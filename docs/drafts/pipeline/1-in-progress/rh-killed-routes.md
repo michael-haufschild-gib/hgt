@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**411 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**417 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-24, `6649425b7a2221579f9fd235a89303b8b1b2a5bc`**.
+Source-audit cutoff: **2026-09-24, `703288df6190dc142e63c650eb3742cc63bf13e6`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
@@ -25,13 +25,13 @@ Concurrent uncommitted formal edits remain pending evidence and are not counted.
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 33 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 51 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 83 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 41 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 53 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 84 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 39 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 63 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 66 |
 | [Analytic roots, multiplicity and regularization](#roots) | 11 |
-| [Other finite, scalar and source-blind selectors](#other) | 83 |
+| [Other finite, scalar and source-blind selectors](#other) | 85 |
 
 <a id="retired-labels"></a>
 
@@ -920,6 +920,8 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 
 ## E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation
 
+- [EDQ physical initial-segment LCM positivity](#no-go-412)
+- [E→EDQ coefficient-blind Gamma--Hankel domination](#no-go-413)
 - [EDQ Möbius divisor-kernel positivity](#no-go-296)
 - [EDQ uniform one-prime core insertion bound](#no-go-297)
 - [E bounded-density binary singleton histories](#no-go-022)
@@ -1828,10 +1830,43 @@ Evidence: [all-source directed-mean no-go](../../../../formal/GaloisForLFunction
 
 [Back to family](#arithmetic) · [Current T2 frontier](rh-current-frontier-map.md#t2--natural-abel-singular-wold-divisor)
 
+<a id="no-go-412"></a>
+
+### EDQ physical initial-segment LCM positivity
+
+**Closed result**
+
+Complete divisor-closed physical LCM panels sum to exact nonnegative coprime-window discrepancy squares. But the *actual* initial complete-grade prefix at cutoff `10`, start `0`, window `15` equals `−45/196`; universal initial-prefix positivity is false. Exact Möbius inversion writes every prefix as Mertens-quotient-weighted panel squares, whose coefficients need not be positive.
+
+**Survivor / still open**
+
+The pointwise divisor-lattice conservation law and signed panel-square inversion retain all physical weights. EDQ still needs cancellation across panels and control of the incomplete high-LCM boundary to bound its two-log signed quotient.
+
+Evidence: [panel conservation](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionCenteredLcmCoprimeConservation.lean), [negative physical prefix](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionCenteredLcmInitialCutoffSign.lean), [Mertens inversion](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionCenteredLcmMertensPanelInversion.lean).
+
+[Back to family](#arithmetic) · [Current EDQ frontier](rh-current-frontier-map.md#candidate-edq)
+
+<a id="no-go-413"></a>
+
+### E→EDQ coefficient-blind Gamma--Hankel domination
+
+**Closed result**
+
+For adjacent signed atoms at `m,m+1`, physical residue-dipole energy is at least `m/(m+1)^3`, while the same coefficient vector has critical Gamma--Hankel energy at most `1/(4m^3)`. Their ratio is unbounded; no coefficient-independent comparison constant transfers Route E energy to EDQ physical energy.
+
+**Survivor / still open**
+
+The adjacent modular-wrap cost is explicit. A surviving bridge must pay it nonlocally or exploit the literal Möbius signs; this no-go does not rule out a source-specific E or EDQ estimate.
+
+Evidence: [adjacent-dipole no-go](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionRouteEAdjacentDipoleNoGo.lean).
+
+[Back to family](#arithmetic) · [Current E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
+
 <a id="scattering"></a>
 
 ## HB, FZZ and PW: scattering and physical action
 
+- [PW-B unrenormalized all-fibre zero residual boundary](#no-go-415)
 - [PW-B direct un-oriented optical/CTP incidence](#no-go-410)
 - [channelwise third-order Hawking/AIME cancellation](#no-go-216)
 - [diagonal or sector-local Hawking completion](#no-go-215)
@@ -3320,6 +3355,22 @@ Evidence: [parity theorem](../../../../formal/GaloisForLFunctions/RHTower/ThetaC
 
 [Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
 
+<a id="no-go-415"></a>
+
+### PW-B unrenormalized all-fibre zero residual boundary
+
+**Closed result**
+
+At a hypothetical left-half Xi copy, the actual integrated square-plus-cap residual cusp boundary has a nonzero normalized limit on some physical radial fibre. The complete angular and square-reader remainders are negligible under the prescribed weights; cap mixing cannot erase the dominant inverse-square channel on every clock. Unrenormalized all-fibre zero-boundary disposal is therefore false under that hypothesis.
+
+**Survivor / still open**
+
+The exact two-principal-channel cusp asymptotic identifies a forced contact/counterterm. PW-B may still use an ordered, source-faithful compensation; proving its incidence with the literal CTP current and outer optical receiver remains open. An independently established all-fibre zero boundary would instead be an RH receiver.
+
+Evidence: [residual boundary theorem](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWResidualBoundaryNoGo.lean), [cusp asymptotic](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWResidualCuspAsymptotic.lean), [source card](pwb-residual-dominant-radial-rigidity-own.md).
+
+[Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
+
 <a id="theta"></a>
 
 ## Theta, Schur, spectral and positivity mechanisms
@@ -4520,6 +4571,7 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 
 ## Ward, Suzuki, prime–Gamma and operator landing
 
+- [P/SP-E positive-semidefinite active-head strict cross](#no-go-414)
 - [P/SP-E blanket normalized history passivity](#no-go-408)
 - [absolute or merely relative Gamma anomaly cancellation](#no-go-253)
 - [APF source-null or positive winding](#no-go-185)
@@ -5685,9 +5737,9 @@ The meromorphic continuation of the literal unit-Riesz Laplace source agrees wit
 
 **Survivor / still open**
 
-The same continuation is analytic on a fixed low-height disk, and its singularities faithfully retain spectral information. P/SP-E needs a meromorphic or singular graph transport plus a signed arithmetic payment law for the physical diagonal; local analyticity cannot be promoted to global source passivity.
+The same continuation is analytic on a fixed low-height disk. Each positive-height zeta zero now has an explicit nonzero multiplicity-quantized residue; a continuous scalar gauge regularizing the pole must vanish there, and its local jet is constrained. P/SP-E needs a meromorphic/singular graph transport plus signed payment on the physical diagonal.
 
-Evidence: [spectral pole](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceSpectralPole.lean), [Landau disk](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLandauDisk.lean).
+Evidence: [spectral pole](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceSpectralPole.lean), [quantized residue](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourcePoleResidue.lean), [gauge jet](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourcePoleGaugeJet.lean).
 
 [Back to family](#ward) · [Current P/SP-E frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
 
@@ -5697,13 +5749,29 @@ Evidence: [spectral pole](../../../../formal/GaloisForLFunctions/RHTower/SPEQuan
 
 **Closed result**
 
-The literal unit-Riesz source takes both signs cofinally, beyond arbitrary square-root-scale floors. Its continuous-to-integer credit transfer, combined with the already negative residual escape, makes the complete normalized prime-power history cofinally unbounded below. A universal nonnegative-history premise is false for this carrier.
+The literal unit-Riesz source takes both signs cofinally, beyond arbitrary square-root-scale floors. Its integer credit transfer and negative residual escape make the complete normalized prime-power history fall below every fixed square-root-clock lower envelope cofinally. A fixed square-root compensator or universal nonnegative-history premise is false for this carrier; the one-step flux has arbitrarily negative root-clock slopes.
 
 **Survivor / still open**
 
 The exact signed credit/debt identity and meromorphic source continuation remain. A viable P/SP-E successor must pay centroid and square debts through a new sign-sensitive arithmetic mechanism, not assume blanket history passivity.
 
-Evidence: [quantitative oscillation](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceQuantitativeOscillation.lean), [integer-history no-go](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceIntegerHistoryNoGo.lean).
+Evidence: [quantitative oscillation](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceQuantitativeOscillation.lean), [root-scale escape](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSqrtScaleEscape.lean), [forced root-clock flux](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePForcedRootClockFlux.lean).
+
+[Back to family](#ward) · [Current P/SP-E frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
+<a id="no-go-414"></a>
+
+### P/SP-E positive-semidefinite active-head strict cross
+
+**Closed result**
+
+At arbitrarily late physical heads, the complete active prime-power strict-cross source matrix is not positive semidefinite. Its all-ones quadratic is the original signed source current. The literal finite P-G186 Burnol Gram is invertible on those packets, so its actual forward two-Julia congruence remains non-PSD; positive rank-one environment landing cannot identify the full current.
+
+**Survivor / still open**
+
+Finite active-head incidence, source-current identity and faithful Gram transport survive. A viable P/SP-E carrier must retain an indefinite channel or an independently source-derived compensator, with a cofinal graph norm and Xi landing still to prove.
+
+Evidence: [active-head survival](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePActiveHeadHistorySurvival.lean), [finite Gram faithfulness](../../../../formal/GaloisForLFunctions/RHTower/RoutePPrimitiveBurnolGramModularFaithfulness.lean).
 
 [Back to family](#ward) · [Current P/SP-E frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
 
@@ -5922,6 +5990,8 @@ Evidence: [forward-bridge no-go](../../../../formal/GaloisForLFunctions/RHTower/
 
 ## Other finite, scalar and source-blind selectors
 
+- [slope-only off-line-moment RH consumer](#no-go-416)
+- [mollified mean-square gate below its exponential floor](#no-go-417)
 - [high-block uniform sharp-head energy](#no-go-409)
 - [grid modulus-only cell surplus](#no-go-411)
 - [all-prime Fermat-quotient carry selector](#no-go-167)
@@ -7236,5 +7306,37 @@ A bound depending only on cell coefficient moduli cannot force the required posi
 Retain signed cross-cell phase/covariance information and prove a source-faithful positive surplus for the actual mollified coefficients. The determinant and density receivers remain conditional on that estimate.
 
 Evidence: [modulus-only no-go](../../../../formal/GaloisForLFunctions/HTGeometry/GridDeviceModulusOnlyNoGo.lean).
+
+[Back to family](#other) · [Current energy diagnostics](rh-current-frontier-map.md#barbanvehov-and-levinson-energy-diagnostics)
+
+<a id="no-go-416"></a>
+
+### slope-only off-line-moment RH consumer
+
+**Closed result**
+
+The multiplicity-weighted off-line first moment is nonnegative. Any eventual upper bound `4π·moment(V)≤κV` must have `κ≥0`; no Littlewood/Jensen consumer of that slope-only form can force the moment to vanish at *every* height, as RH requires.
+
+**Survivor / still open**
+
+Zero slope may still give `o(V)` and a stronger density theorem. RH needs a separate pointwise source rigidity or zero-exclusion law; averaged proportion estimates cannot rule out a sparse off-line set.
+
+Evidence: [slope theorem](../../../../formal/GaloisForLFunctions/RHTower/MollifiedGateConstantFloor.lean), [obstruction card](offline-moment-slope-obstruction.md).
+
+[Back to family](#other) · [Current off-line-moment frontier](rh-current-frontier-map.md#off-line-first-moment-and-large-value-selection)
+
+<a id="no-go-417"></a>
+
+### mollified mean-square gate below its exponential floor
+
+**Closed result**
+
+For `R>0`, every quantified `ZetaMollifiedMeanSquareGate R c` with `c≥1` requires `c≥exp(5R/3)`. Thus a proposed gate with a smaller constant is impossible. Under the two-gate margin hypotheses, the resulting off-line-moment coefficient is likewise nonnegative.
+
+**Survivor / still open**
+
+The floor is a necessary condition, not an attained estimate. Establishing a gate at or asymptotically near it could yield `o(T)` off-line moment; Estermann's analytic layer still lacks the contour-shifted divisor correlation and twisted off-diagonal. Even attainment would not prove RH through this consumer alone.
+
+Evidence: [gate floor](../../../../formal/GaloisForLFunctions/RHTower/MollifiedGateConstantFloor.lean), [analytic continuation frontier](estermann-analytic-layer.md).
 
 [Back to family](#other) · [Current energy diagnostics](rh-current-frontier-map.md#barbanvehov-and-levinson-energy-diagnostics)

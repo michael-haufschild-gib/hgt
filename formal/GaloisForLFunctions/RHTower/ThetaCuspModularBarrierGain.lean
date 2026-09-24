@@ -62,6 +62,61 @@ private theorem full_slope_upper {x : ℝ}
   change deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x*(1+R)-2*q*f*M ≤ (5-2*q)*(f*(1+R))
   nlinarith only [hm, htail]
 
+/-- The complete source slope is controlled by its first physical atom once the
+first scale reaches `15/2`. Exposed for source-sign localization. -/
+theorem thetaCuspFullSource_slope_upper_of_fifteenHalves_le {x : ℝ}
+    (hq : 15/2 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
+    deriv thetaCuspFullSource x ≤
+      (5-2*thetaCuspSingleAtomReflectionScale 1 x)*thetaCuspFullSource x :=
+  full_slope_upper hq
+
+/-- The complete theta source has slope at most `-6` from first-atom scale
+`45/8`; the signed higher spectral moment improves the first-atom estimate. -/
+theorem thetaCuspFullSource_slope_le_neg_six_of_fortyFiveEighths_le {x : ℝ}
+    (hq : 45/8 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
+    deriv thetaCuspFullSource x ≤ -6 * thetaCuspFullSource x := by
+  let q := thetaCuspSingleAtomReflectionScale 1 x
+  let f := thetaCuspSourceTerm x 1
+  let R := thetaCuspHigherLikelihoodSpectralMoment (thetaCuspLikelihoodCoordinate x) 0
+  let M := thetaCuspHigherLikelihoodSpectralMoment (thetaCuspLikelihoodCoordinate x) 1
+  have hx : 0 < x := by
+    by_contra h
+    have he : Real.exp (2*x) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+    have hm := mul_le_mul_of_nonneg_left he Real.pi_pos.le
+    dsimp [thetaCuspSingleAtomReflectionScale] at hq
+    norm_num at hq
+    nlinarith only [hq, hm, Real.pi_lt_four]
+  have hB := thetaCuspLikelihoodCoordinate_pos hx.le
+  have hR : 0 ≤ R := thetaCuspHigherLikelihoodSpectralMoment_nonneg 0
+  have heF : thetaCuspFullSource x = f*(1+R) := by
+    dsimp [f, R]
+    rw [thetaCuspFullSource_eq_first_mul_likelihoodPartition hB,
+      thetaCuspLikelihoodPartition_eq_one_add_moment_zero hB]
+  have hfirst : deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x ≤ -6*f := by
+    have hp : 0 ≤ 8*q^(2 : ℕ)-54*q+51 := by
+      have hm := mul_nonneg (show 0 ≤ q-45/8 by dsimp [q]; linarith only [hq])
+        (show 0 ≤ 8*q-9 by dsimp [q]; linarith only [hq])
+      nlinarith only [hm]
+    have hq0 : 0 ≤ q := by dsimp [q]; linarith only [hq]
+    have hm := mul_nonneg (Real.exp_pos (x/2-q)).le (mul_nonneg hq0 hp)
+    rw [first_slope_eq]
+    dsimp [f]
+    rw [thetaCuspSourceTerm_one_eq_scale_profile]
+    change Real.exp (x/2-q)*(-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q) ≤
+      -6*(Real.exp (x/2-q)*(4*q^(2 : ℕ)-6*q))
+    nlinarith only [hm]
+  have hm := mul_le_mul_of_nonneg_right hfirst (show 0 ≤ 1+R by linarith only [hR])
+  have htail : 0 ≤ 2*q*f*M := by
+    have hq0 : 0 ≤ q := by dsimp [q]; linarith only [hq]
+    have hf : 0 < f := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num)
+    have hM : 0 ≤ M := thetaCuspHigherLikelihoodSpectralMoment_nonneg 1
+    positivity
+  rw [deriv_thetaCuspFullSource_eq_likelihood_moment hx, heF]
+  change deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x*(1+R)-2*q*f*M ≤
+    -6*(f*(1+R))
+  nlinarith only [hm, htail]
+
+
 private theorem full_slope_ratio_lower {x : ℝ} (hx : 0 ≤ x) :
     -6*k x*thetaCuspFullSource x ≤ deriv thetaCuspFullSource x := by
   have hu := thetaCuspModularMassDrift_nonneg hx

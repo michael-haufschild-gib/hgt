@@ -280,3 +280,91 @@
   witness. Lean: `SPEQuantileRieszRoutePSourcePoleGaugeJet.lean`, scratch and
   targeted `--old` leaf build passed. This sharpens local graph patching and
   first-jet constraints but does not produce a cofinal graph or debt payment.
+- Under any eventual one-sided constant bound
+  `epsilon·source(t)+B ≥ 0`, the literal shifted tail defines a nonnegative
+  measure. Its MGF is exactly the shifted source tail Laplace transform;
+  source plus compact-head subtraction plus the constant-shift term is its
+  analytic germ. Landau transfer supplies exponential moments for every
+  tilt `<1`, so the reconstructed source transform is analytic on `Re z>0`
+  and equals the literal continuation on `Re z>1/2`. Lean:
+  `SPEQuantileRieszRoutePShiftedPositiveCarrier.lean`; scratch and targeted
+  `--old` leaf build passed. This is conditional on the bound, not a proof of
+  such a bound or an unconditional RH implication.
+- Under the same one-sided bound with `epsilon ≠ 0`, the reconstructed
+  logarithmic derivative is analytic on `Re s>1/2`, agrees with the actual
+  regularized-zeta logarithmic derivative on `Re s>1`, and analytic-identity
+  rigidity propagates the equality across `Re s>1/2`. A hypothetical
+  regularized-zeta zero there would force an exact logarithmic-derivative
+  pole and is excluded. Consequently the shifted positive-tail
+  reconstruction equals the literal Route P continuation on **all**
+  `Re z>0`. Lean: `SPEQuantileRieszRoutePShiftedAnalyticRigidity.lean`;
+  scratch and targeted `--old` leaf build passed. This remains conditional
+  on the one-sided source bound, which is unproved.
+- For any positive real measure, if its real MGF has boundary Abel mass `B`
+  at tilt `1` and its complex MGF has an imaginary-axis Abel residue `c` at
+  the same tilt, then `‖c‖≤B`. This follows from the pointwise norm bound
+  `‖complexMGF(z)‖≤mgf(Re z)` before taking boundary limits. Lean:
+  `PositiveMGFBoundaryResidue.lean`; Mathlib-only scratch, direct Lean, and
+  targeted `--old` leaf `.olean` passed. This is the core quantitative
+  obstruction for a constant-shifted Route-P positive tail.
+- At every positive-height critical-line zero, the source has a nonzero
+  imaginary-axis residue `c=-m/(rho(rho+1/2))`. If an eventual one-sided
+  constant shift `epsilon·S+B` were nonnegative, analytic rigidity welds its
+  positive-tail MGF to the literal source for all `Re z>0`; its real boundary
+  Abel mass is `B`, while its imaginary boundary residue is `epsilon·c`.
+  The positive-MGF inequality forces `‖epsilon·c‖≤B`. Taking `epsilon=±1`
+  and `B=‖c‖/2` proves a closed theorem: some fixed `δ>0` has both
+  `S(t)>δ` and `S(t)<-δ` arbitrarily far out. Lean:
+  `SPEQuantileRieszRoutePSourceFixedAmplitudeOscillation.lean`; scratch,
+  direct Lean, and targeted `--old` leaf `.olean` passed. This strengthens
+  the corpus's decaying-amplitude oscillation but does not synchronize the
+  signed credit with terminal/square debts or construct the Xi graph.
+- The fixed source amplitude survives integer-cell transfer: for some
+  `δ>0`, arbitrarily large integer `N` satisfy
+  `δ N < N·S(log N)`. Transfer loses at most `(log 4+5)√X`, asymptotically
+  below the source's linear credit. Since the exact normalized history is
+  `-2N·S(log N)` plus an eventually negative geometric remainder, some
+  `c>0` has cofinal physical heads `K` with
+  `history(K)/mass(K) < -c(K+2)`. Lean:
+  `SPEQuantileRieszRoutePLinearHistoryEscape.lean`; scratch, direct Lean,
+  targeted `--old` leaf `.olean`, and formal lint passed. This upgrades the
+  prior square-root-scale escape: every sublinear positive compensator fails
+  to restore blanket passivity. It does not imply that a linear or larger
+  **signed, source-faithful** compensator exists, nor pay debts or prove RH.
+- An eventual one-sided **upper** bound on the literal unit-Riesz source
+  forces RH: the constant-shift positive-tail analytic reconstruction is
+  holomorphic on the right half-plane, so its equality with the actual zeta
+  logarithmic derivative excludes every right-strip zero. Contrapositively,
+  if RH fails the source exceeds every prescribed height arbitrarily late.
+  The integer-cell transfer loses only `O(√X)`; choosing a larger source
+  height preserves arbitrary amplitude at integer heads. The exact history
+  remainder is eventually negative, hence the closed Lean theorem
+  `routeP_normalized_history_superlinear_escape_or_RH` proves: either RH,
+  or for every real `B` the normalized physical history is `< -B(K+2)`
+  at arbitrarily large heads. Lean:
+  `SPEQuantileRieszRoutePLinearLowerThreshold.lean`; scratch Lean and targeted
+  `lake --old -q build ...:olean` passed. Whole-route meaning: any universal
+  eventual linear lower bound for this literal history would prove RH; no
+  such bound or Xi graph has been constructed. The opposite RH⇒linear-bound
+  direction would require a global inverse-square-root weighted prime-mass
+  error estimate in addition to the corpus's RH⇒Chebyshev power bound.
+- At `x=K+2`, the physical mass `m_K` is exactly Suzuki's Abel-weighted
+  Chebyshev mass. Abel subtraction gives
+  `m_K-(2√x-1)=x^(-1/2)(ψ(x)-x)+(1/2)∫₁ˣ t^(-3/2)(ψ(t)-t)dt`.
+  From RH⇒`|ψ(t)-t|≤C t^(5/8)`, the new Lean theorem gives
+  `|m_K-2√x|≤D x^(1/8)` for every `K`.
+- The exact physical two-square decomposition, bounded centroid excess,
+  nonnegative width cube, unconditional mass lower bound, and RH-bounded
+  unit-Riesz source now yield `H_K≥-B(K+2)` for all `K≥3`. Combined with
+  the preceding unconditional escape-or-RH theorem, the **closed Lean
+  equivalence** is `RH ↔ ∃B≥0 ∀K≥3, H_K≥-B(K+2)`.
+  Lean: `SPEQuantileRieszRoutePLinearFloorCriterion.lean`; scratch and
+  targeted `lake --old -q build <leaf>:olean` passed; umbrella wired.
+- Whole-route meaning: source credit is `-xS(log x)/2`, so its RH-controlled
+  scale is *linear*, not `x^(3/4)`; the two square debts are at most
+  `O(x^(3/4))` under RH. The corpus already proves cofinal fixed-amplitude
+  negative linear excursions unconditionally. Hence the exact missing
+  arithmetic obligation is a **uniform linear lower amplitude**, not a
+  nonnegative or sublinear floor. This criterion does not prove that floor
+  unconditionally, pay debts from source, or construct the meromorphic
+  ordered-history graph.

@@ -1,6 +1,7 @@
 # Estermann's zeta function: the analytic layer
 
-**Status:** in progress. Definition, functional equation, divisor series, entire completion, exact
+**Status:** the analytic layer is closed through the smoothed twisted divisor sum
+(`estermann_smoothed_sum`, MUST-379). Previously: in progress. Definition, functional equation, divisor series, entire completion, exact
 principal part, closed form of the character sum, left-half-plane polynomial bound **and the
 convexity bound on the closed strip `-1 ≤ Re s ≤ 2`** are proved in Lean and axiom-clean. The
 former open core (the middle strip) is closed. The remaining work is the Perron/Mellin step and
@@ -148,7 +149,133 @@ only (`rectIntegral_eq_two_pole_residues`, `RectangleIntegral'_eq_sumResiduesIn`
 `HasSimplePolesOn`). It is what a contour shift past the double pole of `ζ²`, of Estermann's zeta,
 or of any Rankin–Selberg square consumes.
 
-## Next
+## Cauchy's derivative formula on a rectangle
+
+`HTGeometry/AnalyticDoublePoleSplit.lean`
+* `slopeExt f p` — the difference quotient of `f` at `p`, extended by `deriv f p`;
+  `differentiableOn_slopeExt` proves it holomorphic, from the removable singularity theorem and
+  `hasDerivAt_iff_tendsto_slope`. No second derivative, no power series.
+* `exists_doublePole_split`: `f s = f p + f'(p)(s−p) + (s−p)² G s` with `G` holomorphic, by
+  applying the slope extension twice.
+* `exists_doublePole_principalPart`: the same in the normal form
+  `f s/(s−p)² = f p (s−p)^{-2} + (f'(p)(s−p)^{-1} + G s)`.
+
+`HTGeometry/RectangleDerivativeFormula.lean`
+* `rectIntegral_div_sub_sq_eq_deriv`: **`∮_{∂R} f(s)/(s−p)² ds = 2πi f'(p)`** for `f` holomorphic
+  on a neighbourhood of the closed rectangle and `p` strictly inside. Mathlib has the circle
+  version; the corpus's rectangle residue calculus covered simple poles only.
+
+This is the last missing tool for the contour shift: the integrand is
+`x^{-s}Γ(s)D(s,a/q) = g(s)/(s−1)²` with `g = x^{-s}Γ(s)·estermannEntire(s)` holomorphic on
+`Re s > 0`, and the shift's residue is `g'(1)`.
+
+## The rectangle identity is closed
+
+`RHTower/EstermannMellinNumerator.lean`
+* `estermannMellinNumerator q a x s = x^{-s} Γ(s) · (s-1)² D(s, a/q)`, holomorphic on `Re s > 0`
+  (`differentiableOn_estermannMellinNumerator`), with
+  `estermannMellinNumerator_div : N(s)/(s-1)² = x^{-s} Γ(s) D(s, a/q)` off `s = 1`.
+* `deriv_Gamma_one : Γ'(1) = -γ`, from `Complex.digamma_one` and `Γ(1) = 1`.
+* **`deriv_estermannMellinNumerator_one`:** the residue,
+
+```text
+N'(1) = (γ - log x - 2 log q)/(q x).
+```
+
+  The three factors contribute `-log x`, `Γ'(1) = -γ` and the Estermann residue `(2γ-2 log q)/q`.
+
+`RHTower/EstermannRectangleIdentity.lean`
+* **`rectIntegral_estermannMellinIntegrand`:** for `x, T > 0`,
+
+```text
+∮_{∂([½,2]×[-T,T])} x^{-s} Γ(s) D(s, a/q) ds = 2πi (γ - log x - 2 log q)/(q x).
+```
+
+  Exact, at every finite height, by Cauchy's derivative formula on a rectangle.
+
+With `x = 1/X` the residue is `(X/q)(log(X/q²) + γ)` — the main term of the smoothed twisted
+divisor sum.
+
+## The horizontal edges vanish
+
+`RHTower/EstermannHorizontalDecay.lean`
+* `tendsto_poly_mul_exp_neg_zero K hc : (1+T)^K e^{-cT} → 0` for `c > 0`, by the substitution
+  `w = c(1+T)` into `Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero`.
+* `rpow_neg_le_of_mem : x^{-u} ≤ x^{-1/2} + x^{-2}` for `u ∈ [½,2]` (both monotonicity cases).
+* `exists_bound_norm_estermannMellinIntegrand_horizontal`: on `Re s ∈ [½,2]`, `|Im s| ≥ 1`,
+
+```text
+‖x^{-s} Γ(s) D(s,a/q)‖ ≤ C (1+|t|)^N e^{-π|t|/2},
+```
+
+  from the three factor bounds: the constant weight, `exists_bound_norm_Gamma_vertical_strip`, and
+  the convexity bound `exists_bound_norm_estermannZeta_strip`.
+* **`tendsto_horizontal_estermannMellin`:** both horizontal edge integrals
+  `∫_{1/2}^{2} x^{-s}Γ(s)D(s,a/q) du` at height `±T` tend to `0` as `T → ∞`.
+
+The Gamma decay `e^{-π|t|/2}` beats the polynomial convexity bound, which is exactly what the
+Phragmén–Lindelöf work earlier in this card was for.
+
+## The contour shift is closed
+
+`RHTower/EstermannVerticalIntegrable.lean`
+* `integrable_estermannMellinIntegrand_vertical`: on a line `0 < Re s ≤ 2`, `Re s ≠ 1`, the
+  integrand `x^{-s}Γ(s)D(s,a/q)` is integrable. Continuity comes from `Γ` (right half plane) and
+  `D` (off `s = 1`); above unit height the tail bound is `C(1+|t|)^N e^{-π|t|/2}`, and raising the
+  constant absorbs the compact part `|t| ≤ 1`, so a single majorant
+  `K(1+|t|)^N e^{-(π/2)|t|}` dominates the whole line.
+
+`RHTower/EstermannContourShift.lean`
+* **`estermannMellin_vertical_difference`:**
+
+```text
+∫_ℝ x^{-(2+iv)} Γ(2+iv) D(2+iv, a/q) dv - ∫_ℝ x^{-(½+iv)} Γ(½+iv) D(½+iv, a/q) dv
+  = 2π · (γ - log x - 2 log q)/(q x).
+```
+
+  The rectangle identity holds at every height; the horizontals vanish and the verticals converge
+  (`MeasureTheory.intervalIntegral_tendsto_integral`), so the limit is exact.
+
+Since `mellinInv σ (Γ·D) x = (1/2π)·(the vertical integral at `Re s = σ`)`, this is
+
+```text
+mellinInv 2 (Γ·D) x - mellinInv (1/2) (Γ·D) x = (γ - log x - 2 log q)/(q x),
+```
+
+and with `estermann_exponential_mellin` at `c = 2`,
+
+```text
+∑_N d(N) e(aN/q) e^{-Nx} = (γ - log x - 2 log q)/(qx) + mellinInv (1/2) (Γ·D) x,
+```
+
+the remaining integral being `O(x^{-1/2})` by the same line bound.
+
+## Earlier framing of the same step
+
+Combine: the vertical edges converge to the full vertical integrals (by integrability of
+`Γ(σ+it)D(σ+it)` on each line, from the same three bounds), so the rectangle identity passes to
+the limit and gives
+
+```text
+mellinInv 2 (Γ·D) x - mellinInv (1/2) (Γ·D) x = (γ - log x - 2 log q)/(q x),
+```
+
+i.e. `∑_N d(N) e(aN/q) e^{-Nx} = (γ - log x - 2 log q)/(qx) + O(x^{-1/2})`.
+
+## Earlier framing of the same step
+
+Let `T → ∞` in the rectangle identity. The horizontal edges decay like `T^N e^{-πT/2}` (the Gamma
+factor beats the convexity bound for `D` on `[½,2]`), and the vertical edges converge to the full
+vertical integrals, giving
+
+```text
+mellinInv 2 (Γ·D) x - mellinInv (1/2) (Γ·D) x = (γ - log x - 2 log q)/(q x),
+```
+
+i.e. `∑_N d(N) e(aN/q) e^{-Nx} = (γ - log x - 2 log q)/(q x) + O(x^{-1/2})`.
+Then the shifted divisor correlation, then the BCHB off-diagonal.
+
+## Superseded next step
 
 Move the contour of `x^{-s}Γ(s)D(s,a/q)` from `Re s = 2` to `Re s = 1/2` (staying right of the
 pole of `Γ` at `s = 0`), using `rectIntegral_eq_double_pole_residue_on` with `U = {Re z > 0}` and

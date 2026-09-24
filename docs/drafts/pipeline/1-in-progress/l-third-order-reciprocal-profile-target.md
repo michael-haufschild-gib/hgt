@@ -1,6 +1,6 @@
 # Route L: one integer-order source target
 
-- **Status:** finite source isometry, primitive-ratio sign localization, stationary-kernel algebra, exact Gamma-weighted finite Möbius-polynomial identity, source-order comparison, the direct finite Gamma--Hankel identity, and the power-balanced source reduction are formalized in Lean. Paper proofs now give an unconditional `E(N)^2` stretched-exponential *relative* saving for the full signed reciprocal energy, near-complete prime/composite compensation inside a shrinking interval, an exact short-interval rank-one/covariance approximation, quadratic-Mertens and opposite-sign-transport sufficient criteria, an exact prefix-current transport construction and Gamma cost, two-adic localization of a weaker one-sided RH receiver, the signed unbalanced endpoint, and fixed-factor prime-insertion laws; these sharpenings remain open in Lean. The cutoff-independent signed power-balanced bound needed for RH is open.
+- **Status:** finite source isometry, primitive-ratio sign localization, stationary-kernel algebra, exact Gamma-weighted finite Möbius-polynomial identity, source-order comparison, the direct finite Gamma--Hankel identity, the power-balanced source reduction, and the cubic discrete packet second-difference identity are formalized in Lean. Paper proofs now give an unconditional `E(N)^2` stretched-exponential *relative* saving for the full signed reciprocal energy, near-complete prime/composite compensation inside a shrinking interval, an exact short-interval rank-one/covariance approximation, quadratic-Mertens and opposite-sign-transport sufficient criteria, an exact prefix-current transport construction and Gamma cost, two-adic localization of a weaker one-sided RH receiver, the signed unbalanced endpoint, fixed-factor prime-insertion laws, a macroscopic source-compatible dyadic signed-dipole contraction followed by a literal prime-band compensator, and an all-order discrete packet identity for the full signed source. The cutoff-independent signed power-balanced bound needed for RH is open.
 - **Hard target:** for one fixed order, prove a power-sharp block mean square of the literal Möbius source
 
 ```
@@ -207,6 +207,17 @@ B_(3+delta,delta)(N)
 ```
 
 If, for `delta` arbitrarily close to zero from above, (15) has one finite upper ceiling on an unbounded subsequence of `N`, then (14), the nonnegative Gamma--Hankel diagonal, and the already formalized bounded-return Fatou criterion imply RH. This avoids the paper-level fractional-source and geometric-packet transport for this parameter-coupled target. `MobiusReciprocalGammaHankelBridge` formalizes the exact finite identity, the two-step comparison, and the integer-numerator kernel. The substantive open estimate remains a one-power cancellation of the comparable-index Möbius pairs; the unconditional absolute pair sum grows at scale `N^(1-delta)`. Existing additive-triangle criteria in the corpus retain different coefficients and do not prove (15).
+
+The [all-order discrete Möbius packet identity](../2-fully-proven/l-discrete-mobius-packet-sobolev.md) gives a second exact form of (15). If `b_k=sum_(n≤N) mu(n)(n+1)^(-1-delta)((n-1)/(n+1))^k`, then
+
+```text
+B_(3+delta,delta)(N) = 2^(delta-3) * sum_(k≥0)
+  binom(4+delta+k,k) * (b_k-2b_(k+2)+b_(k+4))^2.       (15a)
+```
+
+The generic positive packet expansion and the source-specific step-two second-difference bridge are proved in [Lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusReciprocalDiscretePacketBridge.lean). Formula (15a) locates the hard arithmetic estimate in one weighted sequence norm. The paper-level [finite packet horizon theorem](../2-fully-proven/l-discrete-mobius-packet-sobolev.md#unconditional-finite-packet-horizon-paper-proof) bounds the omitted range `k≥C_P N log N` by `O_P(N^(-P))` for any fixed `P>0`, uniformly in `0≤delta≤1`; hence the global arithmetic problem is entirely inside a finite `O(N log N)` packet range. Neither identity nor horizon bounds that range.
+
+The paper-level [source-index aperture theorem](../2-fully-proven/l-discrete-mobius-packet-sobolev.md#source-index-aperture-at-the-cubic-threshold-paper-proof) narrows this finite range further. For `0≤delta≤1` and all sufficiently large packet indices `k`, the source indices below `floor(4k/log k)` and above `ceil(k^((5+delta)/(4+2delta)))` have a weighted `ℓ²` contribution bounded independently of `N` and `delta`. Integrating the exact exponential kernel controls every lower cutoff `A*k/log k` with `A<4`; at `A=4`, finite Abel summation and the corpus's stretched-exponential Mertens saving make the endpoint summable. The same saving controls the upper endpoint, where absolute values would give harmonic packet energy. Thus bounded returns of (15) are equivalent to bounded returns of the literal Möbius packet norm on the finite wedge `k<O(N log N)` and `4k/log k<n≤k^((5+delta)/(4+2delta))`. Only signed cancellation in this two-sided critical wedge remains; its bound is open.
 
 **Unconditional global signed saving (paper proof; Lean theorem open).** Write `E(x)=deningerMertensSaving x=exp(-((log x)^(1/3))/108)` and `F_N(t)=sum_(n<=N) mu(n)*n^2*exp(-n*t)`. The corpus's `deningerMertensM_rate`, with its finite initial exceptions absorbed into one constant, gives `|M(x)| << x*E(x)` for real `x>=1`. Ordinary finite Abel summation gives the exact formula
 
@@ -487,7 +498,20 @@ M(n)=G(n)-G(n/2)-G(n/3)+G(n/6)
     =U_3(3*n)-U_3(n).                                    (16z)
 ```
 
-This supplies a smaller RH-scale target than the whole low-prime covariance: if `E_3(X)=sum_(n<=X) U_3(n)^2`, then `Q(X)<=4*E_3(3X)`. Hence `E_3(X)=O_epsilon(X^(2+epsilon))` for every `epsilon>0` implies RH by the existing quadratic-Mertens receiver. Conversely, the corpus's `RHTower.mobiusMertensAllStrictHalfPowerBound_iff_riemannHypothesis` implies this bound for `E_3`: invert the two finite Euler removals to write `G(x)=sum_(i,j>=0) M(floor(x/(2^i*3^j)))`; under RH the geometric sum is `O_epsilon(x^(1/2+epsilon))`, so `U_3(n)` has the same pointwise order and `E_3` has the asserted bound. Thus this *single fixed prime-3 rough half-window* is an RH-equivalent signed-energy producer, not merely one summand to be paid separately. The formal prime-removal law `RHTower.mobiusMertensPartialSum_eq_primeWindow` already supplies the one-prime step; the displayed two-dilation reconstruction and its critical energy equivalence remain paper-level. Existing short-window mean-square results found by deep corpus search concern windows of subpower length and do not give the proportional-length bound for `U_3`.
+This supplies a smaller RH-scale target than the whole low-prime covariance: if `E_3(X)=sum_(n<=X) U_3(n)^2`, then `Q(X)<=4*E_3(3X)`. Conversely, inverting the two finite Euler removals gives `G(x)=sum_(i,j>=0) M(floor(x/(2^i*3^j)))`, and subtracting its half-scale copy telescopes the powers of `2`:
+
+```
+U_3(n)=sum_(k>=1) M(floor(n/3^k)).                     (16aa)
+```
+
+The sum is finite because `M(0)=0`. For every finite `X`, Minkowski and the fact that each integer `m` has at most `3^k` preimages under `n |-> floor(n/3^k)` give the unconditional energy inequality
+
+```
+sqrt(E_3(X)) <= sum_(1<=k<=floor(log_3 X))
+                  sqrt(3^k * Q(floor(X/3^k))).          (16ab)
+```
+
+If `Q(X)=O_epsilon(X^(2+epsilon))`, the right side is `O_epsilon(X^(1+epsilon/2))` by a geometric sum `sum_k 3^(-k*(1+epsilon)/2)`. Together with `Q(X)<=4*E_3(3X)`, this proves that the *all-epsilon critical energy bounds for `Q` and `E_3` are equivalent by finite scale inequalities*, without invoking an analytic converse. The existing quadratic-Mertens receiver then makes `E_3(X)=O_epsilon(X^(2+epsilon))` for every positive `epsilon` an RH-equivalent producer. This single fixed prime-3 rough half-window is not merely one summand to be paid separately. The formal prime-removal law `RHTower.mobiusMertensPartialSum_eq_primeWindow` already supplies the one-prime step; the displayed two-dilation reconstruction and its energy inequalities remain paper-level. Existing short-window mean-square results found by deep corpus search concern windows of subpower length and do not give the proportional-length bound for `U_3`.
 
 **Power-unbalanced pairs are already absolutely paid.** For each `n>=1`, set `D=floor((n^2)^(1/3))`. Then `sum_(m<=D) m^2 <= D^3 <= n^2`, so, for every `delta>0`,
 
@@ -671,6 +695,8 @@ K_0(x,y)/sqrt(K_0(x,x)*K_0(y,y))
 ```
 
 Gram Cauchy--Schwarz and (20) therefore give the pointwise bound `G(x,y) < (9/10)*K_0(x,y)`. Define `G_delta` by replacing `t^4/Gamma(5)` in the displayed integral with `t^(4+delta)/Gamma(5+delta)`. Its diagonal ratio `G_delta(x,x)/K_delta(x,x)` and the dyadic correlation floor `(2*sqrt(2)/3)^(5+delta)` vary continuously with `delta`; the strict inequality persists with factor `9/10` for all `0<=delta<=epsilon` for some `epsilon>0`. Thus any finite nonnegative base packet in `[X,2X]` retains a nonnegative `2,3`-inserted energy below `9/10` of its original energy. For odd primes `X<p<=2X`, `X>144`, and `N>=12X`, every atom of this 16-term block lies in the cubic power-balanced sector. This establishes composite compensation after two prime insertions, but it is weaker than the single-`2` bound and does not produce decay with the number of inserted primes. The corpus's `EulerDeletionCompositeInterference` proves a related exact overlap law in a different Dirichlet Gram; the additive Gamma--Hankel calculation here does not follow from that theorem.
+
+The complementary signed local mode is now quantified by the [prime-insertion dipole-jet theorem](../2-fully-proven/l-prime-insertion-dipole-jet.md). For a near-cancelling pair `f_(x+h)-f_x`, the energy ratio after inserting `q` tends to `1+1/q-256*q²*(-q²+3*q-1)/(q+1)^7`: it is `4513/4374>1` for `q=2` and `283/192>1` for `q=3`. Infinitely many literal prime/semiprime pairs `p,2r` approach this `q=3` jet, with the source signs intact. A positive counterweight also survives: two equally oriented dipoles at dyadic scales `x,2x` telescope under `2`-insertion to `v_x-v_(4x)`, whose exact energy is below `4/5` of that of `v_x+v_(2x)`. PNT supplies `≫R/log R` disjoint, aligned literal prime/semiprime precursors in four fixed relative-width intervals. Their *combined* signed source packet retains the `4/5` contraction and has energy `≫_delta R^(1-delta)/log²R` for sufficiently small `delta≥0`; every atom lies in the unresolved balanced sector for large `R`. A second disjoint band of literal prime atoms near half the base jet scale compensates the inserted packet further: exact rational Gamma covariance gives its squared energy below `2/3` of the inserted energy, hence below `8/15` of precursor energy. The surviving producer must globalize this cross-packet compensation across the full Möbius source, including unmatched atoms. The paper theorem is closed; its Lean formalization is open.
 
 ## Finite one-large-prime window at the RH scale
 

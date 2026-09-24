@@ -755,3 +755,205 @@
   uniform for a moving edge. Its useful transferable lesson is to keep
   transposed/remainder terms recombined; its displayed truncation bound
   does not close the EDQ mesoscopic-band estimate.
+- **Log-prime feedback has asymptotically antipodal signed channels (paper
+  proof; Lean pending):** in the literal compensated renewal of
+  `EulerDeletionLogPrimeForcing`, write `J_N=logSource N`,
+  `A_N=dilationPackets N`, and `B_N=forcing N`. The formal identity is
+  `J_N=-(A_N+B_N)` and the formal forcing law supplies constants
+  `0<c<C` with `cN≤‖B_N‖²≤CN` eventually. The existing arbitrary-log
+  source saving, transferred through the generator-combination identity,
+  gives `‖G_k‖≤C₀√k/log³k` for large `k` and `‖G_k‖≤C₁√k` globally.
+  The *formal* vector Abel identity expresses
+  `J_N=log(N)G_N−Σ_{k<N}log((k+1)/k)G_k`. Since the logarithmic increment
+  is at most `1/k`, split the history at `√N`: the early part is
+  `O(N^(1/4))`, the late part is `O(√N/log³N)`, and the terminal part is
+  `O(√N/log²N)`. Thus `‖J_N‖=o(√N)`.
+  Cauchy--Schwarz now yields the *quadratic* phase law
+  `(Re⟪A_N,B_N⟫+‖B_N‖²)/N→0` and
+  `(‖A_N‖²−‖B_N‖²)/N→0`; in particular the normalized channel
+  correlation tends to `−1`. This is a quadratic consequence of the
+  compensated-renewal card's already derived relative cancellation,
+  not an independent arithmetic estimate; it identifies the compulsory
+  negative order-`N` cross term
+  in the actual prime-dilation/compensator pair. It does **not** bound the
+  smaller residual `J_N` at the RH scale or the original `G_N`; a Gram
+  estimate that treats the two channels separately necessarily loses the
+  cancellation. No new Lean theorem is claimed until the entire source
+  transfer and limit proof passes the targeted scratch check.
+- **Centered Farey high-clock leakage law (dependency-closed paper proof;
+  Lean pending):** for *any* real coefficients `|a_d|≤1`, put
+  `F_N(k)=Σ_{d≤N}a_d(k mod d)/d`, let `m_N` be its complete-period mean,
+  `g_N=F_N−m_N`, and `V_N` its complete-period variance. The exact
+  gcd-square covariance gives the stronger linear bound
+  `0≤V_N≤3N/4`: bound `gcd(m,n)²` by `Σ_{d|m,n}d²`,
+  reindex multiples to obtain
+  `V_N≤(1/12)Σ_{d≤N}H_{⌊N/d⌋}²`, and expand the square.
+  Swapping the finite sums gives
+  `Σ_{d≤N}H_{⌊N/d⌋}²
+   =Σ_{r,s≤N}⌊N/max(r,s)⌋/(rs)
+   ≤N(Σ_{r≥1}r^(−3/2))²≤9N`;
+  the final bound is the elementary integral comparison
+  `Σ_{r≥1}r^(−3/2)≤3`. A shorter formal route already supported by
+  `sum_inv_sqrt_cube_le` and `sum_one_div_sqrt_le` is finite Cauchy--Schwarz:
+  `H_M²≤(Σ_{r≤M}r^(−3/2))(Σ_{r≤M}r^(−1/2))≤6√M`, hence
+  `Σ_{d≤N}H_{⌊N/d⌋}²≤12N` and the still-linear `V_N≤N`.
+  Every frequency of `g_N` is a *nonzero*
+  reduced fraction with denominator at most `N`; distinct frequencies
+  are `N⁻²`-separated. Finite Parseval gives coefficient square mass
+  `V_N`. The corpus dual Farey large sieve therefore gives, for any
+  translated length-`T` block,
+  `Σ_{j=T}^{2T−1}|g_N(j+1)|²≤(T+A_N)V_N`, where
+  `A_N=N²(1+log(N²/2+1))`. Let `q=clock l` and take the admissible
+  periodic history predictor `h(j)=F_N((j mod q)+1)`. Its error is
+  **exactly** `g_N(j+1)−g_N((j mod q)+1)`; the mean cancels before any
+  square. Dyadic physical-tail summation and the fibre-alias bound
+  `Σ_{k≥1}cellWeight(r+kq)≤2/q²` give
+  `‖sourceVec a N−P_l(sourceVec a N)‖²
+   ≤(8/q+20A_N/(3q²))V_N`.
+  The complete argument needs no Mertens saving or two-point Möbius
+  correlation. At the corpus two-log clock
+  `l=2(log₂(N+1)+1)`, `q≥(N+1)²/(l+1)`, so the right side is
+  `O(log³N/N)→0` *uniformly over all coefficient sequences bounded by
+  one*. Orthogonal Pythagoras upgrades the existing `O(log N)`
+  full-source versus signed-projection discrepancy to `o(1)`.
+  More generally any clock with `q≫N^(3/2)√(log N)` suffices; the
+  corpus's elementary `2^l/(l+1)` clock bound permits levels
+  `(3/2+δ)log₂N` for every fixed `δ>0`, below its present two-log level.
+  At each such smaller level, a cofinal polylog ceiling for the literal
+  signed `pairedMoebiusQuotient` projection still implies RH by the
+  corpus full-source RH endpoint, because the omitted energy is `o(1)`.
+  Likewise any hypothetical off-line-zero power growth of the full
+  source must appear in that smaller projection. These are receiver
+  consequences, not source-side ceiling proofs.
+  This closes the high-clock alias/tail obstruction on paper but does
+  **not** bound the retained signed quotient or prove RH. Formal work
+  still needs the finite residue-Fourier/Farey and variance bridges;
+  `Sieve.largeSieve_dual_fareySet`, the period covariance formula,
+  and the history predictor are already proved. An earlier uncentered
+  estimate unnecessarily required Mertens control of `m_N`; centering
+  before squaring is essential. No numerical calculation or axiom check
+  was used; no external priority is claimed.
+- **Top-denominator Fourier packet identifies the residual arithmetic scale
+  (paper calculation; Lean pending):** for `d≥2`, the coefficient of the
+  centered residue `k↦(k mod d)/d−(d−1)/(2d)` at nonzero frequency `t/d` is
+  exactly `−1/[d(1−exp(−2πit/d))]`. This follows from the finite geometric
+  derivative `Σ_{r<d} r z^r=−d/(1−z)` when `z^d=1`, `z≠1`.
+  Consequently the coefficient of the full signed source at reduced
+  frequency `1/d` is exactly
+  `−[d(1−exp(−2πi/d))]⁻¹ Σ_{k≤N/d} a_{kd}/k`.
+  For `N/2<d≤N`, this is a nonvanishing factor depending only on `d`
+  times `a_d` alone. Frequencies `1/d` and `1/e` in this band differ by
+  `|d−e|/(de)`, so a length-`T` observation cannot separate indices in
+  a window of order `N²/T`. At the generic high-clock threshold
+  `T≈N^(3/2)`, that unresolved packet spans order `√N` consecutive
+  denominators. For literal Möbius coefficients, its signed amplitudes
+  are therefore fixed-start short Möbius windows—precisely the arithmetic
+  obstruction already visible in the EDQ first-tail identity. This is a
+  geometric explanation of why the coefficient-independent large-sieve
+  bound stops near exponent `3/2`, not a proof of a lower bound or of RH;
+  cancellations with other Fourier packets are not ruled out.
+- **Top-denominator packet is an exact spectral band (Lean theorem
+  `reciprocal_frequency_mem_top_band`):** among all source frequencies
+  `t/m` with `1≤t<m≤N`, the
+  open band `(1/N, 2/N)` contains exactly the first harmonics `1/d`
+  with `N/2<d<N`. Indeed `t≥2` forces `t/m≥2/N`, while `t=1` gives
+  precisely the stated denominator range. This isolates the literal
+  top-denominator Möbius coefficients from every higher harmonic in
+  complete-period Fourier space. The frequency classification is built
+  in `EulerDeletionTopFrequencyBand.lean`. It does **not** itself give a lower
+  bound on a finite physical time window: windowing broadens frequencies,
+  and that leakage must be quantified before converting the band fact
+  into an obstruction or a signed gain. Parseval does give the unconditional
+  complete-period frame bound
+  `V_N≥(4π²)⁻¹Σ_{N/2<d<N}a_d²` for arbitrary real coefficients (paper
+  proof; Lean pending): these
+  coefficients have no colliding source modulus, and
+  `|1−exp(−2πi/d)|≤2π/d`. Lower-denominator coefficients cannot erase
+  this top-band energy, regardless of signs. The exact divisor-channel
+  factorization below and the elementary `J₂(d)≥d²/4` yield the
+  slightly weaker but trigonometry-free `V_N≥(1/48)Σ_{N/2<d≤N}a_d²`.
+- **Exact denominator-channel factorization (dependency-closed paper proof;
+  Lean pending):** for each reduced frequency `t/d`, `d≥2`, the centered
+  source coefficient is
+  `b_{t/d}=−S_d(a)/[d(1−exp(−2πit/d))]`, where
+  `S_d(a)=Σ_{k≤N/d}a_{kd}/k`. Thus *all* primitive numerators at one
+  denominator share the same signed arithmetic amplitude; numerator
+  dependence is universal geometry. Complete-period Parseval gives
+  `V_N=Σ_{d=2}^N W_d S_d(a)²`, with
+  `W_d=Σ_{1≤t<d,(t,d)=1}1/[d²|1−exp(−2πit/d)|²]
+       =J₂(d)/(12d²)`.
+  The last equality follows by Möbius inversion of the elementary full
+  sawtooth variance `Σ_{t=1}^{d−1}|1−exp(−2πit/d)|⁻²=(d²−1)/12`;
+  equivalently it is the corpus gcd-power diagonalization with the
+  `d=1` harmonic-mean square removed. This makes the whole-route split
+  precise: arithmetic lives in `S_d(a)`, while the physical weighted
+  quotient introduces nonorthogonal cross-denominator Gram terms that
+  complete-period Parseval cannot bound. No RH implication is claimed
+  from the factorization alone.
+- **Literal-Möbius period variance has linear lower order (dependency-closed
+  paper proof; Lean pending):** write `J₂(d)=gcdPowKernel 2 d`. The corpus
+  gcd-power diagonalization gives
+  `12V_N=Σ_{d≤N}J₂(d)(Σ_{m≤N,d|m}μ(m)/m)²
+          −(Σ_{m≤N}μ(m)/m)²`.
+  Möbius inversion of `J₂=μ∗id²` and the elementary inverse-square tail
+  `Σ_{e≥2}e⁻²≤3/4` give `J₂(d)≥d²/4` for every positive `d`: the `e=1`
+  term is `d²` and the absolute total of all other divisor terms is
+  at most `3d²/4`. For `N/2<d≤N` the inner multiples sum is exactly
+  `μ(d)/d`; therefore
+  `12V_N≥(1/4)Σ_{N/2<d≤N}μ(d)²−H_N²`.
+  The corpus proves positive dyadic squarefree density, so the first
+  term is `≫N`, while `H_N²=O(log²N)=o(N)`. Hence `V_N≍N` for the
+  literal Möbius source. The upper bound from the preceding fact is
+  order-sharp even for the signed source. This rules out reducing the
+  high-clock threshold by seeking `V_N=o(N)`; any lower-clock advance
+  must control incomplete-window phase cancellation, not complete-period
+  variance. An independent, shorter Fourier proof uses the exact band
+  above: Parseval and `|1−exp(−2πi/d)|≤2π/d` give
+  `V_N≥(4π²)⁻¹Σ_{N/2<d<N}μ(d)²≫N`, with no Jordan-kernel lower bound or
+  subtraction of the harmonic scalar. This does not bound the low-clock
+  signed quotient or prove RH.
+- **The first variance bridge is now closed in Lean:**
+  `Sieve.gcd_square_double_sum_le_harmonic` proves
+  `Σ_{m,n≤N} gcd(m,n)²/(mn) ≤ N H_N²`, where
+  `H_N=Σ_{m≤N}1/m`. The proof uses the corpus gcd-power diagonalization,
+  bounds each divisor channel by `H_N²`, and makes no cancellation assumption.
+  `DeletionPeriodCovariance.mobiusVariance_le_harmonic_sq` then combines
+  the literal Möbius coefficient bound with exact signed period covariance
+  to prove `V_N≤N H_N²/12`. Both leaf modules passed scratch and targeted
+  `lake --old build ...:olean` audits; both are imported by the RHTower
+  umbrella, which was deliberately not built. This is not yet the
+  physical-window theorem: the absent formal step is finite residue DFT,
+  reduced-Farey regrouping, and dual large sieve. On paper this variance
+  bound is already sufficient for vanishing high-clock leakage at the
+  two-log clock after that transfer, despite its `log² N` loss. The signed
+  low-clock quotient remains the RH-hard obstruction.
+- **The finite-frequency and translated-window bridge has two more Lean
+  leaves:** `Sieve.centered_residue_fourier_coeff` proves the exact
+  coefficient `−1/[d(1−z)]` at every nontrivial `d`-th root by a finite
+  weighted-geometric telescope; `centered_residue_fourier_root` instantiates
+  it at each nonzero standard harmonic. Separately,
+  `Sieve.largeSieve_dual_fareySet_shifted` proves the dual Farey large-sieve
+  bound on an arbitrary translated observation block by phase rotation of
+  coefficients. Both targeted `--old` leaf olean audits passed and imports
+  are wired into the RHTower umbrella. The missing link is not either local
+  identity: it is finite DFT inversion for the literal residue source,
+  regrouping coincident rational frequencies into reduced Farey channels,
+  and identifying the resulting coefficient energy with `periodCovariance`.
+  Until that link is formal, the paper `o(1)` two-log high-clock law is not
+  claimed as a Lean theorem.
+- **The DFT support mechanism is now formal at the finite-signal level:**
+  `dft_normalizedResidueSignal_zero` proves the centered sawtooth has no
+  constant mode; `dft_normalizedResidueSignal_neg` computes every nonzero
+  mode as `−1/(1−ζ_d^t)`. In a separate generic leaf,
+  `dft_eq_zero_of_periodic_nontrivial_phase` proves a translation-invariant
+  finite signal has no DFT coefficient at a character detecting its period,
+  and `dft_periodic_lift_eq_zero` applies this to a signal lifted from
+  modulus `d` to a divisible period `P`. Both new leaf modules passed
+  targeted `--old` olean audits and were wired into the RHTower umbrella.
+  This exposes a more economical route to the missing Farey transfer:
+  the full source spectrum lies in the union of annihilators of the
+  periods `d≤N`; reduced Farey fractions are exactly that union after
+  removing collisions. The remaining formal work is arithmetic support
+  identification (`P∣dk`), finite inversion/Parseval, and transfer of the
+  resulting coefficients into the shifted dual large sieve. This is a
+  structural identity, not a source-side signed quotient ceiling.

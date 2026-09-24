@@ -330,6 +330,19 @@ det H₃(δ) = (1-3148δ-2204δ²) / [146313216000(1+δ)⁵].
 
 At `δ=1/1000<8/2997`, the numerator is `-2150204/1000000<0`, while at `δ=0` it is `1>0`; the second leading minor stays positive because `15A-7=493/1001>0`. The sign flips exactly when `3148δ+2204δ²=1`. This is an abstract source, not the actual first theta atom or its actual higher tail. It proves that even a tail smaller than the *proved* theta bound, with the *proved* qualitative likelihood orientation, may destroy the first open source determinant. The positive survivor is a **source-specific stability margin**: an actual first-atom determinant bound must dominate the exact signed perturbation produced by the higher atoms; their relative mass and likelihood order do not pay that margin automatically.
 
+**Two-atom source reduction (Lean-proved remainder bound; determinant still open).** The geometric estimate used for the full higher tail is termwise: for `n=k+2`, its relative first-atom weight is at most `(1/375)·1000⁻ᵏ`. Retaining the second atom (`k=0`) leaves the geometric sum over `k≥1`, exactly `1/374625`. In `PrimeArchThetaSourceAtomDomination.lean`, `thetaCuspBeyondSecondAtomDominationWeight_le` proves this weight bound; `thetaCuspFullSource_sub_first_second_le` transfers it pointwise; and `thetaCuspBeyondSecondAtomRawEvenMoment_le_first_tiny` proves, for **every** `j≥0`,
+
+```text
+R_j := thetaCuspRawEvenMoment j
+       - thetaCuspAtomRawEvenMoment j 1
+       - thetaCuspAtomRawEvenMoment j 2
+    ≤ thetaCuspAtomRawEvenMoment j 1 / 374625.
+```
+
+The remainder is nonnegative by the positive integer-atom expansion. Put `a_j=thetaCuspAtomRawEvenMoment j 1`, `b_j=thetaCuspAtomRawEvenMoment j 2`, and `h_j=a_j+b_j`. Then the *actual* normalized theta moments obey `t_j=(h_j+R_j)/(h₀+R₀)` and the paper-level interval `h_j/(h₀+a₀/374625) ≤ t_j ≤ (h_j+a_j/374625)/h₀`. The first open determinant depends only on `t₁,…,t₅`, so a strict determinant lower bound for this two-atom interval, preferably using the actual correlated `R_j`, would finish this finite Hankel stage. The uniform first-atom tail bound `8/2997` exceeds the toy instability threshold from the preceding paragraph, whereas the new post-second-atom bound is far smaller. Neither scale comparison proves the actual determinant sign; it identifies the two-atom core and a precise tiny remainder that a source-specific margin must absorb.
+
+**Every fixed theta-shell prefix has infinitely many nonreal Fourier zeros (paper proof; concrete Lean transfer open).** For `N≥1` let `P_N(x)=∑_{n=1}^N thetaCuspSourceTerm x n` on `x≥0` and `F_N(z)=∫₀^∞ P_N(x) cos(zx) dx`. The corpus proves `P_N'(0)>0` in `ThetaCuspFiniteShellSeamCancellation.lean` and proves `b²F_N(b)→-P_N'(0)<0` in `ThetaFiniteShellFourierBoundary.lean`. Thus `F_N` has no real zeros outside a compact interval. Since `F_N(0)>0`, it is nonzero; holomorphy makes the real zeros inside that interval finite. The source formula gives `0≤P_N(x)≤K_N exp((9/2)x-πe^{2x})` for a finite `K_N`. For `R=|Im z|`, `|cos(zx)|≤e^{Rx}`. The inequality `e^{2x}≥(4/3)x³` and the elementary maximum of `(R+9/2)x-(2π/3)x³` give `log max_{|z|≤R}|F_N(z)|=O(R^{3/2})`, strictly subquadratic. In particular `F_N` is entire, and Riemann–Lebesgue gives `F_N(b)→0` on both real rays. If it had finitely many complex zeros, finite-zero subquadratic Hadamard factorization would give `F_N(z)=P(z)c exp(Bz)`. Outside the zeros' radius, both `|P(b)|` and `|P(-b)|` are at least one, so `|F_N(b)F_N(-b)|≥|c|²>0`, contradicting two-ray decay. The zero set is infinite, and only finitely many zeros are real; hence **infinitely many are nonreal**. This rules out every fixed finite shell prefix as an all-order real-zero replacement even though its omitted raw moments are uniformly tiny. The positive survivor is finite-order approximation with an explicitly paid remainder: the infinitely many omitted atoms are essential for exact modular seam cancellation. `FiniteZeroSubquadraticTwoRayDecay.lean` formalizes the reusable Hadamard/two-ray step, and `ThetaFiniteShellSubquadraticSourceBound.lean` proves the first shell's double-exponential pointwise envelope. The prefix sum's entire subquadratic-growth theorem, which would connect these formal ingredients to the concrete `F_N`, remains open in Lean. None of this decides the actual size-three determinant.
+
 **Exact fifth-moment target for the actual theta source (paper algebra; not yet Lean).** Write `t_j=thetaCuspNormalizedEvenMoment j`, `m_j=normalizedPrimeArchMoment j`, `d=m₀m₂-m₁²>0` (already Lean-proved), `B=9m₀t₄-504m₁t₃+15120m₂t₂-181440m₃t₁`, and `C=m₀m₃²-2m₁m₂m₃+m₂³`. The exact source recurrence gives `m₄=(t₅-B)/362880`, hence
 
 ```text
@@ -337,6 +350,100 @@ det (m_(i+j))_(0≤i,j<3)>0  ↔  t₅>B+362880 C/d.
 ```
 
 Equivalently, the raw log-convexity surplus `t₅-t₄²/t₃` must exceed `B+362880 C/d-t₄²/t₃`. The countermodel at `A=49/100` has zero surplus and a positive required gap; its smooth variants have a *strictly positive but insufficient* surplus. Thus the known raw Cauchy--Schwarz inequality `t₅≥t₄²/t₃` cannot close this target by itself. The unresolved actual-source problem is a quantitative lower bound on `t₅` strong enough for this displayed threshold, or a different global signed-divisor argument.
+
+**Shifted-source Gram residual and four-moment gate (Gram positivity and decomposition Lean-proved; source-specific margin open).** Push the normalized positive theta measure `(2/thetaCuspRawEvenMoment 0)·thetaCuspFullSource(x) dx` on `x>0` forward by `y=x²`, obtaining a probability measure `μ` with `t_j=∫y^j dμ`. Put
+
+```text
+q = t₁t₃-t₂²,
+P = t₁t₄²-2t₂t₃t₄+t₃³,
+Δ = q t₅-P,
+G = d P-q(d B+362880 C).
+```
+
+The weighted Gram matrix `[t_(i+j+1)]_(0≤i,j<3)` is strictly positive definite: its quadratic form is `∫y(c₀+c₁y+c₂y²)²dμ`, and a nonzero quadratic cannot vanish on the full positive support of `μ`. Its `2×2` head gives `q>0`; its determinant gives `Δ>0`. `ThetaCuspNormalizedShiftedGramStrict.lean` formalizes the stronger all-order fact: the full theta moment Hankel matrix is positive definite, and the indices `1,3,…,2n-1` form precisely the shifted raw even-moment matrix. Reflection identifies those full moments with the repository's half-line raw moments; normalization preserves every determinant sign. The file explicitly proves `thetaCuspNormalizedEvenMoment_shifted_q_pos` and `thetaCuspNormalizedEvenMoment_shifted_delta_pos`. This is a stronger fifth-moment lower bound than adjacent log-convexity. More precisely, with `α=(t₁t₄-t₂t₃)/q` and `β=(t₃²-t₂t₄)/q`, the orthogonality equations `t₃=αt₂+βt₁` and `t₄=αt₃+βt₂` yield the exact *positive residual*
+
+```text
+Δ/q = t₅-P/q = ∫ y (y²-αy-β)² dμ(y) > 0.
+```
+
+Substitution into the exact prime--archimedean recurrence gives a division-free decomposition of the first open source determinant `D₃=det(m_(i+j))_(0≤i,j<3)`:
+
+```text
+362880 q D₃ = d Δ + G.
+```
+
+Since `d,q,Δ` are strict positive, the **four-moment gate** `G≥0` would prove `D₃>0` using only `t₁,…,t₄`, without separately enclosing `t₅`. If `G<0` for the literal source, the exact remaining requirement is `dΔ>−G`: it is the amount of positive theta-source Gram residual that must pay the negative four-moment gate. The gate is not a generic positivity theorem. Any smooth full-support countermodel above with `D₃<0` also has `q,Δ>0`, forcing `G<−dΔ` there. Thus positivity, full support, and strict source moment inequalities alone cannot decide its sign; the actual modular source is essential.
+
+The residual has a quantitative local-mass form. For three disjoint ordered intervals `0<I₁<I₂<I₃` in the `y` coordinate, let `p_i=μ(I_i)>0`, `u_i=inf I_i>0`, and `g_ij=inf I_j-sup I_i>0` for `i<j`. The Vandermonde identity
+
+```text
+Δ = (1/6) ∫∫∫ y₁y₂y₃ ∏_(i<j)(y_i-y_j)² dμ(y₁)dμ(y₂)dμ(y₃)
+  ≥ (u₁u₂u₃) (g₁₂g₁₃g₂₃)² p₁p₂p₃
+```
+
+follows by keeping the six permutations of `I₁×I₂×I₃`. This supplies an explicit source-specific route to `dΔ>−G`: bound the four-moment gate above and pay any deficit with three certified theta mass windows. No comparison strong enough for the literal source is yet proved. The existing `ShiftedHankelStrictPositivity.lean` supplies generic strict Gram positivity; the new content here is its exact interaction with the K-RVM cumulant threshold and the quantitative deficit to be paid.
+
+For an analytic attack that avoids the fifth moment altogether, the gate is *quadratic in `e=t₄`*. Set `a=t₁`, `b=t₂`, `c=t₃`, `u=ac/180+b²/144-a²b/12+a⁴/8`, `v=m₁`, `w=m₂`, so `m₃=u-e/5040` and `d=aw-v²`. Writing `G=A₂e²+A₁e+A₀`, direct expansion gives
+
+```text
+A₂ = a(d-q/70),
+A₁ = -2dbc-45adq-144q(vw-au),
+A₀ = dc³-q[d(-504vc+15120wb-181440au)
+              +362880(au²-2vwu+w³)].
+```
+
+This leaves a concrete first-three-moment coefficient test and a fourth-moment interval test; the existing two-atom remainder bounds through order four can be inserted without estimating `t₅`. No sign for this quadratic at the actual source moments has been established. `PrimeArchThetaShiftedGramGate.lean` Lean-checks the exact decomposition `362880 q D₃=dΔ+G`. Strict `q,Δ` are Lean theorems; the needed sign of `G`, or a quantitative residual margin if it is negative, remains open.
+
+**Sharp four-moment boundary and two-atom residual transfer (Radau algebra and raw determinant transfer Lean-checked; Radau measure construction remains a paper proof).** The bound `t₅≥P/q` is the exact lower endpoint permitted by the first four moments, not merely one convenient Cauchy estimate. For any positive law `μ` on `y≥0` with moments `t₀=1,t₁=a,t₂=b,t₃=c,t₄=e` and strict three-by-three ordinary and shifted Hankel matrices, set `ν(dy)=y μ(dy)`. Its monic degree-two orthogonal polynomial is `Q(y)=y²-αy-β`, with `α=(ae-bc)/q`, `β=(c²-be)/q`, and `q=ac-b²>0`. Orthogonality to `1,y` forces two distinct positive roots `r₁<r₂`: otherwise `Q` or `Q(y)(y-r)` for its only positive root `r` would be nonnegative on the positive support and have positive integral, contrary to one of the two orthogonality equations. Divide every polynomial of degree at most three by `Q`; its linear remainder defines positive two-node Gaussian quadrature weights `w_i=∫ℓ_i(y)dν=∫ℓ_i(y)²dν>0`, where `ℓ_i` is the linear Lagrange polynomial at `r_i`. This quadrature matches `a,b,c,e`.
+
+Define a new law `μ_*` with weights `w_i/r_i` at `r_i` and the remaining weight at zero. Writing `s=be-c²>0` and `D₀=det[t_(i+j)]_(0≤i,j<3)>0`, elementary reduction modulo `Q` gives the *exact* zero mass
+
+```text
+μ_*({0}) = 1 - w₁/r₁ - w₂/r₂ = D₀/s > 0.
+```
+
+The node separation is itself an explicit moment identity, avoiding an external root-location theorem. With `α=(ae-bc)/q` and `s=be-c²`,
+
+```text
+α²-4s/q = (α-2b/a)²+4q/a² > 0,
+b(ae-bc)=a s+c q>0,
+Q(b/a)=-q/a²<0.
+```
+
+Thus `0<r₁<b/a<r₂` and both Gaussian weights are positive. `ThetaCuspRadauFourMomentBoundary.lean` Lean-checks every offset theta Hankel determinant, the ordinary size-three determinant, the discriminant, explicit positive roots straddling `b/a`, positive quadrature weights, exact matches for size-biased moments `a,b,c,e`, the endpoint fifth moment `P/q`, and positive mass left at zero. Packaging these weights into a Lean `Measure` and proving the resulting exact infimum remain separate tasks.
+
+Thus `μ_*` is positive and has exactly the same `t₀,…,t₄` as `μ`. Its positive support lies at the two roots of `Q`, so `∫y Q(y)²dμ_*=0` and `t₅(μ_*)=P/q`. The exact K-RVM identity therefore yields `362880 q D₃(μ_*)=G`. Consequently, if the *actual* theta moments have `G<0`, then **no argument using only their first four values and positivity of an otherwise arbitrary source law can prove `D₃>0`**: the explicitly reconstructed positive three-atom law has those same values and a negative determinant. A positive `G` would instead settle the actual finite minor using the already Lean-proved strict residual. This is the precise four-moment information boundary; it does not assert either sign for the literal theta source.
+
+More precisely, the Radau law solves the full constrained minimization problem:
+
+```text
+inf { D₃(λ) : λ≥0, t₅(λ)<∞, t_j(λ)=t_j(μ) for 0≤j≤4 }
+  = G/(362880 q).
+```
+
+Here `D₃(λ)` means the determinant of the prime--archimedean cumulant-recursion moments generated from `λ` by the same algebraic formulas. The lower bound is the nonnegative norm `∫ y Q(y)²dλ` in the shifted-moment decomposition; `μ_*` attains equality. This makes `G` the exact four-moment decision statistic, not merely a sufficient-condition surrogate.
+
+For the literal normalized theta law, the residual has the exact variational form
+
+```text
+Δ = q ∫ y Q(y)² dμ,
+362880 q D₃ = d q ∫ y Q(y)² dμ + G.
+```
+
+The remaining source-specific problem is therefore to lower-bound this orthogonal-polynomial norm strongly enough to pay `−G` if the gate is negative.
+
+The positive residual also survives the full theta atom tail quantitatively. Let `h_j=a_j+b_j` be the first-two-atom raw moments, `R_j` the remaining raw moments, `h₀>0`, and `ε=1/374625`, so `0≤R₀≤ε a₀≤ε h₀`. The shifted raw Gram matrix for the full source is the sum of the first-two-atom matrix and a positive semidefinite tail matrix. Determinant monotonicity on the positive cone (equivalently, the nonnegative Vandermonde triple integral) gives
+
+```text
+Δ_full = det[h_(i+j+1)+R_(i+j+1)]_(0≤i,j<3)/(h₀+R₀)³
+       ≥ det[h_(i+j+1)]_(0≤i,j<3)/(h₀+R₀)³
+       ≥ Δ_two_atom/(1+ε)³,
+q_full ≥ q_two_atom/(1+ε)².
+```
+
+`PrimeArchThetaTwoAtomHankelDominance.lean` Lean-checks the stronger unconditional all-size raw determinant inequality `det[h_(i+j+1)] ≤ det[thetaCuspRawEvenMoment (i+j+1)]`. It represents each shifted matrix as an integral of rank-one kernels, proves the exact post-second-atom density nonnegative from its summable expansion, and applies real positive-cone determinant monotonicity from `RealPositiveConeDeterminantMonotone.lean`. The displayed normalized inequalities also use the paper mass estimate `R₀≤ε a₀`; that normalization step is not yet packaged in the Lean module.
+
+These are correlated, source-specific lower bounds requiring no independent enclosure of `R₅`. They reduce the remaining `dΔ>−G` comparison to an analytic lower bound on the two-atom Gram determinant, a lower bound on `d`, and an upper bound on the negative part of the four-moment gate over the existing two-atom remainder intervals. The corpus already has an unconditional lower bound for `d` in `XiPrimeMarkedFiniteSixthLowerBracket.lean`; the missing ingredient is a strong enough analytic comparison for the actual two-atom moments through order five.
 
 **Finite critical-head/tail certificate and its present height gap (paper proof; not yet Lean).** Let `F` be any finite subset of distinct Xi-divisor support points whose `λ_q` are positive real, let `D_F` be their signed-triple sum displayed above, and set `A=∑_q m_q|λ_q|`, `a_F=∑_{q∉F}m_q|λ_q|`. The formal theorem `norm_xiZeroCopyReciprocalSquare_lt_one_div_oneHundredFifty` gives the uniform radius `|λ_q|<R=1/150`. Each triple term has absolute value at most `64R⁶` times the product of its three weighted atom masses `m_q|λ_q|`. Triples meeting `Fᶜ` have total mass at most `a_F A²/2` (mark one tail atom, then bound its remaining unordered pair by `A²/2`). Therefore
 

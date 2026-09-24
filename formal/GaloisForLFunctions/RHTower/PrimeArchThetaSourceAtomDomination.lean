@@ -401,6 +401,163 @@ theorem thetaCuspHigherAtomDominationWeight_le_geometric_rational :
       rw [tsum_mul_left, tsum_geometric_of_lt_one (by norm_num) (by norm_num)]
     _ = (8 : ℝ) / 2997 := by norm_num
 
+/-! Removing the second atom reduces the remaining geometric source weight by three orders. -/
+
+/-- The total relative weight of integer atoms `n ≥ 3` is at most `1/374625`. -/
+theorem thetaCuspBeyondSecondAtomDominationWeight_le :
+    (∑' k : ℕ, thetaCuspSourceAtomDominationWeight (k + 3)) ≤
+      (1 : ℝ) / 374625 := by
+  have hweight : Summable
+      (fun k : ℕ => thetaCuspSourceAtomDominationWeight (k + 3)) :=
+    summable_thetaCuspSourceAtomDominationWeight.comp_injective
+      (fun _ _ h => Nat.add_right_cancel h)
+  have hgeo : Summable (fun k : ℕ =>
+      (1 / 375 : ℝ) * ((1 / 1000 : ℝ) ^ (k + 1))) := by
+    have h : Summable (fun k : ℕ => (1 / 1000 : ℝ) ^ k) :=
+      summable_geometric_of_norm_lt_one (by norm_num)
+    simpa [pow_succ, mul_assoc, mul_comm, mul_left_comm] using
+      (h.mul_left ((1 / 375 : ℝ) * (1 / 1000 : ℝ)))
+  calc
+    (∑' k : ℕ, thetaCuspSourceAtomDominationWeight (k + 3)) ≤
+        ∑' k : ℕ, (1 / 375 : ℝ) * ((1 / 1000 : ℝ) ^ (k + 1)) := by
+      apply Summable.tsum_le_tsum _ hweight hgeo
+      intro k
+      simpa [Nat.add_assoc] using
+        (thetaCuspSourceAtomDominationWeight_add_two_le_geometric (k + 1))
+    _ = ((1 / 375 : ℝ) * (1 / 1000 : ℝ)) *
+        (1 - (1 / 1000 : ℝ))⁻¹ := by
+      rw [show (fun k : ℕ => (1 / 375 : ℝ) * (1 / 1000 : ℝ) ^ (k + 1)) =
+        (fun k : ℕ => ((1 / 375 : ℝ) * (1 / 1000 : ℝ)) *
+          (1 / 1000 : ℝ) ^ k) by
+          funext k
+          rw [pow_succ]
+          ring,
+        tsum_mul_left, tsum_geometric_of_lt_one (by norm_num) (by norm_num)]
+    _ = (1 : ℝ) / 374625 := by norm_num
+
+/-- The completed source past its first two integer atoms is uniformly tiny. -/
+def thetaCuspBeyondSecondAtomDominationWeight : ℝ :=
+  ∑' k : ℕ, thetaCuspSourceAtomDominationWeight (k + 3)
+
+theorem thetaCuspFullSource_sub_first_second_le
+    {x : ℝ} (hx : 0 ≤ x) :
+    thetaCuspFullSource x - thetaCuspSourceTerm x 1 -
+        thetaCuspSourceTerm x 2 ≤
+      thetaCuspBeyondSecondAtomDominationWeight * thetaCuspSourceTerm x 1 := by
+  have hs := summable_thetaCuspSourceTerm x
+  have htail : Summable (fun k : ℕ => thetaCuspSourceTerm x (k + 3)) :=
+    hs.comp_injective (fun _ _ h => Nat.add_right_cancel h)
+  have hweight : Summable
+      (fun k : ℕ => thetaCuspSourceAtomDominationWeight (k + 3)) :=
+    summable_thetaCuspSourceAtomDominationWeight.comp_injective
+      (fun _ _ h => Nat.add_right_cancel h)
+  have hweighted : Summable (fun k : ℕ =>
+      thetaCuspSourceAtomDominationWeight (k + 3) *
+        thetaCuspSourceTerm x 1) := hweight.mul_right _
+  have hhead :
+      (∑ n ∈ Finset.range 3, thetaCuspSourceTerm x n) =
+        thetaCuspSourceTerm x 1 + thetaCuspSourceTerm x 2 := by
+    simp [Finset.sum_range_succ, thetaCuspSourceTerm, thetaCuspSeed]
+  calc
+    thetaCuspFullSource x - thetaCuspSourceTerm x 1 -
+        thetaCuspSourceTerm x 2 =
+          ∑' k : ℕ, thetaCuspSourceTerm x (k + 3) := by
+      rw [thetaCuspFullSource, ← hs.sum_add_tsum_nat_add 3, hhead]
+      ring
+    _ ≤ ∑' k : ℕ,
+        thetaCuspSourceAtomDominationWeight (k + 3) *
+          thetaCuspSourceTerm x 1 := by
+      exact Summable.tsum_le_tsum
+        (fun k => thetaCuspSourceTerm_le_first
+          (n := k + 3) (by omega) hx) htail hweighted
+    _ = thetaCuspBeyondSecondAtomDominationWeight *
+        thetaCuspSourceTerm x 1 := by
+      rw [thetaCuspBeyondSecondAtomDominationWeight]
+      exact Summable.tsum_mul_right _ hweight
+
+def thetaCuspBeyondSecondAtomRawEvenMoment (j : ℕ) : ℝ :=
+  thetaCuspRawEvenMoment j - thetaCuspAtomRawEvenMoment j 1 -
+    thetaCuspAtomRawEvenMoment j 2
+
+theorem thetaCuspBeyondSecondAtomRawEvenMoment_le_first (j : ℕ) :
+    thetaCuspBeyondSecondAtomRawEvenMoment j ≤
+      thetaCuspBeyondSecondAtomDominationWeight *
+        thetaCuspAtomRawEvenMoment j 1 := by
+  let mu : Measure ℝ := volume.restrict (Set.Ioi 0)
+  let f : ℝ → ℝ := fun x => x ^ (2 * j) * thetaCuspFullSource x
+  let g₁ : ℝ → ℝ := fun x => x ^ (2 * j) * thetaCuspSourceTerm x 1
+  let g₂ : ℝ → ℝ := fun x => x ^ (2 * j) * thetaCuspSourceTerm x 2
+  let r : ℝ → ℝ := fun x => x ^ (2 * j) *
+    (thetaCuspFullSource x - thetaCuspSourceTerm x 1 -
+      thetaCuspSourceTerm x 2)
+  have hf : Integrable f mu := integrableOn_thetaCuspRawMoment (2 * j)
+  have hg₁ : Integrable g₁ mu := integrableOn_pow_mul_thetaCuspSourceTerm j 1
+  have hg₂ : Integrable g₂ mu := integrableOn_pow_mul_thetaCuspSourceTerm j 2
+  have hr : Integrable r mu := by
+    convert (hf.sub hg₁).sub hg₂ using 1
+    funext x
+    dsimp [f, g₁, g₂, r]
+    ring
+  have hbound : Integrable
+      (fun x => thetaCuspBeyondSecondAtomDominationWeight * g₁ x) mu :=
+    hg₁.const_mul _
+  have hle : ∀ᵐ x ∂mu,
+      r x ≤ thetaCuspBeyondSecondAtomDominationWeight * g₁ x := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    dsimp [r, g₁]
+    calc
+      x ^ (2 * j) * (thetaCuspFullSource x - thetaCuspSourceTerm x 1 -
+          thetaCuspSourceTerm x 2) ≤
+        x ^ (2 * j) *
+          (thetaCuspBeyondSecondAtomDominationWeight * thetaCuspSourceTerm x 1) :=
+        mul_le_mul_of_nonneg_left
+          (thetaCuspFullSource_sub_first_second_le hx.le)
+          (pow_nonneg hx.le _)
+      _ = _ := by ring
+  have hi := integral_mono_ae hr hbound hle
+  have hvalue : thetaCuspBeyondSecondAtomRawEvenMoment j =
+      2 * ∫ x, r x ∂mu := by
+    rw [thetaCuspBeyondSecondAtomRawEvenMoment,
+      thetaCuspRawEvenMoment, thetaCuspAtomRawEvenMoment]
+    change 2 * ∫ x, f x ∂mu - 2 * ∫ x, g₁ x ∂mu -
+      2 * ∫ x, g₂ x ∂mu = 2 * ∫ x, r x ∂mu
+    have hrfun : r = (f - g₁) - g₂ := by
+      funext x
+      dsimp [r, f, g₁, g₂]
+      ring
+    rw [hrfun]
+    calc
+      2 * ∫ x, f x ∂mu - 2 * ∫ x, g₁ x ∂mu -
+          2 * ∫ x, g₂ x ∂mu =
+        2 * ((∫ x, f x ∂mu) - (∫ x, g₁ x ∂mu) -
+          (∫ x, g₂ x ∂mu)) := by ring
+      _ = 2 * ∫ x, (f - g₁ - g₂) x ∂mu := by
+        congr 1
+        rw [← integral_sub hf hg₁]
+        change (∫ x, (f - g₁) x ∂mu) - (∫ x, g₂ x ∂mu) =
+          ∫ x, ((f - g₁) - g₂) x ∂mu
+        exact (integral_sub (hf.sub hg₁) hg₂).symm
+  rw [hvalue, thetaCuspAtomRawEvenMoment]
+  calc
+    2 * ∫ x, r x ∂mu ≤
+      2 * ∫ x, thetaCuspBeyondSecondAtomDominationWeight * g₁ x ∂mu :=
+      mul_le_mul_of_nonneg_left hi (by norm_num)
+    _ = thetaCuspBeyondSecondAtomDominationWeight *
+        (2 * ∫ x, g₁ x ∂mu) := by
+      rw [integral_const_mul]
+      ring
+    _ = _ := rfl
+
+theorem thetaCuspBeyondSecondAtomRawEvenMoment_le_first_tiny (j : ℕ) :
+    thetaCuspBeyondSecondAtomRawEvenMoment j ≤
+      (1 : ℝ) / 374625 * thetaCuspAtomRawEvenMoment j 1 := by
+  have hweight : thetaCuspBeyondSecondAtomDominationWeight ≤
+      (1 : ℝ) / 374625 :=
+    thetaCuspBeyondSecondAtomDominationWeight_le
+  exact (thetaCuspBeyondSecondAtomRawEvenMoment_le_first j).trans
+    (mul_le_mul_of_nonneg_right hweight
+      (thetaCuspAtomRawEvenMoment_nonneg j 1))
+
 theorem thetaCuspHigherAtomDominationWeight_le_one_div_three_hundred_seventy_four :
     thetaCuspHigherAtomDominationWeight ≤ (1 : ℝ) / 374 :=
   thetaCuspHigherAtomDominationWeight_le_geometric_rational.trans (by norm_num)

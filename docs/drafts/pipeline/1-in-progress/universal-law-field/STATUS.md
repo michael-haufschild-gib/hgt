@@ -6442,3 +6442,130 @@ bound `|β − ½| ≤ ½ − 1/(58 log|γ|)`), `riemannZeta_eq_zero_of_xiZeroCo
 MUST-376: the receiver needs positivity on all of `Re s > ½`. The far regime is robust; the
 binding constraint is the near regime, where the width is exactly the zero-free-region width. Any
 improvement of the zero-free region transfers verbatim.
+
+## MUST-377 — the Hadamard RH receiver has no tail obstruction (2026-09-24)
+
+`RHTower.xiPairedResolventTerm_nonneg_tail` (`RHTower/XiHadamardTailNonneg.lean`): with
+`x = Re s − ½ > 0` and `ξ(s) ≠ 0`, **every** copy of ordinate
+
+```text
+|γ| ≥ hadamardTailHeight s = (|Im s| + 1)/x + 1
+```
+
+has nonnegative reflection-paired resolvent term — unconditionally, with no zero-free region and
+no hypothesis on the copy's real part. The numerator `x(x²−a²) + x(t²+γ²) − 2atγ` obeys
+`2atγ ≤ |t||γ|` (as `|a| ≤ ½`) and `x(x²−a²) ≥ −x/4`, while `xγ − |t| ≥ 1 + x` and `|γ| ≥ 1` give
+`|t||γ| + x/4 ≤ x(t²+γ²)`.
+
+Consequently (`tsum_low_le_two_mul_re_logDeriv_xi`)
+
+```text
+∑_{|γ| < hadamardTailHeight s} (paired term) ≤ 2 Re (ξ'/ξ)(s),
+```
+
+and `re_logDeriv_xi_nonneg_of_low_nonneg`: the low part alone decides the receiver.
+
+**Reading.** `Re (ξ'/ξ) ≥ 0` on `Re s > ½` is RH. This shows the receiver is *local in the
+height*: at each test point only the finitely many copies below `(|Im s|+1)/(Re s − ½) + 1` can
+obstruct it, and the infinite tail is always on the right side. Any attack on the receiver may
+therefore assume a finite zero set at each point; equivalently, no convergence or tail-cancellation
+difficulty exists in this formulation. The remaining difficulty is entirely the local one already
+isolated by CANNOT-323: a copy with `|β − ½| > Re s − ½` makes its own pair term negative as `s`
+approaches its pole.
+
+## MUST-377 is superseded; MUST-378 — the sharp unconditional Hadamard region (2026-09-24)
+
+**Correction.** MUST-377 localized the Hadamard receiver to copies of ordinate below
+`(|Im s| + 1)/(Re s − ½) + 1`, using the reflection pairing `ρ ↦ 1 − ρ`. The corpus already had a
+strictly sharper localization in the **line-conjugate** pairing `ρ ↦ 1 − conj ρ`, which preserves
+the ordinate: `re_inv_add_re_inv_lineConj_pos_of_far` (`RHTower/XiHadamardPairSignLaw.lean`) gives
+positivity of a pair whenever `(Re s − ½)² + (Im s − Im ρ)² ≥ ¼`, so the obstruction window is
+`|Im s − Im ρ| < ½` — **bounded, independent of the height**. MUST-377 and MUST-375 are therefore
+weaker forms of what follows; they remain true and built, but are superseded.
+
+`RHTower/XiHadamardSharpRegion.lean` (all axiom-clean):
+
+* `four_half_lt_abs_im_of_xiZeroCopy : 4.5 < |Im ρ|` for every copy, from `41/2 < (Im ρ)²`.
+* `re_logDeriv_xi_nonneg_of_disk`, `re_logDeriv_xi_nonneg_of_window`: the engines. The second
+  discharges every copy outside the window `|Im s − Im ρ| < ½` unconditionally.
+* **`re_logDeriv_xi_nonneg_of_abs_im_le_four`:** `½ < Re s → |Im s| ≤ 4 → 0 ≤ Re (ξ'/ξ)(s)`.
+  The window is *empty* there, because every copy has ordinate above `4.5`. So the exact RH
+  receiver holds unconditionally on the **entire rectangle** `Re s > ½`, `|Im s| ≤ 4`.
+* **`re_logDeriv_xi_nonneg_of_zeroFree_sharp`:** for `|Im s| > 4`,
+  `1 − 1/58 / log(|Im s| + ½) ≤ Re s → 0 ≤ Re (ξ'/ξ)(s)`. Inside the window `|Im ρ| < |Im s| + ½`,
+  so the zero-free region applies at that height. This is strictly wider than MUST-375's
+  `1 − 1/58 / log(4(|Im s| + 1))`.
+
+**Reading.** The obstruction to the Hadamard receiver is confined to a height window of width one
+around `Im s`, whatever `Re s > ½`. Combined with `41/2 < (Im ρ)²` this already gives a full
+unconditional rectangle; combined with the zero-free region it gives the region above. Reaching
+`Re s > ½` still requires a region of fixed width — the local obstruction of CANNOT-323 is
+untouched.
+
+**Process note.** The duplication arose from searching for the *tool* (paired resolvent terms)
+rather than the *conclusion* (which pairing makes the far regime unconditional). The corpus's
+`XiHadamardPairSignLaw` card states the window in prose; a search for "line conjugate pair disk"
+would have found it.
+
+## MUST-379 — the smoothed twisted divisor sum, unconditionally (2026-09-24)
+
+`RHTower.estermann_smoothed_sum` (`RHTower/EstermannSmoothedSum.lean`): for every modulus `q`,
+every unit `a` mod `q` and every `x > 0`,
+
+```text
+∑_{N ≥ 1} d(N) e(aN/q) e^{-Nx}
+  = (γ - log x - 2 log q)/(q x)
+    + (1/2π) ∫_ℝ x^{-(½+iv)} Γ(½+iv) D(½+iv, a/q) dv,
+```
+
+and `RHTower.exists_bound_norm_estermann_smoothed_error` bounds the integral by `C x^{-1/2}` with
+`C` depending only on `q` and `a`. With `x = 1/X` the main term is `(X/q)(log(X/q²) + γ)`.
+
+The chain, all built and axiom-clean this session:
+
+1. `estermannZeta`, its functional equation, `hasSum_estermannZeta` — `RHTower/EstermannZeta.lean`.
+2. `D(s,a/q) = ∑ d(N)e(aN/q)N^{-s}` — `EstermannDivisorSeries.lean`.
+3. `(s-1)²D` entire; `D = q^{1-2s}ζ² + q^{-s}R_a`; principal part `1/q`, `(2γ-2log q)/q` —
+   `EstermannEntire.lean`, `EstermannPrincipalPart.lean`.
+4. Exponential strip bounds for `hurwitzZeta`, `expZeta` (absent from mathlib) —
+   `HTGeometry/MellinMajorant.lean`, `GammaReciprocal{Exp,Strip}Bound.lean`,
+   `HurwitzZetaStripExpBound.lean`.
+5. Phragmén–Lindelöf convexity: `‖D‖ ≤ C(1+|t|)^N` on `-1 ≤ Re s ≤ 2` —
+   `EstermannStripExpBound.lean`, `EstermannEdgeBounds.lean`,
+   `EstermannStripPolynomialBound.lean`, `EstermannConvexity.lean`.
+6. Exponentially smoothed Perron inversion for an arbitrary Dirichlet series —
+   `ExponentialMellinPerron.lean`, `EstermannExponentialMellin.lean`.
+7. Rectangle residue calculus for a **double** pole and Cauchy's derivative formula on a rectangle
+   (the corpus had simple poles only) — `HTGeometry/RectangleDoublePole.lean`,
+   `AnalyticDoublePoleSplit.lean`, `RectangleDerivativeFormula.lean`.
+8. Rectangle identity, horizontal decay, vertical integrability, contour shift —
+   `EstermannMellinNumerator.lean`, `EstermannRectangleIdentity.lean`,
+   `EstermannHorizontalDecay.lean`, `EstermannVerticalIntegrable.lean`,
+   `EstermannContourShift.lean`.
+
+This is the twisted-divisor input the ledger's *Barban–Vehov and Levinson energy diagnostics* entry
+asks for ("prove a signed twisted second-moment/off-diagonal estimate"). Per CANNOT-371 that lane
+bounds the **proportion** of zeros on the line, not RH.
+
+MUST-380: the shifted divisor correlation `∑_{n≤x} d(n)d(n+h)` from this, then the BCHB
+off-diagonal replacing the trivial row bound of `Sieve/TwistedOffDiagonalSum`.
+
+## MUST-381 — `|ξ|` increases to the right inside the zero-free region (2026-09-24)
+
+`RHTower/XiHorizontalMonotone.lean`. Since `∂_σ ‖ξ(σ+it)‖² = 2‖ξ‖² Re(ξ'/ξ)(σ+it)`, the Hadamard
+positivity region of MUST-378 is a region of horizontal monotonicity of `|ξ|`:
+
+* `monotoneOn_norm_xi_low {t} (ht : |t| ≤ 4) : MonotoneOn (fun σ => ‖ξ(σ+it)‖) (Ioi (1/2))`;
+* `monotoneOn_norm_xi_high {t} (ht : 4 < |t|) :
+   MonotoneOn (fun σ => ‖ξ(σ+it)‖) (Ici (1 − 1/58/log(|t| + 1/2)))`.
+
+Supporting: `hasDerivAt_normSq_xi_horizontal` (unconditional), `monotoneOn_normSq_xi_horizontal`
+(monotonicity from positivity of `Re (ξ'/ξ)` on any convex set of abscissas — reusable for any
+improved region), `monotoneOn_norm_of_normSq`.
+
+**Relation to prior corpus work.** `strictMonoOn_norm_XiC_horizontal_of_halfPlaneBound`
+(`ThetaCuspCenterMixedPublishedGrowthPriorArt.lean`, the Sondow–Dumitrescu form) is parametrized
+by a **uniform** half-plane zero bound `XiZeroHalfPlaneBound alpha`; unconditionally only
+`alpha = 1/2` is available, giving monotonicity on `Re s ≥ 1`. The statements here are height
+dependent and reach into the strip: full width below height four, and the zero-free-region width
+above it.
