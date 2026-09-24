@@ -79,3 +79,12 @@ F_p = ⋃_{A ∈ PSL2Z/Γ̄(p)} A·F₁; W as above with ⟨f,g⟩ = ∫_{F_p} f
   Remaining: P1/P4/P5 (coset-sum inner product on W, unfolding over `isFundamentalDomain_fd`, Cauchy–Schwarz
   giving ĥ²|f(w)|² ≤ ½ Σ_γ lens(w,γw) for unit f; conjugation invariance of the lens sum), P9 (cusp tail via
   convexity of |a_n(y)|² from `maassCoefficient_modal_equation`), dyadic summation, P10 assembly.
+- 2026-09-24 — More components closed in Lean (built, wired): `SarnakXueCuspTail`, `SarnakXueCuspMode`
+  (P9: `mass_tail_fraction`: p ∫_p^∞ mass/y² ≤ max(1, p/4π) ∫_1^∞ mass/y² for Γ(p) forms with 0 < λ < 1/4, via
+  `normSq_antitoneOn` — |a_n|² convex and decaying beyond √λ/|k_n| — and `tail_le_bulk`), `SarnakXueUnfolding`
+  (abstract `lintegral_set_sq_le`: (∫_B u)² ≤ (Σ_g μ(B ∩ gB)) ∫_F u²), `SarnakXueInner` (coset-sum inner product
+  `ip`, positive definite via `source_mass_pos`; `core`; `sum_normSq_le` for orthonormal bases),
+  `SarnakXuePretrace` (Γ̄(p) ≤ PSL(2,ℤ), fundamental domain `cellP`, `pretrace`:
+  (∫_{B_R(w)} |u|)² ≤ (Σ_{h∈Γ̄(p)} μ(B_R(w) ∩ hB_R(w)))·⟨u,u⟩).
+  Remaining: kernel sum (lens + counting + dyadic summation, conjugation invariance), cusp-region integrals
+  (∫_{𝒟∩{y>p}} density ≤ tail mass), orthonormal-basis assembly, and the final exponent arithmetic.

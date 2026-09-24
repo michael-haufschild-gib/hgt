@@ -1,0 +1,6 @@
+Facts / no-gos only (root agent, 2026-09-24):
+- Scratch `/tmp/EDQMassScratch.lean` compiles with `lake env lean`: for every N, `Σ_{q=1}^N Λ(q) deningerHarmonicPartial (N/q) / q = Sieve.moebiusLogHarmonicPartial N`; hence reciprocal mass tends to 1 by the existing normalization theorem. Not promoted to repo: linkage is exact but by itself does not bound EDQ signed source.
+- Proposed fixed-physical-point Chebyshev-error reinterpretation is not new: `EulerDeletionLogMoebiusCellIdentity.lean` already proves the stronger exact initial-cell formula and complete divisor-tail formula. Moving tail remains open.
+- Proposed universal completion-migration defect is not new source-side mechanism: `RouteRCompletionMigrationDefect.lean` already defines escape class and proves its global vanishing equivalent to RH; that is a receiver, not an unconditional vanishing law.
+- Route map current obstacles: E full moving packet/fourth moment; EDQ retained signed two-log quotient and incomplete high-LCM boundary; SP-E signed arithmetic linear floor/payment and meromorphic ordered-history intertwiner; T2 directed square-root-window means beyond finite graph norms. Any next candidate must predict a source-side law on these moving/cofinal quantities, not merely repackage an RH equivalent.
+- No repository edits in this audit; route map remained read-only.

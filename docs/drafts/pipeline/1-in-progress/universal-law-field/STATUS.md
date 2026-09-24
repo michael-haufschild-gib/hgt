@@ -6614,3 +6614,49 @@ cancellation between moduli, not by bounding each modulus separately.
 ## CANNOT-385 — strong log-concavity does not force the first divisor-moment Hankel sign (2026-09-24)
 
 An RH proof through positivity of a transformed source-moment Hankel matrix cannot obtain its first size-three sign from evenness, positivity, strict decrease on the positive ray, strong log-concavity, positivity of the first four transformed moments, and even an all-order linear moment-score recurrence alone. The positive Gaussian--Hermite perturbation `φ(x)[1+t(-He₄+He₆−2He₈+He₁₀)(x)]` satisfies these conditions for sufficiently small `t>0`, after a fixed spatial rescaling, yet its transformed size-three determinant is `t²(−196+324t+16t²)<0` before rescaling. **Must** constrain the coupled second-order tangent `m₂' m₄'−(m₃')²` using information special to the actual arithmetic source. The density construction, log-concavity, and all-order score transfer are paper-proved; exact moment-to-determinant algebra and finite sign/score constraints are Lean-proved in `RHTower.PrimeArchHermiteMomentBoundary`.
+
+## CANNOT-386 — finite source data and the real divisor cannot exclude off-line packets (2026-09-24)
+
+**Cannot** prove RH from any prescribed finite depth of source moments, positivity, evenness,
+global strong log-concavity, Schwartz and every-rate exponential decay, and the entire real
+Fourier-zero divisor alone,
+even arbitrarily near the literal theta source. For each `m ≥ 1`, the source
+`k_t = thetaCuspFullSource + t·(thetaCuspFullSource)⁽⁴ᵐ⁾` is strictly positive for
+sufficiently small `t>0`; its moments through order `4m−1` and its real Fourier
+zeros with multiplicity are exactly those of the literal source, but its transform is
+`XiC(z)(1+t z⁴ᵐ)` and therefore has a nonreal zero packet at radius `t^(−1/(4m))`.
+**Must** use global arithmetic coherence of the literal source to exclude such packets;
+finite-jet or real-divisor tests cannot detect them. Paper proof and exact scope:
+`docs/drafts/pipeline/2-fully-proven/theta-derivative-dark-divisor-packets.md`.
+Lean formalization pending.
+
+## CANNOT-387 — square-root cancellation in the modulus aspect of the divisor family is blind to zeta (2026-09-24)
+
+The twisted divisor series attached to a modulus carries the zeta square in a single
+twist-independent term with coefficient `q^{1−2s}`, so a weighted average over the reduced residues
+carries `ζ(s)²` with that coefficient times the **total weight**. Weighting by an additive character
+at a nonzero frequency makes the total weight the Ramanujan value `−1`, so each such mode carries
+exactly `−q^{1−2s}ζ(s)²`, whose modulus exponent `1−2σ` is below `1/2` throughout `σ > 1/4` and is
+`0` on the critical line, while the unconditional square-root cancellation available for such a mode
+has exponent `1/2`. **Cannot** deduce anything about zeta from square-root cancellation inside one
+modulus: the zeta content sits a factor `q^{2σ−1/2}` — exactly `√q` on the critical line — below the
+certified accuracy. The only weights that keep the zeta content at the size of the bound are those
+whose total over the reduced residues is of order `q`, and for these the coefficients degenerate to
+Ramanujan sums, for which the cancellation provably fails. **Must** therefore obtain the zeta content
+from the behaviour of the zero frequency across moduli, where its generating function is
+`σ_{1−w}(N)/ζ(w)`; within a modulus the mixing is information about the non-principal characters only.
+
+## MUST-388 — the symmetry of the divisor family is a mixing operator away from one frequency (2026-09-24)
+
+The functional equation of the twisted divisor series acts on the family through the inversion of
+the reduced residues, so pairing the family against an additive character and applying the
+functional equation term by term returns the inverse-twisted average, not the additive one. In the
+additive Fourier basis that inversion has matrix entries `q^{−1}S(m,−n;q)`, which away from the zero
+frequency are of size `2q^{−1/2}`, the largest delocalisation a unitary matrix of that size admits;
+at the zero frequency the entries are Ramanujan sums and are of size `1`. **Must** read the symmetry
+of the family as an operator that is flat except in one distinguished row, the row that carries the
+zeta content; at modulus one the operator degenerates to a scalar, which is why the level-one
+symmetry carries no information about the zeros. A consequence with a number attached: transporting
+the flat part across the critical line gives the additive-twist average at a prime modulus the
+unconditional left-edge exponent `7/2` in place of the `4` that the trivial per-residue estimate
+yields, which is the modulus aspect of the divisor function in an arithmetic progression.

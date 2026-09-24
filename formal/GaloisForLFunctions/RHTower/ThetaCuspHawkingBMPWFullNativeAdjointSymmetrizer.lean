@@ -170,5 +170,62 @@ theorem physical_source_adjoint_contact_decomposition (q : XiZeroCopy)
         parameter q branch * fullAngularField q branch z * N z := by
   linear_combination (U z) * (physical_source_full_dual_zero q branch z hz)
 
+/-- Compatibility at one arbitrary angular mode; its coefficients may depend on that mode. -/
+def CompatibleAtMode (lam mu a b c : ℂ) : Prop :=
+  ∀ p : ℂ × ℂ,
+    constantSymmetrizer a b c (modeAction lam mu p) =
+      modeAdjointAction lam mu (constantSymmetrizer a b c p)
+
+/-- Exact classification of all symmetric modewise intertwiners. The native-native
+coefficient is free, but the full-channel coefficients obey one rigid relation. -/
+theorem compatibleAtMode_iff (lam mu a b c : ℂ) :
+    CompatibleAtMode lam mu a b c ↔ lam * a + (mu - lam) * b = 0 := by
+  constructor
+  · intro h
+    have hc := congrArg Prod.fst (h (0, 1))
+    dsimp [CompatibleAtMode, constantSymmetrizer, modeAction,
+      modeAdjointAction] at hc
+    linear_combination hc
+  · intro h p
+    rcases p with ⟨u, v⟩
+    apply Prod.ext
+    · dsimp [constantSymmetrizer, modeAction, modeAdjointAction]
+      linear_combination v * h
+    · dsimp [constantSymmetrizer, modeAction, modeAdjointAction]
+      linear_combination -u * h
+
+/-- Every compatible symmetric modewise current sends a source vertex of the
+literal full/native triangular system to zero in the full dual channel. This
+does not depend on derivative order or the choice of native-native coefficient. -/
+theorem compatible_source_full_dual_zero (lam mu a b c H Q : ℂ)
+    (hlam : lam ≠ 0) (hcompat : CompatibleAtMode lam mu a b c)
+    (hsource : mu * H = lam * (H + Q)) :
+    (constantSymmetrizer a b c (H, Q)).1 = 0 := by
+  have hrel := (compatibleAtMode_iff lam mu a b c).mp hcompat
+  have hsrc : (mu - lam) * H - lam * Q = 0 := by
+    linear_combination hsource
+  have hzero : lam * (a * H + b * Q) = 0 := by
+    linear_combination H * hrel - b * hsrc
+  exact (mul_eq_zero.mp hzero).resolve_left hlam
+
+/-- No symmetric modewise intertwiner can retain a nonzero full dual contact at
+a source vertex of the literal triangular action. -/
+theorem no_modewise_full_contact (lam : ℂ) (hlam : lam ≠ 0) :
+    ¬ ∃ mu H Q a b c : ℂ,
+      CompatibleAtMode lam mu a b c ∧
+      mu * H = lam * (H + Q) ∧
+      (constantSymmetrizer a b c (H, Q)).1 ≠ 0 := by
+  rintro ⟨mu, H, Q, a, b, c, hcompat, hsource, hne⟩
+  exact hne (compatible_source_full_dual_zero lam mu a b c H Q hlam hcompat hsource)
+
+/-- The actual Xi coupling is nonzero on both branches, so the full-channel
+obstruction holds unconditionally for every physical Xi copy. -/
+theorem physical_no_modewise_full_contact (q : XiZeroCopy) (branch : Bool) :
+    ¬ ∃ mu H Q a b c : ℂ,
+      CompatibleAtMode (parameter q branch) mu a b c ∧
+      mu * H = parameter q branch * (H + Q) ∧
+      (constantSymmetrizer a b c (H, Q)).1 ≠ 0 :=
+  no_modewise_full_contact (parameter q branch) (physical_parameter_ne_zero q branch)
+
 end
 end RHTower.D4BMPWFullNativeAdjointSymmetrizer
