@@ -1,0 +1,8 @@
+# PW-B full-response angular transport
+
+- **Chain:** literal full CTP = skew future-response pairing → full/native response angular current → oriented cap/lift incidence → extinction → RH.
+- **Hard premise:** transfer the closed literal kernel equation `ΔK=λ(K+N)` through each infinite source-event integral, without dropping native response or original direct/image gates. Pointwise circle growth is insufficient for angular differentiation/Fubini.
+- **Corpus inputs:** `FullAngularMeanGrowth.angularMean_growth_at` proves pointwise strict radial growth from `energy_inequality`; `FullSourceCircleGrowth.mean_global_growth` bounds native forcing uniformly in horizontal center; `FullAngularJointJets.angularMean_joint_smooth` gives joint regularity; `FullAngularCausalPeierls.fullFutureResponse_test_fubini` admits each fixed-angular source-event interchange.
+- **Conjectured strengthening under attack:** for every compact angular-center set and exponent `γ>sourceGrowthExponent q`, one constant bounds the full mean and radial derivative by `C exp(γd)` for all centers and `d≥0`. Source-specific proof: the existing energy inequality has a center-independent threshold and forcing bound on bounded log-height; bound its energy at that threshold uniformly by joint smoothness and compactness, then retain the explicit Lyapunov constant in `energy_comparison`. This enables compact-angular weak transposition, followed by elliptic regularity or derivative domination for the full response.
+- **Falsifier:** if no compact-uniform version survives the exact theta source, the proposed response-current transposition fails; fixed-center growth alone cannot justify it.
+- **Status:** conjecture/paper argument under Lean attack; no response PDE or incidence claimed.

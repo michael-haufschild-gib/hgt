@@ -14,6 +14,8 @@ Scope: compressed facts and logically forced design constraints extracted from a
 
 - **Cannot derive the first open source Hankel minor from local zero geometry, RVM counting asymptotics, and positivity of every individual moment at every order.** For abstract nodes `1+iε`, `1-iε`, `2` of unit weight, with `0<ε<1`, the moment sequence `M_n=∑λ^(n+1)` has first minors `M₀=4` and `M₀M₂-M₁²=4(1-ε⁴)>0`, while its size-three determinant is `-8ε²(1+ε²)³<0`. Since `|1+iε|<√2`, the real node `2` dominates the conjugate pair at every power `n+1≥2`; hence every `M_n` is positive. It also satisfies the actual source's three known strict cold orientations `M₂<M₀³/4`, `M₃<M₀⁴/8`, `M₄<M₀⁵/16`. Rescaling by `0<c<1/300`, choosing `0<ε<√c`, and doubling weights preserves these signs while placing reciprocal nodes inside the proved `1/150` radius and their inverse-square-root spectral coordinates inside the Xi strip, with FE--Schwarz pairing. Appending a sufficiently late positive real reciprocal-RVM tail preserves the strict signs and gives the smooth RVM count up to a bounded error. A proof for actual Xi therefore needs a global arithmetic relation among nodes beyond these constraints; the model says nothing about Xi's determinant. See the [signed triple expansion and tail completion](../k-rvm-finite-sixth-moment-bracket.md).
 
+- **Cannot settle the first open source Hankel minor from decreasing source density and low-order radius-moment signs alone.** The positive radius-mixing Gram inequality supplies an exact fifth-moment floor, but a shape-normalized Gaussian perturbation has a strictly negative four-moment determinant gate while its first moment, effective-rank gap, ordinary and radius shifted minors, and adjacent-ratio separation stay positive. The negative gate and simultaneous signs are [Lean-proved algebraically](../../../../../formal/GaloisForLFunctions/RHTower/PrimeArchRadiusGaussianGateBoundary.lean); realization by a smooth decreasing density remains a paper reconstruction. At the Gaussian boundary the floor loses `840/11` of the fifth moment while the prime--archimedean determinant vanishes. A proof for the actual theta source must control its fifth moment jointly with the lower-moment deviations, beyond a universal monotonicity floor.
+
 - **Cannot obtain a positive critical-zero head merely from the current initial off-line-exclusion band.** The proved exclusion only says zeros of squared ordinate below `2365/16` would be critical, while the separate source radius puts every Xi zero above `599/4=2396/16` in squared ordinate. That band contains no zero. Any finite-critical-head argument must locate critical zeros beyond it and control the remaining divisor tail; the [finite-head determinant certificate](../k-rvm-finite-sixth-moment-bracket.md) makes the needed tail margin explicit.
 
 - **Cannot infer the first open reciprocal-moment Hankel determinant from global source log-concavity and order-one entire Fourier transform, or from a theta-cusp tail plus strict raw-moment log-convexity alone.** The symmetric probability source `(1-A)δ₀+(A/2)(δ₋₁+δ₁)` at `A=49/100` has all first five cumulant-derived moments positive and `M₀M₂-M₁²>0`, but its leading size-three determinant is `A³(945A²+630A-551)/4572288000<0`. Gaussian convolution with variance greater than one makes it globally strictly log-concave and decreases that determinant further; multiplying its density by a small `exp(-ε cosh(2x))` preserves the signs and gives an order-one entire transform. Separately, smooth compact convolution followed by a small admixture of the normalized actual theta-cusp source gives a smooth, strictly positive full-support source equal to a positive multiple of the actual source outside a compact set, with the same determinant sign. Neither variant is the actual modular theta-cusp source. Must prove a source-specific quantitative cross-moment law; qualitative regularity and positivity do not settle it. See the [exact source countermodel and fifth-moment target](../k-rvm-finite-sixth-moment-bracket.md).
@@ -6574,340 +6576,41 @@ by a **uniform** half-plane zero bound `XiZeroHalfPlaneBound alpha`; uncondition
 dependent and reach into the strip: full width below height four, and the zero-free-region width
 above it.
 
-## MUST-382 — the local zero count, and the Laguerre margin is the Hadamard receiver's first-order trace (2026-09-24)
-
-`RHTower/XiWindowZeroCount.lean` (all axiom-clean). The corpus bounded the Lorentzian mass
-`Σ_ρ 1/(1 + (t − γ)²) ≤ 8(C + log(|t| + 4))` but never counted zeros. A copy with
-`|Im ρ − t| ≤ w` carries at least `1/(1 + w²)` of that mass, so
-
-```text
-finite_xiOrdinateWindow (w t) : {q | |Im ρ_q − t| ≤ w}.Finite
-ncard_xiOrdinateWindow_le_log (w t) : #{ρ : |Im ρ − t| ≤ w} ≤ 8(1 + w²)(C + log(|t| + 4))
-```
-
-with `≤ 16(C + log(|t| + 4))` for `w = 1`. Finiteness is a conclusion: an infinite window contains
-finite subsets of every cardinality, each already exceeding the total mass.
-
-`RHTower/XiLaguerreWindowPositivity.lean` (all axiom-clean). `laguerre_Xi_eq_tsum_inv_sq` puts the
-corpus identity `ΞC'² − ΞC·ΞC'' = ΞC²·Σ_q (z − a_q)⁻²` on the real axis in `Xi` coordinates, and
-`re_inv_sq_sub_xiSpectralPoint_eq` computes the atom exactly:
-
-```text
-Re ((t − a_q)²)⁻¹ = ((t − γ_q)² − δ_q²) / ((t − γ_q)² + δ_q²)²,   a_q = γ_q − i δ_q.
-```
-
-**Reading.** The atom is positive exactly off the disk `|t − γ_q| < |δ_q|` — the *same* disks that
-obstruct the Hadamard receiver `Re (ξ'/ξ) ≥ 0`. Since `Re (ξ'/ξ)` vanishes identically on the
-critical line and its `σ`-derivative there is `L₁(t)/Ξ(t)²`, the first Laguerre inequality is the
-first-order trace of the receiver at the line. The Laguerre lane is therefore not an independent
-route: it inherits exactly the local obstruction of CANNOT-323.
-
-Consequences, all unconditional: `laguerre_Xi_pos_of_window_onLine` (RH inside one unit ordinate
-window at height `t` already gives `L₁(t) > 0`), `laguerre_Xi_nonneg_of_window_onLine` (the
-nonvanishing hypothesis is unnecessary for the non-strict form, since at a zero of `Ξ` the margin
-collapses to `(Ξ')²`), `laguerre_Xi_nonneg_of_offLine_floor` (an off-line height floor `H` gives
-`L₁ ≥ 0` on `|t| + 1/2 ≤ H`), `laguerre_Xi_pos_of_abs_le_four`, and
-`laguerre_Xi_nonneg_of_abs_le_criticalBand`: **`L₁(t) ≥ 0` for every `|t| ≤ 58/5`**, from
-`not_exists_xiZeroCopy_offLine_of_im_sq_lt_2365_over_16`.
-
-## MUST-382 correction — the corpus already owned zero counting (2026-09-24)
-
-The MUST-382 entry above said the corpus "never counted zeros". That is false. `ZetaLocalZeroCount`
-proves `N(t+1) − N(t) ≪ log t`; `RiemannVonMangoldt` and `XiZeroCountRVMRemainder` prove the count
-with logarithmic remainder; `XiZeroCountLocalCeiling.exists_card_window_le` is the sharp window
-ceiling `(H/2π) log(t+H) + 2C log(t+H)` with a block-length law; `PrimeLagLandauWeights` has the
-`|γ| ∈ [k, k+1)` form. `XiWindowZeroCount` contributes only (i) finiteness of the window as a set,
-which the Finset-indexed corpus statements do not supply, and (ii) a threshold-free explicit bound
-at every real height of either sign, which `laguerre_offLine_separation` needs because it applies at
-an arbitrary off-line ordinate. The disk-detector content of MUST-382 stands unchanged.
-
-## MUST-383 — mean-zero twists have no main term (2026-09-24)
-
-`RHTower/EstermannMeanZeroTwist.lean` (axiom-clean). The main term
-`(γ − log x − 2 log q)/(qx)` of the smoothed twisted divisor sum is independent of the twist `a`,
-because the character-sum collapse makes `D(s, a/q) = q^{1−2s} ζ(s)² + q^{−s} R_a(s)` with an
-`a`-independent double pole. Hence for any `w : (ZMod q)ˣ → ℂ` with `∑_a w(a) = 0`,
-
-```text
-‖∑_{a ∈ (ZMod q)ˣ} w(a) ∑_N d(N) e(aN/q) e^{-Nx}‖ ≤ C_w · x^{-1/2},
-```
-
-with no main term at all; `exists_bound_norm_estermann_character` is the non-principal Dirichlet
-character case.
-
-**Reading.** Every *multiplicative* structure on the twist sees only the `O(x^{-1/2})` critical-line
-integral. The arithmetic of the divisor function in progressions is therefore entirely carried by
-that integral, not by the pole. Passing to progressions needs the non-unit twists, which reduce by
-`gcd(a,q)` to smaller moduli and produce a Ramanujan-sum main term — the next module.
-
-## MUST-384 — the smoothed divisor sum in a progression to a prime modulus (2026-09-24)
-
-`RHTower/EstermannProgressionOrthogonality.lean`, `RHTower/EstermannPrimeProgression.lean`
-(all axiom-clean). Additive orthogonality gives, for every modulus,
-
-```text
-∑_{a mod q} e(−ab/q) ∑_N d(N) e(aN/q) e^{-Nx} = q · ∑_{N ≡ b (q)} d(N) e^{-Nx},
-```
-
-and the weighted form of MUST-383 keeps the main term: `∑_a w(a) S_a = (∑_a w(a)) main_q + O_w(x^{-1/2})`.
-For a prime modulus the nonzero twists are exactly the units, the unit-weight total is the Ramanujan
-sum `c_q(b) = −1`, and hence for `b ≢ 0 (mod q)`
-
-```text
-q ∑_{N ≡ b (q)} d(N) e^{-Nx} = ∑_N d(N) e^{-Nx} − (γ − log x − 2 log q)/(qx) + O_q(x^{-1/2}).
-```
-
-**Reading.** To this accuracy the entire dependence on the residue `b` is one Ramanujan factor; all
-further arithmetic of `d(n)` in progressions is carried by the critical-line integral. General
-moduli need the gcd reduction `e(aN/q) = e(a'N/q')`, producing `∑_{d ∣ q} c_{q/d}(b) · main(q/d)`.
-
-## MUST-385 — scaled twists reduce the modulus (2026-09-24)
-
-`RHTower/EstermannScaledTwist.lean` (axiom-clean). `e((d j)/(d q')) = e(j/q')` gives
-`estermannSmoothedSum q (d·m) x = estermannSmoothedSum (q/d) m x` for `q = d q'`. With
-`d = gcd(a, q)` every residue twist becomes a unit twist of a smaller modulus, so
-`estermann_smoothed_sum` applies to all twists, and the main term a twist carries is that of its
-reduced modulus. This is the missing ingredient for the general-modulus progression law
-`q ∑_{N ≡ b (q)} d(N) e^{-Nx} = ∑_{d ∣ q} c_{q/d}(b) · main(q/d) + O(x^{-1/2})`.
-
-## MUST-386 — the smoothed divisor sum in a progression, arbitrary modulus (2026-09-24)
-
-`RHTower/EstermannGeneralProgression.lean` (axiom-clean). `exists_reducedMain`: with
-`d = gcd(a,q)`, `a/d` is coprime to `q' = q/d`, so the scaled-twist reduction MUST-385 sends every
-residue twist to a unit twist of the divisor modulus `q'`; hence every twist has an `O(x^{-1/2})`
-expansion with main term `(γ − log x − 2 log q')/(q' x)`. Averaging against the unimodular
-`e(−ab/q)` gives
-
-```text
-q ∑_{N ≡ b (q)} d(N) e^{-Nx} = ∑_{a mod q} e(−ab/q) · main(q/gcd(a,q)) + O_q(x^{-1/2}).
-```
-
-**Reading.** All analysis in the progression problem is now discharged. What remains is the finite
-regrouping of residues by gcd, which turns the main term into `∑_{d ∣ q} c_{q/d}(b) · main(q/d)`
-with Ramanujan sums; the prime case MUST-384 is the instance `c_q(b) = −1`.
-
-## MUST-387 — the shifted divisor correlation reduces to progressions; the bottleneck is uniformity in the modulus (2026-09-24)
-
-Since `d(n+h) = #{k : k ∣ n+h}`,
-
-```text
-∑_n d(n) d(n+h) e^{-nx} = ∑_{k ≥ 1} ∑_{n ≡ −h (k)} d(n) e^{-nx},
-```
-
-so the shifted divisor correlation is the progression sum of MUST-386 summed over moduli. Every
-individual progression asymptotic is now proved. What the correlation additionally needs, and what
-the corpus does not have, is an error term **uniform in the modulus**: the present bounds are
-`∃ C` per modulus, obtained from `exists_bound_norm_estermannZeta_strip`, which is
-`∃ C N, ‖D(s, a/q)‖ ≤ C (1 + |Im s|)^N` with `C` qualitative in `q`.
-
-**Reading.** The remaining obstacle in this lane is not the individual asymptotics but the
-`q`-dependence of the critical-line bound — precisely the point where Kloosterman/spectral input is
-classically required. The convexity route to an explicit exponent is: the right edge `Re s = 2`
-is `q`-independent (`‖D‖ ≤ ∑_N d(N)/N²`, the Dirichlet series bound), the left edge `Re s = −1`
-picks up `q^3` from the functional equation, and Phragmén–Lindelöf interpolates to `q^{3/2}` on
-`Re s = 1/2`. Making `EstermannEdgeBounds` and `EstermannConvexity` explicit in `q` is therefore the
-next analytic target, and it is what would let the `k`-sum above converge with a usable rate.
-
-## MUST-388 — the right edge of the Estermann strip is modulus-free (2026-09-24)
-
-`RHTower/EstermannRightEdgeExplicit.lean` (axiom-clean). On `Re s ≥ 2` the Dirichlet series is
-absolutely convergent and the twist is a unimodular additive character, so
-
-```text
-‖D(s, a/q)‖ ≤ divisorSquareMass := ∑_N d(N)/N²
-```
-
-with **no dependence on `q` or on the twist `a`**. This is the `q`-free edge of the convexity
-argument of MUST-387; what remains for a modulus-uniform critical-line bound is the left edge
-`Re s = −1`, where the functional equation contributes the powers of `q`, and a Phragmén–Lindelöf
-interpolation with tracked constants.
-
-## MUST-389 — the left edge of the Estermann strip, explicit in the modulus (2026-09-24)
-
-`RHTower/EstermannLeftEdgeExplicit.lean` (axiom-clean). Evaluating the functional equation
-
-```text
-D(1−s, a/q) = 2 q^{2s−1} (2π)^{−2s} Γ(s)² (D(s, ā/q) + cos(πs) D(s, −ā/q))
-```
-
-on `Re s = 2` controls every factor explicitly: `‖q^{2s−1}‖ = q³`, `‖(2π)^{−2s}‖ = (2π)^{−4}`,
-`‖Γ(s)‖ ≤ Γ(2) = 1`, `‖cos(πs)‖ ≤ e^{π|t|}`, and both Estermann values lie on the modulus-free
-right edge of MUST-388. Hence
-
-```text
-‖D(−1 + it, a/q)‖ ≤ 4 (2π)^{−4} (∑_N d(N)/N²) · q³ · e^{π|t|},
-```
-
-with an absolute constant.
-
-**Reading.** The two edges now pin the modulus dependence exactly: `q⁰` on `Re s = 2` and `q³` on
-`Re s = −1`. What remains for the uniformity MUST-387 identified is a Phragmén–Lindelöf
-interpolation with tracked constants, which would give `‖D(1/2 + it, a/q)‖ ≪ q^{3/2}(1+|t|)^N` —
-the classical convexity exponent — and hence an error term `O(q^{3/2} x^{-1/2})` in the progression
-law, uniform enough to sum over moduli in the shifted divisor correlation.
-
-## MUST-390 — the left edge is polynomial; both edges are now `q`-free after normalisation (2026-09-24)
-
-`RHTower/EstermannLeftEdgePolynomial.lean` (axiom-clean). MUST-389 kept `e^{π|t|}` because it
-discarded the Gamma decay. The corpus's explicit vertical modulus bound
-(`HTGeometry/GammaVerticalModulus.norm_Gamma_one_add_nat_bounds`)
-
-```text
-‖Γ(2 + it)‖ ≤ √(2π|t|/(1 − e^{−2})) · 3|t| · e^{−π|t|/2}
-```
-
-squares to `(18π/(1 − e^{−2})) |t|³ e^{−π|t|}`, which cancels the cosine growth exactly. Hence
-
-```text
-‖D(−1 + it, a/q)‖ ≤ K q³ |t|³   for |t| ≥ 1,  K absolute.
-```
-
-**Reading.** After the normalisation `G(s) = q^{s−2} D(s)` both edges are `q`-free and polynomial:
-`‖G(2 + it)‖ ≤ ∑_N d(N)/N²` and `‖G(−1 + it)‖ ≤ K |t|³`. A Phragmén–Lindelöf interpolation depends
-only on the edge data — the admissible-growth hypothesis carries no constant into the conclusion —
-so it yields `‖D(1/2 + it, a/q)‖ ≪ q^{3/2}(1 + |t|)^N` with an absolute implied constant. That is
-the modulus-uniform bound MUST-387 identified as the obstacle to summing the progression law over
-moduli in the shifted divisor correlation.
-
-## MUST-391 — the convexity bound `q^{3/2}`, dependency-closed on paper (2026-09-24)
-
-Every input is now a built theorem; only the assembly remains.
-
-**Setup.** Fix `q` and a unit `a` mod `q`. With `E(s) = (s−1)² D(s, a/q)` entire
-(`estermannEntire_eq`), put
-
-```text
-F(s) = q^{s−2} · E(s) / (s + 2)^5 .
-```
-
-**Analyticity.** `E` is entire, `q^{s−2} = exp((s−2) log q)` is entire, and `s + 2 ≠ 0` on
-`Re s ≥ −1`; so `F` is analytic on a neighbourhood of the closed strip `−1 ≤ Re s ≤ 2`.
-
-**Growth.** `‖q^{s−2}‖ = q^{σ−2} ≤ 1` and `‖(s+2)^{−5}‖ ≤ 1` there, so
-`EstermannStripExpBound` gives `‖F(s)‖ ≤ C_q e^{(π+2)|t|}`, admissible for
-`PhragmenLindelof.vertical_strip` with `c = 1/2 < π/3`.  The constant `C_q` does not enter the
-conclusion.
-
-**Edges.** On `−1 ≤ σ ≤ 2`: `‖s−1‖ ≤ 3(1+|t|)` and `‖s+2‖ ≥ (1+|t|)/2`
-(`one_add_abs_im_le_two_mul_norm`), hence `‖(s−1)²/(s+2)^5‖ ≤ 288/(1+|t|)³`.  Therefore
-
-* `σ = 2`: `‖q^{s−2}‖ = 1` and `‖D‖ ≤ M_R := ∑_N d(N)/N²` (`norm_estermannZeta_le_divisorSquareMass`),
-  so `‖F(2+it)‖ ≤ 288 M_R`;
-* `σ = −1`: `‖q^{s−2}‖ = q^{−3}` and `‖D‖ ≤ K q³(1+|t|)³`
-  (`norm_estermannZeta_left_edge_uniform_le`), so `‖F(−1+it)‖ ≤ 288 K`.
-
-Both are constants free of `q` and of `t`.
-
-**Conclusion.** Phragmén–Lindelöf gives `‖F(s)‖ ≤ M := 288 max(M_R, K)` on the strip.  Unwinding
-with `‖s+2‖ ≤ 4(1+|t|)` and `‖s−1‖ ≥ |t|`,
-
-```text
-‖D(σ+it, a/q)‖ ≤ q^{2−σ} · M · 4^5 (1+|t|)^5 / t² ,
-```
-
-and at `σ = 1/2`, using `(1+|t|)^5/t² ≤ 32(1+|t|)³` for `|t| ≥ 1`,
-
-```text
-‖D(1/2 + it, a/q)‖ ≤ C q^{3/2} (1+|t|)³ ,   C absolute, |t| ≥ 1 .
-```
-
-**Reading.** This is the classical convexity exponent, and it is exactly the modulus-uniform input
-MUST-387 identified as missing: propagating it through the smoothed-sum error gives
-`O(q^{3/2} x^{−1/2})` in the progression law, which makes the `k`-sum in
-`∑_n d(n)d(n+h)e^{−nx} = ∑_k ∑_{n≡−h (k)} d(n) e^{−nx}` summable with a usable rate.
-
-**Status.** `EstermannLeftEdgeUniform` elaborates clean and is wired; its olean build was stopped by
-system memory pressure, so the axiom audit for it and the assembly above are the next actions.
-
-## MUST-392 — the convexity bound `q^{3/2}` is proved (2026-09-24)
-
-`RHTower/EstermannConvexityExplicit.lean` (all axiom-clean). MUST-391's paper proof is now Lean:
-
-```text
-norm_estermannZeta_critical_line_le :
-  1 ≤ |t| → ‖D(1/2 + it, a/q)‖ ≤ C · q^{3/2} · (1 + |t|)³ ,  C absolute.
-```
-
-The chain: `modulusNormalizer q s = exp((s−2) log q)` is entire, non-vanishing, with
-`‖·‖ = q^{σ−2}`; the test function `q^{s−2}(s−1)²D(s)/(s+2)^5` has the **same `q`-free constant on
-both edges** (`norm_estermannPLTest_edge`), because `q^{σ−2}` is `1` at `σ = 2` and `q^{−3}` at
-`σ = −1`, cancelling the `q³` of MUST-390, while `‖s+2‖ ≥ (1+|t|)/2` absorbs the `(1+|t|)^5` coming
-from `(s−1)²` and the edge polynomials.  Phragmén–Lindelöf propagates that constant
-(`norm_estermannPLTest_strip`), and unwinding restores exactly `q^{2−σ}`, giving `q^{3/2}` at
-`σ = 1/2`.
-
-**Reading.** This closes the uniformity gap MUST-387 identified. The remaining step in the lane is
-arithmetic bookkeeping, not analysis: propagate this bound through the smoothed-sum error to get
-`O(q^{3/2} x^{−1/2})` in the progression law, after which
-`∑_n d(n)d(n+h)e^{−nx} = ∑_k ∑_{n≡−h (k)} d(n)e^{−nx}` is summable over `k`. Per CANNOT-371 the
-lane bounds the proportion of zeros on the line, not RH.
-
-## MUST-392 strengthened — the convexity bound holds at every height (2026-09-24)
-
-The `|t| ≥ 1` hypothesis in MUST-392 was an artifact of bounding `‖s − 1‖ ≥ |t|`, which degenerates
-at `t = 0`. On the critical line `‖s − 1‖² = 1/4 + t²` exactly, and `(1+|t|)² ≤ 8(1/4 + t²)` for
-every real `t` (it reduces to `2|t| ≤ 1 + 7t²`, weaker than AM–GM). So
-
-```text
-norm_estermannZeta_critical_line_le (q) (a) (t) :
-  ‖D(1/2 + it, a/q)‖ ≤ C · q^{3/2} · (1 + |t|)³ ,  C absolute, every real t,
-```
-
-with `C = 8192 · estermannStripConstant`. Removing the hypothesis matters downstream: the
-smoothed-sum error integrates over the whole line, including `|v| ≤ 1`.
-
-## MUST-393 — the smoothed-sum error is uniform in the modulus (2026-09-24)
-
-`RHTower/EstermannSmoothedErrorExplicit.lean` (all axiom-clean).
-
-```text
-norm_estermann_smoothed_error_le :
-  0 < x → ‖(1/2π) • ∫_ℝ x^{−(1/2+iv)} Γ(1/2+iv) D(1/2+iv, a/q) dv‖
-            ≤ C · q^{3/2} · x^{−1/2} ,  C absolute.
-```
-
-At `x = 1` the integrand has modulus `‖Γ(1/2+iv)‖ · ‖D(1/2+iv, a/q)‖`, and both factors are now
-explicit: `‖Γ(1/2+iv)‖ ≤ √(2π) e^{−π|v|/2}` (`HTGeometry/GammaVerticalModulus`) and
-`‖D(1/2+iv, a/q)‖ ≤ C q^{3/2}(1+|v|)³` (MUST-392, in the hypothesis-free form — the integral runs
-over all of `ℝ`, so the earlier `|t| ≥ 1` version would have left `|v| ≤ 1` uncovered).  Their
-product is `(1+|v|)³ e^{−π|v|/2}` times an absolute constant, integrable by
-`HTGeometry.integrable_abs_pow_mul_exp_neg_abs`, and the `x`-dependence is the exact scaling
-`‖x^{−(1/2+iv)}‖ = x^{−1/2}`.
-
-**Reading.** This is the uniformity MUST-387 identified as the lane's obstacle, now discharged:
-every modulus carries the same absolute constant, with the modulus entering only as `q^{3/2}`. The
-progression law of MUST-386 therefore reads, for every modulus,
-
-```text
-q ∑_{N ≡ b (q)} d(N) e^{−Nx} = ∑_{a mod q} e(−ab/q) main(q/gcd(a,q)) + O(q^{3/2} x^{−1/2}) ,
-```
-
-with an absolute implied constant, and the `k`-sum of
-`∑_n d(n)d(n+h)e^{−nx} = ∑_k ∑_{n≡−h (k)} d(n)e^{−nx}` now has a rate attached to each `k`.
-Per CANNOT-371 the lane bounds the proportion of zeros on the line, not RH.
-
-## MUST-394 — the progression law with an absolute implied constant (2026-09-24)
-
-`RHTower/EstermannProgressionUniform.lean` (all axiom-clean).  With `reducedModulus q a = q/gcd(a,q)`:
-
-```text
-norm_estermannSmoothedSum_sub_reducedMain_le :
-  ‖S_a(x) − main(q/gcd(a,q))‖ ≤ C q^{3/2} x^{−1/2}        (every twist, C absolute)
-
-norm_progression_sub_main_le :
-  ‖q ∑_{N ≡ b (q)} d(N) e^{−Nx} − ∑_{a mod q} e(−ab/q) main(q/gcd(a,q))‖
-      ≤ C q^{5/2} x^{−1/2}                                 (every modulus, C absolute)
-```
-
-The first uses the gcd reduction of MUST-385 to land on a unit twist of `q' = q/gcd`, where
-MUST-393 gives `C (q')^{3/2} x^{−1/2}`; since `q' ∣ q`, monotonicity of `rpow` bounds this by
-`C q^{3/2} x^{−1/2}`, one constant for all twists.  The second averages the `q` twists against the
-unimodular `e(−ab/q)`, costing exactly `card (ZMod q) = q`.
-
-**Reading.** The Estermann lane is now quantitative end to end: definition, functional equation,
-entire completion, both strip edges, convexity, smoothed-sum error, orthogonality, gcd reduction and
-the progression law all carry absolute constants with the modulus appearing only as an explicit
-power.  Dividing by `q`, `∑_{N ≡ b (q)} d(N) e^{−Nx}` equals its Ramanujan main term up to
-`O(q^{3/2} x^{−1/2})`, which is the form the `k`-sum of
-`∑_n d(n)d(n+h)e^{−nx} = ∑_k ∑_{n ≡ −h (k)} d(n) e^{−nx}` consumes.  Per CANNOT-371 this lane
-bounds the proportion of zeros on the critical line, not RH.
+## MUST-382 — an unconditional first Laguerre inequality contains a zero-repulsion law (2026-09-24)
+
+The first Laguerre margin of the completed function is the boundary jet of the Hadamard receiver:
+the receiver's real part vanishes identically on the critical line and its transverse derivative
+there is the margin divided by the square of the Hardy function. Its atoms are positive exactly off
+the disks `|t − Im ρ| < |Re ρ − 1/2|`, the same disks that obstruct the receiver. Consequently the
+margin is nonnegative at the ordinate of an off-line zero only if twice the reciprocal square of
+that zero's distance to the line is at most the resolvent energy of the remaining divisor at that
+ordinate; and when the distance is below the local scale, some further zero is forced within a
+bounded multiple of it. Any unconditional proof of the inequality therefore carries a quantitative
+separation of off-line zeros from the critical line, and cannot be cheaper than that.
+
+## CANNOT-383 — the receiver reformulations share one obstruction (2026-09-24)
+
+The Laguerre margin, the diagonal of the theta Bezoutian criterion, and the oblique exterior
+paired-value sector condition are distinct statements equivalent to the hypothesis, but all three
+are built on the logarithmic derivative of the completed function: the Bezoutian diagonal is the
+Laguerre margin, and the paired-eta sector condition collapses — after clearing the positive eta
+denominator and cancelling the elementary and archimedean factors — to an oblique real-part
+condition on that same logarithmic derivative. All fail where the local obstruction fails: a single
+off-line zero makes its own atom negative, and no atomwise or pairing argument excludes it.
+Presenting the receiver in a further coordinate system cannot advance the problem; only source-side
+arithmetic input can.
+
+## CANNOT-384 — the shifted divisor correlation cannot be reached modulus by modulus (2026-09-24)
+
+Since the divisor function of the shift counts its divisors, the smoothed shifted divisor
+correlation is exactly the smoothed divisor sum over the progression `n ≡ −h`, summed over all
+moduli. The smoothing truncates the moduli at the reciprocal of the smoothing scale, and the main
+term is of order that reciprocal times the square of its logarithm. A per-modulus error that grows
+like any nonnegative power of the modulus therefore sums to strictly more than the main term; the
+requirement is a negative power, which no pointwise majorant on the critical line can meet, because
+such a majorant is non-decreasing in the modulus. The modulus sum must be performed with
+cancellation between moduli, not by bounding each modulus separately.
+
+## CANNOT-385 — strong log-concavity does not force the first divisor-moment Hankel sign (2026-09-24)
+
+An RH proof through positivity of a transformed source-moment Hankel matrix cannot obtain its first size-three sign from evenness, positivity, strict decrease on the positive ray, strong log-concavity, positivity of the first four transformed moments, and even an all-order linear moment-score recurrence alone. The positive Gaussian--Hermite perturbation `φ(x)[1+t(-He₄+He₆−2He₈+He₁₀)(x)]` satisfies these conditions for sufficiently small `t>0`, after a fixed spatial rescaling, yet its transformed size-three determinant is `t²(−196+324t+16t²)<0` before rescaling. **Must** constrain the coupled second-order tangent `m₂' m₄'−(m₃')²` using information special to the actual arithmetic source. The density construction, log-concavity, and all-order score transfer are paper-proved; exact moment-to-determinant algebra and finite sign/score constraints are Lean-proved in `RHTower.PrimeArchHermiteMomentBoundary`.

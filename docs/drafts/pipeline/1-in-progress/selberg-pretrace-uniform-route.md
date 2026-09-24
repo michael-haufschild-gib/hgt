@@ -69,3 +69,13 @@ F_p = ⋃_{A ∈ PSL2Z/Γ̄(p)} A·F₁; W as above with ⟨f,g⟩ = ∫_{F_p} f
 - P10: B ≪ e^{R(1−2s)}(R log p + e^R/p³)e^{εR} on F₁ ∩ {y ≤ Cp}; e^R = p³ gives dim W ≪ p^{6−6s+ε}; with
   dim W ≥ (p−1)/2 this gives s ≤ 5/6 + o(1), i.e. λ ≥ 5/36 − o(1) (Sarnak–Xue). Check: the exponent reproduces the
   density hypothesis m ≪ V^{2(1−s)}, V ≍ p³, so the bookkeeping is right.
+- 2026-09-24 — Upper-bound components closed in Lean (all built `--old`, wired, no sorry):
+  `HyperbolicBallMeanValue` (P3: `integral_centred_kernel`, `setIntegral_closedBall_eigen`:
+  ∫_{B_R(z)} G = G(z)·∫_{B_R(i)} (Im)^s), `HyperbolicBallTransform` (P7: `ballTransform_lower`:
+  ∫_{B_R(i)} y^s dμ ≥ (cosh R)^s/16 for R ≥ 2, 0 ≤ s ≤ 2), `HyperbolicLens` (P6: `volume_lens_le`:
+  vol(B_R(z) ∩ B_R(z')) ≤ 16 cosh R / cosh(d(z,z')/2), via cosh d(w,ia) + cosh d(w,i/a) = (a+1/a) cosh d(w,i)),
+  `SarnakXueCounting` (P8: `two_cosh_dist_eq_qform`, `card_le`: #{γ ∈ Γ(p) : 2cosh d(z,γz) ≤ X} ≤
+  (2y√X/p+1) + (4√X/p+1) + (4√X/p²+1)(4√X/p+1)·2C(9X)^ε for |x| ≤ 1/2, y ≥ 1/2).
+  Remaining: P1/P4/P5 (coset-sum inner product on W, unfolding over `isFundamentalDomain_fd`, Cauchy–Schwarz
+  giving ĥ²|f(w)|² ≤ ½ Σ_γ lens(w,γw) for unit f; conjugation invariance of the lens sum), P9 (cusp tail via
+  convexity of |a_n(y)|² from `maassCoefficient_modal_equation`), dyadic summation, P10 assembly.

@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**423 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**426 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-24, `c76e753e761f822eb4a42ea14808925d56c78de6`**.
+Source-audit cutoff: **2026-09-24, `46da517b7962bd62fdff18175c637d9b44bf923f`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
@@ -24,9 +24,9 @@ Concurrent uncommitted formal edits remain pending evidence and are not counted.
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 33 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 55 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 86 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 34 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 56 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 87 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 40 |
 | [Singular descent, formation and completion](#completion) | 29 |
 | [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 67 |
@@ -308,6 +308,7 @@ Source-native aperture invariant is required.
 
 ## CCM-FU: prime scheduling and current bounds
 
+- [CCM-FU fixed or undersized old-core shell payment](#no-go-424)
 - [CCM exterior constant-mode adaptive-mass repair](#no-go-294)
 - [CCM phase-locked canonical exterior packet](#no-go-295)
 - [CCM all-frequency positive/scalar Ward completion](#no-go-075)
@@ -341,6 +342,22 @@ Source-native aperture invariant is required.
 - [CCM-FU scalar graph-energy coercion](#no-go-389)
 - [CCM-FU delayed short-clock-span payment](#no-go-393)
 - [CCM matched-quantile debt-only Cauchy wall](#no-go-400)
+
+<a id="no-go-424"></a>
+
+### CCM-FU fixed or undersized old-core shell payment
+
+**Closed result**
+
+The physical inverse-cube mean of the dense dyadic prime shell `(2N,3N]` diverges, even after adjoining any fixed old prime core. For a disjoint moving core `Q`, the explicit head/debt floor persists whenever `480·2^|Q|≤#(2N,3N] primes`. Fixed-core or such undersized-core positive payment cannot uniformly absorb this shell.
+
+**Survivor / still open**
+
+The exact shell floor quantifies capacity required of a moving old core. CCM-FU may still use a sufficiently large core or signed cancellation across old/new walls; neither an all-cutoff payment nor an exhaustive history is excluded.
+
+Evidence: [shell divergence](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorDyadicShellDebtGrowth.lean), [fixed-core debt](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorShellAnchorDebt.lean), [moving-core cardinality](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorShellAnchorComplexity.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
 <a id="no-go-294"></a>
 
@@ -920,6 +937,7 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 
 ## E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation
 
+- [E prime-dilation-only boundary covariance sign](#no-go-425)
 - [E zero-row-only Kloosterman spectral cancellation](#no-go-419)
 - [T1 pointwise cancellation of complete stationary prime cone](#no-go-420)
 - [EDQ physical initial-segment LCM positivity](#no-go-412)
@@ -975,6 +993,22 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 - [HCF positivity-only uniform-grid alias variance](#no-go-395)
 - [HC line-conjugation-stable scalarization of ordered-prime orientation](#no-go-396)
 - [T2 polynomial source graphs plus fixed Bohr datum](#no-go-397)
+
+<a id="no-go-425"></a>
+
+### E prime-dilation-only boundary covariance sign
+
+**Closed result**
+
+At boundary Gamma--Hankel exponent one, finitely many literal `d:pd` prime-ratio matrix rays can have an arbitrarily steep negative logarithmic aggregate. But the **complete integer-ratio section**, with all coprime cofactors and its diagonal, is bounded in absolute value by `6(1+log X)`: uniform signed Möbius-harmonic cancellation compensates the prime-only rays. A prime-only sign cannot be promoted to the complete covariance.
+
+**Survivor / still open**
+
+The uniform coprime-harmonic and integer-ratio bounds are positive cancellation laws. E still needs source-faithful control of noninteger primitive ratios and the moving full-energy/fourth-moment estimate; this boundary result is not an RH-strength ceiling above exponent one.
+
+Evidence: [prime-dilation negative rays](../../../../formal/GaloisForLFunctions/RHTower/MobiusFirstPrimeDilationCancellation.lean), [complete integer-ratio bound](../../../../formal/GaloisForLFunctions/RHTower/MobiusCoprimeHarmonicUniform.lean).
+
+[Back to family](#arithmetic) · [Current E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
 
 <a id="no-go-296"></a>
 
@@ -1900,6 +1934,7 @@ Evidence: [complete prime-cone bound](../../../../formal/GaloisForLFunctions/RHT
 
 ## HB, FZZ and PW: scattering and physical action
 
+- [PW-B subcritical scalar full-square contact](#no-go-426)
 - [PW-B integrable normalized off-line cusp forcing](#no-go-421)
 - [PW-B fixed-calibration two-amplitude off-line incidence](#no-go-418)
 - [PW-B unrenormalized all-fibre zero residual boundary](#no-go-415)
@@ -1986,6 +2021,22 @@ Evidence: [complete prime-cone bound](../../../../formal/GaloisForLFunctions/RHT
 - [PW-B single cross-metric ordered CTP readout](#no-go-401)
 - [PTR fixed-`k` geometric Maxwell sideband](#no-go-402)
 - [PTR finite-energy bilateral conormal boundary](#no-go-403)
+
+<a id="no-go-426"></a>
+
+### PW-B subcritical scalar full-square contact
+
+**Closed result**
+
+At a hypothetical left-half Xi copy, the actual cross-clock forcing mean cannot equal `a(log y)·sourceMean(y)+d` on the upper cusp when `a` is continuous and `|a(t)|≤M exp(σt)` with `σ` strictly below the source growth exponent. Such a full-square scalar contact becomes integrable after forcing normalization, contradicting the formally proved nonzero translated-window charge.
+
+**Survivor / still open**
+
+The charge supplies a sharp growth-grade boundary: any scalar survivor must carry at least the missing cusp grade, or use a genuinely nonlocal/ordered contact. The no-go does not prove oriented CTP incidence, fixed-grade magnitude, outer extinction or RH.
+
+Evidence: [subcritical contact no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWCrossClockSubcriticalContactNoGo.lean), [source charge](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWCrossClockTranslatedTests.lean).
+
+[Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
 
 <a id="no-go-299"></a>
 

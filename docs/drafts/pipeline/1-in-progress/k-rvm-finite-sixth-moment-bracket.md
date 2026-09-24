@@ -602,9 +602,50 @@ With `B=9ae−504m₁c+15120m₂b−181440m₃a`, `C=am₃²−2m₁m₂m₃+m�
 H_R(e)=d p_R−11q_R(dB+362880C).
 ```
 
-The radius bound is sharp for a positive mixture of two flat intervals, whose radius measure has two support points. It therefore exposes a second precise four-moment boundary, independent of the ordinary shifted-Gram boundary. Substituting `m₃=u−e/5040` shows `H_R` is quadratic in `e` with leading coefficient `a(243d−11q_R/70)`. `PrimeArchThetaRadiusGateCurvature.lean` proves this coefficient is strictly negative for the literal source: its exact form is `−51q/40+b(176b−693a²−441r)/280`, where `q=ac−b²>0`, `r=a²−18m₁>0`, `b>0`, and `m₁>0` implies `b<3a²`. Thus either pair of positive endpoint values for `H_R` over the certified two-atom interval for `e` would settle the first open determinant. Neither endpoint sign has been proved. If an endpoint gate is negative, the missing source-specific quantity is the strict radius-mixing quadratic residual `11q_Rf−p_R`, which must pay it.
+The radius bound is sharp for a positive mixture of two flat intervals, whose radius measure has two support points. It therefore exposes a second precise four-moment boundary, independent of the ordinary shifted-Gram boundary. Substituting `m₃=u−e/5040` shows `H_R` is quadratic in `e` with leading coefficient `a(243d−11q_R/70)`. `PrimeArchThetaRadiusGateCurvature.lean` proves this coefficient is strictly negative for the literal source: its exact form is `−51q/40+b(176b−693a²−441r)/280`, where `q=ac−b²>0`, `r=a²−18m₁>0`, `b>0`, and `m₁>0` implies `b<3a²`. Positive values for `H_R` at both endpoints of the certified two-atom interval for `e` would settle the first open determinant. Neither endpoint sign has been proved. If an endpoint gate is negative, the missing source-specific quantity is the strict radius-mixing quadratic residual `11q_Rf−p_R`, which must pay it.
+
+**Generic radius-gate limit (gate and low-order signs Lean-proved; moment reconstruction paper-proved).** This new gate is not automatically positive under monotonicity and the low-order source-like signs. Set `(a,b,c,e)=(1,3-ε,15,105)` and `f=p_R/(11q_R)`. At `ε=0`, `q_R=90`, `f=9555/11`, `m₁=m₂=m₃=0`, and `m₄=-1/4752`. Differentiating the exact determinant formula at zero gives `D₃'(0)=-1/38016`. `PrimeArchRadiusGaussianGateBoundary.lean` proves without premises that the exact four-moment radius gate is strictly negative for every sufficiently small positive `ε`: it writes the gate as `d(p_R−11q_R B)−11q_R·362880 C`, uses `p_R−11q_R B=-75600` at zero and continuity, and proves `C=(m₃-m₁m₂)²+m₂²d≥0` when `d>0`. The same module proves that the low-order signs `m₁>0`, `r>0`, `q=ac-b²>0`, `q_R>0`, and `14b²<9ac` persist. The radius moments `(1,3a,5b,7c,9e)` have ordinary size-three determinant `720` and shifted size-two determinant `90` at `ε=0`. Their positive Radau reconstruction has a radius atom at zero and two positive radius atoms; replacing the zero atom by a sufficiently small positive radius and smoothing the resulting decreasing flat-interval mixture preserves strict negative `D₃` and the listed open signs. This measure reconstruction remains a paper proof. Thus source monotonicity and those signs alone cannot decide the minor. The positive survivor is the radius-mixing fifth-moment floor and its literal-source gate above; their endpoint sign requires information about the completed theta density beyond these generic constraints.
 
 The proof exposes a concrete next source-specific margin. At finite radius `R`, the difference between the quadratic norm and `(64/3969)` times its top moment equals `ρ(R)H_{α,β}(R)+∫₀ᴿ(−ρ'(x))H_{α,β}(x)dx`, where the explicitly square-completed cumulative gap `H_{α,β}` is nonnegative. `ThetaCuspModularRatio.thetaCuspFullSource_slope_le_neg_six_of_fortyFiveEighths_le` proves `−ρ'≥6ρ` once the first-atom reflection scale reaches `45/8`. A lower bound for the integral of `H_{α,β}ρ` on that ray at the *orthogonal* coefficients, strong enough to pay the possible negative part of `G+(64/3905)dp`, is the remaining direct comparison. Existing low-moment first-atom concentration bounds and this slope theorem do not yet supply that comparison.
+
+The Gaussian boundary explains the needed precision. At shape-normalized Gaussian moments `(a,b,c,e,f)=(1,3,15,105,945)`, all four nontrivial prime--archimedean moments `m₁,…,m₄` vanish, so `D₃` begins at second order under a smooth shape perturbation. The sharp radius lower endpoint is only `f_R=9555/11`, losing `840/11` of the fifth moment even at that boundary; replacing the actual `f` by this independent floor creates a first-order negative gate as soon as `d>0`. A successful source proof must therefore control the fifth moment *coupled to* the lower moment deviations, not merely use a universal radius or ordinary shifted-Gram floor. Three separated windows for the literal radius density `−xρ'(x)` give a positive Vandermonde residual in principle, but no bound yet compares it with the gate's negative part.
+
+**Strongly log-concave Gaussian--Hermite boundary (paper density proof; exact moment and determinant algebra Lean-proved).** The generic source class remains too broad even after imposing strict log-concavity and positivity of all first four nontrivial prime--archimedean moments. Let `X` have standard Gaussian density and put
+
+```text
+P = -He₄ + He₆ - 2He₈ + He₁₀
+  = x¹⁰−47x⁸+687x⁶−3586x⁴+5616x²−1173,
+ρₜ(x) = φ(x)(1+tP(x)),   x∈ℝ.
+```
+
+The Gaussian integration-by-parts identity `E[X^(2j)He_(2k)(X)] = (2j)!/(2j−2k)! · E[X^(2j−2k)]` for `j≥k`, zero otherwise, gives `E[P]=E[X²P]=0` and the normalized half-line even moments
+
+```text
+(a,b,c,e,f)=(1, 3−24t, 15+360t, 105−65520t, 945+378000t).
+```
+
+The Lean leaf independently checks all six corrections using the Gaussian Wick recurrence `g₀=1`, `g_(j+1)=(2j+1)g_j` and the displayed polynomial coefficients. More generally, for `P=pHe₄+qHe₆+rHe₈+sHe₁₀`, Gaussian integration by parts gives the exact transformed moments
+
+```text
+m₁=−4pt,  m₂=6qt,
+m₃=−8rt+4p²t²,  m₄=10st−10pqt².
+```
+
+Thus the Gaussian tangent of `D₃` is **diagonal in Hermite degree**: `D₃=t²(60qs−64r²)+O(t³)`. `gaussianHermiteDet_exact` proves the full polynomial through order `t⁴` in Lean. The coefficient `p` affects only higher-order terms. This identifies the precise coupled direction that a theta-specific identity must control; separate bounds on any one moment discard the `qs−r²` comparison.
+
+For sufficiently small `t>0`, `1+tP>0`: the even polynomial has positive leading coefficient and is bounded below. Moreover `ρₜ` is *strongly* log-concave. Indeed `log ρₜ` has second derivative `−1+(log(1+tP))''`. On a fixed compact interval this correction tends uniformly to zero with `t`. Outside a sufficiently large interval, `P(x)≥x¹⁰/2` and `P''(x)≤C x⁸`, so `(log(1+tP))''≤tP''/(1+tP)≤2C/x²`; choose the interval large, then `t` small, to make the correction `<1/2` everywhere. Evenness makes the normalized restriction to `x>0` have the displayed moments and a strictly decreasing density. Spatially rescaling by `1/10` preserves determinant sign and log-concavity and enforces the source's `j=4` score inequality `303f≤145e` (in shape coordinates, `303f/100<145e`).
+
+The cumulant recursion yields exactly
+
+```text
+m₀=1,  m₁=4t,  m₂=6t,
+m₃=t(16+4t),  m₄=t(10+10t),
+D₃=t²(−196+324t+16t²) < 0     (0<t<1/2).
+```
+
+`PrimeArchHermiteMomentBoundary.lean` proves the displayed exact algebra, strict negativity, `m₁,…,m₄>0`, `d>0`, `q_R>0`, the first-atom-style `14b²<9ac`, and the rescaled fifth-moment score bound for `0<t<1/1000`. The analytic Gaussian integration and strong log-concavity arguments above are **not yet Lean formalized**. This is a genuine positive-density countermodel, unlike the earlier radius-boundary tuple: monotonicity, strong log-concavity, these finite moment signs, and the score bound still do not imply `D₃>0`. The positive survivor is the exact Gaussian tangent-cone law: if `m_j=t·(v,w,z,y)_j` for `j=1,…,4`, then `D₃=t²[(wy−z²)+t(2vwz−v²y−w³)]`. Here `wy−z²=−196`; a successful literal-theta argument must constrain this *coupled* tangent direction through its arithmetic/functional identity or a stronger source-specific high-moment law.
+
+The obstruction survives even the **all-order** score recurrence at paper level. Since `P` is bounded below and has positive degree-ten leading term, there is a constant `C` independent of sufficiently small `t>0` such that `t y P'(y)/(1+tP(y))≤C` for all `y≥0`: on a compact interval the quotient tends uniformly to zero, while in the tail `P(y)≥c y¹⁰` and `|yP'(y)|≤C₁y¹⁰`, so it is bounded by `C₁/c`. For the spatially rescaled density `ρ_{s,t}(x)=s⁻¹ρₜ(x/s)`, write `V=-logρ_{s,t}`. Then `xV'(x)≥x²/s²−C`. Integration by parts against `x^(2j+1)ρ_{s,t}` gives, for every `j≥0`, `M_{j+1}≤s²(2j+1+C)M_j`. Choose one fixed `s>0` with `303s²·2≤32` and `303s²(1+C)≤17`; then `303M_{j+1}≤(32j+17)M_j` at **every** even-moment level. Scaling multiplies `D₃` by `s¹⁸>0`, so its sign remains negative. This all-order extension is a dependency-closed paper proof, **not yet Lean formalized**; the Lean leaf proves only the explicit `j=4` instance at `s=1/10`.
 
 These are correlated, source-specific lower bounds requiring no independent enclosure of `R₅`. They reduce the remaining `dΔ>−G` comparison to an analytic lower bound on the two-atom Gram determinant, a lower bound on `d`, and an upper bound on the negative part of the four-moment gate over the existing two-atom remainder intervals. The corpus already has an unconditional lower bound for `d` in `XiPrimeMarkedFiniteSixthLowerBracket.lean`; the missing ingredient is a strong enough analytic comparison for the actual two-atom moments through order five.
 

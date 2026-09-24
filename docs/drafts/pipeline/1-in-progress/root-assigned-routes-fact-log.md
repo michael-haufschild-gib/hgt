@@ -1064,3 +1064,49 @@
   coherence can be destroyed by integration. Both leaves pass direct Lean
   checks and targeted `lake --old build ...:olean`; umbrella imports are
   wired, without an umbrella build.
+- **Route E physical-shell off-saddle boundary (2026-09-24):** The Gaussian-shell
+  saddle proof in the conditioned parity--energy regression card asserts that
+  the complement of `|τ|=O(C^{-1/2} log C)` is exponentially smaller than its
+  `exp(-D/2)` main scale by Gaussian decay. This does **not** follow from the
+  Gaussian factor alone: at that boundary its exponent is only `O(log² C)`,
+  while the prime-array regression deficit `D` has order
+  `Y^a/(log Y)^3`, so `D/log² C → ∞`. The corrected deficit-matching cutoff
+  for a Gaussian `exp(-b τ²)` is `h=sqrt(2D/b)`, at which the entire exterior
+  integral of the **literal normalized finite parity--energy Euler product**
+  has norm at most `exp(-D) sqrt(π/(b/2))`. This bound is now an unconditional,
+  source-specific Lean theorem in `RouteEPhysicalShellSaddleExterior`; it uses
+  the newly proved exact local/product modulus ceiling `≤1`, not an assumed
+  envelope. Direct Lean check and targeted `lake --old build ...:olean` passed;
+  umbrella import is wired, no umbrella build. For the card's `b=λC/2`, this
+  requires `h=O(sqrt(D/C))`, a wider `O((log Y)^{-2})` window. This repairs only
+  off-saddle control. Terminal-phase Taylor uniformity on the wider window,
+  low-prime cumulants, source-level prime asymptotics, and the **complex
+  central-saddle lower bound** remain unproved; no RH claim follows. More
+  importantly, the parent card's target `(13)` is a **negative antiscale
+  determinant**: completing its saddle would certify failure of positive
+  shell coercivity, not control the RH-equivalent moving packet-square mass.
+  This is an obstruction audit, not an RH producer; future E effort must stay
+  on the noninteger primitive-ratio / transverse-frequency collective bound.
+- **E moving additive row (2026-09-24):** For literal boundary Gamma--Hankel
+  coefficients, put `R(m,N)=Σ_{i<N} μ(i+1)/(m+i+2)`. The new unconditional
+  Lean theorem proves `|R(m,N)| ≤ 4N/(m+N+1)` for **all** moving `m,N`, using
+  exact Abel summation and the corpus's uniform `|Σ_{n≤k} μ(n)/n|≤2`.
+  Thus even a row crossing noninteger primitive ratios cannot itself create
+  unbounded covariance; the unresolved issue is alignment of many moving rows
+  (or its packet/fourth-moment equivalent). The estimate does not sum to an RH
+  ceiling: taking absolute values over `m≤N` still costs order `N`. It is in
+  `MobiusGammaHankelMovingRowAbel`, which also proves exact equality between
+  the sum of these signed rows and `finiteMobiusGammaHankelEnergy N 1`;
+  wired into RHTower, and passed direct Lean
+  plus targeted `lake --old build ...:olean`; no umbrella build or axiom check.
+- **E harmonic-prefix-to-energy obstruction (2026-09-24):** The moving-row
+  estimate cannot be aggregated into an RH-scale Gamma--Hankel ceiling using
+  only a uniform harmonic-prefix bound and coefficient bound. For every
+  `M`, the `{0,1}` coefficient block on `[M+1,2(M+1))` has all harmonic
+  prefixes bounded by `1`, yet its boundary Gamma--Hankel energy at cutoff
+  `2(M+1)` is at least `(M+1)/4`. This is a coefficient-blind no-go, not a
+  claim about the actual Möbius energy: arithmetic cross-row cancellation
+  remains the live producer. The exact linear-energy survivor is proved in
+  `MobiusGammaHankelHarmonicPrefixNoGo.lean`; direct Lean check and targeted
+  `lake --old build ...:olean` passed, umbrella import wired, no umbrella
+  build or axiom check.

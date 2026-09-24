@@ -478,7 +478,7 @@ The factor has no zero in `1/2<Re(s)<1`, so the Mellin argument in (16q2) applie
 G(N+1)-G(N)=2*U(N)/((N+1)*(N+2)).                   (16q5)
 ```
 
-The corpus's unconditional `O(N)=o(N)` implies `G(N)->0`, removing the linear homogeneous solution. If `|U(N)|<=C_epsilon*N^(1/2+epsilon)` with `epsilon<1/2`, telescope (16q5) from `N` to infinity: `|G(N)|=O_epsilon(N^(-1/2+epsilon))`, `|F(N)|=O_epsilon(N^(3/2+epsilon))`, and `O(N)=2*U(N)+2*F(N)/N=O_epsilon(N^(1/2+epsilon))`. The prime-2 renewal identity then gives the usual Mertens half-power bound and RH. Conversely RH bounds `O`, `F`, and `U` at that scale. The finite summation-by-parts identity, literal weighted-source equality, normalized recurrence, and finite telescoping law are proved in [Lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusCenteredFirstMomentTerminalLaw.lean); the infinite-tail power transfer and literal RH equivalence remain paper-level. The unresolved arithmetic producer is now **one centered signed first moment**, rather than a family of Fourier projections.
+The corpus's unconditional `O(N)=o(N)` implies `G(N)->0`, removing the linear homogeneous solution. If `|U(N)|<=C_epsilon*N^(1/2+epsilon)` with `epsilon<1/2`, telescope (16q5) from `N` to infinity: `|G(N)|=O_epsilon(N^(-1/2+epsilon))`, `|F(N)|=O_epsilon(N^(3/2+epsilon))`, and `O(N)=2*U(N)+2*F(N)/N=O_epsilon(N^(1/2+epsilon))`. The prime-2 renewal identity then gives the usual Mertens half-power bound and RH. Conversely RH bounds `O`, `F`, and `U` at that scale. The source-independent finite summation-by-parts identity, weighted-source equality, normalized recurrence, and finite telescoping law are proved in [Lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusCenteredFirstMomentTerminalLaw.lean); literal odd-Mobius instantiation, infinite-tail power transfer, and RH equivalence remain paper-level. The unresolved arithmetic producer is now **one centered signed first moment**, rather than a family of Fourier projections.
 
 **Dyadic Haar variant of the single-statistic criterion (paper proof; source bound open).** A piecewise-constant centered weight is still closer to the prime-2 window. Put `D(Y)=O(Y)-2*O(floor(Y/2))`, the odd-Mobius mass in the upper half minus its mass in the lower half. The weight `w(t)=1` for `1/2<t<=1` and `w(t)=-1` for `0<t<=1/2` has Mellin factor
 
@@ -487,6 +487,80 @@ integral_(0)^1 t^(s-1)*w(t)dt = (1-2^(1-s))/s.       (16q6)
 ```
 
 Its zeros lie on `Re(s)=1`, so it detects every off-line zero in the critical strip. More directly, for `N>=1` let `b_j=O(2^j*N)/(2^j*N)`. Then `b_(j+1)-b_j=D(2^(j+1)*N)/(2^(j+1)*N)` and `b_j->0` by the unconditional prime-number-theorem bound for the odd source. A uniform `|D(Y)|=O_epsilon(Y^(1/2+epsilon))` gives a convergent geometric telescope and `O(N)=O_epsilon(N^(1/2+epsilon))`, hence RH; the converse follows from RH. This is a single signed adjacent-half estimate with no zero-mode premise. The generic geometric telescope is already in `MobiusCyclicMeanSlopeRigidity.lean`. Neither the literal-source receiver nor the RH-scale `D` estimate is yet in Lean; the latter is the arithmetic obstacle. The prime contribution to `D(Y)` has its leading `Y/log Y` term canceled automatically by the equal-length Haar halves, but controlling the residual prime/composite cancellation to square-root scale remains open.
+
+**Haar–Ramaré fibre decomposition at the square-root cofactor boundary (paper identity; Lean correction bound closed).** The Haar contrast above permits a source-faithful prime/cofactor expansion with a useful scale split. For integer `Y>=3`, write `kappa_Y(n)=1` when `Y/2<n<=Y`, `kappa_Y(n)=-1` when `1<=n<=Y/2`, and `kappa_Y(n)=0` otherwise. Put `omega(m)=#{p prime:p|m}` and `H_P(z)=#{p odd prime:z/2<p<=z}-#{p odd prime:p<=z/2}`. For each odd `m` set `E_m(Y)=sum_(p odd prime|m, p<=Y/m) kappa_Y(p*m)`. The exact normalized-prime-factor identity for squarefree odd `n>1`, `mu(n)=sum_(p|n)mu(n)/omega(n)`, followed by `n=p*m`, `mu(p*m)=-mu(m)` when `p` does not divide `m`, gives
+
+```
+D(Y) = kappa_Y(1)
+     - sum_(m odd<=Y/3) mu(m)/(omega(m)+1)*H_P(Y/m)
+     + sum_(m odd<=Y/3) mu(m)/(omega(m)+1)*E_m(Y).      (16q7)
+```
+
+For `R=floor(sqrt Y)`, retain coprimality in the large-cofactor block and remove it only for `m<=R`:
+
+```
+D(Y) = -sum_(m odd<=min(R,Y/3)) mu(m)/(omega(m)+1)*H_P(Y/m)
+       -sum_(R<m<=Y/3, m odd) mu(m)/(omega(m)+1)
+          *sum_(p odd prime<=Y/m, p does not divide m) kappa_Y(p*m)
+       + Err_R(Y),                    |Err_R(Y)|<=R+1. (16q8)
+```
+
+Indeed `|E_m(Y)|<=omega(m)`, `|mu(m)|<=1`, and there are at most `R` small cofactors. The `O(sqrt Y)` coprimality correction is already within the RH-scale budget. The exact literal correction and bound `|Err_R(Y)-kappa_Y(1)|<=R` are now closed in [Lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusHaarRamareCoprimalityBudget.lean) as `mobiusHaarCorrection` and `abs_mobiusHaarCorrection_le`; its normalized-fibre theorem works for arbitrary bounded signed weights. For every fixed cofactor `m`, the inner unrestricted prime fibre is the same centered difference `H_P(Y/m)`; its leading constant-density prime term cancels because the upper and lower halves have equal length. This cancellation is lost under unique least-prime peeling, which truncates each prime fibre at `minFac(m)`. It is also lost under unique-large-prime peeling at `q>R`: for `Y/(2R)<m<=R`, the lower Haar half `q<=Y/(2m)` lies entirely below `R`, so the retained large-prime fibre is one-sided. The full Ramaré fibre keeps that lower half in the small-cofactor prime contrast. Formula (16q8) therefore isolates the remaining arithmetic producer as **joint cancellation** between the small-cofactor prime Haar contrasts and the large-cofactor block with `p<sqrt Y`; separate absolute estimates do not yield a half-power bound. The corpus has `Sieve.sum_eq_sum_ramare_complex`, `Sieve.moebius_prime_mul`, and squareful-vanishing lemmas for the exact finite expansion. The source-faithful signed prime–cofactor factorization is now closed for every cutoff in [Lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusHaarRamareFullPrimeCofactor.lean) as `oddHaarSource_eq_ramare_cofactor`, with the exact `-mu(m)/(omega(m)+1)` weight and squareful zero case. Regrouping its finite cofactor set into the explicit ranges of (16q8), and the coupled power estimate, remain open in Lean.
+
+**Top-third cofactor occupancy and forced semiprime compensation (rigidity in Lean; asymptotic paper proof).** Let `R=floor(sqrt Y)` and let `r_R(n)` count distinct prime divisors `p|n` for which `n/p<=R`. For an odd source atom `Y/3<n<=Y`, two distinct such primes force `n=pq`: writing `n=pqa` gives `(n/p)(n/q)=na<=R^2<=Y<3n`, so `a<3`; as `a` is odd, `a=1`. The exact [Lean theorem](../../../../formal/GaloisForLFunctions/RHTower/MobiusHaarRamareTopWindowSemiprime.lean) is `two_small_cofactors_top_third_semiprime`; the same file also proves the parity-free upper-half version. Thus `r_R(n)<=2` throughout the top third, and `r_R(n)=2` occurs precisely for distinct-prime semiprimes `n=pq` with `p,q<=R` there. Every higher-prime-degree odd atom above `Y/3` has at most one small-cofactor incidence; higher-degree overlap is confined to the lower third of the Haar source.
+
+This exceptional packet has a sharp signed main term. Let `L=log Y` and
+
+```
+S_R(Y)=sum_(3<=p<q<=R, p,q prime) kappa_Y(p*q).
+```
+
+The full pair count is `T_R=binom(pi_odd(R),2)~2Y/L^2`. For pairs in the upper Haar half, the prime number theorem and the rescaled prime measure `(log R/R)*sum_(p<=R)delta_(p/R) -> Lebesgue_[0,1]` give
+
+```
+U_R=#{3<=p<q<=R:p*q>Y/2}~(1-log 2)*Y/L^2,
+```
+
+because the ordered area `meas{(u,v) in [0,1]^2:u*v>1/2}` is `(1-log 2)/2`; the diagonal is lower order and `Y/(2R^2)->1/2`. Hence `S_R(Y)=2U_R-T_R~ -2(log 2)*Y/L^2`. The corpus's quantitative PNT (`Sieve.primeCounting_sub_logIntegral_isBigO`) gives `H_P(Y)~-(log 2)*Y/L^2`, so the signed prime contribution `-H_P(Y)` is `+(log 2)*Y/L^2`. Write the exact literal source as `D(Y)=-H_P(Y)+S_R(Y)+E_R(Y)`, where `E_R` contains every remaining odd-Mobius atom, including `1`. The corpus's sharp Mertens saving (`Sieve.exists_norm_sum_moebius_kappa_two_rate`), transferred to the odd source by the prime-2 renewal identity, gives `D(Y)=o(Y/L^A)` for each fixed `A`. Therefore
+
+```
+E_R(Y)~+(log 2)*Y/L^2.                              (16q8a)
+```
+
+This is an unconditional, source-specific compensation law: after the near-square two-incidence semiprimes are removed, all other composites must supply a positive main term of the same size as the prime Haar packet. It does not control the required `O_epsilon(Y^(1/2+epsilon))` residual. The pair-count and compensation asymptotics have paper proofs; their Lean formalization and a power-scale estimate on the coupled residual remain open.
+
+**Whole repeated-incidence packet at the first residual scale (finite triple bound in Lean; asymptotic paper proof).** Define `B_R(Y)` as the literal signed Haar sum over odd `n<=Y` having `r_R(n)>=2`, counted once per source atom. Three distinct incidences imply `n^2<=R^3`: if `n=p*q*r*a`, multiplying the three cofactor inequalities gives `n^2*a<=R^3`. This is closed in [Lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusHaarRamareTripleIncidenceSparsity.lean) as `triple_small_cofactors_sq_le_cube_of_distinct_primes`. Since `R~sqrt Y`, any triple-incidence atom is at most `Y^(3/4)`; even counting its at most `O(log^2 Y)` prime pairs, its contribution is `o(Y/log^2 Y)`.
+
+Count each selected prime pair `p<q` in an atom `n=a*p*q` instead. The cofactor constraints are exactly `p,q<=R/a`. The `a=1` packet is `S_R(Y)~ -2(log 2)*Y/log^2 Y` above. For any fixed odd squarefree `a>=3`, all such `n` satisfy `n<=Y/a<=Y/3`, hence have Haar sign `-1`; excluding the finitely many `p,q|a` does not affect the main term. The prime number theorem gives its signed pair contribution `-mu(a)*(2/a^2)*Y/log^2 Y`. The tail is controlled uniformly: for `a<=R^(1/4)`, the PNT upper bound gives `O(Y/(a^2*log^2 Y))`, summable beyond any fixed `a=A`; for `a>R^(1/4)`, the trivial pair count sums to `O(R^(7/4))=o(Y/log^2 Y)`. Therefore the sum over `a` can pass through the limit. Since `sum_(a odd>=1) mu(a)/a^2=prod_(p odd)(1-p^(-2))=8/pi^2`, and triple-incidence repetitions are lower order,
+
+```
+B_R(Y)~[2-2*log 2-16/pi^2]*Y/log^2 Y.          (16q8b)
+```
+
+There is also an exact finite prime-pair form for the overlap before the negligible triple-incidence correction. Let `Q_R(Y)=sum_(n odd<=Y) binom(r_R(n),2)*mu(n)*kappa_Y(n)` and `M_(pq)^odd(T)=sum_(a odd<=T, gcd(a,p*q)=1)mu(a)`. Reindexing each chosen pair `p<q` as `n=a*p*q` gives `a<=R/q`; for `a>=3`, `n<=Y/3` has Haar weight `-1`. Consequently
+
+```
+Q_R(Y)=2*U_R-sum_(3<=p<q<=R, p,q prime) M_(pq)^odd(floor(R/q)).  (16q8d)
+```
+
+The difference `Q_R(Y)-B_R(Y)` is supported on atoms with at least three incidences, so its absolute value is `O(R^(3/2)*log^2 R)=o(Y/log^2 Y)` by the Lean triple bound. Formula (16q8d) exposes actual finite Möbius cancellation within the repeated-incidence packet: for `R/4<q<=R/3` and `p>3`, the `a=1` and `a=3` terms cancel exactly because `M_(pq)^odd(floor(R/q))=0`. The `O(Y^(3/4)*log^2 Y)` multiplicity correction is **larger** than the RH target `Y^(1/2+epsilon)` for small `epsilon`; any power-scale argument must retain it exactly and couple the full repeated-incidence packet to the zero-or-one-incidence sector.
+
+Let `Z_R(Y)` be the literal Haar sum over odd source atoms with `r_R(n)<=1`. Since `D(Y)=B_R(Y)+Z_R(Y)` and `D(Y)=o(Y/log^A Y)` for every fixed `A`, this gives
+
+```
+Z_R(Y)~[2*log 2-2+16/pi^2]*Y/log^2 Y.         (16q8c)
+```
+
+The prime contribution inside `Z_R` is `-H_P(Y)~(log 2)*Y/log^2 Y`; thus the zero-or-one-incidence **composites** contribute `[log 2-2+16/pi^2]*Y/log^2 Y` to first order. This locates the necessary compensation in a precise incidence partition, but a power-saving estimate on the coupled sectors is still required. The asymptotics (16q8b)–(16q8c) are paper-level and remain open in Lean.
+
+**Large-prime peeling boundary profile (paper proof; Lean theorem open).** Write `pi_o(z)` for odd-prime count through `z` and `J_R(z)` for the Haar contrast of primes `q>R` with `q<=z`. Direct interval subtraction gives the exact two-case law
+
+```
+J_R(z) = H_P(z)+pi_o(R)          if z/2>=R,
+       = pi_o(z)-pi_o(R)        if z/2<R<=z.             (16q9)
+```
+
+For `z=Y/m`, `m<=R=floor(sqrt Y)`, this separates at `m=Y/(2R)`. Unique-large-prime peeling therefore introduces a constant `pi_o(R)` times a Möbius cofactor sum on the lower-`m` band and a one-sided prime count on the transition band. The full-fibre Ramaré expansion (16q8) keeps both Haar halves at each small cofactor, while the complementary large-cofactor block carries the necessary cross-scale cancellation. This exact boundary profile specifies which term a proposed large-prime argument must compensate; no estimate of that compensation is claimed.
 
 **Unconditional prime/composite cancellation at its first scale (paper proof; Lean theorem open).** Let `P(n)` count odd primes in `(n/2,n]`, and let `C(n)` be the sum of `mu(u)` over odd nonprimes (including `u=1` when it lies in the window). Equation (16l) gives the exact source decomposition `M(n)=C(n)-P(n)`. The prime-counting asymptotic already present as `RHTower.tendsto_primeCounting_nat_ratio` gives `P(n)~n/(2*log n)`, hence, by summation,
 

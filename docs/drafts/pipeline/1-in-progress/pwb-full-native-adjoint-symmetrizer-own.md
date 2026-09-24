@@ -1,0 +1,8 @@
+# PW-B full/native current test
+
+- **Chain:** literal full CTP → source-faithful Green current including native lift defect → oriented incidence → fixed-grade extinction → RH.
+- **Corpus data:** full kernel's temporal forcing is `λ(K_full+K_native)` (`FullAngularGoursatTransposition`); native kernel's is angular `ΔK_native` (`NativeGoursat`); actual vertex fields satisfy `ΔH=λ(H+Q)` (`FullAngularCovector`).
+- **Lean-closed scoped no-go:** `A_μ(u,n)=(λ(u+n),μn)` has no nondegenerate mode-independent symmetric symmetrizer even if compatibility is required only at `μ=0,λ`. The actual Xi coupling `λ=parameter q branch` is nonzero by `Re(physicalRate)<−2`. The first nondegenerate local symmetrizer `S_μ=[[μ−λ,−λ],[-λ,0]]` intertwines `A_μ` with its transpose. Actual theta vertices satisfy `S(H,Q)=(0,−λH)` because `ΔH=λ(H+Q)`.
+- **Positive survivor:** For arbitrary full/native `U,N`, source contact is `H(ΔU−λ(U+N))−λQU = HΔU−UΔH−λHN`. For the **literal gated direct/image kernel** `K` and actual native causal kernel `N`, the new physical-height equation `ΔK=λ(K+N)` sharpens this to `HΔK−KΔH=λ(HN−QK)`. The mixed term is the precise bulk load of the finite angular Green current; no cancellation is claimed.
+- **Lean:** `ThetaCuspHawkingBMPWFullNativeAdjointSymmetrizer.lean` and `ThetaCuspHawkingBMPWLiteralKernelGreenContact.lean` direct checks and exact-module `lake build --old` pass; both umbrella imports wired.
+- **Hard remainder:** integrate the literal kernel contact over the finite modular domain with all sides/top/core retained; identify its boundary and noncompact limit with literal two-event CTP plus full-minus-native defect, or prove no source-faithful boundary transport carries the cross-clock cusp charge.
