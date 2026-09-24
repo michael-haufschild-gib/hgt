@@ -636,6 +636,8 @@ For two such intervals `I=(Y_I,Z_I]` and `J=(Y_J,Z_J]`, write `K_delta(x,y)=x^2*
 
 For the shrinking interval used in (17c), the shape error has an extra factor `H/X=o(1)` relative to the maximal Mertens count scale. Thus the nearly complete prime/composite cancellation there is already visible in its *net Möbius count*. A blockwise route to an RH-scale global bound would need square-root-scale control of these counts together with their covariance; alternatively, stronger negative cross-interval covariance could compensate larger individual counts. Equation (17e) specifies the local quantity and error to attack, rather than treating all composite-pair terms as an undifferentiated residue.
 
+**Complete first-two-layer local compensation (paper proof; Lean theorem open).** The [source-literal matching theorem](../2-fully-proven/l-all-prime-semiprime-local-matching.md) uses the corpus's quantitative prime-counting error and the density surplus `1/2+1/3+1/5=31/30` to match **every** prime in `(R,2R]` to an opposite-sign semiprime `2r`, `3r`, or `5r`, then every unused squarefree semiprime to an opposite-sign triprime `2rs`, `3rs`, or `5rs` with `r,s>5`. The two matchings are disjoint and move atoms by `O_B(R/log^B R)` for any fixed `B>0`. Their combined cubic Gamma energy is `O_B(R^(1-delta)*(log log R)^2/log^(2B+2) R)`, uniformly for `0<=delta<=1`. This compensates both low prime-factor layers with arbitrary logarithmic saving, but unused triprimes and the bulk of higher squarefree layers still determine the full source's power-scale residual.
+
 **A two-adic composite compensation law (paper proof; Lean theorem open).** For positive real `x,y`, `0<=delta<=1`, and `K_delta(x,y)=x^2*y^2/(x+y)^(5+delta)`, set
 
 ```

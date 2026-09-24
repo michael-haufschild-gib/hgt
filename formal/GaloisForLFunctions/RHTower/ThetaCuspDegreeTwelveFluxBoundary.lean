@@ -2,13 +2,12 @@ import GaloisForLFunctions.RHTower.ThetaCuspDegreeTwelveFluxShape
 import GaloisForLFunctions.RHTower.ThetaCuspCenterCompensationFlux
 
 /-!
-# The lawful degree-twelve flux has exactly one-sided tail debt
+# The lawful degree-twelve flux has one-sided tail debt
 
-This identifies the source-selected flux of the shape theorem with the
-Schwartz polynomial correction. The zero-mass law makes negative derivative
-unavoidable beyond every cutoff; strict log-rate descent then makes the
-negative region terminal. This does not compare that debt with the native
-odd-four Schur current.
+The source-selected flux is exactly the Schwartz polynomial correction. Its
+zero-mass law makes negative derivative unavoidable beyond every cutoff;
+strict log-rate descent makes the negative region terminal. This does not
+compare that debt with the native odd-four Schur current.
 -/
 
 namespace RHTower
@@ -37,7 +36,7 @@ theorem integral_Ioi_deriv_thetaCuspDegreeTwelveFlux_eq_neg {a : ℝ}
   rw [thetaCuspDegreeTwelveFlux_eq_polynomialFlux]
   exact integral_Ioi_deriv_thetaCuspPolynomialFlux_eq_neg 10 ha R
 
-/-- Beyond every positive cutoff, the correction must export negative mass. -/
+/-- Beyond every positive cutoff, the correction exports negative mass. -/
 theorem thetaCuspDegreeTwelveFlux_exists_negative_after {a R : ℝ}
     (ha : 0 < a) (habs : |a| < 1) (hR : 0 < R) :
     ∃ s : ℝ, R < s ∧ deriv (thetaCuspDegreeTwelveFlux a) s < 0 := by

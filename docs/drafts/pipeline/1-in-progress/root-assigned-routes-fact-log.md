@@ -1003,3 +1003,32 @@
   and even a zero-row spectral estimate would leave transverse energy
   untouched. The leaf passed scratch and targeted `lake --old build
   ...:olean`; its umbrella import is wired, with no umbrella build.
+- **T1 uncentered stationary-cone noncancellation (2026-09-24):** New leaf
+  `XiMassStationaryPrimeConeNoncancellation` proves that the *complete*
+  uncentered sum `Σ_{n≤X} Λ(n)/√n · exp(iδ(log X−log n))` is nonzero whenever
+  `X` is large and `δ→0`; the quantitative strengthening gives
+  `Re Σ ≥ √X/4` cofinally at the literal
+  cutoff `X=exp(du/(d−1/2))` and every fixed-frequency timelike stationary
+  rapidity `−timelikeRapidity u h`. An exact Lean reindexing identifies this
+  full sum with the literal `k+2`, `k<⌊X⌋₊−1` cone after its vanishing
+  `n=0,1` terms. The proof splits at `X/10⁶`: the corpus's
+  unconditional lower mass `(log 2/2)√X` dominates the lower block bounded
+  by `21√X/1000`, while the upper block has phase spread at most
+  `|δ|log(10⁶)→0`. This excludes cancellation of the *whole positive-prime
+  factor*, not merely the labelled `(2,3)` term, without PNT or numerical
+  experiments. The literal uncentered zero-jet cone is itself RH-equivalent
+  under the uniform vertical bound in `XiMassLevinsonComovingZeroJetLanding`;
+  centering is a separate equivalent presentation, not a prerequisite for
+  faithfulness. `XiMassStationaryPrimeConeCovarianceGrowth` proves the exact
+  factorization of the literal finite `k+2` rapidity kernel through this
+  aligned mass and, for every fixed pair `h,k`, the cofinal lower bound
+  `‖full two-rapidity covariance at (−η_h,−η_k)‖ ≥
+  (a exp(−aσ))² X/64`, with `X=exp(du/(d−1/2))`. This is a theorem about the
+  complete prime-pair covariance, not a selected saddle cell. It rules out
+  uniform pointwise covariance cancellation at fixed-prime stationary pairs.
+  It does not bound the signed two-rapidity integral or prove RH. The cutoff
+  apex satisfies `log X/u=d/(d−1/2)>1`, so its dominant indices are spacelike
+  even while fixed-prime stationary rapidities tend to zero: pointwise
+  coherence can be destroyed by integration. Both leaves pass direct Lean
+  checks and targeted `lake --old build ...:olean`; umbrella imports are
+  wired, without an umbrella build.

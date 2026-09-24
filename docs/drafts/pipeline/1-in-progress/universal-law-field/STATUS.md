@@ -18,6 +18,10 @@ Scope: compressed facts and logically forced design constraints extracted from a
 
 - **Cannot infer the first open reciprocal-moment Hankel determinant from global source log-concavity and order-one entire Fourier transform, or from a theta-cusp tail plus strict raw-moment log-convexity alone.** The symmetric probability source `(1-A)δ₀+(A/2)(δ₋₁+δ₁)` at `A=49/100` has all first five cumulant-derived moments positive and `M₀M₂-M₁²>0`, but its leading size-three determinant is `A³(945A²+630A-551)/4572288000<0`. Gaussian convolution with variance greater than one makes it globally strictly log-concave and decreases that determinant further; multiplying its density by a small `exp(-ε cosh(2x))` preserves the signs and gives an order-one entire transform. Separately, smooth compact convolution followed by a small admixture of the normalized actual theta-cusp source gives a smooth, strictly positive full-support source equal to a positive multiple of the actual source outside a compact set, with the same determinant sign. Neither variant is the actual modular theta-cusp source. Must prove a source-specific quantitative cross-moment law; qualitative regularity and positivity do not settle it. See the [exact source countermodel and fifth-moment target](../k-rvm-finite-sixth-moment-bracket.md).
 
+- **Cannot infer the first open determinant from superexponential likelihood separation among source atoms alone.** Let `f` be any smooth positive full-support even density with all moments finite and negative first open determinant, as constructed in the preceding countermodel. On the positive half-line set `f₁(x)=f(x)` and `f_n(x)=δ 2^(-n) f(x) exp(-π(n²-1)exp(2x))` for `n≥2`. For every `0<m≤n` and `0<x≤y`, the ratio `f_n/f_m` satisfies *equality* in the theta Morse-gap contraction `r(y)=exp(-π(n²-m²)(exp(2y)-exp(2x)))r(x)`. Yet the sum of the later atoms is bounded by `δ f`, so its first six half-line even moments tend to those of `f` as `δ→0`; continuity of the normalized cumulant determinant keeps it negative for sufficiently small positive `δ`. Thus even the exact pairwise contraction proved for theta atoms does not control the dominant atom's shape or certify the determinant. Must also establish a quantitative inequality for the actual complete source or dominant atom and its tail interaction; this abstract model does not satisfy the actual theta atom formulas.
+
+- **Cannot infer the first open determinant from an all-order linear upper moment recurrence and strict shifted Hankel positivity alone.** The known symmetric three-point negative-determinant law with mass `A=49/100` at `±1` can be rescaled to support in `[-r,r]`; every prime–archimedean moment is homogeneous in the appropriate even power of `r`, so its negative size-three determinant keeps its sign. Add an arbitrarily small symmetric smooth bump, positive on an interval and supported in `[-R,R]` with `r<R<√(17/303)`. For small bump mass the determinant remains negative by continuity, while every finite shifted raw-moment Hankel matrix is strictly positive because the law has positive density on an interval. Compact support gives `t_(j+1)≤R²t_j`, hence `303t_(j+1)≤(32j+17)t_j` for **every** `j≥0`. This paper countermodel shows that the new Lean-checked theta score recurrence must be used with further identities of the actual modular source; its moment inequality and strict Gram tower alone do not close the gate.
+
 - **Must retain the harmonic powers and time moments of the source observable being matched.** A finite sum of exponential modes cannot reproduce an exponential times a nonconstant affine time factor, even with freely chosen or repeated frequencies. Such a factor can arise from differentiating the source pairing without asserting a multiple arithmetic zero or a defective physical mode. The [original source-clock audit](../../5-failed/hb-original-source-clock-rigidity.md) derives both retained moment coordinates and an exact quartic-clock integral for the complete action; the representation alone supplies no vanishing law.
 
 - **Cannot infer regularity of a source response from regularity of its paired action.** Must identify which observable carries the proposed spectral information and prove the transport of its poles or residues. The [original Green-pole audit](../../5-failed/hb-original-green-pole-matching.md) exhibits actual critical Xi sources whose complete canonical action is analytic while their original Green response has a genuine pole at every interior detector and every nonzero amplitude. Replacing an action value by a response residue therefore requires a separate matching theorem.
@@ -6569,3 +6573,69 @@ by a **uniform** half-plane zero bound `XiZeroHalfPlaneBound alpha`; uncondition
 `alpha = 1/2` is available, giving monotonicity on `Re s ≥ 1`. The statements here are height
 dependent and reach into the strip: full width below height four, and the zero-free-region width
 above it.
+
+## MUST-382 — the local zero count, and the Laguerre margin is the Hadamard receiver's first-order trace (2026-09-24)
+
+`RHTower/XiWindowZeroCount.lean` (all axiom-clean). The corpus bounded the Lorentzian mass
+`Σ_ρ 1/(1 + (t − γ)²) ≤ 8(C + log(|t| + 4))` but never counted zeros. A copy with
+`|Im ρ − t| ≤ w` carries at least `1/(1 + w²)` of that mass, so
+
+```text
+finite_xiOrdinateWindow (w t) : {q | |Im ρ_q − t| ≤ w}.Finite
+ncard_xiOrdinateWindow_le_log (w t) : #{ρ : |Im ρ − t| ≤ w} ≤ 8(1 + w²)(C + log(|t| + 4))
+```
+
+with `≤ 16(C + log(|t| + 4))` for `w = 1`. Finiteness is a conclusion: an infinite window contains
+finite subsets of every cardinality, each already exceeding the total mass.
+
+`RHTower/XiLaguerreWindowPositivity.lean` (all axiom-clean). `laguerre_Xi_eq_tsum_inv_sq` puts the
+corpus identity `ΞC'² − ΞC·ΞC'' = ΞC²·Σ_q (z − a_q)⁻²` on the real axis in `Xi` coordinates, and
+`re_inv_sq_sub_xiSpectralPoint_eq` computes the atom exactly:
+
+```text
+Re ((t − a_q)²)⁻¹ = ((t − γ_q)² − δ_q²) / ((t − γ_q)² + δ_q²)²,   a_q = γ_q − i δ_q.
+```
+
+**Reading.** The atom is positive exactly off the disk `|t − γ_q| < |δ_q|` — the *same* disks that
+obstruct the Hadamard receiver `Re (ξ'/ξ) ≥ 0`. Since `Re (ξ'/ξ)` vanishes identically on the
+critical line and its `σ`-derivative there is `L₁(t)/Ξ(t)²`, the first Laguerre inequality is the
+first-order trace of the receiver at the line. The Laguerre lane is therefore not an independent
+route: it inherits exactly the local obstruction of CANNOT-323.
+
+Consequences, all unconditional: `laguerre_Xi_pos_of_window_onLine` (RH inside one unit ordinate
+window at height `t` already gives `L₁(t) > 0`), `laguerre_Xi_nonneg_of_window_onLine` (the
+nonvanishing hypothesis is unnecessary for the non-strict form, since at a zero of `Ξ` the margin
+collapses to `(Ξ')²`), `laguerre_Xi_nonneg_of_offLine_floor` (an off-line height floor `H` gives
+`L₁ ≥ 0` on `|t| + 1/2 ≤ H`), `laguerre_Xi_pos_of_abs_le_four`, and
+`laguerre_Xi_nonneg_of_abs_le_criticalBand`: **`L₁(t) ≥ 0` for every `|t| ≤ 58/5`**, from
+`not_exists_xiZeroCopy_offLine_of_im_sq_lt_2365_over_16`.
+
+## MUST-382 correction — the corpus already owned zero counting (2026-09-24)
+
+The MUST-382 entry above said the corpus "never counted zeros". That is false. `ZetaLocalZeroCount`
+proves `N(t+1) − N(t) ≪ log t`; `RiemannVonMangoldt` and `XiZeroCountRVMRemainder` prove the count
+with logarithmic remainder; `XiZeroCountLocalCeiling.exists_card_window_le` is the sharp window
+ceiling `(H/2π) log(t+H) + 2C log(t+H)` with a block-length law; `PrimeLagLandauWeights` has the
+`|γ| ∈ [k, k+1)` form. `XiWindowZeroCount` contributes only (i) finiteness of the window as a set,
+which the Finset-indexed corpus statements do not supply, and (ii) a threshold-free explicit bound
+at every real height of either sign, which `laguerre_offLine_separation` needs because it applies at
+an arbitrary off-line ordinate. The disk-detector content of MUST-382 stands unchanged.
+
+## MUST-383 — mean-zero twists have no main term (2026-09-24)
+
+`RHTower/EstermannMeanZeroTwist.lean` (axiom-clean). The main term
+`(γ − log x − 2 log q)/(qx)` of the smoothed twisted divisor sum is independent of the twist `a`,
+because the character-sum collapse makes `D(s, a/q) = q^{1−2s} ζ(s)² + q^{−s} R_a(s)` with an
+`a`-independent double pole. Hence for any `w : (ZMod q)ˣ → ℂ` with `∑_a w(a) = 0`,
+
+```text
+‖∑_{a ∈ (ZMod q)ˣ} w(a) ∑_N d(N) e(aN/q) e^{-Nx}‖ ≤ C_w · x^{-1/2},
+```
+
+with no main term at all; `exists_bound_norm_estermann_character` is the non-principal Dirichlet
+character case.
+
+**Reading.** Every *multiplicative* structure on the twist sees only the `O(x^{-1/2})` critical-line
+integral. The arithmetic of the divisor function in progressions is therefore entirely carried by
+that integral, not by the pole. Passing to progressions needs the non-unit twists, which reduce by
+`gcd(a,q)` to smaller moduli and produce a Ramanujan-sum main term — the next module.

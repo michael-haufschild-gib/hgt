@@ -339,7 +339,7 @@ R_j := thetaCuspRawEvenMoment j
     ≤ thetaCuspAtomRawEvenMoment j 1 / 374625.
 ```
 
-The remainder is nonnegative by the positive integer-atom expansion. Put `a_j=thetaCuspAtomRawEvenMoment j 1`, `b_j=thetaCuspAtomRawEvenMoment j 2`, and `h_j=a_j+b_j`. Then the *actual* normalized theta moments obey `t_j=(h_j+R_j)/(h₀+R₀)` and the paper-level interval `h_j/(h₀+a₀/374625) ≤ t_j ≤ (h_j+a_j/374625)/h₀`. The first open determinant depends only on `t₁,…,t₅`, so a strict determinant lower bound for this two-atom interval, preferably using the actual correlated `R_j`, would finish this finite Hankel stage. The uniform first-atom tail bound `8/2997` exceeds the toy instability threshold from the preceding paragraph, whereas the new post-second-atom bound is far smaller. Neither scale comparison proves the actual determinant sign; it identifies the two-atom core and a precise tiny remainder that a source-specific margin must absorb.
+The remainder is nonnegative by the positive integer-atom expansion. Put `a_j=thetaCuspAtomRawEvenMoment j 1`, `b_j=thetaCuspAtomRawEvenMoment j 2`, and `h_j=a_j+b_j`. Then the *actual* normalized theta moments obey `t_j=(h_j+R_j)/(h₀+R₀)` and the Lean-proved interval `h_j/(h₀+a₀/374625) ≤ t_j ≤ h_j/h₀`. The upper bound uses likelihood ordering of every atom beyond the second against the first-two-atom head; the lower bound uses the tiny analytic tail domination. The first open determinant depends only on `t₁,…,t₅`, so a strict determinant lower bound using this interval, preferably retaining the actual correlated `R_j`, would finish this finite Hankel stage. The uniform first-atom tail bound `8/2997` exceeds the toy instability threshold from the preceding paragraph, whereas the post-second-atom bound is far smaller. Neither scale comparison proves the actual determinant sign; it identifies the two-atom core and a precise tiny remainder that a source-specific margin must absorb.
 
 **Every fixed theta-shell prefix has infinitely many nonreal Fourier zeros (paper proof; concrete Lean transfer open).** For `N≥1` let `P_N(x)=∑_{n=1}^N thetaCuspSourceTerm x n` on `x≥0` and `F_N(z)=∫₀^∞ P_N(x) cos(zx) dx`. The corpus proves `P_N'(0)>0` in `ThetaCuspFiniteShellSeamCancellation.lean` and proves `b²F_N(b)→-P_N'(0)<0` in `ThetaFiniteShellFourierBoundary.lean`. Thus `F_N` has no real zeros outside a compact interval. Since `F_N(0)>0`, it is nonzero; holomorphy makes the real zeros inside that interval finite. The source formula gives `0≤P_N(x)≤K_N exp((9/2)x-πe^{2x})` for a finite `K_N`. For `R=|Im z|`, `|cos(zx)|≤e^{Rx}`. The inequality `e^{2x}≥(4/3)x³` and the elementary maximum of `(R+9/2)x-(2π/3)x³` give `log max_{|z|≤R}|F_N(z)|=O(R^{3/2})`, strictly subquadratic. In particular `F_N` is entire, and Riemann–Lebesgue gives `F_N(b)→0` on both real rays. If it had finitely many complex zeros, finite-zero subquadratic Hadamard factorization would give `F_N(z)=P(z)c exp(Bz)`. Outside the zeros' radius, both `|P(b)|` and `|P(-b)|` are at least one, so `|F_N(b)F_N(-b)|≥|c|²>0`, contradicting two-ray decay. The zero set is infinite, and only finitely many zeros are real; hence **infinitely many are nonreal**. This rules out every fixed finite shell prefix as an all-order real-zero replacement even though its omitted raw moments are uniformly tiny. The positive survivor is finite-order approximation with an explicitly paid remainder: the infinitely many omitted atoms are essential for exact modular seam cancellation. `FiniteZeroSubquadraticTwoRayDecay.lean` formalizes the reusable Hadamard/two-ray step, and `ThetaFiniteShellSubquadraticSourceBound.lean` proves the first shell's double-exponential pointwise envelope. The prefix sum's entire subquadratic-growth theorem, which would connect these formal ingredients to the concrete `F_N`, remains open in Lean. None of this decides the actual size-three determinant.
 
@@ -406,7 +406,81 @@ d-q/70 = -b(77a²+49r)/7560 - q/168.
 (U-L)G(e) = (U-e)G(L)+(e-L)G(U)-A₂(U-L)(e-L)(U-e).
 ```
 
-For `L≤e≤U`, two positive endpoint gate values would prove `G>0`; an independently certified interior gap could also let the positive curvature surplus pay small negative endpoint values. More directly, let `F_R=(thetaCuspRawEvenMoment 0)^(-3)(2048/22920975)·thetaCuspFullSource(R)^3 R^21`, the Lean-proved residual floor below. The two endpoint tests `G(L)+dF_R>0` and `G(U)+dF_R>0` would imply `dΔ+G(e)>0`, even if `G` itself is negative. `PrimeArchThetaTwoAtomNormalizedInterval.lean` now proves the unconditional interval `h_j/(h₀+εa₀)≤t_j≤(h_j+εa_j)/h₀` for every `j`, using a nonnegative beyond-second-atom remainder and the prior `ε=1/374625` domination theorem. In particular it supplies certified `L,U` at `j=4` without a numerical moment estimate. The two endpoint comparisons remain the hard open source inequalities; no endpoint sign is currently certified. The source-specific positivity application has a dependency-closed paper proof; Lean consolidation remains to be added.
+For `L≤e≤U`, two positive endpoint gate values would prove `G>0`; an independently certified interior gap could also let the positive curvature surplus pay small negative endpoint values. More directly, let `F_R=(thetaCuspRawEvenMoment 0)^(-3)(2048/22920975)·thetaCuspFullSource(R)^3 R^21`, the Lean-proved residual floor below. The two endpoint tests `G(L)+dF_R>0` and `G(U)+dF_R>0` would imply `dΔ+G(e)>0`, even if `G` itself is negative. `PrimeArchThetaTwoAtomNormalizedInterval.lean` proves `h_j/(h₀+εa₀)≤t_j≤(h_j+εa_j)/h₀` for every `j`, using a nonnegative beyond-second-atom remainder and the prior `ε=1/374625` domination theorem. `PrimeArchThetaBeyondSecondLikelihoodOrder.lean` now sharpens the upper bound to `t_j≤h_j/h₀` unconditionally: the Born--Witten score increases strictly with atom index, so each atom `n≥3` is likelihood-ratio smaller than atom two, and the integrated two-sample kernel orders every even-power expectation. Atom two is itself ordered below atom one, hence the tail's normalized moment is below the two-atom head's. The resulting certified endpoints at `j=4` are `L=h₄/(h₀+εa₀)` and `U=h₄/h₀`. The two endpoint comparisons remain the hard open source inequalities; no endpoint sign is currently certified. The source-specific positivity application has a dependency-closed paper proof; Lean consolidation remains to be added.
+
+**Quantitative theta-atom separation (score, ratios, and constant-rate two-point margin Lean-checked; sharpened two-window moment gap paper-proved).** The exact Born--Witten score difference has a positive correction to the Morse-scale difference. For `0<m≤n` and `x≥0`,
+
+```text
+W_n(x)-W_m(x) ≥ S_n(x)-S_m(x) ≥ π(n²-m²),
+S_n(x)=πn² exp(2x).
+```
+
+`PrimeArchThetaAtomExponentialSeparation.lean` proves these inequalities and, for `0<x≤y`, the resulting quantitative likelihood contraction
+
+```text
+f_n(y)/f_m(y) ≤ exp(-2π(n²-m²)(y-x)) f_n(x)/f_m(x).
+```
+
+The same Lean module proves the consequent two-point determinant floor `f_n(x)f_m(y)-f_m(x)f_n(y) ≥ [1-exp(-2π(n²-m²)(y-x))]f_n(x)f_m(y)`.
+Keeping the full Morse gap instead of its seam value gives a stronger Lean-checked contraction:
+
+```text
+f_n(y)/f_m(y) ≤ exp(-π(n²-m²)(exp(2y)-exp(2x))) f_n(x)/f_m(x).
+```
+
+This yields a strict *size* for the fourth-moment interval, beyond its existing order sign. Set `A_j(n)=2∫₀∞x^(2j)f_n(x)dx`, `H_j=A_j(1)+A_j(2)`, `R_j=Σ_(n≥3)A_j(n)`, `M₀=H₀+R₀`, and `U=H₄/H₀`. For disjoint windows `I_l⊂(0,v]`, `I_h⊂[u,∞)`, `0<v<u`, write `p_n(I)=2∫_I f_n`. Symmetrizing the two-sample product and retaining just atom pair `(m,n)=(1,3)` on `I_l×I_h` gives
+
+```text
+U-t₄ = (H₄R₀-H₀R₄)/(H₀M₀)
+     ≥ (u⁸-v⁸)(1-exp(-8π(exp(2u)-exp(2v))))
+         ·p₃(I_l)p₁(I_h)/(H₀M₀) > 0.
+```
+
+Indeed, the pairwise cross difference is `4∫_(x<y)(y⁸-x⁸)[f₃(x)f₁(y)-f₁(x)f₃(y)] dxdy`; the stronger ratio contraction bounds its bracket below by `[1-exp(-8π(exp(2u)-exp(2v)))]f₃(x)f₁(y)` on the selected rectangle. Also `t₄-L≥R₄/M₀>0`, since `R₀≤εA₀(1)`. Consequently the gate's concavity surplus `-A₂(t₄-L)(U-t₄)` has an explicit positive lower bound from two source windows and `R₄`. This has **not** been compared with any negative endpoint gate value; the determinant sign remains open.
+
+**Dominant-score moment recurrence and Schur constraint (Lean-checked, no numerical enclosure).** Tail likelihood separation alone cannot decide the gate: scaling every later atom toward zero preserves its ratio law while removing its moment contribution. The first-atom curvature theorem gives `W₁(x)≥-1/16+(19/2)x`, and atom-index score order gives the same lower bound for every `W_n`, `n≥1`. Completing the square yields the pointwise certificate
+
+```text
+303x² ≤ 1+32xW_n(x)                 (x≥0).
+```
+
+The exact Born--Witten Ward identity integrates `x^(2j+1)W_n` against the positive atom density to `(2j+1)/2` times its `2j`-moment. `PrimeArchThetaScoreMomentRecurrence.lean` proves, atomwise and after summing the complete source, for every `j≥0`,
+
+```text
+303·t_(j+1) ≤ (32j+17)·t_j.
+```
+
+This bounds the gate's fourth moment by `e=t₄≤(113/303)c`, in addition to the two-atom bound `e≤U`, and bounds its fifth moment by `f=t₅≤(145/303)e`. Combining the latter with the strict shifted-Gram residual `Δ=qf-p>0`, where `q=ac-b²` and `p=ae²-2bce+c³`, `PrimeArchThetaScoreSchurConstraint.lean` proves the new *strict four-moment* restriction
+
+```text
+303p < 145qe,
+303ae²-(606bc+145q)e+303c³ < 0.
+```
+
+It also proves the forced three-moment discriminant `(606bc+145q)²-4(303a)(303c³)>0`. These restrictions shrink the admissible moment region for the gate. They do not determine the sign of `G(e)` or compare its negative part with `dΔ`; that source-specific comparison is still open.
+
+**Retained score defect (atom identity and full-source square floor Lean-checked).** The all-order recurrence is not merely qualitative. `PrimeArchThetaScoreMomentDefect.lean` proves, for every positive atom and `j≥0`, the exact identity
+
+```text
+(32j+17)M_j(n)-303M_(j+1)(n)
+  = ∫₀∞ x^(2j)[1+32xW_n(x)-303x²]χ_n(x)² dx,
+```
+
+where `M_j(n)=∫₀∞x^(2j)χ_n(x)²dx` and `χ_n` is the Born--Witten amplitude. The pointwise bracket is at least `(x-1)²`. Summing nonnegative atom defects and retaining the first atom yields the unconditional Lean theorem
+
+```text
+(32j+17)T_j-303T_(j+1)
+  ≥ 2π∫₀∞ x^(2j)(x-1)²χ₁(x)² dx,
+```
+
+where `T_j=thetaCuspRawEvenMoment j`. In the normalized gate coordinates, `113c-303e` therefore has the explicit positive square-integral floor obtained by setting `j=3`. For the window `I=[1/4,1/2]`, the paper consequence is `113c-303e ≥ p₁(I)/(4⁷T₀)`, since `x⁶(x-1)²≥4⁻⁷` there and `p₁(I)=2∫_I f₁`. Setting `j=4` and using `Δ=qf-p>0`, the Schur module Lean-proves the strengthened source constraint
+
+```text
+303T₀p + qJ₄ < 145qT₄,
+J₄ = 2π∫₀∞ x⁸(x-1)²χ₁(x)²dx.
+```
+
+On the same window `I=[1/4,1/2]`, the paper bound is `J₄≥4⁻⁹p₁(I)`. This retains a measurable source margin lost by the mere upper recurrence; whether that margin pays the determinant gate remains open.
 
 **Sharp four-moment boundary and two-atom residual transfer (Radau algebra and raw determinant transfer Lean-checked; Radau measure construction remains a paper proof).** The bound `t₅≥P/q` is the exact lower endpoint permitted by the first four moments, not merely one convenient Cauchy estimate. For any positive law `μ` on `y≥0` with moments `t₀=1,t₁=a,t₂=b,t₃=c,t₄=e` and strict three-by-three ordinary and shifted Hankel matrices, set `ν(dy)=y μ(dy)`. Its monic degree-two orthogonal polynomial is `Q(y)=y²-αy-β`, with `α=(ae-bc)/q`, `β=(c²-be)/q`, and `q=ac-b²>0`. Orthogonality to `1,y` forces two distinct positive roots `r₁<r₂`: otherwise `Q` or `Q(y)(y-r)` for its only positive root `r` would be nonnegative on the positive support and have positive integral, contrary to one of the two orthogonality equations. Divide every polynomial of degree at most three by `Q`; its linear remainder defines positive two-node Gaussian quadrature weights `w_i=∫ℓ_i(y)dν=∫ℓ_i(y)²dν>0`, where `ℓ_i` is the linear Lagrange polynomial at `r_i`. This quadrature matches `a,b,c,e`.
 

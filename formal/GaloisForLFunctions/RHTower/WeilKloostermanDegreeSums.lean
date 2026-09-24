@@ -76,6 +76,8 @@ theorem monicOf_surj {f : F[X]} (hf : f.Monic) :
   · subst h2; exact hf.coeff_natDegree
   · rw [Polynomial.coeff_eq_zero_of_natDegree_lt]; omega
 
+variable [Fintype F] [DecidableEq F]
+
 /-- Monic polynomials of degree `m`. -/
 noncomputable def monicDeg (m : ℕ) : Finset F[X] := univ.image (monicOf (F := F) m)
 
@@ -95,6 +97,7 @@ theorem card_monicDeg (m : ℕ) : (monicDeg (F := F) m).card = Fintype.card F ^ 
   rw [monicDeg, Finset.card_image_of_injective _ (monicOf_injective m), Finset.card_univ,
     Fintype.card_fun, Fintype.card_fin]
 
+omit [Fintype F] [DecidableEq F] in
 theorem monicOf_nextCoeff {m : ℕ} (hm : 1 ≤ m) (c : Fin m → F) :
     (monicOf m c).nextCoeff = c ⟨m - 1, by omega⟩ := by
   rw [Polynomial.nextCoeff, monicOf_natDegree, if_neg (by omega), monicOf_coeff,
@@ -103,6 +106,7 @@ theorem monicOf_nextCoeff {m : ℕ} (hm : 1 ≤ m) (c : Fin m → F) :
 section weight
 variable (ψ : AddChar F ℂ) (a : F)
 
+omit [Fintype F] [DecidableEq F] in
 theorem coeff_one_mul (f g : F[X]) :
     (f * g).coeff 1 = f.coeff 1 * g.coeff 0 + f.coeff 0 * g.coeff 1 := by
   rw [coeff_mul, Finset.Nat.antidiagonal_succ]
@@ -113,6 +117,7 @@ theorem coeff_one_mul (f g : F[X]) :
 noncomputable def klW (f : F[X]) : ℂ :=
   if f.coeff 0 = 0 then 0 else ψ (-f.nextCoeff - a * (f.coeff 1 / f.coeff 0))
 
+omit [Fintype F] in
 theorem klW_mul {f g : F[X]} (hf : f.Monic) (hg : g.Monic) :
     klW ψ a (f * g) = klW ψ a f * klW ψ a g := by
   unfold klW

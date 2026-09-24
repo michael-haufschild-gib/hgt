@@ -170,5 +170,70 @@ theorem normalizedPrincipal_tendsto (q : XiZeroCopy)
   rw [← hpow]
   ring
 
+/-- Positive-height smoothness gives one further derivative of the actual cusp mean. -/
+private theorem mean_third (q : XiZeroCopy) (y : ℝ) (hy : 0 < y) :
+    HasDerivAt (deriv (deriv (crossMean q)))
+      (deriv (deriv (deriv (crossMean q))) y) y := by
+  have hf2 : ContDiffOn ℝ ∞ (vertical (vertical (crossPlanar q)))
+      {z : ℂ | 0 < z.im} :=
+    planar_derivative_contDiffOn
+      (planar_derivative_contDiffOn (crossPlanar_smooth q) Complex.I) Complex.I
+  have h := average_hasDerivAt (vertical (vertical (crossPlanar q))) hf2 hy
+  have hh : HasDerivAt (deriv (deriv (crossMean q)))
+      (average (vertical (vertical (vertical (crossPlanar q)))) y) y := by
+    apply h.congr_of_eventuallyEq
+    filter_upwards [Ioi_mem_nhds hy] with t ht
+    exact (average_second_hasDerivAt (crossPlanar q) (crossPlanar_smooth q) ht).deriv
+  exact hh.differentiableAt.hasDerivAt
+
+theorem normalizedMean_hasDerivAt (q : XiZeroCopy) (t : ℝ) :
+    HasDerivAt (normalizedMean q) (deriv (normalizedMean q) t) t :=
+  (normalizedMean_first q t).differentiableAt.hasDerivAt
+
+theorem normalizedMean_deriv_hasDerivAt (q : XiZeroCopy) (t : ℝ) :
+    HasDerivAt (deriv (normalizedMean q))
+      (deriv (deriv (normalizedMean q)) t) t := by
+  have hw := exp_rate_hasDerivAt (-rate q) t
+  have hy := exp_cast_hasDerivAt t
+  have hd := mean_comp_exp_second q t
+  have hh := mean_comp_exp_first q t
+  have ha := (hy.mul hd).sub (hh.const_mul (rate q))
+  have h := hw.mul ha
+  rw [normalizedMean_deriv]
+  exact h.differentiableAt.hasDerivAt
+
+theorem normalizedMean_second_continuous (q : XiZeroCopy) :
+    Continuous (deriv (deriv (normalizedMean q))) := by
+  have hc0 : Continuous (fun t : ℝ => crossMean q (Real.exp t)) :=
+    continuous_iff_continuousAt.mpr (fun t =>
+      (mean_first q (Real.exp t) (Real.exp_pos t)).continuousAt.comp
+        Real.continuous_exp.continuousAt)
+  have hc1 : Continuous (fun t : ℝ => deriv (crossMean q) (Real.exp t)) :=
+    continuous_iff_continuousAt.mpr (fun t =>
+      (mean_second q (Real.exp t) (Real.exp_pos t)).continuousAt.comp
+        Real.continuous_exp.continuousAt)
+  have hc2 : Continuous (fun t : ℝ => deriv (deriv (crossMean q)) (Real.exp t)) :=
+    continuous_iff_continuousAt.mpr (fun t =>
+      (mean_third q (Real.exp t) (Real.exp_pos t)).continuousAt.comp
+        Real.continuous_exp.continuousAt)
+  have hy : Continuous (fun t : ℝ => (Real.exp t:ℂ)) :=
+    Complex.continuous_ofReal.comp Real.continuous_exp
+  have hw : Continuous (fun t : ℝ => Complex.exp (-rate q*(t:ℂ))) := by fun_prop
+  have hi : Continuous (fun t : ℝ =>
+      (Real.exp t:ℂ)^(2:ℕ)*deriv (deriv (crossMean q)) (Real.exp t) +
+      (1-2*rate q)*(Real.exp t:ℂ)*deriv (crossMean q) (Real.exp t) +
+      rate q^(2:ℕ)*crossMean q (Real.exp t)) :=
+    (((hy.pow 2).mul hc2).add ((continuous_const.mul hy).mul hc1)).add
+      (continuous_const.mul hc0)
+  have heq : (fun t : ℝ => deriv (deriv (normalizedMean q)) t) =
+      (fun t : ℝ => Complex.exp (-rate q*(t:ℂ)) *
+        ((Real.exp t:ℂ)^(2:ℕ)*deriv (deriv (crossMean q)) (Real.exp t) +
+          (1-2*rate q)*(Real.exp t:ℂ)*deriv (crossMean q) (Real.exp t) +
+        rate q^(2:ℕ)*crossMean q (Real.exp t))) :=
+    funext (normalizedMean_second q)
+  change Continuous (fun t : ℝ => deriv (deriv (normalizedMean q)) t)
+  rw [heq]
+  exact hw.mul hi
+
 end
 end RHTower.D4BMPWCrossClockLogIdentity
