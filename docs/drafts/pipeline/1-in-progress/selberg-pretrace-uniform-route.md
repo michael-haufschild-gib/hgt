@@ -32,3 +32,15 @@ T-eigenvalues ζ, ζ^{a²} are all present). The pretrace inequality plus counti
   same λ ∈ ℂ have proportional rotation averages about i. Build green; axioms propext/choice/Quot.sound.
   Wired into `RHTower.lean`. Next: K-invariance of the hyperbolic measure and the point-pair integral
   ∫ k(d(i,w))F(w)dμ = F(i)·ĥ(λ); then general centres via GL⁺ transport; then the pretrace inequality.
+- 2026-09-24 — Point-pair principle closed: `formal/GaloisForLFunctions/RHTower/HyperbolicPointPair.lean`.
+  `exists_rot_axis` (every point lies on a rotation orbit through the imaginary axis), `kAverage_rot`,
+  `two_pi_integral_eq_kAverage` (GL(2,ℝ)-invariance of the hyperbolic measure + Fubini),
+  `kAverage_eq_smul`, and `integral_kernel_eigen`: for rotation-invariant φ and eigenfunctions G, E with the
+  same λ, ∫φG = (G(i)/E(i))∫φE. Build green, axioms propext/choice/Quot.sound. No heartbeat options used;
+  a slow elaboration was fixed by a direct coordinate continuity lemma (`continuous_rot_smul_of`).
+  Next: reference eigenfunction E = (Im z)^s; transport to arbitrary centres by GL⁺; pretrace inequality on
+  Γ\ℍ (unfolding over a fundamental domain); SL₂(𝔽_p) dimension bound; counting in Γ(p).
+- 2026-09-24 — Selberg transform at i closed: `formal/GaloisForLFunctions/RHTower/HyperbolicPowerEigen.lean`.
+  `powerEigen_smooth`, `powerEigen_laplacian` (Δ(Im z)^s = s(1−s)(Im z)^s), and
+  `integral_kernel_eq_selbergTransform`: ∫φG = G(i)·∫φ·(Im)^s for every eigenfunction G with eigenvalue
+  s(1−s) and every rotation-invariant φ. Build green; axioms propext/choice/Quot.sound. Step 1 complete.

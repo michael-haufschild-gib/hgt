@@ -86,6 +86,46 @@ K_P(N)=ceil(((P+6)/2)*(N+1)*log(N+1))
 
 makes the omitted positive tail `O_P((N+1)^(-P))`, uniformly in `0≤delta≤1`. A cutoff-uniform cubic energy bound is therefore equivalent to the same bound for the **finite** packet range `0≤k<K_P(N)`; the hard arithmetic lies below an `O(N log N)` packet horizon. This horizon theorem is still open in Lean.
 
+### Critical boundedness horizon (paper proof)
+
+The stretched-exponential Mertens saving improves the horizon needed for the *boundedness* receiver. Let `E(x)=exp(-(log x)^(1/3)/108)` and
+
+```text
+K(N)=ceil(((N+1)/4)*log(N+1)).
+```
+
+Then, for all sufficiently large `N`, uniformly in `0≤delta≤1`,
+
+```text
+2^(5+delta) sum_(k≥K(N)) binom(4+delta+k,k)c_k(N)²
+  ≤ C [E(N)² log(N+1)^5 + log(N+1)^3/(N+1)]
+  → 0 as N→infinity.                                      (6a)
+```
+
+Here `c_k(N)=sum_(n≤N) mu(n)n²(n+1)^(-5-delta)q_n^k`. To prove (6a), take `H=floor((N-3)/2)`. For `k≥K(N)≥2N` and large `N`, the real profile `g_k(x)=x²(x+1)^(-5-delta)((x-1)/(x+1))^k` is increasing on `[H,N]`: its logarithmic derivative is at least `-4/x+2k/x²≥0`. The proved Mertens estimate `|M(x)|≤C x E(x)`, finite Abel summation on `(H,N]`, and `E(x)≤C E(N)` for `H≤x≤N` give
+
+```text
+|sum_(H<n≤N) mu(n)g_k(n)|
+  ≤ C N E(N)g_k(N)
+  ≤ C E(N)N^(-2-delta) exp(-2k/(N+1)).           (6b)
+```
+
+For `n≤H`, the positive function `x^(-3-delta)exp(-2k/x)` is increasing through `H+2`. Its integral, after `u=2k/x`, gives
+
+```text
+|sum_(n≤H) mu(n)g_k(n)|
+  ≤ C k^(-1)N^(-1-delta)exp(-4k/(N+1)),         (6c)
+```
+
+using `H+2≤(N+1)/2` and `H+2≈N/2`. The product bound `w_k≤e^5 k^(4+delta)` and the elementary exponential-tail estimate
+
+```text
+sum_(k≥K) k^p exp(-lambda*k/(N+1))
+  ≤ C_lambda (N+1) K^p exp(-lambda*K/(N+1))
+```
+
+for `K≥N+1`, `2≤p≤5`, applied to the squares of (6b)--(6c), yield respectively `C E(N)² N^(-delta)log(N+1)^(4+delta)` and `C N^(-1-delta)log(N+1)^(2+delta)`. These are bounded by (6a). Since `E(N)² log(N+1)^5→0`, the tail vanishes. The constant `1/4` is the critical endpoint for this Mertens-based estimate at `delta=0`: absolute values alone leave a harmonic-scale tail there. For bounded returns, the remaining packet range is therefore `k<K(N)`, with one fixed leading constant, rather than the larger `K_P(N)` required for arbitrary polynomial tail decay. This sharpening remains paper-level.
+
 ## Source-index aperture at the cubic threshold (paper proof)
 
 The finite horizon can also be narrowed in the *source* index. Fix any `A` with `0<A≤4`, and take a threshold `k_A` large enough for the estimates below. For `0≤delta≤1`, `N≥1`, and `k≥k_A`, put
@@ -161,15 +201,15 @@ w_k |c_k^high|² ≤ e^5 C_H² k^(-1) E(k)².               (7d)
 
 The series on the right converges: after `u=log x`, its integral comparison is a constant times `int_(log k_A)^infinity exp(-2u^(1/3)/108)du<infinity`. The square of the sum of the low and high portions is at most twice the sum of their squares, proving (7). The exponent `a_delta` is the exact threshold where an *absolute-value* high-index estimate has harmonic `k^(-1)` energy; the unconditional Mertens saving supplies the missing summability at this threshold. If one uses only absolute values, `U_k=ceil(k^(a_delta+epsilon))` for any fixed `epsilon>0` also gives (7), with a constant depending on `epsilon`.
 
-By the triangle inequality in weighted `ℓ²`, the full cubic packet norm is bounded along any sequence of cutoffs if and only if the middle norm is bounded there, up to the fixed error norm `sqrt(C_A)`. Taking the sharp choice `A=4` and combining (7) with the finite packet horizon above gives a **finite source-and-packet wedge** criterion: for any fixed `P>0`, the Route L RH receiver is supplied by a cutoff-independent bound along unbounded `N` for
+By the triangle inequality in weighted `ℓ²`, the full cubic packet norm is bounded along any sequence of cutoffs if and only if the middle norm is bounded there, up to the fixed error norm `sqrt(C_A)`. Taking the sharp choice `A=4` and combining (7) with the critical boundedness horizon (6a) gives a **finite source-and-packet wedge** criterion: the Route L RH receiver is supplied by a cutoff-independent bound along unbounded `N` for
 
 ```text
-sum_(k_4≤k<K_P(N)) w_k
+sum_(k_4≤k<K(N)) w_k
   |sum_(floor(4k/log k)<n≤min(N,ceil(k^a_delta)))
        mu(n)n²/(n+1)^(5+delta) q_n^k|².                   (8)
 ```
 
-The finitely many `k<k_4` have a uniform absolute bound, and the full tail beyond `K_P(N)` is `O_P(N^(-P))`. Conversely, a bounded full energy bounds (8). Thus the unresolved cancellation is confined to the literal Möbius coefficients inside this **two-sided critical wedge**; neither edge can cause failure. Both critical endpoint proofs use the proved Mertens rate and remain paper-level; the full-to-middle equivalence follows from the already formalized exact cubic packet identity once (7) is formalized.
+The finitely many `k<k_4` have a uniform absolute bound, and the full tail beyond `K(N)` tends to zero by (6a). Conversely, a bounded full energy bounds (8). Thus the unresolved cancellation is confined to the literal Möbius coefficients inside this **two-sided critical wedge**; neither edge can cause failure. Both critical endpoint proofs use the proved Mertens rate and remain paper-level; the full-to-middle equivalence follows from the already formalized exact cubic packet identity once (7) is formalized.
 
 ## Open arithmetic producer
 

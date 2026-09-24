@@ -957,3 +957,49 @@
   identification (`P∣dk`), finite inversion/Parseval, and transfer of the
   resulting coefficients into the shifted dual large sieve. This is a
   structural identity, not a source-side signed quotient ceiling.
+- **Literal spectral support and its physical meaning:** The new
+  `EulerDeletionLiteralResidueSpectralSupport` leaf proves that a nonzero DFT
+  mode of the centered factorial-period source has reduced denominator at
+  most `N`; `EulerDeletionLiteralResidueSourceBridge` identifies that signal
+  pointwise with the complexification of the corpus's
+  `residueCombination − periodMean`. Both leaves passed targeted `--old`
+  olean audits and are wired into the RHTower umbrella. A separate scratch
+  Lean proof establishes exact normalized DFT energy = `periodCovariance`
+  via the corpus's existing finite Parseval theorem; the new
+  `EulerDeletionCenteredSourceFourierEnergy` leaf is wired and its targeted
+  `lake --old build ...:olean` audit passed. The centered Fourier spectrum controls
+  high-clock leakage, not the RH-bearing source projection: removing the
+  constant period mode also removes the signed Mertens scalar. The corpus
+  already has `mobius_periodMean = (MertensM − deningerHarmonicPartial)/2`
+  and the two-log RH receiver already accepts an `O(log N)` high-clock error.
+  Therefore a sharper `o(1)` leakage theorem is not the bottleneck; no claim
+  that Parseval/Farey transfer proves RH is justified.
+- **Exact hard frontier reconfirmed before new conjecturing:** Corpus search
+  found `EulerDeletionFirstTailMertens`, which already proves that the entire
+  first post-cutoff block is a fixed-start signed Mertens-increment field,
+  including its harmonic cross moment and two-way energy inequalities.
+  `EulerDeletionFirstTailWindowEnergy` identifies the same energy with the
+  one-start slice of dyadic Möbius-window mean squares; the averaged bound
+  does not control that fixed start. An attempted first-shell identity was
+  abandoned before adding Lean code because it duplicated these theorems.
+  The unclosed arithmetic problem is a cofinal polylog ceiling for the
+  fixed-start increment energy (or a genuinely different RH route), not
+  first-shell decomposition or high-clock Fourier localization.
+- **E spectral-transfer boundary (2026-09-24):** The recent Qi--Qiao
+  short-interval spectral large sieve (arXiv:2608.29558v2, Theorem 1)
+  estimates a *Maass-form spectral sum* of Hecke-eigenvalue polynomials.
+  Its saving comes from cancellation of a common Ramanujan-sum main term
+  between the Eisenstein contribution and the Kuznetsov Kloosterman term.
+  The new `KloostermanZeroRowSpectralComparison` proves the exact finite
+  mismatch: at modulus `c`, let `T_c(r)=Σ_n b_n S(r,n;c)`. The paper's
+  Ramanujan quadratic is `M|T_c(0)|²/c²`, whereas the corpus's complete
+  equal-modulus main energy is
+  `(M/c)Σ_r|T_c(r)|² = c·M|T_c(0)|²/c² +
+  (M/c)Σ_{r≠0}|T_c(r)|²`. The transverse summand is nonnegative and
+  remains in the weighted sum over moduli; the module proves both its
+  exact identity and nonnegativity in Lean. Thus the paper cancels only
+  a zero-row term, not the full physical Gram. No automorphic embedding
+  or Eisenstein partner for the literal E source is known in the corpus,
+  and even a zero-row spectral estimate would leave transverse energy
+  untouched. The leaf passed scratch and targeted `lake --old build
+  ...:olean`; its umbrella import is wired, with no umbrella build.

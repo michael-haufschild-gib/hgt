@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**417 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**418 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-24, `703288df6190dc142e63c650eb3742cc63bf13e6`**.
+Source-audit cutoff: **2026-09-24, `9c30c3c90dca7a1817150883aa811312150400d6`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
@@ -26,7 +26,7 @@ Concurrent uncommitted formal edits remain pending evidence and are not counted.
 | [Retired original route labels](#retired-labels) | 17 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 33 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 53 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 84 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 85 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 39 |
 | [Singular descent, formation and completion](#completion) | 29 |
 | [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 66 |
@@ -1866,6 +1866,7 @@ Evidence: [adjacent-dipole no-go](../../../../formal/GaloisForLFunctions/RHTower
 
 ## HB, FZZ and PW: scattering and physical action
 
+- [PW-B fixed-calibration two-amplitude off-line incidence](#no-go-418)
 - [PW-B unrenormalized all-fibre zero residual boundary](#no-go-415)
 - [PW-B direct un-oriented optical/CTP incidence](#no-go-410)
 - [channelwise third-order Hawking/AIME cancellation](#no-go-216)
@@ -3349,7 +3350,7 @@ The completed CTP real numerator is reflection-odd, whereas crossed weak optical
 
 **Survivor / still open**
 
-Both literal direct/image event charts and finite-support mixed-test Goursat transposition survive. An ordinate-weighted CTP numerator has matching parity, but parity is not incidence. PW-B still needs an oriented optical/CTP identity, outer receiver limit, nonzero response mass and all-divisor extinction.
+Both literal direct/image event charts and finite-support mixed-test Goursat transposition survive. An ordinate-weighted CTP numerator has matching parity, but parity is not incidence. Both response masses are now strictly positive; PW-B still needs a source-derived oriented identity and outer receiver limit.
 
 Evidence: [parity theorem](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWOpticalCTPParity.lean), [ordered transport facts](pwb-ordered-null-transport-own-facts.md).
 
@@ -3368,6 +3369,22 @@ At a hypothetical left-half Xi copy, the actual integrated square-plus-cap resid
 The exact two-principal-channel cusp asymptotic identifies a forced contact/counterterm. PW-B may still use an ordered, source-faithful compensation; proving its incidence with the literal CTP current and outer optical receiver remains open. An independently established all-fibre zero boundary would instead be an RH receiver.
 
 Evidence: [residual boundary theorem](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWResidualBoundaryNoGo.lean), [cusp asymptotic](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWResidualCuspAsymptotic.lean), [source card](pwb-residual-dominant-radial-rigidity-own.md).
+
+[Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
+
+<a id="no-go-418"></a>
+
+### PW-B fixed-calibration two-amplitude off-line incidence
+
+**Closed result**
+
+For the literal completed CTP source, amplitude scaling gives degree four; crossed weak optical flux has degree eight. At any Xi zero copy, one fixed real calibration of their oriented identity at both amplitudes `1` and `2` forces `Re ρ=1/2` by strict positivity of both response masses. With unit calibration, the pair of identities is *equivalent* to critical-line placement. It is not an automatic off-line homogeneity identity or an independently established RH producer.
+
+**Survivor / still open**
+
+The exact source scaling and positive weak masses survive. Derive a source-faithful fixed-amplitude incidence, or an amplitude-dependent normalization/contact from the ordered current, and prove its outer receiver limit; the theorem does not exclude either possibility.
+
+Evidence: [amplitude criterion](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWAmplitudeIncidenceNoGo.lean), [source card](pwb-amplitude-uniform-incidence-own.md).
 
 [Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
 
@@ -5749,13 +5766,13 @@ Evidence: [spectral pole](../../../../formal/GaloisForLFunctions/RHTower/SPEQuan
 
 **Closed result**
 
-The literal unit-Riesz source takes both signs cofinally, beyond arbitrary square-root-scale floors. Its integer credit transfer and negative residual escape make the complete normalized prime-power history fall below every fixed square-root-clock lower envelope cofinally. A fixed square-root compensator or universal nonnegative-history premise is false for this carrier; the one-step flux has arbitrarily negative root-clock slopes.
+The literal unit-Riesz source takes both signs cofinally, now with one fixed positive amplitude on each side. Its integer credit transfer and negative residual escape make the complete normalized prime-power history fall below `-δ(K+2)` cofinally for some `δ>0`; square-root compensation and universal nonnegative-history premises are false. If RH fails, excursions beat *every* fixed linear floor cofinally. This last conditional statement does not assert superlinear escape under RH.
 
 **Survivor / still open**
 
-The exact signed credit/debt identity and meromorphic source continuation remain. A viable P/SP-E successor must pay centroid and square debts through a new sign-sensitive arithmetic mechanism, not assume blanket history passivity.
+The exact signed credit/debt identity and meromorphic source continuation remain. RH gives an eventual linear lower floor, and the converse is formal: that floor is an RH receiver. A viable P/SP-E successor must derive the floor/payment from a new sign-sensitive arithmetic mechanism, not assume blanket history passivity.
 
-Evidence: [quantitative oscillation](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceQuantitativeOscillation.lean), [root-scale escape](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSqrtScaleEscape.lean), [forced root-clock flux](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePForcedRootClockFlux.lean).
+Evidence: [fixed-amplitude oscillation](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceFixedAmplitudeOscillation.lean), [unconditional linear escape](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLinearHistoryEscape.lean), [conditional superlinear escape](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLinearLowerThreshold.lean), [floor equivalence](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLinearFloorCriterion.lean).
 
 [Back to family](#ward) · [Current P/SP-E frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
 
@@ -7335,7 +7352,7 @@ For `R>0`, every quantified `ZetaMollifiedMeanSquareGate R c` with `c≥1` requi
 
 **Survivor / still open**
 
-The floor is a necessary condition, not an attained estimate. Establishing a gate at or asymptotically near it could yield `o(T)` off-line moment; Estermann's analytic layer still lacks the contour-shifted divisor correlation and twisted off-diagonal. Even attainment would not prove RH through this consumer alone.
+The floor is necessary, not an attained estimate. Establishing a gate at or near it could yield `o(T)` off-line moment. Estermann's smoothed contour shift and `O(x^{-1/2})` twisted-divisor sum are now formal, but shifted-divisor correlations and the twisted second-moment off-diagonal remain open. Even attainment would not prove RH through this consumer alone.
 
 Evidence: [gate floor](../../../../formal/GaloisForLFunctions/RHTower/MollifiedGateConstantFloor.lean), [analytic continuation frontier](estermann-analytic-layer.md).
 

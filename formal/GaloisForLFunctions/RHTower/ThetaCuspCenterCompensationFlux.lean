@@ -106,5 +106,53 @@ theorem integral_thetaCuspNativeSignedHankelForm_add_compensation
     integral_const_mul, integral_deriv_thetaCuspCenterCompensationFlux habs,
     mul_zero, add_zero, thetaCuspCenterMixedSignedHankelForm_eq_integral_native ha0 ha]
 
+/-- Polynomial multiples of the center flux remain lawful source corrections. -/
+def thetaCuspPolynomialFlux (n : ℕ) (a r : ℝ) : ℝ :=
+  r^n * thetaCuspCenterCompensationFlux a r
+
+private theorem exists_schwartz_thetaCuspPolynomialFlux
+    (n : ℕ) {a : ℝ} (ha : |a| < 1) :
+    ∃ F : 𝓢(ℝ, ℝ), (F : ℝ → ℝ) = thetaCuspPolynomialFlux n a := by
+  obtain ⟨F, hF⟩ := exists_schwartz_thetaCuspCenterCompensationFlux ha
+  have hp : (fun r : ℝ => r^n).HasTemperateGrowth := by fun_prop
+  refine ⟨SchwartzMap.smulLeftCLM ℝ (fun r : ℝ => r^n) F, ?_⟩
+  funext r
+  rw [SchwartzMap.smulLeftCLM_apply_apply hp, hF]
+  rfl
+
+/-- Every polynomial center flux has integrable derivative in the critical aperture. -/
+theorem integrableOn_deriv_thetaCuspPolynomialFlux
+    (n : ℕ) {a : ℝ} (ha : |a| < 1) :
+    IntegrableOn (deriv (thetaCuspPolynomialFlux n a)) (Ioi 0) := by
+  obtain ⟨F, hF⟩ := exists_schwartz_thetaCuspPolynomialFlux n ha
+  rw [← hF]
+  exact (SchwartzMap.derivCLM ℝ ℝ F).integrable.integrableOn
+
+/-- The polynomial correction does not change the integrated signed source. -/
+theorem integral_deriv_thetaCuspPolynomialFlux
+    (n : ℕ) {a : ℝ} (ha : |a| < 1) :
+    ∫ r : ℝ in Ioi 0, deriv (thetaCuspPolynomialFlux n a) r = 0 := by
+  obtain ⟨F, hF⟩ := exists_schwartz_thetaCuspPolynomialFlux n ha
+  have hz : F 0 = 0 := by
+    rw [hF]
+    simp [thetaCuspPolynomialFlux, thetaCuspCenterCompensationFlux]
+  rw [← hF]
+  have ht : Tendsto (F : ℝ → ℝ) atTop (𝓝 0) :=
+    F.tendsto_cocompact.mono_left atTop_le_cocompact
+  simpa only [hz, sub_self] using integral_Ioi_of_hasDerivAt_of_tendsto' (a := 0)
+    (fun r _ => F.hasDerivAt r) (SchwartzMap.derivCLM ℝ ℝ F).integrable.integrableOn ht
+
+/-- The exact signed tail debt beyond any cutoff is the negative boundary flux. -/
+theorem integral_Ioi_deriv_thetaCuspPolynomialFlux_eq_neg
+    (n : ℕ) {a : ℝ} (ha : |a| < 1) (R : ℝ) :
+    (∫ r : ℝ in Ioi R, deriv (thetaCuspPolynomialFlux n a) r) =
+      -thetaCuspPolynomialFlux n a R := by
+  obtain ⟨F, hF⟩ := exists_schwartz_thetaCuspPolynomialFlux n ha
+  rw [← hF]
+  have ht : Tendsto (F : ℝ → ℝ) atTop (𝓝 0) :=
+    F.tendsto_cocompact.mono_left atTop_le_cocompact
+  simpa only [hF, zero_sub] using integral_Ioi_of_hasDerivAt_of_tendsto' (a := R)
+    (fun r _ => F.hasDerivAt r) (SchwartzMap.derivCLM ℝ ℝ F).integrable.integrableOn ht
+
 end
 end RHTower

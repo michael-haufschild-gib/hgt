@@ -1,0 +1,3 @@
+import GaloisForLFunctions.RHTower.XiRelativeResolventTrace
+
+#check RHTower.xiRelativeResolventTrace

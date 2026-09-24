@@ -32,7 +32,8 @@ private theorem thetaTail_nonneg {x : ℝ} (hx : 0 < x) :
   rw [heq]
   exact tsum_nonneg (fun k => thetaCuspSourceTerm_nonneg_of_pos hx (k + 3))
 
-private def weightedRawEvenMoment (w : ℝ → ℝ) (j : ℕ) : ℝ :=
+/-- The raw even moment of a half-line density before normalization. -/
+def weightedRawEvenMoment (w : ℝ → ℝ) (j : ℕ) : ℝ :=
   2 * ∫ x : ℝ in Ioi 0, x ^ (2 * j) * w x
 
 private def weightedShiftedKernel (w : ℝ → ℝ) (n : ℕ) (x : ℝ) :
@@ -117,7 +118,9 @@ private theorem weightedRawEvenMoment_sub
   rw [integral_sub hv hw]
   ring
 
-private theorem weightedShiftedHankel_det_mono
+/-- Pointwise domination of nonnegative half-line densities increases every shifted Hankel
+determinant. -/
+theorem weightedShiftedHankel_det_mono
     (w v : ℝ → ℝ) (n : ℕ)
     (hw : ∀ j, IntegrableOn (fun x : ℝ => x ^ (2 * j) * w x) (Ioi 0))
     (hv : ∀ j, IntegrableOn (fun x : ℝ => x ^ (2 * j) * v x) (Ioi 0))

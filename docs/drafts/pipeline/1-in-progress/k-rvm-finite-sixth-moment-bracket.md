@@ -394,6 +394,20 @@ A₀ = dc³-q[d(-504vc+15120wb-181440au)
 
 This leaves a concrete first-three-moment coefficient test and a fourth-moment interval test; the existing two-atom remainder bounds through order four can be inserted without estimating `t₅`. No sign for this quadratic at the actual source moments has been established. `PrimeArchThetaShiftedGramGate.lean` Lean-checks the exact decomposition `362880 q D₃=dΔ+G`. Strict `q,Δ` are Lean theorems; the needed sign of `G`, or a quantitative residual margin if it is negative, remains open.
 
+**Actual-source concavity of the four-moment gate (exact identity Lean-proved; source sign paper-proved, Lean consolidation pending).** Put `r=a²-18m₁`, the K-RVM effective-rank gap. Substituting the known cumulant formulas gives the stronger exact identity
+
+```text
+d-q/70 = -b(77a²+49r)/7560 - q/168.
+```
+
+`PrimeArchThetaGateCurvatureIdentity.lean` Lean-checks this without premises. The existing K-RVM effective-rank theorem `9·routeKQuarticHalfEnergy<routeKQuarticHalfMass²` is exactly `r>0`; the shifted theta minor gives `q>0`, and `a,b>0`. Thus `A₂=a(d-q/70)<0` for the literal theta source: `G(e)` is a strictly concave quadratic in `e=t₄`. The same Lean module proves its exact chord identity
+
+```text
+(U-L)G(e) = (U-e)G(L)+(e-L)G(U)-A₂(U-L)(e-L)(U-e).
+```
+
+For `L≤e≤U`, two positive endpoint gate values would prove `G>0`; an independently certified interior gap could also let the positive curvature surplus pay small negative endpoint values. More directly, let `F_R=(thetaCuspRawEvenMoment 0)^(-3)(2048/22920975)·thetaCuspFullSource(R)^3 R^21`, the Lean-proved residual floor below. The two endpoint tests `G(L)+dF_R>0` and `G(U)+dF_R>0` would imply `dΔ+G(e)>0`, even if `G` itself is negative. `PrimeArchThetaTwoAtomNormalizedInterval.lean` now proves the unconditional interval `h_j/(h₀+εa₀)≤t_j≤(h_j+εa_j)/h₀` for every `j`, using a nonnegative beyond-second-atom remainder and the prior `ε=1/374625` domination theorem. In particular it supplies certified `L,U` at `j=4` without a numerical moment estimate. The two endpoint comparisons remain the hard open source inequalities; no endpoint sign is currently certified. The source-specific positivity application has a dependency-closed paper proof; Lean consolidation remains to be added.
+
 **Sharp four-moment boundary and two-atom residual transfer (Radau algebra and raw determinant transfer Lean-checked; Radau measure construction remains a paper proof).** The bound `t₅≥P/q` is the exact lower endpoint permitted by the first four moments, not merely one convenient Cauchy estimate. For any positive law `μ` on `y≥0` with moments `t₀=1,t₁=a,t₂=b,t₃=c,t₄=e` and strict three-by-three ordinary and shifted Hankel matrices, set `ν(dy)=y μ(dy)`. Its monic degree-two orthogonal polynomial is `Q(y)=y²-αy-β`, with `α=(ae-bc)/q`, `β=(c²-be)/q`, and `q=ac-b²>0`. Orthogonality to `1,y` forces two distinct positive roots `r₁<r₂`: otherwise `Q` or `Q(y)(y-r)` for its only positive root `r` would be nonnegative on the positive support and have positive integral, contrary to one of the two orthogonality equations. Divide every polynomial of degree at most three by `Q`; its linear remainder defines positive two-node Gaussian quadrature weights `w_i=∫ℓ_i(y)dν=∫ℓ_i(y)²dν>0`, where `ℓ_i` is the linear Lagrange polynomial at `r_i`. This quadrature matches `a,b,c,e`.
 
 Define a new law `μ_*` with weights `w_i/r_i` at `r_i` and the remaining weight at zero. Writing `s=be-c²>0` and `D₀=det[t_(i+j)]_(0≤i,j<3)>0`, elementary reduction modulo `Q` gives the *exact* zero mass
@@ -442,6 +456,15 @@ q_full ≥ q_two_atom/(1+ε)².
 ```
 
 `PrimeArchThetaTwoAtomHankelDominance.lean` Lean-checks the stronger unconditional all-size raw determinant inequality `det[h_(i+j+1)] ≤ det[thetaCuspRawEvenMoment (i+j+1)]`. It represents each shifted matrix as an integral of rank-one kernels, proves the exact post-second-atom density nonnegative from its summable expansion, and applies real positive-cone determinant monotonicity from `RealPositiveConeDeterminantMonotone.lean`. The displayed normalized inequalities also use the paper mass estimate `R₀≤ε a₀`; that normalization step is not yet packaged in the Lean module.
+
+**Explicit literal-source residual floor (Lean-proved).** Strict reflected-product monotonicity of the completed theta density gives `thetaCuspFullSource(x) ≥ m_R := thetaCuspFullSource(R) > 0` for `0<x≤R`. This is the maximal constant minorant on that window and strengthens the earlier explicit envelope floor `2π(2π−3) exp(−π exp(2R))`. The flat density `m_R·1_(0,R]` has shifted raw moments `2m_R R^(2j+1)/(2j+1)`. Its size-three shifted Hankel determinant is exactly `(2048/22920975)m_R³R²¹`. Positive-cone determinant monotonicity and exact normalization therefore give, for every `R≥0`,
+
+```text
+Δ ≥ (thetaCuspRawEvenMoment 0)^(-3)
+      · (2048/22920975) · m_R³ R²¹.
+```
+
+`WeightedMonicQuadraticHalfWindow.lean` independently proves the corresponding sharp weighted monic-quadratic integral floor by exact square completion. `PrimeArchThetaFlatWindowGramFloor.lean` Lean-checks the endpoint source bound, all-size shifted determinant transfer, exact flat determinant, and displayed normalized `Δ` bound. This is a source-specific quantitative margin, but its size has **not** been compared with a possible negative four-moment gate `G`. To prove the open source minor via `362880qD₃=dΔ+G`, the remaining literal-source inequality is `G+d·(thetaCuspRawEvenMoment 0)^(-3)(2048/22920975)m_R³R²¹>0` for some `R>0`, or another sufficiently strong residual bound. No sign is claimed for that expression.
 
 These are correlated, source-specific lower bounds requiring no independent enclosure of `R₅`. They reduce the remaining `dΔ>−G` comparison to an analytic lower bound on the two-atom Gram determinant, a lower bound on `d`, and an upper bound on the negative part of the four-moment gate over the existing two-atom remainder intervals. The corpus already has an unconditional lower bound for `d` in `XiPrimeMarkedFiniteSixthLowerBracket.lean`; the missing ingredient is a strong enough analytic comparison for the actual two-atom moments through order five.
 
