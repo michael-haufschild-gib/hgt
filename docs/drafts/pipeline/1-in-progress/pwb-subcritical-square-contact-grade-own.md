@@ -1,0 +1,7 @@
+# PW-B subcritical square-contact grade
+
+- **Claim:** For a hypothetical Xi copy with `Re q < 1/2`, put `β = sourceGrowthExponent q`. Then `Re(rate q) = 2β`. If a continuous height multiplier satisfies `‖a(t)‖ ≤ M exp(σt)` for `t > log 3` with `σ < β`, the actual cross-clock forcing mean cannot equal `a(log y) · sourceMean q y + d` for every `y ≥ 3`, for any constant `d`.
+- **Proof chain:** literal two-leg CTP → source-faithful ordered current/contact → PW-B extinction → RH. This theorem excludes the entire subcritical scalar reweighting of the existing full-square contact. Any survivor must carry at least the missing cusp grade, or use a genuinely new nonlocal/ordered contact sector.
+- **Proof:** The corpus's global full-square growth bounds its complete width-one mean by `C y^β`, including signed Fourier tail. The proposed contact, normalized by `exp(-rate·t)`, is `L¹` because `σ+β<2β`; the constant is also `L¹`. Equality would make the *actual* normalized forcing `L¹`, contradicting its proved nonzero translated-window charge.
+- **Lean:** `ThetaCuspHawkingBMPWCrossClockSubcriticalContactNoGo.lean` proves the exact exponent identity and no-go. Scratch and direct checks passed; `lake build --old` exact-module audit passed. Umbrella import wired; no umbrella build.
+- **Scope:** Mean-level scalar contact exclusion, not covector/CTP incidence, outer limit, fixed-grade magnitude, all-divisor extinction, or RH.

@@ -44,3 +44,28 @@ T-eigenvalues ζ, ζ^{a²} are all present). The pretrace inequality plus counti
   `powerEigen_smooth`, `powerEigen_laplacian` (Δ(Im z)^s = s(1−s)(Im z)^s), and
   `integral_kernel_eq_selbergTransform`: ∫φG = G(i)·∫φ·(Im)^s for every eigenfunction G with eigenvalue
   s(1−s) and every rotation-invariant φ. Build green; axioms propext/choice/Quot.sound. Step 1 complete.
+- 2026-09-24 — **Lower multiplicity bound closed in Lean.** `SarnakXueRepresentationBound.half_pred_le_finrank`:
+  a finite-dimensional complex SL(2,ℤ)-representation trivial on Γ(p) with no invariant vector has
+  p − 1 ≤ 2·dim (T has an eigenvalue ζ ≠ 1 since S³TSTS = T⁻¹, S⁴ = 1 and ⟨S,T⟩ = SL(2,ℤ); conjugation by
+  lifts of diag(a,a⁻¹) gives T ↦ T^{a²} mod Γ(p)). `SarnakXueEigenspaceBound.exceptional_translateSpan_dim`:
+  for p = N+1 prime, 0 < λ < 1/4, every nonzero f in the principal Γ(p) Maass eigenspace has a finite-dimensional
+  SL(2,ℤ)-translate span W with N ≤ 2 dim W (level one is exceptional-free by `level_le_fourteen_no_exceptional`).
+  Build green, axioms propext/choice/Quot.sound, wired.
+
+## Upper multiplicity bound — paper plan (2026-09-24)
+Notation: s ∈ (1/2,1), λ = s(1−s); F₁ = standard fundamental domain (corpus `isFundamentalDomain_fd`),
+F_p = ⋃_{A ∈ PSL2Z/Γ̄(p)} A·F₁; W as above with ⟨f,g⟩ = ∫_{F_p} f ḡ dμ (SL(2,ℤ)-invariant).
+- P1/P2: orthonormal basis f_j of W, B(z) = Σ|f_j(z)|² is SL(2,ℤ)-invariant, ∫_{F₁} B = dim W / [PSL2Z : Γ̄(p)].
+- P3: point-pair at any centre: ∫ φ(g⁻¹w)G(w)dμ = G(g·i)·ĥ(s), ĥ(s) = ∫φ·(Im)^s (transport of
+  `integral_kernel_eq_selbergTransform` by SL(2,ℝ)).
+- P4/P5: unfolding over F_p and Bessel for the finite orthonormal family, with k = 1_{d ≤ R}:
+  ĥ_R(s)² B(z) ≤ Σ_{γ∈Γ(p)} vol(B_R(z) ∩ B_R(γz)).
+- P6: lens bound: the lens lies in the disc about the midpoint of radius r, cosh r = cosh R / cosh(D/2)
+  (valid for D ≤ 2R), so vol ≤ 2π(cosh r − 1) ≤ 4π e^{R − D/2}.
+- P7: ĥ_R(s) ≥ c e^{sR}.
+- P8: counting in Γ(p): tr γ ≡ 2 mod p², so #{γ ∈ Γ(p) : ‖γ‖² ≤ X} ≪ X^ε(1 + √X/p + X/p³) (choose t, then a ≡ 1,
+  then divisors of a(t−a) − 1); parabolic terms at height y add ≪ yR/p.
+- P9: cusp truncation: for y ≥ Cp the Fourier modes (frequencies n/p, n ≠ 0) carry at most half of the F₁-mass of B.
+- P10: B ≪ e^{R(1−2s)}(R log p + e^R/p³)e^{εR} on F₁ ∩ {y ≤ Cp}; e^R = p³ gives dim W ≪ p^{6−6s+ε}; with
+  dim W ≥ (p−1)/2 this gives s ≤ 5/6 + o(1), i.e. λ ≥ 5/36 − o(1) (Sarnak–Xue). Check: the exponent reproduces the
+  density hypothesis m ≪ V^{2(1−s)}, V ≍ p³, so the bookkeeping is right.

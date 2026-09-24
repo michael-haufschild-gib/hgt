@@ -397,6 +397,97 @@ sum_(u odd) mu(u)*mu(u+h)*w_(X,h)(u)
 
 The parity restriction is essential: `u=h+1+i+j` must remain odd. The box factorization identifies a concrete arithmetic producer for the remaining bound: a **combined signed two-linear-form estimate** over the moving rectangles indexed by even `h`, with forms `h+1+i+j` and `2*h+1+i+j`. At `z=1`, the polynomial has mass `a*b=floor((m+1)^2/4)`; its constant/low-frequency mode is large, so the already formal high-ordinate Route-T estimates cannot alone pay this source. Any use of the corpus's prime--cofactor phase or bilinear machinery must retain the cancellation across `h`, `i`, and `j` at this low-frequency scale. The exact statement (16q) is a proof-level target, not an established estimate, and the RH-scale `O_epsilon(X^(2+epsilon))` bound for its aggregate remains open.
 
+**Cyclic low-frequency localization of the literal half-window (source high-pass theorem in Lean; low-mode criterion paper proof).** Fix `X>=1`, an odd cycle `N=2X+1`, and on its representatives define `f(j)=mu(j)` for odd `j` and `f(j)=0` for even `j`. Write `F=DFT(f)`, `chi_k=exp(2*pi*i*k/N)`, and `d_k=1-chi_k^(-1)`. For `tau>0`, split `F=F_low+F_high` by `|d_k|<tau` and `|d_k|>=tau`. Define `f_low=IDFT(F_low)`, `f_high=IDFT(F_high)`, and `P_high=IDFT(F_high/d_k)` (the quotient is zero wherever `F_high=0`). Cyclic Fourier inversion gives the exact discrete derivative `P_high(j)-P_high(j-1)=f_high(j)`. Therefore for every `1<=m<=X/2`, the existing prime-2 half-window identity (16l) gives
+
+```
+M(2m) = L_tau(m) + P_high(2m)-P_high(m),
+L_tau(m) = sum_(m<u<=2m) f_low(u).
+```
+
+Because doubling permutes the odd cycle, `sum_j |P_high(2j)-P_high(j)|^2 <= 4 sum_j |P_high(j)|^2`. Parseval and the spectral cutoff then give the **unconditional**, source-independent estimate, proved in [Lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusMertensCyclicHighPass.lean),
+
+```
+sum_(j mod N) |P_high(2j)-P_high(j)|^2
+    <= 4*tau^(-2)*sum_(j mod N)|f(j)|^2 <= 4*N*tau^(-2).
+```
+
+At `tau=X^(-1/2)` this pays the entire high-frequency part by `8X^2+4X`, already at the required RH scale. Also `M(2m+1)=M(2m)+mu(2m+1)`, so `Q(X) << X^2+sum_(m<=X/2)|L_tau(m)|^2`; the reverse comparison holds with another absolute constant. The low set contains at most `1+N/(2*sqrt X)=O(sqrt X)` frequencies, since `|d_k|>=4*min(k,N-k)/N`. Thus the open arithmetic estimate is equivalent, at the all-`epsilon` level, to the same `X^(2+epsilon)` bound for a rank-`O(sqrt X)` **low additive-frequency** projection of the literal odd-Mobius half-window. This does not bound those low modes; it removes every high mode without a shifted-correlation or prime-gap hypothesis.
+
+The same Lean module now proves the literal odd-Mobius source-energy bound `sum_(j mod N)|P_high(2j)-P_high(j)|^2 <= 4*N/tau^2` and the exact source window `sum_(m<u<=2m)f(u)=M(2m)`. The low/high window decomposition, low-mode count, and resulting `Q` comparison remain paper-level.
+
+**Removing the zero Fourier mode by two-scale slope rigidity (finite slope laws in Lean; source criterion paper proof).** In the preceding construction set `N_X=2X+1`, `F_X=DFT(f_X)`, and `a_X=F_X(0)/N_X`, the mean of the literal odd-Mobius source. With `tau=X^(-1/2)`, let `L_X^circ(m)` be the half-window of the inverse DFT restricted to the **nonzero** modes `0<|d_k|<tau`. Fourier inversion and the high-pass theorem give, for `1<=m<=X/2`,
+
+```
+M(2m) = m*a_X + L_X^circ(m) + H_X(m),
+sum_(m<=X/2) |H_X(m)|^2 <= 8*X^2+4*X.             (16q0)
+```
+
+The source mean satisfies `a_X -> 0` unconditionally: writing `O(Y)=sum_(u<=Y, u odd)mu(u)`, the prime-2 coefficient identity gives `M(Y)=O(Y)-O(floor(Y/2))`, hence `O(Y)=sum_(j>=0)M(floor(Y/2^j))`; the corpus's `M(Y)=o(Y)` and a geometric split show `O(Y)=o(Y)`. Now suppose, for every `epsilon>0`, `sum_(m<=X/2)|L_X^circ(m)|^2=O_epsilon(X^(2+epsilon))`. Equation (16q0) yields the same bound for the **centered** energy `E_X=sum_(m<=X/2)|M(2m)-m*a_X|^2`. On the overlap `X/4<=m<=X/2` of scales `X` and `2X`,
+
+```
+|a_X-a_(2X)|^2 * sum_(X/4<=m<=X/2)m^2
+    <= 2*E_X+2*E_(2X) = O_epsilon(X^(2+epsilon)).   (16q1)
+```
+
+The integer sum is bounded below by a fixed positive multiple of `X^3`, so `|a_X-a_(2X)|=O_epsilon(X^(-1/2+epsilon/2))`. Telescope along `X,2X,4X,...` to the known limit `a_(2^j X)->0`; for `epsilon<1` the geometric series gives `|a_X|=O_epsilon(X^(-1/2+epsilon/2))`. Thus `sum_(m<=X/2)m^2|a_X|^2=O_epsilon(X^(2+epsilon))`, the full `Q(X)` bound follows, and the existing Gamma--Hankel receiver gives RH. Conversely RH gives the same nonzero-low-mode energy bound by the Mertens half-power estimate, the prime-2 renewal identity, and (16q0). Therefore the all-`epsilon` **nonzero low-mode** energy law is RH-equivalent; the exact zero coefficient needs no separate square-root estimate. This removes the immediately circular `k=0` target, leaving joint cancellation among `1<=|k|=O(sqrt X)` as the arithmetic producer. The generic overlap and geometric-telescope inequalities are proved in [Lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusCyclicMeanSlopeRigidity.lean); their literal-source assembly and the full equivalence remain paper-level.
+
+**Fixed nonzero additive-twist criterion and quantitative Mellin nonannihilation (paper proof; Lean theorem open).** The preceding low-mode criterion asks for a joint estimate on a growing family of frequencies. A distinct, smaller producer is available. For real `Y>=1` and each fixed positive integer `k`, put
+
+```
+T_k(Y) = sum_(1<=n<=Y, n odd) mu(n)*exp(2*pi*i*k*n/Y),
+W_k(s) = integral_(0)^1 t^(s-1)*exp(2*pi*i*k*t) dt.
+```
+
+The following **all-fixed-index** statement is RH-equivalent: for every `k>=1` and every `epsilon>0`, `T_k(Y)=O_(k,epsilon)(Y^(1/2+epsilon))` as `Y->infinity`. The same estimate for negative `k` follows by conjugation because the source is real. At odd integer `Y=2X+1`, `T_k(Y)` is exactly the corresponding discrete Fourier coefficient of the literal odd-Mobius source, up to the DFT sign convention; moving `Y` by at most two changes `T_k(Y)` by `O_k(1)`, so an odd-integer formulation is equivalent.
+
+For `Re(s)>1`, Fubini and the substitution `t=n/Y` give the exact Mellin identity
+
+```
+integral_(1)^infinity T_k(Y)*Y^(-s-1) dY
+    = W_k(s) * A_odd(s),
+A_odd(s) = sum_(n odd) mu(n)/n^s
+         = 1/((1-2^(-s))*zeta(s)).                       (16q2)
+```
+
+The postulated all-`epsilon` bound makes each integral on the left holomorphic throughout `Re(s)>1/2`. Suppose `rho` is a zeta zero with `1/2<Re(rho)<1`. Since `1-2^(-rho) != 0`, meromorphic continuation of (16q2) forces `W_k(rho)=0` for **every** nonzero integer `k`. This cannot happen. Indeed `g_s(t)=t^(s-1)` belongs to `L²(0,1)` when `beta=Re(s)>1/2`. Parseval and the elementary integral of a power give the exact identity
+
+```
+sum_(k!=0) |W_k(s)|²
+  = integral_(0)^1 |g_s(t)|² dt - |W_0(s)|²
+  = 1/(2*beta-1) - 1/|s|²
+  = |s-1|² / ((2*beta-1)*|s|²).                           (16q3)
+```
+
+Thus the nonzero Fourier moments are jointly nonvanishing at every `s` in that half-plane except `s=1`; an off-line zeta zero cannot be hidden in the zero mode. Conversely RH supplies `M(Y)=O_epsilon(Y^(1/2+epsilon))`; the prime-2 renewal equation gives the same bound for the odd source prefix, and partial summation yields the asserted `T_k` estimate for each fixed `k`. The corpus has `hasSum_sq_fourierCoeffOn` and power-integral lemmas for (16q3), and existing Mellin/Dirichlet continuation receivers for (16q2), but neither their literal odd-source assembly nor any required fixed-`k` square-root additive-twist estimate has been formalized or proved unconditionally. This criterion removes the growing-frequency joint estimate from the logical target; the arithmetic obstruction now sits in fixed-index twists, especially the near-zero major-arc regime as `Y` grows.
+
+**One centered first moment suffices (finite Abel/terminal recurrence in Lean; power transfer paper proof).** The fixed-index criterion can be compressed further, without any unknown Fourier-moment zero set. For the literal odd source `a(n)=mu(n)` when `n` is odd and zero otherwise, set `O(N)=sum_(1<=n<=N)a(n)` and
+
+```
+U(N) = sum_(1<=n<=N) a(n)*(n/N - 1/2).
+```
+
+For every `epsilon>0`, the single estimate `|U(N)|=O_epsilon(N^(1/2+epsilon))` is RH-equivalent. Its weight has zero integral on `[0,1]`; its Mellin factor is explicit:
+
+```
+integral_(0)^1 t^(s-1)*(t-1/2)dt = (s-1)/(2*s*(s+1)).   (16q4)
+```
+
+The factor has no zero in `1/2<Re(s)<1`, so the Mellin argument in (16q2) applies. There is also an elementary source-level proof avoiding analytic continuation. Let `F(N)=sum_(0<=m<N)O(m)`. Finite summation by parts gives `sum_(n<=N)n*a(n)=N*O(N)-F(N)` and hence `U(N)=O(N)/2-F(N)/N`. Since `F(N+1)=F(N)+O(N)`, the normalized state `G(N)=F(N)/(N*(N+1))` obeys the exact recurrence
+
+```
+G(N+1)-G(N)=2*U(N)/((N+1)*(N+2)).                   (16q5)
+```
+
+The corpus's unconditional `O(N)=o(N)` implies `G(N)->0`, removing the linear homogeneous solution. If `|U(N)|<=C_epsilon*N^(1/2+epsilon)` with `epsilon<1/2`, telescope (16q5) from `N` to infinity: `|G(N)|=O_epsilon(N^(-1/2+epsilon))`, `|F(N)|=O_epsilon(N^(3/2+epsilon))`, and `O(N)=2*U(N)+2*F(N)/N=O_epsilon(N^(1/2+epsilon))`. The prime-2 renewal identity then gives the usual Mertens half-power bound and RH. Conversely RH bounds `O`, `F`, and `U` at that scale. The finite summation-by-parts identity, literal weighted-source equality, normalized recurrence, and finite telescoping law are proved in [Lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusCenteredFirstMomentTerminalLaw.lean); the infinite-tail power transfer and literal RH equivalence remain paper-level. The unresolved arithmetic producer is now **one centered signed first moment**, rather than a family of Fourier projections.
+
+**Dyadic Haar variant of the single-statistic criterion (paper proof; source bound open).** A piecewise-constant centered weight is still closer to the prime-2 window. Put `D(Y)=O(Y)-2*O(floor(Y/2))`, the odd-Mobius mass in the upper half minus its mass in the lower half. The weight `w(t)=1` for `1/2<t<=1` and `w(t)=-1` for `0<t<=1/2` has Mellin factor
+
+```
+integral_(0)^1 t^(s-1)*w(t)dt = (1-2^(1-s))/s.       (16q6)
+```
+
+Its zeros lie on `Re(s)=1`, so it detects every off-line zero in the critical strip. More directly, for `N>=1` let `b_j=O(2^j*N)/(2^j*N)`. Then `b_(j+1)-b_j=D(2^(j+1)*N)/(2^(j+1)*N)` and `b_j->0` by the unconditional prime-number-theorem bound for the odd source. A uniform `|D(Y)|=O_epsilon(Y^(1/2+epsilon))` gives a convergent geometric telescope and `O(N)=O_epsilon(N^(1/2+epsilon))`, hence RH; the converse follows from RH. This is a single signed adjacent-half estimate with no zero-mode premise. The generic geometric telescope is already in `MobiusCyclicMeanSlopeRigidity.lean`. Neither the literal-source receiver nor the RH-scale `D` estimate is yet in Lean; the latter is the arithmetic obstacle. The prime contribution to `D(Y)` has its leading `Y/log Y` term canceled automatically by the equal-length Haar halves, but controlling the residual prime/composite cancellation to square-root scale remains open.
+
 **Unconditional prime/composite cancellation at its first scale (paper proof; Lean theorem open).** Let `P(n)` count odd primes in `(n/2,n]`, and let `C(n)` be the sum of `mu(u)` over odd nonprimes (including `u=1` when it lies in the window). Equation (16l) gives the exact source decomposition `M(n)=C(n)-P(n)`. The prime-counting asymptotic already present as `RHTower.tendsto_primeCounting_nat_ratio` gives `P(n)~n/(2*log n)`, hence, by summation,
 
 ```

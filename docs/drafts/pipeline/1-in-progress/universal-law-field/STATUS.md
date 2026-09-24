@@ -6639,3 +6639,275 @@ character case.
 integral. The arithmetic of the divisor function in progressions is therefore entirely carried by
 that integral, not by the pole. Passing to progressions needs the non-unit twists, which reduce by
 `gcd(a,q)` to smaller moduli and produce a Ramanujan-sum main term — the next module.
+
+## MUST-384 — the smoothed divisor sum in a progression to a prime modulus (2026-09-24)
+
+`RHTower/EstermannProgressionOrthogonality.lean`, `RHTower/EstermannPrimeProgression.lean`
+(all axiom-clean). Additive orthogonality gives, for every modulus,
+
+```text
+∑_{a mod q} e(−ab/q) ∑_N d(N) e(aN/q) e^{-Nx} = q · ∑_{N ≡ b (q)} d(N) e^{-Nx},
+```
+
+and the weighted form of MUST-383 keeps the main term: `∑_a w(a) S_a = (∑_a w(a)) main_q + O_w(x^{-1/2})`.
+For a prime modulus the nonzero twists are exactly the units, the unit-weight total is the Ramanujan
+sum `c_q(b) = −1`, and hence for `b ≢ 0 (mod q)`
+
+```text
+q ∑_{N ≡ b (q)} d(N) e^{-Nx} = ∑_N d(N) e^{-Nx} − (γ − log x − 2 log q)/(qx) + O_q(x^{-1/2}).
+```
+
+**Reading.** To this accuracy the entire dependence on the residue `b` is one Ramanujan factor; all
+further arithmetic of `d(n)` in progressions is carried by the critical-line integral. General
+moduli need the gcd reduction `e(aN/q) = e(a'N/q')`, producing `∑_{d ∣ q} c_{q/d}(b) · main(q/d)`.
+
+## MUST-385 — scaled twists reduce the modulus (2026-09-24)
+
+`RHTower/EstermannScaledTwist.lean` (axiom-clean). `e((d j)/(d q')) = e(j/q')` gives
+`estermannSmoothedSum q (d·m) x = estermannSmoothedSum (q/d) m x` for `q = d q'`. With
+`d = gcd(a, q)` every residue twist becomes a unit twist of a smaller modulus, so
+`estermann_smoothed_sum` applies to all twists, and the main term a twist carries is that of its
+reduced modulus. This is the missing ingredient for the general-modulus progression law
+`q ∑_{N ≡ b (q)} d(N) e^{-Nx} = ∑_{d ∣ q} c_{q/d}(b) · main(q/d) + O(x^{-1/2})`.
+
+## MUST-386 — the smoothed divisor sum in a progression, arbitrary modulus (2026-09-24)
+
+`RHTower/EstermannGeneralProgression.lean` (axiom-clean). `exists_reducedMain`: with
+`d = gcd(a,q)`, `a/d` is coprime to `q' = q/d`, so the scaled-twist reduction MUST-385 sends every
+residue twist to a unit twist of the divisor modulus `q'`; hence every twist has an `O(x^{-1/2})`
+expansion with main term `(γ − log x − 2 log q')/(q' x)`. Averaging against the unimodular
+`e(−ab/q)` gives
+
+```text
+q ∑_{N ≡ b (q)} d(N) e^{-Nx} = ∑_{a mod q} e(−ab/q) · main(q/gcd(a,q)) + O_q(x^{-1/2}).
+```
+
+**Reading.** All analysis in the progression problem is now discharged. What remains is the finite
+regrouping of residues by gcd, which turns the main term into `∑_{d ∣ q} c_{q/d}(b) · main(q/d)`
+with Ramanujan sums; the prime case MUST-384 is the instance `c_q(b) = −1`.
+
+## MUST-387 — the shifted divisor correlation reduces to progressions; the bottleneck is uniformity in the modulus (2026-09-24)
+
+Since `d(n+h) = #{k : k ∣ n+h}`,
+
+```text
+∑_n d(n) d(n+h) e^{-nx} = ∑_{k ≥ 1} ∑_{n ≡ −h (k)} d(n) e^{-nx},
+```
+
+so the shifted divisor correlation is the progression sum of MUST-386 summed over moduli. Every
+individual progression asymptotic is now proved. What the correlation additionally needs, and what
+the corpus does not have, is an error term **uniform in the modulus**: the present bounds are
+`∃ C` per modulus, obtained from `exists_bound_norm_estermannZeta_strip`, which is
+`∃ C N, ‖D(s, a/q)‖ ≤ C (1 + |Im s|)^N` with `C` qualitative in `q`.
+
+**Reading.** The remaining obstacle in this lane is not the individual asymptotics but the
+`q`-dependence of the critical-line bound — precisely the point where Kloosterman/spectral input is
+classically required. The convexity route to an explicit exponent is: the right edge `Re s = 2`
+is `q`-independent (`‖D‖ ≤ ∑_N d(N)/N²`, the Dirichlet series bound), the left edge `Re s = −1`
+picks up `q^3` from the functional equation, and Phragmén–Lindelöf interpolates to `q^{3/2}` on
+`Re s = 1/2`. Making `EstermannEdgeBounds` and `EstermannConvexity` explicit in `q` is therefore the
+next analytic target, and it is what would let the `k`-sum above converge with a usable rate.
+
+## MUST-388 — the right edge of the Estermann strip is modulus-free (2026-09-24)
+
+`RHTower/EstermannRightEdgeExplicit.lean` (axiom-clean). On `Re s ≥ 2` the Dirichlet series is
+absolutely convergent and the twist is a unimodular additive character, so
+
+```text
+‖D(s, a/q)‖ ≤ divisorSquareMass := ∑_N d(N)/N²
+```
+
+with **no dependence on `q` or on the twist `a`**. This is the `q`-free edge of the convexity
+argument of MUST-387; what remains for a modulus-uniform critical-line bound is the left edge
+`Re s = −1`, where the functional equation contributes the powers of `q`, and a Phragmén–Lindelöf
+interpolation with tracked constants.
+
+## MUST-389 — the left edge of the Estermann strip, explicit in the modulus (2026-09-24)
+
+`RHTower/EstermannLeftEdgeExplicit.lean` (axiom-clean). Evaluating the functional equation
+
+```text
+D(1−s, a/q) = 2 q^{2s−1} (2π)^{−2s} Γ(s)² (D(s, ā/q) + cos(πs) D(s, −ā/q))
+```
+
+on `Re s = 2` controls every factor explicitly: `‖q^{2s−1}‖ = q³`, `‖(2π)^{−2s}‖ = (2π)^{−4}`,
+`‖Γ(s)‖ ≤ Γ(2) = 1`, `‖cos(πs)‖ ≤ e^{π|t|}`, and both Estermann values lie on the modulus-free
+right edge of MUST-388. Hence
+
+```text
+‖D(−1 + it, a/q)‖ ≤ 4 (2π)^{−4} (∑_N d(N)/N²) · q³ · e^{π|t|},
+```
+
+with an absolute constant.
+
+**Reading.** The two edges now pin the modulus dependence exactly: `q⁰` on `Re s = 2` and `q³` on
+`Re s = −1`. What remains for the uniformity MUST-387 identified is a Phragmén–Lindelöf
+interpolation with tracked constants, which would give `‖D(1/2 + it, a/q)‖ ≪ q^{3/2}(1+|t|)^N` —
+the classical convexity exponent — and hence an error term `O(q^{3/2} x^{-1/2})` in the progression
+law, uniform enough to sum over moduli in the shifted divisor correlation.
+
+## MUST-390 — the left edge is polynomial; both edges are now `q`-free after normalisation (2026-09-24)
+
+`RHTower/EstermannLeftEdgePolynomial.lean` (axiom-clean). MUST-389 kept `e^{π|t|}` because it
+discarded the Gamma decay. The corpus's explicit vertical modulus bound
+(`HTGeometry/GammaVerticalModulus.norm_Gamma_one_add_nat_bounds`)
+
+```text
+‖Γ(2 + it)‖ ≤ √(2π|t|/(1 − e^{−2})) · 3|t| · e^{−π|t|/2}
+```
+
+squares to `(18π/(1 − e^{−2})) |t|³ e^{−π|t|}`, which cancels the cosine growth exactly. Hence
+
+```text
+‖D(−1 + it, a/q)‖ ≤ K q³ |t|³   for |t| ≥ 1,  K absolute.
+```
+
+**Reading.** After the normalisation `G(s) = q^{s−2} D(s)` both edges are `q`-free and polynomial:
+`‖G(2 + it)‖ ≤ ∑_N d(N)/N²` and `‖G(−1 + it)‖ ≤ K |t|³`. A Phragmén–Lindelöf interpolation depends
+only on the edge data — the admissible-growth hypothesis carries no constant into the conclusion —
+so it yields `‖D(1/2 + it, a/q)‖ ≪ q^{3/2}(1 + |t|)^N` with an absolute implied constant. That is
+the modulus-uniform bound MUST-387 identified as the obstacle to summing the progression law over
+moduli in the shifted divisor correlation.
+
+## MUST-391 — the convexity bound `q^{3/2}`, dependency-closed on paper (2026-09-24)
+
+Every input is now a built theorem; only the assembly remains.
+
+**Setup.** Fix `q` and a unit `a` mod `q`. With `E(s) = (s−1)² D(s, a/q)` entire
+(`estermannEntire_eq`), put
+
+```text
+F(s) = q^{s−2} · E(s) / (s + 2)^5 .
+```
+
+**Analyticity.** `E` is entire, `q^{s−2} = exp((s−2) log q)` is entire, and `s + 2 ≠ 0` on
+`Re s ≥ −1`; so `F` is analytic on a neighbourhood of the closed strip `−1 ≤ Re s ≤ 2`.
+
+**Growth.** `‖q^{s−2}‖ = q^{σ−2} ≤ 1` and `‖(s+2)^{−5}‖ ≤ 1` there, so
+`EstermannStripExpBound` gives `‖F(s)‖ ≤ C_q e^{(π+2)|t|}`, admissible for
+`PhragmenLindelof.vertical_strip` with `c = 1/2 < π/3`.  The constant `C_q` does not enter the
+conclusion.
+
+**Edges.** On `−1 ≤ σ ≤ 2`: `‖s−1‖ ≤ 3(1+|t|)` and `‖s+2‖ ≥ (1+|t|)/2`
+(`one_add_abs_im_le_two_mul_norm`), hence `‖(s−1)²/(s+2)^5‖ ≤ 288/(1+|t|)³`.  Therefore
+
+* `σ = 2`: `‖q^{s−2}‖ = 1` and `‖D‖ ≤ M_R := ∑_N d(N)/N²` (`norm_estermannZeta_le_divisorSquareMass`),
+  so `‖F(2+it)‖ ≤ 288 M_R`;
+* `σ = −1`: `‖q^{s−2}‖ = q^{−3}` and `‖D‖ ≤ K q³(1+|t|)³`
+  (`norm_estermannZeta_left_edge_uniform_le`), so `‖F(−1+it)‖ ≤ 288 K`.
+
+Both are constants free of `q` and of `t`.
+
+**Conclusion.** Phragmén–Lindelöf gives `‖F(s)‖ ≤ M := 288 max(M_R, K)` on the strip.  Unwinding
+with `‖s+2‖ ≤ 4(1+|t|)` and `‖s−1‖ ≥ |t|`,
+
+```text
+‖D(σ+it, a/q)‖ ≤ q^{2−σ} · M · 4^5 (1+|t|)^5 / t² ,
+```
+
+and at `σ = 1/2`, using `(1+|t|)^5/t² ≤ 32(1+|t|)³` for `|t| ≥ 1`,
+
+```text
+‖D(1/2 + it, a/q)‖ ≤ C q^{3/2} (1+|t|)³ ,   C absolute, |t| ≥ 1 .
+```
+
+**Reading.** This is the classical convexity exponent, and it is exactly the modulus-uniform input
+MUST-387 identified as missing: propagating it through the smoothed-sum error gives
+`O(q^{3/2} x^{−1/2})` in the progression law, which makes the `k`-sum in
+`∑_n d(n)d(n+h)e^{−nx} = ∑_k ∑_{n≡−h (k)} d(n) e^{−nx}` summable with a usable rate.
+
+**Status.** `EstermannLeftEdgeUniform` elaborates clean and is wired; its olean build was stopped by
+system memory pressure, so the axiom audit for it and the assembly above are the next actions.
+
+## MUST-392 — the convexity bound `q^{3/2}` is proved (2026-09-24)
+
+`RHTower/EstermannConvexityExplicit.lean` (all axiom-clean). MUST-391's paper proof is now Lean:
+
+```text
+norm_estermannZeta_critical_line_le :
+  1 ≤ |t| → ‖D(1/2 + it, a/q)‖ ≤ C · q^{3/2} · (1 + |t|)³ ,  C absolute.
+```
+
+The chain: `modulusNormalizer q s = exp((s−2) log q)` is entire, non-vanishing, with
+`‖·‖ = q^{σ−2}`; the test function `q^{s−2}(s−1)²D(s)/(s+2)^5` has the **same `q`-free constant on
+both edges** (`norm_estermannPLTest_edge`), because `q^{σ−2}` is `1` at `σ = 2` and `q^{−3}` at
+`σ = −1`, cancelling the `q³` of MUST-390, while `‖s+2‖ ≥ (1+|t|)/2` absorbs the `(1+|t|)^5` coming
+from `(s−1)²` and the edge polynomials.  Phragmén–Lindelöf propagates that constant
+(`norm_estermannPLTest_strip`), and unwinding restores exactly `q^{2−σ}`, giving `q^{3/2}` at
+`σ = 1/2`.
+
+**Reading.** This closes the uniformity gap MUST-387 identified. The remaining step in the lane is
+arithmetic bookkeeping, not analysis: propagate this bound through the smoothed-sum error to get
+`O(q^{3/2} x^{−1/2})` in the progression law, after which
+`∑_n d(n)d(n+h)e^{−nx} = ∑_k ∑_{n≡−h (k)} d(n)e^{−nx}` is summable over `k`. Per CANNOT-371 the
+lane bounds the proportion of zeros on the line, not RH.
+
+## MUST-392 strengthened — the convexity bound holds at every height (2026-09-24)
+
+The `|t| ≥ 1` hypothesis in MUST-392 was an artifact of bounding `‖s − 1‖ ≥ |t|`, which degenerates
+at `t = 0`. On the critical line `‖s − 1‖² = 1/4 + t²` exactly, and `(1+|t|)² ≤ 8(1/4 + t²)` for
+every real `t` (it reduces to `2|t| ≤ 1 + 7t²`, weaker than AM–GM). So
+
+```text
+norm_estermannZeta_critical_line_le (q) (a) (t) :
+  ‖D(1/2 + it, a/q)‖ ≤ C · q^{3/2} · (1 + |t|)³ ,  C absolute, every real t,
+```
+
+with `C = 8192 · estermannStripConstant`. Removing the hypothesis matters downstream: the
+smoothed-sum error integrates over the whole line, including `|v| ≤ 1`.
+
+## MUST-393 — the smoothed-sum error is uniform in the modulus (2026-09-24)
+
+`RHTower/EstermannSmoothedErrorExplicit.lean` (all axiom-clean).
+
+```text
+norm_estermann_smoothed_error_le :
+  0 < x → ‖(1/2π) • ∫_ℝ x^{−(1/2+iv)} Γ(1/2+iv) D(1/2+iv, a/q) dv‖
+            ≤ C · q^{3/2} · x^{−1/2} ,  C absolute.
+```
+
+At `x = 1` the integrand has modulus `‖Γ(1/2+iv)‖ · ‖D(1/2+iv, a/q)‖`, and both factors are now
+explicit: `‖Γ(1/2+iv)‖ ≤ √(2π) e^{−π|v|/2}` (`HTGeometry/GammaVerticalModulus`) and
+`‖D(1/2+iv, a/q)‖ ≤ C q^{3/2}(1+|v|)³` (MUST-392, in the hypothesis-free form — the integral runs
+over all of `ℝ`, so the earlier `|t| ≥ 1` version would have left `|v| ≤ 1` uncovered).  Their
+product is `(1+|v|)³ e^{−π|v|/2}` times an absolute constant, integrable by
+`HTGeometry.integrable_abs_pow_mul_exp_neg_abs`, and the `x`-dependence is the exact scaling
+`‖x^{−(1/2+iv)}‖ = x^{−1/2}`.
+
+**Reading.** This is the uniformity MUST-387 identified as the lane's obstacle, now discharged:
+every modulus carries the same absolute constant, with the modulus entering only as `q^{3/2}`. The
+progression law of MUST-386 therefore reads, for every modulus,
+
+```text
+q ∑_{N ≡ b (q)} d(N) e^{−Nx} = ∑_{a mod q} e(−ab/q) main(q/gcd(a,q)) + O(q^{3/2} x^{−1/2}) ,
+```
+
+with an absolute implied constant, and the `k`-sum of
+`∑_n d(n)d(n+h)e^{−nx} = ∑_k ∑_{n≡−h (k)} d(n)e^{−nx}` now has a rate attached to each `k`.
+Per CANNOT-371 the lane bounds the proportion of zeros on the line, not RH.
+
+## MUST-394 — the progression law with an absolute implied constant (2026-09-24)
+
+`RHTower/EstermannProgressionUniform.lean` (all axiom-clean).  With `reducedModulus q a = q/gcd(a,q)`:
+
+```text
+norm_estermannSmoothedSum_sub_reducedMain_le :
+  ‖S_a(x) − main(q/gcd(a,q))‖ ≤ C q^{3/2} x^{−1/2}        (every twist, C absolute)
+
+norm_progression_sub_main_le :
+  ‖q ∑_{N ≡ b (q)} d(N) e^{−Nx} − ∑_{a mod q} e(−ab/q) main(q/gcd(a,q))‖
+      ≤ C q^{5/2} x^{−1/2}                                 (every modulus, C absolute)
+```
+
+The first uses the gcd reduction of MUST-385 to land on a unit twist of `q' = q/gcd`, where
+MUST-393 gives `C (q')^{3/2} x^{−1/2}`; since `q' ∣ q`, monotonicity of `rpow` bounds this by
+`C q^{3/2} x^{−1/2}`, one constant for all twists.  The second averages the `q` twists against the
+unimodular `e(−ab/q)`, costing exactly `card (ZMod q) = q`.
+
+**Reading.** The Estermann lane is now quantitative end to end: definition, functional equation,
+entire completion, both strip edges, convexity, smoothed-sum error, orthogonality, gcd reduction and
+the progression law all carry absolute constants with the modulus appearing only as an explicit
+power.  Dividing by `q`, `∑_{N ≡ b (q)} d(N) e^{−Nx}` equals its Ramanujan main term up to
+`O(q^{3/2} x^{−1/2})`, which is the form the `k`-sum of
+`∑_n d(n)d(n+h)e^{−nx} = ∑_k ∑_{n ≡ −h (k)} d(n) e^{−nx}` consumes.  Per CANNOT-371 this lane
+bounds the proportion of zeros on the critical line, not RH.

@@ -1,7 +1,7 @@
 # Weil's bound for Kloosterman sums in Lean
 
 - **ID:** WEIL-KLOOSTERMAN
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper, classical) — Lean build
 - **Source:** Selberg programme (card `selberg-maass-symmetric-power-attempt`, section 7). Absent from mathlib
   and the corpus (searched 2026-09-24).
@@ -52,3 +52,19 @@ the d = 2 case of the moduli-cancellation hypothesis H_η), and the d = 2 model 
 Components: (A) Hasse derivatives of X^{Qj}, root multiplicity via Hasse derivatives; (B) D^{(k)}h^N = h^{N−k}P_k;
 (C) nonzero kernel of an underdetermined linear map; (D) independence lemma; (E) root counting; (F) parameters;
 (G) Euler criterion link; (H) squarefreeness of h; (I) additive Hilbert 90 count; (J) Vandermonde; (K) assembly.
+- 2026-09-24 — Stepanov closed in Lean (build green, axioms propext/choice/Quot.sound):
+  `StepanovHyperelliptic` (Hasse-derivative lemmas, D^{(k)}h^N = h^{N−k}P_k, substitution injectivity, squarefree
+  descent, `stepanov_independence`), `StepanovCount` (`stepanov_count`: ℓ·#T_ε ≤ (K−1) + N·D + Q(J−1)),
+  `StepanovCharacterSum` (`stepanov_bound`: 2#T_ε ≤ s² + 2(D+1)s for Q = s², s ≥ D + 5;
+  `abs_sum_quadraticChar_le`: |Σ_x χ(h(x))| ≤ 2(D+1)s + D). Elementary Weil bound for hyperelliptic character
+  sums over even-degree extensions. Remaining for Kloosterman: squarefreeness of (v^p−v)²−4a, the
+  Artin–Schreier/trace counting identity Σ_{j≠0} K_E(j²a) = 1 + Σ_v χ(h(v)), and the Vandermonde lemma.
+- 2026-09-24 — **Closed in Lean** (build green with `--old`, wired into RHTower.lean, axioms
+  propext/Classical.choice/Quot.sound). `WeilKloostermanArtinSchreier`: `asMap` (v ↦ v^p − v) has kernel of
+  size p and image = trace kernel (`image_asMap`, `sum_asMap`), `card_fiber_quadratic`
+  (#{x≠0 : x + b/x = u} = 1 + χ(u² − 4b)), `sum_twist_char`, `twist_eq_extKloosterman`,
+  `sum_extKloosterman_twists`: Σ_{j∈𝔽_p^×} K_E(j²a) = 1 + Σ_v χ((v^p−v)² − 4a).
+  `WeilKloostermanBound`: `asDisc_squarefree`, `norm_le_of_power_sums_bound` (power sums O(ρ^m) ⇒ all |z_i| ≤ ρ),
+  `power_sums_bound` (over GaloisField p (2m), m ≥ 3), and
+  `kloosterman_weil_bound : p ≠ 2 → ψ primitive → a ≠ 0 → ‖kloosterman ψ a‖ ≤ 2√p`.
+  Classical theorem (Weil 1948); first formal proof in this corpus and, as far as checked, absent from mathlib.

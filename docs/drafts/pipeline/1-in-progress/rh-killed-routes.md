@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**418 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**423 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-24, `9c30c3c90dca7a1817150883aa811312150400d6`**.
+Source-audit cutoff: **2026-09-24, `c76e753e761f822eb4a42ea14808925d56c78de6`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
@@ -25,11 +25,11 @@ Concurrent uncommitted formal edits remain pending evidence and are not counted.
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 33 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 53 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 85 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 39 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 55 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 86 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 40 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 66 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 67 |
 | [Analytic roots, multiplicity and regularization](#roots) | 11 |
 | [Other finite, scalar and source-blind selectors](#other) | 85 |
 
@@ -920,6 +920,8 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 
 ## E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation
 
+- [E zero-row-only Kloosterman spectral cancellation](#no-go-419)
+- [T1 pointwise cancellation of complete stationary prime cone](#no-go-420)
 - [EDQ physical initial-segment LCM positivity](#no-go-412)
 - [E→EDQ coefficient-blind Gamma--Hankel domination](#no-go-413)
 - [EDQ Möbius divisor-kernel positivity](#no-go-296)
@@ -1862,10 +1864,43 @@ Evidence: [adjacent-dipole no-go](../../../../formal/GaloisForLFunctions/RHTower
 
 [Back to family](#arithmetic) · [Current E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
 
+<a id="no-go-419"></a>
+
+### E zero-row-only Kloosterman spectral cancellation
+
+**Closed result**
+
+The literal complete equal-modulus Kloosterman main energy splits exactly into its zero-frequency row plus a nonnegative transverse-frequency sum. The Ramanujan quadratic canceled in the proposed spectral comparison covers only the zero row (with its own normalization), so its cancellation alone cannot bound the full Route E Gram.
+
+**Survivor / still open**
+
+The exact zero-row/transverse decomposition is source-faithful. E still needs a spectral embedding or signed arithmetic estimate that pays the transverse modes and the collective fourth moment; the comparison does not rule out such a mechanism.
+
+Evidence: [finite spectral comparison](../../../../formal/GaloisForLFunctions/RHTower/Sieve/KloostermanZeroRowSpectralComparison.lean), [source audit](root-assigned-routes-fact-log.md).
+
+[Back to family](#arithmetic) · [Current E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
+
+<a id="no-go-420"></a>
+
+### T1 pointwise cancellation of complete stationary prime cone
+
+**Closed result**
+
+At each fixed timelike stationary frequency, the complete *uncentered* aligned von Mangoldt sum has real part at least `√X/4` cofinally. The literal two-rapidity covariance at any fixed stationary pair consequently has modulus bounded below by a positive multiple of `X`. The whole pointwise cone cannot be made small merely by canceling its labelled `(2,3)` cell.
+
+**Survivor / still open**
+
+The exact finite source factorization and coherent bulk survive. T1 needs nonlocal cancellation after the signed rapidity integral, or an equivalent centered source estimate; pointwise covariance growth does not settle that integrated problem or disprove RH.
+
+Evidence: [complete prime-cone bound](../../../../formal/GaloisForLFunctions/RHTower/XiMassStationaryPrimeConeNoncancellation.lean), [covariance growth](../../../../formal/GaloisForLFunctions/RHTower/XiMassStationaryPrimeConeCovarianceGrowth.lean).
+
+[Back to family](#arithmetic) · [Current T1 frontier](rh-current-frontier-map.md#t1--theta-tail-core-current)
+
 <a id="scattering"></a>
 
 ## HB, FZZ and PW: scattering and physical action
 
+- [PW-B integrable normalized off-line cusp forcing](#no-go-421)
 - [PW-B fixed-calibration two-amplitude off-line incidence](#no-go-418)
 - [PW-B unrenormalized all-fibre zero residual boundary](#no-go-415)
 - [PW-B direct un-oriented optical/CTP incidence](#no-go-410)
@@ -3388,10 +3423,27 @@ Evidence: [amplitude criterion](../../../../formal/GaloisForLFunctions/RHTower/T
 
 [Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
 
+<a id="no-go-421"></a>
+
+### PW-B integrable normalized off-line cusp forcing
+
+**Closed result**
+
+At a hypothetical left-half Xi copy, the literal two-branch cross-clock forcing has a nonzero translated-window normalized cusp charge. Its normalized log-height forcing is therefore not `L¹` on the actual upper cusp; assuming integrability there contradicts that charge. This is a conditional off-line obstruction/RH receiver, not an unconditional identity between optical and CTP currents.
+
+**Survivor / still open**
+
+The exact nonzero source charge survives and must be transported or compensated by a noncompact ordered current. Prove source-faithful contact transport and oriented optical/CTP incidence; the wider weighted-contact classification remains paper-only.
+
+Evidence: [translated charge and cusp nonintegrability](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWCrossClockTranslatedTests.lean), [source card](pwb-cross-clock-source-mean-nonintegrability-own.md).
+
+[Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
+
 <a id="theta"></a>
 
 ## Theta, Schur, spectral and positivity mechanisms
 
+- [CLG degree-twelve correction with nonnegative global derivative](#no-go-422)
 - [bounded-similarity/Keldysh/theta pseudospectral selection](#no-go-193)
 - [central theta probability convolution-root producer](#no-go-261)
 - [CLG fixed-mass/first-moment curvature reserve](#no-go-109)
@@ -4107,6 +4159,22 @@ Evidence: [tensor-square multiplicity](../../../../formal/GaloisForLFunctions/RH
 
 [Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
 
+<a id="no-go-422"></a>
+
+### CLG degree-twelve correction with nonnegative global derivative
+
+**Closed result**
+
+The lawful degree-twelve polynomial correction has a strictly positive derivative reserve on the complete-source compact chamber, but its derivative integrates to zero globally. Beyond every positive cutoff it exports negative signed mass; for positive aperture below one, its derivative is eventually strictly negative on a terminal ray. A globally nonnegative correction derivative is impossible.
+
+**Survivor / still open**
+
+The compact reserve and exact negative boundary-flux law remain useful. CLG must compare the tail debt with the native odd-four Schur current and keep the positive local variance; the correction alone does not prove or refute integrated theta positivity.
+
+Evidence: [compact reserve](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspPolynomialFluxMiddleReserve.lean), [tail debt](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspDegreeTwelveFluxBoundary.lean), [odd-head variance](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspActualOddHeadVariance.lean).
+
+[Back to family](#theta) · [Current CLG/TTF frontier](rh-current-frontier-map.md#clgttf--completed-theta-bezoutian-no-escape)
+
 <a id="completion"></a>
 
 ## Singular descent, formation and completion
@@ -4588,6 +4656,7 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 
 ## Ward, Suzuki, prime–Gamma and operator landing
 
+- [SEC asymptotic adjacent Calkin-small seam selection](#no-go-423)
 - [P/SP-E positive-semidefinite active-head strict cross](#no-go-414)
 - [P/SP-E blanket normalized history passivity](#no-go-408)
 - [absolute or merely relative Gamma anomaly cancellation](#no-go-253)
@@ -5666,14 +5735,13 @@ Evidence: [reciprocal-tail no-go](../../../../formal/GaloisForLFunctions/RHTower
 **Closed result**
 
 The outer shifted-pole residue correction does not cancel under functional reflection. Reflection
-can make the correction real, but cannot force its real part or normalized covariance to vanish.
+can make it real, but cannot force vanishing. Stronger: at centered observation and shift `0<ε≤1`, **every** actual Xi copy has a strictly negative real correction, including a hypothetical off-line copy; no nonempty finite mixture cancels internally.
 
 **Survivor / still open**
 
-The pole-safe inner Cauchy landing survives. EGC needs an independent source-side decay or
-real-part cancellation law along a cofinal contour family.
+The pole-safe inner landing and the full summable residue-to-continued-source trace survive. EGC needs independent source-side decay or compensated real-part cancellation at noncentered outer observations along a cofinal contour family.
 
-Evidence: [reflection-correction no-go](../../../../formal/GaloisForLFunctions/RHTower/XiMeromorphicCauchyPairReflectionCorrectionNoGo.lean).
+Evidence: [reflection-correction no-go](../../../../formal/GaloisForLFunctions/RHTower/XiMeromorphicCauchyPairReflectionCorrectionNoGo.lean), [all-copy centered sign](../../../../formal/GaloisForLFunctions/RHTower/XiMeromorphicCauchyPairAllCopyCenteredCorrection.lean), [complete source trace](../../../../formal/GaloisForLFunctions/RHTower/XiCauchyPairShiftResidueSourceTrace.lean).
 
 [Back to family](#ward) · [Current EGC frontier](rh-current-frontier-map.md#candidate-egc)
 
@@ -5791,6 +5859,22 @@ Finite active-head incidence, source-current identity and faithful Gram transpor
 Evidence: [active-head survival](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePActiveHeadHistorySurvival.lean), [finite Gram faithfulness](../../../../formal/GaloisForLFunctions/RHTower/RoutePPrimitiveBurnolGramModularFaithfulness.lean).
 
 [Back to family](#ward) · [Current P/SP-E frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
+<a id="no-go-423"></a>
+
+### SEC asymptotic adjacent Calkin-small seam selection
+
+**Closed result**
+
+The essential norm of an adjacent-prime seam coboundary equals the seam-charge jump divided by its positive Euler scale. Along the prime ray, both charges vanish for *every* point in the open strip. Thus adjacent essential norms tend to zero even after restoring the Euler scale, including at a hypothetical off-critical Xi copy; asymptotic smallness cannot select the critical line.
+
+**Survivor / still open**
+
+The exact essential-norm formula and one-ended seam interface survive. SEC needs exact eventual compactness/equality or another non-asymptotic source law; this no-go does not exclude exact compactness as a separate criterion.
+
+Evidence: [adjacent essential-norm theorem](../../../../formal/GaloisForLFunctions/RHTower/XiPrimeSeamAdjacentEssentialNormNoGo.lean).
+
+[Back to family](#ward) · [Current SEC frontier](rh-current-frontier-map.md#candidate-sec)
 
 <a id="roots"></a>
 

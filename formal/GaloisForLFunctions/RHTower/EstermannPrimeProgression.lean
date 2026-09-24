@@ -61,6 +61,77 @@ theorem estermannSmoothedSum_zero (q : ℕ) [NeZero q] (x : ℝ) :
   have h0 : ((ZMod.stdAddChar (0 : ZMod q)) : ℂ) = 1 := by simp
   rw [estermannCoeff, zero_mul, h0, mul_one]
 
+/-- For a prime modulus the residue sum splits into the zero term and the unit sum. -/
+private theorem sum_zmod_eq_add_sum_units {q : ℕ} [Fact q.Prime] (f : ZMod q → ℂ) :
+    ∑ a : ZMod q, f a = f 0 + ∑ a : (ZMod q)ˣ, f (a : ZMod q) := by
+  classical
+  have hinj : ∀ u ∈ (Finset.univ : Finset (ZMod q)ˣ), ∀ v ∈ (Finset.univ : Finset (ZMod q)ˣ),
+      (u : ZMod q) = (v : ZMod q) → u = v := fun u _ v _ h => Units.ext h
+  have himg : (Finset.univ : Finset (ZMod q)ˣ).image (fun u : (ZMod q)ˣ => (u : ZMod q))
+      = (Finset.univ : Finset (ZMod q)).erase 0 := by
+    ext a
+    simp only [Finset.mem_image, Finset.mem_erase, Finset.mem_univ, and_true, true_and]
+    constructor
+    · rintro ⟨u, -, rfl⟩
+      exact u.ne_zero
+    · intro ha
+      exact ⟨Units.mk0 a ha, rfl⟩
+  have h1 : ∑ a : (ZMod q)ˣ, f (a : ZMod q)
+      = ∑ a ∈ (Finset.univ : Finset (ZMod q)).erase 0, f a := by
+    rw [← himg, Finset.sum_image hinj]
+  rw [h1]
+  exact (Finset.add_sum_erase _ f (Finset.mem_univ 0)).symm
+
+/-- **The smoothed divisor sum in a progression to a prime modulus.**  For `b ≢ 0 (mod q)`,
+
+`q ∑_{N ≡ b (q)} d(N) e^{-Nx} = ∑_N d(N) e^{-Nx} − (γ − log x − 2 log q)/(qx) + O(x^{-1/2})`.
+
+The subtracted term is the twist-independent main term weighted by the Ramanujan sum
+`c_q(b) = −1`. -/
+theorem exists_bound_norm_estermann_prime_progression (q : ℕ) [hq : Fact q.Prime]
+    (b : ZMod q) (hb : b ≠ 0) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 0 < x →
+      ‖(q : ℂ) * (∑' N : ℕ, (if (N : ZMod q) = b then ((N.divisors.card : ℂ)) else 0) *
+            Complex.exp (-(((N : ℝ) * x : ℝ) : ℂ)))
+          - ((∑' N : ℕ, ((N.divisors.card : ℂ)) * Complex.exp (-(((N : ℝ) * x : ℝ) : ℂ)))
+              - estermannSmoothedMain q x)‖
+        ≤ C * x ^ (-(1 / 2 : ℝ)) := by
+  haveI : NeZero q := ⟨hq.out.pos.ne'⟩
+  obtain ⟨C, hC, hbound⟩ := exists_bound_norm_estermann_weighted q
+    (fun a : (ZMod q)ˣ => ((ZMod.stdAddChar (-((a : ZMod q) * b))) : ℂ))
+  refine ⟨C, hC, fun x hx => ?_⟩
+  have horth := sum_twist_eq_progression q b hx
+  have hsplit := sum_zmod_eq_add_sum_units
+    (fun a : ZMod q => ((ZMod.stdAddChar (-(a * b))) : ℂ) * estermannSmoothedSum q a x)
+  have hzero : ((ZMod.stdAddChar (0 : ZMod q)) : ℂ) = 1 := by simp
+  have hall : (∑ a : ZMod q, ((ZMod.stdAddChar (-(a * b))) : ℂ)) = 0 := by
+    have h := sum_stdAddChar_mul q (-b)
+    rw [if_neg (by simpa using hb)] at h
+    rw [← h]
+    exact Finset.sum_congr rfl (fun a _ => by rw [show a * (-b) = -(a * b) by ring])
+  have hw : (∑ a : (ZMod q)ˣ, ((ZMod.stdAddChar (-((a : ZMod q) * b))) : ℂ)) = -1 := by
+    have hsp := sum_zmod_eq_add_sum_units (fun a : ZMod q => ((ZMod.stdAddChar (-(a * b))) : ℂ))
+    rw [hall] at hsp
+    simp only [zero_mul, neg_zero] at hsp
+    rw [hzero] at hsp
+    linear_combination -hsp
+  have hS0 : ((ZMod.stdAddChar (-((0 : ZMod q) * b))) : ℂ) * estermannSmoothedSum q 0 x
+      = ∑' N : ℕ, ((N.divisors.card : ℂ)) * Complex.exp (-(((N : ℝ) * x : ℝ) : ℂ)) := by
+    rw [zero_mul, neg_zero, hzero, one_mul, estermannSmoothedSum_zero]
+  have hkey := hbound x hx
+  rw [hw] at hkey
+  have htarget : (q : ℂ) * (∑' N : ℕ, (if (N : ZMod q) = b then ((N.divisors.card : ℂ)) else 0) *
+        Complex.exp (-(((N : ℝ) * x : ℝ) : ℂ)))
+        - ((∑' N : ℕ, ((N.divisors.card : ℂ)) * Complex.exp (-(((N : ℝ) * x : ℝ) : ℂ)))
+            - estermannSmoothedMain q x)
+      = (∑ a : (ZMod q)ˣ, ((ZMod.stdAddChar (-((a : ZMod q) * b))) : ℂ) *
+          estermannSmoothedSum q (a : ZMod q) x) - (-1) * estermannSmoothedMain q x := by
+    rw [← horth, hsplit, hS0]
+    ring
+  rw [htarget]
+  exact hkey
+
+
 end
 
 end RHTower

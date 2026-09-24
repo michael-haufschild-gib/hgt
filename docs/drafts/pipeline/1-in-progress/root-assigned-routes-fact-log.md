@@ -81,6 +81,38 @@
   literal Möbius/Ramaré response exists in the corpus, and the corpus’s coefficient-blind affine
   spectral closure is already ruled out.  It cannot currently discharge E's collective fourth
   moment.
+- **Route E first-prime negative covariance ray (Lean):** at the boundary Gamma--Hankel exponent
+  one, the two literal matrix entries indexed by `d-1,2d-1` for odd squarefree `d` total
+  `-2/(3d)`. Their sum through `d≤M` is at most `-(log M)/12+7/12`. The same `d:2d`
+  arithmetic ray in the cubic reciprocal kernel totals `-8/(243d)` and at most
+  `-(log M)/243+7/243`. More strongly, every prime `p≥11` has a literal `d:pd` negative
+  channel with coefficient `2/(p+1)` on squarefree cofactors coprime to `2p`. For every
+  prescribed slope `C`, a finite set of such prime rays has total contribution at most
+  `-C((log M)/8-7/8)` whenever `log M≥7`: Euler's divergent prime harmonic sum makes their
+  coefficient arbitrarily large. Each ray is certified as a literal matrix subsum, with its
+  indices inside its `(p+1)M` cutoff. Thus any small *complete boundary covariance* would
+  require unbounded compensation from other ratios; absolute or finitely localised ratio
+  estimates cannot by themselves close E. This is a boundary diagnostic, not the
+  RH-strength full off-diagonal ceiling at exponents above one. Certificate:
+  `MobiusFirstPrimeDilationCancellation.lean` (direct Lean and targeted `lake --old build
+  ...:olean` passed; umbrella import wired, not built).
+- **Route E integer-ratio compensation (Lean):** The coprime floor-column identity gives
+  `|Σ_{q≤N,(q,r)=1} μ(q)/q|≤2` uniformly in both the cutoff `N` and moving modulus `r`.
+  The exact reciprocal shift and a telescoping correction give
+  `|Σ_{q≤N,(q,r)=1} μ(q)/(q+1)|≤3`. For every squarefree cofactor `d`, the complete
+  oriented Gamma--Hankel dilation ray `(d,dq)`, including its single diagonal entry,
+  equals `(2/d)Σ_{q≤N,(q,d)=1} μ(q)/(q+1)` and is bounded by `6/d`.
+  Summing all literal integer-ratio matrix entries through cutoff `X` therefore gives
+  absolute signed mass at most `6(1+log X)`. This is the positive compensation law
+  surviving the arbitrarily negative prime-only rays above: full integer-ratio
+  cancellation is unconditional even with moving coprimality and cutoff. It does
+  **not** bound noninteger primitive-ratio pairs or the RH-equivalent cofinal
+  `r>1` Gamma--Hankel energy. In fact integer-ratio pairs are absolutely
+  summable for each fixed `r>1`, so this new boundary cancellation diagnoses
+  the prime-ray compensation but does not by itself advance the RH-strength
+  ceiling. Certificate:
+  `MobiusCoprimeHarmonicUniform.lean` (direct Lean and targeted `lake --old build
+  ...:olean` passed; umbrella import wired, not built).
 - LI's squared-seam Cassini object is an exact Xi receiver after the square-coordinate bridge:
   `xiSquaredSeamCassiniSource (1 + z^2) = XiC z`, with its zeros and multiplicities exactly those
   of `XiZeroCopy`.  Consequently any global zero/singularity-support restriction formulated only

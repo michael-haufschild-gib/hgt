@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Route:** K-RVM
-- **Scientific status:** An unconditional Lean theorem matches the completed source's first three half-moments with a finite head and one positive-scale cofinite RVM-plus-cycle reserve. Paper constructions place the head and reserve in one operator, including a quantile-shell head with `N-O(1)` positive atoms at the required `O(log T)` local-density scale. A dyadic transport-or-exception bound excludes fixed-core near-quantile heads at all orders. The bare source-minus-RVM-tail moment germ is unconditionally nonrational on paper, so it has infinite Hankel rank and gives a finite, as-yet-unidentified obstruction at every fixed head rank. Paper no-go arguments also exclude the original squared-gap reserve for every disjoint schedule; fixed log-power amplification `β<4/3` of its unsquared physical response for every schedule; and every fixed `β≥0` on the regular consecutive-triangle schedule. At `β=2`, the surviving count equation is weighted discrete curvature of selected-block incidence; sparse trace-class clusters can meet its fluctuation scale, but no completed-prime-source selection rule is known. Every positive cofinite cycle also has a convex-order hinge surplus, forcing normalized even-power corrections to form a positive Hausdorff moment sequence. The all-order route still needs a head with irregular transport or growing exceptional capacity and an exact source-moment identity satisfying those constraints. These paper results need Lean formalization. RH remains open.
+- **Scientific status:** An unconditional Lean theorem matches the completed source's first three half-moments with a finite head and one positive-scale cofinite RVM-plus-cycle reserve. Paper constructions place the head and reserve in one operator, including a quantile-shell head with `N-O(1)` positive atoms at the required `O(log T)` local-density scale. A dyadic transport-or-exception bound excludes fixed-core near-quantile heads at all orders. The bare source-minus-RVM-tail moment germ is unconditionally nonrational on paper, so it has infinite Hankel rank and gives a finite, as-yet-unidentified obstruction at every fixed head rank. Paper no-go arguments also exclude the original squared-gap reserve for every disjoint schedule; fixed log-power amplification `β<4/3` of its unsquared physical response for every schedule; and every fixed `β≥0` on the regular consecutive-triangle schedule. At `β=2`, the surviving count equation is weighted discrete curvature of selected-block incidence; sparse trace-class clusters can meet its fluctuation scale, but no completed-prime-source selection rule is known. Every positive cofinite cycle also has a convex-order hinge surplus, forcing normalized even-power corrections to form a positive Hausdorff moment sequence. The monotone completed theta density now gives two Lean-proved fifth-moment floors and two quantitative lower gates for the first open determinant; both gate signs remain unresolved. The all-order route still needs a head with irregular transport or growing exceptional capacity and an exact source-moment identity satisfying those constraints. These paper results need Lean formalization. RH remains open.
 
 Let `E = routeKQuarticHalfMass`, `F = routeKQuarticHalfEnergy`, and
 `G = normalizedPrimeArchMoment 2 / 2`. The current source proofs give
@@ -482,6 +482,29 @@ J₄ = 2π∫₀∞ x⁸(x-1)²χ₁(x)²dx.
 
 On the same window `I=[1/4,1/2]`, the paper bound is `J₄≥4⁻⁹p₁(I)`. This retains a measurable source margin lost by the mere upper recurrence; whether that margin pays the determinant gate remains open.
 
+**Affine score--Gram determinant reduction (exact source identity Lean-checked; affine sign open).** A sign audit rules out using the positive score defect as a direct lower bound on the fifth moment: `S₄=145e-303f` grows when `f` shrinks, while `D₃` grows with `f`. A different elimination uses the negative quadratic curvature of the four-moment gate. With `v=m₁`, `w=m₂`, `u=ac/180+b²/144-a²b/12+a⁴/8`, `d=aw-v²`, `q=ac-b²`, `p=ae²-2bce+c³`, and `Δ=qf-p`, define
+
+```text
+K₀ = c³/70 - d(-504vc+15120wb-181440au)
+     - 362880(au²-2vwu+w³),
+K₁ = -bc/35 -45ad -144(vw-au) +145d/303 -145q/21210,
+A(e) = K₀+K₁e,        S₄=145e-303f.
+```
+
+`PrimeArchThetaScoreAffineGateAlgebra.lean` proves the polynomial identity for arbitrary real coordinates; `PrimeArchThetaScoreAffineGate.lean` specializes it to the literal source:
+
+```text
+362880 D₃ = A(e) + Δ/70 + (q/70-d)S₄/303.
+```
+
+For the actual source `q/70-d>0` by the existing effective-rank/curvature identity, `Δ>0` by shifted Gram positivity, and `S₄≥J₄/T₀≥0` by the first-atom score square. Thus `A(e)≥0` is a new sufficient *affine*, rather than quadratic, fourth-moment test for `D₃>0`. More generally the existing flat-window floor `F_R≤Δ` gives the explicit sufficient comparison
+
+```text
+A(e)+F_R/70+(q/70-d)J₄/(303T₀)>0.
+```
+
+This comparison has not been proved for the literal source. The score defect's positive appearance in this identity does not reverse the original monotonicity in `f`: `Δ` falls as `S₄` rises with `e` fixed. In fact, because `S₄=145e-303(Δ+p)/q` and `q/70-d>0`, inserting *independent* lower bounds `F_R≤Δ` and `J₄/T₀≤S₄` into the affine identity yields a lower bound no stronger than the original `dΔ+G` identity with `Δ≥F_R`. The affine form helps only if new source information controls the terms jointly. Generic positivity of `A(e)` is also false for any admissible negative-`D₃` countermodel that has the same effective-rank sign, because both other terms are nonnegative there. The remaining work is a source-specific coupled inequality strong enough to settle the determinant sign.
+
 **Sharp four-moment boundary and two-atom residual transfer (Radau algebra and raw determinant transfer Lean-checked; Radau measure construction remains a paper proof).** The bound `t₅≥P/q` is the exact lower endpoint permitted by the first four moments, not merely one convenient Cauchy estimate. For any positive law `μ` on `y≥0` with moments `t₀=1,t₁=a,t₂=b,t₃=c,t₄=e` and strict three-by-three ordinary and shifted Hankel matrices, set `ν(dy)=y μ(dy)`. Its monic degree-two orthogonal polynomial is `Q(y)=y²-αy-β`, with `α=(ae-bc)/q`, `β=(c²-be)/q`, and `q=ac-b²>0`. Orthogonality to `1,y` forces two distinct positive roots `r₁<r₂`: otherwise `Q` or `Q(y)(y-r)` for its only positive root `r` would be nonnegative on the positive support and have positive integral, contrary to one of the two orthogonality equations. Divide every polynomial of degree at most three by `Q`; its linear remainder defines positive two-node Gaussian quadrature weights `w_i=∫ℓ_i(y)dν=∫ℓ_i(y)²dν>0`, where `ℓ_i` is the linear Lagrange polynomial at `r_i`. This quadrature matches `a,b,c,e`.
 
 Define a new law `μ_*` with weights `w_i/r_i` at `r_i` and the remaining weight at zero. Writing `s=be-c²>0` and `D₀=det[t_(i+j)]_(0≤i,j<3)>0`, elementary reduction modulo `Q` gives the *exact* zero mass
@@ -539,6 +562,49 @@ q_full ≥ q_two_atom/(1+ε)².
 ```
 
 `WeightedMonicQuadraticHalfWindow.lean` independently proves the corresponding sharp weighted monic-quadratic integral floor by exact square completion. `PrimeArchThetaFlatWindowGramFloor.lean` Lean-checks the endpoint source bound, all-size shifted determinant transfer, exact flat determinant, and displayed normalized `Δ` bound. This is a source-specific quantitative margin, but its size has **not** been compared with a possible negative four-moment gate `G`. To prove the open source minor via `362880qD₃=dΔ+G`, the remaining literal-source inequality is `G+d·(thetaCuspRawEvenMoment 0)^(-3)(2048/22920975)m_R³R²¹>0` for some `R>0`, or another sufficiently strong residual bound. No sign is claimed for that expression.
+
+**Monotone-density relative Gram floor (Lean-proved; determinant sign still open).** A different use of the same flat-window square completion avoids choosing a radius. For every continuously differentiable nonnegative decreasing density `ρ` on `x≥0` with the required integrable moments, and every `α,β∈ℝ`, `MonotoneWeightedMonicQuadratic.lean` proves
+
+```text
+∫₀∞ x²(x⁴+αx²+β)²ρ(x)dx ≥ (64/3969)∫₀∞ x¹⁰ρ(x)dx.
+```
+
+The constant is sharp for decreasing densities: the cumulative integral of the difference is nonnegative at every radius by the flat-window theorem, so integration by parts against `−ρ'≥0` gives the half-line inequality. `PrimeArchThetaMonotoneGramRatio.lean` applies it to the literal completed theta density and minimizes over the monic quadratic using the shifted Gram equations. With `q=ac-b²`, `p=ae²−2bce+c³`, `f=t₅`, and `Δ=qf−p`, the resulting **unconditional source inequality** is
+
+```text
+Δ ≥ (64/3969)qf,      equivalently Δ ≥ (64/3905)p.
+```
+
+Together with the already proved score recurrence `303f≤145e`, this narrows the four-moment Schur region to `303·3969p≤145·3905qe`, strengthening `303p<145qe` as a bound (the earlier strict inequality remains separately proved). In the exact determinant identity it gives the new lower gate
+
+```text
+362880qD₃ ≥ G+(64/3905)dp.
+```
+
+This comparison attacks the actual unresolved minor without an independent enclosure of `f`. Its right-hand sign has not been established for the literal source; monotonicity alone is too broad a source class to settle that sign.
+
+**Radius-mixing shifted Gram gate (Lean-proved; endpoint sign open).** Decreasing `ρ` has a positive flat-interval radius mixture. Applying integration by parts to the nonnegative primitive `x³(x⁴+αx²+β)²` gives, for every `α,β∈ℝ`,
+
+```text
+11f+18αe+(7α²+14β)c+10αβb+3β²a ≥ 0.
+```
+
+`MonotoneRadiusShiftedGram.lean` proves this for any suitable decreasing density and `PrimeArchThetaRadiusShiftedGram.lean` applies it to the literal completed theta source. The radius moments are `(3a,5b,7c,9e,11f)`. The corpus's first-atom Stein ratio bound yields the strict radius minor `q_R=21ac−25b²>0`, and exact quadratic minimization in `RadiusShiftedGramAlgebra.lean` gives the independent fifth-moment floor
+
+```text
+11q_R f ≥ p_R,        p_R=243ae²−630bce+343c³.
+```
+
+With `B=9ae−504m₁c+15120m₂b−181440m₃a`, `C=am₃²−2m₁m₂m₃+m₂³`, and `d=am₂−m₁²`, `PrimeArchThetaRadiusGramGate.lean` proves the exact lower test
+
+```text
+362880·11q_R D₃ ≥ H_R(e),
+H_R(e)=d p_R−11q_R(dB+362880C).
+```
+
+The radius bound is sharp for a positive mixture of two flat intervals, whose radius measure has two support points. It therefore exposes a second precise four-moment boundary, independent of the ordinary shifted-Gram boundary. Substituting `m₃=u−e/5040` shows `H_R` is quadratic in `e` with leading coefficient `a(243d−11q_R/70)`. `PrimeArchThetaRadiusGateCurvature.lean` proves this coefficient is strictly negative for the literal source: its exact form is `−51q/40+b(176b−693a²−441r)/280`, where `q=ac−b²>0`, `r=a²−18m₁>0`, `b>0`, and `m₁>0` implies `b<3a²`. Thus either pair of positive endpoint values for `H_R` over the certified two-atom interval for `e` would settle the first open determinant. Neither endpoint sign has been proved. If an endpoint gate is negative, the missing source-specific quantity is the strict radius-mixing quadratic residual `11q_Rf−p_R`, which must pay it.
+
+The proof exposes a concrete next source-specific margin. At finite radius `R`, the difference between the quadratic norm and `(64/3969)` times its top moment equals `ρ(R)H_{α,β}(R)+∫₀ᴿ(−ρ'(x))H_{α,β}(x)dx`, where the explicitly square-completed cumulative gap `H_{α,β}` is nonnegative. `ThetaCuspModularRatio.thetaCuspFullSource_slope_le_neg_six_of_fortyFiveEighths_le` proves `−ρ'≥6ρ` once the first-atom reflection scale reaches `45/8`. A lower bound for the integral of `H_{α,β}ρ` on that ray at the *orthogonal* coefficients, strong enough to pay the possible negative part of `G+(64/3905)dp`, is the remaining direct comparison. Existing low-moment first-atom concentration bounds and this slope theorem do not yet supply that comparison.
 
 These are correlated, source-specific lower bounds requiring no independent enclosure of `R₅`. They reduce the remaining `dΔ>−G` comparison to an analytic lower bound on the two-atom Gram determinant, a lower bound on `d`, and an upper bound on the negative part of the four-moment gate over the existing two-atom remainder intervals. The corpus already has an unconditional lower bound for `d` in `XiPrimeMarkedFiniteSixthLowerBracket.lean`; the missing ingredient is a strong enough analytic comparison for the actual two-atom moments through order five.
 

@@ -44,3 +44,76 @@ asks for.
 
 ## Log
 - 2026-09-24 — built, wired, axiom-clean.
+
+## Additive orthogonality and the prime-modulus progression (2026-09-24)
+
+`formal/GaloisForLFunctions/RHTower/EstermannProgressionOrthogonality.lean` (axiom-clean):
+
+* `summable_estermannSmoothedTerm` — absolute convergence of the smoothed twisted terms, from
+  `d(N) ≤ N + 1` against the geometric factor `e^{-Nx}`;
+* `sum_twist_eq_progression` — the exact bridge, for **every** modulus,
+
+```text
+∑_{a mod q} e(−ab/q) ∑_N d(N) e(aN/q) e^{-Nx} = q · ∑_{N ≡ b (q)} d(N) e^{-Nx}.
+```
+
+`formal/GaloisForLFunctions/RHTower/EstermannPrimeProgression.lean` (axiom-clean):
+
+* `exists_bound_norm_estermann_weighted` — the weighted form that keeps the main term: for an
+  arbitrary weight on the units, `∑_a w(a) S_a = (∑_a w(a)) · main_q + O_w(x^{-1/2})`.  The
+  mean-zero theorem is the case `∑_a w(a) = 0`;
+* `estermannSmoothedSum_zero` — the untwisted sum is the zero twist;
+* `sum_zmod_eq_add_sum_units` — for a prime modulus the residue sum is the zero term plus the unit
+  sum;
+* **`exists_bound_norm_estermann_prime_progression`** — for prime `q` and `b ≢ 0 (mod q)`,
+
+```text
+q ∑_{N ≡ b (q)} d(N) e^{-Nx}
+  = ∑_N d(N) e^{-Nx} − (γ − log x − 2 log q)/(qx) + O_q(x^{-1/2}).
+```
+
+The subtracted term is the twist-independent main term weighted by the Ramanujan sum
+`c_q(b) = ∑_{a ≠ 0} e(−ab/q) = −1`.
+
+## Reading
+
+The whole `b`-dependence of the progression sum, to this accuracy, is the single Ramanujan factor.
+Everything beyond it lives in the `O(x^{-1/2})` critical-line integral, which is where the
+arithmetic of `d(n)` in progressions actually sits.  This is the twisted-divisor input the ledger's
+Barban–Vehov / BCHB off-diagonal entry asks for; the general (non-prime) modulus needs the gcd
+reduction `e(aN/q) = e(a'N/q')`, giving the full Ramanujan main term `∑_{d ∣ q} c_{q/d}(b)·main(q/d)`.
+
+## The scaled-twist reduction (2026-09-24)
+
+`formal/GaloisForLFunctions/RHTower/EstermannScaledTwist.lean` (axiom-clean):
+
+* `stdAddChar_scale` — `e((d j)/(d q')) = e(j/q')`: the standard additive character is invariant
+  under simultaneously scaling argument and modulus;
+* `estermannCoeff_scale`, `estermannSmoothedSum_scale` —
+  `estermannSmoothedSum q (d·m) x = estermannSmoothedSum (q/d) m x` whenever `q = d q'`.
+
+Writing `d = gcd(a, q)` this sends an arbitrary residue twist to a **unit** twist of the reduced
+modulus `q/d`, which is exactly the hypothesis `estermann_smoothed_sum` requires.  The arithmetic
+consequence is that the main term carried by a scaled twist is `(γ − log x − 2 log q')/(q' x)`,
+belonging to the reduced modulus — this is the `a`-dependence that upgrades the single Ramanujan
+factor of the prime case to the full expansion `∑_{d ∣ q} c_{q/d}(b) · main(q/d)`.
+
+## The general modulus (2026-09-24)
+
+`formal/GaloisForLFunctions/RHTower/EstermannGeneralProgression.lean` (axiom-clean):
+
+* `exists_reducedMain` — **every** residue twist has an `O(x^{-1/2})` expansion, not only the units:
+  with `d = gcd(a, q)`, `Nat.coprime_div_gcd_div_gcd` makes `a/d` coprime to `q' = q/d`, so the
+  scaled-twist reduction lands on a unit twist of the divisor modulus `q'`, where
+  `estermann_smoothed_sum` applies.  The main term carried is `(γ − log x − 2 log q')/(q' x)`.
+* `exists_bound_norm_estermann_general_progression` — averaging against `e(−ab/q)`, of modulus one,
+
+```text
+q ∑_{N ≡ b (q)} d(N) e^{-Nx} = ∑_{a mod q} e(−ab/q) · main(q_a) + O_q(x^{-1/2})
+```
+
+for an arbitrary modulus, `q_a = q/gcd(a,q)`.
+
+The remaining step is purely finite and combinatorial: grouping the residues by their gcd turns
+`∑_a e(−ab/q) main(q_a)` into `∑_{d ∣ q} c_{q/d}(b) · main(q/d)` with Ramanujan sums.  No analysis
+is left in it.

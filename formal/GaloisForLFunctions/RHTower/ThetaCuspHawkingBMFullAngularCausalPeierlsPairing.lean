@@ -296,6 +296,129 @@ theorem fullCausalSourcePair_self (q : XiZeroCopy) (branch b : Bool)
     fullCausalSourcePair q branch b b a a X k = 0 := by
   rw [fullCausalSourcePair_decomposition, sub_self]
 
+/-- Reciprocity turns the literal CTP pairing into the skew source pairing of
+two future responses under one fixed full-kernel branch. Thus its Green-current
+realization needs only the sourced future weak equation, not a separate
+retarded-response PDE. -/
+theorem fullCausalSourcePair_eq_future_skew (q : XiZeroCopy)
+    (branch b c : Bool) (a d : ℂ) (X k : ℝ) :
+    fullCausalSourcePair q branch b c a d X k =
+      (∫ p : Event, timeReducedCoefficient (physicalRate q c) d p.1 p.2 *
+          fullFutureResponse q branch b a p.1 p.2 X k ∂eventMeasure) -
+        ∫ p : Event, timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+          fullFutureResponse q branch c d p.1 p.2 X k ∂eventMeasure := by
+  rw [fullCausalSourcePair_decomposition]
+  rw [integral_prod _ (fullSourcePairDensity_integrable q branch c b d a X k),
+    integral_prod _ (fullSourcePairDensity_integrable q branch b c a d X k)]
+  simp only [pair_future_inner]
+
+private def futureTestDensity (q : XiZeroCopy) (branch b : Bool) (a : ℂ)
+    (X k : ℝ) (phi : Event → ℂ) (z : Event × Event) : ℂ :=
+  phi z.2 *
+    (angularDirichletKernel q branch (z.1.1-z.2.1) z.2.2 z.1.2 X k *
+      timeReducedCoefficient (physicalRate q b) a z.1.1 z.1.2)
+
+private theorem futureTestDensity_measurable (q : XiZeroCopy)
+    (branch b : Bool) (a : ℂ) (X k : ℝ) (phi : Event → ℂ)
+    (hphi : Continuous phi) :
+    Measurable (futureTestDensity q branch b a X k phi) := by
+  have hk := (full_kernel_measurable q branch X k).comp
+    (show Measurable (fun z : Event × Event =>
+      ((z.1.1-z.2.1,z.2.2,z.1.2) : ℝ × ℝ × ℝ)) by fun_prop)
+  have hj := (timeReducedCoefficient_joint_continuous (physicalRate q b) a).measurable.comp
+    (measurable_fst : Measurable (Prod.fst : Event × Event → Event))
+  exact (hphi.measurable.comp measurable_snd).mul (hk.mul hj)
+
+/-- Absolute joint source/target admission of the literal future full-circle
+response against every continuous compact physical time/radial test. The
+strict full-kernel exponent remains below the actual source decay exponent. -/
+theorem futureTestDensity_integrable (q : XiZeroCopy) (branch b : Bool)
+    (a : ℂ) (X k : ℝ) (phi : Event → ℂ)
+    (hphi : Continuous phi) (hc : HasCompactSupport phi) :
+    Integrable (futureTestDensity q branch b a X k phi)
+      (eventMeasure.prod volume) := by
+  obtain ⟨C,hC,hK⟩ := angularDirichletKernel_strict_growth q branch X k
+  obtain ⟨D,hD,hJ⟩ := timeReducedCoefficient_physical_bound q b a _
+    (decayExponent_bounds q).2
+  let w : Event → ℝ := fun r => ‖phi r‖ * Real.exp (-strictGrowthExponent q*r.1)
+  have hw : Integrable w := by
+    apply (hphi.norm.mul (by fun_prop)).integrable_of_hasCompactSupport
+    exact hc.norm.mul_right
+  have hrate : strictGrowthExponent q-decayExponent q < 0 := by
+    linarith [(strictGrowthExponent_bounds q).2]
+  have hm := ((eventWeight_integrable q
+    (strictGrowthExponent q-decayExponent q) hrate).mul_prod hw).const_mul (C*D)
+  apply hm.mono' (futureTestDensity_measurable q branch b a X k phi hphi).aestronglyMeasurable
+  have he : ∀ᵐ p : Event ∂eventMeasure, p.2 < 0 := by
+    apply (Measure.ae_prod_iff_ae_ae
+      ((isOpen_lt continuous_snd continuous_const).measurableSet :
+        MeasurableSet {p : Event | p.2 < 0})).mpr
+    exact ae_of_all _ (fun _ => ae_restrict_mem measurableSet_Iio)
+  have hz : ∀ᵐ z : Event × Event ∂eventMeasure.prod volume, z.1.2 < 0 := by
+    apply (Measure.ae_prod_iff_ae_ae
+      ((isOpen_lt continuous_fst.snd continuous_const).measurableSet :
+        MeasurableSet {z : Event × Event | z.1.2 < 0})).mpr
+    filter_upwards [he] with p hp
+    exact ae_of_all _ (fun _ => hp)
+  filter_upwards [hz] with z hz
+  by_cases ht : 0 ≤ z.1.1-z.2.1
+  · have hb := mul_le_mul (hK (z.1.1-z.2.1) z.2.2 z.1.2 ht)
+      (hJ z.1.1 z.1.2 hz) (norm_nonneg _)
+      (mul_nonneg hC (Real.exp_pos _).le)
+    have h := mul_le_mul_of_nonneg_left hb (norm_nonneg (phi z.2))
+    rw [futureTestDensity, norm_mul, norm_mul]
+    apply h.trans_eq
+    dsimp only [eventWeight, w]
+    simp only [sub_mul, mul_sub, neg_mul, Real.exp_sub, Real.exp_neg]
+    ring
+  · have hneg : z.1.1-z.2.1 < 0 := lt_of_not_ge ht
+    rw [futureTestDensity,
+      full_kernel_negative q branch _ z.2.2 z.1.2 X k hneg,
+      zero_mul, mul_zero, norm_zero]
+    dsimp only [eventWeight, w]
+    positivity
+
+private theorem futureTestDensity_source_integral (q : XiZeroCopy)
+    (branch b : Bool) (a : ℂ) (X k : ℝ) (phi : Event → ℂ) (r : Event) :
+    (∫ p : Event, futureTestDensity q branch b a X k phi (p,r) ∂eventMeasure) =
+      fullFutureResponse q branch b a r.1 r.2 X k * phi r := by
+  rw [fullFutureResponse, ← integral_mul_const]
+  apply integral_congr_ae
+  exact ae_of_all _ (fun p => by
+    simp only [futureTestDensity,directedFullDensity,if_true]
+    ring)
+
+private theorem futureTestDensity_target_integral (q : XiZeroCopy)
+    (branch b : Bool) (a : ℂ) (X k : ℝ) (phi : Event → ℂ) (p : Event) :
+    (∫ r : Event, futureTestDensity q branch b a X k phi (p,r)) =
+      timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+        ∫ r : Event,
+          angularDirichletKernel q branch (p.1-r.1) r.2 p.2 X k * phi r := by
+  have he (r : Event) : futureTestDensity q branch b a X k phi (p,r) =
+      timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+        (angularDirichletKernel q branch (p.1-r.1) r.2 p.2 X k * phi r) := by
+    unfold futureTestDensity
+    ring
+  simp_rw [he]
+  exact integral_const_mul _ _
+
+/-- The admitted infinite original source can be transposed through every
+continuous compact physical target test for the literal full future response.
+No angular field or source leg is replaced by the native kernel. -/
+theorem fullFutureResponse_test_fubini (q : XiZeroCopy)
+    (branch b : Bool) (a : ℂ) (X k : ℝ) (phi : Event → ℂ)
+    (hphi : Continuous phi) (hc : HasCompactSupport phi) :
+    (∫ r : Event, fullFutureResponse q branch b a r.1 r.2 X k * phi r) =
+      ∫ p : Event, timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+        (∫ r : Event,
+          angularDirichletKernel q branch (p.1-r.1) r.2 p.2 X k * phi r)
+        ∂eventMeasure := by
+  have hi := futureTestDensity_integrable q branch b a X k phi hphi hc
+  have h := integral_integral_swap
+    (f := fun p r => futureTestDensity q branch b a X k phi (p,r)) hi
+  simpa only [futureTestDensity_source_integral,
+    futureTestDensity_target_integral] using h.symm
+
 end
 
 end RHTower.D4BMFullAngularCausalPeierls
