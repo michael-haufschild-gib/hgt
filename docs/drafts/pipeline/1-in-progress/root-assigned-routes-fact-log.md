@@ -358,3 +358,400 @@
   boundary (`EulerDeletionTerminalCoefficientCollapse.lean`). The unresolved
   step is cancellation *across* these residual coefficients. A bare complete
   lcm sign argument does not attack that step.
+- **Physical centered-lcm survivor:** for every positive complete label `n ≤ N`,
+  the *actual* Möbius-weighted divisor-window cross fibre equals `μ(n)` times
+  the double-centered kernel `1_{n∣km}`, summed over the two literal physical
+  windows. Centering uses the exact full-period mean `1/d` for each `d∣n`,
+  so no divisor-dependent discrepancy weight is discarded. At prime `n=p`,
+  the diagonal fibre is exactly `divisorWindowDiscrepancy(p,t,H)² ≥ 0`.
+  Consequently prime complete fibres cannot provide negative diagonal
+  cancellation; any such low-lcm cancellation must involve composite labels,
+  while `n>N` remains the incomplete cutoff carrier. This is a sharper
+  structural target, not the missing signed bound. Certificate:
+  `EulerDeletionCenteredLcmIncidence.lean` (direct Lean and targeted
+  `lake --old build ...:olean` passed; umbrella import wired, not built).
+- **Semiprime local-cancellation witness:** for distinct primes `p,q`, the actual
+  complete physical `pq` diagonal fibre is exactly
+  `D(pq)^2 + 2D(p)D(q) - 2D(pq)(D(p)+D(q))`, with the literal
+  divisor-window discrepancies `D`. On the one-cell window ending at `p`, it
+  equals `[1 - 2p - 2(p-1)^2 q]/(p^2 q^2) < 0`. Thus composite labels can
+  contribute the opposite sign to prime-square fibres without discarding
+  divisor-dependent weights. This is a local witness only: neither sum over
+  labels nor incomplete high-lcm boundary is controlled. Certificate:
+  `EulerDeletionCenteredLcmSemiprimeSign.lean` (direct Lean and targeted
+  `lake --old build ...:olean` passed; umbrella import wired, not built).
+- **Period-mean law (paper proof; not yet Lean):** let `A(n)` be the average over
+  `k=1,…,n` of the one-cell diagonal `physicalCenteredLcmFibre n (k-1) 1
+  (k-1) 1`, for `n>0`. If `n` is squarefree, then
+  `A(n) = μ(n)[1/n - ∏_{p|n}(2p-1)/p²]`; otherwise `A(n)=0`.
+  For each pair with `lcm(d,e)=n`, period averaging the two centered divisor
+  indicators gives `1/n - 1/(de)`. The unweighted and `1/(de)`-weighted lcm
+  pair sums factor at each prime as `-1` and `-2/p+1/p²`, respectively.
+  Nonzero Möbius pairs cannot have nonsquarefree lcm. Thus `A(1)=0`, and for
+  every squarefree `n>1`, `A(n)` has the strict sign `-μ(n)` because each
+  `(2p-1)/p² > 1/p`. This locates a multiplicative, alternating period-main
+  term. Averaging the pointwise conservation law below over a full period gives
+  `Σ_{d|n} A(d) = (φ(n)/n)(1-φ(n)/n)`: before averaging, lcm partition makes
+  this the square of `Σ_{e|n} μ(e)(1/e - 1_{e|k})`, whose value is
+  `φ(n)/n - 1_{gcd(k,n)=1}`. Thus alternating prime/semiprime/higher grades
+  conserve the Bernoulli variance of coprimality, bounded by `1/4` on every
+  complete divisor lattice. The mean law and `1/4` bound here are **paper-only**;
+  the stronger pointwise divisor-closed identity is formalized below. This
+  does **not** bound the EDQ cutoff or its incomplete high-lcm boundary.
+- **Pointwise physical divisor-lattice conservation (Lean):** for every `n>0`,
+  starting coordinate `t`, and window length `H`, the sum of the actual
+  centered complete lcm fibres over `q|n` is exactly
+  `[H·φ(n)/n - #{k∈(t,t+H] : gcd(k,n)=1}]² ≥ 0`. No period averaging,
+  divisor-independent replacement, or dropped discrepancy weight enters.
+  The proof combines the corpus's exact finite lcm-pair reindexing with its
+  physical Möbius-to-coprime window identity. This resolves cancellation
+  within any complete divisor lattice, including prime and negative
+  semiprime grades. The EDQ initial-segment cutoff `d≤N` is generally not
+  one such lattice; bounding cross-panel correlations and the incomplete
+  high-lcm boundary remains the RH-scale obstacle. Certificate:
+  `EulerDeletionCenteredLcmCoprimeConservation.lean` (direct Lean and targeted
+  `lake --old build ...:olean` passed; umbrella import wired, not built).
+- **Divisor-panel inversion obstruction (paper proof; not yet Lean):** the
+  unique expansion of the cutoff indicator on positive divisors in principal
+  divisor-lattice panels is
+  `1_{d≤N} = Σ_{m≤N, d|m} M(⌊N/m⌋)`, where
+  `M(X)=Σ_{j≤X} μ(j)`. For `d≤N`, interchange `m=d k` and the inner Mertens
+  sum: the result is `Σ_{r≤N/d} Σ_{j|r} μ(j)=1`; for `d>N` both sides vanish.
+  Uniqueness follows from the triangular incidence matrix with diagonal one.
+  Hence an exact panel decomposition of the actual EDQ cutoff carries
+  Mertens quotient coefficients before any estimate. The new nonnegative
+  divisor-panel squares alone cannot yield the missing prefix bound by a
+  coefficient-blind positive-mixture argument; a signed cross-panel law must
+  retain those coefficients. This is a no-go for that proposed use of the
+  panel theorem, not a no-go for EDQ itself.
+- **Actual physical initial-segment sign failure (Lean):**
+  write `F(q)=physicalCenteredLcmFibre q 0 15 0 15`. Then
+  `Σ_{1≤q≤10} F(q) = -45/196 < 0`. The only nonzero physical coefficients
+  `a_d=μ(d)(15/d-#{1≤k≤15:d|k})` for `1≤d≤10` are
+  `a₂=-1/2`, `a₆=1/2`, `a₇=-1/7`, and `a₁₀=1/2`.
+  Among these, the only distinct pairs whose lcm is at most ten are
+  `(2,6)` and `(2,10)`. Therefore the complete-grade prefix is
+  `(a₂+a₆)²+(a₂+a₁₀)²-a₂²+a₇² = -1/4+1/49 = -45/196`.
+  Equivalently, the divisor-closed `q|10` subpanel is exactly zero by the
+  proved conservation law; the added `q=6` grade is `-1/4` and the `q=7`
+  grade is `1/49`, while `q=3,4,8,9` vanish. Thus the universal positivity
+  conjecture for *actual* physical initial-segment complete-lcm sums is false,
+  not merely for arbitrary coefficient vectors or one isolated semiprime
+  grade. The positive survivor is precisely divisor-closed conservation;
+  arbitrary initial cutoffs still require signed cross-grade cancellation.
+  Certificate: `EulerDeletionCenteredLcmInitialCutoffSign.lean` (direct Lean
+  and targeted `lake --old build ...:olean` passed; umbrella import wired,
+  not built; both public capstones audit with only `propext`,
+  `Classical.choice`, `Quot.sound`). The following extension remains paper-only: the same value
+  holds for every
+  `H=15+210k`, `k≥0`, at start `t=0`. Every squarefree `d≤10` divides `210`,
+  and its discrepancy is the fractional part `H/d-⌊H/d⌋`, unchanged when
+  `H` grows by `210`; nonsquarefree coefficients vanish. Hence fixed cutoff
+  `N=10` has arbitrarily long physical windows with the same negative sum.
+- **Underlying kernel criterion (paper proof; not yet Lean):** for any finite
+  positive support `S` and cutoff `N` with `d≤N` for all `d∈S`, the symmetric
+  `0/1` matrix `K(d,e)=1_{lcm(d,e)≤N}` is positive semidefinite for *all*
+  coefficient vectors exactly when the relation `lcm(d,e)≤N` is transitive
+  on `S`. If transitive, its equivalence classes give all-ones diagonal
+  blocks and `aᵀKa` is a sum of block squares. Conversely, if `d~e` and
+  `d~f` but `e≁f`, the vector with coefficients `a_d=-1`, `a_e=a_f=1`
+  (zero elsewhere) has value `3-4=-1`; this directly witnesses failure of
+  positive semidefiniteness. On squarefree support `{2,6,10}` at cutoff ten,
+  `2~6`, `2~10`, but `6≁10`; the physical window above realizes a nearby
+  negative vector. This classifies the abstract positivity boundary and
+  identifies the exact arithmetic restriction a successful EDQ estimate must
+  exploit beyond a generic Gram argument.
+- **Signed panel-square inversion (Lean):**
+  let `F(q)` be the complete physical centered lcm grade and let
+  `B(m)=H·φ(m)/m-#{k∈(t,t+H]:gcd(k,m)=1}`. Pointwise divisor-closed
+  conservation says `B(m)²=Σ_{q|m}F(q)`. Möbius inversion followed by the
+  finite divisor hyperbola swap gives the exact initial-cutoff law
+  `Σ_{1≤q≤N}F(q)=Σ_{1≤m≤N}M(⌊N/m⌋)B(m)²` for all `N,t,H`.
+  The squares retain the actual fixed-start physical weights, but their
+  unique coefficients are signed Mertens quotient values; the negative
+  ten-grade witness is therefore compatible with every individual panel
+  square being nonnegative. This isolates the cross-grade cancellation as a
+  signed quadratic **coefficient problem**, not a missing local square law.
+  It does not by itself bound the EDQ quotient or the high-lcm boundary.
+  Certificate: `EulerDeletionCenteredLcmMertensPanelInversion.lean` (direct
+  Lean and targeted `lake --old build ...:olean` passed; umbrella import
+  wired, not built; both public capstones audit with only `propext`,
+  `Classical.choice`, `Quot.sound`).
+- **A local derivative tax also misses long modular wraps (paper proof; not
+  yet Lean):** for the two-atom vector `a_m=1`, `a_{m+q}=-1`, with
+  `2≤q≤m/2`, every physical cell `k∈[m,m+q)` has residue difference of
+  magnitude at least `1/2`. The full physical energy is therefore at least
+  `q/[4(m+q)(m+q+1)] ≥ q/(16m²)`. The corpus's Laplace-dipole estimate
+  gives critical Gamma--Hankel energy `≤q²/(4m³)`. Set `m=t²`, `q=t` and
+  `t≥2`. Then physical energy is `≥1/(16t³)`, whereas Hankel energy is
+  `≤1/(4t⁴)`. Even adding the local coefficient-difference tax
+  `J(a)=Σ_{k≥1}(a_{k+1}-a_k)²/k²` cannot give a uniform bridge: the four
+  nonzero differences lie at `m-1,m,m+q-1,m+q`, so `J(a)≤16/t⁴`.
+  Consequently the ratio of physical energy to Hankel energy plus this
+  local tax is at least `t/260` and unbounded. The necessary positive
+  survivor is a genuinely nonlocal gap payment (of order `q/m²` on this
+  family) or Möbius-specific cancellation. This refines the Lean adjacent
+  obstruction below; the gap-family and tax statement still need Lean.
+- **Route E → EDQ coefficient-blind energy bridge fails (Lean):** for the
+  adjacent signed atoms at frequencies `m,m+1`, the physical residue dipole
+  `residueVec m - residueVec (m+1)` has norm-square at least
+  `m/(m+1)^3`: its wrap cell `j=m-1` alone has that energy. The *same*
+  adjacent two-atom coefficient vector has critical (`r=1`) finite
+  Gamma--Hankel energy at most `1/(4m^3)` by the corpus's Laplace-dipole
+  theorem. For every `m≥2`, physical energy therefore exceeds `m` times
+  the Gamma--Hankel energy; no coefficient-independent comparison constant
+  exists. This is a source-topology obstruction, **not** a no-go for a
+  Möbius-specific transfer or for RH. Any universal replacement must pay
+  at least the `m^-2` modular wrap cost on adjacent dipoles; a bridge using
+  the actual Möbius signs remains open. Certificate:
+  `EulerDeletionRouteEAdjacentDipoleNoGo.lean` (direct Lean, targeted
+  `lake --old build ...:olean`, formal lint and four capstone axiom audits
+  passed; umbrella import wired but not built; axioms only `propext`,
+  `Classical.choice`, `Quot.sound`).
+- **Complete LCM-grade gcd normal form and parity trace (paper proof; Lean
+  pending):** write `K_n(k,m)` for the corpus's period-double-centered
+  Möbius LCM fibre and set
+  `C_n = n⁻² ∑_{a=1}^n gcd(n,a)` for `n≥1`. Counting the kernel of
+  multiplication by `m` modulo `n` gives
+  `avg_{a mod n} 1_{n∣am}=gcd(n,m)/n`. Substitution into the already-proved
+  double-centering identity yields the exact source-grade formula
+  `K_n(k,m)=μ(n)[1_{n∣km}−gcd(n,k)/n−gcd(n,m)/n+C_n]`.
+  For squarefree `n>1`, `n∣k² ↔ n∣k`, so the full-period diagonal mean is
+  `avg_{k mod n} K_n(k,k)=μ(n)(1/n−C_n)`. Every gcd in the defining sum is
+  at least one, and the `a=n` term is `n>1`; hence `C_n>1/n`. Thus **every**
+  squarefree grade with an even number of prime factors has a negative
+  one-cell physical diagonal somewhere, while odd-parity grades have a
+  positive one-cell diagonal somewhere. In fact a sharper explicit witness
+  is the cell `k=m=n`: its two one-sided averages equal one and
+  `K_n(n,n)=μ(n)(C_n−1)`. Because `C_n` is the average of
+  `1_{n∣ab}` over the `n²` residue pairs and the `(1,1)` pair is zero for
+  `n>1`, `C_n≤1−1/n²`. Therefore for every even-parity squarefree `n>1`,
+  the literal one-cell physical grade at `k=n` is at most `−1/n²`;
+  odd-parity grades have the opposite positive lower bound. This extends
+  the Lean semiprime
+  sign witness to all squarefree grades and pinpoints why EDQ needs
+  cancellation *across* grades, not grade-wise positivity. It does not
+  estimate the signed initial-grade sum or the incomplete high-LCM boundary.
+- **Uniform even-grade sign gap (paper proof; Lean pending):** the same
+  `C_n` is the probability that `n∣ab` for independent uniform residues
+  `a,b (mod n)`. For squarefree `n`, the Chinese remainder theorem gives
+  `C_n=∏_{p∣n}(2p−1)/p²`. Each factor decreases with the prime and lies
+  strictly below one. If `μ(n)=1` and `n>1`, `n` has at least two distinct
+  prime factors; the two smallest possible factors are `p=2,3`.
+  Consequently `C_n≤(3/4)(5/9)=5/12` and the **literal** one-cell
+  physical grade at `k=n` obeys `K_n(n,n)≤−7/12`, uniformly over all
+  even-parity squarefree grades. Equality occurs for `n=6`, so the
+  constant is sharp. This upgrades the qualitative semiprime no-go to a
+  sharp whole-parity obstruction. Cross-grade cancellation remains open.
+- **Divisor-closed composite payment is unbounded (paper proof; Lean
+  pending):** let `P` be the product of any finite set of primes and take
+  the literal one-cell window ending at `k=P`. The corpus's divisor-panel
+  conservation gives the complete grade sum
+  `Σ_{q∣P} K_q(P,P)=(φ(P)/P)²≤1`. Each prime grade is
+  `K_p(P,P)=(1−1/p)²≥1/4`; grade one is zero. Therefore the sum over
+  composite squarefree grades `q∣P` is at most `1−(#primes in P)/4`.
+  Along growing prime sets it tends to `−∞`, while the positive prime
+  grades tend to `+∞`; cancellation is exact and unbounded in the actual
+  Möbius source. This is the strongest positive survivor of the grade-wise
+  sign obstruction: the arithmetic *can* pay across a divisor-closed
+  lattice. EDQ still requires a signed bound for numerical initial grade
+  cutoffs and the incomplete high-LCM boundary; this identity cannot be
+  substituted for that moving-cutoff estimate.
+- **Factorial-cell numerical cutoff exposes Mertens (paper proof; Lean
+  pending):** fix `N≥1` and take the literal one-cell window ending at
+  `k=N!`. Every complete LCM grade `q≤N` divides `k`; the explicit
+  diagonal law above therefore gives the exact *numerical initial-grade*
+  identity
+  `Σ_{1≤q≤N} K_q(k,k) = -M(N) + Σ_{1≤q≤N} μ(q) C_q`.
+  For squarefree `q`, CRT yields `C_q=∏_{p∣q}(2p−1)/p²≤2^ω(q)/q=τ(q)/q`;
+  nonsquarefree terms vanish. Thus the correction has absolute value at
+  most `Σ_{q≤N}τ(q)/q≤(Σ_{a≤N}1/a)²=O(log² N)`. This transfers the
+  Mertens-scale signed obstruction into an **actual fixed-start physical
+  initial-LCM panel**, with no period replacement or missing grades below
+  `N`. It does not bound EDQ's physical energy: the factorial endpoint
+  moves far beyond the source cutoff and the omitted high-LCM boundary is
+  still separate. Any uniform polylog upper or lower bound on this
+  unweighted signed panel would force a corresponding one-sided
+  polylog bound on `M(N)`; no such bound is claimed here.
+- **Squarefree arithmetic period does not remove physical prime-square
+  layers (paper proof; Lean pending):** the corpus residue-sum identity and
+  squarefree support of `μ` show that `pairedMoebiusSource N` has period
+  `P_N=∏_{p≤N}p`, with no repeated prime factors. If `p∣L`, conditioning a
+  `P_N`-periodic function uniformly on residues modulo `L` or `pL` gives
+  the same mean on each child: `gcd(P_N,L)=gcd(P_N,pL)`. The actual physical
+  weights `w_j=1/((j+1)(j+2))` are not uniform, so the prime-square
+  history layer is *exactly* the weighted conditional-mean discrepancy
+  from that common uniform mean, not zero. Precisely, if child masses are
+  `m_b`, child means `a_b`, common uniform mean `u`, and
+  `e_b=a_b-u`, its parent-fibre energy is
+  `Σ_b m_b(e_b-(Σ_c m_c e_c)/(Σ_c m_c))²`. This cleanly separates
+  squarefree arithmetic frequency from physical boundary bias; the latter
+  must be estimated, not discarded.
+- **Explicit squareful leakage in the literal Möbius drift (paper proof;
+  Lean pending):** at `N=5`, the `l=3` transition refines `clock 3=6` to
+  `clock 4=12`; its only future signed modulus is prime `5`, with `μ(5)=-1`.
+  Let `a_0,a_6` be physical conditional means of `residue 5` on the child
+  fibres `j≡0,6 (mod 12)`. The first weights and residues are
+  `(w_0,residue 5 0)=(1/2,1/5)` and
+  `(w_6,residue 5 6)=(1/56,2/5)`. For `k≥1`,
+  `w_{12k}≤1/[84k(k+1)]` and
+  `w_{6+12k}≤1/[140k(k+1)]`; telescoping gives tail masses at most
+  `1/84` and `1/140`. Since every residue lies in `[0,1]`, these imply
+  `a_0≤47/210` and `a_6≥2/7`, hence `a_6-a_0≥13/210`. The reverse-tail
+  identity therefore gives a nonzero *actual* `historyLayer 3
+  (predictableDrift 5)`, despite the squarefree source period. The two-child
+  variance identity and masses `m_0≥1/2`, `m_6≥1/56` even give
+  `‖historyLayer 3 (predictableDrift 5)‖²≥(13/210)²/58`.
+  Thus replacing the corpus's prime-power carrier by a prime-only carrier
+  is false; future primes leak through a prime-square physical refinement.
+  This rules out a source-support shortcut but leaves the signed moving-
+  cutoff low-clock bound—the actual RH obstacle—open.
+- **Signed anchored-tail upper bound for the squareful producer (paper
+  proof; Lean pending):** put `L=clock l`, `S_N(j)=pairedMoebiusSource N j`,
+  and `A_{N,L}(j)=S_N(j)-S_N(j%L)`. The corpus's `sourcePredictorVec`
+  is exactly `j↦S_N(j%L)` and belongs to `historySpace l`.
+  `historyLayer l=P_{l+1}-P_l` is the orthogonal projection onto the
+  new-history subspace, hence is contractive and annihilates this predictor.
+  If `l+1` is squareful, `μ(l+1)=0`, so the corpus's exact
+  source-minus-innovation identity yields the source-faithful bound
+  `‖historyLayer l (predictableDrift N)‖² ≤
+   Σ_{j≥L} w_j A_{N,L}(j)²` (in fact for every `N`, including `l≥N`).
+  The right side retains all Möbius signs in one square; by the corpus's
+  truncated-divisor identity, writing `r=j%L` gives
+  `A_{N,L}(j)=(j-r)H_N-Σ_{r+1<k≤j+1}F_N(k)`, where
+  `H_N=Σ_{d≤N}μ(d)/d` and `F_N(k)=Σ_{d|k,d≤N}μ(d)`.
+  Thus the squareful portion of the *actual* low-clock EDQ producer is
+  bounded by an explicit signed physical-tail window energy, with no
+  beta quotient, separated absolute coefficients, or terminal-period
+  average. Since `|A_{N,L}(j)|≤N` and the exact physical tail mass is
+  `1/(L+1)`, it also gives the unconditional sharper ceiling
+  `‖historyLayer l (predictableDrift N)‖²≤N²/(L+1)` on these layers,
+  versus the corpus's generic `4N²/(L+1)` source-layer envelope.
+  The abstract nested-projection contraction is checked in
+  `/tmp/ProjectionIncrementScratch.lean`; source-linked Lean remains
+  pending because its import hit the memory guard while another agent was
+  building. No polylog estimate of the signed right side is claimed.
+- **The signed anchor is RH-hard before quotient cancellation (paper proof;
+  Lean pending):** the corpus's `sum_trunc_eq_one_of_le` and source identity
+  give `S_N(j)=(j+1)H_N-1` whenever `j<N`. Thus for any `L≤N/2` and
+  `2L≤j<N`, `A_{N,L}(j)=(j-j%L)H_N`. Since `j-j%L≥j/2` and
+  `w_j j²≥1/3` for `j≥2`, the positive anchored-tail right side above
+  satisfies
+  `Σ_{j≥L}w_j A_{N,L}(j)² ≥ (N-2L)H_N²/12`.
+  In particular, at the fixed squareful stage `l=3`, `L=6`, a uniform
+  polylog bound on this *upper-bound carrier* for `N≥24` would force
+  `H_N=O(N^{-1/2} polylog N)`, already an RH-strength Möbius estimate.
+  The corpus already has the analogous first-`N` harmonic lower bound for
+  the full physical error (`half_nat_mul_deningerHarmonicPartial_sq_le_bdMobiusFullErrorEnergy`);
+  the new point is that the proposed anchor reproduces this debt and so
+  cannot simplify the squareful producer by itself.
+  The conjecture that the anchor alone makes squareful low-clock energy
+  easy is therefore rejected: it squares *before* conditional averaging,
+  retaining a harmonic ramp that the quotient can suppress. The later
+  `L¹` argument below in fact controls the initial block and exterior
+  tail separately for sufficiently small clocks, so a cross-cutoff
+  payment is not logically necessary there. The survivor is the structural split
+  between squarefree-period arithmetic and physical weight bias, not a
+  proposed absolute anchored-energy estimate. Any successful EDQ proof
+  must keep weighted conditional averaging before squaring, and at moving
+  clocks beyond the `L¹` horizon may also require genuinely signed
+  cross-boundary control.
+- **Unconditional physical `L¹` convergence with `L²` failure (paper proof;
+  Lean pending):** put `e_N(j)=pairedMoebiusSource N j+1` and retain the
+  corpus saving `s(N)=exp(-log(N)^(1/3)/216)`. Its two proved bounds are
+  `|H_N|≤C₁s(N)` (`DeletionStretchedEnergy.harmonic_rate`) and
+  `‖pairedMoebiusSource N‖²_{L²(w)}≤C₂ N s(N)` (the modular-norm rate plus
+  `sourceVec_energy`). On `0≤j<N`, exact floor inversion gives
+  `e_N(j)=(j+1)H_N`, so this part of `‖e_N‖_{L¹(w)}` is at most
+  `|H_N| Σ_{j<N}1/(j+2) ≤ |H_N| log(N+1)`. On `j≥N`, physical mass is
+  `1/(N+1)`; Cauchy--Schwarz and `‖e_N‖²₂≤2C₂Ns(N)+2` give a tail at most
+  `sqrt((2C₂Ns(N)+2)/(N+1))`. Both terms tend to zero unconditionally.
+  Thus the *literal* finite Möbius source converges to `-1` in physical
+  `L¹`, even though the corpus's
+  `not_tendsto_bdMobiusFullErrorEnergy_zero` proves its corresponding
+  `L²` error does **not** tend to zero. This uses the complete physical
+  tail and does not assert an RH-scale energy ceiling. The broad `L¹`
+  versus `L²` phenomenon is already in Báez-Duarte (2000,
+  arXiv:math/0011254); this entry is the exact discrete physical carrier
+  and a direct consequence of this corpus's stronger stretched estimates,
+  not a claim of external priority.
+- **Every fixed chronological clock misses cofinal energy (paper proof;
+  Lean pending):** each `historySpace l` has finitely many positive-mass
+  fibres. Physical `L¹` convergence above therefore implies
+  `P_l(e_N)→0` in `L²` for every fixed `l` (each fibre mean is bounded by
+  `‖e_N‖₁/m_r`). The same holds at `l+1`, hence
+  `historyLayer l (sourceVec μ N)→0` in `L²`. The exact
+  source-minus-innovation identity gives the sharper fixed-layer limit
+  `historyLayer l (predictableDrift N)→-signedInnovation l`; all
+  non-squarefree prime-power layers tend to zero, despite the positive
+  `N=5,l=3` leakage witness. Finally the corpus's unconditional failure
+  of strong `L²` convergence plus orthogonal Pythagoras implies one
+  `ε>0` such that, for every fixed `l`, cofinally many `N` have
+  `‖e_N-P_l(e_N)‖²₂≥ε`. The critical error is necessarily a moving-clock
+  defect, not any fixed-fibre defect. This is a concentration/escape
+  classification, not an RH proof or a bound at `l≈log N`.
+- **Quantitative moving-clock escape horizon (paper proof; Lean pending):**
+  the preceding first-block/tail estimate actually gives
+  `‖e_N‖_{L¹(w)}²≤C s(N)` eventually: `log(N+1)² s(N)→0` and
+  `1/N=o(s(N))`. For `L=clock l`, each physical fibre contains its first
+  representative `r<L`, so its mass is at least
+  `w_r≥1/[L(L+1)]`. Writing `b_r=Σ_{j≡r mod L}w_j e_N(j)`, finite-fibre
+  coarea and `Σ_r|b_r|≤‖e_N‖₁` give the *uniform-in-l* estimate
+  `‖P_l e_N‖²₂=Σ_r b_r²/m_r ≤L(L+1)‖e_N‖₁²
+    ≤C L(L+1)s(N)` for all large `N`.
+  Hence for **every** moving level `l(N)` with
+  `(clock l(N))² s(N)→0`, its projection of the actual error tends to
+  zero in `L²`. Combining the corpus's
+  `not_tendsto_bdMobiusFullErrorEnergy_zero` with Pythagoras gives one
+  `ε>0` such that every such moving clock misses at least `ε` energy
+  cofinally (the cofinal cutoff may depend on the chosen clock schedule).
+  For example, `clock l(N)≤s(N)^(-1/4)` eventually suffices, so the
+  unresolved RH-scale energy must cross a clock horizon of order at least
+  `exp((log N)^(1/3)/864)` on cofinal excursions. This is a lower
+  localization law, not an upper bound or RH proof.
+- **Cofinal mesoscopic-band conservation (paper proof; Lean pending):**
+  take `K(N)=5(log₂(N+1)+1)` from the corpus's high-clock theorem and any
+  moving lower level `l₀(N)≤K(N)` with
+  `(clock l₀(N))²s(N)→0`. The new lower-horizon estimate gives
+  `‖P_{l₀(N)}e_N‖²₂→0`. The existing best-approximation bound
+  `source_sub_historyProjection_energy_le_clock_tail` and the proved
+  `clock K(N)≥(N+1)^4/11` give
+  `‖e_N-P_{K(N)}e_N‖²₂≤N²/(clock K(N)+1)=O(N^-2)→0`;
+  the constant target is already in every history space. Orthogonal
+  Pythagoras therefore yields the exact decomposition
+  `‖e_N‖²₂=‖P_{l₀}e_N‖²₂+
+    ‖(P_K-P_{l₀})e_N‖²₂+‖e_N-P_K e_N‖²₂`.
+  In particular the difference between the full error energy and this
+  mesoscopic-band energy tends to **zero**, without dividing by either
+  quantity or assuming boundedness.
+  Since the corpus proves `‖e_N‖²₂` does not tend to zero, one
+  `ε>0` satisfies
+  `∀M ∃N≥M, ‖(P_{K(N)}-P_{l₀(N)})e_N‖²₂≥ε`.
+  Thus the unavoidable raw-Möbius critical energy lies cofinally in a
+  genuinely moving *intermediate* clock band: below the logarithmic
+  high-clock cutoff but beyond every admissible subexponential lower
+  clock. The unresolved RH estimate must control this specific band;
+  fixed-clock and high-clock arguments cannot settle it. **Interpretation
+  audit:** the corpus already proves the cofinal positive floor for
+  `N*H_N²`, carried by the first `N` physical cells. Hence the band floor
+  can be entirely inherited from that known harmonic obstruction; it is
+  *not* evidence of a new independent signed-tail obstruction. A genuine
+  EDQ advance must improve the moving signed projection ceiling or the
+  fixed-start Mertens-window/quotient-tail estimate, not merely relocalize
+  this floor. The exact `N<n≤2N` Mertens-increment and signed-interaction
+  formula is already formalized in `EulerDeletionFirstTailMertens` and its
+  fixed-window form in `EulerDeletionFirstTailWindowEnergy`.
+- **Literature boundary for the same physical Gram problem:**
+  Pyvovarov, *A few remarks on the Baez-Duarte Criterion*
+  (arXiv:2607.12084v3, July 2026), proves an exact third-order
+  Vasyunin-cotangent truncation and
+  `F_[3](e^{-u})≪u^{-1}log²(e/u)`, but explicitly leaves the total
+  `ρ₃` remainder as a four-part signed global bilinear criterion
+  (its Theorem 9.35 and §9.6). At the heuristic scale `N≈u⁻¹`, that
+  truncation envelope `N log² N` is weaker than the corpus's sharp-cutoff
+  `N·exp(-c(log N)^(1/3))` source-energy ceiling; the damped and sharp
+  carriers are distinct, so this is **not** a theorem-level comparison
+  without a transfer proof. The paper itself warns that its fixed-edge expansion is not
+  uniform for a moving edge. Its useful transferable lesson is to keep
+  transposed/remainder terms recombined; its displayed truncation bound
+  does not close the EDQ mesoscopic-band estimate.

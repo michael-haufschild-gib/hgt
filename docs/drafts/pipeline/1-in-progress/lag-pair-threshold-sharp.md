@@ -56,12 +56,26 @@ equation (`riemannZeta_one_sub_eq_zero_iff`) applied to the partner zero `1 − 
 identity `β(1−β) − a(1−a) = (β−a)(1−a−β)`. Finally `log|γ| ≤ |γ| − 1` turns the requirement
 `cγ² ≥ log|γ|/2` into `|γ| ≥ 1/(2c)`.
 
-## Open successor
+## Closed
 
-Close `HyperbolicZeroFree` on the remaining bounded range of ordinates. The threshold `T` above is
-existential because `Sieve.exists_zero_free_region` carries an existential `T₀`; with an explicit
-zero-free constant valid from `|γ| ≈ 4.53` upward the whole condition would follow, since for
-`γ² ≥ 41/2` it only asks `β(1−β) ≥ 1/82`, i.e. `0.0124 ≤ β ≤ 0.9876`.
+[`HyperbolicZeroFreeClosed`](../../../../formal/GaloisForLFunctions/RHTower/HyperbolicZeroFreeClosed.lean)
+closes it, **unconditionally**:
+
+- `RHTower.xiZeroCopy_hyperbolic_exact` — every zero copy of `ξ` satisfies the *exact* requirement
+  `1/4 ≤ b(γ² + 2 − 2b)`, `b = β(1−β)`. The crude form `1/4 ≤ bγ²` is false at the lowest certified
+  ordinate; the `+2 − 2b` is what makes it work.
+- `RHTower.pairCondition_half_of_hyperbolic_exact` — the exact condition gives the pair condition at
+  `σ = 1/2`, since the two differ by `b³/γ² ≥ 0`.
+- `RHTower.re_lagPoleSeries_nonneg_half` — **`Re G(s) ≥ 0` on `Re s > 1/2`, unconditionally.**
+
+The threshold of `re_lagPoleSeries_nonneg` therefore moves from `13/25` to `1/2`, the exact wall of
+the method identified above.
+
+Mechanism: `xiZeroCopy_zero_free_fiftyEight` bounds `β` away from `1`, and the same theorem applied
+to the partner copy at `1 − ρ̄` — same ordinate — bounds it away from `0`, giving `b ≥ u(1−u)` with
+`u = 1/(58 log γ)`. `RHTower.hyperbolic_numeric` then closes the numerics: `b ↦ b(G + 2 − 2b)` is
+increasing on `[0,1/4]`, and monotonicity in `G` reduces to `log(41/2) ≥ 1 + 2K/41`, because
+`log G ≤ log(41/2) + 2G/41 − 1`. The margin at `G = 41/2` is about `1.4%`.
 
 ## Log
 - 2026-09-24 — created; exact threshold, sharpness witness, hyperbolic sufficient condition and the

@@ -1,6 +1,6 @@
 # Universal-law corpus facts
 
-Updated: 2026-09-23
+Updated: 2026-09-24
 
 Scope: compressed facts and logically forced design constraints extracted from audited positive theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
 
@@ -11,6 +11,12 @@ Scope: compressed facts and logically forced design constraints extracted from a
 - **Must match complete padded carrier vectors at support-count seams before using an intermediate-value argument.** Equal moments on neighboring branches do not ensure a continuous choice of atoms. At integer effective rank `k`, a reverse branch with `k` equal atoms of size `A/k` agrees coordinatewise after padding with the neighboring `(k+1)` branch, whose extra atom is zero. The [finite-fold selector theorem](../../../../../formal/GaloisForLFunctions/RHTower/FiniteReverseResidualSelector.lean) proves continuity from these seam identities wherever residual mass and energy are positive. The [branch moment theorem](../../../../../formal/GaloisForLFunctions/RHTower/FiniteReverseResidualBranchMoments.lean) separately proves nonnegative atoms and exact first two moments when the selected rank lies within its finite slot count.
 
 - **Must supply an all-order source representation or an independent divisor identity beyond any finite-jet carrier.** A nonnegative finite head can match the completed source's first three relevant power sums exactly and unconditionally; the [exact carrier theorem](../../../../../formal/GaloisForLFunctions/RHTower/XiPrimeMarkedFiniteSixthExactCarrier.lean) proves this without RH. Every fixed finite Hankel block has infinitely many unrestricted moment-sequence extensions by the [finite-face theorem](../../../../../formal/GaloisForLFunctions/HTGeometry/FiniteHankelBoundaryExtensionClass.lean), so finite data do not determine later moments. Representing every canonical source moment by one positive measure implies RH by the [moment-representation capstone](../../../../../formal/GaloisForLFunctions/RHTower/PrimeArchMomentMeasureRH.lean); the finite match alone establishes neither that representation nor Xi's divisor.
+
+- **Cannot derive the first open source Hankel minor from local zero geometry, RVM counting asymptotics, and positivity of every individual moment at every order.** For abstract nodes `1+iε`, `1-iε`, `2` of unit weight, with `0<ε<1`, the moment sequence `M_n=∑λ^(n+1)` has first minors `M₀=4` and `M₀M₂-M₁²=4(1-ε⁴)>0`, while its size-three determinant is `-8ε²(1+ε²)³<0`. Since `|1+iε|<√2`, the real node `2` dominates the conjugate pair at every power `n+1≥2`; hence every `M_n` is positive. It also satisfies the actual source's three known strict cold orientations `M₂<M₀³/4`, `M₃<M₀⁴/8`, `M₄<M₀⁵/16`. Rescaling by `0<c<1/300`, choosing `0<ε<√c`, and doubling weights preserves these signs while placing reciprocal nodes inside the proved `1/150` radius and their inverse-square-root spectral coordinates inside the Xi strip, with FE--Schwarz pairing. Appending a sufficiently late positive real reciprocal-RVM tail preserves the strict signs and gives the smooth RVM count up to a bounded error. A proof for actual Xi therefore needs a global arithmetic relation among nodes beyond these constraints; the model says nothing about Xi's determinant. See the [signed triple expansion and tail completion](../k-rvm-finite-sixth-moment-bracket.md).
+
+- **Cannot obtain a positive critical-zero head merely from the current initial off-line-exclusion band.** The proved exclusion only says zeros of squared ordinate below `2365/16` would be critical, while the separate source radius puts every Xi zero above `599/4=2396/16` in squared ordinate. That band contains no zero. Any finite-critical-head argument must locate critical zeros beyond it and control the remaining divisor tail; the [finite-head determinant certificate](../k-rvm-finite-sixth-moment-bracket.md) makes the needed tail margin explicit.
+
+- **Cannot infer the first open reciprocal-moment Hankel determinant from global source log-concavity and order-one entire Fourier transform, or from a theta-cusp tail plus strict raw-moment log-convexity alone.** The symmetric probability source `(1-A)δ₀+(A/2)(δ₋₁+δ₁)` at `A=49/100` has all first five cumulant-derived moments positive and `M₀M₂-M₁²>0`, but its leading size-three determinant is `A³(945A²+630A-551)/4572288000<0`. Gaussian convolution with variance greater than one makes it globally strictly log-concave and decreases that determinant further; multiplying its density by a small `exp(-ε cosh(2x))` preserves the signs and gives an order-one entire transform. Separately, smooth compact convolution followed by a small admixture of the normalized actual theta-cusp source gives a smooth, strictly positive full-support source equal to a positive multiple of the actual source outside a compact set, with the same determinant sign. Neither variant is the actual modular theta-cusp source. Must prove a source-specific quantitative cross-moment law; qualitative regularity and positivity do not settle it. See the [exact source countermodel and fifth-moment target](../k-rvm-finite-sixth-moment-bracket.md).
 
 - **Must retain the harmonic powers and time moments of the source observable being matched.** A finite sum of exponential modes cannot reproduce an exponential times a nonconstant affine time factor, even with freely chosen or repeated frequencies. Such a factor can arise from differentiating the source pairing without asserting a multiple arithmetic zero or a defective physical mode. The [original source-clock audit](../../5-failed/hb-original-source-clock-rigidity.md) derives both retained moment coordinates and an exact quartic-clock integral for the complete action; the representation alone supplies no vanishing law.
 
@@ -6097,3 +6103,342 @@ exponent-one zero-free region bounds `β` away from `1`, the functional equation
 existential `T₀`. What remains of MUST-269 is a bounded range of ordinates, where for `γ² ≥ 41/2`
 the condition asks only `0.0124 ≤ β ≤ 0.9876`; an explicit zero-free constant valid from
 `|γ| ≈ 4.53` upward would close it.
+
+## MUST-270 (2026-09-24)
+
+MUST: rebuild the zero-free region on the sharp Landau input. `RHTower.neg_re_logDeriv_riemannZeta_le`
+(`RHTower/ZetaLogDerivSharpLandau.lean`) proves `−Re (ζ'/ζ)(σ+it) ≤ 1/5 + log t +
+digammaVerticalLogConstant` for `1 < σ ≤ 2`, `t ≥ 4`, from the four-factor identity plus
+`re_logDeriv_xi_pos_of_one_le_re` — the completed logarithmic derivative has positive real part right
+of the strip, so the zeros only help and the archimedean factor is the only source of growth. The
+coefficient of `log t` is **one**, against `400` in `dlvp_inequality`'s Landau step
+(`320·(5/4) log(7+8|γ|)`). That single loss is why `Sieve.exists_zero_free_region` has width
+`1/(10000 log|γ|)` and threshold `e^{40804}`.
+
+With the sharp input the three-four-one step reads `4/(σ−β) ≤ 3/δ + 3A + 5 log|γ| + C`, and the
+region survives for any `c` with `4/(c₀+c) − 3/c₀ > 5`; maximising the left side at
+`c₀ = √3 c/(2−√3)` gives `0.0717/c > 5`, i.e. width about `1/(70 log|γ|)`. Two inputs remain: the
+companion bound retaining the zero's own term `1/(σ−β)` — it must be sharp, since a factor `2` there
+makes `2/(c₀+c) − 3/c₀` negative for every `c₀` — and an explicit pole bound `A`, which the same
+four-factor identity at `t = 0` gives as `A ≤ 1`.
+
+## MUST-270 progress (2026-09-24)
+
+The sharp companion bound is proved: `RHTower.neg_re_logDeriv_riemannZeta_le_sub_resolvent`
+(`RHTower/ZetaLogDerivSharpLandauZero.lean`) gives, for `1 < σ ≤ 2` and `t ≥ 4`,
+`−Re (ζ'/ζ)(σ+it) ≤ 1/5 + log t + digammaVerticalLogConstant − (σ−β)/|s−ρ|²` for every zero copy.
+The pairing is handled without loss: `RHTower.resolventTerm_le_re_logDeriv_xi` sums the paired
+resolvent series over the two-element set `{q, reflect q}` and obtains `2·(σ−β)/|s−ρ|²` in both the
+distinct and the coincident case (when `reflect q = q` the single paired term already doubles,
+because `ρ = 1 − ρ`). Extracting only `{q}` would cost a factor `2`, which is fatal: with `2/(σ−β)`
+the bracket `2/(c₀+c) − 3/c₀` is negative for every `c₀`.
+
+What remains for MUST-270 is the explicit pole bound `A` on the real segment `1 < σ ≤ 2` — the same
+four-factor identity at `t = 0` reduces it to a bound for `Γ_ℝ'/Γ_ℝ(σ)` there, where the term is
+negative, so `A = 1` — and then the three-four-one assembly replacing `dlvp_inequality`'s Landau
+input.
+
+## MUST-270 closed except for the pole constant (2026-09-24)
+
+The zero-free region has been rebuilt on the sharp Landau input.
+`RHTower.dlvp_sharp` (`RHTower/DlvpSharp.lean`) gives, for a zero copy of `ξ` at `β + iγ` with
+`γ ≥ 4` and every `1 < σ ≤ 2`, `4/(σ−β) ≤ 3/(σ−1) + 5 log γ + dlvpSharpConstant A` — coefficient `5`
+on `log γ`, against `320·(5/4) = 400` in `dlvp_inequality`. Inputs: the sharp bound at height `2γ`,
+the companion bound with the zero retained at height `γ`, and `Sieve.re_logDeriv_shift_le`.
+
+`RHTower.exists_xiZeroCopy_zero_free_sharp` (`RHTower/ZeroFreeRegionSharp.lean`) turns it into
+`∃ T ≥ 4, ∀ q : XiZeroCopy, T ≤ Im ρ_q → Re ρ_q ≤ 1 − 1/(100 log (Im ρ_q))`, by taking
+`δ = 1/(16 log γ)`: the inequality becomes `(63/29) log γ < K`, impossible for
+`log γ ≥ 29|K|/63`. **Width `1/100`, against `1/10000`.**
+
+CANNOT (recorded, not a defect of the above): the threshold stays existential because
+`Sieve.exists_pole_bound` is proved by compactness on `[1,2]`. Making it explicit needs a bound for
+`Γ_ℝ'/Γ_ℝ(σ) = ψ(σ/2)/2 − (log π)/2` on `1 < σ ≤ 2`; mathlib's `Complex.digamma` API carries only
+`digamma_one`, `digamma_one_half` and `digamma_apply_add_one`, with no monotonicity and no Gauss
+series, so the series `ψ(x) = −γ + Σ (1/(n+1) − 1/(n+x))` — which gives `ψ(x) ≤ −γ` for `0 < x ≤ 1`
+termwise — has to be built. Even with `A = 1` the threshold is about `e^{22.5}`, so MUST-269 remains
+open at bounded height.
+
+## MUST-270 closed (2026-09-24)
+
+The zero-free region is now fully explicit. `RHTower.neg_re_logDeriv_riemannZeta_real_le`
+(`RHTower/ZetaPoleBoundExplicit.lean`) proves the pole bound `−ζ'/ζ(σ) ≤ 1/(σ−1) + 1` on
+`1 < σ ≤ 2` from the four-factor identity at a real point, using
+`RHTower.re_digamma_ofReal_le`: `Re ψ(x) ≤ log 3 − 3/10` for `1/2 < x ≤ 1`, obtained by two steps of
+`ψ(z+1) = ψ(z) + 1/z` into `(5/2, 3]` where `‖ψ(z) − log z‖ ≤ 3/‖z‖`. Since `3 ≤ π` the archimedean
+term is negative, so `A = 1`.
+
+`RHTower.xiZeroCopy_zero_free_explicit` then gives
+`∀ q : XiZeroCopy, exp (29 K / 63) ≤ Im ρ_q → Re ρ_q ≤ 1 − 1/(100 log (Im ρ_q))` with
+`K = 14 + 10π + 6 log 2 ≈ 49.58`, i.e. threshold `≈ e^{22.8}`. Against
+`Sieve.exists_zero_free_region`: **width `1/100` instead of `1/10000`, threshold `e^{22.8}` instead
+of `e^{40804}`.**
+
+MUST-269 remains open at bounded height: the hyperbolic condition holds for `|γ| ≥ e^{22.8}`, while
+the corpus certifies only `γ² > 41/2` from below, leaving `4.53 ≤ |γ| ≤ 8·10^9`. The dominant part of
+`K` is `5·digammaVerticalLogConstant ≈ 45`, and that constant bounds `‖Γ_ℝ'/Γ_ℝ‖` rather than its
+real part; a real-part bound would roughly halve `K`.
+
+## MUST-271 (2026-09-24)
+
+The zero-free region is now `Re ρ ≤ 1 − 1/(100 log Im ρ)` for every zero copy of `ξ` with
+`Im ρ ≥ 4`, with no remaining threshold: `RHTower.xiZeroCopy_zero_free_from_four`
+(`RHTower/ZeroFreeRegionFromFour.lean`). The gain over MUST-270 is
+`RHTower.re_logDeriv_Gammaℝ_le_half_log`: only the **real part** of `Γ_ℝ'/Γ_ℝ` is ever used, and it
+is half the modulus bound, so the de la Vallée Poussin coefficient drops from `5` to `5/2`
+(`RHTower.dlvp_half`). Table: `1/10000` from `e^{40804}` → `1/100` from `e^{22.8}` → `1/100` from `4`.
+
+MUST: close MUST-269's residual range, now only `4.53 ≤ |γ| < 7`. Either sharpen
+`xiEndpointCompletedCurvature < 2/43` to `< 1/50` (giving `γ² > 49` instead of `γ² > 41/2`), or
+prove the pole bound with `A ≤ −1/3` and rerun the region at `c = 1/55`. The second is the shorter
+path: the four-factor identity gives `A ≤ 1/σ + Re ψ(σ/2)/2 − (log π)/2`, and one shift
+`ψ(x) = ψ(x+1) − 1/x` makes it `σ`-independent, `A ≤ (1 − γ − log π)/2 ≈ −0.361`, **provided**
+`ψ(y) ≤ ψ(2)` for `y ≤ 2`. That is monotonicity of digamma, i.e. convexity of `log Γ`
+(`Real.convexOn_log_Gamma`) plus a `Complex.digamma`/`Real.Gamma` derivative bridge, which mathlib
+does not have.
+
+## MUST-271 closed; MUST-269 reduced to an assembly (2026-09-24)
+
+`RHTower.re_digamma_le_log` (`RHTower/DigammaLeLog.lean`) proves **`Re ψ(y) ≤ log y` for every
+`y > 0`** — the `n`-fold recurrence plus `‖ψ(z) − log z‖ ≤ 3/‖z‖` and
+`Σ_{k<n} 1/(y+k) ≥ log(y+n) − log y`, then `n → ∞`. Neither convexity of `log Γ` nor the Gauss
+series is needed, so MUST-271's stated prerequisite was avoidable.
+
+Consequences in the same module: `two_fifths_le_log_pi_sub_log_two` (`log π − log 2 ≥ 2/5`, from
+`exp(1/10) ≤ 10/9` and `π > 3.14`); the pole bound
+`neg_re_logDeriv_riemannZeta_real_le_neg`: **`−ζ'/ζ(σ) ≤ 1/(σ−1) − 1/5`** on `1 < σ ≤ 2`, where one
+shift `ψ(σ/2) = ψ(σ/2+1) − 2/σ` cancels the `1/σ` of the four-factor identity exactly; and
+`xiZeroCopy_zero_free_fiftyEight`: **the zero-free region of width `1/(58 log γ)` valid from ordinate
+`4`**.
+
+MUST-269 is now an assembly. In the exact form `1/4 ≤ b(γ² + 2 − 2b)` with `b = β(1−β)`, the region
+gives `b ≥ u(1−u)`, `u = 1/(58 log γ)`; the lower bound `β ≥ u` comes from applying the region to the
+partner copy at `1 − ρ̄`, which has the same ordinate, and `xiZeroCopyConjEquiv` handles negative
+ordinates. At `γ² = 41/2` the inequality reads `0.25367 ≥ 0.25`, and the margin grows because
+`(γ² + K)/log γ` is increasing for `γ ≥ √(41/2)` — which follows from `log γ ≤ log γ₀ + γ/γ₀ − 1`
+alone, since `2γ₀² log γ₀ ≥ γ₀² + K`.
+
+## CANNOT-368 (2026-09-24)
+
+CANNOT be a spectral model in which, apart from finitely many exceptions, positive Xi-zero heights
+are paired with the smooth Riemann--von Mangoldt quantiles `T_k` with error at most a *fixed
+multiple* of the local spacing `T_{k+1}−T_k`, and only a bounded shift of the index. Such a pairing forces the zero count
+`N(T)` to differ from the smooth Riemann--von Mangoldt count by `O(1)`: between successive
+quantiles only a bounded number of paired zeros can cross the threshold, since consecutive smooth
+spacings have ratio tending to one. But the exact count is
+the smooth count plus `S(T)+O(1/T)`, and `S(T)` is unbounded in both directions unconditionally
+([Dobner, Theorem 1](https://arxiv.org/abs/2101.01747)). This is a paper proof;
+the near-quantile counting implication and the required unconditional `S(T)` input are not yet
+formalized in Lean. It does not exclude spectra with unbounded index displacement.
+
+## CANNOT-369 (2026-09-24)
+
+CANNOT obtain the Xi divisor from a smooth-Riemann--von-Mangoldt quantile baseline by a regular
+partition into consecutive blocks of fixed size `m` whose late reciprocal-height branches have
+centered offsets `b₁(T),…,b_m(T)` with `Σ b_i(T)=0` and at most polylogarithmic size,
+branch errors `O(1/log T)`, and offset variation `o(1/log T)` across the corresponding
+polylogarithmic-width height window. Counting each branch by the exact smooth
+quantile equation gives a finite difference of the smooth count; its linear terms cancel and its
+second derivative contributes only `O((max_i |b_i|)²/T)=o(1)`. The spectral count therefore differs from the smooth count by
+`O(1)`, contradicting unconditional unboundedness of `S(T)`
+([Dobner, Theorem 1](https://arxiv.org/abs/2101.01747)). This paper-level rule excludes even
+unbounded displacement *in units of local spacing* when the displacements form a sufficiently
+regular centered pattern. Quantitatively, if branch error and fixed-window offset variation sum
+to `η(T)`, the count error is `O(1+η(T) log T)`; an exact Xi carrier needs
+`η(T) ≳ (log T)^(-2/3)(log log T)^(-1/3)` along an unbounded sequence by Dobner's
+two-sided `Ω`-result. It leaves nonlocal, growing-block, or genuinely irregular count
+transport open. The count comparison and Xi fluctuation input are not yet Lean formalized.
+
+## CANNOT-370 (2026-09-24)
+
+CANNOT obtain the Xi divisor from the smooth Riemann--von Mangoldt quantiles by disjoint,
+uniformly bounded local spectral blocks that preserve the number of points per block and move
+every sufficiently high point by `o((log T)^(-2/3)(log log T)^(-1/3))` in absolute height.
+At height `T`, only baseline points in the maximal displacement window can change the count;
+the smooth density there is `O(log T)`. Thus the count error is
+`o((log T/log log T)^(1/3))`, contradicting Dobner's unconditional two-sided
+`Ω((log T/log log T)^(1/3))` fluctuations
+([Theorem 1](https://arxiv.org/abs/2101.01747)). This paper-level capacity law applies
+regardless of block schedule or source weights. It is sharper than CANNOT-368's
+bounded-multiple-of-spacing obstruction: local displacement can exceed many spacings yet still
+be too small to supply Xi's count fluctuations. The count-capacity transfer and `S(T)` input
+remain to be formalized in Lean.
+
+## MUST-269 closed (2026-09-24)
+
+`RHTower.re_lagPoleSeries_nonneg_half` (`RHTower/HyperbolicZeroFreeClosed.lean`):
+**`Re G(s) ≥ 0` on `Re s > 1/2`, unconditionally.** The threshold of `re_lagPoleSeries_nonneg` moves
+from `13/25` to `1/2`, which CANNOT-323 identified as the exact wall of the termwise method.
+
+Two corrections to the earlier plan are worth recording. First, the condition that had to be proved
+is not `HyperbolicZeroFree` (`1/4 ≤ β(1−β)γ²`) — that is **false** at the lowest certified ordinate
+with any width the region can supply. The right statement is the exact pair requirement
+`1/4 ≤ b(γ² + 2 − 2b)`, `b = β(1−β)` (`RHTower.xiZeroCopy_hyperbolic_exact`), which differs from the
+pair condition by `b³/γ² ≥ 0` (`RHTower.pairCondition_half_of_hyperbolic_exact`). Second, the lower
+bound `β ≥ u` comes from applying the zero-free region to the partner copy at `1 − ρ̄`, which has the
+same ordinate — no separate argument is needed.
+
+`RHTower.hyperbolic_numeric` carries the numerics: `b ↦ b(G + 2 − 2b)` is increasing on `[0,1/4]`, so
+only `b ≥ u(1−u)` with `u = 1/(29 log G)` matters, and monotonicity in `G` reduces to
+`log(41/2) ≥ 1 + 2K/41` because `log G ≤ log(41/2) + 2G/41 − 1`. Margin at `G = 41/2`: about `1.4%`.
+Supporting: `log_fortyOne_half_lower` (`≥ 2.9921`, from `4 log 2` and `log x ≥ 1 − 1/x`) and
+`log_fortyOne_half_upper` (`≤ 3.023`, from `exp 3 > 20.085` and `exp x ≥ 1 + x`).
+
+This does **not** prove RH: `re_le_half_add_of_lagPoleSeries_re_nonneg` at `σ₀ = 1/2` gives only
+`Re ρ ≤ 1`. CANNOT-323 stands — the lane converts positivity into real-part bounds one-for-one.
+
+## The zero-free region, final form (2026-09-24)
+
+`RHTower.riemannZeta_ne_zero_of_one_sub_lt_re` (`RHTower/ZetaZeroFreeRegionSharp.lean`):
+
+```text
+4 ≤ |γ|  →  1 − 1/(58 log |γ|) < β  →  riemannZeta (β + iγ) ≠ 0,
+```
+
+with the contrapositive `re_le_one_sub_of_riemannZeta_eq_zero`. Against
+`Sieve.exists_zero_free_region` (`1/(10000 log|γ|)`, threshold `exp(u₀²)`, `u₀ ≥ 202`): **172× the
+width, and no threshold beyond `|γ| ≥ 4`.** The transport off the `ξ` copies needs only
+`xi_eq_zero_iff` inside the strip and `xiZeroCopyConjEquiv` for negative ordinates.
+
+MUST: replace uses of `Sieve.exists_zero_free_region` by this, and re-examine the constants it feeds
+— `Sieve.ZetaLittlewoodRegion`, the PNT error terms, the zero-density inputs — all of which inherited
+the `1/10000` and the astronomical threshold.
+
+## The zero-free region has no exceptional range (2026-09-24)
+
+`RHTower.four_le_abs_im_of_zeta_zero` (`RHTower/ZetaZeroFreeRegionAllZeros.lean`): every nontrivial
+zero of `ζ` has `|Im ρ| ≥ 4`, because `fortyOne_div_two_lt_im_sq_of_xi_eq_zero` puts every `ξ` zero
+above squared ordinate `41/2 > 16`. So the threshold of
+`riemannZeta_ne_zero_of_one_sub_lt_re` excludes nothing, and the region applies to **every**
+nontrivial zero:
+
+```text
+1/(58 log |Im ρ|)  ≤  Re ρ  ≤  1 − 1/(58 log |Im ρ|),
+```
+
+`re_le_one_sub_of_zeta_zero` and `one_div_le_re_of_zeta_zero` (the second from
+`riemannZeta_one_sub_eq_zero_iff`), with
+`mul_one_sub_re_ge_of_zeta_zero : Re ρ (1 − Re ρ) ≥ u(1−u)`, `u = 1/(58 log |Im ρ|)`.
+
+No threshold, no exceptional set, no existential constant anywhere in the chain.
+
+## Two-sided digamma bound (2026-09-24)
+
+`log y − 1/y ≤ Re ψ(y) ≤ log y` for every `y > 0`: `RHTower.re_digamma_le_log`
+(`RHTower/DigammaLeLog.lean`) and `RHTower.log_sub_inv_le_re_digamma`
+(`RHTower/DigammaTwoSided.lean`), the latter from `RHTower.harmonic_le_log_add_inv`
+(`Σ_{k<n} 1/(y+k) ≤ 1/y + log(y+n−1) − log y`) and `RHTower.inv_succ_le_log_one_add_inv`.
+
+Both are shift-and-limit arguments over the corpus's `‖ψ(z) − log z‖ ≤ 3/‖z‖`. On the positive reals
+they are sharper (`1/y` against `3/y`) and carry no restriction on the size of the argument, where
+the corpus bound needs `‖z‖ ≥ 2` and mathlib has no size bound for `Complex.digamma` at all.
+
+## The zero-free region, unrestricted form (2026-09-24)
+
+`RHTower.riemannZeta_ne_zero_of_lt_re` (`RHTower/ZetaZeroFreeRegionUnrestricted.lean`):
+
+```text
+0 < Re s  →  1 − 1/(58 log (|Im s| + 4)) < Re s  →  riemannZeta s ≠ 0,
+```
+
+with no case hypothesis on the ordinate. The strip `|Im s| < 4` is zero-free outright
+(`riemannZeta_ne_zero_of_abs_im_lt_four`, from `four_le_abs_im_of_zeta_zero`), `Re s ≥ 1` is
+`riemannZeta_ne_zero_of_one_le_re`, and above ordinate `4` the scale `log(|Im s|+4)` only strengthens
+the hypothesis. `riemannZeta_ne_zero_of_lt_re_coords` gives the `(β,t)` form the corpus's region
+interfaces use, so it is a drop-in for `Sieve.exists_zero_free_region` and
+`Sieve.exists_zero_free_region_from_nine` with an explicit constant and no threshold.
+
+## First downstream consumer re-derived (2026-09-24)
+
+`RHTower.exists_logDeriv_zeta_bound_sharp` (`RHTower/ZetaLogDerivStripSharp.lean`):
+
+```text
+∃ C > 0, ∀ σ γ, 5 ≤ |γ| → 1 − 1/(232 log|γ|) ≤ σ → σ ≤ 9/8 → ‖ζ'/ζ(σ+iγ)‖ ≤ C log²|γ|.
+```
+
+`Sieve.exists_logDeriv_zeta_bound_of_region` is already parametrised by the region, so feeding it
+`riemannZeta_ne_zero_of_one_sub_lt_re` instead of `Sieve.exists_zero_free_region` costs one line and
+turns the corpus's `exists_logDeriv_zeta_bound_explicit` — width `1/40000` from `exp(40804)` — into
+**width `1/232` from ordinate `5`**: `172×` the strip, threshold gone. `C` stays existential because
+`exists_wide_zero_count` is.
+
+MUST: the same substitution for `Sieve.ZetaInvStripBound` and the PNT error terms. There the other
+inputs (`exists_neg_log_zeta_upper`, `exists_logDeriv_zeta_bound`) are themselves existential, so the
+gain is in the threshold and the width only until those are made explicit too.
+
+## CANNOT-371 — no eventual linear off-line moment bound can prove RH (2026-09-24)
+
+`RHTower.offLineMoment_slope_nonneg` (`RHTower/MollifiedGateConstantFloor.lean`):
+
+```text
+(∀ᶠ V in atTop, 4π · offLineMoment V ≤ κ · V)  →  0 ≤ κ.
+```
+
+`offLineMoment V = Σ_{ξ-zeros, ½ < Re z < 1, 0 ≤ Im z ≤ V} m(z)(Re z − ½)` is a sum of nonnegative
+terms, so a negative slope forces `0 ≤ (negative)·V` at arbitrarily large `V`. RH is equivalent to
+`offLineMoment V = 0` for **every** `V`, a pointwise statement; the strongest conclusion an eventual
+linear bound can carry is `offLineMoment V = o(V)`, attained exactly at slope zero. Every
+Littlewood/Jensen off-line-moment consumer in the corpus has this shape, so the whole family is
+structurally incapable of settling RH, whatever mean-square input it is fed.
+
+## CANNOT-372 — the mollified mean-square gate constant has an exponential floor (2026-09-24)
+
+`RHTower.exp_five_thirds_mul_le_of_zetaMollifiedMeanSquareGate` (same file):
+
+```text
+0 < R → 1 ≤ c → ZetaMollifiedMeanSquareGate R c → exp((5/3) R) ≤ c,
+```
+
+and `RHTower.not_zetaMollifiedMeanSquareGate_of_lt_exp`: no gate exists with `c < exp((5/3)R)`.
+`RHTower.gates_coefficient_nonneg` gives the same for the two-gate consumer:
+`0 ≤ log c₁ − (1 + κ₀) R` whenever the margin hypothesis of
+`eventually_offLineMoment_le_of_gates` holds. So the target `log c₁ < (1 + κ₀) R` pursued by the
+Levinson lane is **unattainable**, not merely unproved.
+
+**Positive survivor.** The contrapositive is an unconditional *lower* bound for the mollified mean
+square on the Levinson abscissa `σ₀ = ½ − R/log T₂`, proved purely from zero counting: for every
+`R > 0` and every `c < exp((5/3)R)` there is an `ε > 0` such that for cofinally many `U`, **every**
+admissible window and unit-head bounded mollifier of the gate's shape satisfies
+
+```text
+∫_{T₁}^{T₂} ‖ζ(σ₀+it) Ψ(σ₀+it)‖² dt > (c + ε)(T₂ − T₁).
+```
+
+This supersedes the window-length floor of CANNOT-322 (`MollifiedMeanSquareFloor`), which gave the
+constant `1`; the constant here is `exp((5/3)R)`, and it grows with the Levinson depth.
+
+MUST-374: decide whether the floor is attained — a gate with `c₁ → exp((5/3)R)` would give
+`offLineMoment V = o(V)`, which is the open target of the ledger's *off-line first moment* entry.
+
+## MUST-375 — Hadamard positivity holds inside the critical strip (2026-09-24)
+
+`RHTower.re_logDeriv_xi_nonneg_of_zeroFree` (`RHTower/XiLogDerivZeroFreePositive.lean`):
+
+```text
+1 − 1/58 / log(4(|Im s| + 1)) ≤ Re s   →   0 ≤ Re (ξ'/ξ)(s).
+```
+
+`Re (ξ'/ξ)(s) ≥ 0` on `Re s > ½` is an exact RH receiver. The corpus previously had it
+unconditionally only on `Re s ≥ 1` (`re_logDeriv_xi_pos_of_one_le_re`) and on a low-height region;
+the ledger records "positivity is unconditional for `Re s ≥ 1` … not throughout the critical
+strip". This pushes it into the strip with **the same constant `58` as the zero-free region**.
+
+Mechanism. The reflection-paired resolvent term of a copy `ρ = β + iγ` has numerator
+`2(x(x² − a²) + x(t² + γ²) − 2 a t γ)`, `x = Re s − ½`, `a = β − ½`, `t = Im s`
+(`xiPairedResolventTerm_nonneg_of_numerator`). Two regimes cover every copy:
+
+* `log|γ| ≤ log(4(|t| + 1))` — the zero-free region gives `|a| ≤ ½ − 1/(58 log|γ|) ≤ x`, and
+  `2·numerator = 4x(x²−a²) + 2(x−a)(t+γ)² + 2(x+a)(t−γ)² ≥ 0` termwise
+  (`pairedNumerator_nonneg_near`);
+* `log|γ| > log(4(|t| + 1))` — the region is too weak, but then `|γ| > 4(|t| + 1)` and the
+  quadratic distance term dominates: `(t²+γ²)/4 − |t||γ| ≥ 4` while `x(x²−a²) ≥ −1/8`
+  (`pairedNumerator_nonneg_far`).
+
+No zero counting and no analytic estimate enter; only the zero-free region and the exact algebra of
+the reflected pair. Supporting: `abs_re_sub_half_le_of_xiZeroCopy` (the region as a displacement
+bound `|β − ½| ≤ ½ − 1/(58 log|γ|)`), `riemannZeta_eq_zero_of_xiZeroCopy`,
+`one_lt_log_abs_im_of_xiZeroCopy`.
+
+MUST-376: the receiver needs positivity on all of `Re s > ½`. The far regime is robust; the
+binding constraint is the near regime, where the width is exactly the zero-free-region width. Any
+improvement of the zero-free region transfers verbatim.

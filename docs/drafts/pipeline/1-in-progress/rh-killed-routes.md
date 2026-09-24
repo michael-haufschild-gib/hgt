@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**407 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**411 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-23, `060008a29f4c979b77dce27991d9e6dc50a58963`**.
+Source-audit cutoff: **2026-09-24, `6649425b7a2221579f9fd235a89303b8b1b2a5bc`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
@@ -26,12 +26,12 @@ Concurrent uncommitted formal edits remain pending evidence and are not counted.
 | [Retired original route labels](#retired-labels) | 17 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 33 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 51 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 82 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 83 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 41 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 62 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 63 |
 | [Analytic roots, multiplicity and regularization](#roots) | 11 |
-| [Other finite, scalar and source-blind selectors](#other) | 81 |
+| [Other finite, scalar and source-blind selectors](#other) | 83 |
 
 <a id="retired-labels"></a>
 
@@ -1832,6 +1832,7 @@ Evidence: [all-source directed-mean no-go](../../../../formal/GaloisForLFunction
 
 ## HB, FZZ and PW: scattering and physical action
 
+- [PW-B direct un-oriented optical/CTP incidence](#no-go-410)
 - [channelwise third-order Hawking/AIME cancellation](#no-go-216)
 - [diagonal or sector-local Hawking completion](#no-go-215)
 - [FZZ cubic raw zero-collar cutoff](#no-go-299)
@@ -3303,6 +3304,22 @@ Evidence: [finite-energy no-go](../../../../formal/GaloisForLFunctions/RHTower/P
 
 [Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
 
+<a id="no-go-410"></a>
+
+### PW-B direct un-oriented optical/CTP incidence
+
+**Closed result**
+
+The completed CTP real numerator is reflection-odd, whereas crossed weak optical flux is reflection-even. Their direct scalar identification cannot hold as an un-oriented covariance law. The exact reflection-pair defect is `32 (Re q−1/2) Im q · mass₊ mass₋`.
+
+**Survivor / still open**
+
+Both literal direct/image event charts and finite-support mixed-test Goursat transposition survive. An ordinate-weighted CTP numerator has matching parity, but parity is not incidence. PW-B still needs an oriented optical/CTP identity, outer receiver limit, nonzero response mass and all-divisor extinction.
+
+Evidence: [parity theorem](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWOpticalCTPParity.lean), [ordered transport facts](pwb-ordered-null-transport-own-facts.md).
+
+[Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
+
 <a id="theta"></a>
 
 ## Theta, Schur, spectral and positivity mechanisms
@@ -4503,6 +4520,7 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 
 ## Ward, Suzuki, prime–Gamma and operator landing
 
+- [P/SP-E blanket normalized history passivity](#no-go-408)
 - [absolute or merely relative Gamma anomaly cancellation](#no-go-253)
 - [APF source-null or positive winding](#no-go-185)
 - [completed Riesz clock descent through marginal quotient](#no-go-135)
@@ -5673,6 +5691,22 @@ Evidence: [spectral pole](../../../../formal/GaloisForLFunctions/RHTower/SPEQuan
 
 [Back to family](#ward) · [Current P/SP-E frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
 
+<a id="no-go-408"></a>
+
+### P/SP-E blanket normalized history passivity
+
+**Closed result**
+
+The literal unit-Riesz source takes both signs cofinally, beyond arbitrary square-root-scale floors. Its continuous-to-integer credit transfer, combined with the already negative residual escape, makes the complete normalized prime-power history cofinally unbounded below. A universal nonnegative-history premise is false for this carrier.
+
+**Survivor / still open**
+
+The exact signed credit/debt identity and meromorphic source continuation remain. A viable P/SP-E successor must pay centroid and square debts through a new sign-sensitive arithmetic mechanism, not assume blanket history passivity.
+
+Evidence: [quantitative oscillation](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceQuantitativeOscillation.lean), [integer-history no-go](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceIntegerHistoryNoGo.lean).
+
+[Back to family](#ward) · [Current P/SP-E frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
 <a id="roots"></a>
 
 ## Analytic roots, multiplicity and regularization
@@ -5888,6 +5922,8 @@ Evidence: [forward-bridge no-go](../../../../formal/GaloisForLFunctions/RHTower/
 
 ## Other finite, scalar and source-blind selectors
 
+- [high-block uniform sharp-head energy](#no-go-409)
+- [grid modulus-only cell surplus](#no-go-411)
 - [all-prime Fermat-quotient carry selector](#no-go-167)
 - [boundary-resolvent shortcut](#no-go-241)
 - [bounded Marcinkiewicz/Yoneda descent](#no-go-252)
@@ -7170,3 +7206,35 @@ Escaping boundedness, reindexing, or suppressing the limit while remaining summa
 Evidence: [integrable-tail no-go](../../../../formal/GaloisForLFunctions/RHTower/ChronologicalTailL1IntegrableNoGo.lean), [Cauchy no-go](../../../../formal/GaloisForLFunctions/RHTower/ChronologicalTailL1CauchyNoGo.lean), [fact audit](ctf-l1-stability-own-research-facts.md).
 
 [Back to family](#other) · [Current CTF frontier](rh-current-frontier-map.md#candidate-ctf)
+
+<a id="no-go-409"></a>
+
+### high-block uniform sharp-head energy
+
+**Closed result**
+
+`SharpEnergyInput C` fails for every fixed `C`. Its quantifier includes sharp head length one; there the energy is exactly the mollifier's own energy and is at least `¼∑_{p≤√N}1/p`, which diverges.
+
+**Survivor / still open**
+
+The exact head-one identity and two-sided growth bounds are formal. A successor must retain the smooth head and its `ζ`–mollifier cancellation, or absorb logarithmic growth in a redesigned receiver; the present fixed-constant consumer cannot.
+
+Evidence: [sharp-energy refutation](../../../../formal/GaloisForLFunctions/RHTower/HighBlockSharpEnergyRefutation.lean), [source card](high-block-sharp-energy-refuted.md).
+
+[Back to family](#other) · [Current energy diagnostics](rh-current-frontier-map.md#barbanvehov-and-levinson-energy-diagnostics)
+
+<a id="no-go-411"></a>
+
+### grid modulus-only cell surplus
+
+**Closed result**
+
+A bound depending only on cell coefficient moduli cannot force the required positive grid surplus; the exact modulus-only source model admits counterexamples. This closes a sign-blind estimate, not the grid-density route.
+
+**Survivor / still open**
+
+Retain signed cross-cell phase/covariance information and prove a source-faithful positive surplus for the actual mollified coefficients. The determinant and density receivers remain conditional on that estimate.
+
+Evidence: [modulus-only no-go](../../../../formal/GaloisForLFunctions/HTGeometry/GridDeviceModulusOnlyNoGo.lean).
+
+[Back to family](#other) · [Current energy diagnostics](rh-current-frontier-map.md#barbanvehov-and-levinson-energy-diagnostics)

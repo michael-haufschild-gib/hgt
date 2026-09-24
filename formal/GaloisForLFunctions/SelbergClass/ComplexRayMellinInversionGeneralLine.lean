@@ -459,7 +459,7 @@ theorem mellinInv_line_Gamma_eq_exp_neg {c x : ℝ} (hc : 0 < c) (hx : 0 < x) :
         Complex.Gamma ((c : ℂ) + (t : ℂ) * I) := by
     dsimp only [f]
     simp only [Complex.ofReal_exp, Complex.ofReal_neg]
-    have h := RHTower.mellin_exp_neg_mul (m := 1) (by norm_num)
+    have h := RHTower.mellin_exp_neg_mul_finiteExponentialSumMellin (m := 1) (by norm_num)
       (by simpa using hc' : 0 < (((c : ℂ) + (t : ℂ) * I).re))
     simp only [one_mul] at h
     norm_num at h

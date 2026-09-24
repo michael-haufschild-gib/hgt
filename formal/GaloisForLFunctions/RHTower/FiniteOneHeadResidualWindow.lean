@@ -181,6 +181,34 @@ theorem oneHeadResidualRankTwo_on_Icc
     mul_nonneg (sub_nonneg.mpr hcb) hfactor
   linarith [hid]
 
+/-- Inside two admitted endpoints, the one-coordinate Cauchy budget is
+strictly positive. This removes the boundary seam from fixed-count moment
+matching after a small perturbation of the source moments. -/
+theorem oneHeadResidualBudget_pos_on_Ioo
+    {E F a b x : ℝ} {N : ℕ} (hN : 0 < N)
+    (ha : 0 ≤ oneHeadResidualBudget E F N a)
+    (hb : 0 ≤ oneHeadResidualBudget E F N b)
+    (hax : a < x) (hxb : x < b) :
+    0 < oneHeadResidualBudget E F N x := by
+  have hba : 0 < b - a := sub_pos.mpr (lt_trans hax hxb)
+  have hleft : 0 ≤ (b - x) * oneHeadResidualBudget E F N a :=
+    mul_nonneg (sub_nonneg.mpr hxb.le) ha
+  have hright : 0 ≤ (x - a) * oneHeadResidualBudget E F N b :=
+    mul_nonneg (sub_nonneg.mpr hax.le) hb
+  have hNreal : (0 : ℝ) < N := by exact_mod_cast hN
+  have hstrict :
+      0 < (N : ℝ) * (b - a) * (x - a) * (b - x) := by
+    positivity
+  have hchord := oneHeadResidualBudget_chord_identity E F N a b x
+  have hproduct : 0 < (b - a) * oneHeadResidualBudget E F N x := by
+    rw [hchord]
+    linarith
+  by_contra hnot
+  have hnonpos : oneHeadResidualBudget E F N x ≤ 0 := le_of_not_gt hnot
+  have hproductNonpos : (b - a) * oneHeadResidualBudget E F N x ≤ 0 :=
+    mul_nonpos_of_nonneg_of_nonpos hba.le hnonpos
+  exact (not_lt_of_ge hproductNonpos) hproduct
+
 end
 
 end RHTower

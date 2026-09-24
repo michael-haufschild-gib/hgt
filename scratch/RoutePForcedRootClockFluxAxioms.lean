@@ -1,0 +1,4 @@
+import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePForcedRootClockFlux
+
+#print axioms RHTower.routeP_cofinal_flux_below_any_root_clock_slope
+#print axioms RHTower.routeP_cofinal_primePower_flux_below_any_root_clock_slope
