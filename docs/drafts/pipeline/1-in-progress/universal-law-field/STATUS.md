@@ -6020,3 +6020,80 @@ MUST-371 — [Lean] **Partner angle law of resonant states: the sine of the angl
 MUST-372 — [Lean] **Prime-measure rigidity for finite perturbations: the prime block is the only finite modification of itself for which the restricted Weil operator can be positive at every aperture.** For finitely many distinct scales `x i > 1` and real weights `w i`, let the block `∑ i, w i·x i^{-1/2}(τ_{log x i}+τ_{−log x i})` be added to the finite prime block (`RHTower.WeilDeletion.finiteFamily`, an aperture-compatible `CCMRemainderFamily`). Then `(∀ a, 0 ≤ (finiteFamily P).energy a) ↔ RiemannHypothesis ∧ ∀ i, w i = 0` (`RHTower.WeilDeletion.finiteFamily_nonneg_iff`; the forward direction `riemannHypothesis_and_weights_zero_of_finiteFamily_nonneg`). Mechanism: if RH fails the literal energy is unbounded below and the block is bounded (`finiteFamily_energy_le`, budget `∑|w i|·2/√x i`); if RH holds, the zero side of the modulated wide bump at any frequency `ζ` with gap `d` to all zero ordinates is `≤ gapZeroSideConstant ζ d / L⁴` (`tsum_normSq_paperFT_modulatedBump_le_of_gap`, constant `kappaThree²·max((2|ζ|+1)²/d⁶, 64)·33/100`), the block term is the frequency profile `∑ i, w i (2/√x i) cos(ζ log x i)` times an overlap between `c₂L − M log x i` and `c₂L` (`bumpOverlap_le`), so positivity forces the profile `≤ 0` at every gap frequency (`perturbationProfile_nonpos_of_gap`); gap frequencies are dense (`exists_gap_frequency`, finiteness of spectral points below any norm from the summability of `1/‖z_q‖²`), so by continuity the profile is `≤ 0` everywhere, and a finite cosine sum with distinct positive frequencies that is nonpositive everywhere has zero coefficients (`GaloisForLFunctions.HTGeometry.cosineSum_coeff_eq_zero_of_nonpos`, Cesàro means against `1 ± cos(a j t)`). Converse: zero weights give the literal family, nonnegative under RH (`ccmRestrictedWeilGroundEnergy_nonneg_of_riemannHypothesis`, new). Modules `WeilFinitePerturbationFamily`, `WeilModulatedBumpGapBound`, `WeilPrimeMeasureRigidityFinite`, `HTGeometry/CosineSumNonposZero`. Meaning: no finite conspiracy of prime-weight changes can restore Weil positivity — the PMR conjecture (notes.md 2026-09-19) holds for finitely supported perturbations, unconditionally in the form "positive at all apertures ⟹ RH and no change"; the open core is infinite (e.g. all-prime) deletion patterns, where the profile is not a finite sum.
 
 MUST-373 — [Lean] **Prime-measure rigidity for countable summable perturbations.** For scales `x n > 1` (distinct) and weights `w n` with summable budget `∑ |w n|·2/√(x n)` and summable logarithmic moment `∑ |w n|·(2/√(x n))·log(x n)`, the series of inserted blocks converges in operator norm (`norm_ccmInsertedBlock_le : ‖block‖ ≤ |w|·2/√x`, `summable_ccmInsertedBlock`) and defines the aperture-compatible family `RHTower.WeilDeletion.countableFamily`; then `(∀ a, 0 ≤ (countableFamily P).energy a) ↔ RiemannHypothesis ∧ ∀ n, w n = 0` (`countableFamily_nonneg_iff`). New inputs beyond MUST-372: the operator-norm bound of the scale-transport block (from the inner-product formula and unitarity of the log-translations), the series calculus of the block (`adjoint_tsum_eq`, `re_inner_ccmCountableBlock` via `HasSum.mapL` along evaluation, `innerSL` and `reCLM`), the invisible-scale estimate `|κ n|·L ≤ |κ n|·log(x n)/2` for scales above the aperture (which is why the logarithmic moment is the right hypothesis), the continuity of the profile `∑' w n (2/√x n) cos(ζ log x n)` (`continuous_tsum`), and the uniqueness lemma for absolutely convergent cosine series (`GaloisForLFunctions.HTGeometry.cosineSeries_coeff_eq_zero_of_nonpos`, by truncation and the Cesàro bounds `cosineSum_coeff_le_of_le`). Modules `WeilCountablePerturbationFamily`, `WeilPrimeMeasureRigidityCountable`, `HTGeometry/CosineSeriesNonposZero`. Meaning: every ℓ¹-with-log-moment change of the prime weights (for instance removing all higher prime powers `p^k`, `k ≥ 2`, whose budget `∑ k log² p·p^{−k/2}` converges) destroys positivity at some aperture; the remaining open core is the heavy regime `∑ |w n| log(x n)/√(x n) = ∞` (e.g. deleting all primes in a residue class), where the block is not a bounded perturbation of the literal operator.
+
+## CANNOT-321 (2026-09-24)
+
+CANNOT: satisfy `RHTower.SharpEnergyInput C` for any `C`. The definition quantifies over every head
+length `u ∈ range (hbL a)`, and at `u = 0` the sharp head is the single coefficient `1`, so the
+Dirichlet convolution collapses onto the mollifier: the energy equals the mollifier's own displaced
+coefficient energy `Σ_{m ≤ N} (μ(m) log(N/m)/log N)² m^{2d-1}` with `N = ⌊U^{1/20}⌋`. Primes `p` with
+`p² ≤ N` have Barban–Vehov ratio at least `1/2` and `p^{2d-1} ≥ 1/p`, so that energy is at least
+`¼ Σ_{p ≤ √N} 1/p`, which is unbounded. Lean: `RHTower.not_sharpEnergyInput`
+(`RHTower/HighBlockSharpEnergyRefutation.lean`). Consequently MUST-215 is closed negatively and
+`RHTower.exists_zetaDyadicMeanSquareLaw_of_sharpEnergyInput` has an unsatisfiable hypothesis. The
+mechanism is more elementary than CANNOT-320: no Selberg diagonalisation is involved, and the defect
+appears at the trivial head, so it cannot be removed by changing the head cutoff.
+
+MUST: any replacement high-block input must avoid sharp heads. The head-one energy is two-sided,
+`¼ Σ_{p ≤ √N} 1/p ≤ E(0,d) ≤ N^{2d} Σ_{m ≤ N} 1/m` (`RHTower.quarter_primeSum_le_headOneEnergy`,
+`RHTower.headOneEnergy_le`), so the obstruction is exactly one harmonic factor `≍ log N ≍ (1/20) log U`.
+The displacement factor `N^{2d}` is harmless at the displacement the consumer uses, `d ≍ R/log U`,
+where `N^{2d} ≍ e^{R/10}`; the harmonic factor is not, because it enters `exists_highBlock_bound`
+linearly through `9 e^{4R} C` while `ZetaDyadicMeanSquareLaw` carries a fixed real constant. The
+surviving formulation is a bound on the *smooth* displaced head against the displaced mollifier, not
+mediated by `smooth_head_eq_sum_sharp`.
+
+## CANNOT-322 (2026-09-24)
+
+CANNOT: obtain a negative Jensen term from the mollified mean square. A detector Dirichlet
+polynomial with leading coefficient `1` has coefficient energy at least `1`, so the mean value
+theorem forces `∫_{T₁}^{T₂} ‖dirPoly N a t‖² ≥ (T₂−T₁) − 8N(1+log N)`
+(`RHTower.dirPoly_meanSquare_floor`), hence `(1−ε)(T₂−T₁) ≤ Msq` once
+`8N(1+log N) ≤ ε(T₂−T₁)` (`RHTower.one_sub_mul_le_dirPoly_meanSquare`) and
+`log(1−ε) ≤ log(Msq/(T₂−T₁))` (`RHTower.log_one_sub_le_log_dirPoly_meanSquare_div`), in
+`RHTower/MollifiedMeanSquareFloor.lean`. The normalized mean square can approach `1` from above but
+never fall below it, for any mollifier whatsoever.
+
+MUST: read the off-line displacement chain accordingly. In
+`exists_zetaOffLineFirstMoment_add_mollifierLogMean_le_of_mollified_meanSquare` the mean square
+enters only through `(T₂−T₁)/2 · log(Msq/(T₂−T₁))`, which the floor bounds below by
+`(T₂−T₁)/2 · log(1−ε)`. So that term is never a useful negative quantity: the chain's entire
+RH-strength has to come from `−∫ log‖Ψ(1/2+it)‖ dt`, not from the mean square. Improving the
+mollified mean-square constant toward its optimum `1` improves the bound on the
+multiplicity-weighted horizontal displacement but cannot drive it to zero. The floor is proved for
+the detector Dirichlet polynomial, which is the object the high-block and dyadic-law constructions
+actually bound; the corresponding statement for `∫‖ζΨ(σ₀+it)‖²` itself is not proved here.
+
+## CANNOT-323 / MUST-269 (2026-09-24)
+
+CANNOT: improve the termwise partner-pair positivity of the lag pole series beyond its own
+threshold. The pair numerator equals `2σ(X(σ²−a²+A²) + 4a²γA)` (`RHTower.pairNumerator_eq`), a
+quadratic in the ordinate offset `A` whose vertex value is `2σ(X²(σ²−a²) − 4a⁴γ²)/X`; so for `X > 0`
+and `σ > 0` it is nonnegative for every `A` **exactly** when `4a⁴γ² ≤ X²(σ²−a²)`
+(`RHTower.pairNumerator_nonneg_forall_iff`, via `RHTower.exists_pairNumerator_neg` at
+`A = −2a²γ/X`), in `RHTower/LagPairThresholdSharp.lean`. No sharper estimate of the same pair can
+move the wall: the unconditional threshold of `re_lagPoleSeries_nonneg` is limited by
+`sup_ρ √(a² + 4a⁴γ²/X²)`, and with `|a| < 1/2` that supremum is at least `1/2`.
+
+MUST: prove the hyperbolic zero-free condition `β(1−β)γ² ≥ 1/4` for every zero of `ξ`
+(`RHTower.HyperbolicZeroFree`). It is exactly what lowers the threshold from `13/25` to `1/2`:
+`RHTower.pairCondition_half_of_hyperbolic` gives the pair condition at `σ = 1/2`, and
+`RHTower.re_lagPoleSeries_nonneg_half_of_hyperbolic` gives `Re G ≥ 0` on `Re s > 1/2`. The condition
+is strictly weaker than RH — `RHTower.hyperbolicZeroFree_of_riemannHypothesis` derives it from
+`β = 1/2` and `γ² > 41/2` with room to spare — and it is implied for `|γ| ≥ T` by any de la Vallée
+Poussin region `1 − β ≥ c/log|γ|`, since `c/(2 log|γ|) ≥ 1/(4γ²)` for large `|γ|`. The open part is
+the low-height range `41/2 < γ² < T²`, where `Sieve.exists_zero_free_region` supplies only an
+existential threshold `T`. Reaching `1/2` does not prove RH — `re_le_half_add_of_lagPoleSeries_re_nonneg`
+then gives only `Re ρ ≤ 1` — so the hyperbolic condition is a method target, not an RH producer.
+
+## MUST-269 partial closure (2026-09-24)
+
+The hyperbolic zero-free condition `β(1−β)γ² ≥ 1/4` holds above some ordinate, unconditionally:
+`RHTower.exists_hyperbolic_zeroFree_high` in `RHTower/HyperbolicZeroFreeHigh.lean`. The
+exponent-one zero-free region bounds `β` away from `1`, the functional equation bounds it away from
+`0` at the same rate, the two together force `c/log|γ| ≤ 1/2` so that
+`β(1−β) ≥ (c/L)(1 − c/L) ≥ c/(2L)`, and `log|γ| ≤ |γ| − 1` reduces the requirement to
+`|γ| ≥ 1/(2c)`. The threshold is existential only because `Sieve.exists_zero_free_region` carries an
+existential `T₀`. What remains of MUST-269 is a bounded range of ordinates, where for `γ² ≥ 41/2`
+the condition asks only `0.0124 ≤ β ≤ 0.9876`; an explicit zero-free constant valid from
+`|γ| ≈ 4.53` upward would close it.

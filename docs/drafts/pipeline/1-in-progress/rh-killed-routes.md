@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**406 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**407 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-23, `21b5a4c07f1a541de002475140544ddce30c31fb`**.
+Source-audit cutoff: **2026-09-23, `060008a29f4c979b77dce27991d9e6dc50a58963`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
@@ -29,7 +29,7 @@ Concurrent uncommitted formal edits remain pending evidence and are not counted.
 | [HB, FZZ and PW: scattering and physical action](#scattering) | 82 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 41 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 61 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 62 |
 | [Analytic roots, multiplicity and regularization](#roots) | 11 |
 | [Other finite, scalar and source-blind selectors](#other) | 81 |
 
@@ -4523,6 +4523,7 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 - [higher fixed Suzuki contact as RH endpoint](#no-go-133)
 - [MSC ordinary/stable Hilbert and fixed-rigging transport](#no-go-076)
 - [P ordinary physical scalar depth completion](#no-go-050)
+- [P/SP-E globally holomorphic literal unit-Riesz source](#no-go-407)
 - [P/SP-E transport-credit-only matched history](#no-go-405)
 - [positive same-phase shared-plane Suzuki fusion](#no-go-258)
 - [Route-P direct determinant and scalar/Rees/cubic matching](#no-go-245)
@@ -5655,6 +5656,22 @@ Use a global shell--metric Wronskian or another source-faithful all-prime law to
 Evidence: [finite-jet no-go](../../../../formal/GaloisForLFunctions/RHTower/SuzukiFiniteJetGlobalIdentificationNoGo.lean).
 
 [Back to family](#ward) · [Current SV2 frontier](rh-current-frontier-map.md#sv2--suzuki-projective-limit-and-shifted-kernel-inertia)
+
+<a id="no-go-407"></a>
+
+### P/SP-E globally holomorphic literal unit-Riesz source
+
+**Closed result**
+
+The meromorphic continuation of the literal unit-Riesz Laplace source agrees with its transform on the honest half-plane. At every positive-height zeta zero its shifted coordinate is a non-removable singularity; Hardy's critical-line zeros give unconditional examples. A holomorphic continuation through the entire critical line is therefore impossible for this literal source.
+
+**Survivor / still open**
+
+The same continuation is analytic on a fixed low-height disk, and its singularities faithfully retain spectral information. P/SP-E needs a meromorphic or singular graph transport plus a signed arithmetic payment law for the physical diagonal; local analyticity cannot be promoted to global source passivity.
+
+Evidence: [spectral pole](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceSpectralPole.lean), [Landau disk](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLandauDisk.lean).
+
+[Back to family](#ward) · [Current P/SP-E frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
 
 <a id="roots"></a>
 

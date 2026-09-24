@@ -33,6 +33,7 @@ theorem predictableDrift_logClockProjection_error_norm_sq_eq_highClock (N : ℕ)
   have hp := Submodule.norm_sq_eq_add_norm_sq_starProjection
     (predictableDrift N) (historySpace (min (logarithmicClockThreshold N) N))
   have hfull := predictableDrift_norm_sq_eq_lowClock_add_highClock N
+  rw [Submodule.starProjection_orthogonal_val] at hp
   rw [lowClockProducerEnergy_eq_historyProjection_norm_sq] at hfull
   nlinarith
 
@@ -58,6 +59,9 @@ theorem predictableDrift_logClockProjection_error_norm_tendsto_zero :
     simpa only [predictableDrift_logClockProjection_error_norm_sq_eq_highClock] using
       predictableDrift_logarithmic_highClock_energy_tendsto_zero
   have hsqrt := hsq.sqrt
-  simpa only [Real.sqrt_sq_eq_abs, abs_norm, Real.sqrt_zero] using hsqrt
+  convert hsqrt using 1
+  · funext N
+    rw [Real.sqrt_sq_eq_abs, abs_of_nonneg (norm_nonneg _)]
+  · norm_num
 
 end RHTower.DeletionResidueMartingale

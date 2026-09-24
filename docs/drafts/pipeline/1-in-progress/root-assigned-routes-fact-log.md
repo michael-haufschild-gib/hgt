@@ -281,3 +281,80 @@
   arithmetic estimate. Certificate: `EulerDeletionLogClockProducerReduction.lean`
   (targeted olean compiled; two capstones have only `propext`, `Classical.choice`,
   `Quot.sound`).
+- The retained logarithmic producer is the squared norm of **one** conditional
+  projection onto `historySpace(min(K(N),N))`. Its orthogonal residual is exactly
+  the high-clock band, has squared norm at most `110/(N+1)`, and tends strongly
+  to zero. This does not imply convergence or boundedness of the moving
+  projection; the existing strong-drift no-go remains intact. Certificate:
+  `EulerDeletionLogClockConditionalApproximation.lean` (targeted olean compiled;
+  four capstones audited with standard axioms only).
+- The same low-clock energy is an exact **signed prime-power beta-resolvent**
+  fibre sum. The literal fixed-start first-tail energy is at most
+  `24·lowClockProducerEnergy(N)+2640/(N+1)+60`. Thus the first-tail arithmetic
+  obligation survives localisation and cannot be discarded. Certificate:
+  `EulerDeletionLogClockPrimePowerProducer.lean` (targeted olean compiled; two
+  capstones audited with standard axioms only).
+- A single source projection `logClockSourceProjection(N)` has pointwise value
+  `pairedMoebiusQuotient(N,min(K(N),N),j mod clock(min(K(N),N)))`, retaining the
+  simultaneous Möbius signs. Its squared norm and low-clock drift energy bound
+  each other by `2·(other)+4`; in particular full drift squared norm is at most
+  `2·‖logClockSourceProjection(N)‖²+4+110/(N+1)`. Therefore the EDQ producer
+  is equivalent, up to fixed constants and a vanishing error, to one physical
+  weighted signed quotient field at a logarithmic clock. **No polylog ceiling
+  for that field has been proved.** Certificate:
+  `EulerDeletionLogClockSingleQuotient.lean` (targeted olean compiled; four
+  capstones audited with standard axioms only).
+- **Whole-source critical-clock sharpening:** for every coefficient sequence
+  `|a(n)|≤1`, the squared error of projecting the complete source to
+  `historySpace(L)` is at most `N²/(clock(L)+1)`. This projects the signed sum
+  *before* squaring, avoiding the extra count of chronological layers in the
+  previous high-clock band bound. At `L=4(log₂(N+1)+1)` the squared error is
+  at most `9/(N+1)`; at the RH-relevant smaller
+  `L=2(log₂(N+1)+1)` it is at most `3(log₂(N+1)+1)`.
+  The latter is only logarithmic, hence harmless for a cofinal polylog RH
+  ceiling. Certificates: `EulerDeletionHighClockLayerTail.lean`,
+  `EulerDeletionFourLogClockLocalization.lean`, and
+  `EulerDeletionTwoLogClockLocalization.lean` (targeted oleans compiled; new
+  capstones audit with only `propext`, `Classical.choice`, `Quot.sound`).
+- **Two-log signed RH receiver:** the retained projection has exact pointwise
+  coordinate `pairedMoebiusQuotient(N,L,j mod clock(L))`, with original
+  weighted fibre mass and all Möbius signs. Complete source energy is at most
+  its projected energy plus `3(log₂(N+1)+1)`; complete predictable-drift
+  energy is at most twice projected energy plus `6(log₂(N+1)+1)+4`.
+  A cofinal polylog bound on this one signed quotient field implies RH through
+  the existing EDQ receiver. **That bound is not proved.** The physical
+  initial cells still force the reciprocal Möbius scalar, and later cells
+  retain fixed-start Mertens windows. Certificate:
+  `EulerDeletionTwoLogClockRHEndpoint.lean` (targeted olean compiled; both
+  capstones audit with only `propext`, `Classical.choice`, `Quot.sound`).
+- **The two-log quotient retains both necessary source obstructions:** its
+  energy controls `N·(Σ_{d≤N} μ(d)/d)²` up to
+  `12(log₂(N+1)+1)+4`; projection therefore cannot average away the literal
+  fixed-start harmonic scalar. More strongly, each hypothetical off-line
+  nontrivial zero `ρ` forces, eventually, a positive lower bound
+  `c_ρ·N^(2|Re ρ−1/2|)` for that same projected quotient energy. The latter
+  transfers the corpus's exact current power floor through the complete
+  physical source and an `O(log N)` projection remainder; it does not prove
+  a signed upper bound. Certificates:
+  `EulerDeletionTwoLogClockHarmonicNecessity.lean` and
+  `EulerDeletionTwoLogClockOffLineGrowth.lean` (targeted oleans compiled;
+  three capstones audit with only `propext`, `Classical.choice`, `Quot.sound`).
+- **All-shift complete-lcm polarity:** for every `n` (including zero) and source cells `k,m`,
+  the complete signed fibre `Σ_{lcm(d,e)=n} μ(d)μ(e)·1_{d∣k}1_{e∣m}` equals
+  `μ(n)·1_{n∣km}`. The identity survives every finite window and arbitrary real
+  physical weight, so the former `n∣h` collapse is only a special case. No
+  further sign cancellation is available *inside* a complete lcm fibre:
+  EDQ's missing upper bound must couple distinct Möbius labels and the
+  incomplete high-lcm cutoff boundary. This is an exact structural reduction,
+  not a bound on the two-log quotient. Certificate:
+  `EulerDeletionAllShiftLcmPolarity.lean` (premise-free public capstones;
+  direct Lean and targeted
+  `lake --old build ...:olean` passed; umbrella import wired, not built).
+- **Scope correction:** the physical nonclock EDQ cross fibre has divisor-dependent
+  discrepancy weights, so all-shift complete-lcm polarity does *not* simplify
+  that weighted carrier to `μ(n)·1_{n∣km}`. The corpus already has its sharper
+  physical normal form: each live future residual has one signed period
+  coefficient, the primitive period polynomial minus the exact spatial cutoff
+  boundary (`EulerDeletionTerminalCoefficientCollapse.lean`). The unresolved
+  step is cancellation *across* these residual coefficients. A bare complete
+  lcm sign argument does not attack that step.

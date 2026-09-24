@@ -199,10 +199,10 @@ theorem le_log_factorial (n : ℕ) :
     rw [Real.log_div (by positivity) (ne_of_gt hfacpos), Real.log_pow] at hlog
     linarith
 
-/-- **Mertens' first theorem, upper bound.** -/
-theorem mertensFirst_upper {n : ℕ} (hn : 1 ≤ n) :
-    ∑ p ∈ Nat.primesLE n, Real.log p / (p : ℝ) ≤ Real.log n + Real.log 4 := by
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+/-- The factorial comparison shared by both finite Mertens upper bounds. -/
+theorem mertensFirst_upper_factorial_core (n : ℕ) :
+    (n : ℝ) * (∑ p ∈ Nat.primesLE n, Real.log p / (p : ℝ)) ≤
+      Real.log ((n ! : ℕ) : ℝ) + ∑ p ∈ Nat.primesLE n, Real.log p := by
   have hlower : ∑ p ∈ Nat.primesLE n, ((n / p : ℕ) : ℝ) * Real.log p
       ≤ Real.log ((n ! : ℕ) : ℝ) := by
     rw [log_factorial_eq_sum_primesLE n]
@@ -228,6 +228,13 @@ theorem mertensFirst_upper {n : ℕ} (hn : 1 ≤ n) :
         = ((n : ℝ) / (p : ℝ) - 1) * Real.log p := by ring
     rw [this]
     exact mul_le_mul_of_nonneg_right hfl hlogp
+  linarith
+
+/-- **Mertens' first theorem, upper bound.** -/
+theorem mertensFirst_upper {n : ℕ} (hn : 1 ≤ n) :
+    ∑ p ∈ Nat.primesLE n, Real.log p / (p : ℝ) ≤ Real.log n + Real.log 4 := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hcore := mertensFirst_upper_factorial_core n
   have hcheb := sum_log_primesLE_le n
   have hfac := log_factorial_le n
   have hkey : (n : ℝ) * (∑ p ∈ Nat.primesLE n, Real.log p / (p : ℝ))

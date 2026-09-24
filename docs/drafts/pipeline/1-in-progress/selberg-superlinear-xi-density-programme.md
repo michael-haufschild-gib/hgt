@@ -1894,3 +1894,181 @@ nonzero, i.e. some `zeta(1/2+i(a+dn))`, `n >= 0`, is nonzero.
 Modules: `HTGeometry/{CosineArc,CauchyCircleIntegral}.lean`,
 `RHTower/{PutnamPoissonBound,PutnamJumpBlowUp,XiNoArithmeticProgression}.lean`
 (and `RHTower/PutnamApproximateIdentity.lean` for the two-sided companion).
+
+## Route 1 barrier, sharpened (2026-09-24)
+
+The audit of 2026-08-19 recorded that Route 1 needs "a bound for `∑_j|∫_{I_j}ZW|` that is not a
+triangle inequality over `n`".  That is right but understates the obstruction: **the natural
+replacement, Cauchy–Schwarz over the cells, is exactly critical.**
+
+Per cell, `|∫_{I_j} f|² ≤ H ∫_{I_j} f²`; summing and applying Cauchy–Schwarz over the `T/H` cells,
+
+```text
+Bsum²  =  (∑_j |∫_{I_j} f|)²  ≤  (T/H) · H · ∫ f²  =  T · ∫ f² .
+```
+
+But the same Cauchy–Schwarz bounds the absolute mass the device needs from below:
+
+```text
+L²  ≤  (∫ |f|)²  ≤  T · ∫ f² .
+```
+
+So `Bsum` and `L` are bounded by the *same* quantity `√(T ∫ f²)`, and no lower bound for the
+surplus `L − Bsum` follows from these two estimates however `H` is chosen.  Closing Route 1
+requires strict improvement on one of the two sides: either `|f| = |Z·W|` is flatter than
+Cauchy–Schwarz allows, so that `L` saturates `√(T∫f²)` (this is what a good mollifier buys), or
+genuine cancellation inside each cell, so that `Bsum` falls strictly below it.  Both are quantitative
+statements about the mollified function, i.e. Selberg's machinery; neither follows from moment
+bounds alone.
+
+Formalised in `formal/GaloisForLFunctions/HTGeometry/GridDeviceCellEstimate.lean`:
+
+- `sq_sum_abs_le_card_mul_length_mul_total` — the cell estimate
+  `(∑_i |c i|)² ≤ #cells · H · ∑_i Q i` from the per-cell bounds `c i ² ≤ H · Q i`.
+- `grid_surplus_bounds_coincide` — both `L` and `Bsum` are bounded by `√(W · I₂)`.
+
+**Consequence for the ledger.**  The fixed-length-mollifier simplification of brick 48 removes the
+Conrey asymptotic, but it does not remove this collision: brick 48's scheme bounds
+`Q ≤ H·∫|ζM|²` and then uses Cauchy–Schwarz over the cells, which is precisely the critical
+estimate above.  Route 1 therefore still needs a flatness or cancellation input, not a sharper
+moment constant.
+
+## Reclassification of the remaining requirement (2026-09-24)
+
+**Unverified estimate, recorded for checking — not a Lean result.**
+
+Bricks 13–15 recorded the open item as "the coefficient estimate `∑_k|c_k|² ≪ 1` … that is the
+Conrey computation and is the remaining mathematics".  Those bricks predate Graham (46–47) and
+brick 48.  Running the brick-48 harmonic-weighted bound with a *growing* mollifier appears to give
+the coefficient estimate directly, without Conrey:
+
+With the normalised linear mollifier `a_m = μ(m)log(X/m)/log X`, brick 48 gives
+
+```text
+λ  =  ∑_{k ≤ N} (b_X(k)/log X)² / k
+   ≤  [ 4A²(1+log N)(1+log X) + (1+2log X)(X log X)² ] / log²X
+   ≈  4A² · log N / log X      +      2 X² log X / log²X .
+```
+
+Take `X = T^θ` and `N ≍ T^{1/2+θ}` (the AFE conductor `√(T/2π)` times the mollifier length).  Then
+
+* the main term is `4A²(1/2+θ)/θ`, **a constant**, not a growing quantity;
+* the error term needs `X² ≪ N`, i.e. `2θ < 1/2 + θ`, i.e. `θ < 1/2` — exactly the condition the
+  programme already carries.
+
+So `λ = O(1)` for every `θ < 1/2`, from Graham alone.  If this is right, the remaining requirement
+is **not** the Conrey asymptotic.
+
+What it becomes, via the collision above: the device needs `Bsum < L ≈ T`, while Cauchy–Schwarz
+over cells allows only `Bsum ≤ √(T ∫f²) ≈ T√λ`.  So the missing input is a **constant-factor**
+saving `√λ` over Cauchy–Schwarz in the cell cancellation, rather than a `√(log T)` saving (which is
+what a fixed-length mollifier would require, since there `λ ≍ log T/log X`).
+
+Caveat, and it is a serious one: `A = 6 + |γ|`, so `λ ≈ 8A² ≈ 346` as `θ → 1/2`, giving
+`√λ ≈ 19`.  A nineteen-fold gain over Cauchy–Schwarz is a large constant, and the programme's own
+margin bookkeeping (Levinson's `0.009`) suggests constants of this size are usually fatal.  The
+reclassification is therefore from "needs a hard asymptotic" to "needs a large but fixed constant
+factor", which is a different kind of problem, not obviously an easier one.
+
+**To check before relying on this:** the relation `N ≍ T^{1/2+θ}` against the smooth AFE actually
+used (bricks 4–5, 14), and whether the first moment really gives `L ≈ T` with a constant that does
+not itself carry a `1/√λ`.
+
+## Verification of the reclassification, and brick 61 (2026-09-24)
+
+Check 1 of the previous section — the relation `N ≍ T^{1/2+θ}` against the smooth AFE — **passes**,
+but only with two corrections to the chain as recorded.
+
+**Correction A: use the affine mean value theorem, not brick 13.**  Brick 13's window form carries
+the error `8N(1+log N)·∑_m|a_m|²`.  With `N ≍ T^{1/2+θ}` and `∑|a_m|² ≍ λ` that is `≍ T^{1/2+θ}log T`,
+and the `log T` is avoidable.  The tree already owns the *affine* form
+(`Sieve/DirichletPolyAffineMeanSquare.lean`, `integral_Icc_normSq_dirPoly_le_affine`), whose error is
+`5πe·∑_m (m+1)|a_m|²`.  For the mollified coefficients `c_k = k^{-1/2} b_X(k)/log X` this is
+`≍ ∑_{k ≤ N} b_X(k)²/log²X`, which Graham bounds by `4A²N(1+log X)/log²X ≍ N/log X`.  So
+
+```text
+affine error  ≍  T^(1/2+θ) / log X  ≪  T   ⟺   θ < 1/2 ,
+```
+
+i.e. the programme's own threshold `θ < 1/2` is exactly the condition for the affine error to be
+admissible.  This is a consistency check the chain passes.
+
+**Correction B: the truncation exponent.**  Brick 14 instantiates
+`exists_norm_smoothAFECutoff_le_neg_rpow` at `A = 1`, giving a tail `≍ K x N^{-1/2}`.  With
+`x ≍ √T` and `N ≍ T^{1/2+θ}` the tail is negligible only when
+
+```text
+A  >  1/(4θ) + 1/2 ,
+```
+
+so `A = 1` suffices only as `θ → 1/2` and fails for smaller `θ`.  Since the Gaussian cutoff decays
+at every exponent, this is a free parameter that brick 14 simply fixed too early.
+
+### Landed brick 61: the truncation at an arbitrary exponent (2026-09-24)
+
+`formal/GaloisForLFunctions/RHTower/SmoothAFEDirectTruncationRpow.lean`
+
+- `exists_norm_smoothAFEDirectSeries_sub_dirPoly_le_rpow` — for every `A > 1/2`,
+  ```
+  ‖smoothAFEDirectSeries x τ − dirPoly N (afeDirectCoeff x N) (−τ)‖
+      ≤ (K_A · x^A) · ∑'_i 1/((i+N)+1)^(A+1/2) ,
+  ```
+  uniformly in the height, by instantiating the cutoff decay at exponent `A` instead of `1`.
+
+Axiom-clean.  This closes correction B.  Correction A needs no new mathematics, only the use of the
+affine mean square in place of brick 13 where the chain is assembled.
+
+**Check 2 remains open**: whether the first-moment lower bound `L ≈ T` carries a constant that
+itself absorbs the `√λ ≈ 19`.  Until that is settled the reclassification should not be relied on.
+
+## Check 2 settled — and a correction to the previous section (2026-09-24)
+
+The reclassification section above concluded that the missing input is a constant-factor gain
+`√λ ≈ 19` over Cauchy–Schwarz, and warned that such a constant is probably fatal.  **That
+conclusion was wrong**, and the error was to compare a scale against a shape.
+
+On a window of length `T` write `I₁ = ∫|f|`, `I₂ = ∫f²`.  Cauchy–Schwarz bounds **both** sides of
+the surplus by `√(T I₂)`, so the device needs the cell cancellation to beat that bound by the
+factor `√(T I₂)/I₁`.  That factor is invariant under `f ↦ c f`
+(`HTGeometry/GridDeviceGainScaleInvariance.lean`, `grid_required_gain_scale_invariant`).
+
+The mollifier's mean-square constant `λ` is exactly such a common amplitude: it multiplies `I₂` by
+`λ` and `I₁` by `√λ`, and cancels.  The earlier section compared `L ≈ T` (the value at `λ = 1`)
+against `√(T I₂) ≈ T√λ` and read the discrepancy as a required gain.  It is not: the first moment
+scales with `√λ` too.
+
+**So the required gain carries no `λ` at all.**  It is a normalised `L¹/L²` shape ratio of the
+mollified function on the window — a pure distributional quantity, bounded by `1`, and equal to `1`
+only for a function of constant modulus.  Whether it is bounded away from the cancellation the
+cells actually exhibit is a statement about the *distribution* of `|Z M|`, not about any constant
+in Graham's bound.
+
+Consequence for the ledger: sharpening constants in the coefficient estimate cannot help, and
+neither can enlarging `λ`; both cancel.  The open input is the shape of `|ZM|` against the cell
+cancellation, and nothing else in the chain bears on it.
+
+## The collision is not about Cauchy–Schwarz: no modulus-only bound can close the device (2026-09-24)
+
+The two preceding sections treated the obstruction as a property of Cauchy–Schwarz, then of the
+shape ratio.  Both understate it.  The obstruction is structural and holds for **every** estimate
+that factors through `|f|`.
+
+Write `m j` for the absolute mass of `f` on cell `j`.  The signed cell integrals satisfy
+`|∫_{I_j} f| ≤ m j`, and an estimate depending only on `|f|` is one valid for every sign pattern
+compatible with those masses.  The pattern with no sign changes is realised by `|f|` itself and
+attains `∑_j m j = ∫|f|`.  Hence **any modulus-only bound `Φ` satisfies `Φ ≥ ∫|f|`**, and the
+surplus `∫|f| − Φ` it yields is never positive.
+
+Formalised in `formal/GaloisForLFunctions/HTGeometry/GridDeviceModulusOnlyNoGo.lean`:
+
+- `no_modulus_only_cell_bound` — `∑_i m i ≤ Φ` for every `Φ` valid across sign patterns.
+- `grid_surplus_nonpos_of_modulus_only` — hence the surplus is `≤ 0`.
+
+This subsumes at one stroke: Cauchy–Schwarz over the cells, Hölder at every exponent, the affine
+mean value theorem, and every moment estimate on `ζM`, including any sharpening of Graham's
+constants.  All of them factor through `|f|`.
+
+**Consequence for the ledger.**  The open input of Route 1 is not any moment bound.  It is an
+estimate that uses *where* `Z·W` changes sign — i.e. information about the zeros themselves — which
+is why the route reads as circular at this point.  Any continuation must break that circularity
+explicitly, and no amount of work on the coefficient side can do it.

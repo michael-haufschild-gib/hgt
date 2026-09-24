@@ -1,7 +1,7 @@
 # RH research ledger
 
 **No route proves or disproves RH.** This register separates **24 active routes**,
-**37 named candidates**, and **406 closed mechanisms**. “Active” means a formal
+**37 named candidates**, and **407 closed mechanisms**. “Active” means a formal
 route architecture with an independent mathematical problem still open, not a proof in hand.
 
 [Active routes](#active-routes) · [Route candidates](#route-candidates) ·
@@ -20,9 +20,10 @@ route architecture with an independent mathematical problem still open, not a pr
 - Route labels are lookup keys, not claims of independence. A receiver ending in RH
   does not prove its source premise. A killed subroute does not kill its whole family.
 
-**Source-audit cutoff: 2026-09-23, `21b5a4c07f1a541de002475140544ddce30c31fb`.**
-Reviewed new route modules and source cards since `327d41990bfaa2f8bd1bd0bfd4bcc0fe80da6f36`.
-The much larger modified-file delta includes broad corpus churn and is not counted as new mathematics.
+**Source-audit cutoff: 2026-09-23, `060008a29f4c979b77dce27991d9e6dc50a58963`.**
+Reconciled the 23-file committed formal delta since `21b5a4c07f1a541de002475140544ddce30c31fb`
+(19 additions, two modifications, two withdrawn WIP modules). Earlier ledger edits in those commits
+were not recounted as new results.
 No builds, Lean checks, tests, lint or index refresh were run for this ledger update.
 Concurrent uncommitted formal edits are not promoted into committed closure.
 
@@ -126,9 +127,9 @@ problem. The family index is a navigation aid, not an exhaustive dependency grap
 
 ### L — singular Green/BV-to-physical descent
 
-- **Closed:** Original-Green coordinates have a nonzero product-topology zero-damping limit retaining literal prime source and zeta jets; new source modules add prime-reflection sewing and a right-line damping law. Separately, a paper-level reciprocal-exponential comparison identifies one order-three Möbius block-energy estimate sufficient for the existing RH receiver; this reduction is not yet formalized.
-- **Open:** Construct a source-faithful normed Green/BV completion and prove simultaneous reader vanishing. Alternatively prove `∫_K^{2K}|T₃(t)|²dt ≪_η K^{-4+η}` for every `η>0`; the unconditional absolute bound loses one power. The reduction supplies no arithmetic cancellation.
-- **Evidence:** [Green completion](../../../../formal/GaloisForLFunctions/RHTower/DeningerOriginalGreenCoordinateCompletion.lean), [reflection sewing](../../../../formal/GaloisForLFunctions/RHTower/DeningerOriginalGreenPrimeReflectionSewing.lean), [paper reduction](l-third-order-reciprocal-profile-target.md).
+- **Closed:** Original-Green coordinatewise zero-damping completion and prime-reflection sewing remain. The reciprocal/original order-three Möbius--Laplace *finite* energy isometry is now formal, preserving every signed off-diagonal term with factor eight. Finite gcd reindexing moves every off-diagonal Möbius sign to a primitive coprime ratio with nonnegative common-scale weight. Infinite fractional transport and the RH-scale criterion remain paper-level.
+- **Open:** Construct a source-faithful normed Green/BV completion and prove simultaneous reader vanishing. Alternatively prove `∫_K^{2K}|T₃(t)|²dt ≪_η K^{-4+η}` for every `η>0`, or a uniform signed bound on the equivalent finite near-endpoint quadratic form. Primitive-ratio localization identifies, but does not cancel, the long-range coprime band.
+- **Evidence:** [Green completion](../../../../formal/GaloisForLFunctions/RHTower/DeningerOriginalGreenCoordinateCompletion.lean), [finite isometry](../../../../formal/GaloisForLFunctions/RHTower/MobiusReciprocalSourceEnergy.lean), [primitive-ratio sign law](../../../../formal/GaloisForLFunctions/RHTower/MobiusReciprocalPrimitiveRatio.lean), [analytic and arithmetic boundary](l-third-order-reciprocal-profile-target.md).
 
 <a id="li--finite-paired-li-prime--gamma-order"></a>
 
@@ -158,41 +159,41 @@ problem. The family index is a navigation aid, not an exhaustive dependency grap
 
 ### P — paired prime–Gamma signed exterior wall
 
-- **Closed:** The terminal coefficient threshold and mass--centroid source envelope remain exact. The committed matched-quantile history now has a finite arithmetic-null formula and a weighted-Chebyshev-credit minus two-square-debts decomposition. After subtracting that credit, its normalized history tends to `−∞`; ideal-centroid and transport-credit-only repairs fail. The terminal orbit has a forced projective null boundary, not a finite nondegenerate landing.
-- **Open:** Produce a source-derived compensator paying the full centroid and square debts on the physical diagonal, including ratio one, and construct the ordered-history graph intertwiner. Rectangular asymptotics, transport credit alone and projective normalization cannot establish terminal passivity.
-- **Evidence:** [Arithmetic-null history](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePArithmeticVarianceNull.lean), [credit decomposition](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePWeightedChebyshevCredit.lean), [credit escape](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePWeightedCreditEscape.lean), [projective boundary](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePTerminalProjectiveBoundary.lean).
+- **Closed:** The terminal threshold, weighted-Chebyshev-credit decomposition and negative residual escape remain exact. The literal unit-Riesz Laplace source now has a meromorphic continuation agreeing with its honest half-plane transform. It is analytic on a fixed low-height disk, but every positive-height critical zeta zero is a non-removable singularity; Hardy's theorem supplies at least one such point unconditionally. Global holomorphic source regularization across the critical line is closed.
+- **Open:** Produce a source-derived compensator paying the full centroid and square debts on the physical diagonal, including ratio one, and a graph intertwiner that respects the unavoidable source poles. Local Landau-disk analyticity and projective normalization do not establish terminal passivity.
+- **Evidence:** [Credit escape](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePWeightedCreditEscape.lean), [literal source pole](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceSpectralPole.lean), [low-height disk](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLandauDisk.lean).
 
 <a id="pw-b--recoildeninger-ward-transmutation"></a>
 
 ### PW-B — recoil/Deninger Ward transmutation
 
-- **Closed:** Literal Schwarz covariance still gives `Re CΣ=0` on critical divisor copies. The completed CTP pairing now has an exact original-cap plus lift-defect source normal form. Finite nonseparable null transposition preserves the center-time-coupled two-leg test. A single complementary metric is exchange-even and cannot encode the order-skew CTP pair; the metric/current pair retains both parities.
-- **Open:** Prove full direct/image source-domain transport and an admitted noncompact limit, then the normalized original-cap/lift-defect magnitude identity with fixed-grade PW imbalance and partner balance. The finite chart and real cancellation do not supply that magnitude law.
-- **Evidence:** [Cap/lift normal form](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWCompletedCTPOriginalCapLiftBridge.lean), [finite transposition](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralCyclicPeierlsNonseparableTransposition.lean), [cross-metric no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralCyclicPeierlsCrossMetricOrientationNoGo.lean), [chart audit](pw-b-ordered-ctp-null-chart.md).
+- **Closed:** Literal Schwarz covariance still gives `Re CΣ=0` on critical divisor copies; the completed CTP source has its original-cap plus lift-defect form. A new source-normalized weak optical identity gives flux `=−Im(parameter)·response mass` on each physical branch; the crossed two-branch flux matches fixed-grade PW imbalance without fitting a phase scalar. The unverified physical-cutoff and full finite two-arm transposition modules were withdrawn; null-face and finite nonseparable test results remain.
+- **Open:** Prove a source-faithful incidence between weak optical flux and the *ordered* CTP cap/lift current, with response-mass positivity or another nondegenerate normalization. Then prove full direct/image transport, admitted noncompact limit, all-divisor extinction and partner balance. The crossed identity alone is not a magnitude law.
+- **Evidence:** [Weak optical Ward law](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWWeakSourceOpticalWard.lean), [cap/lift normal form](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWCompletedCTPOriginalCapLiftBridge.lean), [verified null-face boundary](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWOrderedNullImageFace.lean), [chart audit](pw-b-ordered-ctp-null-chart.md).
 
 <a id="q--exterior-paired-value-passivity"></a>
 
 ### Q — exterior paired-value passivity
 
-- **Closed:** Order-23 source-height control enlarges the unconditional paired reciprocal-square phase barrier and actual continued prime--Gamma trace sign to `0<Re z≤279/20`, `0<Im z<1/2`, away from a zeta zero/pole. Q remains an oblique complex-flux observable, so a D2 real-part bound alone still cannot imply passivity.
-- **Open:** Extend the atomwise/source-trace barrier beyond `279/20` cofinally across the full pole-free upper strip, or produce a pole witness. The remaining source law must orient complex phase, not only real flux.
-- **Evidence:** [Order-23 trace band](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchCentralPairedFourthTraceBand.lean), [central algebra](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchCentralPairedDiagonalAlgebra.lean), [D2--Q oblique flux](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchD2QObliqueFlux.lean).
+- **Closed:** The unconditional *complete trace* sign remains proved only on `0<Re z≤279/20`, `0<Im z<1/2` away from poles. For an individual line-conjugate reciprocal-square pair, the negative-phase set is an exact disk in squared spectral coordinates; every hypothetical off-line Xi copy has a pole-free upper-strip negative witness, while a critical-line copy has nonnegative pair phase. Thus all-strip *atomwise* sign is an RH receiver, not a source proof.
+- **Open:** Extend source-level control of the **complete** oblique trace beyond the finite band, or derive another cancellation/orientation law that excludes the atomwise negative witnesses. Pairwise geometry alone does not determine the sum or remove poles; a D2 real-part estimate still cannot orient Q.
+- **Evidence:** [Trace band](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchCentralPairedFourthTraceBand.lean), [negative disk](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchCentralPairedNegativeDiskGeometry.lean), [atomwise classification](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchCentralPairedPhaseResonanceClassification.lean).
 
 <a id="rg--gaussian-arithmetic-and-suzuki-transport-positivity"></a>
 
 ### RG — Gaussian arithmetic and Suzuki transport positivity
 
-- **Closed:** Real-node representative ambiguity and the finite eta-flux RH receiver remain closed. Every compact center-minimum Gaussian certificate reaching the phase flip `pi/epsilon` must now pay an explicit elementary peak through the bounded digamma channel plus retained prime slope mass; the latter is bounded by the deterministic budget `cutoff·log(cutoff)^2`, yielding an explicit necessary cutoff-growth law.
-- **Open:** Produce certificates with that growing prime budget uniformly in center and width, or prove the finite eta flux tends to zero from an independent arithmetic anti-alignment estimate. The phase-flip law quantifies unavoidable cost; it does not construct good widths or signed seam control.
-- **Evidence:** [Phase-flip peak](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianCertificatePeakObstruction.lean), [digamma bound](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianCertificatePhaseFlipDigammaBound.lean), [cutoff budget](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianCertificatePhaseFlipCutoffBudget.lean), [finite arithmetic flux criterion](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiPositiveCriticalStripEtaFiniteArithmeticFluxCriterion.lean).
+- **Closed:** The finite eta-flux RH receiver and Gaussian phase-flip cutoff cost remain. The completed paired-eta partner-minus-original amplitude is eventually positive at any hypothetical right-half zero, eventually negative at its left reflection, and identically zero on the critical line. Arbitrarily late nonpositive cutoffs for every zero are therefore RH-equivalent, not a proved arithmetic recurrence.
+- **Open:** Derive that nonpositive sign recurrence or finite-flux decay from source-side arithmetic anti-alignment, while meeting the Gaussian prime-budget growth uniformly in center and width. The sign criterion itself does not supply the required estimate.
+- **Evidence:** [Top-prefix sign criterion](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/EtaTopPrefixAmplitudeSignCriterion.lean), [Gaussian cutoff budget](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianCertificatePhaseFlipCutoffBudget.lean), [finite flux receiver](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiPositiveCriticalStripEtaFiniteArithmeticFluxCriterion.lean).
 
 <a id="sp-e--signed-prime-dilation-versus-continuum"></a>
 
 ### SP-E — signed prime dilation versus continuum
 
-- **Closed:** Prime-power history remains positive definite modulo its one relative-offset shear. Its full matched-quantile normalized variance has a literal arithmetic-null/Chebyshev decomposition; the weighted credit is an exact unit-Riesz renewal resolvent source. The residual after that credit diverges negatively, and the terminal homogeneous orbit collapses to one projective null flag.
-- **Open:** Derive a signed arithmetic payment law for the remaining centroid/square debts and a coefficient-faithful ordered-history graph intertwiner. The resolvent identity names the source term but does not bound it or cure the negative residual.
-- **Evidence:** [History decomposition](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePWeightedChebyshevCredit.lean), [unit-Riesz bridge](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePUnitRieszRenewalBridge.lean), [residual escape](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePTransportHistoryEscape.lean).
+- **Closed:** Prime-power history remains positive definite modulo one offset shear; its credit-minus-debts residual diverges negatively. The unit-Riesz renewal credit now has an explicit meromorphic source continuation: analytic on a low-height Landau disk, non-removable at actual critical-line zeros. Regular full-critical-line analytic transport is excluded, while the local disk survives.
+- **Open:** Derive signed arithmetic payment of the centroid/square debts and a coefficient-faithful ordered-history intertwiner through a *meromorphic* or singular source domain. The unit-Riesz identity and low-height disk supply neither payment nor global passivity.
+- **Evidence:** [History decomposition](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePWeightedChebyshevCredit.lean), [source pole](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePSourceSpectralPole.lean), [Landau disk](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLandauDisk.lean).
 
 <a id="stc--exterior-sonin-seam-coherence"></a>
 
@@ -288,9 +289,9 @@ Some are alternative presentations of an active route's existing open problem.
 
 ### EDQ
 
-- **Closed / available:** Residue innovations converge strongly, while predictable drift cannot converge strongly or be exponent-two uniformly integrable. Terminal beta transport is sign-preserving and residual-period geometry collapses to one coefficient. New support theorems sharpen the live upper-half carrier exactly to ordinary primes `p in [l+2,N]`: non-prime terminal successors, old-prime composites and the singleton residual vanish. Literal child energy samples only one clock span, shorter than each surviving prime's full phase cycle, so complete-period averaging is unavailable.
-- **Open:** Bound the resulting incomplete prime-orbit reduced-residue covariance cofinally and sum the quotient tail by a genuinely non-uniformly-integrable signed argument. Prime support removes composite noise but supplies no prime-pair cancellation.
-- **Evidence:** [Terminal prime support](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionTerminalPrimeSupport.lean), [future-prime support](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionReverseTailFuturePrimeSupport.lean), [upper-half physical collapse](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionUpperHalfPhysicalPrimeSupport.lean), [fact audit](routes-e-p-u-q-c1-d2-l-own-research-facts.md).
+- **Closed / available:** Residue innovations converge strongly, while the full predictable drift cannot converge strongly or be exponent-two uniformly integrable. The literal upper-half prime packet differs from its paired-source endpoint by a vanishing physical `L²` remainder. More strongly, the *complete drift* energy above the logarithmic clock `K(N)=5(log₂(N+1)+1)` is at most `110/(N+1)`. Its norm-square equals one moving low-clock/base-history producer plus that vanishing high-clock energy; the low-clock producer is exactly a signed prime-power beta-resolvent carrier, not a bound on it.
+- **Open:** Prove a cofinal ceiling for the signed `O(log N)` early-clock/base-history producer, including its fixed-start Möbius window and incomplete prime-orbit covariance, then sum the quotient tail. High-clock localization does not overturn the known full-drift nonconvergence.
+- **Evidence:** [High-clock tail](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionHighClockLayerTail.lean), [log-clock localization](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionLogClockLocalization.lean), [conditional approximation](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionLogClockConditionalApproximation.lean), [prime-power producer](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionLogClockPrimePowerProducer.lean).
 
 <a id="candidate-egc"></a>
 
@@ -368,9 +369,9 @@ Some are alternative presentations of an active route's existing open problem.
 
 ### K-RVM
 
-- **Closed / available:** The cubic obstruction to a squared single carrier and the even signed-reflection block remain formal. New source inequalities place the actual completed quadratic, quartic and sixth traces strictly inside a three-moment admission cone. An unconditional finite nonnegative head with at least ten slots matches all three moments exactly; a continuous selector closes the integer-rank seams.
-- **Open:** Choose a positive-scale cofinite RVM/cycle reserve whose three trace contributions stay inside that cone, then control the full moment sequence and prove the signed-reflection determinant has the Xi divisor. A finite sixth-moment match is not a global spectral identification.
-- **Evidence:** [Exact sixth-moment head](../../../../formal/GaloisForLFunctions/RHTower/XiPrimeMarkedFiniteSixthExactCarrier.lean), [strict cone](../../../../formal/GaloisForLFunctions/RHTower/XiPrimeMarkedFiniteSixthStrictCone.lean), [signed-reflection block](../../../../formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMSignedReflectionCandidate.lean), [source audit](k-rvm-finite-sixth-moment-bracket.md).
+- **Closed / available:** The even signed-reflection block and exact finite nonnegative head matching quadratic, quartic and sixth source traces remain formal. For every prescribed prime prefix and `ε>0`, a later reciprocal-RVM tail plus a *positively scaled* cofinal cycle has Hilbert--Schmidt energy below `ε`; the same reserve has every positive-power Hilbert--Schmidt energy below `ε`.
+- **Open:** Prove the reserve's second/fourth/sixth trace contributions fit the strict residual three-moment cone, incorporate the arbitrary finite prime-diagonal head, then control *all* moments and identify the Xi divisor. Small norm alone does not match source traces or establish RH.
+- **Evidence:** [Exact sixth-moment head](../../../../formal/GaloisForLFunctions/RHTower/XiPrimeMarkedFiniteSixthExactCarrier.lean), [cofinite reserve](../../../../formal/GaloisForLFunctions/RHTower/XiPrimeMarkedCofiniteReserveAllPowerSmall.lean), [signed-reflection block](../../../../formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMSignedReflectionCandidate.lean), [source audit](k-rvm-finite-sixth-moment-bracket.md).
 
 <a id="candidate-mplf"></a>
 
@@ -432,9 +433,9 @@ Some are alternative presentations of an active route's existing open problem.
 
 ### RG-ETA
 
-- **Closed / available:** Actual finite paired-eta arithmetic fluxes converge diagonally to the complete upper-spectral heat detector. Vanishing of this one explicit finite sequence is equivalent to RH; an off-axis zero forces eventual strict positivity. This closes the finite-to-complete interface and identifies the exact arithmetic target.
-- **Open:** Prove that finite flux tends to zero by anti-alignment of the retained coupled prefix at square-root scale. Finite truncation or the criterion itself supplies no such source estimate. Subordinate to RG.
-- **Evidence:** [Finite arithmetic flux criterion](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiPositiveCriticalStripEtaFiniteArithmeticFluxCriterion.lean).
+- **Closed / available:** Finite paired-eta fluxes converge diagonally to the complete heat detector, with vanishing equivalent to RH. A second exact receiver uses the partner-minus-original prefix magnitude: a hypothetical right-half zero makes it eventually positive, and arbitrarily late nonpositive values on every zero are RH-equivalent. The slower partner component also has a sharp full-norm limit at a hypothetical right-half zero.
+- **Open:** Prove finite-flux decay or nonpositive prefix sign recurrence from arithmetic anti-alignment at square-root scale. Neither equivalence supplies that source estimate. Subordinate to RG.
+- **Evidence:** [Top-prefix sign criterion](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/EtaTopPrefixAmplitudeSignCriterion.lean), [finite flux criterion](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiPositiveCriticalStripEtaFiniteArithmeticFluxCriterion.lean).
 
 <a id="candidate-rg-hf"></a>
 
@@ -576,7 +577,7 @@ does not independently solve the problem; they do not mean its premise is false.
 
 ### Closed subroutes inside otherwise live families
 
-The complete catalogue contains **all 406 named entries**, not a selected list. Each family
+The complete catalogue contains **all 407 named entries**, not a selected list. Each family
 opens a name index followed by one structured result/survivor card per mechanism.
 The 17 original-label records above are included in that total; FD2 and RBH also have
 their longer architecture verdicts in the reference.
@@ -589,7 +590,7 @@ their longer architecture verdicts in the reference.
 | [HB, FZZ and PW: scattering and physical action](rh-killed-routes.md#scattering) | 82 |
 | [Theta, Schur, spectral and positivity mechanisms](rh-killed-routes.md#theta) | 41 |
 | [Singular descent, formation and completion](rh-killed-routes.md#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](rh-killed-routes.md#ward) | 61 |
+| [Ward, Suzuki, prime–Gamma and operator landing](rh-killed-routes.md#ward) | 62 |
 | [Analytic roots, multiplicity and regularization](rh-killed-routes.md#roots) | 11 |
 | [Other finite, scalar and source-blind selectors](rh-killed-routes.md#other) | 81 |
 
@@ -699,6 +700,12 @@ remove—or expose—inside the named routes.
   they do not establish an approximation limit or transfer Kammeyer's analytic counterexample to
   unrelated models.
 - **Evidence:** [Determinant mechanisms](../../../../formal/GaloisForLFunctions/HTGeometry/KammeyerDeterminantApproximationCore.lean), [corpus applications](../../../../formal/GaloisForLFunctions/HTGeometry/KammeyerDeterminantApproximationApplications.lean).
+
+### Xi Laguerre--Pólya and Jensen receivers
+
+- **Closed:** Laguerre--Pólya membership of centered `XiC`, or splitting of all its Jensen polynomials, implies RH. Conversely RH implies the first real Laguerre inequality, so one negative first-Laguerre margin would refute RH. These are exact function-theoretic receivers/falsification tests, not source-produced inequalities.
+- **Open:** Prove all-Jensen hyperbolicity or Laguerre--Pólya membership from a new arithmetic source law, or construct an actual negative Laguerre margin. The receiver implications alone settle neither direction.
+- **Evidence:** [Laguerre--Pólya receiver](../../../../formal/GaloisForLFunctions/RHTower/XiLaguerrePolyaRiemannHypothesis.lean), [Jensen receiver](../../../../formal/GaloisForLFunctions/RHTower/XiJensenPolynomialRiemannHypothesis.lean), [first-margin criterion](../../../../formal/GaloisForLFunctions/RHTower/XiLaguerreMarginUnconditional.lean).
 
 ### Source-construction and selector checks
 

@@ -512,6 +512,248 @@ theorem ae_topPrefixFiniteEnergyHorizontalTiltBracket_ne_zero_of_crossover_outsi
   · linarith
   · linarith
 
+/-- The new-head pairing has the opposite orientation from the adjacent
+moment pairing: its negative head contributes one minus sign. -/
+private theorem completed_exponential_head_pair_re
+    (C s : ℂ) (L t u x : ℝ) (b : ℕ) :
+    ((C * (-Complex.exp (-s * L) * Complex.exp (-s * t))) *
+        starRingEnd ℂ
+          (C * (((x : ℂ) ^ b) * Complex.exp (-s * u)))).re =
+      -Complex.normSq C * x ^ b *
+        Real.exp (-s.re * (L + t + u)) *
+          Real.cos (s.im * (u - (L + t))) := by
+  have hexp :
+      Complex.exp (-s * L) * Complex.exp (-s * t) =
+        Complex.exp (-s * (L + t)) := by
+    rw [← Complex.exp_add]
+    congr 1
+    ring
+  have hneg :
+      -Complex.exp (-s * L) * Complex.exp (-s * t) =
+        -Complex.exp (-s * (L + t)) := by
+    rw [neg_mul, hexp]
+  rw [hneg]
+  have h := completed_exponential_feature_pair_re C s 1 x (L + t) u 0 b
+  simp only [pow_zero, one_mul] at h
+  have h' :
+      (C * Complex.exp (-s * ((L : ℂ) + (t : ℂ))) *
+        starRingEnd ℂ
+          (C * ((x : ℂ) ^ b * Complex.exp (-s * u)))).re =
+        Complex.normSq C * x ^ b *
+          Real.exp (-s.re * (L + t + u)) *
+            Real.cos (s.im * (u - (L + t))) := by
+    simpa only [Complex.ofReal_add] using h
+  calc
+    ((C * -Complex.exp (-s * (L + t))) *
+        starRingEnd ℂ
+          (C * ((x : ℂ) ^ b * Complex.exp (-s * u)))).re =
+        -((C * Complex.exp (-s * (L + t))) *
+          starRingEnd ℂ
+            (C * ((x : ℂ) ^ b * Complex.exp (-s * u)))).re := by
+          simp only [mul_neg, neg_mul, Complex.neg_re]
+    _ = -Complex.normSq C * x ^ b *
+        Real.exp (-s.re * (L + t + u)) *
+          Real.cos (s.im * (u - (L + t))) := by
+          rw [h']
+          ring
+
+/-- Fully real form of the translated new-head kernel.  The only possible
+pointwise sign changes are the cosine phase and the horizontal crossover. -/
+def pairedEtaTopPrefixFiniteEnergyFactoredHeadKernel
+    (rho : NontrivialZetaZero) (N : ℕ) (z : ℝ × ℝ) : ℝ :=
+  -2 *
+    (z.2 - pairedEtaLogTailCutoff (N + 2)) ^
+      (analyticZetaZeroMultiplicity rho - 1) *
+    Real.cos (rho.1.im *
+      (z.2 - (pairedEtaLogTailCutoff (N + 1) + z.1))) *
+    pairedEtaTopPrefixFiniteEnergyHorizontalTiltBracket rho
+      (pairedEtaLogTailCutoff (N + 1) + z.1 + z.2)
+
+/-- The reflected head and successor top feature have a common cosine phase. -/
+private theorem topPrefixFinitePartnerHead_mul_conj_top_re
+    (rho : NontrivialZetaZero) (N : ℕ) (t u : ℝ) :
+    (pairedEtaTopPrefixFinitePartnerHeadFeature rho N t *
+        starRingEnd ℂ
+          (pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixFinitePartnerFeature
+            rho (N + 1) u)).re =
+      -pairedEtaCompletedLaplaceWeight
+          (NontrivialZetaZero.conjugatePartner rho).1 *
+        (u - pairedEtaLogTailCutoff (N + 2)) ^
+          (analyticZetaZeroMultiplicity rho - 1) *
+        Real.exp (-(1 - rho.1.re) *
+          (pairedEtaLogTailCutoff (N + 1) + t + u)) *
+        Real.cos (rho.1.im *
+          (u - (pairedEtaLogTailCutoff (N + 1) + t))) := by
+  unfold pairedEtaTopPrefixFinitePartnerHeadFeature
+    pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixFinitePartnerFeature
+    pairedEtaCompletedLaplaceWeight
+  simpa only [NontrivialZetaZero.conjugatePartner_coe,
+      Complex.sub_re, Complex.one_re, Complex.conj_re,
+      Complex.sub_im, Complex.one_im, Complex.conj_im,
+      zero_sub, neg_neg] using
+    completed_exponential_head_pair_re
+      (pairedEtaXiCompletionFactor
+          (NontrivialZetaZero.conjugatePartner rho).1 *
+        (NontrivialZetaZero.conjugatePartner rho).1)
+      (NontrivialZetaZero.conjugatePartner rho).1
+      (pairedEtaLogTailCutoff (N + 1)) t u
+      (u - pairedEtaLogTailCutoff (N + 2))
+      (analyticZetaZeroMultiplicity rho - 1)
+
+/-- The parity-adjusted conjugate head has the same cosine phase. -/
+private theorem topPrefixFiniteConjugateHead_mul_conj_top_re
+    (rho : NontrivialZetaZero) (N : ℕ) (t u : ℝ) :
+    (pairedEtaTopPrefixFiniteConjugateHeadFeature rho N t *
+        starRingEnd ℂ
+          (pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixFiniteConjugateFeature
+            rho (N + 1) u)).re =
+      -pairedEtaCompletedLaplaceWeight rho.1 *
+        (u - pairedEtaLogTailCutoff (N + 2)) ^
+          (analyticZetaZeroMultiplicity rho - 1) *
+        Real.exp (-rho.1.re *
+          (pairedEtaLogTailCutoff (N + 1) + t + u)) *
+        Real.cos (rho.1.im *
+          (u - (pairedEtaLogTailCutoff (N + 1) + t))) := by
+  let C := pairedEtaXiCompletionFactor rho.1 * rho.1
+  let L := pairedEtaLogTailCutoff (N + 1)
+  let x := u - pairedEtaLogTailCutoff (N + 2)
+  let A : ℂ := C * (-Complex.exp (-rho.1 * L) * Complex.exp (-rho.1 * t))
+  let B : ℂ := C * ((x : ℂ) ^ (analyticZetaZeroMultiplicity rho - 1) *
+    Complex.exp (-rho.1 * u))
+  have hrewrite :
+      (pairedEtaTopPrefixFiniteConjugateHeadFeature rho N t *
+          starRingEnd ℂ
+            (pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixFiniteConjugateFeature
+              rho (N + 1) u)).re = (B * starRingEnd ℂ A).re := by
+    unfold pairedEtaTopPrefixFiniteConjugateHeadFeature
+      pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixFiniteConjugateFeature
+    simpa only [A, B, C, L, x] using
+      parity_conjugate_pair_re (analyticZetaZeroMultiplicity rho) A B
+  rw [hrewrite]
+  have hswap : (B * starRingEnd ℂ A).re =
+      (A * starRingEnd ℂ B).re := by
+    simp [Complex.mul_re, Complex.conj_re, Complex.conj_im]
+    ring
+  rw [hswap]
+  unfold pairedEtaCompletedLaplaceWeight
+  exact completed_exponential_head_pair_re C rho.1 L t u x
+    (analyticZetaZeroMultiplicity rho - 1)
+
+/-- Exact factorization of the literal new-head kernel. -/
+theorem topPrefixFiniteEnergyHeadKernel_eq_factored
+    (rho : NontrivialZetaZero) (N : ℕ) (z : ℝ × ℝ) :
+    pairedEtaTopPrefixFiniteEnergyHeadKernel rho N z =
+      pairedEtaTopPrefixFiniteEnergyFactoredHeadKernel rho N z := by
+  unfold pairedEtaTopPrefixFiniteEnergyHeadKernel
+    pairedEtaTopPrefixFiniteEnergyFactoredHeadKernel
+    pairedEtaTopPrefixFiniteEnergyHorizontalTiltBracket
+  rw [Complex.sub_re, topPrefixFinitePartnerHead_mul_conj_top_re,
+    topPrefixFiniteConjugateHead_mul_conj_top_re]
+  ring
+
+/-- At multiplicity one, no centered monomial remains: the head kernel is
+exactly a negative cosine times the horizontal tilt bracket. -/
+theorem topPrefixFiniteEnergyHeadKernel_eq_cosine_bracket_of_multiplicity_one
+    (rho : NontrivialZetaZero)
+    (hm : analyticZetaZeroMultiplicity rho = 1)
+    (N : ℕ) (z : ℝ × ℝ) :
+    pairedEtaTopPrefixFiniteEnergyHeadKernel rho N z =
+      -2 * Real.cos (rho.1.im *
+        (z.2 - (pairedEtaLogTailCutoff (N + 1) + z.1))) *
+      pairedEtaTopPrefixFiniteEnergyHorizontalTiltBracket rho
+        (pairedEtaLogTailCutoff (N + 1) + z.1 + z.2) := by
+  rw [topPrefixFiniteEnergyHeadKernel_eq_factored]
+  simp [pairedEtaTopPrefixFiniteEnergyFactoredHeadKernel, hm]
+
+/-- To the right of the critical line, the horizontal factor is positive
+strictly after its unique crossover. -/
+theorem topPrefixFiniteEnergyHorizontalTiltBracket_pos_after_crossover
+    (rho : NontrivialZetaZero) (hhalf : 1 / 2 < rho.1.re)
+    (v : ℝ)
+    (hv : pairedEtaTopPrefixFiniteEnergyHorizontalTiltCrossover rho < v) :
+    0 < pairedEtaTopPrefixFiniteEnergyHorizontalTiltBracket rho v := by
+  rw [topPrefixFiniteEnergyHorizontalTiltBracket_pos_iff_oriented_crossover
+    rho (ne_of_gt hhalf) v]
+  exact mul_pos (by linarith) (sub_pos.mpr hv)
+
+/-- Once the new head starts after the crossover, the horizontal factor is
+positive almost everywhere on the whole head--prefix product measure. -/
+theorem ae_topPrefixFiniteEnergyHeadHorizontalBracket_pos
+    (rho : NontrivialZetaZero) (hhalf : 1 / 2 < rho.1.re)
+    (N : ℕ)
+    (hcut : pairedEtaTopPrefixFiniteEnergyHorizontalTiltCrossover rho <
+      pairedEtaLogTailCutoff (N + 1)) :
+    ∀ᵐ z : ℝ × ℝ
+      ∂((pairedEtaShiftedLogHeadMeasure (N + 1)).prod
+        (pairedEtaFiniteLogMeasure (N + 2))),
+      0 < pairedEtaTopPrefixFiniteEnergyHorizontalTiltBracket rho
+        (pairedEtaLogTailCutoff (N + 1) + z.1 + z.2) := by
+  rw [Measure.ae_prod_iff_ae_ae (by
+    unfold pairedEtaTopPrefixFiniteEnergyHorizontalTiltBracket
+    measurability)]
+  have hhead : ∀ᵐ t : ℝ ∂pairedEtaShiftedLogHeadMeasure (N + 1), 0 < t := by
+    rw [pairedEtaShiftedLogHeadMeasure_eq_restrict_Ioc]
+    filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
+    exact ht.1
+  filter_upwards [hhead] with t ht
+  filter_upwards [ae_pos_pairedEtaFiniteLogMeasure (N + 2)] with u hu
+  exact topPrefixFiniteEnergyHorizontalTiltBracket_pos_after_crossover
+    rho hhalf _ (by linarith)
+
+/-- After the crossover, a multiplicity-one head kernel is negative exactly
+where its Fourier cosine is positive. -/
+theorem ae_topPrefixFiniteEnergyHeadKernel_neg_iff_cos_pos
+    (rho : NontrivialZetaZero)
+    (hm : analyticZetaZeroMultiplicity rho = 1)
+    (hhalf : 1 / 2 < rho.1.re)
+    (N : ℕ)
+    (hcut : pairedEtaTopPrefixFiniteEnergyHorizontalTiltCrossover rho <
+      pairedEtaLogTailCutoff (N + 1)) :
+    ∀ᵐ z : ℝ × ℝ
+      ∂((pairedEtaShiftedLogHeadMeasure (N + 1)).prod
+        (pairedEtaFiniteLogMeasure (N + 2))),
+      pairedEtaTopPrefixFiniteEnergyHeadKernel rho N z < 0 ↔
+        0 < Real.cos (rho.1.im *
+          (z.2 - (pairedEtaLogTailCutoff (N + 1) + z.1))) := by
+  filter_upwards
+    [ae_topPrefixFiniteEnergyHeadHorizontalBracket_pos rho hhalf N hcut]
+    with z hb
+  rw [topPrefixFiniteEnergyHeadKernel_eq_cosine_bracket_of_multiplicity_one
+    rho hm N z]
+  constructor
+  · intro hk
+    by_contra hc
+    have hcos : Real.cos (rho.1.im *
+        (z.2 - (pairedEtaLogTailCutoff (N + 1) + z.1))) ≤ 0 :=
+      le_of_not_gt hc
+    have hfirst : 0 ≤ -2 * Real.cos (rho.1.im *
+        (z.2 - (pairedEtaLogTailCutoff (N + 1) + z.1))) := by
+      nlinarith
+    have hproduct := mul_nonneg hfirst hb.le
+    linarith
+  · intro hcos
+    exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos (by norm_num) hcos) hb
+
+/-- The exact multiplicity-one source condition is an integral of the
+weighted head--prefix Fourier cosine. -/
+theorem topPrefixFiniteEnergyLeadingFlux_eq_integral_head_cosine_bracket_of_multiplicity_one
+    (rho : NontrivialZetaZero)
+    (hm : analyticZetaZeroMultiplicity rho = 1) (N : ℕ) :
+    pairedEtaTopPrefixFiniteEnergyLeadingFlux rho N =
+      ∫ z : ℝ × ℝ,
+        -2 * Real.cos (rho.1.im *
+          (z.2 - (pairedEtaLogTailCutoff (N + 1) + z.1))) *
+        pairedEtaTopPrefixFiniteEnergyHorizontalTiltBracket rho
+          (pairedEtaLogTailCutoff (N + 1) + z.1 + z.2)
+        ∂((pairedEtaShiftedLogHeadMeasure (N + 1)).prod
+          (pairedEtaFiniteLogMeasure (N + 2))) := by
+  rw [topPrefixFiniteEnergyLeadingFlux_eq_integral_headKernel_of_multiplicity_eq_one
+    rho hm N]
+  apply integral_congr_ae
+  filter_upwards with z
+  exact topPrefixFiniteEnergyHeadKernel_eq_cosine_bracket_of_multiplicity_one
+    rho hm N z
+
 end
 
 end RiemannGaussian

@@ -51,6 +51,18 @@
   signed Abel-integrated Chebyshev credit. Bounded-credit/geometry-only repairs
   cannot work. This does not establish the credit's sign or the independent
   ordered-history terminal graph intertwiner.
+- The literal unit-Riesz source `S(t)` has unconditional quantitative
+  two-sided excursions: for every real `B,T`, some `t>T` satisfies
+  `S(t)>B exp(-t/2)`, and some `t>T` satisfies
+  `S(t)<-B exp(-t/2)`. A hypothetical eventual floor yields a positive
+  perturbed tail; its transform extends past the Hardy axis by the low-height
+  Landau disk, after subtracting a correction pole at `-1/2`, contradicting
+  the proved source nonextension. Lean:
+  `SPEQuantileRieszRoutePSourceQuantitativeOscillation.lean`; leaf-only
+  `lake --old build` passed; both theorem axiom audits show only
+  `propext`, `Classical.choice`, `Quot.sound`.
+- This source theorem alone does not bound Chebyshev and mass-mismatch square
+  debts jointly and does not imply RH or the ordered-history intertwiner.
 - Exact cross-route identification at `x=K+2`:
   `C = x sqrt(x)/3 - (x/2)·unitRieszVonMangoldtRenewal(x,x)` and
   `C = -(x/2)·criticalMellinChebyshevResolventSource(log x)`.
@@ -79,19 +91,31 @@
   cannot be replaced by a globally holomorphic positive proxy. Still open:
   a Landau proof that this forces cofinal signs of the literal source, transfer
   to integer apertures, physical diagonal sign, ordered terminal graph.
-- Landau attack insight (not yet Lean-proved): existing low-height theorem
-  `zetaResidueUnit_ne_zero_of_re_pos_abs_im_le_four` makes `F` holomorphic on
-  the closed disk `|z-1|≤5/4`, reaching `Re z=-1/4`. If one source sign is
-  eventual, tilt its nonnegative tail at `Re z=1` and apply the corpus's
-  complex-MGF Landau transfer at radius `5/4` to force integrability at a
-  negative real Laplace parameter. That would contradict the just-proved
-  Hardy-axis pole. The compact initial correction and weighted-holomorphy
-  transfer remain proof obligations.
 - The required low-height analytic disk is now Lean-proved, not conjectural:
   `F` is analytic at every `z` with `Re z > -1/2` and `|Im z|≤4`, hence on
   `closedBall 1 (5/4)`. Lean:
   `SPEQuantileRieszRoutePLandauDisk.lean`. The disk reaches `Re z=-1/4`
   while staying clear of the `z+1`, `z+1/2` denominators and all zeta zeros.
-  This supplies exact Landau continuation radius. Positive-measure MGF
-  identification, compact initial correction, and Hardy-pole contradiction
-  are still open.
+  This supplies exact Landau continuation radius.
+- For any eventual sign `epsilon * S(t) ≥ 0` on `t>T` with `T≥0`, the literal
+  tilted tail is a positive measure. Its complex MGF is exactly the signed
+  tail Laplace transform; the omitted compact head is entire. Landau's
+  positive-measure theorem and the disk above force a `9/8` exponential
+  moment at tilt `1`, hence tail convergence at Laplace parameter `-1/8`.
+  Lean: `SPEQuantileRieszRoutePSourceLandauCarrier.lean` (direct `.olean`
+  compiled). This is a conditional consequence of the sign hypothesis,
+  not a claim that the sign hypothesis holds.
+- The same moment makes the reconstructed literal source transform analytic
+  on `Re z>-1/8`; it agrees with `F` on `Re z>1/2`. Lean:
+  `SPEQuantileRieszRoutePSourceLandauExtension.lean` (direct `.olean`
+  compiled).
+- The reconstructed transform yields an analytic pole-filled zeta
+  logarithmic derivative on `Re s>3/8` under any eventual fixed sign. The
+  analytic differential identity and exact meromorphic order `-1` at a zeta
+  zero exclude Hardy's unconditional critical-line zero. Therefore the
+  literal source has positive and negative values arbitrarily far along the
+  logarithmic ray. Lean:
+  `SPEQuantileRieszRoutePSourceCofinalSignOscillation.lean` (direct `.olean`
+  compiled); axiom audit only `[propext, Classical.choice, Quot.sound]`.
+  This settles qualitative source-sign recurrence. It does not supply
+  amplitude, integer-aperture crossings, or the ordered terminal graph.

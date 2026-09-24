@@ -1,6 +1,6 @@
 # Route L: one integer-order source target
 
-- **Status:** the finite source isometry and primitive-ratio sign localization are formalized in Lean; the infinite analytic reductions and the stated arithmetic bound remain paper-level/open as specified below.
+- **Status:** finite source isometry, primitive-ratio sign localization, stationary-kernel algebra, exact Gamma-weighted finite Möbius-polynomial identity, source-order comparison, and the direct finite Gamma--Hankel identity are formalized in Lean. Infinite analytic reductions for the fixed cubic target remain paper-level; the signed arithmetic bound is open.
 - **Hard target:** for one fixed order, prove a power-sharp block mean square of the literal Möbius source
 
 ```
@@ -127,6 +127,86 @@ sum_(a>=1) sum_(b>=a^q) k_delta(a,b)
 ```
 
 The symmetric far-separated sector obeys the same bound. In particular the **same cutoff `b>=a^(3/2)` works for every `delta>0`**, because (10) then reduces to `sum_a a^(-1-delta)`. The unresolved band can therefore be fixed once and for all as primitive coprime pairs `2<=a<b<a^(3/2)`, together with its transpose. A uniform signed bound for that band for every `delta>0` would establish the finite criterion and RH. Formula (9) keeps the actual Möbius signs and the positive gcd-scale weights; replacing those signs by absolute values on this band loses a power.
+
+### Stationary ratio and localized frequency form
+
+Put `p=5-delta` and `sigma=(1+delta)/2`. The same finite kernel has the exact factorization
+
+```
+k_delta(m,n)
+ = m^(-sigma)n^(-sigma) F_p(log(m/n)),
+F_p(u)=(2 cosh(u/2))^(-p).
+```
+
+In particular `F_p(log(da/db))=F_p(log(a/b))`: the normalized kernel is stationary in logarithmic index and unchanged by common scaling. `MobiusReciprocalPrimitiveRatio.cubicMomentFiniteEnergy_eq_stationary` and `reciprocalMomentStationaryKernel_scale` prove the corresponding finite algebraic identities in Lean. This gives a second exact view of the primitive-band problem, through the literal Dirichlet polynomial `P_N(s)=sum_(n<=N) mu(n)n^(-s)`.
+
+For `p>0`, the substitution `z=exp(u)` in the beta integral gives
+
+```
+integral_R F_p(u) exp(-i t u) du
+  = Gamma(p/2+it) Gamma(p/2-it) / Gamma(p).
+```
+
+Fourier inversion and finite summation yield the exact identity
+
+```
+B_delta(N)
+ = [1/(2 pi Gamma(5-delta))]
+   integral_R |Gamma((5-delta)/2+it)|^2
+              |P_N((1+delta)/2+it)|^2 dt.              (11)
+```
+
+`MobiusReciprocalGammaFrequency.cubicMomentFiniteEnergy_eq_realGammaIntegral` proves (11) in Lean in the normalized-density form `B_delta(N)=2^(-p) integral gammaHeightDensity(p,t) |P_N(sigma-it)|^2 dt`; the sign of `t` is immaterial because coefficients and density are real and even. The same module proves `B_delta(N)>=0` for every finite cutoff. Its exact coefficient exponent shows why a generic Dirichlet-polynomial mean square is insufficient: this is a **localized multiplicative-frequency** estimate at `sigma` just to the right of `1/2`. By Stirling's bound and the trivial `|P_N(sigma+it)|<<_delta N^((1-delta)/2)`, the part of (11) with `|t|>log(2N)/pi` is `O_delta(N^(-delta) (log(2N))^(4-delta))`. Thus a uniform bound for the remaining Gamma-weighted interval `|t|<=log(2N)/pi` would suffice for RH. This cuts the frequency search to logarithmic height without replacing the required signed cancellation. The corpus's additive-phase orthogonality in `HeatEnergyBridge` is in `n theta`, not `t log n`, and does not supply this bound; the Ramaré local-moment interface gives an explicit cost budget, not the required uniform estimate.
+
+**Order-independent arithmetic exponent.** The same derivation works for every fixed real source order `R>2`. Weight the finite `T_R` square by `t^(2R-2-delta)`; its Gamma integral has `p_R=2R-1-delta` and pair kernel
+
+```
+k_(R,delta)(m,n)
+ = (mn)^(R-1-delta)/(m+n)^(2R-1-delta)
+ = m^(-sigma)n^(-sigma) F_(p_R)(log(m/n)),
+sigma=(1+delta)/2.
+```
+
+Moreover `k_(R,delta)(da,db)=d^(-1-delta)k_(R,delta)(a,b)` for every positive `d,a,b`. Both algebraic laws are now proved in Lean as `generalReciprocalMomentKernel_eq_stationary` and `generalReciprocalMomentKernel_scale`. The Lean theorem `finiteGeneralMomentOffDiagonal_eq_primitiveScaleWeight` also proves that the full finite off-diagonal for every `R` has the **same** nonnegative scale weight `W_(delta,N)(a,b)` in (9) and the **same** primitive Möbius signs; only `k_(R,delta)(a,b)` changes. Higher order changes the positive ratio profile and the Gamma-frequency weight, but **neither the Möbius coefficient abscissa nor the gcd scale exponent**. The corresponding Fourier identity has `|Gamma(p_R/2+it)|²` in (11). This identifies one order-independent arithmetic cancellation target across the entire fixed-order reciprocal family; no bound for that target follows from the identities.
+
+**Order-transfer law.** The normalized Gamma density obeys the exact shape recurrence
+
+```
+rho_(p+2)(t) = (p^2+4t^2)/(p(p+1)) rho_p(t),
+rho_p(t) <= (p+1)/p rho_(p+2)(t)       (p>0).       (12)
+```
+
+`MobiusReciprocalGammaFrequency.gammaHeightDensity_add_two` and `gammaHeightDensity_le_succ_two` prove (12) in Lean. Since the Möbius polynomial has the same coefficient abscissa at every reciprocal order, `MobiusReciprocalOrderTransfer.finiteGeneralReciprocalEnergy_eq_realGammaIntegral` and `finiteGeneralReciprocalEnergy_le_succ` prove the finite comparison
+
+```
+B_(R,delta)(N) <= 4 (p_R+1)/p_R * B_(R+1,delta)(N),
+p_R=2R-1-delta>0.                              (13)
+```
+
+Here `B_(R,delta)(N)` is the finite signed quadratic form with kernel `k_(R,delta)`. The factor `4` comes from the `2^(-p_R)` Fourier normalization. Thus a uniform bound at **any one fixed higher integer order** transfers to order three by finitely many positive comparisons, without assuming cancellation during transport. This makes source order an arithmetic design choice: a higher-order ratio profile may be attacked if it exposes a useful correlation law. No fixed order is bounded by (12) alone; the uniform Möbius-polynomial estimate remains the hard step.
+
+**Direct integer-numerator source to the closed Laplace endpoint.** Set `R_0=1+delta` and `R_2=3+delta`, with `0<delta<1`. At the lower order, the numerator exponent `R_0-1-delta` vanishes, so the original finite Möbius Gamma--Hankel energy is exactly
+
+```
+H_N(1+delta) = Gamma(1+delta) B_(1+delta,delta)(N).
+```
+
+Two applications of (13) give the unconditional finite inequality
+
+```
+H_N(1+delta)
+ <= Gamma(1+delta) * 16 (2+delta)(4+delta)/((1+delta)(3+delta))
+      * B_(3+delta,delta)(N).                         (14)
+```
+
+At the upper order, `k_(3+delta,delta)(m,n)=(mn)^2/(m+n)^(5+delta)`: its numerator is an integer polynomial. Thus one may target the literal finite signed additive form
+
+```
+B_(3+delta,delta)(N)
+ = sum_(m,n<=N) mu(m)mu(n) m^2 n^2/(m+n)^(5+delta).   (15)
+```
+
+If, for `delta` arbitrarily close to zero from above, (15) has one finite upper ceiling on an unbounded subsequence of `N`, then (14), the nonnegative Gamma--Hankel diagonal, and the already formalized bounded-return Fatou criterion imply RH. This avoids the paper-level fractional-source and geometric-packet transport for this parameter-coupled target. `MobiusReciprocalGammaHankelBridge` formalizes the exact finite identity, the two-step comparison, and the integer-numerator kernel. The substantive open estimate remains a one-power cancellation of the comparable-index Möbius pairs; the unconditional absolute pair sum grows at scale `N^(1-delta)`. Existing additive-triangle criteria in the corpus retain different coefficients and do not prove (15).
 
 ## Finite one-large-prime window at the RH scale
 

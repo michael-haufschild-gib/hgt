@@ -46,6 +46,29 @@ private theorem sourceVec_sub_predictor_norm_le
     _ ≤ ∑ _i ∈ range N, δ := Finset.sum_le_sum (fun i _ => hterm i)
     _ = (N : ℝ) * δ := by simp
 
+/-- Best approximation by the lower history improves the whole-source high-clock leakage
+from a sum of layerwise `N²/clock` costs to a single `N²/clock` cost. This is
+coefficient-independent; further improvement must use the arithmetic signs. -/
+theorem source_sub_historyProjection_energy_le_clock_tail
+    (a : ℕ → ℝ) (ha : ∀ n, |a n| ≤ 1) (N l : ℕ) :
+    ‖sourceVec a N - (historySpace l).starProjection (sourceVec a N)‖ ^ (2 : ℕ) ≤
+      (N : ℝ) ^ 2 / ((clock l : ℝ) + 1) := by
+  have hbest :
+      ‖sourceVec a N - (historySpace l).starProjection (sourceVec a N)‖ ≤
+        ‖sourceVec a N - sourcePredictorVec a N l‖ := by
+    rw [Submodule.starProjection_minimal]
+    change _ ≤ ‖sourceVec a N -
+      (⟨sourcePredictorVec a N l, sourcePredictorVec_mem a N l⟩ : historySpace l)‖
+    exact ciInf_le ⟨0, Set.forall_mem_range.mpr fun _ => norm_nonneg _⟩ _
+  have hnorm := hbest.trans (sourceVec_sub_predictor_norm_le a ha N l)
+  have hsq := (sq_le_sq₀ (norm_nonneg _)
+    (by positivity : 0 ≤ (N : ℝ) * Real.sqrt (1 / ((clock l : ℝ) + 1)))).mpr hnorm
+  calc
+    _ ≤ ((N : ℝ) * Real.sqrt (1 / ((clock l : ℝ) + 1))) ^ 2 := hsq
+    _ = (N : ℝ) ^ 2 / ((clock l : ℝ) + 1) := by
+      rw [mul_pow, Real.sq_sqrt (by positivity)]
+      ring
+
 private theorem source_layer_norm_le
     (a : ℕ → ℝ) (ha : ∀ n, |a n| ≤ 1) (N l : ℕ) :
     ‖historyLayer l (sourceVec a N)‖ ≤
