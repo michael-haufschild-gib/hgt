@@ -1,9 +1,22 @@
 import GaloisForLFunctions.RHTower.CCMSuzukiCrossApertureMetricCurvature
 
+/-!
+# Retained-block curvature is metric-shift leakage
+
+For the literal Suzuki Riesz response, the three-aperture curvature has no independent
+retained-block source charge. Its pairing with an old test is exactly the next coercive-shift
+increment times the preceding shell's physical pairing with that test. The completed
+prime–polar–Gamma form is transported as a single coupled source throughout.
+
+This identity supplies no cofinal bound: controlling the weighted physical shell leakage
+remains the arithmetic convergence problem.
+-/
+
 open scoped InnerProductSpace
 
 noncomputable section
 namespace RHTower
+open GaloisForLFunctions.HTGeometry
 
 private theorem suzukiRiesz_retained_metric_gap
     {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1)
@@ -30,8 +43,11 @@ private theorem suzukiRiesz_retained_metric_gap
   rw [inner_suzukiWeilIntervalFormEmbedding_eq_of_val_eq
     (ccmArchimedeanFormDomain_extension_val hab u)
     (ccmArchimedeanFormDomain_extension_val hab v)]
+  push_cast
   ring
 
+/-- The literal curvature on retained tests is precisely the next change of coercive
+metric paired against the preceding shell's physical leakage. -/
 theorem suzuki_metricCurvature_retained_eq_shift_shellLeakage
     {a b c : SuzukiPositiveAperture} (hab : a.1 ≤ b.1) (hbc : b.1 ≤ c.1)
     (eps : ℝ) (v : CCMArchimedeanFormDomain a) :
@@ -80,6 +96,7 @@ theorem suzuki_metricCurvature_retained_eq_shift_shellLeakage
   rw [hcoc, map_add, map_add, inner_add_left, inner_add_left,
     hBC, zero_add, hgap] at hAC
   change inner ℂ (R K) w = _
-  linear_combination -hAC
+  push_cast at hAC ⊢
+  linear_combination hAC
 
 end RHTower

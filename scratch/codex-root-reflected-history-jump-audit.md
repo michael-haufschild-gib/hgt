@@ -55,6 +55,11 @@ failed conceptual bridge.
   proves the terminal-order ceiling is exactly controlled by both initial
   energy and the complete signed endpoint. Prime reordering cannot remove
   the endpoint arithmetic cancellation problem.
+- `CCMSuzukiCrossApertureCurvatureLeakage.lean`: for actual Suzuki responses,
+  three-aperture metric curvature paired against a retained test equals the
+  next coercive-shift difference times the preceding shell's physical pairing.
+  Thus curvature has no independent retained-block charge. This does not
+  bound the physical shell leakage or imply cofinal convergence.
 
 Whole-route consequence: the next serious conjecture must specify an actual
 pre-scalar, source-defined prime–polar–Γ coupling and a cofinal signed law.

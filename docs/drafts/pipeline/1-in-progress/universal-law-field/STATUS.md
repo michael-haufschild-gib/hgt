@@ -7235,3 +7235,59 @@ not merely unproved but **unavailable**: the mechanism that produces every other
 form does not exist here. **Must** conclude that the identity, though true and equivalent to the
 hypothesis, cannot be obtained by the route that motivated stating it, and that the recorded
 falsifier for the transverse-equilibrium card is discharged against it.
+
+## MUST-416 — the zero network exists: every vertex has finite conductance (2026-09-25)
+
+The network whose vertices are the divisor points and whose conductance between two of them is the
+reciprocal squared distance is **locally finite**: at every vertex the total conductance converges.
+The proof splits the divisor at a given point into the points whose ordinate is within one of it,
+finitely many because the divisor is locally finite, and the rest, where the squared distance is at
+least the squared ordinate gap and the corpus's Cauchy weight dominates after transporting it from
+multiplicity copies to support points along the canonical injection. **Must** record that this also
+discharges a convergence obligation left implicit earlier: the transverse force of the marginality
+identity was defined as an unrestricted sum over the divisor, and it is now proved absolutely
+convergent, the force term at each pair being bounded by the conductance because both real parts lie
+in the open unit interval.
+
+## CANNOT-417 — the cutset criterion cannot prove recurrence here, because the exponent is exactly two (2026-09-25)
+
+Recurrence of that network is the remaining unconditional input of the transverse-equilibrium chain,
+and it is **true but marginal**. In the ordinate variable the zeros form a quasi-one-dimensional
+configuration in a strip of bounded width, and a conductance equal to the reciprocal squared
+separation is, in one dimension, the Cauchy jump kernel: the walk lies in the domain of the symmetric
+stable law of index exactly one, which is the precise boundary between recurrence and transience, and
+falls on the recurrent side. **Cannot** establish it by the standard cutset criterion. The
+conductance across a level cut is the double sum of reciprocal squared separations over pairs
+straddling the cut, which in one dimension is a harmonic series and therefore **diverges**; the
+cutset bound on effective resistance is then vacuous. **Must** therefore reach recurrence by the flow
+criterion — no unit flow to infinity has finite energy — or by the Fourier criterion for the jump
+kernel, neither of which is available in the ambient library. The divergence is not a defect of the
+argument but another instance of the same marginality: the exponent that makes the cut conductance
+diverge is exactly the exponent that makes the walk recurrent.
+
+## MUST-418 — the maximum principle replaces recurrence, because the zero network is complete (2026-09-25)
+
+Recurrence of the zero network was wanted in order to run a Liouville argument, and the previous
+entry showed the elementary criterion for it is vacuous. The gate is not needed in that form. Every
+pair of distinct divisor points has **strictly positive** conductance, the reciprocal squared
+distance, so the network is **complete**, and on a complete network the maximum principle does not
+have to propagate along paths: it closes in one step. At a point where the real part is maximal,
+every term of the transverse force is nonnegative; the force is the sum of those terms and the
+harmonicity hypothesis makes that sum zero; a convergent sum of nonnegative terms that vanishes has
+every term zero; and each vanishing term says that the real part at the corresponding point equals
+the maximal one. **Must** therefore record that the marginality identity plus an **attained** maximal
+real part gives the hypothesis outright, with no Liouville argument, no recurrence, and no
+boundedness. The convergence needed is exactly the local finiteness proved in the previous entry.
+
+## MUST-419 — what remains of the chain is the attained/non-attained dichotomy alone (2026-09-25)
+
+With recurrence and boundedness eliminated, the transverse-equilibrium chain has exactly two
+remaining inputs: the marginality identity itself, and the attainment of the supremum of the real
+part over the divisor. The second is not a technical convenience but the same dichotomy the ledger
+already isolated when studying single-base lag sequences and window averages, where an attained
+maximal excess is detected by elementary means while a supremum approached but never attained escapes
+every averaging argument. **Must** therefore read the present chain as reducing the hypothesis to that
+dichotomy plus one identity, and **cannot** any longer count recurrence, boundedness or the Liouville
+property among its obligations. In the attained case the chain is complete modulo the identity; in
+the non-attained case the maximum principle has no point of application, and that is precisely the
+regime the corpus has repeatedly found to be the hard one.

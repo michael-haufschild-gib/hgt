@@ -121,3 +121,11 @@ E(z,s) = P_0(z,s) = y^s + Σ_{c≠0} c^{-2s} N^{-s} Σ_n 𝓕ker_{0,y/N,s}(n) S_
   `integral_poincare_cusp_phi`: ∫_0^N E_∞(σ(x+iy),s)dx = N·count₀·y^s + φ_{∞,σ∞}(s)·y^{1−s} (Re s > 1).
   Next: pass the identity to Re s > 1/2 (needs s-analyticity of ∫_0^N E^cont(σ(x+iy),s)dx: locally uniform bounds on
   E* and constTerm), then the truncated Eisenstein series and Maass–Selberg for Γ(N).
+- 2026-09-25 — `CoprimeClassRamanujan` (built, wired): |Σ_{r mod n'N, r≡b (N), (r,n')=1} e(nr/(n'N))| ≤ n² uniformly in n'
+  (Möbius + CRT + geometric sums). `SelbergEisensteinCuspFourier` (built, wired): `sliceσ` (Poisson for the row c
+  at σ∞), `ksumσ`, `norm_ksumσ_le` (|S_σ(0,n;c)| ≤ n²), `norm_etermσ_le`, `differentiableAt_Estarσ`.
+  `SelbergEisensteinCuspExpansion` (built, wired, axioms clean): `poincare_smul_expansion` (Re s > 1) and
+  `Econt_smul_eq` (N ≥ 3, Re s > 1/2, s ≠ 1): the continued E_∞(σz,s) = count₀ y^s + N^{-s}(y/N)^{1−s}φ_{∞,σ∞}(s)
+  + E*_σ(z,s), each term holomorphic; via identity theorem on the punctured half-plane (`isPreconnected_punctured`).
+  This is the Fourier expansion of the continued Γ(N) Eisenstein series at every cusp.
+  Next: Maass–Selberg relation for Γ(N) (truncated E_∞ norm) using these constant terms.

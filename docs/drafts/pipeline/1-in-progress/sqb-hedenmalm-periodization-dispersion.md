@@ -808,6 +808,213 @@ Neither covariance is signed separately. These are finite-row paper
 identities; all-row differentiation, weighted admission and Lean
 formalization remain open.
 
+There is a sharper **edge-current** form of this obstruction. For any
+finite row set, the fluctuation mass and every real-coefficient
+covariance are complete-graph pair sums:
+
+```text
+sum_v |S_v|² = (B/2)*sum_(v,w) w_v*w_w*|r_v-r_w|²,
+sum_v w_v*a_v*conj(r_v-m)
+  = (1/2)*sum_(v,w) w_v*w_w*(a_v-a_w)*conj(r_v-r_w)   (a_v real). (19j)
+```
+
+The second identity also holds for complex `a_v`; reality is needed
+only when identifying the theta/geometric coefficients below. Define
+`Delta_vw r=r_v-r_w`, and likewise for `ell` and `theta_j`. In the
+orientation of (19b), the **combined** leakage-plus-drift imaginary
+pairing becomes
+
+```text
+J_F = Im sum_v [Q L(Pi U_f)+(5/2)*Q(y*partial_y S)]_v*conj(S_v)
+    = (B/2)*Im sum_(v,w) w_v*w_w *
+        [m*Delta_vw ell
+         -2*y²*sum_(j=x,y) A_j*Delta_vw theta_j
+         +(5/4)*(delta_v*r'_v-delta_w*r'_w)]
+        *conj(Delta_vw r).                            (19k)
+```
+
+This is a finite-row algebraic theorem, obtained by applying (19j)
+to (19f) and (19h). It changes the source question from the sign of an
+unnamed PDE leakage to the orientation of an explicit **primitive-row
+edge current**. The numerator is sensitive to relative phases of
+`p_alpha/Phi` at distinct modular heights; pointwise positivity of
+`Phi`, strict source log-concavity and the source disk (8a) do not by
+themselves orient those phases. A proof producer would have to derive
+an all-row cancellation or sign from the literal theta arithmetic in
+the bracket of (19k), then justify its weighted spatial integral. The
+edge formula alone is a receiver and makes no spectral-reality claim.
+
+The edge set has a canonical **arithmetic grading**. Write each row as
+its primitive integer pair `v=(c,d)`, with the sign convention of
+`ModularStripUnfolding.gammaSetHalf`, and put
+`k(v,w)=|c*d'-d*c'|`. If `k(v,w)=0`, two primitive integer rows are
+equal up to sign, hence represent the same row and have
+`Delta_vw r=0`. Every nonzero term in (19j)--(19k) therefore has
+`k(v,w)>=1`. Common right action by `SL₂(ℤ)` preserves `k`, so the
+finite-row edge current decomposes exactly into positive determinant
+grades. The unoriented grade-one edges are primitive bases modulo row
+sign and form a single orbit under the common modular action; higher
+grades carry extra residue data.
+This is the rank-two arithmetic content absent from diagonal unfolding.
+It suggests a concrete producer test: unfold the complete grade-one
+current, then determine whether the remaining grades satisfy a
+source-derived cancellation law. Swapping the endpoints of an edge
+does **not** cancel its contribution: both the bracket and
+`Delta_vw r` change sign. No grade has yet been evaluated or signed.
+
+### Automorphic occurrence metric and directional-variance potential [paper proof]
+
+The polynomial weight in (15c') selects Xi zeros but is not modular
+invariant. The corpus already constructs the positive, modular-invariant
+height sum `E_s(z)=positiveCuspRows s z=sum_v h_v(z)^s` for `s>1`.
+On the standard cusp, the identity row contributes `y^s` and the
+nonidentity rows satisfy the same shifted-lattice estimate used in
+(15c), now with exponent `s`:
+
+```text
+E_s(x+i*y)=y^s+O_s(y^(1-s)) uniformly for |x|<=1/2, y>=1. (19l)
+```
+
+Thus `E_(5/2)` is pointwise comparable to `y^(5/2)` there, and the
+fixed occurrence criterion has an **automorphic** form:
+
+```text
+XiC(alpha)=0  <->
+  integral_(F,y>1) E_(5/2)(z)*sum_v |S^*_(p_alpha)(z,v)|² dmu(z)<infinity
+```
+
+for `0<Im(alpha)<1/2`, `Re(alpha)!=0`. The equivalence is a paper
+consequence of (15c') and (19l); the Lean statement is not yet built.
+
+This weight has a stronger exact Green geometry. Put
+`D_v=y*grad(log h_v)`, `pi_v=h_v^s/E_s`, and `d_s=sum_v pi_v*D_v`.
+Every `D_v` has Euclidean norm one, `sum_v pi_v=1`, and termwise
+differentiation is locally absolute because these first derivatives
+are bounded by `s*h_v^s/y`. Write `L_0=-y²*Delta` and retain
+`L=1+L_0` for the native expression. Since each height power satisfies
+`L_0(h_v^s)=-s*(s-1)*h_v^s`, the weighted symmetric expression and
+its square-root conjugate obey
+
+```text
+L_E = L-y²*grad(log E_s) dot grad = L-s*y*d_s dot grad,
+sqrt(E_s)*L_E*(1/sqrt(E_s)) = L+V_s,
+V_s = s*(s-2)/4+(s²/8)*sum_(v,w) pi_v*pi_w*|D_v-D_w|². (19m)
+```
+
+The last equality follows from
+`1-|d_s|²=(1/2)*sum_(v,w)pi_v*pi_w*|D_v-D_w|²`.
+For `s=5/2`, `V_s>=5/16`, strictly at every point because the
+identity and `(1,0)` rows have different height directions. In the
+cusp, `d_s` tends to the identity-row direction and `V_s` tends to
+`5/16`, recovering (19a). Unlike the raw power weight, this
+source-compatible metric preserves modular orbit unfolding while
+adding a nonnegative **directional variance potential**. It does not
+erase the forced source term.
+
+For a finite source-row packet, its drift has an exact phase form
+parallel to (19f):
+
+```text
+Im sum_v (y²*grad(log E_s) dot grad S_v)*conj(S_v)
+  = (s/2)*sum_v b_v²*(d_s dot D_v)*
+      Im(r'_v*conj(r_v-m)).                          (19n)
+```
+
+The derivatives of `m` drop out by row orthogonality, and the
+derivatives of the positive amplitudes contribute only real terms.
+Equation (19n) replaces the single identity-row factor `delta_v` in
+(19f) by a positive Eisenstein average of *all* row-direction
+correlations. The mathematical target is now the signed combination
+of (19h) and (19n) in the automorphic `E_(5/2)` space. Whether its
+determinant grades cancel or have a useful sign for the actual theta
+response remains open; no spectral-reality theorem is inferred.
+
+The choice `E_(5/2)` also has a **source-side interpretation already
+proved in Lean**. `SelbergThetaEisensteinProbes.source_eisenstein_pairing`
+evaluates the original scalar response against every `E_s`:
+
+```text
+integral_F source(alpha,z)*E_s(z) dmu(z)
+  = probeMass(s)/(alpha²+(2*s-1)²),  probeMass(s)>0. (19o)
+```
+
+At the selecting exponent `s=5/2`, the denominator is `alpha²+16`.
+For nonreal `alpha²`, the imaginary part of this literal source
+pairing is `-probeMass(5/2)*Im(alpha²)/|alpha²+16|²`, a known
+nonzero signed source work. The same `E_s` is thus both the
+Xi-occurrence metric and an exactly evaluated arithmetic adjoint
+probe. This does **not** evaluate the nonlinear projected edge current
+in (19h)--(19n); an identification of that current with (19o), or a
+rigorous inequality between them, is the new source-specific test.
+
+There is a stronger ground-state choice. Let `rho=5/4`,
+`H=E_rho`, and use the **squared Eisenstein weight** `w=H²`.
+Equation (19l) at `rho` gives `w=y^(5/2)*(1+O(y^(-3/2)))`
+uniformly on the cusp, so it selects precisely the same Xi-zero
+responses as (15c'). It is positive and modular invariant. Unlike
+`E_(5/2)`, its square root is itself a Maass eigenfunction:
+`L H=(1-rho*(rho-1))*H`. The product rule gives the exact global
+ground-state transform
+
+```text
+L_w = L-2*y²*grad(log H) dot grad,
+H*L_w*(1/H) = L+rho*(rho-1)=L+5/16.             (19p)
+```
+
+Thus the Xi-selecting Hilbert geometry has a modular-invariant
+completion whose symmetric **differential expression** conjugates to
+the unchanged native Maass expression plus a constant, with no
+variable potential. The corresponding closed-operator equivalence
+still requires a domain proof. The previous positive variance potential (19m)
+belongs to the alternative unsquared `E_(5/2)` weight; (19p) is the
+preferred carrier for the spectral step. The corpus's
+`source_eisenstein_pairing` also evaluates the source against this
+same `H`, now as `probeMass(5/4)/(alpha²+9/4)`.
+
+Equivalently, set `g_alpha=H*S^*_(p_alpha)`. Multiplication by `H`
+is a unitary map from `L²(H²*dmu;row bundle)` to the original native
+row-bundle `L²(dmu)`. Consequently, in the physical strip,
+
+```text
+XiC(alpha)=0 <-> g_alpha belongs to native row-bundle L²;  (19r)
+```
+
+at an Xi zero `g_alpha` is nonzero by (15). On the smooth core, the
+original row equation becomes
+
+```text
+Q (L+5/16-lambda_alpha)*g_alpha
+  = -H*Q L(Pi U_(p_alpha))
+    -2*y²*Q(grad(H) dot grad(S^*_(p_alpha))).     (19s)
+```
+
+This is a source-faithful **native Hilbert-space occurrence**, not an
+eigenvalue assertion: the right side is the full, explicit residual
+in the fluctuation channel that an RH proof must control. The
+source-line component of `(L+5/16-lambda_alpha)*g_alpha` is not
+asserted to vanish. Its closed-domain interpretation is still open.
+Because `H` depends on modular row geometry rather than the theta
+coefficients, any RH-producing step must act on this residual through
+the literal theta response; the ground-state transform is a carrier
+theorem, not the missing source law.
+
+With `pi_u=h_u^rho/H` and `d_rho=sum_u pi_u D_u`, the drift in
+(19p) is a complete-row average. For a finite source-row packet,
+
+```text
+Im sum_v (2*y²*grad(log H) dot grad S_v)*conj(S_v)
+  = rho*sum_v b_v²*(d_rho dot D_v)*
+      Im(r'_v*conj(r_v-m)).                          (19q)
+```
+
+This has the same cusp limit as `(5/2)` times (19f), since
+`d_rho` tends to the identity-row direction. The remaining
+paper-level source problem is the signed combination of (19h)
+and (19q), now in a globally automorphic space. The closed-domain
+intertwining, all-row differentiation and source cancellation are
+not yet proved; (19p) alone does not make a forced response an
+eigenvector.
+
 ## Conjecture loop and whole-chain consequence
 
 **Conjecture 1:** The common source mode makes the two carriers isometric.
@@ -870,16 +1077,26 @@ imaginary part is exactly a signed phase covariance, with no amplitude
 or theta score terms. This makes the remaining arithmetic cancellation
 an explicit row-ratio problem rather than an unspecified boundary term.
 
-**Surviving attack:** Extend (19f) over all primitive rows using the
-corpus's theta envelopes, then calculate the moving-projection part of
-(19b) in the same `r_v`, `delta_v` coordinates. The decisive new theorem
-must orient their combined phase covariance at the no-radiation states
-selected by (15c'); if that total pairing is real, its nonzero
-fluctuation mass forces `Im(alpha²)=0` and RH. The nonparabolic
-scattering kernel (12) and finite-packet positive Cauchy density can
-inform the calculation, but their zero-derivative source pairing does
-not already pay the dilation phase. Build the closed `y^(5/2)` domain
-and formalize this exact source law once the paper sign proof is found.
+**Conjecture 10:** The Xi-selecting cusp weight can be made automorphic
+without changing its admitted responses. **Proved on paper:**
+`E_(5/2)` has the same cusp growth as `y^(5/2)` and produces the
+positive directional-variance potential (19m). **Stronger pivot:**
+the squared weight `E_(5/4)^2` has the same selecting growth, while
+its differential-expression ground-state transform is exactly
+`L+5/16` globally, by (19p).
+Its drift is the all-row correlation (19q). The graph identity
+(19k) and determinant grading expose a rank-two arithmetic object;
+none of these statements signs its source current.
+
+**Surviving attack:** Use the automorphic `E_(5/4)^2` space. Extend
+(19h) and (19q) to complete rows and the closed weighted domain;
+then unfold the determinant-one edge sector and compare its theta
+arithmetic with the exact `E_(5/4)` source probe (19o). The decisive
+new theorem must orient the full determinant-graded source current
+at no-radiation states. If that current is real, positive fluctuation
+mass forces `Im(alpha²)=0` and RH. The nonparabolic scattering kernel
+(12) may guide its evaluation, but neither it nor the scalar
+Eisenstein probe already pays the projected phase current.
 
 ## Corpus anchors
 

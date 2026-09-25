@@ -51,8 +51,9 @@ balance a divergent force.
 | input | statement | status |
 |---|---|---|
 | **H** harmonicity | the identity above | **open — the core** |
-| **B** boundedness | `|δ| < 1/2`; far better from the zero-free region | trivial / certified |
-| **R** recurrence | zero graph recurrent: nearest-neighbour conductances `≍ (log γ)²`, and `Σ_n (log γ_n)^{-2} = ∞` | unconditional; **not yet built** |
+| **B** boundedness | **no longer needed** — superseded by the maximum principle (MUST-418) | eliminated |
+| **R** recurrence | **no longer needed** — the network is *complete*, so the maximum principle closes in one step (`riemannHypothesis_of_harmonic_at_max`) | eliminated |
+| **A** attainment | sup of `Re` over the divisor is attained | **open — the remaining input besides H** |
 | **S** symmetry | constancy ⟹ RH | **closed this cycle** |
 
 ```
@@ -61,7 +62,7 @@ riemannHypothesis_iff_re_constant :
 riemannHypothesis_of_forall_re_eq : (∀ ρ, Re ρ = c) → RiemannHypothesis
 ```
 
-H + B + R ⟹ `δ` constant (Liouville on a recurrent graph) ⟹ S ⟹ RH.
+**H + A ⟹ RH** (`riemannHypothesis_of_transverseForce_zero_of_attained`). B and R are eliminated.
 
 ## Honest status
 
@@ -75,7 +76,14 @@ the four inputs are unconditional; one is discharged; the difficulty is concentr
 1. **H may be exactly as hard as RH** with no gain — likely, since RH ⟹ H trivially (every term
    vanishes). The gain is only real if H admits an argument that RH does not, e.g. a variational or
    Euler–Lagrange derivation. If no such argument appears in one cycle, downgrade this card.
-2. **R is not proved.** Divergence of `Σ (log γ_n)^{-2}` is necessary; full recurrence needs a
-   Nash–Williams cutset argument on a graph that is not a line. Do not cite R until built.
+2. **R is not proved, and the obvious route is closed.** Recurrence is true but marginal: in the
+   ordinate variable the zeros are quasi-one-dimensional and the reciprocal-squared conductance is
+   the Cauchy kernel, stable index exactly `1` — the recurrence/transience boundary, on the recurrent
+   side. **Nash–Williams is vacuous here**: the conductance across a level cut is a double sum of
+   reciprocal squared separations over straddling pairs, a harmonic series, so it diverges and the
+   cutset bound on effective resistance gives nothing (CANNOT-417). What *is* built is that the
+   network exists — every vertex has finite total conductance (`summable_zeroConductance`), which
+   also discharges the absolute convergence of the transverse force. Recurrence itself needs the
+   flow criterion or the Fourier criterion, neither in the ambient library.
 3. Liouville for recurrent *weighted* graphs with unbounded degree needs care; the standard statement
    assumes local finiteness, which holds here, but the proof must be checked.
