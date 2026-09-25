@@ -18437,6 +18437,8 @@ import GaloisForLFunctions.RHTower.GL3PowerFunctionComplex
 import GaloisForLFunctions.RHTower.GL3HeckeOperator
 import GaloisForLFunctions.RHTower.GL3HeckePowerEigen
 import GaloisForLFunctions.RHTower.GL3EpsteinEisenstein
+import GaloisForLFunctions.RHTower.GL3TernaryTheta
+import GaloisForLFunctions.RHTower.GL3EpsteinContinuation
 import GaloisForLFunctions.RHTower.WeilKloostermanDegreeSums
 import GaloisForLFunctions.RHTower.WeilKloostermanLFunction
 import GaloisForLFunctions.RHTower.WeilKloostermanHasseDavenport

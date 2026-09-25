@@ -1,7 +1,10 @@
 # Every fixed theta-shell prefix has infinitely many nonreal zeros
 
 - **Scope:** fixed canonical shell prefixes as real-zero foundations; not the full theta route.
-- **Status:** complete scratch Lean proof; named leaf and axiom audit pending.
+- **Status:** Lean-proved; scratch and named leaf build pass. All ten public theorem
+  axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
+  Index refreshed; `lint --check-generated` passes with existing large-file warnings.
+  Leaf wired into `RHTower.lean`.
 - **Provenance:** formalization of the existing paper argument in
   `../1-in-progress/k-rvm-finite-sixth-moment-bracket.md`, paragraph “Every fixed
   theta-shell prefix”. No new discovery or novelty claim.

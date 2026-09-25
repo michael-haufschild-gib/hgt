@@ -70,24 +70,36 @@ with an extra unspecified theta hypothesis would merely rename the missing sign.
 The exact all-order theta cumulant recurrence and boundary cancellation must instead
 be tested together. No source sign has been obtained, and the RH goal stays open.
 
-## Evidence and status
-
-## Concrete finite-prefix falsification: pending Lean transfer
+## Concrete finite-prefix falsification: Lean transfer closed
 
 The corpus already contains a paper proof that every nonempty fixed theta-shell
 prefix has infinitely many nonreal Fourier zeros (`k-rvm-finite-sixth-moment-bracket.md`,
 paragraph headed “Every fixed theta-shell prefix”). This is prior research, not a new
-conjecture or novelty claim. Its concrete entire/subquadratic-growth transfer remains
-open in Lean. Close that transfer using the literal source envelope, then combine
-`ThetaFiniteShellFourierBoundary` with `FiniteZeroSubquadraticTwoRayDecay`.
+conjecture or novelty claim. `ThetaFiniteShellNonrealZeros` now closes its concrete
+entire/subquadratic-growth transfer from the literal source envelope and combines
+`ThetaFiniteShellFourierBoundary` with `FiniteZeroSubquadraticTwoRayDecay`. It proves
+infinitely many nonreal zeros and finitely many real zeros for every nonempty cutoff.
 
 **Route test:** this excludes every fixed-prefix real-zero foundation, not merely
 the numerically tested first two. The positive survivor is the already formalized
 exact full-tail compensation. It does not supply full-source Hankel positivity.
 
-**Verification plan:** scratch entire transform and growth bound; prove infinitely
-many nonreal zeros; audit assumptions and axioms; named leaf build and formal lint.
-No numerical experiment and no edits to another researcher's log.
+**Verification:** scratch proof and named leaf build passed. All ten public theorem
+axiom reports contain only `propext`, `Classical.choice`, and `Quot.sound`.
+Corpus index refreshed; `scripts/formal_tools.py lint --check-generated` passes
+with existing large-file warnings. No numerical experiment was used.
+
+Exact proof and survivor: `../5-failed/theta-fixed-prefix-nonreal-zeros.md`.
+
+## Remaining source problem
+
+The full-source all-polynomial sign remains unproved. The finite-prefix no-go is now
+closed; further fixed-cutoff certification would not establish this sign. A next
+producer attempt must retain literal infinite arithmetic assembly and supply its
+sign, beyond the already available recurrence, symmetry, and boundary cancellation.
+No all-degree producer or new universal conjecture is claimed.
+
+## Evidence and status
 
 Separate fact log: `rh-reflection-source-sign-2026-09-26-facts.md`.
 Search outputs are discovery evidence, not compilation certificates. Existing unrelated GL3 work is outside this research scope.
