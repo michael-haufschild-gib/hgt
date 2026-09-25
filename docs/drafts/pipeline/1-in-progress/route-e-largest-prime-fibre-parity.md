@@ -8,7 +8,7 @@
 
 ## Goal and scope
 
-This tests the proposed Route E payment by denominator cofactors, including all cofactor grades rather than a fixed-depth subset. It is a negative result for that mechanism, not an RH estimate: cancellation across distinct largest-prime fibres or numerator supports growing with the fibre remains open. The denominator family lies below the physical cutoff (q^2), and each nonzero denominator has unique largest prime (q).
+This tests the proposed Route E payment by denominator cofactors, including all cofactor grades rather than a fixed-depth subset. It is a negative result for that local mechanism, not an RH estimate. The denominator family lies below the physical cutoff ($q^2$), and each nonzero denominator has unique largest prime $q$. The sign-locked region is in fact absolutely summable across $q$ even when the numerator support moves subject to the theorem's threshold; it cannot itself be an RH-scale obstruction.
 
 ## Exact theorem
 
@@ -72,9 +72,26 @@ Finally, omission of supported squarefree $d\ge q$ changes the normalized fibre 
 
 The tail bound uses $d^{-2}\le[d(d-1)]^{-1}$ for $d\ge2$, whose series telescopes. Thus $|q^2T_P(q)-M_P(q)|\le8B_P/q<1/4$, proving the displayed strict margin.
 
+## Route-level consequence: the sign-locked region is subcritical
+
+There is a stronger conclusion than fixed-support summability. For **any** choice of finite prime sets $P(q)$ satisfying $q>32B_{P(q)}$, the whole selected fibre family is absolutely summable over $q$; no cross-fibre signed payment is required there. Indeed the kernel inequality above and the injective squarefree-product parameterization give
+
+\[
+ |T_{P(q)}(q)|\le {2\over q^2}\prod_{p\in P(q)}(1+p).
+\]
+
+For every prime $p\ge2$, $(1+p)^4\le(1+p^2)^3$ (expand, or use $p^3(p^3-4)+p(2p^3-3p-4)\ge0$). Multiplication yields $\prod_{p\in P}(1+p)\le B_P^{3/4}$. Consequently
+
+\[
+ |T_{P(q)}(q)| < {2\over 32^{3/4}q^{5/4}},
+ \qquad \sum_{q\ \mathrm{prime}}|T_{P(q)}(q)|<\infty.
+\]
+
+This falsifies the tempting extrapolation that persistent sign inside these fibres creates a global debt. Any RH-scale divergence or cancellation must live in the **joint-scale sector** $B_P\gtrsim q$ (or other primitive pairs), precisely where the far-fibre expansion ceases to be uniform. The $5/4$ majorant is not asserted sharp for that sector.
+
 ## Research status
 
 - Corpus audit: Route E already proves eventual parity for a fixed numerator Boolean cube against a **prime denominator only** (`RouteEPrimitiveAllGradeParityBarrier.lean`); it does not include all smaller-prime denominator cofactors. Search for Route E largest-prime/cofactor completion and exact kernel usages found no existing theorem of this form. This is a corpus novelty claim, not an external-priority claim.
-- Positive survivor: exact main term $M_P(q)$, uniform Euler-factor margin, and quadratic-cutoff largest-prime disintegration. They identify the missing cancellation as a joint effect of changing numerator support or summing distinct $q$-fibres, not cofactor completion within one fixed-support fibre.
-- Lean status: unformalized. Required ingredients are finite squarefree divisor reindexing, Möbius multiplicativity, finite Euler products, and elementary rational bounds. No new analytic limit theorem is required.
-- Falsifier / next attack: seek a fixed $P$ and prime $q>32B_P$ violating the sign, or prove that summing these disjoint fibres cannot produce Route E's required covariance ceiling. The latter is open; this theorem alone is not an RH producer.
+- Positive survivor: exact main term $M_P(q)$, uniform Euler-factor margin, quadratic-cutoff largest-prime disintegration, and the new moving-support $q^{-5/4}$ absolute majorant. The majorant identifies a **subcritical sector**, not missing cancellation there.
+- Lean status: sign theorem and moving-support summability remain paper-only. Scratch Lean checks the rational kernel remainder, finite Euler-factor sign, unique squarefree-product parameterization, and reciprocal-square tail/total estimates. The literal finite Möbius source and final bounds remain to be closed.
+- Falsifier / next attack: seek a prime $q>32B_P$ violating either the sign or the $q^{-5/4}$ bound. More important: characterize the joint-scale regime $B_P\gtrsim q$ without assuming a far-fibre expansion; test whether a new source-faithful invariant controls its cross-fibre resonance. No RH producer is presently established.

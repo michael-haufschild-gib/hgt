@@ -240,7 +240,9 @@ sum over `a` and `p`.
 
 Choose the cutoff and the two moment-correcting bumps used to make
 `q_N^flat` from a fixed Gevrey class of order `s` with `1<s<2`.
-Such compactly supported functions exist, and the two correction
+For example, the standard positive-side germ `exp(-1/x^2)` (zero for
+`x<=0`) gives order `s=3/2` cutoffs and bumps by translation,
+reflection and multiplication. The two correction
 coefficients remain uniformly bounded by the same moment-matrix
 argument as above. The exact observation and (5) are unchanged.
 For `beta=1/s>1/2`, the weighted test has
@@ -297,6 +299,11 @@ the factor `1/b` only helps. Their total is bounded by
 For example, `s=3/2` and `sigma=5/12` allow any fixed
 `eta<1/12` for all sufficiently large `N`.
 
+The same low-`p` count applies to the full `H_p`, including `b=1`.
+Thus every prime layer with `p<=P` has a power-saving **combined**
+theta observation. The surviving largest-prime sum may equivalently
+be restricted to `p>P`, after reducing `eta` if necessary.
+
 Consequently the exact causal observation has the **largest-prime
 normal form**
 
@@ -313,20 +320,50 @@ combined theta observation. The signed largest-prime sum in (16)
 still has the full RH difficulty; this theorem changes its source
 geometry, not its bound.
 
+The remaining current is exactly a **sieve dilation defect**. Let
+`X=N/p`, `Q=R_(p-1)`, and define the truncated wheel count
+
+```text
+S_(p,X)(r)=sum_(a|Q, a<=X) mu(a)*floor(r/a),
+M_(p,X)=sum_(a|Q, a<=X) mu(a).
+```
+
+Since `j mod p=j-p*floor(j/p)` and
+`floor(floor(r/a)/p)=floor(r/(a*p))`,
+
+```text
+sum_(a|Q, a<=X) mu(a)*psi_p(floor(r/a))
+ =S_(p,X)(r)/p-S_(p,X)(floor(r/p))
+   -(p-1)/(2*p)*M_(p,X).                         (17)
+```
+
+The last term has total theta observation
+`O(N^(-5/2)*sum_(p<=N)N/p)=O(N^(-3/2)*log N)` by the exact zeroth
+moment of `q_N^flat` inherited from the causal criterion. It is
+absorbed in (16). Hence RH now asks for a
+subpower bound on the **wavelet observation of the complete
+cross-prime scale defect**
+`S_(p,N/p)(r)/p-S_(p,N/p)(floor(r/p))`, summed over primes.
+The truncated wheel count itself is signed; only its untruncated
+version is a positive sifted count. Equation (17) does not provide
+the needed bound, but identifies a specific renormalization defect
+on which a new source law could act.
+
 ## Consequence and remaining producer
 
 Subpower growth of the prime-only covariance in (7), for every fixed
 `delta>0`, is equivalent to the original causal criterion and hence
-to RH. The point of (7) is its **source description**: the hard term
-is joint old-prime/composite predictable history observed by the
-completed-theta wavelet at genuine new-prime transitions. Higher
-prime-power clock layers in the lcm filtration were refinements of the
-physical observation, not arrivals of squarefree source atoms.
-No signed estimate for the middle term is proved here.
+to RH. The stronger uniform-cycle result (16)--(17) identifies the
+same hard observation, up to a power-saving error, as the signed
+largest-prime current or equivalently the wavelet-tested cross-prime
+sieve dilation defect. Higher prime-power clock layers in the lcm
+filtration were refinements of the physical observation, not arrivals
+of squarefree source atoms. No signed subpower estimate for the
+largest-prime current is proved here.
 
 Existing Lean anchors: `EulerDeletionResidueMartingale.lean` (physical
 measure and periodic projection), `EulerDeletionResidueFourierCoefficient.lean`
 (signed sawtooth Fourier coefficient), `EulerDeletionPrimePowerClockSupport.lean`
 (old lcm clock), and the `Sieve` primorial-divisibility lemmas returned
-by corpus deep search. Equations (1)--(7) remain paper-level; no Lean
+by corpus deep search. Equations (1)--(17) remain paper-level; no Lean
 build or computation was run for this card.

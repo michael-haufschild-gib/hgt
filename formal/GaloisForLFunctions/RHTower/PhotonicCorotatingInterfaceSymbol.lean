@@ -264,8 +264,8 @@ theorem ptr_complex_interface_principal_kernel_zero
   have ha := (mul_eq_zero.mp hmul).resolve_left hsum
   exact ⟨ha, hvalue.symm.trans ha⟩
 
-/-- A complex normal symbol with positive real part has a unique choice of
-square-root sign whose real part is positive. Only existence is used here. -/
+/-- A complex normal symbol with positive real part has a square root whose
+real part is positive. -/
 theorem ptr_exists_decaying_complex_normal_root (α : ℂ) (ha : 0 < α.re) :
     ∃ κ : ℂ, κ ^ 2 = α ∧ 0 < κ.re := by
   obtain ⟨κ, hκ⟩ := IsAlgClosed.exists_pow_nat_eq α (n := 2) (by omega)

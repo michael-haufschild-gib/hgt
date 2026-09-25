@@ -59,9 +59,15 @@ theorem poissonBumpTerm_le (t : ℝ) (ρ : XiDivisorSupport) :
   have hu0 : 0 ≤ u := sq_nonneg _
   have hdle : d ≤ 1 := by
     rw [hd]; nlinarith
-  rw [poissonBumpTerm, ← hd, ← hu, div_le_iff₀ (by positivity), mul_comm]
-  rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
-  nlinarith
+  have h1u : (0 : ℝ) < 1 + u := by positivity
+  rcases eq_or_lt_of_le (show (0 : ℝ) ≤ d + u by positivity) with hz | hpos
+  · rw [poissonBumpTerm, ← hd, ← hu, ← hz, div_zero]
+    positivity
+  · rw [poissonBumpTerm, ← hd, ← hu, div_le_iff₀ hpos]
+    have hrw : (d + u) * (2 * (1 / (1 + u))) = ((d + u) * 2) / (1 + u) := by
+      field_simp
+    rw [mul_comm, hrw, le_div_iff₀ h1u]
+    nlinarith
 
 theorem summable_poissonBumpTerm (t : ℝ) : Summable (fun ρ => poissonBumpTerm t ρ) :=
   Summable.of_nonneg_of_le (poissonBumpTerm_nonneg t) (poissonBumpTerm_le t)
@@ -74,9 +80,12 @@ theorem poissonPotential_nonneg (t : ℝ) : 0 ≤ poissonPotential t :=
 theorem poissonBumpTerm_eq_scaled {ρ : XiDivisorSupport} (h : (ρ : ℂ).re ≠ 1 / 2) (t : ℝ) :
     poissonBumpTerm t ρ = 1 / (1 + ((t - (ρ : ℂ).im) / ((ρ : ℂ).re - 1 / 2)) ^ (2 : ℕ)) := by
   have hδ : (ρ : ℂ).re - 1 / 2 ≠ 0 := sub_ne_zero.mpr h
-  rw [poissonBumpTerm, div_pow, div_eq_div_iff (by positivity) (by positivity)]
-  field_simp
-  ring
+  have hδ2 : ((ρ : ℂ).re - 1 / 2) ^ (2 : ℕ) ≠ 0 := pow_ne_zero _ hδ
+  have key : 1 + ((t - (ρ : ℂ).im) / ((ρ : ℂ).re - 1 / 2)) ^ (2 : ℕ)
+      = (((ρ : ℂ).re - 1 / 2) ^ (2 : ℕ) + (t - (ρ : ℂ).im) ^ (2 : ℕ))
+        / ((ρ : ℂ).re - 1 / 2) ^ (2 : ℕ) := by
+    rw [div_pow, add_div, div_self hδ2]
+  rw [poissonBumpTerm, key, one_div_div]
 
 /-- On the critical line the bump is identically zero. -/
 theorem poissonBumpTerm_of_re_eq_half {ρ : XiDivisorSupport} (h : (ρ : ℂ).re = 1 / 2) (t : ℝ) :

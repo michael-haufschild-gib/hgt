@@ -101,3 +101,80 @@ network of `ZeroNetworkConductance`. Unconditional and axiom-clean.
   to see a free orbit and still converges: it reads each free orbit as the integer `1`.
 - `TransverseAttainment.lean` retains the honest dichotomy from the maximum-principle route
   (identity + finite off-line set ⟹ hypothesis) as the record of what that route could reach.
+
+---
+
+# Part II: the critical-line potential, and mass blindness
+
+## Moving the base point
+
+The angular energy is only defined at zeros. Put the base point on the critical line instead. For
+real `t`,
+
+    U(t) = Σ_ρ δ_ρ² / (δ_ρ² + (t − Im ρ)²),     δ_ρ = Re ρ − 1/2.
+
+The sum converges at every `t`: displacements are bounded by one half, so each summand is at most
+twice a fixed Cauchy weight, and the ordinates are locally finite.
+
+Written in scale-invariant form, each summand is
+
+    1 / (1 + ((t − Im ρ)/δ_ρ)²)  —  a bump of height exactly 1 and width exactly |δ_ρ|.
+
+On-line zeros contribute nothing. So `U ≡ 0` under the hypothesis, and `U(Im ρ) ≥ 1` for any off-line
+zero, since that zero's own bump is at its peak there. Hence
+
+    RH  ⟺  U(t) < 1 for all real t,
+
+a uniform strict bound on one explicit function of one real variable. This is strictly better than
+the version at zeros: the criterion now ranges over a continuum, still uses no attainment, and the
+quantum is unchanged.
+
+The superlevel set of one bump at height `λ` is the interval of half-width `|δ| √((1−λ)/λ)` about the
+zero's ordinate. **Detecting a zero at displacement `δ` requires resolution of order `δ`.**
+
+## Mass blindness
+
+The mass of one bump over the symmetric window of half-width `R` is exactly
+
+    ∫ = 2 δ arctan(R/δ)  <  π δ   for every R.
+
+So the two norms of the same object are decoupled at every scale:
+
+| | height | mass |
+|-|-|-|
+| one bump at displacement `δ` | `1`, always | `< π δ → 0` |
+
+Every unconditional handle this field has on the off-line divisor is a mass. The density integral
+`∫_{1/2}^{1} N(σ,T) dσ` is exactly half the total displacement mass `Σ_ρ |δ_ρ|`; Littlewood's lemma
+expresses it through a logarithmic mean on the critical line; mollified moments and smoothed counting
+functions are of the same kind. The theorem proved here is that **no such bound constrains the
+height**: for every amplification constant `C` and every tolerance `ε` there is a displacement whose
+bump mass, multiplied by `C`, stays below `ε` on every window, while the bump still attains height
+one.
+
+This is a no-go with an exact mechanism, not an impression. It accounts in one line for the family of
+results in this field that stall a fixed factor short of their target — the mollified mean-square
+floor, the Littlewood/Jensen slope obstruction, the density constants — and it says what a producer
+must do instead: **control a supremum at unknown resolution, not an average at fixed resolution.**
+It is the quantitative form of the earlier finding that the hypothesis is a separation target rather
+than a resolution target.
+
+## What is now open
+
+`[OPEN CORE]` unchanged in shape but sharper in kind: an unconditional bound `U(t) < 1`.
+
+By the above it cannot come from any average of the divisor. By the non-holomorphy of the angular
+kernel it cannot come from the Hadamard/logarithmic-derivative machinery alone. What the holomorphic
+side does supply, and the corpus already owns, is `deriv (logDeriv Xi) z = −Σ_ρ (z − ρ)⁻²`, which
+gives the exactly computable combination
+
+    Σ_ρ (δ_ρ² − (t − Im ρ)²)/|1/2 + it − ρ|⁴ = −Re (logDeriv ξ)'(1/2 + it),
+
+so that `Σ_ρ δ_ρ²/|1/2+it−ρ|⁴ = ½[C(t) − Re (logDeriv ξ)'(1/2+it)]` with `C(t) = Σ_ρ |1/2+it−ρ|^{-2}`.
+The single non-holomorphic quantity in the whole picture is `C`, the self-energy of the divisor. That
+is the precise object the next step has to reach.
+
+## Lean
+
+`formal/GaloisForLFunctions/RHTower/CriticalLinePoissonPotential.lean` and
+`formal/GaloisForLFunctions/RHTower/DisplacementMassBlindness.lean`. Unconditional, axiom-clean.

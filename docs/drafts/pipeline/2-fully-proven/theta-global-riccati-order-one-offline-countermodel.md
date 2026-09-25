@@ -17,6 +17,8 @@ For every positive integer `N`, every `η>0`, and every nonempty open real inter
    `2 A_t(u,t) A_tt(u,t)−A_ttt(u,t)>0`.
 3. The entire Fourier transform `F(z)=∫_ℝ g(x)e^(izx) dx` has at least `N` distinct zeros in `Re z∈I`, `0<Im z<η`.
 
+Because `g` is real and even, `F` is even and satisfies `F(conj z)=conj(F(z))`; its off-real zeros therefore carry the same reflection-quartet symmetry as a centered completed zeta function.
+
 Thus even **global**, strict, two-parameter Riccati/correlation-angle curvature, together with source positivity, reflection, strong log-concavity, and order-one entire growth, does not force critical-line zeros. The literal theta source has further exact modular/Euler assembly absent here; this theorem does not test that assembly.
 
 ## Explicit family and spectral zeros

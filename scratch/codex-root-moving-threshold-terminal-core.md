@@ -85,3 +85,17 @@ The head square is only `O(M)`; the positive limit comes from the unprocessed si
 More generally, every prime-prefix terminal core with `limsup k_M/M≤1−η` for a fixed `η>0` retains a fixed first-cell interval of primes `p/M∈[1−η/2,1]`. The exact singleton formula and weighted PNT then give `E_M(P_M)≥c_η M²/log M` for all large `M`, independently of how its head is selected. Therefore **any** prime-prefix route aiming at RH-scale current energy must have `k_M/M→1`: its quotient depth collapses to the birth layer and its head approaches the completed critical source. Fixed macroscopic-depth head cancellation and RH-scale variance reduction cannot coexist in a prefix controller. Non-prefix selection or a truly signed intertemporal payment is structurally necessary for this route to do more than solve the quadratic intermediate gate.
 
 Hostile checks: large prime gaps do **not** refute the controller. `k_M` may jump over a long prime gap when its next prime is admitted early; macroscopic closeness `k_M/M→1/Y₀` does not constrain this microscopic timing. The monotonicity proof uses the exact head and uniform *time drift*, not a false local prime-spacing approximation. This nested theorem is paper-level; weighted-PNT/drift and Baker-specialization bridges are not yet Lean-closed. It does not prove RH or the original all-history payment.
+
+## Temporal-shear no-go for old cutoffs (paper proof)
+
+The nested controller fails the **actual hard gate** of old-cutoff transfer, not merely because no bound was proved. Fix any `y∈(1,2)` and set `λ=y/Y₀∈(0,1)`. For each large current cutoff `M`, put `m_M=⌊λM⌋`. Since `k_M/M→1/Y₀`, we have `m_M/k_M→y`. At this old cutoff the *same* processed core is a terminal prime prefix with moving depth `y`, so the uniform fluid-head law gives
+
+`(log m_M/m_M^(3/2)) H(m_M,k_M) → A(y)>0`.
+
+Consequently its literal old-cutoff energy obeys
+
+`E_(m_M)(P_M) ≥ H(m_M,k_M)² ∼ A(y)² m_M³/(log m_M)²`,
+
+and in particular `E_(m_M)(P_M)/m_M²→+∞`. This is a **source-specific time-shear obstruction**: an equilibrium for the moving current boundary becomes an off-equilibrium, superquadratic source at a fixed fraction of its prior age. It proves the monotone prefix is not CCM-FU's all-cutoff transferred-energy solution even though its current energy is `∼V(Y₀)M²/log M`.
+
+The positive survivor is exact: two different source moments have different roles. The first moment `A` can be set to zero by a macroscopic free boundary; the singleton second moment remains `V>0`; looking backward in time changes the quotient depth and restores a nonzero **first** moment. Any viable growing-core route must pay *all age ratios* by genuinely source-selected non-prefix admission/covariance, or use a mechanism whose old-cutoff energy is signed against later transfer. A single scalar moving threshold cannot do it. This is a paper no-go with a paper positive survivor; no Lean or RH claim is made.

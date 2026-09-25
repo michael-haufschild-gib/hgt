@@ -16,7 +16,7 @@ Scope: compressed facts and logically forced design constraints extracted from a
 
 - **Cannot exclude off-line zeros in the natural Xi strip from positivity, evenness, strong log-concavity, any finite moment list, the exact critical half-density charge, and all finite prime-deletion right-ray positivity inequalities.** At every sufficiently high horizontal frequency and fixed height inside the strip, a two-packet perturbation forces a zero while preserving the shape properties, ordinary mass and both reflected charges, and converging to the literal theta source in Schwartz topology. One version equals theta outside a fixed compact interval and remains positive after every finite literal prime deletion on the positive ray, uniformly over prime sets; a second is real-analytic, converges holomorphically on every compact subset of the theta source strip, and has relative tail error faster than every ordinary exponential in the log coordinate. The [two-packet interpolation theorem](../../2-fully-proven/theta-compact-critical-strip-zero-engineering.md) proves both on paper. Neither version preserves exact Euler coefficients or entire real-zero divisor; the theorem does not identify which infinite source constraint can orient Xi.
 
-- **Cannot infer critical-line zeros, a zero-free strip, or a local zero-count bound from global strict reflected Riccati/correlation-angle curvature, even with positive even strongly log-concave source and order-one entire Fourier growth.** A symmetric three-Gaussian mixture has a uniform positive two-variable Riccati margin and arbitrarily many off-real zeros in any prescribed real interval and any strip `0<Im z<η`. Small even hyperbolic-cosine damping preserves the margin and selected zeros while giving superexponential source decay and order-one Fourier growth. The [global Riccati countermodel](../../2-fully-proven/theta-global-riccati-order-one-offline-countermodel.md) proves this on paper. It does not preserve exact theta Euler coefficients or critical charges; a zero-exclusion argument using the literal theta Riccati law must also control a nonlocal arithmetic phase.
+- **Cannot infer critical-line zeros, a zero-free strip, or a local zero-count bound from global strict reflected Riccati/correlation-angle curvature, even with positive even strongly log-concave source and order-one entire Fourier growth.** A symmetric three-Gaussian mixture has a uniform positive two-variable Riccati margin and arbitrarily many off-real zeros in any prescribed real interval and any strip `0<Im z<η`; hyperbolic-cosine damping preserves selected zeros and enforces order-one growth ([paper proof](../../2-fully-proven/theta-global-riccati-order-one-offline-countermodel.md)). **Cannot repair the implication by also fixing ordinary mass and both reflected critical half-density charges:** a charge-fitted variant matches those three scalar budgets of the literal completed theta source exactly, keeps the strict global Riccati law and order-one growth, and has an off-line zero arbitrarily close to the critical line ([paper proof](../../2-fully-proven/theta-riccati-three-charge-offline-countermodel.md)). Neither construction preserves the exact theta Euler coefficients; a zero-exclusion argument must control a nonlocal arithmetic phase beyond these scalar and differential laws.
 
 - **Cannot create a new Xi zero by a symmetric integer-scale deformation while preserving the theta source's ordinary mass, critical half-density charge and complete monotonicity of its normalized flux.** This holds even for signed, infinite mixtures of all integer translations, not just positive convolutions or one prime-power chain. Exact Gaussian-rate arithmetic turns flux positivity into nonnegative weights at every reduced rational denominator; a strictly positive divisor-Möbius identity then forces the deformation to be the identity. The [divisor Bernstein theorem](../../2-fully-proven/theta-divisor-bernstein-gauge-rigidity.md) proves this on paper. The restriction concerns that deformation class; literal one-sided Euler completion still has a boundary-mass defect and needs its own complex orientation law.
 
@@ -7348,3 +7348,36 @@ the sum of `Δ` over its conjugate. **Must** therefore record that the object mi
 threshold bound is a non-holomorphic pairing of the divisor with itself, not another holomorphic
 lemma, which is a concrete account of why the analytic toolkit of this field was found to be
 saturated: the saturation was of the holomorphic half only.
+
+## MUST-424 — the critical-line potential is a sum of unit bumps (2026-09-25)
+
+Move the base point of the angular energy off the zeros and onto the critical line. For real `t` put
+`U(t) = Σ_ρ δ_ρ² / (δ_ρ² + (t − Im ρ)²)` with `δ_ρ = Re ρ − 1/2`. The sum converges at every `t`,
+because the displacements are bounded by one half and the ordinates are locally finite; each summand
+is at most twice a fixed Cauchy weight. Each zero contributes a single bump which in scale-invariant
+form is `1/(1 + ((t − Im ρ)/δ_ρ)²)`: **height exactly one, width exactly the displacement**. Zeros on
+the line contribute nothing. **Must** record that `U` vanishes identically under the hypothesis and is
+at least one at the ordinate of any off-line zero, so the hypothesis is equivalent to the uniform
+strict bound `U < 1` for a single explicit function of one real variable, quantified over all `t`
+with no attainment, no extremal point and no limiting configuration; and that the values of `U` never
+lie entirely inside the open interval from zero to one. The superlevel set of a single bump at height
+`λ` is the interval of half-width `δ √((1−λ)/λ)` about the ordinate of the zero, so detecting a zero
+at displacement `δ` requires resolution of order `δ`.
+
+## CANNOT-425 — mass blindness: no averaged criterion can decide the hypothesis (2026-09-25)
+
+The mass of one bump over the symmetric window of half-width `R` about its centre is exactly
+`2 δ arctan(R/δ)`, hence strictly below `π δ` on the whole line, while its height is exactly one
+whatever `δ` is. The two norms are therefore decoupled at every scale: as the displacement shrinks the
+mass goes to zero and the height does not move. **Cannot** decide the hypothesis by any criterion that
+reads the off-line divisor only through a total displacement mass `Σ_ρ |δ_ρ|`. The density integral
+`∫_{1/2}^{1} N(σ,T) dσ` is exactly half that mass, and Littlewood's lemma expresses it through a
+logarithmic mean on the critical line, so the whole Littlewood–Jensen family, the density theorems,
+the mollified moments and the smoothed counting functions are criteria of this kind. For every
+amplification constant and every tolerance there is a displacement whose bump mass stays below the
+tolerance on every window while the bump still attains height one; no bound on the mass, at any
+constant, constrains the height. **Must** therefore read the repeated finding that averaged criteria
+stall a fixed factor short of their target as a structural consequence of this decoupling rather than
+as a deficiency of the estimates, and must require of any producer that it control a supremum at
+unknown resolution rather than an average at fixed resolution. This is the quantitative form of the
+earlier finding that the hypothesis is a separation target and not a resolution target.
