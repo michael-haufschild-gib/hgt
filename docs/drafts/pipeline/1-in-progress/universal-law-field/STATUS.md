@@ -7205,3 +7205,33 @@ unconditional statements about zero density and the strip, and only harmonicity 
 difficulty. **Cannot** any longer describe the target as a single global inequality; it is a local
 balance at each zero together with a density statement and a symmetry, of which the symmetry is
 discharged.
+
+## MUST-414 — the marginality identity in closed form is a stationarity condition (2026-09-25)
+
+Summing the Hadamard partial fractions at a simple zero turns the transverse equilibrium condition
+into a purely local jet statement: the ratio of the second to the first derivative of the completed
+function at the zero is **purely imaginary**. Since the real part of that ratio is the horizontal
+logarithmic derivative of the modulus of the first derivative, the identity says exactly that
+**every zero is a horizontal critical point of the modulus of the derivative of the completed
+function**. **Must** record this as the variational form of the marginality condition: it is a
+stationarity statement about an explicit real function of one real variable on each horizontal line,
+not a sum over the whole divisor and not an inequality. The unconditional half is immediate and now
+certified: differentiating the functional equation gives that the derivative changes sign under the
+point reflection in the centre of the strip, so the modulus of the derivative is invariant under that
+reflection, and in particular the derivative vanishes at the centre.
+
+## CANNOT-415 — the variational derivation is unavailable, by hypertranscendence (2026-09-25)
+
+Equilibrium identities of exactly this shape — the sum over the other zeros of the reciprocal
+separations equals a fixed function evaluated at the zero — have one general source: a second-order
+linear differential equation. Given such an equation, evaluating it at a simple zero produces the
+identity immediately, and the configuration is then the equilibrium of a Coulomb gas in the potential
+the equation determines; this is the classical electrostatic theorem, and it is the **variational**
+derivation, since the equilibrium is the critical point of an explicit energy. **Cannot** run that
+derivation for the completed zeta function: it satisfies no such equation, being differentially
+transcendental, and the corpus records this in the strong form that it remains so after adjoining any
+finite bath of auxiliary functions. The variational proof of the marginality identity is therefore
+not merely unproved but **unavailable**: the mechanism that produces every other identity of this
+form does not exist here. **Must** conclude that the identity, though true and equivalent to the
+hypothesis, cannot be obtained by the route that motivated stating it, and that the recorded
+falsifier for the transverse-equilibrium card is discharged against it.

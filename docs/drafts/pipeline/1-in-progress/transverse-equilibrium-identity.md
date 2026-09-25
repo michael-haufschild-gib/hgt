@@ -1,6 +1,16 @@
 # The marginality identity: transverse Coulomb equilibrium
 
-**Status:** identity found and stated; Liouville chain isolated; last step Lean-closed.
+**Status:** identity found, closed form derived, **variational route closed negatively**
+(CANNOT-415). Liouville chain isolated; symmetry step Lean-closed.
+
+> **Verdict on the variational proof.** The closed form is `Re(ξ''(ρ)/ξ'(ρ)) = 0` — *every zero is a
+> horizontal critical point of `‖ξ'‖`*, a genuine stationarity condition. But the one general machine
+> that *derives* equilibrium identities of this shape is Stieltjes' electrostatic theorem, which
+> requires a second-order linear ODE `p'' + Qp' + Rp = 0`; then `Σ_{k≠j}1/(z_j−z_k) = −Q(z_j)/2`
+> follows, and the configuration is the critical point of an explicit energy. **`ξ` satisfies no such
+> ODE** — it is differentially transcendental (corpus F97/F198, in the strong form: still so after
+> adjoining any finite bath). So the variational derivation is **unavailable, not merely unproved**.
+> This discharges falsifier 1 below, negatively, within the one cycle it allowed.
 **Module:** `RHTower/TransverseEquilibrium.lean`. **Ledger:** MUST-412, MUST-413.
 
 ## Derivation

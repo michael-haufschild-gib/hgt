@@ -43,6 +43,18 @@ failed conceptual bridge.
   `logDeriv xiNonrightCanonicalProduct` correction. Its coefficient-faithful
   landing is therefore an exact comparison containing target-side divisor
   data, not a source-only proof that the escaped coefficient vanishes.
+- `SymmetricShiftFunctionalEquation.lean` and
+  `EntireFunctionalEquationOffLine.lean` already give off-line zeros with
+  reflection symmetry; the latter retains nonnegative generalized
+  von Mangoldt density and entire completion, but changes pole order.
+  Generic Euler positivity plus functional equation is therefore not an
+  RH selector. Exact pole/local-factor structure remains a necessary
+  differentiator, not a proved sufficient condition.
+- `MobiusDivisorFixedCoreMacroscopicNetPairDrop.lean` lowers selected-prime
+  energy with a core-dependent margin. `MobiusDivisorSquareRootTerminalOrder.lean`
+  proves the terminal-order ceiling is exactly controlled by both initial
+  energy and the complete signed endpoint. Prime reordering cannot remove
+  the endpoint arithmetic cancellation problem.
 
 Whole-route consequence: the next serious conjecture must specify an actual
 pre-scalar, source-defined prime–polar–Γ coupling and a cofinal signed law.

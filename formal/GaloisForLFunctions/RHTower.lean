@@ -17162,6 +17162,7 @@ import GaloisForLFunctions.RHTower.DivisorSliceGenus
 import GaloisForLFunctions.RHTower.DivisorSliceFixedPart
 import GaloisForLFunctions.RHTower.DivisorSliceFreePart
 import GaloisForLFunctions.RHTower.TransverseEquilibrium
+import GaloisForLFunctions.RHTower.XiDerivReflection
 import GaloisForLFunctions.RHTower.ClockDegeneracy
 import GaloisForLFunctions.RHTower.ReflectionTateParity
 import GaloisForLFunctions.RHTower.WeilLagFunctionCarrier

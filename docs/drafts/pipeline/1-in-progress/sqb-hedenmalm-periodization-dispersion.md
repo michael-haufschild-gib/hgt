@@ -725,6 +725,89 @@ compared with the leakage-plus-drift expression (19b) before asserting
 any sign. Equation (19c) is paper algebra; its infinite-row/global
 domain specialization remains open in Lean.
 
+### Finite-row vertical connection law [paper-proved algebra]
+
+The weight-induced drift in (19b) has an explicit primitive-row
+coordinate. At `z=x+i*y`, `y>0`, a row with lower matrix entries
+`(c,d)` has `h_v=y/|c*z+d|²` and `x_v=log(h_v)/2`. Put
+
+```text
+delta_v(z) = y*partial_y log(h_v)
+           = 1-2*c²*y²/|c*z+d|²,       -1<=delta_v<=1.  (19d)
+```
+
+For a finite row set, let `b_v=sqrt(h_v/2)*Phi(x_v)>0`,
+`U_f,v=sqrt(h_v/2)*f(x_v)`, `r_v=f(x_v)/Phi(x_v)`,
+`q_v=Phi'(x_v)/Phi(x_v)`, and
+`m=(sum_v b_v²*r_v)/(sum_v b_v²)`. The fluctuation is
+`S_v=b_v*(r_v-m)`. The chain rule gives the exact source generator
+
+```text
+y*partial_y U_f,v
+  = delta_v*sqrt(h_v/2)*(f+f')(x_v)/2.              (19e)
+```
+
+Differentiate `S=U_f-m*b` and pair with `S`. The `partial_y m`
+term vanishes because `sum_v b_v*conj(S_v)=0`. Expanding
+`(f+f')/Phi=r'+(1+q)*r` then leaves
+
+```text
+Im sum_v (y*partial_y S_v)*conj(S_v)
+  = (1/2)*sum_v delta_v*b_v²*
+      Im(r'_v*conj(r_v-m)).                          (19f)
+```
+
+Every amplitude and theta log-density contribution is real and
+therefore disappears from this imaginary current. For the actual
+source response `f=p_alpha`, (19f) identifies the weight-induced part
+of (19b) as a **signed phase covariance of the literal row ratios**.
+The identity row has `delta=1`; all nonidentity rows have
+`delta-1=-2*c²*y²/|c*z+d|²<=0`. This does not sign (19f), because
+its phase covariance can change sign. Passing (19f) to all rows and
+computing the moving-projection leakage in the same coordinates is
+the next source-level problem. No RH conclusion or Lean closure is
+claimed from this finite-row identity alone.
+
+The other summand of (19b) also has an exact finite-row covariance
+normal form. Write `B=sum_v b_v²`, `w_v=b_v²/B`, and let
+`xi_(j,v)=partial_j x_v` for `j=x,y`. Set
+
+```text
+ell_v = (L b_v)/b_v = (5-Phi''(x_v)/Phi(x_v))/4,
+theta_(j,v) = partial_j log(b_v) = (1+q_v)*xi_(j,v),
+C_0 = sum_v w_v*ell_v*conj(r_v-m),
+C_j = sum_v w_v*theta_(j,v)*conj(r_v-m),
+A_j = sum_v w_v*xi_(j,v)*r'_v.                       (19g)
+```
+
+The row formula for `ell_v` uses the unchanged native differential
+expression `L=1-y²*Delta` and hyperbolic invariance of each primitive
+row height. Differentiating the weighted mean gives
+`partial_j m=A_j+2*conj(C_j)`. Product differentiation of `L(m*b)`
+and orthogonality of `S` to `b` then give
+
+```text
+Im sum_v (Q L(Pi U_f))_v*conj(S_v)
+  = B*Im[m*C_0-2*y²*(A_x*C_x+A_y*C_y)].           (19h)
+```
+
+The apparent quadratic score term is `2*conj(C_j)*C_j`, which is real
+and cancels from the imaginary current. Thus (19f) and (19h) express
+the **entire finite-row obstruction** in theta curvature, score,
+ratio-derivative and modular-height covariances. The geometric
+coefficients have the sharp hyperbolic identity
+
+```text
+y²*(xi_(x,v)²+xi_(y,v)²)=1/4.                      (19i)
+```
+
+For the actual `f=p_alpha`, the missing theorem is a sign or
+vanishing law for the sum of (19h) and `(5/2)` times (19f), with
+all primitive rows and the weighted spatial integral retained.
+Neither covariance is signed separately. These are finite-row paper
+identities; all-row differentiation, weighted admission and Lean
+formalization remain open.
+
 ## Conjecture loop and whole-chain consequence
 
 **Conjecture 1:** The common source mode makes the two carriers isometric.
@@ -778,16 +861,25 @@ by the dilation drift in (19a). The surviving source identity (19b)
 couples this drift to the moving-projection leakage. Its signed pairing
 is the new, single-space mathematical target; no vanishing is known.
 
-**Surviving attack:** Build the closed `y^(5/2)` row domain in Lean
-from the existing strip-unfolding and compact-height Maass core. Compute
-the signed sum of scalar--fluctuation leakage and dilation drift in
-(19b) without dropping rows. The decisive theta-specific theorem would
-make that total pairing real at the no-radiation states selected by
-(15c'); since their fluctuation mass is positive, it would force
-`Im(alpha²)=0` and then RH. The existing
-nonparabolic scattering kernel (12) and finite-packet positive Cauchy
-density are source data for that computation. Until the total-current
-law is proved, (15c') is an occurrence mechanism, not a reality theorem.
+**Conjecture 9:** Forced complex-parameter Rellich reduces that pairing
+to a cusp/core boundary once the Xi radiation vanishes. **False:** the
+exact stress divergence (19c) retains both theta-source dilation work
+and imaginary phase current in the interior. The positive replacement
+is the finite-row connection law (19d)--(19f): the weighted drift's
+imaginary part is exactly a signed phase covariance, with no amplitude
+or theta score terms. This makes the remaining arithmetic cancellation
+an explicit row-ratio problem rather than an unspecified boundary term.
+
+**Surviving attack:** Extend (19f) over all primitive rows using the
+corpus's theta envelopes, then calculate the moving-projection part of
+(19b) in the same `r_v`, `delta_v` coordinates. The decisive new theorem
+must orient their combined phase covariance at the no-radiation states
+selected by (15c'); if that total pairing is real, its nonzero
+fluctuation mass forces `Im(alpha²)=0` and RH. The nonparabolic
+scattering kernel (12) and finite-packet positive Cauchy density can
+inform the calculation, but their zero-derivative source pairing does
+not already pay the dilation phase. Build the closed `y^(5/2)` domain
+and formalize this exact source law once the paper sign proof is found.
 
 ## Corpus anchors
 
