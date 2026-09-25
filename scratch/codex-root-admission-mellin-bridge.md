@@ -10,9 +10,9 @@ This is a [BRIDGE], not a primary universal conjecture: its statement was select
 
 ## Corpus inputs and new test
 
-- The corpus proves the exact terminal energy and clipped child source for **arbitrary** cores processing all primes with `p²≤M` (`MobiusDivisorAdaptiveTerminalCriticalSource`, scratch and targeted OLean checked). The channel sum equals `C(M)` by `sum_mobiusDivisorDilationChannel_eq_psiDefect_abel` and the integer Abel identity; the latter is currently private in the child weld and needs a public Lean bridge.
+- The corpus proves the exact terminal energy and clipped child source for **arbitrary** cores processing all primes with `p²≤M` (`MobiusDivisorAdaptiveTerminalCriticalSource`, scratch and targeted OLean checked). Its public `criticalContinuousAbel_nat_eq_dilation_sum` now identifies the channel sum with `C(M)`; the updated leaf's named `--old` OLean audit passed.
 - The corpus proves `Mellin(Σ_p √p C(x/p))(3/2+δ) / (δ^r log(1/δ))→c≠0` for some `r≥1` and the literal critical Abel source `C`.
-- Strong PNT for `ψ` implies every absolute boundary logarithmic moment `∫_1^∞ |C(y)|y^(-5/2)(1+log y)^k dy<∞`; this remains to be formalized for this exact `C`. The weighted strong-PNT series for `ψ` is scratch Lean-closed for every natural log power in `scratch/codex-root-log-pnt-moments.lean`. A pointwise stretched-exponential bound on `C` is unnecessary.
+- Strong PNT for `ψ` implies every absolute boundary logarithmic moment `∫_1^∞ |C(y)|y^(-5/2)(1+log y)^k dy<∞`; this remains to be formalized for this exact `C`. The weighted series for the exact `ψ`-defect is scratch Lean-closed for every natural log power in `scratch/codex-root-log-pnt-moments.lean`. A pointwise stretched-exponential bound on `C` is unnecessary.
 
 The moment implication is not a black box. The corpus's integral representation is `C(y)=∫_1^y F(⌊t⌋)/(2√t)dt`, with `F(n)=ψ(n)-n+2γ`. Triangle inequality and Tonelli give
 

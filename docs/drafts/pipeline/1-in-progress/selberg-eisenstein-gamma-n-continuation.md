@@ -100,3 +100,19 @@ E(z,s) = P_0(z,s) = y^s + Σ_{c≠0} c^{-2s} N^{-s} Σ_n 𝓕ker_{0,y/N,s}(n) S_
 - 2026-09-25 — `SelbergEisensteinCuspSlice` (built, wired, no warnings): `esumxy_eq` (row summand = (c²)^{-s}·ker₀(x+d/c)),
   `Gc_eq`, `hasSum_translates_sign`, `countσ`, `hasSum_Gc`: Σ_d ∫_0^N (row summand) dx = (c²)^{-s}·countσ(c)·∫_ℝ ker₀
   for c ≠ 0, Re s > 1/2. Next: sum over c (interchange tsum/integral) to get the constant term at σ∞.
+- 2026-09-25 — `SelbergEisensteinCuspConstant` (built, wired, no warnings; axioms propext/choice/Quot.sound):
+  `integral_poincare_cusp`: for Re s > 1, ∫_0^N E_∞(σ(x+iy), s) dx = N·count₀·y^s + (Σ_c (c²)^{-s} countσ(c))·∫_ℝ ker₀,
+  count₀ = #{d = ±1 : (0,d) a row at σ∞}. Interchange by `integral_tsum_of_summable_integral_norm` with row
+  majorant (c²)^{-Re s}·|c|N (`weight_le`, `summable_weight`). Next: rows at σ∞ = primitive rows ≡ (σ₁₀, σ₁₁) mod N;
+  countσ(c) = [c ≡ σ₁₀ (N)]·|c|·Π_{p|c, p∤N}(1 − 1/p); Dirichlet series = Σ_{(e,N)=1} μ(e)e^{-2s}·(Hurwitz ζ at 2s−1
+  in the class σ₁₀ē mod N); continuation to Re s > 1/2, s ≠ 1.
+- 2026-09-25 — `CoprimeClassCount` (built, wired): `card_coprime_class_mul_totient`: (gcd(n,N), b) = 1 ⇒
+  #{r mod nN : r ≡ b (N), (r,n)=1}·φ(N) = φ(nN) (Möbius + CRT, via `totient_mul_eq`). `SelbergEisensteinCuspCount`
+  (built, wired): `mem_image_congr` (rows at σ∞ = primitive rows ≡ (σ₁₀,σ₁₁) mod N), `countσ_mul_totient`:
+  countσ(c)·φ(N) = [c ≡ σ₁₀ (N)]·φ(|c|N). Next: D_σ(s) = Σ_c (c²)^{-s}countσ(c) as Σ_{u∈(ℤ/N)^×} L(μχ_N δ_u, 2s)·
+  L(δ_{±σ₁₀u⁻¹}, 2s−1) (ZMod.LFunction) ⇒ meromorphic continuation to Re s > 1/2, pole only at s = 1.
+- 2026-09-25 — `SelbergEisensteinCuspScattering` (built, wired, no warnings; axioms clean): `countσ_eq`
+  (countσ(c) = [c ≡ σ₁₀]·H_N(|c|)), `tsum_weight_eq` (Σ_c (c²)^{-s}countσ(c) = L(H_N Φ_σ, 2s), Φ_σ = δ_{σ₁₀}+δ_{−σ₁₀}),
+  `LSeries_H_mul` (L(H_N Φ, w) = Σ_{u∈(ℤ/N)^×} L(μχ_N δ_u, w)·L(Φ(u·), w−1) via ZMod.LFunction), `Dσ`,
+  `tsum_weight_eq_Dσ`, `differentiableAt_Dσ` (holomorphic on Re s > 1/2, s ≠ 1).
+  Next: ∫ker₀ = y^{1−s}·√π Γ(s−1/2)/Γ(s); the constant term of E_∞ at σ∞ for Re s > 1/2 by continuation.

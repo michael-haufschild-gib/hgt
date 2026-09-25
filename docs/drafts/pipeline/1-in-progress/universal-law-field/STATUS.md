@@ -6964,3 +6964,104 @@ information about the zeros. The quotient by squares is the opposite extreme —
 the identity, the two forms coincide and no condition of the hypothesis's strength survives — so the
 carrier must sit strictly between the divisor group and its square-class quotient, with the two-torsion
 supplied and the valuation grading retained.
+
+## CANNOT-399 — the anomaly is two-torsion and every reader in the corpus is real-valued (2026-09-25)
+
+Two involutions act on the divisor. The functional equation, which fixes no zero, and the Hermitian
+reflection sending a zero to one minus its conjugate, which fixes **exactly** the critical line. The
+hypothesis is therefore not an inequality at all: it is the statement that this second, canonical
+two-element group acts **trivially** on the divisor — that the permutation module of divisor copies
+has no free orbit. Off-line zeros are precisely the free orbits, and they occur in pairs, so the
+quantity separating the two cases is the class of a free orbit in a module over the group ring of
+the two-element group: it is **two-torsion**. The horizontal grade, twice the real part minus one, is
+the reflection-**odd** coordinate; the reals are torsion free, so the reflection's fixed locus in the
+reals is the single point zero. **Cannot** detect a free orbit with any real-valued reader that is
+even under the reflection: every such reader — every norm, energy, squared amplitude, signature,
+Gram determinant, index, capacity or positivity in the corpus — takes the same value on a copy and on
+its partner, and the canonical even coordinate is the square of the grade, which is nonnegative for
+**every** value of the grade and hence automatically consistent with an off-line copy. This is the
+structural cause, not another instance, of the record that every audited operation transports,
+forgets or repackages the anomaly and none annihilates it: the transports are real-linear and the
+anomaly is two-torsion, and the universal map from a two-torsion group to the reals is zero.
+
+## MUST-400 — the four dead lanes are one square-root obstruction (2026-09-25)
+
+The same two-torsion class appears in four places the ledger has treated as unrelated, and they are
+one. **First**, the reflection kernel of the lag function is the translation kernel composed with
+the group inversion, whose fixed locus on the divisor group is a point because the group is torsion
+free. **Second**, on the dual side the same inversion has fixed locus the full group of quadratic
+characters, and the zeros instead sit on the archimedean one-parameter line, which meets that locus
+only at the identity because the prime logarithms are rationally independent; so the two loci are
+transverse and the reflection form is exactly metabolic, one hyperbolic plane per conjugate pair,
+signature balanced, Witt class zero. **Third**, the twin-rigidity result says every factorisation of
+the completed function into two pieces is a square root dressed by a unit, and the multiplicity
+ladder's open core is an analytic half-divisor. **Fourth**, the dyadic-root tower says a positive
+finite zero order cannot be divisible by every power of two, and the global parity wall says the
+completed function has odd-order critical zeros above every height. **Must** read these as one
+statement: the squaring map on characters has kernel the quadratic characters and admits no
+continuous section already at a single prime, so the obstruction to reflection positivity, to the
+half-divisor, to the root tower and to the parity of the divisor is a single class with values in the
+two-element field. **Cannot** compute that class by any of the real-valued machinery already
+catalogued. The one arithmetic machine that computes a global two-torsion class exactly from local
+ramification, with no estimate anywhere, is genus theory and its ambiguous class number formula; a
+producer in this direction must exhibit the divisor with its Hermitian involution as the module whose
+invariants that formula computes, and derive triviality of the action from local data before divisor
+specialisation.
+
+## MUST-401 — the hypothesis is the injectivity of the ordinate map (2026-09-25)
+
+The Hermitian reflection **preserves the imaginary part**, so the two-element action whose
+triviality is the hypothesis is fibred over the height: every orbit lies inside one horizontal
+slice, and each slice is an independent finite problem. A free orbit therefore consists of two
+**distinct** zeros at **exactly the same** ordinate. Hence the hypothesis is equivalent to the
+statement that distinct divisor points have distinct imaginary parts — that the projection of the
+divisor to the ordinate is injective. **Must** read the hypothesis as a **separation** statement
+rather than a positivity one: the quantity to be excluded is an exact collision, at distance zero in
+the ordinate, and not a real part resolved at the scale of the mean gap. Unconditionally, any height
+carrying a single divisor point is already critical, with no hypothesis and no estimate; so the
+entire content is concentrated on the heights that carry more than one point, whose local number is
+at most a constant times the logarithm of the height.
+
+## CANNOT-402 — this is why every resolution-limited method stalls one power short (2026-09-25)
+
+The recorded walls of the pair-correlation and mollified-Littlewood families are all statements about
+**resolution**: a bandwidth-one pair statistic resolves real parts only at the product of the window
+length and the distance from the line, never at the reciprocal of the logarithm; a mollifier of fixed
+length gives a density exponent that is twice its length exponent and no choice of profile changes
+it; the Gaussian family sees a displacement only once its width beats the archimedean background,
+and the widths that are certifiable are precisely the trivial ones. **Cannot** conclude from this
+that the hypothesis is beyond reach of those families for a quantitative reason. The object those
+families are trying to resolve is a displacement of the real part, whereas by the previous entry the
+object that must be excluded is a coincidence of two ordinates, which is a codimension condition and
+not a magnitude. **Must** therefore distinguish between excluding a small displacement, which
+requires resolution and is what every failed estimate attempted, and excluding an exact coincidence,
+which requires transversality and has never been attempted. The two are equivalent as statements and
+entirely different as targets: the first is a limit of approximations that provably stop one power of
+the logarithm short, the second admits arguments — argument principle counts, derivative
+non-vanishing, genericity of a projection — that are insensitive to scale.
+
+## MUST-403 — the hypothesis in the genus-theoretic coordinate (2026-09-25)
+
+Genus theory phrases everything through the **norm** of the Galois action, and over the two-element
+field the two eigen-conditions collapse: subtracting one and adding one are the same operation, so
+the norm is its own companion, it squares to zero, and the mod-two divisor module is a two-term
+complex whose single cohomology is the Tate group that Chevalley's ambiguous class number formula
+computes. **Must** therefore state the hypothesis in that coordinate, and it can be: the hypothesis
+holds exactly when **the Galois norm of the Hermitian reflection vanishes identically on the
+mod-two divisor module**, equivalently when the differential of that complex is zero and its
+cohomology is the whole module. Nothing in this reformulation is an estimate, and no positivity,
+signature or energy appears in it.
+
+## MUST-404 — the slices are finite, so the object genus theory needs exists (2026-09-25)
+
+The obstruction to applying an ambiguous class number formula was that the divisor group is
+infinite while the formula computes invariants of finite modules. That obstruction is removed. The
+reflection preserves the ordinate, so the action is fibred over the height, and each horizontal
+**slice** of the divisor support — the points of a fixed imaginary part — is a **finite** set,
+because the divisor is locally finite and the zeros lie in the critical strip, hence in a compact
+rectangle at each height. Each slice is stable under the reflection. **Must** therefore read the
+hypothesis as a family of statements about genuinely finite two-element-group sets, one per height:
+the hypothesis holds exactly when every slice has at most one point. **Cannot** any longer dismiss
+the genus-theoretic route on the ground that the carrier is infinite; the carrier is a family of
+finite carriers, and the remaining gates are the exact sequence with a computable third term and the
+derivation of ramification data before divisor specialisation.
