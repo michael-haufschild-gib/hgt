@@ -75,7 +75,9 @@ theorem abs_mobiusDivisorSelectionFibre_le_source_amplitude (M : ℕ) (P R : Fin
   rw [← abs_oriented]
   exact oriented_amplitude M P hP R hR
 
-private lemma product_label_count (T : Finset (Finset ℕ)) (N : ℕ)
+/-- Distinct prime labels of product at most `N` inject into the first `N`
+positive integers. -/
+theorem mobiusDivisorProductLabel_count_le (T : Finset (Finset ℕ)) (N : ℕ)
     (hT : ∀ R∈T,∀ p∈R,p.Prime) :
     (T.filter (fun R => (∏ p∈R,p)≤N)).card≤N := by
   let S := T.filter (fun R => (∏ p∈R,p)≤N)
@@ -112,7 +114,7 @@ private lemma sum_abs_product_bound (T : Finset (Finset ℕ)) (N : ℕ)
       exact mul_le_mul (hf R hRt) (hg R hRt) (abs_nonneg _) ((abs_nonneg _).trans (hf R hRt))
     _ = (S.card:ℝ)*H^(2 : ℕ) := by simp
     _ ≤ (N:ℝ)*H^(2 : ℕ) := mul_le_mul_of_nonneg_right
-      (by exact_mod_cast product_label_count T N hT) (sq_nonneg H)
+      (by exact_mod_cast mobiusDivisorProductLabel_count_le T N hT) (sq_nonneg H)
 
 private lemma source_amplitude_square (M k : ℕ) :
     ((3/5:ℝ)*2^k*Real.sqrt M)^(2 : ℕ)=(9/25:ℝ)*4^k*(M:ℝ) := by

@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**426 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**434 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,9 +11,9 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-24, `46da517b7962bd62fdff18175c637d9b44bf923f`**.
-Updated records link directly to committed Lean statements; unchanged records retain their
-historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
+Source-audit cutoff: **2026-09-24, `d89d925848842cb1d8c6a2b9f1c6c3874d68ac07`**.
+Updated records link to committed Lean statements and explicitly marked paper proofs;
+unchanged records retain their historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
 RBH's retired architecture remain accessible from
 the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subroutes).
@@ -24,12 +24,12 @@ Concurrent uncommitted formal edits remain pending evidence and are not counted.
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 34 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 56 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 87 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 40 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 36 |
+| [E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation](#arithmetic) | 58 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 88 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 42 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 67 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 68 |
 | [Analytic roots, multiplicity and regularization](#roots) | 11 |
 | [Other finite, scalar and source-blind selectors](#other) | 85 |
 
@@ -308,6 +308,8 @@ Source-native aperture invariant is required.
 
 ## CCM-FU: prime scheduling and current bounds
 
+- [CCM-FU dense high-prime old-core shell payment](#no-go-427)
+- [CCM-FU upper-third mixed-curvature cancellation](#no-go-428)
 - [CCM-FU fixed or undersized old-core shell payment](#no-go-424)
 - [CCM exterior constant-mode adaptive-mass repair](#no-go-294)
 - [CCM phase-locked canonical exterior packet](#no-go-295)
@@ -356,6 +358,38 @@ The physical inverse-cube mean of the dense dyadic prime shell `(2N,3N]` diverge
 The exact shell floor quantifies capacity required of a moving old core. CCM-FU may still use a sufficiently large core or signed cancellation across old/new walls; neither an all-cutoff payment nor an exhaustive history is excluded.
 
 Evidence: [shell divergence](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorDyadicShellDebtGrowth.lean), [fixed-core debt](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorShellAnchorDebt.lean), [moving-core cardinality](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorShellAnchorComplexity.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
+<a id="no-go-427"></a>
+
+### CCM-FU dense high-prime old-core shell payment
+
+**Closed result**
+
+Even processing every prime in `(N,2N]` before the fresh `(2N,3N]` shell leaves a divergent physical inverse-cube mean. On the relevant height band all two-prime products of such high primes are inactive, so old-core cardinality alone cannot pay the new shell.
+
+**Survivor / still open**
+
+The exact high-core head and mean floors sharpen the required old-core geometry. A lower-prime active core or a signed all-history mechanism may still pay; neither is excluded.
+
+Evidence: [high-core shell theorem](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorShellHighCore.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
+<a id="no-go-428"></a>
+
+### CCM-FU upper-third mixed-curvature cancellation
+
+**Closed result**
+
+For distinct fresh primes above one third of cutoff, after any processed prime core, the physical selection energy has **nonnegative** pairwise mixed curvature. The old-core residual partner keeps its Möbius orientation; negative mixed curvature in this sector cannot fund the debt.
+
+**Survivor / still open**
+
+The exact sector sign is a useful positive rigidity law. Payment may require lower-prime sectors, higher-order collective terms, or a different signed current; the full all-cutoff energy is not signed by this theorem.
+
+Evidence: [upper-third mixed sign](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorThirdSectorMixedSign.lean), [support restriction](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorThirdSectorDefectBarrier.lean).
 
 [Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
@@ -935,8 +969,10 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 
 <a id="arithmetic"></a>
 
-## E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation
+## E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation
 
+- [E harmonic-prefix-only Gamma--Hankel ceiling](#no-go-429)
+- [Estermann single-modulus character/inverse-twist selector](#no-go-430)
 - [E prime-dilation-only boundary covariance sign](#no-go-425)
 - [E zero-row-only Kloosterman spectral cancellation](#no-go-419)
 - [T1 pointwise cancellation of complete stationary prime cone](#no-go-420)
@@ -1009,6 +1045,38 @@ The uniform coprime-harmonic and integer-ratio bounds are positive cancellation 
 Evidence: [prime-dilation negative rays](../../../../formal/GaloisForLFunctions/RHTower/MobiusFirstPrimeDilationCancellation.lean), [complete integer-ratio bound](../../../../formal/GaloisForLFunctions/RHTower/MobiusCoprimeHarmonicUniform.lean).
 
 [Back to family](#arithmetic) · [Current E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
+
+<a id="no-go-429"></a>
+
+### E harmonic-prefix-only Gamma--Hankel ceiling
+
+**Closed result**
+
+For every block length there are `{0,1}` coefficients whose every reciprocal harmonic prefix has absolute value at most one, while the finite boundary Gamma--Hankel energy is at least one quarter of that length. A generic unit harmonic-prefix budget cannot imply a sublinear energy ceiling.
+
+**Survivor / still open**
+
+The literal Möbius moving-row Abel bound remains uniform and source-specific. E needs cancellation **between** its moving rows or stronger arithmetic structure; the counterexample is not a lower bound for literal Möbius energy.
+
+Evidence: [counterexample](../../../../formal/GaloisForLFunctions/RHTower/MobiusGammaHankelHarmonicPrefixNoGo.lean), [literal row bound](../../../../formal/GaloisForLFunctions/RHTower/MobiusGammaHankelMovingRowAbel.lean).
+
+[Back to family](#arithmetic) · [Current E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
+
+<a id="no-go-430"></a>
+
+### Estermann single-modulus character/inverse-twist selector
+
+**Closed result**
+
+The prime-modulus regular part factors after a character average into Dirichlet L-function components. Its functional equation pairs a character with its conjugate, without mixing distinct components (paper consequence). The inverse-twist mode has a literal Kloosterman square-root saving, but its explicit ζ² coefficient on a nonzero mode is only `−p^(1−2s)`, below the Weil error scale on the critical line. Neither character-diagonal reformulation nor a single-modulus Weil bound selects ζ zeros.
+
+**Survivor / still open**
+
+The exact factorization, Kloosterman inversion and saved left edge remain useful arithmetic inputs. A viable shifted-divisor/Levinson producer needs cancellation across moduli or source-specific correlations beyond one Weil-bounded mode.
+
+Evidence: [character factorization](../../../../formal/GaloisForLFunctions/RHTower/EstermannCharacterFactorization.lean), [ζ-content](../../../../formal/GaloisForLFunctions/RHTower/EstermannKloostermanZetaContent.lean), [Weil saving](../../../../formal/GaloisForLFunctions/RHTower/EstermannKloostermanSaving.lean), [reframing audit](../5-failed/estermann-degeneracy-rigidity.md).
+
+[Back to family](#arithmetic) · [Shared Estermann frontier](rh-current-frontier-map.md#barbanvehov-and-levinson-energy-diagnostics)
 
 <a id="no-go-296"></a>
 
@@ -1934,6 +2002,7 @@ Evidence: [complete prime-cone bound](../../../../formal/GaloisForLFunctions/RHT
 
 ## HB, FZZ and PW: scattering and physical action
 
+- [PW-B symmetric full/native current retaining full dual contact](#no-go-431)
 - [PW-B subcritical scalar full-square contact](#no-go-426)
 - [PW-B integrable normalized off-line cusp forcing](#no-go-421)
 - [PW-B fixed-calibration two-amplitude off-line incidence](#no-go-418)
@@ -2035,6 +2104,22 @@ At a hypothetical left-half Xi copy, the actual cross-clock forcing mean cannot 
 The charge supplies a sharp growth-grade boundary: any scalar survivor must carry at least the missing cusp grade, or use a genuinely nonlocal/ordered contact. The no-go does not prove oriented CTP incidence, fixed-grade magnitude, outer extinction or RH.
 
 Evidence: [subcritical contact no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWCrossClockSubcriticalContactNoGo.lean), [source charge](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWCrossClockTranslatedTests.lean).
+
+[Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
+
+<a id="no-go-431"></a>
+
+### PW-B symmetric full/native current retaining full dual contact
+
+**Closed result**
+
+The actual nonzero full/native coupling admits no mode-independent symmetric symmetrizer, already at two angular rates. A first-order modewise symmetrizer intertwines the triangular action, but **every compatible symmetric modewise form** sends an actual full-field source vertex to zero full dual contact. A symmetric local current cannot both preserve that compatibility and retain the desired full-channel source pairing.
+
+**Survivor / still open**
+
+The derivative symmetrizer and exact literal gated-kernel Green contact survive, with a mixed native bulk load. PW-B still needs their finite-domain boundary transport, or a nonsymmetric/nonlocal current retaining the off-line cusp charge.
+
+Evidence: [symmetrizer classification](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWFullNativeAdjointSymmetrizer.lean), [literal Green contact](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWLiteralKernelGreenContact.lean).
 
 [Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
 
@@ -3494,6 +3579,8 @@ Evidence: [translated charge and cusp nonintegrability](../../../../formal/Galoi
 
 ## Theta, Schur, spectral and positivity mechanisms
 
+- [K-RVM generic monotone/log-concave moment-gate positivity](#no-go-432)
+- [Theta finite moments plus real divisor as off-line exclusion](#no-go-433)
 - [CLG degree-twelve correction with nonnegative global derivative](#no-go-422)
 - [bounded-similarity/Keldysh/theta pseudospectral selection](#no-go-193)
 - [central theta probability convolution-root producer](#no-go-261)
@@ -3536,6 +3623,38 @@ Evidence: [translated charge and cusp nonintegrability](../../../../formal/Galoi
 - [P/SP-E finite Lorentz-graph coercivity](#no-go-386)
 - [K-RVM paired quartic determinant identity](#no-go-398)
 - [SQB tensor-square unitarity as finite packet selector](#no-go-399)
+
+<a id="no-go-432"></a>
+
+### K-RVM generic monotone/log-concave moment-gate positivity
+
+**Closed result**
+
+Lean proves negative radius-gate algebra on source-like low-moment data and a corrected Gaussian--Hermite moment family with negative size-three prime--archimedean determinant and the listed finite signs/score bound. The realization as a positive strongly log-concave density, and an all-order score recurrence, are dependency-closed **paper results, not Lean theorems**. Generic monotonicity, log-concavity, and independent Gram/score floors therefore cannot force the determinant sign.
+
+**Survivor / still open**
+
+The radius-mixing floor and exact Gaussian tangent-cone law identify a coupled fifth-versus-lower-moment requirement. K-RVM needs that inequality for the **literal completed theta density**; these countermodels do not sign its actual determinant.
+
+Evidence: [radius-gate algebra](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchRadiusGaussianGateBoundary.lean), [Hermite algebra](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchHermiteMomentBoundary.lean), [paper density audit](k-rvm-finite-sixth-moment-bracket.md).
+
+[Back to family](#theta) · [Current K-RVM frontier](rh-current-frontier-map.md#candidate-k-rvm)
+
+<a id="no-go-433"></a>
+
+### Theta finite moments plus real divisor as off-line exclusion
+
+**Closed result**
+
+At **paper-proof level**, positive strongly log-concave deformations `k+t k⁽⁴ᵐ⁾` of the completed theta density preserve every moment below order `4m` and the complete real-zero divisor, but their Fourier transforms acquire an exact nonreal zero packet. Lean currently proves the all-order derivative-polynomial leading sign, not the full positivity/curvature/Fourier packet theorem. Thus finite moments, compact spectral probes and real-zero data alone cannot exclude hidden off-real zeros in the generic source class.
+
+**Survivor / still open**
+
+The first-atom relative tail detects this differential deformation, and the literal theta modular/Euler identity is not preserved by it. Formalize the full packet theorem; STC, CSB, U, K-RVM and MPLF still need an all-scale source law distinguishing the actual theta density.
+
+Evidence: [paper theorem and formalization gate](../2-fully-proven/theta-derivative-dark-divisor-packets.md), [leading-sign Lean leaf](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspDerivativeLeadingSign.lean).
+
+[Back to family](#theta) · [Shared theta boundary](rh-current-frontier-map.md#theta-derivative-packets-and-finite-data-blindness)
 
 <a id="no-go-308"></a>
 
@@ -4707,6 +4826,7 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 
 ## Ward, Suzuki, prime–Gamma and operator landing
 
+- [W1C bare Clifford discrete spectrum or compact-resolvent occurrence](#no-go-434)
 - [SEC asymptotic adjacent Calkin-small seam selection](#no-go-423)
 - [P/SP-E positive-semidefinite active-head strict cross](#no-go-414)
 - [P/SP-E blanket normalized history passivity](#no-go-408)
@@ -4772,6 +4892,22 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 - [D2 source-selected reciprocal-power moment tail](#no-go-390)
 - [EGC reflection-only shifted-pole correction](#no-go-391)
 - [G symmetric Schwarz-cap regularization](#no-go-392)
+
+<a id="no-go-434"></a>
+
+### W1C bare Clifford discrete spectrum or compact-resolvent occurrence
+
+**Closed result**
+
+The unchanged weight-one Clifford square is a continuous Fourier-multiplication carrier: each attained energy fibre is the reflected frequency pair, has measure zero, and yields no eigenvector. The natural Dirac root also has no eigenvectors; the square's resolvent at `i` is noncompact. Bare discrete Xi-eigenvalue and compact-resolvent Fredholm occurrence are excluded.
+
+**Survivor / still open**
+
+The exact two-frequency fibre classification survives. W1C can only acquire arithmetic Xi occurrence through a changed operator/domain or a source-derived scattering denominator, not the free Clifford relation alone.
+
+Evidence: [spectral no-go](../../../../formal/GaloisForLFunctions/RHTower/WeightOneCliffordSpectralNoGo.lean), [failed subroute card](../5-failed/w1c-bare-clifford-eigenvalue-occurrence.md).
+
+[Back to family](#ward) · [Current W1C frontier](rh-current-frontier-map.md#candidate-w1c)
 
 <a id="no-go-309"></a>
 

@@ -1,0 +1,7 @@
+# PW-B actual defect-Ward CTP identity
+
+- **Chain:** literal CTP → full/native operator anomaly → noncompact cap incidence and source-derived extinction → fixed-grade PW imbalance → RH.
+- **New exact result:** On the complete positive-height chart, both the actual full theta field and every literal gated full Goursat kernel satisfy `D K = λ(K+N)`. For the signed reader `S(u,n)=(u-n,0)`, its first-row anomaly is `λ(K-N)` at every physical point. Hence the *entire* direct-minus-image full/native Peierls kernel—including cone correction—is an operator anomaly, not merely its source vertex.
+- **Two-event transport:** The source-weighted anomaly density equals `λ` times the literal lift-defect density pointwise and is absolutely integrable. Antisymmetrizing both original source orders gives `causalSourceAnomaly = λ·causalSourceLiftDefect`; equivalently `λ·fullCausalSourcePair = λ·causalSourcePair + causalSourceAnomaly`. This discharges source-to-two-event anomaly identification without a cutoff, mode decomposition, or `L²` admission.
+- **Lean:** `ThetaCuspHawkingBMPWActualOperatorAnomaly.lean` passes direct `lake env lean` and is umbrella-wired. Targeted `lake --old build` was stopped when it replayed >12,000 unrelated dependencies; no OLean audit is claimed.
+- **Hard remainder:** Identify this admitted anomaly integral with an oriented noncompact cap/current boundary, including the native term, and prove an all-divisor source extinction and fixed-grade magnitude. The exact defect-Ward identity alone implies neither. PW-B remains open.

@@ -37,6 +37,84 @@ of the literal theta source, a strictly positive even source in that neighborhoo
 same moments through `J` and the same complete real-zero divisor, but has nonreal zeros.
 The assertion holds whether or not RH itself is true.
 
+## Compact-tail strengthening
+
+For every `J` and every Schwartz neighborhood of `k`, there is a strictly positive,
+even, globally strongly log-concave smooth source `g` in that neighborhood such that
+
+```text
+g(x) = k(x) outside a compact interval,
+∫ x^j g(x) dx = ∫ x^j k(x) dx     (0 ≤ j ≤ J),
+the entire Fourier transform of g has a nonreal zero.
+```
+
+Thus even **exact equality with the literal theta source on both tails**,
+combined with strong log-concavity and any finite set of moment identities,
+cannot force a real divisor. This strengthening does not assert preservation
+of the complete real-zero divisor.
+
+To prove it, choose `r=4m>J` and `t>0` small enough for the theorem above.
+Choose an even smooth cutoff `χ_R` equal to one on `[-R,R]`, zero outside
+`[-R−1,R+1]`, and between zero and one everywhere, with uniformly bounded
+derivatives of each fixed order. Interpolate *log densities*:
+
+```text
+b_R = exp((1−χ_R)log k + χ_R log k_t).
+```
+
+Thus `b_R=k_t` inside `[-R,R]` and `b_R=k` outside `[-R−1,R+1]`. On each
+transition interval, put `L=log k_t−log k`. The first-atom expansions in the
+proof below give, for fixed `t>0` and `x→+∞`,
+`L(x)=2r x+O_t(1)`, `L'(x)=2r+o(1)`, `L''(x)=o(1)`, whereas both
+`(log k)''` and `(log k_t)''` equal `−4π exp(2x)+O_t(1)`.
+Consequently
+
+```text
+(log b_R)'' = (1−χ_R)(log k)'' + χ_R(log k_t)''
+               + 2χ_R'L' + χ_R''L
+             = −4π exp(2x) + O_t(R)
+```
+
+on the positive transition interval. The negative one follows by evenness.
+For large `R` the curvature is uniformly negative; inside and outside the
+transition it inherits the strong log-concavity of `k_t` and `k`.
+The same first-atom bounds give `b_R→k_t` in every Schwartz seminorm and in
+every exponentially weighted `L¹` norm: on the moving transition the
+first-atom formulas and product differentiation bound each fixed derivative by
+`C_{s,t}(1+R)^{N_s}(1+q)^{N_{s,r}}exp(−q/2)`, with `q=πexp(2|x|)` and fixed
+integers `N_s,N_{s,r}`. This dominates every polynomial or exponential weight
+as `R→∞`; elsewhere the difference is a tail of `k_t−k`. Hence the moments
+through `J` of `b_R−k` tend to zero, but need not vanish exactly.
+
+Fix a nonnegative even `C∞` bump `ψ`, supported in a fixed small central
+interval and positive on an open interval. Let `N=⌊J/2⌋` and
+`ψ_ℓ(x)=x^(2ℓ)ψ(x)` for `0≤ℓ≤N`. The matrix
+`H_{iℓ}=∫x^(2(i+ℓ))ψ(x)dx` is positive definite: its quadratic form is
+`∫(Σ_i v_i x^(2i))²ψ(x)dx>0` for every nonzero vector `v`, because a
+nonzero polynomial cannot vanish on that open interval. Hence it is
+invertible. Write `d_i(R)=∫x^(2i)(b_R−k)(x)dx` and choose the unique coefficients
+`c(R)=−H⁻¹d(R)`, which tend to zero. Then
+
+```text
+g_R = b_R + Σ_{ℓ=0}^N c_ℓ(R) ψ_ℓ
+```
+
+has all even moments through `J` exactly equal to those of `k`; odd moments
+agree by evenness. Outside `[-R−1,R+1]`, `g_R=k`. On the fixed bump support,
+`b_R=k_t` for large `R`; because `c(R)→0`, the correction tends to zero in
+`C²` there. Strict positivity and the uniform negative logarithmic curvature
+of `k_t` therefore persist on that support. Elsewhere `g_R=b_R`, whose
+positivity and global strong log-concavity were established above.
+
+The entire Fourier transforms of `g_R` converge uniformly on each compact
+complex set to `F_t=XiC(1+t z^r)`, by the exponential `L¹` convergence.
+Take a small closed disk around one nonreal root of `1+t z^r`, disjoint from
+the real axis and with no `F_t` zero on its boundary. Rouché's theorem gives
+a nonreal zero of the transform of `g_R` in that disk for all sufficiently
+large `R`. Finally choose `t` small to enter the prescribed Schwartz
+neighborhood, then `R` large enough for the stated properties. This completes
+the strengthening without a numerical experiment.
+
 ## Proof
 
 The corpus proves `k(x)>0` on all of `ℝ` (`thetaCuspFullSource_pos_all`), its evenness
@@ -153,11 +231,45 @@ does **not** satisfy the literal modular/Euler identity. A surviving RH proof
 must use an all-scale arithmetic coherence condition that distinguishes `k`
 from these differential deformations; merely increasing a fixed moment depth
 cannot do so. Point (5), proved by the same first-atom asymptotic used above,
-gives a concrete arithmetic discriminator: first-atom relative normalization
-sees a perturbation that every fixed absolute Schwartz seminorm can miss. This
-discriminator alone says nothing about Xi zero locations; it identifies which
-source information the no-go discarded. The packet's escape to infinity
-explains why compact spectral convergence sees no contradiction.
+shows that first-atom relative normalization detects the **exact differential
+packet**. The compact-tail strengthening proves that tail normalization by
+itself is still insufficient: one can keep the literal tails unchanged and
+implant a nonreal zero. The surviving producer must link those tails to the
+interior through an exact global arithmetic law. The packet's escape to
+infinity explains why compact spectral convergence sees no contradiction.
+
+The companion [tail-capacity theorem](theta-tail-divisor-capacity-threshold.md)
+sharpens this distinction: a nonzero perturbation preserving the *complete*
+Xi divisor cannot decay as `exp(−a exp(b|x|))` for any `b>2`, while these
+derivative packets attain the boundary `b=2`. The critical exponent follows
+from angular Jensen growth and the full Riemann–von Mangoldt zero density;
+it is independent of whether those zeros lie on the critical line.
+
+## Spectral-infinity boundary theorem
+
+Let `𝓔` be the real even smooth functions whose derivatives have every
+exponential decay rate, with seminorms
+`p_{A,n}(f)=sup_x exp(A|x|)|f⁽ⁿ⁾(x)|` for `A,n≥0`. Let `𝓗` be the
+members of `𝓔` whose entire Fourier transforms have only real zeros.
+The theorem gives `k_t∈𝓔\𝓗` for every sufficiently small `t>0`, while
+
+```text
+p_{A,n}(k_t−k) = t p_{A,n}(k⁽ʳ⁾) → 0
+```
+
+for every fixed seminorm. Thus `k` belongs to the closure of `𝓔\𝓗`;
+if RH is true, it lies on the boundary of `𝓗` in this source topology.
+The same statement holds relative to the positive, even, globally strongly
+log-concave source class because every `k_t` stays in that class.
+
+More operationally, if finitely many real-valued source statistics `C_i`
+are continuous at `k` in this topology and satisfy strict inequalities
+`C_i(k)>0`, then all those inequalities also hold for some `k_t∉𝓗`.
+No collection of such **strict, continuous ambient-source margins alone**
+can certify real-rootedness of the literal source. A surviving producer must
+use a boundary equality, a nonuniform/cofinal or singular observation, or
+an exact arithmetic membership law that excludes the deformations. This is
+only a necessary design constraint; it supplies none of those producers.
 
 The elementary Fourier and polynomial steps are classical. The source-specific
 positive deformation and exact preserved real divisor were not found in the
@@ -168,7 +280,14 @@ current corpus search; that does not establish external publication novelty.
 - [x] Dependency-closed paper proof using named corpus inputs.
 - [x] Formalize all-order derivative-polynomial degree, leading coefficient, and
       positive fourth-multiple ratio at infinity in `RHTower.ThetaCuspDerivativeLeadingSign`.
-- [ ] Formalize eventual positivity of the full `k⁽⁴ᵐ⁾` from the first-atom error theorem.
+- [x] Formalize eventual positivity of the full `k⁽⁴ᵐ⁾` on both tails from the
+      first-atom error theorem in `RHTower.ThetaCuspDerivativeTailPositivity`.
 - [ ] Formalize global small-`t` positivity and strong log-concavity, moment cancellation,
       and entire Fourier factor.
 - [ ] Formalize the additional divisor packet as one closed Lean theorem; audit only new modules.
+- [ ] Formalize the compact-tail strengthening and its finite-moment correction.
+
+Both new leaf files pass direct `lake env lean` checks and are wired into the umbrella.
+The leading-sign leaf's targeted build passed. A targeted build of the tail-positivity
+leaf is pending: its dependency graph launched many stale module rebuilds concurrently,
+so it was interrupted to avoid memory exhaustion; no Lean process was left running.

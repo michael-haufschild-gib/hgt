@@ -6,13 +6,12 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCuspIndicialSelection
 # PW-B full/native adjoint-current obstruction
 
 The literal full kernel has angular forcing `λ (K_full + K_native)`; the native
-kernel carries its angular Laplacian.  Their fixed-angular-mode operator is
-triangular.  A symmetric two-channel current with coefficients independent of
-angular mode is necessarily blind to the full channel.  The first nondegenerate
-local symmetrizer instead contains one angular Laplacian, and the actual
-source vertex lands entirely in its native dual channel.  This is a scoped
-obstruction to a constant same-response current, not a no-go for adjoint or
-noncompact boundary currents.
+kernel carries its angular Laplacian. Their fixed-angular-mode operator is
+triangular. At nonzero coupling every algebraic modewise intertwiner with the
+transpose is forced symmetric, and every physical source vertex lands in its
+native dual channel. The full readout is exactly proportional to the
+intertwining defect, which is skew for symmetric maps. This modewise result
+does not eliminate global differential, adjoint, or noncompact boundary currents.
 -/
 
 namespace RHTower.D4BMPWFullNativeAdjointSymmetrizer
@@ -195,8 +194,8 @@ theorem compatibleAtMode_iff (lam mu a b c : ℂ) :
       linear_combination -u * h
 
 /-- Every compatible symmetric modewise current sends a source vertex of the
-literal full/native triangular system to zero in the full dual channel. This
-does not depend on derivative order or the choice of native-native coefficient. -/
+literal full/native triangular system to zero in the full dual channel. The
+modewise coefficient choice and native-native coefficient are unrestricted. -/
 theorem compatible_source_full_dual_zero (lam mu a b c H Q : ℂ)
     (hlam : lam ≠ 0) (hcompat : CompatibleAtMode lam mu a b c)
     (hsource : mu * H = lam * (H + Q)) :
@@ -226,6 +225,85 @@ theorem physical_no_modewise_full_contact (q : XiZeroCopy) (branch : Bool) :
       mu * H = parameter q branch * (H + Q) ∧
       (constantSymmetrizer a b c (H, Q)).1 ≠ 0 :=
   no_modewise_full_contact (parameter q branch) (physical_parameter_ne_zero q branch)
+
+/-- An arbitrary modewise matrix, without a symmetry premise. -/
+def arbitraryModeMap (a b c d : ℂ) (p : ℂ × ℂ) : ℂ × ℂ :=
+  (a * p.1 + b * p.2, c * p.1 + d * p.2)
+
+def ArbitraryCompatibleAtMode (lam mu a b c d : ℂ) : Prop :=
+  ∀ p : ℂ × ℂ,
+    arbitraryModeMap a b c d (modeAction lam mu p) =
+      modeAdjointAction lam mu (arbitraryModeMap a b c d p)
+
+/-- Nonzero triangular coupling forces every modewise algebraic intertwiner to
+be symmetric. The native-native coefficient remains free. -/
+theorem arbitraryCompatible_iff (lam mu a b c d : ℂ) (hlam : lam ≠ 0) :
+    ArbitraryCompatibleAtMode lam mu a b c d ↔
+      b = c ∧ lam * a + (mu - lam) * b = 0 := by
+  constructor
+  · intro h
+    have hf := congrArg Prod.fst (h (0, 1))
+    have hs := congrArg Prod.snd (h (0, 1))
+    dsimp [arbitraryModeMap, modeAction, modeAdjointAction] at hf hs
+    have hbc : lam * (b - c) = 0 := by linear_combination -hs
+    refine ⟨sub_eq_zero.mp ((mul_eq_zero.mp hbc).resolve_left hlam), ?_⟩
+    linear_combination hf
+  · rintro ⟨rfl, h⟩
+    intro p
+    change constantSymmetrizer a b d (modeAction lam mu p) =
+      modeAdjointAction lam mu (constantSymmetrizer a b d p)
+    exact (compatibleAtMode_iff lam mu a b d).mpr h p
+
+/-- Every algebraic modewise dualization of a physical source vertex loses
+its full dual component; symmetry was not an independent assumption. -/
+theorem arbitraryCompatible_source_full_dual_zero
+    (lam mu a b c d H Q : ℂ) (hlam : lam ≠ 0)
+    (hcompat : ArbitraryCompatibleAtMode lam mu a b c d)
+    (hsource : mu * H = lam * (H + Q)) :
+    (arbitraryModeMap a b c d (H, Q)).1 = 0 := by
+  obtain ⟨rfl, hrel⟩ := (arbitraryCompatible_iff lam mu a b c d hlam).mp hcompat
+  change (constantSymmetrizer a b d (H, Q)).1 = 0
+  exact compatible_source_full_dual_zero lam mu a b d H Q hlam
+    ((compatibleAtMode_iff lam mu a b d).mpr hrel) hsource
+
+/-- No arbitrary compatible modewise matrix restores a nonzero full dual
+source contact for either Xi-labelled physical branch. -/
+theorem physical_no_arbitrary_modewise_full_contact
+    (q : XiZeroCopy) (branch : Bool) :
+    ¬ ∃ mu H Q a b c d : ℂ,
+      ArbitraryCompatibleAtMode (parameter q branch) mu a b c d ∧
+      mu * H = parameter q branch * (H + Q) ∧
+      (arbitraryModeMap a b c d (H, Q)).1 ≠ 0 := by
+  rintro ⟨mu, H, Q, a, b, c, d, hcompat, hsource, hne⟩
+  exact hne (arbitraryCompatible_source_full_dual_zero
+    (parameter q branch) mu a b c d H Q
+    (physical_parameter_ne_zero q branch) hcompat hsource)
+
+/-- On a source vertex, the full readout is exactly controlled by the
+top-right intertwining defect. No symmetry or compatibility is assumed. -/
+theorem source_full_readout_eq_defect
+    (lam mu a b c d H Q : ℂ)
+    (hsource : mu * H = lam * (H + Q)) :
+    lam * (arbitraryModeMap a b c d (H, Q)).1 =
+      (lam * a + (mu - lam) * b) * H := by
+  dsimp [arbitraryModeMap]
+  linear_combination -b * hsource
+
+/-- For symmetric maps the whole intertwining defect is one skew operator,
+independent of the native-native coefficient. This is the exact positive
+survivor of the compatible-current no-go. -/
+theorem symmetric_intertwining_defect
+    (lam mu a b d u n : ℂ) :
+    arbitraryModeMap a b b d (modeAction lam mu (u, n)) =
+      ((modeAdjointAction lam mu (arbitraryModeMap a b b d (u, n))).1 +
+          (lam * a + (mu - lam) * b) * n,
+       (modeAdjointAction lam mu (arbitraryModeMap a b b d (u, n))).2 -
+          (lam * a + (mu - lam) * b) * u) := by
+  apply Prod.ext
+  · dsimp [arbitraryModeMap, modeAction, modeAdjointAction]
+    ring
+  · dsimp [arbitraryModeMap, modeAction, modeAdjointAction]
+    ring
 
 end
 end RHTower.D4BMPWFullNativeAdjointSymmetrizer

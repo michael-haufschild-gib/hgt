@@ -106,9 +106,12 @@ functional equation transports the cancellation across the critical line.
 `EK-7` (the saving reaches the progression). Combining EK-6 with EK-2 at `Re s = 2` gives an
 unconditional left edge for the additive twist with the Weil saving built in:
 `‖∑_a e(ab/p)D(−1+it,a/p)‖ ≤ 8(2π)^{−4}(∑_N d(N)N^{−2}) p³√p e^{π|t|}`,
-against `p³φ(p)` from the trivial per-term estimate. Interpolating between this left edge
-(exponent `7/2`) and the unchanged right edge (exponent `1`) puts the critical-line exponent at
-`9/4` in place of the convexity value `5/2`: the divisor function in a progression to a prime
-modulus inherits a `q^{1/4}` saving from Weil's theorem. This is below the `θ < −1/2` that
-CANNOT-384 requires, so the no-go stands; it is the first place in this lane where modulus-aspect
-cancellation reaches the progression at all.
+against `p³φ(p)` from the trivial per-term estimate. Normalising by `q^{(5/6)(s−2)}` makes that
+left edge (exponent `7/2`) and the unchanged right edge (exponent `1`) carry the same single power
+of the modulus, so Phragmén–Lindelöf across `−1 ≤ Re s ≤ 2` propagates it and unwinding on the
+critical line multiplies by `q^{5/4}`:
+`‖∑_a e(ab/p)D(1/2+it,a/p)‖ ≤ C p^{9/4}(1+|t|)³` with `C` absolute,
+in place of the convexity value `φ(p)p^{3/2} ≍ p^{5/2}`. The divisor function in a progression to a
+prime modulus therefore inherits a `q^{1/4}` saving from Weil's theorem. This is far from the
+`θ < −1/2` that CANNOT-384 requires, so the no-go stands; it is the first place in this lane where
+modulus-aspect cancellation reaches the progression at all.

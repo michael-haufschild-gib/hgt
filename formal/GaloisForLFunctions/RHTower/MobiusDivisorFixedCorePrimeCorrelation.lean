@@ -188,7 +188,9 @@ def mobiusDivisorPrimeCorrelationTerm (P : Finset ℕ) (p M r : ℕ) : ℝ :=
   2*Real.sqrt p*(r : ℝ)*mobiusDivisorInterpolatedFibre M r P ∅*
     mobiusDivisorInterpolatedFibre M (p*r) P ∅
 
-private lemma correlation_as_fibres (P : Finset ℕ) {p r : ℕ}
+/-- One literal prime-release correlation term is the signed product of its
+two actual source fibres. -/
+theorem mobiusDivisorPrimeCorrelationTerm_eq_fibres (P : Finset ℕ) {p r : ℕ}
     (hp : p.Prime) (hpP : p∉P) (hr : 0<r) (hs : Squarefree r)
     (hd : Disjoint r.primeFactors (insert p P)) (M : ℕ) :
     mobiusDivisorPrimeCorrelationTerm P p M r =
@@ -223,7 +225,7 @@ private lemma correlation_point_bound (P : Finset ℕ) (hP : ∀ q∈P,q.Prime) 
   have hRp : ∀ q∈insert p r.primeFactors,q.Prime := by simpa using And.intro hp hR
   have h0 := abs_mobiusDivisorSelectionFibre_le_source_amplitude M P r.primeFactors hP hR
   have h1 := abs_mobiusDivisorSelectionFibre_le_source_amplitude M P (insert p r.primeFactors) hP hRp
-  rw [correlation_as_fibres P hp hpP hr hs hd M, abs_mul, abs_mul]
+  rw [mobiusDivisorPrimeCorrelationTerm_eq_fibres P hp hpP hr hs hd M, abs_mul, abs_mul]
   rw [abs_neg,abs_of_nonneg (by norm_num : (0:ℝ)≤2)]
   calc
     _ ≤ (2*((3/5:ℝ)*2^(P.card-1)*Real.sqrt M))*

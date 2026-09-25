@@ -1,7 +1,7 @@
 # Selberg: point-pair invariants, pretrace inequality, uniform congruence gap
 
 - **ID:** SELBERG-PRETRACE-UNIFORM
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** CANDIDATE (programme)
 - **Source:** No-go on `3-formalized/selberg-strip-hardy-gap.md`: strip/cusp energy cannot reach uniform level.
 - **Statement:** Build, unconditionally in Lean, Selberg's mean-value theorem for Laplace eigenfunctions on ℍ,
@@ -88,3 +88,11 @@ F_p = ⋃_{A ∈ PSL2Z/Γ̄(p)} A·F₁; W as above with ⟨f,g⟩ = ∫_{F_p} f
   (∫_{B_R(w)} |u|)² ≤ (Σ_{h∈Γ̄(p)} μ(B_R(w) ∩ hB_R(w)))·⟨u,u⟩).
   Remaining: kernel sum (lens + counting + dyadic summation, conjugation invariance), cusp-region integrals
   (∫_{𝒟∩{y>p}} density ≤ tail mass), orthonormal-basis assembly, and the final exponent arithmetic.
+- 2026-09-25 — **Programme closed in Lean.** `SarnakXueKernel` (`kernel_sum_le`), `SarnakXuePointwise`
+  (`pointwise_bound`, `kernelSum_smul`), `SarnakXueCuspRegion` (`fd_cusp_fraction`), `SarnakXueDimension`
+  (`card_deck_le`: |SL(2,ℤ)/Γ(p)| ≤ p³; `dim_le`: N ≤ 3 vol(𝒟) p³ kb/((cosh R)^s/16)²), `SarnakXueTheorem`
+  (`final_bound`, `sarnak_xue_gap`, `principal_congruence_gap`: ∀ η > 0 ∃ P, ∀ prime p = N+1 with N ≥ P,
+  Γ(p) has no Maass cusp form with eigenvalue in (0, 5/36 − η)). All built `--old`, wired, axioms
+  propext/Classical.choice/Quot.sound. Mathematical status: Sarnak–Xue (1991) exponent, not new; first uniform
+  spectral gap for congruence subgroups in the corpus. Open for the goal: pass 5/36 (needs multiplicity input
+  beyond (p−1)/2 or counting beyond the density hypothesis) and treat small primes / composite levels.

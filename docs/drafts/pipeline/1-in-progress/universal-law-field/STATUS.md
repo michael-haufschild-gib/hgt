@@ -6628,7 +6628,57 @@ zeros with multiplicity are exactly those of the literal source, but its transfo
 **Must** use global arithmetic coherence of the literal source to exclude such packets;
 finite-jet or real-divisor tests cannot detect them. Paper proof and exact scope:
 `docs/drafts/pipeline/2-fully-proven/theta-derivative-dark-divisor-packets.md`.
+**Cannot** repair this finite-moment route by requiring exact equality with the literal
+theta source outside a compact interval: an even positive, globally strongly
+log-concave compact perturbation, with a finite Gram-matrix correction of its
+moments, still has a nonreal Fourier zero while agreeing with the theta source
+on both tails. This strengthening does not preserve the full real divisor.
+**Must** link literal tails to the interior by an exact all-scale arithmetic
+identity; tail normalization alone is insufficient. The same paper card proves
+this by Rouché's theorem.
+
+## MUST-391 — full-divisor-preserving source changes live at theta's exact tail exponent (2026-09-24)
+
+**Must** retain the double-exponential tail scale `exp(−a exp(2|x|))`
+when changing the literal theta source while preserving every Xi zero with
+multiplicity. If a source difference `u` obeys
+`|u(x)|≤C exp(−a exp(b|x|))` for some `b>2`, its Fourier transform has
+angular Jensen capacity at most `[2/(πb)+o(1)]R log R`, whereas the complete
+Xi divisor requires `[1/π+o(1)]R log R`; hence `u=0`. The bound is sharp:
+nonzero fourth-multiple derivative packets have `b=2` and preserve the
+complete original divisor. **Cannot** replace an all-scale arithmetic
+selector by a compact-tail or strictly faster-tail surgery that preserves
+the full divisor. This capacity law does not locate the zeros: both on-line
+and hypothetical off-line Xi zeros have the same leading radial count.
+If a divisor-preserving difference is instead bounded relative to the
+literal positive source, `|u|≤Ck`, its entire quotient `\widehat u/XiC`
+has only `O(R)` extra zeros in radius `R` and, for even `u`, finite
+exponential type: angular source growth and Riemann–von Mangoldt cancel
+their `R log R` terms in Jensen's formula. **Must** have a constant
+quotient when `u` is even: the completed-gamma/Stirling comparison bounds
+its angular indicator by `δ²/4+O(δ⁴)` near the imaginary axis, while a
+nontrivial real indicator segment of an even finite-type quotient would
+grow linearly in `|δ|`. The indicator collapses to a point; bounded
+minimal type on the imaginary axis makes the quotient constant, hence
+`u` is a scalar multiple of the literal source. This is exact relative-source
+rigidity, not a zero-location law.
+Paper proof: `docs/drafts/pipeline/2-fully-proven/theta-tail-divisor-capacity-threshold.md`.
 Lean formalization pending.
+
+## CANNOT-392 — positivity and relative source domination permit finite real-divisor surgery (2026-09-24)
+
+**Cannot** weaken full-divisor preservation in the relative-source
+rigidity law to preservation outside a finite exceptional set. For any
+positive real Xi zero `γ`, the explicit even source
+`g_γ(x)=γ∫₀∞sin(γt)k(|x|+t)dt` is strictly positive, satisfies
+`g_γ/k→0` on both tails and has transform
+`XiC(z)/(1−z²/γ²)`: exactly one multiplicity at each of `±γ` is
+removed and every other Xi zero remains. The positive flow
+`(1−ε)k+εg_γ` moves that pair to `±γ/√(1−ε)` for `ε<1`, then
+deletes it at `ε=1`; total mass stays fixed. **Must** use the complete
+divisor or an exact arithmetic law fixing the exceptional roots if a
+source-uniqueness argument is meant to constrain RH. Paper proof:
+`docs/drafts/pipeline/2-fully-proven/theta-positive-real-zero-division.md`.
 
 ## CANNOT-387 — square-root cancellation in the modulus aspect of the divisor family is blind to zeta (2026-09-24)
 
@@ -6657,6 +6707,149 @@ at the zero frequency the entries are Ramanujan sums and are of size `1`. **Must
 of the family as an operator that is flat except in one distinguished row, the row that carries the
 zeta content; at modulus one the operator degenerates to a scalar, which is why the level-one
 symmetry carries no information about the zeros. A consequence with a number attached: transporting
-the flat part across the critical line gives the additive-twist average at a prime modulus the
-unconditional left-edge exponent `7/2` in place of the `4` that the trivial per-residue estimate
-yields, which is the modulus aspect of the divisor function in an arithmetic progression.
+the flat part across the critical line by the functional equation gives the additive-twist average
+at a prime modulus the left-edge exponent `7/2` in place of `4`, and after interpolation the
+unconditional critical-line exponent `9/4` in place of the convexity value `5/2`, a saving `q^{1/4}`
+for the modulus aspect of the divisor function in an arithmetic progression.
+
+## CANNOT-389 — no strict continuous ambient-source certificate at theta (2026-09-24)
+
+**Cannot** infer real-rootedness of the completed theta transform from any finite
+family of ambient-source inequalities that are continuous in every fixed
+exponentially weighted derivative seminorm and hold with strict margin at the
+literal theta source. The positive, even, globally strongly log-concave sources
+`k+t k⁽⁴ᵐ⁾` converge to `k` in all those seminorms but have an exact nonreal
+zero packet for every sufficiently small `t>0`. **Must** use a boundary equality,
+a nonuniform/cofinal or singular observation, or an exact arithmetic membership
+law excluding those deformations. This is a necessity statement, not a proof
+of any such producer. Paper proof and scope:
+`docs/drafts/pipeline/2-fully-proven/theta-derivative-dark-divisor-packets.md`.
+
+## MUST-389 — the hypothesis follows from a rigidity, never from an estimate (2026-09-24)
+
+Any set of conditions from which the hypothesis might be deduced falls on one side of a dichotomy:
+either some object satisfying those conditions has a zero off the critical line, in which case the
+conditions cannot yield the hypothesis, or the conditions already determine the zeta function
+itself, in which case nothing has been reduced. The first alternative holds for every unconditional
+input isolated so far — archimedean positivity, any finite depth of source moments, the real Fourier
+divisor, and square-root cancellation in the modulus aspect. For the last the witness is explicit
+and exact: replacing the divisor coefficients by `d(N) − 2^θ·d(N/2)` at even `N` keeps every
+coefficient within the factor `1 + 2^θ` of `d(N)`, hence keeps the full square-root cancellation of
+the Kloosterman-weighted sums with that constant, and produces the series `ζ(s)²(1 − 2^{θ−s})`,
+which vanishes at `s = θ` for **every** real `θ`, in particular inside the critical strip and off
+the critical line, and at a point that can be pushed arbitrarily close to the edge of the strip. The
+deformation leaves the coefficient size and the cancellation intact and destroys exactly one thing:
+the symmetry of the zero set about the critical line. **Must** therefore obtain the hypothesis from
+a statement with no slack in which the Dirichlet series and the functional equation act together —
+the second alternative of the dichotomy is the classical rigidity that a Dirichlet series with this
+functional equation is the zeta function — and **cannot** obtain it from any inequality, however
+sharp, whose hypotheses survive an Euler-factor deformation at a single prime.
+
+## MUST-390 — the class must be constructed, not verified (2026-09-24)
+
+MUST-389 stated a dichotomy; it has a third case, and the third case is where every successful
+proof of an analogous statement lives. A set of conditions can also determine a **large** class
+every member of which has all its zeros on the critical line: the real-rooted entire functions, the
+Hermite--Biehler class, the spectra of self-adjoint operators, and, over a finite field, the zeta
+functions of smooth projective curves. Over a finite field that class is produced by a
+construction — the curve yields a finite-dimensional cohomology, the cohomology carries a
+nondegenerate pairing, the pairing forces the absolute values of the Frobenius roots — and the
+hypothesis is never tested against any particular zeta function. For the object at hand no such
+class is known, and it **cannot** be reached by verification: every checkable property is either
+satisfied by deformations of the object or already equivalent to the hypothesis, with nothing in
+between. The free side is now sharp: iterating a single Euler-factor step at one prime produces,
+for **any** finite list of prescribed points at **any** abscissas, a coefficient sequence dominated
+by a constant times the divisor function — hence carrying the full square-root cancellation in the
+modulus with that constant — whose Dirichlet series vanishes at every prescribed point. The inputs
+give neither a zero-free region nor a bound on the number of off-line zeros. **Must** therefore
+construct a category in which the object is one member among many and in which the pairing exists,
+subject to the two constraints already established: the regularization that makes the object finite
+must preserve the positivity that is free before it, and the membership test must have a
+deformation space that is neither everything nor a single point.
+
+## MUST-393 — the literal critical-zero data have a sharp non-Hilbert endpoint (2026-09-25)
+
+**Must** reach the theta-weighted `L¹` endpoint if using real Xi-zero
+harmonics to determine the completed source. Let `k>0` be the literal
+theta source and `dμ=k(x)dx`. Include the cosine frequency derivatives
+through each real Xi zero's multiplicity, and the constant function.
+Their span is dense in even `L¹(μ)` exactly when RH holds. More sharply,
+its codimension equals twice the total multiplicity of off-line Xi
+zero quartets (infinite if there are infinitely many). **Cannot**
+replace this endpoint by any finite `L^p(μ)` with `p>1`: the span has
+infinite codimension there unconditionally, witnessed by the independent
+source ratios `k⁽⁴ᵐ⁾/k` for `m≥1`. An arithmetic construction of `L¹`
+density, or an exclusion of bounded annihilators, is still missing;
+the equivalence itself is a receiver. Paper proof:
+`docs/drafts/pipeline/2-fully-proven/theta-endpoint-harmonic-completeness.md`.
+
+## MUST-394 — each even moment pays for one off-line source modulus (2026-09-25)
+
+**Must** use an all-scale arithmetic constraint, or control the complete
+off-line defect, when real-zero data and finitely many source moments are
+used to identify a positive completed source. If the completed theta
+transform has `M<∞` off-line zero quartets counted with multiplicity,
+the real vector space of theta-dominated even source differences that
+preserve every real zero through multiplicity and vanish in even moments
+`0,2,…,2N` has exact dimension `max(2M−N,0)`. If `M=∞`, it is
+infinite-dimensional for each finite `N`. Every such direction gives a
+small strictly positive source deformation with exactly the same real
+zeros and those moments. In particular, when `0<M<∞`, one nonzero
+direction preserves the first `2M` even moments and moves the entire
+off-line divisor; the next moment removes it. This is a conditional
+classification, not an RH proof. Paper proof:
+`docs/drafts/pipeline/2-fully-proven/theta-endpoint-harmonic-completeness.md`.
+
+## CANNOT-395 — positive Euler transport leaves off-line source surgery admissible (2026-09-25)
+
+**Cannot** deduce RH from positive all-prime coefficients, a positive
+archimedean seed, smooth reflection, source mass, leading theta-tail
+normalization and the complete real-zero divisor alone. For any
+hypothetical off-line Xi zero quartet, one-sided zero division commutes
+with every outward logarithmic prime shift and their all-integer Euler
+sum. A real proper rational zero-division combination yields a
+theta-dominated source difference and a seed difference, both vanishing
+relative to the originals on the positive tail. Small positive
+perturbations keep the source and seed positive, preserve the mass,
+leading tail and every real zero through multiplicity, but move the
+selected off-line quartet. **Must** use the exact polynomial-Gaussian
+seed or a joint arithmetic–archimedean law sensitive to its change;
+prime covariance and ordinary seam smoothness transport the defect
+rather than exclude it. The seed change has an explicit nonzero
+commutator with the first-order equation defining the Gaussian base;
+that commutator is an observable, not a zero-location contradiction.
+This is a conditional deformation theorem,
+not an RH proof. Paper proof:
+`docs/drafts/pipeline/2-fully-proven/theta-euler-zero-division-seed-transfer.md`.
+
+## CANNOT-396 — fixed trace-class determinant cannot carry the full Xi divisor (2026-09-25)
+
+**Cannot** identify the full Xi zero divisor with a fixed trace-class
+operator's standard linear-parameter determinant `det₂(I−zT)`, even after bounded
+two-sided transport and a trace-class correction. Trace class would
+make the reciprocal moduli of determinant zeros summable, whereas
+Riemann–von Mangoldt gives at least `c T log T` Xi zeros, counted with
+multiplicity, in every sufficiently large dyadic ordinate band
+`(T,2T]`; their reciprocal-modulus sum diverges. **Must** retain a
+non-trace-class spectral source or use a parameter-dependent/singular
+relative construction if an operator determinant is to carry the exact
+Xi divisor. This is a zero-density constraint, not a zero-location
+proof. Paper proof:
+`docs/drafts/pipeline/2-fully-proven/stc-mertens-trace-class-xi-divisor-barrier.md`.
+
+## MUST-397 — an exact Xi determinant has logarithm-squared spectral capacity (2026-09-25)
+
+**Must** carry at least `1/(2π)` logarithm-squared Ky Fan mass:
+if a compact Hilbert–Schmidt operator has a standard linear-parameter
+regularized determinant with exactly the complete Xi divisor, counting
+multiplicity, then its modulus-ordered eigenvalues satisfy
+`Σ_(j≤N)|λ_j|=(1/(2π)+o(1))(log N)²`, and its first `N` singular
+values have sum at least that large. This is unconditional and does
+not assume normality or RH. For any decomposition into a component
+with `o((log N)²)` Ky Fan mass and a residual, the residual must
+carry at least the displayed leading mass by the Ky Fan triangle
+inequality. **Cannot** recover the full divisor from a component
+with sub-logarithm-squared capacity plus a trace-class or weak
+Schatten-one remainder. This locates necessary spectral capacity,
+not the sign or location of any zero. Paper proof:
+`docs/drafts/pipeline/2-fully-proven/theta-cdf-crossfrequency-rvm-capacity.md`.
