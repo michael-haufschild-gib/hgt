@@ -277,7 +277,7 @@ Lean rules:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2609.02882
+- https://github.com/domino14/zeta5
   
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -303,30 +303,24 @@ be efficient with lean. clean up after yourself. do not run large rebuilds. do n
 do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
 
 ## Research 2
-**Goal:** Create novel and significant knowledge about the universal laws and principles of quantum recurrence.
-
-Novel and significant means: It solves a problem neither our lean corpus nor literature have solved yet (as of August 2026).
+**Goal:** Move the frontier of our lean corpus towards a formal proof of the Selberg 1/4 conjecture.
 
 **Lean rules:**
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
 2. Always build in the foreground, 1 process per single agent.
 3. No computations.
-4. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+4. Always use  lake env lean \<file>  and only lake build \<module> --old for the final audit. Do not forget to wire new modules into the umbrellas.
 5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave stale lean processes running - clean up after yourself.
 
 **Mandatory reasearch and conjecturing rules:** 
 1. always use the search tool for our lean corpus to find ideas, existing work. conjecture based on the lean corpus, not your training data which is behind our research in the lean corpus.
 2. always tackle the hardest mathematical problem that neither our lean corpus nor literature have solved yet. missing infrastructure or no existing proof is not reason to pivot but to build the infrastructure and to solve the open problem yourself.
-3. to create new knowledge use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...  
+3. to create new knowledge use the heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...  
+4. On every turn use the hgtl7 skill workflow.
 
-goal is met when no further knowledge can be created.
+Goal is met when the Selberg 1/4 conjecture is formally and unconditionally proven or falsified in our Lean corpus.
 
-
-1. Arithmetic signed-incidence / Ward: CCM-FU, D2, E, G, G-CE, P, SP-E, SCE, T1, T2, HC, CFI, PPM, HJ, BW, MSC, PEP, EWQ-V, LI.
-2. Global spectral / cofinal operator selection: C1, NB/BD, F2, STC, CSB, O, Q, CLG/TTF, U, SV2, BSH, UEB, PBM, IRK, SEC, BPC, MPLF, W1C, K-RVM, GTA, APF, AKC, S6F, WS2.
-3. Singular descent / provenance / completion: CDC, L, TK, PSRC, SC, PCS, TCD, JAS, WBF, XST, NDS, KMSS.
-4. Nonlinear scattering / dynamical selection: HB, FZZ-P, RBH, PW-B.
 
 Reminder: 
 1. create new knowledge, do not just search and pivot when hitting an unsolved problem - solve it using conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...

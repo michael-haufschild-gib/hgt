@@ -7513,3 +7513,17 @@ is zero and the weights agree termwise, including on the diagonal, so
 `angularEnergy ρ₀ = U(Im ρ₀)` whenever `Re ρ₀ = 1/2`. **Must:** the two thresholds recorded for these
 objects are one threshold, and an on-line zero sharing its ordinate with an off-line zero carries
 angular energy at least two.
+
+## MUST-445 — the transport term is removable; the residual obstruction is diffusion
+
+Along a path of velocity `ż = −2L` the convective derivative cancels the transport term exactly:
+`d/dτ V(z(τ),τ) = V_zz − 2V²`. The characteristics are not auxiliary — `−2L(z) = −2Σ_k(z − x_k)⁻¹` is
+the Calogero velocity field, so the zeros travel along them and the field equation carries no
+transport in Lagrangian coordinates. **Cannot** therefore attribute the residual loss in a collision
+lemma to transport. **Must:** what remains is the diffusion, and its sign is adverse where it
+matters: between consecutive real zeros the field tends to `+∞` at both ends, so it has an interior
+minimum with `V_zz ≥ 0`. The comparison is not marginal — at the midpoint of a gap `δ` the pair's own
+part gives `V = 8/δ²`, `V_zz = 192/δ⁴`, `2V² = 128/δ⁴`, so diffusion exceeds damping by exactly `3/2`
+and the raw field grows along the characteristic. **Must** consequently run any collision lemma on
+the regular part alone: the pair's singular part is already exact in `u' = 4Δu − 8`, but the damping
+bound does not apply to the raw field near a close pair.
