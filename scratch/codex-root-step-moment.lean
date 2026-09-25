@@ -121,7 +121,12 @@ theorem summable_shifted_log_weight_of_log_power (R : ℕ → ℝ) (j : ℕ)
           (((k : ℝ) + 1) ^ (2 : ℕ)))) :=
     (hzero.add hpow).mul_left C
   apply (summable_nat_add_iff 1).1
-  refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_)
+  refine Summable.of_nonneg_of_le (fun k => by
+      have hlog : 0 ≤ Real.log (((k + 1 : ℕ) : ℝ) + 2) :=
+        Real.log_nonneg (by
+          have hk : (0 : ℝ) ≤ ((k + 1 : ℕ) : ℝ) := Nat.cast_nonneg _
+          linarith)
+      positivity) (fun k => ?_)
     ((summable_nat_add_iff 1).2 hmaj)
   let n : ℝ := ((k + 2 : ℕ) : ℝ)
   have hn2 : (2 : ℝ) ≤ n := by
@@ -141,7 +146,6 @@ theorem summable_shifted_log_weight_of_log_power (R : ℕ → ℝ) (j : ℕ)
       have hlog1 : 0 ≤ Real.log (n + 1) := Real.log_nonneg (by linarith)
       linarith
     gcongr
-    exact hbase
   have hadd : (1 + Real.log n) ^ j ≤
       (2 : ℝ) ^ (j - 1) * (1 + Real.log n ^ j) := by
     simpa using add_pow_le (by norm_num : (0 : ℝ) ≤ 1) hlognon j
@@ -160,9 +164,12 @@ theorem summable_shifted_log_weight_of_log_power (R : ℕ → ℝ) (j : ℕ)
         gcongr
       _ = C * (1 + Real.log n ^ j) := by
         dsimp [C]
-        rw [mul_assoc, ← pow_add]
-        congr 1
-        omega
+        calc
+          (2 : ℝ) ^ j * ((2 : ℝ) ^ j * (1 + Real.log n ^ j)) =
+              ((2 : ℝ) ^ j * (2 : ℝ) ^ j) * (1 + Real.log n ^ j) := by ring
+          _ = (2 : ℝ) ^ (j + j) * (1 + Real.log n ^ j) := by rw [← pow_add]
+          _ = (2 : ℝ) ^ (2 * j) * (1 + Real.log n ^ j) := by
+            rw [show j + j = 2 * j by omega]
   have hscale := mul_le_mul_of_nonneg_left hlogpow
     (show 0 ≤ |R (k + 2)| / n ^ (2 : ℕ) by positivity)
   have htarget : |R (k + 2)| * (1 + Real.log (n + 1)) ^ j /
@@ -175,6 +182,20 @@ theorem summable_shifted_log_weight_of_log_power (R : ℕ → ℝ) (j : ℕ)
       _ ≤ (|R (k + 2)| / n ^ (2 : ℕ)) *
           (C * (1 + Real.log n ^ j)) := hscale
       _ = _ := by ring
-  convert htarget using 1 <;> push_cast <;> ring
+  simpa [n, Nat.cast_add, Nat.add_assoc, add_assoc,
+    show (1 : ℝ) + 1 = 2 by norm_num,
+    show (1 : ℝ) + 2 = 3 by norm_num,
+    show (2 : ℝ) + 1 = 3 by norm_num] using htarget
+
+theorem integrableOn_floor_log_weight_of_log_power (R : ℕ → ℝ) (j : ℕ)
+    (hzero : Summable (fun k : ℕ =>
+      |R (k + 1)| / (((k : ℝ) + 1) ^ (2 : ℕ))))
+    (hpow : Summable (fun k : ℕ =>
+      |R (k + 1)| * Real.log ((k : ℝ) + 1) ^ j /
+        (((k : ℝ) + 1) ^ (2 : ℕ)))) :
+    IntegrableOn (fun x : ℝ => R ⌊x⌋₊ *
+      ((1 + Real.log x) ^ j / x ^ (2 : ℕ))) (Ioi (1 : ℝ)) :=
+  integrableOn_floor_log_weight_of_summable R j
+    (summable_shifted_log_weight_of_log_power R j hzero hpow)
 
 end GaloisForLFunctions.HTGeometry

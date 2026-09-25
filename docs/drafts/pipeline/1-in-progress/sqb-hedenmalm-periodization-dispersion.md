@@ -500,6 +500,27 @@ Then the following source-faithful modular regularity criterion holds:
 XiC(alpha)=0  <->  M_s(alpha)<infinity for every s>=0. (15c)
 ```
 
+The quantifier over all weights can be replaced by **one fixed Hilbert
+weight on the physical Xi strip**. For `0<Im(alpha)<1/2` and
+`Re(alpha)!=0`, let `p_alpha` be the unique `H²` free-resolvent solution
+used in (15a). Then
+
+```text
+XiC(alpha)=0  <->  M_(5/2)(alpha)<infinity.             (15c')
+```
+
+The forward implication follows from the all-rate decay in (15b).
+For the reverse, if `XiC(alpha)!=0`, the two-row lower bound (15e)
+holds on every sufficiently high dyadic cusp band. The contribution
+of a band of height `N` to `M_(5/2)` is at least
+`c_alpha*N^(1/2-Im(alpha))`. Since `Im(alpha)<1/2`, these positive
+contributions cannot sum to a finite value. This is a fixed, positive
+Hilbert-space occurrence test for the entire physical strip; no
+parameter-dependent intersection of weighted domains is needed.
+The same argument gives `M_s(alpha)=infinity` whenever
+`s>=2+Im(alpha)` and `XiC(alpha)!=0`. It makes no assertion that the
+native Maass action is symmetric in this weighted space.
+
 For the forward direction, (15b) gives for every `N` a bound
 `|p_alpha(x)|<=C_N exp(-N*|x|)`. The full row vector in (17) therefore
 has identity-row square at most `C_N*y^(1-N)` for `y>1`. A nonparabolic
@@ -630,6 +651,47 @@ Equations (18)--(19) are the next mathematical attack, not a claimed
 vanishing: the scalar--fluctuation leakage may carry the entire Green
 current. It must be computed with all primitive rows and the actual
 domain, then compared with the known scattering kernel in (12).
+
+### One-space Green formulation [formal differential identity; domain and sign open]
+
+The fixed gate (15c') suggests using the single row-bundle space
+`H_(5/2)` with measure `y^(5/2)*dmu=y^(1/2)*ds*dy` on the cusp.
+There is a precise cost to moving the native Laplacian to that space.
+On smooth compactly supported row tests, if the differential part of
+the native action is `L=-y²*(partial_s²+partial_y²)` (an unchanged
+scalar potential may be added), the weighted symmetric expression is
+
+```text
+L_w = L-(5/2)*y*partial_y,
+U_w f = y^(5/4)*f,
+U_w L_w U_w^(-1) = L+5/16.                         (19a)
+```
+
+The first equality is the divergence-form operator for the weighted
+measure; the last follows by differentiating `y^(-5/4)g` twice.
+The positive weighted geometry therefore supplies a self-adjoint
+candidate, but its drift differs from the original source equation.
+Writing `S=Q U_(p_alpha)`, `Q=1-Pi`, and `b=U_Phi`, the rowwise equation
+in (18) gives the exact compact-core algebra
+
+```text
+Q L_w Q S
+  = lambda_alpha*S
+    - Q L(Pi U_(p_alpha))
+    - (5/2)*Q(y*partial_y S).                         (19b)
+```
+
+Both terms on the right are forced by the same moving source line:
+the first is its off-diagonal Maass leakage, while the second is the
+drift required to keep the fixed Xi-selecting Hilbert metric symmetric.
+If the compact-core identity extends to a closed symmetric realization
+on `H_(5/2)`, an off-real Xi zero can survive only if the imaginary
+pairing of their **sum** pays `Im(lambda_alpha)*||S||²_(H_(5/2))`.
+The source problem is thus a single signed connection-current identity
+in one fixed space. Neither (15c') nor formal symmetry proves that this
+current vanishes; deriving its actual theta/prime cancellation is the
+remaining RH-scale obstacle. The domain extension and equation (19b)
+for the infinite row sum are not yet formalized in Lean.
 
 ## Conjecture loop and whole-chain consequence
 

@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**443 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**447 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-25, `bf2a35418`**.
+Source-audit cutoff: **2026-09-25, `89fc8bbe6`**.
 Updated records link to committed Lean statements and explicitly marked paper proofs;
 unchanged records retain their historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
@@ -26,10 +26,10 @@ Concurrent uncommitted formal edits remain pending evidence and are not counted.
 | [Retired original route labels](#retired-labels) | 17 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 37 |
 | [E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation](#arithmetic) | 60 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 91 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 43 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 93 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 44 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 70 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 71 |
 | [Analytic roots, multiplicity and regularization](#roots) | 11 |
 | [Other finite, scalar and source-blind selectors](#other) | 85 |
 
@@ -2053,6 +2053,8 @@ Evidence: [complete prime-cone bound](../../../../formal/GaloisForLFunctions/RHT
 
 ## HB, FZZ and PW: scattering and physical action
 
+- [PTR sharp cylinder cutoff on all tempered distributions](#no-go-444)
+- [PTR uniform bilateral imaginary loss as a real causal response](#no-go-445)
 - [FZZ-P balanced compact-current transfer](#no-go-438)
 - [PW-B exact compatible full/native current contact](#no-go-439)
 - [PTR passive angular and multimode loss-flux reductions](#no-go-440)
@@ -2192,6 +2194,38 @@ The actual signed reader has a nonzero intertwining anomaly equal to the full–
 Evidence: [operator-level classification](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWOperatorAnomalyLaw.lean), [actual anomaly identity](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWActualOperatorAnomaly.lean).
 
 [Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
+
+<a id="no-go-444"></a>
+
+### PTR sharp cylinder cutoff on all tempered distributions
+
+**Closed result**
+
+In a local normal chart, no continuous action on all tempered distributions agrees with the sharp cylinder indicator on point masses from both sides. The two point-mass limits at the interface would be both zero and `δ₀`. This Lean theorem does not address the full spatial Maxwell transmission problem.
+
+**Survivor / still open**
+
+The indicator remains a bounded `L²` material multiplier. Specify a restricted distribution/trace domain or piecewise interior/exterior Cauchy-data relation, then derive its source-faithful Maxwell interface law and test the prime conormal trace.
+
+Evidence: [local cutoff theorem](../../../../formal/GaloisForLFunctions/RHTower/PhotonicCylinderDistributionCutoffNoGo.lean), [failed formulation and survivor](../5-failed/ptr-global-tempered-cutoff-no-go.md).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
+<a id="no-go-445"></a>
+
+### PTR uniform bilateral imaginary loss as a real causal response
+
+**Closed result**
+
+For nonzero opposite signed frequencies, real time-domain response requires conjugate material values. A constant strictly positive imaginary part at both signs contradicts that symmetry. Lean also gives the exact signed-conductive all-mode pump identity: the modulation-work bulk term survives, so the earlier uniform-loss monotonicity does not transfer.
+
+**Survivor / still open**
+
+The signed conductive replacement obeys the reality law and retains an exact frequency-weighted current balance, with the zero-frequency constitutive value kept separate. Derive a physical dispersive cylinder interface relation, its signed work/trace domain, and a conormal exclusion or falsifying mode. This does not retire PTR.
+
+Evidence: [conductive pump identity](../../../../formal/GaloisForLFunctions/RHTower/PhotonicConductiveMultimodePumpIdentity.lean), [failed causal extrapolation and survivor](../5-failed/ptr-uniform-bilateral-complex-loss-causal-no-go.md).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
 
 <a id="no-go-440"></a>
 
@@ -3681,6 +3715,7 @@ Evidence: [translated charge and cusp nonintegrability](../../../../formal/Galoi
 
 ## Theta, Schur, spectral and positivity mechanisms
 
+- [Cofinal theta sieve with uniformly bounded signed cusp variation](#no-go-447)
 - [O reflected lag Gram positivity](#no-go-441)
 - [K-RVM generic monotone/log-concave moment-gate positivity](#no-go-432)
 - [Theta finite moments plus real divisor as off-line exclusion](#no-go-433)
@@ -3726,6 +3761,22 @@ Evidence: [translated charge and cusp nonintegrability](../../../../formal/Galoi
 - [P/SP-E finite Lorentz-graph coercivity](#no-go-386)
 - [K-RVM paired quartic determinant identity](#no-go-398)
 - [SQB tensor-square unitarity as finite packet selector](#no-go-399)
+
+<a id="no-go-447"></a>
+
+### Cofinal theta sieve with uniformly bounded signed cusp variation
+
+**Closed result**
+
+On paper, along every cofinal finite-prime deletion sequence, positive and negative variations of the literal sieved theta source each diverge at the negative cusp although signed total mass tends to zero. At each fixed cusp cutoff `R`, after the cofinal limit, their common lower scale is `e^{R/2}/R`. A uniformly total-variation-bounded signed-measure or `L¹` boundary limit cannot carry this source-to-seed passage. This theorem is Lean-pending.
+
+**Survivor / still open**
+
+The exact two-sign escape law survives. TQFQ, SV2, O, CSB and STC need a distributional/trace topology retaining prime–polar–Gamma cancellation and an independent source-side divisor orientation; no RH claim or joint cutoff-rate bound follows.
+
+Evidence: [paper theorem and dependency](../2-fully-proven/theta-sieve-bidirectional-cusp-variation.md).
+
+[Back to family](#theta) · [Shared theta frontier](rh-current-frontier-map.md#cofinal-theta-sieve-two-sign-cusp-escape)
 
 <a id="no-go-441"></a>
 
@@ -4945,6 +4996,7 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 
 ## Ward, Suzuki, prime–Gamma and operator landing
 
+- [STC uniformly bounded linear all-height source-to-seam landing](#no-go-446)
 - [U finite-prime shifted-Xi Pick positivity](#no-go-442)
 - [STC bounded flat-gap seam reader](#no-go-443)
 - [W1C bare Clifford discrete spectrum or compact-resolvent occurrence](#no-go-434)
@@ -5013,6 +5065,22 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 - [D2 source-selected reciprocal-power moment tail](#no-go-390)
 - [EGC reflection-only shifted-pole correction](#no-go-391)
 - [G symmetric Schwarz-cap regularization](#no-go-392)
+
+<a id="no-go-446"></a>
+
+### STC uniformly bounded linear all-height source-to-seam landing
+
+**Closed result**
+
+Lean proves the signed squarefree source's normalized fixed-ordinate Gram overlap vanishes between distinct physical heights at the Euler boundary. On paper, no uniformly bounded linear maps can land this whole height interval in a nonzero norm-continuous prime seam; in a separable Hilbert target, bounded pointwise all-height landing has at most countable nonzero support. These operator no-gos are not yet Lean theorems. A finite selected set of Xi heights does not inherit the obstruction.
+
+**Survivor / still open**
+
+The paper constructs an exact prime-extraction landing at each safe source level, rigid on squarefree coordinates, with operator norm diverging at the sharp square-root partition scale. It works off center regardless of Xi zeros. STC still needs an arithmetic Xi-divisor law coupling singular transport to the anchored commutator/Calkin bound, not arbitrary finite-height interpolation.
+
+Evidence: [source Gram in Lean](../../../../formal/GaloisForLFunctions/RHTower/STCPhysicalOrdinateSourceOrthogonality.lean), [operator proof and exact survivor on paper](../2-fully-proven/stc-physical-ordinate-transport-singularity.md).
+
+[Back to family](#ward) · [Current STC frontier](rh-current-frontier-map.md#stc--exterior-sonin-seam-coherence)
 
 <a id="no-go-442"></a>
 

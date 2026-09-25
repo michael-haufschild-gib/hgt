@@ -116,3 +116,8 @@ E(z,s) = P_0(z,s) = y^s + Σ_{c≠0} c^{-2s} N^{-s} Σ_n 𝓕ker_{0,y/N,s}(n) S_
   `LSeries_H_mul` (L(H_N Φ, w) = Σ_{u∈(ℤ/N)^×} L(μχ_N δ_u, w)·L(Φ(u·), w−1) via ZMod.LFunction), `Dσ`,
   `tsum_weight_eq_Dσ`, `differentiableAt_Dσ` (holomorphic on Re s > 1/2, s ≠ 1).
   Next: ∫ker₀ = y^{1−s}·√π Γ(s−1/2)/Γ(s); the constant term of E_∞ at σ∞ for Re s > 1/2 by continuation.
+- 2026-09-25 — `SelbergEisensteinScatteringEntry` (built, wired, no warnings): `integral_ker0_scale`
+  (∫(y/(x²+y²))^s dx = y^{1−s}C(s)), `phiσ = Dσ·C`, `differentiableAt_phiσ` (holomorphic on Re s > 1/2, s ≠ 1),
+  `integral_poincare_cusp_phi`: ∫_0^N E_∞(σ(x+iy),s)dx = N·count₀·y^s + φ_{∞,σ∞}(s)·y^{1−s} (Re s > 1).
+  Next: pass the identity to Re s > 1/2 (needs s-analyticity of ∫_0^N E^cont(σ(x+iy),s)dx: locally uniform bounds on
+  E* and constTerm), then the truncated Eisenstein series and Maass–Selberg for Γ(N).

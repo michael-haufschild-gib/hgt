@@ -3,7 +3,7 @@
 - **ID:** stc-physical-ordinate-transport-singularity
 - **Stage:** 2-fully-proven (paper)
 - **Routes:** STC, squarefree/Sonin source comparison
-- **Status:** [PROVED ON PAPER] [SOURCE GRAM COLLAPSE FORMALIZED] [SHARP EXACT-TRANSPORT CLASSIFICATION PAPER-ONLY] [NOT AN RH PROOF]
+- **Status:** [PROVED ON PAPER] [SOURCE GRAM COLLAPSE AND RIGGED EXTRACTOR BOUNDEDNESS FORMALIZED] [SHARP CLASSIFICATION PAPER-ONLY] [NOT AN RH PROOF]
 
 ## Actual source and target
 
@@ -132,6 +132,54 @@ Pointwise-in-height convergence alone gives the divergence theorem above, not (9
 
 For any finite distinct heights \(\gamma_1,\ldots,\gamma_m\) and any prescribed target vectors \(z_1,\ldots,z_m\) in a Hilbert space, there are uniformly bounded **finite-rank** maps \(S_\sigma\) for all \(\sigma\) sufficiently near one with \(S_\sigma x_{\sigma,\gamma_i}=z_i\) exactly. Their source Gram matrix tends to the identity by (3), so eventually its least eigenvalue is at least \(1/2\). Inverting that finite Gram matrix gives the interpolation map, with norm at most \(\sqrt2\) times the norm of the synthesis map \(e_i\mapsto z_i\). Therefore the all-height obstruction cannot be applied to only a finite collection of hypothetical Xi zeros. An arithmetic law must constrain how the map is selected or how it behaves across a genuinely cofinal family; arbitrary interpolation of selected zeros is nonselective.
 
+## Critical topology: maximal graph collapse and a rigged recovery
+
+The norm divergence in the original carrier cannot be repaired by replacing a bounded map with **one fixed closed unbounded operator**. Fix an off-centre \(\beta\), a cofinal sequence \(\sigma_j\downarrow1\), and let \(R\) be any closed complex linear relation in
+\(\ell^2(\mathbb N)\oplus\ell^2(\mathbb P)\) containing
+\((y_{\sigma_j,\gamma},v_{\beta,\gamma})\) for every \(j\) and every real \(\gamma\). Then its vertical fibre is the entire prime space. In fact, the **smallest** such closed relation is
+
+\[
+\boxed{\quad R_{\min}=\ell^2(\{n:\mu(n)^2=1\})\oplus\ell^2(\mathbb P).\quad}
+\tag{10}
+\]
+
+For each fixed \(\gamma\), \(y_{\sigma_j,\gamma}\rightharpoonup0\): its norms equal one and each coordinate tends to zero because \(Q(\sigma_j)\to\infty\). A closed linear subspace of a Hilbert space is weakly closed, so \((0,v_{\beta,\gamma})\in R\). These target vectors span densely. Indeed, if \(w\) is orthogonal to all of them, then \(\sum_p\overline{w_p}b_\beta(p)p^{i\gamma}=0\) for every \(\gamma\), where \(b_\beta(p)=\log(p)p^{-1/2}(p^{-\beta}-p^{\beta-1})\). The coefficients are absolutely summable by Cauchy--Schwarz; Fourier averaging recovers each one, and every \(b_\beta(p)\ne0\). Thus \((0,Y)\subset R\). At any one fixed \(\sigma_j\), the source orbit \(\{y_{\sigma_j,\gamma}\}_\gamma\) spans the squarefree subspace densely, by the same absolutely summable Fourier-coefficient uniqueness argument. Subtracting arbitrary vertical outputs from the retained graph pairs and closing proves (10). Conversely every retained pair lies in the right-hand side, so it is the minimal relation. Its output is unconstrained at every source point in its domain. This is a **fixed-graph** obstruction; it does not forbid the scale-dependent maps (5).
+
+There is a precise positive replacement. For \(a>0\), let \(H_{-a}\) be the completion of finitely supported coefficient sequences under
+\(\|f\|_{-a}^2=\sum_{n\ge1}|f(n)|^2 n^{-2a}\). Equivalently the isometric \(\ell^2\) coordinate is \(\widetilde f(n)=n^{-a}f(n)\). Remove the divergent probability normalization and set
+
+\[
+ z_{\sigma,\gamma}(n)=\mu(n)n^{-\sigma/2}n^{i\gamma},\qquad
+ z_{1,\gamma}(n)=\mu(n)n^{-1/2}n^{i\gamma}.
+\tag{11}
+\]
+
+Then \(z_{\sigma,\gamma}\to z_{1,\gamma}\) strongly in \(H_{-a}\) as \(\sigma\downarrow1\), for every fixed \(\gamma\): \(\sum_n\mu(n)^2n^{-1-2a}<\infty\) supplies a common majorant. No such critical vector exists at \(a=0\), since \(\sum_n\mu(n)^2/n=\infty\).
+
+Put \(\kappa=\min(\beta,1-\beta)\). For \(\beta\ne1/2\) and \(0<a<\kappa\), define the prime-coordinate maps
+
+\[
+ (B_{\sigma,\beta}f)(p)
+ =-\log p\,p^{(\sigma-1)/2}
+   (p^{-\beta}-p^{\beta-1})f(p),
+ \qquad
+ (B_{1,\beta}f)(p)
+ =-\log p\,(p^{-\beta}-p^{\beta-1})f(p).
+\tag{12}
+\]
+
+Here \(f\in H_{-a}\), and each map takes values in \(Y\). Whenever
+\(a+(\sigma-1)/2<\kappa\), \(B_{\sigma,\beta}\) is bounded, its norm is exactly
+\(\sup_p(\log p)p^{a+(\sigma-1)/2}|p^{-\beta}-p^{\beta-1}|\), and
+\(B_{\sigma,\beta}z_{\sigma,\gamma}=v_{\beta,\gamma}\) **at every height**.
+As \(\sigma\downarrow1\), \(B_{\sigma,\beta}\to B_{1,\beta}\) in operator norm and hence
+\(B_{1,\beta}z_{1,\gamma}=v_{\beta,\gamma}\). To verify operator-norm convergence, choose \(\eta>0\) with \(a+\eta<\kappa\); when \((\sigma-1)/2<\eta\), the multiplier tails are uniformly dominated by \(2(\log p)p^{-(\kappa-a-\eta)}\to0\), and convergence is uniform on the finite head.
+
+The window \(0<a<\kappa\) is **sharp for any bounded linear all-height landing** on \(H_{-a}\), not only for (12). If a bounded \(B:H_{-a}\to Y\) takes \(z_{1,\gamma}\) to \(v_{\beta,\gamma}\) on a nonempty real interval, the coordinate Dirichlet series is holomorphic in a strip \(|\Im\gamma|<a\). Identity continuation and Fourier coefficient recovery force \(B\) to agree with \(B_{1,\beta}\) on every squarefree coordinate. A prime basis vector then forces
+\(\|B\|\ge(\log p)p^a|p^{-\beta}-p^{\beta-1}|\), which is unbounded when \(a\ge\kappa\). Thus the original graph is maximally multivalued, while the unnormalised source has a bounded critical transport after an arbitrarily small **positive** loss of coefficient regularity. The width of that loss is limited exactly by the horizontal distance \(\kappa\) from the nearer strip edge.
+
+This recovery is **not an RH selector**. It works for every off-centre \(\beta\), independently of Xi's divisor; the multiplier itself uses \(\beta\). A proof still needs an arithmetic law that pins a source-defined transport at Xi-zero fibres and enforces a regularity or Calkin constraint strong enough to exclude off-line grades. Equations (10)--(12) identify the topology such a law must use, without providing the law.
+
 ## Interpretation and exact limit of the result
 
 The normalized Euler source has a **discrete physical-height boundary kernel**: distinct fixed ordinates become orthogonal. The prime seam has a **continuous physical-height boundary kernel**. Matching these geometries for an entire height interval requires a singular transport. The existing fixed-\(t\) Sonin phase limit instead probes \(n^{it(\sigma-1)}\), a shrinking physical height; its all-phase diagonal is pointwise in fixed \(t\) and does not contradict this theorem. The corpus's Route-P ordinate diagonalization proves analogous orthogonality for a positive Euler source; (3) and the source-to-seam transport consequence above use the signed squarefree source and the actual STC seam.
@@ -146,4 +194,5 @@ The theorem rules out **uniformly bounded linear all-height** source-to-seam lan
 - Existing all-fixed-scaled-phase Sonin diagonal: `SoninCofinalComplexPhaseGlobalCarrier.lean`; analogous positive-Euler ordinate orthogonality: `RoutePCriticalBoundaryOrdinateDiagonalization.lean`.
 - [STCPhysicalOrdinateSourceOrthogonality.lean](../../../../formal/GaloisForLFunctions/RHTower/STCPhysicalOrdinateSourceOrthogonality.lean) proves the exact source overlap and off-diagonal critical limit. Its leaf passed `lake env lean` and is wired into the RHTower umbrella without an umbrella build; the operator norm divergence and countable-support classification above remain paper-only.
 - The exact multiplier, open-interval Fourier rigidity, and sharp cost (5)--(9) are paper-proved and Lean-pending. Corpus search found Fourier uniqueness and bounded diagonal-operator ingredients, but no theorem combining this literal squarefree source with the STC seam and its minimal singular cost.
+- The maximal fixed-graph collapse (10) and full rigged recovery (11)--(12) are paper-proved and Lean-pending. [STCRiggedPrimeSeamBound.lean](../../../../formal/GaloisForLFunctions/RHTower/STCRiggedPrimeSeamBound.lean) already constructs the critical diagonal extractor in isometric weighted coordinates and proves its bounded-operator norm estimate for `a < min beta (1-beta)`; its leaf passed `lake env lean` and is wired into the RHTower umbrella without an umbrella build. The source-vector limit, exact source landing, rigidity and sharp failure at the threshold remain to formalise. The corpus also has generic closed-relation vertical-fibre lemmas (`CompleteResolutionCofinalConditioningLaw.lean`) and critical squarefree weak nullity at zero phase (`SquarefreeCriticalFockEscape.lean`); the source-specific, all-height prime-seam combination and sharp regularity window were not found in the partial deep search. No literature-priority claim is made.
 - A broad deep corpus search returned the component source/target results, but no theorem asserting this all-height source-to-seam operator norm obstruction. The search was partial, so no external or corpus-wide priority claim is made.

@@ -1,7 +1,7 @@
 # RH research ledger
 
 **No route proves or disproves RH.** This register separates **24 active routes**,
-**38 named candidates**, and **443 catalogued closed mechanisms**. “Active” means a formal
+**38 named candidates**, and **447 catalogued closed mechanisms**. “Active” means a formal
 route architecture with an independent mathematical problem still open, not a proof in hand.
 
 [Active routes](#active-routes) · [Route candidates](#route-candidates) ·
@@ -20,8 +20,8 @@ route architecture with an independent mathematical problem still open, not a pr
 - Route labels are lookup keys, not claims of independence. A receiver ending in RH
   does not prove its source premise. A killed subroute does not kill its whole family.
 
-**Source-audit cutoff: 2026-09-25, `bf2a35418`.**
-Reconciled committed Lean source and route cards since `d89d925848842cb1d8c6a2b9f1c6c3874d68ac07`.
+**Source-audit cutoff: 2026-09-25, `89fc8bbe6`.**
+Reconciled committed Lean source and route cards since `bf2a35418`.
 No builds, Lean checks, tests, lint or index refresh were run for this ledger update.
 Concurrent uncommitted formal edits are not promoted into committed closure.
 
@@ -77,9 +77,9 @@ problem. The family index is a navigation aid, not an exhaustive dependency grap
 
 ### CSB — cofinal Bernstein source/target comparison
 
-- **Closed:** Finite Bernstein/moment machinery and thin-collar RH receivers remain. Paper theta all-sieve/prime-deletion laws now give a **source-fidelity** cone and pure-ray classification, while finite deletions and one-sided Bernstein positivity admit counterexamples; neither signs the completed zero spectrum. The endpoint `L¹` harmonic criterion is RH-equivalent, not an independent producer.
-- **Open:** Produce cofinal degrees/apertures with a source-derived bounded/subexponential source–target discrepancy or a truly all-prime orientation law. Finite cone checks and pure-ray uniqueness cannot supply it.
-- **Evidence:** [Pure-ray paper theorem](../2-fully-proven/theta-prime-deletion-bernstein-pure-ray.md), [one-sided countermodel](../2-fully-proven/theta-one-sided-bernstein-two-anchor-offline-zero.md), [original architecture](rh-frontier-reference-2026-09-12.md#source-line-856).
+- **Closed:** Finite Bernstein/moment machinery and thin-collar RH receivers remain. Paper theta all-sieve/prime-deletion laws give a **source-fidelity** cone and pure-ray classification, while finite deletions and one-sided Bernstein positivity admit counterexamples. New paper proof shows cofinal prime deletion creates unbounded positive **and** negative cusp variation despite vanishing signed mass; uniformly `L¹`-bounded signed-measure transport is unavailable. The endpoint `L¹` harmonic criterion is RH-equivalent, not a producer.
+- **Open:** Produce cofinal degrees/apertures with a source-derived, signed source–target discrepancy in a topology that permits this two-sign escape, or a truly all-prime orientation law. Pure-ray uniqueness and cancellation of total mass do not sign the completed zero spectrum.
+- **Evidence:** [Bidirectional cusp variation, paper](../2-fully-proven/theta-sieve-bidirectional-cusp-variation.md), [pure-ray paper theorem](../2-fully-proven/theta-prime-deletion-bernstein-pure-ray.md), [one-sided countermodel](../2-fully-proven/theta-one-sided-bernstein-two-anchor-offline-zero.md).
 
 <a id="d2--continued-primearchimedean-free-sector-passivity"></a>
 
@@ -125,9 +125,9 @@ problem. The family index is a navigation aid, not an exhaustive dependency grap
 
 ### L — singular Green/BV-to-physical descent
 
-- **Closed:** The Ramaré prime–cofactor factorization and error budgets remain. A new **paper RH criterion** identifies subpower growth of the literal one-sided Möbius–theta tail with RH; off-line zeros give poles of the corresponding causal boundary transform with exact multiplicity. Lean now formalizes finite critical-source/Abel–Mellin bridges and a nonzero boundary jet, but not the full causal criterion or terminal prime-head transform. This is a sharper receiver, not an independent bound.
+- **Closed:** The Ramaré prime–cofactor factorization and error budgets remain. A **paper RH criterion** identifies subpower growth of the literal one-sided Möbius–theta tail with RH; off-line zeros give poles of the corresponding causal boundary transform with exact multiplicity. Lean now also identifies the complete integer-channel head with the continuously sampled critical Abel source. This exact source identity, the finite Abel–Mellin bridges and the nonzero boundary jet do not prove the causal criterion or terminal prime-head bound.
 - **Open:** Prove the source-only subpower tail bound, equivalently RH-scale signed cancellation in the moving prime-power window; or close the existing Haar/low-mode/cubic-energy and Green/BV descent routes. Absolute estimates and finite Mellin jets do not supply that cancellation.
-- **Evidence:** [Causal criterion and status](../2-fully-proven/causal-mobius-theta-boundary-criterion.md), [critical Abel jet](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorCriticalPrimeMellinSingularity.lean), [prime–cofactor identity](../../../../formal/GaloisForLFunctions/RHTower/MobiusHaarRamareFullPrimeCofactor.lean).
+- **Evidence:** [Causal criterion and status](../2-fully-proven/causal-mobius-theta-boundary-criterion.md), [integer-channel Abel identity](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorAdaptiveTerminalCriticalSource.lean), [critical Abel jet](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorCriticalPrimeMellinSingularity.lean), [prime–cofactor identity](../../../../formal/GaloisForLFunctions/RHTower/MobiusHaarRamareFullPrimeCofactor.lean).
 
 <a id="li--finite-paired-li-prime--gamma-order"></a>
 
@@ -149,9 +149,9 @@ problem. The family index is a navigation aid, not an exhaustive dependency grap
 
 ### O — restricted-Weil ground and genus-lag order
 
-- **Closed:** The restricted-Weil wall remains an RH-equivalent receiver; termwise lag positivity still reaches only its unconditional half-wall. The lag kernel's **reflection/Hankel partner is unconditionally not positive semidefinite**: an actual negative diagonal is formalized. Inverting a translation-positive kernel does not supply the missing reflected sign.
-- **Open:** Prove the restricted-Weil signed numerical-range lower wall from the von Mangoldt source, or find a genuinely new non-termwise lag comparison. Reflection of the existing lag Gram is closed as a shortcut.
-- **Evidence:** [Lag reflection no-go](../../../../formal/GaloisForLFunctions/RHTower/LagReflectionKernelNoGo.lean), [canonical numerical range](../../../../formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundRemainderNumericalRange.lean), [global lag half-wall](../../../../formal/GaloisForLFunctions/RHTower/HyperbolicZeroFreeClosed.lean).
+- **Closed:** The restricted-Weil wall remains an RH-equivalent receiver; termwise lag positivity reaches only its unconditional half-wall. The lag kernel's **reflection/Hankel partner is unconditionally not positive semidefinite**. Lean now also packages RH as trivial Hermitian reflection on Xi divisor support, equivalently injective ordinate projection, vanishing mod-2 reflection norm, or subsingleton finite height slices. These are exact receivers, not a genus-theoretic source computation. Paper cofinal theta sieving excludes uniformly bounded-total-variation signed-measure transport.
+- **Open:** Prove the restricted-Weil signed numerical-range lower wall from the von Mangoldt source, or derive an independent arithmetic law excluding free reflection orbits. An exact arithmetic-module bridge and pre-divisor ramification data are missing; generic transversality is not such a law.
+- **Evidence:** [Lag reflection no-go](../../../../formal/GaloisForLFunctions/RHTower/LagReflectionKernelNoGo.lean), [divisor norm](../../../../formal/GaloisForLFunctions/RHTower/DivisorGaloisNorm.lean), [finite slices](../../../../formal/GaloisForLFunctions/RHTower/DivisorSliceGenus.lean), [canonical numerical range](../../../../formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundRemainderNumericalRange.lean).
 
 <a id="p--paired-primegamma-signed-exterior-wall"></a>
 
@@ -197,17 +197,17 @@ problem. The family index is a navigation aid, not an exhaustive dependency grap
 
 ### STC — exterior Sonin seam coherence
 
-- **Closed:** The target-free fixed-prime lift remains. All-prime Gamma-to-Stokes **pair** calibration is closed in Lean; paper results classify its three-prime holonomy, the unique positive hyperbolic-gap factor making the pair flat, and the correction's indefinite packet signature. The actual grade seam is a derivative/phase-twisted **current**, not a bounded reader of that flat Hilbert band; a finite-order prime-log/bounded-imaginary obstruction is formal, while the full Hilbert specialization is paper-only. Poisson/Mertens-clock and theta CDF-action bridges sharpen this topology, but do not produce a Xi selector.
-- **Open:** Construct a source-faithful **singular all-prime seam** with cofinal sub-root Calkin control and the right Xi divisor; pay nonclosable reader/physical-clock costs and nontrivial cross-prime curvature. Neither pair flatness nor an entrywise-positive gap factor is an operator positivity theorem.
-- **Evidence:** [All-prime pair bridge](../../../../formal/GaloisForLFunctions/RHTower/DeningerGammaAllPrimeStokesPairBridge.lean), [gap completion and paper scope](../2-fully-proven/stc-hyperbolic-gap-flat-completion.md), [finite-order reader no-go](../../../../formal/GaloisForLFunctions/RHTower/STCFlatGapPrimeLogReaderNoGo.lean), [Poisson/Mertens paper theorem](../2-fully-proven/stc-poisson-mertens-clock-commutator.md).
+- **Closed:** The target-free fixed-prime lift remains. All-prime Gamma-to-Stokes **pair** calibration is Lean-closed; paper results classify its holonomy, flat gap factor and indefinite packet signature. The actual grade seam is a derivative/phase-twisted **current**, not a bounded flat-band reader. New Lean proves the literal signed squarefree source's normalized physical-height Gram overlap tends to zero at distinct heights. On paper, a uniformly bounded linear all-height landing into the nonzero continuous prime seam is impossible; a bounded landing into a separable Hilbert space can be nonzero at only countably many heights. Conversely, an exact prime-extraction landing exists at safe source levels but has a sharp divergent norm and is rigid on squarefree coordinates. These operator claims remain paper-only; finite selected zero packets can still be interpolated by bounded maps.
+- **Open:** Construct a source-faithful **singular all-prime seam** with cofinal sub-root Calkin control and the right Xi divisor; couple its source-to-seam singular cost to the anchored commutator's essential norm and control cross-prime curvature. The exact extraction map works off center regardless of Xi zeros, so it is no selector.
+- **Evidence:** [Physical-ordinate Gram in Lean](../../../../formal/GaloisForLFunctions/RHTower/STCPhysicalOrdinateSourceOrthogonality.lean), [transport singularity and exact survivor on paper](../2-fully-proven/stc-physical-ordinate-transport-singularity.md), [all-prime pair bridge](../../../../formal/GaloisForLFunctions/RHTower/DeningerGammaAllPrimeStokesPairBridge.lean), [finite-order reader no-go](../../../../formal/GaloisForLFunctions/RHTower/STCFlatGapPrimeLogReaderNoGo.lean).
 
 <a id="sv2--suzuki-projective-limit-and-shifted-kernel-inertia"></a>
 
 ### SV2 — Suzuki projective limit and shifted-kernel inertia
 
-- **Closed:** Moving Binet window, anchored normal form and finite-jet global-identification no-go remain. Connected fixed-clock sixth-jet residue noncancellation is now Lean-backed; its source-to-window analytic conclusion remains a paper attack, not a killed clock. Finite clocks cannot substitute for the moving all-prime source law.
-- **Open:** Control the moving infinite-head signed residual by a global shell–metric Wronskian or equivalent source law, and close the connected-clock Abel bridge if using that scoped obstruction.
-- **Evidence:** [Connected-clock residue leaf](../../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiConnectedJetPoleNoGo.lean), [analytic-bridge audit](ccm-fu-fixed-clock-pole-obstruction.md), [finite-jet no-go](../../../../formal/GaloisForLFunctions/RHTower/SuzukiFiniteJetGlobalIdentificationNoGo.lean).
+- **Closed:** Moving Binet window, anchored normal form and finite-jet global-identification no-go remain. Connected fixed-clock sixth-jet residue noncancellation is Lean-backed; its source-to-window analytic conclusion remains a paper attack. Paper cofinal theta sieving now proves two-sign unbounded cusp variation, so a uniformly `L¹`-bounded boundary measure cannot carry the all-prime limit.
+- **Open:** Control the moving infinite-head signed residual by a global shell–metric Wronskian or equivalent source law in a topology retaining cusp cancellation, and close the connected-clock Abel bridge if using that scoped obstruction.
+- **Evidence:** [Bidirectional cusp variation, paper](../2-fully-proven/theta-sieve-bidirectional-cusp-variation.md), [connected-clock residue leaf](../../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiConnectedJetPoleNoGo.lean), [analytic-bridge audit](ccm-fu-fixed-clock-pole-obstruction.md).
 
 <a id="t1--theta-tail-core-current"></a>
 
@@ -415,9 +415,9 @@ Some are alternative presentations of an active route's existing open problem.
 
 ### PTR
 
-- **Closed / available:** Infinite helical support and finite-energy obstruction remain. Moving OAM still cannot support a **jointly polynomial-growth source-free angular** solution with positive loss: conserved shear sectors force zero. An abstract arbitrary-spatial-Hilbert flux theorem similarly annihilates loss overlap under its stated polynomial **loss-mass** and adjoint-coupling hypotheses; the literal cylinder overlap/adjointness layer is formalized without mode truncation.
-- **Open:** Derive the **actual all-grade Maxwell/interface map** and a PDE estimate from boundary distributionality to interior loss-mass growth—or exhibit ultraviolet escape. Radial/interface flux, spatial mixing, forcing and causal material dispersion are outside the angular no-go; full PTR is not retired.
-- **Evidence:** [Angular distributional no-go](../../../../formal/GaloisForLFunctions/RHTower/PhotonicHelicalAngularDistributionalNoGo.lean), [abstract multimode flux](../../../../formal/GaloisForLFunctions/RHTower/PhotonicPassiveMultimodeFluxNoGo.lean), [literal cylinder overlap](../../../../formal/GaloisForLFunctions/RHTower/PhotonicRotatingCylinderMaterialOverlap.lean), [scope audit](ptr-loss-flux-distributional-no-go.md).
+- **Closed / available:** The prior angular and conditional multimode loss-flux no-gos remain. New Lean excludes a continuous sharp-cylinder cutoff on **all tempered distributions** in a local normal chart while retaining the bounded `L²` material multiplier. A real time-domain response cannot have constant strictly positive imaginary permittivity at both signed frequencies. A signed conductive replacement obeys the reality law and an exact arbitrary-spatial-Hilbert pump identity with a modulation-work term; the prior monotone uniform-loss argument does not transfer to it.
+- **Open:** Derive the **actual all-grade Maxwell Cauchy-data/interface relation** with restricted trace domain and causal dispersion. Then prove a source-faithful prime conormal exclusion or exhibit an interface/drive-supported mode, and justify any distribution-to-interior loss-mass estimate. Neither local cutoff nor constitutive no-go retires PTR.
+- **Evidence:** [Sharp-cutoff no-go](../../../../formal/GaloisForLFunctions/RHTower/PhotonicCylinderDistributionCutoffNoGo.lean), [signed conductive pump identity](../../../../formal/GaloisForLFunctions/RHTower/PhotonicConductiveMultimodePumpIdentity.lean), [positive survivors and scope](ptr-calderon-boundary-reframe.md), [prior multimode flux](../../../../formal/GaloisForLFunctions/RHTower/PhotonicPassiveMultimodeFluxNoGo.lean).
 
 <a id="candidate-rfhm"></a>
 
@@ -511,9 +511,9 @@ Some are alternative presentations of an active route's existing open problem.
 
 ### TQFQ
 
-- **Closed / available:** On paper, a pinned theta quantile/Volterra quotient has exact Xi divisor occurrence as reciprocal point spectrum of an infinite Fourier matrix; its one-port boundary feedback is explicit. The two prime quantile flows for `2` and `3` determine a median-anchored positive source CDF in Lean, so a flow-preserving transfer cannot silently replace the theta density. Ordinary Koopman translation has no `L²` eigenvectors and is not the needed Xi carrier.
-- **Open:** Formalize the quotient/Fourier action, then prove a **theta-specific cross-frequency spectral orientation** or construct a source-faithful rigged/self-adjoint transfer retaining the singular one-port feedback. Generic log-concavity and finite-frequency blocks do not sign the full matrix.
-- **Evidence:** [Quantile quotient and paper scope](theta-quantile-fourier-action-quotient.md), [two-prime rigidity](../../../../formal/GaloisForLFunctions/RHTower/ThetaTwoPrimeQuantileFlowRigidity.lean), [cross-frequency capacity](../2-fully-proven/theta-cdf-crossfrequency-rvm-capacity.md), [singular port](../2-fully-proven/theta-quantile-critical-one-port-rigging.md).
+- **Closed / available:** On paper, a pinned theta quantile/Volterra quotient has exact Xi divisor occurrence as reciprocal point spectrum of an infinite Fourier matrix; its one-port boundary feedback is explicit. The two prime quantile flows for `2` and `3` determine a median-anchored positive source CDF in Lean. Ordinary Koopman translation has no `L²` eigenvectors. New paper cusp theorem shows cofinal prime deletion has unbounded two-sign variation, blocking a uniformly finite-measure boundary passage even when signed mass vanishes.
+- **Open:** Formalize the quotient/Fourier action, then prove a **theta-specific cross-frequency spectral orientation** or construct a source-faithful rigged/self-adjoint transfer retaining singular one-port feedback and unbounded signed cusp cancellation. Finite-frequency blocks do not sign the full matrix.
+- **Evidence:** [Bidirectional cusp variation, paper](../2-fully-proven/theta-sieve-bidirectional-cusp-variation.md), [quantile quotient](theta-quantile-fourier-action-quotient.md), [two-prime rigidity](../../../../formal/GaloisForLFunctions/RHTower/ThetaTwoPrimeQuantileFlowRigidity.lean), [cross-frequency capacity](../2-fully-proven/theta-cdf-crossfrequency-rvm-capacity.md).
 
 <a id="candidate-ueb"></a>
 
@@ -583,7 +583,7 @@ does not independently solve the problem; they do not mean its premise is false.
 
 ### Closed subroutes inside otherwise live families
 
-The complete catalogue contains **all 443 named entries**, not a selected list. Each family
+The complete catalogue contains **all 447 named entries**, not a selected list. Each family
 opens a name index followed by one structured result/survivor card per mechanism.
 The 17 original-label records above are included in that total; FD2 and RBH also have
 their longer architecture verdicts in the reference.
@@ -591,12 +591,12 @@ their longer architecture verdicts in the reference.
 | Browse closed mechanisms | Entries |
 |---|---:|
 | [Retired original route labels](rh-killed-routes.md#retired-labels) | 17 |
-| [CCM-FU: prime scheduling and current bounds](rh-killed-routes.md#ccm) | 36 |
-| [E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation](rh-killed-routes.md#arithmetic) | 58 |
-| [HB, FZZ and PW: scattering and physical action](rh-killed-routes.md#scattering) | 88 |
-| [Theta, Schur, spectral and positivity mechanisms](rh-killed-routes.md#theta) | 42 |
+| [CCM-FU: prime scheduling and current bounds](rh-killed-routes.md#ccm) | 37 |
+| [E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation](rh-killed-routes.md#arithmetic) | 60 |
+| [HB, FZZ and PW: scattering and physical action](rh-killed-routes.md#scattering) | 93 |
+| [Theta, Schur, spectral and positivity mechanisms](rh-killed-routes.md#theta) | 44 |
 | [Singular descent, formation and completion](rh-killed-routes.md#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](rh-killed-routes.md#ward) | 68 |
+| [Ward, Suzuki, prime–Gamma and operator landing](rh-killed-routes.md#ward) | 71 |
 | [Analytic roots, multiplicity and regularization](rh-killed-routes.md#roots) | 11 |
 | [Other finite, scalar and source-blind selectors](rh-killed-routes.md#other) | 85 |
 
@@ -604,6 +604,19 @@ their longer architecture verdicts in the reference.
 
 These are not additional active-route labels. Their value is the exact problem they
 remove—or expose—inside the named routes.
+
+### Reflection, ordinate and genus receivers
+
+- **Closed in Lean:** Hermitian reflection fixes precisely critical Xi divisor points; RH is equivalent to injectivity of the ordinate map, vanishing of the mod-2 norm `1+σ` on divisor-support functions, and subsingleton-ness of every finite, reflection-stable height slice. These equivalent coordinates make the prospective genus bridge precise but do not derive any arithmetic class group or ramification input.
+- **Qualification:** Reflection-even readers have equal **partner values**, not automatic blindness to whether a free orbit exists: the even quantity `(2 Re ρ−1)²` vanishes exactly on the line. Nor is a free two-point orbit a nonzero Tate class in the ordinary permutation module: the existing Lean orbit theorem makes every free-orbit cocycle a boundary. A claim that genus theory, generic ordinate transversality, or a universal two-torsion class already excludes off-line zeros exceeds these results.
+- **Open:** Construct an arithmetic exact sequence mapping local source data to the **free** part of these finite Xi slices and derive ramification data before divisor specialization; then prove it forces the mod-2 norm to vanish. Computing only the reflection-fixed/ambiguous part cannot exclude free orbits. A concurrent uncommitted [retirement card](../5-failed/genus-programme-retired.md) records that narrower fixed-part obstruction; its new Lean leaf is not counted as committed closure at this cutoff.
+- **Evidence:** [Reflection parity](../../../../formal/GaloisForLFunctions/RHTower/ReflectionTateParity.lean), [ordinate injectivity](../../../../formal/GaloisForLFunctions/RHTower/OrdinateInjectivity.lean), [norm](../../../../formal/GaloisForLFunctions/RHTower/DivisorGaloisNorm.lean), [finite slices](../../../../formal/GaloisForLFunctions/RHTower/DivisorSliceGenus.lean), [free-orbit Tate boundary](../../../../formal/GaloisForLFunctions/RHTower/IntegralCyclicReflectionTateOrbitUniversalityLaw.lean).
+
+### Cofinal theta sieve: two-sign cusp escape
+
+- **Closed on paper, Lean-pending:** Along finite prime sets increasing through all primes, positive and negative variations of the literal sieved theta source both diverge at the negative cusp, while total signed mass tends to zero. After taking the cofinal limit at each fixed cusp cutoff `R`, the lower scale is `e^{R/2}/R`. Thus no uniformly bounded-total-variation signed-measure or `L¹` boundary limit can perform this source-to-seed passage. This is a topology obstruction, not a sign or RH theorem.
+- **Open:** Control the coupled prime–polar–Gamma cancellation in a distributional/trace topology that preserves the divisor, with joint cutoff/rate information if needed. The fixed-`R` lower bound is not a uniform two-parameter asymptotic.
+- **Evidence:** [Bidirectional variation and proof status](../2-fully-proven/theta-sieve-bidirectional-cusp-variation.md).
 
 ### Theta derivative packets and finite-data blindness
 
@@ -663,9 +676,9 @@ remove—or expose—inside the named routes.
 
 ### Barban–Vehov and Levinson energy diagnostics
 
-- **Closed:** Barban–Vehov split and mollified gate floor remain. The prime-modulus Estermann family now has Lean-backed Kloosterman inversion, Weil saving, functional-equation exchange and a `p^(9/4)` critical-line bound for its additive twist. The nonzero mode's ζ² content lies below Weil accuracy, while the zero/Ramanujan row retains ζ without cancellation: a **single-modulus square-root estimate is nonselective**. Related Selberg/Kloosterman modules formalize substantial finite/source geometry, but their separate spectral or multiplicity receivers do not supply an RH endpoint.
-- **Open:** Obtain signed cancellation **across moduli** and shifted-divisor correlations at the needed scale; one-modulus `p^(1/4)` gain is too small. An arithmetic reflection-positive datum is still missing: translation/Toeplitz positivity alone gives `C²+S²`, whereas the required reflected/Hankel comparison is `C²−S²` and can be negative on one atom.
-- **Evidence:** [Modulus-aspect theorem and scope](estermann-modulus-aspect-kloosterman.md), [Lean strip bound](../../../../formal/GaloisForLFunctions/RHTower/EstermannKloostermanConvexity.lean), [reflection/translation distinction](../../../../formal/GaloisForLFunctions/RHTower/ReflectionVersusTranslationPositivity.lean), [Selberg spectral route status](../3-formalized/selberg-three-sixteenths-kloosterman.md).
+- **Closed:** Barban–Vehov split and mollified gate floor remain. The prime-modulus Estermann family has Lean-backed Kloosterman inversion, Weil saving, functional-equation exchange and a `p^(9/4)` critical-line additive-twist bound; a **single-modulus square-root estimate is nonselective**. Independent Selberg Eisenstein leaves now give a cusp constant-term integral, primitive-row/coprime count, and a Dirichlet-series scattering factor holomorphic on `Re s>1/2`, `s≠1`. This is spectral/source infrastructure, not an RH route closure.
+- **Open:** Obtain signed cancellation **across moduli** and shifted-divisor correlations at the needed scale; one-modulus `p^(1/4)` gain is too small. For the Selberg branch, complete the kernel Gamma integral and continuation of the full constant term. An arithmetic reflection-positive datum is still missing.
+- **Evidence:** [Modulus-aspect theorem and scope](estermann-modulus-aspect-kloosterman.md), [Selberg cusp constant](../../../../formal/GaloisForLFunctions/RHTower/SelbergEisensteinCuspConstant.lean), [cusp count](../../../../formal/GaloisForLFunctions/RHTower/SelbergEisensteinCuspCount.lean), [scattering factor](../../../../formal/GaloisForLFunctions/RHTower/SelbergEisensteinCuspScattering.lean), [Selberg continuation card](selberg-eisenstein-gamma-n-continuation.md).
 
 ### Dyadic Xi roots and continuation
 
@@ -825,10 +838,11 @@ them to active routes.
 ### Evidence boundary
 
 The register reconciles committed Lean source through the cutoff above. This increment adds
-nine grouped scoped no-go records (443 catalogued total) and one named candidate, TQFQ;
-no active route is retired. Changed frontiers include CCM-FU/SV2, CLG/TTF/S6F/TCD,
-CSB/K-RVM/MPLF, E, FZZ-P, HC, L/HDL/PSRC, LI, O, PW-B, STC, U, PTR, SQB, WS2 and TQFQ. Independent Selberg leaves
-are not promoted to an RH route closure. None proves RH.
+four scoped no-go records (447 catalogued total), with no new route label or active-route retirement.
+Changed frontiers are L's exact Abel-source identity; O's reflection/ordinate receivers;
+STC's physical-height transport boundary; PTR's cutoff and causal-loss limits; and the
+paper theta-cusp boundary affecting CSB, SV2 and TQFQ. Independent Selberg leaves
+remain spectral infrastructure, not an RH route closure. None proves RH.
 
 This is a committed-source and explicitly marked paper-proof audit, not a fresh kernel/dependency validation. No build or generated
 check was run. It does not broaden theorem hypotheses or present paper-only arguments as Lean closure. Current source links

@@ -7065,3 +7065,141 @@ the hypothesis holds exactly when every slice has at most one point. **Cannot** 
 the genus-theoretic route on the ground that the carrier is infinite; the carrier is a family of
 finite carriers, and the remaining gates are the exact sequence with a computable third term and the
 derivation of ramification data before divisor specialisation.
+
+## CANNOT-405 — the genus invariant degenerates to one bit per height (2026-09-25)
+
+The object an ambiguous class number formula produces is the **fixed** part of the action — the
+ambiguous classes. On a horizontal slice of the divisor the reflection can fix only the single point
+of real part one half at that height, so **the fixed part of every slice is a subsingleton,
+unconditionally, whether or not the hypothesis holds**. The two halves therefore separate exactly:
+the fixed part is a single bit per height, known with no hypothesis beyond the question "is the
+critical point at this height a zero"; and the hypothesis is the statement that the **whole** slice
+is a subsingleton, that is, that the **free** part is empty. **Cannot** decide the hypothesis by any
+computation of the fixed part, because the fixed part has no internal structure to compute: over a
+window it is a sum of bits, one per height, so the genus-theoretic invariant is not a class with
+torsion, an extension, or a defect, but a raw count — the count of critical zeros. That is the
+Hardy--Selberg--Levinson--Conrey counting problem the ledger already records as walled, reached by a
+different road. **Must** therefore recognise that the two-torsion framing buys nothing at the level
+of the fixed part: the two-torsion is one bit per slice and the aggregate is an integer.
+
+## MUST-406 — the target is the free part, for which no classical machine exists (2026-09-25)
+
+The positive survivor of the previous entry is exact. On every slice the reflection splits the
+divisor points into a fixed part of size at most one and free orbits of size two, so the total count
+is the fixed bit plus twice the number of free orbits, and the hypothesis is the vanishing of that
+number of free orbits. Two distinct points at one ordinate force at least one genuinely free orbit.
+**Must** therefore aim any surviving genus-style argument at the **non-ambiguous** part of the
+action, not the ambiguous one. Every classical formula in the area — Chevalley's, the genus number
+formula, the ambiguous class number formula — computes the fixed part from ramification and says
+nothing about the free part, which is exactly the complement it quotients away. **Cannot** obtain the
+free count from them, and the corpus contains no machine that computes a free-orbit count from local
+data. The programme built on the ambiguous class number formula is therefore retired at its own
+decisive gate, with this separation as its survivor: the hypothesis is the emptiness of the free part
+of a fibred two-element action whose fixed part is unconditionally one bit per fibre.
+
+## CANNOT-407 — every route localizes, and localization kills the free part by construction (2026-09-25)
+
+For a two-element group acting on a finite set the Borel equivariant cohomology is a polynomial ring
+on the equivariant parameter at each fixed point and is the ground field at each free orbit. The free
+orbits are therefore exactly the **torsion** for that parameter, and inverting it — the localization
+that produces Tate cohomology and, with it, Smith theory, the signature, the Fredholm and Toeplitz
+indices, the Krein inertia, the Witt and Hasse classes, the spectral flow and the Maslov index —
+annihilates that torsion by construction. This is the Atiyah–Segal–Quillen localization theorem, so
+it is not a feature of any particular argument: **every localized invariant computes the fixed part
+and nothing else**, and the fixed part of a slice is the unconditional subsingleton of the previous
+entry. **Cannot** detect the hypothesis with any invariant that is localized in this sense, and every
+invariant the ledger records for the reflection is. **Must** therefore note the single named cause of
+the corpus's universal blindness: the anomaly is torsion for the equivariant parameter, and every
+route inverts it. The surviving target is an **unlocalized** equivariant statement — that the action
+is equivariantly formal, that is, that the free part is empty.
+
+## MUST-408 — the free part is the left half-slice, and it is concrete (2026-09-25)
+
+The reflection sends real part to one minus real part, so on every slice it exchanges the two open
+half-slices on either side of the critical line and fixes only the critical point. Each slice is
+therefore the disjoint union of a subsingleton fixed part and a free part whose two halves are
+exchanged by the reflection, and the hypothesis holds exactly when **every left half-slice is
+empty**. **Must** direct any successor at that object: it is the free part made concrete, it is a set
+rather than a class, and it is the `u`-torsion the previous entry says every classical invariant
+discards. Failure of the hypothesis is the existence of a single divisor point strictly left of the
+critical line, and the height of that point carries a genuinely free orbit. **Cannot** any longer
+treat the free part as inaccessible for lack of a description; what it lacks is a machine, and the
+classical machines are excluded for a structural reason rather than a quantitative one.
+
+## MUST-409 — a machine must be exhibited before its output is computed (2026-09-25)
+
+Process law, extracted from a retired route of this cycle. A machine imported by structural analogy
+must have its **output quantity** computed in the target setting **before** the analogy is developed.
+The route retired as `CANNOT-405` matched its target on every structural check available — it
+required no diagonalisation, imposed no integrality on the zeros, produced no characteristic
+polynomial, and was therefore excluded by none of the recorded obstructions to its neighbours — yet
+it died in one line, because the quantity it computes is trivially determined in the target. **Must**
+therefore test a proposed import by asking what it computes here, not by asking what it would need;
+a machine whose output is already known, or is fixed independently of the question, is a receiver
+however well its hypotheses match.
+
+## MUST-410 — the physical dictionary is forced, and it names parity (2026-09-25)
+
+Of the three involutions of the plane that preserve the divisor, conjugation reverses the ordinate
+and fixes the real part, the functional equation reverses both, and their composite — the Hermitian
+reflection whose triviality is the hypothesis — fixes the ordinate and reflects the real part.
+Reading the ordinate as time, these are **time reversal**, **PT**, and **parity**. **Must** therefore
+state the hypothesis as: **parity is unbroken** — every state is its own parity image — and its
+failure as a parity doublet, two distinct states at one instant. The clock degeneracy is exact: at
+every instant the number of states is the number of parity-invariant states plus twice the number of
+states on one side, the first term is zero or one with no hypothesis, and the hypothesis holds
+exactly when every instant carries at most one state. In that language the hypothesis is the
+statement that **time is a complete observable on the divisor**: reading the clock determines the
+state. A corollary with no hypothesis: the number of states at an instant is **odd** exactly when one
+of them is parity-invariant, that is, exactly when the critical point at that height is a zero.
+
+## CANNOT-411 — the system is exactly critical, so no inequality can have slack (2026-09-25)
+
+Two facts already on record combine into a diagnosis that was not drawn. The heat deformation of the
+completed function moves the zeros by a Calogero-type flow under which off-line pairs merge and
+become critical; its threshold parameter is at most zero exactly under the hypothesis, and is at
+least zero unconditionally. **The hypothesis is therefore the statement that the threshold is exactly
+zero** — the configuration sits precisely on the boundary between broken and unbroken parity, from
+the unbroken side. In equivariant language the threshold is the time required to make the action
+formal, and the flow converts free orbits into fixed ones; the hypothesis says no time is required
+and none is to spare. **Cannot** expect any inequality to carry slack at such a configuration, and
+this is the single explanation of the ledger's most repeated pattern: every certified estimate stops
+one power of the logarithm short, no profile improves it, the certified widths are exactly the
+trivial ones, the exponent is provable at one half and is zero under the hypothesis with nothing
+between, the positivity is marginal with no spectral gap on any window, and every prime power is
+load-bearing. Those are not eight quantitative coincidences; they are the universal signature of a
+system at a critical point, where the true value saturates every bound. **Must** therefore aim a
+producer at an **exact marginality identity** rather than a bound: the quantity to establish is that
+a marginal coupling is exactly marginal, which is a vanishing statement about a derivative, not an
+inequality about a size.
+
+## MUST-412 — the marginality identity is transverse Coulomb equilibrium (2026-09-25)
+
+Taking real parts in the Calogero flow of the heat deformation shows that the **displacement** of a
+zero from the critical line evolves by the **graph heat equation** on the graph whose vertices are
+the zeros and whose conductance between two of them is the reciprocal squared distance. The
+hypothesis is therefore an **equilibrium** of that flow, and the criticality diagnosis becomes a
+concrete condition: the transverse Coulomb force on every zero vanishes, that is, the sum over all
+other zeros of the difference of real parts divided by the squared distance is zero at every zero.
+This is an identity, not a bound — the shape the previous entry demands — and it is the
+Euler–Lagrange equation of the transverse Dirichlet energy, which is exactly the energy the flow
+dissipates. **Must** treat this as the marginality condition: harmonicity of the displacement. Its
+content is visible at a hypothetical off-line zero, where the term contributed by the zero's own
+reflection partner is exactly the reciprocal of twice the displacement and therefore diverges as the
+displacement shrinks, so the identity forces all the remaining zeros to balance a divergent force.
+
+## MUST-413 — the producer decomposes into four separable inputs (2026-09-25)
+
+The identity sits in a Liouville chain with four inputs, and they are independent of each other.
+**Harmonicity** of the displacement is the identity above. **Boundedness** of the displacement is
+immediate, and much better is already certified by the zero-free region. **Recurrence** of the zero
+graph is an unconditional statement about zero density: the nearest-neighbour conductances grow like
+the square of the logarithm of the height, and the reciprocal series over the zeros diverges, which
+is the Nash–Williams shape. **Constancy forces the hypothesis** by the functional equation, and this
+last step is now proved: if the real part is constant on the divisor then the constant is one half,
+so the hypothesis is exactly the statement that the displacement is a constant function. **Must**
+therefore aim at the three remaining inputs separately rather than at the hypothesis: two of them are
+unconditional statements about zero density and the strip, and only harmonicity carries the
+difficulty. **Cannot** any longer describe the target as a single global inequality; it is a local
+balance at each zero together with a density statement and a symmetry, of which the symmetry is
+discharged.

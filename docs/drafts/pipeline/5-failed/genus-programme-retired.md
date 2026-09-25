@@ -1,7 +1,25 @@
 # The genus-theory programme for RH
 
 **Origin:** MUST-400. **Coordinates:** CANNOT-397, CANNOT-399, MUST-401.
-**Status:** Layer A started. Layers B, C open. This card is the plan and the gate list.
+**Status: RETIRED at gate G4.** Verdict `CANNOT-405`; survivor `MUST-406`.
+Positive results G1–G3 stand and are Lean-certified; the programme's *producer* claim is dead.
+
+> **Verdict.** The ambiguous class number formula computes the **fixed** part of the action. On a
+> slice the fixed part is a subsingleton **unconditionally** — the reflection can fix only the single
+> point `1/2 + it` — so the genus invariant degenerates to one bit per height and, over a window, to
+> a raw count of critical zeros. That is the Hardy–Selberg–Levinson–Conrey counting problem, already
+> walled in the ledger, reached by a new road. The hypothesis lives in the **free** part, and no
+> classical formula in the area computes a free-orbit count.
+> Lean: `RHTower/DivisorSliceFixedPart.lean` (`xiSliceFixed_subsingleton`).
+
+**Survivor (MUST-406).** The fixed/free separation is exact and unconditional: on each slice,
+`count = (fixed bit) + 2·(free orbits)`, the fixed bit is a subsingleton with no hypothesis, and RH
+is the vanishing of the free count. Two distinct points at one ordinate force a free orbit
+(`not_both_fixed_of_two_in_slice`). Any surviving genus-style argument must target the
+**non-ambiguous** part — the complement every classical formula quotients away.
+
+---
+
 
 ## Why this programme and not another
 
