@@ -7527,3 +7527,25 @@ part gives `V = 8/δ²`, `V_zz = 192/δ⁴`, `2V² = 128/δ⁴`, so diffusion ex
 and the raw field grows along the characteristic. **Must** consequently run any collision lemma on
 the regular part alone: the pair's singular part is already exact in `u' = 4Δu − 8`, but the damping
 bound does not apply to the raw field near a close pair.
+
+## MUST-446 — the pair field is a pointwise value of the regular field inside the gap
+
+Partial fractions give `[(x₁ − y)(x₂ − y)]⁻¹ = [(x₁ − y)⁻¹ − (x₂ − y)⁻¹]/(x₂ − x₁)`, so the pair field
+of a consecutive pair is the divided difference `Δ = [L(x₁) − L(x₂)]/(x₂ − x₁)` of the regular
+logarithmic derivative across the gap. Consecutiveness places every surrounding zero outside the
+closed gap, so `L` is differentiable there with derivative minus the regular field, and the mean value
+theorem gives `Δ = V(ξ)` for some `ξ` strictly inside the gap, `V(z) = Σ_y (z − y)⁻²`. **Must:** the
+pair quantity is an honest pointwise value of a field smooth across the gap and carrying none of the
+pair's singularity, so any bound on the regular field over the gap interval bounds `Δ`. **Cannot:**
+object that the adverse diffusion of the raw field near a close pair obstructs this — that adversity
+belongs to the pair's own singular part, which this identity removes.
+
+## MUST-447 — the pair field is bounded by the one-sided fields at the two zeros
+
+Each term of the regular field is monotone across the gap in the direction of its own zero, so the
+left-hand terms are largest at the left endpoint and the right-hand terms at the right endpoint.
+With the pair field a pointwise value of the regular field inside the gap, this gives
+`Δ ≤ Σ_{y < x₁} (x₁ − y)⁻² + Σ_{y > x₂} (x₂ − y)⁻²` without locating the interior point. **Must:**
+neither sum carries a near-singular term, the closest contribution on each side lying at the distance
+of the neighbouring gap, so the pair field of a close pair is controlled by ordinary one-sided
+spacing data at the two zeros and the pair's own singularity is absent by construction.

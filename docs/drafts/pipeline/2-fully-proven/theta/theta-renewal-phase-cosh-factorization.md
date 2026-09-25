@@ -29,13 +29,15 @@ one-sided convolution to define
  Q(t)=\sum_{m\geq1}\frac{1}{m c^m}\nu^{*m}(t),\qquad t\geq0. \tag{1}
 \]
 
-Then \(q<3/10\), \(Q(t)>0\),
-\(\int_0^\infty e^{at}Q(t)\,dt=-\log(1-q)<1/2\), and
+Put \(\beta=\pi-3/2>3/2\). Then \(q<1/6\), \(Q(t)>0\),
+\(\int_0^\infty e^{at}Q(t)\,dt=-\log(1-q)<1/5\), and
 
 \[
- 0<Q(t)\leq\frac{a}{1-q}e^{-at}. \tag{2}
+ 0<Q(t)\leq e^{-\beta t}\frac{1-e^{-at}}{t}
+       \leq a e^{-\beta t}. \tag{2}
 \]
 
+At \(t=0\), the middle expression has value \(a\).
 The convolution series has a real-analytic continuation \(Q^\dagger\) along the
 whole real axis. Its reflection is **exactly**
 
@@ -48,6 +50,21 @@ and (2)--(3) give the universal negative-end asymptotic
 \(Q^\dagger(-t)\sim e^{at}/t\) as \(t\to\infty\). The positive renewal branch
 decays, while its analytic negative branch necessarily carries a growing
 boundary datum.
+
+The renewal density also obeys the positive Volterra law
+\[
+ c\,tQ(t)=t\nu(t)+\int_0^t \nu(s)(t-s)Q(t-s)\,ds. \tag{3a}
+\]
+Define \(W(t)=e^{-at}/t+Q(t)>0\) for \(t>0\). Equation (3) says that its
+analytic continuation across the simple pole at zero is **odd**:
+\(W^\dagger(-t)=-W(t)\). The elementary Frullani identity gives
+\[
+ \eta(\lambda)+S(\lambda)
+   =\int_0^\infty W(t)\sinh(\lambda t)\,dt
+   \quad(|\operatorname{Re}\lambda|<a), \tag{3b}
+\]
+with convergence at zero because \(\sinh(\lambda t)=O(t)\). Thus the entire
+two-ended zero problem is encoded by one positive, odd boundary kernel.
 
 For \(|\operatorname{Re}\lambda|<a\), define the convergent transforms
 
@@ -66,7 +83,7 @@ and the principal analytic branch
 \]
 
 The prefactor is analytic and nowhere zero in this strip. Moreover
-\(|\operatorname{Im} S(\lambda)|<1/2\). Hence, in its upper half,
+\(|\operatorname{Im} S(\lambda)|<1/5\). Hence, in its upper half,
 
 \[
  \boxed{\Xi(2i\lambda)=0
@@ -85,38 +102,27 @@ frequency axis, (4) becomes the explicit amplitude--phase factorization
        +\int_0^\infty Q(t)\sin(\tau t)\,dt\right].} \tag{6}
 \]
 
-All real Xi zeros are crossings of **one** phase level, not successive
-branches of a logarithm. RH is now the assertion that the complex level in
+All positive real-frequency Xi zeros are crossings of **one** phase level,
+with the negative-frequency zeros obtained by reflection. RH is now the
+assertion that the complex level in
 (5) has no point away from the imaginary \(\lambda\)-axis. Equations
 (1)--(6) do **not** establish that assertion.
 
 ## Paper proof
 
-Write \(r=c-1=2\sum_{n\geq1}e^{-\pi n^2}\). Since \(\pi>3\) and
-\(n^2\geq n\),
-\(r<2\sum_{n\geq1}e^{-3n}=2/(e^3-1)<1/4\); the last inequality follows
-already from \(e^3>1+3+3^2/2+3^3/6>9\). The elementary bound
-\(e^t\geq1+t\) gives
-\(R(t)\leq r e^{-(\pi-a)t}<r e^{-11t/4}\). Therefore
-
-\[
- M_{-a}:=\int_0^\infty e^{at}R(t)\,dt<\frac{2r}{5}.
-\]
-
-As \(\nu=-R'+aR\), integration by parts yields
-
-\[
- \int_0^\infty e^{at}\nu(t)\,dt=r+2aM_{-a}
-   <\frac65r<\frac3{10},
-\]
-
-so \(q<3/10\). The weighted convolution norm makes (1) absolutely
-convergent and gives
-\(\int e^{at}Q=\sum_{m\geq1}q^m/m=-\log(1-q)
-\leq q/(1-q)<3/7<1/2\). Each term of \(v\) decreases on \(t\geq0\),
-because its logarithmic derivative is \(1+2a-\pi n^2e^t<0\).
 Theta reflection gives \(P'(0)=0\), hence \(v(0)=\nu(0)/c=a\).
-Consequently \(v^{*m}(t)\leq a q^{m-1}\), proving (2).
+Each positive theta summand of \(v\) has logarithmic derivative
+\(1+2a-\pi n^2e^t\leq-\beta\) for \(t\geq0\). Therefore
+\(0<v(t)\leq a e^{-\beta t}\) and
+\(q\leq a/\beta<1/6\). The weighted convolution norm makes (1)
+absolutely convergent and gives
+\(\int e^{at}Q=\sum_{m\geq1}q^m/m=-\log(1-q)
+\leq q/(1-q)<1/5\). Moreover
+\(v^{*m}(t)\leq a^m e^{-\beta t}t^{m-1}/(m-1)!\).
+Summing these bounds with the coefficient \(1/m\), and then multiplying
+by \(e^{-at}\), proves (2).
+Multiplying (1) by \(t\) and using
+\(t(f*g)=(tf)*g+f*(tg)\) proves (3a) term by term.
 
 For \(\operatorname{Re}\lambda>a\), put
 \(L(\lambda)=\int_0^\infty e^{-\lambda t}P(t)\,dt\).
@@ -143,7 +149,7 @@ Substitute (7), use
 \(\tanh\eta=\lambda/a\). This gives (4); its restriction to
 \(\lambda=i\tau\) gives (6). In the upper half-strip,
 \(0<\operatorname{Im}\eta<\pi/2\), while
-\(|\operatorname{Im} S|\leq\int e^{at}Q<1/2\). Only the \(i\pi/2\)
+\(|\operatorname{Im} S|\leq\int e^{at}Q<1/5\). Only the \(i\pi/2\)
 zero of \(\cosh\) lies in that imaginary range, proving (5).
 
 For (3), the series (1) extends real-analytically through zero: write
@@ -169,14 +175,50 @@ Coefficient comparison yields
 \(Q^{(2j)}(0)=a^{2j+1}/(2j+1)\) for every \(j\). Their Taylor series is
 \(\sinh(at)/t\). The real-analytic identity theorem extends the resulting
 even-germ identity to every real \(t\), proving (3).
-Finally \(2\sinh(at)/t\geq2a>a/(1-q)\geq Q(t)\), so (3) makes the
+Finally \(2\sinh(at)/t\geq2a>a\geq Q(t)\), so (3) makes the
 negative branch positive. Equation (2) then gives its stated asymptotic.
+The relation \(W^\dagger(-t)=-W(t)\) follows by substituting (3);
+integrating \(e^{-at}\sinh(\lambda t)/t\) gives \(\eta(\lambda)\), proving
+(3b).
+
+## Modular ODE controls the non-universal germ
+
+The even Taylor germ of \(Q\) is fixed by (3). The first odd coefficient
+has a direct source value:
+\[
+ \boxed{Q'(0)=\frac{a^2}{2}-\frac{P''(0)}{c}
+       =\frac{5-\pi^2 c^8}{32}<0.} \tag{9}
+\]
+Indeed the \(m=1,2\) terms of (1) give
+\(Q'(0)=\nu'(0)/c+\nu(0)^2/(2c^2)\); higher convolution powers vanish
+to order at least two. Since \(\nu=aP-P'\), \(P'(0)=0\), and
+\(\nu(0)=ac\), the first equality follows.
+
+For the second, put \(H(x)=P(2x)\). The [Lean-proved modular differential
+closure](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchThetaModularDifferentialClosure.lean)
+has normalized state variables \(Z,R,S\) with
+\(H'=-HS/6\) and
+\(S'=3-S^2/3-(3/4)R^2(1-Z^2)\).
+At the self-dual point \(x=0\), its initial data are
+\(Z=S=0\), \(R=\pi c^4\). Consequently
+\[
+ \frac{P''(0)}{c}=\frac14\frac{H''(0)}{H(0)}
+   =-\frac18+\frac{\pi^2c^8}{32},
+\]
+which proves (9); \(c>1\) and \(\pi>3\) make its sign strict.
+Repeated differentiation of the same finite polynomial ODE, followed
+by the formal logarithm in (7), recursively determines **every odd
+Taylor coefficient of \(Q\)** from the single self-dual parameter
+\(\pi c^4\). This is a paper-level bridge from the existing Lean ODE to
+the new renewal phase; the coefficient formula and recurrence have
+not been formalized.
 
 ## The next producer question
 
 The universal reflection (3) fixes every even Taylor coefficient of
 the renewal phase kernel. The theta-specific data are its odd germ,
-equivalently the even derivatives of \(P\) at the modular seam. The
+equivalently the even derivatives of \(P\) at the modular seam; the
+existing finite modular ODE generates them all. The
 remaining mathematical obstacle is to derive from the literal theta
 atoms a complex level-set law excluding
 \(\eta(\lambda)+S(\lambda)=i\pi/2\) when

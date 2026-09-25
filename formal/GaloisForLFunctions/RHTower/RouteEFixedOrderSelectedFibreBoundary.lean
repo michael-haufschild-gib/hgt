@@ -1,12 +1,13 @@
 import GaloisForLFunctions.RHTower.RouteETerminalSourceReporterFirewall
 import GaloisForLFunctions.RHTower.RouteEPrimitiveConeParentNoGo
+import Mathlib.Analysis.Convex.SpecificFunctions.Basic
 
 /-! Fixed-order test of the Route E largest-prime cofactor mechanism.
 For 1 < r ≤ 2, every coefficient-bounded single numerator channel with
 numerator at most q is absolutely summable over denominator primes q.
 This is a boundary/receiver quantifier no-go, not a full-covariance bound. -/
 
-open Finset
+open Set Finset
 namespace RHTower
 noncomputable section
 
@@ -192,6 +193,74 @@ theorem summable_routeEFixedOrderPrimeFibre
         (ArithmeticFunction.moebius ((q : ℕ) * d) : ℝ)
       else 0)
     (fun q d => routeEFixedOrderPrimeFibre_coeff_bound (p q) q d)
+
+theorem routeERealOrderedSecantRpow {r x y z w : ℝ}
+    (hr : 1 ≤ r) (hx : 0 ≤ x) (hxy : x < y) (hyz : y ≤ z) (hzw : z < w) :
+    (y ^ r - x ^ r) / (y - x) ≤ (w ^ r - z ^ r) / (w - z) := by
+  have hconv := convexOn_rpow hr
+  have hxmem : x ∈ Ici (0 : ℝ) := hx
+  have hymem : y ∈ Ici (0 : ℝ) := by simp; linarith
+  have hzmem : z ∈ Ici (0 : ℝ) := by simp; linarith
+  have hwmem : w ∈ Ici (0 : ℝ) := by simp; linarith
+  have h1 := hconv.secant_mono hxmem hymem hwmem (ne_of_gt hxy)
+    (ne_of_gt (lt_of_lt_of_le hxy (hyz.trans hzw.le))) (by linarith : y ≤ w)
+  have h2 := hconv.secant_mono hwmem hxmem hzmem (by linarith : x ≠ w)
+    (by linarith : z ≠ w) (by linarith : x ≤ z)
+  have h2' : (w ^ r - x ^ r) / (w - x) ≤ (w ^ r - z ^ r) / (w - z) := by
+    calc
+      (w ^ r - x ^ r) / (w - x) = (x ^ r - w ^ r) / (x - w) := by
+        rw [show x ^ r - w ^ r = -(w ^ r - x ^ r) by ring,
+          show x - w = -(w - x) by ring, neg_div_neg_eq]
+      _ ≤ (z ^ r - w ^ r) / (z - w) := h2
+      _ = (w ^ r - z ^ r) / (w - z) := by
+        rw [show z ^ r - w ^ r = -(w ^ r - z ^ r) by ring,
+          show z - w = -(w - z) by ring, neg_div_neg_eq]
+  exact h1.trans h2'
+
+theorem routeEReciprocalRpow {u r : ℝ} (hu : 0 < u) :
+    (1 / u) ^ r = u ^ (-r) := by
+  rw [one_div, Real.inv_rpow hu.le, Real.rpow_neg hu.le]
+
+theorem routeEFixedOrderDifference_cross
+    {r a b c : ℝ} (hr : 1 ≤ r) (ha : 0 < a) (hb : 0 < b)
+    (hbc : b + a ≤ c) :
+    routeEFixedOrderDifference r a c * routeEFixedOrderDifference 1 a b ≤
+      routeEFixedOrderDifference 1 a c * routeEFixedOrderDifference r a b := by
+  let x : ℝ := 1 / (2 * a + c)
+  let y : ℝ := 1 / (a + c)
+  let z : ℝ := 1 / (2 * a + b)
+  let w : ℝ := 1 / (a + b)
+  have hc : 0 < c := by linarith
+  have hx : 0 ≤ x := by dsimp [x]; positivity
+  have hxy : x < y := by
+    dsimp [x, y]
+    exact one_div_lt_one_div_of_lt (by positivity) (by linarith)
+  have hyz : y ≤ z := by
+    dsimp [y, z]
+    apply one_div_le_one_div_of_le (by positivity)
+    linarith
+  have hzw : z < w := by
+    dsimp [z, w]
+    exact one_div_lt_one_div_of_lt (by positivity) (by linarith)
+  have hslope := routeERealOrderedSecantRpow hr hx hxy hyz hzw
+  have hcross := (div_le_div_iff₀ (by linarith : 0 < y - x)
+    (by linarith : 0 < w - z)).mp hslope
+  have hkrc : y ^ r - x ^ r = routeEFixedOrderDifference r a c := by
+    dsimp [x, y, routeEFixedOrderDifference]
+    rw [routeEReciprocalRpow (by positivity : 0 < a + c),
+      routeEReciprocalRpow (by positivity : 0 < 2 * a + c)]
+  have hkrb : w ^ r - z ^ r = routeEFixedOrderDifference r a b := by
+    dsimp [w, z, routeEFixedOrderDifference]
+    rw [routeEReciprocalRpow (by positivity : 0 < a + b),
+      routeEReciprocalRpow (by positivity : 0 < 2 * a + b)]
+  have hk1c : y - x = routeEFixedOrderDifference 1 a c := by
+    dsimp [x, y, routeEFixedOrderDifference]
+    simp only [Real.rpow_neg_one, inv_eq_one_div]
+  have hk1b : w - z = routeEFixedOrderDifference 1 a b := by
+    dsimp [w, z, routeEFixedOrderDifference]
+    simp only [Real.rpow_neg_one, inv_eq_one_div]
+  rw [hkrc, hkrb, hk1c, hk1b] at hcross
+  simpa only [mul_comm] using hcross
 
 end
 end RHTower

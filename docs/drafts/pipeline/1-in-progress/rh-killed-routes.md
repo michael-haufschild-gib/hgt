@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**465 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**471 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,23 +11,23 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-25, `6a8c8f7e7`**.
+Source-audit cutoff: **2026-09-25, `d0f6214ff`**.
 Updated records link to committed Lean statements and explicitly marked paper proofs;
 unchanged records retain their historical evidence. No builds, Lean checks, tests, lint
 or index refresh were run for this update. FD2's full verdict and
 RBH's retired architecture remain accessible from
 the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subroutes).
-Concurrent uncommitted paper-card revisions remain pending evidence and are not counted.
+Concurrent uncommitted Lean sources and paper-card revisions remain pending evidence and are not counted.
 
 ## Browse by family
 
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 37 |
-| [E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation](#arithmetic) | 62 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 38 |
+| [E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation](#arithmetic) | 63 |
 | [HB, FZZ and PW: scattering and physical action](#scattering) | 98 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 49 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 53 |
 | [Singular descent, formation and completion](#completion) | 29 |
 | [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 75 |
 | [Analytic roots, multiplicity and regularization](#roots) | 12 |
@@ -308,6 +308,7 @@ Source-native aperture invariant is required.
 
 ## CCM-FU: prime scheduling and current bounds
 
+- [CCM-FU/P normalized critical Abel eventual one-sided sign](#no-go-466)
 - [CCM fixed positive exponential-clock bounded source](#no-go-435)
 - [CCM-FU dense high-prime old-core shell payment](#no-go-427)
 - [CCM-FU upper-third mixed-curvature cancellation](#no-go-428)
@@ -345,6 +346,22 @@ Source-native aperture invariant is required.
 - [CCM-FU scalar graph-energy coercion](#no-go-389)
 - [CCM-FU delayed short-clock-span payment](#no-go-393)
 - [CCM matched-quantile debt-only Cauchy wall](#no-go-400)
+
+<a id="no-go-466"></a>
+
+### CCM-FU/P normalized critical Abel eventual one-sided sign
+
+**Closed result**
+
+Lean gives an exact positive correction between normalized critical Abel source and Route P's ray, bounded by `(20/3)e^(-t/2)`. Fixed-amplitude positive and negative excursions of the Route P ray therefore persist for the Abel source arbitrarily far out. Neither eventual scalar sign can hold for this normalized source.
+
+**Survivor / still open**
+
+The asymptotic source identification is reusable. A signed, non-scalar growing-core energy/covariance payment and terminal control remain open; two-sided oscillation alone supplies no such bound.
+
+Evidence: [Abel–P bridge and oscillation](../../../../formal/GaloisForLFunctions/RHTower/CriticalAbelRoutePAsymptoticBridge.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
 <a id="no-go-435"></a>
 
@@ -988,6 +1005,7 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 
 ## E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation
 
+- [E boundary singleton divergence at fixed receiver order](#no-go-467)
 - [E hard-core exclusion as an operator-wide negative order](#no-go-455)
 - [E far-prime completed-cofactor sign as global debt](#no-go-449)
 - [E coordinatewise primitive parent payment](#no-go-436)
@@ -1051,6 +1069,22 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 - [HC line-conjugation-stable scalarization of ordered-prime orientation](#no-go-396)
 - [T2 polynomial source graphs plus fixed Bohr datum](#no-go-397)
 
+<a id="no-go-467"></a>
+
+### E boundary singleton divergence at fixed receiver order
+
+**Closed result**
+
+The prime and `2p` selected numerator fibres both have nonsummable order-`1/q` mass at boundary exponent `r=1`, with opposite signs. Lean separately bounds each coefficient-bounded selected cofactor fibre with `a≤q` by `6a q^(-r-1)≤6q^(-r)` for fixed `1<r≤2`; the resulting prime sum is absolutely convergent. The boundary divergence is not a fixed-receiver-order full-covariance divergence theorem.
+
+**Survivor / still open**
+
+The exact counterpayment and sharp fixed-order decay identify the true task: sum all numerator grades, retain Gamma/common-gcd weights and control the cofinal cutoff uniformly as receiver order approaches the boundary.
+
+Evidence: [First counterpayment](../../../../formal/GaloisForLFunctions/RHTower/RouteELargestPrimeFibreParity.lean), [fixed-order fibre theorem](../../../../formal/GaloisForLFunctions/RHTower/RouteEFixedOrderSelectedFibreBoundary.lean).
+
+[Back to family](#arithmetic) · [Current E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
+
 <a id="no-go-455"></a>
 
 ### E hard-core exclusion as an operator-wide negative order
@@ -1073,11 +1107,11 @@ Evidence: [pair field and status](route-e-hardcore-pair-field.md), [Walsh spectr
 
 **Closed result**
 
-Lean now proves that completing all smaller-prime denominator cofactors beneath `qC_P>32B_P`, where `B_P=∏_{p∈P}(1+p²)` and `C_P=∏_{p∈P}(p−1+p⁻²)`, preserves the selected numerator cube's parity with an amplified `q⁻²` margin. The old `q⁻⁵ᐟ⁴` majorant requires the **stronger** `q>32B_P` condition; it does not cover every sign-locked moving support. In fact, a Lean moving-singleton corollary yields a disjoint coefficient-one prime-numerator channel `H_{p(q),q}>1/(8192q)` whose prime sum diverges. This is positive debt, not divergence of the full signed covariance.
+Lean proves that completing all smaller-prime denominator cofactors beneath `qC_P>32B_P`, where `B_P=∏_{p∈P}(1+p²)` and `C_P=∏_{p∈P}(p−1+p⁻²)`, preserves the selected numerator cube's parity with an amplified `q⁻²` margin. The old `q⁻⁵ᐟ⁴` majorant requires the **stronger** `q>32B_P` condition. A moving-singleton prime-numerator channel has `H_{p(q),q}>1/(8192q)`; new Lean source proves a disjoint composite `2p(q)` channel with `J_{2p(q),q}<−H_{p(q),q}`. Both selected prime sums are nonsummable with opposite signs. Neither gives divergence or convergence of full signed covariance.
 
 **Survivor / still open**
 
-The exact Euler-factor main term and parity margin survive. Cube overlap cannot pay the **disjoint** prime-numerator debt: Route E must identify cancellation from other numerator integers/channels in the complete physical covariance. The old summable far-prime statement remains valid only on its stated subcritical domain.
+The exact Euler-factor main term and parity margin survive. The disjoint composite numerator `2p(q)` **does** give negative counterpayment `<−H_{p(q),q}<−1/(8192q)`; the earlier claim that no disjoint channel paid the debt is superseded. This does not prove cancellation of the complete physical covariance. The old summable far-prime statement remains valid only on its stated subcritical domain, and fixed-order selected fibres are summable as in [no-go 467](#no-go-467).
 
 Evidence: [largest-prime proof and status](route-e-largest-prime-fibre-parity.md), [Lean source theorem](../../../../formal/GaloisForLFunctions/RHTower/RouteELargestPrimeFibreParity.lean).
 
@@ -3834,6 +3868,10 @@ Evidence: [translated charge and cusp nonintegrability](../../../../formal/Galoi
 
 ## Theta, Schur, spectral and positivity mechanisms
 
+- [Positive even prime-scale theta source as zero-confinement principle](#no-go-468)
+- [Raw theta half-port and regular scalar/translation repairs](#no-go-469)
+- [Prime–modular pointwise order as matrix positivity](#no-go-470)
+- [Bounded regular deconvolution of theta chronological atoms](#no-go-471)
 - [Theta compact inverse under a bounded injective symmetrizer](#no-go-461)
 - [Theta quotient under a coercive finite-range Fourier symmetrizer](#no-go-462)
 - [Critical theta-wall finite part as a scalar positive cube energy](#no-go-463)
@@ -3885,6 +3923,70 @@ Evidence: [translated charge and cusp nonintegrability](../../../../formal/Galoi
 - [P/SP-E finite Lorentz-graph coercivity](#no-go-386)
 - [K-RVM paired quartic determinant identity](#no-go-398)
 - [SQB tensor-square unitarity as finite packet selector](#no-go-399)
+
+<a id="no-go-468"></a>
+
+### Positive even prime-scale theta source as zero-confinement principle
+
+**Closed result**
+
+Lean constructs a positive even modified theta source whose completed transform has reflection symmetry and an off-line strip zero after one self-reciprocal Euler numerator. Its grade-two logarithmic coefficient is negative, so the model does **not** preserve the literal theta/von Mangoldt coefficient law. Positivity, evenness and reflection alone cannot confine zeros.
+
+**Survivor / still open**
+
+The exact source-transform construction separates generic positivity from coefficient-faithful arithmetic. Any theta route needs a prime-grade or complex-phase law specific to the literal source.
+
+Evidence: [Positive-source off-line model](../../../../formal/GaloisForLFunctions/RHTower/ThetaPrimeScalePositiveSourceOffLineNoGo.lean).
+
+[Back to family](#theta) · [Current K-RVM frontier](rh-current-frontier-map.md#candidate-k-rvm)
+
+<a id="no-go-469"></a>
+
+### Raw theta half-port and regular scalar/translation repairs
+
+**Closed result**
+
+On paper, the literal theta half-port is nonzero at Xi zeros, but its right-normal modulus imbalance has both signs at arbitrarily high simple critical ordinates (each crossing direction has lower relative density `5/18`). Neither fixed Hermite–Biehler direction holds. A zero-free finite-exponential-type scalar gauge preserving exact symmetrization is trivial. Strict orientation of a smooth corrected half-port forces cancellation of every even source jet at the causal cut, while finite real prime-translation corrections vanish at each Xi zero and leave the raw alternating slope unchanged. These are paper theorems, not Lean closures.
+
+**Survivor / still open**
+
+The all-even-jet cancellation is a sharp necessary local boundary condition. The additive derivative port passes the local zero test, but global strict order and a coefficient-faithful singular/cofinal source construction remain open. Lean's midpoint two-jet theorem is a line-classifying receiver, not its source proof.
+
+Evidence: [Half-port orientation and gauge, paper](../2-fully-proven/theta-half-line-port-alternating-orientation.md), [causal germ and translation ideal, paper](../2-fully-proven/theta-causal-germ-translation-ideal-phase-selection.md), [midpoint receiver, Lean](../../../../formal/GaloisForLFunctions/RHTower/SourceZeroHedenmalmMidpointTwoJet.lean).
+
+[Back to family](#theta) · [Current STC frontier](rh-current-frontier-map.md#stc--exterior-sonin-seam-coherence)
+
+<a id="no-go-470"></a>
+
+### Prime–modular pointwise order as matrix positivity
+
+**Closed result**
+
+On paper, prime deletion fails to commute with theta inversion and yields one strict sign crossing at `y=1`. The associated symmetric two-scale kernel is pointwise positive, yet its matrices have infinite positive and negative index, including at actual prime scales. Entrywise source order cannot be promoted to positive-semidefinite covariance.
+
+**Survivor / still open**
+
+Exact crossing, scale monotonicity and the rank-one vacuum plus signed-sine decomposition survive. A theta-specific complex continuation or phase-aperture law must control the indefinite channel and boundary port; pointwise positivity is insufficient.
+
+Evidence: [Prime–modular commutator, paper](../2-fully-proven/theta-prime-modular-commutator-crossing.md).
+
+[Back to family](#theta) · [Current TQFQ frontier](rh-current-frontier-map.md#candidate-tqfq)
+
+<a id="no-go-471"></a>
+
+### Bounded regular deconvolution of theta chronological atoms
+
+**Closed result**
+
+On paper, the smooth cutoff current is Gaussian convolution of an explicit atomic chronological measure, and its Fourier multiplier is nowhere zero: exact singular inversion recovers coefficients. Nevertheless nearby sites with opposite literal Möbius signs are invisible to fixed compact families of regular `L¹` observers; critical total variation diverges. Injectivity of convolution does not give a bounded inverse or a stable sign estimate in that observer topology.
+
+**Survivor / still open**
+
+Coefficient-faithful recovery survives in a singular distributional topology. Prove a source-controlled estimate there, retaining prime chronology and the shared reciprocal-zeta resonance; regularized recovery alone does not orient Xi.
+
+Evidence: [Chronological transfer and deconvolution, paper](../2-fully-proven/theta-chronological-boundary-positive-transfer.md).
+
+[Back to family](#theta) · [Current CSB frontier](rh-current-frontier-map.md#csb--cofinal-bernstein-sourcetarget-comparison)
 
 <a id="no-go-461"></a>
 

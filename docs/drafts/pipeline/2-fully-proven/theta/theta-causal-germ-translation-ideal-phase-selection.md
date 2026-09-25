@@ -2,9 +2,9 @@
 
 - **ID:** `theta-causal-germ-translation-ideal-phase-selection`
 - **Stage:** 2-fully-proven (paper theorem; Lean formalization open)
-- **Type:** THEOREM (paper), exact source-class obstruction and constructive local survivor
+- **Type:** THEOREM (paper), exact source-class obstruction and cofinal prime-port no-go
 - **Routes:** STC, CSB, U, BPC, K-RVM, MPLF, RHist
-- **Statement:** A smooth half-line correction that gives the completed theta port a strict right-half-plane modulus orientation must cancel every even Taylor jet of the source at the causal cut. Finite prime-translation corrections lie in the Xi ideal and cannot do this; a boundary-subtracted prime-moment port passes the local zero test but still lacks a global source inequality.
+- **Statement:** A smooth half-line correction that gives the completed theta port a strict right-half-plane modulus orientation must cancel every even Taylor jet of the source at the causal cut. Finite prime-translation corrections lie in the Xi ideal and cannot do this. Both orderings of a boundary-subtracted one-prime moment are ruled out as cofinal strip-wide ports: clock-after-deletion has a real wall shear, while deletion-after-clock fails the complex phase-aperture test forced by the proved Xi zero-radius bound.
 - **Dependencies:** [Alternating half-port orientation](theta-half-line-port-alternating-orientation.md), in particular its source nonvanishing and the unconditional two-sign simple-critical-zero density; the completed theta source's smooth even Schwartz profile and exponential moments; ordinary Fourier integration by parts and translation change of variables.
 
 ## Goal and change of representation
@@ -195,4 +195,51 @@ On the critical boundary, writing `x(γ)=XiC(γ)`, direct differentiation of (13
    -rL sin(Lγ)x(γ)x'(γ).                            (17)
 ```
 
-The first bracket is the first Laguerre margin. The second is a signed prime phase coupling and is not controlled by the source positivity used above. No global phase order or RH conclusion follows. The [ordered prime–modular theta commutator](theta-prime-modular-commutator-crossing.md) is outside the translation-polynomial class of (6), but its present real one-crossing law has not established this complex phase order. External novelty of the combined causal-germ, translation-ideal, and operator-order results is not audited. Lean formalization remains open.
+The first bracket is the first Laguerre margin. The second is a signed prime phase coupling and is not controlled by the source positivity used above.
+
+## The source-radius phase obstruction kills cofinal one-prime order
+
+**[PROVED HERE ON PAPER]** The reversed-order port (13) has a point with `D_p^cov<0` in the open physical strip `0<Re w<1/2` for **every sufficiently large prime**. This is unconditional and uses no RH case split.
+
+The [exact Xi reciprocal-square resolvent identity](../../../../../../formal/GaloisForLFunctions/RHTower/XiRelativeResolventTrace.lean) already pairs the centered canonical product under functional-equation reflection. Let `ζ_q=xiSpectralPoint q=γ_q+iδ_q` run over Xi divisor copies, with multiplicity. For every `w` with `X(w)=xi(1/2+w)≠0`, its absolutely convergent form is
+
+```text
+z(w):=X'(w)/X(w)
+    =w ∑_(q:XiZeroCopy) 1/(w²+ζ_q²).                 (18)
+```
+
+The [source second-moment radius theorem](../../../../../../formal/GaloisForLFunctions/RHTower/XiReciprocalSquareSecondMomentRadius.lean) proves `γ_q²>599/4` for **every** Xi zero; critical-strip containment gives `|δ_q|<1/2`. Both are unconditional, and the gap uses no zero computation. At `w₀=1/2+2i`, write `ζ_q=γ+iδ` and
+
+```text
+C=γ²-δ²-15/4,       D=2+2γδ,
+w₀/(w₀²+ζ_q²)=(1/2+2i)/(C+iD),
+Re[w₀/(w₀²+ζ_q²)]=(C/2+2D)/(C²+D²),
+Im[w₀/(w₀²+ζ_q²)]=(2C-D/2)/(C²+D²).               (19)
+```
+
+Here `C>γ²-4`, `2-|γ|<D<2+|γ|`, and `|γ|>12`. Consequently
+
+```text
+C/2+2D > (|γ|-2)²/2 >0,
+10[Im numerator-(9/5)·Re numerator]
+ =11C-41D >11γ²-41|γ|-126>0.                 (19a)
+```
+
+The last polynomial is positive for every `|γ|>12`. Thus **each** absolutely summable term in (18) lies in the same strict cone `Im>(9/5)Re>0`; no RH pairing or case split is needed. At least one Xi zero exists, so summing gives `z₀=z(w₀)` with `Im z₀>(9/5) Re z₀>0`. Consequently `Re z₀<|z₀|/2` (indeed `Re z₀/|z₀|<5/√106<1/2`). The wall point is nonzero unconditionally because `X(w₀)=xi(1+2i)≠0` by the proved zero-free line `Re s=1`.
+
+Choose a phase `θ_*` so that `e^(iθ_*)z₀=|z₀|`. For each large prime put `L=log p`; choose a real `β_p` with `Lβ_p≡θ_* (mod 2π)` and `|β_p-2|≤π/L`. Then `β_p→2`, while the **exact** wall symbol is
+
+```text
+A_p(1/2+iβ_p)=1-[e^(iθ_*)+p⁻¹e^(-iθ_*)]/2.       (20)
+```
+
+By this unconditional nonvanishing and continuity,
+
+```text
+Re[A_p(1/2+iβ_p) z(1/2+iβ_p)]
+  → Re z₀-|z₀|/2 <0.                             (21)
+```
+
+Equation (15) makes `D_p^cov<0` at these wall points for all sufficiently large primes, and continuity moves each negative point slightly into `0<Re w<1/2`. The exact positive survivor is a **phase-aperture classification**: for any cofinal wall multiplier of the form `1-c e^(iLβ)+o(1)` with a remainder locally uniform near `β=2` and a freely sweeping phase, strip-wide order forces `Re z(w₀)≥c|z(w₀)|`. At `w₀` the source radius makes that impossible for every `c≥5/√106`; the prime deletion coefficient is `c=1/2`.
+
+The two operator orderings thus fail for different structural reasons despite identical favorable local zero orientation. Clock-after-deletion fails on the real strip; deletion-after-clock fails at a complex point near the wall for all sufficiently large primes. A viable producer must change the wall phase geometry rather than merely differentiate, translate, or reorder a **single** Euler deletion. This does not rule out collective prime correlations, a modular commutator, or singular cofinal operations. The [ordered prime–modular theta commutator](theta-prime-modular-commutator-crossing.md) is outside the translation-polynomial class of (6), but its present real one-crossing law has not established this complex phase order. External novelty of the combined causal-germ, translation-ideal, and phase-aperture results is not audited. Lean formalization remains open.
