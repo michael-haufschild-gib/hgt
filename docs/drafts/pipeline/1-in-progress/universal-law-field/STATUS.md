@@ -7381,3 +7381,110 @@ stall a fixed factor short of their target as a structural consequence of this d
 as a deficiency of the estimates, and must require of any producer that it control a supremum at
 unknown resolution rather than an average at fixed resolution. This is the quantitative form of the
 earlier finding that the hypothesis is a separation target and not a resolution target.
+
+## MUST-426 — the discriminant law: the hypothesis is squareness of the divisor (2026-09-25)
+
+Attach to each zero the monic quadratic cutting out its functional-equation orbit,
+`Q_ρ(s) = (s − ρ)(s − (1 − ρ̄))`. Its discriminant is the constant `(2 Re ρ − 1)²`, four times the
+squared displacement, and on the critical line its value is real and non-positive,
+`Q_ρ(1/2 + it) = −[(Re ρ − 1/2)² + (t − Im ρ)²]`. Consequently the summand of the critical-line
+potential is the **discriminant ratio** `−disc(Q_ρ)/(4 Q_ρ(1/2+it))`. **Must** record the two
+consequences. First, the hypothesis is equivalent to the vanishing of every orbit discriminant, and
+equivalently to every orbit quadratic being a perfect square: the hypothesis says that the divisor is
+a square for the functional-equation involution, and the potential is the generating function of the
+discriminants. Second, every ingredient of the discriminant ratio is a holomorphic function of the
+variable once the orbit is known, so the summand of the critical-weight reader is **not** intrinsically
+non-holomorphic. What is missing is only the matching of each zero to its partner, that is a
+factorisation of the divisor into functional-equation orbits. **Must** therefore identify the analytic
+obstruction to the critical-weight reader with the arithmetic obstruction to a canonical half-divisor
+already isolated in this field: they are the same obstruction, and the matching is exactly the
+ordinate pairing, which is the separation statement recorded earlier.
+
+## MUST-427 — the threshold is two (2026-09-25)
+
+At the ordinate of an off-line zero there are two zeros, the zero and its functional-equation
+partner, which share that ordinate because the partner reflects the real part and fixes the imaginary
+part. Each contributes a full unit to the critical-line potential at that ordinate. **Must** therefore
+sharpen the threshold: the potential is at least two at the ordinate of any off-line zero, and the
+hypothesis is equivalent to the uniform bound below two rather than below one. The criterion has a
+factor of two of room, which is the first quantitative slack recorded anywhere in this field for a
+statement equivalent to the hypothesis.
+
+## CANNOT-428 — the weight trichotomy: only one exponent carries the signal (2026-09-25)
+
+A reader that weights a zero by `δ²/(δ² + τ²)^k` receives exactly `δ^{2−2k}` from that zero at its
+own ordinate. At `k = 0` the signal is `δ²` and vanishes with the displacement; at `k = 1` it is one,
+independent of the displacement; at `k = 2` it is `1/δ²` and diverges. **Cannot** decide the
+hypothesis with a reader at either flanking exponent, and the two failures have opposite causes. The
+whole averaged family — density integrals, Littlewood and Jensen consumers, mollified moments,
+smoothed counts — sits at the vanishing exponent and is blind for the reason already recorded. The
+Laguerre expression sits at the diverging exponent, where the contribution of an off-line pair is
+`−2/δ²` and must be cancelled against a sum over the remaining zeros that nothing bounds, which is
+exactly what made the inner-band route circular. **Must** therefore treat the middle exponent as the
+only surviving weight in this field, and read the two retired lanes as the two ways of missing it.
+
+## MUST-429 — the matching is conjugation, and MUST-426's identification was wrong (2026-09-25)
+
+In the spectral coordinate `z_ρ = (ρ − 1/2)·(−i)` the functional-equation partner of a zero is its
+complex conjugate, `z_{σρ} = z̄_ρ`. The matching therefore requires no choice: it is the pairing of
+the non-real zeros of a real entire function with their conjugates, and each orbit quadratic is the
+corresponding real quadratic factor. **Must** correct the identification made in this field's
+immediately preceding entry: the obstruction to the critical-weight reader is **not** a half-divisor
+and is unrelated to the failure to construct a canonical square root of the divisor. That entry's
+first conclusion, that the hypothesis is the squareness of the divisor under the involution, stands
+unchanged; its second conclusion, that the missing datum is the matching, is withdrawn. The matching
+is free.
+
+## MUST-430 — the potential is a linear Blaschke defect, and the weight is the whole difficulty (2026-09-25)
+
+With the matching in hand, attach to each zero its Blaschke factor at a real point,
+`B_ρ(t) = (t − z̄_ρ)/(t − z_ρ)`. It is unimodular on the real axis, equals one exactly when the zero
+lies on the critical line, and the partner's factor is its conjugate. The bump of the potential is
+its defect from one, `bump_ρ(t) = ‖1 − B_ρ(t)‖²/4 = (1 − Re B_ρ(t))/2`, and a zero together with its
+partner contributes four times one bump, so the potential is the total Blaschke defect halved:
+`Σ_ρ (1 − B_ρ(t)) = 2 U(t)`. **Must** record that the potential is therefore *linear* in the family of
+defects rather than quadratic, and that the defect has the closed form
+
+  `1 − B_ρ(t) = 2i (Re ρ − 1/2)/(t − z_ρ)`,
+
+the resolvent at the zero weighted by its displacement. **Cannot** obtain that weighting from the
+holomorphic data: the Taylor coefficients of the logarithmic derivative of the completed function at
+a real point deliver exactly the unweighted power sums `Σ_ρ (t − z_ρ)^{-k}` for `k ≥ 1`, and no
+combination of them attaches the displacement to its own resolvent, because the displacement is the
+imaginary part of the point and the power sums are conjugation-symmetric. **Must** therefore restate
+the open core as the problem of weighting the resolvent by the displacement, which is a sharper and
+more nearly standard object than any previous formulation in this field, and is where the next
+attempt should begin.
+
+## MUST-431 — localised Hermite positivity, and one negative value refutes (2026-09-25)
+
+Fix a real base point `t` off the spectral divisor and set `u_q = (t − z_q)^{-1}`. The localised power
+sums `p_k(t) = Σ_q u_q^k` converge for every `k ≥ 2`, because a point off the divisor stays a
+positive distance from all of it — the divisor is locally finite, so only finitely many spectral
+points lie within a unit of the base point and each of those is at positive distance, while the rest
+are at distance at least one. The lowest member is an explicit derivative of the logarithmic
+derivative of the completed function, `p_2(t) = −(log-derivative)'(t)`, so these are holomorphic data.
+For a real test vector supported on a finite set the Hankel form of these power sums factors
+exactly and unconditionally,
+
+  `Σ_{i,j} c_i c_j p_{i+j+2}(t) = Σ_q P(u_q)²`,   `P(x) = Σ_i c_i x^{i+1}`.
+
+**Must** record that under the hypothesis every `u_q` is real, so the right-hand side is a sum of
+squares of real numbers and the form is a nonnegative real at every base point and every test
+vector; and contrapositively that **a single negative value of the form, at one base point and one
+test vector, refutes the hypothesis**. The line conjugation acts on the localised resolvent as
+complex conjugation, so a zero and its functional-equation partner contribute a square and its
+conjugate, and an orbit contributes twice a real part; that is the only place a negative value can
+come from.
+
+**Must** also record what is and is not new here. Hermite's criterion, the finite Hankel positivity
+for a finite real spectrum, the finite Hermite–Sylvester converse and the Jensen–Turán hyperbolicity
+route are all already held in this field. All of them are anchored at a single base point, which the
+weight analysis of this lane shows cannot see a zero near the line, because the signal sits at the
+scale of the displacement and at the place fixed by the ordinate. The new element is the
+**localisation**: the criterion is now anchored at every real base point, which is the shape the
+weight analysis demands. **Cannot** yet claim the converse: the finite Hermite–Sylvester converse
+held in this field does not transfer to an infinite divisor, where the negative contribution of one
+orbit must outweigh the positive contributions of all the on-line zeros, and that comparison is the
+uncontrolled local clustering already identified. The positivity is therefore a necessary condition
+with a falsification route, not yet a criterion.

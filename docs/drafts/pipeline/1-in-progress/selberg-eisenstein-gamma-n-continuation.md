@@ -138,3 +138,31 @@ E(z,s) = P_0(z,s) = y^s + Σ_{c≠0} c^{-2s} N^{-s} Σ_n 𝓕ker_{0,y/N,s}(n) S_
   Q2c  D_n(s) = Σ_c|c|^{-2s}ksumσ(c,n) = Σ_± Σ_{M|n} M^{1−2s} Σ_u F_{±,M}(u) L_u(2s); continuation near the line.
   Q3   E*_ext(z,s) = Σ_{n≠0} N^{-s}kerBessel(y/N,s,n)e(nx/N)D_n(s); locally uniform bounds (K-Bessel decay, d(n)n^{2δ}).
   Q4   identity with Econt on Re s > 1/2; constant term via cBeta and ζ(2s−1)/L(2s,·).
+- 2026-09-25 — Q2 done. `CoprimeClassExact` (exact class sums), `SelbergMoebiusUnitClassL` (L_u(w) = φ(N)^{-1}Σ_χ χ̄(u)/L(w,χ),
+  holomorphic on Re w ≥ 1, w ≠ 1), `SelbergEisensteinCoefficientSeries` (`tsum_ksumσ_eq_Dn`: Σ_c|c|^{-2s}S_σ(0,n;c) = D_n(s)
+  on Re s > 1/2; `differentiableAt_Dn` off zeros of L(2s,χ), 2s ≠ 1; `differentiableAt_Dn_of_half_le` on Re s ≥ 1/2,
+  s ≠ 1/2; `norm_Dn_le`). All built, wired, axioms clean. Next: Q3 (E*_ext and its holomorphy near the line).
+- 2026-09-25 — Q3/Q4 DONE. `SelbergEisensteinStarCriticalLine` (built, wired): `Wset` (open: Re s > 0, 2s ≠ 1, L(2s,χ) ≠ 0 ∀χ),
+  `EstarExt` = Σ_{n≠0} N^{-s}·kerBessel·e(nx/N)·D_n(s), `Estarσ_eq_EstarExt` (Re s > 1/2), `differentiableAt_EstarExt` on W
+  (Bessel envelope + D_n growth + Cauchy-dominated tsum). `SelbergEisensteinCriticalLine` (built, wired, axioms clean):
+  `phiExt` (continued scattering entry), `EcuspExt`, `Econt_smul_eq_EcuspExt` (N ≥ 3) and
+  `differentiableAt_EcuspExt_of_half_le`: every Γ(N) Eisenstein series E_∞(σz,s) is holomorphic on a neighbourhood of
+  {Re s ≥ 1/2} \ {1/2, 1}, in particular on the critical line minus s = 1/2.
+  Next toward Kuznetsov: (i) behaviour at s = 1/2 and the functional equation/unitarity of the scattering matrix on the line;
+  (ii) Maass–Selberg for Γ(N) (truncated L² norms on the line); (iii) spectral decomposition. Very long road.
+- 2026-09-25 — PLAN MS-N (Maass–Selberg for Γ(N), coset-sum form over the level-one cell 𝒟 = fd):
+  (A) pairing over Γ(N)\ℍ = ∫_𝒟 Σ_{q∈SL₂(ℤ)/Γ(N)} F(q̃z)G(q̃z) (generalize SarnakXueInner/Pretrace from eigenfunctions).
+  (B) for z ∈ 𝒟: E_u(q̃z) = count₀(q)y^u + N^{-u}(y/N)^{1−u}φ_q(u) + E*_q(u,z) (= `Ecusp`, σ = q̃).
+  (C) Λ^Y at coset level: L_q(u,Y,z) = E_u(q̃z) − [y>Y](count₀(q)y^u + N^{-u}(y/N)^{1−u}φ_q(u)).
+  (D) zero mean: Σ_q ∫_{𝒟∩{y>Y}} E*_q(u,z)·c_q(v,y) dμ = 0, grouping q by right T-translates (E*_{qT^j}(u,z) = E*_q(u,z+j),
+      count₀ and φ invariant under q ↦ qT^j) so the N width-1 pieces make a full period of e(nx/N), n ≠ 0.
+  (E) unfolding: Σ_q Σ_{γ∈Γ∞(N)\Γ(N)} f(γq̃z) = Σ_{δ∈⟨T^N⟩\SL₂(ℤ)} f(δz); ∫_𝒟 Σ_δ = 2∫_{strip width N}.
+  (F) slab/cusp integrals → Maass–Selberg in the region Re u > Re v > 1/2, then continuation.
+- 2026-09-25 — MS-N (E) generalized: `SelbergSeedUnfolding.seed_unfold` (built, wired): ∫_{cellP}(Σ_q F(qz))g = ∫_{strip} F g
+  for any ⟨T^N⟩-invariant seed F. Next: truncation Λ^Y on cellP = ⋃_c R_c·fd via cusp pieces R_c(fd ∩ {y > Y}),
+  the row-height bound on fd (rows with c ≠ 0 have height ≤ 1, corpus `rowHeight_le_one_of_mem_fd`), truncation identity.
+- 2026-09-25 — MS-N (C/E): `SelbergTruncationIdentity` (built, wired): `truncation_identity`: for w ∈ fd, Y ≥ 1,
+  E_∞(σw,u) = rowSumY(u)(σw) + [Im w > Y]·count₀(σ)·(Im w)^u (rows with c ≠ 0 have height ≤ 1 on fd).
+  Remaining MS-N steps: coset-sum integral ∫_{cellP} F = Σ_c ∫_fd F(R_c w) (PSL cosets; Deck = 2× PSL cosets for N ≥ 3);
+  T-orbit structure c ↦ cT^j (orbits of size N) and E*_{σT^j}(u,w) = E*_σ(u,w+j) ⇒ zero mean of E* over the orbit;
+  slab (seed_unfold) and cusp integrals; final formula.

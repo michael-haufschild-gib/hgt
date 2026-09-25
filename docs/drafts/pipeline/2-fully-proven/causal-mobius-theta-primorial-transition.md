@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven (paper theorem; Lean formalization open)
 - **Type:** THEOREM (paper)
 - **Routes:** L, PSRC
-- **Statement:** The exact theta observation has a uniformly bounded prime-only physical innovation. On a uniform primorial cycle its arithmetic layers factor into smooth and rough cofactors; all non-largest-prime layers have a power-saving total theta observation, leaving a signed largest-prime current.
+- **Statement:** The exact theta observation has a uniformly bounded prime-only physical innovation. On a uniform primorial cycle its arithmetic layers factor into smooth and rough cofactors; completed-theta reflection makes all non-largest-prime layers superpolynomially small in total, leaving the signed largest-prime current.
 
 ## Goal
 
@@ -149,33 +149,38 @@ classes of `d` sharing that gcd. Consequently, for prime `p`,
 (U_p-U_(p-1))f_d=0                if p does not divide d.       (8)
 ```
 
-Let `a_N(r)=w_r*q_N^flat(r)` and periodize the absolutely summable
-observer by
+For this uniform-cycle argument, use the unflattened exact theta test
+`q_N` from the causal criterion. Put
+`a_N(r)=w_r*q_N(r)=[g(r/N)-g((r+1)/N)]/sqrt(N)` for `r>=1`, and
+extend it by the same difference formula at `r=0`. Since `g(0)=0`,
+`a_N(0)=-g(1/N)/sqrt(N)` and `sum_(r>=0)a_N(r)=0` exactly.
+Extend `C_N` by `C_N(0)=0`, so this extra cell leaves the original
+pairing unchanged. Periodize the absolutely summable observer by
 
 ```text
-Q_N(a)=M*sum_(r>=1, r=a mod M) a_N(r),  a in Z/MZ.
+Q_N(a)=M*sum_(r>=0, r=a mod M) a_N(r),  a in Z/MZ.
 ```
 
 With normalized uniform inner product `⟨u,v⟩_M=M^(-1)*sum_a u(a)v(a)`,
 periodicity gives the **exact** identity
 
 ```text
-⟨C_N,q_N^flat⟩_H=⟨C_N,Q_N⟩_M.                         (9)
+⟨C_N,q_N⟩_H=⟨C_N,Q_N⟩_M.                              (9)
 ```
 
-The constant layer contributes only `O(N^(-3/2))`: its source average
-has modulus at most `N`, while the exact observer mean is
-`sum_r a_N(r)=g(1/N)/sqrt(N)=O(N^(-5/2))`. Telescoping uniform
-projections, using (8), and writing `d=p*m` therefore gives
+The constant layer has zero pairing because the extended observer
+has exact mean zero. Telescoping uniform projections, using (8),
+and writing `d=p*m` therefore gives
 
 ```text
 B(N) = -sum_(p<=N, p prime) ⟨(U_p-U_(p-1))f_p,Q_N⟩_M
        -sum_(p*m<=N, p prime, m>=2, p does not divide m)
           mu(m)*⟨(U_p-U_(p-1))f_(p*m),Q_N⟩_M
-       +O(N^(-3/2)).                                   (10)
+       +e_N.                                           (10)
 ```
 
-Here the displayed error also includes `e_N=O(N^(-5/2))` from (5).
+Here `e_N=O(N^(-5/2))` is the exact remainder in the unflattened
+source identity of the causal criterion.
 Equation (10) is a source-faithful prime--cofactor decomposition with
 **no nonincident prime layers**. It gives a different interpretation of
 the physical predictable drift: its nonincident response is measure
@@ -238,87 +243,83 @@ sum over `a` and `p`.
 
 ### Largest-prime reduction [PROVED HERE; paper]
 
-Choose the cutoff and the two moment-correcting bumps used to make
-`q_N^flat` from a fixed Gevrey class of order `s` with `1<s<2`.
-For example, the standard positive-side germ `exp(-1/x^2)` (zero for
-`x<=0`) gives order `s=3/2` cutoffs and bumps by translation,
-reflection and multiplication. The two correction
-coefficients remain uniformly bounded by the same moment-matrix
-argument as above. The exact observation and (5) are unchanged.
-For `beta=1/s>1/2`, the weighted test has
+The actual theta atom gives more than generic smooth-wavelet decay.
+Recall `a_N(r)=[g(r/N)-g((r+1)/N)]/sqrt(N)` and set
 
 ```text
-a_N(r)=w_r*q_N^flat(r)=N^(-3/2)*G_N(r/N),
-|Fourier(G_N)(xi)|<=C*exp(-c*|xi|^beta),
-sum_(r>=1)|a_N(r)|<=C*N^(-1/2),                (14)
+A_N(a,p)=sum_(r>=0) a_N(r)*psi_p(floor(r/a)),
+G(x)=sum_(m>=1)g(m*x),  x>0.
 ```
 
-with constants independent of `N`. The Fourier estimate follows by
-integrating by parts `k` times using uniform bounds
-`||G_N^(k)||_1<=C^(k+1)*(k!)^s`, then taking
-`k` of order `|xi|^(1/s)`. The cutoff makes `G_N` vanish near the
-origin, so Poisson summation applies on the full integer lattice.
-
-For any zero-mean, period-`h` sequence `v` with `|v|<=1`, discrete
-Fourier expansion and Poisson summation give, when `h<=N`,
+Abel summation on the integer cells is exact. The centered sawtooth
+changes only at `r=j*a`, where its jump is `1/p-1_(p|j)`.
+Because `g(r/N)` tends rapidly to zero and `g(0)=0`, the extended
+`r=0` cell removes the boundary term:
 
 ```text
-|sum_(r>=1) a_N(r)*v(r)|
- <=C*N^(1/2)*exp(-c*(N/h)^beta).              (15)
+A_N(a,p)=1/sqrt(N)*[
+   (1/p)*sum_(j>=1)g(j*a/N)
+   -sum_(k>=1)g(k*p*a/N)].                     (14)
 ```
 
-Indeed each nonconstant discrete frequency is at distance at least
-`1/h` from an integer; there are at most `h<=N` frequencies.
-The trivial `L1` bound from (14) also gives `C*N^(-1/2)` for every
-such `v`.
-
-The contribution to (10) from `b>1` in (12) is `O(N^(-eta))` for some
-`eta>0`, even after
-taking its absolute value. Here is the full count. Choose
-`P=(D*log N)^(1/beta)` with `D` a sufficiently large fixed constant.
-For `p<=P`, group the rough `b` sum as `H_p-1`; its absolute value is
-at most `1+log N`. The number of eligible `a` is at most the number
-of integers `a<=N` whose prime factors are at most `P`. For any
+The exact completed-theta reflection used in the causal criterion is
+`G(1/x)=x*G(x)` for every `x>0`. Applying it at `x=N/a` and
+`x=N/(p*a)` turns (14) into the **source-specific duality**
 
 ```text
-1-1/s < sigma < 1/2,
+A_N(a,p)=sqrt(N)/(p*a)*[G(N/a)-G(N/(p*a))]. (15)
 ```
 
-Rankin's inequality bounds that count by
-`N^sigma*prod_(q<=P, q prime)(1-q^(-sigma))^(-1)
- =N^(sigma+o(1))`: the logarithm of the product is
-`O(P^(1-sigma))=o(log N)`. Thus the entire `p<=P` contribution is
-at most `N^(-1/2+sigma+o(1))*polylog(N)=o(1)`.
+For `x>=1`, the explicit Gaussian polynomial defining `g` gives
+`|G(x)|<=C*exp(-c*x^2)` after absorbing polynomial factors into
+the exponential. Since `p*a<=N`, put `x=N/(p*a)>=1`; then
 
-For `p>P` and `b>1`, every prime factor of `b` exceeds `p`, so
-`h=p*a<=N/b<N/p`. Apply (15) to the centered period-`p*a`
-sequence in (12), obtaining `C*N^(1/2)*exp(-c*p^beta)`.
-There are at most `N*log_2 N` triples `(p,a,b)` with `p*a*b<=N`;
-the factor `1/b` only helps. Their total is bounded by
-`C*N^(3/2)*log N*exp(-c*P^beta)=O(N^(-1))` after increasing `D`.
-For example, `s=3/2` and `sigma=5/12` allow any fixed
-`eta<1/12` for all sufficiently large `N`.
+```text
+|A_N(a,p)|<=C*N^(-1/2)*exp(-c*x^2).          (15a)
+```
 
-The same low-`p` count applies to the full `H_p`, including `b=1`.
-Thus every prime layer with `p<=P` has a power-saving **combined**
-theta observation. The surviving largest-prime sum may equivalently
-be restricted to `p>P`, after reducing `eta` if necessary.
+In a non-largest-prime term `d=p*a*b` from (12), `b>1` has every
+prime factor larger than `p`. Hence `x=N/(p*a)>=b>p`.
+Equation (15a) suppresses that term by a Gaussian in the **later
+prime**, before using its Möbius sign. To sum all these bounds,
+split at `P=log N/(4*log log N)` for sufficiently large `N`.
+For `p<=P`, every `a|R_(p-1)` satisfies
+`a<=R_(p-1)<=p^p<=N^(1/4)`; hence
+`x=N/(p*a)>=N^(1/2)` for large `N`. For `p>P` and `b>1`,
+`x>=b>p>P`, so `x^2` grows faster than `log N`.
+There are at most `N*log_2 N` triples `(p,a,b)` with
+`p*a*b<=N`. Thus the Gaussian sum of **all** `b>1` terms in
+(10) is `O_A(N^(-A))` for every fixed `A>0`, even after taking
+absolute values. The same argument shows that all `b=1` terms
+with `p<=P` are superpolynomially small.
 
-Consequently the exact causal observation has the **largest-prime
-normal form**
+Consequently the exact causal observation has the
+**largest-prime normal form**
 
 ```text
 B(N)=-sum_(p<=N, p prime)
        sum_(a|R_(p-1), p*a<=N)
-         mu(a)*sum_(r>=1) a_N(r)*psi_p(floor(r/a))
-     +O(N^(-eta)).                                   (16)
+         mu(a)*sum_(r>=0) a_N(r)*psi_p(floor(r/a))
+     +e_N+O_A(N^(-A))  (every fixed A>0).              (16)
 ```
 
 Each squarefree modulus `p*a` appears once, at its largest prime.
 All earlier-prime projections of that same atom have negligible
-combined theta observation. The signed largest-prime sum in (16)
-still has the full RH difficulty; this theorem changes its source
-geometry, not its bound.
+combined theta observation. The same low-`p` estimate allows the
+sum in (16) to be restricted to `p>P`. The signed largest-prime sum
+still has the full RH difficulty; the new gain is exact
+theta-reflection control of every earlier prime layer.
+
+There is an important whole-chain check. In (15), the first term
+`G(N/a)` is itself superpolynomially small after summing all
+`p*a<=N`: for `p<=P`, `N/a>=N^(3/4)`, while for `p>P`,
+`N/a>=p>P`. The second term satisfies
+`sqrt(N)/(p*a)*G(N/(p*a))=(p*a)^(-1/2)*k(log(N/(p*a)))`.
+Since `mu(p*a)=-mu(a)`, the largest-prime current in (16) is,
+up to `O_A(N^(-A))`, the negative finite Möbius--theta head
+over `2<=d<=N`. This identifies its arithmetic content exactly:
+the new decomposition removes nonterminal geometric layers but does
+not generate the missing cancellation of the finite head.
 
 The remaining current is exactly a **sieve dilation defect**. Let
 `X=N/p`, `Q=R_(p-1)`, and define the truncated wheel count
@@ -337,10 +338,8 @@ sum_(a|Q, a<=X) mu(a)*psi_p(floor(r/a))
    -(p-1)/(2*p)*M_(p,X).                         (17)
 ```
 
-The last term has total theta observation
-`O(N^(-5/2)*sum_(p<=N)N/p)=O(N^(-3/2)*log N)` by the exact zeroth
-moment of `q_N^flat` inherited from the causal criterion. It is
-absorbed in (16). Hence RH now asks for a
+The last term has **zero** theta observation because
+`sum_(r>=0)a_N(r)=0` exactly. Hence RH now asks for a
 subpower bound on the **wavelet observation of the complete
 cross-prime scale defect**
 `S_(p,N/p)(r)/p-S_(p,N/p)(floor(r/p))`, summed over primes.
@@ -356,7 +355,8 @@ Subpower growth of the prime-only covariance in (7), for every fixed
 to RH. The stronger uniform-cycle result (16)--(17) identifies the
 same hard observation, up to a power-saving error, as the signed
 largest-prime current or equivalently the wavelet-tested cross-prime
-sieve dilation defect. Higher prime-power clock layers in the lcm
+sieve dilation defect, with the explicit remainder `e_N`.
+Higher prime-power clock layers in the lcm
 filtration were refinements of the physical observation, not arrivals
 of squarefree source atoms. No signed subpower estimate for the
 largest-prime current is proved here.

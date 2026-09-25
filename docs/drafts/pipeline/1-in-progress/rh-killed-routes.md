@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**447 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**454 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,13 +11,13 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-25, `89fc8bbe6`**.
+Source-audit cutoff: **2026-09-25, `06179ead3`**.
 Updated records link to committed Lean statements and explicitly marked paper proofs;
 unchanged records retain their historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
 RBH's retired architecture remain accessible from
 the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subroutes).
-Concurrent uncommitted formal edits remain pending evidence and are not counted.
+Concurrent uncommitted paper-card revisions remain pending evidence and are not counted.
 
 ## Browse by family
 
@@ -25,12 +25,12 @@ Concurrent uncommitted formal edits remain pending evidence and are not counted.
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 37 |
-| [E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation](#arithmetic) | 60 |
+| [E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation](#arithmetic) | 61 |
 | [HB, FZZ and PW: scattering and physical action](#scattering) | 93 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 44 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 46 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 71 |
-| [Analytic roots, multiplicity and regularization](#roots) | 11 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 74 |
+| [Analytic roots, multiplicity and regularization](#roots) | 12 |
 | [Other finite, scalar and source-blind selectors](#other) | 85 |
 
 <a id="retired-labels"></a>
@@ -988,6 +988,7 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 
 ## E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation
 
+- [E far-prime completed-cofactor sign as global debt](#no-go-449)
 - [E coordinatewise primitive parent payment](#no-go-436)
 - [LI global real-axis scalar-sign selector](#no-go-437)
 - [E harmonic-prefix-only Gamma--Hankel ceiling](#no-go-429)
@@ -1048,6 +1049,22 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 - [HCF positivity-only uniform-grid alias variance](#no-go-395)
 - [HC line-conjugation-stable scalarization of ordered-prime orientation](#no-go-396)
 - [T2 polynomial source graphs plus fixed Bohr datum](#no-go-397)
+
+<a id="no-go-449"></a>
+
+### E far-prime completed-cofactor sign as global debt
+
+**Closed result**
+
+On paper, completing all smaller-prime denominator cofactors beneath a far prime `q>32∏_{p∈P}(1+p²)` preserves a fixed numerator cube's parity with an explicit `q⁻²` margin. Even for supports moving within that threshold, **one selected cube per fibre** has a summable `q⁻⁵ᐟ⁴` majorant. This does not bound the number or overlap of cubes covering the full source. The theorem is Lean-pending.
+
+**Survivor / still open**
+
+The exact Euler-factor main term and sign margin survive. Route E must analyze collective cube multiplicity, the joint-scale regime `∏(1+p²) ≳ q`, other primitive pairs and cross-fibre signed cancellation; the far-fibre asymptotic is not uniform there.
+
+Evidence: [largest-prime paper proof and status](route-e-largest-prime-fibre-parity.md).
+
+[Back to family](#arithmetic) · [Current E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
 
 <a id="no-go-436"></a>
 
@@ -3715,6 +3732,8 @@ Evidence: [translated charge and cusp nonintegrability](../../../../formal/Galoi
 
 ## Theta, Schur, spectral and positivity mechanisms
 
+- [O/genus fixed-part count as free-orbit selector](#no-go-448)
+- [Global reflected Riccati and three scalar charges as zero selector](#no-go-453)
 - [Cofinal theta sieve with uniformly bounded signed cusp variation](#no-go-447)
 - [O reflected lag Gram positivity](#no-go-441)
 - [K-RVM generic monotone/log-concave moment-gate positivity](#no-go-432)
@@ -3761,6 +3780,38 @@ Evidence: [translated charge and cusp nonintegrability](../../../../formal/Galoi
 - [P/SP-E finite Lorentz-graph coercivity](#no-go-386)
 - [K-RVM paired quartic determinant identity](#no-go-398)
 - [SQB tensor-square unitarity as finite packet selector](#no-go-399)
+
+<a id="no-go-448"></a>
+
+### O/genus fixed-part count as free-orbit selector
+
+**Closed result**
+
+Lean proves the reflection-fixed part of each Xi height slice has at most one point unconditionally, while the whole slice may additionally contain paired free orbits: `#slice=#fixed+2#left`. Computing only an ambiguous/fixed-part count cannot force the free count to vanish. This retires that precise classical genus-formula producer, not every arithmetic or unlocalized equivariant approach.
+
+**Survivor / still open**
+
+The exact fixed/free slice classification remains. Derive pre-divisor source data that constrains the **free** half-slice, or prove O's signed Weil wall independently; a count of critical zeros alone restates a receiver.
+
+Evidence: [fixed slice in Lean](../../../../formal/GaloisForLFunctions/RHTower/DivisorSliceFixedPart.lean), [free slice](../../../../formal/GaloisForLFunctions/RHTower/DivisorSliceFreePart.lean), [retired proposal](../5-failed/genus-programme-retired.md).
+
+[Back to family](#theta) · [Current O frontier](rh-current-frontier-map.md#o--restricted-weil-ground-and-genus-lag-order)
+
+<a id="no-go-453"></a>
+
+### Global reflected Riccati and three scalar charges as zero selector
+
+**Closed result**
+
+Paper countermodels have positive even strongly log-concave sources, order-at-most-one entire Fourier transforms and strictly positive global two-variable reflected Riccati jets, yet arbitrarily many off-real strip zeros. A refined construction also matches the literal theta source's ordinary mass and both half-density charges exactly while retaining an off-real zero. These are counterfeit sources, not Xi; both combined countermodels are Lean-pending.
+
+**Survivor / still open**
+
+The quantitative Riccati margin and charge-fitting construction separate local curvature/scalar budgets from nonlocal phase. CSB, STC, U, K-RVM and MPLF still need a **literal Euler/modular** all-prime orientation or boundary-response law; these countermodels do not rule out such a source-specific theorem.
+
+Evidence: [global Riccati construction](../2-fully-proven/theta-global-riccati-order-one-offline-countermodel.md), [three-charge refinement](../2-fully-proven/theta-riccati-three-charge-offline-countermodel.md).
+
+[Back to family](#theta) · [Shared theta frontier](rh-current-frontier-map.md#theta-derivative-packets-and-finite-data-blindness)
 
 <a id="no-go-447"></a>
 
@@ -4996,6 +5047,9 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 
 ## Ward, Suzuki, prime–Gamma and operator landing
 
+- [STC rank-two local defect as finite global negative index](#no-go-450)
+- [STC one fixed closed normalized source-to-seam graph](#no-go-451)
+- [STC bounded fixed rigged Xi-divisor reading](#no-go-452)
 - [STC uniformly bounded linear all-height source-to-seam landing](#no-go-446)
 - [U finite-prime shifted-Xi Pick positivity](#no-go-442)
 - [STC bounded flat-gap seam reader](#no-go-443)
@@ -5065,6 +5119,54 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 - [D2 source-selected reciprocal-power moment tail](#no-go-390)
 - [EGC reflection-only shifted-pole correction](#no-go-391)
 - [G symmetric Schwarz-cap regularization](#no-go-392)
+
+<a id="no-go-450"></a>
+
+### STC rank-two local defect as finite global negative index
+
+**Closed result**
+
+A paper counterfeit positive even rapid-decay source has Hilbert–Schmidt inverse and the same rank-two monopole–dipole Green defect, yet infinitely many distinct off-real source modes. Any faithful Pontryagin self-adjoint realization of its first `N` upper-half-plane modes needs negative index at least `N`. A local two-port defect alone cannot impose a universal index-one spectral bound. This is not a theta/Xi counterexample and is Lean-pending.
+
+**Survivor / still open**
+
+The neutral-subspace lower bound is exact. STC needs a **source-specific two-parameter transfer/Green kernel** controlling negative squares across spectral parameters, not a count of local boundary ports.
+
+Evidence: [paper construction and proof](../2-fully-proven/stc-universal-boundary-pontryagin-countermodel.md).
+
+[Back to family](#ward) · [Current STC frontier](rh-current-frontier-map.md#stc--exterior-sonin-seam-coherence)
+
+<a id="no-go-451"></a>
+
+### STC one fixed closed normalized source-to-seam graph
+
+**Closed result**
+
+On paper, any fixed closed linear relation containing every normalized cofinal signed-squarefree source vector and its prime-seam target at all heights has the entire prime space as vertical fibre. Its minimal closed graph is the squarefree source subspace times the full prime target, so it cannot determine an output. This does not forbid scale-dependent maps. Lean currently proves source Gram collapse, not this relation theorem.
+
+**Survivor / still open**
+
+After removing the divergent probability normalization, a small positive loss of coefficient regularity gives an exact bounded critical prime extractor on paper; Lean proves its multiplier bound for `0<a<min(β,1−β)`. That extractor is nonselective off center. A Xi-divisor law and Calkin orientation remain open.
+
+Evidence: [graph collapse and rigged recovery, paper](../2-fully-proven/stc-physical-ordinate-transport-singularity.md), [bounded rigged multiplier in Lean](../../../../formal/GaloisForLFunctions/RHTower/STCRiggedPrimeSeamBound.lean).
+
+[Back to family](#ward) · [Current STC frontier](rh-current-frontier-map.md#stc--exterior-sonin-seam-coherence)
+
+<a id="no-go-452"></a>
+
+### STC bounded fixed rigged Xi-divisor reading
+
+**Closed result**
+
+Paper zero-density argument: any bounded fixed scalar reading of the rigged squarefree source is either identically zero on that source or has only `O(T)` real zeros through height `T`. Positive-proportion simple critical Xi zeros have order `T log T` count. Thus no nontrivial fixed bounded reader, finite determinant of such readings, or determinant convergent in one fixed positive weighted-Wiener norm can carry the entire critical Xi divisor. This source-specific theorem is Lean-pending.
+
+**Survivor / still open**
+
+The strip-holomorphic Dirichlet almost-periodic observation class is sharply identified. A divisor-faithful cofinal scalar limit must have diverging reader norms or leave every fixed weighted-Wiener aperture; construct such a source-selected singular limit and retain the seam/Calkin bound.
+
+Evidence: [zero-density proof and singular-reader necessity, paper](../2-fully-proven/stc-physical-ordinate-transport-singularity.md).
+
+[Back to family](#ward) · [Current STC frontier](rh-current-frontier-map.md#stc--exterior-sonin-seam-coherence)
 
 <a id="no-go-446"></a>
 
@@ -6288,6 +6390,7 @@ Evidence: [adjacent essential-norm theorem](../../../../formal/GaloisForLFunctio
 
 ## Analytic roots, multiplicity and regularization
 
+- [Mass-only bounds for a unit-height off-line Poisson bump](#no-go-454)
 - [compact Thorin/Markov/seam-log Hankel](#no-go-260)
 - [convolution-inverse analytic twins](#no-go-063)
 - [finite holomorphic/difference-form Yang--Baxter selector](#no-go-094)
@@ -6299,6 +6402,22 @@ Evidence: [adjacent essential-norm theorem](../../../../formal/GaloisForLFunctio
 - [symplectic doubling, universal even multiplicity, or quadratic-symbol orientation](#no-go-060)
 - [one-point Cauchy marginal as horizontal-displacement detector](#no-go-339)
 - [MPLF bounded forward raw-jet recovery](#no-go-371)
+
+<a id="no-go-454"></a>
+
+### Mass-only bounds for a unit-height off-line Poisson bump
+
+**Closed result**
+
+Lean proves an elementary bump `d²/(d²+(t−γ)²)` has peak one at `t=γ`, while its integral on any symmetric finite window is `<π|d|`. For arbitrarily small nonzero displacement, every fixed amplification of this mass is arbitrarily small although the peak persists. Thus no **uniform bound on bump mass alone** controls the height needed by the critical-line Poisson receiver. This is a kernel countermodel, not a theorem that every zero-density method fails.
+
+**Survivor / still open**
+
+The explicit scale `|d|` and unit-height threshold identify the needed pointwise/resolution-sensitive quantity. Prove `U(t)<1` for all heights from literal arithmetic, or derive another source-side law; the Lean equivalence itself is only an RH receiver.
+
+Evidence: [bump integral and countermodel](../../../../formal/GaloisForLFunctions/RHTower/DisplacementMassBlindness.lean), [Poisson receiver](../../../../formal/GaloisForLFunctions/RHTower/CriticalLinePoissonPotential.lean).
+
+[Back to family](#roots) · [Transverse shared frontier](rh-current-frontier-map.md#transverse-zero-network-and-angular-threshold)
 
 <a id="no-go-260"></a>
 

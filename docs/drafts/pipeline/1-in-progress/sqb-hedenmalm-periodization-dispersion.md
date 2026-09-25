@@ -4,6 +4,7 @@
 - **Route:** SQB, using the corpus's Hedenmalm exact-spectrum carrier.
 - **Claim boundary:** The original scalar periodization has an exact metric loss; a uniquely source-matched complete-row lift preserves the Hedenmalm metric and isolates the fixed forcing. Its fluctuation channel has exact one-dimensional kernel, retained Xi-mode mass, and a one-dimensional multivalued differential defect. One fixed cusp-weighted Hilbert norm detects off-real Xi zeros throughout the physical strip: a source-faithful regularity occurrence, not a self-adjoint spectral occurrence. No RH proof follows.
 - **Frontier map:** read-only.
+- **Prime-sieve mode boundary:** [Exact cofinal causal-mode escape](../2-fully-proven/sqb-prime-deletion-causal-mode-escape.md) identifies the nonzero Gaussian radiation trace lost under compact-local source convergence.
 
 ## Chain and hard obstacle
 
