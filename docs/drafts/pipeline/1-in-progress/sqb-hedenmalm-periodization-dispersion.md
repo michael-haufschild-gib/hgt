@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress; exact paper identity, Lean formalization open.
 - **Route:** SQB, using the corpus's Hedenmalm exact-spectrum carrier.
-- **Claim boundary:** The original scalar periodization has an exact metric loss; a uniquely source-matched complete-row lift preserves the Hedenmalm metric and isolates the fixed forcing. Its fluctuation channel has exact one-dimensional kernel, retained Xi-mode mass, and a one-dimensional multivalued differential defect. All cusp-height moments of that positive fluctuation norm are finite exactly at off-real Xi zeros: a source-faithful regularity occurrence, not a self-adjoint spectral occurrence. No RH proof follows.
+- **Claim boundary:** The original scalar periodization has an exact metric loss; a uniquely source-matched complete-row lift preserves the Hedenmalm metric and isolates the fixed forcing. Its fluctuation channel has exact one-dimensional kernel, retained Xi-mode mass, and a one-dimensional multivalued differential defect. One fixed cusp-weighted Hilbert norm detects off-real Xi zeros throughout the physical strip: a source-faithful regularity occurrence, not a self-adjoint spectral occurrence. No RH proof follows.
 - **Frontier map:** read-only.
 
 ## Chain and hard obstacle
@@ -13,12 +13,12 @@ classifier, but its Xi-conditioned theta modes obey a *forced* equation.
 The positive metric can now be transported with every primitive row retained.
 The fluctuation quotient removes the forcing and retains nonzero mass, but
 its raw differential relation has a one-dimensional multivalued defect and
-nonreal eigenpairs at generic free-resolvent parameters. The new all-weight
-cusp criterion (15c) recovers the exact Xi selection inside that positive
-fluctuation channel. The hard obstacle is **a closed native Green law on
-this no-radiation domain that makes the scalar--fluctuation Maass leakage
-real or zero**. A norm comparison that drops cross-row contribution cannot
-accomplish that law.
+nonreal eigenpairs at generic free-resolvent parameters. The sharpened
+single-weight criterion (15c') recovers the exact Xi selection inside one
+positive fluctuation Hilbert space. The hard obstacle is **a closed Green
+law on this no-radiation domain that controls the combined moving-projection
+leakage and weight-induced dilation current**. A norm comparison that drops
+cross-row contribution cannot accomplish that law.
 
 ## The common literal mode
 
@@ -693,6 +693,38 @@ current vanishes; deriving its actual theta/prime cancellation is the
 remaining RH-scale obstacle. The domain extension and equation (19b)
 for the infinite row sum are not yet formalized in Lean.
 
+The first Rellich test can be done exactly at the smooth compact-core
+level. For a scalar field `u` satisfying
+`Delta u+(a+i*b)*y^(-2)*u=F`, use the real-potential stress
+`T_ij=2*Re(partial_i u*conj(partial_j u))
+       -delta_ij*(|grad u|²-a*y^(-2)*|u|²)` and the dilation vector
+`D=x*partial_x+y*partial_y`. Its trace is `2*a*y^(-2)*|u|²`;
+the derivative of the inverse-square potential cancels that trace.
+The exact remaining divergence is
+
+```text
+div(T D)
+  = 2*Re(F*conj(D u))
+    + 2*b*y^(-2)*Im(u*conj(D u)).                    (19c)
+```
+
+For the actual native scalar response `W_p`, the source equation gives
+`a+i*b=lambda_alpha-1` and `F=P_0/(4*y²)`. Hence the two bulk terms
+are respectively the **literal theta-source dilation work** and the
+imaginary spectral phase current. Cusp no-radiation can remove a top
+boundary; it cannot erase either interior term. In particular the
+existing real-eigenvalue, unforced conservation theorem in
+`SelbergMaassDilationStress` does not extend by simply taking a limit.
+The attempted pure-boundary reduction fails. The positive next target
+is a source-specific identity for the *combined* bulk work in (19c),
+with complete primitive rows and the side/core boundary retained.
+`SelbergThetaNativeMeanCancellation` evaluates the zero-derivative
+source pairing as a positive Cauchy transform, but does not evaluate
+this dilation derivative. The analogous row-bundle identity should be
+compared with the leakage-plus-drift expression (19b) before asserting
+any sign. Equation (19c) is paper algebra; its infinite-row/global
+domain specialization remains open in Lean.
+
 ## Conjecture loop and whole-chain consequence
 
 **Conjecture 1:** The common source mode makes the two carriers isometric.
@@ -734,15 +766,28 @@ exponential radiation tail. This supplies Xi-faithful occurrence as
 regularity in a positive modular channel, while (18)--(19) locate the
 remaining Maass coupling.
 
-**Surviving attack:** Build the closed all-cusp-weight row domain in Lean
+**Conjecture 7:** Xi-selective regularity needs an intersection of all
+cusp-weighted spaces. **False, with a positive replacement:** (15c')
+shows that the single `y^(5/2)` Hilbert norm selects Xi zeros across
+the physical strip. This makes a closed-domain attack concrete.
+
+**Conjecture 8:** Passing to that fixed positive Hilbert metric makes
+the native Maass equation symmetric without further source work.
+**False on the compact core:** the symmetric weighted expression differs
+by the dilation drift in (19a). The surviving source identity (19b)
+couples this drift to the moving-projection leakage. Its signed pairing
+is the new, single-space mathematical target; no vanishing is known.
+
+**Surviving attack:** Build the closed `y^(5/2)` row domain in Lean
 from the existing strip-unfolding and compact-height Maass core. Compute
-the signed scalar--fluctuation leakage in (19) without dropping rows.
-The decisive theta-specific theorem would make that pairing real at
-the no-radiation states selected by (15c); since their fluctuation mass
-is positive, it would force `Im(alpha²)=0` and then RH. The existing
+the signed sum of scalar--fluctuation leakage and dilation drift in
+(19b) without dropping rows. The decisive theta-specific theorem would
+make that total pairing real at the no-radiation states selected by
+(15c'); since their fluctuation mass is positive, it would force
+`Im(alpha²)=0` and then RH. The existing
 nonparabolic scattering kernel (12) and finite-packet positive Cauchy
-density are source data for that computation. Until the leakage law is
-proved, (15c) is a new occurrence mechanism, not a reality theorem.
+density are source data for that computation. Until the total-current
+law is proved, (15c') is an occurrence mechanism, not a reality theorem.
 
 ## Corpus anchors
 

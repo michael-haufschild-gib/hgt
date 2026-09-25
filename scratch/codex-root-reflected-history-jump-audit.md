@@ -28,6 +28,21 @@ failed conceptual bridge.
   positivity of every centered scalar reciprocal trace. The theta
   `j≈N²` scalar-jet crossover is not by itself an RH selector; only a
   source-specific general-packet law could make it relevant.
+- `SuzukiShiftSpectralMonotoneRatio.lean` signs a shift derivative for one
+  fixed operator under a monotone common spectral response.
+  `SuzukiParitySpectralPairTransport.lean` identifies the actual even/odd
+  cross-Wronskian as lower-pair credit minus spectral-inversion debt.
+  `CCMSuzukiCrossApertureProjectiveWronskian.lean` shows aperture transport
+  additionally has a physical shell and a metric-response term. Shift
+  monotonicity does not sign that aperture increment.
+- `MobiusGammaXiMarkedClockBoundaryRateDecoupling.lean` proves the marked
+  commutator's zero-clock port vanishes identically while the base singular
+  response retains its RH-equivalent coefficient. The affine charge in
+  `MobiusGammaXiPreScalarAffinePrimePolarGammaProducer.lean` survives, but
+  `MobiusGammaXiPreScalarAffineBoundaryRenormalization.lean` adds an explicit
+  `logDeriv xiNonrightCanonicalProduct` correction. Its coefficient-faithful
+  landing is therefore an exact comparison containing target-side divisor
+  data, not a source-only proof that the escaped coefficient vanishes.
 
 Whole-route consequence: the next serious conjecture must specify an actual
 pre-scalar, source-defined prime–polar–Γ coupling and a cofinal signed law.

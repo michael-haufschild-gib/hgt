@@ -43,8 +43,18 @@ By the choice of `k`, (2) becomes `m_k(c) M^(3/2)/(log M)^(k+1)` plus a lower-or
 
 The literal selection energy contains `H_c(M)²` as a nonnegative summand, even before using terminality. Hence its ratio to `M²` is at least asymptotic to `m_k(c)² M/(log M)^(2k+2)`, which tends to infinity.
 
+## Independent Mellin check
+
+Let `H_c(x)=C(x)+Σ_{p<x<cp}√p C(x/p)` for real `x≥1`. At integers this is (1). On each unit cell, the literal source interpolation and `|ψ(n)-n+2γ|=O(n)` give `|C(x)-C(⌊x⌋)|=O(√x)` and a total prime-child change `O(√x log x)`. The indicator `x<cp` can switch for at most one integer prime in a unit cell because `c>1`; its jump is `O_c(√x)`. Thus an assumed `H_c(M)=O(M)` would imply `H_c(x)=O(x)`.
+
+For real `s>3/2`, dilation and absolute convergence give the exact identity
+
+`Mellin(H_c)(s)=J(s)+primeZeta(s−1/2)J_c(s)`,
+
+where `J(s)=∫_1^∞C(y)y^(−s−1)dy` and `J_c(s)=∫_1^c C(y)y^(−s−1)dy`. Strong PNT gives every absolute boundary log moment of `C`, so `J` is `C^∞` from the right at `s=3/2`. The compactly supported `J_c` is entire and not identically zero by the unit-cell positivity; let `k` be its finite zero order at `3/2`. Since `primeZeta(1+δ)=log(1/δ)+O(1)`, the product has a nonzero `δ^k log(1/δ)` term and cannot be `C^k` at the boundary. But `H_c(x)=O(x)` would make its Mellin transform holomorphic on `Re(s)>1`, hence `C^k` there. Contradiction. This verifies the no-go without relying on the full asymptotic expansion, though it does not replace the asymptotic proof of the stated sharp rate.
+
 ## Whole-route meaning and audit boundary
 
-This excludes every history whose admission front is a fixed proportional distance behind prime birth. It is stronger than the earlier paper law excluding polynomially delayed histories, and stronger than the corpus's half-prime (`c=2`) head escape because it handles all `c>1`, including cancellation of finitely many window moments. A viable bounded history must have a genuinely nonstationary, source-selected front approaching prime birth or must use a different state than this terminal core. The theorem does not control the changing-core covariance or produce an RH proof.
+This excludes every history whose admission front is one fixed proportional distance behind prime birth. It complements the earlier paper law excluding arbitrary *polynomially delayed* histories: this result reaches much shorter delay but assumes a rigid fixed-ratio schedule. It extends the corpus's half-prime (`c=2`) head escape to all `c>1`, including cancellation of finitely many window moments. It does **not** imply that every prime in a viable history must be admitted at ratio `1+o(1)`; a nonstationary, source-selected mix of early and late admissions may still balance. The theorem does not control the changing-core covariance or produce an RH proof.
 
 Lean status: local unit-cell positivity is being checked in `scratch/codex-root-proportional-delay.lean`; terminal-core identity is already corpus-certified. The compact moment nonflatness and weighted-PNT asymptotic (2) have not been formalized. No broad/umbrella build was run.
