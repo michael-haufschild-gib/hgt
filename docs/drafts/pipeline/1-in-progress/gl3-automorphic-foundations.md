@@ -29,7 +29,9 @@ Neither mathlib nor the corpus has any GL(3) automorphic theory (corpus search 2
 - [ ] G4 `GL3FourierExpansion`: Piatetski-Shapiro–Shalika expansion over U₂(ℤ)\SL₂(ℤ).
 - [ ] G5 `GL3JacquetWhittaker`: Jacquet integral, convergence, Casimir eigen-equations, Bump–Stade Mellin formula.
 - [ ] G6 `GL3MaassForm`: SL₃(ℤ) and Γ₀(N)-type Maass cusp forms; Fourier–Whittaker coefficients; Hecke operators.
-- [ ] G7 `GL3Kloosterman`: Plücker coordinates, Bruhat decomposition of SL₃(ℚ), Weyl-element Kloosterman sums; S_{w₅}(m,n;c₁,c₁²) = c₁·Kl₃ (links to `HyperKloostermanRootNumber`).
+- [x] G7c `GL3CoxeterCell` + `GL3CoxeterPhase`: the Coxeter cell (M₂₀ ≠ 0, plk₂ = 0), D ∣ A, coprimality, explicit Bruhat decomposition over ℚ, the three Kloosterman phases.
+- [x] G7d `GL3CoxeterKloosterman`: S_{w₃}(m₁,m₂,n₂; D, D²) = D·Kl₃(−m₁m₂n₂; D) for unit weights (links to `HyperKloostermanRootNumber`).
+- [ ] G7e orbit parametrisation U(ℤ)\cell(A,D)/U_w(ℤ) ↔ (p₀ mod D, C mod A) as a bijection; general (D, A) Coxeter sums.
 - [ ] G8 `GL3Poincare`: Poincaré series, unfolding, Kloosterman expansion.
 - [ ] G9 spectral side and Buttcane's hyper-Kloosterman Kuznetsov formula.
 
@@ -37,3 +39,4 @@ Neither mathlib nor the corpus has any GL(3) automorphic theory (corpus search 2
 - 2026-09-25 — created; corpus and mathlib audited (no GL(3) automorphic material); G1 started.
 - 2026-09-25 — G1 closed: `RHTower/GL3UpperHalfSpace.lean` (structure `H3`, `gram`, `ofPD`, `gram_ofPD`, `ofPD_gram`, `ofMat_smul`, `MulAction (GL (Fin 3) ℝ) H3`, recognition principle `smul_eq_of_mul`, `nGL_smul` Heisenberg translation, `dGL_smul` dilation, `SL₃(ℤ)` action via `slToGL`). `lake build --old` green, wired after `HyperKloostermanRootNumber`, axioms propext/choice/Quot.sound.
 - 2026-09-25 — G1b, G7a, G7b closed and wired (`GL3IwasawaHeight`, `GL3Plucker`, `GL3PluckerParam`); all `lake build --old` green. Next: Bruhat cells via Plücker vanishing patterns, the w₅ Kloosterman set and its identification with Kl₃; then Poincaré series (finite locally for compactly supported profiles, by the height formulas).
+- 2026-09-25 — G7c/G7d closed and wired (`GL3CoxeterCell`, `GL3CoxeterPhase`, `GL3CoxeterKloosterman`): explicit w₃ Bruhat decomposition over ℚ; D ∣ A; phases; fibre count ℤ/D² → ℤ/D; S_{w₃}(m;D,D²) = D·Kl₃(−m₁m₂n₂;D). Axioms propext/choice/Quot.sound.

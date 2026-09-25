@@ -1,0 +1,17 @@
+# Theta renewal feedback: complex resonances and infinite Pick index (2026-09-25)
+
+Authoritative paper card: docs/drafts/pipeline/2-fully-proven/theta/theta-renewal-complex-resonance-stieltjes-obstruction.md. Routes STC/CSB/U via theta one-port, with source formula from theta-renewal-phase-cosh-factorization.md. Paper proof dependency-closed, but source-specific Lean formalization and external novelty audit OPEN. No RH proof/falsification. Frontier map is read-only by user instruction.
+
+Source: a=1/4, c=Theta(1), ν(t)=2πΣ_{n≥1}n² exp((a+1)t-π n² e^t)>0, N(z)=∫_0∞e^{-zt}ν(t)dt, D(z)=c-N(z). Q(t)=Σ_m ν^{*m}(t)/(m c^m), W(t)=e^{-at}/t+Q(t)>0. Existing paper theorem gives q=N(-a)/c<1/6 and Xi(2iλ)=(a+λ)D(λ)+(a-λ)D(-λ), both D factors zero-free for |Reλ|<a.
+
+NEW paper theorem: N is entire finite order via ν(t)≤K exp((a+1)t-π e^t), giving |N(z)|≤K π^{-(|z|+a+1)}Γ(|z|+a+1)≤exp(C(1+|z|)^2). N(x) strictly decreases from ∞ to0, so D has exactly one real zero x_*<-a. If D had finitely many zeros, existing Lean theorem RHTower.exists_polynomial_mul_expPolynomial_of_finite_zeroSet in FiniteZeroHadamardProduct.lean gives D=P exp R with polynomials. On x→∞, D→c>0, D'→0; R'=D'/D-P'/P→0, so polynomial R'=0. Then D const·P; nonzero finite limit forces P constant, contradiction. Hence D has infinitely many nonreal zeros, all Re z<-a.
+
+For Re z≥-a, Qhat=-log(1-N/c), Qhat'=N'/(c-N). H(z)=∫t e^{-zt}W(t)dt=1/(z+a)-N'/(c-N). Every nonreal D zero gives genuine pole of H with residue its multiplicity. If W were completely monotone, W(t)=∫_[0,∞)e^{-st}μ(ds), then H(z)=∫μ(ds)/(z+s)^2, holomorphic on C\(-∞,0], contradiction. Same excludes signed real-rate measure with weighted absolute variation. Thus positive W is intrinsically complex-resonant, not real-rate Laplace mixture.
+
+IMPORTANT FAILED LEAD: Complete monotonicity of W would NOT itself prove RH. Re[λ/(s²-λ²)]=(Re λ)(s²-|λ|²)/|s²-λ²|² changes sign. Do not repeat the false plus sign.
+
+Define A(λ)=(a+λ)D(λ), B(λ)=(a-λ)D(-λ), K=B/A. Xi=A(1+K). Along λ=iy, B=conj A, Re A=Xi(2y)/2, Im A=v(y), v(y)/y→c>0 by Riemann-Lebesgue N(iy)→0. At a simple critical zero y_j, K(iy_j)=-1. For g(x,y)=|A(x+iy)|²-|B(x+iy)|², exact Cauchy-Riemann crossing ∂_x g(0,y_j)=-2v(y_j) d/dy Xi(2y)|_{y_j}. Corpus half-port theorem gives arbitrarily high simple critical zeros with both derivative signs, so neither fixed gain direction |K|<1 nor >1 holds in right collar.
+
+STRONGER NEW paper theorem: Pick defect P_K(λ,μ)=(1-K(λ)conj K(μ))/(λ+conj μ), 0<Reλ,Reμ<a, has infinite positive AND negative index. At distinct critical zeros y_j≠y_k, boundary P_K(iy_j,iy_k)=0 because K=-1. Diagonal one-sided limit P_K(iy_j,iy_j)= -[d/dy Xi(2y)]_{y_j}/v(y_j), alternating signs. Arbitrarily large selected finite boundary matrices are exactly diagonal definite; perturb points slightly into right collar preserving signatures. Thus no Schur/Pick or finite-negative-index generalized Schur model for this literal loop. Remaining RH gate: show K avoids -1 off critical axis by source-specific winding/phase control; infinite-index geometry rules out passive scalar shortcuts.
+
+Existing Lean corpus tools: FiniteZeroHadamardProduct.lean has finite-zero Hadamard theorem; HTGeometry/StieltjesTransformPick.lean has Stieltjes holomorphy for finite measures; XiShiftEulerDenseFiniteSection.lean has finite-section inertia machinery. Renewal Q, D source identities currently paper only, so full Lean formalization requires substantial new source work. No Lean process owned at end. No computations or frontier-map edits.

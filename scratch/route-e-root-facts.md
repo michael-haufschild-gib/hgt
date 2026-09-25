@@ -1,0 +1,8 @@
+# Route E fixed-order facts (root agent)
+
+- The RH receiver uses a cutoff-uniform one-sided complete covariance bound at fixed real exponents `r > 1` arbitrarily near `1`. Boundary divergence at `r = 1` does not satisfy that quantifier.
+- One coefficient-bounded numerator `a(q) ≤ q` per denominator prime has an absolutely summable literal cofactor fibre for every fixed `1 < r ≤ 2` (`RouteEFixedOrderSelectedFibreBoundary.lean`). This kills one-fibre promotion of the boundary harmonic debt, not a dense numerator family.
+- For every squarefree `a > 0`, prime `q ≥ 128a`, and `r ≥ 1`, the complete denominator-cofactor fibre obeys `-μ(a) H_r(a,q) > K_r(a,q)/48`. Denominator completion cannot reverse a far-cone numerator-grade sign.
+- In the proportional prime band `1/1024 ≤ p/q ≤ 1/256`, the literal prime fibre is at least `C_r q^{-r}` and the disjoint `2p` composite fibre is at most `-D_r q^{-r}`, with positive constants independent of the pair. Uniform finite two-window block inequalities for both signs are Lean-closed (`RouteEFixedOrderPrimeBandMass.lean`).
+- PNT window counts imply on paper that each selected sign has block magnitude `≫ N^{2-r}/log² N → ∞` for `1 < r < 2`. The analytic aggregation is not yet Lean-closed. This is not divergence of the complete signed covariance; all-grade, near-cone, common-gcd, and Gamma payment remain open.
+- Corpus search found prior fixed Boolean-cube parity with prime denominator and selected quotient-pair sign, but not the full denominator-cofactor all-grade fixed-order margin or proportional two-sign block law. Index coverage was partial; claim corpus-new, not external priority.

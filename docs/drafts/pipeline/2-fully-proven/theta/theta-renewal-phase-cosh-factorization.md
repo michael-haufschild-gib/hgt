@@ -348,6 +348,20 @@ the exact service-law form
 This follows from the even-source Fourier formula
 \(\Xi(2z)=2\int_0^\infty k(x)\cos(2zx)\,dx\),
 the substitution \(t=2x\), and (18).
+The one-sided source connection
+\(H(2z)=\int_0^\infty k(x)e^{2izx}\,dx\) retains an explicit seam term:
+\[
+ \boxed{\displaystyle
+ H(2z)=ac\,\mathbb E_g[e^{-(a-iz)T}]
+       =(a-iz)D(-iz)+icz.} \tag{19a}
+\]
+To see the second equality, integrate \(g=-v'/a\) by parts, use
+\(v(0)=a\), and substitute
+\(D(-iz)=c[1-\widehat v(a-iz)]\). The \(icz\) terms cancel exactly
+between \(H(2z)\) and \(H(-2z)\), recovering (8). Thus the literal
+one-port transform, its renewal denominator, and the completed
+two-port Xi coefficient are linked without discarding the boundary
+seam.
 
 The weighted renewal kernel \(R(t)=e^{at}Q(t)\) is the Lévy density
 of a concrete compound-Poisson law. Let \(Y\) be a sum of a geometric

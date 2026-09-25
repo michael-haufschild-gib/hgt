@@ -7610,3 +7610,34 @@ and the pair is optimal. **Must** keep the criterion at `N = 2` and attack the p
 This closes the window-enlargement successor of CANNOT-451 at its source: the earlier diagnosis that
 the obstruction was the logarithmic boundary divergence of `Σ_y |d_y|⁻²` was wrong, since the
 criterion degrades like `1/(N + 1)` even with a perfect buffer.
+
+## MUST-454 — which observables have a sign is a two-point question
+
+For an odd pair kernel `F` the rate of `Σ_j G(x_j)` along `ẋ_j = Σ_{k≠j} F(x_j − x_k)` is
+`(1/2) Σ_{j≠k} (g(x_j) − g(x_k))·F(x_j − x_k)` with `g = G′`, and a two-point configuration
+evaluates to exactly `(g p − g q)·F(p − q)`. **Must:** the rate is nonpositive for every finite
+configuration precisely when `(g x − g y)·F(x − y) ≤ 0` for all `x, y`. The classification of signed
+observables is independent of the configuration and of the number of zeros.
+
+## CANNOT-455 — no pair dynamics has a bounded nonconstant Lyapunov observable
+
+Dichotomy on the kernel. If `F < 0` throughout `(0,∞)`, the two-point condition says exactly that
+`g` is monotone, i.e. that `G` is convex, and a convex function bounded above on `ℝ` is constant.
+If `F` is negative on one interval of `(0,∞)` and positive on another, then `g` is nondecreasing
+under every shift in the first and nonincreasing under every shift in the second; a sign interval
+`(α, β)` propagates to every shift beyond `αβ/(β − α)`, since `t/k` lands in `(α, β)` for an integer
+`k`, so `g` is both nondecreasing and nonincreasing under all large shifts and is constant, `G` is
+affine and `Σ_j G(x_j)` is conserved. **Cannot** therefore obtain a localised monotone observable
+from any pairwise zero dynamics, attractive or not. **Must:** the obstruction of CANNOT-451 is not a
+property of the kernel `1/u` but of the two-point sign condition; it needs no irrationality and no
+regularity of `g`, and covers every pair interaction at once.
+
+## CANNOT-456 — the backward-collision criterion has no direction that proves RH
+
+Reality is preserved forward in heat time, so `H_0` has only real zeros exactly when `Λ ≤ 0`, and
+`Λ ≥ 0` is known; RH is `Λ = 0`. A collision at some `t < 0` is consistent with `Λ = 0` and with
+`Λ > 0` alike, so no collision statement separates them. **Cannot** therefore reach RH from the
+criterion in any form. **Must:** its only consumer is the contrapositive — finitely many non-real
+zeros of `H_t` for a single `t < 0` refutes RH — whose antecedent is strictly stronger than the
+Ki–Kim–Lee finiteness available for `t > 0`. The surviving content of the lane is MUST-448…452 and
+CANNOT-451/453/455, which are laws of pairwise zero dynamics rather than of the critical line.
