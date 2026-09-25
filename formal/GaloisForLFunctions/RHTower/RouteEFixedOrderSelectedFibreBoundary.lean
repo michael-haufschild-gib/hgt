@@ -262,5 +262,372 @@ theorem routeEFixedOrderDifference_cross
   rw [hkrc, hkrb, hk1c, hk1b] at hcross
   simpa only [mul_comm] using hcross
 
+theorem routeEInvSqTail_le (q : ℕ) (hq : 3 ≤ q) :
+    (∑ d ∈ Finset.Ioo 1 q, 1 / (d : ℝ) ^ (2 : ℕ)) ≤ 11 / 12 := by
+  have hset : Finset.Ioo 1 q = insert 2 (Finset.Ioo 2 q) := by
+    ext d
+    simp only [Finset.mem_Ioo, Finset.mem_insert]
+    omega
+  rw [hset, Finset.sum_insert (by simp)]
+  have h := sum_Ioo_inv_sq_le (α := ℝ) 2 q
+  norm_num at h ⊢
+  have h' : (∑ d ∈ Finset.Ioo 2 q, 1 / (d : ℝ) ^ (2 : ℕ)) ≤ 2 / 3 := by
+    simpa only [one_div] using h
+  linarith
+
+theorem routeEBaseMain_gt
+    {a : ℝ} (ha : 0 < a) {q : ℕ} (hq128 : 128 * a ≤ (q : ℝ)) :
+    (11 / 12 : ℝ) * a / (q : ℝ) ^ (2 : ℕ) <
+      routeEFixedOrderDifference 1 a (q : ℝ) := by
+  have hq : (0 : ℝ) < q := by linarith
+  have haBound : a ≤ (q : ℝ) / 128 := by linarith
+  have hsqa : a * a ≤ a * (q : ℝ) / 128 := by
+    nlinarith [mul_le_mul_of_nonneg_left haBound ha.le]
+  have haq : a * (q : ℝ) ≤ (q : ℝ) ^ (2 : ℕ) / 128 := by
+    nlinarith [mul_le_mul_of_nonneg_right haBound hq.le]
+  have hden : (a + (q : ℝ)) * (2 * a + (q : ℝ)) <
+      (12 / 11 : ℝ) * (q : ℝ) ^ (2 : ℕ) := by
+    nlinarith [sq_pos_of_pos hq]
+  rw [routeEFixedOrderDifference_one_eq_cone ha hq]
+  unfold routeEPrimitiveConeWeight
+  have hdenpos : 0 < (a + (q : ℝ)) * (2 * a + (q : ℝ)) := by positivity
+  have hq2pos : 0 < (q : ℝ) ^ (2 : ℕ) := by positivity
+  rw [div_lt_div_iff₀ hq2pos hdenpos]
+  have hscaled := mul_lt_mul_of_pos_left hden ha
+  nlinarith
+
+theorem routeEBaseKernel_le_invSq
+    {a b : ℝ} (ha : 0 ≤ a) (hb : 0 < b) :
+    routeEFixedOrderDifference 1 a b ≤ a / b ^ (2 : ℕ) := by
+  rcases eq_or_lt_of_le ha with rfl | ha0
+  · simp [routeEFixedOrderDifference]
+  rw [routeEFixedOrderDifference_one_eq_cone ha0 hb]
+  unfold routeEPrimitiveConeWeight
+  have hden : b ^ (2 : ℕ) ≤ (a + b) * (2 * a + b) := by
+    nlinarith [sq_nonneg a]
+  have hdenpos : 0 < (a + b) * (2 * a + b) := by positivity
+  have hb2pos : 0 < b ^ (2 : ℕ) := by positivity
+  rw [div_le_div_iff₀ hdenpos hb2pos]
+  nlinarith [mul_le_mul_of_nonneg_left hden ha]
+
+theorem routeEBaseTail_le
+    {a : ℝ} (ha : 0 ≤ a) {q : ℕ} (hq : 3 ≤ q) :
+    (∑ d ∈ Finset.Ioo 1 q,
+      routeEFixedOrderDifference 1 a ((q : ℝ) * (d : ℝ))) ≤
+      (11 / 12 : ℝ) * a / (q : ℝ) ^ (2 : ℕ) := by
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (show 0 < q by omega)
+  have hpoint (d : ℕ) (hd : d ∈ Finset.Ioo 1 q) :
+      routeEFixedOrderDifference 1 a ((q : ℝ) * (d : ℝ)) ≤
+        (a / (q : ℝ) ^ (2 : ℕ)) * (1 / (d : ℝ) ^ (2 : ℕ)) := by
+    have hd0 : (0 : ℝ) < d := by
+      exact_mod_cast (show 0 < d by have := (Finset.mem_Ioo.mp hd).1; omega)
+    have hk := routeEBaseKernel_le_invSq ha (mul_pos hq0 hd0)
+    calc
+      _ ≤ a / ((q : ℝ) * (d : ℝ)) ^ (2 : ℕ) := hk
+      _ = (a / (q : ℝ) ^ (2 : ℕ)) * (1 / (d : ℝ) ^ (2 : ℕ)) := by
+        rw [mul_pow]
+        ring
+  calc
+    (∑ d ∈ Finset.Ioo 1 q,
+      routeEFixedOrderDifference 1 a ((q : ℝ) * (d : ℝ))) ≤
+      ∑ d ∈ Finset.Ioo 1 q,
+        (a / (q : ℝ) ^ (2 : ℕ)) * (1 / (d : ℝ) ^ (2 : ℕ)) := by
+          exact Finset.sum_le_sum hpoint
+    _ = (a / (q : ℝ) ^ (2 : ℕ)) *
+          (∑ d ∈ Finset.Ioo 1 q, 1 / (d : ℝ) ^ (2 : ℕ)) := by
+            rw [Finset.mul_sum]
+    _ ≤ (a / (q : ℝ) ^ (2 : ℕ)) * (11 / 12) :=
+      mul_le_mul_of_nonneg_left (routeEInvSqTail_le q hq) (by positivity)
+    _ = (11 / 12 : ℝ) * a / (q : ℝ) ^ (2 : ℕ) := by ring
+
+theorem routeEFixedOrderDifference_pos
+    {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hb : 0 < b) :
+    0 < routeEFixedOrderDifference r a b := by
+  unfold routeEFixedOrderDifference
+  exact sub_pos.mpr (Real.rpow_lt_rpow_of_neg (by positivity)
+    (by linarith : a + b < 2 * a + b) (by linarith : -r < 0))
+
+/-- Universal first-cofactor dominance: any bounded coefficient sequence whose
+first coefficient is one has positive completed fibre in the far cone. -/
+theorem routeEFixedOrderCofactorFibre_pos
+    {r a : ℝ} (hr : 1 ≤ r) (ha : 0 < a)
+    {q : ℕ} (hq : 3 ≤ q) (hq128 : 128 * a ≤ (q : ℝ))
+    (c : ℕ → ℝ) (hc : ∀ d, |c d| ≤ 1) (hc1 : c 1 = 1) :
+    0 < routeEFixedOrderCofactorFibre r a q c := by
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (show 0 < q by omega)
+  have hmain1 := routeEBaseMain_gt ha hq128
+  have htail1 := routeEBaseTail_le ha.le hq
+  have hgap1 :
+      (∑ d ∈ Finset.Ioo 1 q,
+        routeEFixedOrderDifference 1 a ((q : ℝ) * (d : ℝ))) <
+      routeEFixedOrderDifference 1 a (q : ℝ) := lt_of_le_of_lt htail1 hmain1
+  have hmain1pos : 0 < routeEFixedOrderDifference 1 a (q : ℝ) :=
+    routeEFixedOrderDifference_pos (by norm_num) ha hq0
+  have hmainrpos : 0 < routeEFixedOrderDifference r a (q : ℝ) :=
+    routeEFixedOrderDifference_pos (by linarith) ha hq0
+  have hcross :
+      (∑ d ∈ Finset.Ioo 1 q,
+        routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ))) *
+        routeEFixedOrderDifference 1 a (q : ℝ) ≤
+      (∑ d ∈ Finset.Ioo 1 q,
+        routeEFixedOrderDifference 1 a ((q : ℝ) * (d : ℝ))) *
+        routeEFixedOrderDifference r a (q : ℝ) := by
+    rw [Finset.sum_mul, Finset.sum_mul]
+    apply Finset.sum_le_sum
+    intro d hd
+    apply routeEFixedOrderDifference_cross hr ha hq0
+    have hd2 : 2 ≤ d := by have := (Finset.mem_Ioo.mp hd).1; omega
+    have hd2R : (2 : ℝ) ≤ d := by exact_mod_cast hd2
+    have haq : a ≤ (q : ℝ) := by linarith
+    nlinarith [mul_le_mul_of_nonneg_right hd2R hq0.le]
+  have htailr :
+      (∑ d ∈ Finset.Ioo 1 q,
+        routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ))) <
+      routeEFixedOrderDifference r a (q : ℝ) := by
+    have hchain :
+        (∑ d ∈ Finset.Ioo 1 q,
+          routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ))) *
+          routeEFixedOrderDifference 1 a (q : ℝ) <
+        routeEFixedOrderDifference r a (q : ℝ) *
+          routeEFixedOrderDifference 1 a (q : ℝ) := by
+      calc
+        _ ≤ (∑ d ∈ Finset.Ioo 1 q,
+              routeEFixedOrderDifference 1 a ((q : ℝ) * (d : ℝ))) *
+              routeEFixedOrderDifference r a (q : ℝ) := hcross
+        _ < routeEFixedOrderDifference 1 a (q : ℝ) *
+              routeEFixedOrderDifference r a (q : ℝ) :=
+          mul_lt_mul_of_pos_right hgap1 hmainrpos
+        _ = routeEFixedOrderDifference r a (q : ℝ) *
+              routeEFixedOrderDifference 1 a (q : ℝ) := by ring
+    by_contra hnot
+    have hle : routeEFixedOrderDifference r a (q : ℝ) ≤
+        ∑ d ∈ Finset.Ioo 1 q,
+          routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ)) := le_of_not_gt hnot
+    have hmul := mul_le_mul_of_nonneg_right hle hmain1pos.le
+    linarith
+  have hset : Finset.Ioo 0 q = insert 1 (Finset.Ioo 1 q) := by
+    ext d
+    simp only [Finset.mem_Ioo, Finset.mem_insert]
+    omega
+  have htailCoeff :
+      -(∑ d ∈ Finset.Ioo 1 q,
+          routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ))) ≤
+      ∑ d ∈ Finset.Ioo 1 q,
+        c d * routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ)) := by
+    rw [← Finset.sum_neg_distrib]
+    apply Finset.sum_le_sum
+    intro d hd
+    have hd0 : (0 : ℝ) < d := by
+      exact_mod_cast (show 0 < d by have := (Finset.mem_Ioo.mp hd).1; omega)
+    have hk := routeEFixedOrderDifference_pos (by linarith : 0 < r) ha
+      (mul_pos hq0 hd0)
+    have hcminus := (abs_le.mp (hc d)).1
+    nlinarith
+  unfold routeEFixedOrderCofactorFibre
+  rw [hset, Finset.sum_insert (by simp), hc1, one_mul]
+  simp only [Nat.cast_one, mul_one]
+  linarith
+
+theorem routeEFixedOrderPrimeFibre_pos
+    {r : ℝ} (hr : 1 ≤ r) (p q : Nat.Primes) (hq128 :
+      128 * (p : ℝ) ≤ (q : ℝ)) :
+    0 < routeEFixedOrderPrimeFibre r p q := by
+  have hq3 : 3 ≤ (q : ℕ) := by
+    have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast p.property.two_le
+    have hq2 : (256 : ℝ) ≤ (q : ℝ) := by nlinarith
+    exact_mod_cast (show (3 : ℝ) ≤ (q : ℝ) by linarith)
+  have hc1 :
+      (if Nat.Coprime (p : ℕ) 1 then
+        (ArithmeticFunction.moebius (p : ℕ) : ℝ) *
+          (ArithmeticFunction.moebius ((q : ℕ) * 1) : ℝ)
+      else 0) = 1 := by
+    simp [ArithmeticFunction.moebius_apply_prime p.property,
+      ArithmeticFunction.moebius_apply_prime q.property]
+  exact routeEFixedOrderCofactorFibre_pos hr (by exact_mod_cast p.property.pos)
+    hq3 hq128 _ (routeEFixedOrderPrimeFibre_coeff_bound p q) hc1
+
+theorem routeEFixedOrderCofactorFibre_neg
+    {r a : ℝ} (hr : 1 ≤ r) (ha : 0 < a)
+    {q : ℕ} (hq : 3 ≤ q) (hq128 : 128 * a ≤ (q : ℝ))
+    (c : ℕ → ℝ) (hc : ∀ d, |c d| ≤ 1) (hc1 : c 1 = -1) :
+    routeEFixedOrderCofactorFibre r a q c < 0 := by
+  have hpos := routeEFixedOrderCofactorFibre_pos hr ha hq hq128
+    (fun d => -c d) (fun d => by simpa using hc d) (by simp [hc1])
+  have heq : routeEFixedOrderCofactorFibre r a q (fun d => -c d) =
+      -routeEFixedOrderCofactorFibre r a q c := by
+    unfold routeEFixedOrderCofactorFibre
+    simp only [neg_mul, Finset.sum_neg_distrib]
+  rw [heq] at hpos
+  linarith
+
+def routeEFixedOrderIntegerNumeratorFibre
+    (r : ℝ) (a : ℕ) (q : Nat.Primes) : ℝ :=
+  routeEFixedOrderCofactorFibre r (a : ℝ) (q : ℕ) (fun d =>
+    if Nat.Coprime a d then
+      (ArithmeticFunction.moebius a : ℝ) *
+        (ArithmeticFunction.moebius ((q : ℕ) * d) : ℝ)
+    else 0)
+
+/-- All squarefree numerator grades retain their Möbius parity after every
+physical denominator cofactor below q, at every order r ≥ 1. -/
+theorem routeEFixedOrderIntegerNumeratorFibre_parity
+    {r : ℝ} (hr : 1 ≤ r) {a : ℕ} (ha : 0 < a) (haSq : Squarefree a)
+    (q : Nat.Primes) (hq128 : 128 * (a : ℝ) ≤ (q : ℝ)) :
+    0 < -(ArithmeticFunction.moebius a : ℝ) *
+      routeEFixedOrderIntegerNumeratorFibre r a q := by
+  let mu : ℝ := (ArithmeticFunction.moebius a : ℝ)
+  let coeff : ℕ → ℝ := fun d => if Nat.Coprime a d then
+    mu * (ArithmeticFunction.moebius ((q : ℕ) * d) : ℝ) else 0
+  have hmuSq : mu ^ (2 : ℕ) = 1 := by
+    change (ArithmeticFunction.moebius a : ℝ) ^ (2 : ℕ) = 1
+    exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree haSq
+  have hmuAbs : |mu| = 1 := by
+    change |(ArithmeticFunction.moebius a : ℝ)| = 1
+    exact_mod_cast ArithmeticFunction.abs_moebius_eq_one_of_squarefree haSq
+  have hcoeff (d : ℕ) : |coeff d| ≤ 1 := by
+    dsimp [coeff]
+    split_ifs with h
+    · rw [abs_mul, hmuAbs, one_mul]
+      exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := (q : ℕ) * d)
+    · norm_num
+  have hnewcoeff (d : ℕ) : |-mu * coeff d| ≤ 1 := by
+    rw [abs_mul, abs_neg, hmuAbs, one_mul]
+    exact hcoeff d
+  have hcoeffOne : (-mu * coeff 1) = 1 := by
+    simp [coeff, ArithmeticFunction.moebius_apply_prime q.property]
+    nlinarith
+  have hq3 : 3 ≤ (q : ℕ) := by
+    have ha1 : (1 : ℝ) ≤ a := by exact_mod_cast ha
+    have hqBig : (128 : ℝ) ≤ (q : ℝ) := by nlinarith
+    exact_mod_cast (show (3 : ℝ) ≤ (q : ℝ) by linarith)
+  have hpos := routeEFixedOrderCofactorFibre_pos hr
+    (by exact_mod_cast ha : (0 : ℝ) < a) hq3 hq128
+    (fun d => -mu * coeff d) hnewcoeff hcoeffOne
+  have hlinear : routeEFixedOrderCofactorFibre r (a : ℝ) (q : ℕ)
+      (fun d => -mu * coeff d) =
+      -mu * routeEFixedOrderCofactorFibre r (a : ℝ) (q : ℕ) coeff := by
+    unfold routeEFixedOrderCofactorFibre
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro d hd
+    ring
+  change 0 < -mu * routeEFixedOrderCofactorFibre r (a : ℝ) (q : ℕ) coeff
+  rw [← hlinear]
+  exact hpos
+
+theorem routeEBaseMain_gt_fifteen_sixteenths
+    {a : ℝ} (ha : 0 < a) {q : ℕ} (hq128 : 128 * a ≤ (q : ℝ)) :
+    (15 / 16 : ℝ) * a / (q : ℝ) ^ (2 : ℕ) <
+      routeEFixedOrderDifference 1 a (q : ℝ) := by
+  have hq : (0 : ℝ) < q := by linarith
+  have haBound : a ≤ (q : ℝ) / 128 := by linarith
+  have hsqa : a * a ≤ a * (q : ℝ) / 128 := by
+    nlinarith [mul_le_mul_of_nonneg_left haBound ha.le]
+  have haq : a * (q : ℝ) ≤ (q : ℝ) ^ (2 : ℕ) / 128 := by
+    nlinarith [mul_le_mul_of_nonneg_right haBound hq.le]
+  have hden : (a + (q : ℝ)) * (2 * a + (q : ℝ)) <
+      (16 / 15 : ℝ) * (q : ℝ) ^ (2 : ℕ) := by
+    nlinarith [sq_pos_of_pos hq]
+  rw [routeEFixedOrderDifference_one_eq_cone ha hq]
+  unfold routeEPrimitiveConeWeight
+  have hdenpos : 0 < (a + (q : ℝ)) * (2 * a + (q : ℝ)) := by positivity
+  have hq2pos : 0 < (q : ℝ) ^ (2 : ℕ) := by positivity
+  rw [div_lt_div_iff₀ hq2pos hdenpos]
+  have hscaled := mul_lt_mul_of_pos_left hden ha
+  nlinarith
+
+/-- Uniform quantitative first-cofactor dominance, relative to the principal
+fixed-order edge, valid for all r ≥ 1. -/
+theorem routeEFixedOrderCofactorFibre_gt_fraction
+    {r a : ℝ} (hr : 1 ≤ r) (ha : 0 < a)
+    {q : ℕ} (hq : 3 ≤ q) (hq128 : 128 * a ≤ (q : ℝ))
+    (c : ℕ → ℝ) (hc : ∀ d, |c d| ≤ 1) (hc1 : c 1 = 1) :
+    (1 / 48 : ℝ) * routeEFixedOrderDifference r a (q : ℝ) <
+      routeEFixedOrderCofactorFibre r a q c := by
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (show 0 < q by omega)
+  have hmain1 := routeEBaseMain_gt_fifteen_sixteenths ha hq128
+  have htail1 := routeEBaseTail_le ha.le hq
+  have hmain1max := routeEBaseKernel_le_invSq ha.le hq0
+  have hmain1pos : 0 < routeEFixedOrderDifference 1 a (q : ℝ) :=
+    routeEFixedOrderDifference_pos (by norm_num) ha hq0
+  have hmainrpos : 0 < routeEFixedOrderDifference r a (q : ℝ) :=
+    routeEFixedOrderDifference_pos (by linarith) ha hq0
+  have htail1strong :
+      (∑ d ∈ Finset.Ioo 1 q,
+        routeEFixedOrderDifference 1 a ((q : ℝ) * (d : ℝ))) <
+      (47 / 48 : ℝ) * routeEFixedOrderDifference 1 a (q : ℝ) := by
+    have hratio : 0 < a / (q : ℝ) ^ (2 : ℕ) := by positivity
+    have hmain1' : (15 / 16 : ℝ) * (a / (q : ℝ) ^ (2 : ℕ)) <
+        routeEFixedOrderDifference 1 a (q : ℝ) := by
+      convert hmain1 using 1; ring
+    have htail1' :
+        (∑ d ∈ Finset.Ioo 1 q,
+          routeEFixedOrderDifference 1 a ((q : ℝ) * (d : ℝ))) ≤
+        (11 / 12 : ℝ) * (a / (q : ℝ) ^ (2 : ℕ)) := by
+      convert htail1 using 1; ring
+    linarith
+  have hcross :
+      (∑ d ∈ Finset.Ioo 1 q,
+        routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ))) *
+        routeEFixedOrderDifference 1 a (q : ℝ) ≤
+      (∑ d ∈ Finset.Ioo 1 q,
+        routeEFixedOrderDifference 1 a ((q : ℝ) * (d : ℝ))) *
+        routeEFixedOrderDifference r a (q : ℝ) := by
+    rw [Finset.sum_mul, Finset.sum_mul]
+    apply Finset.sum_le_sum
+    intro d hd
+    apply routeEFixedOrderDifference_cross hr ha hq0
+    have hd2 : 2 ≤ d := by have := (Finset.mem_Ioo.mp hd).1; omega
+    have hd2R : (2 : ℝ) ≤ d := by exact_mod_cast hd2
+    have haq : a ≤ (q : ℝ) := by linarith
+    nlinarith [mul_le_mul_of_nonneg_right hd2R hq0.le]
+  have htailr :
+      (∑ d ∈ Finset.Ioo 1 q,
+        routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ))) <
+      (47 / 48 : ℝ) * routeEFixedOrderDifference r a (q : ℝ) := by
+    have hchain :
+        (∑ d ∈ Finset.Ioo 1 q,
+          routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ))) *
+          routeEFixedOrderDifference 1 a (q : ℝ) <
+        ((47 / 48 : ℝ) * routeEFixedOrderDifference r a (q : ℝ)) *
+          routeEFixedOrderDifference 1 a (q : ℝ) := by
+      calc
+        _ ≤ (∑ d ∈ Finset.Ioo 1 q,
+              routeEFixedOrderDifference 1 a ((q : ℝ) * (d : ℝ))) *
+              routeEFixedOrderDifference r a (q : ℝ) := hcross
+        _ < ((47 / 48 : ℝ) * routeEFixedOrderDifference 1 a (q : ℝ)) *
+              routeEFixedOrderDifference r a (q : ℝ) :=
+          mul_lt_mul_of_pos_right htail1strong hmainrpos
+        _ = ((47 / 48 : ℝ) * routeEFixedOrderDifference r a (q : ℝ)) *
+              routeEFixedOrderDifference 1 a (q : ℝ) := by ring
+    by_contra hnot
+    have hle : (47 / 48 : ℝ) * routeEFixedOrderDifference r a (q : ℝ) ≤
+        ∑ d ∈ Finset.Ioo 1 q,
+          routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ)) := le_of_not_gt hnot
+    have hmul := mul_le_mul_of_nonneg_right hle hmain1pos.le
+    linarith
+  have hset : Finset.Ioo 0 q = insert 1 (Finset.Ioo 1 q) := by
+    ext d
+    simp only [Finset.mem_Ioo, Finset.mem_insert]
+    omega
+  have htailCoeff :
+      -(∑ d ∈ Finset.Ioo 1 q,
+          routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ))) ≤
+      ∑ d ∈ Finset.Ioo 1 q,
+        c d * routeEFixedOrderDifference r a ((q : ℝ) * (d : ℝ)) := by
+    rw [← Finset.sum_neg_distrib]
+    apply Finset.sum_le_sum
+    intro d hd
+    have hd0 : (0 : ℝ) < d := by
+      exact_mod_cast (show 0 < d by have := (Finset.mem_Ioo.mp hd).1; omega)
+    have hk := routeEFixedOrderDifference_pos (by linarith : 0 < r) ha
+      (mul_pos hq0 hd0)
+    have hcminus := (abs_le.mp (hc d)).1
+    nlinarith
+  unfold routeEFixedOrderCofactorFibre
+  rw [hset, Finset.sum_insert (by simp), hc1, one_mul]
+  simp only [Nat.cast_one, mul_one]
+  linarith
+
 end
 end RHTower

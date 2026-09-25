@@ -26,7 +26,8 @@ private theorem sinh_sq_gt_sq {h : ℝ} (hh : h ≠ 0) : h ^ (2 : ℕ) < (Real.s
   · have hs : h < Real.sinh h := Real.self_lt_sinh_iff.mpr hpos
     nlinarith
 
-private theorem exp_gap_sq_gt (t x y : ℝ) (ht : 0 < t) (hxy : x ≠ y) :
+/-- Strict logarithmic-mean gap underlying the local Euler determinant. -/
+theorem exp_gap_sq_gt (t x y : ℝ) (ht : 0 < t) (hxy : x ≠ y) :
     t ^ (2 : ℕ) * Real.exp (t * x) * Real.exp (t * y) * (x - y) ^ (2 : ℕ) <
       (Real.exp (t * x) - Real.exp (t * y)) ^ (2 : ℕ) := by
   let m : ℝ := t * (x + y) / 2
