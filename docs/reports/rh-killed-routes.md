@@ -1,8 +1,8 @@
 # RH killed routes
 
-Snapshot 2026-09-25, HEAD `434b48f0e`. A route is killed when it cannot deliver an RH proof or disproof: every producer it proposes is impossible, circular (its premise is RH re-encoded) or nonselective (holds equally with off-line zeros). A killed route's theorems survive as receivers or infrastructure; each entry names the survivor. Built from docs/reports/endpoints.md (NO-GO families), docs/reports/STATUS.md and the Lean corpus search tool. No builds or Lean checks were run. Active routes: docs/reports/rh-current-frontier-map.md. The pre-rewrite catalogue (477 mechanism records with full X/S text) is archived at docs/reports/archive/rh-killed-routes-2026-09-25.md; Part II keeps its numbering.
+Snapshot 2026-09-25, HEAD `434b48f0e`. A route is killed when it cannot deliver an RH proof or disproof: every producer it proposes is impossible, circular (its premise is RH re-encoded) or nonselective (holds equally with off-line zeros). A killed route's theorems survive as receivers or infrastructure; each entry names the survivor. Built from docs/reports/endpoints.md (NO-GO families), docs/reports/STATUS.md and the Lean corpus search tool. No builds or Lean checks were run. Active routes: docs/reports/rh-current-frontier-map.md. Part II keeps the former catalogue numbering (no-go-NNN).
 
-Contents: Part I.1 retired original labels (19) · I.2 routes retired in the 2026-09 audits (24) · I.3 universal-law-field mechanisms retired (58) · I.4 route-class kills (18) · I.5 Lean-certified NO-GO endpoint families (54) · Part II closed mechanisms (460, former numbering).
+Contents: Part I.1 retired original labels (19) · I.2 routes retired in the 2026-09 audits (24) · I.3 universal-law-field mechanisms retired (57) · I.4 route-class kills (18) · I.5 Lean-certified NO-GO endpoint families (54) · Part II closed mechanisms (460, former numbering).
 
 Codes: as in the frontier map. KR-x = entry in I.2. no-go-NNN = former catalogue number (Part II). REF = P1:rh-frontier-reference-2026-09-12. [L] Lean, [P] paper only, [N] numerical only. Kill = the decisive obstruction. Survivor = strongest retained positive result or the changed problem it leaves.
 
@@ -170,7 +170,7 @@ Kill: these bound Laplace eigenvalues of `Γ(N)`; the zeros of ζ enter the GL(2
 Survivor [L]: Selberg `3/16` for all `Γ(N)`, Sarnak–Xue `λ₁(Γ(p)) ≥ 5/36−η` for large `p`, Weil's Kloosterman bound, strip/Hardy energy laws excluding exceptional eigenvalues at principal levels 1–14 — infrastructure.
 E: R:SelbergThreeSixteenths; R:SarnakXueTheorem; R:SelbergMaassStripHardyGap; R:WeilKloostermanDegreeSums.
 
-## Part I.3 — Universal-law-field (ULF) mechanisms retired (58)
+## Part I.3 — Universal-law-field (ULF) mechanisms retired (57)
 
 Each proposed as a higher producer mechanism; each fails as stated (STATUS). Survivors feed TG, HF and candidate CDC. One line per failure: mechanism — why.
 - FAIL-28 Twisted Möbius–Witt fractional index — the lift from Xi occurrence to a single-valued meromorphic germ is unjustified and would prohibit an exact Suzuki/Wold family (F194–F196, CANNOT-106/107).
@@ -181,7 +181,7 @@ Each proposed as a higher producer mechanism; each fails as stated (STATUS). Sur
 - FAIL-40 Intervention tomography — ternary countermodel fixes observer and recovery kernel, implements FE, moves nonzero charge (MUST-106, CANNOT-153).
 - FAIL-41 C*-envelope / Shilov boundary — classifies the quotient after the boundary ideal is supplied (CANNOT-154).
 - FAIL-42 Central-support / distributive completion — restates formation homology and the completion boundary.
-- FAIL-43 Tensor amplification, nuclear exactness, projective/metaplectic coherence — no fixed-target embedding, no stable images, gauge-trivial scalar FE data (CANNOT-148).
+- FAIL-43 Tensor amplification, nuclear exactness, projective/metaplectic coherence — no fixed-target embedding, no stable images, gauge-trivial scalar FE data (F305, F306).
 - FAIL-44 Baire automatic continuity — the executable core is a dense meagre `F_σ`; countable compact atlases miss a residual set (CANNOT-156/158).
 - FAIL-45 Complete-metric / isometric dense landing — completion transports the singular horizon faithfully (CANNOT-157).
 - FAIL-46 Information neutrality / trace-ideal shortcut — the lift preserves off-wall superselection (F319).
@@ -202,7 +202,7 @@ Each proposed as a higher producer mechanism; each fails as stated (STATUS). Sur
 - FAIL-61 One interaction direction + one Krein direction — double counting of one reflection charge (F352).
 - FAIL-62 One-dimensional holonomy, FE inversion, covariant Stokes closure — fixed-frame triviality is RH (F353).
 - FAIL-63 Recovery uniqueness, minimality, information neutrality — recovery reconstructs any cocycle (F354).
-- FAIL-64 Weyl–parabolic self-opposition — no source theorem swaps the axes (F358).
+- FAIL-64 Weyl–parabolic self-opposition — no source theorem swaps the axes; a ternary countermodel fixes observer and legs and acts by `−1` on nonzero charge.
 - FAIL-65 Idempotent/dagger completion + accumulated one-port shear — bounded upper-shear splittings exist (F365, F366).
 - FAIL-66 Proof identity, confluence, subsingleton completion — erase presentations only after vanishing (F368).
 - FAIL-67 GL(2) automorphic positivity — see KR-AUT.
@@ -225,8 +225,7 @@ Each proposed as a higher producer mechanism; each fails as stated (STATUS). Sur
 - FAIL-84 Scalar outer (Szegő) completion — loses odd unsquared orientation (CANNOT-237).
 - FAIL-85 Finite monitored unitary realization of the exit tail — exit mean `7/4` coarse (CANNOT-238).
 - FAIL-86 Direct determinant / fixed theta hazard — residues miss finite-rank horizons (CANNOT-239).
-- FAIL-89 Mellin creator and cofinite Gamma frames — information-neutral whitening (F524–F526).
-- FAIL-90 Petz recovery / nonabelian holonomy / small trace self-commutator — preserve every grade, cannot kill index (F527–F529).
+- FAIL-89/90 Mellin creator, cofinite Gamma frames, Petz recovery, nonabelian holonomy, small trace self-commutator — information-neutral, preserve every grade, cannot kill index (F524–F529).
 - FAIL-91 Gamma spectators / multiplicative transport of `T` (F530–F535).
 - FAIL-92 Continuous multiplicative completion / generic Halmos–Naimark dilation (F536, CANNOT-242).
 - FAIL-93 Choosing a member of the same-defect completion fibre (F542–F547, CANNOT-248).
@@ -297,7 +296,7 @@ CIRCULAR (24):
 
 ## Part II — Closed mechanisms (former catalogue, 460)
 
-Each line: former number, closed mechanism, evidence. A closed mechanism does not retire its route. Most records constrain a live route (named in the section header); records cited by a KR entry in Part I.2 belong to that killed route. Full obstruction and survivor text: archive file (same numbering). Retired-label records (no-go-097, 100, 101, 102, 136, 142, 145, 146, 150, 151, 152, 156, 163, 164, 180, 186, 341) are in Part I.1.
+Each line: former number, closed mechanism, evidence. A closed mechanism does not retire its route. Most records constrain a live route (named in the section header); records cited by a KR entry in Part I.2 belong to that killed route. Retired-label records (no-go-097, 100, 101, 102, 136, 142, 145, 146, 150, 151, 152, 156, 163, 164, 180, 186, 341) are in Part I.1.
 
 ### CCM-FU: prime scheduling and current bounds (39) — constrains FU, RW
 
