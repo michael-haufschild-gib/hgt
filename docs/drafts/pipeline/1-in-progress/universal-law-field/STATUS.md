@@ -16,6 +16,8 @@ Scope: compressed facts and logically forced design constraints extracted from a
 
 - **Cannot exclude off-line zeros in the natural Xi strip from positivity, evenness, strong log-concavity, any finite moment list, the exact critical half-density charge, and all finite prime-deletion right-ray positivity inequalities.** At every sufficiently high horizontal frequency and fixed height inside the strip, a two-packet perturbation forces a zero while preserving the shape properties, ordinary mass and both reflected charges, and converging to the literal theta source in Schwartz topology. One version equals theta outside a fixed compact interval and remains positive after every finite literal prime deletion on the positive ray, uniformly over prime sets; a second is real-analytic, converges holomorphically on every compact subset of the theta source strip, and has relative tail error faster than every ordinary exponential in the log coordinate. The [two-packet interpolation theorem](../../2-fully-proven/theta-compact-critical-strip-zero-engineering.md) proves both on paper. Neither version preserves exact Euler coefficients or entire real-zero divisor; the theorem does not identify which infinite source constraint can orient Xi.
 
+- **Cannot infer critical-line zeros, a zero-free strip, or a local zero-count bound from global strict reflected Riccati/correlation-angle curvature, even with positive even strongly log-concave source and order-one entire Fourier growth.** A symmetric three-Gaussian mixture has a uniform positive two-variable Riccati margin and arbitrarily many off-real zeros in any prescribed real interval and any strip `0<Im z<η`. Small even hyperbolic-cosine damping preserves the margin and selected zeros while giving superexponential source decay and order-one Fourier growth. The [global Riccati countermodel](../../2-fully-proven/theta-global-riccati-order-one-offline-countermodel.md) proves this on paper. It does not preserve exact theta Euler coefficients or critical charges; a zero-exclusion argument using the literal theta Riccati law must also control a nonlocal arithmetic phase.
+
 - **Cannot create a new Xi zero by a symmetric integer-scale deformation while preserving the theta source's ordinary mass, critical half-density charge and complete monotonicity of its normalized flux.** This holds even for signed, infinite mixtures of all integer translations, not just positive convolutions or one prime-power chain. Exact Gaussian-rate arithmetic turns flux positivity into nonnegative weights at every reduced rational denominator; a strictly positive divisor-Möbius identity then forces the deformation to be the identity. The [divisor Bernstein theorem](../../2-fully-proven/theta-divisor-bernstein-gauge-rigidity.md) proves this on paper. The restriction concerns that deformation class; literal one-sided Euler completion still has a boundary-mass defect and needs its own complex orientation law.
 
 - **Cannot orient Xi zeros from all finite-prime-deleted fluxes being completely monotone, global source positivity, ordinary mass and one exact half-density charge without the reflected charge.** A positive two-shift theta mixture has every such property and an exact off-line Mellin zero at real strip coordinate `1/4`. Cofinal prime deletion isolates the Gaussian seed and proves that all-sieve flux monotonicity is equivalent to positivity of an arbitrary exponentially integrable translation measure; with ordinary mass and **both** reflected half-charges fixed, this class rigidifies to theta. Yet symmetric positive mixtures with charge defect of order `T^(−2)` can add off-line zeros at height `T` when their shift gap shrinks. The [all-sieve seed-projector theorem](../../2-fully-proven/theta-all-sieve-seed-projector-translation-cone.md) proves the classification and sharp tests on paper. A completion proof must retain the second singular boundary observation and control moving spectral height, not merely verify finite-sieve positivity and approximate charge convergence.
@@ -7291,3 +7293,58 @@ dichotomy plus one identity, and **cannot** any longer count recurrence, bounded
 property among its obligations. In the attained case the chain is complete modulo the identity; in
 the non-attained case the maximum principle has no point of application, and that is precisely the
 regime the corpus has repeatedly found to be the hard one.
+
+## MUST-420 — the angular energy of an off-line zero is quantized at one (2026-09-25)
+
+For two distinct zeros set `cos²θ = (Re ρ − Re ρ')² / |ρ − ρ'|²`, the squared cosine of the angle the
+joining segment makes with the real axis, and let the angular energy of a zero be the sum of this
+quantity over all other zeros. The sum converges at every zero, because real parts are confined to
+the critical strip, so each term is at most `1/|ρ − ρ'|²`, and the divisor is locally finite. The
+functional equation places the partner `1 − ρ̄` horizontally opposite `ρ` at distance `|2 Re ρ − 1|`,
+so its term is `(2 Re ρ − 1)² / (2 Re ρ − 1)² = 1` exactly, for every off-line zero, independently of
+how close that zero is to the critical line. **Must** therefore record that the angular energy is at
+least one at every off-line zero and identically zero at every zero when the hypothesis holds, so the
+family of angular energies never lies entirely inside the open interval from zero to one. The
+cancellation is exact because the Cauchy kernel is homogeneous of degree minus two against a squared
+length: a zero at real part one half plus a thousandth and a zero at real part nine tenths have the
+same energy. **Cannot** any longer treat a zero close to the critical line as a small perturbation in
+any functional built from this kernel.
+
+## MUST-421 — the hypothesis in threshold form, with no attainment (2026-09-25)
+
+The hypothesis is equivalent to the strict inequality that every zero has angular energy below one,
+and equally to the vanishing of the angular energy at a single zero, since one zero seeing every
+other zero in a purely vertical direction forces all real parts to agree. **Must** record that this
+is the first equivalent in this field stated as a threshold with a margin rather than as an exact
+identity: the earlier equivalents in this lane — vanishing of a reflection norm, a slice of
+cardinality at most one, a vanishing horizontal logarithmic derivative — are rigid, and nothing
+weaker than the identity implies them, whereas an unconditional upper bound anywhere strictly below
+one would suffice here. **Cannot** continue to count attainment of the supremum of the real part
+among the obligations of this lane: the statement quantifies over all zeros with a strict
+inequality, uses no extremal zero, no limiting configuration and no escape-to-infinity case, and
+supersedes the maximum-principle formulation in which that dichotomy appeared. The attainment
+obstruction was an artifact of using an extremal functional, not a feature of the problem.
+
+## CANNOT-422 — no continuous deformation functional can see the quantum (2026-09-25)
+
+The partner term of the angular energy equals one for every off-line zero and zero for every zero on
+the critical line. As a zero drifts toward the line its angular energy does not decay; it remains at
+least one and drops to zero only in the limit. **Cannot** therefore expect any functional that varies
+continuously under a motion of the zeros — a heat-type deformation of the entire function, a
+continuity argument in a deformation parameter driven to its boundary value, or any perturbative
+expansion in the off-line displacement — to detect the hypothesis through this energy, because such a
+functional is by construction blind to a jump. **Must** read the criticality wall recorded earlier in
+this field as having this exact object-level cause rather than as an analogy: the invariant that
+separates the two regimes is integer-valued, and the flow is continuous.
+
+## CANNOT-423 — the angular energy is not accessible to the holomorphic toolkit (2026-09-25)
+
+Writing the difference of two zeros as `Δ`, the squared cosine equals one half plus one half the real
+part of `Δ` divided by its conjugate. The second summand involves the conjugate and is therefore not
+holomorphic in either zero. **Cannot** evaluate or bound the angular energy with the machinery this
+field has accumulated: Hadamard products, logarithmic derivatives and the Taylor coefficients of the
+completed function at a zero compute the sum of `Δ` to the power minus two in closed form, and never
+the sum of `Δ` over its conjugate. **Must** therefore record that the object missing for the
+threshold bound is a non-holomorphic pairing of the divisor with itself, not another holomorphic
+lemma, which is a concrete account of why the analytic toolkit of this field was found to be
+saturated: the saturation was of the holomorphic half only.

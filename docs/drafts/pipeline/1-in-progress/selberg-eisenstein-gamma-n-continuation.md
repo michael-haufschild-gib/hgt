@@ -129,3 +129,12 @@ E(z,s) = P_0(z,s) = y^s + Σ_{c≠0} c^{-2s} N^{-s} Σ_n 𝓕ker_{0,y/N,s}(n) S_
   + E*_σ(z,s), each term holomorphic; via identity theorem on the punctured half-plane (`isPreconnected_punctured`).
   This is the Fourier expansion of the continued Γ(N) Eisenstein series at every cusp.
   Next: Maass–Selberg relation for Γ(N) (truncated E_∞ norm) using these constant terms.
+- 2026-09-25 — `SelbergKernelBessel` (built, wired): `fourier_ker0_eq_bessel`: 𝓕ker₀_{y,s}(ξ) = y^s·2π^s/Γ(s)·(|ξ|/y)^{s−1/2}
+  ·K_{s−1/2}(2πy|ξ|) on Re s > 1/2 (from the corpus Gamma–Bessel transform at Re s > 1 + identity theorem); the Bessel
+  side `kerBessel` is entire in s. `SelbergKernelBetaIntegral` (built, wired): ∫(1+t²)^{-s} = √πΓ(s−1/2)/Γ(s) on Re s > 1/2.
+  PLAN (E on the critical line Re s = 1/2, s ≠ 1/2):
+  Q2a  L_u(w) = Σ_{e≡u} μ(e)e^{-w} = φ(N)^{-1}Σ_χ χ̄(u)/L(w,χ); holomorphic near Re w ≥ 1, w ≠ 1 (mathlib nonvanishing).
+  Q2b  ksumσ(c,n) = [c≡σ₁₀]Σ_{e|c,(e,N)=1} μ(e)[M|n]·M·ψ((sgn c·n/M)·σ₁₁·ē), M = |c|/e, ψ = std additive char of ℤ/N.
+  Q2c  D_n(s) = Σ_c|c|^{-2s}ksumσ(c,n) = Σ_± Σ_{M|n} M^{1−2s} Σ_u F_{±,M}(u) L_u(2s); continuation near the line.
+  Q3   E*_ext(z,s) = Σ_{n≠0} N^{-s}kerBessel(y/N,s,n)e(nx/N)D_n(s); locally uniform bounds (K-Bessel decay, d(n)n^{2δ}).
+  Q4   identity with Econt on Re s > 1/2; constant term via cBeta and ζ(2s−1)/L(2s,·).

@@ -159,4 +159,28 @@ theorem ptr_paper_dielectric_helical_principal_pos
   have hrad : 0 ≤ ((299792458 : ℝ) / 100000000 * ξr) ^ 2 := sq_nonneg _
   nlinarith [mul_pos (sub_pos.mpr hsub) hpos]
 
+/-- The actual inside profile and exterior air have no common decaying
+source-free principal boundary amplitude in the locked helical sector. -/
+theorem ptr_paper_dielectric_principal_transmission_kernel_zero
+    (φ : ℝ) (ain aout : ℂ) (hvalue : ain = aout)
+    (hflux : ((Real.sqrt
+        (((299792458 : ℝ) / 100000000) ^ 2 -
+          ptrPaperDielectricReal φ * ((27 : ℝ) / 200 * Real.pi) ^ 2) : ℝ) : ℂ) * ain +
+      ((Real.sqrt
+        (((299792458 : ℝ) / 100000000) ^ 2 -
+          ((27 : ℝ) / 200 * Real.pi) ^ 2) : ℝ) : ℂ) * aout = 0) :
+    ain = 0 ∧ aout = 0 := by
+  have hv2 : 0 ≤ ((27 : ℝ) / 200 * Real.pi) ^ 2 := sq_nonneg _
+  have hin : 0 < ((299792458 : ℝ) / 100000000) ^ 2 -
+      ptrPaperDielectricReal φ * ((27 : ℝ) / 200 * Real.pi) ^ 2 := by
+    have hmax := ptr_paper_cylinder_strictly_inside_light_surface
+    have hε := ptrPaperDielectricReal_le_fifteen φ
+    nlinarith [mul_nonneg (sub_nonneg.mpr hε) hv2]
+  have hout : 0 < ((299792458 : ℝ) / 100000000) ^ 2 -
+      ((27 : ℝ) / 200 * Real.pi) ^ 2 := by
+    have hmax := ptr_paper_cylinder_strictly_inside_light_surface
+    nlinarith
+  exact ptr_elliptic_interface_principal_kernel_zero _ _ hin hout
+    ain aout hvalue hflux
+
 end RHTower

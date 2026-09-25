@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven (paper theorem; Lean formalization open)
 - **Type:** THEOREM (paper)
 - **Routes:** L, PSRC
-- **Statement:** The exact theta observation of the physical Möbius residue source has a uniformly bounded prime-only innovation and localizes to signed joint history across genuine new-prime transitions.
+- **Statement:** The exact theta observation has a uniformly bounded prime-only physical innovation. On a uniform primorial cycle its arithmetic layers factor into smooth and rough cofactors; all non-largest-prime layers have a power-saving total theta observation, leaving a signed largest-prime current.
 
 ## Goal
 
@@ -130,6 +130,188 @@ and `|P_N^sf(r)|<=2*N` give
 The middle difference telescopes over primes because `R_l` changes
 only at primes. This proves (7) without an energy estimate for
 individual layers.
+
+## Uniform-cycle reinterpretation [PROVED HERE]
+
+The physical measure makes conditional projections of a period `d`
+respond to a prime `p` even when `p` does not divide `d`. This is a
+property of the measure, not of the arithmetic source. There is an exact
+way to remove it without changing the theta observation. Put `M=R_N`,
+and let `U_l` be uniform conditional averaging on the finite cyclic
+group `Z/MZ` onto functions of the residue modulo `R_l`. Every nonzero
+Möbius atom `f_d` with `d<=N` is `M`-periodic, so `U_N C_N=C_N`.
+
+For a function of period `d`, `U_l f_d` depends only on the residue
+modulo `gcd(d,R_l)`: an `R_l`-coset runs uniformly through the residue
+classes of `d` sharing that gcd. Consequently, for prime `p`,
+
+```text
+(U_p-U_(p-1))f_d=0                if p does not divide d.       (8)
+```
+
+Let `a_N(r)=w_r*q_N^flat(r)` and periodize the absolutely summable
+observer by
+
+```text
+Q_N(a)=M*sum_(r>=1, r=a mod M) a_N(r),  a in Z/MZ.
+```
+
+With normalized uniform inner product `⟨u,v⟩_M=M^(-1)*sum_a u(a)v(a)`,
+periodicity gives the **exact** identity
+
+```text
+⟨C_N,q_N^flat⟩_H=⟨C_N,Q_N⟩_M.                         (9)
+```
+
+The constant layer contributes only `O(N^(-3/2))`: its source average
+has modulus at most `N`, while the exact observer mean is
+`sum_r a_N(r)=g(1/N)/sqrt(N)=O(N^(-5/2))`. Telescoping uniform
+projections, using (8), and writing `d=p*m` therefore gives
+
+```text
+B(N) = -sum_(p<=N, p prime) ⟨(U_p-U_(p-1))f_p,Q_N⟩_M
+       -sum_(p*m<=N, p prime, m>=2, p does not divide m)
+          mu(m)*⟨(U_p-U_(p-1))f_(p*m),Q_N⟩_M
+       +O(N^(-3/2)).                                   (10)
+```
+
+Here the displayed error also includes `e_N=O(N^(-5/2))` from (5).
+Equation (10) is a source-faithful prime--cofactor decomposition with
+**no nonincident prime layers**. It gives a different interpretation of
+the physical predictable drift: its nonincident response is measure
+bias; the arithmetic response is entirely prime incidence. The
+cofactor signs in the second sum remain essential and unbounded by
+this identity.
+
+The uniform carrier does not provide a free Hilbert bound. Its
+periodized observer has norm that can grow with `M`; replacing the
+physical measure removes incidence bias but loses the bounded-test
+property in (5). A proof route must exploit signed prime--cofactor
+structure in (10), or find a dual norm that controls this exact
+observer, without taking absolute values of the cofactor sum.
+
+### Exact smooth/rough factorization [PROVED HERE]
+
+Uniform averaging permits a stronger explicit formula. Write `V_g`
+for uniform averaging modulo a divisor `g` of `M`, so `U_l=V_(R_l)`.
+For `g|d`, average `f_d` over any residue class `r mod g`. That class visits
+`r mod g, (r mod g)+g, ..., (r mod g)+(d/g-1)*g` modulo `d`, so
+
+```text
+V_g f_d(r)=[(r mod g)+(d-g)/2]/d.                 (11)
+```
+
+For each squarefree `d` divisible by `p`, factor it uniquely as
+`d=p*a*b`, where all prime factors of `a` are `<p` and all prime
+factors of `b` are `>p`. Write the centered sawtooth
+
+```text
+psi_p(j)=[(j mod p)-(p-1)/2]/p.
+```
+
+Equation (11), first with `g=p*a` and then with `g=a`, gives the
+factorization
+
+```text
+(U_p-U_(p-1))f_(p*a*b)(r)=psi_p(floor(r/a))/b. (12)
+```
+
+Set `H_p(X)=sum_(b<=X, every prime factor of b > p) mu(b)/b`,
+including `b=1`. Möbius multiplicativity now yields an exact
+formula for the entire prime layer:
+
+```text
+(U_p-U_(p-1))C_N(r)
+ =-sum_(a|R_(p-1), p*a<=N)
+      mu(a)*H_p(N/(p*a))*psi_p(floor(r/a)).      (13)
+```
+
+The rough-side coefficient has the unconditional absolute bound
+`|H_p(X)|<=sum_(b<=X)1/b<=1+log X`. Thus the unresolved arithmetic
+growth is organized as a **signed old-prime smooth-divisor sum**
+against a centered new-prime sawtooth, with only a logarithmic
+rough-cofactor weight. Substituting (13) into (9)--(10) gives the
+literal theta observation as this smooth/rough prime-current sum,
+up to `O(N^(-3/2))`. This is a candidate source law to attack;
+the absolute bound on `H_p` does not control the remaining signed
+sum over `a` and `p`.
+
+### Largest-prime reduction [PROVED HERE; paper]
+
+Choose the cutoff and the two moment-correcting bumps used to make
+`q_N^flat` from a fixed Gevrey class of order `s` with `1<s<2`.
+Such compactly supported functions exist, and the two correction
+coefficients remain uniformly bounded by the same moment-matrix
+argument as above. The exact observation and (5) are unchanged.
+For `beta=1/s>1/2`, the weighted test has
+
+```text
+a_N(r)=w_r*q_N^flat(r)=N^(-3/2)*G_N(r/N),
+|Fourier(G_N)(xi)|<=C*exp(-c*|xi|^beta),
+sum_(r>=1)|a_N(r)|<=C*N^(-1/2),                (14)
+```
+
+with constants independent of `N`. The Fourier estimate follows by
+integrating by parts `k` times using uniform bounds
+`||G_N^(k)||_1<=C^(k+1)*(k!)^s`, then taking
+`k` of order `|xi|^(1/s)`. The cutoff makes `G_N` vanish near the
+origin, so Poisson summation applies on the full integer lattice.
+
+For any zero-mean, period-`h` sequence `v` with `|v|<=1`, discrete
+Fourier expansion and Poisson summation give, when `h<=N`,
+
+```text
+|sum_(r>=1) a_N(r)*v(r)|
+ <=C*N^(1/2)*exp(-c*(N/h)^beta).              (15)
+```
+
+Indeed each nonconstant discrete frequency is at distance at least
+`1/h` from an integer; there are at most `h<=N` frequencies.
+The trivial `L1` bound from (14) also gives `C*N^(-1/2)` for every
+such `v`.
+
+The contribution to (10) from `b>1` in (12) is `O(N^(-eta))` for some
+`eta>0`, even after
+taking its absolute value. Here is the full count. Choose
+`P=(D*log N)^(1/beta)` with `D` a sufficiently large fixed constant.
+For `p<=P`, group the rough `b` sum as `H_p-1`; its absolute value is
+at most `1+log N`. The number of eligible `a` is at most the number
+of integers `a<=N` whose prime factors are at most `P`. For any
+
+```text
+1-1/s < sigma < 1/2,
+```
+
+Rankin's inequality bounds that count by
+`N^sigma*prod_(q<=P, q prime)(1-q^(-sigma))^(-1)
+ =N^(sigma+o(1))`: the logarithm of the product is
+`O(P^(1-sigma))=o(log N)`. Thus the entire `p<=P` contribution is
+at most `N^(-1/2+sigma+o(1))*polylog(N)=o(1)`.
+
+For `p>P` and `b>1`, every prime factor of `b` exceeds `p`, so
+`h=p*a<=N/b<N/p`. Apply (15) to the centered period-`p*a`
+sequence in (12), obtaining `C*N^(1/2)*exp(-c*p^beta)`.
+There are at most `N*log_2 N` triples `(p,a,b)` with `p*a*b<=N`;
+the factor `1/b` only helps. Their total is bounded by
+`C*N^(3/2)*log N*exp(-c*P^beta)=O(N^(-1))` after increasing `D`.
+For example, `s=3/2` and `sigma=5/12` allow any fixed
+`eta<1/12` for all sufficiently large `N`.
+
+Consequently the exact causal observation has the **largest-prime
+normal form**
+
+```text
+B(N)=-sum_(p<=N, p prime)
+       sum_(a|R_(p-1), p*a<=N)
+         mu(a)*sum_(r>=1) a_N(r)*psi_p(floor(r/a))
+     +O(N^(-eta)).                                   (16)
+```
+
+Each squarefree modulus `p*a` appears once, at its largest prime.
+All earlier-prime projections of that same atom have negligible
+combined theta observation. The signed largest-prime sum in (16)
+still has the full RH difficulty; this theorem changes its source
+geometry, not its bound.
 
 ## Consequence and remaining producer
 

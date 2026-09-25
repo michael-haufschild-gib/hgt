@@ -407,6 +407,12 @@ zero must excite joint old-prime history at periods between approximately
 `N` and `N^(5/4)`. This is a narrower source obligation than full drift energy;
 it still requires a new signed estimate in that transition band.
 
+A [primorial refinement](causal-mobius-theta-primorial-transition.md)
+replaces the lcm filtration by the source's squarefree prime clock. Its
+uniformly bounded innovations occur only at new primes, and the same
+theta observation localizes to a prime-only signed transition
+covariance. The bound on that covariance remains open.
+
 On `N<=t<N+1`, the summation set in (1) is fixed. The established bound
 `|k'(x)|<=C_1*exp(-x)` for `x>=0` gives
 `|B(t)-B(N)|<=C_2*N^(-1/2)` by termwise differentiation and
