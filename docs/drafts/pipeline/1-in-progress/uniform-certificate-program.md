@@ -130,6 +130,42 @@ load-bearing step if this lane is ever reopened.
 - **Status:** divisor-side killing theorem Lean-proved (`ZeroInfluenceStochastic`); prime-side
   mechanism read off a Lean-proved corpus identity.
 
+## The unifying finding: the critical Sobolev exponent
+
+Both lanes closed, and a cross-domain note on *extreme-controlling + size-uniform* mechanisms
+resolved why. Such mechanisms come in three kinds: **positivity** (`max ≤ total`, constant 1),
+**bounded evaluation** (`|L_x(f)| ≤ C‖f‖_H`, as in RKHS and Sobolev), and **monotone aggregation**.
+The decisive distinction is total versus average: `‖x‖_∞ ≤ ‖x‖_p` is uniform, `‖x‖_∞ ≤ N^{1/p}·RMS`
+is not.
+
+Applied here:
+
+- **Positivity** is already in play — our bumps are nonnegative, so `bump_ρ(t) ≤ U(t)` with constant
+  one, height-uniform. But it certifies `max ≤ total` and **the total is our unknown**. Wrong
+  direction.
+- **Bounded evaluation** is the live one, and it names the exponent.
+
+| norm | scaling in `d` | scale-invariant |
+|-|-|-|
+| `L¹` (mass) | `d` | no — this is the mass-blindness no-go |
+| `L^p`, `p < ∞` | `d^{1/p}` | no |
+| `H^s`, `s < 1/2` | `d^{(1−2s)/2}` | no |
+| **`H^{1/2}`** | **`d⁰`** | **yes** |
+| **`L^∞`** | **`d⁰`** | **yes** |
+
+The Lebesgue row is `integral_pow_bumpKernel` (the degree law with `F = (·)^p`); the Sobolev row
+follows from the exact transform `π d·e^{−d|ξ|}`.
+
+**So the degree-zero class has two members, and in one dimension `H^s ↪ L^∞` needs `s > 1/2`
+strictly.** The family sits exactly at the endpoint where the embedding fails. Scale-invariance is
+necessary but **not sufficient** — we have a scale-invariant norm and it still does not certify the
+supremum — and the deficit is exactly one logarithm, which the absolute-constant requirement
+forbids.
+
+This collapses the three independent appearances of `1/2` (interlacing window vs saddle width,
+Riemann–Siegel main-sum length, required Gibbs decay) into **one** object: the critical Sobolev
+exponent of a scale-invariant bump in one dimension.
+
 ## Log
 
 - 2026-09-25 — created in 1-in-progress. Cross-domain scan and corpus audit of four mechanisms
@@ -148,3 +184,8 @@ load-bearing step if this lane is ever reopened.
   against an available `t^(−1/2)`), the Riemann–Siegel main-sum length `√(t/2π)`, and the required
   Gibbs decay `1/2 − ε`. Three unrelated mechanisms reaching the same exponent is evidence it is a
   property of the object rather than of the methods.
+- 2026-09-25 — **Square root explained.** The recurring `1/2` is the critical Sobolev exponent: the
+  bump family is `H^{1/2}`-scale-invariant and `H^{1/2}` is exactly the endpoint where `H^s ↪ L^∞`
+  fails in one dimension. Lebesgue half formalised (`CriticalExponent`); Sobolev half paper-level.
+  Program stage: both lanes closed, unifying finding recorded. Candidate for 5-failed with a strong
+  positive survivor, or for continuation on the recurrence question.

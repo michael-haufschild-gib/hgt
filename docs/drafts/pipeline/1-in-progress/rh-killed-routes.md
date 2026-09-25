@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**454 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**465 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,10 +11,10 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-25, `06179ead3`**.
+Source-audit cutoff: **2026-09-25, `6a8c8f7e7`**.
 Updated records link to committed Lean statements and explicitly marked paper proofs;
-unchanged records retain their historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
-committed Rellich/Friedrichs replacement. FD2's full verdict and
+unchanged records retain their historical evidence. No builds, Lean checks, tests, lint
+or index refresh were run for this update. FD2's full verdict and
 RBH's retired architecture remain accessible from
 the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subroutes).
 Concurrent uncommitted paper-card revisions remain pending evidence and are not counted.
@@ -25,13 +25,13 @@ Concurrent uncommitted paper-card revisions remain pending evidence and are not 
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 37 |
-| [E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation](#arithmetic) | 61 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 93 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 46 |
+| [E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation](#arithmetic) | 62 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 98 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 49 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 74 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 75 |
 | [Analytic roots, multiplicity and regularization](#roots) | 12 |
-| [Other finite, scalar and source-blind selectors](#other) | 85 |
+| [Other finite, scalar and source-blind selectors](#other) | 86 |
 
 <a id="retired-labels"></a>
 
@@ -988,6 +988,7 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 
 ## E, EDQ, HCF, T1/T2, LI and Estermann: arithmetic cancellation
 
+- [E hard-core exclusion as an operator-wide negative order](#no-go-455)
 - [E far-prime completed-cofactor sign as global debt](#no-go-449)
 - [E coordinatewise primitive parent payment](#no-go-436)
 - [LI global real-axis scalar-sign selector](#no-go-437)
@@ -1050,19 +1051,35 @@ Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower
 - [HC line-conjugation-stable scalarization of ordered-prime orientation](#no-go-396)
 - [T2 polynomial source graphs plus fixed Bohr datum](#no-go-397)
 
+<a id="no-go-455"></a>
+
+### E hard-core exclusion as an operator-wide negative order
+
+**Closed result**
+
+The finite coprime pair field has negative conjugate-character covariance, but its full Markov/Walsh spectrum has eigenvalues `μ(n_K)/n_K`; even interaction grades are positive. Thus local exclusion or the special character inequality cannot imply negative semidefiniteness for arbitrary physical observables. The exact unweighted primitive-pair quadratic form is likewise an indefinite odd/even-grade energy after source-faithful Radon amplification.
+
+**Survivor / still open**
+
+The Lean-closed grade-parity law and primitive-pair identity expose a concrete target: source-derived odd/even balance **after** retaining the physical Gamma/common-gcd kernel and cutoff. The empty grade is a weighted Möbius sum, not free cancellation; its stronger RH-scale transfer is paper-only.
+
+Evidence: [pair field and status](route-e-hardcore-pair-field.md), [Walsh spectrum](../../../../formal/GaloisForLFunctions/RHTower/RouteEHardCoreWalshSpectrum.lean), [primitive-pair bridge](../../../../formal/GaloisForLFunctions/RHTower/RouteEHardCorePrimitiveBridge.lean).
+
+[Back to family](#arithmetic) · [Current E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
+
 <a id="no-go-449"></a>
 
 ### E far-prime completed-cofactor sign as global debt
 
 **Closed result**
 
-On paper, completing all smaller-prime denominator cofactors beneath a far prime `q>32∏_{p∈P}(1+p²)` preserves a fixed numerator cube's parity with an explicit `q⁻²` margin. Even for supports moving within that threshold, **one selected cube per fibre** has a summable `q⁻⁵ᐟ⁴` majorant. This does not bound the number or overlap of cubes covering the full source. The theorem is Lean-pending.
+Lean now proves that completing all smaller-prime denominator cofactors beneath `qC_P>32B_P`, where `B_P=∏_{p∈P}(1+p²)` and `C_P=∏_{p∈P}(p−1+p⁻²)`, preserves the selected numerator cube's parity with an amplified `q⁻²` margin. The old `q⁻⁵ᐟ⁴` majorant requires the **stronger** `q>32B_P` condition; it does not cover every sign-locked moving support. In fact, a Lean moving-singleton corollary yields a disjoint coefficient-one prime-numerator channel `H_{p(q),q}>1/(8192q)` whose prime sum diverges. This is positive debt, not divergence of the full signed covariance.
 
 **Survivor / still open**
 
-The exact Euler-factor main term and sign margin survive. Route E must analyze collective cube multiplicity, the joint-scale regime `∏(1+p²) ≳ q`, other primitive pairs and cross-fibre signed cancellation; the far-fibre asymptotic is not uniform there.
+The exact Euler-factor main term and parity margin survive. Cube overlap cannot pay the **disjoint** prime-numerator debt: Route E must identify cancellation from other numerator integers/channels in the complete physical covariance. The old summable far-prime statement remains valid only on its stated subcritical domain.
 
-Evidence: [largest-prime paper proof and status](route-e-largest-prime-fibre-parity.md).
+Evidence: [largest-prime proof and status](route-e-largest-prime-fibre-parity.md), [Lean source theorem](../../../../formal/GaloisForLFunctions/RHTower/RouteELargestPrimeFibreParity.lean).
 
 [Back to family](#arithmetic) · [Current E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
 
@@ -2070,6 +2087,11 @@ Evidence: [complete prime-cone bound](../../../../formal/GaloisForLFunctions/RHT
 
 ## HB, FZZ and PW: scattering and physical action
 
+- [PTR single-clock stroboscopic zeta return](#no-go-456)
+- [PTR uniformly finite-order prime-cluster return](#no-go-457)
+- [PTR commutative occupation of literal prime cells](#no-go-458)
+- [PTR commutative quotient of literal prime-source algebra](#no-go-459)
+- [PTR raw cyclic trace as order-insensitive Euler landing](#no-go-460)
 - [PTR sharp cylinder cutoff on all tempered distributions](#no-go-444)
 - [PTR uniform bilateral imaginary loss as a real causal response](#no-go-445)
 - [FZZ-P balanced compact-current transfer](#no-go-438)
@@ -2211,6 +2233,86 @@ The actual signed reader has a nonzero intertwining anomaly equal to the full–
 Evidence: [operator-level classification](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWOperatorAnomalyLaw.lean), [actual anomaly identity](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWActualOperatorAnomaly.lean).
 
 [Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
+
+<a id="no-go-456"></a>
+
+### PTR single-clock stroboscopic zeta return
+
+**Closed result**
+
+Lean proves no readout of one `exp(−Ts)`, for any fixed `T>0`, equals the zeta-valued `photonicReturn` throughout `Re s>2`: it would make zeta vertically periodic. A return holomorphic on all `Re s>0` also cannot equal it there, because zeta has a pole at `s=1`. The latter conclusion is conditional on the physical port satisfying that holomorphy class; this is not formalized for the slab.
+
+**Survivor / still open**
+
+A source-derived direct port must acquire the genuine pole at `s=1`, perhaps via logarithmic retiming or an infinite-prime source. The rotating-cylinder conormal and independent defect confinement remain open.
+
+Evidence: [no-go and survivor](../5-failed/ptr-single-clock-stroboscopic-return-no-go.md), [Lean theorem](../../../../formal/GaloisForLFunctions/RHTower/PhotonicFixedClockReturnNoGo.lean).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
+<a id="no-go-457"></a>
+
+### PTR uniformly finite-order prime-cluster return
+
+**Closed result**
+
+Lean's Boolean inversion shows no fixed interaction order `d<|S|` matches the shifted target integer weight `∏_{p∈B}p−1` on every subpacket of a prime packet `S`. Independent coprime factorization already fails at `2·3`.
+
+**Survivor / still open**
+
+Every full cluster source has forced top interaction `∏_{p∈S}(p−1)`. An algebraic Euler-dilation frame realizes the coefficient but is not yet a physical Maxwell port; source-faithful frame realization and confinement remain open.
+
+Evidence: [failed-subroute card](../5-failed/ptr-finite-order-prime-cluster-return-no-go.md), [interaction-order theorem](../../../../formal/GaloisForLFunctions/RHTower/PhotonicPrimeInteractionOrderNoGo.lean).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
+<a id="no-go-458"></a>
+
+### PTR commutative occupation of literal prime cells
+
+**Closed result**
+
+Distinct literal temporal-Maxwell prime transfers have different fixed lines and do not commute, so no multiplicative map from the commutative prime-exponent monoid sends every prime generator to its actual cell transfer. One common invertible Jordan frame is likewise impossible.
+
+**Survivor / still open**
+
+The relative fixed-line slopes and strictly negative mixed trace encode prime data in **relative physical frames**. Ordered, nonlinear or driven ports remain outside this no-go; the algebraic dilation bridge alone is not a source lift.
+
+Evidence: [failed-subroute card](../5-failed/ptr-literal-prime-cell-commutative-occupation-no-go.md), [Lean theorem](../../../../formal/GaloisForLFunctions/RHTower/PhotonicPrimeSourceFrameNoncommutativityNoGo.lean).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
+<a id="no-go-459"></a>
+
+### PTR commutative quotient of literal prime-source algebra
+
+**Closed result**
+
+For two distinct prime-cell nilpotent parts, Lean proves their commutator squares to a nonzero scalar unit. Any unital commutative algebra quotient of the generated physical source would kill this commutator and hence its unit, so no nontrivial such quotient exists. This is stronger than failure of a common Jordan frame.
+
+**Survivor / still open**
+
+The normalized ordered commutator is a source-defined involution. A trace-only/nonlinear/nonlocal or newly driven port may use that orientation, but has no established Euler landing or defect-confinement law.
+
+Evidence: [failed-subroute card](../5-failed/ptr-literal-prime-source-abelianization-no-go.md), [Lean theorem](../../../../formal/GaloisForLFunctions/RHTower/PhotonicPrimeSourceAlgebraAbelianizationNoGo.lean).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
+<a id="no-go-460"></a>
+
+### PTR raw cyclic trace as order-insensitive Euler landing
+
+**Closed result**
+
+For three distinct primes, Lean proves `tr(TₚT_qTᵣ)≠tr(TₚTᵣT_q)`. Raw cyclic trace does not descend to commutative prime occupation even though two-cell traces hide order.
+
+**Survivor / still open**
+
+The exact cubic Vandermonde trace is a nonzero source-defined orientation, odd under a word reversal. Symmetrized or nonlocal readouts remain open, but must retain arithmetic coefficients and the physical port.
+
+Evidence: [failed-subroute card](../5-failed/ptr-raw-cyclic-trace-euler-landing-no-go.md), [Lean theorem](../../../../formal/GaloisForLFunctions/RHTower/PhotonicPrimeTripleCyclicTraceNoGo.lean).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
 
 <a id="no-go-444"></a>
 
@@ -3732,6 +3834,9 @@ Evidence: [translated charge and cusp nonintegrability](../../../../formal/Galoi
 
 ## Theta, Schur, spectral and positivity mechanisms
 
+- [Theta compact inverse under a bounded injective symmetrizer](#no-go-461)
+- [Theta quotient under a coercive finite-range Fourier symmetrizer](#no-go-462)
+- [Critical theta-wall finite part as a scalar positive cube energy](#no-go-463)
 - [O/genus fixed-part count as free-orbit selector](#no-go-448)
 - [Global reflected Riccati and three scalar charges as zero selector](#no-go-453)
 - [Cofinal theta sieve with uniformly bounded signed cusp variation](#no-go-447)
@@ -3780,6 +3885,54 @@ Evidence: [translated charge and cusp nonintegrability](../../../../formal/Galoi
 - [P/SP-E finite Lorentz-graph coercivity](#no-go-386)
 - [K-RVM paired quartic determinant identity](#no-go-398)
 - [SQB tensor-square unitarity as finite packet selector](#no-go-399)
+
+<a id="no-go-461"></a>
+
+### Theta compact inverse under a bounded injective symmetrizer
+
+**Closed result**
+
+The full literal theta compact inverse has nonzero constant kernel and dense range, hence injective adjoint. Lean proves no bounded **injective** operator can intertwine it with its adjoint, even without a positivity hypothesis. The paper zero-Jordan-history theorem extends the obstruction to the centered quotient; that extension is not Lean-closed here.
+
+**Survivor / still open**
+
+The infinite derivative history gives a source-defined quotient that retains all nonzero Xi eigenvalues on paper. Prime translations leave the fixed source Hilbert space, so a singular/graded prime action and nonzero-spectrum orientation remain necessary.
+
+Evidence: [full-inverse Lean theorem](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaZeroHistoryNoGo.lean), [zero-history paper theorem](../2-fully-proven/theta-compact-inverse-zero-jordan-history.md).
+
+[Back to family](#theta) · [Current TQFQ frontier](rh-current-frontier-map.md#candidate-tqfq)
+
+<a id="no-go-462"></a>
+
+### Theta quotient under a coercive finite-range Fourier symmetrizer
+
+**Closed result**
+
+A paper proof excludes any bounded, coercive, self-adjoint Fourier metric of uniformly finite `||m|−|n||` range satisfying `GD=D*G` for the literal theta CDF quotient. The range permits arbitrary `±n` pairing and neighboring-frequency mixing. This is a **paper-only** no-go; it does not exclude unbounded, infinite-range or noncoercive metrics.
+
+**Survivor / still open**
+
+The full CDF-action resistance network has positive grounded dipole energy, but its Xi-bearing gauge differs by a non-`ℓ²` constant. A source-specific global boundary-gauge orientation is still required.
+
+Evidence: [finite-range theorem](../2-fully-proven/theta-cdf-no-finite-range-symmetrizer.md), [positive network](../2-fully-proven/theta-quantile-resistance-network.md).
+
+[Back to family](#theta) · [Current TQFQ frontier](rh-current-frontier-map.md#candidate-tqfq)
+
+<a id="no-go-463"></a>
+
+### Critical theta-wall finite part as a scalar positive cube energy
+
+**Closed result**
+
+Lean proves that the critical Laurent finite part of the rational-ratio wall has a negative all-ones energy on a finite squarefree prime cube for **every scalar subtraction**. This closes scalar finite-part positivity in that arithmetic model, not an analytic identification with the full theta boundary current.
+
+**Survivor / still open**
+
+The leading positive rational-ratio autocorrelation survives. Any completed theta-wall argument needs a non-scalar or signed renormalization and a proved analytic landing from the actual source.
+
+Evidence: [finite-cube theorem](../../../../formal/GaloisForLFunctions/RHTower/ThetaWallCriticalPrimeCubeFinitePartNoGo.lean).
+
+[Back to family](#theta) · [Current CLG/TTF frontier](rh-current-frontier-map.md#clgttf--completed-theta-bezoutian-no-escape)
 
 <a id="no-go-448"></a>
 
@@ -5047,6 +5200,7 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 
 ## Ward, Suzuki, prime–Gamma and operator landing
 
+- [Burnol–theta conjugacy-only holonomy under amplitude gauge](#no-go-464)
 - [STC rank-two local defect as finite global negative index](#no-go-450)
 - [STC one fixed closed normalized source-to-seam graph](#no-go-451)
 - [STC bounded fixed rigged Xi-divisor reading](#no-go-452)
@@ -5119,6 +5273,22 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 - [D2 source-selected reciprocal-power moment tail](#no-go-390)
 - [EGC reflection-only shifted-pole correction](#no-go-391)
 - [G symmetric Schwarz-cap regularization](#no-go-392)
+
+<a id="no-go-464"></a>
+
+### Burnol–theta conjugacy-only holonomy under amplitude gauge
+
+**Closed result**
+
+Lean proves that independent nonzero prime-depth amplitude rescalings conjugate the literal Burnol–theta modular holonomy while multiplying each Gram entry by its endpoint weights. A conjugacy-invariant finite holonomy readout cannot retain those coefficient normalizations by itself.
+
+**Survivor / still open**
+
+The exact amplitude-gauge law identifies what a source-framed singular/cofinal boundary must retain: the literal prime weights or a justified gauge-breaking datum. It does not rule out such a boundary or prove BPC's collar continuation.
+
+Evidence: [amplitude-gauge theorem](../../../../formal/GaloisForLFunctions/RHTower/PrimeBurnolThetaAmplitudeGaugeNoGo.lean).
+
+[Back to family](#ward) · [Current BPC frontier](rh-current-frontier-map.md#candidate-bpc)
 
 <a id="no-go-450"></a>
 
@@ -6618,6 +6788,7 @@ Evidence: [forward-bridge no-go](../../../../formal/GaloisForLFunctions/RHTower/
 
 ## Other finite, scalar and source-blind selectors
 
+- [Uniform local contraction or mixed-cone SOS as free-orbit certificate](#no-go-465)
 - [slope-only off-line-moment RH consumer](#no-go-416)
 - [mollified mean-square gate below its exponential floor](#no-go-417)
 - [high-block uniform sharp-head energy](#no-go-409)
@@ -6703,6 +6874,22 @@ Evidence: [forward-bridge no-go](../../../../formal/GaloisForLFunctions/RHTower/
 - [U scalar source-capital inference](#no-go-240)
 - [universal squared-Euler anti-Löwner positivity](#no-go-256)
 - [unchanged timelike-mass transport to Vaughan near-diagonal phase](#no-go-293)
+
+<a id="no-go-465"></a>
+
+### Uniform local contraction or mixed-cone SOS as free-orbit certificate
+
+**Closed result**
+
+The uniform-certificate card closes two scoped lanes. Lean proves the normalized divisor influence rows sum exactly to `1`, so strict Dobrushin contraction has zero margin; source parity moments amplify rather than contract at a fixed aperture. A separate Lean cone witness blocks semidefinite representability of the mixed real/imaginary reflection cone; identifying the proposed dual certificate with this SOS cone is **paper-only**.
+
+**Survivor / still open**
+
+Exact local prime factorization survives, and the stochastic divisor kernel points to **recurrence**, not contraction. Pure real and pure imaginary frequency cones admit square certificates; the mixed cone is the obstruction. A source-derived recurrent/index or non-SOS certificate remains unproved.
+
+Evidence: [program and status](uniform-certificate-program.md), [stochastic influence](../../../../formal/GaloisForLFunctions/RHTower/ZeroInfluenceStochastic.lean), [cone obstruction](../../../../formal/GaloisForLFunctions/RHTower/ConePositivstellensatzFailure.lean).
+
+[Back to family](#other) · [Current network frontier](rh-current-frontier-map.md#transverse-zero-network-and-angular-threshold)
 
 <a id="no-go-310"></a>
 

@@ -10,6 +10,8 @@
 
 This tests payment by **all** smaller-prime denominator cofactors, not a fixed-depth subset. The denominator family lies below the physical cutoff $q^2$ and each nonzero denominator has largest prime $q$. The old quadratic-mass threshold gives an absolutely summable selected family, but that threshold discarded the Euler main term's growing parity margin. Retaining the margin yields a *non-summable harmonic-scale selected family*. This is a source-side cancellation debt, not an RH estimate: other numerator channels may pay it.
 
+**Receiver alignment.** Every theorem on this card concerns the boundary exponent $r=1$. The RH-equivalent Gamma--Hankel criterion instead requests an $N$-uniform one-sided covariance ceiling at exponents $r>1$ arbitrarily close to 1; its ceiling may depend on $r$. Thus bilateral divergence at $r=1$ alone neither proves nor obstructs that criterion. Any proposed transfer principle must be reconstructed at fixed $r>1$ with the complete common-gcd/primitive-ratio source and then supply the required $N$-uniform bound. This quantifier gap is a no-go for promoting the present boundary law to an RH producer.
+
 ## Exact theorem
 
 Let $P$ be a finite set of primes below $q$, $a_S=\prod_{p\in S}p$, $B_P=\prod_{p\in P}(1+p^2)$, and $C_P=\prod_{p\in P}(p-1+p^{-2})\ge1$. Define
@@ -45,6 +47,16 @@ H_{p,q}=\sum_{1\le d<q\atop(d,p)=1}
 \]
 
 The empty-numerator fibre is strictly negative for these $q$ by the same parity theorem with $P=\varnothing$. Therefore $H_{p(q),q}>T_{\{p(q)\}}(q)>1/(8192q)$, and $\sum_{q\text{ prime}}H_{p(q),q}=+\infty$. Unlike the cube sums, these chosen source pairs are disjoint: each has one fixed prime numerator and denominator with unique largest prime $q$. Thus cube overlap is not the reason this harmonic positive debt survives. The remaining payment must come from *other* numerator integers/channels of the complete signed source.
+
+**First literal payment channel.** For the same selected $p=p(q)\ge3$, let $J_{2p,q}$ be the cofactor-completed literal source with composite numerator $2p$ and its arithmetic Möbius coefficient. The exact Boolean-source identity is
+
+\[
+T_{\{2,p\}}(q)-T_{\{2\}}(q)=H_{p,q}+J_{2p,q}.
+\]
+
+The parity-margin theorem makes $T_{\{2,p\}}(q)<0<T_{\{2\}}(q)$ whenever $q\ge256p$. Consequently $J_{2p,q}<-H_{p,q}<-1/(8192q)$ in the moving band. Thus a *disjoint composite-numerator channel* actually overpays the disjoint prime-numerator harmonic debt. This is not full-covariance cancellation: higher numerator grades and the physical common-gcd/limit remain. It does falsify the conjecture that denominator-cofactor completion leaves a prime-only obstruction with no source-level payment.
+
+After deleting only the finite initial segment $q<4096$, the selected $2p(q)$ channel is non-summable on its own: its terms are negative and bounded above by $-1/(8192q)$, while the prime reciprocal series diverges. Lean proves this non-summability. Hence the selected completed fibres have *both* a divergent positive prime channel and a divergent negative composite channel. Separate finite-variation completion of these channels cannot be the all-grade solution; the signed transfer must be retained before the cofinal limit. This bilateral divergence is a fibre-level statement, not yet a formal theorem about total variation of the raw pair measure.
 
 ## Dependency-closed paper proof
 
@@ -90,6 +102,8 @@ Finally, omission of supported squarefree $d\ge q$ changes the normalized fibre 
 
 The tail bound uses $d^{-2}\le[d(d-1)]^{-1}$ for $d\ge2$, whose series telescopes. Thus $|q^2T_P(q)-M_P(q)|\le8B_P/q<C_P/4$, proving the displayed strict margin. For the moving singleton, $B_{\{p\}}=1+p^2\le2p^2$ and $C_{\{p\}}=p-1+p^{-2}\ge p/2$. The band $q\ge256p$ implies $qC>32B$; $q\le1024p$ then gives $T>p/(8q^2)\ge1/(8192q)$. Euler's prime-reciprocal divergence closes the corollary.
 
+For the two-prime cube, $B_{\{2,p\}}=5(1+p^2)\le(50/9)p^2$ and $C_{\{2,p\}}=(5/4)(p-1+p^{-2})\ge(5/6)p$ for $p\ge3$. Hence $q\ge256p$ implies the same strict margin condition for $\{2,p\}$, while it trivially does so for $\{2\}$. Their opposite parity signs give the strict increment above. Expanding the four numerator subsets of $\{2,p\}$ and subtracting the two subsets of $\{2\}$ leaves *exactly* the $p$ and $2p$ Möbius terms, proving the payment identity without a hidden cube-overlap argument.
+
 ## Route-level consequence: the sign-locked region is subcritical
 
 There is a stronger conclusion than fixed-support summability. For **any** choice of finite prime sets $P(q)$ satisfying $q>32B_{P(q)}$, the whole selected fibre family is absolutely summable over $q$; no cross-fibre signed payment is required there. Indeed the kernel inequality above and the injective squarefree-product parameterization give
@@ -105,11 +119,11 @@ For every prime $p\ge2$, $(1+p)^4\le(1+p^2)^3$ (expand, or use $p^3(p^3-4)+p(2p^
  \qquad \sum_{q\ \mathrm{prime}}|T_{P(q)}(q)|<\infty.
 \]
 
-The old $q^{-5/4}$ bound is valid **only under its stronger hypothesis** $q>32B_P$. It does not classify all sign-locked selected cubes. The refined signal-to-error ratio $qC_P/B_P$ reaches moving supports with $B_P\gtrsim q$ and, for one prime $p(q)\asymp q$, produces a harmonic-divergent **disjoint numerator-prime channel**. This reverses the old route-level extrapolation: completing denominator cofactors alone does **not** make every selected numerator channel summable. Remaining hard problem is to identify and bound the exact payment from other numerator integers in the complete physical covariance. Boolean cubes overlap, but the prime-numerator channel itself does not.
+The old $q^{-5/4}$ bound is valid **only under its stronger hypothesis** $q>32B_P$. It does not classify all sign-locked selected cubes. The refined signal-to-error ratio $qC_P/B_P$ reaches moving supports with $B_P\gtrsim q$ and, for one prime $p(q)\asymp q$, produces a harmonic-divergent **disjoint numerator-prime channel**. Completing denominator cofactors alone does **not** make every selected numerator channel summable. But numerator activation by $2$ exposes a disjoint opposite-sign $2p$ channel with greater harmonic magnitude; both selected signed tails are non-summable. The hard problem is therefore an *all-grade source transfer/payment law* under the physical cutoff and common-gcd limit, not isolation of a prime debt or a local cube sign. This is a route-level reinterpretation to test, not an RH producer.
 
 ## Research status
 
 - Corpus audit: Route E already proves eventual parity for a fixed numerator Boolean cube against a **prime denominator only** (`RouteEPrimitiveAllGradeParityBarrier.lean`); it does not include all smaller-prime denominator cofactors. Search for Route E largest-prime/cofactor completion and exact kernel usages found no existing theorem of this form. This is a corpus novelty claim, not an external-priority claim.
-- Positive survivor: exact main term and *amplified* parity margin $C_P$, a linear-in-support sign range, and a harmonic-divergent **coefficient-one prime-numerator** channel after full denominator-cofactor completion. The old $q^{-5/4}$ majorant remains a sharp statement of its restricted far-prime regime, not a global selected-family law.
-- Lean status: `RouteELargestPrimeFibreParity.lean` proves the full finite squarefree support expansion, kernel and cutoff errors, parity margin, moving-singleton lower bound, Bertrand prime choice, and non-summability. `routeELargestPrimeCofactorSet q` is exactly all primes below $q$. `routeELargestPrimeMobiusFibre_eq_cut` identifies every squarefree-support coefficient with literal $\mu(a_S)\mu(qd_D)$. `routeELargestPrimeSingleton_eq_empty_add_prime`, `routeELargestPrimePrimeNumerator_harmonic_lower`, and `not_summable_routeELargestPrimePrimeNumeratorSelected` close the disjoint prime-only survivor.
-- Falsifier / next attack: find a large prime $q$ for which the exact prime-numerator cofactor fibre violates the harmonic lower bound. The unresolved RH producer is the *complete* covariance: identify the other numerator integers and cross-fibre signs that pay this disjoint divergent positive family. No RH producer is presently established.
+- Positive survivor: exact main term and *amplified* parity margin $C_P$, a linear-in-support sign range, and **bilateral non-summability of disjoint prime and composite numerator fibres** after full denominator-cofactor completion. The old $q^{-5/4}$ majorant remains a sharp statement of its restricted far-prime regime, not a global selected-family law.
+- Lean status: `RouteELargestPrimeFibreParity.lean` proves the full finite squarefree support expansion, kernel and cutoff errors, parity margin, moving-singleton lower bound, Bertrand prime choice, and prime-channel non-summability. `routeELargestPrimeCofactorSet q` is exactly all primes below $q$. `routeELargestPrimeMobiusFibre_eq_cut` identifies every squarefree-support coefficient with literal $\mu(a_S)\mu(qd_D)$. `routeELargestPrimeSingleton_eq_empty_add_prime`, `routeELargestPrimePrimeNumerator_harmonic_lower`, and `not_summable_routeELargestPrimePrimeNumeratorSelected` close the disjoint prime-only survivor. `routeELargestPrimeTwoActivatedIncrement_eq_prime_add_composite`, `routeELargestPrimeTwoPrimeNumerator_harmonic_upper`, and `not_summable_routeELargestPrimeCompositeNumeratorSelected` identify the first literal composite payment and prove its selected tail non-summable.
+- Falsifier / next attack: test whether the first $2p$ payment extends to a coefficient-faithful, all-grade transfer law at a fixed $r>1$, with a cutoff-uniform bound. The unresolved RH producer is the *complete* covariance, including common-gcd/Gamma coupling and cofinal approach to $r=1$. Boundary-only divergence cannot discharge it. No RH producer is presently established.

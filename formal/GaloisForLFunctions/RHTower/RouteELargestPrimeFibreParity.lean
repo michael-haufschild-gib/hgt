@@ -990,31 +990,27 @@ theorem routeELargestPrimeHarmonicSelected_lower (q : Nat.Primes) :
 /-- A sign-locked, physical-cutoff selected subfamily is not absolutely
 summable across prime largest-denominator fibres. Any cancellation in the
 complete covariance must come from other numerator channels. -/
-theorem not_summable_routeELargestPrimeHarmonicSelected :
-    ¬ Summable routeELargestPrimeHarmonicSelected := by
+private theorem lpf_not_summable_harmonic_tail (N : ℕ) :
+    ¬ Summable (fun q : Nat.Primes =>
+      if N ≤ (q : ℕ) then 1 / (8192 * (q : ℝ)) else 0) := by
   intro hsum
-  have hminor : Summable (fun q : Nat.Primes =>
-      if 1024 ≤ (q : ℕ) then 1 / (8192 * (q : ℝ)) else 0) :=
-    Summable.of_nonneg_of_le
-      (fun q => by split_ifs <;> positivity)
-      routeELargestPrimeHarmonicSelected_lower hsum
-  have hfinite : {q : Nat.Primes | (q : ℕ) < 1024}.Finite := by
-    convert (routeELargestPrimeCofactorSet 1024).finite_toSet using 1
+  have hfinite : {q : Nat.Primes | (q : ℕ) < N}.Finite := by
+    convert (routeELargestPrimeCofactorSet N).finite_toSet using 1
     ext q
     simp only [Finset.mem_coe, Set.mem_setOf_eq,
       mem_routeELargestPrimeCofactorSet]
   have hevent :
       (fun q : Nat.Primes =>
-        if 1024 ≤ (q : ℕ) then 1 / (8192 * (q : ℝ)) else 0) =ᶠ[Filter.cofinite]
+        if N ≤ (q : ℕ) then 1 / (8192 * (q : ℝ)) else 0) =ᶠ[Filter.cofinite]
       (fun q : Nat.Primes => 1 / (8192 * (q : ℝ))) := by
     rw [Filter.EventuallyEq, Filter.eventually_cofinite]
     refine hfinite.subset ?_
     intro q hq
     simp only [Set.mem_setOf_eq] at hq ⊢
     by_contra hnot
-    have hge : 1024 ≤ (q : ℕ) := by omega
+    have hge : N ≤ (q : ℕ) := by omega
     simp [hge] at hq
-  have hscaled := hminor.congr_cofinite hevent
+  have hscaled := hsum.congr_cofinite hevent
   have hscaled' : Summable (fun q : Nat.Primes =>
       (1 / 8192 : ℝ) * (1 / (q : ℝ))) := by
     have hfun : (fun q : Nat.Primes =>
@@ -1028,6 +1024,16 @@ theorem not_summable_routeELargestPrimeHarmonicSelected :
   have hharmonic : Summable (fun q : Nat.Primes => 1 / (q : ℝ)) :=
     (summable_mul_left_iff (by norm_num : (1 / 8192 : ℝ) ≠ 0)).mp hscaled'
   exact Nat.Primes.not_summable_one_div hharmonic
+
+theorem not_summable_routeELargestPrimeHarmonicSelected :
+    ¬ Summable routeELargestPrimeHarmonicSelected := by
+  intro hsum
+  have hminor : Summable (fun q : Nat.Primes =>
+      if 1024 ≤ (q : ℕ) then 1 / (8192 * (q : ℝ)) else 0) :=
+    Summable.of_nonneg_of_le
+      (fun q => by split_ifs <;> positivity)
+      routeELargestPrimeHarmonicSelected_lower hsum
+  exact lpf_not_summable_harmonic_tail 1024 hminor
 
 /-- The same unconditional divergence, now stated with the literal arithmetic
 Möbius coefficients of both source endpoints. -/
@@ -1069,6 +1075,64 @@ private theorem lpfPowerset_singleton (p : Nat.Primes) :
   ext S
   simp only [Finset.mem_powerset, Finset.mem_insert, Finset.mem_singleton,
     Finset.subset_singleton_iff]
+
+private theorem lpfPowerset_pair (a b : Nat.Primes) (_hab : a ≠ b) :
+    ({a, b} : Finset Nat.Primes).powerset = {∅, {a}, {b}, {a, b}} := by
+  classical
+  rw [Finset.powerset_insert]
+  rw [lpfPowerset_singleton]
+  simp only [Finset.image_insert, Finset.image_singleton, Finset.insert_empty]
+  ext S
+  simp only [Finset.mem_union, Finset.mem_insert, Finset.mem_singleton]
+  tauto
+
+private theorem lpfSumPowerset_pair (a b : Nat.Primes) (hab : a ≠ b)
+    (f : Finset Nat.Primes → ℝ) :
+    ∑ S ∈ ({a, b} : Finset Nat.Primes).powerset, f S =
+      f ∅ + f {a} + f {b} + f {a, b} := by
+  rw [lpfPowerset_pair a b hab]
+  have h0 : (∅ : Finset Nat.Primes) ∉
+      ({{a}, {b}, {a, b}} : Finset (Finset Nat.Primes)) := by
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+    refine ⟨by simp, by simp, ?_⟩
+    intro heq
+    have ha : a ∈ (∅ : Finset Nat.Primes) := heq ▸ (by simp)
+    simp at ha
+  have h1 : ({a} : Finset Nat.Primes) ∉
+      ({{b}, {a, b}} : Finset (Finset Nat.Primes)) := by
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+    constructor
+    · simpa using hab
+    · intro heq
+      have hb : b ∈ ({a} : Finset Nat.Primes) := heq ▸ (by simp)
+      simp only [Finset.mem_singleton] at hb
+      exact hab hb.symm
+  have h2 : ({b} : Finset Nat.Primes) ∉
+      ({{a, b}} : Finset (Finset Nat.Primes)) := by
+    simp only [Finset.mem_singleton]
+    intro heq
+    have ha : a ∈ ({b} : Finset Nat.Primes) := heq ▸ (by simp)
+    simp only [Finset.mem_singleton] at ha
+    exact hab ha
+  simp only [Finset.sum_insert h0, Finset.sum_insert h1,
+    Finset.sum_insert h2, Finset.sum_singleton]
+  ac_rfl
+
+private theorem lpfSumPowerset_singleton (a : Nat.Primes)
+    (f : Finset Nat.Primes → ℝ) :
+    ∑ S ∈ ({a} : Finset Nat.Primes).powerset, f S = f ∅ + f {a} := by
+  rw [lpfPowerset_singleton]
+  simp only [Finset.sum_insert (by simp :
+    (∅ : Finset Nat.Primes) ∉ ({{a}} : Finset (Finset Nat.Primes))),
+    Finset.sum_singleton]
+
+private theorem lpfPairIncrement (a b : Nat.Primes) (hab : a ≠ b)
+    (f : Finset Nat.Primes → ℝ) :
+    (∑ S ∈ ({a, b} : Finset Nat.Primes).powerset, f S) -
+      (∑ S ∈ ({a} : Finset Nat.Primes).powerset, f S) =
+        f {b} + f {a, b} := by
+  rw [lpfSumPowerset_pair a b hab, lpfSumPowerset_singleton]
+  ring
 
 /-- The singleton Boolean cube is exactly the disjoint union of the empty
 numerator channel and the prime numerator channel; no overlapping cubes are
@@ -1186,6 +1250,64 @@ noncomputable def routeELargestPrimeTwoActivatedIncrement
     routeELargestPrimeMobiusFibre {two}
       (routeELargestPrimeCofactorSet q) q
 
+/-- The second new numerator support in the `2`-activated increment is the
+literal composite `2p` source, after all allowed denominator cofactors. -/
+noncomputable def routeELargestPrimeTwoPrimeNumeratorFibre
+    (p q : Nat.Primes) (R : Finset Nat.Primes) : ℝ :=
+  let two : Nat.Primes := ⟨2, by norm_num⟩
+  ∑ D ∈ R.powerset,
+    if Disjoint ({two, p} : Finset Nat.Primes) D ∧
+        lpfNatProd D < (q : ℕ) then
+      (ArithmeticFunction.moebius ((2 : ℕ) * (p : ℕ)) : ℝ) *
+        (ArithmeticFunction.moebius ((q : ℕ) * lpfNatProd D) : ℝ) *
+          routeEPrimitiveConeWeight
+            ((2 : ℝ) * (p : ℝ)) ((q : ℝ) * lpfRealProd D)
+    else 0
+
+/-- Exact disjoint-source decomposition: adding numerator prime `p` above
+`{2}` creates only the prime `p` and composite `2p` channels. -/
+theorem routeELargestPrimeTwoActivatedIncrement_eq_prime_add_composite
+    (p q : Nat.Primes) (hp3 : 3 ≤ (p : ℕ)) :
+    routeELargestPrimeTwoActivatedIncrement p q =
+      routeELargestPrimePrimeNumeratorFibre p q
+        (routeELargestPrimeCofactorSet q) +
+      routeELargestPrimeTwoPrimeNumeratorFibre p q
+        (routeELargestPrimeCofactorSet q) := by
+  classical
+  let two : Nat.Primes := ⟨2, by norm_num⟩
+  have hne : two ≠ p := by
+    intro h
+    have hp : (p : ℕ) = 2 := congrArg Subtype.val h.symm
+    omega
+  change routeELargestPrimeMobiusFibre {two, p}
+      (routeELargestPrimeCofactorSet q) q -
+      routeELargestPrimeMobiusFibre {two}
+        (routeELargestPrimeCofactorSet q) q =
+      routeELargestPrimePrimeNumeratorFibre p q
+        (routeELargestPrimeCofactorSet q) +
+      routeELargestPrimeTwoPrimeNumeratorFibre p q
+        (routeELargestPrimeCofactorSet q)
+  unfold routeELargestPrimeMobiusFibre
+    routeELargestPrimePrimeNumeratorFibre
+    routeELargestPrimeTwoPrimeNumeratorFibre
+  dsimp only
+  rw [← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro D hD
+  rw [lpfPairIncrement two p hne]
+  by_cases htwoD : two ∈ D
+  · have htwoAny : ∀ r : Nat.Primes, (r : ℕ) = 2 → r ∈ D := by
+      intro r hr
+      have hre : r = two := Subtype.ext (by simpa [two] using hr)
+      exact hre ▸ htwoD
+    simp [htwoD, Finset.disjoint_left, lpfNatProd, lpfRealProd]
+    intro hnot
+    exact (hnot (htwoAny _ rfl)).elim
+  by_cases hpD : p ∈ D
+  · simp [hpD, Finset.disjoint_left]
+  simp [htwoD, hpD, Finset.disjoint_left, lpfNatProd,
+    lpfRealProd, two, hne]
+
 /-- The first composite numerator channel overpays the harmonic prime-only
 channel after every smaller-prime denominator cofactor is completed. -/
 theorem routeELargestPrimeTwoActivatedIncrement_negative
@@ -1266,5 +1388,57 @@ theorem routeELargestPrimeTwoActivatedIncrement_negative
     nlinarith [sq_pos_of_pos hqR]
   dsimp [routeELargestPrimeTwoActivatedIncrement, P, R, two] at *
   linarith
+
+/-- The literal composite `2p` source pays more than the disjoint prime `p`
+source's harmonic mass in the moving-prime band. This identifies an actual
+opposing source channel, rather than inferring payment from cube overlap. -/
+theorem routeELargestPrimeTwoPrimeNumerator_harmonic_upper
+    (p q : Nat.Primes) (hp3 : 3 ≤ (p : ℕ))
+    (hlow : 256 * (p : ℕ) ≤ (q : ℕ))
+    (hhigh : (q : ℕ) ≤ 1024 * (p : ℕ))
+    (hq : 1024 ≤ (q : ℕ)) :
+    routeELargestPrimeTwoPrimeNumeratorFibre p q
+      (routeELargestPrimeCofactorSet q) <
+        -(1 / (8192 * (q : ℝ))) := by
+  have hprime := routeELargestPrimePrimeNumerator_harmonic_lower
+    p q hlow hhigh hq
+  have hinc := routeELargestPrimeTwoActivatedIncrement_negative
+    p q hp3 hlow
+  have hsplit := routeELargestPrimeTwoActivatedIncrement_eq_prime_add_composite
+    p q hp3
+  linarith
+
+/-- The Bertrand-selected literal composite channel opposite the prime
+channel, with a finite initial segment removed. -/
+noncomputable def routeELargestPrimeCompositeNumeratorSelected
+    (q : Nat.Primes) : ℝ :=
+  if 4096 ≤ (q : ℕ) then
+    routeELargestPrimeTwoPrimeNumeratorFibre (lpfBandPrime q) q
+      (routeELargestPrimeCofactorSet q)
+  else 0
+
+/-- The disjoint composite-numerator payment has divergent negative mass.
+Thus both signs have infinite selected variation before any all-grade
+conditional completion. -/
+theorem not_summable_routeELargestPrimeCompositeNumeratorSelected :
+    ¬ Summable routeELargestPrimeCompositeNumeratorSelected := by
+  intro hsum
+  have hminor : Summable (fun q : Nat.Primes =>
+      if 4096 ≤ (q : ℕ) then 1 / (8192 * (q : ℝ)) else 0) := by
+    refine Summable.of_nonneg_of_le
+      (fun q => by split_ifs <;> positivity) (fun q => ?_) hsum.neg
+    ·
+      by_cases hq : 4096 ≤ (q : ℕ)
+      · have hband := lpfBandPrime_bounds q (by omega : 1024 ≤ (q : ℕ))
+        have hp3 : 3 ≤ (lpfBandPrime q : ℕ) := by
+          by_contra hnot
+          have hp2 := (lpfBandPrime q).property.two_le
+          omega
+        have hcomp := routeELargestPrimeTwoPrimeNumerator_harmonic_upper
+          (lpfBandPrime q) q hp3 hband.1 hband.2 (by omega)
+        simp only [hq, ↓reduceIte, routeELargestPrimeCompositeNumeratorSelected]
+        linarith
+      · simp [routeELargestPrimeCompositeNumeratorSelected, hq]
+  exact lpf_not_summable_harmonic_tail 4096 hminor
 
 end RHTower
