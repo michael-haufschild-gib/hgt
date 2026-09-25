@@ -7294,197 +7294,233 @@ property among its obligations. In the attained case the chain is complete modul
 the non-attained case the maximum principle has no point of application, and that is precisely the
 regime the corpus has repeatedly found to be the hard one.
 
-## MUST-420 — the angular energy of an off-line zero is quantized at one (2026-09-25)
+## MUST-420 — angular energy is quantized at one (2026-09-25)
 
-For two distinct zeros set `cos²θ = (Re ρ − Re ρ')² / |ρ − ρ'|²`, the squared cosine of the angle the
-joining segment makes with the real axis, and let the angular energy of a zero be the sum of this
-quantity over all other zeros. The sum converges at every zero, because real parts are confined to
-the critical strip, so each term is at most `1/|ρ − ρ'|²`, and the divisor is locally finite. The
-functional equation places the partner `1 − ρ̄` horizontally opposite `ρ` at distance `|2 Re ρ − 1|`,
-so its term is `(2 Re ρ − 1)² / (2 Re ρ − 1)² = 1` exactly, for every off-line zero, independently of
-how close that zero is to the critical line. **Must** therefore record that the angular energy is at
-least one at every off-line zero and identically zero at every zero when the hypothesis holds, so the
-family of angular energies never lies entirely inside the open interval from zero to one. The
-cancellation is exact because the Cauchy kernel is homogeneous of degree minus two against a squared
-length: a zero at real part one half plus a thousandth and a zero at real part nine tenths have the
-same energy. **Cannot** any longer treat a zero close to the critical line as a small perturbation in
-any functional built from this kernel.
+For distinct zeros put `cos²θ = (Re ρ − Re ρ′)²/|ρ − ρ′|²`; the sum over all other zeros converges at
+every zero, real parts lying in the strip and the divisor being locally finite. The
+functional-equation partner lies horizontally opposite at distance `|2 Re ρ − 1|`, so its term is
+exactly `1`, independent of the distance to the critical line. **Must:** the angular energy is at
+least one at every off-line zero and identically zero under the hypothesis; no family of values lies
+entirely in `(0,1)`. **Cannot:** treat a near-line zero as a small perturbation in any functional
+built from the Cauchy kernel — the kernel is homogeneous of degree minus two against a squared
+length, so a zero at displacement `10⁻³` and one at `4·10⁻¹` have equal energy.
 
-## MUST-421 — the hypothesis in threshold form, with no attainment (2026-09-25)
+## MUST-421 — threshold form, attainment eliminated (2026-09-25)
 
-The hypothesis is equivalent to the strict inequality that every zero has angular energy below one,
-and equally to the vanishing of the angular energy at a single zero, since one zero seeing every
-other zero in a purely vertical direction forces all real parts to agree. **Must** record that this
-is the first equivalent in this field stated as a threshold with a margin rather than as an exact
-identity: the earlier equivalents in this lane — vanishing of a reflection norm, a slice of
-cardinality at most one, a vanishing horizontal logarithmic derivative — are rigid, and nothing
-weaker than the identity implies them, whereas an unconditional upper bound anywhere strictly below
-one would suffice here. **Cannot** continue to count attainment of the supremum of the real part
-among the obligations of this lane: the statement quantifies over all zeros with a strict
-inequality, uses no extremal zero, no limiting configuration and no escape-to-infinity case, and
-supersedes the maximum-principle formulation in which that dichotomy appeared. The attainment
-obstruction was an artifact of using an extremal functional, not a feature of the problem.
+The hypothesis is equivalent to the strict bound "angular energy below one at every zero", and to its
+vanishing at a single zero. **Must:** this is a threshold with a margin, unlike the rigid equivalents
+already held here (vanishing reflection norm, slice cardinality one, vanishing horizontal logarithmic
+derivative); any unconditional bound strictly below one suffices. **Cannot:** count attainment of the
+supremum of the real part among the obligations of this field. The statement quantifies over all
+zeros with a strict inequality and uses no extremal zero, no limiting configuration and no
+escape-to-infinity case; attainment was an artifact of extremal functionals.
 
-## CANNOT-422 — no continuous deformation functional can see the quantum (2026-09-25)
+## CANNOT-422 — no continuous deformation sees the quantum (2026-09-25)
 
-The partner term of the angular energy equals one for every off-line zero and zero for every zero on
-the critical line. As a zero drifts toward the line its angular energy does not decay; it remains at
-least one and drops to zero only in the limit. **Cannot** therefore expect any functional that varies
-continuously under a motion of the zeros — a heat-type deformation of the entire function, a
-continuity argument in a deformation parameter driven to its boundary value, or any perturbative
-expansion in the off-line displacement — to detect the hypothesis through this energy, because such a
-functional is by construction blind to a jump. **Must** read the criticality wall recorded earlier in
-this field as having this exact object-level cause rather than as an analogy: the invariant that
-separates the two regimes is integer-valued, and the flow is continuous.
+The partner term is one for every off-line zero and zero on the critical line, so the energy jumps
+rather than decays as a zero approaches the line. **Cannot:** detect the hypothesis by any functional
+varying continuously under a motion of the zeros — heat-type deformations, continuity in a parameter
+driven to its boundary value, or perturbative expansion in the displacement. **Must:** read the
+criticality wall as having this cause: the separating invariant is integer-valued and the flow is
+continuous.
 
-## CANNOT-423 — the angular energy is not accessible to the holomorphic toolkit (2026-09-25)
+## CANNOT-423 — the angular energy is not holomorphic (2026-09-25)
 
-Writing the difference of two zeros as `Δ`, the squared cosine equals one half plus one half the real
-part of `Δ` divided by its conjugate. The second summand involves the conjugate and is therefore not
-holomorphic in either zero. **Cannot** evaluate or bound the angular energy with the machinery this
-field has accumulated: Hadamard products, logarithmic derivatives and the Taylor coefficients of the
-completed function at a zero compute the sum of `Δ` to the power minus two in closed form, and never
-the sum of `Δ` over its conjugate. **Must** therefore record that the object missing for the
-threshold bound is a non-holomorphic pairing of the divisor with itself, not another holomorphic
-lemma, which is a concrete account of why the analytic toolkit of this field was found to be
-saturated: the saturation was of the holomorphic half only.
+With `Δ` the difference of two zeros, `cos²θ = ½ + ½ Re(Δ/Δ̄)`. **Cannot:** evaluate or bound the
+angular energy with Hadamard products, logarithmic derivatives or Taylor coefficients at a zero;
+those compute `Σ Δ⁻²` in closed form and never `Σ Δ/Δ̄`. **Must:** the missing object is a
+non-holomorphic self-pairing of the divisor, not another holomorphic lemma; the recorded saturation
+of this field's analytic toolkit is of the holomorphic half only.
 
 ## MUST-424 — the critical-line potential is a sum of unit bumps (2026-09-25)
 
-Move the base point of the angular energy off the zeros and onto the critical line. For real `t` put
-`U(t) = Σ_ρ δ_ρ² / (δ_ρ² + (t − Im ρ)²)` with `δ_ρ = Re ρ − 1/2`. The sum converges at every `t`,
-because the displacements are bounded by one half and the ordinates are locally finite; each summand
-is at most twice a fixed Cauchy weight. Each zero contributes a single bump which in scale-invariant
-form is `1/(1 + ((t − Im ρ)/δ_ρ)²)`: **height exactly one, width exactly the displacement**. Zeros on
-the line contribute nothing. **Must** record that `U` vanishes identically under the hypothesis and is
-at least one at the ordinate of any off-line zero, so the hypothesis is equivalent to the uniform
-strict bound `U < 1` for a single explicit function of one real variable, quantified over all `t`
-with no attainment, no extremal point and no limiting configuration; and that the values of `U` never
-lie entirely inside the open interval from zero to one. The superlevel set of a single bump at height
-`λ` is the interval of half-width `δ √((1−λ)/λ)` about the ordinate of the zero, so detecting a zero
-at displacement `δ` requires resolution of order `δ`.
+`U(t) = Σ_ρ δ²/(δ² + (t − Im ρ)²)` with `δ = Re ρ − 1/2` converges at every real `t`. Each summand is
+`1/(1 + ((t − Im ρ)/δ)²)`: height exactly one, width exactly the displacement; on-line zeros
+contribute nothing. **Must:** `U` vanishes under the hypothesis and is at least one at the ordinate
+of any off-line zero, so the hypothesis is the uniform strict bound `U < 1` on one function of one
+real variable, with no attainment, no extremal point and no limit; values never lie entirely in
+`(0,1)`. The superlevel set at height `λ` is the interval of half-width `δ√((1−λ)/λ)`, so detecting a
+zero at displacement `δ` requires resolution of order `δ`.
 
-## CANNOT-425 — mass blindness: no averaged criterion can decide the hypothesis (2026-09-25)
+## CANNOT-425 — mass blindness (2026-09-25)
 
-The mass of one bump over the symmetric window of half-width `R` about its centre is exactly
-`2 δ arctan(R/δ)`, hence strictly below `π δ` on the whole line, while its height is exactly one
-whatever `δ` is. The two norms are therefore decoupled at every scale: as the displacement shrinks the
-mass goes to zero and the height does not move. **Cannot** decide the hypothesis by any criterion that
-reads the off-line divisor only through a total displacement mass `Σ_ρ |δ_ρ|`. The density integral
-`∫_{1/2}^{1} N(σ,T) dσ` is exactly half that mass, and Littlewood's lemma expresses it through a
-logarithmic mean on the critical line, so the whole Littlewood–Jensen family, the density theorems,
-the mollified moments and the smoothed counting functions are criteria of this kind. For every
-amplification constant and every tolerance there is a displacement whose bump mass stays below the
-tolerance on every window while the bump still attains height one; no bound on the mass, at any
-constant, constrains the height. **Must** therefore read the repeated finding that averaged criteria
-stall a fixed factor short of their target as a structural consequence of this decoupling rather than
-as a deficiency of the estimates, and must require of any producer that it control a supremum at
-unknown resolution rather than an average at fixed resolution. This is the quantitative form of the
-earlier finding that the hypothesis is a separation target and not a resolution target.
+The mass of one bump over a symmetric window of half-width `R` is `2δ·arctan(R/δ) < πδ`, while its
+height is one whatever `δ` is. **Cannot:** decide the hypothesis by any criterion reading the
+off-line divisor through a total displacement mass `Σ|δ_ρ|`. The density integral `∫N(σ,T)dσ` is half
+that mass, Littlewood's lemma expresses it as a logarithmic mean on the critical line, and mollified
+moments and smoothed counting functions are of the same kind; for every amplification constant and
+every tolerance there is a displacement whose mass stays under the tolerance on every window while
+the height is one. **Must:** read the stalling of averaged criteria a fixed factor short as
+structural, and require of a producer a supremum at unknown resolution rather than an average at
+fixed resolution.
 
-## MUST-426 — the discriminant law: the hypothesis is squareness of the divisor (2026-09-25)
+## MUST-426 — the discriminant law: the hypothesis is squareness (2026-09-25)
 
-Attach to each zero the monic quadratic cutting out its functional-equation orbit,
-`Q_ρ(s) = (s − ρ)(s − (1 − ρ̄))`. Its discriminant is the constant `(2 Re ρ − 1)²`, four times the
-squared displacement, and on the critical line its value is real and non-positive,
-`Q_ρ(1/2 + it) = −[(Re ρ − 1/2)² + (t − Im ρ)²]`. Consequently the summand of the critical-line
-potential is the **discriminant ratio** `−disc(Q_ρ)/(4 Q_ρ(1/2+it))`. **Must** record the two
-consequences. First, the hypothesis is equivalent to the vanishing of every orbit discriminant, and
-equivalently to every orbit quadratic being a perfect square: the hypothesis says that the divisor is
-a square for the functional-equation involution, and the potential is the generating function of the
-discriminants. Second, every ingredient of the discriminant ratio is a holomorphic function of the
-variable once the orbit is known, so the summand of the critical-weight reader is **not** intrinsically
-non-holomorphic. What is missing is only the matching of each zero to its partner, that is a
-factorisation of the divisor into functional-equation orbits. **Must** therefore identify the analytic
-obstruction to the critical-weight reader with the arithmetic obstruction to a canonical half-divisor
-already isolated in this field: they are the same obstruction, and the matching is exactly the
-ordinate pairing, which is the separation statement recorded earlier.
+Attach to each zero the orbit quadratic `Q_ρ(s) = (s − ρ)(s − (1 − ρ̄))`. Its discriminant is the
+constant `(2 Re ρ − 1)²`; on the critical line its value is real and non-positive,
+`Q_ρ(1/2 + it) = −[(Re ρ − 1/2)² + (t − Im ρ)²]`; and the bump of the potential is the discriminant
+ratio `−disc(Q_ρ)/(4 Q_ρ(1/2+it))`. **Must:** the hypothesis is the vanishing of every orbit
+discriminant, equivalently every orbit quadratic being a perfect square — the divisor is a square for
+the involution — and the potential is the generating function of the discriminants.
 
 ## MUST-427 — the threshold is two (2026-09-25)
 
-At the ordinate of an off-line zero there are two zeros, the zero and its functional-equation
-partner, which share that ordinate because the partner reflects the real part and fixes the imaginary
-part. Each contributes a full unit to the critical-line potential at that ordinate. **Must** therefore
-sharpen the threshold: the potential is at least two at the ordinate of any off-line zero, and the
-hypothesis is equivalent to the uniform bound below two rather than below one. The criterion has a
-factor of two of room, which is the first quantitative slack recorded anywhere in this field for a
-statement equivalent to the hypothesis.
+The partner shares the ordinate of a zero and reflects its real part, so at that ordinate two zeros
+each contribute a full unit. **Must:** the potential is at least two at the ordinate of any off-line
+zero, and the hypothesis is the uniform bound below two rather than below one — the first
+quantitative slack recorded here for a statement equivalent to the hypothesis.
 
-## CANNOT-428 — the weight trichotomy: only one exponent carries the signal (2026-09-25)
+## CANNOT-428 — the weight trichotomy (2026-09-25)
 
-A reader that weights a zero by `δ²/(δ² + τ²)^k` receives exactly `δ^{2−2k}` from that zero at its
-own ordinate. At `k = 0` the signal is `δ²` and vanishes with the displacement; at `k = 1` it is one,
-independent of the displacement; at `k = 2` it is `1/δ²` and diverges. **Cannot** decide the
-hypothesis with a reader at either flanking exponent, and the two failures have opposite causes. The
-whole averaged family — density integrals, Littlewood and Jensen consumers, mollified moments,
-smoothed counts — sits at the vanishing exponent and is blind for the reason already recorded. The
-Laguerre expression sits at the diverging exponent, where the contribution of an off-line pair is
-`−2/δ²` and must be cancelled against a sum over the remaining zeros that nothing bounds, which is
-exactly what made the inner-band route circular. **Must** therefore treat the middle exponent as the
-only surviving weight in this field, and read the two retired lanes as the two ways of missing it.
+A reader weighting a zero by `δ²/(δ² + τ²)^k` receives `δ^{2−2k}` from that zero at its own ordinate:
+`δ²` at `k = 0`, one at `k = 1`, `δ⁻²` at `k = 2`. **Cannot:** decide the hypothesis at either
+flanking exponent, and the two failures have opposite causes. The averaged family — density
+integrals, Littlewood and Jensen consumers, mollified moments, smoothed counts — sits at the vanishing
+exponent. The Laguerre expression sits at the diverging one, where an off-line pair contributes
+`−2/δ²` that must cancel against a sum over the remaining zeros which nothing bounds; that is what
+made the inner-band route circular. **Must:** treat the middle exponent as the only surviving weight.
 
-## MUST-429 — the matching is conjugation, and MUST-426's identification was wrong (2026-09-25)
+## MUST-429 — the matching is conjugation (2026-09-25)
 
-In the spectral coordinate `z_ρ = (ρ − 1/2)·(−i)` the functional-equation partner of a zero is its
-complex conjugate, `z_{σρ} = z̄_ρ`. The matching therefore requires no choice: it is the pairing of
-the non-real zeros of a real entire function with their conjugates, and each orbit quadratic is the
-corresponding real quadratic factor. **Must** correct the identification made in this field's
-immediately preceding entry: the obstruction to the critical-weight reader is **not** a half-divisor
-and is unrelated to the failure to construct a canonical square root of the divisor. That entry's
-first conclusion, that the hypothesis is the squareness of the divisor under the involution, stands
-unchanged; its second conclusion, that the missing datum is the matching, is withdrawn. The matching
-is free.
+In the spectral coordinate `z = (ρ − 1/2)(−i)` the functional-equation partner is the complex
+conjugate. **Must:** the matching requires no choice; it is the conjugate pairing of the non-real
+zeros of a real entire function, and each orbit quadratic is the corresponding real quadratic factor.
+**Cannot:** identify the obstruction to the critical-weight reader with a half-divisor or with the
+absence of a canonical square root of the divisor. That identification, made alongside MUST-426, is
+withdrawn; MUST-426's own statement stands.
 
-## MUST-430 — the potential is a linear Blaschke defect, and the weight is the whole difficulty (2026-09-25)
+## MUST-430 — the potential is a linear Blaschke defect (2026-09-25)
 
-With the matching in hand, attach to each zero its Blaschke factor at a real point,
-`B_ρ(t) = (t − z̄_ρ)/(t − z_ρ)`. It is unimodular on the real axis, equals one exactly when the zero
-lies on the critical line, and the partner's factor is its conjugate. The bump of the potential is
-its defect from one, `bump_ρ(t) = ‖1 − B_ρ(t)‖²/4 = (1 − Re B_ρ(t))/2`, and a zero together with its
-partner contributes four times one bump, so the potential is the total Blaschke defect halved:
-`Σ_ρ (1 − B_ρ(t)) = 2 U(t)`. **Must** record that the potential is therefore *linear* in the family of
-defects rather than quadratic, and that the defect has the closed form
+`B_ρ(t) = (t − z̄_ρ)/(t − z_ρ)` is unimodular on the real axis, equals one exactly when the zero lies
+on the critical line, and the partner's factor is its conjugate. The bump is `‖1 − B_ρ‖²/4 =
+(1 − Re B_ρ)/2`, and a zero with its partner contributes four times one bump, so
+`Σ_ρ (1 − B_ρ(t)) = 2U(t)`. **Must:** the potential is *linear* in the family of defects, and
+`1 − B_ρ(t) = 2i(Re ρ − 1/2)/(t − z_ρ)` — the resolvent weighted by the displacement. **Cannot:**
+obtain that weighting from the holomorphic data, which deliver exactly the unweighted power sums
+`Σ_ρ (t − z_ρ)^{-k}` for `k ≥ 1`; these are conjugation-symmetric, so the odd-in-displacement part
+cancels between a zero and its partner.
 
-  `1 − B_ρ(t) = 2i (Re ρ − 1/2)/(t − z_ρ)`,
+## MUST-431 — localised Hermite positivity (2026-09-25)
 
-the resolvent at the zero weighted by its displacement. **Cannot** obtain that weighting from the
-holomorphic data: the Taylor coefficients of the logarithmic derivative of the completed function at
-a real point deliver exactly the unweighted power sums `Σ_ρ (t − z_ρ)^{-k}` for `k ≥ 1`, and no
-combination of them attaches the displacement to its own resolvent, because the displacement is the
-imaginary part of the point and the power sums are conjugation-symmetric. **Must** therefore restate
-the open core as the problem of weighting the resolvent by the displacement, which is a sharper and
-more nearly standard object than any previous formulation in this field, and is where the next
-attempt should begin.
+At a real base point off the spectral divisor set `u_q = (t − z_q)^{-1}`. The power sums
+`p_k(t) = Σ_q u_q^k` converge for every `k ≥ 2`, because a point off the divisor stays a positive
+distance from all of it; and `p_2(t)` is an explicit derivative of the logarithmic derivative of the
+completed function, so the entries are holomorphic data. For a real test vector on a finite set the
+Hankel form factors unconditionally as `Σ_{i,j} c_i c_j p_{i+j+2}(t) = Σ_q P(u_q)²` with
+`P(x) = Σ c_i x^{i+1}`. **Must:** under the hypothesis every `u_q` is real, so the form is a
+nonnegative real at every base point and test vector, and a single negative value refutes the
+hypothesis. The line conjugation acts on the resolvent as complex conjugation, so an orbit
+contributes twice a real part; that is the only source of negativity. **Cannot:** claim the converse:
+the finite Hermite–Sylvester converse does not transfer to an infinite divisor, where one orbit's
+negative contribution must outweigh all the on-line zeros.
 
-## MUST-431 — localised Hermite positivity, and one negative value refutes (2026-09-25)
+## MUST-432 — the monomial witness (2026-09-25)
 
-Fix a real base point `t` off the spectral divisor and set `u_q = (t − z_q)^{-1}`. The localised power
-sums `p_k(t) = Σ_q u_q^k` converge for every `k ≥ 2`, because a point off the divisor stays a
-positive distance from all of it — the divisor is locally finite, so only finitely many spectral
-points lie within a unit of the base point and each of those is at positive distance, while the rest
-are at distance at least one. The lowest member is an explicit derivative of the logarithmic
-derivative of the completed function, `p_2(t) = −(log-derivative)'(t)`, so these are holomorphic data.
-For a real test vector supported on a finite set the Hankel form of these power sums factors
-exactly and unconditionally,
+At the ordinate of an off-line zero, the resolvents of that zero and of its partner are purely
+imaginary of modulus `1/δ`, and a purely imaginary number raised to an exponent congruent to two
+modulo four is a negative real; the orbit contributes `−2/δ^{4n+2}` with no cancellation and no
+coefficient tuning. Every other zero, having resolvent of modulus at most `1/δ′` with `δ′ > δ`, is
+multiplied by `(1/δ′)^{4n}` against the off-line `(1/δ)^{4n}`. **Must:** an off-line zero strictly
+closer to the base point than any other zero is refuted by a single evaluation of a single derivative
+of the logarithmic derivative; the degree is not a parameter to optimise, it need only clear a fixed
+geometric ratio. **Cannot:** remove the isolation hypothesis by this route; the clustered regime is
+untouched. The retired inner-band computation is the case `n = 0` of this family, the one member with
+no geometric suppression.
 
-  `Σ_{i,j} c_i c_j p_{i+j+2}(t) = Σ_q P(u_q)²`,   `P(x) = Σ_i c_i x^{i+1}`.
+## MUST-433 — the scaling degree law (2026-09-25)
 
-**Must** record that under the hypothesis every `u_q` is real, so the right-hand side is a sum of
-squares of real numbers and the form is a nonnegative real at every base point and every test
-vector; and contrapositively that **a single negative value of the form, at one base point and one
-test vector, refutes the hypothesis**. The line conjugation acts on the localised resolvent as
-complex conjugation, so a zero and its functional-equation partner contribute a square and its
-conjugate, and an orbit contributes twice a real part; that is the only place a negative value can
-come from.
+The bump family is one profile acted on by the scaling group, `bump(cd, cg, ct) = bump(d, g, t)`, so
+functionals of the family are graded by homogeneity degree and the grading is a complete obstruction.
+The peak is degree zero: applying any function to the bump at its centre gives the same number for
+every displacement. Every pointwise average is degree one: for any function and any window the
+integral is the displacement times a profile integral, the factor being the Jacobian. **Cannot:**
+reach the hypothesis with any pointwise-average functional — no finite `L^p` norm, mollified moment,
+smoothed counting function or nonlinear average. **Must:** the degree-zero class also contains the
+total variation, a bump rising once and falling once so that its variation is two whatever its width,
+and the count. Conversion laws from averages to heights exist and are sharp here, but each supplies a
+scale and the only scale is the displacement; a producer must supply a scale, and the only intrinsic
+one in the zero distribution is the ordinate spacing.
 
-**Must** also record what is and is not new here. Hermite's criterion, the finite Hankel positivity
-for a finite real spectrum, the finite Hermite–Sylvester converse and the Jensen–Turán hyperbolicity
-route are all already held in this field. All of them are anchored at a single base point, which the
-weight analysis of this lane shows cannot see a zero near the line, because the signal sits at the
-scale of the displacement and at the place fixed by the ordinate. The new element is the
-**localisation**: the criterion is now anchored at every real base point, which is the shape the
-weight analysis demands. **Cannot** yet claim the converse: the finite Hermite–Sylvester converse
-held in this field does not transfer to an infinite divisor, where the negative contribution of one
-orbit must outweigh the positive contributions of all the on-line zeros, and that comparison is the
-uncontrolled local clustering already identified. The positivity is therefore a necessary condition
-with a falsification route, not yet a criterion.
+## MUST-434 — the decided invariant is a count (2026-09-25)
+
+At an ordinate, every off-line divisor point of that ordinate has its bump at full height, so the
+free part of the slice counts itself inside the potential; that free part has even cardinality, twice
+the left half-slice. **Must:** one free orbit forces the potential to be at least two, the hypothesis
+is the vanishing of that count at every ordinate, and the potential is an upper envelope of a count
+rather than a quantity that happens to detect zeros. **Must:** the deciding invariant is
+integer-valued while every analytic functional of the completed function is continuous, so no limit
+of measurements produces it; the class of functional-equation-symmetric sources with arbitrary finite
+Euler heads admits both a fixed-orbit and a free-orbit extension at a generic off-line point, so the
+source's local data do not select orbit type; and the involution is the composite of the functional
+equation with complex conjugation, so the hypothesis states that the arithmetic and the archimedean
+involutions agree on the divisor. **Cannot:** expect a producer that manufactures the zeros from the
+source; a producer must constrain the ambient symmetric geometry.
+
+## CANNOT-435 — coboundary, not cohomology (2026-09-25)
+
+Over the two-element field the norm of the involution is `Nf = f + f∘σ`, squaring to zero. The left
+half of the strip is a canonical section — the involution exchanges the halves and fixes the line —
+so `N(f·1_{Re<1/2}) = f` for every invariant `f` vanishing on the fixed locus, with no choice used.
+The coboundary is therefore surjective onto the cochains vanishing on the critical line, the Tate
+cohomology is the functions on that line alone, and `N(1_{Re<1/2}) = 1_{Re≠1/2}`. **Cannot:** obtain
+the hypothesis from any equivariant invariant, localisation or completion: all compute cohomology,
+and the hypothesis is the vanishing of a coboundary, which passing to cohomology discards. This is
+the cause of the recorded localisation blindness, and it is why the torsion reading is a correct
+description and not a producer. **Must:** direct a producer at the boundary map, not its cohomology.
+
+## MUST-436 — the boundary map (2026-09-25)
+
+A cochain is a coboundary if and only if it is invariant under the reflection and vanishes on the
+critical line; the image is an explicit subspace with no quotient taken, and a coboundary is freely
+determined by one bit per free orbit. The reflection preserves ordinates, so the map is fibred over
+the ordinate map and its rank is the sum over ordinates of the free-orbit count of each slice. Over
+any finite set of ordinates, the total zero count equals the critical-line count plus twice the
+free-orbit count. **Must:** the hypothesis is the agreement of those two counts on every window; this
+is the classical relation between all zeros and the zeros on the critical line, in exact finite form,
+so this field's lane and the classical count decide the same integer and differ only in access —
+averaged over a window there, fibrewise here.
+
+## CANNOT-437 — the required bound is an absolute constant (2026-09-25)
+
+The free-orbit count at an ordinate is at most the Cauchy-weighted local zero density there, of size
+a constant times the logarithm of the height. **Cannot:** use any estimate of that shape. The count is
+an integer and twice it is dominated by the potential, so a bound below two forces it to vanish while
+a bound of two or more forces nothing at all; the threshold carries no slack. **Must:** the required
+estimate is uniform in the height, an absolute constant, whereas every analytic estimate here grows
+with the height; the obstruction is the height-dependence, not the strength, and the target admits no
+lossy version — an estimate losing a constant factor or a logarithm is no result. Integrality is what
+removes the slack.
+
+## MUST-438 — a signature, not a bound (2026-09-25)
+
+The hypothesis says an involution on a discrete set has no free orbits; over a base field that is the
+statement that an étale algebra is totally real. Such statements are decided by a trace form: the
+signature of `ℝ^r × ℂ^s` gives each complex pair one positive and one negative direction, so the
+vanishing of the complex part is positive semidefiniteness and the free-orbit count is the **negative
+index**. **Must:** the target is a signature computation, not an estimate below a threshold. The
+localised Hermite form is that trace form — a zero and its partner contribute a square and its
+conjugate so each orbit is one real direction, a fixed orbit contributes the square of a real number
+and is never negative, and a free orbit is indefinite since the monomial test vector anchored at the
+zero's own ordinate makes its contribution negative at every degree. **Must:** the sign of the
+discriminant of a real algebra is determined by the parity of the complex part, so a determinant sees
+only the parity of the free-orbit count; the parity law already held here is the determinant of this
+form and the counting problem is its signature, and these are not two findings.
+
+## MUST-439 — the sign criterion is the Hermite–Biehler lane, already held (2026-09-25)
+
+A real entire function has only real zeros exactly when its logarithmic derivative maps the upper
+half-plane into the lower. Termwise the resolvent of a zero contributes
+`−Im (z − z_ρ)^{-1} = (Im z − Im z_ρ)/|z − z_ρ|²`: a zero on the critical line contributes positively
+throughout the open upper half-plane, a zero off the line has an orbit member of positive spectral
+height whose contribution directly beneath it, at half that height, is exactly `−2/Im z_ρ`. The
+hypothesis is the positivity of every such term at every point of the open upper half-plane.
+
+**Cannot:** treat this as a new route. It is the Hermite–Biehler / de Branges lane this field already
+holds in stronger form — a strict Hermite–Biehler inequality for the carrier `XiC + i·XiC'` gives the
+hypothesis outright, and the known gap there is **strictness, not semidefiniteness**; the Herglotz
+half of the lane already carries its own no-go. **Cannot** either claim that harmonic positivity
+evades the obstructions recorded elsewhere here: the function whose positivity is wanted is harmonic
+only away from the non-real zeros, and a maximum principle on a half-plane needs the singularity set,
+which is the unknown. **Must:** record the general constraint this instance illustrates — a
+reformulation possessing a classical computer has been attempted; novelty requires the computer to be
+the new part, not the reformulation.

@@ -135,10 +135,145 @@ The direct sum $G_0=\bigoplus_{n\ge1}G_n$ is a bounded positive injective operat
 
 The other cross-frequency entries follow from the same matrix (2) and reflection. Equation (6) is a test for this frequency-folded metric, not a necessary RH condition: the canonical metric $T$ already has the different, rank-two defect in (1). No vanishing or sign law for this full residual is established.
 
+## Full cross-frequency Schoenberg core and singular boundary port
+
+There is a positive geometry on **all** frequencies, not only the paired blocks. For nonzero integers $m,n$ set
+
+\[
+G_{mn}=\frac{\Phi_m+\Phi_n-\Phi_{m-n}}2,
+\quad J_{nn}=\frac1{\pi n},
+\quad u_m=1,
+\quad v_n=\frac{\Phi_n}{2\pi n}.
+\tag{7}
+\]
+
+On every finite packet of distinct nonzero frequencies, $G$ is the strict Gram matrix of
+$\sqrt{q(t)/2}(e^{2\pi int}-1)$ in $L^2(0,1)$. The functions are square-integrable because
+$\Phi_n<\infty$; symmetry $q(1-t)=q(t)$ removes their imaginary mixed integrals. Positivity is
+**strict**: a finite trigonometric polynomial $\sum_n c_n(e^{2\pi int}-1)$ vanishing almost
+everywhere on $(0,1)$ vanishes identically, and its nonzero-frequency coefficients are the $c_n$.
+The full finite Fourier section of (2), with every cross-frequency entry retained, therefore has
+the exact decomposition
+
+\[
+\boxed{D_I=G_IJ_I-u_Iv_I^{\mathsf T}.}\tag{8}
+\]
+
+The counterterm is intrinsic to the literal quotient: $v_n=D_{nn}$ by (2), so
+$(GJ)_{mn}=D_{mn}+D_{nn}$. No independent renormalization coefficient or fitted boundary
+datum has been inserted.
+
+The port-free $G_IJ_I$ is similar to the Hermitian matrix
+$G_I^{1/2}J_IG_I^{1/2}$ and has only nonzero real eigenvalues, with exactly as many positive
+and negative eigenvalues as positive and negative frequencies in $I$. Thus all possible nonreal
+finite-section spectrum is confined to the **single affine boundary port** in (8). On a
+sign-symmetric packet, frequency reflection anticommutes with both terms of (8), so the full
+finite-section spectrum remains $\pm$-paired. This is an exact source-level factorization, not a
+proof that the port is harmless.
+
+The port cannot be discarded in the infinite limit: $u=(1)_{n\ne0}$ is not an $\ell^2$ vector,
+while its subtraction is precisely what makes the original quotient matrix a legitimate operator.
+For a general positive even strictly log-concave source the same Gram law holds, yet the
+two-Gaussian witness above has infinitely many off-real Fourier zeros. Hence positive bulk Gram,
+one-port rank, and strict source concavity together **do not** orient the port. The RH-bearing
+question is whether the literal modular theta source gives an additional, coefficient-faithful
+boundary-work law for this singular port. A generic rank-one perturbation or a positive metric
+for $G_IJ_I$ is not such a law.
+
+A direct Herglotz shortcut already fails on one paired packet. Write
+$A=\Phi_n$, $B=\Phi_{2n}$, and let $D_0=G_{\{n,-n\}}J_{\{n,-n\}}$.
+Its eigenvalues are $\pm\lambda$, where
+$\lambda^2=B(4A-B)/(4\pi^2n^2)>0$. The rank-one secular factor is exactly
+
+\[
+1+v^{\mathsf T}(\mu-D_0)^{-1}u
+=1+\frac{AB}{2\pi^2n^2(\mu^2-\lambda^2)}.\tag{9}
+\]
+
+Its residues at $+\lambda$ and $-\lambda$ have opposite signs, so it is not a
+Herglotz function of $\mu$, **even though** this paired block has real spectrum.
+Parity suggests the squared variable $\mu^2$; its full-packet residue signs and the
+singular-port limit remain unproved. Equation (9) follows by
+$D_0^2=\lambda^2I$, $v^{\mathsf T}u=0$, and
+$v^{\mathsf T}D_0u=AB/(2\pi^2n^2)$. This is a no-go for a scalar
+first-order-passivity interpretation, not a no-go for a squared-parameter source law.
+
+The squared-parameter reformulation has a sharper obstruction than (9). Fix a finite set
+$P\subset\mathbb N_{>0}$, retain both signs of each frequency, and fold into the even/odd
+reflection sectors. Let $G^+$ and $G^-$ be the two strictly positive Gram blocks,
+$K=\operatorname{diag}_{n\in P}(1/(\pi n))$, and $S=K^{1/2}$. Conjugating the parity-folded
+matrix by $\operatorname{diag}(S^{-1},S^{-1})$ gives exactly
+
+\[
+\widetilde D_P=\begin{pmatrix}0&A-ab^{\mathsf T}\\B&0\end{pmatrix},
+\quad A=SG^+S>0,\quad B=SG^-S>0,\quad
+a_n=\sqrt{\frac2{\pi n}},\quad
+b_n=\frac{\Phi_n}{\sqrt{2\pi n}}.
+\tag{10}
+\]
+
+Consequently the squared operator on the even sector is similar to
+
+\[
+H-xy^{\mathsf T},\qquad
+H=B^{1/2}AB^{1/2}>0,\quad x=B^{1/2}a,\quad y=B^{1/2}b.
+\tag{11}
+\]
+
+This is a positive self-adjoint bulk with one **oblique** boundary intervention, not a
+self-adjoint rank-one penalty. Its skew part has the exact invariant
+
+\[
+\|xy^{\mathsf T}-yx^{\mathsf T}\|_F^2
+=2\bigl[(a^{\mathsf T}Ba)(b^{\mathsf T}Bb)-(a^{\mathsf T}Bb)^2\bigr].
+\tag{12}
+\]
+
+For any packet containing $n$ and $2n$, (4) gives $\Phi_{2n}>\Phi_n$, whereas
+$b_j/a_j=\Phi_j/2$. Thus $a,b$ are not proportional; $B$ is invertible; the right side of
+(12) is **strictly positive**. This proves an actual-source no-go: folding and squaring do
+not make the literal theta boundary feedback self-adjoint in the canonical positive Gram
+metric. It does not rule out another source-built metric or real spectrum. The bulk is already
+positive; the hard problem is the *orientation of an oblique singular port*, not a missing
+bulk coercivity estimate. Formulae (10)–(12) follow from reflection invariance of $G$,
+oddness of $J,v$, evenness of $u$, and the two-vector Gram determinant identity. Strict
+obliqueness also holds for other strictly convex reciprocal-speed sources, so it is not
+theta-arithmetic selection.
+
+There is also an unavoidable **cofinal counterterm**, not merely a non-self-adjoint finite
+correction. Let $I_N=\{\pm1,\ldots,\pm N\}$ and compress the actual bounded quotient $D$
+to this packet. Since $\Phi_1>0$,
+
+\[
+\|u_{I_N}v_{I_N}^{\mathsf T}\|
+=\|u_{I_N}\|\,\|v_{I_N}\|
+\ge \frac{\Phi_1}{\pi}\sqrt N,
+\qquad
+\boxed{\ \|G_{I_N}J_{I_N}\|
+\ge \frac{\Phi_1}{\pi}\sqrt N-\|D\|\longrightarrow\infty.\ }
+\tag{13}
+\]
+
+The first equality is the exact norm of a finite rank-one map, and the second follows from
+(8) and the uniform compression bound $\|D_{I_N}\|\le\|D\|$. Thus the real-spectrum
+core $GJ$ and the boundary port each diverge in norm while their **difference remains
+bounded**. The port is not a perturbation of a pre-existing bounded self-adjoint limit; it
+is a compulsory counterterm. This changes the infinite problem's primitive from the bulk
+operator to the *paired cancellation* $(GJ,uv^{\mathsf T})$. Any argument taking a positive
+bulk limit first in bounded-operator norm is impossible. An unbounded graph or
+strong-resolvent construction remains possible, but must transport the port with it. This norm divergence is
+generic for finite positive $\Phi_1$; by itself it does not distinguish theta or prove RH.
+
+Status of (7)–(13): dependency-closed paper proof; Lean formalization of the action $\Phi_n$,
+its weighted endpoint integrability, the strict Gram and the finite matrix factorization is open.
+Schoenberg's negative-type-to-Gram construction and similarity of a positive Gram times a real
+diagonal are standard parent theory; priority of this specific quantile-divisor factorization is
+unverified. It is a structural bridge, not a claimed RH advance.
+
 ## Status and next mathematical test
 
 - Equations (1)–(6), including all-mode real $2\times2$ blocks and the cross-frequency residual: paper derivations above; Lean formalization open. They use the corpus's actual theta source and determinant identity, not numerical evidence.
 - Novelty: the one-dimensional quantile-profile concavity is known (the [Bobkov correspondence as recalled here](https://onlinelibrary.wiley.com/doi/10.1002/cpa.70020), equations 2.5–2.6). Novelty of the combined quotient/CDF-action/curvature formulation has not been externally established.
 - Hardest obstacle: prove a *theta-specific*, globally compatible orientation of the one-port feedback in (1), or an equivalent real-spectrum theorem for the full infinite matrix (2). Generic log-concavity and CDF negative type are insufficient.
 - Route-level reinterpretation: this theta carrier has **exact divisor occurrence** but lacks spectral reality, whereas SQB has a selfadjoint native carrier but lacks source-generated occurrence. A source-faithful transfer between them would attack both gaps at once, but is not constructed. On a $B$-eigenmode $v$ with $f=Pv$, the quotient port is exactly $\beta(f)=\mu\langle e,v\rangle$; it is the same pinned-mean source coefficient used by the corpus's [theta-to-Plücker lift](../../../../formal/GaloisForLFunctions/RHTower/FrankensteinThetaPluckerIntertwiningAnomaly.lean). That module proves a naive coefficient-faithful lift has nonzero physical residual precisely off the critical line; [singular boundary recovery](../../../../formal/GaloisForLFunctions/RHTower/FrankensteinThetaPluckerBoundaryAnomalyRecovery.lean) shows the residual retains the full off-line carrier. The fixed SQB corrected vector likewise retains forcing. Equality of source coefficients does **not** cancel either physical residual. Any genuine transfer must derive its correction from the literal source, before imposing spectral vanishing.
-- Next conjecture loop: derive the exact source law for cross-frequency couplings in (2) under frequency folding; test compatibility of the explicit $G_n$ on the full infinite matrix. Any failure must be interpreted against the whole determinant-to-spectrum chain before choosing another source invariant.
+- Next conjecture loop: test whether the *exact square-lattice theta identity*, absent from generic positive log-concave sources, constrains the oblique port's cofinal boundary work. A passivity claim based only on $G$, strict convexity, or finite block reality is already falsified or insufficient. Any candidate must predict a source-side signed identity that fails for the two-Gaussian witness before being promoted to an RH route.

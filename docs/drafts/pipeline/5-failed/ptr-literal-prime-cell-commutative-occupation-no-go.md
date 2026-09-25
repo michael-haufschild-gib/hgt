@@ -1,0 +1,7 @@
+# PTR literal prime-cell occupation lift no-go
+
+- **Chain tested:** literal source-free temporal-Maxwell prime cells → order-insensitive prime-occupation transfer → `photonicReturn` coefficients → independent confinement → RH.
+- **Killed claim:** No multiplicative map from the commutative finite prime-exponent monoid sends each prime generator to its literal physical two-cycle transfer. Distinct prime transfers do not commute and admit no common invertible frame into powers of one fixed parabolic Jordan block.
+- **Exact positive survivor:** The nilpotent fixed line for prime `p` has slope `−2 log p`. For distinct `p,q`, the mixed trace is `−(144/25)(log p−log q)²/(log p log q)<0`. Thus prime arithmetic is visible in *relative physical frames*, not in a common Jordan line. These statements and the source-level no-go are closed in `PhotonicPrimeSourceFrameNoncommutativityNoGo.lean`.
+- **Scope:** This kills direct commutative occupation assembly of the existing slab cells, including the source-fixed interpretation of the algebraic Euler dilation. It does not exclude an ordered prime-word construction, a nonmultiplicative scalar readout, additional engineered slabs, or the rotating-cylinder distributional port. No full PTR retirement or RH result.
+- **Audit:** Direct Lean and targeted `lake build --old GaloisForLFunctions.RHTower.PhotonicPrimeSourceFrameNoncommutativityNoGo` passed. Umbrella import wired; no umbrella build.

@@ -36,6 +36,12 @@ absolute-frequency range, fail boundedness, or fail uniform
 coercivity. This theorem does not decide whether any such metric
 exists and does not establish RH.
 
+The later [zero-Jordan-history theorem](theta-compact-inverse-zero-jordan-history.md)
+strengthens this conclusion: the actual quotient admits **no
+bounded injective intertwiner with its adjoint at all**. The
+fixed-range result remains an independent Fourier-asymptotic proof
+and its fixed-shift action lemma is not implied by the Jordan law.
+
 ## Fixed-shift action lemma
 
 For every fixed `a∈ℤ`, the literal theta action satisfies

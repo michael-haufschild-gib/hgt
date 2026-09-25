@@ -58,7 +58,7 @@ theorem hermiteForm_monomialTestVector (t : ℝ) (n : ℕ) :
 
 /-- **The sign law.** A purely imaginary number raised to an exponent congruent to two modulo four
 is a negative real. -/
-theorem pow_of_imaginary {u : ℂ} {δ : ℝ} (hδ : δ ≠ 0)
+theorem pow_of_imaginary {u : ℂ} {δ : ℝ}
     (hu : u = Complex.I / (δ : ℂ) ∨ u = -(Complex.I / (δ : ℂ))) (n : ℕ) :
     u ^ (4 * n + 2) = -(((δ : ℂ)) ^ (4 * n + 2))⁻¹ := by
   have hbase : (Complex.I / (δ : ℂ)) ^ (2 : ℕ) = -(((δ : ℂ)) ^ (2 : ℕ))⁻¹ := by
@@ -115,7 +115,7 @@ theorem exists_monomial_hermite_witness {t : ℝ} (ht : OffSpectralDivisor t)
     intro q hq
     have : ‖spectralResolvent t q‖ = 1 / δ := by
       rcases hin q hq with h | h <;> rw [h] <;>
-        simp [Complex.norm_div, Complex.norm_I, abs_of_pos hδ]
+        simp [abs_of_pos hδ]
     rw [this]
     field_simp
   -- pointwise majorant
@@ -125,7 +125,7 @@ theorem exists_monomial_hermite_witness {t : ℝ} (ht : OffSpectralDivisor t)
             -((δ ^ (4 * n + 2))⁻¹) - (1 / δ') ^ (4 * n) * (δ ^ (2 : ℕ))⁻¹ else 0) := by
     intro q
     by_cases hq : q ∈ A
-    · rw [if_pos hq, hnormA q hq, pow_of_imaginary hδ0 (hin q hq) n]
+    · rw [if_pos hq, hnormA q hq, pow_of_imaginary (hin q hq) n]
       have hre : (-(((δ : ℂ)) ^ (4 * n + 2))⁻¹).re = -((δ ^ (4 * n + 2))⁻¹) := by
         rw [← Complex.ofReal_pow, ← Complex.ofReal_inv, ← Complex.ofReal_neg,
           Complex.ofReal_re]
@@ -154,10 +154,15 @@ theorem exists_monomial_hermite_witness {t : ℝ} (ht : OffSpectralDivisor t)
     (hSsum.mul_left _).add hE
   -- compare
   have hcmp := Summable.tsum_le_tsum hmaj hL hR
-  rw [re_tsum (summable_spectralResolvent_pow ht (by omega))] at *
+  have hcong : (∑ q ∈ A, (if q ∈ A then
+      -((δ ^ (4 * n + 2))⁻¹) - (1 / δ') ^ (4 * n) * (δ ^ (2 : ℕ))⁻¹ else 0))
+      = ∑ _q ∈ A, (-((δ ^ (4 * n + 2))⁻¹) - (1 / δ') ^ (4 * n) * (δ ^ (2 : ℕ))⁻¹) :=
+    Finset.sum_congr rfl (fun q hq => if_pos hq)
   rw [Summable.tsum_add (hSsum.mul_left _) hE, tsum_mul_left,
-    tsum_eq_sum (s := A) (fun q hq => if_neg hq), Finset.sum_congr rfl
-      (fun q hq => if_pos hq), Finset.sum_const, nsmul_eq_mul] at hcmp
+    tsum_eq_sum (s := A) (fun q hq => if_neg hq), hcong, Finset.sum_const,
+    nsmul_eq_mul] at hcmp
+  show (∑' q : XiZeroCopy, spectralResolvent t q ^ (4 * n + 2)).re < 0
+  rw [re_tsum (summable_spectralResolvent_pow ht (by omega))]
   -- the final numeric estimate
   have hkey : (1 / δ') ^ (4 * n) * (∑' q : XiZeroCopy, ‖spectralResolvent t q‖ ^ (2 : ℕ))
       < (A.card : ℝ) * (δ ^ (4 * n + 2))⁻¹ := by
@@ -188,7 +193,10 @@ theorem exists_monomial_hermite_witness {t : ℝ} (ht : OffSpectralDivisor t)
         _ = ((∑' q : XiZeroCopy, ‖spectralResolvent t q‖ ^ (2 : ℕ)) * δ ^ (2 : ℕ) + 1)
               * (δ / δ') ^ (4 * n) := by ring
         _ < (A.card : ℝ) := by linarith [hlt]
-    nlinarith [hδpow, inv_pos.mpr hδpow]
+    have hinvpos : (0 : ℝ) < (δ ^ (4 * n + 2))⁻¹ := inv_pos.mpr hδpow
+    have hmul := mul_lt_mul_of_pos_right hstep hinvpos
+    rw [mul_assoc, mul_inv_cancel₀ hδpow.ne', mul_one] at hmul
+    linarith
   have hEval : (A.card : ℝ) * (-((δ ^ (4 * n + 2))⁻¹)
       - (1 / δ') ^ (4 * n) * (δ ^ (2 : ℕ))⁻¹) ≤ -((A.card : ℝ) * (δ ^ (4 * n + 2))⁻¹) := by
     have : (0 : ℝ) ≤ (A.card : ℝ) * ((1 / δ') ^ (4 * n) * (δ ^ (2 : ℕ))⁻¹) := by positivity

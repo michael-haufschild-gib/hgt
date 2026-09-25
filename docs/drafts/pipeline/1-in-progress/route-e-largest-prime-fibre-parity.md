@@ -2,17 +2,17 @@
 
 - **ID:** E-LPF
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (paper); Lean pending
+- **Type:** THEOREM (Lean-closed squarefree source expansion)
 - **Source:** `rh-current-frontier-map.md`, Route E primitive/noninteger-ratio obstacle
 - **Statement:** Completing every denominator cofactor below a far prime does not cancel a fixed numerator Möbius cube: its literal primitive Gamma--Hankel fibre has the parity-predicted sign with an explicit $q^{-2}$ margin.
 
 ## Goal and scope
 
-This tests the proposed Route E payment by denominator cofactors, including all cofactor grades rather than a fixed-depth subset. It is a negative result for that local mechanism, not an RH estimate. The denominator family lies below the physical cutoff ($q^2$), and each nonzero denominator has unique largest prime $q$. The sign-locked region is in fact absolutely summable across $q$ even when the numerator support moves subject to the theorem's threshold; it cannot itself be an RH-scale obstruction.
+This tests payment by **all** smaller-prime denominator cofactors, not a fixed-depth subset. The denominator family lies below the physical cutoff $q^2$ and each nonzero denominator has largest prime $q$. The old quadratic-mass threshold gives an absolutely summable selected family, but that threshold discarded the Euler main term's growing parity margin. Retaining the margin yields a *non-summable harmonic-scale selected family*. This is a source-side cancellation debt, not an RH estimate: other numerator channels may pay it.
 
 ## Exact theorem
 
-Let $P$ be a finite set of primes, $a_S=\prod_{p\in S}p$, $B_P=\prod_{p\in P}(1+p^2)$, and
+Let $P$ be a finite set of primes below $q$, $a_S=\prod_{p\in S}p$, $B_P=\prod_{p\in P}(1+p^2)$, and $C_P=\prod_{p\in P}(p-1+p^{-2})\ge1$. Define
 
 \[
 K(a,b)=\frac{a}{(a+b)(2a+b)},\qquad
@@ -20,13 +20,31 @@ T_P(q)=\sum_{S\subseteq P}\sum_{1\le d<q\atop (a_S,d)=1}
 \mu(a_S)\mu(qd)K(a_S,qd).
 \]
 
-For every prime $q>32B_P$,
+For every prime $q$ satisfying $qC_P>32B_P$,
 
 \[
-(-1)^{|P|+1}q^2T_P(q)>\frac14.
+(-1)^{|P|+1}q^2T_P(q)>\frac{C_P}{4}\ge\frac14.
 \]
 
-Every nonzero term is a literal coprime primitive pair in the cone $2a_S<qd$, with $qd<q^2$ and largest prime $q$. The theorem supplies no bound on the complete Route E covariance.
+The sufficient scale is roughly $q\gg\prod_{p\in P}p$, rather than $q\gg\prod_{p\in P}p^2$: factorwise $p+1\le(1+p^2)/(p-1+p^{-2})\le p+2$, so $q>32\prod_{p\in P}(p+2)$ suffices. It also forces $q>2a_S$. Every nonzero term is therefore a literal coprime primitive pair in $2a_S<qd$, with $qd<q^2$ and largest prime $q$. The theorem supplies no bound on the complete covariance.
+
+**Harmonic moving-prime corollary.** For every sufficiently large prime $q$, Bertrand's theorem chooses a prime $p(q)$ with $256p(q)\le q\le1024p(q)$. Complete *every* denominator cofactor supported on primes below $q$ in the singleton numerator cube. Then
+
+\[
+T_{\{p(q)\}}(q)>\frac{1}{8192q},\qquad
+\sum_{q\text{ prime}}T_{\{p(q)\}}(q)=+\infty.
+\]
+
+Lean proves the stronger non-summability statement for this nonnegative selected family. This does **not** imply divergence of the full covariance, since other numerator channels may have opposite sign.
+
+**Disjoint prime-numerator survivor.** The singleton cube is exactly the empty-numerator fibre plus the coefficient-one prime-numerator fibre
+
+\[
+H_{p,q}=\sum_{1\le d<q\atop(d,p)=1}
+  \mu(p)\mu(qd)K(p,qd).
+\]
+
+The empty-numerator fibre is strictly negative for these $q$ by the same parity theorem with $P=\varnothing$. Therefore $H_{p(q),q}>T_{\{p(q)\}}(q)>1/(8192q)$, and $\sum_{q\text{ prime}}H_{p(q),q}=+\infty$. Unlike the cube sums, these chosen source pairs are disjoint: each has one fixed prime numerator and denominator with unique largest prime $q$. Thus cube overlap is not the reason this harmonic positive debt survives. The remaining payment must come from *other* numerator integers/channels of the complete signed source.
 
 ## Dependency-closed paper proof
 
@@ -52,7 +70,7 @@ U_q\ge\prod_{n=2}^{q-1}(1-n^{-2})
   =\frac{q}{2(q-1)}\ge\frac12.
 \]
 
-As $q>32B_P$, every $p\in P$ is below $q$. Möbius multiplicativity, coprimality and finite Boolean product expansion give the approximating main term exactly:
+Since every $p\in P$ is below $q$, Möbius multiplicativity, coprimality and finite Boolean product expansion give the approximating main term exactly:
 
 \[
 M_P(q)
@@ -60,7 +78,7 @@ M_P(q)
   \left(1-\frac{p}{1-p^{-2}}\right).
 \]
 
-Each parenthesized factor is negative with absolute value at least one, so $(-1)^{|P|+1}M_P(q)\ge1/2$.
+Equivalently $M_P(q)=(-1)^{|P|+1}C_P\prod_{r<q,\ r\notin P}(1-r^{-2})$. The last product is at least $1/2$, so $(-1)^{|P|+1}M_P(q)\ge C_P/2$. Replacing $C_P$ by its minimum $1$ is exactly the information loss that created the old quadratic-mass boundary.
 
 Finally, omission of supported squarefree $d\ge q$ changes the normalized fibre by at most
 
@@ -70,7 +88,7 @@ Finally, omission of supported squarefree $d\ge q$ changes the normalized fibre 
 \le\frac{2B_P}{q}.
 \]
 
-The tail bound uses $d^{-2}\le[d(d-1)]^{-1}$ for $d\ge2$, whose series telescopes. Thus $|q^2T_P(q)-M_P(q)|\le8B_P/q<1/4$, proving the displayed strict margin.
+The tail bound uses $d^{-2}\le[d(d-1)]^{-1}$ for $d\ge2$, whose series telescopes. Thus $|q^2T_P(q)-M_P(q)|\le8B_P/q<C_P/4$, proving the displayed strict margin. For the moving singleton, $B_{\{p\}}=1+p^2\le2p^2$ and $C_{\{p\}}=p-1+p^{-2}\ge p/2$. The band $q\ge256p$ implies $qC>32B$; $q\le1024p$ then gives $T>p/(8q^2)\ge1/(8192q)$. Euler's prime-reciprocal divergence closes the corollary.
 
 ## Route-level consequence: the sign-locked region is subcritical
 
@@ -87,11 +105,11 @@ For every prime $p\ge2$, $(1+p)^4\le(1+p^2)^3$ (expand, or use $p^3(p^3-4)+p(2p^
  \qquad \sum_{q\ \mathrm{prime}}|T_{P(q)}(q)|<\infty.
 \]
 
-This falsifies the tempting extrapolation that persistent sign in **one selected cube per largest-prime fibre** creates a global debt. The theorem does not bound the number of distinct cubes needed to cover the full source, nor their overlaps. RH-scale mass can still arise from their collective multiplicity, from the **joint-scale sector** $B_P\gtrsim q$ where the far-fibre expansion ceases to be uniform, or from other primitive pairs. The $5/4$ majorant is not asserted sharp for that sector.
+The old $q^{-5/4}$ bound is valid **only under its stronger hypothesis** $q>32B_P$. It does not classify all sign-locked selected cubes. The refined signal-to-error ratio $qC_P/B_P$ reaches moving supports with $B_P\gtrsim q$ and, for one prime $p(q)\asymp q$, produces a harmonic-divergent **disjoint numerator-prime channel**. This reverses the old route-level extrapolation: completing denominator cofactors alone does **not** make every selected numerator channel summable. Remaining hard problem is to identify and bound the exact payment from other numerator integers in the complete physical covariance. Boolean cubes overlap, but the prime-numerator channel itself does not.
 
 ## Research status
 
 - Corpus audit: Route E already proves eventual parity for a fixed numerator Boolean cube against a **prime denominator only** (`RouteEPrimitiveAllGradeParityBarrier.lean`); it does not include all smaller-prime denominator cofactors. Search for Route E largest-prime/cofactor completion and exact kernel usages found no existing theorem of this form. This is a corpus novelty claim, not an external-priority claim.
-- Positive survivor: exact main term $M_P(q)$, uniform Euler-factor margin, quadratic-cutoff largest-prime disintegration, and the new moving-support $q^{-5/4}$ absolute majorant for one selected cube per fibre. The majorant identifies a **subcritical selected family**, not a bound on the union of all such cubes.
-- Lean status: sign theorem and moving-support summability remain paper-only. Scratch Lean checks the rational kernel remainder, finite Euler-factor sign, unique squarefree-product parameterization, reciprocal-square tail/total estimates, and the full weighted kernel-error ceiling $6B_P/q$. The literal finite Möbius source and final bounds remain to be closed.
-- Falsifier / next attack: seek a prime $q>32B_P$ violating either the sign or the $q^{-5/4}$ bound. More important: characterize the joint-scale regime $B_P\gtrsim q$ without assuming a far-fibre expansion; test whether a new source-faithful invariant controls its cross-fibre resonance. No RH producer is presently established.
+- Positive survivor: exact main term and *amplified* parity margin $C_P$, a linear-in-support sign range, and a harmonic-divergent **coefficient-one prime-numerator** channel after full denominator-cofactor completion. The old $q^{-5/4}$ majorant remains a sharp statement of its restricted far-prime regime, not a global selected-family law.
+- Lean status: `RouteELargestPrimeFibreParity.lean` proves the full finite squarefree support expansion, kernel and cutoff errors, parity margin, moving-singleton lower bound, Bertrand prime choice, and non-summability. `routeELargestPrimeCofactorSet q` is exactly all primes below $q$. `routeELargestPrimeMobiusFibre_eq_cut` identifies every squarefree-support coefficient with literal $\mu(a_S)\mu(qd_D)$. `routeELargestPrimeSingleton_eq_empty_add_prime`, `routeELargestPrimePrimeNumerator_harmonic_lower`, and `not_summable_routeELargestPrimePrimeNumeratorSelected` close the disjoint prime-only survivor.
+- Falsifier / next attack: find a large prime $q$ for which the exact prime-numerator cofactor fibre violates the harmonic lower bound. The unresolved RH producer is the *complete* covariance: identify the other numerator integers and cross-fibre signs that pay this disjoint divergent positive family. No RH producer is presently established.

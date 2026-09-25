@@ -93,6 +93,14 @@ Away from WS2's own zeros, the standard Hilbert–Carleman product law makes the
 
 The second determinant is a source-defined *relative* determinant on the resolvent set of $I+zS$. Its behavior there, together with the exponential anomaly, encodes the missing phase; separate factors need not extend meromorphically across a zero of $I+zS$. Equation (8) provides no zero-free or real-spectrum law.
 
+The [theta resistance-network theorem](../2-fully-proven/theta-quantile-resistance-network.md#kron-reduction-exposes-the-universal-clock-port) gives a sharper normal form for the **same** corrected WS2 carrier. In Fourier coordinates let $a_n=-\widehat h(n)>0$, $h_0=\int h$, $J_{mn}=\delta_{mn}/(2\pi n)$, and let $G$ be the positive Schur complement of multiplication by $h$ over the constant mode. With $c_n=1/(2\pi n)$, its exact pencil is
+
+\[
+G\,U^{-1}(S+K)U=J-\frac{a\otimes c}{h_0}. \tag{9}
+\]
+
+This identifies the determinant-bearing correction as an inverse-network response with one conductance/clock boundary port. $G$ is injective but not bounded below, and the port is singular in its energy completion. Thus (9) gives a concrete target for spectral orientation without turning the Hilbert--Schmidt correction into a bounded self-adjoint similarity. On actual Xi root modes its boundary-work identity reduces to the universal root energy identity, with a weighted Cauchy--Schwarz gap in the metric; a theta-specific constraint must act on the two-ended connection coefficient before root specialization.
+
 ## Whole-chain consequence and next conjecture loop
 
 WS2's signed diagonal gives a real-spectrum reference with the correct smooth scale; theta gives exact divisor occurrence. In the natural source-only identification, their difference has a sharp Schatten threshold and cannot be treated as WS2's previously proved trace-class relocation. The next hard conjecture is a theta-specific orientation law for the relative determinant or its equivalent one-port quotient. Test source candidates against the full nonlocal kernel (1), including the compact accumulation point, before attempting a homotopy or positive-metric argument.

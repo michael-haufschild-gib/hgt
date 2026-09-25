@@ -395,3 +395,510 @@ at the ordinate where the pair sits.
 ## Lean
 
 `formal/GaloisForLFunctions/RHTower/LocalHermitePositivity.lean`. Unconditional, axiom-clean.
+
+---
+
+# Part VI: the test vector
+
+Part V left one thing open: a test vector making the on-line contribution small. It is the **high odd
+monomial, anchored at the ordinate of the suspected zero**.
+
+    P(x) = x^{2n+1},   base point t = Im ρ,   test vector supported on the single index 2n.
+
+The Hermite form then collapses to one power sum:
+
+    Σ_{i,j} c_i c_j p_{i+j+2}(t) = p_{4n+2}(t).
+
+## Why the sign is automatic
+
+At `t = Im ρ` the spectral point of `ρ` sits directly above or below the base point:
+`t − z_ρ = iδ`. So the resolvent is **purely imaginary**, `u_ρ = −i/δ`, and the partner's is `+i/δ`.
+A purely imaginary number raised to an exponent `≡ 2 mod 4` is a *negative real*:
+
+    (±i/δ)^{4n+2} = −δ^{-(4n+2)}.
+
+So the off-line orbit contributes `−2/δ^{4n+2}` — negative for **every** `n`, with no cancellation
+and no coefficient tuning. The anchoring is what buys this: only at the zero's own ordinate is the
+resolvent exactly imaginary.
+
+## Why the on-line contribution is suppressed
+
+If every other zero satisfies `|t − z| ≥ δ'` with `δ' > δ`, then each other resolvent has modulus
+`≤ 1/δ'`, and
+
+    |u|^{4n+2} ≤ (1/δ')^{4n} · |u|²,
+
+so the whole rest of the divisor is bounded by `(1/δ')^{4n} · S` with `S = Σ‖u‖²` finite. Meanwhile
+the off-line term carries `(1/δ)^{4n}`. The ratio is `(δ/δ')^{4n} → 0`, so for `n` large the negative
+term wins by any margin. Formally: choose `N` with `(δ/δ')^N < |A| / (Sδ² + 1)`; then `n = N` works.
+
+## The detection theorem
+
+**An off-line zero strictly closer to the critical line than to any other zero, in the localised
+metric at its own ordinate, is refuted by a single evaluation of a single derivative of
+`(logDeriv Ξ)`.** (`exists_monomial_hermite_witness`, `not_riemannHypothesis_of_monomial_witness`.)
+
+The degree `n` is not a parameter to optimise — it only has to clear a fixed geometric ratio against
+a fixed constant.
+
+## What this does and does not settle
+
+**Settled:** every off-line configuration in which the offending zero is *isolated at the scale of
+its own displacement*. For those, the hypothesis is decided by one number.
+
+**Not settled:** the clustered regime, where a zero's displacement exceeds its distance to a
+neighbour's ordinate. That is the same local-clustering obstruction that made the inner-band route
+circular — and the reason is now visible: **the retired inner-band computation is the case `n = 0` of
+this family**, the one member with no geometric suppression at all. Every `n ≥ 1` is strictly
+stronger, and the family only fails where clustering defeats the suppression.
+
+`[OPEN CORE]` a configuration-independent lower bound on the separation `δ'/δ`, or a second test
+family that handles clusters — for instance anchoring between two clustered zeros rather than at one
+of them, so that the cluster contributes coherently rather than competitively.
+
+## Lean
+
+`formal/GaloisForLFunctions/RHTower/HermiteMonomialWitness.lean`. Unconditional, axiom-clean.
+
+---
+
+# Part VII: stepping back — the gap is a homogeneity degree
+
+## The standing diagnosis, corrected
+
+The usual statement is: we control mass, frequency, energy; we need height; no conversion law
+connects them. The first two clauses are right. The third is wrong, and the correction is the useful
+part.
+
+**Conversion laws from averages to heights are not missing.** Sobolev embedding, Bernstein, and
+Landau–Kolmogorov all do exactly that. The last is even *sharp* on our family: for one bump,
+
+    ‖b‖_∞² ≍ ‖b‖_{L¹} · ‖b'‖_{L^∞},      πδ · (c/δ) = πc,
+
+with `δ` cancelling exactly. So the conversion exists and is tight. It is useless here because it
+needs `‖b'‖_∞ ~ 1/δ` — a scale, and the only scale in the problem is `δ`, the unknown. **Every
+conversion law is available and every one is vacuous**, which is a stronger and more precise
+statement than "no conversion law exists".
+
+## The dimensional fact
+
+The bump family is one profile acted on by the scaling group (`bumpKernel_scaling`):
+
+    bump(c·d, c·g, c·t) = bump(d, g, t).
+
+So every functional of the family is graded by homogeneity degree, and the grading is a complete
+obstruction:
+
+| functional | degree | decides RH? | computable from ξ? |
+|-|-|-|-|
+| peak / sup | **0** | yes | no |
+| total variation | **0** | yes | no |
+| count of bumps | **0** | yes | no |
+| every `∫ F(bump)`: all `L^p` (p<∞), mollified moments, smoothed counts, any nonlinear average | **1** | no | yes |
+
+`comp_bumpKernel_peak` — `F(bump(d,g,g)) = F(1)` for every `F` and every `d ≠ 0`.
+`integral_comp_bumpKernel` — `∫ F(bump) = d · (profile integral)` for every `F` and every window;
+the factor `d` is exactly the Jacobian.
+
+That second one strictly generalises Part II's mass blindness, which was the case `F = id`. It rules
+out not just `L¹` but **every pointwise-nonlinear average**, at one stroke.
+
+## Consequences
+
+**Negative.** No functional built by "apply something pointwise, then integrate" can reach the
+hypothesis. Not a deficiency of any particular estimate — a dimensional impossibility.
+
+**Positive, and this is the useful half.** The degree-zero class is *not* just the sup. Total
+variation is degree zero (a bump rises once `0 → 1` and falls once back, so `TV = 2` whatever its
+width), and so is the count. All three decide the hypothesis. The target is wider than it looked, and
+`‖f‖_∞ ≤ ½ TV(f)` is a *free* conversion inside the degree-zero class.
+
+**What a producer must do.** No conversion changes the degree. A producer must **supply a scale**,
+and the only intrinsic scale in the zero distribution is the ordinate spacing. That is the single
+reason the mollified floor, the Littlewood/Jensen slope obstruction, the inner band, and the
+clustered regime of the monomial witness are all *the same wall*. They are not four problems.
+
+`[OPEN CORE]` an unconditional scale: a lower bound on the local ordinate spacing, or a substitute
+for one. Everything in this lane now reduces to that single object.
+
+## Lean
+
+`formal/GaloisForLFunctions/RHTower/ScalingDegreeLaw.lean`. (The `TV = 2` observation is elementary
+reasoning, stated here, not Lean-certified — the Lean content is the scaling covariance, the
+degree-zero peak, and the degree-one law for all `F`.)
+
+---
+
+# Part VIII: the zeros are a count, not a quantity
+
+## Three claims, and their status here
+
+**(a) "You cannot produce a function that creates the zeros."** This is a theorem in this field, and
+Part VII named its cause. The deciding invariant is degree zero, and the degree-zero class contains an
+**integer-valued** member — the count. Every analytic functional of `ξ` is continuous; the count is
+not. So no limit of measurements produces it. That is exactly the deformation blindness recorded as
+CANNOT-422, now with its mechanism identified rather than observed.
+
+**(b) "The zeros are a property of the ambient geometry, not of ζ."** Already a theorem here, in
+`FiniteDivisorPrefixNonselection`: the class of functional-equation-symmetric sources with arbitrary
+finite Euler heads admits **both** a fixed-orbit extension by a new critical-line pair **and** a
+free-orbit extension at an arbitrary generic off-line point of the strip, each preserving every
+prescribed multiplicity. The local data of the zeta function therefore do not select the orbit type.
+Orbit type is a property of the symmetric ambient class.
+
+**(c) "Rational versus complex."** Exact, not metaphorical. The involution whose free orbits are being
+counted is `σ = (functional equation) ∘ (complex conjugation)`: `ρ ↦ 1 − ρ̄`. The first factor is
+arithmetic, the second archimedean. `riemannHypothesis_iff_supportPartner_eq_id` says the hypothesis
+is precisely that **these two involutions agree on the divisor** — the arithmetic symmetry and the
+archimedean symmetry are the same symmetry there.
+
+## The conversion inside degree zero
+
+What was missing was the link between the two degree-zero descriptions developed separately in this
+lane: the *count* of free orbits per slice, and the *analytic* potential. It is now proved.
+
+At the ordinate `t`, every off-line point of that ordinate sits directly above or below the base
+point, so its bump is at full height and contributes exactly `1`:
+
+    #(free part of the slice at t) ≤ U(t),      #(free part) = 2 · #(left half-slice).
+
+So one free orbit forces `U(t) ≥ 2` — the threshold recovered from the **count**, not from the pair.
+And `RH ⟺ the free-orbit count vanishes at every ordinate`.
+
+The potential is therefore not a quantity that happens to detect zeros. **It is an upper envelope of
+a count.** The object being decided is the number of free orbits of an involution acting on a divisor
+— a property of the symmetry, qualitative and integer-valued. The analysis enters only to bound that
+count from above, which is the one direction the degree law leaves open.
+
+## What this says about the producer
+
+Not: manufacture the zeros from the source. That is blocked by (a) and (b).
+
+Instead: **constrain the symmetric ambient geometry so that free orbits cannot occur in it.** The
+target object is `#(free σ-orbits) = 0` — an equivariant statement about a ℤ/2-action, which is where
+the torsion reading of this lane (`divisorNorm`, the 𝔽₂ Galois norm, the Tate-cohomological form)
+already pointed. Part VII explains *why* that is the right home: equivariant invariants are
+scale-invariant by construction, hence degree zero, hence the only kind that can decide this.
+
+`[OPEN CORE]` unchanged in substance and clearer in shape: an upper bound on the free-orbit count.
+The degree law says it cannot come from an average; (a) says it cannot come from a continuous
+deformation; (b) says it cannot come from the source's local data. What remains is a rigidity of the
+ambient symmetric class itself.
+
+## Lean
+
+`formal/GaloisForLFunctions/RHTower/FreeOrbitCountBound.lean`. Unconditional, axiom-clean.
+
+---
+
+# Part IX: attacking the ambient rigidity — the answer is negative, and sharp
+
+Part VIII said a producer must constrain the ambient symmetric class so that free orbits cannot
+occur, and pointed at the equivariant/torsion reading as the natural home. This part attacks that and
+finds it cannot work — for a reason that is worth more than the attempt.
+
+## The computation
+
+Over `𝔽₂` the norm of the reflection is `N f = f + f∘σ`, with `N ∘ N = 0`. The left half of the strip
+is a **canonical section** of the involution: `σ` exchanges the halves and fixes the line, so
+`1_{Re < 1/2}` picks exactly one point of each free orbit, with no choice. Hence
+
+    N (f · 1_{Re < 1/2}) = f
+
+for every invariant `f` vanishing on the fixed locus (`divisorNorm_leftSection`). So the coboundary
+is **surjective onto the cochains vanishing on the critical line**, and
+
+    Tate cohomology of the divisor = functions on the critical line alone.
+
+**The free orbits are exactly what the cohomology discards.**
+
+## The sharp form: one cochain
+
+    N (1_{Re < 1/2}) = 1_{Re ≠ 1/2}          (`divisorNorm_leftSection_one`)
+
+The coboundary of the left-half indicator is the characteristic function of the off-line part. So
+
+    RH ⟺ the coboundary of one explicit cochain vanishes.
+
+## What this settles
+
+**Negative, and this is the point.** No equivariant invariant, localisation or completion can produce
+the hypothesis. All of them compute *cohomology*, and the hypothesis is **not a cohomology class** —
+it is the statement that a *coboundary* vanishes. Passing to cohomology is precisely the operation
+that throws it away.
+
+That is the cause of the localisation blindness recorded long ago in this field, and it explains why
+the two-torsion reading — correct as a *description* of RH — can never be a *producer*. The
+description and the mechanism were being conflated.
+
+**Positive redirection.** The object to control is `im(N)`, which is the characteristic function of
+the free part — the boundary map itself, not any quotient in which it has been divided out. That is
+a strictly smaller and more concrete target than "an equivariant rigidity", and it is consistent with
+everything else in this lane: `im(N) = 0` is the free-orbit count vanishing (Part VIII), which is the
+degree-zero invariant (Part VII), which the potential envelopes (Part VIII).
+
+So the four descriptions — `sup U < 2`, free-orbit count zero, `N(1_{Re<1/2}) = 0`, ordinate
+injectivity — are one statement, and the obstruction to each is the same: **none of them is reachable
+by an averaged, continuous, or cohomological functional.** Every standard machine is now excluded by
+a named theorem rather than by repeated failure.
+
+`[OPEN CORE]` control of `im(divisorNorm)`, equivalently an upper bound on the free-orbit count. The
+excluded routes are now: averages (Part II, VII), continuous deformations (Part III), the source's
+local data (Part VIII), and cohomology (this part).
+
+## Lean
+
+`formal/GaloisForLFunctions/RHTower/DivisorTateCohomology.lean`. Unconditional, axiom-clean.
+
+---
+
+# Part X: the boundary map
+
+Part IX said: stop looking at cohomology, control `im(N)`. This part describes it completely.
+
+## The image, exactly
+
+    ∃g, N g = f   ⟺   f∘σ = f  and  f vanishes on the critical line
+
+(`mem_range_divisorNorm_iff`). Forward is immediate; backward is the canonical left-half section of
+Part IX. So the image is an **explicit subspace** — no quotient taken anywhere — and a coboundary is
+freely determined by **one bit per free orbit**, its values on the left half-slices, unconstrained
+(`divisorNorm_leftSection_of_mem_range`).
+
+`im N = 0` is the hypothesis. The free orbits are a basis of the image.
+
+## What the rank counts
+
+The reflection preserves ordinates, so `N` is **fibred over the ordinate map** and
+
+    rank N = Σ_t (free-orbit count of the slice at t).
+
+Each slice is at most one critical-line point plus free orbits in pairs, so over any finite set of
+ordinates (`sum_ncard_xiSlice`):
+
+    (total zero count) = (critical-line count) + 2 · (free-orbit count)
+
+and (`riemannHypothesis_iff_window_counts_agree`)
+
+    RH ⟺ the two counts agree on every window.
+
+**That is the classical relation between `N(T)` and `N₀(T)`, in exact finite form.**
+
+## The unification, stated plainly
+
+This lane and the classical count of critical-line zeros **decide the same integer**. They are not
+competing routes and should not have been treated as such. What differs is the *access*:
+
+| | reaches the deficiency by | verdict |
+|-|-|-|
+| classical (Levinson, mollified moments) | averaging over a window | forbidden by the scaling degree law (Part VII) — averages are degree 1 |
+| boundary map | fibrewise, one ordinate at a time | the resolution the degree law requires |
+
+So the entire gain of this lane over the classical one is **locality**, and that is exactly the
+property Part II proved to be necessary. This also retroactively explains the mollified-moment
+terminus: it is a degree-1 tool aimed at a degree-0 integer.
+
+## Where this leaves the problem
+
+Nothing here bounds the rank. What is now established:
+
+- the target is completely explicit (`im N`, an honest subspace);
+- it is a **sum of local integers**, one per ordinate;
+- it coincides with the classical deficiency `(N − N₀)/2`;
+- no quotient, average, deformation or cohomology is concealing it.
+
+`[OPEN CORE]` **an upper bound for that sum of local integers.** That is the single remaining object
+in this entire field. Every other formulation in Parts I–X is equivalent to it, and every standard
+machine has been excluded by a named theorem.
+
+## Lean
+
+`formal/GaloisForLFunctions/RHTower/BoundaryMapImage.lean`. Unconditional, axiom-clean.
+
+---
+
+# Part XI: bounding the local integers
+
+A bound on `Σ_t #(free orbits at t)` **is** the hypothesis. None is proved here. What is proved is
+the shape any bound must have, and it turns out to be very restrictive.
+
+## The unconditional bound that does exist
+
+    #(free orbits at t)  ≤  Σ_ρ 1/(1 + (t − Im ρ)²)
+
+(`ncard_xiSliceLeft_le_cauchyWeight`), via `2·#(free) ≤ U(t) ≤ 2·Σ_ρ 1/(1+(t−Im ρ)²)`. The right-hand
+side is the standard Cauchy-weighted local zero density — of size `≍ log(height)`. This is the
+natural estimate, and it is useless. The next result says why, and why *every* estimate of its shape
+is useless.
+
+## No lossy bound is of any use
+
+The free-orbit count is an **integer** and `2·#(free) ≤ U(t)`. Hence:
+
+- `U(t) < 2`  ⟹  `#(free orbits at t) = 0`   (`xiSliceLeft_eq_empty_of_poissonPotential_lt_two`)
+- `U(t) ≤ B` with `B ≥ 2`  ⟹  **nothing at all**
+
+The threshold is exactly `2` and carries no slack. So:
+
+> **The required estimate is uniform in the height — an absolute constant.** Every analytic estimate
+> in this field grows with the height.
+
+That is the difficulty in its final form. It is *not* that the available bounds are weak. It is that
+they have the wrong **dependence on the height**, and the target admits no lossy version. An estimate
+losing a constant factor, or a factor of `log`, is not a partial result — it is no result.
+
+## The cause: integrality removes the slack
+
+This is the quantisation of Part I coming back as the final obstruction. Against a **real-valued**
+target, an estimate within a constant factor is progress. Against an **integer**, only an estimate
+crossing a fixed threshold is of any use. Every approximation method produces the first kind; the
+problem requires the second.
+
+## The diagnostic arc, closed
+
+| the hypothesis is | the apparatus produces |
+|-|-|
+| integer-valued | real-valued |
+| scale-invariant (degree 0) | degree 1 |
+| fibrewise / local | averaged over windows |
+| uniform in height | growing in height |
+
+Four mismatches, each now carrying a named theorem rather than an impression. Everything in Parts
+I–XI is one statement seen from eleven sides, and the reason each standard machine fails is no longer
+an observation but a proof.
+
+`[OPEN CORE]` an absolute-constant, height-uniform bound `U(t) < 2`. There is nothing else left in
+this lane, and no weaker version of it is worth proving.
+
+## Lean
+
+`formal/GaloisForLFunctions/RHTower/LocalCountBound.lean`. Unconditional, axiom-clean.
+
+---
+
+# Part XII: the shape
+
+Parts I–XI drove the problem to "bound an integer below an absolute threshold". That is a **size**
+statement, it admits no lossy version, and it is a dead end. It is also the wrong reading of the
+object.
+
+## What the object actually is
+
+The hypothesis says: **an involution on a discrete set has no free orbits.** Every point is fixed.
+That is not a size statement at all.
+
+Over a base field this shape has a name. A finite real algebra is `ℝ^r × ℂ^s`; its complex points
+pair under conjugation; "no free orbits" is `s = 0`. So
+
+> **RH is the statement that the divisor algebra is totally real.**
+
+## Totally-real statements are decided by signatures
+
+The trace form of `ℝ^r × ℂ^s` has signature `(r + s, s)`: each real factor gives a positive
+direction, **each complex pair gives one positive and one negative direction**. Hence
+
+    s = 0  ⟺  the trace form is positive semidefinite,     s = the negative index.
+
+That trace form is exactly the localised Hermite form of Part V. So the target is not an estimate —
+**it is a signature computation.** The orbit decomposition confirms the identification:
+
+| | contribution to the form | |
+|-|-|-|
+| a zero and its partner | `w²` and its conjugate, i.e. `2·Re(w²)` | one real direction per orbit (`orbitTraceContribution`) |
+| fixed orbit | square of a real number | never negative (`orbitTraceContribution_nonneg_of_real`) |
+| free orbit | strictly negative for the monomial anchored at its own ordinate, every degree | genuinely indefinite (`orbitTraceContribution_neg_of_offLine`) |
+
+## The shadow that is classically accessible
+
+For a real algebra, `sign(disc) = (−1)^s`. So a **discriminant detects the parity of `s` and nothing
+more** — which is precisely the parity law this lane already had (`odd_ncard_xiSlice_iff`), and
+exactly as much as a single determinant can see.
+
+So two findings that looked independent are one: **the parity law is the determinant of the trace
+form; the counting problem is its signature.**
+
+And signatures are computed from **sign patterns of principal minors** — here, minors of the Hankel
+matrices whose entries are the localised power sums `p_k(t)`, each an explicit derivative of
+`logDeriv Ξ`. That is a concrete object, not a bound.
+
+## Where else this shape appears
+
+- **Lehmer's conjecture.** Either the trivial value or a gap bounded away by an absolute constant,
+  uniform in the degree; lossy bounds (Dobrowolski) exist and do not suffice; and the hard case is
+  the *reciprocal*, i.e. self-symmetric, one. Same structure, same reason for difficulty: the
+  symmetry.
+- **Totally real fields / positive-definite trace forms.** The direct classical home.
+- **Index and signature theorems.** An integer target; analytic tools produce approximations; the
+  integer is reached by a localisation formula, not an estimate.
+- **Wall-crossing.** The count is locally constant off a discriminant locus; the hypothesis says we
+  sit on the empty side.
+
+## What changes
+
+The question stops being "how do we get the constant down to 2" and becomes **"what computes this
+signature?"** Signatures come from localisation formulas, from Sturm sequences, from spectral
+decompositions — not from sharper averages. That is a different search, and it is the one consistent
+with every no-go in Parts I–XI.
+
+`[OPEN CORE]` a computation of the negative index of the localised trace form. The entries are
+explicit; the minors are explicit; what is missing is a reason for their signs.
+
+## Lean
+
+`formal/GaloisForLFunctions/RHTower/TraceFormSignature.lean`. Unconditional, axiom-clean.
+
+---
+
+# Part XIII: what computes the signature — a sign
+
+Part XII turned the target into a signature. Signatures of *this* kind — "a real entire function has
+only real zeros" — have a classical computer: the **Hermite–Biehler / Nevanlinna** criterion. Such a
+function has only real zeros exactly when its logarithmic derivative maps the upper half-plane into
+the lower.
+
+## Termwise
+
+The logarithmic derivative is a sum of resolvents, and
+
+    −Im (z − z_ρ)^{-1} = (Im z − Im z_ρ) / |z − z_ρ|²          (`nevanlinnaTerm_eq_neg_im_inv`)
+
+- **on-line zero** → real spectral point → term positive throughout the open upper half-plane
+  (`nevanlinnaTerm_pos_of_im_eq_zero`);
+- **off-line zero** → its orbit has a member of positive spectral height `c`, and directly beneath
+  it at height `c/2` the term is exactly `−2/c` (`nevanlinnaTerm_witness_value`).
+
+Hence `RH ⟺ every term is positive at every point of the open upper half-plane`
+(`riemannHypothesis_iff_forall_nevanlinnaTerm_pos`).
+
+## RETRACTION — this is not a new route
+
+I framed this as opening technology the no-gos don't reach. That was wrong, and a corpus search I
+should have run first shows it:
+
+| already in the corpus | content |
+|-|-|
+| `StrictHermiteBiehlerGivesRH` | **strict** Hermite–Biehler for `XiC + i·XiC'` gives RH outright; the known gap is *strictness, not semidefiniteness* |
+| `SuzukiLagariasMeromorphicInner` | Lagarias–Suzuki (2006) Thm 4, specialised to ξ |
+| `SuzukiFiniteApertureHermiteBiehler`, `DeBrangesFiniteOrderRigidity`, `DeBrangesGaugeInvariance` | a developed de Branges lane |
+| `SuzukiCoalescingHalfPlaneUniqueness` | positive-real-part source on ℂ₊ forces RH |
+| `PrimeDelayHerglotzNoGo` | a no-go on the naive Herglotz construction |
+
+So the reformulation is classical (Pólya), and the corpus holds it in **stronger** form with the gap
+already localised.
+
+**And the technology claim fails on its own terms.** `−Im(Ξ'/Ξ)` is harmonic on ℂ₊ *minus the
+non-real zeros*. A maximum principle on the half-plane needs the singularity set — which is exactly
+the unknown. The argument is circular, and I should have seen that before writing the claim rather
+than after.
+
+**What survives:** the termwise computation is correct and the Lean is sound — the exact witness value
+`−2/c`, and the equivalence. It is a small clean artifact, not a new lane.
+
+**The general constraint this instance illustrates**, which is the real output: *a reformulation that
+has a classical computer has already been attempted.* 150 years of work has exhausted the classical
+computers. Novelty has to live in the **computer**, not in the reformulation. Parts XII and XIII both
+reformulated; neither produced a new computer.
+
+## Lean
+
+`formal/GaloisForLFunctions/RHTower/NevanlinnaSignCriterion.lean`. Unconditional, axiom-clean.

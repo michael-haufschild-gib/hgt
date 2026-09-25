@@ -166,3 +166,26 @@ E(z,s) = P_0(z,s) = y^s + Σ_{c≠0} c^{-2s} N^{-s} Σ_n 𝓕ker_{0,y/N,s}(n) S_
   Remaining MS-N steps: coset-sum integral ∫_{cellP} F = Σ_c ∫_fd F(R_c w) (PSL cosets; Deck = 2× PSL cosets for N ≥ 3);
   T-orbit structure c ↦ cT^j (orbits of size N) and E*_{σT^j}(u,w) = E*_σ(u,w+j) ⇒ zero mean of E* over the orbit;
   slab (seed_unfold) and cusp integrals; final formula.
+- 2026-09-25 — MS-N (D) infrastructure: `SelbergCellCosetShift` (∫_{cellP} F = ∫_fd Σ_c F(R_c w); right T-shift `shEquiv` on
+  cosets; F(R_{cT}w) = F(R_c(w+1)); N-periodicity) and `SelbergCusppieceAveraging` (`finite_cosets`, `avg_sum`,
+  `F_out_iterate`, `sum_shift_integral`: the N shifted width-one pieces make one period). Built, wired.
+  Next: CT_c(u,y) := N^{-1}∫_0^N E_u(R_c(x+iy))dx (shift-invariant, = count₀y^u + N^{-1}φ(u)y^{1−u}); cusp-tail Fubini on
+  fd ∩ {y > Y} = [−1/2,1/2]×(Y,∞); Step 1 zero-mean; slab/cusp integrals.
+- 2026-09-25 — `SelbergCuspConstantTerm` (built, wired): `CT` (constant term at R_c∞), `integral_eq_CT`, `CT_sh`, `poincare_sub_CT`
+  (E_∞(R_c z,u) − CT_c(u,Im z) = E*_{σ_c}(u,z)). Next: `norm_Estarσ_le` (≤ K y^{−3−Re u}) and Step 1 zero-mean lemma.
+- 2026-09-25 — `SelbergCuspZeroMean` (built, wired): `norm_Estarσ_le` (|E*_σ| ≤ S₁S₂·econst(Im z)), `sum_weighted_row_mean_zero`
+  (Σ_c g_c(∫_{-1/2}^{1/2}E(R_c(x+iy))dx − CT_c(y)) = 0 for shift-invariant g). Remaining MS-N: the 2D assembly —
+  I_Y(u,v) = Σ_c ∫_fd L_c(u)L_c(v), Step 1 via Fubini on cuspRect + zero mean, Step 3–4 (truncation identity + seed_unfold on
+  the slab), cusp integrals with CT_c(v), final algebra; econst ≲ y^{−3−σ} for integrability.
+- 2026-09-25 — `SelbergMaassSelbergSlab` (built, wired): `norm_poincare_le`, `integral_row_eq`, `integral_norm_row_le`,
+  `integrableOn_slabG`, `slab_eq`: ∫_{strip}[y ≤ Y]y^u E(z,v) = N Y^{u+v−1}/(u+v−1) + φ_{∞∞}(v)Y^{u−v}/(u−v) (1 < Re v < Re u).
+  Remaining: (i) integrability of seedY·E_v on the strip (for seed_unfold) — follows from slabG integrability;
+  (ii) cusp integrals Σ_c b_c(u)∫_{fd,y>Y} y^{1−u}E(R_c w,v) via zero-mean + CT_c(v); (iii) Step 1 in 2D form;
+  (iv) assembly of I_Y(u,v) with coset-level truncation L_c.
+- 2026-09-25 — built+wired: `SelbergMaassSelbergCuspStep` (Step 1 `sum_cusp_estar_zero`), HTGeometry
+  `UpperHalfPlaneCoordIntegrable` (`integrableOn_coord_iff`), `SelbergMaassSelbergBounds` (`coeff_sh`, `Lc`, bounds, four
+  integrability lemmas on fd). Next: assembly module (slab via cellP + seed_unfold, cusp CT integrals, final formula).
+- 2026-09-25 — MS-N DONE (region): `SelbergMaassSelbergGammaN.maassSelberg_region` (built, wired, axioms clean):
+  N ≥ 3, 1 < Re v < Re u, Y ≥ 1: Σ_c ∫_fd Λ^Y_c E_u·Λ^Y_c E_v = N Y^{u+v−1}/(u+v−1) + φ_{∞∞}(v)Y^{u−v}/(u−v)
+  − Σ_c b_c(u)(a_c Y^{v−u}/(u−v) + b_c(v)Y^{1−u−v}/(u+v−1)). Next: holomorphy of both sides in (u,v) and continuation
+  to the critical line (needs E-continuation bounds on fd, cf. level-one EisensteinTruncatedPairingHolomorphic).

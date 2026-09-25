@@ -216,7 +216,7 @@ theorem ptr_right_halfplane_holomorphic_photonic_return_no_go
     (h : ∀ s : ℂ, 2 < s.re → F s = photonicReturn s) : False := by
   have h00 : AnalyticOnNhd ℂ (fun s => F s 0 0) {s : ℂ | 0 < s.re} := by
     intro s hs
-    exact (hF s hs).apply 0 |>.apply 0
+    exact (analyticAt_pi_iff.mp (analyticAt_pi_iff.mp (hF s hs) 0) 0)
   apply ptr_right_halfplane_holomorphic_zeta_no_go (fun s => F s 0 0) h00
   intro s hs
   have hentry := congrArg (fun M : Matrix (Fin 2) (Fin 2) ℂ => M 0 0) (h s hs)
