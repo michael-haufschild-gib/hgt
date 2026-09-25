@@ -232,3 +232,10 @@ trace-class statement and non-trace-class theta statement are not yet
 formalized in Lean. No new axiom or premise is proposed. This card
 does not establish RH, falsify RH, or identify a source-derived map to
 the theta ports.
+
+The later [theta CDF action and cross-frequency capacity theorem](theta-cdf-crossfrequency-rvm-capacity.md)
+matches this prime clock to a literal theta-source action up to a
+fixed `−log π` offset and a trace-class kernel difference. It also
+shows that the determinant-bearing theta quotient obtains its
+logarithm-squared spectral mass from cross-frequency coupling, which
+this trace-class clock comparison cannot supply.

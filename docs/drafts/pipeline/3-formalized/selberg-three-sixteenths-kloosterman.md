@@ -1,7 +1,7 @@
 # Selberg 3/16 through Kloosterman sums over all moduli
 
 - **ID:** SELBERG-316
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (classical) — Lean programme toward the Selberg frontier
 - **Source:** `3-formalized/selberg-pretrace-uniform-route.md` (5/36 closed; multiplicity methods stop there).
 
@@ -115,3 +115,17 @@ Continuation Q(z,s) of P_m(z,s) to Re s > 3/4 (not claimed Γ(N)-invariant a pri
   `norm_fourier_ker_le_uniform`, `summable_cw`, `norm_Qc_le`, `differentiableAt_Q` (Q holomorphic on Re s > 3/4),
   `norm_Q_le_poly` (|Q(z,s)| ≤ C(y^{-6} + y^3) locally uniformly for Re s ≤ 3). Next: measurability of Q in z,
   K5 (cusp decay of u ⇒ ∫_{cellP} (y^{-6}+y^3)|u| < ∞), K6 (identity theorem), K7 (assembly).
+- 2026-09-25 — K5 closed: `SelbergMaassExpDecayCell` (built, wired): `normSq_le_exp` (ODE exponential decay via
+  H = G' + κG), `mode_decay`, `maass_decay` (|f(z)| ≤ C e^{-π Im z/(N+1)} beyond t₀, by pointwise Fourier inversion),
+  `integrableOn_fd`, `im_smul_bound`, `finite_cosets`, `integrableOn_cellP`: (y^{-6}+y^3)|f| ∈ L¹(cellP(N+1)).
+  Next: K6 (holomorphy of ∫_{cellP} Q(z,s) f(z) dμ on 3/4 < Re s < 3 and of the Mellin side; identity theorem),
+  K7 (assembly).
+- 2026-09-25 — K6/K7 closed; **Selberg 3/16 formalized.** `SelbergPoincarePole` (measurability of Q in z,
+  `differentiableAt_pairing`, Mellin side `mel`, `differentiableAt_mel`, `J_lower`, `alpha_eq_zero`) and
+  `SelbergThreeSixteenths` (`alpha_zero_of_pairing` via the identity theorem on {s₀ < Re s < 3},
+  `coefficient_conj` for the positive modes, `selberg_three_sixteenths`: Γ(N+1), N ≥ 2, has no Maass cusp form
+  with 0 < λ < 3/16; `selberg_three_sixteenths_all`: every Γ(N), N ≥ 1, by restriction to Γ(4)). Built `--old`,
+  wired, axioms propext/choice/Quot.sound, lint passes. The proof uses no spectral theorem: unfolding + Weil +
+  Poisson + identity theorem + ODE energy rigidity.
+- 2026-09-25 — `selberg_three_sixteenths_congruence`: λ₁ ≥ 3/16 for every congruence subgroup Γ ⊇ Γ(N) (Γ₀(N),
+  Γ₁(N), …), by restricting Maass forms to Γ(N).

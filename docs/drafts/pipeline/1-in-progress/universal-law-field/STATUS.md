@@ -1,10 +1,22 @@
 # Universal-law corpus facts
 
-Updated: 2026-09-24
+Updated: 2026-09-25
 
 Scope: compressed facts and logically forced design constraints extracted from audited positive theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
 
 ## RH: route-independent research constraints
+
+- **Must retain the critical cusp boundary charge when completing literal theta Euler sources.** Every individual Gaussian source atom, and every fixed finite-prime smooth-number source, has zero integral against `exp(x/2)`, while the completed theta source has integral `1/2`. The finite-prime sources cannot converge in this weighted `L¹` topology. Against any bounded `C¹` observation `ψ` with integrable derivative, their limit is the completed bulk observation minus `(1/2)ψ(−∞)`. The same law holds for every cofinal exhaustion by atom sets with finite reciprocal mass at each stage, independent of ordering. The [exact boundary-completion theorem](../../2-fully-proven/theta-euler-critical-boundary-mass-escape.md) isolates this negative-cusp defect without assuming RH. Xi spectral exponentials are unbounded at that cusp, so their full complex boundary response still needs an arithmetic orientation law; the scalar half-charge cannot locate zeros. A proof using source completion must carry that singular boundary observation rather than exchange the Euler limit with its critical Mellin integral.
+
+- **Must treat both reflected critical ports as a singular coupled completion.** At every finite-prime theta Euler stage the `+1/2` Mellin value is zero, while its first derivative becomes `1/2` after multiplication by the finite Euler factor at `1`. At `−1/2` the same stage has a meromorphic pole whose order equals the number of admitted primes; the completed source has finite charge `1/2` at both ports. Any scalar meromorphic repair making both finite-stage ports nonzero must introduce a simple pole at `+1/2` and a zero of that growing order at `−1/2`. The [two-port order theorem](../../2-fully-proven/theta-euler-two-port-jet-pole-renormalization.md) proves this on paper. A regular scalar limit or one endpoint jet cannot supply the required full complex-phase orientation.
+
+- **Cannot infer Xi-divisor continuity from local convergence of literal theta sources, even when one critical boundary charge converges.** Deleting any finite set of primes from the completed source preserves every interior Xi zero with multiplicity: its Mellin transform is Xi times zero-free finite Euler factors. Deleting all primes leaves the Gaussian seed compact locally, and that seed has no interior Xi zero. Along this path the half-density charge tends to the seed's zero charge, but every real interior Mellin observation of the deleted sources tends to zero while the seed's observation is strictly negative. The [prime-deletion spectral-escape theorem](../../2-fully-proven/theta-prime-deletion-spectral-escape.md) proves the discontinuity. Must control the full complex boundary family and the actual positivity/modular source, not just local source convergence, reflection, or one scalar endpoint charge.
+
+- **Cannot exclude off-line zeros in the natural Xi strip from positivity, evenness, strong log-concavity, any finite moment list, the exact critical half-density charge, and all finite prime-deletion right-ray positivity inequalities.** At every sufficiently high horizontal frequency and fixed height inside the strip, a two-packet perturbation forces a zero while preserving the shape properties, ordinary mass and both reflected charges, and converging to the literal theta source in Schwartz topology. One version equals theta outside a fixed compact interval and remains positive after every finite literal prime deletion on the positive ray, uniformly over prime sets; a second is real-analytic, converges holomorphically on every compact subset of the theta source strip, and has relative tail error faster than every ordinary exponential in the log coordinate. The [two-packet interpolation theorem](../../2-fully-proven/theta-compact-critical-strip-zero-engineering.md) proves both on paper. Neither version preserves exact Euler coefficients or entire real-zero divisor; the theorem does not identify which infinite source constraint can orient Xi.
+
+- **Cannot create a new Xi zero by a symmetric integer-scale deformation while preserving the theta source's ordinary mass, critical half-density charge and complete monotonicity of its normalized flux.** This holds even for signed, infinite mixtures of all integer translations, not just positive convolutions or one prime-power chain. Exact Gaussian-rate arithmetic turns flux positivity into nonnegative weights at every reduced rational denominator; a strictly positive divisor-Möbius identity then forces the deformation to be the identity. The [divisor Bernstein theorem](../../2-fully-proven/theta-divisor-bernstein-gauge-rigidity.md) proves this on paper. The restriction concerns that deformation class; literal one-sided Euler completion still has a boundary-mass defect and needs its own complex orientation law.
+
+- **Cannot orient Xi zeros from all finite-prime-deleted fluxes being completely monotone, global source positivity, ordinary mass and one exact half-density charge without the reflected charge.** A positive two-shift theta mixture has every such property and an exact off-line Mellin zero at real strip coordinate `1/4`. Cofinal prime deletion isolates the Gaussian seed and proves that all-sieve flux monotonicity is equivalent to positivity of an arbitrary exponentially integrable translation measure; with ordinary mass and **both** reflected half-charges fixed, this class rigidifies to theta. Yet symmetric positive mixtures with charge defect of order `T^(−2)` can add off-line zeros at height `T` when their shift gap shrinks. The [all-sieve seed-projector theorem](../../2-fully-proven/theta-all-sieve-seed-projector-translation-cone.md) proves the classification and sharp tests on paper. A completion proof must retain the second singular boundary observation and control moving spectral height, not merely verify finite-sieve positivity and approximate charge convergence.
 
 - **Must verify both sides of the moment cone when deforming a nonnegative finite spectral carrier.** After fixing one atom `x` in an `N`-atom head of mass `E` and quadratic energy `F`, the remaining atoms require `(E-x)²/(N-1) ≤ F-x² ≤ (E-x)²`. The Cauchy lower bound alone does not certify nonnegative atoms. The [one-atom residual-window theorems](../../../../../formal/GaloisForLFunctions/RHTower/FiniteOneHeadResidualWindow.lean) prove a positive interval only after checking the upper bound separately; no zero-location conclusion follows from this finite constraint.
 
@@ -6853,3 +6865,102 @@ with sub-logarithm-squared capacity plus a trace-class or weak
 Schatten-one remainder. This locates necessary spectral capacity,
 not the sign or location of any zero. Paper proof:
 `docs/drafts/pipeline/2-fully-proven/theta-cdf-crossfrequency-rvm-capacity.md`.
+
+## MUST-391 — a regularization preserves the free positivity exactly when its multiplier is a positive kernel (2026-09-25)
+
+The raw prime-side moment blocks are positive semidefinite at every finite aperture with no
+hypothesis; the regularization that makes the limit finite acts entrywise, so the question of what
+survives has an exact answer. An entrywise multiplier carries every positive semidefinite input to
+a positive semidefinite output **if and only if** the multiplier is itself positive semidefinite:
+one direction is Schur's product theorem, the other follows by feeding in the all-ones block.
+**Must** therefore choose a regularization whose multiplier is a positive kernel.
+
+The factorial regularization is not one. The identity `(m+n)! = binom(m+n,m)·m!·n!` splits
+`1/(m+n)!` into a diagonal congruence, which is harmless, times the multiplier `1/binom(m+n,m)`,
+whose two-by-two corner has determinant `−1/2`; and no diagonal congruence can replace it, since
+`c_m c_n = 1/(m+n)!` is already contradictory at the indices `0` and `1`. For the first trace block
+the multiplier is the reciprocal odd factorials `!![1, 1/6; 1/6, 1/120]`, of determinant `−7/360`,
+and the **all-ones** block — the most degenerate positive Gram there is — already breaks under it.
+**Cannot** therefore attribute the loss of positivity at that block to the arithmetic of the source:
+it is a property of the normalization map alone, and every source-specific computation of it is an
+instance. The unregularized limit is by contrast unobstructed: consistency of the finite blocks
+gives a nonnegative form on finitely supported vectors with no further hypothesis, so the object
+that carries the free positivity exists and it is the regularization, not the object, that has to
+be replaced.
+
+## CANNOT-392 — the free positivity cannot transport to the Jensen criterion, at any pair (2026-09-25)
+
+The multiplier relating the raw prime-side moment blocks to the blocks the Jensen criterion needs is
+the reciprocal factorials, and it is not merely outside the cone of positive kernels but on the
+wrong side of the Cauchy--Schwarz ceiling everywhere. Strict log-convexity of the factorial gives
+`((m+n)!)² < (2m)!·(2n)!` for every `m ≠ n`, so `1/(m+n)!` strictly exceeds the geometric mean
+`1/√((2m)!(2n)!)` of the diagonal entries at **every** off-diagonal pair; every two-by-two block on
+distinct indices has negative determinant, and no positive kernel agrees with the reciprocal
+factorials even at two indices. The overshoot is `√((2m)!(2n)!)/(m+n)!`, which at `m = 0` is the
+square root of the central binomial coefficient — exponential, not a constant. **Cannot** therefore
+treat the unconditional positivity of the raw blocks as partial evidence for the criterion, and
+**cannot** repair the gap by sharpening the prime side: the two positivities are related
+anti-positively at every scale. **Must** instead find a criterion whose normalization lies in the
+admissible cone, which is now explicit — congruences, Hadamard powers and limits of positive
+kernels. Factorial decay as such is not the obstruction: the rank-one kernel `1/√((2m)!(2n)!)` is
+positive and decays at least as fast; it is the specific reciprocal-factorial shape that is
+excluded.
+
+## MUST-393 — the hypothesis is a reflection positivity, and reflection positivity is a comparison (2026-09-25)
+
+The Gram matrices that come free from the prime side are Toeplitz: their entries depend on `m − n`,
+because the explicit formula is translation covariant. The Gram matrices any zero criterion needs
+are Hankel: their entries depend on `m + n`, because the functional equation is a reflection. For a
+single frequency the two forms differ by exactly one sign,
+`∑ u_m u_n cos((m−n)x) = C² + S²` and `∑ u_m u_n cos((m+n)x) = C² − S²`, with `C` and `S` the even
+and odd parts of the weight against that frequency. The translation form is a sum of squares and is
+nonnegative for every weight and every frequency with no hypothesis — that is the whole of the free
+positivity. The reflection form is a **difference** of squares: it is not a positivity but the
+comparison `S² ≤ C²`, and a single atom at `x = π/2` with the weight on the index one already makes
+it `−1`. **Cannot** obtain a comparison from a positivity, so every route that proposes to transport
+the free prime-side positivity into a zero criterion is excluded at the level of the sign, before
+any arithmetic is used; the failure of the factorial regularization at every pair, and the blindness
+of square-root cancellation in the modulus, are two instances of this one sign. **Must** therefore
+supply the reflection positivity as new data rather than derive it: the datum that makes the
+difference of squares nonnegative is exactly what reconstructs a Hilbert space with a self-adjoint
+generator, so the object to construct and the missing hypothesis are the same thing.
+
+## CANNOT-397 — the reflection positivity the criteria ask for is false, not missing (2026-09-25)
+
+The lag kernel on the multiplicative group of positive reals has two companions. The **translation**
+kernel evaluates the lag function at ratios, and its positive semidefiniteness is the hypothesis.
+The **reflection** kernel evaluates it at products, and it is what a criterion of Hankel shape — one
+whose entries depend on the product rather than on the ratio — asks to be positive. The two differ
+by the group inversion: the reflection kernel is the translation kernel with one argument inverted.
+Hence they agree along a column exactly at a fixed point of the inversion, that is at an element of
+order dividing two. **Cannot** obtain reflection positivity on this group, because the group is
+torsion free: its only fixed point is the identity, the reflection kernel's diagonal is therefore the
+lag function restricted to the **squares**, and the lag function takes strictly negative values at
+arbitrarily large arguments with no hypothesis. So the diagonal itself is negative somewhere and the
+reflection kernel is not positive semidefinite. **Cannot** repair this by assuming the hypothesis:
+under it the value of the lag function at zero is the exact supremum, so the antipodal two-point form
+of the reflection kernel, which equals twice the lag function at the square minus twice its value at
+zero, is **nonpositive at every point**. The hypothesis does not supply reflection positivity; it
+forces the reflection form to be negative semidefinite in exactly the directions the inversion
+creates. The demand recorded as the terminus of the previous cycle — "supply the reflection
+positivity as data" — is therefore not a gap to be filled on this group at all.
+
+## MUST-398 — the missing datum is two-torsion, and arithmetic supplies it only away from the divisor group (2026-09-25)
+
+The failure of CANNOT-397 is located exactly: the reflection form is automatically as good as the
+free translation form at every element equal to its own inverse, and automatically indefinite at
+every element of infinite order, because the diagonal there is the lag function at a square rather
+than at the identity. **Must** therefore carry out any reflection-positivity argument on a carrier
+whose inversion has a large fixed set, i.e. one with abundant two-torsion. The group of principal
+divisors of the rational integers is free abelian and has none; the rational numbers acquire exactly
+one nontrivial involution, the sign, and it lives at the archimedean place; a congruence quotient of
+modulus with several prime factors acquires a fixed set whose size is two to the number of those
+prime factors, and there the functional equation is no longer a scalar but the inversion of the
+reduced residues, whose Fourier matrix is maximally flat away from one row. **Cannot** read the
+repeated finding that the prime and archimedean organs are sampling-disjoint as an accident: the
+reflection's entire fixed locus is archimedean, which is why every attempt to produce the comparison
+from prime data alone has failed and why the level-one symmetry, being a scalar, has never carried
+information about the zeros. The quotient by squares is the opposite extreme — there the inversion is
+the identity, the two forms coincide and no condition of the hypothesis's strength survives — so the
+carrier must sit strictly between the divisor group and its square-class quotient, with the two-torsion
+supplied and the valuation grading retained.

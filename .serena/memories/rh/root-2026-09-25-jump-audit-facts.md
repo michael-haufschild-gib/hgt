@@ -1,0 +1,8 @@
+# Verified facts / no-gos
+- `SourceHorizontalRiggedKreinGlobalIndex.lean` proves all-prime left-fibre form has exactly one negative square, but its form is parameterized by `s`; it is **not** a fixed Pontryagin-space Xi spectral realization.
+- `SourceHorizontalRiggedKreinFibreTrivializationNoGo.lean` proves same-half tame congruence and cross-half anti-congruence; fibrewise Krein-isomorphism class cannot locate critical wall.
+- `PositiveEulerFiniteQuartetOrientationLaw.lean` assigns `(2,2)` Weil-block signature to a generic off-line quartet. No faithful source-to-Xi spectral landing follows from the index-one source form.
+- `PrimeGammaSignedEulerianCurvaturePluckerLift.lean` and `PrimeGammaCauchyCubicSignedEulerianCurvature.lean` already prove nonzero/positive finite ordered four-label Pluecker curvature and scalar completed-face blindness. `SuzukiReflectedHistoryPrimeChainBoundary.lean` already records ordered source word becoming null after abelian cofinalization. Claiming these as a new jump would rediscover corpus.
+- `SuzukiEulerianSignedGammaCurrent.lean` proves exact SP-E mass-error decomposition into negative signed curvature first moment plus positive higher-Binet Gamma correction, latter O(sqrt N); no source-derived cofinal moderation is established there.
+- The tentative Gamma-Hankel dilation difference Q_N=∫F_N(t)(F_N(t)-F_N(2t))dt only gives generic lower bound Q_N≥(1−1/√2)∫F_N² by Cauchy, wrong direction for RH-scale upper bound. Do not pursue as payment law.
+- No new mathematical theorem or Lean edit resulted from this audit. Next hard target must be a source-derived *ordered* cofinal signed moderation or coefficient-faithful map to completed word columns, not another fibrewise index or RH-equivalent receiver.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusDivisorTerminalCriticalSourceTransform
+import GaloisForLFunctions.RHTower.MobiusDivisorLatePrimeHeadAsymptotic
 
 noncomputable section
 open Finset

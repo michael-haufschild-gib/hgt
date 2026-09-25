@@ -40,6 +40,13 @@ and `K_N(T)=Σ_(j≤N)s_j(T)`.
    K_N(D₀)=O(log(N+2) log log(N+3))=o((log N)²).
    ```
 
+   Moreover the paired-block metric
+   `G₀=⊕_(n≥1)[[1,r_n],[r_n,1]]`, with
+   `r_n=(Φ_(2n)−Φ_n)/Φ_n∈(0,1)`, is **uniformly positive and
+   boundedly invertible**. The earlier source result had only
+   positivity and injectivity. Its exact remaining defect is the
+   full cross-frequency commutator `G₀D−D*G₀`.
+
 2. The full determinant-bearing operator has eigenvalues `−1/z`
    for the nonzero XiC zeros `z`, with algebraic multiplicity. Its
    modulus-ordered eigenvalue partial sums obey
@@ -73,6 +80,17 @@ and `K_N(T)=Σ_(j≤N)s_j(T)`.
    trace zero, and `K_Φ` has the same essential spectrum `[0,4]`.
    This is a source-derived prime-to-theta **clock** alignment. It
    does not identify `K_Φ` with the determinant-bearing theta inverse.
+5. **Frequency admission is discrete.** Extend the action expression
+   formally to a real frequency `r`:
+
+   ```text
+   Φ(r)=∫_ℝ (1−cos(2πrF(x)))dx.
+   ```
+
+   This nonnegative integral is finite **if and only if** `r∈ℤ`.
+   Thus the theta clock is intrinsically a lattice action; its
+   prime values admit endpoint cancellation, while ordinary
+   differentiation through real frequency is unavailable.
 
 Thus every stable opposite-frequency pair in the source-derived
 Fourier quotient has too little spectral mass to carry the Xi zero
@@ -163,6 +181,17 @@ Both endpoints equal `log log n−log π+O(ε_n)`, proving
 Φ_n = log log n − log π + O(log log n/log n).
 ```
 
+The previously proved paired-block inequalities give
+`0<r_n<1`. The sharp action law also gives
+`Φ_(2n)−Φ_n=O(log log n/log n)` and
+`Φ_n∼log log n`, hence `r_n=O(1/log n)→0`.
+All sufficiently late blocks therefore satisfy `r_n≤1/2`;
+the finitely many earlier blocks have a positive minimum
+`1−r_n`. Thus there is a single `c>0` with
+`cI≤G₀≤2I`, and `G₀⁻¹` is bounded. This does not make `D`
+self-adjoint in that metric: only its diagonal `H_n` blocks are
+symmetrized, while the cross-frequency defect remains.
+
 For prime `p`, this calibrates the Mertens coordinate
 `x_p=log log p` by a fixed offset. It is a source-derived coordinate
 match, not an operator transport or Xi-divisor identity.
@@ -188,6 +217,15 @@ zero trace. Positivity follows from positive definiteness of
 `sech²((a-b)/2)` for arbitrary real labels `a,b`; boundedness follows
 from the trace-class comparison with bounded `K`. Compact
 equivalence gives `σ_ess(K_Φ)=[0,4]`.
+
+For the discrete-admission law, if `r∉ℤ` then `F(x)→1` as
+`x→+∞`, so the integrand tends to
+`1−cos(2πr)>0`; its integral diverges. If `r∈ℤ`, the integrand
+vanishes quadratically as `F(x)→0` on the left and as `F(x)→1`
+on the right. The source's double-exponential tail makes both
+tails integrable, while the finite middle interval is harmless.
+Equivalently, in quantile coordinates `q(t)dt=dx` has infinite mass
+at both endpoints, and an integer character cancels both.
 
 The `H_n` block is exactly
 

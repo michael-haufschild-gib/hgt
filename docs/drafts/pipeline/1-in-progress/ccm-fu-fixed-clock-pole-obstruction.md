@@ -113,8 +113,10 @@ Aω⁽⁶⁾(u) = -(96/ω³) * [T(u-ω)-T(u+ω)+2ω T'(u)],
 
 where `T` is the existing polar-minus-prime tail Mellin defect. This analytic identity is
 **not yet a Lean theorem**. Source-faithful first Abel integration is now closed on the
-safe Euler half-plane; six justified spectral differentiations and continuation remain
-open. The finite-window identity alone does not establish it.
+safe Euler half-plane. `CCMFUSuzukiConnectedPrimeSixthJet.lean` now proves the
+sixth derivative of the literal connected prime Dirichlet series equals its exact
+endpoint exponential jet. The polar sixth derivative and completed continuation
+remain open. The finite-window identity alone does not establish them.
 
 `CCMHardyHorizontalEndpointZero.lean` now proves unconditionally in Lean that there is a
 Hardy-height Xi zero with no Xi zero anywhere on its rightward horizontal ray. The companion
@@ -127,7 +129,8 @@ noncancellation is thus **Lean-closed**. `CCMFUSuzukiConnectedPrimeAbel.lean`,
 `CCMFUSuzukiConnectedPolarAbel.lean`, and
 `CCMFUSuzukiConnectedCompletedAbel.lean` now prove the first-Abel identity for the
 same literal completed connected source on `Re u > 1+ω`, retaining prime-minus-polar
-cancellation. Sixfold differentiation and uniqueness of continuation remain open.
+cancellation. The prime-channel sixfold differentiation is also closed; polar-channel
+differentiation and uniqueness of continuation remain open.
 
 On `Re u>1+ω`, the first-Abel identity is Lean-closed by an actual finite-prime
 Dirichlet series and actual clocked-polar Laplace integral. The remaining paper
@@ -148,10 +151,10 @@ on `Re u>0`, contradicting the endpoint pole. More importantly, boundedness of t
 connected window** would make its exact Volterra primitive `H Wω(H)` grow only linearly; the
 second-Abel transform `u² Laplace[H Wω(H)]` gives the same analytic extension. This is an
 unconditional paper proof that every fixed `ω>0` connected triangular window is unbounded;
-Lean currently closes the finite sixth-jet identity, literal first-Abel identity and
-spectral pole noncancellation, but **not** sixfold differentiation, second-Abel
-continuation or the final pole contradiction. Priority against external literature has
-not been established.
+Lean currently closes the finite sixth-jet identity, literal first-Abel identity,
+prime-channel sixth derivative and spectral pole noncancellation, but **not** the
+polar sixth derivative, second-Abel continuation or final pole contradiction.
+Priority against external literature has not been established.
 It would retire **fixed** `ω>0` clocks, not moving
 source-adaptive clocks or the RH-bearing zero-clock window.
 
@@ -319,9 +322,10 @@ checked against the literal source; the endpoint argument is not a substitute fo
 2. **Closed for the connected sixth jet:** residue noncancellation uses the actual Xi
    divisor in `CCMFUSuzukiConnectedJetPoleNoGo.lean`.
 3. **Partially closed:** first-Abel source-to-Laplace identity holds for the literal
-   completed connected source on `Re u > 1+ω`. Still prove its sixth-derivative
-   identification, bounded-window second-Abel continuation, and analytic uniqueness
-   for that *same* source before promoting the window no-go.
+   completed connected source on `Re u > 1+ω`, and the prime-channel sixth derivative
+   has the predicted exponential jet. Still prove polar-channel differentiation,
+   bounded-window second-Abel continuation, and analytic uniqueness for that *same*
+   source before promoting the window no-go.
 4. Search priority: classify this against existing Suzuki fixed-shift results and literature.
 5. For the connected assertion, prove the maximal-support non-extension lemma for a compact
    positive shift measure, then the literal shifted-source Laplace identity. Verify that no
