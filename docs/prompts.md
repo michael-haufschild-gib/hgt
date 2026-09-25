@@ -141,7 +141,7 @@ HB — theta-cusp Hawking causal scattering
 
 ## research Route
 
-Goal: Create a formal proof or falsification of the riemann hypothesis using one or a combination of routes/route candidates STC, CSB, U, RG, BPC, K-RVM, MPLF, RG-ETA, RG-HF, RHist from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+Goal: Create a formal proof or falsification of the riemann hypothesis using one or a combination of routes/route candidates STC, CSB, U, RG, BPC, K-RVM, MPLF, RG-ETA, RG-HF, RHist from docs/reports/rh-current-frontier-map.md
 
 **Lean rules:**
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -377,7 +377,7 @@ Missing mathematical knowledge: create it with a heavy conjecturing loop workflo
 
 Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
 
-write down high level interpretation of significant facts about the RH problem and solution in docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md. it is not a diary or working log, but key points of guiding future research agents where to look and where to not look for a solution of the form "Must be this", "Must be like this", "Must do this", "Must have this", "Must be able to do this", "Cannot be this", "Cannot be like this", "Must have this", "Must be able to do this". If the entry cannot be understood without first researching a specific route, it is not valid.
+write down high level interpretation of significant facts about the RH problem and solution in docs/reports/STATUS.md. it is not a diary or working log, but key points of guiding future research agents where to look and where to not look for a solution of the form "Must be this", "Must be like this", "Must do this", "Must have this", "Must be able to do this", "Cannot be this", "Cannot be like this", "Must have this", "Must be able to do this". If the entry cannot be understood without first researching a specific route, it is not valid.
 
 if computations can help you to find new leads or answer questions which you truly could not find or answer by reasoning, then computations are allowed
 
@@ -386,7 +386,7 @@ download results and document them in a subfolder in docs/drafts/pipeline/2-full
 
 
 ## new idea
-Create significant knowledge and progress across all our RH proof routes and route candidates and finalize a formal proof of RH in lean: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+Create significant knowledge and progress across all our RH proof routes and route candidates and finalize a formal proof of RH in lean: docs/reports/rh-current-frontier-map.md
 
 Use the search tool for the lean corpus, not to find ready solutions but new ideas to brainstorm and conjecture about. Do not just search, but also create missing mathematical knowledge with a heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
 
@@ -402,8 +402,8 @@ Do not conjecture or judge or assume or anything on your training data. Your tra
    
 **Work rules:**
 1. Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
-2. Document high level knowledge about the problem as a whole independent of routes in docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md. Entries document compact knowledge about RH and its solution in the form "Must be this", "Must be like this", "Must do this", "Must have this", "Must be able to do this", "Cannot be this", "Cannot be like this", Cannot have this", "Cannot be able to do this". If the entry cannot be understood without first researching a specific route, it does not belong here.
-3. Update docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md only as a current state, no history, no diary, not logging - only document the current state of all routes and route candidates.
+2. Document high level knowledge about the problem as a whole independent of routes in docs/reports/STATUS.md. Entries document compact knowledge about RH and its solution in the form "Must be this", "Must be like this", "Must do this", "Must have this", "Must be able to do this", "Cannot be this", "Cannot be like this", Cannot have this", "Cannot be able to do this". If the entry cannot be understood without first researching a specific route, it does not belong here.
+3. Update docs/reports/rh-current-frontier-map.md only as a current state, no history, no diary, not logging - only document the current state of all routes and route candidates.
 4. Any new turn starts with you stating in chat what the full proof chain is that you are working on and how your new work will deliver significant progress for it.
 5. Missing in our Lean corpus or mathlib - Build no matter the effort.
 

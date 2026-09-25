@@ -209,6 +209,23 @@ theorem divisorCoreMellinEuler_ratio_eq_inverse_geometricProduct
                 (primeNome half_pos p).lt_one
     _ = _ := by rw [Finset.prod_mul_distrib, Finset.prod_inv_distrib]
 
+/-- Adding processed primes never contracts the normalized Mellin multiplier at
+any frequency: prime processing acts as inverse smoothing in this spectral norm. -/
+theorem norm_divisorCoreMellinEuler_ratio_mono (t : ℝ)
+    {s u : Finset Nat.Primes} (hsu : s ⊆ u) :
+    ‖divisorCoreMellinEuler (s.image (fun p : Nat.Primes => (p : ℕ)))
+      ((t : ℂ) * Complex.I) /
+      divisorCoreMellinEuler (s.image (fun p : Nat.Primes => (p : ℕ))) 0‖ ≤
+    ‖divisorCoreMellinEuler (u.image (fun p : Nat.Primes => (p : ℕ)))
+      ((t : ℂ) * Complex.I) /
+      divisorCoreMellinEuler (u.image (fun p : Nat.Primes => (p : ℕ))) 0‖ := by
+  rw [divisorCoreMellinEuler_ratio_eq_inverse_geom,
+    divisorCoreMellinEuler_ratio_eq_inverse_geom,
+    norm_routeTNormalizedEulerCore, norm_routeTNormalizedEulerCore]
+  apply Real.exp_le_exp.mpr
+  exact Finset.sum_le_sum_of_subset_of_nonneg hsu
+    (fun p hp hps => routeTInverseGeomDefect_nonneg t p)
+
 /-- No core-independent pointwise residue-dominance constant exists at a nonzero frequency. -/
 theorem tendsto_divisorCoreMellinEuler_ratio_norm_atTop {t : ℝ} (ht : t ≠ 0) :
     Tendsto (fun s : Finset Nat.Primes =>

@@ -108,6 +108,18 @@ The rotated-ray formula in that card transports both parts toward
 the same global Abel/Gauss-cusp boundary. The missing theorem is a
 coupled constraint on those parts, not a separate positivity claim
 about either one.
+In particular, positivity gives the strict arithmetic Abel inequality
+\[
+ \boxed{\displaystyle
+ \operatorname{Im}M_u
+   <\frac{2u(c-1)}{u^2+1/4}\qquad(u>0).}                 \tag{4c}
+\]
+Substituting formula (8) of the rational-cusp card expresses the left
+side entirely through its continuous quadratic-phase potential
+\(\sum_{n\geq1}e^{-i\pi n^2r}/n^2\) and the finite boundary arc.
+This is a global signed restriction on those Gauss phases, proved
+without selecting a single cusp. It constrains the imaginary part;
+the real-part balance needed for zero confinement remains open.
 Equating (4) and (4a) makes the renewal--Mellin compatibility explicit:
 \[
  \boxed{\displaystyle

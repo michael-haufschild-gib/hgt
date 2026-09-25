@@ -1,17 +1,10 @@
 import GaloisForLFunctions.RHTower.ZetaLogDerivZeroDistance
+import GaloisForLFunctions.RHTower.VonMangoldtLogHarmonicSummatory
+import GaloisForLFunctions.RHTower.Sieve.ZeroFreeRegionKappaOne
 
 open Finset
 
 namespace RHTower
-
-/-- `log y ≤ 2√y` for `y > 0`. -/
-private theorem log_le_two_sqrt {y : ℝ} (hy : 0 < y) : Real.log y ≤ 2 * Real.sqrt y := by
-  have h1 : Real.log (Real.sqrt y) ≤ Real.sqrt y - 1 :=
-    Real.log_le_sub_one_of_pos (Real.sqrt_pos.mpr hy)
-  have h2 : Real.log (Real.sqrt y) = Real.log y / 2 := Real.log_sqrt hy.le
-  rw [h2] at h1
-  have h3 : (0 : ℝ) ≤ Real.sqrt y := Real.sqrt_nonneg y
-  linarith
 
 /-- The telescoping majorant for the tail weights `log(k+1)/k²`. -/
 private theorem log_div_sq_le_telescope {k : ℕ} (hk : 1 ≤ k) :
@@ -31,7 +24,7 @@ private theorem log_div_sq_le_telescope {k : ℕ} (hk : 1 ≤ k) :
   have hbpos : (0 : ℝ) < b := by linarith
   have hba : b ≤ a + 1 := by nlinarith [ha2, hb2, ha1, hab]
   have hlog : Real.log ((k : ℝ) + 1) ≤ 2 * b := by
-    have h := log_le_two_sqrt (y := (k : ℝ) + 1) (by linarith)
+    have h := Sieve.log_le_two_sqrt (x := (k : ℝ) + 1) (by linarith)
     rw [← hb] at h; exact h
   have hk4 : (k : ℝ) ^ (2 : ℕ) = a ^ (4 : ℕ) := by
     rw [← ha2]; ring
@@ -52,7 +45,7 @@ private theorem log_div_sq_le_telescope {k : ℕ} (hk : 1 ≤ k) :
     _ ≤ _ := hstep
 
 /-- `∑_{k=1}^{K} log(k+1)/k² ≤ 12`. -/
-private theorem sum_log_div_sq_le (K : ℕ) :
+theorem sum_log_div_sq_le (K : ℕ) :
     ∑ k ∈ Finset.Icc 1 K, Real.log ((k : ℝ) + 1) / (k : ℝ) ^ (2 : ℕ) ≤ 12 := by
   have hbound : ∀ n : ℕ, ∑ k ∈ Finset.Icc 1 n, Real.log ((k : ℝ) + 1) / (k : ℝ) ^ (2 : ℕ)
       ≤ 12 * (1 - 1 / Real.sqrt ((n : ℝ) + 1)) := by
@@ -67,37 +60,6 @@ private theorem sum_log_div_sq_le (K : ℕ) :
   have h := hbound K
   have hnn : (0 : ℝ) ≤ 1 / Real.sqrt ((K : ℝ) + 1) := by positivity
   linarith
-
-/-- `∑_{k=1}^{K} 1/k² ≤ 2`. -/
-private theorem sum_inv_sq_le (K : ℕ) :
-    ∑ k ∈ Finset.Icc 1 K, 1 / (k : ℝ) ^ (2 : ℕ) ≤ 2 := by
-  have hbound : ∀ n : ℕ, 1 ≤ n →
-      ∑ k ∈ Finset.Icc 1 n, 1 / (k : ℝ) ^ (2 : ℕ) ≤ 2 - 1 / (n : ℝ) := by
-    intro n hn
-    induction n with
-    | zero => omega
-    | succ m ih =>
-      rcases Nat.eq_or_lt_of_le hn with h | h
-      · have hm : m = 0 := by omega
-        subst hm; norm_num
-      · have hm1 : 1 ≤ m := by omega
-        have ihm := ih hm1
-        have hmpos : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm1
-        rw [Finset.sum_Icc_succ_top (by omega)]
-        have hstep : 1 / (((m : ℕ) + 1 : ℝ)) ^ (2 : ℕ) ≤ 1 / (m : ℝ) - 1 / ((m : ℝ) + 1) := by
-          rw [div_sub_div _ _ (ne_of_gt hmpos) (by positivity),
-            div_le_div_iff₀ (by positivity) (by positivity)]
-          ring_nf
-          nlinarith
-        push_cast
-        linarith
-  rcases Nat.eq_zero_or_pos K with h | h
-  · subst h; simp
-  · have := hbound K h
-    have hKpos : (0 : ℝ) < (K : ℝ) := by exact_mod_cast h
-    have : (0 : ℝ) < 1 / (K : ℝ) := by positivity
-    linarith [hbound K h]
-
 
 /-- **The far field of the zero divisor is `O(log t)`.**  Over any finite set of zero copies whose
 ordinates are at distance at least `1` from `t`, the sum of inverse squared distances is bounded by
