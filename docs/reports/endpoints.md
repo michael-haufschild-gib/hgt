@@ -1,0 +1,993 @@
+# RH endpoint ledger (Lean corpus)
+
+Snapshot 2026-09-25. Scope: every public declaration under `formal/GaloisForLFunctions/` (RHTower, HTGeometry) whose statement contains mathlib `RiemannHypothesis` as conclusion, premise or equivalent: 3,639 declarations in 1,609 modules, grouped into 259 endpoint families plus 1 non-endpoint bucket. Built from `scripts/formal_tools.py research` (paged lexical enumeration) and the Lean statement at each hit. Per-declaration map: `docs/reports/endpoints-index.tsv` (columns: family, status, shape, module, declaration, file:line).
+
+Families: LIVE 205 · NO-GO 54 (FALSE 10, EXCLUDED 20, CIRCULAR 24) · non-endpoint 1. Declarations: ⇔ 1691, ⇒ 724, ¬⇒ 266, ∨ 50, ¬⇔ 74, ⇒¬ 34, ∧ 169, N 631.
+
+## Target
+
+- RH = mathlib `RiemannHypothesis`. Canonical equivalent `RiemannTower:rh_iff_xi_ne_zero_right`: RH ↔ ∀ s, 1/2 < Re s → ξ s ≠ 0.
+- `xi s = s(s−1)/2 · completedRiemannZeta₀ s + 1/2` (entire ξ). `XiC z = ξ(1/2 + i z)`: RH ⇔ every zero of XiC is real. `xiCent W = ξ(1/2 + W)`.
+- `XiDivisorSupport`: zeros of ξ. `XiZeroCopy`: a zero with one multiplicity index (multiplicity-exact sums run over copies).
+- `xiSpectralPoint q = −i(ρ − 1/2)`: real ⇔ Re ρ = 1/2. `xiZeroCopyReciprocalSquare q = xiSpectralPoint q⁻²`: a positive real ⇔ Re ρ = 1/2.
+- Prime–arch source: `continuedPrimeArchSourceRelativeTrace z`, built only from −ζ′/ζ and the archimedean factor at s = 1/2 + iz, equals the ξ relative resolvent trace; its normalized moments mₙ (`normalizedPrimeArchMoment`) are the source-side form of reciprocal-square power sums.
+- `xiWeilPolarization F G = Σ_q F(t_q)·(F♯G)(t_q)`, t_q = xiSpectralPoint q: multiplicity-exact zero-side Weil form.
+
+## Legend
+
+- Shapes (per declaration): ⇔ P ↔ RH · ⇒ P → RH · ¬⇒ ¬RH → Q (prove ¬Q) · ∨ RH ∨ X (prove ¬X) · ¬⇔ P ↔ ¬RH (a witness refutes RH) · ⇒¬ W → ¬RH · ∧ RH inside a package (∧, TFAE, ∃ …, (RH ↔ …)) · N RH → Q (a witness of ¬Q refutes RH). Entry header shows counts over all declarations in the family's modules; a module belongs to exactly one family, so an anchor may sit in a module counted elsewhere.
+- LIVE: premise neither proved, refuted, nor shown in Lean to be RH re-encoded. Discharging D proves RH (or, in FAL, supplies a disproof).
+- NO-GO: NOGO-FALSE: Premise refuted in Lean (implication vacuous) · NOGO-EXCLUDED: Producer class excluded in Lean (route-class kill) · NOGO-CIRCULAR: Premise is RH re-encoded (Lean circularity audit).
+- Fields: D = what must be proved (any listed alternative suffices) · G = mechanism · X = Lean-proved sub-obstructions / excluded producers inside a live family · A = anchor declaration `Module:theorem` · mod = module count.
+- Sections: DIV Divisor-side restatements (zeros, multiplicities, local jets, towers) · CLS Classical criteria and arithmetic bounds · CCM Weil / explicit-formula positivity (CCM, Ward, Suzuki) · PGM Prime–Gamma and Möbius sources · THT Theta, heat, Hankel and moment positivity · OPR Operator and spectral realizations · GEO Arithmetic geometry, cohomology, descent · PHY Physics models (thermal, KMS, Lee–Yang, Hawking) · FAL Falsifiers and necessary consequences.
+
+## LIVE (205)
+
+### DIV · Divisor-side restatements (zeros, multiplicities, local jets, towers) (33)
+
+- **F0050 Zero-free right half-plane of ξ or an explicit entire carrier** · ⇔12 ⇒1 ∧1 · 7 mod · A `RiemannTower:rh_iff_xi_ne_zero_right`
+  - D: ∀s, Re s > 1/2 ⇒ ξ(s) ≠ 0 (canonical target); equivalently for the centered prime-tail entire carrier or other explicit entire multiples of ζ/ξ.
+  - G: Canonical form of RH; every other endpoint lands here.
+- **F0011 Pointwise zero self-duality / Böttcher–Prüfer / window-count restatements** · ⇔99 ⇒16 ¬⇒6 ∧4 N11 · 74 mod · A `BornTemperatureFactorType:riemannHypothesis_iff_xiZero_reflection_fixed`
+  - D: ∀ ξ-zero ρ: 1−ρ̄ = ρ (or Born factor-label/phase match; Böttcher–Prüfer charges trivial; support count = fixed-point count in every ordinate window).
+  - G: Direct restatements of Re ρ = 1/2 at each zero.
+  - X: divisor-side restatement; no source handle.
+- **F0051 ℤ₂-Kummer square-root tower of ξ / deck and ladder** · ⇔41 ⇒21 ¬⇒4 ¬⇔4 ∧3 N8 · 28 mod · A `RiemannTower:rh_iff_tower`
+  - D: Coherent square-root (ℤ₂-Kummer) tower of ξ on the right half-plane; windowed deck trivialities at all levels/heights; ladder rungs at every (or cofinally many / unboundedly many) level.
+  - G: Off-line zeros of odd order obstruct square roots on reflection-closed windows.
+- **F0175 Upper spectral-ξ Blaschke / heat / Poisson masses** · ⇔36 ⇒1 ¬⇒21 N9 · 25 mod · A `RiemannXiBoundaryBlaschkeRigidity:riemannXiUpperBlaschkeCompleteLogDerivative_at_zero_eq_zero_iff_rh`
+  - D: At one observation point (e.g. the origin or i): complete signed Blaschke log-derivative = 0; boundary density / derivative variation / phase dispersion = 0; hyperbolic heat sum / action / window / Poisson defect / log-defect mass / boundary heat = 0; reflected-pair Gaussian correlation = 0; resolvent / reflected screw mass = 0 or subexponential; Suzuki off-axis signed initial velocity = 0; critical-line deviation / upper height mass = 0.
+  - G: Sums over upper-half-plane spectral ξ zeros; each off-line zero contributes a strictly positive term.
+  - X: quantities are built from the zeros.
+- **F0042 Cofinal window line packages** · ⇔4 ⇒49 N2 · 11 mod · A `CofinalWindowDataRH:cofinalWindowLinePackages_iff_riemannHypothesis`
+  - D: Cofinally many heights T with `WindowLinePackage T` (or second-moment orthogonal-saving / anchor-mass / integral-ledger outer-power window data; slope-circle windows at each right-half zero).
+  - G: Local window data at every height force zeros onto the line.
+  - X: premise per hypothetical right-half zero.
+- **F0172 Ladder rung + simplicity collision** · ⇔7 ⇒11 N16 · 6 mod · A `RHLadderHedenmalmSimplicityCollision:riemannHypothesis_of_rhLadder_one_of_xiZerosSimple`
+  - D: `RHLadder k` (k ≥ 1; k = 1 suffices) together with simplicity of all ξ zeros (or theta first-quotient value constraint, density of the theta eigen-algebraic subspace, or continued-Cauchy-to-Hedenmalm closure).
+  - G: Rung 1 forces even order at off-line zeros; simplicity forbids it.
+  - X: xiContinuedCauchyToHedenmalmClosure_iff_simple: the closure bridge is exactly simplicity.
+- **F0237 Horizontal collision charge / quantized source energies (HC)** · ⇔17 ⇒13 N2 · 8 mod · A `XiHorizontalCollisionChargeEndpoint:riemannHypothesis_iff_forall_horizontalCollisionCharge_lt_two`
+  - D: ∀T (natural heights, cofinally or eventually suffice): horizontal collision charge < 2 (= 0); multiplicity-faithful Gauss–Hodge prime current summable (or its single source-resolvent trace, Gamma-six suspension traces); prime Cayley information loss → 0 or eventually < 2; two-prime Cesàro source excess → 0 or eventually < 2; Ward–Green Cayley reflection energy < 32; Ward–Green exterior (dephased) packet energy = 0 or below the quantum 4(96/145)²; recurrent real-action ledger / summable collision replay for the global reflection defect.
+  - G: Each off-line collision contributes an indivisible quantum; any strict sub-quantum bound gives RH.
+  - X: charges and packet energies are built from zero windows; source-side forms (prime currents, two-prime excess) are arithmetic.
+- **F0195 Source-horizontal adaptive Fisher / Gamma-six ξ-copy classifiers** · ⇔17 ⇒4 ∨1 ¬⇔1 N1 · 20 mod · A `SourceHorizontalAdaptiveFisherChiralitySelection:riemannHypothesis_iff_sourceHorizontalXi_adaptiveKLChirality_zero`
+  - D: For every ξ-zero copy (at a retained prime): adaptive KL chirality = 0; adaptive (fibre-balanced) reversal or class-law scale-orbit certificates; frozen Hodge work = adaptive Jeffreys work; Route-N parity fusion certificates; pre-vacuum annealed invariance; Gamma-six covariant boundary = fixed, suspensions flat, all moment-neutral traces subexponential, positive-star untwisting, reflection idempotents self-adjoint, cyclic characters descend, balancing log distortions vanish, shell reflected responses identified; Wold prime-clock polar scale work bounded; second-Cartier Krein orbits bounded / compact circle representation; carrier vanishes. Falsifier form: a copy with abelian information escape.
+  - G: Each reads the centered rate 2Re ρ − 1 through prime-clock data.
+  - X: quantifies over ξ copies; not_cofinalObserverSeparation_of_absolutelyContinuous: contiguous finite laws give no perfect orientation test; supertrace / commutator traces are blind.
+- **F0236 Hedenmalm local Jordan blocks (RH ∧ simple zeros)** · ⇔3 ⇒6 ∧9 N6 · 10 mod · A `XiHedenmalmJordanMatrix:all_xiLocalJordanMatrix_isHermitian_iff_rh_and_simple`
+  - D: RH ∧ simplicity ⇔: a conservative divisor-supported Hedenmalm metric exists; every local Jordan matrix is Hermitian; a symmetric source quotient faithful on divided chains exists; prime–arch Cauchy sign ∧ theta eigen-completeness (or theta first sine / Fourier–Laplace moment ≠ 0 at zeros); static value constraint.
+  - G: Multiple zeros create nonzero Jordan steps; off-line zeros break Hermiticity.
+  - X: demands simplicity in addition to RH.
+- **F0174 Reflected bi-heat aperture gaps** · ⇔14 · 11 mod · A `ReflectedBiHeatSignedTwoScaleReceiverCone:riemannHypothesis_iff_reflectedBiHeatSignedTwoApertureGap_eq_zero`
+  - D: ∀ ξ support ρ: reflected bi-heat aperture gap = 0 (two-rate, irrational-rate, separated-sign, three-scale, measure-separated, finite commensurate packets); multiplicity-leading jet norm balance; positive-matrix cross-aperture balance; asymmetric linear scale reporter reflection-balanced.
+  - G: Left/right heat responses balance exactly at critical-line support.
+  - X: quantifies over ξ support.
+- **F0062 Deninger divisor model (H¹ spanned by ξ-zero copies)** · ⇔4 ⇒3 N4 · 4 mod · A `DeningerDivisorSchwarzMonodromy:deningerDivisorMonodromy_comm_iff_riemannHypothesis`
+  - D: ∀z: divisor defect trace = 0 (or every three-point defect trace = 0); ∃ antilinear gauge commuting with θ; [θ, canonical monodromy] = 0; θ-eigenvalues on the line.
+  - G: Model is built from the zeros; conditions restate Re ρ = 1/2 through Ward/resolvent traces.
+  - X: deningerDivisor_linearGauge_diag_eq_zero: every linear gauge is totally blind.
+- **F0114 Canonical horizontal orientation multiplier** · ⇔3 ⇒4 N4 · 2 mod · A `HedenmalmOrientationUpperSingularityCeilingRH:canonicalOrientation_analyticOnNhd_upperHalfPlane_iff_riemannHypothesis`
+  - D: For a > 0: `xiCanonicalHorizontalOrientationMultiplier a` analytic on Im b > a (upper singularity ceiling); or its upper vertical mesh locally bounded below; or every point of the left-shift boundary has Re ≥ 1/2.
+  - G: Off-line zeros are upper-half-plane singularities of the orientation multiplier.
+- **F0135 Local divisor jets + ladder rung** · ⇔6 ⇒4 · 4 mod · A `LocalDivisorJetRHLadderClosure:rhLadder_and_rightAdamsDilationPure_iff_riemannHypothesis`
+  - D: `RHLadder k` (k ≥ 1) and, at every hypothetical right-half zero: reversible prime-power local-jet action, trivial infinitesimal unit, vanishing log unit, pure Adams-dilation weights, or polarized Adams eigenpacket in one isometry/contraction.
+  - G: Local jet arithmetic at a zero of order ≥ 2^k is incompatible with off-line position.
+  - X: normalizedPrimeDerivativeJetCoeff_primePower_norm_gt: positive jet directions grow strictly.
+- **F0127 High-exponent shell multipliers** · ⇔6 ⇒1 ∧1 N1 · 3 mod · A `HighExponentShellManuscriptCapstone:riemannHypothesis_iff_exists_shellCriticalStripZeroFree`
+  - D: ζ(s)·shellMultiplier_m(s) ≠ 0 on Re s > 1/2 for one (equivalently every) m ≥ 12; common zero set of the high shell frame empty.
+  - G: Shell multipliers are zero-free there, so zeros of the product are zeta zeros; the frame is differentially independent.
+  - X: restatement of ζ zero-freeness.
+- **F0213 Transverse equilibrium / maximum principle** · ⇔1 ⇒5 ∨1 N2 · 3 mod · A `TransverseMaximumPrinciple:riemannHypothesis_of_transverseForce_zero_of_attained`
+  - D: Transverse force vanishes at every ξ divisor point and the off-line support is finite (or the maximal real part is attained); or Re ρ is constant on the divisor.
+  - G: Harmonicity of the transverse field plus finiteness/attainment excludes off-line zeros; otherwise off-line support is infinite.
+- **F0001 Angular energy / Poisson potential threshold** · ⇔5 ⇒1 N2 · 3 mod · A `AngularEnergyQuantization:riemannHypothesis_iff_forall_angularEnergy_lt_one`
+  - D: ∀ ξ-zero j: `angularEnergy j < 1` (or = 0); or ∀t: critical-line `poissonPotential t < 1` (or = 0).
+  - G: Each off-line zero contributes a full unit; on-line zeros contribute 0 — integrality leaves no slack.
+  - X: potential is built from the zeros.
+- **F0043 Modulus-slope field of log|ξ|** · ⇔6 ⇒¬2 · 5 mod · A `ChargeTomography:rh_iff_forall_modulusSlope_eq_zero`
+  - D: ∀ρ in the right half: two-circle modulus slope of log|ξ| vanishes on small circles (log|ξ| harmonic); falsifier: one nonzero slope sample on a right-half (or mirrored left-half) ball.
+  - G: Nonzero slope = zero enclosed; a single sample decides.
+- **F0099 Gauss–Hodge prime-character mass / seam energy on the divisor** · ⇔7 N1 · 4 mod · A `GaussHodgeSeamEnergyBridge:riemannHypothesis_iff_burnolPrimeCharacter_unimodular`
+  - D: ∀ ξ-zero copy q (∀ prime p): Gauss–Hodge mass current = 0 (or summable in p); FE mode = vertical mode (unimodular); prime-2 Burnol character unimodular; prime-2 seam charge = 0; prime-summed seam energy = 0.
+  - G: |p^{−ρ}| = p^{−1/2} exactly on the line; off-line copies have non-summable Gauss virial currents.
+  - X: GaussHodgeMassCurrent:hodgeMass_interface_cannot_force_vanishing — reflection-closed configuration with positive mass (Hodge-index interface cannot force vanishing); no_function_of_fePair_computes_hermitian — FE-pair samples cannot compute the Hermitian sample.
+- **F0121 Theta prime-domain admission per ξ-zero copy** · ⇔7 · 4 mod · A `HedenmalmThetaGammaSixWoldCarrier:all_summable_sq_thetaGammaSixWoldHorizontalCarrier_iff_riemannHypothesis`
+  - D: ∀q: Σ_p carrier(p,q)² < ∞ (Gamma-six shell / Wold / endpoint-normalized half-density); principal operator trace class; log p·half-density² → 0; covariant moving-horizon prime energy = 0; half-density double-log boundary energy / log log N → 0.
+  - G: Nonneutral copies retain a nonsummable prime-harmonic channel.
+  - X: quantifies over ξ-zero copies.
+- **F0268 Synchronized universality certificate packages** · ⇔4 ¬⇔3 · 4 mod · A `XiWholeCorpusPositivePhaseUniversalityLaw:riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate`
+  - D: `XiSpectralApertureCertificate τ L 0 N` (zero aperture); terminal analytic-source / terminal geometric-phase / whole-corpus positive-phase universal certificates. Failure side: the synchronized failure certificates ⇔ ¬RH.
+  - G: Bundles of coordinates each individually ⇔ RH; positive and failure phases are exact complements.
+  - X: packages add no independent content beyond any single coordinate.
+- **F0106 Hedenmalm completed line-pair odd part / radial source work** · ⇔4 · 2 mod · A `HedenmalmCompletedSourceLineConjugateDiracResolvent:all_completedXiLinePairOdd_eq_zero_iff_riemannHypothesis`
+  - D: ∀ ξ support point ρ: completed line-pair odd part = 0; or completed radial source work = 0.
+  - G: Odd line-conjugate resolvent component vanishes exactly on the line.
+  - X: quantifies over ξ support.
+- **F0191 FE-forced Krein / Pick form definiteness** · ⇔2 ⇒2 · 1 mod · A `SeamSpectralFlow:riemannHypothesis_iff_conjPairCarrier_polarization`
+  - D: ∀ right-half ρ: the functional-equation Krein form H(ρ) is nonnegative; or at every right-half zero the conjugate-pair Pick carrier is Krein-nonnegative for all node sets.
+  - G: κ₋ = number of off-line pairs; definiteness ⇔ no off-line pair.
+  - X: divisor-built form.
+- **F0090 Meixner root-seam energy at every zero** · ⇔2 ⇒1 · 2 mod · A `GammaMeixnerRootSeamScale:riemannHypothesis_iff_meixnerRootDomain`
+  - D: ∀m ≥ 1 (or along any positive null sequence of convolution times), ∀ ξ-zero ρ: `meixnerSeamEnergy (1/m) ρ` summable.
+  - G: Seam energy diverges exactly at off-line zeros.
+  - X: quantifies over ξ zeros.
+- **F0123 Theta prime-modular recurrence / cocycle descent** · ⇔3 · 3 mod · A `HedenmalmThetaSourcePrimeModularIntegrableCocycleDescent:forall_thetaXiPrimeModularIntegrablePotential_iff_riemannHypothesis`
+  - D: ∀ ξ-zero copy q: prime-modular compact recurrence descent; integrable prime-circle potential exists; quadratic ghost orbit globally closable (shell-replica properness).
+  - G: Descent exists exactly at neutral copies.
+  - X: quantifies over ξ-zero copies.
+- **F0230 Gamma-six Wold boundary control / singular source descent** · ⇔3 · 3 mod · A `XiGammaSixWoldBoundaryDomination:forall_xiGammaSixBoundaryWoldDominated_iff_riemannHypothesis`
+  - D: ∀ ξ copy: filtered Gamma-six boundary controlled; boundary Wold-dominated at grade k; Big-Witt Wold–Jordan actual source energy descends.
+  - G: Each holds exactly at neutral (critical) copies.
+  - X: finite-packet Hessian bounds violated off neutral grade.
+- **F0263 One-prime finite-action recurrent replay** · ⇔1 ⇒1 N1 · 1 mod · A `XiSourceMarkedFiniteActionReplay:xiSourceMarkedFiniteActionReplayAt_iff_riemannHypothesis`
+  - D: At one source-native prime coordinate n: `XiSourceMarkedFiniteActionReplayAt n`.
+  - G: A finite-action recurrent replay annihilates every ξ horizontal defect at that prime.
+- **F0009 Bilateral jet moderation at every zero** · ⇔2 · 1 mod · A `BilateralModerationXiDivisorBridge:riemannHypothesis_iff_forall_xiZero_bilateralModerate`
+  - D: Fixed prime p, grade k: every ξ-zero's bilateral jet family is moderate (∃ moderate eigen-sequence).
+  - G: Conormal conservativity at the divisor; off-line zero forces exponential growth.
+- **F0068 Γ-functional-equation cell periodicity dichotomy** · ⇔1 ⇒1 · 2 mod · A `DichotomyInstances:gammaFECell_dichotomy_implies_rh`
+  - D: Every Γ-FE cell satisfies the periodicity dichotomy, and no off-line strip point has an arithmetic progression of zeta zeros ρ + ikT.
+  - G: Periodicity is excluded off the line, so the dichotomy forces the line.
+- **F0115 Hedenmalm prime endpoint doublet / prime-normal sub-log-square** · ⇒2 · 2 mod · A `HedenmalmPrimeNormalWickBoundaryEnergy:riemannHypothesis_of_xiCZeroHedenmalmPrimeNormalSubLogSquare`
+  - D: `XiCZeroHedenmalmPrimeEndpointDoubletSubLogSquare` or `XiCZeroHedenmalmPrimeNormalSubLogSquare` (per ξ-zero prime boundary energy grows slower than log²).
+  - G: Off-line zeros force log-square prime boundary energy.
+  - X: quantifies over XiC zeros.
+- **F0117 Gamma-sewn Möbius aperture Stokes first-trace prime moments** · ⇔2 · 2 mod · A `HedenmalmStokesCompletedResponseCovariantRenormalization:all_tsum_gammaSewnMobiusApertureStokesCovariantFirstTracePrimeMoment_eq_zero_iff_rh`
+  - D: ∀ ξ-zero copy q: Σ_p covariant first-trace prime moment = 0; or oriented first-trace current = 0.
+  - G: Renormalized first-trace current detects the centered rate |2Re ρ − 1|.
+  - X: not_summable_gammaSewnMobiusApertureStokesCriticalFirstTracePrimeMoment — critical prime slice nonsummable; not_continuousAt…OrientedFirstTraceCurrent_zero — quantized jump.
+- **F0002 Anharmonic Chebyshev cubic descent** · ⇔1 · 1 mod · A `AnharmonicChebyshevCubicDescentCriterion:allXiZeroChebyshevQSquaresStrictlyNegative_iff_riemannHypothesis`
+  - D: Every ξ-zero maps under q(s)² to the strictly negative real ray (`AllXiZeroChebyshevQSquaresStrictlyNegative`).
+  - G: Cubic change of variable sends the critical line to the negative axis.
+- **F0262 Per-orbit cofinal selective cubic admissibility** · ⇒1 · 1 mod · A `XiSourceAmplificationInternalReflection:riemannHypothesis_of_forall_xiOrbitCofinalSelectiveCubicAdmissible`
+  - D: For every ξ-zero copy q: `XiOrbitCofinalSelectiveCubicAdmissible q` on one fixed triple.
+  - G: Off-line divisors keep an external reflection that gives a cofinal cubic falsifier; internal reflection only on the line.
+- **F0266 Boundary-character neutrality (modular type superselection)** · ⇔1 · 1 mod · A `XiSourceModularTypeSuperselectionLaw:xiBoundaryCharacterNeutral_iff_riemannHypothesis`
+  - D: `XiBoundaryCharacterNeutral`: the boundary character of every ξ divisor is neutral.
+  - G: Divisor-level form of RH in modular-type coordinates.
+  - X: Excluded producers: positive conservative invariant quadratic (none for nonzero reflected real character); coherent prime-seam charge family on right-half copies; finite-Rees sewing of unsquared reflected affinities.
+
+### CLS · Classical criteria and arithmetic bounds (10)
+
+- **F0203 Suzuki screw function Ψ and related Suzuki criteria** · ⇔16 ⇒9 ¬⇔1 N23 · 16 mod · A `SuzukiScrewPointwiseNonnegativityCriterion:riemannHypothesis_iff_suzukiPsiPointwiseNonnegative`
+  - D: Suzuki screw function Ψ ≥ 0 pointwise (Thm 1.7); screw series bounded on a half-line (Thm 1.6); Ψ bounded below by −C e^{εt} ∀ε (or prime hinge sum ≤ smooth part + C e^{εt}); screw kernel positive (Thm 1.2); smooth-test screw form ≥ 0 (Thm 1.3); P̂ isometry (Thm 4.4) / ‖Ŝ_t‖² = 2πΨ(t) (Cor 4.3); L¹ rate subexponential; Stieltjes moment Hankel matrices (ordinary + shifted) PSD (Thm 1.8; falsifier: one finite block fails); Li–Weil form Re ≥ 0 (Cor 4.6); V₀ mass + peak conditions (Prop 5.1); shifted-ξ Hardy leakage = 0 ∀ω.
+  - G: Suzuki's screw-line / de Branges programme: Ψ(t) = −Σ_ρ (1−cos(γt))/γ²-type sums are ≥ 0 iff all γ real.
+- **F0140 Discrete Möbius–Laplace transform decay** · ⇔10 ⇒18 ¬⇒1 N4 · 14 mod · A `MobiusLaplaceCriterionFrontier:mobiusDiscreteLaplaceHalfDecay_implies_riemannHypothesis`
+  - D: |Σ μ(n)e^{−nx}| ≤ C x^{−1/2} (or ·polylog, or x^{−1/2−ε} ∀ε) as x → 0⁺; Möbius–Laplace Mellin continuation wall; strict-right / cofinal energy finite; cofinal finite-section energy bounded; cofinal Gamma–Hankel off-diagonal one-sided ceiling (even frequently); additive-triangle linear / polylog / subpower upper bound.
+  - G: Liflandsky-type Laplace criterion; decay forms also force simple critical zeros / multiplicity caps; under ¬RH the Gamma–Hankel escape cone activates.
+  - X: MobiusLiouvilleSquareDilationWall:mobiusLiouvilleSquareDilationMellinContinuationWall_iff_mobius — Liouville twist gives no easier source.
+- **F0139 Mertens function and Möbius convolutions (Littlewood)** · ⇔15 ⇒9 ¬⇒2 ∧1 N5 · 12 mod · A `MobiusMertensLittlewood:mobiusMertensAllStrictHalfPowerBound_iff_riemannHypothesis`
+  - D: M(x) = O(x^{1/2+ε}) ∀ε (also finite coprime signature form); weighted Mertens moments ∀α < 1/2; even / fourth / self (additive) convolution subpower upper bounds; palindromic reversal energy subpower (any prime-removed window); mixed additive convolution power Re ≤ C(N+1)^α with α+1 ≤ k; zeta-zero abscissa = 1/2.
+  - G: Littlewood's criterion and one-sided convolution upgrades; some forms also give simple zeros.
+- **F0008 Báez-Duarte / Nyman–Beurling distance** · ⇒15 ¬⇒3 ∧2 · 8 mod · A `BaezDuarteDistance:riemannHypothesis_of_tendsto_bdDistDiscrete`
+  - D: d_N → 0 (`bdDistDiscrete`), or one finite section below each reciprocal threshold, or finite Gram certificates, or Möbius complementary-tail energy → 0, or ‖bdGen θ‖ = θ|log θ| for one θ∈(0,1).
+  - G: L²(0,1) approximation of 1 by dilated fractional parts; off-line zero gives a uniform positive floor.
+  - X: bdDistDiscrete_floor_of_zero: under ¬RH distances bounded away from 0.
+- **F0240 Jensen polynomials / Laguerre–Pólya class of Ξ** · ⇒2 ⇒¬3 N9 · 5 mod · A `XiJensenPolynomialRiemannHypothesis:riemannHypothesis_of_splits_jensenPoly_XiC`
+  - D: All Jensen polynomials of XiC split over ℝ (hyperbolic), or XiC ∈ Laguerre–Pólya class. Falsifier: one real t with Ξ′(t)² < Ξ(t)Ξ″(t) (Laguerre margin negative; unconditional form).
+  - G: Pólya: RH ⇔ Ξ Laguerre–Pólya ⇔ all Jensen polynomials hyperbolic.
+  - X: margin ≥ 0 proved for |t| ≤ 58/5 (window positivity).
+- **F0269 Vertical modulus monotonicity of |Ξ| / square descent** · ⇔2 ⇒2 ¬⇒1 N8 · 3 mod · A `XiSquareDescentVerticalModulusConverse:riemannHypothesis_iff_xiSquareDescentVerticalModulus`
+  - D: ‖XiC(x+iy)‖ nondecreasing in y ≥ 0 for every x; or square-descent vertical modulus monotone (globally, or on the band beyond R = 218/25 given the quartet-accretive band).
+  - G: Off-line zero pairs create a vertical dip of |Ξ| between them.
+- **F0133 Li criterion (paired Li coefficients)** · ⇔5 ⇒2 ¬⇒1 · 4 mod · A `LiCriterion:riemannHypothesis_iff_forall_re_xiLiPaired_nonneg`
+  - D: Re λₙ ≥ 0 ∀n (paired `xiLiPaired`); suffices on any fixed arithmetic progression k·n; source-only forms: even-square prime–arch Li source ≥ 0, shifted prime–arch moment Chebyshev combinations ≥ 0.
+  - G: Li's criterion; off-line zeros make λₙ positive and negative infinitely often.
+  - X: not_eventually_re_xiLiPaired_neg: never eventually negative.
+- **F0222 Cayley–Chebyshev coefficients** · ⇔2 ⇒1 ¬⇒1 N1 · 1 mod · A `XiCayleyChebyshevPositiveRootCriterion:riemannHypothesis_iff_forall_xiCayleyChebyshevCoefficient_re_nonneg`
+  - D: Re(ξ Cayley–Chebyshev coefficient n) ≥ 0 ∀n; equivalently normalized filtered Gamma packets ≥ 0 ∀n.
+  - G: Li-type coefficients in Cayley–Chebyshev coordinates; an off-line zero gives a mode of modulus > 1.
+- **F0242 Re(ξ′/ξ) ≥ 0 on the right half-strip (Hadamard)** · ⇔1 ⇒1 ¬⇔1 ⇒¬1 · 2 mod · A `XiLogDerivReCriterion:riemannHypothesis_iff_re_logDeriv_xi_nonneg`
+  - D: ∀s with Re s > 1/2 (or 1/2 < Re s < 1): Re(ξ′/ξ)(s) ≥ 0. Falsifier: one s with Re s > 1/2 and Re(ξ′/ξ)(s) < 0.
+  - G: Each line-conjugate zero pair contributes a negative term only inside its off-line disk.
+  - X: proved unconditionally for |Im s| ≤ 4 and on Re s ≥ 1 − 1/(58 log(|Im s|+1/2)) (XiHadamardSharpRegion).
+- **F0189 Salem / Gonzalez–Negrín Fermi-mode exclusion** · ⇔2 · 2 mod · A `SalemFermiModeCriterion:salemFermiModeExclusion_iff_riemannHypothesis`
+  - D: `SalemFermiModeExclusion` (or integral form): no nonzero bounded solution of the Salem Fermi–Dirac integral equation for σ in (1/2, 1).
+  - G: Salem's criterion via the eta function.
+
+### CCM · Weil / explicit-formula positivity (CCM, Ward, Suzuki) (34)
+
+- **F0023 Fixed-width rectangular (two-edge) Weil family** · ⇔31 ⇒17 ¬⇒22 ∧6 N4 · 23 mod · A `CCMRectangularWeilCompleteness:riemannHypothesis_iff_rectangular_logSample_weil_nonneg`
+  - D: For one fixed width L: Re W_L(log n/2) ≥ 0 ∀n (log-sampled two-edge Weil positivity); or eventually bounded below; or norm bounded; or Re log-coefficient ≥ −C n^ε (also off a finite / half-power-thin / transverse-thin exceptional set); or negative-part (square) Dirichlet energy summable at 1+ε, abscissa ≤ 1, finite or summable channel cover abscissa ≤ 1; screw-window curvature ≥ 0 / bounded below; same for every generic smooth two-edge profile; separated source section energy bounded below.
+  - G: Under ¬RH the family oscillates two-sidedly at every power below sup(Re ρ − 1/2); negative-part abscissa = 1 + that sup.
+- **F0096 Continued ξ Ward boundary laws (four-unit / Euler-edge / Hardy saturation)** · ⇔26 ⇒16 ¬⇒2 ¬⇔1 ∧4 N14 · 12 mod · A `GammaSewnMobiusXiWardCofinalBoundaryLift:riemannHypothesis_iff_continuedXiWardFourUnitBoundaryLiftLaw`
+  - D: `ContinuedXiWardFourUnitBoundaryLiftLaw` or its Gram law; `ContinuedXiWardEulerEdgeScalarLaw` or boundary Gram law; anti-causal Möbius–Gamma–ξ Ward transport = 0 at one positive node and aperture; Ward boundary source phase cross-ratio has modulus exactly 1.
+  - G: Four-unit Schur law: cross-ratio ≤ 1 always, = 1 iff no strict-right Schwarz pair.
+- **F0130 Weil lag function / integer lag boundedness** · ⇔23 ⇒16 ¬⇒6 ∨3 ∧1 N12 · 18 mod · A `WeilLagFunctionInteger:riemannHypothesis_iff_integerLag_bddAbove`
+  - D: Weil lag function Φ bounded above (or below; one-sided suffices), on a dense set, or on the {p,q}-rationals for two primes; Φ Bohr almost periodic; ∫₀ᵀ Φ⁺ ≤ C e^{ηT} ∀η; ∫ Φ² e^{−σu} < ∞ ∀σ > 0; lag Gram kernel PSD (every arithmetic Gram matrix (Φ(log n/m)) PSD); lag pole series Re ≥ 0 on Re s > 0 (or extends analytically); integer lag bounded (above or below), ≤ sharp constant, maximised at n = 1 (explicit ψ / Mertens inequality); bounded on primes, prime powers, k-th powers or one base with clean shadows; reflection-twisted Frobenius form ≥ 0.
+  - G: Landau transfer: an off-line zero makes lags grow like p^{Re ρ − 1/2}; Φ is the explicit-formula ψ-remainder.
+  - X: not_forall_lagReflectionKernel_self_nonneg: reflection kernel not PSD unconditionally; single-base bound gives only RH ∨ infinitely many off-line copies.
+- **F0238 ξ–Hurwitz orientation vector / Weil sign (Route Q)** · ⇔17 ⇒8 ¬⇒13 ∨1 ¬⇔2 ∧2 N4 · 16 mod · A `XiHurwitzOrientationWeilSector:riemannHypothesis_iff_xiHurwitzOrientationVector_weil_nonneg`
+  - D: The canonical Hurwitz orientation vector has Weil–Hilbert quadratic ≥ 0 (equivalently vector = 0, orientation energy = 0, closest zero-energy cone boundary unique); or Weil quadratic ≥ 0 on the (exterior beyond 218/25, positive-paired) continued Cauchy algebraic core (exterior source passivity); or one convergent eventually nonnegative continued-Cauchy / separated finite-source sequence; or a cofinal nonnegative fusion of the two boundary reconstructions; all-width rectangular subpower / tropical Sonin absorption / all finite rational-Hurwitz refinements.
+  - G: Under ¬RH the orientation vector has strictly negative Weil energy and every boundary fusion is trapped in the negative cone (sharp radius E/2).
+- **F0018 Multiplicity-exact ξ Weil form: positivity / Krein split / GNS** · ⇔23 ⇒5 ∧2 N15 · 23 mod · A `XiWeilPositivityCriterion:riemannHypothesis_iff_xiWeilPolarization_nonneg`
+  - D: Re W(F,F) ≥ 0 for all square-summable (or all entire) F, or only on: the span of off-strip kernels, regular Cauchy diagonals, one regular Cauchy diagonal at a time, the source-only rank-one prime–arch divided difference, theta-eigen Fourier sums; two-channel resolvent kernel PSD; aperture two-channel energies ≥ 0. Equivalently: divisor-odd sector null; W invariant under the parity twist J; pair-difference / deviation-weighted energy = 0 for all F; total deviation mass = 0; reflection-even energy dominates odd; W a sum of squares (GNS); Hermitian pair = Weil pair at the prime-2 test.
+  - G: W(F,F) = Σ_q |F(t_q)|² under RH; the negative Krein sector is spanned by off-line pairs; the even part is unconditionally ≥ 0.
+  - X: xiWeilPairTerm_primeTest: polarization blind at the prime test; the evaluation domain is built on ξ-zero copies, so only the source-only one-Cauchy form is arithmetic.
+- **F0032 Sharp dyadic prime-window (von Koch) gates** · ⇔5 ⇒25 ¬⇒4 ∧3 N2 · 15 mod · A `CCMGeneralizedVonKoch:riemannHypothesis_iff_exists_dyadicWeightedPrimeWindowSubpowerUpper`
+  - D: ∀ε>0 eventually: weighted dyadic prime window ≤ 2(1−1/√2)√n + C n^ε (also only at perfect squares, prime-only window, or Chebyshev-error increment ≤ C n^ε); or positive-excess (square) energy Dirichlet-summable at 1+ε or at 1 / abscissa ≤ 1; or admissible positive correction abscissa ≤ 1; `ChebyshevErrorPowerSpectrum 0`; completed passive response ≥ 0; diagonal right-slope lower bounds.
+  - G: One-sided subpower bound on dyadic ψ-windows; under ¬RH the negative part has abscissa exactly 1 + sup(Re ρ − 1/2).
+- **F0027 CCM first-clock literal published source** · ⇔9 ⇒4 ¬⇒3 N18 · 7 mod · A `CCMFirstClockTailLowerBoundCompleteness:ccmFirstClockPublishedSourceEventuallyBoundedBelow_iff_rh`
+  - D: One of: first-clock source eventually bounded below; reduced bad/good mass deficit eventually bounded above; scaled source asymptotically Bohr almost periodic; prime half-wave dominance; reduced prime-power tower dominance; all completed Markov orientations.
+  - G: Under ¬RH the reduced mass deficit exceeds every ceiling on every tail.
+- **F0038 Restricted-Weil polar ground energy / two-pole compression** · ⇔12 ⇒7 ¬⇒5 ∨3 ¬⇔1 ∧2 N3 · 14 mod · A `CCMRestrictedWeilPolarMultiplierCriterion:riemannHypothesis_iff_polarGroundEnergy_nonneg`
+  - D: ∀ aperture a: polar ground energy ≥ 0 (or > 0, or ≥ −C e^{εa}); equivalently |pole cross| ≤ pole diagonal for the two real-exponential poles; even/odd parity pole tests ≥ 0 (odd tail reducible to integer or prime-power entries); log-Chebyshev deficit primitive = O(e^{t/2}); literal prime–Gamma pole inequality. Falsifier: one negative smooth polar-multiplier test.
+  - G: Bombieri–Yoshida-type constrained Weil form; the only failure pattern is one zero aperture, positive below and negative above.
+- **F0007 Holomorphy of an explicit prime/Weil source right of Re s = 1** · ⇔18 ⇒5 ¬⇔1 ∧3 N3 · 14 mod · A `CCMRectangularObservablePoleTomography:riemannHypothesis_iff_observableTailContinuation_analytic_rightOne`
+  - D: One explicit Dirichlet source is analytic on Re s > 1 (BV prime window, inverse-tilted dyadic, sharp dyadic prime window, simple prime divisor, fixed-width prime–Gamma tail, rectangular Weil observable/full observable); or regularized critical-Mellin defect analytic on Re u > −1/2; equivalently every simple pole lies on the line.
+  - G: Each source is meromorphic with simple poles exactly at shifted off-line ξ-zeros (divisor tomography); holomorphy = no off-line zero.
+  - X: source identity valid only for Re s > 3/2; continuation is the RH content.
+- **F0034 Restricted-Weil negative floor growth** · ⇔9 ⇒1 ¬⇒15 ¬⇔1 ∧1 N1 · 6 mod · A `CCMRestrictedWeilFloorGrowthSpectrum:riemannHypothesis_iff_restrictedWeilFloor_subpower`
+  - D: Negative restricted-Weil floor η_n (or inward-regularized floor) is subpower: ∀ε, η_n = O(n^ε); equivalently Dirichlet abscissa ≤ 1, aperture-subexponential, aperture log-growth exponent = 0.
+  - G: Under ¬RH the floor exceeds every power below sup(Re ρ − 1/2) cofinally; abscissa = 1 + that sup.
+- **F0275 Hardy critical-fiber Poisson margin / free-sector passivity** · ⇔15 ∧6 N4 · 8 mod · A `XiWeilHardyFiberDeflatedAntiHerglotz:riemannHypothesis_iff_fixedCriticalFiberDeflatedUpperAntiHerglotz`
+  - D: For one critical fiber ρ (Hardy supplies one unconditionally): fiber-deflated anti-Herglotz passivity; prime–Gamma Poisson margin (all frequencies, only above 218/25, or only positive high frequency; one or two conjugate channels); deflated source energy ≥ 0; positive high vertical log-growth of the deflated canonical product. Or: critical-locus Poisson margin (above verified height 233/20); off-critical relative resolvent anti-Herglotz / positive-frequency / leakage-cone (interior) passivity above 233/20.
+  - G: Deleting a critical fiber leaves a trace that is passive exactly when no off-critical zero exists.
+- **F0101 Gaussian Weil positivity (Gaussian test functions)** · ⇔17 ⇒3 N4 · 10 mod · A `GaussianXiLogDerivativeGrowth:gaussianArithmeticExplicitFormula_nonnegative_iff_riemannHypothesis`
+  - D: Canonical symmetric Gaussian zero sum ≥ 0 for all widths/centres (arithmetic explicit-formula side identified); or unboundedly many good widths (arithmetic, prime-energy, prime-discrepancy, Suzuki-energy budgets); or coherent Gaussian kernel PSD on finite spans.
+  - G: Weil positivity restricted to Gaussians; the prime side is explicit via Gauss's digamma transform.
+- **F0173 Reciprocal-atom polynomial test form Q₀** · ⇔8 ⇒8 ¬⇒1 N2 · 4 mod · A `ReciprocalAtomPolynomialApproximation:riemannHypothesis_iff_forall_polynomial_xiQZero_nonneg`
+  - D: Re Q₀(p) ≥ 0 for every real polynomial test p (also with a finite boundary ideal, one-point / Uvarov kernel, finite exterior channel or summable exterior boundary measure added); or a globally positive repair by an atom-nonfeeding / atom-local / isolator-killing / hard-edge counterterm.
+  - G: Atom isolators at reciprocal-square ξ coordinates detect off-line zeros; counterterms that do not feed atoms cannot hide them.
+  - X: counterterm variants are RH-transparent (no easier).
+- **F0024 CCM-FU Suzuki checkpoint / affine mixture bounds** · ⇔8 ⇒2 ¬⇒1 ∧4 N3 · 10 mod · A `CCMFUSuzukiCheckpointAffineReduction:ccmFUSuzukiCanonicalCheckpointAffineTailBound_iff_and_riemannHypothesis`
+  - D: One of: `CCMFUSuzukiCanonicalCheckpointAffineTailBound`; checkpoint affine mixture bound; central Xi-screw codiagonal or positive mixture bound; delayed-charge transform bound; prime-only polar action bound; remainder / Mertens-deviation variation action bound; source-adaptive positive log-chord uniformly bounded.
+  - G: Uniform bound on the completed Suzuki checkpoint current; under ¬RH it exceeds every ceiling cofinally.
+  - X: exists_suzukiCheckpointCriticalProperPrimePowerAbsoluteVariation_uniform_bound: prime-power sector harmless; prime-only sector carries RH.
+- **F0019 Critical-Mellin completed error / Guinand–Weil third grade** · ⇒11 ¬⇒4 ∧2 · 7 mod · A `CCMGuinandWeilThirdGradeSubcubicCompleteness:riemannHypothesis_of_subcubic_criticalMellinCompletedError`
+  - D: One of: |completed critical-Mellin error(h)| ≤ C h^α with α < 3; completed-error differences ≤ C n^ε; positive-variation (square) energy summable at 1+ε or at 1; cumulative third-grade source bounded; third-grade rate window converges; Cesàro linear bound; anchored-moment (tail) bound; analytic extension of the regularized critical-Mellin defect across the third-grade half-plane.
+  - G: Under ¬RH the completed error escapes every subcubic envelope and the third-grade source every bound.
+- **F0272 Ward edge energy / mass quantization (8π / 4π Gram budgets)** · ⇔13 ¬⇒1 ¬⇔1 ∧1 · 11 mod · A `XiWardEdgeEnergyPhaseQuantizationUniversalityLaw:riemannHypothesis_iff_xiWardEdgeQuadEnergy_eq_zero`
+  - D: Continued ξ Ward edge quadratic energy = 0 (budget law at any 0 ≤ c ≤ 8π, closed or sharp); Gram-term sum over right-upper copy pairs ≤ c (0 ≤ c ≤ 4π); edge measure = 0; anti-causal Ward edge mass on the line = 0; every (nonpositive) integer window mass = 0; Krein weighted transverse index = 0; five-shift Euler–Gamma windowed Krein charge = 0; fixed prime–Gamma secant reflection-difference energy / fundamental-symmetry gap = 0.
+  - G: Edge energy is quantized: 0 on RH, > 8π off RH; no intermediate phase.
+  - X: Windowed holomorphic Weil pair is prime-blind; coefficient-faithful Hermitian/source identification of the five-shift charge is RH itself; weighted-coupling no-go on the transverse mass shell.
+- **F0040 Unit-Riesz critical Chebyshev resolvent** · ⇔4 ⇒3 N7 · 3 mod · A `CCMUnitRieszSuzukiGreenProducerClassification:riemannHypothesis_iff_unitRieszCriticalResolventBounded`
+  - D: Critical-Mellin Chebyshev resolvent source bounded on t ≥ 0 (or at t = log N); or completed outgoing profile ≤ pole-packet profile ∀N ≥ 2, u > 0; or completed outgoing energy bounded.
+  - G: Resolvent of the Chebyshev error at the critical line stays bounded iff no off-line pole.
+- **F0274 Separated prime–Gamma Cauchy packet source energy** · ⇔7 ¬⇔3 ∧3 N1 · 3 mod · A `XiWeilSpectralFoldIndexConservation:riemannHypothesis_iff_forall_xiSeparatedPacket_sourceEnergy_nonnegative`
+  - D: Every pairwise-separated continued Cauchy packet P has source energy ≥ 0; or no 1-packet Weil Gram is negative; or every rank-2 packet Gram det ≥ 0 (or against one fixed positive reference packet: det ≥ 0 / reflected Cauchy–Schwarz); or fixed-fiber sampling floor |fiber|·|P(ρ₀)|² ≤ source energy. Falsify: one finite packet with negative source energy, or a literal source Lorentzian plane.
+  - G: Source energy is an explicit finite prime–Gamma/Cauchy expression; a negative value is a finite certificate of ¬RH.
+- **F0201 Suzuki divisor-free formation coordinates** · ⇔7 ⇒1 ∧4 N1 · 11 mod · A `SuzukiCompletedFormationEnergy:riemannHypothesis_iff_suzukiCompletedFormationEnergyIncrementEventuallyBounded`
+  - D: Eventually bounded: corrected scale-connection action; completed formation energy increment; formation innovation; signed / aligned-Gamma corrected transition core; fixed-affine residual (negative sign); completed source observer-jet linear action.
+  - G: Divisor-free properness coordinates; bounded formation production iff no off-line zero.
+  - X: suzukiFiniteContact_algebraicEndpointNoGo: contact order m ≥ 2 packets excluded; harmonic–Riesz clock first differences unbounded.
+- **F0031 Restricted-Weil first-contact alternative** · ¬⇒1 ∨6 · 4 mod · A `CCMRestrictedWeilPoleHingeFirstContact:riemannHypothesis_or_exists_ccmPoleCompression_exact_first_wall`
+  - D: Exclude the first-contact state: no aperture a with zero restricted-Weil ground energy and strict positivity below a (physical source kernel / translation saturation / exact first wall |pole cross| = pole diagonal).
+  - G: RH or a unique first zero aperture; failure of RH produces a physical zero-energy state at first contact.
+  - X: ccmFirstContact_no_narrow_translate: first-contact state is not a translate of a narrower admissible state.
+- **F0036 Rational-adelic fixed-prime fibre identities** · ⇔6 · 4 mod · A `CCMRationalAdelicCompletedXiFixedCoronaPolarization:forall_ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_riemannHypothesis`
+  - D: At one fixed prime p, for every ξ support point ρ: same-fibre norm identity or source-dagger identity; or reflected Gaussian physical defect class = 0.
+  - G: Hodge-mate coefficient vanishes exactly on critical-line support.
+  - X: quantifies over ξ support points.
+- **F0049 Sharp cancelled source parity collision** · ⇒5 · 1 mod · A `CCMSharpPrimeWindowParityCollision:riemannHypothesis_of_rhLadder_of_dyadicSharpPrimeCancelledSource_rightZeroFree`
+  - D: `RHLadder k` (k ≥ 1) together with: sharp-prime cancelled source has even order on the collision band, or is an analytic square there, or is zero-free on the right.
+  - G: Source parity collides with the first ξ parity rung.
+- **F0073 Euler-pole completed Suzuki wall nonexpansive** · ⇔3 ¬⇔1 ∧1 · 3 mod · A `EulerPoleFourUnitCompletedWall:eulerPoleCompletedWallNonexpansive_iff_riemannHypothesis`
+  - D: `EulerPoleCompletedWallNonexpansive`: ‖completed unit-Riesz Cauchy wall(N+2)‖² ≤ ‖Euler-pole boundary profile‖² = 4 ∀N; falsifier: one N with strict excess.
+  - G: Incoming Euler-pole budget is exactly 4.
+- **F0039 CCM global Weil / two-pole passivity** · ⇔4 · 2 mod · A `CCMUnconditionalFoundation:ccmGlobalWeilPassivity_iff_riemannHypothesis`
+  - D: `CCMGlobalWeilPassivity`, `CCMRegularTwoPolePassivity`, or `CCMContinuedTwoPoleSourcePassivity`.
+  - G: Rank-two Cauchy passivity of the continued prime–archimedean source.
+- **F0105 Prime Ward exterior coefficient-faithful source** · ⇔1 ⇒1 N2 · 1 mod · A `HedenmalmCoefficientFaithfulExteriorSourceContour:xiPrimeWardExteriorCoefficientFaithfulSourceSubquantum_iff_riemannHypothesis`
+  - D: `XiPrimeWardExteriorCoefficientFaithfulSourceSubquantum` (fixed prime, rational rectangle).
+  - G: Exterior Cayley–Abel packet energy vanishes under RH.
+- **F0176 Selected Laplace boundary-minus-bulk heat functional** · ⇔4 · 4 mod · A `RiemannXiSuzukiPointwiseChebyshevLogAverageLaplaceBoundaryHeatSelectedScalar:tendsto_quantitativeSelectedLaplaceBoundarySubArea_im_zero_iff_rh`
+  - D: Canonical expanding arithmetic boundary-minus-bulk Laplace functional → 0 (or its imaginary part / near-edge decomposed / vertical-minus-bulk scalar → 0).
+  - G: Pointwise Chebyshev log-average Laplace boundary heat; nonnegative arithmetic scalar.
+- **F0035 Prolate Rayleigh ground lock** · ⇔1 ¬⇒1 N1 · 1 mod · A `CCMProlateRayleighGroundLock:CCMProlateRayleighGroundData.riemannHypothesis_iff_rayleighExcess_tendsto_zero`
+  - D: For ground data D: Rayleigh excess D.rayleighExcess n → 0.
+  - G: Under ¬RH one negative restricted-Weil floor persists: excess ≥ δ > 0 eventually.
+- **F0205 Suzuki Cartan germ / Stokes–Cartan Ward observable** · ⇔3 · 2 mod · A `SuzukiNonabelianCartanWardCofinalEquivalence:riemannHypothesis_iff_suzukiCompletedStokesCartanWardObservableBounded`
+  - D: `SuzukiCompletedStokesCartanWardObservableBounded`; or, for a cubic-controlled local Cartan germ φ, the Ward observable is bounded.
+  - G: Nonabelian Suzuki Ward endpoint.
+  - X: all_suzukiLocalCartanGermWardObservables_bounded_iff_riemannHypothesis: no cubic-controlled germ makes it easier.
+- **F0223 Cayley–Ward radial visibility bounded** · ⇔1 ∧1 N1 · 1 mod · A `XiCayleyWardDynamicalVisibility:xiCayleyWardRadialVisibility_bounded_iff_rh`
+  - D: ∃K ∀n: Cayley–Ward radial visibility(n) ≤ K.
+  - G: One off-line quartet contributes at least its height–order visibility.
+- **F0029 Upper-half-plane extension of ξ′/ξ; Xi-screw exponential moments** · ⇒2 · 1 mod · A `CCMFirstClockLandauCompleteness:riemannHypothesis_of_upper_logDeriv_extension`
+  - D: Analytic A on Im w > 1/2 agreeing with logDeriv XiC there; or `CCMXiScrewAllExponentialMoments`.
+  - G: Off-line zeros are simple poles of ξ′/ξ in the upper region.
+- **F0037 Restricted-Weil canonical ground head** · ⇔1 ⇒1 · 2 mod · A `CCMRestrictedWeilCanonicalGroundRemainderNumericalRange:ccmRestrictedWeilCanonicalGroundHead_remainderNumericalLowerBound_iff_riemannHypothesis`
+  - D: ∀ aperture a, eventually: ‖form remainder(canonical ground head_n)‖ ≤ ‖head_n‖; or canonical numerical-range lower bound.
+  - G: Nonexpansion of the compressed remainder on actual heads.
+- **F0016 Exterior cosine-measure gauge positivity** · ⇒1 · 1 mod · A `CCMActualHeadExteriorCosineMeasureGauge:riemannHypothesis_of_exists_nonnegative_correctedExteriorMeasureGaugeRepresentative`
+  - D: For every Suzuki aperture a: a pointwise-nonnegative representative (μ, ν supported ≥ 2a) of the corrected exterior-measure gauge class.
+  - G: Positive exterior measure excludes negative Weil contributions of off-line zeros.
+- **F0066 Weil–Hilbert positivity on the lower prime–Gamma Cauchy subspace** · ⇒1 · 1 mod · A `DeningerPrimeGammaLowerCauchyPositivity:riemannHypothesis_of_deningerPrimeGammaLowerCauchy_nonnegative`
+  - D: 0 ≤ `xiWeilHilbertQuadratic v` for every v in the lower prime–Gamma Cauchy algebraic subspace.
+  - G: Lower Cauchy atoms approximate all Weil test vectors.
+- **F0080 Weil positivity modulo a finite-rank counterterm** · ⇒1 · 1 mod · A `FiniteRankCountertermXiVisibility:riemannHypothesis_of_repairedXiWeil_nonneg_of_signTests_in_ker`
+  - D: A finite quadratic correction B∘L (L of finite rank r) with Re W(F,F) + B(L F) ≥ 0 for all square-summable F and every off-real ξ sign test in ker L.
+  - G: Finite-rank repairs cannot hide an off-line zero.
+
+### PGM · Prime–Gamma and Möbius sources (34)
+
+- **F0124 ξ-mass shifted family: height-uniform line bounds (Route T)** · ⇔57 ⇒1 ¬⇒3 ¬⇔3 ∧4 N4 · 54 mod · A `XiMassPrimeGradedOpenCore:riemannHypothesis_iff_not_xiMassCanonicalBottomPrimeIntegral_norm_unbounded`
+  - D: For the ξ-mass shifted family (mass a ≥ 1/2): one of the following is bounded uniformly in height on one vertical line Re = σ > 0 — the mass-shifted trace; a jet-modified trace / jet atom series / jet bottom source or prime integral / retreat or window sum; the (canonical) bottom prime integral; prime-masked (L¹, boundary, dilation-orbit, adjacent) or valuation-filtered traces; half-density / full adjacent prime-connection currents; semigroup / oblique high-pass traces; aperture-gap trace; critical cone pairings (centered atom, cosine, Dirichlet, true prime, prime atom, discrete remainder, outgoing flux, endpoint cone, Bessel cone / quadrature defect, Deninger cross current, timelike glancing, Levinson zero-jet / prime-secant / symmetric reciprocal, true-prime depth packets); global prime-tail Green pairing or Green–Stokes current; half-density Weil pairing; moving / subcaustic quadrature defect; type-zero moving prime cone; theta-quantile resolvent / Kerr–Newman Green current. Also: cubic vertical Hilbert energy → 0; mass-shifted energy = 0.
+  - G: Off-line zeros make the ξ-mass currents escape every bound on the line; under ¬RH the canonical bottom prime integral is cofinally unbounded.
+  - X: finite prime-power subtractions are harmless (uniform infinite tail = RH); zero-charge packets unconditionally bounded; Levinson reciprocal tuning erases every prime in the aperture.
+- **F0020 Continued prime–archimedean source: anti-Herglotz / accretivity / bounds** · ⇔31 ⇒11 ¬⇒4 ∧4 N19 · 15 mod · A `PrimeArchEndpointFrequencyAccretivity:continuedPrimeArchPositiveFrequencyAbove_iff_riemannHypothesis`
+  - D: For 0 < Im z < 1/2 (ζ(1/2+iz) ≠ 0): Im T(z) ≤ 0 for the continued prime–arch relative trace T — everywhere, or only at high positive frequency Re z > R (R ∈ {4, 161/40, 87/10, 218/25, 233/20, Platt–Trudgian radius}); or Im T bounded above there; equivalently completed prime–Gamma left-half-strip accretive / bounded below / locally bounded below (also at Gaussian-rational points); reciprocal-square upper sector ≥ 0; Deninger divisor upper anti-Herglotz.
+  - G: Off-line zeros are poles of T with the wrong sign; under ¬RH Im T exceeds every ceiling at high frequency.
+  - X: proved unconditionally for |Re z| ≤ 161/40 (PrimeArchConnesBornWittenKMSMaster) and |Re z| ≤ 87/10 (PrimeArchOffLineQuartetKMSMaster); RH content is the tail beyond.
+- **F0245 Physical prime-aperture theta–Abel energy (D2 / Q sources)** · ⇔25 ⇒6 ¬⇒5 ¬⇔9 N8 · 13 mod · A `XiPhysicalPrimeApertureThetaAbelEnergyPrimeSourceCriterion:unitPhysicalThetaAbelEnergyCofinalCorrectedPrimeEventuallyBoundedBelow_iff_riemannHypothesis`
+  - D: For the physical theta–Abel energy (parameters L, A, c; unit values suffice): Weil polarization of the log-sampled two-edge family ≥ 0; cofinal continued-source / corrected-prime / symmetric-radius / canonical selected contours eventually bounded below; D2 Gaussian-rational windows (eventually) bounded below; arithmetic contour array asymptotically nonnegative; prime log-mesh locally bounded below; every cofinal schedule asymptotically nonnegative; one generic smooth probe with Landau response bounded below. Falsifier forms: cofinal killer tails / packets or eventually negative witnesses exist.
+  - G: Physical-energy scalarization of the continued prime–arch source; under ¬RH contours fall below every floor at arbitrarily late scales.
+- **F0153 Pure-prime log-height defect D2 (Gaussian-rational points)** · ⇔12 ⇒2 ¬⇒9 ¬⇔4 ⇒¬3 N2 · 7 mod · A `PrimeArchFourthTracePurePrimeTail:primeArchLogHeightDefectGaussianRatPositiveFrequencyAboveBoundedBelow_twoHundredThirtyThree_twentieths_iff_rh`
+  - D: At Gaussian-rational q with 0 < Re q < 1/2, Im q > threshold (233/20, 58289/5000, order-23 thresholds): `primeArchLogHeightDefect` bounded below; equivalently infinite prime flux ≥ −L − (1/2)log(height) (guarded/unguarded); admissible windows bounded below. Falsifier: a localized sequence of such points with defect → −∞.
+  - G: Canonical prime-only scalar core after fourth-trace and archimedean discharge.
+  - X: PrimeArchLogHeightDefectBoundaryInteriorNoGo: boundary-only contour bridge is itself RH (boundary-blind windows ⇔ ¬RH).
+- **F0232 Heat–Cassini Wold residual (Route T / T2)** · ⇔14 ⇒1 N7 · 13 mod · A `XiHeatCassiniWoldResidualMertensInverseAbel:riemannHypothesis_iff_woldNatResidualAllStrictHalfPowerRate`
+  - D: Natural Wold residual strict-half decay; sub-half residual absolute convergence; positive-ray Borel terminal weight → 0 throughout 0 < y < 1/2 (finite landing form); natural width / √-mean / one-sided √-mean spectrum at 0; natural Abel continuation regular at strict-right points; required residual (Borel-rotated) continuation continuous at ρ − 1 for right-half zeros; cofinal natural square energies below 3/4; pure Wold half-density line bound.
+  - G: Wold residual of the heat–Cassini source; off-line zeros force residues / non-decay.
+  - X: forced off-line residue prevents continuity (not_continuousAt_…); all finite polynomial graph norms compatible with divergence.
+- **F0022 Fixed-width prime–Gamma tail source sign / negative mass** · ⇔6 ¬⇒3 ∧8 N1 · 5 mod · A `CCMPrimeGammaSourceEnergySpectrum:riemannHypothesis_iff_primeGammaLogCoefficient_tail_nonneg`
+  - D: For fixed L,N: prime–Gamma log coefficients ≥ 0 for n ≥ N; or negative-part Dirichlet abscissa ≤ 1 (= −∞); or cumulative negative mass = O(X^{1+ε}); prime–polar source variant.
+  - G: Under ¬RH the negative-part abscissa and cumulative growth order are exactly 1 + sup(Re ρ − 1/2).
+- **F0109 Squarefree first-trace polar observable / curvature-normalized seam-flux budget** · ⇔11 ⇒1 ¬⇒3 N1 · 6 mod · A `HedenmalmStokesCurvatureNormalizedFluxBudget:squarefreeFirstTraceRightDissipative_iff_riemannHypothesis`
+  - D: Squarefree first-trace sharp polar finite part regular on Re s > 1 (dyadic width log 2 suffices); `SquarefreeFirstTraceRightDissipative`; curvature-normalized right (tail) budget; positive-frequency curvature-normalized tail bounded above beyond height 233/20 (or 218/25 on the verified central band).
+  - G: Fourth-trace verification localizes the RH content to the high-frequency tail; under ¬RH the seam flux exceeds every ceiling there.
+- **F0145 Möbius–theta adaptive prime-normal Green provenance** · ⇔11 ¬⇔1 · 7 mod · A `MobiusThetaAdaptivePrimeNormalHorizonIntertwiner:adaptivePrimeNormalHorizonGreenProvenance_eq_zero_iff_riemannHypothesis`
+  - D: At a fixed prime: adaptive Green codiagonal / resolved line comparison = 0 on every ξ-zero copy; global reflected Green record codiagonal = 0; horizon Green provenance / incidence / resolved class = 0; frozen = adaptive source work on all copies; reflection-oddness of provenance.
+  - G: One global source-built column detects every horizontal displacement.
+  - X: adaptivePrimeNormalReflectedHorizonGreenProvenance_reflect: provenance is reflection-even, so oddness is not free; horizon intertwiner not bounded below.
+- **F0187 Route-P primitive Burnol–Deninger four-leg orientation defect** · ⇔6 ¬⇒1 ¬⇔3 · 3 mod · A `RoutePPrimitiveBurnolDeningerFiniteOrientationWitness:xiWeilHilbertQuadratic_fourLegOrientationDefectJet_nonneg_iff_riemannHypothesis`
+  - D: For nonzero amplitude A: four-leg orientation defect jet = 0 (or its Weil–Hilbert quadratic ≥ 0) at one / every finite index; finite lower fundamental symmetry gap = 0; four-leg Hodge mate = upper squared Cauchy jet. Falsifier: one finite index n with Weil–Hilbert quadratic of the n-th finite defect jet < 0.
+  - G: Off RH every finite member of the explicit mixed prime–Gamma sequence has strictly negative Weil energy.
+- **F0070 Paired-eta top-prefix flux (finite eta arithmetic)** · ⇔6 ⇒1 ¬⇒1 N1 · 6 mod · A `EtaEnergyLeadingFlux:riemannHypothesis_iff_all_topPrefixFiniteEnergyLeadingFlux_firstMoment_summable`
+  - D: Universal critical first-moment summability of the isolated leading finite-eta energy flux (or its leading-kernel integral); or no persistent positive top-prefix amplitude difference.
+  - G: Finite paired-eta fluxes converge to the heat detector; an off-line zero leaves a persistent positive signal.
+- **F0072 Euler-deletion Möbius current at each zero** · ⇔6 ⇒3 · 5 mod · A `EulerDeletionMobiusCurrentEscape:riemannHypothesis_iff_mobius_current_bounded`
+  - D: ∀ nontrivial zero ρ: Re sourceCurrent_N(ρ) bounded (or cofinally bounded, cofinally ≤ B log^q N, cofinally ≤ B N^ε; tapered/averaged current); or modulus-two reflected current = 0 at every zero.
+  - G: Literal Möbius currents at a zero stay small iff Re ρ = 1/2.
+  - X: quantifies over zeta zeros.
+- **F0144 Möbius–Gamma–ξ coupled-error singular graph debt / four-unit wall** · ⇔4 ⇒1 ¬⇒2 ∧2 · 5 mod · A `MobiusGammaXiCoupledErrorSingularGraphGlobalWall:mobiusGammaXiCoupledErrorSingularGraphDebt_eq_zero_iff_rh`
+  - D: Singular graph debt = 0; `MobiusGammaXiFourUnitOperatorNormTransport`; completed anti-causal Ward response at the node 1/2 = 0; two-node graph-normal mass boundary positivity ∀t > 0; fixed-four PSD walls for every u with Re uᵢ ≥ 0.
+  - G: Under ¬RH the universal graph excess and the Ward response at 1/2 are strictly positive.
+- **F0025 Signed Möbius–divisor / Selberg √-Abel actions** · ⇔5 ⇒2 ∧1 · 7 mod · A `CCMFUSuzukiMobiusDivisorAbelProducer:riemannHypothesis_iff_mobiusDivisorSquareRootAbelBounded`
+  - D: Uniform boundedness (or subpower growth) of: `MobiusDivisorSquareRootAbelBounded`; `CoherentSelbergSquareRootAbelBounded`; `CompletedPrimePolarGammaUnitApertureBounded`.
+  - G: Half-order Abel means of signed arithmetic sources stay bounded iff no pole right of 1/2.
+- **F0188 SP-E / Route-P history linear floor and outgoing balances** · ⇔5 ∨1 N2 · 6 mod · A `SPEQuantileRieszRoutePLinearFloorCriterion:riemannHypothesis_iff_routeP_history_eventual_linear_floor`
+  - D: ∃B ≥ 0 ∀K ≥ 3: normalized-variance defect(K) ≥ −B(K+2) (eventual linear floor of the physical Route-P history); completed quantile–Riesz transport bounded; completed quarter-dilation balance bounded; Eulerian completed outgoing discrepancy bounded.
+  - G: Under ¬RH no fixed linear compensator bounds the history below; under RH one does.
+  - X: history has unconditional negative linear excursions.
+- **F0120 Theta–Möbius prime-normal Ward / packet bounds (Route P physical)** · ⇔7 · 7 mod · A `HedenmalmThetaMobiusPrimeNormalWardContract:thetaMobiusPrimeNormalWardBound_iff_riemannHypothesis`
+  - D: `ThetaMobiusPrimeNormalWardBound`; adaptive codiagonal packet output bound; signed scalar Möbius reader output bound; every half-density diagonal Hilbert–Schmidt; completed-response Ward bound; Hardy–Green residual four-unit bound; fixed reflection incidence Ward bound.
+  - G: Physical Route-P producer contract: uniform bounds on literal prime-normal outputs.
+  - X: thetaPhysicalEndpointCompletedResponseCopyIncidenceWardBound_iff_riemannHypothesis: every nonsymmetric fixed incidence is RH-equivalent (no gain).
+- **F0134 Li even-cross prime–Gamma balances (LI)** · ⇔4 ⇒1 N2 · 3 mod · A `LiEvenSquarePrimeGammaCrossBalanceCriterion:riemannHypothesis_iff_liEvenPrimeGammaCrossBalanceNonnegative`
+  - D: `LiEvenPrimeGammaCrossBalanceNonnegative` (fixed Chebyshev prime–Gamma cross balances ≥ 0); localized Stieltjes heat source ≥ 0; heat differential Fₙ″ − Fₙ′/4 ≥ 0; completed Abel clock ≥ 0; no interior zero of the adjacent even-cross current on (0,1/4].
+  - G: Explicit prime–Gamma forms of Li-type positivity.
+- **F0137 Canonical prime-shift residue graph closability** · ⇔3 ∨1 ¬⇔1 ∧2 · 3 mod · A `MarcinkiewiczPrimeTailBanach:canonicalPrimeShiftResidue_graph_status`
+  - D: `IsClosableMarcinkiewicz residueDomain residueFunctional` (Marcinkiewicz prime-tail Banach setting).
+  - G: Residue functional is zero under RH; no nontrivial closed branch otherwise.
+- **F0107 Hedenmalm critical-feature prime–Gamma budget / Ward–Green feature trace** · ⇔6 · 4 mod · A `HedenmalmCriticalFeatureLatticePrimeGammaBudget:primeGammaOffLineLatticeBudget_eq_zero_iff_rh`
+  - D: Off-line excess of a corrected critical-feature channel = 0 (or lattice budget = 0); positive-shift vertical square regularity; five-shift Ward–Green feature trace = 0; off-line feature energy trace = 0 (critical-line projection exhausts feature energy).
+  - G: Feature channels see exactly the off-line part of the prime–Gamma current.
+- **F0138 Möbius boundary sources (Chowla, Gibbs, large-prime, aperture)** · ⇒6 · 5 mod · A `MobiusAdditiveTriangleChowlaFrontier:mobiusAdditiveStrictOffDiagonalSubpowerUpperBound_implies_riemannHypothesis`
+  - D: One of: Möbius additive-lattice subpower evaluation (delocalization); binary-Chowla strict off-diagonal subpower (or linear·polylog) upper bound; positive Gibbs boundary-mixing law; zero/one-large-prime boundary all-strict-half bound; canonical finite-prime-aperture second-Cesàro subpower upper bound.
+  - G: Aggregated Möbius correlation cancellation forces M(x) = O(x^{1/2+ε}); Chowla forms also cap multiplicities.
+- **F0071 Euler-deletion Möbius source energy (cofinal ceilings)** · ⇒5 · 4 mod · A `EulerDeletionSignedResidueCovariance:riemannHypothesis_of_cofinally_log_bounded_energy`
+  - D: Cofinally: primitive energy, modular Möbius approximant norm², complete signed cross sum, signed residue covariance energy, or two-log-clock source projection ≤ B·(log N)^q (or ≤ B·N^ε ∀ε).
+  - G: Deletion of Euler factors turns 1/ζ into signed Möbius currents; polylog energy forbids off-line growth.
+  - X: stretched_rate: unconditional stretched-exponential ceiling known; target is polylog/subpower.
+- **F0083 Gamma-six prime–archimedean contour subexponentiality** · ⇔5 · 4 mod · A `FrankensteinGammaSixGuinandWeilContourCarrier:riemannHypothesis_iff_forall_sourceHorizontalGammaSixSymmetricPrimeArchContourSubexponential`
+  - D: Gamma-six symmetric prime–arch contour integrals subexponential for all admissible (R,c) (or only the high-height tail beyond 243/20); strip linear-flow source currents subexponential at all (integer) heights; all two-prime flowed traces subexponential.
+  - G: Off-line zeros are expanding modes of the Gamma-six source pencil.
+  - X: not_subexponential_finiteExponentialPencil_of_expanding_mode.
+- **F0086 Route-P matrix-complete boundary restriction** · ⇔3 ⇒1 N1 · 3 mod · A `FrankensteinMatrixCompleteBoundaryRestriction:routePMatrixCompleteBoundaryRestrictionLaw_iff_riemannHypothesis`
+  - D: `RoutePMatrixCompleteBoundaryRestrictionLaw`.
+  - G: Matrix-complete restriction of the paired prime–Gamma boundary.
+  - X: no_universal_gramTrace_le_coherentNormSq: no universal Gram-trace-to-coherent-norm passage.
+- **F0048 Completed prime–Gamma odd log-derivative polynomial parity** · ⇒3 · 2 mod · A `CompletedPrimeGammaMovingPolynomialParity:riemannHypothesis_of_movingPolynomialFarRight_evenFactorization`
+  - D: `CompletedOddLogDerivPolynomialRightEvenFactorization` (with far-right positivity or far-right moment asymptotic).
+  - G: Even factorization of moving odd log-derivative polynomials forces line zeros.
+- **F0142 Route-L cofinal cubic signed energy** · ⇒3 · 1 mod · A `MobiusCofinalCubicEnergyCriterion:riemannHypothesis_of_routeLCanonicalCubicEnergyBounded`
+  - D: `RouteLCofinalCubicEnergyBounded` (or canonical countable version, or frequently bounded returns).
+  - G: Cofinal literal cubic signed bounds exclude off-line zeros (Fatou subsequence).
+- **F0147 Möbius–theta paracyclic null homology / dagger boundary class** · ⇔3 · 2 mod · A `MobiusThetaPhysicalParacyclicSourceNullHomology:ccmMobiusThetaEveryPhysicalDefectSourceNullHomologous_iff_riemannHypothesis`
+  - D: Every physical defect source null-homologous (`CCMMobiusThetaEveryPhysicalDefectSourceNullHomologous`); internal-jet source dagger boundary class survives; source residue annihilates every minimal boundary.
+  - G: Annihilating the canonical minimal boundary forces Re ρ = 1/2.
+- **F0253 Reflection-incidence source admission (trace-one / nuclear)** · ⇔3 · 2 mod · A `XiReflectionIncidenceSchattenSpectrum:riemannHypothesis_iff_xiReflectionIncidenceNuclearSourceAdmission`
+  - D: Coefficient-faithful trace-one reflection-incidence source converges (ordinary landing); or endpoint-order nuclear / all-order Schatten source admission.
+  - G: Off-line copies leave an open summability window that fixed orders do not annihilate.
+- **F0074 Euler primitive reflected boundary fracture / off-diagonal holonomy** · ⇔2 · 2 mod · A `EulerPrimitiveCommonTestPolarizedReflectionRigidity:xiPrimitiveBoundaryFractureFiniteEnergy_iff_riemannHypothesis`
+  - D: `XiPrimitiveBoundaryFractureFiniteEnergy`, or uniform capacity of reflected off-diagonal Euler-primitive holonomy.
+  - G: Holonomy is unbounded at every point off the line.
+  - X: finite determinants, char. polynomials and trace moments are horizontally blind.
+- **F0160 Prime co-shift reflection-odd singular class** · ⇔2 · 2 mod · A `PrimeCoShiftReflectionOddSingularCohomology:xiReflectionOddPrimeCoShiftClassVanishes_iff_riemannHypothesis`
+  - D: `XiReflectionOddPrimeCoShiftClassVanishes`; or every ξ zero's reflection-odd co-shift ground function lies in the range of the source differential.
+  - G: The formal co-shift eigenprofile leaves ℓ² at the Hilbert wall; finite truncations are exact (blind).
+  - X: PrimeCoShiftNaturalSingularBoundaryNoGo:reflectionOdd_not_mem_sourceNaturalSelectiveBoundary — no source-natural singular differential preserving forward modes absorbs the class.
+- **F0168 All positive prime-seam damping** · ⇔1 ⇒1 · 1 mod · A `PrimeSeamDampingAperture:xiAllPositivePrimeSeamDamping_iff_riemannHypothesis`
+  - D: `XiAllPositivePrimeSeamDamping` (cofinal-loss interface).
+  - G: Prime-seam damping stays positive at every aperture iff no off-line zero.
+- **F0056 Countertransport field vs squarefree Möbius reporter** · ⇒1 · 1 mod · A `CountertransportCountableReporterSelectionCriterion:riemannHypothesis_of_countertransportXiField_sq_norm_le_countableReporter`
+  - D: For σ > 1, ‖D‖ ≤ 1, K ≥ 0: ∀c, ‖countertransport Xi field(c)‖² ≤ K·‖squarefree Möbius countable reporter(c)‖².
+  - G: Countable arithmetic reporter dominates the reflected Gaussian countertransport.
+- **F0087 Möbius–Sonin affine critical-boundary renormalization** · ∧1 · 1 mod · A `FrankensteinSoninAffineCriticalBoundaryRenormalization:exists_soninContractivePreScalarAffineCriticalBoundaryRenormalization`
+  - D: A contractive Sonin schedule whose cofinal Möbius–Gamma–ξ Ward moving transport crosses the singular Euler target with the literal affine prime renormalization.
+  - G: Sonin contraction plus affine Möbius renormalization at the critical boundary.
+- **F0091 Gamma–Mertens shift-two coboundary** · ⇔1 · 1 mod · A `GammaMertensOrbitCoboundaryRH:gammaMertensShiftTwoCoboundaryCriterion_iff_riemannHypothesis`
+  - D: `GammaMertensShiftTwoCoboundaryCriterion`.
+  - G: Finite completed-Gamma shift coboundary of the Mertens orbit.
+- **F0095 Gamma–Jacobi barycentric pointed Euler reader** · ⇔1 · 1 mod · A `GammaJacobiBarycentricPointedEulerReader:xiCofinalGammaJacobiBarycentricPointedReaderFlat_iff_riemannHypothesis`
+  - D: `XiCofinalGammaJacobiBarycentricPointedReaderFlat M K`.
+  - G: Cofinal flatness of the pointed barycentric reader.
+- **F0244 Outer Euler modulus prime-two alignment** · ⇒1 · 1 mod · A `XiOuterEulerModulusPrimeSeamAntialignment:riemannHypothesis_of_xiOuterPrimeTwoAligned`
+  - D: `XiOuterPrimeTwoAligned h` (h ≥ 1): outer Euler modulus aligned with the prime-two seam.
+  - G: Antialignment of the outer Euler modulus and the prime-two seam detects off-line zeros.
+
+### THT · Theta, heat, Hankel and moment positivity (21)
+
+- **F0092 Prime–arch moment sequence: Hankel / Stieltjes / trace-Hankel positivity** · ⇔59 ⇒37 ¬⇒9 ∨3 ¬⇔9 ∧7 N41 · 52 mod · A `PrimeArchThetaHankelDegreeTail:primeArchSourceTraceHankelIntDegreeTwoTailNonnegative_iff_riemannHypothesis`
+  - D: Normalized prime–arch moments mₙ form a positive moment sequence: complete Hankel cone PSD; Hankel determinants > 0 (tail from size 3); represented by a positive (compact / infinite-support) measure; ∃ ℓ² Gram realization or self-adjoint vacuum observable with ⟨ω,Aⁿω⟩ = mₙ (nonterminating Krylov chain); integer-polynomial source trace Hankel ≥ 0 — even only on a degree tail ≥ K, a sparse / monic / 2-Eisenstein infinite degree set, antipodal pairs, tail-dominant cone, centered Eisenstein or combined residuals; circle density a probability mixture of radial Poisson kernels; any strict Hankel ray (Gamma-quarter, black-hole reciprocal, Källén–Lehmann) adjoined stays PSD; finite positive-atomic local closure.
+  - G: mₙ = Σ_q (reciprocal-square coordinate of ξ-zero copy q)ⁿ; coordinates are positive reals exactly under RH; under ¬RH every infinite degree set carries a negative integer Hankel test.
+  - X: theta-cusp low-block certificates in PrimeArchTheta*Transfer receivers are redundant (degree-two tail alone ⇔ RH); observablePushforwardMeasure…: every Euclidean realization has the same pushforward.
+- **F0152 Prime–arch endpoint Bernstein / Hausdorff moment positivity** · ⇔37 ⇒15 ¬⇒29 ¬⇔2 ∧11 N13 · 34 mod · A `PrimeArchBernsteinNegativeMassAbscissa:riemannHypothesis_iff_not_tendsto_primeArchBernsteinNegativeMass_atTop`
+  - D: For the normalized prime–arch moments at the endpoint Hausdorff radius: Bernstein negative mass does not diverge (bounded / cofinally bounded / subexponential / cofinally vanishing); Bernstein L¹ = mass ∀N; purity ≤ mass² (bounded / subexponential / cofinally bounded); total variation subexponential; Abel susceptibility finite on [0,1) (critical radius = 1) or continues through the collar (meromorphic collar); exact exponent = 1; cofinal linear dissipation; real-p energy^(1/n) → 1; calibrated Hausdorff differences / cofinal diagonals / quadrants / order-20…23 tails ≥ 0; bounded Bernstein discrepancy vs positive comparators or finite thermal truncations.
+  - G: RH ⇔ mₙ is a Hausdorff moment sequence; under ¬RH negative mass and purity grow exponentially with base in (1, 251001/250000].
+  - X: negative mass = 0 through degree 12 (primeArchEndpointHausdorffBernsteinNegativeMass_eq_zero_of_degree_le_twelve); Pringsheim: susceptibility has a genuine singularity at its radius.
+- **F0158 Coupled-Sonin / Sonin prime–arch comparisons** · ⇔16 ⇒37 ¬⇒2 ¬⇔1 ∧1 · 22 mod · A `SoninCoupledVarianceCollapse:soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_riemannHypothesis`
+  - D: Coupled-Sonin comparison with the prime–arch moments: finite / projective Gram or trace-moment coupling (convergence or closure), moment-ratio coupling, per-test value closure / variational / Rayleigh upper bound, normalized-variance / Feshbach / quantum-Fisher / Robertson upper bound (also on centered, 2-Eisenstein or valuation residuals), vacuum Feshbach / Robertson integer nonnegativity, Bernstein mismatch or relative determinant in the unit collar envelope, bounded Bernstein discrepancy of coupled Rényi densities; Sonin all-prime exact moment weld at one aperture; Sonin prime–arch adjacent-norm / barycenter / cofinal section / per-test trace-Hankel coupling.
+  - G: Sonin (Burnol) space operators reproduce the prime–arch moments; positivity transfers to the ξ moment sequence.
+  - X: SoninCoupledProjectiveFeshbachEquivalence:soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_targetNonnegative_of_collapse — under variance collapse each comparison is exactly RH (no gain).
+- **F0261 Route U: strict-frontier source-wall phases of the shifted Hankel** · ⇔12 ⇒1 ¬⇒15 ∨8 N11 · 14 mod · A `XiShiftedStrictFrontierSourceWallIntegrabilityGate:riemannHypothesis_iff_xiShiftedAllStrictFrontierSourceWallsLocallyIntegrable`
+  - D: Every occupied strict terminal frontier's adaptive Christoffel source wall is locally L¹ (eventually, or at all frontiers); equivalently exclude the cofinal phase (source-wall / non-integrable wall / arithmetic-source residue / contact-order-two / integer holonomy / all-contact residue / adaptive mixed completed contact / terminal source charge / parabolic UV cascade).
+  - G: Under ¬RH, occupied terminal frontiers of the shifted-Hankel failure sets are unbounded, each carrying a positive finite-order residue that makes the arithmetic source wall non-integrable; under RH every failure set is empty.
+  - X: Arcsine-vacuum centering does not cure non-integrability; phases are vacuous under RH, so a producer must show L¹ without assuming the failure set is empty.
+- **F0103 Gaussian heat trace / heat-Hankel positivity of ξ** · ⇔3 ¬⇒2 ∨1 ⇒¬11 ∧1 N16 · 9 mod · A `XiGaussianHeatTraceCriterion:riemannHypothesis_iff_forall_xiPolynomialGaussianHeatTraceReal_nonneg`
+  - D: ∀t > 0: Gaussian heat trace ≥ 0, polynomial-square heat traces ≥ 0, heat-Hankel forms / matrices PSD (all N ≥ N₀). Falsifiers: one t > 0 with a negative heat trace, negative polynomial-square trace, negative Turán minor, negative Hankel form / principal minor / determinant, heat trace < |complex heat trace| at complex time, or a certified numerical witness within error ε.
+  - G: Under RH the heat moments are moments of a positive measure; one negative value refutes RH.
+- **F0118 Theta-source finite-stage real-divisor locks** · ⇒11 ∨11 ∧5 · 9 mod · A `HedenmalmThetaActualFiniteDivisorRigidity:riemannHypothesis_of_thetaSourceSignedAllStagesRealDivisor`
+  - D: All finite theta-source stages have real divisors (signed ordinary determinants, full Krein doubles, chiral Krein candidates), or a real graded (finite-window / order-two / full) trace polarization exists, or the arithmetic Hermite / Green flag holds, or chiral candidates → XiC locally uniformly (limit = XiC).
+  - G: Each construction converges to XiC; real stage divisors pass to the limit (Hurwitz). Dichotomy: RH or some stage has a nonreal zero / the construction fails.
+  - X: each module proves only the dichotomy "RH ∨ construction fails"; no stage reality proved.
+- **F0220 ξ-Taylor theta-tail core current (T1)** · ⇔10 ⇒7 N5 · 5 mod · A `XiCTaylorThetaTailCoreCurrentEquivalence:xiCTaylorThetaTailCoreCurrentSublinearUpper_iff_riemannHypothesis`
+  - D: On an odd superaccurate ξ-Taylor schedule (one, every, or the canonical one): theta-tail core current / core interference / full-density transfer current is sublinear; or the finite-arithmetic prefix+remainder joint current bound (1/8, 1/4) holds; or a two-term / Prouhet bridge.
+  - G: Finite Taylor truncations of XiC carry the theta-tail current; sublinear growth excludes off-line zeros ("no-shortcut": remainder form is RH-equivalent).
+- **F0041 Seam-log Hankel positivity / compact Markov–Thorin representation** · ⇔5 ⇒6 N6 · 6 mod · A `CanonicalXiSeamLogEquivalence:canonicalXiSeamLogTraceHankelNonnegative_iff_riemannHypothesis`
+  - D: `CanonicalXiSeamLogTraceHankelNonnegative`, or seam-log generating function is a compact Markov transform, or prime–arch compact Markov germ / compact positive Thorin exponent representation.
+  - G: Hausdorff/Stieltjes moment positivity of the canonical seam-log sequence.
+- **F0271 Squared-seam Cassini source: dyadic / power-32/64 / Jensen laws** · ⇔12 ⇒1 ¬⇔1 N3 · 8 mod · A `XiSquaredSeamPowerSixtyFourMassCriterion:xiSquaredSeamPowerSixtyFourSourceDominated_iff_riemannHypothesis`
+  - D: Squared-ξ dyadic half-plane signs; dyadic tail from 5 (32) or from 6 (64); power-32 annulus empty ∧ tail-from-6; power-64 source dominated; degree-32 transverse charge = 0; degree-32 reflection defect = 0; Cassini Jensen residual 4096·J₆₄ − Re m₆₃/2 = 0 (or intrinsic jet residual = 0); Jensen dominated; theta-cusp Cassini inward boundary saturated; dyadic moment certificate.
+  - G: Dyadic moments of the squared-ξ seam source; the unconditional Cassini component is fixed, the residual is the off-line charge.
+- **F0100 Gauss–Hodge source resolvent moments (complete monotonicity)** · ⇔7 ⇒4 ¬⇒2 ¬⇔2 N1 · 2 mod · A `GaussHodgeWeightedResolventEdge:forall_alternating_iteratedDeriv_gaussHodgeSourceResolventField_nonneg_in_wedge_iff_rh`
+  - D: Fixed m ≥ 1, prime p, X ≥ 0: Re(source (or weighted) resolvent moment_n) ≥ 0 ∀n; equivalently (−1)ⁿ ∂ⁿ field(X) ≥ 0; suffices on the wedge n ≥ 19, X < (n+1)². Falsifier: one negative moment inside that wedge.
+  - G: Off-line copies make the safe-sector moment strictly positive and a wedge moment negative.
+- **F0270 Squared-Euler aperture charge / anti-Löwner Hankel** · ⇔8 ⇒2 ¬⇔1 N2 · 4 mod · A `XiSquaredEulerDiagonalCorrelationUniversalityLaw:xiSquaredEulerAllFiniteCentralMinorsNonnegative_iff_riemannHypothesis`
+  - D: Squared-Euler aperture charge dominated (all degrees, or integer degrees, or orbitwise bounded); all orbit charge densities / finite-packet boundary charges vanish; all finite central minors ≥ 0; anti-Löwner producer, i.e. ∀N Audenaert derivative Hankel PSD (or decreasing + increasing Löwner jet matrices PSD).
+  - G: Transverse kernel charge of each off-critical ξ atom is positive; singleton packets already detect failure.
+  - X: not_exists_xiSquaredEulerAperture_termwise_bound_of_ne_half: no finite atomwise comparison constant dominates transverse charge by Hilbert response.
+- **F0212 Theta tilt-flux / source Bezoutian positivity (CLG/TTF)** · ⇔8 ⇒1 ¬⇒1 N1 · 5 mod · A `ThetaCuspTiltFluxSourceWeld:riemannHypothesis_iff_thetaCuspTiltSource_tiltFlux_nonneg`
+  - D: For every finite node set w_j (Re w_j > 1/2) and coefficients c: Re Σ c_j c̄_l B(w_j, w_l) ≥ 0 for the theta-cusp tilt source Bezoutian (equivalently the tilt derivative of the correlation energy ≥ 0), or the removable theta-tail first-moment Bezoutian / two-Volterra Krein difference / double-Laplace matrix is PSD.
+  - G: Bezoutian positivity of the theta source on the right half-plane; under ¬RH a negative witness exists that is not supported on two real nodes.
+  - X: not_exists_twoSupport_realRay_of_thetaCuspTiltFlux_neg: two real nodes never witness failure.
+- **F0122 Theta-stage Schur quartic charge / skew-adjoint defect** · ⇔1 ⇒3 N4 · 4 mod · A `HedenmalmThetaSchurQuarticSpectralDecayEquivalence:riemannHypothesis_iff_thetaSourceSchurPositiveQuarticChargeUniformDecay`
+  - D: Actual theta-stage Schur positive quartic charge cofinally small / uniformly decaying (`ThetaSourceSchurPositiveQuarticChargeUniformDecay`); all-stage scalar quartic charge flag; signed stage skew-adjoint energy cofinally small.
+  - G: Persistent non-normality of theta stages carries the off-line charge.
+- **F0227 Gamma–Meixner shape trace (Landau continuation / complete monotonicity)** · ⇔3 ⇒2 N3 · 2 mod · A `XiGlobalMeixnerShapeLandau:riemannHypothesis_iff_xiGammaShapeTrace_continuation`
+  - D: ∃ G holomorphic on Re s > 0 agreeing with the Gamma–Meixner shape trace on Re s > 1 (one-scalar Landau criterion); or the Gamma-shape real trace has a completely monotone (Hankel-positive) extension.
+  - G: Shape trace vanishes identically under RH; off-line zeros give non-summable twists.
+- **F0104 Theta-cusp center-mixed Fourier / ξ Hankel orbit nonnegativity** · ⇔5 ∧1 · 4 mod · A `HedenmalmCenterMixedOrientationBoundary:thetaCuspCenterMixedFourierNonnegative_iff_riemannHypothesis`
+  - D: `ThetaXiHankelOrbitNonnegative` or `ThetaCuspCenterMixedFourierNonnegative`.
+  - G: Global avoidance of the nonnegative chamber by the theta orbit.
+- **F0233 Heat–Cassini phase clock / Stieltjes orientation defect** · ⇔6 · 3 mod · A `XiHeatCassiniStieltjesOrientationDefect:riemannHypothesis_iff_xiHeatStieltjesEnvelope_le_velocityTrace`
+  - D: At one shift y: heat–Cassini phase-clock energy = 0; orientation defect = 0; Stieltjes envelope = (or ≤) Cassini velocity trace; Stieltjes envelope = Re shifted reciprocal moment; wrong-grade reflected Wold theta Green line bound.
+  - G: Cassini velocity ≤ phase-blind Stieltjes envelope always; equality iff RH.
+- **F0113 Hedenmalm Gaussian / raw Hankel cone** · ⇔5 · 3 mod · A `HedenmalmGaussianHankelRH:hedenmalmGaussianHankelCone_iff_riemannHypothesis`
+  - D: `HedenmalmGaussianHankelCone τ` at one (equivalently every) temperature τ > 0; raw unwindowed Hankel cone; tail cone at threshold 0.
+  - G: Complete Hankel positivity of the Hedenmalm heat sequence; temperature-invariant.
+- **F0157 Route-Q theta plateau reporter barycenter** · ⇔2 ∧2 · 2 mod · A `PrimeArchThetaCanonicalPlateauQuantizerOrientationWall:routeQThetaPlateauReporter_firstMomentDefect_eq_zero_iff_rh`
+  - D: Plateau reporter first-moment defect ∫Q dμ − m₁ = 0; plateau reporter is a complete prime–arch moment witness.
+  - G: Canonical monotone plateau quantizer pushes the theta source to the compact ξ moment measure.
+- **F0108 Theta essential inverse-flow trace orbit bounded** · ⇔1 ∧1 · 1 mod · A `HedenmalmEssentialInverseFlowTrace:riemannHypothesis_iff_thetaEssentialLogCoefficient_norm_bdd`
+  - D: ∃C ∀n with L ≤ log n/2: ‖thetaEssentialLogCoefficient L n‖ ≤ C.
+  - G: Riesz projections of the theta kernel give prime tomography; one positive-width trace orbit.
+- **F0208 Theta analytic real defect kernel injectivity** · ⇔1 · 1 mod · A `ThetaAnalyticRealDefectKernel:injective_realBoundaryComparison_iff_riemannHypothesis`
+  - D: `realBoundaryComparison` is injective.
+  - G: Real boundary comparison of the theta analytic defect kernel.
+- **F0267 Centered theta spin-sector thinning coherence** · ⇔1 · 1 mod · A `XiSourceSpinThinningCoherence:everyXiCenteredThetaSpinThinningCoherent_iff_riemannHypothesis`
+  - D: `EveryXiCenteredThetaSpinThinningCoherent`.
+  - G: Spin-sector thinning inheritance is sufficient for RH and holds on the actual divisor exactly under RH.
+
+### OPR · Operator and spectral realizations (26)
+
+- **F0156 ξ thermal / reciprocal-square operator mass saturation** · ⇔39 ⇒5 ¬⇒3 ¬⇔4 ∧4 N3 · 16 mod · A `PrimeArchThermalKrylovEquivalence:xiThermalSecondMoment_le_source_iff_rh`
+  - D: One scalar inequality: thermal second moment ≤ m₁ (unconditionally ≥); or reciprocal-square Hermitian mass ≤ m₁; or ‖reciprocal-square operator‖²_HS ≤ m₁; or HS norm² ≤ real fourth trace; thermal orientation energy = 0; finite KMS thermal truncations → mₙ.
+  - G: Equality in an unconditional lower bound exactly under RH; the defect is the transverse thermal energy.
+- **F0081 Finite-to-entire Hardy reductio** · ⇔1 ¬⇒33 · 30 mod · A `FiniteToEntireHardyReductio:exists_canonicalFiniteHardyFrontier_sequence_of_not_rh`
+  - D: Refute any consequence of an upper-half-plane zero of spectral ξ: a root-pinned canonical finite Hardy polynomial frontier Bₙ → ξ with positive homotopy root, and its forced heat-action / height / Blaschke–Poisson residual / root-count / log-derivative / theta-limit properties. Base: every zero of spectral ξ is real.
+  - G: Under ¬RH one explicit polynomial sequence carries all these properties simultaneously; any contradiction proves RH.
+- **F0254 ξ resolvent polynomial Turán ladder / Im² mass at one shift** · ⇔15 ⇒9 N3 · 13 mod · A `XiResolventSpectralDescent:riemannHypothesis_iff_forall_polyTuranMinor_re_nonneg`
+  - D: At one shift X ≥ 0, for every real polynomial p (or only nodal / rational-nodal polynomials, or index 0): Turán minor Re(M_p(n)M_p(n+2) − M_p(n+1)²) ≥ 0 of resolvent moments; or trace-functional Cauchy–Schwarz; or Re(resolvent trace of p) ≥ 0; or central trace-Hankel ≥ 0; or Im² deviation mass = 0; or (X+1)⁴·Im² mass → 0 along one escaping sequence; or nodal adaptive arithmetic landing ≥ 0.
+  - G: Resolvent points of ξ-zero copies at shift X are real exactly under RH; a nonreal point makes some polynomial moment Turán minor negative.
+  - X: eval_norm_mul_kill_eq_zero_of_line: verified-height line placement and nodal certificate are disjoint supplies (no double counting).
+- **F0119 Theta kernel operator spectral reality** · ⇔11 ¬⇒4 ∧1 N8 · 8 mod · A `HedenmalmThetaSourceCompressedInverseDeterminant:riemannHypothesis_iff_thetaKernelOperator_nonzero_spectrum_real`
+  - D: Every nonzero spectral point of `thetaKernelOperator` is real; Fredholm eigenmodes pinned Green-isotropic; squared seam spectrum positive; Green boundary current neutral on every divisor mode; compact root-flux / rank-two boundary-flux energy = 0 (∀q flux = 0); (direct) boundary Cayley clock growth subexponential.
+  - G: Nonzero theta-kernel spectrum = reciprocal ξ spectral points; off-line zeros are expanding Cayley modes.
+- **F0250 Reciprocal-square continued-Cauchy source reality (one fixed pole)** · ⇔12 ⇒4 ¬⇔3 N5 · 10 mod · A `XiReciprocalSquareFixedCauchySource:xiReciprocalSquareFixedCauchyOrientationDefect_nonpos_iff_riemannHypothesis`
+  - D: One scalar: continued-Cauchy orientation defect at the predetermined pole ≤ 0 (equivalently = 0; > 0 ⇔ ¬RH); or reciprocal-square quadratic value real on every (one, countable Gaussian-rational, continued) Cauchy source vector; reciprocal-square operator self-adjoint; fixed-Cauchy reciprocal-Krylov source contrast / seam saturation / real response recovery.
+  - G: Reciprocal-square coordinates are real exactly under RH; a fixed Cauchy pole already sees every off-line copy.
+  - X: xiWeilPolarization_cauchy_holomorphicResponse_im_eq_zero: holomorphic replacement of the adjoint response is blind.
+- **F0248 Prime-seam Calkin compactness / seam charges on the ξ divisor (SEC)** · ⇔17 ⇒2 ¬⇒3 ¬⇔1 · 12 mod · A `XiPrimeSeamPairEnergy:xiPrimeSeamPairEnergyBounded_iff_riemannHypothesis`
+  - D: Global prime-seam Calkin Gram compact (any Sonin cutoff a > 0); all-scale Calkin certificate; cofinal first-prime Euler compressions essentially commuting or essential norm decaying; finite Euler compressions essentially commuting on all ξ fibres; higher-grade Calkin compactness at one prime; summable Calkin aggregate compact; prime-seam charges coherent; pair energy bounded (or sublinear); two-prime (2,3) seam charges / norms equal; prime-two Euler radial / boundary seams vanish.
+  - G: Off-line strip fibres have arbitrarily large reciprocal-prime pair energy and a positive Calkin floor.
+  - X: adjacent-seam asymptotic essential-norm smallness is automatic and nonselective.
+- **F0202 Suzuki shifted-ξ exterior / Carleman carrier analyticity (SV2)** · ⇔13 ⇒5 N4 · 11 mod · A `SuzukiCanonicalShiftedXi:riemannHypothesis_iff_forall_suzukiCanonicalA_realZeros`
+  - D: For every ω > 0 the canonical Suzuki shifted-ξ A_ω has only real zeros (Suzuki 2012 Prop. 1); or a Suzuki exterior remainder (affine two-shift sewn, cross-sewn, opposite-shift average, normalized) is analytic off the real axis; or the right Carleman exterior / even carrier is analytic on the upper half-plane; or an analytic Euler-defect source germ weld exists.
+  - G: Nonreal ξ zeros are exact poles of the exterior remainder.
+  - X: exists_nonzero_opposite_suzuki_shifts_below_iff — circularity certificate for opposite pairs; mixed-coordinate quotient not Herglotz.
+- **F0216 ξ log-derivative anisotropic sublinear growth / finite Taylor flux** · ⇔9 ⇒4 N5 · 4 mod · A `XiAnisotropicSublinearGate:xiAnisotropicLogDerivSublinearUpper_iff_riemannHypothesis`
+  - D: Sublinear upper growth of Im/Re (ξ′/ξ) on the explicit anisotropic rational mesh; or for a superaccurate ξ-Taylor schedule: anisotropic log-derivative current / oriented coefficient current sublinear; or finite ξ-Taylor Gaussian-rational left-half Im eventually ≤ 1 (bounded above).
+  - G: Off-line zeros force linear growth of the log-derivative current on the mesh.
+- **F0006 Real-rooted / self-adjoint approximants of XiC (Hurwitz)** · ⇒11 ¬⇒3 ∨1 · 10 mod · A `AsymptoticSelfAdjointness:riemannHypothesis_of_asymptotically_real_zeros`
+  - D: Entire (eventually) Fn → XiC locally uniformly with zeros |Im w| ≤ εₙ → 0 (exact: real zeros); e.g. normalized characteristic polynomials of metric-Hermitian semimetric quotients or real-spectrum CCM source-response completions.
+  - G: Hurwitz: limits of real-rooted functions are real-rooted.
+  - X: CompressionCannotSelfAdjointify:compression_norm_lower_bound — compression cannot shrink the non-self-adjoint defect; CCMSourceResponseDeterminantDichotomy:ccmSourceResponse_radicalProjection_exclusive.
+- **F0215 ξ Poisson trace: line bound / scalar inequality** · ⇔4 ⇒2 ⇒¬2 N6 · 4 mod · A `XiPoissonLineBoundRH:riemannHypothesis_iff_exists_xiPoissonTrace_line_bound`
+  - D: The ξ Poisson trace is bounded on one vertical line Re = σ > 0; or at one σ: xiPoissonTraceReal σ ≤ Re xiPoissonTraceC σ (Poisson defect / energy = 0). Falsifiers: one t > 0 with Re(Poisson moment trace) < 0, or a complex time with Poisson trace real part < |complex trace|.
+  - G: Index-free spectral rigidity: Poisson weights of real spectral points are positive.
+- **F0197 de Branges / strict Hermite–Biehler (Hedenmalm pair)** · ⇔2 ⇒3 N8 · 4 mod · A `SuzukiXiDonoghueTarget:riemannHypothesis_iff_strict_hermiteBiehler`
+  - D: `SuzukiHermiteBiehler xiHedenmalmDeBrangesE`: the Hedenmalm de Branges function is strictly Hermite–Biehler (|E(z̄)| < |E(z)| on the upper half-plane).
+  - G: Lagarias–Suzuki: HB structure ⇔ real zeros of the associated A-function (Im logDeriv XiC < 0 upstairs).
+- **F0235 Hedenmalm Hermitian diagonal / numerical-sector orientation** · ⇔5 ⇒2 ¬⇔1 ∧2 N2 · 5 mod · A `XiHedenmalmOrientationGate:xiHedenmalmUpperHermitianDiagonalNonnegative_iff_riemannHypothesis`
+  - D: `XiHedenmalmUpperHermitianDiagonalNonnegative`; pointed-moment version; orientation-endpoint universal certificate; right-half local Jordan normality ∧ theta reciprocal numerical upper sector; continued prime–arch upper Cauchy diagonal ≥ 0 (formula form).
+  - G: Orientation factor of RH (constraint × orientation); numerical sector is blind to multiplicity.
+- **F0225 Euler-safe Carathéodory kernel positivity** · ⇔8 · 4 mod · A `XiEulerSafeCauchyLoss:riemannHypothesis_iff_isPSDKernel_criticalLogDerivKernel`
+  - D: On the Euler-safe half-plane Re > a: the critical log-derivative kernel is PSD; or the safe Carathéodory kernel dominates its Cauchy-loss product (all finite / Gaussian-rational node sets); or Euler-safe deficit ≥ 0; or Euler-safe paired (rational) passivity.
+  - G: Critical log-derivative is a Carathéodory function exactly when no off-line zero.
+  - X: not_isPSDKernel_modelLoss: generic positive-real shortcut fails.
+- **F0067 Hilbert–Pólya one-way spectral inclusion** · ⇔1 ⇒5 N1 · 5 mod · A `DeningerUnitaryFlowRieszPurity:riemannHypothesis_of_unitaryFlow_rieszEigenfunctional`
+  - D: A unitary flow V (or self-adjoint/positive Hodge structure) such that every nontrivial zeta zero s yields a nonzero eigenfunctional y with ⟨y, Vx⟩ = e^{(s−1/2)…}⟨y,x⟩.
+  - G: Zeros become eigenvalues of a unitary/self-adjoint operator, hence on the line.
+- **F0226 First divided source upper numerical sector** · ⇔3 ⇒3 N1 · 2 mod · A `XiFirstDividedSourceNumericalSectorClosure:canonicalTwoPointFirstDividedSourceUpperNumericalSector_iff_riemannHypothesis`
+  - D: For a ξ-annihilating quotient J retaining all first divided sources (e.g. the two-point quotient at two regular points, or the canonical prime-source pair): `XiFirstDividedSourceUpperNumericalSector J`.
+  - G: Numerical range of the divided-source operator stays in the upper sector iff zeros are real.
+- **F0163 Prime-clock cutoff energy at approximant zeros** · ⇒5 · 1 mod · A `PrimeEnergyZeroTransfer:riemannHypothesis_of_xiCTaylorApprox_localPrimeEnergy`
+  - D: Entire approximants Fn → XiC (or Taylor approximants of XiC) whose zeros z in each compact set satisfy primeClockCutoffEnergy(n, Im z)/log² n ≤ Eₙ → 0 (cofinal cutoff version).
+  - G: Zeros of good approximants carry sub-log-square finite-prime energy only on the line.
+- **F0097 Gamma–ξ hybrid Weierstrass operator self-adjoint** · ⇔1 ⇒1 ∧1 N1 · 1 mod · A `GammaXiHybridWeierstrassFredholmUniversalityLaw:gammaXiHybridWeierstrassOperator_isSelfAdjoint_iff_rh`
+  - D: `gammaXiHybridWeierstrassOperator s` is self-adjoint.
+  - G: Compact injective hybrid operator; reality of its Weierstrass spectrum is RH; the Gamma block adds no premise.
+  - X: gammaXiHybridWeierstrassOperator_not_isClosed_range: range not closed (approximate blindness).
+- **F0116 Burnol–Sonin Weyl reciprocity defect** · ⇔3 ⇒1 · 3 mod · A `HedenmalmSoninCofinalReciprocalGaugeRigidity:all_burnolSoninWeylReciprocityDefect_eq_one_iff_rh`
+  - D: ∀ ξ support ρ: Burnol–Sonin Weyl reciprocity defect = 1 (or Calderón–Witt Gamma Weyl sewing cost product = 1); `XiCofinalReciprocalSoninGauge c`.
+  - G: Weyl reciprocity is exact only on the line.
+  - X: quantifies over ξ support.
+- **F0181 Connes ground-state / Suzuki characteristic / Hedenmalm positive-form walls** · ⇔2 ⇒2 · 1 mod · A `RiemannHypothesisSOTA2026:connesXiGroundStateLimitWall_iff_riemannHypothesis`
+  - D: `ConnesXiGroundStateLimitWall`; `SuzukiXiCharacteristicLimitWall` (ordinary entire compact premise); `HedenmalmXiPositiveFormWall`.
+  - G: Literature limit criteria (Connes–Consani–Moscovici ground states, Suzuki characteristic functions, Hedenmalm forms) in closed form.
+  - X: unstructured Connes limit criterion is RH itself ("anti-theatre closure").
+- **F0013 Burnol bilateral aperture defect contraction** · ⇔1 ⇒2 · 1 mod · A `BurnolBilateralApertureRH:riemannHypothesis_iff_burnol_bilateral_defects_ne`
+  - D: At every strip zeta zero w: ‖D⁻(w)‖ ≤ ‖D⁺(w)‖ (bilateral Sonin aperture defects), or finite-holonomy form ⟨…⟩ ≤ 0.
+  - G: Sonin-space evaluators at off-line zeros expand the minus-defect.
+  - X: quantifies over zeta zeros.
+- **F0199 Suzuki meromorphic / spherical characteristic limit walls** · ⇒2 N1 · 2 mod · A `SuzukiCharacteristicMeromorphicLimit:suzukiXiMeromorphicCharacteristicLimitWall_implies_riemannHypothesis`
+  - D: `SuzukiXiMeromorphicCharacteristicLimitWall`, `SuzukiV2MeromorphicCharacteristicLimitWall`, or `SuzukiV2SphericalAtlasCharacteristicLimitWall`.
+  - G: Corrected (pole-free / spherical) convergence of Suzuki characteristic functions to the ξ target.
+- **F0015 Burnol co-Poisson non-orthogonality** · ⇔1 · 1 mod · A `BurnolCoPoissonSourceVectorSpace:riemannHypothesis_iff_exists_burnolCoPoisson_inner_ne_zero`
+  - D: ∀ strip point w (1/2<Re w<1): Riesz evaluator at w is not orthogonal to the co-Poisson span in the Sonin space.
+  - G: Nyman–Beurling-type completeness in the Sonin/co-Poisson space.
+- **F0200 Suzuki coalescing upper-half-plane source limit** · ⇒1 · 1 mod · A `SuzukiCoalescingHalfPlaneUniqueness:riemannHypothesis_of_upperHalfPlane_source_limit`
+  - D: Holomorphic Fₙ on the upper half-plane, locally uniformly bounded, whose limit coalesces with the Suzuki ξ source (Theorem I uniqueness).
+  - G: Half-plane uniqueness of the limit transfers zero-freeness.
+- **F0214 Weight-one Clifford–Dirac spectral reality** · ⇔1 · 1 mod · A `WeightOneCliffordDirac:xiWeightOneCliffordSpectralReality_iff_riemannHypothesis`
+  - D: `XiWeightOneCliffordSpectralReality a`: the quadratic Mellin symbol of the weight-one Clifford–Dirac operator is real on ξ data.
+  - G: Right end of the source Clifford–Dirac detour.
+- **F0247 Route-K all-order reflected energy incidence** · ⇒1 · 1 mod · A `XiPrimeMarkedAllOrderIncidenceFactorization:riemannHypothesis_of_routeKAllOrderReflectedEnergyIncidence`
+  - D: An operator T with `RouteKAllOrderReflectedEnergyIncidence T`.
+  - G: All-order reflected prime-marked energy incidence factorization.
+  - X: normalizedPrimeArch_firstHankelMinor_nonneg_of_routeKAllOrderIncidence: forces the first nonconstant Hankel minor ≥ 0.
+- **F0258 Critical Loewner shift-generator kernel PSD** · ⇔1 · 1 mod · A `XiShiftLoewnerCriticalGenerator:riemannHypothesis_iff_isPSDKernel_criticalGenerator`
+  - D: The ω = 0 Loewner generator kernel C₀(W,V) = (H₀(W) + conj H₀(V))/(W + V̄), H₀ = 2 logDeriv ξ_cent, is PSD on Re W > 1/2.
+  - G: Loewner/Pick positivity of the ξ log-derivative on the right half-plane.
+  - X: not_isPSDKernel_shiftGenerator: no positive shift ω > 0 has a PSD generator; only ω = 0 is usable.
+
+### GEO · Arithmetic geometry, cohomology, descent (29)
+
+- **F0182 Route-R prime–Gamma / rational-adelic divisor classifiers** · ⇔39 ⇒6 · 32 mod · A `RouteRHarmonicQuantumGapCriterion:riemannHypothesis_of_eventually_norm_profileAverage_lt_one`
+  - D: For every ξ divisor point (at a fixed prime): Burnol head (dressed) current = reflection partner; no completion defect survives / escape- and phantom-free completion; Gamma-orientation descent; cross-prime Stokes–Sonin commutator compact (norm-approximable); degree-six BV–Green physical cyclic descent / reflected boundary = 0; scalar Cartier non-erasure; first-wall prime abscissa / profile average |Re| < 1 frequently (sub-quantum gap); fixed-tail Roos null-homology; invariant amplitude annihilated; prime-cap Arakelov boundary law; Poisson history neutral / detailed balance; fixed-grade Cartier phase intertwining; Gaussian quadrature descent; reflected phase quadrature landing / Hermiticity; singular Stokes flat; sieve-variation cap reporter = 0; rational Cartier landing; resolution core radius = 0 / Noether charge-free; source-marked finite completion continuous.
+  - G: Each classifier reads the centered rate 2Re ρ − 1 through a prime–Gamma field; it vanishes exactly at critical support.
+  - X: quantifies over ξ divisor; exists_isCofinalUnitProfile_no_single_stage_decides: no single stage decides.
+- **F0239 ξ–Hurwitz anchors, monodromy characters and first-prime seams (HJ)** · ⇔24 ⇒12 ¬⇒1 ¬⇔1 N7 · 13 mod · A `XiHurwitzConstraintOrientation:riemannHypothesis_iff_xiHurwitzNegativeCharacterChamber`
+  - D: Hurwitz monodromy character at every ξ support point = −e^{2π Im ρ} (negative character chamber); anchored pair Vandermonde real (anchored orientation energy = 0) with a critical anchor; FE–Schwarz pair / triple / half-anchor circuits at every divisor point; first-prime seam charges or prime-two anchor seams vanish; literal first-prime co-Poisson residual vanishes; anchor-jet projective reflection law; rational Hurwitz fibre two-reflection fixed; tropical Sonin loop compact-equal; principal Hurwitz phase sup = 0; a ξ sign bracket (or Hardy moment gap) plus reality of all critical-anchor pair Vandermondes.
+  - G: Rational-Hurwitz fibres recover each n^s; the modulus-two reflected equality is the first-prime seam, exact only on the line.
+  - X: xi_ne_zero_of_openCriticalStrip_of_monoScalar_eq_oneSub: the two FE exponents of a zero cannot share a Hurwitz character.
+- **F0057 Deninger arithmetic cohomology: Frobenius–Hodge purity** · ⇔8 ⇒14 ∧4 N2 · 17 mod · A `DeningerArithmeticSemisimpleHodge:deningerArithmeticGradedTheta_hodgeStar_iff_riemannHypothesis`
+  - D: Frobenius θ commutes with the Hodge star on arithmetic H¹ (graded, odd/oriented, closed Hilbert domain, real Weil transport); or every local jet Hodge form / finite Hodge exhaustion is θ-invariant; or a positive source Hodge star / polarized Gelfand triple / weight-one polarization with Riesz ξ-spectrum / dense-range resolvent core exists; or zeta zeros are θ-eigenvalues of a positive three-term Hodge structure; complete Weil square cone ≥ 0.
+  - G: Weight-one purity: [θ, ⋆] equals the purity defect times the off-line displacement.
+  - X: deningerLinearTestHilbertPairing_eq_zero: complex-linear test embeddings cannot realize the dual pairing.
+- **F0064 Deninger–Meyer half-density ξ-evaluations** · ⇔8 ⇒5 N3 · 8 mod · A `DeningerMeyerHalfDensityL1Completion:riemannHypothesis_iff_deningerMeyerHalfDensityXiEvaluationsBounded`
+  - D: ∀ ξ support point ρ: ξ-evaluation bounded / continuous / sequentially closable in the half-density topology; weighted evaluation admissible (any nonzero diagonal weight); pointwise invariant evaluation gauge exists; reflected Gaussian line Wronskian vanishes ∀q or factors through a reflection-invariant observable; anti-reflected odd multiplier factorization.
+  - G: Evaluations at off-line points are unbounded for the canonical source topology.
+  - X: quantifies over ξ support.
+- **F0075 Euler squarefree Wick (EWQ) divisor compatibilities** · ⇔11 ∧5 · 14 mod · A `EulerSquarefreeWickHolonomyRecurrence:everyEulerWickNormalizedInteractionHolonomyCompatible_iff_riemannHypothesis`
+  - D: At a fixed prime p, for every ξ-zero copy: colored-braid / holonomy compatibility; cofinal gauge transport; completed-jet color reflection-fixed / orientation; finite-residue Meyer mass natural; Gamma-six balanced depth return, full-source descent, marginal repairability, positive projectors, reporter covariance, pure reflection-pair averages; Hedenmalm reflected crossing ≥ 0; directional Wilson contrast = 0; quadratic common-refinement landing.
+  - G: EWQ packet coordinates see the transverse displacement 2Re ρ − 1 through a fixed prime log.
+  - X: all quantify over ξ-zero copies; common-refinement descent exists exactly at neutral grade; marginal repair rigid under hypertranscendence.
+- **F0082 Formation potential / survival transfer** · ⇔10 ⇒1 ∧4 N1 · 8 mod · A `FormationPotentialCriterion:riemannHypothesis_iff_exists_formationPotential`
+  - D: For the survival transfer of (m,r): analytic and nonzero on Re s > 1/2; or = exp(−Φ) with Φ holomorphic there (global formation potential); or its log-derivative analytic there; `ZetaZeroFreeRight`.
+  - G: Renormalized formation work is globally exact iff no off-line zero.
+  - X: global primitive existence is the endpoint itself.
+- **F0084 Frankenstein Big-Witt / Gamma reporter descent and ghost erasure** · ⇔12 ⇒1 · 11 mod · A `FrankensteinXiFullIntegralGammaEvaluationProducer:everyXiFullIntegralGammaProducerDescends_iff_riemannHypothesis`
+  - D: For every ξ-divisor point ρ (and prime p): integral bidirectional Big-Witt Gamma descent; inverse-Gamma reporter descent; two-orientation unital scale-zero descent; full integral Gamma producer descent; quadratic ghost vector in the derivative range; cyclic boundary anomaly = 0; paracyclic two-sheet anomaly cells / prime-clock BV ground readouts vanish; Plücker lower boundary anomaly cancels; terminal-multiplicity Fisher admission; translated theta responses equal their line conjugates.
+  - G: Descent/ghost erasure holds exactly at critical-line divisor points.
+  - X: quantifies over ξ divisor; FrankensteinThetaPrimeTranslationCommonForcing:integral_thetaXiPrimeTranslatedSourceResidual_mul_sourceChar_eq_zero — common forcing lies in all ξ evaluation kernels; primeGammaLocalInverseOrientedGhost_two_ne_three_half — off-line countermodel.
+- **F0217 Arakelov–Hurwitz algebraicity / Kronecker chamber** · ⇔4 ⇒7 N2 · 4 mod · A `XiArakelovHurwitzAlgebraicityCollision:xiRightArakelovHurwitzAlgebraic_iff_riemannHypothesis`
+  - D: Every hypothetical right-half zero satisfies Arakelov–Hurwitz algebraicity (or algebraic-character / FE-trace dependence; relative algebraicity given integral coordinates; finite-anchor capture); or integral Arakelov coordinates with contractive conjugate roots (integral conjugate chamber at each zero).
+  - G: Transcendence: at a nonreal algebraic Arakelov coordinate the Hurwitz character trace is transcendental, so the conditions hold only vacuously.
+  - X: premise quantifies over hypothetical right-half zeros (vacuous under RH).
+- **F0065 Deninger–Meyer reflected Gaussian source orbit / countertransport capacity** · ⇔8 ⇒1 ¬⇒2 ¬⇔1 · 5 mod · A `DeningerMeyerReflectedGaussianCountertransportXiCapacity:deningerMeyerReflectedGaussianCountertransportXiFieldsBounded_iff_rh`
+  - D: Log-Gaussian (or ξ-avoiding) centered source orbit bounded; reflected Gaussian countertransport ξ-fields bounded (adaptive prime-normal records/codiagonals bounded); reflected Gaussian horizon Green provenance / incidence / resolved class = 0; positive admissible dual spectrum.
+  - G: Source cohomology capacity stays ≤ 2 while the ξ-norm of one source orbit escapes every ceiling under ¬RH.
+- **F0161 Prime-depth BV–Wold ξ source classifiers** · ⇔12 · 11 mod · A `PrimeDepthBVWoldCurvedSourceDifferential:primeDepthBVWoldXiDifferentialFlat_iff_riemannHypothesis`
+  - D: One of: cofinal source-normal equicontinuity; BV–Wold source differential flat; graded det₂ counterboundary trivial / Cartier diagonal descends; positive Stokes polarization flat; Rees corona comparisons agree / physical corona admitted; scalar leading conormal annihilated; depth-one relative-log trace class; singular / source-normal depth-lowering landing; source-pointed normal jets vanish.
+  - G: Resolved exactness holds even off-line; the physical corona / normal jet is nonzero exactly at off-line copies.
+  - X: primeDepthBVWoldGradedDet2StokesCartierTrivialization_strictNoGo; not_exists_primeDepthBVWoldConnection_vertexPotential (nonseparable edge field).
+- **F0061 Deninger Green-resolved defect** · ⇔9 ⇒2 · 8 mod · A `DeningerGreenResolvedDefectLaw:deningerArithmeticGreenResolvedDefect_vanishes_iff_riemannHypothesis`
+  - D: ∀a ∈ graded H¹: Green-resolved defect = 0; or defect supported in a codiagonally conservative sector; or Hodge/Green grade separation; or Hellinger–Gamma provenance quotient vanishes.
+  - G: Resolved Green defect is the purity obstruction in source coordinates.
+- **F0054 Constitutive dagger confluence (pre-divisor potential)** · ⇔1 ⇒4 · 4 mod · A `ConstitutiveDaggerConfluence:riemannHypothesis_of_predivisorRepairProofErasure`
+  - D: For every ξ support point: dagger-confluent potential (or repair proof-erasure consistency) of the literal pre-divisor source, plus radially calibrated repair potential at every s.
+  - G: Off-line points violate proof-erasure consistency under radial calibration.
+  - X: admitsRadiallyCalibratedDaggerConfluence_iff_re_eq_half: arbitrary pointwise existence is exactly the critical-line condition.
+- **F0243 ξ nodal defect superselection / Picard–Lefschetz naturality** · ⇔5 · 2 mod · A `XiNodalDefectSuperselection:xiNodalDefectSuperselection_iff_riemannHypothesis`
+  - D: `XiNodalDefectSuperselection` (or global master equation, arithmetic second-order coherence, every zeta zero nodal-defect pure); arithmetic nearby monodromy = Picard–Lefschetz monodromy on every terminal conductor.
+  - G: Quotient obstruction is the mixed neutral source jet (BV curvature of the total defect differential).
+- **F0058 Big-Witt prime-seam Dirichlet source energy** · ⇔3 ∧1 · 1 mod · A `DeningerBigWittPrimeSeamDirichletTransport:deningerBigWittXiPrimeSeamSourceEnergyBounded_iff_riemannHypothesis`
+  - D: `DeningerBigWittXiPrimeSeamSourceEnergyBounded` (or sublinear submass; or all aggregate finite-divisor Stokes sources vanish).
+  - G: Big-Witt transport of prime-pair difference energy onto the ξ-divisor.
+  - X: not_summable_deningerBigWittCrossPrimePhysicalAtom: cross-prime physical atoms not summable.
+- **F0224 ξ completion-defect syndrome** · ⇔3 ¬⇔1 · 3 mod · A `XiCompletionDefectSyndrome:xiCompletionDefectSyndromeFree_iff_riemannHypothesis`
+  - D: `XiCompletionDefectSyndromeFree` (no ξ fibre carries the full completion-defect syndrome).
+  - G: Failure of RH is witnessed by one fibre carrying the complete syndrome.
+- **F0063 Exceptional-line / Gamma-six shell transport isometry** · ⇔3 · 1 mod · A `DeningerExponentGammaSixShellTransportRigidity:riemannHypothesis_iff_deningerExceptionalCoefficient_isometric`
+  - D: ∀ ξ support point ρ: ‖exceptional line-reflection coefficient(ρ)‖ = 1; or it transports Gamma-six shells; or shell reflection multiplier is Wold-stationary.
+  - G: Blow-up transport is isometric exactly on the line.
+  - X: quantifies over ξ support; three presentations proved equivalent (no duplication).
+- **F0085 Pre-divisor Wold orbit completed source order** · ⇔3 · 2 mod · A `FrankensteinPreDivisorWoldOrbitCompletedSourceOrderFirewall:everyFrankensteinPreDivisorWoldOrbitCompletedSourceOrder_iff_riemannHypothesis`
+  - D: `EveryFrankensteinPreDivisorWoldOrbitCompletedSourceOrder` (or its Gram-remainder conservation form); Wold-regularized Julia orbit completed source order law.
+  - G: Literal pre-divisor operator order on Wold orbits.
+- **F0265 Source matroid circuit fracture-free** · ⇔2 ∧1 · 1 mod · A `XiSourceMatroidCircuitFracture:xiSourceCircuitFractureFree_iff_riemannHypothesis`
+  - D: `XiSourceCircuitFractureFree` (equivalently circuit comparison preserving).
+  - G: Positive third-derivative drop mass orients the odd boundary channel; fractures occur only at off-line circuits.
+- **F0045 Complete-resolution reflected second-Cartier budgets** · ⇔2 · 1 mod · A `CompleteResolutionReflectedShellSecondCartierDescent:everyCompleteResolutionActualXiReflectedShellSecondCartierCofinalBudget_iff_rh`
+  - D: `EveryCompleteResolutionActualXiReflectedShellSecondCartierCofinalBudget` (or cumulative variant): uniform order of consecutive completed source runs.
+  - G: Explicit pre-divisor shell budget; finite energies converge with multiplicity.
+- **F0241 Koszul mutual-statistics completion** · ⇔2 · 2 mod · A `XiKoszulMutualStatisticsSuperselection:xiOrderIndependentKoszulCompletion_iff_riemannHypothesis`
+  - D: `XiOrderIndependentKoszulCompletion`; or at a fixed prime every canonical Koszul sign cup vanishes.
+  - G: Anomaly-free mutual-statistics descent of the reflected phase.
+  - X: not_nonempty_deningerCalderonWittOrderBlindCoefficientFaithfulCompletion: no linear scalar completion is both transposition-invariant and coefficient-faithful.
+- **F0246 Pre-divisor reflection-defect one-port stabilization / sewing** · ⇒2 · 2 mod · A `XiPreDivisorReflectionDefectStabilization:riemannHypothesis_of_globalPreDivisorOnePortStabilization`
+  - D: `XiGlobalPreDivisorOnePortStabilization` or `XiGlobalOnePortSewing` (global rank-one law for the reflection defect before divisor specialization).
+  - G: Global defect-budget endpoint.
+  - X: stabilizerPort_not_central_of_right: the longitudinal central rank port cannot stabilize on the right half.
+- **F0256 Deninger–Meyer selected bilateral fixed-star positive receivers** · ⇔2 · 1 mod · A `XiSelectedBilateralPositiveSourceReceiver:everyXiSelectedBilateralPositiveSourceReceiver_iff_riemannHypothesis`
+  - D: For every retained ξ divisor: a fixed-star bilateral positive source receiver (even unnormalized, arbitrary diagonal) exists.
+  - G: The modular-covariant receiver stays positive off the line but cannot be the canonical one there.
+  - X: deningerMeyerXiPrimeGammaModularReceiver_ne_canonical_of_re_ne_half.
+- **F0004 Completed arithmetic formation boundary free** · ⇔1 · 1 mod · A `ArithmeticFormationCompletionBoundaryFusion:xiArithmeticFormationCompletionBoundaryFree_iff_riemannHypothesis`
+  - D: `XiArithmeticFormationCompletionBoundaryFree`: universal finite effectivity of the completed arithmetic boundary.
+  - G: Boundary of the completed formation vanishes iff no off-line fibre.
+- **F0005 Arithmetic central character unitary** · ⇔1 · 1 mod · A `ArithmeticXiStokesCentralRankPort:xiArithmeticCentralCharacterUnitary_iff_riemannHypothesis`
+  - D: `XiArithmeticCentralCharacterUnitary n`: central character unitary on every ξ-divisor fibre.
+  - G: Off-line fibres give non-unitary central character.
+  - X: not_exists_continuousPhysicalRank_eq_centralDefect: defect is not one continuous physical rank.
+- **F0059 Calderón–Witt Gaussian horizontal packet normalizability** · ⇔1 · 1 mod · A `DeningerCalderonWittGaussianHorizontalNormalization:forall_deningerCalderonWittGaussianHorizontalWronskianPacket_normalizable_iff_rh`
+  - D: ∀ ξ-zero copy q: Gaussian horizontal Wronskian packet is (unweighted) normalizable.
+  - G: Inverse-horizon admission fails exactly at off-line copies.
+  - X: quantifies over ξ-zero copies.
+- **F0069 Dyadic relative reflection integral frames** · ⇔1 · 1 mod · A `DyadicRelativeReflectionIntegralFrameRigidity:everyXiDyadicRelativeReflectionIntegralFrame_iff_riemannHypothesis`
+  - D: `EveryXiDyadicRelativeReflectionIntegralFrame` (global formation/properness theorem).
+  - G: Integral frames exist on every ξ fibre exactly when no free reflection orbit.
+- **F0094 Formation-complete horizontal positivity** · ⇒1 · 1 mod · A `FormationCompletePositivityReflectedGramFracture:riemannHypothesis_of_sourceZeroHorizontalFormationCompletePositive`
+  - D: `SourceZeroHorizontalFormationCompletePositive`.
+  - G: Global formation-complete positivity closes the selection gap.
+  - X: not_both_formationReflectedGramCompletions_nonneg: the two reflected Gram completions are never both ≥ 0 (m ≥ 3).
+- **F0129 Prime Poisson–Haar prefix reflection Cauchy coherence** · ⇔1 · 1 mod · A `JointAncestryPrimeHaarPrefixCauchyReflectionDiscriminator:everyXiPrimePoissonHaarPrefixReflectionCauchyCoherent_iff_riemannHypothesis`
+  - D: `EveryXiPrimePoissonHaarPrefixReflectionCauchyCoherent`.
+  - G: Infinite-support reflection discriminator on prime Haar prefixes.
+- **F0164 Irrational-rotation projective-module K₀ index** · ⇔1 · 1 mod · A `PrimeIrrationalRotationKZeroRH:riemannHypothesis_iff_xiPrimeRotationKZeroIndexData`
+  - D: At primes p,q: every right-half ξ zero carries a `XiPrimeRotationKZeroIndexDatum`.
+  - G: K₀ index of the irrational-rotation module detects off-line zeros.
+  - X: quantifies over right-half zeros.
+
+### PHY · Physics models (thermal, KMS, Lee–Yang, Hawking) (9)
+
+- **F0206 Theta-cusp Hawking / Birmingham–Mokhtari (BM) ξ-divisor receivers (HB)** · ⇔126 ⇒6 ¬⇒1 ∨5 ∧1 N1 · 103 mod · A `ThetaCuspHawkingBMSourceFECocycleHyperbolicModulusOrientation:forall_normSq_hbXiPeierlsUnitSourceFECocycle_eq_one_iff_rh`
+  - D: A physical Hawking/Teukolsky/Peierls condition that holds exactly at critical copies, e.g.: source-FE cocycle unit gain on every ξ copy; Peierls branch Schwarz covariance; source-FE / QNM clock defect = 0; finite physical clock step covariant at one nonzero time; FE-Schwarz orbit trace / radiation / optical power = 0; canonical left source extinction; folded horizon dark at every copy; second-harmonic reflection currents cancel; AIME horizon reciprocity / even-phase Ward cancellation; regular-Fock vacuum / partner number 0 / Shale implementability; backreaction resonances real / passive; full-mirror no order jump / unit coupling winding / standard-clock mixing; Parikh–Wilczek recoil energies = 0; mediator horizon rank-one / monodromy trivial; minimum-phase / all-pass winding rigidity.
+  - G: Each off-line zero produces a tilted Hawking sector with nonzero gain, beat drift or recoil phase; the physical quantity vanishes iff the copy is critical.
+  - X: receivers only: every listed condition is RH-equivalent; producer attempts are killed (see HB producer no-go family).
+- **F0077 FZZ cigar parity-delay Mellin completeness (FZZ-P)** · ⇔17 ⇒1 · 13 mod · A `FZZCigarParityDelaySourceContinuation:fzzCigarParityMellinComplete_iff_riemannHypothesis`
+  - D: `FZZCigarParityMellinComplete` or an equivalent source-native condition: reflection (crossing) matching at one or all source scales; Hermitian-cone matching; covariant-reporter matching; balanced external Gamma Ward-delay divisor saturation; Deninger information Ward equilibrium; reflected-Fermi information stationarity; fixed quintic or quadratic eigenphase divisor completeness; linear replica-area divisor passivity; FZZ puncture horizon-dilation completeness / theta source coordinate real.
+  - G: Parity-delay Mellin modes of the FZZ cigar coincide with ξ-divisor modes; completeness excludes off-line modes.
+  - X: not_fzzCigarParityFixedMonomialPhaseComplete_one..four: fixed monomial phases of degree 1–4 impossible; FZZCigarPunctureL2DilationNoGo:not_FZZPunctureL2DilationComplete — L² dilation completeness false.
+- **F0052 Thermodynamic-limit passive / KMS responses** · ⇔2 ⇒10 ∧1 N3 · 7 mod · A `PrimeArchPassiveResponseRH:riemannHypothesis_of_finiteKMSWightmanResponse_tendsto`
+  - D: Growing finite KMS (Wightman, dissipative, entropy-production, Gaussian-rational countable) systems whose responses or moment sequences converge to the continued prime–arch source / moments on its domain; finite thermal Krylov sequences → mₙ.
+  - G: Passive (Herglotz) limits orient the source; only growing systems can work.
+  - X: fixed finite realizations are excluded (see fixed finite passive/thermal family); MobiusKMSScalarCancellationCapstone: scalar cancellation variant.
+- **F0264 Thermal projective cold partition bounded / zero free energy** · ⇔13 ¬⇒1 ¬⇔1 · 4 mod · A `XiThermalProjectiveMomentSpectrum:riemannHypothesis_iff_exists_eventually_bounded_thermalProjectiveColdPartition`
+  - D: Cold partition Z_k bounded (eventually); or log Z_k / k → 0; or along any cofinal (size, cold) section / the diagonal: truncations bounded (even only frequently), subexponential, or free energy → 0; or ∀α > 0 projective moments ≤ C·αᵐ; or first projective moment = 0 (≤ 0).
+  - G: Off-line zeros contribute exponentially growing cold weights; under ¬RH every cofinal section diverges to +∞.
+- **F0010 BPS saturation energies** · ⇔5 · 1 mod · A `BogomolnyPrasadSommerfieldBounds:xiRadialJensenBPSSaturation_iff_rh`
+  - D: Energy = charge (or energy = 0) for one of: heat-Cassini unit phase clock, Ward edge quad, squared-seam power-64 defect, Ward–Green projection, radial Jensen.
+  - G: Bogomolny bound energy ≥ charge; saturation exactly when no off-line zero.
+- **F0151 Photonic prime cyclic slab / parabolic return confinement** · ⇔3 · 2 mod · A `PhotonicParabolicReturn:riemannHypothesis_iff_photonicReturn_confinement`
+  - D: Every strip s with det(photonicReturn s) = 0 has Re s = 1/2; or at a fixed prime, the complex-PTC conormal sideband is moderate at every ξ-zero copy; or one fixed-gain PCM multiplier matches the half-density character on all copies.
+  - G: Photonic time-crystal return defects coincide with ζ zeros.
+  - X: finite Floquet truncations, invariant positive metrics and finite OAM transfers are impossible (not_photonicFiniteFloquetTruncation_positiveStepInvariant_of_nonzero, not_photonicPrimeCyclicSlabCell_positive_metric).
+- **F0165 Prime Ising tree partitions → ξ (Lee–Yang)** · ⇒3 · 2 mod · A `PrimeIsingTreeCavity:riemannHypothesis_of_primeIsingTreePartition_tendstoLocallyUniformly`
+  - D: Prime Ising tree partitions (raw, or balanced-centered) → XiC (or E·XiC with E entire zero-free, or unit-central XiC) locally uniformly.
+  - G: Lee–Yang: ferromagnetic tree partitions have zeros on the unit circle / real line.
+- **F0180 Source-forced horizontal vanishing (DQPT memory lag)** · ⇔2 ⇒1 · 2 mod · A `RiemannSourceForcedHorizontalVanishingFrontier:xiSourceForcedHorizontalVanishing_iff_riemannHypothesis`
+  - D: `XiSourceForcedHorizontalVanishing`; `DQPTMemoryLagHorizontalVanishes`.
+  - G: Physical landing exposes the horizontal annihilation without assuming it.
+- **F0255 Global reversible arithmetic KMS realization of ξ modes** · ⇒1 · 1 mod · A `XiReversibleKMSModularWall:riemannHypothesis_of_globalXiPrimeReversibleKMS`
+  - D: A source algebra A with functional φ and automorphism σ satisfying the KMS exchange φ(ab) = φ(bσa), realizing every ξ-divisor mode at one prime p reversibly (two-sided invertible history generator) with the Meyer/Gamma exchange eigenvalue Δ_p(ρ) = ‖χ_p(ρ)‖².
+  - G: Reversibility forces Δ_p(ρ) = 1, i.e. Re ρ = 1/2; off-line modes live only in the irreversible Toeplitz sector (0 < Δ < 1).
+  - X: xiPrimeKMSHistory_not_reversible_of_re_ne_half: producer must construct the reversible completion and descend the exchange law.
+
+### FAL · Falsifiers and necessary consequences (9)
+
+- **F0276 Standalone necessary consequences of RH (refute by one counterexample)** · N63 · 24 mod · A `ChebyshevErrorPowerBound:chebyshev_error_isBigO_of_riemannHypothesis`
+  - D: Refute RH by violating one of: ψ(N) − N = O(√N log²N); |ζ(s)| ≥ κ|t|^{−ε} for Re s ≥ 1/2+δ, |t| ≥ 6; Re λₙ(paired Li) ≥ 0; Gaussian heat moments Re ≥ 0 and nonincreasing in t; Re ξ′/ξ > 0 on Re s > 1/2; ‖Weil lag function‖ ≤ pole-sharp constant, antipodal lag-reflection form ≤ 0; hyperbolic pair zero-free condition; twin factorization; no exact finite complex modal / linear-recurrence model of the completed moving source at the centre; ξ circle atomic measure a probability measure with positive weights; Gauss–Hodge character-sum budget ≤ 2|F|·Σ|v|²; first-clock rational kernel Re ≥ 0 at spectral points, finite absolute-ordinate fibres; centred order-19/20/21 residual annuli empty; unit-Riesz outgoing charge → ∞; Suzuki screw operators injective; Poisson cut trace ‖C‖ ≤ real trace; admissible heat-contour approximants exist.
+  - G: RH ⇒ Q proved in Lean with no matching converse in the module; any explicit ¬Q is a disproof.
+  - X: LagReflectionKernelNoGo: lag reflection kernel is unconditionally not PSD (diagonal already fails), so only the RH-side inequality survives.
+- **F0196 Completed squared-ξ source jet sign** · ⇒¬1 N5 · 1 mod · A `SquaredXiSourceJetRHWiring:not_riemannHypothesis_of_completedSourceJet_neg`
+  - D: One radius w > 0 and order n with completedSourceJet n w < 0.
+  - G: Under RH all shifted reciprocal-square powers have positive real part, so every completed jet is ≥ 0.
+- **F0125 Localized Hermite form / monomial witness** · ⇒¬2 N3 · 2 mod · A `LocalHermitePositivity:not_riemannHypothesis_of_hermiteForm_re_neg`
+  - D: One off-spectral base point t and real coefficients c with Re Σ cᵢcⱼ·spectralPowerSum_t(i+j+2) < 0; or a high odd monomial evaluation at a zero's ordinate.
+  - G: Hermite positivity anchored at every base point; one negative value refutes RH.
+- **F0260 Negative shifted reciprocal moment / Hankel quadratic** · ⇒¬2 N3 · 1 mod · A `XiShiftedReciprocalHankelDisproof:not_riemannHypothesis_of_xiShiftedReciprocalHankelQuadratic_neg`
+  - D: Falsify: one y ≥ 0 and n with Re(shifted reciprocal moment Σ_q λ_q(y)ⁿ) < 0, or one finite coefficient vector c with shifted reciprocal Hankel quadratic < 0.
+  - G: Under RH every shifted reciprocal square is a positive real, so all moments and finite Hankel quadratics are > 0.
+- **F0089 Integral faithful Arakelov coordinates** · ⇒¬1 N2 · 1 mod · A `FrobeniusTorsionLaw:not_riemannHypothesis_of_xiArakelovIntegral_faithful`
+  - D: Prove `XiArakelovCoordinatesIntegral` and `XiArakelovFaithful`.
+  - G: Frobenius torsion law: integral + faithful + unitary is contradictory, so integral faithful coordinates refute RH.
+- **F0190 Odd-order right-half zero (deck parity)** · ⇒¬2 ∧1 · 1 mod · A `SeamChargeStratum:xiDeckParity_ne_zero_imp_not_rh`
+  - D: One right-half point ρ with nonzero deck parity (odd vanishing order of ξ), or a finite right-half family with nonzero total parity.
+  - G: Odd-order zeros off the line cannot be paired away.
+  - X: restatement of an off-line zero.
+- **F0257 Finite prime-side Euler-shift Pick witness** · ¬⇔2 N1 · 2 mod · A `XiShiftEulerFinitePrimeCertificate:not_riemannHypothesis_iff_xiShiftEulerFinitePrimeCertificate`
+  - D: Falsify: exhibit a finite, rigorously tail-certified prime-side Pick witness (Gaussian-rational points) with negative kernel form at a positive shift, or a positive rational shift with an uncancelled pole seen by a finite Gaussian test. Prove RH: show none exists.
+  - G: The Euler-shift Pick kernel is PSD under RH; failure of RH is detected by a finite certified prime-side computation.
+- **F0047 Completed-flux quadratic coefficient on the line** · ⇒¬2 · 1 mod · A `CompletedFluxLaguerreReader:completedFluxTaylorCoeff_two_line_re_pos_not_RH`
+  - D: Exhibit t with Xi(t) ≠ 0 and Re(second completed-flux Taylor coefficient at 1/2+it) > 0 (or prime + archimedean flux version).
+  - G: Laguerre-type second-order sign on the critical line is forced by RH.
+- **F0150 Rouché sphere-domination zero planting** · ⇒¬2 · 1 mod · A `PerturbationZero:not_riemannHypothesis_of_sphere_domination_center_margin`
+  - D: A ball B(s₀,r) ⊂ Re > 1/2 (radius below the margin) and analytic g, h with h(s₀) = 0 and |ξ-carrier − h| < |h| on the sphere (sphere domination).
+  - G: Rouché plants a zero of ξ inside the right half-plane.
+
+## NO-GO (54)
+
+### NOGO-FALSE · Premise refuted in Lean (implication vacuous) (10)
+
+- **F0204 Weighted Suzuki curvature first-moment linear bound / central unit-Riesz barycenter bound** · CCM · ⇒2 ∧3 · 2 mod · A `SuzukiFirstMomentTriangularAbelTransfer:riemannHypothesis_of_suzukiWeightedCurvatureFirstMomentLinearBound`
+  - Premise: `CCMFUSuzukiWeightedCurvatureFirstMomentLinearBound` or `CCMUnitRieszCentralBarycenterNaturalBound`.
+  - Dead: SuzukiFirstMomentCriticalErrorClassification:weightedFirstMomentLinearBound_iff_rh_and_psiRemainderSquareRootBounded — premise ⇔ RH ∧ ψ(x)−x = O(√x), and CCMFULittlewoodNoGo:not_psiRemainderSquareRootBounded_of_riemannHypothesis refutes the second conjunct.
+  - G: First-moment control of the Suzuki curvature current.
+- **F0026 First-clock apex superlevel majorization** · CCM · ⇒1 · 1 mod · A `CCMFirstClockApexSuperlevelMajorization:ccmFirstClockApexSuperlevelMajorization_implies_rh`
+  - Premise: `CCMFirstClockApexSuperlevelMajorization`.
+  - Dead: CCMFirstClockApexSuperlevelMajorization:not_ccmFirstClockApexSuperlevelMajorization — prime power 4 is a positive atom at the negative apex.
+  - G: Closed-superlevel mass comparison at the apex.
+- **F0030 ψ remainder square-root bounded** · CLS · N1 · 1 mod · A `CCMFULittlewoodNoGo:not_psiRemainderSquareRootBounded_of_riemannHypothesis`
+  - Premise: `PsiRemainderSquareRootBounded` (ψ(x) − x = O(√x)).
+  - Dead: CCMFULittlewoodNoGo — false under RH (Littlewood oscillation).
+  - G: Would be a strong-RH receiver.
+- **F0198 Suzuki ordinary entire characteristic limit walls (v1, v2)** · OPR · ⇒2 N2 · 2 mod · A `RiemannHypothesisSOTA2026:suzukiXiCharacteristicLimitWall_implies_riemannHypothesis`
+  - Premise: `SuzukiXiCharacteristicLimitWall` or Suzuki v2 `SuzukiV2CharacteristicLimitWall` (ordinary entire compact-open limit of Suzuki characteristic functions).
+  - Dead: SuzukiCharacteristicEntireLimitNoGo:not_suzukiXiCharacteristicLimitWall and SuzukiV2CharacteristicTarget:not_suzukiV2CharacteristicLimitWall — both unconditionally false (targets are not entire); corrected meromorphic / spherical walls are live.
+  - G: Legacy compact-limit walls.
+- **F0155 Fixed finite passive / thermal / state-space realization** · PHY · N2 · 2 mod · A `PrimeArchThermalKrylovRH:riemannHypothesis_of_primeArchFiniteKMSWightmanMoments`
+  - Premise: One fixed finite passive response, finite thermal even-gap or KMS/Wightman system, or fixed spectral-width / state-dimension closure reproducing the continued prime–arch source or all moments mₙ.
+  - Dead: PrimeArchPassiveResponseRH:not_continuedPrimeArchSourceRelativeTrace_eq_finitePassiveResponse; PrimeArchThermalKrylovRH:not_primeArchExactFiniteThermalEvenGapMoments, not_primeArchExactFiniteKMSWightmanMoments — no fixed finite system realizes the source; PrimeArchFiniteStateDimension / FiniteSpectralDimension: excluded under RH and by any nonzero determinant.
+  - G: Finite Herglotz/KMS realizations are automatically oriented.
+- **F0166 Central-normalized prime Ising tree → XiC** · PHY · ⇒1 · 1 mod · A `IsingCavityRapidityAudioCascade:riemannHypothesis_of_centralNormalizedPrimeIsingTreePartition_tendstoLocallyUniformly`
+  - Premise: Central-normalized prime Ising tree partitions → XiC (or unit-central XiC) locally uniformly.
+  - Dead: PrimeIsingTreeBalancedCentering:not_tendstoLocallyUniformly_centralNormalizedPrimeIsingTreePartition_XiC — premise impossible (target derivative mismatch).
+  - G: Scalar normalization at the center.
+- **F0211 UV-transparent Hawking KMS–FDT impedance limit** · PHY · ⇒1 · 1 mod · A `ThetaCuspHawkingUVTransparentImpedanceEndpoint:riemannHypothesis_of_thetaCuspHawkingUVTransparentKMSFDTImpedanceLimit`
+  - Premise: `ThetaCuspHawkingUVTransparentKMSFDTImpedanceLimit` (raw-amplitude impedance model).
+  - Dead: ThetaCuspHawkingUVTransparentImpedanceEndpoint:not_nonempty_thetaCuspHawkingUVTransparentKMSFDTImpedanceLimit — premise empty (Hardy sign oscillation); implication vacuous.
+  - G: Raw-amplitude Hawking impedance.
+- **F0231 Wold residual half-endpoint variation + critical mesh energy** · THT · ⇒6 N1 · 3 mod · A `XiHeatCassiniWoldResidualTwoSidedClosure:riemannHypothesis_of_half_twoSided_residualUpperVariation`
+  - Premise: Summable half-endpoint residual upper variation (or absolute convergence at i/2, or half-rate pointwise decay) together with summable prime-gap critical energy; or two-sided half-endpoint variation.
+  - Dead: XiHeatCassiniWoldCriticalGraphNoGo:not_half_residualUpperVariation_and_primeGapCriticalEnergy, not_half_twoSided_residualUpperVariation — premises unconditionally false (analytic-source and sub-half variants in the ODE-closure module are not refuted).
+  - G: Route-T ODE closure at the critical endpoint.
+- **F0209 Source-selected reciprocal-power / Cassini reciprocal-likelihood carriers** · THT · ⇒2 N2 · 1 mod · A `ThetaCuspCalibratedPowerReciprocalEvenTailNoGo:riemannHypothesis_of_oddShiftedPrimeArchMomentRepresentation`
+  - Premise: The fixed source-selected continuous reciprocal-power (Cassini-calibrated) carrier matches a complete even or odd shifted prime–arch moment tail; or the Cassini reciprocal-likelihood boundary identity holds.
+  - Dead: ThetaCuspCalibratedPowerReciprocalEvenTailNoGo:not_exists_evenTail_…/not_exists_oddTail_thetaCuspSourceSelectedPowerReciprocal_moment_matching — no cutoff works; ThetaCuspCassiniMarkovBoundaryTransport:not_thetaCuspCassiniReciprocalLikelihoodBoundaryIdentity — mass > 1.
+  - G: Positive continuous carrier would realize the moment tail (a general positive measure would suffice; see prime–arch moment family).
+- **F0219 Coefficient-faithful signed cross-orbit incidence (XST)** · THT · ⇔1 ∧1 · 1 mod · A `XiCTaylorPrimitiveDirectionSignedCrossOrbitNoGo:everyXSTSignedCrossOrbitSpinLanding_iff_riemannHypothesis`
+  - Premise: A coefficient-faithful signed cross-orbit incidence landing (`XSTCoefficientFaithfulSignedCrossOrbitIncidence`).
+  - Dead: XiCTaylorPrimitiveDirectionSignedCrossOrbitNoGo:not_nonempty_XSTCoefficientFaithfulSignedCrossOrbitIncidence — no such incidence exists; every signed incidence vanishes on the actual current.
+  - G: Signed spin landing of the primitive-direction theta-tail current.
+
+### NOGO-EXCLUDED · Producer class excluded in Lean (route-class kill) (20)
+
+- **F0055 Constrained Weil aperture window: attained top excess** · CCM · ∨1 · 1 mod · A `ConstrainedWeilApertureWindowMean:riemannHypothesis_or_not_attainedTopExcess_of_twistedPlateau_nonneg`
+  - Premise: Given twisted-plateau Suzuki screw forms ≥ 0: RH ∨ ¬AttainedTopExcess — would need an attained top excess to force RH.
+  - Dead: ConstrainedWeilApertureWindowMean:not_attainedTopExcess_of_twistedPlateau_nonneg — second branch holds unconditionally; dichotomy never yields RH.
+  - G: Positive excess supremum under ¬RH.
+- **F0053 Connected-symmetry protected defect / seam-blind window charges** · DIV · ⇔2 · 1 mod · A `ConnectedSymmetryBarrier:rh_iff_no_protected_defect`
+  - Premise: No right-half ξ-zero is a topologically protected defect; every line-free closed ball in Re > 1/2 has zero box charge.
+  - Dead: ConnectedSymmetryBarrier:not_surjective_loopCharge_of_preconnected — connected-symmetry mechanism false: loop charge constant over preconnected families.
+  - G: Deck/loop charge of moving windows would protect off-line zeros.
+- **F0177 Reflected bi-heat Markov normalization** · DIV · ⇔1 ∧1 · 1 mod · A `ReflectedBiHeatSourceFaithfulMarkovNormalizationNoGo:riemannHypothesis_iff_reflectedBiHeatActualLeadingNormPair_markovFlow_balance`
+  - Premise: Reflection-equivariant conservative Markov flow balancing the actual leading norm pair at some finite time.
+  - Dead: ReflectedBiHeatSourceFaithfulMarkovNormalizationNoGo:reflectedBiHeatMarkovFlow_balance_iff — no finite time creates balance; source-faithful normalizations closed.
+  - G: Markov smoothing of the two channels.
+- **F0193 Shared-Ward Gamma ghost descent producers** · GEO · ⇔12 ∧2 · 10 mod · A `SourceGammaCentralModuleGhostRigidity:everyFrankensteinFiniteMatrixCentralGammaGhostDescends_iff_riemannHypothesis`
+  - Premise: Universal descent / darkness for: finite-matrix central Gamma ghosts; equimodular prime-dependent ghosts; finite half-density tensor powers; positive Hermitian channel scalarizations; coherent joint quadratic observables; channel-resolved joint naturality; reflection-even / Fisher-frame / half-density radial ghosts; source-natural or source-selected shared ghosts; Gamma-six algebraic untwisting.
+  - Dead: "[SHARED-WARD ROUTE-CLASS KILL]" theorems: sharedWardFiniteMatrixCentralGammaGhostRouteKilled, sharedWardEquimodularPrimeDependentGammaGhostRouteKilled, sharedWardFiniteHalfDensityTensorPowerRadialGhostRouteKilled, sharedWardChannelResolvedGammaNaturalityRouteKilled, sourceHorizontalGammaSixAlgebraicUntwistingRouteKilled.
+  - G: Each reduces to the shared four-route Ward endpoint (≡ RH).
+- **F0183 Route-R intrinsic producers** · GEO · ⇔8 ⇒2 ∧1 · 6 mod · A `RouteRPrepolarTerminalNoGo:nonempty_routeRExternalPositivePolarHandoff_iff_riemannHypothesis`
+  - Premise: A gauge-natural nonnegative hyperbolic comparison on every fibre; an external positive polar handoff; a source-natural prepolar branch; a global bounded prime-depth covariance producer; prime-clock cubic multiplicative descent; an operator topology in which the receiver is closed and compactly approximable.
+  - Dead: RouteRHyperbolicGaugePositivePolarUniversalityNoGo:routeR_gaugeInvariant_nonnegativeQuadraticForm_eq_zero; RouteRPrepolarTerminalNoGo:routeRPrepolarIntrinsicProducer_cannot_annihilate_horizontalCarrier; RouteRBoundedPrimeDepthCovarianceProducer:scalar_eq_zero_of_bounded_covariance_on_isometric_orbit; RouteRPrimeClockCubicSymmetrizationNoGo; RouteROperatorTopologyCompactnessDichotomy:no_routeRTwoThree_operatorTopology_closed_and_compactlyApproximates.
+  - G: Intrinsic source structures that would annihilate the horizontal carrier.
+- **F0112 Route-N Gamma-sewn Krein / projective Kadison receivers** · GEO · ⇔2 · 2 mod · A `HedenmalmGammaSewnXiKadisonReceiverNoGo:forall_xiZero_routeNGammaSewnProjectiveKadisonDefect_eq_zero_iff_rh`
+  - Premise: ∀ ξ support ρ: Route-N critical-horizon Krein prime sequence summable; or at a fixed prime, projective/Kadison defect = 0 on every ξ-zero copy.
+  - Dead: HedenmalmGammaSewnXiKadisonReceiverNoGo:routeNGammaSewnSquarefreeXiGerm_projectiveKadisonDefect_pos — squarefree-germ attachment has positive defect; routeRGammaSewnModularDeconvolution_not_preservesL1 — Route-R modular recovery loses ℓ¹.
+  - G: Record vanishes exactly on critical copies; positive at every strict-right point.
+- **F0229 Wold–Jordan continuous / Hausdorff multifibre descent** · GEO · ⇔2 · 2 mod · A `XiGammaSixWoldJordanHausdorffMultifibreDescentNoGo:everyFaithfulT2EncodedWoldJordanDescent_iff_riemannHypothesis`
+  - Premise: ∀ ξ copy: continuous nonlinear Big-Witt Wold–Jordan energy descent, or faithful Hausdorff-encoded multifibre descent.
+  - Dead: deningerBigWittWoldJordanActualSourceContinuousEnergyDescends_iff_linear — nonlinearity adds no power; "[L HAUSDORFF MULTIFIBRE ROUTE-CLASS KILL]".
+  - G: Nonlinear or Hausdorff-target descent of the Wold–Jordan source.
+- **F0012 Bounded vertical-clock approximants** · OPR · ⇔2 ⇒3 N3 · 1 mod · A `BoundedClockZeroTransfer:boundedVerticalClockApproximationCertificate_iff_riemannHypothesis`
+  - Premise: Entire approximants Fn → XiC whose off-real zeros carry uniformly bounded vertical clocks (`BoundedVerticalClockApproximationCertificate`, compact-local version too).
+  - Dead: BoundedClockZeroTransfer:xiC_transverse_clock_escape — approximants with vertical zero lattices have unbounded periods; certificate is RH itself.
+  - G: Bounded clocks pin limit zeros to the real axis.
+- **F0143 Möbius–Gamma–ξ coupled-error scalar / linear / homogeneous debt controllers** · PGM · ∧10 · 4 mod · A `MobiusGammaXiCoupledErrorDebtCancellationDichotomy:mobiusGammaXiDebtController_cancellation_iff_rh_or_eq_opposite`
+  - Premise: Controlled critical residual = 0 for a scalar, marked linear-lift, real-linear or real-homogeneous debt controller T.
+  - Dead: NoGo modules: non-erasing cancellation is exactly RH; mobiusGammaXiRealReflectionResidual_ward_real_eq_zero — antiunitary candidate erases every real Ward response.
+  - G: Residual = 0 ⇔ RH ∨ T erases the source (T = unique opposite controller).
+- **F0228 HC filtered Gamma-six diagonal landing** · PGM · ⇔2 N2 · 1 mod · A `XiGammaSixFilteredBoundaryDiagonalLandingNoGo:riemannHypothesis_iff_hcFilteredGammaSixDiagonalLanding`
+  - Premise: `HCFilteredGammaSixDiagonalLanding` (or copywise version) realized by an exact positive-depth filtered sequence.
+  - Dead: XiGammaSixFilteredBoundaryDiagonalLandingNoGo:not_hcFilteredGammaSixExactDiagonalLanding, no_exact_copywise_gammaSixFilteredBoundaryCollisionLanding — exact landing impossible.
+  - G: Exact diagonal landing of the filtered Gamma-six collision current.
+- **F0171 Exponent-zero Euler gauges of the all-negative sheet** · PGM · ⇔3 · 1 mod · A `ProjectiveEulerNegativeSheetGaugeNoGo:canonicalNegativeEulerSheetPoleFreeRightStrip_iff_riemannHypothesis`
+  - Premise: Canonical all-negative Euler sheet pole-free on the right strip, possibly after an exponent-zero source-faithful gauge.
+  - Dead: ProjectiveEulerNegativeSheetGaugeNoGo:exponentZeroGaugeCanonicalNegativeEulerSheetPoleFreeRightStrip_iff_riemannHypothesis — no exponent-zero gauge changes the condition.
+  - G: Negative Euler sheet has poles at right-half zeta zeros.
+- **F0234 Compact-open scalar descent of source / reflected-Wold charge** · PGM · ⇔3 · 3 mod · A `XiHeatCassiniWoldOrbitChargeCompactOpenNoGo:xiWoldOrbitChargeEnergyCompactOpenDescent_iff_riemannHypothesis`
+  - Premise: Compact-open (or upper-semicontinuous) scalar descent of exact reflected-Wold orbit-charge energy, or of the source Noether charge of every canonical divisor.
+  - Dead: offLineXiDivisor_no_compactOpen_woldOrbitChargeEnergyReporter, offLineXiDivisor_no_compactOpenUpper_woldOrbitChargeEnergyMajorant, offLineXiDivisor_no_compactOpen_sourceChargeReporter: a source-matched bubble converges locally uniformly to ξ yet keeps nonzero charge, so compact-open continuity cannot carry the charge; a producer needs a proper/source-marked topology or a nonscalar object.
+  - G: Continuous scalar reporters of quantized charge.
+- **F0146 Complete physical coface annihilator landing** · PGM · ⇔1 · 1 mod · A `MobiusThetaCompletePhysicalCofaceAnnihilatorNoGo:all_exists_continuous_completePhysicalCofaceAnnihilator_landing_actualGreenCodiagonal_iff_rh`
+  - Premise: ∀ ξ-zero copy: a continuous operator killing all complete physical exponent cofaces and landing the theta source on the actual Green codiagonal.
+  - Dead: MobiusThetaCompletePhysicalCofaceAnnihilatorNoGo:continuousLinearMap_thetaSource_eq_zero_of_annihilates_completePhysicalCofaces — such an operator kills the theta source.
+  - G: Source weld through coface annihilation.
+- **F0252 Positive cofinal regularization of the trace-one reflection incidence** · PGM · ⇔1 · 1 mod · A `XiReflectionIncidencePositiveCofinalRegularizationNoGo:riemannHypothesis_iff_xiReflectionIncidenceTraceOnePositiveCofinalRegularizationLanding`
+  - Premise: Positive Abel / heat / Cesàro cofinal regularization landing of the coefficient-faithful trace-one reflection-incidence source.
+  - Dead: positiveCofinalOrderedRegularizationFrequentlyBounded_iff_summable — positive regularization has no endpoint gain.
+  - G: Damping the divergent positive source.
+- **F0207 HB (theta-cusp Hawking) producer classes** · PHY · ⇔30 ⇒1 ∨3 ∧3 N1 · 30 mod · A `ThetaCuspHawkingHBSourceFaithfulEquivariantNeutralizationNoGo:d4HBEveryInjectiveSwapEquivariantResponseNeutralizes_iff_riemannHypothesis`
+  - Premise: Producing any HB receiver via: clock-preserving or source-fixed linear gauge conjugacy; isolated unit-amplitude or vacuum-differentiable / vacuum-regular nonlinear evolution; modewise or all-order triangular QNM clock renormalization; nonzero FE-invariant response correction; physical-Jost biorthogonal normalization; vacuum-continuous / differentiable nonlinear detector scalarization; fixed (skew) universal Peierls propagator; normalized AIME residue; source-faithful equivariant neutralization; unit moving-horizon AIME cancellation; complex-bilinear QNM positivity; full-cokernel KMS passivity; Hermitian dilation fidelity; charged double-KMS sector swap; Parikh–Wilczek aggregate / three-moment regularizations; single-sector frequency.
+  - Dead: Lean route-kill certificates: d4HBClockPreservingGaugeConjugacyRouteKilled, d4HBVacuumDifferentiableNonlinearEvolutionRouteKilled, d4BMMixedCasimirModewiseQNMClockRenormalization_noGo, d4BMMixedCasimirAllOrderTriangularQNMClockRenormalization_noGo, d4BMXiSecondHarmonicFEInvariantNonzeroResponseCorrectionRouteKilled, d4HBPhysicalJostBiorthogonalNormalizationRouteKilled, d4HBSourceFaithfulSwapEquivariantNeutralizationRouteKilled, d4HBUnitMovingHorizonAIMECancellationRouteKilled, not_exists_hbUniversalPeierls_nonzero_fixedPropagator_unit_BM_incidence.
+  - G: Proposed physical mechanisms to force the HB receivers.
+- **F0079 FZZ same-source divisor gradient flow** · PHY · ⇔1 ∧1 · 1 mod · A `FZZCigarParitySameSourceDivisorGradientFlowNoGo:fzzCigarParity_sameSourceReflectedFermiGradientRealizability_iff_riemannHypothesis`
+  - Premise: `FZZCigarParitySameSourceReflectedFermiGradientRealizability` via continuous same-source divisor transport.
+  - Dead: FZZCigarParitySameSourceDivisorGradientFlowNoGo:fzzCigarParity_sameSourceDivisorGradientFlow_noGo — fixed-source continuous divisor transport is impossible off the line.
+  - G: Reflected-Fermi gradient flow transports divisor points to the line.
+- **F0132 Lee–Yang marginal carrier couplings** · PHY · ⇔2 · 1 mod · A `LeeYangMarginalCarrier:riemannHypothesis_iff_zero_coupling_marginal`
+  - Premise: ∀ right-half zero ρ: 1/2 − Re ρ lies in the carrier interaction locus at height Im ρ; or carrier Herglotz at the seam coordinate.
+  - Dead: LeeYangMarginalCarrier:not_isForcingFamily_carrierInteractionLocus — the monotone forcing mechanism fails on the carrier locus.
+  - G: Lee–Yang marginality of zero couplings.
+- **F0218 Moving positive tail-completion gauges (ξ-Taylor)** · THT · ⇔2 · 1 mod · A `XiCTaylorMovingPositiveCompletionGaugeNoGo:riemannHypothesis_iff_forall_movingPositiveTailCompletionGaugeChargeScreened`
+  - Premise: ∀σ with Re σ < 1/2: moving positive-tail completion gauge (or critical log-phase theta-tail packet) charge screened.
+  - Dead: XiCTaylorMovingPositiveCompletionGaugeNoGo:tendsto_movingPositiveTailCompletionGauge_horizontalCharge_zero — arbitrary moving positive gauges screen only where the charge already vanishes.
+  - G: Positive completion gauges would screen the horizontal charge.
+- **F0111 ξ-root conormal positive-damping marked landing (theta cokernel)** · THT · ⇔1 · 1 mod · A `HedenmalmGammaSewnCokernelBaseChangeNoGo:xiRootConormalAllPositiveDampingMarkedLanding_iff_riemannHypothesis`
+  - Premise: `XiRootConormalAllPositiveDampingMarkedLanding`.
+  - Dead: HedenmalmGammaSewnCokernelBaseChangeNoGo:not_hasTotalThetaCokernelMarkedLanding — total theta cokernel landing impossible.
+  - G: Marked landing of the theta cokernel at all positive dampings.
+- **F0259 Atomwise (degree-one) positivity of shifted ξ trace forms** · THT · ⇔1 · 1 mod · A `XiShiftedAtomwisePositivityNoGo:xiShifted_atomwiseAffine_nonneg_iff_riemannHypothesis`
+  - Premise: At a positive mass shift y: for every ξ-zero copy q and real affine p, Re(λ_q p(λ_q)²) ≥ 0 (λ_q = shifted reciprocal square).
+  - Dead: Atomwise nonnegativity is RH per atom; any mass-shifted spectral-face proof must use cross-orbit cancellation (exists_affine_traceAtom_re_neg).
+  - G: At a nonreal atom, real affine polynomials hit all of ℂ, so a phase rotation makes one atom negative.
+
+### NOGO-CIRCULAR · Premise is RH re-encoded (Lean circularity audit) (24)
+
+- **F0017 Weil–Clifford scalar coefficient positivity** · CCM · ⇔1 · 1 mod · A `CCMCliffordWeilProduct:riemannHypothesis_iff_xiWeilCliffordCoefficient_nonneg`
+  - Premise: 0 ≤ Re `xiWeilCliffordCoefficient` on the full ξ-evaluation domain.
+  - Dead: CCMCliffordWeilProduct — "hostile circularity certificate": positivity on the full domain is RH itself.
+  - G: Scalar Clifford reading of Weil positivity.
+- **F0028 First-clock principal relative capacity on tail** · CCM · ⇔1 · 1 mod · A `CCMFirstClockJuliaPrincipalRelativeNoGo:ccmFirstClockPrincipalRelativeCapacityOnTail_iff_rh`
+  - Premise: `CCMFirstClockPrincipalRelativeCapacityOnTail`.
+  - Dead: same module: "exactly RH, not an independent mechanism"; ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy_unbounded_of_scale_tendsto_zero — Krein no-go.
+  - G: Julia principal-relative residual capacity of the first clock.
+- **F0149 Theta prime admission NoGo receivers (analytic doublet / ℓ¹ half-density / quartet eight-bound)** · DIV · ⇔3 · 3 mod · A `HedenmalmThetaMovingHorizonAnalyticDoubletNoGo:all_summable_thetaMovingHorizonAnalyticCovariantDoubletEnergy_iff_riemannHypothesis`
+  - Premise: ∀q analytic covariant doublet energy summable; ∀q literal physical half-density in adaptive ℓ¹; symmetric-quartet Hardy–Green eight-unit bound.
+  - Dead: NoGo modules: "exactly RH, not an unconditional source theorem"; summable_abs…HalfDensityAmplitude_iff_boundaryFlux_zero — ℓ¹ admission is same-fibre neutrality; eight_lt_…QuartetHardyGreenEnergy — every exceptional quartet has energy > 8.
+  - G: Proposed unconditional source theorems for prime admission.
+- **F0136 Dyadic m-free zeta rungs** · DIV · ⇔1 · 1 mod · A `MFreeTwinNoGo:riemannHypothesis_iff_dyadicMFreeZetaRung_zero_ne_zero`
+  - Premise: Base rung `dyadicMFreeZetaRung 0` zero-free on Re s > 1/2.
+  - Dead: MFreeTwinNoGo:dyadicMFreeZetaRung_zero_iff_base — base rung carries exactly the zeta zeros; all positive rungs are zero-free.
+  - G: Dyadic m-free factorization of ζ.
+- **F0003 Arakelov power-orbit stability / Big-Witt square pullback** · GEO · ⇔3 ⇒4 ∧1 · 3 mod · A `ArakelovPowerOrbitRH:xiArakelovPowerPreperiodic_iff_riemannHypothesis`
+  - Premise: `XiArakelovPowerStable n` / `XiArakelovPowerPreperiodic n` (n≥2) on ξ-zero Arakelov coordinates.
+  - Dead: ArakelovPowerOrbitRH:xiArakelovPowerPreperiodic_iff_riemannHypothesis — "circularity audit": certificate is RH itself; BigWittArakelovSourceEndomorphismTerminal:not_deningerEntireArakelovSquarePullbackExists — global entire square pullback impossible.
+  - G: Finite monodromy of the Arakelov power orbit detects off-line zeros.
+- **F0178 Reflected character Bockstein / carrier norm equality** · GEO · ⇔1 ⇒4 · 2 mod · A `ReflectedCharacterCarrierClassification:riemannHypothesis_of_reflectedCharacterNorm_eq`
+  - Premise: At every ξ zero: non-inner reflected character derivation, nonzero relative character carrier, or ‖α ρ q‖ = ‖β ρ q‖ under the source calibrations.
+  - Dead: ReflectedCharacterCarrierClassification:reflectedCharacterNorm_eq_iff_criticalLine — "re-encoding verdict": the scalar hypothesis is the critical-line condition.
+  - G: Reflected characters have equal norm only on the line.
+- **F0167 Prime-power centered-mark collision / finite monodromy** · GEO · ⇔1 ⇒1 ∧1 · 2 mod · A `PrimePowerCenteredMarkRH:xiRightPrimePowerMarkCollision_iff_riemannHypothesis`
+  - Premise: `XiRightPrimePowerMarkCollision p` (one collision on a fixed base at every right-half zero); right-half prime-power mark finite monodromy.
+  - Dead: PrimePowerCenteredMarkRH — "circularity audit": bare zero-indexed certificate ⇔ RH; PrimePowerCenteredMarkSourceReceiverNoGo:not_rightHalfPrimePowerMarkFiniteMonodromy — divisor-independent finite monodromy impossible.
+  - G: Collisions of centered prime powers occur only on the line.
+- **F0162 Global barrelled BV–Wold source producer** · GEO · ⇔1 ⇒1 · 2 mod · A `PrimeDepthBVWoldBarrelledSourceTerminalNoGo:primeDepthBVWoldXiGlobalBarrelledSourceProducer_iff_riemannHypothesis`
+  - Premise: `PrimeDepthBVWoldXiGlobalBarrelledSourceProducer sourceDepth`.
+  - Dead: PrimeDepthBVWoldBarrelledSourceTerminalNoGo — "BW terminal no-go": producer ⇔ RH; certificate exists exactly on the critical line.
+  - G: Banach–Steinhaus null-orbit principle applied to cofinal readouts.
+- **F0251 Reduced-conductor Roos regulator** · GEO · ⇔1 ∧1 · 1 mod · A `XiReducedConductorRoosRegulatorClassification:nonempty_xiReducedConductorRoosRegulator_iff_riemannHypothesis`
+  - Premise: A reduced-conductor Roos regulator realizing all transverse Roos classes.
+  - Dead: same module: exists iff RH already holds; xiReducedMultiplicityConductorNearbyClass_lineConj — reduced data blind to reflection (an oriented regulator exists unconditionally).
+  - G: Conductor data regulating the Roos obstruction.
+- **F0046 Pre-divisor second-Cartier normal order law** · GEO · ⇔1 · 1 mod · A `CompleteResolutionSecondCartierNormalOrder:completeResolutionXiPreDivisorSecondCartierOrderLaw_iff_riemannHypothesis`
+  - Premise: `CompleteResolutionXiPreDivisorSecondCartierOrderLaw`.
+  - Dead: same theorem, "hostile classification": unconditional construction of the order law is exactly RH, not a construction.
+  - G: Global order law on the pre-divisor second Cartier complex.
+- **F0060 Gaussian entropy prime-cycle triangle holonomy** · GEO · ⇔1 · 1 mod · A `DeningerCalderonWittGaussianPrimeCycleTensorNoGo:forall_deningerGaussianEntropyPrimeCycleCarrier_holonomy_eq_zero_iff_rh`
+  - Premise: ∀q: holonomy of the scalar-coupled Gaussian prime triangle carrier vanishes.
+  - Dead: same module (NoGo): vanishing of any one retained triangle has exactly RH strength; deningerGaussianPrimeTriangleHolonomy_carrierFrom_ne_zero — base holonomy ≠ 0.
+  - G: Triangle holonomy on the ξ-divisor family.
+- **F0076 EWQ source-independent diagonal Krein completion** · GEO · ⇒1 · 1 mod · A `EulerSquarefreeWickSourceIndependentKreinCompletionNoGo:riemannHypothesis_of_everyXiEWQSourceIndependentDiagonalKreinCompletion`
+  - Premise: `EveryXiEWQSourceIndependentDiagonalKreinCompletion i j w p`.
+  - Dead: same module: not_reflectionPair_ewqSourceIndependentDiagonalKreinCompletions_of_re_ne_half and norm_ewqKreinXiPrimeCharacter_eq_one_of_reflectionPair_kreinCompletions — the premise forces |prime character| = 1, i.e. is the line condition itself.
+  - G: One fixed diagonal metric completes both members of every reflection pair.
+- **F0128 JAS Gamma–theta closed-flat unit-residue certificate** · GEO · ¬⇔1 · 1 mod · A `JointAncestryGammaThetaClosedFlatOffWallCompatibilityNoGo:exists_jasGammaThetaClosedFlatUnitResidueCertificate_iff_not_riemannHypothesis`
+  - Premise: Falsifier form: ∃ ξ-zero copy with `JASGammaThetaClosedFlatUnitResidueCertificate`.
+  - Dead: same module (structural no-go): certificate ⇔ same-copy nonneutrality, i.e. an off-line zero itself.
+  - G: Joint-ancestry creator package plus unit residue.
+- **F0014 Burnol Cartier / divided-shift source laws (Route R)** · OPR · ⇔4 ⇒6 · 7 mod · A `BurnolDividedShiftPhysicalDissipativity:riemannHypothesis_of_burnolXiDividedShiftPhysicalDissipativity`
+  - Premise: One of: divided-shift head flux dissipativity; forward head norm conservation; Gamma-head energy nonamplification; divided-shift physical dissipativity; source flatness; forward reflected Cartier–Stokes sewing.
+  - Dead: RouteRBurnolLocalProducerNoGo — each law is "exactly RH, not a weaker source lemma"; fixed ports fail at every right-half divisor candidate.
+  - G: Pre-divisor Euler–Gamma–Stokes source law forcing the co-Poisson head isometry.
+- **F0249 Bare reciprocal Clifford polarization** · OPR · ⇔1 ⇒1 N1 · 1 mod · A `XiReciprocalCliffordSquare:xiReciprocalCliffordPolarization_iff_riemannHypothesis`
+  - Premise: `XiReciprocalCliffordPolarization`.
+  - Dead: same theorem: "exact circularity audit for the bare Clifford-polarization predicate".
+  - G: Clifford polarization of the reciprocal ξ operator.
+- **F0126 Localized zero-free approximants near off-real points** · OPR · ⇒2 · 2 mod · A `LocalizedZeroFreeTransfer:riemannHypothesis_of_pointwise_zeroFree_approximants`
+  - Premise: For each off-real z (|Im z| ≤ 1/2): approximants Fn → XiC zero-free on a disc about z with a uniform proximity bound m ≤ ‖XiC w‖.
+  - Dead: LocalizationScopeAndGuardrail:proximity_hypothesis_is_conclusion — the proximity hypothesis already asserts XiC ≠ 0 there.
+  - G: Local Hurwitz transfer of zero-freeness.
+- **F0185 Route-P differentiable unitary completions of the fixed-node ξ phase** · PGM · ⇒3 ¬⇒4 · 4 mod · A `RoutePScalarUnitaryCompletionRegularityNoGo:riemannHypothesis_of_differentiable_scalarXiPhase_unitaryCompletion`
+  - Premise: A differentiable Hilbert defect vector (or unit source-frame overlap, or Gamma-sewn recovered phase completion) completing the fixed-node scalar ξ phase to unit norm at aperture 0; first-order slack.
+  - Dead: NoGo modules: every exact completion has the same first-order loss (tendsto_norm_sq_div_aperture_…); under ¬RH none is differentiable; RoutePFirstOrderSlackNoGo — curvature toll < phase defect.
+  - G: Differentiable unitary completion forces zero linear phase loss.
+- **F0093 Gamma-sewn Möbius aperture passive deletion completion** · PGM · ⇒2 · 1 mod · A `GammaSewnMobiusApertureStokesPassiveDeletionSignedCorrection:riemannHypothesis_of_gammaSewnMobiusApertureStokesCriticalPassiveDeletionCompletion`
+  - Premise: `GammaSewnMobiusApertureStokesCriticalPassiveDeletionCompletion` (or passive negative-correction completion).
+  - Dead: same theorem docstring: supplying the producer as premise is circular.
+  - G: Exact passive deletion producer of the critical aperture.
+- **F0102 HC bounded diagonal receiver** · PGM · ⇔2 · 1 mod · A `HCGaussHodgeBoundedDiagonalNoGo:riemannHypothesis_iff_forall_hcHasBoundedDiagonalReceiver`
+  - Premise: ∀T: `HCHasBoundedDiagonalReceiver m T` (grade-one version too).
+  - Dead: HCGaussHodgeBoundedDiagonalNoGo — "HC bounded-diagonal route kill": receiver is RH itself; gaussHodgePrimeLinearEscapeConstant_mul_prime_le — off-line copies dominate a linear prime profile.
+  - G: Bounded diagonal reception of every horizontal-collision window.
+- **F0186 Route-P approximate matrix-complete subquantum trace defect** · PGM · ⇔1 ¬⇒1 · 1 mod · A `RoutePMatrixCompleteSubquantumTraceDefectNoGo:routePSubquantumTraceDefectBoundaryRestriction_iff_riemannHypothesis`
+  - Premise: `RoutePSubquantumTraceDefectBoundaryRestriction`.
+  - Dead: same module: "approximate matrix-completion kill"; under ¬RH defect density ≥ 2N − budget.
+  - G: Approximate matrix-complete boundary restriction with subquantum trace defect.
+- **F0169 Prime-square Wold scale domination** · PGM · ⇔1 · 1 mod · A `PrimeSquareWoldScaleDominationRigidity:everyXiPrimeSquareWoldScaleDominated_iff_riemannHypothesis`
+  - Premise: `EveryXiPrimeSquareWoldScaleDominated`.
+  - Dead: same module: "already exactly RH-strength"; not_primeSquareWoldScaleDominated_of_pos — every positive drift escapes every fixed budget.
+  - G: Completed Wold cap on the prime-square signal.
+- **F0184 Route-E parity column-load defect** · PGM · ⇒1 · 1 mod · A `RouteEParityColumnLoadCircularityNoGo:routeEParityColumnDefectAllStrictHalfPowerBound_implies_riemannHypothesis`
+  - Premise: `RouteEParityColumnDefectAllStrictHalfPowerBound`.
+  - Dead: RouteEParityColumnLoadCircularityNoGo:routeEParityColumnDefectAllStrictHalfPowerBound_implies_signature — already the strict-half Möbius signature (Littlewood) criterion.
+  - G: Opposite-parity column-load control.
+- **F0078 FZZ argument-dilation Ward cancellation** · PHY · ⇔2 · 1 mod · A `FZZCigarParityArgumentDilationDarkOrbitNoGo:fzzCigarParityAllArgumentDilationWardCancellation_iff_riemannHypothesis`
+  - Premise: `FZZCigarParityAllArgumentDilationWardCancellation`.
+  - Dead: same module (NoGo): "adding Ward cancellation to universal dilation darkness is exactly RH"; dilation character ≠ 0.
+  - G: Ward cancellation added to universal dilation darkness.
+- **F0148 Theta Green reflected-pair + fibre neutrality** · THT · ⇔1 · 1 mod · A `HedenmalmThetaGreenReflectionPairNoGo:thetaGreenReflectedPairNeutral_and_fiberNeutral_iff_riemannHypothesis`
+  - Premise: `ThetaGreenReflectedPairNeutral ∧ ThetaGreenBoundaryNeutral`.
+  - Dead: HedenmalmThetaGreenReflectionPairNoGo:thetaGreenReflectedPairNeutral_unconditional — pair neutrality holds unconditionally (square-fold blindness); adds nothing.
+  - G: Adding reflected-pair cancellation to same-fibre neutrality.
+
+## Non-endpoint bucket
+
+- **F0277 Conditional-on-RH infrastructure (not endpoints)** · N96 · 42 mod. Constructions that take `hRH` as a hypothesis (Suzuki de Branges / model space / F_γ basis / screw L² form, Perron residues, ordered zero-copy enumerations, canonical products, Sonin moment spectra); they supply no endpoint. Listed in the index only.

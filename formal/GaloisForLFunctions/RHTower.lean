@@ -18430,6 +18430,7 @@ import GaloisForLFunctions.RHTower.GL3SiegelDomain
 import GaloisForLFunctions.RHTower.GL3FundamentalDomain
 import GaloisForLFunctions.RHTower.GL3PoincareUnfolding
 import GaloisForLFunctions.RHTower.GL3LongElementCell
+import GaloisForLFunctions.RHTower.GL3Laplacian
 import GaloisForLFunctions.RHTower.WeilKloostermanDegreeSums
 import GaloisForLFunctions.RHTower.WeilKloostermanLFunction
 import GaloisForLFunctions.RHTower.WeilKloostermanHasseDavenport
