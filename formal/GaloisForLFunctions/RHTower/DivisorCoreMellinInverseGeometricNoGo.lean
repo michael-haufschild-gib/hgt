@@ -1,6 +1,22 @@
 import GaloisForLFunctions.RHTower.DivisorCoreMellinBoundary
 import GaloisForLFunctions.HTGeometry.AbelianZetaGas.SocleNoLimit
 
+/-!
+# Growing-core inverse-geometric amplification of the literal divisor Mellin factor
+
+At the square-root Mellin boundary, each processed prime factor, normalized by its
+zero-frequency value, is a unit phase times the reciprocal of the characteristic
+factor of a geometric prime-log occupation.  The prime phase-defect theorem from
+the Abelian zeta-gas corpus applies at the exact exponent `1/2`: for every fixed
+nonzero frequency, the sum of defects diverges.  Consequently the norm of the
+literal finite-core Euler multiplier divided by its residue factor tends to
+infinity as the prime core grows.
+
+This rules out core-uniform pointwise domination by the Mellin residue.  It does
+not control the Fourier integral, signed source covariance, or endpoint terms:
+those can still cancel across frequencies and require source-specific analysis.
+-/
+
 open Filter
 open scoped Topology
 open GaloisForLFunctions.HTGeometry
@@ -9,6 +25,7 @@ namespace RHTower
 
 private theorem half_pos : (0 : ℝ) < 1 / 2 := by norm_num
 
+/-- The geometric prime-log modulus debt at Route T's exact half-density exponent. -/
 noncomputable def routeTInverseGeomDefect (t : ℝ) (p : Nat.Primes) : ℝ :=
   geomDefect (primeNome half_pos p).val (phaseAngle (primeNome half_pos p) (2 * t))
 
@@ -17,6 +34,7 @@ theorem routeTInverseGeomDefect_nonneg (t : ℝ) (p : Nat.Primes) :
   exact geomDefect_nonneg (primeNome half_pos p).pos
     (primeNome half_pos p).lt_one _
 
+/-- At every fixed nonzero frequency, the prime-indexed inverse-smoothing debt diverges. -/
 theorem not_summable_routeTInverseGeomDefect {t : ℝ} (ht : t ≠ 0) :
     ¬ Summable (routeTInverseGeomDefect t) := by
   intro hs
@@ -69,6 +87,7 @@ private theorem inverse_geom_factor_identity (q φ : ℝ) (hq0 : 0 < q) (hq1 : q
   field_simp [hq, h1, h1', hz, hzq]
   ring
 
+/-- One normalized Mellin Euler factor in inverse-geometric coordinates. -/
 noncomputable def routeTNormalizedPrimeEuler (t : ℝ) (p : Nat.Primes) : ℂ :=
   let q := (primeNome half_pos p).val
   let φ := phaseAngle (primeNome half_pos p) (2 * t)
@@ -116,6 +135,7 @@ private theorem prime_nome_half_exp (p : Nat.Primes) :
   congr 1
   ring
 
+/-- The inverse-geometric factor is the literal one-prime divisor-core multiplier. -/
 theorem divisorCoreMellinEuler_singleton_ratio (t : ℝ) (p : Nat.Primes) :
     divisorCoreMellinEuler {(p : ℕ)} ((t : ℂ) * Complex.I) /
         divisorCoreMellinEuler {(p : ℕ)} 0 = routeTNormalizedPrimeEuler t p := by
@@ -147,6 +167,7 @@ theorem divisorCoreMellinEuler_singleton_ratio (t : ℝ) (p : Nat.Primes) :
   rw [hden, harg, Complex.exp_sub, ← hqi, Complex.exp_neg]
   simp only [div_eq_mul_inv]
 
+/-- Exact identification of the full finite processed-prime core. -/
 theorem divisorCoreMellinEuler_ratio_eq_inverse_geom
     (t : ℝ) (s : Finset Nat.Primes) :
     divisorCoreMellinEuler (s.image (fun p : Nat.Primes => (p : ℕ)))
@@ -164,6 +185,31 @@ theorem divisorCoreMellinEuler_ratio_eq_inverse_geom
   rw [himg, himg, ← Finset.prod_div_distrib]
   exact Finset.prod_congr rfl (fun p _ => divisorCoreMellinEuler_singleton_ratio t p)
 
+/-- The literal core is a deterministic phase times the inverse of a positive
+geometric prime-log characteristic product. -/
+theorem divisorCoreMellinEuler_ratio_eq_inverse_geometricProduct
+    (t : ℝ) (s : Finset Nat.Primes) :
+    divisorCoreMellinEuler (s.image (fun p : Nat.Primes => (p : ℕ)))
+      ((t : ℂ) * Complex.I) /
+      divisorCoreMellinEuler (s.image (fun p : Nat.Primes => (p : ℕ))) 0 =
+        (∏ p ∈ s, Complex.exp (-((phaseAngle (primeNome half_pos p) (2 * t) : ℂ) *
+          Complex.I))) *
+        (∏ p ∈ s, geomFactor (primeNome half_pos p).val
+          (phaseAngle (primeNome half_pos p) (2 * t)))⁻¹ := by
+  rw [divisorCoreMellinEuler_ratio_eq_inverse_geom, routeTNormalizedEulerCore]
+  calc
+    (∏ p ∈ s, routeTNormalizedPrimeEuler t p) =
+        ∏ p ∈ s, Complex.exp (-((phaseAngle (primeNome half_pos p) (2 * t) : ℂ) *
+          Complex.I)) *
+          (geomFactor (primeNome half_pos p).val
+            (phaseAngle (primeNome half_pos p) (2 * t)))⁻¹ := by
+              apply Finset.prod_congr rfl
+              intro p hp
+              exact inverse_geom_factor_identity _ _ (primeNome half_pos p).pos
+                (primeNome half_pos p).lt_one
+    _ = _ := by rw [Finset.prod_mul_distrib, Finset.prod_inv_distrib]
+
+/-- No core-independent pointwise residue-dominance constant exists at a nonzero frequency. -/
 theorem tendsto_divisorCoreMellinEuler_ratio_norm_atTop {t : ℝ} (ht : t ≠ 0) :
     Tendsto (fun s : Finset Nat.Primes =>
       ‖divisorCoreMellinEuler (s.image (fun p : Nat.Primes => (p : ℕ)))

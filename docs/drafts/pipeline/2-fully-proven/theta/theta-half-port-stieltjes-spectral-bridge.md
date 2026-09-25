@@ -120,6 +120,52 @@ This identity is the concrete source coupling to test against the
 global cusp-phase law; it retains the seam term from the one-port
 formula rather than replacing it by an abstract positive measure.
 
+## Xi is the seam velocity of a positive spectral-measure flow
+
+For every spatial shift `s>=0`, form the actual right-tail connection
+and its Stieltjes density by
+\[
+ h_s(z)=\int_0^\infty k(s+x)e^{izx}\,dx,
+ \qquad
+ \sigma_s(t)=\frac{\operatorname{Im}h_s(\sqrt t)}{\pi}>0
+ \quad(t>0).                                                   \tag{7}
+\]
+Strict decrease of `k` on the positive ray makes (1)--(2) apply to
+each shifted tail. Differentiation under the integral followed by
+integration by parts gives the **exact causal source equation**
+\[
+ \partial_s h_s(z)=-k(s)-iz h_s(z).                         \tag{8}
+\]
+For real `u>0`, write \(h_s(u)=P_s(u)+iI_s(u)\). Equation (8) is a
+forced two-component rotation,
+\[
+ \partial_s P_s(u)=-k(s)+uI_s(u),\qquad
+ \partial_s I_s(u)=-uP_s(u).                                  \tag{9}
+\]
+The Stieltjes boundary formula says
+\(P_s(u)=\operatorname{PV}\int_0^\infty
+\sigma_s(t)/(t-u^2)\,dt\). Therefore (9) is also the singular-integral
+spectral flow
+\[
+ \partial_s\sigma_s(t)
+   =-\frac{\sqrt t}{\pi}\operatorname{PV}
+      \int_0^\infty\frac{\sigma_s(q)}{q-t}\,dq,
+ \qquad s\geq0,\ t>0.                                      \tag{10}
+\]
+At the modular seam `s=0`, \(P_0(u)=\Xi(u)/2\), so
+\[
+ \boxed{\displaystyle
+ \left.\partial_s\sigma_s(u^2)\right|_{s=0}
+       =-\frac{u}{2\pi}\Xi(u).}                         \tag{11}
+\]
+This is a source-defined **normal-velocity law**: positive real Xi
+zeros are stationary spectral-density frequencies at the seam. It
+links the static Stieltjes picture to the corpus's two-ended causal
+Volterra equation. The flow is positive for every actual right-tail
+shift, but its initial velocity changes sign at successive Xi
+crossings; positivity of the evolving density alone does not orient
+that velocity in the complex frequency plane.
+
 ## Paper proof
 
 Integration by parts, using `k(x)->0` and
@@ -158,6 +204,9 @@ For (4), substitute `z=r` in the renewal card's exact identity
 \(h(2z)=(a-iz)D(-iz)+icz\) and use
 \(D(-ir)=c\exp[-C(r)-iS(r)]\). Taking imaginary parts and applying
 (3) gives (4), including its strict sign by (5).
+Equations (7)--(11) follow by applying the same Stieltjes argument
+to `x -> k(s+x)` and taking real and imaginary parts of (8); no
+zero assumption is used.
 
 ## Remaining producer question
 
