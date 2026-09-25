@@ -320,6 +320,91 @@ Taylor coefficient of \(Q\)** from the single self-dual parameter
 the new renewal phase; the coefficient formula and recurrence have
 not been formalized.
 
+## The physical theta source is the renewal input's exit density
+
+The renewal input is linked directly to the literal completed-theta
+source, not just to the same Mellin transform. Write
+\[
+ k(x)=y^{5/4}\bigl(2y\Theta''(y)+3\Theta'(y)\bigr),
+ \qquad y=e^{2x},\quad x\geq0,
+\]
+as in the [rational-cusp boundary law](theta-rational-cusp-boundary-law.md).
+Differentiating the explicit theta expression for \(v\) gives the
+source identity
+\[
+ \boxed{\displaystyle
+ v'(2x)=-\frac{e^{x/2}}{2c}\,k(x)<0.} \tag{18}
+\]
+Indeed \(v(t)=-e^{3t/2}\Theta'(e^t)/c\), so the chain rule produces
+the displayed \(3\Theta'+2y\Theta''\) combination exactly.
+Since \(v(0)=a\) and \(v(t)\to0\), the density
+\(g(t)=-v'(t)/a\) is a probability density on \([0,\infty)\).
+Its mean is \(q/a<2/3\), and the entire completed Xi transform has
+the exact service-law form
+\[
+ \boxed{\displaystyle
+ \Xi(2z)=2ac\int_0^\infty e^{-at}\cos(zt)\,g(t)\,dt.} \tag{19}
+\]
+This follows from the even-source Fourier formula
+\(\Xi(2z)=2\int_0^\infty k(x)\cos(2zx)\,dx\),
+the substitution \(t=2x\), and (18).
+
+The weighted renewal kernel \(R(t)=e^{at}Q(t)\) is the Lévy density
+of a concrete compound-Poisson law. Let \(Y\) be a sum of a geometric
+number of independent increments with common density \(v/q\),
+where \(\Pr(N=m)=(1-q)q^m\) for \(m\geq0\). With
+\(\widehat v(s)=\int_0^\infty e^{-st}v(t)\,dt\), the convolution
+logarithm (1) yields
+\[
+ \boxed{\displaystyle
+ \mathbb E[e^{-sY}]
+  =\frac{1-q}{1-\widehat v(s)}
+  =\exp\!\int_0^\infty (e^{-st}-1)R(t)\,dt,
+ \qquad
+ D(\lambda)=\frac{c(1-q)}
+                 {\mathbb E[e^{-(a+\lambda)Y}]}.} \tag{20}
+\]
+The first identity holds for \(\operatorname{Re}s\geq0\); the second
+holds for \(\operatorname{Re}\lambda\geq-a\). Thus (8) couples
+*two reciprocal Laplace values of one positive workload law*.
+The waiting-time law \(\mu\) from (10) has survival
+\(s(t)=e^{-at}(1+tR(t))\), so both probabilistic objects are generated
+from the same physical theta exit density.
+
+There is also a strict orientation on the **complex** connection.
+If \(\lambda=x+iy\), \(x\geq-a\), and \(y>0\), then
+\(f_x(t)=e^{-xt}\nu(t)\) is positive and strictly decreasing: every
+theta summand has logarithmic derivative
+\(a+1-x-\pi n^2e^t\leq1+2a-\pi<0\).
+Pairing consecutive positive and negative half-periods of sine gives
+\(\int_0^\infty f_x(t)\sin(yt)\,dt>0\). Consequently
+\[
+ \boxed{\displaystyle
+ \operatorname{Re}D(\lambda)\geq c(1-q)>0,\qquad
+ \operatorname{Im}D(\lambda)>0
+ \quad(x\geq-a,\ y>0).} \tag{21}
+\]
+The real-part inequality uses
+\(|\widehat\nu(\lambda)|\leq cq\). In the upper half of
+\(|\operatorname{Re}\lambda|<a\), \(D(\lambda)\) lies in the
+first quadrant and \(D(-\lambda)\) in the fourth. Comparing their
+zero-free logarithms in (7) therefore sharpens the phase bound to
+\[
+ \boxed{\displaystyle
+ 0<\operatorname{Im}S(\lambda)<1/5.} \tag{22}
+\]
+Equivalently, for \(\operatorname{Re}z>0\) and
+\(|\operatorname{Im}z|<a\),
+\(0<\operatorname{Re}[\Phi(z)-\arctan(z/a)]<1/5\).
+This orients the imaginary phase throughout the complex strip,
+not just on real frequencies. It does **not** control the real
+balance \(\operatorname{Re}[\eta+S]\) on the level
+\(\operatorname{Im}[\eta+S]=\pi/2\), so it does not exclude an
+off-line Xi zero. Any compound-Poisson or Lee--Yang route must
+prove that remaining coupled balance for this literal theta law;
+generic positivity, reciprocal symmetry, and small workload
+intensity do not assert it.
+
 ## The next producer question
 
 The universal reflection (3) fixes every even Taylor coefficient of
@@ -330,11 +415,12 @@ turns the two-ended connection into a single probability-phase level:
 \(\mathbb E_\mu[\operatorname{Si}(zT)]=\pi/2\).
 The remaining mathematical obstacle is to prove, from the *literal*
 theta ODE orbit or its atom structure, that this level has no nonreal
-point in the right half of the critical strip. The positivity of
-\(\mu\), evenness of its survival function, and positive definiteness
-of \(\Phi'\) are exact structural facts, but no zero-location theorem
-has been derived from them. The source search found existing
-one-sided Mellin, theta-log-concavity, prime-translation, and positive
-kernel identities, but no source-specific level-set confinement
-law. The results here are paper only; none of (1)--(17) is asserted
-Lean-closed.
+point in the right half of the critical strip. The physical source is
+also the exit density of the same subcritical renewal input, and its
+one-sided connection is reciprocal to a compound-Poisson Laplace
+transform. The strict complex quadrant law (21) orients the phase,
+but the real two-port balance remains open. The source search found
+existing one-sided Mellin, theta-log-concavity, prime-translation,
+positive-kernel, compound-Poisson, and finite Lee--Yang identities,
+but no source-specific level-set confinement law. The results here
+are paper only; none of (1)--(22) is asserted Lean-closed.

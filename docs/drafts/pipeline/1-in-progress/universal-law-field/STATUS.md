@@ -7551,3 +7551,62 @@ With the pair field a pointwise value of the regular field inside the gap, this 
 neither sum carries a near-singular term, the closest contribution on each side lying at the distance
 of the neighbouring gap, so the pair field of a close pair is controlled by ordinary one-sided
 spacing data at the two zeros and the pair's own singularity is absent by construction.
+
+## MUST-448 — the virial of the pair force is a pure pair count
+
+For distinct reals `Σ_j Σ_{k≠j} (x_j − x_k)⁻¹ = 0` and `Σ_j x_j Σ_{k≠j} (x_j − x_k)⁻¹ = N(N−1)/2`.
+Both follow from the swap involution on ordered pairs: the first integrand is antisymmetric, and
+`x_j/(x_j − x_k) + x_k/(x_k − x_j) = 1` on every unordered pair. **Must:** the virial of the pair
+force sees only the number of pairs and never the configuration — the first quantity in this lane
+that is at once exact, unconditional and configuration-blind, hence height-uniform with no spacing
+input. It is translation invariant: the same value holds about every centre, because the forces
+balance.
+
+## MUST-449 — the second moment collapses at a configuration-independent rate
+
+Along `ẋ_j = −2 Σ_{k≠j} (x_j − x_k)⁻¹` the virial identity gives `d/dτ Σ_j (x_j − c)² = −2N(N−1)`
+exactly, hence `Σ_j (x_j(τ) − c)² = Σ_j (x_j(0) − c)² − 2N(N−1)τ` for as long as the flow exists.
+Nonnegativity of the second moment forces `τ ≤ Σ_j (x_j(0) − c)² / (2N(N−1))`, so some pair
+collides. **Must:** a collision criterion exists that requires no bound on any field, no selection
+of a favourable pair and no spacing hypothesis. The open core of MUST-443…447 is bypassed rather
+than solved.
+
+## MUST-450 — the signed observables of the flow are exactly the convex ones
+
+Symmetrisation with a weight `g` gives `2 Σ_j g(x_j) F_j = Σ_{j≠k} [g(x_j) − g(x_k)]/(x_j − x_k)`,
+the off-diagonal sum of the divided differences of `g`. **Must:** `Σ_j G(x_j)` is nonincreasing
+along the flow exactly when `g = G′` is monotone, i.e. exactly when `G` is convex. `G = (x − c)²`
+is the unique case in which every divided difference is the same constant `2`, which is the source
+of its configuration-blind rate.
+
+## CANNOT-451 — the virial does not localise
+
+A convex function on `ℝ` bounded above is constant. **Cannot** therefore localise any signed
+observable of the flow to a window: a localised virial weight would be a nonconstant convex
+function bounded above. **Must** instead carry the external field explicitly. Centring on the
+window's own centroid cancels the leading external effect exactly — `Σ_j u_j/(d − u_j) =
+Σ_j u_j²/(d(d − u_j))` whenever `Σ_j u_j = 0` — and the residual has a fixed sign, since
+`d(d − u_j) ≥ |d|(|d| − r) > 0` for `|u_j| ≤ r < |d|`: the outside zeros always oppose collapse, by
+at most `4 I₂ Σ_y [|d_y|(|d_y| − r)]⁻¹`. **Cannot** conclude collapse for a unit window of the zeta
+zeros from that bound alone: with `N ≍ ϱ` the internal rate is `≍ N²` while the external sum
+diverges logarithmically as the nearest outside zero approaches the window edge, giving `≍ N² log N`.
+The sharp remaining gap is the boundary divergence of `Σ_y |d_y|⁻²`, not the pair field of MUST-447.
+
+## MUST-452 — the block collapse threshold is one formula, `δ²E < 6/(N+1)`
+
+A block of `N` evenly spaced zeros with gap `δ` has second moment `N(N² − 1)δ²/12` about its
+centroid, so the virial criterion `4 I₂ E < 2N(N−1)` is exactly `(N + 1)·δ²E < 6`, with `E` the
+field of the zeros outside the block. **Must:** the whole family of collision criteria is a single
+law with a single constant; `N = 2` returns the pair criterion `δ²E < 2`. With every outside gap at
+least `G`, the telescoping bound `Σ_{m≥1} (mG)⁻² ≤ 2/G²` gives `E ≤ 4/G²` and hence the
+self-contained threshold `δ/G < (3/(2(N + 1)))^{1/2}`, which at `N = 2` is `δ/G < 1/√2`.
+
+## CANNOT-453 — enlarging the block is not a route around the pair field
+
+`I₂/(N(N−1)) = (N + 1)δ²/12`: the moment of inertia outgrows the pair count by exactly one power of
+`N`. **Cannot** therefore extract anything from the `N²` internal collapse rate — the threshold
+`6/(N + 1)` is strictly decreasing, so every block larger than a pair is strictly harder to collapse
+and the pair is optimal. **Must** keep the criterion at `N = 2` and attack the pair field itself.
+This closes the window-enlargement successor of CANNOT-451 at its source: the earlier diagnosis that
+the obstruction was the logarithmic boundary divergence of `Σ_y |d_y|⁻²` was wrong, since the
+criterion degrades like `1/(N + 1)` even with a perfect buffer.

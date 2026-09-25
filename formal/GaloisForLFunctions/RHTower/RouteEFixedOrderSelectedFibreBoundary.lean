@@ -629,5 +629,198 @@ theorem routeEFixedOrderCofactorFibre_gt_fraction
   simp only [Nat.cast_one, mul_one]
   linarith
 
+/-- Quantitative all-grade law: completing every smaller denominator cofactor
+retains at least a forty-eighth of the principal edge, with Möbius parity. -/
+theorem routeEFixedOrderIntegerNumeratorFibre_margin
+    {r : ℝ} (hr : 1 ≤ r) {a : ℕ} (ha : 0 < a) (haSq : Squarefree a)
+    (q : Nat.Primes) (hq128 : 128 * (a : ℝ) ≤ (q : ℝ)) :
+    (1 / 48 : ℝ) * routeEFixedOrderDifference r (a : ℝ) (q : ℝ) <
+      -(ArithmeticFunction.moebius a : ℝ) *
+        routeEFixedOrderIntegerNumeratorFibre r a q := by
+  let mu : ℝ := (ArithmeticFunction.moebius a : ℝ)
+  let coeff : ℕ → ℝ := fun d => if Nat.Coprime a d then
+    mu * (ArithmeticFunction.moebius ((q : ℕ) * d) : ℝ) else 0
+  have hmuSq : mu ^ (2 : ℕ) = 1 := by
+    change (ArithmeticFunction.moebius a : ℝ) ^ (2 : ℕ) = 1
+    exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree haSq
+  have hmuAbs : |mu| = 1 := by
+    change |(ArithmeticFunction.moebius a : ℝ)| = 1
+    exact_mod_cast ArithmeticFunction.abs_moebius_eq_one_of_squarefree haSq
+  have hcoeff (d : ℕ) : |coeff d| ≤ 1 := by
+    dsimp [coeff]
+    split_ifs with h
+    · rw [abs_mul, hmuAbs, one_mul]
+      exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := (q : ℕ) * d)
+    · norm_num
+  have hnewcoeff (d : ℕ) : |-mu * coeff d| ≤ 1 := by
+    rw [abs_mul, abs_neg, hmuAbs, one_mul]
+    exact hcoeff d
+  have hcoeffOne : (-mu * coeff 1) = 1 := by
+    simp [coeff, ArithmeticFunction.moebius_apply_prime q.property]
+    nlinarith
+  have hq3 : 3 ≤ (q : ℕ) := by
+    have ha1 : (1 : ℝ) ≤ a := by exact_mod_cast ha
+    have hqBig : (128 : ℝ) ≤ (q : ℝ) := by nlinarith
+    exact_mod_cast (show (3 : ℝ) ≤ (q : ℝ) by linarith)
+  have hpos := routeEFixedOrderCofactorFibre_gt_fraction hr
+    (by exact_mod_cast ha : (0 : ℝ) < a) hq3 hq128
+    (fun d => -mu * coeff d) hnewcoeff hcoeffOne
+  have hlinear : routeEFixedOrderCofactorFibre r (a : ℝ) (q : ℕ)
+      (fun d => -mu * coeff d) =
+      -mu * routeEFixedOrderCofactorFibre r (a : ℝ) (q : ℕ) coeff := by
+    unfold routeEFixedOrderCofactorFibre
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro d hd
+    ring
+  change (1 / 48 : ℝ) * routeEFixedOrderDifference r (a : ℝ) (q : ℝ) <
+    -mu * routeEFixedOrderCofactorFibre r (a : ℝ) (q : ℕ) coeff
+  rw [← hlinear]
+  exact hpos
+
+theorem routeEFixedOrderDifference_scale
+    {r a q : ℝ} (ha : 0 ≤ a) (hq : 0 < q) :
+    routeEFixedOrderDifference r a q =
+      q ^ (-r) * routeEFixedOrderDifference r (a / q) 1 := by
+  have h1 : a + q = q * (a / q + 1) := by
+    field_simp
+  have h2 : 2 * a + q = q * (2 * (a / q) + 1) := by
+    field_simp
+  unfold routeEFixedOrderDifference
+  rw [h1, h2, Real.mul_rpow hq.le (by positivity),
+    Real.mul_rpow hq.le (by positivity)]
+  ring
+
+theorem routeEFixedOrderDifference_continuousOn_ratio
+    (r α β : ℝ) (hα : 0 < α) :
+    ContinuousOn (fun t : ℝ => routeEFixedOrderDifference r t 1) (Icc α β) := by
+  have hc1 : ContinuousOn (fun t : ℝ => t + 1) (Icc α β) := by fun_prop
+  have hc2 : ContinuousOn (fun t : ℝ => 2 * t + 1) (Icc α β) := by fun_prop
+  have hp1 : ContinuousOn (fun t : ℝ => (t + 1) ^ (-r)) (Icc α β) :=
+    hc1.rpow_const (fun t ht => Or.inl (ne_of_gt (by linarith [ht.1] : 0 < t + 1)))
+  have hp2 : ContinuousOn (fun t : ℝ => (2 * t + 1) ^ (-r)) (Icc α β) :=
+    hc2.rpow_const (fun t ht => Or.inl (ne_of_gt (by linarith [ht.1] : 0 < 2 * t + 1)))
+  convert hp1.sub hp2 using 1
+  funext t
+  rfl
+
+/-- Positive compact ratio floor for the source edge at a fixed exponent. -/
+theorem exists_routeEFixedOrderRatioFloor
+    {r α β : ℝ} (hr : 0 < r) (hα : 0 < α) (hαβ : α ≤ β) :
+    ∃ m : ℝ, 0 < m ∧ ∀ t ∈ Icc α β,
+      m ≤ routeEFixedOrderDifference r t 1 := by
+  obtain ⟨t₀, ht₀, hmin⟩ := isCompact_Icc.exists_isMinOn
+    ⟨α, ⟨le_rfl, hαβ⟩⟩
+    (routeEFixedOrderDifference_continuousOn_ratio r α β hα)
+  refine ⟨routeEFixedOrderDifference r t₀ 1,
+    routeEFixedOrderDifference_pos hr (lt_of_lt_of_le hα ht₀.1) (by norm_num), ?_⟩
+  intro t ht
+  exact hmin ht
+
+/-- On a compact proportional prime-pair band, the literal full-cofactor
+source retains a fixed positive fraction of its homogeneous main edge. -/
+theorem exists_routeEPrimeBandFloor
+    {r : ℝ} (hr : 1 ≤ r) :
+    ∃ C : ℝ, 0 < C ∧ ∀ p q : Nat.Primes,
+      (1 / 1024 : ℝ) ≤ ((p : ℝ) / (q : ℝ)) →
+      ((p : ℝ) / (q : ℝ)) ≤ (1 / 256 : ℝ) →
+      C * (q : ℝ) ^ (-r) ≤ routeEFixedOrderPrimeFibre r p q := by
+  obtain ⟨m, hm, hmin⟩ := exists_routeEFixedOrderRatioFloor
+    (r := r) (α := (1 / 1024 : ℝ)) (β := (1 / 256 : ℝ))
+    (by linarith) (by norm_num) (by norm_num)
+  refine ⟨m / 48, by positivity, ?_⟩
+  intro p q hlo hhi
+  have hq0 : (0 : ℝ) < (q : ℝ) := by exact_mod_cast q.property.pos
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.pos
+  have hp_le : (p : ℝ) ≤ (1 / 256 : ℝ) * (q : ℝ) :=
+    (div_le_iff₀ hq0).mp hhi
+  have hq128 : 128 * (p : ℝ) ≤ (q : ℝ) := by linarith
+  have hq3 : 3 ≤ (q : ℕ) := by
+    have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast p.property.two_le
+    exact_mod_cast (show (3 : ℝ) ≤ (q : ℝ) by linarith)
+  have hc1 :
+      (if Nat.Coprime (p : ℕ) 1 then
+        (ArithmeticFunction.moebius (p : ℕ) : ℝ) *
+          (ArithmeticFunction.moebius ((q : ℕ) * 1) : ℝ)
+      else 0) = 1 := by
+    simp [ArithmeticFunction.moebius_apply_prime p.property,
+      ArithmeticFunction.moebius_apply_prime q.property]
+  have hrel : (1 / 48 : ℝ) * routeEFixedOrderDifference r (p : ℝ) (q : ℝ) <
+      routeEFixedOrderPrimeFibre r p q := by
+    exact routeEFixedOrderCofactorFibre_gt_fraction hr hp0 hq3 hq128 _
+      (routeEFixedOrderPrimeFibre_coeff_bound p q) hc1
+  have hmFloor : m ≤ routeEFixedOrderDifference r ((p : ℝ) / (q : ℝ)) 1 :=
+    hmin _ ⟨hlo, hhi⟩
+  have hscale := routeEFixedOrderDifference_scale
+    (r := r) (a := (p : ℝ)) (q := (q : ℝ)) hp0.le hq0
+  calc
+    (m / 48) * (q : ℝ) ^ (-r) =
+        (1 / 48 : ℝ) * ((q : ℝ) ^ (-r) * m) := by ring
+    _ ≤ (1 / 48 : ℝ) * ((q : ℝ) ^ (-r) *
+          routeEFixedOrderDifference r ((p : ℝ) / (q : ℝ)) 1) := by
+      exact mul_le_mul_of_nonneg_left
+        (mul_le_mul_of_nonneg_left hmFloor (by positivity)) (by norm_num)
+    _ = (1 / 48 : ℝ) * routeEFixedOrderDifference r (p : ℝ) (q : ℝ) := by
+      rw [hscale]
+    _ ≤ routeEFixedOrderPrimeFibre r p q := hrel.le
+
+/-- The adjacent composite grade has a uniform negative source floor on the
+same proportional band; this is a distinct literal numerator channel. -/
+theorem exists_routeECompositeBandFloor
+    {r : ℝ} (hr : 1 ≤ r) :
+    ∃ C : ℝ, 0 < C ∧ ∀ p q : Nat.Primes,
+      3 ≤ (p : ℕ) →
+      (1 / 1024 : ℝ) ≤ ((p : ℝ) / (q : ℝ)) →
+      ((p : ℝ) / (q : ℝ)) ≤ (1 / 256 : ℝ) →
+      routeEFixedOrderIntegerNumeratorFibre r (2 * (p : ℕ)) q ≤
+        -C * (q : ℝ) ^ (-r) := by
+  obtain ⟨m, hm, hmin⟩ := exists_routeEFixedOrderRatioFloor
+    (r := r) (α := (1 / 512 : ℝ)) (β := (1 / 128 : ℝ))
+    (by linarith) (by norm_num) (by norm_num)
+  refine ⟨m / 48, by positivity, ?_⟩
+  intro p q hp3 hlo hhi
+  have hq0 : (0 : ℝ) < (q : ℝ) := by exact_mod_cast q.property.pos
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.pos
+  have hp_le : (p : ℝ) ≤ (1 / 256 : ℝ) * (q : ℝ) :=
+    (div_le_iff₀ hq0).mp hhi
+  have hq128 : 128 * ((2 * (p : ℕ) : ℕ) : ℝ) ≤ (q : ℝ) := by
+    push_cast
+    linarith
+  have hpodd : Odd (p : ℕ) := p.property.odd_of_ne_two (by omega)
+  have hcop : Nat.Coprime 2 (p : ℕ) := hpodd.coprime_two_left
+  have hsq : Squarefree (2 * (p : ℕ)) :=
+    Nat.squarefree_mul_iff.mpr ⟨hcop, Nat.prime_two.squarefree, p.property.squarefree⟩
+  have hmu : (ArithmeticFunction.moebius (2 * (p : ℕ)) : ℝ) = 1 := by
+    rw [ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime hcop,
+      ArithmeticFunction.moebius_apply_prime Nat.prime_two,
+      ArithmeticFunction.moebius_apply_prime p.property]
+    norm_num
+  have hmargin := routeEFixedOrderIntegerNumeratorFibre_margin hr
+    (by omega : 0 < 2 * (p : ℕ)) hsq q hq128
+  rw [hmu] at hmargin
+  have hmFloor : m ≤ routeEFixedOrderDifference r
+      (((2 * (p : ℕ) : ℕ) : ℝ) / (q : ℝ)) 1 := by
+    apply hmin
+    have hratio : (((2 * (p : ℕ) : ℕ) : ℝ) / (q : ℝ)) =
+        2 * ((p : ℝ) / (q : ℝ)) := by push_cast; ring
+    rw [hratio]
+    constructor <;> linarith
+  have hscale := routeEFixedOrderDifference_scale
+    (r := r) (a := ((2 * (p : ℕ) : ℕ) : ℝ)) (q := (q : ℝ))
+    (by positivity) hq0
+  have hbound : (m / 48) * (q : ℝ) ^ (-r) ≤
+      (1 / 48 : ℝ) * routeEFixedOrderDifference r
+        ((2 * (p : ℕ) : ℕ) : ℝ) (q : ℝ) := by
+    calc
+      _ = (1 / 48 : ℝ) * ((q : ℝ) ^ (-r) * m) := by ring
+      _ ≤ (1 / 48 : ℝ) * ((q : ℝ) ^ (-r) *
+          routeEFixedOrderDifference r
+            (((2 * (p : ℕ) : ℕ) : ℝ) / (q : ℝ)) 1) := by
+        exact mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_left hmFloor (by positivity)) (by norm_num)
+      _ = (1 / 48 : ℝ) * routeEFixedOrderDifference r
+          ((2 * (p : ℕ) : ℕ) : ℝ) (q : ℝ) := by rw [hscale]
+  linarith
+
 end
 end RHTower

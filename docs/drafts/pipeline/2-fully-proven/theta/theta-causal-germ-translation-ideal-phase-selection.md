@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven (paper theorem; Lean formalization open)
 - **Type:** THEOREM (paper), exact source-class obstruction and cofinal prime-port no-go
 - **Routes:** STC, CSB, U, BPC, K-RVM, MPLF, RHist
-- **Statement:** A smooth half-line correction that gives the completed theta port a strict right-half-plane modulus orientation must cancel every even Taylor jet of the source at the causal cut. Odd parts of finite full-line prime translations lie in the Xi ideal and cannot do this. At every sufficiently large prime, **every real clock/deletion commutator coefficient** fails strip-wide order; the failure also persists for log-narrow positive prime packets. The obstruction is an unconditional complex phase aperture forced by the proved Xi zero-radius bound.
+- **Statement:** A smooth half-line correction that gives the completed theta port a strict right-half-plane modulus orientation must cancel every even Taylor jet of the source at the causal cut. Odd parts of finite full-line prime translations lie in the Xi ideal and cannot do this. At every sufficiently large prime, **every real clock/deletion commutator coefficient** fails strip-wide order; the failure persists for log-narrow positive packets and for **all positive two-scale packets with sublinear logarithmic spread**. The obstruction is an unconditional complex phase aperture forced by the proved Xi zero-radius bound.
 - **Dependencies:** [Alternating half-port orientation](theta-half-line-port-alternating-orientation.md), in particular its source nonvanishing and unconditional two-sign simple-critical-zero density; completed theta source's smooth even Schwartz profile and exponential moments; [multiplicity-exact Xi reciprocal-square resolvent](../../../../../formal/GaloisForLFunctions/RHTower/XiRelativeResolventTrace.lean), [source zero-radius theorem](../../../../../formal/GaloisForLFunctions/RHTower/XiReciprocalSquareSecondMomentRadius.lean), critical-strip/exterior zero-freeness, and existence of Xi zeros; ordinary Fourier integration by parts and translation change of variables.
 
 ## Goal and change of representation
@@ -267,4 +267,147 @@ Re z₀ - (1-p⁻¹)m_p/2
 
 It remains negative at a nearby point in the open physical strip. The bound is uniform in `μ_p`: **one prime threshold works for every real gauge coefficient at once**. The imaginary source phase is the part no real commutator coefficient can cancel.
 
-The two operator orderings fail the same complex phase test despite identical favorable local zero orientation; clock-after-deletion also has the separate real wall shear (11a). A viable producer must change the wall phase geometry rather than merely differentiate, translate, or reorder a **single** Euler deletion with a real commutator coefficient. This does not rule out collective prime correlations, a modular commutator, or singular cofinal operations. The [ordered prime–modular theta commutator](theta-prime-modular-commutator-crossing.md) is outside the translation-polynomial class of (6), but its present real one-crossing law has not established this complex phase order. External novelty of the combined causal-germ, translation-ideal, and phase-aperture results is not audited. Lean formalization remains open.
+## Log-narrow collective packets inherit the obstruction
+
+**[PROVED HERE ON PAPER]** Replacing one prime by any positive, normalized packet of primes whose logarithmic width tends to zero still fails strip-wide order, uniformly over **all** real commutator gauges. More generally, let finite weights `v_(R,j)≥0` sum to one, let `L_(R,j)=log p_(R,j)`, and suppose a reference `L_R→∞` satisfies
+
+```text
+δ_R:=max_j |L_(R,j)-L_R|→0.                         (25)
+```
+
+The primes need not be distinct. Define the even real source symbol and its gauge port by
+
+```text
+A_R(w)=1-∑_j v_(R,j) p_(R,j)^(-1/2) cosh(L_(R,j)w),
+E_(R,μ)(w)=X(w)/2+A_R(w)X'(w)
+                         +μ_R A_R'(w)X(w)/L_R,      μ_R∈ℝ. (26)
+```
+
+For `w=1/2+iβ` with `|β-2|≤π/L_R`, the positive-frequency packet satisfies, uniformly over that interval,
+
+```text
+∑_j v_(R,j)e^(i(L_(R,j)-L_R)β)=1+o(1),
+∑_j v_(R,j)(L_(R,j)/L_R)e^(i(L_(R,j)-L_R)β)=1+o(1). (27)
+```
+
+Indeed `|e^(it)-1|≤|t|`, `β` stays bounded, and (25) controls both phase error and scale ratio. The corresponding negative-frequency sums, each weighted by `p_(R,j)^(-1)`, are `o(1)` because `min_j p_(R,j)→∞`. Consequently the wall expression `[E_(R,μ)-X/2]/X` differs from
+
+```text
+z(1/2+iβ)-e^(iL_Rβ)[z(1/2+iβ)+μ_R]/2           (28)
+```
+
+by at most `η_R(1+|μ_R|)` with `η_R→0`, uniformly in the displayed `β` interval. Choose its phase so that `e^(iL_Rβ_R)(z₀+μ_R)=|z₀+μ_R|` and `|β_R-2|≤π/L_R`. Since `|μ_R|≤|z₀+μ_R|+|z₀|` and `|z₀+μ_R|≥Im z₀>2 Re z₀`, the error is small **relative to the same modulus that creates the negative margin**. Thus `Re[(E_(R,μ)-X/2)/X]<0` at `1/2+iβ_R` for every sufficiently large `R`, uniformly over `μ_R∈ℝ`; continuity moves the negative point into the open physical strip.
+
+This rules out neighboring-prime aggregation as a repair of the scalar port. A surviving collective construction must break at least one exact feature of (25)–(26): positive normalized weights in a log-narrow packet, scalar multiplication of the same Xi clock channel, or a real commutator gauge. In particular, any attempt based on positive packets must retain nonvanishing **logarithmic scale spread** rather than relying on the number of nearby primes.
+
+The same proof gives a quantitative **coherence threshold** for packets wider than (25). Retain (26), but require only `δ_R/L_R→0`, and set
+
+```text
+B_R(β)=∑_j v_(R,j)e^(i(L_(R,j)-L_R)β),
+a₀=Re z₀>0,       b₀=Im z₀>(11/4)a₀.              (29)
+```
+
+The phase steering still works because `|B_R(β_R)-B_R(2)|≤πδ_R/L_R→0` whenever `|β_R-2|≤π/L_R`; the corresponding derivative-weighted packet differs from `B_R` by at most `δ_R/L_R`. Both errors are small **relative to** `|z₀+μ_R|` for arbitrary real `μ_R`, and the reverse-frequency packet is `o(1)` relative to it. If `|B_R(2)|≥c>2a₀/b₀` along any unbounded subsequence, choose the nearby phase so that `e^(iL_Rβ_R)B_R(2)(z₀+μ_R)` is positive real. For some `η_R→0` independent of `μ_R`, the wall defect divided by `2|X|²` is at most
+
+```text
+a₀-(c/2-η_R)|z₀+μ_R|+η_R
+ ≤a₀-(c/2-η_R)b₀+η_R<0.                         (30)
+```
+
+Absorbing the packet error into `c/2` makes the negative margin uniform even when `|μ_R|→∞`. Therefore any cofinal packet sequence with strict strip order must obey
+
+```text
+limsup_(R→∞)|B_R(2)| ≤ 2a₀/b₀ < 8/11.             (31)
+```
+
+Choose `L_R` as midpoint of smallest and largest packet log scales, and write `Δ_R=max_j L_(R,j)-min_j L_(R,j)=2δ_R`. For `Δ_R<π`, every phase `2(L_(R,j)-L_R)` lies in `[-Δ_R,Δ_R]`; positivity of the weights gives `|B_R(2)|≥Re B_R(2)≥cos Δ_R`. If `Δ_R≥π`, the following bound is automatic. Thus (31) forces the sharper necessary lower spread
+
+```text
+liminf_(R→∞) Δ_R ≥ arccos(2a₀/b₀)
+                      > arccos(8/11).              (32)
+```
+
+This is a source-derived, strictly positive lower bound on collective logarithmic dispersion, independent of packet size and of every real clock gauge. Equivalently, successful positive packets cannot have `max_j p_(R,j)/min_j p_(R,j)→1`. It is necessary, not sufficient: suppressing one low-frequency characteristic value does not prove RH or global phase order.
+
+## Three-harmonic obstruction for every positive two-scale packet
+
+The minimum-width way to suppress `|B_R(2)|` is a balanced pair of extreme scales. This follows directly from the geometry above: for `0≤Δ<π/2`, `|B_R(2)|≥cos Δ`, and equality holds exactly when all weight sits at the two endpoint logs with equal weights (apart from the degenerate `Δ=0` case). Thus increasing the number of primes cannot improve the single-height coherence bound at fixed log width. The balanced two-scale candidate is the sharp test of that bound, but cancellation at height `2` merely moves its phase to harmonics.
+
+**[PROVED HERE ON PAPER]** Let a packet in (26) contain exactly two primes `p_(R,-),p_(R,+)`, with arbitrary normalized positive weights, midpoint log scale `L_R=(log p_(R,-)+log p_(R,+))/2→∞`, and log separation `Δ_R=log p_(R,+)-log p_(R,-)=o(L_R)`. For every sufficiently large `R` and **every** `μ_R∈ℝ`, its scalar port has a negative modulus defect somewhere in the open physical strip. There is no restriction on whether `Δ_R` tends to zero, a finite positive number, or infinity sublinearly.
+
+The source-radius argument used at height `2` also supplies strict cones at heights `4` and `6`. For `h∈{2,4,6}`, put `w_h=1/2+ih`, `z_h=X'(w_h)/X(w_h)`, `t=|γ|>61/5`, and for each Xi zero copy set
+
+```text
+C_h=γ²-δ²+1/4-h² > t²-h²,
+D_h=h+2γδ,                 h-t<D_h<h+t.
+```
+
+The real numerator of `w_h/(C_h+iD_h)` is `C_h/2+hD_h>(t-h)²/2>0`. Its imaginary numerator minus `k_h` times its real numerator is
+
+```text
+(h-k_h/2)C_h-(1/2+k_h h)D_h
+ > (h-k_h/2)(t²-h²)-(1/2+k_h h)(h+t),             (33)
+```
+
+where `(k_2,k_4,k_6)=(11/4,15/4,4)`. The three right sides are respectively
+
+```text
+(5/8)t²-6t-29/2,
+(17/8)t²-(31/2)t-96,
+4t²-(49/2)t-291.                                    (34)
+```
+
+Each is strictly positive at `t=61/5` and strictly increasing thereafter. The zero-radius theorem gives `t²>599/4>(61/5)²`; summing the absolutely convergent reciprocal-square series and using existence of Xi zeros therefore yields
+
+```text
+0<Re z₂,    Im z₂>(11/4)Re z₂,
+0<Re z₄,    Im z₄>(15/4)Re z₄,
+0<Re z₆,    Im z₆>4 Re z₆.                            (35)
+```
+
+All three `X(w_h)=xi(1+ih)` are nonzero unconditionally on `Re s=1`. In particular the corresponding phase-aperture thresholds satisfy
+
+```text
+2 Re z₂/Im z₂ < 8/11,
+2 Re z₄/Im z₄ < 8/15,
+2 Re z₆/Im z₆ < 1/2.                                (36)
+```
+
+Write the two weights as `v,1-v`. At the three wall heights the packet characteristic function obeys
+
+```text
+B_R(2n)=v e^(-inΔ_R)+(1-v)e^(inΔ_R),
+|B_R(2n)|²=cos²(nΔ_R)+(1-2v)²sin²(nΔ_R)
+          ≥cos²(nΔ_R),                 n=1,2,3.    (37)
+```
+
+For every real `θ`, at least one of
+
+```text
+|cos θ|≥8/11,   |cos 2θ|≥8/15,   |cos 3θ|≥1/2       (38)
+```
+
+holds. Indeed, if `x=|cos θ|<8/11` and `|2x²-1|<8/15`, then `x²>7/30` and `x>12/25`. Also `cos 3θ` has modulus `x(3-4x²)`: if `x≤3/5`, this exceeds `(12/25)(39/25)>1/2`; if `x>3/5`, it exceeds `(3/5)(107/121)>1/2`. The identities include every value of the separation `Δ_R`, so the packet cannot hide its coherent phase at all three source-controlled heights.
+
+Choose the height from (38) for each `R`. Equation (37) and the **strict** cone (36) put its characteristic amplitude above the negative-defect threshold, with a fixed margin drawn from the minimum of the three positive differences `c_h Im z_h/2-Re z_h`, where `(c₂,c₄,c₆)=(8/11,8/15,1/2)`. The phase-steering proof of (30) applies at this height: `Δ_R/L_R→0` makes both the characteristic-function change over the steering interval and the derivative-weight error `o(1)`; both errors stay small relative to `|z_h+μ_R|≥Im z_h` for **arbitrarily large real** `μ_R`. The reverse-frequency packet tends to zero because both primes tend to infinity. Hence the wall defect is negative uniformly in the gauge; continuity gives an interior negative point.
+
+The result is a three-harmonic **rank obstruction**, rather than another single-height estimate: every positive packet supported on at most two comparable logarithmic prime scales recurs at one of three fixed spectral probes. An eligible scalar packet must use at least three independently placed log scales, a width comparable to its center, or an operation outside this positive scalar class. Those alternatives remain conjectural as RH producers.
+
+A first three-scale repair also fails on the next harmonic. Ideal equal log offsets `-π/4,0,π/4` with equal weights give `B(2n)=[1+2cos(nπ/2)]/3`: the amplitudes at heights `2,4,6` are all `1/3`, so the coarse three-harmonic inequality (38) no longer forces a failure there. This does **not** establish positive defect at those heights; (36) gives upper, not lower, bounds on the exact failure thresholds. At height `8`, however, `B(8)=1`. The same termwise argument has `k₈=2`; the right side of (33) is `7t²-(33/2)t-580>0` for `t>61/5`. Hence `Im z₈>2 Re z₈>0`, while `|B(8)|=1`, so this symmetric three-scale packet again has a negative strip defect cofinally. The prime number theorem lets actual prime log scales approximate these three ideal offsets as their center tends to infinity; the strict negative margin survives that approximation. This failed repair shows why a finite list of low harmonics is only a test of a packet design, not a global phase solution.
+
+There is an exact **finite-rank phase law** behind this recurrence. For any probability weights `v_j≥0` on at most `m` unit phases `u_j`, set `b_n=∑_j v_j u_j^n`, with `b₀=1` and `b_(-n)=conj b_n`. Then
+
+```text
+max_(1≤n≤m)|b_n| ≥ 1/m.                             (39)
+```
+
+Indeed the `(m+1)×(m+1)` Toeplitz matrix `T_(a,b)=b_(a-b)`, indexed by `0≤a,b≤m`, is the Gram matrix of the `m+1` monomials evaluated at at most `m` weighted phases. Its rank is at most `m`, so choose a nonzero vector `c` in its kernel and an index `a` with maximal `|c_a|`. The `a`-th row gives
+
+```text
+|c_a| ≤ ∑_(b≠a)|b_(a-b)| |c_b|
+      ≤ m·max_(1≤n≤m)|b_n|·|c_a|,
+```
+
+proving (39). It is sharp: take equal weights on any `m` of the `(m+1)`-st roots of unity. Then `b_n=-u_*^n/m` for `1≤n≤m`, where `u_*` is the omitted root, while `|b_(m+1)|=1`. At packet wall heights `2,4,…,2m`, the phases are `u_j=e^(2i(L_j-L_R))`, so (39) is an exact rank/coherence constraint on any finite positive Euler packet, independent of prime sizes and real gauges. The three-scale test above is the `m=3` sharp configuration rotated to phases `-i,1,i`; its compulsory full recurrence at the fourth harmonic is precisely where the source cone defeats it. For larger `m`, (39) alone cannot force failure: the available Xi aperture at the selected harmonic must also be narrower than `1/m`. This states the missing joint source–arithmetic inequality without pretending that Toeplitz rank by itself proves RH.
+
+The two operator orderings fail the same complex phase test despite identical favorable local zero orientation; clock-after-deletion also has the separate real wall shear (11a). A viable producer must change the wall phase geometry rather than merely differentiate, translate, reorder, or positively average **one or two comparable** Euler-deletion scales with a real commutator coefficient. Broad-scale packets of rank at least three, a modular commutator, and singular cofinal operations remain outside this no-go. The [ordered prime–modular theta commutator](theta-prime-modular-commutator-crossing.md) is outside the translation-polynomial class of (6), but its present real one-crossing law has not established this complex phase order. External novelty of the combined causal-germ, translation-ideal, and phase-aperture results is not audited. Lean formalization remains open.
