@@ -1,0 +1,3 @@
+- The open cores: xi.md §10.2 lists RH-equivalent statements in their sharpest known form, for example the Hadamard receiver Re(ξ′/ξ) ≥ 0, the reflection defect Σ|γ|⁻² ≤ Re Σγ⁻², the causal Möbius–theta tail, and the prime lag ceiling a_p ≤ a₁.
+
+- The structural diagnosis: RH amounts to the reflection ρ↦1−ρ̄ having no free orbits, equivalently distinct zeros having distinct ordinates. There's no slack to work with (Λ = 0, and free-orbit counts are integers), so progress needs an exact identity or a bound that is uniform in height (U(t) < 2). Readers that are symmetric under the reflection can't see off-line zeros, and localized invariants only compute fixed points (MUST-400 to MUST-442).

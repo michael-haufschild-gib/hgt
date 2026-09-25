@@ -8,8 +8,8 @@ Card template: docs/drafts/pipeline/_card-template.md
 6. Failed/retired → docs/drafts/pipeline/5-failed
 
 ## Check prior research before any new topic or writing new lean code
-- Current ledger of the major RH proof routes and route candidates: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md (ignore if you are not working on RH)
-- High level facts about things the RH proof must or can not be like: docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md (ignore if not working on RH)
+- Current ledger of the major RH proof routes and route candidates: docs/reports/rh-current-frontier-map.md (ignore if you are not working on RH)
+- High level facts about things the RH proof must or can not be like: docs/reports/STATUS.md (ignore if not working on RH)
 - Run the documented search command directly. Do not run `research --help` or read the search Python
   implementation as preparation. Consult help/source only to diagnose a command execution failure
   or when explicitly tasked with changing the search tool.
