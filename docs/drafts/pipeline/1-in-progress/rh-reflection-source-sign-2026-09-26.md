@@ -25,8 +25,6 @@ Prove the full arithmetic source moment form nonnegative on every real polynomia
 2. Freeze and symbolically attack a mechanism that retains exact boundary cancellation at every degree.
 3. Formalize only a dependency-closed result, audit its hypotheses and axioms, and record its consequence for the whole route.
 
-## Evidence and status
-
 ## Frozen mechanism test C1: monotone-source contraction
 
 **Classification:** derived mechanism conjecture, not a new universal RH conjecture.
@@ -41,19 +39,55 @@ The universal claim is stronger than the actual-theta statement and has a cheap 
 
 **Symbolic experiment:** mix equal amounts of uniform laws on `[-1,1]` and `[-4,4]`.
 The even moments are `(1+4^(2k))/(2*(2k+1))`. Test `D-B` on coefficient
-indices `{1,2}` and vector `(-13,17)`. Hand algebra gives `-13311/3584`.
-This is awaiting Lean verification; no floating-point experiment was run.
+indices `{1,2}` and vector `(-13,17)`. Lean verifies the exact value
+`-119221/32256`. No floating-point experiment was run.
 
-**Positive survivor to audit:** for two uniform radii with squared radii `A,B`,
+**Positive survivor, Lean-proved:** for two uniform radii with squared radii `A,B`,
 the determinant of the difference-source cleared block at indices `{1,2}` is
 `(A-B)^4 * (-3*A^4+36*A^3*B-2*A^2*B^2+36*A*B^3-3*B^4)/4572288000`.
 For a mixing proportion `t`, the covariance block is multiplied by `t*(1-t)`.
 This gives an exact sharp boundary for that compression, not an all-degree classification.
 
-**Whole-route consequence if certified:** monotonicity cannot establish the proposed
+**Whole-route consequence:** monotonicity cannot establish the proposed
 positive-contraction representation. The actual theta inequality remains undecided and
 would need arithmetic information beyond a decreasing density. Failure of `D-B >= 0`
 does not refute `B >= 0`, and neither is an RH counterexample.
+
+Closed mechanism and exact paper proof:
+`../5-failed/monotone-source-gram-contraction.md`.
+
+## Pivot and relevance gate
+
+The next source-sign attack must use the exact full theta assembly in the nonlinear
+cumulant form. Merely adding finite moment controls or generic shape assumptions
+does not meet the route test: the existing paper countermodels in
+`../2-fully-proven/theta/theta-compact-critical-strip-zero-engineering.md`
+preserve evenness, strong log-concavity, finite moments, exact tails and half-density
+charges while inserting a nonreal strip zero. That result remains paper-only.
+
+No new universal conjecture is frozen here: a positive-contraction representation
+with an extra unspecified theta hypothesis would merely rename the missing sign.
+The exact all-order theta cumulant recurrence and boundary cancellation must instead
+be tested together. No source sign has been obtained, and the RH goal stays open.
+
+## Evidence and status
+
+## Concrete finite-prefix falsification: pending Lean transfer
+
+The corpus already contains a paper proof that every nonempty fixed theta-shell
+prefix has infinitely many nonreal Fourier zeros (`k-rvm-finite-sixth-moment-bracket.md`,
+paragraph headed “Every fixed theta-shell prefix”). This is prior research, not a new
+conjecture or novelty claim. Its concrete entire/subquadratic-growth transfer remains
+open in Lean. Close that transfer using the literal source envelope, then combine
+`ThetaFiniteShellFourierBoundary` with `FiniteZeroSubquadraticTwoRayDecay`.
+
+**Route test:** this excludes every fixed-prefix real-zero foundation, not merely
+the numerically tested first two. The positive survivor is the already formalized
+exact full-tail compensation. It does not supply full-source Hankel positivity.
+
+**Verification plan:** scratch entire transform and growth bound; prove infinitely
+many nonreal zeros; audit assumptions and axioms; named leaf build and formal lint.
+No numerical experiment and no edits to another researcher's log.
 
 Separate fact log: `rh-reflection-source-sign-2026-09-26-facts.md`.
 Search outputs are discovery evidence, not compilation certificates. Existing unrelated GL3 work is outside this research scope.
