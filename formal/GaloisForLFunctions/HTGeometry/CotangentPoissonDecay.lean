@@ -13,7 +13,8 @@ upper half-plane without input hypotheses.
 
 namespace GaloisForLFunctions.HTGeometry
 
-open Complex
+open Complex Filter
+open scoped Topology
 
 noncomputable section
 
@@ -117,7 +118,7 @@ theorem norm_cot_cotangentPoissonPoint_add_I_le (x θ : ℝ) :
     2 * (exteriorEulerRadius x)⁻¹ / ‖cotangentPoissonPhase x θ - 1‖ ≤
         2 * (exteriorEulerRadius x)⁻¹ / (1 - (exteriorEulerRadius x)⁻¹) :=
       div_le_div_of_nonneg_left (by positivity) hpos hden
-    _ = 2 / (exteriorEulerRadius x - 1) := by field_simp; ring
+    _ = 2 / (exteriorEulerRadius x - 1) := by field_simp
 
 /-- The real part inherits the corrected cotangent's decay bound. -/
 theorem abs_re_cot_cotangentPoissonPoint_le (x θ : ℝ) :
@@ -128,6 +129,24 @@ theorem abs_re_cot_cotangentPoissonPoint_le (x θ : ℝ) :
         |(Complex.cot (cotangentPoissonPoint x θ) + I).re| := by simp
     _ ≤ ‖Complex.cot (cotangentPoissonPoint x θ) + I‖ := Complex.abs_re_le_norm _
     _ ≤ _ := norm_cot_cotangentPoissonPoint_add_I_le x θ
+
+/-- The correction decays exponentially in the global radius coordinate. -/
+theorem norm_cot_cotangentPoissonPoint_add_I_le_exp (x θ : ℝ) :
+    ‖Complex.cot (cotangentPoissonPoint x θ) + I‖ ≤ 2 * Real.exp (-x) := by
+  simpa only [exteriorEulerRadius, add_sub_cancel_left, Real.exp_neg, div_eq_mul_inv]
+    using norm_cot_cotangentPoissonPoint_add_I_le x θ
+
+/-- Even an arbitrarily varying horizontal phase has the same nonzero
+upper-half-plane cotangent limit. -/
+theorem tendsto_cot_cotangentPoissonPoint (θ : ℝ → ℝ) :
+    Tendsto (fun x => Complex.cot (cotangentPoissonPoint x (θ x)))
+      atTop (nhds (-I)) := by
+  have hb : Tendsto (fun x : ℝ => 2 * Real.exp (-x)) atTop (nhds 0) := by
+    simpa using (Real.tendsto_exp_atBot.comp tendsto_neg_atTop_atBot).const_mul 2
+  have hz : Tendsto (fun x => Complex.cot (cotangentPoissonPoint x (θ x)) + I)
+      atTop (nhds (0 : ℂ)) :=
+    squeeze_zero_norm (fun x => norm_cot_cotangentPoissonPoint_add_I_le_exp x (θ x)) hb
+  simpa using hz.sub_const I
 
 end
 

@@ -12,7 +12,7 @@ Poisson mass, all-pass delay, and squared outer-factor amplitude.
 
 namespace GaloisForLFunctions.HTGeometry
 
-open Complex
+open _root_.Complex
 open scoped BigOperators
 
 noncomputable section
@@ -43,7 +43,7 @@ theorem re_mul_logDeriv_exteriorEulerCascade {n : ℕ} (x : Fin n → ℝ) (θ :
       (Complex.exp (θ * Complex.I)) := by fun_prop
   unfold exteriorEulerCascade
   rw [logDeriv_prod (fun i _ => exteriorEuler_factor_ne_zero (x i) θ)
-    (fun i _ => hd i), Finset.mul_sum, map_sum]
+    (fun i _ => hd i), Finset.mul_sum, Complex.re_sum]
   exact Finset.sum_congr rfl fun i _ => re_mul_logDeriv_exteriorEulerFactor (x i) θ
 
 /-- Exact conservation of the finite phase budget. -/

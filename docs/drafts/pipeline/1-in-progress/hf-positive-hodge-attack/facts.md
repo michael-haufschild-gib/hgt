@@ -38,3 +38,8 @@ Scope: frontier route HF. Facts and no-gos only.
   - Consequence (`ccmRestrictedWeilSourceQuadratic_ge_of_primeBound`): on pole-constrained vectors `Q_a ≥ ‖u‖²_arch − (‖T_a‖+|2γ₀−1|)‖f‖²`. The level-`a` Hodge index can fail only through spectral mass where the archimedean weight is `< (1+o(1))e^a`, i.e. heights `≲ exp((1+o(1))e^a)`. This replaces `4e^a` (L14) and `21e^a` (corpus outer shell).
   - The constant is optimal for any argument that ignores the height `t` (`‖T_a‖ ≥ (1−ε)e^a`). Below the horizon, negativity needs a shadow pole: phase alignment of `n^{−it}`, `n ≤ e^{2a}`.
   - **Route:** the level-wise producer is now pinned to two exact walls: shadow-pole exclusion below `exp((1+o(1))e^a)` and RH-local PNT on `[1,e^{2a}]`.
+- **HF-F18 [Lean, `RHTower.ZeroLatticeDepthNyquistLaw`]:** Nyquist law for zero depth.
+  - The off-line vertical zero lattice `{½ ± δ + 2πik/L}` (Zeta23 `ZeroConfig`, any `0 < δ ≤ ½`) passes Weil positivity on tests supported in `[−a, a]` iff `a ≤ L/2` (`offLineLattice_weil_positive_iff`).
+  - For `a ≤ L/2` its Weil form equals that of the doubled on-line lattice, `2L⟨f,g⟩` (`W_offLineLatticeConfig_eq_onLine`).
+  - For `a > L/2` a two-bump test gives `−2LB(e^{δL/2}−e^{−δL/2})²` (`exists_re_W_offLineLatticeConfig_neg`).
+  - **Route:** zero-side positivity at level `a` cannot certify depth for zeros whose local spacing is below `π/a`, i.e. heights above about `e^{2a}`. The user's shadow-pole ⇔ deep-zero duality up to `exp(e^a)` therefore needs an arithmetic non-lattice input at ordinate scale `1/a` (L22).

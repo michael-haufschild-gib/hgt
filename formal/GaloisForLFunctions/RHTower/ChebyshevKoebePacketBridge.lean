@@ -1,5 +1,4 @@
-import GaloisForLFunctions.RHTower.ChebyshevKoebeGenerating
-import GaloisForLFunctions.HTGeometry.ChebyshevSpectralPacketGenerating
+import GaloisForLFunctions.RHTower.ChebyshevKoebeFiniteAtoms
 
 namespace RHTower
 
@@ -21,25 +20,10 @@ theorem packetCenteredChebyshevRational_eq_koebe {r : ℕ}
     (hden : ∀ j, 1 - 2 * v * (1 - 2 * lam j) + v ^ (2 : ℕ) ≠ 0) :
     packetCenteredChebyshevRational lam w v =
       (1 - v ^ (2 : ℕ)) / (4 * v) * packetKoebeResolvent lam w v := by
-  classical
-  rw [packetCenteredChebyshevRational, packetKoebeResolvent,
-    Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro j hj
-  by_cases hlam0 : lam j = 0
-  · simp [hlam0]
-  simp only [if_neg hlam0]
-  calc
-    w j * lam j * (1 - v ^ (2 : ℕ)) /
-        (1 - 2 * v * (1 - 2 * lam j) + v ^ (2 : ℕ)) =
-      w j * (lam j * (1 - v ^ (2 : ℕ)) /
-        (1 - 2 * v * (1 - 2 * lam j) + v ^ (2 : ℕ))) := by ring
-    _ = w j * ((1 - v ^ (2 : ℕ)) / (4 * v) *
-        (chebyshevTraceKoebeMap v /
-          (chebyshevTraceKoebeMap v - (-(27 / 4 : ℂ) / lam j)))) := by
-      rw [chebyshevKoebe_centeredNode hv0 hv1 hlam0 (hden j)]
-    _ = (1 - v ^ (2 : ℕ)) / (4 * v) *
-        (w j * (chebyshevTraceKoebeMap v /
-          (chebyshevTraceKoebeMap v - (-(27 / 4 : ℂ) / lam j)))) := by ring
+  simpa only [packetCenteredChebyshevRational, packetKoebeResolvent,
+    finiteChebyshevCenteredRational, finiteKoebeResolvent] using
+    (finiteChebyshevCenteredRational_eq_koebe
+      (Finset.univ : Finset (Fin r)) w lam hv0 hv1
+      (fun j _ => hden j))
 
 end RHTower
