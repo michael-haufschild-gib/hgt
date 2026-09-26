@@ -148,7 +148,7 @@ theorem int_sq_add_self_nonneg (n : ℤ) : 0 ≤ (n : ℝ) ^ (2 : ℕ) + n := by
   have : 0 ≤ n ^ 2 + n := by nlinarith
   exact_mod_cast this
 
-theorem norm_thetaTwo_le {τ : ℂ} (hτ : 1 ≤ τ.im) :
+theorem norm_thetaTwo_le_cusp {τ : ℂ} (hτ : 1 ≤ τ.im) :
     ‖thetaTwo τ‖ ≤ thetaTwoCuspConstant * Real.exp (-π * τ.im / 4) := by
   have hτ0 : 0 < τ.im := by linarith
   unfold thetaTwo
@@ -179,7 +179,7 @@ theorem norm_thetaGroupHauptmodul_le {τ : ℂ} (hτ : 1 ≤ τ.im) :
     ‖thetaGroupHauptmodul τ‖ ≤ 4096 * thetaTwoCuspConstant ^ 4 * Real.exp (-π * τ.im) := by
   unfold thetaGroupHauptmodul
   rw [norm_div, norm_mul, norm_pow, norm_pow, norm_pow]
-  have h2 := norm_thetaTwo_le hτ
+  have h2 := norm_thetaTwo_le_cusp hτ
   have h4 := norm_thetaFour_le_two hτ
   have h3 := half_le_norm_thetaThree hτ
   have hK := thetaTwoCuspConstant_nonneg

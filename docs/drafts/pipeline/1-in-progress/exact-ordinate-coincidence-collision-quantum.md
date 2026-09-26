@@ -1,6 +1,6 @@
 # Route 3 — exact ordinate coincidence (collision quantum, two-prime source form)
 
-- **ID:** route3-exact-ordinate-coincidence
+- **ID:** exact-ordinate-coincidence-collision-quantum
 - **Stage:** 1-in-progress
 - **Type:** ROUTE CARD (no-go at step 1/2 + positive survivor + successor conjectures)
 - **Source:** docs/reports/route-proposals/route3.md; proposal.md §5; endpoints F0237
@@ -12,7 +12,7 @@ Exact identity thin-slice pair current = two-prime arithmetic excess, then a hei
 ## Gates
 - [x] 0 → 1 in-progress: step-1 stop test run.
 - [x] 1 → 2 survivor paper proof (below).
-- [x] 2 → 3 survivor Lean: `RHTower/Route3HolomorphicCollisionDissolution.lean` (`route3_exchangeLaw`,
+- [x] 2 → 3 survivor Lean: `RHTower/XiHolomorphicTwoPrimePencilGrowthDichotomy.lean` (`xiTwoPrimePencil_reflected_holomorphic_exchange`,
   `riemannHypothesis_iff_forall_xiHolomorphicTwoPrimeExcess_bounded`,
   `eventually_exists_horizontalCollision_of_tendstoLocallyUniformly`); lake build green; axioms clean; umbrella-wired.
 
@@ -57,7 +57,7 @@ Exact identity thin-slice pair current = two-prime arithmetic excess, then a hei
 - **Status:** survivors 1–2 Lean-closed (module above); 3 is a classification note.
 
 ## Successor conjectures (conjecture loop)
-- see route3-facts.md (C-series).
+- see exact-ordinate-coincidence-facts.md (C-series).
 
 ## Log
 - 2026-09-26 — created; step 1 and step 2 decided.

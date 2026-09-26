@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.DictionarySign
 import GaloisForLFunctions.HTGeometry.HurwitzClosedZeroLocus
 
 /-!
-# Route 3 closure: holomorphic two-prime clocks dissolve the collision quantum
+# Holomorphic two-prime clocks: the collision quantum becomes a growth dichotomy
 
 The two-prime Cesàro carrier of `XiHorizontalCollisionTwoPrimeCesaroCarrier` uses the reflected
 character product `χ_p(ρ) χ_p(1 - conj ρ)`, a pure phase that depends on `Im ρ` alone.  Its Cesàro
@@ -41,26 +41,23 @@ noncomputable section
 
 /-! ## Reflection law for prime clocks -/
 
-theorem route3_lineReflect_eq_self_of_re_eq_half {z : ℂ} (hz : z.re = 1 / 2) :
+theorem lineReflect_eq_self_of_re_eq_half {z : ℂ} (hz : z.re = 1 / 2) :
     lineReflect z = z := by
   apply Complex.ext
   · simp only [lineReflect, Complex.sub_re, Complex.one_re, Complex.conj_re]
     linarith
   · simp [lineReflect]
 
-theorem route3_lineReflect_im (z : ℂ) : (lineReflect z).im = z.im := by
-  simp [lineReflect]
-
-theorem route3_norm_burnolPrimeCharacter {p : ℝ} (hp : 0 < p) (s : ℂ) :
+theorem norm_burnolPrimeCharacter_eq_rpow {p : ℝ} (hp : 0 < p) (s : ℂ) :
     ‖burnolPrimeCharacter p s‖ = p ^ (s.re - 1 / 2) := by
   rw [burnolPrimeCharacter, Complex.norm_cpow_eq_rpow_re_of_pos hp]
   simp
 
 /-- **Reflection law.**  A prime clock and its critical-line reflection have reciprocal moduli:
 one partner of every free orbit grows exactly as fast as the other decays. -/
-theorem route3_norm_burnolPrimeCharacter_lineReflect_mul {p : ℝ} (hp : 0 < p) (s : ℂ) :
+theorem norm_burnolPrimeCharacter_lineReflect_mul_norm {p : ℝ} (hp : 0 < p) (s : ℂ) :
     ‖burnolPrimeCharacter p (lineReflect s)‖ * ‖burnolPrimeCharacter p s‖ = 1 := by
-  rw [route3_norm_burnolPrimeCharacter hp, route3_norm_burnolPrimeCharacter hp,
+  rw [norm_burnolPrimeCharacter_eq_rpow hp, norm_burnolPrimeCharacter_eq_rpow hp,
     ← Real.rpow_add hp, lineReflect_re]
   have hexp : 1 - s.re - 1 / 2 + (s.re - 1 / 2) = 0 := by ring
   rw [hexp, Real.rpow_zero]
@@ -89,10 +86,10 @@ theorem xiHolomorphicTwoPrimePencil_eq_source_of_onLine {T : ℝ}
   unfold xiHolomorphicTwoPrimePencil xiHorizontalCollisionTwoPrimeSourcePencil
   apply Finset.sum_congr rfl
   intro rho hrho
-  rw [route3_lineReflect_eq_self_of_re_eq_half (hline rho hrho)]
+  rw [lineReflect_eq_self_of_re_eq_half (hline rho hrho)]
 
 /-- Zero collision charge forces every zero of the window onto the critical line. -/
-theorem route3_re_eq_half_of_collisionCharge_eq_zero {T : ℝ}
+theorem re_eq_half_of_xiHorizontalCollisionCharge_eq_zero {T : ℝ}
     (h : xiHorizontalCollisionCharge T = 0) {rho : ℂ}
     (hrho : rho ∈ (stripZeros_finite T).toFinset) : rho.re = 1 / 2 := by
   by_contra hne
@@ -108,7 +105,7 @@ theorem route3_re_eq_half_of_collisionCharge_eq_zero {T : ℝ}
 
 /-- A window whose zeros are all critical has zero collision charge: two distinct critical points
 never share an ordinate. -/
-theorem route3_collisionCharge_eq_zero_of_onLine {T : ℝ}
+theorem xiHorizontalCollisionCharge_eq_zero_of_stripZeros_onLine {T : ℝ}
     (hline : ∀ rho ∈ (stripZeros_finite T).toFinset, rho.re = 1 / 2) :
     xiHorizontalCollisionCharge T = 0 := by
   unfold xiHorizontalCollisionCharge
@@ -137,45 +134,45 @@ theorem tendsto_xiHolomorphicTwoPrimeExcess_zero_of_charge_eq_zero {T : ℝ}
   have hsrc := tendsto_xiHorizontalCollisionTwoPrimeSourceExcess T
   rw [h, Nat.cast_zero] at hsrc
   have hline : ∀ rho ∈ (stripZeros_finite T).toFinset, rho.re = 1 / 2 :=
-    fun rho hrho => route3_re_eq_half_of_collisionCharge_eq_zero h hrho
+    fun rho hrho => re_eq_half_of_xiHorizontalCollisionCharge_eq_zero h hrho
   refine hsrc.congr' (Eventually.of_forall fun N => ?_)
   unfold xiHolomorphicTwoPrimeExcess xiHorizontalCollisionTwoPrimeSourceExcess
   simp_rw [xiHolomorphicTwoPrimePencil_eq_source_of_onLine hline]
 
 /-! ## Off-line windows: exponential growth -/
 
-/-- Diagonal clock `36^{ρ - 1/2}`. -/
-def route3DiagonalClock (rho : ℂ) : ℂ :=
+/-- The diagonal two-prime clock `36^{ρ - 1/2} = (2^{ρ-1/2})^2 (3^{ρ-1/2})^2`. -/
+def xiThirtySixPrimeClock (rho : ℂ) : ℂ :=
   (burnolPrimeCharacter 2 rho * burnolPrimeCharacter 2 rho) *
     (burnolPrimeCharacter 3 rho * burnolPrimeCharacter 3 rho)
 
 theorem xiHolomorphicTwoPrimePencil_diag (T : ℝ) (n : ℕ) :
     xiHolomorphicTwoPrimePencil T n n =
       ∑ rho ∈ (stripZeros_finite T).toFinset,
-        ((analyticOrderAt xi rho).toNat : ℂ) * route3DiagonalClock rho ^ n := by
-  unfold xiHolomorphicTwoPrimePencil route3DiagonalClock
+        ((analyticOrderAt xi rho).toNat : ℂ) * xiThirtySixPrimeClock rho ^ n := by
+  unfold xiHolomorphicTwoPrimePencil xiThirtySixPrimeClock
   apply Finset.sum_congr rfl
   intro rho _
   simp only [mul_pow]
   ring
 
-theorem route3_norm_diagonalClock (rho : ℂ) :
-    ‖route3DiagonalClock rho‖ = (36 : ℝ) ^ (rho.re - 1 / 2) := by
-  unfold route3DiagonalClock
-  rw [norm_mul, norm_mul, norm_mul, route3_norm_burnolPrimeCharacter (by norm_num),
-    route3_norm_burnolPrimeCharacter (by norm_num)]
+theorem norm_xiThirtySixPrimeClock (rho : ℂ) :
+    ‖xiThirtySixPrimeClock rho‖ = (36 : ℝ) ^ (rho.re - 1 / 2) := by
+  unfold xiThirtySixPrimeClock
+  rw [norm_mul, norm_mul, norm_mul, norm_burnolPrimeCharacter_eq_rpow (by norm_num),
+    norm_burnolPrimeCharacter_eq_rpow (by norm_num)]
   rw [← Real.mul_rpow (by norm_num) (by norm_num), ← Real.mul_rpow (by norm_num) (by norm_num),
     ← Real.mul_rpow (by norm_num) (by norm_num)]
   norm_num
 
-theorem route3_one_lt_norm_diagonalClock {rho : ℂ} (h : 1 / 2 < rho.re) :
-    1 < ‖route3DiagonalClock rho‖ := by
-  rw [route3_norm_diagonalClock]
+theorem one_lt_norm_xiThirtySixPrimeClock {rho : ℂ} (h : 1 / 2 < rho.re) :
+    1 < ‖xiThirtySixPrimeClock rho‖ := by
+  rw [norm_xiThirtySixPrimeClock]
   exact Real.one_lt_rpow (by norm_num) (by linarith)
 
 /-- A finite exponential pencil whose maximal modes carry a nonzero aggregated coefficient does
 not decay after division by the maximal radius. -/
-theorem route3_not_tendsto_normalized_finitePencil
+theorem not_tendsto_normalized_finitePencil_of_dominantFiber
     {ι : Type*} [DecidableEq ι] (S : Finset ι) (c z : ι → ℂ) {r : ℝ} (hr : 0 < r)
     (hle : ∀ i ∈ S, ‖z i‖ ≤ r)
     (hfiber : ∃ u ∈ (S.filter fun i => ‖z i‖ = r).image (fun i => z i / (r : ℂ)),
@@ -228,7 +225,7 @@ theorem not_eventually_bounded_xiHolomorphicTwoPrimeExcess_of_charge_ne_zero {T 
     by_contra hall
     push Not at hall
     apply h
-    exact route3_collisionCharge_eq_zero_of_onLine hall
+    exact xiHorizontalCollisionCharge_eq_zero_of_stripZeros_onLine hall
   obtain ⟨rho₀, hrho₀S, hrho₀ne⟩ := hoff
   have hright : ∃ rho ∈ S, 1 / 2 < rho.re := by
     rcases lt_or_gt_of_ne hrho₀ne with hlt | hgt
@@ -240,29 +237,29 @@ theorem not_eventually_bounded_xiHolomorphicTwoPrimeExcess_of_charge_ne_zero {T 
     · exact ⟨rho₀, hrho₀S, hgt⟩
   obtain ⟨rho₁, hrho₁S, hrho₁⟩ := hright
   have hSne : S.Nonempty := ⟨rho₁, hrho₁S⟩
-  obtain ⟨rmax, hrmaxS, hrmax⟩ := S.exists_max_image (fun rho => ‖route3DiagonalClock rho‖) hSne
-  set r := ‖route3DiagonalClock rmax‖ with hr
-  have hr1 : 1 < r := lt_of_lt_of_le (route3_one_lt_norm_diagonalClock hrho₁) (hrmax rho₁ hrho₁S)
+  obtain ⟨rmax, hrmaxS, hrmax⟩ := S.exists_max_image (fun rho => ‖xiThirtySixPrimeClock rho‖) hSne
+  set r := ‖xiThirtySixPrimeClock rmax‖ with hr
+  have hr1 : 1 < r := lt_of_lt_of_le (one_lt_norm_xiThirtySixPrimeClock hrho₁) (hrmax rho₁ hrho₁S)
   have hr0 : 0 < r := by linarith
   let c : ℂ → ℂ := fun rho => ((analyticOrderAt xi rho).toNat : ℂ)
   -- the dominant fiber through `rmax` has positive integer coefficient
-  have hfiber : ∃ u ∈ (S.filter fun i => ‖route3DiagonalClock i‖ = r).image
-        (fun i => route3DiagonalClock i / (r : ℂ)),
-      finiteExponentialFiberCoefficient (S.filter fun i => ‖route3DiagonalClock i‖ = r) c
-        (fun i => route3DiagonalClock i / (r : ℂ)) u ≠ 0 := by
-    refine ⟨route3DiagonalClock rmax / (r : ℂ),
+  have hfiber : ∃ u ∈ (S.filter fun i => ‖xiThirtySixPrimeClock i‖ = r).image
+        (fun i => xiThirtySixPrimeClock i / (r : ℂ)),
+      finiteExponentialFiberCoefficient (S.filter fun i => ‖xiThirtySixPrimeClock i‖ = r) c
+        (fun i => xiThirtySixPrimeClock i / (r : ℂ)) u ≠ 0 := by
+    refine ⟨xiThirtySixPrimeClock rmax / (r : ℂ),
       Finset.mem_image_of_mem _ (Finset.mem_filter.mpr ⟨hrmaxS, rfl⟩), ?_⟩
     unfold finiteExponentialFiberCoefficient
-    have hcast : (∑ i ∈ (S.filter fun i => ‖route3DiagonalClock i‖ = r) with
-          route3DiagonalClock i / (r : ℂ) = route3DiagonalClock rmax / (r : ℂ), c i) =
-        (((∑ i ∈ (S.filter fun i => ‖route3DiagonalClock i‖ = r) with
-          route3DiagonalClock i / (r : ℂ) = route3DiagonalClock rmax / (r : ℂ),
+    have hcast : (∑ i ∈ (S.filter fun i => ‖xiThirtySixPrimeClock i‖ = r) with
+          xiThirtySixPrimeClock i / (r : ℂ) = xiThirtySixPrimeClock rmax / (r : ℂ), c i) =
+        (((∑ i ∈ (S.filter fun i => ‖xiThirtySixPrimeClock i‖ = r) with
+          xiThirtySixPrimeClock i / (r : ℂ) = xiThirtySixPrimeClock rmax / (r : ℂ),
             (analyticOrderAt xi i).toNat : ℕ) : ℂ)) := by
       push_cast
       rfl
     rw [hcast, Nat.cast_ne_zero]
-    have hmem : rmax ∈ (S.filter fun i => ‖route3DiagonalClock i‖ = r).filter
-        (fun i => route3DiagonalClock i / (r : ℂ) = route3DiagonalClock rmax / (r : ℂ)) :=
+    have hmem : rmax ∈ (S.filter fun i => ‖xiThirtySixPrimeClock i‖ = r).filter
+        (fun i => xiThirtySixPrimeClock i / (r : ℂ) = xiThirtySixPrimeClock rmax / (r : ℂ)) :=
       Finset.mem_filter.mpr ⟨Finset.mem_filter.mpr ⟨hrmaxS, rfl⟩, rfl⟩
     have hpos : 0 < (analyticOrderAt xi rmax).toNat :=
       Nat.pos_of_ne_zero (xi_order_toNat_ne_zero
@@ -270,11 +267,11 @@ theorem not_eventually_bounded_xiHolomorphicTwoPrimeExcess_of_charge_ne_zero {T 
     have hle := Finset.single_le_sum
       (f := fun i => (analyticOrderAt xi i).toNat) (fun i _ => Nat.zero_le _) hmem
     exact Nat.pos_iff_ne_zero.mp (lt_of_lt_of_le hpos hle)
-  have hnot := route3_not_tendsto_normalized_finitePencil S c route3DiagonalClock hr0
+  have hnot := not_tendsto_normalized_finitePencil_of_dominantFiber S c xiThirtySixPrimeClock hr0
     (fun i hi => hrmax i hi) hfiber
   -- frequent lower bound for the normalized diagonal pencil
   have hfreq : ∃ ε > 0, ∃ᶠ n : ℕ in atTop,
-      ε ≤ ‖∑ i ∈ S, c i * (route3DiagonalClock i / (r : ℂ)) ^ n‖ := by
+      ε ≤ ‖∑ i ∈ S, c i * (xiThirtySixPrimeClock i / (r : ℂ)) ^ n‖ := by
     by_contra hcon
     push Not at hcon
     apply hnot
@@ -285,11 +282,11 @@ theorem not_eventually_bounded_xiHolomorphicTwoPrimeExcess_of_charge_ne_zero {T 
   obtain ⟨ε, hε, hfreqε⟩ := hfreq
   -- rescaling identity on the diagonal
   have hdiag (n : ℕ) : ‖xiHolomorphicTwoPrimePencil T n n‖ =
-      r ^ n * ‖∑ i ∈ S, c i * (route3DiagonalClock i / (r : ℂ)) ^ n‖ := by
+      r ^ n * ‖∑ i ∈ S, c i * (xiThirtySixPrimeClock i / (r : ℂ)) ^ n‖ := by
     rw [xiHolomorphicTwoPrimePencil_diag]
     have hrc : (r : ℂ) ≠ 0 := by exact_mod_cast hr0.ne'
-    have : (∑ rho ∈ S, ((analyticOrderAt xi rho).toNat : ℂ) * route3DiagonalClock rho ^ n) =
-        (r : ℂ) ^ n * ∑ i ∈ S, c i * (route3DiagonalClock i / (r : ℂ)) ^ n := by
+    have : (∑ rho ∈ S, ((analyticOrderAt xi rho).toNat : ℂ) * xiThirtySixPrimeClock rho ^ n) =
+        (r : ℂ) ^ n * ∑ i ∈ S, c i * (xiThirtySixPrimeClock i / (r : ℂ)) ^ n := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro i _
@@ -359,7 +356,7 @@ theorem not_eventually_bounded_xiHolomorphicTwoPrimeExcess_of_charge_ne_zero {T 
 
 /-- **Exchange law.**  The holomorphic excess is eventually bounded exactly when the collision
 charge vanishes, whereas the reflected excess always converges to the charge itself. -/
-theorem route3_exchangeLaw (T : ℝ) :
+theorem xiTwoPrimePencil_reflected_holomorphic_exchange (T : ℝ) :
     Tendsto (xiHorizontalCollisionTwoPrimeSourceExcess T) atTop
         (nhds (xiHorizontalCollisionCharge T : ℝ)) ∧
       ((∃ C : ℝ, ∀ᶠ N : ℕ in atTop, xiHolomorphicTwoPrimeExcess T N ≤ C) ↔
@@ -379,7 +376,7 @@ theorem riemannHypothesis_iff_forall_xiHolomorphicTwoPrimeExcess_bounded :
     RiemannHypothesis ↔
       ∀ T : ℝ, ∃ C : ℝ, ∀ᶠ N : ℕ in atTop, xiHolomorphicTwoPrimeExcess T N ≤ C := by
   rw [riemannHypothesis_iff_forall_horizontalCollisionCharge_eq_zero]
-  exact forall_congr' fun T => ((route3_exchangeLaw T).2).symm
+  exact forall_congr' fun T => ((xiTwoPrimePencil_reflected_holomorphic_exchange T).2).symm
 
 /-! ## Collisions are Hurwitz-stable under the functional-equation symmetry -/
 
@@ -399,7 +396,7 @@ theorem eventually_exists_horizontalCollision_of_tendstoLocallyUniformly
   filter_upwards [GaloisForLFunctions.HTGeometry.eventually_exists_zero_closedBall_of_tendstoLocallyUniformly
     hconv hF hFn hr hz hsphere] with n hn
   obtain ⟨w, hw, hw0⟩ := hn
-  refine ⟨w, lineReflect w, hw0, ?_, (route3_lineReflect_im w).symm, ?_⟩
+  refine ⟨w, lineReflect w, hw0, ?_, (lineReflect_im w).symm, ?_⟩
   · rw [hsym, hw0, map_zero]
   · intro heq
     have hre : w.re = 1 / 2 := by

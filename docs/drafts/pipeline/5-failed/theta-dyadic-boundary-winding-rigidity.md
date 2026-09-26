@@ -59,7 +59,7 @@ Every `F_k` is continuous, 2-periodic, obeys the exact dyadic law, and has the s
 
 ## Status
 
-Exact normal form and arbitrary-winding family verified in `formal/GaloisForLFunctions/RHTower/ThetaBoundaryDyadicClassification.lean`, namespace `RHTower.DyadicBoundary`. Source check and named leaf build pass. All 36 public theorem axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`. The leaf is imported by `RHTower.lean`. Repository lint reports four unrelated missing umbrella imports (`ModularAxisSourceTransform`, `ThetaGroupFormCuspBounds`, `ThetaGroupHauptmodulForms`, `ThetaGroupOffLineStripZero`); none of those files was modified here. No numerical experiment or global novelty claim. The actual theta odd primitive is `sum_{n odd, n>=1} exp(-i*pi*n^2*r)/n^2`; the dyadic law transports these coefficients and imposes no relation between distinct odd squares.
+Exact normal form and arbitrary-winding family verified in `formal/GaloisForLFunctions/RHTower/ThetaBoundaryDyadicClassification.lean`, namespace `RHTower.DyadicBoundary`. Source check and named leaf build pass. All 36 public theorem axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`. The leaf is imported by `RHTower.lean`. Repository lint reports five unrelated missing umbrella imports (`ModularAxisSourceTransform`, `ThetaGroupDeformationPrimeTwo`, `ThetaGroupFormCuspBounds`, `ThetaGroupHauptmodulForms`, `ThetaGroupOffLineStripZero`); none of those files was modified here. No numerical experiment or global novelty claim. The actual theta odd primitive is `sum_{n odd, n>=1} exp(-i*pi*n^2*r)/n^2`; the dyadic law transports these coefficients and imposes no relation between distinct odd squares.
 
 ## No-go closure
 

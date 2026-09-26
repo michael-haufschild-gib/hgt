@@ -99,8 +99,6 @@ producer attempt must retain literal infinite arithmetic assembly and supply its
 sign, beyond the already available recurrence, symmetry, and boundary cancellation.
 No all-degree producer or new universal conjecture is claimed.
 
-## Evidence and status
-
 ## Boundary mechanism attack
 
 Two exact tests now close a new generic no-go. The dyadic law retains an arbitrary
@@ -115,12 +113,12 @@ of the retained odd primitive.
 Card and positive survivor: `../5-failed/theta-dyadic-boundary-winding-rigidity.md`.
 
 The next source-specific attack derives the signed imaginary-axis arc charges of
-the literal theta source. `ThetaCuspComplexWard.source_complex_ward` (namespace
-`RHTower.ThetaImaginaryArc`) now closes the strip-wide differential identity.
+the literal theta source. `ThetaCuspComplexWard` now proves
+`RHTower.ThetaImaginaryArc.source_complex_ward`, closing the strip-wide differential identity.
 The differentiated cusp-flatness and arc integrals remain Lean-open. Full derivation
 and exact outstanding obligations: `rh-theta-imaginary-arc-charge-2026-09-26.md`.
 
-Both new leaf builds pass. The dyadic leaf has 36 standard-only axiom reports.
+Both new leaf builds pass. All 43 public theorem axiom reports contain standard axioms only.
 Global lint currently reports unrelated missing umbrella imports; those files were
 not modified. RH remains unresolved. No new universal producer is claimed.
 

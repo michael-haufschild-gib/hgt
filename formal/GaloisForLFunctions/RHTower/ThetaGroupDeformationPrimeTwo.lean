@@ -305,7 +305,7 @@ theorem tendsto_thetaTwo_axis : Tendsto (fun y : ℝ => thetaTwo (I * (y : ℂ))
     simp only [Function.comp_apply, id]; ring_nf
   refine squeeze_zero_norm' ?_ hb
   filter_upwards [eventually_ge_atTop (1 : ℝ)] with y hy
-  have := norm_thetaTwo_le (τ := I * (y : ℂ)) (by simpa using hy)
+  have := norm_thetaTwo_le_cusp (τ := I * (y : ℂ)) (by simpa using hy)
   simpa using this
 
 theorem tendsto_sub_one_axis {f : ℂ → ℂ}

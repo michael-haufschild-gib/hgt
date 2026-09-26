@@ -68,7 +68,15 @@ The literal source admits no holomorphic logarithm on its whole strip. A continu
 
 ## Formal obligations
 
-1. **Lean-closed:** complex Ward identity for the literal `thetaCuspStripSource`, not a newly defined substitute. `ThetaCuspComplexWard`, namespace `RHTower.ThetaImaginaryArc`, theorem `source_complex_ward`; scratch check and named leaf build pass. The source potential and both real derivative identifications are proved directly from the existing theta-tail jets.
+Formal proof path for obligation 2: the existing odd-cusp bound implies
+`|theta(1+w)| <= C_N |w|^N` in the cone `|w|<=5 Im w`, for every `N`.
+A Cauchy disk of radius `Im w/2` around a point with `|w|<=2 Im w`
+stays in that larger cone. The all-order Cauchy estimate therefore gives
+the same flatness for each theta derivative. This avoids differentiating
+an asymptotic formula. Chain rules along `w=1+i exp(2it)` then give the
+endpoint limits needed by the exact arc integrals.
+
+1. **Lean-closed:** complex Ward identity for the literal `thetaCuspStripSource`, not a newly defined substitute. `ThetaCuspComplexWard`, namespace `RHTower.ThetaImaginaryArc`, theorem `source_complex_ward`; scratch check and named leaf build pass. All seven public theorem axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`. The source potential and both real derivative identifications are proved directly from the existing theta-tail jets.
 2. Differentiated odd-cusp flatness, including integrability at the endpoint.
 3. Both exact arc charges and the unconditional interior source-zero theorem.
 

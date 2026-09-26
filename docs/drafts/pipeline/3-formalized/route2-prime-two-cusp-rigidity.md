@@ -1,7 +1,7 @@
 # Route 2: the prime-2 boundary relation is cusp rigidity, not a winding mechanism
 
 - **ID:** route2-prime-two-cusp-rigidity
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized (results 4, 5 and the R₂ characterization in Lean; 1–3 paper)
 - **Type:** THEOREM (paper) + NO-GO for route 2 claim (ii)
 - **Source:** docs/reports/route-proposals/route2.md, claim (ii) and steps 3, 6;
   2F/theta/theta-rational-cusp-boundary-law (Q, eq. (7)-(8)).
@@ -51,6 +51,17 @@ For F holomorphic on ℍ write R₂(F): F(τ)+F(τ+1)=2F(4τ). θ=θ₃ satisfie
    open dense set of the strip (else Ξ_{θh}/Ξ_{θh²} is real on an open set, hence constant,
    contradicting q-expansions 16q+… vs 256q²+…).
 
+## Relation to the independent r-space kill
+
+`5-failed/theta-dyadic-boundary-winding-rigidity.md` (other session, Lean
+`ThetaBoundaryDyadicClassification`) classifies all bounded solutions of R₂ in r-space
+(F = Σ4^{-j}A(4^j r), A anti-periodic) and builds R₂-loops of every winding. This card is the
+s-space and modular complement: R₂ acts diagonally on Mellin transforms; inside exact
+Γ_θ-modularity it is equivalent to regularity at the zero-charge cusp and singles out θ; removing
+that regularity (θ·ℝ[h]) produces off-line strip zeros. Both kills leave the same open core: a
+non-Mellin-diagonal index map from the literal theta data to the renewal loop. The odd primitive
+A has Mellin transform (1−2^{−s})ζ(s)·(Γ-factor), so it carries ζ itself; no such map is known.
+
 ## Whole-route consequence
 
 - Claim (ii) as stated is vacuous: R₂ is the 2-Euler factor and acts diagonally.
@@ -58,9 +69,43 @@ For F holomorphic on ℍ write R₂(F): F(τ)+F(τ+1)=2F(4τ). θ=θ₃ satisfie
   R₂ is the zero-charge cusp regularity (Hamburger's convergence hypothesis in modular form).
   The one-sided gauge k+b·k(·+log 3) also satisfies R₂ (frequencies n², 9n²) with off-line zeros
   (1+b√3·3^{−w}); it breaks FE. The deformation audit must include V=θ·ℝ[h].
-- Inside FE + integer spectrum + source-strip analyticity the theta source is a single point
-  (rigidity). A route-2 mechanism must be analytic and valid on a class that excludes V; the
+- Inside FE + integer spectrum + source-strip analyticity + R₂ the theta source is a single point
+  (rigidity); without R₂ the class contains off-line countermodels (Lean).
+- The Hecke-semigroup view does not help: Q_s is a common eigenvector of the transfer operators of
+  r ↦ n²r (eigenvalues n^{−s}), but so is every Helson series Σχ(n)n^{−s}, which can have prescribed
+  off-line zeros (xi §7.2); adding the inversion S returns to ζ. A route-2 mechanism must be analytic and valid on a class that excludes V; the
   only separating datum is growth at zero-charge cusps. Step 3 has no candidate loop left.
 
+## Lean certificate
+
+Modules (all in `formal/GaloisForLFunctions/RHTower/`, wired into `RHTower.lean`; `lake build` of each
+target green; lint gate passes; every theorem below prints only `propext`, `Classical.choice`,
+`Quot.sound`):
+
+- `ThetaGroupHauptmodulForms`: `thetaGroupHauptmodul_add_two`, `thetaGroupHauptmodul_S`
+  (h is Γ_θ-invariant), `thetaGroupForm_add_two`, `thetaGroupForm_S` (θ₃·P(h) has the exact theta
+  inversion law), `differentiableAt_thetaGroupForm`.
+- `ModularAxisSourceTransform` (generic): for F holomorphic on ℍ with `F(ie^{-2x}) = e^x F(ie^{2x})`
+  and `‖F τ − c‖ ≤ M e^{−π im τ}`: `modSource_neg` (even source k_F = T'' − T/4),
+  `exists_norm_modSource_le_exp` (beats every exponential), `differentiable_modXi` (entire
+  transform), `modXi_neg`.
+- `ThetaGroupFormCuspBounds`: `thetaGroupForm_axis`, `thetaGroupBasis_cuspDecay`,
+  `norm_thetaGroupHauptmodul_le`, `norm_thetaTwo_le_cusp`.
+- `ThetaGroupOffLineStripZero`: `eq_zero_of_fourier_eq_zero` (Fourier injectivity via charFun),
+  `modAxis_eq_zero_of_modSource_eq_zero` (ODE recovery), `thetaGroupXi_independent`,
+  `exists_strip_point_thetaGroupXi_independent` (open mapping + identity theorem),
+  `exists_real_comb_eq`, `thetaGroup_offLine_strip_zero`.
+- `ThetaGroupDeformationPrimeTwo`: `thetaGroupXi_zero_eq_XiC` (the undeformed transform is XiC),
+  `modXi_thetaGroupDeformation` (= XiC + t₁Ξ₁ + t₂Ξ₂), `thetaGroupDeformation_add_two`,
+  `thetaGroupDeformation_S`, `modSource_thetaGroupDeformation_neg`,
+  **`thetaGroupDeformation_offLine_strip_zero`** (∃ real t₁,t₂ and z₀ with 0 < im z₀ < ½ and
+  Ξ_{t}(z₀) = 0), **`norm_cusp_one_le_of_primeTwo`** (R₂ + inversion ⟹
+  ‖F(1+i/y)‖ ≤ 2M√y e^{−πy/4}), **`thetaGroupDeformation_primeTwo_iff`** (R₂ ⟺ t₁ = t₂ = 0).
+
+Not formalized: results 1–3 (coefficient law, Hecke family, Mellin diagonality), full rigidity
+M^!_{1/2}(Γ_θ,v_θ) ∩ R₂ = ℂθ (needs the Hauptmodul classification), reality of the deformed source,
+source positivity (not expected for the parameters produced).
+
 ## Log
-- 2026-09-26 — created; results 1–5 on paper; Lean formalization of 1, 2, 4 started.
+- 2026-09-26 — created; results 1–5 on paper.
+- 2026-09-26 — Lean: countermodel with off-line strip zero, cusp rigidity, R₂ ⟺ t = 0. Axioms clean.
