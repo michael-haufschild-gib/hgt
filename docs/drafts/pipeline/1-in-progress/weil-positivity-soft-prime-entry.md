@@ -310,3 +310,89 @@ part of the form, not by the pole terms; the two pole directions assist the unco
 minimizer rather than contaminate it. Beyond `a ≈ 1.3` extra real zeros interleave with the
 zeta ordinates in both forms (zero counting of exponential type versus `N(T)`), and the
 eigenvectors become numerically delicate; the reliable regime is `a ≤ 1.1`.
+
+## Addendum 2026-09-26 — a computer-free certificate for `μ₀(√2) > 0` (plan, in progress)
+
+**Trace certificate (paper, exact).** Let `W(ξ) = Re ψ(¼ + iπξ) − log π` (so the archimedean
+form is `∫ W |f̂|²`). Let `V₀(a)` be the pole-vanishing subspace of `L²(−a,a)`, and let
+`dist_a(ξ)` be the `L²(−a,a)` distance from `e_ξ = e^{2πixξ}` to `span{e^{±x/2}}`. For
+`f ∈ V₀(a)`, `f̂(ξ) = ⟨e_ξ − Π e_ξ, f⟩`, so `|f̂(ξ)|² ≤ ‖f‖² dist_a(ξ)²`. Since
+`W ≥ α − (α − W)₊`,
+
+`Q_arch(f) ≥ (α − ∫ (α − W)₊ dist_a² dξ) ‖f‖²`   for every `α > 0`.
+
+This is the trace of the compressed negative part of `W − α`; it is finite because
+`(α − W)₊` has compact support (`W` grows like `log|ξ|`).
+
+**Closed form.** With `C(ω) = ∫_{−a}^{a} cos(ωx) cosh(x/2)` and `S(ω) = ∫ sin(ωx) sinh(x/2)`,
+`dist² = 2a − C²/(a + sinh a) − S²/(sinh a − a)`. At `a = ½ log 2`: `sinh a = √2/4` and
+`e^{a/2} = 2^{1/4}`.
+
+**Hand estimate at `a = ½ log 2`, `α = 0.3`.**
+- `W(0) = −5.37`, `W(0.5) = −0.70`, `W(1) = −0.001`, `W(1.25) = 0.22`, `W(1.5) = 0.41`.
+- `dist²(0) = 1.7·10⁻⁵`, `dist²(0.5) = 0.019`, `dist²(0.75) = 0.081`, `dist²(1) = 0.20`,
+  `dist²(1.25) = 0.36`.
+- `∫(α − W)₊ dist² ≈ 0.07`, so the certificate gives `μ₀(√2) ≳ 0.2`. The numerical value is
+  `0.547`. The Lorentzian dip of `W` at `0` is killed almost completely by the two constraints.
+
+**Lean plan.**
+1. Plane-wave vector; `𝓕f(ξ) = ⟨e_ξ, f⟩`; the Cauchy–Schwarz bound under the constraints.
+2. Closed-form residual norm via antiderivatives.
+3. Certificate inequality for the CCM source quadratic at `a = ½ log 2`: the polar term and the
+   `n = 2` prime term vanish (`inner_logTranslationCLM_two_aperture_eq_zero`).
+4. Grid numerics:
+   - `W` lower bounds from `re_digamma_mono_of_abs_le`, the digamma recurrence and `log_sub_inv_le_re_digamma`;
+   - residual upper bounds at grid midpoints, with the Lipschitz constant `2π√(2a³/3)`.
+5. `μ₀(½ log 2) > 0`, then `eventually_ccmRestrictedWeilPolarGroundEnergy_pos` gives Weil
+   positivity with the prime 2 past `√2`, unconditionally.
+
+## Addendum 2026-09-26 — `μ₀(√2) ≥ 1/10` and positivity past `√2` (Lean, unconditional, computer-free)
+
+**Theorem (Lean, axioms `[propext, Classical.choice, Quot.sound]`).**
+- `RHTower.one_tenth_le_ccmRestrictedWeilPolarGroundEnergy_halfLogTwo`: the pole-vanishing ground
+  energy of the exact restricted Weil form at aperture `½ log 2` is `≥ 1/10`.
+- `RHTower.exists_polarGroundEnergy_pos_past_halfLogTwo`: there is an aperture `b > ½ log 2` with
+  positive pole-vanishing ground energy at every aperture `c ≤ b`. Past `½ log 2` the form contains
+  the prime `2` (translation by `log 2`).
+
+This closes the only external input of Theorems C–D above. Connes–Consani's computer-checked
+Sonin inequality is no longer needed.
+
+**Mechanism: the trace certificate.**
+- For pole-vanishing `f`, `f̂(ξ) = ⟨e_ξ − (p cosh + iq sinh)(x/2), f⟩`, so `|f̂(ξ)|² ≤ ‖f‖²·ρ²(ξ;p,q)`.
+  The residual `ρ²` has the closed form
+  `2a − 2pC + p²(a+sinh a) − 2qS + q²(sinh a − a)`.
+- `Q(f) ≥ (α − Σ_k 2h G_k R_k)‖f‖²`. Here `W(kh) ≥ α − G_k` on a grid, and `R_k` bounds the
+  shell Fourier mass from `ρ²` at a reference frequency plus the Lipschitz offset
+  `4π²d²·2a³/3`.
+- Parameters: `α = 3/10`, `h = 1/10`, 14 shells.
+  - `W` lower bounds come from the digamma recurrence (16 steps), the half-plane asymptotic, and
+    `log π < 1.146`.
+  - Residuals come from midpoint–radius enclosures of `log 2`, `2^{1/4}`, and degree-20 Taylor
+    `sin`/`cos` at rational phases.
+  - Total `β < 0.2`.
+- The dip `W(0) = −5.37` is absorbed because `e_ξ` is within `O(ξ²)` of `span{e^{±x/2}}`:
+  `dist²(0) = 1.7·10⁻⁵`, `dist²(0.5) = 0.019`.
+
+**Modules.**
+- `HTGeometry/MidpointRadiusTrigEnclosures` (enclosure arithmetic, Taylor enclosures).
+- `RHTower/PoleVanishingWeilTraceCertificate` (plane-wave residual bound, closed form, Lipschitz
+  bound, source-quadratic reduction at `½ log 2`, grid certificate).
+- `RHTower/PoleVanishingWeilPositivityHalfLogTwo` (constants, 14 shell residuals, 15 grid values,
+  assembly).
+- Wired into the umbrellas; `lake build --old` passes; no heartbeat overrides.
+
+**Scope.**
+- The certificate is a small-aperture tool. At aperture `a`, the prime sum pushes the support of
+  `(α − W_a)₊` out to `ξ* ≈ exp(4e^a)`, while `dist²_a → 2a`. So the trace bound diverges
+  super-exponentially in `a`.
+- Past `√2` the result is soft: `λ₁` is not explicit.
+- Next target: an explicit `λ₁`. Combine the log-soft entry law (end-window mass ≤ singular
+  energy / `log(1/ε)`) with a certificate at aperture `b` that controls the singular energy, not
+  only `‖f‖²`.
+
+**Correction (2026-09-26).** Positivity past `√2` is not new. Zhu, arXiv 2608.24827 (Aug 2026),
+proves `Q(f) ≥ 8.9·10⁻¹⁸‖f‖²` for `supp f ⊂ [−0.8, 0.8]` (primes 2, 3, 4 included) by certified
+interval computation. New here: a computer-free, Lean-verified proof with an order-one margin at
+`√2`, and the trace-certificate criterion `μ₀ ≥ α − ∫(α − W)₊ dist²`. Parallel card:
+`weil-pole-vanishing-bathtub-certificate-sqrt2.md` (same certificate; closed by the modules above).

@@ -14,7 +14,10 @@ For every real a, there exist n, real x_i>a, and real b_i such that
 `sum_ij b_i*b_j*K_f(x_i,x_j)<0`.
 Thus no real tail has PSD first-atom Gram matrices at every rank.
 
-This statement passes Lean scratch. Named leaf and axiom audits pending.
+This statement passes Lean scratch and all three named leaf builds. All 27
+public theorem axiom reports contain only propext, Classical.choice, and
+Quot.sound. Leaves are wired; index refreshed; final lint --check-generated
+passes with existing large-file warnings.
 No claim concerns the sign of the complete even theta kernel.
 
 ## Dependency-closed paper proof
@@ -48,7 +51,7 @@ For every strip source satisfying these analytic bounds, **all finite negative
 dimensions are invariant under restriction to any real tail**. This applies
 both to the exact first atom and the complete theta source, with exact kernel
 identification in each case. The generic proof and both actual instantiations
-are Lean-closed in scratch. This survivor is stronger than transporting one
+are Lean-closed and audited. This survivor is stronger than transporting one
 negative diagonal: it preserves the entire finite negative-index profile.
 
 Files:

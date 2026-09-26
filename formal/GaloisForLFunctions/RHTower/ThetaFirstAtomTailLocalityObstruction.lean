@@ -53,10 +53,6 @@ theorem exists_norm_firstAtom_le {δ : ℝ} (hδ0 : 0≤δ) (hδ4 : 2*δ<Real.pi
   change ‖thetaCuspComplexTerm z 1‖ ≤
     Real.exp (z.re/2)*(2*Real.pi)*(2*Real.pi*Real.exp (4*z.re)+3*Real.exp (2*z.re))*
       Real.exp (-c*Real.exp (2*z.re)) at h
-  have he (a b : ℝ) : Real.exp (a*z.re)*Real.exp (b*z.re) = Real.exp ((a+b)*z.re) := by
-    rw [← Real.exp_add]
-    congr 1
-    ring
   by_cases hx : 0≤z.re
   · have hpoly : Real.exp (z.re/2)*(2*Real.pi)*
         (2*Real.pi*Real.exp (4*z.re)+3*Real.exp (2*z.re)) ≤ A*Real.exp (5*z.re) := by

@@ -126,3 +126,15 @@ positivity proof.
 Whole-route decision: stop seeking positivity of the exact first atom at all
 ranks. Revisit the complete-source comparison using its reflection completion;
 fixed-order or fixed-rank far-tail expansions cannot settle this obstruction.
+
+## Final C7b audit and handoff
+
+Three named leaf builds pass; all 27 public theorem axiom reports are
+standard-only. Leaves wired, index refreshed, final lint --check-generated
+passes. Closed obstruction and positive survivor:
+`../5-failed/rh-first-atom-positive-tail-psd-root-2026-09-26.md`.
+
+The next attack tests complete theta itself: can ANY strictly positive
+Cauchy-energy reserve survive uniformly in rank? Frozen C8, its reflected
+diagonal mechanism, and exact scope:
+`rh-full-theta-coercivity-audit-root-2026-09-26.md`.

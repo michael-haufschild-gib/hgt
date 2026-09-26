@@ -145,3 +145,17 @@ the GL₃ converse theorem, hence Luo–Rudnick–Sarnak and Kim–Sarnak). No G
   Status: this is Shimura (1975) + the Luo–Rudnick–Sarnak trivial-zero mechanism for sym², level Γ₀(N+1),
   trivial nebentypus. Known mathematics; no new scientific content. Consumers: LRS twisted-nonvanishing (21/100)
   needs the χ-twisted version (θ_χ, E(z,w;ψ) with ψ = χ²-type character) and a GL(3) large sieve / zero density.
+- 2026-09-26 — Twisted family closed (7 modules, wired after HalfWeightForcedZero):
+  `HalfWeightTwistedTheta` (Gauss-sum invariance G(m+(c/q)k;c)=G(m;c); θ(γz+a/q)=J(γ,z)θ(z+ad²/q) on Γ₀(4q²);
+  θ_χ=Σ_a χ̄(a)θ(z+a/q), θ_χ(γz)=χ(d)²Jθ_χ), `HalfWeightTwistedCoefficients` (g_ψ via Gauss expansion,
+  klH_ψ = (ic)^{1/2}/√2 τ⁻¹ Σ_b ψ₀(b)(μ*N)(n+bc/q)(c), q-part factorisation T(n,q^αc') = (μ*N(n))(c')ψ̄₀(c')A_α(n),
+  D_n = i^{1/2}/(√2τ) L(Q*ψ̄₀g_L, 2w−½)), `HalfWeightTwistedL` (product character χ'=ψ̄₀χ_n, generic
+  μ²χ/square split, D*_n = L(4w−1,ψ̄₀²)D_n holomorphic on Re w>¼, A_α(0)=0 so D_0=0, uniform |n|-bound),
+  `HalfWeightTwistedEisenstein` (E*_ψ continuation, ψ-automorphy, growth, continuity),
+  `HalfWeightTwistedRankinSelberg` (unfolding with even character, rsFoldTw holomorphic, = 2L(4w−1,ψ̄₀²)∫_strip),
+  `HalfWeightTwistedKernel` (G_χ = f(4z)θ̄_χ y^{1/4}: law with χ², decay, zeroth coefficient Σ_j conj g_χ(4j²)…,
+  strip integral), `HalfWeightTwistedForcedZero`: **`shimura_forced_zero_tw`** — for χ of odd prime conductor
+  q∤N+1, χ⁴≠1: Y_χ = L(4w−1,χ̄⁴)Σ_j conj(g_χ(4j²))ρ_{j²}(8πj²)^{3/4−w} holomorphic on Re w>¼, Y_χ(¼+τ)=0;
+  `conj_gTw_sq`: weights = conj(χ(4)τ(χ̄))·χ̄(j)². Axioms standard. This is L(2τ, sym²u⊗χ̄²)=0 for the whole
+  square-twist family (known: Shimura/LRS/Iwaniec input). Remaining for any family argument past 3/16: the
+  functional equation (scattering of E_ψ at all cusps of Γ₀(4(N+1)q²)) and a moduli-averaged dual bound.

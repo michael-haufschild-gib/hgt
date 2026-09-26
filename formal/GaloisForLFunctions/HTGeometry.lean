@@ -15954,3 +15954,4 @@ import GaloisForLFunctions.HTGeometry.GridDeviceCellEstimate
 import GaloisForLFunctions.HTGeometry.GridDeviceGainScaleInvariance
 import GaloisForLFunctions.HTGeometry.GridDeviceModulusOnlyNoGo
 import GaloisForLFunctions.HTGeometry.LogarithmicSpacing
+import GaloisForLFunctions.HTGeometry.MidpointRadiusTrigEnclosures

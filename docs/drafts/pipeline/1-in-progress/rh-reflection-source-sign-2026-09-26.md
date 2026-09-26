@@ -271,3 +271,28 @@ invariant and paper proof are in
 No positive-tail negative direction is yet proved; the analytic locality
 specialization remains the next scoped test. All three new named builds and
 all 38 public theorem axiom audits pass; final global formal lint passes.
+
+## C7b/C8: the all-rank comparison must lose its strict Cauchy margin
+
+C7b closes the previously open analytic bridge: every real tail contains a
+negative finite real Gram packet for the exact first atom. The complete theta
+source also has a verified analytic L2 realization; every real tail preserves
+its full finite negative-index profile. Three named builds, 27 public theorem
+axiom audits, and final lint pass.
+
+C8 attacks the actual complete source. For any a and c>0, some finite nodes
+x_i>a give a negative quadratic form for
+`K_Phi(x,y)-c*Phi(x)*Phi(y)/(exp(2x)+exp(2y))`.
+Scratch, named build, all 17 public axiom reports, and final lint pass. The proof uses
+exact reflection and the incoming diagonal asymptotic, an added analytic
+rank-one feature, dense tail sampling, and a Cauchy Schur complement.
+
+**Whole-route correction:** C6 is an exact positive model, but a strictly
+positive part of its Cauchy-energy reserve cannot remain in the literal source
+uniformly in rank. A sharp comparison leaving zero, or another reference norm
+compatible with both reflected ends, remains open. No claim that the complete
+theta kernel is indefinite and no RH conclusion follows.
+
+Closed mechanisms and positive survivors:
+`../5-failed/rh-first-atom-positive-tail-psd-root-2026-09-26.md`;
+`../5-failed/rh-full-theta-positive-cauchy-reserve-root-2026-09-26.md`.

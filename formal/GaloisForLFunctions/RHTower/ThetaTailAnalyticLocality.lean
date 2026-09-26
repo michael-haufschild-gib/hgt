@@ -152,6 +152,28 @@ theorem differenceForm_hermitian (v w : SourceDouble) :
     inner ℂ v.fst w.fst+inner ℂ (-v.snd) w.snd
   simp
 
+/-- The source realization with one scalar comparison channel. -/
+abbrev SourceAugmented := WithLp 2 (SourceDouble × ℂ)
+
+def scalarDifferenceForm (c : ℝ) : SourceAugmented →L[ℂ] SourceAugmented :=
+  (WithLp.prodContinuousLinearEquiv 2 ℂ SourceDouble ℂ).symm ∘L
+    ((differenceForm.comp (ContinuousLinearMap.fst ℂ SourceDouble ℂ)).prod
+      ((-(2*c:ℂ)) • (ContinuousLinearMap.snd ℂ SourceDouble ℂ))) ∘L
+    (WithLp.prodContinuousLinearEquiv 2 ℂ SourceDouble ℂ)
+
+theorem scalarDifferenceForm_apply (c : ℝ) (v : SourceAugmented) :
+    scalarDifferenceForm c v = WithLp.toLp 2 (differenceForm v.fst, -(2*c:ℂ)*v.snd) := rfl
+
+theorem scalarDifferenceForm_hermitian (c : ℝ) (v w : SourceAugmented) :
+    inner ℂ v (scalarDifferenceForm c w) = inner ℂ (scalarDifferenceForm c v) w := by
+  rw [scalarDifferenceForm_apply, scalarDifferenceForm_apply, WithLp.prod_inner_apply,
+    WithLp.prod_inner_apply]
+  change inner ℂ v.fst (differenceForm w.fst)+inner ℂ v.snd (-(2*c:ℂ)*w.snd) =
+    inner ℂ (differenceForm v.fst) w.fst+inner ℂ (-(2*c:ℂ)*v.snd) w.snd
+  rw [differenceForm_hermitian]
+  simp only [RCLike.inner_apply, map_mul, map_neg, Complex.conj_ofReal, map_ofNat]
+  ring
+
 def StripSource.section (P : StripSource) (z : ℂ) : SourceDouble :=
   WithLp.toLp 2 ((P.family 1).section z, (P.family (-1)).section z)
 

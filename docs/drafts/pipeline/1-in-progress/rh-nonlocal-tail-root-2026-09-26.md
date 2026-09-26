@@ -243,3 +243,23 @@ C7 tests whether the exact first atom itself has a negative center energy,
 using its existing Wigner moment identities; the full source's evenness is
 retained as an explicit scope boundary. Frozen experiment:
 `rh-first-atom-tail-audit-root-2026-09-26.md`.
+
+## C7b/C8 change the whole-route target
+
+C7b is fully audited: the exact first atom has a negative finite real Gram
+packet on every real tail. The complete theta L2 realization is also closed;
+its finite negative-index profile is invariant under every real-tail restriction.
+
+C8 then attacks the complete source itself. Lean scratch proves that no c>0
+makes `K_Phi >= c*Phi(x)*Phi(y)/(exp(2x)+exp(2y))` hold at all ranks on any tail.
+Exact reflection sends the complete diagonal into a scale that forbids the
+corresponding analytic rank-one feature; density transports that obstruction
+back to every outgoing tail. Named build, 17 public axiom audits, and final lint pass.
+
+**Decision:** C6's strict Cauchy reserve cannot survive intact in the literal
+source. Stop seeking a comparison with a strictly positive residual Cauchy
+gap. An exact semidefinite cancellation leaving zero, or a reference norm
+compatible with the incoming reflected envelope, remains open. Do not turn
+the strict-coercivity no-go into a false claim that the full kernel is indefinite.
+
+Proof and survivor: `../5-failed/rh-full-theta-positive-cauchy-reserve-root-2026-09-26.md`.
