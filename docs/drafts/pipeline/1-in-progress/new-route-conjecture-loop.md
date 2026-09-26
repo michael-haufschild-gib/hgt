@@ -428,3 +428,33 @@ A new route must break one wall by a mechanism, not by a sharper estimate. Wall 
 
 ## Log
 - 2026-09-26 — loop opened; C1 `INSIGNIFICANT`, C2 `BRIDGE`, C3–C5 `REDISCOVERED`; four-wall diagnosis; C6–C7 `FALSE` (Deligne amplification is k-blind / range-blind over ℚ); C8 `CIRCULAR`; C9 `REDISCOVERED` (route-3 slice core = LA Laguerre hierarchy); C10 `FALSE` + detection-index law k* ≍ b log T; C9 Lean (XiHorizontalSliceTaylorPositivity); C11 `CIRCULAR`; C12 `INSIGNIFICANT` (zero-free inputs act near the 1-line; the slice core is the mirror region); C13 `CIRCULAR`; C14 `FALSE` (exactness vs estimation meta-wall); C15 `REDISCOVERED`; C16 `REDISCOVERED`; C17 reduction (KR-R3 pair residual = density/growth); C18 `FALSE` (no Frobenius relation at roots); slice equivalence closed in Lean (EOC-F24); C19 `FALSE` (natural cone-preserving approximants); C20 `FALSE` + Lean cone criterion (EOC-F25); C21 `INSIGNIFICANT`; C22 density corollary (paper, then Lean conditional, EOC-F26); C23 `REDISCOVERED`; C24 `BRIDGE` (moment form; tails oscillate at the ordinate); C25 `REDISCOVERED` (= ULF-TERM-001); C26 `SURVIVES` (high-order slice positivity; finite door-2 integer).
+- 2026-09-26 — **C26 PROVED and formalized** (`3-formalized/high-order-slice-positivity.md`). `RHTower.exists_riemannHypothesis_iff_low_order_xiSliceCoeff_nonneg`: `∃ K κ, RH ⟺ ∀ t ≥ 0, ∀ k < max(K, κ log t), c_{2k}(t) ≥ 0`, axiom-clean. The door-2 integer `V(t)` (sign changes among the first `κ log t` coefficients) is now a finite, pointwise, even integer, and RH ⟺ `V ≡ 0`. The next cycle (C27) must attack the finite low-order window itself.
+
+### C27 — sharp window: positivity for every saddle radius `R_k > ½`
+- Conjecture: for every `ε > 0` there is `t₀(ε)` such that `c_{2k}(t) > 0` whenever `t ≥ t₀` and the saddle radius satisfies `R_k ≥ ½ + ε`. Equivalently `k ≳ (¼ + ε/2) log t`.
+- Paper argument:
+  - The Stirling gain on the arc is `(R − a) log(t/2π)`.
+  - The ζ loss under the convexity bound is at most `(½ − a) log t` at abscissa `½ + a`.
+  - The net exponent is `≤ −(R − ½) log t`.
+  - The core disc lies in `Re s ≥ 1 + ε/2`, where `ζ'/ζ` is `O(1/ε)`.
+- Why the threshold `½` is exact for this method: for `R < ½` the saddle point `½ + R + it` lies in the critical strip. The core then needs a zero-free disc around it plus a lower bound on `|ζ|` there. That is local zero-freeness on the segment `(½, 1) + it`. By the detection law, an off-line pair of displacement `b` is seen at `R ≈ b`, exactly in that range.
+- Verdict: `SURVIVES` on paper but `INSIGNIFICANT` relative to the core. It only improves `κ` to about `¼`. Not formalized.
+- **Relentless interrogation.** What kills it is that inside the window the saddle point sits in the strip. So the window IS local zero-freeness (four walls, wall 1). There is no stronger slice conjecture that avoids this: any positivity proof of a window coefficient needs `|ζ|` bounded below near `½ + R + it`.
+
+### C28 — unconditional density of fully slice-positive heights
+- Claim: by the cone criterion, `c_n(t) ≥ 0` for all `n` outside `⋃_ρ (γ − b_ρ, γ + b_ρ)`, a set of measure `≤ 2 Σ_{γ ≤ T} (β − ½)⁺`.
+- Kill: the explicit off-line first moment in the corpus (`SingleInputOffLineMomentConstant`) is conditional on the mollified mean-square gates. This is the conditional density consumer C22 again.
+- Verdict: `REDISCOVERED` (= C22 / EOC-F26). It is density only (wall 3).
+
+### Slice-route closure (no-go discipline)
+- Positive survivor: C26, proved and formalized as `exists_riemannHypothesis_iff_low_order_xiSliceCoeff_nonneg`.
+- Exact boundary: the RH-bearing window is the set of orders whose saddle point lies in the critical strip (C27). There, window positivity is equivalent to local zero-freeness of `(½, 1) + it`.
+- The slice form of route 3 therefore has no independent content beyond C26. Route 3 as a whole:
+  - two-prime excess: `KR-R3` (holomorphic 0/∞, second moment density-only);
+  - slice form: closed here.
+- Status: route 3's residual is RH-strength in every form found so far. The loop continues on a new route.
+- 2026-09-26 — pivot (user direction): first Laguerre inequality at every height, card `first-laguerre-all-heights.md`.
+  - Open in the literature.
+  - Failure set = isolated near-line FE pairs (near-double zeros).
+  - Not implied by the analytic inputs (Hadamard surgery).
+  - Mechanisms M1–M6: circular, insignificant or false.

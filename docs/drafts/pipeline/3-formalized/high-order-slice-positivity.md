@@ -1,7 +1,7 @@
 # High-order slice positivity at every height
 
 - **ID:** high-order-slice-positivity
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** CONJECTURE → THEOREM (paper, in progress)
 - **Source:** `new-route-conjecture-loop.md` C26; route 3 slice core (`XiHorizontalSliceTaylorPositivity`,
   `…Converse`, `XiHorizontalSliceConeCriterion`)
@@ -128,3 +128,29 @@ Lean bricks in order:
 - W7: Cauchy coefficient formula `c_{2k}R^{2k} = (1/π)∫_{−π/2}^{π/2} g_t(Re^{iθ})e^{−2ikθ}dθ` (from `iteratedDeriv_eq_circleIntegral`, evenness, and conjugation symmetry).
 - W8: assembly. Core `|θ| ≤ 1/√M`, from `Re G`. Intermediate zone `1/√M ≤ θ ≤ η`, from `|G|`. Tail `η ≤ θ ≤ π/2`, from W2 with `1−cos θ ≥ 2θ²/π²`.
 - W9 (large k, `R > t/2`): Stirling with small-`|w|` handling near `θ ≈ π/2`. Deferred.
+- 2026-09-26 — **W3–W8 done [L]. Window theorem proved, unconditional and axiom-clean.**
+  - `RHTower.exists_xiSliceCoeff_pos_window` (`RHTower/XiSliceHighOrderCoeffPositivity.lean`): `∃ t₀ κ, ∀ t ≥ t₀, ∀ k, κ log t ≤ k ≤ (t log t)/8 → 0 < c_{2k}(t)` (ComplexOrder, so the coefficient is also real).
+  - Modules:
+    - `XiSliceSaddleArcBounds`: `|ξ'/ξ(s) − ½log(s/2)| ≤ 3 + ΣΛ(n)/n²`; the disc bounds for `L = ξ'/ξ(½+·+it)+ξ'/ξ(½+·−it)`; `F = wL` real on ℝ; `F'(R)` within `2(log4+π+4C)` of `L(R)`.
+    - `XiSliceCoeffQuarterArc`: exact formula `c_{2k}(t) = (2|ξ(½+R+it)|²/(πR^{2k}))∫₀^{π/2} Re S`, using period π and conjugate symmetry of `S`; IVT for the saddle radius.
+    - `XiSliceHighOrderCoeffPositivity`: pointwise bounds for the core (`Re S ≥ 7/40` for `θ ≤ Λ^{−1/2}`), the mid-core (`Re S ≥ 0` up to `Λ^{−2/5}`), the middle (`|S| ≤ e^{−Λθ²/8}` up to 1/1000) and the tail (circle decay); assembly; scale choice via `Tendsto`.
+  - Novelty (web, 2026-09-26): no height-local large-order positivity result found. Nearest items: complex Laguerre half-plane for the first functional (alphaXiv 2609, k = 1 only); Laguerre/Turán results on the Maclaurin axis t = 0; GORZ Jensen hyperbolicity for large shift.
+- NEXT (W9): the range `k > t log t/8` (saddle `R ≥ t/5`), needed so that RH ⟺ positivity of the first `κ log t` coefficients.
+  - Scale `T = t+R`, `Λ = R log T`.
+  - Disc bounds with annulus `T/4 ≤ |s| ≤ 2T`.
+  - Arc `θ ≤ π/3`: Stirling split with segment distance `≥ X₁ ≥ R/4` (no `|c| ≤ t/2` needed), `ζ ≤ 2`, polynomial ratio `≤ e^{4θ}`.
+  - Arc `θ ∈ [π/3, π/2]`: crude bounds (compact-box bound for ξ, `|Γ(x+iy)| ≤ Γ(x)`, imaginary-shift lower bound at `s₀`, real Stirling gain `≈ (R/4) log R`).
+- 2026-09-26 — **W9 done [L]. C26 fully formalized, axiom-clean.**
+  - `RHTower/XiSliceLargeRadiusArcBounds.lean`: large-radius disc bounds (scale `log R`); near-arc decay via the Stirling split in `Re ≥ R/4`; far-arc decay `exp(−(R/8)log R)`, from the compact box bound for ξ, `|Γ(x+iy)| ≤ Γ(x)`, the saddle lower bound and the growth of `Γ` on the real axis.
+  - `RHTower/XiSliceFiniteOrderReduction.lean`:
+    - `quarter_integral_pos_of_arc_bounds`: abstract assembly;
+    - `exists_xiSliceCoeff_pos_large_order`: `∃ K₀, ∀ t ≥ 0, ∀ k ≥ max(K₀, t log t/8) → c_{2k}(t) > 0`;
+    - `exists_xiSliceCoeff_pos_high_order`: `∃ K κ, ∀ t ≥ 0, ∀ k ≥ max(K, κ log t) → c_{2k}(t) > 0`;
+    - `xiSliceCoeff_odd_eq_zero`;
+    - `riemannHypothesis_of_xiSliceCoeff_nonneg_of_nonneg_height`;
+    - **`exists_riemannHypothesis_iff_low_order_xiSliceCoeff_nonneg`**: `∃ K κ, RH ⟺ ∀ t ≥ 0, ∀ k < max(K, κ log t), c_{2k}(t) ≥ 0`.
+  - Stage: Formalized. The card moves to `3-formalized`.
+
+## What the theorem says and what remains
+- Unconditional content: at height `t`, every Laguerre-slice coefficient of order `≥ 2κ log t` is positive. The RH content of route 3 therefore sits in the first `O(log t)` coefficients, which are explicit differential expressions of Ξ at `t` of order `O(log t)`. This matches the detection-index law, under which an off-line pair of displacement `b` is first seen at order `≍ b log t`.
+- Open core (route 3, unchanged in difficulty): nonnegativity of `c_{2k}(t)` for `k < κ log t`. Nothing here decides it. The four-wall diagnosis of `new-route-conjecture-loop.md` applies verbatim to this finite window.
