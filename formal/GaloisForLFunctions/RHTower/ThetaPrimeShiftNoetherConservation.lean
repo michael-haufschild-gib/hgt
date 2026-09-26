@@ -130,6 +130,12 @@ theorem summable_primeShiftNoetherCurrent (S T : ThetaSource) (x : ℝ) :
   obtain ⟨C, _, hb, _⟩ := exists_primeShift_uniform_bounds S T
   exact Summable.of_norm_bounded (summable_primeShiftMajorant.mul_left C) (fun n => hb n x)
 
+/-- One summable majorant controls every observation point, including boundary limits. -/
+theorem exists_summable_primeShiftNoetherCurrent_bound (S T : ThetaSource) :
+    ∃ b : ℕ → ℝ, Summable b ∧ ∀ n x, ‖primeShiftNoetherCurrent S T n x‖ ≤ b n := by
+  obtain ⟨C, _, hb, _⟩ := exists_primeShift_uniform_bounds S T
+  exact ⟨fun n => C * primeShiftMajorant n, summable_primeShiftMajorant.mul_left C, hb⟩
+
 def fullPrimeShiftNoetherCurrent (S T : ThetaSource) (x : ℝ) : ℂ :=
   ∑' n : ℕ, primeShiftNoetherCurrent S T n x
 

@@ -99,3 +99,9 @@ Horizontal classes `C_g = {z : Re z = g}`, sizes `H(g)`. Within a class, `K(i v)
   (paper, external constant), versus the corpus 0.5087.
 - **Verdict H3:** (H) SURVIVES; open core narrowed to a quantitative sampling-rigidity statement. Next: Lean for the
   sharpened partial theorem (abstract real inner-product form).
+- **Lean (2026-09-26):** `formal/GaloisForLFunctions/HilbertMetric/HorizontalLamzouriInequality.lean` (711 lines,
+  wired into `HilbertMetric`, `lake build` green, axioms = propext/choice/Quot.sound). Abstract real inner-product
+  version, no independence, any ambient space: `HorizontalPacket.energy_lower_bound`, `mixedOverlap_sq_le`,
+  `card_hs_ge_of_overlap`, `card_hs_ge_of_overlap_ge` (√2−1 criterion), `lamzouri_inequality` (Prop. 2.1 (2.4)),
+  `mixedOverlap_ge_ownPair`. STATUS MUST-468.
+- **Still open:** the kernel instantiation (`f_z = ηe^{−2πizu}`, `E = Σ K(z−s)²`) and the full (H).

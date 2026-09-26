@@ -347,4 +347,249 @@ theorem sum_normSq_mollifiedZetaCoeff_ge {b : ℕ → ℂ} {y M : ℕ} (hy : 1 �
     mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hmert hlogM.le) hMpow
   linarith
 
+/-- The closing algebra: from `A(1−η) ≤ √((1+η)A·X)`, `A ≥ T(1+c)`, `η = c/10`, `c ≤ 3/5`, get
+`X ≥ T(1 + c/2)`. -/
+theorem floor_closing_algebra {A X T c η : ℝ} (hT : 0 < T) (hc : 0 < c) (hc35 : c ≤ 3 / 5)
+    (hη : η = c / 10) (hA : T * (1 + c) ≤ A) (hX : 0 ≤ X)
+    (h : A * (1 - η) ≤ Real.sqrt ((1 + η) * A * X)) :
+    T * (1 + c / 2) ≤ X := by
+  have hA0 : 0 < A := lt_of_lt_of_le (by positivity) hA
+  have hη0 : 0 < η := by rw [hη]; positivity
+  have hη1 : η < 1 := by rw [hη]; linarith
+  have hsq : (A * (1 - η)) ^ 2 ≤ (1 + η) * A * X :=
+    (Real.le_sqrt (by nlinarith) (by positivity)).mp h
+  have h1 : A * (1 - η) ^ 2 ≤ (1 + η) * X := by
+    have : A * ((1 - η) ^ 2 * A) ≤ A * ((1 + η) * X) := by nlinarith
+    have := le_of_mul_le_mul_left this hA0
+    nlinarith
+  have h2 : (1 - 3 * η) * (1 + η) ≤ (1 - η) ^ 2 := by nlinarith
+  have h3 : A * (1 - 3 * η) ≤ X := by
+    have : A * ((1 - 3 * η) * (1 + η)) ≤ (1 + η) * X := le_trans (by nlinarith) h1
+    nlinarith
+  have h4 : T * (1 + c) * (1 - 3 * η) ≤ A * (1 - 3 * η) :=
+    mul_le_mul_of_nonneg_right hA (by rw [hη]; linarith)
+  have h5 : T * (1 + c / 2) ≤ T * (1 + c) * (1 - 3 * η) := by
+    rw [hη]
+    have : (1 + c / 2) ≤ (1 + c) * (1 - 3 * (c / 10)) := by nlinarith
+    nlinarith
+  linarith
+
+theorem floor_hundred_le_exp_five : (100 : ℝ) ≤ Real.exp 5 := by
+  have h : Real.exp 5 = Real.exp 1 ^ 5 := by rw [← Real.exp_nat_mul]; norm_num
+  have he := Real.exp_one_gt_d9
+  rw [h]
+  calc (100 : ℝ) ≤ 2.7 ^ 5 := by norm_num
+    _ ≤ Real.exp 1 ^ 5 := pow_le_pow_left₀ (by norm_num) (by linarith) 5
+
+/-- Size facts at `T = e^L` with `M = ⌊e^{L/20}⌋` and `y ≤ e^{L/100}`. -/
+theorem floor_scale_facts {L : ℝ} (hL : 500 ≤ L) {M y : ℕ}
+    (hMle : (M : ℝ) ≤ Real.exp (L / 20)) (hMgt : Real.exp (L / 20) - 1 < M)
+    (hy : 1 ≤ y) (hyle : (y : ℝ) ≤ Real.exp (L / 100)) :
+    2 ≤ M ∧ y ≤ M ∧ Real.log M ≤ L / 20 ∧ L / 20 - Real.log 2 ≤ Real.log M ∧
+      Real.log y ≤ L / 100 := by
+  have h5 : (100 : ℝ) ≤ Real.exp 5 := floor_hundred_le_exp_five
+  have hE : Real.exp 5 ≤ Real.exp (L / 20) := Real.exp_le_exp.mpr (by linarith)
+  have hM2 : 2 ≤ M := by
+    have : (2 : ℝ) < M := by linarith
+    exact_mod_cast this.le
+  have hMpos : (0 : ℝ) < M := by exact_mod_cast (by omega : 0 < M)
+  have hypos : (0 : ℝ) < y := by exact_mod_cast (by omega : 0 < y)
+  have hyM : y ≤ M := by
+    have h1 : Real.exp (L / 100) * 2 ≤ Real.exp (L / 20) := by
+      have : Real.exp (L / 20) = Real.exp (L / 100) * Real.exp (L / 25) := by
+        rw [← Real.exp_add]; ring_nf
+      rw [this]
+      have h2 : (2 : ℝ) ≤ Real.exp (L / 25) := by
+        have := Real.add_one_le_exp (L / 25); linarith
+      nlinarith [Real.exp_pos (L / 100)]
+    have : (y : ℝ) ≤ M := by linarith [Real.exp_pos (L / 100)]
+    exact_mod_cast this
+  refine ⟨hM2, hyM, ?_, ?_, ?_⟩
+  · have := Real.log_le_log hMpos hMle
+    rwa [Real.log_exp] at this
+  · have h1 : Real.exp (L / 20) / 2 ≤ M := by linarith
+    have := Real.log_le_log (by positivity) h1
+    rwa [Real.log_div (Real.exp_pos _).ne' (by norm_num), Real.log_exp] at this
+  · have := Real.log_le_log hypos hyle
+    rwa [Real.log_exp] at this
+
+/-- The twisted-moment error is `≤ η T` at `T = e^L`. -/
+theorem floor_error_le {L η : ℝ} (hL0 : 0 ≤ L) (hη : 0 < η)
+    (hL35 : Real.log (35 / η) / (19 / 50) ≤ L)
+    {M y : ℕ} (hMle : (M : ℝ) ≤ Real.exp (L / 20)) (hyle : (y : ℝ) ≤ Real.exp (L / 100)) :
+    (y : ℝ) ^ 2 * M * (27 * Real.sqrt (Real.exp L) * M + 8 * (M : ℝ) ^ 2) ≤
+      η * Real.exp L := by
+  have hsq : Real.sqrt (Real.exp L) = Real.exp (L / 2) := by
+    rw [Real.sqrt_eq_iff_mul_self_eq (Real.exp_pos _).le (Real.exp_pos _).le, ← Real.exp_add]
+    ring_nf
+  rw [hsq]
+  have hM0 : (0 : ℝ) ≤ M := Nat.cast_nonneg M
+  have hy2 : (y : ℝ) ^ 2 ≤ Real.exp (L / 50) := by
+    calc (y : ℝ) ^ 2 ≤ Real.exp (L / 100) ^ 2 := pow_le_pow_left₀ (Nat.cast_nonneg y) hyle 2
+      _ = Real.exp (L / 50) := by rw [← Real.exp_nat_mul]; ring_nf
+  have hM2' : (M : ℝ) ^ 2 ≤ Real.exp (L / 10) := by
+    calc (M : ℝ) ^ 2 ≤ Real.exp (L / 20) ^ 2 := pow_le_pow_left₀ hM0 hMle 2
+      _ = Real.exp (L / 10) := by rw [← Real.exp_nat_mul]; ring_nf
+  have hinner : 27 * Real.exp (L / 2) * M + 8 * (M : ℝ) ^ 2 ≤ 35 * Real.exp (11 / 20 * L) := by
+    have h1 : Real.exp (L / 2) * M ≤ Real.exp (11 / 20 * L) := by
+      calc Real.exp (L / 2) * M ≤ Real.exp (L / 2) * Real.exp (L / 20) :=
+            mul_le_mul_of_nonneg_left hMle (Real.exp_pos _).le
+        _ = Real.exp (11 / 20 * L) := by rw [← Real.exp_add]; ring_nf
+    have h2 : Real.exp (L / 10) ≤ Real.exp (11 / 20 * L) := Real.exp_le_exp.mpr (by linarith)
+    linarith
+  have hprod : Real.exp (L / 50) * Real.exp (L / 20) * Real.exp (11 / 20 * L) =
+      Real.exp (31 / 50 * L) := by
+    rw [← Real.exp_add, ← Real.exp_add]; ring_nf
+  have htot : (y : ℝ) ^ 2 * M * (27 * Real.exp (L / 2) * M + 8 * (M : ℝ) ^ 2) ≤
+      35 * Real.exp (31 / 50 * L) := by
+    calc (y : ℝ) ^ 2 * M * (27 * Real.exp (L / 2) * M + 8 * (M : ℝ) ^ 2)
+        ≤ Real.exp (L / 50) * Real.exp (L / 20) * (35 * Real.exp (11 / 20 * L)) := by
+          gcongr
+      _ = 35 * (Real.exp (L / 50) * Real.exp (L / 20) * Real.exp (11 / 20 * L)) := by ring
+      _ = 35 * Real.exp (31 / 50 * L) := by rw [hprod]
+  refine htot.trans ?_
+  have hbig : 35 / η ≤ Real.exp (19 / 50 * L) := by
+    have := (div_le_iff₀ (by norm_num : (0 : ℝ) < 19 / 50)).mp hL35
+    calc 35 / η = Real.exp (Real.log (35 / η)) := (Real.exp_log (by positivity)).symm
+      _ ≤ Real.exp (19 / 50 * L) := Real.exp_le_exp.mpr (by linarith)
+  have hsplit : Real.exp L = Real.exp (31 / 50 * L) * Real.exp (19 / 50 * L) := by
+    rw [← Real.exp_add]; ring_nf
+  rw [hsplit]
+  have := (div_le_iff₀ hη).mp hbig
+  nlinarith [Real.exp_pos (31 / 50 * L)]
+
+/-- The mean-value error `8M(1 + log M)` is `≤ η T` at `T = e^L`. -/
+theorem floor_mvt_le {L η : ℝ} (hη : 0 < η) (hL8 : Real.log (8 / η) / (9 / 10) ≤ L) {M : ℕ}
+    (hM1 : 1 ≤ M) (hMle : (M : ℝ) ≤ Real.exp (L / 20)) :
+    8 * M * (1 + Real.log M) ≤ η * Real.exp L := by
+  have h1 : 8 * (M : ℝ) * (1 + Real.log M) ≤ 8 * Real.exp (L / 10) := by
+    have hMpos : (0 : ℝ) < M := by exact_mod_cast (by omega : 0 < M)
+    have hlog : Real.log (M : ℝ) ≤ L / 20 := by
+      have := Real.log_le_log hMpos hMle; rwa [Real.log_exp] at this
+    have h1' : 1 + Real.log (M : ℝ) ≤ Real.exp (L / 20) := by
+      have := Real.add_one_le_exp (L / 20); linarith
+    have hlog0 : 0 ≤ 1 + Real.log (M : ℝ) := by
+      have := Real.log_nonneg (show (1 : ℝ) ≤ M by exact_mod_cast hM1); linarith
+    calc 8 * (M : ℝ) * (1 + Real.log M) ≤ 8 * Real.exp (L / 20) * Real.exp (L / 20) := by
+          gcongr
+      _ = 8 * Real.exp (L / 10) := by rw [mul_assoc, ← Real.exp_add]; ring_nf
+  refine h1.trans ?_
+  have hbig : 8 / η ≤ Real.exp (9 / 10 * L) := by
+    have := (div_le_iff₀ (by norm_num : (0 : ℝ) < 9 / 10)).mp hL8
+    calc 8 / η = Real.exp (Real.log (8 / η)) := (Real.exp_log (by positivity)).symm
+      _ ≤ Real.exp (9 / 10 * L) := Real.exp_le_exp.mpr (by linarith)
+  have hsplit : Real.exp L = Real.exp (L / 10) * Real.exp (9 / 10 * L) := by
+    rw [← Real.exp_add]; ring_nf
+  rw [hsplit]
+  have := (div_le_iff₀ hη).mp hbig
+  nlinarith [Real.exp_pos (L / 10)]
+
+/-- The unmollified primes give `D ≥ 1 + (3/5) e^{-a/10}` at `T = e^L`, `σ = 1/2 + a/L`. -/
+theorem floor_D_ge {b : ℕ → ℂ} {y M : ℕ} {L a : ℝ} (hL500 : 500 ≤ L) (ha : 0 < a) (hLK : 100 * (2 * mertensPrimeConst + Real.log 2) + 1 ≤ L)
+    (hy : 1 ≤ y) (hb1 : b 1 = 1) (hMle : (M : ℝ) ≤ Real.exp (L / 20))
+    (hMgt : Real.exp (L / 20) - 1 < M) (hyle : (y : ℝ) ≤ Real.exp (L / 100)) :
+    1 + 3 / 5 * Real.exp (-(a / 10)) ≤
+      ∑ n ∈ Finset.Icc 1 M, ‖mollifiedZetaCoeff b y n‖ ^ 2 * (n : ℝ) ^ (-2 * (1 / 2 + a / L)) := by
+  obtain ⟨hM2, hyM, _, hlogMge, hlogy⟩ := floor_scale_facts hL500 hMle hMgt hy hyle
+  have hL0 : 0 < L := by linarith
+  have hMpos : (0 : ℝ) < M := by exact_mod_cast (by omega : 0 < M)
+  have hσ12 : 1 / 2 ≤ 1 / 2 + a / L := by have := div_pos ha hL0; linarith
+  have hDge := sum_normSq_mollifiedZetaCoeff_ge (b := b) hy hyM hM2 hb1 hσ12
+  have hpowM : Real.exp (-(a / 10)) ≤ (M : ℝ) ^ (1 - 2 * (1 / 2 + a / L)) := by
+    have h1 : Real.exp (L / 20) ^ (1 - 2 * (1 / 2 + a / L)) ≤
+        (M : ℝ) ^ (1 - 2 * (1 / 2 + a / L)) :=
+      Real.rpow_le_rpow_of_nonpos hMpos hMle (by have := div_pos ha hL0; linarith)
+    have h2 : Real.exp (L / 20) ^ (1 - 2 * (1 / 2 + a / L)) = Real.exp (-(a / 10)) := by
+      rw [← Real.exp_mul]; congr 1; field_simp; ring
+    linarith
+  have hratio : 3 / 5 ≤ (Real.log M - Real.log y - 2 * mertensPrimeConst) / Real.log M := by
+    have h2 := Real.log_two_lt_d9
+    have hlogM0 : 0 < Real.log (M : ℝ) := by linarith
+    rw [le_div_iff₀ hlogM0]
+    linarith
+  have h := mul_le_mul hpowM hratio (by norm_num) (Real.rpow_nonneg hMpos.le _)
+  linarith
+
+/-- **The floor under every short mollified mean square right of the line.** For every `a > 0`, for
+all large `T`, every mollifier `Ψ = Σ_{d ≤ y} b_d d^{-s}` with `y ≤ T^{1/100}`, `b_1 = 1`,
+`|b_d| ≤ 1` satisfies `∫_T^{2T} |ζΨ(1/2 + a/log T + it)|² dt ≥ (1 + (3/10) e^{-a/10}) T`. -/
+theorem exists_eventually_integral_normSq_zetaMollified_rightShift_ge {a : ℝ} (ha : 0 < a) :
+    ∀ᶠ T in atTop, ∀ y : ℕ, 1 ≤ y → (y : ℝ) ≤ T ^ ((1 : ℝ) / 100) → ∀ b : ℕ → ℂ, b 1 = 1 →
+      (∀ d ∈ Finset.Icc 1 y, ‖b d‖ ≤ 1) →
+      (1 + 3 / 10 * Real.exp (-(a / 10))) * T ≤
+        ∫ t in T..(2 * T), ‖riemannZeta (((1 / 2 + a / Real.log T : ℝ) : ℂ) + (t : ℂ) * I) *
+          edPoly b (Finset.Icc 1 y) (((1 / 2 + a / Real.log T : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+  set c : ℝ := 3 / 5 * Real.exp (-(a / 10)) with hcdef
+  have hc0 : 0 < c := by positivity
+  have hc35 : c ≤ 3 / 5 := by
+    have : Real.exp (-(a / 10)) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+    rw [hcdef]; linarith
+  have hη0 : 0 < c / 10 := by positivity
+  filter_upwards [eventually_ge_atTop (Real.exp (max (max 500 (2 * a + 2))
+    (max (100 * (2 * mertensPrimeConst + Real.log 2) + 1)
+      (max (Real.log (35 / (c / 10)) / (19 / 50)) (Real.log (8 / (c / 10)) / (9 / 10))))))]
+    with T hTL₀
+  intro y hy hyle b hb1 hb
+  have hT0 : 0 < T := lt_of_lt_of_le (Real.exp_pos _) hTL₀
+  have hLL₀ := Real.log_le_log (Real.exp_pos _) hTL₀
+  rw [Real.log_exp] at hLL₀
+  obtain ⟨L, hLdef⟩ : ∃ L : ℝ, L = Real.log T := ⟨_, rfl⟩
+  have hTexp : T = Real.exp L := by rw [hLdef, Real.exp_log hT0]
+  rw [← hLdef] at hLL₀
+  subst hTexp
+  simp only [Real.log_exp] at hyle ⊢
+  have hL500 : 500 ≤ L := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hLL₀
+  have hLa : 2 * a + 2 ≤ L := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hLL₀
+  have hLK : 100 * (2 * mertensPrimeConst + Real.log 2) + 1 ≤ L :=
+    le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hLL₀
+  have hL35 : Real.log (35 / (c / 10)) / (19 / 50) ≤ L :=
+    le_trans (le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) (le_max_right _ _)) hLL₀
+  have hL8 : Real.log (8 / (c / 10)) / (9 / 10) ≤ L :=
+    le_trans (le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) (le_max_right _ _)) hLL₀
+  have hL0 : 0 < L := by linarith
+  have hyle' : (y : ℝ) ≤ Real.exp (L / 100) := by
+    rw [← Real.exp_mul] at hyle; rwa [show L * (1 / 100) = L / 100 by ring] at hyle
+  obtain ⟨M, hMdef⟩ : ∃ M : ℕ, M = ⌊Real.exp (L / 20)⌋₊ := ⟨_, rfl⟩
+  have hMle : (M : ℝ) ≤ Real.exp (L / 20) := by rw [hMdef]; exact Nat.floor_le (by positivity)
+  have hMgt : Real.exp (L / 20) - 1 < M := by
+    rw [hMdef]; have := Nat.lt_floor_add_one (Real.exp (L / 20)); linarith
+  obtain ⟨hM2, -, -, -, -⟩ := floor_scale_facts hL500 hMle hMgt hy hyle'
+  have hσ12 : 1 / 2 ≤ 1 / 2 + a / L := by have := div_pos ha hL0; linarith
+  have hσ1 : 1 / 2 + a / L < 1 := by
+    have : a / L < 1 / 2 := by rw [div_lt_iff₀ hL0]; linarith
+    linarith
+  have hD1c := floor_D_ge (b := b) hL500 ha hLK hy hb1 hMle hMgt hyle'
+  rw [← hcdef] at hD1c
+  set D : ℝ := ∑ n ∈ Finset.Icc 1 M, ‖mollifiedZetaCoeff b y n‖ ^ 2 *
+    (n : ℝ) ^ (-2 * (1 / 2 + a / L)) with hD
+  have hD0 : 0 < D := by linarith
+  have hE := floor_error_le hL0.le hη0 hL35 (M := M) hMle hyle'
+  have hMVT := floor_mvt_le hη0 hL8 (by omega : 1 ≤ M) hMle
+  have hT4 : 4 ≤ Real.exp L := by have := Real.add_one_le_exp L; linarith
+  have hcore := mollified_meanSquare_floor_core hσ12 hσ1 hT4 hy (by omega : 1 ≤ M) hb hD0
+  rw [← hD] at hcore
+  set X : ℝ := ∫ t in Real.exp L..(2 * Real.exp L), ‖riemannZeta (((1 / 2 + a / L : ℝ) : ℂ) +
+    (t : ℂ) * I) * edPoly b (Finset.Icc 1 y) (((1 / 2 + a / L : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 with hX
+  have hX0 : 0 ≤ X := intervalIntegral.integral_nonneg (by linarith) fun t _ => by positivity
+  have hY : (Real.exp L + 8 * M * (1 + Real.log M)) * D * X ≤
+      (1 + c / 10) * (Real.exp L * D) * X := by
+    have : (Real.exp L + 8 * M * (1 + Real.log M)) * D ≤ (1 + c / 10) * (Real.exp L * D) := by
+      nlinarith
+    exact mul_le_mul_of_nonneg_right this hX0
+  have hlow : Real.exp L * D * (1 - c / 10) ≤
+      Real.sqrt ((1 + c / 10) * (Real.exp L * D) * X) := by
+    have h1 : Real.exp L * D * (1 - c / 10) ≤ Real.exp L * D -
+        (y : ℝ) ^ 2 * M * (27 * Real.sqrt (Real.exp L) * M + 8 * (M : ℝ) ^ 2) := by
+      have : c / 10 * Real.exp L ≤ c / 10 * (Real.exp L * D) := by
+        have := mul_le_mul_of_nonneg_left (by linarith : (1 : ℝ) ≤ D) (Real.exp_pos L).le
+        nlinarith
+      nlinarith
+    exact h1.trans (hcore.trans (Real.sqrt_le_sqrt hY))
+  have hA : Real.exp L * (1 + c) ≤ Real.exp L * D :=
+    mul_le_mul_of_nonneg_left hD1c (Real.exp_pos L).le
+  have hfin := floor_closing_algebra (Real.exp_pos L) hc0 hc35 rfl hA hX0 hlow
+  calc (1 + 3 / 10 * Real.exp (-(a / 10))) * Real.exp L = Real.exp L * (1 + c / 2) := by
+        rw [hcdef]; ring
+    _ ≤ X := hfin
+
 end RHTower

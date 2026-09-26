@@ -110,7 +110,7 @@ theorem norm_twistedZetaTerm_le {σ : ℝ} (hσ : 1 / 2 ≤ σ) {d n : ℕ} (hd 
     rw [mul_one_div]
     exact this
 
-theorem integral_exp_I_mul (φ T : ℝ) (hφ : φ ≠ 0) :
+theorem integral_exp_I_mul_window_le (φ T : ℝ) (hφ : φ ≠ 0) :
     ‖∫ t in T..(2 * T), Complex.exp (I * ((t * φ : ℝ) : ℂ))‖ ≤ 2 / |φ| := by
   have hc : I * (φ : ℂ) ≠ 0 := mul_ne_zero I_ne_zero (by exact_mod_cast hφ)
   have heq : (fun t : ℝ => Complex.exp (I * ((t * φ : ℝ) : ℂ))) =
@@ -243,7 +243,7 @@ theorem norm_integral_twistedZeta_two_sub_diag_le {σ : ℝ} (hσ : 1 / 2 ≤ σ
           have := Real.log_injOn_pos (Set.mem_Ioi.mpr hn0)
             (Set.mem_Ioi.mpr (by exact_mod_cast hdm)) h'
           exact hne (by exact_mod_cast this.symm)
-        have hexp := integral_exp_I_mul (twistedZetaFreq d n m) T hφne
+        have hexp := integral_exp_I_mul_window_le (twistedZetaFreq d n m) T hφne
         have hinv : 2 / |twistedZetaFreq d n m| ≤ 4 * n := by
           rw [div_le_iff₀ (abs_pos.mpr hφne)]
           rcases le_or_gt (2 * n) (d * m) with hbig | hsmall

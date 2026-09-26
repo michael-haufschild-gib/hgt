@@ -45,14 +45,21 @@ def xiHeatThirdUniformDebt (τ : ℝ) : ℝ :=
 theorem xiHeatThirdUniformDebt_nonneg (τ : ℝ) :
     0 ≤ xiHeatThirdUniformDebt τ := by
   unfold xiHeatThirdUniformDebt
-  positivity [xiHeatNormMoment_nonneg]
+  have h1 := xiHeatNormMoment_nonneg 1 τ
+  have h3 := xiHeatNormMoment_nonneg 3 τ
+  have h5 := xiHeatNormMoment_nonneg 5 τ
+  positivity
 
 theorem xiHeatThirdUniformDebt_tendsto_zero :
     Tendsto xiHeatThirdUniformDebt atBot (𝓝 0) := by
   have h := (((xiHeatNormMoment_scaled_tendsto_zero 1).const_mul 11).add
     ((xiHeatNormMoment_scaled_tendsto_zero 3).const_mul 35)).add
       ((xiHeatNormMoment_scaled_tendsto_zero 5).const_mul 3)
-  simpa [xiHeatThirdUniformDebt, mul_assoc] using h
+  simp only [mul_zero, add_zero] at h
+  convert h using 1
+  ext τ
+  unfold xiHeatThirdUniformDebt
+  ring
 
 /-- The complete phase debt has a coefficient-uniform vanishing majorant. -/
 theorem xiHeatThirdPhaseDebt_le_uniform (a b c τ : ℝ) :

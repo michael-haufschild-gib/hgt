@@ -35,7 +35,6 @@ theorem bilateralLaplace_vertical_eq_fourier (S : ThetaSource) (a t : ℝ) :
   filter_upwards with x
   have hf : -2 * Real.pi * x * (-t / (2 * Real.pi)) = t * x := by
     field_simp
-    ring
   rw [hf]
   unfold thetaSourceNoetherTilt
   have he : ((a : ℂ) + I * (t : ℂ)) * (x : ℂ) =
@@ -55,7 +54,8 @@ theorem tendsto_bilateralLaplace_vertical (S : ThetaSource) (a : ℝ) :
     exact le_sup_left
   have ht : Tendsto (fun t : ℝ => -t / (2 * Real.pi)) atTop atBot :=
     (tendsto_div_const_atBot_of_pos (by positivity)).mpr tendsto_neg_atTop_atBot
-  simpa only [← bilateralLaplace_vertical_eq_fourier] using (hr.mono_left hb).comp ht
+  simpa only [Function.comp_def, ← bilateralLaplace_vertical_eq_fourier] using
+    (hr.mono_left hb).comp ht
 
 theorem tendsto_xiPrimeGammaNoetherPath_fst :
     Tendsto (fun t => (xiPrimeGammaNoetherPath t).1) atTop (𝓝 (0 : ℂ)) := by
@@ -70,10 +70,28 @@ theorem tendsto_norm_xiPrimeGammaNoetherPath_snd :
   have hpos : Tendsto (fun t => ‖(xiPrimeGammaNoetherPath t).1‖) atTop (𝓝[>] (0 : ℝ)) :=
     tendsto_nhdsWithin_iff.mpr ⟨hzero,
       Eventually.of_forall (fun t => norm_pos_iff.mpr (xiPrimeGammaNoetherPath_fst_ne_zero t))⟩
-  simpa only [xiPrimeGammaNoetherPath, norm_inv, Pi.inv_apply] using hpos.inv_tendsto_nhdsGT_zero
+  have hinv : Tendsto (fun t => ‖(xiPrimeGammaNoetherPath t).1‖⁻¹) atTop atTop :=
+    hpos.inv_tendsto_nhdsGT_zero
+  simpa only [xiPrimeGammaNoetherPath, norm_inv] using hinv
 
 theorem xiPrimeGammaNoetherAdjoint_unbounded (C : ℝ) :
     ∃ t : ℝ, C < ‖(xiPrimeGammaNoetherPath t).2‖ :=
   (tendsto_norm_xiPrimeGammaNoetherPath_snd.eventually_gt_atTop C).exists
+
+/-- The canonical unit-charge adjoint cannot belong to unweighted square-integrable states. -/
+theorem xiPrimeGammaNoetherAdjoint_not_memLp_two :
+    ¬ MemLp (fun t => (xiPrimeGammaNoetherPath t).2) 2 (volume : Measure ℝ) := by
+  intro h
+  have hi : Integrable (fun t => ‖(xiPrimeGammaNoetherPath t).2‖ ^ (2 : ℕ)) :=
+    h.integrable_norm_pow two_ne_zero
+  obtain ⟨T, hT⟩ := eventually_atTop.mp
+    (tendsto_norm_xiPrimeGammaNoetherPath_snd.eventually_ge_atTop 1)
+  have hone : IntegrableOn (fun _ : ℝ => (1 : ℝ)) (Set.Ici T) := by
+    apply hi.integrableOn.mono' aestronglyMeasurable_const
+    filter_upwards [ae_restrict_mem measurableSet_Ici] with t ht
+    simp only [norm_one]
+    have hge := hT t ht
+    nlinarith
+  simp at hone
 
 end RHTower.ThetaSourceWard

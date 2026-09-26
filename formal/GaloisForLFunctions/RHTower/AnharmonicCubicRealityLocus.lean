@@ -113,12 +113,44 @@ private theorem conjugate_mul_self_eq_one_iff_norm_eq_one (z : ℂ) :
   · intro h
     simp [h]
 
-theorem chebyshevAnharmonicQ_re_zero_iff_threeCircles
+theorem chebyshevAnharmonicQ_re_zero_iff_line_or_circles
     {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
     (chebyshevAnharmonicQ s).re = 0 ↔
       s.re = 1 / 2 ∨ ‖s‖ = 1 ∨ ‖1 - s‖ = 1 := by
   rw [chebyshevAnharmonicQ_re_zero_iff_realityLocus hs0 hs1,
     conjugate_mul_self_eq_one_iff_norm_eq_one,
     conjugate_mul_self_eq_one_iff_norm_eq_one]
+
+theorem xiZeroCopy_chebyshevAnharmonicQ_re_zero_iff_criticalLine (q : XiZeroCopy) :
+    (chebyshevAnharmonicQ (q.1 : ℂ)).re = 0 ↔ (q.1 : ℂ).re = 1 / 2 := by
+  let s : ℂ := q.1
+  have him : 1 < s.im ^ (2 : ℕ) := by
+    simpa only [s] using xiZeroCopy_one_lt_im_sq q
+  have hs0 : s ≠ 0 := by
+    intro h
+    rw [h] at him
+    norm_num at him
+  have hs1 : s ≠ 1 := by
+    intro h
+    rw [h] at him
+    norm_num at him
+  rw [chebyshevAnharmonicQ_re_zero_iff_line_or_circles hs0 hs1]
+  constructor
+  · intro h
+    rcases h with hline | hcircle | hcircle
+    · exact hline
+    · have hsq : normSq s = 1 := by
+        rw [normSq_eq_norm_sq, hcircle]
+        norm_num
+      rw [normSq_apply] at hsq
+      nlinarith only [him, hsq, sq_nonneg s.re]
+    · have hsq : normSq (1 - s) = 1 := by
+        rw [normSq_eq_norm_sq, hcircle]
+        norm_num
+      rw [normSq_apply] at hsq
+      simp only [sub_re, one_re, sub_im, one_im, zero_sub] at hsq
+      nlinarith only [him, hsq, sq_nonneg (1 - s.re)]
+  · intro h
+    exact Or.inl h
 
 end RHTower
