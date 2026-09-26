@@ -22,13 +22,13 @@ formalize UNCONDITIONALLY in lean all proven theorem for every single card in:
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:
-1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
-2. Always build in the foreground, 1 process per single agent.
-3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
-4. No computations.
-5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
-6. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
-7. make sure you don't leave stale lean processes running - clean up after yourself.
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
 
 Non-negotiable working mode rules:
 1. If it cannot be done in a single session -> Does not matter. Do it!
@@ -49,13 +49,13 @@ GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF TH
 Goal: Create a formal proof or falsification of the Ramanujan–Petersson conjecture for Maass forms.
 
 **Lean rules:**
-1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
-2. Always build in the foreground, 1 process per single agent.
-3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
-4. No computations.
-5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
-6. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
-7. make sure you don't leave stale lean processes running - clean up after yourself.
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
 
 **Working mode rules:**
 1. Use the search tool for our lean corpus heavily.
@@ -70,18 +70,19 @@ goal is met when lean corpus has an uncondtional formal proof/falsification of t
 ## apply external paper to corpus experiment
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
-papers:
-- https://www.alphaxiv.org/abs/2608.chebyshev-trace-riemann-hypothesis
-- https://www.alphaxiv.org/abs/2608.riemann-xi-hankel-criterion
+this is a freak fringe paper and clearly has issues, but take the core ideas seriously for a moment and ask "what if?" "how could i make this work?" "where could it add something interesting to our research?" "is there something that when applied to our lean corpus could suprise us?"
 
-Lean rules:
-1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
-2. Always build in the foreground, 1 process per single agent.
-3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
-4. No computations.
-5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
-6. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
-7. make sure you don't leave stale lean processes running - clean up after yourself.
+papers:
+- docs/others/einstein-fringe2.md
+  
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
    
 Non-negotiable working mode rules:
 1. If an idea would be interesting, but is missing lean infrastructure, build it no matter the effort, instead of pivoting.
@@ -95,12 +96,13 @@ use the search tool for the lean corpus to check what already was formalized so 
 **Goal:** Move the frontier of our lean corpus towards a formal proof of the Selberg 1/4 conjecture.
 
 **Lean rules:**
-1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
-2. Always build in the foreground, 1 process per single agent.
-3. No computations.
-4. Always use  lake env lean \<file>  and only lake build \<module> --old for the final audit. Do not forget to wire new modules into the umbrellas.
-5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
-6. make sure you don't leave stale lean processes running - clean up after yourself.
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
 
 **Mandatory reasearch and conjecturing rules:** 
 1. always use the search tool for our lean corpus to find ideas, existing work. conjecture based on the lean corpus, not your training data which is behind our research in the lean corpus.
@@ -132,12 +134,13 @@ good. hope this helped. continue now your lean work only without computations.
 Use computations and formalize lean to discover new routes, kill routes, sharpen routes, discharge premises and finally close a formal RH proof chain.
 
 **Lean rules:**
-1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
-2. Always build in the foreground, 1 process per single agent.
-3. No computations.
-4. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
-5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
-6. make sure you don't leave stale lean processes running - clean up after yourself.
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
 
 **Mandatory reasearch and conjecturing rules:** 
 1. always use the search tool for our lean corpus to find ideas, existing work. conjecture based on the lean corpus, not your training data which is behind our research in the lean corpus.
@@ -210,6 +213,7 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 8) use arxiv search and single word and broad searches for finding papers not directly related to the problem and see if there is anything useful in the found papers - do not search for your problem or narrow searches, prefer most receent papers (january to september 2026). example searches: "hawking", "commutator", "recurrence", "cauchy", ... - these are examples, create your own search terms. most papers will be useless, but a few will allow to bring in solutions from fields far away from your actual problem
 
 ## hgtl7 create new knowledge
+/hgtl7
 contribute one significant piece of knowledge to our lean corpus that moves the frontier in any existing route or any new route towards a proof or falsification of the riemann hypothesis. the new knowledge cannot appear anywhere in public literature, your training data nor our lean corpus.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
@@ -217,9 +221,10 @@ your main tool for this is an endless loop of conjecture -> succeed and move to 
 do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
 
 **Lean rules:**
-1. Proofs must be unconditional anses, no hypotheses, no addedaxioms, ....
-2. Always build in the foreground,t.
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
 3. No computations
-4. Always use  lake env lean \<filmodule> for the final audit. Donot forget to wire new modules into the umbrellas.
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.

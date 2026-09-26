@@ -15977,3 +15977,4 @@ import GaloisForLFunctions.HTGeometry.GreedyPhaseL2
 import GaloisForLFunctions.HTGeometry.FejerWeightedAverage
 import GaloisForLFunctions.HTGeometry.FejerWeightedQuadraticAverage
 import GaloisForLFunctions.HTGeometry.WeightedDoubleIntegralBound
+import GaloisForLFunctions.HTGeometry.ChebyshevMomentTrace

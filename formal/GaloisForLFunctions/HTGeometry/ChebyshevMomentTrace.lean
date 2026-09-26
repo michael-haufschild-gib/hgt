@@ -18,7 +18,7 @@ theorem chebyshevTracePolynomial_zero : chebyshevTracePolynomial 0 = X := by
 theorem chebyshevTracePolynomial_one :
     chebyshevTracePolynomial 1 = X - 2 * X ^ 2 := by
   simp [chebyshevTracePolynomial, Chebyshev.T_one]
-  ring
+  ring_nf
 
 theorem chebyshevTracePolynomial_add_two (n : ℕ) :
     chebyshevTracePolynomial (n + 2) =
@@ -26,7 +26,7 @@ theorem chebyshevTracePolynomial_add_two (n : ℕ) :
         chebyshevTracePolynomial n := by
   simp only [chebyshevTracePolynomial, Nat.cast_add, Nat.cast_ofNat,
     Chebyshev.T_add_two, sub_comp, mul_comp, X_comp, ofNat_comp]
-  ring
+  ring_nf
 
 theorem chebyshevTracePolynomial_eval (n : ℕ) (x : ℝ) :
     (chebyshevTracePolynomial n).eval x =
