@@ -105,7 +105,7 @@ theorem hasDerivAt_exp_half_complex (x : ℝ) :
     HasDerivAt (fun x : ℝ => (Real.exp (x / 2) : ℂ)) ((Real.exp (x / 2) : ℂ) / 2) x := by
   have h := ((Real.hasDerivAt_exp (x / 2)).comp x ((hasDerivAt_id x).div_const 2)).ofReal_comp
   convert h using 1
-  · funext y; simp [Function.comp_def]
+  · funext y; simp
   · push_cast; ring
 
 theorem hasDerivAt_modTail (hF : DifferentiableOn ℂ F modUpperSet) (x : ℝ) :

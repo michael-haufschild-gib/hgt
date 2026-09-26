@@ -101,5 +101,30 @@ No all-degree producer or new universal conjecture is claimed.
 
 ## Evidence and status
 
+## Boundary mechanism attack
+
+Two exact tests now close a new generic no-go. The dyadic law retains an arbitrary
+anti-periodic primitive; its complete bounded solution space is reconstructed with
+a geometric remainder. More strongly, continuous nonvanishing solutions with zero
+mean and both normalized theta endpoint anchors realize every winding `-(2*k+1)`.
+`ThetaBoundaryDyadicClassification` proves these statements in Lean. This defeats
+generic dyadic winding rigidity; it does not identify the examples with the literal
+theta renewal loop. The open step is the source-specific index map and its control
+of the retained odd primitive.
+
+Card and positive survivor: `../5-failed/theta-dyadic-boundary-winding-rigidity.md`.
+
+The next source-specific attack derives the signed imaginary-axis arc charges of
+the literal theta source. `ThetaCuspComplexWard.source_complex_ward` (namespace
+`RHTower.ThetaImaginaryArc`) now closes the strip-wide differential identity.
+The differentiated cusp-flatness and arc integrals remain Lean-open. Full derivation
+and exact outstanding obligations: `rh-theta-imaginary-arc-charge-2026-09-26.md`.
+
+Both new leaf builds pass. The dyadic leaf has 36 standard-only axiom reports.
+Global lint currently reports unrelated missing umbrella imports; those files were
+not modified. RH remains unresolved. No new universal producer is claimed.
+
+## Evidence and status
+
 Separate fact log: `rh-reflection-source-sign-2026-09-26-facts.md`.
 Search outputs are discovery evidence, not compilation certificates. Existing unrelated GL3 work is outside this research scope.

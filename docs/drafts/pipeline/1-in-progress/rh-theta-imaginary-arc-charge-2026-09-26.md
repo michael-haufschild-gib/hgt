@@ -68,8 +68,8 @@ The literal source admits no holomorphic logarithm on its whole strip. A continu
 
 ## Formal obligations
 
-1. Complex Ward identity for the literal `thetaCuspStripSource`, not a newly defined substitute.
+1. **Lean-closed:** complex Ward identity for the literal `thetaCuspStripSource`, not a newly defined substitute. `ThetaCuspComplexWard`, namespace `RHTower.ThetaImaginaryArc`, theorem `source_complex_ward`; scratch check and named leaf build pass. The source potential and both real derivative identifications are proved directly from the existing theta-tail jets.
 2. Differentiated odd-cusp flatness, including integrability at the endpoint.
 3. Both exact arc charges and the unconditional interior source-zero theorem.
 
-All three remain Lean-open. The no-log obstruction is not marked formally closed until these exact positive survivors are checked. No numerical experiment; no global novelty claim.
+Obligations 2–3 remain Lean-open. The no-log obstruction is not marked formally closed until these exact positive survivors are checked. No numerical experiment; no global novelty claim.
