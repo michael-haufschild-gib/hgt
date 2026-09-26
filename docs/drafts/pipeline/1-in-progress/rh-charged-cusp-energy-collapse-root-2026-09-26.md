@@ -140,5 +140,6 @@ version. No RH hypothesis or source sign assumption is used.
 **Lean status:** the rank-uniform damped finite and infinite mean-square
 bound, coefficient summability, and exact Gaussian energy bound compile in
 `ThetaCuspQuadraticMeanSquare`; its required named dependency build passes.
-Horizontal clock substitution and literal source identification are in
-scratch. The final C10 limit is not yet Lean-closed.
+`ThetaCuspChargedSourceMeanSquare` closes horizontal clock substitution,
+literal full-source identification, and the compact N^9 bound; its named
+build passes. The final C10 limit is not yet Lean-closed.

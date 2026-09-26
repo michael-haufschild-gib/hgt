@@ -108,3 +108,17 @@ dyadic (prime-2 Euler factor) mode. Open converse: RH ⟹ witness class = closed
 (Beurling-type completeness modulo the explicit Blaschke factor; paper-level via Hardy-space factorization).
 Literature: η-variants of Nyman–Beurling exist; the spurious dyadic witness family, the dyadic invariance, the
 mass-fraction Hermitian identity and the FZZ bridge were not found.
+
+## PM-11 (proved, Lean) — the physical target is the dyadic Haar function
+`RHTower/FermiNymanBeurlingHaarTarget.lean` (build green, axioms standard, wired).
+`h = −1` on `(0,½]`, `+1` on `(½,1]`; `∫_0^1 h(t) t^{s−1} dt = (1 − 2^{1−s})/s` (`integral_dyadicHaar_mul_cpow`).
+- `h` annihilates every spurious witness (`integral_dyadicHaar_mul_conj_spurious`) and pairs nonzero with every
+  zero witness in the strip (`integral_dyadicHaar_mul_conj_zeroWitness_ne_zero`).
+- Finite combinations of generators are orthogonal to every witness; complex Cauchy–Schwarz gives the floor
+  `∫_0^1 |h − Σ c_j φ_{a_j}|² ≥ (2Re ρ − 1)|1 − 2^{1−ρ}|²/|ρ|²` for every zero with `½<Re ρ<1`
+  (`dyadicHaar_approximation_floor`).
+- **Criterion:** `h` an `L²(0,1]`-limit of alternating generators ⟹ RH (`riemannHypothesis_of_dyadicHaar_approximable`).
+Meaning: on `Re s = ½` the distance is `(1/2π)∫|1−2^{1−s}|²|1 + ζ(s)D(s)|²/|s|²`, `D = Σ c_k k^{−s}`; since
+`|1 − 2^{1−s}| ∈ [√2−1, √2+1]` there, the physical problem is the Báez-Duarte problem with a bounded equivalent weight.
+The spurious factor cancels exactly against the Haar target; the physical model contributes the weight and nothing else.
+Open core (unchanged): exhibit `D_N` with `‖1 + ζ D_N‖ → 0` — Möbius cancellation at the half power (route MC).

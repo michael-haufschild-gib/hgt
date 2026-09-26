@@ -150,6 +150,7 @@ theorem IsFermiNymanWitness.integrableOn_norm {w : ℝ → ℂ} (hw : IsFermiNym
     IntegrableOn (fun t => ‖w t‖) (Ioc 0 1) := by
   refine (((integrableOn_const (C := (1 : ℝ)) measure_Ioc_lt_top.ne).add hw.2.1).div_const 2).mono'
     (hw.1.aestronglyMeasurable measurableSet_Ioc).norm (Filter.Eventually.of_forall fun t => ?_)
+  simp only [Pi.add_apply]
   rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
   nlinarith [sq_nonneg (‖w t‖ - 1)]
 
@@ -228,8 +229,10 @@ theorem dyadicHaar_approximation_floor {ρ : ℂ} (hζ : riemannZeta ρ = 0) (h1
         (norm_fermiNymanCombination_le c a)),
       hw.integral_combination_mul_conj c a ha, sub_zero,
       integral_dyadicHaar_mul_conj_powerWitness (by linarith), Complex.conj_conj]
+  have hmeas : Measurable fun t => dyadicHaar t - fermiNymanCombination c a t :=
+    measurable_dyadicHaar.sub (measurable_fermiNymanCombination c a)
   have hcs := hw.norm_sq_integral_mul_conj_le
-    (measurable_dyadicHaar.sub (measurable_fermiNymanCombination c a))
+    (g := fun t => dyadicHaar t - fermiNymanCombination c a t) hmeas
     (integrableOn_normSq_dyadicHaar_sub_combination c a)
   rw [hpair, integral_Ioc_normSq_powerWitness hz1 one_pos, Real.one_rpow, Complex.conj_re] at hcs
   have hpos : 0 < 2 * ρ.re - 1 := by linarith

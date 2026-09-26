@@ -49,3 +49,14 @@ non-integer m. Fatou step needs strip inversion for general F (corpus has it onl
   holomorphic extension to |Im w|<1. Infrastructure: holomorphic log h on ℍ (ThetaHauptmodulLogarithm),
   exact cusp-1 branch log h(1−1/v) = iπ − 8log2 − 2πiv + Log Q(v), window law for all real a (ThetaPowerFamily).
   All axioms [propext, Classical.choice, Quot.sound]. Open: T3 (a = 1/2 is L(s,χ₈)); a = 1/2 Hardy (transfer fails exactly there).
+- 2026-09-26 — SR [L]: `thetaPowerXiC_strip_zeros_finite` (a>1/2: finitely many zeros in |Im w| ≤ 1/2), module
+  ThetaPowerStripRigidity (weighted saddle e^{vs}, core radius 4032(a+1)/m+1).
+- 2026-09-26 — T3 [L]: `thetaPowerXiC_half_eq_completedLFunction`: Λ_{1/2}(w) = (√2/4)·8^{s/2}·Λ(s,χ₈), s = ½−iw,
+  |Im w|<1; `thetaPowerXi_half_eq_zero_iff`. Modules ThetaChiEightSeries (θ₂θ₄ = ϑ₈²/2, ϑ₈ = e^{-πi/8}θ₂((τ+1)/2)),
+  ThetaPowerChiEightLFunction (axis identity, Mellin, identity theorem).
+- 2026-09-26 — C7 [X as stated]: the holomorphic segment contains two more Euler products. a = 1/3: F_{1/3} =
+  (θ₂θ₃θ₄)^{1/3} = 2^{1/3}η(τ) = 2^{1/3}Σχ₁₂(n)q^{n²/24}, Λ_{1/3} ∝ Λ(s,χ₁₂); a = 1/6: F_{1/6} ∝ ϑ_{χ₂₄}
+  (one-dimensionality of holomorphic forms per multiplier). Leading exponent a/4 = 1/q ⇒ Euler products at a = 4/q,
+  q ∈ {8,12,24} (the even real primitive q with (ℤ/q)^× of exponent 2 up to T²), plus a = 0. "Every interior a has off-line
+  zeros" would refute GRH for χ₁₂ and χ₂₄. Survivor C7*: off-line zeros for a ∈ [0,1/2]∖{0,1/6,1/3,1/2}.
+  Effective conductor of Λ_a is 4/a (zero density (1/2π)log(4t/(2πa))).

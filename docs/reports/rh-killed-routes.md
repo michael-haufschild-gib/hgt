@@ -28,7 +28,7 @@ Codes: as in the frontier map. KR-x = entry in I.2. no-go-NNN = former catalogue
 - **RBH** (mechanism no-go-225). Kill: complementary/wall finite parts and separated-sign or passive production are blind or RH receivers. Survivor: changed nonseparated, nonlinear or singular datum (→ PM). E: REF.
 - **SNR** (no-go-186). Kill: the reporter aperture realizes an arbitrary positive target height independently of the source. Survivor: a source-native aperture invariant is required. E: REF.
 
-## Part I.2 — Retired routes (28)
+## Part I.2 — Retired routes (30)
 
 ### KR-AUT — GL(2) automorphic spectral positivity
 Route: Petersson/Kuznetsov/Selberg trace formula with a tuned nonnegative test, plus DI/Stadlmann-type estimates.
@@ -202,6 +202,47 @@ Survivor [L]:
 - It is proved for all levels `λ ≤ √2·e^{1/100}` with the prime 2 (`one_twentieth_le_ccmRestrictedWeilPolarGroundEnergy_of_le_primeTwo`).
 
 E: R:ConformalHodgeBlindness; R:DeningerResolventCoreIsRiemannHypothesis; H:EntireMultiplierDefectUniversality; R:PoleVanishingWeilPositivityPrimeTwo; P1:hf-positive-hodge-attack/facts.
+
+### KR-RW — Restricted Weil ground energy (legacy C1, O, CCM wall)
+Route: positivity of the pole-vanishing restricted Weil ground energy `μ₀(a)` at every aperture, produced by bounding the pole-compressed prime translation operator (frontier RW).
+Kill:
+- The open step is RH itself [L, both directions] (`riemannHypothesis_iff_forall_polarGroundEnergy_nonneg`: Bombieri–Yoshida plus RH ⇒ ground energy `≥ 0`).
+- Every producer whose inputs survive a single-prime deletion is impossible [L] (`WeilSinglePrimeDeletion`: the deleted functional is negative on a two-bump test).
+- Termwise/Chebyshev operator bounds reproduce the trivial rate `e^A` (MUST-261).
+- Finite-aperture certificates reach only bounded apertures; `μ₀` falls from `0.52` at `√2` to `≤ 0.003` at `λ ≈ 1.65` (HF-F12).
+
+So the route is CIRCULAR with no live producer.
+
+Survivor [L]:
+- Unconditional `μ₀ ≥ 1/20` on all apertures `a ≤ ½(log 2 + 1/50)`, prime 2 included, computer-free.
+- RH ⇔ `μ₀ ≥ 0` beyond that aperture (`riemannHypothesis_iff_polarGroundEnergy_nonneg_beyond_primeTwo`).
+- The trace/Krein-extension certificate `μ₀ ≥ α − ∫(α − W_a − h)₊ dist²`.
+
+E: R:PolarGroundEnergyNonnegIffRiemannHypothesis; R:CCMRestrictedWeilPolarBombieriYoshida; R:WeilSinglePrimeDeletion; R:PoleVanishingWeilPositivityPrimeTwo; P3:weil-pole-vanishing-trace-certificate-sqrt2-lean.
+
+### KR-WL — Weil lag function (legacy O)
+Route: boundedness of the lag function `Φ` (one side suffices), produced by an archimedean Hodge index `Φ(0) ≥ Φ(L)` for the intersection pairing `B(v_x, v_y) = Φ(log x − log y)` on principal divisors (frontier WL).
+Kill:
+- The open step is RH [L]: `riemannHypothesis_iff_weilLagFunctionReal_bddAbove`, `…_bddBelow`, `riemannHypothesis_iff_primeLag_le_sharp` (`a_n ≤ a_1`).
+- The named producer is the same statement [L]: `riemannHypothesis_iff_lagGramKernel_posSemidef` (Hodge index = PSD lag Gram = RH).
+
+So the route is CIRCULAR with no independent producer.
+
+Closed around it:
+- uniform gaps and finite truncations (MUST-234/245);
+- de la Vallée Poussin positivity (CANNOT-341);
+- one base orbit or sparse support (CANNOT-327/328);
+- self-pairings (CANNOT-325);
+- lag Gram sign shortcuts (no-go-149, 441);
+- the genus fixed part (KR-GEN);
+- deletion-robust inputs for the ambient Weil form (`WeilSinglePrimeDeletion`).
+
+Survivor [L]:
+- The dichotomy: all `a_n ∈ [−a_1, a_1]`, or `(a_n)` is unbounded both ways.
+- `|Φ(L)| ≤ Ce^{L/2}e^{−cL^{1/10}}`.
+- `Φ ≤ Me^{aL}` ⇒ `Re ρ ≤ ½ + a`.
+
+E: R:WeilLagFunctionOneSided; R:WeilLagFunctionGram; R:PrimeLagLandauPrimesOnly; R:WeilLagFunctionOmega.
 
 ## Part I.3 — Universal-law-field (ULF) mechanisms retired (59)
 
