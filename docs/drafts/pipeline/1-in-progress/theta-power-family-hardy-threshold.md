@@ -68,3 +68,10 @@ non-integer m. Fatou step needs strip inversion for general F (corpus has it onl
   81/(4r) − x³ − x), Λ_a entire of order ≤ 3/2, Riemann–Lebesgue on both rays ⇒ infinitely many zeros; minus SR.
   Dichotomy at the wall: a ≤ 1/2 (holomorphic at cusp 1) infinitely many real zeros for a < 1/2; a > 1/2 all but
   finitely many zeros outside the closed critical strip.
+- 2026-09-26 — C7*-T [L]: `thetaPowerXiC_offline_zero_of_transcendental` (RHTower/ThetaPowerTranscendentalOffLineZero):
+  every transcendental a ∈ (0,1/2) has a zero of Λ_a with 0 < Im w < 1/2. Holomorphy at every cusp does not force RH
+  on a co-countable parameter set. Card: 3-formalized/theta-power-transcendental-offline-zeros.md.
+- 2026-09-26 — goal audit [L]: T3 `thetaPowerXiC_half_eq_completedLFunction` (|Im w| < 1), SR `thetaPowerXiC_strip_zeros_finite`
+  (a > 1/2), C7 `thetaPower_cuspHolomorphy_not_RH` (O open, (0,1/2)∖O countable, transcendental a ⇒ infinitely many zeros
+  with 0 < Im w < 1/2) and `thetaPower_allInterior_offline_imp_chiTwelve_offline` (C7 for all interior a ⇒ off-line zero
+  of Λ(s,χ₁₂)); all standard axioms.

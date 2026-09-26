@@ -69,3 +69,19 @@ functional equation and its root number. Without the root-number phases only ν 
   - `gaussSum_legendre`: τ((·/p)) = G(p).
   - This removes blocker (c) for odd prime conductors. Still needed: Kronecker χ_D of general fundamental discriminants (multiplicativity plus D = −4, ±8).
 - 2026-09-26 — `MaassCharacterTwist` (built, wired): u_χ = Σχ̄(a)u(z+a/q) transforms by χ(d)² on Γ₀((N+1)q²). This is the weight-0 input for the twisted RS route.
+- 2026-09-26 — **Hecke layer plan (paper; the corpus lacks Γ₀ Hecke operators and finite-dimensionality of Maass eigenspaces).**
+  - For a prime p ∤ M, take the representatives α_∞ = (p 0; 0 1) and α_b = (1 b; 0 p), b mod p, and set T_p u(z) = Σ_i u(α_i z).
+  - For γ = (A B; C D) ∈ Γ₀(M): α_iγ = γ'_i α_{σ(i)} with γ'_i ∈ Γ₀(M), where σ is the Möbius action of (D B; C A) on P¹(F_p):
+    - α_bγα_{b''}⁻¹ = (A+bC, (B+bD−(A+bC)b'')/p; pC, D−Cb'') with b'' = (B+bD)/(A+bC) when A + bC ≢ 0;
+    - otherwise α_bγα_∞⁻¹ = ((A+bC)/p, B+bD; C, pD);
+    - α_∞γα_{b''}⁻¹ with b'' = D/C when C ≢ 0 (p);
+    - otherwise α_∞γα_∞⁻¹ = (A, pB; C/p, D), where p ∤ M gives C/p ≡ 0 (M).
+  - σ is a bijection with inverse the action of the inverse matrix, so T_p u is Γ₀(M)-invariant. Pullbacks by rational matrices preserve the eigenvalue and cuspidality (corpus `rationalGL_maass_eigenfunction_cuspidal_pullback`).
+  - Coefficients: a_{T_p u}(n) = a(n/p) + p·a(pn) (unnormalised Whittaker scaling).
+  - Next: T_pT_q = T_qT_p and T_p² = T_{p²} + (p+1)Id on coefficients. A common eigenvector needs finite-dimensionality, the analytic gap (compact resolvent on cusp forms).
+- 2026-09-26 — **Hecke layer, first brick closed** (`Gamma0MaassHeckeOperator`, built `--old`, wired after `LegendreRootNumber`, standard axioms):
+  - `heckeT_invariant`: T_pf(z) = f(pz) + Σ_b f((z+b)/p) is Γ₀(M)-invariant for p ∤ M, from the P¹(𝔽_p) permutation σ (`sigmaP_injective`) and the four transfer identities.
+  - `heckeH_maass`: on Maass cusp forms T_p preserves invariance, the eigenvalue and integral-cusp decay. Each term is a positive rational pullback; the Laplacian is additive (`laplacian_add`, `isMaassEigenfunction_sum`).
+  - LegendreRootNumber axiom check: standard.
+  - Next Hecke bricks: the Fourier coefficient formula a_{T_pu}(n) = a(n/p) + p·a(pn); commutation; common eigenvectors (need finite-dimensional eigenspaces).
+- 2026-09-26 — **Hecke coefficients closed** (`Gamma0MaassHeckeCoefficients`, built `--old`, wired, standard axioms). For continuous 1-periodic F, `coefficient_heckeT` gives (T_pF)^(n; y) = [p∣n]F̂(n/p; py) + pF̂(pn; y/p). The pieces are the period-p reduction `coeff_period_nat` (the geometric sum Σ_{j<p}e(−nj/p) = p[p∣n]) and the tiling `coeff_sum_translates`. `maass_coefficient_heckeT` is the Γ₀(M) Maass case. With the Whittaker normalisation F̂(n;y) = ρ(n)√y K(2π|n|y), this gives √p λ_p ρ(n) = √p(ρ(n/p) + ρ(pn)).

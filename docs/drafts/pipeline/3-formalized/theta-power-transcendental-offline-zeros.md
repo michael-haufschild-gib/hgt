@@ -94,3 +94,33 @@ a zero z* of M with Re z* ∈ (1/4, 1/2); w* = i(2z* − 1/2) has Im w* ≠ 0 an
   Σ|b_n|²(n+α)^{−1/2} = ∞, Σ|b_n|(n+α)^{−1/4} = ∞, polygon mass `exists_sigma_partial_mass_ge`),
   HTGeometry/GammaVerticalSharpBound (|Γ(σ+it)|⁻¹ ≤ C|t|^{1/2−σ}e^{π|t|/2}, 0 ≤ σ ≤ 1, via Phragmén–Lindelöf on
   Γ(z)⁻¹(z+2)^{z−1/2}). Open: Dirichlet series D, rotated Mellin mean square, Plancherel inequality, target, transfer.
+- 2026-09-26 — bricks [L]: ThetaPowerDirichletSplit (M entire = 4Λ_a(i(2z−1/2)); termwise M_δ = Γπ^{−z}D^δ;
+  D = D^δ + E^δ on Re z > 0; off-line D-zeros ⇒ off-line Λ_a zeros), HTGeometry/PlancherelInequalityReal
+  (∫|Ĝ|² ≤ 2π∫|g|², Gaussian regularization), ThetaPowerShiftDifferenceBound (envelope, Cauchy F', |F(τ)−F(τ+iδ)| ≤
+  3C₁δ^ηIm^{−1/4−η}e^{−(πa/16)Im}), ThetaPowerMeanSquare (rotation to angle π/2+2c via strip shift, Plancherel,
+  translation by (log cos2c)/2, sharp Γ ⇒ `exists_lintegral_thetaPowerDirichletError_le`: ∫_T^{2T}|E^δ(σ+it)|² ≤ Cδ^{2η}T).
+  Remaining plan (revised, no area integrals): (A1) Cauchy circle-average sup bound; (A2) greedy phases in
+  L²(circle R₂) block-wise ⇒ convergent target, uniform on closedBall R; (A3) polygon closure with one fixed side
+  (greedy partition + triangle); (A4) two reflected solutions + independence of (n+α)^{−z} ⇒ f ≢ 0; (A5) isolated zero
+  ⇒ sphere radius r with min|f| = m > 0; (B) averaging of products of one-coordinate trig polynomials in ℚ-independent
+  frequencies (limit = product of constant terms), Fejér weights ψ = ∏F_L(φ_n − θ*_n) (mean 1, weighted miss 2/L),
+  mean-square for E^δ, circle Cauchy bound ⇒ ∃t: 3|D(·+it) − f| ≤ |f| on sphere ⇒ `exists_zero_of_sphere_domination`.
+- 2026-09-26 — **C7*-T PROVED IN LEAN.** `RHTower.thetaPowerXiC_offline_zero_of_transcendental : 0 < a → a < 1/2 →
+  Transcendental ℚ a → ∃ w, 0 < w.im ∧ w.im < 1/2 ∧ thetaPowerXiC a w = 0`; axioms [propext, Classical.choice,
+  Quot.sound]; `lake build` of the module passes; lint clean. Final bricks: RHTower/ThetaPowerSmoothDirichletBounds
+  (|(n+α)^{-z}| ≤ α^{-2}, D^δ bounded/continuous on 0<Re<2, vertical-shift decomposition),
+  RHTower/ThetaPowerErrorCesaroMeanSquare (∫₀ᵀ|E^δ(z+it)|² ≤ C₀(δ) + 4Cδ^{2η}T via dyadic blocks),
+  HTGeometry/FejerWeightedQuadraticAverage (ψ-averages: mean 1, unit distance 2/L, quadratic form → diagonal),
+  HTGeometry/WeightedDoubleIntegralBound (Tonelli bound for ∫ψ·∫q), RHTower/ThetaPowerFejerTransfer (circle
+  majorant, averaging lemma, `exists_shift_near_target`), RHTower/ThetaPowerTranscendentalOffLineZero (Q-independence
+  of log(n+a/4) from transcendence, target parameters, sphere domination).
+  Consequence for C7: holomorphy at every cusp does not force RH — every transcendental a ∈ (0,1/2) has an off-line
+  zero at 0 < Im w < 1/2. C7 as stated (all interior a) implies ¬GRH(χ₁₂) (a = 1/3) and stays CIRCULAR.
+  Next: openness of the off-line set in a (Hurwitz/sphere domination) ⇒ RH-exceptional set is closed, countable,
+  algebraic; unboundedly many good translates ⇒ infinitely many off-line zeros.
+- 2026-09-26 — upgrades [L]: `thetaPowerXiC_offline_zeros_infinite_of_transcendental` (infinitely many zeros with
+  0 < Im w < 1/2; the transfer now yields translates t ≥ T₀ for every T₀); RHTower/ThetaPowerOffLineParameterSet:
+  `isOpen_thetaPowerOffLineSet`, `countable_thetaPower_exceptional`, `thetaPower_exceptional_algebraic`,
+  `isClosed_thetaPower_exceptional_in_interval` — the RH-exceptional set E ⊂ (0,1/2) is closed, countable, algebraic.
+  Successor card: 0-backlog/theta-power-exceptional-set-integral-exponent.md (C7**: E ⊆ {1/6, 1/3}; η-form
+  F_a = 2^a η g^{6a−2}).

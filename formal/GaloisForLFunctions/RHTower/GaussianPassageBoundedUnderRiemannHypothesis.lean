@@ -4,10 +4,10 @@ import GaloisForLFunctions.RHTower.PrimeVacuumErrorTransfer
 import GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch
 
 /-!
-# Route 1, step 2 is exactly the Riemann hypothesis
+# Bounded Gaussian passage is exactly the Riemann hypothesis
 
-Route 1 (`docs/reports/route-proposals/route1.md`) needs, as its step 2, convergence of the
-zero-free Gaussian Euler–continuum family `Φₓ` through the passage `x → 0⁺` into the strip.
+Consider the zero-free Gaussian Euler–continuum family `Φₓ` and its passage `x → 0⁺` into the
+strip.
 `AnchoredPhasePassageRigidity` proves that bounded boundary argument of the relative potential
 `Lₓ + Aₓ` on every circle `C(1+iγ, r)`, `0 < r < ½`, along one sequence `xₖ → 0⁺`, implies RH.
 
@@ -28,7 +28,7 @@ has no zero with `Re ρ > ½ + α`.  The passage therefore reads the zero-free h
 abscissa `Θ = sup Re ρ`.  It cannot localize in height: one far zero with large real part already
 unbounds it.
 
-These are receivers: they identify route 1's step 2 with RH (and with `Θ ≤ ½ + α`) and produce
+These are receivers: they identify bounded passage with RH (and with `Θ ≤ ½ + α`) and produce
 nothing towards either.
 -/
 
@@ -574,7 +574,7 @@ theorem riemannHypothesis_iff_gaussianPassage_boundaryArgOscillation_bounded :
   ⟨gaussianPassage_boundaryArgOscillation_bounded_of_riemannHypothesis,
     riemannHypothesis_of_gaussianPassage_boundaryArgOscillation_bounded⟩
 
-/-! ## Every abscissa: route 1's step 2 measures the zero-free half-plane -/
+/-! ## Every abscissa: bounded passage measures the zero-free half-plane -/
 
 /-- Continuity of a function restricted to a circle, from continuity on the closed disc. -/
 private theorem continuous_comp_circleMap_of_closedBall {G : ℂ → ℂ} {c : ℂ} {r : ℝ} (hr : 0 ≤ r)

@@ -69,3 +69,33 @@ Two directions the law itself suggests:
 - If a proposed transversality argument works for a general entire function with the same functional
   equation, it proves too much (CANNOT-01): the FE alone admits off-line zeros, hence admits
   collisions, so any valid argument must use the Dirichlet series as well.
+
+## Reduction of the open core (2026-09-26)
+- **Slice-local argument principle = the Laguerre hierarchy at height `t`.** Put
+  `G_t(u) = ξ(½+√u+it) ξ(½−√u+it)`. It is entire, and `G_t(x²) = |ξ(½+x+it)|²` for real `x`. Its roots
+  are `u = (β−½ + i(γ−t))²`. Critical zeros give `u ≤ 0`, and a collision at `t` gives the positive root
+  `u = (β−½)²`. The Taylor coefficients of `G_t` are the higher Laguerre expressions of `Ξ` at `t`
+  (`c₀ = Ξ²`, `c₁ = Ξ'² − ΞΞ''`, …). A collision at `t` ⟺ a positive root ⟹ a sign change in
+  `(L_k(t))`, which is Csordas–Varga's hierarchy localised at one height. The open core coincides with
+  route LA's (see `new-route-conjecture-loop.md`, C9).
+- **Transversality** is void: collisions are codimension 0 and Hurwitz-stable under the FE (EOC-F6).
+- **Lean [L], axiom-clean:** `RHTower/XiHorizontalSliceTaylorPositivity.lean`.
+  - `xiSliceProduct t x = ξ(½+x+it)ξ(½−x+it)` and `xiSliceCoeff t n` (Taylor coefficients at `0`).
+  - `re_eq_half_of_xiSliceCoeff_nonneg`: nonnegative coefficients at `t` ⇒ every zero with ordinate `t`
+    is critical.
+  - `slice_collision_free_of_xiSliceCoeff_nonneg`: nonnegative coefficients at `t` ⇒ the height is
+    collision-free.
+  - `exists_not_nonneg_xiSliceCoeff_of_offLine`: an off-line zero breaks the sign at its own ordinate.
+  - `riemannHypothesis_of_xiSliceCoeff_nonneg`: nonnegativity at every height ⇒ RH.
+  - Open producer: the sign of `xiSliceCoeff t n` for all `t` and all `n ≲ ½ log t` (detection-index
+    law, loop card C10).
+- **Equivalence [L], axiom-clean:** `RHTower/XiHorizontalSliceTaylorPositivityConverse.lean`,
+  `riemannHypothesis_iff_xiSliceCoeff_nonneg : RH ↔ ∀ t n, 0 ≤ xiSliceCoeff t n`.
+  - The converse uses the corpus's unconditional Hadamard product (`XiC_eq_constant_mul_canonicalProduct`).
+    Under RH the paired factor is `E₁((t−ix)/γ)E₁((t+ix)/γ) = e^{2t/γ}((γ−t)²+x²)/γ²`.
+  - It also uses the closure of `NonnegTaylorAtZero` under sums and products (Leibniz) and under
+    locally uniform limits (`tendstoLocallyUniformlyOn_iteratedDeriv`).
+  - **Producer shape made exact:** RH ⟺ for every `t` the slice product is a locally uniform limit of
+    entire functions with nonnegative Taylor coefficients at `0`. A producer must supply such
+    approximants from source data (not from the zeros). The deformation law says the approximation
+    scheme must use the functional equation, the Euler product and additive structure together.

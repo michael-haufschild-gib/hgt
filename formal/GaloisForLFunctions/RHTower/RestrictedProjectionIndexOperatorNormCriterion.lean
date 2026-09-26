@@ -13,8 +13,7 @@ For orthogonal projections `R, P` with Hilbert–Schmidt displacement `D = R - P
 below one: a vector of `Ran R ∩ Ker P` is fixed by `(1 - P) R`.
 
 Every sub-unit budget on the forward seam in any Schatten norm implies this operator-norm bound.
-For route 1 (`docs/reports/route-proposals/route1.md`), whose fallback asks for `Tr T_(D,x) ≤ B_base < 1`
-on the relative cubic defect, the sharp form of the budget is therefore `‖(1 - P) R‖ < 1`, with no
+So a budget `Tr (R - P)³ ≤ B < 1` on the cubic defect has the sharp form `‖(1 - P) R‖ < 1`, with no
 trace-class content.  For the Hardy projections of two unimodular boundary phases this is the
 Nehari / Toeplitz-invertibility condition on their quotient.
 

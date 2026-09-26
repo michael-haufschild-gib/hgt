@@ -170,6 +170,9 @@ uniqueness `selfSimilar_of_mellin_lowerDefect`. Sharp: zero witness `t^{ρ̄−1
 ## PM-16 (proved, Lean) — the Hermitian identity is exactly RH
 `RHTower/FermiNymanWitnessSelfSimilarityCriterion.lean` (build green, axioms standard, wired).
 `riemannHypothesis_iff_fermiNymanWitness_selfSimilar : RH ↔ ∀ w, IsFermiNymanWitness w → ∀ t ∈ (0,1], w(t/2)=w(t)`;
+**PM-17 [L] the exponent ladder** `zetaZeroFreeStrip_iff_mellinFermiWitness_selfSimilar` (all `a < 1`):
+`ζ ≠ 0 on 1−a < Re s < 1  ⟺  every witness of Mellin exponent a with m(x) ≤ B/√(x−a) is self-similar`;
+the forward witness is `t^{ρ−1}` (bounded majorant), the converse uses removability on `Re z = a` from the rate.
 `…_halfMass` (`∫_0^{½}|w|² = ½∫_0^1|w|²`), `…_halfMass_le` (`q ≥ 0`). Converse proof: L² witness has exponent `½` with
 rate `m(½+ε) ≤ (1+‖w‖²)/(2√(2ε))` (AM–GM); under RH `Ξ(1−z) ≠ 0` off `Re z = ½`; at critical zeros the left form has
 nonnegative meromorphic order (a pole would beat the `ε^{−1/2}` rate at `z₀+ε`), so the regularized defect is entire;
@@ -193,3 +196,36 @@ Proof.
    ⟹ `w(2t) = w(t)` (continuity).
 Where `L^p`, `p<∞`, fails: `W` analytic only on `Re z > 1/p`; the strip `0 < Re z ≤ 1/p` needs `1/ζ` bounds on
 `1 − 1/p ≤ Re s < 1` — a zero-free half-plane.
+
+## PM status (closed)
+The route's producer class is Mellin-diagonal (gate KR-R2) and every PM receiver is now an exact Lean equivalence:
+RH ⟺ L² witness self-similarity ⟺ half-mass ⟺ `q ≥ 0` (PM-16); zero-free strips ⟺ rigidity at each Mellin exponent
+(PM-17); exponent 0 unconditional (PM-15). Positive survivors all formalized. Open cores left outside PM:
+MC (Möbius cancellation at the half power) and WL (one-sided prime inequality at scale `√X`; routes 1 and 3 land there).
+
+## PM-18 (proved, Lean) — every off-line zero forces a negative direction of `q`
+`RHTower/FermiNymanWitnessNegativeIndex.lean` (build green, axioms standard, wired).
+`exists_dyadicForm_neg_orthonormal`: for `n` distinct zeros in `½ < Re s < 1` there are `n` witnesses with
+`q(vᵢ, vⱼ) = −δᵢⱼ`, where `vᵢ = wᵢ + Σₗ Xᵢₗ gₗ` and `X = −½(Q+1)B⁻¹`. The mechanism: `q ≡ 0` on the spurious
+span (`dyadicForm_spurious_spurious`), and the cross matrix `Bₗⱼ = (2^{−ρⱼ}−½)/(ρⱼ − dₗ)` with
+`dₗ = 2πi(l+1)/log 2` is a nonsingular Cauchy matrix (`eq_zero_of_cauchy_sum_eq_zero`, Lagrange).
+`encard_rightStripZeros_le_witnessNegIndex`: `#{ζ(ρ)=0, ½<Re ρ<1} ≤ ind₋(q | witness class)` (in `ℕ∞`);
+`riemannHypothesis_iff_witnessNegIndex_eq_zero`: RH ⟺ `ind₋ = 0`.
+Meaning: the "RH is a signature problem" reading (free-orbit count = negative index) is now realized on the
+physical Fermi source, with the integer bounded below exactly by the off-line zero count.
+Open (PM-19, conjecture): equality `ind₋ = Σ multiplicities` — needs the Beurling–Lax structure
+`W₂ = S₀ ⊕ closure(zero witnesses and their log-derivatives)`. The deformation-obstruction law predicts
+the signature is not homotopy-computable from the source alone.
+Quantum margin [L]: `riemannHypothesis_iff_witnessNegIndex_le_one` — the index is 0 or ≥ 2 (off-line zeros come in
+conjugate pairs; no real zeros in the strip, `riemannZeta_ne_zero_of_abs_im_lt_four`). This is route 3's "K < 2"
+structure realized on the physical source; by the gate on sub-quantum margins (KR-R1/R3) the margin is idle.
+
+## PM-19a (proved, Lean) — the RH defect is localized at poles, unconditionally
+`IsFermiNymanWitness.selfSimilar_of_removable` / `IsMellinFermiWitness.selfSimilar_of_removable`
+(`FermiNymanWitnessSelfSimilarityCriterion`, axioms standard): a continuous L² witness is self-similar as soon as the
+left form `−2^{−z}z(1−z)Φ₀(1−z)/Ξ(1−z)` of its conjugate has nonnegative meromorphic order at every zero of
+`Ξ(1−z)` in `Re z < ½` — no RH hypothesis. Isolated zeros now come from the identity theorem
+(`eventually_zetaEntire_one_sub_ne_zero`); the zero-free ladder is a corollary. So the kernel of the principal-part
+map at the points `1 − ρ` (`Re ρ > ½`) is exactly the self-similar class: `dim(W₂/S₀) ≤` total pole order, and with
+PM-18, `#zeros ≤ ind₋(q) ≤ dim(W₂/S₀)`. Remaining for the exact count (PM-19b): principal-part space of dimension
+`Σ m_ρ` as an explicit linear map, and the multiplicity-aware lower bound via `t^{ρ̄−1} log^j t`.

@@ -863,6 +863,183 @@ Positivity therefore never helps a GL₂-only family: the only positive GL₂-on
 - the Maass twist u_χ;
 - Gauss's sign G(p) = √p or i√p (Landsberg–Schaar), and root number 1 for the Legendre symbol.
 
+**Cycle 80. Conjecture (level-by-level GL₂ Kuznetsov gives moduli cancellation for Kl₃).** Write Kl₃(m;q) = Σ*_{x mod q} e(x/q)S(x̄, m; q). Here S(x̄, m; q) is the Kloosterman sum of the cusp pair (∞, 0) of Γ₀(x) at modulus q√x (Deshouillers–Iwaniec). So Σ_{q∼Q} w(q/Q)Kl₃(m;q) = Σ_x Σ_{q>x, (q,x)=1} w(q/Q)e(x/q)S(x̄, m; q), and every inner sum is a GL₂ Kuznetsov sum at level x with a smooth weight: e(x/q) has O(1) oscillation on q ∼ Q. The conjecture is that this gives Σ_q Kl₃(m;q) ≪ Q^{2−η}. By the exponent law ν ≤ (1−η)/(2(2−η)), that passes 3/16; η = 1/4 would give 3/14.
+- (a) *Per level.* For newforms ρ_{j0} = ε_jρ_{j∞}, where ε_j is the Atkin–Lehner sign, and ω_j ≍ 1/x. The spectral side Σ_j ε_jω_jλ_j(m)ĥ_x(t_j) is ≍ x^{−1/2} (root numbers of O(x) forms with |t| ≲ 1). So Σ_{q∼Q} S(x̄, m; q) ≍ Q√m, which is square-root cancellation over q at each level. Summing over x ≤ Q gives Q², Deligne's bound |Kl₃| ≤ 3q on average and no better.
+- (b) *Across levels (heuristic).* The test functions ĥ_x oscillate like X^{2it} with X = 4π√m/(Q√x), so their Fourier transforms sit at length 2log(1/X) ≈ log(Q³x/m). In the trace formula for T_mW_x the elliptic (class number H(4mx)) term is therefore negligible. What dominates are hyperbolic classes of trace xk and discriminant x(xk² − 4m), i.e. sums Σ_k L(1, χ_{x(xk²−4m)}) at that length. By the Kuznetsov–Selberg dictionary these are again Kloosterman sums over moduli ≍ Q√x. **Verdict: CIRCULAR.**
+- (c) *Switching.* The off-diagonal terms n = 1 + kq with k ≤ K = 1/(QY) are sums of λ_{sym²} over n ≡ 1 (k) of length kQ. Expanded in characters mod k, they are the same twisted sym² family at modulus k, with dual length k²/Q. For k < √Q they are negligible (entire L-functions, no main term). For k ≥ √Q the character-averaged dual (Kl₃(·; k)) is ≪ k, so the off-diagonal is ≪ K². With Y = Q^{−a}: off-diagonal Q^{2a−2}, main Q^{1+2aν}, q-dual Q². These are compatible iff ν > 1/4. **The threshold 1/4 is invariant under the switch q ↔ k.**
+- (d) *Literature.* The source text of Iwaniec 1996 (Topics in Geometry, 203–212) is not accessible. Risager (arXiv 0707.2332 §1): Iwaniec "used some of the same ideas" as Luo–Rudnick–Sarnak in a proof "entirely in a GL₂ framework". Search snippets saying "Kuznetsov formula and Burgess" refer to Iwaniec's 1984 prime geodesic theorem, not to 10/49. *Numerical question, not a derivation:* if the moduli saving were η = 4δ, with δ the subconvexity saving for L(1/2, χ), then Burgess (δ = 1/16) gives η = 1/4 and ν ≤ 3/14, Iwaniec's exponent. Weyl (δ = 1/12, Petrow–Young) would give ν ≤ 1/5 (LRS's 21/100), and Lindelöf would give ν = 0. This fits one data point.
+
+*Survivor:* level-by-level GL₂ spectral theory reproduces Deligne's bound for Kl₃ on average over moduli without algebraic geometry. This is the moduli analogue of cycle 73(b). Going further needs cancellation across levels of Atkin–Lehner-weighted spectral sums, i.e. a prime-geodesic-type bound for Σ_x e(x/q)Σ_k L(1, χ_{x(xk²−4m)}).
+*Formal (built, wired, standard axioms):* `Gamma0MaassHeckeOperator`. For p ∤ M, T_p maps Γ₀(M) Maass cusp forms to Γ₀(M)-invariant C² Laplace eigenfunctions with the same eigenvalue that decay at every integral cusp (`heckeH_maass`). Invariance comes from the permutation of P¹(𝔽_p) by the Möbius action of (D B; C A) with four explicit transfer matrices (`heckeT_invariant`). The Laplacian is additive on C² functions (`laplacian_add`). The axiom check of `LegendreRootNumber` is standard.
+
+**Cycle 81. Conjecture (families with explicitly evaluable duals give moduli cancellation).** Salié sums and Hasse–Davenport products (τ(ψ)τ(ψχ₃)τ(ψχ₃²) = ψ̄(27)τ(ψ³)·const) evaluate explicitly. Look for a forced-zero family whose character-averaged dual is a GL₂ Kloosterman sum, which has spectral cancellation over moduli, instead of Kl₃, which does not.
+- (a) The simplest such family is L(s, u ⊗ ψ): degree 2, forced zero at s = ν (pole of Γ_R(s−ν)), root number ∝ τ(ψ)², averaged dual ∝ S(N̄, m; q). With a moduli saving η against Weil the exponent law reads ν* = (1/2 − η)/(3/2 − η), so any η > 1/6 would beat 3/16. But S(N̄, m; q) is the (∞, 0) Kloosterman sum of Γ₀(N), and **u itself is in the level-N spectrum**. Its Kuznetsov term ε_uλ_u(m)(Q√N/√m)^{2ν}, inserted in the dual Σ_m λ̄_u(m)g(m/L)(…), gives Σ_m |λ_u(m)|²m^{−ν}g(m/L) ≍ L^{1−ν}. That is exactly the primal main term Y^{−ν}, so the identity is self-consistent and yields no contradiction. Bounding the other exceptional forms by θ gives the bootstrap map F(θ) = 2θ/(1+2θ) > θ for all θ < 1/2: it cannot even reach 3/16. **Verdict: CIRCULAR.**
+- (b) The same resonance holds one rank up. Moduli sums of Kl₃ are GL(3) spectral objects (Bump–Friedberg–Goldfeld, Buttcane), and the GL(3) spectrum contains sym²u with parameter 2ν. Its term in the Kl₃ moduli sum, inserted in the sym² dual, reproduces the main term Y^{−2ν}.
+
+*Survivor (structural):* in a forced-zero family of twists of Π, the moduli sum of the averaged dual is spectrally expanded over a space that contains Π itself, and Π's term reproduces the main term exactly. A spectral proof of moduli cancellation therefore needs an a-priori bound for the exceptional spectrum it contains, so it is a bootstrap, as conjectured in cycle 72. Explicit evaluability of the dual does not remove this; it only moves the family from GL(3) to GL(2), where the bootstrap map F(θ) = 2θ/(1+2θ) has no fixed point in (0, 1/2).
+
+**Cycle 82. Conjecture (the square-twist family law with switching is ν ≤ (1−η)/4, with ceiling 1/8).** Let η be a uniform saving over moduli, Σ_{q∼Q} w(q/Q)Kl₃(±m;q) ≪ Q^{2−η} for m ≤ Q^A. Apply the forced-zero identity over all q ∼ Q with even ψ mod q, and switch the off-diagonal to the k-family (cycle 80(c)), which then enjoys the same saving.
+- Sizes with Y = Q^{−a}: main Q^{1+2aν}; q-dual Q^{2−η}; k-dual K^{2−η} with K = Q^{a−1} (zero when K < √Q).
+- The constraints are a > (1−η)/(2ν) and (2−η)(a−1) < 1 + 2aν. They are compatible **iff ν > (1−η)/4**. Without switching the law is (1−η)/(2(2−η)). Both give 1/4 at η = 0.
+- *Parallel (exact at the level of exponent laws).* For a half-integral weight form the Petersson formula at n gives |a(n)|²n^{−(k−1)/2} ≪ 1 + Σ_{c≲n} |S(n,n;c)|c^{−1}(c/n)^{1/2}. A moduli saving η there gives a(n)n^{−(k−1)/4} ≪ n^{(1−η)/4}: **the same law (1−η)/4.** Weil/Salié (η = 0) gives n^{1/4} and ν ≤ 1/4 (Selberg). Iwaniec's two exponents coincide: a(n) ≪ n^{1/4−1/28} = n^{3/14} (Invent. Math. 87, 1987) and ν ≤ 3/14 (1996). Both are the instance **η = 1/7** of the law, which suggests that the 1996 argument transfers the 1987 moduli saving (averaging over levels) to the sym² family. That is a reading of the exponents, not verified against the source.
+- *Attack.*
+  - Spectral moduli cancellation is at most square root (tempered Kuznetsov terms are O(C) against the trivial C^{3/2}), so η ≤ 1/2. Hence **the square-twist sym² family is capped at ν ≤ 1/8 (λ ≥ 15/64 ≈ 0.234)**.
+  - Reaching Kim–Sarnak (ν ≤ 7/64) would need η ≥ 9/16 > 1/2, so **no moduli-cancellation input lets this family reach Kim–Sarnak**.
+  - This also **refutes cycle 72's bootstrap formula F(θ) = 7θ/(4+14θ)**: that formula has F(0) = 0, whereas any method of this type has F(0) ≥ 1/8.
+- *Comparison with the positive degree-4 family* (π × π̃ ⊗ χ, zero at 2ν, pole term 1/(qY), dual Kl₄ with Deligne size q^{3/2}). With a saving η its law is ν > (3/2 − η)/(5 − 2η), i.e. 3/10 at η = 0, 1/4 at η = 1/2 and 1/6 at η = 1, worse than the square-twist family at every η. **So the best GL₂ forced-zero family is the square-twist sym² family, with ceiling 1/8.**
+- **Verdict: SURVIVES PRELIMINARY ATTACK as a heuristic exponent law.** It is not a theorem: the moduli saving is an input, and the switching step needs smooth weights in both families. **[OPEN CORE]:** a Kl₃ moduli saving η > 0 from GL₂ tools alone, i.e. Iwaniec's mechanism.
+
+**Cycle 83. SOTA read of Deshouillers–Iwaniec (Invent. Math. 70, 1982; GDZ OCR, pp. 219–288), then the exact second moment of Kl₃ over moduli.**
+- *Source.*
+  - Thm 6 (level-averaged exceptional large sieve): Σ_{q∼Q}Σ_{λ_j exc} X^{2κ_j}|Σ_{n∼N} a_nρ_j(n)|² ≪ (QN)^ε(Q + N + NX)‖a‖².
+  - DI's conjecture replaces NX by √(NX), "as powerful as the Selberg eigenvalue conjecture" in all known applications. Thm 7 proves it for a_n ≡ 1.
+  - Thms 10–12 are bilinear bounds for S(m r̄, ±n; sc) and for incomplete Kloosterman fractions e(n·\overline{rd}/sc). They save only when the r, d ranges are short (the term (C + DR)² in K²).
+- *Consequences.*
+  - (i) For one exceptional form, level averaging alone gives nothing beyond a single level (weight 1/level per level against a diagonal of size #levels).
+  - (ii) In cycle 80's decomposition the level x runs over a complete period (R ≍ C), so Thms 10 and 12 are weaker than Deligne there. Applying Thm 6 to Σ_x Σ_q e(x/q)S(x̄, m; q) gives LQ^{2+a/4}, worse than Deligne's LQ². Even DI's conjecture gives exactly LQ², i.e. Deligne.
+- *Exact reduction (new form, elementary).* With T = Σ_{q∼Q} w_q Σ_m λ̄(m)G(m/L)Kl₃(m;q), Cauchy–Schwarz gives |T|² ≤ ‖λ‖²_L·Σ_m G|Σ_q w_qKl₃(m;q)|². Poisson in m mod qq' uses the Fourier transform of Kl₃, Σ_m Kl₃(m;q)e(βm/q) = qS(1, −β̄; q) − 1, and twisted multiplicativity. The result is
+  **Σ_m G(m/L)|Σ_q w_qKl₃(m;q)|² = Diag + L Σ_{h≠0} Σ_{q≠q'} w_q w̄_{q'} Ĝ(hL/(qq')) S(h̄, q³ − q'³; qq') + O(lower)**, where Diag ≍ LQ³.
+  - The product S(1, −h̄q'; q)·S(1, h̄q; q') is the single sum mod qq' with argument B = h̄(q³ − q'³), since B ≡ −h̄q'³ (q) and B ≡ h̄q³ (q').
+  - The h-range is H = Q²/L.
+- *Threshold law.* Let OD ≪ L·HQ^{3−δ} be a saving of Q^δ over Weil. Then dual = Q^{3/2} + Q^{1+(a−δ)/2}, and without switching the family gives **ν* = max(1/(4(1+δ)), 1/6)**. Weil alone (δ = 0) gives exactly 1/4. Iwaniec's 3/14 corresponds to δ = 1/6 at a = 7/6 (H = Q^{1/6}), i.e. to OD ≪ Diag: the whole h-sum costs O(1) at L = Q^{11/6}. In large-sieve language, the vectors (Kl₃(m;q)/q)_{m≤L} would have to be quasi-orthogonal over q ∼ Q already for L ≥ Q^{11/6}. The Schur test with Weil gives (L + Q²)‖c‖², i.e. only L ≥ Q².
+- **Verdict: BRIDGE.** The open core is now the concrete Kloosterman bilinear form OD = Σ_{h≤H}Σ_{q≠q'} S(h̄, q³−q'³; qq') (equivalently Σ S(−h̄, q'; q)S(−h̄, q; q')), with a power saving beyond Weil. Heuristically it has square-root size LQ²√H ≪ Diag, which would give η = 1/2. **[OPEN CORE]:** any saving in this reciprocal form, e.g. from Duke–Friedlander–Iwaniec or Bettin–Chandee bounds for Kloosterman fractions, or from Kuznetsov in q at level hq'.
+
+**Cycle 84. Attack on the cubic-difference Kloosterman form (cycle 83's open core).**
+- *Formal (built `--old`, wired, standard axioms): `HyperKloostermanSecondMomentKernel`.*
+  - `fourier_hyperKloosterman_three`: Σ_m Kl₃(m; n)e(βm/n) = nS(1, −β⁻¹; n) for β a unit. `sum_hyperKloosterman_three`: Σ_m Kl₃ = 0 for n > 1. `star_hyperKloosterman_three`: conj Kl₃(a) = Kl₃(−a).
+  - `second_moment_kernel`: Σ_{m mod qr} Kl₃(m; q)Kl₃(−m; r)e(hm/qr) = qr·S(1, h⁻¹(q³ − r³); qr) for a unit h. `second_moment_kernel_of_fst`: it vanishes when q ∣ h. So cycle 83's reduction is exact, with no lower-order terms.
+- *Attack (a): expand in q mod q', Kuznetsov in q.* Use S(1, h̄q; q') = Σ*_{t mod q'} e(\overline{ht}/q')e(tq/q'). The q-sum Σ_q w(q)e(tq/q')S(1, −h̄q'; q) is then a Kuznetsov sum at level h; for h = 1 there is no exceptional spectrum at all. But the weight has frequency t/q', so its transform sits at |t_j| ≍ |t| ≤ Q. The spectral large sieve then costs (T² + Q) with T ≍ Q and yields ≍ Q^{7/2}, worse than Weil's Q³. Keeping t small only covers a negligible part of the t-range. **FALSE as a route.**
+- *Attack (b): Cauchy–Schwarz in q', then in q.* After factoring, the q-sum becomes a product of two Kloosterman sums modulo the varying modulus q, times a function periodic mod q'q'' ≍ Q² > Q. This is again horizontal, and Poisson in the modulus is not available. **FALSE.**
+- *Diagnosis.* OD is a bilinear (Type II) sum of Kloosterman sums over moduli c = qq' whose argument couples the two factors. Only Type I moduli sums (c ≡ 0 mod d, fixed arguments) are within Kuznetsov's reach. Type II bounds for Kloosterman sums over moduli are exactly what blocks sign changes of Kl₂(1; p) over primes (Fouvry–Michel, Annals 2007; Matomäki's refinements handle Type I only).
+- *Formal export (built, wired, standard axioms): `SelbergConjectureSmallLevel`.* `restrictMaass` restricts a Maass cusp form to any subgroup Γ' ≤ Γ. `hardy_bound_of_principal_le` gives α(1+α) ≤ 2λ for every Γ ⊇ Γ(N+1). `no_exceptional_of_principal_le` proves **Selberg's conjecture for every subgroup of SL₂(ℤ) containing some Γ(N), 1 ≤ N ≤ 14**, with `gamma0_no_exceptional` and `gamma1_no_exceptional` as corollaries. Literature: Huxley 1985 has level ≤ 18. The 1D Neumann ground state on the strip is μ ≈ κy₀ = α to leading order, so the corpus Hardy bound is sharp there and the only slack left is the strip/cell covering factor 2. Levels 15–18 would need a factor below 1.98–1.58.
+- **Verdict: BRIDGE to a known open problem.** The square-twist sym² route past 3/16 needs a Type II moduli estimate for Kloosterman sums. Iwaniec's 1996 argument, if it follows this family, must create Type I structure some other way, e.g. an extra averaging variable or a different family.
+
+**Cycle 85. Conjecture: the strip/cell factor 2 is an artefact, and a floor-1 Hardy bound plus a band trace estimate proves Selberg for Γ(N) for every N ≤ 25.**
+
+*Literature.* Huxley's geometric method gives λ₁(X(N)) > 1/4 for N ≤ 17; the corpus had N ≤ 14. Booker–Strömbergsson cover only squarefree Γ₀(N) (by trace-formula computation).
+
+*Notation (paper proof).* Use the deck-summed densities and slice functions: s(y) = ∫₀¹ D(x+iy) dx, g(y) = sliceGradient, m = s/y². Set a = √3/2, w₀ = 1/a − 1 = 2/√3 − 1, κ = 2π/N and E_F = λM_F. Define
+- M_high = ∫₁^∞ m and E_high = ∫₁^∞ g (a full strip inside F);
+- M_band = ∫_a^1 m and E_band = ∫_a^1 g.
+
+*Proof.*
+1. **Hardy with floor 1.** Take h = α/y − κ with 0 ≤ α ≤ κ, t = κ − α. The corpus ground-state identity g ≥ Qm + (hs)' with Q = α(1−α) + 2ακy holds for every α. Integrated over [1, ∞) it gives E_high ≥ q_α M_high + t·s(1), with q_α = α(1 − α + 2κ) = (κ − t)(1 + κ + t). The boundary term −h(1)s(1) = t·s(1) now helps.
+2. **Band trace.** The vertical ground state gives |s'| ≤ c·s + g/c for every c > 0. Then s(y) ≤ s(1) + ∫_a^1(cs + g/c) on [a, 1]. Integrating against dy/y² and using ∫ s ≤ ∫ s/u² gives (1 − w₀c)M_band ≤ w₀s(1) + (w₀/c)E_band.
+3. **Covering.** E_band + E_high = E_rect ≤ 2E_F (corpus strip bound), while E_high ≤ E_F because the high strip lies inside F. Also M_F ≤ M_rect = M_band + M_high.
+4. **Combination.** With β = t(1/w₀ − c) = t(2√3 + 3 − c):
+   - (1 + t/c)E_F ≥ q_α M_high + β M_band ≥ min(q_α, β)M_rect ≥ min(q_α, β)M_F;
+   - hence **λ ≥ min(q_α, β)/(1 + t/c)**.
+5. **Numerics.** Take c = 11/10 and t = 49/1000. For N ≤ 25, κ ≥ 2π/25 > 0.25132, so q_α ≥ 0.2630 and β ≥ 0.2628, against 1 + t/c = 1.04455. Both ratios exceed 1/4 (0.2518 and 0.2516). **So Γ(N) has no exceptional eigenvalue for N ≤ 25.** Through the conjugation diag(1, N)Γ(N)diag(1, N)⁻¹ ⊆ Γ₀(N²) ∩ Γ₁(N), the same holds for every Γ₀(M) with M ∣ N² (N ≤ 25), including non-squarefree M such as 625, 576 and 529.
+
+*Status: FORMALIZED* (built `--old`, wired, standard axioms, lint clean).
+- `SelbergMaassFloorOneGap`: `floor_one_hardy`, `band_trace`, `high_le`, `rect_le`, `cell_le_rect`, `closing_chain`, and **`level_le_twentyfive_no_exceptional`** (Γ(N+1), N+1 ≤ 25).
+- `SelbergConjectureLevelTwentyFive`: `no_exceptional_of_principal_le` (every Γ ⊇ Γ(N), N ≤ 25), the Γ₀ and Γ₁ corollaries, `conjMaass` (u(z/N) on Γ(N) from u on Γ₀(N²)), and **`gamma0_sq_no_exceptional`** (Γ₀(M) for M ∣ N², N ≤ 25).
+
+*Literature re-check, verdict REDISCOVERED as a statement.* Booker–Lee–Strömbergsson ("Twist-minimal trace formulas and the Selberg eigenvalue conjecture", JLMS 2020) verify Selberg for Γ(N), N ≤ 226, and Γ₁(N), N ≤ 880, by rigorous trace-formula computation. What is new here:
+- a computation-free proof whose geometric range, 25, exceeds Huxley's 18;
+- the first machine-checked proof of Selberg's conjecture for these groups.
+
+The floor-one method caps at N ≤ 30 even with a perfect band estimate: q_κ = κ(1+κ) ≥ 1/4 requires κ ≥ 0.2071. With the present band constant it caps at N ≤ 25, and N = 26 fails for every choice of c and t.
+
+**Cycle 86. Two candidate GL₂-only mechanisms for Iwaniec's 10/49, tested.**
+- (a) *Cubic structure.* The kernel argument h̄(q³ − q'³) factors over ℤ[ω] as (q − q')(q − ωq')(q − ω²q'), which suggests cubic metaplectic Kloosterman sums over ℚ(ω). Duke–Iwaniec (1993, "A relation between cubic exponential and Kloosterman sums") relate Σ_x e((ax³+bx)/p) to Kloosterman sums with a cubic character, via Hasse–Davenport. Kl₃ is not of that form. The Hasse–Davenport rewriting τ(χ²)³ = χ̄(64)τ(χ)³τ(χη)³/τ(η)³ averages back to Kl₃(±8√a), which is circular. **Verdict: not applicable.**
+- (b) *Twist multiplicity plus level density.* The q − 1 twists u ⊗ χ of an exceptional form share its eigenvalue at level Nq². Weil plus Kuznetsov at a single level gives Σ_{exc} M^{4ν_j} ≪ M (harmonic weights ≍ 1/M). If all twists sat in one Kuznetsov family this would force q·(Nq²)^{4ν} ≪ Nq², i.e. ν ≤ 1/8. **FALSE.** u ⊗ χ has nebentypus χ², so each fixed-character space holds O(1) twists. In Γ₁(Nq²), which holds all of them, the volume grows like q⁴ and the density bound becomes trivial.
+- *Survivor.* Twist families help only as families of L-functions (LRS), not as multiplicity in a single Kuznetsov space. GL(3) Kuznetsov leaves no room for Kl₃ moduli cancellation (cycle 66), and horizontal Kl₃ over primes is Katz's open problem. **So every route to Kl₃ moduli cancellation checked so far is blocked.** Iwaniec's 3/14 must use a structure not reconstructed here.
+
+**Cycle 87. Conjecture: a bootstrap through Deshouillers–Iwaniec bilinear bounds gives the Type II saving in the cubic-difference form.** Each factor of OD_h = Σ_{q,q'} S(−h̄, q'; q)S(−h̄, q; q') is Kuznetsov-able in its own modulus. S(−h̄, q'; q) is the (∞, 0) sum of Γ₀(h) in the modulus q with argument q', and h ≤ H is small, so the exceptional spectrum involved is that of small levels. That suggests a bootstrap: a saving δ(θ) in OD from DI Theorems 9/10 with exceptional exponent θ gives ν* = 1/(4(1+δ)). The hope is that δ(1/4) > 0, i.e. that Selberg's own 3/16 input already saves.
+- *Attack.* DI Theorems 9, 10 and 12 allow arbitrary coefficients in the argument variables (m, n, r, s) but only smooth weights in the modulus variable c.
+  - In OD the two variables play symmetric roles. Whichever one is taken as the Kuznetsov modulus, the other factor becomes a rough coefficient in that modulus: S(−h̄, q; q') as a function of q mod q', and vice versa.
+  - Expanding the rough factor in additive characters costs √Q and produces weights e(tq/q') of frequency up to 1. The spectral large sieve then runs over |t_j| ≤ Q and loses (cycle 84).
+  - Cauchy–Schwarz over q' restores smoothness in q only after squaring. It leaves products of two Kloosterman sums with the same varying modulus q, again horizontal.
+- **Verdict: FALSE (structural).** The Type II obstruction is intrinsic to the reciprocal symmetry of OD, and no DI-type bound applies at any θ. This is the same obstruction that blocks sign changes of Kl₂(1; p) over primes, where only Type I information is available (Fouvry–Michel; Matomäki; Drappeau–Maynard use Siegel-zero or Selberg-type inputs, not Type II bounds).
+- *State of the formal frontier (unchanged this cycle).* 3/16 for all congruence subgroups; exactly 1/4 for every Γ ⊇ Γ(N) with N ≤ 25 and for every Γ₀(M) with M ∣ N², N ≤ 25.
+
+**Cycle 88. Conjecture: nodal-domain topology is a weight-0-only input that passes the theta barrier.** Take a real exceptional eigenfunction u with λ = λ₁ = s(1−s), s = 1/2 + ν, on a congruence surface X = Γ\H.
+- *Structure.* By Courant, u has exactly two nodal domains D₊ and D₋. Each is the Dirichlet ground state of its domain, so λ₀(Γ_D\H) < λ for the image Γ_D of π₁(D) in Γ. By Elstrodt–Patterson–Sullivan (λ₀ = δ(1−δ) when δ > 1/2), **both nodal fundamental groups have critical exponent δ(Γ_D) > 1/2 + ν**.
+- *Consequence of the conjecture.* By the minimal-partition characterisation of the first nonzero eigenvalue (Helffer–Hoffmann-Ostenhof–Terracini), Selberg's conjecture would follow if no 2-partition of X had both parts with δ > 1/2.
+- *Attack.* The inputs used are real-valuedness, Courant, the Dirichlet ground state and Patterson–Sullivan. **All of them hold equally for non-congruence finite-index subgroups of SL₂(ℤ).** Selberg's own examples, covers of Γ(2)\H through small-Cheeger quotients of the free group, have λ₁ → 0. Hence no argument built only from these inputs can prove λ₁ ≥ 1/4. Large-level congruence surfaces also contain many disjoint subsurfaces with δ > 1/2, so no partition obstruction exists. **Verdict: FALSE (barrier).**
+- *Survivor.* A proof must combine an input that fails in weight 1/2 (real-valuedness, Hecke operators at primes) with an input that fails for non-congruence groups (arithmetic: congruence or Hecke structure). Real-valuedness alone fails the second test. Hecke operators at primes pass both, but every known way to couple them to the archimedean parameter goes through families or functoriality (cycles 58–87, and Yang's withdrawn joint bound in cycle 62).
+
+**Cycle 89. The theta barrier is now formal: the weight-1/2 analogue of Selberg's conjecture is FALSE (Lean).**
+- `WeightMaassLaplacian` gives:
+  - `weightLaplacian_rpowIm_mul`: Δ_k(y^{k/2} f) = (k/2)(1 − k/2) y^{k/2} f for holomorphic f;
+  - `norm_jacobiTheta_le`: |θ(τ)| ≤ 1 + 1/√Im τ, by Gaussian sum–integral comparison.
+- `HalfWeightThetaExceptionalEigenvalue`, theorem **`weight_half_exceptional`**, proves that for F = y^{1/4}θ on Γ₀(4) with the unitary theta multiplier j:
+  - F is nowhere zero;
+  - F(γz) = j(γ,z)F(z);
+  - Δ_{1/2}F = (3/16)F;
+  - |F∘γ|² is integrable on the modular fundamental domain for every γ ∈ SL₂(ℤ), hence F is square-integrable on Γ₀(4)\ℍ;
+  - 3/16 < 1/4.
+- All built, wired, standard axioms, lint clean.
+- *Meaning.* This machine-checks the survivor of cycle 59: every argument whose inputs also hold for the theta multiplier (Weil/Salié-strength Kloosterman bounds, Kuznetsov, positivity, energy methods on the multiplier bundle) is capped at 3/16. Selberg's 3/16 is sharp for such arguments. The classical fact is not new; the formal statement of the barrier is.
+
+**Cycle 90. Source check of the symmetric-square technique, and the GL₂-only ceiling.** Sarnak, *Notes on the generalized Ramanujan conjectures* (Clay Math. Proc. 4, 2005; PDF read), eqs. (21)–(22): for a cusp form Π on GL(n), n ≤ 4, using L(s, Π, sym²) with Duke–Iwaniec at finite places and LRS at ∞ gives |Re μ_j(Π_∞)| ≤ 1/2 − 1/(1 + n(n+1)/2).
+- n = 2 (π itself, Shimura's sym²): 1/2 − 1/4 = 1/4, i.e. **ν ≤ 1/4, exactly Selberg's 3/16**. This agrees with cycle 73's per-modulus law and with the formal theta barrier of cycle 89.
+- n = 3 (Π = sym²π, Gelbart–Jacquet): 2ν ≤ 5/14, i.e. ν ≤ 5/28, λ ≥ 171/784 (LRS 1995). This needs the GJ lift and the analytic theory of sym² on GL(3).
+- n = 5 (sym⁴π, Kim): 4ν ≤ 7/16, i.e. 7/64.
+- *Attack on the remaining GL₂-only family:* the Garrett triple product L(s, π × π × π ⊗ χ) = L(s, sym³π ⊗ χ)L(s, π ⊗ χω)². It has degree 8 and a forced zero at 3ν. The exponent law ν ≤ (d−1)/((d+1)k), with d = 8 and k = 3, gives 7/27 > 1/4, which is worse. **FALSE.**
+- *Survivor.* Among GL₂-only L-function families (Shimura sym², Rankin–Selberg π × π̃, Garrett triple product), none beats 1/4 under the family method with Deligne-quality duals. Iwaniec's 10/49 is therefore not an instance of this technique, and its mechanism remains unreconstructed. Every bound past 3/16 in the published record uses functoriality (GJ, Kim–Shahidi), with Iwaniec's 1996 paper as the only exception.
+
+**Cycle 91. Conjecture: energy method plus Rankin–Selberg mode distribution beats 3/16 uniformly.**
+- *Idea.* The floor-1 Hardy bound (cycle 85) degrades with N only because the Fourier gap is 2π/N. Suppose that at every height y ≥ 1, at most a fraction ε of the deck-summed slice mass sits in modes |n| < δN. Then the effective gap is 2πδ and λ ≳ (1−ε)·2πδ(1 + 2πδ), which is ≥ 1/4 for δ ≈ 0.035 and small ε.
+- *Why it looked promising.* The input "Σ_{n≤X}|ρ(n)|² ≫ X at X ≍ δN" fails in weight 1/2, since θ is supported on squares with Σ ≍ √X, so it passes the theta barrier. It is also arithmetic: effective only through Hecke/RS structure at the square-root-of-conductor scale.
+- *Attack.* At height y (width-N coordinates) mode n carries |ρ(n)|²·y·K_ν(2π|n|y/N)², and K_ν(x) ≍ x^{−ν} for small x.
+  - Even with perfectly equidistributed |ρ(n)|², the fraction of mass in |n| < δN at y ≍ 1 is ≍ (2πδ)^{1−2ν} ≈ 0.3 for δ = 0.035. The Bessel profile itself pushes mass into low modes.
+  - The resulting bound, ≈ 0.7·2πδ(1 + 2πδ) + 0.3·κ(1 + κ), is about 0.2 < 1/4. Raising δ raises the low-mode fraction faster.
+  - This is exactly cycle 64's negative strip balance Φ_ν.
+- **Verdict: REDISCOVERED (cycle 64).** No distribution of |ρ(n)|², however equidistributed, lets the energy method reach 1/4 uniformly. The obstruction is the archimedean Bessel profile of exceptional forms, not arithmetic.
+
+**Cycle 92. SOTA refresh and consolidation.**
+- *Literature.* A 2025–2026 search finds no improvement past Kim–Sarnak (arXiv 2505.00489 uses 7/64; arXiv 2608.18236 proves a density theorem for thin groups).
+- *Consolidation.* `SelbergConjectureStatus.selberg_status` (built, wired, standard axioms) bundles:
+  - 3/16 for every congruence subgroup;
+  - exactly 1/4 for every Γ ⊇ Γ(N) with N ≤ 25 and for every Γ₀(M) with M ∣ N²;
+  - the formal theta barrier (weight-1/2 eigenvalue 3/16).
+- The uniform statement is open in the literature. Every route the loop has examined ends in a named obstruction (cycles 56–91).
+
+**Cycle 93. Falsification side: could some congruence subgroup have an exceptional eigenvalue?**
+- *Consequences of a counterexample.* A Hecke–Maass form π with 0 < ν < 1/2 would, under automorphy of every symmetric power (Langlands functoriality; known for n ≤ 4 by Gelbart–Jacquet and Kim–Shahidi, and for all n for holomorphic forms by Newton–Thorne), give sym^nπ an archimedean parameter nν. Once nν ≥ 1/2 the LRS bound on GL(n+1) is violated. So a counterexample contradicts symmetric-power functoriality, a central conjecture of the Langlands programme. It is also excluded computationally for Γ(N), N ≤ 226, and Γ₁(N), N ≤ 880 (Booker–Lee–Strömbergsson), and formally in this corpus for all Γ ⊇ Γ(N), N ≤ 25.
+- *What a Lean falsification would need.* An explicit level and an explicit exceptional eigenfunction with a certified eigenvalue. That requires numerical certification, which the no-computation rule forbids, and all evidence says no such form exists.
+- **Verdict: falsification route CLOSED** (not a proof of anything; the evidence and the Langlands framework point the other way). With cycles 56–92 the loop has now examined both directions of the goal.
+
+**Cycle 94. Source identification of Iwaniec's family (Blomer–Brumley, arXiv 1003.0559 §1.2, read) and the exact estimate behind 10/49.**
+- *Source.* Blomer–Brumley §1.2, eqs. (1.3)–(1.7):
+  - the Duke–Iwaniec family F(p^ℓ) = Σ_{Q≤q<2Q prime} Σ_{n²p^{−2ℓ}≡1 (q)} λ_{sym²}(n)g(np^{−ℓ});
+  - the bound F ≪ p^ℓ + Q^{(m+1)/2+ε}, obtained by detecting the congruence with characters, applying the FE of L(s, π, sym² × χ²) and Deligne's bound for hyper-Kloosterman sums;
+  - the archimedean version (1.7) F(Y) = Σ_q Σ_{n²≡1 (q)} λ_{sym²}(n)g(nY) with g the inverse Mellin transform of L_∞(s, sym²), "due to Iwaniec [9] = Topics in Geometry 1996".
+- *Consequence.* For π on GL(2) (m = 3) this gives exactly 1/4, i.e. 3/16. **The family is the one analysed in cycles 73 and 80–84.** Iwaniec's 10/49 therefore comes from improving the Deligne step in the q-sum ("careful evaluation of sums of hyper-Kloosterman sums", zbMATH review), not from a different family.
+- *The exact estimate needed.* At the threshold ν = 3/14 of the no-switching law, Y = Q^{−7/4} and the dual length is L = q³Y ≍ Q^{5/4}. Then 10/49 is equivalent to
+  **T := Σ_{q∼Q prime} Σ_{m} λ_{sym²}(m)W(m/L)Kl₃(±mN̄; q) ≪ Q^{3+ε} at L = Q^{5/4}.**
+  - Deligne gives Q²L = Q^{13/4}.
+  - The multiplicative large sieve over characters mod q (cycle 73(b)) gives Q^{25/8}.
+  - Full square-root cancellation would give Q^{17/8}.
+  - So Iwaniec saves Q^{1/4} over Deligne and Q^{1/8} over the large sieve.
+- *Reconstruction path, GL₂-only.* Fourier-expand in m mod q using the formalized identity Σ_m Kl₃(m;q)e(βm/q) = qS(1, −β̄; q) (`HyperKloostermanSecondMomentKernel.fourier_hyperKloosterman_three`). This gives T_q = Σ_{h mod q} S(1, h̄; q)·S_h with S_h = Σ_m λ_{sym²}(m)W(m/L)e(hm/q), additive twists of the sym² series. Via Shimura's integral these are ⟨u·θ_{h/q}, E⟩, with θ at the cusp h/q evaluated through Gauss sums (corpus: `thetaPeriodic_inversion`, `QuadraticGaussSumSign`). The Kl₂ factor then combines with those Gauss sums into Salié-type sums, which evaluate explicitly. This is a plausible reading of the "careful evaluation". **[OPEN CORE]:** carry out this evaluation and extract the Q^{1/4} saving.
+
+**Cycle 95. Conjecture (reconstruction): Iwaniec's 10/49 is a level-of-distribution-4/7 statement for sym² coefficients in the classes ±1 mod q.**
+- *Law.* Take F(Y) = Σ_{q∼Q} Σ_{n≡±1 (q)} λ_{sym²}(n)g(nY) with X = 1/Y and Q = X^ϑ.
+  - The forced zero (Λ(s, sym²u) entire, and L_∞ poles cancelled) makes the expected main term (1/q)Σ_n λ_{sym²}(n)g(nY) negligible, because its dual has length N²Y ≪ 1.
+  - The single term n = 1 contributes g(Y) ≍ X^{2ν} to every class, Q·X^{2ν} in total.
+  - A level of distribution ϑ, meaning Σ_{q∼Q}|Σ_{n≡±1 (q)} λ_{sym²}(n)g(nY)| ≪ X(log X)^{−A} for Q ≤ X^ϑ, therefore forces Q·X^{2ν} ≪ X, i.e. **ν ≤ (1 − ϑ)/2**.
+- *Consistency checks.*
+  - ϑ = 1/2 (Bombieri–Vinogradov quality, from the multiplicative large sieve) gives ν ≤ 1/4: Selberg's 3/16, matching cycle 73(b) and the theta barrier.
+  - ϑ = 4/7, the Bombieri–Friedlander–Iwaniec level for a fixed residue class (Acta Math. 1986, via Deshouillers–Iwaniec Kloosterman bounds), gives **ν ≤ 3/14, i.e. λ ≥ 10/49, Iwaniec's exponent exactly**.
+  - The dictionary ϑ = 1/(2 − η) reproduces cycle 76's η = 1/4.
+  - The threshold Y = Q^{−7/4} of cycle 94 is exactly Q = X^{4/7}.
+- *Consequences.*
+  - A GL₂-only level ϑ = 3/5 would give ν ≤ 1/5, i.e. LRS's 21/100 without Gelbart–Jacquet. ϑ > 3/5 would beat 21/100 GL₂-only; ϑ = 5/8 would give 55/256.
+  - Beating Kim–Sarnak (ν < 7/64) would need ϑ > 25/32, far beyond any known level for any arithmetic sequence.
+  - The modern levels for primes (Maynard 3/5; Lichtman ≈ 0.617 for triply well-factorable moduli) rely on the Heath-Brown decomposition of Λ. For λ_{sym²} the analogous structure (λ(k²) = Σ_{d|k} μ(d)λ(k/d)², Rankin–Selberg coefficients) needs shifted-convolution or GL(3)-Voronoi input, which is GL₂-accessible only through Shimura's theta integral.
+- **Verdict: SURVIVES as a reconstruction.** It matches Iwaniec's exponent exactly and explains 3/16 as ϑ = 1/2. It is not verified against the source. **[OPEN CORE]:** a level of distribution ϑ > 1/2 for λ_{sym²} in the classes ±1 mod q with suitably factorable moduli, from GL₂ spectral theory; any ϑ > 4/7 improves Iwaniec.
+
+**Cycle 96. Endpoints of the level-of-distribution law ν ≤ (1 − ϑ)/2.**
+- *Per-modulus check.* For one prime q, a GL(3) progression sum has Voronoi dual X·q^{−3}Σ_{m≤q³/X}λ̄(m)Kl₃(am;q). With Deligne this is ≤ q, against the trivial X/q, so the level is **1/2** (not 2/3 as for GL(2) coefficients, where the dual error is q^{1/2}). This agrees with ϑ = 1/2 ⟺ 3/16. Going beyond 1/2 needs cancellation in Σ_{m≤q³/X} λ̄(m)Kl₃(am;q) below the Pólya–Vinogradov range. That is exactly T (cycle 94), which Iwaniec overcame by averaging over q.
+- *Endpoints.*
+  - ϑ → 1, i.e. an Elliott–Halberstam-strength distribution of λ_{sym²} in the classes ±1 mod q averaged over q ≤ X^{1−ε}, gives ν = 0, the full conjecture.
+  - Hence **Selberg's conjecture follows from an Elliott–Halberstam-type hypothesis for the Shimura sym² coefficients in the classes ±1**. This is a conditional reduction in the spirit of the Linnik–Selberg implication, not a proof. The hypothesis is open, like EH for primes.
+  - Beating Kim–Sarnak needs ϑ > 25/32, beyond every known level for any arithmetic sequence (primes: Maynard 3/5, Lichtman ≈ 0.617 with triply well-factorable weights; d₃ individually: 1/2 + 1/46).
+- **Verdict: the level-of-distribution route is CAPPED at the current technology frontier.** It reproduces 3/16 (ϑ = 1/2) and 10/49 (ϑ = 4/7). It would reproduce 21/100 GL₂-only at ϑ = 3/5 and needs EH strength for the conjecture. No uniform proof follows.
+
 **Conclusion of cycles 56–61** (corrected by cycle 71: Iwaniec's GL₂-only 10/49 passes 3/16 via Shimura's entire twisted sym²). Every *Kloosterman-sum* route checked reaches exactly 3/16, and Kim–Sarnak's 7/64 is reached only through Sym⁴. What stops each route: Weil's bound is sharp for weight-uniform arguments (theta barrier); the bilinear route needs saving past the Cauchy–Schwarz diagonal; the forced-zero route needs Kl₁₅ cancellation over moduli (GL(15)). No new unconditional theorem survived, so nothing was formalized in Lean this batch. Full Selberg remains open.
 
 ### User-directed Einasto discovery — cycle 37 input

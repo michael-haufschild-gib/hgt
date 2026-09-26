@@ -159,8 +159,7 @@ theorem norm_thetaPowerForm_shift_sub_le (ha0 : 0 < a) (ha1 : a < 1 / 2) {δ : �
     rw [hs, segment_eq_image] at hx
     obtain ⟨θ, ⟨hθ0, hθ1⟩, rfl⟩ := hx
     simp only [Complex.add_im, Complex.real_smul, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
-      zero_mul, add_zero, Complex.sub_im, Complex.mul_re, Complex.I_re, Complex.I_im, mul_one, mul_zero,
-      sub_zero, zero_add]
+      zero_mul, add_zero, Complex.I_re, Complex.I_im, mul_one, mul_zero]
     nlinarith
   have hdiff : ∀ x ∈ s, DifferentiableAt ℂ (thetaPowerForm a) x := by
     intro x hx
@@ -209,11 +208,11 @@ theorem norm_thetaPowerForm_sub_shift_le (ha0 : 0 < a) (ha1 : a < 1 / 2) {η : �
         rw [show η - 1 = -(1 - η) by ring, Real.rpow_neg hτ.le, ← div_eq_mul_inv,
           div_le_one (Real.rpow_pos_of_pos hτ _)]
         exact Real.rpow_le_rpow hδ.le hδy (by linarith)
-      rw [h1, h2]
       have hA : 0 ≤ δ ^ η * y ^ (-(1 / 4 : ℝ) - η) :=
         mul_nonneg (Real.rpow_nonneg hδ.le _) (Real.rpow_nonneg hτ.le _)
-      calc y ^ (-(1 / 4 : ℝ) - η) * y ^ (η - 1) * (δ ^ η * δ ^ (1 - η))
-          = (δ ^ η * y ^ (-(1 / 4 : ℝ) - η)) * (δ ^ (1 - η) * y ^ (η - 1)) := by ring
+      calc y ^ (-(5 / 4 : ℝ)) * δ
+          = (y ^ (-(1 / 4 : ℝ) - η) * y ^ (η - 1)) * (δ ^ η * δ ^ (1 - η)) := by rw [← h2, ← h1]
+        _ = (δ ^ η * y ^ (-(1 / 4 : ℝ) - η)) * (δ ^ (1 - η) * y ^ (η - 1)) := by ring
         _ ≤ (δ ^ η * y ^ (-(1 / 4 : ℝ) - η)) * 1 := mul_le_mul_of_nonneg_left h3 hA
         _ = δ ^ η * y ^ (-(1 / 4 : ℝ) - η) := mul_one _
     calc 3 * thetaPowerEnvelopeConstant a * y ^ (-(5 / 4 : ℝ)) * Real.exp (-(π * a / 16 * y)) * δ
