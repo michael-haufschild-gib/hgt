@@ -32,7 +32,8 @@ theorem positiveExpPacket_log_curvature_nonneg {m : ℕ}
   have hc := (convexOn_log_expSum (fun i => Real.exp (w i)) a
     (Nat.succ_pos m) (fun i => Real.exp_pos (w i))).2
       (Set.mem_univ t) (Set.mem_univ (t + 2 * h))
-      (a := (1 / 2 : ℝ)) (b := (1 / 2 : ℝ)) (by positivity) (by positivity) (by ring)
+      (show 0 ≤ (1 / 2 : ℝ) by positivity)
+      (show 0 ≤ (1 / 2 : ℝ) by positivity) (by ring)
   have he : (1 / 2 : ℝ) * t + (1 / 2 : ℝ) * (t + 2 * h) = t + h := by ring
   simp only [smul_eq_mul, he] at hc
   unfold logStepCurvature positiveExpPacket
@@ -88,6 +89,66 @@ theorem positiveExpPacket_stepDeterminant_pair_sum {m : ℕ}
     Nat.cast_one, one_mul, Nat.cast_ofNat] at hp
   unfold stepDeterminant
   exact_mod_cast hp
+
+/-- Vanishing sampled curvature means every mode has the same sampled multiplier. -/
+theorem positiveExpPacket_stepDeterminant_zero_iff {m : ℕ}
+    (w a : Fin (m + 1) → ℝ) (t h : ℝ) :
+    stepDeterminant (positiveExpPacket w a t) (positiveExpPacket w a (t + h))
+      (positiveExpPacket w a (t + 2 * h)) = 0 ↔
+        ∀ i j, a i * h = a j * h := by
+  let term (i j : Fin (m + 1)) :=
+    (Real.exp (w i) * Real.exp (a i * t)) *
+    (Real.exp (w j) * Real.exp (a j * t)) *
+    (Real.exp (a i * h) - Real.exp (a j * h)) ^ (2 : ℕ)
+  have ht (i j : Fin (m + 1)) : 0 ≤ term i j := by dsimp [term]; positivity
+  have hp : 2 * stepDeterminant (positiveExpPacket w a t) (positiveExpPacket w a (t + h))
+      (positiveExpPacket w a (t + 2 * h)) = ∑ i, ∑ j, term i j :=
+    positiveExpPacket_stepDeterminant_pair_sum w a t h
+  have hz : stepDeterminant (positiveExpPacket w a t) (positiveExpPacket w a (t + h))
+      (positiveExpPacket w a (t + 2 * h)) = 0 ↔ (∑ i, ∑ j, term i j) = 0 := by
+    rw [← hp]
+    constructor <;> intro hh <;> linarith
+  rw [hz]
+  constructor
+  · intro hh i j
+    have hi := (Finset.sum_eq_zero_iff_of_nonneg
+      (fun i _ => Finset.sum_nonneg (fun j _ => ht i j))).mp hh i (Finset.mem_univ i)
+    have hij := (Finset.sum_eq_zero_iff_of_nonneg (fun j _ => ht i j)).mp hi j
+      (Finset.mem_univ j)
+    have hw : (Real.exp (w i) * Real.exp (a i * t)) *
+        (Real.exp (w j) * Real.exp (a j * t)) ≠ 0 := by positivity
+    have he := (mul_eq_zero.mp hij).resolve_left hw
+    exact Real.exp_injective (sub_eq_zero.mp (sq_eq_zero_iff.mp he))
+  · intro hh
+    apply Finset.sum_eq_zero
+    intro i _
+    apply Finset.sum_eq_zero
+    intro j _
+    simp [term, hh i j]
+
+/-- Exact acceleration keeps the positive normalization visible. -/
+theorem positiveExpPacket_relativeStep_difference {m : ℕ}
+    (w a : Fin (m + 1) → ℝ) (t h : ℝ) :
+    relativeStep (positiveExpPacket w a (t + h)) (positiveExpPacket w a (t + 2 * h)) -
+      relativeStep (positiveExpPacket w a t) (positiveExpPacket w a (t + h)) =
+        stepDeterminant (positiveExpPacket w a t) (positiveExpPacket w a (t + h))
+          (positiveExpPacket w a (t + 2 * h)) /
+            (positiveExpPacket w a t * positiveExpPacket w a (t + h)) := by
+  unfold relativeStep stepDeterminant
+  rw [div_sub_div _ _ (positiveExpPacket_pos w a (t + h)).ne'
+    (positiveExpPacket_pos w a t).ne']
+  congr 1 <;> ring
+
+/-- A neutral relative-gap observation is precisely unresolved spectral dispersion. -/
+theorem positiveExpPacket_relativeStep_eq_iff {m : ℕ}
+    (w a : Fin (m + 1) → ℝ) (t h : ℝ) :
+    relativeStep (positiveExpPacket w a (t + h)) (positiveExpPacket w a (t + 2 * h)) =
+      relativeStep (positiveExpPacket w a t) (positiveExpPacket w a (t + h)) ↔
+        ∀ i j, a i * h = a j * h := by
+  rw [← sub_eq_zero, positiveExpPacket_relativeStep_difference, div_eq_zero_iff]
+  have hd := mul_ne_zero (positiveExpPacket_pos w a t).ne'
+    (positiveExpPacket_pos w a (t + h)).ne'
+  simp only [hd, or_false, positiveExpPacket_stepDeterminant_zero_iff]
 
 /-- Exponential-packet sampling is exactly the static-mixture partition with negated rates. -/
 theorem staticHeterogeneityPartition_eq_positiveExpPacket {m : ℕ}

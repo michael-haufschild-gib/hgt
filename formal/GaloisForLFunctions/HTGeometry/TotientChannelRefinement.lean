@@ -66,7 +66,11 @@ theorem residueChannel_refined_product_survivor (m n i j x : ℕ) :
 theorem residueChannel_refined_count (m n a : ℕ) :
     ((Finset.Ico a (a + m ^ (n + 1))).filter (fun x => x.Coprime (m ^ (n + 1)))).card =
       m ^ n * m.totient := by
-  simp_rw [Nat.coprime_comm]
+  have hf : ((Finset.Ico a (a + m ^ (n + 1))).filter
+      (fun x => x.Coprime (m ^ (n + 1)))) =
+      ((Finset.Ico a (a + m ^ (n + 1))).filter (fun x => (m ^ (n + 1)).Coprime x)) := by
+    exact Finset.filter_congr (fun _ _ => Nat.coprime_comm)
+  rw [hf]
   rw [Nat.filter_coprime_Ico_eq_totient, totient_channel_pow]
 
 end

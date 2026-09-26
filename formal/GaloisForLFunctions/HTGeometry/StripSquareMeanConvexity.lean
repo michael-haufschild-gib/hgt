@@ -151,7 +151,7 @@ theorem le_sqrt_mul_of_forall_pos {X A B : ℝ} (hA : 0 < A) (hB : 0 ≤ B)
 
 /-- Cauchy–Schwarz for interval integrals of continuous functions, in the form used by the
 three-line argument. -/
-theorem integral_norm_mul_le_sqrt {f g : ℝ → ℂ} {A B SA : ℝ} (hAB : A ≤ B)
+theorem integral_norm_mul_le_sqrt_of_bound {f g : ℝ → ℂ} {A B SA : ℝ} (hAB : A ≤ B)
     (hf : Continuous f) (hg : Continuous g) (hSA : 0 < SA)
     (hfS : ∫ t in A..B, ‖f t‖ ^ 2 ≤ SA) :
     ∫ t in A..B, ‖f t‖ * ‖g t‖ ≤ Real.sqrt (SA * ∫ t in A..B, ‖g t‖ ^ 2) := by
@@ -294,7 +294,7 @@ theorem integral_normSq_le_of_three_lines {F : ℂ → ℂ} {l u σ A B SL SR M 
           refine intervalIntegral.integral_congr fun t _ => ?_
           rw [norm_mul, hzeq t, hFcEq _ (hmemLine x _ hx), hcdef, Complex.norm_conj]
       _ ≤ Real.sqrt (S' * Icen) :=
-          integral_norm_mul_le_sqrt hAB hfcont hlineσ hS' (hbound z.im)
+          integral_norm_mul_le_sqrt_of_bound hAB hfcont hlineσ hS' (hbound z.im)
   have hσS : (σ : ℂ) ∈ S := by
     show ((σ : ℂ)).re ∈ Icc l u
     simpa using (⟨hσl, hσu⟩ : σ ∈ Icc l u)

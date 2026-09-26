@@ -12,6 +12,7 @@ Reminder:
 3. WORK ONLY ON THE HARDEST MATHEMATICAL PROBLEMS, NOT ON OPTIMIZING SOME NUMBERS OR BOUNDS. HARD FRONTIER RESEARCH.
 4. Effort is not a reason to pivot. If something is missing in our lean corpus and mathlib, you build it no matter the effort.
 
+also apply here noether´s theorem in both directions in the naive form "every continuous symmetry of the action of a physical system with conservative forces has a corresponding conservation law." so 1. for a conservation law, can we find the action and symmetry, and 2. can we identify elements in our lean corpus that can be interpreted as action and symmetry of a physical system and find the conservation law for it?
 
 ## formalize goal
 /goal
@@ -230,3 +231,5 @@ do not conjecture or judge or assume or anything on your training data. your tra
 7. Optimize lean code. No raising heartbeat hacks.
 
 Keep a working log for yourself and do not pay too much attention what other agents are doing. 
+
+every continuous symmetry of the action of a physical system with conservative forces has a corresponding conservation law.

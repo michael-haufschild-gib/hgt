@@ -54,6 +54,25 @@ theorem orderedPrimeRelativeGap_lt_iff_determinant (n : ℕ) :
   exact div_pos_iff_of_pos_right
     (mul_pos (nthPrimeSubtype_pos n) (nthPrimeSubtype_pos (n + 1)))
 
+/-- Relative acceleration subtracts a square-gap penalty from additive acceleration. -/
+theorem orderedPrimeStepDeterminant_gap_formula (n : ℕ) :
+    orderedPrimeStepDeterminant n =
+      (nthPrimeSubtype n : ℝ) *
+        (xiHeatCassiniOrderedPrimeGap (n + 1) - xiHeatCassiniOrderedPrimeGap n) -
+          xiHeatCassiniOrderedPrimeGap n ^ (2 : ℕ) := by
+  unfold orderedPrimeStepDeterminant stepDeterminant xiHeatCassiniOrderedPrimeGap
+  simp only [Nat.add_assoc]
+  ring
+
+/-- A larger raw gap gives relative expansion only after clearing the exact square-gap penalty. -/
+theorem orderedPrimeRelativeGap_expansion_threshold (n : ℕ) :
+    xiHeatCassiniOrderedPrimeRelativeGap n < xiHeatCassiniOrderedPrimeRelativeGap (n + 1) ↔
+      xiHeatCassiniOrderedPrimeGap n ^ (2 : ℕ) <
+        (nthPrimeSubtype n : ℝ) *
+          (xiHeatCassiniOrderedPrimeGap (n + 1) - xiHeatCassiniOrderedPrimeGap n) := by
+  rw [orderedPrimeRelativeGap_lt_iff_determinant, orderedPrimeStepDeterminant_gap_formula,
+    sub_pos]
+
 /-- A geometric progression of three consecutive primes is impossible. -/
 theorem orderedPrimeStepDeterminant_ne_zero (n : ℕ) :
     orderedPrimeStepDeterminant n ≠ 0 := by

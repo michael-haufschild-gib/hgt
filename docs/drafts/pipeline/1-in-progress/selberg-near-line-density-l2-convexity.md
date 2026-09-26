@@ -71,3 +71,24 @@ Notation: `L = log U`, `N = ⌊U^{1/100}⌋`, `σ_L = 1/2 − 1/L`, `σ₀ = 1/2
 
 ## Log
 - 2026-09-26 — created; corpus audit found the consumer and the gate already formal; paper proof above.
+
+## Lean status (2026-09-26)
+All modules check with `lake env lean`, no `sorry`, no warnings:
+- `HTGeometry/StripSquareMeanConvexity.lean` — `integral_normSq_le_of_three_lines` (step 2).
+- `RHTower/ZetaMollifiedDisplacedWindowMeanSquare.lean` — `exists_highBlock_window_bound_productAFE`
+  (gate with loss `2a^{95/100}` instead of `εa`).
+- `RHTower/BarbanVehovMollifiedZetaTail.lean` — `norm_hbMollifiedTail_le` (`‖ζΨ−1−P‖ ≤ 2/N`, `Re ≥ 3`).
+- `RHTower/VonMangoldtMollifierPolynomialMeanSquare.lean` — `tsum_vonMangoldt_div_rpow_le_six`,
+  `sum_vonMangoldt_sq_rpow_le` (`≤ 5/δ²`), `integral_normSq_edPoly_displaced_le`.
+- `RHTower/SelbergNearLineGaussianField.lean`, `SelbergNearLineWindowBounds.lean`,
+  `SelbergNearLineWindowConvexity.lean` — windowed field, edge bounds, one-window three-lines.
+- `RHTower/SelbergNearLineMollifiedErrorMeanSquare.lean` —
+  `exists_eventually_integral_hbMollifiedTail_rightShift_le`:
+  `∫_{T₁}^{T₂}‖ζΨ−1−P‖²(1/2+a/log U+it) ≤ C e^{−(a+1)/300}(T₂−T₁+2U^{99/100})`.
+- `RHTower/SelbergNearLineZeroDensity.lean` — `exists_selberg_nearLine_zeroDensity`,
+  `tendsto_selbergNearLineRate`.
+- `RHTower/XiCriticalScaleDiscSeamSelbergDensity.lean` —
+  `exists_criticalScale_badDisc_proportion_le`: for every `ε>0` there is `a₀` with, for `a ≥ a₀` and
+  large `U`, bad discs of radius `2a/log U` in `[T₁,T₂] ⊂ [U/4,U/2]` `≤ ε ·` discs in the window.
+Deviation from the plan: the von Mangoldt head gives `η_P ≤ 400000/a²` (not exponential), so the
+proportion decays like `1/a`; Selberg's `e^{−a/4}` needs σ-adapted sieve weights (not built).

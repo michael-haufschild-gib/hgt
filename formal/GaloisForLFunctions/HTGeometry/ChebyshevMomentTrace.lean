@@ -69,10 +69,11 @@ theorem chebyshevMomentTrace_one (s : ℕ → ℝ) :
     simpa only [pow_one] using momentFunctional_X_pow s 1,
     momentFunctional_X_pow]
 
-theorem momentFunctional_finset_atoms {ι : Type*} [DecidableEq ι]
+theorem momentFunctional_finset_atoms {ι : Type*}
     (S : Finset ι) (w x : ι → ℝ) (p : Polynomial ℝ) :
     momentFunctional (fun k => ∑ i ∈ S, w i * x i ^ k) p =
       ∑ i ∈ S, w i * p.eval (x i) := by
+  classical
   rw [momentFunctional_eq_support_sum]
   simp only [Finset.mul_sum]
   rw [Finset.sum_comm]
@@ -84,20 +85,22 @@ theorem momentFunctional_finset_atoms {ι : Type*} [DecidableEq ι]
   intro k hk
   ring
 
-theorem chebyshevMomentTrace_finset_atoms {ι : Type*} [DecidableEq ι]
+theorem chebyshevMomentTrace_finset_atoms {ι : Type*}
     (S : Finset ι) (w x : ι → ℝ) (n : ℕ) :
     chebyshevMomentTrace (fun k => ∑ i ∈ S, w i * x i ^ k) n =
       ∑ i ∈ S, w i * x i * (Chebyshev.T ℝ (n : ℤ)).eval (1 - 2 * x i) := by
+  classical
   rw [chebyshevMomentTrace, momentFunctional_finset_atoms]
   apply Finset.sum_congr rfl
   intro i hi
   rw [chebyshevTracePolynomial_eval]
   ring
 
-theorem chebyshevShiftedMomentTrace_finset_atoms {ι : Type*} [DecidableEq ι]
+theorem chebyshevShiftedMomentTrace_finset_atoms {ι : Type*}
     (S : Finset ι) (w x : ι → ℝ) (n : ℕ) :
     chebyshevShiftedMomentTrace (fun k => ∑ i ∈ S, w i * x i ^ k) n =
       ∑ i ∈ S, w i * (Chebyshev.T ℝ (n : ℤ)).eval (1 - 2 * x i) := by
+  classical
   rw [chebyshevShiftedMomentTrace, momentFunctional_finset_atoms]
   apply Finset.sum_congr rfl
   intro i hi
