@@ -43,3 +43,7 @@ Scope: frontier route HF. Facts and no-gos only.
   - For `a ≤ L/2` its Weil form equals that of the doubled on-line lattice, `2L⟨f,g⟩` (`W_offLineLatticeConfig_eq_onLine`).
   - For `a > L/2` a two-bump test gives `−2LB(e^{δL/2}−e^{−δL/2})²` (`exists_re_W_offLineLatticeConfig_neg`).
   - **Route:** zero-side positivity at level `a` cannot certify depth for zeros whose local spacing is below `π/a`, i.e. heights above about `e^{2a}`. The user's shadow-pole ⇔ deep-zero duality up to `exp(e^a)` therefore needs an arithmetic non-lattice input at ordinate scale `1/a` (L22).
+- **HF-F19 [Lean, `RHTower.IsolatedDeepZeroWeilDetection`]:** Isolated-deep-zero detection.
+  - For any zero configuration with local count `A₀` (ζ included, `zeta_weil_positive_forces_offLine_companion`), zero-side Weil positivity on `C²` tests in `[−a,a]` forces every zero of depth `δ` with `e^{2δa} ≳ A₀ log|γ₀|·poly(a,1/δ)(1+e^a/(1+R))` to have another off-line zero within ordinate distance `R`.
+  - Master inequality: `re_W_modulatedTest_le_of_isolated`.
+  - **Route:** together with HF-F18, the Hodge ⇒ zero-free-region transfer fails exactly by coherent deep clusters. The V₀ (polar-constrained) version is the next step.

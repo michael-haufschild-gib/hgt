@@ -92,3 +92,12 @@ All modules check with `lake env lean`, no `sorry`, no warnings:
   large `U`, bad discs of radius `2a/log U` in `[T₁,T₂] ⊂ [U/4,U/2]` `≤ ε ·` discs in the window.
 Deviation from the plan: the von Mangoldt head gives `η_P ≤ 400000/a²` (not exponential), so the
 proportion decays like `1/a`; Selberg's `e^{−a/4}` needs σ-adapted sieve weights (not built).
+
+## Long-mollifier barrier (2026-09-26)
+- `RHTower/ZetaGaussianTwistedMoment.lean` — `norm_integral_twistedZeta_gauss_sub_diag_le`: Gaussian-windowed
+  twisted first moment of `ζ`; errors `27√T n e^{1−R²/H²} + 2n(√(πH²/2)e^{1−H²/(128n²)} + e^{1−R²/H²}√(πH²))`.
+- `RHTower/MollifiedMeanSquareGaussianPrimeFloor.lean` —
+  `exists_eventually_integral_normSq_zetaMollified_rightShift_ge_of_lt_one`: for `a>0`, `0<θ<1`, mollifier length
+  `y ≤ T^θ`, `b₁=1`, `|b_d|≤1`: `∫_T^{2T}|ζΨ(½+a/log T+it)|² ≥ (1+(1−θ)e^{−2a}/16)T`. Axioms: propext,
+  Classical.choice, Quot.sound.
+- Consequence: fixed-`a` density `o(1)` via the Littlewood consumer needs mollifiers of length `≥ T^{1−o(1)}`.

@@ -202,27 +202,33 @@ theorem re_logDeriv_etaElementaryReflectionMultiplier (x b : ℝ) :
   simp only [sub_re, add_re, neg_re, conj_re, s, etaReflectionStripPoint]
   ring
 
+/-- The actual horizontal log-modulus derivative at every strip point,
+without choosing a branch of the complex logarithm. -/
+theorem deriv_log_norm_etaElementaryReflectionMultiplier (x b : ℝ) :
+    deriv (fun σ : ℝ => Real.log ‖etaElementaryReflectionMultiplier
+      ((σ : ℂ) + (b : ℂ) * I)‖) (sigmoid x) =
+      (logDeriv etaElementaryReflectionMultiplier (etaReflectionStripPoint x b)).re := by
+  have hd := (differentiableAt_etaElementaryReflectionMultiplier x b).hasDerivAt
+  have hpath : HasDerivAt
+      (fun σ : ℝ => (σ : ℂ) + (b : ℂ) * I) 1 (sigmoid x) := by
+    simpa using (Complex.ofRealCLM.hasDerivAt (x := sigmoid x)).add_const
+      ((b : ℂ) * I)
+  have hcomp : HasDerivAt (fun σ : ℝ => etaElementaryReflectionMultiplier
+      ((σ : ℂ) + (b : ℂ) * I))
+      (deriv etaElementaryReflectionMultiplier
+        (etaReflectionStripPoint x b)) (sigmoid x) := by
+    simpa [etaReflectionStripPoint] using! hd.comp (sigmoid x) hpath
+  rw [(hasDerivAt_log_norm_comp hcomp
+    (etaElementaryReflectionMultiplier_ne_zero x b)).deriv]
+  rfl
+
 /-- The actual multiplier log-modulus has a strictly negative horizontal
 derivative at every point in the analytic high-height range. -/
 theorem deriv_log_norm_etaElementaryReflectionMultiplier_neg (x t : ℝ) :
     deriv (fun σ : ℝ => Real.log ‖etaElementaryReflectionMultiplier
       ((σ : ℂ) + (etaArchimedeanHeight t : ℂ) * I)‖) (sigmoid x) < 0 := by
-  have hd := (differentiableAt_etaElementaryReflectionMultiplier x
-    (etaArchimedeanHeight t)).hasDerivAt
-  have hpath : HasDerivAt
-      (fun σ : ℝ => (σ : ℂ) + (etaArchimedeanHeight t : ℂ) * I) 1 (sigmoid x) := by
-    simpa using (Complex.ofRealCLM.hasDerivAt (x := sigmoid x)).add_const
-      ((etaArchimedeanHeight t : ℂ) * I)
-  have hcomp : HasDerivAt (fun σ : ℝ => etaElementaryReflectionMultiplier
-      ((σ : ℂ) + (etaArchimedeanHeight t : ℂ) * I))
-      (deriv etaElementaryReflectionMultiplier
-        (etaReflectionStripPoint x (etaArchimedeanHeight t))) (sigmoid x) := by
-    simpa [etaReflectionStripPoint] using! hd.comp (sigmoid x) hpath
-  rw [(hasDerivAt_log_norm_comp hcomp
-    (etaElementaryReflectionMultiplier_ne_zero x (etaArchimedeanHeight t))).deriv]
-  change (logDeriv etaElementaryReflectionMultiplier
-    (etaReflectionStripPoint x (etaArchimedeanHeight t))).re < 0
-  rw [re_logDeriv_etaElementaryReflectionMultiplier]
+  rw [deriv_log_norm_etaElementaryReflectionMultiplier,
+    re_logDeriv_etaElementaryReflectionMultiplier]
   have h := etaPrefactor_plus_archimedean_drift x t
   dsimp only at h
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)

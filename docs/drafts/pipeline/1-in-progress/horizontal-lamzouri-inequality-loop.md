@@ -105,3 +105,22 @@ Horizontal classes `C_g = {z : Re z = g}`, sizes `H(g)`. Within a class, `K(i v)
   `card_hs_ge_of_overlap`, `card_hs_ge_of_overlap_ge` (√2−1 criterion), `lamzouri_inequality` (Prop. 2.1 (2.4)),
   `mixedOverlap_ge_ownPair`. STATUS MUST-468.
 - **Still open:** the kernel instantiation (`f_z = ηe^{−2πizu}`, `E = Σ K(z−s)²`) and the full (H).
+
+## Cycle H4 — R′ killed; near-line horizontal isolation closed in Lean (2026-09-27)
+- **R′ (`2T + 4Λ + T²/#M ≥ #M` always): FALSE as a route.** Double real points at all real zeros of
+  `Ψ(x−·)` put `h_p ∈ A` exactly (parity) with `T = t` small and `Λ = 0`. But (H) holds there with slack
+  `~2a²`: the pair is not absorbed at the level of Φ (compression eigenvalues `≈ 3 + a`, `3 − a`). So the
+  trace-only range-A step is lossy, and absorption must be read from `‖Φ_A − 2I‖²`, not from `h ∈ A`.
+- **Unnormalised inequality (paper + Lean).** For `m₂ ≥ 2`, `mP ≥ 1` and arbitrary norms:
+  `4·mass − E − 2N + 2Σ_H(1−‖f‖²) + Σ_M(1 + 2‖P_A f‖² − 2‖f‖²) ≤ #H`. A mixed point with `‖f‖ ≤ 1` and
+  `‖g_p − f‖ ≤ 1/8` costs nothing, because `2‖f‖² − 2t ≤ 8‖f‖·‖g−f‖`.
+- **Theorem (Lean, unconditional).** `≥ (HD(1) − ε)N(T,2T)` zeros are simple, critical, and have no other
+  zero on their horizontal line within `2/(3 log(T/2π))` of the critical line. Route: Zeta23 block data
+  → `HorizontalPacket` in `ℝ^d` (kernel = normalised sampled matrix), sampling Parseval via
+  `hasSum_sq_fourierCoeffOn`, cosh-shift bound, then Zeta23's seam/traces/ThmD endgame unchanged.
+  Modules: `HilbertMetric/HorizontalLamzouriUnnormalized`, `RHTower/WindowTransformSamplingParseval`,
+  `RHTower/HorizontalIsolationBlockPacket`, `RHTower/HorizontallyIsolatedSimpleZeros` (all built, 0
+  warnings, wired). STATUS MUST-469.
+- **Open core unchanged:** mixed classes whose off-line zeros are farther than `c/log T` from the line.
+  The Toeplitz model says a violator needs symbol "pair comb − one real point" (negative real
+  multiplicity). This is plausible evidence that (H) is true, not a proof.
