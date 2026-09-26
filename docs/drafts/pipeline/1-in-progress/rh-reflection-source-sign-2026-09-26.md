@@ -115,12 +115,28 @@ Card and positive survivor: `../5-failed/theta-dyadic-boundary-winding-rigidity.
 The next source-specific attack derives the signed imaginary-axis arc charges of
 the literal theta source. `ThetaCuspComplexWard` now proves
 `RHTower.ThetaImaginaryArc.source_complex_ward`, closing the strip-wide differential identity.
-The differentiated cusp-flatness and arc integrals remain Lean-open. Full derivation
-and exact outstanding obligations: `rh-theta-imaginary-arc-charge-2026-09-26.md`.
+The differentiated cusp-flatness, both exact arc charges and an unconditional
+interior imaginary source zero are now Lean-closed. The negative sine charge
+forces a negative source value, while the seam value is positive. Consequently
+the literal source admits no exponential representation on its whole strip.
+Full proof and positive survivor:
+`../3-formalized/rh-theta-imaginary-arc-charge-2026-09-26.md`.
+The stronger near-cusp eventual-negativity asymptotic remains paper-only.
 
-Both new leaf builds pass. All 43 public theorem axiom reports contain standard axioms only.
-Global lint currently reports unrelated missing umbrella imports; those files were
-not modified. RH remains unresolved. No new universal producer is claimed.
+**Route gate:** this closes the explicit source-logarithm stop test in route2.
+It does not close linear boundary continuation or the source-specific winding
+map. Further source-zero refinements would not supply the missing RH producer.
+
+The dyadic and Ward leaves retain their 43 standard-only axiom audits. The three
+new cusp/arc leaves add 23 standard-only public theorem audits; their named builds
+pass. Corpus index regenerated; `lint --check-generated` passes with existing
+large-file warnings. RH remains unresolved. No new universal producer is claimed.
+
+The source audit also finds the global Abel pairing and continuous-`Q` one-port
+formula already paper-proved in `theta-rational-cusp-boundary-law.md`, equations
+(5)–(8). Reconstructing that representation is not a new producer. The remaining
+attack must constrain its source-specific complex phase and distinguish it from
+the dyadic arbitrary-winding examples.
 
 ## Evidence and status
 

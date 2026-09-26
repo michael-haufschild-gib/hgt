@@ -38,7 +38,11 @@ theorem lineReflect_eq_conj_one_sub (s : ℂ) : lineReflect s = starRingEnd ℂ 
 
 theorem lineReflect_half_add_mul_I (t : ℝ) :
     lineReflect ((1 / 2 : ℂ) + t * I) = (1 / 2 : ℂ) + t * I := by
-  apply Complex.ext <;> simp [lineReflect] <;> norm_num
+  apply Complex.ext
+  · simp only [lineReflect, Complex.sub_re, Complex.one_re, Complex.conj_re, Complex.add_re]
+    simp
+    norm_num
+  · simp [lineReflect]
 
 /-- **Reflection law.**  An entire clock of modulus one on the critical line satisfies
 `Λ(s) · conj Λ(1 − conj s) = 1` everywhere. -/

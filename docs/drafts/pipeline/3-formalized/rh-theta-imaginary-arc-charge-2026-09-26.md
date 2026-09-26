@@ -1,7 +1,7 @@
 # Exact imaginary-axis charge of the theta source — root research
 
-- **Stage:** 1-in-progress
-- **Type:** [BRIDGE], new analytic derivation; Lean transfer pending
+- **Stage:** 3-formalized
+- **Type:** [BRIDGE], exact arc charges and unconditional source-zero theorem; Lean-closed
 - **Owner:** root
 - **Goal:** settle the concrete source-zero stop test in the boundary renewal proposal without numerical premises, and retain the exact signed law it exposes.
 - **Prior evidence:** `docs/reports/xi.md` §2.25 lists an interior imaginary source zero only as a computation. `ThetaCuspComplexStrip` proves strip holomorphy and reflection. `ThetaCuspReflection` proves the real Ward equation. `JacobiThetaBoundaryLimits` proves the odd-cusp exponential bound. None of these alone states the arc charge below.
@@ -77,7 +77,13 @@ an asymptotic formula. Chain rules along `w=1+i exp(2it)` then give the
 endpoint limits needed by the exact arc integrals.
 
 1. **Lean-closed:** complex Ward identity for the literal `thetaCuspStripSource`, not a newly defined substitute. `ThetaCuspComplexWard`, namespace `RHTower.ThetaImaginaryArc`, theorem `source_complex_ward`; scratch check and named leaf build pass. All seven public theorem axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`. The source potential and both real derivative identifications are proved directly from the existing theta-tail jets.
-2. Differentiated odd-cusp flatness, including integrability at the endpoint.
-3. Both exact arc charges and the unconditional interior source-zero theorem.
+2. **Lean-closed:** `ThetaOddCuspDerivativeFlatness` proves arbitrary-power bounds for every theta derivative in a non-tangential cone. `ThetaCuspImaginaryEndpoint` transfers these bounds to the potential, its first two complex derivatives and the literal source. All required endpoint limits are zero. `ThetaCuspImaginaryArcCharge.intervalIntegrable_axisSource_weight` closes endpoint integrability for every continuous weight.
+3. **Lean-closed:** `cosine_arc_charge` and `sine_arc_charge` prove the displayed exact identities (the second with `-Potential 0/4`, definitionally the same theta value). `exists_negative_axis_source` and `exists_imaginary_source_zero` are unconditional existentials. `no_strip_exponential_representation` excludes even an unrestricted exponential representation of the source on its whole strip.
 
-Obligations 2–3 remain Lean-open. The no-log obstruction is not marked formally closed until these exact positive survivors are checked. No numerical experiment; no global novelty claim.
+The stronger differentiated asymptotic and eventual strict negativity near the endpoint remain paper-only. The formal source-zero proof instead uses the negative sine charge, positivity at zero and the intermediate value theorem; it does not assume eventual negativity.
+
+## Closure and verification
+
+The no-log obstruction is closed together with its positive survivor: both exact signed charges and all-order odd-cusp flatness. It retires whole-strip logarithmic continuation of the literal source. Linear continuation and the source-specific renewal winding problem remain open.
+
+All three new leaf scratch checks and named builds pass. All 23 public theorem axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`. Leaves are wired into `RHTower.lean`. No numerical experiment; no global novelty claim. Corpus index regenerated; `scripts/formal_tools.py lint --check-generated` passes with existing large-file warnings. All owned processes exited.

@@ -46,3 +46,22 @@ the GL₃ converse theorem, hence Luo–Rudnick–Sarnak and Kim–Sarnak). No G
 ## Log
 - 2026-09-26 — created from loop cycle 71; H1 closed (`RHTower/HalfWeightTheta.lean`, wired, axioms
   propext/choice/Quot.sound).
+- 2026-09-26 — H2 closed (`HalfWeightThetaMultiplier`): κ(γ) constant by maximum modulus; Poisson at
+  the cusp −d/c (`theta_cusp`); `J_mul_gauss`: J(γ,z)·G(−d;c)·(ic)^{1/2} = c√2(cz+d)^{1/2};
+  `norm_sq_gaussQ`: |G(−d;c)|² = 2c for 4 | c, (c,d) = 1. H3 closed (`HalfWeightEisenstein`):
+  `eisHalf` on ⟨T⟩\Γ₀(4M) with nebentypus ψ, absolute convergence Re w > 1, `eisHalf_smul`.
+  All wired; axioms propext/choice/Quot.sound.
+- 2026-09-26 — H4a closed (`HalfWeightKernel`: kerH = e^{-i arg(x+iy)/2}(y/(x²+y²))^s, |kerH| = wt^σ,
+  Fourier decay, Poisson for Re s ≥ 3/4). H4b in progress: `star_jU_mul_im_cpow` (c > 0 summand =
+  C(c,d) c^{-2w} kerH(y, x + d/c), C unimodular, C(c,d) = G(−d;c)(ic)^{1/2}/(√2 c)).
+  **Design decisions for H6/H8 (recorded so they survive compaction):**
+  (a) Growth of E at the other cusps is NOT obtained from Eisenstein series at every cusp. Near a
+      rational point a, the expansion at ∞ with |𝓕kerH_{y,w}(n)| ≤ min(y^{1−σ}C_σ, D|w|²y^{−1−σ}/n²)
+      and |D_n(w)| ≪ n^{1/2+ε}(1+|w|)^A gives |E(ζ,w)| ≪ (Im ζ)^{−A'}: polynomial growth at every
+      cusp, enough because F(z) = u(4z)θ̄(z)y^{1/4} decays exponentially at every cusp.
+  (b) Continuation across Re w = 1/2 is required (the critical line s = 2w − 1/2, Re s = 1/2, is not
+      covered by the functional equation). Non-constant coefficients: integrate 𝓕kerH by parts
+      once (converges for Re w > 0). Constant term: ∫kerH(1,w,x)dx = ∫(1+ix)^{−a}(1−ix)^{−b}dx with
+      a = w + 1/4, b = w − 1/4, closed form 2^{2−a−b}πΓ(a+b−1)/(Γ(a)Γ(b)) (Beta integral); its
+      pole at w = 1/2 cancels the zero of 1/ζ(4w−1).
+  (c) Poles at s = 1 are handled by Rankin–Selberg, not by the θ-residue of E at w = 3/4.

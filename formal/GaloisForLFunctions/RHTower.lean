@@ -18445,6 +18445,8 @@ import GaloisForLFunctions.RHTower.GL3EpsteinContinuation
 import GaloisForLFunctions.RHTower.GL3EpsteinPrimitive
 import GaloisForLFunctions.RHTower.HalfWeightTheta
 import GaloisForLFunctions.RHTower.HalfWeightThetaMultiplier
+import GaloisForLFunctions.RHTower.HalfWeightEisenstein
+import GaloisForLFunctions.RHTower.HalfWeightKernel
 import GaloisForLFunctions.RHTower.WeilKloostermanDegreeSums
 import GaloisForLFunctions.RHTower.WeilKloostermanLFunction
 import GaloisForLFunctions.RHTower.WeilKloostermanHasseDavenport
@@ -19427,3 +19429,5 @@ import GaloisForLFunctions.RHTower.ModularAxisSourceTransform
 import GaloisForLFunctions.RHTower.ThetaGroupFormCuspBounds
 import GaloisForLFunctions.RHTower.ThetaGroupOffLineStripZero
 import GaloisForLFunctions.RHTower.ThetaGroupDeformationPrimeTwo
+import GaloisForLFunctions.RHTower.ThetaCuspImaginaryEndpoint
+import GaloisForLFunctions.RHTower.ThetaCuspImaginaryArcCharge
