@@ -11,11 +11,11 @@ noncomputable section
 
 /-- Chebyshev trace coordinates of the actual xi central reciprocal moments. -/
 def xiCentralChebyshevMomentTrace (n : ℕ) : ℝ :=
-  HTGeometry.chebyshevMomentTrace (fun k => (xiCentralReciprocalMoment k).re) n
+  HTGeometry.chebyshevShiftedMomentTrace (fun k => (xiCentralReciprocalMoment k).re) n
 
 /-- The same trace coordinates read from the prime--Gamma source germ. -/
 def primeArchChebyshevMomentTrace (n : ℕ) : ℝ :=
-  HTGeometry.chebyshevMomentTrace
+  HTGeometry.chebyshevShiftedMomentTrace
     (fun k => analyticTraceMoments
       (normalizedTraceMomentGerm continuedPrimeArchSourceRelativeTrace) k) n
 

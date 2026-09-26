@@ -56,7 +56,7 @@ theorem mem_criticalScaleWindow_heights {r T₁ T₂ : ℝ} (hr : 0 < r) (hT₂ 
 
 /-- **Exceptional discs of the window are at most the zeros right of `1/2 + r`.** -/
 theorem card_badCriticalScaleWindowDiscs_le {r T₁ T₂ : ℝ} (hr : 0 < r) (hr8 : r ≤ 1 / 8)
-    (hT₁ : 0 < T₁) (hT₂ : r ≤ T₂) {Z : Finset ℂ}
+    (hT₁ : 0 < T₁) (hT₂ : r ≤ T₂) (hT : T₁ ≤ T₂) {Z : Finset ℂ}
     (hZ : ∀ z : ℂ, z ∈ Z ↔ z ∈ (uIcc (1 / 2 : ℝ) (15 / 2) ×ℂ uIcc T₁ T₂) ∧ riemannZeta z = 0) :
     ((badCriticalScaleWindowDiscs r T₁ T₂).card : ℝ) ≤
       ∑ w ∈ Z.filter (fun w => 1 / 2 + r ≤ w.re), ((analyticOrderAt riemannZeta w).toNat : ℝ) := by
@@ -116,8 +116,7 @@ theorem card_badCriticalScaleWindowDiscs_le {r T₁ T₂ : ℝ} (hr : 0 < r) (hr
     _ ≤ _ := hmult
 
 /-- The window holds at least `(T₂ − T₁)/(3r) − 2` discs. -/
-theorem card_criticalScaleWindow_ge {r T₁ T₂ : ℝ} (hr : 0 < r) (hT₁ : 0 ≤ T₁)
-    (hT : T₁ + 2 * r ≤ T₂) :
+theorem card_criticalScaleWindow_ge {r T₁ T₂ : ℝ} (hr : 0 < r) (hT₁ : 0 ≤ T₁) :
     (T₂ - T₁) / (3 * r) - 2 ≤ ((criticalScaleWindow r T₁ T₂).card : ℝ) := by
   unfold criticalScaleWindow
   have h3r : 0 < 3 * r := by positivity
@@ -132,10 +131,9 @@ theorem card_criticalScaleWindow_ge {r T₁ T₂ : ℝ} (hr : 0 < r) (hT₁ : 0 
   rcases le_or_gt k₁ (k₂ + 1) with h | h
   · rw [Nat.cast_sub h]
     push_cast
-    have e : (T₂ - T₁) / (3 * r) - 2 ≤ ((T₂ - r) / (3 * r) - 1) + 1 - ((T₁ + r) / (3 * r) + 1) +
-        1 / 3 := by
-      rw [show ((T₂ - r) / (3 * r) - 1) + 1 - ((T₁ + r) / (3 * r) + 1) + 1 / 3 =
-        (T₂ - T₁) / (3 * r) - 2 / (3 * r) * r + 1 / 3 - 1 by field_simp; ring]
+    have e : (T₂ - T₁) / (3 * r) - 2 ≤ ((T₂ - r) / (3 * r) - 1) + 1 - ((T₁ + r) / (3 * r) + 1) := by
+      rw [show ((T₂ - r) / (3 * r) - 1) + 1 - ((T₁ + r) / (3 * r) + 1) =
+        (T₂ - T₁) / (3 * r) - 2 / (3 * r) * r - 1 by field_simp; ring]
       have : 2 / (3 * r) * r = 2 / 3 := by field_simp
       linarith
     linarith
@@ -148,6 +146,44 @@ theorem card_criticalScaleWindow_ge {r T₁ T₂ : ℝ} (hr : 0 < r) (hT₁ : 0 
       linarith
     exact this.trans (Nat.cast_nonneg _)
 
+/-- The arithmetic of the proportion bound. -/
+theorem badDisc_proportion_arith {X L a K ε U rate : ℝ} (hX : U / 4 - 2 ≤ X) (hL : 0 < L)
+    (ha : 0 < a) (hK : 0 ≤ K) (hε : 0 < ε) (hLa : 16 * a ≤ L)
+    (hrate : rate ≤ Real.pi * ε / 3) (hsm : (K * L + 2 * Real.pi * ε / 3) * 24 ≤ ε * U / 4) :
+    L / (2 * Real.pi * a) * (X / 2 * rate + K * L) ≤ ε * (X * L / (6 * a) - 2) := by
+  have hπ3 : 3 ≤ Real.pi := Real.pi_gt_three.le
+  have hπ : 0 < Real.pi := Real.pi_pos
+  have hkey : 6 * K * L / Real.pi + 24 * a * ε / L ≤ X * ε := by
+    have h1 : 6 * K * L / Real.pi ≤ 2 * K * L := by
+      rw [div_le_iff₀ hπ]
+      nlinarith [mul_nonneg hK hL.le]
+    have h2 : 24 * a * ε / L ≤ 3 / 2 * ε := by
+      rw [div_le_iff₀ hL]
+      nlinarith
+    have h3 : 16 * Real.pi * ε ≤ ε * U / 4 := by nlinarith [mul_nonneg hK hL.le]
+    have h4 : (U / 4 - 2) * ε ≤ X * ε := mul_le_mul_of_nonneg_right hX hε.le
+    nlinarith [mul_nonneg hK hL.le]
+  have hstep : L / (2 * Real.pi * a) * (X / 2 * rate + K * L) ≤
+      X * L * ε / (12 * a) + K * L ^ 2 / (2 * Real.pi * a) := by
+    have hX0 : 0 ≤ X := by nlinarith [mul_nonneg hK hL.le]
+    have e1 : L / (2 * Real.pi * a) * (X / 2 * rate + K * L) =
+        L / (2 * Real.pi * a) * (X / 2) * rate + K * L ^ 2 / (2 * Real.pi * a) := by
+      field_simp
+    have e2 : L / (2 * Real.pi * a) * (X / 2) * (Real.pi * ε / 3) = X * L * ε / (12 * a) := by
+      field_simp
+      ring
+    rw [e1, ← e2]
+    have : 0 ≤ L / (2 * Real.pi * a) * (X / 2) := by positivity
+    have := mul_le_mul_of_nonneg_left hrate this
+    linarith
+  have hdiff : ε * (X * L / (6 * a) - 2) - (X * L * ε / (12 * a) + K * L ^ 2 / (2 * Real.pi * a)) =
+      L / (12 * a) * (X * ε - (6 * K * L / Real.pi + 24 * a * ε / L)) := by
+    field_simp
+    ring
+  have hnn : 0 ≤ L / (12 * a) * (X * ε - (6 * K * L / Real.pi + 24 * a * ε / L)) :=
+    mul_nonneg (by positivity) (by linarith)
+  linarith
+
 /-- **Almost every critical-scale right disc has a contracting seam.** -/
 theorem exists_criticalScale_badDisc_proportion_le {ε : ℝ} (hε : 0 < ε) :
     ∃ a₀ : ℝ, 1 ≤ a₀ ∧ ∀ a : ℝ, a₀ ≤ a → ∀ᶠ U in atTop,
@@ -157,7 +193,7 @@ theorem exists_criticalScale_badDisc_proportion_le {ε : ℝ} (hε : 0 < ε) :
   obtain ⟨A, K, hA, hK, hdens⟩ := exists_selberg_nearLine_zeroDensity
   have hrate := tendsto_selbergNearLineRate A
   have hev : ∀ᶠ a in atTop, selbergNearLineRate A a ≤ Real.pi * ε / 3 :=
-    hrate.eventually (ge_mem_nhds (by positivity))
+    hrate.eventually (ge_mem_nhds (div_pos (mul_pos Real.pi_pos hε) (by norm_num)))
   obtain ⟨a₁, ha₁⟩ := eventually_atTop.mp hev
   refine ⟨max a₁ 1, le_max_right _ _, fun a ha => ?_⟩
   have ha1 : 1 ≤ a := le_trans (le_max_right _ _) ha
@@ -173,7 +209,8 @@ theorem exists_criticalScale_badDisc_proportion_le {ε : ℝ} (hε : 0 < ε) :
       h1.eventually (ge_mem_nhds (by positivity))
     filter_upwards [h2, Real.tendsto_log_atTop.eventually_ge_atTop (16 * a),
       eventually_ge_atTop (max 100 (400 * Real.pi / 3 + 100))] with U hU hlog hU100
-    have hU0 : 0 < U := by linarith [le_max_left 100 (400 * Real.pi / 3 + 100)]
+    have h100 : (100 : ℝ) ≤ U := le_trans (le_max_left _ _) hU100
+    have hU0 : 0 < U := by linarith
     refine ⟨?_, hlog, le_trans (le_max_left _ _) hU100⟩
     rw [div_le_div_iff₀ hU0 (by positivity)] at hU
     have hUpi : 400 * Real.pi / 3 + 100 ≤ U := le_trans (le_max_right _ _) hU100
@@ -193,7 +230,8 @@ theorem exists_criticalScale_badDisc_proportion_le {ε : ℝ} (hε : 0 < ε) :
   have hT₁20 : 20 ≤ T₁ := by linarith [hT₁.1]
   have hT12 : T₁ < T₂ := by linarith [hT₁.2, hT₂.1]
   obtain ⟨Z, hZ⟩ := exists_zetaRectangleZeros_finset hT₁20 hT12
-  have hbad := card_badCriticalScaleWindowDiscs_le hr0 hr8 hT₁0 (by linarith [hT₂.1]) hZ
+  have hbad := card_badCriticalScaleWindowDiscs_le hr0 hr8 hT₁0 (by linarith [hT₂.1])
+    hT12.le hZ
   have hc := hcount Z hZ
   have hfilter : Z.filter (fun w => 1 / 2 + 2 * a / L ≤ w.re) =
       Z.filter (fun w => 1 / 2 + r ≤ w.re) := by
@@ -202,38 +240,22 @@ theorem exists_criticalScale_badDisc_proportion_le {ε : ℝ} (hε : 0 < ε) :
   rw [hfilter] at hc
   set S : ℝ := ∑ w ∈ Z.filter (fun w => 1 / 2 + r ≤ w.re),
     ((analyticOrderAt riemannZeta w).toNat : ℝ) with hS
-  have hwin := card_criticalScaleWindow_ge hr0 hT₁0.le (by linarith [hT₁.2, hT₂.1])
-  -- `S ≤ L/(2πa) ((T₂−T₁)/2 · rate + K L)` and the window holds `≥ (T₂−T₁) L/(6a) − 2` discs
+  have hwin := card_criticalScaleWindow_ge (T₂ := T₂) hr0 hT₁0.le
   have ha0 : 0 < a := by linarith
-  have hπ : 0 < Real.pi := Real.pi_pos
   have hSb : S ≤ L / (2 * Real.pi * a) *
       ((T₂ - T₁) / 2 * selbergNearLineRate A a + K * L) := by
-    rw [le_div_iff₀ (by positivity) |>.symm.le_iff_le] at *
-    rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
-    have : 2 * Real.pi * (a / L * S) = S * (2 * Real.pi * a) / L := by field_simp
-    rw [this, div_le_iff₀ hL0] at hc
-    linarith
-  have hlen : U / 5 ≤ T₂ - T₁ := by linarith [hT₁.2, hT₂.1]
+    have e : S = L / (2 * Real.pi * a) * (2 * Real.pi * (a / L * S)) := by
+      field_simp
+    rw [e]
+    exact mul_le_mul_of_nonneg_left hc (by positivity)
   have hdiv : (T₂ - T₁) / (3 * r) = (T₂ - T₁) * L / (6 * a) := by
     rw [hr]; field_simp; ring
   rw [hdiv] at hwin
+  have harith := badDisc_proportion_arith (X := T₂ - T₁) (U := U) (by linarith [hT₁.2, hT₂.1])
+    hL0 ha0 hK hε hlogU hra hsm
   calc ((badCriticalScaleWindowDiscs r T₁ T₂).card : ℝ) ≤ S := hbad
     _ ≤ L / (2 * Real.pi * a) * ((T₂ - T₁) / 2 * selbergNearLineRate A a + K * L) := hSb
-    _ ≤ ε * ((T₂ - T₁) * L / (6 * a) - 2) := by
-        have hrate0 := selbergNearLineRate_nonneg hA.le a
-        rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
-        have h1 : (T₂ - T₁) / 2 * selbergNearLineRate A a ≤ (T₂ - T₁) / 2 * (Real.pi * ε / 3) :=
-          mul_le_mul_of_nonneg_left hra (by linarith)
-        have hLa : 16 * a ≤ L := hlogU
-        have hK' : K * L * L + 2 * Real.pi * ε / 3 * L ≤ ε * (T₂ - T₁) / 12 * L := by
-          have := hsm
-          nlinarith
-        have e : ε * ((T₂ - T₁) * L / (6 * a) - 2) * (2 * Real.pi * a) =
-            ε * (T₂ - T₁) * L * Real.pi / 3 - 4 * Real.pi * ε * a := by
-          field_simp; ring
-        rw [e]
-        have h4a : 4 * Real.pi * ε * a ≤ Real.pi * ε * L / 4 := by nlinarith
-        nlinarith
+    _ ≤ ε * ((T₂ - T₁) * L / (6 * a) - 2) := harith
     _ ≤ ε * (criticalScaleWindow r T₁ T₂).card := mul_le_mul_of_nonneg_left hwin hε.le
 
 end RHTower

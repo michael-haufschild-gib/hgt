@@ -6,32 +6,53 @@ open scoped BigOperators
 
 namespace HTGeometry
 
+noncomputable def chebyshevTraceKernelPolynomial (n : ℕ) : Polynomial ℝ :=
+  (Chebyshev.T ℝ (n : ℤ)).comp (1 - 2 * X)
+
 noncomputable def chebyshevTracePolynomial (n : ℕ) : Polynomial ℝ :=
-  X * (Chebyshev.T ℝ (n : ℤ)).comp (1 - 2 * X)
+  X * chebyshevTraceKernelPolynomial n
 
 noncomputable def chebyshevMomentTrace (s : ℕ → ℝ) (n : ℕ) : ℝ :=
   momentFunctional s (chebyshevTracePolynomial n)
 
+noncomputable def chebyshevShiftedMomentTrace (s : ℕ → ℝ) (n : ℕ) : ℝ :=
+  momentFunctional s (chebyshevTraceKernelPolynomial n)
+
+theorem chebyshevTraceKernelPolynomial_zero :
+    chebyshevTraceKernelPolynomial 0 = 1 := by
+  simp [chebyshevTraceKernelPolynomial]
+
+theorem chebyshevShiftedMomentTrace_zero (s : ℕ → ℝ) :
+    chebyshevShiftedMomentTrace s 0 = s 0 := by
+  simpa [chebyshevShiftedMomentTrace, chebyshevTraceKernelPolynomial_zero] using
+    momentFunctional_X_pow s 0
+
 theorem chebyshevTracePolynomial_zero : chebyshevTracePolynomial 0 = X := by
-  simp [chebyshevTracePolynomial]
+  simp [chebyshevTracePolynomial, chebyshevTraceKernelPolynomial]
 
 theorem chebyshevTracePolynomial_one :
     chebyshevTracePolynomial 1 = X - 2 * X ^ 2 := by
-  simp [chebyshevTracePolynomial, Chebyshev.T_one]
+  simp [chebyshevTracePolynomial, chebyshevTraceKernelPolynomial, Chebyshev.T_one]
   ring_nf
 
 theorem chebyshevTracePolynomial_add_two (n : ℕ) :
     chebyshevTracePolynomial (n + 2) =
       2 * (1 - 2 * X) * chebyshevTracePolynomial (n + 1) -
         chebyshevTracePolynomial n := by
-  simp only [chebyshevTracePolynomial, Nat.cast_add, Nat.cast_ofNat,
+  simp only [chebyshevTracePolynomial, chebyshevTraceKernelPolynomial,
+    Nat.cast_add, Nat.cast_ofNat,
     Chebyshev.T_add_two, sub_comp, mul_comp, X_comp, ofNat_comp]
   ring_nf
 
 theorem chebyshevTracePolynomial_eval (n : ℕ) (x : ℝ) :
     (chebyshevTracePolynomial n).eval x =
       x * (Chebyshev.T ℝ (n : ℤ)).eval (1 - 2 * x) := by
-  simp [chebyshevTracePolynomial]
+  simp [chebyshevTracePolynomial, chebyshevTraceKernelPolynomial]
+
+theorem chebyshevTraceKernelPolynomial_eval (n : ℕ) (x : ℝ) :
+    (chebyshevTraceKernelPolynomial n).eval x =
+      (Chebyshev.T ℝ (n : ℤ)).eval (1 - 2 * x) := by
+  simp [chebyshevTraceKernelPolynomial]
 
 theorem chebyshevMomentTrace_zero (s : ℕ → ℝ) :
     chebyshevMomentTrace s 0 = s 1 := by
@@ -72,5 +93,14 @@ theorem chebyshevMomentTrace_finset_atoms {ι : Type*} [DecidableEq ι]
   intro i hi
   rw [chebyshevTracePolynomial_eval]
   ring
+
+theorem chebyshevShiftedMomentTrace_finset_atoms {ι : Type*} [DecidableEq ι]
+    (S : Finset ι) (w x : ι → ℝ) (n : ℕ) :
+    chebyshevShiftedMomentTrace (fun k => ∑ i ∈ S, w i * x i ^ k) n =
+      ∑ i ∈ S, w i * (Chebyshev.T ℝ (n : ℤ)).eval (1 - 2 * x i) := by
+  rw [chebyshevShiftedMomentTrace, momentFunctional_finset_atoms]
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [chebyshevTraceKernelPolynomial_eval]
 
 end HTGeometry

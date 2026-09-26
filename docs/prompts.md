@@ -228,3 +228,5 @@ do not conjecture or judge or assume or anything on your training data. your tra
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
+
+Keep a working log for yourself and do not pay too much attention what other agents are doing. 
