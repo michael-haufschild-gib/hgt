@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMRestrictedWeilApertureMonotonicity
+import GaloisForLFunctions.RHTower.PoleVanishingWeilPrimeTwoEntry
+import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarConstrainedRightContinuity
 
 /-!
 # Selberg-weighted von Mangoldt completions of the restricted Weil form
@@ -24,6 +26,9 @@ This module proves:
   Weil source quadratic built from `Λ_w` is the level-`a` Weil form;
 * `LSeries_selbergWeightedVonMangoldt`: the Dirichlet series of `Λ_w` is
   `-(∑ μ(d) w(d) d^{-s}) · ζ'(s)`.  It has no factor `1/ζ`.
+* `ccmRestrictedWeilSourceQuadratic_eq_integral_selbergSymbol`: on pole-vanishing inputs, the
+  level-`a` form is `∫ weilAtomSymbol(Λ_w, N) |û|²` for every cutoff `N ≥ ⌊e^{2a}⌋`, an explicit
+  Fourier multiplier exact at every prime.
 
 So the completion is exact at every prime.  Its only freedom sits at composite and
 large-prime-power frequencies `n > X`, and it couples different primes through those composite
@@ -32,7 +37,7 @@ line its Krein symbol is therefore `2θ' + 2 Re(ζ' M_w)` plus explicit polar te
 Riemann–Siegel theta function.  A positive symbol would certify the level-`a` Hodge index.
 -/
 
-open ArithmeticFunction Complex Filter Topology
+open ArithmeticFunction Complex Filter Topology MeasureTheory
 
 namespace RHTower
 
@@ -204,6 +209,79 @@ theorem LSeries_selbergWeightedVonMangoldt {w : ℕ → ℝ} {C : ℝ} (hC : ∀
     rw [← hevent.deriv_eq, LSeries_deriv hab, neg_neg]
   rw [hconv, LSeries_convolution' hlog hgs, hderiv]
   ring
+
+/-! ## Frequency-side symbol of a finite-atom completion -/
+
+/-- Weil symbol with the archimedean part and prime atoms `lam n` at `± log n`, `2 ≤ n ≤ N`. -/
+def weilAtomSymbol (lam : ℕ → ℝ) (N : ℕ) (ξ : ℝ) : ℝ :=
+  archimedeanWeilSymbol ξ -
+    ∑ n ∈ Finset.Icc 2 N,
+      lam n * (1 / Real.sqrt n) * (2 * Real.cos (2 * Real.pi * Real.log n * ξ))
+
+/-- **Finite-atom symbol representation.**  On pole-vanishing inputs, the Weil source quadratic
+with weights `lam` and cutoff `N` is the Fourier multiplier `weilAtomSymbol lam N`. -/
+theorem ccmRestrictedWeilSourceQuadraticWith_eq_integral_symbol (a : SuzukiPositiveAperture)
+    (lam : ℕ → ℝ) (N : ℕ) (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u) :
+    ccmRestrictedWeilSourceQuadraticWith a lam N u =
+      ∫ ξ : ℝ, weilAtomSymbol lam N ξ * ‖(u.1 : ℝ → ℂ) ξ‖ ^ 2 := by
+  have hterm : ∀ n : ℕ,
+      (inner ℂ (logTranslationCLM (Real.log n) (ccmArchimedeanFormToAperture a u).1)
+          (ccmArchimedeanFormToAperture a u).1 +
+        inner ℂ (logTranslationCLM (-Real.log n) (ccmArchimedeanFormToAperture a u).1)
+          (ccmArchimedeanFormToAperture a u).1).re =
+        ∫ ξ : ℝ, 2 * Real.cos (2 * Real.pi * Real.log n * ξ) * ‖(u.1 : ℝ → ℂ) ξ‖ ^ 2 := by
+    intro n
+    rw [Complex.add_re, re_inner_logTranslation_eq_integral_cos,
+      re_inner_logTranslation_eq_integral_cos,
+      ← integral_add (integrable_cos_mul_norm_sq_ccmFormDomain a u _)
+        (integrable_cos_mul_norm_sq_ccmFormDomain a u _)]
+    congr 1
+    funext ξ
+    rw [show 2 * Real.pi * -Real.log n * ξ = -(2 * Real.pi * Real.log n * ξ) by ring,
+      Real.cos_neg]
+    ring
+  have hW : Integrable (fun ξ : ℝ => archimedeanWeilSymbol ξ * ‖(u.1 : ℝ → ℂ) ξ‖ ^ 2) := by
+    simpa [archimedeanWeilSymbol] using integrable_two_gammaHardyPhaseRate_mul_norm_sq u.1
+  have hC : ∀ n : ℕ, Integrable (fun ξ : ℝ => lam n * (1 / Real.sqrt n) *
+      (2 * Real.cos (2 * Real.pi * Real.log n * ξ)) * ‖(u.1 : ℝ → ℂ) ξ‖ ^ 2) := by
+    intro n
+    refine ((integrable_cos_mul_norm_sq_ccmFormDomain a u (Real.log n)).const_mul
+      (lam n * (1 / Real.sqrt n) * 2)).congr (Eventually.of_forall fun ξ => ?_)
+    simp only
+    ring
+  have hfun : (fun ξ : ℝ => weilAtomSymbol lam N ξ * ‖(u.1 : ℝ → ℂ) ξ‖ ^ 2) =
+      fun ξ => archimedeanWeilSymbol ξ * ‖(u.1 : ℝ → ℂ) ξ‖ ^ 2 -
+        ∑ n ∈ Finset.Icc 2 N, lam n * (1 / Real.sqrt n) *
+          (2 * Real.cos (2 * Real.pi * Real.log n * ξ)) * ‖(u.1 : ℝ → ℂ) ξ‖ ^ 2 := by
+    funext ξ
+    simp only [weilAtomSymbol]
+    rw [sub_mul, Finset.sum_mul]
+  unfold ccmRestrictedWeilSourceQuadraticWith
+  simp only
+  rw [hu.1, hu.2]
+  simp only [mul_zero, add_zero, Complex.zero_re]
+  simp_rw [hterm]
+  rw [hfun, integral_sub hW (integrable_finsetSum _ fun n _ => hC n),
+    integral_finsetSum _ fun n _ => hC n]
+  congr 1
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [← integral_const_mul]
+  congr 1
+  funext ξ
+  ring
+
+/-- **The level-`a` Weil form is the integral of every Selberg-completion symbol.**  For a weight
+`w` equal to one on `[1, ⌊e^{2a}⌋]`, every cutoff `N ≥ ⌊e^{2a}⌋`, and every pole-vanishing input,
+`Q_a(u) = ∫ weilAtomSymbol(Λ_w, N) |û|²`.  The symbol keeps every prime exactly and carries the
+completion freedom only at composite and large-prime-power frequencies. -/
+theorem ccmRestrictedWeilSourceQuadratic_eq_integral_selbergSymbol (a : SuzukiPositiveAperture)
+    {w : ℕ → ℝ} (hw : ∀ d, 1 ≤ d → d ≤ Nat.floor (Real.exp (2 * a.1)) → w d = 1)
+    {N : ℕ} (hN : Nat.floor (Real.exp (2 * a.1)) ≤ N) (u : CCMArchimedeanFormDomain a)
+    (hu : IsPolarConstrained a u) :
+    ccmRestrictedWeilSourceQuadratic a u =
+      ∫ ξ : ℝ, weilAtomSymbol (selbergWeightedVonMangoldt w) N ξ * ‖(u.1 : ℝ → ℂ) ξ‖ ^ 2 := by
+  rw [← ccmRestrictedWeilSourceQuadraticWith_selberg_eq a hw hN u,
+    ccmRestrictedWeilSourceQuadraticWith_eq_integral_symbol a _ N u hu]
 
 end
 

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.EisensteinHeckeCoefficient
 import GaloisForLFunctions.RHTower.EisensteinLineModelBounds
+import GaloisForLFunctions.RHTower.HeckeOperatorBasic
 
 /-!
 # Hecke operators on the Eisenstein line model
@@ -22,10 +23,6 @@ namespace RHTower
 noncomputable section
 
 /-! ## The Hecke operator on functions of `(x, y)` -/
-
-/-- The Hecke operator `T_p` on functions of `(x, y)`. -/
-def heckeOp (p : ℕ) (F : ℝ → ℝ → ℂ) (x y : ℝ) : ℂ :=
-  (((Real.sqrt p)⁻¹ : ℝ) : ℂ) * (F (p * x) (p * y) + ∑ b ∈ range p, F ((x + b) / p) (y / p))
 
 theorem heckeOp_add (p : ℕ) (F G : ℝ → ℝ → ℂ) (x y : ℝ) :
     heckeOp p (fun x y => F x y + G x y) x y = heckeOp p F x y + heckeOp p G x y := by

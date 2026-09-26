@@ -57,3 +57,15 @@ functional equation and its root number. Without the root-number phases only ν 
   - The row-weighted machinery `eisK` generalises directly to a d-character (replace `eTerm M 1` by `eTerm M ψ'`).
   - The existing modules remain correct statements about Ê (another element of the ψ-Eisenstein space), but they are not yet the partner.
 - **Route decision.** Weight ½ at q and at 2 needs η-twisted partners, the 2-adic partner, the Gauss sign, and local FEs. Weight 0 gets the Eisenstein FE for characters from the Epstein/Poisson method with only τ(ψ) (no quadratic Gauss sums): Θ(z,t) = Σψ(n)e^{−πt|mLz+n|²/y}, with Θ(t) = τ(ψ)/(qLt)·Θ̂(1/(L²t)), gives a mathlib `StrongFEPair` (template: corpus `GL3EpsteinContinuation`). Next brick: the weight-0 Epstein-with-character FE module. The weight-0 route then needs RS unfolding of u·ū_χ and a Hecke layer to divide out L(s,χ).
+- 2026-09-26 — **Weight-0 Eisenstein FE with character closed in Lean** (`EpsteinCharacterFunctionalEquation`, built `--old`, wired, standard axioms).
+  - `char_poisson`: Σψ(n)e^{−πd(n+a)²} = τ(ψ)/(q√d)·Σψ̄(k)e^{−πk²/(q²d)}e(ak/q).
+  - `thetaQ_inversion`: the 2D lattice theta inversion Θ_{qB}(t) = τ(ψ)/(tq²B)·Θ̂_B(1/(tq²B²)).
+  - The generic weighted lattice theta: positive definiteness |mAz+n|² ≥ (δ/2)n² + (A²y²/2)m²; summability, continuity, decay; `mellin_thetaW` = (π/y)^{−s}Γ(s)·Σw|mAz+n|^{−2s}.
+  - `epsFEPair` is a strong FE pair (weight 1, ε = τ(ψ)/(q²B)). `differentiable_epsΛ`: Λ is entire. `epstein_char_functional_equation`: Λ(1−s) = τ(ψ)/(q²B)·(q²B²)^s·(π/y)^{−s}Γ(s)·Σψ̄(k)|kBz+l|^{−2s}.
+  - Next on the weight-0 route: (a) primitive-vector decomposition to Poincaré series (L(2s,ψ)·E_∞^{(q²B)} and the dual split into rows q‖c and q∤c); (b) RS unfolding of u·ū_χ against both sides; (c) the twist identity at the cusps; (d) a Hecke layer to divide out L(s,χ).
+- 2026-09-26 — **Gauss sign closed in Lean** (`QuadraticGaussSumSign`, built `--old`, wired, standard axioms). Proof by Landsberg–Schaar: θ(1/p+iε) is expanded (A) by periodic Poisson mod p and (B) by Fricke + parity split + Fricke, then ε → 0⁺.
+  - `gaussQuad_eq`: G(p) = (ip/2)^{1/2}(1 + e(−p/4));
+  - `gaussQuad_of_mod_four_eq_one/three`: G(p) = √p or i√p;
+  - `gaussSum_legendre`: τ((·/p)) = G(p).
+  - This removes blocker (c) for odd prime conductors. Still needed: Kronecker χ_D of general fundamental discriminants (multiplicativity plus D = −4, ±8).
+- 2026-09-26 — `MaassCharacterTwist` (built, wired): u_χ = Σχ̄(a)u(z+a/q) transforms by χ(d)² on Γ₀((N+1)q²). This is the weight-0 input for the twisted RS route.

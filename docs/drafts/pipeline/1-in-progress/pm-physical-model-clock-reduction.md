@@ -153,7 +153,29 @@ transported to the Fermi source. Consequence: RH ⟺ bounded witnesses are dense
 Barrier (matches STATUS "exponent, not constant"): no method gives self-similarity of `L^p` witnesses for any
 `p < ∞`, which would be a zero-free half-plane `Re s > 1 − 1/p`.
 
-## PM-14 (paper → Lean in progress) — bounded witnesses are self-similar (the PNT end of the ladder)
+## PM-14 (proved, Lean; superseded by PM-15) — bounded witnesses are self-similar
+First proof used Zeta23 `ZetaInvBnd`/`ZetaInvBound2`/`ZetaZeroFree` on a thin strip; replaced by PM-15, which needs no
+zero-free region. Corollaries kept: `IsFermiNymanWitness.selfSimilar_of_bounded`, `selfSimilar_of_bounded_fermiWitness`.
+
+## PM-15 (proved, Lean) — sharp unconditional boundary: Mellin exponent zero
+`RHTower/FermiNymanWitness{Mellin,DyadicDefect,ExponentZeroRigidity}.lean` (build green, axioms standard, wired).
+`IsMellinFermiWitness w a`: continuous on `(0,1]`, orthogonal to all `φ_b`, `∫_0^1 t^{x−1}|w| < ∞` for `x > a`.
+Theorem `IsMellinFermiWitness.selfSimilar`: exponent `0` ⟹ `w(t/2) = w(t)`. Also `…selfSimilar_of_mellinExponentZero`.
+Proof: `W` analytic on `Re z > a` (differentiation under the integral); Fubini on `0<Re s<1−a`; entire `U`;
+**growth by maximum modulus on rectangles `[−1,1]×±[T_k,T_{k+1}]` between Titchmarsh IX.7 heights**
+(`exists_seq_zeta_inv_horizontal`, corpus) — no zero-free region, no Phragmén–Lindelöf; generic lemma
+`exists_polyGrowth_of_zetaInv_bounds`; Liouville along integers `eq_zero_of_polyGrowth_of_tendsto_nat`; Fourier
+uniqueness `selfSimilar_of_mellin_lowerDefect`. Sharp: zero witness `t^{ρ̄−1}` has exponent `1−Re ρ > 0`.
+
+## PM-16 (proved, Lean) — the Hermitian identity is exactly RH
+`RHTower/FermiNymanWitnessSelfSimilarityCriterion.lean` (build green, axioms standard, wired).
+`riemannHypothesis_iff_fermiNymanWitness_selfSimilar : RH ↔ ∀ w, IsFermiNymanWitness w → ∀ t ∈ (0,1], w(t/2)=w(t)`;
+`…_halfMass` (`∫_0^{½}|w|² = ½∫_0^1|w|²`), `…_halfMass_le` (`q ≥ 0`). Converse proof: L² witness has exponent `½` with
+rate `m(½+ε) ≤ (1+‖w‖²)/(2√(2ε))` (AM–GM); under RH `Ξ(1−z) ≠ 0` off `Re z = ½`; at critical zeros the left form has
+nonnegative meromorphic order (a pole would beat the `ε^{−1/2}` rate at `z₀+ε`), so the regularized defect is entire;
+then PM-15's growth/Liouville/uniqueness with `x₁ = 3/4`. Answer to "is the divisor-selective Hermitian identity
+open?": yes, and it is RH itself, formally (both directions in Lean). RH enters only as absence of poles of
+`V_w(z) = (1−2^{−z})W(z)` in `Re z < ½`.
 Statement: `w` continuous on `(0,1]`, `|w| ≤ M`, `∫_0^1 φ_a w = 0` for all `a ≥ 1` ⟹ `w(t/2) = w(t)` on `(0,1]`.
 Proof.
 1. `F(a) = ∫_0^1 φ_a(t) w(t) dt` (`φ_a(t) = φ_1(at)`), `|F| ≤ 3M`, `F = 0` on `[1,∞)`.

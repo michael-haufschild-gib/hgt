@@ -31,3 +31,4 @@ Scope: frontier route HF. Facts and no-gos only.
 - **HF-F15 [literature]:**
   - Suzuki arXiv 2606.09096 is the de Branges/screw framework for level-wise Weil forms.
   - Alpöge–Furman arXiv 2608.13637 is Sylvester inertia plus a rank-trace inequality on Gabor compressions of Weil's form (≥2/3 simple on-line zeros, Lean-verified). This is the structural signature tool for HF, but second moments give proportions only.
+- **HF-F16 [Lean, `RHTower.SelbergTruncatedVonMangoldtKreinCompletion`]:** On pole-vanishing inputs, the level-`a` Weil form is the Fourier multiplier `weilAtomSymbol(Λ_w, N)` for every Selberg weight `w` (`w = 1` below `e^{2a}`) and every cutoff `N ≥ ⌊e^{2a}⌋`. Also: `ccmRestrictedWeilSourceQuadratic_eq_integral_selbergSymbol`, `ccmRestrictedWeilSourceQuadraticWith_eq_integral_symbol`. **Route:** HF-Krein at level `a` means some finite-cutoff Selberg symbol, plus invisible terms, is nonnegative against `|û|²`.
