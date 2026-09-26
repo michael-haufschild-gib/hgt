@@ -1040,6 +1040,13 @@ The floor-one method caps at N ≤ 30 even with a perfect band estimate: q_κ = 
   - Beating Kim–Sarnak needs ϑ > 25/32, beyond every known level for any arithmetic sequence (primes: Maynard 3/5, Lichtman ≈ 0.617 with triply well-factorable weights; d₃ individually: 1/2 + 1/46).
 - **Verdict: the level-of-distribution route is CAPPED at the current technology frontier.** It reproduces 3/16 (ϑ = 1/2) and 10/49 (ϑ = 4/7). It would reproduce 21/100 GL₂-only at ϑ = 3/5 and needs EH strength for the conjecture. No uniform proof follows.
 
+**Cycle 97. Consistency of the level-of-distribution law with switching.** Write F_q = Σ_{q∼Q} Σ_{n≡1 (q)} λ_{sym²}(n)g(nY) = Q·g(Y) + F_r, where F_r is the same sum with the complementary divisor r = (n−1)/q ≍ X/Q as modulus.
+- *Size of F_r.* Each r-progression is a twisted sym² sum of length X with Voronoi dual length r³/X. It is negligible for r < X^{1/3} and ≲ r (Deligne) otherwise, so F_r ≲ (X/Q)², and F_r is negligible once Q > X^{2/3}.
+- *Size of the q-dual.* D ≲ Q^{2−η}.
+- *Resulting law.* Q·X^{2ν} must exceed both terms, i.e. ν > max(1 − 3ϑ/2, ϑ(1−η)/2 + ...). With Deligne on both sides (η = 0) the optimum is ϑ = 1/2, ν = 1/4, reproducing cycle 80(c)'s invariance.
+- *Agreement.* The LoD law ν ≤ (1−ϑ)/2 corresponds to D ≪ X^{1−δ}, i.e. ϑ(2−η) < 1, the dictionary ϑ = 1/(2−η) of cycle 95. The three formulations (moduli saving η, level ϑ, switching) are consistent and all place Iwaniec at η = 1/4 ⟺ ϑ = 4/7.
+- **Verdict: BRIDGE (consistency).** No new saving: the gain must come from moduli cancellation in the q-dual, which is Iwaniec's unpublished-to-us technical step.
+
 **Conclusion of cycles 56–61** (corrected by cycle 71: Iwaniec's GL₂-only 10/49 passes 3/16 via Shimura's entire twisted sym²). Every *Kloosterman-sum* route checked reaches exactly 3/16, and Kim–Sarnak's 7/64 is reached only through Sym⁴. What stops each route: Weil's bound is sharp for weight-uniform arguments (theta barrier); the bilinear route needs saving past the Cauchy–Schwarz diagonal; the forced-zero route needs Kl₁₅ cancellation over moduli (GL(15)). No new unconditional theorem survived, so nothing was formalized in Lean this batch. Full Selberg remains open.
 
 ### User-directed Einasto discovery — cycle 37 input

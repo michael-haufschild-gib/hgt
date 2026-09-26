@@ -141,3 +141,7 @@ Further loops on the sharp fallback (2026-09-26):
   - `DiscArgumentDatum.norm_forwardHankelSeam_lt_one`: the forward seam of every holomorphic phase contracts.
   - **`riemannHypothesis_iff_forall_xiRightDisc_adjointSeam_lt_one`**: RH ⟺ the adjoint seam of the `xi` phase contracts on every right disc.
   - Route 1 is now completely formal as an equivalence; the only non-formal item is the producer, which is RH.
+- **R1-L17: no uniform seam margin for `xi` itself [L]** (`RHTower.XiRightDiscAdjointSeamSupremum`; axioms `propext, Classical.choice, Quot.sound`; `lake build --old` green; lint passed).
+  - `not_exists_uniform_xiRightDisc_seam_margin`: no `δ > 0` has `‖(1−P)U†P‖ ≤ 1−δ` on all zero-free right discs. Unconditional: it uses one on-line zero (Hardy).
+  - `OnLineZeroData.one_sub_seam_sq_le`: `1 − ‖seam‖² ≤ 3(1−r²) + 6π/log(1+π/(1−r))` for the disc of radius `t` at `ρ₀ + t/r`, whatever the multiplicity.
+  - Kills every route-1 producer that would deliver a height- or position-uniform seam contraction: compactness arguments, uniform Nehari distances, uniform `H^∞` mollifier bounds. A producer must be exactly margin-free near on-line zeros.

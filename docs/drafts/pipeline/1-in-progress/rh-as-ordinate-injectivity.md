@@ -99,3 +99,22 @@ Two directions the law itself suggests:
     entire functions with nonnegative Taylor coefficients at `0`. A producer must supply such
     approximants from source data (not from the zeros). The deformation law says the approximation
     scheme must use the functional equation, the Euler product and additive structure together.
+- **Per-zero cone criterion [L], axiom-clean:** `RHTower/XiHorizontalSliceConeCriterion.lean`.
+  - `xiSliceCoeff_nonneg_of_cone`: if every zero copy satisfies `|Re ρ − ½| ≤ |Im ρ − t|`, all slice
+    coefficients at `t` are nonnegative. The Hadamard product is grouped into Hermitian-reflection
+    orbits (`lagPartner_lagPartner`, `xiSpectralPoint_lagPartner`). Each pair contributes the positive
+    multiple of `x⁴ + 2((Im ρ − t)² − (Re ρ − ½)²)x² + ((Im ρ − t)² + (Re ρ − ½)²)²`, whose `x²`
+    coefficient is `≥ 0` exactly outside the cone.
+  - `xiSliceCoeff_nonneg_of_abs_le`: for `|t| ≤ 233/20`, every higher Laguerre expression of `Ξ` at `t`
+    is nonnegative, unconditionally. This uses the corpus's computer-free critical band below
+    `Im² = 2365/16`, and extends the first-order margin `|t| ≤ 58/5` to all orders.
+  - The slice test at `t` is broken only by zeros inside the cone `|Im ρ − t| < |Re ρ − ½|`. A collision
+    (`t = Im ρ`, `Re ρ ≠ ½`) is its apex.
+- **Density consumer [L], axiom-clean:** `RHTower/XiHorizontalSliceDensityFromMeanSquare.lean`,
+  `exists_volume_sliceFailure_le_of_line_meanSquare`.
+  - Given the mean square of `ζΨ` on the critical line (explicit hypothesis, the corpus's MC terminus),
+    the heights in `[T₁+½, T₂−½]` where some slice coefficient fails to be `≥ 0` have measure at most
+    `(1/π)((T₂−T₁)/2·log(Msq/(T₂−T₁)) + C + K(log T₂ + log Mb))`.
+  - Route 3's density shadow now plugs into the same missing input as Levinson and MC. Any Lean proof
+    of a mollified mean square `Msq ≤ c(T₂−T₁)` makes "all-order Laguerre positivity on at least
+    `1 − log c/(2π)` of every window" unconditional.

@@ -259,3 +259,79 @@ annihilating a positive source proves positivity of a signed operator. The
 proof attempt must then discharge the sign itself. Another equivalent
 criterion, domain-only result, comparison no-go, or generic receiver does not
 count as resolution of this obligation.
+
+### S4: real-zero removal and sharp comparison — no sign advance
+
+The attempted induction was to remove real zeros of the actual transform
+while preserving a positive decreasing physical source. For an even smooth
+rapidly decreasing source Phi and a real Fourier zero gamma > 0, the candidate
+is
+
+`Psi_gamma(x) = gamma * integral_x^infinity sin(gamma*(y-x))*Phi(y) dy`.
+
+Paper calculation: `Psi_gamma'' + gamma^2*Psi_gamma = gamma^2*Phi`.
+Evenness and the zero equation make Psi_gamma even. Its transform is
+`hat Phi(t)/(1-t^2/gamma^2)`, with removable singularities at the removed
+zeros. On the positive half-line, integration by parts gives
+
+`Psi_gamma(x) = integral_x^infinity (1-cos(gamma*(y-x)))*(-Phi'(y)) dy`.
+
+Thus a decreasing source gives a nonnegative source after one removal.
+This is a paper calculation, not a new formal theorem or a proof of the
+iteration needed for the actual theta source.
+
+The attempted inheritance of decreasingness fails already for an elementary
+even decreasing source: take
+`Phi(x)=1_(|x|<1)+epsilon*1_(|x|<3)`, with `0<epsilon<1`.
+Its Fourier transform is
+`2*sin(t)/t * (1+3*epsilon-4*epsilon*sin(t)^2)`.
+The parenthesized factor is at least `1-epsilon>0`, so pi is the first
+positive real zero. For `1<x<3`, its source after removal is
+`epsilon*(1-cos(pi*(3-x)))`; its derivative at `x=3/2` is `epsilon*pi>0`.
+This counterexample concerns the proposed general induction step, not the
+actual theta source. Its nonnegative one-step formula is the positive
+survivor, stated above; it has not been promoted or formalized as an RH
+advance. No actual-source deflation route is declared closed.
+
+**Whole route:** neither one-step positivity nor the existence of real zeros
+supplies the shape invariant, iteration, and residual-factor control needed
+to exclude off-line zeros. Those conditions were not proved for Phi.
+
+The second attack tried to obtain the S2 sharp variance comparison by
+isolating the polar channels and using a Schur complement. The inspected
+`CCMRestrictedWeilActualBirmanSchwinger` keeps the signed prime--polar forcing;
+`CCMRestrictedWeilActualHeadPrimePolarGammaProducer` identifies its producer
+with the source quadratic and retains nonnegativity as an obligation.
+`SelbergThetaSourceVariance` proves a positive variance for actual divisor
+modes but asserts no native spectral occurrence. None supplied, and this
+attempt did not derive, the missing comparison. **Whole route:** replacing
+the form by one of these identities leaves its unrestricted sign open.
+
+Search evidence: `/tmp/rh-s4-theta-kernel-search.json` reports partial results;
+`/tmp/rh-s4-real-deflation-search.json`,
+`/tmp/rh-s4-real-zero-division-search.json`, and
+`/tmp/rh-s4-polar-schur-search.json` completed against the available index.
+Method retrieval returned no verified sign producer. Compiler coverage is
+predominantly pending/source-only/stale. No numerical mathematical experiment,
+Lean theorem, or RH sign advance is claimed for S4.
+
+### S5 target: arithmetic cancellation of the actual transverse current
+
+The current corpus gives, for every actual Xi copy with spectral point
+`z=b+i*c`, a nonvanishing two-ended mode `u` satisfying
+`u'=-i*z*u-i*Phi`. With `r=u/Phi`, the existing exact identity is
+
+`integral (log Phi)'*|u|^2/Phi = 2*c*V`, with `V>0`.
+
+The target of this attack is to prove the left side zero from the literal
+arithmetic source equation, keeping the selected copy fixed. That would
+force `c=0`; merely exchanging it with its reflected copy would not.
+This is an attack on the existing RH obstruction, not a newly asserted
+theorem or a new primary conjecture. The tested proof must use the actual
+prime coefficients in a step that establishes cancellation or a sign.
+
+The source energy estimate `m/b^2<M<2*m/b^2` and the pointwise disk
+`|1+b*r(x)|<1` are already formalized in `SelbergThetaSourceEnergy`.
+They concern one mode, retain the transverse parameter in their weight,
+and supply no integer free-orbit upper bound. Repackaging the number two
+as a counting bound without a proved pairwise comparison is inadmissible.

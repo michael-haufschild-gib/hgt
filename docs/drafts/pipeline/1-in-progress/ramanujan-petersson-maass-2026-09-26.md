@@ -382,3 +382,45 @@ The proposed `SelbergModalEnergy.maassCoefficient_bounded` was inspected in sour
 The same missing quantitative arithmetic estimate persisted in three consecutive resumed turns: the six-mechanism loop, the direct period-correlation continuation, and this current-state revalidation. The first changed route selection through negative evidence; none closed the estimate. No actual Maass counterexample was produced. The seven earlier auxiliary modules and their audits do not certify the requested theorem. There is no capstone proof artifact on which a successful targeted build or axiom audit could establish completion.
 
 Blocked-audit conclusion: the agent is at a research impasse, with no justified proof-producing next action identified. Further work requires a new mathematical argument or an applicable result to audit; repeated generic reductions would not advance the requested end state. The goal must not be marked complete. Request blocked status after this audit. No Lean source changes or builds in this turn; owned search session 61111 exited, and no owned Lean process was started.
+
+## Resumed trace-cancellation attack
+
+The user requested continued mathematical attacks, not another search-only revalidation. Goal remains unmet. The active question is whether a positive spectral trace at the indices m=n=p^n has subexponential growth in n. A proof for a suitable fixed positive spectral weight would exclude an exponentially growing prime-power Hecke coefficient. No such trace bound is assumed.
+
+### Candidate P: remove the ramified-modulus growth
+
+[PAPER IDENTITY; not Lean checked] Let p be prime, R a positive integer, B any complex-valued function on positive reals, and S the ordinary Kloosterman sum. Define finite sums
+
+`K_n(R) = sum_(1<=c<=p^n*R) S(p^n,p^n;c)/c * B(p^n/c)`,
+
+`F_n(R) = sum_(1<=c<=p^n*R, p does not divide c) S(p^n,p^n;c)/c * B(p^n/c)`,
+
+`E(R) = sum_(1<=d<=R, p divides d) S(1,1;d)/d * B(1/d)`.
+
+Partition c=p^a*c0 with p not dividing c0. For a<=n, reducing the unit sum modulo c0 gives
+
+`S(p^n,p^n;p^a*c0) = phi(p^a)*S(p^(n-a),p^(n-a);c0)`.
+
+For a>n, put c=p^n*d. Reduction of units modulo d has p^n fibers because p divides d, giving `S(p^n,p^n;p^n*d)=p^n*S(1,1;d)`. The scaled cutoff then yields exactly
+
+`K_n(R) = F_n(R) + (1-1/p)*sum_(k<n) F_k(R) + E(R)`,
+
+`K_n(R)-K_(n-1)(R) = F_n(R)-F_(n-1)(R)/p` for n>=1.
+
+Whole-route consequence: this does not improve an exponent. Polynomial bounds for F imply polynomial bounds for K, and the stable inverse recurrence reconstructs polynomially bounded F from polynomially bounded K. Passing to infinite sums also needs convergence. Positive survivor: arithmetic localization of the unresolved cancellation to moduli coprime to p, not a new Maass estimate. No originality claim or auxiliary Lean installation.
+
+### Candidate Q: keep the two oscillatory factors together
+
+[FROZEN FOR ATTACK] For p not dividing c, reindexing units gives `S(p^n,p^n;c)=S(1,p^(2*n);c)`. Before taking absolute values, combine the Bessel factors exp(plus/minus 4*pi*i*p^n/c) with the additive character in S. The exact ring identities are
+
+`u+u^(-1)-2=(u-1)^2*u^(-1)`,
+
+`u+u^(-1)+2=(u+1)^2*u^(-1)`.
+
+Hostile test: these expressions are not quadratic polynomials in u; the inverse is not constant. Gaussian evaluation cannot be inferred from the displayed squares. The test must control the sum over both residues and moduli, including the transition c comparable to p^n where a large-argument Bessel expansion is not uniform. A local stationary-phase rewrite without that estimate does not meet the target.
+
+### Candidate R: choose away the oscillatory tail
+
+[FROZEN FOR ATTACK] Test whether a spectral weight h, nonnegative on the actual spectrum and nonzero at the selected form, can remove the leading large-argument Bessel oscillation. If positivity prevents that, test signed h rather than assuming spectral positivity survives. The discriminating quantity is the moment `integral t*tanh(pi*t)*h(t) dt`, which appears both in the diagonal and in the formal leading Bessel coefficient. A fixed-order asymptotic cannot be integrated over unbounded spectral t without an independent uniform remainder bound.
+
+Input checks: search `/tmp/rp_hecke_trace_amplifier_20260926m.json` completed nonpartially over 59,738 inventoried files. Retrieved Kloosterman estimates either fix the modulus or assume coefficient majorants; none inspected supplies this varying-modulus trace bound. Proposed ingredient groups are unverified. The spectral formula was checked against Li--Young, Theorem 2.3, and the fixed-order Bessel expansion against DLMF 10.17.3; these external formulas are not Lean certificates.

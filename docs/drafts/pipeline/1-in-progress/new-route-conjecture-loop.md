@@ -292,6 +292,126 @@
   forces real-rootedness-type structure; the only known cone-preserving families (Pólya's fake ξ, `H_λ`
   for `λ ≥ Λ`) are not built from primes or are circular.
 
+### C20 — local Euler-factor surgery against the slice cone
+- **Conjecture.** Removing or adding finitely many local Euler factors (FE-symmetrised) keeps the slice
+  cone, and so gives Euler-built cone-preserving approximants.
+- **Attack.**
+  - Removal: `ξ·(1−p^{−s})(1−p^{s−1})` has new zeros at `Re s = 0, 1`, `Im s = 2πk/log p`, displacement
+    `½`, i.e. cone apices at `t = 2πk/log p`. Positivity then fails at those heights by the Lean
+    contrapositive (applied to the modified function).
+  - Addition: division introduces poles, so the function is not entire.
+  - FE-symmetric factors with only critical zeros (`p^{s−½} + p^{½−s} − 2cos α`) preserve the cone,
+    but they carry no arithmetic of `ξ`.
+- **Verdict.** `FALSE` (the single-prime deformation of the deformation law, in slice form).
+- **Formal by-product [L].** Per-zero cone criterion and an unconditional all-order Laguerre band
+  `|t| ≤ 233/20` (`XiHorizontalSliceConeCriterion.lean`, EOC-F25).
+
+### C21 — pushing the unconditional band with the fourth reciprocal-trace budget
+- **Conjecture.** The corpus's critical band (`XiFourthTraceExtendedCriticalLineBand`: an off-line atom
+  `> 9/200000` against the source moment `< 9/50000`), fed through the cone criterion, extends the
+  all-order band past `233/20`.
+- **Attack.** The atom of an off-line copy decays with height like a fourth reciprocal power. Each
+  band is therefore a fixed-height exclusion whose reach is set by the numeric size of the source
+  moment. The cone criterion needs `|Im ρ − t| ≥ |Re ρ − ½|` for zeros near `t`, which is the same
+  information near `t`. Crossing the first ordinate `≈ 14.13` needs finer source constants at each step
+  (a finite verification).
+- **Verdict.** `INSIGNIFICANT` (wall 1, height-local).
+
+### C22 — density form of the slice criterion (paper)
+- **Statement.** For large `T`, all Taylor coefficients of the slice product at `t` (all Laguerre
+  expressions of every order) are nonnegative for every `t ∈ [T, 2T]` outside a set of measure
+  `≤ (1/2π) · log(mollified mean square) · T + o(T)`.
+- **Proof sketch.** By EOC-F25 the failure set at height `t` needs a zero inside the cone at `t`. The
+  failure set is therefore contained in `⋃ (γ − |β−½|, γ + |β−½|)` over off-line pairs. Its measure is
+  `≤ Σ_{β>½} 2(β−½)`. Littlewood's lemma with a mollifier `M` (`M(1)=1`) gives
+  `2π Σ_{T<γ≤2T, β>½}(β−½) ≤ (T/2) log((1/T)∫|ζM|²) + o(T)`. With Selberg/Conrey mean squares
+  `≈ 3` (resp. `≈ 2.75`), the failure measure is `≤ 0.175T` (resp. `≤ 0.161T`): the full hierarchy holds on
+  at least `82%` of heights.
+- **Verdict.** `SURVIVES` as a paper corollary (density, wall 3; no RH content). The Lean version needs
+  the mollified second moment, the corpus's MC terminus, so it cannot close unconditionally yet.
+  Recorded as the density shadow of route 3.
+- **Lean [L] (same day).** `XiHorizontalSliceDensityFromMeanSquare.lean`:
+  `exists_volume_sliceFailure_le_of_line_meanSquare`, with the mean square as an explicit hypothesis.
+
+### C23 — a Rodgers–Tao-type contradiction in the forward direction (`Λ ≤ 0`)
+- **Conjecture.** As Rodgers–Tao derive `Λ ≥ 0` from unconditional zero statistics under the backward
+  heat flow, an off-line zero (`Λ > 0`) contradicts an unconditional statistic under the forward flow.
+- **Attack.** For `t > 0` the de Bruijn–Newman approximant evaluates the Dirichlet series at
+  `σ_eff ≈ ½ + (t/4) log(x/4π)`. The first term dominates, and all zeros are real, only above
+  `x ≳ e^{2/t}`. Below that height `H_t` inherits `ξ`'s zeros up to small motion, so `Λ ≤ t` is
+  RH for `ξ` up to height `≈ e^{2/t}` (Polymath 15 closes `t = 0.2` with numerics). An off-line pair of
+  displacement `b` is absorbed by forward time `≤ b²/2`. No unconditional statistic is violated by a
+  sparse set of such pairs: forward relaxation erases them, and density statistics cannot see them.
+- **Verdict.** `REDISCOVERED` (Polymath 15 / Ki–Kim–Lee structure: wall 1 plus 1-line dominance). The
+  asymmetry is exact. Backward flow creates collisions from generic statistics, which is how
+  Rodgers–Tao win. Forward flow destroys them, so a contradiction would need a statistic sensitive to
+  one pair, i.e. RH.
+
+### C24 — moment form of the slice criterion
+- **Conjecture.** The slice coefficients are moments,
+  `c_{2k}(t) = (1/(2k)!) ∫ d^{2k} K_t(d) dd` with
+  `K_t(d) = ½∫ Φ₀((s+d)/2) Φ₀((s−d)/2) cos(ts) ds`, and a sign structure of `K_t` (positive tails
+  dominating a negative core) gives all moments `≥ 0`.
+- **Attack.** `K_t` is, up to a constant, the cosine transform in `σ` of `Ξ(t+σ)Ξ(t−σ)`. Pointwise
+  positivity of `K_t` is a Wigner-positivity statement, ruled out by Hudson's theorem (`Φ₀` is not a
+  Gaussian). For large `|d|` the product `Φ₀((s+d)/2)Φ₀((s−d)/2) ≈ exp(−2πe^{s} cosh d)` concentrates at
+  `s ≈ −|d|` with `O(1)` width, so `K_t(d) ≈ A(d) cos(t|d| + φ)`: the tails oscillate at frequency `t`
+  and do not dominate with a sign. High moments are decided by that phase.
+- **Verdict.** `BRIDGE` (a dual form of the Lean equivalence). The oscillation frequency `t` of the tails
+  is the ordinate; the moment signs carry the full content.
+
+### C25 — transplanting the proven RH-analogue mechanisms onto one slice
+- **Conjecture.** One of the mechanisms that *prove* an RH-analogue in a corpus toy model works on the
+  slice at a single height.
+- **Attack (each mechanism at its failure point).**
+  - *Hermite–Biehler with an FE-breaking gain* (Lagarias–Suzuki constant terms
+    `y^u ξ(1+2u) + y^{−u} ξ(1−2u)`, RH for every `y > 0`). The HB inequality
+    `|ξ(w+1)/ξ(w)| > y^{−Re w}` holds because the numerator sits in the zero-free half-plane
+    (`Re(w+1) ≥ 1`) and the Gamma gain `|t|^{1/2}` beats the convexity bound for `|ζ(w)|`. On the slice of
+    `ξ` itself the two HB sides are equal by the FE (`|ξ(½−x+it)| = |ξ(½+x+it)|`). A shift `h` makes
+    the numerator `ζ(½+h+x+it)` vanish at an off-line zero unless `h ≥ ½`.
+  - *Stepanov/Frobenius* (C18): no Frobenius relation holds at the roots.
+  - *Dominance* (Rankin–Swinnerton-Dyer arcs, period polynomials, de Bruijn–Newman `t > 0` at large
+    height): on the slice no term dominates (Gram's law fails; `Σ n^{−1/2} ≍ 2√N`).
+  - *Sturm–Liouville / ODE* (Pólya's fake ξ via Bessel `K`): `Ξ` is hypertranscendental (corpus HT
+    lanes), so there is no ODE.
+  - *Finite-aperture Weil positivity* (Connes–Consani `√2`, corpus prime-2 extension): height-local.
+- **Verdict.** `REDISCOVERED`. This is the corpus's terminal classification ULF-TERM-001
+  (four theorem-closed producer kinds, two doors). The slice form adds one precise remark: HB is
+  degenerate *exactly* on the slice, because the FE equates the two sides there.
+
+### C26 — high-order slice positivity at every height (door-2 integer made finite)
+- **Conjecture (new, paper).** There are absolute constants `C, t₀` such that for `|t| ≥ t₀` and every
+  `k ≥ C log|t|` the slice coefficient `c_k(t)` (the coefficient of `x^{2k}` in `ξ(½+x+it)ξ(½−x+it)`) is
+  strictly positive, unconditionally. `C = ¾` plus an absolute margin should do.
+- **Why (saddle point, paper sketch).** Write `c_k = (R^{−2k}/2π)∫_{−π}^{π} g_t(Re^{iθ}) e^{−2ikθ} dθ`.
+  - By the FE, `|g_t(Re^{iθ})| = |ξ(½+|a|+i(t+c))|·|ξ(½+|a|+i(t−c))|` with `a = R cos θ`,
+    `c = R sin θ`.
+  - Stirling makes the exponential parts `e^{−π|τ|/4}` sum to `e^{−πt/2}`, independent of `θ`, and
+    leaves `t^{|a|}`. So `|g_t(Re^{iθ})|/g_t(R) ≈ t^{−R(1−|cos θ|)} · (ζ-ratio)`: Gaussian angular decay
+    of width `(R log t)^{−1/2}` at the two saddles `θ = 0, π`, which add because `g_t` is even.
+  - Choose `R = R_k` by `R·d/dR log g_t(R) = 2k`, so `R_k ≈ 2k/log t`. For `k ≥ ¾ log t`, `R_k ≥ 3/2` and
+    the saddle sits at `Re s ≥ 2`, where `ζ` is bounded above and below.
+  - Near `θ = ±π/2` the points enter the strip. There `|ζ| ≤ C t^{1/4} log t` (convexity), but the
+    suppression is `t^{−R(1−|cos θ|)} ≤ t^{−R/2} ≤ t^{−3/4}`, which beats `t^{1/2} log² t` against the
+    main-term width `(R log t)^{−1/2}`.
+  - The main term is positive: `g_t(R) > 0`, the linear phase cancels by the choice of `R`, and the
+    quadratic phase has real part `≈ −R log t < 0`.
+- **Consequences.**
+  1. **RH ⟺ for every `t`, the first `O(log(|t|+2))` slice coefficients at `t` are `≥ 0`.** Combined
+     with the Lean equivalence, the RH content at height `t` sits in finitely many (`≍ log t`) explicit
+     differential expressions of `Ξ` at `t`. This matches the detection-index law (C10): pairs of
+     displacement `b ≤ ½` are detected at order `≍ b log t ≤ ½ log t`.
+  2. **Door-2 integer.** `V(t) :=` the number of sign changes of `(c_k(t))_{k ≤ C log t}` is a finite,
+     locally computable, *even* integer (Descartes–Laguerre: `V ≡ #positive roots = 2·#collision pairs
+     (mod 2)`), with `V(t) ≥ 2P(t)` and RH ⟺ `V ≡ 0`. It has the same full-quantum margin as route 3's
+     `K(T) < 2`, but it is defined pointwise from derivatives of `Ξ` at `t`, with no zero enumeration and
+     no averaging (walls 2–3 do not apply to the definition).
+- **Verdict.** `SURVIVES` (paper sketch). Open core: a source-side bound `V(t) < 2`, i.e. sign control of
+  `≍ log t` Laguerre expressions at `t`. That is still RH-strength, but finite at each height.
+  Next: a complete paper proof with explicit constants, a novelty check (GORZ covers the `t = 0`
+  Jensen axis, not the height-local order axis), then Lean.
+
 ## Diagnosis after C1–C5: the four walls the loop keeps hitting
 1. **Height-local blindness.** Every fixed-order or fixed-aperture condition (PF_m, Jensen degree `d`,
    Weil support `S`) sees only zeros below a height tied to the order.
@@ -307,4 +427,4 @@ A new route must break one wall by a mechanism, not by a sharper estimate. Wall 
 *construct* a family (case (c)); walls 1–3 say it must be exact, pointwise and height-uniform.
 
 ## Log
-- 2026-09-26 — loop opened; C1 `INSIGNIFICANT`, C2 `BRIDGE`, C3–C5 `REDISCOVERED`; four-wall diagnosis; C6–C7 `FALSE` (Deligne amplification is k-blind / range-blind over ℚ); C8 `CIRCULAR`; C9 `REDISCOVERED` (route-3 slice core = LA Laguerre hierarchy); C10 `FALSE` + detection-index law k* ≍ b log T; C9 Lean (XiHorizontalSliceTaylorPositivity); C11 `CIRCULAR`; C12 `INSIGNIFICANT` (zero-free inputs act near the 1-line; the slice core is the mirror region); C13 `CIRCULAR`; C14 `FALSE` (exactness vs estimation meta-wall); C15 `REDISCOVERED`; C16 `REDISCOVERED`; C17 reduction (KR-R3 pair residual = density/growth); C18 `FALSE` (no Frobenius relation at roots); slice equivalence closed in Lean (EOC-F24); C19 `FALSE` (natural cone-preserving approximants).
+- 2026-09-26 — loop opened; C1 `INSIGNIFICANT`, C2 `BRIDGE`, C3–C5 `REDISCOVERED`; four-wall diagnosis; C6–C7 `FALSE` (Deligne amplification is k-blind / range-blind over ℚ); C8 `CIRCULAR`; C9 `REDISCOVERED` (route-3 slice core = LA Laguerre hierarchy); C10 `FALSE` + detection-index law k* ≍ b log T; C9 Lean (XiHorizontalSliceTaylorPositivity); C11 `CIRCULAR`; C12 `INSIGNIFICANT` (zero-free inputs act near the 1-line; the slice core is the mirror region); C13 `CIRCULAR`; C14 `FALSE` (exactness vs estimation meta-wall); C15 `REDISCOVERED`; C16 `REDISCOVERED`; C17 reduction (KR-R3 pair residual = density/growth); C18 `FALSE` (no Frobenius relation at roots); slice equivalence closed in Lean (EOC-F24); C19 `FALSE` (natural cone-preserving approximants); C20 `FALSE` + Lean cone criterion (EOC-F25); C21 `INSIGNIFICANT`; C22 density corollary (paper, then Lean conditional, EOC-F26); C23 `REDISCOVERED`; C24 `BRIDGE` (moment form; tails oscillate at the ordinate); C25 `REDISCOVERED` (= ULF-TERM-001); C26 `SURVIVES` (high-order slice positivity; finite door-2 integer).
