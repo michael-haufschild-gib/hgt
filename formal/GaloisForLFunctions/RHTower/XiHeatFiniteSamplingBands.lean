@@ -21,9 +21,9 @@ theorem xiHeatSamplingRadius_pos (N : ℕ) : 0 < xiHeatSamplingRadius N := by
   unfold xiHeatSamplingRadius
   positivity
 
-/-- Every finite collection of actual scaled Xi nodes can be chosen uniformly separated. -/
-theorem eventually_exists_xiHeat_finite_separated_nodes (N : ℕ) :
-    ∀ᶠ τ : ℝ in atBot, ∃ q : Fin N → XiZeroCopy,
+/-- One heat cutoff supplies separated actual Xi nodes at every finite order. -/
+theorem eventually_forall_exists_xiHeat_finite_separated_nodes :
+    ∀ᶠ τ : ℝ in atBot, ∀ N : ℕ, ∃ q : Fin N → XiZeroCopy,
       let z := fun i => (Real.exp τ : ℂ) * xiSpectralPoint (q i) ^ 2
       (∀ i, ‖z i‖ ≤ xiHeatSamplingRadius N) ∧
         (∀ i j, i < j → 1 ≤ (z j).re - (z i).re) := by
@@ -34,15 +34,16 @@ theorem eventually_exists_xiHeat_finite_separated_nodes (N : ℕ) :
       using 1
     ext τ
     ring
-  have hall : ∀ᶠ τ : ℝ in atBot, ∀ i : Fin N, ∃ q : XiZeroCopy,
-      (4 : ℝ) ^ (i : ℕ) * Real.exp (-τ / 2) < (xiSpectralPoint q).re ∧
-        (xiSpectralPoint q).re ≤ 3 * ((4 : ℝ) ^ (i : ℕ) * Real.exp (-τ / 2)) := by
-    apply eventually_all.mpr
-    intro i
-    exact (hT.const_mul_atTop (show (0 : ℝ) < 4 ^ (i : ℕ) by positivity)).eventually
-      eventually_exists_xiSpectralPoint_in_triple_band
-  filter_upwards [hall, eventually_le_atBot (0 : ℝ)] with τ hall hτ
-  choose q hqL hqU using hall
+  obtain ⟨T₀, hT₀⟩ := eventually_atTop.mp eventually_exists_xiSpectralPoint_in_triple_band
+  have hall : ∀ᶠ τ : ℝ in atBot, ∀ i : ℕ, ∃ q : XiZeroCopy,
+      (4 : ℝ) ^ i * Real.exp (-τ / 2) < (xiSpectralPoint q).re ∧
+        (xiSpectralPoint q).re ≤ 3 * ((4 : ℝ) ^ i * Real.exp (-τ / 2)) := by
+    filter_upwards [hT.eventually (eventually_ge_atTop T₀)] with τ hτ i
+    apply hT₀
+    exact hτ.trans (le_mul_of_one_le_left (Real.exp_pos _).le
+      (one_le_pow₀ (show (1 : ℝ) ≤ 4 by linarith)))
+  filter_upwards [hall, eventually_le_atBot (0 : ℝ)] with τ hall hτ N
+  choose q hqL hqU using fun i : Fin N => hall (i : ℕ)
   let t := Real.exp τ
   let T := Real.exp (-τ / 2)
   let z := fun i : Fin N => (t : ℂ) * xiSpectralPoint (q i) ^ 2
@@ -72,8 +73,9 @@ theorem eventually_exists_xiHeat_finite_separated_nodes (N : ℕ) :
     have hlow := mul_le_mul_of_nonneg_left
       ((sq_le_sq₀ (by positivity) hreal0).2 (hqL i).le) ht.le
     have hu : (xiSpectralPoint (q i)).re ≤ (3 * (4 : ℝ) ^ (i : ℕ)) * T := by
-      dsimp [T]
-      linarith [hqU i]
+      calc
+        _ ≤ 3 * ((4 : ℝ) ^ (i : ℕ) * T) := hqU i
+        _ = _ := by ring
     have hupp := mul_le_mul_of_nonneg_left
       ((sq_le_sq₀ hreal0 (by positivity)).2 hu) ht.le
     change t * ((4 : ℝ) ^ (i : ℕ) * T) ^ 2 ≤ _ at hlow
@@ -81,7 +83,7 @@ theorem eventually_exists_xiHeat_finite_separated_nodes (N : ℕ) :
     have him0 := mul_nonneg ht.le (sq_nonneg (xiSpectralPoint (q i)).im)
     have him1 : t * (xiSpectralPoint (q i)).im ^ 2 ≤ 1 := by
       have hm := mul_le_mul_of_nonneg_left hs.le ht.le
-      nlinarith
+      nlinarith only [hm, ht1]
     have hre : (z i).re =
         t * ((xiSpectralPoint (q i)).re ^ 2 - (xiSpectralPoint (q i)).im ^ 2) := by
       simp [z, pow_two, Complex.mul_re]
@@ -93,8 +95,10 @@ theorem eventually_exists_xiHeat_finite_separated_nodes (N : ℕ) :
       ring
     rw [hre, hn]
     constructor
-    · nlinarith
-    constructor <;> nlinarith
+    · nlinarith only [hlow, him1]
+    constructor
+    · nlinarith only [hupp, him0]
+    · nlinarith only [hupp, him1]
   refine ⟨q, ?_⟩
   change (∀ i, ‖z i‖ ≤ xiHeatSamplingRadius N) ∧ _
   constructor
@@ -104,7 +108,7 @@ theorem eventually_exists_xiHeat_finite_separated_nodes (N : ℕ) :
     have hpow := pow_le_pow_right₀ (show (1 : ℝ) ≤ 4 by linarith) i.isLt.le
     have hs := (sq_le_sq₀ (by positivity) (by positivity)).2
       (mul_le_mul_of_nonneg_left hpow (show (0 : ℝ) ≤ 3 by positivity))
-    linarith
+    linarith only [hs]
   · intro i j hij
     have hp : (4 : ℝ) ^ ((i : ℕ) + 1) ≤ (4 : ℝ) ^ (j : ℕ) :=
       pow_le_pow_right₀ (by linarith) (Nat.succ_le_iff.mpr hij)
@@ -114,15 +118,23 @@ theorem eventually_exists_xiHeat_finite_separated_nodes (N : ℕ) :
     have hone2 : 1 ≤ ((4 : ℝ) ^ (i : ℕ)) ^ 2 := by nlinarith
     have hL := (hb j).1
     have hU := (hb i).2.1
-    nlinarith
+    nlinarith only [hp2, hone2, hL, hU]
 
-/-- The full sampling determinant has one lower bound at every finite order. -/
-theorem eventually_exists_xiHeat_sampling_determinant (N : ℕ) :
+/-- Fixed-order specialization of the common sampling cutoff. -/
+theorem eventually_exists_xiHeat_finite_separated_nodes (N : ℕ) :
     ∀ᶠ τ : ℝ in atBot, ∃ q : Fin N → XiZeroCopy,
       let z := fun i => (Real.exp τ : ℂ) * xiSpectralPoint (q i) ^ 2
+      (∀ i, ‖z i‖ ≤ xiHeatSamplingRadius N) ∧
+        (∀ i j, i < j → 1 ≤ (z j).re - (z i).re) :=
+  eventually_forall_exists_xiHeat_finite_separated_nodes.mono fun _ h => h N
+
+/-- The full sampling determinant has one lower bound at every finite order. -/
+theorem eventually_forall_exists_xiHeat_sampling_determinant :
+    ∀ᶠ τ : ℝ in atBot, ∀ N : ℕ, ∃ q : Fin N → XiZeroCopy,
+      let z := fun i => (Real.exp τ : ℂ) * xiSpectralPoint (q i) ^ 2
       (∀ i, ‖z i‖ ≤ xiHeatSamplingRadius N) ∧ 1 ≤ ‖(Matrix.vandermonde z).det‖ := by
-  filter_upwards [eventually_exists_xiHeat_finite_separated_nodes N] with τ hτ
-  obtain ⟨q, hq, hgap⟩ := hτ
+  filter_upwards [eventually_forall_exists_xiHeat_finite_separated_nodes] with τ hτ N
+  obtain ⟨q, hq, hgap⟩ := hτ N
   refine ⟨q, hq, ?_⟩
   rw [Matrix.det_vandermonde, norm_prod]
   apply Finset.one_le_prod
@@ -131,9 +143,15 @@ theorem eventually_exists_xiHeat_sampling_determinant (N : ℕ) :
   apply Finset.one_le_prod
   intro j hj
   have h := hgap i j (Finset.mem_Ioi.mp hj)
-  exact h.trans (by simpa only [Complex.sub_re] using (Complex.re_le_norm
-    ((Real.exp τ : ℂ) * xiSpectralPoint (q j) ^ 2 -
-      (Real.exp τ : ℂ) * xiSpectralPoint (q i) ^ 2)))
+  apply h.trans
+  rw [← Complex.sub_re]
+  exact Complex.re_le_norm _
+
+theorem eventually_exists_xiHeat_sampling_determinant (N : ℕ) :
+    ∀ᶠ τ : ℝ in atBot, ∃ q : Fin N → XiZeroCopy,
+      let z := fun i => (Real.exp τ : ℂ) * xiSpectralPoint (q i) ^ 2
+      (∀ i, ‖z i‖ ≤ xiHeatSamplingRadius N) ∧ 1 ≤ ‖(Matrix.vandermonde z).det‖ :=
+  eventually_forall_exists_xiHeat_sampling_determinant.mono fun _ h => h N
 
 end
 end RHTower

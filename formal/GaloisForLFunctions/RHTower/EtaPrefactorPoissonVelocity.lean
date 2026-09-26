@@ -2,6 +2,8 @@ import GaloisForLFunctions.HTGeometry.ExteriorEulerPoissonBridge
 import GaloisForLFunctions.HTGeometry.GammaVerticalDecay
 import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiPositiveCriticalStripEtaDerivative
 
+set_option autoImplicit false
+
 /-!
 # Unconditional Poisson decomposition of the eta prefactor velocity
 

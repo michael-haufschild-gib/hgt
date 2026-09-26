@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.ExteriorEulerPoissonBridge
 import GaloisForLFunctions.HTGeometry.CirclePoissonOuterFactor
 
+set_option autoImplicit false
+
 /-!
 # Finite Euler cascades and normalized Poisson outer factors
 

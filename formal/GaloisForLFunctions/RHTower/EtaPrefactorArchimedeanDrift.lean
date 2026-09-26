@@ -6,6 +6,8 @@ import GaloisForLFunctions.HTGeometry.DigammaAsymptotic
 import GaloisForLFunctions.HTGeometry.ReflectedDigammaAnomaly
 import GaloisForLFunctions.RHTower.LogModulusHorizontal
 
+set_option autoImplicit false
+
 /-!
 # A fully analytic high-height eta reflection drift bound
 
@@ -59,38 +61,52 @@ theorem etaArchimedeanHeight_digamma_error (t : ℝ) :
     linarith
   linarith
 
-/-- The actual chi logarithmic derivative is strictly negative, with an
-explicit margin, throughout the high-height strip. -/
-theorem re_logDeriv_zetaChi_etaArchimedeanHeight (x t : ℝ) :
-    (logDeriv zetaChi (etaReflectionStripPoint x (etaArchimedeanHeight t))).re <
-      -(1 / 4) - Real.exp t := by
-  let s := etaReflectionStripPoint x (etaArchimedeanHeight t)
-  let y := etaArchimedeanHeight t / 2
+/-- A symmetric digamma formula for the actual Archimedean drift,
+valid at every real height in the open strip. -/
+theorem re_logDeriv_zetaChi_strip (x b : ℝ) :
+    (logDeriv zetaChi (etaReflectionStripPoint x b)).re =
+      Real.log Real.pi -
+        ((Complex.digamma (((sigmoid x / 2 : ℝ) : ℂ) + (b / 2 : ℝ) * I)).re +
+          (Complex.digamma ((((1 - sigmoid x) / 2 : ℝ) : ℂ) + (b / 2 : ℝ) * I)).re) / 2 := by
+  let s := etaReflectionStripPoint x b
+  let y := b / 2
   have hs : 0 < s.re := etaReflectionStripPoint_re_pos _ _
   have ht : s.re < 1 := etaReflectionStripPoint_re_lt_one _ _
   have hp : 0 < (1 - s).re := by simpa using sub_pos.mpr ht
-  have hy : 0 < y := lt_trans Real.pi_pos (etaArchimedeanHeight_half_gt_pi t)
-  have hu := re_digamma_ge (x := sigmoid x / 2) (y := y)
-    (by positivity [sigmoid_pos x]) hy
-  have hv := re_digamma_ge (x := (1 - sigmoid x) / 2) (y := y)
-    (by linarith [sigmoid_lt_one x]) hy
   have ha : s / 2 = ((sigmoid x / 2 : ℝ) : ℂ) + (y : ℂ) * I := by
     dsimp [s, etaReflectionStripPoint, y]
     push_cast
     ring
   have hb : (1 - s) / 2 =
       conj ((((1 - sigmoid x) / 2 : ℝ) : ℂ) + (y : ℂ) * I) := by
+    simp only [map_add, conj_ofReal, map_mul, conj_I]
     dsimp [s, etaReflectionStripPoint, y]
-    apply Complex.ext <;> simp <;> ring
+    push_cast
+    ring
   have hchi := logDeriv_zetaChi (s := s)
     (Complex.Gammaℝ_ne_zero_of_re_pos hs) (Complex.Gammaℝ_ne_zero_of_re_pos hp)
     (hasDerivAt_Gammaℝ_of_re_pos hs).differentiableAt
     (hasDerivAt_Gammaℝ_of_re_pos hp).differentiableAt
   rw [logDeriv_Gammaℝ_of_re_pos hp, logDeriv_Gammaℝ_of_re_pos hs, ha, hb,
     ReflectedDigammaAnomaly.digamma_conj] at hchi
-  change (logDeriv zetaChi s).re < _
+  change (logDeriv zetaChi s).re = _
   rw [hchi]
   simp only [sub_re, neg_re, div_ofNat_re, ofReal_re, conj_re]
+  dsimp [y]
+  ring
+
+/-- The actual chi logarithmic derivative is strictly negative, with an
+explicit margin, throughout the high-height strip. -/
+theorem re_logDeriv_zetaChi_etaArchimedeanHeight (x t : ℝ) :
+    (logDeriv zetaChi (etaReflectionStripPoint x (etaArchimedeanHeight t))).re <
+      -(1 / 4) - Real.exp t := by
+  let y := etaArchimedeanHeight t / 2
+  have hy : 0 < y := lt_trans Real.pi_pos (etaArchimedeanHeight_half_gt_pi t)
+  have hu := re_digamma_ge (x := sigmoid x / 2) (y := y)
+    (by positivity [sigmoid_pos x]) hy
+  have hv := re_digamma_ge (x := (1 - sigmoid x) / 2) (y := y)
+    (by linarith [sigmoid_lt_one x]) hy
+  rw [re_logDeriv_zetaChi_strip]
   have herr := etaArchimedeanHeight_digamma_error t
   have hlog := log_etaArchimedeanHeight_half t
   change Real.log y = _ at hlog
@@ -137,13 +153,14 @@ theorem differentiableAt_etaElementaryReflectionMultiplier (x b : ℝ) :
   exact ((hasDerivAt_pairedEtaFactor _).differentiableAt.mul
     (zetaChi_analyticAt (Complex.Gammaℝ_ne_zero_of_re_pos hp)).differentiableAt).div
     ((hasDerivAt_pairedEtaFactor _).differentiableAt.comp _
-      (differentiableAt_const.sub differentiableAt_id))
+      (by fun_prop))
     (pairedEtaFactor_ne_zero_of_re_lt_one hpt)
 
 theorem pairedEtaFactorLogDerivative_conj (s : ℂ) :
     pairedEtaFactorLogDerivative (conj s) = conj (pairedEtaFactorLogDerivative s) := by
-  simp [pairedEtaFactorLogDerivative, two_cpow_neg_conj, pairedEtaFactor_conj,
-    map_div₀, map_mul]
+  have hlog : Complex.log 2 = (Real.log 2 : ℂ) := by simp
+  simp only [pairedEtaFactorLogDerivative, two_cpow_neg_conj, pairedEtaFactor_conj,
+    map_div₀, map_mul, map_ofNat, hlog, conj_ofReal]
 
 /-- The paper's velocity sum is the real logarithmic derivative of the
 literal analytic multiplier. -/
@@ -174,10 +191,13 @@ theorem re_logDeriv_etaElementaryReflectionMultiplier (x b : ℝ) :
   have hmirror : 1 - s = conj ((((1 - sigmoid x : ℝ) : ℂ) + (b : ℂ) * I)) := by
     dsimp [s, etaReflectionStripPoint]
     simp
-  change (logDeriv etaElementaryReflectionMultiplier s).re = _
-  rw [etaElementaryReflectionMultiplier,
-    logDeriv_div s (mul_ne_zero hf hχ) hfp (hdf.mul hdχ) (hdfp.comp s hsub),
-    logDeriv_mul s hf hχ hdf hdχ, hcomp, logDeriv_pairedEtaFactor, hmirror,
+    ring
+  change (logDeriv (fun z => pairedEtaFactor z * zetaChi z / pairedEtaFactor (1 - z)) s).re = _
+  rw [logDeriv_div (f := fun z => pairedEtaFactor z * zetaChi z)
+      (g := fun z => pairedEtaFactor (1 - z)) s
+      (mul_ne_zero hf hχ) hfp (hdf.mul hdχ) (hdfp.comp s hsub),
+    logDeriv_mul (f := pairedEtaFactor) (g := zetaChi) s hf hχ hdf hdχ,
+    hcomp, logDeriv_pairedEtaFactor, hmirror,
     pairedEtaFactorLogDerivative_conj]
   simp only [sub_re, add_re, neg_re, conj_re, s, etaReflectionStripPoint]
   ring

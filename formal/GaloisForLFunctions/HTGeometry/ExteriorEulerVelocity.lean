@@ -4,6 +4,8 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 
+set_option autoImplicit false
+
 /-!
 # Exterior Euler factors and their phase-independent velocity bounds
 

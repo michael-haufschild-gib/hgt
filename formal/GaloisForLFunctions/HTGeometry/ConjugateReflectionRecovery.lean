@@ -4,6 +4,8 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
 
+set_option autoImplicit false
+
 /-!
 # Source-retaining conjugate reflection and exact recovery
 

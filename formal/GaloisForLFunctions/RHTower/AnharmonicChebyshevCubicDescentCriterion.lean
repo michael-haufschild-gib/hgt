@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.AnharmonicChebyshevMovingFiber
+import GaloisForLFunctions.RHTower.AnharmonicCubicZeroFiber
 import GaloisForLFunctions.RHTower.XiEndpointSourceHeightGap
 
 /-!
@@ -55,19 +56,11 @@ theorem chebyshevAnharmonicQ_ne_zero_of_xiZeroCopy (q : XiZeroCopy) :
   have hs0 : s ≠ 0 := by simpa using hsne 0
   have hs1 : s ≠ 1 := by simpa using hsne 1
   intro hq
-  have hnum : (s - 2) * (s + 1) * (2 * s - 1) = 0 := by
-    rw [chebyshevAnharmonicQ, div_eq_zero_iff] at hq
-    exact hq.resolve_right
-      (mul_ne_zero (mul_ne_zero (by norm_num) hs0) (sub_ne_zero.mpr hs1))
-  rcases mul_eq_zero.mp hnum with hleft | hright
-  · rcases mul_eq_zero.mp hleft with hfirst | hsecond
-    · exact hsne 2 (sub_eq_zero.mp hfirst)
-    · apply hsne (-1)
-      norm_num at hsecond ⊢
-      linear_combination hsecond
-  · apply hsne (1 / 2)
-    norm_num at hright ⊢
-    linear_combination (1 / 2 : ℂ) * hright
+  rcases (chebyshevAnharmonicQ_eq_zero_iff_orbit s).mp
+      ⟨hs0, hs1, hq⟩ with htwo | hminus | hhalf
+  · exact hsne 2 (by simpa using htwo)
+  · exact hsne (-1) (by simpa using hminus)
+  · exact hsne (1 / 2) (by simpa using hhalf)
 
 /-- On the critical line the anharmonic quotient is purely imaginary. -/
 theorem xiZeroCopy_chebyshevAnharmonicQ_re_eq_zero_of_re_eq_half

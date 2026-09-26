@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.ExteriorEulerPoissonBridge
 import GaloisForLFunctions.HTGeometry.CylinderCoordinateEulerBridge
 
+set_option autoImplicit false
+
 /-!
 # Cotangent decay after its nonzero half-plane limit is removed
 

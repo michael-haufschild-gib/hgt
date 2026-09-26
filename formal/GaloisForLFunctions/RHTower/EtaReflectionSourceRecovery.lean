@@ -2,6 +2,8 @@ import GaloisForLFunctions.HTGeometry.ConjugateReflectionRecovery
 import GaloisForLFunctions.HTGeometry.GammaVerticalDecay
 import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiPositiveCriticalStripEtaCompletionReflectionMultiplier
 
+set_option autoImplicit false
+
 /-!
 # Source-retaining reflection bounds for the actual eta Laplace partition
 

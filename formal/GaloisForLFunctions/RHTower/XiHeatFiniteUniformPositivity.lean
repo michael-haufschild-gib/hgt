@@ -17,14 +17,32 @@ open Filter Topology
 open scoped BigOperators
 open GaloisForLFunctions.HTGeometry
 
-/-- Every finite actual polynomial norm energy has a coefficient-uniform small-time floor. -/
-theorem xiHeatFiniteNormEnergy_eventually_uniform_lower (N : ℕ) :
-    ∃ η : ℝ, 0 < η ∧ ∀ᶠ τ : ℝ in atBot, ∀ a : Fin N → ℝ,
-      η * (∑ j, a j ^ 2) ≤ xiHeatFiniteNormEnergy a τ := by
+def xiHeatSamplingEnergyFloor : ℕ → ℝ
+  | 0 => 1
+  | n + 1 =>
+      let N := n + 1
+      let M := xiHeatSamplingRadius N
+      let B : ℝ := 1 + N * M
+      let C : ℝ := N.factorial * (B ^ (N - 1)) ^ N
+      Real.exp (-M) / ((N : ℝ) ^ 3 * C ^ 2)
+
+theorem xiHeatSamplingEnergyFloor_pos (N : ℕ) : 0 < xiHeatSamplingEnergyFloor N := by
+  cases N with
+  | zero => exact one_pos
+  | succ n =>
+    have hM := xiHeatSamplingRadius_pos (n + 1)
+    dsimp [xiHeatSamplingEnergyFloor]
+    positivity
+
+/-- One heat cutoff gives the stated independent energy floor at every order and direction. -/
+theorem xiHeatFiniteNormEnergy_eventually_uniform_floor :
+    ∀ᶠ τ : ℝ in atBot, ∀ (N : ℕ) (a : Fin N → ℝ),
+      xiHeatSamplingEnergyFloor N * (∑ j, a j ^ 2) ≤ xiHeatFiniteNormEnergy a τ := by
   classical
+  filter_upwards [eventually_forall_exists_xiHeat_sampling_determinant] with τ hτ N
   cases N with
   | zero =>
-    refine ⟨1, one_pos, Eventually.of_forall fun τ a => ?_⟩
+    intro a
     simpa using xiHeatFiniteNormEnergy_nonneg a τ
   | succ n =>
     let N := n + 1
@@ -35,9 +53,9 @@ theorem xiHeatFiniteNormEnergy_eventually_uniform_lower (N : ℕ) :
     have hM : 0 < M := xiHeatSamplingRadius_pos N
     have hB : 0 < B := by dsimp [B]; positivity
     have hC : 0 < C := by dsimp [C]; positivity
-    refine ⟨Real.exp (-M) / ((N : ℝ) ^ 3 * C ^ 2), by positivity, ?_⟩
-    filter_upwards [eventually_exists_xiHeat_sampling_determinant N] with τ hτ
-    obtain ⟨q, hq, hdet⟩ := hτ
+    change ∀ a : Fin N → ℝ,
+      Real.exp (-M) / ((N : ℝ) ^ 3 * C ^ 2) * (∑ j, a j ^ 2) ≤ xiHeatFiniteNormEnergy a τ
+    obtain ⟨q, hq, hdet⟩ := hτ N
     let z : Fin N → ℂ := fun i => (Real.exp τ : ℂ) * xiSpectralPoint (q i) ^ 2
     change (∀ i, ‖z i‖ ≤ M) at hq
     change 1 ≤ ‖(Matrix.vandermonde z).det‖ at hdet
@@ -71,7 +89,10 @@ theorem xiHeatFiniteNormEnergy_eventually_uniform_lower (N : ℕ) :
         (mul_le_mul_of_nonneg_left ((sq_le_sq₀ hcap0 hC.le).2 hcap) (sq_nonneg (N : ℝ)))
         (show 0 ≤ ∑ i, ‖polynomialSample v (z i)‖ ^ 2 from
           Finset.sum_nonneg fun _ _ => sq_nonneg _)
-      exact (by simpa only [one_mul] using hleft).trans (h.trans hright)
+      calc
+        _ ≤ ‖(Matrix.vandermonde z).det‖ ^ 2 * ∑ j, a j ^ 2 := by
+          simpa only [one_mul] using hleft
+        _ ≤ _ := h.trans hright
     have hatom (i : Fin N) : Real.exp (-M) * ‖polynomialSample v (z i)‖ ^ 2 ≤
         xiHeatFiniteNormEnergy a τ := by
       have hre : (z i).re ≤ M := (Complex.re_le_norm _).trans (hq i)
@@ -101,6 +122,13 @@ theorem xiHeatFiniteNormEnergy_eventually_uniform_lower (N : ℕ) :
       _ = (N : ℝ) ^ 2 * C ^ 2 * (Real.exp (-M) * ∑ i, ‖polynomialSample v (z i)‖ ^ 2) := by ring
       _ ≤ (N : ℝ) ^ 2 * C ^ 2 * (N * xiHeatFiniteNormEnergy a τ) := hupper
       _ = _ := by ring
+
+/-- Every finite actual polynomial norm energy has a coefficient-uniform small-time floor. -/
+theorem xiHeatFiniteNormEnergy_eventually_uniform_lower (N : ℕ) :
+    ∃ η : ℝ, 0 < η ∧ ∀ᶠ τ : ℝ in atBot, ∀ a : Fin N → ℝ,
+      η * (∑ j, a j ^ 2) ≤ xiHeatFiniteNormEnergy a τ :=
+  ⟨xiHeatSamplingEnergyFloor N, xiHeatSamplingEnergyFloor_pos N,
+    xiHeatFiniteNormEnergy_eventually_uniform_floor.mono fun _ h => h N⟩
 
 /-- Every finite Hankel order has one positive margin for all scaled coefficient directions. -/
 theorem xiHeatHankelForm_eventually_scaled_coercive (N : ℕ) :
@@ -140,7 +168,9 @@ theorem xiHeatHankelForm_eventually_weighted_coercive (N : ℕ) :
     rw [hb j (Finset.mem_range.mp hj), hb k (Finset.mem_range.mp hk)]
   have h' := hτ b
   rw [he] at h'
-  simpa only [b, Fin.sum_univ_eq_sum_range] using h'
+  dsimp only [b] at h'
+  rw [Fin.sum_univ_eq_sum_range (fun j => (a j / (Real.exp τ) ^ j) ^ 2) N] at h'
+  exact h'
 
 /-- Unconditional simultaneous nonnegativity of every vector at each fixed finite order. -/
 theorem xiHeatHankelForm_eventually_nonneg (N : ℕ) :

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.ExteriorEulerVelocity
 import GaloisForLFunctions.HTGeometry.FiniteBlaschkeGroupDelay
 
+set_option autoImplicit false
+
 /-!
 # Euler factor velocity, reciprocal Poisson mass, and all-pass delay
 

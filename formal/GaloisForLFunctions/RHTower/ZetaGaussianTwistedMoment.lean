@@ -26,17 +26,17 @@ open Complex MeasureTheory Set
 namespace RHTower
 
 /-- The Gaussian window `G(s) = exp((2/H²)(s − σ − iτ)²)`. -/
-def gaussWindow (σ τ H : ℝ) (s : ℂ) : ℂ :=
+def verticalGaussWindow (σ τ H : ℝ) (s : ℂ) : ℂ :=
   Complex.exp (((2 / H ^ 2 : ℝ) : ℂ) * (s - (σ : ℂ) - (τ : ℂ) * I) ^ 2)
 
-theorem differentiable_gaussWindow (σ τ H : ℝ) : Differentiable ℂ (gaussWindow σ τ H) := by
-  unfold gaussWindow
+theorem differentiable_verticalGaussWindow (σ τ H : ℝ) : Differentiable ℂ (verticalGaussWindow σ τ H) := by
+  unfold verticalGaussWindow
   fun_prop
 
-theorem gaussWindow_line (σ τ H t : ℝ) :
-    gaussWindow σ τ H ((σ : ℂ) + (t : ℂ) * I) =
+theorem verticalGaussWindow_line (σ τ H t : ℝ) :
+    verticalGaussWindow σ τ H ((σ : ℂ) + (t : ℂ) * I) =
       ((Real.exp (-(2 / H ^ 2) * (t - τ) ^ 2) : ℝ) : ℂ) := by
-  unfold gaussWindow
+  unfold verticalGaussWindow
   rw [Complex.ofReal_exp]
   congr 1
   have h : (σ : ℂ) + (t : ℂ) * I - (σ : ℂ) - (τ : ℂ) * I = ((t - τ : ℝ) : ℂ) * I := by
@@ -45,9 +45,9 @@ theorem gaussWindow_line (σ τ H t : ℝ) :
   push_cast
   ring
 
-theorem norm_gaussWindow (σ τ H : ℝ) (s : ℂ) :
-    ‖gaussWindow σ τ H s‖ = Real.exp (2 / H ^ 2 * ((s.re - σ) ^ 2 - (s.im - τ) ^ 2)) := by
-  unfold gaussWindow
+theorem norm_verticalGaussWindow (σ τ H : ℝ) (s : ℂ) :
+    ‖verticalGaussWindow σ τ H s‖ = Real.exp (2 / H ^ 2 * ((s.re - σ) ^ 2 - (s.im - τ) ^ 2)) := by
+  unfold verticalGaussWindow
   rw [Complex.norm_exp, Complex.re_ofReal_mul]
   congr 1
   simp [sq, Complex.mul_re, Complex.sub_re, Complex.sub_im]
@@ -116,7 +116,7 @@ theorem norm_integral_gaussFourier {H : ℝ} (hH : 0 < H) (c₀ ω τ : ℝ) :
     abs_of_nonneg (Real.sqrt_nonneg _), Complex.norm_exp]
   congr 2
   simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, Complex.I_im,
-    Complex.ofReal_im, zero_mul, one_mul, sub_zero, add_zero, mul_zero]
+    Complex.ofReal_im, zero_mul, sub_zero, add_zero, mul_zero]
 
 /-- At frequency `0` the Gaussian has mass exactly `√(πH²/2)`, whatever the shift `c₀`. -/
 theorem integral_gaussFourier_zero {H : ℝ} (hH : 0 < H) (c₀ τ : ℝ) :
@@ -215,12 +215,12 @@ theorem norm_integral_gaussFourier_le {H : ℝ} (hH : 0 < H) {c₀ ω : ℝ} (τ
 
 /-! ## The line `Re s = 2` with the Gaussian window -/
 
-theorem twistedZetaTerm_mul_gaussWindow {σ : ℝ} {d n m : ℕ} (hd : 1 ≤ d) (hn : 1 ≤ n)
+theorem twistedZetaTerm_mul_verticalGaussWindow {σ : ℝ} {d n m : ℕ} (hd : 1 ≤ d) (hn : 1 ≤ n)
     (hm : 1 ≤ m) (τ H t : ℝ) :
-    twistedZetaTerm σ d n m t * gaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I) =
+    twistedZetaTerm σ d n m t * verticalGaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I) =
       (twistedZetaAmp σ d n m : ℂ) * gaussFourier H (2 - σ) (twistedZetaFreq d n m) τ t := by
   rw [twistedZetaTerm_eq hd hn hm]
-  unfold gaussFourier gaussWindow
+  unfold gaussFourier verticalGaussWindow
   have h : (2 : ℂ) + (t : ℂ) * I - (σ : ℂ) - (τ : ℂ) * I =
       ((2 - σ : ℝ) : ℂ) + ((t - τ : ℝ) : ℂ) * I := by push_cast; ring
   rw [h]
@@ -269,7 +269,7 @@ theorem norm_integral_twistedZeta_gauss_two_sub_diag_le {σ : ℝ} (hσ : 1 / 2 
     {d n : ℕ} (hd : 1 ≤ d) (hn : 1 ≤ n) {H : ℝ} (hH : 0 < H) (hHn : 24 * (n : ℝ) ≤ H ^ 2)
     (τ : ℝ) {R : ℝ} (hR : 0 ≤ R) :
     ‖(∫ t in (τ - R)..(τ + R), twistedZeta σ d n ((2 : ℂ) + (t : ℂ) * I) *
-          gaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) -
+          verticalGaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) -
         (if d ∣ n then (((n : ℝ) ^ (-2 * σ) * Real.sqrt (Real.pi * H ^ 2 / 2) : ℝ) : ℂ) else 0)‖ ≤
       2 * n * gaussTwistError H R n := by
   classical
@@ -279,9 +279,9 @@ theorem norm_integral_twistedZeta_gauss_two_sub_diag_le {σ : ℝ} (hσ : 1 / 2 
   set K : ℝ := Real.sqrt (Real.pi * H ^ 2 / 2) with hK
   set G₀ : ℝ := Real.exp (2 / H ^ 2 * (2 - σ) ^ 2) with hG₀
   -- the Gaussian factor on `Re s = 2`
-  have hGle : ∀ t : ℝ, ‖gaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)‖ ≤ G₀ := by
+  have hGle : ∀ t : ℝ, ‖verticalGaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)‖ ≤ G₀ := by
     intro t
-    rw [norm_gaussWindow, hG₀]
+    rw [norm_verticalGaussWindow, hG₀]
     apply Real.exp_le_exp.mpr
     have : ((2 : ℂ) + (t : ℂ) * I).re = 2 := by simp
     rw [this]
@@ -290,22 +290,22 @@ theorem norm_integral_twistedZeta_gauss_two_sub_diag_le {σ : ℝ} (hσ : 1 / 2 
   have hsum2 : Summable fun m : ℕ => (n : ℝ) * (1 / (m : ℝ) ^ 2) * G₀ :=
     ((Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left _).mul_right _
   have hHas : HasSum (fun m => ∫ t in (τ - R)..(τ + R),
-        twistedZetaTerm σ d n m t * gaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I))
+        twistedZetaTerm σ d n m t * verticalGaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I))
       (∫ t in (τ - R)..(τ + R), twistedZeta σ d n ((2 : ℂ) + (t : ℂ) * I) *
-          gaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) := by
+          verticalGaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) := by
     refine intervalIntegral.hasSum_integral_of_dominated_convergence
       (fun m _ => (n : ℝ) * (1 / (m : ℝ) ^ 2) * G₀) (fun m => ?_) (fun m => ?_) ?_ ?_ ?_
     · have hc : Continuous fun t : ℝ =>
-          twistedZetaTerm σ d n m t * gaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I) := by
+          twistedZetaTerm σ d n m t * verticalGaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I) := by
         rcases Nat.eq_zero_or_pos m with rfl | hm
         · have h0 : (fun t : ℝ => twistedZetaTerm σ d n 0 t *
-              gaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) = fun _ => 0 :=
+              verticalGaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) = fun _ => 0 :=
             funext fun t => by rw [twistedZetaTerm_zero, zero_mul]
           rw [h0]; exact continuous_const
         · have : (fun t : ℝ => twistedZetaTerm σ d n m t *
-              gaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) = fun t : ℝ =>
+              verticalGaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) = fun t : ℝ =>
               (twistedZetaAmp σ d n m : ℂ) * gaussFourier H (2 - σ) (twistedZetaFreq d n m) τ t :=
-            funext fun t => twistedZetaTerm_mul_gaussWindow hd hn hm τ H t
+            funext fun t => twistedZetaTerm_mul_verticalGaussWindow hd hn hm τ H t
           rw [this]
           exact continuous_const.mul (continuous_gaussFourier _ _ _ _)
       exact hc.aestronglyMeasurable
@@ -352,7 +352,7 @@ theorem norm_integral_twistedZeta_gauss_two_sub_diag_le {σ : ℝ} (hσ : 1 / 2 
       rw [div_mul_eq_mul_div, div_le_one hH2]; nlinarith
     linarith
   have hterm : ∀ m : ℕ, ‖(∫ t in (τ - R)..(τ + R),
-        twistedZetaTerm σ d n m t * gaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) - D m‖ ≤
+        twistedZetaTerm σ d n m t * verticalGaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) - D m‖ ≤
       (n : ℝ) * (1 / (m : ℝ) ^ 2) * gaussTwistError H R n := by
     intro m
     have hE0 : 0 ≤ gaussTwistError H R n := by unfold gaussTwistError; positivity
@@ -363,11 +363,11 @@ theorem norm_integral_twistedZeta_gauss_two_sub_diag_le {σ : ℝ} (hσ : 1 / 2 
         norm_zero]
       positivity
     · have hint : (∫ t in (τ - R)..(τ + R),
-          twistedZetaTerm σ d n m t * gaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) =
+          twistedZetaTerm σ d n m t * verticalGaussWindow σ τ H ((2 : ℂ) + (t : ℂ) * I)) =
           (twistedZetaAmp σ d n m : ℂ) *
             ∫ t in (τ - R)..(τ + R), gaussFourier H (2 - σ) (twistedZetaFreq d n m) τ t := by
         rw [← intervalIntegral.integral_const_mul]
-        exact intervalIntegral.integral_congr fun t _ => twistedZetaTerm_mul_gaussWindow hd hn hm τ H t
+        exact intervalIntegral.integral_congr fun t _ => twistedZetaTerm_mul_verticalGaussWindow hd hn hm τ H t
       have hA := twistedZetaAmp_le hσ hd hn hm
       have hA0 : 0 ≤ twistedZetaAmp σ d n m := (Real.exp_pos _).le
       by_cases hdiag : d * m = n
@@ -444,15 +444,15 @@ theorem norm_integral_twistedZeta_gauss_two_sub_diag_le {σ : ℝ} (hσ : 1 / 2 
 /-! ## The contour shift -/
 
 /-- On the horizontal edges `Im s = τ ± R` the windowed integrand is `≤ 9√T n e^{1−R²/H²}`. -/
-theorem norm_twistedZeta_gauss_horizontal_le {σ : ℝ} (hσ : 1 / 2 ≤ σ) (hσ2 : σ ≤ 2) {d n : ℕ}
+theorem norm_twistedZeta_gauss_horizontal_le {σ : ℝ} (hσ : 1 / 2 ≤ σ) {d n : ℕ}
     (hd : 1 ≤ d) (hn : 1 ≤ n) {T H R τ x Y : ℝ} (hT : 4 ≤ T) (hY1 : T ≤ Y) (hY2 : Y ≤ 2 * T)
     (hYR : (Y - τ) ^ 2 = R ^ 2) (hH : 0 < H) (hH24 : 24 ≤ H ^ 2) (hx1 : σ ≤ x) (hx2 : x ≤ 2) :
-    ‖twistedZeta σ d n ((x : ℂ) + (Y : ℂ) * I) * gaussWindow σ τ H ((x : ℂ) + (Y : ℂ) * I)‖ ≤
+    ‖twistedZeta σ d n ((x : ℂ) + (Y : ℂ) * I) * verticalGaussWindow σ τ H ((x : ℂ) + (Y : ℂ) * I)‖ ≤
       9 * Real.sqrt T * n * Real.exp (1 - R ^ 2 / H ^ 2) := by
   rw [norm_mul]
   refine mul_le_mul (norm_twistedZeta_horizontal_le hσ hd hn hT hY1 hY2 hx1 hx2) ?_
     (norm_nonneg _) (by positivity)
-  rw [norm_gaussWindow]
+  rw [norm_verticalGaussWindow]
   apply Real.exp_le_exp.mpr
   have hre : ((x : ℂ) + (Y : ℂ) * I).re = x := by simp
   have him : ((x : ℂ) + (Y : ℂ) * I).im = Y := by simp
@@ -477,7 +477,7 @@ theorem norm_integral_twistedZeta_gauss_sub_diag_le {σ : ℝ} (hσ : 1 / 2 ≤ 
       27 * Real.sqrt T * n * Real.exp (1 - R ^ 2 / H ^ 2) + 2 * n * gaussTwistError H R n := by
   have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hH24 : 24 ≤ H ^ 2 := by linarith
-  set f : ℂ → ℂ := fun s => twistedZeta σ d n s * gaussWindow σ τ H s with hf
+  set f : ℂ → ℂ := fun s => twistedZeta σ d n s * verticalGaussWindow σ τ H s with hf
   set z : ℂ := (σ : ℂ) + ((τ - R : ℝ) : ℂ) * I with hz
   set w : ℂ := (2 : ℂ) + ((τ + R : ℝ) : ℂ) * I with hw
   have hzre : z.re = σ := by simp [hz]
@@ -491,7 +491,7 @@ theorem norm_integral_twistedZeta_gauss_sub_diag_le {σ : ℝ} (hσ : 1 / 2 ≤ 
     have hs1 : s ≠ 1 := by
       intro h; rw [h, Complex.one_im] at him; linarith [him.1]
     exact ((differentiableAt_twistedZeta σ hd hn hs1).mul
-      ((differentiable_gaussWindow σ τ H) s)).differentiableWithinAt
+      ((differentiable_verticalGaussWindow σ τ H) s)).differentiableWithinAt
   have hrect := Complex.integral_boundary_rect_eq_zero_of_differentiableOn f z w hdiff
   rw [hzre, hzim, hwre, hwim] at hrect
   have hhor : ∀ Y : ℝ, T ≤ Y → Y ≤ 2 * T → (Y - τ) ^ 2 = R ^ 2 →
@@ -502,7 +502,7 @@ theorem norm_integral_twistedZeta_gauss_sub_diag_le {σ : ℝ} (hσ : 1 / 2 ≤ 
         9 * Real.sqrt T * n * Real.exp (1 - R ^ 2 / H ^ 2) := by
       intro x hx
       rw [Set.uIoc_of_le hσ2] at hx
-      exact norm_twistedZeta_gauss_horizontal_le hσ hσ2 hd hn hT hY1 hY2 hYR hH hH24 hx.1.le hx.2
+      exact norm_twistedZeta_gauss_horizontal_le hσ hd hn hT hY1 hY2 hYR hH hH24 hx.1.le hx.2
     refine (intervalIntegral.norm_integral_le_of_norm_le_const hb).trans ?_
     rw [abs_of_nonneg (by linarith)]
     have h0 : 0 ≤ Real.sqrt T * n * Real.exp (1 - R ^ 2 / H ^ 2) := by positivity
@@ -530,7 +530,7 @@ theorem norm_integral_twistedZeta_gauss_sub_diag_le {σ : ℝ} (hσ : 1 / 2 ≤ 
       ∫ t in (τ - R)..(τ + R), twistedZeta σ d n ((σ : ℂ) + (t : ℂ) * I) *
         ((Real.exp (-(2 / H ^ 2) * (t - τ) ^ 2) : ℝ) : ℂ) := by
     refine intervalIntegral.integral_congr fun t _ => ?_
-    simp only [hf, gaussWindow_line]
+    simp only [hf, verticalGaussWindow_line]
   rw [← hleft]
   calc ‖(∫ t in (τ - R)..(τ + R), f ((σ : ℂ) + (t : ℂ) * I)) -
         (if d ∣ n then (((n : ℝ) ^ (-2 * σ) * Real.sqrt (Real.pi * H ^ 2 / 2) : ℝ) : ℂ) else 0)‖

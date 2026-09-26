@@ -79,18 +79,22 @@ theorem thetaPrimeLocalResponse_arctan_re_pos (S T : ThetaSource) (r : ℝ) :
       ((continuous_thetaPrimeProfileIncrement _).mul (continuous_thetaPrimeLinkDensity S T)))
     hi.re
   · intro p
+    change 0 ≤ (thetaPrimeProfileIncrement (thetaPrimeArctanProfile r) p *
+      thetaPrimeLinkDensity S T p).re
     rw [thetaPrimeArctanResponse_density]
     apply mul_nonneg _ (thetaPrimeLinkDensity_re_nonneg S T p)
     apply sub_nonneg.mpr
     apply Real.arctan_mono
     linarith [Real.log_natCast_nonneg p.1]
   · apply ne_of_gt
+    change 0 < (thetaPrimeProfileIncrement (thetaPrimeArctanProfile r) (2, 0) *
+      thetaPrimeLinkDensity S T (2, 0)).re
     rw [thetaPrimeArctanResponse_density]
     apply mul_pos _ (thetaPrimeLinkDensity_two_re_pos S T 0)
     apply sub_pos.mpr
     apply Real.arctan_strictMono
     have hl : 0 < Real.log (2 : ℝ) := Real.log_pos one_lt_two
-    simpa only [Nat.cast_ofNat, zero_add, zero_sub] using
+    simpa only [Nat.cast_ofNat, zero_add, add_zero, zero_sub] using
       sub_lt_sub_right (lt_add_of_pos_left (0 : ℝ) hl) r
 
 /-- The explicit Gamma/pole exchange is positive against every translated arctangent. -/
