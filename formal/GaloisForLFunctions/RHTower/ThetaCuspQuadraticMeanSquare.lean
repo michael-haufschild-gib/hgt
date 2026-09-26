@@ -115,7 +115,7 @@ theorem norm_integral_dampedQuadraticMode_pair_le {a b : ℝ}
     (z := z) (by rw [hre]; exact mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr ha) (by positivity))
     (by rw [him]; exact mul_ne_zero hb hsq) hT
   rw [him, abs_mul] at h
-  convert h using 1; ring
+  simpa only [div_mul_div_comm, mul_one] using h
 
 
 private theorem finite_symmetric_row_bound (s : Finset ℕ) (u : ℕ → ℝ)
@@ -145,7 +145,7 @@ private theorem finite_symmetric_row_bound (s : Finset ℕ) (u : ℕ → ℝ)
         apply Finset.sum_le_sum
         intro j hj
         have h := mul_le_mul_of_nonneg_right (two_mul_le_add_sq (u i) (u j)) (hw0 i hi j hj)
-        nlinarith only [h]
+        simpa only [add_mul, mul_assoc] using h
       _ = _ := by simp only [Finset.sum_add_distrib]
   rw [hsecond] at hdouble
   linarith only [hfirst, hdouble]
@@ -353,4 +353,3 @@ theorem gaussianQuadraticSeries_integral_le (N : ℕ) (hN : 0<N)
         (add_nonneg hT (mul_nonneg (by positivity) quadraticRowConstant_nonneg)))
 
 end RHTower.ThetaCuspBoundaryAudit
-

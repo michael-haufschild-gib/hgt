@@ -21,8 +21,10 @@ of any off-line exponent (`exists_conformal_seminorm_with_offLine_character`): t
 and the character is not bounded by the seminorm (`not_bounded_of_conformal_offLine`).  So
 conformal Hodge positivity does not constrain the location of the spectrum.
 
-Together these kill the Hodge route as a producer: its faithfulness step is RH, and its
-positivity step (by conformal geometry) is blind to off-line zeros.
+These are constraints on the Hodge route, not a refutation of it. The abstract package carries no
+information beyond RH unless its carrier is built independently of the zeros, and conformal
+scaling alone cannot supply positivity. A geometric carrier with structural positivity (a category
+with `ζ` as one member among many) is not affected.
 -/
 
 open Complex

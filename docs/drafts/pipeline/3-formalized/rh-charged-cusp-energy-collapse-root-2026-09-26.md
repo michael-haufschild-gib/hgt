@@ -1,8 +1,8 @@
 # Complete-source energy collapse at a charged cusp
 
 - **ID:** RH-CHARGED-CUSP-ENERGY-COLLAPSE-ROOT-20260926
-- **Stage:** 1-in-progress
-- **Type:** [BRIDGE] frozen source-specific conjecture and comparison test
+- **Stage:** 3-formalized
+- **Type:** [BRIDGE] proved source-specific energy law and comparison obstruction
 - **Owner:** root
 - **Parent:** `../5-failed/rh-reflection-compatible-comparison-root-2026-09-26.md`
 
@@ -11,7 +11,7 @@
 Let Phi be the complete theta source, z_N=log(N^(-2)+2i)/2, and J the
 already formalized complex Hermitian realization, equal to 2K on real nodes.
 
-**Conjecture:** J(z_N,z_N)/|Phi(z_N)|^2 tends to zero as N tends to infinity.
+**C10, now proved:** J(z_N,z_N)/|Phi(z_N)|^2 tends to zero as N tends to infinity.
 More intrinsically, the horizontal source section normalized by its value at
 z_N tends to zero in the weighted L2 norm with weight 1+s on s>0.
 
@@ -142,4 +142,69 @@ bound, coefficient summability, and exact Gaussian energy bound compile in
 `ThetaCuspQuadraticMeanSquare`; its required named dependency build passes.
 `ThetaCuspChargedSourceMeanSquare` closes horizontal clock substitution,
 literal full-source identification, and the compact N^9 bound; its named
-build passes. The final C10 limit is not yet Lean-closed.
+build passes. `ThetaTailChargedEnergyCollapse` closes C10, comparison-rate divergence,
+the all-feature boundary law, and the weighted L2 formulation. All three
+leaves build. All 33 public theorem axiom reports contain only `propext`,
+`Classical.choice`, and `Quot.sound`; none missing. All leaves are wired.
+Corpus index refreshed; final `lint --check-generated` passes with existing
+large-file warnings. No owned proof/search/build/index/lint job remains active.
+
+## Positive comparison consequences, paper proof closed
+
+Put r_N=J(z_N,z_N)/|Phi(z_N)|^2. C10 gives r_N>=0 and r_N->0.
+If c>0 and c*|Phi(z_N)|^2<=u_N*J(z_N,z_N) eventually, division by the
+nonzero source gives c<=u_N*r_N. Thus r_N>0 and u_N>=c/r_N->+infinity.
+This strengthens C9's fixed positive boundary floor to mandatory divergence.
+The exact formal conclusion concerns this necessary diagonal inequality;
+no sufficiency of a divergent rate is asserted.
+
+For an analytic f whose every finite complex packet on a real tail obeys
+2c*|sum d_i*f(x_i)|^2<=sum conj(d_j)*d_i*J(x_i,x_j), c>0,
+C9's `scalar_boundary_admissibility` gives 2c*|f(z_N)|^2<=J(z_N,z_N).
+After division, |f(z_N)/Phi(z_N)|^2<=r_N/(2c)->0. Hence the complex ratio
+itself tends to zero. This is an all-feature necessary boundary law for the
+literal kernel, not a finite-rank approximation.
+
+## Method and implementation audit additions
+
+The symmetric Schur row estimate was already present in
+`RiemannXiSuzukiGramSchur` and `BourgainGaussianClustering`. A small private
+proof avoids their unrelated import graphs; no novelty is claimed for Schur,
+tightness, or reciprocal-limit calculus. The new source-specific statement is
+C10 and its actual-kernel consequence. The later deep rate search returned
+partial results with no applicable rate theorem; installed Mathlib's reciprocal
+filter theorem was read directly and tested in the proof.
+
+The compact-source module's unnecessary tail-kernel import was removed.
+Its named build succeeds with 8,957 graph jobs versus 9,834 before removal;
+this is dependency reduction, not a controlled wall-time benchmark. Explicit
+monotonicity and associativity replace arithmetic automation where sufficient.
+No heartbeat/recursion override is used.
+
+### Weighted L2 statement
+
+The integrated normalized `(1+s)` source energy also tends to zero.
+Indeed `Re z_N >= log(2)/2 = r > 0`, directly from
+`|N^(-2)+2i|>=2`. For s>=0, `(1+s)<=(1+1/r)*4*(Re z_N+s)`.
+The same bound proves integrability, so the weighted normalized energy is
+at most `(1+1/r)*J(z_N,z_N)/|Phi(z_N)|^2`, which tends to zero.
+The exact stronger statement passes the named Lean build; no extra source assumption.
+
+## Whole-route decision
+
+C10 closes a source-specific bridge and rules out bounded-rate boundary
+repairs. The unsubtracted kernel's all-rank sign is still the obstruction.
+A further comparison must satisfy the proved boundary disappearance law;
+changing another bounded rate or proving another fixed-rank asymptotic
+cannot close this route. The next sign attack must construct a compatible
+all-rank representation or produce a negative packet for the actual K.
+
+## Final verification
+
+- Named leaves: `ThetaCuspQuadraticMeanSquare`,
+  `ThetaCuspChargedSourceMeanSquare`, `ThetaTailChargedEnergyCollapse`: pass.
+- All 33 public theorem axiom reports: standard Lean axioms only, none missing.
+- All three leaves wired exactly once into `RHTower.lean`; no umbrella build.
+- Final index refresh and `lint --check-generated`: pass.
+- No heartbeat/recursion override, numerical mathematical experiment, or git command.
+- RH remains unresolved; C10 is a completed bridge, not a proof of kernel positivity.

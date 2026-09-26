@@ -276,7 +276,8 @@ theorem chargedSource_compact_integral_le {S : ℝ} (hS : 0 ≤ S) :
       (mul_le_mul_of_nonneg_left hpow hE2) hD)
     calc
       _ ≤ D*(E4*(N:ℝ)^9)+D*(E2*(N:ℝ)^9) := add_le_add h4 h2'
-      _ = _ := by ring
+      _ = _ := by
+        rw [mul_add D E4 E2, add_mul (D*E4) (D*E2), mul_assoc D E4, mul_assoc D E2]
   calc
     _ ≤ ∫ s in (0:ℝ)..S, 2*C^2*(f4 s+f2 s) := by
       apply intervalIntegral.integral_mono_on hS
@@ -290,10 +291,9 @@ theorem chargedSource_compact_integral_le {S : ℝ} (hS : 0 ≤ S) :
       have hsq : (‖chargedSeries N 4 (Real.exp (2*s)-1)‖+
           ‖chargedSeries N 2 (Real.exp (2*s)-1)‖)^2 ≤
           2*(f4 s+f2 s) := by
-        dsimp [f4, f2]
-        nlinarith only [sq_nonneg (‖chargedSeries N 4 (Real.exp (2*s)-1)‖-
-          ‖chargedSeries N 2 (Real.exp (2*s)-1)‖)]
-      convert mul_le_mul_of_nonneg_left hsq (sq_nonneg C) using 1; ring
+        exact add_sq_le
+      simpa only [← mul_assoc, mul_comm (C^2) 2] using
+        mul_le_mul_of_nonneg_left hsq (sq_nonneg C)
     _ = 2*C^2*((∫ s in (0:ℝ)..S, f4 s)+(∫ s in (0:ℝ)..S, f2 s)) := by
       rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_add hi4 hi2]
     _ ≤ _ := by

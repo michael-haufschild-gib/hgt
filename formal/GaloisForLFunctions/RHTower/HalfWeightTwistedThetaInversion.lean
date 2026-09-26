@@ -12,6 +12,10 @@ For the twisted theta function `θ_χ(z) = Σ_a χ̄(a) θ(z + a/q) = τ(χ̄) �
 `χ² ≠ 1`, this gives the Fricke inversion
 `τ(χ) θ_χ(z) = τ(χ̄) τ(χ²) (-2iq²z)^{-1/2} θ_χ̄(-1/(4q²z))`, the source of the root number in the
 functional equation of the twisted symmetric-square family.
+
+More generally, for any weight `c` of period `q`,
+`Σ_n c(n) e(n²z) = (-2iq²z)^{-1/2} Σ_n ĉ(n) e(-n²/(4q²z))` with `ĉ(n) = Σ_{r mod q} c(r) e(rn/q)`;
+with `c(n) = ψ(n) e(bn²/q)` this describes the twisted theta series at every cusp `b/q`.
 -/
 
 open Complex
@@ -207,6 +211,88 @@ theorem thetaTw_inversion (h2 : ψ ^ 2 ≠ 1) {z : ℂ} (hz : 0 < z.im) :
   ring
 
 end Inversion
+
+section Periodic
+
+variable {q : ℕ} [hq : Fact q.Prime]
+
+omit hq in
+theorem periodic_int_mul {c : ℤ → ℂ} (hc : ∀ n, c (n + q) = c n) (m r : ℤ) :
+    c (m * q + r) = c r := by
+  have hp : Function.Periodic c (q : ℤ) := hc
+  rw [add_comm]
+  exact (hp.int_mul m) r
+
+theorem norm_periodic_le {c : ℤ → ℂ} (hc : ∀ n, c (n + q) = c n) (n : ℤ) :
+    ‖c n‖ ≤ ∑ r : Fin q, ‖c ((r : ℕ) : ℤ)‖ := by
+  have hq0 : (0 : ℤ) < q := by exact_mod_cast hq.out.pos
+  have h1 : c n = c (n % q) := by
+    conv_lhs => rw [← Int.ediv_mul_add_emod n q]
+    exact periodic_int_mul hc _ _
+  have hlt : (n % q).toNat < q := by
+    have := Int.emod_lt_of_pos n hq0
+    have h0 := Int.emod_nonneg n hq0.ne'
+    omega
+  have hcast : (((n % q).toNat : ℕ) : ℤ) = n % q := Int.toNat_of_nonneg (Int.emod_nonneg n hq0.ne')
+  rw [h1, ← hcast]
+  exact Finset.single_le_sum (f := fun r : Fin q => ‖c ((r : ℕ) : ℤ)‖) (fun _ _ => norm_nonneg _)
+    (Finset.mem_univ (⟨(n % q).toNat, hlt⟩ : Fin q))
+
+omit hq in
+theorem norm_cexp_rat_phase (r : ℕ) (n : ℤ) :
+    ‖cexp (2 * π * I * (r : ℂ) * n / q)‖ = 1 := by
+  rw [Complex.norm_exp]
+  have : (2 * π * I * (r : ℂ) * n / q).re = 0 := by
+    rw [show (2 * π * I * (r : ℂ) * n / q) = ((2 * π * r * n / q : ℝ) : ℂ) * I by push_cast; ring]
+    simp
+  rw [this, Real.exp_zero]
+
+/-- **Inversion of a theta series with `q`-periodic weights**: for `c` of period `q` and `Im z > 0`,
+`Σ_n c(n) e(n²z) = (-2iq²z)^{-1/2} Σ_n ĉ(n) e(-n²/(4q²z))` with `ĉ(n) = Σ_{r mod q} c(r) e(rn/q)`. -/
+theorem thetaPeriodic_inversion (c : ℤ → ℂ) (hc : ∀ n, c (n + q) = c n) {z : ℂ} (hz : 0 < z.im) :
+    ∑' n : ℤ, c n * cexp (2 * π * I * (n : ℂ) ^ 2 * z) =
+      1 / (-2 * I * (q : ℂ) ^ 2 * z) ^ (1 / 2 : ℂ) *
+        ∑' n : ℤ, (∑ r : Fin q, c ((r : ℕ) : ℤ) * cexp (2 * π * I * ((r : ℕ) : ℂ) * n / q)) *
+          cexp (2 * π * I * (n : ℂ) ^ 2 * (-1 / (4 * (q : ℂ) ^ 2 * z))) := by
+  set B : ℝ := ∑ r : Fin q, ‖c ((r : ℕ) : ℤ)‖
+  have hsum : Summable fun n : ℤ => c n * cexp (2 * π * I * (n : ℂ) ^ 2 * z) :=
+    Summable.of_norm_bounded ((summable_theta_terms hz).norm.mul_left B) fun n => by
+      rw [norm_mul]
+      exact mul_le_mul_of_nonneg_right (norm_periodic_le hc n) (norm_nonneg _)
+  rw [tsum_int_split_residue (q := q) hsum]
+  have hclass : ∀ r : Fin q, ∑' m : ℤ, c (m * q + ((r : ℕ) : ℤ)) *
+      cexp (2 * π * I * (((m * q + ((r : ℕ) : ℤ) : ℤ)) : ℂ) ^ 2 * z) =
+      c ((r : ℕ) : ℤ) * (1 / (-2 * I * (q : ℂ) ^ 2 * z) ^ (1 / 2 : ℂ) *
+        ∑' n : ℤ, cexp (2 * π * I * (n : ℂ) ^ 2 * (-1 / (4 * (q : ℂ) ^ 2 * z))) *
+          cexp (2 * π * I * ((r : ℕ) : ℂ) * n / q)) := by
+    intro r
+    simp_rw [periodic_int_mul hc]
+    rw [tsum_mul_left, ← residue_class_poisson hz (r : ℕ)]
+  simp_rw [hclass]
+  have hv := im_neg_inv_pos hq.out.pos hz
+  set v : ℂ := -1 / (4 * (q : ℂ) ^ 2 * z) with hvdef
+  set C : ℂ := 1 / (-2 * I * (q : ℂ) ^ 2 * z) ^ (1 / 2 : ℂ) with hC
+  have hsd : ∀ r : Fin q, Summable fun n : ℤ => c ((r : ℕ) : ℤ) *
+      (C * (cexp (2 * π * I * (n : ℂ) ^ 2 * v) * cexp (2 * π * I * ((r : ℕ) : ℂ) * n / q))) := by
+    intro r
+    refine ((summable_theta_terms hv).norm.mul_left (‖c ((r : ℕ) : ℤ)‖ * ‖C‖)).of_norm_bounded
+      fun n => ?_
+    rw [norm_mul, norm_mul, norm_mul, norm_cexp_rat_phase]
+    apply le_of_eq
+    ring
+  have e1 : ∀ r : Fin q, c ((r : ℕ) : ℤ) * (C *
+      ∑' n : ℤ, cexp (2 * π * I * (n : ℂ) ^ 2 * v) * cexp (2 * π * I * ((r : ℕ) : ℂ) * n / q)) =
+      ∑' n : ℤ, c ((r : ℕ) : ℤ) *
+        (C * (cexp (2 * π * I * (n : ℂ) ^ 2 * v) * cexp (2 * π * I * ((r : ℕ) : ℂ) * n / q))) := by
+    intro r
+    rw [tsum_mul_left, tsum_mul_left]
+  simp_rw [e1]
+  rw [← Summable.tsum_finsetSum (fun r _ => hsd r), ← tsum_mul_left]
+  refine tsum_congr fun n => ?_
+  rw [Finset.sum_mul, Finset.mul_sum]
+  exact Finset.sum_congr rfl fun r _ => by ring
+
+end Periodic
 
 end
 

@@ -312,11 +312,32 @@ suffice for a valid comparison. The positive survivor is a complex boundary
 admissibility law, with the uniform necessary rate floor
 `u_N >= c*(12*pi^2*exp(-4*pi))^2/(24*486^2)` whenever
 `c*|Phi(z_N)|^2 <= u_N*J(z_N,z_N)`. Nonvanishing rate is not proved sufficient.
-The stronger integrated ratio tending to zero remains open; current bounds
-only show a bounded ratio. Do not claim that sharpening without a new proof.
+C10 below supplies the new proof that the integrated ratio tends to zero,
+strengthening this necessary floor to rate divergence.
 
 The three C9 leaves and the C8 compatibility refactor pass named builds;
 all 63 public axiom reports pass. User-requested optimization preserves
 statements, reduces measured Gaussian elaboration, and removes C8's import
 graph from C9, with no raised limits. Exact proof, survivor, and final lint
 status: `../5-failed/rh-reflection-compatible-comparison-root-2026-09-26.md`.
+
+
+## C10: complete charged energy collapse proved
+
+For z_N=log(N^(-2)+2i)/2, the actual full-source diagonal satisfies
+`J(z_N,z_N)/|Phi(z_N)|^2 -> 0`; the normalized horizontal source also
+vanishes in weighted L2 with weight 1+s. The proof keeps arithmetic phases
+through exact damped quadratic mean-square integration, obtains compact
+N^9 energy, and uses the existing uniform exponential tail and N^10 point
+lower bound. No RH hypothesis or source sign premise enters.
+
+Two positive necessary laws follow. Every eventually valid comparison
+`c*|Phi(z_N)|^2 <= u_N*J(z_N,z_N)`, c>0, forces u_N->+infinity.
+Every analytic feature dominated by finite packets on a real tail satisfies
+`f(z_N)/Phi(z_N)->0`. Bounded-rate repairs are excluded; the sign of
+unsubtracted K remains open. A compatible all-rank representation or a
+negative packet for actual K is still required.
+
+All three named leaves and all 33 public axiom reports pass. Proof,
+optimization, and final lint status:
+`../3-formalized/rh-charged-cusp-energy-collapse-root-2026-09-26.md`.

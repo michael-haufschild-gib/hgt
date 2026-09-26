@@ -8,7 +8,8 @@ import GaloisForLFunctions.RHTower.PoleVanishingWeilPositivityPrimeTwo
 The restricted-Weil route asks for nonnegativity of the pole-vanishing ground energy `μ₀(a)` at
 every aperture `a`.  Bombieri–Yoshida gives the hard direction (nonnegativity at all apertures
 implies RH).  Conversely, under RH the unconstrained ground energy is nonnegative at every aperture,
-and the pole-vanishing ground energy dominates it.  So the open step of the route is RH itself.
+and the pole-vanishing ground energy dominates it.  This is the route's receiver (a two-sided
+equivalence), not an obstruction to any producer.
 
 What is unconditional is positivity on a bounded range of apertures: the pole-vanishing ground
 energy is at least `1/20` for every aperture `a ≤ ½ (log 2 + 1/50)`.
@@ -16,7 +17,7 @@ energy is at least `1/20` for every aperture `a ≤ ½ (log 2 + 1/50)`.
 
 namespace RHTower
 
-/-- **The restricted-Weil open step is RH.** -/
+/-- **The restricted-Weil open step is equivalent to RH** (Bombieri–Yoshida and its converse). -/
 theorem riemannHypothesis_iff_forall_polarGroundEnergy_nonneg :
     RiemannHypothesis ↔ ∀ a : SuzukiPositiveAperture, 0 ≤ ccmRestrictedWeilPolarGroundEnergy a :=
   ⟨fun hRH a => (WeilDeletion.ccmRestrictedWeilGroundEnergy_nonneg_of_riemannHypothesis hRH a).trans

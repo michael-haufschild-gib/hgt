@@ -60,3 +60,11 @@ non-integer m. Fatou step needs strip inversion for general F (corpus has it onl
   q ∈ {8,12,24} (the even real primitive q with (ℤ/q)^× of exponent 2 up to T²), plus a = 0. "Every interior a has off-line
   zeros" would refute GRH for χ₁₂ and χ₂₄. Survivor C7*: off-line zeros for a ∈ [0,1/2]∖{0,1/6,1/3,1/2}.
   Effective conductor of Λ_a is 4/a (zero density (1/2π)log(4t/(2πa))).
+- 2026-09-26 — C7 at a = 1/3 [L]: `thetaPowerXiC_third_offline_zero_iff` (ThetaChiTwelveSeries, ThetaPowerChiTwelveLFunction):
+  ϑ₁₂ S-law via Gauss sums mod 12, ϑ₁₂²⁴ = cΔ (level-one cusp form), F_{1/3}²⁴ = 256Δ ⇒ F_{1/3} = κϑ₁₂; off-line zeros of
+  Λ_{1/3} in |Im w| < 1 ⇔ off-line zeros of Λ(s,χ₁₂) in |Re s − 1/2| < 1. C7 as stated ⇒ ¬GRH(χ₁₂).
+- 2026-09-26 — OFF [L]: `thetaPowerXiC_offStrip_zeros_infinite` (a > 1/2: infinitely many zeros with |Im w| > 1/2, i.e.
+  outside 0 ≤ Re s ≤ 1), module ThetaPowerZerosOffCriticalStrip: axis tail ≤ K e^{−|x|³−|x|} (from x/2 − re^{2x} ≤
+  81/(4r) − x³ − x), Λ_a entire of order ≤ 3/2, Riemann–Lebesgue on both rays ⇒ infinitely many zeros; minus SR.
+  Dichotomy at the wall: a ≤ 1/2 (holomorphic at cusp 1) infinitely many real zeros for a < 1/2; a > 1/2 all but
+  finitely many zeros outside the closed critical strip.
