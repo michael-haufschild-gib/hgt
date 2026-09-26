@@ -62,3 +62,40 @@ Horizontal classes `C_g = {z : Re z = g}`, sizes `H(g)`. Within a class, `K(i v)
 ## Log
 - 2026-09-26 — loop opened after a full frontier audit (frontier map, killed ledger, endpoints, STATUS tail,
   Montgomery/isolation/theta-power/PM cards, Zeta23, Sept-2026 arXiv). H1 FALSE (paper), H2 partial (paper).
+
+## Cycle H3 — structure of the open core (paper, 2026-09-26)
+- **Spectral/Toeplitz form.** `Φ := Σ_z f_z f_z̄* = M_η C_S M_η` (kernel `η(u)η(v)S(u−v)`, `S(τ)=Σ_z e^{−2πizτ}`),
+  `tr Φ = |Z|`, `tr Φ² = E`, `Q := ‖Φ − Π_W‖²_HS = E − 2|Z| + D` (`D` = #distinct). Lamzouri ⟺ `Q ≥ D − #rs`;
+  (H) ⟺ `Q ≥ D − #hs`.
+- **Removal/doubling dichotomy.** For one mixed real `x` with field `G(x) := Σ_{s≠x} K(x−s)²`:
+  `σ_L(Z) ≥ 2|G(x)|` (Lamzouri at `Z∖x` and at `Z` with `x` doubled). Gap: `|G(x)| < 1/2`. Weights on `x` do not
+  close it (curvature of `Q` in the weight is exactly `K(0)² = 1`).
+- **Exact transfer identity.** Replacing `x` by any real configuration `ν = Σ m_j δ_{ξ_j}` in new classes:
+  `σ_H(Z) = σ_H(Z') + 2G(x) − 1 + Σ_j(2m_j − [m_j=1]) − 2Σ_j m_j G(ξ_j) − Σ_{j,k} m_j m_k K(ξ_j−ξ_k)²`.
+  Induction on #mixed closes (H) whenever `G(x) ≥ 1/2`, `G(x) ≤ −1/2`, or `G(ξ) ≤ −(1−2G(x))/4` somewhere.
+  It fails on the defect comb (`G ≥ 0` everywhere, `G(x)=0`) although (H) holds there with slack `≈ 2π²y²`:
+  the induction discards the slack of `Z'`.
+- **Idealised violator.** `Q(Z) − D + #hs ≈ 4t − 1` exactly when (i) `Z∖x` is Lamzouri-tight, (ii) the own pair is
+  absorbed (`⟨Φ'ĝ,ĝ⟩ ≈ 2`), (iii) `r_x := f_x − βg` (`β = 2K(iy)/(1+K(2iy))`) is isolated (`Φ'r_x ≈ 0`).
+  Exact isolation ⟺ every other point `s` satisfies `Ψ(s−x)=0`, `Ψ := (η²(1−βcosh 2πyu))^`.
+- **Realisation attempt.** Pairs at `Λ = x + {zeros of (cosh(2πyu)(1−βcosh 2πyu))^}` give `U = span g`'s with
+  `U^⊥ = span r_x` and `h_p ∈ U` exactly (parity), `‖Π_U f_x‖² = t` exactly — but every other `h_q` leaks
+  `|⟨h_q, r̂_x⟩|² ≍ K(iy)²/4` into `U^⊥`, so the Lamzouri slack is huge. Full isolation would need all pair points
+  at zeros of `Ψ`, and `Ψ` has only boundedly many non-real zeros (one sign change of `1 − βcosh`).
+- **Rigidity heuristic for (H).** If all `h`'s lie in `U` and `ν := Π_{U^⊥} f_x ≠ 0`, then `(ην̄)^` (type `2πλ`) vanishes
+  at every pair point. Absorbing a large-`y` pair needs pair classes of density ≥ 1 (exponential cancellation
+  over `|τ|<1`), i.e. zero density 2 > 2λ·... = 1 allowed ⇒ `ν = 0`. Exact only for infinite configurations; a
+  finite/quantitative version (sampling-theory) is the missing step.
+- **Periodic (Bloch) formula.** Period `P`, cell multiset of `m` points: `E_cell = P^{-1} Σ_{|n|<P} ρ(n/P)|A_n|²`,
+  `A_n = Σ_cell e^{2πizn/P}`. Exact cancellation of a large-`y` pair forces `P` classes per period ⇒ `m ≥ 2P + #mixed`
+  ⇒ `E_cell ≥ ρ(0)m²/P ≥ 2m + 2#mixed`: (H) holds in every exactly-absorbing periodic configuration.
+- **Proved (paper), sharpened partial theorem.** Gram–Schmidt order `A = span(f_mult, g)`, hs reals, mixed reals, `h`:
+  `Σα_j² ≥ 2|Z| − #hs − #mix + 2T + 4Σ_p m_p‖Π_{A^⊥}h_p‖² + T²/#mix`, `T = Σ_mix ‖Π_A f_x‖²`. No independence needed.
+  Horizontal simplicity can miss the Lamzouri bound only through mixed classes whose pair is almost exactly absorbed
+  (`h_p ∈ A`) and far off the line (`‖Π_A f_x‖² < √2 − 1`).
+- **Zeta tradeoff (paper).** With `t(y)=2K(iy)²/(1+K(2iy))`, `κ(η) := sup_y (1−2t(y))⁺/y`:
+  `liminf N_hs/N ≥ C₀ − κ(η)·limsup (Σ_{T<γ≤2T}(β−½)⁺)/T`. Indicator kernel: `t(y) ≈ 2/(πy)`, `κ ≈ 0.2`.
+  With the literature first-moment density (STATUS MUST-349 [P] 0.0535) this gives ≈ 0.66 horizontally simple
+  (paper, external constant), versus the corpus 0.5087.
+- **Verdict H3:** (H) SURVIVES; open core narrowed to a quantitative sampling-rigidity statement. Next: Lean for the
+  sharpened partial theorem (abstract real inner-product form).
