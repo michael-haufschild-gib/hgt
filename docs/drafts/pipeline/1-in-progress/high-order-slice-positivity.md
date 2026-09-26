@@ -67,6 +67,19 @@ sector (uniform in both variables) gives, for the Gamma parts,
 4. The saddle integral with an explicit cubic remainder.
 5. Existence of `R_k ≥ 4` solving `R h'(R) = 2k` for `k ≥ κ log t` (continuity plus asymptotics of `h'`).
 
+## Proved bricks
+- **[L] Imaginary-direction Gamma bounds, explicit and uniform** (`HTGeometry/GammaImaginaryShiftBounds.lean`,
+  axiom-clean). The theorem `log_norm_Gamma_sub_log_Gamma_bounds` states: for `x > 0` and real `y`,
+  `−½(log(1+y²/x²) + I) ≤ log|Γ(x+iy)| − log Γ(x) ≤ −½ I`, where
+  `I = π|y| − x log(1+y²/x²) − 2|y| arctan(x/|y|)`.
+  - It comes from Euler's limit (`GammaSeq_tendsto_Gamma`): exactly,
+    `log|Γ(x+iy)| − log Γ(x) = −½Σ_j log(1+y²/(x+j)²)` (`hasSum_gammaShiftWeight`).
+  - The sum is then sandwiched between integrals (`AntitoneOn.integral_le_sum`/`sum_le_integral`), using
+    the closed-form primitive `v log(1+y²/v²) + 2|y| arctan(v/|y|)`.
+  - This replaces checklist item 1 in the imaginary direction. What remains of item 1 is the
+    real-direction comparison `log Γ(x) − log Γ(x')`, which follows from the corpus's two-sided digamma
+    bound `log u − 1/u ≤ ψ(u) ≤ log u` by integration.
+
 ## Lean plan
 Reuse `NonnegTaylorAtZero`, `xiSliceCoeff`, `hasSum_xiSliceCoeff`. Cauchy coefficient formula: mathlib
 `cauchyPowerSeries` / `iteratedDeriv` via the circle integral. Needed new infrastructure: sector Stirling
@@ -74,4 +87,28 @@ with explicit constants (the corpus has only vertical-strip Gamma bounds: `Gamma
 the digamma two-sided bound). This is the bulk of the work.
 
 ## Log
-- 2026-09-26 — created from C26; outline and checklist written; no step fully proved yet.
+- 2026-09-26 — created from C26; outline and checklist written.
+- 2026-09-26 — brick 1 [L]: explicit two-sided imaginary-direction Gamma bounds (`GammaImaginaryShiftBounds`).
+- 2026-09-26 — brick (a) [L]: complex Stirling difference `abs_log_norm_Gamma_sub_stirlingMain_le` (`HTGeometry/GammaStirlingDifference.lean`): along a segment in `Re > 0` at distance `≥ m ≥ 2` from `0`, `log|Γ(z₁)| − log|Γ(z₀)| = Re(stirlingMain z₁ − stirlingMain z₀) ± 3‖z₁−z₀‖/m`. Next: (b) ζ-ratio bounds, (c) angular decay.
+
+## Step 3 refined: Gamma comparison by integrating the corpus's complex digamma bound
+The corpus has `HTGeometry.norm_digamma_sub_log_le_of_re_pos`: `‖ψ(z) − log z‖ ≤ 3/‖z‖` for
+`Re z > 0`, `‖z‖ ≥ 2`. Only *ratios* of `|Γ(s/2)|` between the saddle point and a point on the circle are
+needed. So integrate `d log|Γ(z)| = Re(ψ(z) dz)` along the segment `z₀ = (½+R+it)/2 → z₁`. Then
+`log|Γ(z₁)| − log|Γ(z₀)| = Re[w log w − w]_{z₀}^{z₁} + E`, with `|E| ≤ 3|z₁−z₀|/min|w| ≤ 12R/t` for
+`R ≤ t/4`.
+- With `w = X + iY` and `Y arg w = πY/2 − Y arctan(X/Y)`, the `πY/2` terms of the two factors
+  (`Y = (t ± c)/2`) sum to the same value as at `θ = 0`.
+- The remainder is `Σ_± (X₁ log|w₁| − X₀ log|w₀|) + O(R³/t²)`.
+- Together with the `π^{−s/2}` factor this gives
+  `Γ-part(θ) − Γ-part(0) ≤ −R(1 − |cos θ|) log(t/2π) + C(R³/t² + R/t)` for `R ≤ t/4`.
+- For `R > t/4` (orders `k ≳ t log t`), the exponential parts still satisfy
+  `|y₁| + |y₂| = 2 max(t, |c|) ≥ 2t`, and the real-direction loss `|w|^{(R−|a|)/2}` dominates. Points
+  with small `|w|` (`R ≈ t`, `θ ≈ π/2`) are bounded directly by `|Γ(¼ + iy/2)| ≤ Γ(¼)`.
+
+Lean bricks in order:
+- (a) arc/segment integration of the digamma bound, i.e. the complex Stirling *difference* lemma;
+- (b) the ζ-ratio bounds;
+- (c) the angular-decay inequality;
+- (d) the saddle integral;
+- (e) assembly with `xiSliceCoeff` through the Cauchy coefficient formula.

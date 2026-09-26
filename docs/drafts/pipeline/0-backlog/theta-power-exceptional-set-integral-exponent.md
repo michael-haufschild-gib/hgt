@@ -37,3 +37,18 @@ so the unconditional content is `E ⊆ {1/6, 1/3}`.
 
 ## Log
 - 2026-09-26 — created; η-form of the family; transcendental case, openness and countability of `E` in Lean.
+- 2026-09-26 — SOTA audit for the algebraic-irrational case. The Hurwitz analogue is open: zeros of ζ(s,α) in
+  1/2 < σ < 1 are known only for α transcendental or rational ≠ 1/2, 1 (Gonek 1979, via universality); Gonek's
+  universality conjecture for algebraic irrational α is open. M. Mine, arXiv:2305.01262 (2023, rev. 2024): universality
+  for all but finitely many algebraic irrational α in each A_ρ(c) = {|α − c| ≤ ρ}, hence N_α(σ₁,σ₂,T) ≫ T for all but
+  finitely many algebraic irrational α in every compact subinterval; Sourmelidis–Steuding: effective weak universality
+  on A(c,d). Cassels (1961, corrected later) handles σ > 1 only. So C7** for algebraic irrational a contains a
+  Gonek-type problem for the theta-power coefficients b_n.
+  Candidate mechanism (not yet a proof): Bagchi limit theorem (unconditional for every α, Mine Thm 3.1) reduces
+  zeros to P(Z_χ has a zero in D) > 0 for the random model Z_χ = Σ χ(n+α)(n+α)^{-s}, χ Haar on the dual of
+  G = ⟨n+α⟩ ⊂ ℝ_{>0}; X_n = χ(n+α) are orthonormal (E X_m X̄_n = [m = n]) without independence. Private primes
+  (prime ideal 𝔭_j of norm p_j > N dividing j+α, which holds for ≥ (1 − 1/d)N of the j ≤ N by the norm count
+  Σ log f(n) ~ dN log N vs Σ_{p ≤ N} ρ_f(p)(N/p) log p ~ N log N) split Ĝ = T^V × Ĝ', making the head J-phases free
+  and the non-J head a random sum of bounded L² size, while the free ℓ¹ mass Σ_J (j+α)^{-σ₀} diverges. Open core:
+  the tail terms divisible by the private primes depend on the free coordinates, so conditioning on a closing
+  configuration of positive but small probability is not yet controlled.

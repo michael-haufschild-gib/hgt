@@ -1047,6 +1047,54 @@ The floor-one method caps at N ≤ 30 even with a perfect band estimate: q_κ = 
 - *Agreement.* The LoD law ν ≤ (1−ϑ)/2 corresponds to D ≪ X^{1−δ}, i.e. ϑ(2−η) < 1, the dictionary ϑ = 1/(2−η) of cycle 95. The three formulations (moduli saving η, level ϑ, switching) are consistent and all place Iwaniec at η = 1/4 ⟺ ϑ = 4/7.
 - **Verdict: BRIDGE (consistency).** No new saving: the gain must come from moduli cancellation in the q-dual, which is Iwaniec's unpublished-to-us technical step.
 
+**Cycle 98. Source read of Iwaniec 1987, then reconstruction of the moduli saving behind 10/49.**
+- *Source (GDZ scans, Invent. Math. 87, 385–401, read in full).* Iwaniec 1987 uses the Petersson formula at (n, n) in half-integral weight.
+  - The Kloosterman sums are Salié sums. Lemmas 4–6 evaluate them explicitly as Σ_{ab=q} e(2n(ār/b − b̄r/a + …)), twisted by the Jacobi symbol (±nr/ab).
+  - This turns the moduli sum into bilinear forms F(A, B; M) in the factor pair (a, b). In (5.2) and (5.3), Weil for incomplete Kloosterman sums gives F ≪ min(A, B)^{3/2}(nr)^{1/2}.
+  - *Averaging over levels* (§6) embeds f into Γ₀(pN) for primes p ∼ P. Then p | ab puts a prime factor into a or b, and Cauchy–Schwarz over the pairs (p₁, p₂) with Weil twice gives (6.3).
+  - Theorem 3: Σ_{Q}|K_Q(x)| ≪ xP^{−1/2} + xn^{−1/2} + (x+n)^{5/8}(x^{1/4}P^{3/8} + n^{1/8}x^{1/8}P^{1/4}). With P = n^{1/7} this gives a(n) ≪ n^{1/4−1/28}.
+- *Archimedean regime of the 1987 method: FALSE as a route past 3/16.*
+  - Take the half-integral Kuznetsov formula at a squarefree n, with the Shimura preimage F of an exceptional u (ν_F = ν/2) and moduli c ∼ y ≫ n².
+  - (a) Without averaging, (5.2)/(5.3) give Σ_{c∼y}c^{−1/2}K(n,n;c) ≪ y^{3/4}n^{1/2+ε}, hence 2ν_F ≤ 1/4, i.e. ν ≤ 1/4. This is an arithmetic proof of Selberg's 3/16 through weight 1/2: Weil is needed only at modulus ≍ √c, and the square-root saving comes from the explicit Salié evaluation.
+  - (b) Averaging over levels cannot improve (a). The Cauchy diagonal costs y^{1/2}P^{−1/2} and the level diagonal costs P. Beating y^{1/4} needs P > y^{1/2} and P < y^{1/4} at once.
+  - (c) In the near-balanced range A ≍ B, Poisson in a followed by Kuznetsov at level n gives exactly ν ≤ ν₀, the exceptional parameter at level n. This is the bootstrap identity of cycle 81.
+  - The reading of cycle 82 ("1996 transfers the 1987 saving through the archimedean place") is therefore wrong. The 1987 device works only in a *transition range*, and the forced-zero family creates exactly that range.
+- *Reconstruction (paper; exponent check exact).* Restrict the twist moduli of the sym² ⊗ ψ family to **q = p·r**, with p ∼ P prime and r ∼ R coprime to p. This is the family analogue of averaging over levels.
+  - Put T = Σ_{r}Σ_{p}Σ_m λ(m)W(m/L)Kl₃(am; pr) with L = Q³/X. Apply Cauchy–Schwarz over (r, m), keeping the p-sum inside.
+  - The diagonal is ≪ LQ³ (Parseval, L ≥ Q). The off-diagonal is completed modulo M = p₁p₂r.
+  - By the Chinese remainder theorem the complete sum C(h) = C₁C₂C₃ factors as follows.
+    - C_i = Σ_x Kl₃(bx; p_i)e(γx/p_i) = p_i S(1, ·; p_i). This is `fourier_hyperKloosterman_three`, so |C_i| ≤ 2p_i^{3/2} by Weil, and C_i = 0 when p_i | h (`sum_hyperKloosterman_three`). In particular C(0) = 0.
+    - C₃ = Σ_x Kl₃(β₁x; r)Kl₃(−β₂x; r)e(γx/r) needs square-root cancellation, |C₃| ≪ r^{5/2}.
+  - Result: **T ≪ Q²L·P^{−1/2} + L^{1/2}P^{1/4}Q^{9/4}** (up to logarithms). Inserted in the family (main QX^{2ν}, switched off-diagonal ≲ X, dual Q^{−3}X·T), the constraints are 2ν > max(a − b/2, 1/2 − a/4 + b/4, 1 − a) with Q = X^a, P = X^b.
+  - The optimum is b = 2/7, a = 4/7, giving **ν ≤ 3/14, Iwaniec's exponent exactly**. At the optimum:
+    - L = X^{5/7} = Q^{5/4} and T ≪ Q³, as cycle 94 required;
+    - Q = X^{4/7}, the level ϑ = 4/7 of cycle 95;
+    - P = √Q, a balanced factorisation.
+  - The Type II obstruction of cycle 84 disappears because only one prime factor sits inside the Cauchy–Schwarz. The Poisson modulus drops from Q² to PQ = Q^{3/2}.
+- *Deligne-free variant.* Take r = s² with s prime.
+  - Stationary phase at even exponent is exact: Kl₃(y; s²) = s²Σ_{z³≡y (s²)} e(3z/s²) for s ∤ 3y. Hence |Kl₃(y; s²)| ≤ 3s², and Kl₃(y; s²) = 0 for s | y.
+  - C₃ = s⁴Σ_κΣ_{z unit mod s²} e((3(1+κ)z − γβ̄₁z³)/s²), with κ³ ≡ −β₂β̄₁. Each inner sum equals s·Σ over the stationary points mod s, so it is ≤ 2s when s ∤ γ. It vanishes when s | γ unless p₁³ ≡ p₂³ (s), and then it is ≤ s(s−1).
+  - With these bounds the completed off-diagonal is ≤ 36(p₁p₂)^{3/2}s⁵(1 + log M) in every case.
+  - The only inputs are Weil's bound for Kl₂ (formal: `EstermannKloostermanSaving.norm_kloostermanSum_le_weil`) and elementary exponential sums. The thinning of the family (count PS instead of Q) cancels out of the exponent law.
+- **Verdict: REDISCOVERED (the bound is Iwaniec 1996), with a Deligne-free and Katz-free proof of the exponential-sum core that we have not seen in the literature.** This closes the [OPEN CORE] of cycles 82–97 at paper level.
+- *Survivor theorem to formalize (Theorem A, finite and unconditional).* Let a be fixed, 𝒫, 𝒮 disjoint sets of primes > 3 not dividing a, p ≤ 2P, s ≤ 2S, and α supported on [1, L]. Then
+  |Σ_{s∈𝒮}Σ_{p∈𝒫}Σ_m α_m Kl₃(am; ps²)|² ≤ |𝒮|²‖α‖²(C₁|𝒫|S⁴P²(L + P) + C₂|𝒫|²P³S⁵ log(PS)).
+- *Paper proof of Theorem A (dependency-closed; Lean plan in this order).*
+  - **L1 (prime square, first-order shift).** Let ε = s in ℤ/s², so ε² = 0 and (x(1+εt))⁻¹ = x⁻¹(1−εt).
+    - For a unit y, Kl₃(y; s²) = Σ_{x₁,x₂ units} e((x₁+x₂+yx̄₁x̄₂)/s²).
+    - Averaging over the shifts x_i ↦ x_i(1+εt_i), t_i ∈ ℤ/s², and using Σ_t e(εtc/s²) = s²[s | c], leaves only the pairs with x₁ ≡ x₂ and x₁³ ≡ y (mod s). There are ≤ 3·s·s of them, so |Kl₃(y; s²)| ≤ 3s².
+  - **L2 (prime-square correlation).** Apply the same five-variable shift to C₃ = Σ_{x unit}Kl₃(β₁x)Kl₃(β₂x)e(γx/s²), with phase F = x₁+x₂+x₃+x₄ + x(β₁x̄₁x̄₂ + β₂x̄₃x̄₄ + γ).
+    - The critical set mod s is u³ = β₁x, v³ = β₂x, u + v + γx = 0. Hence x = β̄₁u³ and v = κu with κ³ = β₂β̄₁ (≤ 3 values), and u² = −(1+κ)β₁γ̄ (≤ 2 values) when s ∤ γ.
+    - So there are ≤ 6 critical points, each with s⁵ lifts, and |C₃| ≤ 6s⁵. The trivial bound is |C₃| ≤ 9s⁶.
+  - **L3 (prime part).** Σ_{x unit mod p}Kl₃(bx; p)e(γx/p) = pS(1, −(γb̄)⁻¹; p) − Kl₃(0; p), and Kl₃(0; p) = 1. So the sum is ≤ 2p^{3/2}+1 for γ ≠ 0 and has size 1 for γ = 0.
+  - **L4 (Parseval at p).** Σ_x |Kl₃(x; p)|² = p⁻¹Σ_β|K̂(β)|² = pΣ_{β≠0}|S(1, β; p)|² ≤ 4p³.
+  - **L5 (completion).** For an M-periodic f = M⁻¹Σ_h F(h)e(h·/M): |Σ_{m=1}^{L} f(m)| ≤ (L/M)|F(0)| + M⁻¹Σ_{h≠0}|F(h)|·2/|e(h/M)−1|.
+    - Since |e(θ)−1| ≥ 4‖θ‖, Σ_{ζ^M=1, ζ≠1} 2/|ζ−1| ≤ M(1 + log M).
+    - For f = A₁(m mod p₁)A₂(m mod p₂)B(m mod s²), the map (h₁, h₂, h₃) ↦ e(h₁/p₁ + h₂/p₂ + h₃/s²) is a bijection onto the M-th roots of unity. The terms with s | h₃ go onto the (M/s)-th roots.
+  - **Assembly.** Cauchy–Schwarz over (s, m) with the p-sum inside; the diagonal comes from L1 + L4; the off-diagonal from L5 with L2 (s ∤ h₃), the trivial bound (s | h₃) and L3. This gives
+    |T|² ≤ |𝒮|‖α‖²·Σ_s[Σ_p 36s⁴(L/p+1)p³ + Σ_{p₁≠p₂}((L/M)·9s⁶ + (2p₁^{3/2}+1)(2p₂^{3/2}+1)·15s⁵(1+log M))].
+- *Next conjecture tested (beyond 3/14 with the same tools).* Iterating the Cauchy–Poisson step needs cancellation in the completed variable h. Its length is H = M/L = X^{1/7}, far below the modulus X^{6/7}, so no further completion applies. The remaining sums over r, p₁, p₂ are horizontal (moduli). **Heuristic ceiling: 3/14 for this method.** Any further gain needs horizontal cancellation, and the family's absolute ceiling is 1/8 (cycle 82).
+
 **Conclusion of cycles 56–61** (corrected by cycle 71: Iwaniec's GL₂-only 10/49 passes 3/16 via Shimura's entire twisted sym²). Every *Kloosterman-sum* route checked reaches exactly 3/16, and Kim–Sarnak's 7/64 is reached only through Sym⁴. What stops each route: Weil's bound is sharp for weight-uniform arguments (theta barrier); the bilinear route needs saving past the Cauchy–Schwarz diagonal; the forced-zero route needs Kl₁₅ cancellation over moduli (GL(15)). No new unconditional theorem survived, so nothing was formalized in Lean this batch. Full Selberg remains open.
 
 ### User-directed Einasto discovery — cycle 37 input

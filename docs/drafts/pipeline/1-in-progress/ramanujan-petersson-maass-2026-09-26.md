@@ -424,3 +424,173 @@ Hostile test: these expressions are not quadratic polynomials in u; the inverse 
 [FROZEN FOR ATTACK] Test whether a spectral weight h, nonnegative on the actual spectrum and nonzero at the selected form, can remove the leading large-argument Bessel oscillation. If positivity prevents that, test signed h rather than assuming spectral positivity survives. The discriminating quantity is the moment `integral t*tanh(pi*t)*h(t) dt`, which appears both in the diagonal and in the formal leading Bessel coefficient. A fixed-order asymptotic cannot be integrated over unbounded spectral t without an independent uniform remainder bound.
 
 Input checks: search `/tmp/rp_hecke_trace_amplifier_20260926m.json` completed nonpartially over 59,738 inventoried files. Retrieved Kloosterman estimates either fix the modulus or assume coefficient majorants; none inspected supplies this varying-modulus trace bound. Proposed ingredient groups are unverified. The spectral formula was checked against Li--Young, Theorem 2.3, and the fixed-order Bessel expansion against DLMF 10.17.3; these external formulas are not Lean certificates.
+
+### Candidate Q outcome: the residual phase is still arithmetic
+
+[PAPER] At an odd prime modulus q not dividing N, write chi for the quadratic character, including chi(0)=0. The equation `u+u^(-1)-2=v` is equivalent to `u^2-(v+2)*u+1=0`. Its roots are automatically units and their number is `1+chi(v*(v+4))`. Consequently
+
+`exp(-2*pi*i*2*N/q)*S(N,N;q) = sum_(v mod q) chi(v*(v+4))*exp(2*pi*i*N*v/q)`.
+
+The constant Fourier term disappears because N is nonzero modulo q. Thus the square-over-unit rewrite has produced a quadratic-character transform, not the ordinary quadratic Gauss sum (whose multiplicity involves chi(v)). This identifies the missing arithmetic weight precisely. It does not bound its average over changing q, and does not rule out a more substantial reciprocity argument. No modulus cancellation or improved Maass bound was obtained.
+
+### Candidate R outcome: separate positivity from the transition range
+
+[PAPER, no Lean certificate] Use normalization
+
+`B_h(x)=(2*i/pi)*integral_R t*h(t)*J_(2*i*t)(x)/cosh(pi*t) dt`.
+
+For a fixed real even polynomial times a Gaussian, the large-x expansion gives
+
+`B_h(x)=-(2/pi)*sqrt(2/(pi*x))*M_h*sin(x-pi/4)+O_h(x^(-3/2))`,
+
+`M_h=integral_R t*tanh(pi*t)*h(t) dt`.
+
+Uniformity check: DLMF 10.17.14 bounds the first Hankel remainder by a constant times `(1+t^2)/x * exp(C*(1+t^2)/x)`. After division by cosh(pi*t), both exponential prefactors are bounded. For sufficiently large x the fixed Gaussian dominates this remainder, so integrating the expansion is justified in this class. Nonzero h>=0 on the whole real line has M_h>0. It cannot eliminate this leading oscillation.
+
+This is NOT a no-go for signed spectral weights. The continuous prime-power coefficient is a sum of n+1 unit-modulus terms. For a fixed weight integrable against the Eisenstein measure, its absolute contribution is at most a constant times `(n+1)^2`. Thus negativity on the continuous spectrum can be paid for without exponential growth; only cusp-spectrum positivity is needed for detection. A possible survivor is an even-degree orthogonal polynomial in t^2 times a Gaussian, with all its positive roots placed inside a gap in the cusp spectrum. Orthogonality would kill finitely many leading Bessel moments while preserving signs outside that gap. The required spectral input and quantitative normalization have not been kernel verified; this is a construction outline, not a finished theorem.
+
+The next hostile test is independent of that construction. For any fixed continuous nonzero B choose `0<a<b` and delta>0 with `abs(B(x))>=delta` on [a,b]. In the p-coprime sum, moduli in `[N/b,N/a]` number `(1-1/p)*N*(1/a-1/b)+O(1)`. Therefore even the optimistic termwise square-root envelope satisfies
+
+`sum_(p does not divide c) d(c)/sqrt(c)*abs(B(N/c)) >= C_(B,p)*sqrt(N)`
+
+for all sufficiently large N, since d(c)>=1. This is a LOWER BOUND ON THE PROPOSED MAJORANT, not on the Kloosterman sum or spectral trace. At N=p^n it prevents this fixed-weight absolute-value method from giving polynomial growth in n. Arbitrarily strong fixed-x tail decay does not change the transition c comparable to N. This retires that proposed inference, not all test-function or trace methods. No new eigenvalue exponent follows.
+
+### Candidate S: average an extra Hecke index before estimating
+
+[ATTEMPTED PIVOT, PAPER] Multiplicativity suggests averaging coefficients at N*r, with p not dividing r, to turn lambda_j(N*r) into lambda_j(N)*lambda_j(r) and exploit geometric cancellation in r. The corpus's `KloostermanTerminalGeometricCancellation` genuinely controls a linear index average, but retains small phase denominators and does not itself control this trace.
+
+For each c coprime to N there is an exact finite representation
+
+`S(N*r,N*r;c)=sum_(v mod c) rho_(N,c)(v)*exp(2*pi*i*r*v/c)`,
+
+where rho counts units z satisfying `z^2-v*z+N^2=0 mod c`. Proof: set z=N*u in the original unit sum and group by `v=N*(u+u^(-1))`. This keeps the arithmetic coefficients, unlike replacing them by arbitrary phases.
+
+The proposed completion does not isolate one frequency. If r has scale R, the Bessel transition now has c of scale N*R. A smooth unrestricted r-average resolves frequencies only to scale c/R, hence to scale N. Equivalently, Poisson summation retains terms with `abs(v-k*c)` of order N; it does not force v=0. Restricting to r coprime to p subtracts the r=p*s average and adds its resonance centers; it does not make this frequency resolution finer. The resulting quadratic congruences have discriminants `v^2-4*N^2` across order N possible integer traces. This describes the size of the unresolved window, not a lower bound for its nonzero contribution. At N=p^n the window is still exponential in n. A bound for its signed weighted sum was not derived. This is a failure of the claimed automatic-completion saving, not a proof that all amplified trace methods fail.
+
+Whole-route result: the ramified-modulus split, phase rewrite, weight cancellation, and extra-index completion have each been tested at their quantitative step. None yet supplies subexponential actual Hecke growth. The arithmetic task left by S is cancellation among the discriminant-weighted transition terms; merely installing the exact root-count identity would not solve it. No auxiliary Lean module is installed under the target-only redirect.
+
+Checks: `Sieve/KloostermanSum.lean` uses the stated classical unit sum, and `kloostermanSum_unit_left` gives the unit-frequency reduction. `SelbergPeterssonKloosterman.petersson_kloosterman` is an unfolded Poincare-series pairing with explicit level and real-part restrictions, not the missing positive all-spectrum growth bound. Search `/tmp/rp_diagonal_phase_20260926n.json` completed with partial retrieval; proposed phase-symmetry obligations did not prove collective cancellation. Its owned session 85261 exited. No Lean process, build, numerical experiment, or heartbeat-limit change was used in this resumed batch.
+
+External inputs: [Li--Young, Theorem 2.3](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/957D21B10686FBDDD2E7537C8D9B19D2/S0010437X11007366a.pdf/the-l2-restriction-norm-of-a-gl3-maass-form.pdf), [Li, Kuznetsov transforms in Section 2](https://annals.math.princeton.edu/wp-content/uploads/annals-v173-n1-p08-p.pdf), and [DLMF 10.17, including complex-order remainder bounds](https://dlmf.nist.gov/10.17). The new deductions above are this task's paper arguments; neither novelty nor Lean verification is asserted.
+
+## Discriminant-reciprocity continuation
+
+Previous-turn classification: progress in route discrimination, not progress in the Maass eigenvalue bound. The recorded finite identities and quantitative failed inferences change the next action: retain the discriminant weights and test genuine reciprocity, rather than repeat absolute-value estimates. The current card was re-read before continuing. Goal remains unmet.
+
+### Candidate T: use prime-power factorization after switching divisors
+
+[PAPER ATTEMPT] Seek to reduce the root-count polynomial `z^2-v*z+N^2`, N=p^n, to the corpus's factored quadratic family. Source inspection rejects the proposed direct application: `ReducedFrequencyMobiusAliasCollapse.quadraticCongruenceRoots` counts roots of `r*(r+h)=0`, not a general discriminant polynomial.
+
+Integer splitting of the actual polynomial forces roots d,e with d*e=p^(2*n). Thus `v=plus/minus(p^j+p^(2*n-j))` for some 0<=j<=2*n. Conversely each such v splits. In a fixed window abs(v)<=C*N, writing j=n+d shows `p^d+p^(-d)<=C`; only a bounded number of these split traces occur as n grows. They cannot replace the order-N window of general discriminants. For instance v=2*N-1 has negative discriminant 1-4*N and is never an integer split for N>=1. This is an obstruction to this factorization shortcut, not a lower bound on the weighted trace.
+
+Search `/tmp/rp_discriminant_reciprocity_20260926o.json` completed with partial retrieval; its suggested CRT uniqueness chain retains the factored-polynomial definition. It does not prove an estimate for the required signed nonsplit-discriminant family. Owned session 77136 exited.
+
+### Candidate U: remove the nonsplit range through the test function
+
+[FROZEN FOR ATTACK] Test a stronger, analytic replacement for divisor switching: can the cosine transform of the geometric test be supported only in the elliptic interval, while its Maass Bessel transform remains nonzero? Such localization could connect to holomorphic trace methods, but is useful only if it still detects the actual Maass form. The decisive test is the exact Bessel representation, not a guessed support property.
+
+Set `F(y)=integral_(x>0) B(x)/x*cos(x*y) dx`. DLMF 10.9.8, subtracted at orders 2*i*t and -2*i*t, gives the improper-integral kernel identity
+
+`(J_(2*i*t)(x)-J_(-2*i*t)(x))/sinh(pi*t) = -(4*i/pi)*integral_(u>0) cos(x*cosh(u))*cos(2*t*u) du`.
+
+The sign is obtained directly by subtraction; a retrieved secondary formula had the opposite sign and is not used. For sufficiently regular B, the normalized Maass transform should therefore be `(2/pi)*integral_(u>0) F(cosh(u))*cos(2*t*u) du`. The pending test is whether the distributional/interchange justification holds for a smooth cosine-bandlimited test, and whether restricting F to abs(y)<1 kills the desired transform. No conditional interface or new Lean module is being installed in place of that test.
+
+### Candidate T follow-up: reciprocal completion returns the original kernel
+
+[PAPER] For an odd prime q not dividing N, let chi be the quadratic character, extended by zero. The root count for `z^2-v*z+N^2` is `1+chi(v^2-4*N^2)`. Finite Fourier transformation gives exactly
+
+`sum_(v mod q) chi(v^2-4*N^2)*e(h*v/q) = S(N*h,N*h;q)-q*[h=0 mod q]`.
+
+Proof: add the constant one to the character, enumerate the roots by the units z=N*u, and apply finite additive-character orthogonality to remove that constant. The zero frequency is -1. Every nonzero frequency is again a diagonal Kloosterman sum; h=1 is precisely the original kernel. Thus this completion is an exact round trip, not an independently stronger cancellation estimate. CRT multiplicativity does not change that conclusion. No new bound for the varying-modulus sum follows.
+
+### Candidate U outcome: the proposed cutoff annihilates the Maass detector
+
+[PAPER PROOF, not Lean] Let b be an even Schwartz function, B(x)=x*b(x) for x>0, and `F(y)=integral_(x>0) b(x)*cos(x*y) dx`. For a Kuznetsov test with B'(0)=0 additionally choose b(0)=0. Define
+
+`M_B(t)=i/(2*sinh(pi*t))*integral_(x>0) (J_(2*i*t)(x)-J_(-2*i*t)(x))*b(x) dx`,
+
+with the removable value at t=0. Then for abs(Im(t))<1/2 the identity under test is
+
+`M_B(t)=(2/pi)*integral_(u>0) F(cosh(u))*cos(2*t*u) du`.
+
+Interchange justification: truncate u at A. Fubini applies on this finite interval. Put a=2*abs(Im(t))<1 and split the x-dependent u-integral at `max(1,log(4/x))`. Integration by parts in the remaining phase x*cosh(u) gives, uniformly in A,
+
+`abs(integral_0^A cos(x*cosh(u))*cos(2*t*u) du) <= C_t*(1+log_+(1/x)+x^(-a))`.
+
+The initial interval has the same bound. This is integrable against abs(b(x)) on the positive half-line, including x=0 since a<1. Dominated convergence proves the displayed transform identity from DLMF 10.9.8; t=0 follows by the same bounds locally uniform in t. This supplies the missing justification rather than interchanging the two improper integrals formally.
+
+If F vanishes for y>=1, the Maass transform is zero. Nonzero such admissible tests exist: choose a nonzero smooth even F supported inside (-1,1) with integral zero, and take its inverse cosine transform b. The zero integral gives b(0)=0. Therefore removing the entire hyperbolic side in this manner removes the desired spectral detector as well. The surviving exact statement is that the Maass response uses only F on the hyperbolic range; it is not an estimate for that response.
+
+A stronger fixed-weight test uses the prime-power arithmetic. The only split ratios `v/(2*p^n)` above one are `(p^d+p^(-d))/2`. This set is locally finite. The remaining grid points v/(2*p^n) are dense in (1,infinity): any open interval contains a smaller interval avoiding those finitely many split ratios, then contains a sufficiently fine prime-power grid point. A continuous F that vanishes at every nonsplit positive-discriminant trace for all n consequently vanishes on [1,infinity), and hence has zero Maass transform. This rules out this exact fixed-weight annihilation strategy, not cancellation of a signed trace.
+
+### Candidate V: allow the annihilating weight to vary with n
+
+[ATTEMPTED PIVOT, PAPER] Keep fixed Y>1 and a fixed spectral parameter t with abs(Im(t))<1/2. Suppose F_n is C1 on [1,Y], vanishes above Y, vanishes at every nonsplit grid point v/(2*N) in [1,Y], and its Maass response is normalized to one. Here N=p^n. The number of excluded split grid points in [1,Y] is bounded independently of n. Every point of [1,Y] therefore lies within C_(p,Y)/N of a retained zero for sufficiently large n. The mean-value inequality gives
+
+`sup_[1,Y] abs(F_n) <= C_(p,Y)/N * sup_[1,Y] abs(F_n')`.
+
+Writing L=arcosh(Y), the exact transform identity gives
+
+`1 <= (2/pi)*L*cosh(2*abs(Im(t))*L)*sup_[1,Y] abs(F_n)`.
+
+Thus `sup abs(F_n') >= c_(p,Y,t)*N`. Moving the weight escapes the fixed-weight vanishing argument only with at least this derivative cost under the stated fixed-support conditions. This is not a lower bound for the actual trace, and does not preclude a method that controls the growing cost by some other argument.
+
+Positive survivor check: take a smooth nonnegative bump psi supported in a short subinterval of (1,Y) on which `cos(2*t*arcosh(y))` is positive (real t; for purely imaginary t the factor is already positive). The functions `psi(y)*sin(2*pi*N*y)^2` vanish on the whole trace grid and have nonzero Maass response. Integration by parts in the cosine term of sin-squared shows that response tends to a positive constant, so normalization is bounded and the derivative cost is O(N). This confirms that exact moving-grid annihilation itself is possible; it does NOT give cusp-spectral positivity or a small geometric estimate. In fact F_n(1)=0 implies that the integrable real-line response has integral zero, so this nonzero response cannot be nonnegative on the entire real line. No conclusion about its signs at all actual cusp eigenvalues is asserted.
+
+Whole-route assessment: reciprocal completion, fixed hyperbolic cutoff, and bounded-cost exact grid removal have failed their discriminating tests. The moving-filter survivor still lacks the actual cusp-spectrum positivity and quantitative signed arithmetic estimate needed for Ramanujan. No actual Maass eigenvalue bound improved, no counterexample was produced, and no capstone Lean certificate exists. These results are paper-level route evidence, not claimed original theorems or formal completion.
+
+Source check: [DLMF 10.9.8](https://dlmf.nist.gov/10.9#E8) supplies the Bessel representation used above. Search `/tmp/rp_bessel_support_20260926p.json` returned nonpartial retrieval over 59,743 inventoried files; its suggested modified-Bessel decay chain does not prove this imaginary-order J transform or the missing arithmetic estimate. Source and compiler freshness remain distinct. Owned session 73856 exited. No Lean edits, builds, numerical experiments, or resource-limit changes in this continuation.
+
+### Candidate W: actual cusp signs of the short-support moving filters
+
+[PAPER DERIVATION, NOT LEAN] The hypothesis being tested is that V's nonnegative moving filter can have nonnegative response at every actual cusp eigenvalue even though its response changes sign on the real line. This fails when its hyperbolic support is sufficiently close to, but separated from, y=1.
+
+Use the Fourier convention `h(r)=integral_R g(u)*exp(i*r*u) du`. Let g be nonzero, nonnegative, even, smooth and compactly supported in `0<abs(u)<b`. Take b below both the first hyperbolic length and `2*log(2)`. The modular trace formula and its explicitly combined scattering/parabolic expression are given in [Rudnick, Section 5.1, equations (5.1)-(5.4)](https://www.math.tau.ac.il/~rudnick/papers/modularCLT.pdf); [Stromberg, Section 2.6, equations (2.7)-(2.11)](https://arxiv.org/pdf/1106.5741) separately lists the identity, elliptic and scattering terms. The combined expression is important: leaving the scattering integral untreated would not justify the following sign conclusion.
+
+Set `A2=integral_R g(u)/u^2 du`, `A1=integral_R g(u)/abs(u) du`, and `M=integral_R g(u) du`. The following derivation gives constants C1,C2 independent of g and b, with b bounded above by one fixed small radius:
+
+`sum_discrete h(r_j) <= -A2/6 + C1*A1 + C2*M`.
+
+1. The hyperbolic contribution vanishes by support. The scattering prime sum vanishes because its arguments are `2*log(m)`, m>=2. The terms proportional to g(0) vanish as well.
+2. Write `r*tanh(pi*r)=abs(r)+R(r)`, where `R(r)=-2*abs(r)/(exp(2*pi*abs(r))+1)` is integrable. Abel regularization gives `integral_R h(r)*abs(r) dr = -2*A2`: the regularized Fourier kernel is `2*(epsilon^2-u^2)/(epsilon^2+u^2)^2`, and dominated convergence applies on the support away from zero. The identity coefficient is 1/12; the R contribution is bounded by `norm(R)_1*M`.
+3. For a>0, [DLMF 5.9.16](https://dlmf.nist.gov/5.9#E16), Fourier inversion and `integral h=2*pi*g(0)=0` give `integral_R h(r)*digamma(a+i*r) dr = -2*pi*integral_0^infinity g(u)*exp(-a*u)/(1-exp(-u)) du`. Fubini is justified before separating the numerator: near u=0 it is bounded by a constant times `1+abs(r)`, integrable against the Schwartz function h. Combining a=1 and a=1/2 gives a whole-line parabolic kernel `1/(2*(exp(abs(u)/2)-1))`, bounded by `C1/abs(u)` on the fixed small interval.
+4. The finitely many elliptic real-spectral weights are integrable. Since `abs(h(r))<=M` for real r, their combined contribution is bounded by `C2*M`.
+
+Now `A1<=b*A2` and `M<=b^2*A2`. Choose b so that `c_b=1/6-C1*b-C2*b^2>0`. The discrete trace is at most `-c_b*A2<0`. Every imaginary spectral parameter has `h(i*tau)=integral g(u)*cosh(tau*u) du>0`; hence a negative term occurs at a real spectral parameter. Such an L2 eigenfunction is cuspidal: its constant Fourier mode has the form `y^(1/2)*(A*exp(i*r*log(y))+B*exp(-i*r*log(y)))`, or `y^(1/2)*(A+B*log(y))` for r=0, and square integrability with measure `dy/y^2` forces both coefficients to vanish. The modular surface has only one cusp.
+
+Positive survivor: the total negative response on real cusp eigenvalues is at least `c_b*A2`, not merely nonzero. This is a quantitative local trace obstruction, derived from the full modular trace formula. Its paper proof uses that external theorem; neither that dependency nor this result was kernel-audited here. It is not a formally closed no-go certificate or a claim of literature novelty.
+
+For V specifically, put `g_N(u)=F_N(cosh(u/2))/(2*pi)`. This gives exactly `h_N(t)=M_(B_N)(t)`. A fixed bump supported sufficiently close to y=1, but separated from it, satisfies W's support condition for every N. Consequently each of these moving filters is negative at some actual cusp spectral value, despite retaining its positive response at the chosen target. Whole route: this subfamily cannot serve as the required positive detector. The result does not exclude signed spatial filters or larger support.
+
+### Candidate X: square the response to repair positivity
+
+[PAPER TEST] For V's real even h_N, squaring gives a nonnegative real-spectral response. Its inverse Fourier transform is `g_N*g_N`. Choose an interval I of length ell>0 inside the positive-u bump on which its fixed envelope is positive. The sine-squared factor is positive except at isolated points. For every `abs(delta)<ell`, the overlap of I and delta+I has positive length, so `(g_N*g_N)(delta)>0`, for every N.
+
+Take `delta_N=2*arcosh(1+1/(2*N))`, which tends to zero. The squared response's hyperbolic filter is therefore positive at the trace-grid point `(2*N+1)/(2*N)` for all sufficiently large N. For prime powers N>=3 this is nonsplit: if `4*N+1=(2*k+1)^2`, then `N=k*(k+1)`, and coprimality of consecutive integers forces the only positive prime-power case N=2. Squaring thus reintroduces a nonsplit arithmetic term that V had removed exactly.
+
+Positive survivor: a whole neighborhood of the singular trace is filled by convolution, uniformly in N; this is stronger than loss of just one prescribed zero. Whole route: this positivity repair does not preserve the arithmetic cancellation mechanism. No statement that the resulting arithmetic sum is necessarily large follows.
+
+### Candidate Y: shrink positive support through the singular trace
+
+[PAPER CONSTRUCTION AND COST] The obstruction in W requires g(0)=0. There is a genuine escape from that condition: take a nonnegative even smooth bump kappa supported in [-1/2,1/2], with integral one; rescale `kappa_a(u)=kappa(u/a)/a`; and use the autocorrelation `g_a=kappa_a*kappa_a`. Its Fourier transform is `h_a(t)=hat(kappa)(a*t)^2`, nonnegative for real t and positive for purely imaginary t. For each fixed Maass parameter t_f, normalization to `h_a(t_f)=1` is bounded for sufficiently small a. The source construction by self-convolution already appears in `formal/GaloisForLFunctions/PNTPlus/Wiener.lean:3264`; it is not claimed as a new positivity construction.
+
+Choose `a<2*arcosh(1+1/(2*N))`. Then the associated hyperbolic filter `F_a(y)=2*pi*g_a(2*arcosh(y))`, y>=1, vanishes at every trace-grid point strictly above 1. This statement concerns the hyperbolic restriction only; admissible extension below y=1 and the full arithmetic trace are not being silently assumed.
+
+The cost can be proved without differentiating the rapidly varying filter. More generally let h be even, nonnegative on the entire real line, Schwartz, with smooth inverse Fourier transform supported in [-a,a]. Suppose `abs(h(t_f))=1`, and set `sigma=abs(Im(t_f))` and `M=integral_R h(t) dt`. Fourier inversion and positivity give
+
+`abs(g(u)) <= g(0)=M/(2*pi)`,
+`sup_R h <= a*M/pi`, and `M >= pi*exp(-a*sigma)/a`.
+
+For `T=pi/(4*a)`, at most half of M lies in [-T,T]. Monotonicity of `t*tanh(pi*t)` for t>=0 therefore yields the explicit bound
+
+`integral_R t*tanh(pi*t)*h(t) dt >= pi^2*exp(-a*sigma)*tanh(pi^2/(4*a))/(8*a^2)`.
+
+The support condition implies `a^2<4/N` by `cosh(a/2)>=1+a^2/8`. For `sigma<=1/2`, the lower bound is at least a fixed positive constant times N. The 1/12 identity coefficient does not change that order. Conversely the normalized fixed-bump autocorrelations above have identity integral of order `a^(-2)`, by scaling and dominated convergence. Thus this positive construction has the stated order of cost, not an artifact of a derivative estimate.
+
+Whole route: shrinking support supplies an actual positive hyperbolic detector, but its diagonal contribution has order at least N=p^n, not polynomial growth in n. This is a lower bound for this contribution under full real-line positivity, NOT a lower bound for a Hecke eigenvalue or the signed total trace. In particular it does not exclude cusp-positive weights that are negative on the continuous spectrum. That less restrictive positivity problem, together with quantitative control of the remaining signed arithmetic terms, is still unproved.
+
+### Current audit after W-Y
+
+The three tests address the actual detector/sign/cost obstacle left by V. They discriminate between failed constructions and a positive survivor, but produce no improved bound for an actual Hecke-Maass eigenvalue and no counterexample. The current methods still do not close the required global arithmetic estimate. No target certificate exists; no auxiliary Lean module was added to present these paper tests as completion.
+
+Searches `/tmp/rp_short_wave_trace_20260926q.json` and `/tmp/rp_positive_filter_cost_20260926r.json` both completed with nonpartial retrieval over 59,744 inventoried files. This is retrieval coverage, not compiled coverage. The former suggested finite-cover Fourier transport rather than a complete spectral trace formula; the latter found the existing autocorrelation construction but no actual-Maass estimate resolving the cost. Its proposed ingredient chain remains unverified. Owned sessions 80086 and 26124 exited. No Lean process, numerical experiment, or resource-limit change was launched in this continuation. Formal integration/audit of W-Y has not been performed, and no formal no-go closure is claimed.

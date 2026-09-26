@@ -145,3 +145,7 @@ Further loops on the sharp fallback (2026-09-26):
   - `not_exists_uniform_xiRightDisc_seam_margin`: no `δ > 0` has `‖(1−P)U†P‖ ≤ 1−δ` on all zero-free right discs. Unconditional: it uses one on-line zero (Hardy).
   - `OnLineZeroData.one_sub_seam_sq_le`: `1 − ‖seam‖² ≤ 3(1−r²) + 6π/log(1+π/(1−r))` for the disc of radius `t` at `ρ₀ + t/r`, whatever the multiplicity.
   - Kills every route-1 producer that would deliver a height- or position-uniform seam contraction: compactness arguments, uniform Nehari distances, uniform `H^∞` mollifier bounds. A producer must be exactly margin-free near on-line zeros.
+- **R1-L18: countermodel for non-arithmetic producers [L]** (`RHTower.ThetaPowerOffLineDiscSeamCountermodel`, `ThetaPowerSeam.exists_upperDisc_relativeIndex_pos_seam_ge_one`; axioms clean; build green).
+  - The theta-power transform `Λ_a` (transcendental `a ∈ (0,½)`) shares with `Ξ` the functional equation, modularity, cusp behaviour and source positivity, yet fails route 1's seam contraction on some off-line disc.
+  - Route-1 producers must use the Euler product.
+- **R1-L19: entire/bounded mollifier producers are stronger than RH [L]** (`RHTower.XiEntireMollifierForcesSimpleZeros`). They would also prove that all zeros are simple.

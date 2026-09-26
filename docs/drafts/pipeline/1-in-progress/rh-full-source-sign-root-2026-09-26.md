@@ -335,3 +335,332 @@ The source energy estimate `m/b^2<M<2*m/b^2` and the pointwise disk
 They concern one mode, retain the transverse parameter in their weight,
 and supply no integer free-orbit upper bound. Repackaging the number two
 as a counting bound without a proved pairwise comparison is inadmissible.
+
+### S5 attacks and exact remaining gaps
+
+**Current cancellation.** Substituting the literal S1 source equation into
+the current leaves signed prime, Gamma, and pole terms. No cancellation for
+the selected copy was derived. Reflection exchanges the two copies and their
+currents; cancelling their sum does not cancel either current.
+
+**Full-kernel falsification attempt.** The proposed test uses several actual
+charged nodes `z_k(eps)=log(eps+2*i*k)/2`, with fixed positive integers k.
+The endpoint layer `s=O(eps)` alone is not an admitted approximation to the
+whole horizontal integral: the ray meets further charged phases. No estimate
+making the omitted ray negligible was proved. In particular the existing
+compact `O(N^9)` energy bound does not justify an `N^8` endpoint model.
+
+For the full degree-four source channel put `t=exp(2s)`. Its product has
+frequency `k*n^2-l*m^2`, damping `pi*eps*(n^2+m^2)*t`, and weight `t^(7/2)`
+times the kernel's logarithmic factor. When `k=d*a^2`, `l=d*b^2`, and
+`g=gcd(a,b)`, the exact resonant indices are `n=(b/g)*j`, `m=(a/g)*j`.
+Their polynomial and damping factors are respectively
+
+`a^4*b^4*j^8/g^8`, and `(a^2+b^2)*j^2/g^2`.
+
+This suggests, but does NOT prove, a full-ray leading scale
+`eps^(-9/2)*log(1/eps)^2`. Up to positive diagonal congruence and a common
+positive scalar, the suggested leading matrix has squarefree blocks
+
+`M(a,b)=gcd(a,b)*a^4*b^4/(a^2+b^2)^(9/2)`.
+
+The sign test for this proposed matrix is positive, not negative. Indeed
+`gcd(a,b)=sum_(r|a,r|b) totient(r)` and
+`(a^2+b^2)^(-9/2)=1/Gamma(9/2)*integral_0^infinity
+u^(7/2)*exp(-a^2*u)*exp(-b^2*u) du` give a positive Gram representation.
+For a finite set of distinct positive a, the r=1 term is strictly positive
+on every nonzero coefficient vector: a finite sum of exponentials with
+distinct exponents cannot vanish identically, as successive multiplication
+by the slowest exponential and passage to infinity proves.
+
+**Unproved analytic obligations:** the Gaussian-sum asymptotic under the
+unbounded t integral, the off-resonant error, and the lower-degree source
+channels. No asymptotic theorem about the actual kernel is claimed. The
+positive candidate matrix gives no support for this fixed-family negative
+witness. It gives no bound uniform in rank and no RH sign theorem either.
+Do not spend a formalization pass on that fixed-family model as a substitute
+for the full sign problem.
+
+**Reflected-mode energy attack.** A direct paper calculation supplies the
+mixed identity and exposes the missing orthogonality. Let z,w be actual
+spectral zero points, `u_z'=-i*z*u_z-i*Phi`, `Q=Phi'/Phi`, and
+`m=integral Phi`. Put
+
+`G(z,w)=integral u_z*conj(u_w)/Phi`,
+`V(z,w)=G(z,w)-m/(z*conj(w))`.
+
+The source-ratio bounds give absolute convergence and zero endpoint values
+for `u_z*conj(u_w)/Phi`; the existing source and current envelopes admit its
+derivative. Integrating the mode equation gives `integral u_z=-m/z`.
+Differentiating the product and integrating therefore gives exactly
+
+`integral Q*u_z*conj(u_w)/Phi = i*(conj(w)-z)*V(z,w)`.
+
+Here V is the Gram matrix of the centered ratios `u_z/Phi+1/z` for the
+positive measure `Phi(x) dx`. For w=conj(z), the mixed current is zero.
+The diagonal currents are `2*Im(z)*V(z,z)` and their reflected opposites.
+The mixed zero concerns multiplication by Q, which changes sign; it is NOT
+orthogonality in the positive source measure. Thus the existing individual
+energy upper bounds below two do not combine into a Bessel/counting
+contradiction by this calculation. This is paper algebra, not a new Lean
+theorem, and no claim that actual off-axis modes exist is made.
+
+**Whole-route decision:** both attacks leave the same sharp sign obligation
+open. No full-kernel negative packet, current cancellation, uniform integer
+bound, or unconditional RH theorem was obtained. The next proof attempt must
+control the simultaneous prime--Gamma--pole form itself, or derive a joint
+mode bound that retains the mixed terms. Another symmetry cancellation or
+fixed-rank cusp estimate does not meet that requirement.
+
+### S5 direct arithmetic action: the retained zero-mode residue
+
+Let A+ be the literal right-shift operator in S1: the constant term,
+paired Gamma integral, both polar integrals, and full prime sum. Let
+`A- = R A+ R`, where `(Rf)(x)=f(-x)`. Thus `A+ Phi=x*Phi` and
+`A- Phi=-x*Phi`. Keep the Gamma numerator paired at u=0.
+
+Write the actual Volterra modes, before imposing a zero, as
+
+`U+(z,x)= i*integral_(t>0) exp(i*z*t)*Phi(x+t) dt`,
+`U-(z,x)=-i*integral_(t<0) exp(i*z*t)*Phi(x+t) dt`.
+
+Here U+ is the anti-causal mode; U- is causal. For `|Im z|<1`, their
+existing exact difference is
+
+`U- - U+ = -i*exp(-i*z*x)*Xi(z)`.
+
+The paper calculation of the arithmetic action is
+
+`A+ U+ = x*U+ - i*partial_z U+`,
+`A- U- = -x*U- + i*partial_z U-`.
+
+The exchanges use the actual source, not an assumed operator domain:
+for fixed x the existing exponential envelopes for the source and its first
+derivative bound their values on `x+t+u`, t,u>=0, by
+`C_x*exp(-(t+u))`.
+For the paired Gamma term on 0<u<=1, split its numerator into
+`(exp(-2u)-exp(-u/2))*Phi(x+t)` and
+`exp(-u/2)*(Phi(x+t)-Phi(x+t+u))`; both contain a factor u, cancelling
+the denominator. This gives an integrable `C*exp(-(1-|Im z|)*t)`
+majorant. For u>=1 the Gamma denominator stays away from zero and
+the polar weight is at most `2*exp(u/2)`. Prime terms are dominated
+by `C*exp(-(1-|Im z|)*t)*Lambda(n)*n^(-3/2)`, summable for n>=2.
+Reflection gives the left-shift exchanges. An extra factor t admits
+the displayed spectral derivatives. These are paper admission estimates;
+they have not been translated into Lean.
+
+Adding the two actions and differentiating the exact Volterra difference
+cancels both x terms, leaving
+
+`A+ U+ + A- U- = exp(-i*z*x)*Xi'(z)`.
+
+At an actual zero the two modes coincide, so with `L=A++A-`:
+
+`L u_z = exp(-i*z*x)*Xi'(z)`.
+
+Source annihilation therefore leaves a spectral derivative residue on a
+zero mode. Setting that action to zero would additionally require Xi'(z)=0;
+at a simple zero its action is nonzero. For a nonreal zero, the mode equation also gives
+`integral exp(i*w*x)*u_z(x) dx=Xi(w)/(w-z)` for w!=z in the admitted
+strip. Taking w=conj(z) shows `integral conj(u_z)*L u_z=0`.
+That zero quadratic value is compatible with an indefinite form; no
+positivity may be inferred from it. Multiple zeros require higher jets,
+since Xi'(z) can vanish. No simplicity assumption is introduced.
+
+**Whole route:** an exact arithmetic residue has been identified on paper,
+but it does not control the form's sign. The open task is still to show the
+full prime--Gamma--pole form nonnegative on all admitted packets (or produce
+a negative packet unconditionally). Do not promote this identity to an RH
+proof, an RH sign advance, or a new priority claim. The targeted deep search
+`/tmp/rh-s5-mode-residue-search.json` completed but supplied no checked exact
+match; most compiler metadata remains pending/source-only/stale.
+
+### S6: test the bare-atom falsifier after exact arithmetic inversion
+
+The preceding turn changed the next attack through its paper residue
+identity, but made no verified RH sign advance. The positive ordinary
+differential operator built from Phi leaves the complex spectral term in
+the Volterra pencil. STATUS's explicit order-one, strongly log-concave
+Riccati countermodels also rule out using those scalar curvature laws as
+zero selectors. No curvature-only proof is being pursued.
+
+The concrete falsification attempt is instead to isolate the first source
+atom using the actual arithmetic coefficients and retain its entire energy
+correction. Write `psi(x)=thetaCuspSourceTerm x 1` and
+`Ppsi(x)=sum_(n>=2) Lambda(n)/sqrt(n)*psi(x+log n)`. Exact divisor regrouping
+gives the paper identities
+
+`sum_(n>=1) mu(n)/sqrt(n)*Phi(x+log n)=psi(x)`,
+`sum_(n>=1) mu(n)*log(n)/sqrt(n)*Phi(x+log n)=-Ppsi(x)`.
+
+The second equality uses `sum_(d|n) mu(d)*log(d)=-Lambda(n)`, not a
+termwise deletion of the logarithmic channel. For each fixed x, the
+Gaussian atom bounds admit both double series absolutely. They also give
+convergence in the two weighted L2 channels on s>0: the n-th translated
+channel is bounded by a polynomial in n and log n times `exp(-c_x*n^2)`.
+The corresponding statement for the differentiated theta-tail density
+already exists in `XiCTaylorThetaTailMobiusConstraint`; no novelty is
+claimed for ordinary Mobius inversion.
+
+For the actual finite packet with nodes `x+log n` and coefficients
+`mu(n)/sqrt(n)`, its K quadratic value therefore tends, on paper, to
+
+`D(x)=2*integral_x^infinity [y*psi(y)^2-psi(y)*Ppsi(y)] dy`.
+
+This is the full arithmetic correction to the bare-atom negative diagonal.
+Replacing D by `integral 2*y*psi(y)^2` drops a channel from the actual
+packet. There is no justified negative witness from the bare atom alone.
+No interchange of this fixed-x limit with x->-infinity has been assumed.
+
+The corrected expression itself has a full-line limit. With
+`C(a)=integral psi(y)*psi(y+log a) dy`, the existing exact Wigner pair
+formula specializes, by the change of variable v=exp(2y), to
+
+`C(a)=(3/2)*a^(5/2)*(-6*a^4+23*a^2-6)/(1+a^2)^(9/2)` (a>0).
+
+For integer n>=2 this is strictly negative: writing r=n^2>=4, the
+numerator polynomial is `-6*(r-4)^2-25*(r-4)-10`.
+Absolute correlations are O(n^(-5/2)); multiplying by
+`Lambda(n)/sqrt(n)` gives an absolutely summable majorant. Thus
+
+`D(-infinity)= [33/(32*sqrt(2))]*(8/3-gamma-log(8*pi))`
+`  +3*sum_(n>=2) Lambda(n)*n^2*(6*n^4-23*n^2+6)/(1+n^2)^(9/2)`.
+
+The first term is the negative bare-atom center moment, while every
+displayed prime correction is positive. This calculation does not compare
+their sizes and is not a claim that D(x) is nonnegative.
+
+The correlation sign was independently checked in Lean scratch:
+`/tmp/rh-s6-prime-correction-sign.lean`, theorem
+`RHTower.RootS6Audit.first_atom_integer_cross_neg`, exit 0. It states
+`integral thetaCuspSourceTerm(x,1)*thetaCuspSourceTerm(x,n)<0` for every
+n>=2; the positive half-density scaling gives the same sign for C(n).
+Proof uses the existing exact pair formula and
+`cosh(log n)>=(5/4)`, not a numerical experiment. Axiom audit reports only
+`propext`, `Classical.choice`, `Quot.sound`. No limit was raised.
+
+**Sector test for this particular full-line probe.** The first atom has
+Fourier--Laplace transform
+
+`A(z)=-(z^2+1/4)/2 * pi^(-1/4-i*z/2)*Gamma(1/4+i*z/2)`.
+
+Put `G(z)=A(z)*A(-z)`. A paper Euler-product argument gives
+`Re G(z)>0` throughout `|Im z|<1/2`. For z=b+ic with b,c>0 and c<1/2,
+set `a_n=2*n+1/2` and
+
+`delta_n=arg(z^2+a_n^2)=integral_(a_n-c)^(a_n+c) b/(t^2+b^2) dt`.
+
+The intervals for n>=1 are disjoint and contained in `(a_1-c,infinity)`.
+Consequently `sum_(n>=1) delta_n < pi/2`, while `0<delta_0<pi/2`.
+Euler's Gamma limit, with the n=0 denominator cancelled, gives G as the
+limit of positive real constants times
+`(z^2+a_0^2)/product_(n=1..N)(z^2+a_n^2)`.
+Their arguments are `delta_0-sum_(n=1..N)delta_n`, uniformly inside
+`(-pi/2,pi/2)` at each fixed z. The limit is nonzero because both Gamma
+arguments have positive real part and `z^2+1/4!=0` in the open strip.
+The axes are positive directly; conjugation and evenness give the other
+quadrants. This establishes the stated sector law on paper without RH.
+
+**Admission still to audit:** identifying the literal D(-infinity) with
+the full divisor sum of G, including the source-form normalization and the
+extension from compact tests to psi. The inspected Guinand--Weil leaf is
+for a resolvent test algebra; its name is not evidence of that extension.
+The spectral sector law alone does not certify the arithmetic inequality.
+If that extension is discharged, this one full-line probe is positive
+regardless of off-line zeros, so it cannot be the sought falsifier. Finite
+tail values and mixed packets remain separate sign questions.
+
+A more applicable unconditional compact-test identity was subsequently
+located: `ccmRestrictedWeilForm_complexSmooth_eq_suzukiWeilDistribution`
+and `suzukiWeilDistribution_hermitianConvolution`. The proposed admission
+proof takes smooth cutoffs `psi_R=chi(x/R)*psi`, chi=1 near zero and
+0<=chi<=1. The exact Gaussian formula gives convergence in H1 and in both
+half-exponential L1 norms. This handles the logarithmic Gamma multiplier
+and polar pairings. The absolute atom-correlation O(n^(-5/2)) envelope
+dominates all cutoff prime terms after weighting by Lambda(n)/sqrt(n).
+Twice integrating by parts gives uniform Fourier bounds
+`|hat psi_R(z)|<=C/(1+|Re z|^2)` on `|Im z|<=1/2`; the existing
+inverse-square summability of the Xi divisor then dominates the zero sums.
+The remaining normalization check is the first atom's archimedean-only
+source equation `G+psi=x*psi` (its Laplace transform is the displayed
+Gamma factor without zeta). None of this cutoff admission or Gamma-sector
+argument has been Lean-checked; retain this as the next concrete proof
+obligation before calling the proposed full-line falsifier refuted.
+
+**Whole route:** exact prime correction is now explicit for a concrete
+attempted negative packet. No negative full-source packet or uniform
+positive form has been obtained. Paper identities and sector law are not
+Lean theorems; the route remains active, and the RH objective is unchanged.
+
+## S7: mixed packets and admission of the attempted falsifier
+
+For real logarithmic displacement t, differentiating the existing exact
+pair Mellin formula gives the paper expressions
+
+`C(t)=3/(32*sqrt(2))*(35*cosh(t)^(-9/2)-24*cosh(t)^(-5/2))`,
+`J(t)=C(t)*(8/3-gamma-log(8*pi)-log(cosh(t)))`
+`     -9/(4*sqrt(2))*sinh(t)^2/cosh(t)^(9/2)`,
+`R(t)=J(t)-sum_(n>=2) Lambda(n)/sqrt(n)*(C(t+log(n))+C(t-log(n)))`.
+
+Here J is the integral of `(2*x+t)*psi(x)*psi(x+t)`. The two-node
+full-line mixed packet asks for `abs(R(t))<=R(0)`. No such uniform
+bound or negative witness has been obtained; coarse absolute prime
+bounds leave the same exponential scale as the existing route obstacle.
+This is not a new criterion claimed as RH progress.
+
+Current concrete obligation: check the S6 Gamma-sector argument in Lean
+before using it to exclude the single-packet witness. Its finite angle
+sum can be bounded by telescoping arctans because the intervals
+`[2*n+1/2-c,2*n+1/2+c]` are disjoint for `abs(c)<1/2`.
+Full source-form admission remains separate. A sector theorem alone
+does not establish the mixed sign or the RH objective.
+
+**S7 result:** the exact Gamma-sector law is now formalized in
+`ThetaCuspAtomGammaSector.lean`. Its public statements are
+`RHTower.thetaCuspAtomGammaCore_re_pos` and
+`RHTower.thetaCuspAtomGammaPair_re_pos`. The proof uses the closed bound
+`norm(H_N)*cos(M)<=Re(H_N)` for Euler's finite Gamma products, with
+`M=atan(b/(1/2-c))<pi/2`, before passing to the nonzero Gamma limit.
+Axes and both other sign choices are included by conjugation and evenness.
+Scratch and named leaf build pass at default limits; the leaf is wired.
+The dependency-closed proof is recorded in
+`../3-formalized/rh-first-atom-gamma-sector-root-2026-09-26.md`.
+
+**Whole route:** the spectral component of the attempted single-packet
+falsifier has been settled. Noncompact source/Weil admission is still
+needed to certify that packet's arithmetic sign; mixed-packet positivity
+and RH remain open. This is component progress, not an RH sign advance.
+
+Final S7 verification: named leaf build exits 0; all three public
+declarations have only `propext`, `Classical.choice`, `Quot.sound`;
+`scripts/formal_tools.py lint` exits 0. No heartbeat/recursion override,
+numerical mathematical experiment, or git command was used. All owned
+Lean/search processes have exited. Logs are
+`/tmp/rh-s7-gamma-sector-build.log`, `/tmp/rh-s7-final-axioms.log`,
+and `/tmp/rh-s7-lint.log`.
+
+## S8: exact main-term cancellation in the mixed packet
+
+The fixed target remains the full mixed-packet sign. The source equation
+still gives no sharp jump comparison. Grouping Wigner atom pairs before
+the full-line integral also requires new convergence evidence: reflection
+makes every finite translated complete-source center pairing zero, so a
+nonzero Mobius limit must retain the escaping boundary current. The
+existing `ThetaCuspCenterCurrentReflection` already proves the underlying
+reflection identity; no novelty is claimed for it.
+
+Current derived calculation to verify: write `f(t)=cosh(t)^(-5/2)` and
+`c=3/(8*sqrt(2))`. The existing Helmholtz formula gives
+`C=c*(1/4-D^2)f`. The proposed exact continuous-prime cancellation is
+
+`integral_(v>0) exp(v/2)*(C(t+v)+C(t-v)) dv = -c*f(t)`.
+
+Thus, with `E(v)=psi_Chebyshev(exp v)-exp v`, the actual mixed kernel is
+
+`R(t)=J(t)+c*f(t)`
+`  - integral_(v>0) exp(-v/2)*(C(t+v)+C(t-v)) dE(v)`.
+
+This is a derived identity candidate, not a new primary conjecture or
+a sign proof. Its purpose is to remove the prime main term exactly before
+testing the remaining signed arithmetic correlation. No bound for that
+correlation has been established.

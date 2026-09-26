@@ -32,14 +32,19 @@ so that a lower bound on the height of the Kronecker-created off-line zeros woul
 - **Strongest positive survivor:** *local real-rootedness at the degenerate end.* For every compact `K ⊂ {|Im w| < 1/2}`
   there is `a₀ > 0` such that for `0 < a < a₀` every zero of `Λ_a` in `K` is real (and simple, asymptotically at the
   lattice `arg Γ(¼ + iu/2) + (u/2)log(1/(πa/4)) ∈ π/2 + πℤ`).
-- **Paper proof:** decomposition above; `|A(w) + A(−w)| ≥ c e^{L/4}` for `Im w ≥ δ/L` (`A(w) = E^{−z}Γ(z)`, ratio
-  `|Γ(z)/Γ(½−z)| ≥ 1 − C Im w`, `e^{vL} ≥ 1 + vL`); for `0 < Im w₀ < δ/L` a zero `w₀` forces the zero `w̄₀`, and along the
-  vertical segment `Λ_a′ = −i 2^{a−3}[A(w)(L + ψ(z)) − A(−w)(L + ψ(½−z))] + β_a′ ≈ −i 2^{a−2} L A(w₀)`, so
-  `Re(conj(−iA(w₀))·Λ_a′) > 0` and `Λ_a(w₀) ≠ Λ_a(w̄₀)`.
+- **Paper proof:** decomposition above; `z(−w) = conj(z(w) − v)`, `v = Im w`, so `|Γ(z(−w))| ≤ |Γ(z(w))| + M₁v` and
+  `|A(w) + A(−w)| ≥ e^{L/4}v(m₀L − M₁)` for every `v ≥ 0` (`sinh x ≥ x`). A zero therefore has `v ≤ 8Ce^{−L/4}/(m₀L)`,
+  its conjugate `w̄` is a zero (`Λ_a` real on ℝ), and on the segment `[w̄, w]`
+  `‖Λ_a′ − (−i c_a L A(w))‖ ≤ ½‖c_a L A(w)‖`, so `Λ_a(w̄) ≠ Λ_a(w)`: contradiction.
 - **New insight:** the family's approach to ξ is not a perturbation: in the transform normalization the cusp constant is
   the leading term, and the only RH-relevant limit is the renormalized one, where the family is a Newman-type flow.
-- **Status:** paper proof complete; Lean in progress (RHTower/ThetaPowerSmallParameterRealZeros).
+- **Status:** [L] `RHTower.thetaPowerXiC_zeros_real_of_small` (RHTower/ThetaPowerSmallParameterRealZeros), with the
+  cusp split `exists_norm_thetaPowerXiC_sub_cuspMain_le` (RHTower/ThetaPowerCuspConstantSplit); standard axioms, lint clean.
 
 ## Log
 - 2026-09-26 — receiver stated, unrenormalized form falsified (unconditional escape), renormalized form circular;
   survivor = local real-rootedness at small `a`.
+- 2026-09-26 — survivor formalized: `thetaPowerXiC_zeros_real_of_small` (∀U, ρ<1/2, ∃a₀>0, ∀a∈(0,a₀), zeros of Λ_a
+  with |Re w| ≤ U, |Im w| ≤ ρ are real); mechanism in Lean: uniform cusp remainder `O(e^{-πy/2})`, folded Mellin
+  split into the Gamma pair plus a bounded remainder, domination `‖A(w)+A(-w)‖ ≥ e^{L/4}v(m₀L−M₁)`, segment injectivity
+  with `Λ_a(w̄) = conj Λ_a(w)`.
