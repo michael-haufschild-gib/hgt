@@ -664,3 +664,81 @@ This is a derived identity candidate, not a new primary conjecture or
 a sign proof. Its purpose is to remove the prime main term exactly before
 testing the remaining signed arithmetic correlation. No bound for that
 correlation has been established.
+
+
+**S8 checked component.** The exact continuous-prime cancellation now passes
+Lean in `/tmp/rh-s8-mainterm.lean` (exit 0, standard axioms only), including
+its identification with the existing `thetaCuspWignerPairKernel (1/2)`.
+The production source `ThetaCuspWignerPrimeMainTerm.lean` also passes direct
+Lean checking. Named build and final public-axiom/lint audits are pending.
+The public theorem is
+`RHTower.thetaCuspWignerPairKernel_continuousPrimeMainTerm`.
+
+**Proof.** Put `f(t)=cosh(t)^(-5/2)`, `d=f'`,
+`k=35/4*cosh(t)^(-9/2)-6*f=(1/4-D^2)f`.
+For `B(t,v)=exp(v/2)*(d(t+v)-f(t+v)/2)`, direct differentiation gives
+`partial_v B=-exp(v/2)*k(t+v)`. The bounds
+`0<f(x)<=4*exp(-2*x)`, `abs(d(x))<=5/2*f(x)` and
+`abs(k(x))<=15*f(x)` imply absolute integrability and `B(t,v)->0`.
+The positive displacement integral is `d(t)-f(t)/2`; evenness of k and
+oddness of d give `-d(t)-f(t)/2` for the negative displacement. Their sum
+is `-f(t)`. The existing Helmholtz theorem identifies the literal kernel
+as `c*k`, with `c=(2*pi)^(-1/2)*Gamma(5/2)/2`. All these analytic
+obligations are in the checked proof; no improper integral is silently
+assigned a value without convergence.
+
+**Attack after the identity.** Estimating the signed prime remainder by
+its absolute size does not produce a uniform displacement bound: the
+moving factor `exp(-v/2)` leaves the half-exponential scale near `v=t`.
+Combining the prime and terminal transport vectors before taking their
+norm was also tested against the corpus. The existing
+`CCMActualHeadCoherentQuantileGammaProducer` already does exactly this,
+and `CCMActualHeadCoherentQuantileGammaPhaseSquare` retains the cross
+phase. Their missing lower bound is still the full source sign. This
+rephrasing is not new knowledge and supplies no new inequality.
+
+**Whole-route gate.** The continuous-prime part is now eliminated exactly,
+without an absolute-value loss. The Stieltjes remainder identity above
+remains a paper derivation; it is not proved by the new leaf. No bound on
+that remainder, mixed-packet positivity, negative full-source witness,
+or RH conclusion has been obtained. Do not replace the frozen source
+sign target by more kernel identities. The remaining task is an actual
+signed arithmetic inequality or an actual negative packet.
+
+
+**Second factorization attempt (paper diagnostic, no theorem promoted).**
+For a sufficiently regular decaying primitive h with
+`Phi=(D^2-1/4)h`, applying this differential operator in both variables
+to `K_h` leaves the endpoint correction
+`K_Phi=L_x L_y K_h + 2*h'(x)*h'(y) - h(x)*h(y)/2`.
+The product rule gives this from the derivative of
+`h'(x+s)*h'(y+s)-h(x+s)*h(y+s)/4`. Thus a positive primitive kernel
+would not by itself supply the desired positive congruence. Neither
+positivity of the actual primitive kernel nor control of its negative
+rank-one endpoint term has been proved. No new positivity claim or
+formal no-go is inferred from this conditional calculation.
+
+**Final S8 verification.** Named leaf build exits 0. Its sole public
+theorem's axiom audit exits 0 with only `propext`, `Classical.choice`,
+`Quot.sound`. The leaf is wired once. Global formal lint exits 1 only for
+unrelated unwired `CircleSeamModulusMargin` and
+`XiZeroFreeDiscSeamModulusMargin`; no own-leaf or stale-index error.
+The dependency-closed component proof is recorded in
+`../3-formalized/rh-wigner-continuous-prime-main-term-root-2026-09-26.md`.
+Logs: `/tmp/rh-s8-mainterm-build.log`, `/tmp/rh-s8-final-axioms.log`,
+`/tmp/rh-s8-lint.log`. All owned Lean/search processes have exited.
+No git, numerical mathematical experiment, or proof-limit override.
+The full source sign and RH goal remain open.
+
+
+## S9: attack the sign after exact main-term removal
+
+The previous turn made component progress: S8 is built and axiom-audited.
+It did not improve a source-sign bound. The fixed target remains full K
+positivity or a negative actual packet. This turn tests whether the
+arithmetic action constrains a hypothetical negative direction, and
+whether the zero-mode inhomogeneous derivative equation admits a genuine
+selfadjoint compression. These are proof attacks on the existing target,
+not new primary conjectures. A universal matrix inequality or a new
+receiver would not count as their success. The explicit arithmetic
+remainder is kept intact.

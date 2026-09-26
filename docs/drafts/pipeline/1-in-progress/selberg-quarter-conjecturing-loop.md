@@ -1095,6 +1095,56 @@ The floor-one method caps at N ≤ 30 even with a perfect band estimate: q_κ = 
     |T|² ≤ |𝒮|‖α‖²·Σ_s[Σ_p 36s⁴(L/p+1)p³ + Σ_{p₁≠p₂}((L/M)·9s⁶ + (2p₁^{3/2}+1)(2p₂^{3/2}+1)·15s⁵(1+log M))].
 - *Next conjecture tested (beyond 3/14 with the same tools).* Iterating the Cauchy–Poisson step needs cancellation in the completed variable h. Its length is H = M/L = X^{1/7}, far below the modulus X^{6/7}, so no further completion applies. The remaining sums over r, p₁, p₂ are horizontal (moduli). **Heuristic ceiling: 3/14 for this method.** Any further gain needs horizontal cancellation, and the family's absolute ceiling is 1/8 (cycle 82).
 
+- *Formal (built `--old`, wired, standard axioms, lint clean). Theorem A is closed in Lean with no hypotheses beyond primality and coprimality.*
+  - `HyperKloostermanPrimeSquareStationaryPhase`:
+    - `norm_hyperKloosterman_prime_sq_le`: |Kl₃(y; s²)| ≤ 3s².
+    - `norm_corr_prime_sq_le`: |Σ_{x unit} Kl₃(β₁x)Kl₃(β₂x)e(γx/s²)| ≤ 6s⁵ for s ∤ γ, by the averaging lemma `sum_eq_sum_ite_of_shift` and `card_condRed_le` (at most six critical points).
+  - `RootOfUnityIntervalCompletion`:
+    - Jordan bound `norm_exp_sub_one_ge`;
+    - harmonic bound `sum_two_div_norm_exp_sub_one_le`;
+    - Fourier inversion;
+    - CRT injectivity `kFreq_mod_injective`;
+    - three-factor completion `norm_sum_Icc_triple_le`.
+  - `HyperKloostermanFactoredModuliCompleteSums`:
+    - L3 `norm_zmodCoeff_klUnit_le` (≤ 2p√p + 1, via the corpus Weil bound);
+    - Parseval `sum_norm_sq_zmodCoeff`;
+    - `diag_le`, `offdiag_le`.
+  - `HyperKloostermanFactoredModuliBilinear.norm_sq_factored_moduli_le` (Theorem A): |T|² ≤ |𝒮|‖α‖²Σ_s(Σ_p 9s⁴(L/p+1)(2p√p+1)² + Σ_{p₁≠p₂} O). Against the trivial bound P²S³L it saves min(P^{1/2}, (L/PS)^{1/2}), which equals Q^{1/4} at the 10/49 parameters.
+  - **Remaining for a formal λ₁ ≥ 10/49:**
+    - the forced-zero identity for sym²u ⊗ ψ with ψ primitive mod p s² (Shimura's integral, gamma factor, root number τ(ψ)³). The untwisted and square-twist forced zeros are already in `HalfWeightTwisted*`.
+    - the mean square Σ_{m≤L}|λ_{sym²}(m)|² ≪ L^{1+ε};
+    - the switched off-diagonal bound (trivial, ≍ X);
+    - Hecke/non-dihedral reduction for an exceptional form.
+**Cycle 99. Conjecture: a moduli large sieve beats Kim–Sarnak in the degree-15 archimedean family.**
+- *Setting (Blomer–Brumley 1003.0559 Thm 2, read).*
+  - Kim–Sarnak's 7/64 is the archimedean Duke–Iwaniec family F(Y) = Σ_q Σ_{n²≡1(q)} λ_{sym²Π}(n)g(nY) for Π = sym⁴π on GL(5). This is a degree m = 15 family with forced zero at 8ν.
+  - The dual is D_q = Σ_m ã(m)m⁻¹Ṽ(m/L)Kl₁₅(m;q) with L = q¹⁵/X. With Deligne, D_q ≪ q⁷, which gives the law ν ≤ (m−1)/((m+1)·8) = 7/64.
+- *Observation.*
+  - At the threshold Q ≍ X^{1/8}, so L ≍ Q⁷ ≫ Q².
+  - Ṽ(x) ∼ x^{1−kν} as x → 0 (the rightmost pole of L_∞(1−s) is at 1 − kν). Hence the ℓ¹ mass of the dual weights sits at m ≍ L, unlike the finite-place version, where the weights ~1/m spread evenly on a log scale.
+  - Split at M₀ = L/Q. The piece m ≤ M₀ saves (M₀/L)^{1−kν} by Deligne. On m > M₀, the Farey large sieve (Q² + L)‖β‖² with Parseval Σ_x|Kl₁₅(x;q)|² ≈ q¹⁵ (no Deligne) saves Q^{−1/2}(L/M₀)^{kν−1/2}.
+  - The balanced moduli saving is η = 1 − kν. The law becomes t² − 8t + 1 > 0 with t = 1 − kν, i.e. ν ≤ (√15 − 3)/8 ≈ 0.10912 < 7/64, λ₁ ≥ (3√15 − 4)/32 ≈ 0.23810.
+- *Attack.* The large sieve needs the mean square ‖β‖₂, i.e. Σ_{m≤M}|λ_{sym²(sym⁴π)}(m)|² ≪ M^{1+ε}. Since sym²(sym⁴) = sym⁸ ⊕ sym⁴⊗ω² ⊕ ω⁴, this is a mean-square bound for sym⁸π. It needs Rankin–Selberg for L(s, sym⁸π × sym⁸π̃) and is unknown for Maass forms. The pointwise route |λ_{sym⁸}(p)| ≤ 9p^{7/8} loses M^{7/8}. Choosing H(s) to kill the pole at 1 − kν only moves the ℓ² mass to m ≍ L; the hypothesis is still needed. Among GL₂ families whose mean squares are known (degree 2, 3, 6 via sym⁴), the dual is short or the base exponent is worse than 7/64.
+- **Verdict: CONDITIONAL (BRIDGE).** MS₈: Σ_{m≤M}|λ_{sym⁸π}(m)|² ≪ M^{1+ε} ⇒ λ₁ ≥ (3√15−4)/32, a gain in the fifth digit.
+- *Survivor (structural):* at the archimedean place Kim–Sarnak's 7/64 is a **mean-square barrier, not a Kloosterman barrier**. The dual is long (L ≍ Q⁷), and moduli cancellation is available for free once ℓ² control of the degree-15 coefficients exists. The same arithmetic applied to d = 3 gives L ≍ Q, so no gain: this is why Iwaniec needed factored moduli.
+**Cycle 100. Audit of the formal path to λ₁ ≥ 10/49 (what Theorem A still needs).**
+- *Inputs of the square-twist family argument* (BB (1.7), cycle 98):
+  - (A) Theorem A (done in Lean);
+  - (B) the functional equation and root number τ(ψ)³ of L(s, sym²u ⊗ ψ) for ψ primitive mod p s² (the SYM2-FE card, which is at prime q so far);
+  - (C) a Hecke eigenform in the exceptional eigenspace;
+  - (D) the mean square Σ_{m≤L}|λ_{sym²}(m)|² ≪ L^{1+ε}, which is the ‖α‖² of Theorem A's Cauchy–Schwarz;
+  - (E) the Mellin/contour assembly of the family identity with the parity and imprimitive corrections;
+  - (F) the trivial switched off-diagonal bound, which needs only ℓ¹ of λ_{sym²} in progressions.
+- *ℓ¹ versus ℓ².*
+  - Hecke gives λ(k²) = Σ_{e|k}μ(e)λ(k/e)² and λ_{sym²}(m) = Σ_{d²k=m}λ(k²). The ℓ¹ bound Σ_{m≤L}|λ_{sym²}(m)| ≪ L log L therefore follows from Rankin–Selberg for u × ū alone (GL₂). That is all the Deligne-trivial dual needs.
+  - The Cauchy–Schwarz step of Theorem A needs **ℓ²**, which is the fourth moment Σ|λ_u(n)|⁴ ≪ x^{1+ε}. The fourth moment requires L(s, sym²u × sym²ū), i.e. Gelbart–Jacquet together with GL(3) × GL(3) Rankin–Selberg.
+- *Attempts to avoid ℓ², all FAILED.*
+  - Positivity of λ(k)² with Cauchy–Schwarz weighted by λ(k)²: the weights are non-smooth, so Poisson in m is blocked.
+  - ‖α‖₂² ≤ ‖α‖₁‖α‖_∞ with the GL₂-only θ_fin ≤ 1/4 loses L^{1/2} and kills the Q^{1/4} saving. With Kim–Sarnak's θ = 7/64 a net saving Q^{0.11} survives, but that is no longer GL₂-only and is weaker than Kim–Sarnak.
+  - Moving the Cauchy–Schwarz to (s, p) makes the correlations horizontal.
+  - The weight-½ Rankin–Selberg (∫|u|²|θ|²E) produces shifted convolutions, not the fourth moment.
+- *The degree-2 family u ⊗ ψ* has a GL₂-available ℓ² (Rankin–Selberg of u). It needs a moduli saving η > 1/6 over Weil for Σ_q Σ_m β_m S(1, m; q) with L = Q^{2/3}. Factored moduli give only η = 1/18 (P = Q^{1/9}). With P = Q, completing the h-sum gives exactly the trivial bound. **FALSE as a GL₂-only route past 3/16.**
+- **Verdict (formal frontier):** every known route to a formal λ₁ > 3/16 passes through GL(3) information: the fourth moment for Iwaniec, Gelbart–Jacquet for Luo–Rudnick–Sarnak, Kim's sym⁴ for Kim–Sarnak. Iwaniec's "entirely GL₂" claim must use a device for (D) that the reconstruction does not see. **[OPEN CORE, formal]:** the fourth moment of Hecke eigenvalues of a Maass form without GL(3), or a moduli-saving argument that needs only ℓ¹ of λ_{sym²}.
 **Conclusion of cycles 56–61** (corrected by cycle 71: Iwaniec's GL₂-only 10/49 passes 3/16 via Shimura's entire twisted sym²). Every *Kloosterman-sum* route checked reaches exactly 3/16, and Kim–Sarnak's 7/64 is reached only through Sym⁴. What stops each route: Weil's bound is sharp for weight-uniform arguments (theta barrier); the bilinear route needs saving past the Cauchy–Schwarz diagonal; the forced-zero route needs Kl₁₅ cancellation over moduli (GL(15)). No new unconditional theorem survived, so nothing was formalized in Lean this batch. Full Selberg remains open.
 
 ### User-directed Einasto discovery — cycle 37 input

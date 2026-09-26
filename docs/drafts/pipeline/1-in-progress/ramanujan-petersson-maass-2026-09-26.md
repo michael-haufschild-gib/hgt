@@ -594,3 +594,244 @@ Whole route: shrinking support supplies an actual positive hyperbolic detector, 
 The three tests address the actual detector/sign/cost obstacle left by V. They discriminate between failed constructions and a positive survivor, but produce no improved bound for an actual Hecke-Maass eigenvalue and no counterexample. The current methods still do not close the required global arithmetic estimate. No target certificate exists; no auxiliary Lean module was added to present these paper tests as completion.
 
 Searches `/tmp/rp_short_wave_trace_20260926q.json` and `/tmp/rp_positive_filter_cost_20260926r.json` both completed with nonpartial retrieval over 59,744 inventoried files. This is retrieval coverage, not compiled coverage. The former suggested finite-cover Fourier transport rather than a complete spectral trace formula; the latter found the existing autocorrelation construction but no actual-Maass estimate resolving the cost. Its proposed ingredient chain remains unverified. Owned sessions 80086 and 26124 exited. No Lean process, numerical experiment, or resource-limit change was launched in this continuation. Formal integration/audit of W-Y has not been performed, and no formal no-go closure is claimed.
+
+## Resumed attack: signed continuous spectrum
+
+The previous tests changed the next action: Y assumed positivity on the entire real line, whereas the trace argument only needs positivity at actual cusp parameters. Failed candidates alone were not grounds to stop this research. The goal is active. The request for 3,000 conjectures has not been fulfilled; the following six mechanism tests are not relabeled as 3,000 independent conjectures. In the terminology of the scientific-method document, these are bridge candidates and hostile tests, not claimed new universal laws or claims of literature priority.
+
+### Candidate Z: finitely many moments with actual cusp positivity
+
+[PAPER CONSTRUCTION, NOT LEAN] For every finite m and every fixed actual cusp parameter t_f, there exists an even entire, strip-Schwartz h, positive at every cusp parameter, with h(t_f)=1 and
+
+`I_k(h)=integral_R t^(2*k+1)*tanh(pi*t)*h(t) dt=0` for `0<=k<2*m`.
+
+Here m>=1; the zero-order case needs no construction. Discreteness gives a closed interval [A,B] inside (0,infinity) containing no squared real cusp parameter. Put c in its interior. For L>0, let P_L be the monic orthogonal polynomial of degree 2*m for the positive measure
+
+`d mu_L(x)=1_(x>0)*tanh(pi*sqrt(x))*exp(-L*(x-c)^2) dx`.
+
+All its roots eventually lie inside (A,B). To justify this rather than assume it, rescale x=c+y/sqrt(L). Every rescaled moment tends to `tanh(pi*sqrt(c))*integral_R y^k*exp(-y^2) dy`, by dominated convergence, including the moving lower endpoint. The finite positive-definite Gaussian Gram matrix has nonzero determinant. The coefficient systems for the monic degree-2*m polynomials therefore converge. A root bound for monic polynomials with bounded coefficients bounds all rescaled roots. The roots are real and in the interval of orthogonality; after undoing the rescaling they lie in (A,B). The standard root-location fact is stated in [DLMF 18.2(vi)](https://dlmf.nist.gov/18.2#vi).
+
+Set `h_L(t)=P_L(t^2)*exp(-L*(t^2-c)^2)`. Even degree makes P_L positive outside (A,B), so h_L is positive at all real cusp parameters and also at every purely imaginary parameter. Substitution x=t^2 gives exactly I_k(h_L)=0 for k<2*m. Its value at t_f is positive, permitting normalization. The quartic exponential gives rapid decay on each fixed horizontal strip, so admissibility is not limited to the real axis.
+
+The corpus supplies genuine ingredients, not this actual-spectrum theorem: `OrthogonalMomentPolynomials.lean` defines the monic family and proves lower-degree orthogonality; `GaussianWindowMomentRescaling.lean` proves Gaussian rescaling and a bounded-density cooling limit. The shifted half-line measure, coefficient convergence, and actual cusp-spectrum application above were checked on paper, not in Lean. A prescribed finite set of imaginary residue zeros can also be imposed by a squared polynomial factor and incorporating it in the positive measure, provided t_f is not among those zeros.
+
+Whole-route meaning: cusp positivity does NOT force the archimedean moment obstruction from full real-line positivity. Finite moment cancellation is possible. This construction alone says nothing about the signed arithmetic trace or constants uniform in m.
+
+### Candidate AA: a uniformly controlled all-moment limit
+
+[FAILED LIMIT, PAPER] Suppose normalized h_m as above had a common bound `abs(h_m(x+i*y))<=C*exp(-c0*x^4)` on a fixed strip containing t_f, with C,c0>0 independent of m. Local normal-family compactness gives a holomorphic limit h with h(t_f)=1. Dominated convergence passes every I_k to the limit. The finite signed measure on [0,infinity) with density `tanh(pi*sqrt(x))*h(sqrt(x))` has an entire Laplace transform, and all its moments vanish. The Laplace transform is identically zero; Fourier uniqueness makes h zero on the positive real axis, then throughout the strip. Contradiction.
+
+Positive survivor: any normalized all-orders sequence must escape this common strip-decay bound. This is NOT a proof that its unweighted L1 norm or its Eisenstein cost must grow; candidate AD below specifically tests and rejects that stronger inference. Whole-route meaning: an infinite-order passage needs an explicit topology and tail control, not just separately vanishing moments.
+
+### Candidate AB: cusp-only positivity with short wave support
+
+[PAPER DERIVATION] Let h be real and even on the real line, Schwartz, with inverse Fourier transform supported in [-a,a], and suppose h>=0 at all real cusp parameters. There is a fixed a0>0 such that, for a<a0, any nonzero such h has `integral h>0`, even if h is negative between cusp parameters.
+
+The actual source input is the cusp Weyl law with remainder `O(T/log(T))`, recorded in [Li--Sarnak, equations (1.2)-(1.4)](https://web.math.princeton.edu/sarnak/SarnakNumberPaper04.pdf). It implies that every interval (T,T+1] contains a real cusp parameter for all sufficiently large T. Thus the symmetric set of distinct real cusp parameters admits ordered Voronoi cells of uniformly bounded length D. No numerical eigenvalue or conjecture about simple spectrum is used.
+
+Choose a fixed Schwartz reproducing kernel K with Fourier multiplier equal to one on [-1,1]. After scaling, `h=K_a*h` and `norm(h')_1<=a*norm(K')_1*norm(h)_1`. On a cell containing a sample s with h(s)>=0, `h_-(x)<=integral_[s,x] abs(h')`. Integration over cells yields
+
+`integral h_- <= D*norm(h')_1 <= D*a*norm(K')_1*norm(h)_1`.
+
+For small enough a the negative mass is strictly less than half the absolute mass. Hence `integral h>0`. In particular, a nonzero cusp-positive short-support response cannot have g(0)=0. This removes W's spatial nonnegativity hypothesis, within a possibly smaller support threshold.
+
+Weighted version: write H(x)=h(x/a), M0=integral abs(H), M1=integral abs(x)*abs(H). Reproduction gives `sup abs(H)<=C*M0`; integrating over a sufficiently small fixed interval then gives `M0<=C'*M1`. Convolution with K' gives `integral abs(x)*abs(H')+integral abs(H')<=C''*M1`. The rescaled Voronoi cells have length at most a*D, so
+
+`integral abs(x)*H_-(x) <= C*a*M1`.
+
+Also `abs(x)*(1-tanh(pi*abs(x)/a))<=C0*a`. It follows that `I_0(h)>=a^(-2)*(1-C1*a)*M1`. Reproduction on a bounded complex strip bounds `abs(H(a*t_f))` by a constant times M1. Consequently normalization h(t_f)=1 forces `I_0(h)>=c_f/a^2` for sufficiently small a, without assuming positivity on the continuous spectrum. This extends Y's small-support diagonal cost to actual cusp-only positivity.
+
+Positive survivor: quantitative comparison between the signed Plancherel integral and the absolute first moment for sufficiently short support. The full source-and-sampling argument remains paper-only. It does not exclude wider wave support.
+
+### Candidate AC: the nonlinear trace grid has its own absolute cost
+
+[PAPER DERIVATION] Fix N=p^n>=3 and define `u_k=2*arcosh(1+k/(2*N))`, k>=1. These are the positive hyperbolic trace-grid points. The spacing satisfies
+
+`u_1^2<=4/N`,
+`(u_(k+1)-u_k)^2<=1/(N*k)` for 1<=k<=N,
+`(u_(k+1)-u_k)^2<=4/k^2` for k>=N.
+
+Therefore the sum of squared gaps, including the initial gap, is `O((1+log(N))/N)`, uniformly in an upper cutoff. The split grid points are `2*d*log(p)` for 1<=d<=n. Their integer trace indices are isolated, and the first index k=1 is nonsplit for N>=3. Deleting isolated split nodes increases the squared-gap sum by at most a fixed factor, using `(x+y)^2<=2*(x^2+y^2)`.
+
+If g is even, C1, compactly supported, and zero at all retained nonsplit nodes, integration of the distance-to-nearest-zero bound gives
+
+`norm(g)_1 <= C*sup abs(g')*(1+log(N))/N`.
+
+This includes the interval next to zero, where g(0) need not vanish, and the final interval ending at the boundary of support. For `h(t)=integral g(u)*exp(i*t*u) du`, support [-b,b], and `abs(h(t_f))=1`, Fourier inversion then gives
+
+`integral abs(t)*abs(h(t)) dt >= c*exp(-b*abs(Im(t_f)))*N/(1+log(N))`.
+
+This conclusion needs no spectral positivity. Combining it with AB, when b is fixed and sufficiently small, gives the same order lower bound for the SIGNED identity contribution of every cusp-positive exact nonsplit-grid annihilator. It covers signed g and g(0) nonzero, not merely V's sine-squared example.
+
+Whole-route meaning: deleting the nonsplit terms under short fixed wave support cannot produce polynomial-in-n archimedean cost. Positive survivor: the exact nonlinear zero mesh controls an absolute spectral first moment. This is not a bound for the actual Hecke trace or eigenvalue. The proposed extension to a combined identity-plus-Eisenstein cost at arbitrary fixed support is not yet recorded as a theorem.
+
+### Candidate AD: move corrections into high spectral gaps
+
+[POSITIVE SURVIVOR, PAPER] The stronger claim suggested by AA, that arbitrarily many finite moment cancellations must incur large unweighted or low-weighted L1 cost, is false when the corrections are allowed to move to infinity. Here is a construction for every FIXED finite number K of moments. Its constants are not uniform in K.
+
+Start with an even entire strip-Schwartz h0 positive on real and imaginary axes and normalized at t_f; for example a normalized `exp(-t^4)`. The Weyl law in the squared parameter x=t^2 has counting asymptotic x/12. It implies fixed-width empty intervals (c-d,c+d) in every sufficiently large interval [alpha*R,beta*R], for suitable fixed d>0 and any fixed 0<alpha<beta: otherwise uniformly smaller gaps would force a counting density greater than 1/12. Shrink the empty intervals to keep their endpoints outside the spectrum.
+
+For a gap center c, use the two templates
+
+`v_c^+(t)=exp(-L*(t^2-c)^2)`,
+`v_c^-(t)=((t^2-c)^2-d^2)*exp(-L*(t^2-c)^2)`.
+
+Both are nonnegative at all actual cusp parameters, including imaginary ones; the minus template is negative only when t^2 lies in the empty interval. Fix L so that `integral_R (v^2-d^2)*exp(-L*v^2) dv<0`. As c tends to infinity, substitution x=t^2 shows I_0(v_c^+) tends to a positive constant and I_0(v_c^-) to a negative constant. Normalize their absolute I_0 to one, calling the results w_c^+ and w_c^-.
+
+Choose K separated intervals for c_j/R in a fixed positive compact interval. For odd j select the minus template at a gap center; for even j select the plus template. Then
+
+`R^(-k)*I_k(w_(c_j)^sign) = sign*(c_j/R)^k + o(1)` for 0<=k<K.
+
+The limiting coefficient system is a Vandermonde system. Its solution for right-hand side `(-I_0(h0),0,...,0)` has all coefficients strictly positive with this alternating choice of signs: the Lagrange coefficient at zero for the j-th ordered positive node has sign `(-1)^(j-1)`. Separation of the node intervals makes invertibility, positivity, and boundedness uniform in R. Perturbing to the actual moments and right-hand side `-R^(-k)*I_k(h0)` gives positive bounded coefficients a_j(R) for all sufficiently large R. Thus
+
+`h_R=h0+sum_j a_j(R)*w_(c_j)^sign`
+
+is positive at every cusp parameter and satisfies I_k(h_R)=0 for k<K exactly. Each correction has
+
+`integral (1+abs(t))^epsilon*abs(w_(c_j)^sign(t)) dt = O_K(R^((epsilon-1)/2))` for 0<=epsilon<1.
+
+It also tends to zero uniformly on each fixed complex compact set. Hence h_R(t_f) tends to one and division by that positive value gives exact normalization while retaining the moment zeros and cusp positivity. In particular, h_R tends to h0 in these low-weighted L1 norms despite having all K selected moments zero. Moment mass escapes to high parameters; this does not contradict AA.
+
+The qualitative reciprocal-zeta growth needed to transfer the low-weighted estimate to the usual Eisenstein weight is supported by [Cully-Hugill--Leong, introduction and Corollary 4](https://arxiv.org/pdf/2312.09412). Only polylogarithmic growth is needed, not the paper's explicit numerical constants or verified finite zero heights. For the weight `abs(zeta(1+2*i*t))^(-2)`, the absolute correction cost tends to zero. This statement about a specified weight does not silently establish any missing normalization bridge in the corpus.
+
+Whole-route meaning: finite archimedean moment cancellation can coexist with actual cusp positivity and a small continuous-spectrum correction. The fixed-gap construction's normalization explosion is not an intrinsic obstruction. This is one quantified family, not thousands of independent conjectures, and is not kernel-verified.
+
+### Candidate AE: does the cheap correction remove the transition kernel?
+
+[FAILED INFERENCE, PAPER] It does not. From the [Bessel series, DLMF 10.2.2](https://dlmf.nist.gov/10.2#E2), the Gamma recurrence and [DLMF 5.4.3](https://dlmf.nist.gov/5.4#E3), for real t and 0<x<=X one obtains
+
+`abs(J_(2*i*t)(x)) <= exp(X^2/4)/abs(Gamma(1+2*i*t))`,
+`abs(t*J_(2*i*t)(x)/cosh(pi*t)) <= C_X*sqrt(abs(t))`.
+
+For the first inequality, the order-rising product has absolute value at least k! in the k-th series term. The second follows from `abs(Gamma(1+2*i*t))^2=2*pi*abs(t)/sinh(2*pi*abs(t))`. The value at t=0 is obtained by continuity. Consequently the forward transform B satisfies
+
+`sup_(0<x<=X) abs(B_(h_R)(x)-B_(h0)(x)) <= C_X*integral sqrt(abs(t))*abs(h_R(t)-h0(t)) dt`,
+
+which tends to zero by AD. After target normalization the same conclusion holds. Thus cancellation of any fixed finite list of archimedean moments leaves the Bessel transform unchanged on every fixed geometric interval in this construction. Whenever B_(h0) has a nonzero interval, R's absolute square-root-N majorant obstruction persists uniformly along R=R(N) tending to infinity. This is a lower bound for the absolute majorant, not for the signed arithmetic trace.
+
+Positive survivor: a quantitative continuity estimate distinguishes moment cancellation at infinity from changing the actual kernel at c comparable to N. Whole-route meaning: the next attack must alter or directly control this transition contribution. Further finite moment cancellations alone are not evidence of a Ramanujan gain.
+
+### Audit and next discriminating question
+
+Z-AA resolve finite versus infinite moment cancellation; AB-AC constrain signed short-support exact filters; AD-AE supply a cheaper positive survivor and show precisely what it fails to change. No actual Hecke exponent improved and no Lean proof or falsification of the goal was produced. These are paper arguments with external spectral inputs, not formally closed no-go certificates. The 3,000-conjecture request remains incomplete; no count inflation is used.
+
+The next discriminating question is whether a cusp-positive correction can change the Bessel kernel in the c-comparable-to-N range while controlling its continuous-spectrum cost and the remaining signed arithmetic sum. AE only excludes corrections small in the specified square-root-weighted L1 norm. It does not exclude corrections of bounded nonzero norm or an arithmetic cancellation argument.
+
+Search `/tmp/rp_cusp_positive_moments_20260926s.json` completed nonpartially over 59,749 files; `/tmp/rp_cusp_sampling_20260926t.json` over 59,750. Retrieved Gaussian, orthogonal-polynomial and Fourier-derivative source statements were distinguished from the missing actual spectral applications. No complete Lean chain for Z-AE was returned or claimed. Sessions 85122 and 46931 exited. No Lean process, numerical experiment, added axiom, or heartbeat change was used.
+
+### Candidate AF: polynomial-cost escaping corrections can change the transition profile
+
+[FAILED BRIDGE, PAPER] AE assumed that the square-root-weighted L1 correction tends to zero. Allowing that norm to stay bounded, or even to grow polynomially with the lowest spectral frequency, still does not permit cancellation of a fixed nonzero transition profile against smooth tests.
+
+Write `D=x*d/dx`, `A=-D^2-x^2`, and let phi be smooth with compact support in (0,infinity). The [Bessel equation, DLMF 10.2.1](https://dlmf.nist.gov/10.2#E1) gives
+
+`A J_(2*i*t)(x)=4*t^2*J_(2*i*t)(x)`.
+
+The operator A is formally symmetric for dx/x on compactly supported tests. Iterating integration by parts gives, for t nonzero,
+
+`integral J_(2*i*t)(x)*phi(x) dx/x = (4*t^2)^(-m)*integral J_(2*i*t)(x)*(A^m phi)(x) dx/x`.
+
+There are no boundary terms. The pointwise kernel bound in AE now implies the following quantitative positive statement. For any integrable spectral correction q supported in abs(t)>=T>=1, put `Mhalf(q)=integral sqrt(abs(t))*abs(q(t)) dt`. Then
+
+`abs(integral B_q(x)*phi(x) dx/x) <= C_(phi,m)*T^(-2*m)*Mhalf(q)`.
+
+Fubini is justified by AE on the fixed compact support of phi. Thus if Mhalf(q_T)=O(T^a) for any fixed a, B_(q_T) tends to zero against every such phi. The same conclusion holds for corrections with a nonzero low-frequency tail if that tail's Mhalf tends to zero and the high-frequency part obeys the stated bound.
+
+If B0 is a fixed nonzero continuous profile on a compact interval, choose phi there with `integral B0*phi dx/x` nonzero. Uniform approximation B_(q_T) -> -B0 on that interval would contradict the preceding limit. More quantitatively, once the pairing cancels at least half its nonzero baseline value, Mhalf(q_T)>=c_(phi,m)*T^(2*m) for every fixed m. This is superpolynomial growth in the lowest spectral frequency; constants depend on m.
+
+Whole-route meaning: scaling the escaping-gap corrections by a polynomial does not fix AE. This rules out smooth-profile cancellation, not cancellation at a finite arithmetic grid, not an oscillatory correction correlated with Kloosterman signs, and not a family without spectral escape. No cusp-positivity assumption was used, so adding it cannot rescue this particular bridge. The exact integration-by-parts estimate is the positive survivor. Its imaginary-order Bessel application is not Lean-verified.
+
+### Candidate AG: delete each modulus separately with a Gaussian-class weight
+
+[FAILED BRIDGE, PAPER] Exponential spectral decay puts the forward Bessel transform in a bounded holomorphic class where the reciprocal modulus grid is a uniqueness set. This also rules out deleting individual arithmetic summands while leaving a nonzero Bessel transform.
+
+Assume
+
+`Mpi(h)=integral sqrt(abs(t))*exp(pi*abs(t))*abs(h(t)) dt < infinity`.
+
+The same Bessel series as in AE, now using the principal branch at Re(z)>0, gives for abs(z)<=X
+
+`abs(t*J_(2*i*t)(z)/cosh(pi*t)) <= C_X*sqrt(abs(t))*exp(2*abs(t)*abs(arg(z)))`.
+
+Since abs(arg(z))<pi/2, the forward transform B_h is holomorphic on the right half-plane and uniformly bounded on every right half-disc. Local dominated integration establishes holomorphy; the bound is `abs(B_h(z))<=C_X*Mpi(h)`. Every quartic-Gaussian weight used in Z or AD satisfies this condition individually. No uniform bound over those families is asserted.
+
+For A>0, suppose B_h(A/c)=0 for every sufficiently large positive integer c. If B_h(r) is nonzero for some r>0, restrict B_h to the disc of radius r centered at r. Under z=r*(1+w), the sample zeros have disk coordinates
+
+`w_c=A/(r*c)-1`, with `1-abs(w_c)=A/(r*c)` for sufficiently large c.
+
+Their Blaschke defects have divergent sum. A bounded nonzero holomorphic disk function cannot have these zeros, a source-level theorem already available as `RHTower.summable_one_sub_norm_of_bounded_analytic_zeros_openDisk` in `SectorPrimeZeroUniqueness.lean` and used by `RHTower.not_bounded_analytic_zero_on_all_frequencyCayley` in `FrequencySectorBlaschkeCompleteness.lean`. Consequently B_h vanishes on the positive real axis, then on the right half-plane by analytic uniqueness. The application here is a paper argument, not an invoked Lean theorem.
+
+The arithmetic refinement needs only prime moduli. For any prime q and integer frequencies m,n, the classical sum S(m,n;q) is nonzero. Indeed let zeta be a primitive q-th root and let a_j count units u with `m*u+n/u=j mod q`. If `sum_(j<q) a_j*zeta^j=0`, cyclotomic irreducibility forces all integer coefficients a_j to be equal. But their sum is q-1, which cannot equal q times an integer. This precise coefficient-equality fact is present in the inspected mathlib source `IsPrimitiveRoot.sum_eq_zero_iff_forall_eq_int` in `RingTheory/Polynomial/Cyclotomic/Roots.lean`. No quantitative lower bound for S follows.
+
+Therefore, for fixed N>=1, termwise deletion
+
+`S(N,N;c)*B_h(4*pi*N/c)=0` for all sufficiently large c
+
+forces B_h to vanish identically: the prime sums are nonzero and the reciprocal primes have divergent sum. The same proof allows deletion of finitely many primes. This is stronger than requiring B_h itself to vanish at every modulus, but much weaker than ruling out cancellation BETWEEN moduli. It is not a statement that h=0, a lower bound for a signed trace, or a Ramanujan obstruction.
+
+Positive survivors:
+
+- Reciprocal integer samples, and even reciprocal prime samples alone, determine this bounded-holomorphic Bessel transform uniquely.
+- The finite form is quantitative. If distinct zeros A/c map into abs(w)<=rho<1 in the disc centered at r, finite Blaschke division gives `abs(B_h(r))<=C_(2*r)*Mpi(h)*rho^(number of zeros)`. Normalization at this geometric point therefore forces an exponential-in-count complex-strip cost. Normalization h(t_f)=1 does NOT by itself give such a lower bound for B_h(r).
+- The angular threshold matters. For every theta<pi/2 and A>0, choose L>pi*A*tan(theta). The function `exp(-L/z)*sin(pi*A/z)` is nonzero, holomorphic and bounded on abs(arg(z))<theta, yet vanishes at every A/c. The bound follows directly from `-L*cos(arg(z))+pi*A*abs(sin(arg(z)))<0`. Thus boundedness only on a narrower sector cannot justify the same uniqueness argument. This is a counterexample in the analytic class, not a constructed cusp-positive Bessel transform.
+
+Whole-route meaning: Gaussian-class exact termwise deletion is not a new route. Viable alternatives must retain signed cancellation, use approximate deletion with its norm cost accounted for, or leave this exponential spectral class. AF additionally prevents a polynomial-cost high-frequency correction from cancelling a fixed smooth transition profile. Neither result supplies the missing signed arithmetic estimate.
+
+### Audit after AF-AG
+
+Deep mechanism search `/tmp/rp_transition_interpolation_20260926u.json` completed with nonpartial retrieval over 59,755 files; its proposed theta-gap chain was unrelated to the required Bessel estimate and was not used. The attempted `--mode method` command was rejected because supported modes are deep, hybrid and lexical; it launched no research job. The corrected deep mechanism search `/tmp/rp_blaschke_uniqueness_20260926v.json` returned partial results with the same inventory coverage. Its suggested harmonic-divergence chain was not verified or used. Direct source inspection found the applicable bounded-zero and cyclotomic coefficient statements instead.
+
+The inspected `KloostermanPhysicalResidueModulusBilinear.lean` retains the signed modulus sum exactly and proves a fixed-modulus baseline; it explicitly leaves the Kuznetsov--Deshouillers--Iwaniec estimate for later. No arithmetic saving was extracted from that identity. AF-AG remain paper-level bridge tests with the exact Bessel/analytic applications unformalized; the no-go closure requirement has not been discharged in Lean. No improved actual Hecke exponent, unconditional target certificate, or completed 3,000-conjecture catalogue exists. Owned search sessions 16288 and 1682 exited, and no Lean process was launched in this continuation.
+
+## Signed arithmetic continuation
+
+The previous turn changed the next action by excluding specific filter mechanisms; it was research progress, not a formal advance. The present target is the actual signed modulus sum. Existing coprime collision estimates were inspected with their energy factors retained. `KloostermanGlobalCollisionCoprime.lean` bounds collisions by twice the squared aggregate source energy, and its large-sieve corollary retains the classical source-length plus modulus-squared scale. `KloostermanCoprimeProductPeriodCompletion.lean` supplies exact cancellation over a product period, not over a short arbitrary interval. These are genuine ingredients, not the missing individual diagonal estimate.
+
+### Candidate AH: average the exponent over a complete multiplicative orbit
+
+[FAILED APPLICATION, PAPER] For an odd prime q and the quadratic character chi, elementary additive-character orthogonality gives the positive identity
+
+`(1/(q-1))*sum_(a in F_q^*) S(a,a;q) = (1+q*chi(-1))/(q-1)`.
+
+To check it, exchange the sums. The inner sum over a is q-1 when u+1/u=0 and -1 otherwise; the number of such units u is 1+chi(-1). Thus complete nonzero-residue averaging really does reduce the square-root-sized individual baseline to a bounded average. If p generates F_q^*, averaging S(p^k,p^k;q) over a complete period yields exactly this expression. No primitive-root assertion for any family of q is assumed.
+
+The transition weight does not provide that period. A fixed block B supported in [a,b] inside (0,infinity) makes B(p^k/c) nonzero only for k in an interval of length log(b/a)/log(p), independently of c. In contrast, for q not dividing p, `r=ord_q(p)` satisfies `q<=p^r-1`, hence `r>=log(q+1)/log(p)`. At q comparable to p^n this period grows at least linearly with n. The complete-period identity cannot be applied to the bounded-width exponent window. This is failure of that inference, not a proof that the short weighted orbit has no cancellation.
+
+Positive survivor beyond the displayed mean: if `abs(B(x))<=C*min(x^a,x^(-b))` with a,b>0 and ell=log(c)/log(p), the sum of abs(B(p^k/c)) over abs(k-ell)>=L is at most
+
+`C*(p^(-a*L)/(1-p^(-a)) + p^(-b*L)/(1-p^(-b)))`.
+
+Each side is a geometric series. This is an absolute kernel-tail bound for one modulus, not a uniform negligible bound after summing all moduli. The remaining short-orbit cancellation is unproved.
+
+### Candidate AI: short-order moduli already have an acceptable absolute bound
+
+[DERIVED BRIDGE, KERNEL-VERIFIED AS DESCRIBED BELOW] Fix an integer p>=2 and a finite order-ratio cutoff k. Define U(p,R) as the union, over 1<=r<=R, of the positive divisors of p^r-1. Every modulus with a positive multiplicative period at most k*n belongs to U(p,k*n). For every epsilon>0,
+
+`card U(p,k*n) <= C_(p,k,epsilon)*(p^n)^epsilon`.
+
+Proof: the divisor bound gives `card U(p,R)<=R*C_delta*(p^R)^delta`. Set delta small enough in terms of k and epsilon and absorb the factor n into the remaining positive exponential exponent. The r=0 term may be included because the positive-divisor finset of zero is empty. No primality of p is required, and k=0 is harmless.
+
+The elementary Kloosterman bound `abs(S(m,l;c))<=phi(c)<=c` then proves an actual arithmetic estimate: for ANY subset Q of these short-period moduli and ANY weights satisfying `abs(w_c)<=1/c`, the absolute summand mass, and hence the signed sum, is O_((p,k,epsilon))((p^n)^epsilon), uniformly in the two integer frequencies m,l. Thus this part of the coprime trace can be removed at an acceptable subpower cost without invoking Weil. On a fixed Bessel transition block, its bounded kernel changes only the constant.
+
+This is stronger for formal implementation than the initially considered prime-only counting argument: it includes composite moduli and needs only the corpus's elementary Kloosterman bound and proved divisor bound. A sharper O(N^(-1/2+epsilon)) transition estimate follows on paper from the full classical Weil bound, but is not the theorem selected for Lean and will not be claimed kernel-verified.
+
+Whole-route meaning: bounded multiplicative-order ratio is not where a superpolynomial prime-power trace obstruction can remain. The complement has order/n unbounded and still requires signed cancellation. Controlling this subset alone does NOT improve an actual Hecke exponent or prove Ramanujan. This is one derived arithmetic bridge, not multiple conjectures obtained by varying p,k or epsilon.
+
+### AI formal certificate and scope audit
+
+Installed `formal/GaloisForLFunctions/RHTower/Sieve/KloostermanShortOrderModuli.lean`, imported by the existing RHTower umbrella. The implementation follows the corpus convention that index q denotes modulus q+1. Its four public theorems are:
+
+- `mem_shortOrderModuli_of_dvd`: every positive period r<=R with q+1 dividing p^r-1 enters the finite set.
+- `card_shortOrderModuli_le`: explicit divisor-bound estimate at a finite cutoff R.
+- `shortOrderModuli_subpower`: for fixed p>=2, k and epsilon>0, one positive constant works for EVERY n.
+- `shortOrder_kloosterman_subpower`: the same uniform constant bounds the sum of absolute weighted classical Kloosterman summands, for every subset of the short-period set, all integer frequencies, and every weight with norm at most 1/(q+1).
+
+Thus the result is an unconditional arithmetic theorem with domain and weight conditions, not a theorem assuming an unproved cancellation estimate. It is NOT a closed proof of the user goal: the large-order complement and its connection to an improved actual Maass eigenvalue bound remain unresolved. The stronger Weil-based decay rate discussed above and AH's orbit-mean identity were not formalized in this module.
+
+Validation: the full scratch proof passed `lake env lean /tmp/rp_short_order.lean` after one ambiguous natural-to-real cast was explicitly typed. No heartbeat or recursion limit was changed. Final targeted command `lake build GaloisForLFunctions.RHTower.Sieve.KloostermanShortOrderModuli` passed; no full or umbrella build was run. Imported-module audit `lake env lean /tmp/rp_short_order_audit.lean` passed: the definition and all four theorems depend only on propext, Classical.choice and Quot.sound. No added axiom or numerical experiment was introduced; arithmetic proof steps use ordinary kernel-checked tactics.
+
+`scripts/formal_tools.py lint` exited 1: its sole reported error was the unrelated module `GaloisForLFunctions.RHTower.XiSymmetricDiscIndexParity` being unreachable from the RHTower umbrella; it also reported existing large-file warnings. That module was not changed. Do not report a clean global lint gate. Scoped whitespace checking passed. Owned scratch, build, audit and lint sessions all exited.
+
+Search `/tmp/rp_signed_modulus_20260926w.json` completed nonpartially over 59,757 inventoried files and `/tmp/rp_prime_power_orbit_20260926x.json` over 59,759. Suggested symmetry and expansion chains were not mistaken for cancellation bounds. The [2025 Blomer--Risager--Shparlinski paper, Theorems 1.1 and 1.3](https://arxiv.org/pdf/2411.17823) supplies averaging over arithmetic frequencies; those statements do not supply an individual diagonal prime-power estimate. The [Sarnak--Tsimerman formulation](https://web.math.princeton.edu/sarnak/LinnikSelbergApr07.pdf) identifies a stronger signed-modulus conjecture, not an unconditional input available to this proof.
+
+The next unresolved arithmetic range is the complement of every fixed bound ord_c(p)<=k*n. The new certificate isolates that range but does not control it. No actual Hecke exponent improved, no Maass counterexample exists in this work, and the request for 3,000 conjectures remains unfinished. Goal remains active.

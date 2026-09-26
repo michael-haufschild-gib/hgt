@@ -112,3 +112,19 @@ Lean bricks in order:
 - (c) the angular-decay inequality;
 - (d) the saddle integral;
 - (e) assembly with `xiSliceCoeff` through the Cauchy coefficient formula.
+- 2026-09-26 — brick W1 [L]: `HTGeometry/GammaSymmetricSplitDecay.lean`. Exact law for the Stirling main term `φ(X,Y)=Re(w log w − w)`: `φ(X,·)` is concave (`∂_Yφ = −arg w`) and `∂_Xφ = log|w|`. So `φ(X₁,Y+d)+φ(X₁,Y−d)−2φ(X₀,Y) ≤ −2(X₀−X₁)log|X₁+iY|`, with no error term and any `d`. Gamma form (`log_norm_Gamma_split_le`): `≤ −2(X₀−X₁)log Y + 12(X₀−X₁+|d|)/Y` for `Y ≥ 4`, `|d| ≤ Y/2`. This replaces the four-point estimate.
+- 2026-09-26 — brick W2 [L]: `RHTower/XiSliceCircleDecay.lean`.
+  - `norm_xiSliceProduct_circle_le`: for `t ≥ 8`, `R ≤ t/2`, `cos θ ≥ 0`, `|g_t(Re^{iθ})| ≤ g_t(R)(B/m₀)² exp(−R(1−cos θ)log(t/2π) + 12R(1−cos θ+|sin θ|)/t + 4(½+R cos θ)/t)`.
+  - `…_explicit`: ζ-ratio factor `16` when `R cos θ ≥ 3/2`, and `(4+12t)²` otherwise.
+- 2026-09-26 — brick W5-generic [L]: `HTGeometry/SaddleArcControl.lean`, `saddleArc_bounds`. Hypotheses: `f` zero-free and holomorphic on `U ⊇ D̄(R,r)`, `F = wf'/f` real on ℝ, `|F−F(R)| ≤ M` on the disc. Then for `0 ≤ θ ≤ r/(2R)`, with `F₁ = F'(R)` and `K = 32M/r²`:
+  - `|G(θ)| ≤ exp(−F₁R(1−cos θ) + KR²θ³/3)`;
+  - `Re G(θ) ≥ exp(−F₁R(1−cos θ) − KR²θ³/3)·cos(|F₁|Rθ³/6 + KR²θ³/3)`.
+  The proof is the ODE `G' = G·i(F−λ)` plus two Cauchy estimates.
+
+### Remaining Lean plan (window theorem `κ log t ≤ k ≤ ε t log t`)
+- W3: the M-bound for `f = g_t` on `D̄(R, R/2)`. Uses `logDeriv_xi_fourFactor`, the digamma bound `|ψ−log| ≤ 3/|w|`, `norm_logDeriv_zeta_le_of_two_le_re` (≤ `vonMangoldtSquareMass`), and `g_t(z) = ξ(½+z+it)ξ(½+z−it)`, which gives `F(w) = w(ℓ(½+w+it)+ℓ(½+w−it))`.
+- W3': a lower bound on `F₁ = F'(R) = L(R)+RL'(R)` of size `≥ log(t/2π) − C`, for the Gaussian decay inside `|θ| ≤ η`.
+- W6: IVT for the saddle `F(R) = 2k`.
+- W7: Cauchy coefficient formula `c_{2k}R^{2k} = (1/π)∫_{−π/2}^{π/2} g_t(Re^{iθ})e^{−2ikθ}dθ` (from `iteratedDeriv_eq_circleIntegral`, evenness, and conjugation symmetry).
+- W8: assembly. Core `|θ| ≤ 1/√M`, from `Re G`. Intermediate zone `1/√M ≤ θ ≤ η`, from `|G|`. Tail `η ≤ θ ≤ π/2`, from W2 with `1−cos θ ≥ 2θ²/π²`.
+- W9 (large k, `R > t/2`): Stirling with small-`|w|` handling near `θ ≈ π/2`. Deferred.

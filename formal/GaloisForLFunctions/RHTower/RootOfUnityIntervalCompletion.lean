@@ -137,16 +137,16 @@ theorem sum_two_div_norm_exp_sub_one_le (N : ℕ) :
     _ ≤ N * (1 + Real.log N) := by gcongr
 
 /-- The discrete Fourier coefficient `Â(h) = Σ_y A(y) e(-hy/n)`. -/
-def fourierCoeff {n : ℕ} [NeZero n] (A : ZMod n → ℂ) (h : ZMod n) : ℂ :=
+def zmodCoeff {n : ℕ} [NeZero n] (A : ZMod n → ℂ) (h : ZMod n) : ℂ :=
   ∑ y : ZMod n, A y * ZMod.stdAddChar (-(h * y))
 
 /-- **Fourier inversion on `ZMod n`:** `A(x) = n⁻¹ Σ_h Â(h) e(hx/n)`. -/
 theorem fourier_inversion {n : ℕ} [NeZero n] (A : ZMod n → ℂ) (x : ZMod n) :
-    A x = (n : ℂ)⁻¹ * ∑ h : ZMod n, fourierCoeff A h * ZMod.stdAddChar (h * x) := by
+    A x = (n : ℂ)⁻¹ * ∑ h : ZMod n, zmodCoeff A h * ZMod.stdAddChar (h * x) := by
   have hn : (n : ℂ) ≠ 0 := by exact_mod_cast NeZero.ne n
-  have key : ∑ h : ZMod n, fourierCoeff A h * ZMod.stdAddChar (h * x) =
+  have key : ∑ h : ZMod n, zmodCoeff A h * ZMod.stdAddChar (h * x) =
       ∑ y : ZMod n, A y * ∑ h : ZMod n, ZMod.stdAddChar (h * (x - y)) := by
-    simp only [fourierCoeff, Finset.sum_mul, Finset.mul_sum]
+    simp only [zmodCoeff, Finset.sum_mul, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun y _ => Finset.sum_congr rfl fun h _ => ?_
     rw [mul_assoc, ← AddChar.map_add_eq_mul]
@@ -287,7 +287,7 @@ def zTriple (h : ZMod n₁ × ZMod n₂ × ZMod n₃) : ℂ :=
 theorem triple_expansion (A₁ : ZMod n₁ → ℂ) (A₂ : ZMod n₂ → ℂ) (B : ZMod n₃ → ℂ) (m : ℕ) :
     A₁ (m : ZMod n₁) * A₂ (m : ZMod n₂) * B (m : ZMod n₃) =
       ((n₁ * n₂ * n₃ : ℕ) : ℂ)⁻¹ * ∑ h : ZMod n₁ × ZMod n₂ × ZMod n₃,
-        fourierCoeff A₁ h.1 * fourierCoeff A₂ h.2.1 * fourierCoeff B h.2.2 * zTriple h ^ m := by
+        zmodCoeff A₁ h.1 * zmodCoeff A₂ h.2.1 * zmodCoeff B h.2.2 * zTriple h ^ m := by
   rw [fourier_inversion A₁, fourier_inversion A₂, fourier_inversion B]
   simp_rw [stdAddChar_mul_natCast_pow]
   simp only [Fintype.sum_prod_type, zTriple, Finset.mul_sum, Finset.sum_mul]
@@ -306,10 +306,10 @@ The interval sum over `[1, L]` is then at most
 theorem norm_sum_Icc_triple_le (h12 : n₁.Coprime n₂) (h13 : n₁.Coprime n₃) (h23 : n₂.Coprime n₃)
     {d N₃ : ℕ} (hd0 : 0 < d) (hdN : n₃ = d * N₃)
     (A₁ : ZMod n₁ → ℂ) (A₂ : ZMod n₂ → ℂ) (B : ZMod n₃ → ℂ) {α₁ α₂ βg βa c₀ : ℝ}
-    (hA₁ : ∀ h, ‖fourierCoeff A₁ h‖ ≤ α₁) (hA₂ : ∀ h, ‖fourierCoeff A₂ h‖ ≤ α₂)
-    (hβg : 0 ≤ βg) (hBg : ∀ h : ZMod n₃, ¬ d ∣ h.val → ‖fourierCoeff B h‖ ≤ βg)
-    (hBa : ∀ h, ‖fourierCoeff B h‖ ≤ βa)
-    (h0 : ‖fourierCoeff A₁ 0 * fourierCoeff A₂ 0 * fourierCoeff B 0‖ ≤ c₀) (L : ℕ) :
+    (hA₁ : ∀ h, ‖zmodCoeff A₁ h‖ ≤ α₁) (hA₂ : ∀ h, ‖zmodCoeff A₂ h‖ ≤ α₂)
+    (hβg : 0 ≤ βg) (hBg : ∀ h : ZMod n₃, ¬ d ∣ h.val → ‖zmodCoeff B h‖ ≤ βg)
+    (hBa : ∀ h, ‖zmodCoeff B h‖ ≤ βa)
+    (h0 : ‖zmodCoeff A₁ 0 * zmodCoeff A₂ 0 * zmodCoeff B 0‖ ≤ c₀) (L : ℕ) :
     ‖∑ m ∈ Finset.Icc 1 L, A₁ (m : ZMod n₁) * A₂ (m : ZMod n₂) * B (m : ZMod n₃)‖ ≤
       (L : ℝ) / (n₁ * n₂ * n₃ : ℕ) * c₀ +
         α₁ * α₂ * βg * (1 + Real.log (n₁ * n₂ * n₃ : ℕ)) +
@@ -329,7 +329,7 @@ theorem norm_sum_Icc_triple_le (h12 : n₁.Coprime n₂) (h13 : n₁.Coprime n�
   have hα₂ : 0 ≤ α₂ := (norm_nonneg _).trans (hA₂ 0)
   have hβa : 0 ≤ βa := (norm_nonneg _).trans (hBa 0)
   set C : ZMod n₁ × ZMod n₂ × ZMod n₃ → ℂ := fun h =>
-    fourierCoeff A₁ h.1 * fourierCoeff A₂ h.2.1 * fourierCoeff B h.2.2 with hC
+    zmodCoeff A₁ h.1 * zmodCoeff A₂ h.2.1 * zmodCoeff B h.2.2 with hC
   set φ : ℕ → ℕ → ℝ := fun N j =>
     2 / ‖Complex.exp (2 * Real.pi * Complex.I * j / N) - 1‖ with hφ
   -- the combined frequency of a nonzero triple
