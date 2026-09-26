@@ -41,3 +41,11 @@ non-integer m. Fatou step needs strip inversion for general F (corpus has it onl
 
 ## Log
 - 2026-09-26 — frozen; supersedes theta-module-strip-rigidity as the next target (SR folds into T1 later).
+- 2026-09-26 — T2 [L]: `thetaPowerXi_real_zeros_infinite` (0<a<1/2), module ThetaPowerHardyZeros; generic transfer
+  `strip_bounded_of_stripDensity_tail_sign` / `exists_fourier_zero_ge_of_strip_unbounded` (StripSourceHardyTransfer):
+  axis-bounded even real strip source + one-signed Fourier tail ⇒ bounded on the strip.
+- 2026-09-26 — T1 [L]: `thetaPowerXi_real_zeros_finite` (a>1/2), modules ThetaPowerSaddleWindow/FarField/Integral:
+  real-m saddle (Gaussian law R₀−Reψ ≥ ms²/(28t⁶), core radius (1008(a+1)/m+1)t³), Farey |F_a| ≤ 36^a|cτ+d|^{-1/2}e^{mπIm/4},
+  holomorphic extension to |Im w|<1. Infrastructure: holomorphic log h on ℍ (ThetaHauptmodulLogarithm),
+  exact cusp-1 branch log h(1−1/v) = iπ − 8log2 − 2πiv + Log Q(v), window law for all real a (ThetaPowerFamily).
+  All axioms [propext, Classical.choice, Quot.sound]. Open: T3 (a = 1/2 is L(s,χ₈)); a = 1/2 Hardy (transfer fails exactly there).

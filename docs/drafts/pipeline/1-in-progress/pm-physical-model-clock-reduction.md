@@ -61,3 +61,28 @@ requirement (arbitrary real spectra are realizable; the content is the identific
 
 ## Log
 - 2026-09-26 — created; PM-1 proved.
+
+## PM-7 (paper) — source completeness is an outer-function statement
+On the critical line every Mellin transform of a source is a matrix element of the unitary dilation group,
+so no Hermitian identity on the line constrains off-line zeros. The literal PM receiver is one-sided: the dilates
+`{f(λt) : λ ≥ 1}` of the parity source `f = B(t) − 2B(2t)` are complete in the Hardy-space picture iff its Mellin
+transform `Γ(s)(1 − 2^{1−s})ζ(s)` is outer on `Re s > ½` modulo the explicit inner factor of `1 − 2^{1−s}`.
+That factor is the Blaschke product over `s_k = 1 + 2πik/log 2` (`Σ ½/(1+|s_k|²) < ∞`; mean type 0, so no singular
+factor). Completeness modulo that factor ⟺ RH, i.e. Nyman–Beurling for the Fermi/Bose kernel. The physical inverse
+problem is the inverse blackbody problem, solved by Möbius inversion ⇒ PM ≡ route MC at the source level.
+
+## PM-8 (paper, no-go) — Putnam-type Euler input cannot close PM-2
+PM-2's non-attained counterexample needs, above every off-line zero, a sparse approximate comb of zeros at ordinates
+`≈ γ₀ + 2πk/log 2` with nearly equal real part (shadow law). Putnam/van Frankenhuijsen exclude exact consecutive
+vertical progressions. Their mechanism does not extend: approximate sparse dyadic combs occur generically on the
+critical line (`γ log 2/2π` is equidistributed mod 1), so no Euler-product mean along the progression can see a
+density-zero comb. The Bohr mean `lim (1/K)Σ_{k<K} ζ(s₀ + 2πik/log 2) = (1 − 2^{−s₀})^{−1}` excludes only positive-density
+exact combs off the line. Landau's `Σ_{γ≤T} 2^{kρ} = −(T/2π)Λ(2^k)+O(log T)` is dominated by on-line zeros
+(off-line count `o(T)`), so it is blind to the comb as well. Survivor: `NO POSITIVE SALVAGE` beyond the positive-density exact-comb
+exclusion, which does not constrain the non-attained regime.
+
+## PM status (2026-09-26, after PM-7/PM-8)
+All PM receivers now land in routes with named open cores: dyadic clock → WL (`√X` one-sided prime bound);
+source completeness → MC/Nyman–Beurling; PW-B extinction → nodal set of one reflection-odd Schwarz function
+(the source-forced balance of the PW-B lane). PM-2 is the only non-circular PM question; it needs arithmetic
+information about sparse sets of off-line zeros, which no known Euler-product identity supplies (CANNOT-327, PM-8).

@@ -1,8 +1,8 @@
 # RH killed routes
 
-Snapshot 2026-09-26, HEAD `b2801a3cb` + working tree. A route is killed when it cannot deliver an RH proof or disproof: every producer it proposes is impossible, circular (its premise is RH re-encoded) or nonselective (holds equally with off-line zeros). A killed route's theorems survive as receivers or infrastructure; each entry names the survivor. Built from docs/reports/endpoints.md (NO-GO families), docs/reports/STATUS.md and the Lean corpus search tool. [L] tags follow the cited modules. Active routes: docs/reports/rh-current-frontier-map.md. Part II keeps the former catalogue numbering (no-go-NNN).
+Scope: killed = stated producer impossible, circular or nonselective; survivor = strongest retained positive theorem or open replacement. Sources: docs/reports/endpoints.md, docs/reports/STATUS.md, local Lean corpus, route cards. Active routes: docs/reports/rh-current-frontier-map.md. [L] = cited Lean declaration; [P] = paper proof; no fresh compilation implied.
 
-Contents: Part I.1 retired original labels (19) · I.2 routes retired in the 2026-09 audits (27) · I.3 universal-law-field mechanisms retired (59) · I.4 route-class kills (23) · I.5 Lean-certified NO-GO endpoint families (54) · Part II closed mechanisms (464, former numbering).
+Index: I.1 retired labels (19) · I.2 retired routes (27) · I.3 ULF mechanisms (59) · I.4 class kills (23) · I.5 NO-GO endpoint families (54) · II scoped mechanisms (471).
 
 Codes: as in the frontier map. KR-x = entry in I.2. no-go-NNN = former catalogue number (Part II). REF = P1:rh-frontier-reference-2026-09-12. [L] Lean, [P] paper only, [N] numerical only. Kill = the decisive obstruction. Survivor = strongest retained positive result or the changed problem it leaves.
 
@@ -28,7 +28,7 @@ Codes: as in the frontier map. KR-x = entry in I.2. no-go-NNN = former catalogue
 - **RBH** (mechanism no-go-225). Kill: complementary/wall finite parts and separated-sign or passive production are blind or RH receivers. Survivor: changed nonseparated, nonlinear or singular datum (→ PM). E: REF.
 - **SNR** (no-go-186). Kill: the reporter aperture realizes an arbitrary positive target height independently of the source. Survivor: a source-native aperture invariant is required. E: REF.
 
-## Part I.2 — Routes retired in the 2026-09 audits (27)
+## Part I.2 — Retired routes (27)
 
 ### KR-AUT — GL(2) automorphic spectral positivity
 Route: Petersson/Kuznetsov/Selberg trace formula with a tuned nonnegative test, plus DI/Stadlmann-type estimates.
@@ -178,9 +178,9 @@ E: R:AnchoredPhasePassageRigidity; P5:route1-sub-quantum-chiral-passage; P1:rout
 
 ### KR-R2 — Route 2: renewal winding fixed by the prime-2 boundary self-similarity
 Route: count nonreal solutions of `K=−1` as the winding of a loop from `Q(r)=Σe^{−iπn²r}/n²`, invariant under `r↦4r` via `Q(r+1)+Q(r)=½Q(4r)` (route-proposals/route2.md; RN producer).
-Kill: [P] `R₂ ⇔ a_{2m}=a_m`; `R₂` is Mellin-diagonal, `𝓜[Q(·+1)]=−(1−2^{1−s})𝓜[Q]`, a unit on the strip ⇒ no zero count depends on it; winding invariance under `r↦4r` is trivial and fixed-point evaluation returns ξ (fixed points `0, 2/3, 4/3`: `ζ(s)`, `ζ(s)(ω̄+(1−ω̄)3^{−s})`, extra zeros on `Re s=½` since `|G(1,3)|²=3`). [L] `θ₃(1+t₁h+t₂h²)`, `h=θ₂⁴θ₄⁴/θ₃⁸` (2-periodic, exact θ-inversion law, even source of the same Gaussian atoms with integer frequencies, analytic on `|Im x|<π/4`, transform `XiC+t₁Ξ₁+t₂Ξ₂`) vanishes at some `0<Im z₀<½` for real `t` (`thetaGroupDeformation_offLine_strip_zero`). [P] one-sided gauge `k+b·k(·+log p)` keeps `R₂`, breaks FE, has off-line zeros. [P] Q_s is a common eigenvector of the transfer operators of `r↦n²r` (eigenvalue `n^{−s}`); common eigenvectors = Helson series `Σχ(k)k^{−s}`. [P] waiting-time level `E_μ[Si(zT)]=π/2`: the log-concave uniform law has nonreal solutions (`sin w=−w`). [L, other session] r-space: `R₂`-loops realize every winding (no-go-479).
-Survivor: [L] `R₂` + weight-½ inversion law ⇒ `‖F(1+i/y)‖ ≤ 2M√y e^{−πy/4}` (zero-charge cusp, `2=4^{1/2}`; `norm_cusp_one_le_of_primeTwo`); `θ₃(1+t₁h+t₂h²)` satisfies `R₂` iff `t₁=t₂=0` (`thetaGroupDeformation_primeTwo_iff`); undeformed transform `=XiC` (`thetaGroupXi_zero_eq_XiC`). [P] in `M^!_{1/2}(Γ_θ,v_θ)`, `R₂ ⇒ F=cθ`; Hecke family `Σ_{j<p}Q_a(r+2j/p)=p^{−1}Q_a(p²r) ⇔ a_{pm}=a_m`; `1+K(λ)=Ξ(2iλ)/((a−λ)D(−λ))`; claim (i) made exact is the Riemann–Siegel saddle at the cusp. The only datum separating ξ from these countermodels is growth at zero-charge cusps, which with FE pins ζ.
-E: R:ThetaGroupDeformationPrimeTwo; R:ThetaGroupOffLineStripZero; R:ThetaGroupHauptmodulForms; R:ThetaGroupFormCuspBounds; R:ModularAxisSourceTransform; P3:route2-prime-two-cusp-rigidity; P1:route2-theta-boundary-facts; P5:theta-dyadic-boundary-winding-rigidity.
+Kill: [P] `R₂ ⇔ a_{2m}=a_m`; `R₂` is Mellin-diagonal, `𝓜[Q(·+1)]=−(1−2^{1−s})𝓜[Q]`, a unit on the strip ⇒ no zero count depends on it; winding invariance under `r↦4r` is trivial and fixed-point evaluation returns ξ (fixed points `0, 2/3, 4/3`: `ζ(s)`, `ζ(s)(ω̄+(1−ω̄)3^{−s})`, extra zeros on `Re s=½` since `|G(1,3)|²=3`). [L] `θ₃(1+t₁h+t₂h²)`, `h=θ₂⁴θ₄⁴/θ₃⁸` (2-periodic, exact θ-inversion law, even source of the same Gaussian atoms with integer frequencies, analytic on `|Im x|<π/4`, transform `XiC+t₁Ξ₁+t₂Ξ₂`) vanishes at some `0<Im z₀<½` for real `t` (`thetaGroupDeformation_offLine_strip_zero`). [P] one-sided gauge `k+b·k(·+log p)` keeps `R₂`, breaks FE, has off-line zeros. [P] Q_s is a common eigenvector of the transfer operators of `r↦n²r` (eigenvalue `n^{−s}`); common eigenvectors = Helson series `Σχ(k)k^{−s}`. [P] waiting-time level `E_μ[Si(zT)]=π/2`: the log-concave uniform law has nonreal solutions (`sin w=−w`). [L] r-space: `R₂`-loops realize every winding (no-go-479); strict source positivity, exact `Γ_θ` weight-½ modularity and positive renewal increment still admit arbitrarily small `θ₃(1+sh)` deformations with off-line strip zeros (CANNOT-463); every nonconstant `P∈ℝ[X]` gives finitely many real and infinitely many nonreal zeros of the `θ₃P(h)` transform.
+Survivor: [L] `R₂` + weight-½ inversion law ⇒ `‖F(1+i/y)‖ ≤ 2M√y e^{−πy/4}` (zero-charge cusp, `2=4^{1/2}`; `norm_cusp_one_le_of_primeTwo`); `θ₃(1+t₁h+t₂h²)` satisfies `R₂` iff `t₁=t₂=0` (`thetaGroupDeformation_primeTwo_iff`); undeformed transform `=XiC` (`thetaGroupXi_zero_eq_XiC`); within `θ₃·ℝ[h]`, infinitely many real zeros ⇔ `P` constant, with exact cusp-1 charge distinguishing Xi. [P] in `M^!_{1/2}(Γ_θ,v_θ)`, `R₂ ⇒ F=cθ`; Hecke family `Σ_{j<p}Q_a(r+2j/p)=p^{−1}Q_a(p²r) ⇔ a_{pm}=a_m`; `1+K(λ)=Ξ(2iλ)/((a−λ)D(−λ))`; Riemann–Siegel saddle at the cusp. Strip-wide cusp-charge analogue remains conjectural.
+E: R:ThetaGroupDeformationPrimeTwo; R:ThetaGroupOffLineStripZero; R:ThetaCuspChargeModularCriticality; R:ThetaCuspChargePolynomialRigidity; R:ThetaGroupHauptmodulForms; R:ModularAxisSourceTransform; P3:route2-charge-line-hardy-rigidity; P3:route2-prime-two-cusp-rigidity; P1:theta-module-strip-rigidity; P5:theta-dyadic-boundary-winding-rigidity.
 
 ### KR-R3 — Route 3: exact ordinate coincidence (collision charge `<2`, two-prime source form)
 Route: identity between the thin-slice pair current and a two-prime Cesàro excess, then a height-uniform bound `<2` (route-proposals/route3.md; F0237; WD producer).
@@ -319,7 +319,7 @@ EXCLUDED (20):
 CIRCULAR (24):
 - F0017 Weil–Clifford scalar coefficient positivity [RW]. F0028 First-clock principal relative capacity [FU]. F0149 Theta prime-admission receivers. F0136 Dyadic `m`-free zeta rungs [DR]. F0003 Arakelov power-orbit stability / Big-Witt square pullback [KR-INT]. F0178 Reflected character norm equality. F0167 Prime-power centered-mark collision. F0162 Global barrelled BV–Wold producer. F0251 Reduced-conductor Roos regulator. F0046 Pre-divisor second-Cartier order law. F0060 Gaussian entropy prime-cycle holonomy. F0076 EWQ source-independent diagonal Krein completion. F0128 JAS closed-flat unit-residue certificate [JAS]. F0014 Burnol Cartier/divided-shift source laws [R]. F0249 Bare reciprocal Clifford polarization. F0126 Localized zero-free approximants — proximity hypothesis is the conclusion. F0185 Route-P differentiable unitary completions [RP]. F0093 Gamma-sewn Möbius passive deletion completion. F0102 HC bounded diagonal receiver [WD]. F0186 Route-P subquantum trace defect [RP]. F0169 Prime-square Wold scale domination. F0184 Route-E parity column-load defect = Littlewood signature criterion [MC]. F0078 FZZ argument-dilation Ward cancellation [PM]. F0148 Theta Green reflected-pair + fibre neutrality — pair neutrality unconditional, adds nothing.
 
-## Part II — Closed mechanisms (former catalogue, 464)
+## Part II — Closed mechanisms (471)
 
 Each line: former number, closed mechanism, evidence. A closed mechanism does not retire its route. Most records constrain a live route (named in the section header); records cited by a KR entry in Part I.2 belong to that killed route. Retired-label records (no-go-097, 100, 101, 102, 136, 142, 145, 146, 150, 151, 152, 156, 163, 164, 180, 186, 341) are in Part I.1.
 
@@ -431,7 +431,9 @@ Each line: former number, closed mechanism, evidence. A closed mechanism does no
 - no-go-419 E zero-row-only Kloosterman spectral cancellation. [L] E: R:Sieve/KloostermanZeroRowSpectralComparison, P1:root-assigned-routes-fact-log
 - no-go-420 T1 pointwise cancellation of complete stationary prime cone. [L] E: R:XiMassStationaryPrimeConeNoncancellation, R:XiMassStationaryPrimeConeCovarianceGrowth
 
-### Scattering and physical action: HB, FZZ, PW, PTR (100) — constrains PM, PTR; HB
+### Scattering and physical action: HB, FZZ, PW, PTR (101) — constrains PM, PTR; HB
+
+- no-go-487 FZZ divisor-mode passivity from physical response. Kill [L]: canonical-twist passivity ⇔ dyadic Xi-zero clock boundedness; literal parity source has zeros at `1+2πik/log 2` with response `17/16>1`, so uniform source-mode passivity is false. Survivor: exact dyadic clock receiver; open divisor-selective Hermitian identity, not a physical scalar passivity law. E: R:FZZParityAreaResponseDyadicClockBridge; R:FZZParityDyadicNonPassiveModes; P1:pm-physical-model-clock-reduction.
 
 - no-go-426 PW-B subcritical scalar full-square contact. [L] E: R:ThetaCuspHawkingBMPWCrossClockSubcriticalContactNoGo, R:ThetaCuspHawkingBMPWCrossClockTranslatedTests
 - no-go-438 FZZ-P balanced compact-current transfer. [L] E: R:FZZCigarParityBalancedExternalCompactCurrentNoGo, P5:fzz-p-balanced-compact-current-transfer-no-go
@@ -534,12 +536,18 @@ Each line: former number, closed mechanism, evidence. A closed mechanism does no
 - no-go-418 PW-B fixed-calibration two-amplitude off-line incidence. [L] E: R:ThetaCuspHawkingBMPWAmplitudeIncidenceNoGo, P1:pwb-amplitude-uniform-incidence-own
 - no-go-421 PW-B integrable normalized off-line cusp forcing. [L] E: R:ThetaCuspHawkingBMPWCrossClockTranslatedTests, P1:pwb-cross-clock-source-mean-nonintegrability-own
 
-### Theta, Schur, spectral and positivity mechanisms (59) — constrains TH, RN, WL, RW, SZ, LA
+### Theta, Schur, spectral and positivity mechanisms (64) — constrains TH, RN, WL, RW, SZ, LA
+
+- no-go-482 Literal theta global all-degree cold-aperture convexity. Kill [L]: `L_j⁴ S_j(−L_j) → (log Φ(√y))'''(u)` along `L_j=(j+½)/u`; at `u=9` limit `<0`, hence eventual negative curvature. Survivor: exact signed incoming-profile law; degree-zero and full Hankel gates open. E: R:ThetaColdDegreeCornerLimit; P5:rh-global-all-degree-aperture-convexity-root-2026-09-26.
+- no-go-483 Fixed finite local Gram realization of complete theta cleared form. Kill [L, coefficient class]: anti-diagonal normalization excludes every fixed finite falling-factorial jet representation; first row fixes any weighted-multiplication moments [P]. Survivor: exact normalized anti-diagonal limit; nonlocal/unbounded-order source feature map remains open. E: R:ThetaLocalGramObstruction; P5:rh-local-gram-source-root-2026-09-26.
+- no-go-484 Fixed-level, rank-uniform logarithmic-Cauchy correction. Kill [L]: alternating `2m`-vector has `Q=2m(L+1−2h_m)`, `2h_m∼log m`; fixed `L` or uniformly bounded coefficient-energy repair fails. Survivor: necessary `L≥2h_m−1`, sufficient `L≥2h_m`; literal fixed-node tail becomes positive definite after translation, while corrected squared-Cauchy model is PSD for `L+log c≥2`; growing-rank literal transfer open. E: R:LogarithmicCauchyRankBoundary; R:LogarithmicCauchyUniformRepair; R:ThetaTailCauchyAsymptotic; P5:rh-log-cauchy-rank-root-2026-09-26.
+- no-go-485 Positive independent-cosh expansion of literal theta potential. Kill [L]: leading `e^{2x}` coefficient forces edge mass `2π` at frequency 2, contradicting negative linear residual `−9x/2`. Survivor: exact spectral-edge mass and linear-charge laws; signed/interacting source construction open. E: R:ThetaPositiveCoshPotentialObstruction; P5:rh-positive-cosh-potential-root-2026-09-26.
+- no-go-486 Bare first-atom theta tail globally PSD. Kill [L]: squared-source invariant `∫e^{2x}f²=(75/(44π))∫f²` forces negative incoming diagonal; analytic section density transports a negative finite Gram direction to *every* real tail. Survivor: full finite negative-index profile invariant under restriction to any tail, also for complete theta; complete-source PSD remains open. E: R:ThetaFirstAtomTailCenterObstruction; R:ThetaFirstAtomTailLocalityObstruction; R:ThetaTailAnalyticLocality; P5:rh-first-atom-positive-tail-psd-root-2026-09-26.
 
 - no-go-478 Decreasing-density contraction `0 ≤ B ≤ D` of the cleared log-moment kernel (two-uniform mixture; `D−B` value `−119221/32256` at `(−13,17)`). [L] E: R:MonotoneSourceGramContraction, P5:monotone-source-gram-contraction
 - no-go-479 Generic dyadic boundary winding rigidity (continuous nonvanishing zero-mean solutions with both theta endpoint anchors realize every winding `−(2k+1)`). [L] E: R:ThetaBoundaryDyadicClassification, P5:theta-dyadic-boundary-winding-rigidity
 - no-go-480 Fixed theta-shell prefix as real-zero foundation (every nonempty prefix: infinitely many nonreal, finitely many real zeros). [L] E: R:ThetaFiniteShellNonrealZeros, P5:theta-fixed-prefix-nonreal-zeros
-- no-go-481 Holomorphic logarithm of the theta source on its strip (imaginary-axis arc charges `0` and `−θ(1)/4` force an interior source zero). [P; complex Ward identity and odd-cusp derivative flatness L; arc integrals Lean-open] E: R:ThetaCuspComplexWard, R:ThetaOddCuspDerivativeFlatness, P1:rh-theta-imaginary-arc-charge-2026-09-26
+- no-go-481 Whole-strip holomorphic logarithm of literal theta source. Kill [L]: arc charges `0`, `−θ(1)/4` force an interior imaginary-axis *source* zero; no whole-strip exponential. Survivor: exact signed arc-charge and odd-cusp flatness laws; no Xi zero-location conclusion. E: R:ThetaCuspImaginaryArcCharge; R:ThetaCuspImaginaryEndpoint; P3:rh-theta-imaginary-arc-charge-2026-09-26.
 - no-go-472 C1 prime-only Loewner Gram positivity. [L] E: R:PrimeEulerLoewnerLocalNoGo, R:PrimeEulerLoewnerGlobalFarRightNoGo
 - no-go-476 Theta renewal real-rate/passive finite-index loop. [P] E: P2:theta/theta-renewal-complex-resonance-stieltjes-obstruction
 - no-go-468 Positive even prime-scale theta source as zero-confinement principle. [L] E: R:ThetaPrimeScalePositiveSourceOffLineNoGo
@@ -628,7 +636,9 @@ Each line: former number, closed mechanism, evidence. A closed mechanism does no
 - no-go-360 RHist scalar positive darkness with finite continuous-observer price. [L] E: R:XiCanonicalRepairPairPositiveDarkHistoryNoGo, R:DeningerBigWittCrossPrimeRHistPriceEscape
 - no-go-372 RHist square-root singular rescaling. [L] E: R:DeningerBigWittCrossPrimeRHistSingularRescalingNoGo
 
-### Ward, Suzuki, prime–Gamma and operator landing (75) — constrains WD, SZ, RP, PA, RN, W1C, SEC, MSC, APF
+### Ward, Suzuki, prime–Gamma and operator landing (76) — constrains WD, SZ, RP, PA, RN, W1C, SEC, MSC, APF, HF
+
+- no-go-488 Conformal Hodge positivity as faithful off-line carrier. Kill [L]: `p(V_cu)=e^{κc}p(u)` makes every nonzero character with `Re λ≠κ` unbounded; positive invariant form is faithful iff divisor real. Survivor: conformal critical-line completion; causal Hardy model retains right-half zeros [P], and source-derived faithful/nonconformal pairing remains open (CANNOT-462). E: R:ConformalHodgeBlindness; H:EntireMultiplierDefectUniversality; P1:hf-positive-hodge-attack/facts.
 
 - no-go-464 Burnol–theta conjugacy-only holonomy under amplitude gauge. [L] E: R:PrimeBurnolThetaAmplitudeGaugeNoGo
 - no-go-450 STC rank-two local defect as finite global negative index. E: P2:route

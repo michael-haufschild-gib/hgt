@@ -47,3 +47,6 @@ Notation: `a = (log 2)/2`, `S = 2a = log 2`, `u` a real smooth core on `(−a, a
 
 ## Log
 - 2026-09-26 — created; design by hand estimates (fact log EOC-F17–F19).
+- 2026-09-26 — superseded: closed in Lean by a parallel session (`RHTower.PoleVanishingWeilPositivityHalfLogTwo`:
+  `one_tenth_le_ccmRestrictedWeilPolarGroundEnergy_halfLogTwo`, `exists_polarGroundEnergy_pos_past_halfLogTwo`).
+  Own duplicates removed; kept `HTGeometry.SinCosAlternatingTaylorBounds` (all-order alternating sin/cos bounds, wired).

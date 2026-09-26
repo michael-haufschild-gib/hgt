@@ -263,3 +263,27 @@ compatible with the incoming reflected envelope, remains open. Do not turn
 the strict-coercivity no-go into a false claim that the full kernel is indefinite.
 
 Proof and survivor: `../5-failed/rh-full-theta-positive-cauchy-reserve-root-2026-09-26.md`.
+
+## C9: charged-cusp boundary admissibility is necessary
+
+C9 is falsified for the complete source: with q(x)=exp(2x)+exp(-2x), every
+real tail and every c>0 contain a finite real negative packet for
+`K_Phi-c*Phi(x)*Phi(y)/(q(x)+q(y))`. Exact phase alignment at
+z_N=log(N^(-2)+2i)/2 gives source size at least A*N^5, while the actual
+complex tail diagonal is at most D*N^10 and the comparison diagonal grows
+at least as N^12. Analytic locality and the complex Cauchy projection carry
+the obstruction to real tail samples. No sign decision for K_Phi follows.
+
+**Whole-route correction:** symmetry and both real-end asymptotics do not
+suffice for a valid comparison. The positive survivor is a complex boundary
+admissibility law, with the uniform necessary rate floor
+`u_N >= c*(12*pi^2*exp(-4*pi))^2/(24*486^2)` whenever
+`c*|Phi(z_N)|^2 <= u_N*J(z_N,z_N)`. Nonvanishing rate is not proved sufficient.
+The stronger integrated ratio tending to zero remains open; current bounds
+only show a bounded ratio. Do not claim that sharpening without a new proof.
+
+The three C9 leaves and the C8 compatibility refactor pass named builds;
+all 63 public axiom reports pass. User-requested optimization preserves
+statements, reduces measured Gaussian elaboration, and removes C8's import
+graph from C9, with no raised limits. Exact proof, survivor, and final lint
+status: `../5-failed/rh-reflection-compatible-comparison-root-2026-09-26.md`.

@@ -26,8 +26,7 @@ theorem gaussian_sum_from_one_le {a : ℝ} (ha : 0 < a) :
   have hanti : AntitoneOn (fun x : ℝ => Real.exp (-a*x^2)) (Ici 0) := by
     intro x hx y hy hxy
     apply Real.exp_le_exp.mpr
-    have hsq : x^2 ≤ y^2 := by nlinarith [show 0 ≤ x from hx, show 0 ≤ y from hy]
-    nlinarith
+    exact mul_le_mul_of_nonpos_left ((sq_le_sq₀ hx hy).2 hxy) (neg_nonpos.mpr ha.le)
   simpa only [integral_gaussian_Ioi] using
     hanti.tsum_add_one_le_integral (integrable_exp_neg_mul_sq ha).integrableOn
       (fun x hx => (Real.exp_pos _).le)
@@ -127,10 +126,12 @@ theorem source_norm_le_sharp_strip {δ : ℝ} (hδ0 : 0 ≤ δ)
   have h4 : thetaGaussianPowerSum a 4 ≤ 8/a^2*(Real.sqrt (Real.pi/(a/2))/2) := by
     calc
       _ ≤ (2:ℝ)*(2/a)^2*(Real.sqrt (Real.pi/(a/2))/2) := by
-        simpa using gaussian_even_power_sum_le ha (show 0 < (2:ℕ) by omega)
+        simpa only [Nat.factorial_two, Nat.cast_ofNat, Nat.reduceMul] using
+          gaussian_even_power_sum_le ha (show 0 < (2:ℕ) by omega)
       _ = _ := by ring
   have h2 : thetaGaussianPowerSum a 2 ≤ 2/a*(Real.sqrt (Real.pi/(a/2))/2) := by
-    simpa using gaussian_even_power_sum_le ha (show 0 < (1:ℕ) by omega)
+    simpa only [Nat.factorial_one, Nat.cast_one, Nat.reduceMul, pow_one, one_mul] using
+      gaussian_even_power_sum_le ha (show 0 < (1:ℕ) by omega)
   have hsqrt : Real.sqrt (Real.pi/(a/2)) = Real.sqrt (2/c)/E := by
     have he : Real.pi/(a/2) = (2/c)/E^2 := by dsimp [a]; field_simp
     rw [he, Real.sqrt_div (by positivity), Real.sqrt_sq hE.le]
@@ -167,7 +168,9 @@ theorem fourth_power_block_lower (N : ℕ) (hN : 0 < N) :
     have hnhi : (n:ℝ) ≤ 2*N := by exact_mod_cast hn1.le
     have hrat : (n:ℝ)^2/(N:ℝ)^2 ≤ 4 := by
       rw [div_le_iff₀ (sq_pos_of_pos hNr)]
-      nlinarith [sq_nonneg ((n:ℝ)-2*N)]
+      calc
+        (n:ℝ)^2 ≤ (2*(N:ℝ))^2 := (sq_le_sq₀ (Nat.cast_nonneg n) (by positivity)).2 hnhi
+        _ = 4*(N:ℝ)^2 := by ring
     have he : Real.exp (-4*Real.pi) ≤
         Real.exp (-(Real.pi/(N:ℝ)^2)*(n:ℝ)^2) := by
       apply Real.exp_le_exp.mpr
@@ -248,10 +251,13 @@ theorem charged_cusp_source_lower {z : ℂ} {eps : ℝ} (heps : 0 < eps) (heps1 
     ring
   have hB : B.re ≤ -(12*Real.pi^2*S4) := by
     rw [hre]
-    have hp : eps^2-4 ≤ -3 := by nlinarith
+    have hp : eps^2-4 ≤ -3 := by
+      have hs := (sq_le_sq₀ heps.le (show (0:ℝ) ≤ 1 by norm_num)).2 heps1
+      norm_num only [one_pow] at hs
+      linarith only [hs]
     have h := mul_le_mul_of_nonneg_right hp (show 0 ≤ 4*Real.pi^2*S4 by positivity)
     have hn : 0 ≤ 6*Real.pi*eps*S2 := by positivity
-    nlinarith
+    linarith only [h, hn]
   have hn : 12*Real.pi^2*S4 ≤ ‖B‖ := by
     have hr := Complex.abs_re_le_norm B
     linarith [neg_le_abs B.re]
@@ -313,7 +319,7 @@ theorem chargedPoint_cos_bounds {eps : ℝ} (heps : 0 < eps) (heps1 : eps ≤ 1)
     apply Real.cos_pos_of_mem_Ioo
     constructor <;> linarith [le_abs_self (chargedPoint eps).im, neg_le_abs (chargedPoint eps).im]
   refine ⟨?_, Real.cos_le_one _⟩
-  nlinarith [mul_le_mul_of_nonneg_right hn hc.le]
+  linarith only [he, mul_le_mul_of_nonneg_right hn hc.le]
 
 theorem chargedPoint_source_lower (N : ℕ) (hN : 0 < N) :
     12*Real.pi^2*Real.exp (-4*Real.pi)*(N:ℝ)^5 ≤
@@ -321,7 +327,9 @@ theorem chargedPoint_source_lower (N : ℕ) (hN : 0 < N) :
   have hNr : (0:ℝ) < N := by exact_mod_cast hN
   have hN1 : (1:ℝ) ≤ N := by exact_mod_cast hN
   have heps : 0 < 1/(N:ℝ)^2 := by positivity
-  have heps1 : 1/(N:ℝ)^2 ≤ 1 := by rw [div_le_one (by positivity)]; nlinarith
+  have hN2 : (1:ℝ) ≤ (N:ℝ)^2 := by
+    simpa only [one_pow] using pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 1) hN1 2
+  have heps1 : 1/(N:ℝ)^2 ≤ 1 := (div_le_one (sq_pos_of_pos hNr)).2 hN2
   have hr := (chargedPoint_re_bounds heps heps1).1
   have hlow := charged_cusp_source_lower heps heps1 (chargedPoint_exp heps)
   have hblock := fourth_power_block_lower N hN
@@ -333,7 +341,10 @@ theorem chargedPoint_source_lower (N : ℕ) (hN : 0 < N) :
   have hp2 := mul_le_mul_of_nonneg_right hex
     (show 0 ≤ 12*Real.pi^2*thetaGaussianPowerSum (Real.pi/(N:ℝ)^2) 4 from
       mul_nonneg (by positivity) (thetaGaussianPowerSum_nonneg _ _))
-  nlinarith
+  simp only [one_mul] at hp2
+  calc
+    _ = (12*Real.pi^2)*((N:ℝ)^5*Real.exp (-4*Real.pi)) := by ring
+    _ ≤ _ := hp.trans (hp2.trans hlow)
 
 
 theorem chargedPoint_source_horizontal_upper (N : ℕ) (hN : 0 < N)
@@ -343,7 +354,9 @@ theorem chargedPoint_source_horizontal_upper (N : ℕ) (hN : 0 < N)
   have hNr : (0:ℝ) < N := by exact_mod_cast hN
   have hN1 : (1:ℝ) ≤ N := by exact_mod_cast hN
   have heps : 0 < 1/(N:ℝ)^2 := by positivity
-  have heps1 : 1/(N:ℝ)^2 ≤ 1 := by rw [div_le_one (by positivity)]; nlinarith
+  have hN2 : (1:ℝ) ≤ (N:ℝ)^2 := by
+    simpa only [one_pow] using pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 1) hN1 2
+  have heps1 : 1/(N:ℝ)^2 ≤ 1 := (div_le_one (sq_pos_of_pos hNr)).2 hN2
   let z := chargedPoint (1/(N:ℝ)^2)
   let c := Real.cos (2*z.im)
   have hz := chargedPoint_mem_strip heps
@@ -364,18 +377,23 @@ theorem chargedPoint_source_horizontal_upper (N : ℕ) (hN : 0 < N)
     simpa only [div_pow, one_pow, mul_pow, show (3:ℝ)^2=9 by norm_num, ← pow_mul,
       show (2:ℕ)*2=4 by omega] using h
   have hN24 : (N:ℝ)^2 ≤ (N:ℝ)^4 := by
-    have hN2 : 1 ≤ (N:ℝ)^2 := by nlinarith
-    nlinarith [sq_nonneg ((N:ℝ)^2-1)]
+    calc
+      (N:ℝ)^2 = (N:ℝ)^2*1 := (mul_one _).symm
+      _ ≤ (N:ℝ)^2*(N:ℝ)^2 := mul_le_mul_of_nonneg_left hN2 (sq_nonneg _)
+      _ = _ := by ring
   have hA : 16/c^2+6/c ≤ 162*(N:ℝ)^4 := by
     calc
       _ = 16*(1/c^2)+6*(1/c) := by ring
       _ ≤ 16*(9*(N:ℝ)^4)+6*(3*(N:ℝ)^2) := by gcongr
-      _ ≤ _ := by nlinarith
+      _ ≤ _ := by linarith only [hN24]
   have hsqrt : Real.sqrt (2/c) ≤ 3*(N:ℝ) := by
     apply Real.sqrt_le_iff.mpr
     constructor
     · positivity
-    · nlinarith [show 2/c=2*(1/c) by ring]
+    · calc
+        2/c = 2*(1/c) := by ring
+        _ ≤ 2*(3*(N:ℝ)^2) := mul_le_mul_of_nonneg_left hi (by norm_num)
+        _ ≤ (3*(N:ℝ))^2 := by nlinarith only [sq_nonneg (N:ℝ)]
   have hC : (16/c^2+6/c)*Real.sqrt (2/c) ≤ 486*(N:ℝ)^5 := by
     calc
       _ ≤ (162*(N:ℝ)^4)*(3*(N:ℝ)) := mul_le_mul hA hsqrt (by positivity) (by positivity)

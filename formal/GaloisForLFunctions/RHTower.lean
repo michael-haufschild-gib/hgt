@@ -19513,3 +19513,7 @@ import GaloisForLFunctions.RHTower.ThetaHauptmodulLogarithm
 import GaloisForLFunctions.RHTower.ThetaPowerFamily
 import GaloisForLFunctions.RHTower.StripSourceHardyTransfer
 import GaloisForLFunctions.RHTower.ThetaPowerHardyZeros
+import GaloisForLFunctions.RHTower.ThetaPowerSaddleWindow
+import GaloisForLFunctions.RHTower.ThetaPowerSaddleFarField
+import GaloisForLFunctions.RHTower.ThetaPowerSaddleIntegral
+import GaloisForLFunctions.RHTower.ThetaPowerStripRigidity

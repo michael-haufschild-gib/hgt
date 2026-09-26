@@ -1,10 +1,10 @@
 # Reflection-compatible comparison after the Cauchy reserve obstruction
 
 - **ID:** RH-REFLECTION-COMPATIBLE-COMPARISON-ROOT-20260926
-- **Stage:** 1-in-progress
+- **Stage:** 5-failed; exact obstruction and positive survivor formalized
 - **Type:** [BRIDGE] falsifiable source-comparison candidate, not a universal-law claim
 - **Owner:** root
-- **Parent:** `rh-full-theta-coercivity-audit-root-2026-09-26.md`
+- **Parent:** `../1-in-progress/rh-full-theta-coercivity-audit-root-2026-09-26.md`
 
 ## Frozen C9
 
@@ -130,10 +130,14 @@ bounds. It would require an integrated estimate retaining arithmetic phases.
 
 - Scratch proofs and all three named leaf builds pass.
 - All three modules wired into the umbrella.
-- 44 public theorem axiom reports and final generated-file lint pending.
-- User requests proof optimization at default heartbeat limits. A per-module
-  compiler profile is being measured before changing proof scripts; no
-  heartbeat or recursion-depth override occurs in these leaves.
+- All 63 public theorem axiom reports pass (44 C9, 17 C8, 2 shared): only
+  `propext`, `Classical.choice`, `Quot.sound`, with none missing.
+- Final named C9 and C8 builds pass; all affected leaves are wired.
+- Index refreshed; final `lint --check-generated` passes with existing
+  large-file warnings. The other owner supplied the previously missing
+  `ThetaPowerStripRigidity` import; no unrelated source was edited here.
+- User requests proof optimization at default heartbeat limits. Measured proof and import optimizations are complete; final named C9 builds
+  pass. No heartbeat or recursion-depth override occurs in these leaves.
 
 ### Measured compiler baseline (default heartbeat limits, one worker)
 
@@ -150,3 +154,41 @@ augmented Hermitian form. Remove that dependency through a lower-level shared
 form, retaining the existing C8 public API. Profile the Gaussian proof's
 unrestricted nonlinear searches before replacing them. Detailed artifacts:
 `/tmp/rh-c9-profile-before.json`, `/tmp/rh-c9-before-*.log`.
+
+### Optimization verified in scratch and final builds
+
+The generic scalar Hermitian form now lives in `ThetaTailAnalyticLocality`.
+C8 retains its existing `Augmented`/`augmentedForm` API through definitionally
+equal wrappers. C9 no longer imports C8's asymptotic proof graph. A recursive
+project-source import audit removes 1,414 graph entries, including 1,203
+project modules; no new dependency is added. This count stops recursion at
+external packages and is not a count of all transitive Mathlib dependencies.
+
+The Gaussian proofs replace broad nonlinear searches by monotone square/power
+bounds, explicit transitivity, `linarith only`, and restricted factorial
+simplification. All 15 theorem statements are unchanged. Default heartbeat and
+recursion limits are unchanged; no override is present in any of the five
+edited modules.
+
+Detailed compiler traces (`trace.profiler`, threshold 30 ms, one worker):
+
+| Proof | Before | After |
+|---|---:|---:|
+| gaussian_sum_from_one_le | 0.293 s | 0.058 s |
+| source_norm_le_sharp_strip | 1.065 s | 0.368 s |
+| fourth_power_block_lower | 0.914 s | 0.449 s |
+| chargedPoint_source_lower | 0.654 s | 0.131 s |
+| chargedPoint_source_horizontal_upper | 2.373 s | 0.914 s |
+
+The 14 proofs reported in both traces total 7.677 s before and 3.402 s after.
+These are observed compiler timings, not guaranteed speedups. Concurrent
+machine load made import/total wall times variable: the comparison's paired
+runs were 54.73 s before and 7.46 s after, while its earlier baseline was
+12.86 s. Do not interpret that pair as an 86% stable speedup. The final
+Gaussian profile reduced tactic execution 0.629→0.393 s and typeclass
+inference 1.86→1.03 s. Scratch checks pass for the final Gaussian source,
+C8 compatibility wrappers, and the leaner C9 comparison. Named builds and
+63 public axiom reports (44 C9, 17 C8, 2 shared) all pass.
+
+Profile artifacts: `/tmp/rh-c9-proof-profile.json`,
+`/tmp/rh-c9-final-profile.json`, `/tmp/rh-c9-import-reduction.json`.

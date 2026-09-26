@@ -28,7 +28,7 @@ section LineA
 
 variable {a t : ℝ}
 
-theorem continuous_chLineA (ha : 0 < a) (ht : 0 < t) (ht2 : t ^ 2 ≤ 1 / 2) :
+theorem continuous_chLineA (ht : 0 < t) (ht2 : t ^ 2 ≤ 1 / 2) :
     Continuous (chLineA a t) := by
   have hβ := chBeta_lt ht (by linarith)
   have hβ0 := chBeta_nonneg ht2
@@ -52,7 +52,7 @@ theorem integrable_chLineA (ha : 0 < a) (ht : 0 < t) (ht2 : t ^ 2 ≤ 1 / 2) :
   have hβ0 := chBeta_nonneg ht2
   obtain ⟨C, _, hbd⟩ := thetaPowerTail_decay ha (chBeta t) hβ0 hβ
   refine Integrable.mono' ((integrable_exp_neg_mul_abs' one_pos).const_mul C)
-    (continuous_chLineA ha ht ht2).aestronglyMeasurable (Filter.Eventually.of_forall fun s => ?_)
+    (continuous_chLineA ht ht2).aestronglyMeasurable (Filter.Eventually.of_forall fun s => ?_)
   have hz : |((s : ℂ) - (chBeta t : ℂ) * Complex.I).im| ≤ chBeta t := by
     simp [abs_of_nonneg hβ0]
   have h := hbd _ hz
