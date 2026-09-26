@@ -142,3 +142,132 @@ the dyadic arbitrary-winding examples.
 
 Separate fact log: `rh-reflection-source-sign-2026-09-26-facts.md`.
 Search outputs are discovery evidence, not compilation certificates. Existing unrelated GL3 work is outside this research scope.
+
+## Joint cold-aperture / degree result
+
+The refreshed frontier retires route2's Mellin-diagonal prime-2 winding mechanism (KR-R2).
+The next source-sign test attacked the cooperative Gaussian moment-curvature hierarchy.
+Its two endpoint regimes leave a joint cold-aperture / degree corner uncovered.
+
+`GaussianMomentColdDegreeCorner` first supplied an exact positive-source falsifier, sharp sign
+classification and signed joint limit. The literal theta transfer is now fully Lean-closed:
+for every `u>0`, `L_n=(n+1/2)/u` gives
+
+`L_n^4*S_n(-L_n) -> (log(Phi(sqrt(y))))'''(u)`.
+
+At `u=9` the limit is strictly negative, hence actual theta curvature is eventually negative.
+`RHTower.ThetaColdCorner.not_all_degree_aperture_curvature_nonnegative` has no input hypotheses.
+This retires global all-degree aperture convexity as a maximum-principle input. Degree-zero GABTC
+and RH remain open. The strongest positive survivor is the exact signed incoming-profile law.
+
+Paper proof, all six formal modules and validation:
+`../3-formalized/rh-cold-degree-corner-2026-09-26.md`.
+No-go closure:
+`../5-failed/rh-global-all-degree-aperture-convexity-root-2026-09-26.md`.
+All current-turn named builds and 39 public theorem axiom audits pass. Global lint fails only on
+six other unwired theta-charge modules, listed in fact F38. No git commands or numerical experiments.
+
+**Route audit:** degree-zero GABTC would close one block, with an all-order gap still open (F39).
+The decisive target remains the actual source sign at every degree.
+
+
+## Positive hyperbolic-mode construction: exact failure and survivor
+
+Frozen C3 asked whether the actual normalized potential
+`V(x)=log Phi(0)-log Phi(x)` has a nonnegative quadratic term plus a positive summable family
+`sum a_n(cosh(b_n*x)-1)`. The exact source envelope refutes this representation in Lean.
+It also refutes every sublinear signed repair. This is one representation test; no general
+Lee–Yang theorem for arbitrary cosh potentials was assumed.
+
+The strongest positive survivor is an exact edge-mass law and unavoidable correction charge.
+A positive mode source with `exp(-2x)*P(x)->pi` has frequency-2 mass `2pi`, hence
+`P(x)>=2pi(cosh(2x)-1)`. The actual residual divided by `x` tends to `-9/2`.
+Any exact correction negligible at the leading exponential scale must therefore have
+`r(x)/x < -9/2+eps` eventually for every `eps>0`.
+
+Paper proof, precise class, unconditional no-go and all certificates:
+`../5-failed/rh-positive-cosh-potential-root-2026-09-26.md`.
+Named build and all 16 public theorem axiom audits pass; latest global lint passes.
+No git commands or numerical experiments. All owned jobs exited.
+
+**Whole-route consequence:** retain the exact signed source prefactor in a future construction.
+This closes C3; refining this rejected positive-mode class is not the next RH task. The source-specific
+all-order Hankel sign or an exact interacting source incidence remains unproved. RH remains open.
+
+
+## Local Gram realization: all fixed derivative orders excluded
+
+The next representation test now has an unconditional source answer. Arbitrary signed
+reweighting cannot realize the cleared matrix as an odd-monomial Gram matrix. More generally,
+`ThetaLocalGramObstruction.theta_no_finite_local_jet_gram` excludes every fixed finite
+local differential order, including arbitrary signed cross-moment coefficients.
+
+Positive survivor: after multiplying entry (i,j) by `(2i+1)!(2j+1)!` and dividing by
+moment `m_(i+j+1)`, row zero is exactly one and every fixed positive row tends to zero.
+Along a common anti-diagonal this is incompatible with bounded polynomial degree;
+local derivative energies necessarily have that bounded-degree property. All links,
+including the descending-factorial polynomial representation, are Lean-checked.
+
+Closed card and exact scope: `../5-failed/rh-local-gram-source-root-2026-09-26.md`.
+Named build and 24 public theorem axiom audits pass. This [BRIDGE] excludes a producer
+mechanism; it does not produce the remaining source sign. Nonlocal constructions and
+order growing with degree remain open. The charge-line Hardy rigidity found during
+this audit was already present and was not duplicated.
+
+Latest repository gate: global lint remains red on three concurrently added charge-power
+modules missing umbrella imports and API/overview staleness. The new local-Gram leaf has
+no reported lint error. Other workers' files were preserved; all root-owned jobs exited.
+
+## Nonlocal tail: exact rank obstruction and literal-source bridge
+
+The logarithmic-Cauchy coefficient model now has a Lean-proved no-go and positive
+survivor: no fixed diagonal level, nor a uniformly energy-bounded repair, gives
+positivity in every rank. Its transition is pinned to a width-one window around
+`2h_m`, and `2h_m-log m -> 2log 2+gamma`. The exact adverse sign pattern and
+required repair cost are also proved. This is a model statement, not an RH
+counterexample. See `../5-failed/rh-log-cauchy-rank-root-2026-09-26.md`.
+
+The literal kernel bridge is now formalized and audited:
+`ThetaTailCauchyAsymptotic` proves its two-term Cauchy asymptotic and eventual
+strict positivity for every fixed finite distinct-node set. Full theta assembly
+is retained throughout. Both named builds and all 52 public theorem axiom audits pass; final global
+formal lint passes. Source proof card:
+`../3-formalized/rh-theta-tail-cauchy-root-2026-09-26.md`.
+
+**Whole-route gate:** the model and source results leave a joint rank/translation
+problem. Neither fixed-rank positivity nor a pointwise vanishing correction
+controls the coefficient form when rank grows. Existing quantitative source
+jet bounds at order below the Morse scale are available, but their conversion
+to this kernel form has not been proved. Live card:
+`rh-nonlocal-tail-root-2026-09-26.md`. RH remains unresolved.
+
+## Positive correction and uniform model repair
+
+The literal source's next tail term is now Lean-identified as the positive
+squared-Cauchy correction with coefficient 7. Its Cayley coefficient form is
+an exact positive weighted difference energy, unbounded relative to ordinary
+energy. This explains why the earlier bounded-repair no-go cannot eliminate
+it. Exact source bridge:
+`../3-formalized/rh-theta-tail-first-correction-root-2026-09-26.md`.
+
+The new all-rank theorem proves the logarithmic-Cauchy model plus c/(u+v)^2
+PSD whenever c>0 and L+log(c)>=2. Its quantitative lower bound is
+[L+log(c)-2]*CauchyEnergy. At the literal correction scale, the reserve is
+[log(7r/pi)-2]*CauchyEnergy, and r>=pi*exp(2)/7 suffices for model PSD.
+This is a uniform producer for the explicit corrected model. The full source
+remainder comparison remains unproved. Paper and formal certificates:
+`../3-formalized/rh-log-cauchy-uniform-repair-root-2026-09-26.md`.
+
+Both new named builds and all 25 public theorem axiom reports pass. Next
+attack tests the exact first atom before attempting uniform source transfer;
+its frozen scope is in `rh-first-atom-tail-audit-root-2026-09-26.md`.
+No unconditional RH proof or falsification has been obtained.
+
+The exact first-atom audit also closes: its normalized exp(2x) scale moment is
+75/(44*pi), forcing a negative full-line center energy and a negative incoming
+tail diagonal. Global bare-atom PSD is therefore false. The exact positive
+invariant and paper proof are in
+`../5-failed/rh-first-atom-global-tail-psd-root-2026-09-26.md`.
+No positive-tail negative direction is yet proved; the analytic locality
+specialization remains the next scoped test. All three new named builds and
+all 38 public theorem axiom audits pass; final global formal lint passes.

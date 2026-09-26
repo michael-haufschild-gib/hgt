@@ -21,3 +21,5 @@
   to `p=0` (formalized). Setting `p=Re ρ-1/2` gives the direct Mellin-completeness/RH chain.
 - Survivor/open core: prove literal fractional/all-depth compact source response equals vacuum anchor,
   retaining physical normalization and cross-charge weighting. Required imaginary part is strictly positive.
+- [L] FZZ-P premise = dyadic clock pencil bound: canonical-twist area response `R(ρ)=3/4+(‖2^{ρ−½}‖²+‖2^{(1−ρ̄)−½}‖²)/8`; divisor passivity ⟺ every window's Cesàro energy of `Σ m_ρ 2^{n(ρ−½)}` bounded (`FZZParityAreaResponseDyadicClockBridge`). Physical layer adds nothing beyond the prime-2 clock; producer = bound on zero-indexed dyadic pencil (explicit-formula form: single-base lag, open only in non-attained regime).
+- [L] Literal parity source has non-passive modes: `Γ(s)(1−2^{1−s})ζ(s)=0` at `1+2πik/log 2` (k≠0), area response `17/16` (`FZZParityDyadicNonPassiveModes`). Uniform source-mode passivity is false; producer must be strip-restricted. [P] every finite dilation regularization of the Bose delay has spurious modes near Re s=1; the spurious-free subtraction B(t)−1/t is the Nyman–Beurling sawtooth.
