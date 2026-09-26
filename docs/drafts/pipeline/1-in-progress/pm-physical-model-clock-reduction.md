@@ -86,3 +86,25 @@ All PM receivers now land in routes with named open cores: dyadic clock → WL (
 source completeness → MC/Nyman–Beurling; PW-B extinction → nodal set of one reflection-odd Schwarz function
 (the source-forced balance of the PW-B lane). PM-2 is the only non-circular PM question; it needs arithmetic
 information about sparse sets of off-line zeros, which no known Euler-product identity supplies (CANNOT-327, PM-8).
+
+## PM-9 (proved, Lean) — the divisor-selective Hermitian identity, explicit
+`RHTower/FermiNymanBeurlingDyadicWitness.lean` (build green, axioms standard, wired).
+The FZZ parity source in Nyman–Beurling form: generators `φ_a(x) = {1/(ax)} − 2{1/(2ax)}` (support `(0,1/a]`),
+`M[φ_a](s) = −a^{−s}(1−2^{1−s})ζ(s)/s` on the strip and, by analytic continuation, on the punctured right half-plane.
+Witness = continuous `w ∈ L²(0,1]` orthogonal to every `φ_a`, `a ≥ 1`.
+- Spurious witnesses `t^{−2πik/log 2}` (`k≠0`) exist unconditionally and are dyadically self-similar `w(t/2)=w(t)`
+  (`isFermiNymanWitness_spurious`, `powerWitness_spurious_half`).
+- Zero witnesses `t^{ρ̄−1}` for zeros with `½<Re ρ<1`; `w(t/2)=2^{1−ρ̄}w(t)`, never self-similar.
+- The witness class is invariant under the dyadic dilation `w ↦ w(·/2)` (`IsFermiNymanWitness.halfDilate`).
+- Mass fractions: zero witness `∫_0^{1/2}|w|² = 2^{1−2Re ρ}∫_0^1|w|²`; self-similar witnesses exactly `½`.
+- **Identity ⟹ RH (both forms):** every witness self-similar ⟹ RH (`riemannHypothesis_of_fermiNymanWitness_selfSimilar`);
+  the Hermitian form `q(w) = ∫_0^{1/2}|w|² − ½∫_0^1|w|²` vanishing on all witnesses ⟹ RH
+  (`riemannHypothesis_of_fermiNymanWitness_halfMass`).
+- **FZZ bridge:** the canonical-twist area response of the mode `ρ` equals `3/4 + (m + m⁻¹)/8`, `m` = dyadic mass fraction of
+  its witness (`fzzAreaResponse_eq_witness_massFraction`). Spurious modes are `m = ½` (response 17/16); off-line zeros
+  have `m ∈ (½,1)` (response in `(1,17/16)`); critical zeros have no normalizable witness.
+Meaning: the FZZ-P premise is exactly the statement that every normalizable witness of the physical source is a
+dyadic (prime-2 Euler factor) mode. Open converse: RH ⟹ witness class = closed span of spurious witnesses
+(Beurling-type completeness modulo the explicit Blaschke factor; paper-level via Hardy-space factorization).
+Literature: η-variants of Nyman–Beurling exist; the spurious dyadic witness family, the dyadic invariance, the
+mass-fraction Hermitian identity and the FZZ bridge were not found.

@@ -28,7 +28,7 @@ Codes: as in the frontier map. KR-x = entry in I.2. no-go-NNN = former catalogue
 - **RBH** (mechanism no-go-225). Kill: complementary/wall finite parts and separated-sign or passive production are blind or RH receivers. Survivor: changed nonseparated, nonlinear or singular datum (→ PM). E: REF.
 - **SNR** (no-go-186). Kill: the reporter aperture realizes an arbitrary positive target height independently of the source. Survivor: a source-native aperture invariant is required. E: REF.
 
-## Part I.2 — Retired routes (27)
+## Part I.2 — Retired routes (28)
 
 ### KR-AUT — GL(2) automorphic spectral positivity
 Route: Petersson/Kuznetsov/Selberg trace formula with a tuned nonnegative test, plus DI/Stadlmann-type estimates.
@@ -187,6 +187,21 @@ Route: identity between the thin-slice pair current and a two-prime Cesàro exce
 Kill [L]: the two-prime excess is zero-indexed; its only unconditional bound is the Cauchy local density `≍ log t` (the proposal's own stop test). The reflected summand `χ_p(ρ)χ_p(1−ρ̄)` is holomorphic × antiholomorphic ⇒ no explicit formula carries it; a holomorphic clock unimodular on the line gives one growing mode per free orbit ⇒ the holomorphic two-prime excess is 0 or unbounded (CANNOT-458). Collisions are FE-forced, codimension 0 and Hurwitz-stable (MUST-459).
 Survivor [L]: exchange law (reflected excess → `K(T) ∈ 2ℕ`; holomorphic excess bounded ⇔ `K(T)=0`); RH ⇔ holomorphic two-prime excess bounded ∀T; collision stability under locally uniform FE-symmetric limits; every entire line-unimodular clock satisfies `Λ(s)·conj Λ(1−s̄)=1`, window excess unbounded iff a zero leaves `|Λ|=1`, otherwise → aliasing charge `≥2` per off-line zero; liminf singleton-fibre ratio `≥ ½` (`≈0.5087` via Montgomery–Taylor). [P] singleton bound `½` sharp for inputs `κ_s=2/3`; Stepanov auxiliary integer at `√X` precision = one-sided Nyman–Beurling; Zeta23 inertia is density-only.
 E: R:XiHolomorphicTwoPrimePencilGrowthDichotomy; R:XiLineUnimodularClockExcessCriterion; R:XiHorizontalSingletonFiberHalfDensity; P1:exact-ordinate-coincidence-collision-quantum; P1:exact-ordinate-coincidence-facts.
+
+### KR-HF — Positive Hodge form on arithmetic cohomology (Deninger / Meyer / F₁)
+Route: a geometrically produced positive Hodge form on `H¹ = M_ζ` whose positivity and Frobenius-flow compatibility force weight-one purity (frontier HF).
+Kill (every named producer):
+- Conformal/Kähler positivity is blind: [L] a conformally scaled seminorm never bounds an off-line character (`not_bounded_of_conformal_offLine`), and the two coexist for every off-line exponent (`exists_conformal_seminorm_with_offLine_character`).
+- A faithful positive invariant form exists ⇔ the divisor is real [L] (`nonempty_positiveInvariantForm_iff`).
+- The J-reflection pairing has signature `(d,d)` [L] (`conjPairBlock_not_positive`).
+- The causal Hardy completion is Nyman–Beurling [L].
+- The Hodge–Schwartz resolvent core ⇔ RH [L, both directions] (`riemannHypothesis_iff_nonempty_hodgeSchwartzResolventXiSpectrum`, `…DenseRangeXiSpectrum`): realized on the naive diagonal carrier `XiDivisorSupport → ℂ`, so CIRCULAR.
+
+Survivor [L]:
+- The Hodge index on the primitive (pole-vanishing) part is Weil positivity at every level, i.e. route RW.
+- It is proved for all levels `λ ≤ √2·e^{1/100}` with the prime 2 (`one_twentieth_le_ccmRestrictedWeilPolarGroundEnergy_of_le_primeTwo`).
+
+E: R:ConformalHodgeBlindness; R:DeningerResolventCoreIsRiemannHypothesis; H:EntireMultiplierDefectUniversality; R:PoleVanishingWeilPositivityPrimeTwo; P1:hf-positive-hodge-attack/facts.
 
 ## Part I.3 — Universal-law-field (ULF) mechanisms retired (59)
 

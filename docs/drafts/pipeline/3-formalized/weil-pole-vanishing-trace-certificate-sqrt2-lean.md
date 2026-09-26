@@ -69,3 +69,34 @@ corpus).
   `≤ 0.003` at `λ = 1.649`.
 - So level-by-level certificates cannot approach RH (gate "No slack"; HF-F12).
 - Route reading: this is the finite-level arithmetic Hodge index (HF-F11 = route RW).
+
+## Explicit level past the prime-2 entry (Lean)
+
+**Statements.**
+- `RHTower.one_twentieth_le_ccmRestrictedWeilPolarGroundEnergy_primeTwo`: at the aperture
+  `b = ½(log 2 + 1/50)` (`λ₁ = √2 · e^{1/100} ≈ 1.4284`), `μ₀(b) ≥ 1/20` with the prime `2` in the
+  form.
+- `RHTower.one_twentieth_le_ccmRestrictedWeilPolarGroundEnergy_of_le_primeTwo`: every aperture
+  `c ≤ b` has `μ₀(c) ≥ 1/20`.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+**Mechanism: Krein extension freedom.** On `V₀(b)` the form is the Fourier multiplier
+`W − √2 log 2 · (cos 2πLξ − cos 2π·2b·ξ)`. The prime term is `cos 2πLξ`, and the added
+`cos 2π·2bξ` is a lag-`2b` term with null overlap, so it is free.
+- The difference equals `2 sin(π(2b+L)ξ) sin(πξ/50)`.
+- It is nonpositive on `[0.7111, 1.4221]`, at most `0.12319|ξ|`, and at most `1.9606` everywhere.
+
+**Certificate data.**
+- Parameters: `α = 3/10`, `h = 1/10`, 18 shells.
+- Shell residuals use the optimal residual `2b − C²/(b+sinh b) − S²/(sinh b − b)`, so no fitted
+  parameters are needed.
+- Tail thresholds `1.8, 2.05, 3.2, 6.6, 12.5` use a sharpened logarithm bound (compare at
+  `2^j·264.0625`).
+- Modules: `RHTower/PoleVanishingWeilPrimeTwoEntry` (translation = modulation, source reduction,
+  general-symbol certificate) and `RHTower/PoleVanishingWeilPositivityPrimeTwo`.
+- Wired into the umbrella; `lake build --old` passes; lint clean.
+
+**Scope.** Computer-free, but below the numerical record: the corpus pod certificate reaches
+`λ ≈ 1.568` and Zhu reaches `e^{0.8}`. This result does not address the super-exponential decay
+of `μ₀` (HF-F12).
