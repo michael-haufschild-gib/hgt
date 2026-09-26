@@ -109,7 +109,8 @@ theorem xiHeatMonomialAmplitude_succ_debt_bound (n : ℕ) (τ : ℝ) (q : XiZero
     2 * (xiHeatMonomialAmplitude (n + 1) τ q).im ^ 2 ≤
         Real.exp (-(t * z.re)) * (t ^ 2 * z.im ^ 2) *
           (4 * (n + 1 : ℝ) ^ 2 * (t ^ (2 * n) * ‖z‖ ^ (2 * n)) +
-            t ^ (2 * (n + 1)) * ‖z‖ ^ (2 * (n + 1))) := h
+            t ^ (2 * (n + 1)) * ‖z‖ ^ (2 * (n + 1))) := by
+      simpa only [xiHeatMonomialAmplitude, t, z, mul_pow] using h
     _ ≤ Real.exp (-(t * z.re)) * (t ^ 2 * ‖z‖) *
           (4 * (n + 1 : ℝ) ^ 2 * (t ^ (2 * n) * ‖z‖ ^ (2 * n)) +
             t ^ (2 * (n + 1)) * ‖z‖ ^ (2 * (n + 1))) := by
@@ -125,9 +126,13 @@ theorem xiHeatMonomialPhaseDebt_le_budget (n : ℕ) (τ : ℝ) :
       xiHeatMonomialPhaseBudget n τ := by
   cases n with
   | zero =>
+    have hs : Summable (fun q : XiZeroCopy => (Real.exp τ) ^ 2 *
+        (‖xiSpectralPoint q ^ 2‖ * Real.exp (-(Real.exp τ * (xiSpectralPoint q ^ 2).re)))) := by
+      simpa only [pow_one] using
+        (summable_xiHeatNormMoment 1 τ).mul_left ((Real.exp τ) ^ 2)
     have h := Summable.tsum_le_tsum (xiHeatMonomialAmplitude_zero_debt_bound τ)
       ((summable_xiHeatMonomialAmplitude_im_sq 0 τ).mul_left 2)
-      ((summable_xiHeatNormMoment 1 τ).mul_left ((Real.exp τ) ^ 2))
+      hs
     simpa only [tsum_mul_left, xiHeatMonomialPhaseBudget, xiHeatNormMoment, pow_one] using h
   | succ n =>
     have hs1 := (summable_xiHeatNormMoment (2 * n + 1) τ).mul_left
@@ -152,9 +157,10 @@ def xiHeatFinitePhaseDebt {N : ℕ} (a : Fin N → ℝ) (τ : ℝ) : ℝ :=
 
 theorem xiHeatFinitePhaseBudget_tendsto_zero (N : ℕ) :
     Tendsto (xiHeatFinitePhaseBudget N) atBot (𝓝 0) := by
-  have h := tendsto_finset_sum Finset.univ
+  change Tendsto (fun τ => ∑ j : Fin N, xiHeatMonomialPhaseBudget j τ) atBot (𝓝 0)
+  have h := tendsto_finsetSum Finset.univ
     (fun (j : Fin N) _ => xiHeatMonomialPhaseBudget_tendsto_zero j)
-  simpa only [Finset.sum_const_zero, xiHeatFinitePhaseBudget] using h
+  simpa only [Finset.sum_const_zero] using h
 
 /-- Full polynomial phase debt has a vanishing majorant uniform in its coefficient vector. -/
 theorem xiHeatFinitePhaseDebt_le_budget {N : ℕ} (a : Fin N → ℝ) (τ : ℝ) :
@@ -165,7 +171,7 @@ theorem xiHeatFinitePhaseDebt_le_budget {N : ℕ} (a : Fin N → ℝ) (τ : ℝ)
   have hA : 0 ≤ A := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hpoint (q : XiZeroCopy) :
       (∑ j, a j * (xiHeatMonomialAmplitude j τ q).im) ^ 2 ≤ A * f q := by
-    exact sum_mul_sq_le_sq_mul_sq Finset.univ a
+    exact Finset.sum_mul_sq_le_sq_mul_sq Finset.univ a
       (fun j : Fin N => (xiHeatMonomialAmplitude j τ q).im)
   have hs : Summable f := summable_sum fun j _ => summable_xiHeatMonomialAmplitude_im_sq j τ
   have hl : Summable (fun q => (∑ j, a j * (xiHeatMonomialAmplitude j τ q).im) ^ 2) :=

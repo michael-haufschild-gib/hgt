@@ -98,7 +98,7 @@ theorem re_mul_logDeriv_exteriorEulerFactor (x θ : ℝ) :
       (Complex.exp (θ * I))).re = exteriorEulerSpeed x θ := by
   have hd : HasDerivAt (fun z : ℂ => 1 - (exteriorEulerRadius x : ℂ) * z)
       (-(exteriorEulerRadius x : ℂ)) (Complex.exp (θ * I)) := by
-    simpa using (hasDerivAt_const (Complex.exp (θ * I)) (1 : ℂ)).sub
+    simpa using! (hasDerivAt_const (Complex.exp (θ * I)) (1 : ℂ)).sub
       ((hasDerivAt_id (Complex.exp (θ * I))).const_mul (exteriorEulerRadius x : ℂ))
   rw [logDeriv_apply, hd.deriv]
   have halg : Complex.exp (θ * I) *

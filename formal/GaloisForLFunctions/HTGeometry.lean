@@ -15997,3 +15997,4 @@ import GaloisForLFunctions.HTGeometry.ExponentialPacketRelativeGap
 import GaloisForLFunctions.HTGeometry.CoherentRelativeGap
 import GaloisForLFunctions.HTGeometry.QuadraticHeatPhaseDefect
 import GaloisForLFunctions.HTGeometry.VandermondeSamplingEnergy
+import GaloisForLFunctions.HTGeometry.MonomialHeatPhaseDefect

@@ -82,6 +82,14 @@
 - **N44 (Bernstein / Eisenstein moments).** `c_{2k}(t)` are the even `b`-moments of `M_t(b) = ½∫Φ((b+a)/2)Φ((b−a)/2)cos(ta)da`, which is the constant-term-subtracted Eisenstein series `E*(ie^b, ½+it)` at the unitary parameter. The sufficient condition `M_t ≥ 0` (all `b`) fails: for large `b`, `M_t(b) ≈ e^{9b/2}K_{it}(2πe^b)`, which oscillates in `t`. So positivity must come from cancellation across `b`. `FALSE` (sufficient form); `REDISCOVERED` (Hecke integral, dual to N18).
 - **N45 (Schoenberg / Pólya criteria for the Laguerre kernel `K₁`).** `K₁(a) = ½a²(Φ⋆Φ)(a) + 2((uΦ)⋆(uΦ))(a)`. The second term is PD (`FT = Ξ'²`); the first has `FT = −(Ξ²)''/2`. `K₁` decays doubly exponentially and is concave near `0`, so Pólya's convexity criterion fails. `K₁(√·)` is not completely monotone (`exp(−2πe^{√s})` is not CM), so it is not a Gaussian mixture. `FALSE` as sufficient criteria; `CIRCULAR` otherwise.
 
+- **N46 (de la Vallée Poussin 3-4-1 at the critical line).** At `σ = 1`, positivity of `3 + 4cos φ + cos 2φ` acts on the Dirichlet coefficients of `−ζ'/ζ`. The prime phases tie heights `0, t, 2t` together, and the pole at `1` supplies the positive mass. At `σ = ½` the FE partner `½ − δ + iγ` plays the pole's role but cancels exactly on the line (`Re ξ'/ξ(½+it) = 0`). Inside the strip, `Re ξ'/ξ` at heights `t` and `2t` depends on disjoint local zero sets, with no Dirichlet series linking them. `FALSE`. Every known zero-free-region mechanism uses the pole at `1` plus coefficient positivity, and neither is available at the FE line.
+- **Decision on N42 (sharp window).** A paper proof is complete modulo standard analytic inputs. The pieces are:
+  - convexity via the bounded Phragmén–Lindelöf on `zetaEntire(s)·e^{(s−it₀)²}·t₀^{−ℓ(s)}`, with `ℓ(s) = (3+η−s)/2`;
+  - the left edge `|χ(−η+it)| ≪ t^{½+η}`, which needs a lower bound for `|χ(1+η+it)|` via the vertical digamma bound; the corpus left-line lemma covers only `σ ∈ (0,½)`;
+  - disc bounds for `ξ'/ξ` on `Re ≥ 1 + ε/2` (`triv_bound_zeta`);
+  - a generalized quarter-integral assembly whose cubic coefficient is `ε`-dependent.
+  It is not started: it removes only orders that detect nothing (`b > ½`) and leaves the near-double core untouched, i.e. it is not an attack on the hard obstacle.
+
 ## Loop state
 The input must be arithmetic at Dirichlet length `≍ T` (N4). It must separate O-charge from M-charge (not continuous in the divisor), and it must give an absolute-constant, integer-type bound. No candidate satisfies all three so far.
 
@@ -93,7 +101,7 @@ After N8–N19 the admissible shape is narrower:
 - (v) It is not a half-type mechanism (Lesson L). Every known RH-true arithmetic object gets its line from a zero-free half where the Euler product or PNT holds, and ξ has no half (twin rigidity).
 - (vi) It is not a second-order or independence statement (Lesson M). A Gaussian or Steinhaus model with ζ's local covariance has only `1/√3` of its zeros real, and the missing 42% sit exactly at `δ ≍ 1/log T`. The input must encode unitary-type rigidity: heuristically additive (Hardy–Littlewood) prime correlations, or the coherence of the two AFE halves at the RS stationary point.
 
-**Directions (a)–(c) run as N25–N27, all killed.** Consequence: after N8–N45, an input excluding near-double zeros must be a global positivity or unitarity structure (support type, not moment type; not half type). That is the HF/Hilbert–Pólya lane, not a local arithmetic estimate. Earlier list, kept for reference:
+**Directions (a)–(c) run as N25–N27, all killed.** Consequence: after N8–N46, an input excluding near-double zeros must be a global positivity or unitarity structure (support type, not moment type; not half type). That is the HF/Hilbert–Pólya lane, not a local arithmetic estimate. Earlier list, kept for reference:
 - (a) A sign law at critical points from a 4-point (not 2-point) arithmetic correlation: the Kac–Rice fraction of bad critical points as a functional of the local 4th cumulant, compared with the Gaussian value.
 - (b) CCM/prolate self-adjoint models: can a Rouché comparison on symmetric disks transfer real-rootedness, and what approximation precision would that need?
 - (c) The literal theta source: split `K(a)` with the theta expansion in one factor only.

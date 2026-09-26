@@ -75,7 +75,6 @@ theorem xiHeatThirdNormEnergy_eventually_uniform_lower :
       quadraticHeatValue a (b * Real.exp τ) (c * (Real.exp τ) ^ 2)
         (xiSpectralPoint (q i) ^ 2) := by
     simp [polynomialSample, Fin.sum_univ_three, v, z, quadraticHeatValue]
-    push_cast
     ring
   have hv : (∑ j, ‖v j‖ ^ 2) = a ^ 2 + b ^ 2 + c ^ 2 := by
     simp [v, Fin.sum_univ_three, Complex.norm_real, Real.norm_eq_abs, sq_abs]

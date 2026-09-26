@@ -57,7 +57,7 @@ theorem monomialHeatPhaseDebt_bound (n : ℕ) (t : ℝ) (z : ℂ) :
       2 * ((n + 1 : ℝ) ^ 2 * z.im ^ 2 * ‖z‖ ^ (2 * n)) +
         t ^ 2 * z.im ^ 2 / 2 * ‖z‖ ^ (2 * (n + 1)) := by
     linarith
-  have h := mul_le_mul_of_nonneg_left hpoly (Real.exp_pos _).le
+  have h := mul_le_mul_of_nonneg_left hpoly (Real.exp_pos (-(t * z.re))).le
   nlinarith only [hbase, h]
 
 end
