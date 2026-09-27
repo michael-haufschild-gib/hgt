@@ -451,7 +451,7 @@ theorem quarter_gamma_lower_of_ratio {A s y : ℝ} (hs : 4 ≤ s) (hy : y = s / 
   exact (pow_le_pow_iff_left₀ hq0 hA0.le two_ne_zero).mp hfinal
 
 /-- **Sharp quarter-line Gamma bound.**  For `s ≥ 4`: `|Γ(1/4 + is/2)| ≥ e^{-πs/4}/(1+s)`.
-Duplication gives `|Γ(1/4+iy)Γ(3/4+iy)| = √(2π)|Γ(1/2+2iy)| ≥ √2 π e^{-2π|y|/2 ·...}`, and the
+With `y = s/2`, duplication gives `|Γ(1/4+iy)Γ(3/4+iy)| = √(2π)|Γ(1/2+is)| ≥ π e^{-πs/2}`, and the
 digamma bound on the segment `[1/4, 3/4] + iy` gives `|Γ(3/4+iy)| ≤ e(1+y)|Γ(1/4+iy)|`. -/
 theorem norm_Gamma_quarter_line_sharp {s : ℝ} (hs : 4 ≤ s) :
     Real.exp (-(π * s / 4)) / (1 + s) ≤
@@ -653,6 +653,499 @@ theorem tilted_xi_line_ge {θ τ δ : ℝ} (hτ : 4 ≤ τ) (hδ : 0 < δ) (hδ1
         rw [← hθexp]; ring
     _ ≤ Real.exp (τ * θ) * (‖xiUnit s‖ * ‖riemannZeta s‖) :=
         mul_le_mul_of_nonneg_left hprod (Real.exp_pos _).le
+
+/-! ## The window floor and the Christoffel bound -/
+
+/-- The lower envelope of `e^{τ(π/4-ε)}|Ξ(τ)|` on `[τ₀ - δ/2, τ₀ + δ/2]`. -/
+def tiltedWindowFloor (ε τ₀ δ : ℝ) : ℝ :=
+  tiltedXiLineConst * ((τ₀ - 1 / 2) ^ 2 / (τ₀ + 3 / 2)) * Real.exp (-(ε * (τ₀ + 1 / 2))) *
+    Real.exp (-(3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ))
+
+theorem tiltedWindowFloor_pos {ε τ₀ δ : ℝ} (hτ₀ : 5 ≤ τ₀) : 0 < tiltedWindowFloor ε τ₀ δ := by
+  unfold tiltedWindowFloor
+  have := tiltedXiLineConst_pos
+  have : 0 < τ₀ - 1 / 2 := by linarith
+  have : 0 < τ₀ + 3 / 2 := by linarith
+  positivity
+
+theorem tilted_xi_window_ge {ε τ₀ δ τ : ℝ} (hε : 0 ≤ ε) (hτ₀ : 5 ≤ τ₀) (hδ : 0 < δ)
+    (hδ1 : δ ≤ 1) (hsep : ∀ ρ ∈ zetaZeroConfig.carrier, δ ≤ |ρ.im - τ₀|)
+    (hτ : τ ∈ Icc (τ₀ - δ / 2) (τ₀ + δ / 2)) :
+    tiltedWindowFloor ε τ₀ δ ≤
+      Real.exp (τ * (π / 4 - ε)) * ‖riemannPhiTransform (1 / 2 + I * τ)‖ := by
+  have hτ4 : 4 ≤ τ := by linarith [hτ.1]
+  have hfar : ∀ ρ ∈ zetaZeroConfig.carrier, δ / 2 ≤ |ρ.im - τ| := by
+    intro ρ hρ
+    have h1 := hsep ρ hρ
+    have h2 : |τ - τ₀| ≤ δ / 2 := abs_le.mpr ⟨by linarith [hτ.1], by linarith [hτ.2]⟩
+    have := abs_sub_abs_le_abs_sub (ρ.im - τ₀) (τ - τ₀)
+    have e : ρ.im - τ₀ - (τ - τ₀) = ρ.im - τ := by ring
+    rw [e] at this
+    linarith [abs_sub_comm (ρ.im - τ₀) (τ - τ₀)]
+  have h := tilted_xi_line_ge (θ := π / 4 - ε) hτ4 (by linarith : (0 : ℝ) < δ / 2)
+    (by linarith) hfar
+  refine le_trans ?_ h
+  have hC := logDerivZetaConstant_nonneg
+  have hc := tiltedXiLineConst_pos
+  unfold tiltedWindowFloor
+  have hfrac : (τ₀ - 1 / 2) ^ 2 / (τ₀ + 3 / 2) ≤ τ ^ 2 / (1 + τ) := by
+    rw [div_le_div_iff₀ (by linarith) (by linarith)]
+    have hsq : (τ₀ - 1 / 2) ^ 2 ≤ τ ^ 2 := pow_le_pow_left₀ (by linarith) (by linarith [hτ.1]) 2
+    have h1 : 1 + τ ≤ τ₀ + 3 / 2 := by linarith [hτ.2]
+    exact mul_le_mul hsq h1 (by linarith) (by positivity)
+  have he1 : Real.exp (-(ε * (τ₀ + 1 / 2))) ≤ Real.exp ((π / 4 - ε - π / 4) * τ) := by
+    apply Real.exp_le_exp.mpr
+    have : τ ≤ τ₀ + 1 / 2 := by linarith [hτ.2]
+    nlinarith
+  have hlog : Real.log τ ≤ Real.log (τ₀ + 1) :=
+    Real.log_le_log (by linarith) (by linarith [hτ.2])
+  have he2 : Real.exp (-(3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ)) ≤
+      Real.exp (-(3 / 2 * logDerivZetaConstant * Real.log τ / (δ / 2))) := by
+    apply Real.exp_le_exp.mpr
+    rw [show 3 / 2 * logDerivZetaConstant * Real.log τ / (δ / 2) =
+      3 * logDerivZetaConstant * Real.log τ / δ by field_simp]
+    have : 3 * logDerivZetaConstant * Real.log τ / δ ≤
+        3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ := by
+      apply div_le_div_of_nonneg_right _ hδ.le
+      exact mul_le_mul_of_nonneg_left hlog (by positivity)
+    linarith
+  have h0 : 0 ≤ tiltedXiLineConst * ((τ₀ - 1 / 2) ^ 2 / (τ₀ + 3 / 2)) := by
+    have : 0 < τ₀ + 3 / 2 := by linarith
+    positivity
+  calc tiltedXiLineConst * ((τ₀ - 1 / 2) ^ 2 / (τ₀ + 3 / 2)) * Real.exp (-(ε * (τ₀ + 1 / 2))) *
+        Real.exp (-(3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ))
+      ≤ tiltedXiLineConst * (τ ^ 2 / (1 + τ)) * Real.exp ((π / 4 - ε - π / 4) * τ) *
+          Real.exp (-(3 / 2 * logDerivZetaConstant * Real.log τ / (δ / 2))) := by
+        gcongr
+
+/-- **Christoffel bound (raw form).**  If `ν` is dominated by the level-`L` Hodge form, the tilted
+test fits in `[-L, L]`, and twice the tail is below the window floor, then
+`ν([τ₀ - δ/2, τ₀ + δ/2]) ≤ ‖W(T,T)‖ / ℓ²`, `ℓ = (m/2)(τ₀ - 1/2)² · 4w cos(1/8) ∫κ`. -/
+theorem measure_window_le_of_dominated_tilted {L U w ε : ℝ} {ν : Measure ℝ}
+    (hν : DominatedByHodgeForm L ν) (hε : 0 ≤ ε) (hθ0 : 0 ≤ π / 4 - ε)
+    (hθ : 2 * (π / 4 - ε) < π / 2) (hw : 0 < w) (hw4 : 4 * w ≤ 1) (hUL : U + w ≤ L)
+    {τ₀ δ : ℝ} (hτ₀ : 5 ≤ τ₀) (hδ : 0 < δ) (hδ1 : δ ≤ 1)
+    (hsep : ∀ ρ ∈ zetaZeroConfig.carrier, δ ≤ |ρ.im - τ₀|)
+    (hbig : 2 * (∫ u : ℝ, ‖tiltedTail U (π / 4 - ε) u‖ * Real.exp (1 / 2 * |u|)) ≤
+      tiltedWindowFloor ε τ₀ δ) :
+    ν (Icc (τ₀ - δ / 2) (τ₀ + δ / 2)) ≤
+      ENNReal.ofReal (‖zetaZeroConfig.W (landauRadicalTest U (π / 4 - ε) w τ₀)
+          (landauRadicalTest U (π / 4 - ε) w τ₀)‖ /
+        ((tiltedWindowFloor ε τ₀ δ / 2) * (τ₀ - 1 / 2) ^ 2 *
+          (4 * w * (Real.cos (1 / 8) * (∫ u, weilBump u)))) ^ 2) := by
+  set θ := π / 4 - ε with hθdef
+  set εt := ∫ u : ℝ, ‖tiltedTail U θ u‖ * Real.exp (1 / 2 * |u|) with hεt
+  set m := tiltedWindowFloor ε τ₀ δ with hm
+  set I₀ := Icc (τ₀ - δ / 2) (τ₀ + δ / 2) with hI₀
+  set c := 4 * w * (Real.cos (1 / 8) * (∫ u, weilBump u)) with hc
+  have hIκ : 0 < ∫ u, weilBump u := weilBump.integral_pos
+  have hcos : 0 < Real.cos (1 / 8) := Real.cos_pos_of_mem_Ioo
+    ⟨by linarith [Real.pi_gt_three], by linarith [Real.pi_gt_three]⟩
+  have hc0 : 0 < c := by rw [hc]; positivity
+  have hm0 : 0 < m := tiltedWindowFloor_pos hτ₀
+  set ℓ := (m / 2) * (τ₀ - 1 / 2) ^ 2 * c with hℓ
+  have hτ₀' : 0 < τ₀ - 1 / 2 := by linarith
+  have hℓ0 : 0 < ℓ := by rw [hℓ]; positivity
+  have hpt : ∀ τ ∈ I₀, ℓ ≤ ‖paperFT (landauRadicalTest U θ w τ₀) (τ : ℂ)‖ := by
+    intro τ hτ
+    have hτω : |τ - τ₀| ≤ 1 / 2 := abs_le.mpr ⟨by linarith [hτ.1], by linarith [hτ.2]⟩
+    have hlow := norm_paperFT_landauRadicalTest_real_ge (U := U) hθ0 hθ hw hw4 τ₀ hτω
+    have hXi := tilted_xi_window_ge hε hτ₀ hδ hδ1 hsep hτ
+    rw [← hεt] at hlow
+    have hsq : (τ₀ - 1 / 2) ^ 2 ≤ τ ^ 2 + 1 / 4 := by
+      have : (τ₀ - 1 / 2) ^ 2 ≤ τ ^ 2 := pow_le_pow_left₀ (by linarith) (by linarith [hτ.1]) 2
+      linarith
+    have hdiff : m / 2 ≤ Real.exp (τ * θ) * ‖riemannPhiTransform (1 / 2 + I * τ)‖ - εt := by
+      rw [hθdef]; linarith
+    calc ℓ = (m / 2) * ((τ₀ - 1 / 2) ^ 2 * c) := by rw [hℓ]; ring
+      _ ≤ (Real.exp (τ * θ) * ‖riemannPhiTransform (1 / 2 + I * τ)‖ - εt) *
+            ((τ ^ 2 + 1 / 4) * c) := by
+          apply mul_le_mul hdiff (mul_le_mul_of_nonneg_right hsq hc0.le) (by positivity)
+            (by linarith)
+      _ ≤ ‖paperFT (landauRadicalTest U θ w τ₀) (τ : ℂ)‖ := hlow
+  have hdom := hν (landauRadicalTest U θ w τ₀) (contDiff_landauRadicalTest hθ0 hθ hw τ₀)
+    (tsupport_landauRadicalTest hw τ₀ hUL) (paperFT_landauRadicalTest_half_I hθ0 hθ hw τ₀)
+    (paperFT_landauRadicalTest_neg_half_I hθ0 hθ hw τ₀)
+  have hind : ∫⁻ τ, I₀.indicator (fun _ => ENNReal.ofReal (ℓ ^ 2)) τ ∂ν ≤
+      ∫⁻ τ, ENNReal.ofReal (‖paperFT (landauRadicalTest U θ w τ₀) τ‖ ^ 2) ∂ν := by
+    refine lintegral_mono fun τ => ?_
+    by_cases hτ : τ ∈ I₀
+    · rw [indicator_of_mem hτ]
+      exact ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ hℓ0.le (hpt τ hτ) 2)
+    · rw [indicator_of_notMem hτ]; exact bot_le
+  rw [lintegral_indicator_const measurableSet_Icc] at hind
+  have hkey : ENNReal.ofReal (ℓ ^ 2) * ν I₀ ≤
+      ENNReal.ofReal ‖zetaZeroConfig.W (landauRadicalTest U θ w τ₀)
+        (landauRadicalTest U θ w τ₀)‖ :=
+    hind.trans hdom
+  have hℓ2 : 0 < ℓ ^ 2 := by positivity
+  rw [ENNReal.ofReal_div_of_pos hℓ2]
+  rw [ENNReal.le_div_iff_mul_le (Or.inl (ENNReal.ofReal_pos.mpr hℓ2).ne')
+    (Or.inl ENNReal.ofReal_ne_top)]
+  rw [mul_comm]; exact hkey
+
+/-! ## The exponent balance at the Landau height -/
+
+/-- With `ε = √η/2` and `w = η/8`:
+`2ε(1 - η/2) e^{2L} ≤ cos(2(π/4 - ε)) e^{2(L - w)}`. -/
+theorem landau_rate_ge {η L : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2) :
+    2 * (Real.sqrt η / 2) * (1 - η / 2) * Real.exp (2 * L) ≤
+      Real.cos (2 * (π / 4 - Real.sqrt η / 2)) * Real.exp (2 * (L - η / 8)) := by
+  set ε := Real.sqrt η / 2 with hε
+  have hε0 : 0 < ε := by rw [hε]; positivity
+  have hεsq : ε ^ 2 = η / 4 := by rw [hε, div_pow, Real.sq_sqrt hη.le]; ring
+  have hcos : Real.cos (2 * (π / 4 - ε)) = Real.sin (2 * ε) := by
+    rw [show 2 * (π / 4 - ε) = π / 2 - 2 * ε by ring, Real.cos_pi_div_two_sub]
+  have hsin : 2 * ε * (1 - ε ^ 2) ≤ Real.sin (2 * ε) := by
+    have h := Real.sin_gt_sub_cube (x := 2 * ε) (by positivity)
+    have h3 : 0 < ε ^ 3 := pow_pos hε0 3
+    nlinarith
+  have hexp : Real.exp (2 * L) * (1 - η / 4) ≤ Real.exp (2 * (L - η / 8)) := by
+    have := Real.add_one_le_exp (-(η / 4))
+    rw [show 2 * (L - η / 8) = 2 * L + (-(η / 4)) by ring, Real.exp_add]
+    exact mul_le_mul_of_nonneg_left (by linarith) (Real.exp_pos _).le
+  rw [hcos]
+  have hs0 : 0 ≤ 2 * ε * (1 - ε ^ 2) := by
+    have : ε ^ 2 ≤ 1 := by rw [hεsq]; linarith
+    have : 0 ≤ 1 - ε ^ 2 := by linarith
+    positivity
+  have hE := Real.exp_pos (2 * L)
+  have hq : 1 - η / 2 ≤ (1 - η / 4) * (1 - η / 4) := by nlinarith
+  calc 2 * ε * (1 - η / 2) * Real.exp (2 * L)
+      = (2 * ε * Real.exp (2 * L)) * (1 - η / 2) := by ring
+    _ ≤ (2 * ε * Real.exp (2 * L)) * ((1 - η / 4) * (1 - η / 4)) :=
+        mul_le_mul_of_nonneg_left hq (by positivity)
+    _ = 2 * ε * (1 - ε ^ 2) * (Real.exp (2 * L) * (1 - η / 4)) := by rw [hεsq]; ring
+    _ ≤ Real.sin (2 * ε) * Real.exp (2 * (L - η / 8)) :=
+        mul_le_mul hsin hexp (by nlinarith) (hs0.trans hsin)
+
+/-- **The gain below the Landau height.**  For `τ₀ ≤ (1-η) 2π e^{2L}`, the tail rate
+`R = π cos(2θ) e^{2(L-w)}` exceeds the tilt cost `ε(τ₀ + 1/2)` by `(π/2) η^{3/2} e^{2L} - ε/2`. -/
+theorem landau_gain {η L τ₀ : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2)
+    (hτ : τ₀ ≤ (1 - η) * (2 * π * Real.exp (2 * L))) :
+    π / 2 * (η * Real.sqrt η) * Real.exp (2 * L) - Real.sqrt η / 2 / 2 ≤
+      π * Real.cos (2 * (π / 4 - Real.sqrt η / 2)) * Real.exp (2 * (L - η / 8)) -
+        Real.sqrt η / 2 * (τ₀ + 1 / 2) := by
+  have hr := landau_rate_ge (L := L) hη hη2
+  have hs0 : 0 ≤ Real.sqrt η := Real.sqrt_nonneg _
+  have hpi := Real.pi_pos
+  have h1 : π * (2 * (Real.sqrt η / 2) * (1 - η / 2) * Real.exp (2 * L)) ≤
+      π * (Real.cos (2 * (π / 4 - Real.sqrt η / 2)) * Real.exp (2 * (L - η / 8))) :=
+    mul_le_mul_of_nonneg_left hr hpi.le
+  have h2 : Real.sqrt η / 2 * τ₀ ≤ Real.sqrt η / 2 * ((1 - η) * (2 * π * Real.exp (2 * L))) :=
+    mul_le_mul_of_nonneg_left hτ (by positivity)
+  nlinarith
+
+/-- The level threshold: `B + 16L ≤ κ e^{2L}` for all large `L`. -/
+theorem exists_level_linear_le_exp {B κ : ℝ} (hB : 0 ≤ B) (hκ : 0 < κ) :
+    ∃ L₀ : ℝ, 1 ≤ L₀ ∧ ∀ L : ℝ, L₀ ≤ L → B + 16 * L ≤ κ * Real.exp (2 * L) := by
+  refine ⟨max 1 ((B + 16) / (2 * κ)), le_max_left _ _, fun L hL => ?_⟩
+  have hL1 : 1 ≤ L := le_trans (le_max_left _ _) hL
+  have hL2 : (B + 16) / (2 * κ) ≤ L := le_trans (le_max_right _ _) hL
+  have hexp : 2 * L ^ 2 ≤ Real.exp (2 * L) := by
+    have := Real.sum_le_exp_of_nonneg (x := 2 * L) (by linarith) 3
+    simp [Finset.sum_range_succ, Nat.factorial] at this
+    nlinarith
+  have hk : B + 16 ≤ 2 * κ * L := by
+    rw [div_le_iff₀ (by positivity)] at hL2; linarith
+  have h1 : B + 16 * L ≤ (B + 16) * L := by nlinarith
+  have h2 : (B + 16) * L ≤ 2 * κ * L * L := mul_le_mul_of_nonneg_right hk (by linarith)
+  have h3 : 2 * κ * L * L ≤ κ * Real.exp (2 * L) := by
+    have := mul_le_mul_of_nonneg_left hexp hκ.le
+    nlinarith
+  linarith
+
+/-- Twice the tail is below the window floor. -/
+theorem landau_two_tail_le_floor {M cL L G R εt ε τ₀ δ B : ℝ} (hM : 0 ≤ M)
+    (hcL : cL = tiltedXiLineConst) (hτ₀ : 5 ≤ τ₀) (hε1 : ε ≤ 1) (hL : 0 ≤ L)
+    (hεt : εt ≤ 2 * M * Real.exp (6 * L) * Real.exp (-R))
+    (hgain : G / 2 - ε / 2 ≤ R - ε * (τ₀ + 1 / 2))
+    (hZ : 3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ ≤ G / 8)
+    (hB : Real.log (4 * M / cL + 1) + 1 ≤ B) (hBL : B + 16 * L ≤ G / 4) :
+    2 * εt ≤ tiltedWindowFloor ε τ₀ δ := by
+  have hcL0 : 0 < cL := by rw [hcL]; exact tiltedXiLineConst_pos
+  have hlog0 : 0 ≤ Real.log (4 * M / cL + 1) :=
+    Real.log_nonneg (by have : 0 ≤ 4 * M / cL := by positivity
+                        linarith)
+  set X := Real.exp (-(ε * (τ₀ + 1 / 2))) with hX
+  have hX0 : 0 < X := Real.exp_pos _
+  set Z := Real.exp (-(3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ)) with hZdef
+  have hZlow : Real.exp (-(G / 8)) ≤ Z := Real.exp_le_exp.mpr (by linarith)
+  have hQ : 1 ≤ (τ₀ - 1 / 2) ^ 2 / (τ₀ + 3 / 2) := by
+    rw [le_div_iff₀ (by linarith)]; nlinarith
+  have hR : Real.exp (-R) ≤ Real.exp (1 / 2 - G / 2) * X := by
+    rw [hX, ← Real.exp_add]; apply Real.exp_le_exp.mpr; linarith
+  have hexpB : 4 * M / cL + 1 ≤ Real.exp B := by
+    calc 4 * M / cL + 1 = Real.exp (Real.log (4 * M / cL + 1)) :=
+          (Real.exp_log (by positivity)).symm
+      _ ≤ Real.exp B := Real.exp_le_exp.mpr (by linarith)
+  have hkey : 4 * M * Real.exp (6 * L + 1 / 2 - G / 2) ≤ cL * Real.exp (-(G / 8)) := by
+    have h1 : 4 * M ≤ cL * Real.exp B := by
+      have := mul_le_mul_of_nonneg_left hexpB hcL0.le
+      rw [mul_add, mul_div_cancel₀ _ hcL0.ne', mul_one] at this
+      linarith
+    calc 4 * M * Real.exp (6 * L + 1 / 2 - G / 2)
+        ≤ cL * Real.exp B * Real.exp (6 * L + 1 / 2 - G / 2) :=
+          mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
+      _ = cL * Real.exp (B + 6 * L + 1 / 2 - G / 2) := by
+          rw [mul_assoc, ← Real.exp_add]; ring_nf
+      _ ≤ cL * Real.exp (-(G / 8)) := by
+          apply mul_le_mul_of_nonneg_left _ hcL0.le
+          apply Real.exp_le_exp.mpr
+          linarith
+  unfold tiltedWindowFloor
+  rw [← hcL, ← hX, ← hZdef]
+  calc 2 * εt ≤ 2 * (2 * M * Real.exp (6 * L) * (Real.exp (1 / 2 - G / 2) * X)) := by
+        have := mul_le_mul_of_nonneg_left hR (by positivity : (0 : ℝ) ≤ 2 * M * Real.exp (6 * L))
+        linarith
+    _ = 4 * M * Real.exp (6 * L + 1 / 2 - G / 2) * X := by
+        rw [show 6 * L + 1 / 2 - G / 2 = 6 * L + (1 / 2 - G / 2) by ring, Real.exp_add]; ring
+    _ ≤ cL * Real.exp (-(G / 8)) * X := mul_le_mul_of_nonneg_right hkey hX0.le
+    _ ≤ cL * ((τ₀ - 1 / 2) ^ 2 / (τ₀ + 3 / 2)) * X * Z := by
+        have hcX : 0 ≤ cL * X := by positivity
+        calc cL * Real.exp (-(G / 8)) * X = (cL * X) * Real.exp (-(G / 8)) := by ring
+          _ ≤ (cL * X) * (((τ₀ - 1 / 2) ^ 2 / (τ₀ + 3 / 2)) * Z) := by
+              apply mul_le_mul_of_nonneg_left _ hcX
+              have : Real.exp (-(G / 8)) ≤ 1 * Z := by linarith
+              exact this.trans (mul_le_mul_of_nonneg_right hQ (Real.exp_pos _).le)
+          _ = _ := by ring
+
+/-- The numeric form of the Christoffel ratio below the Landau height. -/
+theorem landau_ratio_le {M Bw A₀ cL w c₀ L E G R εt ε τ₀ δ Wv B : ℝ} (hM : 0 ≤ M)
+    (hA₀ : 1 ≤ A₀) (hcL : cL = tiltedXiLineConst) (hw : 0 < w) (hc₀ : 0 < c₀)
+    (hτ₀ : 5 ≤ τ₀) (hε1 : ε ≤ 1) (hE : E = Real.exp (2 * L))
+    (hτE : τ₀ + 3 / 2 ≤ 8 * E)
+    (hεt0 : 0 ≤ εt) (hεt : εt ≤ 2 * M * Real.exp (6 * L) * Real.exp (-R))
+    (hgain : G / 2 - ε / 2 ≤ R - ε * (τ₀ + 1 / 2))
+    (hZ : 6 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ ≤ G / 4)
+    (hW : Wv ≤ εt ^ 2 * Bw ^ 2 * (1 + τ₀) ^ 4 * (24 * A₀ * Real.log (τ₀ + 3)))
+    (hB : Real.log (64 * (96 * (M ^ 2 * Bw ^ 2 * A₀) / (cL ^ 2 * w ^ 2 * c₀ ^ 2)) + 1) + 1 ≤ B)
+    (hBL : B + 16 * L ≤ G / 4) :
+    Wv / ((tiltedWindowFloor ε τ₀ δ / 2) * (τ₀ - 1 / 2) ^ 2 * (4 * w * c₀)) ^ 2 ≤
+      Real.exp (-(G / 2)) := by
+  have hcL0 : 0 < cL := by rw [hcL]; exact tiltedXiLineConst_pos
+  set K₃ := 96 * (M ^ 2 * Bw ^ 2 * A₀) / (cL ^ 2 * w ^ 2 * c₀ ^ 2) with hK₃
+  have hK₃0 : 0 ≤ K₃ := by
+    rw [hK₃]
+    apply div_nonneg _ (by positivity)
+    exact mul_nonneg (by norm_num) (mul_nonneg (mul_nonneg (sq_nonneg _) (sq_nonneg _))
+      (by linarith))
+  set X := Real.exp (-(ε * (τ₀ + 1 / 2))) with hX
+  have hX0 : 0 < X := Real.exp_pos _
+  set Z := Real.exp (-(3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ)) with hZdef
+  have hZ0 : 0 < Z := Real.exp_pos _
+  have hZ2 : Real.exp (-(G / 4)) ≤ Z ^ 2 := by
+    rw [hZdef, sq, ← Real.exp_add]; apply Real.exp_le_exp.mpr
+    have e : 6 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ =
+        2 * (3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ) := by ring
+    rw [e] at hZ; linarith
+  set x := τ₀ - 1 / 2 with hx
+  have hx0 : 0 < x := by rw [hx]; linarith
+  set y := τ₀ + 3 / 2 with hy
+  have hy0 : 0 < y := by rw [hy]; linarith
+  have hm : tiltedWindowFloor ε τ₀ δ = cL * (x ^ 2 / y) * X * Z := by
+    unfold tiltedWindowFloor; rw [hcL]
+  set T := 2 * M * Real.exp (6 * L) * (Real.exp (1 / 2 - G / 2) * X) with hT
+  have hR : Real.exp (-R) ≤ Real.exp (1 / 2 - G / 2) * X := by
+    rw [hX, ← Real.exp_add]; apply Real.exp_le_exp.mpr; linarith
+  have hεtT : εt ≤ T := by
+    rw [hT]
+    exact hεt.trans (mul_le_mul_of_nonneg_left hR (by positivity))
+  have hpoly := pinning_poly_le hτ₀
+  have hlog0 : 0 ≤ Real.log (τ₀ + 3) := Real.log_nonneg (by linarith)
+  have hWv : Wv ≤ T ^ 2 * Bw ^ 2 * (24 * A₀) * (4 * x ^ 8) := by
+    have hA0' : 0 ≤ 24 * A₀ := by linarith
+    calc Wv ≤ εt ^ 2 * Bw ^ 2 * (1 + τ₀) ^ 4 * (24 * A₀ * Real.log (τ₀ + 3)) := hW
+      _ = εt ^ 2 * (Bw ^ 2 * (24 * A₀)) * ((1 + τ₀) ^ 4 * Real.log (τ₀ + 3)) := by ring
+      _ ≤ T ^ 2 * (Bw ^ 2 * (24 * A₀)) * (4 * (τ₀ - 1 / 2) ^ 8) := by
+          gcongr
+      _ = T ^ 2 * Bw ^ 2 * (24 * A₀) * (4 * x ^ 8) := by rw [hx]; ring
+  have hden : ((cL * (x ^ 2 / y) * X * Z) / 2 * x ^ 2 * (4 * w * c₀)) ^ 2 =
+      4 * cL ^ 2 * w ^ 2 * c₀ ^ 2 * X ^ 2 * Z ^ 2 * x ^ 8 / y ^ 2 := by
+    field_simp; ring
+  rw [hm, hden]
+  have hden0 : 0 < 4 * cL ^ 2 * w ^ 2 * c₀ ^ 2 * X ^ 2 * Z ^ 2 * x ^ 8 / y ^ 2 := by positivity
+  rw [div_le_iff₀ hden0]
+  have hyE : y ^ 2 ≤ 64 * Real.exp (4 * L) := by
+    have h8 : y ≤ 8 * Real.exp (2 * L) := by rw [hy, ← hE]; exact hτE
+    have h2 : Real.exp (4 * L) = Real.exp (2 * L) ^ 2 := by
+      rw [sq, ← Real.exp_add]; ring_nf
+    rw [h2]
+    calc y ^ 2 ≤ (8 * Real.exp (2 * L)) ^ 2 := pow_le_pow_left₀ hy0.le h8 2
+      _ = 64 * Real.exp (2 * L) ^ 2 := by ring
+  have hexpB : 64 * K₃ + 1 ≤ Real.exp (B - 1) := by
+    calc 64 * K₃ + 1 = Real.exp (Real.log (64 * K₃ + 1)) := (Real.exp_log (by positivity)).symm
+      _ ≤ Real.exp (B - 1) := Real.exp_le_exp.mpr (by linarith)
+  -- the target: T² Bw² 24A₀ 4x⁸ ≤ e^{-G/2} · 4cL²w²c₀²X²Z²x⁸/y²
+  have hT2 : T ^ 2 = 4 * M ^ 2 * Real.exp (12 * L) * Real.exp (1 - G) * X ^ 2 := by
+    rw [hT]
+    have e1 : Real.exp (6 * L) ^ 2 = Real.exp (12 * L) := by
+      rw [sq, ← Real.exp_add]; ring_nf
+    have e2 : Real.exp (1 / 2 - G / 2) ^ 2 = Real.exp (1 - G) := by
+      rw [sq, ← Real.exp_add]; ring_nf
+    rw [show (2 * M * Real.exp (6 * L) * (Real.exp (1 / 2 - G / 2) * X)) ^ 2 =
+      4 * M ^ 2 * Real.exp (6 * L) ^ 2 * Real.exp (1 / 2 - G / 2) ^ 2 * X ^ 2 by ring, e1, e2]
+  have hbig : 64 * K₃ * Real.exp (16 * L + 1 - 3 / 4 * G) ≤ Real.exp (-(G / 2)) := by
+    calc 64 * K₃ * Real.exp (16 * L + 1 - 3 / 4 * G)
+        ≤ Real.exp (B - 1) * Real.exp (16 * L + 1 - 3 / 4 * G) :=
+          mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
+      _ = Real.exp (B + 16 * L - 3 / 4 * G) := by rw [← Real.exp_add]; ring_nf
+      _ ≤ Real.exp (-(G / 2)) := Real.exp_le_exp.mpr (by linarith)
+  have hWv' : T ^ 2 * Bw ^ 2 * (24 * A₀) * (4 * x ^ 8) =
+      K₃ * (4 * cL ^ 2 * w ^ 2 * c₀ ^ 2 * X ^ 2 * x ^ 8) * (Real.exp (12 * L) * Real.exp (1 - G)) := by
+    rw [hT2, hK₃]; field_simp; ring
+  have hstep : K₃ * (4 * cL ^ 2 * w ^ 2 * c₀ ^ 2 * X ^ 2 * x ^ 8) *
+      (Real.exp (12 * L) * Real.exp (1 - G)) ≤
+      Real.exp (-(G / 2)) * (4 * cL ^ 2 * w ^ 2 * c₀ ^ 2 * X ^ 2 * Z ^ 2 * x ^ 8 / y ^ 2) := by
+    set P := 4 * cL ^ 2 * w ^ 2 * c₀ ^ 2 * X ^ 2 * x ^ 8 with hP
+    have hP0 : 0 < P := by rw [hP]; positivity
+    have hr : 4 * cL ^ 2 * w ^ 2 * c₀ ^ 2 * X ^ 2 * Z ^ 2 * x ^ 8 / y ^ 2 = P * (Z ^ 2 / y ^ 2) := by
+      rw [hP]; field_simp
+    rw [hr]
+    have hZy : Real.exp (-(G / 4)) / (64 * Real.exp (4 * L)) ≤ Z ^ 2 / y ^ 2 :=
+      div_le_div₀ (by positivity) hZ2 (by positivity) hyE
+    have hmain : K₃ * (Real.exp (12 * L) * Real.exp (1 - G)) ≤
+        Real.exp (-(G / 2)) * (Real.exp (-(G / 4)) / (64 * Real.exp (4 * L))) := by
+      have e : Real.exp (-(G / 2)) * (Real.exp (-(G / 4)) / (64 * Real.exp (4 * L))) =
+          Real.exp (-(G / 2)) * Real.exp (-(G / 4)) / (64 * Real.exp (4 * L)) := by ring
+      rw [e, le_div_iff₀ (by positivity)]
+      have e3 : Real.exp (16 * L + 1 - 3 / 4 * G) * Real.exp (-(G / 4)) =
+          Real.exp (12 * L) * Real.exp (1 - G) * Real.exp (4 * L) := by
+        rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]; ring_nf
+      have e2 : K₃ * (Real.exp (12 * L) * Real.exp (1 - G)) * (64 * Real.exp (4 * L)) =
+          64 * K₃ * Real.exp (16 * L + 1 - 3 / 4 * G) * Real.exp (-(G / 4)) := by
+        rw [mul_assoc (64 * K₃), e3]; ring
+      rw [e2]
+      exact mul_le_mul_of_nonneg_right hbig (Real.exp_pos _).le
+    calc K₃ * P * (Real.exp (12 * L) * Real.exp (1 - G))
+        = P * (K₃ * (Real.exp (12 * L) * Real.exp (1 - G))) := by ring
+      _ ≤ P * (Real.exp (-(G / 2)) * (Real.exp (-(G / 4)) / (64 * Real.exp (4 * L)))) :=
+          mul_le_mul_of_nonneg_left hmain hP0.le
+      _ ≤ P * (Real.exp (-(G / 2)) * (Z ^ 2 / y ^ 2)) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hZy (Real.exp_pos _).le) hP0.le
+      _ = Real.exp (-(G / 2)) * (P * (Z ^ 2 / y ^ 2)) := by ring
+  calc Wv ≤ T ^ 2 * Bw ^ 2 * (24 * A₀) * (4 * x ^ 8) := hWv
+    _ = _ := hWv'
+    _ ≤ _ := hstep
+
+/-! ## The pinning law at the Landau height -/
+
+/-- **Krein pinning up to the Landau height.**  For every `0 < η ≤ 1/2` there is `L₀` such that for
+all `L ≥ L₀`, every positive measure `ν` dominated by the level-`L` Hodge form of `ζ` has
+`ν([τ₀ - δ/2, τ₀ + δ/2]) ≤ exp(-(π/2) η^{3/2} e^{2L})` whenever `5 ≤ τ₀ ≤ (1-η) 2π e^{2L}`,
+every zero ordinate is at distance `≥ δ` from `τ₀`, `0 < δ ≤ 1`, and
+`12 C log(τ₀+1)/δ ≤ (π/2) η^{3/2} e^{2L}`. -/
+theorem zeta_krein_completion_pinned_below_landau_height :
+    ∀ η : ℝ, 0 < η → η ≤ 1 / 2 → ∃ L₀ : ℝ, ∀ L : ℝ, L₀ ≤ L → ∀ ν : Measure ℝ,
+      DominatedByHodgeForm L ν → ∀ τ₀ δ : ℝ, 5 ≤ τ₀ →
+        τ₀ ≤ (1 - η) * (2 * π * Real.exp (2 * L)) → 0 < δ → δ ≤ 1 →
+        (∀ ρ ∈ zetaZeroConfig.carrier, δ ≤ |ρ.im - τ₀|) →
+        12 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ ≤
+          π / 2 * (η * Real.sqrt η) * Real.exp (2 * L) →
+        ν (Icc (τ₀ - δ / 2) (τ₀ + δ / 2)) ≤
+          ENNReal.ofReal (Real.exp (-(π / 2 * (η * Real.sqrt η) * Real.exp (2 * L)))) := by
+  intro η hη hη2
+  obtain ⟨A₀, hA₀, hloc⟩ := Zeta23.RvM.zetaZeroConfig_local_count
+  obtain ⟨ε, hεdef⟩ : ∃ ε : ℝ, ε = Real.sqrt η / 2 := ⟨_, rfl⟩
+  have hs0 : 0 < Real.sqrt η := Real.sqrt_pos.mpr hη
+  have hs1 : Real.sqrt η ≤ 1 := by
+    rw [Real.sqrt_le_one]; linarith
+  have hε0 : 0 < ε := by rw [hεdef]; positivity
+  have hε1 : ε ≤ 1 := by rw [hεdef]; linarith
+  have hθ0 : 0 ≤ π / 4 - ε := by rw [hεdef]; linarith [Real.pi_gt_three]
+  have hθ : 2 * (π / 4 - ε) < π / 2 := by linarith
+  obtain ⟨w, hwdef⟩ : ∃ w : ℝ, w = η / 8 := ⟨_, rfl⟩
+  have hw : 0 < w := by rw [hwdef]; positivity
+  have hw4 : 4 * w ≤ 1 := by rw [hwdef]; linarith
+  have hM : 0 ≤ tiltedPhiTailConst := tiltedPhiTailConst_nonneg
+  have hBw : 0 ≤ scaledBumpConst w := scaledBumpConst_nonneg hw
+  have hcL0 : 0 < tiltedXiLineConst := tiltedXiLineConst_pos
+  obtain ⟨c₀, hc₀def⟩ : ∃ c₀ : ℝ, c₀ = Real.cos (1 / 8) * (∫ u, weilBump u) := ⟨_, rfl⟩
+  have hc₀ : 0 < c₀ := by
+    have hIκ : 0 < ∫ u, weilBump u := weilBump.integral_pos
+    have hcos : 0 < Real.cos (1 / 8) := Real.cos_pos_of_mem_Ioo
+      ⟨by linarith [Real.pi_gt_three], by linarith [Real.pi_gt_three]⟩
+    rw [hc₀def]; positivity
+  obtain ⟨B₁, hB₁⟩ : ∃ B₁ : ℝ, B₁ = Real.log (4 * tiltedPhiTailConst / tiltedXiLineConst + 1) :=
+    ⟨_, rfl⟩
+  obtain ⟨B₂, hB₂⟩ : ∃ B₂ : ℝ, B₂ = Real.log (64 * (96 * (tiltedPhiTailConst ^ 2 *
+      scaledBumpConst w ^ 2 * A₀) / (tiltedXiLineConst ^ 2 * w ^ 2 * c₀ ^ 2)) + 1) := ⟨_, rfl⟩
+  obtain ⟨B, hBdef⟩ : ∃ B : ℝ, B = max B₁ B₂ + 1 := ⟨_, rfl⟩
+  have hB₁0 : 0 ≤ B₁ := by
+    rw [hB₁]
+    apply Real.log_nonneg
+    have : 0 ≤ 4 * tiltedPhiTailConst / tiltedXiLineConst := by positivity
+    linarith
+  have hmaxl := le_max_left B₁ B₂
+  have hmaxr := le_max_right B₁ B₂
+  have hB0 : 0 ≤ B := by rw [hBdef]; linarith
+  have hκ : 0 < π / 4 * (η * Real.sqrt η) := by have := Real.pi_pos; positivity
+  obtain ⟨L₀, hL₀1, hL₀⟩ := exists_level_linear_le_exp hB0 hκ
+  refine ⟨L₀, fun L hL ν hν τ₀ δ hτ₀ hτ hδ hδ1 hsep hH => ?_⟩
+  have hL1 : 1 ≤ L := le_trans hL₀1 hL
+  obtain ⟨E, hEdef⟩ : ∃ E : ℝ, E = Real.exp (2 * L) := ⟨_, rfl⟩
+  have hE1 : 1 ≤ E := by rw [hEdef]; exact Real.one_le_exp (by linarith)
+  obtain ⟨G, hGdef⟩ : ∃ G : ℝ, G = π * (η * Real.sqrt η) * E := ⟨_, rfl⟩
+  have hBL : B + 16 * L ≤ G / 4 := by
+    have h := hL₀ L hL
+    rw [← hEdef] at h
+    rw [hGdef]; linarith
+  obtain ⟨U, hUdef⟩ : ∃ U : ℝ, U = L - w := ⟨_, rfl⟩
+  obtain ⟨R, hRdef⟩ : ∃ R : ℝ, R = π * Real.cos (2 * (π / 4 - ε)) * Real.exp (2 * U) :=
+    ⟨_, rfl⟩
+  have hgain0 := landau_gain (L := L) hη hη2 hτ
+  rw [← hεdef, ← hwdef, ← hEdef, ← hUdef, ← hRdef] at hgain0
+  have hgain : G / 2 - ε / 2 ≤ R - ε * (τ₀ + 1 / 2) := by
+    rw [hGdef]; linarith
+  have hG68 : 68 ≤ G := by linarith
+  have hR3 : 3 ≤ R := by
+    have : 0 ≤ ε * (τ₀ + 1 / 2) := by
+      have : 0 ≤ τ₀ + 1 / 2 := by linarith
+      positivity
+    linarith
+  have hεt := integral_norm_tiltedTail_mul_exp_le (U := U) hθ0 hθ (by rw [← hRdef]; exact hR3)
+  rw [← hRdef] at hεt
+  have hU6 : Real.exp (6 * U) ≤ Real.exp (6 * L) :=
+    Real.exp_le_exp.mpr (by rw [hUdef]; linarith)
+  have hεt' : (∫ u : ℝ, ‖tiltedTail U (π / 4 - ε) u‖ * Real.exp (1 / 2 * |u|)) ≤
+      2 * tiltedPhiTailConst * Real.exp (6 * L) * Real.exp (-R) := by
+    refine hεt.trans ?_
+    have := Real.exp_pos (-R)
+    gcongr
+  have hεt0 : 0 ≤ ∫ u : ℝ, ‖tiltedTail U (π / 4 - ε) u‖ * Real.exp (1 / 2 * |u|) :=
+    integral_nonneg fun _ => by positivity
+  have hH' : 4 * (3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ) ≤ G / 2 := by
+    have e : 12 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ =
+        4 * (3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ) := by ring
+    rw [e, ← hEdef] at hH
+    rw [hGdef]; linarith
+  have hZ8 : 3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ ≤ G / 8 := by linarith
+  have hZ4 : 6 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ ≤ G / 4 := by
+    have e : 6 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ =
+        2 * (3 * logDerivZetaConstant * Real.log (τ₀ + 1) / δ) := by ring
+    rw [e]; linarith
+  have hbig := landau_two_tail_le_floor hM rfl hτ₀ hε1 (by linarith) hεt' hgain hZ8
+    (by rw [← hB₁]; linarith) hBL
+  have hUL : U + w ≤ L := by rw [hUdef]; linarith
+  have hraw := measure_window_le_of_dominated_tilted hν hε0.le hθ0 hθ hw hw4 hUL hτ₀ hδ hδ1 hsep
+    hbig
+  refine le_trans hraw (ENNReal.ofReal_le_ofReal ?_)
+  have hW := norm_W_landauRadicalTest_le hA₀ hloc (U := U) hθ0 hθ hw hw4 τ₀
+  rw [abs_of_nonneg (by linarith : (0 : ℝ) ≤ τ₀)] at hW
+  have hτE : τ₀ + 3 / 2 ≤ 8 * E := by
+    have hπ : π < 3.15 := Real.pi_lt_d2
+    have h1 : τ₀ ≤ 2 * π * E := by
+      rw [hEdef]
+      have : 0 ≤ η * (2 * π * Real.exp (2 * L)) := by have := Real.pi_pos; positivity
+      linarith
+    have h2 : π * E ≤ 3.15 * E := mul_le_mul_of_nonneg_right hπ.le (by linarith)
+    linarith
+  have hratio := landau_ratio_le hM hA₀ rfl hw hc₀ hτ₀ hε1 hEdef hτE
+    hεt0 hεt' hgain hZ4 hW (by rw [← hB₂]; linarith) hBL
+  have eG : π / 2 * (η * Real.sqrt η) * Real.exp (2 * L) = G / 2 := by
+    rw [hGdef, hEdef]; ring
+  rw [eG, ← hc₀def]
+  exact hratio
 
 end
 

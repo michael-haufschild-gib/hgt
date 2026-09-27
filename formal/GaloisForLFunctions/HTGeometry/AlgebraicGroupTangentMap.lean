@@ -32,19 +32,6 @@ section Generic
 
 variable [IsIntegral G.left]
 
-/-- The graph `a ↦ a + ε D a` of a derivation. -/
-abbrev dualGraph (D : Derivation C G.left.functionField G.left.functionField) :
-    G.left.functionField →ₐ[C] DualL G.left.functionField :=
-  derivationGraphAlgHom D
-
-@[simp]
-theorem dualGraph_fst (D : Derivation C G.left.functionField G.left.functionField)
-    (a : G.left.functionField) : (dualGraph G D a).fst = a := rfl
-
-@[simp]
-theorem dualGraph_snd (D : Derivation C G.left.functionField G.left.functionField)
-    (a : G.left.functionField) : (dualGraph G D a).snd = D a := rfl
-
 theorem stalkConstants_genericPoint :
     stalkConstants G (genericPoint G.left) = CommRingCat.ofHom (algebraMap C G.left.functionField) :=
   Spec.map_injective ((fromSpecStalk_comp_hom G _).symm.trans
@@ -69,71 +56,114 @@ theorem genericPointHom_eq_stalkPoint :
     Spec.map (𝟙 _) ≫ G.left.fromSpecStalk (genericPoint G.left)
   rw [Spec.map_id, Category.id_comp]
 
-/-- The lift `g_D` of the generic point along `F[ε] → F`. -/
-def genericLift (D : Derivation C G.left.functionField G.left.functionField) :
-    algebraicPointSource (K := C) (R := DualL G.left.functionField) ⟶ G :=
-  pointSourceMap (dualGraph G D) ≫ genericPointHom G
+variable (L : Type u) [Field L] [Algebra C L] [Algebra G.left.functionField L]
+  [IsScalarTower C G.left.functionField L]
 
-theorem genericLift_eq_stalkPoint (D : Derivation C G.left.functionField G.left.functionField) :
-    genericLift G D = stalkPoint G (genericPoint G.left)
-      (CommRingCat.ofHom (dualGraph G D).toRingHom) (by
-        rw [stalkConstants_genericPoint]
-        exact CommRingCat.hom_ext (RingHom.ext fun c => (dualGraph G D).commutes c)) := by
+/-- The graph `a ↦ a + ε D a` of a derivation `D : F → L`. -/
+abbrev dualGraph (D : Derivation C G.left.functionField L) :
+    G.left.functionField →ₐ[C] DualL L :=
+  derivationGraphAlgHom D
+
+@[simp]
+theorem dualGraph_fst (D : Derivation C G.left.functionField L) (a : G.left.functionField) :
+    (dualGraph G L D a).fst = algebraMap _ L a := rfl
+
+@[simp]
+theorem dualGraph_snd (D : Derivation C G.left.functionField L) (a : G.left.functionField) :
+    (dualGraph G L D a).snd = D a := rfl
+
+/-- The generic point with values in an extension `L` of the function field. -/
+abbrev genericPointAt : algebraicPointSource (K := C) (R := L) ⟶ G :=
+  pointSourceMap (IsScalarTower.toAlgHom C G.left.functionField L) ≫ genericPointHom G
+
+/-- The stalk homomorphism of the generic point with values in `L`. -/
+abbrev genericStalkAt : G.left.presheaf.stalk (genericPoint G.left) ⟶ CommRingCat.of L :=
+  CommRingCat.ofHom (algebraMap G.left.functionField L)
+
+theorem genericStalkAt_const :
+    stalkConstants G (genericPoint G.left) ≫ genericStalkAt G L =
+      CommRingCat.ofHom (algebraMap C L) := by
+  rw [stalkConstants_genericPoint]
+  exact CommRingCat.hom_ext (RingHom.ext fun c =>
+    (IsScalarTower.algebraMap_apply C G.left.functionField L c).symm)
+
+instance isLocalHom_genericStalkAt : IsLocalHom (genericStalkAt G L).hom :=
+  inferInstanceAs (IsLocalHom (algebraMap G.left.functionField L))
+
+theorem genericPointAt_eq_stalkPoint :
+    genericPointAt G L = stalkPoint G (genericPoint G.left) (genericStalkAt G L)
+      (genericStalkAt_const G L) := by
+  rw [genericPointAt, genericPointHom_eq_stalkPoint, pointSourceMap_comp_stalkPoint]
+  exact stalkPoint_congr G _ rfl _ _
+
+/-- The lift `g_D` of the generic point along `L[ε] → L`. -/
+def genericLift (D : Derivation C G.left.functionField L) :
+    algebraicPointSource (K := C) (R := DualL L) ⟶ G :=
+  pointSourceMap (dualGraph G L D) ≫ genericPointHom G
+
+theorem dualGraph_const (D : Derivation C G.left.functionField L) :
+    stalkConstants G (genericPoint G.left) ≫ CommRingCat.ofHom (dualGraph G L D).toRingHom =
+      CommRingCat.ofHom (algebraMap C (DualL L)) := by
+  rw [stalkConstants_genericPoint]
+  exact CommRingCat.hom_ext (RingHom.ext fun c => (dualGraph G L D).commutes c)
+
+theorem genericLift_eq_stalkPoint (D : Derivation C G.left.functionField L) :
+    genericLift G L D = stalkPoint G (genericPoint G.left)
+      (CommRingCat.ofHom (dualGraph G L D).toRingHom) (dualGraph_const G L D) := by
   rw [genericLift, genericPointHom_eq_stalkPoint, pointSourceMap_comp_stalkPoint]
   exact stalkPoint_congr G _ rfl _ _
 
-instance isLocalHom_dualGraph (D : Derivation C G.left.functionField G.left.functionField) :
-    IsLocalHom (CommRingCat.ofHom (dualGraph G D).toRingHom).hom :=
-  isLocalHom_of_fst_comp _ (RingHom.id G.left.functionField) fun _ => rfl
+theorem dualGraph_comp_sqzFst (D : Derivation C G.left.functionField L) :
+    CommRingCat.ofHom (dualGraph G L D).toRingHom ≫
+      CommRingCat.ofHom (sqzFst (C := C) (L := L) (M := L)).toRingHom = genericStalkAt G L :=
+  rfl
+
+instance isLocalHom_dualGraph (D : Derivation C G.left.functionField L) :
+    IsLocalHom (CommRingCat.ofHom (dualGraph G L D).toRingHom).hom :=
+  isLocalHom_of_fst_comp _ (algebraMap G.left.functionField L) fun _ => rfl
 
 /-- **The lift determines the derivation.** -/
-theorem genericLift_injective {D₁ D₂ : Derivation C G.left.functionField G.left.functionField}
-    (h : genericLift G D₁ = genericLift G D₂) : D₁ = D₂ := by
+theorem genericLift_injective {D₁ D₂ : Derivation C G.left.functionField L}
+    (h : genericLift G L D₁ = genericLift G L D₂) : D₁ = D₂ := by
   rw [genericLift_eq_stalkPoint, genericLift_eq_stalkPoint] at h
   have h' := stalkPoint_injective G h
   ext a
-  have := congrArg (fun q : G.left.functionField ⟶ CommRingCat.of (DualL G.left.functionField) =>
-    (q a).snd) h'
-  exact this
+  exact congrArg (fun q : G.left.functionField ⟶ CommRingCat.of (DualL L) => (q a).snd) h'
 
 /-- The reduction of a lift of the generic point. -/
-theorem sqzFst_genericLift (D : Derivation C G.left.functionField G.left.functionField) :
-    pointSourceMap (sqzFst (C := C) (L := G.left.functionField) (M := G.left.functionField)) ≫
-      genericLift G D = genericPointHom G := by
+theorem sqzFst_genericLift (D : Derivation C G.left.functionField L) :
+    pointSourceMap (sqzFst (C := C) (L := L) (M := L)) ≫ genericLift G L D = genericPointAt G L := by
   rw [genericLift, ← Category.assoc, ← pointSourceMap_comp]
-  have h : (sqzFst (C := C) (L := G.left.functionField) (M := G.left.functionField)).comp
-      (dualGraph G D) = AlgHom.id C _ := AlgHom.ext fun _ => rfl
-  rw [h, pointSourceMap_id, Category.id_comp]
+  have h : (sqzFst (C := C) (L := L) (M := L)).comp (dualGraph G L D) =
+      IsScalarTower.toAlgHom C G.left.functionField L := AlgHom.ext fun _ => rfl
+  rw [h]
 
-/-- **Every lift of the generic point along `F[ε] → F` comes from a derivation.** -/
-theorem exists_genericLift_eq (w : algebraicPointSource (K := C) (R := DualL G.left.functionField) ⟶ G)
-    (hw : pointSourceMap (sqzFst (C := C) (L := G.left.functionField)
-      (M := G.left.functionField)) ≫ w = genericPointHom G) :
-    ∃ D : Derivation C G.left.functionField G.left.functionField, w = genericLift G D := by
-  rw [genericPointHom_eq_stalkPoint] at hw
-  haveI : IsLocalHom (genericStalkId G).hom := inferInstanceAs (IsLocalHom (RingHom.id _))
-  obtain ⟨ψ, hψ, hψφ, rfl⟩ := exists_stalkPoint_of_lift G _ (genericStalkId G) _ w hw
-  have hfst : ∀ a, (ψ a).fst = a := fun a =>
+/-- **Every lift of the generic point along `L[ε] → L` comes from a derivation.** -/
+theorem exists_genericLift_eq (w : algebraicPointSource (K := C) (R := DualL L) ⟶ G)
+    (hw : pointSourceMap (sqzFst (C := C) (L := L) (M := L)) ≫ w = genericPointAt G L) :
+    ∃ D : Derivation C G.left.functionField L, w = genericLift G L D := by
+  rw [genericPointAt_eq_stalkPoint] at hw
+  obtain ⟨ψ, hψ, hψφ, rfl⟩ := exists_stalkPoint_of_lift G _ (genericStalkAt G L) _ w hw
+  have hfst : ∀ a, (ψ a).fst = algebraMap G.left.functionField L a := fun a =>
     congrArg (fun q : G.left.presheaf.stalk (genericPoint G.left) ⟶ _ => q a) hψφ
   have hconst : ∀ c : C, ψ (algebraMap C G.left.functionField c) =
-      algebraMap C (DualL G.left.functionField) c := by
+      algebraMap C (DualL L) c := by
     intro c
     rw [stalkConstants_genericPoint] at hψ
     exact congrArg (fun q : CommRingCat.of C ⟶ _ => q c) hψ
-  let D : Derivation C G.left.functionField G.left.functionField :=
+  let D : Derivation C G.left.functionField L :=
     Derivation.mk'
       { toFun := fun a => (ψ a).snd
         map_add' := fun a b => by rw [map_add, TrivSqZeroExt.snd_add]
         map_smul' := fun c a => by
-          have hc : algebraMap C (DualL G.left.functionField) c =
-              TrivSqZeroExt.inl (algebraMap C G.left.functionField c) := rfl
+          have hc : algebraMap C (DualL L) c = TrivSqZeroExt.inl (algebraMap C L c) := rfl
           rw [RingHom.id_apply, Algebra.smul_def, map_mul, hconst, TrivSqZeroExt.snd_mul, hc,
             TrivSqZeroExt.fst_inl, TrivSqZeroExt.snd_inl, smul_zero, add_zero, smul_eq_mul,
             Algebra.smul_def] }
       (fun a b => by
         change (ψ (a * b)).snd = a • (ψ b).snd + b • (ψ a).snd
-        rw [map_mul, TrivSqZeroExt.snd_mul, hfst, hfst]
-        simp only [smul_eq_mul, MulOpposite.smul_eq_mul_unop, MulOpposite.unop_op]
+        rw [map_mul, TrivSqZeroExt.snd_mul, hfst, hfst, Algebra.smul_def a, Algebra.smul_def b,
+          smul_eq_mul, MulOpposite.smul_eq_mul_unop, MulOpposite.unop_op]
         ring)
   refine ⟨D, ?_⟩
   rw [genericLift_eq_stalkPoint]

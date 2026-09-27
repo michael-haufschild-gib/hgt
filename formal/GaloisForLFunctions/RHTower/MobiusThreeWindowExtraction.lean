@@ -264,6 +264,48 @@ theorem threeWindow_part_two {R δ ε : ℝ} (hR : 1 ≤ R) (hε : 0 < ε) {Q : 
         exact hsum.trans hY1
     _ = _ := by rw [hid]
 
+/-- `m_q L_q² ≤ R^{3α} q^{2-3α} / (2048 ε² log R)` for `m_q ≤ (R/q)^α/(32768 log 5R)`,
+`L_q = q(4R/q)^α/ε`. -/
+theorem supply_mul_length_sq_le {R ε : ℝ} (hR : 5 ≤ R) (hε : 0 < ε) {q : ℕ} (hq1 : 1 ≤ q)
+    {mq : ℝ} (hm : mq ≤ (R / q) ^ supplyExp / (32768 * Real.log (5 * R))) :
+    mq * ((q : ℝ) * (4 * R / q) ^ supplyExp / ε) ^ 2 ≤
+      R ^ (3 * supplyExp) * (q : ℝ) ^ (-(3 * supplyExp - 2)) / (2048 * ε ^ 2 * Real.log R) := by
+  have hR0 : 0 < R := by linarith
+  have hlog : 0 < Real.log R := Real.log_pos (by linarith)
+  have hlog5 : Real.log R ≤ Real.log (5 * R) := Real.log_le_log hR0 (by linarith)
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq1
+  rw [cofactor_H_eq hq1 hR0.le]
+  have h16 : ((4 : ℝ) ^ supplyExp) ^ 2 ≤ 16 := by
+    have := four_rpow_supplyExp_le
+    have h0 : 0 ≤ (4 : ℝ) ^ supplyExp := Real.rpow_nonneg (by norm_num) _
+    nlinarith
+  have hRq : 0 < R / q := by positivity
+  have hkey : (R / q) ^ supplyExp * ((q : ℝ) * (R / q) ^ supplyExp) ^ 2 =
+      R ^ (3 * supplyExp) * (q : ℝ) ^ (-(3 * supplyExp - 2)) := by
+    have e1 : ((R / q) ^ supplyExp) ^ 2 = (R / q) ^ (2 * supplyExp) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hRq.le]; ring_nf
+    have e2 : (R / q) ^ supplyExp * (R / q) ^ (2 * supplyExp) = (R / q) ^ (3 * supplyExp) := by
+      rw [← Real.rpow_add hRq]; ring_nf
+    have e3 : (R / q) ^ (3 * supplyExp) = R ^ (3 * supplyExp) / (q : ℝ) ^ (3 * supplyExp) :=
+      Real.div_rpow hR0.le hq0.le _
+    have e4 : (q : ℝ) ^ (-(3 * supplyExp - 2)) = (q : ℝ) ^ 2 / (q : ℝ) ^ (3 * supplyExp) := by
+      rw [show -(3 * supplyExp - 2) = (2 : ℝ) - 3 * supplyExp by ring, Real.rpow_sub hq0,
+        Real.rpow_two]
+    calc (R / q) ^ supplyExp * ((q : ℝ) * (R / q) ^ supplyExp) ^ 2
+        = (q : ℝ) ^ 2 * ((R / q) ^ supplyExp * ((R / q) ^ supplyExp) ^ 2) := by ring
+      _ = (q : ℝ) ^ 2 * (R / q) ^ (3 * supplyExp) := by rw [e1, e2]
+      _ = _ := by rw [e3, e4]; ring
+  have hA0 : 0 ≤ ((q : ℝ) * (R / q) ^ supplyExp) ^ 2 := sq_nonneg _
+  calc mq * (4 ^ supplyExp * ((q : ℝ) * (R / q) ^ supplyExp) / ε) ^ 2
+      = mq * ((4 : ℝ) ^ supplyExp) ^ 2 * ((q : ℝ) * (R / q) ^ supplyExp) ^ 2 / ε ^ 2 := by
+        ring
+    _ ≤ (R / q) ^ supplyExp / (32768 * Real.log R) * 16 * ((q : ℝ) * (R / q) ^ supplyExp) ^ 2 /
+          ε ^ 2 := by
+        gcongr
+        exact hm.trans (by gcongr)
+    _ = R ^ (3 * supplyExp) * (q : ℝ) ^ (-(3 * supplyExp - 2)) / (2048 * ε ^ 2 * Real.log R) := by
+        rw [← hkey]; field_simp; ring
+
 theorem threeWindow_part_three {R δ ε : ℝ} (hR : 5 ≤ R) (hε : 0 < ε) {Q : Finset ℕ} {Y : ℕ}
     (hY1 : 1 ≤ Y) (hQ : Q ⊆ Icc 1 Y) (hY : (Y : ℝ) ≤ R ^ ((2 : ℝ) / 5)) (m : ℕ → ℕ)
     (hm : ∀ q ∈ Q, (m q : ℝ) ≤ (R / q) ^ supplyExp / (32768 * Real.log (5 * R))) :
@@ -275,44 +317,9 @@ theorem threeWindow_part_three {R δ ε : ℝ} (hR : 5 ≤ R) (hε : 0 < ε) {Q 
   have hlog5 : Real.log R ≤ Real.log (5 * R) := Real.log_le_log hR0 (by linarith)
   have hj := jetConst_nonneg 3
   have hE : 0 < (R ^ ((5 + δ) / 2))⁻¹ := inv_pos.mpr (Real.rpow_pos_of_pos hR0 _)
-  -- `m_q L_q² ≤ R^{3α} q^{2-3α} / (2048 ε² log R)`
   have hterm : ∀ q ∈ Q, (m q : ℝ) * ((q : ℝ) * (4 * R / q) ^ supplyExp / ε) ^ 2 ≤
-      R ^ (3 * supplyExp) * (q : ℝ) ^ (-(3 * supplyExp - 2)) / (2048 * ε ^ 2 * Real.log R) := by
-    intro q hq
-    have hq1 : 1 ≤ q := (mem_Icc.mp (hQ hq)).1
-    have hq0 : (0 : ℝ) < q := by exact_mod_cast hq1
-    rw [cofactor_H_eq hq1 hR0.le]
-    have h16 : ((4 : ℝ) ^ supplyExp) ^ 2 ≤ 16 := by
-      have := four_rpow_supplyExp_le
-      have h0 : 0 ≤ (4 : ℝ) ^ supplyExp := Real.rpow_nonneg (by norm_num) _
-      nlinarith
-    have hRq : 0 < R / q := by positivity
-    have hkey : (R / q) ^ supplyExp * ((q : ℝ) * (R / q) ^ supplyExp) ^ 2 =
-        R ^ (3 * supplyExp) * (q : ℝ) ^ (-(3 * supplyExp - 2)) := by
-      have e1 : ((R / q) ^ supplyExp) ^ 2 = (R / q) ^ (2 * supplyExp) := by
-        rw [← Real.rpow_natCast, ← Real.rpow_mul hRq.le]; ring_nf
-      have e2 : (R / q) ^ supplyExp * (R / q) ^ (2 * supplyExp) = (R / q) ^ (3 * supplyExp) := by
-        rw [← Real.rpow_add hRq]; ring_nf
-      have e3 : (R / q) ^ (3 * supplyExp) = R ^ (3 * supplyExp) / (q : ℝ) ^ (3 * supplyExp) :=
-        Real.div_rpow hR0.le hq0.le _
-      have e4 : (q : ℝ) ^ (-(3 * supplyExp - 2)) = (q : ℝ) ^ 2 / (q : ℝ) ^ (3 * supplyExp) := by
-        rw [show -(3 * supplyExp - 2) = (2 : ℝ) - 3 * supplyExp by ring, Real.rpow_sub hq0,
-          Real.rpow_two]
-      calc (R / q) ^ supplyExp * ((q : ℝ) * (R / q) ^ supplyExp) ^ 2
-          = (q : ℝ) ^ 2 * ((R / q) ^ supplyExp * ((R / q) ^ supplyExp) ^ 2) := by ring
-        _ = (q : ℝ) ^ 2 * (R / q) ^ (3 * supplyExp) := by rw [e1, e2]
-        _ = _ := by rw [e3, e4]; ring
-    have hm0 : 0 ≤ (m q : ℝ) := Nat.cast_nonneg _
-    have hA0 : 0 ≤ ((q : ℝ) * (R / q) ^ supplyExp) ^ 2 := sq_nonneg _
-    calc (m q : ℝ) * (4 ^ supplyExp * ((q : ℝ) * (R / q) ^ supplyExp) / ε) ^ 2
-        = (m q : ℝ) * ((4 : ℝ) ^ supplyExp) ^ 2 * ((q : ℝ) * (R / q) ^ supplyExp) ^ 2 / ε ^ 2 := by
-          ring
-      _ ≤ (R / q) ^ supplyExp / (32768 * Real.log R) * 16 * ((q : ℝ) * (R / q) ^ supplyExp) ^ 2 /
-            ε ^ 2 := by
-          gcongr
-          exact (hm q hq).trans (by gcongr)
-      _ = R ^ (3 * supplyExp) * (q : ℝ) ^ (-(3 * supplyExp - 2)) / (2048 * ε ^ 2 * Real.log R) := by
-          rw [← hkey]; field_simp; ring
+      R ^ (3 * supplyExp) * (q : ℝ) ^ (-(3 * supplyExp - 2)) / (2048 * ε ^ 2 * Real.log R) :=
+    fun q hq => supply_mul_length_sq_le hR hε (mem_Icc.mp (hQ hq)).1 (hm q hq)
   have hsum := sum_rpow_neg_le_of_subset hY1 hQ (c := 3 * supplyExp - 2)
     (by norm_num [supplyExp]) (by norm_num [supplyExp])
   have hYR : (Y : ℝ) ^ (1 - (3 * supplyExp - 2)) ≤ R ^ ((2 : ℝ) / 5 * (3 - 3 * supplyExp)) := by

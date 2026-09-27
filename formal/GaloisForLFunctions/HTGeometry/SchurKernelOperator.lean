@@ -1,5 +1,6 @@
 import Mathlib
 import GaloisForLFunctions.HTGeometry.SchurTest
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
 
 /-!
 # Integral operators with Schur-bounded kernels on `L²(μ)`
@@ -363,6 +364,66 @@ theorem tendsto_norm_op_of_weaklyNull
   simp only [Function.comp_apply]
   rw [Lp.norm_def, eLpNorm_two_eq]
 
+/-- **Square-integrable kernels are Hilbert–Schmidt.**  For a.e. `y` the row `k(y,·)` is an `L²`
+vector `r_y` with `(T f)(y) = ⟪r̄_y, f⟫`; Bessel's inequality in any Hilbert basis bounds
+`∑ᵢ |(T eᵢ)(y)|²` by `‖r_y‖²`, and integration in `y` gives `∑ᵢ ‖T eᵢ‖² ≤ ∬ |k|²`. -/
+theorem isHilbertSchmidt_op (hk2 : ∫⁻ y, ∫⁻ z, ‖k.toFun y z‖ₑ ^ 2 ∂μ ∂μ < ∞) :
+    ContinuousLinearMap.IsHilbertSchmidt k.op := by
+  classical
+  set b := ContinuousLinearMap.hsBasis ℂ (Lp ℂ 2 μ)
+  set R : α → ℝ≥0∞ := fun y => ∫⁻ z, ‖k.toFun y z‖ₑ ^ 2 ∂μ
+  have hRm : Measurable R := (k.measurable_enorm.pow_const 2).lintegral_prod_right'
+  have hRfin : ∀ᵐ y ∂μ, R y < ∞ := ae_lt_top hRm hk2.ne
+  have hrow : ∀ y, R y < ∞ → MemLp (fun z => (starRingEnd ℂ) (k.toFun y z)) 2 μ := by
+    intro y hy
+    refine ⟨(Complex.continuous_conj.measurable.comp (k.measurable_left y)).aestronglyMeasurable, ?_⟩
+    rw [eLpNorm_two_eq]
+    simp only [RCLike.enorm_conj]
+    exact ENNReal.rpow_lt_top_of_nonneg (by norm_num) hy.ne
+  have hnormrow : ∀ y (hy : R y < ∞), ENNReal.ofReal (‖(hrow y hy).toLp _‖ ^ 2) = R y := by
+    intro y hy
+    have hne : eLpNorm (fun z => (starRingEnd ℂ) (k.toFun y z)) 2 μ ≠ ∞ := (hrow y hy).2.ne
+    rw [Lp.norm_toLp, ← ENNReal.toReal_pow, ENNReal.ofReal_toReal (ENNReal.pow_ne_top hne),
+      eLpNorm_two_sq]
+    simp only [RCLike.enorm_conj, R]
+  have hin : ∀ i, ∀ᵐ y ∂μ, ∀ hy : R y < ∞,
+      (k.op (b i) : α → ℂ) y = inner ℂ ((hrow y hy).toLp _) (b i) := by
+    intro i
+    filter_upwards [k.op_coeFn (b i)] with y hy' hy
+    rw [hy', apply, L2.inner_def]
+    refine integral_congr_ae ?_
+    filter_upwards [(hrow y hy).coeFn_toLp] with z hz
+    rw [hz, RCLike.inner_apply, Complex.conj_conj]
+    ring
+  have hnormsq : ∀ i, ‖k.op (b i)‖ ^ 2 = (∫⁻ y, ‖(k.op (b i) : α → ℂ) y‖ₑ ^ 2 ∂μ).toReal := by
+    intro i
+    rw [Lp.norm_def, ← ENNReal.toReal_pow, eLpNorm_two_sq]
+  have hfin : ∀ i, ∫⁻ y, ‖(k.op (b i) : α → ℂ) y‖ₑ ^ 2 ∂μ ≠ ∞ := by
+    intro i
+    rw [← eLpNorm_two_sq]
+    exact ENNReal.pow_ne_top (Lp.eLpNorm_ne_top _)
+  show Summable fun i => ‖k.op (b i)‖ ^ 2
+  refine summable_of_sum_le (fun i => sq_nonneg _) (c := (∫⁻ y, R y ∂μ).toReal) fun s => ?_
+  simp_rw [hnormsq]
+  rw [← ENNReal.toReal_sum fun i _ => hfin i]
+  refine ENNReal.toReal_mono hk2.ne ?_
+  rw [← lintegral_finsetSum' s fun i _ =>
+    ((Lp.stronglyMeasurable (k.op (b i))).measurable.enorm.pow_const 2).aemeasurable]
+  refine lintegral_mono_ae ?_
+  have hall : ∀ᵐ y ∂μ, ∀ i ∈ s, ∀ hy : R y < ∞,
+      (k.op (b i) : α → ℂ) y = inner ℂ ((hrow y hy).toLp _) (b i) :=
+    (eventually_all_finset s).mpr fun i _ => hin i
+  filter_upwards [hall, hRfin] with y hy hyR
+  calc ∑ i ∈ s, ‖(k.op (b i) : α → ℂ) y‖ₑ ^ 2
+      = ∑ i ∈ s, ENNReal.ofReal (‖inner ℂ (b i) ((hrow y hyR).toLp _)‖ ^ 2) := by
+        refine Finset.sum_congr rfl fun i hi => ?_
+        rw [hy i hi hyR, norm_inner_symm, ← ofReal_norm, ← ENNReal.ofReal_pow (norm_nonneg _)]
+    _ = ENNReal.ofReal (∑ i ∈ s, ‖inner ℂ (b i) ((hrow y hyR).toLp _)‖ ^ 2) :=
+        (ENNReal.ofReal_sum_of_nonneg fun i _ => by positivity).symm
+    _ ≤ ENNReal.ofReal (‖(hrow y hyR).toLp _‖ ^ 2) :=
+        ENNReal.ofReal_le_ofReal (b.orthonormal.sum_inner_products_le _)
+    _ = R y := hnormrow y hyR
+
 omit [SFinite μ] in
 /-- Cauchy–Schwarz against the constant function: `(∫ g)² ≤ ν(univ) ∫ g²`. -/
 theorem sq_lintegral_le_measure_mul {β : Type*} [MeasurableSpace β] (ν : Measure β)
@@ -516,6 +577,74 @@ theorem sum_enorm_inner_cellVec_op_sq_le (hpos : ∀ i, μ (I i) ≠ 0)
     _ = ∫⁻ p in ⋃ q ∈ s, I q.1 ×ˢ I q.2, ‖k.toFun p.1 p.2‖ₑ ^ 2 ∂(μ.prod μ) :=
         (lintegral_biUnion_finset hrect (fun q _ => (hI q.1).prod (hI q.2)) _).symm
     _ ≤ ∫⁻ p, ‖k.toFun p.1 p.2‖ₑ ^ 2 ∂(μ.prod μ) := setLIntegral_le_lintegral _ _
+
+/-- A kernel bounded by `M` sends a normalized cell to a vector of squared norm at most
+`M · A · μ(I)`, where `A` is the Schur bound. -/
+theorem norm_op_cellVec_sq_le (hpos : ∀ i, μ (I i) ≠ 0) {M : ℝ} (hM0 : 0 ≤ M)
+    (hM : ∀ y z, ‖k.toFun y z‖ ≤ M) (i : ι) :
+    ‖k.op (cellVec I hI hfin i)‖ ^ 2 ≤ M * k.bound * (μ (I i)).toReal := by
+  set c : ℝ := cellConst (μ := μ) I i with hc
+  have hc0 : 0 ≤ c := Real.rpow_nonneg ENNReal.toReal_nonneg _
+  have hcoe : (cellVec I hI hfin i : α → ℂ) =ᵐ[μ] (I i).indicator fun _ => (c : ℂ) :=
+    indicatorConstLp_coeFn
+  have hpt : ∀ y, ‖k.apply (cellVec I hI hfin i) y‖ₑ ^ 2 ≤
+      ∫⁻ z in I i, ‖k.toFun y z‖ₑ ^ 2 ∂μ := by
+    intro y
+    have h1 : ‖k.apply (cellVec I hI hfin i) y‖ₑ ≤
+        ENNReal.ofReal c * ∫⁻ z in I i, ‖k.toFun y z‖ₑ ∂μ := by
+      refine (k.enorm_apply_le _ y).trans (le_of_eq ?_)
+      rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
+        ← lintegral_indicator (hI i)]
+      refine lintegral_congr_ae ?_
+      filter_upwards [hcoe] with z hz
+      rw [hz]
+      by_cases hzI : z ∈ I i
+      · rw [Set.indicator_of_mem hzI, Set.indicator_of_mem hzI, ← ofReal_norm (c : ℂ),
+          Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hc0, mul_comm]
+      · rw [Set.indicator_of_notMem hzI, Set.indicator_of_notMem hzI, enorm_zero, mul_zero]
+    have h2 := sq_lintegral_le_measure_mul (μ.restrict (I i))
+      (k.measurable_left y).enorm.aemeasurable
+    rw [Measure.restrict_apply_univ] at h2
+    have hcμ : ENNReal.ofReal c ^ 2 * μ (I i) = 1 := by
+      rw [← ENNReal.ofReal_pow hc0, ← ENNReal.ofReal_toReal (hfin i),
+        ← ENNReal.ofReal_mul (by positivity), cellConst_sq_mul I (hpos i) (hfin i),
+        ENNReal.ofReal_one]
+    calc ‖k.apply (cellVec I hI hfin i) y‖ₑ ^ 2
+        ≤ (ENNReal.ofReal c * ∫⁻ z in I i, ‖k.toFun y z‖ₑ ∂μ) ^ 2 := pow_le_pow_left' h1 2
+      _ = ENNReal.ofReal c ^ 2 * (∫⁻ z in I i, ‖k.toFun y z‖ₑ ∂μ) ^ 2 := mul_pow _ _ _
+      _ ≤ ENNReal.ofReal c ^ 2 * (μ (I i) * ∫⁻ z in I i, ‖k.toFun y z‖ₑ ^ 2 ∂μ) := by gcongr
+      _ = ∫⁻ z in I i, ‖k.toFun y z‖ₑ ^ 2 ∂μ := by rw [← mul_assoc, hcμ, one_mul]
+  have hsq : ∀ y z, ‖k.toFun y z‖ₑ ^ 2 ≤ ENNReal.ofReal M * ‖k.toFun y z‖ₑ := by
+    intro y z
+    rw [← ofReal_norm, ← ENNReal.ofReal_pow (norm_nonneg _), ← ENNReal.ofReal_mul hM0]
+    exact ENNReal.ofReal_le_ofReal (by nlinarith [norm_nonneg (k.toFun y z), hM y z])
+  have htot : ∫⁻ y, ‖(k.op (cellVec I hI hfin i) : α → ℂ) y‖ₑ ^ 2 ∂μ ≤
+      ENNReal.ofReal M * k.bound * μ (I i) := by
+    calc ∫⁻ y, ‖(k.op (cellVec I hI hfin i) : α → ℂ) y‖ₑ ^ 2 ∂μ
+        = ∫⁻ y, ‖k.apply (cellVec I hI hfin i) y‖ₑ ^ 2 ∂μ := by
+          refine lintegral_congr_ae ?_
+          filter_upwards [k.op_coeFn (cellVec I hI hfin i)] with y hy
+          rw [hy]
+      _ ≤ ∫⁻ y, ∫⁻ z in I i, ‖k.toFun y z‖ₑ ^ 2 ∂μ ∂μ := lintegral_mono hpt
+      _ ≤ ∫⁻ y, ∫⁻ z in I i, ENNReal.ofReal M * ‖k.toFun y z‖ₑ ∂μ ∂μ :=
+          lintegral_mono fun y => lintegral_mono fun z => hsq y z
+      _ = ∫⁻ z in I i, ∫⁻ y, ENNReal.ofReal M * ‖k.toFun y z‖ₑ ∂μ ∂μ :=
+          lintegral_lintegral_swap (measurable_const.mul k.measurable_enorm).aemeasurable
+      _ ≤ ∫⁻ z in I i, ENNReal.ofReal M * k.bound ∂μ := by
+          refine lintegral_mono fun z => ?_
+          rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+          gcongr
+          exact k.col z
+      _ = ENNReal.ofReal M * k.bound * μ (I i) := by rw [setLIntegral_const]
+  rw [Lp.norm_def, ← ENNReal.toReal_pow, eLpNorm_two_sq]
+  calc (∫⁻ y, ‖(k.op (cellVec I hI hfin i) : α → ℂ) y‖ₑ ^ 2 ∂μ).toReal
+      ≤ (ENNReal.ofReal M * k.bound * μ (I i)).toReal :=
+        ENNReal.toReal_mono (by
+          exact ENNReal.mul_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.coe_ne_top)
+            (hfin i)) htot
+    _ = M * k.bound * (μ (I i)).toReal := by
+        rw [ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_ofReal hM0,
+          ENNReal.coe_toReal]
 
 end Cells
 

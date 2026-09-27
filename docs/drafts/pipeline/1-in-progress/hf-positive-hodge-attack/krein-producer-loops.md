@@ -948,3 +948,56 @@ Next conjectures to test:
   2. The tail satisfies `ε_U ≤ 2M_θe^{5U}e^{−π sin(2ε)e^{2U}}`, using the per-term strip bound and evenness.
   3. On the window, `|T̂| ≥ (e^{τθ}|Ξ(τ)| − ε_U)(τ²+¼)·4w cos(⅛)∫κ`. Also `e^{τθ}|Ξ(τ)| ≥ c τ²e^{−ετ}/(1+τ)·(1/3)e^{−(3/2)C log τ/δ'}`, using the sharp Gamma bound and the `|ζ|` path bound.
   4. Exponent: `sin 2ε ≥ 2ε(1−ε²)` and `e^{−2w} ≥ 1−2w` give `−2π sin(2ε)e^{2U} + 2ετ₀ ≤ −4πεe^{2L}[(1−ε²)(1−2w) − (1−η)] ≤ −πη^{3/2}e^{2L}`.
+
+### L39 — Landau-sharp cluster exclusion: `Hodge(a)` excludes every off-line zero below `(π sin 2ε/ε)·e^{2a−3/4}`, which tends to `2π·e^{2a−3/4}` (in progress)
+(Label L39: the parallel cycle's L38 is the tilted-kernel Krein pinning. Its module `TiltedRiemannKernel` is this cycle's input.)
+- **Context.**
+  - L34 (HF-F31) excludes clustered off-line zeros below `2e^{2X}`, `X = a − 3/8`. The constant 2 has two sources:
+    - `|Ξ(τ)| ≍ e^{−πτ/4}` makes the interpolant `e^{πt/4}` large;
+    - the positive remainder of the off-node zeros is bounded by `η·‖f‖`, and `‖f‖` contains the interpolant a second time.
+  - The Landau density heuristic puts the exact threshold at `2π·e^{2X}`.
+- **Conjecture.** Let `0 ≤ θ < π/4` and `ε = π/4 − θ`. `Hodge(a)` excludes every zero with `β > ½`, `t ≥ 101`, whenever
+  `π cos(2θ) e^{2X} > ε t + O(N(log N + log 1/δ) + log t + N X)`.
+  - At `θ = 0` the horizon is `4e^{2X}`, twice L34's.
+  - As `θ → π/4` it is `(π sin 2ε/ε)e^{2X} → 2πe^{2X}`.
+- **Mechanism.**
+  1. *Tilt only the kernel.* Keep L34's cluster setup and its untilted interpolant `Q`, with `QPK̂ = ±i` at the nodes. Replace `K = D_LΦ` by `K_θ = D_LΦ_θ`. Since `Φ̂_θ = e^{θz}Ξ`, we get `K̂_θ = e^{θz}K̂`, so at a node the test's transform is `e^{θγ}·(±i) − Y`.
+  2. *Node block.* For a node `ν` and its reflection, `(e^{θγ}X)·conj(e^{θγ̄}X') = −e^{2θγ}`. Its real part is `≤ −e^{2θ Re γ}cos(2θ Im γ) ≤ −(2/3)e^{2θ Re γ}`, because `|2θ Im γ| < π/4`.
+  3. *Refined off-node remainder.* At an off-node zero the transform is `−Q P·tail_θ^(γ)`. The tail `(1−χ)K_θ` is `C²`, and `tail''` is built from `K_θ, k₁, k₂` on `|u| ≥ X`. So `(1+|t|)²|tail^(γ)| ≤ T`, where `T` is tail-sized. Both factors of every off-node summand are therefore `≤ 6c_M T/(1+|t|)²`, and the whole off-node sum is `≤ 45 S_Z c_M² T²`. The test norm `‖f‖` never enters.
+  4. *Balance.* `(3/8)e^{2θ(t−3/4)} ≤ 45 S_Z c_M² T² ⇒ e^{θ(t−3/4)} ≲ c_M T`. Here `c_M ≍ e^{π(t+1)/4}·polylog` and `T ≍ poly·e^{O(NX)}·e^{−π cos(2θ)e^{2X}}`. This gives the conjectured horizon.
+- **Kill attempts.**
+  - *False?* Every factor is explicit. Only the single-factor balance `e^{εt} ≷ e^{−π cos 2θ e^{2X}}` enters, and at `θ → π/4` it is exactly the Landau count `2πe^{2X}`. Above that height the zeros oversample `PW_a`, so no pinning or exclusion is expected (the parallel L38 heuristic).
+  - *Circular?* No. The inputs are L34's unconditional setup, the tilted kernel identity, and tail bounds.
+  - *Rediscovered?* Finite-level exclusion exists only in this corpus (L34). Tilted slices of `Φ` are classical (Pólya, de Bruijn, Hardy), but not as finite-level radical tests; the parallel cycle uses them only for pinning.
+  - *Insignificant?* It fixes the constant of the Nyquist law at the Landau value. So: `Hodge(a) ⇒` RH up to `(2π − o(1))e^{2a−3/4}`. At `θ = 0` alone the refined remainder already doubles L34's horizon.
+  - Verdict: SURVIVES PRELIMINARY ATTACK.
+- **Paper proof.**
+  1. The input from `TiltedRiemannKernel` is `paperFT Φ_θ = e^{zθ}Ξ` on `|Im z| ≤ ½`, with double-exponential decay. Hence `Φ_θ` is SuperExpDecay, and `DivisorData L Φ_θ` holds with local factor `e^{zθ}u(z)`.
+  2. `K̂_θ·P_L = e^{θz}Ξ = e^{θz}K̂·P_L`, so `K̂_θ = e^{θz}K̂` off the nodes. It also holds at the nodes by continuity, since the node set is finite.
+  3. Write `K_θ = D_aD_bg₂` (two outer divisions). Then `k₁ = −iaK_θ − i·D_bg₂`, `p₁ = −ib·D_bg₂ − ig₂`, `k₂ = −iak₁ − ip₁`. Each tail is `≤ (1+Γ)^j·2^N·tail_{Φ_θ}(½ + 3N/2, X)`.
+  4. Put `tail = (1−p)K_θ`, so `tail'' = −p₂K_θ − 2p₁k₁ + (1−p)k₂`. This vanishes on `|u| < X`, and `|p_j| ≤ Kp`. Two integrations by parts (`paperFT_deriv_of_superExpDecay`) give `|z|²|tail^(z)| ≤ Kp(tail_K + 2tail_{k₁}) + tail_{k₂}` on `|Im z| ≤ ½`.
+  5. Node block `≤ −(3/8)e^{2θ(t₀−3/4)}`, provided `6c_M·tail_K ≤ e^{θ(t₀−3/4)}/8`. The off-node sum is `≤ 45S_Z c_M²T²`. Hodge then forces `e^{θ(t₀−3/4)} ≤ max(48, 11√(S_Z+1))·c_M T`.
+  6. Tail of `Φ_θ` with weight `c`: `∫_{|u|>X}‖Φ_θ‖e^{c|u|} ≤ 2M e^{(c+11/2)X}e^{−π cos(2θ)e^{2X}}` once `π cos(2θ)e^{2X} ≥ c + 11/2`. This follows from `norm_tiltedPhi_le_of_rate` and the monotonicity of `(c+11/2)u − πc₂e^{2u}`.
+
+### L38 result — Krein pinning holds up to the Landau height `(1−η)·2πe^{2L}`. TRUE [L]
+- **Theorem** (`RHTower/LandauHeightKreinPinning:zeta_krein_completion_pinned_below_landau_height`; unconditional; axioms propext/choice/Quot.sound).
+  - For every `0 < η ≤ ½` there is `L₀` such that, for `L ≥ L₀`, every positive measure `ν` dominated by the level-`L` Hodge form satisfies `ν([τ₀ ± δ/2]) ≤ exp(−(π/2)η^{3/2}e^{2L})`.
+  - Conditions: `5 ≤ τ₀ ≤ (1−η)·2πe^{2L}`, zero-ordinate separation `δ ∈ (0,1]`, and `12C log(τ₀+1)/δ ≤ (π/2)η^{3/2}e^{2L}`.
+- **Improvement over L36.** The pinning height goes from `0.61e^{2L}` to `(1−η)·6.28e^{2L}`, and the bound is `exp(−cη^{3/2}e^{2L})` with no polynomial prefactor.
+  - `2πe^{2L}` is where the zero density `(1/2π)log(τ/2π)` equals the Nyquist rate `L/π`. It is Connes–Consani's scale `2πλ²`, which they give only heuristically, as a count match (2106.01715, Prop. 4.2).
+  - Sharpness (heuristic, RH plus sampling): the constant `2π` cannot be raised.
+- **New tools.**
+  - `RHTower/TiltedRiemannKernel`:
+    - `Φ_θ(u) = Φ_ℂ(u+iθ)` has `Φ̂_θ(z) = e^{zθ}Ξ(z)` for `|Im z| ≤ ½` (`paperFT_tiltedPhi`, a contour shift in the theta strip).
+    - `Φ_ℂ = Φ` on the real line (`thetaCuspStripSource_ofReal_eq`).
+    - Double-exponential tail `‖Φ_θ(u)‖ ≤ M e^{9|u|/2}e^{−π cos(2θ)e^{2|u|}}` (`norm_tiltedPhi_le_of_rate`), with tail mass `2Me^{6U}e^{−π cos 2θ e^{2U}}`.
+    - At zeros only the tail is seen (`paperFT_tiltedCore_at_zero`).
+  - `RHTower/LandauHeightKreinPinning`:
+    - Scaled bump `κ(u/4w)` with its transform bounds.
+    - Tilted radical test `landauRadicalTest` (Hodge class) with its Weil bound `norm_W_landauRadicalTest_le`.
+    - **Sharp quarter-line Gamma** `|Γ(¼+is/2)| ≥ e^{−πs/4}/(1+s)` (`norm_Gamma_quarter_line_sharp`, from duplication plus the digamma segment ratio `|Γ(¾+iy)| ≤ e(1+y)|Γ(¼+iy)|`). The corpus previously had only `e^{−πs/2}`.
+    - Tilted Ξ line bound `e^{τθ}|Ξ(τ)| ≥ c τ²/(1+τ)·e^{(θ−π/4)τ}·e^{−(3/2)C log τ/δ}` (`tilted_xi_line_ge`).
+- **Route consequence (HF).** A positive completion at level `L` is a spectral realization of the zeros exactly up to the Landau height `2πe^{2L}`, which is where the finite-level Weil data stop determining the zero set. Any producer must reproduce the zeros to precision `exp(−cη^{3/2}e^{2L})` below `(1−η)·2πe^{2L}`.
+- **Next.**
+  - (a) The tilted kernel should also sharpen the Nyquist exclusion (HF-F31, `2e^{2a−3/4}`) to the Landau height.
+  - (b) It should give the near-radical count with CC's constant 2: dimension `≥ (2−η)e^{2L}` (HF-F30 has `e^{2L−2}/20`). Tilted tests `Φ_θ ⋆ g` with `g` localized in phase space cover the region `|u| + ½log(|τ|/2π) < L`, whose area is exactly `2·2πe^{2L}`.
