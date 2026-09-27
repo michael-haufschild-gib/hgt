@@ -1,0 +1,29 @@
+# Paired weighted ξ energy floor and late phase saving
+
+Goal stays ACTIVE: no unconditional RH proof/refutation, no actual negative ξ witness, no proof that the final lower bracket is nonnegative. Current turn made verified strict quantitative improvements and proved their rate limitation.
+
+Repo /Users/michael/Documents/code/hgt/formal. Report /Users/michael/Documents/Codex/2026-09-26/new-chat-3/outputs/xi-weighted-floor-late-phase.md. Log work/xi-curvature-rh-loop.md under same projectless workspace. Manifest/axiom source+log/verification/metadata log prefix work/xi-weighted-floor-late-phase.
+
+Seven new leaves,27 public theorems,6 definitions, all final foreground `lake --old env lean <leaf> -o <olean>` warning-free:
+- RHTower/XiGaussianLateOrientationEnvelope (87650):7theorems3defs.
+- HTGeometry/WeightedVandermondeSamplingEnergy (20811):4theorems1def.
+- RHTower/XiCriticalGaussianWeightedFloor (92308):2theorems1def.
+- RHTower/XiGaussianLateOrientationSaving (65175):6theorems.
+- RHTower/XiGaussianWeightedFloorPhase (65128):4theorems.
+- RHTower/XiCriticalGaussianThirdWeightedFloor (82279):2theorems1def.
+- RHTower/XiCriticalWeightedFloorRate (71732):2theorems.
+All imported once into area umbrellas. Axiom25077exit0:31/31 reports(all27+4providers), only propext/Classical.choice/Quot.sound. Source forbidden scan/no overrides/whitespace/currentoleans/imports all clean. Index7006exit0. Metadata5148exit1 only10unrelated unwired modules (CCMFiniteTriangleBound,FiniteSignedTriangleBound,MobiusDivisorFullHeadCompletion,MobiusDivisorPhysicalCutoff,MoebiusMollifiedCriticalMoment,MoebiusMollifiedErrorThreeLines,MoebiusMollifiedZetaField,SignedTriangleCollectiveGap,ThetaPrimeDeletionMellin,ZetaZeroDensityPowerSaving), no generated staleness. No full/umbrella builds/commit/push. All owned Lean/research/index/lint handles terminal.
+
+Mathematics:
+K=sum|A|²,J=sum(ReA)²,I=sum(ImA)²,D=2I,H=J-I=K-D. All complete polynomial cross terms retained before inequalities.
+1. For eachN=n+1>=1 actual distinct positive criticalnodes γ_i exist. x_i=γ_i²,V_ij=x_i^j, Δ=|detV|². New `polynomialSamplingHeatCapacity z rate t`=sum_j sum_i |adjV_ji|² exp(t rate_i). Weighted exact adjugate identity+CS proves Δ*sumcoeff²<=Cap*sum_i|Q(z_i)|²exp(-t rate_i). Cap>0 for injectivez; Cap<=N*oldSamplingCap²*sum_i exp(t rate_i).
+2. `xiCriticalSamplingHeatFloor γ t`=2Δ/Capγ(t). Both distinct Schwarz partners of each positive node counted once, so J>=Fγ(t)sumcoeff² and K>=same. Fγ>0 all t>0. `exists_xiGaussianRealChannel_paired_weighted_floor n` returns γ,q,iMax,c with actualnodes, injectivesquarednodes,maxnode,c=Δ/(N²samplingCap²), and forallpositive t: Fγ(t)>0, 2c exp(-γ_iMax²*t)<=Fγ(t), allcoeff Jfloor. `exists_xiGaussianEnergy_paired_weighted_floor` givesKfloor. Independent of phase/RH sign. At least twice old same-node floor.
+3. Complete3 explicit denominator atx,y,z: C3=(y-z)²[1+(y+z)²+(yz)²]exp(tx)+(x-z)²[1+(x+z)²+(xz)²]exp(ty)+(x-y)²[1+(x+y)²+(xy)²]exp(tz). F3=2[(y-x)(z-x)(z-y)]²/C3. `xiCriticalSamplingHeatFloor_third γ t` exact identity x=γ0² etc; no zero-height/moment numeric evaluation.
+4. Halfanchor orientation ratio: Cjhalf=2j²+8(2j+4)(2j+3), A_j(t/2,t)=Cjhalf*b_j(t/2). Define S_n=sum_{j<n}C_(j+1)half*(2j+4)!, T_n=4(1+S_n). For t>=4 A_(n+1)<= [96+S_n(4/t)²] B_(n+1)(t/2). For t>=T_n correction<=1, so ratio<=97. Symbolic factorial recurrence, no evaluated lists. Definitions xiGaussianOrientationHalfOrderFactor/HalfTailCap/LateTime.
+5. Certified G_F gives97*U_F<delta_F/2 (U=129delta/(128G-129)). `xiGaussianOrientationPhaseBudget_half_late_lt` strictly below halfdelta exp(-tG/2)B_N(t/2), itself strictly below old same-halfanchor42/41. ActualI<=halfdelta exp(-tG/2)B_N(t/2)sumcoeff² allpositiveorders,t>=T_(N-1),allF and coefficients. Threshold independent F/coeff. This is I; D=2I.
+6. `exists_xiHeatHankelForm_paired_weighted_lower n`: sameactualfamily,Fγpositivealltime, H_N>=[Fγ-min(oldResidualBudget,orientationBudget)]sumcoeff², forallF/coeff/t>0. Late variant replacesphasebudget with halfdelta exp(-tG/2)B. Bothliteralcomplete3specializations retain a²μ0+2abμ1+(b²+2ac)μ2+2bcμ3+c²μ4.
+7. Rate limitation VERIFIED: `xiCriticalSamplingHeatFloor_node_rate_upper n γ i` on ordinary injective-node subtype produces C>0 forallreal t Fγ(t)<=C exp(-γ_i²t). Nonzero determinant forces each adjugate column nonzero. Largestnode corollary `exists_xiGaussianWeightedFloor_rate_sandwich n`: actualsamefloorbetween c*exp(-Lt) andC*exp(-Lt),L=maxγ², c,C>0; alsoactualJfloor. This is an upper bound on the CONSTRUCTED FLOOR, not actualK/J. Betterprefactor, same exponential rate. Does not prove phase comparison fails for all possibleF; adaptiveG mayimprove ifsourcecaptured.
+
+Frontier: coefficient-uniform independentfloor now genuinely stronger, allN/allpositiveheat. Phase ceiling strictlybetter atlateheatallN. No independent sourcecapture provingfloor>=phase, no nonnegativefullbracket/alltimecomplete3positivity. Do not claim boundimprovementalone establishesRHroute. Next useful target needs new quantified low-corecriticalsource capture or phase control relative to weighted critical nodal energy; another equivalent criterion is preparatory. High-only source depletion already obstructed in earlier memory. Do not duplicate these results.
+
+Proof lessons: `λ` reserved Lean token; used `rate`. Annotate `(s:=Finset.range(n+1))` on Finset.sum_nonneg when passed into inferred have. Give explicit norm term in sq_nonneg within single_le_sum or implicitfunction inference fails. Avoid nlinarith across differently associated quotients: calc/ring equality then positive multiplication. Fin3 determinant needs broad simp[Matrix.vandermonde_apply] to normalize Fin.val numerals before ring; subsequent push_cast was redundant and removed. All standardaxioms/no native_decide/decide/norm_num/#eval/#reduce/heartbeat changes.

@@ -41,8 +41,7 @@ theorem xiCriticalSamplingHeatFloor_third (γ : Fin 3 → ℝ) (t : ℝ) :
       ((((γ 1 ^ 2 - γ 0 ^ 2) * (γ 2 ^ 2 - γ 0 ^ 2) *
         (γ 2 ^ 2 - γ 1 ^ 2)) : ℝ) : ℂ) := by
     rw [Matrix.det_fin_three]
-    simp only [Matrix.vandermonde_apply]
-    push_cast
+    simp [Matrix.vandermonde_apply]
     ring
   unfold xiCriticalSamplingHeatFloor
   rw [hdet]

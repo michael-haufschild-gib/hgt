@@ -1,48 +1,23 @@
 import GaloisForLFunctions.RHTower.DampedPrimeSumAssembly
 
 /-!
-# IMS localization of the Weil form
+# Algebra for two-channel IMS estimates
 
-The Weil functional is a convolution quadratic form,
-
-```text
-Q(h) = ∬ K(x - y) h(x) h(y) dx dy ,
-```
-
-with `K` the sum of the pole kernel `e^{|u|/2}`, the prime atoms `-Λ(n)n^{-1/2}(δ_{log n}+δ_{-log n})`
-and the archimedean kernel.  Such forms admit an exact localization identity.  If `χ₁, χ₂` satisfy
-`χ₁² + χ₂² = 1` then, pointwise,
+If `χ₁, χ₂` satisfy `χ₁² + χ₂² = 1`, then pointwise,
 
 ```text
 χ₁(x)χ₁(y) + χ₂(x)χ₂(y) = 1 - ½[ (χ₁(x)-χ₁(y))² + (χ₂(x)-χ₂(y))² ] ,
 ```
 
-and integrating against `K(x-y)h(x)h(y)` gives the **IMS formula**
+This file proves that algebraic identity, a Lipschitz estimate for its weight,
+and a scalar lower bound assuming an IMS equality and an error estimate. It
+does not construct a partition or prove convergence of an arithmetic kernel
+integral. The actual prime--Gamma--pole identity and convergent signed errors
+are provided by `CCMThetaArithmeticLocalization`.
 
-```text
-Q(h) = Q(χ₁h) + Q(χ₂h) + ½ ∬ K(x-y)[ (χ₁(x)-χ₁(y))² + (χ₂(x)-χ₂(y))² ] h(x)h(y) dx dy .
-```
-
-Covering an interval of length `L + η` by two intervals of length `L`, which overlap in `L - η`, one
-may take the partition Lipschitz with constant `c/(L-η)`, so the error is bounded by
-
-```text
-|Err| ≤ (2c²/(L-η)²) · M₂ · ‖h‖² ,        M₂ = ∫_{|u| ≤ L+η} |K(u)| u² du ,
-```
-
-the second moment of the Weil kernel, which is finite because the archimedean singularity is only
-`1/(2|u|)`.  Consequently, if the Weil form is positive semidefinite on intervals of length `L` —
-which is the Connes–Consani theorem for `L ≤ log 2` — then on length `L + η` it is bounded below by
-`-2c²M₂/(L-η)²`.
-
-**The error is `O(1)`, not `O(η)`**, because the partition gradient is `O(1/L)` regardless of `η`.
-So localization gives quantitative *near*-positivity past `log 2` but not positivity.  Together with
-the direct estimate and the damped prime sum, this is the third independent route to the same place:
-all of them reduce to the same missing input, a **spectral gap** in the Connes–Consani theorem.
-That reduction is now established from three directions and is recorded as the sharp open problem.
-
-This file formalizes the pointwise partition identity, the Lipschitz bound on the localization
-weight, and the resulting lower bound in terms of the kernel's second moment.
+The parameter `c/(L-η)` need not vanish as `η` tends to zero. That observation
+limits this particular sufficient error estimate; it does not prove that all
+signed localization arguments fail or reduce to an unproved local spectral gap.
 -/
 
 open Real

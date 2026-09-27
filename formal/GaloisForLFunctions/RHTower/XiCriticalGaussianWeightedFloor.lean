@@ -141,7 +141,12 @@ theorem exists_xiGaussianRealChannel_paired_weighted_floor (n : ℕ) :
       rw [div_mul_eq_mul_div, div_le_iff₀ hB]
       simpa only [mul_comm] using hsamp
     change (2 * D / B) * (∑ j ∈ Finset.range N, a j ^ 2) ≤ J
-    nlinarith only [hdiv, hsum]
+    calc
+      _ = 2 * (D / B * ∑ j ∈ Finset.range N, a j ^ 2) := by ring
+      _ ≤ 2 * ∑ i : Fin N, ‖polynomialSample v (z i)‖ ^ 2 *
+          Real.exp (-((t : ℝ) * rate i)) :=
+        mul_le_mul_of_nonneg_left hdiv (by positivity)
+      _ ≤ J := hsum
 
 /-- The exact same independent paired floor also bounds the complete positive norm energy. -/
 theorem exists_xiGaussianEnergy_paired_weighted_floor (n : ℕ) :

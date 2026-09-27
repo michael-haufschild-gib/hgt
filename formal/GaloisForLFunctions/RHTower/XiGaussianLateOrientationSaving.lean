@@ -76,7 +76,7 @@ theorem xiGaussianImaginaryChannel_half_late_le_half_source
     ⟨t.1, by change (t.1 : ℝ) / 2 ≤ (t.1 : ℝ); linarith only [t.1.property]⟩
   have h' := mul_le_mul_of_nonneg_right
     (xiGaussianOrientationPhaseBudget_half_late_lt F n t).le
-      (Finset.sum_nonneg fun j _ => sq_nonneg (a j))
+      (Finset.sum_nonneg (s := Finset.range (n + 1)) fun j _ => sq_nonneg (a j))
   have he : -(((t.1 : ℝ) - (xiGaussianHalfHeat t.1 : ℝ)) *
       xiCriticalResidualPhaseGap F) = -((t.1 : ℝ) * xiCriticalResidualPhaseGap F / 2) := by
     change -(((t.1 : ℝ) - (t.1 : ℝ) / 2) * _) = _

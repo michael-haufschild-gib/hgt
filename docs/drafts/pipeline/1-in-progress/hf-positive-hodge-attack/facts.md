@@ -59,3 +59,9 @@ Scope: frontier route HF. Facts and no-gos only.
 - **HF-F22 [Lean, `RHTower.NegativeWeilValueForcesDeepZero`]:** Negative Weil value ⇒ deep zero.
   - `Re W(e^{−itu}s) ≤ −μ` forces a zero within `R` of `t` with `e^{2|β−½|a} ≥ μ/(768A₀N² log t) − e^a/(1+R)`.
   - **Route:** combined with HF-F18–F21 this gives the complete quantitative shadow-pole ⇔ deep-zero duality, with its true horizon (between `exp(c√a)` and `e^{2a}`).
+- **HF-F23 [Lean, `RHTower.ClusterRobustHodgeExclusion`]:** Cluster-robust Hodge exclusion and its Nyquist sharpness.
+  - For any configuration with local count `A₀`, the level-`a` Hodge index fails at a zero with `|β−½| ≥ δ`, `|γ| ≥ 2` whenever `a ≥ max(e⁶, 1/δ)` and `100((n+1)log²a + log(A₀(|γ|+4))) ≤ a`, with `n = N_d(γ−101, γ+101)` (`not_hodgeIndex_below_cluster_horizon`).
+  - For ζ the horizon is `exp(a/(10⁵A₀ log²a))` (`zeta_hodge_index_cluster_horizon`), replacing `exp(c√(a/log a))` (HF-F21).
+  - Conversely, the Nyquist lattice has window count `≤ 1000L` and satisfies Hodge(a) for `a ≤ L/2` (`offLineLattice_masks_at_linear_level`). So no criterion "window count `≤ 2000a` ⇒ violation" exists (`not_forall_hodge_exclusion_sublinear_level`).
+  - Mechanism: halving selection of the test centre (`exists_empty_annulus_center`), with killing distance `ε₀(4λ)^{−log₂n}` instead of `ε₀λ^{−n}`. The polar root is kept out of the `4n` tail exponent.
+  - **Route:** exclusion by the Hodge index is controlled by the local window density: sufficient at `n ≲ a/log²a`, impossible in general at `n ≳ 2000a`. Only the `log²a` factor is open.

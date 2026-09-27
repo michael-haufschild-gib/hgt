@@ -2,49 +2,20 @@ import GaloisForLFunctions.RHTower.PoleMinusPrimeMainIsLaplace
 import GaloisForLFunctions.RHTower.ArchimedeanSingleIntegral
 
 /-!
-# Pole, prime main term, and the first archimedean mode cancel identically
+# Finite-interval Laplace substitution and scalar cancellation
 
-The archimedean side of the Weil functional is the series whose `n`-th summand is
+Substituting `t = 2u` rewrites the displayed finite-interval archimedean mode
+as twice a Laplace integral. The scalar identity
+`2 * Lhalf + (A0 - 2 * Lhalf) = A0` then removes a shared term from any
+decomposition supplied as a hypothesis. The constant Laplace integral and
+monotonicity of the mode denominators are also proved.
 
-```text
-A(0)/(n+1) - ∫₀^∞ e^{-(n+3/4)t} A(t/2) e^{t/2} dt .
-```
-
-Substituting `t = 2u` turns the integral into a Laplace transform of `A` itself:
-
-```text
-∫₀^{2X} e^{-(n+3/4)t} A(t/2) e^{t/2} dt  =  2 ∫₀^{X} A(u) e^{-(2n+1/2)u} du ,
-```
-
-so the `n`-th summand is `A(0)/(n+1) - 2·𝓛A(2n + 1/2)`, and the **first** one, `n = 0`, is
-
-```text
-A(0) - 2·𝓛A(1/2) .
-```
-
-Its Laplace part is exactly the negative of the pole-minus-prime-main residue: that residue is
-`2·𝓛A(1/2)`.  Adding them,
-
-```text
-[ pole - primeMain ] + [ first archimedean mode ]  =  2·𝓛A(1/2) + A(0) - 2·𝓛A(1/2)  =  A(0) .
-```
-
-> **The pole term, the prime-number-theorem main term, and the first archimedean mode cancel
-> identically, leaving only `A(0)`.  The Weil functional contains no quantity of size `e^{L/2}` at
-> all: what survives is `A(0)`, a convergent series of Laplace transforms at `5/2, 9/2, 13/2, …`, and
-> the smoothed prime-counting error.**
-
-Each surviving Laplace transform is bounded by `A(0)/(2n + 1/2)`, so the whole archimedean tail is
-`O(A(0))` with an absolute constant.  The hypothesis is therefore exactly the statement that the
-smoothed prime error stays below an explicit multiple of `A(0)` — an inequality between two bounded
-quantities, with every exponentially large term already cancelled.
-
-This explains the barriers recorded in this development.  A method that tries to gain by widening the
-window is trying to extract information from three terms whose sum is `A(0)` independently of the
-width.
-
-This file formalizes the substitution, the identification of the `n`-th mode as a Laplace transform,
-the three-way cancellation, and the uniform bound on the surviving modes.
+This module supplies no source-level identification of the full Weil form,
+no bound on the prime-counting error, and no summability theorem for the
+archimedean tail. The individual reciprocal mode bounds alone are not
+summable. Applying the scalar cancellation to arithmetic sources requires
+separate identifications and estimates. Actual pole-source leading
+cancellation is established in `CCMPoleLeadingCancellation`.
 -/
 
 open Real intervalIntegral
@@ -80,8 +51,8 @@ window changes nothing in the combined term. -/
 theorem cancellation_width_independent (A0 L₁ L₂ : ℝ) :
     (2 * L₁ + (A0 - 2 * L₁)) = (2 * L₂ + (A0 - 2 * L₂)) := by ring
 
-/-- **The surviving modes are uniformly small.**  If `|A| ≤ A(0)` — which holds whenever `Â ≥ 0` —
-then `𝓛A(s) ≤ A(0)/s` for `s > 0`. -/
+/-- Rewrite a supplied scalar upper bound in division notation. No integral estimate is
+established by this lemma. -/
 theorem laplace_mode_bound {A0 s I : ℝ} (_hs : 0 < s) (hI : I ≤ A0 * (1 / s)) :
     I ≤ A0 / s := by
   rwa [mul_one_div] at hI
@@ -111,9 +82,8 @@ theorem mode_denominators_increase {m n : ℕ} (h : m ≤ n) :
   have : (m : ℝ) ≤ (n : ℝ) := Nat.cast_le.mpr h
   linarith
 
-/-- **No exponential content survives.**  Whatever the width, the combined pole, prime main term and
-first archimedean mode equal `A(0)`, so the functional is bounded by `A(0)` plus the tail plus the
-smoothed error — none of which grows with the width through this route. -/
+/-- Cancel the shared scalar term in a supplied decomposition. The dependence of `Tail` and
+`Err` on a source or width remains unrestricted. -/
 theorem no_exponential_content {A0 Lhalf Tail Err W : ℝ}
     (hW : W = 2 * Lhalf + (A0 - 2 * Lhalf) - Tail - Err) :
     W = A0 - Tail - Err := by rw [hW]; ring

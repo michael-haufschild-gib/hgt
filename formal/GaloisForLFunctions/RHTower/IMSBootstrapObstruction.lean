@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.IMSLocalizationWeilForm
 
 /-!
-# The IMS bootstrap cannot extend the elementary range
+# A scale-invariant model budget for IMS localization
 
 Cycle 27 proposed feeding the elementary gap through the IMS localization bound.  The elementary
 tower does carry a gap: dropping the nonnegative pole square,
@@ -30,23 +30,16 @@ whence the error is
 2κ²M₂ ≈ π²·(L+η)²/(L-η)² ≥ π² ,
 ```
 
-**independent of `L`**.  The gap only grows logarithmically, so the competition
-`log(1/(2L)) - 1 > π²` requires `L < e^{-1-π²}/2 ≈ 2·10⁻⁵`.  Iterating multiplies `L` by
-`1 + ρ` with `ρ = (√δ₀/π - 1)/(√δ₀/π + 1) < 1`, and `ρ → 0` as `δ₀ ↓ π²`, so the bootstrap stalls at
-`L ≈ 10⁻⁵`.
+**independent of `L`** in this model. The competition
+`log(1/(2L)) - 1 > π²` requires `L < exp(-1-π²)/2`.
 
-That is far below the threshold `L = 2ℓ₀ ≈ 0.4994` which the **direct** elementary bound already
-reaches.  So IMS localization is strictly weaker than the direct estimate and cannot extend the
-range at any point.  The proposal of cycle 27 is closed.
-
-The reason is structural and worth recording: the localization error is scale invariant, because the
-Weil kernel's `1/|u|` singularity makes its second moment scale exactly like the square of the
-partition length, cancelling the `κ²`.  Only a gap that grows faster than logarithmically could beat
-it, and no such gap exists — `δ₀` is the average of the archimedean symbol, which is logarithmic by
-Stirling.
-
-This file formalizes the second-moment computation, the scale invariance of the error, and the
-comparison showing the IMS threshold falls below the direct elementary one.
+The statements below prove the model second moment, its scale invariance, and
+this exact logarithmic threshold. They do not bound the actual signed arithmetic
+localization error below by the model budget. In particular, failure of a
+sufficient estimate is not an impossibility theorem for localization, and these
+lemmas do not establish failure of every IMS bootstrap for the full Weil form.
+The final comparison applies to reference lengths at least `1/2`; it does not
+compare with a claimed elementary threshold smaller than `1/2`.
 -/
 
 open Real
@@ -100,8 +93,8 @@ theorem bootstrap_threshold {L : ℝ} (hL : 0 < L)
   rw [hinv] at hstep
   linarith
 
-/-- **The threshold is far below the direct elementary one.**  `e^{-1-π²}/2 < 1/2 < 0.4994` is
-already enough: `π² > 0` gives `e^{-1-π²} < e^{-1} < 1`. -/
+/-- The model threshold is below `1/2`. This alone gives no comparison with a
+reference length smaller than `1/2`. -/
 theorem bootstrap_threshold_small : Real.exp (-1 - Real.pi ^ (2 : ℕ)) / 2 < 1 / 2 := by
   have hpi : (0 : ℝ) < Real.pi ^ (2 : ℕ) := by positivity
   have h1 : Real.exp (-1 - Real.pi ^ (2 : ℕ)) < 1 := by
@@ -109,8 +102,8 @@ theorem bootstrap_threshold_small : Real.exp (-1 - Real.pi ^ (2 : ℕ)) / 2 < 1 
     linarith
   linarith
 
-/-- Consequently the IMS bootstrap stalls strictly inside the range the direct elementary bound
-already covers, so it never extends it. -/
+/-- A length satisfying the model gap condition is below every reference length
+at least `1/2`. The name records the original proposed application. -/
 theorem ims_never_extends {L₀ : ℝ} (hL₀ : 1 / 2 ≤ L₀) {L : ℝ} (hL : 0 < L)
     (hgap : Real.pi ^ (2 : ℕ) < Real.log (1 / (2 * L)) - 1) :
     L < L₀ := by

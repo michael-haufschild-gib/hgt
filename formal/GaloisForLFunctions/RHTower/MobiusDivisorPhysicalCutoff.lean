@@ -43,16 +43,17 @@ theorem abs_sum_dilation_unitHead_le (D : Finset ℕ) (hD : ∀ d ∈ D, 0 < d) 
       have hle : x / d ≤ 1 := (div_nonpos_of_nonpos_of_nonneg hx hdR.le).trans zero_le_one
       rw [divisorContinuousUnitHead_eq_zero hle, mul_zero]
     rw [Finset.sum_eq_zero hz, abs_zero, Real.sqrt_eq_zero'.mpr hx, mul_zero]
-  have hsplit : ∑ d ∈ D with (d : ℝ) ≤ x, c d * Real.sqrt d * divisorContinuousUnitHead (x / d)
+  have hsplit : ∑ d ∈ D.filter (fun d : ℕ => (d : ℝ) ≤ x),
+        c d * Real.sqrt d * divisorContinuousUnitHead (x / d)
       = ∑ d ∈ D, c d * Real.sqrt d * divisorContinuousUnitHead (x / d) := by
     apply Finset.sum_filter_of_ne
     intro d hd hne
     by_contra hdx
     apply hne
     have hdR : (0 : ℝ) < d := by exact_mod_cast hD d hd
-    rw [divisorContinuousUnitHead_eq_zero ((div_le_one hdR).mpr (le_of_not_ge hdx).le), mul_zero]
+    rw [divisorContinuousUnitHead_eq_zero ((div_le_one hdR).mpr (le_of_not_ge hdx)), mul_zero]
   rw [← hsplit]
-  have hterm : ∀ d ∈ D with (d : ℝ) ≤ x,
+  have hterm : ∀ d ∈ D.filter (fun d : ℕ => (d : ℝ) ≤ x),
       |c d * Real.sqrt d * divisorContinuousUnitHead (x / d)| ≤ 3 / 5 * Real.sqrt x := by
     intro d hd
     have hd0 : (0 : ℝ) < d := by exact_mod_cast hD d (Finset.mem_filter.mp hd).1
@@ -67,20 +68,23 @@ theorem abs_sum_dilation_unitHead_le (D : Finset ℕ) (hD : ∀ d ∈ D, 0 < d) 
           rw [Real.sqrt_div hx.le, one_mul]
           have hs : Real.sqrt (d : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hd0).ne'
           field_simp
-  have hcard : ((D.filter (fun d => (d : ℝ) ≤ x)).card : ℝ) ≤ x := by
-    have hsub : D.filter (fun d => (d : ℝ) ≤ x) ⊆ Finset.Icc 1 ⌊x⌋₊ := by
+  have hcard : ((D.filter (fun d : ℕ => (d : ℝ) ≤ x)).card : ℝ) ≤ x := by
+    have hsub : D.filter (fun d : ℕ => (d : ℝ) ≤ x) ⊆ Finset.Icc 1 ⌊x⌋₊ := by
       intro d hd
       rw [Finset.mem_filter] at hd
       exact Finset.mem_Icc.mpr ⟨hD d hd.1, Nat.le_floor hd.2⟩
     have h1 := Finset.card_le_card hsub
     rw [Nat.card_Icc, Nat.add_sub_cancel] at h1
-    calc ((D.filter (fun d => (d : ℝ) ≤ x)).card : ℝ) ≤ (⌊x⌋₊ : ℝ) := by exact_mod_cast h1
+    calc ((D.filter (fun d : ℕ => (d : ℝ) ≤ x)).card : ℝ) ≤ (⌊x⌋₊ : ℝ) := by exact_mod_cast h1
       _ ≤ x := Nat.floor_le hx.le
-  calc |∑ d ∈ D with (d : ℝ) ≤ x, c d * Real.sqrt d * divisorContinuousUnitHead (x / d)|
-      ≤ ∑ d ∈ D with (d : ℝ) ≤ x, |c d * Real.sqrt d * divisorContinuousUnitHead (x / d)| :=
+  calc |∑ d ∈ D.filter (fun d : ℕ => (d : ℝ) ≤ x),
+        c d * Real.sqrt d * divisorContinuousUnitHead (x / d)|
+      ≤ ∑ d ∈ D.filter (fun d : ℕ => (d : ℝ) ≤ x),
+        |c d * Real.sqrt d * divisorContinuousUnitHead (x / d)| :=
         Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ _d ∈ D with (d : ℝ) ≤ x, 3 / 5 * Real.sqrt x := Finset.sum_le_sum hterm
-    _ = ((D.filter (fun d => (d : ℝ) ≤ x)).card : ℝ) * (3 / 5 * Real.sqrt x) := by
+    _ ≤ ∑ _d ∈ D.filter (fun d : ℕ => (d : ℝ) ≤ x), 3 / 5 * Real.sqrt x :=
+        Finset.sum_le_sum hterm
+    _ = ((D.filter (fun d : ℕ => (d : ℝ) ≤ x)).card : ℝ) * (3 / 5 * Real.sqrt x) := by
         rw [Finset.sum_const, nsmul_eq_mul]
     _ ≤ x * (3 / 5 * Real.sqrt x) :=
         mul_le_mul_of_nonneg_right hcard (by positivity)
@@ -192,14 +196,14 @@ private lemma cube_envelope_eq {x : ℝ} (hx : 0 < x) :
       Real.sqrt_eq_rpow]
   rw [Real.rpow_neg hx.le, h32]
   have hs : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx
-  have hss : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx.le
+  have hss : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx.le
   field_simp
-  nlinarith [hss]
+  exact hss
 
 /-- **The inverse-cube tail of any function with envelope `c x^{3/2}`.**  It is integrable above
 every positive cutoff, with tail at most `2c/√X`. -/
 theorem integrableOn_abs_div_cube_Ioi_and_le {f : ℝ → ℝ} (hf : Measurable f) {c : ℝ}
-    (hc : 0 ≤ c) (hb : ∀ x, |f x| ≤ c * x * Real.sqrt x) {X : ℝ} (hX : 0 < X) :
+    (hb : ∀ x, |f x| ≤ c * x * Real.sqrt x) {X : ℝ} (hX : 0 < X) :
     IntegrableOn (fun x => |f x| / x ^ 3) (Ioi X) ∧
       ∫ x in Ioi X, |f x| / x ^ 3 ≤ 2 * c / Real.sqrt X := by
   have hrp : IntegrableOn (fun x : ℝ => c * x ^ (-(3 / 2 : ℝ))) (Ioi X) :=
@@ -228,14 +232,13 @@ theorem integrableOn_abs_div_cube_Ioi_and_le {f : ℝ → ℝ} (hf : Measurable 
         rw [show -(3 / 2 : ℝ) + 1 = -(1 / 2) by norm_num, Real.rpow_neg hX.le, ← hsX]
         have hs : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX
         field_simp
-        ring
 
 /-- **The tail bound (2).**  For every finite core and every `X > 0`,
 `∫_X^∞ |H_P(x)|/x³ dx ≤ 2/√X`. -/
 theorem integral_abs_mobiusDivisorContinuousHead_tail_le (P : Finset ℕ) {X : ℝ} (hX : 0 < X) :
     ∫ x in Ioi X, |mobiusDivisorContinuousHead P x| / x ^ 3 ≤ 2 / Real.sqrt X := by
   have h := (integrableOn_abs_div_cube_Ioi_and_le (measurable_mobiusDivisorContinuousHead P)
-    (by norm_num : (0 : ℝ) ≤ 3 / 5) (abs_mobiusDivisorContinuousHead_le P) hX).2
+    (abs_mobiusDivisorContinuousHead_le P) hX).2
   refine h.trans ?_
   have hs : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX
   rw [div_le_div_iff_of_pos_right hs]
@@ -287,7 +290,7 @@ theorem mobiusDivisorUniformMoment_sub_tail_le (P : Finset ℕ) (hP : ∀ p ∈ 
       measurableSet_Ioi (hiM.mono_set (fun x hx => hx.1)) (hiM.mono_set (Ioi_subset_Ioi hX))
   have htail : ∫ x in Ioi X, mobiusDivisorContinuousHead P x / x ^ 3 ≤ 2 / Real.sqrt X := by
     have hab := (integrableOn_abs_div_cube_Ioi_and_le (measurable_mobiusDivisorContinuousHead P)
-      (by norm_num : (0 : ℝ) ≤ 3 / 5) (abs_mobiusDivisorContinuousHead_le P) hX0).1
+      (abs_mobiusDivisorContinuousHead_le P) hX0).1
     refine (setIntegral_mono_on (hiM.mono_set (Ioi_subset_Ioi hX)) hab measurableSet_Ioi
       (fun x hx => ?_)).trans (integral_abs_mobiusDivisorContinuousHead_tail_le P hX0)
     exact div_le_div_of_nonneg_right (le_abs_self _) (pow_pos (hX0.trans hx) 3).le
@@ -337,8 +340,8 @@ theorem setIntegral_Ioc_one_comp_div {F : ℝ → ℝ} (hF : ∀ y ≤ 1, F y = 
   have hB0 : 0 < B := zero_lt_one.trans_le hB
   rcases lt_or_ge X 1 with hX | hX
   · have hXB : X / B ≤ 1 := (div_le_one hB0).mpr (hX.le.trans hB)
-    rw [Ioc_eq_empty_of_le hX.le, Ioc_eq_empty_of_le hXB, Measure.restrict_empty,
-      Measure.restrict_empty, integral_zero_measure, integral_zero_measure, mul_zero]
+    rw [Ioc_eq_empty_of_le hX.le, Ioc_eq_empty_of_le hXB]
+    simp
   have hX0 : 0 ≤ X := zero_le_one.trans hX
   have hFB : ∀ y ≤ 1, F (y / B) = 0 := fun y hy => hF _ ((div_le_one hB0).mpr (hy.trans hB))
   rw [setIntegral_Ioc_one_eq_intervalIntegral hFB hX0,
@@ -353,21 +356,46 @@ theorem setIntegral_Ioc_one_comp_div {F : ℝ → ℝ} (hF : ∀ y ≤ 1, F y = 
     intervalIntegral.integral_comp_div (fun y => F y / y ^ 3) hB0.ne', zero_div, smul_eq_mul]
   field_simp
 
+/-! ### Bounds on the physical interval -/
+
+/-- On `(1, X]` a product of two heads evaluated below `Y` is bounded. -/
+theorem abs_head_mul_head_div_cube_le_of_le (P Q : Finset ℕ) {u v Y x : ℝ} (hu : u ≤ Y)
+    (hv : v ≤ Y) (hx : 1 ≤ x) :
+    |mobiusDivisorContinuousHead P u * mobiusDivisorContinuousHead Q v / x ^ 3|
+      ≤ (3 / 5 * Y * Real.sqrt Y) * (3 / 5 * Y * Real.sqrt Y) := by
+  have hx3 : 1 ≤ x ^ 3 := one_le_pow₀ hx
+  rw [abs_div, abs_of_pos (zero_lt_one.trans_le hx3), abs_mul]
+  refine (div_le_self (by positivity) hx3).trans ?_
+  have h1 := abs_mobiusDivisorContinuousHead_le_of_le P hu
+  have h2 := abs_mobiusDivisorContinuousHead_le_of_le Q hv
+  exact mul_le_mul h1 h2 (abs_nonneg _) ((abs_nonneg _).trans h1)
+
+/-- On `(1, X]` a head evaluated below `Y` is bounded after the inverse-cube weight. -/
+theorem abs_head_div_cube_le_of_le (P : Finset ℕ) {u Y x : ℝ} (hu : u ≤ Y) (hx : 1 ≤ x) :
+    |mobiusDivisorContinuousHead P u / x ^ 3| ≤ 3 / 5 * Y * Real.sqrt Y := by
+  have hx3 : 1 ≤ x ^ 3 := one_le_pow₀ hx
+  rw [abs_div, abs_of_pos (zero_lt_one.trans_le hx3)]
+  exact (div_le_self (abs_nonneg _) hx3).trans (abs_mobiusDivisorContinuousHead_le_of_le P hu)
+
 /-! ### The two-scale moment -/
 
 /-- The two-scale head `g_{P,A}(x) = H_P(x) + A H_P(x/A)`. -/
 def mobiusDivisorTwoScaleHead (P : Finset ℕ) (A x : ℝ) : ℝ :=
   mobiusDivisorContinuousHead P x + A * mobiusDivisorContinuousHead P (x / A)
 
-private lemma head_comp_div_eq_zero (P : Finset ℕ) {A : ℝ} (hA : 1 ≤ A) :
-    ∀ y ≤ 1, mobiusDivisorContinuousHead P y = 0 :=
-  fun _ hy => mobiusDivisorContinuousHead_eq_zero P hy
-
 /-- The truncated moment of the rescaled head. -/
 theorem setIntegral_Ioc_one_head_comp_div (P : Finset ℕ) {A : ℝ} (hA : 1 ≤ A) (X : ℝ) :
     ∫ x in Ioc 1 X, mobiusDivisorContinuousHead P (x / A) / x ^ 3 =
       (A ^ 2)⁻¹ * ∫ y in Ioc 1 (X / A), mobiusDivisorContinuousHead P y / y ^ 3 :=
   setIntegral_Ioc_one_comp_div (fun _ hy => mobiusDivisorContinuousHead_eq_zero P hy) hA X
+
+theorem integrableOn_Ioc_one_head_comp_div (P : Finset ℕ) {A : ℝ} (hA : 1 ≤ A) (X : ℝ) :
+    IntegrableOn (fun x => mobiusDivisorContinuousHead P (x / A) / x ^ 3) (Ioc 1 X) := by
+  have hA0 : 0 < A := zero_lt_one.trans_le hA
+  have hm := measurable_mobiusDivisorContinuousHead P
+  refine integrableOn_Ioc_of_abs_le (K := 3 / 5 * X * Real.sqrt X) (by fun_prop) (fun x hx => ?_)
+  exact abs_head_div_cube_le_of_le P
+    ((div_le_self (zero_le_one.trans hx.1.le) hA).trans hx.2) hx.1.le
 
 /-- **The two-scale physical cutoff (4).**  For every `X ≥ max(1, (8/m)²)`, uniformly in the
 finite prime core and in `A ≥ 1`, `∫_1^X g_{P,A}/x³ ≥ m/2`. -/
@@ -380,27 +408,12 @@ theorem mobiusDivisor_physicalCutoff_twoScale_moment_lower (P : Finset ℕ)
   have hA0 : 0 < A := zero_lt_one.trans_le hA
   have hX0 : 0 < X := zero_lt_one.trans_le hX
   have hi1 := integrableOn_Ioc_head_div_cube P 1 X
-  have hi2 : IntegrableOn (fun x => mobiusDivisorContinuousHead P (x / A) / x ^ 3) (Ioc 1 X) := by
-    have h := integrableOn_Ioc_head_mul_head_div_cube P ∅ (inv_nonneg.mpr hA0.le)
-      (zero_le_one) 1 X
-    refine integrableOn_Ioc_of_abs_le
-      (measurable_div_cube ((measurable_mobiusDivisorContinuousHead P).comp
-        (measurable_id.div_const A))) (K := 3 / 5) (fun x hx => ?_)
-    have hx0 : 0 < x := zero_lt_one.trans hx.1
-    rcases le_or_gt (x / A) 1 with hxA | hxA
-    · rw [mobiusDivisorContinuousHead_eq_zero P hxA, zero_div, abs_zero]; norm_num
-    · have hxA' : x / A ≤ x := div_le_self hx0.le hA
-      rw [abs_div, abs_of_pos (pow_pos hx0 3), div_le_iff₀ (pow_pos hx0 3)]
-      have h1 := abs_mobiusDivisorContinuousHead_le_of_le P hxA'
-      have hsx : Real.sqrt x ≤ x := by
-        rw [Real.sqrt_le_left hx0.le]; nlinarith [hx.1]
-      have hx2 : 1 ≤ x ^ 2 := one_le_pow₀ hx.1.le
-      nlinarith [Real.sqrt_nonneg x]
+  have hi2 := integrableOn_Ioc_one_head_comp_div P hA X
   have hsum : ∫ x in Ioc 1 X, mobiusDivisorTwoScaleHead P A x / x ^ 3 =
       (∫ x in Ioc 1 X, mobiusDivisorContinuousHead P x / x ^ 3) +
         A * ((A ^ 2)⁻¹ * ∫ y in Ioc 1 (X / A), mobiusDivisorContinuousHead P y / y ^ 3) := by
-    rw [← setIntegral_Ioc_one_head_comp_div P hA X, ← integral_const_mul, ← integral_add hi1
-      (hi2.const_mul A)]
+    rw [← setIntegral_Ioc_one_head_comp_div P hA X, ← integral_const_mul,
+      ← integral_add hi1 (hi2.const_mul A)]
     refine setIntegral_congr_fun measurableSet_Ioc (fun x _ => ?_)
     simp only [mobiusDivisorTwoScaleHead]
     ring
@@ -408,9 +421,8 @@ theorem mobiusDivisor_physicalCutoff_twoScale_moment_lower (P : Finset ℕ)
   have hmain := mobiusDivisorUniformMoment_sub_tail_le P hP hX
   have h8 := two_div_sqrt_le hm (by norm_num : (0 : ℝ) < 8) hXm
   rcases lt_or_ge (X / A) 1 with hXA | hXA
-  · rw [Ioc_eq_empty_of_le hXA.le, Measure.restrict_empty, integral_zero_measure, mul_zero,
-      mul_zero, add_zero]
-    have : 2 * mobiusDivisorUniformMoment / 8 ≤ mobiusDivisorUniformMoment / 2 := by linarith
+  · rw [Ioc_eq_empty_of_le hXA.le]
+    simp only [Measure.restrict_empty, integral_zero_measure, mul_zero, add_zero]
     linarith
   · have hsec := mobiusDivisorUniformMoment_sub_tail_le P hP hXA
     have hXA0 : 0 < X / A := zero_lt_one.trans_le hXA
@@ -423,18 +435,17 @@ theorem mobiusDivisor_physicalCutoff_twoScale_moment_lower (P : Finset ℕ)
       exact mul_le_mul_of_nonneg_right h2 (Real.sqrt_nonneg _)
     have hsX : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX0
     have hsXA0 : 0 < Real.sqrt (X / A) := Real.sqrt_pos.mpr hXA0
-    have hkey : A * ((A ^ 2)⁻¹ * ∫ y in Ioc 1 (X / A), mobiusDivisorContinuousHead P y / y ^ 3)
-        ≥ -(2 / Real.sqrt X) := by
-      have hA2 : A * (A ^ 2)⁻¹ = A⁻¹ := by field_simp
-      rw [← mul_assoc, hA2]
-      have hlow : A⁻¹ * (mobiusDivisorUniformMoment - 2 / Real.sqrt (X / A)) ≤
-          A⁻¹ * ∫ y in Ioc 1 (X / A), mobiusDivisorContinuousHead P y / y ^ 3 :=
-        mul_le_mul_of_nonneg_left hsec (inv_nonneg.mpr hA0.le)
-      have hcmp : A⁻¹ * (2 / Real.sqrt (X / A)) ≤ 2 / Real.sqrt X := by
-        rw [inv_mul_eq_div, div_div, div_le_div_iff₀ (by positivity) hsX]
-        nlinarith [hsXA]
-      have hmA : 0 ≤ A⁻¹ * mobiusDivisorUniformMoment := by positivity
-      nlinarith [hlow, hcmp, hmA]
+    have hA2 : A * (A ^ 2)⁻¹ = A⁻¹ := by field_simp
+    rw [← mul_assoc, hA2]
+    have hlow : A⁻¹ * (mobiusDivisorUniformMoment - 2 / Real.sqrt (X / A)) ≤
+        A⁻¹ * ∫ y in Ioc 1 (X / A), mobiusDivisorContinuousHead P y / y ^ 3 :=
+      mul_le_mul_of_nonneg_left hsec (inv_nonneg.mpr hA0.le)
+    have hcmp : A⁻¹ * (2 / Real.sqrt (X / A)) ≤ 2 / Real.sqrt X := by
+      rw [inv_mul_eq_div, div_div, div_le_div_iff₀ (by positivity) hsX]
+      nlinarith [hsXA]
+    have hmA : 0 ≤ A⁻¹ * mobiusDivisorUniformMoment := by positivity
+    have hexp : A⁻¹ * (mobiusDivisorUniformMoment - 2 / Real.sqrt (X / A)) =
+        A⁻¹ * mobiusDivisorUniformMoment - A⁻¹ * (2 / Real.sqrt (X / A)) := by ring
     linarith
 
 /-! ### The synchronized energy -/
@@ -461,6 +472,24 @@ private lemma cube_weight_Ioc_le (X : ℝ) : ∫ x in Ioc 1 X, (1 : ℝ) / x ^ 3
   refine (ae_restrict_iff' measurableSet_Ioi).mpr (ae_of_all _ (fun x hx => ?_))
   exact div_nonneg zero_le_one (pow_pos (zero_lt_one.trans hx) 3).le
 
+/-- The two rescaled pieces of the two-scale square. -/
+theorem setIntegral_Ioc_one_head_mul_head_comp_div (P : Finset ℕ) {A : ℝ} (hA : 1 ≤ A) (X : ℝ) :
+    ∫ x in Ioc 1 X, mobiusDivisorContinuousHead P x * mobiusDivisorContinuousHead P (x / A) / x ^ 3
+      = (A ^ 2)⁻¹ * mobiusDivisorPhysicalCorrelation P A (X / A) := by
+  have hA0 : 0 < A := zero_lt_one.trans_le hA
+  have h := setIntegral_Ioc_one_comp_div
+    (F := fun y => mobiusDivisorContinuousHead P (A * y) * mobiusDivisorContinuousHead P y)
+    (fun y hy => by rw [mobiusDivisorContinuousHead_eq_zero P hy, mul_zero]) hA X
+  refine Eq.trans ?_ h
+  refine setIntegral_congr_fun measurableSet_Ioc (fun x _ => ?_)
+  rw [mul_div_cancel₀ _ hA0.ne']
+
+theorem setIntegral_Ioc_one_head_sq_comp_div (P : Finset ℕ) {A : ℝ} (hA : 1 ≤ A) (X : ℝ) :
+    ∫ x in Ioc 1 X, mobiusDivisorContinuousHead P (x / A) ^ 2 / x ^ 3
+      = (A ^ 2)⁻¹ * mobiusDivisorPhysicalEnergy P (X / A) :=
+  setIntegral_Ioc_one_comp_div (F := fun y => mobiusDivisorContinuousHead P y ^ 2)
+    (fun y hy => by rw [mobiusDivisorContinuousHead_eq_zero P hy]; ring) hA X
+
 /-- **The synchronized energy law (5).**  For every `X ≥ max(1, (8/m)²)`, uniformly in the finite
 prime core and in `A ≥ 1`, `E_P(X) + C_P(A; X/A)/A ≥ m²/4`. -/
 theorem mobiusDivisor_physicalCutoff_synchronized_energy_lower (P : Finset ℕ)
@@ -468,102 +497,83 @@ theorem mobiusDivisor_physicalCutoff_synchronized_energy_lower (P : Finset ℕ)
     (hXm : (8 / mobiusDivisorUniformMoment) ^ 2 ≤ X) :
     mobiusDivisorUniformMoment ^ 2 / 4 ≤
       mobiusDivisorPhysicalEnergy P X + mobiusDivisorPhysicalCorrelation P A (X / A) / A := by
-  set m := mobiusDivisorUniformMoment with hmdef
-  have hm : 0 < m := mobiusDivisorUniformMoment_pos
+  have hm : 0 < mobiusDivisorUniformMoment := mobiusDivisorUniformMoment_pos
   have hA0 : 0 < A := zero_lt_one.trans_le hA
   have hX0 : 0 < X := zero_lt_one.trans_le hX
-  set H := mobiusDivisorContinuousHead P with hH
-  have hHz : ∀ y ≤ 1, H y = 0 := fun y hy => mobiusDivisorContinuousHead_eq_zero P hy
-  set g := mobiusDivisorTwoScaleHead P A with hg
-  -- integrability of the three pieces of `g²`
-  have hHx : ∀ x, H x = H (1 * x) := fun x => by rw [one_mul]
-  have hi0 : IntegrableOn (fun x => H x ^ 2 / x ^ 3) (Ioc 1 X) := by
-    have := integrableOn_Ioc_head_mul_head_div_cube P P zero_le_one zero_le_one 1 X
-    refine this.congr_fun (fun x _ => ?_) measurableSet_Ioc
-    simp only [one_mul, hH]; ring
-  have hi1 : IntegrableOn (fun x => H (A * (x / A)) * H (x / A) / x ^ 3) (Ioc 1 X) := by
-    have := integrableOn_Ioc_head_mul_head_div_cube P P zero_le_one (inv_nonneg.mpr hA0.le) 1 X
-    refine this.congr_fun (fun x _ => ?_) measurableSet_Ioc
-    simp only [one_mul, hH]
-    rw [mul_div_cancel₀ _ hA0.ne', div_eq_inv_mul]
-  have hi2 : IntegrableOn (fun x => H (x / A) ^ 2 / x ^ 3) (Ioc 1 X) := by
-    have := integrableOn_Ioc_head_mul_head_div_cube P P (inv_nonneg.mpr hA0.le)
-      (inv_nonneg.mpr hA0.le) 1 X
-    refine this.congr_fun (fun x _ => ?_) measurableSet_Ioc
-    simp only [hH]
-    rw [div_eq_inv_mul]; ring
+  have hHm := measurable_mobiusDivisorContinuousHead P
+  have hxA : ∀ x ∈ Ioc (1 : ℝ) X, x / A ≤ X := fun x hx =>
+    (div_le_self (zero_le_one.trans hx.1.le) hA).trans hx.2
+  -- the three pieces of the square
+  have hi0 : IntegrableOn (fun x => mobiusDivisorContinuousHead P x ^ 2 / x ^ 3) (Ioc 1 X) := by
+    refine integrableOn_Ioc_of_abs_le
+      (K := (3 / 5 * X * Real.sqrt X) * (3 / 5 * X * Real.sqrt X)) (by fun_prop) (fun x hx => ?_)
+    rw [pow_two]
+    exact abs_head_mul_head_div_cube_le_of_le P P hx.2 hx.2 hx.1.le
+  have hi1 : IntegrableOn (fun x => mobiusDivisorContinuousHead P x *
+      mobiusDivisorContinuousHead P (x / A) / x ^ 3) (Ioc 1 X) := by
+    refine integrableOn_Ioc_of_abs_le
+      (K := (3 / 5 * X * Real.sqrt X) * (3 / 5 * X * Real.sqrt X)) (by fun_prop) (fun x hx => ?_)
+    exact abs_head_mul_head_div_cube_le_of_le P P hx.2 (hxA x hx) hx.1.le
+  have hi2 : IntegrableOn (fun x => mobiusDivisorContinuousHead P (x / A) ^ 2 / x ^ 3)
+      (Ioc 1 X) := by
+    refine integrableOn_Ioc_of_abs_le
+      (K := (3 / 5 * X * Real.sqrt X) * (3 / 5 * X * Real.sqrt X)) (by fun_prop) (fun x hx => ?_)
+    rw [pow_two]
+    exact abs_head_mul_head_div_cube_le_of_le P P (hxA x hx) (hxA x hx) hx.1.le
+  have h01 : IntegrableOn (fun x => mobiusDivisorContinuousHead P x ^ 2 / x ^ 3 +
+      2 * A * (mobiusDivisorContinuousHead P x * mobiusDivisorContinuousHead P (x / A) / x ^ 3))
+      (Ioc 1 X) := hi0.add (hi1.const_mul _)
+  have hpt : ∀ x, mobiusDivisorTwoScaleHead P A x ^ 2 / x ^ 3 =
+      mobiusDivisorContinuousHead P x ^ 2 / x ^ 3 +
+        2 * A * (mobiusDivisorContinuousHead P x * mobiusDivisorContinuousHead P (x / A) / x ^ 3) +
+        A ^ 2 * (mobiusDivisorContinuousHead P (x / A) ^ 2 / x ^ 3) := by
+    intro x
+    simp only [mobiusDivisorTwoScaleHead]
+    ring
   -- the expansion of the square
-  have hexp : ∫ x in Ioc 1 X, g x ^ 2 / x ^ 3 =
+  have hexp : ∫ x in Ioc 1 X, mobiusDivisorTwoScaleHead P A x ^ 2 / x ^ 3 =
       mobiusDivisorPhysicalEnergy P X + mobiusDivisorPhysicalEnergy P (X / A) +
         2 * mobiusDivisorPhysicalCorrelation P A (X / A) / A := by
-    have hpt : ∀ x, g x ^ 2 / x ^ 3 = H x ^ 2 / x ^ 3 +
-        (2 * A) * (H (A * (x / A)) * H (x / A) / x ^ 3) + A ^ 2 * (H (x / A) ^ 2 / x ^ 3) := by
-      intro x
-      simp only [hg, mobiusDivisorTwoScaleHead, hH]
-      rw [mul_div_cancel₀ _ hA0.ne']
-      ring
     simp_rw [hpt]
-    rw [integral_add (hi0.add (hi1.const_mul _)) (hi2.const_mul _),
-      integral_add hi0 (hi1.const_mul _), integral_const_mul, integral_const_mul]
-    have hs1 := setIntegral_Ioc_one_comp_div (F := fun y => H (A * y) * H y)
-      (fun y hy => by simp only; rw [hHz y hy, mul_zero]) hA X
-    have hs2 := setIntegral_Ioc_one_comp_div (F := fun y => H y ^ 2)
-      (fun y hy => by simp only; rw [hHz y hy]; ring) hA X
-    simp only at hs1 hs2
-    rw [hs1, hs2]
-    simp only [mobiusDivisorPhysicalEnergy, mobiusDivisorPhysicalCorrelation, hH]
+    rw [integral_add h01 (hi2.const_mul _), integral_add hi0 (hi1.const_mul _),
+      integral_const_mul, integral_const_mul, setIntegral_Ioc_one_head_mul_head_comp_div P hA X,
+      setIntegral_Ioc_one_head_sq_comp_div P hA X]
+    have hE : ∫ x in Ioc 1 X, mobiusDivisorContinuousHead P x ^ 2 / x ^ 3 =
+        mobiusDivisorPhysicalEnergy P X := rfl
+    rw [hE]
     field_simp
     ring
   -- Cauchy–Schwarz in the form `g² ≥ 2 m g − m²`
-  have hig : IntegrableOn (fun x => g x / x ^ 3) (Ioc 1 X) := by
-    have h1 := integrableOn_Ioc_head_div_cube P 1 X
-    have h2 : IntegrableOn (fun x => H (x / A) * H (1 * x) / x ^ 3) (Ioc 1 X) := by
-      have := integrableOn_Ioc_head_mul_head_div_cube P P (inv_nonneg.mpr hA0.le) zero_le_one 1 X
-      refine this.congr_fun (fun x _ => ?_) measurableSet_Ioc
-      simp only [hH]; rw [div_eq_inv_mul]
-    -- `H(x/A)/x³` is bounded on `(1, X]`
-    have h3 : IntegrableOn (fun x => H (x / A) / x ^ 3) (Ioc 1 X) := by
-      refine integrableOn_Ioc_of_abs_le
-        (measurable_div_cube ((measurable_mobiusDivisorContinuousHead P).comp
-          (measurable_id.div_const A))) (K := 3 / 5 * X * Real.sqrt X) (fun x hx => ?_)
-      have hx0 : 0 < x := zero_lt_one.trans hx.1
-      have hx3 : 1 ≤ x ^ 3 := one_le_pow₀ hx.1.le
-      rw [abs_div, abs_of_pos (pow_pos hx0 3)]
-      refine (div_le_self (abs_nonneg _) hx3).trans ?_
-      exact abs_mobiusDivisorContinuousHead_le_of_le P
-        ((div_le_self hx0.le hA).trans hx.2)
-    refine (h1.add (h3.const_mul A)).congr_fun (fun x _ => ?_) measurableSet_Ioc
-    simp only [hg, mobiusDivisorTwoScaleHead, hH, Pi.add_apply]
+  have hig : IntegrableOn (fun x => mobiusDivisorTwoScaleHead P A x / x ^ 3) (Ioc 1 X) := by
+    have h := (integrableOn_Ioc_head_div_cube P 1 X).add
+      ((integrableOn_Ioc_one_head_comp_div P hA X).const_mul A)
+    refine h.congr_fun (fun x _ => ?_) measurableSet_Ioc
+    simp only [Pi.add_apply, mobiusDivisorTwoScaleHead]
     ring
   have hlin := mobiusDivisor_physicalCutoff_twoScale_moment_lower P hP hA hX hXm
   have hcw := cube_weight_Ioc_le X
-  have hcwint : IntegrableOn (fun x : ℝ => (1 : ℝ) / x ^ 3) (Ioc 1 X) :=
-    integrableOn_Ioc_of_abs_le (measurable_div_cube measurable_const) (K := 1) (fun x hx => by
-      have hx3 : 1 ≤ x ^ 3 := one_le_pow₀ hx.1.le
-      rw [abs_div, abs_one, abs_of_pos (zero_lt_one.trans_le hx3)]
-      exact div_le_one_of_le₀ hx3 (zero_le_one.trans hx3))
-  have hig2 : IntegrableOn (fun x => g x ^ 2 / x ^ 3) (Ioc 1 X) := by
-    have hpt : ∀ x, g x ^ 2 / x ^ 3 = H x ^ 2 / x ^ 3 +
-        (2 * A) * (H (A * (x / A)) * H (x / A) / x ^ 3) + A ^ 2 * (H (x / A) ^ 2 / x ^ 3) := by
-      intro x
-      simp only [hg, mobiusDivisorTwoScaleHead, hH]
-      rw [mul_div_cancel₀ _ hA0.ne']
-      ring
-    refine ((hi0.add (hi1.const_mul _)).add (hi2.const_mul _)).congr_fun
-      (fun x _ => (hpt x).symm) measurableSet_Ioc
-  have hcs : 2 * m * (∫ x in Ioc 1 X, g x / x ^ 3) - m ^ 2 * (∫ x in Ioc 1 X, (1 : ℝ) / x ^ 3)
-      ≤ ∫ x in Ioc 1 X, g x ^ 2 / x ^ 3 := by
+  have hcwint : IntegrableOn (fun x : ℝ => (1 : ℝ) / x ^ 3) (Ioc 1 X) := by
+    refine integrableOn_Ioc_of_abs_le (by fun_prop) (K := 1) (fun x hx => ?_)
+    have hx3 : 1 ≤ x ^ 3 := one_le_pow₀ hx.1.le
+    rw [abs_div, abs_one, abs_of_pos (zero_lt_one.trans_le hx3)]
+    exact div_le_one_of_le₀ hx3 (zero_le_one.trans hx3)
+  have hig2 : IntegrableOn (fun x => mobiusDivisorTwoScaleHead P A x ^ 2 / x ^ 3) (Ioc 1 X) :=
+    (h01.add (hi2.const_mul _)).congr_fun (fun x _ => (hpt x).symm) measurableSet_Ioc
+  have hcs : 2 * mobiusDivisorUniformMoment *
+        (∫ x in Ioc 1 X, mobiusDivisorTwoScaleHead P A x / x ^ 3) -
+      mobiusDivisorUniformMoment ^ 2 * (∫ x in Ioc 1 X, (1 : ℝ) / x ^ 3)
+      ≤ ∫ x in Ioc 1 X, mobiusDivisorTwoScaleHead P A x ^ 2 / x ^ 3 := by
     rw [← integral_const_mul, ← integral_const_mul, ← integral_sub (hig.const_mul _)
       (hcwint.const_mul _)]
     refine setIntegral_mono_on ((hig.const_mul _).sub (hcwint.const_mul _)) hig2
       measurableSet_Ioc (fun x hx => ?_)
     have hx3 : 0 < x ^ 3 := pow_pos (zero_lt_one.trans hx.1) 3
-    have hsq : 2 * m * g x - m ^ 2 ≤ g x ^ 2 := by nlinarith [sq_nonneg (g x - m)]
+    set g := mobiusDivisorTwoScaleHead P A x
+    set m := mobiusDivisorUniformMoment
+    have hsq : 2 * m * g - m ^ 2 ≤ g ^ 2 := by nlinarith [sq_nonneg (g - m)]
     have := div_le_div_of_nonneg_right hsq hx3.le
-    simp only [Pi.sub_apply]
-    calc 2 * m * (g x / x ^ 3) - m ^ 2 * (1 / x ^ 3) = (2 * m * g x - m ^ 2) / x ^ 3 := by
-          ring
-      _ ≤ g x ^ 2 / x ^ 3 := this
+    calc 2 * m * (g / x ^ 3) - m ^ 2 * (1 / x ^ 3) = (2 * m * g - m ^ 2) / x ^ 3 := by ring
+      _ ≤ g ^ 2 / x ^ 3 := this
   -- monotonicity of the energy
   have hmono : mobiusDivisorPhysicalEnergy P (X / A) ≤ mobiusDivisorPhysicalEnergy P X := by
     unfold mobiusDivisorPhysicalEnergy
@@ -572,9 +582,13 @@ theorem mobiusDivisor_physicalCutoff_synchronized_energy_lower (P : Finset ℕ)
     refine (ae_restrict_iff' measurableSet_Ioc).mpr (ae_of_all _ (fun x hx => ?_))
     exact div_nonneg (sq_nonneg _) (pow_pos (zero_lt_one.trans hx.1) 3).le
   rw [hexp] at hcs
-  have hm2 : 0 ≤ m ^ 2 := sq_nonneg m
-  nlinarith [hcs, hlin, hcw, hmono, mul_le_mul_of_nonneg_left hcw hm2,
-    mul_le_mul_of_nonneg_left hlin (by linarith : (0 : ℝ) ≤ 2 * m)]
+  have hm2 : 0 ≤ mobiusDivisorUniformMoment ^ 2 := sq_nonneg _
+  have h1 := mul_le_mul_of_nonneg_left hcw hm2
+  have h2 := mul_le_mul_of_nonneg_left hlin (by linarith : (0 : ℝ) ≤ 2 * mobiusDivisorUniformMoment)
+  have hC : 2 * mobiusDivisorPhysicalCorrelation P A (X / A) / A =
+      2 * (mobiusDivisorPhysicalCorrelation P A (X / A) / A) := by ring
+  rw [hC] at hcs
+  nlinarith
 
 /-! ### The prime-insertion correlation drop -/
 
@@ -587,6 +601,20 @@ def mobiusDivisorPhysicalCorrelationDrop (P : Finset ℕ) (p : ℕ) (X : ℝ) : 
   mobiusDivisorCoreDensity P * mobiusDivisorPhysicalCorrelation P p X -
     mobiusDivisorCoreDensity (insert p P) * mobiusDivisorPhysicalCorrelation (insert p P) p X
 
+/-- The rescaled cross term: `∫_1^Z H_P(px) H_P(x/p)/x³ = p^{-2} C_P(p²; Z/p)`. -/
+theorem setIntegral_Ioc_one_head_mul_head_div_prime (P : Finset ℕ) {p : ℝ} (hp : 1 ≤ p)
+    (Z : ℝ) :
+    ∫ x in Ioc 1 Z, mobiusDivisorContinuousHead P (p * x) *
+        mobiusDivisorContinuousHead P (x / p) / x ^ 3
+      = (p ^ 2)⁻¹ * mobiusDivisorPhysicalCorrelation P (p ^ 2) (Z / p) := by
+  have hp0 : 0 < p := zero_lt_one.trans_le hp
+  have h := setIntegral_Ioc_one_comp_div
+    (F := fun y => mobiusDivisorContinuousHead P (p ^ 2 * y) * mobiusDivisorContinuousHead P y)
+    (fun y hy => by rw [mobiusDivisorContinuousHead_eq_zero P hy, mul_zero]) hp Z
+  refine Eq.trans ?_ h
+  refine setIntegral_congr_fun measurableSet_Ioc (fun x _ => ?_)
+  rw [show p ^ 2 * (x / p) = p * x by field_simp]
+
 /-- **The exact insertion identity (6).**  For a fresh prime `p`,
 `D_{P,p}(X) = ρ_P p√p/(p+1) [E_P(X) + C_P(p²; X/p)/p²] + ρ_P/(p+1) [C_P(p; X) − C_P(p; X/p)]`. -/
 theorem mobiusDivisorPhysicalCorrelationDrop_eq (P : Finset ℕ) (hP : ∀ q ∈ P, q.Prime)
@@ -597,60 +625,73 @@ theorem mobiusDivisorPhysicalCorrelationDrop_eq (P : Finset ℕ) (hP : ∀ q ∈
             mobiusDivisorPhysicalCorrelation P ((p : ℝ) ^ 2) (X / p) / (p : ℝ) ^ 2) +
         mobiusDivisorCoreDensity P / (p + 1) *
           (mobiusDivisorPhysicalCorrelation P p X - mobiusDivisorPhysicalCorrelation P p (X / p)) := by
-  set H := mobiusDivisorContinuousHead P with hH
-  have hHz : ∀ y ≤ 1, H y = 0 := fun y hy => mobiusDivisorContinuousHead_eq_zero P hy
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
   have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp.one_lt.le
   have hsp : Real.sqrt p * Real.sqrt p = p := Real.mul_self_sqrt hp0.le
-  have hins : ∀ x, mobiusDivisorContinuousHead (insert p P) x = H x - Real.sqrt p * H (x / p) :=
+  have hHm := measurable_mobiusDivisorContinuousHead P
+  have hins : ∀ x, mobiusDivisorContinuousHead (insert p P) x =
+      mobiusDivisorContinuousHead P x - Real.sqrt p * mobiusDivisorContinuousHead P (x / p) :=
     fun x => mobiusDivisorContinuousHead_insert P hP hp hpP x
-  -- the four pieces
-  have hi1 := integrableOn_Ioc_head_mul_head_div_cube P P hp0.le zero_le_one 1 X
-  have hi2 : IntegrableOn (fun x => H ((p : ℝ) ^ 2 * (x / p)) * H (x / p) / x ^ 3) (Ioc 1 X) := by
-    have := integrableOn_Ioc_head_mul_head_div_cube P P hp0.le (inv_nonneg.mpr hp0.le) 1 X
-    refine this.congr_fun (fun x _ => ?_) measurableSet_Ioc
-    simp only [hH]
-    rw [show (p : ℝ) ^ 2 * (x / p) = p * x by field_simp, div_eq_inv_mul x]
-  have hi3 : IntegrableOn (fun x => H x ^ 2 / x ^ 3) (Ioc 1 X) := by
-    have := integrableOn_Ioc_head_mul_head_div_cube P P zero_le_one zero_le_one 1 X
-    refine this.congr_fun (fun x _ => ?_) measurableSet_Ioc
-    simp only [one_mul, hH]; ring
-  have hi4 : IntegrableOn (fun x => H ((p : ℝ) * (x / p)) * H (x / p) / x ^ 3) (Ioc 1 X) := by
-    have := integrableOn_Ioc_head_mul_head_div_cube P P zero_le_one (inv_nonneg.mpr hp0.le) 1 X
-    refine this.congr_fun (fun x _ => ?_) measurableSet_Ioc
-    simp only [one_mul, hH]
-    rw [mul_div_cancel₀ _ hp0.ne', div_eq_inv_mul x]
+  have hpx : ∀ x ∈ Ioc (1 : ℝ) X, (p : ℝ) * x ≤ p * X := fun x hx =>
+    mul_le_mul_of_nonneg_left hx.2 hp0.le
+  have hxX : ∀ x ∈ Ioc (1 : ℝ) X, x ≤ p * X := fun x hx =>
+    hx.2.trans (le_mul_of_one_le_left (zero_le_one.trans (hx.1.le.trans hx.2)) hp1)
+  have hxp : ∀ x ∈ Ioc (1 : ℝ) X, x / p ≤ p * X := fun x hx =>
+    (div_le_self (zero_le_one.trans hx.1.le) hp1).trans (hxX x hx)
+  have hi1 : IntegrableOn (fun x => mobiusDivisorContinuousHead P (p * x) *
+      mobiusDivisorContinuousHead P x / x ^ 3) (Ioc 1 X) :=
+    integrableOn_Ioc_of_abs_le (by fun_prop) (fun x hx =>
+      abs_head_mul_head_div_cube_le_of_le P P (hpx x hx) (hxX x hx) hx.1.le)
+  have hi2 : IntegrableOn (fun x => mobiusDivisorContinuousHead P (p * x) *
+      mobiusDivisorContinuousHead P (x / p) / x ^ 3) (Ioc 1 X) :=
+    integrableOn_Ioc_of_abs_le (by fun_prop) (fun x hx =>
+      abs_head_mul_head_div_cube_le_of_le P P (hpx x hx) (hxp x hx) hx.1.le)
+  have hi3 : IntegrableOn (fun x => mobiusDivisorContinuousHead P x ^ 2 / x ^ 3) (Ioc 1 X) := by
+    refine integrableOn_Ioc_of_abs_le
+      (K := (3 / 5 * (p * X) * Real.sqrt (p * X)) * (3 / 5 * (p * X) * Real.sqrt (p * X)))
+      (by fun_prop) (fun x hx => ?_)
+    rw [pow_two]
+    exact abs_head_mul_head_div_cube_le_of_le P P (hxX x hx) (hxX x hx) hx.1.le
+  have hi4 : IntegrableOn (fun x => mobiusDivisorContinuousHead P x *
+      mobiusDivisorContinuousHead P (x / p) / x ^ 3) (Ioc 1 X) :=
+    integrableOn_Ioc_of_abs_le (by fun_prop) (fun x hx =>
+      abs_head_mul_head_div_cube_le_of_le P P (hxX x hx) (hxp x hx) hx.1.le)
+  have hpt : ∀ x, mobiusDivisorContinuousHead (insert p P) (p * x) *
+      mobiusDivisorContinuousHead (insert p P) x / x ^ 3 =
+      mobiusDivisorContinuousHead P (p * x) * mobiusDivisorContinuousHead P x / x ^ 3 -
+        Real.sqrt p * (mobiusDivisorContinuousHead P (p * x) *
+          mobiusDivisorContinuousHead P (x / p) / x ^ 3) -
+        Real.sqrt p * (mobiusDivisorContinuousHead P x ^ 2 / x ^ 3) +
+        (p : ℝ) * (mobiusDivisorContinuousHead P x *
+          mobiusDivisorContinuousHead P (x / p) / x ^ 3) := by
+    intro x
+    rw [hins, hins, show (p : ℝ) * x / p = x by field_simp]
+    linear_combination (mobiusDivisorContinuousHead P x *
+      mobiusDivisorContinuousHead P (x / p) / x ^ 3) * hsp
+  have h12 : IntegrableOn (fun x => mobiusDivisorContinuousHead P (p * x) *
+      mobiusDivisorContinuousHead P x / x ^ 3 -
+        Real.sqrt p * (mobiusDivisorContinuousHead P (p * x) *
+          mobiusDivisorContinuousHead P (x / p) / x ^ 3)) (Ioc 1 X) :=
+    hi1.sub (hi2.const_mul _)
+  have h123 : IntegrableOn (fun x => mobiusDivisorContinuousHead P (p * x) *
+      mobiusDivisorContinuousHead P x / x ^ 3 -
+        Real.sqrt p * (mobiusDivisorContinuousHead P (p * x) *
+          mobiusDivisorContinuousHead P (x / p) / x ^ 3) -
+        Real.sqrt p * (mobiusDivisorContinuousHead P x ^ 2 / x ^ 3)) (Ioc 1 X) :=
+    h12.sub (hi3.const_mul _)
   have hcorr : mobiusDivisorPhysicalCorrelation (insert p P) p X =
       mobiusDivisorPhysicalCorrelation P p X -
-        Real.sqrt p * ((((p : ℝ) ^ 2) ^ 2)⁻¹ * 0 +
-          ((p : ℝ) ^ 2)⁻¹ * mobiusDivisorPhysicalCorrelation P ((p : ℝ) ^ 2) (X / p)) -
+        Real.sqrt p * (((p : ℝ) ^ 2)⁻¹ *
+          mobiusDivisorPhysicalCorrelation P ((p : ℝ) ^ 2) (X / p)) -
         Real.sqrt p * mobiusDivisorPhysicalEnergy P X +
         (p : ℝ) * (((p : ℝ) ^ 2)⁻¹ * mobiusDivisorPhysicalCorrelation P p (X / p)) := by
-    have hpt : ∀ x, mobiusDivisorContinuousHead (insert p P) (p * x) *
-        mobiusDivisorContinuousHead (insert p P) x / x ^ 3 =
-        H (p * x) * H x / x ^ 3 - Real.sqrt p * (H ((p : ℝ) ^ 2 * (x / p)) * H (x / p) / x ^ 3) -
-          Real.sqrt p * (H x ^ 2 / x ^ 3) +
-          (p : ℝ) * (H ((p : ℝ) * (x / p)) * H (x / p) / x ^ 3) := by
-      intro x
-      rw [hins, hins, show (p : ℝ) * x / p = x by field_simp,
-        show (p : ℝ) ^ 2 * (x / p) = p * x by field_simp, mul_div_cancel₀ _ hp0.ne']
-      have : (p : ℝ) = Real.sqrt p * Real.sqrt p := hsp.symm
-      rw [this]
-      ring
     unfold mobiusDivisorPhysicalCorrelation
     simp_rw [hpt]
-    rw [integral_add ((hi1.sub (hi2.const_mul _)).sub (hi3.const_mul _)) (hi4.const_mul _),
-      integral_sub (hi1.sub (hi2.const_mul _)) (hi3.const_mul _),
+    rw [integral_add h123 (hi4.const_mul _), integral_sub h12 (hi3.const_mul _),
       integral_sub hi1 (hi2.const_mul _), integral_const_mul, integral_const_mul,
-      integral_const_mul]
-    have hs2 := setIntegral_Ioc_one_comp_div (F := fun y => H ((p : ℝ) ^ 2 * y) * H y)
-      (fun y hy => by simp only; rw [hHz y hy, mul_zero]) hp1 X
-    have hs4 := setIntegral_Ioc_one_comp_div (F := fun y => H ((p : ℝ) * y) * H y)
-      (fun y hy => by simp only; rw [hHz y hy, mul_zero]) hp1 X
-    simp only at hs2 hs4
-    rw [hs2, hs4]
-    simp only [mobiusDivisorPhysicalEnergy, hH]
-    ring
+      integral_const_mul, setIntegral_Ioc_one_head_mul_head_div_prime P hp1 X,
+      setIntegral_Ioc_one_head_mul_head_comp_div P hp1 X]
+    rfl
   have hdens : mobiusDivisorCoreDensity (insert p P) =
       mobiusDivisorCoreDensity P * ((p : ℝ) / (p + 1)) := by
     unfold mobiusDivisorCoreDensity
@@ -659,7 +700,6 @@ theorem mobiusDivisorPhysicalCorrelationDrop_eq (P : Finset ℕ) (hP : ∀ q ∈
   unfold mobiusDivisorPhysicalCorrelationDrop
   rw [hcorr, hdens]
   have hp1' : (p : ℝ) + 1 ≠ 0 := by positivity
-  have hsp0 : Real.sqrt (p : ℝ) ^ 2 = p := Real.sq_sqrt hp0.le
   field_simp
   ring
 
@@ -676,18 +716,19 @@ theorem mobiusDivisorPhysicalCorrelation_annulus_eq (P : Finset ℕ) {p : ℕ} (
     ∫ x in Ioc (X / p) X, mobiusDivisorContinuousHead P (p * x) *
       (mobiusDivisorContinuousHead P x +
         (p : ℝ) * Real.sqrt p * mobiusDivisorContinuousHead P (x / p)) / x ^ 3 := by
-  set H := mobiusDivisorContinuousHead P with hH
-  have hHz : ∀ y ≤ 1, H y = 0 := fun y hy => mobiusDivisorContinuousHead_eq_zero P hy
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
   have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp.one_lt.le
   have hXp : X / p ≤ X := div_le_self hX hp1
   have hXp0 : 0 ≤ X / p := div_nonneg hX hp0.le
+  have hHm := measurable_mobiusDivisorContinuousHead P
+  have hHz : ∀ y ≤ 1, mobiusDivisorContinuousHead P y = 0 :=
+    fun y hy => mobiusDivisorContinuousHead_eq_zero P hy
   -- a difference of physical integrals is the annulus
-  have hdiff : ∀ G : ℝ → ℝ, (∀ y ≤ 1, G y = 0) → Measurable G → (∃ K, ∀ x, |G x / x ^ 3| ≤ K) →
+  have hdiff : ∀ G : ℝ → ℝ, (∀ y ≤ 1, G y = 0) → Measurable G → ∀ K : ℝ,
+      (∀ x, |G x / x ^ 3| ≤ K) →
       (∫ x in Ioc 1 X, G x / x ^ 3) - (∫ x in Ioc 1 (X / p), G x / x ^ 3) =
         ∫ x in Ioc (X / p) X, G x / x ^ 3 := by
-    intro G hG hGm hGb
-    obtain ⟨K, hK⟩ := hGb
+    intro G hG hGm K hK
     have hint : ∀ s t, IntegrableOn (fun x => G x / x ^ 3) (Ioc s t) := fun s t =>
       integrableOn_Ioc_of_abs_le (measurable_div_cube hGm) (fun x _ => hK x)
     rw [setIntegral_Ioc_one_eq_intervalIntegral hG hX,
@@ -696,59 +737,54 @@ theorem mobiusDivisorPhysicalCorrelation_annulus_eq (P : Finset ℕ) {p : ℕ} (
         ((intervalIntegrable_iff_integrableOn_Ioc_of_le hX).mpr (hint 0 X))
         ((intervalIntegrable_iff_integrableOn_Ioc_of_le hXp0).mpr (hint 0 (X / p))),
       intervalIntegral.integral_of_le hXp]
-  have hm1 : Measurable (fun y => H ((p : ℝ) * y) * H y) :=
-    (measurable_mobiusDivisorContinuousHead_comp_mul P _).mul
-      (measurable_mobiusDivisorContinuousHead P)
-  have hm2 : Measurable (fun y => H ((p : ℝ) * y) * H (y / p)) :=
-    (measurable_mobiusDivisorContinuousHead_comp_mul P _).mul
-      ((measurable_mobiusDivisorContinuousHead P).comp (measurable_id.div_const _))
-  have hb1 : ∃ K, ∀ x, |H ((p : ℝ) * x) * H x / x ^ 3| ≤ K := by
-    refine ⟨_, fun x => ?_⟩
+  have hb1 : ∀ x, |mobiusDivisorContinuousHead P ((p : ℝ) * x) *
+      mobiusDivisorContinuousHead P x / x ^ 3| ≤ 9 / 25 * ((p : ℝ) * 1) * Real.sqrt ((p : ℝ) * 1) := by
+    intro x
     have := abs_mobiusDivisorContinuousHead_mul_div_cube_le P P hp0.le zero_le_one x
     rwa [one_mul] at this
-  have hb2 : ∃ K, ∀ x, |H ((p : ℝ) * x) * H (x / p) / x ^ 3| ≤ K := by
-    refine ⟨_, fun x => ?_⟩
+  have hb2 : ∀ x, |mobiusDivisorContinuousHead P ((p : ℝ) * x) *
+      mobiusDivisorContinuousHead P (x / p) / x ^ 3| ≤
+        9 / 25 * ((p : ℝ) * (p : ℝ)⁻¹) * Real.sqrt ((p : ℝ) * (p : ℝ)⁻¹) := by
+    intro x
     have := abs_mobiusDivisorContinuousHead_mul_div_cube_le P P hp0.le
       (inv_nonneg.mpr hp0.le) x
     rwa [← div_eq_inv_mul] at this
-  have hz1 : ∀ y ≤ 1, H ((p : ℝ) * y) * H y = 0 := fun y hy => by rw [hHz y hy, mul_zero]
-  have hz2 : ∀ y ≤ 1, H ((p : ℝ) * y) * H (y / p) = 0 := fun y hy => by
-    rw [hHz (y / p) ((div_le_one hp0).mpr (hy.trans hp1)), mul_zero]
-  have hA1 := hdiff _ hz1 hm1 hb1
-  have hA2 := hdiff _ hz2 hm2 hb2
-  -- rescaling identifies the `p²` correlations with the first annulus
-  have hsc : ∀ Z, ∫ x in Ioc 1 Z, H ((p : ℝ) * x) * H (x / p) / x ^ 3 =
-      ((p : ℝ) ^ 2)⁻¹ * mobiusDivisorPhysicalCorrelation P ((p : ℝ) ^ 2) (Z / p) := by
-    intro Z
-    have h := setIntegral_Ioc_one_comp_div (F := fun y => H ((p : ℝ) ^ 2 * y) * H y)
-      (fun y hy => by simp only; rw [hHz y hy, mul_zero]) hp1 Z
-    simp only at h
-    unfold mobiusDivisorPhysicalCorrelation
-    rw [← h]
-    refine setIntegral_congr_fun measurableSet_Ioc (fun x _ => ?_)
-    simp only [hH]
-    rw [show (p : ℝ) ^ 2 * (x / p) = p * x by field_simp]
-  have hC1 : mobiusDivisorPhysicalCorrelation P p X - mobiusDivisorPhysicalCorrelation P p (X / p)
-      = ∫ x in Ioc (X / p) X, H ((p : ℝ) * x) * H x / x ^ 3 := hA1
+  have hA1 := hdiff (fun y => mobiusDivisorContinuousHead P ((p : ℝ) * y) *
+    mobiusDivisorContinuousHead P y) (fun y hy => by rw [hHz y hy, mul_zero])
+    (by fun_prop) _ hb1
+  have hA2 := hdiff (fun y => mobiusDivisorContinuousHead P ((p : ℝ) * y) *
+    mobiusDivisorContinuousHead P (y / p))
+    (fun y hy => by rw [hHz (y / p) ((div_le_one hp0).mpr (hy.trans hp1)), mul_zero])
+    (by fun_prop) _ hb2
   have hC2 : ((p : ℝ) ^ 2)⁻¹ * (mobiusDivisorPhysicalCorrelation P ((p : ℝ) ^ 2) (X / p) -
       mobiusDivisorPhysicalCorrelation P ((p : ℝ) ^ 2) (X / p / p)) =
-      ∫ x in Ioc (X / p) X, H ((p : ℝ) * x) * H (x / p) / x ^ 3 := by
-    rw [mul_sub, ← hsc X, ← hsc (X / p)]
+      ∫ x in Ioc (X / p) X, mobiusDivisorContinuousHead P ((p : ℝ) * x) *
+        mobiusDivisorContinuousHead P (x / p) / x ^ 3 := by
+    rw [mul_sub, ← setIntegral_Ioc_one_head_mul_head_div_prime P hp1 X,
+      ← setIntegral_Ioc_one_head_mul_head_div_prime P hp1 (X / p)]
     exact hA2
-  have hint1 : IntegrableOn (fun x => H ((p : ℝ) * x) * H x / x ^ 3) (Ioc (X / p) X) := by
-    obtain ⟨K, hK⟩ := hb1
-    exact integrableOn_Ioc_of_abs_le (measurable_div_cube hm1) (fun x _ => hK x)
-  have hint2 : IntegrableOn (fun x => H ((p : ℝ) * x) * H (x / p) / x ^ 3) (Ioc (X / p) X) := by
-    obtain ⟨K, hK⟩ := hb2
-    exact integrableOn_Ioc_of_abs_le (measurable_div_cube hm2) (fun x _ => hK x)
-  have hsplit : ∫ x in Ioc (X / p) X, H ((p : ℝ) * x) *
-      (H x + (p : ℝ) * Real.sqrt p * H (x / p)) / x ^ 3 =
-      (∫ x in Ioc (X / p) X, H ((p : ℝ) * x) * H x / x ^ 3) +
-        (p : ℝ) * Real.sqrt p * ∫ x in Ioc (X / p) X, H ((p : ℝ) * x) * H (x / p) / x ^ 3 := by
+  have hint1 : IntegrableOn (fun x => mobiusDivisorContinuousHead P ((p : ℝ) * x) *
+      mobiusDivisorContinuousHead P x / x ^ 3) (Ioc (X / p) X) :=
+    integrableOn_Ioc_of_abs_le (by fun_prop) (fun x _ => hb1 x)
+  have hint2 : IntegrableOn (fun x => mobiusDivisorContinuousHead P ((p : ℝ) * x) *
+      mobiusDivisorContinuousHead P (x / p) / x ^ 3) (Ioc (X / p) X) :=
+    integrableOn_Ioc_of_abs_le (by fun_prop) (fun x _ => hb2 x)
+  have hsplit : ∫ x in Ioc (X / p) X, mobiusDivisorContinuousHead P ((p : ℝ) * x) *
+      (mobiusDivisorContinuousHead P x +
+        (p : ℝ) * Real.sqrt p * mobiusDivisorContinuousHead P (x / p)) / x ^ 3 =
+      (∫ x in Ioc (X / p) X, mobiusDivisorContinuousHead P ((p : ℝ) * x) *
+        mobiusDivisorContinuousHead P x / x ^ 3) +
+        (p : ℝ) * Real.sqrt p * ∫ x in Ioc (X / p) X, mobiusDivisorContinuousHead P ((p : ℝ) * x) *
+          mobiusDivisorContinuousHead P (x / p) / x ^ 3 := by
     rw [← integral_const_mul, ← integral_add hint1 (hint2.const_mul _)]
     refine setIntegral_congr_fun measurableSet_Ioc (fun x _ => ?_)
     ring
-  rw [hsplit, ← hC1, ← hC2]
+  rw [hsplit, ← hC2]
+  have hC1 : mobiusDivisorPhysicalCorrelation P p X - mobiusDivisorPhysicalCorrelation P p (X / p)
+      = ∫ x in Ioc (X / p) X, mobiusDivisorContinuousHead P ((p : ℝ) * x) *
+        mobiusDivisorContinuousHead P x / x ^ 3 := hA1
+  rw [hC1]
+  field_simp
   ring
 
 end RHTower

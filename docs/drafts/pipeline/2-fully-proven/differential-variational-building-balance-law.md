@@ -3118,3 +3118,70 @@ its independence of `L` (the cocycle plus equivariance make the two comparison t
 additivity along an exact sequence.  Then slopes, and the Harder--Narasimhan filtration whose
 integrality supplies the **uniform** escape rate that the Sylvester contraction needs — the one thing
 that separates the proved `relAttr(F) = F` from transversality `F ⊔ G = ⊤`.
+
+### Plan — the slope splitting that closes `(16)` (2026-09-27)
+
+Oppositeness is the only open statement.  It follows from a three-part decomposition proved by
+strong induction on dimension, for any additive bijection `T` of a finite-dimensional space `E`
+over the completed skew field `D` that is semilinear for a valuation-preserving automorphism fixing
+`π` (this class contains the variational action, its powers, its inverse, and `π^{-c}T^d`):
+
+`E = E_+ ⊕ E_0 ⊕ E_-`, all `T`-invariant, with a lattice `P ⊆ E_+` and `m ≥ 1` such that
+`T^{-m}P ⊆ πP` (quantitative expansion), a lattice `N ⊆ E_0` with `TN = N`, and a lattice
+`Q ⊆ E_-` with `T^mQ ⊆ πQ`.
+
+Ingredients, in order:
+1. forward hull `Λ_∞ = ∑_{n≥0} TⁿΛ` and its divisible part `W' = ⋂_k π^kΛ_∞`, an invariant
+   subspace independent of `Λ`;
+2. **divisible-part lemma**: `Λ_∞ ⊆ W' + π^{-c}Λ` — needs the Artinian structure of `E/Λ` and
+   one completeness statement in `D` (a sequence with `c_{n+1} − c_n ∈ πⁿO` converges with
+   `c − c_n ∈ πⁿO`), used through the coordinates of a lattice basis;
+3. exhaustion: if `W' = E` then `Λ_{n+1} = TΛ_n` eventually, and a single `m` gives
+   `π^{-1}Λ_{n₁} ⊆ T^mΛ_{n₁}`;
+4. an extension of forward-bounded by forward-bounded is forward-bounded (ultrametric block sums);
+5. bounded in both directions gives a `T`-stable lattice (the hull `∑ TⁿN`);
+6. Sylvester splitting `X = −∑ T_{W'}^{-(n+1)} A Cⁿ` of `0 → W' → E → E/W' → 0`;
+7. induction: `W'` has no forward-bounded part (its image in `E/A_+` would be a bounded hull
+   containing a subspace), so `W' = E_+`, and the complement splits by the induction hypothesis.
+
+Then the attracting core is `E_0 ⊕ E_-`, the repelling core is `E_0 ⊕ E_+`, and their sum is `E`.
+Applying the same theorem to `π^{-c}T^d` for every rational `c/d` gives the canonical slope
+decomposition `E = ⊕_s E_s` (rationality from integrality of the lattice index), hence the
+weighted flags, their oppositeness, and the identification of the weights with the Cartan
+translation vector `(14)`.
+
+### Lean progress — oppositeness `F ⊔ G = ⊤` is proved (2026-09-27)
+
+The slope splitting is now formal, for the whole class of uniformizer-semilinear automorphisms of an
+arbitrary finite-dimensional vector space `E` over the completed skew field `𝔻` (automorphisms are
+`E ≃ₗ[ℤ] E`, semilinear for a ring automorphism of `𝔻` preserving `𝒪` and fixing `π`).  New leaves,
+in dependency order:
+
+```text
+CompletedPseudoDiffOpAdicCompleteness    valuation balls are closed nbhds; 𝔻 is adically complete
+CompletedPseudoDiffOpVectorLattice       dilations ϖ^k M, absorption, coordinates, separation,
+                                         completeness and uniqueness of limits for fg M ⊆ E
+CompletedPseudoDiffOpVectorArtinian      𝔻/𝒪 Artinian; descending chains above a lattice stabilize
+CompletedPseudoDiffOpSemilinearAut       IsUniformizerSemilinear, images T M, forwardBoundedSubspace
+CompletedPseudoDiffOpForwardHull         divisible-part lemma M ⊆ W' + ϖ^{-c}Λ; exhaustion ⇒ ϖ^{-1}P ⊆ T^m P
+CompletedPseudoDiffOpContractingLattice  splitting lemma (series Σ T^{-(i+1)} w_i, tails T t_n = w_n + t_{n+1});
+                                         no bounded vectors ⇒ T⁻¹ contracts a lattice (strong induction)
+CompletedPseudoDiffOpBoundedSplitting    boundedness mod B(T) is boundedness; quotient automorphism of
+                                         E/W; second splitting lemma;
+                                         forwardBoundedSubspace_sup_backwardContractingSubspace_eq_top
+CompletedPseudoDiffOpThreePartDecomposition
+                                         E = C(T) ⊕ (B(T) ⊓ B(T⁻¹)) ⊕ C(T⁻¹), contracting lattices
+DifferentialVariationalOppositeBoundaryPair
+                                         variationalAttractingSubspace_sup_variationalRepellingSubspace_eq_top
+```
+
+`variationalAttractingSubspace σ b L ⊔ variationalRepellingSubspace σ b L = ⊤` holds for every
+differential field automorphism `σ`: bounded forward orbits are slow, bounded backward orbits are slow
+for `σ⁻¹`, and every vector is a sum of the two.  No hypotheses; no heartbeat options in any new leaf
+(a local registration of the valuation-ring action replaces them).
+
+Still to do for the full weighted-flag statement of `(16)`: identify the canonical subspaces with
+`B(T)`, `B(T⁻¹)` (so `F ⊓ G` is the neutral part with a `T`-stable lattice), the degree
+`deg_T(W) = index(Λ, TΛ)` and the average-slope recursion giving the rational slope decomposition
+`E = ⊕_s E_s` with opposite filtrations `B(ϖ^cT^d) ⊕ C(ϖ^cT^d) = E` at every rational slope `c/d`, and
+the identification of the slopes (with multiplicity) with the Cartan translation vector `(14)`.

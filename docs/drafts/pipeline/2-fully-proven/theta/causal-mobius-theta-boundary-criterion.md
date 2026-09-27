@@ -495,3 +495,16 @@ internal search conclusion, not an external novelty claim. The short broad
 arXiv search for causal/Mellin, renewal/boundary and Wiener–Hopf/positive
 methods supplied no usable source bound. This card is a paper proof, not a
 Lean certificate.
+
+## Lean progress (2026-09-27)
+
+The criterion (2) and the ingredients (3)–(6) are formalized unconditionally in
+`RHTower/CausalThetaHalfLaplace.lean` and `RHTower/CausalMobiusThetaTail.lean` (axiom-clean):
+`riemannHypothesis_iff_causalMobiusThetaTail_subpower` is (2); `causalTailMellin_add_correction`
+is (3) with `H = K + E`; `re_mul_thetaHalfLaplace_neg_pos` is (5);
+`causalMobiusThetaTail_subpower_of_riemannHypothesis` is (6); and
+`causalMobiusThetaTail_growth_excludes_zero` is the quantitative form (any `O(t^a)` bound excludes
+zeros with `Re ρ > 1/2 + a`).  Not yet formalized on this card: the exact pole order `m`, the
+layer-cake and Ramaré forms (8)–(9), the diagonal energy law (10), the physical-source realization
+(11)–(23), and the prime-deletion stability law (7).  The finite moving-cusp form lives on
+`3-formalized/finite-prime-moving-cusp-causal-criterion.md`.
