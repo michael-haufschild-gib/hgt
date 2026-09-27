@@ -124,3 +124,40 @@ Horizontal classes `C_g = {z : Re z = g}`, sizes `H(g)`. Within a class, `K(i v)
 - **Open core unchanged:** mixed classes whose off-line zeros are farther than `c/log T` from the line.
   The Toeplitz model says a violator needs symbol "pair comb − one real point" (negative real
   multiplicity). This is plausible evidence that (H) is true, not a proof.
+
+## Cycle H5 — overlap criterion; radius widened to 5/(2 log(T/2π)) (2026-09-27)
+- **Overlap criterion (paper + Lean).** Let `F, G` be real sequences on a countable index set with
+  `Σ_t F² ≤ 1` for every finite `t`, `ΣFG = K > 0` and `ΣG² = B`. Then every finite `s` has
+  `1 + 2(Σ_s FG)²/Σ_s G² − 2Σ_s F² ≥ 2K²/B − 1`. Proof: the identity
+  `B(K − sq)² − (K² − s²B)(B − q²) = (Kq − sB)²` on each finite superset, then the limit.
+  It is tail-robust: the truncation needs no edge analysis.
+- **Zeta side.** Polarised sampling Parseval gives `Σ_k φ̂(w_k) Re ψ̂(w_k) = L∫φψ`. With `ψ = φ cosh(ε·)`,
+  whose transform on the real axis is `Re φ̂(w − iε)`: `K = ∫φ²cosh/∫φ² ≥ 1`, `B = ∫φ²cosh²/∫φ² ≤ C·K`,
+  `C = cosh(εL/2)`. Hence `2K²/B − 1 ≥ 2/C − 1 ≥ 0` for `C ≤ 2`, which is `δ ≤ 2 arccosh 2 / L ≈ 2.634/L`.
+- **Theorem (Lean, unconditional).** The radius in MUST-469 is now `5/(2 log(T/2π))` (was `2/(3 log(T/2π))`),
+  which uses `cosh(5/4) ≤ 2`. `RHTower/HorizontallyIsolatedSimpleZeros:horizontallyIsolated_simple_critical`;
+  `shift_overlap_cost`, `overlap_criterion`. Axioms: propext, choice, Quot.sound.
+- **Limit of this method.** For `εL → ∞` the angle between `φ` and `φ cosh(ε·)` in `L²` tends to `π/2`, since
+  `φ` vanishes at the edges where `cosh` concentrates. So single-pair overlap cannot pass `O(1/L)`.
+  Far pairs need multi-point absorption (the compression `‖Φ_A − 2I‖²`), not the single `g_p`.
+
+## Cycle H6 — lens isolation in Lean; CGdL relaxation blocked; field = Berezin symbol (2026-09-27)
+- **Conjecture H6a (proved, Lean).** Absorption is not only horizontal. A multiple critical zero or an
+  off-line zero `z` at `(Δ, ε)` from a simple critical zero `x` costs nothing whenever
+  `cosh(εL/2) ≤ 2cos²(ΔL/2)`, `|Δ|L/2 ≤ π/2` (full-grid overlap `≥ cos(ΔL/2)·J`, norm `≤ cosh(εL/2)·J`).
+  Theorem: `≥ (HD(1)−ε)N(T,2T)` zeros are simple, critical, and every other zero in that lens is simple
+  and critical (`RHTower/LensIsolatedSimpleZeros`, STATUS MUST-472). The lens contains the segment
+  `|ε| ≤ 5/(2L)` and the rectangle `|Δ| ≤ 1/L`, `|ε| ≤ 3/(2L)`. Refactor: Zeta23's endgame is now the
+  generic `thmD_count_of_seam` (any count dominating the seam); `absorbed_block_count` takes any
+  multiple-point or pair absorber.
+- **Conjecture H6b (killed).** Unconditional CGdL (`ĝ ≤ 0` outside the band): Fourier side fine (FE ⇒
+  `|Σe^{2πiξz}|²`), physical side needs density exponent `> 2R ≥ 2` (STATUS CANNOT-473).
+- **Structure (paper).** For `λ ≤ ½` (sinc model) the field `G_W(ξ) = Σ_{s∈W}K(ξ−s)²` is the Berezin
+  symbol `⟨Φ_W f_ξ, f_ξ⟩` of `Φ_W` on Paley–Wiener, every comb `{f_{ξ+j}}` is an ONB, so
+  `Σ_j G_W(ξ+j) = |W|` for all `ξ` (and all complex shifts). Relocation/doubling induction (base case =
+  Lamzouri, induct on #mixed) closes (H) unless: `|G_{Z∖x}(x)| < ½`, and the negative mass of `G_{Z∖x}`
+  and of `G_Z` along every free integer-spaced set is `< ½`. A single far pair makes an oscillating field
+  `≈ ±2K(iy)² cos(2π(ξ−x))`; cancelling it to `O(1)` needs multipole/comb structures of length
+  `≳ e^{πy}`. Exact combs have constant field (Poisson) and absorb a mixed point at cost 3. So violators
+  of (H) need exponentially long near-combs; evidence that (H) is true, not a proof.
+- **Open core unchanged:** full (H) for mixed classes outside the lens.

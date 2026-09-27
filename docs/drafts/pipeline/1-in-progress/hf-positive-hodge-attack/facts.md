@@ -47,3 +47,15 @@ Scope: frontier route HF. Facts and no-gos only.
   - For any zero configuration with local count `A₀` (ζ included, `zeta_weil_positive_forces_offLine_companion`), zero-side Weil positivity on `C²` tests in `[−a,a]` forces every zero of depth `δ` with `e^{2δa} ≳ A₀ log|γ₀|·poly(a,1/δ)(1+e^a/(1+R))` to have another off-line zero within ordinate distance `R`.
   - Master inequality: `re_W_modulatedTest_le_of_isolated`.
   - **Route:** together with HF-F18, the Hodge ⇒ zero-free-region transfer fails exactly by coherent deep clusters. The V₀ (polar-constrained) version is the next step.
+- **HF-F20 [Lean, `RHTower.IsolatedDeepZeroHodgeIndex`]:** HF-F19 holds for the Hodge index itself (polar-constrained tests, `HodgeIndexAtLevel`).
+  - The polar correction costs `O(e^{3a/2}/γ₀²)` relative to the main term.
+  - Theorem: `zeta_hodge_index_forces_offLine_companion`.
+  - **Route:** Hodge(a) forces every deep zero above height `e^{3a/4}` to have an off-line companion within `R ≍ e^a`. The remaining wall is to exclude coherent deep clusters (HF-F18).
+- **HF-F21 [Lean, `RHTower.LowHeightHodgeExclusion`]:** Quantitative Hodge-index exclusion at low height.
+  - The level-`a` Hodge index fails whenever a zero `½+δ+iγ₀` (`|γ₀| ≥ 1`) satisfies an explicit inequality in `(a, δ, γ₀, n)`, with `n` the number of zeros within distance `H` (`exists_hodge_violation_low_height`).
+  - Non-vacuous (`eventually_lowHeight_condition`). Consequence: `zeta_re_eq_half_of_hodgeIndex`, i.e. Hodge(a) ∀a ⇒ RH for `|γ| ≥ 1`.
+  - Horizon [P]: Hodge(a) excludes zeros up to height `exp(c√(a/log a))` with depth `≥ exp(−c√(a log a))`. The configuration ceiling is `e^{2a}` (HF-F18).
+  - **Route:** the remaining gap is the interpolation-norm bound between the pigeonhole horizon `exp(c√a)` and Nyquist `e^{2a}`.
+- **HF-F22 [Lean, `RHTower.NegativeWeilValueForcesDeepZero`]:** Negative Weil value ⇒ deep zero.
+  - `Re W(e^{−itu}s) ≤ −μ` forces a zero within `R` of `t` with `e^{2|β−½|a} ≥ μ/(768A₀N² log t) − e^a/(1+R)`.
+  - **Route:** combined with HF-F18–F21 this gives the complete quantitative shadow-pole ⇔ deep-zero duality, with its true horizon (between `exp(c√a)` and `e^{2a}`).

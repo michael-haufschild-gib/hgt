@@ -154,3 +154,13 @@ Lean bricks in order:
 ## What the theorem says and what remains
 - Unconditional content: at height `t`, every Laguerre-slice coefficient of order `≥ 2κ log t` is positive. The RH content of route 3 therefore sits in the first `O(log t)` coefficients, which are explicit differential expressions of Ξ at `t` of order `O(log t)`. This matches the detection-index law, under which an off-line pair of displacement `b` is first seen at order `≍ b log t`.
 - Open core (route 3, unchanged in difficulty): nonnegativity of `c_{2k}(t)` for `k < κ log t`. Nothing here decides it. The four-wall diagnosis of `new-route-conjecture-loop.md` applies verbatim to this finite window.
+
+## 2026-09-27 — sharp window [L], axiom-clean
+- **`exists_riemannHypothesis_iff_xiSliceCoeff_nonneg_below_quarter_log`**: for every `ε > 0`, `∃ K, RH ⟺ ∀ t ≥ 0, ∀ k < max(K, (¼+ε) log t), c_{2k}(t) ≥ 0`. This replaces `κ ≥ 6` by `¼ + ε`, which is the CANNOT-470 edge. Every order below `¼ log t` detects some admissible displacement `b = 2k/log t < ½` (N40/N41). So the window is sharp up to `ε`.
+- `exists_xiSliceCoeff_pos_above_quarter_log`: `∃ K, ∀ t ≥ 0, ∀ k ≥ max(K, (¼+ε) log t), c_{2k}(t) > 0`.
+- Modules:
+  - `ZetaConvexityBound`: `‖ζ(σ+it)‖ ≤ C t^{(1+η−σ)/2}` on `[−η, 1+η]`, by bounded Phragmén–Lindelöf on `ζ_entire·e^{(s−it₀)²}·t₀^{−(3+η−s)/2}`.
+  - `XiSliceSaddleArcBoundsEulerRegion`: disc, slope and saddle-arc bounds on a disc of radius `η` for saddle radius `R ≥ ½+2η`. Both slice points stay in `Re ≥ 1+η`, where `‖ζ'/ζ‖ ≤ (σ−1)⁻¹ + C`.
+  - `XiSliceArcTailConvexity`: `|S(θ)| ≤ A(t^{−η} + t^{−θ₁²/10})` for `θ ≥ θ₁` and `R ∈ [½+2η, R₁]`. Arc points in the strip lose `t^{½+η−R cos θ}` to convexity and gain `t^{−(R−R cos θ)}` from Γ, leaving `t^{½+η−R} ≤ t^{−η}`.
+  - `XiSliceCoeffPositivitySharpWindow`: scaled quarter-arc assembly (disc constant `≤ Kℓ`, `K = R₁/(2η)`; saddle bounds on `θ ≤ 1/(1000K)`; phase condition `(1+128K)Λδ³ ≤ 3/2`), saddle existence on `[½+2η, R₁]`, sharp window, and the reduction.
+- The open core is unchanged: `c_{2k}(t) ≥ 0` for `k < (¼+ε) log t`. The near-double-zero part is `k = O(1)`, i.e. the bounded-order Laguerre inequalities `L_k(Ξ)(t) ≥ 0`, since `b ≍ 1/log t` is detected at `k ≍ Lb = O(1)`.

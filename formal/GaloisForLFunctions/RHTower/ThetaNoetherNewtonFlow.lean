@@ -158,7 +158,7 @@ theorem hasDerivAt_thetaNoetherFlow (x t : ℝ) :
     HasDerivAt (thetaNoetherFlow x) (thetaNoetherSpeed (thetaNoetherFlow x t)) t := by
   convert! (hasDerivAt_thetaNoetherTrajectory (t + thetaNoetherTravelTime x)).comp t
     ((hasDerivAt_id t).add_const (thetaNoetherTravelTime x)) using 1
-  simp only [mul_one]
+  simp only [mul_one, thetaNoetherFlow]
 
 theorem thetaNoetherFlow_energy (x t : ℝ) :
     thetaNoetherMechanicalEnergy (thetaNoetherFlow x t) (deriv (thetaNoetherFlow x) t) =

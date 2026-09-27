@@ -14,6 +14,12 @@ on-line vectors satisfy only `‖f‖ ≤ 1`.  A mixed point costs nothing as so
 `1/8` of the even vector of some pair (`one_add_two_mul_overlap_sub_nonneg`), because then
 `2‖f‖² − 2‖P_A f‖² ≤ 8‖f‖·‖g − f‖ ≤ 1`.  Hence `4·mass − E − 2N ≤ #H`
 (`four_mass_sub_energy_le_of_near`).
+
+A sharper sufficient condition for a mixed point is an overlap bound on full sequences.  If the
+truncated vectors `f, g` extend to sequences with `Σ f² ≤ 1`, `Σ f g = K > 0` and `Σ g² = B`, then
+the truncation to any finite set has cost at least `2K²/B − 1`
+(`overlap_criterion`).  This holds however much of the mass the truncation loses: the proof reduces
+to `B(K − s q)² − (K² − s²B)(B − q²) = (Kq − sB)²` (`overlap_tail_identity`).
 -/
 
 open scoped RealInnerProductSpace
@@ -186,7 +192,144 @@ theorem four_mass_sub_energy_le_of_near (hm₂ : ∀ i, 2 ≤ P.m₂ i) (hmP : �
       one_add_two_mul_overlap_sub_nonneg (P.g_mem_absorbing (σ i)) (hM i) (hnear i)
   linarith
 
+/-- **Horizontal criterion by cost.**  If every mixed point satisfies
+`0 ≤ 1 + 2‖P_A f‖² − 2‖f‖²` and every horizontally simple point has norm at most one, then
+`4·mass − E − 2N ≤ #H`. -/
+theorem four_mass_sub_energy_le_of_cost (hm₂ : ∀ i, 2 ≤ P.m₂ i) (hmP : ∀ p, 1 ≤ P.mP p)
+    (hH : ∀ i, ‖P.fH i‖ ≤ 1)
+    (hcost : ∀ i, 0 ≤ 1 + 2 * ‖P.absorbing.starProjection (P.fM i)‖ ^ 2 - 2 * ‖P.fM i‖ ^ 2) :
+    4 * P.mass - P.energy - 2 * P.count ≤ Fintype.card ιH := by
+  have h := P.four_mass_sub_energy_le hm₂ hmP
+  have h1 : 0 ≤ ∑ i, (1 - ‖P.fH i‖ ^ 2) := Finset.sum_nonneg fun i _ => by
+    have := hH i
+    have := norm_nonneg (P.fH i)
+    nlinarith
+  have h2 : 0 ≤ ∑ i, (1 + 2 * ‖P.absorbing.starProjection (P.fM i)‖ ^ 2 - 2 * ‖P.fM i‖ ^ 2) :=
+    Finset.sum_nonneg fun i _ => hcost i
+
+  linarith
+
 end HorizontalPacket
+
+/-! ### The overlap criterion for truncated sequences -/
+
+open Filter Topology
+
+
+/-- Key algebra: `B (K − s q)² − (K² − s² B)(B − q²) = (K q − s B)²`. -/
+theorem overlap_tail_identity (K B s q : ℝ) :
+    B * (K - s * q) ^ 2 - (K ^ 2 - s ^ 2 * B) * (B - q ^ 2) = (K * q - s * B) ^ 2 := by ring
+
+/-- **Finite overlap criterion.**  Let `s ⊆ t` be finite, `Σ_t F² ≤ 1`, `K = Σ_t F G ≥ 0`,
+`B = Σ_t G² > 0`.  Then the truncation to `s` satisfies
+`1 + 2 (Σ_s F G)² / Σ_s G² − 2 Σ_s F² ≥ 2K²/B − 1`. -/
+theorem finite_overlap_criterion {ι : Type*} [DecidableEq ι] (F G : ι → ℝ) {s t : Finset ι}
+    (hst : s ⊆ t) (hF : ∑ k ∈ t, F k ^ 2 ≤ 1) (hK : 0 ≤ ∑ k ∈ t, F k * G k)
+    (hB : 0 < ∑ k ∈ t, G k ^ 2) :
+    2 * (∑ k ∈ t, F k * G k) ^ 2 / (∑ k ∈ t, G k ^ 2) - 1
+      ≤ 1 + 2 * (∑ k ∈ s, F k * G k) ^ 2 / (∑ k ∈ s, G k ^ 2) - 2 * ∑ k ∈ s, F k ^ 2 := by
+  set x := ∑ k ∈ s, F k ^ 2
+  set ip := ∑ k ∈ s, F k * G k
+  set gg := ∑ k ∈ s, G k ^ 2
+  set a := ∑ k ∈ t \ s, F k ^ 2
+  set c' := ∑ k ∈ t \ s, F k * G k
+  set q2 := ∑ k ∈ t \ s, G k ^ 2
+  set K := ∑ k ∈ t, F k * G k
+  set B := ∑ k ∈ t, G k ^ 2
+  have hsplit : ∀ f : ι → ℝ, ∑ k ∈ t, f k = ∑ k ∈ s, f k + ∑ k ∈ t \ s, f k := fun f => by
+    rw [← Finset.sum_sdiff hst, add_comm]
+  have hK' : K = ip + c' := hsplit _
+  have hB' : B = gg + q2 := hsplit _
+  have hFt : ∑ k ∈ t, F k ^ 2 = x + a := hsplit _
+  have ha0 : 0 ≤ a := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hq0 : 0 ≤ q2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hgg0 : 0 ≤ gg := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  -- finite Cauchy–Schwarz on the tail
+  have hCS : c' ^ 2 ≤ a * q2 := Finset.sum_mul_sq_le_sq_mul_sq (t \ s) F G
+  have hx1 : x + a ≤ 1 := hFt ▸ hF
+  -- the ratio term is nonnegative
+  have hratio0 : 0 ≤ 2 * ip ^ 2 / gg := div_nonneg (by positivity) hgg0
+  have hKB : 0 ≤ K ^ 2 / B := div_nonneg (sq_nonneg _) hB.le
+  -- main case analysis
+  by_cases hgpos : 0 < gg
+  · by_cases hcase : 0 ≤ K - Real.sqrt a * Real.sqrt q2
+    · -- ip ≥ K − √a √q2 ≥ 0
+      have hc'le : c' ≤ Real.sqrt a * Real.sqrt q2 := by
+        have h1 : c' ^ 2 ≤ (Real.sqrt a * Real.sqrt q2) ^ 2 := by
+          rw [mul_pow, Real.sq_sqrt ha0, Real.sq_sqrt hq0]; exact hCS
+        exact abs_le_of_sq_le_sq' h1 (by positivity) |>.2
+      have hip : K - Real.sqrt a * Real.sqrt q2 ≤ ip := by linarith
+      have hip2 : (K - Real.sqrt a * Real.sqrt q2) ^ 2 ≤ ip ^ 2 :=
+        pow_le_pow_left₀ hcase hip 2
+      -- (K − s q)² ≥ (K²/B − s²)(B − q²) with s = √a, q = √q2
+      have hid := overlap_tail_identity K B (Real.sqrt a) (Real.sqrt q2)
+      rw [Real.sq_sqrt ha0, Real.sq_sqrt hq0] at hid
+      have hkey : (K ^ 2 / B - a) * gg ≤ ip ^ 2 := by
+        have h1 : (K ^ 2 - a * B) * (B - q2) ≤ B * (K - Real.sqrt a * Real.sqrt q2) ^ 2 := by
+          nlinarith [sq_nonneg (K * Real.sqrt q2 - Real.sqrt a * B)]
+        have hgg : gg = B - q2 := by linarith
+        rw [hgg]
+        have : (K ^ 2 / B - a) * (B - q2) = (K ^ 2 - a * B) * (B - q2) / B := by
+          field_simp
+        rw [this, div_le_iff₀ hB]
+        nlinarith
+      have hratio : 2 * (K ^ 2 / B - a) ≤ 2 * ip ^ 2 / gg := by
+        rw [mul_div_assoc]
+        apply mul_le_mul_of_nonneg_left _ (by norm_num)
+        rw [le_div_iff₀ hgpos]; exact hkey
+      have : 2 * K ^ 2 / B = 2 * (K ^ 2 / B) := by ring
+      linarith
+    · -- K < √a √q2 ⇒ K²/B < a
+      have hcase' : K ≤ Real.sqrt a * Real.sqrt q2 := by linarith [lt_of_not_ge hcase]
+      have hK2 : K ^ 2 ≤ a * B := by
+        have h1 : K ^ 2 ≤ (Real.sqrt a * Real.sqrt q2) ^ 2 := pow_le_pow_left₀ hK hcase' 2
+        rw [mul_pow, Real.sq_sqrt ha0, Real.sq_sqrt hq0] at h1
+        nlinarith
+      have : K ^ 2 / B ≤ a := by rw [div_le_iff₀ hB]; linarith
+      have : 2 * K ^ 2 / B = 2 * (K ^ 2 / B) := by ring
+      linarith
+  · -- gg = 0: then G vanishes on s, so ip = 0 and K = c'
+    have hgg0' : gg = 0 := le_antisymm (not_lt.mp hgpos) hgg0
+    have hGs : ∀ k ∈ s, G k = 0 := by
+      intro k hk
+      have := (Finset.sum_eq_zero_iff_of_nonneg (fun k _ => sq_nonneg (G k))).mp hgg0' k hk
+      exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp this
+    have hip0 : ip = 0 := Finset.sum_eq_zero fun k hk => by rw [hGs k hk, mul_zero]
+    have hK2 : K ^ 2 ≤ a * B := by
+      rw [hK', hip0, zero_add, hB', hgg0', zero_add]; exact hCS
+    have : K ^ 2 / B ≤ a := by rw [div_le_iff₀ hB]; linarith
+    have : 2 * K ^ 2 / B = 2 * (K ^ 2 / B) := by ring
+    rw [hgg0', div_zero]
+    linarith
+
+/-- **Overlap criterion.**  If every partial sum of `F²` is at most `1`, `Σ F G = K > 0` and
+`Σ G² = B`, then every finite truncation satisfies
+`1 + 2 (Σ_s F G)² / Σ_s G² − 2 Σ_s F² ≥ 2K²/B − 1`. -/
+theorem overlap_criterion {ι : Type*} [DecidableEq ι] {F G : ι → ℝ} {K B : ℝ}
+    (hF : ∀ t : Finset ι, ∑ k ∈ t, F k ^ 2 ≤ 1)
+    (hFG : HasSum (fun k => F k * G k) K) (hG : HasSum (fun k => G k ^ 2) B) (hK : 0 < K)
+    (s : Finset ι) :
+    2 * K ^ 2 / B - 1
+      ≤ 1 + 2 * (∑ k ∈ s, F k * G k) ^ 2 / (∑ k ∈ s, G k ^ 2) - 2 * ∑ k ∈ s, F k ^ 2 := by
+  have tFG : Tendsto (fun t : Finset ι => ∑ k ∈ t, F k * G k) atTop (𝓝 K) := hFG
+  have tG : Tendsto (fun t : Finset ι => ∑ k ∈ t, G k ^ 2) atTop (𝓝 B) := hG
+  -- K² ≤ B from the partial Cauchy–Schwarz inequalities
+  have hKB : K ^ 2 ≤ B := by
+    have hev : ∀ t : Finset ι, (∑ k ∈ t, F k * G k) ^ 2 ≤ ∑ k ∈ t, G k ^ 2 := fun t => by
+      have h1 := Finset.sum_mul_sq_le_sq_mul_sq t F G
+      have h2 : 0 ≤ ∑ k ∈ t, G k ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+      nlinarith [hF t]
+    exact le_of_tendsto_of_tendsto' (tFG.pow 2) tG hev
+  have hB : 0 < B := lt_of_lt_of_le (by positivity) hKB
+  have hlim : Tendsto (fun t : Finset ι => 2 * (∑ k ∈ t, F k * G k) ^ 2 / (∑ k ∈ t, G k ^ 2) - 1)
+      atTop (𝓝 (2 * K ^ 2 / B - 1)) :=
+    (((tFG.pow 2).const_mul 2).div tG hB.ne').sub_const 1
+  refine le_of_tendsto hlim ?_
+  have hKev : ∀ᶠ t in atTop, 0 < ∑ k ∈ t, F k * G k := tFG.eventually (lt_mem_nhds hK)
+  have hBev : ∀ᶠ t in atTop, 0 < ∑ k ∈ t, G k ^ 2 := tG.eventually (lt_mem_nhds hB)
+  filter_upwards [hKev, hBev, eventually_ge_atTop s] with t hKt hBt hst
+  exact finite_overlap_criterion F G hst (hF t) hKt.le hBt
+
 
 end
 

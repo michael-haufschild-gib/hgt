@@ -1,4 +1,5 @@
-import GaloisForLFunctions.RHTower.ThetaPrimeGammaScalingEnergy
+import GaloisForLFunctions.RHTower.ThetaCuspGammaSourceAction
+import GaloisForLFunctions.RHTower.ThetaCuspPolarSourceAction
 
 /-!
 # The continuous Gamma/pole shift has both signs
@@ -37,6 +38,7 @@ theorem thetaGammaPolarScalingKernel_factor (u : ℝ) :
     ring
   unfold thetaGammaPolarScalingKernel
   rw [Real.cosh_eq, he]
+  simp only [neg_div]
   ring
 
 private theorem exp_neg_two_log (r : ℝ) (hr : 0 < r) :

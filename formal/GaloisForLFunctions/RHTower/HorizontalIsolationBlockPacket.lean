@@ -13,9 +13,10 @@ complement.  Then the matrix is the coordinate kernel of the horizontal packet
 Frobenius norm is the packet energy, and `N` is the packet count.
 
 The unnormalised horizontal Lamzouri inequality then gives
-`4 tr − ‖·‖² − 2N ≤ #(S₁ \ M)` as soon as every point of `M` lies within `1/8` of the real vector
-of some pair (`horizontal_block_count`).  This is Zeta23's `c = 2` count `≤ s₁` with the mixed
-points removed.
+`4 tr − ‖·‖² − 2N ≤ #(S₁ \ M)` as soon as every point `x` of `M` has a pair whose real vector `g`
+satisfies `0 ≤ 1 + 2⟨f_x, g⟩²/‖g‖² − 2‖f_x‖²` (`horizontal_block_count`); more generally the
+absorber may be any multiple on-line point or pair (`absorbed_block_count`).  This is Zeta23's
+`c = 2` count `≤ s₁` with the absorbed points removed.
 -/
 
 open scoped RealInnerProductSpace
@@ -228,13 +229,15 @@ theorem norm_blockReVec_le_one (hc : 0 < c) {z : ι} (hz : ∑ k, ‖D.v z k‖ 
   have h0 := norm_nonneg (blockReVec D c z)
   nlinarith
 
-/-- **Horizontal count at the block level.**  If every point of `M ⊆ S₁` lies within `1/8` of the
-real vector of some off-line pair, then `4 tr − ‖·‖² − 2N ≤ #(S₁ \ M)` for the normalised block
-matrix. -/
-theorem horizontal_block_count (hc : 0 < c) (hM : M ⊆ D.S₁)
+/-- **Absorbed count at the block level.**  If every point `x` of `M ⊆ S₁` has an absorber
+`σ x`, a multiple on-line point or an off-line pair representative, whose normalised real vector
+`g` satisfies `0 ≤ 1 + 2⟨f_x, g⟩²/‖g‖² − 2‖f_x‖²`, then `4 tr − ‖·‖² − 2N ≤ #(S₁ \ M)` for the
+normalised block matrix. -/
+theorem absorbed_block_count (hc : 0 < c) (hM : M ⊆ D.S₁)
     (hPois : ∀ z ∈ D.onLine, ∑ k, ‖D.v z k‖ ^ 2 ≤ c)
-    (σ : {z // z ∈ M} → {z // z ∈ Pr.R})
-    (hnear : ∀ x : {z // z ∈ M}, ‖blockReVec D c (σ x) - blockReVec D c x‖ ≤ 1 / 8) :
+    (σ : {z // z ∈ M} → ι) (hσ : ∀ x, σ x ∈ D.S₂ ∨ σ x ∈ Pr.R)
+    (hcost : ∀ x : {z // z ∈ M}, 0 ≤ 1 + 2 * ⟪blockReVec D c x, blockReVec D c (σ x)⟫ ^ 2
+        / ‖blockReVec D c (σ x)‖ ^ 2 - 2 * ‖blockReVec D c x‖ ^ 2) :
     4 * RHLinalg.rtrace (D.blockP c + D.blockQ c) - RHLinalg.frobSq (D.blockP c + D.blockQ c)
       - 2 * (D.Ncount : ℝ) ≤ ((D.S₁ \ M).card : ℝ) := by
   set Pk := blockPacket D Pr c M
@@ -243,17 +246,39 @@ theorem horizontal_block_count (hc : 0 < c) (hM : M ⊆ D.S₁)
     ← blockPacket_count D Pr c M hM]
   have hS1on : ∀ z ∈ D.S₁, z ∈ D.onLine := fun z hz => by
     rw [D.onLine_eq_S₁_union_S₂]; exact Finset.mem_union_left _ hz
-  have h := Pk.four_mass_sub_energy_le_of_near
+  have hmem : ∀ x, blockReVec D c (σ x) ∈ Pk.absorbing := fun x => by
+    rcases hσ x with h | h
+    · exact Pk.f₂_mem_absorbing ⟨σ x, h⟩
+    · exact Pk.g_mem_absorbing ⟨σ x, h⟩
+  have hproj : ∀ x : {z // z ∈ M}, ⟪blockReVec D c x, blockReVec D c (σ x)⟫ ^ 2
+      / ‖blockReVec D c (σ x)‖ ^ 2 ≤ ‖Pk.absorbing.starProjection (Pk.fM x)‖ ^ 2 := by
+    intro x
+    have h := inner_sq_le_norm_sq_starProjection_mul (hmem x) (Pk.fM x)
+    rcases (sq_nonneg ‖blockReVec D c (σ x)‖).lt_or_eq with hpos | hzero
+    · rw [div_le_iff₀ hpos]; exact h
+    · rw [← hzero, div_zero]; exact sq_nonneg _
+  have key : ∀ a g b n : ℝ, 0 ≤ 1 + 2 * a / g - 2 * n → a / g ≤ b → 0 ≤ 1 + 2 * b - 2 * n :=
+    fun a g b n h1 h2 => by rw [mul_div_assoc] at h1; linarith
+  have h := Pk.four_mass_sub_energy_le_of_cost
     (fun i => by
       have := (Finset.mem_filter.mp i.2).2.2
       show (2 : ℝ) ≤ (D.m i : ℝ); exact_mod_cast this)
     (fun p => by show (1 : ℝ) ≤ (D.m p : ℝ); exact_mod_cast D.one_le_m p)
     (fun i => norm_blockReVec_le_one D c hc
       (hPois i (hS1on i ((Finset.mem_sdiff.mp i.2).1))))
-    (fun i => norm_blockReVec_le_one D c hc (hPois i (hS1on i (hM i.2))))
-    σ hnear
+    (fun x => key _ _ _ _ (hcost x) (hproj x))
   rw [Fintype.card_coe] at h
   exact h
+
+/-- **Horizontal count at the block level.**  The case of off-line pair absorbers. -/
+theorem horizontal_block_count (hc : 0 < c) (hM : M ⊆ D.S₁)
+    (hPois : ∀ z ∈ D.onLine, ∑ k, ‖D.v z k‖ ^ 2 ≤ c)
+    (σ : {z // z ∈ M} → {z // z ∈ Pr.R})
+    (hcost : ∀ x : {z // z ∈ M}, 0 ≤ 1 + 2 * ⟪blockReVec D c x, blockReVec D c (σ x)⟫ ^ 2
+        / ‖blockReVec D c (σ x)‖ ^ 2 - 2 * ‖blockReVec D c x‖ ^ 2) :
+    4 * RHLinalg.rtrace (D.blockP c + D.blockQ c) - RHLinalg.frobSq (D.blockP c + D.blockQ c)
+      - 2 * (D.Ncount : ℝ) ≤ ((D.S₁ \ M).card : ℝ) :=
+  absorbed_block_count D Pr c M hc hM hPois (fun x => (σ x).1) (fun x => Or.inr (σ x).2) hcost
 
 end Block
 

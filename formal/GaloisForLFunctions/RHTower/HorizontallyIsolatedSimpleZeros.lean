@@ -9,38 +9,28 @@ A zero `ρ = ½ + iγ` is *horizontally isolated at scale `δ`* if no other zero
 within horizontal distance `δ` of the critical line.  The main theorem
 `horizontallyIsolated_simple_critical` states: for every `ε > 0` and all large `T`, at least
 `(HD(1) − ε)·N(T,2T)` zeros with `T < γ ≤ 2T` are simple, on the critical line, and horizontally
-isolated at scale `2/(3 log(T/2π))`.  Here `HD(1) = 2 − 1/c₁* = 0.67250…` is the unconditional
+isolated at scale `5/(2 log(T/2π))`.  Here `HD(1) = 2 − 1/c₁* = 0.67250…` is the unconditional
 Montgomery–Taylor constant of Zeta23.
 
 Proof.  Zeta23's multiplicity-aware zero side counts `s₁ ≥ 4 tr Â − ‖Â‖² − 2N` for the sampled Weil
 matrix `Â`.  The unnormalised horizontal Lamzouri inequality (`HorizontalIsolationBlockPacket`)
 removes from `s₁` every simple critical zero whose ordinate carries an off-line zero `p` with
-`|Re p − ½| ≤ δ`.  This costs nothing once the real part of the sampled vector of `p` is within
-`1/8` of the sampled vector of the critical zero.  By sampling Parseval that distance is at most
-`cosh(δL/2) − 1` (`blockReVec_near`), which is `≤ 1/8` at `δ = 2/(3L)` (`cosh_third_le`).  The
+`|Re p − ½| ≤ δ`.  This costs nothing once the sampled vector `f` of the critical zero and the real
+part `g` of the sampled vector of `p` satisfy `0 ≤ 1 + 2⟨f,g⟩²/‖g‖² − 2‖f‖²`.  On the full sampling
+grid, Parseval gives `⟨f,g⟩ = ∫φ²cosh(ε·)/∫φ² ≥ 1` and `‖g‖² ≤ 2⟨f,g⟩` when `cosh(εL/2) ≤ 2`, and
+the overlap criterion passes this to the truncated grid (`blockOverlap_near`).  At `δ = 5/(2L)` the
+condition is `cosh(5/4) ≤ 2`.  The
 windows, the tail seam and the prime-side traces are Zeta23's, unchanged; only the counted set
 differs (`seam_horizontal`, `thmD_horizontal_abstract`).
 -/
 
 open Complex Finset
+open scoped RealInnerProductSpace
 open Zeta23 Zeta23.ZeroSide
 
 namespace RHTower
 
 noncomputable section
-
-/-- `cosh(1/3) ≤ 9/8`. -/
-theorem cosh_third_le : Real.cosh (1 / 3) ≤ 9 / 8 := by
-  have h1 := Real.cosh_le_exp_half_sq (1 / 3)
-  have h2 : Real.exp ((1 / 3 : ℝ) ^ 2 / 2) ≤ 18 / 17 := by
-    have hy : ((1 / 3 : ℝ) ^ 2 / 2) = 1 / 18 := by norm_num
-    rw [hy]
-    have h3 := Real.add_one_le_exp (-(1 / 18 : ℝ))
-    have h4 : Real.exp (1 / 18 : ℝ) * Real.exp (-(1 / 18 : ℝ)) = 1 := by
-      rw [← Real.exp_add]; simp
-    have h5 : 0 < Real.exp (1 / 18 : ℝ) := Real.exp_pos _
-    nlinarith
-  linarith
 
 variable (Z : ZeroConfig) (T : ℝ) (P : Params)
 
@@ -72,48 +62,50 @@ theorem gammaOf_eq_im_sub (ρ : ℂ) :
     gammaOf ρ = ((ρ.im : ℝ) : ℂ) - ((ρ.re - 1 / 2 : ℝ) : ℂ) * I := by
   apply Complex.ext <;> simp [gammaOf]
 
-/-- **A near pair is close in sampled real part.**  If `x` is on the line and `p` shares its
-ordinate with `|Re p − 1/2| ≤ δ`, `cosh(δL/2) ≤ 9/8`, then the normalised real vectors of `p` and
-`x` differ by at most `1/8`. -/
-theorem blockReVec_near (hconj : PhiHatConj T P) (hL : 0 < P.L T) (hc : Continuous (P.phi T))
-    (hsupp : ∀ u, P.L T / 2 ≤ |u| → P.phi T u = 0) (ha : 0 < P.a T) {δ : ℝ}
-    (hδ : Real.cosh (δ * (P.L T / 2)) ≤ 9 / 8) {x p : ZI Z T} (hx : (x : ℂ).re = 1 / 2)
+/-- **A near pair has large overlap.**  If `x` is on the line and `p` shares its ordinate with
+`|Re p − 1/2| ≤ δ`, `cosh(δL/2) ≤ 2`, then the normalised real vectors `f` of `x` and `g` of `p`
+satisfy `0 ≤ 1 + 2⟨f,g⟩²/‖g‖² − 2‖f‖²`. -/
+theorem blockOverlap_near (hconj : PhiHatConj T P) (hreal : PhiHatReal T P) (hL : 0 < P.L T)
+    (hc : Continuous (P.phi T)) (hsupp : ∀ u, P.L T / 2 ≤ |u| → P.phi T u = 0) (ha : 0 < P.a T)
+    {δ : ℝ} (hδ : Real.cosh (δ * (P.L T / 2)) ≤ 2) {x p : ZI Z T} (hx : (x : ℂ).re = 1 / 2)
     (him : (p : ℂ).im = (x : ℂ).im) (hre : |(p : ℂ).re - 1 / 2| ≤ δ) :
-    ‖blockReVec (blockData Z T P hconj) (P.a T * P.L T ^ 2) p
-      - blockReVec (blockData Z T P hconj) (P.a T * P.L T ^ 2) x‖ ≤ 1 / 8 := by
+    0 ≤ 1 + 2 * ⟪blockReVec (blockData Z T P hconj) (P.a T * P.L T ^ 2) x,
+          blockReVec (blockData Z T P hconj) (P.a T * P.L T ^ 2) p⟫ ^ 2
+        / ‖blockReVec (blockData Z T P hconj) (P.a T * P.L T ^ 2) p‖ ^ 2
+      - 2 * ‖blockReVec (blockData Z T P hconj) (P.a T * P.L T ^ 2) x‖ ^ 2 := by
   set c := P.a T * P.L T ^ 2 with hcdef
-  have hc0 : 0 < c := by positivity
   set γ := (x : ℂ).im
   set ε := (p : ℂ).re - 1 / 2
   have hgp : gammaOf (p : ℂ) = (γ : ℂ) - ε * I := by rw [gammaOf_eq_im_sub, him]
   have hgx : gammaOf (x : ℂ) = (γ : ℂ) := by
     rw [gammaOf_eq_im_sub, hx]; simp; rfl
-  have hbound := sum_sq_re_shift_sub_le P T hL hc hsupp hconj γ ε
-  have hsq : ‖blockReVec (blockData Z T P hconj) c p - blockReVec (blockData Z T P hconj) c x‖ ^ 2
-      ≤ (1 / 8) ^ 2 := by
+  have hδ0 : 0 ≤ δ := le_trans (abs_nonneg _) hre
+  have hε : Real.cosh (ε * (P.L T / 2)) ≤ 2 := by
+    refine le_trans ?_ hδ
+    rw [Real.cosh_le_cosh, abs_mul, abs_mul, abs_of_nonneg hδ0]
+    exact mul_le_mul_of_nonneg_right hre (abs_nonneg _)
+  have h := shift_overlap_cost P T hL hc hsupp hconj hreal ha γ ε hε
+  have hin : ⟪blockReVec (blockData Z T P hconj) c x, blockReVec (blockData Z T P hconj) c p⟫
+      = ∑ k : Fin (P.d T), (P.phiHat T ((γ : ℂ) - P.tau T k)).re / Real.sqrt c
+          * ((P.phiHat T ((γ : ℂ) - ε * I - P.tau T k)).re / Real.sqrt c) := by
+    simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, blockReVec_apply]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    simp only [blockData, mkData_v, evalVec, hgp, hgx]
+    ring
+  have hnp : ‖blockReVec (blockData Z T P hconj) c p‖ ^ 2
+      = ∑ k : Fin (P.d T), ((P.phiHat T ((γ : ℂ) - ε * I - P.tau T k)).re / Real.sqrt c) ^ 2 := by
     rw [EuclideanSpace.norm_sq_eq]
-    simp only [PiLp.sub_apply, blockReVec_apply, Real.norm_eq_abs, sq_abs]
-    have hterm : ∀ k : Fin (P.d T),
-        ((blockData Z T P hconj).v p k).re / Real.sqrt c - ((blockData Z T P hconj).v x k).re / Real.sqrt c
-        = ((P.phiHat T ((γ : ℂ) - ε * I - P.tau T k)).re
-            - (P.phiHat T ((γ : ℂ) - P.tau T k)).re) / Real.sqrt c := by
-      intro k
-      simp only [blockData, mkData_v, evalVec, hgp, hgx]
-      ring
-    simp only [hterm, div_pow, Real.sq_sqrt hc0.le]
-    rw [← Finset.sum_div, div_le_iff₀ hc0]
-    refine le_trans hbound ?_
-    have hδ0 : 0 ≤ δ := le_trans (abs_nonneg _) hre
-    have hcosh : Real.cosh (ε * (P.L T / 2)) ≤ Real.cosh (δ * (P.L T / 2)) := by
-      rw [Real.cosh_le_cosh, abs_mul, abs_mul, abs_of_nonneg hδ0]
-      exact mul_le_mul_of_nonneg_right hre (abs_nonneg _)
-    have h1 : 0 ≤ Real.cosh (ε * (P.L T / 2)) - 1 := by
-      linarith [Real.one_le_cosh (ε * (P.L T / 2))]
-    have h2 : (Real.cosh (ε * (P.L T / 2)) - 1) ^ 2 ≤ (1 / 8) ^ 2 :=
-      pow_le_pow_left₀ h1 (by linarith) 2
-    nlinarith
-  have h0 := norm_nonneg (blockReVec (blockData Z T P hconj) c p - blockReVec (blockData Z T P hconj) c x)
-  nlinarith
+    simp only [blockReVec_apply, Real.norm_eq_abs, sq_abs]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    simp only [blockData, mkData_v, evalVec, hgp]
+  have hnx : ‖blockReVec (blockData Z T P hconj) c x‖ ^ 2
+      = ∑ k : Fin (P.d T), ((P.phiHat T ((γ : ℂ) - P.tau T k)).re / Real.sqrt c) ^ 2 := by
+    rw [EuclideanSpace.norm_sq_eq]
+    simp only [blockReVec_apply, Real.norm_eq_abs, sq_abs]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    simp only [blockData, mkData_v, evalVec, hgx]
+  rw [hin, hnp, hnx]
+  exact h
 
 
 theorem mem_nearMixed_spec (hconj : PhiHatConj T P) {δ : ℝ} (x : {z // z ∈ nearMixed Z hconj δ}) :
@@ -124,10 +116,10 @@ theorem mem_nearMixed_spec (hconj : PhiHatConj T P) {δ : ℝ} (x : {z // z ∈ 
 /-- **Horizontal zero-side count.**  For the normalised sampled Weil matrix `Â` of the window `I′`,
 `4 tr Â − ‖Â‖² − 2N(I′)` is at most the number of simple on-line points of `I′` with no off-line
 pair on their horizontal line within distance `δ` of the critical line, whenever
-`cosh(δL/2) ≤ 9/8`. -/
+`cosh(δL/2) ≤ 2`. -/
 theorem hatAz_horizontal (hconj : PhiHatConj T P) (hreal : PhiHatReal T P) (hPois : PoissonSq T P)
     (hL : 0 < P.L T) (hc : Continuous (P.phi T)) (hsupp : ∀ u, P.L T / 2 ≤ |u| → P.phi T u = 0)
-    (ha : 0 < P.a T) {δ : ℝ} (hδ : Real.cosh (δ * (P.L T / 2)) ≤ 9 / 8) :
+    (ha : 0 < P.a T) {δ : ℝ} (hδ : Real.cosh (δ * (P.L T / 2)) ≤ 2) :
     4 * RHLinalg.rtrace (P.hat T (Z.Az P T)) - RHLinalg.frobSq (P.hat T (Z.Az P T))
       - 2 * (Z.NIprime T : ℝ) ≤ (((blockData Z T P hconj).S₁ \ nearMixed Z hconj δ).card : ℝ) := by
   have hc0 : 0 < P.a T * P.L T ^ 2 := by positivity
@@ -145,7 +137,7 @@ theorem hatAz_horizontal (hconj : PhiHatConj T P) (hreal : PhiHatReal T P) (hPoi
   have hxon : ((x : ZI Z T) : ℂ).re = 1 / 2 := by
     have h := (Finset.mem_filter.mp hxS1).2.1
     exact (mkData_σ_eq_iff Z T _ _ _).mp h
-  exact blockReVec_near hconj hL hc hsupp ha hδ hxon hspec.2.1 hspec.2.2
+  exact blockOverlap_near hconj hreal hL hc hsupp ha hδ hxon hspec.2.1 hspec.2.2
 
 
 /-- **From `I′` to `(T, 2T]`.**  The simple on-line points of `I′` outside `nearMixed` are
@@ -209,7 +201,7 @@ the number of simple critical-line zeros that are horizontally isolated at scale
 theorem seam_horizontal (hT : 0 ≤ T) (hconj : PhiHatConj T P) (hreal : PhiHatReal T P)
     (hPois : PoissonSq T P) {θ₀ : ℝ} (hTl : Assembly.TailInputs Z P T θ₀) (ha : 0 < P.a T)
     (hL : 0 < P.L T) (hc : Continuous (P.phi T)) (hsupp : ∀ u, P.L T / 2 ≤ |u| → P.phi T u = 0)
-    {δ : ℝ} (hδ : Real.cosh (δ * (P.L T / 2)) ≤ 9 / 8) :
+    {δ : ℝ} (hδ : Real.cosh (δ * (P.L T / 2)) ≤ 2) :
     4 * RHLinalg.rtrace (P.hat T (Z.Gz P T)) - RHLinalg.frobSq (P.hat T (Z.Gz P T))
       - 2 * (Z.N T (2 * T) : ℝ) - 3 * (Assembly.NII Z T : ℝ)
       - θ₀ / (P.a T * P.L T)
@@ -237,26 +229,32 @@ section ThmD
 open Filter Asymptotics Topology Real RHLinalg Zeta23.ThmD Zeta23.Assembly
 
 
-/-- **Theorem D for horizontally isolated simple zeros, abstract.**  With the window-realising
-parameters, `(2 − c⁻¹ − ε)·N(T,2T)` simple critical-line zeros with ordinate in `(T,2T]` have no
-off-line zero on their horizontal line within distance `2/(3L)` of the critical line. -/
-theorem thmD_horizontal_abstract (Z : ZeroConfig) (H : PaperInputs Z) (P : Params) (hP : P.Valid)
+/-- **Theorem D from a seam, abstract.**  With the window-realising parameters, any count `Cnt`
+that dominates the multiplicity-aware seam eventually satisfies `(2 − c⁻¹ − ε)·N(T,2T) ≤ Cnt T`
+for large `T`.  Only the seam depends on which zeros are counted; the traces, the tail and the
+endgame are Zeta23's. -/
+theorem thmD_count_of_seam (Z : ZeroConfig) (H : PaperInputs Z) (P : Params) (hP : P.Valid)
     (hlam : P.lam < 1)
     (aT bT JT trG trG2 : ℝ → ℝ)
     (hTr : TracesBoundsD P aT bT JT trG trG2 (fun T => (Z.N T (2 * T) : ℝ)))
     {c : ℝ} (hc0 : 0 < c)
     (hc : Tendsto (fun T => cRatio (P.lam1 T) (aT T) (bT T) (JT T)) atTop (𝓝 c))
     (ha : ∀ᶠ T in atTop, 1 / 2 ≤ aT T ∧ aT T ≤ 1)
-    (hBlock : ∀ᶠ T in atTop, BlockInputs Z (P.atD T) T)
     (θ₀ : ℝ → ℝ) (hTail : ∀ᶠ T in atTop, TailInputs Z (P.atD T) T (θ₀ T))
     (hθ₀ : ∃ C : ℝ, ∀ᶠ T in atTop, θ₀ T ≤ C * l T * T ^ (P.lam / 2 - 1))
     (hNII : ∃ C : ℝ, ∀ᶠ T in atTop, (NII Z T : ℝ) ≤ C * Real.sqrt T * l T)
     (hGzGp : ∀ᶠ T in atTop, Z.Gz (P.atD T) T = (P.atD T).Gp T)
     (hId : ∀ᶠ T in atTop, (P.atD T).trGtilde T = trG T ∧ (P.atD T).trGtildeSq T = trG2 T ∧
       (P.atD T).a T = aT T)
-    (hcalE : Tendsto P.calE atTop (𝓝 0)) :
-    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
-      (2 - c⁻¹ - ε) * (Z.N T (2 * T) : ℝ) ≤ NisoH Z (2 / (3 * P.L T)) T (2 * T) := by
+    (hcalE : Tendsto P.calE atTop (𝓝 0)) (Cnt : ℝ → ℝ)
+    (hseam : ∀ᶠ T in atTop,
+      4 * rtrace ((P.atD T).hat T (Z.Gz (P.atD T) T)) - frobSq ((P.atD T).hat T (Z.Gz (P.atD T) T))
+        - 2 * (Z.N T (2 * T) : ℝ) - 3 * (NII Z T : ℝ)
+        - θ₀ T / ((P.atD T).a T * (P.atD T).L T)
+          * (4 + 2 * Real.sqrt (frobSq ((P.atD T).hat T (Z.Gz (P.atD T) T)))
+            + θ₀ T / ((P.atD T).a T * (P.atD T).L T))
+        ≤ Cnt T) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀, (2 - c⁻¹ - ε) * (Z.N T (2 * T) : ℝ) ≤ Cnt T := by
   have hlam0 := hP.lam_pos
   have hlam1 : P.lam ≤ 1 := hlam.le
   obtain ⟨C₁, hC₁, T₁, htr1⟩ := hTr.tr1
@@ -277,26 +275,13 @@ theorem thmD_horizontal_abstract (Z : ZeroConfig) (H : PaperInputs Z) (P : Param
   ------------------------------------------------------------------
   -- (1) the main inequality, eventually in T
   ------------------------------------------------------------------
-  have hmain : ∀ᶠ T in atTop, (2 - c⁻¹) * N T - err T ≤ (NisoH Z (2 / (3 * P.L T)) T (2 * T) : ℝ) := by
-    filter_upwards [hBlock, hTail, hGzGp, hId, ha, eventually_ge_atTop T₁,
-      eventually_ge_atTop T₂, eventually_ge_atTop (0:ℝ), eventually_l_pos,
-      eventually_calE_nonneg P hlam0 (zero_le_one.trans hP.one_le_w), eventually_w8 hP]
-      with T hBl hTl hGG hid ha2 hT₁ hT₂ hT0 hl hE0 h8
+  have hmain : ∀ᶠ T in atTop, (2 - c⁻¹) * N T - err T ≤ Cnt T := by
+    filter_upwards [hseam, hTail, hGzGp, hId, ha, eventually_ge_atTop T₁,
+      eventually_ge_atTop T₂, eventually_l_pos]
+      with T hA hTl hGG hid ha2 hT₁ hT₂ hl
     obtain ⟨hidtr, hidfr, hida⟩ := hid
     have hapos' : 0 < aT T := by linarith [ha2.1]
-    have haposD : 0 < (P.atD T).a T := by rw [hida]; exact hapos'
     have hLpos : 0 < P.L T := by simp only [Params.L]; positivity
-    -- Seam A for the window-realizing parameters
-    have hW := admWindow_params hP h8
-    have hcD : Continuous ((P.atD T).phi T) := by
-      rw [Params.atD_phi_valid T hP]; exact hW.contDiff.continuous
-    have hsuppD : ∀ u, (P.atD T).L T / 2 ≤ |u| → (P.atD T).phi T u = 0 := by
-      intro u hu; rw [Params.atD_phi_valid T hP]; exact hW.support u hu
-    have hδD : Real.cosh (2 / (3 * P.L T) * ((P.atD T).L T / 2)) ≤ 9 / 8 := by
-      rw [Params.atD_L, show 2 / (3 * P.L T) * (P.L T / 2) = 1 / 3 by field_simp]
-      exact cosh_third_le
-    have hA := seam_horizontal (Z := Z) hT0 (fun z => GzGp.phiHat_conj _ T z)
-      (fun r => GzGp.phiHat_ofReal _ T r) (poissonSqD hP h8) hTl haposD hLpos hcD hsuppD hδD
     -- the hat-unit traces in terms of the abstract data
     have hrt : rtrace ((P.atD T).hat T (Z.Gz (P.atD T) T)) = (aT T * P.L T)⁻¹ * trG T := by
       rw [rtrace_hat, hGG, rtrace_tilde_Gp, hidtr, hida]; rfl
@@ -407,18 +392,54 @@ theorem thmD_horizontal_abstract (Z : ZeroConfig) (H : PaperInputs Z) (P : Param
 
 
 
+/-- **Theorem D for horizontally isolated simple zeros, abstract.**  With the window-realising
+parameters, `(2 − c⁻¹ − ε)·N(T,2T)` simple critical-line zeros with ordinate in `(T,2T]` have no
+off-line zero on their horizontal line within distance `5/(2L)` of the critical line. -/
+theorem thmD_horizontal_abstract (Z : ZeroConfig) (H : PaperInputs Z) (P : Params) (hP : P.Valid)
+    (hlam : P.lam < 1)
+    (aT bT JT trG trG2 : ℝ → ℝ)
+    (hTr : TracesBoundsD P aT bT JT trG trG2 (fun T => (Z.N T (2 * T) : ℝ)))
+    {c : ℝ} (hc0 : 0 < c)
+    (hc : Tendsto (fun T => cRatio (P.lam1 T) (aT T) (bT T) (JT T)) atTop (𝓝 c))
+    (ha : ∀ᶠ T in atTop, 1 / 2 ≤ aT T ∧ aT T ≤ 1)
+    (θ₀ : ℝ → ℝ) (hTail : ∀ᶠ T in atTop, TailInputs Z (P.atD T) T (θ₀ T))
+    (hθ₀ : ∃ C : ℝ, ∀ᶠ T in atTop, θ₀ T ≤ C * l T * T ^ (P.lam / 2 - 1))
+    (hNII : ∃ C : ℝ, ∀ᶠ T in atTop, (NII Z T : ℝ) ≤ C * Real.sqrt T * l T)
+    (hGzGp : ∀ᶠ T in atTop, Z.Gz (P.atD T) T = (P.atD T).Gp T)
+    (hId : ∀ᶠ T in atTop, (P.atD T).trGtilde T = trG T ∧ (P.atD T).trGtildeSq T = trG2 T ∧
+      (P.atD T).a T = aT T)
+    (hcalE : Tendsto P.calE atTop (𝓝 0)) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (2 - c⁻¹ - ε) * (Z.N T (2 * T) : ℝ) ≤ NisoH Z (5 / (2 * P.L T)) T (2 * T) := by
+  refine thmD_count_of_seam Z H P hP hlam aT bT JT trG trG2 hTr hc0 hc ha θ₀ hTail hθ₀ hNII
+    hGzGp hId hcalE (fun T => (NisoH Z (5 / (2 * P.L T)) T (2 * T) : ℝ)) ?_
+  have hlam0 := hP.lam_pos
+  filter_upwards [hTail, hId, ha, eventually_ge_atTop (0:ℝ), eventually_l_pos, eventually_w8 hP]
+    with T hTl hid ha2 hT0 hl h8
+  have haposD : 0 < (P.atD T).a T := by rw [hid.2.2]; linarith [ha2.1]
+  have hLpos : 0 < P.L T := by simp only [Params.L]; positivity
+  have hW := admWindow_params hP h8
+  have hcD : Continuous ((P.atD T).phi T) := by
+    rw [Params.atD_phi_valid T hP]; exact hW.contDiff.continuous
+  have hsuppD : ∀ u, (P.atD T).L T / 2 ≤ |u| → (P.atD T).phi T u = 0 := by
+    intro u hu; rw [Params.atD_phi_valid T hP]; exact hW.support u hu
+  have hδD : Real.cosh (5 / (2 * P.L T) * ((P.atD T).L T / 2)) ≤ 2 := by
+    rw [Params.atD_L, show 5 / (2 * P.L T) * (P.L T / 2) = 5 / 4 by field_simp; ring]
+    exact cosh_five_quarters_le_two
+  exact seam_horizontal (Z := Z) hT0 (fun z => GzGp.phiHat_conj _ T z)
+    (fun r => GzGp.phiHat_ofReal _ T r) (poissonSqD hP h8) hTl haposD hLpos hcD hsuppD hδD
+
 /-- Fixed `λ ∈ (0,1)`, abstract zero configuration with the paper's inputs. -/
 theorem thmD_horizontal_lam_abstract (Z : ZeroConfig) (H : PaperInputs Z) (P : Params) (hP : P.Valid)
     (hlam : P.lam < 1) :
     ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
-      (HD P.lam - ε) * (Z.N T (2 * T) : ℝ) ≤ NisoH Z (2 / (3 * P.L T)) T (2 * T) := by
+      (HD P.lam - ε) * (Z.N T (2 * T) : ℝ) ≤ NisoH Z (5 / (2 * P.L T)) T (2 * T) := by
   have hLoc : LocalHypsCoreDEventually P := localHypsCoreD_eventually hP
   have hTr := tracesBoundsD_concrete (Z := Z) hP H hLoc
   have hc := tendsto_cRatio_concrete hP Z
   have hc0 := cStar_pos hP.lam_pos hP.lam_le_one
   have ha : ∀ᶠ T in atTop, 1 / 2 ≤ (concreteDataD P Z).aT T ∧ (concreteDataD P Z).aT T ≤ 1 :=
     (concreteFactsD hP H hLoc).ab_range.mono fun T h => ⟨h.1.trans h.2.1, h.2.2.1⟩
-  have hBlock := eventually_blockInputsD Z hP
   obtain ⟨θ₀, hTail, hθ₀⟩ := eventually_tailPackageD Z H hP
   obtain ⟨A₀, hA₀, hloc⟩ := H.RvM.local_count
   have hNII := Tail.eventually_NII_le Z hA₀ hloc
@@ -430,7 +451,7 @@ theorem thmD_horizontal_lam_abstract (Z : ZeroConfig) (H : PaperInputs Z) (P : P
     Eventually.of_forall fun T =>
       ⟨Params.atD_trGtilde T hP, Params.atD_trGtildeSq T hP, Params.atD_a T hP⟩
   have hcalE := calE_tendsto_zero P hP.lam_pos hP.lam_le_one (zero_le_one.trans hP.one_le_w)
-  have h := thmD_horizontal_abstract Z H P hP hlam _ _ _ _ _ hTr hc0 hc ha hBlock θ₀ hTail hθ₀ hNII
+  have h := thmD_horizontal_abstract Z H P hP hlam _ _ _ _ _ hTr hc0 hc ha θ₀ hTail hθ₀ hNII
     hGzGp hId hcalE
   simpa only [HD, one_div] using h
 
@@ -462,23 +483,23 @@ theorem N0simpleIsolated_anti {δ₁ δ₂ : ℝ} (h : δ₁ ≤ δ₂) (T₁ T�
   · exact (zetaZeroConfig.window_finite T₁ T₂).subset fun ρ hρ => hρ.1.1.1
 
 /-- `ζ` at fixed `λ ∈ (0,1)`: `(HD(λ) − ε)·N(T,2T)` simple critical-line zeros are horizontally
-isolated at scale `2/(3λ log(T/2π))`. -/
+isolated at scale `5/(2λ log(T/2π))`. -/
 theorem horizontallyIsolated_simple_critical_lam {lam : ℝ} (h0 : 0 < lam) (h1 : lam < 1) :
     ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
-      (HD lam - ε) * (Ncount T (2 * T) : ℝ) ≤ N0simpleIsolated (2 / (3 * (lam * l T))) T (2 * T) := by
+      (HD lam - ε) * (Ncount T (2 * T) : ℝ) ≤ N0simpleIsolated (5 / (2 * (lam * l T))) T (2 * T) := by
   have hP := paramsOf_valid taperProfile_stdProfile h0 h1.le
   have h := thmD_horizontal_lam_abstract zetaZeroConfig paperInputs_zeta (paramsOf stdProfile lam) hP h1
   simpa [paramsOf, Params.L, NisoH_zetaZeroConfig] using h
 
 /-- **Horizontally isolated simple zeros of ζ.**  For every `ε > 0` and all large `T`, at least
 `(HD(1) − ε)·N(T,2T)` zeros `ρ` with `T < Im ρ ≤ 2T` are simple, lie on the critical line, and no
-other nontrivial zero with the same ordinate lies within horizontal distance `2/(3 log(T/2π))` of
+other nontrivial zero with the same ordinate lies within horizontal distance `5/(2 log(T/2π))` of
 the critical line.  Here `HD(1) = 2 − 1/c₁* = 0.67250…` is the Montgomery–Taylor constant. -/
 theorem horizontallyIsolated_simple_critical :
     ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
-      (HD 1 - ε) * (Ncount T (2 * T) : ℝ) ≤ N0simpleIsolated (2 / (3 * l T)) T (2 * T) := by
+      (HD 1 - ε) * (Ncount T (2 * T) : ℝ) ≤ N0simpleIsolated (5 / (2 * l T)) T (2 * T) := by
   refine eps_form_HD (N := fun T => (Ncount T (2 * T) : ℝ))
-    (lower := fun T => (N0simpleIsolated (2 / (3 * l T)) T (2 * T) : ℝ))
+    (lower := fun T => (N0simpleIsolated (5 / (2 * l T)) T (2 * T) : ℝ))
     (fun _ => Nat.cast_nonneg _) ?_
   intro lam hl1 hl2 ε hε
   obtain ⟨T₀, hT₀⟩ := horizontallyIsolated_simple_critical_lam (by linarith) hl2 ε hε
@@ -492,7 +513,7 @@ theorem horizontallyIsolated_simple_critical :
     rw [le_div_iff₀ (by positivity)]
     linarith
   have hlam0 : 0 < lam := by linarith
-  have hscale : 2 / (3 * l T) ≤ 2 / (3 * (lam * l T)) := by
+  have hscale : 5 / (2 * l T) ≤ 5 / (2 * (lam * l T)) := by
     apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
     nlinarith
   have := hT₀ T hTT₀
