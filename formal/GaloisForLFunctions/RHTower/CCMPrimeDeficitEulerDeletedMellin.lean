@@ -51,7 +51,7 @@ theorem ccmEulerDeletedCriticalPolynomial_eq_sum (P N : ℕ) (t : ℝ) :
         ((ccmEulerRenewalKernel P * ccmEulerDeletedPrime P : ArithmeticFunction ℝ) n : ℂ) *
           (n : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) := by
   rw [ccmEulerDeletedCriticalPolynomial,
-    LSeries_eq_sum_term_of_support (fun n h => criticalSeq_support h)]
+    Sieve.LSeries_eq_sum_term_of_support (fun n h => criticalSeq_support h)]
   apply Finset.sum_congr rfl
   intro n hn
   have hn0 : n ≠ 0 := (show 0 < n from (Finset.mem_Icc.mp hn).1).ne'

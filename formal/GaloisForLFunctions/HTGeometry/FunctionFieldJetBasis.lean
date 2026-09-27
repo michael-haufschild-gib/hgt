@@ -179,50 +179,56 @@ theorem jetJacobian_det_ne_zero {s : Fin d → F} (hs : IsTranscendenceBasis C s
   simp only [δ, jetPartial_apply_basis] at h
   simpa using h
 
-/-- The positive jets `δ^(k+1) s_i` of a family `s`. -/
-def basisJets (s : Fin d → F) (q : ℕ × Fin d) : FunctionJetField F d :=
-  ((jetFieldDerivation ht : FunctionJetField F d → FunctionJetField F d)^[q.1 + 1])
-    (algebraMap F (FunctionJetField F d) (s q.2))
+/-! ### Triangular families of jets
 
-theorem basisJets_mem_jetSubalgebra (s : Fin d → F) (q : ℕ × Fin d) :
-    basisJets ht s q ∈ jetSubalgebra (q.1 + 1) := by
-  have h := jetFieldDerivation_iterate_sub_mem ht s q.1 q.2
-  have hsum : ∑ j, algebraMap F (FunctionJetField F d) (jetJacobian ht s q.2 j) *
-      (functionJet (j, q.1) : FunctionJetField F d) ∈ jetSubalgebra (q.1 + 1) :=
+A family `z_(k,i)` is triangular with diagonal blocks `M_k` when
+`z_(k,i) = Σ_j M_k(i,j) y_(j,k) + (a polynomial in the jets of order < k)`.  With invertible
+blocks such a family is algebraically independent over `F` and generates the jet field. -/
+
+section Triangular
+
+variable (z : ℕ × Fin d → FunctionJetField F d) (M : ℕ → Matrix (Fin d) (Fin d) F)
+
+/-- Triangularity of a jet family with diagonal blocks `M`. -/
+def IsJetTriangular : Prop :=
+  ∀ k i, z (k, i) - ∑ j, algebraMap F (FunctionJetField F d) (M k i j) * functionJet (j, k) ∈
+    jetSubalgebra k
+
+variable {z M}
+
+theorem IsJetTriangular.mem_jetSubalgebra (hz : IsJetTriangular z M) (k : ℕ) (i : Fin d) :
+    z (k, i) ∈ jetSubalgebra (k + 1) := by
+  have hsum : ∑ j, algebraMap F (FunctionJetField F d) (M k i j) *
+      (functionJet (j, k) : FunctionJetField F d) ∈ jetSubalgebra (k + 1) :=
     Subalgebra.sum_mem _ fun j _ => Subalgebra.mul_mem _ (Subalgebra.algebraMap_mem _ _)
-      (functionJet_mem_jetSubalgebra (Nat.lt_succ_self q.1))
-  have := Subalgebra.add_mem _ (jetSubalgebra_mono (Nat.le_succ q.1) h) hsum
+      (functionJet_mem_jetSubalgebra (Nat.lt_succ_self k))
+  have := Subalgebra.add_mem _ (jetSubalgebra_mono (Nat.le_succ k) (hz k i)) hsum
   rwa [sub_add_cancel] at this
 
-/-- The coordinate derivation of the leading order reads off the Jacobian. -/
-theorem jetCoordPartial_basisJets_same (s : Fin d → F) (k : ℕ) (i j : Fin d) :
-    jetCoordPartial (j, k) (basisJets ht s (k, i)) =
-      algebraMap F (FunctionJetField F d) (jetJacobian ht s i j) := by
+/-- The coordinate derivation of the leading order reads off the diagonal block. -/
+theorem IsJetTriangular.jetCoordPartial_same (hz : IsJetTriangular z M) (k : ℕ) (i j : Fin d) :
+    jetCoordPartial (j, k) (z (k, i)) = algebraMap F (FunctionJetField F d) (M k i j) := by
   classical
-  have h := jetFieldDerivation_iterate_sub_mem ht s k i
-  have hR := jetCoordPartial_eq_zero_of_mem (p := (j, k)) (le_refl k) h
+  have hR := jetCoordPartial_eq_zero_of_mem (p := (j, k)) (le_refl k) (hz k i)
   rw [map_sub, sub_eq_zero] at hR
-  change jetCoordPartial (j, k) (((jetFieldDerivation ht : FunctionJetField F d →
-    FunctionJetField F d)^[k + 1]) (algebraMap F (FunctionJetField F d) (s i))) = _
   rw [hR, map_sum]
   simp only [Derivation.leibniz, jetCoordPartial_functionJet, Derivation.map_algebraMap,
     smul_eq_mul, mul_zero, add_zero, Prod.mk.injEq, and_true, mul_ite, mul_one]
   rw [Finset.sum_ite_eq']
   simp
 
-/-- **Finite truncations of the jets of a transcendence basis are independent over `F`.** -/
-theorem algebraicIndependent_basisJets_trunc {s : Fin d → F} (hs : IsTranscendenceBasis C s)
-    (N : ℕ) : AlgebraicIndependent F (fun q : Fin N × Fin d => basisJets ht s ((q.1 : ℕ), q.2)) := by
+/-- **Finite truncations of a triangular family with invertible blocks are independent.** -/
+theorem IsJetTriangular.algebraicIndependent_trunc [CharZero F] (hz : IsJetTriangular z M)
+    (hM : ∀ k, (M k).det ≠ 0) (N : ℕ) :
+    AlgebraicIndependent F (fun q : Fin N × Fin d => z ((q.1 : ℕ), q.2)) := by
   classical
-  haveI : CharZero F := charZero_of_injective_algebraMap (algebraMap C F).injective
-  let M : Matrix (Fin N × Fin d) (Fin N × Fin d) (FunctionJetField F d) :=
-    Matrix.of fun q' q => jetCoordPartial (q'.2, (q'.1 : ℕ)) (basisJets ht s ((q.1 : ℕ), q.2))
-  have hblock : M.BlockTriangular (fun q => q.1) := by
+  let J : Matrix (Fin N × Fin d) (Fin N × Fin d) (FunctionJetField F d) :=
+    Matrix.of fun q' q => jetCoordPartial (q'.2, (q'.1 : ℕ)) (z ((q.1 : ℕ), q.2))
+  have hblock : J.BlockTriangular (fun q => q.1) := by
     intro q' q hlt
-    exact jetCoordPartial_eq_zero_of_mem (Nat.succ_le_of_lt hlt)
-      (basisJets_mem_jetSubalgebra ht s _)
-  have hdiag : ∀ k : Fin N, (M.toSquareBlock (fun q => q.1) k).det =
-      algebraMap F (FunctionJetField F d) (jetJacobian ht s).det := by
+    exact jetCoordPartial_eq_zero_of_mem (Nat.succ_le_of_lt hlt) (hz.mem_jetSubalgebra _ _)
+  have hdiag : ∀ k : Fin N, (J.toSquareBlock (fun q => q.1) k).det =
+      algebraMap F (FunctionJetField F d) (M k).det := by
     intro k
     let e : Fin d ≃ {q : Fin N × Fin d // q.1 = k} :=
       { toFun := fun i => ⟨(k, i), rfl⟩
@@ -236,25 +242,24 @@ theorem algebraicIndependent_basisJets_trunc {s : Fin d → F} (hs : IsTranscend
     rw [← Matrix.det_submatrix_equiv_self e, RingHom.map_det, ← Matrix.det_transpose]
     congr 1
     ext i j
-    simp only [Matrix.submatrix_apply, Matrix.toSquareBlock_def, Matrix.of_apply, M, e,
+    simp only [Matrix.submatrix_apply, Matrix.toSquareBlock_def, Matrix.of_apply, J, e,
       Equiv.coe_fn_mk, Matrix.transpose_apply, RingHom.mapMatrix_apply, Matrix.map_apply]
-    exact jetCoordPartial_basisJets_same ht s k i j
-  have hdet : M.det ≠ 0 := by
-    rw [hblock.det_fintype]
-    rw [Finset.prod_ne_zero_iff]
+    exact hz.jetCoordPartial_same k i j
+  have hdet : J.det ≠ 0 := by
+    rw [hblock.det_fintype, Finset.prod_ne_zero_iff]
     intro k _
     rw [hdiag k, ne_eq, map_eq_zero_iff _ (algebraMap F (FunctionJetField F d)).injective]
-    exact jetJacobian_det_ne_zero ht hs
+    exact hM k
   exact algebraicIndependent_of_domain_jacobian (K := F)
-    (fun q : Fin N × Fin d => basisJets ht s ((q.1 : ℕ), q.2))
+    (fun q : Fin N × Fin d => z ((q.1 : ℕ), q.2))
     (fun q' => ⇑(jetCoordPartial (q'.2, (q'.1 : ℕ))))
     (fun q' a b => map_add _ a b)
     (fun q' a b => by rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul])
-    (fun q' c => (jetCoordPartial _).map_algebraMap c) M hdet (fun q' q => rfl)
+    (fun q' c => (jetCoordPartial _).map_algebraMap c) J hdet (fun q' q => rfl)
 
-/-- **The positive jets of a transcendence basis are algebraically independent over `F`.** -/
-theorem algebraicIndependent_basisJets {s : Fin d → F} (hs : IsTranscendenceBasis C s) :
-    AlgebraicIndependent F (basisJets ht s) := by
+/-- **A triangular family of jets with invertible blocks is algebraically independent.** -/
+theorem IsJetTriangular.algebraicIndependent [CharZero F] (hz : IsJetTriangular z M)
+    (hM : ∀ k, (M k).det ≠ 0) : AlgebraicIndependent F z := by
   classical
   rw [algebraicIndependent_iff_injective_aeval, injective_iff_map_eq_zero]
   intro P hP
@@ -272,7 +277,7 @@ theorem algebraicIndependent_basisJets {s : Fin d → F} (hs : IsTranscendenceBa
   obtain ⟨Q, rfl⟩ := MvPolynomial.exists_rename_eq_of_vars_subset_range P emb hemb hvars
   rw [MvPolynomial.aeval_rename] at hP
   have hQ : Q = 0 :=
-    (algebraicIndependent_iff_injective_aeval.mp (algebraicIndependent_basisJets_trunc ht hs N))
+    (algebraicIndependent_iff_injective_aeval.mp (hz.algebraicIndependent_trunc hM N))
       (by rw [map_zero]; exact hP)
   rw [hQ, map_zero]
 
@@ -295,11 +300,11 @@ theorem adjoin_functionJet_eq_top :
         exact IntermediateField.mul_mem _ hP (IntermediateField.subset_adjoin F _ ⟨q, rfl⟩)
   exact IntermediateField.div_mem _ (hmem a) (hmem b)
 
-/-- **The jets of a transcendence basis generate the jet field over `F`.** -/
-theorem adjoin_basisJets_eq_top {s : Fin d → F} (hs : IsTranscendenceBasis C s) :
-    IntermediateField.adjoin F (Set.range (basisJets ht s)) = ⊤ := by
+/-- **A triangular family of jets with invertible blocks generates the jet field over `F`.** -/
+theorem IsJetTriangular.adjoin_eq_top (hz : IsJetTriangular z M) (hM : ∀ k, (M k).det ≠ 0) :
+    IntermediateField.adjoin F (Set.range z) = ⊤ := by
   classical
-  set L := IntermediateField.adjoin F (Set.range (basisJets ht s)) with hL
+  set L := IntermediateField.adjoin F (Set.range z) with hL
   -- every jet of order `k` lies in `L`, by induction on `k`
   have hjet : ∀ k : ℕ, ∀ j : Fin d, (functionJet (j, k) : FunctionJetField F d) ∈ L := by
     intro k
@@ -309,25 +314,22 @@ theorem adjoin_basisJets_eq_top {s : Fin d → F} (hs : IsTranscendenceBasis C s
         rw [jetSubalgebra, Algebra.adjoin_le_iff]
         rintro _ ⟨q, hq, rfl⟩
         exact ih q.2 hq q.1
-      have hlin : ∀ i, ∑ l, algebraMap F (FunctionJetField F d) (jetJacobian ht s i l) *
+      have hlin : ∀ i, ∑ l, algebraMap F (FunctionJetField F d) (M k i l) *
           (functionJet (l, k) : FunctionJetField F d) ∈ L := by
         intro i
-        have h := hsub (jetFieldDerivation_iterate_sub_mem ht s k i)
-        have hb : basisJets ht s (k, i) ∈ L := IntermediateField.subset_adjoin F _ ⟨(k, i), rfl⟩
+        have h := hsub (hz k i)
+        have hb : z (k, i) ∈ L := IntermediateField.subset_adjoin F _ ⟨(k, i), rfl⟩
         have := L.sub_mem hb h
-        rwa [basisJets, sub_sub_cancel] at this
+        rwa [sub_sub_cancel] at this
       intro j
-      let A := jetJacobian ht s
-      have hAinv : A * A⁻¹ = 1 := Matrix.mul_nonsing_inv A
-        (isUnit_iff_ne_zero.mpr (jetJacobian_det_ne_zero ht hs))
+      let A := M k
       have hA : (functionJet (j, k) : FunctionJetField F d) = ∑ i,
           algebraMap F (FunctionJetField F d) (A⁻¹ j i) *
             ∑ l, algebraMap F (FunctionJetField F d) (A i l) * functionJet (l, k) := by
         simp only [Finset.mul_sum, ← mul_assoc, ← map_mul]
         rw [Finset.sum_comm]
         simp only [← Finset.sum_mul, ← map_sum]
-        have hinv : A⁻¹ * A = 1 := Matrix.nonsing_inv_mul A
-          (isUnit_iff_ne_zero.mpr (jetJacobian_det_ne_zero ht hs))
+        have hinv : A⁻¹ * A = 1 := Matrix.nonsing_inv_mul A (isUnit_iff_ne_zero.mpr (hM k))
         have hcoef : ∀ l, ∑ i, A⁻¹ j i * A i l = if j = l then 1 else 0 := by
           intro l
           have := congrFun (congrFun hinv j) l
@@ -340,6 +342,29 @@ theorem adjoin_basisJets_eq_top {s : Fin d → F} (hs : IsTranscendenceBasis C s
   rw [eq_top_iff, ← adjoin_functionJet_eq_top, IntermediateField.adjoin_le_iff]
   rintro _ ⟨⟨j, k⟩, rfl⟩
   exact hjet k j
+
+end Triangular
+
+/-- The positive jets `δ^(k+1) s_i` of a family `s`. -/
+def basisJets (s : Fin d → F) (q : ℕ × Fin d) : FunctionJetField F d :=
+  ((jetFieldDerivation ht : FunctionJetField F d → FunctionJetField F d)^[q.1 + 1])
+    (algebraMap F (FunctionJetField F d) (s q.2))
+
+/-- The jets of any family are triangular, with the Jacobian as diagonal block. -/
+theorem isJetTriangular_basisJets (s : Fin d → F) :
+    IsJetTriangular (basisJets ht s) (fun _ => jetJacobian ht s) :=
+  fun k i => jetFieldDerivation_iterate_sub_mem ht s k i
+
+/-- **The positive jets of a transcendence basis are algebraically independent over `F`.** -/
+theorem algebraicIndependent_basisJets {s : Fin d → F} (hs : IsTranscendenceBasis C s) :
+    AlgebraicIndependent F (basisJets ht s) := by
+  haveI : CharZero F := charZero_of_injective_algebraMap (algebraMap C F).injective
+  exact (isJetTriangular_basisJets ht s).algebraicIndependent fun _ => jetJacobian_det_ne_zero ht hs
+
+/-- **The jets of a transcendence basis generate the jet field over `F`.** -/
+theorem adjoin_basisJets_eq_top {s : Fin d → F} (hs : IsTranscendenceBasis C s) :
+    IntermediateField.adjoin F (Set.range (basisJets ht s)) = ⊤ :=
+  (isJetTriangular_basisJets ht s).adjoin_eq_top fun _ => jetJacobian_det_ne_zero ht hs
 
 end
 

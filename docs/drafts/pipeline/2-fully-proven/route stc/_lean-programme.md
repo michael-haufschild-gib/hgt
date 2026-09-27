@@ -34,13 +34,13 @@ append a Log line, add `<card>-formalized.md` certificate (module + table card i
 | prime-height-commutator-calkin-ghost | source identity | ghost operator X on ℓ²(P) | done → 3-formalized |
 | prime-square-positivity-wall | `F=-Q'` | Laurent (1), negativity, kernel not PSD | done → 3-formalized |
 | source-work-grade-duality | involution + factorization | strict monotone E, no Φ, edge limits, (5),(6), (7) slope and branch uniqueness | done → 3-formalized |
-| euler-prime-boundary-tangent-space | Gram limit | S(v)=v⁻²+O(1), (2), density, weak null, Gamma-law limit, (5)-(7), fixed grade | todo |
-| prime-boundary-height-fibers | fixed-height limit | ℓ² Gram (1), (2) complete, moving (3), completion (4), reader (7) | todo |
+| euler-prime-boundary-tangent-space | Gram limit | S(v)=v⁻²+O(1), (2), density, weak null, Gamma-law limit, (5)-(7), fixed grade | done → 3-formalized |
+| prime-boundary-height-fibers | fixed-height limit | ℓ² Gram (1), (2) complete, moving (3), completion (4), reader (7) | done → 3-formalized |
 | physical-ordinate-transport-singularity | source Gram, rigged bound | divergence, countable support, (5)-(14) | todo |
 | poisson-mertens-clock-commutator | physical column wall | bounded noncompact K, σ_ess=[0,4], commutator, powers, reflected columns, Wiener–Hopf model, HS, phase twist, theta kernel non-selfadjoint | todo |
 | mertens-trace-class-xi-divisor-barrier | — | E ∈ S₁, Tr E = 0, signed spectrum, B_θ ∉ S₁, no transport, relative determinant | todo |
 | poisson-thermal-chirality-flat-primitive | symbol even/decreasing | multipliers, functional calculus, trace-class lift, sign instability, edge law, boundary trace | todo |
-| universal-boundary-pontryagin-countermodel | — | construction, HS, commutator (5), eigenvectors, neutral-subspace bound | todo |
+| universal-boundary-pontryagin-countermodel | — | construction, HS, commutator (5), eigenvectors, neutral-subspace bound | done → 3-formalized |
 
 ## Log
 
@@ -53,3 +53,27 @@ append a Log line, add `<card>-formalized.md` certificate (module + table card i
 - 2026-09-27: gamma-prime-hilbert-chamber closed (`STCGammaPrimeHilbertChamber`, `STCGammaPrimeWallScaling`); P2 gained `tendsto_inner_lp_of_coord`, `finrank_range_le_card`; `STCOrderedCurvatureRank` gained the det version.
 - 2026-09-27: flat-gap-exterior-spectral-reader closed (STCFlatGapSpectralBand, STCFlatGapMeasureReaderNoGo); moved to stage 3.
 - 2026-09-27: hyperbolic-gap-krein-signature closed (HTGeometry.ExponentialKernelAlternatingInertia, STCHyperbolicGapKreinSignature); moved to stage 3.
+- 2026-09-27: universal-boundary-pontryagin-countermodel closed (STCUniversalBoundaryPontryaginCountermodel, HedenmalmCompactSourceEigenmode, HTGeometry.PontryaginNeutralEigenvectorBound); moved to stage 3.
+- 2026-09-27: prime-boundary-height-fibers closed (STCPrimeLogSquarePoleScaling, STCPrimeBoundaryHeightFibers, HTGeometry.ExponentialFeatureTangentSpace); moved to stage 3.
+- 2026-09-27: euler-prime-boundary-tangent-space closed (STCPrimeBoundaryTangentSpace, STCPrimeBoundaryGammaLaw); moved to stage 3.
+
+## Plan for the last four cards (2026-09-27)
+
+Order: PMC (poisson-mertens-clock-commutator) → MTC (mertens-trace-class) → PTC (thermal chirality) → POT
+(physical-ordinate transport). PMC is the base of MTC and PTC.
+
+- PMC layers: (a) prime shells `S_n = {n ≤ log log p < n+1}`, `m_n → 1` (corpus Mertens II:
+  `tendsto_primeRecipSum_sub_logLog`, sharp rate `Sieve.abs_mertensS_sub_logLog_sub_const_le`);
+  (b) `K(p,q) = (pq)^{-1/2} h(x_p-x_q)`, `h = sech²(·/2)` (existing `stcPrimePoissonKernel`), bounded by
+  weighted Schur test (corpus `WeightedSchurTest`), positive (Poisson Gram); (c) commutator
+  `C = (x_p-x_q)K`, bounded, skew; (d) physical powers `T^β` phase diagram (column sums
+  `Σ 1/(p (log p)^s)`, s > 0); (e) Calkin model: cell isometry `U`, Wiener–Hopf `W`, `UKU* - W`
+  Hilbert–Schmidt, `σ_ess` via Weyl sequences (definition: unit weakly-null approximate eigenvectors),
+  `0 ≤ W ≤ 4`, plane-wave packets; (f) reflected kernels; phase twist; theta-inverse self-adjointness no-go.
+- MTC layers: trace class of `E = A - W` via block nuclear bounds (cosine-series or H² route), trace zero via
+  cell compressions, signed spectrum, theta inverse not trace class (growth / RvM), relative determinant.
+- PTC layers: Fourier multiplier of `h` (`4πξ/sinh(πξ)`, corpus `CoshFourierTransform`), commutator
+  symbol, trace-class lift, boundary trace anomaly, sign-instability example, edge asymptotics.
+- POT layers: Gram (3) (existing `STCPhysicalOrdinateSourceOrthogonality`), norm divergence, countable
+  support, exact multiplier (5)–(9), finite-packet interpolation, graph collapse (10), rigged recovery
+  (11)–(12) (existing `STCRiggedPrimeSeamBound`), zero-density rigidity (13)–(14), Banach algebra `A_η`.

@@ -209,7 +209,7 @@ theorem integrable_quarticProfile_sourceChar (z : ℂ) :
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (quarticProfile_pos x),
     norm_sourceChar]
 
-theorem sourceChar_add (z : ℂ) (x y : ℝ) :
+theorem sourceChar_add_mul (z : ℂ) (x y : ℝ) :
     sourceChar z (x + y) = sourceChar z x * sourceChar z y := by
   rw [sourceChar, sourceChar, sourceChar, ← Complex.exp_add]
   push_cast
@@ -226,7 +226,7 @@ theorem xiC_source (z : ℂ) :
         (fun y => (quarticProfile y : ℂ) * sourceChar z y * sourceChar z s) (x - s) := by
       intro x
       simp only
-      rw [mul_assoc, ← sourceChar_add, sub_add_cancel]
+      rw [mul_assoc, ← sourceChar_add_mul, sub_add_cancel]
     simp_rw [e]
     rw [integral_sub_right_eq_self (fun y => (quarticProfile y : ℂ) * sourceChar z y *
       sourceChar z s) s, integral_mul_const]
@@ -236,7 +236,7 @@ theorem xiC_source (z : ℂ) :
     have := (hH.comp_sub_right s).mul_const (sourceChar z s)
     refine this.congr (ae_of_all _ fun x => ?_)
     simp only
-    rw [mul_assoc, ← sourceChar_add, sub_add_cancel]
+    rw [mul_assoc, ← sourceChar_add_mul, sub_add_cancel]
   have hsplit : (fun x => ((source P).k x : ℂ) * sourceChar z x) = fun x =>
       (quarticProfile x : ℂ) * sourceChar z x +
         (P.a : ℂ) * ((quarticProfile (x - P.L) : ℂ) * sourceChar z x) +
@@ -422,11 +422,6 @@ theorem density_tail_integral_left {x c : ℝ} (hx : x ≤ -(P.L + 1))
   rwa [density_neg] at h
 
 /-- Complementary tail masses. -/
-theorem setIntegral_Iic_add_Ioi {f : ℝ → ℂ} (hf : Integrable f) (x : ℝ) :
-    (∫ y in Iic x, f y) + ∫ y in Ioi x, f y = ∫ y, f y := by
-  rw [← setIntegral_union (Iic_disjoint_Ioi le_rfl) measurableSet_Ioi hf.integrableOn
-    hf.integrableOn, Iic_union_Ioi, setIntegral_univ]
-
 theorem setIntegral_Iic_add_Ioi_real {f : ℝ → ℝ} (hf : Integrable f) (x : ℝ) :
     (∫ y in Iic x, f y) + ∫ y in Ioi x, f y = ∫ y, f y := by
   rw [← setIntegral_union (Iic_disjoint_Ioi le_rfl) measurableSet_Ioi hf.integrableOn
@@ -639,7 +634,7 @@ theorem norm_sourceModeU_le_right {z : ℂ} (hz : |z.im| ≤ 1) (hzero : xiC (so
     {x : ℝ} (hx : P.L + 1 ≤ x) : ‖sourceModeU (source P) z x‖ ≤ density P x := by
   have hf := integrable_k_sourceChar (source P) (hasShiftedTail_source P z)
   have hI : sourceModeI (source P) z x = -∫ y in Ioi x, ((source P).k y : ℂ) * sourceChar z y := by
-    have h := setIntegral_Iic_add_Ioi hf x
+    have h := HedenmalmFredholmRange.setIntegral_Iic_add_Ioi hf x
     change _ = xiC (source P) z at h
     rw [hzero] at h
     rw [sourceModeI]

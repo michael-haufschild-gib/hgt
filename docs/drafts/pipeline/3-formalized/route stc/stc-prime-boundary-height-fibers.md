@@ -1,9 +1,9 @@
 # Spectral height fibres of the critical Euler prime boundary
 
 - **ID:** stc-prime-boundary-height-fibers
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Routes:** STC, RHist
-- **Status:** [PROVED ON PAPER] [ARITHMETIC FIXED-HEIGHT LIMIT LEAN-CHECKED] [FULL HILBERT FORMALIZATION PENDING] [NOT AN RH PROOF]
+- **Status:** [PROVED ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]
 - **Novelty:** Source-specific synthesis of the prime Abel pole and literal Euler height character. Literature novelty unverified.
 
 ## Source and theorem
@@ -69,4 +69,8 @@ At fixed nonzero horizontal grade g, the normalized compact channel v² P_(b_(v+
 
 The real same-height case is the checked theorem tendsto_stcEulerPrimeBoundaryTangentGram. The new leaf STCPrimeHeightFiberAbel.lean Lean-checks the literal complex prime-log-square series, its exact identity with the derivative of the existing prime-log current in the Euler half-plane, analyticity of that current on the one-line at nonzero height, and the resulting normalized fixed-height limit zero. Thus the arithmetic core of (2) is checked without assuming (5). The literal source phase is already proved in XiOuterEulerModulusPrimeSeamAntialignment.lean.
 
-Still outside Lean are the identification of (1) as an ell² inner product, the moving-height limit (3), and the Hilbert completion and nonclosable reader (4)–(7). The paper proof uses the prime-power identity (5) for the moving complex scaling; that identity is also not yet formalized. None of these boundary laws establishes the required source-to-Xi-divisor transport.
+The ℓ² Gram (1), the fixed and moving limits (2)–(3), the prime-power identity (5), the complex pole (6), continuity in the height, the Hilbert completion and its nonseparability (4), and the nonclosable reader (7) are now formalized in `STCPrimeLogSquarePoleScaling.lean`, `STCPrimeBoundaryHeightFibers.lean` and `ExponentialFeatureTangentSpace.lean`; see the certificate. None of these boundary laws establishes the required source-to-Xi-divisor transport.
+
+## Log
+
+- 2026-09-27: ℓ² Gram (1), fixed-height and moving-height limits (2)–(3), height continuity and non-commuting limits, Euler identity (5) and complex pole (6), completion `⊕_t L²(r dr)` with dense span, nonseparability and the no-separable-realization theorem (4), nonclosable endpoint reader (7), and the vanishing fixed-grade channel formalized unconditionally (`STCPrimeLogSquarePoleScaling.lean`, `STCPrimeBoundaryHeightFibers.lean`, `HTGeometry/ExponentialFeatureTangentSpace.lean`); certificate `stc-prime-boundary-height-fibers-formalized.md`; moved to stage 3.

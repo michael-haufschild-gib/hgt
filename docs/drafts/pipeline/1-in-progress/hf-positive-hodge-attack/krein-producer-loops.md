@@ -748,3 +748,203 @@ Next conjectures to test:
   - The negative side follows by the parity `Φ^{(k)}(−u) = (−1)^kΦ^{(k)}(u)`.
   - **Ratio**: `(128e²)^{2k} e^{−3πY₀/2}·poly ≤ e^{−3Y₀}` for `k ≤ Y₀/10`. Removing the two polar functionals costs 2 dimensions.
 - **Target theorem.** For all large `a`: `dim V ≥ e^{2a−2}/10 − 4` and `‖W(f,f)‖ ≤ exp(−3e^{2a−2})∫‖f‖²` on `V`.
+
+### L35 result — The near radical of the level-`a` Weil form has dimension `≍ e^{2a}`. TRUE [L]
+- **Theorem** (`RHTower/WeilNearRadicalDimension:zeta_weil_near_radical_dimension`; unconditional; axioms propext, Classical.choice, Quot.sound).
+  - For all large `a`, the Hodge-class tests (`C²`, `tsupport ⊆ [−a,a]`, `f̂(±i/2) = 0`) contain a subspace `V` with `dim V ≥ e^{2a−2}/20`.
+  - On `V`, `‖W(f,f)‖ ≤ exp(−e^{2a−2})∫|f|²`.
+  - By min–max, at least `e^{2a−2}/20` eigenvalues of the level-`a` Weil/Hodge form lie below `exp(−e^{2a−2})`.
+  - This is the order of magnitude of Connes–Consani's numerically observed `≈ 2e^{2a}` extremely small eigenvalues, now a theorem.
+- **Construction.**
+  - `V` is the kernel of the two polar functionals inside `{(Σ_{i≤K} a_iΦ^{(i)})·χ_a}`, `K = ⌊e^{2a−2}/10⌋ − 3`.
+  - `χ_a = ϑ(a−u)ϑ(a+u)` is 1 on `[−(a−1), a−1]`. `Φ^{(i)}` has transform `(−iz)^iΞ(z)`, so it lies in the exact radical, and the Weil energy is that of the tail.
+  - Tail: Lagrange extrapolation from `[Y₀/8, Y₀/4]` with no factorial loss (the node products `i!(k−i)!` and `Σ1/(i!(k−i)!) = 2^k/k!`). Bulk: a Remez inequality in the chart `e^{2u}`, again with exponential rather than factorial loss.
+  - Ratio: `137984·k²Y₀⁴(128e²)^{2k}e^{−3πY₀/2} ≤ e^{−Y₀}` for `k + 1 ≤ Y₀/10`, `Y₀ = e^{2a−2} ≥ max(100, log(720C+1))`.
+- **Modules** (all wired, `lake build --old` green):
+  - `HTGeometry/PolynomialExtrapolationRemez` (≈470 lines): sharp Lagrange value and derivative extrapolation; Remez sublevel bound in a monotone chart.
+  - `RHTower/RiemannKernelCuspSeries` (≈560): `Φ = S_{4π²X²−6πX}` as the cusp series `Σ_n e^{u/2}R(n²e^{2u})e^{−πn²e^{2u}}`; `S_R' = S_{DR}`; parity; decay; transforms; radical; linear independence of `P_k = D^kR₀`.
+  - `RHTower/CuspSeriesBulkTailBounds` (≈600): weighted tail bound `M·28k(16e)^kY₀²e^{−πY₀}e^{−u}` and bulk bound `∫S_R² ≥ M²e^{−πY₀/2}/(176(8e)^{2k})`.
+  - `RHTower/TruncatedRiemannKernelWeilEnergy` (≈760): cutoff, truncated tests, Weil-energy bound, and the tail and bulk bounds in terms of bulk maxima.
+  - `RHTower/WeilNearRadicalDimension` (≈330): ratio, linear algebra (rank–nullity, injectivity), final theorem.
+- **Verdict: BRIDGE → new theorem.**
+  - The phenomenon was observed and explained heuristically by Connes–Consani (2021) and CCM (2025), and fitted empirically by Zhu (2026). No proof of the count or the margin existed. L30 gave a single vector.
+  - Consequence for HF: every certificate `W ≥ η‖f‖²` with `η > exp(−e^{2a−2})` on a subspace `U` has `U ∩ V = 0`, so `U` misses at least `e^{2a−2}/20` dimensions.
+  - Any producer of Hodge(a) must therefore certify positivity on a `≳ e^{2a}`-dimensional block where the form is `exp(−e^{2a})`-degenerate. Finite-rank-correction producers and CCM's (S2) (ground state isolated from the rest) face this whole block, not one vector.
+- **Open (sharp form).** The count is `(2−O(η))e^{2a}` at margin `exp(−ηe^{2a})` (prolate/Landau–Widom). Polynomial multipliers cap at `(π/2)e^{2a}`; reaching `2e^{2a}` needs square phase-space concentration (prolates or Gabor boxes).
+- **L34 result [L]: cluster-robust Nyquist exclusion.** Six modules, wired (five in `RHTower.lean` after `HodgeNyquistExclusion`, one in `HTGeometry.lean`). Built with `lake build`; axioms propext, Classical.choice, Quot.sound. The remaining lint errors belong to other, unwired modules.
+  - `HTGeometry/ExponentialLagrangeContour` (285 lines).
+    - `sum_expNodalWeight_inside_eq_rectangleIntegral`: barycentric interpolation in `w = e^{iκz}` as a `z`-plane rectangle contour. The residue of `iκe^{iκt}/(e^{iκt}−ω)` is computed through `dslope`.
+    - `norm_coeff_le_of_forall_real`: the coefficients are bounded by the supremum on the circle.
+  - `RHTower/CompositeResolventDivision` (418 lines).
+    - `multiResolvent_spec`: division by a finite divisor. `multiResolvent_tail`: the tail bound `2^{Σm}`, independent of the geometry.
+    - `multiResolvent_two_step`, `resolvent_pair_calculus`: two derivatives.
+    - `expPolyShiftOp`: a shift operator with symbol `Q(e^{iκz})`.
+  - `RHTower/XiWindowQuotient` (519 lines).
+    - `card_windowCopySet_le`: the window of multiplicity copies has `O(log t₀)` elements.
+    - `norm_logDeriv_xi_sub_window_le`: `|ξ'/ξ − Σ_V (s−ρ)⁻¹| ≤ C log t₀`, with no distance hypothesis.
+    - `abs_log_windowQuotient_sub_le`: Lipschitz bound. `log_norm_windowQuotient_anchor_ge`: the anchor at `Re s = 2`.
+  - `RHTower/ClusterNodeFrame` (296 lines).
+    - Node set and node divisor with the multiplicities of the `ξ`-divisor. `riemannXiHat_local_factor`: the local factor of `Ξ` of exactly the divisor order.
+    - `prod_norm_sub_ge_on_frame`: frame products are `≥ (δ₀/(16e))^N`. `prod_windowCopySet_conj`: reflection with multiplicity.
+  - `RHTower/ClusterInterpolationContour` (1195 lines).
+    - `ClusterSetup` with forward-difference selection (`exists_clusterSetup`).
+    - `Lh_le_norm_Khat`: `|K̂| ≥ e^{L(t₀)}(δ₀/16e)^N` on both frames, by zero-free paths of length `≤ 3` plus symmetry.
+    - `one_le_norm_polarSymbol`: `|P| ≥ 1` for the adapted polar shift `(2k+1)π/t₀`.
+    - `norm_Q_eval_le`: the interpolant is at most `2·3^N·Mb` on `ℝ`.
+  - `RHTower/HodgeClusterNyquistExclusion` (1072 lines).
+    - `re_W_le_nodes_add`: finitely many nodes against the rest. `re_summand_node_le`: each node contributes `≤ −m(1−2η−η²)`.
+    - `cluster_inequality`.
+    - **`hodgeIndex_excludes_clustered_zero`** (product form) and **`hodgeIndex_cluster_nyquist_horizon`** (logarithmic form).
+- **Theorem (L34).** Assume Hodge(a) with `a ≥ 1`, and let `ρ₀ = β₀+it₀` have `β₀ > ½`, `t₀ ≥ 101`, and `6+3N ≤ 2πe^{2X}`, where `X = a−3/8` and `N` is the number of window zeros with multiplicity. Then
+  `πe^{2X} ≤ π(t₀+1)/2 + 2log(N+1) + 2L_N + a/2 + 2log(t₀+3) + (5+3N)X + log(K₀2^N B_N)`,
+  where `L_N = log32 + N log3 + N log(32(N+1)) + 2N log(16e/δ₀) + 2 + N log5 + 3C log t₀ − log δ₀`.
+  - With `N = O(log t₀)` the right side is `πt₀/2 + O(log t₀(log log t₀ + log(1/δ₀)) + a log t₀)`.
+  - So the level-`a` Hodge index excludes every off-line zero below `2e^{2a−3/4} − O(log t₀·(log log t₀ + log 1/δ₀))`, uniformly in clustering.
+- **Paper proof (outline, all steps formalized).**
+  1. Selection. Choose `X ∈ [½,¾]` and `y₀ ∈ [δ₀/4, δ₀/2]` by forward differences. Every sub-product of the window divisor on the frame of the rectangles `[t₀±X]×±[y₀,1]` is then `≥ (δ₀/16e)^N`.
+  2. Nodes. The nodes are the zeros inside the rectangles. Divide `Φ` by the node divisor to get `K = D_LΦ`, with `K̂ = Ξ/Π(z−γ)^m`. This is holomorphic and zero-free on the closed rectangles.
+  3. Frame bound. `|K̂| = |ξ/P_V|·Π_{non-node window zeros}|t−γ|`. `log|ξ/P_V|` is `C log t₀`-Lipschitz on zero-free segments of total length `≤ 3` to `Re s = 2`, where it is `≥ −πτ/4 − 2 − N log 5`.
+  4. Interpolant. Let `Q` interpolate `±i/(PK̂)` at `e^{iκγ}`. By the exponential contour on the two rectangles, `|Q(e^{iκx})| ≤ 2·3^N·Mb` on `ℝ`, so the coefficients are `≤ Mq`.
+  5. Test. The test `f = N_Q P_s(χK)` is `C²`, supported in `[−a,a]`, and vanishes at `±i/2`. Its transform is `±i − Y` at the nodes and `−Y` at every other zero, with `|Y| ≤ 6Σ|c_k|·tail(K)`.
+  6. Contradiction. The node block is `≤ −3/8` once `η ≤ ¼`. Hodge positivity then forces `1 ≤ η(4 + 14S_Z e^{a/2}N₁₂)`, and `tail(K) ≤ 2^N·tail_Φ(a−3/8) ≤ exp(−πe^{2a−3/4}+O(Na))`.
+- **Verdict (L34).** PROVED. The level-`a` Hodge index for `ζ` is at least RH up to height `≍ 2e^{2a−3/4}`, with only polylogarithmic losses and no separation hypothesis.
+  - This removes the "super-tight cluster" and "density/crowding mask" caveats of L28–L32 inside the Nyquist regime.
+  - Novelty: CCM Cor. 3.8 (arXiv 2511.22755) is the limit statement `lim μ = 0 ⇒ RH`. No finite-height version appears in the literature (checked: 2511.22755, 2511.23257, 2605.20224, 2606.09096, 2608.24827).
+- **Producer consequence.** A producer of level-`a` positivity is a proof of RH up to `2e^{2a−3/4}` (MUST-481). Combined with L33, the finite-level problem sits between RH to `≍ e^{2a}` and RH to `exp(O(e^a))`. That window is the "blind zone", where HF-F29 counts deep pairs of the other cycle.
+
+### L35 — Spectral separation at finite level: off-line zeros below Nyquist create eigenvalues `≤ −e^{−(π/2)t}` (in progress)
+- **Context.** CCM (arXiv 2511.22755, Cor. 3.8) proves only the limit statement `lim_λ μ_λ = 0 ⇒ RH`. HF-F30 (other cycle) shows that `≍ e^{2a}` eigenvalues of the level-`a` Weil form lie within `exp(−e^{2a−2})` of `0`, unconditionally. HF-F29 shows the negative index counts off-line pairs.
+- **Conjecture (spectral separation law).** Let `μ(a)` be the bottom of the polar-constrained level-`a` Weil form (relative to `∫|f|²`).
+  - For every zero `β₀+it₀` with `β₀ > ½`, `t₀ ≥ 101`: either `πe^{2a−3/4} ≤ π(t₀+1)/2 + O(polylog)` (the zero is above Nyquist), or `μ(a) ≤ −exp(−π(t₀+1)/2 − O(polylog))`.
+  - Equivalently, `μ(a) ≥ −η` excludes all off-line zeros below `min(2e^{2a−3/4}, (2/π)log(1/η)) − O(log t(log log t + log 1/δ))`.
+  - So the spectrum near `0` splits in two: the near-radical cluster `|μ| ≤ exp(−e^{2a−2})` (`≍ e^{2a}` eigenvalues), and one eigenvalue `≤ −e^{−πt/2}` per off-line zero at height `t` below Nyquist. Nothing lies in between, up to the blind zone.
+- **Why a producer needs it.** A producer must deliver `μ(a) ≥ −o(1)`. This law says what "almost positive" certifies: `μ(a) ≥ −η` is RH up to height `(2/π)log(1/η)`. It is the height-resolved form of CCM's criterion, and it quantifies how numerical lower bounds on `μ(a)` translate into zero-free heights.
+- **Kill attempts.**
+  - *False?* No shape contradicts it. The L34 node test has `Re W ≤ −3/8` and `∫|f|² ≲ e^{π(t₀+1)/2+polylog}`.
+  - *Circular?* No. The input is the L34 test plus an `L²` bound `∫|f|² ≤ 2a(‖f‖₁+‖f''‖₁)²`.
+  - *Rediscovered?* Bombieri 2000 and CCM have no heights. 2608.24827 has certified `λ_min` bounds only at `L ≤ 0.8`, with no zero statement.
+  - *Insignificant?* It is a receiver in quantitative form. It turns the CCM program's numerical object `μ(a)` into zero-free heights, and it supplies the missing half of the spectral picture next to HF-F30.
+  - Verdict: SURVIVES PRELIMINARY ATTACK.
+
+### L36 — Krein pinning law: every positive completion of the level-`a` Weil form is the zero measure of ζ below height `≍ e^{2a}` (in progress)
+- **Context.**
+  - HF's level-wise producer object is a positive Krein completion: a positive measure `ν` with `∫|f̂|²dν = W(f,f)` on the level-`a` Hodge class. It exists iff Hodge(a).
+  - The corpus has the global statement: a nonnegative theta-null Schwartz form has a unique spectral measure, supported on the real Ξ divisor (`HedenmalmUniversalPositiveFormClassification`).
+  - At finite level the extension problem is indeterminate, so no uniqueness is known there.
+- **Literature (checked 2026-09-27).**
+  - Suzuki (arXiv 2206.03682, 2606.09096; screw function, de Branges spaces) conjectures a zero operator as the `a → ∞` limit of finite-interval realizations. No quantitative pinning of extensions.
+  - CC, CCM, Zhu: numerics only.
+- **Conjecture (bold).** There are `c, c' > 0` such that, for all large `a`, every positive measure `ν` dominated by the level-`a` Weil form on the Hodge class (`∫|f̂|²dν ≤ |W(f,f)|`) satisfies:
+  - **(P1)** `ν(I) ≤ exp(−c e^{2a})` for every interval `I ⊂ [−c'e^{2a}, c'e^{2a}]` at distance `≥ δ` from all zero ordinates, with `δ ≥ e^{−c e^{2a}/log}`;
+  - **(P2)** for an exact representation `ν`, `|ν(B(γ,r)) − m_γ| ≤ exp(−c e^{2a})` at every isolated on-line zero below `c'e^{2a}`.
+  - Hence every producer of Hodge(a) is a spectral realization of the zeros below the Nyquist-scale height, to super-exponential precision.
+- **Mechanism.**
+  - This is a Christoffel-function bound. The modulated radical test `f_ω = Φ_{≤a−1/4} ⋆ (∂²−¼)(κe^{−iω·})` has transform `Φ̂_core·(−z²−¼)κ̂(z−ω)`: polar-free, radical, and localized at `ω`.
+  - Take `ω = τ₀`. Then `ν(I)·min_I|f̂_ω|² ≤ |W(f_ω,f_ω)| ≤ poly·e^{−πe^{2a−1/2}}`, while `|f̂_ω| ≳ |Ξ(τ₀)| ≳ e^{−πτ₀/2}·exp(−C log τ₀/δ)`. This uses the lossy Gamma bound and the corpus lower bound for `|ζ|` along a horizontal path.
+  - (P2) uses the resolvent division `D_γ` (`ResolventDivisionDecay`).
+- **L35 result [L]: spectral separation.** Module `RHTower/WeilFloorSpectralSeparation`, wired after `HodgeClusterNyquistExclusion`; built; axioms propext/choice/Quot.sound.
+  - `WeilFloorAtLevel Z a η` means `μ(a) ≥ −η`: `Re W(f,f) ≥ −η∫|f|²` on polar-constrained `C²` tests in `[−a,a]`.
+  - `norm_le_of_contDiff_two_supp`: `sup|f| ≤ 2a‖f''‖₁`. `integral_norm_sq_le`: `∫|f|² ≤ 2a‖f''‖₁‖f‖₁`.
+  - `cluster_floor_inequality`: `1 ≤ η_t(4 + 14S_Z e^{a/2}B') + 6aηB'²`.
+  - **`weilFloor_excludes_clustered_zero`** (product form) and **`weilFloor_spectral_separation`** (logarithmic form). Under `μ(a) ≥ −η`, every zero with `β₀ > ½`, `t₀ ≥ 101`, and `6+3N ≤ 2πe^{2X}` satisfies one of:
+    - `πe^{2X} ≤ π(t₀+1)/2 + 2log(N+1) + 2L + a/2 + 2log(t₀+3) + (5+3N)X + log(2K₀2^N B)`, or
+    - `log(1/η) ≤ π(t₀+1)/2 + 2log(N+1) + 2L + 4log(t₀+3) + 2log B + log(2K₁a)`.
+- **Verdict (L35).** PROVED.
+  - An off-line zero at height `t` below `≈2e^{2a−3/4}` produces an eigenvalue `≤ −e^{−πt/2−O(log t(log log t + log 1/δ) + log a)}`, whatever the configuration of nearby zeros.
+  - With HF-F30, the spectrum near `0` separates into the near-radical cluster (`≍e^{2a}` eigenvalues, `|μ| ≤ exp(−e^{2a−2})`) and one eigenvalue `≤ −e^{−πt/2}` per off-line zero below Nyquist.
+  - CCM's `lim μ = 0 ⇒ RH` becomes height-resolved: `μ(a) ≥ −η ⇒` RH below `min(2e^{2a−3/4}, (2/π)log(1/η)) − polylog`.
+- **Next (L36): producer side.** From the L35 exploration: on the near radical, the radical identity reduces `Q(χ(Φ⋆ψ))` to `Q` of the tail. The tail is a two-bump function of width `≍e^{−2a}` at `±(a−1/8)`. Its self-correlation avoids every `log n`, and the cross term meets only the prime powers near `e^{2a−1/4}`.
+  - So the archimedean `log|τ|` symbol should make `Q ≥ 0` there, unconditionally.
+  - Candidate unconditional producer class: Weil positivity on thin tests whose autocorrelation support avoids the prime logarithms.
+
+### L37 — Nyquist inertia law: below Nyquist, every off-line zero is its own negative square (in progress)
+- **Context.**
+  - HF-F29 (`zeta_weil_inertia_law`) gives two bounds on the `ε`-negative index of the level-`a` Weil form.
+    - Upper: at most the off-line pairs below `exp(O(e^a) + O(log 1/ε))`.
+    - Lower: at least `|T| − 2`, but only for zeros that are deep (`β ≥ ½ + δ`), isolated at radius `R` from other off-line zeros, and below the visibility height `exp(e^{2δa − O(log a)})`.
+  - The lower bound misses three cases:
+    - shallow zeros (for `δ ≲ log a / a` the visibility height is below `e^{2a}`);
+    - clusters;
+    - the two polar constraints.
+  - L34/L35 give one negative direction per zero, with no configuration hypothesis. They say nothing about how several zeros interact.
+- **Conjecture (Nyquist inertia law).** There are absolute `K₀, K₁` with the following property. Let `a ≥ 1`, and let `T` be a finite set of zeros with `β > ½`, `t ≥ 101`, and pairwise `|t_ρ − t_σ| ≥ 3/2`.
+  - Suppose `K₀·|T|·e^{a/2}·Λ²·τ ≤ 1`. Here `Λ` bounds the per-zero size `2^N B_N (N+1) M_{t,δ,N} (t+3)²` of the L34 test, and `τ` bounds its tail `e^{(5+3N)X − πe^{2X}}`.
+  - Then the `1/(K₁ a |T| Λ²)`-negative index of the level-`a` Weil form is `≥ |T|`.
+  - The loss relative to L34 is `log|T|`, in logarithmic form. There is no isolation, no depth-dependent visibility and no `−2`: each cluster test is polar-free by construction.
+- **Consequence.** The HF-F29 upper bound and this law sandwich the negative index. Between the Nyquist height `≈ 2e^{2a}` and the archimedean horizon `exp(O(e^a))` lies the blind zone. Below Nyquist, the negative index of the finite-level Weil form counts separated off-line zeros exactly, at any depth and in any configuration.
+- **Kill attempts.**
+  - *False?* The Gram matrix of the cluster tests is diagonally dominant. Test `j` has transform `±i` at its own nodes and `≤ η_j` at every other zero. Disjoint reflect-closed node sets make each cross summand `≤ m(η_j E_k + η_k E_j)/(1+|t|)²`. No shape contradicts it.
+  - *Circular?* No. It is a Gram argument on unconditional tests.
+  - *Rediscovered?* Weil and Bombieri (2000): the full index counts off-line zeros (no level). Yoshida (1992): positivity on small support. HF-F29: margins as above. None gives a finite-level lower bound for clusters.
+  - *Insignificant?* It is receiver-side. Its value is structural: below Nyquist, the finite-level Weil form is exactly the zero trace form. Any producer at level `a` must certify an index of `0`, which is RH below Nyquist, zero by zero and with no averaging.
+  - Verdict: SURVIVES PRELIMINARY ATTACK.
+- **Paper proof.**
+  1. For each `ρ ∈ T` take the L34 cluster setup at `t_ρ`. Its nodes lie in `|Im − t_ρ| < 3/4`, so the node sets are pairwise disjoint and reflect-closed.
+  2. Diagonal: `Re W(f_ρ,f_ρ) ≤ −3/8 + 5S_Z η_ρ e^{a/2} B'_ρ` when `η_ρ ≤ ¼` (the L34 node block).
+  3. Cross terms: `|W(f_ρ,f_σ)| ≤ (5/4)S_Z(η_ρE_σ + η_σE_ρ)`, where `E = e^{a/2}·4(‖f‖₁+‖f''‖₁)`. Each zero is off the nodes of `f_ρ` or of `f_σ`, and so is its reflection.
+  4. Gram: `Re W(Σc f) ≤ (−3/8 + D + (|T|−1)O)‖c‖² ≤ −¼‖c‖²`, and `∫|Σc f|² ≤ |T|‖c‖² max∫|f|² ≤ |T|‖c‖²·2aB'²`.
+  5. So the synthesis map is injective and its range is `|T|`-dimensional, polar-free, supported in `[−a,a]`, and `ε`-negative. Conclude with `le_csSup`, with bounded-above from the HF-F29 upper bound.
+
+### L36 result — Positive completions are pinned to the zeros below `≈ e^{2L−1/2}`. TRUE [L] for (P1); (P2) open
+- **Theorem** (`RHTower/KreinCompletionPinning:zeta_krein_completion_pinned_off_zeros`; unconditional; axioms propext/choice/Quot.sound).
+  - There are `K > 0` and `L₀` such that, for `L ≥ L₀`, every positive measure `ν` with `∫|f̂|²dν ≤ |W(f,f)|` on the level-`L` Hodge class satisfies `ν([τ₀−δ/2, τ₀+δ/2]) ≤ K e^{12L} e^{−πe^{2L−1/2}}`.
+  - Conditions: `τ₀ ≥ 5` is at distance `≥ δ` from every zero ordinate (`0 < δ ≤ 1`), and `π(τ₀+½) + 6C log(τ₀+1)/δ ≤ πe^{2L−1/2}`, where `C` is the corpus `ζ'/ζ` constant.
+  - Every positive Krein completion of the level-`L` Weil form is such a `ν`, and the RH zero measure is one of them.
+  - So below height `≈ e^{2L−1/2}` a positive completion is super-exponentially close to being supported on the zero ordinates. In the indeterminate extension problem, positivity forces the spectrum.
+- **Proof.** A Christoffel-function bound, using the modulated radical test `f_{L,τ₀} = Φ_{≤L−¼} ⋆ (κe^{−iτ₀·})₂` (`RHTower/ModulatedRiemannRadicalTest`).
+  - The test is polar-free and radical, with transform `Φ̂_core(z)(−z²−¼)κ̂(z−τ₀)`.
+  - `W(f,f) ≤ ε_L²C_κ²(1+τ₀)⁴·24A₀log(τ₀+3)`. Both evaluation points see only the tail, and there is fourth-order bump decay.
+  - On the window, `|f̂| ≥ (|Ξ| − ε_L)(τ²+¼)cos(⅛)∫κ`. Also `|Ξ(τ)| ≥ c_Ξτ²e^{−πτ/2}exp(−(3/2)C log τ/δ)`, from the duplication-lossy Gamma bound and the `|ζ|` horizontal-path bound.
+- **Modules.** `RHTower/ModulatedRiemannRadicalTest` (≈510 lines) and `RHTower/KreinCompletionPinning` (≈450 lines). Both are wired and built with `lake build --old`, and lint is clean for these modules.
+- **Verdict.** New theorem, a rigidity law for the producer object of HF.
+  - The corpus global version (`HedenmalmUniversalPositiveFormClassification`: a theta-null form has a unique spectral measure on the real Ξ divisor) is the `L = ∞` shadow. L36 is its quantitative finite-level form.
+  - Literature: Suzuki (screw/de Branges) conjectures limits but gives no finite-level pinning; CC/CCM/Zhu are numerical.
+- **Route consequence (HF).**
+  - Any producer of a positive Krein completion at level `L` must place its spectral mass on the zero ordinates of ζ below `≈ e^{2L}`, to precision `exp(−πe^{2L−1/2})`.
+  - So a producer is a finite-level spectral realization of the zeros below the Nyquist-scale height.
+  - Together with HF-F31 (Hodge(a) ⇒ RH up to `≍e^{2a}`): positivity at level `L` is at least RH to height `e^{2L}`, and its witness measure is the zero measure there.
+- **Open (P2).** Masses: `ν(B(γ,r)) = m_γ + tiny` at isolated on-line zeros.
+  - The upper half should follow from the resolvent-divided test `D_γΦ`.
+  - The lower half needs `ν` controlled super-close to every other zero. Polynomial bump decay (`κ̂`) is too weak at low frequencies, where `|Ξ|` is large, so a new idea is needed.
+- **L37 result [L]: Nyquist inertia law.** Module `RHTower/WeilNyquistInertia`, wired after `WeilFloorSpectralSeparation`. Checked with `lake env lean`; axioms propext/choice/Quot.sound.
+  - `norm_W_le_of_split`: if `f̂` is `≤ η_f` off a set `F` of zeros and `ĝ(conj γ)` is `≤ η_g` on `F`, then `‖W(f,g)‖ ≤ (5/4)S_Z(η_f E_g + η_g E_f)`.
+  - `exists_negative_subspace_of_gram`: a diagonally dominant Weil Gram matrix of polar-constrained tests (`Re W_ii ≤ −3/8 + D`, `‖W_ij‖ ≤ O`, `D + (n−1)O ≤ 1/8`) gives an `n`-dimensional `ε`-negative subspace, for `εn·max∫|f_i|² ≤ 1/8`.
+  - Cluster pieces:
+    - `ClusterSetup.re_W_test_le` (diagonal);
+    - `norm_W_cluster_tests_le` (cross terms; node sets are disjoint for heights `3/2` apart, and closed under reflection);
+    - `testTail_le`, `normBound_le`, `size_bounds` (explicit sizes);
+    - `exists_clusterSetup_node`.
+  - **`weilNegIndex_ge_card_offline_zeros`.** There are absolute `K₀, K₁` with the following property. Let `T` be a set of zeros with `β > ½`, `t ≥ 101`, ordinates pairwise `≥ 3/2` apart, each satisfying `6+3N ≤ 2πe^{2X}`, with `nyquistSize ≤ Λ` and `nyquistTail ≤ τ`. If `K₀|T|e^{a/2}Λ²τ ≤ 1`, then `|T| ≤ weilNegIndex ζ a (1/(K₁ a|T|Λ²))`.
+- **Verdict (L37).** PROVED.
+  - Below Nyquist, every off-line zero is a negative square of the level-`a` Weil form, at any depth and in any configuration (separated ordinates only).
+  - The loss is `log|T|` in the horizon. No isolation, no `−2`, and no depth-dependent visibility enter.
+  - With the HF-F29 upper bound: `#{3/2-separated off-line zeros below 2e^{2a−3/4} − polylog − (2/π)log|T|} ≤ index(a, ε) ≤ #{off-line pairs below exp(O(e^a) + O(log 1/ε))}`.
+- **Producer consequence.** A level-`a` producer certifies index `0`. This is not "RH on average": each separated off-line zero below Nyquist independently forces its own negative direction.
+  - So the finite-level form offers no cancellation between zeros that a producer could exploit.
+  - Any producer at level `a` is a zero-by-zero certificate of RH below `≈2e^{2a}`.
+
+### L38 — Landau-sharp Krein pinning: positive completions are pinned up to height `(1−η)·2πe^{2L}` (in progress)
+- **Context.**
+  - L36 (HF-F33) pins positive completions below `≈ e^{2L−1/2}`. Its method is limited to `≈ 4e^{2L}`, because cutting `Φ` at `L` leaves an artifact of size `e^{−πe^{2L}}`, while `|Ξ(τ)| ≍ e^{−πτ/4}`.
+  - The Landau heuristic says the pinning height should be `2πe^{2L}`, where the zero density `(1/2π)log(τ/2π)` equals the Nyquist rate `L/π` of tests supported in `[−L, L]`.
+  - This is also Connes–Consani's natural scale `2πλ²` (arXiv 2106.01715, Prop. 4.2). There it appears only as a heuristic eigenvalue-count match for their spectral triple, not as a theorem.
+- **Conjecture (bold).** For every `η ∈ (0, ½]` there is `L₀` such that, for all `L ≥ L₀` and every positive measure `ν` dominated by the level-`L` Hodge form: `ν([τ₀ ± δ/2]) ≤ exp(−(π/2)η^{3/2}e^{2L})`.
+  - Conditions: `5 ≤ τ₀ ≤ (1−η)·2πe^{2L}`, `τ₀` is at distance `≥ δ` from all zero ordinates, and `12C log(τ₀+1)/δ ≤ (π/2)η^{3/2}e^{2L}`.
+  - Sharpness (heuristic, under RH): above `(1+η)·2πe^{2L}` the ordinates oversample `PW_L`, so the Christoffel function of the zero measure is `≳ 1` and no pinning holds. The constant `2π` is therefore exact.
+- **Mechanism (new tool: tilted radical kernels).**
+  - `Φ_θ(u) = Φ_ℂ(u + iθ)` is the horizontal slice of the complexified theta source at height `θ < π/4`.
+  - A contour shift gives `Φ̂_θ(z) = e^{zθ}Ξ(z)`. So `Φ_θ` is exactly radical, and the tilt `e^{τθ}` cancels `Ξ`'s decay: `e^{τθ}|Ξ(τ)| ≍ e^{−(π/4−θ)τ}`.
+  - `Φ_θ` still decays like `e^{−π cos(2θ) e^{2|u|}}`.
+  - With `θ = π/4 − ε`: the cut artifact is `e^{−π sin(2ε)e^{2L}}` against a signal of `e^{−ετ₀}`, so the ratio is small iff `τ₀ < 2πe^{2L}·(sin 2ε/2ε)`.
+  - This needs the sharp quarter-line Gamma bound `|Γ(¼ + iτ/2)| ≥ e^{−πτ/4}/(1+τ)`, from duplication plus the digamma ratio `|Γ(¾+iy)/Γ(¼+iy)| ≤ e(1+y)`. The corpus bound `e^{−πτ/2}` is too weak.
+- **Kill attempts.**
+  - *False?* No: the mechanism is explicit below the threshold, and sampling blocks it above.
+  - *Circular?* No: it is a Christoffel bound on an explicit Hodge-class test.
+  - *Rediscovered?* CC give the scale `2πλ²` only heuristically, as a count match. There is no finite-level Krein pinning in the literature (Suzuki 2206.03682/2606.09096, CC, CCM 2511.22755). The corpus L36 reaches `0.61e^{2L}`. Tilted theta slices appear classically (Pólya, de Bruijn), but not as finite-level radical tests.
+  - *Insignificant?* It gives the exact threshold. It identifies the pinning height with the Landau height where the zero density equals the Nyquist rate. So a positive completion at level `L` determines the zeros up to exactly `2πe^{2L}`.
+  - Verdict: SURVIVES PRELIMINARY ATTACK.
+- **Paper proof.** Take `ε = √η/2`, `θ = π/4 − ε`, `w = η/8`, `U = L − w`, and let `κ_w(u) = κ(u/4w)` be the scaled bump. Take the test `T = (Φ_θ·1_{[−U,U]}) ⋆ (κ_{w,τ₀}'' − κ_{w,τ₀}/4)`. It is `C²`, supported in `[−L, L]`, and polar-free.
+  1. At every zero, `T̂ = −Φ̂_{θ,>U}·κ̂₂`, so `‖W(T,T)‖ ≤ ε_U²·C_κ²(4w)^{−6}(1+τ₀)⁴·24A₀log(τ₀+3)`.
+  2. The tail satisfies `ε_U ≤ 2M_θe^{5U}e^{−π sin(2ε)e^{2U}}`, using the per-term strip bound and evenness.
+  3. On the window, `|T̂| ≥ (e^{τθ}|Ξ(τ)| − ε_U)(τ²+¼)·4w cos(⅛)∫κ`. Also `e^{τθ}|Ξ(τ)| ≥ c τ²e^{−ετ}/(1+τ)·(1/3)e^{−(3/2)C log τ/δ'}`, using the sharp Gamma bound and the `|ζ|` path bound.
+  4. Exponent: `sin 2ε ≥ 2ε(1−ε²)` and `e^{−2w} ≥ 1−2w` give `−2π sin(2ε)e^{2U} + 2ετ₀ ≤ −4πεe^{2L}[(1−ε²)(1−2w) − (1−η)] ≤ −πη^{3/2}e^{2L}`.

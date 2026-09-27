@@ -1,10 +1,10 @@
 # A rank-two theta boundary defect with infinitely many off-real source modes
 
 - **ID:** stc-universal-boundary-pontryagin-countermodel
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); universal finite-index realization no-go
 - **Routes:** STC, CSB, K-RVM, MPLF, RHist
-- **Status:** [PROVED HERE ON PAPER] [LEAN FORMALIZATION OPEN] [NOT AN RH PROOF]
+- **Status:** [PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]
 - **Dependencies:** elementary Fourier translation, quantile substitution, Hilbert--Schmidt kernel criterion, and the neutral-subspace dimension bound proved below. The general quantile-root and kernel-energy machinery is present in `HedenmalmQuantileRootMode.lean` and `HedenmalmHilbertSchmidtNorm.lean`. No computation or hypothesis about Xi zeros is used.
 
 ## The failed conjecture and its positive survivor
@@ -98,4 +98,8 @@ The representation should therefore be tested through its **two-parameter transf
 
 In STC, `source_pair_symmetric_kernel_two_channel` in `DeningerGammaAllPrimeStokesPairBridge.lean` similarly gives two algebraic one-prime channels on every finite equal-depth packet. The countermodel shows why that finite-packet channel count cannot itself cap the negative index of a completed spectral transfer. The unresolved STC work is to construct the all-prime transfer and prove a source-specific cross-parameter law for it.
 
-This source is a counterfeit, not the Riemann theta source, and (2) does not concern zeta. The theorem rejects the universal index-one interpretation, not a source-specific one. The exact source construction and index bound are dependency-closed on paper; Lean formalization of the constructed density, its quantile operator, and the spectral/index conclusion remains required. Literature novelty of this combined operator countermodel has not been established.
+This source is a counterfeit, not the Riemann theta source, and (2) does not concern zeta. The theorem rejects the universal index-one interpretation, not a source-specific one. The exact source construction and index bound are formalized in `STCUniversalBoundaryPontryaginCountermodel.lean` (with the generic `HedenmalmCompactSourceEigenmode.lean` and `PontryaginNeutralEigenvectorBound.lean`); see the certificate. Literature novelty of this combined operator countermodel has not been established.
+
+## Log
+
+- 2026-09-27: parameters and three-bump density (positive, even, smooth, dominated by every Gaussian), Fourier factorization (1), zeros (2), quartic tail envelope, finite Hilbert--Schmidt energy (3)--(4), metric commutator and rank-two defect (5), mode envelope and nonzero `L²` eigenvectors with eigenvalues `-1/z_n^+` (6), and the neutral-subspace index bound formalized unconditionally (`STCUniversalBoundaryPontryaginCountermodel.lean`, `HedenmalmCompactSourceEigenmode.lean`, `PontryaginNeutralEigenvectorBound.lean`); certificate `stc-universal-boundary-pontryagin-countermodel-formalized.md`; moved to stage 3.

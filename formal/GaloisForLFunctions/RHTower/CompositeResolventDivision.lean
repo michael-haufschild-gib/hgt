@@ -15,7 +15,7 @@ When `Σm ≥ 2`, the division is `D_a D_b g₂` (`multiResolvent_two_step`), wh
 continuous integrable derivatives (`resolvent_pair_calculus`).
 
 The shift operator `g ↦ Σ c_k g(· - kκ)` has symbol `Q(e^{iκz})`, where `Q = Σ c_k X^k`
-(`paperFT_polyShiftOp`).
+(`paperFT_expPolyShiftOp`).
 -/
 
 open Complex MeasureTheory Filter Topology Set Polynomial
@@ -314,7 +314,7 @@ theorem resolvent_pair_calculus {a b : ℂ} {g₂ : ℝ → ℂ} (hg₂ : SuperE
 
 /-- The shift operator `g ↦ Σ_k c_k g(· - kκ)` with symbol `Q(e^{iκz})`, `c_k` the coefficients
 of `Q`. -/
-def polyShiftOp (Q : ℂ[X]) (κ : ℝ) (g : ℝ → ℂ) (x : ℝ) : ℂ :=
+def expPolyShiftOp (Q : ℂ[X]) (κ : ℝ) (g : ℝ → ℂ) (x : ℝ) : ℂ :=
   ∑ k ∈ Finset.range (Q.natDegree + 1), Q.coeff k * g (x - k * κ)
 
 /-- The coefficient mass `Σ_k ‖c_k‖`. -/
@@ -338,23 +338,23 @@ theorem SuperExpDecay.finset_sum {ι : Type*} (s : Finset ι) {g : ι → ℝ �
       funext fun x => by simp [Finset.sum_insert ha]
     rw [e]; exact h1.add h2
 
-theorem SuperExpDecay.polyShiftOp {g : ℝ → ℂ} (hg : SuperExpDecay g) (Q : ℂ[X]) (κ : ℝ) :
-    SuperExpDecay (polyShiftOp Q κ g) :=
+theorem SuperExpDecay.expPolyShiftOp {g : ℝ → ℂ} (hg : SuperExpDecay g) (Q : ℂ[X]) (κ : ℝ) :
+    SuperExpDecay (expPolyShiftOp Q κ g) :=
   SuperExpDecay.finset_sum _ fun k _ => (hg.comp_sub (k * κ)).const_mul (Q.coeff k)
 
-theorem paperFT_polyShiftOp {g : ℝ → ℂ} {z : ℂ}
+theorem paperFT_expPolyShiftOp {g : ℝ → ℂ} {z : ℂ}
     (hg : Integrable (fun u => g u * Complex.exp (I * z * u))) (Q : ℂ[X]) (κ : ℝ) :
-    paperFT (polyShiftOp Q κ g) z = Q.eval (Complex.exp (I * z * κ)) * paperFT g z := by
+    paperFT (expPolyShiftOp Q κ g) z = Q.eval (Complex.exp (I * z * κ)) * paperFT g z := by
   have hint : ∀ k ∈ Finset.range (Q.natDegree + 1), Integrable
       (fun u : ℝ => Q.coeff k * g (u - k * κ) * Complex.exp (I * z * u)) := by
     intro k _
     have := (integrable_comp_sub_mul_cexp hg (k * κ)).const_mul (Q.coeff k)
     refine this.congr (Eventually.of_forall fun u => ?_)
     simp only; ring
-  have hsplit : paperFT (polyShiftOp Q κ g) z =
+  have hsplit : paperFT (expPolyShiftOp Q κ g) z =
       ∑ k ∈ Finset.range (Q.natDegree + 1),
         Q.coeff k * paperFT (fun x => g (x - k * κ)) z := by
-    unfold paperFT polyShiftOp
+    unfold paperFT expPolyShiftOp
     simp_rw [Finset.sum_mul]
     rw [integral_finsetSum _ hint]
     refine Finset.sum_congr rfl fun k _ => ?_
@@ -368,25 +368,25 @@ theorem paperFT_polyShiftOp {g : ℝ → ℂ} {z : ℂ}
   rw [show I * z * ((k : ℂ) * κ) = (k : ℂ) * (I * z * κ) by ring]
   ring
 
-theorem hasDerivAt_polyShiftOp {g g' : ℝ → ℂ} (hg : ∀ x, HasDerivAt g (g' x) x) (Q : ℂ[X])
-    (κ x : ℝ) : HasDerivAt (polyShiftOp Q κ g) (polyShiftOp Q κ g' x) x := by
-  unfold polyShiftOp
+theorem hasDerivAt_expPolyShiftOp {g g' : ℝ → ℂ} (hg : ∀ x, HasDerivAt g (g' x) x) (Q : ℂ[X])
+    (κ x : ℝ) : HasDerivAt (expPolyShiftOp Q κ g) (expPolyShiftOp Q κ g' x) x := by
+  unfold expPolyShiftOp
   exact HasDerivAt.fun_sum fun k _ => ((hg (x - k * κ)).comp_sub_const x (k * κ)).const_mul _
 
-theorem continuous_polyShiftOp {g : ℝ → ℂ} (hg : Continuous g) (Q : ℂ[X]) (κ : ℝ) :
-    Continuous (polyShiftOp Q κ g) := by
-  unfold polyShiftOp; fun_prop
+theorem continuous_expPolyShiftOp {g : ℝ → ℂ} (hg : Continuous g) (Q : ℂ[X]) (κ : ℝ) :
+    Continuous (expPolyShiftOp Q κ g) := by
+  unfold expPolyShiftOp; fun_prop
 
-theorem integral_norm_polyShiftOp_le {g : ℝ → ℂ} (hg : Integrable g) (Q : ℂ[X]) (κ : ℝ) :
-    ∫ x, ‖polyShiftOp Q κ g x‖ ≤ coeffMass Q * ∫ x, ‖g x‖ := by
+theorem integral_norm_expPolyShiftOp_le {g : ℝ → ℂ} (hg : Integrable g) (Q : ℂ[X]) (κ : ℝ) :
+    ∫ x, ‖expPolyShiftOp Q κ g x‖ ≤ coeffMass Q * ∫ x, ‖g x‖ := by
   have hi : ∀ k ∈ Finset.range (Q.natDegree + 1),
       Integrable (fun x => ‖Q.coeff k‖ * ‖g (x - k * κ)‖) :=
     fun k _ => (hg.comp_sub_right _).norm.const_mul _
-  calc ∫ x, ‖polyShiftOp Q κ g x‖
+  calc ∫ x, ‖expPolyShiftOp Q κ g x‖
       ≤ ∫ x, ∑ k ∈ Finset.range (Q.natDegree + 1), ‖Q.coeff k‖ * ‖g (x - k * κ)‖ := by
         refine integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _)
           (integrable_finsetSum _ hi) (Eventually.of_forall fun x => ?_)
-        unfold polyShiftOp
+        unfold expPolyShiftOp
         refine (norm_sum_le _ _).trans (le_of_eq ?_)
         refine Finset.sum_congr rfl fun k _ => ?_
         rw [norm_mul]
@@ -395,10 +395,10 @@ theorem integral_norm_polyShiftOp_le {g : ℝ → ℂ} (hg : Integrable g) (Q : 
         refine Finset.sum_congr rfl fun k _ => ?_
         rw [integral_const_mul, integral_sub_right_eq_self (fun x => ‖g x‖)]
 
-theorem polyShiftOp_eq_zero {g : ℝ → ℂ} {b κ x : ℝ} (hκ : 0 ≤ κ) (Q : ℂ[X])
+theorem expPolyShiftOp_eq_zero {g : ℝ → ℂ} {b κ x : ℝ} (hκ : 0 ≤ κ) (Q : ℂ[X])
     (hg : ∀ u, b ≤ |u| → g u = 0) (hx : b + Q.natDegree * κ ≤ |x|) :
-    polyShiftOp Q κ g x = 0 := by
-  unfold polyShiftOp
+    expPolyShiftOp Q κ g x = 0 := by
+  unfold expPolyShiftOp
   refine Finset.sum_eq_zero fun k hk => ?_
   have hk' : (k : ℝ) ≤ Q.natDegree := by
     exact_mod_cast Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)

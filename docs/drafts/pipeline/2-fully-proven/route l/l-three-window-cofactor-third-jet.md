@@ -118,7 +118,7 @@ R^(3alpha-5/2-delta/2)Y^(3-3alpha)/log R
     = O(R^(-11/500-delta/2)/log R).
 ```
 
-This proves (1), and its dyadic sum converges. The source-reduction assertion follows by the norm triangle inequality, as in the [two-jet predecessor](l-balanced-prime-semiprime-two-jet-extraction.md).
+This proves (1), and its dyadic sum converges. The source-reduction assertion follows by the norm triangle inequality, as in the [two-jet predecessor](../../3-formalized/route%20l/l-balanced-prime-semiprime-two-jet-extraction.md).
 
 ## Global rounding across a dyadic cofactor layer
 

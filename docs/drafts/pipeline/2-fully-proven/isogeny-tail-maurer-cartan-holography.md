@@ -824,3 +824,60 @@ a homomorphism `G(L) → T(L)` (functoriality of points), natural in differentia
 `ℓ` by the invertible `dα`, invertibility by transcendence counting).  For each `E`-embedding
 `σ : K → N` (`N = K̄`, constants `C`), `h_σ = σ_*g · g⁻¹` has `ℓ(h_σ) = 0` and `α^n(h_σ) = e`,
 so `h_σ ∈ Γ_n`; `σ ↦ h_σ` is injective, so `[K : E] ≤ |Γ_n|` and Artin gives `E = K^{Γ_n}`.
+
+### Field-level core compiled (2026-09-27)
+
+Modules (compiled with `lake env lean`; not yet wired):
+
+* `FunctionFieldJetField`, `FunctionFieldJetBasis` (triangular jet families: independence and
+  generation), `FunctionFieldJetExtension` (differential extension `φ̃` of every `C`-endomorphism,
+  uniqueness, functoriality, automorphisms), `FixedAdjoinIndependentDescent`.
+* `MaurerCartanJetCoordinates`: for a derivation basis `D` of `F/C`, `δa = Σ ℓ_i D_i a`; the
+  `ℓ`-jets are independent over `F` and generate `K`; chain-rule matrix of any `φ`, its
+  invertibility and action `φ̃ ℓ_j = Σ a_ij ℓ_i`.
+* `MaurerCartanFixedFields`: `K^σ = PV(F^σ)` for automorphisms commuting with `D`;
+  `φ̃(K) = PV(φ F)` for constant chain-rule matrix; equivariance + `F^P = C` makes the matrix
+  constant; **abstract Theorem A** `mem_tail_iff_fixed` from the two order-zero inputs.
+
+Remaining geometric inputs (scheme level), with the chosen proofs:
+
+1. `F^{G(C)} = C` and closedness of `{x : σ_x f = f}`: evaluate sections at `C`-points; the
+   stabilizer is `⋂_y y⁻¹((G∖V) ∪ Z_V(f − f(y)))`.
+2. `α^{n*}F = F^{Γ_n}`: every `α^{n*}F`-embedding `σ : F → F̄` has `h_σ = g_σ·g⁻¹ ∈ ker α^n(F̄)`,
+   which is a constant point because `ker α` is finite over `C` and `α` is onto on `C`-points;
+   hence `σ = σ_c` and an element fixed by `Γ_n` is fixed by all embeddings.
+3. Invariant derivation basis: `D_v f` from the `F[ε]`-point `v·g`, `v ∈ T(C)`; `T(L) ≅ L^r`
+   through `m_e/m_e²`; `T(F) → Der_C(F,F)` is an `F`-linear bijection, so `r = d`.
+
+### Scheme-level order-zero inputs compiled (2026-09-27)
+
+* `AlgebraicGroupGenericPoint`: `C`-algebra structure on `C(X)`, generic point `g` as an
+  `F`-valued point, `f ∘ g = g ∘ Spec(f*)`, injectivity of field-valued points through `g`,
+  translation action `x ↦ σ_x` (homomorphism), `g · x = g ∘ Spec(σ_x)`.
+* `AlgebraicGroupRationalPointEvaluation`: values of sections at rational points, basic-open
+  criterion, vanishing at all rational points ⇒ zero; **stabilizers of rational functions are
+  Zariski closed** (`exists_isClosed_translation_stabilizer`); **`C(G)^{G(C)} = C`**
+  (`mem_range_algebraMap_of_translation_fixed`).
+* `IsogenyFunctionFieldLevel`: `IsIsogeny` (surjective hom with finite kernel), field points of
+  finite `C`-schemes are constant, `α` onto on rational points, iterates, finite transcendence
+  basis of `C(G)`, **level theorem** `mem_range_isogenyPullback_pow_iff`:
+  `α^{n*}C(G) = C(G)^{ker(α^n)(C)}`.
+
+Remaining: translation-invariant derivation basis (dual-number points; tangent space at `e`),
+then assembly of Theorems A–D on the jet field.
+
+### Invariant derivations and Theorem A compiled (2026-09-27)
+
+* `SchemeStalkPoints`, `SquareZeroPointLifts` (group law on `L[ε]`-lifts = addition, via
+  `L[ε₁,ε₂]`), `AlgebraicGroupTangentMap` (derivations = lifts of the generic point; identity
+  stalk point; point derivations determined on generators of `m_e`),
+  `AlgebraicGroupDerivationCoordinates` (`Θ : Der_C F → F^r` linear, injective, equivariant),
+  `AlgebraicGroupInvariantDerivations` (descent: stable subspaces are spanned by fixed vectors;
+  **basis of translation-invariant derivations** with `det(D_i t_j) ≠ 0`).
+* `AlgebraicGroupIsogenyTail`: jet field `K = C(J^∞G)`, Maurer–Cartan velocity `ℓ`,
+  `α* ℓ = dα · ℓ` with `dα` constant invertible, **Theorem A**
+  `mem_isogenyTail_iff_deckClosure_fixed`: `⋂_n α^{n*}K = K^{H(C)}` for every integral
+  commutative algebraic group and isogeny (all inputs proved, no hypotheses beyond the setting).
+
+Remaining for the card: Theorem B (differential-adjoin form, `α*` automorphism of `F^{H(C)}`),
+Corollaries C, D; wiring; axiom audit.

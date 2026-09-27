@@ -1,11 +1,11 @@
 # Continuum tangent space of the critical Euler prime source
 
 - **ID:** `stc-euler-prime-boundary-tangent-space`
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Type:** exact source-boundary scaling theorem
 - **Routes:** STC, RHist
-- **Status:** `[PROVED ON PAPER] [CENTRAL GRAM LIMIT LEAN-CHECKED] [FULL LEAN FORMALIZATION PENDING] [NOT AN RH PROOF]`
-- **Lean core:** `STCEulerPrimeBoundaryTangentGram.lean` proves (1)'s two-parameter Gram limit from `tendsto_gradedPrimeLogZeta 1`; direct `lake env lean` passed. Targeted Lake audit remains pending because Lake launched parallel transitive dependency rebuilds, which were stopped to honor the one-process rule.
+- **Status:** `[PROVED ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
+- **Lean:** `STCEulerPrimeBoundaryTangentGram.lean`, `STCPrimeLogSquarePoleScaling.lean`, `STCPrimeBoundaryTangentSpace.lean`, `STCPrimeBoundaryGammaLaw.lean`, `HTGeometry/ExponentialFeatureTangentSpace.lean`; see the certificate.
 - **Novelty:** the prime-pole asymptotic is classical; its tangent-Hilbert and double-scaled STC operator interpretation is a corpus-level source identification, with external novelty unverified.
 
 ## Source and statement
@@ -186,3 +186,7 @@ cutoff grows. A route must derive a source-faithful transport
 from fixed grade into this moving tangent regime, preserve a
 zero-specific observable, and obtain the required cofinal bound.
 Neither (1)--(6) nor the change of carrier provides that transport.
+
+## Log
+
+- 2026-09-27: pole (1) and tangent Gram, continuum limit (2) with positivity, density of the exponential features, weak null, Laplace and characteristic-function limits with weak convergence to the Gamma law (Lévy continuity), double-scaled source (5)--(7) with rank two and kernel, fixed-grade limit and operator-norm finite part formalized unconditionally (`STCPrimeLogSquarePoleScaling.lean`, `STCPrimeBoundaryTangentSpace.lean`, `STCPrimeBoundaryGammaLaw.lean`, `HTGeometry/ExponentialFeatureTangentSpace.lean`); certificate `stc-euler-prime-boundary-tangent-space-formalized.md`; moved to stage 3.

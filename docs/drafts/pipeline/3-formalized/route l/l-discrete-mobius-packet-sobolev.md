@@ -1,10 +1,10 @@
 # Route L: all-order discrete Möbius packet identity
 
 - **ID:** L-DISCRETE-MOBIUS-PACKET-SOBOLEV
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** Literal finite Möbius coefficients and the corpus Gamma--Hankel packet expansion
-- **Lean status:** Cubic source-packet identity, its positive energy square sum, and its exact Route L source identification are formalized in `MobiusReciprocalDiscretePacketBridge`; general `J`, finite horizon, and two-sided critical source aperture remain paper-level
+- **Lean status:** Formalized unconditionally: identities (1)–(2), bounds (5)–(6) with the horizon equivalence, the critical horizon (6a), the source aperture (7) for every `0<A≤4`, and the wedge criterion (8) with its RH receiver. See [the Lean certificate](l-discrete-mobius-packet-sobolev-formalized.md).
 
 ## Theorem
 
@@ -60,7 +60,7 @@ c_(J,k) = 4^(-(J-1)) * sum_(1≤n≤N)
 
 The second equality is the ordinary finite binomial theorem and interchange of two finite sums. Substituting (4) in (3) gives the constant `2^r/4^(2J-2)=2^(delta-2J+3)`, proving (1). Setting `J=3` proves (2). For a one-atom check, `N=1` gives `b_0=2^(-1-delta)` and `b_k=0` for `k>0`; (2) equals `2^(-5-delta)`, the direct `(m,n)=(1,1)` kernel value.
 
-The [Lean module](../../../../formal/GaloisForLFunctions/RHTower/MobiusReciprocalDiscretePacketBridge.lean) proves the exact cubic packet identity as `cubic_sourcePacket_eq_stepTwoDifference`, combines it with the generic positive expansion as `cubicGammaHankelEnergy_eq_stepTwoDifference`, identifies the same literal finite source as `cubicGammaHankelEnergy_eq_routeL`, and cancels the nonzero Gamma factor in `routeLCubicEnergy_eq_packetSecondDifference`. The module is wired into `RHTower.lean` and passed targeted `lake --old build GaloisForLFunctions.RHTower.MobiusReciprocalDiscretePacketBridge`. No RH estimate is asserted by these identities.
+The [Lean module](../../../../../formal/GaloisForLFunctions/RHTower/MobiusReciprocalDiscretePacketBridge.lean) proves the exact cubic packet identity as `cubic_sourcePacket_eq_stepTwoDifference`, combines it with the generic positive expansion as `cubicGammaHankelEnergy_eq_stepTwoDifference`, identifies the same literal finite source as `cubicGammaHankelEnergy_eq_routeL`, and cancels the nonzero Gamma factor in `routeLCubicEnergy_eq_packetSecondDifference`. The module is wired into `RHTower.lean` and passed targeted `lake --old build GaloisForLFunctions.RHTower.MobiusReciprocalDiscretePacketBridge`. No RH estimate is asserted by these identities.
 
 ## Unconditional finite packet horizon (paper proof)
 
@@ -84,7 +84,7 @@ with an absolute constant `C`. For the last step, bound `sum_(k≥0)(k+5)^5 exp(
 K_P(N)=ceil(((P+6)/2)*(N+1)*log(N+1))
 ```
 
-makes the omitted positive tail `O_P((N+1)^(-P))`, uniformly in `0≤delta≤1`. A cutoff-uniform cubic energy bound is therefore equivalent to the same bound for the **finite** packet range `0≤k<K_P(N)`; the hard arithmetic lies below an `O(N log N)` packet horizon. This horizon theorem is still open in Lean.
+makes the omitted positive tail `O_P((N+1)^(-P))`, uniformly in `0≤delta≤1`. A cutoff-uniform cubic energy bound is therefore equivalent to the same bound for the **finite** packet range `0≤k<K_P(N)`; the hard arithmetic lies below an `O(N log N)` packet horizon. This horizon theorem is formalized in `MobiusDiscretePacketHorizon`.
 
 ### Critical boundedness horizon (paper proof)
 
@@ -124,7 +124,7 @@ sum_(k≥K) k^p exp(-lambda*k/(N+1))
   ≤ C_lambda (N+1) K^p exp(-lambda*K/(N+1))
 ```
 
-for `K≥N+1`, `2≤p≤5`, applied to the squares of (6b)--(6c), yield respectively `C E(N)² N^(-delta)log(N+1)^(4+delta)` and `C N^(-1-delta)log(N+1)^(2+delta)`. These are bounded by (6a). Since `E(N)² log(N+1)^5→0`, the tail vanishes. The constant `1/4` is the critical endpoint for this Mertens-based estimate at `delta=0`: absolute values alone leave a harmonic-scale tail there. For bounded returns, the remaining packet range is therefore `k<K(N)`, with one fixed leading constant, rather than the larger `K_P(N)` required for arbitrary polynomial tail decay. This sharpening remains paper-level.
+for `K≥N+1`, `2≤p≤5`, applied to the squares of (6b)--(6c), yield respectively `C E(N)² N^(-delta)log(N+1)^(4+delta)` and `C N^(-1-delta)log(N+1)^(2+delta)`. These are bounded by (6a). Since `E(N)² log(N+1)^5→0`, the tail vanishes. The constant `1/4` is the critical endpoint for this Mertens-based estimate at `delta=0`: absolute values alone leave a harmonic-scale tail there. For bounded returns, the remaining packet range is therefore `k<K(N)`, with one fixed leading constant, rather than the larger `K_P(N)` required for arbitrary polynomial tail decay. This sharpening is formalized in `MobiusDiscretePacketCriticalHorizon`.
 
 ## Source-index aperture at the cubic threshold (paper proof)
 
@@ -209,7 +209,7 @@ sum_(k_4≤k<K(N)) w_k
        mu(n)n²/(n+1)^(5+delta) q_n^k|².                   (8)
 ```
 
-The finitely many `k<k_4` have a uniform absolute bound, and the full tail beyond `K(N)` tends to zero by (6a). Conversely, a bounded full energy bounds (8). Thus the unresolved cancellation is confined to the literal Möbius coefficients inside this **two-sided critical wedge**; neither edge can cause failure. Both critical endpoint proofs use the proved Mertens rate and remain paper-level; the full-to-middle equivalence follows from the already formalized exact cubic packet identity once (7) is formalized.
+The finitely many `k<k_4` have a uniform absolute bound, and the full tail beyond `K(N)` tends to zero by (6a). Conversely, a bounded full energy bounds (8). Thus the unresolved cancellation is confined to the literal Möbius coefficients inside this **two-sided critical wedge**; neither edge can cause failure. Both critical endpoint proofs use the proved Mertens rate; (7), the full-to-middle equivalence and the RH receiver are formalized in `MobiusDiscretePacketSourceAperture`.
 
 ## Open arithmetic producer
 

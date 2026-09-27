@@ -278,11 +278,11 @@ theorem SuperExpDecay.differentiable_paperFT {g : ℝ → ℂ} (hg : SuperExpDec
 /-! ## The polar shift adapted to the height -/
 
 /-- The odd multiple `(2k+1)π/t₀` of `π/t₀` in `[1/16, 1/8]`. -/
-def polarShift (t₀ : ℝ) : ℝ :=
+def heightPolarShift (t₀ : ℝ) : ℝ :=
   (2 * ⌈(t₀ / (16 * π) - 1) / 2⌉₊ + 1) * π / t₀
 
-theorem polarShift_mem {t₀ : ℝ} (ht₀ : 101 ≤ t₀) :
-    1 / 16 ≤ polarShift t₀ ∧ polarShift t₀ ≤ 1 / 8 := by
+theorem heightPolarShift_mem {t₀ : ℝ} (ht₀ : 101 ≤ t₀) :
+    1 / 16 ≤ heightPolarShift t₀ ∧ heightPolarShift t₀ ≤ 1 / 8 := by
   have hpi := Real.pi_pos
   have hpi4 : π < 3.1416 := Real.pi_lt_d4
   have ht0 : 0 < t₀ := by linarith
@@ -292,7 +292,7 @@ theorem polarShift_mem {t₀ : ℝ} (ht₀ : 101 ≤ t₀) :
     rw [le_div_iff₀ (by positivity)]; nlinarith
   have hk2 : (k : ℝ) < (t₀ / (16 * π) - 1) / 2 + 1 :=
     Nat.ceil_lt_add_one (by linarith)
-  unfold polarShift
+  unfold heightPolarShift
   rw [← hk]
   constructor
   · rw [le_div_iff₀ ht0]
@@ -306,29 +306,29 @@ theorem polarShift_mem {t₀ : ℝ} (ht₀ : 101 ≤ t₀) :
     rw [le_div_iff₀ (by positivity)] at this
     nlinarith
 
-theorem exp_I_mul_polarShift {t₀ : ℝ} (ht₀ : 101 ≤ t₀) :
-    Complex.exp (I * t₀ * polarShift t₀) = -1 := by
+theorem exp_I_mul_heightPolarShift {t₀ : ℝ} (ht₀ : 101 ≤ t₀) :
+    Complex.exp (I * t₀ * heightPolarShift t₀) = -1 := by
   have ht0 : (t₀ : ℂ) ≠ 0 := by exact_mod_cast (by linarith : t₀ ≠ 0)
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, polarShift t₀ = (2 * k + 1) * π / t₀ := ⟨_, rfl⟩
-  have e : I * (t₀ : ℂ) * ((polarShift t₀ : ℝ) : ℂ) = (k : ℂ) * (2 * π * I) + π * I := by
+  obtain ⟨k, hk⟩ : ∃ k : ℕ, heightPolarShift t₀ = (2 * k + 1) * π / t₀ := ⟨_, rfl⟩
+  have e : I * (t₀ : ℂ) * ((heightPolarShift t₀ : ℝ) : ℂ) = (k : ℂ) * (2 * π * I) + π * I := by
     rw [hk]; push_cast; field_simp
   rw [e, Complex.exp_add, Complex.exp_nat_mul_two_pi_mul_I, one_mul, Complex.exp_pi_mul_I]
 
 /-- Near the height `t₀`, the polar symbol is at least `1` in modulus. -/
 theorem one_le_norm_polarSymbol {t₀ : ℝ} (ht₀ : 101 ≤ t₀) {z : ℂ} (hre : |z.re - t₀| ≤ 1) :
-    1 ≤ ‖polarSymbol (polarShift t₀) z‖ := by
-  set s := polarShift t₀
-  obtain ⟨hs1, hs2⟩ := polarShift_mem ht₀
+    1 ≤ ‖polarSymbol (heightPolarShift t₀) z‖ := by
+  set s := heightPolarShift t₀
+  obtain ⟨hs1, hs2⟩ := heightPolarShift_mem ht₀
   set w : ℂ := z - t₀ with hw
   have hz : z = t₀ + w := by rw [hw]; ring
   have hsplit : polarSymbol s z = -Complex.cos (w * s) - (Real.cosh (s / 2) : ℂ) := by
     unfold polarSymbol
     have e1 : Complex.exp (I * z * s) = -Complex.exp (w * s * I) := by
       rw [hz, show I * ((t₀ : ℂ) + w) * s = I * t₀ * s + w * s * I by ring, Complex.exp_add,
-        exp_I_mul_polarShift ht₀]; ring
+        exp_I_mul_heightPolarShift ht₀]; ring
     have e2 : Complex.exp (-(I * z * s)) = -Complex.exp (-(w * s) * I) := by
       rw [hz, show -(I * ((t₀ : ℂ) + w) * s) = -(I * t₀ * s) + -(w * s) * I by ring,
-        Complex.exp_add, Complex.exp_neg, exp_I_mul_polarShift ht₀]; ring
+        Complex.exp_add, Complex.exp_neg, exp_I_mul_heightPolarShift ht₀]; ring
     rw [e1, e2, Complex.cos]; ring
   obtain ⟨x, hx⟩ : ∃ x : ℝ, x = (w * s).re := ⟨_, rfl⟩
   obtain ⟨y, hy⟩ : ∃ y : ℝ, y = (w * s).im := ⟨_, rfl⟩
@@ -773,7 +773,7 @@ theorem node_im_ne_zero {ρ : XiDivisorSupport} (hρ : ρ ∈ C.nodes) : (gammaO
 /-! ### The interpolant -/
 
 /-- The polar symbol at the adapted shift. -/
-def Pp (z : ℂ) : ℂ := polarSymbol (polarShift C.t₀) z
+def Pp (z : ℂ) : ℂ := polarSymbol (heightPolarShift C.t₀) z
 
 theorem differentiable_Pp : Differentiable ℂ C.Pp := by
   unfold Pp polarSymbol; fun_prop

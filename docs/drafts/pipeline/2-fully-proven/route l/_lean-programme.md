@@ -19,12 +19,14 @@ theorems (`lake env lean` clean, `#print axioms` = propext/Classical.choice/Quot
 |-|-|-|
 | l-abel-prefix-mixed-gram-sign | `MobiusAbelPrefixGramIntegral`, `MobiusAbelPrefixFourierMultiplier` | done → 3-formalized/route l |
 | l-all-prime-semiprime-local-matching | G0, G1 (first order), A0, cell matching, semiprime count (6), triprime supply (7) | todo |
-| l-balanced-prime-semiprime-two-jet-extraction | G0, G1 (second order), theta mass, block selection (corpus), cofactor sum | todo |
-| l-discrete-mobius-packet-sobolev | general-`J` packet identity, horizon (5)–(6), critical horizon (6a), aperture (7), wedge (8) | todo (cubic identity in `MobiusReciprocalDiscretePacketBridge`) |
+| l-balanced-prime-semiprime-two-jet-extraction | `MobiusTwoJetBlockTaylor`, `…CofactorPacket`, `…PrimeSemiprimePacket`, `…LinearDensity` | done → 3-formalized/route l |
+| l-discrete-mobius-packet-sobolev | `MobiusDiscretePacketGeneralOrder`, `…Horizon`, `…EdgeEstimates`, `…CriticalHorizon`, `…SourceAperture` | done → 3-formalized/route l |
 | l-prime-insertion-dipole-jet | `MobiusPrimeInsertionDipoleJet`, `…LiteralPackets`, `…MacroscopicPacket`, `MobiusCubicSourceMertensEnergy` | done → 3-formalized/route l |
 | l-three-window-cofactor-third-jet | G0, G1 (third / d-th order), simplex selector, rounding (corpus), cofactor layers | todo |
 
 ## Log
+- 2026-09-27 — card 3 (two-jet extraction) closed and moved; reusable: `exists_window_family` (theta-mass window primes), `exists_block_two_jet`, `blockSet`/`packetSet` bookkeeping, `cofinal_packet_reduction`, `moebius_two_mul_mul_prime`.
+- 2026-09-27 — card 4 (discrete packet identity, horizons, aperture, wedge) closed and moved; `MobiusDiscretePacketEdgeEstimates` has Abel/Mertens tools, kernel monotonicity, telescoping low-edge bound and `Σ (log k)^p E(k)²/k` summability for cards 3 and 6; `mertensSaving_antitone`, `tendsto_mertensSaving_mul_log` moved to `MobiusCubicSourceMertensEnergy`.
 - 2026-09-27 — card 5 (prime insertion) closed and moved; Mertens energy bound `gammaNorm_mobiusCubicSource_le` available for card 4.
 - 2026-09-27 — G0, G1 built; card 1 closed and moved.
 - 2026-09-27 — ledger created; corpus audit of cited modules done.

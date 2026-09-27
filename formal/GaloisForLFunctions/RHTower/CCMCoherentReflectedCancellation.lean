@@ -53,6 +53,7 @@ theorem aestronglyMeasurable_ccmActualHeadReflectedCoherentField
           (hshift (Real.log n))).congr ?_
     filter_upwards with r
     simp only [Finset.sum_apply]
+    rfl
   exact hsum.add ((Complex.ofRealCLM.continuous.measurable.comp
     (measurable_ccmActualHeadQuantileTerminalDisplacementDensity T N)).aestronglyMeasurable.smul
       (hshift T))
@@ -88,13 +89,22 @@ def ccmActualHeadSupportedReflectedDirection (a : SuzukiPositiveAperture)
     (ccmActualHeadQuantileCompletedCoherentField (2*a.1) N f r +
       ccmActualHeadReflectedCoherentField (2*a.1) N f r)
 
+private theorem projected_measurable {E : Type*} [TopologicalSpace E]
+    (P : ℝ × E → E) (Y : ℝ → E) (hP : Continuous P) (hY : AEStronglyMeasurable Y) :
+    AEStronglyMeasurable (fun r : ℝ => P (r, Y r)) :=
+  hP.comp_aestronglyMeasurable
+    ((continuous_id : Continuous (fun r : ℝ => r)).aestronglyMeasurable.prodMk hY)
+
 theorem aestronglyMeasurable_ccmActualHeadSupportedReflectedDirection
     (a : SuzukiPositiveAperture) (N : ℕ) (f : SoninL2) :
     AEStronglyMeasurable (ccmActualHeadSupportedReflectedDirection a N f) :=
-  (continuous_ccmIncrementSupportProjection_joint a).comp_aestronglyMeasurable
-    ((continuous_id : Continuous (fun r : ℝ => r)).aestronglyMeasurable.prodMk
-      ((aestronglyMeasurable_ccmActualHeadQuantileCompletedCoherentField (2*a.1) N f).add
-        (aestronglyMeasurable_ccmActualHeadReflectedCoherentField (2*a.1) N f)))
+  projected_measurable
+    (fun p : ℝ × SoninL2 => ccmIncrementSupportProjection a p.1 p.2)
+    (fun r => ccmActualHeadQuantileCompletedCoherentField (2*a.1) N f r +
+      ccmActualHeadReflectedCoherentField (2*a.1) N f r)
+    (continuous_ccmIncrementSupportProjection_joint a)
+    ((aestronglyMeasurable_ccmActualHeadQuantileCompletedCoherentField (2*a.1) N f).add
+      (aestronglyMeasurable_ccmActualHeadReflectedCoherentField (2*a.1) N f))
 
 theorem re_inner_increment_supportedReflectedDirection_zero
     (a : SuzukiPositiveAperture) (N : ℕ) (f : suzukiApertureHilbert a) (r : ℝ) :

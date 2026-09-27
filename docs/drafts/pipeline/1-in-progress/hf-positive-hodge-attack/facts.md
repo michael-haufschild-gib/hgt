@@ -105,3 +105,21 @@ Scope: frontier route HF. Facts and no-gos only.
   - The `ε`-negative index of the polar-constrained level-`a` Weil form of ζ is at most the number of off-line pairs with `|γ| ≤ H(A₀,a,ε)`, where `log H ≤ 7000e^a + 7log A₀ + 7log(1/ε) + 150` (`zeta_weil_negative_index_le`). It holds unconditionally, and each pair counts once regardless of multiplicity.
   - It is at least `|T| − 2` for every family `T` of separated, isolated, visible pairs (`zeta_weil_inertia_law`).
   - **Route:** the finite-level Hodge defect is a count of off-line pairs in the window `[exp(e^{2δa−O(log a)}), exp(O(e^a))]`. A level-wise, quantitative form of Bombieri's count.
+- **HF-F30 [Lean, `RHTower.WeilNearRadicalDimension`]:** The near radical has dimension `≍ e^{2a}`, unconditionally.
+  - For all large `a`, the level-`a` Hodge-class tests contain a subspace of dimension `≥ e^{2a−2}/20` on which `‖W(f,f)‖ ≤ exp(−e^{2a−2})∫|f|²` (`zeta_weil_near_radical_dimension`). So the lowest `e^{2a−2}/20` eigenvalues are all super-exponentially small.
+  - This proves the order of magnitude of Connes–Consani's numerical `≈ 2e^{2a}` "minuscule eigenvalues".
+  - **Route:** any positivity certificate with margin above `exp(−e^{2a−2})` misses `≳ e^{2a}` dimensions.
+  - Tools: sharp Lagrange/Remez (`HTGeometry.PolynomialExtrapolationRemez`); `Φ^{(k)}` as explicit cusp series (`RHTower.RiemannKernelCuspSeries`).
+- **HF-F31 [Lean, `RHTower.HodgeClusterNyquistExclusion`]:** Cluster-robust Nyquist exclusion.
+  - Hodge(a), `a ≥ 1`, excludes every zero `β₀+it₀` with `β₀ > ½` and `101 ≤ t₀ ≤ 2e^{2a−3/4} − O(log t₀(log log t₀ + log 1/(β₀−½)))`, whatever the configuration of nearby zeros (`hodgeIndex_cluster_nyquist_horizon`).
+  - Mechanism. The whole node divisor (all zeros of depth `> y₀` in the window) is divided out of `Φ`. A shift operator with an exponential-polynomial symbol then interpolates `±i/(PK̂)` at the nodes, and its size is controlled by rectangle contours (`HTGeometry.ExponentialLagrangeContour`). Node distances never enter.
+  - **Route:** finite-level positivity for `ζ` is at least RH up to `≍ e^{2a}`. Any producer must certify that.
+- **HF-F32 [Lean, `RHTower.WeilFloorSpectralSeparation`]:** Spectral separation at finite level.
+  - If `μ(a) ≥ −η`, every off-line zero lies above `≈2e^{2a−3/4}` or has `(π/2)t ≥ log(1/η) − O(log t(log log t + log 1/δ) + log a)` (`weilFloor_spectral_separation`).
+  - The negative spectrum below Nyquist is one eigenvalue `≤ −e^{−πt/2−polylog}` per off-line zero at height `t`.
+  - **Route:** this is the height-resolved form of CCM's `lim μ_λ = 0 ⇒ RH`. A numerical or proved floor `μ(a) ≥ −η` is RH up to height `(2/π)log(1/η)`.
+- **HF-F33 [Lean, `RHTower.ModulatedRiemannRadicalTest`, `RHTower.KreinCompletionPinning`]:** Krein pinning law.
+  - For all large `L`, every positive measure dominated by the level-`L` Hodge form of ζ (in particular every positive Krein completion) has mass `≤ K e^{12L}e^{−πe^{2L−1/2}}` on any window `[τ₀ ± δ/2]` at distance `≥ δ` from the zero ordinates, provided `π(τ₀+½) + 6C log(τ₀+1)/δ ≤ πe^{2L−1/2}` (`zeta_krein_completion_pinned_off_zeros`).
+  - **Route:** positive completions are pinned to the zeros below `≈ e^{2L}`. A producer is a finite-level spectral realization.
+  - Tools: the modulated radical test `modRadicalTest L ω` with its Weil bound `norm_W_modRadicalTest_le`, and the critical-line lower bound for Ξ `norm_riemannPhiTransform_line_ge`.
+- **HF-F33 [Lean, `RHTower.WeilNyquistInertia`]:** Nyquist inertia law. For `a ≥ 1` and a finite set `T` of zeros with `β > ½`, `t ≥ 101`, ordinates pairwise `≥ 3/2` apart, below the Nyquist condition with margin `log|T|`: `|T| ≤ weilNegIndex ζ a (1/(K₁ a|T|Λ²))` (`weilNegIndex_ge_card_offline_zeros`). No isolation, depth margin or polar loss. **Route:** below Nyquist the finite-level Weil form is the zero trace form, one negative square per zero. With HF-F29 this gives an inertia sandwich up to the blind zone `[2e^{2a}, exp(O(e^a))]`.

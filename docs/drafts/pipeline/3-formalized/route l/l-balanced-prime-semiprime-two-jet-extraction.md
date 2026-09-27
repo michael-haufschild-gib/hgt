@@ -1,10 +1,10 @@
 # Route L: balanced cofactor two-jet extraction
 
 - **ID:** L-BALANCED-PRIME-SEMIPRIME-TWO-JET
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Source:** Literal cubic Gamma–Hankel atoms and the corpus's unconditional every-base theta-mass theorem
-- **Lean status:** The arithmetic inputs `RHTower.Sieve.eventually_routeT_detectorPacking_theta_mass_every_base` and `RHTower.Sieve.sum_inv_coprime_squarefree_ge`, the cubic source identity, and the finite unit-coefficient first-moment selector `RHTower.exists_balanced_two_orientations` are closed in Lean. The prime-window assembly, analytic two-jet Hilbert bound, and cofactor summation remain paper-level.
+- **Lean status:** Formalized unconditionally: (1)–(2) with the cofinal reduction, the cofactor packets (8), the harmonic bound (9), and the linear-density extraction (10)–(11) for every `0<η<4/29`. See [the Lean certificate](l-balanced-prime-semiprime-two-jet-extraction-formalized.md).
 
 ## Theorem
 

@@ -37,6 +37,8 @@ private theorem removeRealComponent_norm_split (V Z : SoninL2) :
       simp only [inner_smul_right, Complex.mul_re, Complex.ofReal_re,
         Complex.ofReal_im, zero_mul, sub_zero]
     have h := norm_sub_sq (𝕜 := ℂ) V ((b : ℂ) • Z)
+    change ‖V - (b : ℂ) • Z‖ ^ 2 = ‖V‖ ^ 2 -
+      2 * (inner ℂ V ((b : ℂ) • Z)).re + ‖(b : ℂ) • Z‖ ^ 2 at h
     rw [hi, hs] at h
     change ‖V‖ ^ 2 = ‖V - (b : ℂ) • Z‖ ^ 2 + ‖V - (V - (b : ℂ) • Z)‖ ^ 2
     rw [sub_sub_cancel, hs]
@@ -85,14 +87,22 @@ theorem norm_sq_ccmActualHeadSupportedCoherentField_phase_split
           ccmActualHeadPhaseReducedCoherentField a N f r‖ ^ 2 :=
   removeRealComponent_norm_split _ _
 
+private theorem projected_measurable {E : Type*} [TopologicalSpace E]
+    (P : ℝ × E → E) (Y : ℝ → E) (hP : Continuous P) (hY : AEStronglyMeasurable Y) :
+    AEStronglyMeasurable (fun r : ℝ => P (r, Y r)) :=
+  hP.comp_aestronglyMeasurable
+    ((continuous_id : Continuous (fun r : ℝ => r)).aestronglyMeasurable.prodMk hY)
+
 private theorem reduced_measurable (a : SuzukiPositiveAperture) (N : ℕ) (f : SoninL2) :
     AEStronglyMeasurable (ccmActualHeadPhaseReducedCoherentField a N f) := by
   let V := ccmActualHeadSupportedCoherentField a N f
   let Z := ccmActualHeadSupportedReflectedDirection a N f
   have hV : AEStronglyMeasurable V :=
-    (continuous_ccmIncrementSupportProjection_joint a).comp_aestronglyMeasurable
-      ((continuous_id : Continuous (fun r : ℝ => r)).aestronglyMeasurable.prodMk
-        (aestronglyMeasurable_ccmActualHeadQuantileCompletedCoherentField (2*a.1) N f))
+    projected_measurable
+      (fun p : ℝ × SoninL2 => ccmIncrementSupportProjection a p.1 p.2)
+      (ccmActualHeadQuantileCompletedCoherentField (2*a.1) N f)
+      (continuous_ccmIncrementSupportProjection_joint a)
+      (aestronglyMeasurable_ccmActualHeadQuantileCompletedCoherentField (2*a.1) N f)
   have hZ : AEStronglyMeasurable Z :=
     aestronglyMeasurable_ccmActualHeadSupportedReflectedDirection a N f
   have hi : AEStronglyMeasurable (fun r : ℝ => (inner ℂ (V r) (Z r)).re) :=
@@ -177,7 +187,8 @@ private theorem weighted_inner_lower (d v : SoninL2) (g k : ℝ)
     nlinarith [sq_nonneg (g*‖d‖ - 2*‖v‖)]
   linarith
 
-private theorem reduced_pointwise_lower
+/-- Pointwise bound for the complete current, with an adjustable Gamma share. -/
+theorem ccmActualHeadPhaseReducedGamma_pointwise_lower
     (a : SuzukiPositiveAperture) (N : ℕ) (f : suzukiApertureHilbert a)
     (η : {η : ℝ // 0 < η}) (r : ℝ) :
     -((2 / (η : ℝ)) * (‖ccmActualHeadPhaseReducedCoherentField a N f.1 r‖ ^ 2 *
@@ -224,7 +235,7 @@ theorem ccmRestrictedWeilSource_ge_phaseReducedGamma
   have hi := integrable_ccmActualHeadCompletedCoherentInnerField (2*a.1) N f.1
   have h := integral_mono ((hc.const_mul (2 / (η : ℝ))).neg)
     (((hm.const_mul (η : ℝ)).div_const 2).add (hi.const_mul 2))
-    (reduced_pointwise_lower a N f η)
+    (ccmActualHeadPhaseReducedGamma_pointwise_lower a N f η)
   simp only [Pi.neg_apply, Pi.add_apply] at h
   rw [integral_neg, integral_const_mul,
     integral_add ((hm.const_mul (η : ℝ)).div_const 2) (hi.const_mul 2),
