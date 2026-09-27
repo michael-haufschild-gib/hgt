@@ -1,11 +1,13 @@
 import GaloisForLFunctions.RHTower.QuadraticGaussSumSign
 
 /-!
-# Fourth powers of quadratic Gauss sums
+# Square and fourth-power laws of quadratic Gauss sums
 
 For `q > 0` and `(a, q) = 1`, the quadratic Gauss sum `G(a; q) = Σ_{r mod q} e(a r²/q)` satisfies
 
-`G(a; q)^4 = q²` (`q` odd),   `G(a; q) = 0` (`q ≡ 2 mod 4`),   `G(a; q)^4 = -4 q²` (`4 ∣ q`).
+`G(a; q)² = χ₄(q) q` (`q` odd),   `G(a; q) = 0` (`q ≡ 2 mod 4`),   `G(a; q)² = 2 q i χ₄(a)` (`4 ∣ q`),
+
+hence `G(a; q)^4 = q²`, `0`, `-4 q²` respectively.
 
 The proof reindexes over `ZMod`: the Chinese remainder factorization
 `G(a; mn) = G(an; m) G(am; n)`, the odd prime-power reduction `G(a; ℓ^{k+2}) = ℓ G(a; ℓ^k)`,
@@ -231,9 +233,23 @@ theorem gaussQ_prime_pow_add_two {ℓ : ℕ} (hℓ : ℓ.Prime) (h2 : ℓ ≠ 2)
       exact (ZMod.val_eq_zero r).mp hr0
   · simp
 
-/-- For an odd prime `ℓ ∤ a`, `G(a; ℓ)^4 = ℓ²`. -/
-theorem gaussQ_prime_pow_four {ℓ : ℕ} (hℓ : ℓ.Prime) (h2 : ℓ ≠ 2) {a : ℤ}
-    (ha : ¬ (ℓ : ℤ) ∣ a) : gaussQ a ℓ ^ 4 = (ℓ : ℂ) ^ 2 := by
+/-- The sign `χ₄(q)` of an odd modulus: `1` for `q ≡ 1 (mod 4)`, `-1` otherwise. -/
+def oddSquareSign (q : ℕ) : ℂ := if q % 4 = 1 then 1 else -1
+
+theorem oddSquareSign_mul {m n : ℕ} (hm : m % 2 = 1) (hn : n % 2 = 1) :
+    oddSquareSign (m * n) = oddSquareSign m * oddSquareSign n := by
+  unfold oddSquareSign
+  have hm4 : m % 4 = 1 ∨ m % 4 = 3 := by omega
+  have hn4 : n % 4 = 1 ∨ n % 4 = 3 := by omega
+  rcases hm4 with h1 | h1 <;> rcases hn4 with h2 | h2 <;>
+    simp [Nat.mul_mod, h1, h2]
+
+theorem oddSquareSign_sq (q : ℕ) : oddSquareSign q ^ 2 = 1 := by
+  unfold oddSquareSign; split_ifs <;> norm_num
+
+/-- **Gauss's square law at an odd prime**: `G(a; ℓ)² = χ₄(ℓ) ℓ` for `ℓ ∤ a`. -/
+theorem gaussQ_prime_sq {ℓ : ℕ} (hℓ : ℓ.Prime) (h2 : ℓ ≠ 2) {a : ℤ}
+    (ha : ¬ (ℓ : ℤ) ∣ a) : gaussQ a ℓ ^ 2 = oddSquareSign ℓ * ℓ := by
   classical
   haveI : Fact ℓ.Prime := ⟨hℓ⟩
   haveI : NeZero ℓ := ⟨hℓ.ne_zero⟩
@@ -278,21 +294,24 @@ theorem gaussQ_prime_pow_four {ℓ : ℕ} (hℓ : ℓ.Prime) (h2 : ℓ ≠ 2) {a
     have h := congrArg (fun z : ℤ => (z : ℂ)) this
     push_cast at h
     exact h
-  have hquad : gaussQuad ℓ ^ 4 = (ℓ : ℂ) ^ 2 := by
+  have hquad : gaussQuad ℓ ^ 2 = oddSquareSign ℓ * ℓ := by
     have hodd : ℓ % 2 = 1 := Nat.odd_iff.mp (hℓ.odd_of_ne_two h2)
     have hsq : ((Real.sqrt ℓ : ℝ) : ℂ) ^ 2 = ℓ := by
       rw [← Complex.ofReal_pow, Real.sq_sqrt (Nat.cast_nonneg ℓ)]; simp
+    unfold oddSquareSign
     rcases (by omega : ℓ % 4 = 1 ∨ ℓ % 4 = 3) with h4 | h4
-    · rw [gaussQuad_of_mod_four_eq_one ℓ h4, show (4 : ℕ) = 2 * 2 from rfl, pow_mul, hsq]
-    · rw [gaussQuad_of_mod_four_eq_three ℓ h4, mul_pow, show (4 : ℕ) = 2 * 2 from rfl, pow_mul,
-        pow_mul, hsq, Complex.I_sq]
-      ring
+    · rw [gaussQuad_of_mod_four_eq_one ℓ h4, hsq, if_pos h4, one_mul]
+    · rw [gaussQuad_of_mod_four_eq_three ℓ h4, mul_pow, hsq, Complex.I_sq, if_neg (by omega)]
   have hG' : gaussQ a ℓ * legendreC ℓ (a : ZMod ℓ) = gaussQuad ℓ := by
     rw [hG, mul_comm]; exact hshift
-  have : (gaussQ a ℓ * legendreC ℓ (a : ZMod ℓ)) ^ 4 = (ℓ : ℂ) ^ 2 := by rw [hG', hquad]
-  rw [mul_pow, show (4 : ℕ) = 2 * 2 from rfl, pow_mul (legendreC ℓ (a : ZMod ℓ)), hχ, one_pow,
-    mul_one] at this
-  exact this
+  have : (gaussQ a ℓ * legendreC ℓ (a : ZMod ℓ)) ^ 2 = oddSquareSign ℓ * ℓ := by rw [hG', hquad]
+  rwa [mul_pow, hχ, mul_one] at this
+
+/-- For an odd prime `ℓ ∤ a`, `G(a; ℓ)^4 = ℓ²`. -/
+theorem gaussQ_prime_pow_four {ℓ : ℕ} (hℓ : ℓ.Prime) (h2 : ℓ ≠ 2) {a : ℤ}
+    (ha : ¬ (ℓ : ℤ) ∣ a) : gaussQ a ℓ ^ 4 = (ℓ : ℂ) ^ 2 := by
+  rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, gaussQ_prime_sq hℓ h2 ha, mul_pow,
+    oddSquareSign_sq, one_mul]
 
 /-! ## Powers of two -/
 
@@ -485,10 +504,11 @@ theorem gaussQ_two_pow_add_four {a : ℤ} (ha : Odd a) (k : ℕ) :
       exact (ZMod.val_eq_zero r).mp this
   · simp
 
-/-! ## Fourth powers -/
+/-! ## Square and fourth-power laws -/
 
-theorem gaussQ_two_pow_pow_four {a : ℤ} (ha : Odd a) (k : ℕ) :
-    gaussQ a (2 ^ (k + 2)) ^ 4 = -4 * ((2 ^ (k + 2) : ℕ) : ℂ) ^ 2 := by
+/-- `G(a; 2^{k+2})² = 2^{k+3} e^{2πi a/4}` for odd `a`. -/
+theorem gaussQ_two_pow_sq {a : ℤ} (ha : Odd a) (k : ℕ) :
+    gaussQ a (2 ^ (k + 2)) ^ 2 = 2 ^ (k + 3) * cexp (2 * Real.pi * I * (a / 4)) := by
   induction k using Nat.strong_induction_on with
   | _ k ih =>
     have hω : cexp (2 * Real.pi * I * (a / 2)) = -1 := cexp_pi_I_mul_odd ha
@@ -498,24 +518,26 @@ theorem gaussQ_two_pow_pow_four {a : ℤ} (ha : Odd a) (k : ℕ) :
       set ω := cexp (2 * Real.pi * I * (a / 4))
       have hω2 : ω ^ 2 = -1 := by
         rw [← hω, ← Complex.exp_nat_mul]; congr 1; push_cast; ring
-      have : (2 * (1 + ω)) ^ 4 = 16 * (1 + 2 * ω + ω ^ 2) ^ 2 := by ring
-      rw [this, hω2]
-      have : (1 + 2 * ω + -1) ^ 2 = 4 * ω ^ 2 := by ring
-      rw [this, hω2]; push_cast; ring
+      linear_combination 4 * hω2
     | 1, _ =>
       rw [show (1 + 2 : ℕ) = 3 from rfl, show (2 : ℕ) ^ 3 = 8 from rfl, gaussQ_eight ha]
-      set ω := cexp (2 * Real.pi * I * (a / 8))
-      have hω4 : ω ^ 4 = -1 := by
-        rw [← hω, ← Complex.exp_nat_mul]; congr 1; push_cast; ring
-      rw [mul_pow, hω4]; push_cast; ring
+      have hω2 : cexp (2 * Real.pi * I * (a / 8)) ^ 2 = cexp (2 * Real.pi * I * (a / 4)) := by
+        rw [← Complex.exp_nat_mul]; congr 1; push_cast; ring
+      rw [mul_pow, hω2]; norm_num
     | j + 2, ih =>
-      rw [show j + 2 + 2 = j + 4 by ring, gaussQ_two_pow_add_four ha, mul_pow,
-        ih j (by omega)]
-      push_cast; ring
+      rw [show j + 2 + 2 = j + 4 by ring, gaussQ_two_pow_add_four ha, mul_pow, ih j (by omega)]
+      ring
 
-/-- Odd moduli: `G(a; q)^4 = q²` for `(a, q) = 1`. -/
-theorem gaussQ_pow_four_of_odd : ∀ q : ℕ, q % 2 = 1 → ∀ a : ℤ, IsCoprime a q →
-    gaussQ a q ^ 4 = (q : ℂ) ^ 2 := by
+theorem gaussQ_two_pow_pow_four {a : ℤ} (ha : Odd a) (k : ℕ) :
+    gaussQ a (2 ^ (k + 2)) ^ 4 = -4 * ((2 ^ (k + 2) : ℕ) : ℂ) ^ 2 := by
+  have hω : cexp (2 * Real.pi * I * (a / 4)) ^ 2 = -1 := by
+    rw [← cexp_pi_I_mul_odd ha, ← Complex.exp_nat_mul]; congr 1; push_cast; ring
+  rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, gaussQ_two_pow_sq ha, mul_pow, hω]
+  push_cast; ring
+
+/-- **Odd moduli**: `G(a; q)² = χ₄(q) q` for `(a, q) = 1`. -/
+theorem gaussQ_sq_of_odd : ∀ q : ℕ, q % 2 = 1 → ∀ a : ℤ, IsCoprime a q →
+    gaussQ a q ^ 2 = oddSquareSign q * q := by
   intro q
   induction q using Nat.recOnPosPrimePosCoprime with
   | prime_pow p n hp hn =>
@@ -524,6 +546,7 @@ theorem gaussQ_pow_four_of_odd : ∀ q : ℕ, q % 2 = 1 → ∀ a : ℤ, IsCopri
       rintro rfl
       obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_lt hn
       simp [pow_succ] at hodd
+    have hpo : p % 2 = 1 := Nat.odd_iff.mp (hp.odd_of_ne_two hp2)
     have hpa : ¬ (p : ℤ) ∣ a := by
       intro hd
       have : IsCoprime a (p : ℤ) := by
@@ -535,13 +558,18 @@ theorem gaussQ_pow_four_of_odd : ∀ q : ℕ, q % 2 = 1 → ∀ a : ℤ, IsCopri
     induction n using Nat.strong_induction_on with
     | _ n ih =>
       match n, ih with
-      | 0, _ => simp [gaussQ_one]
-      | 1, _ => simpa using gaussQ_prime_pow_four hp hp2 hpa
+      | 0, _ => simp [gaussQ_one, oddSquareSign]
+      | 1, _ => simpa using gaussQ_prime_sq hp hp2 hpa
       | m + 2, ih =>
-        rw [gaussQ_prime_pow_add_two hp hp2 hpa, mul_pow, ih m (by omega)]
-        push_cast; ring
+        have hpm : p ^ m % 2 = 1 := Nat.odd_iff.mp (Odd.pow (Nat.odd_iff.mpr hpo))
+        rw [gaussQ_prime_pow_add_two hp hp2 hpa, mul_pow, ih m (by omega),
+          show p ^ (m + 2) = p ^ m * (p * p) by ring,
+          oddSquareSign_mul hpm (by rw [Nat.mul_mod, hpo]), oddSquareSign_mul hpo hpo]
+        have := oddSquareSign_sq p
+        push_cast
+        linear_combination -(oddSquareSign (p ^ m) * (p : ℂ) ^ m * (p : ℂ) ^ 2) * this
   | zero => intro h; simp at h
-  | one => intro _ a _; simp [gaussQ_one]
+  | one => intro _ a _; simp [gaussQ_one, oddSquareSign]
   | coprime a b ha hb hab iha ihb =>
     intro hodd x hx
     obtain ⟨hao', hbo'⟩ := Nat.odd_mul.mp (Nat.odd_iff.mpr hodd)
@@ -553,8 +581,15 @@ theorem gaussQ_pow_four_of_odd : ∀ q : ℕ, q % 2 = 1 → ∀ a : ℤ, IsCopri
       have := hx; push_cast at this; exact this.of_isCoprime_of_dvd_right (dvd_mul_left _ _)
     have hab' : IsCoprime (a : ℤ) b := Nat.isCoprime_iff_coprime.mpr hab
     rw [gaussQ_mul_of_coprime (by omega) (by omega) hab, mul_pow,
-      iha hao (x * b) (hxa.mul_left hab'.symm), ihb hbo (x * a) (hxb.mul_left hab')]
+      iha hao (x * b) (hxa.mul_left hab'.symm), ihb hbo (x * a) (hxb.mul_left hab'),
+      oddSquareSign_mul hao hbo]
     push_cast; ring
+
+/-- Odd moduli: `G(a; q)^4 = q²` for `(a, q) = 1`. -/
+theorem gaussQ_pow_four_of_odd (q : ℕ) (hq : q % 2 = 1) (a : ℤ) (ha : IsCoprime a q) :
+    gaussQ a q ^ 4 = (q : ℂ) ^ 2 := by
+  rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, gaussQ_sq_of_odd q hq a ha, mul_pow,
+    oddSquareSign_sq, one_mul]
 
 /-- Moduli `q ≡ 2 (mod 4)`: `G(a; q) = 0` for `(a, q) = 1`. -/
 theorem gaussQ_eq_zero_of_mod_four_eq_two {q : ℕ} (hq : q % 4 = 2) {a : ℤ}
@@ -574,9 +609,46 @@ theorem gaussQ_eq_zero_of_mod_four_eq_two {q : ℕ} (hq : q % 4 = 2) {a : ℤ}
     · exact ho
   exact Int.odd_mul.mpr ⟨hao, by exact_mod_cast Nat.odd_iff.mpr hm⟩
 
-/-- Moduli divisible by `4`: `G(a; q)^4 = -4 q²` for `(a, q) = 1`. -/
-theorem gaussQ_pow_four_of_four_dvd {q : ℕ} (hq0 : 0 < q) (hq : 4 ∣ q) {a : ℤ}
-    (ha : IsCoprime a q) : gaussQ a q ^ 4 = -4 * (q : ℂ) ^ 2 := by
+/-- The quarter phase `e^{2πi n/4}` depends only on `n mod 4`. -/
+theorem cexp_quarter_int (n : ℤ) :
+    cexp (2 * Real.pi * I * ((n : ℂ) / 4)) = cexp (2 * Real.pi * I * (((n % 4 : ℤ) : ℂ) / 4)) := by
+  have h := Int.emod_add_mul_ediv n 4
+  conv_lhs => rw [← h]
+  push_cast
+  rw [show (((n % 4 : ℤ) : ℂ) + 4 * ((n / 4 : ℤ) : ℂ)) / 4 = ((n % 4 : ℤ) : ℂ) / 4 + ((n / 4 : ℤ) : ℂ) by
+    ring, cexp_two_pi_I_add_int]
+
+theorem cexp_quarter_one : cexp (2 * Real.pi * I * ((1 : ℂ) / 4)) = I := by
+  rw [show 2 * (Real.pi : ℂ) * I * (1 / 4) = Real.pi / 2 * I by ring, Complex.exp_pi_div_two_mul_I]
+
+theorem cexp_quarter_three : cexp (2 * Real.pi * I * ((3 : ℂ) / 4)) = -I := by
+  rw [show 2 * (Real.pi : ℂ) * I * (3 / 4) = ((3 : ℕ) : ℂ) * (Real.pi / 2 * I) by push_cast; ring,
+    Complex.exp_nat_mul, Complex.exp_pi_div_two_mul_I]
+  rw [show (3 : ℕ) = 2 + 1 from rfl, pow_succ, Complex.I_sq]; ring
+
+/-- `e^{2πi am/4} χ₄(m) = i χ₄(a)` for odd `a` and odd `m`. -/
+theorem cexp_quarter_mul_oddSquareSign {a : ℤ} (ha : Odd a) {m : ℕ} (hm : m % 2 = 1) :
+    cexp (2 * Real.pi * I * (((a * m : ℤ) : ℂ) / 4)) * oddSquareSign m =
+      I * (if a % 4 = 1 then 1 else -1) := by
+  rw [cexp_quarter_int]
+  have ha4 : a % 4 = 1 ∨ a % 4 = 3 := by
+    obtain ⟨k, rfl⟩ := ha; omega
+  have hm4 : m % 4 = 1 ∨ m % 4 = 3 := by omega
+  have hmz : ((m : ℤ) % 4) = ((m % 4 : ℕ) : ℤ) := by push_cast; rfl
+  unfold oddSquareSign
+  rcases ha4 with h1 | h1 <;> rcases hm4 with h2 | h2
+  · have : (a * m) % 4 = 1 := by rw [Int.mul_emod, h1, hmz, h2]; norm_num
+    rw [this, if_pos h2, if_pos h1]; push_cast; rw [cexp_quarter_one]
+  · have : (a * m) % 4 = 3 := by rw [Int.mul_emod, h1, hmz, h2]; norm_num
+    rw [this, if_neg (by omega), if_pos h1]; push_cast; rw [cexp_quarter_three]; ring
+  · have : (a * m) % 4 = 3 := by rw [Int.mul_emod, h1, hmz, h2]; norm_num
+    rw [this, if_pos h2, if_neg (by omega)]; push_cast; rw [cexp_quarter_three]; ring
+  · have : (a * m) % 4 = 1 := by rw [Int.mul_emod, h1, hmz, h2]; norm_num
+    rw [this, if_neg (by omega), if_neg (by omega)]; push_cast; rw [cexp_quarter_one]
+
+/-- **Moduli divisible by `4`**: `G(a; q)² = 2 q i χ₄(a)` for `(a, q) = 1`. -/
+theorem gaussQ_sq_of_four_dvd {q : ℕ} (hq0 : 0 < q) (hq : 4 ∣ q) {a : ℤ}
+    (ha : IsCoprime a q) : gaussQ a q ^ 2 = 2 * q * I * (if a % 4 = 1 then 1 else -1) := by
   obtain ⟨k, m, hm, rfl⟩ := Nat.exists_eq_two_pow_mul_odd hq0.ne'
   have hm0 : 0 < m := hm.pos
   have hk : 2 ≤ k := by
@@ -601,10 +673,20 @@ theorem gaussQ_pow_four_of_four_dvd {q : ℕ} (hq0 : 0 < q) (hq : 4 ∣ q) {a : 
   have ham : IsCoprime a (m : ℤ) := by
     have := ha; push_cast at this; exact this.of_isCoprime_of_dvd_right (dvd_mul_left _ _)
   have h2m : IsCoprime ((2 ^ (j + 2) : ℕ) : ℤ) (m : ℤ) := Nat.isCoprime_iff_coprime.mpr hcop
+  have hmodd : m % 2 = 1 := Nat.odd_iff.mp hm
   rw [gaussQ_mul_of_coprime (by positivity) hm0 hcop, mul_pow,
-    gaussQ_two_pow_pow_four (Int.odd_mul.mpr ⟨hao, by exact_mod_cast hm⟩) j,
-    gaussQ_pow_four_of_odd m (Nat.odd_iff.mp hm) _ (ham.mul_left h2m)]
-  push_cast; ring
+    gaussQ_two_pow_sq (Int.odd_mul.mpr ⟨hao, by exact_mod_cast hm⟩) j,
+    gaussQ_sq_of_odd m hmodd _ (ham.mul_left h2m)]
+  have key := cexp_quarter_mul_oddSquareSign hao hmodd
+  push_cast at key ⊢
+  linear_combination (2 ^ (j + 3) * (m : ℂ)) * key
+
+/-- Moduli divisible by `4`: `G(a; q)^4 = -4 q²` for `(a, q) = 1`. -/
+theorem gaussQ_pow_four_of_four_dvd {q : ℕ} (hq0 : 0 < q) (hq : 4 ∣ q) {a : ℤ}
+    (ha : IsCoprime a q) : gaussQ a q ^ 4 = -4 * (q : ℂ) ^ 2 := by
+  rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, gaussQ_sq_of_four_dvd hq0 hq ha, mul_pow,
+    mul_pow, Complex.I_sq]
+  split_ifs <;> ring
 
 /-- **Fourth-power law of quadratic Gauss sums.** For `(a, q) = 1`, `q > 0`,
 `G(a; q)^4` equals `q²`, `0` or `-4 q²` according as `q` is odd, `q ≡ 2 (mod 4)` or `4 ∣ q`. -/
@@ -615,6 +697,18 @@ theorem gaussQ_pow_four {q : ℕ} (hq0 : 0 < q) {a : ℤ} (ha : IsCoprime a q) :
   · exact gaussQ_pow_four_of_odd q h1 a ha
   · rw [gaussQ_eq_zero_of_mod_four_eq_two h2 ha]; norm_num
   · exact gaussQ_pow_four_of_four_dvd hq0 (by omega) ha
+
+/-- **Quadratic Gauss-sum square law.** For `q > 0` and `(a, q) = 1`,
+`G(a; q)² = χ₄(q) q` (`q` odd), `0` (`q ≡ 2 mod 4`), `2 q i χ₄(a)` (`4 ∣ q`). -/
+theorem gaussQ_sq {q : ℕ} (hq0 : 0 < q) {a : ℤ} (ha : IsCoprime a q) :
+    gaussQ a q ^ 2 =
+      if q % 2 = 1 then oddSquareSign q * q
+      else if q % 4 = 2 then 0 else 2 * q * I * (if a % 4 = 1 then 1 else -1) := by
+  split_ifs with h1 h2
+  · exact gaussQ_sq_of_odd q h1 a ha
+  · rw [gaussQ_eq_zero_of_mod_four_eq_two h2 ha]; norm_num
+  · rw [gaussQ_sq_of_four_dvd hq0 (by omega) ha, if_pos ‹_›]
+  · rw [gaussQ_sq_of_four_dvd hq0 (by omega) ha, if_neg ‹_›]
 
 /-- For odd `q` and `(a, q) = 1`, `|G(a; q)| = √q`. -/
 theorem norm_gaussQ_of_odd {q : ℕ} (hq : q % 2 = 1) {a : ℤ} (ha : IsCoprime a q) :

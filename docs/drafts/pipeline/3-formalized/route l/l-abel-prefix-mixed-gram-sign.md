@@ -1,9 +1,10 @@
 # Route L: Abel-prefix mixed Gamma--Hankel sign atlas
 
 - **ID:** L-ABEL-PREFIX-MIXED-GRAM-SIGN
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Lean status:** Finite Abel identity, algebraic mixed-kernel formula, and quantitative pointwise sign bounds are closed in [MobiusAbelPrefixGramSign.lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusAbelPrefixGramSign.lean). The Gamma integral identification, integrated unit-interval Gram signs, and frozen-prefix Fourier representation below remain paper-level.
+- **Lean status:** Closed. Every displayed result (1)–(10), the sharpness and transition claims, and the discrete Gram signs are proved in `MobiusAbelPrefixGramIntegral` and `MobiusAbelPrefixFourierMultiplier` (with the shared layers `MobiusCubicGammaNorm`, `MobiusCubicGammaAtomJets`); the finite algebraic sign bounds remain in `MobiusAbelPrefixGramSign`. Certificate: [l-abel-prefix-mixed-gram-sign-formalized.md](l-abel-prefix-mixed-gram-sign-formalized.md).
+- **Formalized companion:** [l-abel-prefix-mixed-gram-sign-formalized.md](l-abel-prefix-mixed-gram-sign-formalized.md)
 
 ## Exact prefix-energy representation
 
@@ -117,4 +118,4 @@ This agrees with the corpus's finite Möbius Laplace/Mellin receiver, now derive
 
 ## Consequence for the hard source bound
 
-Equation (4) replaces the original Möbius pair coefficients by correlations of the *actual Mertens prefixes* against an explicitly signed mixed Gram. The archimedean part now has a proved local-positive/far-negative structure and quantitative margins. The remaining obstruction is arithmetic: for abscissas `a=(1+delta)/2` cofinal from the right at `1/2`, upper-bound the full signed sum `sum M(m)M(n)D_delta(m,n)` together with its terminal cross term, uniformly in `N` **for each chosen `delta>0`**. The [formal cofinal cubic criterion](../3-formalized/l-cofinal-cubic-source-criterion.md) shows that constants may depend on `delta`; no bound at `delta=0` is part of the RH receiver. In particular, pointwise signs of `D_delta` alone do not control products `M(m)M(n)`. A productive next conjecture must quantify how Mertens-prefix signs and magnitudes interact across the comparable and separated scale regions of (5); it cannot replace those prefixes by absolute values.
+Equation (4) replaces the original Möbius pair coefficients by correlations of the *actual Mertens prefixes* against an explicitly signed mixed Gram. The archimedean part now has a proved local-positive/far-negative structure and quantitative margins. The remaining obstruction is arithmetic: for abscissas `a=(1+delta)/2` cofinal from the right at `1/2`, upper-bound the full signed sum `sum M(m)M(n)D_delta(m,n)` together with its terminal cross term, uniformly in `N` **for each chosen `delta>0`**. The [formal cofinal cubic criterion](../l-cofinal-cubic-source-criterion.md) shows that constants may depend on `delta`; no bound at `delta=0` is part of the RH receiver. In particular, pointwise signs of `D_delta` alone do not control products `M(m)M(n)`. A productive next conjecture must quantify how Mertens-prefix signs and magnitudes interact across the comparable and separated scale regions of (5); it cannot replace those prefixes by absolute values.

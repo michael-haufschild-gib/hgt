@@ -27,7 +27,7 @@ theorem tendsto_exp_neg_half_mul_criticalMellinPrimeMass :
       ring
     rw [criticalMellinCompletedError_eq_polar_sub_primeMass, Real.sinh_eq]
     nlinarith only [hcancel, hdouble]
-  have h := (tendsto_const_nhds.sub
+  have h := ((tendsto_const_nhds (x := (2 : ℝ))).sub
     (Real.tendsto_exp_neg_atTop_nhds_zero.const_mul (2 : ℝ))).sub
       tendsto_exp_neg_half_mul_criticalMellinCompletedError_atTop_zero
   simpa only [mul_zero, sub_zero, ← heq] using h

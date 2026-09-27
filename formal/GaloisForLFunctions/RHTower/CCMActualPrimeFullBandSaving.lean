@@ -27,13 +27,17 @@ private theorem atom_norm_le (a : SuzukiPositiveAperture) (n : ℕ) (hn : 2 ≤ 
       (mul_le_mul_of_nonneg_right (norm_ccmPrimeTransportOperator_le_outerShell a n hl)
         (norm_nonneg f))
     have h := mul_le_mul_of_nonneg_left hop hv
-    nlinarith only [h]
+    calc
+      _ ≤ ArithmeticFunction.vonMangoldt n * (1 / Real.sqrt n * ‖f‖) := h
+      _ = _ := by ring
   · rw [if_neg hl]
     have hop := (ContinuousLinearMap.le_opNorm (ccmPrimeTransportOperator a n) f).trans
       (mul_le_mul_of_nonneg_right (norm_ccmPrimeTransportOperator_le a (by omega : 1 ≤ n))
         (norm_nonneg f))
     have h := mul_le_mul_of_nonneg_left hop hv
-    nlinarith only [h]
+    calc
+      _ ≤ ArithmeticFunction.vonMangoldt n * (2 / Real.sqrt n * ‖f‖) := h
+      _ = _ := by ring
 
 private theorem band_subset (a : SuzukiPositiveAperture) (lo hi : ℝ) :
     ccmActualPrimeBand a lo hi ⊆ Finset.Icc 2 ⌊Real.exp (2 * a.1)⌋₊ :=
@@ -82,7 +86,7 @@ theorem ccmFinitePrimeOperator_sq_le_collectiveBandBudget
   let H := ccmActualPrimeBand a.1 1 0
   let R := S \ (L ∪ H)
   let V := fun n => ((ArithmeticFunction.vonMangoldt n : ℂ) • ccmPrimeTransportOperator a.1 n) f
-  let b := fun n => (if a.1.1 < Real.log n then (1 : ℝ) else 2) *
+  let b := fun n : ℕ => (if a.1.1 < Real.log n then (1 : ℝ) else 2) *
     (ArithmeticFunction.vonMangoldt n / Real.sqrt n)
   let r := ∑ n ∈ R, b n
   let m := ccmActualPrimeBandMass a.1 4 3

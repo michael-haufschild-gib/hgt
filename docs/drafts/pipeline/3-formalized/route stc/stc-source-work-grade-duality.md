@@ -1,10 +1,10 @@
 # Hidden grade duality of source phase work versus prime-seam energy
 
 - **ID:** stc-source-work-grade-duality
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Type:** exact source-scalarization non-identification theorem
 - **Routes:** STC, RHist, Gamma-six/Sonin source lift
-- **Status:** [PROVED ON PAPER] [ALGEBRAIC DUALITY AND SOURCE FACTORIZATION FORMALIZED] [ENERGY COMPARISON LEAN PENDING] [NOT AN RH PROOF]
+- **Status:** [PROVED ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]
 
 ## Two actual source observables
 
@@ -73,3 +73,7 @@ For 0<t<1 its sign is positive below t=1/sqrt(3), zero at that grade, and negati
 - Exact seam square density, convergence, and pair-energy limit: XiPrimeSeamReflectionEnergy.lean and XiPrimeSeamPairAsymptotics.lean.
 - [STCSourceWorkGradeDuality.lean](../../../../formal/GaloisForLFunctions/RHTower/STCSourceWorkGradeDuality.lean) formalizes the rational involution, work invariance, and factorization of the actual complete-source/Sonin work through that profile. Its leaf passed `lake env lean` and is wired into the RHTower umbrella without an umbrella build. Strict seam-energy monotonicity, edge asymptotics, and the no-factor-through-work consequence remain paper-only.
 - Deep corpus searches for a direct source-work/seam-energy bridge were partial and found the two components but no exact duality comparison. No external priority claim is made.
+
+## Log
+
+- 2026-09-27: duality, strict monotonicity, both edge limits, outer-edge asymptotics (5)–(6), slope (7) and the Bockstein budget no-go formalized unconditionally (`STCSourceWorkGradeDuality.lean`, `STCSourceWorkSeamEnergy.lean`); certificate `stc-source-work-grade-duality-formalized.md`; moved to stage 3.

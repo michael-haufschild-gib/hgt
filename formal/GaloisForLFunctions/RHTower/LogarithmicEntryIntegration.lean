@@ -50,20 +50,25 @@ private theorem weighted_common_prefix (w : ℕ → ℝ) (g : ℝ → ℝ)
   intro n _
   by_cases hn : Real.log n ≤ t <;> simp [hn, mul_comm]
 
-theorem intervalIntegrable_mul_logarithmicEntrySum (w : ℕ → ℝ)
-    (g : ℝ → ℝ) (hg : Continuous g) {T : ℝ} (hT : 0 ≤ T) :
+theorem intervalIntegrable_mul_logarithmicEntrySum_of_intervalIntegrable (w : ℕ → ℝ)
+    (g : ℝ → ℝ) {T : ℝ} (hg : IntervalIntegrable g volume 0 T) (hT : 0 ≤ T) :
     IntervalIntegrable (fun t => g t * logarithmicEntrySum w t) volume 0 T := by
   classical
   have hi (n : ℕ) : IntervalIntegrable
       ((Ici (Real.log n)).indicator (fun t : ℝ => w n * g t)) volume 0 T := by
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hT]
-    exact (((hg.const_mul (w n)).intervalIntegrable (μ := volume) 0 T).1).indicator
-      measurableSet_Ici
+    exact (hg.const_mul (w n)).1.indicator measurableSet_Ici
   have hs := IntervalIntegrable.sum (s := Finset.Icc 1 ⌊Real.exp T⌋₊) (fun n _ => hi n)
   apply hs.congr
   intro t ht
   have htT : t ≤ T := (uIoc_of_le hT ▸ ht).2
   simpa only [Finset.sum_apply] using (weighted_common_prefix w g htT).symm
+
+theorem intervalIntegrable_mul_logarithmicEntrySum (w : ℕ → ℝ)
+    (g : ℝ → ℝ) (hg : Continuous g) {T : ℝ} (hT : 0 ≤ T) :
+    IntervalIntegrable (fun t => g t * logarithmicEntrySum w t) volume 0 T :=
+  intervalIntegrable_mul_logarithmicEntrySum_of_intervalIntegrable w g
+    (hg.intervalIntegrable 0 T) hT
 
 private theorem integral_indicator_Ici (g : ℝ → ℝ) {c T : ℝ}
     (hc : 0 ≤ c) (hcT : c ≤ T) :
@@ -83,16 +88,15 @@ private theorem integral_indicator_Ici (g : ℝ → ℝ) {c T : ℝ}
   simpa only [hset] using
     ((Ioi_ae_eq_Ici (μ := volume) (a := c)).inter (ae_eq_refl (Ioc 0 T))).symm
 
-theorem integral_mul_logarithmicEntrySum (w : ℕ → ℝ)
-    (g : ℝ → ℝ) (hg : Continuous g) {T : ℝ} (hT : 0 ≤ T) :
+theorem integral_mul_logarithmicEntrySum_of_intervalIntegrable (w : ℕ → ℝ)
+    (g : ℝ → ℝ) {T : ℝ} (hg : IntervalIntegrable g volume 0 T) (hT : 0 ≤ T) :
     (∫ t in (0 : ℝ)..T, g t * logarithmicEntrySum w t) =
       ∑ n ∈ Finset.Icc 1 ⌊Real.exp T⌋₊, w n * ∫ t in Real.log n..T, g t := by
   classical
   have hi (n : ℕ) : IntervalIntegrable
       ((Ici (Real.log n)).indicator (fun t : ℝ => w n * g t)) volume 0 T := by
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hT]
-    exact (((hg.const_mul (w n)).intervalIntegrable (μ := volume) 0 T).1).indicator
-      measurableSet_Ici
+    exact (hg.const_mul (w n)).1.indicator measurableSet_Ici
   have hp (t : ℝ) (ht : t ∈ uIcc 0 T) :=
     weighted_common_prefix w g ((uIcc_of_le hT ▸ ht).2)
   rw [intervalIntegral.integral_congr hp,
@@ -104,5 +108,12 @@ theorem integral_mul_logarithmicEntrySum (w : ℕ → ℝ)
     ((Nat.le_floor_iff (Real.exp_pos T).le).mp (Finset.mem_Icc.mp hn).2)
   rw [integral_indicator_Ici _ (Real.log_nonneg hnR) hlogT,
     intervalIntegral.integral_const_mul]
+
+theorem integral_mul_logarithmicEntrySum (w : ℕ → ℝ)
+    (g : ℝ → ℝ) (hg : Continuous g) {T : ℝ} (hT : 0 ≤ T) :
+    (∫ t in (0 : ℝ)..T, g t * logarithmicEntrySum w t) =
+      ∑ n ∈ Finset.Icc 1 ⌊Real.exp T⌋₊, w n * ∫ t in Real.log n..T, g t :=
+  integral_mul_logarithmicEntrySum_of_intervalIntegrable w g
+    (hg.intervalIntegrable 0 T) hT
 
 end RHTower

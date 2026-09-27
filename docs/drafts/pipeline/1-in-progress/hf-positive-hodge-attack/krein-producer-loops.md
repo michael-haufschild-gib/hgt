@@ -583,3 +583,71 @@ Next conjectures to test:
   - For ζ only `θ* ≤ 1` is known (HF-F17).
   - Open: is the relaxed exponent of ζ equal to `2Θ_ζ` unconditionally? The zero side needs bounded off-line density. The prime side needs smoothness of `f`, which the `L²` index does not see.
 - **Modules.** `RHTower/OffLineDensityWeilLowerBound` (835 lines), `RHTower/ErrorExponentAbscissaExcessLaw` (248), `RHTower/OffLineClusterWeilUnbounded` (654). All are wired into `RHTower.lean` and built with `lake build --old`. Axioms: propext, Classical.choice, Quot.sound.
+
+### L33 — ζ-specific height reduction: the level-`a` Weil form of ζ sees only its zeros below `exp(O(e^a))`. TRUE [L]
+- **Question.** L32 showed that for abstract configurations the depth hypothesis must be global: an off-line pair at any height has eventual exponent ½. Does ζ, through its explicit formula, have a finite horizon?
+- **Theorem** (`RHTower/ZetaWeilFormHeightReduction:zeta_re_W_ge_of_depth_below_horizon`). There is `A₀` such that for `a > 0` and `0 ≤ η ≤ ½`: suppose every zero with `|γ| ≤ H(A₀,a)` has `|β−½| ≤ η`, and the unit windows below `H` carry off-line multiplicity `≤ D`. Then every polar-constrained `C²` test on `[−a,a]` has
+  `Re W(f,f) ≥ −(7000(2a+3)·D·e^{2η(a+2)} + 2)∫|f|²`,
+  with `log H(A₀,a) ≤ 7000e^a + log A₀ + 160` (`log_zetaHorizonHeight_le`).
+- **Corollaries.**
+  - "Zeros up to height `T`" form, for every `a` with `H(A₀,a) ≤ T` (`zeta_re_W_ge_of_depth_up_to_height`). This rescues the original L30 formulation for ζ. For abstract configurations it is false (L32 pair).
+  - Relaxed-index form (`zeta_relaxedHodgeIndexAtLevel_of_depth_below_horizon`).
+  - **Finite verification.** RH below `H(A₀,a)` gives `Re W ≥ −2∫|f|²` at level `a` (`zeta_re_W_ge_neg_two_of_critical_below_horizon`).
+- **Mechanism.**
+  1. Split `W(f,f) = W(f,g) + (W(f,f) − W(f,g))`, where `ĝ = f̂·q_b²`, `q_b = ŵ_b/ŵ_b(0)`, `w_b = (b²−u²)₊^{5/2}`, and `b = e^{−2E}/4`.
+  2. **Symbol side** (`RHTower/ZetaSymbolArchimedeanHorizon`). The bilinear explicit formula (only `f` needs polar zeros) gives the density `|f̂|²(1−q_b²)(μ+P_X)`.
+     - `μ ≥ (log(1+|τ|/4) − 10)/(2π)`, from two digamma recurrences plus `|ψ−log| ≤ 3/|z|`.
+     - `P_X ≥ −(34/π)√X`, since `Σ_{n≤N}Λ(n)/√n ≤ 34√N` by dyadic induction on Chebyshev.
+     - Hence `μ+P_X ≥ 0` above `4e^E`, with `E = 10 + 68√X`, `X = e^{2(a+2)}`.
+     - Below that height `0 ≤ 1−q_b² ≤ (bτ)²`. Plancherel then gives the error `≥ −E e^{−2E}∫|f|²`.
+  3. **Zero side.** The summand is `m·f̂(x)·conj f̂(x̄)·q_b(x)²`.
+     - Below `H`: `Re(AB̄c) ≥ −|A−B|²/4 − |A||B||c−q_b(γ)²|`. This is summed by the height-restricted depth Bessel bound (L32 machinery restricted to `|γ| ≤ H`) and a plain Bessel bound over off-line zeros for the phase error `6b|β−½|`.
+     - Above `H`: `|q_b|² ≤ e·400²/(b⁶(1+|γ|)⁴)`, summed by the local count.
+- **Kill attempts.**
+  - *Circular?* No. The inputs are the unconditional explicit formula, Chebyshev, digamma bounds and the local count.
+  - *Rediscovered?* Smoothing the explicit formula so that far zeros are negligible is standard. The corpus had only the symbol-side horizon (`PrimeTransportPoleSchurNorm`: positivity for tests living above `exp((1+o(1))e^a)`). The zero-side reduction of the level-`a` index to finitely many zeros, with explicit height, is new in the corpus. Verdict: BRIDGE with a new quantitative statement.
+- **Picture for ζ at level `a`.**
+  - The index sees zeros up to `exp(εa/log²a)` (L29).
+  - It is determined, from above, by zeros up to `exp(O(e^a))` (L33).
+  - The region in between is the frontier map's "height-blind" zone. L31's conjecture (Nyquist height `e^{2a}`) targets its lower edge.
+- **Horizon constant.** It is `7000` rather than `1+o(1)` because of the crude `√X` prime bound and the `b⁻⁶` tail. The sharp PNT constant (`primeTransport_horizon_law`) would give `log H ≍ e^a`.
+- **Modules.** `RHTower/ZetaSymbolArchimedeanHorizon` (671 lines), `RHTower/ZetaWeilFormHeightReduction` (952). Both are wired and built with `lake build --old`. Axioms: propext, Classical.choice, Quot.sound.
+- **L31 result [L]: the Nyquist flatness law.** Four modules, all wired after `WeilMarginSuperexponentialLaw`; built; axioms propext/choice/Quot.sound; the lint errors that remain belong to other, unwired modules.
+  - `RHTower/ResolventDivisionDecay` (general).
+    - `D_γ g(x) = −ie^{−iγx}∫_{u≤x} g e^{iγu}`.
+    - `(z−γ)·(D_γ g)^ = ĝ` (`paperFT_resolventDiv_mul`).
+    - Pointwise decay `‖D_γ g(x)‖ ≤ e^{−μ|x|}∫_{|u|≥|x|}‖g‖e^{(μ+½)|u|}` when `ĝ(γ)=0`.
+    - Tail iteration `∫_{|x|≥X}‖D_γ g‖e^{c|x|} ≤ 2∫_{|u|≥X}‖g‖e^{(c+3/2)|u|}`.
+    - Iteration at a zero of order `m`, with the leading factor carried along (`iterResolvent_spec`, `iterResolvent_eventually_ne`).
+  - `RHTower/RadicalDetectionKernel`.
+    - `Ξ = paperFT Φ` (`riemannXiHat`) and its local factorisation at zeros.
+    - `OffLinePairData`, the kernel `h = D_{γ₀}^{m₀}D_{γ₁}^{m₁}Φ`.
+    - `kernel_mul`: `(z−γ₀)^{m₀}(z−γ₁)^{m₁}ĥ = Ξ`; `kernel_eq_zero` at every other zero; `kernel_at_γ₀/γ₁`.
+    - The smooth plateau, the polar operator and the node operator, and `kernel_calculus`.
+  - `RHTower/HodgeOffLineFlatnessLaw`.
+    - `re_W_le_node_add`: one pair against the rest, for any `C²` test.
+    - The test `f = N P(χ h)`; `node_inequality`; `flatness` (node values ≤ tail of `Φ` × poly).
+    - `exists_offLinePairData`.
+  - `RHTower/HodgeZetaFlatnessLaw`.
+    - `local_factor_unique`; transfer to `ζ` (`norm_leading_riemannXiHat`).
+    - `|Γ(1+iy)|² = πy/sinh πy`, a lower bound for `Γ` in the strip, and `|ξ_unit(ρ)| ≥ e^{−π|t|/4}`.
+    - Polar symbol lower bound `β(1−β)/128`.
+    - Tail of `Φ`: `≤ 80Mθe^π e^{(c+9/2)X−πe^{2X}}/κ`.
+    - **`hodgeIndex_zeta_flatness_explicit`.**
+- **Verdict (L31).** SURVIVES and is PROVED as a flatness law. At every off-line zero below height `≈ 2e^{2a−3/4}`, the level-`a` Hodge index forces the product of the leading Taylor coefficients of `ζ` at the zero and at its mirror below `exp((π/2)|t₀| − πe^{2a−3/4} + O(Na))`.
+  - The horizon is Nyquist, up to a constant factor `e^{−3/4}`. It is exponentially beyond L28's `exp(a/(2000A₀log(10⁶/δ)))`, and depth enters only polynomially.
+  - The mechanism is structural: the radical is a killer of all zeros at once, and the only cost is its truncation.
+- **What is still open for full exclusion (next loop).** An unconditional lower bound on `|ζ^{(m)}(ρ)/m!|`: Borel–Carathéodory gives `≥ e^{−C log²T}·Π_{nearby}|ρ−ρ'|`. Flatness then forces a super-tight cluster, with another zero within `exp(−c(e^{2a}−|t₀|/2)/log T)`.
+  - To exclude clusters, divide `Φ̂` by the whole cluster polynomial and interpolate on the cluster. This is the L28 Lagrange/contour machinery, with the radical `Ξ` replacing `Ŵ^N·(killing polynomial)`.
+  - That would make the level-`a` Hodge index for `ζ` exactly as strong as RH up to height `≍ e^{2a}`.
+- **Producer lesson.** Level-`a` positivity is (at least) RH at the Nyquist height `≍ e^{2a}`, with margin `exp(−πe^{2a})` (MUST-478). A producer at level `a` must therefore decide the location of all `≍ ae^{2a}` zeros below `e^{2a}` from arithmetic alone. There is no shortcut: any partial positivity at level `a` already contains that information.
+
+### L32 — From flatness to exclusion: the radical-weighted cluster test (in progress)
+- **Conjecture.** For `ζ`, Hodge(a) excludes every off-line zero of depth `≥ δ` up to height `2e^{2a−3/4} − C·(A₀ log T)²·log(C/δ)`. The bound is uniform in clustering: internal cluster distances never enter.
+- **Why L31 does not suffice.** The single-pair test normalizes the node block by `|Ξ-coefficient|`, which is `∝ Π_{nearby}|ρ₀−ρ'|`. A super-tight off-line cluster makes it arbitrarily small.
+- **Mechanism.** Combine the L28 multi-node interpolation with the L31 radical.
+  - Profile `Ψ(z) = Ξ(z)/P_S(z) · Ŵ(z−t₀)^N · P_pol(z)`, where `P_S` is the full cluster polynomial with multiplicities. At kernel level this is the composite resolvent `Π_σ D_{γ_σ}^{m_σ}Φ`.
+  - `Q` interpolates `±i/Ψ` at the cluster nodes. It is realized on the bump side, `h ⋆ Q(i∂)(e^{−it₀x}W^{⋆N})`, so no smoothness is lost.
+  - Each node pair contributes exactly `−(m+m')`. The on-line and shallow zeros are killed by `Ξ`, the far zeros are damped by `Ŵ^N`, and the truncation tail is `exp(−πe^{2a−3/4})`.
+  - Only `|Ψω|` on the rectangle sides enters (`HTGeometry.sum_nodalWeight_inside_eq_rectangleIntegral`). The side selection by forward differences costs `(δ/16e)^{|S|}`, independent of cluster geometry.
+- **Analytic input still needed.** A lower bound for `|Ξ/P_S|` on the rectangle sides: `≥ e^{−π|t|/4}T^{−C}·(side distance)^N`. This is Borel–Carathéodory on a disc with the zeros extracted (`HTGeometry.BallLogarithm`, `AnalyticBallFinsetFactorization`, the `ZetaLocalZeroCount` Jensen count).

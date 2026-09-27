@@ -1,10 +1,10 @@
 # Ordered cross-prime curvature has unbounded exterior rank
 
 - **ID:** `stc-ordered-curvature-unbounded-rank`
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Type:** structural no-go with a four-channel positive survivor
 - **Routes:** STC, RHist, cross-prime Gamma-six/Sonin source lift
-- **Status:** `[PROVED HERE ON PAPER] [FOUR-CHANNEL IDENTITY FORMALIZED] [RANK THEOREM LEAN PENDING] [NOT AN RH PROOF]`
+- **Status:** `[PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
 
 ## Reinterpretation
 
@@ -136,3 +136,7 @@ open for a different boundary construction.
   completed without finding a source-to-ordered-kernel identity.
   The rank search had partial coverage; external priority is not
   claimed.
+
+## Log
+
+- 2026-09-27: every displayed theorem formalized unconditionally; certificate `stc-ordered-curvature-unbounded-rank-formalized.md`; moved to stage 3.

@@ -98,10 +98,10 @@ private theorem finite_weighted_cross_bound
   intro i hi
   apply Finset.sum_le_sum
   intro j hj
-  have h := mul_le_mul_of_nonneg_left (hxy i hi j hj) (mul_nonneg (hu i hi) (hv j hj))
+  have h := mul_le_mul_of_nonneg_left (hxy j hj i hi) (mul_nonneg (hu j hj) (hv i hi))
   rw [_root_.inner_smul_left (𝕜 := ℂ), _root_.inner_smul_right (𝕜 := ℂ)]
   simp only [Complex.conj_ofReal, Complex.mul_re, Complex.mul_im,
-    Complex.ofReal_re, Complex.ofReal_im, zero_mul, mul_zero, sub_zero, add_zero]
+    Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero, add_zero]
   nlinarith only [h]
 
 /-- A fixed interference constant for every cross term of the complete two bands. -/

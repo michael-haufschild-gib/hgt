@@ -88,3 +88,12 @@ Scope: frontier route HF. Facts and no-gos only.
 - **HF-F27 [Lean, `RHTower.OffLineClusterWeilUnbounded`]:** Bounded depth without an error exponent.
   - Pairs `¾, ¼ + ie^{k+1}` of multiplicity `k+1` give depth `¼` and the count `N(t,t+1] ≤ 2log(|t|+3)`. Yet at every large level the relaxed index fails for every `θ`, and `Re W` is unbounded below on polar-constrained tests (`exists_bounded_depth_without_error_exponent`).
   - **Route:** the uniform exponent sees off-line multiplicity as well as depth. For ζ, "quasi-RH ⟹ `θ* < 1`" needs locally bounded off-line multiplicity. The opposite implication (L29) does not.
+- **HF-F28 [Lean, `RHTower.ZetaSymbolArchimedeanHorizon`, `RHTower.ZetaWeilFormHeightReduction`]:** Height reduction for ζ.
+  - If the zeros with `|γ| ≤ H(A₀,a)` have `|β−½| ≤ η` and off-line density `≤ D`, then `Re W(f,f) ≥ −(7000(2a+3)De^{2η(a+2)} + 2)∫|f|²` at level `a`, where `log H ≤ 7000e^a + log A₀ + 160` (`zeta_re_W_ge_of_depth_below_horizon`).
+  - RH below `H(A₀,a)` gives `Re W ≥ −2∫|f|²` (`zeta_re_W_ge_neg_two_of_critical_below_horizon`).
+  - Tools: the bilinear symbol form (`zeta_W_eq_integral_mu_add_PX_bilinear`), `μ+P_X ≥ 0` above `4e^{10+68√X}`, Plancherel for `paperFT`, and `Σ_{n≤N}Λ(n)/√n ≤ 34√N`.
+  - **Route:** for ζ, the level-`a` index is decided by the zeros below `exp(O(e^a))` (abstract configurations have no horizon, HF-F26). A producer of Hodge(a) needs to certify only finitely many zeros.
+- **HF-F26 [Lean, `RHTower.HodgeZetaFlatnessLaw`]:** Nyquist flatness law.
+  - Hodge(a) with `a ≥ 1` forces `|v(ρ₀)v'(ρ₀')| ≤ K·poly·e^{(π/2)|t₀|+(λ+9/2)(a−3/8)−πe^{2a−3/4}}` at every off-line zero with `|t₀| ≥ 8`, where `v, v'` are the leading Taylor coefficients of `ζ` at `ρ₀` and at its mirror (`hodgeIndex_zeta_flatness_explicit`).
+  - The radical `Φ` supplies a killer of all zeros for free. The resolvent division `D_γ` un-kills one off-line pair and keeps the double-exponential decay.
+  - **Route:** the Hodge index at level `a` sees off-line zeros up to height `2e^{2a−3/4}`, the Nyquist scale, instead of `exp(a/log)` (HF-F23/L28). The remaining gap to exclusion is super-tight clusters only.

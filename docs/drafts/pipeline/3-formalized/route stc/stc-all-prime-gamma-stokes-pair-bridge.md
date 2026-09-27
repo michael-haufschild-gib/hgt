@@ -1,10 +1,10 @@
 # All-prime equal-depth Gamma-to-Stokes pair bridge
 
 - **ID:** `stc-all-prime-gamma-stokes-pair-bridge`
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Type:** exact source transport and nonseparable calibration law
 - **Routes:** STC, RHist, Gamma-six/Sonin
-- **Status:** `[PROVED ON PAPER] [LEAN LEAF CHECKED AND OLEAN GENERATED] [NOT AN RH PROOF]`
+- **Status:** `[PROVED ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
 
 ## Source and target
 
@@ -135,3 +135,7 @@ step remains the RH-producing obligation.
 - Deep corpus searches found these ingredients but not equation (3)
   for arbitrary equal-depth prime pairs. Results were partial;
   external priority is not claimed.
+
+## Log
+
+- 2026-09-27: every displayed theorem formalized unconditionally; certificate `stc-all-prime-gamma-stokes-pair-bridge-formalized.md`; moved to stage 3.

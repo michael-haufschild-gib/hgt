@@ -52,7 +52,7 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | deletion-cutoff-commutator-collapse | L1, PNT | todo |
 | chronological-boundary-positive-transfer | L1, Laplace | todo |
 | prime-deletion-moving-cusp-dual-source | L1, Landau | todo |
-| rational-cusp-boundary-law | Poisson/Gauss sums | partial: (1), (1a), natural boundary, zero-charge in `ThetaRationalCuspBoundary` (+ `QuadraticGaussSumFourthPower`); (2)–(8) Ward/rotation/Abel pairing todo |
+| rational-cusp-boundary-law | Poisson/Gauss sums | done → 3-formalized (`ThetaRationalCuspBoundary`, `ThetaCuspOneSidedConnection`, `ThetaCuspAbelBoundaryPairing`, `QuadraticGaussSumFourthPower`) |
 | prime-modular-commutator-crossing | Jacobi, Hardy sign, PNT | todo |
 | renewal-phase-cosh-factorization | L4 | todo |
 | renewal-complex-resonance-stieltjes-obstruction | L4, Hadamard | todo |

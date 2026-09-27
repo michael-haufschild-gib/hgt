@@ -1,6 +1,7 @@
 # Rational-cusp boundary law for the completed theta source
 
-- **Stage:** 2-fully-proven on paper; not formalized in Lean.
+- **Stage:** 3-formalized. Lean: `GaloisForLFunctions.RHTower.ThetaRationalCuspBoundary`, `ThetaCuspOneSidedConnection`, `ThetaCuspAbelBoundaryPairing` (+ `QuadraticGaussSumFourthPower`), see `theta-rational-cusp-boundary-law-formalized.md`
+- **Type:** THEOREM (paper and Lean)
 - **Route:** TQFQ/WS2 connection coefficient.
 - **Scope:** A theorem about the actual completed theta source at its complex-clock boundary. It does not locate Xi zeros.
 
@@ -168,4 +169,7 @@ Fubini is legitimate in the absolutely convergent remainder of (6), giving the s
 \]
 The final integral is absolutely convergent because \(Q\) is bounded and \(\Re\alpha_z<0\). Thus the dense Gauss-cusp singularities of the source are integrated into a continuous quadratic-phase potential before the source-sensitive connection phase is tested. Equation (7) is a concrete arithmetic constraint on that potential; neither its pointwise sign nor a sign for the weighted integral in (8) has been proved.
 
-Classical theta/Poisson and quadratic Gauss-sum methods underlie the local proof, and the Ward identities used in (3) are already in Lean. No claim of literature novelty is made for the local rational-cusp asymptotic without a separate audit. The global one-sided boundary representations (5) and (8) have not been formalized or independently novelty-audited.
+Classical theta/Poisson and quadratic Gauss-sum methods underlie the local proof, and the Ward identities used in (3) are already in Lean. No claim of literature novelty is made for the local rational-cusp asymptotic without a separate audit. The global one-sided boundary representations (5) and (8) are formalized; they have not been independently novelty-audited.
+
+## Log
+- 2026-09-27 — all displayed results formalized unconditionally: local cusp limit (1) for all p,q>0, |G|=√q, Gauss square law and charge (1a), zero-charge limit, natural boundary on both edges; Ward reduction (3)–(4), rotated branch (2), Abel pairing (5), ray bounds (6), square-phase potential and parity (7), (8), twisted Poisson at y=i, U−V mode identity; moved to 3-formalized.

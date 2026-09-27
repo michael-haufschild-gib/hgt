@@ -314,24 +314,28 @@ theorem thetaOneSidedConnection_eq_ward (z : ℂ) :
   rw [I_sq]
   ring
 
+/-- `XiC z = H(z) + H(-z)`. -/
+theorem XiC_eq_thetaOneSidedConnection_add (z : ℂ) :
+    XiC z = thetaOneSidedConnection z + thetaOneSidedConnection (-z) := by
+  rw [← sourceTransform_thetaSourceC,
+    expMomentSource_thetaSourceC.sourceTransform_eq_integral_cos thetaSourceC_neg z]
+  unfold thetaOneSidedConnection
+  rw [← integral_add, ← integral_const_mul]
+  · refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
+    have hcos : Complex.cos (z * x) = (cexp (z * x * I) + cexp (-(z * x) * I)) / 2 := rfl
+    simp only [thetaSourceC, hcos]
+    rw [show z * x * I = I * z * x by ring, show -(z * x) * I = I * -z * x by ring]
+    ring
+  · exact (expMomentSource_thetaSourceC.integrable_cexp (-z)).integrableOn.congr_fun
+      (fun x _ => by simp only [thetaSourceC]; ring_nf) measurableSet_Ioi
+  · exact (expMomentSource_thetaSourceC.integrable_cexp z).integrableOn.congr_fun
+      (fun x _ => by simp only [thetaSourceC]; ring_nf) measurableSet_Ioi
+
 /-- **Two-sided reduction.** `XiC z = 1/2 - ((z² + 1/4)/4)(M_z + M_{-z})`. -/
 theorem XiC_eq_wardMellin (z : ℂ) :
     XiC z = 1 / 2 - (z ^ 2 + 1 / 4) / 4 * (wardMellin z + wardMellin (-z)) := by
-  have hH : XiC z = thetaOneSidedConnection z + thetaOneSidedConnection (-z) := by
-    rw [← sourceTransform_thetaSourceC,
-      expMomentSource_thetaSourceC.sourceTransform_eq_integral_cos thetaSourceC_neg z]
-    unfold thetaOneSidedConnection
-    rw [← integral_add, ← integral_const_mul]
-    · refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-      have hcos : Complex.cos (z * x) = (cexp (z * x * I) + cexp (-(z * x) * I)) / 2 := rfl
-      simp only [thetaSourceC, hcos]
-      rw [show z * x * I = I * z * x by ring, show -(z * x) * I = I * -z * x by ring]
-      ring
-    · exact (expMomentSource_thetaSourceC.integrable_cexp (-z)).integrableOn.congr_fun
-        (fun x _ => by simp only [thetaSourceC]; ring_nf) measurableSet_Ioi
-    · exact (expMomentSource_thetaSourceC.integrable_cexp z).integrableOn.congr_fun
-        (fun x _ => by simp only [thetaSourceC]; ring_nf) measurableSet_Ioi
-  rw [hH, thetaOneSidedConnection_eq_ward, thetaOneSidedConnection_eq_ward]
+  rw [XiC_eq_thetaOneSidedConnection_add, thetaOneSidedConnection_eq_ward,
+    thetaOneSidedConnection_eq_ward]
   ring
 
 /-- `M_z` is entire. -/

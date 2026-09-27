@@ -1,7 +1,7 @@
 # Three-prime obstruction to direct all-pair Stokes-curvature gluing
 
 - **ID:** `stc-odd-curvature-three-prime-obstruction`
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Type:** FALSIFIED direct-gluing conjecture; positive triangle-charge theorem
 - **Routes:** STC, cross-prime Gamma-six/Sonin source lift
 - **Status:** `[PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
@@ -126,3 +126,7 @@ copying into the current canonical seam, not STC or RH.
   three-prime potential in
   `RouteRCrossPrimeStokesFourChannelObstruction.lean`; wired into
   `GaloisForLFunctions/RHTower.lean` without an umbrella build.
+
+## Log
+
+- 2026-09-27: every displayed theorem formalized unconditionally; certificate `stc-odd-curvature-three-prime-obstruction-formalized.md`; moved to stage 3.

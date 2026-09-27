@@ -1,10 +1,10 @@
 # Cofinal three-prime Stokes holonomy at every nonzero grade
 
 - **ID:** `stc-cofinal-triangle-holonomy-all-grades`
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Type:** exact all-grade source obstruction and singular-correction threshold
 - **Routes:** STC, Gamma-six/Sonin source lift
-- **Status:** `[PROVED ON PAPER] [LEAN FORMALIZATION PENDING] [NOT AN RH PROOF]`
+- **Status:** `[PROVED ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
 
 ## Question
 
@@ -94,3 +94,7 @@ The correction required to make the literal analytic Stokes curvature a cobounda
 - The canonical pair-coboundary form is in `SoninPrimeSeamExteriorCalkin.lean`.
 - The sharp source Hilbert chamber in [the Gamma-prime chamber theorem](stc-gamma-prime-hilbert-chamber.md) is consistent with (5); the present result concerns the **necessary correction** to an exact coboundary and holds at every nonzero grade.
 - Deep corpus search was partial and returned the near-neutral theorem, but no all-grade cofinal triangle law. External priority is not claimed.
+
+## Log
+
+- 2026-09-27: every displayed theorem formalized unconditionally; certificate `stc-cofinal-triangle-holonomy-all-grades-formalized.md`; moved to stage 3.

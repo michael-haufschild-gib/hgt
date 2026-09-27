@@ -159,7 +159,7 @@ private theorem stokes_odd_slope {p q : ℕ} (hp : 1 < p) (hq : 1 < q) :
   rw [routeRCrossPrimeStokesOddCurvature_eq]
   unfold routeRCrossPrimeStokesPhase routeRCrossPrimeStokesGauge
   dsimp [x, y]
-  ring
+  ring_nf
 
 private theorem stokes_triangle_slope :
     Tendsto
@@ -177,7 +177,7 @@ private theorem stokes_triangle_slope :
   convert h using 1
   · funext g
     ring
-  · ring
+  · ring_nf
 
 private theorem stokes_triangle_slope_strict :
     Tendsto
@@ -228,6 +228,14 @@ theorem no_direct_stokes_three_prime_potential :
   apply hg
   rw [h35, h57, h37]
   ring
+
+/-- **Neutral-grade slope of the pair scalar.** For `x = log p`, `y = log q`,
+`c_pq(g)/g → -(x+y)(y/x + x/y)` as `g → 0`. -/
+theorem tendsto_stokesOddCurvature_div_grade {p q : ℕ} (hp : 1 < p) (hq : 1 < q) :
+    Tendsto (fun g : ℝ => routeRCrossPrimeStokesOddCurvature p q g / g) (𝓝[≠] (0 : ℝ))
+      (𝓝 (-((Real.log p + Real.log q) *
+        (Real.log q / Real.log p + Real.log p / Real.log q)))) :=
+  stokes_odd_slope hp hq
 
 /-- **Neutral-grade slope of the `(3,5,7)` triangle charge.** The quotient `Ω(g)/g` has a limit
 at the neutral grade, and that limit is below `-(log 3)/2`. -/

@@ -59,7 +59,7 @@ theorem moebius_eq_short_square_correction (U n : ℕ) (hn : n < (U + 1) ^ 2) :
   linarith only [h]
 
 private theorem dilation_arithmetic_mul (a b : ArithmeticFunction ℝ) (f : ℝ → ℝ) :
-    logarithmicWeightedDilation (a * b) f =
+    logarithmicWeightedDilation (a * b : ArithmeticFunction ℝ) f =
       logarithmicWeightedDilation a (logarithmicWeightedDilation b f) := by
   funext T
   exact (logarithmicWeightedDilation_comp a b f T).symm

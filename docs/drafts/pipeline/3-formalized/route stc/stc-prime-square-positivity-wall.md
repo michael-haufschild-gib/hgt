@@ -1,9 +1,9 @@
 # Prime-square sign wall for the continued Euler Gram
 
 - **ID:** stc-prime-square-positivity-wall
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Routes:** STC, RHist
-- **Status:** [PROVED ON PAPER] [LEAN FORMALIZATION PENDING] [NOT AN RH PROOF]
+- **Status:** [PROVED ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]
 - **Novelty:** Exact sign consequence for the continued depth-zero log-square source; literature novelty unverified.
 
 ## Conjecture tested and result
@@ -49,3 +49,7 @@ The negative diagonal does not depend on RH and does not detect an off-line zero
 ## Lean gate
 
 The new STCPrimeHeightFiberAbel.lean checks F=-Q' in the Euler half-plane. Existing XiPrimeLogHigherValuationCriticalBoundary.lean checks the valuation-two/three-plus split, and the real prime pole is checked in PrimeTraceCriticalEnergyBudget.lean and PrimeLogPowZetaAbelPole.lean. The Laurent expansion and negative diagonal conclusion are paper-proved here but not yet assembled in Lean.
+
+## Log
+
+- 2026-09-27: Laurent law, negative diagonal and both kernel no-gos formalized unconditionally in `STCPrimeSquarePositivityWall.lean`; certificate `stc-prime-square-positivity-wall-formalized.md`; moved to stage 3.
