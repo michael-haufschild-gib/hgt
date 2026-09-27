@@ -10922,3 +10922,56 @@ theorem, pair infrastructure, and output/charge theorem audit exactly to
 umbrella build.  This closes literal terminal response and the two-coordinate base of the inward
 observability induction.  Remaining exact core is simultaneous terminal-inward transport of these
 responses to the full raw output-jet determinant.  Card stays at Stage 2.
+
+## Repair of Reduction III: the compatibility gap closes by regularity (2026-09-27)
+
+`[PROVED HERE, PAPER LEVEL]` The open core recorded above — making the level-`k` Wiman lead
+compatible with the level-`(k-1)` place on the actual branch field — is not needed in the form the
+terminal-inward construction asked for.  Two facts remove it.
+
+**Regularity.**  Write `E_k = C(w, f_k(w), f_k'(w))`, a field of meromorphic functions of `w`.  If
+`theta in E_k` is algebraic over `C(w)`, clearing the leading coefficient makes it integral over
+`C[w]`, hence entire of polynomial growth, hence a polynomial divided by a polynomial.  So `C(w)` is
+algebraically closed in `E_k`, i.e. `E_k/C(w)` is regular, and the irreducible relation
+`P_k(U,V,W)` is absolutely irreducible over `C(U)`.  Composition with `F_(k-1)` identifies `E_k`
+with `C(X_(k-1), X_k, b_k)` inside `K_k`; since `X_k` is transcendental over `K_(k-1)`, `P_k` stays
+irreducible over `K_(k-1)(X_k)`:
+
+`[K_k : K_(k-1)(X_k)] = deg_W P_k`.                                                    (R)
+
+Consequently **every** root of `P_k` in any extension of `K_(k-1)(X_k)` defines a field embedding
+of `K_k`.  No branch-correlation between layers exists.
+
+**Base change of the top-symbol root.**  The top symbol `Q_k(U,T)` has coefficients in `C[U]`.
+Reduction I (formal: `exists_entireFirstOrderWiman_topSymbolPuiseuxRoot`) gives a Puiseux root
+`sigma_k(U) = c_k U^(p_k)(1+o(1))` over `C` at `U = infinity`, `c_k != 0`, `p_k + 1 > 0`.
+Under **any** ring map sending `U` to a Laurent pole `t^(-N)` (with `N` divisible by the
+ramification of `sigma_k`), `sigma_k` maps to a root of `Q_k(t^(-N),T)` of exact order `-N p_k` and
+leading coefficient `c_k`, whatever the rest of the field is.
+
+**Bottom-up tower.**  Let `k_0` be an algebraic closure of `C(z)` and, recursively,
+`L_j = k_(j-1)((t_j))`, `k_j` an algebraic closure of `L_j`, with `delta` and `partial_1,...,partial_j`
+extended (uniquely: char 0, algebraic).  Build `iota_j : K_j -> L_j` with
+`iota_j(X_j) = t_j^(-N_j)` and `iota_j(b_j)` the Newton--Puiseux root of `P_j(iota(X_(j-1)), t_j^(-N_j), W)`
+with prescribed slope-one edge root `hat sigma_j` := the base change of `sigma_j` (for `j = 1`, any
+nonzero root of `Q_1`).  (R) makes `iota_j` a field embedding; uniqueness of derivation extensions
+makes it differential for `delta = delta_coeff - (A_j/N_j) E` (`E` the Euler operator,
+`A_j = iota(delta X_j / X_j)`, of order `0`), `partial_i` coefficientwise (`i<j`) and
+`partial_j = -(1/N_j) t_j^(N_j) E`.
+
+**Leading-term lemma.**  In `k((t))` with these derivations, if `Y` has order `-Ns`, `s != 0`, and
+leading coefficient `h`, then the coefficient of `J_m(Y) = det(partial_i delta^r Y)` at order
+`-mNs + N` is `+- s h^m J_(m-1)(delta h/h + s A_0)`, computed in `k` (`A_0` the constant term of `A`).
+Proof: leading coefficients evolve by `delta + sA_0`; `partial_m` multiplies them by `s` and raises
+the order by `N`; the terminal-scaled Bell row reduction is exact.
+
+**Descent.**  With `G_j = delta X_j` put `Y_(n-1) = hat sigma_n G_(n-1)` and
+`Y_(j-1) = delta log(hat sigma_j G_(j-1)) + (p_(j+1)+1) hat sigma_j G_(j-1)`.  In `L_j`, `Y_j` has
+order `-N_j(p_(j+1)+1) < 0` (the logarithmic term has order `>= 0` because `A_j` has order `0`) and
+leading coefficient `(const) hat sigma_j G_(j-1) != 0`.  The lemma gives
+`J_j(Y_j) != 0 <== J_(j-1)(Y_(j-1)) != 0`, and `J_0 = 1`.  At the top, `Y = t_n^(-N)` gives
+`J_n(X_n) != 0`, i.e. `X_n, X_n', ..., X_n^(n-1)` are algebraically independent over `C(z)`.
+With the formal upper bound, `ord_DA(F_n) = n`.
+
+The only analytic inputs are Reduction I for each single layer (formal) and the regularity lemma.
+The Lean plan follows this proof literally.

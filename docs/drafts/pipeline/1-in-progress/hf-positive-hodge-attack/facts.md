@@ -65,3 +65,26 @@ Scope: frontier route HF. Facts and no-gos only.
   - Conversely, the Nyquist lattice has window count `≤ 1000L` and satisfies Hodge(a) for `a ≤ L/2` (`offLineLattice_masks_at_linear_level`). So no criterion "window count `≤ 2000a` ⇒ violation" exists (`not_forall_hodge_exclusion_sublinear_level`).
   - Mechanism: halving selection of the test centre (`exists_empty_annulus_center`), with killing distance `ε₀(4λ)^{−log₂n}` instead of `ε₀λ^{−n}`. The polar root is kept out of the `4n` tail exponent.
   - **Route:** exclusion by the Hodge index is controlled by the local window density: sufficient at `n ≲ a/log²a`, impossible in general at `n ≳ 2000a`. Only the `log²a` factor is open.
+- **HF-F24 [Lean, `RHTower.SelbergSymbolCriticalStrip`]:** A Selberg symbol inequality at level `a` forces a critical strip of width `1/a`.
+  - For every Selberg completion `(w,N)` with `w = 1` on `[1,⌊e^{2a}⌋]` and `N ≥ ⌊e^{2a}⌋`, the ζ zero side of a polar-constrained level-`a` test equals `(1/2π)∫|h_f|² weilAtomSymbol(Λ_w,N)(τ/2π)` (`zeta_W_eq_integral_selbergSymbol`, from the proven explicit formula).
+  - Positivity of the symbol form ⟺ `HodgeIndexAtLevel zetaZeroConfig a` (`hodgeIndexAtLevel_iff_selbergSymbolPositive`).
+  - Hence (HF-F23) it forces `|β−½| < 1/a` for all zeros with `2 ≤ |γ|`, `10⁵A₀log(|γ|+306)log²a ≤ a` (`zeta_selbergSymbol_forces_critical_strip`).
+  - RH ⇒ the inequality at all levels, and the inequality at all large levels ⇒ RH above ordinate 2.
+  - **Route:** HF-Krein at level `a` is a quasi-RH statement at heights up to `exp(a/log²a)`, strictly beyond de la Vallée-Poussin / Korobov–Vinogradov. Invisible Selberg atoms cannot weaken it (completion invariance).
+- **HF-F24 [Lean, `RHTower.RiemannKernelWeilRadical`, `RHTower.WeilMarginSuperexponentialLaw`]:** radical and margin law.
+  - Riemann's kernel `Φ = T'' − T/4` has `∫Φ(x)e^{(s−½)x}dx = s(s−1)Λ(s)/2` on `ℂ∖{0,1}`. Its transform therefore vanishes at every nontrivial zero, on or off the line, so `Φ` lies in the radical of the Weil form, unconditionally.
+  - Truncating `Φ` and smoothing with `κ'' − κ/4` gives Hodge-class tests on `[−L,L]` with `‖W(f,f)‖ ≤ C e^{12L−πe^{2L−1/2}}‖f‖²` (`zeta_weil_margin_superexponential`).
+  - **Route:** a producer of level-`L` positivity must deliver a margin below `exp(−π e^{2L−1/2}+O(L))`. The super-exponential smallness comes from the radical; positivity does not.
+- **HF-F25 [Lean, `RHTower.RelaxedHodgeDepthDictionary`]:** The relaxed dictionary.
+  - If `Re W(f,f) ≥ −e^{θa}∫|f|²` on polar-constrained tests at level `a`, then every zero with `10⁴A₀(log(|γ|+306)+log a+2/ε+2)log²a ≤ εa` has `|β−½| ≤ θ/2+ε` (`relaxed_hodge_dictionary`; ζ: `zeta_relaxed_hodge_dictionary`).
+  - Heights covered: up to `exp(εa/(2·10⁴A₀log²a))`.
+  - Tools: edge-concentrated sinh tests with the physical `L²` bound (`EdgeConcentratedWeilTests`), a penalized deepest-zero centre, and the halving root-killing.
+  - **Route:** the prime-side error exponent at level `a` controls twice the zeros' abscissa excess. `θ = 1` is trivial (HF-F17), and any `θ < 1` is a quasi-RH.
+- **HF-F26 [Lean, `RHTower.OffLineDensityWeilLowerBound`, `RHTower.ErrorExponentAbscissaExcessLaw`]:** The converse dictionary and the exact exponent law.
+  - If `|β−½| ≤ η` at every zero and every unit window carries off-line multiplicity `≤ D`, then `Re W(f,f) ≥ −3500(2a+3)D e^{2η(a+2)}∫|f|²` for every continuous `f` on `[−a,a]` (`re_W_ge_of_depth_offLineDensity`).
+  - With the local count and no zeros below 2: `∀ρ, |β−½| ≤ η` ⟺ `∀θ > 2η`, the relaxed index holds for all large `a` (`abs_re_sub_half_le_iff_eventually_relaxed`).
+  - The depth must be global: a single pair at any height `T` has eventual exponent `½` (`offLinePairConfig_eventually_relaxed_iff`).
+  - **Route:** under bounded off-line density, the eventual error exponent is exactly `2 sup|β−½|`.
+- **HF-F27 [Lean, `RHTower.OffLineClusterWeilUnbounded`]:** Bounded depth without an error exponent.
+  - Pairs `¾, ¼ + ie^{k+1}` of multiplicity `k+1` give depth `¼` and the count `N(t,t+1] ≤ 2log(|t|+3)`. Yet at every large level the relaxed index fails for every `θ`, and `Re W` is unbounded below on polar-constrained tests (`exists_bounded_depth_without_error_exponent`).
+  - **Route:** the uniform exponent sees off-line multiplicity as well as depth. For ζ, "quasi-RH ⟹ `θ* < 1`" needs locally bounded off-line multiplicity. The opposite implication (L29) does not.

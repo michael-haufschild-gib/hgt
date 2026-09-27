@@ -309,13 +309,15 @@ window `|γ - γ₀| ≤ H + 1`, the halving selection finds a zero `ρ₁ = ½ 
 `δ₁ ≥ δ/2` and `|γ₁ - γ₀| ≤ ε₀`, a cluster radius `ε` and a killing distance `η = λε` bounded
 below by `clusterKillScale δ N₀ n`, such that every zero of the window `|γ - γ₁| ≤ H` is either
 within `ε` of `±iδ₁` (in coordinates centred at `γ₁`) or at distance `≥ η` from both. -/
-theorem cluster_selection (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z.carrier) {δ : ℝ} (hδ : 0 < δ)
-    (hre : ρ₀.re = 1 / 2 + δ) {H : ℝ} (hH : 0 ≤ H) {N₀ n : ℕ}
-    (hn : (Z.finite_window (ρ₀.im - (H + 1)) (ρ₀.im + (H + 1))).toFinset.card ≤ n) :
-    ∃ ρ₁ ∈ Z.carrier, ∃ δ₁ : ℝ, ρ₁.re = 1 / 2 + δ₁ ∧ δ / 2 ≤ δ₁ ∧
-      |ρ₁.im - ρ₀.im| ≤ lowHeightEps0 δ N₀ ∧
+theorem cluster_selection_radius (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z.carrier) {δ : ℝ}
+    (hδ : 0 < δ) (hre : ρ₀.re = 1 / 2 + δ) {H : ℝ} (hH : 0 ≤ H) {N₀ n : ℕ}
+    (hn : (Z.finite_window (ρ₀.im - (H + 1)) (ρ₀.im + (H + 1))).toFinset.card ≤ n) {r₀ : ℝ}
+    (hr₀ : 0 < r₀) (hr₀s : r₀ ≤ lowHeightEps0 δ N₀) :
+    ∃ ρ₁ ∈ Z.carrier, ∃ δ₁ : ℝ, ρ₁.re = 1 / 2 + δ₁ ∧ δ / 2 ≤ δ₁ ∧ |δ - δ₁| < r₀ ∧
+      |ρ₁.im - ρ₀.im| ≤ r₀ ∧
       ∃ Kset ⊆ (Z.finite_window (ρ₁.im - H) (ρ₁.im + H)).toFinset, Kset.card ≤ n ∧
-        ∃ ε η : ℝ, 0 < ε ∧ ε ≤ lowHeightEps0 δ₁ N₀ ∧ η ≤ 1 ∧ clusterKillScale δ N₀ n ≤ η ∧
+        ∃ ε η : ℝ, 0 < ε ∧ ε ≤ lowHeightEps0 δ₁ N₀ ∧ ε ≤ r₀ ∧ η ≤ 1 ∧
+          r₀ / (2 * (4 * lowHeightScale n) ^ (Nat.log 2 n + 1)) ≤ η ∧
           ε / η = 1 / lowHeightScale n ∧
           (∀ ρ ∈ (Z.finite_window (ρ₁.im - H) (ρ₁.im + H)).toFinset, ρ ∉ Kset →
             ‖(gammaOf ρ - ρ₁.im) - -(I * δ₁)‖ < ε ∨ ‖(gammaOf ρ - ρ₁.im) - I * δ₁‖ < ε) ∧
@@ -329,9 +331,10 @@ theorem cluster_selection (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z.c
   set xf : ℂ → ℂ := fun ρ => gammaOf ρ - γ₀ with hxf
   set P := W₁.image xf with hP
   have hPcard : P.card ≤ n := Finset.card_image_le.trans hn
-  set s := lowHeightEps0 δ N₀ with hs
-  have hs0 : 0 < s := lowHeightEps0_pos hδ N₀
-  obtain ⟨hsδ, hs1⟩ := lowHeightEps0_le hδ N₀
+  set s := r₀ with hs
+  have hs0 : 0 < s := hr₀
+  have hsδ : s ≤ δ / 300 := hr₀s.trans (lowHeightEps0_le hδ N₀).1
+  have hs1 : s ≤ 1 / 300 := hr₀s.trans (lowHeightEps0_le hδ N₀).2
   set lam := lowHeightScale n with hlamdef
   have hlam : 1 ≤ lam := by
     rw [hlamdef]; unfold lowHeightScale; nlinarith [Nat.cast_nonneg (α := ℝ) n]
@@ -403,16 +406,17 @@ theorem cluster_selection (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z.c
   set Kset := W.filter (fun ρ => η ≤ ‖(gammaOf ρ - ρ₁.im) - -(I * δ₁)‖ ∧
     η ≤ ‖(gammaOf ρ - ρ₁.im) - I * δ₁‖) with hKdef
   have hlam0 : 0 < lam := by linarith
-  refine ⟨ρ₁, hρ₁Z, δ₁, by rw [hδ₁def]; ring, hδ₁, hre_near.le, Kset, Finset.filter_subset _ _,
+  have hεs : ε ≤ s / 2 := by
+    rw [hεdef, div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  refine ⟨ρ₁, hρ₁Z, δ₁, by rw [hδ₁def]; ring, hδ₁, him_near, hre_near.le, Kset,
+    Finset.filter_subset _ _,
     ((Finset.card_filter_le _ _).trans (Finset.card_le_card hWW₁)).trans hn, ε, η,
-    by positivity, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · have h1 : ε ≤ s / 2 := by
-      rw [hεdef, div_le_div_iff₀ (by positivity) (by norm_num)]
-      nlinarith
-    exact h1.trans (lowHeightEps0_half_le hδ₁ N₀)
+    by positivity, ?_, by linarith, ?_, ?_, ?_, ?_, ?_⟩
+  · have : s / 2 ≤ lowHeightEps0 δ N₀ / 2 := by linarith
+    exact hεs.trans (this.trans (lowHeightEps0_half_le hδ₁ N₀))
   · rw [hηdef]; linarith
-  · unfold clusterKillScale
-    rw [← hs, ← hlamdef, ← hkk, hηdef, div_le_div_iff₀ (by positivity) (by norm_num)]
+  · rw [hηdef, div_le_div_iff₀ (by positivity) (by norm_num)]
     have h := ht1
     rw [div_le_iff₀ (by positivity)] at h
     nlinarith
@@ -431,6 +435,24 @@ theorem cluster_selection (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z.c
   · intro ρ hρ
     exact (Finset.mem_filter.mp hρ).2
 
+
+/-- **Re-centred selection** at the radius `ε₀ = lowHeightEps0 δ N₀`. -/
+theorem cluster_selection (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z.carrier) {δ : ℝ} (hδ : 0 < δ)
+    (hre : ρ₀.re = 1 / 2 + δ) {H : ℝ} (hH : 0 ≤ H) {N₀ n : ℕ}
+    (hn : (Z.finite_window (ρ₀.im - (H + 1)) (ρ₀.im + (H + 1))).toFinset.card ≤ n) :
+    ∃ ρ₁ ∈ Z.carrier, ∃ δ₁ : ℝ, ρ₁.re = 1 / 2 + δ₁ ∧ δ / 2 ≤ δ₁ ∧
+      |ρ₁.im - ρ₀.im| ≤ lowHeightEps0 δ N₀ ∧
+      ∃ Kset ⊆ (Z.finite_window (ρ₁.im - H) (ρ₁.im + H)).toFinset, Kset.card ≤ n ∧
+        ∃ ε η : ℝ, 0 < ε ∧ ε ≤ lowHeightEps0 δ₁ N₀ ∧ η ≤ 1 ∧ clusterKillScale δ N₀ n ≤ η ∧
+          ε / η = 1 / lowHeightScale n ∧
+          (∀ ρ ∈ (Z.finite_window (ρ₁.im - H) (ρ₁.im + H)).toFinset, ρ ∉ Kset →
+            ‖(gammaOf ρ - ρ₁.im) - -(I * δ₁)‖ < ε ∨ ‖(gammaOf ρ - ρ₁.im) - I * δ₁‖ < ε) ∧
+          (∀ ρ ∈ Kset,
+            η ≤ ‖(gammaOf ρ - ρ₁.im) - -(I * δ₁)‖ ∧ η ≤ ‖(gammaOf ρ - ρ₁.im) - I * δ₁‖) := by
+  obtain ⟨ρ₁, hρ₁, δ₁, hre₁, hδ₁, -, hγ₁, Kset, hKW, hKn, ε, η, hε0, hεε, -, hη1, hηlow, hεη,
+    hclu, hkil⟩ := cluster_selection_radius (N₀ := N₀) Z hρ₀ hδ hre hH hn
+      (lowHeightEps0_pos hδ N₀) le_rfl
+  exact ⟨ρ₁, hρ₁, δ₁, hre₁, hδ₁, hγ₁, Kset, hKW, hKn, ε, η, hε0, hεε, hη1, hηlow, hεη, hclu, hkil⟩
 
 /-! ### The cluster-robust theorem -/
 

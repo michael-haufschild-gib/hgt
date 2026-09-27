@@ -491,6 +491,26 @@ theorem backwardContractingSubspace_slopeAut_eq (s : ℚ) :
         exact inf_le_inf_left _ hX
     _ = ⨆ t, ⨆ (_ : s < t), slopeSubspace T hT t := sup_bot_eq _
 
+
+/-- **The repelling flag.**  `B(S_s⁻¹)` is the sum of the slope parts of slope at least `s`. -/
+theorem forwardBoundedSubspace_inv_slopeAut_eq (s : ℚ) :
+    forwardBoundedSubspace (slopeAut (K := K) T s.num s.den)⁻¹
+        (isUniformizerSemilinear_slopeAut hT s.num s.den).inv =
+      ⨆ t, ⨆ (_ : s ≤ t), slopeSubspace T hT t := by
+  have hS := isUniformizerSemilinear_slopeAut hT s.num s.den
+  have hB := forwardBoundedSubspace_eq_neutral_sup hS.inv
+  have hB' : forwardBoundedSubspace (slopeAut (K := K) T s.num s.den)⁻¹ hS.inv =
+      slopeSubspace T hT s ⊔ backwardContractingSubspace (slopeAut (K := K) T s.num s.den) hS := by
+    rw [hB, backwardContractingSubspace_congr (inv_inv _) hS.inv.inv hS, slopeSubspace,
+      forwardBoundedSubspace_congr (inv_inv _) hS.inv.inv hS, inf_comm]
+  rw [hB', backwardContractingSubspace_slopeAut_eq hT s]
+  apply le_antisymm
+  · refine sup_le (le_iSup₂_of_le s le_rfl le_rfl) (iSup₂_mono' fun t ht => ⟨t, ht.le, le_rfl⟩)
+  · refine iSup₂_le fun t ht => ?_
+    rcases lt_or_eq_of_le ht with h | rfl
+    · exact le_sup_of_le_right (le_iSup₂_of_le t h le_rfl)
+    · exact le_sup_left
+
 end Slopes
 
 end

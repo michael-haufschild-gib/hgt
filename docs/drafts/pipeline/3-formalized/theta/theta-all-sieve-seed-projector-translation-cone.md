@@ -1,10 +1,10 @@
 # Cofinal prime deletion recovers the hidden translation measure
 
 - **ID:** theta-all-sieve-seed-projector-translation-cone
-- **Stage:** 2-fully-proven (paper)
+- **Stage:** 3-formalized
 - **Type:** all-sieve Bernstein-cone classification, exact and quantitative charge rigidity, sharp off-line countermodels
 - **Routes:** STC, CSB, U, MPLF, RG-HF, RHist; source-side comparison with RG and EDQ
-- **Status:** [PROVED HERE ON PAPER] [LEAN FORMALIZATION OPEN] [NOT AN RH PROOF]
+- **Status:** [PROVED HERE ON PAPER] [LEAN: `GaloisForLFunctions.RHTower.ThetaAllSieveSeedProjector`, see `theta-all-sieve-seed-projector-translation-cone-formalized.md`] [NOT AN RH PROOF]
 - **Dependencies:** the literal theta flux and finite-prime deletion formula in [theta-prime-deletion-spectral-escape.md](theta-prime-deletion-spectral-escape.md), the critical charge in [theta-euler-critical-boundary-mass-escape.md](theta-euler-critical-boundary-mass-escape.md), and finite Bernstein--Widder plus Laplace-measure uniqueness already available in the Lean corpus. No numerical computation is used.
 
 ## Set-up and all-sieve classification
@@ -108,4 +108,7 @@ Writing the zero height as `T_ε=π/ε`, the standard local expansion of `cosh` 
 
 All finite prime deletions act as an **arithmetic microscope**: after cofinal deletion, the `n=1` Gaussian seed remains, and its continuum of shifted rates identifies the hidden translation measure. This is stronger than undeleted Bernstein positivity, which the earlier [one-sided countermodel](theta-one-sided-bernstein-two-anchor-offline-zero.md) passes. The positive two-shift countermodel (7) shows that even this complete sieve condition plus one charge is insufficient without reflection. The family (10) shows why near-charge information is too weak at moving spectral height unless a fixed logarithmic shift gap is retained.
 
-None of these statements orients the zeros of the unmodified theta source. Literal finite Euler smooth-number stages are not finite signed measures acting on `k`: their chronological coefficient mass grows, their reflection is created only at completion, and their critical charge has a boundary anomaly. The open mathematical step is to carry an arithmetic sign/complex-phase law through that singular completion, rather than infer it from the rigidity of regular translation gauges. Lean formalization and literature novelty of the combined results remain open.
+None of these statements orients the zeros of the unmodified theta source. Literal finite Euler smooth-number stages are not finite signed measures acting on `k`: their chronological coefficient mass grows, their reflection is created only at completion, and their critical charge has a boundary anomaly. The open mathematical step is to carry an arithmetic sign/complex-phase law through that singular completion, rather than infer it from the rigidity of regular translation gauges. Literature novelty of the combined results remains open; they are formalized in Lean.
+
+## Log
+- 2026-09-27 — all-sieve theorem, cofinal seed limit (2), deleted flux (3)–(4), multiplier (5), two-charge and even rigidity, the two-shift countermodel (7), the gap law (8)–(9) and the moving-zero family (10) with its `π²/16` rate formalized unconditionally; moved to 3-formalized.

@@ -1,8 +1,8 @@
 # Positive theta-source flow that removes one real Xi zero pair
 
 - **ID:** `theta-positive-real-zero-division`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean formalization pending
+- **Stage:** 3-formalized. Lean: `GaloisForLFunctions.RHTower.ThetaZeroDivisionSource`, see `theta-positive-real-zero-division-formalized.md`
+- **Type:** THEOREM (paper and Lean)
 - **Route:** source-side divisor geometry for STC, CSB, U, RG, K-RVM, MPLF, and RG-HF
 - **Status:** `[PROVED HERE ON PAPER] [NOT AN RH PROOF]`
 
@@ -138,14 +138,17 @@ arithmetic constraint.
 
 - [x] Paper proof using corpus positivity, strict log-concavity,
       first-atom tail, entire Fourier identity, and a real Xi zero.
-- [ ] Formalize positivity through the `1−cos` integration-by-parts
+- [x] Formalize positivity through the `1−cos` integration-by-parts
       identity and the negative derivative of the strict even
       log-concave source.
-- [ ] Formalize the source integral, ODE, smooth even join, relative
+- [x] Formalize the source integral, ODE, smooth even join, relative
       tail bound, and entire Fourier division.
-- [ ] Formalize the positive flow and exact zero-pair motion, then wire
+- [x] Formalize the positive flow and exact zero-pair motion, then wire
       completed leaf modules into the RHTower umbrella.
 
 The half-period sine argument and Fourier/ODE identities are classical.
 The exact completed-theta positive zero-deletion flow was not located in
 the current corpus search; no external publication novelty is claimed.
+
+## Log
+- 2026-09-27 — all theorem items formalized unconditionally in `ThetaZeroDivisionSource` (general complex zero-division layer, theta specialization, positive flow, multiplicity bookkeeping; instances from Hardy's theorem); moved to 3-formalized.

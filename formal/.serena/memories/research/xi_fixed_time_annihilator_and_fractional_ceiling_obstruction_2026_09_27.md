@@ -1,0 +1,25 @@
+# Fixed positive heat time, all degrees: proved annihilator obstruction
+
+User steering: focus fixed positive heat time across all Hankel orders; stop polishing shrinking degree/time estimates. Keep goal ACTIVE until unconditional RH or not-RH. Do not pivot merely because mathematics/infrastructure is missing; conjecture/prove/fail/learn. No computations, added axioms/premises, heartbeat hacks, full/umbrella builds. Use corpus research tool and direct Lean, no cards. One owned foreground Lean process at a time. No subagents authorized.
+
+New definitive knowledge (NOT an RH counterexample): for every t>0, actual sampled positive energy has no positive lower bound by continuous Gaussian mass uniform over all real polynomial degrees. Build real P_F(w)=prod_q in finiteF (1-w/alpha_q²)(1-w/conj(alpha_q)²), alpha_q actual xiSpectralPoint, all copies retained. P_F(0)=1; each selected copy vanishes exactly. A fixed head H has reciprocal-square tail <t/16. Sector |alpha²|<2Re(alpha²) gives norm heat(P_(F union H),t,q)<=norm heat(P_H,t/2,q), a fixed summable majorant. Each summand eventually zero; dominated convergence yields full K_t(P_F)->0 over Finset atTop.
+
+S=sum_q|alpha_q|^-2, delta=1/[2(1+S)]. Uniform interval P_F(x²)>=1/4 on [-delta,delta], so native M_t(P_F)>=delta/8 exp(-t delta²)>0. Thus not exists c>0 forallP K_t(P)>=c*M_t(P), even not exists c>0 forallP K_t(P)>=c*P.coeff0². Exact unscale bridge yields not_exists_xiScaledEvenGaussian_uniform_norm_floor for every positive r and norm of whole even polynomial Gaussian. This does NOT rule out degree-dependent floors, fixed3 positivity, actual phase<=K, or RH.
+
+Stronger result: latest fractional phase budget cannot be rescued by choosing interpolation L separately for every polynomial. Positive b_r=Z3/2/2*min(r²*S0(r)²,2*T0(r)²), S0=degree0 samplingfactor*verticalSlope, T0=degree0 coordinateSlope. For every degree d and every L>0, Budget3/2(d,r,L)>=b_r>0. Therefore not(forallP existsL>0 Budget3/2(2degP,r,L)*wholeGaussianNorm²<=actualK(P,r)). This is a proved failure of the actual existing fractional-ceiling-to-floor strategy, not just an unanswered domination problem and not negativity of an actual Hankel form. Actual phase can vanish with K in these near-null directions. Next mathematics must preserve that behavior and compare actual phase to actual sampled energy; no return to exponent polishing or counting another equivalent criterion as progress.
+
+Five new fixed-time leaves in formal/GaloisForLFunctions/RHTower, 21 public theorems and 2 defs, all warning-free foreground lake --old env lean <leaf> -o <object>:
+- XiGaussianAnnihilator final22472; normalized real factors, full product, constant1, zeros, exponential bound, head/tail exactsplit.
+- XiGaussianAnnihilatorEnergy final32284; dominatinghead, energyzero, constant1smallenergy, no constantcoefficientfloor. Main tendsto line64.
+- XiGaussianAnnihilatorMass final58369; squaredmoduli realaxis, uniforminterval, uniformmasslower, no massfloor line132.
+- XiGaussianFixedTimeCoercivityObstruction final11333; exactunscaleK, no GaussianNormfloor line33.
+- XiGaussianFractionalBudgetObstruction final14767; Z3/2pos, budgetfloorall(d,L) line51, notforallPexistsLdomination line104.
+
+Six earlier density/sampling leaves completed before steering are preserved/audited, not used to chase normalization: RHTower/XiGlobalPacketDensity70409 (3thms1def); HTGeometry/GaussianCoordinateStripSampling39185 (4thms2defs); HTGeometry/GaussianPacketMaximizers1626 (1thm); HTGeometry/GaussianLogWeightedSampling9129 (3thms2defs); RHTower/XiAbsoluteHeightCells72463 (2thms1def); RHTower/XiAbsoluteGaussianSampling71405 (4thms2defs). They preserve exact divisor multiplicities and wholepolynomialcross terms. Three UNVERIFIED normalization drafts moved intact OUTSIDE corpus to artifact work/deferred-log-density: XiLogDensityPhaseBound.lean, GaussianLogDegreeScale.lean, XiGaussianLogTraceFloor.lean. No imports refer to them; never claim their theorems.
+
+Collective:11leaves38publictheorems10defs, wired exactlyonce/currentobjects/sourceforbiddenandwhitespace/gitdiffcheck clean. 42axiomreports(38new+4actualproviders) session76558exit0, standardonly propext/Classical.choice/Quot.sound, no diagnostics. Index44529exit0. Metadata97500exit1:8 unrelated unwired modules +2 concurrentlystaledgeneratedindexes; no ownedscopeerror. Finalindex70943exit0 refreshesgeneratedindexes afterlint, not rerun fullmetadata. Finalsourcehashes unchanged. All owned processes terminal. No fullbuild/commits.
+
+Report: /Users/michael/Documents/Codex/2026-09-26/new-chat-3/outputs/xi-fixed-time-annihilator.md
+Manifest/verification/axioms/log/lint: same workspace work/xi-fixed-time-annihilator-*. Workinglog work/xi-curvature-rh-loop.md.
+
+Lean lessons: NNReal coe_mk sometimes survives dsimp and causes ring failure; explicit change keeping same R fixes. Finset.prod_pow rewrites prod of powers TO power of prod, not reverse. Norm x² simplifies to |x|²; use sq_abs. Sum reciprocal written inverse needs simp only [←one_div] before change. No resource overrides.

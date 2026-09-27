@@ -1448,3 +1448,8 @@ Notation: `δ=Re ρ−½`; angular energy of a zero = `Σ_{ρ′≠ρ}cos²θ`, 
   - **Isolated zeros.** Detection at aperture `≈ (log γ₀ + log a)/δ` improves to `(C/δ)·log(A₀ log γ₀)` (MUST-476).
   - **Classical region.** "Beating the classical region at height `T` needs `S ≫ log T·log log T`" is false for any fixed depth: `S ≥ C·log T` excludes all zeros of depth `≥ δ₀` at height `T`, with primes up to `T^{C'}`. The factor `log log T` returns only at depths `δ ≍ 1/log T`.
   - **Sharp constant.** The optimal constant `c*` in `S = c*·log T` lies between `½` (Nyquist lattice, L27) and `≈ 2000·A₀·log(10⁶/δ)`.
+- MUST-478 — prove any level-`L` positivity (Weil or Hodge index) with a margin at most `C e^{12L − π e^{2L−1/2}}`: no producer can have more slack. [L] (`RHTower.zeta_weil_margin_superexponential`, axioms propext/choice/Quot.sound).
+  - For every large `L` there is a `C²` test `f`, supported in `[−L, L]`, with `f̂(±i/2) = 0` and `‖W_ζ(f,f)‖ ≤ C e^{12L} e^{−π e^{2L−1/2}} ‖f‖₂²`. This is unconditional.
+  - Mechanism: Riemann's kernel `Φ` (theta source, `∫Φ(x)e^{(s−½)x}dx = s(s−1)Λ(s)/2`, `RHTower.riemannPhiTransform_eq`) lies in the radical of the Weil form, because its transform vanishes at every nontrivial zero, on or off the line (`riemannPhiTransform_eq_zero_of_nontrivial`). Truncate `Φ` and smooth it with `κ'' − κ/4`.
+  - Replaces: Zhu's `λ_min(L) ≤ exp(−L e^L)`, which needs RH (arXiv 2608.24827), and the numerical Landau–Widom evidence behind HF-F12.
+  - Also: the radical supplies near-null vectors only. CCM's convergence step (arXiv 2511.22755, S2) needs a lower bound on the ground energy, which is positivity itself.

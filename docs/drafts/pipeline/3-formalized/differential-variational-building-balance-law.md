@@ -1,11 +1,11 @@
 # Differential variational-building balance and boundary law
 
 - **ID:** `differential-variational-building-balance-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL DIFFERENTIAL-FIELD THEOREM / FOUNDING HT CONSTRAINT LAW
-- **Scientific status:** `[PROVED HERE] [LEAN CORE FORMALIZED] [EXTERNAL NOVELTY PROVISIONAL]`
-- **Linear witness:** `../../3-formalized/hypertranscendental-clock-shear-rank-threshold.md`
-- **Open successor:** `../../1-in-progress/nonlinear-hypertranscendental-clock-building-completeness.md`
+- **Scientific status:** `[PROVED HERE] [LEAN FORMALIZED] [EXTERNAL NOVELTY PROVISIONAL]`
+- **Linear witness:** `hypertranscendental-clock-shear-rank-threshold.md`
+- **Open successor:** `../1-in-progress/nonlinear-hypertranscendental-clock-building-completeness.md`
 - **Statement:** Every reversible automorphism of a finitely generated differential field acts
   canonically on an affine building attached to its variational Ore module.  The action is
   determinant-balanced.  Consequently reversible differential-order growth has no intermediate
@@ -374,7 +374,7 @@ proves that realization or RH.
 
 - [x] 0 -> 1: intrinsic object, theorem, falsifiers, and exact rank-two witness
 - [x] 1 -> 2: complete algebraic/building proof and explicit parent-theory boundary
-- [ ] 2 -> 3: Ore localization, balanced Cartan law, and building dichotomy fully formalized
+- [x] 2 -> 3: Ore localization, balanced Cartan law, and building dichotomy fully formalized
 - [ ] 3 -> 4: specialist novelty confirmation and standalone preprint
 
 ## Log
@@ -3185,3 +3185,71 @@ Still to do for the full weighted-flag statement of `(16)`: identify the canonic
 `deg_T(W) = index(Λ, TΛ)` and the average-slope recursion giving the rational slope decomposition
 `E = ⊕_s E_s` with opposite filtrations `B(ϖ^cT^d) ⊕ C(ϖ^cT^d) = E` at every rational slope `c/d`, and
 the identification of the slopes (with multiplicity) with the Cartan translation vector `(14)`.
+
+### Lean progress — `(16)` complete: weighted flags, slopes, and the Cartan vector (2026-09-27)
+
+Theorem B is now formal in full.  The remaining statements of `(16)` — the identification of the
+canonical subspaces with the bounded parts, the rational slope decomposition with opposite weighted
+flags at every level, and the identification of the weights with the Cartan translation vector
+`(14)` — are proved unconditionally.  New leaves (all in `HTGeometry`, dependency order):
+
+```text
+CompletedPseudoDiffOpLatticeDegree       Module.length is invariant under semilinear equivalences;
+                                         layer lengths, the signed lattice index (cocycle, swap,
+                                         dilation = -k·dim), and the degree deg_S(W) of an invariant
+                                         subspace: multiplicative in S, additive on direct sums,
+                                         deg(ϖ^k) = -k·dim, zero on stable lattices, positive when S
+                                         expands a lattice
+CompletedPseudoDiffOpRelativeSplitting   the splitting restricted to an invariant subspace, stable
+                                         lattices inside B(S) ⊓ B(S⁻¹), degree sign on each piece
+CompletedPseudoDiffOpSlopeDecomposition  slopeAut T c d = ϖ^c T^d, slopeSubspace T s = neutral part of
+                                         ϖ^{num s} T^{den s};  ⨆_s E_s = ⊤, iSupIndep, finitely many
+                                         nonzero; B(ϖ^cT^d) = ⨆_{t ≤ s} E_t, C(ϖ^cT^d) = ⨆_{s < t} E_t,
+                                         B((ϖ^cT^d)⁻¹) = ⨆_{s ≤ t} E_t  (average-slope recursion)
+DifferentialVariationalWeightedFlags     variationalAttractingSubspace = B(T), repelling = B(T⁻¹)
+                                         (escape argument), attracting = ⨆_{t ≤ 0} E_t,
+                                         repelling = ⨆_{0 ≤ t} E_t, attracting ⊓ repelling = E_0,
+                                         isCompl_variationalSlopeFlag: the flags at every rational
+                                         level s are complementary
+CompletedPseudoDiffOpIsoclinicFrame      each E_s carries a lattice fixed by ϖ^{num s}T^{den s};
+                                         T^{Dn} N_s = ϖ^{-nDs} N_s; slope-adapted skew basis B of 𝔻^r
+                                         with sorted slopes, slope t occurring dim E_t times, and
+                                         T^{Dn}{y | 0 ≤ v(B-coords)} = {y | -nD·sl_j ≤ v(j-th coord)}
+DifferentialVariationalCartanSlopes      exists_variationalSlopes_cartanTranslationVector:
+                                           ∃ sl sorted, #{i | sl i = t} = dim E_t, Σ sl = 0,
+                                           λ(σ) = -sl  for every base vertex
+                                         differentialVariationalCartanTranslationVector_eq_zero_iff:
+                                           λ(σ) = 0  ↔  E_0 = ⊤
+```
+
+**The weights of the opposite flags are exactly the Cartan vector.**  In the slope-adapted frame the
+base lattice is the standard lattice and `σ^{Dn}` moves it to the standard lattice at the coweight
+`-nD·sl`, dominant because the slopes are sorted; uniqueness of dominant Cartan coordinates makes this
+the relative position of the orbit, the balance law `(12)` gives `Σ sl = 0` (the positive components
+of `(14)` are exactly balanced by the negative ones — `(15)` read through the flags), and along the
+subsequence `Dn` the normalized positions are constant.  In particular the Cartan translation vector
+is rational, with denominators dividing the slope denominators, and its multiplicities are the
+dimensions of the slope parts.
+
+With the entries above, every numbered statement of the card is formal:
+
+| Statement | Lean |
+|---|---|
+| `(2)`--`(4)` | `KaehlerConnection`, `KaehlerSemilinearAction`, the freeness/structure/rank leaves, `exact operator rank/differential-transcendence identity (4)` |
+| `(5)`--`(10)` Theorem A action | `DifferentialVariationalOreModule`, `projectiveBuildingAction`, basis covariance, isometry leaves |
+| `(11)`--`(12)` balance | `variationalOreCartanBalance_everyLattice` |
+| `(14)`--`(15)` | `tendsto_differentialVariationalCartanTranslationVector`, `_base_independent`, `_antitone`, `_sum_eq_zero` |
+| bounded / boundary dichotomy, no parabolic phase | `differentialVariationalPhase_iff`, `differentialVariationalEuclideanTranslationLength_pos_iff_orbitUnbounded` |
+| `(16)` opposite weighted flags | `variationalAttractingSubspace_sup_variationalRepellingSubspace_eq_top`, `variationalAttractingSubspace_inf_variationalRepellingSubspace`, `isCompl_variationalSlopeFlag`, `iSup_variationalSlopeSubspace_eq_top`, `iSupIndep_variationalSlopeSubspace`, `exists_variationalSlopes_cartanTranslationVector` |
+| `(19)`--`(23)` Theorem C | `freeDifferentialOrder_eq_topCartan`, `FreeDifferentialClockPhase`, `SubadditiveClockGauge.translationLength_conjugate` |
+| `(22)` | `variationalBoundaryPair_iff`, `freeDifferential_boundaryPair_iff` |
+| §5 rank one / rank two | `DifferentialVariationalRankOnePhase`, `FreeDifferentialClockShearCartan` (`(n,-n)`, `λ = (1,-1)`, `ℓ = 1`) |
+
+Every leaf of this entry passed a direct `lake env lean` check and a targeted `lake build --old`;
+all 294 declarations of the fifteen slope-splitting leaves (`AdicCompleteness` through
+`CartanSlopes`) audit to `[propext, Classical.choice, Quot.sound]` or fewer.  No `sorry`, no axioms,
+no hypotheses beyond the card's own (`C` a constant base, `K/C` a differential field, a finite Ore
+basis), and no heartbeat options in any new leaf.  All leaves are wired into `HTGeometry`.
+
+- 2026-09-27 -- Stage 3: `(16)` completed (slope decomposition, opposite weighted flags, weights =
+  Cartan translation vector); card moved to `3-formalized`.

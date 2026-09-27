@@ -1,6 +1,6 @@
 # Global reflected Riccati positivity does not orient an order-one Fourier divisor
 
-- **Stage:** 2-fully-proven (paper); Lean formalization and literature-novelty audit open.
+- **Stage:** 3-formalized. Lean: `GaloisForLFunctions.RHTower.ThetaRiccatiGaussianCountermodel`, see `theta-global-riccati-order-one-offline-countermodel-formalized.md`; literature-novelty audit open.
 - **Routes:** STC, CSB, U, K-RVM, MPLF, RHist.
 - **Source comparison:** `ThetaCuspGlobalReflectedRiccati.lean` proves the same two-variable reflected Riccati sign for the literal completed theta source. This card proves that sign is not a zero-location mechanism by itself.
 - **Corpus distinction:** `ThetaSourceStrictLogConcavityFluxNoGo.lean` already gives a log-concave modulated-Gaussian off-axis zero. Its theorem does not assert the global two-variable Riccati margin, order-one transform growth, or arbitrary local off-axis zero count proved here.
@@ -105,4 +105,7 @@ and every added term is nonnegative. Thus (2) holds unchanged for `gε`; its ref
 - **Mechanism:** the damping changes the transform's global order from two to at most one for every `ε>0`, yet its transforms converge locally uniformly to the undamped order-two transform as `ε↓0`. Any finite spectral window keeps its selected zeros. A global growth class therefore gives no local phase orientation unless its quantitative bounds are tied to the exact arithmetic source.
 - **Positive survivor:** inequality (2) gives a quantitative family of globally Riccati-positive sources stable under the displayed superexponential damping. It separates the differential curvature law from the nonperturbative arithmetic phase. Any RH producer using this theta law must additionally use exact modular/Euler coefficients or an equivalent nonlocal constraint that this family violates. The surviving target is the source-selected connection value `B(z)=−H(−z)/H(z)` from `theta-one-port-variogram-pencil.md`, not another consequence of its finite reflected jets.
 
-The paper proof is dependency-closed using elementary cumulant differentiation, Gaussian Fourier translation, Rouché, and the displayed tail estimate. The exact combined countermodel is not yet formalized in Lean. Literature novelty has not been established.
+The paper proof is dependency-closed using elementary cumulant differentiation, Gaussian Fourier translation, Rouché, and the displayed tail estimate. The exact combined countermodel is formalized in Lean. Literature novelty has not been established.
+
+## Log
+- 2026-09-27 — theorem items 1–3, the explicit family, closed-form transform, simple spectral zeros, locally uniform convergence with Hurwitz persistence, order-one growth, derivative decay, real-analyticity and the uniform Riccati margin (2) formalized unconditionally (with `L = σ/2`); moved to 3-formalized.

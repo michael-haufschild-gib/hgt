@@ -126,18 +126,17 @@ theorem exp_sub_one_le_two_mul_of_le_half {s : ℝ} (hs0 : 0 ≤ s) (hs : s ≤ 
       _ = 1 := h2
   nlinarith
 
-/-- **Cluster estimate.**  If the profile's factors are far from `x₀ = -iδ` relative to `ε`, and
-`F(x₀)` is purely imaginary, then `Re F(z)² ≤ -(79/100)|F(x₀)|²` whenever `|z - x₀| < ε`. -/
-theorem re_sq_lowHeightProfile_cluster {k : ℕ} {L : List ℂ} {δ ε : ℝ} (hδ : 0 < δ)
+/-- **Cluster perturbation.**  If the profile's factors are far from `x₀ = -iδ` relative to `ε`,
+then `|F(z) - F(x₀)| ≤ |F(x₀)|/10` whenever `|z - x₀| < ε`. -/
+theorem norm_lowHeightProfile_sub_le_tenth {k : ℕ} {L : List ℂ} {δ ε : ℝ} (hδ : 0 < δ)
     (hδ2 : δ ≤ 1 / 2) (hε0 : 0 < ε) (hε1 : ε ≤ 1)
     (hr : ∀ r ∈ pairRoots L, -(I * δ) - r ≠ 0)
     (hS : ((k + 2 * L.length + 1 : ℕ) : ℝ) * (4 * ε) +
         ((pairRoots L).map fun r => ε / ‖-(I * δ) - r‖).sum ≤ 1 / 20)
-    (hF0 : lowHeightProfile (sinhTestWeight 1) k L (-(I * δ)) ^ 2 =
-      -((‖lowHeightProfile (sinhTestWeight 1) k L (-(I * δ))‖ ^ 2 : ℝ) : ℂ))
     {z : ℂ} (hz : ‖z - -(I * δ)‖ < ε) :
-    (lowHeightProfile (sinhTestWeight 1) k L z ^ 2).re ≤
-      -(79 / 100) * ‖lowHeightProfile (sinhTestWeight 1) k L (-(I * δ))‖ ^ 2 := by
+    ‖lowHeightProfile (sinhTestWeight 1) k L z -
+      lowHeightProfile (sinhTestWeight 1) k L (-(I * δ))‖ ≤
+      1 / 10 * ‖lowHeightProfile (sinhTestWeight 1) k L (-(I * δ))‖ := by
   set x₀ := -(I * (δ : ℂ)) with hx₀
   set W := paperFT (fun u => (sinhTestWeight 1 u : ℂ)) with hW
   have hWx₀ : W x₀ = ((∫ u, sinhTestWeight 1 u * Real.cosh (δ * u) : ℝ) : ℂ) :=
@@ -185,10 +184,21 @@ theorem re_sq_lowHeightProfile_cluster {k : ℕ} {L : List ℂ} {δ ε : ℝ} (h
   have hθ : Real.exp S - 1 ≤ 1 / 10 := by
     have := exp_sub_one_le_two_mul_of_le_half hS0 (by linarith)
     linarith
-  have hnear : ‖lowHeightProfile (sinhTestWeight 1) k L z -
-      lowHeightProfile (sinhTestWeight 1) k L x₀‖ ≤
-      1 / 10 * ‖lowHeightProfile (sinhTestWeight 1) k L x₀‖ :=
-    hpert.trans (mul_le_mul_of_nonneg_right hθ (norm_nonneg _))
+  exact hpert.trans (mul_le_mul_of_nonneg_right hθ (norm_nonneg _))
+
+/-- **Cluster estimate.**  If the profile's factors are far from `x₀ = -iδ` relative to `ε`, and
+`F(x₀)` is purely imaginary, then `Re F(z)² ≤ -(79/100)|F(x₀)|²` whenever `|z - x₀| < ε`. -/
+theorem re_sq_lowHeightProfile_cluster {k : ℕ} {L : List ℂ} {δ ε : ℝ} (hδ : 0 < δ)
+    (hδ2 : δ ≤ 1 / 2) (hε0 : 0 < ε) (hε1 : ε ≤ 1)
+    (hr : ∀ r ∈ pairRoots L, -(I * δ) - r ≠ 0)
+    (hS : ((k + 2 * L.length + 1 : ℕ) : ℝ) * (4 * ε) +
+        ((pairRoots L).map fun r => ε / ‖-(I * δ) - r‖).sum ≤ 1 / 20)
+    (hF0 : lowHeightProfile (sinhTestWeight 1) k L (-(I * δ)) ^ 2 =
+      -((‖lowHeightProfile (sinhTestWeight 1) k L (-(I * δ))‖ ^ 2 : ℝ) : ℂ))
+    {z : ℂ} (hz : ‖z - -(I * δ)‖ < ε) :
+    (lowHeightProfile (sinhTestWeight 1) k L z ^ 2).re ≤
+      -(79 / 100) * ‖lowHeightProfile (sinhTestWeight 1) k L (-(I * δ))‖ ^ 2 := by
+  have hnear := norm_lowHeightProfile_sub_le_tenth hδ hδ2 hε0 hε1 hr hS hz
   have := re_sq_le_of_near (by norm_num : (0 : ℝ) ≤ 1 / 10) hF0 hnear
   linarith
 

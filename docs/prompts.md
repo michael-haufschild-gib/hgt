@@ -2,9 +2,9 @@
 
 optimize lean code. no raising heartbeat hacks.
 
-do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. 
+do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. EVEN IF THIS MEANS TO INVENT A COMPLETE NEW FIELD OR BRANCH OF MATHEMATICS.
 
-do not just search. create new knowledge with an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures.
+do not just search. create new knowledge with an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures. be creative. follow unusual and fringe ideas as well as straight forward ideas. it cost almost nothing to try things.
 
 Reminder: 
 1. create new knowledge, do not just search and pivot when hitting an unsolved problem - solve it using an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures.
@@ -18,7 +18,7 @@ also apply here noether´s theorem in both directions in the naive form "every c
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
-- docs/drafts/pipeline/2-fully-proven/chronological
+- docs/drafts/pipeline/2-fully-proven/ (ignore subfolders)
   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -74,7 +74,7 @@ find as many places as possible in our lean corpus to apply theorems-lemmas-prop
 this is a freak fringe paper and clearly has issues, but take the core ideas seriously for a moment and ask "what if?" "how could i make this work?" "where could it add something interesting to our research?" "is there something that when applied to our lean corpus could suprise us?"
 
 papers:
-- docs/others/einstein-fringe2.md
+- docs/others/rh_v2_final.pdf
   
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...

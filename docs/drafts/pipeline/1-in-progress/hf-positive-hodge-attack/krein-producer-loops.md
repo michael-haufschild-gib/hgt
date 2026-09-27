@@ -429,3 +429,157 @@ Next conjectures to test:
   - the level-`a` Hodge index holds whenever `a ≤ L/2` and `2a e^{2aδ} ≤ L`.
 
   The density term `log A₀` of the resolution law is therefore necessary, up to its constant. Both masking regimes are now Lean-closed.
+
+### L28 — Is HF-Krein at level `a` stronger than the known zero-free regions? YES: it is a critical strip of width `1/a` [L]
+- **Question (user).** Can a finite-cutoff Selberg symbol inequality from HF-F16 hold at level `a` without implying a zero-free region beyond the de la Vallée-Poussin / Korobov–Vinogradov type?
+- **Bridge.** In the Zeta23 normalization, via the proven explicit formula for ζ (`WeilEF.EF_lit_zetaZeroConfig`, `gammaFacts`).
+  - `zeta_W_eq_integral_selbergSymbol`: for polar-constrained `C²` tests supported in `[−a,a]`, `W(f,f) = (1/2π)∫|h_f(τ)|² weilAtomSymbol(Λ_w,N)(τ/2π) dτ`. This holds for every weight `w = 1` on `[1,⌊e^{2a}⌋]` and every cutoff `N ≥ ⌊e^{2a}⌋`.
+  - `weilAtomSymbol_vonMangoldt_eq`: `weilAtomSymbol(Λ,⌊X⌋)(τ/2π) = 2π(μ(τ)+P_X(τ))`, the Zeta23 density.
+  - `integral_normSq_paperFT_mul_cos_eq_zero`: atoms at `n > e^{2a}` are invisible.
+  - `integral_weilAtomSymbol_completion`: completion invariance.
+- **Equivalence.** `hodgeIndexAtLevel_iff_selbergSymbolPositive`: every admissible Selberg symbol inequality at level `a` is exactly `HodgeIndexAtLevel zetaZeroConfig a`.
+- **Strip.**
+  - `zeta_selbergSymbol_forces_critical_strip`, and `…_nonneg_…` for a pointwise positive Krein symbol. At level `a ≥ e⁶`, every zero with `|γ| ≥ 2` and `10⁵A₀log(|γ|+306)log²a ≤ a` has `|β−½| < 1/a`.
+  - Height form (`zeta_selbergSymbol_forces_strip_up_to_height`): one level `a ≍ A₀ log T (log log T)²` confines all zeros up to height `T` to `|β−½| < 1/a`.
+  - Consistency: RH ⇒ the inequality at every level (`selbergSymbolPositiveAtLevel_of_forall_re_eq_half`), and the inequality at all large levels ⇒ `β = ½` for `|γ| ≥ 2` (`zeta_re_eq_half_of_selbergSymbol_eventually`).
+- **Lean.** `RHTower.SelbergSymbolCriticalStrip`; wired after `ClusterRobustHodgeExclusion`; `lake build --old` green; axioms propext/choice/Quot.sound.
+- **Verdict.**
+  - No. Every finite-cutoff Selberg symbol inequality at a level `a ≥ e⁶` implies a quasi-RH strip `|β−½| < 1/a` up to height `exp(a/(10⁵A₀log²a))`.
+  - dlVP and VK only confine `1−β` (`≫ 1/log T`, `≫ (log T)^{−2/3}(log log T)^{−1/3}`). No unconditional result bounds `β−½` by any constant `< ½` beyond the numerically verified height.
+  - So HF-Krein at a level `a` with `exp(a/(10⁵A₀log²a))` above the verified height is strictly stronger than every known zero-free region.
+  - The Selberg completion freedom cannot weaken this: the level-`a` form is completion-invariant.
+- **Positive survivor / next.** The relaxed dictionary.
+  - Unconditionally, HF-F17 gives `Q_a ≥ −(1+o(1))e^a‖f‖²`, i.e. error exponent `θ = 1`, which is the trivial region `β < 1`.
+  - Conjecture [P]: `Q_a ≥ −e^{θa}‖f‖²` on polar-constrained tests, with `θ < 1`, forces `β ≤ (1+θ)/2 + ε` up to height `exp(cε a/(A₀log²a))`.
+  - Paper mechanism: an edge-concentrated sinh weight, which gains `e^{2δa}`, times the cluster-robust root-killing polynomial, which costs `e^{O(n log²a)}`.
+  - If true, the exponent of the prime-side error at level `a` is exactly twice the abscissa excess of the zeros. Any `θ < 1` would be a quasi-RH.
+
+### L30 — Goal cycle "find the producer": the radical of the Weil form, the CCM producer, and the margin law (in progress)
+- **Literature checked (2026-09-27).**
+  - Connes–Consani–Moscovici, *Zeta spectral triples* (arXiv 2511.22755). Every finite-stage ground-state transform has only real zeros (Carathéodory–Fejér, rank-one perturbation). Two steps are listed as missing:
+    - (S1) the ground state of `QW_λ` is simple and even;
+    - (S2) the prolate/theta guess `k_λ = E(h_λ)` approximates the ground state well enough for the zeros to converge.
+  - Connes, arXiv 2602.04022 (survey): the same strategy.
+  - Zhu, arXiv 2608.24827:
+    - `λ_min(L) ≤ exp(−L e^L)` is proved only under RH;
+    - the unconditional upper bounds are interval-arithmetic values at fixed `L`;
+    - the Landau–Widom law is empirical.
+  - Connes–Consani, *Spectral triples and ζ-cycles* (arXiv 2106.01715): the radical of `QW` contains the range of `E`, and small eigenvalues are explained by "prolate vectors"; the support is numerical only.
+- **Conjecture (radical producer).** Positivity at level `L` is produced by the radical. `QW_L` should dominate an explicit nonnegative leakage functional of a radical representative, and this domination would supply CCM's gap in (S2).
+- **Kill: CIRCULAR.**
+  - Under ¬RH, `QW_L` takes values `≤ −c e^{2Lδ}/L³` (MUST-259), while any leakage functional is `≥ 0`. So the conjecture is RH at level `L` with a constant.
+  - Structurally, the radical is the kernel of the form. It can only produce near-null vectors (upper bounds on the margin), never lower bounds.
+  - (S2) needs `|ε_λ| ≪ gap`, a lower bound on `ε_λ`, which is Weil positivity itself. CCM's strategy is therefore a receiver whose producer step is positivity.
+- **Survivor (positive statement): the no-slack margin law.**
+  - Riemann's kernel `Φ = T'' − T/4`, with `T(x) = e^{x/2}(θ(ie^{2x}) − 1)/2`, lies in the radical of the Weil form: `∫Φ(x)e^{(s−½)x}dx = ½s(s−1)Λ(s)` vanishes at every nontrivial zero, on or off the line.
+  - Truncating `Φ` and convolving with `κ₂ = κ'' − κ/4` (whose transform vanishes at `±i/2`) gives Hodge-class tests on `[−L, L]` with `|W(f,f)| ≤ C e^{CL} exp(−π e^{2L−1/2}) ‖f‖²`.
+  - Hence, unconditionally, the level-`L` Hodge/Weil ground energy is at most `exp(−π e^{2L−1/2} + O(L))`.
+  - Any producer of level-`L` positivity must therefore deliver a margin below this. The mechanism behind the super-exponential smallness is the radical, unconditionally.
+- **L30 result [L].** Two modules, both wired after `LatticeMasksDeepPair`; built; axioms propext/choice/Quot.sound; lint clean.
+  - `RHTower/RiemannKernelWeilRadical`:
+    - `riemannPhiTransform_eq`: `∫Φ e^{(s−½)x} = s(s−1)Λ(s)/2` on `ℂ∖{0,1}`, by two integrations by parts with a nonzero cusp value, the Mellin transform of `θ(iy) − 1`, and analytic continuation;
+    - `riemannPhiTransform_eq_zero_of_nontrivial`;
+    - `riemannPhiTransform_two_ne_zero`;
+    - `paperFT_riemannPhiKernel`.
+  - `RHTower/WeilMarginSuperexponentialLaw`:
+    - `weilRadicalTest L = Φ_{≤L−1/4} ⋆ (κ''−κ/4)`, which is `C²`, supported in `[−L,L]`, and polar-free;
+    - `norm_W_weilRadicalTest_le` (the tail factor times the `C²`-decay factor, summed with `WeilEF.zero_sum_inv_sq`);
+    - `weilRadicalTest_mass_ge` (evaluation at `−3i/2`, where `Φ̂ = ξ(2)`);
+    - `zeta_weil_margin_superexponential`.
+- **Verdict.**
+  - The radical-producer conjecture is CIRCULAR.
+  - Survivor: an unconditional no-slack law. The margin at level `L` is at most `exp(−π e^{2L−1/2} + 12L)`.
+  - This is new relative to Zhu (conditional, `exp(−L e^L)`) and to CCM/CC (numerical).
+- **Lesson for the producer.** The only structure that arithmetic provides unconditionally at level `L` is the radical, which makes the margin tiny. A producer must supply a lower bound that matches it to within `exp(−π e^{2L})`. Such a lower bound can only come from an identity or a rigidity, not from an estimate.
+- **L30 addendum: a false density argument, recorded so it is not retried.**
+  - Claim tested: `QW > 0` on `V_L = {(Φ⋆g)χ_L}`, because the tails are narrow edge spikes. On such spikes only the archimedean term acts, since `log 2` exceeds the spike width. `V_L` is dense in the form domain (the duality argument uses the analyticity of `Φ` and `Ξ ≢ 0`). Together these would give Weil positivity at every level.
+  - Kill: the Epstein zeta (theta representation plus FE, but off-line zeros) would satisfy the same argument, so it is wrong. The error is that the narrow-spike estimate needs `‖g‖₁` moderate. Approximating a general test needs `ĝ ≈ f̂/Ξ`, whose norm blows up near zeros. The tail width then grows like `e^{−2L}·log‖g‖` and reaches `O(1)`, so the primes re-enter.
+  - Survivor [P]: `QW((Φ⋆g)χ_L) > 0` for every `g` with `log‖g‖₁ ≤ c e^{2L}` (bounded-quotient cone). It is positivity along near-radical directions only, and tautological in spirit.
+
+### L29 — The relaxed dictionary: error exponent `θ` confines the zeros to `|β−½| ≤ θ/2 + ε`. TRUE [L]
+- **Statement** (`relaxed_hodge_dictionary`).
+  - Setting: `Z` has local count `A₀` and no zeros below ordinate 2; `θ ≥ 0`, `ε > 0`, `a ≥ max(e¹², 1/ε)`.
+  - Hypothesis: `Re W(f,f) ≥ −e^{θa}∫|f|²` for every polar-constrained `C²` test in `[−a,a]` (`RelaxedHodgeIndexAtLevel Z θ a`).
+  - Conclusion: every zero with `10⁴A₀(log(|γ|+306) + log a + 2/ε + 2)log²a ≤ εa` has `|β−½| ≤ θ/2 + ε`.
+  - Height form (`relaxed_hodge_dictionary_height`): all zeros up to `exp(εa/(2·10⁴A₀log²a))`, once `a ≥ a₀(ε,A₀)`.
+  - ζ (`zeta_relaxed_hodge_dictionary`): the low-height hypothesis comes from `riemannZeta_ne_zero_of_im_sq_le`.
+- **Lean.** Three modules, all wired; `lake build --old` green; axioms propext/choice/Quot.sound.
+  - `EdgeConcentratedWeilTests` (631 lines).
+  - `RelaxedHodgeDictionary` (917 lines).
+  - `RelaxedHodgeDepthDictionary` (641 lines).
+  - Refactors: `cluster_selection_radius` in `ClusterRobustHodgeExclusion`; `norm_lowHeightProfile_sub_le_tenth` in `LowHeightHodgeExclusion`.
+- **Mechanism.**
+  1. **Test.** `f = e^{−iγu}(s ⋆ g̃)` with the odd edge weight `s = sinh(δu)(b²−u²)₊^{5/2}` and the L27 killing factor `g`. The profile `Ψ = I ŝ G` is real-structured, so `Wsummand = m Ψ²`.
+  2. **Gain.** `ŝ(−iδ) = P ≥ b²e^{2δ(b−2)}/16` against `‖s‖_∞ ≤ cosh(δb)b⁵`. The physical-space bound `∫|f|² ≤ 2a(‖s‖_∞‖g‖₁)²` (Young-type, no Plancherel) gives a gain of `e^{2δb}` over `∫|f|²`.
+  3. **Killing cost.** `‖g‖₁ ≤ |G(x₀)|·Π(‖w'‖₁+|r|‖w‖₁)/(‖w‖₁|x₀−r|)`. The `ŵ` factors cost nothing, since `|ŵ(x₀)| ≥ ‖w‖₁`. The roots cost `(122/η)^{2n}(990/δ)²`.
+  4. **Centre.** A penalized deepest zero, maximizing `Re ρ − λ|Im ρ − γ₀|` with `λ = 1/(8b e^{2/ε})`. No zero within ordinate `R+1` is more than `1/(8b)` deeper, so near-tail zeros cost `e^{O(1)}`.
+  5. **Far zeros** (depth up to ½) are paid for by `(1+R)^M ≥ e^b`, with `1+R = e^{2/ε}` and `M = ⌈εa/2⌉`.
+  6. **Balance.** The losses are `M + O(n log²a)` and the gain margin is `2εa`.
+- **Verdict.** TRUE, in the form asked.
+  - The exponent `θ` of the prime-side error at level `a` controls twice the abscissa excess of the zeros up to height `exp(a^{1−o(1)})`.
+  - `θ = 1` (HF-F17, unconditional) gives the trivial `β < 1+ε`. Any `θ < 1` would give the quasi-RH `β ≤ (1+θ)/2 + ε` at those heights.
+  - Beating the trivial prime-transport norm `e^a` by any exponential factor at level `a` is therefore at least as strong as a quasi-RH.
+- **Open / next.**
+  - The converse: a zero-free half-plane `β ≤ ½ + η` gives `Q_a ≥ −C(a)e^{2ηa}∫|f|²`? This needs a Plancherel–Pólya bound at sub-Nyquist density; above Nyquist depth is invisible (L22).
+  - Removing `hlow` in general.
+
+### L31 — The radical as a Nyquist-resolution detector (in progress)
+- **Exploration kills recorded first.**
+  - Truncated-radical descent: it reduces to the two-bump energy `m_b²·W(g(·−b)+g(·+b))`, i.e. WL lag positivity. CIRCULAR.
+  - CCM (S1), evenness of the ground state: odd near-radical vectors are derivatives `(Φ⋆H)'` of even ones. Differentiation multiplies the double-exponential tail by `≈2πe^{2L}`, so heuristically `λ_odd/λ_even ≳ e^{4L}`. Proving that needs a lower bound on the odd energy, which is positivity. CIRCULAR as a producer.
+  - Markov/Lévy structure of the polar-free form: already L16. REDISCOVERED.
+- **Conjecture (bold).** For `ζ`, the level-`a` Hodge index excludes every off-line zero up to height `c·e^{2a}`, uniformly in depth and clustering up to polylogarithmic losses. So `Hodge(a)` is RH up to the Nyquist height, with the constant.
+  - Mechanism. `Φ̂ = Ξ` kills every zero at once. Dividing `Φ̂` by `(z−γ₀)^{m₀}(z−γ̄₀)^{m₁}` restores exactly one off-line pair. That is done at kernel level by the resolvent `D_γ g(x) = −i e^{−iγx}∫_{−∞}^x g(u)e^{iγu}du`, which keeps the double-exponential decay because `ĝ(γ)=0`.
+  - The two restored nodes carry a hyperbolic `(1,1)` block of size `|Ξ^{(m)}(ρ₀)/m!|² ≈ e^{−π|γ₀|/2}`. Truncation to `[−a,a]` costs `exp(−πe^{2a−O(1)})`. Negativity therefore follows once `|γ₀| ≲ 2e^{2a}` (4e^{2a} with a two-sided tail estimate).
+  - Compared with L28 (`exp(a/(2000A₀log(10⁶/δ)))`), the horizon improves exponentially and reaches the Nyquist scale, above which HF-F18 shows depth is invisible to abstract configurations.
+- **Kill attempts.**
+  - *False?* The lattice masking counterexamples (HF-F18, L27, L29) have compactly supported radicals of radius `L/2`. The same mechanism then detects exactly at `a ≥ L/2`, which is their proven threshold, so the conjecture is consistent with them and even predicts them.
+  - *Circular?* No. The inputs are the unconditional radical identity and an unconditional local lower bound for `ξ` near a zero.
+  - *Rediscovered?* Bombieri 2000 (negative eigenvalues ↔ off-line zeros, no horizon), arXiv 2607.02828 (finite Galerkin dictionary, no exclusion), 2608.24827, 2609.20367, and Connes' folklore "cutoff `λ` sees height `λ²`" (heuristic only). No theorem found.
+  - *Insignificant?* It is a receiver, not a producer. But it closes the HF horizon question (HF-F21/F23, L27–L29): the finite-level Hodge index is, for `ζ`, at least RH up to height `≍ e^{2a}`.
+  - Verdict: SURVIVES PRELIMINARY ATTACK.
+- **Paper proof (Theorem A, flatness law).**
+  - Setting: `ρ₀` off-line zero, `γ₀ = gammaOf ρ₀`, `γ₁ = conj γ₀`, orders `m₀, m₁`, local factors `Φ̂ = (z−γ_j)^{m_j}u_j`.
+  - Construction:
+    - `h = D_{γ₀}^{m₀}D_{γ₁}^{m₁}Φ`, so `ĥ = Φ̂/((z−γ₀)^{m₀}(z−γ₁)^{m₁})`.
+    - `f = N_op P_op(χ_b h)`, where `P(z) = cos(sz)−cosh(s/2)` gives exact polar vanishing and `N(z) = c₁+c₂e^{isz}` interpolates `N(γ₀)=1`, `N(γ₁)=v`, `|v|=1`.
+  - Non-node zeros see only the tail `E=(1−χ_b)h`. The node block has real part `−(m_{ρ₀}+m_{ρ̄'})|P(γ₀)P(γ₁)ĥ(γ₀)ĥ(γ₁)|` plus tail cross terms.
+  - Hodge(a) therefore forces `|u₀(γ₀)u₁(γ₁)| ≤ (2|δ₀|)^{m₀+m₁}·(tail at a−O(1))·(poly)`.
+  - Tail iteration: `∫_{|x|≥X}|D g|e^{λ|x|} ≤ 2∫_{|u|≥X}|g|e^{(λ+3/2)|u|}`.
+- **Theorem B.** Combines Theorem A with the local lower bound `|ξ^{(m)}(ρ₀)/m!| ≥ e^{−π|γ₀|/4}·T^{−C}·Π_{nearby}|ρ₀−ρ|`. That bound comes from Borel–Carathéodory: `HTGeometry.BallLogarithm`, `AnalyticBallFinsetFactorization`.
+
+### L32 — The converse of the relaxed dictionary: error exponent = 2 × abscissa excess, exactly when off-line multiplicity is bounded. TRUE [L]; the density hypothesis is sharp [L]
+(Label L32 because L28–L31 are also used by a parallel cycle in this card.)
+- **Question (user).** If all zeros up to height `T` satisfy `|β−½| ≤ η` and the local density there is sub-Nyquist, does `Q_a ≥ −C·a·e^{2ηa}∫|f|²` follow? Together with L29 (relaxed dictionary) this would make "error exponent = 2 × abscissa excess" an exact equivalence.
+- **Answer, in three parts.**
+  1. *"Up to height `T`" is false for every `T`.* The level-`a` form sees every height: a single pair `¾ + iT, ¼ + iT` has eventual error exponent exactly `½` (`offLinePairConfig_eventually_relaxed_iff`, any `T ≥ 2`). The hypothesis must be global.
+  2. *Global converse, TRUE [L].* If every zero has `|β−½| ≤ η` and every unit window carries off-line multiplicity `≤ D`, then `Re W(f,f) ≥ −3500(2a+3)·D·e^{2η(a+2)}∫|f|²` for **every** continuous `f` on `[−a,a]` (`re_W_ge_of_depth_offLineDensity`). No polar constraint and no smoothness are needed. On-line zeros cost nothing, so `D = 0` gives Weil positivity, and "sub-Nyquist" is not needed: any finite `D` works.
+  3. *Exact equivalence [L].* Assume the local count `A₀ log`, no zeros below ordinate 2, and off-line density `≤ D`. Then `∀ρ, |β−½| ≤ η` ⟺ `∀θ > 2η`, the relaxed index `Re W ≥ −e^{θa}∫|f|²` holds for all large `a` (`abs_re_sub_half_le_iff_eventually_relaxed`). So `inf{θ eventually admissible} = 2 sup|β−½|`.
+- **Sharpness of the density hypothesis [L]** (`OffLineClusterWeilUnbounded`).
+  - The cluster configuration has, at each height `e^{k+1}`, the pair `¾ + ie^{k+1}, ¼ + ie^{k+1}`, each of multiplicity `k+1 = ⌊log γ⌋`.
+  - It has depth `¼` everywhere, the ζ-type count `N(t,t+1] ≤ 2log(|t|+3)`, and no zeros below 2.
+  - Yet at every large level the relaxed index fails for **every** `θ`, and `Re W` is unbounded below on polar-constrained tests (`offLineClusterConfig_eventually_not_relaxed`, `offLineClusterConfig_weil_unbounded_below`, `exists_bounded_depth_without_error_exponent`).
+  - So the uniform error exponent sees depth **and** off-line multiplicity. A multiplicity growing like `log γ` at fixed depth already makes it `+∞`.
+- **Mechanism (converse).**
+  1. `Re(AB̄) ≥ −|A−B|²/4`. This leaves only the depth differences `h_f(x_ρ) − h_f(x̄_ρ) = ∫f·(e^{ix_ρu} − e^{ix̄_ρu})`, which vanish on the line.
+  2. A weighted Bessel inequality (pointwise AM–GM plus the Schur test, with no Cauchy–Schwarz on integrals).
+  3. The plateau weight `h_J = Σ_{|j|≤J} w₁(·−j) ≥ (3/4)^{5/2}` on `[−J, J]`, with `ĥ_J = (Σ_j e^{izj})ŵ₁`.
+  4. The Gram kernel is four values of `ĥ_J` at `|Im| ≤ 2η`, and unit windows give row sums `≤ 10D·672(2J+1)e^{2η(J+1)}`.
+- **Mechanism (cluster).**
+  - Polar-corrected deep-zero test at height `e^{k+1}`. Isolation holds at radius `e^a` for `k > a`.
+  - The isolation inequality keeps the multiplicity: the pair gives `−2(k+1)P²`, and everything else gives `O((k+2)‖s‖²)`.
+  - `P² ≥ 12288‖s‖²` for large `a`. The polar coefficients are `O(1/k)` and the test energy stays bounded, so taking `k` large beats `e^{θa}`.
+- **Novelty audit.**
+  - The Bessel core is the classical Plancherel–Pólya / Carleson-measure bound for Paley–Wiener spaces (uniform density in a strip ⇒ `Σ|F(z_k)|² ≲ e^{2ηa}(a+1)D‖F‖²`). BRIDGE.
+  - The corpus had the fixed-test (Landau-type) version: `CCMRectangularOneSidedTransverseExponent`, where a power budget `n^α` of one observable holds iff `Re ρ ≤ ½+α`, unconditionally and with no density.
+  - New here:
+    - the exact equivalence for the **uniform** (quadratic-form) exponent;
+    - on-line zeros being free, so the relevant density is the off-line one;
+    - the counterexample showing the uniform exponent is **not** a function of the abscissa excess under ζ-type counts.
+  - The fixed-test and uniform exponents differ precisely by off-line multiplicity growth.
+- **Route consequence (HF).**
+  - `θ*(a) < 1` for ζ ⟹ quasi-RH (L29, unconditional).
+  - Quasi-RH ⟹ `θ* < 1` iff (up to the cluster obstruction) the off-line multiplicity of ζ is locally bounded.
+  - For ζ only `θ* ≤ 1` is known (HF-F17).
+  - Open: is the relaxed exponent of ζ equal to `2Θ_ζ` unconditionally? The zero side needs bounded off-line density. The prime side needs smoothness of `f`, which the `L²` index does not see.
+- **Modules.** `RHTower/OffLineDensityWeilLowerBound` (835 lines), `RHTower/ErrorExponentAbscissaExcessLaw` (248), `RHTower/OffLineClusterWeilUnbounded` (654). All are wired into `RHTower.lean` and built with `lake build --old`. Axioms: propext, Classical.choice, Quot.sound.

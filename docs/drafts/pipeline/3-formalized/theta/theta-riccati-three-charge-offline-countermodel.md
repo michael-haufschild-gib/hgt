@@ -1,6 +1,6 @@
 # Exact scalar theta charges do not repair global Riccati zero control
 
-- **Stage:** 2-fully-proven on paper; Lean formalization and external novelty audit open.
+- **Stage:** 3-formalized. Lean: `GaloisForLFunctions.RHTower.ThetaRiccatiThreeChargeCountermodel`, see `theta-riccati-three-charge-offline-countermodel-formalized.md`; literature-novelty audit open.
 - **Routes:** CSB, K-RVM, MPLF, STC, U.
 - **Comparison:** Strengthens [global Riccati countermodel](theta-global-riccati-order-one-offline-countermodel.md) by matching ordinary mass and both reflected half-density charges of the literal completed theta source exactly. It does not match Euler coefficients, the entire real-zero divisor, or all-sieve laws.
 - **No RH conclusion.** No numerical computation is used.
@@ -55,3 +55,6 @@ Damping adds `E(u,t)=2εcosh(u/σ)(cosh(t/σ)-1)` to the action. Its first two d
 - **Conjecture:** the theta source's two exact critical scalar charges, ordinary mass, global Riccati law and order-one Fourier growth jointly exclude off-line zeros. **False:** the theorem supplies all those properties and an off-line zero arbitrarily near the critical line.
 - **Attempt:** rescale the previous Gaussian family to fit the charges. **Fails:** amplitude fixes only one scalar budget. Tuning `σ` fixes the half-charge/mass ratio; retuning after damping preserves both the ratio and a simple spectral zero.
 - **Positive survivor:** the exact charge-fitting map is compatible with strict global Riccati positivity and a nonreal Fourier divisor. A source-side RH proof must use an additional non-scalar arithmetic constraint: exact Euler coefficients, an equivalent all-prime phase law, or the full reflected complex boundary response. This construction does not rule out such a constraint.
+
+## Log
+- 2026-09-27 — theorem items 1–4 for every `0<M<Q`, `η>0`, and the literal theta specialization `(M,Q)=(∫k,1/2)` with `0<∫k<1/2`, formalized unconditionally (ratio law (1), its strict monotonicity, IVT charge fitting after damping, Hurwitz persistence of the simple zero); moved to 3-formalized.

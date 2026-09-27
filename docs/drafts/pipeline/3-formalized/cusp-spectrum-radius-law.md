@@ -1,12 +1,16 @@
 # The Cusp–Spectrum Radius Law for the Selberg class
 
 - **ID:** cusp-spectrum-radius-law
-- **Stage:** 2-fully-proven (paper proof complete; independent of Selberg's conjectures)
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized (corrected statement; independent of Selberg's conjectures)
+- **Type:** THEOREM (paper + Lean)
 - **Source:** `../1-in-progress/selberg-orthogonality-working-log.md` §§13.1, 14.1, 23.1, 24.2, 25
-- **Statement:** the shift-lattice expansion of the degree-`d` theta function of `F ∈ S^♯` at any
-  base point has radius of convergence exactly the distance from that point to the rest of the
-  standard-twist spectrum; at the cusp this reads `d q^{−1/d}`.
+- **Statement (corrected 2026-09-27):** the shift-lattice expansion of the degree-`d` theta
+  function of `F ∈ S^♯` at the cusp represents `Φ_F − (singular part)` and has radius of convergence
+  exactly the cusp gap `Δ(0) = dist(0, Spec F) = d(m₀/q)^{1/d}` (`= d q^{−1/d}` when `a_F(1) = 1`),
+  at every base point `s`; for `ζ` the boundary law holds at every real base point with the gap
+  measured to the full singular set `ℤ`.  The original claim at every `α₀ ≥ 0` with the gap
+  measured to `Spec(F)` alone is false (Lean counterexample, §Correction); its corrected form is the
+  open conjecture `../0-backlog/standard-twist-boundary-radius-conjecture.md`.
 
 ## Statement
 
@@ -17,15 +21,26 @@ F_α(w)   := Σ_{n≥1} a_F(n) n^{−w} e(−α n^{1/d})       (the K–P standa
 Δ(α₀)    := dist( α₀ , Spec(F) \ {α₀} ) ,             Spec(F) = { d(m/q)^{1/d} : a_F(m) ≠ 0 }.
 ```
 
-> **Theorem.** For every `s ∈ C` off the exceptional lattice `{s*_ℓ + k/d}` and every `α₀ ≥ 0`,
+> **Theorem (cusp radius law; corrected, Lean).** Let `m₀` be the first index with `a_F(m₀) ≠ 0`,
+> so `Δ(0) = dist(0, Spec F) = d (m₀/q)^{1/d}`.  For **every** `s ∈ ℂ`,
 > ```
-> limsup_{k→∞} | F_{α₀}(s − k/d) / k! |^{1/k}  =  1 / ( 2π Δ(α₀) ) .
+> limsup_{k→∞} | F(s − k/d) / k! |^{1/k}  =  1 / ( 2π Δ(0) ) ,
 > ```
-> Equivalently, `Φ_F(s, −α₀+ζ) − (explicit singular part at α₀) = Σ_{k≥0} ((2πiζ)^k/k!) F_{α₀}(s−k/d)`
-> with radius of convergence exactly `Δ(α₀)`.
+> and for `s ∉ 1 + ℕ/d`, `ζ ∈ H`, `|ζ| < Δ(0)`,
+> ```
+> Φ_F(s, ζ) − P_F(s, ζ) = Σ_{k≥0} ((2πiζ)^k/k!) F(s−k/d),
+> ```
+> with radius of convergence exactly `Δ(0)`; `P_F(s,ζ)` is the residue at `u₀ = d(1−s)` of
+> `(−2πiζ)^{−u} Γ(u) F(s+u/d)`, analytic in `ζ` on `H` (zero when `F` is entire).
+> With `a_F(1) = 1` the constant is `q^{1/d}/(2πd)`.
 >
-> **Cusp case.** Since `a_F(1) = 1`, `Δ(0) = min Spec(F) = d q^{−1/d}`, so
-> `limsup_k |F(s−k/d)/k!|^{1/k} = q^{1/d}/(2πd)`.
+> **Degree one, every boundary base point (Lean).** For `F = ζ` and every `α₀ ∈ ℝ`, `s ∉ ℕ`:
+> `limsup_k |F_{α₀}(s−k)/k!|^{1/k} = 1/(2π dist(α₀, ℤ \ {α₀}))` — the gap is measured to the full
+> singular set of the twist family, which contains `0`.
+>
+> **Original claim (refuted).** "For every `α₀ ≥ 0`, `limsup_k |F_{α₀}(s−k/d)/k!|^{1/k} =
+> 1/(2π dist(α₀, Spec(F) \ {α₀}))`" is false: for `ζ` and `0 < α₀ < 1/2` the left side is
+> `1/(2πα₀)` and the right side `1/(2π(1−α₀))`.
 
 ## Proof
 
@@ -1177,3 +1192,136 @@ into `RHTower` without building that umbrella.
 This closes every representational premise in the card's independent general-rank radius law.  It
 does not supply the external Kaczorowski--Perelli standard-twist boundary continuation and
 nonzero-residue theorem, so the card remains at Stage 2.
+
+## Correction — the boxed theorem is false off the spectrum (2026-09-27)
+
+**The boxed statement, read literally, is false.**  For `F = ζ` (`d = q = 1`, `Spec(ζ) = {1,2,3,…}`)
+and every base point `0 < α₀ < 1/2`, the growth constant of `F_{α₀}(s−k)/k!` is `1/(2π α₀)`, not
+`1/(2π Δ(α₀)) = 1/(2π(1 − α₀))`.  Lean certificate, `RHTower/ZetaTwistOffSpectrumGap.lean`:
+
+```text
+infDist_shiftSpectrum_oneCoeff                 dist(α, Spec(ζ) \ {α}) = 1 − α   for α < 1
+twistGap_neg_of_lt_half                        the true gap at −α is α            for 0 < α < 1/2
+zetaTwist_growth_ne_shiftSpectrumGap           the boxed law fails at every 0 < α₀ < 1/2, every s₀ ∉ ℕ
+zetaTwist_growth_ne_shiftSpectrumGap_tenth     the instance α₀ = 1/10, s₀ = 1/2: 5/π ≠ 5/(9π)
+```
+
+The left side is the corpus's unconditional `hadamardLimsup_zetaTwistShift`; the right side is the
+card's own `Δ`.  All four declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+*Where the proof breaks.*  Step 2 lists as singular only the boundary points `−α` with
+`α ∈ Spec(F)`.  Two further kinds of singular shift exist:
+
+1. `α = 0` whenever `F` has a pole at `s = 1`: then `F_0 = F` is not entire, and `Φ_F(s,·)` is
+   singular at `z = 0` (for `ζ`, `Li_s(e^{2πiz})` has its branch point there).  `Spec(F)` omits `0`.
+2. `α = −β`, `β ∈ Spec(F)`: `F_{−β}(s) = conj(F̄_β(s̄))` and `Spec(F̄) = Spec(F)`, so the reflected
+   spectrum is singular as well.
+
+So the gap must be measured to the full singular set
+`Sing(F) = {α ∈ ℝ : F_α is not entire} ⊇ Spec(F) ∪ (−Spec(F)) ∪ {0 if F has a pole}`.  For `ζ` this
+is exactly the corpus theorem `hadamardLimsup_zetaTwistShift_eq_infDist` (singular set `ℤ`).
+
+A second gap: the radius of a Taylor expansion at `−α₀` is the distance to the nearest singularity
+of the continuation *anywhere in `ℂ`*, including the lower half plane, where `Φ_F(s,·)` is not given
+by its series.  Step 2 controls only real boundary points.  In degree two the Voronoi transform of
+`ζ²` already exhibits nonreal singular points (`z = −2i√n`, from the `K_0` kernel); they are not the
+nearest ones there, but no argument excludes nearer nonreal singularities in general degree.  The
+boundary law for general `α₀ ≠ 0` and `d ≥ 2` is therefore an open conjecture, not a theorem; it is
+moved to its own card.
+
+**Positive survivor — the cusp law holds at every base point, for every class member.**  At
+`α₀ = 0` the boxed law is true, and unconditionally so.  New modules:
+
+```text
+HTGeometry/ShiftSpectrumFirstIndex.lean
+  tendsto_cpow_mul_LSeries_of_re_atTop        m^w L(f,w) → f(m) when f vanishes below m, Re w → ∞
+  infDist_zero_shiftSpectrum_of_first         dist(0, Spec) = d (m/q)^{1/d} at the first index m
+RHTower/SelbergCuspGrowthEveryBasePoint.lean
+  ExtendedSelbergClass.firstIndex             m₀ = first n with a(n) ≠ 0
+  ExtendedSelbergClass.value_eq_asymmetric_of_farLeft
+                                              the asymmetric FE pointwise far to the left, including
+                                              at trivial zeros (continuity from nonreal points)
+  SelbergGammaData.exists_asymmetricS_shift_ne_zero
+                                              the sine factor is nonzero among 2r+1 lattice points:
+                                              zeros of the j-th factor are spaced d/λ_j, Σ λ_j/d = 1/2
+  SelbergGammaData.exists_frequently_le_norm_asymmetricS_shift_everywhere
+  ExtendedSelbergClass.tendsto_norm_reflection_shift_rpow_inv      reflected root → m₀^{-1/d}
+  ExtendedSelbergClass.limsup_norm_shift_rpow_inv_firstIndex
+  ExtendedSelbergClass.cuspGrowthLaw
+      ∀ F ∈ S^♯, d > 0, ∀ s₀ ∈ ℂ:  limsup_k (‖F(s₀−k/d)‖/k!)^{1/k} = 1/(2π dist(0, Spec F))
+  SelbergClass.cuspGrowthLaw                  a_F(1) = 1:  = q^{1/d}/(2πd)
+```
+
+This removes every premise of the earlier Step-3 theorems (height above the Gamma tail, `a_F(1) ≠ 0`,
+nonvanishing of the sine factor at the base point): there is no exceptional set of base points at
+all, and `a_F(1) = 0` is allowed (the gap is then `d(m₀/q)^{1/d}`, still the distance from the cusp
+to the spectrum).  Remaining for this card: the cusp expansion identity
+`Φ_F(s,ζ) − P_F(s,ζ) = Σ_k (2πiζ)^k F(s−k/d)/k!` on `H ∩ {|ζ| < Δ(0)}` (Step 1 at the cusp, by
+Mellin–Barnes), then the card is restated to the proved cusp law plus the degree-one boundary law
+with the corrected gap.
+
+## Lean progress — the cusp expansion is formal; Stage 3 (2026-09-27)
+
+Step 1 at the cusp — the Mellin–Barnes expansion with its singular part — is now a Lean theorem for
+every class member, completing the corrected card.  New leaves:
+
+```text
+HTGeometry/GammaHalfIntegerLineBound.lean
+  Real.Gamma_nat_add_three_halves      Γ(K+3/2) = √π ∏_{j≤K}(j+1/2)
+  norm_Gamma_neg_half_line_le(_exp)    ‖Γ(−K−1/2+it)‖ ≤ π√2 e^{−π|t|/2}/Γ(K+3/2), uniformly in K
+  norm_Gamma_le_Gamma_re_div           ‖Γ(z)‖ ≤ Γ(Re z)/(1 + (Im z)²/(Re z+1)²)
+  integral_inv_one_add_affine_sq       ∫ (1 + (a+bt)²/B²)^{-1} dt = πB/|b|
+HTGeometry/FinitePoleVerticalContourShift.lean
+  verticalIntegral_sub_eq_sum_laurentCoeff_of_horizontal_tendsto_seq
+                                       vertical contour shift across finitely many poles of any order
+  laurentCoeff_neg_one_of_eq_div       residue of G(z)/(z−p) is G(p)
+RHTower/SelbergStripPolynomialGrowth.lean
+  ExtendedSelbergClass.exists_polynomial_bound_strip
+                                       ‖F(w)‖ ≤ C |Im w|^N on every vertical strip (Phragmén–Lindelöf
+                                       against finite order; the FE edge bound cancels the sine growth)
+RHTower/SelbergThetaMellinBarnes.lean
+  ExtendedSelbergClass.theta_imag_eq_mellinBarnes
+                                       Φ_F(s, iy) = (1/2π) ∫ (2πy)^{-(c+it)} Γ(c+it) F(s+(c+it)/d) dt
+RHTower/SelbergCuspMellinResidues.lean
+  ExtendedSelbergClass.laurentCoeff_cuspMellinIntegrand_neg_nat
+                                       residue at u = −k is x^k (−1)^k/k! F(s−k/d)
+  ExtendedSelbergClass.cuspPolarPart, analyticOnNhd_cuspPolarPart
+                                       the singular part, analytic on H (Leibniz on the clearing shift)
+RHTower/SelbergCuspMellinEstimates.lean
+  integrable_cuspMellinIntegrand_right, tendsto_hIntegral_cuspMellinIntegrand
+RHTower/SelbergCuspLeftLineDecay.lean
+  eventually_norm_cuspMellinIntegrand_left_le, eventually_integrable_norm_integral_left_le
+  tendsto_integral_cuspMellinIntegrand_left
+                                       the far-left integrals → 0 for y < Δ(0): their K-th roots
+                                       tend to y/Δ(0)
+RHTower/SelbergCuspExpansion.lean
+  ExtendedSelbergClass.hadamardLimsup_shift        growth functional = 1/(2πΔ(0)), extended reals
+  ExtendedSelbergClass.radius_cuspExpansion        radius of Σ (2πiζ)^k F(s−k/d)/k! is exactly Δ(0)
+  ExtendedSelbergClass.hasSum_cuspExpansion_imag   the expansion on the imaginary axis
+  ExtendedSelbergClass.hasSum_cuspExpansion        the expansion on H ∩ {|ζ| < Δ(0)}
+```
+
+| Corrected card item | Lean |
+|---|---|
+| cusp growth law, every `s`, every `F ∈ S^♯` | `ExtendedSelbergClass.cuspGrowthLaw`, `hadamardLimsup_shift` |
+| cusp constant `q^{1/d}/(2πd)` for the Selberg class | `SelbergClass.cuspGrowthLaw` |
+| expansion `Φ_F − P_F = Σ (2πiζ)^k F(s−k/d)/k!` at the cusp | `ExtendedSelbergClass.hasSum_cuspExpansion` |
+| radius exactly `Δ(0)` | `ExtendedSelbergClass.radius_cuspExpansion` |
+| singular part analytic | `ExtendedSelbergClass.analyticOnNhd_cuspPolarPart` |
+| degree one, every boundary base point, corrected gap | `hadamardLimsup_zetaTwistShift_eq_infDist` |
+| the original general law is false | `zetaTwist_growth_ne_shiftSpectrumGap(_tenth)` |
+| interior law, Verifications arithmetic, Consequences arithmetic, jump lemma | earlier tables above |
+
+The "Consequences" that rest on the boundary law at spectral points (`Δ(α_m) → 0` forcing the
+far-left growth of `F_{α_m}` to blow up) are statements about the refuted/open general law; their
+arithmetic halves are formal (`tendsto_shiftSpectrumGap_nhds_zero`,
+`tendsto_degreeOneLatticeRoot_atTop`), their analytic halves move with the conjecture card.
+
+All 114 declarations of the eleven new leaves audit to `[propext, Classical.choice, Quot.sound]`
+(or fewer); each leaf passes `lake env lean` with no messages and a targeted `lake build --old`, and
+all are wired into `HTGeometry`/`RHTower`.  No `sorry`, no axioms, no heartbeat options.
+
+- 2026-09-27 -- boxed general law refuted in Lean; cusp law proved for every base point and every
+  class member; cusp expansion with singular part and exact radius proved; card restated and moved
+  to `3-formalized`; corrected general boundary law opened as
+  `0-backlog/standard-twist-boundary-radius-conjecture.md`.
