@@ -14,7 +14,7 @@ every `0 ≤ δ < 1`,
 `‖S_N‖_δ ≤ C_δ N^((1-δ)/2) E(N)`   for all large `N`.
 -/
 
-open Filter Finset
+open Filter Topology Finset
 open scoped ArithmeticFunction.Moebius
 
 noncomputable section
@@ -96,6 +96,36 @@ theorem mertensSaving_ge {η : ℝ} (hη : 0 < η) :
   have : K⁻¹ * (N ^ η)⁻¹ * (K * N ^ η) = 1 := by field_simp
   have hE := mertensSaving_pos N
   nlinarith [mul_pos (inv_pos.mpr hK) (inv_pos.mpr hNpos)]
+
+/-- `E` is nonincreasing on `[1, ∞)`. -/
+theorem mertensSaving_antitone {x y : ℝ} (hx : 1 ≤ x) (hxy : x ≤ y) :
+    mertensSaving y ≤ mertensSaving x := by
+  unfold mertensSaving deningerMertensSaving
+  apply Real.exp_le_exp.mpr
+  have h0 : 0 ≤ Real.log x := Real.log_nonneg hx
+  have h1 : Real.log x ≤ Real.log y := Real.log_le_log (by linarith) hxy
+  have := Real.rpow_le_rpow h0 h1 (by norm_num : (0 : ℝ) ≤ 1 / 3)
+  linarith
+
+/-- `E(R) log R → 0`. -/
+theorem tendsto_mertensSaving_mul_log :
+    Tendsto (fun R => mertensSaving R * Real.log R) atTop (𝓝 0) := by
+  have hg : Tendsto (fun u : ℝ => 108 ^ 3 * ((u / 108) ^ 3 * Real.exp (-(u / 108)))) atTop (𝓝 0) := by
+    have h := (Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 3).comp
+      (tendsto_id.atTop_div_const (by norm_num : (0 : ℝ) < 108))
+    have := h.const_mul (108 ^ 3)
+    rw [mul_zero] at this
+    exact this
+  have hu : Tendsto (fun R : ℝ => Real.log R ^ ((1 : ℝ) / 3)) atTop atTop :=
+    (tendsto_rpow_atTop (by norm_num)).comp Real.tendsto_log_atTop
+  refine (hg.comp hu).congr' ?_
+  filter_upwards [eventually_gt_atTop (1 : ℝ)] with R hR
+  have hl : 0 ≤ Real.log R := Real.log_nonneg hR.le
+  simp only [Function.comp_apply, mertensSaving, deningerMertensSaving]
+  have hc : (Real.log R ^ ((1 : ℝ) / 3)) ^ 3 = Real.log R := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hl]; norm_num
+  rw [div_pow, hc]
+  field_simp
 
 /-- `Σ_{n ≤ N} n^(-s) E(n) ≤ C N^(1-s) E(N)` for `0 < s < 1`. -/
 theorem sum_rpow_neg_mul_mertensSaving_le {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) :

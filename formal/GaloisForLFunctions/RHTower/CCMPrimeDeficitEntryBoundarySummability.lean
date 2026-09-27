@@ -28,9 +28,8 @@ theorem summable_abs_ccmPrimeDeficitEntryTransient_div :
   have hp : Summable (fun n : ℕ => ((n : ℝ) ^ 2)⁻¹) :=
     Real.summable_nat_pow_inv.mpr (by norm_num)
   have hm : Summable (fun n : ℕ => (Real.log n + 14) / (2 * (n : ℝ) ^ 2)) := by
-    convert (Sieve.summable_log_div_sq.mul_left (1 / 2 : ℝ)).add (hp.mul_left 7) using 1
-    ext n
-    ring
+    exact ((Sieve.summable_log_div_sq.mul_left (1 / 2 : ℝ)).add (hp.mul_left 7)).congr
+      (fun n => by ring)
   exact Summable.of_nonneg_of_le (fun n => by positivity)
     abs_ccmPrimeDeficitEntryTransient_div_le hm
 
@@ -38,7 +37,8 @@ theorem summable_ccmPrimeDeficitEntryTransient_div :
     Summable (fun n : ℕ => ccmPrimeDeficitEntryTransient n / n) := by
   apply Summable.of_norm_bounded summable_abs_ccmPrimeDeficitEntryTransient_div
   intro n
-  simp only [Real.norm_eq_abs, abs_div, abs_of_nonneg (Nat.cast_nonneg n), le_refl]
+  simp only [Real.norm_eq_abs, abs_div,
+    abs_of_nonneg (Nat.cast_nonneg n : (0 : ℝ) ≤ n), le_refl]
 
 theorem summable_ccmPrimeDeficitEntryTransient_at_entry_scale :
     Summable (fun n : ℕ => Real.exp (-(2 * Real.log n / 2)) *

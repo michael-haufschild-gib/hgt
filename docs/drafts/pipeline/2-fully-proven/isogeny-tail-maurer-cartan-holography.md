@@ -770,3 +770,57 @@ by Smith normal form over `ℤ` together with the deck-order count `card_ker_tor
 card's Stage-3 gate (items 1--5: quotient sheaves, positive-dimensional invariant generation, point
 separation, the Maurer--Cartan torsor on the infinite-jet function field, and the finite-action
 quotient presentation) is untouched by this entry and still stands.
+
+## Lean plan — order-zero reduction of Theorems A–D (2026-09-27)
+
+**Reduction.**  With invariant 1-forms `ω_1,…,ω_d` of `F = C(G)` (an `F`-basis of `Ω_{F/C}`, fixed
+by every translation) put `ℓ_i = D̃(ω_i) ∈ K`, where `D̃ : Ω_{F/C} → K` is induced by the derivation
+of `K` restricted to `F`.  Then
+
+* `D(t) ∈ F(ℓ)` for every `t ∈ F`, so inductively `K = F(ℓ^{(k)} : k ≥ 0)`, and the `ℓ^{(k)}`
+  are algebraically independent over `F` (count: `K = F(jets)` has the same size);
+* every translation fixes each `ℓ^{(k)}`, and `α*` acts on `span_C{ℓ_i}` by the invertible
+  differential `dα`;
+* for any group `Γ` of automorphisms of `F` acting trivially on algebraically independent
+  variables `y`, `F(y)^Γ = F^Γ(y)`.
+
+Hence `K^{H(C)} = F^{H(C)}(ℓ^{(≥0)}) = F^{H(C)}⟨ℓ⟩` (Theorem B, with the position field
+`F^{H(C)} = C(G/H)`), `α^{n*}K = (α^{n*}F)(ℓ^{(≥0)})` and `K^{Γ_n} = F^{Γ_n}(ℓ^{(≥0)})`, so
+Theorem A reduces to the order-zero statements
+
+1. `α^{n*} F = F^{Γ_n}` (the isogeny is the quotient by its kernel, at function-field level);
+2. `F^{Γ_∞} = F^{H(C)}` (stabilizers of rational functions are Zariski closed).
+
+The DCF quotient theorem is not needed.  Corollary C: `F^{G(C)} = C` and the independence of the
+`ℓ`-jets; Corollary D: fixed fields commute with intersections (already Lean).
+
+**Modules to build** (scheme-theoretic, `G : Over (Spec C)` with `GrpObj`, `IsCommMonObj`,
+integral, finite type):
+
+* S1 function-field pullback along dominant morphisms of integral schemes;
+* S2 points `G(C)`, translation action on `F`, faithfulness;
+* S3 the free differential field `K` on a finitely generated separable `F/C` and the extension of
+  `C`-endomorphisms of `F` to differential endomorphisms of `K`;
+* S4 invariant differentials: an `F`-basis of `Ω_{F/C}` of translation-invariant forms;
+* S5 isogenies: `α^{n*}F = F^{Γ_n}`;
+* S6 Zariski closure `H` and closedness of stabilizers;
+* S7 assembly of A–D, and `α*(F^{H(C)}) = F^{H(C)}`.
+
+### Functor-of-points Maurer–Cartan (2026-09-27)
+
+No invariant differential forms are needed.  For a differential field `(L, δ)` over `C` put
+`T(L) = ker(G(L[ε]) → G(L))` (based first-order jets, an `L`-vector space: `L`-scaling by
+`ε ↦ cε`, addition = group law) and
+
+`ℓ(x) = G(ψ_δ)(x) · G(ι)(x)⁻¹ ∈ T(L)`,  `ψ_δ(a) = a + ε δa`, `ι(a) = a`,
+
+a homomorphism `G(L) → T(L)` (functoriality of points), natural in differential maps, with kernel
+`G(L^δ)` (`ℓ(x) = 0` iff `δ` kills the stalk map of `x`).  With `ℓ(g) = Σ ℓ_i e_i`
+(`e_i` a basis of `T(C)`), the first-order expansion of `f(y·g)` in the based jet `y` gives
+`δf = Σ ℓ_i ∂_i f`, `∂_i f ∈ F` (additivity by the `L[ε₁,ε₂]` trick, `L`-linearity by
+`ε ↦ cε`).  Hence `K = F(ℓ^{(≥0)})`.
+
+**Theorem A, level `n`, without degree theory.**  `E = α^{n*}K ∋ ℓ_i` (since `α*` acts on
+`ℓ` by the invertible `dα`, invertibility by transcendence counting).  For each `E`-embedding
+`σ : K → N` (`N = K̄`, constants `C`), `h_σ = σ_*g · g⁻¹` has `ℓ(h_σ) = 0` and `α^n(h_σ) = e`,
+so `h_σ ∈ Γ_n`; `σ ↦ h_σ` is injective, so `[K : E] ≤ |Γ_n|` and Artin gives `E = K^{Γ_n}`.

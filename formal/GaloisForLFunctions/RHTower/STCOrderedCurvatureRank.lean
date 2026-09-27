@@ -254,12 +254,12 @@ private theorem tendsto_log_ratio_zero {P Q : ℕ → ℕ} (hP : ∀ k, 0 < P k)
     rw [Real.log_mul (by positivity) hPk.ne'] at this
     linarith
 
-/-- **Unbounded ordered rank.** For every `g ≠ 0`, every even `n` and every threshold `N`,
-there are `n` increasing primes above `N` whose ordered curvature matrix has full rank `n`. -/
-theorem exists_prime_packet_orderedStokesMatrix_rank {g : ℝ} (hg : g ≠ 0) {n : ℕ}
+/-- **Nonsingular ordered packets.** For every `g ≠ 0`, every even `n` and every threshold `N`,
+there are `n` increasing primes above `N` whose ordered curvature matrix is nonsingular. -/
+theorem exists_prime_packet_orderedStokesMatrix_det_ne_zero {g : ℝ} (hg : g ≠ 0) {n : ℕ}
     (hn : Even n) (N : ℕ) :
     ∃ p : Fin n → ℕ, StrictMono p ∧ (∀ i, (p i).Prime) ∧ (∀ i, N < p i) ∧
-      (orderedStokesMatrix p g).rank = n := by
+      (orderedStokesMatrix p g).det ≠ 0 := by
   have hpk : ∀ k : ℕ, ∃ P : ℕ → ℕ, StrictMono P ∧ (∀ i, (P i).Prime) ∧
       ((max N k : ℕ) : ℝ) < P 0 ∧ ∀ i ≤ n, (P i : ℝ) < (1 + 1 / ((k : ℝ) + 1)) * P 0 :=
     fun k => exists_prime_packet (by positivity) n _
@@ -310,18 +310,20 @@ theorem exists_prime_packet_orderedStokesMatrix_rank {g : ℝ} (hg : g ≠ 0) {n
   · have h0 : (N : ℝ) < P K 0 := lt_of_le_of_lt (by exact_mod_cast le_max_left N K) (hbig K)
     have : P K 0 ≤ P K i := (hmono K).monotone (Nat.zero_le _)
     exact lt_of_lt_of_le (by exact_mod_cast h0) this
-  · have hc : (-4 * Real.sinh (g * Real.log (P K 0)))⁻¹ ≠ 0 := by
-      apply inv_ne_zero
-      apply mul_ne_zero (by norm_num)
-      rw [Real.sinh_ne_zero]
-      exact mul_ne_zero hg hLK.ne'
-    have hunit : IsUnit (orderedStokesMatrix (fun i : Fin n => P K i) g).det := by
-      rw [isUnit_iff_ne_zero]
-      intro h0
-      apply hdetK
-      simp only [M, Matrix.det_smul, h0, mul_zero]
-    have := Matrix.rank_of_isUnit _ ((Matrix.isUnit_iff_isUnit_det _).mpr hunit)
-    simpa using this
+  · intro h0
+    apply hdetK
+    simp only [M, Matrix.det_smul, h0, mul_zero]
+
+/-- **Unbounded ordered rank.** For every `g ≠ 0`, every even `n` and every threshold `N`,
+there are `n` increasing primes above `N` whose ordered curvature matrix has full rank `n`. -/
+theorem exists_prime_packet_orderedStokesMatrix_rank {g : ℝ} (hg : g ≠ 0) {n : ℕ}
+    (hn : Even n) (N : ℕ) :
+    ∃ p : Fin n → ℕ, StrictMono p ∧ (∀ i, (p i).Prime) ∧ (∀ i, N < p i) ∧
+      (orderedStokesMatrix p g).rank = n := by
+  obtain ⟨p, hmono, hprime, hN, hdet⟩ := exists_prime_packet_orderedStokesMatrix_det_ne_zero hg hn N
+  refine ⟨p, hmono, hprime, hN, ?_⟩
+  have := Matrix.rank_of_isUnit _ ((Matrix.isUnit_iff_isUnit_det _).mpr (isUnit_iff_ne_zero.mpr hdet))
+  simpa using this
 
 /-- **No fixed finite alternating channel representation.** At a nonzero grade the ordered
 curvature is not the matrix of an alternating bilinear form on a fixed `k`-dimensional channel

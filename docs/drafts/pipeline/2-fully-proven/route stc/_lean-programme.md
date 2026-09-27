@@ -13,7 +13,7 @@ append a Log line, add `<card>-formalized.md` certificate (module + table card i
 | Layer | Content | Module | Status |
 |-|-|-|-|
 | P1 prime windows | `prime_between` iterated: n primes in `(P,(1+ε)^n P]`, cofinal; prime triples with `q/p→e^d`, `r/q→e^e` | `STCPrimeWindowPackets` | done |
-| P2 prime ℓ² matrices | column-not-ℓ² ⇒ no bounded operator; rank-one `P_x`; finite-rank ⇒ compact; HS kernels | search corpus (`DiagonalEllTwoOperator`, `HilbertSchmidtOperator`, `SoninCalkinNormBound`) | audit |
+| P2 ℓ² matrices | `HasLpMatrix`, column obstruction, matrix ⇒ operator uniqueness, `rankOne` matrix/compact, `lpWedge`, rank ≤ 2, transport | `HTGeometry.LpTwoMatrixOperators` (+ `isTraceClass_lpWedge_primes`) | done |
 | P3 prime-log-square pole | `F(v)=Σ(log p)²p^{-1-v} = v^{-2}+O(1)`, complex version near 0 in `Re>0` | `PrimeLogPowZetaAbelPole`, `STCPrimeHeightFiberAbel` | audit |
 | P4 Laplace/exponential density | exponentials dense in `L²((0,∞),t dt)`; Laplace continuity | search corpus | audit |
 | P5 hyperbolic sinc kernel | `S(g(x-y)/2) = (1/a)∫ e^{u(x-y)}`, Andréief, exp-Vandermonde sign, inertia | `Zeta5AndreiefTransfer`, `NavierStokesRealExponentialVandermonde` | audit |
@@ -27,11 +27,11 @@ append a Log line, add `<card>-formalized.md` certificate (module + table card i
 | all-prime-gamma-stokes-pair-bridge | `DeningerGammaAllPrimeStokesPairBridge` | (5) all ordered quadruples, no rank-one calibration, `K/(BB)=n log(q/p)/4`, inf = 0 (PNT), rank ≤2/≤4 packets, no scalar×rescaling identification (needs ordered-rank) | done → 3-formalized |
 | cofinal-triangle-holonomy-all-grades | — | (1) limit, (2a) rational normal form, (5) correction lower bound, non-Hilbert divergence | done → 3-formalized |
 | ordered-curvature-unbounded-rank | four-channel identity | rank ≤4 symmetric, rank n ordered via P1 + det continuity, S_n invertible, fixed-k no-go | done → 3-formalized |
-| hyperbolic-gap-flat-completion | `HyperbolicGapFlatCompletion` (core) | continuous rigidity (3)-(4), prime-only rigidity via P1, source specialization (2), complex seam (5), domain classification (6), half-density ℓ² | todo |
-| hyperbolic-gap-krein-signature | two-point case | general inertia (P5), measure version, finite-channel repair | todo |
-| flat-gap-exterior-spectral-reader | abstract no-go | (1),(2),(4)-(6), nonclosability, compact-measure and Gaussian carrier no-go, transport current | todo |
-| gamma-prime-hilbert-chamber | — | chamber equivalence, compactness, scalar strong limit, Stokes wall `u>2|g|`, ordered kernel HS | todo |
-| prime-height-commutator-calkin-ghost | source identity | ghost operator X on ℓ²(P) | todo |
+| hyperbolic-gap-flat-completion | `HyperbolicGapFlatCompletion` (core) | continuous rigidity (3)-(4), prime-only rigidity via P1, source specialization (2), complex seam (5), domain classification (6), half-density ℓ² | done → 3-formalized |
+| hyperbolic-gap-krein-signature | two-point case | general inertia (P5), measure version, finite-channel repair | done → 3-formalized |
+| flat-gap-exterior-spectral-reader | abstract no-go | (1),(2),(4)-(6), nonclosability, compact-measure and Gaussian carrier no-go, transport current | done → 3-formalized |
+| gamma-prime-hilbert-chamber | — | chamber equivalence, compactness, scalar strong limit, Stokes wall `u>2|g|`, ordered kernel HS | done → 3-formalized |
+| prime-height-commutator-calkin-ghost | source identity | ghost operator X on ℓ²(P) | done → 3-formalized |
 | prime-square-positivity-wall | `F=-Q'` | Laurent (1), negativity, kernel not PSD | done → 3-formalized |
 | source-work-grade-duality | involution + factorization | strict monotone E, no Φ, edge limits, (5),(6), (7) slope and branch uniqueness | done → 3-formalized |
 | euler-prime-boundary-tangent-space | Gram limit | S(v)=v⁻²+O(1), (2), density, weak null, Gamma-law limit, (5)-(7), fixed grade | todo |
@@ -48,3 +48,8 @@ append a Log line, add `<card>-formalized.md` certificate (module + table card i
 - 2026-09-27: P1 layer + four cards closed (modules `STCPrimeWindowPackets`, `STCCofinalTriangleHolonomy`, `STCOrderedCurvatureRank`, `STCGammaPairCalibrationGeometry`; public additions to `RouteRCrossPrimeStokesFourChannelObstruction`).
 - 2026-09-27: prime-square-positivity-wall closed (`STCPrimeSquarePositivityWall`).
 - 2026-09-27: source-work-grade-duality closed (`STCSourceWorkSeamEnergy`).
+- 2026-09-27: P2 layer `LpTwoMatrixOperators`; hyperbolic-gap-flat-completion closed (`STCHyperbolicGapFlatCompletionSource`).
+- 2026-09-27: prime-height-commutator-calkin-ghost closed (`STCPrimeHeightCalkinGhost`).
+- 2026-09-27: gamma-prime-hilbert-chamber closed (`STCGammaPrimeHilbertChamber`, `STCGammaPrimeWallScaling`); P2 gained `tendsto_inner_lp_of_coord`, `finrank_range_le_card`; `STCOrderedCurvatureRank` gained the det version.
+- 2026-09-27: flat-gap-exterior-spectral-reader closed (STCFlatGapSpectralBand, STCFlatGapMeasureReaderNoGo); moved to stage 3.
+- 2026-09-27: hyperbolic-gap-krein-signature closed (HTGeometry.ExponentialKernelAlternatingInertia, STCHyperbolicGapKreinSignature); moved to stage 3.

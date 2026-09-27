@@ -651,3 +651,100 @@ Next conjectures to test:
   - Each node pair contributes exactly `−(m+m')`. The on-line and shallow zeros are killed by `Ξ`, the far zeros are damped by `Ŵ^N`, and the truncation tail is `exp(−πe^{2a−3/4})`.
   - Only `|Ψω|` on the rectangle sides enters (`HTGeometry.sum_nodalWeight_inside_eq_rectangleIntegral`). The side selection by forward differences costs `(δ/16e)^{|S|}`, independent of cluster geometry.
 - **Analytic input still needed.** A lower bound for `|Ξ/P_S|` on the rectangle sides: `≥ e^{−π|t|/4}T^{−C}·(side distance)^N`. This is Borel–Carathéodory on a disc with the zeros extracted (`HTGeometry.BallLogarithm`, `AnalyticBallFinsetFactorization`, the `ZetaLocalZeroCount` Jensen count).
+- **L32 result [L]: Nyquist exclusion for separated zeros.** Module `RHTower/HodgeNyquistExclusion` (781 lines), wired after `HodgeZetaFlatnessLaw`; built; axioms propext/choice/Quot.sound.
+  - Unconditional analytic lower bound.
+    - `abs_log_norm_sub_le`: `log|f|` is Lipschitz along segments where `f'/f` is bounded.
+    - Horizontal and vertical path bounds for `|ζ|`, from the corpus bound `|ζ'/ζ| ≪ log t/δ`.
+    - `exists_good_height`: pigeonhole choice of a height.
+    - `norm_leading_zeta_ge`: `|ζ^{(k)}(ρ₀)/k!| ≥ (1/3)exp(−C log(t₀+1)(16(N+1)/d+1))` at a `d`-separated zero with `β₀ > ½`. Proved by minimum modulus on the circle of radius `d/2`.
+  - Symmetry: `riemannXiHat_conj` (`Ξ(conj z) = conj Ξ(z)`), and `OffLinePairData.norm_u₁_eq` (the mirror node has the same order and leading modulus).
+  - **`hodgeIndex_excludes_separated_zero`** and **`hodgeIndex_nyquist_horizon`**. If Hodge(a) holds (`a ≥ 1`), every zero `ρ₀ = β₀+it₀` with `β₀ > ½`, `t₀ ≥ 8`, order `k`, separated by `d` from all other zeros (its mirror included), satisfies `πe^{2a−3/4} ≤ (π/2)t₀ + 2C log(t₀+1)(16(N+1)/d+1) + (3k+5)(a−3/8) + a/2 + log(9K·16^k(1+1/|β₀−½|)²(1+|γ₀|)²G_Φ(2k)/(β₀(1−β₀))²)`.
+- **Verdict (L32).** The conjecture holds for separated zeros. The level-`a` Hodge index for `ζ` excludes every off-line zero below `2e^{2a−3/4} − O(polylog/d)`. Depth enters only through `d ≤ 2(β₀−½)`, as `1/δ` in the polylog term.
+  - Remaining: super-tight clusters, meaning another zero within `O(log²t/e^{2a})`. These need the multi-node test.
+  - `multiResolvent_spec` (division by a finite divisor) is written and compiles in scratch (`formal/tmp/l31/D1.lean`), ready for that.
+- **Frontier consequence.** The HF horizon question (L25–L29, HF-F21/F23) is closed up to clusters. For `ζ`, Hodge(a) is RH up to height `≍ e^{2a}`, the Nyquist ceiling, which is exponentially beyond every previous exclusion horizon from finite-level positivity.
+
+### L34 — Producer classes of the 2025–26 literature, and the cluster-robust Nyquist exclusion (in progress)
+(Label L34 because L33 is taken by the parallel cycle.)
+- **External state, checked 2026-09-27.**
+  - CCM "Zeta spectral triples" (arXiv 2511.22755). If the lowest eigenvalue of `QW_λ` is simple with an even eigenvector, `ξ̂_λ` has only real zeros. They conjecture `ξ̂_λ → Ξ` on closed substrips of `|Im z|<½`, and Cor. 3.8 states `lim μ_λ = 0 ⇒ RH`.
+  - Connes (arXiv 2511.23257): real zeros for the ground state of any lower-bounded convolution form (continuous Carathéodory–Fejér).
+  - arXiv 2605.20224: numerics only, "no claim of proof".
+  - arXiv 2608.24827: empirical decay `−ln λ_min ≈ 2π²N(T*)/ln N(T*)`, `T* = 2πe^{2L}`.
+  - Suzuki (arXiv 2606.09096): screw-function operator framework, conjectural limit operator.
+  - No finite-level exclusion theorem anywhere.
+- **Producer classes tried first (kills).**
+  1. *Level increment* (`Hodge(a) ⇒ Hodge(a+δ)` from primes in `(e^{2a}, e^{2a+2δ}]`).
+     - For fixed ζ the implication is content-free unless RH fails. For free weights on the new primes it is false, because the admissible weights form a convex set with `Λ` at its boundary (exact-primes gate). CIRCULAR.
+  2. *Hurwitz producer through a PSD convolution form* `B_ν(f) = ∫|f̂|²dν`, with `ν ≥ 0` supported on the real zeros of `Ξ`.
+     - Such a form is PSD with no hypothesis, and `Φ` lies in its radical. But `D_{γ₀}D_{γ̄₀}Φ` (off-line pair divided out) also lies in its radical, and its truncation tail is smaller by `(t₀/2πe^{2a})²`.
+     - So ground states can converge to `Ξ` with its off-line zeros removed. A real-rooted limit carries no information. Only the indefinite (hyperbolic) part of the Weil form sees off-line zeros. BLIND.
+  3. *Fake continuation / Beurling extension* (primes beyond `e^{2a}` replaced by a system with a positive Weil distribution).
+     - Continuing by `Π' = li` gives an entire zero-free `ζ'`. Its symbol is the truncated explicit-formula symbol `A − D_X + pole`, so positivity in the Fejér–Riesz cone is `Hodge(a)` itself. Duality: `Hodge(a) ⟺ ∃ ν ≥ 0` with `ν̂ = W` on `(−2a,2a)`. CIRCULAR.
+  4. *Predictability of primes by the canonical (Krein) extension.*
+     - Under RH the zero set is eventually denser than Nyquist. It is then a sampling, non-interpolating set for `PW_a`, so `PW_a` is not dense in `L²(Z)` and the extension problem is indeterminate.
+     - The primes beyond `e^{2a}` are one of infinitely many admissible continuations. FALSE.
+  5. *Grönwall barrier at `μ(a)=0`.* For Toeplitz/Krein systems, a singular PSD section extends PSD only through the canonical next moment, so zero is not a barrier. FALSE.
+  6. *Lee–Yang torus realization.*
+     - The Kurasov–Sarnak construction needs a reflector that is a product of torus variables (conductor `Π p`). The Γ-phase `θ(t)` is not almost periodic.
+     - Its local linearization at height `T` is the Riemann–Siegel reflector `(T/2π)^{it}`, and the resulting Hermite–Biehler condition is Gram's law, which fails. FALSE.
+  - Positive statement common to 2 and 4: at finite level, only the hyperbolic off-line blocks separate `ζ` from its RH shadow. Whatever a producer certifies at level `a`, it certifies RH to the height where the hyperbolic blocks are visible. That height is the object of the conjecture below.
+- **Conjecture (cluster-robust Nyquist exclusion).** For `ζ`, `Hodge(a)` excludes every zero with `β₀ > ½` below height `2e^{2a−c} − C·n·(log(1/(β₀−½)) + log n + log t₀) − C·log²t₀`, where `n` is the number of zeros in the ordinate window of width 4. Internal cluster distances do not enter.
+- **Mechanism.**
+  - Divide `Ξ` by the whole node divisor `P_S`, where `S` is every zero of depth `> y₀` in the window. At the kernel level this is the composite resolvent `D_SΦ`, which keeps `Φ`'s double-exponential tail uniformly in the geometry.
+  - Multiply by an exponential polynomial `q(z) = Σ c_k e^{iks z}`, i.e. a shift operator with `(n−1)s ≤ 1/8`, chosen to interpolate `±i/(P_pol·Ξ/P_S)` at the nodes. Every node then contributes `−m_σ`; every other zero is killed by `Ξ`, and the polar points by `P_pol`.
+  - The size of `q` on `ℝ` comes from a rectangle contour in the `z`-plane with exponential nodal weight `Ω(e^{ist})`. Only `|Ω|` and `|Ξ/P_S|` on the rectangle sides enter.
+  - Forward-difference side selection costs `(δ/8e)^{|V|}`. The Fourier coefficients of `q` are bounded by `sup_ℝ|q|`.
+  - The lower bound for `|Ξ/P_S|` on the sides comes from Lipschitz continuity of `log|ζ/P_V|` with constant `C log t`, where `P_V` is the window divisor. The only input is `ζ'/ζ − Σ_{near} 1/(s−ρ) = O(log t)`.
+- **Kill attempts.**
+  - *False?* The two-node law (L31) and L32 hold. Super-tight clusters make the two-node block small, but here they are nodes, and `Ξ/P_S` is zero-free on the rectangle. No counterexample shape remains, since `ζ`'s configuration is fixed.
+  - *Circular?* No. The inputs are the radical identity, the local zero count, and `ζ'/ζ` partial fractions.
+  - *Rediscovered?* CCM Cor. 3.8 is the limit statement (`lim μ=0 ⇒ RH`) with no height. Bombieri 2000 and Yoshida 1992 give no horizon, and L28's horizon is `exp(a/(2000A₀log(10⁶/δ)))`.
+  - *Insignificant?* It is a receiver. It closes three open items listed on the frontier map under HF ("multi-node cluster exclusion", "remove density/crowding masks", "uniform Nyquist constant"). It also fixes exactly what any producer at level `a` must certify: RH up to `≍ e^{2a}`.
+  - Verdict: SURVIVES PRELIMINARY ATTACK.
+
+### L34 — The finite-level inertia law: the negative squares of the level-`a` Hodge form of ζ are its off-line pairs between the visibility height and the archimedean horizon. TRUE [L]
+- **Conjecture (bold).** At every level `a` and threshold `ε`, the `ε`-negative index of the polar-constrained level-`a` Weil form of ζ is at most the number of off-line pairs below `exp(O(e^a + log 1/ε))`. It is at least the number of separated, isolated, visible pairs (minus the two polar constraints).
+  - This is a quantitative, level-wise form of Bombieri's count. His version holds only for large enough truncations and assumes finitely many off-line zeros.
+- **Literature audit.**
+  - Bombieri, "Remarks on Weil's quadratic functional I" (eudml 252338): the negative index of big truncations is half the number of off-line zeros, when that number is finite.
+  - arXiv 2607.02828 (finite Guinand–Weil dictionary, eigenvalue certification) and 2608.24827 (finite reduction on compact windows; certificates must resolve frequencies up to `2πe^{A_L}`) work on the symbol side and do not count zeros.
+  - No level-wise count with a horizon was found. Verdict: SURVIVES; BRIDGE (Bombieri + L33) with a new quantitative statement.
+- **Theorem** (`RHTower/ZetaWeilFiniteLevelInertia:zeta_weil_inertia_law`). Let `weilNegIndex Z a ε` be the largest dimension of a space of polar-constrained `C²` tests on `[−a,a]` with `Re W < −ε∫|f|²` off `0`. There is `A₀` such that:
+  - **(upper)** `weilNegIndex(a,ε) ≤ #{off-line pairs with |γ| ≤ H(A₀,a,ε)}`, where `log H ≤ 7000e^a + 7log A₀ + 7log(1/ε) + 150`. Each pair counts once whatever its multiplicity.
+  - **(lower)** Let `T` be a set of zeros of depth `≥ δ`, pairwise `2R` apart with `R ≥ 1`, isolated at radius `R`, and visible (`visibleMargin > 0`, roughly `log H_m ≲ e^{2δa}/poly(a)` and `R ≳ e^a`). Then `weilNegIndex(a,ε) ≥ |T| − 2` for `ε ≤ λ/(|T|(∫s²+1))`.
+- **Mechanism (upper, `ZetaWeilNegativeIndexHorizon`).**
+  - Node conditions: `f̂(x_ρ) = f̂(x̄_ρ)` at the off-line zeros below `H` imply `Re W ≥ −ε∫|f|²`.
+  - The L33 split is used with `b = εe^{−2E}/(8A₀)`. With the node condition, an off-line summand is `m|A|²Re q_b(x)²`, so its phase error is at most `2b²m|A|²`.
+  - That error is summed by a plain Bessel bound with the unconditional density `A₀log(H+4)`. The symbol side contributes `ε/8`, the phase `ε/3`, and the tail `ε/3`.
+  - One condition per pair (`x_{1−ρ̄} = x̄_ρ`) makes `f ↦ (f̂(x_ρ) − f̂(x̄_ρ))_ρ` injective on any `ε`-negative space.
+- **Mechanism (lower).**
+  - Tests: modulated sinh tests at the heights in `T`.
+  - Diagonal: the isolation inequality, with energy monotone in depth.
+  - Off-diagonal: decay `K/(1+Δ)²`, from `(1+d₁)²(1+d₂)² ≥ (1+Δ)²(1+min)²/4` and a new power-two window sum under the log count (`Σ log(1+|n|)/(1+|n|)² ≤ 12`, by a telescoping `(m+1)^{−3/2}` bound). Separation gives `Σ_{σ≠ρ} ≤ 10/R²`.
+  - The Gram expansion plus the Schur test finish the negativity bound. The polar constraints are handled by rank–nullity on `(ĥ(i/2), ĥ(−i/2))`. The threshold comes from `|Σc_ρf_ρ| ≤ |s|Σ|c_ρ|`.
+- **Route consequence (HF).**
+  - The obstruction to `Hodge(a)`, measured as a Krein negative index, is a finite count of off-line pairs.
+  - Every pair above `exp(O(e^a))` is invisible.
+  - Every isolated deep pair below `exp(e^{2δa−O(log a)})` is one negative square.
+  - The gray zone between these heights is exactly where masking can change the count.
+- **Modules.** `RHTower/ZetaWeilNegativeIndexHorizon` (upper, ~705 lines) and `RHTower/ZetaWeilFiniteLevelInertia` (lower + law, ~990 lines). Both are wired and built with `lake build --old`. Axioms: propext, Classical.choice, Quot.sound.
+
+### L35 — The near radical of the level-`a` Weil form has dimension `≍ e^{2a}` (in progress)
+- **Literature (checked 2026-09-27).**
+  - Connes–Consani, *Spectral triples and ζ-cycles* (arXiv 2106.01715, §3): QW_λ on `[λ⁻¹,λ]` has about `2λ²` "extremely small" eigenvalues, with eigenvectors close to `E(prolate)`. This is observed numerically and explained heuristically; there is no theorem.
+  - CCM, *Zeta spectral triples* (arXiv 2511.22755, §8): `ε_λ ≈ 1 − χ(λ) ~ e^{−4πλ²}`, numerical.
+  - Zhu (arXiv 2608.24827): Conj. 12.1, the fitted Landau–Widom law `−ln λ* ≈ C N(T*)/ln N(T*)`; Thm 1.3 is conditional on RH and bounds only `λ₁`.
+  - Corpus: L30 gives one vector with margin `exp(−πe^{2a−1/2}+12a)`.
+- **Conjecture (bold).** There are absolute constants `c, c' > 0` such that, for all large `a`, the polar-constrained `C²` tests on `[−a,a]` contain a subspace `V` with `dim V ≥ c e^{2a}` on which `|W(f,f)| ≤ exp(−c'e^{2a})∫|f|²`.
+  - By min–max, the `⌊c e^{2a}⌋` lowest eigenvalues of the level-`a` Hodge form are all at most `exp(−c'e^{2a})`, unconditionally.
+  - Sharp form [OPEN]: the count is `(2−O(η))e^{2a}` at margin `exp(−ηe^{2a})` (CC's prolate count). Polynomial multipliers can reach at most `(π/2)e^{2a}`.
+- **Mechanism.**
+  - The tests are `F_a = Σ_{k≤K} a_k Φ^{(k)}`, with transform `Q_a(−iz)Ξ(z)`, so they lie in the exact radical.
+  - On `u > 0`, `Φ^{(k)}(u) = Σ_{n≥1} e^{u/2} P_k(n²e^{2u}) e^{−πn²e^{2u}}`, where `P_k = D^k(4π²X²−6πX)` and `DR = R/2 + 2XR' − 2πXR`. So `F_a` is a weighted polynomial `R_a` in `Y = e^{2u}` of degree `≤ K+2`.
+  - Truncate with a cutoff `χ` (equal to 1 on `[−(a−1), a−1]`). The Weil energy is that of the tail `t = F(1−χ)`: `|W| ≤ (5/4)S_Z(∫(|t|+|t'|)e^{|u|/2})²`.
+  - **Tail** (`Y ≥ Y₀ = e^{2a−2}`): Lagrange extrapolation from equispaced nodes on `[Y₀/8, Y₀/4]` gives `|R|, |R'| ≤ M·k·(16eY/Y₀)^k` with no factorial loss.
+  - **Bulk** (`Y ∈ [Y₀/8, Y₀/4]`): a Remez inequality in the variable `e^{2u}` shows that `|R| ≥ (8e)^{−k}M` on a set of `u`-measure `≥ 1/11`. The `n ≥ 2` terms are smaller by `(8e)^k e^{−πY₀/2}`.
+  - The negative side follows by the parity `Φ^{(k)}(−u) = (−1)^kΦ^{(k)}(u)`.
+  - **Ratio**: `(128e²)^{2k} e^{−3πY₀/2}·poly ≤ e^{−3Y₀}` for `k ≤ Y₀/10`. Removing the two polar functionals costs 2 dimensions.
+- **Target theorem.** For all large `a`: `dim V ≥ e^{2a−2}/10 − 4` and `‖W(f,f)‖ ≤ exp(−3e^{2a−2})∫‖f‖²` on `V`.

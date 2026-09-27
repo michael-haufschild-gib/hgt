@@ -97,3 +97,11 @@ Scope: frontier route HF. Facts and no-gos only.
   - Hodge(a) with `a ≥ 1` forces `|v(ρ₀)v'(ρ₀')| ≤ K·poly·e^{(π/2)|t₀|+(λ+9/2)(a−3/8)−πe^{2a−3/4}}` at every off-line zero with `|t₀| ≥ 8`, where `v, v'` are the leading Taylor coefficients of `ζ` at `ρ₀` and at its mirror (`hodgeIndex_zeta_flatness_explicit`).
   - The radical `Φ` supplies a killer of all zeros for free. The resolvent division `D_γ` un-kills one off-line pair and keeps the double-exponential decay.
   - **Route:** the Hodge index at level `a` sees off-line zeros up to height `2e^{2a−3/4}`, the Nyquist scale, instead of `exp(a/log)` (HF-F23/L28). The remaining gap to exclusion is super-tight clusters only.
+- **HF-F27 [Lean, `RHTower.HodgeNyquistExclusion`]:** Nyquist exclusion.
+  - Hodge(a) excludes every `d`-separated off-line zero below `2e^{2a−3/4} − (2/π)(2C log(t+1)(16(N+1)/d+1) + (3k+5)a + log(poly))` (`hodgeIndex_nyquist_horizon`).
+  - This combines the flatness upper bound (HF-F26) with an unconditional Borel-free lower bound for `|ζ^{(k)}(ρ)/k!|`: `log|ζ|` is Lipschitz along zero-avoiding paths, and the minimum modulus is taken on a circle.
+  - **Route:** the level–height dictionary for `ζ` is now Nyquist-sharp, `≍ e^{2a}`, except for super-tight clusters.
+- **HF-F29 [Lean, `RHTower.ZetaWeilNegativeIndexHorizon`, `RHTower.ZetaWeilFiniteLevelInertia`]:** The finite-level inertia law.
+  - The `ε`-negative index of the polar-constrained level-`a` Weil form of ζ is at most the number of off-line pairs with `|γ| ≤ H(A₀,a,ε)`, where `log H ≤ 7000e^a + 7log A₀ + 7log(1/ε) + 150` (`zeta_weil_negative_index_le`). It holds unconditionally, and each pair counts once regardless of multiplicity.
+  - It is at least `|T| − 2` for every family `T` of separated, isolated, visible pairs (`zeta_weil_inertia_law`).
+  - **Route:** the finite-level Hodge defect is a count of off-line pairs in the window `[exp(e^{2δa−O(log a)}), exp(O(e^a))]`. A level-wise, quantitative form of Bombieri's count.

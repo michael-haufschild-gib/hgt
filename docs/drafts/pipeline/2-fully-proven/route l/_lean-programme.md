@@ -21,9 +21,10 @@ theorems (`lake env lean` clean, `#print axioms` = propext/Classical.choice/Quot
 | l-all-prime-semiprime-local-matching | G0, G1 (first order), A0, cell matching, semiprime count (6), triprime supply (7) | todo |
 | l-balanced-prime-semiprime-two-jet-extraction | G0, G1 (second order), theta mass, block selection (corpus), cofactor sum | todo |
 | l-discrete-mobius-packet-sobolev | general-`J` packet identity, horizon (5)–(6), critical horizon (6a), aperture (7), wedge (8) | todo (cubic identity in `MobiusReciprocalDiscretePacketBridge`) |
-| l-prime-insertion-dipole-jet | G0, jet limits, rationals, dyadic compensation, PNT selections, Mertens energy, (8)–(9) | todo |
+| l-prime-insertion-dipole-jet | `MobiusPrimeInsertionDipoleJet`, `…LiteralPackets`, `…MacroscopicPacket`, `MobiusCubicSourceMertensEnergy` | done → 3-formalized/route l |
 | l-three-window-cofactor-third-jet | G0, G1 (third / d-th order), simplex selector, rounding (corpus), cofactor layers | todo |
 
 ## Log
+- 2026-09-27 — card 5 (prime insertion) closed and moved; Mertens energy bound `gammaNorm_mobiusCubicSource_le` available for card 4.
 - 2026-09-27 — G0, G1 built; card 1 closed and moved.
 - 2026-09-27 — ledger created; corpus audit of cited modules done.

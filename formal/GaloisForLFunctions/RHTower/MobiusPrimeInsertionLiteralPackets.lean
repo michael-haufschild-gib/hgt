@@ -562,102 +562,107 @@ theorem exists_dyadic_realization :
         gammaEnergy 0 (insertTwo (twoDipolePrecursor (3 * r₀ j) (p₀ j) (3 * r₁ j) (p₁ j))) /
           gammaEnergy 0 (twoDipolePrecursor (3 * r₀ j) (p₀ j) (3 * r₁ j) (p₁ j)))
         atTop (𝓝 dyadicQuotient) ∧
-      dyadicQuotient < 4 / 5 := by
+      dyadicQuotient < 4 / 5 ∧
+      (∀ᶠ j in atTop, 0 < gammaEnergy 0 (twoDipolePrecursor (3 * r₀ j) (p₀ j) (3 * r₁ j) (p₁ j))) := by
   have hq : ∀ j : ℕ, ∃ q : ℕ × ℕ × ℕ × ℕ, j ≤ q.1 ∧
       DyadicQuadruple (diagScale j) q.1 q.2.1 q.2.2.1 q.2.2.2 := by
     intro j
     obtain ⟨r₀, r₁, p₀, p₁, h1, h2⟩ := exists_dyadicQuadruple (diagScale_pos j) j
     exact ⟨(r₀, r₁, p₀, p₁), h1, h2⟩
   choose q hq using hq
-  set r₀ : ℕ → ℕ := fun j => (q j).1
-  set r₁ : ℕ → ℕ := fun j => (q j).2.1
-  set p₀ : ℕ → ℕ := fun j => (q j).2.2.1
-  set p₁ : ℕ → ℕ := fun j => (q j).2.2.2
   -- real-number facts at each index
   have hfacts : ∀ j, let ε := diagScale j
-      (6 : ℝ) < r₀ j ∧ (2 * r₀ j : ℝ) < r₁ j ∧ (r₁ j : ℝ) < (1 + ε ^ 2) * (2 * r₀ j) ∧
-      (1 + ε) * (3 * r₀ j) < (p₀ j : ℝ) ∧ (p₀ j : ℝ) < (1 + ε ^ 2) * ((1 + ε) * (3 * r₀ j)) ∧
-      (1 + ε) * (3 * r₁ j) < (p₁ j : ℝ) ∧ (p₁ j : ℝ) < (1 + ε ^ 2) * ((1 + ε) * (3 * r₁ j)) := by
+      (6 : ℝ) < (q j).1 ∧ (2 * (q j).1 : ℝ) < (q j).2.1 ∧ ((q j).2.1 : ℝ) < (1 + ε ^ 2) * (2 * (q j).1) ∧
+      (1 + ε) * (3 * (q j).1) < ((q j).2.2.1 : ℝ) ∧ ((q j).2.2.1 : ℝ) < (1 + ε ^ 2) * ((1 + ε) * (3 * (q j).1)) ∧
+      (1 + ε) * (3 * (q j).2.1) < ((q j).2.2.2 : ℝ) ∧ ((q j).2.2.2 : ℝ) < (1 + ε ^ 2) * ((1 + ε) * (3 * (q j).2.1)) := by
     intro j
     obtain ⟨-, -, -, -, -, h6, a, b, c, d, e, f⟩ := hq j
     exact ⟨by exact_mod_cast h6, a, b, c, d, e, f⟩
-  refine ⟨r₀, r₁, p₀, p₁, hq, fun j => ?_, fun j => ?_, ?_, dyadicQuotient_lt⟩
-  · obtain ⟨-, ⟨hr₀, hr₁, hp₀, hp₁, h6, -⟩⟩ := hq j
+  refine ⟨fun j => (q j).1, fun j => (q j).2.1, fun j => (q j).2.2.1, fun j => (q j).2.2.2, hq,
+    fun j => ?_, fun j => ?_, ?_⟩
+  · beta_reduce
+    obtain ⟨-, ⟨hr₀, hr₁, hp₀, hp₁, h6, -⟩⟩ := hq j
     obtain ⟨-, a, -, c, -, e, -⟩ := hfacts j
-    have h6 : 6 < r₀ j := h6
     have hε := diagScale_pos j
-    have a' : 2 * r₀ j < r₁ j := by exact_mod_cast a
-    have c' : 3 * r₀ j < p₀ j := by
-      have : (3 * r₀ j : ℝ) < p₀ j := by nlinarith
+    have a' : 2 * (q j).1 < (q j).2.1 := by exact_mod_cast a
+    have c' : 3 * (q j).1 < (q j).2.2.1 := by
+      have : (3 * (q j).1 : ℝ) < (q j).2.2.1 := by nlinarith
       exact_mod_cast this
-    have e' : 3 * r₁ j < p₁ j := by
-      have : (3 * r₁ j : ℝ) < p₁ j := by nlinarith
+    have e' : 3 * (q j).2.1 < (q j).2.2.2 := by
+      have : (3 * (q j).2.1 : ℝ) < (q j).2.2.2 := by nlinarith
       exact_mod_cast this
     exact ⟨moebius_three_mul hr₀ (by omega), moebius_prime _ hp₀, moebius_three_mul hr₁ (by omega),
       moebius_prime _ hp₁, moebius_six_mul hr₀ h6, moebius_two_mul hp₀ (by omega),
       moebius_six_mul hr₁ (by omega), moebius_two_mul hp₁ (by omega)⟩
-  · obtain ⟨-, ⟨-, -, -, hp₁, h6, -⟩⟩ := hq j
+  · beta_reduce
+    obtain ⟨-, ⟨-, -, -, hp₁, h6, -⟩⟩ := hq j
     obtain ⟨-, a, b, c, d, e, f⟩ := hfacts j
-    have h6 : 6 < r₀ j := h6
     have hε := diagScale_pos j
     have hε2 := diagScale_le j
-    have hr0 : (0 : ℝ) < r₀ j := by exact_mod_cast (by omega : 0 < r₀ j)
-    have hr1 : (0 : ℝ) < r₁ j := by linarith
+    have hr0 : (0 : ℝ) < (q j).1 := by exact_mod_cast (by omega : 0 < (q j).1)
+    have hr1 : (0 : ℝ) < (q j).2.1 := by linarith
     have k1 : (1 + diagScale j ^ 2) * (1 + diagScale j) ≤ 15 / 8 := by nlinarith
-    have n1 : 3 * r₀ j < p₀ j := by
-      have : (3 * r₀ j : ℝ) < p₀ j := by nlinarith
+    have n1 : 3 * (q j).1 < (q j).2.2.1 := by
+      have : (3 * (q j).1 : ℝ) < (q j).2.2.1 := by nlinarith
       exact_mod_cast this
-    have n2 : p₀ j < 6 * r₀ j := by
-      have : (p₀ j : ℝ) < 6 * r₀ j := by nlinarith
+    have n2 : (q j).2.2.1 < 6 * (q j).1 := by
+      have : ((q j).2.2.1 : ℝ) < 6 * (q j).1 := by nlinarith
       exact_mod_cast this
-    have n3 : 2 * r₀ j < r₁ j := by exact_mod_cast a
-    have n4 : 3 * r₁ j < 2 * p₀ j := by
-      have : (3 * r₁ j : ℝ) < 2 * p₀ j := by nlinarith
+    have n3 : 2 * (q j).1 < (q j).2.1 := by exact_mod_cast a
+    have n4 : 3 * (q j).2.1 < 2 * (q j).2.2.1 := by
+      have : (3 * (q j).2.1 : ℝ) < 2 * (q j).2.2.1 := by nlinarith
       exact_mod_cast this
-    have n5 : 3 * r₁ j < p₁ j := by
-      have : (3 * r₁ j : ℝ) < p₁ j := by nlinarith
+    have n5 : 3 * (q j).2.1 < (q j).2.2.2 := by
+      have : (3 * (q j).2.1 : ℝ) < (q j).2.2.2 := by nlinarith
       exact_mod_cast this
-    have n6 : p₁ j < 6 * r₁ j := by
-      have : (p₁ j : ℝ) < 6 * r₁ j := by nlinarith
+    have n6 : (q j).2.2.2 < 6 * (q j).2.1 := by
+      have : ((q j).2.2.2 : ℝ) < 6 * (q j).2.1 := by nlinarith
       exact_mod_cast this
-    have n7 : 2 * p₀ j < 6 * r₁ j := by omega
-    have hodd : p₁ j % 2 = 1 := by
+    have n7 : 2 * (q j).2.2.1 < 6 * (q j).2.1 := by omega
+    have hodd : (q j).2.2.2 % 2 = 1 := by
       rcases hp₁.eq_two_or_odd with h | h
       · omega
-      · exact h
+      · omega
+    have n0 : 0 < (q j).1 := by omega
+    revert n0 n1 n2 n3 n4 n5 n6 n7 hodd
+    generalize (q j).1 = a
+    generalize (q j).2.1 = b
+    generalize (q j).2.2.1 = c
+    generalize (q j).2.2.2 = d
+    intro n0 n1 n2 n3 n4 n5 n6 n7 hodd
     simp only [List.nodup_cons, List.mem_cons, List.not_mem_nil, List.nodup_nil, or_false,
-      not_or]
+      not_or, not_false_eq_true, and_true]
     omega
   · -- the energy ratio
     have hδ : (0 : ℝ) < 5 + 0 := by norm_num
     obtain ⟨K, hK0, hK⟩ := exists_dyadic_approx_const
     set ε : ℕ → ℝ := diagScale with hε_def
-    set X : ℕ → ℝ := fun j => 3 * (r₀ j : ℝ) with hX
-    set e₀ : ℕ → ℝ := fun j => (p₀ j : ℝ) / X j - 1 with he₀
-    set y : ℕ → ℝ := fun j => (r₁ j : ℝ) / r₀ j with hy
-    set e₁ : ℕ → ℝ := fun j => (p₁ j : ℝ) / (3 * r₁ j) - 1 with he₁
+    set X : ℕ → ℝ := fun j => 3 * ((q j).1 : ℝ) with hX
+    set e₀ : ℕ → ℝ := fun j => ((q j).2.2.1 : ℝ) / X j - 1 with he₀
+    set y : ℕ → ℝ := fun j => ((q j).2.1 : ℝ) / (q j).1 with hy
+    set e₁ : ℕ → ℝ := fun j => ((q j).2.2.2 : ℝ) / (3 * (q j).2.1) - 1 with he₁
     set Bt : ℕ → ℝ → ℝ := fun j => twoDipolePrecursor 1 (1 + e₀ j) (y j) (y j * (1 + e₁ j))
       with hBt
-    have hpos : ∀ j, (0 : ℝ) < r₀ j := fun j => by
+    have hpos : ∀ j, (0 : ℝ) < (q j).1 := fun j => by
       obtain ⟨h6, -⟩ := hfacts j; linarith
-    have hscale : ∀ j, twoDipolePrecursor (3 * r₀ j : ℕ) (p₀ j) (3 * r₁ j : ℕ) (p₁ j) =
+    have hscale : ∀ j, twoDipolePrecursor (3 * ((q j).1 : ℝ)) ((q j).2.2.1) (3 * ((q j).2.1 : ℝ)) ((q j).2.2.2) =
         dilate (X j) (Bt j) := by
       intro j
       have hr0 := hpos j
       obtain ⟨-, a, -, -, -, -, -⟩ := hfacts j
-      have hr1 : (0 : ℝ) < r₁ j := by linarith
+      have hr1 : (0 : ℝ) < (q j).2.1 := by linarith
       rw [hBt, ← twoDipolePrecursor_scale]
       congr 1
       · simp [hX]
-      · simp only [he₀, hX]; field_simp
-      · simp only [hy, hX]; push_cast; field_simp
-      · simp only [hy, he₁, hX]; push_cast; field_simp
+      · simp only [he₀, hX]; field_simp; ring
+      · simp only [hy, hX]; field_simp
+      · simp only [hy, he₁, hX]; field_simp; ring
     have hbounds : ∀ j, ε j ≤ e₀ j ∧ e₀ j ≤ ε j + ε j ^ 2 + ε j ^ 3 ∧ ε j ≤ e₁ j ∧
         e₁ j ≤ ε j + ε j ^ 2 + ε j ^ 3 ∧ 2 ≤ y j ∧ y j ≤ 2 + 2 * ε j ^ 2 := by
       intro j
       have hr0 := hpos j
       obtain ⟨-, a, b, c, d, e, f⟩ := hfacts j
-      have hr1 : (0 : ℝ) < r₁ j := by linarith
+      have hr1 : (0 : ℝ) < (q j).2.1 := by linarith
       have hX0 : 0 < X j := by simp only [hX]; positivity
       simp only [he₀, he₁, hy, hε_def]
       refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
@@ -713,15 +718,58 @@ theorem exists_dyadic_realization :
       norm_num at h
     have hlim := hEI.div hEB hpos0
     rw [dyadicQuotient_eq] at hlim
-    refine hlim.congr fun j => ?_
-    have hX0 : 0 < X j := by simp only [hX]; have := hpos j; positivity
-    have he : ε j ^ 2 ≠ 0 := by have := diagScale_pos j; positivity
-    simp only [Pi.div_apply]
-    push_cast
-    rw [hscale j, insertTwo_dilate, gammaEnergy_dilate hX0, gammaEnergy_dilate hX0]
-    have hXp : X j ^ (-1 - (0 : ℝ)) ≠ 0 := (Real.rpow_pos_of_pos hX0 _).ne'
-    by_cases h0 : gammaEnergy 0 (Bt j) = 0
-    · rw [h0]; simp
-    · field_simp
+    have hscaleE : ∀ j, gammaEnergy 0 (twoDipolePrecursor (3 * ((q j).1 : ℝ)) ((q j).2.2.1)
+        (3 * ((q j).2.1 : ℝ)) ((q j).2.2.2)) = X j ^ (-1 - (0 : ℝ)) * gammaEnergy 0 (Bt j) := by
+      intro j
+      have hX0 : 0 < X j := by simp only [hX]; have := hpos j; positivity
+      rw [hscale j, gammaEnergy_dilate hX0]
+    refine ⟨?_, dyadicQuotient_lt, ?_⟩
+    · refine hlim.congr fun j => ?_
+      have hX0 : 0 < X j := by simp only [hX]; have := hpos j; positivity
+      have he : ε j ^ 2 ≠ 0 := by have := diagScale_pos j; positivity
+      simp only [Pi.div_apply]
+      rw [hscale j, insertTwo_dilate, gammaEnergy_dilate hX0, gammaEnergy_dilate hX0]
+      have hXp : X j ^ (-1 - (0 : ℝ)) ≠ 0 := (Real.rpow_pos_of_pos hX0 _).ne'
+      by_cases h0 : gammaEnergy 0 (Bt j) = 0
+      · rw [h0]; simp
+      · have hd : diagScale j ≠ 0 := (diagScale_pos j).ne'
+        field_simp
+    · have hVpos : 0 < gammaEnergy 0 (fun t => jetProfile 1 t + jetProfile (2 * 1) t) := by
+        have h := gammaEnergy_dyadic_pair (x := 1) one_pos
+        have hG : 0 < Real.Gamma 5 := Real.Gamma_pos_of_pos (by norm_num)
+        rw [one_mul] at h
+        have : 0 < Real.Gamma 5 * gammaEnergy 0 (fun t => jetProfile 1 t + jetProfile (2 * 1) t) := by
+          rw [h]; norm_num
+        exact pos_of_mul_pos_right this hG.le
+      filter_upwards [hEB.eventually (lt_mem_nhds hVpos)] with j hj
+      have he : 0 < ε j ^ 2 := by have := diagScale_pos j; positivity
+      have hX0 : 0 < X j := by simp only [hX]; have := hpos j; positivity
+      rw [hscaleE j]
+      have : 0 < gammaEnergy 0 (Bt j) := by
+        have := div_pos_iff.mp hj
+        rcases this with ⟨h1, -⟩ | ⟨-, h2⟩
+        · exact h1
+        · exact absurd he (not_lt.mpr h2.le)
+      exact mul_pos (Real.rpow_pos_of_pos hX0 _) this
+
+/-- Arbitrarily high literal two-dipole precursors whose `2`-inserted eight-atom packets have
+squared energy below `4/5` of the precursor. -/
+theorem exists_high_literal_dyadic_contraction :
+    ∀ n : ℕ, ∃ ε : ℝ, 0 < ε ∧ ∃ r₀ r₁ p₀ p₁ : ℕ, n ≤ r₀ ∧ DyadicQuadruple ε r₀ r₁ p₀ p₁ ∧
+      μ (3 * r₀) = 1 ∧ μ p₀ = -1 ∧ μ (3 * r₁) = 1 ∧ μ p₁ = -1 ∧
+      μ (6 * r₀) = -1 ∧ μ (2 * p₀) = 1 ∧ μ (6 * r₁) = -1 ∧ μ (2 * p₁) = 1 ∧
+      [3 * r₀, p₀, 6 * r₀, 2 * p₀, 3 * r₁, p₁, 6 * r₁, 2 * p₁].Nodup ∧
+      gammaEnergy 0 (insertTwo (twoDipolePrecursor (3 * r₀) p₀ (3 * r₁) p₁)) <
+        4 / 5 * gammaEnergy 0 (twoDipolePrecursor (3 * r₀) p₀ (3 * r₁) p₁) := by
+  obtain ⟨r₀, r₁, p₀, p₁, hq, hμ, hnd, hlim, hlt, hpos⟩ := exists_dyadic_realization
+  have hev := hlim.eventually (gt_mem_nhds hlt)
+  intro n
+  obtain ⟨j, hj⟩ := ((hev.and hpos).and (eventually_ge_atTop n)).exists
+  obtain ⟨⟨hratio, hE0⟩, hjn⟩ := hj
+  obtain ⟨hr, hQ⟩ := hq j
+  obtain ⟨m1, m2, m3, m4, m5, m6, m7, m8⟩ := hμ j
+  refine ⟨diagScale j, diagScale_pos j, r₀ j, r₁ j, p₀ j, p₁ j, hjn.trans hr, hQ, m1, m2, m3, m4,
+    m5, m6, m7, m8, hnd j, ?_⟩
+  rwa [div_lt_iff₀ hE0] at hratio
 
 end RHTower.CubicGamma

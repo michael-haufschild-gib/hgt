@@ -14,7 +14,7 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | L2b gauges | real-shift gauges `∑ c_i k(·+s_i)`: flux atom expansion, grouped Bernstein criterion, rate-coefficient cone, `L_w g = M(w) XiC(iw)`, zero-order transfer | `ThetaTranslationGaugeFlux` | done |
 | L2c measure gauges | `∫ k(·+s) dν`, Fubini flux, Laplace laws, CM under integrals/limits, seed limit, signed Laplace positivity, all-sieve theorem | `ThetaTranslationMeasureGauge` | done |
 | L3 zero division | outward sine Green operator `T_α`, relative bounds, ODE, Fourier division | `ThetaZeroDivisionSource` | done (single division; iterates/partial fractions pending) |
-| L4 renewal | `P,ν,Q,D`, renewal log series, `Xi(2iλ)=(a+λ)D(λ)+(a-λ)D(-λ)` | `ThetaRenewalFactorization` | todo |
+| L4 renewal | `P,ν,Q,D`, renewal log series, `Xi(2iλ)=(a+λ)D(λ)+(a-λ)D(-λ)` | `P`, `L`, continuation `thetaLogLaplaceC`, `Ξ(2iλ) = (λ²-1/16)[L(λ)+L(-λ)]` in `ThetaDeletionInversionCommutator`; renewal layer todo | partial |
 | L5 quantile | CDF/quantile/`B,D,T,A` on `L²(0,1)` (partly in corpus) | existing Hedenmalm modules | audit |
 | L6 complex analysis | Rouché/Hurwitz, Jensen+RvM capacity, indicator/PL | search corpus | audit |
 
@@ -53,7 +53,7 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | chronological-boundary-positive-transfer | L1, Laplace | todo |
 | prime-deletion-moving-cusp-dual-source | L1, Landau | todo |
 | rational-cusp-boundary-law | Poisson/Gauss sums | done → 3-formalized (`ThetaRationalCuspBoundary`, `ThetaCuspOneSidedConnection`, `ThetaCuspAbelBoundaryPairing`, `QuadraticGaussSumFourthPower`) |
-| prime-modular-commutator-crossing | Jacobi, Hardy sign, PNT | todo |
+| prime-modular-commutator-crossing | Jacobi, Hardy sign, PNT | done → 3-formalized (`ThetaDeletionInversionCommutator`, `ThetaQuadratureDefectSpectralKernel`, `ThetaCommutatorKernelInertia`) |
 | renewal-phase-cosh-factorization | L4 | todo |
 | renewal-complex-resonance-stieltjes-obstruction | L4, Hadamard | todo |
 | renewal-reflection-preserving-zero-surgery | L4 | todo |

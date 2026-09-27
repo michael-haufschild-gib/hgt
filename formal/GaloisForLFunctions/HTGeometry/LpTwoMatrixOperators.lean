@@ -166,6 +166,61 @@ theorem isCompactOperator_transport {E F G H : Type*} [NormedAddCommGroup E]
     IsCompactOperator (L ∘L K ∘L R) :=
   (hK.comp_clm R).clm_comp L
 
+/-- An operator whose range lies in the span of a finite set of vectors has rank at most the
+cardinality of that set. -/
+theorem finrank_range_le_card {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    {T : E →L[ℂ] E} (s : Finset E)
+    (h : LinearMap.range ((T : E →L[ℂ] E) : E →ₗ[ℂ] E) ≤ Submodule.span ℂ (s : Set E)) :
+    Module.finrank ℂ (LinearMap.range ((T : E →L[ℂ] E) : E →ₗ[ℂ] E)) ≤ s.card := by
+  haveI : FiniteDimensional ℂ (Submodule.span ℂ (s : Set E)) :=
+    FiniteDimensional.span_of_finite ℂ s.finite_toSet
+  calc Module.finrank ℂ (LinearMap.range ((T : E →L[ℂ] E) : E →ₗ[ℂ] E))
+      ≤ Module.finrank ℂ (Submodule.span ℂ (s : Set E)) := Submodule.finrank_mono h
+    _ ≤ s.card := by
+        have := finrank_span_finset_le_card (R := ℂ) s
+        rw [Set.finrank] at this
+        exact this
+
+/-- **Coordinatewise null and bounded implies weakly null** in `ℓ²(I)`. -/
+theorem tendsto_inner_lp_of_coord {α : Type*} {l : Filter α} (e : α → lp (fun _ : I => ℂ) 2)
+    {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ t, ‖e t‖ ≤ C)
+    (hcoord : ∀ i, Filter.Tendsto (fun t => (e t : I → ℂ) i) l (nhds 0))
+    (z : lp (fun _ : I => ℂ) 2) :
+    Filter.Tendsto (fun t => ⟪z, e t⟫_ℂ) l (nhds 0) := by
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hsum := lp.hasSum_single (E := fun _ : I => ℂ) (p := 2) (by norm_num) z
+  have hδ : 0 < ε / (2 * (C + 1)) := by positivity
+  obtain ⟨S, hS⟩ := (hsum.eventually (Metric.ball_mem_nhds z hδ)).exists
+  set zS := ∑ i ∈ S, lp.single 2 i ((z : I → ℂ) i) with hzS
+  have hfin : Filter.Tendsto (fun t => ⟪zS, e t⟫_ℂ) l (nhds 0) := by
+    have hrw : ∀ t, ⟪zS, e t⟫_ℂ = ∑ i ∈ S, conj ((z : I → ℂ) i) * (e t : I → ℂ) i := by
+      intro t
+      rw [hzS, sum_inner]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [lp.inner_single_left]
+      simp [mul_comm]
+    simp only [hrw]
+    have := tendsto_finsetSum S (fun i _ => (tendsto_const_nhds (x := conj ((z : I → ℂ) i))).mul
+      (hcoord i))
+    simpa using this
+  filter_upwards [Metric.tendsto_nhds.mp hfin (ε / 2) (half_pos hε)] with t ht
+  rw [dist_zero_right] at ht ⊢
+  have hsplit : ⟪z, e t⟫_ℂ = ⟪z - zS, e t⟫_ℂ + ⟪zS, e t⟫_ℂ := by
+    rw [inner_sub_left]; ring
+  have hball : ‖z - zS‖ < ε / (2 * (C + 1)) := by
+    rw [dist_comm, dist_eq_norm] at hS
+    exact hS
+  have h1 : ‖⟪z - zS, e t⟫_ℂ‖ ≤ ε / (2 * (C + 1)) * C :=
+    (norm_inner_le_norm _ _).trans (mul_le_mul hball.le (hC t) (norm_nonneg _) hδ.le)
+  have h2 : ε / (2 * (C + 1)) * C < ε / 2 := by
+    rw [div_mul_eq_mul_div, div_lt_div_iff₀ (by positivity) two_pos]
+    nlinarith
+  calc ‖⟪z, e t⟫_ℂ‖ ≤ ‖⟪z - zS, e t⟫_ℂ‖ + ‖⟪zS, e t⟫_ℂ‖ := by
+        rw [hsplit]; exact norm_add_le _ _
+    _ < ε / 2 + ε / 2 := add_lt_add_of_le_of_lt (h1.trans h2.le) ht
+    _ = ε := by ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

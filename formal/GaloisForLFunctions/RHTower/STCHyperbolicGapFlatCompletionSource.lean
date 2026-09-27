@@ -619,21 +619,10 @@ theorem summable_sq_stcCriticalGradeDerivative {g : ℝ} (hg : |g| < 1 / 2) :
         mul_le_mul_of_nonneg_left hsinh (by positivity)
     _ = Real.log (p : ℝ) ^ 4 * (p : ℝ) ^ (-(2 - 2 * |g|)) := by rw [← hpow]; ring
 
-/-- **Trace-class critical wedge.** Throughout the strip `|g| < 1/2`, the critically weighted
-source wedge `a ∧ d` on `ℓ²(primes)` is compact, of rank at most two, and trace class; any
-bounded two-sided transport of it remains compact. -/
-theorem stcCriticalWedge_traceClass {g : ℝ} (hg : |g| < 1 / 2) :
-    let a := lpOfReal stcCriticalHalfDensity summable_sq_stcCriticalHalfDensity
-    let d := lpOfReal (stcCriticalGradeDerivative g) (summable_sq_stcCriticalGradeDerivative hg)
-    IsCompactOperator (lpWedge a d) ∧
-      Module.finrank ℂ (LinearMap.range ((lpWedge a d : ℓ²P →L[ℂ] ℓ²P) : ℓ²P →ₗ[ℂ] ℓ²P)) ≤ 2 ∧
-      ContinuousLinearMap.IsTraceClass (lpWedge a d) ∧
-      ∀ (L R : ℓ²P →L[ℂ] ℓ²P),
-        IsCompactOperator (L ∘L lpWedge a d ∘L R) := by
-  intro a d
-  refine ⟨isCompactOperator_lpWedge a d, finrank_range_le_two (range_lpWedge_le a d), ?_,
-    fun L R => isCompactOperator_transport (isCompactOperator_lpWedge a d) L R⟩
-  -- factor the wedge through two orthonormal basis vectors
+/-- Every wedge of two vectors of `ℓ²(primes)` is trace class: it factors through two orthonormal
+basis vectors as a product of two Hilbert--Schmidt operators. -/
+theorem isTraceClass_lpWedge_primes (x y : ℓ²P) :
+    ContinuousLinearMap.IsTraceClass (lpWedge x y) := by
   let two : Nat.Primes := ⟨2, Nat.prime_two⟩
   let three : Nat.Primes := ⟨3, Nat.prime_three⟩
   let e1 := lpBasisVec (I := Nat.Primes) two
@@ -649,13 +638,47 @@ theorem stcCriticalWedge_traceClass {g : ℝ} (hg : |g| < 1 / 2) :
   have h21 : ⟪e2, e1⟫_ℂ = 0 := by
     simp only [e1, e2]; rw [inner_lpBasisVec_right]
     simp [lpBasisVec, lp.single_apply, Pi.single_eq_of_ne hne.symm]
-  refine ⟨rankOne ℂ a e1 + rankOne ℂ d e2, rankOne ℂ e1 d - rankOne ℂ e2 a,
-    (isHilbertSchmidt_rankOne a e1).add (isHilbertSchmidt_rankOne d e2),
-    (isHilbertSchmidt_rankOne e1 d).sub (isHilbertSchmidt_rankOne e2 a), ?_⟩
+  refine ⟨rankOne ℂ x e1 + rankOne ℂ y e2, rankOne ℂ e1 y - rankOne ℂ e2 x,
+    (isHilbertSchmidt_rankOne x e1).add (isHilbertSchmidt_rankOne y e2),
+    (isHilbertSchmidt_rankOne e1 y).sub (isHilbertSchmidt_rankOne e2 x), ?_⟩
   unfold lpWedge
   simp only [ContinuousLinearMap.add_comp, ContinuousLinearMap.comp_sub,
     InnerProductSpace.rankOne_comp_rankOne, h11, h22, h12, h21, one_smul, zero_smul]
   abel
+
+/-- **Trace-class critical wedge.** Throughout the strip `|g| < 1/2`, the critically weighted
+source wedge `a ∧ d` on `ℓ²(primes)` is compact, of rank at most two, and trace class; any
+bounded two-sided transport of it remains compact. -/
+theorem stcCriticalWedge_traceClass {g : ℝ} (hg : |g| < 1 / 2) :
+    let a := lpOfReal stcCriticalHalfDensity summable_sq_stcCriticalHalfDensity
+    let d := lpOfReal (stcCriticalGradeDerivative g) (summable_sq_stcCriticalGradeDerivative hg)
+    IsCompactOperator (lpWedge a d) ∧
+      Module.finrank ℂ (LinearMap.range ((lpWedge a d : ℓ²P →L[ℂ] ℓ²P) : ℓ²P →ₗ[ℂ] ℓ²P)) ≤ 2 ∧
+      ContinuousLinearMap.IsTraceClass (lpWedge a d) ∧
+      ∀ (L R : ℓ²P →L[ℂ] ℓ²P), IsCompactOperator (L ∘L lpWedge a d ∘L R) := by
+  intro a d
+  exact ⟨isCompactOperator_lpWedge a d, finrank_range_le_two (range_lpWedge_le a d),
+    isTraceClass_lpWedge_primes a d,
+    fun L R => isCompactOperator_transport (isCompactOperator_lpWedge a d) L R⟩
+
+/-- The vertical phase `p^{iτ}` acts coordinatewise and preserves square summability. -/
+def stcVerticalPhaseTwist (τ : ℝ) (f : ℓ²P) : ℓ²P :=
+  ⟨fun p => ((p : ℕ) : ℂ) ^ ((τ : ℂ) * I) * (f : Nat.Primes → ℂ) p, by
+    refine memℓp_gen ((summable_norm_sq_lp f).congr fun p => ?_)
+    have hp : 0 < (p : ℕ) := p.property.pos
+    rw [ENNReal.toReal_ofNat, Real.rpow_two, norm_mul, Complex.norm_natCast_cpow_of_pos hp]
+    simp⟩
+
+/-- The phase-twisted critical wedge is trace class and compact as well: the vertical phase of
+a zero ordinate is a unitary diagonal gauge that cannot create a nonzero Calkin class. -/
+theorem stcCriticalWedge_phaseTwist_traceClass {g : ℝ} (hg : |g| < 1 / 2) (τ : ℝ) :
+    let a := stcVerticalPhaseTwist τ
+      (lpOfReal stcCriticalHalfDensity summable_sq_stcCriticalHalfDensity)
+    let d := stcVerticalPhaseTwist τ
+      (lpOfReal (stcCriticalGradeDerivative g) (summable_sq_stcCriticalGradeDerivative hg))
+    IsCompactOperator (lpWedge a d) ∧ ContinuousLinearMap.IsTraceClass (lpWedge a d) := by
+  intro a d
+  exact ⟨isCompactOperator_lpWedge a d, isTraceClass_lpWedge_primes a d⟩
 
 end
 

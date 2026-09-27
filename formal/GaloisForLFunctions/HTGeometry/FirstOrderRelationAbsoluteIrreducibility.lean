@@ -59,7 +59,7 @@ theorem algebraMap_complex_mero (c : ℂ) :
   rfl
 
 /-- The coordinate germ is the rational coordinate. -/
-theorem analyticMeroElement_id :
+theorem analyticMeroElement_coord_eq_algebraMap_X :
     analyticMeroElement (fun z : ℂ => z) analyticOnNhd_id =
       algebraMap (RatFunc ℂ) (meroField (Set.univ : Set ℂ)) RatFunc.X := by
   change _ = ratfuncToMero Set.univ isOpen_univ isPreconnected_univ Set.univ_nonempty
@@ -98,7 +98,7 @@ theorem wimanJet_eq (hf : TranscendentalEntire f) :
             · exact (analyticOnNhd_of_transcendentalEntire'' hf).deriv)) := by
   funext i
   fin_cases i
-  · simp [wimanJet, analyticMeroElement_id]
+  · simp [wimanJet, analyticMeroElement_coord_eq_algebraMap_X]
   · rfl
   · rfl
 
@@ -180,7 +180,7 @@ theorem algebraicIndependent_wimanJet_state (hf : TranscendentalEntire f) :
       funext j
       obtain ⟨j, hj⟩ := j
       fin_cases j
-      · simp [firstOrderStateIndexEquiv, wimanJet, analyticMeroElement_id]
+      · simp [firstOrderStateIndexEquiv, wimanJet, analyticMeroElement_coord_eq_algebraMap_X]
       · simp [firstOrderStateIndexEquiv, wimanJet]
       · exact absurd rfl hj
     rw [map_zero, ← hQ, constToMero_eq_algebraMap, ← MvPolynomial.aeval_def,

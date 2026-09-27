@@ -601,7 +601,7 @@ theorem continuous_jetAtom_delta {a z : ℝ} (ha : 0 < a) (hz : 0 < z) :
   exact (by fun_prop : Continuous fun δ : ℝ => a ^ 2 * z ^ 2 * (2 * (a + z) - (5 + δ) * a)).div
     (continuous_const_rpow_delta (c := 6) hs) (fun δ => (Real.rpow_pos_of_pos hs _).ne')
 
-private theorem exists_Icc_of_continuous_neg {φ : ℝ → ℝ} (hφ : Continuous φ) (h0 : φ 0 < 0) :
+theorem exists_Icc_of_continuous_neg {φ : ℝ → ℝ} (hφ : Continuous φ) (h0 : φ 0 < 0) :
     ∃ δ₀ > 0, ∀ δ ∈ Set.Icc (0 : ℝ) δ₀, φ δ < 0 := by
   have hev := (hφ.tendsto 0).eventually (gt_mem_nhds h0)
   obtain ⟨ε, hε, hball⟩ := Metric.eventually_nhds_iff.mp hev
@@ -610,7 +610,7 @@ private theorem exists_Icc_of_continuous_neg {φ : ℝ → ℝ} (hφ : Continuou
   linarith [hδ.2]
 
 /-- The energy of `v_x ± c v_(y)` combinations at scale `1`, written through the kernel. -/
-private theorem gammaEnergy_jet_combo {δ : ℝ} (hδ : 0 ≤ δ) {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
+theorem gammaEnergy_jet_combo {δ : ℝ} (hδ : 0 ≤ δ) {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
     (c : ℝ) :
     gammaEnergy δ (fun t => jetProfile a t + c * jetProfile b t) =
       a * a * abelPrefixGramKernel δ a a + 2 * c * (a * b * abelPrefixGramKernel δ a b) +
@@ -623,11 +623,11 @@ private theorem gammaEnergy_jet_combo {δ : ℝ} (hδ : 0 ≤ δ) {a b : ℝ} (h
     gammaInner_jetProfile hδ ha ha, gammaInner_jetProfile hδ ha hb, gammaInner_jetProfile hδ hb hb]
   ring
 
-private theorem dilate_add' (q : ℝ) (F G : ℝ → ℝ) :
+theorem dilate_add_fun (q : ℝ) (F G : ℝ → ℝ) :
     dilate q (fun t => F t + G t) = fun t => dilate q F t + dilate q G t := by
   funext t; simp only [dilate]; ring
 
-private theorem dilate_smul' (q c : ℝ) (F : ℝ → ℝ) :
+theorem dilate_smul_fun (q c : ℝ) (F : ℝ → ℝ) :
     dilate q (fun t => c * F t) = fun t => c * dilate q F t := by
   funext t; simp only [dilate]; ring
 
@@ -658,11 +658,11 @@ theorem exists_dyadic_contraction_delta :
   have hd := hδ.1
   have e1 : (fun t => jetProfile x t - jetProfile (4 * x) t) =
       dilate x (fun t => jetProfile 1 t + (-1) * jetProfile 4 t) := by
-    rw [dilate_add', dilate_smul', dilate_jetProfile, dilate_jetProfile, mul_one]
+    rw [dilate_add_fun, dilate_smul_fun, dilate_jetProfile, dilate_jetProfile, mul_one]
     funext t; ring_nf
   have e2 : (fun t => jetProfile x t + jetProfile (2 * x) t) =
       dilate x (fun t => jetProfile 1 t + 1 * jetProfile 2 t) := by
-    rw [dilate_add', dilate_smul', dilate_jetProfile, dilate_jetProfile, mul_one]
+    rw [dilate_add_fun, dilate_smul_fun, dilate_jetProfile, dilate_jetProfile, mul_one]
     funext t; ring_nf
   rw [e1, e2, gammaEnergy_dilate hx, gammaEnergy_dilate hx,
     gammaEnergy_jet_combo hd one_pos (by norm_num), gammaEnergy_jet_combo hd one_pos two_pos]
@@ -704,11 +704,11 @@ theorem exists_halfScale_compensation_delta :
   have hd := hδ.1
   have hδ' : 0 < 5 + δ := by linarith
   have hH1 : dyadicJet x = dilate x (fun t => jetProfile 1 t + (-1) * jetProfile 4 t) := by
-    rw [dilate_add', dilate_smul', dilate_jetProfile, dilate_jetProfile, mul_one]
+    rw [dilate_add_fun, dilate_smul_fun, dilate_jetProfile, dilate_jetProfile, mul_one]
     funext t; unfold dyadicJet; ring_nf
   have hsum : (fun t => dyadicJet x t + 3 / 5 * atom (x / 2) t) =
       dilate x (fun t => (jetProfile 1 t + (-1) * jetProfile 4 t) + 3 / 5 * atom (1 / 2) t) := by
-    rw [dilate_add', dilate_smul', dilate_atom, ← hH1]
+    rw [dilate_add_fun, dilate_smul_fun, dilate_atom, ← hH1]
     funext t; ring_nf
   rw [hsum, hH1, gammaEnergy_dilate hx, gammaEnergy_dilate hx]
   have fH := (gammaFinite_jetProfile hδ' one_pos).add
@@ -732,5 +732,31 @@ theorem exists_halfScale_compensation_delta :
   have := hneg δ hδ
   simp only [hφ] at this
   nlinarith
+
+/-- The three unnormalized Gamma integrals of the jet proof, at `x = 1`:
+`Γ(5)‖g‖² = 9/8`, `Γ(5)‖h_q‖² = 9/(8q)`, `Γ(5)⟨g, h_q⟩ = 144 q² (-q²+3q-1)/(q+1)^7`, where
+`g = ∂f_1` and `h_q = q ∂f_q`. -/
+theorem gamma_five_jet_integrals {q : ℝ} (hq : 0 < q) :
+    Real.Gamma 5 * gammaEnergy 0 (atomJet 1 1) = 9 / 8 ∧
+    Real.Gamma 5 * gammaEnergy 0 (fun t => q * atomJet 1 q t) = 9 / (8 * q) ∧
+    Real.Gamma 5 * gammaInner 0 (atomJet 1 1) (fun t => q * atomJet 1 q t) =
+      144 * q ^ 2 * (-q ^ 2 + 3 * q - 1) / (q + 1) ^ 7 := by
+  have hδ : (0 : ℝ) < 5 + 0 := by norm_num
+  have f1 := gammaFinite_atomJet hδ 1 one_pos
+  have fq := gammaFinite_atomJet hδ 1 hq
+  refine ⟨?_, ?_, ?_⟩
+  · rw [gammaEnergy, gamma_five_mul_gammaInner_atomJet_one one_pos one_pos]; norm_num
+  · rw [gammaEnergy, gammaInner_smul_left hδ fq (fq.smul q), gammaInner_smul_right hδ fq fq,
+      show Real.Gamma 5 * (q * (q * gammaInner 0 (atomJet 1 q) (atomJet 1 q))) =
+        q * q * (Real.Gamma 5 * gammaInner 0 (atomJet 1 q) (atomJet 1 q)) by ring,
+      gamma_five_mul_gammaInner_atomJet_one hq hq]
+    field_simp
+    ring
+  · rw [gammaInner_smul_right hδ fq f1,
+      show Real.Gamma 5 * (q * gammaInner 0 (atomJet 1 1) (atomJet 1 q)) =
+        q * (Real.Gamma 5 * gammaInner 0 (atomJet 1 1) (atomJet 1 q)) by ring,
+      gamma_five_mul_gammaInner_atomJet_one one_pos hq]
+    field_simp
+    ring
 
 end RHTower.CubicGamma
