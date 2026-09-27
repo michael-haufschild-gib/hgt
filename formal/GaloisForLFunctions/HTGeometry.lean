@@ -16026,3 +16026,4 @@ import GaloisForLFunctions.HTGeometry.GaussianGlobalVerticalSlope
 import GaloisForLFunctions.HTGeometry.GaussianVerticalRadiusMonotonicity
 
 import GaloisForLFunctions.HTGeometry.GaussianDegreeNormalizedSlope
+import GaloisForLFunctions.HTGeometry.PolynomialHeatImaginaryBound

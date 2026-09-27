@@ -63,6 +63,8 @@ theorem exists_arbitrarily_large_prime_resonant_modulus_decrease (N : ℕ) :
   have hg : ContDiff ℝ (⊤ : ℕ∞) g := F.contDiff.comp (contDiff_id.sub contDiff_const)
   have hgc : HasCompactSupport g := by
     convert F.hasCompactSupport.comp_homeomorph (Homeomorph.addRight (-d)) using 1
+    funext x
+    rfl
   let phi := thetaCompactRealGroundProfile F F.contDiff F.hasCompactSupport
   let psi := thetaCompactRealGroundProfile g hg hgc
   have hpc := hasCompactSupport_thetaCompactRealGroundProfile F F.contDiff F.hasCompactSupport

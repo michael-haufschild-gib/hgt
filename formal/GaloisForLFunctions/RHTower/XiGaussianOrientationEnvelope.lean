@@ -46,7 +46,8 @@ theorem xiSpectralSq_norm_pow_heat_le_factorial (k : ℕ)
       (xiSpectralPoint_normSq_lt_two_mul_sq_re q).le)
   have hp := mul_le_mul_of_nonneg_right
     (pow_le_pow_left₀ (norm_nonneg _) hsector k) (Real.exp_pos (-((s : ℝ) * A))).le
-  have hb := pow_mul_exp_neg_le (div_pos s.property (by positivity : (0 : ℝ) < 2)) k
+  have hb := GaloisForLFunctions.HTGeometry.pow_mul_exp_neg_le
+    (div_pos s.property (by positivity : (0 : ℝ) < 2)) k
     (show 0 ≤ 2 * A by positivity)
   rw [show (s : ℝ) / 2 * (2 * A) = (s : ℝ) * A by ring] at hb
   calc
@@ -67,7 +68,7 @@ theorem xiSpectralSq_norm_pow_heat_le_residual_factorial (F : Finset XiZeroCopy)
     have h := mul_le_mul_of_nonneg_left (xiSpectralSq_re_gt_residualPhaseGap F q).le
       (sub_nonneg.mpr t.property)
     nlinarith only [h]
-  have h := mul_le_mul_of_nonneg_left he (pow_nonneg (norm_nonneg _) k)
+  have h := mul_le_mul_of_nonneg_left he (pow_nonneg (norm_nonneg (xiSpectralPoint q.1 ^ 2)) k)
   have hb := mul_le_mul_of_nonneg_left (xiSpectralSq_norm_pow_heat_le_factorial k s q.1)
     (show 0 ≤ e from (Real.exp_pos _).le)
   nlinarith only [h, hb]

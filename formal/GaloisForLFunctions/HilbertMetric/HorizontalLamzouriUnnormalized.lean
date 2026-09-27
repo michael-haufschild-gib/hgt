@@ -209,6 +209,98 @@ theorem four_mass_sub_energy_le_of_cost (hm₂ : ∀ i, 2 ≤ P.m₂ i) (hmP : �
 
   linarith
 
+/-- The mixed range carries only mixed and negative mass: with `K₃ = C^⊥ ⊓ B`,
+`Σ_{K₃} diagForm ≤ Σ_M (‖f‖² − ‖P_A f‖²)`. -/
+theorem mixed_range_trace_le (hmP : ∀ p, 0 ≤ P.mP p) :
+    ∑ j, P.diagForm ((stdOrthonormalBasis ℝ (P.hsSpanᗮ ⊓ P.positiveSpan : Submodule ℝ V)) j : V)
+      ≤ ∑ i, (‖P.fM i‖ ^ 2 - ‖P.absorbing.starProjection (P.fM i)‖ ^ 2) := by
+  set K₃ : Submodule ℝ V := P.hsSpanᗮ ⊓ P.positiveSpan with hK₃
+  rw [P.sum_diagForm_stdOrthonormalBasis K₃, P.sum_wt_mul (fun v => ‖K₃.starProjection v‖ ^ 2)]
+  have hzero : ∀ v ∈ P.hsSpan, K₃.starProjection v = 0 := by
+    intro v hv
+    rw [Submodule.starProjection_apply_eq_zero_iff, Submodule.mem_orthogonal]
+    intro w hw
+    rw [real_inner_comm]
+    exact Submodule.inner_right_of_mem_orthogonal hv (Submodule.mem_inf.mp hw).1
+  have h₂ : ∀ i, K₃.starProjection (P.f₂ i) = 0 := fun i =>
+    hzero _ (P.absorbing_le_hsSpan (P.f₂_mem_absorbing i))
+  have hH : ∀ i, K₃.starProjection (P.fH i) = 0 := fun i => hzero _ (P.fH_mem_hsSpan i)
+  have hg : ∀ p, K₃.starProjection (P.g p) = 0 := fun p =>
+    hzero _ (P.absorbing_le_hsSpan (P.g_mem_absorbing p))
+  have hM : ∀ i, ‖K₃.starProjection (P.fM i)‖ ^ 2
+      ≤ ‖P.fM i‖ ^ 2 - ‖P.absorbing.starProjection (P.fM i)‖ ^ 2 := by
+    intro i
+    set f := P.fM i
+    have hsplit := Submodule.starProjection_add_starProjection_orthogonal P.absorbing f
+    have hAz : K₃.starProjection (P.absorbing.starProjection f) = 0 :=
+      hzero _ (P.absorbing_le_hsSpan (Submodule.starProjection_apply_mem _ _))
+    have heq : K₃.starProjection f = K₃.starProjection (P.absorbingᗮ.starProjection f) := by
+      conv_lhs => rw [← hsplit]
+      rw [map_add, hAz, zero_add]
+    have hle := K₃.norm_starProjection_apply_le (P.absorbingᗮ.starProjection f)
+    have hpy := Submodule.norm_sq_eq_add_norm_sq_starProjection f P.absorbing
+    rw [heq]
+    have h0 := norm_nonneg (K₃.starProjection (P.absorbingᗮ.starProjection f))
+    nlinarith
+  simp only [h₂, hH, hg, norm_zero]
+  have hneg : 0 ≤ ∑ p, 2 * P.mP p * ‖K₃.starProjection (P.h p)‖ ^ 2 :=
+    Finset.sum_nonneg fun p _ => mul_nonneg (mul_nonneg zero_le_two (hmP p)) (sq_nonneg _)
+  have hMs := Finset.sum_le_sum fun i (_ : i ∈ Finset.univ) => hM i
+  simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero,
+    Finset.sum_const_zero, zero_add, add_zero] at hMs ⊢
+  linarith
+
+/-- **Unnormalised Lamzouri inequality, trace form on the mixed range.**  With `mP ≥ 1` and any
+multiplicities `m₂`, bounding the mixed range by its trace instead of its dimension gives
+`4·mass − E − 2N + 2 Σ_H (1 − ‖f‖²) + Σ_M (2 + 4‖P_A f‖² − 4‖f‖²) ≤ #H + 2 Σ (2 − m₂)`.
+An absorbed mixed point (`f ∈ A`, `‖f‖ = 1`) earns `2`; a simple absorbing point costs `2`. -/
+theorem four_mass_sub_energy_le_trace (hmP : ∀ p, 1 ≤ P.mP p) :
+    4 * P.mass - P.energy - 2 * P.count + 2 * ∑ i, (1 - ‖P.fH i‖ ^ 2)
+      + ∑ i, (2 + 4 * ‖P.absorbing.starProjection (P.fM i)‖ ^ 2 - 4 * ‖P.fM i‖ ^ 2)
+      ≤ Fintype.card ιH + 2 * ∑ i, (2 - P.m₂ i) := by
+  have hmP0 : ∀ p, 0 ≤ P.mP p := fun p => le_trans zero_le_one (hmP p)
+  have hE : ∑ s, P.diagForm (P.frame s) ^ 2 ≤ P.energy :=
+    sum_sq_diag_le_energy P.frame P.vec
+      (fun k l => P.frame_parseval (P.vec_mem_fullSpan k) (P.vec l)) P.wt
+  have hM := P.mass_eq_frame_sum
+  simp only [frame, Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr] at hE hM
+  have hA1 := P.absorbing_sum_general hmP0
+  have hq₁ := sum_sq_ge_of_center
+    (fun j => P.diagForm ((stdOrthonormalBasis ℝ P.absorbing) j : V)) 2
+  have hd₁ : (finrank ℝ P.absorbing : ℝ) ≤ Fintype.card ι₂ + Fintype.card ιP := by
+    exact_mod_cast P.finrank_absorbing_le
+  have hq₂ := sum_sq_ge_of_center
+    (fun j => P.diagForm ((stdOrthonormalBasis ℝ (P.absorbingᗮ ⊓ P.hsSpan : Submodule ℝ V)) j : V)) 1
+  have hd₂ : (finrank ℝ (P.absorbingᗮ ⊓ P.hsSpan : Submodule ℝ V) : ℝ) ≤ Fintype.card ιH := by
+    exact_mod_cast P.finrank_hsSpan_inf_le
+  have hq₃ : 0 ≤ ∑ j, P.diagForm
+      ((stdOrthonormalBasis ℝ (P.hsSpanᗮ ⊓ P.positiveSpan : Submodule ℝ V)) j : V) ^ 2 :=
+    Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hb := P.mixed_range_trace_le hmP0
+  have hq₄ := P.negative_range_bound
+  have hΛ : 0 ≤ ∑ p, P.mP p * ‖P.positiveSpanᗮ.starProjection (P.h p)‖ ^ 2 :=
+    Finset.sum_nonneg fun p _ => mul_nonneg (hmP0 p) (sq_nonneg _)
+  have hmass := P.mass_expand
+  have hm₂s : ∑ i, (2 - P.m₂ i) = 2 * (Fintype.card ι₂ : ℝ) - ∑ i, P.m₂ i := by
+    simp [Finset.sum_sub_distrib, Finset.card_univ, mul_comm]
+  have hmPs : (Fintype.card ιP : ℝ) ≤ ∑ p, P.mP p := by
+    have := Finset.sum_le_sum fun p (_ : p ∈ Finset.univ) => hmP p
+    simpa [Finset.sum_const, Finset.card_univ, nsmul_eq_mul] using this
+  have eH : ∑ i, (1 - ‖P.fH i‖ ^ 2) = Fintype.card ιH - ∑ i, ‖P.fH i‖ ^ 2 := by
+    simp [Finset.sum_sub_distrib]
+  have eM : ∑ i, (2 + 4 * ‖P.absorbing.starProjection (P.fM i)‖ ^ 2 - 4 * ‖P.fM i‖ ^ 2)
+      = 2 * Fintype.card ιM + 4 * P.mixedOverlap - 4 * ∑ i, ‖P.fM i‖ ^ 2 := by
+    simp [Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.mul_sum, mixedOverlap]
+  have eb : ∑ i, (‖P.fM i‖ ^ 2 - ‖P.absorbing.starProjection (P.fM i)‖ ^ 2)
+      = ∑ i, ‖P.fM i‖ ^ 2 - P.mixedOverlap := by
+    simp [Finset.sum_sub_distrib, mixedOverlap]
+  rw [eb] at hb
+  simp only [one_pow, one_mul, mul_one] at hq₂
+  norm_num at hq₁
+  rw [eH, eM, hm₂s]
+  simp only [count]
+  linarith
+
 end HorizontalPacket
 
 /-! ### The overlap criterion for truncated sequences -/
