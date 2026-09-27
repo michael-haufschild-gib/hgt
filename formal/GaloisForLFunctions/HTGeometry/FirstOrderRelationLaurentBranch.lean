@@ -27,13 +27,13 @@ variable {K : Type} [Field K] [Algebra ℂ K]
 
 /-- The top symbol `Q(u,·)` of a first-order relation, at the value `u` of the first coordinate. -/
 def topSymbolAt (S : Finset (ℕ × ℕ)) (A : ℕ × ℕ → Polynomial ℂ) (d : ℕ) (u : K) : K[X] :=
-  ∑ i ∈ firstOrderTopNewtonFace S A d, Polynomial.C (Polynomial.aeval u (A i)) * X ^ i.2
+  ∑ i ∈ firstOrderTopNewtonFace S A d, Polynomial.C (Polynomial.aeval u (A i)) * Polynomial.X ^ i.2
 
 /-- The relation compactified at `V = ∞`: `t^d P(u, t^(-1), t^(-1) Y)` over `K[[t]]`. -/
 def relationCompactAt (S : Finset (ℕ × ℕ)) (A : ℕ × ℕ → Polynomial ℂ) (d : ℕ) (u : K) :
     (PowerSeries K)[X] :=
   ∑ i ∈ S, Polynomial.C (PowerSeries.C (Polynomial.aeval u (A i)) *
-    (PowerSeries.X : PowerSeries K) ^ (d - (i.1 + i.2))) * X ^ i.2
+    (PowerSeries.X : PowerSeries K) ^ (d - (i.1 + i.2))) * Polynomial.X ^ i.2
 
 /-- The special fibre of the compactified relation is the top symbol. -/
 theorem specialFiber_relationCompactAt (S : Finset (ℕ × ℕ)) (A : ℕ × ℕ → Polynomial ℂ) (d : ℕ)
@@ -53,6 +53,7 @@ theorem specialFiber_relationCompactAt (S : Finset (ℕ × ℕ)) (A : ℕ × ℕ
       Nat.sub_pos_of_lt (lt_of_le_of_ne (hdegree i hi) htop)
     simp [Polynomial.map_mul, Polynomial.map_C, Nat.ne_of_gt hpos]
 
+omit [Algebra ℂ K] in
 theorem laurent_single_one_pow (e : ℤ) (n : ℕ) :
     (HahnSeries.single e (1 : K)) ^ n = HahnSeries.single ((n : ℤ) * e) 1 := by
   induction n with
@@ -61,21 +62,23 @@ theorem laurent_single_one_pow (e : ℤ) (n : ℕ) :
       rw [pow_succ, ih, HahnSeries.single_mul_single]
       congr 1
       · push_cast
-        ring
+        ring_nf
       · simp
 
+omit [Algebra ℂ K] in
 theorem ofPowerSeries_expand_C_mul_X_pow (R e : ℕ) (hR : R ≠ 0) (c : K) :
     HahnSeries.ofPowerSeries ℤ K
         (PowerSeries.expand R hR (PowerSeries.C c * (PowerSeries.X : PowerSeries K) ^ e)) =
       HahnSeries.single ((R * e : ℕ) : ℤ) c := by
   rw [map_mul, map_pow, PowerSeries.expand_C, PowerSeries.expand_X, map_mul,
-    HahnSeries.ofPowerSeries_C, map_pow, map_pow, HahnSeries.ofPowerSeries_X, ← pow_mul,
-    HahnSeries.single_pow, one_pow]
-  rw [HahnSeries.C_apply, HahnSeries.single_mul_single, zero_add, mul_one]
-  congr 1
-  push_cast
-  ring
+    HahnSeries.ofPowerSeries_C, map_pow, map_pow, HahnSeries.ofPowerSeries_X, ← pow_mul]
+  induction R * e with
+  | zero => simp
+  | succ k ih =>
+      rw [pow_succ, ← mul_assoc, ih, HahnSeries.single_mul_single]
+      simp
 
+omit [Algebra ℂ K] in
 theorem relation_laurent_term_identity (R d j k : ℕ) (hR : R ≠ 0) (c : K)
     (z : PowerSeries K) (hdegree : j + k ≤ d) :
     HahnSeries.single ((R * d : ℕ) : ℤ) (1 : K) *
@@ -117,8 +120,8 @@ theorem eval₂_firstOrderMvPoly_laurent (S : Finset (ℕ × ℕ)) (A : ℕ × �
     map_sum]
   apply Finset.sum_congr rfl
   intro n _
-  rw [map_mul, map_pow, HahnSeries.C_eq_algebraMap, ← IsScalarTower.algebraMap_apply]
-  rfl
+  rw [map_mul, map_pow, HahnSeries.algebraMap_apply', PowerSeries.algebraMap_apply,
+    HahnSeries.ofPowerSeries_C]
 
 /-- The clearing identity: `t^(Rd) P(u, t^(-R), t^(-R) z) = (expanded compact relation)(z)`. -/
 theorem relation_laurent_mul_eq_compactEval (S : Finset (ℕ × ℕ)) (A : ℕ × ℕ → Polynomial ℂ)
@@ -132,7 +135,7 @@ theorem relation_laurent_mul_eq_compactEval (S : Finset (ℕ × ℕ)) (A : ℕ �
         (((relationCompactAt S A d u).map
           (PowerSeries.expand (R := K) R hR).toRingHom).eval z) := by
   classical
-  rw [Finset.mul_sum, relationCompactAt, Polynomial.map_sum, Polynomial.eval_finset_sum,
+  rw [Finset.mul_sum, relationCompactAt, Polynomial.map_sum, Polynomial.eval_finsetSum,
     map_sum]
   apply Finset.sum_congr rfl
   intro i hi

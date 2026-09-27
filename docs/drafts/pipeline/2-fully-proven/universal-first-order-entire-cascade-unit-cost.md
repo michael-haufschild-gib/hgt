@@ -10975,3 +10975,28 @@ With the formal upper bound, `ord_DA(F_n) = n`.
 
 The only analytic inputs are Reduction I for each single layer (formal) and the regularity lemma.
 The Lean plan follows this proof literally.
+
+### Lean build plan for the repaired Reduction III (2026-09-27)
+
+Modules (HTGeometry), in dependency order; status recorded as they close.
+
+1. `LaurentCoefficientEulerDerivation` — coefficientwise `ℂ`-derivation and Euler derivation
+   `t d/dt` on `K((t))` (scalar action fixed through `algebraMap`, `LaurentComplexDerivation`), and
+   their `HasLead` laws.  **Compiles.**
+2. `LaurentOutputJacobianLead` — `outputJacobian_det_ne_zero_of_hasLead`: under the three boundary
+   laws (`δ ↦ δc + d a₀ c`, lower `∂ⱼ` coefficientwise, terminal `∂ ↦ κ d c` at degree `+N`), a
+   nonzero lower Jacobian of `U = δh/h + d a₀` forces a nonzero output-jet Jacobian of `Y`.  Uses the
+   corpus Bell/terminal-scaled determinant identities.  **Compiles.**
+3. `FirstOrderRelationLaurentBranch` — `exists_relation_laurent_branch`: over any algebraically
+   closed char-0 field `K ⊇ ℂ`, every root `σ` of the top symbol `Q(u,·) ≠ 0` is the lead of a Laurent
+   root `W = t^(-R) z`, `z(0) = σ`, of `P(u, t^(-R), W)`.  **Compiles.**
+4. Base change of the Wiman top-symbol root into any `K((t))` (`embDomainRingHom` ∘ `hahnMapRingHom`),
+   with its `HasLead` and the nonvanishing of `Q(t^(-e),·)`.
+5. Regularity: `RatFunc ℂ` is relatively algebraically closed in `meroField univ`; hence `P_k` is
+   irreducible over every finite extension of `ℂ(U)` (primitive element + degree count) and, by
+   Zariski's lemma specialisation, over `F(V)` for every field `F ⊇ ℂ(U)`.
+6. The tower `C₀ = alg. closure of ℂ(z)`, `Lⱼ = C_(j-1)((tⱼ))`, `Cⱼ = alg. closure of Lⱼ` with
+   derivations; the embedding of the actual branch field (`Φ₀ = ℂ(z,X₁..Xₙ)`, then `bⱼ` one at a
+   time via `minpoly = Pⱼ`); differentiality by uniqueness of derivations on algebraic extensions.
+7. Upward descent `E(j)`, Jacobian criterion over `ℂ(z)` (`algebraicIndependent_of_domain_jacobian`),
+   transfer to `meroField`, and the capstone `ExactDifferentialOrder (entireCascade f n) n`.

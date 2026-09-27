@@ -44,11 +44,11 @@ private theorem band_norm_le (a : SuzukiPositiveAperture) (lo hi : ℝ)
     ‖ccmActualPrimeBandOperator a lo hi f‖ ≤ ccmActualPrimeBandMass a lo hi * ‖f‖ := by
   classical
   unfold ccmActualPrimeBandOperator ccmActualPrimeBandMass
-  rw [ContinuousLinearMap.sum_apply, Finset.sum_mul]
+  rw [_root_.sum_apply, Finset.sum_mul]
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum ?_)
   intro n hn
   have hw := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
-  rw [ContinuousLinearMap.smul_apply, norm_smul, Complex.norm_real,
+  rw [_root_.smul_apply, norm_smul, Complex.norm_real,
     Real.norm_eq_abs, abs_of_nonneg hw]
   apply mul_le_mul_of_nonneg_left _ hw
   exact (ContinuousLinearMap.le_opNorm _ f).trans (by
@@ -85,6 +85,25 @@ private theorem cross_pair_bound (a : SuzukiPositiveAperture) (ha : 4 < a.1)
   norm_num at h
   exact h
 
+private theorem finite_weighted_cross_bound
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    (s t : Finset ℕ) (x y : ℕ → E) (u v : ℕ → ℝ) (Q : ℝ)
+    (hu : ∀ i ∈ s, 0 ≤ u i) (hv : ∀ j ∈ t, 0 ≤ v j)
+    (hxy : ∀ i ∈ s, ∀ j ∈ t, 8 * (inner ℂ (x i) (y j)).re ≤ 7 * Q) :
+    8 * (inner ℂ (∑ i ∈ s, (u i : ℂ) • x i)
+      (∑ j ∈ t, (v j : ℂ) • y j)).re ≤
+        7 * (∑ i ∈ s, u i) * (∑ j ∈ t, v j) * Q := by
+  simp only [sum_inner, inner_sum, Complex.re_sum, Finset.mul_sum, Finset.sum_mul]
+  apply Finset.sum_le_sum
+  intro i hi
+  apply Finset.sum_le_sum
+  intro j hj
+  have h := mul_le_mul_of_nonneg_left (hxy i hi j hj) (mul_nonneg (hu i hi) (hv j hj))
+  rw [_root_.inner_smul_left (𝕜 := ℂ), _root_.inner_smul_right (𝕜 := ℂ)]
+  simp only [Complex.conj_ofReal, Complex.mul_re, Complex.mul_im,
+    Complex.ofReal_re, Complex.ofReal_im, zero_mul, mul_zero, sub_zero, add_zero]
+  nlinarith only [h]
+
 /-- A fixed interference constant for every cross term of the complete two bands. -/
 theorem ccmActualPrimeBands_cross_bound
     (a : {a : SuzukiPositiveAperture // 4 < a.1}) (f : suzukiApertureHilbert a.1) :
@@ -92,26 +111,16 @@ theorem ccmActualPrimeBands_cross_bound
       (ccmActualPrimeBandOperator a.1 1 0 f)).re ≤
         7 * ccmActualPrimeBandMass a.1 4 3 * ccmActualPrimeBandMass a.1 1 0 * ‖f‖ ^ 2 := by
   classical
-  have hpair (n m : ℕ) (hn : n ∈ ccmActualPrimeBand a.1 4 3)
-      (hm : m ∈ ccmActualPrimeBand a.1 1 0) :
-      8 * (inner ℂ
-        ((criticalMellinAtomWeight n : ℂ) •
-          ccmApertureCompression a.1 (ccmSymmetricLogTranslation (Real.log n)) f)
-        ((criticalMellinAtomWeight m : ℂ) •
-          ccmApertureCompression a.1 (ccmSymmetricLogTranslation (Real.log m)) f)).re ≤
-        7 * criticalMellinAtomWeight n * criticalMellinAtomWeight m * ‖f‖ ^ 2 := by
-    have h := mul_le_mul_of_nonneg_left (cross_pair_bound a.1 a.2 hn hm f)
-      (mul_nonneg
-        (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n)
-        (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer m))
-    rw [inner_smul_real_left, inner_smul_real_right]
-    simp only [Complex.smul_re, smul_eq_mul]
-    nlinarith only [h]
-  have hs := Finset.sum_le_sum fun n hn => Finset.sum_le_sum fun m hm => hpair n m hn hm
-  unfold ccmActualPrimeBandOperator ccmActualPrimeBandMass
-  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply,
-    sum_inner, inner_sum, Complex.re_sum]
-  simpa only [Finset.mul_sum, Finset.sum_mul, mul_assoc] using hs
+  have h := finite_weighted_cross_bound
+    (ccmActualPrimeBand a.1 4 3) (ccmActualPrimeBand a.1 1 0)
+    (fun n => ccmApertureCompression a.1 (ccmSymmetricLogTranslation (Real.log n)) f)
+    (fun n => ccmApertureCompression a.1 (ccmSymmetricLogTranslation (Real.log n)) f)
+    criticalMellinAtomWeight criticalMellinAtomWeight (‖f‖ ^ 2)
+    (fun n _ => criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n)
+    (fun n _ => criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n)
+    (fun n hn m hm => cross_pair_bound a.1 a.2 hn hm f)
+  simpa only [ccmActualPrimeBandOperator, ccmActualPrimeBandMass,
+    _root_.sum_apply, _root_.smul_apply] using h
 
 /-- Independent of the vector, its coefficients, and the number of atoms in either band. -/
 theorem ccmActualPrimeBands_sq_bound
@@ -127,7 +136,13 @@ theorem ccmActualPrimeBands_sq_bound
   have hLs := pow_le_pow_left₀ (norm_nonneg _) hL 2
   have hRs := pow_le_pow_left₀ (norm_nonneg _) hR 2
   have hcross := ccmActualPrimeBands_cross_bound a f
-  rw [norm_add_sq (𝕜 := ℂ)]
-  nlinarith only [hLs, hRs, hcross]
+  have hsum := norm_add_sq (𝕜 := ℂ)
+    (ccmActualPrimeBandOperator a.1 4 3 f) (ccmActualPrimeBandOperator a.1 1 0 f)
+  change ‖ccmActualPrimeBandOperator a.1 4 3 f + ccmActualPrimeBandOperator a.1 1 0 f‖ ^ 2 =
+    ‖ccmActualPrimeBandOperator a.1 4 3 f‖ ^ 2 +
+      2 * (inner ℂ (ccmActualPrimeBandOperator a.1 4 3 f)
+        (ccmActualPrimeBandOperator a.1 1 0 f)).re +
+      ‖ccmActualPrimeBandOperator a.1 1 0 f‖ ^ 2 at hsum
+  nlinarith only [hLs, hRs, hcross, hsum]
 
 end RHTower

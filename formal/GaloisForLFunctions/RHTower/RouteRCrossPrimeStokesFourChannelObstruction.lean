@@ -229,6 +229,74 @@ theorem no_direct_stokes_three_prime_potential :
   rw [h35, h57, h37]
   ring
 
+/-- **Neutral-grade slope of the `(3,5,7)` triangle charge.** The quotient `Ω(g)/g` has a limit
+at the neutral grade, and that limit is below `-(log 3)/2`. -/
+theorem exists_tendsto_stokes_triangle_357_slope :
+    ∃ L : ℝ, L < -(Real.log 3) / 2 ∧
+      Tendsto
+        (fun g : ℝ =>
+          (routeRCrossPrimeStokesOddCurvature 3 5 g +
+            routeRCrossPrimeStokesOddCurvature 5 7 g -
+            routeRCrossPrimeStokesOddCurvature 3 7 g) / g)
+        (𝓝[≠] (0 : ℝ)) (𝓝 L) :=
+  ⟨_, stokes_triangle_slope_strict.2, stokes_triangle_slope_strict.1⟩
+
+/-- Near the neutral grade the `(3,5,7)` triangle charge has sign opposite to `g`. -/
+theorem stokes_triangle_357_sign_opposite :
+    ∀ᶠ g : ℝ in 𝓝[≠] 0,
+      g * (routeRCrossPrimeStokesOddCurvature 3 5 g +
+        routeRCrossPrimeStokesOddCurvature 5 7 g -
+        routeRCrossPrimeStokesOddCurvature 3 7 g) < 0 := by
+  obtain ⟨L, hL, hlim⟩ := exists_tendsto_stokes_triangle_357_slope
+  have hL0 : L < 0 := by
+    have : 0 < Real.log (3 : ℝ) := log_three_five_seven.1
+    linarith
+  filter_upwards [hlim.eventually (eventually_lt_nhds hL0), self_mem_nhdsWithin] with g hg hg0
+  have hg0' : g ≠ 0 := hg0
+  have hsq : 0 < g * g := mul_self_pos.mpr hg0'
+  have hrw : g * (routeRCrossPrimeStokesOddCurvature 3 5 g +
+        routeRCrossPrimeStokesOddCurvature 5 7 g -
+        routeRCrossPrimeStokesOddCurvature 3 7 g) =
+      (g * g) * ((routeRCrossPrimeStokesOddCurvature 3 5 g +
+        routeRCrossPrimeStokesOddCurvature 5 7 g -
+        routeRCrossPrimeStokesOddCurvature 3 7 g) / g) := by
+    field_simp
+  rw [hrw]
+  exact mul_neg_of_pos_of_neg hsq hg
+
+/-- **Gauge invariance of the triangle charge.** Adding any one-particle potential difference
+`b_p - b_q` to every pair coefficient leaves the triangle charge unchanged. -/
+theorem triangle_charge_gauge_invariant (C : ℕ → ℕ → ℝ) (b : ℕ → ℝ) (p q r : ℕ) :
+    (C p q + (b p - b q)) + (C q r + (b q - b r)) - (C p r + (b p - b r)) =
+      C p q + C q r - C p r := by
+  ring
+
+/-- **Three-prime compensation law.** Any pair correction `B` that turns the analytic scalar into
+a potential difference on the three edges of `(3,5,7)` has triangle sum `-Ω(g)`. -/
+theorem stokes_triangle_357_compensation (B : ℕ → ℕ → ℝ) (a : ℕ → ℝ) (g : ℝ)
+    (h35 : routeRCrossPrimeStokesOddCurvature 3 5 g + B 3 5 = a 3 - a 5)
+    (h57 : routeRCrossPrimeStokesOddCurvature 5 7 g + B 5 7 = a 5 - a 7)
+    (h37 : routeRCrossPrimeStokesOddCurvature 3 7 g + B 3 7 = a 3 - a 7) :
+    B 3 5 + B 5 7 - B 3 7 =
+      -(routeRCrossPrimeStokesOddCurvature 3 5 g +
+        routeRCrossPrimeStokesOddCurvature 5 7 g -
+        routeRCrossPrimeStokesOddCurvature 3 7 g) := by
+  linarith
+
+/-- Near the neutral grade, the compensating pair correction is never itself a potential
+difference on `(3,5,7)`. -/
+theorem stokes_triangle_357_correction_not_potential :
+    ∀ᶠ g : ℝ in 𝓝[≠] 0, ∀ (B : ℕ → ℕ → ℝ) (a b : ℕ → ℝ),
+      routeRCrossPrimeStokesOddCurvature 3 5 g + B 3 5 = a 3 - a 5 →
+      routeRCrossPrimeStokesOddCurvature 5 7 g + B 5 7 = a 5 - a 7 →
+      routeRCrossPrimeStokesOddCurvature 3 7 g + B 3 7 = a 3 - a 7 →
+      ¬ (B 3 5 = b 3 - b 5 ∧ B 5 7 = b 5 - b 7 ∧ B 3 7 = b 3 - b 7) := by
+  filter_upwards [stokes_triangle_ne_zero_near_zero] with g hg B a b h35 h57 h37 hB
+  have hcomp := stokes_triangle_357_compensation B a g h35 h57 h37
+  obtain ⟨hb35, hb57, hb37⟩ := hB
+  rw [hb35, hb57, hb37] at hcomp
+  exact hg (by linarith)
+
 /-- First one-prime Stokes channel, `sinh(t) cosh(t)`. -/
 def stokesChannelU (p : ℕ) (g : ℝ) : ℝ :=
   Real.sinh (g * Real.log p / 2) * Real.cosh (g * Real.log p / 2)
@@ -265,7 +333,7 @@ theorem stokes_odd_four_channel {p q : ℕ} (hp : 1 < p) (hq : 1 < q)
       g * Real.log p / 2 + g * Real.log q / 2 := by ring
   rw [hsum, Real.sinh_add]
   field_simp [hA, hB]
-  <;> ring
+  ring
 
 end
 end RHTower
