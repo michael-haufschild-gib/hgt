@@ -29,9 +29,10 @@ theorem xiGaussianOrientationMonomialEnvelope_self (j : ℕ) (t : {t : ℝ // 0 
     push_cast
     ring
   have ht : (t : ℝ) ^ 2 / 2 * (2 / (t : ℝ)) ^ 2 = 2 := by
-    field_simp
+    field_simp [t.property.ne']
   unfold xiGaussianOrientationMonomialEnvelope xiGaussianOrientationOrderFactor
-  rw [show 2 * j + 4 = (2 * j + 2) + 2 by omega, hfac, pow_add]
+  rw [show 2 * j + 4 = (2 * j + 2) + 2 by omega, hfac (2 * j + 2),
+    pow_add (2 / (t : ℝ)) (2 * j + 2) 2]
   push_cast
   calc
     _ = (2 * (j : ℝ) ^ 2 +

@@ -180,6 +180,50 @@ theorem blockOverlap_lens (hconj : PhiHatConj T P) (hreal : PhiHatReal T P) (hL 
   rw [hin, hnz, hnx]
   exact h
 
+/-- **Quantitative absorption.**  If `x` is on the line and `|Im z − Im x|·L/2 ≤ π/2` with
+`cos((Im z − Im x)L/2) > 0`, the normalised real vectors `f` of `x` and `g` of `z` satisfy
+`2cos²((Im z − Im x)L/2)/cosh((Re z − ½)L/2) − 1 ≤ 1 + 2⟨f,g⟩²/‖g‖² − 2‖f‖²`. -/
+theorem blockOverlap_ge (hconj : PhiHatConj T P) (hreal : PhiHatReal T P) (hL : 0 < P.L T)
+    (hc : Continuous (P.phi T)) (hsupp : ∀ u, P.L T / 2 ≤ |u| → P.phi T u = 0) (ha : 0 < P.a T)
+    {x z : ZI Z T} (hx : (x : ℂ).re = 1 / 2)
+    (hΔ : |(z : ℂ).im - (x : ℂ).im| * (P.L T / 2) ≤ Real.pi / 2)
+    (hpos : 0 < Real.cos (((z : ℂ).im - (x : ℂ).im) * (P.L T / 2))) :
+    2 * Real.cos (((z : ℂ).im - (x : ℂ).im) * (P.L T / 2)) ^ 2
+        / Real.cosh (((z : ℂ).re - 1 / 2) * (P.L T / 2)) - 1
+      ≤ 1 + 2 * ⟪blockReVec (blockData Z T P hconj) (P.a T * P.L T ^ 2) x,
+          blockReVec (blockData Z T P hconj) (P.a T * P.L T ^ 2) z⟫ ^ 2
+        / ‖blockReVec (blockData Z T P hconj) (P.a T * P.L T ^ 2) z‖ ^ 2
+      - 2 * ‖blockReVec (blockData Z T P hconj) (P.a T * P.L T ^ 2) x‖ ^ 2 := by
+  set c := P.a T * P.L T ^ 2 with hcdef
+  set γ := (x : ℂ).im
+  set γ' := (z : ℂ).im
+  set ε := (z : ℂ).re - 1 / 2
+  have hgz : gammaOf (z : ℂ) = (γ' : ℂ) - ε * I := gammaOf_eq_im_sub _
+  have hgx : gammaOf (x : ℂ) = (γ : ℂ) := by
+    rw [gammaOf_eq_im_sub, hx]; simp; rfl
+  have h := lens_overlap_cost_ge P T hL hc hsupp hconj hreal ha γ γ' ε hΔ hpos
+  have hin : ⟪blockReVec (blockData Z T P hconj) c x, blockReVec (blockData Z T P hconj) c z⟫
+      = ∑ k : Fin (P.d T), (P.phiHat T ((γ : ℂ) - P.tau T k)).re / Real.sqrt c
+          * ((P.phiHat T ((γ' : ℂ) - ε * I - P.tau T k)).re / Real.sqrt c) := by
+    simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, blockReVec_apply]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    simp only [blockData, mkData_v, evalVec, hgz, hgx]
+    ring
+  have hnz : ‖blockReVec (blockData Z T P hconj) c z‖ ^ 2
+      = ∑ k : Fin (P.d T), ((P.phiHat T ((γ' : ℂ) - ε * I - P.tau T k)).re / Real.sqrt c) ^ 2 := by
+    rw [EuclideanSpace.norm_sq_eq]
+    simp only [blockReVec_apply, Real.norm_eq_abs, sq_abs]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    simp only [blockData, mkData_v, evalVec, hgz]
+  have hnx : ‖blockReVec (blockData Z T P hconj) c x‖ ^ 2
+      = ∑ k : Fin (P.d T), ((P.phiHat T ((γ : ℂ) - P.tau T k)).re / Real.sqrt c) ^ 2 := by
+    rw [EuclideanSpace.norm_sq_eq]
+    simp only [blockReVec_apply, Real.norm_eq_abs, sq_abs]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    simp only [blockData, mkData_v, evalVec, hgx]
+  rw [hin, hnz, hnx]
+  exact h
+
 /-- **Lens zero-side count.**  For the normalised sampled Weil matrix `Â` of the window `I′`,
 `4 tr Â − ‖Â‖² − 2N(I′)` is at most the number of simple on-line points of `I′` whose lens at scale
 `L` contains no multiple on-line point and no off-line point of `I′`. -/
@@ -204,6 +248,51 @@ theorem hatAz_lens (hconj : PhiHatConj T P) (hreal : PhiHatReal T P) (hPois : Po
     have h := (Finset.mem_filter.mp hxS1).2.1
     exact (mkData_σ_eq_iff Z T _ _ _).mp h
   exact blockOverlap_lens hconj hreal hL hc hsupp ha hxon hspec.2
+
+open scoped Classical in
+/-- A simple on-line point of `I′` with ordinate in `(T, 2T]` outside `lensMixed` is lens-isolated,
+provided the lens height `π/L` is at most `D₀(T)`. -/
+theorem lensIsolated_of_not_mem_lensMixed (hconj : PhiHatConj T P) {L : ℝ} (hL : 0 < L)
+    (hwin : Real.pi / L ≤ D0 T) {x : ZI Z T} (hxS1 : x ∈ (blockData Z T P hconj).S₁)
+    (hxnot : x ∉ lensMixed Z hconj L) (h1 : T < (x : ℂ).im) (h2 : (x : ℂ).im ≤ 2 * T) :
+    LensIsolated Z L (x : ℂ) := by
+  intro ρ' hρ' hne hlens
+  by_contra hbad
+  apply hxnot
+  refine Finset.mem_filter.mpr ⟨hxS1, ?_⟩
+  -- the lens is inside the window `I′`
+  have hdist : |ρ'.im - (x : ℂ).im| ≤ D0 T := by
+    have h := hlens.1
+    have : |ρ'.im - (x : ℂ).im| ≤ Real.pi / L := by
+      rw [le_div_iff₀ hL]; linarith
+    linarith
+  have hρ'ZI : ρ' ∈ ZI Z T := by
+    rw [mem_ZI, mem_ZIprime_iff]
+    refine ⟨hρ', ?_, ?_⟩
+    · have := (abs_le.mp hdist).1; linarith
+    · have := (abs_le.mp hdist).2; linarith
+  by_cases hon : ρ'.re = 1 / 2
+  · -- a multiple on-line point
+    have hm2 : 2 ≤ Z.mult ρ' := by
+      have h1 := Z.one_le_mult ρ' hρ'
+      have hne1 : Z.mult ρ' ≠ 1 := fun h => hbad ⟨hon, h⟩
+      omega
+    refine ⟨⟨ρ', hρ'ZI⟩, Or.inl ?_, hlens⟩
+    refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_, hm2⟩
+    exact (mkData_σ_eq_iff Z T _ _ _).mpr hon
+  · -- an off-line point: take the representative with `β > ½`
+    rcases lt_or_gt_of_ne hon with hlt | hgt
+    · refine ⟨⟨reflect ρ', reflect_mem_ZI Z T hρ'ZI⟩, Or.inr ?_, ?_⟩
+      · simp only [mkPairReps, Finset.mem_filter, Finset.mem_univ, true_and,
+          ZeroSide.reflect_re]
+        linarith
+      · refine ⟨?_, ?_⟩
+        · simp only [ZeroSide.reflect_im]; exact hlens.1
+        · simp only [ZeroSide.reflect_im, ZeroSide.reflect_re]
+          rw [show (1 - ρ'.re - 1 / 2) * (L / 2) = -((ρ'.re - 1 / 2) * (L / 2)) by ring,
+            Real.cosh_neg]
+          exact hlens.2
+    · exact ⟨⟨ρ', hρ'ZI⟩, Or.inr (by simp [mkPairReps]; linarith), hlens⟩
 
 /-- **From `I′` to `(T, 2T]`.**  The simple on-line points of `I′` outside `lensMixed` whose
 ordinate lies in `(T, 2T]` are lens-isolated, provided the lens height `π/L` is at most `D₀(T)`. -/
@@ -236,44 +325,8 @@ theorem card_S₁_sdiff_lensMixed_le (hconj : PhiHatConj T P) {L : ℝ} (hL : 0 
     · exact Or.inr ⟨hxZI.1, h2, hxZI.2.2⟩
     replace h1 : T < (x : ℂ).im := lt_of_not_ge h1
     replace h2 : (x : ℂ).im ≤ 2 * T := le_of_not_gt h2
-    refine Or.inl (Or.inl ⟨⟨⟨⟨hxZI.1, h1, h2⟩, hxon⟩, hxm⟩, ?_⟩)
-    intro ρ' hρ' hne hlens
-    by_contra hbad
-    apply hxnot
-    refine Finset.mem_filter.mpr ⟨hxS1, ?_⟩
-    -- the lens is inside the window `I′`
-    have hdist : |ρ'.im - (x : ℂ).im| ≤ D0 T := by
-      have h := hlens.1
-      have : |ρ'.im - (x : ℂ).im| ≤ Real.pi / L := by
-        rw [le_div_iff₀ hL]; linarith
-      linarith
-    have hρ'ZI : ρ' ∈ ZI Z T := by
-      rw [mem_ZI, mem_ZIprime_iff]
-      refine ⟨hρ', ?_, ?_⟩
-      · have := (abs_le.mp hdist).1; linarith
-      · have := (abs_le.mp hdist).2; linarith
-    by_cases hon : ρ'.re = 1 / 2
-    · -- a multiple on-line point
-      have hm2 : 2 ≤ Z.mult ρ' := by
-        have h1 := Z.one_le_mult ρ' hρ'
-        have hne1 : Z.mult ρ' ≠ 1 := fun h => hbad ⟨hon, h⟩
-        omega
-      refine ⟨⟨ρ', hρ'ZI⟩, Or.inl ?_, hlens⟩
-      refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_, hm2⟩
-      exact (mkData_σ_eq_iff Z T _ _ _).mpr hon
-    · -- an off-line point: take the representative with `β > ½`
-      rcases lt_or_gt_of_ne hon with hlt | hgt
-      · refine ⟨⟨reflect ρ', reflect_mem_ZI Z T hρ'ZI⟩, Or.inr ?_, ?_⟩
-        · simp only [mkPairReps, Finset.mem_filter, Finset.mem_univ, true_and,
-            ZeroSide.reflect_re]
-          linarith
-        · refine ⟨?_, ?_⟩
-          · simp only [ZeroSide.reflect_im]; exact hlens.1
-          · simp only [ZeroSide.reflect_im, ZeroSide.reflect_re]
-            rw [show (1 - ρ'.re - 1 / 2) * (L / 2) = -((ρ'.re - 1 / 2) * (L / 2)) by ring,
-              Real.cosh_neg]
-            exact hlens.2
-      · exact ⟨⟨ρ', hρ'ZI⟩, Or.inr (by simp [mkPairReps]; linarith), hlens⟩
+    exact Or.inl (Or.inl ⟨⟨⟨⟨hxZI.1, h1, h2⟩, hxon⟩, hxm⟩,
+      lensIsolated_of_not_mem_lensMixed hconj hL hwin hxS1 hxnot h1 h2⟩)
   have hfin : ∀ {T₁ T₂ : ℝ}, (Z.window T₁ T₂).Finite := fun {T₁ T₂} => Z.window_finite T₁ T₂
   have hSfin : S.Finite := hfin.subset (fun ρ h => h.1.1.1)
   calc ((blockData Z T P hconj).S₁ \ lensMixed Z hconj L).card = (A : Set ℂ).ncard := by

@@ -461,6 +461,19 @@ theorem lowHeightRoots_dist_le {γ₀ c δ H : ℝ} {Kset : Finset ℂ} (Z : Zer
   have := norm_sub_root_le hx key'.1 key'.2 hB0 le_rfl
   linarith
 
+/-- The tail bound of the low-height profile with the uniform constant `(H + |γ₀| + 1)^{4n+8}`. -/
+theorem lowHeight_tail_bound {γ₀ c δ H : ℝ} {Kset : Finset ℂ} (Z : ZeroConfig) (hH : 1 / 2 ≤ H)
+    (hcδ : c ∈ Icc (-δ) δ) (hδ2 : δ ≤ 1 / 2)
+    (hK : ∀ ρ ∈ Kset, ρ ∈ Z.carrier ∧ |ρ.im - γ₀| ≤ H) {k N₀ n E : ℕ}
+    (hk : k + 2 * (lowHeightRoots γ₀ c Kset).length + 1 = N₀) (hKn : Kset.card ≤ n)
+    (hE : E + 3 + 4 * (n + 2) ≤ 4 * N₀) (x : ℂ) (hx : |x.im| ≤ 1 / 2) :
+    ‖lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots γ₀ c Kset) x‖ ^ 2 *
+      (1 + |x.re|) ^ (3 + E) ≤ lowHeightTailConstant (H + |γ₀| + 1) N₀ n := by
+  have hroots := lowHeightRoots_dist_le (c := c) Z hH hcδ hδ2 hK hx
+  have hM : (1 : ℝ) ≤ H + |γ₀| + 1 := by have := abs_nonneg γ₀; linarith
+  exact norm_sq_lowHeightProfile_tail hM hx hroots hk
+    (by rw [lowHeightRoots_length]; omega) hE
+
 /-- The value of the profile at `x₀ = -iδ` factors as `G·(c + iδ)²`. -/
 theorem lowHeightProfile_x₀_eq (k : ℕ) (γ₀ c δ : ℝ) (Kset : Finset ℂ) :
     lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots γ₀ c Kset) (-(I * δ)) =
@@ -496,18 +509,21 @@ theorem lowHeight_pointwise (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z
     (hδ : 0 < δ) (hδ2 : δ ≤ 1 / 2) (hre : ρ₀.re = 1 / 2 + δ) (hγ : 1 ≤ |ρ₀.im|) {H : ℝ}
     (hH : 1 ≤ H) {Wn Kset : Finset ℂ}
     (hWn : ∀ ρ, ρ ∈ Wn ↔ ρ ∈ Z.carrier ∧ ρ₀.im - H < ρ.im ∧ ρ.im ≤ ρ₀.im + H)
-    (hKW : Kset ⊆ Wn) {n : ℕ} (hKn : Kset.card ≤ n) {ε η : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1)
+    {n : ℕ} (hKn : Kset.card ≤ n) {ε η : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1)
     (hη0 : 0 < η)
     (hclu : ∀ ρ ∈ Wn, ρ ∉ Kset →
       ‖(gammaOf ρ - ρ₀.im) - -(I * δ)‖ < ε ∨ ‖(gammaOf ρ - ρ₀.im) - I * δ‖ < ε)
     (hkil : ∀ ρ ∈ Kset,
       η ≤ ‖(gammaOf ρ - ρ₀.im) - -(I * δ)‖ ∧ η ≤ ‖(gammaOf ρ - ρ₀.im) - I * δ‖)
     {N₀ : ℕ} (hS : (N₀ : ℝ) * (4 * ε) + (2 * (n : ℝ)) * (ε / η) + 2 * ε + 2 * ε / δ ≤ 1 / 20)
-    {c : ℝ} (hc : c ∈ Icc (-δ) δ) {k : ℕ}
+    {c : ℝ} {k : ℕ}
     (hk : k + 2 * (lowHeightRoots ρ₀.im c Kset).length + 1 = N₀)
     (hF0re : (lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots ρ₀.im c Kset)
       (-(I * δ))).re = 0)
-    {E : ℕ} (hE : E + 3 + 4 * (n + 2) ≤ 4 * N₀) (ρ : Z.carrier) :
+    {E : ℕ} {C₁ : ℝ}
+    (htl : ∀ x : ℂ, |x.im| ≤ 1 / 2 →
+      ‖lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots ρ₀.im c Kset) x‖ ^ 2 *
+        (1 + |x.re|) ^ (3 + E) ≤ C₁) (ρ : Z.carrier) :
     (Z.Wsummand (lowHeightTest ρ₀.im (sinhTestWeight 1) k (lowHeightRoots ρ₀.im c Kset))
         (lowHeightTest ρ₀.im (sinhTestWeight 1) k (lowHeightRoots ρ₀.im c Kset)) ρ).re ≤
       (if ρ = ⟨ρ₀, hρ₀⟩ then -(79 / 100 * (Z.mult ρ₀ : ℝ) *
@@ -516,7 +532,7 @@ theorem lowHeight_pointwise (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z
       (if ρ = ⟨reflect ρ₀, Z.reflect_mem ρ₀ hρ₀⟩ then -(79 / 100 * (Z.mult ρ₀ : ℝ) *
           ‖lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots ρ₀.im c Kset) (-(I * δ))‖ ^ 2)
         else 0) +
-      lowHeightTail Z Wn ρ₀.im H (lowHeightTailConstant (H + |ρ₀.im| + 1) N₀ n) E ρ := by
+      lowHeightTail Z Wn ρ₀.im H C₁ E ρ := by
   classical
   set γ₀ := ρ₀.im with hγ₀
   set L := lowHeightRoots γ₀ c Kset with hL
@@ -565,8 +581,7 @@ theorem lowHeight_pointwise (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z
     have := congrArg (fun x : Z.carrier => (x : ℂ).re) h
     simp only [reflect, Complex.sub_re, Complex.one_re, Complex.conj_re, hre] at this
     linarith
-  have hT0 : ∀ σ : Z.carrier, (σ : ℂ) ∈ Wn →
-      lowHeightTail Z Wn γ₀ H (lowHeightTailConstant (H + |γ₀| + 1) N₀ n) E σ = 0 := by
+  have hT0 : ∀ σ : Z.carrier, (σ : ℂ) ∈ Wn → lowHeightTail Z Wn γ₀ H C₁ E σ = 0 := by
     intro σ hσ; simp [lowHeightTail, hσ]
   rw [hWs]
   by_cases h0 : ρ = ⟨ρ₀, hρ₀⟩
@@ -620,13 +635,7 @@ theorem lowHeight_pointwise (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z
     have hxim : |x.im| ≤ 1 / 2 := by
       rw [hxdef, Complex.sub_im, WeilEF.gammaOf_im, Complex.ofReal_im, sub_zero, abs_le]
       constructor <;> linarith [hst.1, hst.2]
-    have hKH : ∀ σ ∈ Kset, σ ∈ Z.carrier ∧ |σ.im - γ₀| ≤ H := by
-      intro σ hσ
-      obtain ⟨hσZ, h1, h2⟩ := (hWn σ).mp (hKW hσ)
-      exact ⟨hσZ, abs_le.mpr ⟨by linarith, by linarith⟩⟩
-    have hroots := lowHeightRoots_dist_le (c := c) Z (by linarith : (1 : ℝ) / 2 ≤ H) hc hδ2 hKH hxim
-    have hM : (1 : ℝ) ≤ H + |γ₀| + 1 := by have := abs_nonneg γ₀; linarith
-    have htail := norm_sq_lowHeightProfile_tail hM hxim hroots hk (by rw [hLlen]; omega) hE
+    have htail := htl x hxim
     rw [hxre] at htail
     set D := 1 + |(ρ : ℂ).im - γ₀| with hD
     have hD1 : 1 + H ≤ D := by rw [hD]; linarith
@@ -635,7 +644,7 @@ theorem lowHeight_pointwise (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z
     have hDE : (1 + H) ^ E * D ^ 3 ≤ D ^ (3 + E) := by
       rw [pow_add, mul_comm]
       exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hHpos.le hD1 E) (by positivity)
-    have hFbound : ‖F x‖ ^ 2 ≤ lowHeightTailConstant (H + |γ₀| + 1) N₀ n / ((1 + H) ^ E * D ^ 3) := by
+    have hFbound : ‖F x‖ ^ 2 ≤ C₁ / ((1 + H) ^ E * D ^ 3) := by
       rw [le_div_iff₀ (by positivity)]
       calc ‖F x‖ ^ 2 * ((1 + H) ^ E * D ^ 3) ≤ ‖F x‖ ^ 2 * D ^ (3 + E) :=
             mul_le_mul_of_nonneg_left hDE (sq_nonneg _)
@@ -643,8 +652,7 @@ theorem lowHeight_pointwise (Z : ZeroConfig) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z
     simp only [lowHeightTail, if_neg hW]
     calc ((Z.mult (ρ : ℂ) : ℂ) * F x ^ 2).re ≤ ‖(Z.mult (ρ : ℂ) : ℂ) * F x ^ 2‖ := Complex.re_le_norm _
       _ = (Z.mult (ρ : ℂ) : ℝ) * ‖F x‖ ^ 2 := by rw [norm_mul, norm_pow, Complex.norm_natCast]
-      _ ≤ (Z.mult (ρ : ℂ) : ℝ) *
-          (lowHeightTailConstant (H + |γ₀| + 1) N₀ n / ((1 + H) ^ E * D ^ 3)) :=
+      _ ≤ (Z.mult (ρ : ℂ) : ℝ) * (C₁ / ((1 + H) ^ E * D ^ 3)) :=
           mul_le_mul_of_nonneg_left hFbound hmρ
       _ = _ := by ring
 
@@ -741,35 +749,31 @@ theorem re_W_lowHeightTest_le (Z : ZeroConfig) {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
     (hδ : 0 < δ) (hδ2 : δ ≤ 1 / 2) (hre : ρ₀.re = 1 / 2 + δ) (hγ : 1 ≤ |ρ₀.im|) {H : ℝ}
     (hH : 1 ≤ H) {Wn Kset : Finset ℂ}
     (hWn : ∀ ρ, ρ ∈ Wn ↔ ρ ∈ Z.carrier ∧ ρ₀.im - H < ρ.im ∧ ρ.im ≤ ρ₀.im + H)
-    (hKW : Kset ⊆ Wn) {n : ℕ} (hKn : Kset.card ≤ n) {ε η : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1)
+    {n : ℕ} (hKn : Kset.card ≤ n) {ε η : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1)
     (hη0 : 0 < η)
     (hclu : ∀ ρ ∈ Wn, ρ ∉ Kset →
       ‖(gammaOf ρ - ρ₀.im) - -(I * δ)‖ < ε ∨ ‖(gammaOf ρ - ρ₀.im) - I * δ‖ < ε)
     (hkil : ∀ ρ ∈ Kset,
       η ≤ ‖(gammaOf ρ - ρ₀.im) - -(I * δ)‖ ∧ η ≤ ‖(gammaOf ρ - ρ₀.im) - I * δ‖)
     {N₀ : ℕ} (hS : (N₀ : ℝ) * (4 * ε) + (2 * (n : ℝ)) * (ε / η) + 2 * ε + 2 * ε / δ ≤ 1 / 20)
-    {c : ℝ} (hc : c ∈ Icc (-δ) δ) {k : ℕ}
+    {c : ℝ} {k : ℕ}
     (hk : k + 2 * (lowHeightRoots ρ₀.im c Kset).length + 1 = N₀)
     (hF0re : (lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots ρ₀.im c Kset)
       (-(I * δ))).re = 0)
-    {E : ℕ} (hE : E + 3 + 4 * (n + 2) ≤ 4 * N₀) :
+    {E : ℕ} {C₁ : ℝ}
+    (htl : ∀ x : ℂ, |x.im| ≤ 1 / 2 →
+      ‖lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots ρ₀.im c Kset) x‖ ^ 2 *
+        (1 + |x.re|) ^ (3 + E) ≤ C₁) :
     (Z.W (lowHeightTest ρ₀.im (sinhTestWeight 1) k (lowHeightRoots ρ₀.im c Kset))
         (lowHeightTest ρ₀.im (sinhTestWeight 1) k (lowHeightRoots ρ₀.im c Kset))).re ≤
       -(79 / 50) * ‖lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots ρ₀.im c Kset)
-        (-(I * δ))‖ ^ 2 +
-      lowHeightTailConstant (H + |ρ₀.im| + 1) N₀ n / (1 + H) ^ E *
-        (24 * A₀ * Real.log (|ρ₀.im| + 3)) := by
+        (-(I * δ))‖ ^ 2 + C₁ / (1 + H) ^ E * (24 * A₀ * Real.log (|ρ₀.im| + 3)) := by
   classical
   set γ₀ := ρ₀.im with hγ₀
-  set C₁ := lowHeightTailConstant (H + |γ₀| + 1) N₀ n with hC₁
-  have hC₁0 : 0 ≤ C₁ := lowHeightTailConstant_nonneg (by positivity) N₀ n
+  have hC₁0 : 0 ≤ C₁ := by
+    have h := htl 0 (by simp)
+    exact le_trans (by positivity) h
   obtain ⟨hwsum, hwle⟩ := window_tsum_le Z hA₀ hloc γ₀
-  have hLlen := lowHeightRoots_length γ₀ c Kset
-  have hKH : ∀ σ ∈ Kset, σ ∈ Z.carrier ∧ |σ.im - γ₀| ≤ H := by
-    intro σ hσ
-    obtain ⟨hσZ, h1, h2⟩ := (hWn σ).mp (hKW hσ)
-    exact ⟨hσZ, abs_le.mpr ⟨by linarith, by linarith⟩⟩
-  have hM : (1 : ℝ) ≤ H + |γ₀| + 1 := by have := abs_nonneg γ₀; linarith
   -- summability
   have hbound : ∀ ρ : Z.carrier,
       ‖Z.Wsummand (lowHeightTest γ₀ (sinhTestWeight 1) k (lowHeightRoots γ₀ c Kset))
@@ -781,10 +785,12 @@ theorem re_W_lowHeightTest_le (Z : ZeroConfig) {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
       rw [Complex.sub_im, WeilEF.gammaOf_im, Complex.ofReal_im, sub_zero, abs_le]
       constructor <;> linarith [hst.1, hst.2]
     have hxre : (gammaOf (ρ : ℂ) - γ₀).re = (ρ : ℂ).im - γ₀ := by simp [WeilEF.gammaOf_re]
-    have hroots := lowHeightRoots_dist_le (c := c) Z (by linarith : (1 : ℝ) / 2 ≤ H) hc hδ2 hKH
-      hxim
-    have htail := norm_sq_lowHeightProfile_tail (E := 0) (n := n) hM hxim hroots hk
-      (by rw [hLlen]; omega) (by omega)
+    have htail : ‖lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots γ₀ c Kset)
+        (gammaOf ρ - γ₀)‖ ^ 2 * (1 + |(gammaOf (ρ : ℂ) - γ₀).re|) ^ 3 ≤ C₁ := by
+      refine le_trans ?_ (htl _ hxim)
+      gcongr
+      · linarith [abs_nonneg (gammaOf (ρ : ℂ) - γ₀).re]
+      · omega
     rw [hxre] at htail
     rw [Wsummand_lowHeightTest (sinhTestWeight_contDiff 1) (sinhTestWeight_even 1)
       (sinhTestWeight_supp zero_le_one), norm_mul, norm_pow, Complex.norm_natCast]
@@ -799,8 +805,8 @@ theorem re_W_lowHeightTest_le (Z : ZeroConfig) {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
       _ = C₁ * ((Z.mult ρ : ℝ) / (1 + |(ρ : ℂ).im - γ₀|) ^ 3) := by ring
   have hsum := Summable.of_norm_bounded (hwsum.mul_left C₁) hbound
   -- pointwise and summation
-  have hpt := lowHeight_pointwise Z hρ₀ hδ hδ2 hre hγ hH hWn hKW hKn hε0 hε1 hη0 hclu hkil hS hc
-    hk hF0re hE
+  have hpt := lowHeight_pointwise Z hρ₀ hδ hδ2 hre hγ hH hWn hKn hε0 hε1 hη0 hclu hkil hS
+    hk hF0re htl
   have hW := re_W_le_of_pointwise Z _ hsum _ _ _ (T := lowHeightTail Z Wn γ₀ H C₁ E)
     (by
       refine Summable.of_nonneg_of_le (fun ρ => ?_) (fun ρ => ?_) (hwsum.mul_left (C₁ / (1 + H) ^ E))
@@ -841,13 +847,13 @@ theorem re_W_lowHeightTest_le (Z : ZeroConfig) {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
     (-(I * δ))‖
   nlinarith
 
-/-- The floor for the deep-zero value of the low-height profile. -/
-theorem lowHeightFloor_le {γ₀ c δ η : ℝ} {Kset : Finset ℂ} {k N₀ n : ℕ} (hδ : 0 < δ)
-    (hγ : 1 ≤ |γ₀|) (hη0 : 0 < η) (hη1 : η ≤ 1)
-    (hηlow : lowHeightEps0 δ N₀ / lowHeightScale n ^ n ≤ η) (hKn : Kset.card ≤ n)
+/-- The deep-zero value of the low-height profile is at least `w₁^{2N₀} η^{4n} δ⁴` when every
+killed root is at distance `≥ η` from `±iδ`. -/
+theorem norm_sq_lowHeightProfile_x₀_ge {γ₀ c δ η : ℝ} {Kset : Finset ℂ} {k N₀ n : ℕ}
+    (hδ : 0 < δ) (hγ : 1 ≤ |γ₀|) (hη0 : 0 < η) (hη1 : η ≤ 1) (hKn : Kset.card ≤ n)
     (hkil : ∀ ρ ∈ Kset, η ≤ ‖(gammaOf ρ - γ₀) - -(I * δ)‖ ∧ η ≤ ‖(gammaOf ρ - γ₀) - I * δ‖)
     (hk : k + 2 * (lowHeightRoots γ₀ c Kset).length + 1 = N₀) :
-    lowHeightFloor δ N₀ n ≤
+    unitWeightFloor ^ (2 * N₀) * η ^ (4 * n) * δ ^ 4 ≤
       ‖lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots γ₀ c Kset) (-(I * δ))‖ ^ 2 := by
   have hW : unitWeightFloor ≤ ‖paperFT (fun u => (sinhTestWeight 1 u : ℂ)) (-(I * δ))‖ := by
     rw [paperFT_unitWeight_neg_I_mul, Complex.norm_real, Real.norm_eq_abs]
@@ -873,6 +879,18 @@ theorem lowHeightFloor_le {γ₀ c δ η : ℝ} {Kset : Finset ℂ} {k N₀ n : 
   have hpos : 0 ≤ unitWeightFloor ^ N₀ * η ^ (2 * n) * δ ^ 2 := by
     have := unitWeightFloor_pos; positivity
   have hsq := pow_le_pow_left₀ hpos hlow 2
+  calc unitWeightFloor ^ (2 * N₀) * η ^ (4 * n) * δ ^ 4
+      = (unitWeightFloor ^ N₀ * η ^ (2 * n) * δ ^ 2) ^ 2 := by ring
+    _ ≤ _ := hsq
+
+/-- The floor for the deep-zero value of the low-height profile. -/
+theorem lowHeightFloor_le {γ₀ c δ η : ℝ} {Kset : Finset ℂ} {k N₀ n : ℕ} (hδ : 0 < δ)
+    (hγ : 1 ≤ |γ₀|) (hη0 : 0 < η) (hη1 : η ≤ 1)
+    (hηlow : lowHeightEps0 δ N₀ / lowHeightScale n ^ n ≤ η) (hKn : Kset.card ≤ n)
+    (hkil : ∀ ρ ∈ Kset, η ≤ ‖(gammaOf ρ - γ₀) - -(I * δ)‖ ∧ η ≤ ‖(gammaOf ρ - γ₀) - I * δ‖)
+    (hk : k + 2 * (lowHeightRoots γ₀ c Kset).length + 1 = N₀) :
+    lowHeightFloor δ N₀ n ≤
+      ‖lowHeightProfile (sinhTestWeight 1) k (lowHeightRoots γ₀ c Kset) (-(I * δ))‖ ^ 2 := by
   have hε₀0 : 0 ≤ lowHeightEps0 δ N₀ / lowHeightScale n ^ n := by
     unfold lowHeightEps0 lowHeightScale
     have := lt_min hδ one_pos
@@ -883,8 +901,7 @@ theorem lowHeightFloor_le {γ₀ c δ η : ℝ} {Kset : Finset ℂ} {k N₀ n : 
       ≤ unitWeightFloor ^ (2 * N₀) * η ^ (4 * n) * δ ^ 4 := by
         have := unitWeightFloor_pos
         gcongr
-    _ = (unitWeightFloor ^ N₀ * η ^ (2 * n) * δ ^ 2) ^ 2 := by ring
-    _ ≤ _ := hsq
+    _ ≤ _ := norm_sq_lowHeightProfile_x₀_ge hδ hγ hη0 hη1 hKn hkil hk
 
 /-- **Quantitative Weil criterion at low height.**  Let `Z` be a zero configuration with local
 count `N(t, t+1] ≤ A₀ log(|t| + 3)`, and let `ρ₀ = ½ + δ + iγ₀` be a zero with `δ > 0` and
@@ -958,8 +975,13 @@ theorem exists_hodge_violation_low_height (Z : ZeroConfig) {A₀ : ℝ} (hA₀ :
     have : -(I / 2) - (ρ₀.im : ℂ) = conj (⟨-ρ₀.im, 1 / 2⟩ : ℂ) := by apply Complex.ext <;> simp
     rw [this]
     exact lowHeightProfile_eq_zero_of_conj_mem (by unfold lowHeightRoots; simp)
-  · have hW := re_W_lowHeightTest_le Z hA₀ hloc hρ₀ hδ hδ2 hre hγ hH hWn hKW hKn hε0 hε1 hη0
-      hclu hkil hS hc hk hF0re (E := 4 * N₀ - 4 * n - 11) (by omega)
+  · have hKH : ∀ σ ∈ Kset, σ ∈ Z.carrier ∧ |σ.im - ρ₀.im| ≤ H := by
+      intro σ hσ
+      obtain ⟨hσZ, h1, h2⟩ := (hWn σ).mp (hKW hσ)
+      exact ⟨hσZ, abs_le.mpr ⟨by linarith, by linarith⟩⟩
+    have hW := re_W_lowHeightTest_le Z hA₀ hloc hρ₀ hδ hδ2 hre hγ hH hWn hKn hε0 hε1 hη0
+      hclu hkil hS hk hF0re (E := 4 * N₀ - 4 * n - 11)
+      (lowHeight_tail_bound Z (by linarith) hc hδ2 hKH hk hKn (by omega))
     have hfloor := lowHeightFloor_le hδ hγ hη0 hη1 hηlow hKn hkil hk
     have hHE : 0 < (1 + H) ^ (4 * N₀ - 4 * n - 11) := by positivity
     have hkey : lowHeightTailConstant (H + |ρ₀.im| + 1) N₀ n / (1 + H) ^ (4 * N₀ - 4 * n - 11) *

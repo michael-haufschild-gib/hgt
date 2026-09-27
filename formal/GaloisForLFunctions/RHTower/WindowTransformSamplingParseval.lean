@@ -393,28 +393,29 @@ theorem paperFT_cosh_eq_re (Q : Zeta23.Params) (T : ℝ) (hc : Continuous (Q.phi
   rw [hconj']
   apply Complex.ext <;> simp
 
-theorem overlap_bound_aux {L c I₀ I₁ I₂ : ℝ} (hL : 0 < L) (hcI : c = L * I₀) (hI₀ : 0 < I₀)
-    (hI₂ : 0 < I₂) (key : I₀ * I₂ ≤ 2 * I₁ ^ 2) :
-    0 ≤ 2 * (L * I₁ / c) ^ 2 / (L * I₂ / c) - 1 := by
+theorem overlap_bound_aux_ge {L c I₀ I₁ I₂ C c₀ : ℝ} (hL : 0 < L) (hcI : c = L * I₀)
+    (hI₀ : 0 < I₀) (hI₂ : 0 < I₂) (hC : 0 < C) (key : c₀ ^ 2 * (I₀ * I₂) ≤ C * I₁ ^ 2) :
+    2 * c₀ ^ 2 / C - 1 ≤ 2 * (L * I₁ / c) ^ 2 / (L * I₂ / c) - 1 := by
   subst hcI
   have e : 2 * (L * I₁ / (L * I₀)) ^ 2 / (L * I₂ / (L * I₀)) = 2 * I₁ ^ 2 / (I₀ * I₂) := by
     field_simp
-  rw [e, sub_nonneg, le_div_iff₀ (mul_pos hI₀ hI₂), one_mul]
-  exact key
+  rw [e, sub_le_sub_iff_right, div_le_div_iff₀ hC (mul_pos hI₀ hI₂)]
+  nlinarith
 
 open GaloisForLFunctions.HilbertMetric in
-/-- **Lens overlap cost.**  Let `f_k = Re φ̂(γ − τ_k)/√c` and `g_k = Re φ̂(γ' − iε − τ_k)/√c`,
-`c = aL²`, on the grid `k < d`.  If `|γ' − γ|·L/2 ≤ π/2` and
-`cosh(εL/2) ≤ 2 cos²((γ' − γ)L/2)`, then `0 ≤ 1 + 2⟨f,g⟩²/‖g‖² − 2‖f‖²`.  On the full grid
+/-- **Lens overlap cost, quantitative.**  Let `f_k = Re φ̂(γ − τ_k)/√c` and
+`g_k = Re φ̂(γ' − iε − τ_k)/√c`, `c = aL²`, on the grid `k < d`.  If `|γ' − γ|·L/2 ≤ π/2` and
+`cos((γ' − γ)L/2) > 0`, then `2cos²((γ' − γ)L/2)/cosh(εL/2) − 1 ≤ 1 + 2⟨f,g⟩²/‖g‖² − 2‖f‖²`.  On the full grid
 `⟨f,g⟩ = ∫φ²cosh(ε·)cos((γ'−γ)·)/∫φ² ≥ cos((γ'−γ)L/2)·J`, `J = ∫φ²cosh(ε·)/∫φ² ≥ 1`, and
 `‖g‖² = ∫φ²cosh²(ε·)/∫φ² ≤ cosh(εL/2)·J`; the overlap criterion transfers
-`2⟨f,g⟩²/‖g‖² ≥ 1` to the truncated grid. -/
-theorem lens_overlap_cost (Q : Zeta23.Params) (T : ℝ) (hL : 0 < Q.L T)
+its full-grid lower bound to the truncated grid. -/
+theorem lens_overlap_cost_ge (Q : Zeta23.Params) (T : ℝ) (hL : 0 < Q.L T)
     (hc : Continuous (Q.phi T)) (hsupp : ∀ u, Q.L T / 2 ≤ |u| → Q.phi T u = 0)
     (hconj : Zeta23.ZeroSide.PhiHatConj T Q) (hreal : Zeta23.ZeroSide.PhiHatReal T Q)
     (ha : 0 < Q.a T) (γ γ' ε : ℝ) (hΔ : |γ' - γ| * (Q.L T / 2) ≤ Real.pi / 2)
-    (hε : Real.cosh (ε * (Q.L T / 2)) ≤ 2 * Real.cos ((γ' - γ) * (Q.L T / 2)) ^ 2) :
-    0 ≤ 1 + 2 * (∑ k : Fin (Q.d T),
+    (hpos : 0 < Real.cos ((γ' - γ) * (Q.L T / 2))) :
+    2 * Real.cos ((γ' - γ) * (Q.L T / 2)) ^ 2 / Real.cosh (ε * (Q.L T / 2)) - 1
+      ≤ 1 + 2 * (∑ k : Fin (Q.d T),
           (Q.phiHat T ((γ : ℂ) - Q.tau T k)).re / Real.sqrt (Q.a T * Q.L T ^ 2)
             * ((Q.phiHat T ((γ' : ℂ) - ε * I - Q.tau T k)).re / Real.sqrt (Q.a T * Q.L T ^ 2))) ^ 2
         / (∑ k : Fin (Q.d T),
@@ -555,13 +556,7 @@ theorem lens_overlap_cost (Q : Zeta23.Params) (T : ℝ) (hL : 0 < Q.L T)
     rw [this]
     nlinarith [mul_le_mul_of_nonneg_left hc2 (mul_nonneg hφ2 (by linarith : (0:ℝ) ≤ Real.cosh (ε * u)))]
   have hC1 : 1 ≤ C := Real.one_le_cosh _
-  have hc₀pos : 0 < c₀ := by
-    rcases hc₀nn.lt_or_eq with h | h
-    · exact h
-    · exfalso
-      rw [← h] at hε
-      norm_num at hε
-      linarith
+  have hc₀pos : 0 < c₀ := hpos
   have hJpos : 0 < J := lt_of_lt_of_le hI₀pos hI0J
   have hI₁pos : 0 < I₁ := lt_of_lt_of_le (mul_pos hc₀pos hJpos) hI1J
   have hKpos : 0 < L * I₁ / c := by positivity
@@ -570,7 +565,7 @@ theorem lens_overlap_cost (Q : Zeta23.Params) (T : ℝ) (hL : 0 < Q.L T)
   have hinj : Function.Injective (fun k : Fin (Q.d T) => ((k : ℕ) : ℤ)) := by
     intro a b h; simp only [Nat.cast_inj] at h; exact Fin.ext h
   have hcrit := overlap_criterion hFt hFG hGG hKpos s
-  have hlow : 0 ≤ 2 * (L * I₁ / c) ^ 2 / (L * I₂ / c) - 1 := by
+  have hlow : 2 * c₀ ^ 2 / C - 1 ≤ 2 * (L * I₁ / c) ^ 2 / (L * I₂ / c) - 1 := by
     have hI₂pos : 0 < I₂ := by
       have h1 : I₀ ≤ I₂ := by
         apply intervalIntegral.integral_mono_on (by linarith)
@@ -583,15 +578,13 @@ theorem lens_overlap_cost (Q : Zeta23.Params) (T : ℝ) (hL : 0 < Q.L T)
         nlinarith [sq_nonneg (φ u)]
       linarith
     have k2 : c₀ * J * (c₀ * J) ≤ I₁ * I₁ := mul_le_mul hI1J hI1J (by positivity) hI₁pos.le
-    have key : I₀ * I₂ ≤ 2 * I₁ ^ 2 :=
-      calc I₀ * I₂ = I₂ * I₀ := by ring
-        _ ≤ C * J * J := mul_le_mul hI2J hI0J hI₀pos.le (by positivity)
-        _ ≤ 2 * c₀ ^ 2 * J * J := mul_le_mul_of_nonneg_right
-            (mul_le_mul_of_nonneg_right hε hJpos.le) hJpos.le
-        _ = 2 * (c₀ * J * (c₀ * J)) := by ring
-        _ ≤ 2 * (I₁ * I₁) := by linarith [k2]
-        _ = 2 * I₁ ^ 2 := by ring
-    exact overlap_bound_aux hL hcI hI₀pos hI₂pos key
+    have key : c₀ ^ 2 * (I₀ * I₂) ≤ C * I₁ ^ 2 :=
+      calc c₀ ^ 2 * (I₀ * I₂) ≤ c₀ ^ 2 * (J * (C * J)) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul hI0J hI2J hI₂pos.le hJpos.le) (sq_nonneg _)
+        _ = C * (c₀ * J * (c₀ * J)) := by ring
+        _ ≤ C * (I₁ * I₁) := mul_le_mul_of_nonneg_left k2 (by linarith)
+        _ = C * I₁ ^ 2 := by ring
+    exact overlap_bound_aux_ge hL hcI hI₀pos hI₂pos (by linarith) key
   have hFk : ∀ k : Fin (Q.d T), F ((k : ℕ) : ℤ)
       = (Q.phiHat T ((γ : ℂ) - Q.tau T k)).re / Real.sqrt c := by
     intro k
@@ -609,6 +602,43 @@ theorem lens_overlap_cost (Q : Zeta23.Params) (T : ℝ) (hL : 0 < Q.L T)
   rw [Finset.sum_image (fun a _ b _ h => hinj h), Finset.sum_image (fun a _ b _ h => hinj h),
     Finset.sum_image (fun a _ b _ h => hinj h)] at hcrit
   simp only [hFk, hGk] at hcrit
+  linarith
+
+/-- **Lens overlap cost.**  If `|γ' − γ|·L/2 ≤ π/2` and `cosh(εL/2) ≤ 2cos²((γ' − γ)L/2)`, then
+`0 ≤ 1 + 2⟨f,g⟩²/‖g‖² − 2‖f‖²` for the sampled real vectors of `γ` and of `γ' − iε`. -/
+theorem lens_overlap_cost (Q : Zeta23.Params) (T : ℝ) (hL : 0 < Q.L T)
+    (hc : Continuous (Q.phi T)) (hsupp : ∀ u, Q.L T / 2 ≤ |u| → Q.phi T u = 0)
+    (hconj : Zeta23.ZeroSide.PhiHatConj T Q) (hreal : Zeta23.ZeroSide.PhiHatReal T Q)
+    (ha : 0 < Q.a T) (γ γ' ε : ℝ) (hΔ : |γ' - γ| * (Q.L T / 2) ≤ Real.pi / 2)
+    (hε : Real.cosh (ε * (Q.L T / 2)) ≤ 2 * Real.cos ((γ' - γ) * (Q.L T / 2)) ^ 2) :
+    0 ≤ 1 + 2 * (∑ k : Fin (Q.d T),
+          (Q.phiHat T ((γ : ℂ) - Q.tau T k)).re / Real.sqrt (Q.a T * Q.L T ^ 2)
+            * ((Q.phiHat T ((γ' : ℂ) - ε * I - Q.tau T k)).re / Real.sqrt (Q.a T * Q.L T ^ 2))) ^ 2
+        / (∑ k : Fin (Q.d T),
+          ((Q.phiHat T ((γ' : ℂ) - ε * I - Q.tau T k)).re / Real.sqrt (Q.a T * Q.L T ^ 2)) ^ 2)
+      - 2 * ∑ k : Fin (Q.d T),
+          ((Q.phiHat T ((γ : ℂ) - Q.tau T k)).re / Real.sqrt (Q.a T * Q.L T ^ 2)) ^ 2 := by
+  set L := Q.L T
+  set C := Real.cosh (ε * (L / 2))
+  set c₀ := Real.cos ((γ' - γ) * (L / 2))
+  have hC1 : 1 ≤ C := Real.one_le_cosh _
+  have hc₀nn : 0 ≤ c₀ := by
+    apply Real.cos_nonneg_of_neg_pi_div_two_le_of_le
+    · have := neg_abs_le ((γ' - γ) * (L / 2))
+      rw [abs_mul, abs_of_pos (by linarith : (0:ℝ) < L / 2)] at this
+      linarith
+    · have := le_abs_self ((γ' - γ) * (L / 2))
+      rw [abs_mul, abs_of_pos (by linarith : (0:ℝ) < L / 2)] at this
+      linarith
+  have hc₀pos : 0 < c₀ := by
+    rcases hc₀nn.lt_or_eq with h | h
+    · exact h
+    · exfalso
+      rw [← h] at hε
+      norm_num at hε
+      linarith
+  have h := lens_overlap_cost_ge Q T hL hc hsupp hconj hreal ha γ γ' ε hΔ hc₀pos
+  have h1 : 1 ≤ 2 * c₀ ^ 2 / C := by rw [le_div_iff₀ (by linarith)]; linarith
   linarith
 
 /-- **Shift overlap cost.**  The lens cost at equal ordinates: if `cosh(εL/2) ≤ 2` then the sampled

@@ -231,7 +231,7 @@ theorem mixed_range_trace_le (hmP : ∀ p, 0 ≤ P.mP p) :
       ≤ ‖P.fM i‖ ^ 2 - ‖P.absorbing.starProjection (P.fM i)‖ ^ 2 := by
     intro i
     set f := P.fM i
-    have hsplit := Submodule.starProjection_add_starProjection_orthogonal P.absorbing f
+    have hsplit := Submodule.starProjection_add_starProjection_orthogonal (K := P.absorbing) f
     have hAz : K₃.starProjection (P.absorbing.starProjection f) = 0 :=
       hzero _ (P.absorbing_le_hsSpan (Submodule.starProjection_apply_mem _ _))
     have heq : K₃.starProjection f = K₃.starProjection (P.absorbingᗮ.starProjection f) := by
@@ -291,6 +291,7 @@ theorem four_mass_sub_energy_le_trace (hmP : ∀ p, 1 ≤ P.mP p) :
   have eM : ∑ i, (2 + 4 * ‖P.absorbing.starProjection (P.fM i)‖ ^ 2 - 4 * ‖P.fM i‖ ^ 2)
       = 2 * Fintype.card ιM + 4 * P.mixedOverlap - 4 * ∑ i, ‖P.fM i‖ ^ 2 := by
     simp [Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.mul_sum, mixedOverlap]
+    ring
   have eb : ∑ i, (‖P.fM i‖ ^ 2 - ‖P.absorbing.starProjection (P.fM i)‖ ^ 2)
       = ∑ i, ‖P.fM i‖ ^ 2 - P.mixedOverlap := by
     simp [Finset.sum_sub_distrib, mixedOverlap]

@@ -1,7 +1,7 @@
 # Mean-zero twists annihilate the main term of the smoothed divisor sum
 
 - **ID:** estermann-mean-zero
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Statement:** `‖∑_{a ∈ (ZMod q)ˣ} w(a) ∑_N d(N) e(aN/q) e^{-Nx}‖ ≤ C_w x^{-1/2}` whenever
   `∑_a w(a) = 0`.
@@ -117,3 +117,35 @@ for an arbitrary modulus, `q_a = q/gcd(a,q)`.
 The remaining step is purely finite and combinatorial: grouping the residues by their gcd turns
 `∑_a e(−ab/q) main(q_a)` into `∑_{d ∣ q} c_{q/d}(b) · main(q/d)` with Ramanujan sums.  No analysis
 is left in it.
+
+## The Ramanujan main term (2026-09-27)
+
+`formal/GaloisForLFunctions/RHTower/EstermannRamanujanMainTerm.lean` (axiom-clean) carries out the
+grouping step.
+
+* `estermannRamanujanSum d b = ∑_{0 ≤ m < d, gcd(m,d)=1} e(mb/d)`, the Ramanujan sum `c_d(b)`;
+* `sum_filter_reducedModulus_eq`: the residues `0 ≤ n < q` with `q/gcd(n,q) = d` are exactly
+  `(q/d)·m` with `m` a reduced residue mod `d`;
+* `sum_stdAddChar_mul_reducedModulus`: for every weight `g` on the moduli,
+  `∑_{a mod q} e(−ab/q) g(q/gcd(a,q)) = ∑_{d ∣ q} c_d(−b) g(d)`;
+* `estermannRamanujanSum_neg`: `c_d(−b) = c_d(b)`, from the involution `m ↦ d − m` on the reduced
+  residues and `e(b) = 1`;
+* **`norm_progression_sub_ramanujanMain_le`**: for every modulus `q`, residue `b` and `x > 0`,
+
+```text
+‖q ∑_{N ≡ b (q)} d(N) e^{-Nx} − ∑_{d ∣ q} c_d(b) (γ − log x − 2 log d)/(dx)‖ ≤ C q^{5/2} x^{-1/2},
+```
+
+  with `C = estermannSmoothedErrorConstant` absolute; `norm_progression_sub_ramanujanMain_le'` is
+  the same expansion in the card's indexing `∑_{d ∣ q} c_{q/d}(b) main(q/d)`.
+
+Direct check, single-module build (`lake build --old`), and axiom audit pass: the new theorems and
+every declaration listed above audit to exactly `[propext, Classical.choice, Quot.sound]`
+(`sum_zmod_eq_add_sum_units` is a private helper of the prime-progression module).  Wired into
+`RHTower` without an umbrella build.
+
+## Gates
+- [x] 1 → 2: complete paper proof
+- [x] 2 → 3: every proved statement formalized, unconditional, axiom-clean
+
+- 2026-09-27 — Ramanujan grouping formalized; card moved to 3-formalized.

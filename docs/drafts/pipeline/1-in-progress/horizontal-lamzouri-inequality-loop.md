@@ -161,3 +161,20 @@ Horizontal classes `C_g = {z : Re z = g}`, sizes `H(g)`. Within a class, `K(i v)
   `≳ e^{πy}`. Exact combs have constant field (Poisson) and absorb a mixed point at cost 3. So violators
   of (H) need exponentially long near-combs; evidence that (H) is true, not a proof.
 - **Open core unchanged:** full (H) for mixed classes outside the lens.
+
+## Cycle H7 — full separation in Lean; trace form of the packet inequality (2026-09-27)
+- **Conjecture H7 (proved, Lean).** `≥ (HD(1) − r² − ε)N(T,2T)` zeros are simple, critical and have no
+  other zero within `r/log(T/2π)` (`0 < r ≤ 1`). `RHTower/SeparatedSimpleZeros:separated_simple_critical`,
+  STATUS MUST-474.
+- **New abstract ingredient.** Bounding the mixed Gram–Schmidt range by its trace (`4α − α² ≤ 4α`) instead
+  of its dimension (`≤ 2α + 1`) gives `4·mass − E − 2N + 2Σ_H(1−‖f‖²) + Σ_M(2 + 4‖P_A f‖² − 4‖f‖²) ≤ #H +
+  2Σ(2 − m₂)` for any multiplicities. A fully absorbed point earns 2 (twice the old cost), so a simple
+  point may sit in the absorbing range at price 2. This is what lets near-coincident simple zeros be
+  charged like a double zero, i.e. it recovers the real-configuration diagonal extraction inside the
+  unconditional Hilbert-space framework.
+- **Combinatorics.** Ore: a graph without isolated vertices has a dominating set of at most half the
+  vertices (complement of a minimum dominating set dominates) — `exists_dominating_half`.
+- **Assets.** `thmD_count_of_seam` (generic endgame), `absorbed_block_count`, `clustered_block_count`,
+  `blockOverlap_ge`/`lens_overlap_cost_ge` (quantitative cost `2cos²(ΔL/2)/cosh(εL/2) − 1`).
+- **Limit.** The loss `r²` is intrinsic to energy methods: a pair of simple zeros at distance `r/L` has
+  energy `≈ 4 − O(r²)`, the same as a double zero. Removing it needs information beyond pair correlation.
