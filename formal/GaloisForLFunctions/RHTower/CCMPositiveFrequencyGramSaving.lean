@@ -107,6 +107,7 @@ theorem ccmPositiveFrequencyGramCeiling_sq_add_saving (a : SuzukiPositiveApertur
 theorem ccmPositiveFrequencyGramCeiling_le_old (a : SuzukiPositiveAperture) (α R : ℝ) :
     ccmPositiveFrequencyGramCeiling a α R ≤ ccmActualSourceGramCeiling a α := by
   apply (sq_le_sq₀ (norm_nonneg _) (ccmActualSourceGramCeiling_nonneg a α)).mp
+  change ccmPositiveFrequencyGramCeiling a α R ^ 2 ≤ ccmActualSourceGramCeiling a α ^ 2
   have h := ccmPositiveFrequencyGramCeiling_sq_add_saving a α R
   have hs := ccmPositiveFrequencyGramSaving_nonneg a α R
   linarith only [h,hs]

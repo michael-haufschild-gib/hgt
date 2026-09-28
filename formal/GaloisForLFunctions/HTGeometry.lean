@@ -4582,6 +4582,8 @@ import GaloisForLFunctions.HTGeometry.ExpMultiplierRapidDecay
 import GaloisForLFunctions.HTGeometry.ExpRayL2
 import GaloisForLFunctions.HTGeometry.HalfLineLaplaceL2
 import GaloisForLFunctions.HTGeometry.HalfLineLaplaceFourier
+import GaloisForLFunctions.HTGeometry.HalfLineTransformCalculus
+import GaloisForLFunctions.HTGeometry.FiniteRankPhaseMoments
 import GaloisForLFunctions.HTGeometry.TwoSidedLaplaceVanishing
 import GaloisForLFunctions.HTGeometry.HalfPlaneHardy
 import GaloisForLFunctions.HTGeometry.HalfPlaneHardyMul
@@ -16124,3 +16126,5 @@ import GaloisForLFunctions.HTGeometry.GaussianPacketMaximizers
 import GaloisForLFunctions.HTGeometry.GaussianLogWeightedSampling
 
 import GaloisForLFunctions.HTGeometry.ComplexSquareEnergyPerturbation
+import GaloisForLFunctions.HTGeometry.ModularCubicProjectionCrossIdentity
+import GaloisForLFunctions.HTGeometry.CubicClockUnipotentNontrivialClass

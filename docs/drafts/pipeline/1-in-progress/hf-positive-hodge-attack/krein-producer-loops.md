@@ -1487,3 +1487,70 @@ Next conjectures to test:
   3. `Re W ≤ (2m)(−|X₀||X₁| + e(|X₀|+|X₁|) + e²) + (N_max ε B_w(1+t₀)²)²·24A₀log(t₀+3)`, where `e = εB_w(1+t₀)²` and `ε = expTail h ½ U`. Both factors are tail-sized at every other zero because of the bump.
   4. Hodge(a) gives `λ ≤ e(3+24N_max²A₀log)`, with `λ = m_V·t₀²·4w e^{−1/16}∫κ`.
   5. `landau_gain`: the exponent gap is `(π/2)η^{3/2}e^{2a}`. Contradiction.
+- **L57 result [L]: the Nyquist constant is 2π.** Theorems `RHTower/LandauSharpOffLineExclusion`:
+  - `hodgeIndex_excludes_offLine_below_landau`;
+  - `hodgeIndex_forces_critical_line_below_landau` (the two-sided form: such a zero has `β₀ = ½`).
+  Both are unconditional; axioms propext/choice/Quot.sound.
+  - For `0<η≤½` and `M`, for all large `a`, Hodge(a) puts on the critical line every zero with `mult ≤ M` and `8 ≤ t₀ ≤ (1−η)2πe^{2a}` that satisfies:
+    - ordinate separation `δ ≤ ½` from all zeros except itself and its mirror;
+    - `|β₀−½| ≤ δ/2`;
+    - `12C log(t₀+1)/δ + 4 log(1/|β₀−½|) ≤ (π/2)η^{3/2}e^{2a}`.
+  - With `offLineLattice_weil_positive_iff` (blind exactly at density `a/π`, i.e. height `2πe^{2a}`), this determines the constant as 2π. The previous corpus horizon was `2πe^{2a−3/4}`.
+- **Modules** (wired after `SharpWeilNearRadicalCount`; `lake build --old`; lint clean for these):
+  - `RHTower/TiltedOffLinePairKernel`:
+    - local factor of `Φ̂_θ` at any `gammaOf ρ` (`exists_tiltedPhi_local_factor_gammaOf`);
+    - `pairKernel_spec`;
+    - near-pair zero-freeness and the lower-semicircle path lemma;
+    - `pair_circle_floor`;
+    - minimum modulus on the symmetric disc `|z−t₀| ≤ 3δ/4` (`norm_divided_pair_ge`);
+    - `offLine_pairKernel_package`.
+  - `RHTower/LandauPairTest`:
+    - pair phase alignment for general `s` (`pairC₁/pairC₂`, `|N| ≤ 1+4/(s|Im γ₀|)`);
+    - the bump on the imaginary axis `|κ̂_w(iy)| ≥ 4we^{−w|y|}∫κ`;
+    - the Landau test `N_{c,s}((h_{≤U})⋆κ₂)` with its Hodge-class properties;
+    - `re_W_le_pair_add_window` (both factors tail-sized at other zeros);
+    - `pairLandau_inequality`.
+  - `RHTower/LandauSharpOffLineExclusion`: level bound, exponent balance, `N`-factor bound, level balance, and the final theorems.
+- **Mechanism, compared with the corpus.**
+  - No polar shift and no smooth truncation plateau: the polar-free bump carries both the pole constraint and the other-zero decay.
+  - The only support cost is `w+s = η/8`.
+  - The depth enters only through `log(1/|β₀−½|)` (the node symbol), which is necessary.
+- **Verdict.** PROVED. The frontier item "determine the uniform-in-δ Nyquist constant" is closed at 2π, up to the unavoidable depth loss `log(1/δ₀) ≲ η^{3/2}e^{2a}`.
+
+### L57 — The Weil–Toeplitz law: Weil positivity bounds the multiplicative Toeplitz matrix of the prime weights by `log N`. TRUE [L]
+- **Question (from the open core).** Can a smooth element of the Weil cone exist? A density-only obstruction would decide it if it forced the density above what the prime-blind tests allow, or below.
+- **Theorem [L]** `RHTower.weil_multiplicativeToeplitz_bound`. Let `lam` be any Weil-positive weight system (ζ's archimedean term, polar-constrained `C²` tests, every level). There is an absolute `C₀` such that for every `N ≥ 1` and every `c` supported in `[1,N]`:
+  `2 Σ_{2≤n≤N} lam(n) n^{−½} Re Σ_m c(nm) conj c(m) ≤ (log N + C₀) Σ_m |c(m)|²`.
+  - Equivalently, the `N×N` multiplicative Toeplitz matrix of `lam(n)n^{−½}` has top eigenvalue `≤ log N + C₀`.
+- **Mechanism.**
+  - Tests are resonators: narrow polar-free bumps `g_w(x − log m)` with `w = 1/(N+1)` and `g_w = ψ_w'' − ψ_w/4`.
+  - Distinct `log m` with `m ≤ N` are `≥ 1/(N+1)` apart. So the autocorrelation meets the atom `log n` exactly on the multiplicative diagonal `m = nm'`: the prime side is an exact matrix.
+  - The archimedean symbol satisfies `A(τ) ≤ log(1+|τ|) + 4` (vertical digamma bound). On the bump spectrum it is `≤ log(1/w) + ½ + w²τ²/2 + 4`.
+  - The `τ²` term is paid by `w²‖g_w'‖²/‖g_w‖² ≤ K`, a scale-free profile constant obtained by integration by parts: `∫ψ''ψ = −∫ψ'²`.
+- **Corollaries [L].**
+  - `weil_twisted_density_bound`: for every completely multiplicative unimodular `χ`,
+    `2 Σ_{nm≤N, n≥2} lam(n) Re χ(n)/(nm) ≤ (log N + C₀) Σ_{m≤N} 1/m`.
+  - `weil_log_density_le`: `Σ_{nm≤N, n≥2} lam(n)/(nm) ≤ (½ + ε)(log N)²` eventually. In the logarithmic mean `Σ_{k≤N}(lam⋆1)(k)/k`, every Weil-positive system has density at most 1. The constant is sharp at `Λ`: `Σ_{k≤N} log k/k = ½log²N + O(1)`.
+- **Attack.**
+  - False? No. The prime side is exact, and the archimedean side is a pointwise upper bound on a positive spectral measure.
+  - Circular? No zeros are used.
+  - Known? Multiplicative Toeplitz and GCD matrices appear in Ω-results for `ζ` (Hilberdink; Aistleitner–Berkes–Seip; Bondarenko–Seip). I found no statement bounding them by Weil positivity, and none giving a universal upper density for Weil-positive weights. The corpus had only `cΛ` (L52).
+  - Verdict: SURVIVES; modest.
+- **Paper findings (same cycle) [P].**
+  - **Regular rigidity.** If `D_w` continues meromorphically past the critical line, with finitely many poles in `Re s > ½`, none on the line, and polynomial growth, and if `Re D_w ≤ 0` on the line, then `w = 0`.
+    - Proof: a two-bump test isolates `w(n)` at mass `1/ε` against `O(1)` pole terms. Equivalently, Herglotz with finite mass (`μ(ℝ) = 2π·res`), so `μ̂` is continuous and has no atoms.
+    - So the tangent cone of `W` at `Λ` contains no regular direction. Every admissible direction is singular exactly on the critical line.
+    - This generalizes MUST-357's light case to all regular heavy perturbations. Lean: not done; it needs a contour shift for general meromorphic Dirichlet series.
+  - **Density window for smooth elements.** A smooth element (regular `D_u`, residue `r`) has full positivity `k_A + 2r cosh(x/2) − atoms ⪰ 0`.
+    - Even prime-blind tests give `r ≥ r*` (about 0.8 from the Fejér test).
+    - Odd prime-blind tests give an upper bound on `r` (the cosh pairing is `−ĝ(i/2)²` for odd `g`).
+    - L57 gives `r ≤ 1`. So smooth elements, if any, have `r ∈ [r*, 1]`.
+  - **Gaussian threshold (heuristic).** For a density-`r` regular Dirichlet series, `Var Re D(½+it) ≥ ½r² log T` on `[T,2T]` (Cauchy–Schwarz on `Σ|u|²/n`). Gaussian extremes over `T log T` samples are about `r log T`, against the allowance `A/2 ≈ ½ log T`. So generic smooth candidates need `r ≤ ½ < r*`; a smooth element would need sub-Gaussian upper tails.
+  - The resonance method saturates at exactly `r ≤ 1`. Autocorrelations of length-`N` resonators give at most `(r/2) log N`: the `½` is `∫₀¹(1−y)dy`, which is optimal. `Λ` attains it.
+  - So density-only resonance cannot see the Gaussian extremes. Deciding smooth elements needs structure beyond density.
+- **Producer reading.** `Λ` saturates every resonance inequality of the Weil cone to leading order, with slack `(log(T/N) + 2γ) log N` against a main term of `(log N)²`. A producer must in particular certify `λ_max(T_N(Λ)) ≤ log N + O(1)` for the multiplicative Toeplitz matrix of `Λ(n)n^{−½}`. This is a finite-dimensional arithmetic operator inequality implied by RH, and its unconditional status is open.
+- Module `RHTower/WeilPositivityMultiplicativeToeplitzBound.lean` (1079 lines). Built and wired after `WeilPositivityCharacterSpanHalfSpace`. Axioms: propext, Classical.choice, Quot.sound.
+- **L57 correction (same day).** The "producer reading" above is wrong. `λ_max(T_N(Λ)) ≤ log N + O(1)` holds unconditionally and elementarily.
+  - Schur test with `h(m) = m^{−½}`: the row sums give `m^{−½}(Σ_{d|m}Λ(d) + Σ_{n≤N/m}Λ(n)/n) = m^{−½}(log N + O(1))`, by `Σ_{d|m}Λ(d) = log m` and Mertens.
+  - So the Weil–Toeplitz law is a Mertens-level necessary condition. `Λ` meets it without RH, and resonator tests (bumps at `log m`) never see the zeros.
+  - Its content is only as a constraint on *other* weight systems: log-density `≤ 1`. It is not a producer target.

@@ -332,6 +332,13 @@ private theorem sum_range_succ_eq_sum_Icc_two
     · exact h0
     · exact h1
 
+/-- Arbitrary tests of critical prime mass omit the zero-weight atoms zero and one. -/
+theorem sum_range_succ_criticalMellinAtomWeight_mul_eq_Icc (N : ℕ) (F : ℕ → ℝ) :
+    (∑ n ∈ Finset.range (N+1), criticalMellinAtomWeight n*F n) =
+      ∑ n ∈ Finset.Icc 2 N, criticalMellinAtomWeight n*F n :=
+  sum_range_succ_eq_sum_Icc_two N (fun n => criticalMellinAtomWeight n*F n)
+    (by simp [criticalMellinAtomWeight]) (by simp [criticalMellinAtomWeight])
+
 theorem ccmOutgoingPrimeCumulative_floor_exp_succ_eq_primeMass (T : ℝ) :
     ccmOutgoingPrimeCumulative (Nat.floor (Real.exp T) + 1) =
       criticalMellinPrimeMass T := by

@@ -200,6 +200,15 @@ theorem contDiff_nearRadicalTest {K : ℕ} (L : ℝ) (a : Fin (K + 1) → ℂ) :
   refine ContDiff.mul ?_ (Complex.ofRealCLM.contDiff.comp (contDiff_bulkCutoff L))
   exact ContDiff.sum fun i _ => contDiff_const.mul (contDiff_riemannKernelDeriv 2 i)
 
+/-- Every derivative order of the literal near-radical source is available. -/
+theorem contDiff_infty_nearRadicalTest {K : ℕ} (L : ℝ) (a : Fin (K + 1) → ℂ) :
+    ContDiff ℝ (⊤ : ℕ∞) (nearRadicalTest L a) := by
+  apply contDiff_infty.mpr
+  intro n
+  unfold nearRadicalTest kernelComb
+  refine ContDiff.mul ?_ (Complex.ofRealCLM.contDiff.comp (contDiff_bulkCutoff L))
+  exact ContDiff.sum fun i _ => contDiff_const.mul (contDiff_riemannKernelDeriv n i)
+
 theorem tsupport_nearRadicalTest {K : ℕ} (L : ℝ) (a : Fin (K + 1) → ℂ) :
     tsupport (nearRadicalTest L a) ⊆ Icc (-L) L := by
   refine closure_minimal (fun u hu => ?_) isClosed_Icc
@@ -338,10 +347,10 @@ forms lie below `exp(-e^{2a-2})`, and every certificate `W ≥ η‖f‖²` with
 `η > exp(-e^{2a-2})` on a subspace forces that subspace to have codimension at least
 `e^{2a-2}/20`.  `V` consists of truncations of `Q(∂)Φ`, with `Φ` Riemann's kernel and `deg Q` up to
 `e^{2a-2}/10`. -/
-theorem zeta_weil_near_radical_dimension :
+theorem zeta_weil_near_radical_dimension_smooth :
     ∃ L₀ : ℝ, ∀ L : ℝ, L₀ ≤ L → ∃ V : Submodule ℂ (ℝ → ℂ), FiniteDimensional ℂ V ∧
       Real.exp (2 * L - 2) / 20 ≤ (Module.finrank ℂ V : ℝ) ∧
-      (∀ f ∈ V, ContDiff ℝ 2 f ∧ tsupport f ⊆ Icc (-L) L ∧ paperFT f (I / 2) = 0 ∧
+      (∀ f ∈ V, ContDiff ℝ (⊤ : ℕ∞) f ∧ tsupport f ⊆ Icc (-L) L ∧ paperFT f (I / 2) = 0 ∧
         paperFT f (-(I / 2)) = 0) ∧
       ∀ f ∈ V, ‖zetaZeroConfig.W f f‖ ≤ Real.exp (-Real.exp (2 * L - 2)) * ∫ u, ‖f u‖ ^ 2 := by
   obtain ⟨Λ, hΛ0, hΛ⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
@@ -395,7 +404,7 @@ theorem zeta_weil_near_radical_dimension :
   · rintro f ⟨a, ha, rfl⟩
     have hψa : ψ a = 0 := ha
     rw [hψ, nearRadicalPolarMap_eq] at hψa
-    exact ⟨contDiff_nearRadicalTest L a, tsupport_nearRadicalTest L a,
+    exact ⟨contDiff_infty_nearRadicalTest L a, tsupport_nearRadicalTest L a,
       (Prod.mk_eq_zero.mp hψa).1, (Prod.mk_eq_zero.mp hψa).2⟩
   · rintro f ⟨a, -, rfl⟩
     show ‖zetaZeroConfig.W (nearRadicalTest L a) (nearRadicalTest L a)‖ ≤ _
@@ -412,6 +421,20 @@ theorem zeta_weil_near_radical_dimension :
             ∫ u : ℝ, ‖nearRadicalTest L a u‖ ^ 2 := hW
       _ ≤ Real.exp (-Y₀) * ∫ u : ℝ, ‖nearRadicalTest L a u‖ ^ 2 :=
           mul_le_mul_of_nonneg_right hratio hI
+
+/-- The original `C²` interface follows from the smooth near-radical construction. -/
+theorem zeta_weil_near_radical_dimension :
+    ∃ L₀ : ℝ, ∀ L : ℝ, L₀ ≤ L → ∃ V : Submodule ℂ (ℝ → ℂ), FiniteDimensional ℂ V ∧
+      Real.exp (2 * L - 2) / 20 ≤ (Module.finrank ℂ V : ℝ) ∧
+      (∀ f ∈ V, ContDiff ℝ 2 f ∧ tsupport f ⊆ Icc (-L) L ∧ paperFT f (I / 2) = 0 ∧
+        paperFT f (-(I / 2)) = 0) ∧
+      ∀ f ∈ V, ‖zetaZeroConfig.W f f‖ ≤ Real.exp (-Real.exp (2 * L - 2)) * ∫ u, ‖f u‖ ^ 2 := by
+  obtain ⟨L₀, hL₀⟩ := zeta_weil_near_radical_dimension_smooth
+  refine ⟨L₀, fun L hL => ?_⟩
+  obtain ⟨V, hVfin, hdim, hV, hW⟩ := hL₀ L hL
+  refine ⟨V, hVfin, hdim, ?_, hW⟩
+  intro f hf
+  exact ⟨contDiff_infty.mp (hV f hf).1 2, (hV f hf).2⟩
 
 end
 

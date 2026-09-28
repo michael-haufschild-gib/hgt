@@ -63,6 +63,14 @@ private theorem criticalMellinStieltjesPairing_quadraticTimeCutoff
   simpa only [show 2 * (H / 2) = H by ring] using
     (criticalMellinStieltjesPairing_integrationByParts ha hderiv hint hend)
 
+/-- The quadratic Stieltjes identity on the bundled nonnegative time domain. -/
+theorem criticalMellinStieltjesPairing_quadraticNonnegativeTimeCutoff (H : NNReal) :
+    criticalMellinStieltjesPairing ((H : ℝ)/2)
+        (fun h : ℝ => (((H : ℝ)^2-h^2 : ℝ) : ℂ)) =
+      -(∫ h in Ioc (0 : ℝ) (H : ℝ),
+        (criticalMellinCompletedError h : ℂ)*((-2*h : ℝ) : ℂ)) :=
+  criticalMellinStieltjesPairing_quadraticTimeCutoff H.2
+
 /-- Quadratic atom profile relative to a logarithmic cutoff `H`. -/
 def ccmOutgoingQuantileQuadraticAtomProfile (H : ℝ) (n : ℕ) : ℝ :=
   criticalMellinAtomWeight n * (H ^ 2 - (Real.log n) ^ 2)
@@ -169,6 +177,11 @@ private theorem criticalMellinCompletedError_intervalIntegrable_zero_to
         (continuous_id.div_const 2))).continuousOn.integrableOn_Icc.mono_set
           Ioc_subset_Icc_self
   · exact integrableOn_criticalMellinPrimeMass_Ioc
+
+/-- Local integrability of the literal staircase error on every nonnegative time interval. -/
+theorem intervalIntegrable_criticalMellinCompletedError_nonnegativeTime (H : NNReal) :
+    IntervalIntegrable criticalMellinCompletedError volume 0 (H : ℝ) :=
+  criticalMellinCompletedError_intervalIntegrable_zero_to H.2
 
 /-- The complex Stieltjes action is exactly the real signed completed-error moment; no
 regularity is imputed to the prime staircase beyond its established local integrability. -/
