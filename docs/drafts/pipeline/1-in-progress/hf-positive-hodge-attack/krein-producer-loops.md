@@ -1001,3 +1001,489 @@ Next conjectures to test:
 - **Next.**
   - (a) The tilted kernel should also sharpen the Nyquist exclusion (HF-F31, `2e^{2a−3/4}`) to the Landau height.
   - (b) It should give the near-radical count with CC's constant 2: dimension `≥ (2−η)e^{2L}` (HF-F30 has `e^{2L−2}/20`). Tilted tests `Φ_θ ⋆ g` with `g` localized in phase space cover the region `|u| + ½log(|τ|/2π) < L`, whose area is exactly `2·2πe^{2L}`.
+- **L39 result [L]: Landau-sharp cluster exclusion.** Module `RHTower/TiltedClusterNyquistExclusion`, wired after `WeilNyquistInertia`. Checked with `lake env lean`; axioms propext/choice/Quot.sound.
+  - Input: the parallel cycle's `TiltedRiemannKernel` (`tiltedPhi`, `paperFT_tiltedPhi`, `norm_tiltedPhi_le_of_rate`).
+  - New general tools:
+    - `superExpDecay_tiltedPhi`;
+    - `paperFT_tiltedPhi_eq` (`Φ̂_θ = e^{zθ}Ξ` on all of ℂ, by the identity theorem);
+    - `divisorData_nodeList_tilted`;
+    - `expTail_tiltedPhi_le` (weight `c`: `≤ 2M e^{(c+11/2)X} e^{−π cos(2θ)e^{2X}}`);
+    - `expTail_add_le`, `expTail_const_mul`;
+    - `norm_paperFT_tailK_decay`: the discarded tail's transform decays like `(1+|t|)^{−2}` with a tail-sized constant, via `tail''` supported on `|u| ≥ X`;
+    - `re_W_le_nodes_add_decay`: a quadratic remainder `(5/4)S_Z B²` when both factors decay;
+    - `re_tilted_node_pair_le`, `re_neg_cexp_two_mul_le`.
+  - Cluster pieces: `Kθ_spec` (`K̂_θ = e^{zθ}K̂`), `Kθ_calculus` (derivative tails `(1+Γ)^j T`), `testθ_at_node`, `testθ_off`, `tilted_cluster_inequality`.
+  - **`hodgeIndex_excludes_tilted_cluster`** (product form) and **`hodgeIndex_tilted_cluster_horizon`** (log form). For every `0 ≤ θ < π/4`, Hodge(a) and a zero with `β₀ > ½`, `t₀ ≥ 101`, `6 + 3N/2 ≤ 2π cos(2θ)e^{2X}` give
+    `π cos(2θ)e^{2X} ≤ (π/4 − θ)t₀ + π/4 + 3θ/4 + log(K₀2^N(N+1)) + L_N + 2log(t₀+3) + (6+3N/2)X`.
+- **Verdict (L39).** PROVED.
+  - The level-`a` Hodge index excludes every off-line zero below `(π sin 2ε/ε)e^{2a−3/4} − O(log t(log log t + log 1/δ) + NX)/ε`, and `π sin 2ε/ε ↑ 2π` (Landau).
+  - At `θ = 0`, the quadratic remainder alone doubles L34's horizon to `4e^{2X}`.
+  - Why this constant is sharp: at `2πe^{2X}` the zero density `(1/2π)log(t/2π)` reaches the Nyquist rate `X/π`. Above that, the ordinates oversample the tests' Paley–Wiener space and no interpolating test exists. This matches the parallel L38 pinning height.
+- **Producer consequence.** A level-`a` producer is RH up to `(2π − o(1))e^{2a−3/4}`, exactly the Landau height, where the finite-level form stops resolving individual zeros.
+  - Below it, the form is the zero trace form (L37). Above it, a sampling phenomenon takes over. So the finite-level Weil form is an RH certificate of exactly the Landau height, no more and no less (up to the blind zone of deep zeros).
+
+### L40 — Landau-sharp spectral separation: below the Landau height, an off-line zero at height `t` forces `μ(a) ≤ −e^{−2εt}·(poly·B_θ)^{−2}` for every `ε` (in progress)
+- **Context.**
+  - L35 (HF-F32) gives spectral separation: `μ(a) ≥ −η` excludes off-line zeros below `min(2e^{2X}, (2/π)log(1/η))`. The eigenvalue scale `e^{−πt/2}` is the Gamma decay squared.
+  - L39's tilt removes the Gamma decay down to `e^{−εt}`, and its quadratic remainder reaches the Landau height.
+- **Conjecture.** Let `θ = π/4 − ε` with `ε ∈ (0, π/4]`. There are absolute `K₀, K₁` such that, under `μ(a) ≥ −η`, every zero with `β₀ > ½`, `t₀ ≥ 101`, `6 + 3N/2 ≤ 2π cos(2θ)e^{2X}` satisfies
+  `e^{2θ(t₀−3/4)} ≤ K₀[2^N(N+1)M(t₀+3)²e^{(6+3N/2)X}e^{−π cos(2θ)e^{2X}}]² + K₁aη[(N+1)M(t₀+3)²B_θ]²`,
+  where `B_θ = 2^N∫‖Φ_θ‖e^{3N|u|/2}`.
+  - Below the Landau horizon the first term is `≤ ½e^{2θ(t₀−3/4)}`. There, `log(1/η) ≤ 2εt₀ + O(log t(log log t + log 1/δ) + log B_θ + log a)`.
+  - So `μ(a) ≥ −η` certifies RH up to `min((π sin 2ε/ε)e^{2X}, (1/2ε)log(1/η))` minus polylog.
+- **Why it matters (CCM interface).** CCM and Zhu compute `λ_min(L)` numerically. This says what precision certifies what height. Compared with L35, precision `η` now reaches height `(1/2ε)log(1/η)` instead of `(2/π)log(1/η)`, for every `ε > 0` (with `B_θ` growing as `ε → 0`).
+- **Kill attempts.** False? No: it is the L39 node block with the floor added, and `∫|f|² ≤ 2a‖f‖₁‖f''‖₁`. Circular? No. Rediscovered? No finite-level spectral separation exists in the literature (checked for L35). Insignificant? It is the sharp quantitative form of CCM Cor. 3.8. Verdict: SURVIVES PRELIMINARY ATTACK.
+- **Paper proof.**
+  1. Floor: `−η∫|f|² ≤ Re W ≤ Σ_nodes + (5/4)S_Z B_d²`.
+  2. If `η_t ≤ A/8`, the node block is `≤ −(3/8)A²`, so `A² ≤ (10/3)S_Z B_d² + (8/3)η∫|f|²`. Otherwise `A ≤ 4B_d`. In both cases `A² ≤ (16 + 4S_Z)B_d² + 3η∫|f|²`.
+  3. `∫|f|² ≤ 2a(‖f‖₁+‖f''‖₁)²`, with `‖f‖₁+‖f''‖₁ ≤ 4Kp·Σ|c_k|(1+cosh(s/2))(t₀+3)²B_θ`. Here the derivative tails of `K_θ` at `c = 0`, `X = 0` bound `‖K_θ‖₁, ‖K_θ'‖₁, ‖K_θ''‖₁` by `(1+Γ)^j B_θ`.
+- **L40 result [L]: Landau-sharp spectral separation.** Module `RHTower/TiltedWeilSpectralSeparation`, wired after `TiltedClusterNyquistExclusion`. Built with `lake build`; axioms propext/choice/Quot.sound.
+  - `testθ_norm`: `‖f‖₁ + ‖f''‖₁ ≤ 4Kp Σ|c_k|(1+cosh(s/2))(t₀+3)²B_θ`.
+  - `tilted_cluster_floor_inequality`: `A² ≤ (16+4S_Z)B_d² + 6aηN₁₂²`, with `A = e^{θ(t₀−3/4)}`.
+  - **`weilFloor_excludes_tilted_cluster`** (product form): `e^{2θ(t₀−3/4)} ≤ K₀P_H² + K₁aηP_F²`.
+  - **`weilFloor_tilted_spectral_separation`** (logarithmic form): below the Landau horizon (`2K₀P_H² ≤ e^{2θ(t₀−3/4)}`),
+    `log(1/η) ≤ 2(π/4−θ)t₀ + π/2 + 3θ/2 + 2L_N + 2log(N+1) + 4log(t₀+3) + 2log B_θ + log(2K₁a)`.
+- **Verdict (L40).** PROVED.
+  - `μ(a) ≥ −η` certifies RH up to `min((π sin 2ε/ε)e^{2a−3/4}, (1/2ε)log(1/η))`, minus polylog terms and `log B_θ`, for every `ε ∈ (0, π/4]`.
+  - Compared with L35, the eigenvalue scale improves from `e^{−πt/2}` to `e^{−2εt}·B_θ^{−2}`, and the horizon from `2e^{2X}` to Landau.
+- **CCM reading.** A certified lower bound `λ_min(a) ≥ −η` verifies RH up to `≈ min(2πe^{2a−3/4}, (1/2ε)log(1/η))`.
+  - The price of small `ε` is `B_θ`, the `L¹` hump of `Φ(u+iθ)` near the edge of its strip. It grows like `ε^{−O(N)}` (heuristically, from the theta modular transformation). That is not yet formal.
+
+### L41 — Quasi-polynomial precision: `μ(a) ≥ −exp(−C log²t)` certifies RH at height `t` below `(1−o(1))·2πe^{2a−3/4}` (in progress)
+- **Context.** L40 prices the tilt through `B_θ = 2^N∫‖Φ(u+iθ)‖e^{3N|u|/2}`, which is finite but not explicit. Everything else is polylogarithmic.
+- **Conjecture.** With `c = cos 2θ`: `log B_θ ≤ N log 2 + log(56U/c³ + 2M) + (3N/2 + 11/2)U`, where `U = ½ log((3N/2 + 6)/c)`. So `B_θ ≤ (N/c)^{O(N)}`.
+  - Take `θ = π/4 − ε` with `ε ≍ log t·(log log t + log 1/δ)/t` (polylog over `t`).
+  - Then L40 gives: an off-line zero at `t ≤ (1 − O(1/log t))·2πe^{2a−3/4}` forces `μ(a) ≤ −exp(−O(log²t·(log log t + log 1/δ)))`.
+- **Mechanism (hump bound).** Each term of `Φ(u+iθ)` is `≤ e^{u/2}·2π(2πn⁴x² + 3n²x)e^{−πcn²x}`, with `x = e^{2u}`.
+  - Using `s²e^{−s} ≤ (16/e²)e^{−s/2}` and `se^{−s} ≤ (2/e)e^{−s/2}` (`s = πcn²x`), the sum over `n` is geometric: `Σe^{−αn²} ≤ 1 + 1/α`.
+  - Hence `‖Φ(u+iθ)‖ ≤ (14/c²)(e^{u/2} + (2/πc)e^{−3u/2})`, and `≤ (28/c³)e^{3U/2}` on `|u| ≤ U`.
+  - Beyond `U`, use `expTail_tiltedPhi_le`.
+- **Kill attempts.** Circular? No. Known? The trivial `θ(x+iy) ≪ y^{−1/2}` bound is classical; the finite-level consequence is new. Insignificant? It turns L40's "exponential with small rate" into quasi-polynomial precision. Verdict: SURVIVES.
+- **L41 result [L]: quasi-polynomial precision.** Module `RHTower/QuasiPolynomialWeilSeparation`, wired after `TiltedWeilSpectralSeparation`. Built with `lake build`; axioms propext/choice/Quot.sound.
+  - `norm_tiltedPhi_le_hump`: `‖Φ(u+iθ)‖ ≤ (18/c²)(e^{u/2} + (2/πc)e^{−3u/2})`, with `c = cos 2θ`.
+  - `expTail_tiltedPhi_zero_le`, `log_tiltedSize_le`: `log B_θ ≤ N log 2 + log(72U/c³ + 2M) + (3N/2+11/2)U`, where `U = ½log((3N/2+6)/c)`.
+  - **`weilFloor_quasipolynomial_separation`**: below the Landau horizon,
+    `log(1/η) ≤ 2(π/4−θ)t₀ + π/2 + 3θ/2 + 2L_N + 2log(N+1) + 4log(t₀+3) + 2(N log 2 + log(72U/c³+2M) + (3N/2+11/2)U) + log(2K₁a)`.
+- **Verdict (L41).** PROVED.
+  - Correction (checked after L42): the Landau hypothesis contains the tail term `(6+3N/2)X ≍ log²t`, which must be absorbed by `ε`. Consequences:
+    - with `ε ≍ C_κ(log²t + log t log 1/δ)/t`, a floor `μ(a) ≥ −exp(−C'_κ(log²t + log t log 1/δ))` excludes every off-line zero up to `t ≤ 2πe^{2a−3/4}/(1+κ)`;
+    - `(1−o(1))·2πe^{2a−3/4}` needs precision `exp(−ω(log²t))`.
+  - Earlier text in this entry claiming `(1−O(1/log t))` at precision `exp(−O(log²t…))` overstated the result.
+  - The finite-level Weil form is therefore a numerically well-conditioned RH certificate: quasi-polynomially many digits in `λ_min` certify RH up to the Landau height. L35 needed `≍ πt/2` digits.
+
+### L42 — Landau-sharp inertia: below `(1−o(1))·2πe^{2a−3/4}`, every separated off-line zero is a negative square with quasi-polynomial margin (in progress)
+- **Conjecture.** Let `T` be a finite set of zeros with `β > ½`, `t ≥ 101`, pairwise ordinate gaps `≥ 3/2`, each below the tilted Landau horizon with margin `log|T|`. Then `|T| ≤ weilNegIndex ζ a ε`, where `ε ≍ min_ρ e^{−2(π/4−θ)t_ρ}/(poly·B_θ²·|T|·a)`. With `ε ≍ polylog/t`, the margin is `exp(−O(log²t))`.
+- **Mechanism.**
+  - Use the normalized tilted tests `g_j = e^{−θ(t_j−3/4)}·testθ_j`. Their node values have modulus in `[1, e^{3θ/2}]`, so the diagonal is `≤ −3/8 + O(S_Z(B_j/A_j)²)`.
+  - Cross terms split three ways: nodes of `j` against the decaying tail of `k`, nodes of `k` against the tail of `j`, and both tails. This gives `|W(g_j,g_k)| ≤ O(S_Z(B_j/A_j + B_k/A_k + B_jB_k/A_jA_k))`.
+  - Finish with the Gram lemma of L37.
+- **Kill attempts.** No obstruction: it is L37 with L39's tests. Verdict: SURVIVES (completion).
+- **L42 result [L]: Landau-sharp inertia.** Module `RHTower/TiltedWeilNyquistInertia`, wired after `QuasiPolynomialWeilSeparation`. Built with `lake build`; axioms propext/choice/Quot.sound.
+  - Tools:
+    - `W_const_mul` (sesquilinearity);
+    - `norm_W_le_of_pointwise` (`‖W‖ ≤ (5/4)S_Z C` from pointwise products);
+    - `ClusterSetup.re_W_testθ_le` (tilted node block without positivity);
+    - `norm_testθ_node_le`, `testθ_off_carrier`, `norm_W_tilted_tests_le` (three-way cross split);
+    - `tiltBd_le`, `tiltN12_le` (explicit sizes).
+  - **`weilNegIndex_ge_card_tilted`.** Suppose `tiltedHodgeRatio ≤ R`, `tiltedNormRatio ≤ Λ`, pairwise gaps are `≥ 3/2`, and `K₀|T|R ≤ 1`. Then `|T| ≤ weilNegIndex ζ a (1/(K₁a|T|(Λ²+1)))`.
+- **Verdict (L42).** PROVED. The finite-level triple is now Landau-sharp:
+  - exclusion (L39);
+  - spectral separation (L40/L41, quasi-polynomial);
+  - inertia (L42, quasi-polynomial margins).
+  Below `2πe^{2a−3/4}/(1+κ)`, the negative squares of the level-`a` Weil form at margin `exp(−O_κ(log²t))` are exactly the off-line zeros (separated ones counted from below; the upper bound is HF-F29). At `(1−o(1))·Landau` the margin is `exp(−ω(log²t))`.
+
+### L43 — Producer sweep after the finite-level dictionary closed (kills and survivors)
+- **Frame.** L39–L42 plus the corpus lattice law (`offLineLattice_weil_positive_iff`) give a sharp dictionary. Up to the deep-zero blind zone, level-`a` Weil positivity is RH below the Landau height `(1±o(1))·2πe^{2a}`; the constant 2π is sharp for lattice-like configurations. A producer must certify this from source data. Five candidate mechanisms:
+  1. **Near-radical quotient positivity.** Claim: `W ≥ 0` on `R_a^⊥`, the complement of the near radical.
+     - Kill: `W(r, ·) ≈ 0` for near-radical `r`, so negative directions survive projection, and positivity on `R_a^⊥` is RH below Landau. CIRCULAR.
+     - Survivor: `W` descends to `V₀/R_a` up to `exp(−c e^{2a})`, and on the quotient it is the zero trace form. This is structural and is the L37/L42 picture.
+  2. **Monotone-in-level barrier.** Claim: `μ(a)` obeys a differential inequality that keeps it `≥ 0`.
+     - Kill: L34 #5 (the Krein barrier is not a barrier). By L41, `μ` drops to `−exp(−C log²t₁)` within a window of width `O(log t₁/t₁)` in `a` around `½log(t₁/2π)`. No regularity in `a` forbids that. FALSE.
+  3. **Tilt-phase positivity.** Claim: the tilted forms `Σe^{2θγ}f̂(γ)conj f̂(γ̄)` are positive for some `θ` for structural reasons.
+     - Kill: they are ordinary Weil forms of complex-shifted analytic tests. Positivity for all `θ` is positivity on analytic tests, which is RH. CIRCULAR.
+     - Survivor: the tilt rotates the phase of an off-line pair by `−2θδ` and rescales by `e^{2θt}`. This is exactly why L39's node block has real part `−cos(2θ Im γ)e^{2θ Re γ}`.
+  4. **Landau-excess prolate law** (a producer of *size*, not of sign). Conjecture: `λ_min(L) = exp(−π²(S_L − 2N(T*))(1+o(1)))` under RH, where `S_L − 2N(T*) = T*/π` is the Shannon number minus the zero count below `T* = 2πe^{2L}`. This matches the empirical `−ln λ_min ≈ 2π²N/ln N` of arXiv 2608.24827 to leading order (both `≈ 2π²e^{2L}`).
+     - Not a sign producer, so it does not decide RH. SURVIVES as a conjecture about the near radical.
+  5. **Finite-level de Bruijn–Newman.** Let `Λ(a) := inf{t : Hodge_t(a)}` for `H_t`, with kernel `e^{tu²}Φ`. `Λ(a) ↑ Λ ≥ 0` (Rodgers–Tao), and RH ⟺ `Λ(a) ≤ 0` ∀a. The heat flow is a producer for `t ≥ 0.2` (Polymath, with computation), and none at `t = 0`.
+     - The tilt/cluster machinery transfers to `Φ_t = e^{tu²}Φ`, which is still double-exponential. But the window inputs (`ξ/P_V` Lipschitz bounds, local counts) need `H_t` analogues. BRIDGE, not a producer.
+- **Verdict.** No producer survives. The positive survivors are structural.
+- **Consequence for other routes.** The frontier's LA route asks for "an arithmetic O-charge/M-charge separator at Dirichlet length `≍ t`" for near-double off-line pairs.
+  - L39 is such a separator: the level-`a` Weil form with `2πe^{2a−3/4} ≈ t` (Dirichlet length `e^{2a} ≍ t`) excludes every off-line zero at height `t`, super-tight clusters included.
+  - So LA's separator exists; what remains open is its positivity, i.e. the producer.
+- **Next.** Leave zero-side analysis. Candidate: survivor 5, a finite-level de Bruijn–Newman dictionary, using the heat-flow producer for `t > 0` as a genuine source of positivity. Question: what does the heat flow produce at finite level, and how does `Λ(a)` behave?
+
+### L44 — The pole-compressed prime transport is never sub-exponential: Dirichlet resonance kills MUST-261's "source problem". TRUE [L]
+- **Target claim (STATUS MUST-261, frontier RW "Open").** "The source problem is exactly the exponential growth rate of the pole-compressed prime translation operator `P_{V₀}(Σ_nΛ(n)n^{−½}τ_{log n})P_{V₀}` on `L²(−A,A)`: trivial rate `e^A`, rate `< 1` by any margin gives a zero-free strip, sub-exponential ⟺ RH."
+- **Conjecture (kill).** Unconditionally, for all large `A` there is a pole-constrained `f ∈ L²(−A,A)` (`∫f e^{±u/2} = 0`) with `Re⟨T_A f, f⟩ ≥ (e^A/8A)∫|f|²`. So the compressed norm is `≥ e^A/8A`, the implication RH ⇒ sub-exponential is false, and the stated "source problem" is the wrong object.
+- **Mechanism.**
+  - `g = e^{iτu}1_{[−A,A]}` has `⟨Tg,g⟩ = 2Σ Λ(n)n^{−½}(2A − log n)cos(τ log n)`.
+  - Kronecker/Dirichlet (`exists_fin_simultaneous_two_pi_phase_approximation_delayed_quantitative`) gives arbitrarily large integer `τ` with `cos(τ log n) ≥ ½` for all `n ≤ e^{2A}`. Hence `⟨Tg,g⟩ ≥ Σ Λ(n)n^{−½}(2A − log n) ≥ e^{−A+½}ψ(e^{2A−1}) ≥ e^{A}/3` (PNT).
+  - The pole constraint costs `|∫g e^{±u/2}| ≤ 2e^{A/2}/τ`, which tends to 0 as `τ → ∞`. A 2×2 correction by `e^{±u/2}1_{[−A,A]}` makes `f` exactly pole-free, and the change in the form is `O(e^A·e^{A}/τ)`.
+- **Why the low-frequency attempt fails (recorded).** For pole-free tests at bounded frequency the main term cancels exactly: `∫e^{y/2}R_g(y)dy = ĝ(i/2)ĝ(−i/2) = 0`. There `⟨Tg,g⟩ = Arch(g) − W(g,g) + 0`, which is small. The e^A growth lives only at Dirichlet-resonant frequencies `τ ~ exp(O(e^{2A}))`, where `Arch ~ log τ ≫ e^A` keeps the Weil form positive.
+- **Positive survivor.** The RH content of the prime side is the archimedean-relative (frequency-aware) bound `⟨T_Af,f⟩ ≤ Arch(f) + o(1)‖f‖²` on pole-free `f`, i.e. Hodge(A). This is the finite-level Weil form, whose dictionary is L39–L42. No operator-norm (height-blind) formulation can carry RH, pole-compressed or not.
+- **Verdict.** SURVIVES as a kill of the stated RW open core.
+- **Lean.** `RHTower.PoleFreePrimeTranslationResonance`: `poleFree_primeTranslation_resonance`. For all large `A` there is a bounded `f` supported in `[−A,A]` with `∫f e^{±x/2} = 0`, `∫|f|² > 0` and `(e^A/(64A))∫|f|² ≤ Re Q_A(f,f)`. The constant is `1/64` rather than the paper `1/8`, because the PNT step is used as `≥ e^A/4` and the `L²` mass as `≤ 9A/2`. Pieces:
+  - `exists_resonant_frequency`: Dirichlet via `exists_fin_simultaneous_two_pi_phase_approximation_delayed_quantitative`, `Q = 9`.
+  - `exists_primeHinge_ge`: PNT.
+  - `norm_poleMoment_modulatedFlat_le`: `≤ 2e^{|s|A}/τ`.
+  - `pole_system_solve`, `norm_pole_coefficient_le`.
+  - `norm_primeTranslationForm_sub_le`: stability `4Aε(2+ε)·ΣΛ(n)n^{−½}`.
+  - `l2mass_modulatedFlat_sub`.
+
+  Axioms propext/choice/Quot.sound. STATUS CANNOT-474; MUST-261 corrected in place.
+
+### L39 — Finite-level Krein determinacy: representations carry the multiplicities below the Landau height. TRUE [L]
+- **Conjecture (L36 P2, sharpened to the Landau height).** Every positive measure representing the level-`L` Hodge form (`∫|f̂|²dν = |W(f,f)|`) gives each isolated on-line zero its exact multiplicity below `(1−η)·2πe^{2L}`, up to super-exponentially small error.
+- **Kill attempts.**
+  - *False?* No. The zero measure is itself such a representation under RH.
+  - *Circular?* No: it is a Christoffel argument with an explicit resolvent test.
+  - *Rediscovered?* The `L = ∞` uniqueness is the corpus Hedenmalm classification. There are no finite-level mass statements in Suzuki (de Branges / screw), CC or CCM.
+  - *Insignificant?* No. It completes the finite-level determinacy of the indeterminate extension problem.
+  - Verdict: SURVIVES.
+- **Theorem** (`RHTower/KreinRepresentationMassLaw:zeta_krein_representation_masses_below_landau_height`; unconditional; axioms propext/choice/Quot.sound).
+  - For `0 < η ≤ ½` and `M ≥ 1` there is `L₀` such that, for `L ≥ L₀`, every representing `ν` and every on-line zero `½+iγ₀` of multiplicity `m₀ ≤ M` satisfy `|ν([γ₀ ± r_L]) − m₀| ≤ exp(−πη^{3/2}e^{2L}/(64M))`, with `r_L = exp(−πη^{3/2}e^{2L}/(8M))`.
+  - Conditions: `7 ≤ γ₀ ≤ (1−η)2πe^{2L}`, ordinate separation `δ ≤ ½`, and `(48C log(γ₀+1) + 32M)/δ ≤ πη^{3/2}e^{2L}`.
+- **Proof.**
+  1. Test `f = (D_{γ₀}^{m₀}Φ_θ)_{≤L−w} ⋆ κ₂`, where `D` is the corpus iterated resolvent division applied to the tilted kernel.
+  2. Weil form. `W(f,f) = m₀|f̂(γ₀)|² + O(ε_F²·poly)`: at every other zero, `F̂ = Φ̂_θ/(z−γ₀)^{m₀}` vanishes up to the tail (`norm_W_resolventTest_sub_le`).
+  3. Ratio form of Christoffel, the new mechanism.
+     - Off the ball, `|f̂| ≤ r^{−m₀}|ĝ| + (r^{−m₀}ε_Φ+ε_F)|κ̂₂|`. Here `ĝ` is the tilted radical test and `κ̂₂` the plain bump at the same frequency, and the two share the bump factor, so no lower bound on ζ is needed off the ball (`norm_paperFT_resolventTest_le`).
+     - Their energies are `O(ε_Φ²·poly)` and `O(poly)`.
+  4. On the ball.
+     - `F̂` is nearly constant: minimum modulus of `V = Φ̂_θ/(z−γ₀)^{m₀}` on the circle of radius `δ/2` (via `|Ξ(z̄)| = |Ξ(z)|`, the path lower bound for ζ, and the sharp Gamma bound), plus Borel–Carathéodory for `log V` with a ceiling on the radius-`3δ/4` circle (`divided_tilted_kernel_near_zero`).
+     - The bump transform is Lipschitz: `|κ̂_w(s)−κ̂_w(s')| ≤ 2w²|s−s'|`.
+  5. Two-sided mass bound and exponent bookkeeping, with one master level inequality (`landau_small_package`).
+- **Modules** (all wired after `LandauHeightKreinPinning`; all built with `lake build --old`; lint clean for these):
+  - `RHTower/TiltedKernelResolventTest`: SuperExpDecay of `Φ_θ`, weighted tails, local factor at an on-line zero, truncation, bumped tests, and the plain-bump Weil bound.
+  - `RHTower/XiOnLineZeroLocalBounds`: `|Ξ|` two-sided near the line, and the divided-kernel floor, ceiling and variation.
+  - `RHTower/KreinRepresentationMultiplicities`: `RepresentsHodgeForm`, the measure inequalities, and the resolvent-test bounds.
+  - `RHTower/KreinRepresentationMassLaw`: arithmetic core and the final theorem.
+- **Route consequence (HF).** With L38, any positive representation of the level-`L` Weil form equals the zero measure of ζ below `(1−η)·2πe^{2L}`, including multiplicities, up to `exp(−c_{η,M}e^{2L})`.
+  - So the finite-level positivity problem has an essentially unique solution below the Landau height.
+  - A producer of positivity is a finite-level spectral realization that must compute the zeros and their multiplicities.
+- **Next.**
+  - The remaining freedom of representations lies above `2πe^{2L}`: an indeterminacy theorem under RH via oversampling.
+  - Landau-sharp Nyquist exclusion, i.e. HF-F31 with the tilted kernel.
+
+### L45 — Theta threshold: no function decaying faster than Riemann's kernel has a ξ-divisible transform. TRUE [L]
+- **Pivot reason.** L39–L44 closed the finite-level dictionary and the height-blind prime side. The sweep for new producer mechanisms found only rediscoveries:
+  - the AFE reflection of `ζ'/ζ` is the explicit formula;
+  - a Lévy-coupling producer fails the exact-primes gate, since coupling bounds survive prime deletion;
+  - the Krein–Riccati continuation is killed at card line 687;
+  - the CCM ground-state Hurwitz route is blind.
+  L43 survivor 4 (a prolate/Landau–Widom constant `2π²` for the near-radical) was re-examined. A generic-point prolate count predicts `exp(−π²e^{2a}/a)`, far larger than the theta radical `exp(−2πe^{2a})`. The near-radical is theta-driven, not prolate-driven. The structural question: how small can a radical vector's tail be?
+- **Conjecture (bold form).** The zero divisor of `ζ` (with multiplicity) is a uniqueness set for `{F : |F(x)| ≤ Ce^{−ce^{2|x|}}}` iff `c > π`. That is, `ξ ∣ M_F` and rate `c > π` force `F = 0`; `Φ` has every rate `c < π`.
+- **Attack (Phase 4).**
+  - False? The argument has three steps. The quotient `h = M_F/ξ` has exponential type (Stirling floor off the strip, Burnol good heights inside it). It decays like `e^{−(σ/2)log(c/π)}` along both real rays (Binet vs Legendre transform of the decay). The two-ray Paley–Wiener theorem then applies. No hole found.
+  - Circular? No zero-location input.
+  - Rediscovered? No statement found in the corpus or the literature (compact support, `c = ∞`, is `SuzukiCompactL2Fourier`). The mechanism is classical Legendre duality, so experts would find it natural.
+  - Significance: it identifies `Φ` as the extremal generator of the Weil radical. Complex shifts `Φ(·−w)` have rate `πe^{−2|Re w|}cos(2 Im w)`, so the rate-`c` radical is at most a shift window that closes at `c = π`.
+- **Verdict.** SURVIVES. Paper proof and Lean in `P3:theta-threshold-xi-divisible-uniqueness`.
+- **Lean.** `RHTower.ThetaThresholdXiDivisibleUniqueness`: `theta_threshold_xi_divisible`.
+  - For `c > π`: rate `c` together with `M_F = ξ·h` (`h` entire) gives `F = 0` a.e.
+  - For `0 ≤ c < π`: `Φ` is a nonzero example with `h = 1`.
+  - Axioms propext/choice/Quot.sound. The boundary case `c = π` is open; `Φ` misses it only by its polynomial prefactor.
+- **Collateral repair.**
+  - `HodgeNyquistExclusion`'s pigeonhole lemma duplicated `RHTower.exists_good_height` from `XiHeightSelection`, which broke the umbrella. It is renamed `exists_height_far_from_finset`, and its 18 dependents were rebuilt.
+  - `PoleFreePrimeTranslationResonance`'s `primeLogWeight_nonneg` duplicated `VonMangoldtSquarePowerMoments`. It is renamed `vonMangoldtHalfWeightSum(_nonneg)`.
+- **What it says about producers.** The Weil radical is generated by `Φ`, and `Φ` is extremal: no radical vector decays faster. A positivity producer built on near-radical structure (CCM S2, prolate) is therefore anchored at the theta tail, with no faster-decaying radical direction to exploit. Correction to L43 survivor 4. The deepest near-null directions are radical truncations, and no radical vector beats `Φ`'s tail (L45); a lower bound for `λ_min` is open. The near-radical *bulk*, of dimension `≈(2−η)e^{2L}` with margin `exp(−η²e^{2L}/(300L))` (HF-F41, other cycle), is prolate/Landau–Widom-type. Both pictures hold, at different depths of the spectrum.
+
+### L45 — The near radical of the level-`L` Weil form has at least `(2−η)e^{2L}` dimensions: Connes–Consani's constant 2 (in progress)
+- **Context.**
+  - HF-F30 gives `≥ e^{2L−2}/20` near-null directions at margin `exp(−e^{2L−2})`, using polynomial multipliers of `Φ` with Remez losses.
+  - CC (2021) and CCM (2025) observed about `2e^{2L}` tiny eigenvalues numerically; Zhu and 2608.24827 fit the decay empirically. No rigorous count exists (2608.24827 re-checked: it proves only a `λ_min` bound).
+  - The heuristic: Shannon number of `[−L,L] × [−T,T]` minus the zero count below `T`, maximised at `T = 2πe^{2L}`, which gives `(T/π)(2L − log(T/2πe)) = 2e^{2L}`.
+- **Conjecture (L45).** For every `0 < η ≤ 1` there is `L₀` such that for `L ≥ L₀` the Hodge-class tests at level `L` contain a subspace `V` with `dim V ≥ (2−η)e^{2L}` and `‖W(f,f)‖ ≤ exp(−η²e^{2L}/(300L))∫|f|²` on `V`.
+- **Kill attempts.**
+  - *False?* Heuristically the count is `≈ 2e^{2L}` (CC numerics), so a `(2−η)` lower bound is consistent.
+  - *Circular?* No. It uses only Riemann–von Mangoldt, local zero counts and linear algebra; no positivity.
+  - *Rediscovered?* The counting heuristic is CC's; no proof of any count with constant `> 1/(20e²)` exists (corpus HF-F30, 2608.24827, CCM 2511.22755).
+  - *Insignificant?* It proves the leading constant of the CC small-eigenvalue phenomenon (lower bound).
+  - *Margin.* The `1/L` in the margin is the Landau–Widom plunge of a sharp time cutoff: a guard band of width `Δ` costs `ΔL/π` frequencies. The empirical law `−log λ_min ≈ 2π²e^{2L}` suggests the plunge is absent for the true form; that needs zero structure beyond counting.
+  - Verdict: SURVIVES PRELIMINARY ATTACK.
+- **Paper proof.**
+  1. Parameters: `σ = η/8`, `ℓ = L − σ`, `T = 2πe^{2ℓ}`, `Δ = πηe^{2L}/(8L)`, `N = ⌊σΔ/(8e)⌋`.
+  2. Plateau: `b = 1_{[−(ℓ+σ/2), ℓ+σ/2]} ⋆ β ⋆ B_h^{⋆N}`, with `β` a smooth unit bump of radius `σ/4` and `B_h` the unit box of half-width `h = σ/(4N)`.
+     - Then `b` is smooth, `0 ≤ b ≤ 1`, `b = 1` on `[−ℓ,ℓ]`, and `supp b ⊆ [−L,L]`.
+     - `b̂(z) = (2 sin((ℓ+σ/2)z)/z)·β̂(z)·(sin(hz)/(hz))^N`, so on the strip `|b̂(z)| ≤ 4e^{L/2}e^{−N}Δ/|Re z|²` for `|Re z| ≥ Δ`.
+  3. Test space: `E = {b·p : p = Σ_{|k|≤k₀} c_k e^{iτ_k u}}` with `τ_k = kπ/ℓ` and `k₀ = ⌊(T−Δ)ℓ/π⌋`, so `dim E = K = 2k₀+1`.
+     - Orthogonality on `[−ℓ,ℓ]` gives `∫|bp|² ≥ 2ℓ‖c‖²`.
+  4. Constraints: `f̂(γ_ρ) = 0` for every distinct zero with `|Im ρ| ≤ T`, and `f̂(±i/2) = 0`.
+     - Their number is `≤ 2N(0,T) + 2` (conjugation symmetry of the zero set, `mult ≥ 1`).
+     - Dyadic summation of `rvM_main` gives `N(0,T) ≤ (T/2π)log(T/2πe) + C log²T`.
+     - Hence `dim V ≥ K − 2N(0,T) − 2 ≥ 2e^{2ℓ} − 2Δℓ/π − O(L²) ≥ (2−η)e^{2L}`.
+  5. Energy: `W(f,f) = Σ m_ρ f̂(γ_ρ) conj f̂(γ̄_ρ)` has only terms with `|t_ρ| > T`.
+     - There `|f̂| ≤ ‖c‖₁·4e^{L/2}e^{−N}Δ/(Δ+|t|−T)²`.
+     - `window_tsum_le` at `ω = ±T` then gives `|W| ≤ K·16e^Le^{−2N}Δ²·48A₀log(T+3)·‖c‖² ≤ exp(−η²e^{2L}/(300L))∫|f|²` for large `L`.
+- **Lean plan.**
+  - `HTGeometry/BoxConvolutionPlateau`: iterated box convolution, transform, decay, smoothness, plateau.
+  - `RHTower/ZetaZeroCountUpperBound`: `N(0,T)` upper bound and the distinct-zero count for `|Im ρ| ≤ T`.
+  - `RHTower/SharpWeilNearRadicalCount`: test space, constraints, energy bound, final theorem.
+
+### L46 — Hardy equality case for ξ: theta-rate ξ-divisible functions are polynomial multiples of Φ. TRUE [L]
+- **Conjecture.** Suppose `|F(x)| ≤ C e^{k|x|} exp(−π e^{2|x|})` for some `k ≥ 0`, and `M_F = ξ·h` with `h` entire. Then `h` is a polynomial, i.e. `M_F = P·ξ`. This is the exact analogue of Hardy's theorem (Gaussian decay on both sides forces polynomial × Gaussian), with the theta kernel as the extremal and the zero divisor of `ζ` as the vanishing set. It would complete L45: the Weil radical at theta rate is `{P(∂)Φ}`.
+- **Attack (Phase 4).**
+  - Pointwise growth bounds cannot decide it. `h(s) = cos(b(s−½))` (`b < π/4`) satisfies every bound available at fixed height `t`: it is bounded on the real axis with vertical type `b`. The corresponding `F = (Φ(·+ib)+Φ(·−ib))/2` has modulus rate `π cos 2b < π`, which only its phase cancellation hides.
+  - The decisive information is directional. The exact imaginary-shift Γ bound gives `|h(re^{iθ})| ≤ poly·exp(r sin²θ/(4cos θ))`, which is quadratic in `θ`. `cos(b(s−½))` grows like `e^{brθ}`, linearly in `θ`, and violates it.
+  - A sector Phragmén–Lindelöf argument on `δ ≤ arg z ≤ π−δ` with multiplier `e^{iβz}`, `β = δ²/(2 sin δ) → 0`, gives `|h(z)| ≤ A|z+i|^m` uniformly. So `h` is a polynomial.
+  - Verdict: SURVIVES.
+- **Lean.** `RHTower.ThetaRigidityHardyEqualityCase`, main theorem `theta_rigidity_polynomial_quotient`: if `|F| ≤ Ce^{k|x|}e^{−πe^{2|x|}}` and `M_F = ξ·h`, then `h` is a polynomial. `riemannPhiKernel_theta_rate` shows `Φ` meets the hypothesis with `k = 9/2`. Axioms propext/choice/Quot.sound. Reusable pieces:
+  - `norm_le_sector_of_rays`: sector Phragmén–Lindelöf through `z = e^w`;
+  - `Gamma_mul_quadratic_le_norm_Gamma`: `|Γ(x+iy)| ≥ Γ(x)(1+y²/x²)^{−½}e^{−y²/x}`;
+  - `xi_floor_quadratic`;
+  - `ray_core`, `norm_le_upper_half_plane`;
+  - `centredLaplace_conj`.
+- **Classification (L45 + L46).** At decay rate `≥ π`, the ξ-divisible class is `{F : M_F = P·ξ}` with `P` polynomial (up to the polynomial prefactor). Above `π` it is `{0}`. So the Weil radical at theta rate is finite-dimensional per degree, spanned by `Φ` and its polynomial-multiplier images.
+- **Producer relevance (honest).** L45/L46 classify the theta-rate Weil radical. They do not supply a producer.
+  - A real-rooted transform `Ĝ = h·ξ` already gives RH for any entire `h`; the polynomial structure is not needed for that step.
+  - The hard input for CCM (S2) is ξ-divisibility of limits of real-rooted ground states. Under ¬RH, ground states concentrate on off-line zeros and are not ξ-divisible, so that input is RH-strength.
+  - What the classification adds: any ξ-divisible theta-rate limit is identified as `P(∂)Φ`. There is no exotic radical direction for a limit to escape into.
+- **L45 result [L]: sharp near-radical count.** Theorem `RHTower/SharpWeilNearRadicalCount:zeta_weil_near_radical_sharp_count` (unconditional; axioms propext/choice/Quot.sound).
+  - For `0 < η ≤ 1` and all large `L`, the level-`L` Hodge class contains `V` with `dim V ≥ (2−η)e^{2L}` and `‖W(f,f)‖ ≤ exp(−η²e^{2L}/(300L))∫|f|²` on `V`.
+  - HF-F30 had constant `1/(20e²) ≈ 0.0068`. This one is CC's observed constant `2`.
+- **Modules** (wired after `KreinRepresentationMassLaw`; built with `lake build --old`; lint clean for these):
+  - `RHTower/BoxConvolutionPlateau`: `boxPower`, `boxPlateau`, and the transform bound `(2e^{A|y|}/|z|)(e^{h|y|}/(h|z|))^n e^{r|y|}`. With `n ≍ h|x|` this gives `e^{−n}`: exponential decay at a prescribed frequency.
+  - `RHTower/ZetaZeroCountUpperBound`: `zeroCount_upper`, `N(0,T) ≤ (T/2π)(log(T/2π)−1) + C log²T`, by dyadic telescoping of `rvM_main`; and `ncard_lowZeros_le`.
+  - `RHTower/PlateauTrigonometricTests`: Parseval on `[−ℓ,ℓ]`, bulk bound, injectivity, and `norm_W_trigTest_le` (both factors are tail-sized at every zero above `T`).
+  - `RHTower/SharpWeilNearRadicalCount`: far-field plateau decay, dimension and margin arithmetic, and the level and final theorems.
+  - Also fixed three umbrella collisions in the L39 modules: `truncCore`/`truncTail` → `cutoffCore`/`cutoffTail`, `superExpDecay_tiltedPhi` → `superExpDecay_tiltedRiemannKernel`, `expTail_tiltedPhi_le` → `expTail_tiltedPhi_le_of_rate`. They clashed with `TiltedClusterNyquistExclusion` and `HeatEnergyBridge`.
+- **Verdict.** PROVED. The leading constant of the Connes–Consani count is now a theorem as a lower bound.
+- **What it says for HF.** A producer of Hodge(L) must certify positivity on a `(2−o(1))e^{2L}`-dimensional block where the form is `exp(−cη²e^{2L}/L)`-degenerate.
+  - The block is spanned by band-limited tests that vanish at the zeros below the Landau height. So it is the same `2πe^{2L}` phenomenon seen from the kernel side: Shannon number minus zero count.
+- **Open.**
+  - (a) Upper bound: under RH, at most `(2+η)e^{2L}` eigenvalues below `exp(−ηe^{2L})`. This needs a sampling inequality in the oversampled range `t > 2πe^{2L}` together with the undersampled count.
+  - (b) Margin without the `1/L`. Landau–Widom says any sharp-time-cutoff construction loses it, while the empirical law `−log λ_min ≈ 2π²e^{2L}` suggests the true form does not.
+
+### L47 — Theta-window law: the Weil radical at rate `c` is the Paley–Wiener space of the shift window `D_c`. TRUE [L] (forward law + window identity)
+- **Conjecture (directional form).** Let `|F(x)| ≤ Ce^{k|x|}e^{−ce^{2|x|}}` with `0 < c ≤ π`, and `M_F = ξ·h`. Then on `Re s ≥ 2`, `s = re^{iφ}`,
+  `log|h(s)| ≤ r·J_c(φ) + O(log r)`, where `J_c(φ) = ½[cos φ·log(π cos φ/c) + |φ| sin|φ|]`.
+  In coordinates the exponent is `(σ/2)log(π/c) + ½|t|arctan(|t|/σ) − (σ/4)log(1+t²/σ²)`.
+- **Window identity.** `J_c(φ) = sup{v cos φ + |θ| sin|φ| : πe^{−2|v|}cos 2θ ≥ c}`. The supremum is attained at `θ = φ/2`, `v = ½log(π cos φ/c)`.
+  - `|Φ(x−w)|` decays at rate `πe^{−2|Re w|}cos(2 Im w)`, and `M_{Φ(·−w)} = e^{w(s−½)}ξ`. So every direction's bound is attained by a single complex shift of `Φ` from the window `D_c = {w : πe^{−2|Re w|}cos 2 Im w ≥ c}`.
+  - The directional law equals the support function of `D_c` in the directions `π cos φ ≥ c`. In steeper directions it only dominates it (correction after Lean).
+  - `c = π`: `D_π = {0}`, giving L46. `c > π`: `D_c = ∅`, giving L45.
+- **Attack.** False? The exact imaginary-shift integral gives `½I(σ/2,t/2) = (r/2)(φ sin φ + cos φ log cos φ)` with no slack. The window supremum is a one-variable concave maximization, and the tangent-line inequality for `cos` on `[0, π/2]` proves it. SURVIVES. Lean next (the forward law, plus the window inequality and its equality case).
+- **Lean.** `RHTower.ThetaWindowDirectionalLaw`. Axioms propext/choice/Quot.sound.
+  - `theta_window_directional_law`: the forward law with the exact exponent.
+  - `theta_window_le`: every window shift is dominated.
+  - `theta_window_attained`: equality in every direction with `c ≤ π cos φ`.
+  - `theta_window_real_axis_attained`: `Φ(·−½log(π/c))` realizes the law on the real axis.
+  - Reusable: `gammaShiftIntegral_half_eq` (exact Γ imaginary-shift integral in `(σ,t)`), `xi_floor_exact`, `legendre_rate_div_Gamma_le`, `cos_le_tangent`, `centredLaplace_shift`.
+  - Not formalized: the converse (every `h` whose indicator is below the support function of `D_c` is realized), and attainment in oblique directions by complex shifts. The latter needs the tilted kernel decay.
+- **Radical picture (L45–L47).** Graded by decay rate, the Weil radical is `Φ` smeared over the theta window `D_c`:
+  - empty above `π`;
+  - `{0}` at `π` (polynomial quotients);
+  - for `c < π`, growth bounded by `J_c`, which equals the support function of `D_c` where `π cos φ ≥ c`. In steeper directions `J_c` exceeds the window's support function `½arccos(c/π) sin φ`; sharpness there is open.
+- **Verdict for the producer.** A complete structural picture of the radical, but no positivity mechanism. The next cycle pivots to producer attempts.
+
+### L48 — Heavy prime perturbations: radical two-point tests expose the perturbation's own L-zeros (paper; Lean blocked on the Dirichlet-L explicit formula)
+- **Target.** MUST-357's open core: heavy perturbations `Σ|w_n| log n/√n = ∞`, for example deleting a residue class of primes.
+- **Mechanism tried (new).** Use the real shifts `F₁(·+v)` of the pole-free radical kernel `F₁ = (¼−∂²)Φ`. They are exact radical vectors (transform `e^{ivt}G(t)`, `G = ξ·(t²+¼)`), and their truncations have `W_ζ → 0`.
+  - Suppose the perturbed form `W_{Λ+w}` is positive at every aperture. Then `B_w(v) = Σ_n w_n n^{−½}[K(v+log n)+K(v−log n)]` (`K` = autocorrelation of `F₁`) is negative semidefinite.
+  - Hence `|B_w(v)| ≤ −B_w(0)`, and `B̂_w = G²μ̂_w ≤ 0`.
+- **Kill of the naive version (learned).** One might hope that one-signed `w` with growing local sums make `B_w(log m)` unbounded. It fails, because `∫e^{±y/2}K = |F̂₁(±i/2)|² = 0`: pole-freeness annihilates the smooth main term of any regularly distributed prime set (the L44 cancellation again). So `B_w` sees only the prime *fluctuations* of the deleted set. For `w = ±εΛ` the main terms cancel and `B` stays bounded. The Arch-sign argument still kills scaling, since off the zeros `μ̂_{εΛ} = ε·Arch` changes sign.
+- **Positive survivor (paper theorem).** For `w = (Λχ₄ − Λ)/2` (keep `p ≡ 1 (4)`, delete the odd powers of `p ≡ 3 (4)`, halve `p = 2`):
+  - on radical tests, `S_w(E) = ½∫|E|²G²(Arch_{χ₄} − Arch_ζ) − ½Σ_{ρ_χ}|E(γ_χ)|²G(γ_χ)²`;
+  - the zeros of `L(s,χ₄)` enter as negative atoms, and the archimedean mismatch `Re ψ(3/4+it/2) − Re ψ(1/4+it/2) + log 4 > 0` is a positive density;
+  - a trigonometric polynomial `E` vanishing at the first `L(χ₄)`-zeros (where `G²` is not negligible) makes `S_w(E) > 0`, so `W_{Λ+w}` fails positivity at a finite aperture;
+  - the argument works for any character-defined deletion `(Λ ± Λχ)/2` with an archimedean mismatch of fixed sign.
+- **New insight.** Radical tests turn every heavy perturbation into a statement about the zeros of the perturbation's own Dirichlet series. Prime-counting information (main terms, Chebyshev, local sums) is invisible to them; only the L-zeros and the Γ-factor mismatch remain.
+- **Lean status.** Blocked: needs the Guinand–Weil explicit formula for `L(s,χ₄)`, which is not in the corpus (it has zero boxes, zero density and contour pieces for Dirichlet L, but no explicit formula). Backlog card `P0:dirichlet-l-guinand-weil-and-heavy-deletion`.
+
+### L49 — Sharp theta-window law in the steep directions. TRUE [L]
+- **Conjecture.** Let `|F| ≤ Ce^{k|x|}e^{−ce^{2|x|}}` with `0 < c ≤ π`, `M_F = ξh`, and set `φ₀ = arccos(c/π)`, `θ* = φ₀/2`. On the steep sector `φ₀ ≤ arg z ≤ π − φ₀` (and its conjugate), `|h(z)| ≤ B(1+|z|)^m e^{θ*|Im z|}`, where `θ*|sin φ|` is exactly the support function of `D_c` there. Together with L47 on `|arg z| ≤ φ₀`, the growth indicator of `h` is at most the support function of `D_c` in *every* direction.
+  - Sharpness: `Φ(·+iθ*)` has rate `π cos 2θ* = c` and quotient `e^{−iθ*(s−½)}`, of modulus `e^{θ* t}`.
+  - So the rate-`c` radical has growth indicator exactly the support function of `D_c`.
+- **Attack.** On the boundary rays `±φ₀` the L47 exponent is exactly `θ*|t|`, since `log(π cos φ₀/c) = 0` and `½log(1+tan²φ₀) = log(π/c)`. The rays `π ∓ φ₀` follow from the functional equation. Phragmén–Lindelöf in a sector of opening `π − 2φ₀ < π`, with multiplier `e^{iθ*z}`, transports the boundary bound inside. No hole found. SURVIVES.
+- **Lean.** `RHTower.ThetaWindowSteepLaw`. Axioms propext/choice/Quot.sound.
+  - `theta_window_steep_law`: `|h(½+u)| ≤ B(|u|+1)^m e^{θ*|Im u|}` on `φ₀ ≤ |arg u| ≤ π−φ₀`.
+  - `theta_window_tilt_attained`: `Φ(·+iθ*)` has rate `c` and quotient modulus `e^{θ* Im s}`.
+  - Reusable: `windowTail_antitone`, `windowExponent_on_boundary_ray`, `norm_le_sector_of_rays_exp_im` (sector Phragmén–Lindelöf with an `e^{β Im z}` weight), `tiltedPhi_rate` (global tilt decay), `centredLaplace_tiltedPhi`.
+- **Radical classification, final form (L45–L49).** Graded by decay rate `c`, the ξ-divisible class has quotients whose growth indicator is at most the support function of the theta window `D_c`, and it is attained in every direction.
+  - Endpoints: `D_c = ∅` for `c > π`; `D_π = {0}` (polynomials).
+  - Not formalized: the converse Paley–Wiener representation (every such `h` realized).
+- **For the producer.** None. This is the complete structure of what the Weil form cannot see.
+
+### L50 — Perturbation-symbol criterion: Weil positivity near `Λ` is the sign of `Re D_w` on the critical line; deleting even prime powers breaks it (in progress)
+- **Criterion.** Let `w` be polynomially bounded with `w_1 = 0`, and `D_w(s) = Σ w_n n^{−s}`. For radical tests `f` (transform `E·G`, `G = ξ(½+it)(t²+¼)`), `W_ζ(f) = 0` and
+  `W_{Λ+w}(f) = −(1/π)∫|f̂(t)|² Re D_w(½+it) dt`,
+  with the boundary value taken from `Re s > 1`, and continuation where it exists.
+  - (i) Unconditionally, positivity at every aperture forces `Re D_w(½+it) ≤ 0` on `ℝ` minus the real zeros of `Ξ`.
+  - (ii) Under RH, `Re D_w ≤ 0` on the line suffices for positivity.
+  - The tangent cone of Weil positivity at `Λ` is the cone of Dirichlet series with nonpositive real part on the critical line.
+  - Light `w` (continuous `D_w`) with `Re D_w ≤ 0` have mean `w_1 = 0`, which forces `w = 0`. This recovers MUST-357's light rigidity. Heavy `w` are decided by the sign of the continued `D_w`.
+- **Heavy example, ζ only.** Delete all even prime powers `p^{2j}` (heavy: `Σ_p log p·2log p/p = ∞`).
+  - `W'(f) = W_ζ(f) + 2Σ_m Λ(m)/m·Re A_f(2 log m) = W_ζ(f) + (1/π)∫|f̂|² Re(−ζ'/ζ(1+2it)) dt`.
+  - `−ζ'/ζ(s) = 1/(s−1) − γ + O(s−1)`, so `Re(−ζ'/ζ(1+2it)) → −γ < 0` as `t → 0`.
+  - Take `f̂ = E·G` with `E(t) = t·sinc²(Lt)`. It vanishes at `0` (no pole mass) and concentrates at `|t| ≲ 1/L`.
+  - The main term is `≈ −γ|G(0)|²·c/L³`; the tail is `O(L^{−4}·log)` via `|ζ'/ζ(1+it)| ≪ log|t|`. So `W' < 0` after truncation at a large aperture.
+  - The Euler–Mascheroni constant makes the even-power block load-bearing.
+- **Attack.**
+  - False? The sign chain checks: `ζ'/ζ = −1/(s−1) + γ + O(s−1)`.
+  - Circular? No zero input: radical tests, the Laurent expansion and the ζ'/ζ bound on `Re s = 1` are all unconditional.
+  - Known? The corpus did the light case via cosine-series uniqueness (MUST-357). The radical-test reduction to the symbol, and the heavy example, are new to the corpus. No literature statement found.
+  - Verdict: SURVIVES. Lean next (the even-power theorem; the general criterion stays a paper statement).
+- **L50 result: TRUE [L].**
+  - `RHTower.mertens_constant_nonpos_of_weilAtomSymbol_nonneg`: Weil positivity for weights `λ` with `∑_{2≤n≤x}(λ−Λ)n^{−1/2} = A log x + B + o(1)` forces `B ≤ 0`.
+  - `RHTower.squareDeletedVonMangoldt_weilAtomSymbol_not_nonneg`: deleting the even prime powers gives `B = γ`, so positivity fails.
+  - Modules: `WeilSymbolMertensExpansion` (the exact Mertens expansion of the perturbed symbol energy) and `WeilPositivityMertensConstantObstruction`.
+  - Tests: truncated radical tests at level `log S`, spread by a mean-zero probe at scale `S`. The zero side is `O(S^{10}e^{−S})` and the mass is `≥ cS`.
+  - Card: `3-formalized/weil-positivity-mertens-constant-obstruction.md`.
+  - This is the first heavy-perturbation rigidity result for MUST-357's open core. Residue-class deletions (`C(x) ≍ √x`) remain; they need the modulated version or L48.
+
+### L51 — The conductor obstruction: weighting down the primes `p ≡ ±3 (mod 8)` breaks Weil positivity. TRUE [L]
+- **Conjecture.** For every `t > 0` the weights `Λ(1−t+tχ₈)` violate Weil positivity. At the double radical, the energy is `−t log 8 ∫|h|²`.
+- **Attack.**
+  - False? The exact identity reduces the energy to `2π(1−t)Re W_ζ + 2πt Re W_{χ₈} − t log 8∫|h|²`. Both zero sides are killed by a test radical for both `ζ` and `L(χ₈)`.
+  - Circular? No: no zero locations are used, only vanishing of the transforms at the zeros.
+  - Known? This is MUST-357's headline open example (deleting a residue class).
+  - Verdict: SURVIVES.
+- **Proof and Lean.**
+  - Theorem `RHTower.chiEightMix_weilAtomSymbol_not_nonneg`, module `WeilPositivityConductorObstruction`. Axioms: propext, Classical.choice, Quot.sound.
+  - Inputs: Zeta23 `EF_lit_chi_L` and the corpus χ₈ theta kernel.
+  - Card: `3-formalized/dirichlet-l-guinand-weil-and-heavy-deletion.md`.
+- **Insight.**
+  - At the joint radical of `ζ` and `L(χ)`, Weil energy in the character direction is pure archimedean mismatch: `log q` for even `χ`, `π sech(πr) + log 4` for `χ₄`.
+  - The zero sides of both functions drop out exactly.
+  - So Weil positivity at `Λ` fails in the direction `Λ(χ−1)` for *every* `t > 0` because the conductor is `> 1`.
+  - The opposite direction (`t < 0`) has positive mismatch. There positivity is decided by the `L(χ₈)` zeros (sign of `W_{χ₈}`), which is open.
+
+### L51b — χ₈ line, direction t < 0: reduction to zero independence [paper]
+- For `t = −s < 0`, divide the χ₈ kernel by the zero factor `(z−z₁)^m(z−z̄₁)^m` at one zero `ρ₁` of `L(χ₈)`. The kernel of `K̂/(z−w)` is `−i e^{−iwx}∫_{−∞}^x K(y)e^{iwy}dy`, which is super-exponentially decaying when `K̂(w) = 0`. Spreading the probe at `Re z₁` then gives energy `2π[(1+s)m_ζ(ρ₁) − s·m_χ(ρ₁)]·Pair + s log8∫|h|²`.
+  - The pair term `2Re(h(z₁)conj h(z̄₁))` has free sign when `ρ₁` is off the line: choose the multiplier `1 + b(z−γ)`.
+  - Off the line, or `m_ζ(ρ₁) = 0`: violation.
+  - The only surviving configuration: every zero of `L(χ₈)` is on the critical line and is a zero of `ζ` with `(1+s)m_ζ ≥ s·m_χ`.
+  - Zero counting (`N_χ ~ 2N_ζ`) excludes this for `s > 1`.
+- **Result [P].** Positivity fails for `t < −1` unconditionally. For `−1 ≤ t < 0` it fails unless GRH(χ₈) holds and the zeros of `L(χ₈)` are zeros of `ζ` of comparable multiplicity. The window `[−1, 0)` is exactly an independence-of-zeros question. Lean: not started (division machinery plus two Riemann–von Mangoldt counts).
+
+### L52 — Twist rigidity: `Λ(1 + t cos(α log n))` (conjecture)
+- **Exact identity [P].** Let `f₊ = f e^{iαx}` and `f₋ = f e^{−iαx}` (tests with `f, f₊, f₋` polar-constrained), and `A(τ) = Re ψ(¼+iτ/2) − log π`. Then
+  `∫|h|²S_{Λ(1+t cos(α log n))} = 2πReW(f) + πt(ReW(f₊) + ReW(f₋)) − (t/2)∫|h(τ)|²(A(τ−α)+A(τ+α))dτ`.
+  - Mechanism: `k_{f±}(y) = e^{±iαy}k(y)`, and the twisted prime sum is the ζ prime sum of the modulated tests.
+- **Theorem [P].**
+  - If `t·(A(τ₁−α)+A(τ₁+α)) > 0` for some `τ₁`, the weights violate Weil positivity.
+  - Tests: triple radical `B_R ⋆ B_R e^{iα·} ⋆ B_R e^{−iα·}` (transform `B̂(z)B̂(z+α)B̂(z−α)`), spread probe `κ(x/S)e^{−iτ₀x}` at `R = log S`.
+  - Consequences:
+    - `t > 0`: every `α` (take `τ₁` large).
+    - `t < 0`: every `α` with `A(α) < 0` (take `τ₁ = 0`), in particular `|α|` small.
+    - `α = 0`: scaling `cΛ` fails for every `c ≠ 1`.
+  - Two-sided isolation of `Λ` along twist lines for small `|α|`. For large `|α|` (`A(τ−α)+A(τ+α) > 0` for all `τ`, roughly `|α| ≳ 670`) the direction `t < 0` is not seen by the triple radical.
+- **Attack.**
+  - False? No zero input: `W` of the three modulated tests is tiny, because each transform contains `B̂(z)`.
+  - Known? Scaling to `c = 0` (prime-free) is in MUST-357; general `c` and twists are new to the corpus.
+  - Verdict: SURVIVES. Lean next.
+- **L52 result: TRUE [L].** Module `RHTower/WeilPositivityTwistObstruction.lean` (1343 lines). Axioms: propext, Classical.choice, Quot.sound. Wired.
+  - `integral_weilAtomSymbol_twist`: the exact identity.
+  - `twist_weilAtomSymbol_not_nonneg`: violation whenever `t(A(τ₁−α)+A(τ₁+α)) > 0`.
+  - `twist_pos_weilAtomSymbol_not_nonneg`: every `α`, every `t > 0`.
+  - `twist_neg_weilAtomSymbol_not_nonneg`: every `t < 0` when `A(α) < 0`.
+  - `exists_twist_isolation`: two-sided isolation of `Λ` along all small twists.
+  - `scaled_vonMangoldt_weilAtomSymbol_not_nonneg`: `cΛ` fails for every `c ≠ 1`.
+  - **Insight.** Along twist directions, the tangent cone of Weil positivity at `Λ` is computed purely by the archimedean symbol `A` at shifted frequencies. `Λ` is isolated in both directions exactly where `A(τ−α)+A(τ+α)` changes sign. For `|α|` so large that it is positive for all `τ`, the `t < 0` direction is invisible to radical tests; there positivity would be decided by zero-side information.
+- **Correction to L51b.** Counting zeros with `|γ| ≤ T` gives `N_χ(T) ~ N_ζ(T) ~ (T/π)log T`, not `N_χ ~ 2N_ζ`. So counting yields nothing for `t < −1`. The whole `t < 0` direction of the χ₈ line is tied to common zeros of `ζ` and `L(χ₈)`, i.e. zero independence.
+
+### L53 — The conductor law for every real primitive character (conjecture)
+- **Statement.** For every real primitive Dirichlet character `χ` mod `q > 1` and every `t > 0`, the weights `Λ(n)(1 − t + tχ(n))` violate Weil positivity (with `ζ`'s archimedean term).
+  - On tests radical for both `ζ` and `L(s,χ)`, the energy is `−t∫|h|²(log q + κ·π sech(πr))dr`, where `κ` is the parity of `χ`.
+  - The even case has the constant `log q`.
+  - In the odd case, `Re ψ(¾+iy) − Re ψ(¼+iy) = π sech(2πy)` by the digamma reflection formula (corpus `HTGeometry.GammaLogDeriv.digamma_reflection`).
+- **Kernel.** Take `K_χ(x) = Σ_j χ(j)·evenKernel(j/q)(x)` (for odd `χ`, use `oddKernel` with weight `e^{3u/2}`) and `Φ_χ(u) = 2e^{u/2}K_χ(e^{2u})`.
+  - Transform: `paperFT Φ_χ z = 2q^{s}·completedLFunction χ s`, with `s = ½ + iz`, via `WeakFEPair.hasMellin` and `completedLFunction_def_even`.
+  - Super-exponential decay at both ends: `isBigO_atTop_evenKernel_sub`, the kernel functional equation, and `Σχ(j) = 0`.
+- **Attack.** Known? This generalizes L51 (χ₈) to all quadratic characters, including every quadratic residue-class deletion. No literature statement found. Verdict: SURVIVES. Lean: in progress.
+- **L53 result (even case): TRUE [L].** Modules `RHTower/DirichletEvenThetaAxisKernel.lean` and `RHTower/WeilPositivityQuadraticConductorLaw.lean`. Axioms: propext, Classical.choice, Quot.sound. Wired.
+  - `dirichletMix_weilAtomSymbol_not_nonneg`: for every even real primitive `χ` mod `q > 1` and every `t > 0`, the weights `Λ(1−t+tχ)` break Weil positivity. The defect is `t log q ∫|h|²`.
+  - `integral_weilAtomSymbol_dirichlet`: `∫|h|²S_{Λχ} = 2πRe W_χ − log q∫|h|²` for every even real primitive `χ`.
+  - `paperFT_dirichletAxisKernel`: the theta axis kernel of `χ` has transform `q^sΛ(s,χ)`, so it is an entire, super-exponentially decaying radical source for `L(s,χ)`.
+  - The kernel in the corpus was built for χ₈ from the theta-power family; this one works for every even `χ` directly from mathlib's Hurwitz kernels.
+  - **Insight.** Weil positivity for `ζ` fixes more than `Λ` up to scale and twist: it fixes the whole splitting law of every real quadratic field. Tilting toward any quadratic character costs exactly the log of its conductor, and no zero-side information enters for `t > 0`.
+  - Odd case: not formalized (needs `oddKernel` and the digamma reflection).
+
+### L54 — The quadratic conductor law for every quadratic field. TRUE [L]; two-sided isolation [P]
+- **Theorem [L]** `RHTower.quadraticMix_weilAtomSymbol_not_nonneg`: for every real primitive `χ` mod `q > 1`, even or odd, and every `t > 0`, the weights `Λ(1−t+tχ)` break Weil positivity (ζ's archimedean term).
+  - Odd case (imaginary quadratic fields): the defect is `t∫|h|²(log q + π sech(πτ))`. This rests on `Re ψ(¾+ir/2) − Re ψ(¼+ir/2) = π/cosh(πr)` (digamma reflection).
+  - `χ₄` at `t = ½` is L48's example: keep `p ≡ 1 (4)`, delete the odd powers of `p ≡ 3 (4)`, halve the powers of 2. Now formal.
+  - Modules:
+    - `RHTower/DirichletOddThetaAxisKernel.lean`: odd theta axis kernel `e^{3u/2}Σχ(j)oddKernel(j/q)(e^{2u})` with transform `q^sΛ(s,χ)`. There is no pole correction in the odd case.
+    - `RHTower/WeilPositivityImaginaryQuadraticConductorLaw.lean`: contains a generic `JointRadical` section. Any super-exponentially decaying kernel radical for a zero configuration `Z` gives both zero sides `O(Re^{−R/2})` and mass `≥ c`. `weilAtomSymbol_not_nonneg_of_joint_radical` turns an energy bound into a violation.
+  - Axioms: propext, Classical.choice, Quot.sound. Wired.
+- **Two-sided isolation on every real-character line [P].** The `t < 0` direction also fails, for every `t < 0`.
+  - L51b's division argument gives a violation as soon as `L(s,χ)` has a zero where `ζ ≠ 0` (on the line), or any off-line zero.
+  - Such a zero exists unconditionally: Banks–Loftus, arXiv 2607.22930 (no Dirichlet L-function vanishes at every zero of a fixed `L(s,χ₀)`); earlier Fujii, Bombieri–Perelli 1998.
+  - So `W ∩ {Λ(1−t+tχ)} ⊆ {Λ}` for every quadratic `χ`.
+  - Lean: needs a formal distinct-zero theorem (discrete moment `Σ_{ρ_χ} ζ(ρ_χ)`, Landau–Gonek type). Not started.
+- **Summable weights are never Weil-positive [P].** If `Σ|λ(n)|n^{−1/2} < ∞`, then `S_λ = A − 2Re D_λ(½+i·)` is continuous, and positivity forces `S_λ ≥ 0` pointwise (concentrated polar-free tests).
+  - `D_λ` has no frequencies in `(−log 2, log 2)`, so `∫S_λφ = ∫Aφ` for the Fejér kernel `φ = (sin bτ/τ)²`, `b = ½log 2`.
+  - By Gauss's digamma integral, `∫Aφ/π = b(ψ(¼) − log π) + I₁ + bI₂`, with `I₁ ≤ b + b² + 4b³/9` and `I₂ ≤ (16/3)2^{−1/2}`.
+  - Hence `∫Aφ/(πb) ≤ −5.372 + 5.171 < 0`, a contradiction.
+  - Positivity needs the pole: for `λ` with a meromorphic `D_λ` (residue `r` at `s = 1`), `∫S_λφ = ∫Aφ + 2πr(φ(i/2)+φ(−i/2))`. Positivity forces `r ≥ r** ≈ 0.8`, a PNT-type lower bound.
+- **Kill (resonant radical tests).** Radical tests cannot be moved to Dirichlet-resonant heights.
+  - Resonance for all primes up to `e^S` needs `τ₀ ~ exp(e^S)`.
+  - At such heights `|Ξ(τ₀)|² ~ e^{−πτ₀/2}` is beaten by the low-frequency leakage of any compactly supported probe unless `S ≳ log²τ₀`, which is circular.
+  - This is why every rigidity result reaches only directions whose Dirichlet series continues to the line.
+- **Weil cone [P, structural].**
+  - Let `W` = the Weil-positive weight systems with ζ's archimedean term. `W` is convex, and each level `W_a` is compact.
+  - The radical-test criterion (L50) gives `W ⊆ Λ + T`, with `T = {w : Re D_w ≤ 0 on the line}`.
+  - By Farkas duality, `W ≠ ∅` ⟺ PB, a prime-blind positivity: `Σ_i∫A|ĥ_i|² ≥ 0` for polar-constrained families whose autocorrelations sum to 0 at every `log n`. PB is prime-free.
+  - **Uniqueness conjecture** (`W ⊆ {Λ}`, which would give RH ⟺ PB): heuristically FALSE under RH. Hahn–Banach produces weights with absolutely continuous `S_λ` as soon as PB holds.
+  - Survivor: `Λ` is the element of `W` with purely atomic `S`. Extremality of `Λ` in `W` reduces to a Fourier uniqueness question for the pair (zeros of ζ, `{±log n}`), at the Connes–Consani/Landau density 2.
+
+### L55 — Summable prime weights are never Weil-positive. TRUE [L]
+- **Theorem [L]** `RHTower.summable_weights_weilAtomSymbol_not_nonneg`: if `Σ|λ(n)|n^{−1/2} < ∞`, the finite-atom Weil symbol with weights `λ` (ζ's archimedean term) is negative on some polar-constrained `C²` test at some level.
+  - This covers `λ = 0` and every finite truncation `Λ·1_{n≤N}`.
+  - Together with MUST-357 it gives `W ∩ (ℓ¹(n^{−1/2}) ∪ (Λ + ℓ¹(n^{−1/2}))) ⊆ {Λ}`.
+- **Mechanism.** A prime-blind test (support `[−0.34, 0.34]`, autocorrelation inside `(−log 2, log 2)`) has `∫|h|²A < 0`. On it every atom integrates to zero, so the full symbol of any summable `λ` has negative mean against `|h|²` and is negative somewhere. Concentrated radical tests finish.
+- **Reusable [L].**
+  - The x-space form of the archimedean energy: `∫|h|²A = (Re ψ(¼) − log π)∫|h|² + ∫_0^∞ w(t)∫|h|²(1 − cos(τt/2))`, with the positive jump density `w(t) = e^{−t/4}/(1 − e^{−t})` (`integral_normSq_mul_arch_eq_jump`).
+  - A computer-free negativity certificate for the prime-free archimedean form below the first prime.
+- **Producer reading.**
+  - Summable prime data can never produce positivity. The divergence of `Σλ(n)n^{−1/2}`, i.e. the pole of `D_λ` at `s = 1`, is load-bearing.
+  - In Beurling–Deny form, `ψ(¼) − log π ≈ −5.37` is a negative killing constant that only the non-summable prime jumps can repay.
+  - This is the sharp form of "prime-free fails", extended to every absolutely summable perturbation of `0`.
+- Card: `3-formalized/summable-weights-never-weil-positive.md`.
+
+### L56 — The character-span half-space law. TRUE [L]
+- **Theorem [L]** `RHTower.twoCharacterMix_weilAtomSymbol_not_nonneg`. Take real primitive `χ₁, χ₂` (moduli `q_i > 1`) and real `t₁, t₂` with `t₁ log q₁ + t₂ log q₂ > 0`, where `t_i ≥ 0` whenever `χ_i` is odd. Then the weights `Λ(1 + t₁(χ₁ − 1) + t₂(χ₂ − 1))` break Weil positivity.
+  - Mixed signs are allowed. So `W ∩ span{Λ, Λχ₁, Λχ₂} ⊆ {t₁ log q₁ + t₂ log q₂ ≤ 0}`: the conductor-weighted balance is a supporting half-space of the Weil cone at `Λ`.
+- **Machinery [L].**
+  - `AllExpDecay` kernels are closed under convolution, and the transform of a convolution is the product.
+  - `exists_dirichlet_radical_kernel` gives a radical kernel for every real primitive character.
+  - `weilAtomSymbol_not_nonneg_of_joint_radical₂` handles two zero configurations. The tests use `Ψ₁ ⋆ Ψ₂`, radical for `ζ`, `L(χ₁)` and `L(χ₂)`.
+- With the paper two-sided isolation (L54), the expected picture is `W ∩ (character span) = {Λ} ∩ W`.
+- Module `RHTower/WeilPositivityCharacterSpanHalfSpace.lean`. Built and wired; axioms propext/Classical.choice/Quot.sound.
+
+### Open core recorded after L50–L56: smooth elements of the Weil cone [P]
+- Let `W` be the Weil-positive weight systems with ζ's archimedean term. By duality, `W ≠ ∅` ⟺ PB (prime-blind positivity, a prime-free statement).
+- **Uniqueness conjecture:** `W ⊆ {Λ}`. It would give RH ⟺ PB.
+- **Reduction [P].** A segment of `W` through `Λ` exists ⟺ `W` contains a *smooth element* `u`. That is: `D_u` is analytic on `Re s ≥ ½` except a simple pole at `1`, and `Re D_u(½+iτ) ≤ A(τ)/2` for all `τ`, so the symbol is absolutely continuous and `≥ 0`.
+- **Natural candidates all fail [P]:**
+  - `u = ζ − 1 + light`: the Ω-results for `Re ζ(½+it)` beat `½ log t`.
+  - The Möbius–ζ-ratio deformation `u^{(δ)}(n) = δ^{−1}∏_{p|n}(1 − p^{−δ})`, with `D = δ^{−1}(ζ(s)/ζ(s+δ) − 1)`. It fails at `τ = 0` for every `δ > 0`: the first-order term is `(L'² − L'')(½) ≈ +3.47`, and numerically the inequality fails for `δ ∈ (0, 0.5)`. It also fails at large `τ`.
+  - Summable `u` fail by L55.
+- Deciding existence of a smooth element decides whether the Weil cone is a single point.
+
+### L57 — The Nyquist constant is 2π: Hodge(a) excludes separated off-line zeros below `(1−η)·2πe^{2a}` (in progress)
+- **Context.**
+  - Current horizons: HF-F31/HF-F34 reach `2πe^{2a−3/4}` (tilted cluster test with shifts `1/8`, `1/4`).
+  - The lattice law (`offLineLattice_weil_positive_iff`) is blind exactly at spacing `π/a`, i.e. at the ζ-density height `2πe^{2a}`.
+  - So the "uniform-in-δ Nyquist constant" (frontier open item) sits in `[2πe^{−3/4}, 2π]`.
+- **Conjecture (L57).** For `0<η≤½` and `M≥1` there is `a₀` such that, for `a ≥ a₀`, Hodge(a) excludes every nontrivial zero `ρ₀ = β₀+it₀` with:
+  - `β₀ > ½`, `8 ≤ t₀ ≤ (1−η)2πe^{2a}` and `mult ρ₀ ≤ M`;
+  - ordinate separation `δ ≤ ½` from every zero other than `ρ₀` and `1−ρ̄₀`, and depth `β₀−½ ≤ δ/2`;
+  - `12C log(t₀+1)/δ + 4 log(1/(β₀−½)) ≤ (π/2)η^{3/2}e^{2a}`.
+  With the lattice law this determines the constant: 2π.
+- **Kill attempts.**
+  - *False?* The depth loss `log(1/δ₀)` is necessary. A pair's negativity is `O(δ₀²)` against a tail floor `exp(−ce^{2a})`, so shallower zeros are invisible, uniformly in any method with bounded symbols (Cauchy on the strip).
+  - *Circular?* No.
+  - *Known?* Corpus: `2πe^{2a−3/4}`. Literature: only CCM Cor. 3.8 (limit).
+  - *Insignificant?* It closes the frontier item "determine the Nyquist constant".
+  - Verdict: SURVIVES.
+- **Paper proof.**
+  1. Kernel `h = D_{γ₀}^{m}D_{γ₁}^{m}Φ_θ`, `θ = π/4−√η/2`, `γ₀ = t₀−iδ₀`, `γ₁ = γ̄₀`.
+     - `ĥ` is entire and `(z−γ₀)^m(z−γ₁)^m ĥ = e^{zθ}Ξ`.
+     - Minimum modulus on `|z−t₀| = 3δ/4`, using the lower semicircle path bound and `|Ξ(z̄)| = |Ξ(z)|`, gives `|ĥ(γ_j)| ≥ m_V(θ,t₀,δ/2)`.
+  2. Test `f = N_{c₁,c₂,s}((h_{≤U}) ⋆ κ₂^{(w,t₀)})` with `U = a−η/8` and `w = s = η/16`.
+     - `N(γ₀) = 1`, `N(γ₁) = v` aligns the pair phase; `|N| ≤ 1+3/(sδ₀)`.
+  3. `Re W ≤ (2m)(−|X₀||X₁| + e(|X₀|+|X₁|) + e²) + (N_max ε B_w(1+t₀)²)²·24A₀log(t₀+3)`, where `e = εB_w(1+t₀)²` and `ε = expTail h ½ U`. Both factors are tail-sized at every other zero because of the bump.
+  4. Hodge(a) gives `λ ≤ e(3+24N_max²A₀log)`, with `λ = m_V·t₀²·4w e^{−1/16}∫κ`.
+  5. `landau_gain`: the exponent gap is `(π/2)η^{3/2}e^{2a}`. Contradiction.

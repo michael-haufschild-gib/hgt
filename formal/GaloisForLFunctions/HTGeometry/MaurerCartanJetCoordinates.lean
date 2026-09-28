@@ -172,7 +172,8 @@ theorem jetFieldDerivation_eq_sum_maurerCartan (hD : (derivationMatrix D t).det 
 
 /-- The jets `δ^k ℓ_i` of the Maurer–Cartan coordinates. -/
 def maurerCartanJet (q : ℕ × Fin d) : FunctionJetField F d :=
-  ((jetFieldDerivation ht : FunctionJetField F d → FunctionJetField F d)^[q.1]) (maurerCartan D t q.2)
+  ((jetFieldDerivation ht : FunctionJetField F d → FunctionJetField F d)^[q.1])
+    (maurerCartan D t q.2)
 
 /-- The iterated derivatives of a linear combination of first jets are triangular. -/
 theorem isJetTriangular_iterate (w : Fin d → FunctionJetField F d) (B : Matrix (Fin d) (Fin d) F)

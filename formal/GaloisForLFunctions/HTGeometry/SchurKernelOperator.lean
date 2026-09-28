@@ -22,6 +22,7 @@ open scoped ENNReal NNReal ComplexConjugate
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
+set_option autoImplicit false
 
 variable {α : Type*} [MeasurableSpace α] {μ : Measure α} [SFinite μ]
 
@@ -287,6 +288,40 @@ theorem add_op (k₁ k₂ : SchurKernel μ) : (add k₁ k₂).op = k₁.op + k�
   simp only [apply, add]
   rw [← integral_add i1 i2]
   exact integral_congr_ae (Eventually.of_forall fun z => by simp only; ring)
+
+/-- The difference of two Schur kernels. -/
+def sub (k₁ k₂ : SchurKernel μ) : SchurKernel μ where
+  toFun y z := k₁.toFun y z - k₂.toFun y z
+  measurable := k₁.measurable.sub k₂.measurable
+  bound := k₁.bound + k₂.bound
+  row y := by
+    refine (lintegral_mono fun z => enorm_sub_le).trans ?_
+    rw [lintegral_add_left (k₁.measurable_left y).enorm, ENNReal.coe_add]
+    exact add_le_add (k₁.row y) (k₂.row y)
+  col z := by
+    refine (lintegral_mono fun y => enorm_sub_le).trans ?_
+    rw [lintegral_add_left (k₁.measurable_right z).enorm, ENNReal.coe_add]
+    exact add_le_add (k₁.col z) (k₂.col z)
+
+theorem sub_op (k₁ k₂ : SchurKernel μ) : (sub k₁ k₂).op = k₁.op - k₂.op := by
+  ext1 f
+  apply Lp.ext
+  filter_upwards [(sub k₁ k₂).op_coeFn f, k₁.op_coeFn f, k₂.op_coeFn f,
+    Lp.coeFn_sub (k₁.op f) (k₂.op f), k₁.ae_integrable f, k₂.ae_integrable f]
+    with y h h1 h2 h3 i1 i2
+  rw [_root_.sub_apply, h3, Pi.sub_apply, h, h1, h2]
+  simp only [apply, sub]
+  rw [← integral_sub i1 i2]
+  exact integral_congr_ae (Eventually.of_forall fun z => by simp only; ring)
+
+/-- A kernel that is the negative of another has the negative operator. -/
+theorem op_eq_neg_of_toFun {k₁ k₂ : SchurKernel μ} (h : ∀ y z, k₂.toFun y z = -k₁.toFun y z) :
+    k₂.op = -k₁.op := by
+  ext1 f
+  apply Lp.ext
+  filter_upwards [k₂.op_coeFn f, k₁.op_coeFn f, Lp.coeFn_neg (k₁.op f)] with y h2 h1 h3
+  rw [_root_.neg_apply, h3, Pi.neg_apply, h2, h1]
+  simp only [apply, h, neg_mul, integral_neg]
 
 /-! ### Square-integrable kernels -/
 

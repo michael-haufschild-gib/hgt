@@ -13,7 +13,7 @@ and combines the two.
 * `abs_log_norm_sub_le`: `log|f|` is `B`-Lipschitz along a segment where `|f'/f| ≤ B`.
 * `log_norm_zeta_ge_horizontal`, `abs_log_norm_zeta_vertical_le`: `ζ` is not small along paths at
   distance `δ` from every zero, via `|ζ'/ζ| ≪ log t/δ` (`norm_logDeriv_zeta_le`).
-* `exists_good_height`: the pigeonhole choice of a height avoiding the zero ordinates.
+* `exists_height_far_from_finset`: the pigeonhole choice of a height avoiding the zero ordinates.
 * `norm_leading_zeta_ge`: at a nontrivial zero `β₀+it₀` (`β₀ > 1/2`, `t₀ ≥ 8`) at distance `≥ d`
   from every other zero, `|v(ρ₀)| ≥ (1/3) exp(-C log(t₀+1)(16(N+1)/d + 1))`, by the minimum
   modulus on the circle of radius `d/2`.
@@ -265,7 +265,7 @@ theorem abs_log_norm_zeta_vertical_le {σ τ₁ τ₂ δ : ℝ} (hσ : 1 / 2 ≤
 
 /-- **Pigeonhole for heights.** Among `n` reals, some point of any interval of length `L` is at
 distance `≥ L/(2(n+1))` from all of them. -/
-theorem exists_good_height (Y : Finset ℝ) (u : ℝ) {L : ℝ} (hL : 0 < L) :
+theorem exists_height_far_from_finset (Y : Finset ℝ) (u : ℝ) {L : ℝ} (hL : 0 < L) :
     ∃ τ ∈ Icc u (u + L), ∀ y ∈ Y, L / (2 * (Y.card + 1)) ≤ |τ - y| := by
   classical
   set n := Y.card
@@ -355,7 +355,7 @@ theorem norm_zeta_ge_on_circle {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ zetaZeroConfig.
   have hσ1 : 1 / 2 ≤ s.re := by have := (abs_le.mp hre).1; linarith
   have hσ2 : s.re ≤ 2 := by have := (abs_le.mp hre).2; linarith
   have hrd : r ≤ 1 / 2 := by rw [hr]; linarith
-  obtain ⟨τ', hτ', hgood⟩ := exists_good_height (windowOrdinates t₀) s.im (L := r / 2)
+  obtain ⟨τ', hτ', hgood⟩ := exists_height_far_from_finset (windowOrdinates t₀) s.im (L := r / 2)
     (by positivity)
   have hτ'lo : s.im ≤ τ' := hτ'.1
   have hτ'hi : τ' ≤ s.im + r / 2 := hτ'.2

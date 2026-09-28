@@ -5,7 +5,7 @@
 - **Type:** exact source duality, cofinal local limit, and graded boundary profile
 - **Routes:** STC, CSB, U, BPC, K-RVM, MPLF, RHist; Euler-deletion interface
 - **Status:** `[PROVED HERE ON PAPER] [FINITE REFLECTION AND TOTIENT INVERSE IN LEAN] [NOT AN RH PROOF]`
-- **Dependencies:** [finite prime deletion](theta-prime-deletion-spectral-escape.md), [terminal weighted admission](theta-prime-deletion-graded-terminal-admission.md), literal theta first-atom asymptotic.
+- **Dependencies:** [finite prime deletion](../../3-formalized/theta/theta-prime-deletion-spectral-escape.md), [terminal weighted admission](theta-prime-deletion-graded-terminal-admission.md), literal theta first-atom asymptotic.
 
 ## Exact finite identity
 

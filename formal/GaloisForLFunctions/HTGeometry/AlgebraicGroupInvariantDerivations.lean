@@ -115,15 +115,16 @@ variable {C : Type u} [Field C] [CharZero C] (G : Over (Spec (.of C))) [GrpObj G
 /-- A derivation commuting with every translation. -/
 def IsTranslationInvariant (D : Derivation C G.left.functionField G.left.functionField) : Prop :=
   ∀ (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) (f : G.left.functionField),
-    D (translationAlgEquiv G x f) = translationAlgEquiv G x (D f)
+    D (groupTranslationAlgEquiv G x f) = groupTranslationAlgEquiv G x (D f)
 
 omit [CharZero C] [IsCommMonObj G] [LocallyOfFiniteType G.hom] in
 theorem isTranslationInvariant_of_conj
     {D : Derivation C G.left.functionField G.left.functionField}
-    (h : ∀ x, conjDerivation (translationAlgEquiv G x) D = D) : IsTranslationInvariant G D := by
+    (h : ∀ x, conjDerivation (groupTranslationAlgEquiv G x) D = D) :
+    IsTranslationInvariant G D := by
   intro x f
   have := congrArg (fun E : Derivation C G.left.functionField G.left.functionField =>
-    E (translationAlgEquiv G x f)) (h x)
+    E (groupTranslationAlgEquiv G x f)) (h x)
   simp only [conjDerivation_apply, AlgEquiv.symm_apply_apply] at this
   exact this.symm
 
@@ -133,10 +134,11 @@ theorem span_translationInvariant_eq_top :
     Submodule.span G.left.functionField {D | IsTranslationInvariant G D} = ⊤ := by
   rw [eq_top_iff]
   intro D _
-  let T := tangentCoordsLinear G
+  let T := tangentCoordsLinear G G.left.functionField
   let σ : (𝟙_ (Over (Spec (.of C))) ⟶ G) → G.left.functionField ≃+* G.left.functionField :=
-    fun x => (translationAlgEquiv G x).toRingEquiv
-  have hTσ : ∀ x E, (fun k => σ x (T E k)) = T (conjDerivation (translationAlgEquiv G x) E) := by
+    fun x => (groupTranslationAlgEquiv G x).toRingEquiv
+  have hTσ : ∀ x E,
+      (fun k => σ x (T E k)) = T (conjDerivation (groupTranslationAlgEquiv G x) E) := by
     intro x E
     funext k
     exact (tangentCoords_conjDerivation G x E k).symm
@@ -148,12 +150,12 @@ theorem span_translationInvariant_eq_top :
       T '' {D | IsTranslationInvariant G D} := by
     rintro _ ⟨⟨E, rfl⟩, hE⟩
     refine ⟨E, isTranslationInvariant_of_conj G fun x => ?_, rfl⟩
-    apply tangentCoordsLinear_injective G
+    apply tangentCoordsLinear_injective G G.left.functionField
     exact (hTσ x E).symm.trans (hE x)
   have hmem := Submodule.span_mono hfixed hspan
   rw [Submodule.span_image] at hmem
   obtain ⟨E, hE, hTE⟩ := hmem
-  rwa [← tangentCoordsLinear_injective G hTE]
+  rwa [← tangentCoordsLinear_injective G G.left.functionField hTE]
 
 /-- **A basis of translation-invariant derivations.**  For every transcendence basis `t` of the
 function field there are `d` translation-invariant derivations `D_i` with `det(D_i t_j) ≠ 0`. -/
@@ -180,7 +182,8 @@ theorem exists_translationInvariant_derivationMatrix_det_ne_zero {d : ℕ}
     rw [hsum]
     simp only [Derivation.smul_apply, jetPartial_apply_basis, smul_eq_mul]
     simp
-  have hspanE : Submodule.span G.left.functionField (E '' {D | IsTranslationInvariant G D}) = ⊤ := by
+  have hspanE :
+      Submodule.span G.left.functionField (E '' {D | IsTranslationInvariant G D}) = ⊤ := by
     have h1 := congrArg (Submodule.map E) (span_translationInvariant_eq_top G)
     rw [Submodule.map_span, Submodule.map_top, LinearMap.range_eq_top.mpr hEsurj] at h1
     exact h1

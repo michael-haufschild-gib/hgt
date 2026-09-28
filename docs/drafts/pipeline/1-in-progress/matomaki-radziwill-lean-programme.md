@@ -5,6 +5,13 @@
 > `../3-formalized/new_scientific_knowledge/matomaki-radziwill-moebius-short-interval-mean-square.md`.
 > What remains below is the *scoping* of a separate follow-on programme (the integer-start
 > normalisation needed by the two reciprocal-marker cards), not of this one.
+>
+> **Milestone D closed (2026-09-28): every `h → ∞`.**
+> `Sieve/MoebiusAveragedMeanSquareAllLengths.averagedMeanSquare_moebius_of_tendsto` proves
+> `AveragedMeanSquare μ h` for every `h(x) → ∞` with `h ≤ √x` (ladder of prime ranges
+> `ν_j = ν^{2^j}`, amplification by the previous range, exceptional set at the last range, high
+> range by Route T up to `2√x`); `Sieve/RouteECoprimeSignAllWindows` gives the coprime card's `(3)`
+> and `(4)` at every window law with `h/log log(3x) → ∞`.
 
 - **ID:** `MR-LEAN-PROGRAMME-001`
 - **Stage:** 1-in-progress
@@ -19,7 +26,7 @@ the vendored `PNTPlus`:
 
 | Card | Blocking input |
 |---|---|
-| `2-fully-proven/new_scientific_knowledge/route-e-coprime-square-root-mobius-product-sign-law.md` | Matomäki–Radziwiłł 2016, Theorem 1 (for `μ`) |
+| `3-formalized/route e/route-e-coprime-square-root-mobius-product-sign-law.md` | Matomäki–Radziwiłł 2016, Theorem 1 (for `μ`) |
 | `2-fully-proven/new_scientific_knowledge/route-e-growing-reciprocal-marker-low-breadth-transport.md` | same |
 | `2-fully-proven/new_scientific_knowledge/route-e-reciprocal-marker-mobius-hall-law.md` | same |
 | `2-fully-proven/route-e-cofactor-amplified-e3-token-supply.md` | Matomäki–Teräväinen 2022, Theorem 1.2 (all-interval `E₃`) |

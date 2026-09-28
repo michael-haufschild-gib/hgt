@@ -12,7 +12,7 @@ Three stage-2 Route E cards are blocked on one and the same missing input.
 
 - `2-fully-proven/new_scientific_knowledge/route-e-reciprocal-marker-mobius-hall-law.md`
 - `2-fully-proven/new_scientific_knowledge/route-e-growing-reciprocal-marker-low-breadth-transport.md`
-- `2-fully-proven/new_scientific_knowledge/route-e-coprime-square-root-mobius-product-sign-law.md`
+- `3-formalized/route e/route-e-coprime-square-root-mobius-product-sign-law.md`
 
 The first two need the Möbius short-interval mean square with rate `o(1/log x)`; the third needs it
 at windows as short as `(log log x)^{1+η}`. The corpus proves it at windows

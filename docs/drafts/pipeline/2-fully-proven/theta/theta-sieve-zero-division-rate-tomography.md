@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper); Lean formalization pending
 - **Routes:** STC, CSB, U, MPLF, RG-HF, RHist
 - **Status:** `[PROVED HERE ON PAPER] [NOT AN RH PROOF]`
-- **Dependencies:** [zero-division seed transfer](theta-euler-zero-division-seed-transfer.md), [prime-deletion source identity](theta-prime-deletion-spectral-escape.md), [all-sieve seed projector](theta-all-sieve-seed-projector-translation-cone.md). The positive-measure abscissa argument has a formal analogue in `LandauSingularAtAbscissa.lean`; the present theorem has not been formalized.
+- **Dependencies:** [zero-division seed transfer](theta-euler-zero-division-seed-transfer.md), [prime-deletion source identity](../../3-formalized/theta/theta-prime-deletion-spectral-escape.md), [all-sieve seed projector](../../3-formalized/theta/theta-all-sieve-seed-projector-translation-cone.md). The positive-measure abscissa argument has a formal analogue in `LandauSingularAtAbscissa.lean`; the present theorem has not been formalized.
 
 ## Statement
 

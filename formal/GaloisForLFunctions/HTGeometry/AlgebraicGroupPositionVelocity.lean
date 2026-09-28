@@ -39,7 +39,7 @@ instance groupJetDifferential : Differential (GroupJetField G) :=
 theorem groupJetDifferential_deriv (x : GroupJetField G) :
     Differential.deriv x = groupJetDerivation G x := rfl
 
-theorem differentialJet_eq_iterate (n : ℕ) (x : GroupJetField G) :
+theorem groupJetDifferentialJet_eq_iterate (n : ℕ) (x : GroupJetField G) :
     differentialJet n x = ((groupJetDerivation G : GroupJetField G → GroupJetField G)^[n]) x := rfl
 
 /-- An intermediate field whose generators are sent into it by `δ` is closed under `δ`. -/
@@ -114,7 +114,7 @@ theorem positionVelocityField_eq_differentialAdjoin (T : Set G.left.functionFiel
       exact IntermediateField.subset_adjoin C _ ⟨_, Or.inr ⟨q.2, rfl⟩, q.1, rfl⟩
   · refine IntermediateField.adjoin_le_iff.mpr ?_
     rintro _ ⟨y, hy, n, rfl⟩
-    rw [differentialJet_eq_iterate]
+    rw [groupJetDifferentialJet_eq_iterate]
     refine hiter n ?_
     rcases hy with ⟨a, ha, rfl⟩ | ⟨i, rfl⟩
     · exact algebraMap_mem_positionVelocityField _ ha
@@ -124,7 +124,7 @@ variable (α : G ⟶ G) [IsIsogeny G α]
 
 /-- The positions `F^(H(C))`: rational functions invariant under the deck closure. -/
 def deckClosurePositions : Set G.left.functionField :=
-  {a | ∀ x ∈ deckClosurePoints G α, translationAlgEquiv G x a = a}
+  {a | ∀ x ∈ deckClosurePoints G α, groupTranslationAlgEquiv G x a = a}
 
 omit [IsAlgClosed C] [IsIsogeny G α] in
 theorem mcDerivation_mem_deckClosurePositions (i : Fin (groupDim G)) {a : G.left.functionField}
@@ -142,9 +142,9 @@ theorem deckClosure_fixed_iff_mem_differentialAdjoin (u : GroupJetField G) :
   rw [← positionVelocityField_eq_differentialAdjoin G _
     (fun i a ha => mcDerivation_mem_deckClosurePositions G α i ha)]
   have h := fixed_iff_mem_positionVelocityField (groupBasis_isTranscendenceBasis G)
-    (mcDerivation_det_ne_zero G) (fun x : deckClosurePoints G α => translationAlgEquiv G x)
+    (mcDerivation_det_ne_zero G) (fun x : deckClosurePoints G α => groupTranslationAlgEquiv G x)
     (fun x i f => mcDerivation_invariant G i x f) u
-  have hset : {a | ∀ x : deckClosurePoints G α, translationAlgEquiv G x a = a} =
+  have hset : {a | ∀ x : deckClosurePoints G α, groupTranslationAlgEquiv G x a = a} =
       deckClosurePositions G α :=
     Set.ext fun a => ⟨fun h x hx => h ⟨x, hx⟩, fun h x => h x x.2⟩
   rw [hset] at h

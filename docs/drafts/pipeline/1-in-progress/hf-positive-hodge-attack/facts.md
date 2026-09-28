@@ -127,3 +127,54 @@ Scope: frontier route HF. Facts and no-gos only.
   - For every `0 < η ≤ ½` and all large `L`, every positive measure dominated by the level-`L` Hodge form of ζ has mass `≤ exp(−(π/2)η^{3/2}e^{2L})` on every window `[τ₀ ± δ/2]` with `5 ≤ τ₀ ≤ (1−η)·2πe^{2L}` that is `δ`-separated from the zero ordinates, provided `12C log(τ₀+1)/δ ≤ (π/2)η^{3/2}e^{2L}` (`zeta_krein_completion_pinned_below_landau_height`).
   - **Route:** the pinning height is exactly the Landau height `2πe^{2L}`, where the zero density meets the Nyquist rate (CC's `2πλ²`). It is sharp under RH by sampling.
   - Tools: tilted radical kernels `Φ_θ(u) = Φ(u+iθ)` with `Φ̂_θ = e^{zθ}Ξ` (`paperFT_tiltedPhi`), and the sharp quarter-line Gamma bound `|Γ(¼+is/2)| ≥ e^{−πs/4}/(1+s)` (`norm_Gamma_quarter_line_sharp`).
+- **HF-F34 [Lean, `RHTower.TiltedClusterNyquistExclusion`]:** Landau-sharp cluster exclusion. For every `0 ≤ θ < π/4`, Hodge(a) excludes every zero with `β > ½`, `t ≥ 101`, whenever `π cos(2θ)e^{2X} > (π/4 − θ)t + O(N(log N + log 1/δ) + log t + NX)` (`hodgeIndex_tilted_cluster_horizon`). With `θ → π/4` the horizon tends to `2πe^{2X}`, the Landau height. The method uses the tilted kernel `Φ(u+iθ)` (`e^{zθ}Ξ` kills the Gamma decay) and a quadratic off-cluster remainder (the discarded tail's transform decays with a tail-sized constant). **Route:** the finite-level Weil form certifies RH exactly to the Landau height.
+- **HF-F35 [Lean, `RHTower.TiltedWeilSpectralSeparation`]:** Landau-sharp spectral separation. Below the Landau horizon, an off-line zero at height `t` forces `μ(a) ≤ −e^{−2εt}·(poly(t,N,1/δ)·B_θ)^{−2}` for every tilt `ε = π/4 − θ`, where `B_θ = 2^N∫‖Φ(u+iθ)‖e^{3N|u|/2}` (`weilFloor_tilted_spectral_separation`). **Route:** `μ(a) ≥ −η` certifies RH to `min((π sin 2ε/ε)e^{2a−3/4}, (1/2ε)log(1/η))`, up to polylog terms. This is the CCM precision–height dictionary.
+- **HF-F36 [Lean, `RHTower.QuasiPolynomialWeilSeparation`]:** Quasi-polynomial precision. For fixed `κ > 0`, `μ(a) ≥ −exp(−C_κ(log²t + log t log(1/δ)))` excludes every off-line zero up to `2πe^{2a−3/4}/(1+κ)`. At `(1−o(1))·Landau` the precision is `exp(−ω(log²t))`, because the tail term `N·a ≍ log²t` forces `ε ≫ log²t/t` (`weilFloor_quasipolynomial_separation`). The ingredients are the explicit hump bound `‖Φ(u+iθ)‖ ≤ (18/c²)(e^{u/2} + (2/πc)e^{−3u/2})` and `B_θ ≤ (N/c)^{O(N)}`. **Route:** the finite-level Weil form is a well-conditioned RH certificate.
+- **HF-F37 [Lean, `RHTower.TiltedWeilNyquistInertia`]:** Landau-sharp inertia. `3/2`-separated off-line zeros below the tilted Landau horizon (with a `log|T|` margin) give `|T|` independent negative squares of margin `≍ min e^{−2εt}/(poly·B_θ²)` (`weilNegIndex_ge_card_tilted`). **Route:** completes the finite-level dictionary at the Landau constant.
+- **HF-F35 [Lean, `RHTower.KreinRepresentationMassLaw` + `TiltedKernelResolventTest`, `XiOnLineZeroLocalBounds`, `KreinRepresentationMultiplicities`]:** Finite-level Krein determinacy.
+  - Every positive measure representing the level-`L` Hodge form of ζ (`∫|f̂|²dν = |W(f,f)|`) gives every isolated on-line zero of multiplicity `m₀ ≤ M` below `(1−η)·2πe^{2L}` mass `m₀ ± exp(−πη^{3/2}e^{2L}/(64M))` on the ball of radius `exp(−πη^{3/2}e^{2L}/(8M))` (`zeta_krein_representation_masses_below_landau_height`).
+  - **Route:** with HF-F34, positive completions are the zero measure below the Landau height, masses included.
+  - Tools: the resolvent-divided tilted kernel with minimum-modulus floor and Borel–Carathéodory variation (`divided_tilted_kernel_near_zero`); the ratio-form Christoffel domination off the ball (`norm_paperFT_resolventTest_le`); two-sided `|Ξ|` bounds near the line (`norm_riemannPhiTransform_le_near_line`, `norm_riemannPhiTransform_ge_near_line`).
+- **HF-F38 [Lean, `RHTower.PoleFreePrimeTranslationResonance`]:** The pole-compressed prime translation operator on `L²(−A,A)` has norm `≥ e^A/(64A)` unconditionally (`poleFree_primeTranslation_resonance`). Mechanism: Dirichlet-resonant modulation, the PNT hinge sum, and a `2×2` pole correction of cost `8/τ`. **Route:** kills every height-blind (operator-norm) prime-side source problem. The prime side carries RH only relative to `Arch` at the same frequency, i.e. through the Weil form.
+- **HF-F39 [Lean, `RHTower.ThetaThresholdXiDivisibleUniqueness`]:** Theta threshold (`theta_threshold_xi_divisible`). A ξ-divisible transform with decay rate `c > π` forces `F = 0`; `Φ` realizes every `c < π`. **Route:** `Φ` is the extremal Weil-radical vector. The deepest near-null directions come from truncations of the radical, and no radical vector decays faster than `Φ`. Only the upper bound on `λ_min` (MUST-478) is proved; a matching lower bound is open. The bulk of the near-radical, dimension `≈(2−η)e^{2L}` with margin `exp(−η²e^{2L}/(300L))` (HF-F41, other cycle), is prolate-type. Reusable: `exists_quotient_exponential_type` (exponential type of any `M_F/ξ` via good-height rectangles), `Gamma_mul_norm_Gamma_one_le`, `xi_floor`.
+- **HF-F40 [Lean, `RHTower.ThetaRigidityHardyEqualityCase`]:** Hardy equality case (`theta_rigidity_polynomial_quotient`). Theta-rate (polynomial prefactor) together with ξ-divisibility forces a polynomial quotient, so the theta-rate Weil radical is `{P·Φ-type}`. **Route:** classification of the theta-rate radical. It does not reduce CCM (S2), whose hard input (ξ-divisibility of ground-state limits) is RH-strength. Reusable: `norm_le_sector_of_rays` (sector Phragmén–Lindelöf via `e^w`), `Gamma_mul_quadratic_le_norm_Gamma`, `xi_floor_quadratic`.
+- **HF-F41 [Lean, `RHTower.SharpWeilNearRadicalCount` + `BoxConvolutionPlateau`, `ZetaZeroCountUpperBound`, `PlateauTrigonometricTests`]:** Sharp near-radical count. For `0<η≤1` and large `L`, the level-`L` Hodge class contains `V` with `dim V ≥ (2−η)e^{2L}` and `‖W(f,f)‖ ≤ exp(−η²e^{2L}/(300L))∫|f|²` (`zeta_weil_near_radical_sharp_count`): Connes–Consani's constant `2`. The construction is plateau × trigonometric polynomials constrained to vanish at the zeros below `2πe^{2(L−η/8)}`, with Riemann–von Mangoldt counting the constraints. **Route:** the degenerate block any producer must certify has dimension `(2−o(1))e^{2L}`; the upper count is open.
+- **HF-F42 [Lean, `RHTower.ThetaWindowDirectionalLaw`]:** Theta-window law. The quotient of a rate-`c` ξ-divisible function grows at most by `J_c`. `J_c` equals the support function of `D_c` (and is attained) where `π cos φ ≥ c`, and dominates it in steeper directions. **Route:** completes the radical classification (L45–L47); no producer content.
+- **HF-F43 [Lean, `RHTower.ThetaWindowSteepLaw`]:** The theta-window law is sharp in every direction. Steep sectors are bounded by `e^{θ*|Im s|}`, `θ* = ½arccos(c/π)`, and the tilt `Φ(·+iθ*)` attains it. **Route:** completes the radical classification; reusable sector Phragmén–Lindelöf with an `e^{β Im z}` weight.
+
+- **HF-F44 [L] Mertens-constant obstruction.**
+  - Suppose `∑_{2≤n≤x}(λ(n)−Λ(n))n^{−1/2} = A log x + B + o(1)`. Then nonnegative finite-atom Weil symbol energy with weights `λ`, on all polar-constrained `C²` tests at all levels, forces `B ≤ 0`.
+  - Exact identity: `∫|h_f|²S_λ = 2π Re W(f) − 2π(A|h_f(0)|² + 2B‖f‖₂²) + 2π∫_1^{e^{2a+1}}(φ∘log)'·(C − A log − B)`.
+  - Deleting the even prime powers gives `A = −½`, `B = γ`, so Weil positivity fails.
+  - Lean: `RHTower.mertens_constant_nonpos_of_weilAtomSymbol_nonneg`, `RHTower.squareDeletedVonMangoldt_weilAtomSymbol_not_nonneg`.
+- **HF-F45 [L] Conductor obstruction.** For a polar-constrained `C²` test,
+  `∫|h|²S_{Λ(1−t+tχ₈)} = 2π(1−t)Re W_ζ + t(2π Re W_{χ₈} − log 8∫|h|²)`.
+  - Tests radical for both `ζ` and `L(χ₈)` make both zero sides `→ 0`.
+  - Hence every `t > 0` breaks Weil positivity. This includes deleting the primes `≡ ±3 (mod 8)` (`t = ½`) and the twisted weights `Λχ₈` (`t = 1`).
+  - Lean: `RHTower.chiEightMix_weilAtomSymbol_not_nonneg`, `RHTower.integral_weilAtomSymbol_chiEight`.
+- **HF-F46 [L] Twist rigidity.**
+  - The weights `Λ(n)(1+t cos(α log n))` (ζ's archimedean term) break Weil positivity whenever `t(A(τ₁−α)+A(τ₁+α)) > 0` for some `τ₁`. Here `A(τ) = Re ψ(¼+iτ/2) − log π`.
+  - Consequences: every `t > 0` (any `α`); every `t < 0` if `A(α) < 0`; two-sided for small `|α|`; scaling `cΛ` fails for every `c ≠ 1`.
+  - Exact identity `∫|h|²S = 2πReW(f) + πt(ReW(f₊)+ReW(f₋)) − (t/2)∫|h|²(A(τ−α)+A(τ+α))`.
+  - Lean: `RHTower.twist_weilAtomSymbol_not_nonneg`, `RHTower.exists_twist_isolation`, `RHTower.scaled_vonMangoldt_weilAtomSymbol_not_nonneg`.
+- **HF-F47 [L] Quadratic conductor law.**
+  - For every even real primitive Dirichlet character `χ` mod `q > 1` and every `t > 0`, the weights `Λ(n)(1−t+tχ(n))` (ζ's archimedean term) break Weil positivity.
+  - Exact energy `2π(1−t)Re W_ζ + t(2π Re W_χ − log q∫|h|²)`. Tests `f_R ⋆ Φ_{χ,≤4R}` kill both zero sides.
+  - Lean: `RHTower.dirichletMix_weilAtomSymbol_not_nonneg`, `RHTower.integral_weilAtomSymbol_dirichlet`, `RHTower.paperFT_dirichletAxisKernel`.
+- **HF-F48 [L] Quadratic conductor law, all quadratic fields.**
+  - For every real primitive `χ` mod `q > 1` and every `t > 0`, the weights `Λ(1−t+tχ)` break Weil positivity. Odd `χ` gives the defect `log q + π sech(πτ)`.
+  - Lean: `RHTower.quadraticMix_weilAtomSymbol_not_nonneg`, `RHTower.paperFT_dirichletOddAxisKernel`, `RHTower.re_digamma_threeQuarter_sub_quarter`, and the generic `RHTower.weilAtomSymbol_not_nonneg_of_joint_radical`.
+  - [P] The `t < 0` side also fails via distinct zeros (Banks–Loftus 2607.22930).
+  - [P] No weight system with `Σ|λ(n)|n^{−1/2} < ∞` is Weil-positive.
+- **HF-F49 [L] Summable weights are never Weil-positive.**
+  - If `Σ|λ(n)|n^{−1/2} < ∞`, Weil positivity (ζ's archimedean term, polar-constrained tests) fails at some level. Examples: `λ = 0` and `Λ·1_{n≤N}`.
+  - Certificate: a prime-blind flat-top test with `∫|h|²A < 0`.
+  - x-space archimedean energy: `(Re ψ(¼) − log π)∫|h|² + ∫_0^∞ w(t)∫|h|²(1 − cos(τt/2))`.
+  - Lean: `RHTower.summable_weights_weilAtomSymbol_not_nonneg`, `RHTower.integral_normSq_mul_arch_eq_jump`, `RHTower.integral_normSq_paperFT_fejerTest_mul_arch_neg`.
+- **HF-F50 [L] Character-span half-space.**
+  - For real primitive `χ₁, χ₂` and `t₁ log q₁ + t₂ log q₂ > 0` (with `t_i ≥ 0` for odd `χ_i`), the weights `Λ(1 + t₁(χ₁ − 1) + t₂(χ₂ − 1))` break Weil positivity, even with mixed signs.
+  - Lean: `RHTower.twoCharacterMix_weilAtomSymbol_not_nonneg`, `RHTower.AllExpDecay.convolution`, `RHTower.weilAtomSymbol_not_nonneg_of_joint_radical₂`.
+- **HF-F51 [P] Weil cone reduction.**
+  - `W ≠ ∅` ⟺ PB (prime-free).
+  - `W` contains a segment through `Λ` ⟺ `W` has a smooth element (Dirichlet series analytic on `Re s ≥ ½` except the pole at 1, with `Re D ≤ A/2` on the line).
+  - Natural candidates fail: ζ−1 plus light, the Möbius–ζ-ratio deformation, and summable weights.

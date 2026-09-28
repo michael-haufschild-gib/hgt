@@ -140,7 +140,8 @@ theorem exists_const_of_comp_isogeny_eq_one (α : G ⟶ G) [IsIsogeny G α] {N :
     [Algebra C N] (h : algebraicPointSource (K := C) (R := N) ⟶ G) (hα : h ≫ α = 1) :
     ∃ c : 𝟙_ (Over (Spec (.of C))) ⟶ G, c ≫ α = 1 ∧ h = toUnit _ ≫ c := by
   haveI := IsIsogeny.finite_kernel (G := G) (α := α)
-  have hw : h.left ≫ α.left = Spec.map (CommRingCat.ofHom (algebraMap C N)) ≫ identitySection G := by
+  have hw : h.left ≫ α.left =
+      Spec.map (CommRingCat.ofHom (algebraMap C N)) ≫ identitySection G := by
     have h1 : h.left ≫ α.left = (1 : algebraicPointSource (K := C) (R := N) ⟶ G).left :=
       congrArg CommaMorphism.left hα
     rw [h1, Hom.one_def, Over.comp_left, toUnit_left]
@@ -337,13 +338,15 @@ theorem overFunctionFieldPullback_isogenyPow (n : ℕ) :
 
 omit [IsAlgClosed C] [LocallyOfFiniteType G.hom] in
 /-- **Translation by a kernel point fixes the pullback field.** -/
-theorem translationAlgEquiv_overFunctionFieldPullback (φ : G ⟶ G) [IsMonHom φ] [IsDominant φ.left]
+theorem groupTranslationAlgEquiv_overFunctionFieldPullback (φ : G ⟶ G) [IsMonHom φ]
+    [IsDominant φ.left]
     (c : 𝟙_ (Over (Spec (.of C))) ⟶ G) (hc : c ≫ φ = 1) (a : G.left.functionField) :
-    translationAlgEquiv G c (overFunctionFieldPullback G φ a) = overFunctionFieldPullback G φ a := by
+    groupTranslationAlgEquiv G c (overFunctionFieldPullback G φ a) =
+      overFunctionFieldPullback G φ a := by
   have hinv : (GrpObj.mulRight c).hom ≫ φ = φ := by
     rw [← Category.id_comp ((GrpObj.mulRight c).hom), comp_mulRight_hom_eq_mul, MonObj.mul_comp,
       Category.assoc, hc, MonObj.comp_one, _root_.mul_one, Category.id_comp]
-  simp only [translationAlgEquiv_apply, overFunctionFieldPullback_apply]
+  simp only [groupTranslationAlgEquiv_apply, overFunctionFieldPullback_apply]
   have h := Scheme.Hom.functionFieldPullback_congr ((GrpObj.mulRight c).hom.left ≫ φ.left) φ.left
     (congrArg CommaMorphism.left hinv)
   rw [Scheme.Hom.functionFieldPullback_comp] at h
@@ -355,12 +358,12 @@ variable [CharZero C] [IsCommMonObj G]
 theorem mem_range_isogenyPullback_pow_iff (n : ℕ) (f : G.left.functionField) :
     f ∈ Set.range ⇑((overFunctionFieldPullback G α) ^ n) ↔
       ∀ c : 𝟙_ (Over (Spec (.of C))) ⟶ G, c ≫ isogenyPow α n = 1 →
-        translationAlgEquiv G c f = f := by
+        groupTranslationAlgEquiv G c f = f := by
   rw [← overFunctionFieldPullback_isogenyPow]
   set φ := overFunctionFieldPullback G (isogenyPow α n) with hφ
   constructor
   · rintro ⟨a, rfl⟩ c hc
-    exact translationAlgEquiv_overFunctionFieldPullback G (isogenyPow α n) c hc a
+    exact groupTranslationAlgEquiv_overFunctionFieldPullback G (isogenyPow α n) c hc a
   · intro hfix
     obtain ⟨d, t, ht⟩ := exists_fin_isTranscendenceBasis G
     let F := G.left.functionField
@@ -403,7 +406,8 @@ theorem mem_range_isogenyPullback_pow_iff (n : ℕ) (f : G.left.functionField) :
           ((pointSourceMap ιC ≫ g) ≫ isogenyPow α n)⁻¹ at hm
         rw [hm, hP, hP, hσφ, mul_inv_cancel]
       obtain ⟨c, hc, hhc⟩ := exists_const_of_comp_isogenyPow_eq_one α n h hα
-      have hσ : pointSourceMap σC ≫ g = pointSourceMap (ιC.comp (translationAlgEquiv G c).toAlgHom) ≫ g := by
+      have hσ : pointSourceMap σC ≫ g =
+          pointSourceMap (ιC.comp (groupTranslationAlgEquiv G c).toAlgHom) ≫ g := by
         have h1 : pointSourceMap σC ≫ g = (toUnit _ ≫ c) * (pointSourceMap ιC ≫ g) := by
           rw [← hhc, inv_mul_cancel_right]
         rw [h1, mul_comm, pointSourceMap_comp, Category.assoc, ← genericPointHom_mul_const,
@@ -412,7 +416,7 @@ theorem mem_range_isogenyPullback_pow_iff (n : ℕ) (f : G.left.functionField) :
       have hσeq := pointSourceMap_genericPointHom_injective G hσ
       change σC f = _
       rw [hσeq, AlgHom.comp_apply]
-      change ιC (translationAlgEquiv G c f) = _
+      change ιC (groupTranslationAlgEquiv G c f) = _
       rw [hfix c hc]
       rfl
     exact ⟨a, hea⟩

@@ -137,7 +137,7 @@ theorem jetFieldExtension_deriv (φ : F →ₐ[C] F)
   exact sub_eq_zero.mp (hJ (IntermediateField.mem_top (x := x)))
 
 /-- **A differential ring map of the jet field is determined by its restriction to `F`.** -/
-theorem jetField_ringHom_ext {f₁ f₂ : FunctionJetField F d →+* FunctionJetField F d}
+theorem functionJetField_ringHom_ext {f₁ f₂ : FunctionJetField F d →+* FunctionJetField F d}
     (hF : ∀ a, f₁ (algebraMap F (FunctionJetField F d) a) =
       f₂ (algebraMap F (FunctionJetField F d) a))
     (h₁ : ∀ x, jetFieldDerivation ht (f₁ x) = f₁ (jetFieldDerivation ht x))
@@ -174,12 +174,12 @@ theorem jetField_ringHom_ext {f₁ f₂ : FunctionJetField F d →+* FunctionJet
 
 theorem jetFieldExtension_id :
     jetFieldExtension ht (AlgHom.id C F) = RingHom.id (FunctionJetField F d) :=
-  jetField_ringHom_ext ht (fun a => by rw [jetFieldExtension_algebraMap]; rfl)
+  functionJetField_ringHom_ext ht (fun a => by rw [jetFieldExtension_algebraMap]; rfl)
     (jetFieldExtension_deriv ht _) (fun _ => rfl)
 
 theorem jetFieldExtension_comp (φ ψ : F →ₐ[C] F) :
     jetFieldExtension ht (φ.comp ψ) = (jetFieldExtension ht φ).comp (jetFieldExtension ht ψ) :=
-  jetField_ringHom_ext ht
+  functionJetField_ringHom_ext ht
     (fun a => by
       rw [RingHom.comp_apply, jetFieldExtension_algebraMap, jetFieldExtension_algebraMap,
         jetFieldExtension_algebraMap, AlgHom.comp_apply])

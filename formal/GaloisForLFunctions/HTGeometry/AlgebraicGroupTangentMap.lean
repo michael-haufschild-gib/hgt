@@ -33,7 +33,8 @@ section Generic
 variable [IsIntegral G.left]
 
 theorem stalkConstants_genericPoint :
-    stalkConstants G (genericPoint G.left) = CommRingCat.ofHom (algebraMap C G.left.functionField) :=
+    stalkConstants G (genericPoint G.left) =
+      CommRingCat.ofHom (algebraMap C G.left.functionField) :=
   Spec.map_injective ((fromSpecStalk_comp_hom G _).symm.trans
     (fromSpecStalk_genericPoint_comp_hom G))
 
@@ -132,7 +133,8 @@ theorem genericLift_injective {D₁ D₂ : Derivation C G.left.functionField L}
 
 /-- The reduction of a lift of the generic point. -/
 theorem sqzFst_genericLift (D : Derivation C G.left.functionField L) :
-    pointSourceMap (sqzFst (C := C) (L := L) (M := L)) ≫ genericLift G L D = genericPointAt G L := by
+    pointSourceMap (sqzFst (C := C) (L := L) (M := L)) ≫ genericLift G L D =
+      genericPointAt G L := by
   rw [genericLift, ← Category.assoc, ← pointSourceMap_comp]
   have h : (sqzFst (C := C) (L := L) (M := L)).comp (dualGraph G L D) =
       IsScalarTower.toAlgHom C G.left.functionField L := AlgHom.ext fun _ => rfl
@@ -271,7 +273,8 @@ def tangentGenerators : Fin (tangentRank G) → G.left.presheaf.stalk (identityC
 
 theorem span_tangentGenerators : Submodule.span _ (Set.range (tangentGenerators G)) =
     IsLocalRing.maximalIdeal (G.left.presheaf.stalk (identityCenter G)) :=
-  (Submodule.fg_iff_exists_fin_generating_family.mp (maximalIdeal_identity_fg G)).choose_spec.choose_spec
+  (Submodule.fg_iff_exists_fin_generating_family.mp
+    (maximalIdeal_identity_fg G)).choose_spec.choose_spec
 
 /-- **A lift of the identity is determined by its values on the generators.**  A point derivation
 at `e` kills the constants and the square of the maximal ideal. -/

@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / ALL-INTERVAL ARITHMETIC CAPSTONE
 - **Scientific status:** `[LEAN-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT RH]`
-- **Parent:** `../../2-fully-proven/new_scientific_knowledge/route-e-coprime-square-root-mobius-product-sign-law.md`
+- **Parent:** `../route e/route-e-coprime-square-root-mobius-product-sign-law.md`
 - **RH used:** no
 - **Computation used:** no
 

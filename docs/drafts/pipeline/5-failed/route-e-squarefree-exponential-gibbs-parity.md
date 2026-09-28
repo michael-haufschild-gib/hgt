@@ -3048,7 +3048,7 @@ For fixed \(p\), scaling \(n_i=pm_i\) and applying the same bilinear theorem to
 \]
 and \(h/\log\log x\to\infty\).  Thus every interval
 \([x,x+h\sqrt x]\) contains both nonzero Möbius signs.  Full proof and novelty audit:
-`../2-fully-proven/new_scientific_knowledge/route-e-coprime-square-root-mobius-product-sign-law.md`.
+`../3-formalized/route e/route-e-coprime-square-root-mobius-product-sign-law.md`.
 
 This closes all-interval coprime **representation** supply, not physical Hall capacity.  The
 obvious collision-perfect weight is terminally circular: for squarefree \(m\),

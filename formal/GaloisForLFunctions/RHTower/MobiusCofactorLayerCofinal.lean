@@ -8,6 +8,7 @@ import GaloisForLFunctions.RHTower.MobiusCofactorLayerExtraction
   `‖P_{R,q}‖_δ ≤ C [R^{-(1+δ)/2} + R^{α-3/2-δ/2} q^{1-α} + R^{3α-5/2-δ/2} q^{2-3α}/log R]`.   (5)
 * Under `(d+1)(1-α)(1-η) > 1/2` the layered packets at `R = 2^j` have norms with a summable majorant
   uniform in `0 ≤ δ ≤ 1`, so removing them from `S_{2^{J+2}}` is a bounded perturbation.
+* Odd squarefree `q ≤ R^β`, `β < 1/2`, are admissible cofactors.
 * For every `η < 1` some order `d` satisfies the condition; for `d = 3` it is exactly `η < 33/58`.
 -/
 
@@ -36,9 +37,9 @@ theorem gammaNorm_atomJet_le_of_le {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1
       = jetConst r * (x ^ 2 * (x ^ ((5 + δ) / 2))⁻¹ / x ^ r) := by ring
     _ = jetConst r * x ^ (-(r : ℝ) - 1 / 2 - δ / 2) := by rw [e x hx]
     _ ≤ jetConst r * R ^ (-(r : ℝ) - 1 / 2 - δ / 2) := by
-        gcongr
         have : (0 : ℝ) ≤ r := Nat.cast_nonneg r
-        exact Real.rpow_le_rpow_of_nonpos hR hRx (show -(r : ℝ) - 1 / 2 - δ / 2 ≤ 0 by linarith)
+        exact mul_le_mul_of_nonneg_left
+          (Real.rpow_le_rpow_of_nonpos hR hRx (show -(r : ℝ) - 1 / 2 - δ / 2 ≤ 0 by linarith)) hjc
 
 /-- **The per-cofactor bound (5).**  For all large `R` and odd squarefree `q ≤ R^{2/5}` the
 order-three single-cofactor packet satisfies
@@ -170,6 +171,21 @@ theorem exists_threeWindow_cofactor_bound :
       jetConst 3 / (768 * ε ^ 2) + 1) * D := by
     gcongr; have : 0 ≤ 8 * jetConst 2 / ε := by positivity
     linarith
+  linarith
+
+/-- Odd squarefree `q ≤ R^β` with `β < 1/2` are admissible: each prime factor is at most
+`q ≤ R^β < R^{1-β} ≤ R/q`. -/
+theorem admissibleCofactor_of_le_rpow {R β : ℝ} (hR : 1 < R) (hβ : β < 1 / 2) {q : ℕ}
+    (hq : 1 ≤ q) (hodd : Odd q) (hsq : Squarefree q) (hqR : (q : ℝ) ≤ R ^ β) :
+    AdmissibleCofactor R q := by
+  refine ⟨hq, hodd, hsq, fun ℓ _ hℓq => ?_⟩
+  have hR0 : 0 < R := by linarith
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq
+  have hℓ : (ℓ : ℝ) ≤ q := by exact_mod_cast Nat.le_of_dvd (by omega) hℓq
+  have h1 : R ^ β < R ^ (1 - β) := Real.rpow_lt_rpow_of_exponent_lt hR (by linarith)
+  have h2 : R ^ (1 - β) ≤ R / q := by
+    rw [Real.rpow_sub hR0, Real.rpow_one]
+    exact div_le_div_of_nonneg_left hR0.le hq0 hqR
   linarith
 
 /-- For `d = 3` the layer condition `(d+1)(1-α)(1-η) > 1/2` is exactly `η < 33/58`. -/

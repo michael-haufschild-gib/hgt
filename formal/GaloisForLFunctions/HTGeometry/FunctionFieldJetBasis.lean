@@ -102,7 +102,8 @@ theorem jetFieldDerivation_iterate_sub_mem (s : Fin d → F) (k : ℕ) (i : Fin 
       rw [Function.iterate_one, jetFieldDerivation_algebraMap]
       have h : ∑ j, (functionJet (j, 0) : FunctionJetField F d) *
             algebraMap F (FunctionJetField F d) (jetPartial ht j (s i)) -
-          ∑ j, algebraMap F (FunctionJetField F d) (jetJacobian ht s i j) * functionJet (j, 0) = 0 := by
+          ∑ j, algebraMap F (FunctionJetField F d) (jetJacobian ht s i j) *
+            functionJet (j, 0) = 0 := by
         rw [sub_eq_zero]
         exact Finset.sum_congr rfl fun j _ => by rw [jetJacobian, Matrix.of_apply, mul_comm]
       rw [h]
@@ -111,9 +112,11 @@ theorem jetFieldDerivation_iterate_sub_mem (s : Fin d → F) (k : ℕ) (i : Fin 
       set R := ((jetFieldDerivation ht : FunctionJetField F d → FunctionJetField F d)^[k + 1])
           (algebraMap F (FunctionJetField F d) (s i)) -
         ∑ j, algebraMap F (FunctionJetField F d) (jetJacobian ht s i j) * functionJet (j, k) with hR
-      have hiter : ((jetFieldDerivation ht : FunctionJetField F d → FunctionJetField F d)^[k + 1 + 1])
+      have hiter :
+          ((jetFieldDerivation ht : FunctionJetField F d → FunctionJetField F d)^[k + 1 + 1])
           (algebraMap F (FunctionJetField F d) (s i)) =
-          jetFieldDerivation ht (R + ∑ j, algebraMap F (FunctionJetField F d) (jetJacobian ht s i j) *
+          jetFieldDerivation ht (R + ∑ j,
+            algebraMap F (FunctionJetField F d) (jetJacobian ht s i j) *
             functionJet (j, k)) := by
         rw [Function.iterate_succ_apply', hR, sub_add_cancel]
       rw [hiter, map_add, map_sum]
@@ -283,7 +286,8 @@ theorem IsJetTriangular.algebraicIndependent [CharZero F] (hz : IsJetTriangular 
 
 /-- The jet field is generated over `F` by the jets `y_(i,k)`. -/
 theorem adjoin_functionJet_eq_top :
-    IntermediateField.adjoin F (Set.range (functionJet : Fin d × ℕ → FunctionJetField F d)) = ⊤ := by
+    IntermediateField.adjoin F
+      (Set.range (functionJet : Fin d × ℕ → FunctionJetField F d)) = ⊤ := by
   rw [eq_top_iff]
   intro x _
   obtain ⟨a, b, -, rfl⟩ := IsFractionRing.div_surjective (FunctionJetPoly F d) x

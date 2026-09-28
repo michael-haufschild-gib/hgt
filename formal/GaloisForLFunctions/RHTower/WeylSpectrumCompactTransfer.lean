@@ -25,6 +25,7 @@ norm of `T` from below by `c`.
 open Filter Topology
 
 noncomputable section
+set_option autoImplicit false
 
 namespace RHTower
 

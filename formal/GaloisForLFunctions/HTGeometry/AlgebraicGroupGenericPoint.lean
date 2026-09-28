@@ -159,23 +159,26 @@ def translationSchemeIso (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) : G.left ≅ G.
   (Over.forget (Spec (.of C))).mapIso (GrpObj.mulRight x)
 
 /-- **Translation by a rational point acts on the function field.**  `σ_x = τ_x*`. -/
-def translationAlgEquiv (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) :
+def groupTranslationAlgEquiv (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) :
     G.left.functionField ≃ₐ[C] G.left.functionField :=
   AlgEquiv.ofRingEquiv (f := Scheme.Iso.functionFieldPullbackRingEquiv (translationSchemeIso G x))
     (fun c => (overFunctionFieldPullback G (GrpObj.mulRight x).hom).commutes c)
 
-theorem translationAlgEquiv_apply (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) (a : G.left.functionField) :
-    translationAlgEquiv G x a = overFunctionFieldPullback G (GrpObj.mulRight x).hom a := rfl
+theorem groupTranslationAlgEquiv_apply (x : 𝟙_ (Over (Spec (.of C))) ⟶ G)
+    (a : G.left.functionField) :
+    groupTranslationAlgEquiv G x a = overFunctionFieldPullback G (GrpObj.mulRight x).hom a := rfl
 
-theorem translationAlgEquiv_toAlgHom (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) :
-    (translationAlgEquiv G x).toAlgHom = overFunctionFieldPullback G (GrpObj.mulRight x).hom :=
+theorem groupTranslationAlgEquiv_toAlgHom (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) :
+    (groupTranslationAlgEquiv G x).toAlgHom = overFunctionFieldPullback G (GrpObj.mulRight x).hom :=
   rfl
 
-theorem translationAlgEquiv_mul (x y : 𝟙_ (Over (Spec (.of C))) ⟶ G) :
-    translationAlgEquiv G (x * y) = translationAlgEquiv G x * translationAlgEquiv G y := by
+theorem groupTranslationAlgEquiv_mul (x y : 𝟙_ (Over (Spec (.of C))) ⟶ G) :
+    groupTranslationAlgEquiv G (x * y) =
+      groupTranslationAlgEquiv G x * groupTranslationAlgEquiv G y := by
   ext a
-  rw [AlgEquiv.mul_apply, translationAlgEquiv_apply, translationAlgEquiv_apply,
-    translationAlgEquiv_apply, overFunctionFieldPullback_apply, overFunctionFieldPullback_apply,
+  rw [AlgEquiv.mul_apply, groupTranslationAlgEquiv_apply, groupTranslationAlgEquiv_apply,
+    groupTranslationAlgEquiv_apply, overFunctionFieldPullback_apply,
+    overFunctionFieldPullback_apply,
     overFunctionFieldPullback_apply]
   have hs := congrArg (fun e : G ≅ G => e.hom.left) (GrpObj.mulRight_trans x y)
   change (GrpObj.mulRight x).hom.left ≫ (GrpObj.mulRight y).hom.left =
@@ -183,9 +186,9 @@ theorem translationAlgEquiv_mul (x y : 𝟙_ (Over (Spec (.of C))) ⟶ G) :
   rw [← Scheme.Hom.functionFieldPullback_congr _ _ hs, Scheme.Hom.functionFieldPullback_comp]
   rfl
 
-theorem translationAlgEquiv_one : translationAlgEquiv G 1 = 1 := by
+theorem groupTranslationAlgEquiv_one : groupTranslationAlgEquiv G 1 = 1 := by
   ext a
-  rw [AlgEquiv.one_apply, translationAlgEquiv_apply, overFunctionFieldPullback_apply]
+  rw [AlgEquiv.one_apply, groupTranslationAlgEquiv_apply, overFunctionFieldPullback_apply]
   have hiso : GrpObj.mulRight (1 : 𝟙_ (Over (Spec (.of C))) ⟶ G) = Iso.refl G := by
     rw [← MonObj.one_eq_one]
     exact GrpObj.mulRight_one G
@@ -197,9 +200,9 @@ theorem translationAlgEquiv_one : translationAlgEquiv G 1 = 1 := by
 /-- **The translation action** `x ↦ σ_x` of the rational points on the function field. -/
 def translationHom :
     (𝟙_ (Over (Spec (.of C))) ⟶ G) →* (G.left.functionField ≃ₐ[C] G.left.functionField) where
-  toFun := translationAlgEquiv G
-  map_one' := translationAlgEquiv_one G
-  map_mul' := translationAlgEquiv_mul G
+  toFun := groupTranslationAlgEquiv G
+  map_one' := groupTranslationAlgEquiv_one G
+  map_mul' := groupTranslationAlgEquiv_mul G
 
 omit [IsIntegral G.left] in
 /-- Composing a point with right translation by `x` multiplies it by the constant point `x`. -/
@@ -213,7 +216,7 @@ theorem comp_mulRight_hom_eq_mul {S : Over (Spec (.of C))} (p : S ⟶ G)
 /-- **Translating the generic point**: `g · x = g ∘ Spec(σ_x)`. -/
 theorem genericPointHom_mul_const (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) :
     genericPointHom G * (toUnit _ ≫ x) =
-      pointSourceMap (translationAlgEquiv G x).toAlgHom ≫ genericPointHom G := by
+      pointSourceMap (groupTranslationAlgEquiv G x).toAlgHom ≫ genericPointHom G := by
   rw [← comp_mulRight_hom_eq_mul, genericPointHom_comp]
   rfl
 

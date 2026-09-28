@@ -251,11 +251,10 @@ theorem integral_Ioi_deriv_thetaCuspFullSource :
     integrableOn_Ioi_deriv_thetaCuspFullSource tendsto_thetaCuspFullSource_atTop_zero, zero_sub]
 
 /-- **Integration by parts on the positive ray.**
-`w K(−w) = ∫_0^∞ (−k'(u)) (1 − e^{−wu}) du` for `Re w > 0`. -/
-theorem mul_thetaHalfLaplace_neg {w : ℂ} (hw : 0 < w.re) :
+`w K(−w) = ∫_0^∞ (−k'(u)) (1 − e^{−wu}) du` for `Re w ≥ 0`, `w ≠ 0`. -/
+theorem mul_thetaHalfLaplace_neg_of_nonneg {w : ℂ} (hw : 0 ≤ w.re) (hw0 : w ≠ 0) :
     w * thetaHalfLaplace (-w) = ∫ u in Ioi (0 : ℝ),
       (((-deriv thetaCuspFullSource u : ℝ)) : ℂ) * (1 - Complex.exp (-(w * u))) := by
-  have hw0 : w ≠ 0 := fun h => by rw [h] at hw; simp at hw
   obtain ⟨Cd, _, hCd⟩ := exists_abs_deriv_thetaCuspFullSource_le 1
   have hcd := continuous_deriv_thetaCuspFullSource
   have hck := continuous_thetaCuspFullSource
@@ -358,6 +357,13 @@ theorem mul_thetaHalfLaplace_neg {w : ℂ} (hw : 0 < w.re) :
   rw [hK, hibp, hUVint, hsplit, hmass]
   field_simp
   ring
+
+/-- **Integration by parts on the positive ray.**
+`w K(−w) = ∫_0^∞ (−k'(u)) (1 − e^{−wu}) du` for `Re w > 0`. -/
+theorem mul_thetaHalfLaplace_neg {w : ℂ} (hw : 0 < w.re) :
+    w * thetaHalfLaplace (-w) = ∫ u in Ioi (0 : ℝ),
+      (((-deriv thetaCuspFullSource u : ℝ)) : ℂ) * (1 - Complex.exp (-(w * u))) :=
+  mul_thetaHalfLaplace_neg_of_nonneg hw.le fun h => by rw [h] at hw; simp at hw
 
 /-- **The reflected half-line transform is zero-free on the right half-plane.**
 `Re(w K(−w)) > 0` whenever `Re w > 0`. -/

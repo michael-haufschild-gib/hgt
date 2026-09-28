@@ -29,6 +29,7 @@ open scoped ENNReal NNReal ComplexConjugate
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
+set_option autoImplicit false
 
 /-! ### The profile -/
 
@@ -540,7 +541,7 @@ theorem lintegral_clock_sub_sq_lt_top {g g' : ℝ → ℝ} (hg : ∀ s, HasDeriv
 /-- The tilted profile `j(s) = s · sech²(s/2)`, the kernel of the clock commutator. -/
 def sechSqHalfTilt (s : ℝ) : ℝ := s * sechSqHalf s
 
-theorem one_add_mul_exp_neg_le (x : ℝ) : (1 + x) * Real.exp (-x) ≤ 2 * Real.exp (-(x / 2)) := by
+theorem one_add_mul_exp_neg_le_two_mul_exp_half (x : ℝ) : (1 + x) * Real.exp (-x) ≤ 2 * Real.exp (-(x / 2)) := by
   have h := Real.add_one_le_exp (x / 2)
   have e : Real.exp (-x) = Real.exp (-(x / 2)) * Real.exp (-(x / 2)) := by
     rw [← Real.exp_add]; ring_nf
@@ -553,7 +554,7 @@ theorem one_add_mul_exp_neg_le (x : ℝ) : (1 + x) * Real.exp (-x) ≤ 2 * Real.
 theorem abs_sechSqHalfTilt_le (s : ℝ) : |sechSqHalfTilt s| ≤ 8 * Real.exp (-((1 / 2) * |s|)) := by
   rw [sechSqHalfTilt, abs_mul, abs_of_pos (sechSqHalf_pos s)]
   have h1 := mul_le_mul_of_nonneg_left (sechSqHalf_le_exp_neg_abs s) (abs_nonneg s)
-  have h2 := one_add_mul_exp_neg_le |s|
+  have h2 := one_add_mul_exp_neg_le_two_mul_exp_half |s|
   have h3 : |s| * Real.exp (-|s|) ≤ (1 + |s|) * Real.exp (-|s|) := by
     nlinarith [Real.exp_pos (-|s|)]
   calc |s| * sechSqHalf s ≤ |s| * (4 * Real.exp (-|s|)) := h1
@@ -576,7 +577,7 @@ theorem abs_sechSqHalfTiltDeriv_le (s : ℝ) :
   have hd := abs_sechSqHalfDeriv_le s
   have hh := sechSqHalf_le_exp_neg_abs s
   have hpos := sechSqHalf_pos s
-  have h2 := one_add_mul_exp_neg_le |s|
+  have h2 := one_add_mul_exp_neg_le_two_mul_exp_half |s|
   calc |sechSqHalf s + s * sechSqHalfDeriv s| ≤ sechSqHalf s + |s| * sechSqHalf s := by
         refine (abs_add_le _ _).trans ?_
         rw [abs_of_pos hpos, abs_mul]

@@ -5,7 +5,7 @@
 - **Type:** exact two-endpoint Mellin order and renormalization-price theorem
 - **Routes:** STC, CSB, U, MPLF, RHist; source-side comparison with EDQ
 - **Status:** [PROVED HERE ON PAPER] [LEAN: `GaloisForLFunctions.RHTower.ThetaEulerTwoPortJetPole`, see `theta-euler-two-port-jet-pole-renormalization-formalized.md`] [NOT AN RH PROOF]
-- **Dependencies:** the Gaussian atom Mellin formula and finite-prime smooth-number source in [theta-euler-critical-boundary-mass-escape.md](theta-euler-critical-boundary-mass-escape.md), plus the corpus's completed theta transform and endpoint charges. No numerical computation is used.
+- **Dependencies:** the Gaussian atom Mellin formula and finite-prime smooth-number source in [theta-euler-critical-boundary-mass-escape.md](../../2-fully-proven/theta/theta-euler-critical-boundary-mass-escape.md), plus the corpus's completed theta transform and endpoint charges. No numerical computation is used.
 
 ## Exact two-port law
 

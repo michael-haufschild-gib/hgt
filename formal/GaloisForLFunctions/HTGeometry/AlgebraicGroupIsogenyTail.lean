@@ -48,6 +48,12 @@ def groupBasis : Fin (groupDim G) → G.left.functionField :=
 theorem groupBasis_isTranscendenceBasis : IsTranscendenceBasis C (groupBasis G) :=
   (exists_fin_isTranscendenceBasis G).choose_spec.choose_spec
 
+/-- `d = dim G` is the transcendence degree of the function field. -/
+theorem groupDim_eq_trdeg :
+    (groupDim G : Cardinal.{u}) = Algebra.trdeg C G.left.functionField := by
+  have h := (groupBasis_isTranscendenceBasis G).lift_cardinalMk_eq_trdeg
+  rwa [Cardinal.mk_fin, Cardinal.lift_natCast, Cardinal.lift_uzero] at h
+
 /-- The differential function field `K = C(J^∞ G)` of the infinite jet space. -/
 abbrev GroupJetField := FunctionJetField G.left.functionField (groupDim G)
 
@@ -61,7 +67,7 @@ variable [GrpObj G]
 
 /-- Translation by a rational point, on the jet field. -/
 def jetTranslation (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) : GroupJetField G →+* GroupJetField G :=
-  jetFieldExtension (groupBasis_isTranscendenceBasis G) (translationAlgEquiv G x).toAlgHom
+  jetFieldExtension (groupBasis_isTranscendenceBasis G) (groupTranslationAlgEquiv G x).toAlgHom
 
 /-! ### The isogeny and its iterated kernels -/
 
@@ -95,11 +101,12 @@ theorem mulRight_hom_comp_isogeny (α : G ⟶ G) [IsIsogeny G α] (x : 𝟙_ (Ov
 
 omit [LocallyOfFiniteType G.hom] [CharZero C] in
 /-- **`α* ∘ σ_(xα) = σ_x ∘ α*`.** -/
-theorem overFunctionFieldPullback_translation (α : G ⟶ G) [IsIsogeny G α] (x : 𝟙_ (Over (Spec (.of C))) ⟶ G)
+theorem overFunctionFieldPullback_translation (α : G ⟶ G) [IsIsogeny G α]
+    (x : 𝟙_ (Over (Spec (.of C))) ⟶ G)
     (f : G.left.functionField) :
-    overFunctionFieldPullback G α (translationAlgEquiv G (x ≫ α) f) =
-      translationAlgEquiv G x (overFunctionFieldPullback G α f) := by
-  simp only [translationAlgEquiv_apply, overFunctionFieldPullback_apply]
+    overFunctionFieldPullback G α (groupTranslationAlgEquiv G (x ≫ α) f) =
+      groupTranslationAlgEquiv G x (overFunctionFieldPullback G α f) := by
+  simp only [groupTranslationAlgEquiv_apply, overFunctionFieldPullback_apply]
   have h := Scheme.Hom.functionFieldPullback_congr ((GrpObj.mulRight x).hom.left ≫ α.left)
     (α.left ≫ (GrpObj.mulRight (x ≫ α)).hom.left)
     (congrArg CommaMorphism.left (mulRight_hom_comp_isogeny G α x))
@@ -118,7 +125,8 @@ def mcDerivation : Fin (groupDim G) → Derivation C G.left.functionField G.left
     (groupBasis_isTranscendenceBasis G)).choose
 
 omit [IsAlgClosed C] in
-theorem mcDerivation_invariant (i : Fin (groupDim G)) : IsTranslationInvariant G (mcDerivation G i) :=
+theorem mcDerivation_invariant (i : Fin (groupDim G)) :
+    IsTranslationInvariant G (mcDerivation G i) :=
   (exists_translationInvariant_derivationMatrix_det_ne_zero G
     (groupBasis_isTranscendenceBasis G)).choose_spec.1 i
 
@@ -143,12 +151,13 @@ omit [CharZero C] [IsIsogeny G α] in
 /-- **The closure step.**  A rational function fixed by every iterated kernel is fixed by the
 rational points of their Zariski closure, because its stabilizer is Zariski closed. -/
 theorem fixed_isogenyKernelPoints_iff (a : G.left.functionField) :
-    (∀ n, ∀ c ∈ isogenyKernelPoints G α n, translationAlgEquiv G c a = a) ↔
-      ∀ x ∈ deckClosurePoints G α, translationAlgEquiv G x a = a := by
+    (∀ n, ∀ c ∈ isogenyKernelPoints G α n, groupTranslationAlgEquiv G c a = a) ↔
+      ∀ x ∈ deckClosurePoints G α, groupTranslationAlgEquiv G x a = a := by
   constructor
   · intro h x hx
     obtain ⟨Z, hZ, hZa⟩ := exists_isClosed_translation_stabilizer G a
-    have hsub : (⋃ n, (fun c => rationalPointHom G c default) '' isogenyKernelPoints G α n) ⊆ Z := by
+    have hsub :
+        (⋃ n, (fun c => rationalPointHom G c default) '' isogenyKernelPoints G α n) ⊆ Z := by
       rintro _ ⟨_, ⟨n, rfl⟩, c, hc, rfl⟩
       exact (hZa c).mp (h n c hc)
     exact (hZa x).mpr (closure_minimal hsub hZ hx)
@@ -161,7 +170,7 @@ theorem exists_const_mcDerivation_pullback :
       derivationPullbackMatrix (mcDerivation G) (groupBasis G) (overFunctionFieldPullback G α) =
         c.map (algebraMap C G.left.functionField) :=
   exists_const_derivationPullbackMatrix (groupBasis_isTranscendenceBasis G)
-    (mcDerivation_det_ne_zero G) (translationAlgEquiv G) (fun x => x ≫ α)
+    (mcDerivation_det_ne_zero G) (groupTranslationAlgEquiv G) (fun x => x ≫ α)
     (fun x i f => mcDerivation_invariant G i x f) (overFunctionFieldPullback G α)
     (fun x f => overFunctionFieldPullback_translation G α x f)
     (mem_range_algebraMap_of_translation_fixed G)
@@ -208,7 +217,7 @@ theorem mem_isogenyTail_iff_deckClosure_fixed (u : GroupJetField G) :
     (∀ n, u ∈ Set.range ((⇑(jetIsogenyPullback G α))^[n])) ↔
       ∀ x ∈ deckClosurePoints G α, jetTranslation G x u = u :=
   mem_tail_iff_fixed (groupBasis_isTranscendenceBasis G) (mcDerivation_det_ne_zero G)
-    (translationAlgEquiv G) (fun x i f => mcDerivation_invariant G i x f)
+    (groupTranslationAlgEquiv G) (fun x i f => mcDerivation_invariant G i x f)
     (overFunctionFieldPullback G α) (isogenyTangentMatrix G α) (mcDerivation_pullback G α)
     (isogenyTangentMatrix_det_ne_zero G α) (isogenyKernelPoints G α) (deckClosurePoints G α)
     (fun n a => mem_range_isogenyPullback_pow_iff G α n a)

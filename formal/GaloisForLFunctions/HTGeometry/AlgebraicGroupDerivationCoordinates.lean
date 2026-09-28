@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AlgebraicGroupTangentMap
+import GaloisForLFunctions.HTGeometry.AffineLineEtaleLocallyNilpotent
 
 /-!
 # Tangent coordinates of derivations of the function field of an algebraic group
@@ -32,7 +33,8 @@ variable {C : Type u} [Field C] (G : Over (Spec (.of C))) [GrpObj G]
 /-- Pushing points forward along a map of `C`-algebras, as a group homomorphism. -/
 def pointPush {R S : Type u} [CommRing R] [CommRing S] [Algebra C R] [Algebra C S]
     (f : R →ₐ[C] S) :
-    (algebraicPointSource (K := C) (R := R) ⟶ G) →* (algebraicPointSource (K := C) (R := S) ⟶ G) where
+    (algebraicPointSource (K := C) (R := R) ⟶ G) →*
+      (algebraicPointSource (K := C) (R := S) ⟶ G) where
   toFun p := pointSourceMap f ≫ p
   map_one' := MonObj.comp_one _
   map_mul' := MonObj.comp_mul _
@@ -59,7 +61,8 @@ def tangentLift (D : Derivation C G.left.functionField L) :
 theorem sqzFst_tangentLift (D : Derivation C G.left.functionField L) :
     pointSourceMap (sqzFst (C := C) (L := L) (M := L)) ≫
       tangentLift G L D = 1 := by
-  have h := (pointPush G (sqzFst (C := C) (L := L) (M := L))).map_mul (genericLift G L D) (genericLift G L 0)⁻¹
+  have h := (pointPush G (sqzFst (C := C) (L := L) (M := L))).map_mul (genericLift G L D)
+    (genericLift G L 0)⁻¹
   rw [map_inv, pointPush_apply, pointPush_apply, pointPush_apply, sqzFst_genericLift,
     sqzFst_genericLift, mul_inv_cancel] at h
   exact h
@@ -85,11 +88,13 @@ theorem tangentChi_const (D : Derivation C G.left.functionField L) :
   (exists_tangentChi G L D).choose_spec.choose
 
 theorem tangentChi_fst (D : Derivation C G.left.functionField L) :
-    tangentChi G L D ≫ CommRingCat.ofHom (sqzFst (C := C) (L := L) (M := L)).toRingHom = identityEvalAt G L :=
+    tangentChi G L D ≫ CommRingCat.ofHom (sqzFst (C := C) (L := L) (M := L)).toRingHom =
+      identityEvalAt G L :=
   (exists_tangentChi G L D).choose_spec.choose_spec.1
 
 theorem tangentLift_eq (D : Derivation C G.left.functionField L) :
-    tangentLift G L D = stalkPoint G (identityCenter G) (tangentChi G L D) (tangentChi_const G L D) :=
+    tangentLift G L D =
+      stalkPoint G (identityCenter G) (tangentChi G L D) (tangentChi_const G L D) :=
   (exists_tangentChi G L D).choose_spec.choose_spec.2
 
 instance isLocalHom_tangentChi (D : Derivation C G.left.functionField L) :
@@ -110,8 +115,10 @@ theorem tangentLift_add (D₁ D₂ : Derivation C G.left.functionField L) :
     rw [genericLift, genericPointAt, ← Category.assoc, ← pointSourceMap_comp, dualGraph_zero]
   obtain ⟨ψ, hψ, hψφ, hψsnd, hmul⟩ := exists_stalkPoint_mul_of_lifts G (genericPoint G.left)
     (genericStalkAt G L) (genericStalkAt_const G L) 1 (genericPointAt G L) hp
-    (tangentLift G L D₁) (genericLift G L D₂) (sqzFst_tangentLift G L D₁) (sqzFst_genericLift G L D₂)
-    (CommRingCat.ofHom (dualGraph G L D₁).toRingHom) (CommRingCat.ofHom (dualGraph G L D₂).toRingHom)
+    (tangentLift G L D₁) (genericLift G L D₂) (sqzFst_tangentLift G L D₁)
+    (sqzFst_genericLift G L D₂)
+    (CommRingCat.ofHom (dualGraph G L D₁).toRingHom)
+    (CommRingCat.ofHom (dualGraph G L D₂).toRingHom)
     (dualGraph_const G L D₁) (dualGraph_const G L D₂)
     (dualGraph_comp_sqzFst G L D₁) (dualGraph_comp_sqzFst G L D₂)
     (by rw [hg0, tangentLift, inv_mul_cancel_right, genericLift_eq_stalkPoint])
@@ -164,8 +171,10 @@ theorem tangentCoords_add (D₁ D₂ : Derivation C G.left.functionField L) :
     rw [_root_.one_mul, one_eq_stalkPoint]
   obtain ⟨ψ, hψ, hψφ, hψsnd, hmul⟩ := exists_stalkPoint_mul_of_lifts G (identityCenter G)
     (identityEvalAt G _) (identityEvalAt_const G _) 1 1 hp
-    (tangentLift G L D₁) (tangentLift G L D₂) (sqzFst_tangentLift G L D₁) (sqzFst_tangentLift G L D₂)
-    _ _ (tangentChi_const G L D₁) (tangentChi_const G L D₂) (tangentChi_fst G L D₁) (tangentChi_fst G L D₂)
+    (tangentLift G L D₁) (tangentLift G L D₂) (sqzFst_tangentLift G L D₁)
+    (sqzFst_tangentLift G L D₂)
+    _ _ (tangentChi_const G L D₁) (tangentChi_const G L D₂) (tangentChi_fst G L D₁)
+    (tangentChi_fst G L D₂)
     (by rw [MonObj.comp_one, _root_.mul_one, tangentLift_eq])
     (by rw [MonObj.comp_one, _root_.one_mul, tangentLift_eq])
   haveI := isLocalHom_of_comp_sqzFst G ψ hψφ
@@ -191,7 +200,8 @@ theorem tangentCoords_smul (a : L)
   haveI := isLocalHom_of_comp_sqzFst G
     (tangentChi G L D ≫ CommRingCat.ofHom (dualScale (C := C) L a).toRingHom)
     (φ := identityEvalAt G L) (by rw [Category.assoc]; exact hfst)
-  have hχ : tangentChi G L (a • D) = tangentChi G L D ≫ CommRingCat.ofHom (dualScale (C := C) L a).toRingHom := by
+  have hχ : tangentChi G L (a • D) =
+      tangentChi G L D ≫ CommRingCat.ofHom (dualScale (C := C) L a).toRingHom := by
     have e : pointSourceMap (dualScale (C := C) L a) ≫ tangentLift G L D =
         pointSourceMap (dualScale (C := C) L a) ≫
           stalkPoint G (identityCenter G) (tangentChi G L D) (tangentChi_const G L D) := by
@@ -274,26 +284,12 @@ theorem dualMapEquiv_snd (σ : G.left.functionField ≃ₐ[C] G.left.functionFie
     (p : DualL G.left.functionField) : (dualMapEquiv σ p).snd = σ p.snd := by
   simp [dualMapEquiv]
 
-/-- The conjugate derivation `σ ∘ D ∘ σ⁻¹`. -/
-def conjDerivation (σ : G.left.functionField ≃ₐ[C] G.left.functionField)
-    (D : Derivation C G.left.functionField G.left.functionField) :
-    Derivation C G.left.functionField G.left.functionField :=
-  Derivation.mk' (σ.toLinearMap.comp (D.toLinearMap.comp σ.symm.toLinearMap)) fun a b => by
-    change σ (D (σ.symm (a * b))) = a • σ (D (σ.symm b)) + b • σ (D (σ.symm a))
-    rw [map_mul, Derivation.leibniz, map_add, smul_eq_mul, smul_eq_mul, map_mul, map_mul,
-      AlgEquiv.apply_symm_apply, AlgEquiv.apply_symm_apply, smul_eq_mul, smul_eq_mul]
-
-omit [GrpObj G] [LocallyOfFiniteType G.hom] in
-@[simp]
-theorem conjDerivation_apply (σ : G.left.functionField ≃ₐ[C] G.left.functionField)
-    (D : Derivation C G.left.functionField G.left.functionField) (a : G.left.functionField) :
-    conjDerivation σ D a = σ (D (σ.symm a)) := rfl
-
 omit [GrpObj G] [LocallyOfFiniteType G.hom] in
 theorem dualMapEquiv_comp_dualGraph (σ : G.left.functionField ≃ₐ[C] G.left.functionField)
     (D : Derivation C G.left.functionField G.left.functionField) :
-    (dualMapEquiv σ).comp (dualGraph G G.left.functionField D) = (dualGraph G G.left.functionField (conjDerivation σ D)).comp σ.toAlgHom :=
-  AlgHom.ext fun a => TrivSqZeroExt.ext (by simp) (by simp)
+    (dualMapEquiv σ).comp (dualGraph G G.left.functionField D) =
+      (dualGraph G G.left.functionField (conjDerivation σ D)).comp σ.toAlgHom :=
+  AlgHom.ext fun a => TrivSqZeroExt.ext (by simp) (by simp [conjDerivation_apply])
 
 variable (G)
 
@@ -301,38 +297,43 @@ omit [LocallyOfFiniteType G.hom] in
 /-- **Twisting coefficients by a translation conjugates the derivation.** -/
 theorem pointSourceMap_dualMapEquiv_genericLift (x : 𝟙_ (Over (Spec (.of C))) ⟶ G)
     (D : Derivation C G.left.functionField G.left.functionField) :
-    pointSourceMap (dualMapEquiv (translationAlgEquiv G x)) ≫ genericLift G G.left.functionField D =
-      genericLift G G.left.functionField (conjDerivation (translationAlgEquiv G x) D) * (toUnit _ ≫ x) := by
+    pointSourceMap (dualMapEquiv (groupTranslationAlgEquiv G x)) ≫
+        genericLift G G.left.functionField D =
+      genericLift G G.left.functionField (conjDerivation (groupTranslationAlgEquiv G x) D) *
+        (toUnit _ ≫ x) := by
   rw [genericLift, ← Category.assoc, ← pointSourceMap_comp, dualMapEquiv_comp_dualGraph,
     pointSourceMap_comp, Category.assoc, ← genericPointHom_mul_const, MonObj.comp_mul,
     ← Category.assoc (pointSourceMap _) (toUnit _),
-    show pointSourceMap (dualGraph G G.left.functionField (conjDerivation (translationAlgEquiv G x) D)) ≫ toUnit _ =
+    show pointSourceMap (dualGraph G G.left.functionField
+        (conjDerivation (groupTranslationAlgEquiv G x) D)) ≫ toUnit _ =
       toUnit _ from toUnit_unique _ _]
   rfl
 
 omit [LocallyOfFiniteType G.hom] in
 theorem pointSourceMap_dualMapEquiv_tangentLift [IsCommMonObj G] (x : 𝟙_ (Over (Spec (.of C))) ⟶ G)
     (D : Derivation C G.left.functionField G.left.functionField) :
-    pointSourceMap (dualMapEquiv (translationAlgEquiv G x)) ≫ tangentLift G G.left.functionField D =
-      tangentLift G G.left.functionField (conjDerivation (translationAlgEquiv G x) D) := by
-  have h := (pointPush G (dualMapEquiv (translationAlgEquiv G x))).map_mul (genericLift G G.left.functionField D)
+    pointSourceMap (dualMapEquiv (groupTranslationAlgEquiv G x)) ≫
+        tangentLift G G.left.functionField D =
+      tangentLift G G.left.functionField (conjDerivation (groupTranslationAlgEquiv G x) D) := by
+  have h := (pointPush G (dualMapEquiv (groupTranslationAlgEquiv G x))).map_mul
+    (genericLift G G.left.functionField D)
     (genericLift G G.left.functionField 0)⁻¹
   rw [map_inv, pointPush_apply, pointPush_apply, pointPush_apply,
     pointSourceMap_dualMapEquiv_genericLift, pointSourceMap_dualMapEquiv_genericLift] at h
-  change pointSourceMap (dualMapEquiv (translationAlgEquiv G x)) ≫
+  change pointSourceMap (dualMapEquiv (groupTranslationAlgEquiv G x)) ≫
     (genericLift G G.left.functionField D * (genericLift G G.left.functionField 0)⁻¹) = _
-  have h0 : conjDerivation (translationAlgEquiv G x) 0 = 0 := by
+  have h0 : conjDerivation (groupTranslationAlgEquiv G x) 0 = 0 := by
     ext a
-    simp
+    simp [conjDerivation_apply]
   rw [h, h0, tangentLift, _root_.mul_inv, _root_.mul_mul_mul_comm, mul_inv_cancel,
     _root_.mul_one]
 
 /-- **`Θ` is equivariant**: `Θ(σ_x ∘ D ∘ σ_x⁻¹) = σ_x(Θ D)` coordinatewise. -/
 theorem tangentCoords_conjDerivation [IsCommMonObj G] (x : 𝟙_ (Over (Spec (.of C))) ⟶ G)
     (D : Derivation C G.left.functionField G.left.functionField) (i : Fin (tangentRank G)) :
-    tangentCoords G G.left.functionField (conjDerivation (translationAlgEquiv G x) D) i =
-      translationAlgEquiv G x (tangentCoords G G.left.functionField D i) := by
-  set σ := translationAlgEquiv G x
+    tangentCoords G G.left.functionField (conjDerivation (groupTranslationAlgEquiv G x) D) i =
+      groupTranslationAlgEquiv G x (tangentCoords G G.left.functionField D i) := by
+  set σ := groupTranslationAlgEquiv G x
   have hsf : CommRingCat.ofHom (dualMapEquiv σ).toRingHom ≫
       CommRingCat.ofHom (sqzFst (C := C) (L := G.left.functionField)
         (M := G.left.functionField)).toRingHom =
@@ -351,7 +352,8 @@ theorem tangentCoords_conjDerivation [IsCommMonObj G] (x : 𝟙_ (Over (Spec (.o
       tangentChi G G.left.functionField D ≫ CommRingCat.ofHom (dualMapEquiv σ).toRingHom := by
     have e : pointSourceMap (dualMapEquiv σ) ≫ tangentLift G G.left.functionField D =
         pointSourceMap (dualMapEquiv σ) ≫
-          stalkPoint G (identityCenter G) (tangentChi G G.left.functionField D) (tangentChi_const G G.left.functionField D) := by
+          stalkPoint G (identityCenter G) (tangentChi G G.left.functionField D)
+            (tangentChi_const G G.left.functionField D) := by
       rw [← tangentLift_eq]
     rw [pointSourceMap_dualMapEquiv_tangentLift, tangentLift_eq,
       pointSourceMap_comp_stalkPoint] at e

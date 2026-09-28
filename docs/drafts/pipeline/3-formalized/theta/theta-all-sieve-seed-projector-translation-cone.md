@@ -5,7 +5,7 @@
 - **Type:** all-sieve Bernstein-cone classification, exact and quantitative charge rigidity, sharp off-line countermodels
 - **Routes:** STC, CSB, U, MPLF, RG-HF, RHist; source-side comparison with RG and EDQ
 - **Status:** [PROVED HERE ON PAPER] [LEAN: `GaloisForLFunctions.RHTower.ThetaAllSieveSeedProjector`, see `theta-all-sieve-seed-projector-translation-cone-formalized.md`] [NOT AN RH PROOF]
-- **Dependencies:** the literal theta flux and finite-prime deletion formula in [theta-prime-deletion-spectral-escape.md](theta-prime-deletion-spectral-escape.md), the critical charge in [theta-euler-critical-boundary-mass-escape.md](theta-euler-critical-boundary-mass-escape.md), and finite Bernstein--Widder plus Laplace-measure uniqueness already available in the Lean corpus. No numerical computation is used.
+- **Dependencies:** the literal theta flux and finite-prime deletion formula in [theta-prime-deletion-spectral-escape.md](theta-prime-deletion-spectral-escape.md), the critical charge in [theta-euler-critical-boundary-mass-escape.md](../../2-fully-proven/theta/theta-euler-critical-boundary-mass-escape.md), and finite Bernstein--Widder plus Laplace-measure uniqueness already available in the Lean corpus. No numerical computation is used.
 
 ## Set-up and all-sieve classification
 

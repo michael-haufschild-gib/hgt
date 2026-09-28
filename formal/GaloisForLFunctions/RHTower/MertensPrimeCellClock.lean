@@ -23,6 +23,7 @@ namespace RHTower
 open Filter Topology Set MeasureTheory
 
 noncomputable section
+set_option autoImplicit false
 
 /-! ### Prime reciprocal mass -/
 

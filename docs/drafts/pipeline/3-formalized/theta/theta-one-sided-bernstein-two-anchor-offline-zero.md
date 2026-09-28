@@ -5,7 +5,7 @@
 - **Type:** exact sharp countermodel to unreflected flux-and-charge orientation
 - **Routes:** STC, CSB, U, K-RVM, MPLF, RHist; source-side comparison with EDQ
 - **Status:** [PROVED HERE ON PAPER] [LEAN: `GaloisForLFunctions.RHTower.ThetaOneSidedBernsteinGauge`, see `theta-one-sided-bernstein-two-anchor-offline-zero-formalized.md`] [NOT A ZERO OF THE ACTUAL XI]
-- **Dependencies:** the theta Gaussian-rate flux in [theta-euler-critical-boundary-mass-escape.md](theta-euler-critical-boundary-mass-escape.md), the source atom formula there, and the Mellin translation law. No numerical computation is used.
+- **Dependencies:** the theta Gaussian-rate flux in [theta-euler-critical-boundary-mass-escape.md](../../2-fully-proven/theta/theta-euler-critical-boundary-mass-escape.md), the source atom formula there, and the Mellin translation law. No numerical computation is used.
 
 ## Exact construction
 

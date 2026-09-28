@@ -187,12 +187,13 @@ theorem comp_mulRight_hom (y x : 𝟙_ (Over (Spec (.of C))) ⟶ G) :
 /-- **The stabilizer of a rational function, in terms of values.**  If `f` is represented by `s`
 on `U`, then `σ_x f = f` exactly when `s(y · x) = s(y)` for all rational points `y` with `y` and
 `y · x` in `U`. -/
-theorem translationAlgEquiv_germ_eq_iff (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) (U : G.left.Opens)
+theorem groupTranslationAlgEquiv_germ_eq_iff (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) (U : G.left.Opens)
     (hU : genericPoint G.left ∈ U) (s : Γ(G.left, U)) :
-    translationAlgEquiv G x (G.left.presheaf.germ U _ hU s) = G.left.presheaf.germ U _ hU s ↔
+    groupTranslationAlgEquiv G x (G.left.presheaf.germ U _ hU s) = G.left.presheaf.germ U _ hU s ↔
       ∀ (y : 𝟙_ (Over (Spec (.of C))) ⟶ G) (hy : rationalPointHom G y default ∈ U)
         (hyx : rationalPointHom G (y * x) default ∈ U),
-        pointEval (rationalPointHom G (y * x)) U hyx s = pointEval (rationalPointHom G y) U hy s := by
+        pointEval (rationalPointHom G (y * x)) U hyx s =
+          pointEval (rationalPointHom G y) U hy s := by
   set τ := (GrpObj.mulRight x).hom.left with hτ
   have hξ : genericPoint G.left ∈ τ ⁻¹ᵁ U := by
     change τ (genericPoint G.left) ∈ U
@@ -200,9 +201,9 @@ theorem translationAlgEquiv_germ_eq_iff (x : 𝟙_ (Over (Spec (.of C))) ⟶ G) 
     exact hU
   set W := U ⊓ τ ⁻¹ᵁ U
   have hξW : genericPoint G.left ∈ W := ⟨hU, hξ⟩
-  have hσ : translationAlgEquiv G x (G.left.presheaf.germ U _ hU s) =
+  have hσ : groupTranslationAlgEquiv G x (G.left.presheaf.germ U _ hU s) =
       G.left.presheaf.germ (τ ⁻¹ᵁ U) _ hξ (τ.app U s) := by
-    rw [translationAlgEquiv_apply, overFunctionFieldPullback_apply]
+    rw [groupTranslationAlgEquiv_apply, overFunctionFieldPullback_apply]
     exact Scheme.Hom.functionFieldPullback_germ τ U hU s
   rw [hσ]
   have hresU := G.left.presheaf.germ_res (homOfLE (inf_le_left : W ≤ U)) _ hξW
@@ -255,7 +256,7 @@ variable [IsCommMonObj G]
 there is a closed subset `Z ⊆ G` whose rational points are exactly the `x` with `σ_x f = f`. -/
 theorem exists_isClosed_translation_stabilizer (f : G.left.functionField) :
     ∃ Z : Set G.left, IsClosed Z ∧ ∀ x : 𝟙_ (Over (Spec (.of C))) ⟶ G,
-      translationAlgEquiv G x f = f ↔ rationalPointHom G x default ∈ Z := by
+      groupTranslationAlgEquiv G x f = f ↔ rationalPointHom G x default ∈ Z := by
   obtain ⟨U, hU, s, rfl⟩ := G.left.presheaf.exists_germ_eq f
   let c : ∀ y : 𝟙_ (Over (Spec (.of C))) ⟶ G, rationalPointHom G y default ∈ U → C :=
     fun y hy => pointEval (rationalPointHom G y) U hy s
@@ -266,7 +267,7 @@ theorem exists_isClosed_translation_stabilizer (f : G.left.functionField) :
     exact ((G.left.basicOpen _).isOpen.preimage
       (GrpObj.mulRight y).hom.left.base.hom.continuous).isClosed_compl
   · intro x
-    rw [translationAlgEquiv_germ_eq_iff G x U hU s]
+    rw [groupTranslationAlgEquiv_germ_eq_iff G x U hU s]
     simp only [Set.mem_iInter, Set.mem_compl_iff, Set.mem_preimage]
     refine forall_congr' fun y => forall_congr' fun hy => ?_
     have hpt : (GrpObj.mulRight y).hom.left (rationalPointHom G x default) =
@@ -290,7 +291,7 @@ theorem exists_isClosed_translation_stabilizer (f : G.left.functionField) :
 
 /-- **Translation-invariant rational functions are constant**: `C(G)^(G(C)) = C`. -/
 theorem mem_range_algebraMap_of_translation_fixed (f : G.left.functionField)
-    (hf : ∀ x : 𝟙_ (Over (Spec (.of C))) ⟶ G, translationAlgEquiv G x f = f) :
+    (hf : ∀ x : 𝟙_ (Over (Spec (.of C))) ⟶ G, groupTranslationAlgEquiv G x f = f) :
     f ∈ Set.range (algebraMap C G.left.functionField) := by
   haveI : JacobsonSpace G.left := LocallyOfFiniteType.jacobsonSpace G.hom
   obtain ⟨U, hU, s, rfl⟩ := G.left.presheaf.exists_germ_eq f
@@ -306,7 +307,7 @@ theorem mem_range_algebraMap_of_translation_fixed (f : G.left.functionField)
     refine eq_zero_of_rationalPointEval_eq_zero G _ fun z hz => ?_
     rw [map_sub, pointEval_structureSection G.hom _ (rationalPoint_comp_hom G _), sub_eq_zero]
     have hxz : y₀ * (y₀⁻¹ * z) = z := by group
-    have h := (translationAlgEquiv_germ_eq_iff G (y₀⁻¹ * z) U hU s).mp (hf _) y₀ hy₀
+    have h := (groupTranslationAlgEquiv_germ_eq_iff G (y₀⁻¹ * z) U hU s).mp (hf _) y₀ hy₀
       (by rw [hxz]; exact hz)
     exact (pointEval_congr (congrArg (rationalPointHom G) hxz.symm) U hz _ s).trans h
   rw [hs, germ_structureSection]

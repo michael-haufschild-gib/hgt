@@ -218,20 +218,24 @@ theorem mem_range_iff_mem_positionVelocityField (φ : F →ₐ[C] F) (c : Matrix
   · intro hu
     let R : IntermediateField C (FunctionJetField F d) :=
       { (jetFieldExtension ht φ).fieldRange with
-        algebraMap_mem' := fun c' => ⟨algebraMap C (FunctionJetField F d) c', jetFieldExtension_algebraMap_C ht φ c'⟩ }
+        algebraMap_mem' := fun c' =>
+          ⟨algebraMap C (FunctionJetField F d) c', jetFieldExtension_algebraMap_C ht φ c'⟩ }
     have hinv : c * c⁻¹ = 1 := Matrix.mul_nonsing_inv c (isUnit_iff_ne_zero.mpr hcdet)
     have hle : V ≤ R := by
       refine IntermediateField.adjoin_le_iff.mpr ?_
       rintro _ (⟨_, ⟨a, rfl⟩, rfl⟩ | ⟨⟨k, i⟩, rfl⟩)
       · exact ⟨algebraMap F (FunctionJetField F d) a, jetFieldExtension_algebraMap ht φ a⟩
-      · refine ⟨∑ j, algebraMap C (FunctionJetField F d) (c⁻¹ j i) * maurerCartanJet (D := D) ht (k, j), ?_⟩
+      · refine ⟨∑ j, algebraMap C (FunctionJetField F d) (c⁻¹ j i) *
+          maurerCartanJet (D := D) ht (k, j), ?_⟩
         rw [map_sum]
         simp only [map_mul, jetFieldExtension_algebraMap_C, jetFieldExtension_maurerCartanJet ht hD
           φ c hc, Finset.mul_sum]
         rw [Finset.sum_comm]
-        have hcol : ∀ l, ∑ j, algebraMap C (FunctionJetField F d) (c⁻¹ j i) * (algebraMap C (FunctionJetField F d) (c l j) *
+        have hcol : ∀ l, ∑ j, algebraMap C (FunctionJetField F d) (c⁻¹ j i) *
+            (algebraMap C (FunctionJetField F d) (c l j) *
             maurerCartanJet (D := D) ht (k, l)) =
-            algebraMap C (FunctionJetField F d) ((c * c⁻¹) l i) * maurerCartanJet (D := D) ht (k, l) := by
+            algebraMap C (FunctionJetField F d) ((c * c⁻¹) l i) *
+              maurerCartanJet (D := D) ht (k, l) := by
           intro l
           rw [Matrix.mul_apply, map_sum, Finset.sum_mul]
           exact Finset.sum_congr rfl fun j _ => by rw [map_mul]; ring

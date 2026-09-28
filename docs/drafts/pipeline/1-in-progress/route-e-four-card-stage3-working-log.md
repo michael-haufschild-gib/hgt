@@ -8,7 +8,7 @@ on the four cards below, add all missing infrastructure, and move each to `3-for
 | # | card | gating input (as of 2026-09-11) |
 |-|-|-|
 | 1 | `2-fully-proven/route-e-cofactor-amplified-e3-token-supply.md` | Matomäki–Teräväinen all-interval `E₃` Thm 1.2 (arXiv:2207.05038); residual = collective signed cross-modulus (Kuznetsov) estimate on Lemma 3.5(ii) Type-I range, then amplification + Thm 1.2 assembly |
-| 2 | `2-fully-proven/route-e-coprime-square-root-mobius-product-sign-law.md` | general-`h` all-interval quantitative transport / representation input (Matomäki–Radziwiłł lane) |
+| 2 | `3-formalized/route e/route-e-coprime-square-root-mobius-product-sign-law.md` | general-`h` all-interval quantitative transport / representation input (Matomäki–Radziwiłł lane) |
 | 3 | `2-fully-proven/route-e-forbidden-support-e3-stability.md` | same as #1 |
 | 4 | `2-fully-proven/route-e-growing-reciprocal-marker-low-breadth-transport.md` | Menon quantitative mean square → integer-start `DyadicTranslates.dyadicMeanSquare`; residual = initial-exceptional/Case-II volume specialisation, final-block + frequency-band summation, terminal harmonic→integer-start receiver |
 

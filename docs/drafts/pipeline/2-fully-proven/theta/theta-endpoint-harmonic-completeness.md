@@ -89,7 +89,7 @@ g_α(x)=α∫₀∞ sin(αt)k(|x|+t)dt.
 ```
 
 The proof of the
-[real zero-division formula](theta-positive-real-zero-division.md)
+[real zero-division formula](../../3-formalized/theta/theta-positive-real-zero-division.md)
 extends to complex `α`: absolute convergence follows from theta's
 double-exponential tail, and the even join is smooth because
 `g_α'(0+) = −α²F(α)/2=0`. The global equation

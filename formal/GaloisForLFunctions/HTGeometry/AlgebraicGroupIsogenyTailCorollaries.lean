@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.AlgebraicGroupPositionVelocity
 import GaloisForLFunctions.HTGeometry.DifferentialTranscendenceDegree
 import GaloisForLFunctions.HTGeometry.FiniteHolonomyTail
+import GaloisForLFunctions.HTGeometry.HypertranscendentalPow
 import Mathlib.FieldTheory.AlgebraicClosure
 
 /-!
@@ -54,14 +55,6 @@ theorem differentialTranscendenceDegree_eq_of_differentialAlgebraicOver
   change M.cRank = Cardinal.mk κ
   exact hbase.cardinalMk_eq_cRank.symm.trans (Cardinal.mk_range_eq x hx.injective)
 
-/-- An element algebraic over a differential subfield is differentially algebraic over it. -/
-theorem differentialAlgebraicOver_of_isAlgebraic {F E : Type*} [Field F] [Field E] [Algebra F E]
-    [Differential E] (B : IntermediateField F E) {y : E} (hy : IsAlgebraic B y) :
-    DifferentialAlgebraicOver B y := by
-  intro hdiff
-  have htrans : Transcendental B y := hdiff.algebraicIndependent.transcendental Unit.unit
-  exact htrans hy
-
 variable {C : Type u} [Field C] (G : Over (Spec (.of C))) [IsIntegral G.left]
   [LocallyOfFiniteType G.hom] [CharZero C]
 
@@ -82,7 +75,7 @@ instance groupJetDifferentialAlgebra : DifferentialAlgebra C (GroupJetField G) :
 theorem differentialJet_algebraMap_basis (i : Fin (groupDim G)) (n : ℕ) :
     differentialJet (n + 1) (algebraMap _ (GroupJetField G) (groupBasis G i)) =
       functionJet (i, n) := by
-  rw [differentialJet_eq_iterate]
+  rw [groupJetDifferentialJet_eq_iterate]
   induction n with
   | zero => rw [Function.iterate_one, jetFieldDerivation_basis]
   | succ n ih =>
@@ -154,7 +147,7 @@ theorem differentialTranscendenceDegree_groupJetField :
   intro u
   rw [hrange]
   let B := differentialAdjoin C (Set.range x)
-  refine differentialAlgebraicOver_of_isAlgebraic B ?_
+  refine differentialAlgebraicOver_of_isAlgebraic (A := B) ?_
   have hxB : ∀ i, x i ∈ B := fun i => subset_differentialAdjoin C _ ⟨i, rfl⟩
   have hjetB : ∀ p, (functionJet p : GroupJetField G) ∈ B := by
     rintro ⟨i, n⟩
@@ -203,7 +196,7 @@ theorem differentialTranscendenceDegree_groupJetField :
 
 theorem differentialJet_algebraMap_const (c : C) (n : ℕ) :
     differentialJet (n + 1) (algebraMap C (GroupJetField G) c) = 0 := by
-  rw [differentialJet_eq_iterate, Function.iterate_succ_apply]
+  rw [groupJetDifferentialJet_eq_iterate, Function.iterate_succ_apply]
   rw [show groupJetDerivation G (algebraMap C (GroupJetField G) c) = 0 from
     Derivation.map_algebraMap _ c]
   induction n with
@@ -245,30 +238,32 @@ theorem mcVelocity_differentialIndependent : DifferentialIndependent C (mcVeloci
     exact Prod.ext h'.2 h'.1
 
 /-- The velocity field `C⟨ℓ⟩`. -/
-abbrev velocityField : IntermediateField C (GroupJetField G) :=
+abbrev maurerCartanVelocityField : IntermediateField C (GroupJetField G) :=
   differentialAdjoin C (Set.range (mcVelocity G))
 
-theorem velocityField_derivationClosed : DerivationClosed (velocityField G) :=
+theorem maurerCartanVelocityField_derivationClosed :
+    DerivationClosed (maurerCartanVelocityField G) :=
   derivationClosed_differentialAdjoin C _
 
 /-- The velocity field as a differential field. -/
 @[implicit_reducible]
-def velocityFieldDifferential : Differential (velocityField G) :=
-  derivationClosedDifferential _ (velocityField_derivationClosed G)
+def maurerCartanVelocityFieldDifferential : Differential (maurerCartanVelocityField G) :=
+  derivationClosedDifferential _ (maurerCartanVelocityField_derivationClosed G)
 
-attribute [local instance] velocityFieldDifferential
+attribute [local instance] maurerCartanVelocityFieldDifferential
 
-instance velocityField_differentialAlgebra : DifferentialAlgebra C (velocityField G) :=
+instance maurerCartanVelocityField_differentialAlgebra :
+    DifferentialAlgebra C (maurerCartanVelocityField G) :=
   ⟨fun c => Subtype.ext (by
     change groupJetDerivation G (algebraMap C (GroupJetField G) c) =
       algebraMap C (GroupJetField G) ((0 : Derivation ℤ C C) c)
     rw [Derivation.map_algebraMap, Derivation.zero_apply, map_zero])⟩
 
-instance velocityField_charZero : CharZero (velocityField G) :=
-  charZero_of_injective_algebraMap (algebraMap C (velocityField G)).injective
+instance maurerCartanVelocityField_charZero : CharZero (maurerCartanVelocityField G) :=
+  charZero_of_injective_algebraMap (algebraMap C (maurerCartanVelocityField G)).injective
 
-theorem val_differentialJet_velocityField (n : ℕ) (y : velocityField G) :
-    ((differentialJet n y : velocityField G) : GroupJetField G) =
+theorem val_differentialJet_velocityField (n : ℕ) (y : maurerCartanVelocityField G) :
+    ((differentialJet n y : maurerCartanVelocityField G) : GroupJetField G) =
       differentialJet n (y : GroupJetField G) := by
   induction n generalizing y with
   | zero => rfl
@@ -278,15 +273,15 @@ theorem val_differentialJet_velocityField (n : ℕ) (y : velocityField G) :
 
 /-- **`dtrdeg_C C⟨ℓ⟩ = dim G`.** -/
 theorem differentialTranscendenceDegree_velocityField :
-    differentialTranscendenceDegree C (velocityField G) = groupDim G := by
-  let xL : ULift.{u} (Fin (groupDim G)) → velocityField G := fun i =>
+    differentialTranscendenceDegree C (maurerCartanVelocityField G) = groupDim G := by
+  let xL : ULift.{u} (Fin (groupDim G)) → maurerCartanVelocityField G := fun i =>
     ⟨mcVelocity G i.down, subset_differentialAdjoin C _ ⟨i.down, rfl⟩⟩
   have hind : DifferentialIndependent C xL := by
     unfold DifferentialIndependent
-    refine AlgebraicIndependent.of_comp (velocityField G).val ?_
+    refine AlgebraicIndependent.of_comp (maurerCartanVelocityField G).val ?_
     have hK := mcVelocity_differentialIndependent G
     unfold DifferentialIndependent at hK
-    have hfun : (velocityField G).val ∘ (fun p : ULift.{u} (Fin (groupDim G)) × ℕ =>
+    have hfun : (maurerCartanVelocityField G).val ∘ (fun p : ULift.{u} (Fin (groupDim G)) × ℕ =>
         differentialJet p.2 (xL p.1)) =
         (fun p : Fin (groupDim G) × ℕ => differentialJet p.2 (mcVelocity G p.1)) ∘
           (fun p => (p.1.down, p.2)) := by
@@ -297,7 +292,7 @@ theorem differentialTranscendenceDegree_velocityField :
       simp only [Prod.mk.injEq] at h
       exact Prod.ext (ULift.ext _ _ h.1) h.2
   have hgen : differentialAdjoin C (Set.range xL) = ⊤ := by
-    apply IntermediateField.lift_injective (velocityField G)
+    apply IntermediateField.lift_injective (maurerCartanVelocityField G)
     rw [IntermediateField.lift_top, differentialAdjoin, IntermediateField.lift_adjoin]
     congr 1
     ext v
@@ -343,7 +338,7 @@ field, `Tail(α) = C⟨ℓ⟩`. -/
 theorem mem_isogenyTail_iff_mem_velocityField
     (hdense : Dense (⋃ n, (fun c => rationalPointHom G c default) '' isogenyKernelPoints G α n))
     (u : GroupJetField G) :
-    (∀ n, u ∈ Set.range ((⇑(jetIsogenyPullback G α))^[n])) ↔ u ∈ velocityField G := by
+    (∀ n, u ∈ Set.range ((⇑(jetIsogenyPullback G α))^[n])) ↔ u ∈ maurerCartanVelocityField G := by
   have hcomp : ⇑(algebraMap G.left.functionField (GroupJetField G)) ∘
       ⇑(algebraMap C G.left.functionField) = ⇑(algebraMap C (GroupJetField G)) := by
     funext c
@@ -425,11 +420,11 @@ holonomy-invariant part of the velocity field. -/
 theorem finiteHolonomyTail_of_dense (Φ : Set (G ≅ G)) (hΦ : ∀ φ ∈ Φ, φ.hom ≫ α = α ≫ φ.hom)
     (hdense : Dense (⋃ n, (fun c => rationalPointHom G c default) '' isogenyKernelPoints G α n)) :
     (⋂ n, (⇑(jetIsogenyPullback G α))^[n] '' fixedSubset (holonomyMaps G Φ) Set.univ) =
-      fixedSubset (holonomyMaps G Φ) (velocityField G : Set (GroupJetField G)) := by
+      fixedSubset (holonomyMaps G Φ) (maurerCartanVelocityField G : Set (GroupJetField G)) := by
   rw [finiteHolonomyTail G α Φ hΦ]
   congr 1
   ext u
-  change (∀ x ∈ deckClosurePoints G α, jetTranslation G x u = u) ↔ u ∈ velocityField G
+  change (∀ x ∈ deckClosurePoints G α, jetTranslation G x u = u) ↔ u ∈ maurerCartanVelocityField G
   rw [← mem_isogenyTail_iff_deckClosure_fixed, mem_isogenyTail_iff_mem_velocityField G α hdense]
 
 end
