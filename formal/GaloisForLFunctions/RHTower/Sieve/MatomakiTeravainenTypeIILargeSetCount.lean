@@ -103,7 +103,7 @@ theorem exists_matomakiTeravainen_typeII_T1_large_set_count_divisor_bounded
   have hrhoLo : 5 * eps + kappa ≤ 10 * eps := by
     dsimp only [kappa]
     nlinarith [sq_nonneg eps]
-  have hrhoHi : 10 * eps + kappa ≤ 7 / 32 - 5 * eps := by
+  have hrhoHi : 10 * eps + kappa ≤ 23 / 100 - 5 * eps := by
     dsimp only [kappa]
     nlinarith [sq_nonneg eps]
   let S₁ : Finset ℝ := S.filter fun t =>

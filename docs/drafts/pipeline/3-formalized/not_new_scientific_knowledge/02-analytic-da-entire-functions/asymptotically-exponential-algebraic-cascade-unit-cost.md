@@ -1,7 +1,7 @@
 # Unit differential-order cost for autonomous first-order entire cascades
 
 - **ID:** `asymptotically-exponential-algebraic-cascade-unit-cost`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[BRIDGE] [PROVED]`; downgraded after Schanuel-function parent audit
 - **Lane:** general hypertranscendence; finite DA boundary and infinite-depth obstruction
@@ -165,7 +165,7 @@ Its possible future RH value is architectural: if an Euler--archimedean object c
 - [x] Dedicated iteration/differential-order literature audit.
 - [x] Oscillatory and multi-tract autonomous order-one audit resolved by Briot--Bouquet classification plus Clunie growth separation.
 - [ ] Nonautonomous order-one and autonomous higher-order audit.
-- [ ] Lean differential-order observability capstone and Briot--Bouquet classification.
+- [x] Lean differential-order observability capstone and Briot--Bouquet classification.
 - [x] Lean exact positive composition depth.
 
 ## Primary references checked
@@ -281,3 +281,46 @@ Also owned: `ExpAffineCascade.scaled_jet_det_ne_zero` (the model determinant),
 `MultiGradedNewtonModel`, `ObservabilityJacobianTransfer`, `LaurentLeadingDeterminant`,
 `LaurentHasLead`, `HahnLeadingCoefficient`, `CascadeModelAlgebra`, `ScalarMonomial`,
 `TowerMonomialShape`.
+
+## Lean formalization — complete (2026-09-28)
+
+`[FORMALIZED]` Unconditional and axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), wired
+into `GaloisForLFunctions.HTGeometry`.  Relations are `P ∈ ℂ[X][Y]` nonzero with
+`relEval P (f z) (deriv f z) = 0` for all `z` (`relEval` = evaluate the `X`-coefficients at `f`,
+then `Y` at `f'`).
+
+| Card statement | Lean |
+|---|---|
+| **Theorem** `ord_DA(F_n) = cd₊(F_n) = n` | `exactOrder_and_compositionDepth_autonomousFirstOrderCascade` — hypotheses: every factor transcendental entire with a nonzero autonomous first-order relation. The exponential-cover branch condition and the finite/positive lower order hypotheses are implied (see below) and not needed as inputs |
+| Step 1: the states are algebraically independent (with the coordinate `z`) | corpus `algebraicIndependent_cascadeMero_over_complex` (`z, F_1, …, F_n` independent over `ℂ`, the equivalent form of independence over `ℂ(z)`) |
+| Step 2: product-cascade observability | corpus `algebraicIndependent_hahnFractionNestedCascade_of_leads`, `algebraicIndependent_hahnFractionRamLogState` |
+| Step 3: exact order `n` | corpus `exactDifferentialOrder_entireCascade_of_lt` |
+| Step 4: exact positive-order composition depth | corpus `compositionDepth_finiteOrder_positiveCascade` |
+| **Briot–Bouquet for entire solutions**: `f = L(e^{az})`, `L` a Laurent polynomial | `exists_laurentExp_of_autonomous_firstOrder` (`f z = p(e^{az}) / e^{maz}`, `a ≠ 0`) |
+| order and lower order one | `order_eq_one_of_autonomous_firstOrder`, `finiteOrderEnvelope_of_autonomous_firstOrder`, `positiveLowerOrder_of_autonomous_firstOrder` |
+| **Corollary** `ord_DA(f^[n]) = cd₊(f^[n]) = n` | `exactOrder_and_compositionDepth_autonomousFirstOrderIterate` |
+
+New modules (`formal/GaloisForLFunctions/HTGeometry/`): `CasoratiWeierstrassAtInfinity`,
+`FirstOrderRepeatedRegularValue`, `AutonomousFirstOrderEntirePeriod`,
+`AutonomousFirstOrderEntireClassification`, `LaurentExpGrowth`,
+`AutonomousFirstOrderCascadeUnitCost` (plus `FirstOrderRelationLocalUniqueness` from the
+AP-periodicity card).
+
+**The Briot–Bouquet step is proved from scratch for entire solutions, without the curve's Riemann
+surface or uniformization.**
+
+1. *Casorati–Weierstrass at infinity* (`polyBound_or_dense_image`): a function holomorphic near
+   `∞` has polynomial growth or dense image near `∞`; a transcendental entire function has dense
+   image (`dense_image_of_transcendentalEntire`).
+2. *Repeated regular values* (`exists_repeated_relGood_value`): with dense image and isolated bad
+   points, `deg_Y Q + 1` nested discs give a value with that many good preimages; two share the
+   derivative value (pigeonhole on the roots of `Q(w, ·)`).
+3. *Period*: local uniqueness (`eqOn_of_relEval_eq_zero`) turns two equal good jets into a period
+   (`exists_period_of_autonomous_firstOrder`).
+4. *Descent to `ℂ*`*: `f(ωz) = g(e^{2πiz})`, `Q(g(t), (2πi/ω) t g'(t)) = 0`.  An essential
+   singularity of `g` at `∞` or `0` would, by steps 1–2 applied to `g`, give two good points of
+   different moduli with equal jets, hence a second period with non-real ratio
+   (`false_of_equal_cusp_jets`); a doubly periodic entire function is constant
+   (`eq_const_of_two_periods`).
+5. *Laurent polynomial*: polynomial growth at `∞` and `0` makes `t^m g(t)` an entire function of
+   polynomial growth (`exists_laurent_of_polyBounds`).

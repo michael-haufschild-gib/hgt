@@ -163,6 +163,51 @@ theorem imStripTranslateBCF_apply (hc : ContinuousOn f (closedImStrip r)) {B : �
     (hB : ∀ z : ℂ, |z.im| ≤ r → ‖f z‖ ≤ B) (t : ℝ) (z : closedImStrip r) :
     imStripTranslateBCF hc hB t z = f ((z : ℂ) + t) := rfl
 
+/-- **The hypothesis is relative compactness.**  For a continuous function bounded on the closed
+strip, total boundedness of the translates is compactness of the closure of the set of translates in
+the complete space of bounded continuous functions on the closed strip. -/
+theorem hasCompactImStripTranslates_iff_isCompact_closure (hc : ContinuousOn f (closedImStrip r))
+    {B : ℝ} (hB : ∀ z : ℂ, |z.im| ≤ r → ‖f z‖ ≤ B) :
+    HasCompactImStripTranslates f r ↔
+      IsCompact (closure (range (imStripTranslateBCF hc hB))) := by
+  classical
+  set T := imStripTranslateBCF hc hB with hT
+  constructor
+  · intro h
+    have htb : TotallyBounded (range T) := by
+      rw [Metric.totallyBounded_iff]
+      intro ε hε
+      obtain ⟨S, hS⟩ := h (ε / 2) (by linarith)
+      refine ⟨T '' S, S.finite_toSet.image T, ?_⟩
+      rintro _ ⟨t, rfl⟩
+      obtain ⟨s, hs, hts⟩ := hS t
+      refine mem_iUnion₂.mpr ⟨T s, mem_image_of_mem T hs, ?_⟩
+      rw [mem_ball]
+      refine lt_of_le_of_lt ((BoundedContinuousFunction.dist_le (C := ε / 2) (by linarith)).mpr
+        fun z => ?_) (by linarith)
+      rw [dist_eq_norm]
+      show ‖f ((z : ℂ) + t) - f ((z : ℂ) + s)‖ ≤ ε / 2
+      exact hts z z.2
+    exact isCompact_iff_totallyBounded_isComplete.mpr ⟨htb.closure, isClosed_closure.isComplete⟩
+  · intro hK ε hε
+    have htb : TotallyBounded (range T) := hK.totallyBounded.subset subset_closure
+    obtain ⟨C, hCfin, hcover⟩ := Metric.totallyBounded_iff.mp htb (ε / 2) (by linarith)
+    let sel : BoundedContinuousFunction (closedImStrip r) ℂ → ℝ := fun y =>
+      if hy : ∃ s : ℝ, T s ∈ ball y (ε / 2) then hy.choose else 0
+    refine ⟨hCfin.toFinset.image sel, fun t => ?_⟩
+    obtain ⟨y, hyC, hty⟩ := mem_iUnion₂.mp (hcover (mem_range_self t))
+    have hy : ∃ s : ℝ, T s ∈ ball y (ε / 2) := ⟨t, hty⟩
+    refine ⟨sel y, Finset.mem_image.mpr ⟨y, hCfin.mem_toFinset.mpr hyC, rfl⟩, fun z hz => ?_⟩
+    have hsel : T (sel y) ∈ ball y (ε / 2) := by
+      simp only [sel, dif_pos hy]; exact hy.choose_spec
+    have hdist : dist (T t) (T (sel y)) < ε := by
+      rw [mem_ball] at hty hsel
+      calc dist (T t) (T (sel y)) ≤ dist (T t) y + dist (T (sel y)) y := dist_triangle_right _ _ _
+        _ < ε := by linarith
+    have h1 := BoundedContinuousFunction.dist_coe_le_dist (f := T t) (g := T (sel y)) ⟨z, hz⟩
+    rw [dist_eq_norm] at h1
+    exact le_of_lt (lt_of_le_of_lt h1 hdist)
+
 /-- **Sequential compactness of real translates.**  Every sequence of real translates has a
 subsequence converging uniformly on the closed strip. -/
 theorem HasCompactImStripTranslates.exists_subseq_tendstoUniformlyOn
@@ -172,22 +217,8 @@ theorem HasCompactImStripTranslates.exists_subseq_tendstoUniformlyOn
   classical
   obtain ⟨B, hB⟩ := h.exists_bound hc
   set T := imStripTranslateBCF hc hB with hT
-  have htb : TotallyBounded (range T) := by
-    rw [Metric.totallyBounded_iff]
-    intro ε hε
-    obtain ⟨S, hS⟩ := h (ε / 2) (by linarith)
-    refine ⟨T '' S, S.finite_toSet.image T, ?_⟩
-    rintro _ ⟨t, rfl⟩
-    obtain ⟨s, hs, hts⟩ := hS t
-    refine mem_iUnion₂.mpr ⟨T s, mem_image_of_mem T hs, ?_⟩
-    rw [mem_ball]
-    refine lt_of_le_of_lt ((BoundedContinuousFunction.dist_le (C := ε / 2) (by linarith)).mpr
-      fun z => ?_) (by linarith)
-    rw [dist_eq_norm]
-    show ‖f ((z : ℂ) + t) - f ((z : ℂ) + s)‖ ≤ ε / 2
-    exact hts z z.2
   have hK : IsCompact (closure (range T)) :=
-    isCompact_iff_totallyBounded_isComplete.mpr ⟨htb.closure, isClosed_closure.isComplete⟩
+    (hasCompactImStripTranslates_iff_isCompact_closure hc hB).mp h
   obtain ⟨G, -, φ, hφ, hlim⟩ :=
     hK.tendsto_subseq (x := fun n => T (x n)) fun n => subset_closure (mem_range_self _)
   refine ⟨φ, hφ, fun z => if hz : z ∈ closedImStrip r then G ⟨z, hz⟩ else 0, ?_⟩

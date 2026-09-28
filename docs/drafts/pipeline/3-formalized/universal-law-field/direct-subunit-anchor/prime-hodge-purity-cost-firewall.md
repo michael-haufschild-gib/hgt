@@ -1,8 +1,8 @@
 # Prime--Hodge purity-cost firewall
 
 - **ID:** `ULF-PHPCF-001`
-- **Stage:** 2-fully-proven
-- **Type:** unconditional four-organ fusion and completion-homotopy no-go
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **RH used:** no
 - **Divisor used in the source object or bound:** no
 - **Parents:** `ULF-PHIN-001`, `ULF-SCIN-001`,
@@ -243,3 +243,27 @@ Formalized unconditionally in
 `primeHodgePurityCostFirewall` certifies the corrected source object, positivity, Schatten-one
 membership, trace and trace norm one, the `1/3` norm ceiling, exact pure-state radii, strict
 operator/trace-distance firewalls, and same-history cross-prime nonvanishing.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.RHTower.PrimeHodgePurityCostFirewall`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Module `GaloisForLFunctions.RHTower.PrimeHodgePurityCostFirewall` (45 constants, axiom audit clean).
+
+| Claim | Lean declaration |
+|-|-|
+| (PCF.1) `T ≥ 0`, `T ∈ S₁`, `Tr T = ‖T‖₁ = 1`, `‖T‖ ≤ 1/3`, cross-prime entries nonzero | capstone clauses of `primeHodgePurityCostFirewall` |
+| (PCF.2) `B ≤ (115/432) ∑ 1/(p log² p)`, `∑ < 2` | `routePPrimitiveCollisionCubicTraceBudget_le_primeInvLogSq`, `tsum_prime_invNatLogSq_lt_two` (used in the next row) |
+| (PCF.3) `B < 115/216` | `routePPrimitiveCollisionCubicTraceBudget_lt_115_div_216` |
+| (PCF.4) `ρ_pure(S) = 1 - ‖S‖`, `ρ_pure,1(S) = 2(1 - ‖S‖)` for positive trace-one `S` | `operatorPureRadius`, `tracePureRadius`, `operatorPureRadius_eq_one_sub_norm`, `tracePureRadius_eq_two_mul_one_sub_norm` (with `norm_purityRankOneProjection_sub_ge_one_sub_norm`, `traceNorm_purityRankOneProjection_sub_ge_two_mul_one_sub_norm`, attainment `exists_rankOne_operator_distance_eq_purity_cost`, `exists_rankOne_traceNorm_distance_eq_purity_cost`) |
+| (PCF.5) `B + ‖T‖ < 1` | `routePPrimitiveCollisionCubicTraceBudget_add_primeHodgePuritySource_norm_lt_one` |
+| (PCF.6) `‖P - T‖ > B` | `primeHodgePuritySource_operator_distance_gt_budget`, `operatorPureRadius_primeHodgePuritySource` |
+| (PCF.7) `‖P - T‖₁ ≥ 4/3 > 2B` | `primeHodgePuritySource_trace_distance_gt_two_budget`, `primeHodgePuritySource_trace_distance_gt_four_thirds`, `tracePureRadius_primeHodgePuritySource` |
+| (PCF.8) no budgeted additive landing | `no_budgeted_traceClass_additive_pure_landing` |
+| (PCF.9) operator-path variation `> B` | `primeHodgePuritySource_operatorPath_variation_gt_budget` |
+| (PCF.10) trace-class path action `> 2B` | `primeHodgePuritySource_traceClassPath_action_gt_two_budget` |
+| closed capstone | `primeHodgePurityCostFirewall` |
+
+## Log
+
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

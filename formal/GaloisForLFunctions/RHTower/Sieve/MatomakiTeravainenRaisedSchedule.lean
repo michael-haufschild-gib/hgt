@@ -124,15 +124,16 @@ theorem matomakiTeravainen_raised_threshold_loss
     (sigma := sigma) (L := (ell + 1 : ℝ)) (kappa := kappa)
     hLone hkappa.le hpowD'
 
-/-- Huxley's energy threshold follows from the same subpower energy budget used in the density
-estimate.  No separate coefficient-size asymptotic is needed. -/
+/-- The energy threshold `2400 Q ≤ N^{1/2-2σ}` follows, for `σ ≤ 23/100 - 5ε`, from the same
+subpower energy budget used in the density estimate.  No separate coefficient-size asymptotic is
+needed. -/
 theorem huxley_energy_threshold_of_subpower
     {T N sigma eps Q : ℝ} (hT : 1 ≤ T)
     (heps : 0 < eps) (hepss : eps ≤ 1 / 1000)
     (hready : 2400 ≤ T ^ ((1 : ℝ) / 32))
     (hQ : 1 ≤ Q) (hQ3 : Q ^ 3 ≤ T ^ (eps ^ 2))
     (hNlo : T ^ ((9 : ℝ) / 11 - 10 * eps) ≤ N)
-    (hsigma : sigma ≤ 7 / 32 - 5 * eps) :
+    (hsigma : sigma ≤ 23 / 100 - 5 * eps) :
     2400 * Q ≤ N ^ ((1 : ℝ) / 2 - 2 * sigma) := by
   have hT0 : 0 < T := lt_of_lt_of_le zero_lt_one hT
   have hQle : Q ≤ T ^ (eps ^ 2) := by
@@ -147,18 +148,18 @@ theorem huxley_energy_threshold_of_subpower
         mul_le_mul hready hQle (by positivity) (by positivity)
       _ = T ^ ((1 : ℝ) / 32 + eps ^ 2) := by rw [← Real.rpow_add hT0]
   have hexp : (1 : ℝ) / 32 + eps ^ 2 ≤
-      ((9 : ℝ) / 11 - 10 * eps) * ((1 : ℝ) / 16 + 10 * eps) := by
+      ((9 : ℝ) / 11 - 10 * eps) * ((1 : ℝ) / 25 + 10 * eps) := by
     nlinarith [sq_nonneg eps]
   have htoBase : T ^ ((1 : ℝ) / 32 + eps ^ 2) ≤
-      (T ^ ((9 : ℝ) / 11 - 10 * eps)) ^ ((1 : ℝ) / 16 + 10 * eps) := by
+      (T ^ ((9 : ℝ) / 11 - 10 * eps)) ^ ((1 : ℝ) / 25 + 10 * eps) := by
     rw [← Real.rpow_mul hT0.le]
     exact Real.rpow_le_rpow_of_exponent_le hT hexp
   have hN0 : 0 ≤ N := le_trans (Real.rpow_nonneg hT0.le _) hNlo
-  have hsmallExp : 0 ≤ (1 : ℝ) / 16 + 10 * eps := by positivity
-  have htoN : (T ^ ((9 : ℝ) / 11 - 10 * eps)) ^ ((1 : ℝ) / 16 + 10 * eps) ≤
-      N ^ ((1 : ℝ) / 16 + 10 * eps) :=
+  have hsmallExp : 0 ≤ (1 : ℝ) / 25 + 10 * eps := by positivity
+  have htoN : (T ^ ((9 : ℝ) / 11 - 10 * eps)) ^ ((1 : ℝ) / 25 + 10 * eps) ≤
+      N ^ ((1 : ℝ) / 25 + 10 * eps) :=
     Real.rpow_le_rpow (Real.rpow_nonneg hT0.le _) hNlo hsmallExp
-  have hexpN : (1 : ℝ) / 16 + 10 * eps ≤ (1 : ℝ) / 2 - 2 * sigma := by
+  have hexpN : (1 : ℝ) / 25 + 10 * eps ≤ (1 : ℝ) / 2 - 2 * sigma := by
     linarith
   exact hconst.trans (htoBase.trans (htoN.trans
     (Real.rpow_le_rpow_of_exponent_le (by
@@ -176,7 +177,7 @@ theorem exists_matomakiTeravainen_raised_huxley_schedule
       T₀ ≤ T → 0 < ell → ell ≤ L →
       T ^ ((9 : ℝ) / 11 - 10 * eps) ≤ ((A ^ ell : ℕ) : ℝ) →
       ((A ^ ell : ℕ) : ℝ) ≤ T ^ (1 - 2 * eps) →
-      5 * eps + kappa ≤ rho → rho + kappa ≤ 7 / 32 - 5 * eps →
+      5 * eps + kappa ≤ rho → rho + kappa ≤ 23 / 100 - 5 * eps →
       1 ≤ Q → Q ^ 3 ≤ T ^ (eps ^ 2) →
       ∀ r : Fin (ell + 1),
         2 ≤ A ^ ell * 2 ^ (r : ℕ) ∧
@@ -186,7 +187,7 @@ theorem exists_matomakiTeravainen_raised_huxley_schedule
         5 * eps ≤ huxleyThresholdLossSigma
           (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ) ∧
         huxleyThresholdLossSigma
-          (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ) ≤ 7 / 32 - 5 * eps ∧
+          (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ) ≤ 23 / 100 - 5 * eps ∧
         2400 * Q ≤ ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ^
           ((1 : ℝ) / 2 - 2 * huxleyThresholdLossSigma
             (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ)) ∧
@@ -227,7 +228,7 @@ theorem exists_matomakiTeravainen_raised_huxley_schedule
       (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ) :=
     le_trans (by linarith) hDloss.1
   have hsh : huxleyThresholdLossSigma
-      (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ) ≤ 7 / 32 - 5 * eps :=
+      (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ) ≤ 23 / 100 - 5 * eps :=
     hDloss.2.trans hrhoHi
   have hthr := huxley_energy_threshold_of_subpower
     (T := T) (N := ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ))

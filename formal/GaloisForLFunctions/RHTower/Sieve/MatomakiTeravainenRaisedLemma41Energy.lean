@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenRaisedLemma41
 import GaloisForLFunctions.RHTower.Sieve.MaynardWeightedEnergy
+import GaloisForLFunctions.RHTower.Sieve.EnergyLargeValuesBound
 
 /-!
 # Energy-form raised Lemma 4.1 for Matomäki--Teräväinen Proposition 4.2
@@ -53,8 +54,8 @@ theorem raised_dyadic_block_mass_le_of_raw_energy
     _ = Q / (D : ℝ) := by ring
 
 /-- Raised Lemma 4.1 with subpower coefficient energy, exact block cover, threshold loss, and
-summation over the `ell+1` literal dyadic blocks. -/
-theorem exists_lemma41_huxley_raised_energy
+summation over the `ell+1` literal dyadic blocks, from Lemma 4.1 up to any exponent `cap`. -/
+theorem exists_lemma41_raised_energy {cap : ℝ} (hLV : EnergyLargeValuesBound cap)
     {eps : ℝ} (heps : 0 < eps) (hepss : eps ≤ 1 / 1000) :
     ∃ T₀ : ℝ, 1 ≤ T₀ ∧
       ∀ (T : ℝ) (N A ell : ℕ) (rho kappa Q : ℝ)
@@ -72,7 +73,7 @@ theorem exists_lemma41_huxley_raised_energy
           (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ)) →
       (∀ r : Fin (ell + 1),
         huxleyThresholdLossSigma
-          (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ) ≤ 7 / 32 - 5 * eps) →
+          (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ) ≤ cap - 5 * eps) →
       (∀ r : Fin (ell + 1),
         2400 * Q ≤ ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ^
           ((1 : ℝ) / 2 - 2 * huxleyThresholdLossSigma
@@ -90,13 +91,11 @@ theorem exists_lemma41_huxley_raised_energy
         ‖raisedDirichletValue N ell a 1 t‖) →
       (S.card : ℝ) ≤ (ell + 1 : ℝ) *
         T ^ (2 * (rho + kappa) - eps ^ 2 / 5) := by
-  obtain ⟨T₀, hT₀1, hlargeT⟩ :=
-    exists_lemma41_largeness (eps := eps) (D := (1 : ℝ)) heps
+  obtain ⟨T₀, hT₀1, hLVT⟩ := hLV eps heps hepss
   refine ⟨T₀, hT₀1, ?_⟩
   intro T N A ell rho kappa Q a S hT hQ1 hQ3 hA hell hrho hN hNlo hNhi
     hsl hsh hthr hcorr hsupp henergy hsep hspread hlarge
   have hT1 : 1 ≤ T := hT₀1.trans hT
-  obtain ⟨hConst, hLog, _hOne⟩ := hlargeT T hT
   have hcard := card_raised_large_set_le_sum_block_counts hA hell a hsupp hrho S hlarge
   calc
     (S.card : ℝ) ≤ ∑ r : Fin (ell + 1),
@@ -105,12 +104,12 @@ theorem exists_lemma41_huxley_raised_energy
         T ^ (2 * (rho + kappa) - eps ^ 2 / 5) := by
       apply Finset.sum_le_sum
       intro r _hr
-      have hcount := lemma41_huxley_energy_slack
+      have hcount := hLVT T (A ^ ell * 2 ^ (r : ℕ))
+        (huxleyThresholdLossSigma (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ)) Q
         (dyadicWeightedCoeff (N ^ ell) (convPow N ell a) 1
           (A ^ ell * 2 ^ (r : ℕ)))
         (raisedDyadicBlockLargeSet S N A ell a rho r)
-        (le_trans (by norm_num) (hN r)) heps hepss hT1 hConst hLog hQ1 hQ3
-        (hNlo r) (hNhi r) (hsl r) (hsh r)
+        hT hQ1 hQ3 (hNlo r) (hNhi r) (hsl r) (hsh r)
         (raised_dyadic_block_mass_le_of_raw_energy hA a
           (le_trans (by norm_num) hQ1) henergy r) (hthr r)
         (by

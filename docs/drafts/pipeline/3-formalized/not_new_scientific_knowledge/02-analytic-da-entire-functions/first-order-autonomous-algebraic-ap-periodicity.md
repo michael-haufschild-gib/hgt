@@ -1,7 +1,7 @@
 # First-order autonomous algebraic almost-periodicity forces periodicity
 
 - **ID:** `first-order-autonomous-algebraic-ap-periodicity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / CROSS-OPERATOR TRANSDUCTION
 - **Scientific status:** `[PAPER-PROVED] [KNOWN-INGREDIENT SYNTHESIS]`
 - **Novelty status:** no novelty claim; the proof combines algebraic-curve normalization with
@@ -240,18 +240,51 @@ The exact synthesis above was not found verbatim in the audited sources. It is n
 from classical ingredients with a short normalization argument, so this card makes no novelty
 claim.
 
-## Lean status
+## Lean formalization (2026-09-28)
 
-`[NOT LEAN-FORMALIZED]` No Lean theorem is claimed here. The existing corpus already supplies the
-unconditional minimal-separant algebra in
-`formal/GaloisForLFunctions/HTGeometry/AutonomousSeparant.lean` and the real-line hull foundation in
-`formal/GaloisForLFunctions/HTGeometry/AlmostPeriodicHull.lean`. The remaining proof requires an
-algebraic-curve normalization/lifting layer, holomorphic local-flow uniqueness on the normalization,
-the Bohr phase-cube injection, invariance of domain, and the no-solenoid-embedding theorem. These
-surfaces are not presently available as reusable project theorems and must not be replaced by a
-conditional wrapper asserting the conclusion.
+`[FORMALIZED]` Unconditional and axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), wired
+into `GaloisForLFunctions.HTGeometry`.  The strip is `imStrip η = {|Im z| < η}`; the hypothesis
+"relatively compact real translates on every closed smaller strip" is
+`IsImStripUniformlyAlmostPeriodic f η`, and `hasCompactImStripTranslates_iff_isCompact_closure`
+proves it is literally compactness of the closure of the translates in the space of bounded
+continuous functions on the closed strip.  `P(f, f') = 0` is `relEval P (f z) (deriv f z) = 0` for
+`P : ℂ[X][Y]` nonzero, with no irreducibility, regularity or branch assumption.
 
-No Lean build or numerical computation was used in this paper proof.
+| Card statement | Lean |
+|---|---|
+| `(3)`: `Γ(f) = λℤ`, `λ ≠ 0`; the period `2π/|λ|`; `(4)`: rank one | `firstOrderAlgebraic_stripAlmostPeriodic_frequencyGroup` |
+| a nonzero real period | `exists_real_period_of_firstOrderRelation` |
+| order-one hypertranscendence criterion `(17)` | `exists_relEval_ne_zero_of_not_periodic` |
+| divisor-frequency consequence: every continuous translation-equivariant factor has cyclic frequency group, rank ≤ 1 | `observable_frequencyGroup_cyclic` |
+| sharp-conjecture consequence at order one | the rank clause of the first theorem |
+
+Modules (`formal/GaloisForLFunctions/HTGeometry/`): `FirstOrderRelationLocalUniqueness`,
+`ImStripTranslateCompactness`, `FirstOrderAlgebraicStripPeriodicity`,
+`FirstOrderAlgebraicStripFrequencyGroup`.
+
+**The formal proof replaces both classical inputs of the paper route.**  Neither the normalization
+of the algebraic curve nor Schwartz's minimal-set theorem is used.
+
+1. A relation `Q` of least `Y`-degree has `∂_Y Q (f, f') ≢ 0`
+   (`exists_relation_derivative_ne_zero`), so there is a real anchor `x₀` with `f'(x₀) ≠ 0` and
+   `∂_Y Q (f(x₀), f'(x₀)) ≠ 0` (`exists_real_anchor`).
+2. **Local uniqueness without a branch** (`eqOn_of_relEval_eq_zero`): divided differences write
+   `0 = Q(v,v') − Q(w,w') = (v−w)E + (v'−w')D` with `D` near `∂_Y Q ≠ 0`, so `|v'−w'| ≤ K|v−w|`,
+   and Grönwall along radii forces `v = w`.
+3. An `ε`-almost period `τ` and the open mapping theorem give a small complex `c` with
+   `f(x₀+c) = f(x₀+τ)`; local uniqueness makes `f(·+τ) = f(·+c)` on the half strip
+   (`exists_translation_pair`).  If `c` is real, `τ − c` is a real period
+   (`exists_period_of_real_translation_pair`).
+4. Otherwise the pair transports the real line to the heights `k·Im c`
+   (`exists_real_eq_of_translation_pair`); as `Im c → 0` these are dense, so `|f|` never exceeds
+   its supremum on the line (`norm_le_iSup_of_translation_pairs`).  The **maximum principle for
+   translates** (`HasCompactImStripTranslates.exists_const_of_norm_le_iSup`: a limit of translates
+   realising the supremum attains its maximum modulus at an interior point) makes `f` constant,
+   contradicting `f'(x₀) ≠ 0`.
+5. A period confines the Bohr spectrum to `(2π/p)ℤ` (`mem_zmultiples_of_bohrCoefficient_ne_zero`);
+   a nonconstant function has a nonzero frequency (`exists_ne_zero_mem_bohrSpectrum`); subgroups
+   of a cyclic subgroup of `ℝ` are cyclic (`exists_eq_zmultiples_of_le_zmultiples`); the corpus
+   uniqueness theorem gives the period `2π/|λ|` (`periodic_of_bohrSpectrum_subset`).
 
 ## Gates
 
@@ -262,10 +295,13 @@ No Lean build or numerical computation was used in this paper proof.
 - [x] positive order-one hypertranscendence statement extracted
 - [x] primary-source literature audit
 - [x] conservative no-novelty classification
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
 
 ## Log
 
 - 2026-07-17 -- Proved during programme-2 research. The first pass gave only
   `rank_Q Gamma(f)=1`; the surface non-embedding theorem sharpened this to cyclic spectrum and
   periodicity.
+- 2026-09-28 -- Formalized unconditionally in Lean by an elementary route (local uniqueness + maximum
+  principle for translates) that needs neither curve normalization nor Schwartz's theorem; moved to
+  stage 3.

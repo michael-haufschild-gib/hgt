@@ -95,7 +95,7 @@ theorem integrable_ccmExponentialRampVisibleEnergyDensity (T : ℝ) (N : ℕ) :
     have hw : Continuous ccmExponentialRampWeightSquare := by
       unfold ccmExponentialRampWeightSquare ccmExponentialRampDisplacementWeight ccmExponentialRampDerivativeWeight
       fun_prop
-    exact (hk.aestronglyMeasurable.mul (hJ.pow 2)).div hw.aestronglyMeasurable
+    exact (hk.aestronglyMeasurable.mul (hJ.pow 2)).div₀ hw.aestronglyMeasurable
   · filter_upwards with r
     rw [Real.norm_eq_abs, abs_of_nonneg (ccmExponentialRampVisibleEnergyDensity_nonneg T N r),
       ccmExponentialRampArithmeticEnergyDensity_eq_visible_add_transverse]

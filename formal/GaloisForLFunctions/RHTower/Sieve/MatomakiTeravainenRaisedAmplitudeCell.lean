@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenRaisedLemma41Energy
+import GaloisForLFunctions.RHTower.Sieve.JutilaDensityLemma41
 import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenTypeIIAmplitudeCover
 
 namespace RHTower.Sieve
@@ -68,7 +69,7 @@ theorem exists_matomakiTeravainen_typeII_left_raised_cell_count_energy
         huxleyThresholdLossSigma
           (A ^ ell * 2 ^ (r : ℕ))
           (matomakiTeravainenAmplitudeSigma (A : ℝ) V₁ ij.1) (ell + 1 : ℝ) ≤
-            7 / 32 - 5 * eps) →
+            23 / 100 - 5 * eps) →
       (∀ r : Fin (ell + 1),
         2400 * Q ≤ ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ^
           ((1 : ℝ) / 2 - 2 * huxleyThresholdLossSigma
@@ -92,7 +93,7 @@ theorem exists_matomakiTeravainen_typeII_left_raised_cell_count_energy
           (2 * (matomakiTeravainenAmplitudeSigma (A : ℝ) V₁ ij.1 + kappa) -
             eps ^ 2 / 5)) := by
   obtain ⟨T₀, hT₀, hraised⟩ :=
-    exists_lemma41_huxley_raised_energy heps hepss
+    exists_lemma41_raised_energy energyLargeValuesBound_jutila heps hepss
   refine ⟨T₀, hT₀, ?_⟩
   intro T N A ell kappa Q a S F₂ V₁ V₂ J₁ J₂ ij hT hQ hQ3 hA hell
     hrho hV₁ hN hNlo hNhi hsl hsh hthr hcorr hsupp henergy hsep hspread
@@ -160,7 +161,7 @@ theorem exists_matomakiTeravainen_typeII_right_raised_cell_count_energy
         huxleyThresholdLossSigma
           (A ^ ell * 2 ^ (r : ℕ))
           (matomakiTeravainenAmplitudeSigma (A : ℝ) V₂ ij.2) (ell + 1 : ℝ) ≤
-            7 / 32 - 5 * eps) →
+            23 / 100 - 5 * eps) →
       (∀ r : Fin (ell + 1),
         2400 * Q ≤ ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ^
           ((1 : ℝ) / 2 - 2 * huxleyThresholdLossSigma
@@ -237,7 +238,7 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_energy
           huxleyThresholdLossSigma
             (A₁ ^ ell₁ * 2 ^ (r : ℕ))
             (matomakiTeravainenAmplitudeSigma (A₁ : ℝ) V₁ ij.1)
-            (ell₁ + 1 : ℝ) ≤ 7 / 32 - 5 * eps) →
+            (ell₁ + 1 : ℝ) ≤ 23 / 100 - 5 * eps) →
       (∀ ij ∈ matomakiTeravainenActiveAmplitudeIndices S
           (matomakiTeravainenDirichletAmplitude N₁ a₁)
           (matomakiTeravainenDirichletAmplitude N₂ a₂) V₁ V₂ J₁ J₂,
@@ -285,7 +286,7 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_energy
           huxleyThresholdLossSigma
             (A₂ ^ ell₂ * 2 ^ (r : ℕ))
             (matomakiTeravainenAmplitudeSigma (A₂ : ℝ) V₂ ij.2)
-            (ell₂ + 1 : ℝ) ≤ 7 / 32 - 5 * eps) →
+            (ell₂ + 1 : ℝ) ≤ 23 / 100 - 5 * eps) →
       (∀ ij ∈ matomakiTeravainenActiveAmplitudeIndices S
           (matomakiTeravainenDirichletAmplitude N₁ a₁)
           (matomakiTeravainenDirichletAmplitude N₂ a₂) V₁ V₂ J₁ J₂,
@@ -331,7 +332,7 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_energy
                 (matomakiTeravainenAmplitudeSigma (A₁ : ℝ) V₁ ij.1)
                 (matomakiTeravainenAmplitudeSigma (A₂ : ℝ) V₂ ij.2) -
                 eps ^ 2 / 10) := by
-  obtain ⟨T₀, hT₀, hraised⟩ := exists_lemma41_huxley_raised_energy heps hepss
+  obtain ⟨T₀, hT₀, hraised⟩ := exists_lemma41_raised_energy energyLargeValuesBound_jutila heps hepss
   refine ⟨T₀, hT₀, ?_⟩
   intro T N₁ A₁ ell₁ kappa₁ Q₁ a₁ N₂ A₂ ell₂ kappa₂ Q₂ a₂ S V₁ V₂ C J₁ J₂
     hT hQ₁ hQ₁3 hQ₂ hQ₂3 hA₁ hA₂ hell₁ hell₂ hV₁ hV₂ hF₁one hF₂one

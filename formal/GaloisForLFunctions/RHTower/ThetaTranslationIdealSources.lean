@@ -404,6 +404,41 @@ theorem causalPort_primeMomentCorrection {p : ℝ} (hp : 1 < p) (w : ℂ) :
   simp only [neg_mul]
   ring
 
+/-! ## Zero traces -/
+
+/-- A finite spectral limit of odd translation corrections at an Xi zero vanishes: the limit
+stays in the Xi ideal. -/
+theorem translation_limit_eq_zero_of_zero {n : ℕ → ℕ} {c h : ∀ k, Fin (n k) → ℝ} {w : ℂ}
+    (hw : thetaSymmetrizedPort w = 0) {ℓ : ℂ}
+    (hlim : Tendsto (fun k => causalCorrectionTransform
+      (fun u => 2 * translationOddPart (c k) (h k) u) w) atTop (𝓝 ℓ)) : ℓ = 0 := by
+  have : (fun k => causalCorrectionTransform (fun u => 2 * translationOddPart (c k) (h k) u) w) =
+      fun _ => 0 := funext fun k => causalCorrectionTransform_translation_eq_zero (c k) (h k) hw
+  rw [this] at hlim
+  exact tendsto_nhds_unique hlim tendsto_const_nhds
+
+/-- At any zero of `X`, on or off the critical line, an anti-reflected port has `E# = -E`. -/
+theorem halfPortReflect_eq_neg_of_zero {E : ℂ → ℂ}
+    (hE : ∀ w, E w + halfPortReflect E w = thetaSymmetrizedPort w) {w : ℂ}
+    (hw : thetaSymmetrizedPort w = 0) : halfPortReflect E w = -E w := by
+  have := hE w
+  rw [hw] at this
+  linear_combination this
+
+/-- Hence its modulus defect vanishes there: strict interior order fails at any zero of `X` in the
+open strip. -/
+theorem portImbalance_eq_zero_of_zero {E : ℂ → ℂ}
+    (hE : ∀ w, E w + halfPortReflect E w = thetaSymmetrizedPort w) {w : ℂ}
+    (hw : thetaSymmetrizedPort w = 0) : portImbalance E w = 0 := by
+  rw [portImbalance, halfPortReflect_eq_neg_of_zero hE hw, norm_neg, sub_self]
+
+/-- For the prime-moment and gauge ports: at a zero of `X`, `E# = -E` and `D = 0`. -/
+theorem primeGaugePort_reflect_of_zero (p μ : ℝ) {w : ℂ} (hw : thetaSymmetrizedPort w = 0) :
+    halfPortReflect (primeGaugePort p μ) w = -primeGaugePort p μ w ∧
+      portImbalance (primeGaugePort p μ) w = 0 :=
+  ⟨halfPortReflect_eq_neg_of_zero (primeGaugePort_add_reflect p μ) hw,
+    portImbalance_eq_zero_of_zero (primeGaugePort_add_reflect p μ) hw⟩
+
 end
 
 end RHTower

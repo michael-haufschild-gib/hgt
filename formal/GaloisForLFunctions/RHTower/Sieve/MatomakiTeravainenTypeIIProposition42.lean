@@ -6,8 +6,9 @@ import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenTypeIIT3PowerSaving
 # Matomäki--Teräväinen Proposition 4.2: finite Type-II assembly
 
 The three literal amplitude regimes are assembled without disjointness assumptions or hidden
-asymptotic premises. The Huxley replacement for the paper's sharper Jutila input leaves the
-explicit `T^(-eps^(2 : ℕ)/20)` middle-regime saving.
+asymptotic premises.  The large-values input is Jutila's Lemma 4.1 up to `σ = 23/100`
+(`energyLargeValuesBound_jutila`); the middle regime keeps the explicit `T^(-eps^(2 : ℕ)/20)`
+saving.
 -/
 
 namespace RHTower.Sieve
@@ -16,15 +17,16 @@ open Finset
 
 noncomputable section
 
-/-- Huxley-strength Proposition 4.2 for divisor-bounded dyadic Dirichlet factors. The conclusion
-keeps the exact `T₁` polylogarithmic term and the separate `T₂`, `T₃` power savings. -/
-theorem exists_matomakiTeravainen_typeII_proposition42_huxley
+/-- Proposition 4.2 for divisor-bounded dyadic Dirichlet factors, amplitude thresholds up to
+`23/100 - 5ε`. The conclusion keeps the exact `T₁` polylogarithmic term and the separate `T₂`,
+`T₃` power savings. -/
+theorem exists_matomakiTeravainen_typeII_proposition42
     {eps mu eta sigma₀ Cprod C₁ C₂ : ℝ}
     (heps : 0 < eps) (hepss : eps ≤ 1 / 4000)
     (hmu : 0 < mu) (hmulo : 3 * eps ≤ mu)
     (hmuhi : mu ≤ (9 : ℝ) / 11 - 10 * eps)
     (heta : 0 < eta)
-    (hcap : sigma₀ + eta + eps ^ 2 / 20 ≤ 7 / 32 - 5 * eps)
+    (hcap : sigma₀ + eta + eps ^ 2 / 20 ≤ 23 / 100 - 5 * eps)
     (hCprod : 1 ≤ Cprod) (hC₁ : 1 ≤ C₁) (hC₂ : 1 ≤ C₂)
     (k w₁ w₂ : ℕ) :
     ∃ T₀ : ℝ, 1 ≤ T₀ ∧

@@ -94,7 +94,8 @@ theorem frequently_nhdsNE_zero_of_forall_real {p : ℂ → Prop} (h : ∀ x : �
   have hu : Tendsto (fun n : ℕ => ((1 / ((n : ℝ) + 1) : ℝ) : ℂ)) atTop (𝓝[≠] 0) := by
     refine tendsto_nhdsWithin_iff.mpr ⟨?_, Eventually.of_forall fun n => ?_⟩
     · have := (Complex.continuous_ofReal.tendsto 0).comp tendsto_one_div_add_atTop_nhds_zero_nat
-      simpa only [Complex.ofReal_zero] using this
+      rw [Complex.ofReal_zero] at this
+      exact this
     · simp only [mem_compl_iff, mem_singleton_iff, ofReal_eq_zero]
       positivity
   exact hu.frequently (Frequently.of_forall fun n => h _)
@@ -254,7 +255,7 @@ theorem exists_translation_pair (hη : 0 < η) (hf : DifferentiableOn ℂ f (imS
   · rw [deriv_comp_add_const]
     have h1 : ε / R ≤ δ / 2 := by
       rw [div_le_iff₀ hRpos]
-      have := (min_le_right _ _).trans (min_le_right (δ / 2) (δ * R / 2))
+      have h2 : ε ≤ δ * R / 2 := (min_le_right _ _).trans (min_le_right _ _)
       linarith
     linarith
   · rw [deriv_comp_add_const]
@@ -274,17 +275,19 @@ theorem exists_period_of_real_translation_pair (hη : 0 < η)
     intro h
     linarith
   have hF : AnalyticOnNhd ℂ f (imStrip η) := hf.analyticOnNhd (isOpen_imStrip η)
+  have hshiftd : DifferentiableOn ℂ (fun z => f (z + ((τ - c.re : ℝ) : ℂ))) (imStrip η) :=
+    hf.comp (differentiableOn_id.add_const _) fun z hz => add_ofReal_mem_imStrip hz _
   have hshift : AnalyticOnNhd ℂ (fun z => f (z + ((τ - c.re : ℝ) : ℂ))) (imStrip η) :=
-    fun z hz => (hF _ (add_ofReal_mem_imStrip hz _)).comp (analyticAt_id.add analyticAt_const)
+    hshiftd.analyticOnNhd (isOpen_imStrip η)
   have h0 : (0 : ℂ) ∈ imStrip η := by simpa [mem_imStrip] using hη
   have heq : (fun z => f (z + ((τ - c.re : ℝ) : ℂ))) =ᶠ[𝓝 0] f := by
     filter_upwards [(isOpen_imStrip (η / 2)).mem_nhds (by simpa [mem_imStrip] using
       (by linarith : 0 < η / 2))] with z hz
     have hz' : z - (c.re : ℂ) ∈ imStrip (η / 2) := by simpa [mem_imStrip] using hz
     have h1 := hpair _ hz'
-    rw [← hc] at h1
     have e1 : z - (c.re : ℂ) + (τ : ℂ) = z + ((τ - c.re : ℝ) : ℂ) := by push_cast; ring
-    have e2 : z - (c.re : ℂ) + c = z := by rw [hc]; ring
+    have e2 : z - (c.re : ℂ) + c = z := by
+      apply Complex.ext <;> simp [hcim]
     rw [e1, e2] at h1
     exact h1
   intro z hz
@@ -309,18 +312,14 @@ theorem exists_real_eq_of_translation_pair {τ : ℝ} {c : ℂ}
           push_cast; nlinarith [abs_nonneg c.im]
         linarith
       set z : ℂ := ((x - c.re : ℝ) : ℂ) + (((n : ℝ) * c.im : ℝ) : ℂ) * I with hz
+      have hzim : z.im = (n : ℝ) * c.im := by simp [hz]
       have hzS : z ∈ imStrip (η / 2) := by
-        rw [mem_imStrip]
-        simp only [hz, add_im, ofReal_im, mul_im, ofReal_re, I_im, I_re, mul_zero, zero_add,
-          mul_one]
-        rw [abs_mul, Nat.abs_cast]; exact hn'
+        rw [mem_imStrip, hzim, abs_mul, Nat.abs_cast]; exact hn'
       have h1 := hpair z hzS
       have e1 : z + c = x + ((((n + 1 : ℕ) : ℝ) * c.im : ℝ) : ℂ) * I := by
-        rw [hz]
-        conv_lhs => rw [← Complex.re_add_im c]
-        push_cast; ring
+        apply Complex.ext <;> simp [hz]; ring
       have e2 : z + τ = ((x - c.re + τ : ℝ) : ℂ) + (((n : ℝ) * c.im : ℝ) : ℂ) * I := by
-        rw [hz]; push_cast; ring
+        apply Complex.ext <;> simp [hz]
       rw [e1, e2] at h1
       obtain ⟨x', hx'⟩ := ih hn' (x - c.re + τ)
       exact ⟨x', h1.symm.trans hx'⟩
@@ -336,18 +335,14 @@ theorem exists_real_eq_of_translation_pair {τ : ℝ} {c : ℂ}
           push_cast; nlinarith [abs_nonneg c.im]
         linarith
       set z : ℂ := ((x - τ : ℝ) : ℂ) + ((-(((n + 1 : ℕ) : ℝ) * c.im) : ℝ) : ℂ) * I with hz
+      have hzim : z.im = -(((n + 1 : ℕ) : ℝ) * c.im) := by simp [hz]
       have hzS : z ∈ imStrip (η / 2) := by
-        rw [mem_imStrip]
-        simp only [hz, add_im, ofReal_im, mul_im, ofReal_re, I_im, I_re, mul_zero, zero_add,
-          mul_one]
-        rw [abs_neg, abs_mul, Nat.abs_cast]; exact hn
+        rw [mem_imStrip, hzim, abs_neg, abs_mul, Nat.abs_cast]; exact hn
       have h1 := hpair z hzS
       have e1 : z + τ = x + ((-(((n + 1 : ℕ) : ℝ) * c.im) : ℝ) : ℂ) * I := by
-        rw [hz]; push_cast; ring
+        apply Complex.ext <;> simp [hz]
       have e2 : z + c = ((x - τ + c.re : ℝ) : ℂ) + ((-((n : ℝ) * c.im)) : ℝ) * I := by
-        rw [hz]
-        conv_lhs => rw [← Complex.re_add_im c]
-        push_cast; ring
+        apply Complex.ext <;> simp [hz]; ring
       rw [e1, e2] at h1
       obtain ⟨x', hx'⟩ := ih hn' (x - τ + c.re)
       exact ⟨x', h1.trans hx'⟩
@@ -391,11 +386,12 @@ theorem norm_le_iSup_of_translation_pairs (hη : 0 < η) (hf : DifferentiableOn 
       rw [e, abs_mul]
       calc |β| * |z.im / β - k| ≤ |β| * (1 / 2) := mul_le_mul_of_nonneg_left h1 (abs_nonneg _)
         _ = |β| / 2 := by ring
-    have hkβ : |(k : ℝ) * β| < η / 2 := by
-      have := abs_sub_abs_le_abs_sub (k * β) z.im
-      rw [abs_sub_comm] at hround
+    have hkβ' : |(k : ℝ) * β| ≤ 3 * η / 8 := by
+      have h1 := abs_sub_abs_le_abs_sub (k * β) z.im
+      have h2 : |(k : ℝ) * β - z.im| ≤ |β| / 2 := by rwa [abs_sub_comm] at hround
       have hzim : |z.im| ≤ η / 4 := hz
       linarith
+    have hkβ : |(k : ℝ) * β| < η / 2 := lt_of_le_of_lt hkβ' (by linarith)
     obtain ⟨x', hx'⟩ := exists_real_eq_of_translation_pair hpair k hkβ z.re
     set w : ℂ := (z.re : ℂ) + ((k * β : ℝ) : ℂ) * I with hw
     have hwim : w.im = k * β := by simp [hw]
@@ -404,19 +400,16 @@ theorem norm_le_iSup_of_translation_pairs (hη : 0 < η) (hf : DifferentiableOn 
       exact le_ciSup hbdd x'
     have hzw : ‖z - w‖ = |z.im - k * β| := by
       have e : z - w = ((z.im - k * β : ℝ) : ℂ) * I := by
-        rw [hw]
-        conv_lhs => rw [← Complex.re_add_im z]
-        push_cast; ring
+        apply Complex.ext <;> simp [hw]
       rw [e, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
-    have hlipzw := hlip w z (by rw [hwim]; linarith [abs_nonneg ((k : ℝ) * β)])
-      (by linarith)
+    have hlipzw := hlip w z (by rw [hwim]; exact hkβ') (by linarith)
     calc ‖f z‖ ≤ ‖f w‖ + ‖f z - f w‖ := norm_le_insert' _ _
       _ ≤ M₀ + C * ‖z - w‖ := by gcongr
       _ ≤ M₀ + C * (1 / ((n : ℝ) + 1)) := by
           have hC0 : 0 ≤ C := by
             rw [hC]
             have : 0 ≤ B := le_trans (norm_nonneg _) (hB 0 (by simp; positivity))
-            positivity
+            exact div_nonneg (by linarith) (by linarith)
           rw [hzw]
           gcongr
           linarith

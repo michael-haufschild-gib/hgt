@@ -126,17 +126,17 @@ theorem matomakiTeravainen_active_amplitude_strip
     (htau : 5 * eps + kappa ≤ tau)
     (hlarge : ∀ q ∈ S, M₁ ^ (-sigma₀) ≤ F₁ q ∨ M₂ ^ (-sigma₀) ≤ F₂ q)
     (hcorr : max (Real.log 2 / Real.log M₁) (Real.log 2 / Real.log M₂) ≤ eta)
-    (hcap : sigma₀ + eta + kappa ≤ 7 / 32 - 5 * eps)
+    (hcap : sigma₀ + eta + kappa ≤ 23 / 100 - 5 * eps)
     {ij : Fin J₁ × Fin J₂}
     (hij : ij ∈ matomakiTeravainenActiveAmplitudeIndices S F₁ F₂ V₁ V₂ J₁ J₂) :
     (matomakiTeravainenAmplitudeSigma M₁ V₁ ij.1 ≤
         matomakiTeravainenAmplitudeSigma M₂ V₂ ij.2 →
       5 * eps + kappa ≤ matomakiTeravainenAmplitudeSigma M₁ V₁ ij.1 ∧
-      matomakiTeravainenAmplitudeSigma M₁ V₁ ij.1 + kappa ≤ 7 / 32 - 5 * eps) ∧
+      matomakiTeravainenAmplitudeSigma M₁ V₁ ij.1 + kappa ≤ 23 / 100 - 5 * eps) ∧
     (matomakiTeravainenAmplitudeSigma M₂ V₂ ij.2 <
         matomakiTeravainenAmplitudeSigma M₁ V₁ ij.1 →
       5 * eps + kappa ≤ matomakiTeravainenAmplitudeSigma M₂ V₂ ij.2 ∧
-      matomakiTeravainenAmplitudeSigma M₂ V₂ ij.2 + kappa ≤ 7 / 32 - 5 * eps) := by
+      matomakiTeravainenAmplitudeSigma M₂ V₂ ij.2 + kappa ≤ 23 / 100 - 5 * eps) := by
   have hlo := active_matomakiTeravainenAmplitudeSigma_gt_of_upper
     hM₁ hM₂ hV₁ hV₂ hupper₁ hupper₂ hij
   constructor

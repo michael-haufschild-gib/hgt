@@ -34,14 +34,14 @@ theorem autocorrelationSineWeight_pos {n k : ℕ} (hk : 0 < k) (hkn : k ≤ n) :
   have hknR : (k : ℝ) ≤ n := by exact_mod_cast hkn
   apply Real.sin_pos_of_pos_of_lt_pi
   · positivity
-  · rw [mul_div_assoc, div_lt_iff₀ hd]
+  · rw [← mul_div_assoc, div_lt_iff₀ hd]
     nlinarith [Real.pi_pos]
 
 theorem autocorrelationSineWeight_recurrence (n : ℕ) {k : ℕ} (hk : 0 < k) :
     autocorrelationSineWeight n (k - 1) + autocorrelationSineWeight n (k + 1) =
       2 * Real.cos (Real.pi / ((n : ℝ) + 1)) * autocorrelationSineWeight n k := by
-  have hkm : ((k - 1 : ℕ) : ℝ) = (k : ℝ) - 1 :=
-    Nat.cast_sub (Nat.succ_le_of_lt hk)
+  have hkm : ((k - 1 : ℕ) : ℝ) = (k : ℝ) - 1 := by
+    rw [Nat.cast_sub (Nat.succ_le_of_lt hk), Nat.cast_one]
   unfold autocorrelationSineWeight
   rw [hkm, Nat.cast_add, Nat.cast_one]
   rw [sub_mul, add_mul, one_mul]

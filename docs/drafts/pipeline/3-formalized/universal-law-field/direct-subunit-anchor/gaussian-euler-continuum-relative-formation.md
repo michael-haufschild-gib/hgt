@@ -1,8 +1,8 @@
 # Gaussian Euler--continuum relative formation
 
 - **ID:** ULF-GECRF-001
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parent:** `1-in-progress/universal-law-field/direct-subunit-anchor/restricted-prime-gamma-toeplitz-polar-defect.md`
 
 ## Statement
@@ -148,3 +148,24 @@ Formalized unconditionally in
 `gaussianEulerContinuumRelativeFormation_closed` certifies the entire Euler, continuum, and
 formation fields; exact logarithmic-current identity; all locally uniform safe-chart limits;
 zero rectangle winding; `C¹` contour-phase convergence; and reflected zero-free transition law.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.RHTower.GaussianEulerContinuumRelativeFormation`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Module `GaloisForLFunctions.RHTower.GaussianEulerContinuumRelativeFormation` (117 constants, axiom audit clean).
+
+| Claim | Lean declaration |
+|-|-|
+| (GECRF.1) `L_x`, `J_x`, `M_x`, `A_x`, `h_∞`, `Φ_x` | `gaussianEulerLog`, `gaussianVonMangoldtCurrent`, `gaussianContinuumCurrent`, `gaussianContinuumPrimitive` (`exists_gaussianContinuumPrimitive`, `gaussianContinuumPrimitive_unique`, `gaussianContinuumPrimitive_two`), `gaussianArchimedeanHalfFactor` (`_eq_gammaReal`), `gaussianEulerContinuumFormation` |
+| 1. `L_x, J_x, M_x, A_x` entire; `Φ_x` holomorphic and zero-free on `Re s > 0` | `differentiable_gaussianEulerLog`, `differentiable_gaussianVonMangoldtCurrent`, `differentiable_gaussianContinuumCurrent`, `differentiable_gaussianContinuumPrimitive`, `differentiableAt_gaussianEulerContinuumFormation`, `gaussianEulerContinuumFormation_ne_zero` |
+| 2. (GECRF.2) `L_x' = -J_x`; `logDeriv Φ_x = logDeriv h_∞ - J_x + M_x` | `hasDerivAt_gaussianEulerLog`, `deriv_gaussianEulerLog`, `logDeriv_gaussianEulerContinuumFormation` |
+| 3. (GECRF.3) locally uniform limits on `Re s > 1` | `tendstoLocallyUniformlyOn_gaussianEulerLog`, `tendstoLocallyUniformlyOn_gaussianVonMangoldtCurrent`, `tendstoLocallyUniformlyOn_gaussianContinuumCurrent`, `tendstoLocallyUniformlyOn_gaussianContinuumPrimitive`, `tendstoLocallyUniformlyOn_gaussianEulerContinuumFormation` (`gaussianEulerContinuumFormationLimit_eq_xi`) |
+| 4. rectangle winding zero for every `x > 0` | `gaussianFormationRectangleWinding_eq_zero` |
+| 5. (GECRF.4) `G_x` holomorphic, zero-free, `G_x(1-s) = G_x(s)⁻¹`, unitary on `Re s = 1/2` | `differentiableAt_gaussianReflectedTransition`, `gaussianReflectedTransition_ne_zero`, `gaussianReflectedTransition_one_sub`, `norm_gaussianReflectedTransition_critical`; conjugation symmetry `gaussianEulerContinuumFormation_conj` |
+| 6. `C¹` convergence of normalized phases on safe contours | `tendstoLocallyUniformlyOn_logDeriv_gaussianEulerContinuumFormation`, `tendstoLocallyUniformlyOn_gaussianNormalizedPhase`, `tendstoUniformlyOn_gaussianContourPhase_c1` |
+| closed capstone | `gaussianEulerContinuumRelativeFormation_closed` |
+
+## Log
+
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

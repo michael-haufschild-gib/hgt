@@ -146,7 +146,7 @@ theorem isCompactOperator_rectangularLowerBlock {T : E →L[ℂ] F} (hT : IsComp
   (hT.comp_clm (WithLp.fstL 2 ℂ E F)).clm_comp (rectangularRightInclusion (E := E) (F := F))
 
 /-- A member of a rectangular Schatten class with positive exponent is compact. -/
-theorem MemRectSchattenClass.isCompactOperator' {p : ℝ} (hp : 0 < p) {T : E →L[ℂ] F}
+theorem isCompactOperator_of_memRectSchattenClass {p : ℝ} (hp : 0 < p) {T : E →L[ℂ] F}
     (hT : MemRectSchattenClass p T) : IsCompactOperator T := by
   have hL : IsCompactOperator (rectangularLowerBlock T) :=
     ((memRectSchattenClass_iff_lowerBlock p T).mp hT).isCompactOperator hp

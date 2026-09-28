@@ -1,8 +1,8 @@
 # Nonstationary certificate-polar uncertainty, critical mirage, and compact-repair law
 
 - **ID:** ULF-CRGM-2
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / CONSERVATION AND PROPERNESS LAW
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** ULF-CRGM-1
 - **Statement:** Every positive nonstationary conservative-repair genealogy has reciprocal semantic
   and lineage profiles whose finite energies obey a sharp uncertainty product; cofinally they
@@ -22,7 +22,7 @@ one Toeplitz operator.
 - [x] 0 -> 1: reciprocal source profiles and exact finite telescope found
 - [x] 1 -> 2: uncertainty, equality, cofinal admission, critical mirage, compact no-go, and
   exponential-dichotomy chambers dependency-closed below
-- [ ] 2 -> 3: Lean formalization under `HTGeometry/UniversalLawField`
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.CertificatePolarGenealogy`, `GaloisForLFunctions.HTGeometry.UnitriangularRepairGenealogyCofinal`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 - [ ] 3 -> 4: standalone publication and external priority audit
 
 ## 1. Source grammar and finite genealogy
@@ -467,6 +467,40 @@ No Lean was written or built in this research phase. Read-only corpus audit foun
 ingredients but not this variable-certificate conservation theorem. Formalization is mandatory
 before promotion to Stage 3.
 
+
+## Lean certificate
+
+Module `GaloisForLFunctions.HTGeometry.CertificatePolarGenealogy` (137 constants, axiom audit clean); reuses the shift
+calculus of `GaloisForLFunctions.HTGeometry.UnitriangularRepairGenealogyCofinal`.
+
+| Claim | Lean declaration |
+|-|-|
+| (CP.1)–(CP.3) stream, `A_n`, `Q_n` | `CertStream`, `certProd`, `certRecip`, `certProd_succ`, `certRecip_succ`, `certProd_mul_certRecip` |
+| (CP.4)–(CP.5) `W_N`, `G_N`, `q_N` | `finiteCertWeight`, `finiteCertGenealogy`, `finiteLineage` |
+| Theorem 2.1(1) unitriangular, invertible | `finiteCertGenealogy_apply`, `finiteCertWeight_pow_apply`, `finiteCertWeight_pow_eq_zero`, `finiteCertGenealogy_isUnit` |
+| Theorem 2.1(2) (CP.6) `b_N G_N = π₀` | `finiteCertReader_genealogy` |
+| Theorem 2.1(3) (CP.7) `G_N q_N = Q_N e_N`, uniqueness | `finiteCertGenealogy_finiteLineage`, `eq_finiteLineage_of_interior` |
+| Theorem 2.1(4) (CP.8) sharp uncertainty | `certPolar_uncertainty`, `certPolar_lagrange` |
+| Theorem 2.1(5) (CP.9) equality iff balanced | `certPolar_uncertainty_eq_iff`, `certProd_eq_one_iff` |
+| (CP.10) cofinal `W`, `G` | `CertStream.weight`, `CertStream.genealogy`, `CertStream.genealogy_apply` |
+| Theorem 3.1(1) `b G x = x₀` | `CertStream.reader`, `CertStream.reader_genealogy` |
+| Theorem 3.1(2) (CP.12) `b` continuous iff `A ∈ ℓ²` | `CertStream.exists_continuous_reader_iff` |
+| Theorem 3.1(3) (CP.13) kernel dichotomy | `CertStream.genealogy_eq_zero_iff`, `CertStream.ker_genealogy_eq_bot`, `CertStream.ker_genealogy_eq_span` |
+| Theorem 3.1(4) dense range | `CertStream.dense_range_genealogy` |
+| Theorem 3.1(5) (CP.14) polar exclusion | `CertStream.not_summable_both` |
+| Theorem 3.1(6) (CP.15a) `max ≥ N+1`, divergence | `CertStream.le_max_polar_energy`, `CertStream.tendsto_max_polar_energy` |
+| (CP.15)–(CP.16) mirage hypothesis, `L_N`, `u_N` | `CertStream.IsCriticalMirage`, `CertStream.lineageEnergy`, `CertStream.approxLineage` |
+| Theorem 4.1(1) `‖u_N‖ = 1`, weakly null | `CertStream.norm_approxLineage`, `CertStream.approxLineage_weaklyNull` |
+| Theorem 4.1(2) (CP.17) `G u_N = (Q_N/L_N) e_N` | `CertStream.genealogy_approxLineage`, `CertStream.norm_genealogy_approxLineage` |
+| Theorem 4.1(3) injective, dense, proper, nonclosed | `CertStream.mirage_range`, `CertStream.genealogy_not_boundedBelow_of_mirage` |
+| Theorem 4.1(4)–(5) no compact repair (any normed `Y`) | `CertStream.not_jointlyBoundedBelow_of_mirage` |
+| mirage holds for bounded `Q`, regular polynomial growth, stationary critical | `CertStream.isCriticalMirage_of_bounded`, `CertStream.isCriticalMirage_of_polynomial`, `CertStream.stationaryCritical_isCriticalMirage` |
+| (CP.19) transfer products | `certTransfer`, `certTransfer_succ`, `CertStream.weight_pow_eq` |
+| Theorem 5.1 stable (CP.20)–(CP.21) | `neumann_of_norm_pow_le`, `CertStream.stable_phase`, `CertStream.stable_phase_isUnit` |
+| Theorem 5.1 unstable (CP.22)–(CP.27) | `CertStream.forward`, `CertStream.weight_mul_forward`, `CertStream.forward_pow_eq`, `CertStream.genealogy_eq_neg_weight_mul`, `CertStream.unstable_phase` |
+| (CP.24) repair iff `K Q ≠ 0` | `jointlyBoundedBelow_iff_of_orthLine` (inside `CertStream.unstable_phase`), `orthLine_reconstruction` |
+| §6 (CP.28) polarity `a ↦ a⁻¹` | `certProd_inv`, `certRecip_inv`, `certTransfer_inv` |
+
 ## Log
 
 - 2026-08-12 -- reciprocal prefix profiles extracted from nonstationary repair grammar.
@@ -474,3 +508,4 @@ before promotion to Stage 3.
   compact no-go, and exponential-dichotomy chambers proved.
 - 2026-08-12 -- weighted-shift literature audit completed; classical ingredients separated from
   new ULF coupling.
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

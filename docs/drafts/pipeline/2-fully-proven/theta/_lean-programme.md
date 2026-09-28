@@ -38,7 +38,7 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | positive-real-zero-division | L3 | done → 3-formalized (`ThetaZeroDivisionSource`) |
 | euler-zero-division-seed-transfer | L3 | todo |
 | endpoint-harmonic-completeness | L3, tail-capacity | todo |
-| tail-divisor-capacity-threshold | L6 | todo |
+| tail-divisor-capacity-threshold | L6 | partial: relative-source rigidity done (`ThetaRelativeSourceRigidity`; HTGeometry `GammaHorizontalRatio`, `SectorPhragmenLindelof`); open: b>2 capacity (Jensen+RvM), b≤3 (Zeta23), sharpness k⁽⁴ᵐ⁾, Gaussian control, (3) D(δ) |
 | derivative-dark-divisor-packets | partial corpus, L6 | todo |
 | compact-critical-strip-zero-engineering | bumps, Riemann–Lebesgue | done → 3-formalized (`ThetaCompactStripZeroEngineering`, `ThetaAnalyticStripZeroEngineering`, `ThetaSourceSurgeryToolkit`; HTGeometry `OscillatoryPacketFourier`, `EvenAnchorProjection`) |
 | global-riccati-order-one-offline-countermodel | Riccati Gaussian family `ThetaRiccatiGaussianCountermodel` | done → 3-formalized |
@@ -61,6 +61,6 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | half-line-port-alternating-orientation | two-thirds theorem | done → 3-formalized (`ThetaHalfLinePortOrientation`, `ThetaHalfLinePortCrossings`, `ThetaHalfLinePortGauge`) |
 | half-port-stieltjes-spectral-bridge | L4, one-port Stieltjes layer | done → 3-formalized (`ThetaHalfPortStieltjesSpectral`; HTGeometry `OnePortStieltjesTransform`, `OnePortSpectralModel`, `MaximalMultiplicationSelfAdjoint`, `StieltjesPrincipalValueBoundary`, `LorentzianCosineIntegral`) |
 | levy-spherical-dispersion-duality | L4, radial integration | done → 3-formalized (`ThetaReflectedJumpExponents`, `ThetaJumpRenewalMeeting`, `ThetaJumpCompoundPoisson`, `ThetaSphericalRadialLift`) |
-| causal-germ-translation-ideal-phase-selection | zero-radius theorem | todo |
+| causal-germ-translation-ideal-phase-selection | zero-radius theorem | done → 3-formalized (`HalfLineTransformCalculus`, `ThetaCausalGermPort`, `ThetaPrimeMomentPorts`, `ThetaTranslationIdealSources`, `XiWallLogDerivativeCones`, `ThetaPrimePacketPorts`, `ThetaPacketHarmonicObstructions`, `FiniteRankPhaseMoments`) |
 | causal-mobius-theta-boundary-criterion | Möbius–theta tail ⇔ RH criterion | todo |
 | causal-mobius-theta-primorial-transition | primorial innovation bounds | todo |

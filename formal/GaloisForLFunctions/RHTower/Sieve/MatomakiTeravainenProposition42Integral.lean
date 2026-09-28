@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.CellMaxSetDiscretisation
 /-!
 # Proposition 4.2 in integral form
 
-`exists_matomakiTeravainen_typeII_proposition42_huxley` bounds the Type-II amplitude energy over a
+`exists_matomakiTeravainen_typeII_proposition42` bounds the Type-II amplitude energy over a
 finite one-spaced frequency **set** whose points all satisfy the amplitude threshold.  The paper
 states the same estimate as an integral over an arbitrary subset `U` of the ordinate range.
 
@@ -73,7 +73,7 @@ theorem exists_matomakiTeravainen_typeII_proposition42_integral
     (hmu : 0 < mu) (hmulo : 3 * eps ≤ mu)
     (hmuhi : mu ≤ (9 : ℝ) / 11 - 10 * eps)
     (heta : 0 < eta)
-    (hcap : sigma₀ + eta + eps ^ 2 / 20 ≤ 7 / 32 - 5 * eps)
+    (hcap : sigma₀ + eta + eps ^ 2 / 20 ≤ 23 / 100 - 5 * eps)
     (hCprod : 1 ≤ Cprod) (hC₁ : 1 ≤ C₁) (hC₂ : 1 ≤ C₂)
     (k w₁ w₂ : ℕ) :
     ∃ T₀ : ℝ, 1 ≤ T₀ ∧
@@ -104,7 +104,7 @@ theorem exists_matomakiTeravainen_typeII_proposition42_integral
               (2 * (1 + |Real.log T|)) ^ (2 ^ (2 * (w₂ + 1)) - 1)
             + T ^ (-(eps ^ 2 / 20)) + T ^ (-(1 : ℝ) / 2)) := by
   obtain ⟨T₀, hT₀, hfin⟩ :=
-    exists_matomakiTeravainen_typeII_proposition42_huxley heps hepss hmu hmulo hmuhi heta hcap
+    exists_matomakiTeravainen_typeII_proposition42 heps hepss hmu hmulo hmuhi heta hcap
       hCprod hC₁ hC₂ k w₁ w₂
   refine ⟨T₀, hT₀, ?_⟩
   intro T N₁ A₁ a₁ N₂ A₂ a₂ B₁ hT hN₁ hN₁A hN₂ hN₂A hA₁ hA₂ hmuA hA₁hi hprodlo hprodhi

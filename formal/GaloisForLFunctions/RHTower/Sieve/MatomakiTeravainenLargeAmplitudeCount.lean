@@ -24,7 +24,7 @@ theorem exists_matomakiTeravainen_large_amplitude_count_divisor_bounded
       0 < ell → ell ≤ L →
       T ^ ((9 : ℝ) / 11 - 10 * eps) ≤ ((A ^ ell : ℕ) : ℝ) →
       ((A ^ ell : ℕ) : ℝ) ≤ T ^ (1 - 2 * eps) →
-      5 * eps + kappa ≤ rho → rho + kappa ≤ 7 / 32 - 5 * eps →
+      5 * eps + kappa ≤ rho → rho + kappa ≤ 23 / 100 - 5 * eps →
       (∀ n : Fin N,
         ‖a n‖ ≤ C * ((((n : ℕ) + 1).divisors.card : ℝ) ^ w)) →
       (∀ n : Fin N, a n ≠ 0 →
@@ -40,7 +40,7 @@ theorem exists_matomakiTeravainen_large_amplitude_count_divisor_bounded
   obtain ⟨Tschedule, hTschedule, hschedule⟩ :=
     exists_matomakiTeravainen_raised_huxley_schedule heps hepss hkappa L
   obtain ⟨Tcount, hTcount, hcount⟩ :=
-    exists_lemma41_huxley_raised_energy heps hepss
+    exists_lemma41_raised_energy energyLargeValuesBound_jutila heps hepss
   let T₀ : ℝ := max Tenergy (max Tschedule Tcount)
   refine ⟨T₀, hTenergy.trans (le_max_left _ _), ?_⟩
   intro T N A ell rho a S hT hN hNA hA hell hellL hbaseLo hbaseHi

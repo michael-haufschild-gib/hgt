@@ -143,8 +143,10 @@ theorem eqOn_ball_zero_of_norm_deriv_le {e : ℂ → ℂ} {z₀ : ℂ} {r C : �
     (by simp [hγ, h0])
     (fun t ht => by
       rw [norm_mul, add_zero]
-      have := hbound (γ t) (hγball t (Ico_subset_Icc_self ht))
-      nlinarith [norm_nonneg (z - z₀), norm_nonneg (e (γ t)), norm_nonneg (deriv e (γ t))])
+      have h1 := mul_le_mul_of_nonneg_right (hbound (γ t) (hγball t (Ico_subset_Icc_self ht)))
+        (norm_nonneg (z - z₀))
+      calc ‖deriv e (γ t)‖ * ‖z - z₀‖ ≤ C * ‖e (γ t)‖ * ‖z - z₀‖ := h1
+        _ = C * ‖z - z₀‖ * ‖e (γ t)‖ := by ring)
     1 (right_mem_Icc.mpr zero_le_one)
   rw [gronwallBound_ε0_δ0] at hgron
   have hγ1 : γ 1 = z := by simp [hγ]
@@ -253,7 +255,9 @@ theorem eqOn_of_relEval_eq_zero {Q : Polynomial (Polynomial ℂ)} {a₀ b₀ : �
         _ = ‖v z - w z‖ * ‖relDivX Q (v z) (w z) (deriv v z)‖ := hnorm
         _ ≤ ‖v z - w z‖ * K := mul_le_mul_of_nonneg_left hEz (norm_nonneg _)
     rw [div_mul_eq_mul_div, le_div_iff₀ hq₀pos]
-    nlinarith [norm_nonneg (deriv v z - deriv w z), norm_nonneg (v z - w z)]
+    calc ‖deriv v z - deriv w z‖ * ‖q₀‖ = 2 * (‖deriv v z - deriv w z‖ * (‖q₀‖ / 2)) := by ring
+      _ ≤ 2 * (‖v z - w z‖ * K) := by linarith
+      _ = 2 * K * ‖v z - w z‖ := by ring
   have hzero := eqOn_ball_zero_of_norm_deriv_le (e := fun z => v z - w z)
     ((hv.mono hball.1).sub (hw.mono hball.1)) (by simp [hvw]) hkey
   have heq : v =ᶠ[𝓝 z₀] w := by

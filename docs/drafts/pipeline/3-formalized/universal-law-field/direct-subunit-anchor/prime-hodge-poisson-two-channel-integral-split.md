@@ -1,8 +1,8 @@
 # Prime--Hodge Poisson two-channel integral split
 
 - **ID:** `ULF-PHPTCIS-001`
-- **Stage:** 2-fully-proven
-- **Type:** unconditional pre-divisor operator conservation and direct-subunit no-go
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **RH used:** no
 - **Divisor used:** no
 - **Parents:** `ULF-PHIN-001`, `ULF-PHPCF-001`, theta visibility/contrast Pythagorean law,
@@ -219,3 +219,32 @@ Formalized unconditionally in
 `(PTC.1)--(PTC.11)`: scalar and operator conservation, positivity and Schatten-one membership,
 exact traces, strict off-wall fractionalization, every cross-prime entry, information-neutral
 reflection, history-tail limits, and adjacent-tail reconstruction.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.RHTower.PrimeHodgePoissonTwoChannelIntegralSplit`, `GaloisForLFunctions.RHTower.PrimeHodgePoissonTwoChannelFibreLaws`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules `GaloisForLFunctions.RHTower.PrimeHodgePoissonTwoChannelIntegralSplit` (111 constants) and
+`GaloisForLFunctions.RHTower.PrimeHodgePoissonTwoChannelFibreLaws` (9 constants, added 2026-09-28); axiom audit clean.
+
+| Claim | Lean declaration |
+|-|-|
+| (PTC.1) `v_a = sech`, `c_a = tanh`, diagonal self-adjoint commuting contractions | `primeHodgeVisibility`, `primeHodgeContrast`, `primeHodgeVisibility_eq_prime_rpow`, `primeHodgeVisibilityOp`, `primeHodgeContrastOp`, `_isSelfAdjoint`, `primeHodgeVisibilityOp_contrastOp_comm` |
+| (PTC.2) `V_a² + C_a² = I` | `primeHodgeVisibility_sq_add_contrast_sq`, `primeHodgeVisibilityOp_sq_add_contrastOp_sq` |
+| (PTC.3) marginals positive, trace class | `primeHodgeVisibleMarginal`, `primeHodgeContrastMarginal`, `_isPositive`, `_memSchattenClass_one` |
+| cross-prime entries retained (`a ≠ 0` for contrast) | `inner_lpBasis_primeHodgeVisibleMarginal_sameHistory_ne_zero`, `inner_lpBasis_primeHodgeContrastMarginal_sameHistory_ne_zero` |
+| (PTC.4) `Tr T_vis + Tr T_con = 1` | `opTrace_primeHodgeMarginals_add`, `primeHodgeVisibleCharge_add_contrastCharge` |
+| (PTC.5) two-Kraus instrument completely positive, trace preserving on every trace-class input | `primeHodgeTwoChannelInstrument`, `primeHodgeTwoChannelInstrument_completelyPositive`, `primeHodgeTwoChannelInstrument_tracePreserving`, `primeHodgeTwoChannelInstrument_opTrace`, `adjoint_primeHodgeSplitDilation_comp_self` |
+| (PTC.6) | `primeHodgeVisibleCharge_zero`, `primeHodgeContrastCharge_zero` |
+| (PTC.7) strict fractionalization, non-integrality | `primeHodgeVisibleCharge_pos`, `primeHodgeVisibleCharge_lt_one`, `primeHodgeContrastCharge_pos`, `primeHodgeContrastCharge_lt_one`, `primeHodgeVisibleCharge_not_integer`, `primeHodgeContrastCharge_not_integer` |
+| (PTC.8) reflection evenness; `C_{-a} = -C_a` | `primeHodgeVisibleCharge_neg`, `primeHodgeContrastCharge_neg`, `primeHodgeVisibilityOp_neg`, `primeHodgeContrastOp_neg` |
+| (PTC.9) diagonal trace expansion | `opTrace_primeHodgeVisibleMarginal_eq_tsum`, `opTrace_primeHodgeContrastMarginal_eq_tsum` |
+| (PTC.10) history-tail conservation | `primeHodgeHistoryTailProjection`, `opTrace_primeHodgeHistoryTail_marginals_add` |
+| (PTC.11) adjacent-tail reconstruction of `w_n` | `opTrace_primeHodgeHistoryAdjacentTail_marginals_add`, `opTrace_primeHodgeHistoryShell_marginals_add` |
+| §6 visibility → 0, contrast → 1 in modulus along primes (`a ≠ 0`) | `tendsto_primeHodgeVisibility_zero`, `tendsto_abs_primeHodgeContrast_one` |
+| §6 prime-fibre `V_a` compact (`a ≠ 0`); lift to `ℓ²(ℕ × Primes)` not compact | `isCompactOperator_primeHodgePrimeFibreVisibilityOp`, `not_isCompactOperator_primeHodgeVisibilityOp` |
+| closed capstone | `primeHodgePoissonTwoChannelIntegralSplit_fully_closed` |
+
+## Log
+
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

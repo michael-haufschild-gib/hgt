@@ -1,8 +1,8 @@
 # Unitriangular conservative-repair genealogy, cofinal phase, and compact-repair law
 
 - **ID:** ULF-CRGM-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / ROUTE-INDEPENDENT MECHANISM
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** ULF-ALM-1, ULF-ALM-2, ULF-MPE-1, and ULF-FLPM-3
 - **Statement:** A stationary sequence of individually conservative certified repairs is exactly
   unitriangular at every finite depth, but its Hilbert completion undergoes an invertible / dense
@@ -21,7 +21,7 @@ when finite semantic equivalence survives as global formation/properness.
 
 - [x] 0 -> 1: source grammar, exact operator, and falsifiers identified
 - [x] 1 -> 2: all finite, cofinal, admission, compact-repair, and reciprocal claims proved below
-- [ ] 2 -> 3: Lean formalization under `HTGeometry/UniversalLawField`
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.UnitriangularRepairGenealogyFinite`, `GaloisForLFunctions.HTGeometry.UnitriangularRepairGenealogyCofinal`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 - [ ] 3 -> 4: standalone publication/priority audit
 
 ## 1. Certified repair grammar
@@ -436,6 +436,38 @@ infrastructure for unilateral shifts, conservative-repair kernel splittings, den
 criteria, compact--cofinal fusion, and Toeplitz index defects. Formalization remains mandatory
 before this card may enter Stage 3 or count as Lean-proven.
 
+
+## Lean certificate
+
+Modules `GaloisForLFunctions.HTGeometry.UnitriangularRepairGenealogyFinite` (66 constants) and
+`GaloisForLFunctions.HTGeometry.UnitriangularRepairGenealogyCofinal` (96 constants); axiom audit clean.
+
+| Claim | Lean declaration |
+|-|-|
+| (GR.1)–(GR.4) `B_N`, `G_{α,N}`, `b_{α,N}` | `truncBackward`, `finiteGenealogy`, `finiteSemanticReader` |
+| Theorem 2.1(1) (GR.5) invertibility, geometric inverse | `truncBackward_pow_eq_zero`, `finiteGenealogyInverse_eq_geom`, `finiteGenealogy_mul_inverse`, `finiteGenealogyInverse_mul`, `finiteGenealogy_isUnit` |
+| Theorem 2.1(2) (GR.6) `b_{α,N} G_{α,N} = π₀` | `finiteSemanticReader_comp_finiteGenealogy` |
+| Theorem 2.1(3) repair syzygies semantic-null, carrier recovered | `finiteGenealogy_single_zero`, `finiteGenealogy_single_succ`, `finiteSemanticReader_finiteGenealogy_single`, `finiteSemanticReader_eq_carrierCoordinate_inverse` |
+| Theorem 2.1(4) (GR.7)–(GR.8) inverse bounds | `norm_finiteGenealogyInverse_le`, `finiteGenealogyInverse_single_last_apply`, `sqrt_le_norm_finiteGenealogyInverse_one`, `pow_le_norm_finiteGenealogyInverse` |
+| (GR.9) `G_α = 1 - α B` on `ℓ²(ℕ)` | `cofinalGenealogy`, `cofinalGenealogy_apply`, `adjoint_cofinalGenealogy` |
+| Theorem 3.1 subcritical (GR.10) | `cofinalGenealogyUnit`, `cofinalGenealogyUnit_inv_eq_tsum`, `norm_cofinalGenealogyUnit_inv_le`, `cofinalGenealogy_isUnit`, `cofinalGenealogy_boundedBelow` |
+| Theorem 3.1 critical: injective, dense, proper, nonclosed range | `cofinalGenealogy_one_injective`, `dense_range_cofinalGenealogy_one`, `range_cofinalGenealogy_one_ne_univ`, `not_isClosed_range_cofinalGenealogy_one`, `cofinalGenealogy_one_not_boundedBelow` |
+| (GR.11)–(GR.12) `‖u_N‖ = 1`, `‖G_1 u_N‖ = (N+1)^{-1/2} → 0` | `criticalHistory`, `norm_criticalHistory`, `norm_cofinalGenealogy_one_criticalHistory`, `tendsto_norm_cofinalGenealogy_one_criticalHistory` |
+| Theorem 3.1 supercritical: (GR.16) factorization, surjectivity | `cofinalGenealogy_eq_neg_smul_backOp_comp`, `cofinalGenealogy_surjective` |
+| (GR.13) `ker G_α = ℂ g_α` | `hiddenLineage`, `cofinalGenealogy_hiddenLineage`, `ker_cofinalGenealogy` |
+| (GR.14) `R_α`, `G_α R_α = 1`, `‖R_α‖ ≤ (α-1)⁻¹` | `supercriticalRightInverse`, `cofinalGenealogy_comp_supercriticalRightInverse`, `norm_supercriticalRightInverse_le` |
+| (GR.15) `‖g_α‖² = α²/(α²-1)`, divergence at the wall | `norm_sq_hiddenLineage`, `tendsto_hiddenLineage_mass` |
+| (GR.17)–(GR.18) semantic conservation `b_α G_α z = z₀` on `c₀₀` | `semanticReader`, `finiteHistory`, `finiteHistoryGenealogy`, `finiteHistory_finiteHistoryGenealogy`, `semanticReader_finiteHistoryGenealogy` |
+| Theorem 4.1 `b_α` extends continuously iff `α < 1` | `exists_continuous_semanticReader_iff` |
+| Theorem 5.1(1) subcritical repair for every `A` | `JointlyBoundedBelow`, `jointlyBoundedBelow_subcritical` |
+| Theorem 5.1(2) no compact repair at the wall (weakly null `u_N`) | `criticalHistory_weaklyNull`, `tendsto_compactOperator_of_weaklyNull`, `not_jointlyBoundedBelow_critical` |
+| Theorem 5.1(3) supercritical repair iff `A g_α ≠ 0`; rank-one compact repair | `jointlyBoundedBelow_supercritical_iff`, `hiddenLineageObserver`, `jointlyBoundedBelow_hiddenLineageObserver` |
+| (GR.21)–(GR.22) exact joint reconstruction | `restrictedGenealogy_bijective`, `genealogyComplementInverse`, `jointReconstruction` |
+| (GR.23) `G_α = -α B G_{1/α}^*` | `cofinalGenealogy_reciprocal` |
+| (GR.24) finite reciprocal law with terminal projection | `finiteGenealogy_reciprocal`, `terminalProjection`, `norm_terminalProjection` |
+| `P_N → 0` strongly, `‖P_N‖ = 1` | `terminalPort`, `tendsto_terminalPort`, `norm_terminalPort` |
+| (GR.25) index `0`, non-Fredholm, `1` | `genealogyFredholmIndex`, `cofinalGenealogy_fredholm_subcritical`, `cofinalGenealogy_one_not_fredholm`, `cofinalGenealogy_fredholm_supercritical` |
+
 ## Log
 
 - 2026-08-12 -- conjecture isolated from iterative conservative-repair grammar.
@@ -444,3 +476,4 @@ before this card may enter Stage 3 or count as Lean-proven.
 - 2026-08-12 -- broad arXiv audit confirmed classical operator and rewriting parents; coupling
   retained as new ULF mechanism, with no priority claim.
 - 2026-08-12 -- dependency-closed finite/cofinal/admission/compact-repair/reciprocal proof completed.
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

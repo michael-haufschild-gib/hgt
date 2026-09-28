@@ -8,6 +8,7 @@ import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitaryLocalLogNullhomotopy
 import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitaryRotatedLogNullhomotopy
 import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitaryNormalization
 import GaloisForLFunctions.HTGeometry.FiniteUnitaryFundamentalGroupStabilization
+import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitarySimplyConnected
 
 open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FiniteUnitaryStabilization
@@ -728,17 +729,8 @@ theorem subsingleton_fundamentalGroup_specialUnitary_fin_one :
 theorem finiteUnitaryDeterminantKOneMap_injective_all :
     ∀ n : ℕ, Function.Injective (finiteUnitaryDeterminantKOneMap n) := by
   intro n
-  induction n with
-  | zero =>
-      exact (finiteUnitaryDeterminantKOneMap_injective_iff_subsingleton_specialUnitary 0).mpr
-        subsingleton_fundamentalGroup_specialUnitary_fin_one
-  | succ n ih =>
-      intro x y hxy
-      obtain ⟨x', rfl⟩ := unitaryEmbedSuccFundamentalGroupMap_surjective n x
-      obtain ⟨y', rfl⟩ := unitaryEmbedSuccFundamentalGroupMap_surjective n y
-      apply congrArg (unitaryEmbedSuccFundamentalGroupMap (n + 1))
-      apply ih
-      simpa [finiteUnitaryDeterminantKOneMap_unitaryEmbedSucc] using hxy
+  exact (finiteUnitaryDeterminantKOneMap_injective_iff_subsingleton_specialUnitary n).mpr
+    inferInstance
 
 /-- Every nonempty finite complex special-unitary group is simply connected at `π₁`. -/
 theorem subsingleton_fundamentalGroup_finiteSpecialUnitary (n : ℕ) :

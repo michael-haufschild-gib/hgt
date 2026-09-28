@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitaryPathConnected
 import GaloisForLFunctions.HTGeometry.FundamentalGroupTopologicalGroup
 import GaloisForLFunctions.HTGeometry.FiniteUnitaryHaarMeasureLaw
 import GaloisForLFunctions.HTGeometry.LoopOpenCoverDecomposition
+import GaloisForLFunctions.HTGeometry.SphereSimplyConnected
 import GaloisForLFunctions.HTGeometry.SchurTriangulation
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Geometry.Manifold.Instances.Sphere
@@ -426,24 +427,8 @@ theorem rotatedCompletion_firstColumn (a0 : α) (R : Matrix.unitaryGroup α ℂ)
     rw [hy', unitarySphereAction_neg, ← unitaryFirstColumn_eq_action]
 
 theorem unitSphere_compl_singleton_contractible (v : UnitSphere α) :
-    ContractibleSpace ({v}ᶜ : Set (UnitSphere α)) := by
-  let proj := stereographic (norm_eq_of_mem_sphere v)
-  letI hlinear : ContractibleSpace ((ℝ ∙ (v : EuclideanSpace ℂ α))ᗮ) :=
-    (contractible_iff_id_nullhomotopic _).mpr ⟨0, ⟨{
-      toFun := fun p => (1 - (p.1 : ℝ)) • p.2
-      continuous_toFun := by fun_prop
-      map_zero_left := by simp
-      map_one_left := by simp }⟩⟩
-  have htarget : ContractibleSpace proj.target := by
-    rw [stereographic_target]
-    exact Homeomorph.contractibleSpace
-      (Homeomorph.Set.univ ((ℝ ∙ (v : EuclideanSpace ℂ α))ᗮ))
-  letI := htarget
-  have hsource : ({v}ᶜ : Set (UnitSphere α)) = proj.source := by
-    ext x
-    simp [proj]
-  exact Homeomorph.contractibleSpace
-    ((Homeomorph.setCongr hsource).trans proj.toHomeomorphSourceTarget)
+    ContractibleSpace ({v}ᶜ : Set (UnitSphere α)) :=
+  sphereComplementPoint_contractible v
 
 theorem unitSphere_isPathConnected_compl_singleton (v : UnitSphere α) :
     IsPathConnected ({v}ᶜ : Set (UnitSphere α)) := by

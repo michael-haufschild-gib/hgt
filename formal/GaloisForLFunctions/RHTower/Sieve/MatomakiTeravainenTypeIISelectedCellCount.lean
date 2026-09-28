@@ -17,7 +17,7 @@ theorem exists_matomakiTeravainen_typeII_selected_cell_counts_divisor_bounded
     (hmuhi : mu ≤ (9 : ℝ) / 11 - 10 * eps)
     (heta : 0 < eta)
     (htau : 5 * eps + eps ^ 2 / 20 ≤ tau)
-    (hcap : sigma₀ + eta + eps ^ 2 / 20 ≤ 7 / 32 - 5 * eps)
+    (hcap : sigma₀ + eta + eps ^ 2 / 20 ≤ 23 / 100 - 5 * eps)
     (hCprod : 0 < Cprod) (hC₁ : 1 ≤ C₁) (hC₂ : 1 ≤ C₂)
     (k w₁ w₂ : ℕ) :
     let L : ℕ := ⌈1 / mu⌉₊

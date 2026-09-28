@@ -16,8 +16,8 @@ theorem abs_ccmActualTimeExponentialRampAction_le_normalizedDeficit_add_two (H :
       (ccmNormalizedExponentialRampTest (H : ℝ))| ≤
         |Real.exp (-(H : ℝ)/2)*ccmLogChebyshevDeficitPrimitive (H : ℝ)|+2 := by
   rw [ccmActualTimeExponentialRampAction_eq_normalizedDeficit, mul_sub]
-  exact (abs_sub _ _).trans (add_le_add_left
-    (by simpa only [mul_comm] using ccmExponentialRampTransient_bound H) _)
+  exact (abs_sub _ _).trans (add_le_add le_rfl
+    (by simpa only [mul_comm] using ccmExponentialRampTransient_bound H))
 
 theorem abs_normalizedDeficit_le_ccmActualTimeExponentialRampAction_add_two (H : NNReal) :
     |Real.exp (-(H : ℝ)/2)*ccmLogChebyshevDeficitPrimitive (H : ℝ)| ≤
@@ -29,7 +29,7 @@ theorem abs_normalizedDeficit_le_ccmActualTimeExponentialRampAction_add_two (H :
     rw [ccmActualTimeExponentialRampAction_eq_normalizedDeficit]
     ring
   rw [he]
-  exact (abs_add_le _ _).trans (add_le_add_left (ccmExponentialRampTransient_bound H) _)
+  exact (abs_add_le _ _).trans (add_le_add le_rfl (ccmExponentialRampTransient_bound H))
 
 private theorem exp_half_cancel (T : ℝ) : Real.exp (T/2)*Real.exp (-T/2) = 1 := by
   rw [← Real.exp_add, show T/2+(-T/2) = 0 by ring, Real.exp_zero]
@@ -44,7 +44,7 @@ theorem riemannHypothesis_iff_exponentialRampAction_uniformBound :
     obtain ⟨B, hB, hbound⟩ := riemannHypothesis_iff_logChebyshevDeficitPrimitive_bound.mp hRH
     refine ⟨B+2, by linarith, fun H => ?_⟩
     apply (abs_ccmActualTimeExponentialRampAction_le_normalizedDeficit_add_two H).trans
-    apply add_le_add_right _ 2
+    apply add_le_add _ le_rfl
     rw [abs_mul, abs_of_pos (Real.exp_pos _)]
     calc
       _ ≤ Real.exp (-(H : ℝ)/2)*(B*Real.exp ((H : ℝ)/2)) :=
@@ -58,7 +58,7 @@ theorem riemannHypothesis_iff_exponentialRampAction_uniformBound :
     refine ⟨B+2, by linarith, fun T hT => ?_⟩
     let H := NNReal.mk T hT
     have hnorm := (abs_normalizedDeficit_le_ccmActualTimeExponentialRampAction_add_two H).trans
-      (add_le_add_right (hbound H) 2)
+      (add_le_add (hbound H) le_rfl)
     change |Real.exp (-T/2)*ccmLogChebyshevDeficitPrimitive T| ≤ B+2 at hnorm
     rw [abs_mul, abs_of_pos (Real.exp_pos _)] at hnorm
     calc

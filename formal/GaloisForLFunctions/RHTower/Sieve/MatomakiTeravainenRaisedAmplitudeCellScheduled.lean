@@ -45,7 +45,7 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_scheduled_energy
         matomakiTeravainenAmplitudeSigma (A₁ : ℝ) V₁ ij.1 ≤
           matomakiTeravainenAmplitudeSigma (A₂ : ℝ) V₂ ij.2 →
         matomakiTeravainenAmplitudeSigma (A₁ : ℝ) V₁ ij.1 + eps ^ 2 / 20 ≤
-          7 / 32 - 5 * eps) →
+          23 / 100 - 5 * eps) →
       (∀ ij ∈ matomakiTeravainenActiveAmplitudeIndices S
           (matomakiTeravainenDirichletAmplitude N₁ a₁)
           (matomakiTeravainenDirichletAmplitude N₂ a₂) V₁ V₂ J₁ J₂,
@@ -59,7 +59,7 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_scheduled_energy
         matomakiTeravainenAmplitudeSigma (A₂ : ℝ) V₂ ij.2 <
           matomakiTeravainenAmplitudeSigma (A₁ : ℝ) V₁ ij.1 →
         matomakiTeravainenAmplitudeSigma (A₂ : ℝ) V₂ ij.2 + eps ^ 2 / 20 ≤
-          7 / 32 - 5 * eps) →
+          23 / 100 - 5 * eps) →
       (∀ n : Fin N₁, a₁ n ≠ 0 →
         A₁ ≤ (n : ℕ) + 1 ∧ (n : ℕ) + 1 ≤ 2 * A₁) →
       (∑ j : Fin (N₁ ^ ell₁), ‖convPow N₁ ell₁ a₁ j‖ ^ 2 ≤
@@ -103,7 +103,7 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_scheduled_energy
   have hrhoLoFixed : 5 * eps + kappa ≤ (1 : ℝ) / 8 := by
     dsimp [kappa]
     nlinarith [sq_nonneg eps]
-  have hrhoHiFixed : (1 : ℝ) / 8 + kappa ≤ 7 / 32 - 5 * eps := by
+  have hrhoHiFixed : (1 : ℝ) / 8 + kappa ≤ 23 / 100 - 5 * eps := by
     dsimp [kappa]
     nlinarith [sq_nonneg eps]
   have hfixed₁ := hschedule T A₁ ell₁ ((1 : ℝ) / 8) 1 hTs hell₁ hellL₁

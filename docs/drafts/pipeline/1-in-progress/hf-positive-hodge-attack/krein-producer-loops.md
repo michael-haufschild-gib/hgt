@@ -1554,3 +1554,106 @@ Next conjectures to test:
   - Schur test with `h(m) = m^{−½}`: the row sums give `m^{−½}(Σ_{d|m}Λ(d) + Σ_{n≤N/m}Λ(n)/n) = m^{−½}(log N + O(1))`, by `Σ_{d|m}Λ(d) = log m` and Mertens.
   - So the Weil–Toeplitz law is a Mertens-level necessary condition. `Λ` meets it without RH, and resonator tests (bumps at `log m`) never see the zeros.
   - Its content is only as a constraint on *other* weight systems: log-density `≤ 1`. It is not a producer target.
+
+### L58 — "Lorentzian arithmetic" (user prompt: a field bridging spectral, algebraic and geometric facts). Bridge theorem [P]; Perron seed TRUE [L]; local test FALSE [P]
+- **Bridge theorem [P, exact].** Take the level-`a` Weil form without its pole term, `Q₀(f) = ∫∫ f f̄ K₀`.
+  - Its off-diagonal kernel is `−w(2|t|) − Σ Λ(n)n^{−½}δ_{±log n}`, with `w(t) = e^{−t/4}/(1−e^{−t})`: every entry is ≤ 0.
+  - Adjoin the rulings `e_±(x) = e^{±x/2}` with the hyperbolic block `H = [[0,1],[1,0]]` and the coupling `B = [e₊ e₋]`. The result `I_ext = [[−Q₀, B],[B*, H]]` is **Metzler**: every off-diagonal coefficient is ≥ 0.
+  - Its Schur complement over `H` is `−Q_full` (the pole term is `B H^{−1} B*`, i.e. the kernel `2cosh((x−y)/2)`).
+  - Haynsworth inertia: `#pos(I_ext) = 1 + #neg(Q_full)`. So **Weil positivity at level `a` ⟺ the Metzler form `I_ext(a)` has exactly one positive eigenvalue** (Brändén–Huh Lorentzian signature, i.e. the Castelnuovo inequality).
+- **Dictionary.**
+  - Ample class = Perron vector of the Metzler form.
+  - On the divisor lattice this is the critical Bost–Connes Gibbs vector `m^{−½}`.
+  - Hodge index = second eigenvalue ≤ 0.
+  - The Euler product enters twice: through `Λ ≥ 0`, and through `Σ_{d|m}Λ(d) = log m` (the height), which makes `m^{−½}` a Perron vector.
+- **Seed theorem [L]** `RHTower.CriticalGibbs.gibbs_perron_polarization` (module `CriticalGibbsPerronPolarization`, 581 lines; axioms propext, Classical.choice, Quot.sound):
+  - on `[1,N]`, the critical Gibbs vector has von Mangoldt Toeplitz Rayleigh quotient `log N − γ + o(1)` (`tendsto_gibbs_rayleigh`);
+  - unconditionally, every vector has Rayleigh quotient `≤ log N + C` (`exists_vonMangoldt_toeplitz_le`, Schur).
+  - Mechanism: `P(N) = Σ_{nm≤N}Λ(n)/(nm)` equals both `Σ_{k≤N} log k/k` (divisor reindexing) and `Σ_m S(⌊N/m⌋)/m` (Mertens sums). So `2P − (log N−γ)H` is a `1/m`-average of Mertens remainders, which is `o(H)` by a Cesàro lemma on the divisor lattice.
+  - Reading: the polar constraint of the Weil form removes exactly the top eigen-direction of the prime correspondence, and γ is the defect of the Perron eigenvalue. On the lattice slice the decision is Mertens-level, not zero-level.
+- **Local Lorentzian test: FALSE [P].** The signature is not local.
+  - The archimedean-only extended form fails: `A` is negative near 0, and concentrated polar-free tests give a second negative direction of `Q_full` (L55).
+  - Every single-prime form fails too: its symbol at `τ = 0` is `A(0) − 2log p·p^{−½}/(1−p^{−½}) < 0` (`≈ −8.7` for `p = 2`).
+  - So Lorentzian closure cannot act additively over primes: sums preserve the signature only on a common nonpositive hyperplane, which is the L1/L2 failure. Any closure must act on the complete Euler product.
+- **Open core of the field.** A multiplicative (Euler-product) realization of `I_ext` in which Lorentzian signature is produced by closure (products or limits of Lorentzian or stable objects). Candidate carrier: the Bohr-lifted Euler product `∏_p(1 − z_p p^{−s})^{−1}`, which is stable in the `z_p`. The gap is the passage from multivariate stability to the one-variable critical-line signature.
+
+### L59 — Weil's criterion needs only nonnegative tests (Castelnuovo form). TRUE [P]; RH-equivalent reformulation
+- **Linear-algebra lemma [P].** Let `A` be real symmetric with strictly positive off-diagonal entries. Then `A` has at most one positive eigenvalue ⟺ for all `x, y ≥ 0` with `xᵀAx > 0`, `(xᵀAy)² ≥ (xᵀAx)(yᵀAy)`.
+  - (⇒) Restrict to `span{x, y}`. A 2×2 block with `a > 0` and `ac > b²` would be positive definite, giving two positive directions.
+  - (⇐) The top eigenvector can be taken nonnegative (`|v|` has at least the Rayleigh quotient of `v`, since off-diagonals are ≥ 0). It is strictly positive: if `v_i = 0` then `(Av)_i = Σ_{j≠i}A_ij v_j > 0 = λ₁v_i`.
+  - Let `q` be a second positive eigenvector, `q ⊥ p`. Then `x = p` and `y = p + εq ≥ 0` span a positive-definite plane, which violates reverse Cauchy–Schwarz.
+  - Brändén–Huh prove this for nonnegative matrices, where every nonnegative vector is time-like. Here the diagonal is arbitrary (negative self-intersections are allowed), so the time-like condition `xᵀAx > 0` is needed.
+- **Arithmetic application [P].** The extended Weil form `I_ext(a)` of L58 is Metzler with strictly positive off-diagonals: the archimedean jump density `w(2|t|) > 0` connects every pair of points, and the ruling couplings are `e^{±x/2} > 0`.
+  - With L58's Haynsworth identity: **RH ⟺ at every level `a`, for all nonnegative `x = (f, α, β)` and `y = (g, α', β')` with `I_ext(x,x) > 0`: `I_ext(x,y)² ≥ I_ext(x,x) I_ext(y,y)`.**
+  - Weil's criterion is thus decided by pairs of nonnegative test functions. The sign-changing directions that detect off-line zeros are produced inside the span of two positive tests.
+- **Attack.**
+  - False? No: the lemma is elementary, and the sign structure is L58's.
+  - Circular? It is an equivalent reformulation.
+  - Known? I found no literature statement. Brändén–Huh cover nonnegative matrices and volume polynomials; the Weil-criterion literature uses signed tests.
+  - Verdict: SURVIVES as a reformulation; significance moderate. It localizes RH content to "Castelnuovo on pairs of positive functions", the form in which Lorentzian and log-concavity methods operate.
+- **Single positive tests are RH-blind [P, heuristic].** For `g ≥ 0`, the pole term `2⟨g,e₊⟩⟨g,e₋⟩ = 2∫(g⋆g̃)(t)cosh(t/2)` dominates off-line contributions, and narrow bumps are controlled by the archimedean diagonal. So pairs, not single tests, carry the content.
+- **Lean.** Not started. The lemma needs Perron–Frobenius-free spectral linear algebra (mathlib has the Hermitian spectral theorem) and a Courant–Fischer step. The arithmetic side is the L58 sign structure.
+
+### L60 — Perron–Frobenius split of Weil positivity: one bound state plus a 2×2 ruling condition. TRUE [P]
+- **Setting.** `Q_full = Q₀ + 2|c⟩⟨c| − 2|s⟩⟨s|` on `L²(−a,a)`, with `c = cosh(x/2)`, `s = sinh(x/2)`. The pole term `2⟨f,e₊⟩⟨f,e₋⟩` splits into its even and odd parts.
+  - `Q₀` is a Z-form: its off-diagonal kernel is `−w(2|x−y|) − Σ Λ(n)n^{−½}δ_{±log n} ≤ 0`, strictly negative off the diagonal. So `−Q₀` is Metzler and irreducible.
+- **Facts [P].**
+  1. (Unconditional) The ground state of `Q₀` is simple, strictly positive and even: Perron–Frobenius, since `|f|` does not raise the energy of a Z-form. For `a ≳ 1`, `Q₀(c) < 0` (the prime sum dominates by Chebyshev), so `#neg(Q₀) ≥ 1`.
+  2. `|#neg(Q₀) − #neg(Q_full)| ≤ 1`, because the pole term has signature `(1,1)`.
+  3. (Haynsworth on `I_ext` with the `Q₀` block) `#neg(Q_full) = #neg(Q₀) + #pos(M₂) − 1`, where `M₂ = H + [⟨e_i, Q₀^{−1} e_j⟩]` is the 2×2 ruling resolvent matrix.
+- **Theorem [P].** RH ⟺ at every level `a`, both hold:
+  - (i) `Q₀(a)` has exactly one negative eigenvalue (one bound state);
+  - (ii) `M₂(a) ⪯ 0`.
+- **Nodal form of (i) [P].** For a Z-form, `λ₂ < 0` ⟺ some two disjointly supported nonnegative `f, g` span a negative-definite plane.
+  - (⇒) Take the positive and negative parts of the second eigenfunction. With `Q₀(f^±) = λ₂‖f^±‖² + c` and `c = Q₀(f⁺,f⁻) ≤ 0`, the Gram determinant is `λ₂²pq + λ₂c(p+q) > 0` and the trace is `< 0`.
+  - So (i) ⟺ **DPC**: `Q₀(f,g)² ≥ Q₀(f)Q₀(g)` for all disjointly supported `f, g ≥ 0` with negative self-energies. Every quantity here is a positive-function integral, and the interaction `−Q₀(f,g) = ∫∫ f g ν`, with `ν = w(2|·|) + prime atoms`, is ≥ 0.
+- **Content of (i) alone.** (i) implies `#neg(Q_full) ≤ 2` at every level: at most one off-line quadruple is visible per level. That is weaker than RH but still RH-strength-like. RH itself sits in the 2×2 condition (ii), which is a PNT-level balance (`vvᵀ/|μ₀|` against `H`, both `O(1)`).
+- **CCM (S1) check.** CCM's `QW_λ` includes the pole terms `F̂(±i/2)`, so it is not a Z-form and Perron–Frobenius does not give its ground-state simplicity. The pole-free ground state is simple, positive and even unconditionally, but it is the prime Perron mode, not the near-radical vector CCM need.
+- **Attack.**
+  - Circular? Parts (i) and (ii) are an exact equivalent split.
+  - New? I found no statement of RH as "one bound state of the pole-free Weil operator plus a 2×2 ruling condition", nor of the DPC form.
+  - Verdict: SURVIVES as a reformulation. The positive-geometry target is DPC: reverse Cauchy–Schwarz for disjoint positive pairs, a statement about positive measures only.
+- **Tested, fails.** A total-positivity (TP₂) proof of DPC would need a log-concave interaction kernel `ν`. `w(2|t|)` is log-concave on `t > 0` but has a cusp at 0, and the prime atoms are not log-concave. So DPC does not follow from Karlin-type TP₂ inequalities.
+
+### L61 — Weil positivity pins the log-density at Λ's: no supersystem of Λ has positive excess. TRUE [L]
+- **Theorem [L]** `RHTower.weil_supersystem_excess_small`. If `lam ≥ Λ` pointwise and `lam` is Weil-positive (ζ's archimedean term, polar-constrained `C²` tests, every level), then `Σ_{n≥2, nm≤N}(lam(n) − Λ(n))/(nm) = o((log N)²)`.
+  - The L57 ceiling `(½+ε)log²N` meets the L58 floor for `Λ`: `P(N) ≥ (½−ε)log²N`, lemma `eventually_gibbsEnergy_ge`.
+- **Corollary [L]** `RHTower.vonMangoldt_add_const_not_weilPositive`. For every `c > 0`, the weights `Λ(n) + c` are not Weil-positive.
+  - This is a heavy perturbation: `Σ c n^{−½} = ∞`, outside MUST-357's light rigidity.
+  - Proof: the excess `c Σ_{nm≤N}1/(nm) ≥ (c/8)log²N`, obtained by restricting to `n, m ≤ √N`.
+- Module `RHTower/WeilPositivityLogDensityMaximality.lean`. Built and wired; axioms propext, Classical.choice, Quot.sound.
+- **Reading.** In log-density, Λ is maximal in the Weil cone among its supersystems. The downward direction (`Λ − c`, density below 1) is not reached by density arguments; it needs regular rigidity (HF-F54, paper).
+
+### L62 — Two producer candidates tested: arithmetic Markov chain (no slack) and adelic Pitt log-convexity (averaged only). KILLED [P]; survivors recorded
+- **(A) Arithmetic Markov chain.** Doob-transform the Metzler form `−Q₀` by its positive ground state `φ₀` (eigenvalue `λ₀`, with `|λ₀| ≍ e^{a}`). This gives a conservative jump chain on `[−a,a]` with rates `ν(y−x)φ₀(y)/φ₀(x)`, where `ν` = archimedean jumps plus prime-power jumps.
+  - Part (i) of L60 (one bound state) ⟺ `gap(chain) ≥ |λ₀|`.
+  - **Kill (no slack).**
+    - Upper side: the polar-free near radical (dimension `≥ (2−η)e^{2a}`, energy `≤ exp(−η²e^{2a}/(300a))` times its norm, from L35/L45) contains a vector orthogonal to `φ₀`. Since `Q₀ = Q_full` on polar-free vectors, `λ₂(Q₀) ≤ exp(−c e^{2a})`, unconditionally.
+    - Lower side: interlacing gives `λ₂(Q₀) ≥ λ₁(Q_full)`.
+    - So `gap = |λ₀| + O(exp(−c e^{2a}))`. The chain's gap equals its ground energy to super-exponential precision, and no curvature, coupling or Cheeger estimate can certify the sign.
+  - **Survivor [P].** Unconditionally, the pole-free Weil operator has a second eigenvalue `λ₂(Q₀) ≤ exp(−c e^{2a})`. One bound state is exactly the no-slack statement `λ₂(Q₀) ≥ 0`.
+- **(B) Adelic Pitt / log-uncertainty.** Beckner's logarithmic uncertainty constant is `ψ(¼) − log π = A(0)`, exactly the archimedean Weil symbol at 0. Its proof differentiates Pitt's inequality at `α = 0`.
+  - Globally: for real Fourier-self-dual `F` with `F(0) = 0`, `P(α) = ∫_{ℚ*\𝔸*} |x|^{−2α}|E(F)|² d*x` is a moment generating function in `α`, hence log-convex (Hölder).
+  - By Plancherel on `Re s = ½+α` it equals `∫|ξ(½+α+it)|² |F̃/G(½+α+it)|² dt`, with `G(s) = π^{−s/2}Γ(s/2)`. Tate's local FE makes it even in `α`, so `P` is nondecreasing on `[0, ½)` unconditionally.
+  - This is the Hardy–Ingham–Pólya convexity of mean values combined with the functional equation: known type. The RH-equivalent statement is the *pointwise* monotonicity `|ξ(σ+it)| ↑` in `σ > ½`.
+  - **Kill (localization).** Localizing the weight at `t₀` with width `1/√T` costs a factor `e^{2Tα²}`. At second order this detects only off-line zeros with `δ ≲ 1/√T`, below the localization width. So the averaged monotonicity is blind: the individual-zeros gate.
+  - **Survivor.** Weil positivity is an adelic log-uncertainty principle (Burnol's conductor operator). Its local constants are Beckner's, and the global form sums them. The averaged global inequality is unconditional; RH is its pointwise version.
+
+### L63 — Constant-shift rigidity: the line Λ + ℝ meets the Weil cone at most in Λ. PROVED [Lean]
+- **Conjecture.** The downward half of regular rigidity (HF-F54), at the central point `τ = 0`, holds for deviations with a *pole at s = 1*.
+  - If `Σ_{2≤n≤x}(lam(n)−Λ(n))n^{−½} = 2κ√x + A log x + B + o(1)` and `lam` is Weil-positive, then `B ≤ 0`, whatever `κ` and `A` are.
+  - `B` is the regularized central value `D_{lam−Λ}(½)`.
+  - It can fail if the √x slope leaks into the energy at order `S`.
+- **Kill attempt.** The slope contributes `2κ ∫(φ∘log)'√t = −2κφ(0) − κ∫₀^L φe^{u/2}`, and each term is `≍ S`.
+  - The polar constraint turns `∫φe^{u/2}` into `−∫φe^{−u/2} = −2φ(0) + O(sup|φ'|)`.
+  - So the two `≍ S` terms cancel exactly, leaving `O(|κ| sup|φ'|)`, bounded uniformly in `S`. The conjecture survives.
+- **Proof [Lean, `RHTower.WeilPositivityConstantShiftRigidity`].**
+  - `polar_mertens_constant_nonpos_of_weilAtomSymbol_nonneg` (general theorem).
+  - `vonMangoldt_sub_const_not_weilPositive`: `κ = −c`, `B = c(1−ζ(½)) ≥ 2c`, with `ζ(½) := lim(Σ_{n≤N} n^{−½} − 2√N) ≤ −1` proved from scratch by AM–GM telescoping (`halfPowerConstant`).
+  - `eq_zero_of_vonMangoldt_add_const_weilPositive`: combined with L61 (`Λ + c ∉ W` for `c > 0`, density ceiling), `Λ + c ∈ W ⇒ c = 0`.
+  - Axioms: standard only.
+- **Meaning.** Both directions along constants are closed by different mechanisms:
+  - upward, the Toeplitz density ceiling (resonance, L57/L61);
+  - downward, the central Mertens constant (spread radical tests whose zero side is super-exponentially small unconditionally).
+  - `Λ` is two-sided extreme in the constant direction, unconditionally, so a producer must be exact in that direction.
+- **Not settled.** Whether `Λ` is extreme in *every* regular direction, i.e. the full HF-F54. The next step is twisting the spread radical test to reach `Re D_w(½+iτ₀) ≤ 0` at every `τ₀`.

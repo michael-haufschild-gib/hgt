@@ -14,7 +14,7 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_divisor_bounded
     (heps : 0 < eps) (hepss : eps ≤ 1 / 1000)
     (hmu : 0 < mu) (heta : 0 < eta)
     (htau : 5 * eps + eps ^ 2 / 20 ≤ tau)
-    (hcap : sigma₀ + eta + eps ^ 2 / 20 ≤ 7 / 32 - 5 * eps)
+    (hcap : sigma₀ + eta + eps ^ 2 / 20 ≤ 23 / 100 - 5 * eps)
     (hC₁ : 1 ≤ C₁) (hC₂ : 1 ≤ C₂) (w₁ w₂ L : ℕ) :
     ∃ T₀ : ℝ, 1 ≤ T₀ ∧
       ∀ (T : ℝ)
@@ -106,13 +106,13 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_divisor_bounded
         5 * eps + eps ^ 2 / 20 ≤
             matomakiTeravainenAmplitudeSigma (A₁ : ℝ) V₁ ij.1 ∧
           matomakiTeravainenAmplitudeSigma (A₁ : ℝ) V₁ ij.1 + eps ^ 2 / 20 ≤
-            7 / 32 - 5 * eps) ∧
+            23 / 100 - 5 * eps) ∧
       (matomakiTeravainenAmplitudeSigma (A₂ : ℝ) V₂ ij.2 <
           matomakiTeravainenAmplitudeSigma (A₁ : ℝ) V₁ ij.1 →
         5 * eps + eps ^ 2 / 20 ≤
             matomakiTeravainenAmplitudeSigma (A₂ : ℝ) V₂ ij.2 ∧
           matomakiTeravainenAmplitudeSigma (A₂ : ℝ) V₂ ij.2 + eps ^ 2 / 20 ≤
-            7 / 32 - 5 * eps) := by
+            23 / 100 - 5 * eps) := by
     intro ij hij
     exact matomakiTeravainen_active_amplitude_strip hA₁ hA₂ hV₁ hV₂
       hupper₁ hupper₂ htau hlarge hcorrMax hcap hij

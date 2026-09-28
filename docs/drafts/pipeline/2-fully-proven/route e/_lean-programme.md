@@ -255,3 +255,30 @@ assembly → Type I twisted fourth moment → Watt (spectral).
   + C_j(|τ|+2j+2)^{2j}M^{1/2−2j}N^{-1/2−2j} + 2e^{-τ²}/|τ|`).  Next: smooth Halász–Montgomery, Hölder
   with the positivity trick and the discrete mean value theorem (MVT replaces Jutila's fourth-moment
   Lemma 3; `k = 9`, `σ₀ = 0.23` suffices), subdivision, Lemma 4.1.
+- 2026-09-28 — **D1 closed: Lemma 4.1 at Jutila strength.** `Sieve/JutilaLocalLargeValues.exists_card_le_jutila_local`
+  (smooth Halász–Montgomery + reflection + Hölder over pairs + discrete MVT for `D_M^k`):
+  `|S| ≤ 240(2τ₁+1)G/V² + (80√πG/(√N V²))^{2k}(W+1+4L(1+log L))(1+2log L)A(1+log M)^k`, `L = M^k`.
+  `Sieve/JutilaDensityLemma41.exists_lemma41_jutila_energy`: energy form (`‖a‖² ≤ Q/N`, `Q³ ≤ T^{ε²}`,
+  `N ∈ [T^{9/11−10ε}, T^{1−ε}]`), cap `σ ≤ 23/100 − 5ε`, count `≤ T^{2σ−ε²/5}` — same interface as
+  `lemma41_huxley_energy_slack` minus the Huxley threshold.  Windows `N^{2−34σ/9}/Q²`, `k = 9`, dual length
+  `N^{ε²/100−1}·window`.  Next: D2 — the corpus Proposition 4.2 chain (`RaisedLemma41Energy` → … →
+  `Proposition42Integral`) with cap `23/100` in place of `7/32`.
+- 2026-09-28 — **D2 closed: Proposition 4.2 at Jutila strength.** `Sieve/EnergyLargeValuesBound` (the Prop
+  `EnergyLargeValuesBound cap`; Huxley instance `7/32`), `energyLargeValuesBound_jutila : … (23/100)`.
+  `exists_lemma41_raised_energy` takes any bound; the whole Proposition 4.2 chain (`RaisedAmplitudeCell` …
+  `Proposition42Integral`, 11 modules) now runs at cap `23/100` (`hcap : σ₀ + η + ε²/20 ≤ 23/100 − 5ε`);
+  `huxley_energy_threshold_of_subpower` generalised to `σ ≤ 23/100 − 5ε` (exponent `1/25`).  Renamed
+  `exists_matomakiTeravainen_typeII_proposition42_huxley` → `exists_matomakiTeravainen_typeII_proposition42`.
+- 2026-09-28 — **D3 closed: (5.6) at the paper scale.** `Sieve/ShortPrimeBlockTwistDecay.eventually_norm_sum_primeBlock_cpow_le`:
+  `∀ c > 0, ∀ᶠ X, z₀ ≤ Q ≤ X, 0 ≤ δ ≤ 1, exp(c√log X) ≤ |t| ≤ 4X ⇒ |∑_{Q<p≤Q(1+δ)} p^{-1-it}| ≤ exp(−(log X)^{1/30})`
+  (Route-T twisted prime estimate at smoothing width `exp((log X)^{1/25})`; width `≫ (log X)^{-0.91}` against
+  `log Q ≥ (log X)^{0.99}` gives `exp(−(log X)^{2/25}/C)`).  Superpolylog decay suffices for (5.3).
+- 2026-09-28 — **Gap found (G0): the corpus Proposition 2.2 is not uniform.**  `MTPolynomialDivisorBounded α` is
+  `∃ C K, ‖α n‖ ≤ C d(n)^K` *per piece*, and `MTPolynomialDivisorBounded.convolution` adds exponents, so a Type-II
+  `β` built along a Buchstab chain of length `r ≍ (log log X)³` gets `K ≍ r`; `MTTypeIIPieceData` does not record
+  that its prime blocks are disjoint, so the (2.11) coefficient is only `≤ d(m)^R`.  §5 needs fixed `(C, K)` for all
+  pieces (Proposition 4.2 fixes `C₁, w₁` before `T₀`; MVT losses are `(log X)^{2^{2K}}`).  Plan: new predicate
+  `MTUniformDivisorBounded K`, lemma "prime-block family over a Nodup chain of pairwise disjoint blocks has
+  coefficients in {0,1}" (geometric-schedule blocks are disjoint), uniform bounds for the Harman cell /
+  Legendre / adic factors, a uniform piece inductive, and the classification + `PaperAssembly` returning it.
+  Order: G0 → D4 (§5.3) → C1 → E1/E2 → Types I, I/II → B → F.

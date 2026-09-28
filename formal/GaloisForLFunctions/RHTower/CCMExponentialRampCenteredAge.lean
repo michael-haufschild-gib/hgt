@@ -43,10 +43,11 @@ theorem hasDerivAt_ccmExponentialRampSecondOrderWeight (r : ℝ) :
     HasDerivAt ccmExponentialRampSecondOrderWeight (-r/2*Real.exp (r/2)) r := by
   have he := ((hasDerivAt_id r).div_const 2).exp
   have h := (he.sub_const 1).const_mul 2 |>.add (((hasDerivAt_id r).neg).mul he)
+  change HasDerivAt (fun s : ℝ => 2*(Real.exp (s/2)-1)+(-s)*Real.exp (s/2))
+    (-r/2*Real.exp (r/2)) r
   convert! h using 1
-  · rfl
-  · simp only [id_eq]
-    ring
+  simp only [Pi.neg_apply, id_eq]
+  ring
 
 /-- After centering, the bulk mass coefficient is quadratically small at zero displacement. -/
 theorem abs_ccmExponentialRampSecondOrderWeight_le (r : ℝ) :

@@ -1,8 +1,8 @@
 # Prime-log cubic Laplace graph formation law
 
 - **ID:** ULF-PCLGF-001
-- **Stage:** 2-fully-proven
-- **Type:** unconditional pre-divisor source-graph formation law
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parents:** ULF-PCOB-001, ULF-PLCIE-001, ULF-PLCCKU-001
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOT RH]`
 
@@ -111,3 +111,28 @@ identity `A_*^*A_*`; all selection must occur in a later relative completion bou
 
 Direct file check and exact module build pass. Audited axioms are only `propext`,
 `Classical.choice`, and `Quot.sound`.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.RHTower.PrimeLogCubicLaplaceGraphFormation`, `GaloisForLFunctions.RHTower.PrimeLogCongruenceLaplaceSynthesis`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules `GaloisForLFunctions.RHTower.PrimeLogCubicLaplaceGraphFormation` (34 constants) and
+`GaloisForLFunctions.RHTower.PrimeLogCongruenceLaplaceSynthesis` (31 constants, added 2026-09-28); axiom audit clean.
+
+| Claim | Lean declaration |
+|-|-|
+| feature `ψ_{d,u,p}(t) = 2t √w_{d,u}(p) (log p)^{3/2} p^{-t}` | `primeLogCongruenceLaplaceFeature`, `primeLogCongruenceLaplaceFeature_eq` |
+| (PCLGF.1) synthesis | `primeLogCongruenceLaplaceColumn`, `primeLogCongruenceLaplaceSynthesisOp` (u < d), `primeLogCriticalLaplaceMass`, `primeLogCriticalLaplaceSynthesis` (u = d) |
+| (PCLGF.2) Gram law `√(w_p w_q) (2√(log p log q)/(log p + log q))³` | `integral_primeLogCongruenceLaplaceFeature_mul`, `inner_primeLogCongruenceLaplaceColumn`; critical case `integral_primeLogCriticalLaplaceFeature_mul`, `integral_primeLogCriticalLaplaceFeature_mul_eq_kernel`, `inner_primeLogCriticalLaplaceFeatureL2` |
+| (PCLGF.3) `‖ψ_{d,u,p}‖² = w_{d,u}(p)` | `integral_primeLogCongruenceLaplaceFeature_sq`, `norm_sq_primeLogCongruenceLaplaceColumn`; critical `integral_primeLogCriticalLaplaceFeature_sq` |
+| `A_{d,u}` extends to a Hilbert–Schmidt operator exactly for `u < d` | `exists_hilbertSchmidt_primeLogCongruenceLaplaceSynthesis_iff`, `summable_integral_primeLogCongruenceLaplaceFeature_sq_iff` |
+| (PCLGF.4) at `u = d`: `ψ = √(8d)·2t(log p)² p^{-t-1/2}` | `primeLogCongruenceLaplaceFeature_critical`, `primeLogCriticalLaplaceFeature` |
+| `A_*` has no bounded extension (via ULF-PLCCKU-001) | `not_exists_bounded_primeLogCriticalLaplaceColumns`, `primeLogCriticalLaplaceSynthesis_no_bounded_extension`, `not_exists_bounded_primeLogCongruenceLaplaceColumn_critical` |
+| §3 dense finite-prime domain | `dense_primeLogCriticalLaplaceSynthesis_domain` |
+| §3 closability (every compactly supported observation is a bounded reporter; graph-null criterion) | `memℓp_primeLogCriticalLaplaceFeatureC`, `primeLogCriticalLaplaceMass_pointwise_eq_inner`, `tendsto_primeLogCriticalLaplaceCore_pointwise_zero`, `LinearPMap.isClosable_of_tendsto_graph_zero`, `primeLogCriticalLaplaceSynthesis_isClosable` |
+| §3 canonical closed graph retaining the core | `primeLogCriticalLaplaceSynthesis_closure_isClosed`, `primeLogCriticalLaplaceSynthesis_le_closure` |
+| §3 injectivity on the source core (distinct exponentials) | `primeLogCriticalLaplaceMass_injective`, `primeLogCriticalLaplaceSynthesis_injective` |
+
+## Log
+
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

@@ -89,6 +89,8 @@ import GaloisForLFunctions.HilbertMetric.HorizontalLamzouriUnnormalized
 import GaloisForLFunctions.HilbertMetric.GomesReflectedQuarticTensor
 import GaloisForLFunctions.HilbertMetric.GaussianCoherentFisherClock
 import GaloisForLFunctions.HilbertMetric.ResponseCompression
+import GaloisForLFunctions.HilbertMetric.GaussianHarnack
+import GaloisForLFunctions.HilbertMetric.ProjectiveGramRegularization
 
 /-!
 # Hilbert-metric theorem area

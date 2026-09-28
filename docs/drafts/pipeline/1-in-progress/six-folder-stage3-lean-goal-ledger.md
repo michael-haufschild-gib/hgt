@@ -8,10 +8,10 @@ Per-folder detail stays in the folder ledgers (`_STAGE3-LEDGER.md`, `_SWEEP-LEDG
 
 | Folder | Card | Open core | Status |
 |---|---|---|---|
-| 02 | first-order-autonomous-algebraic-ap-periodicity | Schwartz trichotomy replaced (see below) | IN PROGRESS |
+| 02 | first-order-autonomous-algebraic-ap-periodicity | — | **DONE → stage 3** (4 HTGeometry modules) |
 | 02 | smooth-stein-order-two-autonomous-ade-frequency-rank | Taubes replaceable: Reeb field preserves Webster metric ⇒ flow closure is a torus ⇒ β closed | TODO |
 | 02 | entire-heat-multiplicative-da-order-three-floor | global Strelitz component argument | TODO |
-| 02 | asymptotically-exponential-algebraic-cascade-unit-cost | Briot–Bouquet for entire solutions | TODO |
+| 02 | asymptotically-exponential-algebraic-cascade-unit-cost | — | **DONE → stage 3** (6 HTGeometry modules; entire Briot–Bouquet) |
 | 02 | entire-composition-hypertranscendence-or-law | Steinmetz reduction (HT∘HT) | TODO |
 | 03 | combination-mode-reducibility-baker-bridge | polynomial effective Baker (Matveev) | TODO |
 | 03 | hypertranscendental-maximal-finite-horizon-galois-law | parent full-symmetric monodromy, brick D | TODO |
@@ -31,3 +31,8 @@ Per-folder detail stays in the folder ledgers (`_STAGE3-LEDGER.md`, `_SWEEP-LEDG
 
 ## Log
 - 2026-09-28: survey of all 22 cards; ledger created.
+- 2026-09-28: AP-periodicity card promoted (FirstOrderRelationLocalUniqueness, ImStripTranslateCompactness,
+  FirstOrderAlgebraicStripPeriodicity, FirstOrderAlgebraicStripFrequencyGroup).
+- 2026-09-28: cascade card promoted; entire Briot–Bouquet proved (CasoratiWeierstrassAtInfinity,
+  FirstOrderRepeatedRegularValue, AutonomousFirstOrderEntirePeriod/Classification, LaurentExpGrowth,
+  AutonomousFirstOrderCascadeUnitCost).

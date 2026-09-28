@@ -184,3 +184,23 @@ Scope: frontier route HF. Facts and no-gos only.
   - Consequences: twisted log-density `≤ 1` for every completely multiplicative unimodular `χ` (`weil_twisted_density_bound`), and `Σ_{nm≤N} lam(n)/(nm) ≤ (½+ε)log²N` (`weil_log_density_le`).
   - Sharp at `Λ`. It is the density-only ceiling: resonators cannot certify more. For `Λ` it holds unconditionally (Schur test with `m^{−½}`, Mertens), so it carries no RH content for `Λ`.
 - **HF-F54 [P] Regular rigidity at Λ.** If `D_w` is regular past the critical line (meromorphic, finitely many poles in `Re s>½`, none on the line, polynomial growth) and `Re D_w ≤ 0` on the line, then `w = 0`. So every tangent direction of the Weil cone at `Λ` is singular on the critical line.
+- **HF-F55 [Lean, `RHTower.CriticalGibbsPerronPolarization`] Perron–polarization.**
+  - On the divisor lattice `[1,N]`, the critical Gibbs vector `m^{−½}` (the pole direction) has von Mangoldt Toeplitz Rayleigh quotient `log N − γ + o(1)`.
+  - Every vector has Rayleigh quotient `≤ log N + C` (Schur).
+  - The polar constraint removes the Perron direction of the prime correspondence.
+- **HF-F56 [P] Metzler–Lorentzian form of Weil positivity.**
+  - Adjoining the rulings `e^{±x/2}` with a hyperbolic block makes the Weil form Metzler (all off-diagonals ≥ 0: archimedean jumps, Λ-atoms, rulings).
+  - Weil positivity at level `a` ⟺ exactly one positive eigenvalue (Haynsworth).
+  - Not local: archimedean-only and single-prime forms have ≥ 2 positive eigenvalues.
+- **HF-F57 [P] Castelnuovo form on nonnegative tests.**
+  - For symmetric matrices with strictly positive off-diagonals: at most one positive eigenvalue ⟺ reverse Cauchy–Schwarz for nonnegative pairs `(x, y)` with `xᵀAx > 0`.
+  - Applied to the Metzler-extended Weil form (L58), RH ⟺ the Castelnuovo inequality for all pairs of nonnegative extended tests at every level.
+- **HF-F58 [P] Perron–Frobenius split.**
+  - The pole-free Weil operator `Q₀` is a Z-form with a simple, positive, even ground state (unconditional).
+  - RH ⟺ at every level, `Q₀` has exactly one negative eigenvalue and the 2×2 ruling resolvent matrix `H + ⟨e_i,Q₀^{−1}e_j⟩` is `⪯ 0`.
+  - One bound state ⟺ reverse Cauchy–Schwarz for disjointly supported nonnegative pairs (nodal argument).
+  - CCM's `QW_λ` includes the pole, so Perron–Frobenius does not settle their (S1).
+- **HF-F59 [Lean, `RHTower.WeilPositivityConstantShiftRigidity`] Constant-shift rigidity.**
+  - Polar Mertens obstruction: a Weil-positive `lam` with `Σ_{2≤n≤x}(lam−Λ)(n)n^{−½} = 2κ√x + A log x + B + o(1)` has `B ≤ 0`, for every `κ` and `A`. The polar constraint cancels the √x slope, and `h_f(0) = 0` cancels the log slope.
+  - Hence `Λ − c ∉ W` for `c > 0` (`B = c(1−ζ(½)) ≥ 2c`).
+  - With HF-F53/L61: `Λ + c ∈ W ⇒ c = 0`. Unconditional.

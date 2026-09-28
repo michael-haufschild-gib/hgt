@@ -20,13 +20,13 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
 | 12 | autonomous-cap-derivative-shadow-law | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
 | 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | **DONE → 3-formalized** (2026-09-02) |
-| 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | **IN PROGRESS** — selected autonomous branches now give actual meromorphic `C(z)`-jet independence and exact differential order; exact composition depth also closed; Briot–Bouquet classification remains |
+| 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Briot–Bouquet for entire solutions — proved (Casorati–Weierstrass + repeated regular values + periods) | **DONE → 3-formalized** (2026-09-28) |
 | 15 | nonautonomous-cap-linear-order-two-shadow-rigidity | Briot–Bouquet — bypassed | **DONE → 3-formalized** (2026-09-01) |
 | 16 | fixed-taylor-modulus-newton-geometry-ht-blindness | Ostrowski finite basis — replaced by corpus Mahler confinement | **DONE → 3-formalized** (2026-08-30) |
 | 17 | arithmetic-entire-heat-da-finite-spectrum | Popken + Mahler normalization | **DONE → 3-formalized** (2026-08-30) |
 | 18 | finite-commuting-shift-peeling-hypertranscendence-law | Adamczewski–Dreyfus–Hardouin Thm 1.2 | **DONE → 3-formalized** (2026-08-30) |
 | 19 | autonomous-ade-almost-periodic-frequency-rank | Cartwright/O'Brien | **DONE → 3-formalized** (2026-08-31) |
-| 20 | first-order-autonomous-algebraic-ap-periodicity | Schwartz surface flows + normalization | TODO |
+| 20 | first-order-autonomous-algebraic-ap-periodicity | Schwartz + normalization — both bypassed (local uniqueness + maximum principle for translates) | **DONE → 3-formalized** (2026-09-28) |
 | 21 | paired-quasi-elliptic-constraint-rigidity | Hardouin–Singer PPV + Cassidy | **DONE → 3-formalized** (2026-08-31) |
 | 22 | smooth-stein-order-two-autonomous-ade-frequency-rank | Taubes (Weinstein conj. dim 3) | TODO |
 
