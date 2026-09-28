@@ -3,6 +3,7 @@ Copyright (c) 2026 Bennett Chow. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bennett Chow, OpenAI
 -/
+/- Local compatibility change: apply the pushout identity directly on Mathlib 4.32.2. -/
 import Mathlib.Algebra.Group.PUnit
 import Mathlib.GroupTheory.PushoutI
 
@@ -65,7 +66,7 @@ theorem of_true_eq_one (h : Multiplicative ℤ) :
     Monoid.PushoutI.of true h = (1 : Monoid.PushoutI diagram) := by
   calc
     Monoid.PushoutI.of true h = Monoid.PushoutI.base diagram h := by
-      simpa [diagram] using Monoid.PushoutI.of_apply_eq_base diagram true h
+      exact Monoid.PushoutI.of_apply_eq_base diagram true h
     _ = Monoid.PushoutI.of false (1 : PUnit) := by
       simpa [diagram] using (Monoid.PushoutI.of_apply_eq_base diagram false h).symm
     _ = 1 := map_one _

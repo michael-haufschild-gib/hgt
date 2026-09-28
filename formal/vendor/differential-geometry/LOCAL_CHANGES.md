@@ -142,3 +142,5 @@ Backported 29 inspected uses in 16 modules: `continuousOn_iff_continuous_domRest
 - `Geometry/Flow/RicciFlow/Surgery/Topology/LinearOrientation.lean`: four upper-triangular predicates use the equivalent `BlockTriangular id`, with the local `det_of_upperTriangular` and `gramSchmidtOrthonormalBasis_inv_blockTriangular` lemmas. The local API probe, complete scratch file, and standard-axiom audit of `positive_linear_homotopy` pass. Its public statement is unchanged.
 
 - `External/CanonicalTopology/Topology/Homology/RelativeMayerVietoris.lean`: close the biproduct equality by reflexivity, and use explicit congruence of quotient and homology maps where the older rewriter cannot cross reducible carrier aliases. Complete-file scratch check and standard-axiom audit pass; public hypotheses and statements are unchanged.
+
+- `Topology/Algebra/Group/AmalgamatedProduct.lean`: apply `Monoid.PushoutI.of_apply_eq_base` directly for the identity leg; definitional equality handles the identity homomorphism where the older simplifier did not. Complete scratch and standard-axiom checks pass.

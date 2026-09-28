@@ -629,3 +629,9 @@ strict adapter audit: all 37 reachable local/upstream modules validate, includin
 rebuilt `ManifoldDeRhamCohomology` and `ModelDeRhamPeriods`; the final endpoint build
 passed (3,486 jobs). Its certificates can be reused while the branch stays unchanged.
 The Hurewicz part of requirement four remains pending, so that checkbox stays open.
+
+At 465/1,284, the amalgamated-product identity leg needed direct application of
+its existing projection theorem, avoiding an incomplete identity-homomorphism
+simplification on Mathlib 4.32.2. Full-file scratch and standard-axiom checks pass;
+the change is promoted. A single-worker affected-dependency audit of
+`RegularizedMonomialWinding` is running before the main pipeline resumes.

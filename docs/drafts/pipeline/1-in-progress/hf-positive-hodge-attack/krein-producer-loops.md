@@ -1918,3 +1918,21 @@ Next conjectures to test:
 - **Meaning.**
   - Positivity alone produces the Chebyshev phenomenon: the mean density of prime atoms is bounded below by an explicit archimedean constant.
   - For Λ, `L = (∫ψe^{x/2})²` by the PNT, and the inequality is exactly small-support Weil positivity of `ψ` with its pole term (Yoshida / Connes–Consani). This is the consistency check.
+
+### L78 — Residue rigidity and the regular uniqueness theorem (both poles). PROVED [Lean]
+- **Conjecture (the uniqueness counterpart of L77).** L77: every completion has residue ≥ θ*. Near Λ, the residue should be pinned exactly: perturbations whose partial sums carry a pole-type main term `κ(n−1)` are excluded, whatever the sign of `κ`.
+- **Mechanism: the pole of ζ is a polar atom.**
+  - `n^{−½} = ∫_{log(n−1)}^{log n} e^u n^{−½} du` telescopes to `∫_0^∞ e^{u/2}φ_f`.
+  - With `e^{|u|/2} = 2cosh(u/2) − e^{−|u|/2}`, this equals `2Re(ĥ(i/2) conj ĥ(−i/2)) − ∫_0^∞ e^{−u/2}φ_f`.
+  - So constant weights pair as `4π·(polar pairing) + ∫|ĥ|²P_1`, with `P_1` continuous of linear growth.
+  - Polar-constrained concentration tests don't see the polar atom. Probes with polar pairing of both signs (the bump, `+`; the odd probe, `−`) kill it.
+- **Theorems [Lean, `RHTower.WeilPositivityResidueRigidity`].**
+  - `vonMangoldt_add_eq_zero_of_symbol_polar`: continuous symbol + polar atom ⇒ `w = 0`.
+  - `vonMangoldt_add_residue_eq_zero`: partial sums `κ(n−1) + E(n)`, `Σ|E|/(n√n) < ∞` ⇒ `w = 0`. It extends the constant shifts of L63 to every regular residue shift. Example: `Λ + c·1_{2|n}` ⇒ `c = 0`.
+  - `vonMangoldt_add_eq_zero_of_symbol_two_atoms`: both atoms at once (origin + poles `±i/2`). The even zero-mean probe `κ(x/ε₁) − (ε₁/ε₂)κ(x/ε₂)` has positive polar pairing because `∫κ cosh(cx)` increases with `|c|`.
+  - `vonMangoldt_add_twoPole_eq_zero`: **regular uniqueness theorem.** Partial sums `κ₁(n−1) + κ₂(√n−1) + E(n)` with `Σ|E(n)|/(n√n) < ∞` ⇒ `w = 0`.
+  - Axioms: standard.
+- **Meaning.**
+  - The uniqueness half of the Minkowski split now holds on the whole *regular* class: every perturbation whose Dirichlet series has, in `Re s ≥ ½`, at most the two natural poles (`s = 1`, residue shift; `s = ½`, prime-power shift) plus an Abel-summable remainder.
+  - The only perturbations left are those with singularities *at zeros* (boundary atoms at zeros of `ζ` or of other L-functions, interior poles at off-line zeros). These are exactly the RH-relevant ones: as shown in the L76 discussion, `lam* − Λ` for any hypothetical second completion has its singularities at the zeros of `ζ`.
+  - This is the sharp boundary of the regular method. What remains of uniqueness is "positive Hamburger at the zeros".

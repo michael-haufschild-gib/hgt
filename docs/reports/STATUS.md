@@ -1509,3 +1509,5 @@ Notation: `δ=Re ρ−½`; angular energy of a zero = `Σ_{ρ′≠ρ}cos²θ`, 
 - **MUST-506 [Lean: `RHTower.primeWeights_not_weilPositive`]** Any producer of Weil positivity for `ζ` must produce the prime-power weights `log p` at `p^k`, `k ≥ 2`, exactly.
   - The weights `log p` on the primes alone are not Weil-positive.
   - Rescaling the prime-power part by `1 + c` destroys positivity unless `c = 0`.
+- **MUST-507 [Lean: `RHTower.vonMangoldt_add_twoPole_eq_zero`]** A producer of Weil positivity for `ζ` must be sharp against every regular perturbation of the prime weights: residue shifts (`κ₁ n`), prime-power shifts (`κ₂ √n`), and Abel-summable remainders.
+  - Only perturbations singular at zeros (of `ζ` or of other L-functions) escape the regular rigidity. The uniqueness half of any Minkowski-type proof must be decided there.

@@ -149,7 +149,8 @@ u^{−2}-weighted window averages of ψ and monotonicity of ψ:
 **Step 7:** `greedy_chebyshev_expansion` then gives κ ∈ (½, ¾).
 
 ## Milestones
-- **M1a: count-form windows at α > 5/8** (paper proof above), κ < 3/4.
+- **M1a: count-form windows at α > 5/8** (paper proof above), κ < 3/4. **CLOSED in Lean 2026-09-28**
+  (`exists_theta_window_lower_five_eighths`, `exists_prime_deletion_half_dimension_uncertainty_three_quarters`).
 - **M1: count-form Huxley 7/12.** Huxley density (σ ≥ 3/4) plus Ingham density (σ ≤ 3/4), fed through a
   density-to-windows transfer. Route T's `InghamUniformDetector*` stack currently stops at σ ≥ 7/10;
   that is exactly what pins the corpus at 0.701. This milestone extends κ to < 5/6 and is independent
@@ -201,3 +202,39 @@ u^{−2}-weighted window averages of ψ and monotonicity of ψ:
     - Long proofs exhaust the per-declaration heartbeat budget. Split them into pure-arithmetic lemmas
       instead of raising limits.
   - Next: Step 6, the transfer via `lag_explicit_formula` (zeros ↔ windows), then the consumer at κ < 3/4.
+- 2026-09-28 — **M1a closed in Lean: prime windows at every α > 5/8, consumer at every κ ∈ (½, ¾).**
+  - Main theorems (axioms: propext, Classical.choice, Quot.sound):
+    - `RHTower.exists_theta_window_lower_five_eighths`: for 5/8 < α < 1 there is X ≥ 1 with
+      θ(y+L) − θ(y) ≥ (L − (y+L)^α)/2 for all y ≥ X, L ≥ 0.
+    - `RHTower.PrimeDeletion.exists_prime_deletion_half_dimension_uncertainty_three_quarters`: the
+      half-dimension uncertainty instance for every κ ∈ (½, ¾), with α = 13/16 − κ/4 and c = 2. The old
+      range was κ < 2(1 − 0.701299) ≈ 0.5974.
+    - `RHTower.tendsto_tsum_zeroShortWeight`: for 0 < u < 3/8 and c ≥ 1,
+      Σ_ρ x^{β−1} min(1, c x^{2u}/(\|ρ\|\|1−ρ\|)) → 0.
+  - Step 6 as built differs from the paper plan in two places:
+    - No N(T) ≪ T log T count is needed. Zeros with β < ½ and zeros with γ < 0 are folded onto the upper box
+      {β ≥ σ, T ≤ γ ≤ 2T} through the conj and reflect equivalences on `XiZeroCopy`, costing a factor 4
+      (`ncard_foldedHeightBox_le`). The density at σ = ½ then carries the bottom slab.
+    - The window kernel is exact: J(a,b) = S(b) − S(a) − ψ(b)/b + ψ(a)/a, with S(X) = Σ_{n≤X} Λ(n)/n.
+      - `lag_explicit_formula` evaluates J(a,b) exactly as log(b/a) + Re Σ_ρ (b^{ρ−1} − a^{ρ−1})/(ρ(1−ρ)) + …,
+        with ψ(a) ≤ J/(1/a − 1/b) ≤ ψ(b).
+      - Per zero: 2H·x^{β−1} for two windows inside [x, x+H], via the t^{−2}-weighted mean of t^ρ; and
+        16x^{β+1}/(h′\|ρ\|\|1−ρ\|) in the long range.
+  - Exponent bookkeeping per (T, slab): min(1, x^{2u}/T²)·x^{−s}T^{As} ≤ x^{−(1−uA)s}·g(x,T), where
+    g = 1 for T ≤ x^u and g = (x^u/T)^{2−A/2} above x^u.
+    - Shells below x^{2u} use the Route-T width w(4X/3) ≥ 1/(40C L^{9/10}(1+log 4L)²).
+    - Shells above x^{2u} sum geometrically after (1+log T)^B ≤ P T^{c₁/4}.
+    - Final decay: exp(−κL^{1/20}) ≤ m!/(κ^m L^{m/20}).
+  - Modules, in order: `ChebyshevLagWindow` → `ChebyshevLagZeroWindowTerm` → `ChebyshevShortWindowLowerBound`;
+    `XiZeroFoldedHeightCount` → `XiZeroShortWeightBox` → `XiZeroShortWeightDyadic`; `XiZeroFreeHeightBox`;
+    `XiZeroShortWeightVanishing` → `PrimeShortIntervalsFiveEighths` → `PrimeDeletionThreeQuarters`.
+  - Literature status: the window exponent 5/8 is Ingham's (1937), from the same density exponent 8/3 =
+    2 + 4·(1/6). The new corpus content is the formal chain and the κ < 3/4 uncertainty instance.
+  - Next: M1 (Huxley density σ ≥ 3/4 through the same transfer, window exponent 7/12, κ < 5/6).
+    - The transfer modules take any density exponent A < 4 with uA < 1 as input (`tsum_zeroShortWeight_le`).
+    - So M1 needs only a sharper, σ-dependent `hdens`.
+    - M1 needs uA(σ) < 1 on every slab, so u < 5/12 needs A(σ) < 12/5 for all σ ∈ [½, 1].
+      - Huxley supplies that on σ ≥ 3/4.
+      - On σ ≤ 3/4 it needs Ingham's σ-dependent 3/(2−σ). The current 8/3 fails there.
+      - The slab inequality uses A only on its own slab, so `sum_zeroShortWeight_box_le` generalizes
+        directly to a σ-dependent exponent.

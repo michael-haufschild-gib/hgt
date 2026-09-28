@@ -233,3 +233,6 @@ Scope: frontier route HF. Facts and no-gos only.
 - **HF-F68 [Lean, `RHTower.weilPositive_smoothedMean_lower`] Positivity ⇒ Chebyshev.**
   - Every Weil-positive system has smoothed atom mean `L ≥ η/(4π) > 0` (Fejér test `ψ`, `η = −∫|ψ̂|²A`).
   - Mean-zero systems (e.g. Λχ) are never Weil-positive with ζ's archimedean datum.
+- **HF-F69 [Lean, `RHTower.vonMangoldt_add_twoPole_eq_zero`] Regular uniqueness theorem.**
+  - `Λ + w` Weil-positive with partial sums `κ₁(n−1) + κ₂(√n−1) + E(n)`, `Σ|E|/(n√n) < ∞`, forces `w = 0`.
+  - The pole at `s = 1` pairs as a polar atom `4πκ₁Re(ĥ(i/2)conj ĥ(−i/2))`; the pole of `ζ(2s)` at `s = ½` as an atom `πκ₂|ĥ(0)|²`.

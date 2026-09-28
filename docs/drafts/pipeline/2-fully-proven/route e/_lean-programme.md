@@ -335,3 +335,13 @@ assembly → Type I twisted fourth moment → Watt (spectral).
     (spectral decomposition, Eisenstein series), DI spectral large sieve (Bessel-inequality direction) + Watt.
   * Order: remaining certain parts (Types I, I/II reduced to E1/E2 as explicit Props; (5.2) U/non-U; Perron
     assembly B; F), then E1, then E2.
+- 2026-09-28 — **Type I of (5.3) closed modulo E1** (`Sieve/MatomakiTeravainenTypeIHeightWindow`,
+  `Sieve/MatomakiTeravainenTypeIMeanSquare.eventually_typeI_setIntegral_le`, hypothesis
+  `MTDeshouillersIwaniecBound` only): windows `[T/2,T]`, amplifier `(2P)^k ≤ T^{1/5}`, AM–GM split,
+  fourth moment of `M₁` by the MVT (`M₁ ≥ 1/2`), amplified DI for `M₂`; saving `T^{-1/100}`, `T ≥ exp(c√log X)`.
+- 2026-09-28 — **Type I/II of (5.3) reduced to E2** (`Sieve/MatomakiTeravainenTypeI_IIHeightWindow` +
+  summation module): over-height windows `T ≤ ⌊M₃⌋` need no Watt (Kuzmin–Landau `|M₃| ≪ 1/T` + MVT for
+  `M₁M₂`, polylog losses only — this is what makes `T₀ = exp(c√log X)` harmless); sub-height windows have
+  `T ≥ M₃/2 ≥ X^{1/3}`, where `X^{ε/1000}` divisor losses are affordable: three-factor split, Watt for
+  `∫|M₃|⁴|M₂|²` (twist split into two integer blocks `(A,2A]`), amplified MVT for `M₁²M₂𝓜` with the fibrewise
+  Cauchy–Schwarz energy `∑|(f⋆b)(n)|² ≤ D‖f‖²‖b‖²`; saving `X^{-ε/200}`.
