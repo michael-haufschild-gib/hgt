@@ -1,6 +1,6 @@
 /-
 Authors: Jack McCarthy
-Local modifications: compatible fibre algebra and topology instances for Mathlib 4.32.2.
+Local modifications: compatible fibre additive-group instance for Mathlib 4.32.2.
 -/
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Defs
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Basis
@@ -73,23 +73,13 @@ instance fiberAddCommGroup (s : ℕ) (x : B) :
     toAddCommMonoid := Bundle.continuousMultilinearMap.instAddCommMonoid
       (𝕜 := 𝕜) (s := s) (F := F) (E := E) x }
 
-@[reducible]
 instance instNormedAddCommGroup (s : ℕ) (x : B) :
     NormedAddCommGroup (Bundle.continuousMultilinearMap 𝕜 s F E x) := by
-  let normed : NormedAddCommGroup (Bundle.continuousMultilinearMap 𝕜 s F E x) :=
-    inferInstanceAs (NormedAddCommGroup
-    (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E x) 𝕜))
-  exact { normed with
-    toAddCommGroup := fiberAddCommGroup (𝕜 := 𝕜) (F := F) (E := E) s x
-    toMetricSpace := normed.toMetricSpace.replaceTopology
-      (topology_eq (𝕜 := 𝕜) (F := F) (E := E) s x) }
+  delta Bundle.continuousMultilinearMap; infer_instance
 
-@[reducible]
 instance instNormedSpace (s : ℕ) (x : B) :
     NormedSpace 𝕜 (Bundle.continuousMultilinearMap 𝕜 s F E x) := by
-  refine { toModule := inferInstance, norm_smul_le := ?_ }
-  intro c T
-  exact norm_smul_le c (T : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E x) 𝕜)
+  delta Bundle.continuousMultilinearMap; exact ContinuousMultilinearMap.normedSpace
 
 instance instT2Space (s : ℕ) (x : B) :
     @T2Space (Bundle.continuousMultilinearMap 𝕜 s F E x) inferInstance :=

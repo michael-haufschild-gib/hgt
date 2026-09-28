@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Analysis.InnerProductSpace.Laplacian
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.GreenIdentity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.FundamentalSolution
@@ -103,7 +104,7 @@ theorem tendsto_integral_annulus_zero {E : Type*} [NormedAddCommGroup E]
     rw [show μ = volume.restrict {z : ℂ | ‖z‖ ≤ R} from rfl, setIntegral_indicator (hm r)]
     have hs : {z : ℂ | ‖z‖ ≤ R} ∩ A r = {z : ℂ | ‖z‖ ∈ Icc r R} := by
       ext z
-      simp only [mem_inter_iff, mem_ofPred_eq, A, mem_Icc, and_comm]
+      simp only [mem_inter_iff, mem_setOf_eq, A, mem_Icc, and_comm]
     rw [hs]
   simpa only [he] using h
 

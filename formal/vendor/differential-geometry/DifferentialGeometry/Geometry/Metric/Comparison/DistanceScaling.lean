@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import DifferentialGeometry.Geometry.Metric.Scaling
@@ -124,7 +125,7 @@ theorem edistBall_scale
           ENNReal.ofReal (Real.sqrt c * r)} =
       {y : M | riemannianEDistOf (I := I) g x y < ENNReal.ofReal r} := by
   ext y
-  simp only [Set.mem_ofPred_eq]
+  simp only [Set.mem_setOf_eq]
   rw [edistOf_scale]
   rw [ENNReal.ofReal_mul (Real.sqrt_nonneg c)]
   let a : ℝ≥0∞ := ENNReal.ofReal (Real.sqrt c)

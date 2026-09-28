@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import Mathlib.MeasureTheory.Function.Jacobian
@@ -876,7 +877,7 @@ lemma tsum_integral_pou_eq_subtype
   refine tsum_subtype_eq_of_support_subset (s := {α : M | (Function.support (ρ α)).Nonempty})
     (f := fun α => ∫⁻ x, ENNReal.ofReal (ρ α x) * F x ∂(cLM α)) ?_
   intro α hα
-  simp only [Set.mem_ofPred_eq]
+  simp only [Set.mem_setOf_eq]
   by_contra hne
   rw [Set.not_nonempty_iff_eq_empty] at hne
   exact hα (lintegral_ofReal_pou_zero_of_support_empty ρ α hne (cLM α) F)

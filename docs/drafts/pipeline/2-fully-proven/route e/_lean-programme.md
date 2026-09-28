@@ -297,3 +297,41 @@ assembly → Type I twisted fourth moment → Watt (spectral).
   since `(5−8σ₁)θ+2σ₂(1−θ) ≥ 5(1−1/a−ε₁)+2σ₀ > 1/a + ε₂` iff `6/a < 5+2σ₀−O(ε)`; with `σ₀ ≈ 23/100−O(ε)`
   and `a ≥ 1.0999` this needs `ε ≲ 10⁻⁴`.  `U₁` by Proposition 4.2 (integral form) with `a₁ = α ≤ 1`,
   `a₂ = β/B₂` normalised (`|F₂| ≤ B₂ = (log X)^{O(1)}`), `B₁ = exp(−(log X)^{1/30})` (D3).  `U₃` trivial.
+- 2026-09-28 — **D4 closed: (5.3) for Type-II pieces at `a ∈ [1.0999, 1.1]`.**
+  `Sieve/MatomakiTeravainenTypeIIMeanSquare.eventually_typeII_setIntegral_le`: for `A ≥ 1`, `ε ∈ (0, 10⁻⁴]`,
+  `ε_U ∈ (0, ε]`, `c > 0`, eventually in `X`, for every `a ∈ [a₀, 11/10]` (`a₀ ≥ 1.0999`),
+  `P ∈ [(log X)^a, (log X)^{6/5}]`, `B` = primes in `(P, 2P]`, every uniform Type-II datum at
+  `(X, Y, z₀ = mtLowerCutoff X, z = X^{2/11}, δ = mtPaperWidth A X, ε)` with `Y ∈ [X/(log X)², X]`, and
+  every measurable `U ⊆ [exp(c√log X), X]` on which `|∑_{p∈B} p^{-1-it}| ≥ P^{-ε_U/10}`:
+  `∫_U |F₁F₂(1+it)|² ≤ exp(−(log X)^{1/40})`.  Chain: `PrimeSetPowerCoefficients` (`P(s)^k` coefficients,
+  `c_k(m) ≤ k!`, stars-and-bars support), `HeathBrownLemma34PerronPoly` (Lemma 3.4 for complex dense
+  coefficients on `(N, N2^R]`), `PrimePowerAmplifierScale` (`k = ⌊log X/log 2P⌋`, `X^{1-η} ≤ P^k`,
+  `(P+k)^k ≤ P^k X^η`, `k! ≤ M^{1/a}`, lower bound on `U`), `MatomakiTeravainenTypeIICellBounds` (the two
+  amplified cell bounds; the exponent inequality `6/a − 5 − 2σ₀ + 5ε₁ + 8ζ ≤ −δ₀` in log coordinates),
+  `MatomakiTeravainenTypeIIFactors` (`F₁^5`, `F₂` supports/coefficients, dilation `≤ 2`, divisor powers
+  `≤ X^η`, amplified bracket `≤ 128 X^{4η}(1 + X^{1/a}/N)` — the `|𝓜|^{7/4}T^{3/4}` term absorbed since
+  `3/4 ≤ 1/a`), `...AmplifiedMeanValue`, `...TypeIICells`, `...TypeIICover` (Prop 4.2 region ∪ small set ∪
+  `⌊log₂X⌋+1` dyadic cells), `...TypeIIMeanSquare`.  Parameters: `σ₀ = 23/100 − (11/6)ε − ε²/720`
+  (Prop 4.2 at `eps = ε/6`), `η = ζ = ε/1000`, `ε₁ = 1/2000`, `δ₀ = σ₀ε`.  Axioms clean.
+  Next: C1 (non-`U` part), E1 (Type I), E2 (Type I/II), B (Perron assembly), F.
+- 2026-09-28 — **C1 core closed** (`Sieve/SiftedPolyMeanSquare`): `sum_card_roughPair_le_sharp` (rough pairs averaged
+  over the shift, Rankin level `h^{18} ≤ √z`), `integral_normSq_logPoly_sifted_le` (improved MVT for a support avoiding
+  `rangePrimes P₁ h`: `≤ (5/(4δ))B²(|s| + 2(2eKN/E² + K·rem))`), `rhoMinus_eq_zero_of_dvd` (minorant vanishes off
+  `z`-rough `n`), `abs_rhoMinus_le_of_lt_pow` (`|ρ⁻(n)| ≤ 156` for `n < z⁶`).
+- 2026-09-28 — **Audit of the Type I / Type I–II inputs at `a = 1.1` (decisive).**
+  * The card statements fix `a = 1.1` (`h = √x(log x)^{1.55}`), so Harman's sieve with Type I/II pieces is forced:
+    Heath-Brown's identity (MT §6) needs Type II up to `X^{1/3}`, i.e. `a = 1.22`.
+  * Type II range cannot pass `X^{2/11}` with `σ₀ = 0.23` (cell analysis: at `θ = 0.2` the B1/B2 crossing needs
+    `σ₀ > 0.2727`); `θ = 0.2` would make every Type I/II piece with `q₁ > X^{1/5}` a Type II piece (via `q₃ < X^{0.2}`).
+  * Restricting Harman's third term to `q₁ < X^{1/5}` costs `≈ 0.04` of density against a margin `< 0.01`.
+  * Heath-Brown's Lemma 3.4 cannot replace Deshouillers–Iwaniec in Type I: its `(|𝓜|/M)²` term, amplified by `k!²`,
+    is `≍ 1` (no amplifier saving) — confirmed against the corpus bricks 64–98.
+  * Hence: **E1** = twisted fourth moment of a sharp sum `N ≈ √T` with twist length `T^{c₀}` (`c₀ ≈ 45ε`); reduces
+    (Perron/Hölder) to `∫|ζ(½+it)|⁴|A|² ≪ T^{1+ε}‖a‖²` for `A ≤ T^{c₀}`; route: AFE for `ζ²`, off-diagonal shifted
+    divisor sums with coefficients `Σ_{a₁m−a₂n=h} d(m)d(n)W` = main (bounded absolutely) + power-saving error
+    polynomial in `a₁a₂` (Estermann/δ-method + Weil) — non-spectral.
+    **E2** = Watt's bound (twist `≤ T^{1/4}`, term `A²√T`) for Type I/II pieces with `q₁ ∈ (X^{1/5}, X^{1/4})`;
+    per-pair Weil bounds fail (`A³T^{1/2}`), needs bilinear Kloosterman cancellation: Kuznetsov for `Γ₀(q)`
+    (spectral decomposition, Eisenstein series), DI spectral large sieve (Bessel-inequality direction) + Watt.
+  * Order: remaining certain parts (Types I, I/II reduced to E1/E2 as explicit Props; (5.2) U/non-U; Perron
+    assembly B; F), then E1, then E2.

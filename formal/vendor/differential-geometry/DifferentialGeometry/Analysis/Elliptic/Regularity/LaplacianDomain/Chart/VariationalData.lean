@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1Compl
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1ComplFromDom
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.Smooth
@@ -160,7 +161,7 @@ private lemma lintegral_chartLocalMeasure_le_lintegral_riemannianVolumeMeasure
     rw [Filter.EventuallyEq, MeasureTheory.ae_iff]
     refine MeasureTheory.measure_mono_null ?_ h_off_zero
     intro x hx
-    simp only [Set.mem_ofPred_eq] at hx
+    simp only [Set.mem_setOf_eq] at hx
     have hx' : x ∈ (chartAt H α).sourceᶜ ∨ x ∈ (chartAt H α).source := by
       by_cases h : x ∈ (chartAt H α).source
       · exact Or.inr h

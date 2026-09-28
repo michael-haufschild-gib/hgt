@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import Mathlib.Analysis.Convex.GaugeRescale
 import Mathlib.Topology.Algebra.Module.FiniteDimension
@@ -125,7 +126,7 @@ theorem mem_frontier_coordinateSimplex_iff (n : ℕ) (x : coordinateSimplex n) :
       (stdSimplexCoordinateHomeomorph n).symm x ∈ boundary (Fin (n + 1)) := by
   rw [frontier, (isCompact_coordinateSimplex n).isClosed.closure_eq,
     mem_sdiff, interior_coordinateSimplex]
-  simp only [x.prop, true_and, mem_ofPred_eq]
+  simp only [x.prop, true_and, mem_setOf_eq]
   constructor
   · intro h
     change ∃ i, ((stdSimplexCoordinateHomeomorph n).symm x).val i = 0

@@ -16,7 +16,7 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | L3 zero division | outward sine Green operator `T_α`, relative bounds, ODE, Fourier division | `ThetaZeroDivisionSource` | done (single division; iterates/partial fractions pending) |
 | L4 renewal | `P,ν,Q,D`, renewal log series, `Xi(2iλ)=(a+λ)D(λ)+(a-λ)D(-λ)`, cosh factorization, waiting-time law `μ`, phase `Φ`, exit density, compound workload, quadrant law | `ThetaRenewalIncrement`, `ThetaRenewalLogKernel`, `ThetaRenewalAnalyticContinuation`, `ThetaRenewalCoshFactorization`, `ThetaRenewalSeamGerm`, `ThetaRenewalWaitingTime`, `ThetaRenewalProbabilityPhase`, `ThetaRenewalPhaseSlope`, `ThetaRenewalPhaseLevel`, `ThetaRenewalExitDensity` (+ HTGeometry `VolterraConvolutionAlgebra`, `VolterraConvolutionCalculus`, `DecreasingSineTransformPositivity`) | done |
 | L5 quantile | CDF/quantile/`B,D,T,A` on `L²(0,1)` (partly in corpus) | existing Hedenmalm modules | audit |
-| L6 complex analysis | Rouché/Hurwitz, Jensen+RvM capacity, indicator/PL | search corpus | audit |
+| L6 complex analysis | Rouché/Hurwitz (max modulus on `1/G`), Jensen+RvM capacity, sector Phragmén–Lindelöf | HTGeometry `HurwitzMaxModulusZeros`, `JensenIntegratedCountBound`, `SectorPhragmenLindelof`; `ThetaTailDivisorCapacity`, `ThetaTailSectorialGammaBound` | done |
 
 ## Cards (status: todo / partial / done)
 
@@ -38,8 +38,8 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | positive-real-zero-division | L3 | done → 3-formalized (`ThetaZeroDivisionSource`) |
 | euler-zero-division-seed-transfer | L3 | todo |
 | endpoint-harmonic-completeness | L3, tail-capacity | todo |
-| tail-divisor-capacity-threshold | L6 | Lean complete (`ThetaRelativeSourceRigidity`, `ThetaTailDivisorCapacity`, `ThetaTailSimpleCriticalThreshold`, `ThetaTailCapacitySharpness`, `ThetaTailSectorialGammaBound`; HTGeometry `GammaHorizontalRatio`, `SectorPhragmenLindelof`, `JensenIntegratedCountBound`, `GaussianPairControlQuotient`); promotion waits on derivative-packets companion claim |
-| derivative-dark-divisor-packets | partial corpus, L6 | todo |
+| tail-divisor-capacity-threshold | L6 | DONE → 3-formalized (`ThetaRelativeSourceRigidity`, `ThetaTailDivisorCapacity`, `ThetaTailSimpleCriticalThreshold`, `ThetaTailCapacitySharpness`, `ThetaTailSectorialGammaBound`; HTGeometry `GammaHorizontalRatio`, `SectorPhragmenLindelof`, `JensenIntegratedCountBound`, `GaussianPairControlQuotient`) |
+| derivative-dark-divisor-packets | L6 | DONE → 3-formalized (`ThetaDerivativePacketDivisor`, `ThetaSourceTailRatioCalculus`, `ThetaDerivativePacketLogConcavity`, `ThetaDerivativePacketSpectralBoundary`, `ThetaSourceTailDerivativeModeration`, `ThetaCompactTailInterpolation`, `ThetaCompactTailSchwartzConvergence`, `ThetaCompactTailImplant`; HTGeometry `HurwitzMaxModulusZeros`) |
 | compact-critical-strip-zero-engineering | bumps, Riemann–Lebesgue | done → 3-formalized (`ThetaCompactStripZeroEngineering`, `ThetaAnalyticStripZeroEngineering`, `ThetaSourceSurgeryToolkit`; HTGeometry `OscillatoryPacketFourier`, `EvenAnchorProjection`) |
 | global-riccati-order-one-offline-countermodel | Riccati Gaussian family `ThetaRiccatiGaussianCountermodel` | done → 3-formalized |
 | riccati-three-charge-offline-countermodel | L6 | done → 3-formalized (`ThetaRiccatiThreeChargeCountermodel`) |

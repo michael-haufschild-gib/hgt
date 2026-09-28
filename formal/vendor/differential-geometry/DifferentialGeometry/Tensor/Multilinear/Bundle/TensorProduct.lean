@@ -1,5 +1,6 @@
 /-
 Authors: Jack McCarthy
+Local modifications: pointwise product algebra proofs for Mathlib 4.32.2.
 -/
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Section
@@ -103,42 +104,30 @@ noncomputable def productBilinear (s q : ℕ) (x : B) :
     Bundle.continuousMultilinearMap 𝕜 (s + q) F E x :=
   LinearMap.mk₂ 𝕜 productFun
     (fun α₁ α₂ β => by
-      apply toModel_injective (F := F) (E := E)
-      simp only [productFun, toModel_add, toModel_ofModel]
-      ext m
-      simp only [ContinuousMultilinearMap.domDomCongr_apply,
-                 ContinuousMultilinearMap.uncurrySum_apply,
-                 ContinuousMultilinearMap.smulRight_apply,
-                 add_apply,
-                 smul_apply, smul_eq_mul]
-      ring)
+      ext v
+      rw [product_fun_apply]
+      change (α₁ (v ∘ Fin.castAdd q) + α₂ (v ∘ Fin.castAdd q)) *
+        β (v ∘ Fin.natAdd s) = productFun α₁ β v + productFun α₂ β v
+      simp only [product_fun_apply, add_mul])
     (fun c α β => by
-      apply toModel_injective (F := F) (E := E)
-      simp only [productFun, toModel_smul, toModel_ofModel]
-      ext m
-      simp only [ContinuousMultilinearMap.domDomCongr_apply,
-                 ContinuousMultilinearMap.uncurrySum_apply,
-                 ContinuousMultilinearMap.smulRight_apply,
-                 smul_apply, smul_eq_mul]
-      ring)
+      ext v
+      rw [product_fun_apply]
+      change (c * α (v ∘ Fin.castAdd q)) * β (v ∘ Fin.natAdd s) =
+        c * productFun α β v
+      simp only [product_fun_apply, mul_assoc])
     (fun α β₁ β₂ => by
-      apply toModel_injective (F := F) (E := E)
-      simp only [productFun, toModel_add, toModel_ofModel]
-      ext m
-      simp only [ContinuousMultilinearMap.domDomCongr_apply,
-                 ContinuousMultilinearMap.uncurrySum_apply,
-                 ContinuousMultilinearMap.smulRight_apply,
-                 add_apply,
-                 smul_apply, smul_eq_mul]
-      ring)
+      ext v
+      rw [product_fun_apply]
+      change α (v ∘ Fin.castAdd q) *
+        (β₁ (v ∘ Fin.natAdd s) + β₂ (v ∘ Fin.natAdd s)) =
+        productFun α β₁ v + productFun α β₂ v
+      simp only [product_fun_apply, mul_add])
     (fun c α β => by
-      apply toModel_injective (F := F) (E := E)
-      simp only [productFun, toModel_smul, toModel_ofModel]
-      ext m
-      simp only [ContinuousMultilinearMap.domDomCongr_apply,
-                 ContinuousMultilinearMap.uncurrySum_apply,
-                 ContinuousMultilinearMap.smulRight_apply,
-                 smul_apply, smul_eq_mul]
+      ext v
+      rw [product_fun_apply]
+      change α (v ∘ Fin.castAdd q) * (c * β (v ∘ Fin.natAdd s)) =
+        c * productFun α β v
+      rw [product_fun_apply]
       ring)
 
 noncomputable def fromTensor (s q : ℕ) (x : B) :
@@ -456,7 +445,9 @@ noncomputable def product
   ext V
   change Bundle.continuousMultilinearMap.productFun (α x)
     ((0 : MultilinearSection 𝕜 F IB E n q) x) V = _
-  simp [Bundle.continuousMultilinearMap.product_fun_apply, ContMDiffSection.coe_zero]
+  rw [Bundle.continuousMultilinearMap.product_fun_apply]
+  change (α x) (V ∘ Fin.castAdd q) * 0 = 0
+  exact mul_zero _
 
 theorem product_add_left (α β : MultilinearSection 𝕜 F IB E n s)
     (γ : MultilinearSection 𝕜 F IB E n q) :

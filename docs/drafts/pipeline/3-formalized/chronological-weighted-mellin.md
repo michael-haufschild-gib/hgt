@@ -43,6 +43,6 @@ Audit artifacts: `/tmp/chronological_weighted_manifest.json`,
 The [fixed-tail theorem](chronological-finite-tail-obstruction.md) is now
 Lean-complete, using this Mellin identity through the
 [weighted-boundary leaf](chronological-weighted-boundary.md).
-The [growing-moment source and logarithmic window](../2-fully-proven/chronological-growing-moment-source.md)
-also remain paper-only. No failed route has been retired on the strength of
+The [growing-moment source and logarithmic window](chronological-growing-moment-source.md)
+are Lean-complete as well. No failed route has been retired on the strength of
 this component.

@@ -155,8 +155,8 @@ theorem gmGram_eq (m N : ℕ) (hN : 0 < N) (i j : Fin (m + 2)) :
   rw [gmVec, gmVec, zpow_add₀ hk]
 
 theorem dotProduct_gmGram_mulVec (m N : ℕ) (hN : 0 < N) (c : Fin (m + 2) → ℝ) :
-    ∑ i, c i * (gmGram m N).mulVec c i = N * quadForm (gmGramDisc m N) c := by
-  simp only [Matrix.mulVec, dotProduct, gmGram_eq m N hN, quadForm, Finset.mul_sum]
+    ∑ i, c i * (gmGram m N).mulVec c i = N * gramQuadForm (gmGramDisc m N) c := by
+  simp only [Matrix.mulVec, dotProduct, gmGram_eq m N hN, gramQuadForm, Finset.mul_sum]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
 theorem abs_gmVec_le {m N k : ℕ} (hk : k ∈ Finset.Ioc (N / 2) N) (i : Fin (m + 2)) :
@@ -178,12 +178,12 @@ theorem abs_gmVec_le {m N k : ℕ} (hk : k ∈ Finset.Ioc (N / 2) N) (i : Fin (m
     _ ≤ 2 := by
         rw [zpow_neg_one, inv_le_comm₀ hx0 (by norm_num)]; linarith
 
-/-- **Coercivity and the coefficient bound.**  For all large `N` the Gram matrix is invertible and
-`√(Σ cᵢ²) ≤ √(Σ bᵢ²)/(λN)`. -/
-theorem exists_gmGram_coercive (m : ℕ) :
-    ∃ lam : ℝ, 0 < lam ∧ ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N →
-      IsUnit (gmGram m N).det ∧
-        Real.sqrt (∑ i, gmCoeff m N i ^ 2) ≤ Real.sqrt (∑ i, gmRhs m N i ^ 2) / (lam * N) := by
+/-- **Coercivity and the scaled inverse bound.**  For all large `N` the Gram matrix is invertible
+and `N G_N⁻¹` is bounded: `√(Σ ((G_N⁻¹ y)ᵢ)²) ≤ √(Σ yᵢ²)/(λN)` for every `y`. -/
+theorem exists_gmGram_inverse_bound (m : ℕ) :
+    ∃ lam : ℝ, 0 < lam ∧ ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N → IsUnit (gmGram m N).det ∧
+      ∀ y : Fin (m + 2) → ℝ, Real.sqrt (∑ i, ((gmGram m N)⁻¹.mulVec y i) ^ 2) ≤
+        Real.sqrt (∑ i, y i ^ 2) / (lam * N) := by
   obtain ⟨lam, hlam, N₀, hQ⟩ := exists_gmGramDisc_coercive m
   refine ⟨lam, hlam, N₀ + 1, fun N hN => ?_⟩
   have hNpos : 0 < N := by omega
@@ -208,25 +208,53 @@ theorem exists_gmGram_coercive (m : ℕ) :
     have := (Finset.sum_eq_zero_iff_of_nonneg (fun j _ => sq_nonneg ((x - y) j))).mp hsum i
       (Finset.mem_univ i)
     exact sub_eq_zero.mp (pow_eq_zero_iff (n := 2) (by norm_num) |>.mp this)
-  refine ⟨hdet, ?_⟩
-  set c := gmCoeff m N with hc
-  set b := gmRhs m N with hb
-  have hcs : lam * N * ∑ i, c i ^ 2 ≤ Real.sqrt (∑ i, c i ^ 2) * Real.sqrt (∑ i, b i ^ 2) := by
+  refine ⟨hdet, fun y => ?_⟩
+  set c := (gmGram m N)⁻¹.mulVec y with hc
+  have hGc : (gmGram m N).mulVec c = y := by
+    rw [hc, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hdet, Matrix.one_mulVec]
+  have hcs : lam * N * ∑ i, c i ^ 2 ≤ Real.sqrt (∑ i, c i ^ 2) * Real.sqrt (∑ i, y i ^ 2) := by
     refine (hcoer c).trans ?_
-    rw [gmGram_mulVec_gmCoeff hdet]
+    rw [hGc]
     exact Real.sum_mul_le_sqrt_mul_sqrt _ _ _
   have hS : 0 ≤ ∑ i, c i ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
   rw [le_div_iff₀ (by positivity)]
   rcases (Real.sqrt_nonneg (∑ i, c i ^ 2)).eq_or_lt with h0 | hpos
   · rw [← h0]; simp
   · have h1 : Real.sqrt (∑ i, c i ^ 2) * (lam * N * Real.sqrt (∑ i, c i ^ 2)) ≤
-        Real.sqrt (∑ i, c i ^ 2) * Real.sqrt (∑ i, b i ^ 2) := by
+        Real.sqrt (∑ i, c i ^ 2) * Real.sqrt (∑ i, y i ^ 2) := by
       calc Real.sqrt (∑ i, c i ^ 2) * (lam * N * Real.sqrt (∑ i, c i ^ 2))
           = lam * N * (Real.sqrt (∑ i, c i ^ 2) * Real.sqrt (∑ i, c i ^ 2)) := by ring
         _ = lam * N * ∑ i, c i ^ 2 := by rw [Real.mul_self_sqrt hS]
         _ ≤ _ := hcs
     have := le_of_mul_le_mul_left h1 hpos
     linarith
+
+/-- **Coercivity and the coefficient bound.**  For all large `N` the Gram matrix is invertible and
+`√(Σ cᵢ²) ≤ √(Σ bᵢ²)/(λN)`. -/
+theorem exists_gmGram_coercive (m : ℕ) :
+    ∃ lam : ℝ, 0 < lam ∧ ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N →
+      IsUnit (gmGram m N).det ∧
+        Real.sqrt (∑ i, gmCoeff m N i ^ 2) ≤ Real.sqrt (∑ i, gmRhs m N i ^ 2) / (lam * N) := by
+  obtain ⟨lam, hlam, N₀, h⟩ := exists_gmGram_inverse_bound m
+  exact ⟨lam, hlam, N₀, fun N hN => ⟨(h N hN).1, (h N hN).2 (gmRhs m N)⟩⟩
+
+/-- **The scaled Gram matrices converge entrywise** to `∫_{1/2}^1 v vᵀ`. -/
+theorem tendsto_gmGramDisc (m : ℕ) (i j : Fin (m + 2)) :
+    Tendsto (fun N : ℕ => gmGramDisc m N i j) atTop (𝓝 (gmGramLim m i j)) := by
+  obtain ⟨C, hC⟩ := exists_abs_halfTailSum_zpow_sub_le (gmExp m i + gmExp m j)
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  obtain ⟨N₁, hN₁⟩ := exists_nat_gt (|C| / ε)
+  refine ⟨N₁ + 1, fun N hN => ?_⟩
+  have hNpos : 0 < N := by omega
+  have hNr : (0 : ℝ) < N := by exact_mod_cast hNpos
+  rw [Real.dist_eq]
+  refine lt_of_le_of_lt ((hC N hNpos).trans (div_le_div_of_nonneg_right (le_abs_self C)
+    hNr.le)) ?_
+  rw [div_lt_iff₀ hNr]
+  have : |C| / ε < N := hN₁.trans (by exact_mod_cast (by omega : N₁ < N))
+  rw [div_lt_iff₀ hε] at this
+  linarith
 
 /-- **The scaled right-hand side tends to zero** (prime number theorem). -/
 theorem tendsto_gmRhs_div (m : ℕ) (i : Fin (m + 2)) :
@@ -281,8 +309,10 @@ theorem tendsto_gmRhs_div (m : ℕ) (i : Fin (m + 2)) :
       refine (tendsto_halfPrefix_moebius_pow (2 * (j + 1) - 1)).congr fun N => ?_
       simp only [gmVec, he', zpow_natCast]
 
-/-- **Every fixed order is eventually admissible.** -/
-theorem eventually_gmAdmissible (m : ℕ) : ∀ᶠ N : ℕ in atTop, GmAdmissible N m := by
+/-- **For each fixed order the tail coefficients tend to zero uniformly.** -/
+theorem eventually_abs_gmTail_le (m : ℕ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, IsUnit (gmGram m N).det ∧
+      ∀ k ∈ Finset.Ioc (N / 2) N, |gmTail m N k| ≤ ε := by
   obtain ⟨lam, hlam, N₀, hco⟩ := exists_gmGram_coercive m
   have hsum : Tendsto (fun N : ℕ => ∑ i, (gmRhs m N i / N) ^ 2) atTop (𝓝 0) := by
     have := tendsto_finsetSum (s := Finset.univ)
@@ -293,7 +323,7 @@ theorem eventually_gmAdmissible (m : ℕ) : ∀ᶠ N : ℕ in atTop, GmAdmissibl
   set K : ℝ := 2 * Real.sqrt (m + 2) / lam with hK
   have hK0 : 0 < K := by positivity
   filter_upwards [eventually_ge_atTop N₀, eventually_gt_atTop 0,
-    hsqrt.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < 1 / K))] with N hN hNpos hsmall
+    hsqrt.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < ε / K))] with N hN hNpos hsmall
   have hNr : (0 : ℝ) < N := by exact_mod_cast hNpos
   obtain ⟨hdet, hcb⟩ := hco N hN
   refine ⟨hdet, fun k hk => ?_⟩
@@ -320,8 +350,69 @@ theorem eventually_gmAdmissible (m : ℕ) : ∀ᶠ N : ℕ in atTop, GmAdmissibl
         gcongr
         exact hl1.trans (mul_le_mul_of_nonneg_left hcb (Real.sqrt_nonneg _))
     _ = K * Real.sqrt (∑ i, (gmRhs m N i / N) ^ 2) := by rw [hK]; ring
-    _ ≤ K * (1 / K) := mul_le_mul_of_nonneg_left hsmall.le hK0.le
-    _ = 1 := by field_simp
+    _ ≤ K * (ε / K) := mul_le_mul_of_nonneg_left hsmall.le hK0.le
+    _ = ε := by field_simp
+
+/-- **Every fixed order is eventually admissible.** -/
+theorem eventually_gmAdmissible (m : ℕ) : ∀ᶠ N : ℕ in atTop, GmAdmissible N m :=
+  eventually_abs_gmTail_le m one_pos
+
+/-- **The Gram tail is the unique least-squares solution.**  Every tail with the same scaled
+moments differs from the Gram tail by a vector orthogonal to the sampled moment columns, so
+`Σ a'_k² = Σ a_k² + Σ (a'_k - a_k)²`. -/
+theorem sum_sq_tail_eq_add {m N : ℕ} (h : IsUnit (gmGram m N).det) (a' : ℕ → ℝ)
+    (ha' : ∀ i, ∑ k ∈ Finset.Ioc (N / 2) N, a' k * gmVec m N k i = gmRhs m N i) :
+    ∑ k ∈ Finset.Ioc (N / 2) N, a' k ^ 2 = ∑ k ∈ Finset.Ioc (N / 2) N, gmTail m N k ^ 2 +
+      ∑ k ∈ Finset.Ioc (N / 2) N, (a' k - gmTail m N k) ^ 2 := by
+  have hcross : ∑ k ∈ Finset.Ioc (N / 2) N, gmTail m N k * (a' k - gmTail m N k) = 0 := by
+    have hGc : ∀ i, ∑ k ∈ Finset.Ioc (N / 2) N, gmTail m N k * gmVec m N k i = gmRhs m N i := by
+      intro i
+      rw [← gmGram_mulVec_gmCoeff h, gmGram_mulVec]
+      exact Finset.sum_congr rfl fun k _ => by rw [gmTail]; ring
+    set d : ℕ → ℝ := fun k => a' k - gmTail m N k with hd
+    have horth : ∀ i, ∑ k ∈ Finset.Ioc (N / 2) N, d k * gmVec m N k i = 0 := by
+      intro i
+      simp only [hd, sub_mul, Finset.sum_sub_distrib, ha', hGc, sub_self]
+    calc ∑ k ∈ Finset.Ioc (N / 2) N, gmTail m N k * d k
+        = ∑ i, gmCoeff m N i * ∑ k ∈ Finset.Ioc (N / 2) N, d k * gmVec m N k i := by
+          simp only [gmTail, Finset.sum_mul, Finset.mul_sum]
+          rw [Finset.sum_comm]
+          exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => by ring
+      _ = 0 := by simp [horth]
+  have hexp : ∀ k, a' k ^ 2 = gmTail m N k ^ 2 + 2 * (gmTail m N k * (a' k - gmTail m N k)) +
+      (a' k - gmTail m N k) ^ 2 := fun k => by ring
+  simp only [hexp, Finset.sum_add_distrib, ← Finset.mul_sum, hcross, mul_zero, add_zero]
+
+/-- Minimality and uniqueness of the least-squares tail. -/
+theorem gmTail_leastSquares {m N : ℕ} (h : IsUnit (gmGram m N).det) (a' : ℕ → ℝ)
+    (ha' : ∀ i, ∑ k ∈ Finset.Ioc (N / 2) N, a' k * gmVec m N k i = gmRhs m N i) :
+    ∑ k ∈ Finset.Ioc (N / 2) N, gmTail m N k ^ 2 ≤ ∑ k ∈ Finset.Ioc (N / 2) N, a' k ^ 2 ∧
+      (∑ k ∈ Finset.Ioc (N / 2) N, a' k ^ 2 = ∑ k ∈ Finset.Ioc (N / 2) N, gmTail m N k ^ 2 →
+        ∀ k ∈ Finset.Ioc (N / 2) N, a' k = gmTail m N k) := by
+  have heq := sum_sq_tail_eq_add h a' ha'
+  have hnn : 0 ≤ ∑ k ∈ Finset.Ioc (N / 2) N, (a' k - gmTail m N k) ^ 2 :=
+    Finset.sum_nonneg fun _ _ => sq_nonneg _
+  refine ⟨by linarith, fun hE k hk => ?_⟩
+  have h0 : ∑ k ∈ Finset.Ioc (N / 2) N, (a' k - gmTail m N k) ^ 2 = 0 := by linarith
+  have := (Finset.sum_eq_zero_iff_of_nonneg fun j _ => sq_nonneg (a' j - gmTail m N j)).mp h0 k hk
+  exact sub_eq_zero.mp (pow_eq_zero_iff (n := 2) (by norm_num) |>.mp this)
+
+/-- **The least-squares coefficients tend to zero** for each fixed order. -/
+theorem tendsto_gmCoeff (m : ℕ) :
+    Tendsto (fun N : ℕ => Real.sqrt (∑ i, gmCoeff m N i ^ 2)) atTop (𝓝 0) := by
+  obtain ⟨lam, hlam, N₀, hco⟩ := exists_gmGram_coercive m
+  have hsum : Tendsto (fun N : ℕ => Real.sqrt (∑ i, (gmRhs m N i / N) ^ 2) / lam)
+      atTop (𝓝 0) := by
+    have := tendsto_finsetSum (s := Finset.univ) (fun i _ => (tendsto_gmRhs_div m i).pow 2)
+    simpa using (this.sqrt).div_const lam
+  refine squeeze_zero' (Eventually.of_forall fun N => Real.sqrt_nonneg _) ?_ hsum
+  filter_upwards [eventually_ge_atTop N₀, eventually_gt_atTop 0] with N hN hNpos
+  have hNr : (0 : ℝ) < N := by exact_mod_cast hNpos
+  refine (hco N hN).2.trans_eq ?_
+  have : ∑ i, (gmRhs m N i / N) ^ 2 = (∑ i, gmRhs m N i ^ 2) / (N : ℝ) ^ 2 := by
+    rw [Finset.sum_div]; exact Finset.sum_congr rfl fun i _ => by rw [div_pow]
+  rw [this, Real.sqrt_div' _ (sq_nonneg _), Real.sqrt_sq hNr.le]
+  field_simp
 
 /-! ### The diagonal order and the source -/
 

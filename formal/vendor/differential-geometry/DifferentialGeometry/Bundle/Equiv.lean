@@ -10,6 +10,8 @@ import DifferentialGeometry.Bundle.ContinuousLinearMapSection.PointwiseSmoothnes
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 name `LinearEquiv.ofLinear`.
+
 
 open Bundle
 
@@ -1116,7 +1118,7 @@ noncomputable def ContMDiffVectorBundleEquiv.ofMutualInverseHoms
           contMDiff_toFun := hcΦ
           contMDiff_invFun := hcΨ }
       fiberLinearEquiv := fun x =>
-        LinearEquiv.ofLinearMap (φ x) (ψ x)
+        LinearEquiv.ofLinear (φ x) (ψ x)
           (LinearMap.ext fun v => by
             have h := hΦΨ ⟨x, v⟩
             simp only [compatΦ, compatΨ] at h

@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Topology.Homotopy.OpenCollapse
 import Mathlib.Topology.Homotopy.HomotopyGroup
 import Mathlib.Analysis.SpecialFunctions.Sigmoid
@@ -38,7 +39,7 @@ theorem isOpen_cubeInterior (N : Type*) [Finite N] : IsOpen (cubeInterior N) := 
   have heq : cubeInterior N = ⋂ i : N,
       (fun t : N → unitInterval => (t i).val) ⁻¹' Ioo (0 : ℝ) 1 := by
     ext t
-    simp only [cubeInterior, mem_ofPred_eq, mem_iInter, mem_preimage, mem_Ioo]
+    simp only [cubeInterior, mem_setOf_eq, mem_iInter, mem_preimage, mem_Ioo]
   rw [heq]
   exact isOpen_iInter_of_finite fun i => isOpen_Ioo.preimage
     (continuous_subtype_val.comp (continuous_apply i))

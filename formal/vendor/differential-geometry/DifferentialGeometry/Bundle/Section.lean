@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 local-frame coefficient API.
 /-
 Authors: Jack McCarthy
 -/
@@ -439,11 +440,11 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_pointwise
       (fun x => χ x • hframe.coeff i x (τ x)) := by
     intro i
     have hsmooth_lfc : ContMDiff I 𝓘(ℝ) (↑n)
-        (fun x => χ x • e.localFrameCoeff I b i x (τ x)) := by
+        (fun x => χ x • e.localFrame_coeff I b i x (τ x)) := by
       intro x
       by_cases hx : x ∈ tsupport (χ : M → ℝ)
       · exact (χ.contMDiff.of_le (WithTop.coe_le_coe.mpr le_top)).contMDiffAt.smul
-          (contMDiffAt_localFrameCoeff b (hχsupport hx) τ.contMDiff.contMDiffAt i)
+          (contMDiffAt_localFrame_coeff b (hχsupport hx) τ.contMDiff.contMDiffAt i)
       · have hχ_zero : ∀ᶠ y in nhds x, (χ : M → ℝ) y = 0 := by
           apply Filter.Eventually.mono
             ((isClosed_tsupport (χ : M → ℝ)).isOpen_compl.mem_nhds hx)
@@ -457,9 +458,9 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_pointwise
         ext j; simp [IsLocalFrameOn.toBasisAt, Trivialization.localFrame,
           Trivialization.basisAt, hx]
       simp only [hframe.coeff_apply_of_mem hx,
-        e.localFrameCoeff_apply_of_mem_baseSet b hx, hbasis]
+        e.localFrame_coeff_apply_of_mem_baseSet b hx, hbasis]
     · simp [hframe.coeff_apply_of_notMem hx,
-        e.localFrameCoeff_apply_of_notMem_baseSet b hx]
+        e.localFrame_coeff_apply_of_notMem_baseSet b hx]
   let u' : Fin (Module.finrank ℝ F₁) → C^n⟮I, M; ℝ⟯ := fun i =>
     ⟨fun x => χ x • hframe.coeff i x (τ x), hcoeff_smooth i⟩
   have hu'_zero : ∀ i, (u' i) p = 0 := by

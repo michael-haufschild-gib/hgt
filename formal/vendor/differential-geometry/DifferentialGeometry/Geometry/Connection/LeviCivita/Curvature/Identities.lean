@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 local-frame coefficient API.
 import DifferentialGeometry.Geometry.Curvature.Components.Basic
 import DifferentialGeometry.Geometry.Curvature.Components.Lowering
 import DifferentialGeometry.Geometry.Curvature.Components.TraceOneForm
@@ -380,7 +381,7 @@ private theorem coordinateFrame_coeff_mdiffAt_of_contMDiffAt_one
         (fun y : M =>
           (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y)) x₀ := by
     have hraw :=
-      contMDiffAt_localFrameCoeff
+      contMDiffAt_localFrame_coeff
         (I := I) (V := TangentSpace I) (e := e)
         (b := Module.finBasis Real E) (s := Z)
         (k := (1 : WithTop ℕ∞)) hx hZ j

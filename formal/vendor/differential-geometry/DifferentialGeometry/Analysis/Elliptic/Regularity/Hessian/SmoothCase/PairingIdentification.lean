@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.Pairing.LaplacianDomain
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.LpIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Defs
@@ -425,7 +426,7 @@ theorem hessPairingLpOnLapDom_eq_hessPairingSmoothLp_of_per_chart_ae
     rw [MeasureTheory.ae_iff]
     refine MeasureTheory.measure_mono_null ?_ h_union_null
     intro x hx
-    simp only [Set.mem_ofPred_eq, not_forall] at hx
+    simp only [Set.mem_setOf_eq, not_forall] at hx
     obtain ⟨α, hα_in_finset, hα_ne⟩ := hx
     simp only [Set.mem_iUnion]
     exact ⟨α, hα_in_finset, hα_ne⟩

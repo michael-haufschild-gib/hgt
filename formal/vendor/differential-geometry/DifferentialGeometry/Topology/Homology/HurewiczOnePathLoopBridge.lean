@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Topology.Homology.HurewiczOneAbelianization
 import DifferentialGeometry.Topology.Homology.HurewiczTwoMultiplication
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.PathEvaluation
@@ -257,16 +258,16 @@ theorem hurewiczOneLoopGeneration_iff_surjective_sphereHurewicz_circleSphereFund
     simpa only [Int.cast_smul_eq_zsmul ℤ] using ψ.range.zsmul_mem hz k
   let R : Submodule ℤ (integralSingularHomology 1 X) :=
     { carrier := {z | z ∈ ψ.range}
-      zero_mem' := by simpa only [Set.mem_ofPred_eq] using ψ.range.zero_mem
+      zero_mem' := by simpa only [Set.mem_setOf_eq] using ψ.range.zero_mem
       add_mem' := fun hx hy => by
-        simpa only [Set.mem_ofPred_eq] using
-          ψ.range.add_mem (by simpa only [Set.mem_ofPred_eq] using hx)
-            (by simpa only [Set.mem_ofPred_eq] using hy)
+        simpa only [Set.mem_setOf_eq] using
+          ψ.range.add_mem (by simpa only [Set.mem_setOf_eq] using hx)
+            (by simpa only [Set.mem_setOf_eq] using hy)
       smul_mem' := fun k z hz => by
-        have hz' : z ∈ ψ.range := by simpa only [Set.mem_ofPred_eq] using hz
+        have hz' : z ∈ ψ.range := by simpa only [Set.mem_setOf_eq] using hz
         have h := ψ.range.zsmul_mem hz' k
         rw [← Int.cast_smul_eq_zsmul ℤ k z] at h
-        simpa only [Set.mem_ofPred_eq, Int.cast_id] using h }
+        simpa only [Set.mem_setOf_eq, Int.cast_id] using h }
   have hS_le : Submodule.span ℤ (Set.range (fun γ : Path x x => integralPathLoopClass γ)) ≤
       R := by
     refine Submodule.span_le.mpr fun γ hγ => ?_

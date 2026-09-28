@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Topology.Simplex.SupportFace
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 
@@ -23,7 +24,7 @@ theorem isClosed_skeleton (k : ℕ) : IsClosed (skeleton ι k) := by
   classical
   have h : skeleton ι k = ⋃ s : {s : Finset ι // s.card ≤ k + 1}, supportFace s.val := by
     ext p
-    simp only [skeleton, Set.mem_ofPred_eq, Set.mem_iUnion, Subtype.exists, exists_prop]
+    simp only [skeleton, Set.mem_setOf_eq, Set.mem_iUnion, Subtype.exists, exists_prop]
   rw [h]
   exact isClosed_iUnion_of_finite fun s ↦ isClosed_supportFace s.val
 

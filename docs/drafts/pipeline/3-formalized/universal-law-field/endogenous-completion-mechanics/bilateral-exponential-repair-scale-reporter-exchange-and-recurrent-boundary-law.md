@@ -1,8 +1,8 @@
 # Bilateral exponential repair scale, reporter exchange, and recurrent boundary law
 
 - **ID:** ULF-ECMPL-2
-- **Stage:** 2-fully-proven
-- **Type:** ENDOGENOUS COMPLETION THEOREM / NON-REWRITING CALIBRATION
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** Bilateral exponentially weighted convolution algebras form a strict repair scale.
   Every horizontal source intervention shifts a boundary reporter outside its current fibre and is
   bounded only after the next source-weight repair; reflection and phase remain isometric, phase
@@ -416,7 +416,34 @@ weighted-`ell^1` infrastructure is built.
 - [ ] literal arithmetic repair-scale landing;
 - [ ] RH consequence.
 
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.BilateralExponentialConvolutionAlgebra`, `GaloisForLFunctions.HTGeometry.BilateralExponentialRepairScale`, `GaloisForLFunctions.HTGeometry.ConstitutiveBilateralExponentialRepair`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules `GaloisForLFunctions.HTGeometry.BilateralExponentialConvolutionAlgebra` (97 constants), `GaloisForLFunctions.HTGeometry.BilateralExponentialRepairScale` (106 constants), with the finite core `GaloisForLFunctions.HTGeometry.ConstitutiveBilateralExponentialRepair` (30 constants); axiom audit clean. Namespace `BilateralRepair`; `𝒜_a` is `Fibre a` (`[Fact (0 ≤ a)]`), sequences via `Fibre.seq`.
+
+| Claim | Lean declaration |
+|-|-|
+| (BER.1)–(BER.4) weight, fibre, Cauchy formation, reporter, reflection, phase, intervention | `expWeight`, `Admissible`, `wnorm`, `Fibre`, `conv`, `reporter`, `reporterCoeff`, `reflectSeq`, `phaseSeq`, `tiltSeq` |
+| Thm 2.1 submultiplicative weight, (BER.5) | `expWeight_add_le`, `Admissible.conv`, `wnorm_conv_le` |
+| Thm 2.1 commutative unital Banach algebra (Cauchy product commutative/associative, unit `δ₀`, completeness via `ℓ¹` isometry) | `conv_comm`, `conv_assoc`, `conv_unitSeq`, `Fibre.instCommRing`, `Fibre.instNormedCommRing`, `Fibre.instNormedAlgebraComplex`, `Fibre.norm_one_eq`, `Fibre.isometryEquivLp`, `Fibre.instCompleteSpace` |
+| Thm 2.2 `χ_z` continuous character exactly on `|Re z| ≤ a`, norm one | `reporter_conv`, `Fibre.reporterHom`, `Fibre.reporterCLM`, `Fibre.norm_reporterCLM`, `Fibre.exists_reporter_clm_iff` |
+| (BER.7) atom ratio `e^{bk-a|k|}` | `Fibre.reporter_atom_ratio` |
+| (BER.8) character space = annulus `e^{-a} ≤ |w| ≤ e^a` (every character is a strip reporter) | `Fibre.abs_re_le_iff_annulus`, `Fibre.exists_reporter_of_algHom`, `Fibre.hasSum_atoms` |
+| Thm 3.1 (BER.9)–(BER.10) reflection and phase isometries; reporter action | `Fibre.reflect`, `Fibre.phase`, `wnorm_reflectSeq`, `wnorm_phaseSeq`, `reporter_reflectSeq`, `reporter_phaseSeq` |
+| Thm 3.2 (BER.11)–(BER.12) `T_c : 𝒜_{a+|c|} → 𝒜_a` norm one, `χ_z(T_c x) = χ_{z+c}(x)` | `Fibre.tilt`, `Fibre.norm_tilt`, `wnorm_tiltSeq_le`, `reporter_tiltSeq`, `Fibre.reporter_tilt` |
+| Thm 3.2 unbounded on every fixed fibre; loss `|c|` sharp | `tiltSeq_unbounded`, `tiltSeq_loss_sharp` |
+| Thm 4.1 (BER.13)–(BER.15) failure-generated strict repair chain | `repairChain`, `repairChain_strict`, `separatingSeq`, `admissible_separatingSeq`, `not_admissible_separatingSeq`, `Fibre.inclusion`, `Fibre.inclusion_injective` |
+| Thm 4.2 (BER.15a)–(BER.15b) self-catalytic dyadic repair | `selfCatalytic`, `dyadicRepair` |
+| Thm 5.1 (BER.16) `𝒜_∞ = ⋂ 𝒜_a` complete, locally convex, continuous formation; `R`, `U_t`, `T_c` continuous; every `χ_z` continuous | `receiverSubalgebra`, `Receiver`, `Receiver.range_seq`, `Receiver.isClosed_receiver`, `Receiver.instCompleteSpace`, `Receiver.locallyConvexSpace`, `Receiver.continuous_mul`, `Receiver.reflect`, `Receiver.phase`, `Receiver.tilt`, `Receiver.reporterHom`, `Receiver.continuous_reporterHom` |
+| (BER.17) phase periodicity; Cor 6.1 repair grade `nc` exact and divergent | `phaseSeq_add_two_pi`, `Fibre.phase_add_two_pi`, `Receiver.phase_add_two_pi`, `tiltSeq_iterate`, `iterate_repair_grade`, `tendsto_repair_grade` |
+| §7 (BER.18) clock multiplication: small collar loss, unbounded on fixed fibres, all finite jets continuous on `𝒜_∞` | `admissible_clockSeq`, `wnorm_clockSeq_le`, `clockSeq_unbounded`, `Receiver.clock`, `Receiver.seq_clock_pow` |
+| §8 audit: fixed Banach fibre fails (A); `𝒜_∞` admits every reporter (E) | `tiltSeq_unbounded`, `Receiver.reporterHom` |
+| §10 finite core | `stageWeight`, `boundaryReporter`, `nextReporter_not_uniformly_bounded`, `dyadicReporter_self_generates_next` |
+
 ## Log
 
 - 2026-08-14 — theorem derived after character-domain collapse failed to produce its own physical
   landing. Weighted-algebra novelty rejected; endogenous analytic repair genealogy retained.
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import DifferentialGeometry.Topology.Homology.Relative.Excision
 import Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance
@@ -81,8 +82,8 @@ def openCell (I : Type*) [Fintype I] : Set (stdSimplex ℝ I) :=
 
 omit [Nonempty I] in
 theorem isOpen_openCell : IsOpen (openCell I) := by
-  change IsOpen (Set.ofPred (fun x : stdSimplex ℝ I ↦ ∀ i, 0 < x.val i))
-  rw [Set.ofPred_forall]
+  change IsOpen (setOf (fun x : stdSimplex ℝ I ↦ ∀ i, 0 < x.val i))
+  rw [Set.setOf_forall]
   exact isOpen_iInter_of_finite (fun i ↦
     isOpen_lt continuous_const ((continuous_apply i).comp continuous_subtype_val))
 

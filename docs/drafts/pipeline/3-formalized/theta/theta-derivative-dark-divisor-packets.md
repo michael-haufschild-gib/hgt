@@ -1,10 +1,10 @@
 # Positive theta deformations with an exact invisible off-line divisor packet
 
 - **ID:** `theta-derivative-dark-divisor-packets`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean formalization pending
+- **Stage:** 3-formalized (paper theorems formalized unconditionally in Lean; see `theta-derivative-dark-divisor-packets-formalized.md`).
+- **Type:** THEOREM (paper); formalized in Lean
 - **Route:** source-side boundary for STC, CSB, U, K-RVM, and MPLF
-- **Status:** `[PROVED HERE ON PAPER] [NOT AN RH PROOF]`
+- **Status:** `[PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
 
 ## Theorem
 
@@ -282,12 +282,14 @@ current corpus search; that does not establish external publication novelty.
       positive fourth-multiple ratio at infinity in `RHTower.ThetaCuspDerivativeLeadingSign`.
 - [x] Formalize eventual positivity of the full `k⁽⁴ᵐ⁾` on both tails from the
       first-atom error theorem in `RHTower.ThetaCuspDerivativeTailPositivity`.
-- [ ] Formalize global small-`t` positivity and strong log-concavity, moment cancellation,
-      and entire Fourier factor.
-- [ ] Formalize the additional divisor packet as one closed Lean theorem; audit only new modules.
-- [ ] Formalize the compact-tail strengthening and its finite-moment correction.
+- [x] Formalize global small-`t` positivity and strong log-concavity, moment cancellation,
+      and entire Fourier factor (`ThetaDerivativePacketLogConcavity`, `ThetaDerivativePacketDivisor`).
+- [x] Formalize the additional divisor packet as one closed Lean theorem
+      (`thetaDerivativePacket_dark_divisor` in `ThetaDerivativePacketSpectralBoundary`).
+- [x] Formalize the compact-tail strengthening and its finite-moment correction
+      (`exists_thetaCompactTailImplant` in `ThetaCompactTailImplant`).
 
-Both new leaf files pass direct `lake env lean` checks and are wired into the umbrella.
-The leading-sign leaf's targeted build passed. A targeted build of the tail-positivity
-leaf is pending: its dependency graph launched many stale module rebuilds concurrently,
-so it was interrupted to avoid memory exhaustion; no Lean process was left running.
+Every numbered statement (1)–(5), the neighbourhood consequence, the compact-tail strengthening,
+the reciprocal power sums, the detection scale, the logarithmic jet and the spectral-infinity
+boundary theorem are formalized in Lean without hypotheses beyond the card's quantifiers; see the
+certificate `theta-derivative-dark-divisor-packets-formalized.md`.

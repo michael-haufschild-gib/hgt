@@ -7,6 +7,8 @@ import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
 
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 name `ENat.coe_ne_top`.
+
 open Filter InnerProductSpace
 open scoped Topology ContDiff InnerProductSpace
 
@@ -281,7 +283,7 @@ theorem ContDiffAt.laplacian_iteratedFDeriv
       have he : Laplacian.laplacian (iteratedFDeriv ℝ n f) =ᶠ[𝓝 x]
           iteratedFDeriv ℝ n (Laplacian.laplacian f) := by
         have hfn : ContDiffAt ℝ (n + 1 + 2 : ℕ) f x := by simpa using hf
-        filter_upwards [hfn.eventually (fun h => ENat.natCast_ne_top (n + 1 + 2)
+        filter_upwards [hfn.eventually (fun h => ENat.coe_ne_top (n + 1 + 2)
           (WithTop.coe_injective h))] with y hy
         exact ih (hy.of_le (by norm_cast; omega))
       rw [he.fderiv_eq]

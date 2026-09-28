@@ -77,8 +77,8 @@ construction and identify precisely the missing quantitative growth bound.
 **Paper audit outcome:** fixed-m Gram convergence plus unconditional harmonic
 Möbius cancellation proves the bounded growing-jet source. It has an explicit
 exponential residual bound on every [δ,∞), δ>0, but no full-norm estimate.
-[Construction, exact proof and remaining gap](../2-fully-proven/chronological-growing-moment-source.md).
-Both new paper results still require Lean formalization.
+[Construction, exact proof, Lean certificate and remaining gap](../3-formalized/chronological-growing-moment-source.md).
+Both results are Lean-complete; the full-norm [R] estimate remains open.
 
 **K-test complete:** best unit-budget errors at N=512,2048,8192 are
 4.04774603e−6 (m=3), 1.28472776e−6 (m=7), 5.20263969e−7 (m=5).

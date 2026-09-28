@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Topology.Homotopy.CubeInterior
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeHomeomorphism
 
@@ -24,7 +25,7 @@ private def openCube (N : Type u) : Set (N → ℝ) :=
 private theorem isOpen_openCube (N : Type u) [Finite N] : IsOpen (openCube N) := by
   have h : openCube N = ⋂ i : N, (fun x : N → ℝ => x i) ⁻¹' Ioo (0 : ℝ) 1 := by
     ext x
-    simp only [openCube, mem_ofPred_eq, mem_iInter, mem_preimage, mem_Ioo]
+    simp only [openCube, mem_setOf_eq, mem_iInter, mem_preimage, mem_Ioo]
   rw [h]
   exact isOpen_iInter_of_finite fun i => isOpen_Ioo.preimage (continuous_apply i)
 
@@ -100,7 +101,7 @@ private theorem isOpen_liftedOpenCube (N : Type u) [Finite N] :
   have h : liftedOpenCube.{u,v} N =
       ⋂ i : N, (fun x : ULift.{v} (N → ℝ) => x.down i) ⁻¹' Ioo (0 : ℝ) 1 := by
     ext x
-    simp only [liftedOpenCube, mem_ofPred_eq, mem_iInter, mem_preimage, mem_Ioo]
+    simp only [liftedOpenCube, mem_setOf_eq, mem_iInter, mem_preimage, mem_Ioo]
   rw [h]
   exact isOpen_iInter_of_finite fun i =>
     isOpen_Ioo.preimage ((continuous_apply i).comp continuous_uliftDown)

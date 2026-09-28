@@ -1,8 +1,8 @@
 # Source-law prolongation, observer fracture, and withheld-organ reconstruction
 
 - **ID:** ULF-LJPM-1
-- **Stage:** 2 — fully proven on paper
-- **Type:** MECHANISM THEOREM / CROSS-ORGAN RESPONSE LAW
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** constitutive process mathematics; obstruction--promotion mechanics; prime
   Boolean--Mass--Hankel--quantum fusion
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-FORMALIZED] [PRE-RH] [NOT RH]`
@@ -381,6 +381,29 @@ QFI; its second laboratory is the forced passive defect response `(LJP.9)--(LJP.
 - [ ] coefficient-faithful singular admission and cofinal leading-port lower bound
 - [ ] RH selection only after preceding gates
 
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.SourceLawJetPromotion`, `GaloisForLFunctions.HTGeometry.SingularLawJetBlowup`, `GaloisForLFunctions.HTGeometry.FiniteTiltFourOrganResponse`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules `GaloisForLFunctions.HTGeometry.SourceLawJetPromotion` (49 constants), `GaloisForLFunctions.HTGeometry.SingularLawJetBlowup` (19 constants), `GaloisForLFunctions.HTGeometry.FiniteTiltFourOrganResponse` (18 constants); axiom audit clean.
+
+| Claim | Lean declaration |
+|-|-|
+| (LJP.2) evaluation and source-law ideal | `sourceLawEval`, `sourceLawIdeal` |
+| Thm 2.1 (LJP.3) `L(z) ⊆ L(φz)`; equality for injective `φ`; strict inclusion with one coordinate for noninjective `φ` | `sourceLawEval_observer`, `sourceLawIdeal_le_observer`, `sourceLawIdeal_eq_observer_of_injective`, `observer_can_create_relation` |
+| (LJP.4)–(LJP.5) Hasse product and prolonged law | `hasseJetMul`, `IsProlongedProductLaw` |
+| Thm 3.1 (LJP.6) reconstruction, uniqueness, (LJP.7) | `prolongedProductLaw_reconstruct`, `prolongedProductLaw_unique`, `prolongedProductLaw_zero`, `prolongedProductLaw_first` |
+| Cor 3.2 transport and injective reflection | `hasseJetMul_map`, `IsProlongedProductLaw.map`, `isProlongedProductLaw_iff_map_of_injective` |
+| §4 (LJP.8)–(LJP.9) passive split law | `hasseJetUnit`, `IsPassiveSplitLaw`, `hasseJetSquareMiddle`, `hasseJetMul_self_succ` |
+| §4 hidden-response recursion (char ≠ 2, `d₀ ≠ 0`) | `passiveSplitLaw_reconstruct` |
+| (LJP.10) `a₀a₁ + d₀d₁ = 0`, `d₁ = -(a₀/d₀)a₁` | `passiveSplitLaw_first`, `passiveSplitLaw_firstResponse`, `passiveSplit_firstResponse` |
+| (LJP.11)–(LJP.12) organs and `Q M = 4π² H` for an arbitrary finite source law | `tiltIncidence`, `tiltCross`, `tiltMass`, `tiltHankel`, `tiltQFI`, `tiltQFI_mul_tiltMass` |
+| (LJP.13) exact affine-tilt covariance response | `hasDerivAt_tiltCov`, `hasDerivAt_tiltOrgans`, `tiltResponse` |
+| (LJP.15) Hankel response | `hasDerivAt_tiltHankel` |
+| Thm 5.1 (LJP.14) four-organ first-response conservation; (LJP.16) forced QFI response | `hasDerivAt_tiltQFI`, `tiltQFIResponse`, `tilt_fourOrgan_firstResponse_conservation`, `tiltQFIResponse_eq` |
+| Bernoulli prime-clock point: organs are the certified incidence, Mass, Hankel, QFI; QFI response agrees with the certified residual-covariance formula | `booleanTiltMassEnergy_zero`, `booleanTiltHankelDet_zero`, `booleanTiltTransverseQFI_zero`, `hasDerivAt_booleanTiltQFIResponse`, `booleanTilt_fusion_identity`, `booleanTilt_fourOrgan_firstResponse_conservation` |
+
 ## Log
 
 - 2026-08-30 — generic response-scheme proposal rejected as static repackaging after collision with
@@ -390,3 +413,4 @@ QFI; its second laboratory is the forced passive defect response `(LJP.9)--(LJP.
 - 2026-08-30 — formalized the closed mechanism and both laboratories in
   `GaloisForLFunctions.HTGeometry.SourceLawJetPromotion`; direct elaboration and leaf build pass,
   and all audited theorems depend only on Lean/mathlib foundations.
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

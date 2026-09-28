@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Bundle.TangentChart
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Chart.Transition
@@ -138,7 +139,7 @@ private lemma secondaryTrivSndForm_eventuallyEq_applyJacobian [I.Boundaryless]
         (Prod.fst ⁻¹' ((extChartAt I p.proj).target ∩
           (extChartAt I p.proj).symm ⁻¹' (chartAt H α).source)) := by
       ext z
-      simp only [hU_def, Set.mem_ofPred_eq, Set.mem_inter_iff, Set.mem_preimage]
+      simp only [hU_def, Set.mem_setOf_eq, Set.mem_inter_iff, Set.mem_preimage]
       constructor
       · rintro ⟨h1, h2⟩; exact ⟨h1, h1, h2⟩
       · rintro ⟨h1, _, h2⟩; exact ⟨h1, h2⟩
@@ -146,7 +147,7 @@ private lemma secondaryTrivSndForm_eventuallyEq_applyJacobian [I.Boundaryless]
     refine (h1.preimage continuous_fst).inter ((IsOpen.preimage continuous_fst) ?_)
     exact hcont.isOpen_inter_preimage h1 (chartAt H α).open_source
   have hbp_memU : ((extChartAt I.tangent p) p) ∈ U := by
-    rw [hU_def, Set.mem_ofPred_eq, hbp1]
+    rw [hU_def, Set.mem_setOf_eq, hbp1]
     refine ⟨(extChartAt I p.proj).map_source (mem_extChartAt_source (I := I) p.proj), ?_⟩
     rw [(extChartAt I p.proj).left_inv (mem_extChartAt_source (I := I) p.proj)]
     exact hp

@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
@@ -1589,7 +1590,7 @@ private lemma chartPushedRaw_aeEq_zero_of_ae_zero_riemannianMeasure
     rw [Filter.EventuallyEq, MeasureTheory.ae_iff]
     refine MeasureTheory.measure_mono_null ?_ h_chartLocal_offSource_zero
     intro x hx
-    simp only [Set.mem_ofPred_eq] at hx
+    simp only [Set.mem_setOf_eq] at hx
     by_cases hxsrc : x ∈ (chartAt H α).source
     · exfalso
       apply hx

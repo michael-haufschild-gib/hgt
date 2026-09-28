@@ -536,6 +536,21 @@ theorem gaussPairQuotient_not_sectorially_bounded {ω : ℝ} (hω : ω ≠ 0) :
         rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_left hsinh (Real.exp_pos _).le
     _ ≤ _ := hlow
 
+
+/-- **The rigidity quotient is constant.** Under the hypotheses of relative-source rigidity the
+transform is a constant multiple of `XiC`: `H = c F`. In particular the quotient `H/F` has no zeros
+unless it vanishes identically, and exponential type zero. -/
+theorem relativeSource_transform_eq_const_mul {u : ℝ → ℂ} {C : ℝ} (hu : AEStronglyMeasurable u)
+    (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x)
+    (hdiv : ∀ z, analyticOrderAt XiC z ≤ analyticOrderAt (sourceTransform u) z) :
+    ∃ c : ℂ, ∀ z, sourceTransform u z = c * XiC z := by
+  obtain ⟨c, hc⟩ := relativeSource_rigidity hu hC hdiv
+  refine ⟨c, fun z => ?_⟩
+  have h : sourceTransform u z = sourceTransform (fun x => c * thetaSourceC x) z := by
+    unfold sourceTransform
+    exact integral_congr_ae (hc.mono fun x hx => by simp [hx, thetaSourceC])
+  rw [h, sourceTransform_const_mul, sourceTransform_thetaSourceC]
+
 end
 
 end RHTower

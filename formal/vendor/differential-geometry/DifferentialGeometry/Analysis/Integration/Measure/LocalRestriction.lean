@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import Mathlib.Topology.Compactness.LocallyFinite
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
@@ -33,7 +34,7 @@ theorem riemannianMeasure_lintegral_eq_chartLocalMeasure_of_hasCompactSupport
     · have hρx : ρ β x = 0 := by
         by_contra hne
         apply hβ
-        simpa only [S, Set.Finite.mem_toFinset, Set.mem_ofPred_eq] using
+        simpa only [S, Set.Finite.mem_toFinset, Set.mem_setOf_eq] using
           show (Function.support (ρ β) ∩ tsupport F).Nonempty from
             ⟨x, hne, subset_tsupport F hx⟩
       rw [hρx, ENNReal.ofReal_zero, zero_mul]
@@ -59,7 +60,7 @@ theorem riemannianMeasure_lintegral_eq_chartLocalMeasure_of_hasCompactSupport
   · simp [hx]
   · have hs : ρ.finsupport x ⊆ S := by
       intro β hβ
-      simpa only [S, Set.Finite.mem_toFinset, Set.mem_ofPred_eq] using
+      simpa only [S, Set.Finite.mem_toFinset, Set.mem_setOf_eq] using
         show (Function.support (ρ β) ∩ tsupport F).Nonempty from
           ⟨x, (ρ.mem_finsupport x).mp hβ, subset_tsupport F hx⟩
     rw [← Finset.sum_mul, ← ENNReal.ofReal_sum_of_nonneg (fun β _ => ρ.nonneg β x),

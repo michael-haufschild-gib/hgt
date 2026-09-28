@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 local-frame coefficient API.
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Bundle.Frame
 import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
@@ -384,11 +385,11 @@ private lemma riemannSec_eq_zero_of_Z_eq_zero
       (fun b => χ b • hframe.coeff i b (Z b)) := by
     intro i
     have hsmooth_lfc : ContMDiff I 𝓘(ℝ, ℝ) ∞
-        (fun b => χ b • e.localFrameCoeff I basisF i b (Z b)) := by
+        (fun b => χ b • e.localFrame_coeff I basisF i b (Z b)) := by
       intro b
       by_cases hb : b ∈ tsupport (χ : M → ℝ)
       · exact (χ.contMDiff.of_le (by exact_mod_cast le_top)).contMDiffAt.smul
-          (contMDiffAt_localFrameCoeff basisF (hχsupport hb) hZ.contMDiffAt i)
+          (contMDiffAt_localFrame_coeff basisF (hχsupport hb) hZ.contMDiffAt i)
       · have hχ_zero : ∀ᶠ y in nhds b, (χ : M → ℝ) y = 0 := by
           apply Filter.Eventually.mono
             ((isClosed_tsupport (χ : M → ℝ)).isOpen_compl.mem_nhds hb)
@@ -402,9 +403,9 @@ private lemma riemannSec_eq_zero_of_Z_eq_zero
         ext j
         simp [IsLocalFrameOn.toBasisAt, Trivialization.localFrame, Trivialization.basisAt, hb]
       simp only [hframe.coeff_apply_of_mem hb,
-        e.localFrameCoeff_apply_of_mem_baseSet basisF hb, hbasis]
+        e.localFrame_coeff_apply_of_mem_baseSet basisF hb, hbasis]
     · simp [hframe.coeff_apply_of_notMem hb,
-        e.localFrameCoeff_apply_of_notMem_baseSet basisF hb]
+        e.localFrame_coeff_apply_of_notMem_baseSet basisF hb]
   let g : Fin (Module.finrank ℝ F) → M → ℝ := fun i b => χ b • hframe.coeff i b (Z b)
   have hg_zero : ∀ i, g i x = 0 := by
     intro i

@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Topology.Homology.ContractibleCoverOneEvaluation
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.TotallyDisconnectedZero
 
@@ -37,7 +38,7 @@ theorem compl_raySet_eq_preimage {v : E} (hv : v ≠ 0) :
       (homeomorphUnitSphereProd E) ⁻¹'
         (({rayUnit hv}ᶜ : Set (sphere (0 : E) 1)) ×ˢ Set.univ) := by
   ext x
-  simp only [Set.mem_ofPred_eq, mem_preimage, mem_prod, mem_compl_iff, mem_singleton_iff, mem_univ,
+  simp only [Set.mem_setOf_eq, mem_preimage, mem_prod, mem_compl_iff, mem_singleton_iff, mem_univ,
     and_true, homeomorphUnitSphereProd_apply_fst_coe, Subtype.ext_iff]
   constructor
   · intro hx hc

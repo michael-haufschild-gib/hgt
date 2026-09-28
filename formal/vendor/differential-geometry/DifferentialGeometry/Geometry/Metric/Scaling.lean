@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
@@ -73,7 +74,7 @@ def scaleMetric (c : Real) (hc : 0 < c)
     by_cases hlarge : 1 <= c
     · refine (g.isVonNBounded x).subset ?_
       intro v hv
-      simp only [Set.mem_ofPred_eq] at hv ⊢
+      simp only [Set.mem_setOf_eq] at hv ⊢
       by_cases hv0 : v = 0
       · simp [hv0]
       · have hpos := g.pos x v hv0
@@ -84,9 +85,9 @@ def scaleMetric (c : Real) (hc : 0 < c)
         c⁻¹ • (1 : TangentSpace I x →L[Real] TangentSpace I x)
       refine ((g.isVonNBounded x).image L).subset ?_
       intro v hv
-      simp only [Set.mem_ofPred_eq] at hv
+      simp only [Set.mem_setOf_eq] at hv
       refine ⟨c • v, ?_, ?_⟩
-      · simp only [Set.mem_ofPred_eq]
+      · simp only [Set.mem_setOf_eq]
         simp only [smul_apply, smul_eq_mul] at hv
         have hscale :
             g.inner x (c • v) (c • v) =

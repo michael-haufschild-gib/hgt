@@ -5,7 +5,7 @@
 - **Type:** sharp source-class countermodel and finite-anchor no-go
 - **Routes:** STC, CSB, U, K-RVM, MPLF, RHist
 - **Status:** [PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]
-- **Dependencies:** corpus theorems that completed theta source $k$ is positive, even, globally strongly log-concave and has integrable exponentially weighted derivatives of every order; Fourier identity $\Xi_C(z)=\int_{\mathbb R}e^{-izx}k(x)\,dx$; exponential horizontal decay in [XiHorizontalStripDecay.lean](../../../../formal/GaloisForLFunctions/RHTower/XiHorizontalStripDecay.lean). The prior [derivative-packet theorem](../../2-fully-proven/theta/theta-derivative-dark-divisor-packets.md) supplies source facts but places its added zeros outside the natural strip when perturbation is small. No numerical computation is used.
+- **Dependencies:** corpus theorems that completed theta source $k$ is positive, even, globally strongly log-concave and has integrable exponentially weighted derivatives of every order; Fourier identity $\Xi_C(z)=\int_{\mathbb R}e^{-izx}k(x)\,dx$; exponential horizontal decay in [XiHorizontalStripDecay.lean](../../../../formal/GaloisForLFunctions/RHTower/XiHorizontalStripDecay.lean). The prior [derivative-packet theorem](theta-derivative-dark-divisor-packets.md) supplies source facts but places its added zeros outside the natural strip when perturbation is small. No numerical computation is used.
 
 ## Theorem
 

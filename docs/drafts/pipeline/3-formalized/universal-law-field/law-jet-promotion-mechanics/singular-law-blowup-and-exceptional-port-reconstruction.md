@@ -1,8 +1,8 @@
 # Singular law blow-up and exceptional-port reconstruction
 
 - **ID:** ULF-SLBR-1
-- **Stage:** 2 — fully proven on paper
-- **Type:** MECHANISM THEOREM / SINGULAR FORMATION LAW
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** source-law prolongation; Rees/blow-up completion; exceptional-divisor recovery
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-FORMALIZED] [PRE-RH] [NOT RH]`
   `[ZEROTH-PORT RESTRICTION REMOVED] [SINGULAR HISTORY RECONSTRUCTED]`
@@ -327,6 +327,27 @@ the already-known fixed `(2,3)` Gamma port criterion into an unconditional RH pr
 - [ ] source-derived completed-response annihilation
 - [ ] RH selection only after preceding gates
 
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.SingularLawJetBlowup`, `GaloisForLFunctions.HTGeometry.SourceLawJetPromotion`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Module `GaloisForLFunctions.HTGeometry.SingularLawJetBlowup` (19 constants, axiom audit clean), on `GaloisForLFunctions.HTGeometry.SourceLawJetPromotion` (namespace `HTGeometry`).
+
+| Claim | Lean declaration |
+|-|-|
+| (SLB.1)–(SLB.2) Hasse product and prolonged law | `hasseJetMul`, `IsProlongedProductLaw` |
+| (SLB.3) exceptional chart | `exceptionalHasseJetMul` |
+| Thm 2.1 (SLB.5) exceptional-chart identity under (SLB.4) | `hasseJetMul_eq_exceptional_of_vanishBelow` |
+| Thm 3.1 (SLB.6) base-locus vanishing | `prolongedProductLaw_target_vanishBelow` |
+| Thm 3.2 (SLB.8) singular all-order reconstruction | `prolongedProductLaw_singular_reconstruct` |
+| (SLB.9) exceptional direction `q₀ = c h_k / m_k` | `prolongedProductLaw_exceptionalDirection` |
+| Thm 3.3 (SLB.10) uniqueness | `prolongedProductLaw_singular_unique` |
+| Thm 4.1 (SLB.11) injectivity for every nonzero admission history | `hasseJetMul_left_injective_of_exists_ne_zero` |
+| Cor 4.2 (SLB.12) closed order-`k` normal model | `exceptionalUnitJet`, `hasseJetMul_exceptionalUnitJet` |
+| Thm 4.3 (SLB.13) cofinal active-order dichotomy; exactly one alternative | `fixed_chart_frequently_or_activeOrder_tendsto_atTop`, `not_fixed_chart_frequently_and_activeOrder_tendsto_atTop` |
+| Thm 4.4 (SLB.14) additive depth, multiplicative leading port | `FirstActiveHasseOrderAt`, `hasseJetMul_vanishBelow_add`, `hasseJetMul_leading_add`, `FirstActiveHasseOrderAt.mul` |
+
 ## Log
 
 - 2026-08-30 — direct reuse of the fixed `(2,3)` Gamma factorization rejected as regression: its
@@ -339,3 +360,4 @@ the already-known fixed `(2,3)` Gamma port criterion into an unconditional RH pr
 - 2026-08-30 — formalized the complete theorem package in
   `GaloisForLFunctions.HTGeometry.SingularLawJetBlowup`; direct elaboration and leaf build pass,
   and every audited theorem depends only on Lean/mathlib foundations.
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

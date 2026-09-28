@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.Lp.Basic
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.Pairing.Chart
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Ricci.PairingCLM
@@ -832,14 +833,14 @@ theorem riemannianVolumeMeasure_pullback_null
     apply Set.eq_of_subset_of_subset
     · intro x ⟨hx_source, hx_N⟩
       refine ⟨hx_source, ?_⟩
-      simp only [Set.mem_ofPred_eq]
+      simp only [Set.mem_setOf_eq]
       rw [DifferentialGeometry.Analysis.Sobolev.Chart.extChartAtExt_apply_of_mem
         (I := I) α hx_source]
       exact hx_N
     · intro x ⟨hx_source, hx_N⟩
       refine ⟨hx_source, ?_⟩
-      simp only [Set.mem_ofPred_eq]
-      simp only [Set.mem_ofPred_eq] at hx_N
+      simp only [Set.mem_setOf_eq]
+      simp only [Set.mem_setOf_eq] at hx_N
       rw [DifferentialGeometry.Analysis.Sobolev.Chart.extChartAtExt_apply_of_mem
         (I := I) α hx_source] at hx_N
       exact hx_N
@@ -983,10 +984,10 @@ private lemma chartContribSurrogate_ae_eq
   rw [Filter.EventuallyEq, MeasureTheory.ae_iff]
   refine MeasureTheory.measure_mono_null ?_ hpre_null
   intro x hx
-  simp only [Set.mem_ofPred_eq] at hx
+  simp only [Set.mem_setOf_eq] at hx
   by_cases hx_source : x ∈ (chartAt H α).source
   · refine ⟨hx_source, ?_⟩
-    simp only [Set.mem_ofPred_eq]
+    simp only [Set.mem_setOf_eq]
     have h_y_in_target : (toEuclidean (E := E)) ((extChartAt I α) x) ∈
         chartTargetEuclid (I := I) (M := M) α := by
       refine ⟨(extChartAt I α) x, ?_, rfl⟩

@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Metric
 import Mathlib.MeasureTheory.Measure.Restrict
 
@@ -15,7 +16,7 @@ theorem ae_mem_ball_of_measure_sphere_eq_zero (h : μ (sphere c r) = 0) :
     convert h using 1
     congr 1
     ext x
-    simp only [Set.mem_ofPred_eq, not_not]
+    simp only [Set.mem_setOf_eq, not_not]
   filter_upwards [ae_restrict_mem measurableSet_closedBall, ae_restrict_of_ae hzero] with x hx hxn
   exact lt_of_le_of_ne hx hxn
 

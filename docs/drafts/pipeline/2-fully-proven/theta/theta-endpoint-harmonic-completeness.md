@@ -75,7 +75,7 @@ Indeed, since `u` is even,
 identity gives the displayed equality exactly. Thus `H` contains every
 real zero of `F` to at least its full multiplicity. Under RH these are
 all zeros of `F`. The
-[relative-source rigidity theorem](theta-tail-divisor-capacity-threshold.md)
+[relative-source rigidity theorem](../../3-formalized/theta/theta-tail-divisor-capacity-threshold.md)
 then gives `u=ck`, hence `f=c` almost everywhere. Therefore the
 annihilator of `V` in `L∞_even(μ)` is exactly the constants, proving
 `(i)⇒(iii)` by Hahn–Banach. Adding `1` kills that constant, giving
@@ -140,7 +140,7 @@ E(z)=P(z)H(z)/F(z)
 ```
 
 is entire, even and real on the real axis. The proof of
-[relative-source rigidity](theta-tail-divisor-capacity-threshold.md)
+[relative-source rigidity](../../3-formalized/theta/theta-tail-divisor-capacity-threshold.md)
 applies to `E` with only polynomial changes: the angular Jensen
 `R log R` terms for `H` and `F` cancel, so `E` has `O(R)` zeros and
 finite exponential type. On the imaginary axis,

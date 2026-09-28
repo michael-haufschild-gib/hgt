@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.IntegrationByParts
@@ -541,7 +542,7 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
     apply Finset.sum_subset hSdiv
     intro α _ hα_notin
     rw [Set.Finite.mem_toFinset _] at hα_notin
-    simp only [Set.mem_ofPred_eq] at hα_notin
+    simp only [Set.mem_setOf_eq] at hα_notin
     rw [Set.not_nonempty_iff_eq_empty] at hα_notin
     have h_zero : ∀ x : M, divergenceG (I := I) g X x * (ρ α : M → ℝ) x = 0 := by
       intro x

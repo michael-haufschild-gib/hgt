@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import Mathlib.Analysis.Convex.StdSimplex
 import Mathlib.Topology.Homotopy.Equiv
 import Mathlib.Topology.Order.Lattice
@@ -86,8 +87,8 @@ theorem isOpen_punctured : IsOpen (punctured I) :=
 
 omit [Nonempty I] in
 theorem isClosed_boundary : IsClosed (boundary I) := by
-  change IsClosed (Set.ofPred (fun x : stdSimplex ℝ I ↦ ∃ i : I, x.val i = 0))
-  rw [Set.ofPred_exists]
+  change IsClosed (setOf (fun x : stdSimplex ℝ I ↦ ∃ i : I, x.val i = 0))
+  rw [Set.setOf_exists]
   exact isClosed_iUnion_of_finite (fun i ↦
     isClosed_eq ((continuous_apply i).comp continuous_subtype_val) continuous_const)
 

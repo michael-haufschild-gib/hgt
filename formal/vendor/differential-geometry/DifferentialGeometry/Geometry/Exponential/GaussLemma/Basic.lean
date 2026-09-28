@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Exponential.Defs
@@ -749,7 +750,7 @@ private theorem minimizer_confined_to_C2_ball
   have hρt₀_ge : δ ≤ ρ t₀ := by
     have hZclosed : IsClosed Z := by
       have h2 : Z = Set.Icc a b ∩ ρ ⁻¹' (Set.Ici δ) := by
-        ext t; simp only [hZ_def, Set.mem_ofPred_eq, Set.mem_inter_iff,
+        ext t; simp only [hZ_def, Set.mem_setOf_eq, Set.mem_inter_iff,
           Set.mem_preimage, Set.mem_Ici]
       rw [h2]
       exact hρc.preimage_isClosed_of_isClosed isClosed_Icc isClosed_Ici

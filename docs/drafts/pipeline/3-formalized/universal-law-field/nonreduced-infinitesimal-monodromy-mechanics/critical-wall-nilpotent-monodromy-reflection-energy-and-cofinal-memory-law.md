@@ -1,5 +1,7 @@
 # Critical-wall nilpotent monodromy, reflection energy, and cofinal memory law
 
+- **Stage:** 3-formalized
+
 ## Status
 
 - **Label:** ULF-NIMM-1
@@ -254,3 +256,26 @@ Not proved here:
 The next conjecture is not “find another receiver.”  Before any conjecture is stated, corpus search
 must locate an arithmetic source action with a faithful square-zero tangent comparison and show
 exactly which source law could force its monodromy to be the identity.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.RHTower.RouteRNilpotentMonodromy`, `GaloisForLFunctions.HTGeometry.DerivedSelectionGeometry.SquareZeroMonodromy`, `GaloisForLFunctions.RHTower.NilpotentMonodromyCriticalLineChain`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules `GaloisForLFunctions.RHTower.RouteRNilpotentMonodromy` (22 constants), `GaloisForLFunctions.HTGeometry.DerivedSelectionGeometry.SquareZeroMonodromy` (9), `GaloisForLFunctions.RHTower.NilpotentMonodromyCriticalLineChain` (7); axiom audit clean. `h_a` is `routeRNilpotentMonodromyWallClass a` (= `routeRPrimeGammaCriticalWallSummableHadamardClass a` in the summable Hadamard corona `A`).
+
+| Claim | Lean declaration |
+|-|-|
+| (NIMM.1) `h_a² = 0`, `h_a ≠ 0 ⟺ a ≠ 0`, `h_{-a} = -h_a`, `S(h_a) = h_a`; reduced receivers kill `h_a` | `routeRPrimeGammaCriticalWallSummableHadamardClass_sq_zero`, `routeRPrimeGammaCriticalWallSummableHadamardClass_ne_zero_iff`, `routeRPrimeGammaCriticalWallSummableHadamardClass_neg`, `routeRPrimeGammaCriticalWallSummableHadamardClass_shift_fixed`, `routeRPrimeGammaCriticalWallSummableHadamardClass_map_eq_zero`, `routeRPrimeGammaCriticalWall_no_reduced_receiver_injective` |
+| (NIMM.2) `E(q,v) = q + v - 2`, `K(q,v) = q - v` | `reflEnergy`, `ambiCurvature` |
+| Thm 3.1 (NIMM.3) `qv = vq = 1`, `E = 0`, `K = 2h`; `q` a unit | `squareZero_monodromy_mul_inv`, `squareZero_monodromy_inv_mul`, `squareZeroMonodromyUnit`, `squareZero_reflEnergy`, `squareZero_ambiCurvature` |
+| Thm 3.1 unique Laurent specialization | `specializeHom`, `specializeHom_T`, `eq_specializeHom` |
+| Cor 3.2 (NIMM.5) `K = 0 ⟺ h = 0 ⟺ q = 1` (2 cancellable) | `squareZero_ambiCurvature_eq_zero_iff`, `squareZero_monodromy_eq_one_iff` |
+| (NIMM.6) `q_a = 1 + h_a`, `q_a^σ = 1 - h_a` | `routeRNilpotentMonodromy`, `routeRNilpotentMonodromyInv`, `routeRNilpotentMonodromy_squareZero` |
+| Thm 4.1 (NIMM.7) inversion, `q_{-a} = q_a^σ = q_a⁻¹` | `routeRNilpotentMonodromy_mul_inv`, `routeRNilpotentMonodromy_inv_mul`, `routeRNilpotentMonodromyUnit`, `routeRNilpotentMonodromyUnit_inv`, `routeRNilpotentMonodromy_neg` |
+| Thm 4.1 `E = 0`, `K = 2h_a`, shift invariance, `q_a = 1 ⟺ a = 0`, `K = 0 ⟺ a = 0` | `routeRNilpotentMonodromy_energy_eq_zero`, `routeRNilpotentMonodromy_curvature_eq`, `routeRNilpotentMonodromy_shift_fixed`, `routeRNilpotentMonodromyInv_shift_fixed`, `routeRNilpotentMonodromy_eq_one_iff`, `routeRNilpotentMonodromy_curvature_eq_zero_iff`, `routeRNilpotentMonodromyWallClass_eq_zero_iff`, `routeRNilpotentMonodromy_fourOrganLaw` |
+| (NIMM.8) `Φ_a(q⁻¹) = q_a^σ`, `Φ_a(E) = 0`, `Φ_a(K) = 2h_a` | `routeRNilpotentMonodromySpecialization`, `routeRNilpotentMonodromySpecialization_inv`, `routeRNilpotentMonodromySpecialization_energy`, `routeRNilpotentMonodromySpecialization_curvature` |
+| (NIMM.9) `q_{a(ρ)} = 1 ⟺ h_{a(ρ)} = 0 ⟺ Re ρ = 1/2` | `routeRNilpotentMonodromy_eq_one_iff_re`, `routeRNilpotentMonodromyWallClass_eq_zero_iff_re` |
+
+## Log
+
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

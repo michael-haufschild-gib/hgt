@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import Mathlib.Geometry.Manifold.IntegralCurve.ExistUnique
 
 open Bundle Filter Manifold Set
@@ -20,7 +21,7 @@ theorem isMIntegralCurveOn_eqOn_of_contMDiff
     ⟨t₀, ht₀, h, ht₀⟩
   · rw [show s = {t | γ t = γ' t} ∩ K from rfl, inter_comm,
       ← Subtype.image_preimage_val, inter_comm, ← Subtype.image_preimage_val,
-      image_subset_image_iff Subtype.val_injective, preimage_ofPred_eq]
+      image_subset_image_iff Subtype.val_injective, preimage_setOf_eq]
     intro t ht
     rw [mem_preimage, ← closure_subtype] at ht
     revert ht t

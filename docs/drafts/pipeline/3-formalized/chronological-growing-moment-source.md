@@ -1,8 +1,12 @@
 # An unconditional bounded source with increasing matched moments
 
-**[BRIDGE K-growing-jet], paper proved; Lean pending.** This is an actual
-coefficient construction, not the full chronological repair theorem [R].
-No computational result or RH assumption enters the proof.
+**[BRIDGE K-growing-jet], Lean-complete (Stage 3-formalized).** Every proven
+statement below (construction, jets, bounds (B)/(C), logarithmic window and
+its equivalence with [R] for these rows, the coth remainder and its bounds, and
+identities (D)/(E)) is proved in Lean; axioms `propext`, `Classical.choice`,
+`Quot.sound` only. This is an actual coefficient construction, not the full
+chronological repair theorem [R]. No computational result or RH assumption
+enters the proof.
 
 ## Statement
 
@@ -120,8 +124,8 @@ to the single remaining actual-source estimate
 
 This follows by splitting the squared norm at δ and substituting u=Nt.
 The interval in rescaled time grows; replacing it by a fixed compact interval
-would weaken the claim and would not complete [R]. This bound is paper-proved,
-not yet formalized in Lean.
+would weaken the claim and would not complete [R]. This bound and the
+equivalence are Lean-complete.
 
 ## Exact gap and positive consequence
 
@@ -163,13 +167,13 @@ On 0≤u≤log N the corresponding arithmetic remainder majorant is
 When log N is large this increases with m, so that absolute Taylor estimate
 cannot prove the required full-window limit. This is a failure of the bound,
 not a lower bound on the actual signed remainder. The positive residue is
-the exact remainder formula and the proved local upper bound above; their
-Lean formalization is pending, and the source family is not retired.
+the exact remainder formula and the proved local upper bound above; both are
+Lean-complete, and the source family is not retired.
 
 The construction supplies coefficient control, exact arithmetic prefix,
 charge cancellation and increasing jet order simultaneously. Their conjunction
 still has no proved full-norm limit. Fixed-m failure is proved, and Lean-complete, in
-[the finite-tail boundary](../../3-formalized/chronological-finite-tail-obstruction.md).
+[the finite-tail boundary](chronological-finite-tail-obstruction.md).
 
 The diagonal argument gives no quantitative lower bound for m_N. It cannot
 be substituted into a remainder estimate requiring m_N≥c log N. Even such
@@ -178,13 +182,13 @@ remaining interval approaching zero must also be estimated. The unresolved
 task is the actual N-dependent small-t remainder, not existence of finite
 moment solutions or a uniform coefficient budget by itself.
 
-Lean work must formalize this exact source construction, PNT transfer and
-bounds (B)/(C), including the logarithmic window, in addition to the fixed-space obstruction. Neither paper is
-currently a Lean capstone or an RH proof. No novelty claim is made.
+The source construction, PNT transfer, bounds (B)/(C) and the logarithmic
+window are Lean-complete, as is the fixed-space obstruction. Neither result is
+an RH proof. No novelty claim is made.
 
 ## Exact signed projection formula and the harmonic channel
 
-**[BRIDGE K-signed-projection], paper proved; Lean pending.** Keep the same
+**[BRIDGE K-signed-projection], Lean-complete.** Keep the same
 coefficients, not a replacement family. For any N≥2 and admissible m, put
 x_k=k/N, θ_N=M/N and, for u>0,
 
@@ -237,3 +241,37 @@ leaves a growing projection-variation factor. These facts identify the gap
 in this proposed proof; they are not lower bounds or a refutation of (E),
 the source family, or [R]. The signed harmonic and regular terms must be
 estimated together, or a new quantitative estimate must control their costs.
+
+## Lean formalization
+
+All modules in `formal/GaloisForLFunctions/RHTower/`, wired into `RHTower.lean`.
+
+| Card statement | Lean declaration | Module |
+|-|-|-|
+| Unit rows, `m_N → ∞`, prefix `μ(k)` for `k ≤ ⌊N/2⌋`, `Σ a/k = 0`, `Σ a = -2`, `Σ a k^(2j-1) = -2j/B_(2j)` (`j ≤ m_N`), eventually | `growingMomentSource_spec` | `ChronologicalGrowingMomentSource` |
+| Jets at `t = 0` (value `0`, first `m_N` odd derivatives `0`, even derivatives `1`) with the analytic `h(0) = 1/2` | `growingMomentSource_jets`, `heatErrorExt_jets`, `iteratedDeriv_heatErrorExt_zero`, `iteratedDeriv_boseKernelE_zero` | `ChronologicalBoseKernelJets` |
+| Uniform and `L²([δ,∞))` convergence for every `δ > 0` | `growingMomentSource_tendsto_away_from_zero` | `ChronologicalGrowingMomentSource` |
+| Gram construction `c_N = G_N⁻¹ b_N`, exact scaled moments | `gmCoeff`, `gmRow`, `sum_gmRow_mul_gmVec`, `gmRow_moments` | same |
+| Unique least-coefficient-norm tail (Pythagoras) | `sum_sq_tail_eq_add`, `gmTail_leastSquares` | same |
+| `N⁻¹ G_N → G`, `G` positive definite, `G_N` invertible and `N G_N⁻¹` bounded | `tendsto_gmGramDisc`, `gramQuadForm_gmGramLim_pos`, `exists_gmGramDisc_coercive`, `exists_gmGram_inverse_bound` | `ChronologicalHalfTailGram`, `ChronologicalGrowingMomentSource` |
+| `b_N/N → 0` (PNT: Mertens `o(X)`, harmonic sum `→ 0`, Abel summation) | `tendsto_gmRhs_div`, `tendsto_halfPrefix_moebius_pow`, `tendsto_halfPrefix_moebius_harmonic`, `abs_sum_Ioc_mul_le_of_monotone` | `ChronologicalMobiusHalfPrefixMoments` |
+| `c_N → 0`, tail coefficients `→ 0` uniformly, every fixed `m` eventually admissible | `tendsto_gmCoeff`, `eventually_abs_gmTail_le`, `eventually_gmAdmissible` | `ChronologicalGrowingMomentSource` |
+| Diagonal order: largest admissible `m ≤ N`, finitely many exceptional rows | `gmOrder`, `tendsto_gmOrder`, `eventually_gmAdmissible_gmOrder` | same |
+| `Σ μ(k)/(e^(kt)−1) = e^(−t)`; zero charge gives `r_N = q − Σ a_k/(e^(kt)−1)` | `hasSum_moebius_div_exp_sub_one`, `heatError_eq_of_zeroCharge` | `ChronologicalZeroChargeTailBounds` |
+| Bounds (C), (B), explicit `L²([δ,∞))` norm bound, uniform bound | `abs_heatError_le_of_zeroCharge`, `abs_heatError_le_of_zeroCharge'`, `sqrt_integral_sq_heatError_Ioi_le_of_zeroCharge`, `abs_heatError_le_of_zeroCharge_of_le` | same |
+| Logarithmic window `‖r_N‖_(L²([log N/N,∞)))² ≤ 64/(log N)²` | `integral_sq_heatError_Ioi_log_le_of_zeroCharge`, `growingMomentSource_logWindow` | same, `ChronologicalGrowingMomentSource` |
+| [R] for these rows ⇔ `N⁻¹∫₀^(log N) r_N(u/N)² du → 0` | `tendsto_L2Norm_iff_logWindow_of_zeroCharge`, `growingMomentSource_L2_iff_window` | same |
+| Coth partial fractions (DLMF 4.36.3) | `hasSum_bose_partial_fraction` (from mathlib `cot_series_rep'`) | `ChronologicalBoseCothRemainder` |
+| Exact remainder `R_m`, `h = 1/2 − Σ B_(2j) z^(2j−1)/(2j)! + R_m`, `|R_m(z)| ≤ 4z^(2m+1)/(2π)^(2m+2)` | `boseRemainder`, `fusionBoseDefect_eq_taylor_add_remainder`, `abs_boseRemainder_le` | same |
+| `r_N = cosh t − 1 − [sinh t − Σ …] + Σ a_k R_m(kt)` | `heatError_eq_cosh_sinh_remainder` | same |
+| Local bound on `[0,1/N)` (three explicit terms) | `sqrt_integral_sq_heatError_local_le` | `ChronologicalBoseCothLocalBounds` |
+| Sufficient rate `m_N − log N/(4 log 2π) → ∞` kills the third term | `tendsto_local_arith_term_of_rate` | same |
+| Window majorant `4√N (log N)^(2m+3/2)/((2π)^(2m+2)√(4m+3))`, increasing in `m` for large `log N` (`≥ 4π`) | `sqrt_window_absArithRemainder_le`, `logWindowMajorant_le_succ` | same |
+| Signed projection identity (D) | `heatError_gmRow_signed` | `ChronologicalGrowingSignedProjection` |
+| Abel decomposition (E) with `h(0) = 1/2` | `heatError_gmRow_abel` | same |
+| All terms of (E) in `L²([0, log N])`; harmonic-channel cost `√N |H_M| ‖d_(−1)‖` | `abel_terms_memLp`, `harmonic_channel_norm` | same |
+
+**Verification.** `lake env lean` on each of the eight modules: clean.
+`lake --old build` of the top modules: passed. `#print axioms` for 29 capstones:
+only `propext`, `Classical.choice`, `Quot.sound`. No heartbeat options, no
+numerical input. The open [R] estimate is untouched; nothing above claims it.

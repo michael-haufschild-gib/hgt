@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Topology.Homotopy.RayComplement
 import DifferentialGeometry.Topology.Homology.SimplexDegreeChainLevel
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ChainSupport
@@ -203,7 +204,7 @@ private theorem diagonalVector_ne_zero : diagonalVector.{u} ≠ 0 := by
 
 private theorem negativeDiagonalRayComplement_eq :
     negativeDiagonalRayComplement.{u} =
-      (Set.ofPred fun x : liftedSphereSpace.{u} 1 => ¬ ∃ c : ℝ, 0 ≤ c ∧ x = -c • diagonalVector) := by
+      (setOf fun x : liftedSphereSpace.{u} 1 => ¬ ∃ c : ℝ, 0 ≤ c ∧ x = -c • diagonalVector) := by
   ext x
   apply not_congr
   constructor
@@ -219,7 +220,7 @@ private theorem negativeDiagonalRayComplement_eq :
 
 private theorem positiveDiagonalRayComplement_eq :
     positiveDiagonalRayComplement.{u} =
-      (Set.ofPred fun x : liftedSphereSpace.{u} 1 => ¬ ∃ c : ℝ, 0 ≤ c ∧ x = -c • (-diagonalVector)) := by
+      (setOf fun x : liftedSphereSpace.{u} 1 => ¬ ∃ c : ℝ, 0 ≤ c ∧ x = -c • (-diagonalVector)) := by
   ext x
   apply not_congr
   constructor
@@ -277,21 +278,21 @@ theorem puncturedPositiveRayComplement_contractibleSpace :
 
 
 private theorem isClosed_diagonal :
-    IsClosed (Set.ofPred fun x : liftedSphereSpace.{u} 1 =>
+    IsClosed (setOf fun x : liftedSphereSpace.{u} 1 =>
       ∀ i : Fin 3, x.down i = x.down 0) := by
   have hc (i : Fin 3) : Continuous (fun x : liftedSphereSpace.{u} 1 => x.down i) := by fun_prop
-  have heq : (Set.ofPred fun x : liftedSphereSpace.{u} 1 => ∀ i : Fin 3,
+  have heq : (setOf fun x : liftedSphereSpace.{u} 1 => ∀ i : Fin 3,
       x.down i = x.down 0) = ⋂ i, {y | y.down i = y.down 0} := by
     ext x
-    simp only [Set.mem_iInter, Set.mem_ofPred_eq]
+    simp only [Set.mem_iInter, Set.mem_setOf_eq]
   rw [heq]
   exact isClosed_iInter fun i => isClosed_eq (hc i) (hc 0)
 
 theorem isOpen_negativeDiagonalRayComplement :
     IsOpen negativeDiagonalRayComplement.{u} := by
   have he : negativeDiagonalRayComplement.{u} =
-      ((Set.ofPred fun x : liftedSphereSpace.{u} 1 => x.down 0 ≤ 0) ∩
-        (Set.ofPred fun x : liftedSphereSpace.{u} 1 => ∀ i : Fin 3, x.down i = x.down 0))ᶜ := by
+      ((setOf fun x : liftedSphereSpace.{u} 1 => x.down 0 ≤ 0) ∩
+        (setOf fun x : liftedSphereSpace.{u} 1 => ∀ i : Fin 3, x.down i = x.down 0))ᶜ := by
     ext x
     apply not_congr
     constructor
@@ -306,8 +307,8 @@ theorem isOpen_negativeDiagonalRayComplement :
 theorem isOpen_positiveDiagonalRayComplement :
     IsOpen positiveDiagonalRayComplement.{u} := by
   have he : positiveDiagonalRayComplement.{u} =
-      ((Set.ofPred fun x : liftedSphereSpace.{u} 1 => 0 ≤ x.down 0) ∩
-        (Set.ofPred fun x : liftedSphereSpace.{u} 1 => ∀ i : Fin 3, x.down i = x.down 0))ᶜ := by
+      ((setOf fun x : liftedSphereSpace.{u} 1 => 0 ≤ x.down 0) ∩
+        (setOf fun x : liftedSphereSpace.{u} 1 => ∀ i : Fin 3, x.down i = x.down 0))ᶜ := by
     ext x
     apply not_congr
     constructor

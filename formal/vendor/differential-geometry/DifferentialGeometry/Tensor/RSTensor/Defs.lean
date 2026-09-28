@@ -1,6 +1,7 @@
 /-
 Authors: Yuan Liao, Jack McCarthy
 Modified by: Ziyang Qin
+Local modifications: canonical model instances and currying for Mathlib 4.32.2.
 -/
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Curry.Basic
@@ -390,42 +391,26 @@ theorem tensorRSSpace_ext (r s : ℕ) (x : M)
     (f := (show Tensor0SSpace r I x →L[𝕜] Tensor0SSpace s I x from T))
     (g := (show Tensor0SSpace r I x →L[𝕜] Tensor0SSpace s I x from T')) h
 
-instance (s : ℕ) :
-    NormedAddCommGroup (Tensor0SModel s 𝕜 E) := by
-  unfold Tensor0SModel
-  letI : NormedAddCommGroup (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) := inferInstance
-  infer_instance
+@[reducible]
+instance (s : ℕ) : NormedAddCommGroup (Tensor0SModel s 𝕜 E) :=
+  ContinuousMultilinearMap.normedAddCommGroup
 
-instance tensor0SModelNormedSpace (s : ℕ) :
-    NormedSpace 𝕜 (Tensor0SModel s 𝕜 E) := by
-  unfold Tensor0SModel
-  exact @ContinuousMultilinearMap.normedSpace 𝕜 (Fin s) (fun _ : Fin s => E) 𝕜 _ _ _ _ _ _ 𝕜 _ _ _
+@[reducible]
+instance tensor0SModelNormedSpace (s : ℕ) : NormedSpace 𝕜 (Tensor0SModel s 𝕜 E) :=
+  ContinuousMultilinearMap.normedSpace
 
-instance (r s : ℕ) :
-    NormedAddCommGroup (TensorRSModel r s 𝕜 E) := by
-  unfold TensorRSModel
-  unfold Tensor0SModel
-  letI : NormedAddCommGroup (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) := inferInstance
-  letI hs : NormedSpace 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) := inferInstance
-  letI hr : NormedSpace 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => E) 𝕜) := inferInstance
-  apply @ContinuousLinearMap.toNormedAddCommGroup 𝕜 𝕜
-    (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => E) 𝕜)
-    (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜)
-     _ _ _ _ hr hs _ _
+@[reducible]
+instance (r s : ℕ) : NormedAddCommGroup (TensorRSModel r s 𝕜 E) :=
+  ContinuousLinearMap.toNormedAddCommGroup
 
+@[reducible]
 instance tensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s 𝕜 E) :=
-  inferInstance
+  ContinuousLinearMap.toNormedAddCommGroup
 
-instance tensorRSModelNormedSpace (r s : ℕ) :
-    NormedSpace 𝕜 (TensorRSModel r s 𝕜 E) := by
-  unfold TensorRSModel
-  unfold Tensor0SModel
-  letI h : SMulCommClass 𝕜 𝕜 (ContinuousMultilinearMap 𝕜 (fun (x : Fin s) ↦ E) 𝕜) := inferInstance
-  exact @ContinuousLinearMap.toNormedSpace 𝕜 𝕜
-    (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => E) 𝕜)
-    (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜)
-    _ _ _ _ _ _ _ _ 𝕜 _ _ h
+@[reducible]
+instance tensorRSModelNormedSpace (r s : ℕ) : NormedSpace 𝕜 (TensorRSModel r s 𝕜 E) :=
+  ContinuousLinearMap.toNormedSpace
 
 noncomputable instance tensor0SSpace_finiteDimensional (s : ℕ) (x : M) :
     FiniteDimensional 𝕜 (Tensor0SSpace s I x) :=
@@ -752,7 +737,7 @@ private theorem tensorRSSpace_type_eq (r s : ℕ) (x : M) :
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => E) 𝕜 →L[𝕜]
      ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) := by
   unfold TensorRSSpace Tensor0SSpace Bundle.continuousMultilinearMap
-  congr 1 <;> exact tensor0SSpace_topology_eq (I := I) _ x
+  congr! 1 <;> exact tensor0SSpace_topology_eq (I := I) _ x
 
 private def tensorRSSpace_toModelAddHom (r s : ℕ) (x : M) :
     TensorRSSpace r s I x →+ TensorRSModel r s 𝕜 E :=
@@ -859,11 +844,8 @@ end TensorRSSpace
 noncomputable def tensor0SCurry (s : ℕ) (x : M) :
     Tensor0SSpace (s+1) I x ≃L[𝕜]
     (TangentSpace I x →L[𝕜] Tensor0SSpace s I x) :=
-  (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (s + 1) x).trans
-    ((continuousMultilinearCurryLeftEquiv 𝕜
-      (fun _ : Fin (s + 1) => TangentSpace I x) 𝕜).toContinuousLinearEquiv.trans
-        ((ContinuousLinearEquiv.refl 𝕜 (TangentSpace I x)).arrowCongr
-          (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x).symm))
+  Bundle.continuousMultilinearMap.curryLeftEquiv (𝕜 := 𝕜) (F := E)
+    (E := (TangentSpace I : M → Type _)) s x
 
 instance tensor0SBundleTopology (s : ℕ) :
     TopologicalSpace (TotalSpace

@@ -236,6 +236,31 @@ theorem hasseJetMul_exceptionalUnitJet (q : ℕ → F) (k n : ℕ) :
   rw [hsum] at hrec
   simpa [exceptionalUnitJet] using hrec.symm
 
+
+/-- The two alternatives of the cofinal active-order dichotomy are mutually exclusive, so exactly
+one of them holds. -/
+theorem not_fixed_chart_frequently_and_activeOrder_tendsto_atTop (κ : ℕ → ℕ) :
+    ¬ ((∃ k, ∃ᶠ n in Filter.atTop, κ n = k) ∧ Filter.Tendsto κ Filter.atTop Filter.atTop) := by
+  rintro ⟨⟨k, hk⟩, ht⟩
+  obtain ⟨n, hn1, hn2⟩ := (hk.and_eventually (ht.eventually_gt_atTop k)).exists
+  omega
+
+
+/-- **(LJP.10)** The first passive-split coefficient law `a₀a₁ + d₀d₁ = 0`, and hence
+`d₁ = -(a₀/d₀) a₁`, follow from the complete split law. -/
+theorem passiveSplitLaw_first {a d : ℕ → F} (hlaw : IsPassiveSplitLaw a d) (h2 : (2 : F) ≠ 0) :
+    a 0 * a 1 + d 0 * d 1 = 0 := by
+  have h := hlaw 1
+  rw [hasseJetMul_self_succ, hasseJetMul_self_succ] at h
+  simp only [hasseJetSquareMiddle, Finset.range_zero, Finset.sum_empty, add_zero,
+    hasseJetUnit] at h
+  have h' : (2 : F) * (a 0 * a 1 + d 0 * d 1) = 0 := by linear_combination h
+  exact (mul_eq_zero.mp h').resolve_left h2
+
+theorem passiveSplitLaw_firstResponse {a d : ℕ → F} (hlaw : IsPassiveSplitLaw a d)
+    (h2 : (2 : F) ≠ 0) (hd0 : d 0 ≠ 0) : d 1 = -(a 0 / d 0) * a 1 :=
+  passiveSplit_firstResponse (passiveSplitLaw_first hlaw h2) hd0
+
 end
 
 end HTGeometry

@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Topology.Simplex.Face
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import Mathlib.Topology.OpenPartialHomeomorph.Constructions
@@ -83,7 +84,7 @@ def faceOpenPartialHomeomorph (i : Fin (n + 2)) :
   open_source := isClosed_boundary.isOpen_compl
   open_target := by
     change IsOpen {p : boundary (Fin (n + 2)) | ∀ j : Fin (n + 1), 0 < p.val.val (i.succAbove j)}
-    simp only [ofPred_forall]
+    simp only [setOf_forall]
     apply isOpen_iInter_of_finite
     intro j
     exact isOpen_lt continuous_const ((continuous_apply (i.succAbove j)).comp

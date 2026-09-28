@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 local-frame coefficient API.
 import DifferentialGeometry.Geometry.Curvature.Components.LocalFrame
 open DifferentialGeometry.Geometry.Curvature
 
@@ -346,10 +347,10 @@ theorem christoffelCoordFun_mdiffAt_one
     simpa [Z, frame] using
       coordinateFrame_covariantDeriv_mdiffAt_one (I := I) cov hcov x₀ i j
   have hcoeff :=
-    mdifferentiableAt_localFrameCoeff
+    mdifferentiableAt_localFrame_coeff
       (I := I) (e := e) (b := b) hx hZ k
   change MDifferentiableAt I 𝓘(Real, Real)
-    (fun x => (Trivialization.localFrameCoeff I
+    (fun x => (Trivialization.localFrame_coeff I
       (trivializationAt E (TangentSpace I) x₀) (Module.finBasis ℝ E) k x)
       ((cov (coordinateFrameAt (I := I) x₀ j) x)
         (coordinateFrameAt (I := I) x₀ i x))) x₀
@@ -368,12 +369,12 @@ private theorem coordinateFrame_coeff_contMDiffAt_of_contMDiffAt
   have hx : x₀ ∈ e.baseSet := by
     simp [e, coordinateTrivializationAt]
   have hcoeff :=
-    contMDiffAt_localFrameCoeff
+    contMDiffAt_localFrame_coeff
       (I := I) (V := TangentSpace I) (e := e)
       (b := Module.finBasis Real E) (s := Z)
       (k := (∞ : WithTop ℕ∞)) hx hZ j
   change ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
-    (fun y => (Trivialization.localFrameCoeff I
+    (fun y => (Trivialization.localFrame_coeff I
       (trivializationAt E (TangentSpace I) x₀) (Module.finBasis ℝ E) j y) (Z y)) x₀
   exact hcoeff
 

@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 local-frame coefficient API.
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Smooth
 import DifferentialGeometry.Bundle.TangentSpace
@@ -58,17 +59,17 @@ theorem covariantDerivative_localFrame_coeff_eq
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
     {σ : (x : M) → TangentSpace I x} {x : M}
     (hx : x ∈ e.baseSet) (hσ : MDiffAt (T% σ) x) (i k : ι) :
-    e.localFrameCoeff I b k x
+    e.localFrame_coeff I b k x
         ((cov σ x) (e.localFrame b i x)) =
-      mvfderiv (I := I) ((LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+      mvfderiv (I := I) ((LinearMap.piApply (e.localFrame_coeff I b k)) σ)
         x (e.localFrame b i x) +
         ∑ j : ι,
-          e.localFrameCoeff I b j x (σ x) *
-            e.localFrameCoeff I b k x
+          e.localFrame_coeff I b j x (σ x) *
+            e.localFrame_coeff I b k x
               ((cov (e.localFrame b j) x) (e.localFrame b i x)) := by
   classical
   let frame : ι → (x : M) → TangentSpace I x := fun j => e.localFrame b j
-  let coeff : ι → M → Real := fun j y => e.localFrameCoeff I b j y (σ y)
+  let coeff : ι → M → Real := fun j y => e.localFrame_coeff I b j y (σ y)
   let term : ι → (x : M) → TangentSpace I x := fun j => coeff j • frame j
   have hframe_diff (j : ι) : MDiffAt (T% (fun y => frame j y)) x := by
     simpa [frame] using
@@ -77,7 +78,7 @@ theorem covariantDerivative_localFrame_coeff_eq
   have hcoeff_diff (j : ι) :
       MDifferentiableAt I 𝓘(Real, Real) (coeff j) x := by
     simpa [coeff] using
-      mdifferentiableAt_localFrameCoeff
+      mdifferentiableAt_localFrame_coeff
         (I := I) (e := e) (b := b) hx hσ j
   have hterm_diff (j : ι) : MDiffAt (T% (fun y => term j y)) x := by
     exact (hcoeff_diff j).smul_section (hframe_diff j)
@@ -90,8 +91,8 @@ theorem covariantDerivative_localFrame_coeff_eq
       σ =ᶠ[𝓝 x] fun y : M => ∑ j : ι, term j y := by
     filter_upwards [e.open_baseSet.mem_nhds hx] with y hy
     change σ y = ∑ j : ι,
-      e.localFrameCoeff I b j y (σ y) • e.localFrame b j y
-    exact e.eq_sum_localFrameCoeff_smul (I := I) (b := b) (s := σ) hy
+      e.localFrame_coeff I b j y (σ y) • e.localFrame b j y
+    exact e.eq_sum_localFrame_coeff_smul (I := I) (b := b) (s := σ) hy
   have hcov_congr :
       cov σ x = cov ((Finset.univ : Finset ι).sum term) x :=
     cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hσ hsum_diff
@@ -121,8 +122,8 @@ theorem covariantDerivative_localFrame_coeff_eq
               (hframe_diff j) (hcoeff_diff j)) (frame i x))
             simpa [term, coeff, frame, add_comm] using hleib
   have hcoeff_frame (j l : ι) :
-      e.localFrameCoeff I b l x (frame j x) = (if j = l then 1 else 0) := by
-    rw [e.localFrameCoeff_apply_of_mem_baseSet b hx]
+      e.localFrame_coeff I b l x (frame j x) = (if j = l then 1 else 0) := by
+    rw [e.localFrame_coeff_apply_of_mem_baseSet b hx]
     change ((e.basisAt b hx).repr (e.localFrame b j x)) l = (if j = l then 1 else 0)
     rw [e.localFrame_apply_of_mem_baseSet (b := b) hx]
     rw [(e.basisAt b hx).repr_self]
@@ -133,16 +134,16 @@ theorem covariantDerivative_localFrame_coeff_eq
   rw [Finset.sum_add_distrib]
   have hderiv_sum :
       (∑ j : ι,
-          e.localFrameCoeff I b k x
+          e.localFrame_coeff I b k x
             (mvfderiv (I := I) (coeff j) x (frame i x) • frame j x)) =
         mvfderiv (I := I) (coeff k) x (frame i x) := by
     calc
       (∑ j : ι,
-          e.localFrameCoeff I b k x
+          e.localFrame_coeff I b k x
             (mvfderiv (I := I) (coeff j) x (frame i x) • frame j x))
           = ∑ j : ι,
               mvfderiv (I := I) (coeff j) x (frame i x) *
-                e.localFrameCoeff I b k x (frame j x) := by
+                e.localFrame_coeff I b k x (frame j x) := by
               refine Finset.sum_congr rfl fun j _ => ?_
               simp
       _ = ∑ j : ι,
@@ -154,11 +155,11 @@ theorem covariantDerivative_localFrame_coeff_eq
               simp
   have hchristoffel_sum :
       (∑ j : ι,
-          e.localFrameCoeff I b k x
+          e.localFrame_coeff I b k x
             (coeff j x • (cov (frame j) x) (frame i x))) =
         ∑ j : ι,
           coeff j x *
-            e.localFrameCoeff I b k x ((cov (frame j) x) (frame i x)) := by
+            e.localFrame_coeff I b k x ((cov (frame j) x) (frame i x)) := by
     refine Finset.sum_congr rfl fun j _ => ?_
     simp
   rw [hderiv_sum, hchristoffel_sum]
@@ -173,21 +174,21 @@ theorem covariantDerivative_localFrame_coeff_eq_along
     {σ : (x : M) → TangentSpace I x} {x : M}
     (hx : x ∈ e.baseSet) (hσ : MDiffAt (T% σ) x)
     (v : TangentSpace I x) (k : ι) :
-    e.localFrameCoeff I b k x ((cov σ x) v) =
-      mvfderiv (I := I) ((LinearMap.piApply (e.localFrameCoeff I b k)) σ) x v +
+    e.localFrame_coeff I b k x ((cov σ x) v) =
+      mvfderiv (I := I) ((LinearMap.piApply (e.localFrame_coeff I b k)) σ) x v +
         ∑ j : ι,
-          e.localFrameCoeff I b j x (σ x) *
-            e.localFrameCoeff I b k x
+          e.localFrame_coeff I b j x (σ x) *
+            e.localFrame_coeff I b k x
               ((cov (e.localFrame b j) x) v) := by
   classical
-  let f : M → Real := (LinearMap.piApply (e.localFrameCoeff I b k)) σ
+  let f : M → Real := (LinearMap.piApply (e.localFrame_coeff I b k)) σ
   let lhs : TangentSpace I x →ₗ[Real] Real :=
-    (e.localFrameCoeff I b k x).comp (cov σ x).toLinearMap
+    (e.localFrame_coeff I b k x).comp (cov σ x).toLinearMap
   let rhs : TangentSpace I x →ₗ[Real] Real :=
     (mvfderiv (I := I) f x).toLinearMap +
       ∑ j : ι,
-        e.localFrameCoeff I b j x (σ x) •
-          ((e.localFrameCoeff I b k x).comp (cov (e.localFrame b j) x).toLinearMap)
+        e.localFrame_coeff I b j x (σ x) •
+          ((e.localFrame_coeff I b k x).comp (cov (e.localFrame b j) x).toLinearMap)
   have hlin : lhs = rhs := by
     apply (e.basisAt b hx).ext
     intro i
@@ -222,7 +223,7 @@ theorem localHomCoeff_apply
     {x : M} (hx : x ∈ e.baseSet)
     (A : TangentSpace I x →L[Real] TangentSpace I x) (i k : ι) :
     localHomCoeff (I := I) e b i k x A =
-      e.localFrameCoeff I b k x (A (e.localFrame b i x)) := by
+      e.localFrame_coeff I b k x (A (e.localFrame b i x)) := by
   rw [e.localFrame_apply_of_mem_baseSet (b := b) hx]
   have hbasis :
       e.basisAt b hx =
@@ -233,7 +234,7 @@ theorem localHomCoeff_apply
   have hhom : x ∈ (e.continuousLinearMap (RingHom.id Real) e).baseSet := by
     simp [hx]
   simp only [localHomCoeff, homModelCoeff, LinearMap.coe_comp, Function.comp_apply]
-  simp only [Bundle.Trivialization.localFrameCoeff, IsLocalFrameOn.coeff, hx, ↓reduceDIte]
+  simp only [Bundle.Trivialization.localFrame_coeff, IsLocalFrameOn.coeff, hx, ↓reduceDIte]
   rw [← hbasis]
   rw [((e.continuousLinearMap (RingHom.id Real) e).coe_linearMapAt_of_mem hhom)]
   change
@@ -254,7 +255,7 @@ theorem homLocalFrameCoeff_eq_localHomCoeff
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
     {x : M} (hx : x ∈ e.baseSet)
     (A : TangentSpace I x →L[Real] TangentSpace I x) (i k : ι) :
-    (e.continuousLinearMap (RingHom.id Real) e).localFrameCoeff I
+    (e.continuousLinearMap (RingHom.id Real) e).localFrame_coeff I
         (continuousLinearMapHomBasis (𝕜 := Real) b b) (k, i) x A =
       localHomCoeff (I := I) e b i k x A := by
   let eHom := e.continuousLinearMap (RingHom.id Real) e
@@ -267,7 +268,7 @@ theorem homLocalFrameCoeff_eq_localHomCoeff
   have hsx : s x = A := by
     simp [s]
   rw [← hsx]
-  rw [eHom.localFrameCoeff_apply_of_mem_baseSet bHom hhom s (k, i)]
+  rw [eHom.localFrame_coeff_apply_of_mem_baseSet bHom hhom s (k, i)]
   simp only [eHom, bHom, hsx]
   simp [Bundle.Trivialization.basisAt, localHomCoeff, homModelCoeff,
     continuousLinearMap_homBasis_repr]
@@ -282,11 +283,11 @@ theorem covariantDerivative_localHomCoeff_eq
     {σ : (x : M) → TangentSpace I x} {x : M}
     (hx : x ∈ e.baseSet) (hσ : MDiffAt (T% σ) x) (i k : ι) :
     localHomCoeff (I := I) e b i k x (cov σ x) =
-      mvfderiv (I := I) ((LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+      mvfderiv (I := I) ((LinearMap.piApply (e.localFrame_coeff I b k)) σ)
         x (e.localFrame b i x) +
         ∑ j : ι,
-          e.localFrameCoeff I b j x (σ x) *
-            e.localFrameCoeff I b k x
+          e.localFrame_coeff I b j x (σ x) *
+            e.localFrame_coeff I b k x
               ((cov (e.localFrame b j) x) (e.localFrame b i x)) := by
   rw [localHomCoeff_apply (I := I) e b hx (cov σ x) i k]
   exact covariantDerivative_localFrame_coeff_eq (I := I) cov e b hx hσ i k
@@ -301,11 +302,11 @@ theorem covariantDerivative_localHomCoeff_eventuallyEq
     (hx : x ∈ e.baseSet) (hσ : ∀ᶠ y in 𝓝 x, MDiffAt (T% σ) y) (i k : ι) :
     (fun y : M => localHomCoeff (I := I) e b i k y (cov σ y)) =ᶠ[𝓝 x]
       fun y : M =>
-        mvfderiv (I := I) ((LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+        mvfderiv (I := I) ((LinearMap.piApply (e.localFrame_coeff I b k)) σ)
           y (e.localFrame b i y) +
           ∑ j : ι,
-            e.localFrameCoeff I b j y (σ y) *
-              e.localFrameCoeff I b k y
+            e.localFrame_coeff I b j y (σ y) *
+              e.localFrame_coeff I b k y
                 ((cov (e.localFrame b j) y) (e.localFrame b i y)) := by
   filter_upwards [e.open_baseSet.mem_nhds hx, hσ] with y hy hσy
   exact covariantDerivative_localHomCoeff_eq (I := I) cov e b hy hσy i k
@@ -321,13 +322,13 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt
     (i k : ι)
     (hderiv : ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        mvfderiv (I := I) ((LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+        mvfderiv (I := I) ((LinearMap.piApply (e.localFrame_coeff I b k)) σ)
           y (e.localFrame b i y)) x)
     (hcoeff : ∀ j : ι, ContMDiffAt I 𝓘(Real, Real) ∞
-      (fun y : M => e.localFrameCoeff I b j y (σ y)) x)
+      (fun y : M => e.localFrame_coeff I b j y (σ y)) x)
     (hchristoffel : ∀ j : ι, ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        e.localFrameCoeff I b k y
+        e.localFrame_coeff I b k y
           ((cov (e.localFrame b j) y) (e.localFrame b i y))) x) :
     ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M => localHomCoeff (I := I) e b i k y (cov σ y)) x := by
@@ -335,11 +336,11 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt
     covariantDerivative_localHomCoeff_eventuallyEq (I := I) cov e b hx hσ i k
   have hRhs : ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        mvfderiv (I := I) ((LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+        mvfderiv (I := I) ((LinearMap.piApply (e.localFrame_coeff I b k)) σ)
           y (e.localFrame b i y) +
           ∑ j : ι,
-            e.localFrameCoeff I b j y (σ y) *
-              e.localFrameCoeff I b k y
+            e.localFrame_coeff I b j y (σ y) *
+              e.localFrame_coeff I b k y
                 ((cov (e.localFrame b j) y) (e.localFrame b i y))) x := by
     refine hderiv.add ?_
     exact ContMDiffAt.sum fun j _ => (hcoeff j).mul (hchristoffel j)
@@ -356,13 +357,13 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt_one
     (i k : ι)
     (hderiv : ContMDiffAt I 𝓘(Real, Real) (1 : WithTop ℕ∞)
       (fun y : M =>
-        mvfderiv (I := I) ((LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+        mvfderiv (I := I) ((LinearMap.piApply (e.localFrame_coeff I b k)) σ)
           y (e.localFrame b i y)) x)
     (hcoeff : ∀ j : ι, ContMDiffAt I 𝓘(Real, Real) (1 : WithTop ℕ∞)
-      (fun y : M => e.localFrameCoeff I b j y (σ y)) x)
+      (fun y : M => e.localFrame_coeff I b j y (σ y)) x)
     (hchristoffel : ∀ j : ι, ContMDiffAt I 𝓘(Real, Real) (1 : WithTop ℕ∞)
       (fun y : M =>
-        e.localFrameCoeff I b k y
+        e.localFrame_coeff I b k y
           ((cov (e.localFrame b j) y) (e.localFrame b i y))) x) :
     ContMDiffAt I 𝓘(Real, Real) (1 : WithTop ℕ∞)
       (fun y : M => localHomCoeff (I := I) e b i k y (cov σ y)) x := by
@@ -370,11 +371,11 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt_one
     covariantDerivative_localHomCoeff_eventuallyEq (I := I) cov e b hx hσ i k
   have hRhs : ContMDiffAt I 𝓘(Real, Real) (1 : WithTop ℕ∞)
       (fun y : M =>
-        mvfderiv (I := I) ((LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+        mvfderiv (I := I) ((LinearMap.piApply (e.localFrame_coeff I b k)) σ)
           y (e.localFrame b i y) +
           ∑ j : ι,
-            e.localFrameCoeff I b j y (σ y) *
-              e.localFrameCoeff I b k y
+            e.localFrame_coeff I b j y (σ y) *
+              e.localFrame_coeff I b k y
                 ((cov (e.localFrame b j) y) (e.localFrame b i y))) x := by
     refine hderiv.add ?_
     exact ContMDiffAt.sum fun j _ => (hcoeff j).mul (hchristoffel j)
@@ -530,12 +531,12 @@ theorem localFrameCoeff_extDeriv_contMDiffAt
     (i k : ι) :
     ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        mvfderiv (I := I) ((LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+        mvfderiv (I := I) ((LinearMap.piApply (e.localFrame_coeff I b k)) σ)
           y (e.localFrame b i y)) x := by
   have hcoeff :
       ContMDiffAt I 𝓘(Real, Real) ∞
-        ((LinearMap.piApply (e.localFrameCoeff I b k)) σ) x :=
-    contMDiffAt_localFrameCoeff
+        ((LinearMap.piApply (e.localFrame_coeff I b k)) σ) x :=
+    contMDiffAt_localFrame_coeff
       (I := I) (V := TangentSpace I) (e := e) (b := b) (s := σ)
       (k := (∞ : WithTop ℕ∞)) hx hσ k
   have hframe :
@@ -545,7 +546,7 @@ theorem localFrameCoeff_extDeriv_contMDiffAt
       e.open_baseSet hx i
   exact mvfderiv_apply_contMDiffAt_of_section
     (I := I)
-    (f := (LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+    (f := (LinearMap.piApply (e.localFrame_coeff I b k)) σ)
     (X := e.localFrame b i) hcoeff hframe
 
 omit [CompleteSpace E] in
@@ -559,12 +560,12 @@ theorem localFrameCoeff_extDeriv_contMDiffAt_one
     (i k : ι) :
     ContMDiffAt I 𝓘(Real, Real) (1 : WithTop ℕ∞)
       (fun y : M =>
-        mvfderiv (I := I) ((LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+        mvfderiv (I := I) ((LinearMap.piApply (e.localFrame_coeff I b k)) σ)
           y (e.localFrame b i y)) x := by
   have hcoeff :
       ContMDiffAt I 𝓘(Real, Real) (2 : WithTop ℕ∞)
-        ((LinearMap.piApply (e.localFrameCoeff I b k)) σ) x :=
-    contMDiffAt_localFrameCoeff
+        ((LinearMap.piApply (e.localFrame_coeff I b k)) σ) x :=
+    contMDiffAt_localFrame_coeff
       (I := I) (V := TangentSpace I) (e := e) (b := b) (s := σ)
       (k := (2 : WithTop ℕ∞)) hx hσ k
   have hframe :
@@ -574,7 +575,7 @@ theorem localFrameCoeff_extDeriv_contMDiffAt_one
       e.open_baseSet hx i).of_le (by simp : (1 : WithTop ℕ∞) ≤ ∞)
   exact mvfderiv_apply_contMDiffAt_of_section_one
     (I := I)
-    (f := (LinearMap.piApply (e.localFrameCoeff I b k)) σ)
+    (f := (LinearMap.piApply (e.localFrame_coeff I b k)) σ)
     (X := e.localFrame b i) hcoeff hframe
 
 omit [CompleteSpace E] in
@@ -590,7 +591,7 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt_of_section
     (i k : ι)
     (hchristoffel : ∀ j : ι, ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        e.localFrameCoeff I b k y
+        e.localFrame_coeff I b k y
           ((cov (e.localFrame b j) y) (e.localFrame b i y))) x) :
     ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M => localHomCoeff (I := I) e b i k y (cov σ y)) x := by
@@ -598,7 +599,7 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt_of_section
     (I := I) cov e b hx hσdiff i k ?_ ?_ hchristoffel
   · exact localFrameCoeff_extDeriv_contMDiffAt (I := I) e b hx hσ i k
   · intro j
-    exact contMDiffAt_localFrameCoeff
+    exact contMDiffAt_localFrame_coeff
       (I := I) (V := TangentSpace I) (e := e) (b := b) (s := σ)
       (k := (∞ : WithTop ℕ∞)) hx hσ j
 
@@ -615,7 +616,7 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt_of_section_one
     (i k : ι)
     (hchristoffel : ∀ j : ι, ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        e.localFrameCoeff I b k y
+        e.localFrame_coeff I b k y
           ((cov (e.localFrame b j) y) (e.localFrame b i y))) x) :
     ContMDiffAt I 𝓘(Real, Real) (1 : WithTop ℕ∞)
       (fun y : M => localHomCoeff (I := I) e b i k y (cov σ y)) x := by
@@ -625,8 +626,8 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt_of_section_one
   · intro j
     have hcoeff2 :
         ContMDiffAt I 𝓘(Real, Real) (2 : WithTop ℕ∞)
-          (fun y : M => e.localFrameCoeff I b j y (σ y)) x :=
-      contMDiffAt_localFrameCoeff
+          (fun y : M => e.localFrame_coeff I b j y (σ y)) x :=
+      contMDiffAt_localFrame_coeff
         (I := I) (V := TangentSpace I) (e := e) (b := b) (s := σ)
         (k := (2 : WithTop ℕ∞)) hx hσ j
     exact hcoeff2.of_le (by simp : (1 : WithTop ℕ∞) ≤ (2 : WithTop ℕ∞))
@@ -645,7 +646,7 @@ theorem covariantDerivative_homSection_contMDiffAt_of_coeff
     (hσ : ContMDiffAt I (I.prod 𝓘(Real, E)) ∞ (T% σ) x)
     (hchristoffel : ∀ i k j : ι, ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        e.localFrameCoeff I b k y
+        e.localFrame_coeff I b k y
           ((cov (e.localFrame b j) y) (e.localFrame b i y))) x) :
     ContMDiffAt I (I.prod 𝓘(Real, E →L[Real] E)) ∞
       (fun y : M =>
@@ -658,7 +659,7 @@ theorem covariantDerivative_homSection_contMDiffAt_of_coeff
   have hhom : x ∈ eHom.baseSet := by
     simp [eHom, hx]
   refine
-    (contMDiffAt_iff_localFrameCoeff (I := I) (e := eHom) bHom
+    (contMDiffAt_iff_localFrame_coeff (I := I) (e := eHom) bHom
       (s := fun y : M => cov σ y) (k := (∞ : WithTop ℕ∞)) hhom).mpr ?_
   rintro ⟨k, i⟩
   have hlocal :
@@ -668,7 +669,7 @@ theorem covariantDerivative_homSection_contMDiffAt_of_coeff
       (I := I) cov e b hx hσdiff hσ i k (fun j => hchristoffel i k j)
   have heq :
       (fun y : M =>
-          (eHom.localFrameCoeff I bHom (k, i) y) (cov σ y)) =ᶠ[𝓝 x]
+          (eHom.localFrame_coeff I bHom (k, i) y) (cov σ y)) =ᶠ[𝓝 x]
         fun y : M => localHomCoeff (I := I) e b i k y (cov σ y) := by
     filter_upwards [e.open_baseSet.mem_nhds hx] with y hy
     exact homLocalFrameCoeff_eq_localHomCoeff (I := I) e b hy (cov σ y) i k
@@ -686,7 +687,7 @@ theorem covariantDerivative_homSection_contMDiffAt_of_coeff_one
     (hσ : ContMDiffAt I (I.prod 𝓘(Real, E)) (2 : WithTop ℕ∞) (T% σ) x)
     (hchristoffel : ∀ i k j : ι, ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        e.localFrameCoeff I b k y
+        e.localFrame_coeff I b k y
           ((cov (e.localFrame b j) y) (e.localFrame b i y))) x) :
     ContMDiffAt I (I.prod 𝓘(Real, E →L[Real] E)) (1 : WithTop ℕ∞)
       (fun y : M =>
@@ -699,7 +700,7 @@ theorem covariantDerivative_homSection_contMDiffAt_of_coeff_one
   have hhom : x ∈ eHom.baseSet := by
     simp [eHom, hx]
   refine
-    (contMDiffAt_iff_localFrameCoeff (I := I) (e := eHom) bHom
+    (contMDiffAt_iff_localFrame_coeff (I := I) (e := eHom) bHom
       (s := fun y : M => cov σ y) (k := (1 : WithTop ℕ∞)) hhom).mpr ?_
   rintro ⟨k, i⟩
   have hlocal :
@@ -709,7 +710,7 @@ theorem covariantDerivative_homSection_contMDiffAt_of_coeff_one
       (I := I) cov e b hx hσdiff hσ i k (fun j => hchristoffel i k j)
   have heq :
       (fun y : M =>
-          (eHom.localFrameCoeff I bHom (k, i) y) (cov σ y)) =ᶠ[𝓝 x]
+          (eHom.localFrame_coeff I bHom (k, i) y) (cov σ y)) =ᶠ[𝓝 x]
         fun y : M => localHomCoeff (I := I) e b i k y (cov σ y) := by
     filter_upwards [e.open_baseSet.mem_nhds hx] with y hy
     exact homLocalFrameCoeff_eq_localHomCoeff (I := I) e b hy (cov σ y) i k

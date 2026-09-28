@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricci
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 import Mathlib.Analysis.SpecialFunctions.Sqrt
@@ -614,7 +615,7 @@ private theorem chartFrameNormFiber_orth_strong
               exact Set.mem_univ _
           rw [hset_eq]
           have hi_notin : i ∉ {n : Fin (Module.finrank ℝ E) | n.val < i.val} := by
-            simp [Set.mem_ofPred_eq]
+            simp [Set.mem_setOf_eq]
           exact hLI.notMem_span_image hi_notin
         exact hcontra hvi_in_span
       have hgpos : 0 < g.inner b

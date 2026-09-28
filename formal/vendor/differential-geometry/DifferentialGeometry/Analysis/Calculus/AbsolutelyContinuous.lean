@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import Mathlib.Analysis.Calculus.Deriv.Slope
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
@@ -23,8 +24,8 @@ theorem _root_.uniformContinuousOn_of_absolutelyContinuousOnInterval
   · simp only [comap_inf, comap_principal]
     congr
     ext p
-    simp only [disjWithin, Finset.mem_range, preimage_ofPred_eq, Nat.lt_one_iff,
-      forall_eq, mem_ofPred_eq, mem_prod]
+    simp only [disjWithin, Finset.mem_range, preimage_setOf_eq, Nat.lt_one_iff,
+      forall_eq, mem_setOf_eq, mem_prod]
     simp
   · simp [totalLengthFilter, comap_comap, Function.comp_def]
 
@@ -383,7 +384,7 @@ theorem _root_.ContinuousOn.sub_le_integral_of_dini_le (hab : a ≤ b)
       simpa only [uIcc_of_le hab] using
         (intervalIntegral.continuousOn_primitive_interval_left
           (f := g) (μ := volume) (a := a) (b := b) hgU)
-    simpa only [s, inter_comm, Pi.sub_apply, Set.inter_def, Set.mem_ofPred_eq] using
+    simpa only [s, inter_comm, Pi.sub_apply, Set.inter_def, Set.mem_setOf_eq] using
       isClosed_Icc.isClosed_le (continuousOn_const.sub hf) hprim
   have hclosure : closure (Ioc a b) ⊆ s := by
     apply hs.closure_subset_iff.2

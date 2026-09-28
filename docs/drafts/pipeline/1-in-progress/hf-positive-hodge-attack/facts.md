@@ -217,3 +217,6 @@ Scope: frontier route HF. Facts and no-gos only.
 - **HF-F63 [Lean, `RHTower.exists_weilPositive_iff_forall_level`] Minkowski split.**
   - W ≠ ∅ ⟺ every finite level has a positive completion (free prime weights).
   - Given uniqueness W ⊆ {Λ}: RH-positivity of Λ ⟺ finite-level existence.
+- **HF-F64 [Lean, `RHTower.vonMangoldt_add_oscillating_eq_zero`] Regular rigidity (partial sums `O(n^θ)`, `θ < ½`).**
+  - Weil positivity of `Λ + c b` with bounded partial sums of `b` forces `c b = 0`, via the Abel-summed symbol, concentration, prime-blind probes and resonators.
+  - In particular no real non-principal character is a Weil-positive direction (proved for `χ₋₄`).

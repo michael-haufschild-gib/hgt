@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 local-frame coefficient API.
 import DifferentialGeometry.Geometry.Curvature.Riemann.Tensor
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
@@ -902,8 +903,8 @@ private theorem smooth_linear_tangentSection_pointwise
     by_cases hy : y ∈ tsupport (χ : M → Real)
     · have hcoeff :
           ContMDiffAt I 𝓘(Real) (∞ : WithTop ℕ∞)
-            (fun y : M => e.localFrameCoeff I b i y (δ y)) y :=
-        contMDiffAt_localFrameCoeff b (hχsupport hy) δ.contMDiff.contMDiffAt i
+            (fun y : M => e.localFrame_coeff I b i y (δ y)) y :=
+        contMDiffAt_localFrame_coeff b (hχsupport hy) δ.contMDiff.contMDiffAt i
       have hχy : ContMDiffAt I 𝓘(Real) (∞ : WithTop ℕ∞) (χ : M → Real) y :=
         χ.contMDiff.contMDiffAt
       refine (hχy.smul hcoeff).congr_of_eventuallyEq ?_
@@ -913,9 +914,9 @@ private theorem smooth_linear_tangentSection_pointwise
         simp [IsLocalFrameOn.toBasisAt, Trivialization.localFrame,
           Trivialization.basisAt, hz]
       change χ z • hframe.coeff i z (δ z) =
-        χ z • e.localFrameCoeff I b i z (δ z)
+        χ z • e.localFrame_coeff I b i z (δ z)
       rw [hframe.coeff_apply_of_mem hz,
-        e.localFrameCoeff_apply_of_mem_baseSet b hz, hbasis]
+        e.localFrame_coeff_apply_of_mem_baseSet b hz, hbasis]
     · have hχ_zero : ∀ᶠ z in 𝓝 y, (χ : M → Real) z = 0 := by
         apply Filter.Eventually.mono
           ((isClosed_tsupport (χ : M → Real)).isOpen_compl.mem_nhds hy)

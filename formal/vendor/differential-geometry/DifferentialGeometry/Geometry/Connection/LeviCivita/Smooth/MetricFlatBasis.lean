@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 local-frame coefficient API.
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Uniqueness
 import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
@@ -469,18 +470,18 @@ private theorem localFrame_coeff_eq_sum_localInvMetric_inner {ι : Type*} [Finty
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
     (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
     (k : ι) (V : TangentSpace I x) :
-    e.localFrameCoeff I b k x V =
+    e.localFrame_coeff I b k x V =
       ∑ l : ι,
         localInvMetricCoeff (I := I) e b g k l x *
           g.inner x (e.localFrame b l x) V := by
   let v : E := e.continuousLinearMapAt Real x V
   have hcoeff :
-      e.localFrameCoeff I b k x V = b.coord k v := by
+      e.localFrame_coeff I b k x V = b.coord k v := by
     classical
     let σ : (y : M) → TangentSpace I y := fun y => if h : x = y then h ▸ V else 0
     have hσx : σ x = V := by
       simp [σ]
-    have hσ := Bundle.Trivialization.localFrameCoeff_apply_of_mem_baseSet
+    have hσ := Bundle.Trivialization.localFrame_coeff_apply_of_mem_baseSet
       (𝕜 := Real) (F := E) (V := (TangentSpace I : M → Type _)) (I := I)
       (e := e) (b := b) hx σ k
     rw [hσx] at hσ
@@ -509,7 +510,7 @@ private theorem lc_christoffel_eq_koszul_sum {ι : Type*} [Fintype ι]
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
     (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
     (i j k : ι) :
-    e.localFrameCoeff I b k x
+    e.localFrame_coeff I b k x
         ((leviCivitaConnectionOfMetric (I := I) g (e.localFrame b j) x)
           (e.localFrame b i x)) =
       (1 / 2 : Real) *
@@ -572,7 +573,7 @@ theorem lc_christoffel_contMDiffAt {ι : Type*} [Finite ι]
     (i j k : ι) :
     ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        e.localFrameCoeff I b k y
+        e.localFrame_coeff I b k y
           ((leviCivitaConnectionOfMetric (I := I) g (e.localFrame b j) y)
             (e.localFrame b i y))) x := by
   have hRhs :
@@ -588,7 +589,7 @@ theorem lc_christoffel_contMDiffAt {ι : Type*} [Finite ι]
       (koszulScalar_localFrame_contMDiffAt (I := I) e b g hx i j l)
   have heq :
       (fun y : M =>
-        e.localFrameCoeff I b k y
+        e.localFrame_coeff I b k y
           ((leviCivitaConnectionOfMetric (I := I) g (e.localFrame b j) y)
             (e.localFrame b i y))) =ᶠ[𝓝 x]
       fun y : M =>

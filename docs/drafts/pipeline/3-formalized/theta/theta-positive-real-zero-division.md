@@ -120,7 +120,7 @@ is immediate from positivity of both sources.
 
 ## Sharp boundary and limitation
 
-The [relative-source rigidity theorem](../../2-fully-proven/theta/theta-tail-divisor-capacity-threshold.md)
+The [relative-source rigidity theorem](theta-tail-divisor-capacity-threshold.md)
 proves that a source bounded in absolute value by `Ck` cannot preserve
 the **complete** Xi divisor unless it is a scalar multiple of `k`.
 Formula (1) shows that deleting just one real zero pair opens a positive

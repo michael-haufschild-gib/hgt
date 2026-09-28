@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Analysis.ODE.Flow.LinearODE.GlobalExistence
 
 
@@ -441,7 +442,7 @@ theorem linearODESolution_continuousOn
         exact lt_of_lt_of_le hη_lt (by rw [hη_target_def]; linarith)
       exact max_lt h1 h2
     have hd := hρ_bd h_pair_mem
-    simp only [Set.mem_ofPred_eq] at hd
+    simp only [Set.mem_setOf_eq] at hd
     rw [Real.dist_0_eq_abs] at hd
     exact lt_of_le_of_lt (le_abs_self _) hd
   set R' : ℝ := (‖Z₀ x₀‖ + 1) * Real.exp (K * T) with hR'_def
@@ -681,7 +682,7 @@ theorem linearODESolution_continuousOn
     exact norm_add_le _ _
   have h_t_piece : ‖Z x₀ t - Z x₀ t₀‖ < ε / 2 := by
     have hd := hδ_t_bd (Metric.mem_ball.mpr hdt_t)
-    simp only [Set.mem_ofPred_eq] at hd
+    simp only [Set.mem_setOf_eq] at hd
     rw [dist_eq_norm] at hd
     exact hd
   have hbd := hbd_diff x hx_param t ht_Icc
@@ -718,7 +719,7 @@ theorem linearODESolution_continuousOn
             rw [hη_target_def]; linarith
           exact max_lt h1 h2
         have hd := hρ_bd h_pair_in_ball
-        simp only [Set.mem_ofPred_eq] at hd
+        simp only [Set.mem_setOf_eq] at hd
         rw [Real.dist_0_eq_abs] at hd
         exact lt_of_le_of_lt (le_abs_self _) hd
       exact lt_of_le_of_lt h_gb_mono_eps h_inner_lt

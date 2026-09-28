@@ -1,10 +1,10 @@
 # Sharp theta-tail capacity for preserving the complete Xi divisor
 
 - **ID:** `theta-tail-divisor-capacity-threshold`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean formalization pending
+- **Stage:** 3-formalized (paper theorems formalized unconditionally in Lean; see `theta-tail-divisor-capacity-threshold-formalized.md`).
+- **Type:** THEOREM (paper); formalized in Lean
 - **Route:** source-side boundary for STC, CSB, U, K-RVM, MPLF, and RG-HF
-- **Status:** `[PROVED HERE ON PAPER] [NOT AN RH PROOF]`
+- **Status:** `[PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
 
 ## Theorem
 
@@ -241,14 +241,20 @@ that bounded displacement; the theorem does not supply one.
 - [x] Existing corpus: `XiZeroCountRVMRemainder`,
       `XiZeroCountJensenBound`, `Zeta23SimpleCriticalDensity`, and
       `ThetaCuspDerivativeLeadingSign` supply relevant ingredients.
-- [ ] Formalize the uniform Fourier growth bound and angular Jensen
-      coefficient `2/(πb)` for double-exponential source tails.
-- [ ] Formalize the complete-divisor containment and sharp `b>2`
-      contradiction; link the derivative packet after its remaining
-      Fourier-factor formalization.
-- [ ] Formalize the relative-source quotient's linear extra zero count
-      and finite exponential type, then the sectorial gamma/Stirling
-      bound, indicator collapse and bounded minimal-type Liouville step.
+- [x] Formalize the uniform Fourier growth bound and angular Jensen
+      coefficient `2/(πb)` for double-exponential source tails (`ThetaTailDivisorCapacity`).
+- [x] Formalize the complete-divisor containment and sharp `b>2`
+      contradiction; link the derivative packet (`ThetaTailDivisorCapacity`,
+      `ThetaTailCapacitySharpness`, derivative-packet modules).
+- [x] Formalize relative-source rigidity (`ThetaRelativeSourceRigidity`,
+      `ThetaTailSectorialGammaBound`): the Lean proof bounds `Q = H/F` by an order-one envelope,
+      bounds it on the imaginary axis, makes it exponentially small on four rays by the sectorial
+      gamma comparison (3), and concludes by a Phragmén–Lindelöf/Liouville theorem, so `Q` is
+      constant; the linear zero count and exponential-type steps are then immediate.
+
+Every statement of the card (the `b>2` theorem and its sharpness, the real-divisor-only `b≤3`
+threshold, relative-source rigidity, (1)–(3), `D(δ)=δ²/4+O(δ⁴)`, the Gaussian control) is
+formalized in Lean; see the certificate `theta-tail-divisor-capacity-threshold-formalized.md`.
 
 The Jensen and Legendre-transform ingredients are classical. The exact
 theta-source/divisor capacity statement was not found in the current

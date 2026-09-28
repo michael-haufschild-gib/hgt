@@ -1,8 +1,8 @@
 # Range-relative Pluecker determinant-line formation law
 
 - **ID:** `ULF-RDPD-001`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** Evans/Gram/Pluecker no-go, determinant-line duality, and exterior-power
   functoriality exposed by corpus audit
 - **Statement:** Every injective finite-rank formation map canonically factors its top exterior map
@@ -211,6 +211,26 @@ Pluecker line. It also proves that a source gauge change acts through its determ
 Direct compile and targeted module build pass. `#print axioms` reports only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.RangeDeterminantFormation`, `GaloisForLFunctions.HTGeometry.RangeDeterminantGaugePhase`, `GaloisForLFunctions.HTGeometry.ComplexGramPlucker`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules `GaloisForLFunctions.HTGeometry.RangeDeterminantFormation` (25 constants), `GaloisForLFunctions.HTGeometry.RangeDeterminantGaugePhase` (8 constants), with `GaloisForLFunctions.HTGeometry.ComplexGramPlucker` (19 constants); axiom audit clean.
+
+| Claim | Lean declaration |
+|-|-|
+| §3 `R_F`, `q_F`, `j_F`, `D_F = Λ^d R_F`, `Q_F`, `J_F` | `rangeDeterminantLine`, `sourceExteriorToRange`, `rangeDeterminantToAmbient` |
+| Thm 4.1(1) `dim R_F = d`, `dim D_F = 1` | `LinearMap.finrank_range_of_inj`, `finrank_rangeDeterminantLine_of_injective` |
+| Thm 4.1(2) `Q_F` an isomorphism | `sourceExteriorToRange_injective`, `sourceDeterminantRangeEquiv`, `sourceDeterminantRangeEquiv_apply` |
+| Thm 4.1(3) `J_F` injective | `rangeDeterminantToAmbient_injective` |
+| Thm 4.1(4) (RDF) `Λ^d F = J_F ∘ Q_F` | `exteriorPower_formation_factorization` |
+| Thm 4.1 `im(Λ^d F) = J_F(D_F)` | `range_exteriorPower_map_eq_range_rangeDeterminantToAmbient` |
+| Cor 5.1 frame synthesis, `ω_v ≠ 0`, spans, `J(ω_v) = v₁ ∧ ⋯ ∧ v_d` | `frameSynthesis`, `frameSynthesis_injective`, `rangePluckerGenerator`, `rangePluckerGenerator_ne_zero`, `exists_smul_rangePluckerGenerator`, `rangeDeterminantToAmbient_rangePluckerGenerator`, `range_rangeDeterminantToAmbient_eq_span_plucker` |
+| Cor 5.2 `R_{F∘A} = R_F`; `Λ^d(F∘A) = det A · Λ^d F`; `Λ^d A = det A · id` | `range_comp_of_surjective`, `exteriorPower_sourceGauge_covariance`, `exteriorPower_map_top_eq_det_smul` |
+| §6 `det(F_v*F_v) = ‖J(ω_v)‖²` | `complex_rangeGenerator_eq_hermFeatureWedge`, `det_hermFeatureGram_eq_pluckerNormSq`, `hermFeatureWedge_coordinate` |
+| §6 negating a frame vector negates `ω` and fixes Gram; unit phases are invisible | `hermFeature_negate_one`, `hermFeatureWedge_update_smul`, `hermFeatureMinor_update_smul`, `hermPluckerNormSq_update_smul`, `hermFeatureGram_det_update_unit` |
+
 ## Log
 
 - 2026-09-01 — corpus audit completed; range-relative correction identified; dependency-closed paper
@@ -219,3 +239,4 @@ Direct compile and targeted module build pass. `#print axioms` reports only
   passed, axiom audit closed.
 - 2026-09-01 — determinant-holonomy hostile audit completed; finite-line selection use retired;
   cofinal/singular rank-changing gluing isolated as next admissible location of obstruction.
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

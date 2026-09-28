@@ -65,9 +65,6 @@ theorem summable_one_div_exp_mul_sub_one {t : ℝ} (ht : 0 < t) :
     rw [← Real.exp_nat_mul, Nat.cast_one, one_mul]
     ring_nf
 
-theorem abs_moebius_real_le_one (k : ℕ) : |((μ k : ℤ) : ℝ)| ≤ 1 := by
-  exact_mod_cast abs_moebius_le_one
-
 /-- **Möbius–Lambert identity.** `Σ_{k ≥ 1} μ(k)/(e^{kt} - 1) = e^{-t}` for `t > 0`. -/
 theorem hasSum_moebius_div_exp_sub_one {t : ℝ} (ht : 0 < t) :
     HasSum (fun k : ℕ => (μ k : ℝ) / (Real.exp (k * t) - 1)) (Real.exp (-t)) := by
@@ -75,7 +72,7 @@ theorem hasSum_moebius_div_exp_sub_one {t : ℝ} (ht : 0 < t) :
     refine Summable.of_norm_bounded (summable_one_div_exp_mul_sub_one ht) fun k => ?_
     have hb := one_div_exp_mul_sub_one_nonneg k ht
     rw [Real.norm_eq_abs, div_eq_mul_one_div, abs_mul, abs_of_nonneg hb]
-    exact mul_le_of_le_one_left hb (abs_moebius_real_le_one k)
+    exact mul_le_of_le_one_left hb ((by exact_mod_cast abs_moebius_le_one))
   refine hsum.hasSum_iff.mpr ?_
   have hz : ‖(Real.exp (-t) : ℂ)‖ < 1 := by
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
@@ -103,6 +100,14 @@ theorem hasSum_moebius_div_exp_sub_one {t : ℝ} (ht : 0 < t) :
       ← Complex.ofReal_mul, mul_one_div]
   simp only [hterm] at hL
   exact_mod_cast (Complex.ofReal_tsum _).trans hL
+
+/-- **Zero harmonic charge removes the algebraic tail:** `r_N(t) = e^{-t} - Σ_{k ≤ N} a_k/(e^{kt} - 1)`. -/
+theorem heatError_eq_of_zeroCharge {a : ℕ → ℝ} {N : ℕ}
+    (hcharge : chronologicalHarmonicCharge a N = 0) {t : ℝ} (ht : 0 < t) :
+    chronologicalHeatError a N t =
+      Real.exp (-t) - ∑ k ∈ Finset.Ioc 0 N, a k / (Real.exp (k * t) - 1) := by
+  rw [chronologicalHeatError_charge_decomposition a N ht, hcharge, zero_div, zero_add,
+    chronologicalBoseSum]
 
 /-! ### The tail bound -/
 
@@ -156,7 +161,7 @@ theorem abs_heatError_le_of_zeroCharge {a : ℕ → ℝ} {N : ℕ}
   have hbKs : Summable fun j : ℕ => b (j + K) := (summable_nat_add_iff K).mpr hbs
   have hterm : ∀ j : ℕ, ‖(μ (j + K) : ℝ) * b (j + K)‖ ≤ b (j + K) := fun j => by
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hb0 _)]
-    exact mul_le_of_le_one_left (hb0 _) (abs_moebius_real_le_one _)
+    exact mul_le_of_le_one_left (hb0 _) ((by exact_mod_cast abs_moebius_le_one))
   have hnorm_s : Summable fun j : ℕ => ‖(μ (j + K) : ℝ) * b (j + K)‖ :=
     Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hterm hbKs
   have h1 : |∑' j : ℕ, (μ (j + K) : ℝ) * b (j + K)| ≤ ∑' j : ℕ, b (j + K) := by
@@ -283,6 +288,27 @@ theorem integral_sq_heatError_Ioi_le_of_zeroCharge {a : ℕ → ℝ} {N : ℕ}
   rw [integral_const_mul, integral_exp_mul_Ioi (by linarith : -2 * K < 0), hc]
   field_simp
   norm_num
+
+/-- The `L²([δ, ∞))` bound in norm form: `‖r_N‖ ≤ √2 e^{-Kδ}/((1 - e^{-δ})² √K)`. -/
+theorem sqrt_integral_sq_heatError_Ioi_le_of_zeroCharge {a : ℕ → ℝ} {N : ℕ}
+    (hpre : ∀ k : ℕ, 1 ≤ k → k ≤ N / 2 → a k = μ k)
+    (hbound : ∀ k ∈ Finset.Ioc 0 N, |a k| ≤ 1) (hcharge : chronologicalHarmonicCharge a N = 0)
+    {δ : ℝ} (hδ : 0 < δ) :
+    Real.sqrt (∫ t in Ioi δ, chronologicalHeatError a N t ^ 2) ≤
+      Real.sqrt 2 * Real.exp (-((N / 2 + 1 : ℕ) * δ)) /
+        ((1 - Real.exp (-δ)) ^ 2 * Real.sqrt ((N / 2 + 1 : ℕ) : ℝ)) := by
+  have hK0 : (0 : ℝ) < ((N / 2 + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_pos _
+  have hd : 0 < 1 - Real.exp (-δ) := by
+    have := Real.exp_lt_one_iff.mpr (neg_lt_zero.mpr hδ); linarith
+  refine (Real.sqrt_le_sqrt (integral_sq_heatError_Ioi_le_of_zeroCharge hpre hbound hcharge hδ)).trans
+    (le_of_eq ?_)
+  rw [Real.sqrt_div' _ (by positivity), Real.sqrt_mul' _ (by positivity), Real.sqrt_mul hK0.le,
+    show (1 - Real.exp (-δ)) ^ 4 = ((1 - Real.exp (-δ)) ^ 2) ^ 2 by ring,
+    Real.sqrt_sq (by positivity),
+    show Real.exp (-(2 * ((N / 2 + 1 : ℕ) : ℝ) * δ)) = Real.exp (-(((N / 2 + 1 : ℕ) : ℝ) * δ)) ^ 2 by
+      rw [← Real.exp_nat_mul]; congr 1; push_cast; ring,
+    Real.sqrt_sq (Real.exp_pos _).le]
+  ring
 
 /-- **The logarithmic window.** For `N ≥ 4`, `∫_{log N/N}^∞ r_N² ≤ 64/(log N)²`. -/
 theorem integral_sq_heatError_Ioi_log_le_of_zeroCharge {a : ℕ → ℝ} {N : ℕ}

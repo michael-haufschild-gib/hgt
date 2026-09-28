@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.Chart
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.VectorField
 import DifferentialGeometry.Geometry.Exponential.Defs
@@ -402,7 +403,7 @@ theorem maximalGeodesicChosenCurve_rescale_at_one
     maximalGeodesicChosenCurve (I := I) g p (a • v) h1_dom 1 =
       maximalGeodesicChosenCurve (I := I) g p v ha_dom a := by
   have h := h1_in
-  simp only [Set.mem_ofPred_eq, mul_one] at h
+  simp only [Set.mem_setOf_eq, mul_one] at h
   exact h.symm
 
 omit [NeZero (Module.finrank ℝ E)] in

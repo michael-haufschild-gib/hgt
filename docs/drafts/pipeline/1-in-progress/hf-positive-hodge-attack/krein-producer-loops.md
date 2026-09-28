@@ -1749,3 +1749,106 @@ Next conjectures to test:
 - **Open.** Both halves.
   - Existence at level `A` with free weights: is the feasible region `W_A` fat at finite `A`?
   - Uniqueness for non-finite perturbations.
+
+### L69 — Regular rigidity: oscillating (non-summable) perturbations of Λ. PROVED [Lean]
+- **Theorem [Lean, `RHTower.WeilPositivityRegularPerturbationRigidity`].**
+  - `vonMangoldt_add_eq_zero_of_symbol`: if the atoms of `w` pair with tests through a continuous symbol `P` of linear growth, then Weil positivity of `Λ + w` forces `w = 0`.
+    - Concentration gives `P ≤ 0`.
+    - Prime-blind probes give `P ≡ 0`.
+    - Two-point resonators give `w(n) = 0`.
+  - `vonMangoldt_add_oscillating_eq_zero`: weights `c·b` with bounded partial sums `Σ_{2≤k≤n} b(k)`. The symbol is the absolutely convergent Abel series `2Σ B(n)(g_τ(n) − g_τ(n+1))`.
+  - `vonMangoldt_add_chiFour_weilPositive_eq_zero`: `Λ + cχ₋₄` Weil-positive ⇒ `c = 0`.
+  - Axioms: standard only.
+- **Meaning.** Uniqueness (L65) now holds on:
+  - ℓ¹ perturbations (L64);
+  - finite measures at any positions (L67);
+  - constants (L61/L63);
+  - all bounded-partial-sum perturbations, i.e. every real non-principal character and `(−1)^n`, among others (L69).
+- **What remains open for uniqueness.**
+  - Perturbations with growing partial sums that are not polar-Mertens type (e.g. `B(x) ≍ x^θ`, `0 < θ < ½`, irregular).
+  - Irregular deviations of prime-number-theorem type.
+
+### L70 — The existence half is prime-blind archimedean positivity, and it only sees low frequencies. CONJECTURE [P]
+- **Duality [P].** By L68 and Farkas with the level-wise box:
+  - `W_A ≠ ∅` ⟺ PBAP_A: `arch(Φ) ≥ 0` for every positive-definite combination `Φ = Σ α_i φ_{f_i}` of polar level-`A` tests with `Φ(±log n) = 0` for `2 ≤ n ≤ e^{2A}`.
+  - (Box form: `arch(μ) + Σ b_n|c_n(μ)| ≥ 0`. The exact prime-blind version is the limit.)
+  - No primes and no zeros appear: only the ζ archimedean symbol `A(τ) = Re ψ(¼+iτ/2) − log π` and the set `{log n}`.
+- **Explicit-formula reading.** For prime-blind polar `Φ`, `Σ_ρ Φ̂(γ_ρ) = arch(Φ)` identically.
+  - Since `A(τ) > 0` for `|τ| > τ* ≈ 6.3`, a prime-blind test with spectrum above `τ*` has positive zero-sum whatever the zeros are.
+  - So prime-blind tests cannot see off-line zeros at large height, and PBAP is a low-frequency (small-height) statement.
+  - Negativity needs spectral mass in `|τ| < τ*` while vanishing at `log 2, log 3, …`. Near `u = 0` there are no constraints, but there Weil positivity past √2 (corpus, margin 1/10) applies.
+- **Conjecture L70.** PBAP_A holds for every `A`, so W ≠ ∅ unconditionally.
+- **Dichotomy.**
+  - If L70 holds, then RH ⟺ uniqueness (W ⊆ {Λ}), and ¬RH would produce an irregular Weil-positive system `lam* ≠ Λ` with ζ's archimedean data (not ℓ¹, not bounded-partial-sum; L64/L67/L69).
+  - If L70 fails, RH fails, witnessed by an explicit prime-blind positive-definite function with negative archimedean energy.
+- **Open core.**
+  - A quantitative uncertainty principle: positive-definite functions vanishing on `{±log n}` cannot put enough spectral mass below `τ*` relative to the `A`-weighted mass above.
+  - The danger is internal cancellation: combinations of large-support tests whose autocorrelations cancel at each `log n`.
+- **Relation to the corpus.** L20 (visible-unit completions) and L8 (prime-exact completions) study prescribed visible weights. Free visible weights (existence) are new.
+
+### L71 — Regular rigidity for growing oscillations (partial sums `O(n^θ)`, `θ < ½`). PROVED [Lean]
+- `vonMangoldt_add_oscillating_eq_zero` now takes `|Σ_{2≤k≤n} b(k)| ≤ K n^θ` with `θ < ½`. The Abel series converges because `Σ n^{θ−3/2} < ∞`.
+- Covers growing perturbations such as `c χ(n) n^{θ'}` (`θ' < ½`), whose size `n^{θ'}` is far from summable against `n^{−½}`.
+- Remaining uniqueness gap: partial sums of size `≳ √n`, other than the polar (constant-shift) type handled by L63.
+- Module updated in place: `RHTower.WeilPositivityRegularPerturbationRigidity`. Axioms: standard.
+
+### L72 — Attempted PBAP counterexample (far polar corrections). FAILS; the positive reason is recorded [P]
+- **Attempt.** Take `f = f₁ + εf₂ + ε'f₃`, with:
+  - `f₁` a low-frequency bump in `|x| < ¼log 2`, non-polar, with `arch(f₁) < 0` (the corpus Fejér test);
+  - `f₂`, `f₃` tiny corrections at `x ≈ ±A` that restore both polar moments. The shifts amplify `e^{±x/2}` by `e^{A/2}`, so `ε, ε' ≈ e^{−A/2}` suffice.
+
+  Then `arch(f) ≈ arch(f₁) < 0`. If `Φ = φ_f` could also be made prime-blind, Weil positivity would fail for every weight system, and RH would be false.
+- **Why it fails.** The cross-correlation `C = f₁ ⋆ f̃₂`, at lags near `A`, inherits the smoothness of `f₁` (scale about 0.35).
+  - Prime-blindness demands `C(log n) = 0` at all `n` in that window, with spacing `e^{−A}` far below 0.35. This forces `C ≈ 0` on the window.
+  - Polarity forces the Chebyshev-weighted mass `∫ C(u) e^{u/2} du ≈ −(f̂₁(−i/2))²`, which is nonzero.
+  - Contradiction. Far corrections cannot restore polarity while staying invisible to the integers.
+- **Positive insight [P].** Prime-blind archimedean positivity is protected by the density `e^u` of `{log n}`.
+  - The integers are dense enough to see the polar (`e^{u/2}`) moment of any smooth far cross-correlation.
+  - This is the pole/Chebyshev coupling in dual form: vanishing on `{log n}` and the polar constraint together pin the large-lag structure of prime-blind positive-definite functions.
+- **Next.** Turn this into a quantitative lemma: for positive-definite `Φ` vanishing on `{±log n}` with `∫Φ cosh(u/2) = 0`, bound `∫_{|u|>U} |Φ| cosh(u/2)` by the smoothness of `Φ`. That would reduce PBAP to bounded lags, i.e. to a finite-level statement.
+
+### L73 — The Minkowski reformulation of RH (conditional on the uniqueness half). [P]
+- **PBAP is a fixed, zeros-free, primes-free statement.**
+  - PBAP_A says: for every positive-definite combination `Φ` of polar level-`A` tests with `Φ(±log n) = 0` for `n ≤ e^{2A}`, `∫ A(τ) Φ̂(τ) dτ ≥ 0`, where `A(τ) = Re ψ(¼+iτ/2) − log π`.
+  - It involves only the Γ-factor and the set `{log n : n ≥ 2}`, the logarithms of all integers (not just the primes).
+  - RH ⇒ PBAP (Λ is a positive completion). By L68 and the duality of L70: PBAP (all `A`) ⟺ W ≠ ∅.
+- **Prime-blind tests never see off-line zeros.** For prime-blind polar `Φ` the explicit formula reads `Σ_ρ Φ̂(γ_ρ) = arch(Φ)`, a quantity independent of where the zeros are.
+  - So if PBAP holds (a fixed fact), no prime-blind test detects any off-line zero at any height.
+  - If PBAP fails, RH fails, witnessed without zeros or primes.
+- **Reformulation.** Given uniqueness (W ⊆ {Λ}; proved along summable, finite-measure, constant and `O(n^θ)`-oscillating directions, L61–L71):
+
+  **RH ⟺ PBAP.** The archimedean (Γ-factor) Weil form is nonnegative on positive-definite polar functions vanishing at the logarithms of the integers.
+  - The primes disappear. They re-enter only through the uniqueness half, a Hamburger-type rigidity (the integer positions `log n` force the weights to be Λ).
+- **No free lunch.** Under uniqueness, PBAP is exactly as hard as RH.
+  - The Minkowski route therefore splits RH into a primes-free positivity problem (existence) and a Fourier-rigidity problem (uniqueness).
+  - The analogue of the polytope theory: existence by variational/compactness methods, uniqueness by a Brunn–Minkowski-type equality case.
+- **Status.** L68 formal (existence reduces to finite levels). Uniqueness formal in all regular directions (L63, L64, L67, L69, L71). PBAP open; the far-correction counterexample is blocked by integer density (L72).
+
+### L74 — Universal near-radical: no weight system is Weil-positive with slack. CONJECTURE with proof sketch [P-sketch]
+- **Claim.** For every `ε > 0` and every weight system `lam`, some polar test has `Q_lam(f) < ε‖f‖²`. Equivalently, `σ_pb := inf{arch(Φ)/(2πΦ(0)) : Φ prime-blind polar positive-definite} ≤ 0`.
+  - With RH, `σ_pb = 0`. Every positive completion of ζ's archimedean datum is critical.
+  - In Minkowski terms, the Γ-datum is degenerate (like data on a great subsphere), and all its solutions are flat.
+- **Mechanism.**
+  - For a prime-blind polar combination `Φ = Σ α_i φ_{f_i}`, the energy is weight-independent: `Σα_i Q_lam(f_i) = arch(Φ) = 2π Re W_ζ(Φ)` (zero side).
+  - So a prime-blind combination of near-radical tests of `Q_Λ` is near-null for every `lam` simultaneously: a universal near-radical.
+- **Sketch of existence.**
+  - Let `V` be the level-`a` near radical of `Q_Λ` (dimension `≍ 2e^{2a}`, L35). Prime-blindness is `⟨G, M_n⟩ = 0` for a PSD Gram matrix `G` on `V`, with `M_n` the lag-`log n` autocorrelation forms, `n ≤ e^{2a}`.
+  - By Gordan's alternative, a nonzero PSD `G` exists unless some `Σ c_n M_n` is positive definite on `V`.
+  - `tr(P_V τ_{log n}) ≈ 0`: autocorrelations at nonzero lags average out over a large nearly translation-invariant space. So `tr(Σ c_n M_n) ≈ 0`, and no such combination is positive definite.
+  - Hence a prime-blind PSD `G` exists, with `arch/mass ≤ exp(−c e^{2a})`.
+- **Why the naive routes fail.**
+  - Mixing concentrated radical tests blurs log-frequencies at scale 1 (radical autocorrelation), so mixtures are not prime-blind.
+  - Small-support probes are prime-blind but not radical.
+  - Exact prime-blindness needs the Gordan/trace argument on the near radical.
+- **Consequences.**
+  - Refutes the scenario "prime-blind slack ⇒ slack completions ⇒ uniqueness fails".
+  - Shows that existence (PBAP) can never be proved by slack/openness (consistent with L66/L67).
+  - The Weil-positive set W, if nonempty, consists only of critical points.
+- **Status.** Sketch; the trace approximation and the near-radical structure need quantitative control. Lean: open (needs the L35 near-radical as a subspace plus a finite Gordan lemma).
+- **L74 refinement (same session).**
+  - The naive proof ("slack ⇒ the smoothed perturbation symbol `T_w ≤ −ε` everywhere ⇒ contradiction with mean zero") fails. `T_w` may carry huge positive mass in `1/S`-neighbourhoods of the zeros of ξ; the box allows `|T_w| ~ e^{2S}`, and mean zero is then consistent (`N(X) ≍ X log X ≫ εX`). Structurally, `ν_lam = (1−θ)ν_ζ + ρ` with `ρ ≥ ε` is not excluded by averaging.
+  - Such slack completions exist iff `σ_pb > 0`. Testing `ρ` on prime-blind polar `Φ` gives `θ·arch(Φ) ≥ ε·Φ(0)`.
+  - **Precise open core.** Is the Toeplitz form `g ↦ ∫ |B̂ ĝ|² T_c` (radical weight `|B̂|²`, `T_c = Σ_{n≤e^{2a}} c_n cos(τ log n)`) indefinite on `PW_{a−R}` for every `c ≠ 0`?
+    - If yes, Gordan gives prime-blind radical combinations at every level, so `σ_pb = 0` and no slack points exist.
+    - If no, the definite `T_c` is an explicit prime-weight perturbation that could carry slack.
+  - The difficulty: `T_c` oscillates faster (frequencies up to `2a`) than the resolution `1/(a−R)` of `PW_{a−R}`.

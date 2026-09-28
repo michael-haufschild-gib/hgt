@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov
 Coauthors: Jack McCarthy
 Modified by: Ziyang Qin
+Local modifications: explicit power-recursion proofs for Mathlib 4.32.2.
 -/
 import DifferentialGeometry.Tensor.Alternating.Reindexing.Permutation
 import DifferentialGeometry.Tensor.Alternating.Coordinates.MultiKroneckerDelta
@@ -906,7 +907,7 @@ private theorem neg_one_pow_ite (n : ℕ) : (-1 : ℤˣ) ^ n = if Even n then 1 
   | zero => simp
   | succ n ih =>
     have hstep : (-1 : ℤˣ) ^ n.succ = (-1 : ℤˣ) ^ n * (-1 : ℤˣ) := by
-      simpa using (pow_succ (a := (-1 : ℤˣ)) (n := n))
+      exact pow_succ (-1 : ℤˣ) n
     rw [hstep, ih]
     by_cases hn : Even n
     · have hodd : ¬ Even (n + 1) := by
@@ -945,7 +946,7 @@ private theorem inducedPerm_swap_sign_left {m : ℕ} (j b : Fin (m + 1)) (hjb : 
   have hcombine : (-1 : ℤˣ) * (-1 : ℤˣ) ^ (j.val + b.val) = (-1 : ℤˣ) ^ (1 + j.val + b.val) := by
     rw [mul_comm]
     have hstep : (-1 : ℤˣ) ^ (j.val + b.val).succ = (-1 : ℤˣ) ^ (j.val + b.val) * (-1 : ℤˣ) := by
-      simpa using (pow_succ (a := (-1 : ℤˣ)) (n := j.val + b.val))
+      exact pow_succ (-1 : ℤˣ) (j.val + b.val)
     rw [← hstep]
     rw [show (j.val + b.val).succ = 1 + j.val + b.val from by omega]
   rw [hcombine]
@@ -954,7 +955,7 @@ private theorem inducedPerm_swap_sign_left {m : ℕ} (j b : Fin (m + 1)) (hjb : 
     | zero => simp
     | succ n ih =>
       have hstep : (-1 : ℤˣ) ^ n.succ = (-1 : ℤˣ) ^ n * (-1 : ℤˣ) := by
-        simpa using (pow_succ (a := (-1 : ℤˣ)) (n := n))
+        exact pow_succ (-1 : ℤˣ) n
       rw [hstep, ih]
       by_cases hn : Even n
       · have hodd : ¬ Even (n + 1) := by

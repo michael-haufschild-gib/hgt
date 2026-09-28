@@ -3,6 +3,8 @@ import GaloisForLFunctions.RHTower.ChronologicalHeatMellin
 import Mathlib.NumberTheory.Bernoulli
 import Mathlib.NumberTheory.LSeries.HurwitzZetaValues
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
+import GaloisForLFunctions.HTGeometry.ReciprocalJetPolynomials
+import GaloisForLFunctions.HTGeometry.StieltjesPowerSumRecovery
 
 /-!
 # Taylor coefficients of the Bose defect and jets of the heat residual
@@ -64,11 +66,6 @@ theorem mul_boseKernelE_mul_exp_sub_one {z : ℂ} (hz : z ∈ boseStrip) :
     have hden := exp_sub_one_ne_zero_of_mem_boseStrip hz h0
     field_simp
 
-theorem iteratedDeriv_cexp (n : ℕ) : iteratedDeriv n Complex.exp = Complex.exp := by
-  induction n with
-  | zero => simp
-  | succ n ih => rw [iteratedDeriv_succ, ih, Complex.deriv_exp]
-
 /-- The Bernoulli recursion satisfied by the Taylor coefficients of `F(z) = z E(z)`. -/
 theorem sum_choose_iteratedDeriv_mul_boseKernelE {n : ℕ} (hn : 1 ≤ n) :
     ∑ i ∈ Finset.range n, (n.choose i : ℂ) *
@@ -81,7 +78,7 @@ theorem sum_choose_iteratedDeriv_mul_boseKernelE {n : ℕ} (hn : 1 ≤ n) :
     intro j
     rcases Nat.eq_zero_or_pos j with rfl | hj
     · simp
-    · rw [iteratedDeriv_fun_sub Complex.contDiff_exp.contDiffAt contDiffAt_const, iteratedDeriv_cexp,
+    · rw [iteratedDeriv_fun_sub Complex.contDiff_exp.contDiffAt contDiffAt_const, GaloisForLFunctions.HTGeometry.iteratedDeriv_cexp,
         iteratedDeriv_const, if_neg hj.ne', if_neg hj.ne']
       simp
   have hev : (fun z => (z * boseKernelE z) * (Complex.exp z - 1)) =ᶠ[𝓝 (0 : ℂ)]
@@ -94,7 +91,7 @@ theorem sum_choose_iteratedDeriv_mul_boseKernelE {n : ℕ} (hn : 1 ≤ n) :
     rw [iteratedDeriv_fun_sub (f := fun z => Complex.exp z - 1) (g := fun z : ℂ => z)
         ((Complex.contDiff_exp.sub contDiff_const).contDiffAt) contDiffAt_id,
       iteratedDeriv_fun_sub (f := Complex.exp) (g := fun _ : ℂ => (1 : ℂ))
-        Complex.contDiff_exp.contDiffAt contDiffAt_const, iteratedDeriv_cexp,
+        Complex.contDiff_exp.contDiffAt contDiffAt_const, GaloisForLFunctions.HTGeometry.iteratedDeriv_cexp,
       iteratedDeriv_const, iteratedDeriv_fun_id]
     have hn0 : n ≠ 0 := by omega
     simp only [hn0, if_false, Complex.exp_zero, sub_zero]
@@ -168,15 +165,6 @@ theorem boseKernelE_zero : boseKernelE 0 = 1 / 2 := by
   have := iteratedDeriv_boseKernelE_zero 0
   rw [iteratedDeriv_zero] at this
   rw [this, zero_add, bernoulli_one]; push_cast; ring
-
-/-- `B_{2j} ≠ 0` for `j ≥ 1` (Euler's formula for `ζ(2j)`). -/
-theorem bernoulli_two_mul_ne_zero {j : ℕ} (hj : j ≠ 0) : bernoulli (2 * j) ≠ 0 := by
-  intro h0
-  have hz := riemannZeta_two_mul_nat hj
-  rw [h0, Rat.cast_zero, mul_zero, zero_div] at hz
-  exact riemannZeta_ne_zero_of_one_lt_re (by
-    rw [show ((2 : ℂ) * (j : ℂ)) = ((2 * j : ℕ) : ℂ) by push_cast; ring, Complex.natCast_re]
-    exact_mod_cast (by omega : 1 < 2 * j)) hz
 
 /-! ### Jets of the analytic heat residual -/
 
@@ -258,7 +246,7 @@ theorem heatErrorExt_jets {a : ℕ → ℝ} {N m : ℕ}
     push_cast; ring
   · rw [iteratedDeriv_heatErrorExt_zero, sum_ofReal_mul_pow, hodd j hj hjm]
     have hB : (bernoulli (2 * j) : ℂ) ≠ 0 := by
-      exact_mod_cast bernoulli_two_mul_ne_zero (by omega)
+      exact_mod_cast GaloisForLFunctions.HTGeometry.bernoulli_two_mul_ne_zero (by omega)
     have hodd' : Odd (2 * j - 1) := ⟨j - 1, by omega⟩
     rw [show 2 * j - 1 + 1 = 2 * j by omega, hodd'.neg_one_pow]
     push_cast

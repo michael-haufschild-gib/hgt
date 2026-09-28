@@ -120,7 +120,7 @@ theorem exists_abs_halfTailSum_zpow_sub_le (p : ℤ) :
 
 /-! ### Positive definiteness of the limit form -/
 
-theorem integral_sq_pos_of_ne_zero {a b : ℝ} (hab : a < b) {f : ℝ → ℝ}
+theorem integral_sq_pos_of_continuousOn_Icc {a b : ℝ} (hab : a < b) {f : ℝ → ℝ}
     (hf : ContinuousOn f (Icc a b)) {x₀ : ℝ} (hx₀ : x₀ ∈ Icc a b) (hne : f x₀ ≠ 0) :
     0 < ∫ x in a..b, f x ^ 2 := by
   have hint : IntervalIntegrable (fun x => f x ^ 2) volume a b :=
@@ -170,15 +170,15 @@ def gmGramDisc (m N : ℕ) (i j : Fin (m + 2)) : ℝ :=
     (if N / 2 < k then ((k : ℝ) / N) ^ (gmExp m i + gmExp m j) else 0)
 
 /-- The quadratic form of a symmetric coefficient array. -/
-def quadForm {n : ℕ} (G : Fin n → Fin n → ℝ) (c : Fin n → ℝ) : ℝ := ∑ i, ∑ j, c i * c j * G i j
+def gramQuadForm {n : ℕ} (G : Fin n → Fin n → ℝ) (c : Fin n → ℝ) : ℝ := ∑ i, ∑ j, c i * c j * G i j
 
-theorem continuous_quadForm {n : ℕ} (G : Fin n → Fin n → ℝ) : Continuous (quadForm G) := by
-  unfold quadForm
+theorem continuous_gramQuadForm {n : ℕ} (G : Fin n → Fin n → ℝ) : Continuous (gramQuadForm G) := by
+  unfold gramQuadForm
   fun_prop
 
-theorem quadForm_smul {n : ℕ} (G : Fin n → Fin n → ℝ) (r : ℝ) (c : Fin n → ℝ) :
-    quadForm G (r • c) = r ^ 2 * quadForm G c := by
-  unfold quadForm
+theorem gramQuadForm_smul {n : ℕ} (G : Fin n → Fin n → ℝ) (r : ℝ) (c : Fin n → ℝ) :
+    gramQuadForm G (r • c) = r ^ 2 * gramQuadForm G c := by
+  unfold gramQuadForm
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.mul_sum]
@@ -186,8 +186,8 @@ theorem quadForm_smul {n : ℕ} (G : Fin n → Fin n → ℝ) (r : ℝ) (c : Fin
   simp only [Pi.smul_apply, smul_eq_mul]; ring
 
 /-- `Q(c) = ∫_{1/2}^1 (Σ cᵢ vᵢ)²`. -/
-theorem quadForm_gmGramLim (m : ℕ) (c : Fin (m + 2) → ℝ) :
-    quadForm (gmGramLim m) c = ∫ x in (1 / 2 : ℝ)..1, (∑ i, c i * x ^ gmExp m i) ^ 2 := by
+theorem gramQuadForm_gmGramLim (m : ℕ) (c : Fin (m + 2) → ℝ) :
+    gramQuadForm (gmGramLim m) c = ∫ x in (1 / 2 : ℝ)..1, (∑ i, c i * x ^ gmExp m i) ^ 2 := by
   have hcont : ∀ p : ℤ, IntervalIntegrable (fun x : ℝ => x ^ p) volume (1 / 2) 1 := fun p =>
     (contDiffOn_zpow_of_pos (by norm_num : (0 : ℝ) < 1 / 2) p).continuousOn.intervalIntegrable_of_Icc
       (by norm_num)
@@ -207,31 +207,31 @@ theorem quadForm_gmGramLim (m : ℕ) (c : Fin (m + 2) → ℝ) :
     simpa only [Finset.sum_fn] using IntervalIntegrable.sum Finset.univ fun j _ => hij i j
   symm
   rw [intervalIntegral.integral_congr hpt, intervalIntegral.integral_finsetSum fun i _ => hi i]
-  unfold quadForm gmGramLim
+  unfold gramQuadForm gmGramLim
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [intervalIntegral.integral_finsetSum fun j _ => hij i j]
   exact Finset.sum_congr rfl fun j _ => intervalIntegral.integral_const_mul _ _
 
-theorem quadForm_gmGramLim_pos (m : ℕ) {c : Fin (m + 2) → ℝ} (hc : c ≠ 0) :
-    0 < quadForm (gmGramLim m) c := by
-  rw [quadForm_gmGramLim]
+theorem gramQuadForm_gmGramLim_pos (m : ℕ) {c : Fin (m + 2) → ℝ} (hc : c ≠ 0) :
+    0 < gramQuadForm (gmGramLim m) c := by
+  rw [gramQuadForm_gmGramLim]
   by_contra hle
   push Not at hle
   apply hc
   apply eq_zero_of_gm_eqOn_zero
   intro x₀ hx₀
   by_contra hne
-  exact absurd hle (not_le.mpr (integral_sq_pos_of_ne_zero (by norm_num)
+  exact absurd hle (not_le.mpr (integral_sq_pos_of_continuousOn_Icc (by norm_num)
     (continuousOn_finsetSum _ fun i _ => continuousOn_const.mul
       (contDiffOn_zpow_of_pos (by norm_num : (0 : ℝ) < 1 / 2) _).continuousOn) hx₀ hne))
 
 /-- **A positive definite quadratic form dominates a multiple of the squared norm.** -/
-theorem exists_quadForm_lower {n : ℕ} (G : Fin n → Fin n → ℝ)
-    (hpos : ∀ c : Fin n → ℝ, c ≠ 0 → 0 < quadForm G c) :
-    ∃ lam : ℝ, 0 < lam ∧ ∀ c : Fin n → ℝ, lam * ∑ i, c i ^ 2 ≤ quadForm G c := by
+theorem exists_gramQuadForm_lower {n : ℕ} (G : Fin n → Fin n → ℝ)
+    (hpos : ∀ c : Fin n → ℝ, c ≠ 0 → 0 < gramQuadForm G c) :
+    ∃ lam : ℝ, 0 < lam ∧ ∀ c : Fin n → ℝ, lam * ∑ i, c i ^ 2 ≤ gramQuadForm G c := by
   classical
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · exact ⟨1, one_pos, fun c => by simp [quadForm]⟩
+  · exact ⟨1, one_pos, fun c => by simp [gramQuadForm]⟩
   set S : Set (Fin n → ℝ) := {c | ∑ i, c i ^ 2 = 1} with hS
   have hSc : IsCompact S := by
     refine Metric.isCompact_of_isClosed_isBounded
@@ -245,13 +245,13 @@ theorem exists_quadForm_lower {n : ℕ} (G : Fin n → Fin n → ℝ)
     exact Finset.single_le_sum (fun j _ => sq_nonneg (c j)) (Finset.mem_univ i)
   have hSne : S.Nonempty := ⟨Pi.single ⟨0, hn⟩ 1, by
     simp [hS, Pi.single_apply, Finset.sum_ite_eq']⟩
-  obtain ⟨c₀, hc₀S, hmin⟩ := hSc.exists_isMinOn hSne (continuous_quadForm G).continuousOn
+  obtain ⟨c₀, hc₀S, hmin⟩ := hSc.exists_isMinOn hSne (continuous_gramQuadForm G).continuousOn
   have hc₀ : c₀ ≠ 0 := by
     rintro rfl
     simp [hS] at hc₀S
-  refine ⟨quadForm G c₀, hpos c₀ hc₀, fun c => ?_⟩
+  refine ⟨gramQuadForm G c₀, hpos c₀ hc₀, fun c => ?_⟩
   by_cases hc : c = 0
-  · subst hc; simp [quadForm]
+  · subst hc; simp [gramQuadForm]
   set r := Real.sqrt (∑ i, c i ^ 2) with hr
   have hsum_pos : 0 < ∑ i, c i ^ 2 := by
     obtain ⟨i, hi⟩ := Function.ne_iff.mp hc
@@ -264,18 +264,18 @@ theorem exists_quadForm_lower {n : ℕ} (G : Fin n → Fin n → ℝ)
     rw [← Finset.mul_sum, inv_pow, hr, Real.sq_sqrt hsum_pos.le, inv_mul_cancel₀ hsum_pos.ne']
   have hle := hmin hmem
   simp only [Set.mem_setOf_eq] at hle
-  rw [quadForm_smul, inv_pow, hr, Real.sq_sqrt hsum_pos.le] at hle
+  rw [gramQuadForm_smul, inv_pow, hr, Real.sq_sqrt hsum_pos.le] at hle
   rw [mul_comm]
-  calc (∑ i, c i ^ 2) * quadForm G c₀ ≤ (∑ i, c i ^ 2) * ((∑ i, c i ^ 2)⁻¹ * quadForm G c) :=
+  calc (∑ i, c i ^ 2) * gramQuadForm G c₀ ≤ (∑ i, c i ^ 2) * ((∑ i, c i ^ 2)⁻¹ * gramQuadForm G c) :=
         mul_le_mul_of_nonneg_left hle hsum_pos.le
-    _ = quadForm G c := by field_simp
+    _ = gramQuadForm G c := by field_simp
 
 /-- **Discrete coercivity of the half-tail Gram form.** -/
 theorem exists_gmGramDisc_coercive (m : ℕ) :
     ∃ lam : ℝ, 0 < lam ∧ ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N → ∀ c : Fin (m + 2) → ℝ,
-      lam * ∑ i, c i ^ 2 ≤ quadForm (gmGramDisc m N) c := by
-  obtain ⟨lam, hlam, hQ⟩ := exists_quadForm_lower (gmGramLim m) fun c hc =>
-    quadForm_gmGramLim_pos m hc
+      lam * ∑ i, c i ^ 2 ≤ gramQuadForm (gmGramDisc m N) c := by
+  obtain ⟨lam, hlam, hQ⟩ := exists_gramQuadForm_lower (gmGramLim m) fun c hc =>
+    gramQuadForm_gmGramLim_pos m hc
   choose C hC using fun (ij : Fin (m + 2) × Fin (m + 2)) =>
     exists_abs_halfTailSum_zpow_sub_le (gmExp m ij.1 + gmExp m ij.2)
   set K : ℝ := ∑ ij, |C ij| with hK
@@ -289,11 +289,11 @@ theorem exists_gmGramDisc_coercive (m : ℕ) :
   have hNbig : 2 * (m + 2) * K / lam < N := hN₁.trans (by exact_mod_cast (by omega : N₁ < N))
   have hentry : ∀ i j, |gmGramDisc m N i j - gmGramLim m i j| ≤ K / N := fun i j =>
     (hC (i, j) N hNpos).trans (div_le_div_of_nonneg_right (hCle (i, j)) hNr.le)
-  have hdiff : |quadForm (gmGramDisc m N) c - quadForm (gmGramLim m) c| ≤
+  have hdiff : |gramQuadForm (gmGramDisc m N) c - gramQuadForm (gmGramLim m) c| ≤
       (m + 2) * (∑ i, c i ^ 2) * (K / N) := by
-    have hrw : quadForm (gmGramDisc m N) c - quadForm (gmGramLim m) c =
+    have hrw : gramQuadForm (gmGramDisc m N) c - gramQuadForm (gmGramLim m) c =
         ∑ i, ∑ j, c i * c j * (gmGramDisc m N i j - gmGramLim m i j) := by
-      unfold quadForm
+      unfold gramQuadForm
       rw [← Finset.sum_sub_distrib]
       exact Finset.sum_congr rfl fun i _ => by
         rw [← Finset.sum_sub_distrib]; exact Finset.sum_congr rfl fun j _ => by ring

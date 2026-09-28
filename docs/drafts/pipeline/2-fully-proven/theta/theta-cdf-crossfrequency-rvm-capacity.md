@@ -299,7 +299,7 @@ The genuine RH gate remains a **theta-specific orientation of this
 global cross-frequency coupling**, equivalently a proof that actual
 Xi eigenmodes have neutral boundary flux. The theorem locates the
 required spectral capacity but supplies no sign or zero exclusion.
-The [theta derivative dark-packet deformation](theta-derivative-dark-divisor-packets.md)
+The [theta derivative dark-packet deformation](../../3-formalized/theta/theta-derivative-dark-divisor-packets.md)
 shows why density capacity alone cannot orient zeros: a positive
 source can retain the actual real-zero divisor and theta-scale tail
 while acquiring an off-real packet. The exact modular source identity,

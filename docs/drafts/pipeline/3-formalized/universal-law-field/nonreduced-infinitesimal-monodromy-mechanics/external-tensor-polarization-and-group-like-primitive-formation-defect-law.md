@@ -1,5 +1,7 @@
 # External tensor polarization and group-like--primitive formation defect law
 
+- **Stage:** 3-formalized
+
 ## Status
 
 - **Label:** ULF-NIMM-2
@@ -218,3 +220,24 @@ Not proved:
 - arithmetic source coalgebra realization;
 - source equality of group-like and primitive formations;
 - RH.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.RHTower.RouteRExternalTensorMonodromy`, `GaloisForLFunctions.RHTower.NilpotentMonodromyCriticalLineChain`, `GaloisForLFunctions.RHTower.RouteRNilpotentMonodromy`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules `GaloisForLFunctions.RHTower.RouteRExternalTensorMonodromy` (17 constants) and `GaloisForLFunctions.RHTower.NilpotentMonodromyCriticalLineChain` (7 constants), on `GaloisForLFunctions.RHTower.RouteRNilpotentMonodromy`; axiom audit clean.
+
+| Claim | Lean declaration |
+|-|-|
+| Lemma 3.1 (ETP.1) `v ⊗ v = 0 ⟺ v = 0` over a field | `self_tmul_ne_zero_of_ne_zero`, `self_tmul_eq_zero_iff` |
+| (ETP.2) `G_a`, `P_a`, `C_a` on `A ⊗_ℂ A`; diagonal multiplication | `RouteRExternalMonodromyTensor`, `routeRExternalGroupLikeFormation`, `routeRExternalPrimitiveFormation`, `routeRExternalTensorCurvature`, `routeRExternalDiagonalMultiplication` |
+| Thm 4.1 (ETP.3) `G_a = P_a + C_a` | `routeRExternalGroupLikeFormation_eq_primitive_add_curvature` |
+| Thm 4.1 (ETP.4) `C_a = 0 ⟺ a = 0` | `routeRExternalTensorCurvature_eq_zero_iff` |
+| §1 internal multiplication kills `C_a` (`m(h ⊗ h) = h² = 0`) | `routeRExternalDiagonalMultiplication_curvature_eq_zero` |
+| Thm 4.2 (ETP.5) reflection-even; (ETP.6) factorwise shift-stationary | `routeRExternalTensorCurvature_neg`, `routeRExternalTensorCurvature_shift_fixed` |
+| Cor 4.3 (ETP.7) | `routeRExternal_phaseSeparation`, `routeRExternalTensorMonodromy_law` |
+| (ETP.8) `G = P ⟺ C = 0 ⟺ a = 0 ⟺ Re ρ = 1/2` | `routeRExternalGroupLikeFormation_eq_primitive_iff`, `routeRExternalGroupLikeFormation_eq_primitive_iff_re` |
+
+## Log
+
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

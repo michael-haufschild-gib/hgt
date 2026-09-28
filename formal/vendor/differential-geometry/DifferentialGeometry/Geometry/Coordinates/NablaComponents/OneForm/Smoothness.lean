@@ -1,3 +1,4 @@
+-- Local compatibility change (2026-09-28): use the mathlib 4.32.2 local-frame coefficient API.
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Moving
 open DifferentialGeometry.Tensor.Multilinear
 
@@ -29,7 +30,7 @@ private theorem coordinateFrame_coeff_contMDiffAt
   have hx : x₀ ∈ e.baseSet := by
     simp [e, coordinateTrivializationAt]
   have hcoeff :=
-    contMDiffAt_localFrameCoeff
+    contMDiffAt_localFrame_coeff
       (I := I) (V := TangentSpace I) (e := e)
       (b := Module.finBasis 𝕜 E) (s := fun y : M => Z y)
       (k := (∞ : WithTop ℕ∞)) hx Z.contMDiff.contMDiffAt j
@@ -46,9 +47,9 @@ private theorem coordinateFrame_coeff_contMDiffAt
     rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
       (e := e) (b := Module.finBasis 𝕜 E) hy]
   change (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y) =
-    e.localFrameCoeff I (Module.finBasis 𝕜 E) j y (Z y)
+    e.localFrame_coeff I (Module.finBasis 𝕜 E) j y (Z y)
   rw [(coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff_apply_of_mem hy]
-  rw [Bundle.Trivialization.localFrameCoeff_apply_of_mem_baseSet e
+  rw [Bundle.Trivialization.localFrame_coeff_apply_of_mem_baseSet e
     (Module.finBasis 𝕜 E) hy]
   rw [hbasis]
 
@@ -64,7 +65,7 @@ private theorem coordinateFrame_coeff_contMDiffAt_of_contMDiffAt
   have hx : x₀ ∈ e.baseSet := by
     simp [e, coordinateTrivializationAt]
   have hcoeff :=
-    contMDiffAt_localFrameCoeff
+    contMDiffAt_localFrame_coeff
       (I := I) (V := TangentSpace I) (e := e)
       (b := Module.finBasis 𝕜 E) (s := Z)
       (k := (∞ : WithTop ℕ∞)) hx hZ j
@@ -81,9 +82,9 @@ private theorem coordinateFrame_coeff_contMDiffAt_of_contMDiffAt
     rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
       (e := e) (b := Module.finBasis 𝕜 E) hy]
   change (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j y (Z y) =
-    e.localFrameCoeff I (Module.finBasis 𝕜 E) j y (Z y)
+    e.localFrame_coeff I (Module.finBasis 𝕜 E) j y (Z y)
   rw [(coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff_apply_of_mem hy]
-  rw [Bundle.Trivialization.localFrameCoeff_apply_of_mem_baseSet e
+  rw [Bundle.Trivialization.localFrame_coeff_apply_of_mem_baseSet e
     (Module.finBasis 𝕜 E) hy]
   rw [hbasis]
 

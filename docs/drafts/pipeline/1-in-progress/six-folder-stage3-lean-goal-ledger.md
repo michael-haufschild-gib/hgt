@@ -19,7 +19,8 @@ Per-folder detail stays in the folder ledgers (`_STAGE3-LEDGER.md`, `_SWEEP-LEDG
 | 04 | gadc / noisy-binary-tree / exact-rational-rg | Ritt implication, weighted-homogeneous residual | TODO |
 | 01 | six Böttcher cards | Brolin/cylinder monodromy; E–vS; q62 hole-free tip gap | TODO |
 | chrono | finite-tail-obstruction | — | **DONE → stage 3** (12 RHTower modules + quantitative weighted boundary) |
-| chrono | growing-moment-source, recovery-exponential-rate, recovery-uniform-spectrum | source bounds; weighted potential theory (see chronological sweep log) | TODO |
+| chrono | growing-moment-source | — | **DONE → stage 3** (8 RHTower modules) |
+| chrono | recovery-exponential-rate, recovery-uniform-spectrum | weighted potential theory (see chronological sweep log) | TODO |
 | 11 | verified-height-one-zero-turing-extension | needs 10^13-zero certified computation | BLOCKED (rules) |
 
 ## AP-periodicity route (no Schwartz, no normalization)
@@ -41,3 +42,7 @@ Per-folder detail stays in the folder ledgers (`_STAGE3-LEDGER.md`, `_SWEEP-LEDG
   TailSampleSpace, TailKernelLipschitz, TailHeatVectors, TailNormals, WeightedSourceFloor, TailObservation,
   TailWeight, FiniteTailObstruction, LeastNormMomentRepair; WeightedBoundary gained the quantitative
   bound |M(w)(ρ)| ≤ M|ζ'(ρ)|, which gives main theorem and survivor in one route.
+- 2026-09-28: growing-moment-source card promoted. Modules: ZeroChargeTailBounds, BoseKernelJets,
+  HalfTailGram, MobiusHalfPrefixMoments, GrowingMomentSource, BoseCothRemainder, BoseCothLocalBounds,
+  GrowingSignedProjection (29 audited capstones). Reused HTGeometry `bernoulli_two_mul_ne_zero`,
+  `iteratedDeriv_cexp`, `cosh_sub_one_le`, corpus Lambert regrouping and PNT little-o.

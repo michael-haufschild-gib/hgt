@@ -453,3 +453,46 @@ Module plan:
 6. `ChronologicalBoseCothRemainder` — h = 1/2 − 2zΣ1/(z²+(2πn)²), R_m and |R_m| ≤ 4z^{2m+1}/(2π)^{2m+2},
    cosh/sinh decomposition, local L² bound on [0,1/N), window majorant.
 7. `ChronologicalGrowingSignedProjection` — identities (D) and (E).
+
+## Card `chronological-growing-moment-source` CLOSED and promoted to stage 3 (2026-09-28)
+
+Eight modules (`ChronologicalZeroChargeTailBounds`, `ChronologicalBoseKernelJets`,
+`ChronologicalHalfTailGram`, `ChronologicalMobiusHalfPrefixMoments`,
+`ChronologicalGrowingMomentSource`, `ChronologicalBoseCothRemainder`,
+`ChronologicalBoseCothLocalBounds`, `ChronologicalGrowingSignedProjection`).
+Route notes: Bose jets via Leibniz on `zE(z)(e^z-1) = e^z-1-z` and the `sum_bernoulli` recursion
+(`iteratedDeriv (f(c·)) = cⁿ f⁽ⁿ⁾(c·)` holds for every `f : ℂ → ℂ` by `deriv_comp_mul_left`);
+Gram coercivity via compactness of the unit sphere plus entrywise `O(1/N)` Riemann sums;
+coth partial fractions from mathlib `cot_series_rep'` at `x = iz/(2π)` (imaginary parts);
+Abel summation (E) from mathlib `sum_mul_eq_sub_integral_mul'` with the real analytic kernel
+`Re boseKernelE` (value `1/2` at `0`).
+
+### Remaining cards in `2-fully-proven/chronological` (2)
+
+| Card | Remaining obstacle |
+|---|---|
+| `chronological-recovery-exponential-rate` | weighted potential theory |
+| `chronological-recovery-uniform-spectrum` | needs the rate constant from the exponential-rate card |
+
+## Card `chronological-recovery-exponential-rate`: elementary route (2026-09-28)
+
+No general potential theory is needed for the rate. With `P(t) = (-4)^m T_m((1-t²)/4)` (real roots
+`±t_i`, `t_i = √(1-4r_i)`), `W(r)^m = (1-|t|)^m`, and the arcsine law `ν_b` on `[-b,b]`:
+
+* **Lower bound (Jensen).** `log t_m ≥ ∫ log(W^m|T_m|) dν_b` and `∫ log|t-x| dν_b(t) ≥ log(b/2)` for
+  real `x` (equality on `[-b,b]`, from `∫₀^π log|cos θ - cos φ| dθ = -π log 2`) give
+  `t_m ≥ ρ(b)^m`, `ρ(b) = (b²/16) exp((2/π)∫₀^{π/2} log(1-b cos s) ds)`, for **every** `b ∈ (0,1)`.
+  `d/db log ρ(b) = 0 ⇔ I(b) = 3π/2`: the card's `b` maximizes the lower bound.
+* **Upper bound (block Chebyshev products).** `H(a) = (I(a)-π/2)/π`, `H(b) = 1`. Split `[0,b]` into
+  `K` equal-`H`-mass blocks `α_0 = 0 < … < α_K = b`; take `Π_i T^{(α_{i-1})}_{2d}` (scaled monic
+  Chebyshev on `[-α_{i-1}, α_{i-1}]`, the first block `t^{2d}`). `|T^{(a)}_k(t)| ≤ 2 e^{-k U(a,t)}`,
+  `U(a,t) = log(2/a) - arccosh⁺(|t|/a)`; `U(·,t)` is unimodal with `sup - U(0,t) ≤ log 2`, so the
+  left-endpoint sums miss `∫ U dH` by at most `log 2 / K`, uniformly in `t`. With
+  `U^μ + Q ≥ F` on `[-1,1)` (Tonelli + Abel identity `∫₀^x H'(a)/√(x²-a²) da = 1/(2(1-x))`, Wallis
+  `(n+1)J_nJ_{n+1} = π/2`) and `F = -log C(b)` (parts + Tonelli: `∫₀^b H(a)/a da = -(1/π)∫ log(1-b cos s)`),
+  `t_m ≤ e^{o(m)} ρ^m` with `K ≈ √m`.
+* Rate: corpus `cubicGradedRecoveryGap_eq_rootSum` (`δ_{m-1} = t_m/S_m`) plus `1/8 < S_m < m/4`.
+
+Module plan (HTGeometry): ArcsineLogIntegral, CubicRecoveryRateConstants, CubicRecoveryRateLower,
+WallisAbel, ArcsineMixtureEquilibrium, ChebyshevBlockProducts, CubicRecoveryExponentialRate;
+the zero-distribution statement `S_m/m → A` comes last (needs energy/lower-semicontinuity).

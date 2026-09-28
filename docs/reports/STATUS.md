@@ -1499,3 +1499,5 @@ Notation: `δ=Re ρ−½`; angular energy of a zero = `Σ_{ρ′≠ρ}cos²θ`, 
   - No argument that is insensitive to finitely many prime weights can certify Weil positivity.
 - **CANNOT-477 [Lean: `RHTower.vonMangoldt_sub_measure_weilPositive_eq`]** No proof of RH can obtain the positivity of ζ's Weil form by continuity from nearby Weil-positive "generalized prime" systems. The following does not work: Minkowski/Alexandrov openness, or deforming prime positions or weights by a finite measure while keeping ζ's archimedean term.
   - ζ's positive completion is isolated among all finite signed perturbations of the prime measure carried by `[ε, ∞)`.
+- **MUST-503 [Lean: `RHTower.vonMangoldt_add_oscillating_eq_zero`]** Weil positivity with ζ's archimedean term determines the prime weights against every perturbation with bounded partial sums, not only summable ones.
+  - A producer that would also certify `Λ + c·b` for an oscillating `b` (for example a character) with `c ≠ 0` proves a false statement.
