@@ -34,7 +34,9 @@ private theorem exists_complexLog {X : Type*} [TopologicalSpace X]
   refine ⟨g, fun y => ?_⟩
   have h := congrArg (fun u : Units ℂ =>
     ((unitsHomeomorphNeZero (G₀ := ℂ)) u : ℂ)) (congrFun hg y)
-  simpa only [complexExpUnits, Function.comp_apply, Homeomorph.apply_symm_apply] using h
+  simp only [complexExpUnits, Function.comp_apply, Homeomorph.apply_symm_apply] at h
+  change Complex.exp (g y) = (f y : ℂ) at h
+  exact h
 
 /-- Every circle-valued function on a finite special-unitary group admits
 a unique global phase with the principal value prescribed at the identity. -/

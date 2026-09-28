@@ -1,8 +1,8 @@
 # Full Poisson scale-history frame law
 
 - **ID:** ULF-PSH-001
-- **Stage:** 2 — fully proven on paper
-- **Type:** THEOREM / SOURCE-ONLY CROSS-SCALE RECONSTRUCTION
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-PROVED] [PRE-DIVISOR] [NOT RH]`
 - **Lean:** `RHTower.PoissonScaleHistoryFrame`
 
@@ -75,3 +75,24 @@ squared principal mass `sum_p 1/p`.  Nor should that class be subtracted: the co
 theorem shows fixed principal subtraction selects nonneutral grade.  The frame instead realizes
 the harmonic class as translation-escape mass.  A completion theorem must retain its oriented
 nonreduced class while transporting bulk divergence to a boundary law.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.RHTower.PoissonScaleHistoryFrame`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Module `GaloisForLFunctions.RHTower.PoissonScaleHistoryFrame` (15 constants, axiom audit clean).
+
+| Claim | Lean declaration |
+|-|-|
+| History `ψ_t(a) = 2t√a e^{-ta}` and Gram pairing | `poissonScaleHistory`, `poissonScaleHistoryGram` |
+| First Laplace moment `∫ a e^{-ca} = c^{-2}` and `⟨ψ_t, ψ_u⟩ = 4tu/(t+u)²` | `poissonScaleHistoryGram_eq` (via mathlib `integral_Ioi_id_mul_exp_neg_mul`) |
+| Unit history mass | `poissonScaleHistoryGram_self` |
+| `0 < ⟨ψ_t, ψ_u⟩` | `poissonScaleHistoryGram_pos` |
+| `⟨ψ_t, ψ_u⟩ ≤ 1` | `poissonScaleHistoryGram_le_one` |
+| Equality to one exactly when `t = u` | `poissonScaleHistoryGram_eq_one_iff` |
+| `⟨ψ_t, ψ_u⟩ = sech²((log t − log u)/2)` | `poissonScaleHistoryGram_eq_inv_cosh_sq` |
+| `F(x) = 2eˣe^{-eˣ}`, `ψ̃_t(x) = e^{x/2}ψ_t(eˣ) = F(x + log t)` | `poissonLogScaleMother`, `poissonLogScaleHistory`, `poissonLogScaleHistory_eq_translate` |
+
+## Log
+
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

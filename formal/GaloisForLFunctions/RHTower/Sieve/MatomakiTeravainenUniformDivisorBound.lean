@@ -26,7 +26,7 @@ theorem one_le_card_divisors_real {n : ℕ} (hn : 0 < n) : (1 : ℝ) ≤ (n.divi
   exact_mod_cast this
 
 theorem MTUniformDivisorBounded.mono {K L : ℕ} {α : ℕ → ℂ} (hKL : K ≤ L)
-    (h : MTUniformDivisorBounded K α) : MTUniformDivisorBounded L α := fun n hn =>
+    (h : MTUniformDivisorBounded K α) : MTUniformDivisorBounded L α := fun _ hn =>
   (h hn).trans (pow_le_pow_right₀ (one_le_card_divisors_real hn) hKL)
 
 theorem MTUniformDivisorBounded.polynomial {K : ℕ} {α : ℕ → ℂ}

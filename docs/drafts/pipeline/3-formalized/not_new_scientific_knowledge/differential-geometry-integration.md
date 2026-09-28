@@ -86,13 +86,15 @@ For the Cayley result, use the existing constructed generator `J=A-A†` and zer
 
 All 17,555 Lean paths were classified. Detailed proof review was directed by relevance to existing target objects, rather than importing every upstream theorem. This record does not certify every upstream proof body.
 
+**Follow-up correction (2026-09-28):** This first pass was too narrow about topology. The [subsequent topology integration](differential-geometry-topology-integration.md) adds ten reusable leaves and connects existing unitary/arithmetic consumers. The [Poincaré audit](../../../../reports/differential-geometry-poincare-integration-audit.md) verifies that the advertised endpoint constructs controlled extinction and derives ordinary manifold classification without leaving those analytic inputs to its caller; the full upstream closure remains unported locally.
+
 | Upstream area | Lean files | Integration disposition |
 |---|---:|---|
-| Geometry | 7,549 | Connection/curvature/metric candidates reviewed; reuse local Levi–Civita and coordinate geometry. Ricci-flow, surgery, comparison and compactness developments require a substantial independent manifold programme without an identified unconditional consumer in this task. |
+| Geometry | 7,549 | Initial pass reviewed connection/curvature/metric candidates against local geometry. Follow-up Poincaré audit identifies genuine classification infrastructure and concrete geometric adapter targets; the full surgery closure requires a separate compatibility port. |
 | Analysis | 3,599 | Harnack square completion and Cayley transport integrated; Gram regularization integrated. Heat-power estimates, exponential-sum convexity and Gram mechanisms overlap existing code. Generic Sobolev/elliptic interfaces were not substituted for proved concrete endpoints. |
 | Tensor | 131 | Symmetrization and kernel-graph candidates reviewed against existing Gram/Schur code; avoid duplicate representations. |
 | Bundle | 86 | Infrastructure for upstream geometry representation; no separate framework added. |
-| Topology | 5,773 | Mostly PL/manifold/three-manifold/homology infrastructure. No direct consumer identified for the selected Gaussian, theta, Fisher or conservative-operator objects. |
+| Topology | 5,773 | Initial Gaussian/Fisher scope missed relevant local topology. Follow-up integrates circle/sphere topology, global SU simple connectivity, generalized unitary classification, explicit universal covers and lifting consequences; the full Poincaré endpoint remains a separately inventoried port. |
 | External | 417 | Auxiliary topology and regularity developments; not used as new assumptions or dependencies. |
 
 ## Final integrated results

@@ -1494,3 +1494,6 @@ Notation: `δ=Re ρ−½`; angular energy of a zero = `Σ_{ρ′≠ρ}cos²θ`, 
 - **MUST-501 [Lean: `RHTower.eq_zero_of_vonMangoldt_add_const_weilPositive`]** Any producer of Weil positivity for `ζ` must be sharp along the constant direction of the prime weights.
   - The weights `Λ(n) + c` are Weil-positive only for `c = 0`: upward by the Toeplitz density ceiling, downward by the central Mertens constant `c(1−ζ(½)) > 0`.
   - An argument that would also certify `Λ + c` for some small `c ≠ 0` proves a false statement.
+- **MUST-502 [Lean: `RHTower.vonMangoldt_add_summable_not_weilPositive`]** A producer of Weil positivity for `ζ` must use the exact value of every prime weight.
+  - For any nonzero `w` with `Σ|w(n)|n^{−½} < ∞`, the weights `Λ + w` are not Weil-positive. This includes changing a single `Λ(p)`.
+  - No argument that is insensitive to finitely many prime weights can certify Weil positivity.

@@ -4,7 +4,8 @@ import GaloisForLFunctions.RHTower.MobiusDivisorSectionSignLaw
 # The divisor-comparable Möbius section is nonpositive against every monotone kernel
 
 For `N, K : ℕ` let `C_N(K)` be the Möbius-signed number of divisor pairs `m ∣ n`, `m < n ≤ N`,
-below the anti-diagonal `m + n ≤ K`.  Then `C_N(K) ≤ 0` for all `N` and `K`.
+below the anti-diagonal `m + n ≤ K`.  Then `C_N(K) ≤ 0` for all `N` and `K`; more precisely, with
+`N' = min N (K - 1)`, `C_N(K)` is at most minus the number of squarefree integers in `(N'/2, N']`.
 
 *Proof.*  Only rows `n ≤ K - 1` meet the half-plane, so assume `N < K`.  A row with `2n ≤ K`
 contains all proper divisors and equals `-μ(n)²`.  For squarefree `n` with `2n > K`, the complement
@@ -18,7 +19,10 @@ By Abel summation, for every nonincreasing nonnegative weight `w`,
 `∑_{m ∣ n, m < n ≤ N} μ(m)μ(n) w(m+n) ≤ 0`.
 
 In particular the divisor section of the Gamma--Hankel covariance is nonpositive at every exponent
-`r > 0`.
+`r > 0`, and `∑_{m ∣ n, m < n ≤ N} μ(m)μ(n) q^{m+n} ≤ 0` for every `0 ≤ q ≤ 1`.
+
+The anti-diagonal is essential: `m + n = j(e+1)` is the next multiple of `j = m` after `n = je`,
+which is what makes the complement map injective.
 -/
 
 open Finset ArithmeticFunction
@@ -128,8 +132,13 @@ theorem divisorPairRowBelow_eq_complement {K n : ℕ} (hsf : Squarefree n) (hn :
     · rw [if_neg (by omega), if_neg hc]
   rw [neg_mul, Finset.sum_mul, hflip]
 
-/-- **Discrete sign law.**  `C_N(K) ≤ 0` for all `N` and `K`. -/
-theorem divisorPairCountBelow_nonpos (N K : ℕ) : divisorPairCountBelow N K ≤ 0 := by
+/-- **Discrete sign law with drift.**  With `N' = min N (K - 1)`,
+`C_N(K) ≤ -(#{squarefree n ∈ [2, N']} - #{squarefree n ∈ [2, N'/2]})`, a negative multiple of the
+number of squarefree integers in `(N'/2, N']`. -/
+theorem divisorPairCountBelow_le (N K : ℕ) :
+    divisorPairCountBelow N K ≤
+      -((((Finset.Icc 2 (min N (K - 1))).filter Squarefree).card : ℝ) -
+        (((Finset.Icc 2 (min N (K - 1) / 2)).filter Squarefree).card : ℝ)) := by
   -- rows with `n ≥ K` are empty below the anti-diagonal
   have hempty : ∀ n, K ≤ n → divisorPairRowBelow K n = 0 := by
     intro n hn
@@ -157,11 +166,14 @@ theorem divisorPairCountBelow_nonpos (N K : ℕ) : divisorPairCountBelow N K ≤
       omega
   rw [hreduce]
   rcases Nat.eq_zero_or_pos K with hK0 | hKpos
-  · unfold divisorPairCountBelow
-    apply le_of_eq
-    apply Finset.sum_eq_zero
-    intro n hn
-    exact hempty n (by omega)
+  · have hN'0 : N' = 0 := by rw [hN']; omega
+    have hC : divisorPairCountBelow N' K = 0 := by
+      unfold divisorPairCountBelow
+      apply Finset.sum_eq_zero
+      intro n hn
+      exact hempty n (by omega)
+    rw [hC, hN'0, Nat.zero_div, Finset.Icc_eq_empty (by norm_num)]
+    simp
   have hNK : N' < K := by rw [hN']; omega
   -- split into full and partial rows
   unfold divisorPairCountBelow
@@ -206,12 +218,13 @@ theorem divisorPairCountBelow_nonpos (N K : ℕ) : divisorPairCountBelow N K ≤
     · rintro ⟨⟨hge, hnN⟩, hn2K, hsf⟩
       exact ⟨⟨⟨by omega, hnN⟩, hn2K⟩, ⟨hge, hnN⟩, hn2K, hsf⟩
   -- partial rows are bounded by `#Half`
+  set E1 : Finset ℕ := (Finset.Icc 1 N').filter (fun n => ¬(2 * n ≤ K) ∧ Squarefree n)
+    with hE1
   set S : Finset (Σ _ : ℕ, ℕ) :=
-    ((Finset.Icc 1 N').filter (fun n => ¬(2 * n ≤ K) ∧ Squarefree n)).sigma
-      (fun n => n.divisors.filter (fun e => K < n / e + n)) with hS
+    E1.sigma (fun n => n.divisors.filter (fun e => K < n / e + n)) with hS
   have hpartialEq : (∑ n ∈ (Finset.Icc 1 N').filter (fun n => ¬(2 * n ≤ K)),
       divisorPairRowBelow K n) = -∑ p ∈ S, mobiusRealCoefficient p.2 := by
-    rw [hS, Finset.sum_sigma, ← Finset.sum_neg_distrib]
+    rw [hS, hE1, Finset.sum_sigma, ← Finset.sum_neg_distrib]
     rw [← Finset.sum_filter_add_sum_filter_not
       ((Finset.Icc 1 N').filter (fun n => ¬(2 * n ≤ K))) Squarefree]
     have hnonsf : (∑ n ∈ ((Finset.Icc 1 N').filter (fun n => ¬(2 * n ≤ K))).filter
@@ -232,8 +245,28 @@ theorem divisorPairCountBelow_nonpos (N K : ℕ) : divisorPairCountBelow N K ≤
       have h2 := (Finset.mem_Icc.mp hnI).2
       omega
     exact divisorPairRowBelow_eq_complement hsf hn2 (by omega)
-  have hpartialLe : -∑ p ∈ S, mobiusRealCoefficient p.2 ≤ (Half.card : ℝ) := by
-    -- terms with `e = 1` are negative; the others inject into `Half`
+  have hpartialLe : -∑ p ∈ S, mobiusRealCoefficient p.2 ≤ -(E1.card : ℝ) + (Half.card : ℝ) := by
+    -- each partial row has exactly one term with `e = 1`; the others inject into `Half`
+    have hcardOne : (S.filter (fun p => p.2 = 1)).card = E1.card := by
+      apply Finset.card_bij (fun p _ => p.1)
+      · intro p hp
+        have hpS := (Finset.mem_filter.mp hp).1
+        rw [hS, Finset.mem_sigma] at hpS
+        exact hpS.1
+      · intro p hp q hq hpq
+        have hp1 := (Finset.mem_filter.mp hp).2
+        have hq1 := (Finset.mem_filter.mp hq).2
+        exact Sigma.ext hpq (heq_of_eq (hp1.trans hq1.symm))
+      · intro n hn
+        refine ⟨⟨n, 1⟩, ?_, rfl⟩
+        have hn' := hn
+        rw [hE1, Finset.mem_filter, Finset.mem_Icc] at hn'
+        refine Finset.mem_filter.mpr ⟨?_, rfl⟩
+        rw [hS, Finset.mem_sigma]
+        refine ⟨hn, Finset.mem_filter.mpr ⟨Nat.one_mem_divisors.mpr (show n ≠ 0 by omega), ?_⟩⟩
+        show K < n / 1 + n
+        rw [Nat.div_one]
+        omega
     rw [← Finset.sum_filter_add_sum_filter_not S (fun p => p.2 = 1)]
     have hone : (∑ p ∈ S.filter (fun p => p.2 = 1), mobiusRealCoefficient p.2) =
         ((S.filter (fun p => p.2 = 1)).card : ℝ) := by
@@ -254,7 +287,7 @@ theorem divisorPairCountBelow_nonpos (N K : ℕ) : divisorPairCountBelow N K ≤
       apply Finset.card_le_card_of_injOn (fun p => p.1 / p.2)
       · intro p hp
         obtain ⟨hpS, hpe⟩ := Finset.mem_filter.mp hp
-        simp only [hS, Finset.mem_sigma, Finset.mem_filter, Finset.mem_Icc] at hpS
+        simp only [hS, hE1, Finset.mem_sigma, Finset.mem_filter, Finset.mem_Icc] at hpS
         obtain ⟨⟨⟨hn1, hnN⟩, hn2K, hsf⟩, he, hKlt⟩ := hpS
         have hdvd := Nat.dvd_of_mem_divisors he
         have hepos := Nat.pos_of_mem_divisors he
@@ -281,7 +314,7 @@ theorem divisorPairCountBelow_nonpos (N K : ℕ) : divisorPairCountBelow N K ≤
       · intro p hp q hq hpq
         obtain ⟨hpS, hpe⟩ := Finset.mem_filter.mp hp
         obtain ⟨hqS, hqe⟩ := Finset.mem_filter.mp hq
-        simp only [hS, Finset.mem_sigma, Finset.mem_filter, Finset.mem_Icc] at hpS hqS
+        simp only [hS, hE1, Finset.mem_sigma, Finset.mem_filter, Finset.mem_Icc] at hpS hqS
         obtain ⟨⟨⟨_, hpN⟩, _, _⟩, hpd, hpK⟩ := hpS
         obtain ⟨⟨⟨_, hqN⟩, _, _⟩, hqd, hqK⟩ := hqS
         simp only at hpq
@@ -307,27 +340,42 @@ theorem divisorPairCountBelow_nonpos (N K : ℕ) : divisorPairCountBelow N K ≤
         exact Sigma.ext h1 (heq_of_eq he)
     have hcard : ((S.filter (fun p => ¬p.2 = 1)).card : ℝ) ≤ (Half.card : ℝ) := by
       exact_mod_cast hinj
-    have hone0 : (0 : ℝ) ≤ ((S.filter (fun p => p.2 = 1)).card : ℝ) := Nat.cast_nonneg _
-    rw [neg_add, hone]
+    rw [neg_add, hone, hcardOne]
     linarith
-  -- `Half ⊆ Full`
-  have hsubset : Half ⊆ Full := by
-    intro j hj
-    simp only [hHalf, hFull, Finset.mem_filter, Finset.mem_Icc] at hj ⊢
-    obtain ⟨⟨hj2, hjN⟩, hsf⟩ := hj
-    have h2j : 2 * j ≤ N' := by
-      have := Nat.mul_le_of_le_div 2 j N' hjN
-      linarith
-    exact ⟨⟨hj2, by omega⟩, by omega, hsf⟩
-  have hcardle : (Half.card : ℝ) ≤ (Full.card : ℝ) := by
-    exact_mod_cast Finset.card_le_card hsubset
+  -- full and partial squarefree rows together are the squarefree integers of `[2, N']`
+  have hsplit : (Full.card : ℝ) + (E1.card : ℝ) =
+      (((Finset.Icc 2 N').filter Squarefree).card : ℝ) := by
+    have h := Finset.card_filter_add_card_filter_not
+      (s := (Finset.Icc 2 N').filter Squarefree) (fun n => 2 * n ≤ K)
+    have hF : Full = ((Finset.Icc 2 N').filter Squarefree).filter (fun n => 2 * n ≤ K) := by
+      rw [hFull]
+      ext n
+      simp only [Finset.mem_filter, Finset.mem_Icc]
+      tauto
+    have hE : E1 = ((Finset.Icc 2 N').filter Squarefree).filter (fun n => ¬(2 * n ≤ K)) := by
+      rw [hE1]
+      ext n
+      simp only [Finset.mem_filter, Finset.mem_Icc]
+      constructor
+      · rintro ⟨⟨_, h2⟩, h3, h4⟩
+        exact ⟨⟨⟨by omega, h2⟩, h4⟩, h3⟩
+      · rintro ⟨⟨⟨_, h2⟩, h4⟩, h3⟩
+        exact ⟨⟨by omega, h2⟩, h3, h4⟩
+    rw [hF, hE]
+    exact_mod_cast h
   rw [hfullRows, hpartialEq]
   linarith
 
-/-- The divisor-comparable pairs with sum exactly `k`. -/
-def divisorPairLevel (N k : ℕ) : ℝ :=
-  ∑ n ∈ Finset.Icc 1 N, ∑ m ∈ n.properDivisors.filter (fun m => m + n = k),
-    mobiusRealCoefficient m * mobiusRealCoefficient n
+/-- **Discrete sign law.**  `C_N(K) ≤ 0` for all `N` and `K`. -/
+theorem divisorPairCountBelow_nonpos (N K : ℕ) : divisorPairCountBelow N K ≤ 0 := by
+  refine (divisorPairCountBelow_le N K).trans ?_
+  have hsub : (Finset.Icc 2 (min N (K - 1) / 2)).filter Squarefree ⊆
+      (Finset.Icc 2 (min N (K - 1))).filter Squarefree :=
+    Finset.filter_subset_filter _ (Finset.Icc_subset_Icc le_rfl (Nat.div_le_self _ _))
+  have hcard : (((Finset.Icc 2 (min N (K - 1) / 2)).filter Squarefree).card : ℝ) ≤
+      (((Finset.Icc 2 (min N (K - 1))).filter Squarefree).card : ℝ) := by
+    exact_mod_cast Finset.card_le_card hsub
+  linarith
 
 /-- Layer-cake summation against a weight on `ℕ`: for `g ≤ L` on `s`,
 `∑ f(a) w(g a) = w L ∑ f + ∑_{K < L} (w K - w (K+1)) ∑_{g a ≤ K} f(a)`. -/
@@ -438,6 +486,14 @@ theorem gammaHankel_divisorSection_nonpos (N : ℕ) {r : ℝ} (hr : 0 < r) :
       simp only [w, hmax]
       ring
     _ ≤ 0 := this
+
+/-- **Power-series form.**  For `0 ≤ q ≤ 1`,
+`∑_{n ≤ N} μ(n) qⁿ ∑_{m ∣ n, m < n} μ(m) q^m ≤ 0`. -/
+theorem sum_divisorPairs_pow_nonpos (N : ℕ) {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q ≤ 1) :
+    (∑ n ∈ Finset.Icc 1 N, ∑ m ∈ n.properDivisors,
+      mobiusRealCoefficient m * mobiusRealCoefficient n * q ^ (m + n)) ≤ 0 :=
+  sum_divisorPairs_antitone_weight_nonpos N (fun _ _ hab => pow_le_pow_of_le_one hq0 hq1 hab)
+    (fun k => pow_nonneg hq0 k)
 
 end
 end RHTower

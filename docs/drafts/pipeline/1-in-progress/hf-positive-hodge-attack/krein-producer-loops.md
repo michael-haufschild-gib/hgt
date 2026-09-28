@@ -1613,7 +1613,7 @@ Next conjectures to test:
   - Circular? Parts (i) and (ii) are an exact equivalent split.
   - New? I found no statement of RH as "one bound state of the pole-free Weil operator plus a 2×2 ruling condition", nor of the DPC form.
   - Verdict: SURVIVES as a reformulation. The positive-geometry target is DPC: reverse Cauchy–Schwarz for disjoint positive pairs, a statement about positive measures only.
-- **Tested, fails.** A total-positivity (TP₂) proof of DPC would need a log-concave interaction kernel `ν`. `w(2|t|)` is log-concave on `t > 0` but has a cusp at 0, and the prime atoms are not log-concave. So DPC does not follow from Karlin-type TP₂ inequalities.
+- **Tested, fails for the log-concavity shortcut.** For `w(t) = exp(−t/4)/(1−exp(−t))`, `(log w)'' = exp(−t)/(1−exp(−t))² > 0` on `t > 0`. Thus `w(2|t|)` is strictly log-convex on the positive ray and singular at zero; the prime atoms also do not supply a log-concave density. The proposed Karlin-type TP₂ argument therefore does not establish DPC. This rejects that sufficient-condition argument, not every possible proof of DPC.
 
 ### L61 — Weil positivity pins the log-density at Λ's: no supersystem of Λ has positive excess. TRUE [L]
 - **Theorem [L]** `RHTower.weil_supersystem_excess_small`. If `lam ≥ Λ` pointwise and `lam` is Weil-positive (ζ's archimedean term, polar-constrained `C²` tests, every level), then `Σ_{n≥2, nm≤N}(lam(n) − Λ(n))/(nm) = o((log N)²)`.
@@ -1624,13 +1624,13 @@ Next conjectures to test:
 - Module `RHTower/WeilPositivityLogDensityMaximality.lean`. Built and wired; axioms propext, Classical.choice, Quot.sound.
 - **Reading.** In log-density, Λ is maximal in the Weil cone among its supersystems. The downward direction (`Λ − c`, density below 1) is not reached by density arguments; it needs regular rigidity (HF-F54, paper).
 
-### L62 — Two producer candidates tested: arithmetic Markov chain (no slack) and adelic Pitt log-convexity (averaged only). KILLED [P]; survivors recorded
+### L62 — Two producer shortcuts tested: arithmetic Markov gap with positive slack and adelic Pitt log-convexity (averaged only). SHORTCUTS REJECTED [P]; survivors recorded
 - **(A) Arithmetic Markov chain.** Doob-transform the Metzler form `−Q₀` by its positive ground state `φ₀` (eigenvalue `λ₀`, with `|λ₀| ≍ e^{a}`). This gives a conservative jump chain on `[−a,a]` with rates `ν(y−x)φ₀(y)/φ₀(x)`, where `ν` = archimedean jumps plus prime-power jumps.
   - Part (i) of L60 (one bound state) ⟺ `gap(chain) ≥ |λ₀|`.
-  - **Kill (no slack).**
+  - **Obstruction to positive slack.**
     - Upper side: the polar-free near radical (dimension `≥ (2−η)e^{2a}`, energy `≤ exp(−η²e^{2a}/(300a))` times its norm, from L35/L45) contains a vector orthogonal to `φ₀`. Since `Q₀ = Q_full` on polar-free vectors, `λ₂(Q₀) ≤ exp(−c e^{2a})`, unconditionally.
     - Lower side: interlacing gives `λ₂(Q₀) ≥ λ₁(Q_full)`.
-    - So `gap = |λ₀| + O(exp(−c e^{2a}))`. The chain's gap equals its ground energy to super-exponential precision, and no curvature, coupling or Cheeger estimate can certify the sign.
+    - These imply only the one-sided bound `gap ≤ |λ₀| + exp(−c e^{2a})`. Interlacing supplies no unconditional matching lower bound near `|λ₀|`: the sign of `λ₁(Q_full)` is the unresolved issue. A bound with a fixed positive margin above `|λ₀|` is excluded. An exact curvature, coupling or other identity proving `gap ≥ |λ₀|` is not excluded by these estimates and remains unproved. In particular, the previously stated two-sided `O(exp(−c e^{2a}))` error does not follow.
   - **Survivor [P].** Unconditionally, the pole-free Weil operator has a second eigenvalue `λ₂(Q₀) ≤ exp(−c e^{2a})`. One bound state is exactly the no-slack statement `λ₂(Q₀) ≥ 0`.
 - **(B) Adelic Pitt / log-uncertainty.** Beckner's logarithmic uncertainty constant is `ψ(¼) − log π = A(0)`, exactly the archimedean Weil symbol at 0. Its proof differentiates Pitt's inequality at `α = 0`.
   - Globally: for real Fourier-self-dual `F` with `F(0) = 0`, `P(α) = ∫_{ℚ*\𝔸*} |x|^{−2α}|E(F)|² d*x` is a moment generating function in `α`, hence log-convex (Hölder).
@@ -1657,3 +1657,66 @@ Next conjectures to test:
   - downward, the central Mertens constant (spread radical tests whose zero side is super-exponentially small unconditionally).
   - `Λ` is two-sided extreme in the constant direction, unconditionally, so a producer must be exact in that direction.
 - **Not settled.** Whether `Λ` is extreme in *every* regular direction, i.e. the full HF-F54. The next step is twisting the spread radical test to reach `Re D_w(½+iτ₀) ≤ 0` at every `τ₀`.
+
+### L64 — Summable-perturbation rigidity: Weil positivity fixes every prime weight. PROVED [Lean]
+- **Conjecture.** For every nonzero `w` with `Σ|w(n)|n^{−½} < ∞`, `Λ + w ∉ W`.
+  - This is regular rigidity (HF-F54) in its absolutely convergent case.
+  - It can fail if `P_w(τ) = Σ 2w(n)n^{−½}cos(τ log n)` is `≤ 0` everywhere for some `w ≠ 0`, i.e. a nonzero Dirichlet polynomial/series with nonpositive real part on the whole critical line.
+- **Kill attempt.** None. A nonzero `P_w ≤ 0` is impossible, because two-point resonators read off each coefficient with either sign. The conjecture survives.
+- **Proof [Lean, `RHTower.WeilPositivitySummablePerturbationRigidity`].**
+  1. `integral_weilAtomSymbol_vonMangoldt_add_le`: energy `≤ 2π‖W(f)‖ − ∫|h|²P_w + tail`.
+  2. `eq_zero_of_perturbationSymbol_nonpos`: two-point resonators `g(x) ± g(x − log n₀)`, built from L57's narrow polar-free bumps, see only the atom `n₀`, with sign `±`.
+  3. `vonMangoldt_add_violation_of_concentration`: the corpus's spread radical tests, concentrated where `P_w > 0`, have zero side `O(S^{10}e^{−S})`.
+- **Theorems.**
+  - `vonMangoldt_add_summable_not_weilPositive`.
+  - `eq_vonMangoldt_of_weilPositive_of_summable_sub`: `lam ∈ W` and `lam − Λ ∈ ℓ¹(n^{−½})` ⇒ `lam = Λ`.
+  - `vonMangoldt_update_not_weilPositive`: changing a single weight `Λ(n₀)` by any `c ≠ 0` breaks positivity.
+  - Axioms: standard only.
+- **Meaning.** This is the "exact primes" gate as an unconditional theorem.
+  - With `summable_weights_weilAtomSymbol_not_nonneg` (corpus), `W ∩ (Λ + ℓ¹) ⊆ {Λ}` and `W ∩ ℓ¹ = ∅`.
+  - Together with L61/L63 (constant shifts, which are not in ℓ¹), Λ is isolated in W along every direction tested so far.
+- **Survivor / next conjecture (L65).** *W is at most a point: W ⊆ {Λ}.*
+  - Open core: a Weil-positive `lam` with `lam − Λ ∉ ℓ¹`, for example with `Σ_{n≤x}(lam−Λ)(n)n^{−½}` growing but not of polar-Mertens type.
+  - The obstruction mechanism for such `w` needs `P_w` as a distribution. Its positivity somewhere would follow from a "no nonpositive almost-periodic distribution with frequencies `{log n}` and zero mean" lemma, plus concentrated radical tests.
+
+### L65 — "W is at most a point" (uniqueness of the positive completion). OPEN; partial results
+- **Conjecture.** `W ⊆ {Λ}`.
+  - The prime weights are the unique positive completion of the ζ-archimedean place with its pole. Then RH ⟺ W ≠ ∅.
+  - The analogy is uniqueness in Minkowski's problem, which is what drives Hilbert's positivity proof.
+- **Proved.**
+  - L61/L63: constants.
+  - L64: the whole ℓ¹(n^{−½}) neighbourhood.
+  - Corpus: twists, scalings.
+  - HF-F61: W is compact, since `|lam(n)| ≤ √n(log n + C₀)`.
+- **Discrete case (paper, classical input).** Suppose the positive spectral measure `ν_lam` (the Bochner–Schwartz transform of the lam-Weil distribution) is discrete, so that its Hadamard product is of finite order.
+  - Then `ζ_lam = exp Σ lam(n)n^{−s}/log n` is a Dirichlet series with ζ's gamma factor, pole and functional equation.
+  - Hamburger's theorem (1921) gives `ζ_lam = ζ`, hence `lam = Λ`.
+- **Open core.** Non-discrete `ν_lam`: a positive even measure with an absolutely continuous part whose Fourier transform is ζ's archimedean-plus-pole distribution plus atoms on `{±log n}`.
+  - This is a "Hamburger theorem for positive Fourier pairs".
+  - Frequency concentration fails here: the radical factor `|Ξ|²` blurs log-frequencies at scale 1, while `|w(n)|` can be as large as `√n log n`.
+- **Dual form (paper, from compactness).**
+  - `W = ∅` ⟺ some finite positive combination `μ = Σα_i[f_i]` of polar tests has `arch(μ) + Σ_n b_n|c_n(μ)| < 0`, with `b_n = √n(log n + C₀)`.
+  - This is a criterion for "some positive completion exists" in which no primes appear.
+
+### L66 — The Minkowski-problem route (user steer, 2026-09-28). Exact dictionary + mechanism audit [P]
+- **Dictionary (exact).** Take normals `u(x) = (e^{x/2}, e^{−x/2})` on the hyperbola, with `x` the log scale.
+  - The polar constraint `F̂(±i/2) = 0` is exactly Minkowski's closure condition `∫ f u = 0`.
+  - The rulings `e^{±x/2}` are the support functions of points, i.e. translations.
+  - Polar-free tests are exactly the curvature measures `f = h'' − h/4` of compactly supported support perturbations `h`, with `h` unique. Solvability ⟺ closure, which is the 2-D Minkowski theorem here.
+  - L57 resonators are narrow caps at the normals `log m`.
+  - The covolume of such coconvex bodies is `½∫(h'² + h²/4)`, with symbol `τ² + ¼`: the factor `s(s−1)` of `ξ`.
+- **Mechanism audit.**
+  1. **Brunn–Minkowski / Prékopa** (log-concave volume ⇒ Lorentzian Hessian).
+     - *Spectral-domination no-go [P]:* if `Q_Λ = Σ Q_i` with each `Q_i ≥ 0`, then each spectral measure satisfies `μ_i ≤ ν_ζ`. So every positive summand is supported on the zeros and is annihilated (up to truncation) by Riemann's `Φ`-radical tests.
+     - Convexity criteria (Pólya, Koldobsky intersection bodies, Brunn sections) yield absolutely continuous spectra and cannot be summands.
+  2. **Alexandrov mapping lemma** (uniqueness + properness + openness ⇒ existence).
+     - Properness holds: W is compact (HF-F61).
+     - Uniqueness holds in every tested direction (L61, L63, L64; L65 conjecture).
+     - Openness fails at ζ. The FE forces `Re ξ'/ξ = 0` on the line (critical completion).
+     - Finite-perturbation Beurling rigidity [P]: a finite even measure `β` supported away from 0 with `β̂ ≤ 0` vanishes, since a positive-definite distribution vanishing near 0 is 0. So there are no slack completions near ζ, even with prime positions moved.
+     - At a finite level `a`, under RH, Λ is interior to `W_a` (margin about `e^{−ca}`). So the continuity method runs in `a`.
+  3. **Flat-body limit.** Vacuous: level-`a` positivity sees only `n ≤ e^{2a}`, so approximants agree with Λ at every level.
+- **Surviving core (L67 target).** *No first touching*: there is no level `a*` at which `Q_{Λ,a*} ⪰ 0` has a kernel.
+  - A kernel vector `f*` is a flat (degenerate) Minkowski solution. Equivalently, every positive-definite extension is supported on the zeros of `f̂*` (exponential type `a*`): a Gauss quadrature of ζ's Weil functional on `PW_{2a*}`.
+  - Density alone does not exclude it: nodes of linear density with masses growing like `log t` can reproduce the arch singularity.
+  - This is the Krein-degeneracy question in polytope form. The next step is to exclude it using the arithmetic (prime atoms at `log n`).

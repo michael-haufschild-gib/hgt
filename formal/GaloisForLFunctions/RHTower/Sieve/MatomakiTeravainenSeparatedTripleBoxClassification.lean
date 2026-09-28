@@ -418,6 +418,25 @@ theorem mtSignedSeparatedTripleBox_eq_selected_mul_typeIIBeta
   congr 1
   ring
 
+theorem mtSeparatedTripleTypeIIBetaAF_uniformDivisorBounded
+    {u t : ℕ} (endpoint : ℕ → ℕ) (P : Finset ℕ)
+    (data : MTFiniteIterationSourceData t) (i1 i2 i3 : Fin u)
+    (hdisj : ∀ i j, i ≠ j → Disjoint (data.block i) (data.block j))
+    (hprime : ∀ i, ∀ q ∈ data.block i, q.Prime)
+    (chain : List (Fin t)) (I : Finset (Fin t))
+    (z0 D : ℕ) (delta : ℝ) (eIndex kIndex : ℕ) :
+    MTUniformDivisorBounded 5 (fun n =>
+      mtSeparatedTripleTypeIIBetaAF endpoint P data i1 i2 i3 chain I
+        z0 D delta eIndex kIndex n) := by
+  have hlong := mtBlockChainLongAF_uniformDivisorBounded
+    (mtHarmanTripleCellCoefficient_uniformDivisorBounded
+      (mtHarmanSourceBlock endpoint P i1) (mtHarmanSourceBlock endpoint P i2)
+      (mtHarmanSourceBlock endpoint P i3))
+    hdisj hprime (mtBlockChainRemainder chain I) z0 D delta eIndex
+  have h := (hlong.arithmeticFunction_mul (mtUpperAdicOneAF_uniformDivisorBounded delta kIndex))
+    |>.arithmeticFunction_smul (c := (-1 : ℂ) ^ chain.length) (by simp)
+  simpa [mtSeparatedTripleTypeIIBetaAF] using h
+
 /-- Every admissible independent-schedule triple box is exactly Type I/II or Type II. -/
 theorem mtSeparatedTripleBox_isProposition22Piece
     {u : ℕ} {endpoint : ℕ → ℕ} {delta : ℝ}
@@ -456,13 +475,19 @@ theorem mtSeparatedTripleBox_isProposition22Piece
           i1 i2 i3 chain eIndex kIndex ∧
       mtSeparatedTripleBoxProductScale endpoint delta recStart
           i1 i2 i3 chain eIndex kIndex ≤ 4 * Y) :
-    MTProposition22Piece X Y z0Real recRoot delta epsilon
+    MTUniformProposition22Piece 5 X Y z0Real recRoot delta epsilon
       (mtSignedBlockChainAdicBoxAF
         (mtHarmanTripleCellCoefficient
           (mtHarmanSourceBlock endpoint P i1)
           (mtHarmanSourceBlock endpoint P i2)
           (mtHarmanSourceBlock endpoint P i3))
         data.block chain z0 D delta eIndex kIndex) := by
+  obtain ⟨hdisj0, hprime0⟩ := ofMinimalGeometricSchedule_block_disjoint_prime z0 D recStart
+    hdelta hz0 hroot
+  have hdisj : ∀ i j, i ≠ j → Disjoint (data.block i) (data.block j) := by
+    rw [hblocks]; exact hdisj0
+  have hprime : ∀ i, ∀ q ∈ data.block i, q.Prime := by
+    rw [hblocks]; exact hprime0
   let Q : Fin (mtMinimalGeometricDepth delta recStart recRoot hdelta) → ℝ :=
     fun i => mtGeometricLevel delta recStart i.1
   have hQone : ∀ i ∈ chain.toFinset, 1 ≤ Q i := by
@@ -537,8 +562,22 @@ theorem mtSeparatedTripleBox_isProposition22Piece
       rw [mtTypeI_II_PieceDataOfSupported_pieceAF_eq]
       exact (mtSignedSeparatedTripleBox_eq_typeI_II_factors
         endpoint hendpoint P data i1 i2 i3 chain z0 D delta eIndex kIndex).symm
+    have hFuniform : MTUniformDivisorBounded 5 pieceData.α := by
+      have h0 := mtBlockChainLongAF_uniformDivisorBounded
+        (mtHarmanPairCellCoefficient_uniformDivisorBounded
+          (mtHarmanSourceBlock endpoint P i2) (mtHarmanSourceBlock endpoint P i3))
+        hdisj hprime [] z0 D delta eIndex
+      have h1 := h0.arithmeticFunction_smul (c := (-1 : ℂ) ^ chain.length) (by simp)
+      exact h1.mono (by norm_num)
+    have hGuniform : MTUniformDivisorBounded 5 pieceData.β := by
+      have h0 := mtBlockChainCoefficientAF_uniformDivisorBounded
+        (MTUniformDivisorBounded.of_norm_le_one (α := fun n =>
+          if n ∈ mtHarmanSourceBlock endpoint P i1 then (1 : ℂ) else 0)
+          (fun n => by split <;> simp))
+        hdisj hprime chain
+      exact h0.mono (by norm_num)
     rw [← hpiece]
-    exact MTProposition22Piece.typeI_II pieceData
+    exact MTUniformProposition22Piece.typeI_II pieceData hFuniform hGuniform
   · obtain ⟨I, hIS, hI, hIlower, hIupper⟩ := htypeII
     have hR : I.card ≤ Nat.floor (Real.log recRoot / Real.log z0Real) := by
       rcases hchainBound with hz0RealOne | hchainCard
@@ -613,7 +652,14 @@ theorem mtSeparatedTripleBox_isProposition22Piece
           (mtSignedSeparatedTripleBox_eq_selected_mul_typeIIBeta
             endpoint P data i1 i2 i3 chain I hIS z0 D delta eIndex kIndex).symm
     rw [← hpiece]
-    exact MTProposition22Piece.typeII pieceData
+    exact MTUniformProposition22Piece.typeII pieceData
+      (mtMinimalGeometricTypeIIData_primeCoefficient_uniformDivisorBounded
+        z0 D recStart hdelta hz0 hroot I hI hz0RealPos hz0RealLevel hR
+        (fun n => betaAF n)
+        (mtSeparatedTripleTypeIIM2_pos hendpoint hdelta recStart i1 i2 i3 chain I eIndex kIndex)
+        hbetaBounded hIMem hproductII)
+      (mtSeparatedTripleTypeIIBetaAF_uniformDivisorBounded endpoint P data i1 i2 i3 hdisj hprime
+        chain I z0 D delta eIndex kIndex)
 
 end
 

@@ -282,3 +282,18 @@ assembly → Type I twisted fourth moment → Watt (spectral).
   coefficients in {0,1}" (geometric-schedule blocks are disjoint), uniform bounds for the Harman cell /
   Legendre / adic factors, a uniform piece inductive, and the classification + `PaperAssembly` returning it.
   Order: G0 → D4 (§5.3) → C1 → E1/E2 → Types I, I/II → B → F.
+- 2026-09-28 — **G0 closed: uniform Proposition 2.2.**  `Sieve/MatomakiTeravainenUniformDivisorBound`
+  (`MTUniformDivisorBounded K`, convolution `K+L+1`; disjoint prime blocks ⇒ family/tuple coefficient ≤ 1;
+  geometric-schedule blocks disjoint; `MTUniformProposition22Piece K` with `toPiece`, `mono`).  The separated
+  pair/triple and outer-box classifications, the aligned and retained classifications, `PieceClosure` (`.neg`)
+  and `MTProposition22Decomposition.piece_shape` now carry `MTUniformProposition22Piece 5` (all pieces
+  `|α|,|β| ≤ d(n)^5`, Type-II (2.11) coefficient ∈ {0,1}).  All 16 downstream modules rebuilt.
+- 2026-09-28 — **D4 design (§5.3 at a = 1.1, Type II part of (5.3)).**  Both cell bounds use Lemma 3.4 (corpus
+  `integral_Icc_normSq_heathBrown_oneLine_le_lemma34[_refined]`) with the sparse amplifier `M(s) = P₁(s)^k/k!`,
+  `k = ⌊log X/log(2P₁)⌋`: (B1) dense `F₂` (`N = M₂ ≥ X^{2/3}`, refined form), (B2) dense `F₁⁵` split into ≤ 6
+  dyadic blocks (the paper's "arguing similarly" is Lemma 3.4, not the MVT: the MVT diagonal would be
+  `M^{1/a}`).  Amplifier facts: `ε_m ≤ 1`, `k!·|𝓜| ≤ M` (stars and bars, `k/P₁ → 0`), `k! ≤ M^{1/a+o(1)}`,
+  `1 ≤ k!² M^{ε/5}|M(1+it)|²` on `U`.  Cell `(σ₁,σ₂)` succeeds by B1 if `θ(1−2σ₁) ≤ 1−1/a−ε₁`, else by B2
+  since `(5−8σ₁)θ+2σ₂(1−θ) ≥ 5(1−1/a−ε₁)+2σ₀ > 1/a + ε₂` iff `6/a < 5+2σ₀−O(ε)`; with `σ₀ ≈ 23/100−O(ε)`
+  and `a ≥ 1.0999` this needs `ε ≲ 10⁻⁴`.  `U₁` by Proposition 4.2 (integral form) with `a₁ = α ≤ 1`,
+  `a₂ = β/B₂` normalised (`|F₂| ≤ B₂ = (log X)^{O(1)}`), `B₁ = exp(−(log X)^{1/30})` (D3).  `U₃` trivial.

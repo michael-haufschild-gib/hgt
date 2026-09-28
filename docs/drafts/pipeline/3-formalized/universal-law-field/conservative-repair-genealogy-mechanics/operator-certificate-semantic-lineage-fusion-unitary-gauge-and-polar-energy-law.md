@@ -1,8 +1,8 @@
 # Operator-certificate semantic--lineage fusion, unitary gauge, and polar-energy law
 
 - **ID:** ULF-CRGM-3
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / COORDINATE-FREE FUSION LAW
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** ULF-CRGM-2
 - **Statement:** An operator-valued conservative-repair history carries canonical semantic and
   lineage packets whose composite is exactly depth times the identity; their Hilbert--Schmidt
@@ -23,7 +23,7 @@ another list of route analogies.
 - [x] 0 -> 1: operator prefix transports and dual packets typed
 - [x] 1 -> 2: fusion, sharp energy, equality, gauge covariance, cofinal exclusion, kernel, and
   compact critical no-go dependency-closed below
-- [ ] 2 -> 3: Lean formalization under `HTGeometry/UniversalLawField`
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.OperatorCertificateGenealogy`, `GaloisForLFunctions.HTGeometry.VectorSequenceShift`, `GaloisForLFunctions.HTGeometry.OperatorCertificateCofinal`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 - [ ] 3 -> 4: publication and external priority audit
 
 ## 1. Operator-valued repair grammar
@@ -445,9 +445,47 @@ eligible for later formalization. Read-only audit found finite-dimensional matri
 conservative-repair, compact-fusion, and shift infrastructure, but no existing declaration proving
 this packet fusion or equality classification.
 
+
+## Lean certificate
+
+Modules `GaloisForLFunctions.HTGeometry.OperatorCertificateGenealogy` (58 constants), `GaloisForLFunctions.HTGeometry.VectorSequenceShift` (25 constants), `GaloisForLFunctions.HTGeometry.OperatorCertificateCofinal` (74 constants); axiom audit clean. Fibre `V = ℂ^d` (`Fib d`), certificates `C : ℕ → Matrix (Fin d) (Fin d) ℂ` (Lean `C n` is the card's `C_{n+1}`), prefix transports `opPrefix C` (`A_0 = 1`, `A_{n+1} = A_n C_n`), cofinal space `ℓ²(ℕ; V)` (`FibSeq d`).
+
+| Claim | Lean declaration |
+|-|-|
+| (OP.1)–(OP.7) prefix transports, finite genealogy, packets | `opPrefix`, `opPrefix_succ`, `opPrefix_isUnit`, `opPrefix_mul_inv`, `opPrefix_inv_mul`, `mul_opPrefix_inv_succ`, `opFiniteGenealogy`, `opFiniteWeight`, `opFiniteWeight_pow_apply_eq_zero`, `opFiniteGenealogy_isUnit`, `opSemanticPacket`, `opLineagePacket` |
+| Thm 2.1 (OP.8) `B_N G_N = e_0*` | `opSemanticPacket_genealogy` |
+| Thm 2.1 (OP.9) `G_N Q_N = e_0` | `opFiniteGenealogy_lineagePacket` |
+| Thm 2.1 (OP.10) `B_N Q_N = I` | `opSemanticPacket_lineagePacket` |
+| (OP.11)–(OP.12) polar energies | `hsSq`, `opSemanticEnergy`, `opLineageEnergy`, `norm_sq_semanticVector`, `norm_sq_lineageVector` |
+| (OP.14) `⟨B_N*, Q_N⟩_HS = d(N+1)` | `inner_semanticVector_lineageVector` |
+| Thm 3.1 (OP.13) sharp uncertainty | `opPolar_uncertainty` |
+| Thm 3.1 equality iff every `A_n` unitary | `opPolar_uncertainty_eq_iff`, `opPrefix_eq_star_iff_unitary` |
+| Thm 3.1 equivalently iff every certificate unitary | `opPrefix_unitary_iff` |
+| (OP.15) gauge-transformed certificates | `gaugeCert`, `gaugeCert_isUnit` |
+| Thm 4.1 (OP.16) `A_n' = U_0 A_n U_n*` | `opPrefix_gaugeCert` |
+| Thm 4.1 (OP.17) `G_N' D_U = D_U G_N` | `frameDiag`, `opFiniteGenealogy_gauge` |
+| Thm 4.1 (OP.18) packet covariance | `opSemanticPacket_gauge`, `opLineagePacket_gauge` |
+| Thm 4.1 invariance of energies, defect (OP.19), equality chamber | `hsSq_unitary_mul_star`, `inv_gauge`, `opSemanticEnergy_gauge`, `opLineageEnergy_gauge`, `opUncertaintyDefect_gauge`, `opPrefix_unitary_gauge_iff` |
+| (OP.20) cofinal genealogy on `ℓ²(ℕ; V)` | `VecSeq`, `vecBack`, `vecForward`, `OpCertStream`, `OpCertStream.blockDiag`, `OpCertStream.weight`, `OpCertStream.genealogy`, `OpCertStream.genealogy_apply` |
+| (OP.21) hidden-lineage space `V₋` | `OpCertStream.hiddenLineage` |
+| Thm 5.1(1) semantic packet bounded iff (OP.22) | `OpCertStream.exists_semantic_iff` |
+| Thm 5.1(2) lineage packet bounded iff (OP.23) | `OpCertStream.exists_lineage_iff` |
+| Thm 5.1(3) (OP.22) and (OP.23) exclusive | `OpCertStream.not_summable_both` |
+| Thm 5.1(4) (OP.24) `V₋ ≅ ker G` | `OpCertStream.lineageVec`, `OpCertStream.genealogy_eq_zero_iff`, `OpCertStream.hiddenLineageEquiv` |
+| Thm 5.1(5) dense range | `OpCertStream.dense_range_genealogy` |
+| (OP.25) directional energy and history | `OpCertStream.dirEnergy`, `OpCertStream.dirHistory`, `OpCertStream.dirHistory_apply` |
+| Thm 6.1(1) `‖u_N(v)‖ = 1`, weakly null | `OpCertStream.norm_dirHistory`, `OpCertStream.dirHistory_weaklyNull`, `tendsto_inner_vecSeq_of_coord` |
+| Thm 6.1(2) `G u_N(v) = L_N⁻¹ A_N⁻¹ v e_N`, norm → 0 | `OpCertStream.genealogy_dirHistory`, `OpCertStream.norm_genealogy_dirHistory` |
+| Thm 6.1(3) no compact `K` makes `(K, G)` bounded below | `tendsto_compactOperator_of_weaklyNull_hilbert`, `IsJointlyBoundedBelow`, `OpCertStream.not_isJointlyBoundedBelow_of_dirMirage` |
+| §7 closed dense range is everything; finite-dimensional kernel `≅ V₋` | `OpCertStream.surjective_of_isClosed_range`, `OpCertStream.finrank_ker_genealogy` |
+| Thm 7.1 (OP.27) `(K, G)` bounded below iff `K` injective on `ker G` (every bounded `K`) | `OpCertStream.isJointlyBoundedBelow_iff_of_isClosed` |
+| Thm 7.1(2) every finite-rank repair has rank ≥ `dim V₋` | `OpCertStream.finrank_hiddenLineage_le_rank` |
+| Thm 7.1(1),(3),(4) compact repair of rank exactly `dim V₋` exists | `OpCertStream.exists_minimal_compact_repair` |
+
 ## Log
 
 - 2026-08-12 -- operator prefix transport and dual packets constructed.
 - 2026-08-12 -- exact fusion and sharp unitary-gauge equality theorem proved.
 - 2026-08-12 -- cofinal hidden-lineage and minimal compact-repair rank laws proved.
 - 2026-08-12 -- hostile audit retained mechanism synthesis without external novelty claim.
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

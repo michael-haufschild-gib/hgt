@@ -530,6 +530,11 @@ import GaloisForLFunctions.HTGeometry.WeightedOrbitSelectionLaw
 import GaloisForLFunctions.HTGeometry.UnitriangularRepairGenealogyFinite
 import GaloisForLFunctions.HTGeometry.UnitriangularRepairGenealogyCofinal
 import GaloisForLFunctions.HTGeometry.CertificatePolarGenealogy
+import GaloisForLFunctions.HTGeometry.VectorSequenceShift
+import GaloisForLFunctions.HTGeometry.OperatorCertificateGenealogy
+import GaloisForLFunctions.HTGeometry.OperatorCertificateCofinal
+import GaloisForLFunctions.RHTower.GammaHankelGlobalCenteringCost
+import GaloisForLFunctions.RHTower.PoissonScaleHistoryFrame
 
 /-!
 # Universal-law-field Lean umbrella

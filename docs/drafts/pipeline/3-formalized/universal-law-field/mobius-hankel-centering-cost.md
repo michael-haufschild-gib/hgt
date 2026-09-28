@@ -1,8 +1,10 @@
 # Global centering has a divergent Gamma--Hankel compatibility cost
 
+- **Stage:** 3-formalized
+
 - ID: ULF-MHBR-001-S1
 - Parent: `../../1-in-progress/universal-law-field/mobius-hankel-bounded-returns.md`
-- Status: dependency-closed paper proof; Lean verification pending.
+- Status: dependency-closed paper proof; Lean-verified (see Lean certificate).
 - Scope: quantitative obstruction to transporting a bounded energy estimate by global centering;
   neither a disproof nor a proof of Möbius bounded returns.
 
@@ -60,3 +62,27 @@ unconditionally to the actual Möbius coefficients and to all r_k=1+1/(k+2), k>=
   newly applied to the proposed repair. No novelty beyond that application is claimed.
 - Tail-only changes, alternative source-faithful constructions, and the original signed
   covariance bound are not excluded. No general ban on positivity is inferred.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.RHTower.GammaHankelGlobalCenteringCost`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Module `GaloisForLFunctions.RHTower.GammaHankelGlobalCenteringCost` (11 constants, axiom audit clean). `E_N(a; r)` is `finiteGammaHankelEnergy a N r` (coefficients `a 0, …, a (N-1)` at frequencies `1, …, N`); `P_N` is `mertensPrimeProduct N`.
+
+| Claim | Lean declaration |
+|-|-|
+| Step 1: `E_N` is the weighted Laplace square, hence `E_N ≥ 0` for `r > 0` | `integral_finiteRealLaplacePencil_sq`, `finiteGammaHankelEnergy_nonneg` |
+| Step 2: `2E_N(a) + 2E_N(a - b) = E_N(2a - b) + b² E_N(1)` | `finiteGammaHankelEnergy_centering_polarization` |
+| `E_N(a) + E_N(a - b) ≥ b² E_N(1)/2` | `finiteGammaHankelEnergy_add_centered_ge` |
+| Sharpness: equality at `a_n = b/2` | `finiteGammaHankelEnergy_add_centered_half` |
+| Step 3: `E_N(1) ≥ Γ(r) N² / (2N)^r`; full chain `≥ Γ(r) b² N² / (2(2N)^r)` | `finiteGammaHankelEnergy_one_ge`, `finiteGammaHankelEnergy_centering_chain` |
+| Step 4: `P_N⁴ N^s → ∞` for `s > 0` (Mertens' third theorem) | `tendsto_mertensPrimeProduct_mul_log`, `tendsto_mertensPrimeProduct_pow_four_mul_rpow` |
+| `E_N(a_N) + E_N(a_N - b_N) → ∞` for `0 < r < 2`, every triangular array, `b_N = P_N²` | `tendsto_finiteGammaHankelEnergy_centering_cost` |
+| Eventual disjunction `E_N(a_N) > A` or `E_N(a_N - b_N) > B` | `eventually_centering_energy_gt` |
+| `r_k = 1 + 1/(k+2) ∈ (0, 2)` | `criticalHankelExponent_mem` |
+| Möbius coefficients at every `r_k` | `tendsto_mobius_centering_cost`, `eventually_mobius_centering_energy_gt` |
+| Context: finite Euler clock agrees with `μ`; `b_N` is the prime-product mean | `eulerClockNat_eq_moebius`, `primesBelow_prod_eq_mertensPrimeProduct` |
+
+## Log
+
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

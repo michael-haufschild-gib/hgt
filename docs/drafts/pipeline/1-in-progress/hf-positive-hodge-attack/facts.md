@@ -204,3 +204,10 @@ Scope: frontier route HF. Facts and no-gos only.
   - Polar Mertens obstruction: a Weil-positive `lam` with `Σ_{2≤n≤x}(lam−Λ)(n)n^{−½} = 2κ√x + A log x + B + o(1)` has `B ≤ 0`, for every `κ` and `A`. The polar constraint cancels the √x slope, and `h_f(0) = 0` cancels the log slope.
   - Hence `Λ − c ∉ W` for `c > 0` (`B = c(1−ζ(½)) ≥ 2c`).
   - With HF-F53/L61: `Λ + c ∈ W ⇒ c = 0`. Unconditional.
+- **HF-F60 [Lean, `RHTower.WeilPositivitySummablePerturbationRigidity`] Summable-perturbation rigidity.**
+  - If `Σ|w(n)|n^{−½} < ∞` and `w ≠ 0` on `n ≥ 2`, then `Λ + w` is not Weil-positive.
+  - In particular, changing a single weight `Λ(n₀)` breaks positivity, and a Weil-positive `lam` with `lam − Λ ∈ ℓ¹(n^{−½})` equals `Λ`.
+  - Mechanism: coefficient extraction by two-point resonators (`P_w ≤ 0 ⇒ w = 0`), then concentration of spread radical tests where `P_w > 0`.
+- **HF-F61 [Lean, `RHTower.abs_le_of_weilPositive`] The Weil cone lies in a box.**
+  - Every Weil-positive `lam` satisfies `|lam(n)| ≤ √n(log n + C₀)` for all `n ≥ 2`, via the two-point resonators in the Weil–Toeplitz bound.
+  - So W is a compact convex subset of `ℝ^ℕ` (product topology), and W ≠ ∅ iff every finite subsystem is feasible in the box (finite intersection property).

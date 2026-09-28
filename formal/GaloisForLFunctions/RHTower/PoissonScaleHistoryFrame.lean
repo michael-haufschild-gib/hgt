@@ -78,6 +78,13 @@ theorem poissonScaleHistoryGram_le_one {t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
   rw [div_le_one hsq]
   nlinarith [sq_nonneg (t - u)]
 
+/-- Cross-clock visibility is strictly positive. -/
+theorem poissonScaleHistoryGram_pos {t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
+    0 < poissonScaleHistoryGram t u := by
+  rw [poissonScaleHistoryGram_eq ht hu]
+  have := add_pos ht hu
+  positivity
+
 /-- Unit visibility is rigid: it occurs exactly on the same clock. -/
 theorem poissonScaleHistoryGram_eq_one_iff {t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
     poissonScaleHistoryGram t u = 1 ↔ t = u := by

@@ -72,6 +72,62 @@ theorem MTProposition22Piece.neg
       rw [← hpiece]
       exact MTProposition22Piece.typeII negData
 
+/-- Uniform proposition pieces are stable under the alternating signs of the minorant. -/
+theorem MTUniformProposition22Piece.neg {K : ℕ}
+    {X Y z₀ z delta epsilon : ℝ} {f : ArithmeticFunction ℂ}
+    (hf : MTUniformProposition22Piece K X Y z₀ z delta epsilon f) :
+    MTUniformProposition22Piece K X Y z₀ z delta epsilon (-f) := by
+  have hneg : ‖(-1 : ℂ)‖ ≤ 1 := by simp
+  cases hf with
+  | typeI data hα =>
+      let negData : MTTypeIPieceData X Y delta epsilon :=
+        { data with
+          α := fun n => -data.α n
+          α_divisorBounded := by
+            simpa only [neg_one_mul] using data.α_divisorBounded.smul (-1) }
+      have hpiece : negData.pieceAF = -data.pieceAF := by
+        unfold MTTypeIPieceData.pieceAF mtTypeIPieceAF
+        rw [show mtRealIntervalAF negData.α negData.M₁ (2 * negData.M₁) =
+            -mtRealIntervalAF data.α data.M₁ (2 * data.M₁) by
+          simpa [negData] using mtRealIntervalAF_neg data.α data.M₁ (2 * data.M₁)]
+        dsimp only [negData]
+        exact neg_mul (α := ArithmeticFunction ℂ) _ _
+      rw [← hpiece]
+      exact MTUniformProposition22Piece.typeI negData (fun n hn => by
+        simpa [negData] using hα hn)
+  | typeI_II data hα hβ =>
+      let negData : MTTypeI_II_PieceData X Y delta epsilon :=
+        { data with
+          α := fun n => -data.α n
+          α_divisorBounded := by
+            simpa only [neg_one_mul] using data.α_divisorBounded.smul (-1) }
+      have hpiece : negData.pieceAF = -data.pieceAF := by
+        unfold MTTypeI_II_PieceData.pieceAF mtTypeI_II_PieceAF
+        rw [show mtRealIntervalAF negData.α negData.M₁ (2 * negData.M₁) =
+            -mtRealIntervalAF data.α data.M₁ (2 * data.M₁) by
+          simpa [negData] using mtRealIntervalAF_neg data.α data.M₁ (2 * data.M₁)]
+        dsimp only [negData]
+        rw [neg_mul (α := ArithmeticFunction ℂ), neg_mul (α := ArithmeticFunction ℂ)]
+      rw [← hpiece]
+      exact MTUniformProposition22Piece.typeI_II negData (fun n hn => by
+        simpa [negData] using hα hn) hβ
+  | typeII data hprime hβ =>
+      let negData : MTTypeIIPieceData X Y z₀ z delta epsilon :=
+        { data with
+          β := fun n => -data.β n
+          β_divisorBounded := by
+            simpa only [neg_one_mul] using data.β_divisorBounded.smul (-1) }
+      have hpiece : negData.pieceAF = -data.pieceAF := by
+        unfold MTTypeIIPieceData.pieceAF mtTypeIIPieceAF
+        rw [show mtRealIntervalAF negData.β negData.M₂ (2 * negData.M₂) =
+            -mtRealIntervalAF data.β data.M₂ (2 * data.M₂) by
+          simpa [negData] using mtRealIntervalAF_neg data.β data.M₂ (2 * data.M₂)]
+        dsimp only [negData]
+        exact mul_neg (α := ArithmeticFunction ℂ) _ _
+      rw [← hpiece]
+      exact MTUniformProposition22Piece.typeII negData hprime (fun n hn => by
+        simpa [negData] using hβ hn)
+
 end
 
 end RHTower.Sieve

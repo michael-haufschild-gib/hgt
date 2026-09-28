@@ -38,7 +38,7 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | positive-real-zero-division | L3 | done → 3-formalized (`ThetaZeroDivisionSource`) |
 | euler-zero-division-seed-transfer | L3 | todo |
 | endpoint-harmonic-completeness | L3, tail-capacity | todo |
-| tail-divisor-capacity-threshold | L6 | partial: relative-source rigidity done (`ThetaRelativeSourceRigidity`; HTGeometry `GammaHorizontalRatio`, `SectorPhragmenLindelof`); open: b>2 capacity (Jensen+RvM), b≤3 (Zeta23), sharpness k⁽⁴ᵐ⁾, Gaussian control, (3) D(δ) |
+| tail-divisor-capacity-threshold | L6 | Lean complete (`ThetaRelativeSourceRigidity`, `ThetaTailDivisorCapacity`, `ThetaTailSimpleCriticalThreshold`, `ThetaTailCapacitySharpness`, `ThetaTailSectorialGammaBound`; HTGeometry `GammaHorizontalRatio`, `SectorPhragmenLindelof`, `JensenIntegratedCountBound`, `GaussianPairControlQuotient`); promotion waits on derivative-packets companion claim |
 | derivative-dark-divisor-packets | partial corpus, L6 | todo |
 | compact-critical-strip-zero-engineering | bumps, Riemann–Lebesgue | done → 3-formalized (`ThetaCompactStripZeroEngineering`, `ThetaAnalyticStripZeroEngineering`, `ThetaSourceSurgeryToolkit`; HTGeometry `OscillatoryPacketFourier`, `EvenAnchorProjection`) |
 | global-riccati-order-one-offline-countermodel | Riccati Gaussian family `ThetaRiccatiGaussianCountermodel` | done → 3-formalized |

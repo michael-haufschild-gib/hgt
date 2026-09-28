@@ -14,7 +14,8 @@ open Filter Topology Finset ArithmeticFunction
 noncomputable section
 
 /-- Exact finite decomposition asserted by Proposition 2.2, including its quantitative family and
-error clauses. -/
+error clauses; every piece is divisor-bounded with the fixed exponent `5` and every Type-II
+(2.11) coefficient is `0` or `1`. -/
 structure MTProposition22Decomposition (A : ℕ) (X epsilon : ℝ) (Y : ℕ) where
   ι : Type
   indexSet : Finset ι
@@ -26,7 +27,7 @@ structure MTProposition22Decomposition (A : ℕ) (X epsilon : ℝ) (Y : ℕ) whe
         (mtProposition22ENat X epsilon) Y =
       ∑ i ∈ indexSet, piece i + error
   piece_shape : ∀ i ∈ indexSet,
-    MTProposition22Piece X (Y : ℝ) (mtLowerCutoff X)
+    MTUniformProposition22Piece 5 X (Y : ℝ) (mtLowerCutoff X)
       (mtProposition22ZReal X) (mtPaperWidth A X) epsilon (piece i)
   family_card : (indexSet.card : ℝ) ≤ Real.exp ((Real.log (Real.log X)) ^ 5)
   error_support : ∀ {n : ℕ}, error n ≠ 0 →
@@ -248,7 +249,7 @@ theorem eventually_nonempty_mtProposition22Decomposition
       exact Nat.le_ceil _
     exact hlowerCeil.trans hz₀
   have hpieceShape : ∀ idx ∈ S,
-      MTProposition22Piece X (Y : ℝ) (mtLowerCutoff X)
+      MTUniformProposition22Piece 5 X (Y : ℝ) (mtLowerCutoff X)
         (mtProposition22ZReal X) (mtPaperWidth A X) epsilon (F idx) := by
     intro idx hidx
     have hidxFull := mtHarmanCompressedRetainedBoxIndexSet_subset

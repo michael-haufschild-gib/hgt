@@ -64,7 +64,7 @@ theorem mtHarmanRetainedBox_isProposition22Piece_exactThresholds
       (mtPaperAlignedEndpoint outerStart Qouter delta)
       (mtPaperAlignedEndpoint outerStart Douter delta) (Nat.ceil EReal : ℝ)
       data maxDepth j delta N recStart Y) :
-    MTProposition22Piece X Y z0Real recRoot delta epsilon
+    MTUniformProposition22Piece 5 X Y z0Real recRoot delta epsilon
       (mtHarmanRetainedBoxAF
         (mtPaperAlignedEndpoint outerStart Qouter delta)
         (mtPaperAlignedEndpoint outerStart Douter delta)
@@ -99,12 +99,13 @@ theorem mtHarmanRetainedBox_isProposition22Piece_exactThresholds
         omega
       simp only [mtHarmanRetainedBoxAF, mtOuterSeparatedBoxAF, mtBaseOuterAlpha]
       rw [hz0Data, hDData]
-      change MTProposition22Piece X Y z0Real recRoot delta epsilon
+      change MTUniformProposition22Piece 5 X Y z0Real recRoot delta epsilon
         (mtSignedBlockChainAdicBoxAF mtUnitCoefficient data.block idx.1.1.2.2
           z0 Dtrunc delta idx.1.2 idx.2)
       apply mtOuterBlockChainBox_isProposition22Piece
         (mtUnitCoefficientAF_scaleSupported hdelta)
         mtUnitCoefficient_polynomialDivisorBounded
+        mtUnitCoefficient_uniformDivisorBounded
         (mtBaseOuterScale_pos hdelta (0 : Fin 1))
         z0 Dtrunc recStart hdelta hz0 hroot data hblocks
         idx.1.1.2.2 (activeBlockChain_nodup hchain) idx.1.2 idx.2
@@ -142,16 +143,17 @@ theorem mtHarmanRetainedBox_isProposition22Piece_exactThresholds
             omega
           simp only [mtHarmanRetainedBoxAF, mtOuterSeparatedBoxAF]
           rw [hz0Data, hDData]
-          change MTProposition22Piece X Y z0Real recRoot delta epsilon
+          change MTUniformProposition22Piece 5 X Y z0Real recRoot delta epsilon
             (-mtSignedBlockChainAdicBoxAF
               (mtOnePrimeOuterAlpha endpointQ Pq idx.1.1.1)
               data.block idx.1.1.2.2 z0 Dtrunc delta idx.1.2 idx.2)
-          apply MTProposition22Piece.neg
+          apply MTUniformProposition22Piece.neg
           apply mtOuterBlockChainBox_isProposition22Piece
             (mtOnePrimeOuterAlpha_scaleSupported
               (fun i => (hendpointQ i).trans' one_le_two)
               (mtPaperAlignedEndpoint_band hdelta.le) Pq idx.1.1.1)
             (mtFinsetIndicatorCoefficient_polynomialDivisorBounded _)
+            (mtFinsetIndicatorCoefficient_uniformDivisorBounded _)
             (mtOnePrimeOuterScale_pos hendpointQ idx.1.1.1)
             z0 Dtrunc recStart hdelta hz0 hroot data hblocks
             idx.1.1.2.2 (activeBlockChain_nodup hchain) idx.1.2 idx.2
@@ -187,7 +189,7 @@ theorem mtHarmanRetainedBox_isProposition22Piece_exactThresholds
                 omega
               simp only [mtHarmanRetainedBoxAF, mtSeparatedPairBoxAF]
               rw [hz0Data, hDData]
-              change MTProposition22Piece X Y z0Real recRoot delta epsilon
+              change MTUniformProposition22Piece 5 X Y z0Real recRoot delta epsilon
                 (mtSignedBlockChainAdicBoxAF
                   (mtHarmanPairCellCoefficient
                     (mtHarmanSourceBlock endpointD Pd idx.1.1.1.1)
@@ -226,14 +228,14 @@ theorem mtHarmanRetainedBox_isProposition22Piece_exactThresholds
                 omega
               simp only [mtHarmanRetainedBoxAF, mtSeparatedTripleBoxAF]
               rw [hz0Data, hDData]
-              change MTProposition22Piece X Y z0Real recRoot delta epsilon
+              change MTUniformProposition22Piece 5 X Y z0Real recRoot delta epsilon
                 (-mtSignedBlockChainAdicBoxAF
                   (mtHarmanTripleCellCoefficient
                     (mtHarmanSourceBlock endpointD Pd idx.1.1.1.1.1)
                     (mtHarmanSourceBlock endpointD Pd idx.1.1.1.1.2)
                     (mtHarmanSourceBlock endpointD Pd idx.1.1.1.2))
                   data.block idx.1.1.2.2 z0 Dtrunc delta idx.1.2 idx.2)
-              apply MTProposition22Piece.neg
+              apply MTUniformProposition22Piece.neg
               apply mtPaperAlignedSeparatedTripleBox_isProposition22Piece_exactThreshold
                 z0 outerStart z Douter Dtrunc recStart hdelta houterStart houterD
                 hprogress hDouter hz0 hroot data hblocks idx.1.1.1.1.1

@@ -327,6 +327,105 @@ theorem exists_large_mul_log {ε : ℝ} (hε : 0 < ε) (B₁ B₂ B₃ R₀ : �
 
 /-! ## The sharp capacity theorem -/
 
+/-- **The capacity contradiction.** Let `u` be a double-exponential source with `H(c) ≠ 0`. If
+for all large `T` the disc `closedBall c (T + K)` carries at least `κ T log T` zeros of `H` with
+`κ > 2/(πb)`, Jensen's formula contradicts the angular capacity bound. -/
+theorem false_of_capacity (hu : AEStronglyMeasurable u) (ha : 0 < a) (hb0 : 0 < b)
+    (hC : ∀ x, ‖u x‖ ≤ C * Real.exp (-a * Real.exp (b * |x|))) {c : ℂ}
+    (hc : sourceTransform u c ≠ 0) {κ K T₀ : ℝ} (hK0 : 0 ≤ K) (hκ : 2 / (Real.pi * b) < κ)
+    (hT₀ : 1 ≤ T₀)
+    (hcountT : ∀ T, T₀ ≤ T → κ * (T * Real.log T) ≤
+      ∑ᶠ z, (MeromorphicOn.divisor (sourceTransform u) (closedBall c (T + K)) z : ℝ)) :
+    False := by
+  have hms := measurableMomentSource_of_doubleExp hu ha hb0 hC
+  have hHd := hms.differentiable_sourceTransform
+  have hπ := Real.pi_pos
+  set ε := κ - 2 / (Real.pi * b) with hεdef
+  have hε : 0 < ε := by linarith
+  have hκ0 : 0 < κ := by
+    have : 0 < 2 / (Real.pi * b) := by positivity
+    linarith
+  set r₁ := T₀ + 2 * K + 2 with hr₁
+  have hr₁0 : 0 < r₁ := by linarith
+  set φ : ℝ → ℝ := fun r => κ * (r * Real.log r - (Real.log 2 + K) * r)
+  have hcount : ∀ r, r₁ ≤ r → φ r ≤
+      ∑ᶠ z, (MeromorphicOn.divisor (sourceTransform u) (closedBall c r) z : ℝ) := by
+    intro r hr'
+    obtain ⟨T, hTdef⟩ : ∃ T, T = r - K := ⟨_, rfl⟩
+    have hT : T₀ ≤ T := by rw [hTdef]; linarith
+    have hcT := hcountT T hT
+    rw [show T + K = r by rw [hTdef]; ring] at hcT
+    have hr2 : 2 * K ≤ r := by linarith
+    have hrpos : 0 < r := by linarith
+    have hTpos : 0 < T := by rw [hTdef]; linarith
+    have hlogT : Real.log r - Real.log 2 ≤ Real.log T := by
+      rw [← Real.log_div hrpos.ne' two_ne_zero]
+      exact Real.log_le_log (by positivity) (by rw [hTdef]; linarith)
+    have hlogr : Real.log r ≤ r := (Real.log_le_sub_one_of_pos hrpos).trans (by linarith)
+    have hlog2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+    have hlogr0 : 0 ≤ Real.log r := Real.log_nonneg (by linarith)
+    have hTT : r * Real.log r - (Real.log 2 + K) * r ≤ T * Real.log T := by
+      have h1 : T * (Real.log r - Real.log 2) ≤ T * Real.log T :=
+        mul_le_mul_of_nonneg_left hlogT hTpos.le
+      have h2 : T * (Real.log r - Real.log 2) = r * Real.log r - r * Real.log 2 - K * Real.log r +
+          K * Real.log 2 := by rw [hTdef]; ring
+      nlinarith [mul_le_mul_of_nonneg_left hlogr hK0]
+    calc φ r = κ * (r * Real.log r - (Real.log 2 + K) * r) := rfl
+      _ ≤ κ * (T * Real.log T) := mul_le_mul_of_nonneg_left hTT hκ0.le
+      _ ≤ _ := hcT
+  set A₁ := Real.log (1 + 2 * (|c.im| + 1) / (a * b))
+  obtain ⟨R, hRr, hR1, hRbig⟩ := exists_large_mul_log hε
+    (κ * (1 + Real.log 2 + K) + 2 / (Real.pi * b) * A₁)
+    (|c.im| / b)
+    (Real.posLog (C * doubleExpMass a b) + |c.im| / b * A₁ - Real.log ‖sourceTransform u c‖ -
+      κ * (r₁ - r₁ * Real.log r₁ + (Real.log 2 + K) * r₁))
+    (r₁ + 1)
+  have hR : r₁ ≤ R := by linarith
+  have hRpos : 0 < R := by linarith
+  have hφi : IntervalIntegrable (fun r => φ r / r) volume r₁ R := by
+    refine ContinuousOn.intervalIntegrable fun r hr => ?_
+    rw [uIcc_of_le hR] at hr
+    have hr0 : 0 < r := hr₁0.trans_le hr.1
+    exact ((continuousAt_const.mul ((continuousAt_id.mul (Real.continuousAt_log hr0.ne')).sub
+      (continuousAt_const.mul continuousAt_id))).div continuousAt_id hr0.ne').continuousWithinAt
+  have hJ := HTGeometry.log_norm_add_integral_le_circleAverage
+    (fun z _ => hHd.analyticAt z) hc hr₁0 hR hφi (fun r hr => hcount r hr.1)
+  have hIeq : ∫ r in r₁..R, φ r / r =
+      κ * ((R * Real.log R - r₁ * Real.log r₁ - R + r₁) - (Real.log 2 + K) * (R - r₁)) := by
+    have hcongr : ∫ r in r₁..R, φ r / r = ∫ r in r₁..R, κ * (Real.log r - (Real.log 2 + K)) :=
+      intervalIntegral.integral_congr fun r hr => by
+        rw [uIcc_of_le hR] at hr
+        have hr0 : 0 < r := hr₁0.trans_le hr.1
+        simp only [φ]; field_simp
+    rw [hcongr, intervalIntegral.integral_const_mul, intervalIntegral.integral_sub
+      (intervalIntegral.intervalIntegrable_log' ) intervalIntegrable_const, integral_log,
+      intervalIntegral.integral_const, smul_eq_mul]
+    ring
+  rw [hIeq] at hJ
+  have hU := circleAverage_log_norm_le_doubleExp hu ha hb0 hC c hRpos.le
+  have hlogU : Real.log (1 + 2 * (|c.im| + R) / (a * b)) ≤ Real.log R + A₁ := by
+    rw [← Real.log_mul hRpos.ne' (by positivity)]
+    refine Real.log_le_log (by positivity) ?_
+    have hab : 0 < a * b := by positivity
+    have key : 2 * (|c.im| + R) ≤ R * (2 * (|c.im| + 1)) := by nlinarith [abs_nonneg c.im]
+    calc 1 + 2 * (|c.im| + R) / (a * b) ≤ R + R * (2 * (|c.im| + 1)) / (a * b) :=
+          add_le_add hR1 (div_le_div_of_nonneg_right key hab.le)
+      _ = R * (1 + 2 * (|c.im| + 1) / (a * b)) := by ring
+  have hU' : (|c.im| + 2 / Real.pi * R) / b * Real.log (1 + 2 * (|c.im| + R) / (a * b)) ≤
+      (|c.im| + 2 / Real.pi * R) / b * (Real.log R + A₁) :=
+    mul_le_mul_of_nonneg_left hlogU (by positivity)
+  have hexpand : (|c.im| + 2 / Real.pi * R) / b * (Real.log R + A₁) =
+      2 / (Real.pi * b) * (R * Real.log R) + 2 / (Real.pi * b) * A₁ * R +
+        |c.im| / b * Real.log R + |c.im| / b * A₁ := by
+    field_simp; ring
+  have hsplitκ : κ * (R * Real.log R) = 2 / (Real.pi * b) * (R * Real.log R) +
+      ε * (R * Real.log R) := by rw [hεdef]; ring
+  have hJ' : Real.log ‖sourceTransform u c‖ + (κ * (R * Real.log R) - κ * (r₁ * Real.log r₁) -
+      κ * R + κ * r₁ - κ * (Real.log 2 + K) * R + κ * (Real.log 2 + K) * r₁) ≤
+      Real.circleAverage (fun z => Real.log ‖sourceTransform u z‖) c R := by
+    convert hJ using 2; ring
+  linarith
+
 /-- **Sharp theta-tail capacity (`b > 2`).** If a measurable `u` obeys
 `|u(x)| ≤ C exp(-a e^{b|x|})` with `a > 0`, `b > 2`, and its entire Fourier transform
 `H(z) = ∫ e^{-izx} u(x) dx` vanishes at every zero of `F = XiC` to at least that zero's
@@ -349,111 +448,17 @@ theorem ae_eq_zero_of_doubleExp_divisor (hu : AEStronglyMeasurable u) (ha : 0 < 
   have hgap : 2 / (Real.pi * b) < 1 / Real.pi := by
     rw [div_lt_div_iff₀ (by positivity) hπ]; nlinarith
   have hε : 0 < ε := by linarith
-  set κ := 1 / Real.pi - ε with hκ
   obtain ⟨T₀, hT₀4, hmass⟩ := exists_xiSymmetricMass_close ε hε
-  set K := 3 / 2 + ‖c‖ with hK
-  have hK0 : 0 < K := by positivity
-  set r₁ := T₀ + 2 * K + 2 with hr₁
-  have hr₁0 : 0 < r₁ := by linarith
-  set φ : ℝ → ℝ := fun r => κ * (r * Real.log r - (Real.log 2 + K) * r)
-  have hκ0 : 0 < κ := by
-    have : 0 < 2 / (Real.pi * b) := by positivity
-    linarith
-  -- the lower count
-  have hcount : ∀ r ∈ Icc r₁ (r₁ + 1) ∪ Ici r₁, φ r ≤
-      ∑ᶠ z, (MeromorphicOn.divisor (sourceTransform u) (closedBall c r) z : ℝ) := by
-    intro r hr
-    have hr' : r₁ ≤ r := by rcases hr with h | h; exact h.1; exact h
-    obtain ⟨T, hTdef⟩ : ∃ T, T = r - K := ⟨_, rfl⟩
-    have hT : T₀ ≤ T := by rw [hTdef]; linarith
-    have hT0 : 0 ≤ T := by linarith
-    have hmassT := hmass T hT
-    have hlow : κ * (T * Real.log T) ≤ (xiSymmetricMass T : ℝ) := by
-      have := (abs_le.mp hmassT).1; simp only [hκ]; linarith
-    have hdisc := xiSymmetricMass_le_finsum_divisor_XiC c (r := r) hT0
-      (le_of_eq (by rw [hTdef, hK]; ring))
-    have hmono := finsum_divisor_le_of_order_le XiC_differentiable hHd ⟨c, hc⟩ hdiv c r
-    have hcast : (xiSymmetricMass T : ℝ) ≤
-        ∑ᶠ z, (MeromorphicOn.divisor (sourceTransform u) (closedBall c r) z : ℝ) := by
-      rw [← cast_finsum_divisor]; exact_mod_cast hdisc.trans hmono
-    have hr2 : 2 * K ≤ r := by linarith
-    have hrpos : 0 < r := by linarith
-    have hTpos : 0 < T := by rw [hTdef]; linarith
-    have hlogT : Real.log r - Real.log 2 ≤ Real.log T := by
-      rw [← Real.log_div hrpos.ne' two_ne_zero]
-      exact Real.log_le_log (by positivity) (by rw [hTdef]; linarith)
-    have hlogr : Real.log r ≤ r := (Real.log_le_sub_one_of_pos hrpos).trans (by linarith)
-    have hlog2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
-    have hlogr0 : 0 ≤ Real.log r := Real.log_nonneg (by linarith)
-    have hTT : r * Real.log r - (Real.log 2 + K) * r ≤ T * Real.log T := by
-      have h1 : T * (Real.log r - Real.log 2) ≤ T * Real.log T :=
-        mul_le_mul_of_nonneg_left hlogT hTpos.le
-      have h2 : T * (Real.log r - Real.log 2) = r * Real.log r - r * Real.log 2 - K * Real.log r +
-          K * Real.log 2 := by rw [hTdef]; ring
-      nlinarith [mul_le_mul_of_nonneg_left hlogr hK0.le]
-    calc φ r = κ * (r * Real.log r - (Real.log 2 + K) * r) := rfl
-      _ ≤ κ * (T * Real.log T) := mul_le_mul_of_nonneg_left hTT hκ0.le
-      _ ≤ _ := hlow.trans hcast
-  -- a large radius violating the capacity
-  set A₁ := Real.log (1 + 2 * (|c.im| + 1) / (a * b))
-  obtain ⟨R, hRr, hR1, hRbig⟩ := exists_large_mul_log hε
-    (κ * (1 + Real.log 2 + K) + 2 / (Real.pi * b) * A₁)
-    (|c.im| / b)
-    (Real.posLog (C * doubleExpMass a b) + |c.im| / b * A₁ - Real.log ‖sourceTransform u c‖ -
-      κ * (r₁ - r₁ * Real.log r₁ + (Real.log 2 + K) * r₁))
-    (r₁ + 1)
-  have hR : r₁ ≤ R := by linarith
-  have hRpos : 0 < R := by linarith
-  -- Jensen lower bound
-  have hφi : IntervalIntegrable (fun r => φ r / r) volume r₁ R := by
-    refine ContinuousOn.intervalIntegrable fun r hr => ?_
-    rw [uIcc_of_le hR] at hr
-    have hr0 : 0 < r := hr₁0.trans_le hr.1
-    exact ((continuousAt_const.mul ((continuousAt_id.mul (Real.continuousAt_log hr0.ne')).sub
-      (continuousAt_const.mul continuousAt_id))).div continuousAt_id hr0.ne').continuousWithinAt
-  have hJ := HTGeometry.log_norm_add_integral_le_circleAverage
-    (fun z _ => hHd.analyticAt z) hc hr₁0 hR hφi (fun r hr => hcount r (Or.inr hr.1))
-  have hIeq : ∫ r in r₁..R, φ r / r =
-      κ * ((R * Real.log R - r₁ * Real.log r₁ - R + r₁) - (Real.log 2 + K) * (R - r₁)) := by
-    have hcongr : ∫ r in r₁..R, φ r / r = ∫ r in r₁..R, κ * (Real.log r - (Real.log 2 + K)) :=
-      intervalIntegral.integral_congr fun r hr => by
-        rw [uIcc_of_le hR] at hr
-        have hr0 : 0 < r := hr₁0.trans_le hr.1
-        simp only [φ]; field_simp
-    rw [hcongr, intervalIntegral.integral_const_mul, intervalIntegral.integral_sub
-      (intervalIntegral.intervalIntegrable_log' ) intervalIntegrable_const, integral_log,
-      intervalIntegral.integral_const, smul_eq_mul]
-    ring
-  rw [hIeq] at hJ
-  -- angular upper bound
-  have hU := circleAverage_log_norm_le_doubleExp hu ha hb0 hC c hRpos.le
-  have hlogU : Real.log (1 + 2 * (|c.im| + R) / (a * b)) ≤ Real.log R + A₁ := by
-    rw [← Real.log_mul hRpos.ne' (by positivity)]
-    refine Real.log_le_log (by positivity) ?_
-    have hab : 0 < a * b := by positivity
-    have key : 2 * (|c.im| + R) ≤ R * (2 * (|c.im| + 1)) := by nlinarith [abs_nonneg c.im]
-    calc 1 + 2 * (|c.im| + R) / (a * b) ≤ R + R * (2 * (|c.im| + 1)) / (a * b) :=
-          add_le_add hR1 (div_le_div_of_nonneg_right key hab.le)
-      _ = R * (1 + 2 * (|c.im| + 1) / (a * b)) := by ring
-  have hlogR : 0 ≤ Real.log R := Real.log_nonneg hR1
-  have hLpos : 0 ≤ Real.log (1 + 2 * (|c.im| + R) / (a * b)) :=
-    Real.log_nonneg (by have : 0 ≤ 2 * (|c.im| + R) / (a * b) := by positivity
-                        linarith)
-  have hU' : (|c.im| + 2 / Real.pi * R) / b * Real.log (1 + 2 * (|c.im| + R) / (a * b)) ≤
-      (|c.im| + 2 / Real.pi * R) / b * (Real.log R + A₁) :=
-    mul_le_mul_of_nonneg_left hlogU (by positivity)
-  have hexpand : (|c.im| + 2 / Real.pi * R) / b * (Real.log R + A₁) =
-      2 / (Real.pi * b) * (R * Real.log R) + 2 / (Real.pi * b) * A₁ * R +
-        |c.im| / b * Real.log R + |c.im| / b * A₁ := by
-    field_simp; ring
-  have hκε : κ = 2 / (Real.pi * b) + ε := by simp only [hκ, hεdef]; ring
-  have hsplitκ : κ * (R * Real.log R) = 2 / (Real.pi * b) * (R * Real.log R) +
-      ε * (R * Real.log R) := by rw [hκε]; ring
-  have hJ' : Real.log ‖sourceTransform u c‖ + (κ * (R * Real.log R) - κ * (r₁ * Real.log r₁) -
-      κ * R + κ * r₁ - κ * (Real.log 2 + K) * R + κ * (Real.log 2 + K) * r₁) ≤
-      Real.circleAverage (fun z => Real.log ‖sourceTransform u z‖) c R := by
-    convert hJ using 2; ring
-  linarith
+  refine false_of_capacity hu ha hb0 hC hc (κ := 1 / Real.pi - ε) (K := 3 / 2 + ‖c‖)
+    (T₀ := T₀) (by positivity) (by linarith) (by linarith) fun T hT => ?_
+  have hlow : (1 / Real.pi - ε) * (T * Real.log T) ≤ (xiSymmetricMass T : ℝ) := by
+    have := (abs_le.mp (hmass T hT)).1; linarith
+  have hdisc := xiSymmetricMass_le_finsum_divisor_XiC c (r := T + (3 / 2 + ‖c‖)) (T := T)
+    (by linarith) (by linarith)
+  have hmono := finsum_divisor_le_of_order_le XiC_differentiable hHd ⟨c, hc⟩ hdiv c
+    (T + (3 / 2 + ‖c‖))
+  rw [← cast_finsum_divisor]
+  exact hlow.trans (by exact_mod_cast hdisc.trans hmono)
 
 /-- For continuous `u` the capacity theorem is pointwise: `u = 0`. -/
 theorem eq_zero_of_doubleExp_divisor_of_continuous (hu : Continuous u) (ha : 0 < a) (hb : 2 < b)

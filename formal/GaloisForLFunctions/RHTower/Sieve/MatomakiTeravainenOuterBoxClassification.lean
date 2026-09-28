@@ -238,7 +238,8 @@ theorem mtOuterBlockChainBox_isProposition22Piece
     {X Y z0Real epsilon L delta : ℝ} {alpha : ℕ → ℂ}
     (halphaSupport : MTRealScaleSupported
       (mtCoefficientAF alpha) L ((1 + delta) * L))
-    (halphaBounded : MTPolynomialDivisorBounded alpha) (hL : 0 < L)
+    (halphaBounded : MTPolynomialDivisorBounded alpha)
+    (halphaUniform : MTUniformDivisorBounded 0 alpha) (hL : 0 < L)
     (z0 D recStart : ℕ) {recRoot : ℝ} (hdelta : 0 < delta)
     (hz0 : (z0 : ℝ) ≤ mtGeometricLevel delta recStart 0)
     (hroot : mtGeometricLevel delta recStart 0 < recRoot)
@@ -262,9 +263,15 @@ theorem mtOuterBlockChainBox_isProposition22Piece
     (hproduct : Y / 2 <
         mtOuterBlockChainProductScale L delta recStart chain eIndex kIndex ∧
       mtOuterBlockChainProductScale L delta recStart chain eIndex kIndex ≤ 4 * Y) :
-    MTProposition22Piece X Y z0Real recRoot delta epsilon
+    MTUniformProposition22Piece 5 X Y z0Real recRoot delta epsilon
       (mtSignedBlockChainAdicBoxAF alpha data.block chain
         z0 D delta eIndex kIndex) := by
+  obtain ⟨hdisj0, hprime0⟩ := ofMinimalGeometricSchedule_block_disjoint_prime z0 D recStart
+    hdelta hz0 hroot
+  have hdisj : ∀ i j, i ≠ j → Disjoint (data.block i) (data.block j) := by
+    rw [hblocks]; exact hdisj0
+  have hprime : ∀ i, ∀ q ∈ data.block i, q.Prime := by
+    rw [hblocks]; exact hprime0
   let Q : Fin (mtMinimalGeometricDepth delta recStart recRoot hdelta) → ℝ :=
     fun i => mtGeometricLevel delta recStart i.1
   have hQone : ∀ i ∈ chain.toFinset, 1 ≤ Q i := by
@@ -319,8 +326,13 @@ theorem mtOuterBlockChainBox_isProposition22Piece
       dsimp [F, F0, M2]
       rw [smul_mul_assoc]
       rfl
+    have huniform : MTUniformDivisorBounded 5 pieceData.α := by
+      have h0 := mtBlockChainLongAF_uniformDivisorBounded halphaUniform hdisj hprime chain
+        z0 D delta eIndex
+      have h1 := h0.arithmeticFunction_smul (c := (-1 : ℂ) ^ chain.length) (by simp)
+      exact h1.mono (by norm_num)
     rw [← hpiece]
-    exact MTProposition22Piece.typeI pieceData
+    exact MTUniformProposition22Piece.typeI pieceData huniform
   · obtain ⟨I, hIS, hI, hIlower, hIupper⟩ := htypeII
     have hR : I.card ≤ Nat.floor (Real.log recRoot / Real.log z0Real) := by
       rcases hchainBound with hz0RealOne | hchainCard
@@ -384,8 +396,22 @@ theorem mtOuterBlockChainBox_isProposition22Piece
               z0 D delta eIndex kIndex :=
           (mtSignedOuterBox_eq_selected_mul_typeIIBeta
             alpha data chain I hIS z0 D delta eIndex kIndex).symm
+    have hbetaUniform : MTUniformDivisorBounded 5 (fun n => betaAF n) := by
+      have hlong := mtBlockChainLongAF_uniformDivisorBounded halphaUniform hdisj hprime
+        (mtBlockChainRemainder chain I) z0 D delta eIndex
+      have h := (hlong.arithmeticFunction_mul
+        (mtUpperAdicOneAF_uniformDivisorBounded delta kIndex)).arithmeticFunction_smul
+          (c := (-1 : ℂ) ^ chain.length) (by simp)
+      exact (show MTUniformDivisorBounded 3 (fun n => betaAF n) by
+        simpa [betaAF, mtOuterBlockChainTypeIIBetaAF] using h).mono (by norm_num)
     rw [← hpiece]
-    exact MTProposition22Piece.typeII pieceData
+    exact MTUniformProposition22Piece.typeII pieceData
+      (mtMinimalGeometricTypeIIData_primeCoefficient_uniformDivisorBounded
+        z0 D recStart hdelta hz0 hroot I hI hz0RealPos hz0RealLevel hR
+        (fun n => betaAF n)
+        (mtOuterBlockChainTypeIIM2_pos hL hdelta recStart chain I eIndex kIndex)
+        hbetaBounded hIMem hproductII)
+      hbetaUniform
 
 end
 

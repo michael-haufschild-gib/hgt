@@ -30,11 +30,15 @@ theorem sampleMeasure_univ : sampleMeasure univ = 1 := by
 abbrev SampleSpace := Lp ℂ 2 sampleMeasure
 
 /-- The embedding of a function into `L²([1, 2])`; zero if the function is not square integrable. -/
-def toSample (g : ℝ → ℂ) : SampleSpace :=
-  if h : MemLp g 2 sampleMeasure then h.toLp g else 0
+def toSample (g : ℝ → ℂ) : SampleSpace := by
+  classical
+  exact if h : MemLp g 2 sampleMeasure then h.toLp g else 0
 
 theorem toSample_eq {g : ℝ → ℂ} (hg : MemLp g 2 sampleMeasure) : toSample g = hg.toLp g := by
-  rw [toSample, dif_pos hg]
+  simp only [toSample, dif_pos hg]
+
+theorem toSample_of_not {g : ℝ → ℂ} (hg : ¬ MemLp g 2 sampleMeasure) : toSample g = 0 := by
+  simp only [toSample, dif_neg hg]
 
 theorem coeFn_toSample {g : ℝ → ℂ} (hg : MemLp g 2 sampleMeasure) :
     (toSample g : ℝ → ℂ) =ᵐ[sampleMeasure] g := by
@@ -63,6 +67,15 @@ theorem inner_toSample {g k : ℝ → ℂ} (hg : MemLp g 2 sampleMeasure)
   rw [hu1, hu2]
   simp [mul_comm]
 
+/-- The inner product of an arbitrary vector with an embedded function. -/
+theorem inner_toSample_right (ψ : SampleSpace) {k : ℝ → ℂ} (hk : MemLp k 2 sampleMeasure) :
+    (inner ℂ ψ (toSample k) : ℂ) = ∫ u in Icc (1 : ℝ) 2, conj ((ψ : ℝ → ℂ) u) * k u := by
+  rw [MeasureTheory.L2.inner_def]
+  refine integral_congr_ae ?_
+  filter_upwards [coeFn_toSample hk] with u hu
+  rw [hu]
+  simp [mul_comm]
+
 /-- **The norm bound.** -/
 theorem norm_toSample_le {g : ℝ → ℂ} {C : ℝ} (hC : 0 ≤ C)
     (hgb : ∀ u ∈ Icc (1 : ℝ) 2, ‖g u‖ ≤ C) : ‖toSample g‖ ≤ C := by
@@ -73,7 +86,21 @@ theorem norm_toSample_le {g : ℝ → ℂ} {C : ℝ} (hC : 0 ≤ C)
     have := Lp.norm_le_of_ae_bound (p := 2) hC hae
     rw [measureUnivNNReal, sampleMeasure_univ] at this
     simpa using this
-  · rw [toSample, dif_neg hg, norm_zero]; exact hC
+  · rw [toSample_of_not hg, norm_zero]; exact hC
+
+theorem toSample_zero : toSample 0 = 0 := by
+  rw [toSample_eq MemLp.zero]
+  exact MemLp.toLp_zero _
+
+/-- The embedding only sees the values on `[1, 2]`. -/
+theorem toSample_congr {g k : ℝ → ℂ} (h : EqOn g k (Icc (1 : ℝ) 2)) : toSample g = toSample k := by
+  have hae : g =ᵐ[sampleMeasure] k :=
+    (ae_restrict_iff' measurableSet_Icc).mpr (Eventually.of_forall h)
+  by_cases hg : MemLp g 2 sampleMeasure
+  · rw [toSample_eq hg, toSample_eq (hg.ae_eq hae)]
+    exact MemLp.toLp_congr hg (hg.ae_eq hae) hae
+  · have hk : ¬ MemLp k 2 sampleMeasure := fun hk => hg (hk.ae_eq hae.symm)
+    rw [toSample_of_not hg, toSample_of_not hk]
 
 theorem toSample_add {g k : ℝ → ℂ} (hg : MemLp g 2 sampleMeasure)
     (hk : MemLp k 2 sampleMeasure) : toSample (g + k) = toSample g + toSample k := by
@@ -92,11 +119,11 @@ theorem toSample_sum {ι : Type*} (s : Finset ι) {g : ι → ℝ → ℂ}
     toSample (∑ i ∈ s, g i) = ∑ i ∈ s, toSample (g i) := by
   classical
   induction s using Finset.induction_on with
-  | empty => simp [toSample, MemLp.zero, Lp.toLp_zero]
+  | empty => rw [Finset.sum_empty, Finset.sum_empty, toSample_zero]
   | insert a s ha ih =>
     rw [Finset.sum_insert ha, Finset.sum_insert ha,
       toSample_add (hg a (Finset.mem_insert_self a s))
-        (memLp_finset_sum' s fun i hi => hg i (Finset.mem_insert_of_mem hi)),
+        (memLp_finsetSum' s fun i hi => hg i (Finset.mem_insert_of_mem hi)),
       ih fun i hi => hg i (Finset.mem_insert_of_mem hi)]
 
 /-- A.e. equality on `[1, 2]` of functions continuous there is equality on `[1, 2]`. -/
@@ -130,5 +157,14 @@ theorem eqOn_Icc_of_ae_eq {f g : ℝ → ℂ} (hf : ContinuousOn f (Icc (1 : ℝ
     rwa [Measure.restrict_apply' measurableSet_Icc] at this
   have hIvol : 0 < volume I := by rw [hI, Real.volume_Ioo]; simpa using hIpos
   exact absurd (measure_mono hIsub) (by rw [hzero]; exact not_le.mpr hIvol)
+
+/-- Functions continuous on `[1, 2]` with the same embedding agree on `[1, 2]`. -/
+theorem eqOn_of_toSample_eq {f g : ℝ → ℂ} (hf : ContinuousOn f (Icc (1 : ℝ) 2))
+    (hg : ContinuousOn g (Icc (1 : ℝ) 2)) (h : toSample f = toSample g) :
+    EqOn f g (Icc (1 : ℝ) 2) := by
+  refine eqOn_Icc_of_ae_eq hf hg ?_
+  filter_upwards [coeFn_toSample (memLp_sample_of_continuousOn hf),
+    coeFn_toSample (memLp_sample_of_continuousOn hg)] with u hu1 hu2
+  rw [← hu1, ← hu2, h]
 
 end RHTower

@@ -139,6 +139,11 @@ instance realSphereSimplyConnectedSpace (n : ℕ) :
   rw [← Module.finrank_eq_rank', hfin]
   exact_mod_cast (show 1 < n + 2 by omega)
 
+/-- Stereographic manifold charts give local path connectedness of real spheres. -/
+instance realSphereLocallyPathConnectedSpace (n : ℕ) :
+    LocallyPathConnectedSpace (sphere (0 : EuclideanSpace ℝ (Fin (n + 3))) 1) :=
+  ChartedSpace.locallyPathConnectedSpace (EuclideanSpace ℝ (Fin (n + 2))) _
+
 /-- Any two paths on a real sphere of dimension at least two are homotopic
 with fixed endpoints. -/
 theorem realSphere_paths_homotopic (n : ℕ)

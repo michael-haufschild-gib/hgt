@@ -90,7 +90,7 @@ theorem mtPaperAlignedSeparatedPairBox_isProposition22Piece_exactThreshold
           delta recStart i1 i2 chain eIndex kIndex ∧
       mtSeparatedPairBoxProductScale (mtPaperAlignedEndpoint outerStart Douter delta)
           delta recStart i1 i2 chain eIndex kIndex ≤ 4 * Y) :
-    MTProposition22Piece X Y z0Real recRoot delta epsilon
+    MTUniformProposition22Piece 5 X Y z0Real recRoot delta epsilon
       (mtSignedBlockChainAdicBoxAF
         (mtHarmanPairCellCoefficient
           (mtHarmanSourceBlock (mtPaperAlignedEndpoint outerStart Douter delta)
@@ -154,7 +154,7 @@ theorem mtPaperAlignedSeparatedTripleBox_isProposition22Piece_exactThreshold
           delta recStart i1 i2 i3 chain eIndex kIndex ∧
       mtSeparatedTripleBoxProductScale (mtPaperAlignedEndpoint outerStart Douter delta)
           delta recStart i1 i2 i3 chain eIndex kIndex ≤ 4 * Y) :
-    MTProposition22Piece X Y z0Real recRoot delta epsilon
+    MTUniformProposition22Piece 5 X Y z0Real recRoot delta epsilon
       (mtSignedBlockChainAdicBoxAF
         (mtHarmanTripleCellCoefficient
           (mtHarmanSourceBlock (mtPaperAlignedEndpoint outerStart Douter delta)

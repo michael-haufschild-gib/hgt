@@ -426,6 +426,7 @@ theorem rotatedCompletion_firstColumn (a0 : α) (R : Matrix.unitaryGroup α ℂ)
       simpa using congrFun hy j
     rw [hy', unitarySphereAction_neg, ← unitaryFirstColumn_eq_action]
 
+omit [DecidableEq α] in
 theorem unitSphere_compl_singleton_contractible (v : UnitSphere α) :
     ContractibleSpace ({v}ᶜ : Set (UnitSphere α)) :=
   sphereComplementPoint_contractible v
