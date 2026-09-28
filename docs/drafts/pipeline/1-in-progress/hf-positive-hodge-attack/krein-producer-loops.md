@@ -1720,3 +1720,32 @@ Next conjectures to test:
   - A kernel vector `f*` is a flat (degenerate) Minkowski solution. Equivalently, every positive-definite extension is supported on the zeros of `f̂*` (exponential type `a*`): a Gauss quadrature of ζ's Weil functional on `PW_{2a*}`.
   - Density alone does not exclude it: nodes of linear density with masses growing like `log t` can reproduce the arch singularity.
   - This is the Krein-degeneracy question in polytope form. The next step is to exclude it using the arithmetic (prime atoms at `log n`).
+
+### L67 — Beurling rigidity: the positive completion of ζ's archimedean place has no nearby deformation. PROVED [Lean]
+- **Conjecture (from L66).** In the Minkowski/Alexandrov scheme, openness would need Weil-positive completions near Λ with prime atoms moved or added at arbitrary real positions (Beurling primes).
+  - Claim: none exist.
+  - For every finite signed measure `μ₁ − μ₂` carried by `[ε, ∞)`, Weil positivity of `S_Λ − C_{μ₁} + C_{μ₂}` forces `μ₁ = μ₂`.
+- **Proof [Lean, `RHTower.WeilPositivityBeurlingPerturbationRigidity`].**
+  1. Concentration for any bounded continuous perturbation symbol, using spread radical tests.
+  2. Prime-blind extraction: probes supported in `[−ε/4, ε/4]` see no atoms, so `P ≤ 0` ⇒ `P ≡ 0`.
+  3. Fourier uniqueness: the symmetrization `μ + (−)_*μ` has characteristic function equal to the cosine symbol (`Measure.ext_of_charFun`).
+- **Theorems.**
+  - `vonMangoldt_sub_measure_weilPositive_eq`.
+  - `vonMangoldt_move_atom_not_weilPositive`: moving one atom anywhere breaks positivity.
+  - Axioms: standard only.
+- **Meaning.** Alexandrov's continuity step is unavailable at ζ, even among generalized primes.
+  - The Minkowski route's continuity parameter must therefore be the level `a` (finite-level interiority), which reduces to L7/L10.
+  - This strengthens L64 (fixed positions, summable weights) to arbitrary positions and continuous mass, with a cleaner proof (Fourier uniqueness instead of resonators).
+
+### L68 — Minkowski split: existence reduces to finite levels. PROVED [Lean]
+- **Theorem [Lean, `RHTower.WeilPositivityFiniteLevelExistence`].**
+  - `exists_weilPositive_iff_forall_level`: a Weil-positive weight system exists ⟺ every finite level `A` admits a system Weil-positive up to `A`.
+  - Level-wise box `|lam(n)| ≤ √n(log n + C₀)` (via the refactored single-level `weil_multiplicativeToeplitz_bound_at`); Tychonoff; affine energies.
+  - Paper remark (not in Lean, since it is conditional on the open uniqueness conjecture): if W ⊆ {Λ}, then RH-positivity of Λ ⟺ finite-level existence.
+  - Axioms: standard only.
+- **Meaning.** This is exactly Minkowski's existence/uniqueness structure for ζ.
+  - Existence: a finite-level Krein problem with free prime weights.
+  - Uniqueness: a Hamburger-type rigidity for positive Fourier pairs. Known along every summable, constant and finite-measure perturbation (L61, L63, L64, L67).
+- **Open.** Both halves.
+  - Existence at level `A` with free weights: is the feasible region `W_A` fat at finite `A`?
+  - Uniqueness for non-finite perturbations.

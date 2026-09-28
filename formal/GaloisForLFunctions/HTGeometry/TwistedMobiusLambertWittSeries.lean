@@ -367,6 +367,240 @@ theorem twistedMobiusWitt_zero_entire :
     fun _ hz => twistedMobiusWitt_zero hz⟩
 
 
+/-! ## Positive grade: Cesàro and Abel boundary index -/
+
+/-- Divisor-sum swap: `∑_{m ≤ N} K_a(m) = ∑_{d ≤ N} μ(d) d^{-a} ⌊N/d⌋`. -/
+theorem sum_Ioc_twistedMobiusWittCoefficient (a : ℝ) (N : ℕ) :
+    ∑ m ∈ Finset.Ioc 0 N, twistedMobiusWittCoefficient a m =
+      ∑ d ∈ Finset.Ioc 0 N,
+        (ArithmeticFunction.moebius d : ℝ) * (d : ℝ) ^ (-a) * ((N / d : ℕ) : ℝ) := by
+  simp only [twistedMobiusWittCoefficient]
+  have h : ∀ m ∈ Finset.Ioc 0 N,
+      ∑ d ∈ m.divisors, (ArithmeticFunction.moebius d : ℝ) * (d : ℝ) ^ (-a) =
+        ∑ d ∈ Finset.Ioc 0 N,
+          if d ∣ m then (ArithmeticFunction.moebius d : ℝ) * (d : ℝ) ^ (-a) else 0 := by
+    intro m hm
+    rw [← Finset.sum_filter]
+    apply Finset.sum_congr _ (fun _ _ => rfl)
+    ext d
+    rw [Finset.mem_Ioc] at hm
+    simp only [Nat.mem_divisors, Finset.mem_filter, Finset.mem_Ioc]
+    constructor
+    · rintro ⟨hd, -⟩
+      exact ⟨⟨Nat.pos_of_dvd_of_pos hd hm.1, (Nat.le_of_dvd hm.1 hd).trans hm.2⟩, hd⟩
+    · rintro ⟨-, hd⟩
+      exact ⟨hd, by omega⟩
+  rw [Finset.sum_congr rfl h, Finset.sum_comm]
+  refine Finset.sum_congr rfl fun d _ => ?_
+  rw [← Finset.sum_filter, Finset.sum_const, Nat.Ioc_filter_dvd_card_eq_div, nsmul_eq_mul,
+    mul_comm]
+
+theorem rpow_neg_mul_inv_eq {a : ℝ} {d : ℕ} (hd : 0 < d) :
+    (d : ℝ) ^ (-a) * (d : ℝ)⁻¹ = (d : ℝ) ^ (-(1 + a)) := by
+  have hd' : (0 : ℝ) < d := by exact_mod_cast hd
+  rw [Real.rpow_neg hd'.le, Real.rpow_neg hd'.le, Real.rpow_add hd', Real.rpow_one, mul_inv,
+    mul_comm]
+
+/-- **Cesàro mean.**  For `a > 0`, `N⁻¹ ∑_{m ≤ N} K_a(m) → ∑ μ(d) d^{-(1+a)}`. -/
+theorem tendsto_twistedMobiusWittCoefficient_cesaro {a : ℝ} (ha : 0 < a) :
+    Tendsto (fun N : ℕ => (∑ m ∈ Finset.Ioc 0 N, twistedMobiusWittCoefficient a m) / N) atTop
+      (𝓝 (twistedMobiusWittBoundaryIndex a)) := by
+  set g : ℕ → ℕ → ℝ := fun N d => if d ∈ Finset.Ioc 0 N then
+    (ArithmeticFunction.moebius d : ℝ) * (d : ℝ) ^ (-a) * ((N / d : ℕ) : ℝ) / N else 0 with hg
+  have hrepr : ∀ N : ℕ,
+      (∑ m ∈ Finset.Ioc 0 N, twistedMobiusWittCoefficient a m) / N = ∑' d, g N d := by
+    intro N
+    rw [tsum_eq_sum (s := Finset.Ioc 0 N) (fun d hd => if_neg hd),
+      sum_Ioc_twistedMobiusWittCoefficient, Finset.sum_div]
+    exact Finset.sum_congr rfl fun d hd => (if_pos hd).symm
+  simp_rw [hrepr]
+  refine tendsto_tsum_of_dominated_convergence (bound := fun d : ℕ => (d : ℝ) ^ (-(1 + a)))
+    (Real.summable_nat_rpow.mpr (by linarith)) (fun d => ?_) (Eventually.of_forall fun N d => ?_)
+  · rcases Nat.eq_zero_or_pos d with rfl | hd
+    · simp [hg]
+    · have hlim : Tendsto (fun N : ℕ => ((N / d : ℕ) : ℝ) / N) atTop (𝓝 ((d : ℝ)⁻¹)) := by
+        have h := (tendsto_nat_floor_mul_div_atTop (a := (d : ℝ)⁻¹) (by positivity)).comp
+          tendsto_natCast_atTop_atTop
+        refine h.congr fun N => ?_
+        simp only [Function.comp_apply]
+        rw [inv_mul_eq_div, Nat.floor_div_eq_div]
+      have h2 := hlim.const_mul ((ArithmeticFunction.moebius d : ℝ) * (d : ℝ) ^ (-a))
+      rw [mul_assoc, rpow_neg_mul_inv_eq hd] at h2
+      refine h2.congr' ?_
+      filter_upwards [eventually_ge_atTop d] with N hN
+      rw [hg]
+      dsimp only
+      rw [if_pos (Finset.mem_Ioc.mpr ⟨hd, hN⟩)]
+      ring
+  · have hb0 : 0 ≤ (d : ℝ) ^ (-(1 + a)) := Real.rpow_nonneg (Nat.cast_nonneg d) _
+    rw [hg]
+    dsimp only
+    split_ifs with hd
+    · rw [Finset.mem_Ioc] at hd
+      have hN : (0 : ℝ) < N := by exact_mod_cast (hd.1.trans_le hd.2)
+      have hd' : (0 : ℝ) < d := by exact_mod_cast hd.1
+      have hμ : |(ArithmeticFunction.moebius d : ℝ)| ≤ 1 := by
+        have := ArithmeticFunction.abs_moebius_le_one (n := d)
+        exact_mod_cast this
+      have hq : ((N / d : ℕ) : ℝ) / N ≤ (d : ℝ)⁻¹ := by
+        rw [div_le_iff₀ hN]
+        calc ((N / d : ℕ) : ℝ) ≤ (N : ℝ) / d := Nat.cast_div_le
+          _ = (d : ℝ)⁻¹ * N := by ring
+      have hq0 : 0 ≤ ((N / d : ℕ) : ℝ) / N := by positivity
+      rw [Real.norm_eq_abs, mul_div_assoc, abs_mul, abs_mul,
+        abs_of_nonneg (Real.rpow_nonneg hd'.le _), abs_of_nonneg hq0,
+        ← rpow_neg_mul_inv_eq hd.1]
+      calc |(ArithmeticFunction.moebius d : ℝ)| * (d : ℝ) ^ (-a) * (((N / d : ℕ) : ℝ) / N)
+          ≤ 1 * (d : ℝ) ^ (-a) * (d : ℝ)⁻¹ := by
+            gcongr
+        _ = _ := by ring
+    · simpa using hb0
+
+/-- The Abel kernel `(1 - r) rⁿ / (1 - rⁿ) = rⁿ / ∑_{k<n} rᵏ`. -/
+theorem one_sub_mul_pow_div_one_sub_pow {r : ℝ} (hr : r ≠ 1) (n : ℕ) :
+    (1 - r) * (r ^ n / (1 - r ^ n)) = r ^ n / ∑ k ∈ Finset.range n, r ^ k := by
+  have h := geom_sum_mul r n
+  have h1 : (1 - r ^ n) = (1 - r) * ∑ k ∈ Finset.range n, r ^ k := by linarith
+  have hr' : 1 - r ≠ 0 := sub_ne_zero.mpr (Ne.symm hr)
+  rw [h1, mul_div_assoc']
+  rw [mul_div_mul_left _ _ hr']
+
+/-- **Abel limit.**  For `a > 0`, `(1 - r) M_a(r) → ∑ μ(n) n^{-(1+a)}` as `r → 1⁻`. -/
+theorem tendsto_one_sub_mul_twistedMobiusLambert {a : ℝ} (ha : 0 < a) :
+    Tendsto (fun r : ℝ => (1 - (r : ℂ)) * twistedMobiusLambert a r) (𝓝[<] 1)
+      (𝓝 (twistedMobiusWittBoundaryIndex a : ℂ)) := by
+  set h : ℝ → ℕ → ℝ := fun r n =>
+    (ArithmeticFunction.moebius n : ℝ) * (n : ℝ) ^ (-a) * ((1 - r) * (r ^ n / (1 - r ^ n))) with hh
+  have hreal : Tendsto (fun r : ℝ => ∑' n, h r n) (𝓝[<] 1)
+      (𝓝 (twistedMobiusWittBoundaryIndex a)) := by
+    refine tendsto_tsum_of_dominated_convergence (bound := fun n : ℕ => (n : ℝ) ^ (-(1 + a)))
+      (Real.summable_nat_rpow.mpr (by linarith)) (fun n => ?_) ?_
+    · rcases Nat.eq_zero_or_pos n with rfl | hn
+      · simp [hh]
+      · have hsum_pos : (0 : ℝ) < ∑ k ∈ Finset.range n, (1 : ℝ) ^ k := by
+          simp only [one_pow, Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
+          exact_mod_cast hn
+        have hcont : ContinuousAt (fun r : ℝ => r ^ n / ∑ k ∈ Finset.range n, r ^ k) 1 :=
+          (continuousAt_id.pow n).div (continuous_finsetSum _ fun k _ =>
+            continuous_pow k).continuousAt hsum_pos.ne'
+        have hval : (1 : ℝ) ^ n / ∑ k ∈ Finset.range n, (1 : ℝ) ^ k = (n : ℝ)⁻¹ := by
+          simp
+        have hlim : Tendsto (fun r : ℝ => (1 - r) * (r ^ n / (1 - r ^ n))) (𝓝[<] 1)
+            (𝓝 ((n : ℝ)⁻¹)) := by
+          rw [← hval]
+          refine (hcont.tendsto.mono_left nhdsWithin_le_nhds).congr' ?_
+          filter_upwards [self_mem_nhdsWithin] with r hr
+          exact (one_sub_mul_pow_div_one_sub_pow (ne_of_lt hr) n).symm
+        have h2 := hlim.const_mul ((ArithmeticFunction.moebius n : ℝ) * (n : ℝ) ^ (-a))
+        rw [mul_assoc, rpow_neg_mul_inv_eq hn] at h2
+        exact h2
+    · filter_upwards [Ioo_mem_nhdsLT (show (0 : ℝ) < 1 by norm_num)] with r hr n
+      rcases Nat.eq_zero_or_pos n with rfl | hn
+      · have := Real.rpow_nonneg (le_refl (0 : ℝ)) (-(1 + a))
+        simpa [hh] using this
+      · have hr0 := hr.1
+        have hsum : (n : ℝ) * r ^ n ≤ ∑ k ∈ Finset.range n, r ^ k := by
+          have := Finset.card_nsmul_le_sum (Finset.range n) (fun k => r ^ k) (r ^ n)
+            (fun k hk => pow_le_pow_of_le_one hr0.le hr.2.le (Finset.mem_range.mp hk).le)
+          simpa using this
+        have hkernel0 : 0 ≤ r ^ n / ∑ k ∈ Finset.range n, r ^ k := by
+          apply div_nonneg (by positivity)
+          exact Finset.sum_nonneg fun k _ => by positivity
+        have hkernel : r ^ n / ∑ k ∈ Finset.range n, r ^ k ≤ (n : ℝ)⁻¹ := by
+          have hn' : (0 : ℝ) < n := by exact_mod_cast hn
+          have hrn : 0 < r ^ n := by positivity
+          rw [div_le_iff₀ (lt_of_lt_of_le (by positivity) hsum)]
+          calc r ^ n = (n : ℝ)⁻¹ * ((n : ℝ) * r ^ n) := by field_simp
+            _ ≤ (n : ℝ)⁻¹ * ∑ k ∈ Finset.range n, r ^ k := by gcongr
+        have hμ : |(ArithmeticFunction.moebius n : ℝ)| ≤ 1 := by
+          have := ArithmeticFunction.abs_moebius_le_one (n := n)
+          exact_mod_cast this
+        rw [hh]
+        dsimp only
+        rw [one_sub_mul_pow_div_one_sub_pow (ne_of_lt hr.2) n, Real.norm_eq_abs, abs_mul,
+          abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) _),
+          abs_of_nonneg hkernel0, ← rpow_neg_mul_inv_eq hn]
+        calc |(ArithmeticFunction.moebius n : ℝ)| * (n : ℝ) ^ (-a) *
+              (r ^ n / ∑ k ∈ Finset.range n, r ^ k)
+            ≤ 1 * (n : ℝ) ^ (-a) * (n : ℝ)⁻¹ := by gcongr
+          _ = _ := by ring
+  have hcast := (Complex.continuous_ofReal.tendsto _).comp hreal
+  refine hcast.congr fun r => ?_
+  simp only [Function.comp_apply, hh]
+  rw [Complex.ofReal_tsum, twistedMobiusLambert, ← tsum_mul_left]
+  refine tsum_congr fun n => ?_
+  simp only [twistedMobiusWeight]
+  push_cast
+  ring
+
+/-- **Theorem, part 3.**  For `a > 0`: positive Euler-product coefficients, and the Abel limit
+`(1 - r) M_a(r) → 1/ζ(1 + a) ∈ (0, 1)`. -/
+theorem twistedMobiusLambert_positive_grade_law {a : ℝ} (ha : 0 < a) :
+    (∀ m : ℕ, m ≠ 0 → twistedMobiusWittCoefficient a m =
+        ∏ p ∈ m.primeFactors, (1 - (p : ℝ) ^ (-a)) ∧ 0 < twistedMobiusWittCoefficient a m) ∧
+      Tendsto (fun r : ℝ => (1 - (r : ℂ)) * twistedMobiusLambert a r) (𝓝[<] 1)
+        (𝓝 (riemannZeta (((1 + a : ℝ) : ℂ)))⁻¹) ∧
+      twistedMobiusWittBoundaryIndex a ∈ Set.Ioo (0 : ℝ) 1 := by
+  refine ⟨fun m hm => ⟨twistedMobiusWittCoefficient_eq_primeProduct a hm,
+    twistedMobiusWittCoefficient_pos ha hm⟩, ?_, twistedMobiusWittBoundaryIndex_mem_Ioo ha⟩
+  rw [← ofReal_twistedMobiusWittBoundaryIndex_eq_inv_riemannZeta ha]
+  exact tendsto_one_sub_mul_twistedMobiusLambert ha
+
+/-- The Abel limit read on the coefficient series: `(1 - r) ∑ K_a(m) rᵐ → c_a`. -/
+theorem tendsto_one_sub_mul_tsum_twistedMobiusWittCoefficient {a : ℝ} (ha : 0 < a) :
+    Tendsto (fun r : ℝ => (1 - (r : ℂ)) *
+        ∑' m : ℕ, (twistedMobiusWittCoefficient a m : ℂ) * (r : ℂ) ^ m) (𝓝[<] 1)
+      (𝓝 (twistedMobiusWittBoundaryIndex a : ℂ)) := by
+  refine (tendsto_one_sub_mul_twistedMobiusLambert ha).congr' ?_
+  filter_upwards [Ioo_mem_nhdsLT (show (-1 : ℝ) < 1 by norm_num)] with r hr
+  have hr' : ‖(r : ℂ)‖ < 1 := by
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_lt]; exact ⟨hr.1, hr.2⟩
+  rw [twistedMobiusLambert_eq_tsum_coefficient ha.le hr']
+
+/-! ## No meromorphic continuation through the cofinal point -/
+
+/-- **Theorem, part 4.**  For `a > 0`, no function meromorphic at `1` agrees with `W_a` on the
+part of a neighbourhood of `1` inside the unit disc. -/
+theorem twistedMobiusWitt_no_meromorphic_continuation {a : ℝ} (ha : 0 < a) :
+    ¬ ∃ W : ℂ → ℂ, MeromorphicAt W 1 ∧
+      ∃ U ∈ 𝓝 (1 : ℂ), ∀ z ∈ U, ‖z‖ < 1 → W z = twistedMobiusWitt a z := by
+  rintro ⟨W, hW, U, hU, hWU⟩
+  obtain ⟨V, hVU, hVo, h1V⟩ := mem_nhds_iff.mp hU
+  have hreal : ∀ᶠ r : ℝ in 𝓝[<] 1, (r : ℂ) ∈ V ∧ r ∈ Set.Ioo 0 1 := by
+    have h1 : ∀ᶠ r : ℝ in 𝓝 1, (r : ℂ) ∈ V :=
+      Complex.continuous_ofReal.continuousAt.preimage_mem_nhds (by simpa using hVo.mem_nhds h1V)
+    have h1' : ∀ᶠ r : ℝ in 𝓝[<] 1, (r : ℂ) ∈ V := nhdsWithin_le_nhds h1
+    exact h1'.and (Ioo_mem_nhdsLT (by norm_num))
+  have hloc : ∀ᶠ r : ℝ in 𝓝[<] 1, W =ᶠ[𝓝 (r : ℂ)] twistedMobiusWitt a := by
+    filter_upwards [hreal] with r hr
+    have hopen : IsOpen (V ∩ Metric.ball (0 : ℂ) 1) := hVo.inter Metric.isOpen_ball
+    have hmem : (r : ℂ) ∈ V ∩ Metric.ball (0 : ℂ) 1 := by
+      refine ⟨hr.1, ?_⟩
+      rw [Metric.mem_ball, dist_zero_right, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_pos hr.2.1]
+      exact hr.2.2
+    filter_upwards [hopen.mem_nhds hmem] with z hz
+    have hz1 : ‖z‖ < 1 := by simpa using hz.2
+    exact hWU z (hVU hz.1) hz1
+  have hne : ∀ᶠ z in 𝓝[≠] (1 : ℂ), W z ≠ 0 := by
+    rcases hW.eventually_eq_zero_or_eventually_ne_zero with h0 | h0
+    · exfalso
+      have h0r := tendsto_ofReal_nhdsWithin_lt_one_nhdsNE.eventually h0
+      obtain ⟨r, hr0, hrW⟩ := (h0r.and hloc).exists
+      rw [hrW.eq_of_nhds] at hr0
+      exact twistedMobiusWitt_ne_zero a r hr0
+    · exact h0
+  have hlim : Tendsto (fun r : ℝ => (1 - (r : ℂ)) * (-(r : ℂ) * logDeriv W (r : ℂ)))
+      (𝓝[<] 1) (𝓝 ((twistedMobiusWittBoundaryIndex a : ℝ) : ℂ)) := by
+    refine (tendsto_one_sub_mul_twistedMobiusLambert ha).congr' ?_
+    filter_upwards [hloc, hreal] with r hr hr'
+    have hr1 : ‖(r : ℂ)‖ < 1 := by
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hr'.2.1]; exact hr'.2.2
+    rw [twistedMobiusLambert_eq_neg_mul_logDeriv ha.le hr1, logDeriv_apply, logDeriv_apply,
+      hr.deriv_eq, hr.eq_of_nhds]
+  exact no_meromorphic_completion_of_twistedMobiusWittBoundaryIndex ha ⟨W, hW, hne, hlim⟩
+
+
 end
 
 end GaloisForLFunctions.HTGeometry

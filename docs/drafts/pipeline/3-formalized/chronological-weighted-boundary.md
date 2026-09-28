@@ -35,7 +35,9 @@ unproved source estimates.
 Audit artifacts: `/tmp/chronological_boundary_manifest.json`,
 `/tmp/chronological_boundary_axioms.txt`, `/tmp/chronological_boundary_lint.txt`.
 
-The [fixed-tail theorem](../2-fully-proven/chronological-finite-tail-obstruction.md)
-still needs heat-transform separation, discrete projection convergence,
-integer-scale transfer and the actual residual observation inequality in Lean.
-No novelty or completed RH-proof claim is made.
+The [fixed-tail theorem](chronological-finite-tail-obstruction.md) is now
+Lean-complete. It uses the quantitative form added to this module:
+`chronological_mellin_abel_bound` (a source at most `M t^(-1/2)` has Abel
+boundary values at most `M`) and `chronologicalMobiusWeightedSource_norm_mellin_le`
+(`|M(w)(ρ)| ≤ M |ζ'(ρ)|` at every critical zero); the little-o theorem above is
+its `M → 0` case. No novelty or completed RH-proof claim is made.

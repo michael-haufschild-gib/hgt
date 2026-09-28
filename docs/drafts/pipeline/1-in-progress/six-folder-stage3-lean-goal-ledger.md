@@ -18,7 +18,8 @@ Per-folder detail stays in the folder ledgers (`_STAGE3-LEDGER.md`, `_SWEEP-LEDG
 | 03 | projective-horizon-hankel-secant-stratification | normality r≥2, rational singularities | TODO |
 | 04 | gadc / noisy-binary-tree / exact-rational-rg | Ritt implication, weighted-homogeneous residual | TODO |
 | 01 | six Böttcher cards | Brolin/cylinder monodromy; E–vS; q62 hole-free tip gap | TODO |
-| chrono | finite-tail, growing-moment, exp-rate, uniform-spectrum | L² projection/observation; source bounds; weighted potential theory | TODO |
+| chrono | finite-tail-obstruction | — | **DONE → stage 3** (12 RHTower modules + quantitative weighted boundary) |
+| chrono | growing-moment-source, recovery-exponential-rate, recovery-uniform-spectrum | source bounds; weighted potential theory (see chronological sweep log) | TODO |
 | 11 | verified-height-one-zero-turing-extension | needs 10^13-zero certified computation | BLOCKED (rules) |
 
 ## AP-periodicity route (no Schwartz, no normalization)
@@ -36,3 +37,7 @@ Per-folder detail stays in the folder ledgers (`_STAGE3-LEDGER.md`, `_SWEEP-LEDG
 - 2026-09-28: cascade card promoted; entire Briot–Bouquet proved (CasoratiWeierstrassAtInfinity,
   FirstOrderRepeatedRegularValue, AutonomousFirstOrderEntirePeriod/Classification, LaurentExpGrowth,
   AutonomousFirstOrderCascadeUnitCost).
+- 2026-09-28: finite-tail card promoted. Chain: TailInjectivity, TailRiemann, TailProjectionPerturbation,
+  TailSampleSpace, TailKernelLipschitz, TailHeatVectors, TailNormals, WeightedSourceFloor, TailObservation,
+  TailWeight, FiniteTailObstruction, LeastNormMomentRepair; WeightedBoundary gained the quantitative
+  bound |M(w)(ρ)| ≤ M|ζ'(ρ)|, which gives main theorem and survivor in one route.

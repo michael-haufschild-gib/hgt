@@ -168,8 +168,8 @@ Lean formalization is pending, and the source family is not retired.
 
 The construction supplies coefficient control, exact arithmetic prefix,
 charge cancellation and increasing jet order simultaneously. Their conjunction
-still has no proved full-norm limit. Fixed-m failure is proved on paper in
-[the finite-tail boundary](chronological-finite-tail-obstruction.md).
+still has no proved full-norm limit. Fixed-m failure is proved, and Lean-complete, in
+[the finite-tail boundary](../../3-formalized/chronological-finite-tail-obstruction.md).
 
 The diagonal argument gives no quantitative lower bound for m_N. It cannot
 be substituted into a remainder estimate requiring m_N≥c log N. Even such

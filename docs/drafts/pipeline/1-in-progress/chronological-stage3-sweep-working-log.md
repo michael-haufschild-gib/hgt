@@ -413,3 +413,43 @@ Remaining for this card: the Hilbert-space layer (`L²([1,2])`, the finite-dimen
 "a.e. equal continuous functions on `[1,2]` are equal"), the `O(1/N)` Riemann/Gram estimate, the
 integer-scale transfer, the observation inequality (A), and the assembly with
 `ChronologicalWeightedBoundary`.
+
+## Card `chronological-finite-tail-obstruction` CLOSED and promoted to stage 3 (2026-09-28)
+
+Twelve further modules (`ChronologicalTail{Injectivity,Riemann,ProjectionPerturbation,SampleSpace,
+KernelLipschitz,HeatVectors,Normals,Observation,Weight}`, `ChronologicalWeightedSourceFloor`,
+`ChronologicalFiniteTailObstruction`, `ChronologicalLeastNormMomentRepair`), all wired and audited.
+Route change: `ChronologicalWeightedBoundary` now proves the quantitative boundary
+`|M(w)(ρ)| ≤ M|ζ'(ρ)|` for sources `≤ M t^(-1/2)`; the main theorem, `d ≤ L|ζ'(ρ)|` and the
+multiple-zero alternative all follow from it, so no separate little-o transfer is needed.
+The card's fixed-`m` moment-repair remark is proved for every exponent set and right-hand side
+(`leastNormMomentRepair_obstruction`; least norm ⇒ row span via `mem_span_of_iInf_ker_le_ker`).
+
+### Remaining cards in `2-fully-proven/chronological` (3)
+
+| Card | Remaining obstacle |
+|---|---|
+| `chronological-growing-moment-source` | whole construction (Gram matrix, PNT transfer, bounds (B)/(C), log window, remainder, signed projection) |
+| `chronological-recovery-exponential-rate` | weighted potential theory |
+| `chronological-recovery-uniform-spectrum` | needs the rate constant from the exponential-rate card |
+
+## Card `chronological-growing-moment-source`: asset inventory and module plan (2026-09-28)
+
+Corpus assets (reuse, do not rebuild): `twistedMobiusLambert_zero` (Σ μ(n)zⁿ/(1−zⁿ) = z, HTGeometry),
+`chronologicalHeatError_charge_decomposition` (r = charge/t + e^{−t} − Σ a_k/(e^{kt}−1)),
+`tendsto_norm_sum_moebius_div` (Mertens o(N)), `deningerHarmonicPartial_tendsto` +
+`deningerHarmonicLimit_eq_zero` (Σ μ(k)/k → 0), `boseKernelE` (analytic on |Im z| < 2π),
+`norm_tailSampleSum_sub_integral_le` (θ = 1/2 gives the tail M < k ≤ N), mathlib `cot_series_rep`,
+`riemannZeta_two_mul_nat`, `sum_bernoulli`, `sum_mul_eq_sub_integral_mul` (Abel summation).
+
+Module plan:
+1. `ChronologicalZeroChargeTailBounds` — bounds (B), (C), L²([δ,∞)) and uniform decay, log window
+   8/log N, equivalence of full L² convergence with N⁻¹∫₀^{log N} r(u/N)² → 0.
+2. `ChronologicalBoseKernelJets` — iteratedDeriv k boseKernelE 0 = −B_{k+1}/(k+1) (Leibniz on
+   z·E(z)·(e^z−1) = e^z−1−z + `sum_bernoulli` recursion); jets of the analytic residual.
+3. `ChronologicalHalfTailGram` — Gram coercivity on [1/2,1] for exponents {−1,0,1,3,…,2m−1}.
+4. `ChronologicalMobiusHalfPrefixMoments` — b_N/N → 0 (Abel monotone-weight bound + PNT).
+5. `ChronologicalGrowingMomentSource` — fixed-m eventual admissibility, diagonal m_N → ∞, capstone.
+6. `ChronologicalBoseCothRemainder` — h = 1/2 − 2zΣ1/(z²+(2πn)²), R_m and |R_m| ≤ 4z^{2m+1}/(2π)^{2m+2},
+   cosh/sinh decomposition, local L² bound on [0,1/N), window majorant.
+7. `ChronologicalGrowingSignedProjection` — identities (D) and (E).

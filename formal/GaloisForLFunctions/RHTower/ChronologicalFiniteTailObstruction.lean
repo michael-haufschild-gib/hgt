@@ -79,7 +79,7 @@ def tailSpan (θ : ℝ) (V : Submodule ℝ (ℝ → ℝ)) : Submodule ℂ Sample
 
 /-- The fixed-tail defect `d = dist(K_ρ, W)`: the part of the critical profile the tail space
 cannot absorb. -/
-def tailDefect (θ : ℝ) (V : Submodule ℝ (ℝ → ℝ)) (ρ : ℂ) : ℝ :=
+def fixedTailDefect (θ : ℝ) (V : Submodule ℝ (ℝ → ℝ)) (ρ : ℂ) : ℝ :=
   Metric.infDist (critVec θ ρ) (tailSpan θ V : Set SampleSpace)
 
 theorem tailSpan_eq {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1) {V : Submodule ℝ (ℝ → ℝ)} {l : ℕ}
@@ -112,23 +112,23 @@ at the integer scale `1/N` is controlled by the actual residual of every tail in
 theorem exists_observation_inequality {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1)
     (V : Submodule ℝ (ℝ → ℝ)) [FiniteDimensional ℝ V]
     (hV : ∀ f ∈ V, ∃ K, LipschitzOnWith K f (Icc θ 1)) {ρ : ℂ} (hρ : ρ.re = 1 / 2) :
-    ∃ ψ : SampleSpace, ‖ψ‖ = 1 ∧ mellin (sampleWeight θ ψ) ρ = (tailDefect θ V ρ : ℂ) ∧
-      0 < tailDefect θ V ρ ∧ ∃ C : ℝ, 0 ≤ C ∧ ∃ N₁ : ℕ, 0 < N₁ ∧ ∀ N : ℕ, N₁ ≤ N → ∀ f ∈ V,
-        ‖chronologicalMobiusWeightedSource (sampleWeight θ ψ) (1 / N)‖ ≤
+    ∃ ψ : SampleSpace, ‖ψ‖ = 1 ∧ mellin (observedWeight θ ψ) ρ = (fixedTailDefect θ V ρ : ℂ) ∧
+      0 < fixedTailDefect θ V ρ ∧ ∃ C : ℝ, 0 ≤ C ∧ ∃ N₁ : ℕ, 0 < N₁ ∧ ∀ N : ℕ, N₁ ≤ N → ∀ f ∈ V,
+        ‖chronologicalMobiusWeightedSource (observedWeight θ ψ) (1 / N)‖ ≤
           Real.sqrt N * chronologicalL2Norm (chronologicalHeatError (prefixTailArray θ f N) N) + C := by
   obtain ⟨l, g, hgV, hind, hspan⟩ := exists_restriction_basis V (Icc θ 1)
   choose K hK using fun i => hV (g i) (hgV i)
   have hcont : ∀ i, ContinuousOn (g i) (Icc θ 1) := fun i => (hK i).continuousOn
   obtain ⟨ψ, hψ1, -, hψK, hdpos, C, N₁, hN₁, hψN⟩ := exists_tail_normals hθ0 hθ1 hρ hK hind
-  have hd : tailDefect θ V ρ = Metric.infDist (critVec θ ρ)
+  have hd : fixedTailDefect θ V ρ = Metric.infDist (critVec θ ρ)
       (Submodule.span ℂ (Set.range fun i => tailVec θ (g i)) : Set SampleSpace) := by
-    rw [tailDefect, tailSpan_eq hθ0 hθ1 hgV hcont hspan]
+    rw [fixedTailDefect, tailSpan_eq hθ0 hθ1 hgV hcont hspan]
   have hC0 : 0 ≤ C := by
     obtain ⟨ψN, -, -, hdist⟩ := hψN N₁ le_rfl
     have hN₁r : (0 : ℝ) < N₁ := by exact_mod_cast hN₁
     exact (div_nonneg_iff.mp ((norm_nonneg _).trans hdist)).elim (fun h => h.1)
       fun h => absurd h.2 (not_le.mpr hN₁r)
-  refine ⟨ψ, hψ1, by rw [mellin_sampleWeight hθ1 ψ hρ, hψK, hd], hd ▸ hdpos, 1 + C, by linarith,
+  refine ⟨ψ, hψ1, by rw [mellin_observedWeight hθ1 ψ hρ, hψK, hd], hd ▸ hdpos, 1 + C, by linarith,
     N₁, hN₁, fun N hN f hfV => ?_⟩
   have hNpos : 0 < N := lt_of_lt_of_le hN₁ hN
   have hNr : (0 : ℝ) < N := by exact_mod_cast hNpos
@@ -158,17 +158,17 @@ theorem tailDefect_pos_and_le {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1)
     (V : Submodule ℝ (ℝ → ℝ)) [FiniteDimensional ℝ V]
     (hV : ∀ f ∈ V, ∃ K, LipschitzOnWith K f (Icc θ 1)) {ρ : ℂ} (hρ : ρ.re = 1 / 2)
     (hzero : riemannZeta ρ = 0) :
-    0 < tailDefect θ V ρ ∧ ∀ L : ℝ, (∀ᶠ N : ℕ in atTop, ∃ f ∈ V,
+    0 < fixedTailDefect θ V ρ ∧ ∀ L : ℝ, (∀ᶠ N : ℕ in atTop, ∃ f ∈ V,
       chronologicalL2Norm (chronologicalHeatError (prefixTailArray θ f N) N) ≤ L) →
-        tailDefect θ V ρ ≤ L * ‖deriv riemannZeta ρ‖ := by
+        fixedTailDefect θ V ρ ≤ L * ‖deriv riemannZeta ρ‖ := by
   obtain ⟨ψ, hψ1, hmellin, hdpos, C, hC0, N₁, hN₁, hobs⟩ :=
     exists_observation_inequality hθ0 hθ1 V hV hρ
   refine ⟨hdpos, fun L hL => ?_⟩
-  set d := tailDefect θ V ρ with hddef
-  set w := sampleWeight θ ψ with hw
-  have hwm : Measurable w := measurable_sampleWeight hθ1.le ψ
+  set d := fixedTailDefect θ V ρ with hddef
+  set w := observedWeight θ ψ with hw
+  have hwm : Measurable w := measurable_observedWeight hθ1.le ψ
   have hwb : ∀ x, 0 < x → ‖w x‖ ≤ 1 := fun x _ => by
-    rw [hw, sampleWeight]
+    rw [hw, observedWeight]
     by_cases hx : x ∈ Ioc 0 θ
     · rw [Set.indicator_of_mem hx]; exact (norm_sampleProfile_le ψ x).trans hψ1.le
     · rw [Set.indicator_of_notMem hx, norm_zero]; exact zero_le_one
@@ -213,11 +213,12 @@ theorem tailDefect_pos_and_le {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1)
         _ = t ^ (-(1 / 2 : ℝ)) := by
           rw [one_div, Real.sqrt_inv, Real.sqrt_eq_rpow, Real.rpow_neg ht.le]
     have hN := hint N (by omega)
+    have htrans' : ‖chronologicalMobiusWeightedSource w t -
+        chronologicalMobiusWeightedSource w (1 / N)‖ ≤ L₀ + 1 := htrans
     calc ‖chronologicalMobiusWeightedSource w t‖
         ≤ ‖chronologicalMobiusWeightedSource w (1 / N)‖ + (L₀ + 1) := by
           have := norm_sub_norm_le (chronologicalMobiusWeightedSource w t)
             (chronologicalMobiusWeightedSource w (1 / N))
-          rw [hw] at this ⊢
           linarith
       _ ≤ Real.sqrt N * L + C + (L₀ + 1) := by linarith
       _ ≤ L * t ^ (-(1 / 2 : ℝ)) + (C + (L₀ + 1)) := by
@@ -253,7 +254,7 @@ exceeded by the residual of every tail in `V` at arbitrarily large `N`.  In part
 theorem chronologicalFiniteTail_cofinal_lower_bound {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1)
     (V : Submodule ℝ (ℝ → ℝ)) [FiniteDimensional ℝ V]
     (hV : ∀ f ∈ V, ∃ K, LipschitzOnWith K f (Icc θ 1)) {ρ : ℂ} (hρ : ρ.re = 1 / 2)
-    (hzero : riemannZeta ρ = 0) {L : ℝ} (hL : L * ‖deriv riemannZeta ρ‖ < tailDefect θ V ρ) :
+    (hzero : riemannZeta ρ = 0) {L : ℝ} (hL : L * ‖deriv riemannZeta ρ‖ < fixedTailDefect θ V ρ) :
     ∀ N₀ : ℕ, ∃ N ≥ N₀, ∀ f ∈ V,
       L < chronologicalL2Norm (chronologicalHeatError (prefixTailArray θ f N) N) := by
   intro N₀
@@ -283,7 +284,7 @@ theorem chronologicalFiniteTail_obstruction {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : �
   obtain ⟨T₀, -, hT⟩ := exists_riemannZeta_line_zero_dyadic
   obtain ⟨τ, -, hτ⟩ := hT T₀ le_rfl
   have hdpos := (tailDefect_pos_and_le hθ0 hθ1 V hV (linePt_re τ) hτ).1
-  set d := tailDefect θ V (linePt τ)
+  set d := fixedTailDefect θ V (linePt τ)
   set D := ‖deriv riemannZeta (linePt τ)‖
   have hlt : d / (D + 1) * D < d := by
     rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]

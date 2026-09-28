@@ -77,6 +77,25 @@ theorem not_surjective_exteriorPower_newDegree_of_rankJump
     finrank_exteriorPower_newDegree_oldSource_of_rankJump d hU] at hle
   omega
 
+omit [FiniteDimensional K V] in
+/-- The new top-degree exterior map is zero: its source is the zero space. -/
+theorem exteriorPower_newDegree_map_eq_zero_of_rankJump
+    (d : ℕ) (i : U →ₗ[K] V) (hU : finrank K U = d) :
+    exteriorPower.map (d + 1) i = 0 := by
+  haveI : Subsingleton (⋀[K]^(d + 1) U) :=
+    Module.finrank_zero_iff.mp (finrank_exteriorPower_newDegree_oldSource_of_rankJump d hU)
+  exact LinearMap.ext fun x => by rw [Subsingleton.elim x 0, map_zero, LinearMap.zero_apply]
+
+omit [FiniteDimensional K U] in
+/-- The complementary quotient direction `V / i(U)` created by the rank jump is a line. -/
+theorem finrank_quotient_range_of_rankJump
+    (d : ℕ) (i : U →ₗ[K] V) (hi : Function.Injective i)
+    (hU : finrank K U = d) (hV : finrank K V = d + 1) :
+    finrank K (V ⧸ LinearMap.range i) = 1 := by
+  have h := Submodule.finrank_quotient_add_finrank (LinearMap.range i)
+  rw [LinearMap.finrank_range_of_inj hi, hU, hV] at h
+  omega
+
 end
 
 end GaloisForLFunctions.HTGeometry

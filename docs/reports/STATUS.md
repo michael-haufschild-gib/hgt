@@ -1497,3 +1497,5 @@ Notation: `δ=Re ρ−½`; angular energy of a zero = `Σ_{ρ′≠ρ}cos²θ`, 
 - **MUST-502 [Lean: `RHTower.vonMangoldt_add_summable_not_weilPositive`]** A producer of Weil positivity for `ζ` must use the exact value of every prime weight.
   - For any nonzero `w` with `Σ|w(n)|n^{−½} < ∞`, the weights `Λ + w` are not Weil-positive. This includes changing a single `Λ(p)`.
   - No argument that is insensitive to finitely many prime weights can certify Weil positivity.
+- **CANNOT-477 [Lean: `RHTower.vonMangoldt_sub_measure_weilPositive_eq`]** No proof of RH can obtain the positivity of ζ's Weil form by continuity from nearby Weil-positive "generalized prime" systems. The following does not work: Minkowski/Alexandrov openness, or deforming prime positions or weights by a finite measure while keeping ζ's archimedean term.
+  - ζ's positive completion is isolated among all finite signed perturbations of the prime measure carried by `[ε, ∞)`.

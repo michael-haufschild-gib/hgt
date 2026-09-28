@@ -139,6 +139,33 @@ theorem xiFormationStratification_zeroLaw
     exact ⟨hclass, hclass, hrate⟩
   · exact fun h => h.2.2
 
+/-- The boundary-flux factor `M(q)` in `B(q) = -M(q) a(q)` is strictly positive. -/
+theorem thetaXiFluxMassEnergy_pos (q : XiZeroCopy) :
+    0 < thetaSource.mass * thetaXiRootEnergy q :=
+  mul_pos thetaSource.mass_pos (thetaXiRootEnergy_pos q)
+
+/-- The principal escape class is the indicator of nonzero centered modular rate. -/
+theorem thetaKakutaniHarmonicEscapeIndex_eq_indicator (q : XiZeroCopy) :
+    thetaKakutaniHarmonicEscapeIndex q =
+      if primeDepthBVWoldXiCenteredRate q.1 = 0 then 0 else 1 := by
+  simp only [thetaKakutaniHarmonicEscapeIndex,
+    thetaXiRankTwoBoundaryFlux_eq_zero_iff_centeredRate_eq_zero]
+
+/-- Functional-equation reflection preserves the principal escape class. -/
+theorem thetaKakutaniHarmonicEscapeIndex_reflect (q : XiZeroCopy) :
+    thetaKakutaniHarmonicEscapeIndex (xiZeroCopyReflectEquiv q) =
+      thetaKakutaniHarmonicEscapeIndex q := by
+  simp [thetaKakutaniHarmonicEscapeIndex, thetaXiRankTwoBoundaryFlux_reflect]
+
+/-- Vanishing of the principal escape class at every Xi copy is exactly RH. -/
+theorem forall_thetaKakutaniHarmonicEscapeIndex_eq_zero_iff_riemannHypothesis :
+    (∀ q : XiZeroCopy, thetaKakutaniHarmonicEscapeIndex q = 0) ↔ RiemannHypothesis := by
+  rw [← thetaGreenBoundaryNeutral_iff_riemannHypothesis]
+  unfold ThetaGreenBoundaryNeutral
+  exact forall_congr' fun q =>
+    (thetaKakutaniHarmonicEscapeIndex_eq_zero_iff_centeredRate_eq_zero q).trans
+      (thetaXiRankTwoBoundaryFlux_eq_zero_iff_centeredRate_eq_zero q).symm
+
 /-- Global reflected formation-work properness is exactly RH. -/
 theorem forall_xiFormationIndependentWorkProperAt_iff_riemannHypothesis :
     (∀ q : XiZeroCopy, XiFormationIndependentWorkProperAt q) ↔

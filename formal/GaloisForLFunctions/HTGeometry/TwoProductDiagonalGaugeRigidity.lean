@@ -177,6 +177,55 @@ theorem weight_eq_one_of_preservesBothAtomFusions {H : Type*} [CommGroup H]
   rw [← hg]
   exact weight_eq_one g n
 
+/-- The unit packet atom `δ_n`. -/
+def PacketAtom.unit {G : Type*} [One G] (n : ℕ+) : PacketAtom G := ⟨n, 1⟩
+
+/-- For any group, `D_w` preserves ordinary additive fusion of unit atoms exactly when
+`w(m + n) = w(m) w(n)`. -/
+theorem preservesUnitAtomAddFusion_iff {G : Type*} [Group G] (w : ℕ+ → G) :
+    (∀ m n : ℕ+, PacketAtom.diagonalAction w
+        (PacketAtom.addFuse (PacketAtom.unit m) (PacketAtom.unit n)) =
+      PacketAtom.addFuse (PacketAtom.diagonalAction w (PacketAtom.unit m))
+        (PacketAtom.diagonalAction w (PacketAtom.unit n))) ↔
+      ∀ m n, w (m + n) = w m * w n := by
+  refine forall₂_congr fun m n => ?_
+  constructor
+  · intro h
+    simpa [PacketAtom.diagonalAction, PacketAtom.addFuse, PacketAtom.unit] using
+      congrArg PacketAtom.amplitude h
+  · intro h
+    ext <;> simp [PacketAtom.diagonalAction, PacketAtom.addFuse, PacketAtom.unit, h]
+
+/-- For any group, `D_w` preserves Dirichlet fusion of unit atoms exactly when
+`w(mn) = w(m) w(n)`. -/
+theorem preservesUnitAtomMulFusion_iff {G : Type*} [Group G] (w : ℕ+ → G) :
+    (∀ m n : ℕ+, PacketAtom.diagonalAction w
+        (PacketAtom.mulFuse (PacketAtom.unit m) (PacketAtom.unit n)) =
+      PacketAtom.mulFuse (PacketAtom.diagonalAction w (PacketAtom.unit m))
+        (PacketAtom.diagonalAction w (PacketAtom.unit n))) ↔
+      ∀ m n, w (m * n) = w m * w n := by
+  refine forall₂_congr fun m n => ?_
+  constructor
+  · intro h
+    simpa [PacketAtom.diagonalAction, PacketAtom.mulFuse, PacketAtom.unit] using
+      congrArg PacketAtom.amplitude h
+  · intro h
+    ext <;> simp [PacketAtom.diagonalAction, PacketAtom.mulFuse, PacketAtom.unit, h]
+
+/-- **Unit-atom form of two-product rigidity, any group.**  A diagonal action preserving both
+fusions of unit atoms is the identity. -/
+theorem weight_eq_one_of_preservesUnitAtomFusions {G : Type*} [Group G] (w : ℕ+ → G)
+    (hadd : ∀ m n : ℕ+, PacketAtom.diagonalAction w
+        (PacketAtom.addFuse (PacketAtom.unit m) (PacketAtom.unit n)) =
+      PacketAtom.addFuse (PacketAtom.diagonalAction w (PacketAtom.unit m))
+        (PacketAtom.diagonalAction w (PacketAtom.unit n)))
+    (hmul : ∀ m n : ℕ+, PacketAtom.diagonalAction w
+        (PacketAtom.mulFuse (PacketAtom.unit m) (PacketAtom.unit n)) =
+      PacketAtom.mulFuse (PacketAtom.diagonalAction w (PacketAtom.unit m))
+        (PacketAtom.diagonalAction w (PacketAtom.unit n))) (n : ℕ+) : w n = 1 :=
+  weight_eq_one ⟨w, (preservesUnitAtomAddFusion_iff w).mp hadd,
+    (preservesUnitAtomMulFusion_iff w).mp hmul⟩ n
+
 end TwoProductDiagonalGauge
 
 end GaloisForLFunctions.HTGeometry

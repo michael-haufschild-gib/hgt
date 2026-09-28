@@ -62,8 +62,9 @@ Check that projection converges at O(1/N) before using this strengthening.
 **Paper audit outcome:** [K-finite] has a complete paper proof, including
 O(1/N) convergence of exact discrete projections. Its positive survivor is
 a uniform observation inequality and a nonzero orthogonal critical profile.
-[Exact theorem, proof and Lean obligations](../2-fully-proven/chronological-finite-tail-obstruction.md).
-No route retirement or formalized-theorem claim yet.
+[Exact theorem, proof and Lean certificate](../3-formalized/chronological-finite-tail-obstruction.md).
+Lean-complete, including the fixed-m least-norm moment-repair corollary
+(`leastNormMomentRepair_fixedOrder_obstruction`). No route retirement.
 
 **Independently frozen [BRIDGE K-growing-jet].** An unconditional bounded
 array can have exact harmonic charge zero, an exact half-length Möbius prefix,

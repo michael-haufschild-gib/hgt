@@ -27,7 +27,7 @@ def sampleProfile (ψ : SampleSpace) (x : ℝ) : ℂ :=
   inner ℂ ψ (toSample fun u : ℝ => ((fusionBoseDefect (x * u) : ℝ) : ℂ))
 
 /-- The sharply cut weight `1_{(0, θ]} H_ψ`. -/
-def sampleWeight (θ : ℝ) (ψ : SampleSpace) : ℝ → ℂ := (Ioc 0 θ).indicator (sampleProfile ψ)
+def observedWeight (θ : ℝ) (ψ : SampleSpace) : ℝ → ℂ := (Ioc 0 θ).indicator (sampleProfile ψ)
 
 theorem norm_toSample_bose_le (c : ℝ) :
     ‖toSample fun u : ℝ => ((fusionBoseDefect (c * u) : ℝ) : ℂ)‖ ≤ 1 :=
@@ -58,8 +58,8 @@ theorem exists_sampleProfile_lipschitz :
   rw [← sub_mul, abs_mul, abs_of_pos hu0]
   nlinarith [mul_nonneg (mul_nonneg hLh0 (abs_nonneg (x - y))) (by linarith [hu.2] : 0 ≤ 2 - u)]
 
-theorem measurable_sampleWeight {θ : ℝ} (hθ1 : θ ≤ 1) (ψ : SampleSpace) :
-    Measurable (sampleWeight θ ψ) := by
+theorem measurable_observedWeight {θ : ℝ} (hθ1 : θ ≤ 1) (ψ : SampleSpace) :
+    Measurable (observedWeight θ ψ) := by
   classical
   obtain ⟨L, hL0, hL⟩ := exists_sampleProfile_lipschitz
   have hcont : ContinuousOn (sampleProfile ψ) (Ioc 0 θ) := by
@@ -67,13 +67,13 @@ theorem measurable_sampleWeight {θ : ℝ} (hθ1 : θ ≤ 1) (ψ : SampleSpace) 
       |>.continuousOn
     rw [dist_eq_norm, Real.dist_eq]
     exact hL ψ x ⟨hx.1, hx.2.trans hθ1⟩ y ⟨hy.1, hy.2.trans hθ1⟩
-  rw [sampleWeight, ← Set.piecewise_eq_indicator]
+  rw [observedWeight, ← Set.piecewise_eq_indicator]
   exact hcont.measurable_piecewise continuousOn_const measurableSet_Ioc
 
 /-- **Pairing the head with `ψ` is the weighted Möbius source at the integer scale.** -/
 theorem inner_headFun_eq_source {θ : ℝ} (hθ1 : θ < 1) (ψ : SampleSpace) {N : ℕ} (hN : 0 < N) :
     (inner ℂ ψ (toSample (headFun θ N)) : ℂ) =
-      chronologicalMobiusWeightedSource (sampleWeight θ ψ) (1 / N) := by
+      chronologicalMobiusWeightedSource (observedWeight θ ψ) (1 / N) := by
   classical
   have hNpos : (0 : ℝ) < N := by exact_mod_cast hN
   have hterm : ∀ k : ℕ, MemLp (fun u : ℝ => if (k : ℝ) ≤ θ * N then (μ k : ℂ) *
@@ -87,7 +87,7 @@ theorem inner_headFun_eq_source {θ : ℝ} (hθ1 : θ < 1) (ψ : SampleSpace) {N
   have hhead : headFun θ N = ∑ k ∈ Finset.Ioc 0 N, fun u : ℝ => if (k : ℝ) ≤ θ * N then
       (μ k : ℂ) * ((fusionBoseDefect (k / N * u) : ℝ) : ℂ) else 0 := by
     funext u; rw [headFun, Finset.sum_apply]
-  have hw : ∀ x, θ < x → sampleWeight θ ψ x = 0 := fun x hx =>
+  have hw : ∀ x, θ < x → observedWeight θ ψ x = 0 := fun x hx =>
     Set.indicator_of_notMem (fun h => absurd h.2 (not_le.mpr hx)) _
   rw [hhead, toSample_sum _ fun k _ => hterm k, inner_sum,
     chronologicalMobiusWeightedSource_eq_sum _ N (by positivity) hw
@@ -103,14 +103,14 @@ theorem inner_headFun_eq_source {θ : ℝ} (hθ1 : θ < 1) (ψ : SampleSpace) {N
     · have hmem : (k : ℝ) / N ∈ Ioc 0 θ := ⟨div_pos hk0 hNpos, (div_le_iff₀ hNpos).mpr
         (by linarith)⟩
       simp only [hkθ, if_true]
-      rw [sampleWeight, Set.indicator_of_mem hmem, sampleProfile,
+      rw [observedWeight, Set.indicator_of_mem hmem, sampleProfile,
         show (fun u : ℝ => (μ k : ℂ) * ((fusionBoseDefect (k / N * u) : ℝ) : ℂ)) =
           (μ k : ℂ) • fun u : ℝ => ((fusionBoseDefect (k / N * u) : ℝ) : ℂ) from rfl,
         toSample_smul _ (memLp_sample_bose _), inner_smul_right]
     · have hnot : (k : ℝ) / N ∉ Ioc 0 θ := fun h =>
         hkθ (by have := (div_le_iff₀ hNpos).mp h.2; linarith)
       simp only [hkθ, if_false]
-      rw [sampleWeight, Set.indicator_of_notMem hnot, mul_zero,
+      rw [observedWeight, Set.indicator_of_notMem hnot, mul_zero,
         show (fun _ : ℝ => (0 : ℂ)) = 0 from rfl, toSample_zero, inner_zero_right]
   · have hk0 : k = 0 := by
       by_contra h
@@ -120,8 +120,8 @@ theorem inner_headFun_eq_source {θ : ℝ} (hθ1 : θ < 1) (ψ : SampleSpace) {N
     simp
 
 /-- **The Mellin moment of the observed weight is the pairing with the critical vector.** -/
-theorem mellin_sampleWeight {θ : ℝ} (hθ1 : θ < 1) (ψ : SampleSpace) {ρ : ℂ}
-    (hρ : ρ.re = 1 / 2) : mellin (sampleWeight θ ψ) ρ = inner ℂ ψ (critVec θ ρ) := by
+theorem mellin_observedWeight {θ : ℝ} (hθ1 : θ < 1) (ψ : SampleSpace) {ρ : ℂ}
+    (hρ : ρ.re = 1 / 2) : mellin (observedWeight θ ψ) ρ = inner ℂ ψ (critVec θ ρ) := by
   -- the critical transform as an integral over `(0, θ)`
   have hK : ∀ u : ℝ, 0 < u → boseTransform (criticalProfile θ ρ) (u : ℂ) =
       ∫ x in Ioo 0 θ, (x : ℂ) ^ (ρ - 1) * ((fusionBoseDefect (x * u) : ℝ) : ℂ) := by
@@ -136,15 +136,15 @@ theorem mellin_sampleWeight {θ : ℝ} (hθ1 : θ < 1) (ψ : SampleSpace) {ρ : 
     rw [hfun, setIntegral_indicator measurableSet_Ioo,
       Set.inter_eq_right.mpr (Ioo_subset_Ioo_right hθ1.le)]
   -- the Mellin transform as an integral over `(0, θ)`
-  have hM : mellin (sampleWeight θ ψ) ρ =
+  have hM : mellin (observedWeight θ ψ) ρ =
       ∫ x in Ioo 0 θ, (x : ℂ) ^ (ρ - 1) * sampleProfile ψ x := by
     rw [mellin]
-    have hfun : (fun t : ℝ => (t : ℂ) ^ (ρ - 1) • sampleWeight θ ψ t) =
+    have hfun : (fun t : ℝ => (t : ℂ) ^ (ρ - 1) • observedWeight θ ψ t) =
         (Ioc 0 θ).indicator fun t : ℝ => (t : ℂ) ^ (ρ - 1) * sampleProfile ψ t := by
       funext t
       by_cases ht : t ∈ Ioc 0 θ
-      · rw [sampleWeight, Set.indicator_of_mem ht, Set.indicator_of_mem ht, smul_eq_mul]
-      · rw [sampleWeight, Set.indicator_of_notMem ht, Set.indicator_of_notMem ht, smul_zero]
+      · rw [observedWeight, Set.indicator_of_mem ht, Set.indicator_of_mem ht, smul_eq_mul]
+      · rw [observedWeight, Set.indicator_of_notMem ht, Set.indicator_of_notMem ht, smul_zero]
     rw [hfun, setIntegral_indicator measurableSet_Ioc,
       Set.inter_eq_right.mpr Ioc_subset_Ioi_self, integral_Ioc_eq_integral_Ioo]
   -- Fubini on `(0, θ) × [1, 2]`

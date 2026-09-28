@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
 /-!
 # First-order Riemann sums over a proportional tail

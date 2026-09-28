@@ -12,23 +12,26 @@ factor in `Q`.  Write `N_Q(x) = #(S ∩ [1, x])` and `ψ_Q(x) = ∑_{n ≤ x, n 
 the Chebyshev function of the deleted primes.
 
 **Theorem.**  Suppose `N_Q(x) = a x + O(x^θ)` with `θ ≥ 0` and
-`ψ_Q(x) = ∑_{ρ ∈ J} c_ρ x^ρ + O(x^η)` for a finite set `J` of real exponents.  Then every
-exponent `ρ ∈ J` with `max θ η < ρ < 1` carries a quantized coefficient: `ρ c_ρ ∈ ℕ`.
+`ψ_Q(x) = ∑_{ρ ∈ J} c_ρ x^ρ + O(x^η)` for a finite set `J` of complex exponents.  Then every
+`ρ ∈ J` with `Re ρ > max θ η` at which `(s-1)ζ(s)` does not vanish carries a quantized
+coefficient: `ρ c_ρ ∈ ℕ`.  For real `ρ ∈ (max θ η, 1)` the nonvanishing is automatic.
 
 *Proof.*  On `Re s > 1`, `F = L(1_S)/ζ` has logarithmic derivative `F'/F = L(Λ_Q)`.  The integer
-count continues `F` analytically to `Re s > θ` away from the zeros of `ζ`.  The Chebyshev
-expansion continues `L(Λ_Q)` meromorphically to `Re s > η`, with residue `ρ c_ρ` at `ρ`.  Along a
-thin tube around the real axis, where `ζ` does not vanish, the identity `F' = F · L(Λ_Q)`
-persists.  At `ρ` the residue of `F'/F` is the order of vanishing of `F`, a natural number.
+count continues the numerator `(s-1)L(1_S)` analytically to `Re s > θ`, and `(s-1)ζ(s)` is entire.
+The Chebyshev expansion continues `L(Λ_Q)` meromorphically to `Re s > η`, with residue `ρ c_ρ` at
+`ρ`.  After clearing all denominators the identity `F' = F · L(Λ_Q)` is an identity between
+functions analytic on the convex half-plane `Re s > max θ η`, so it persists there.  At `ρ` the
+residue of `F'/F` is the order of vanishing of `F`, a natural number.
 
 For the deletion of a set of primes with counting function `λ ∫^x t^{κ-1} dt / log t + O(x^η)`
 the expansion is `ψ_Q(x) = (λ/κ) x^κ + (λ/κ) x^{κ/2} + ...`, whose coefficient at `κ/2` gives
 `λ/2 ∈ ℕ`.  So for odd `λ` the integer count of `ℙ ∖ Q` cannot have a power saving below
-`x^{κ/2}`, although its primes deviate from `ℙ` by `x^κ`.
+`x^{κ/2}`, although its primes deviate from `ℙ` by `x^κ`.  The same holds for deletions that
+imitate a zero of odd multiplicity at a complex `ρ`, provided `ζ(ρ/2) ≠ 0`.
 -/
 
 open Filter Topology Complex Asymptotics MeasureTheory Set ArithmeticFunction LSeries
-open scoped LSeries.notation
+open scoped LSeries.notation ComplexOrder
 
 namespace RHTower
 
@@ -348,36 +351,33 @@ theorem LSeries_qFreeSeq_sub {a θ : ℝ} (hθ : 0 ≤ θ)
 /-- The deleted von Mangoldt function as a complex sequence. -/
 def deletedSeq (n : ℕ) : ℂ := (deletedVonMangoldt Q n : ℂ)
 
-/-- The remainder of the Chebyshev expansion. -/
-def chebyshevRemainder (J : Finset ℝ) (c : ℝ → ℝ) (t : ℝ) : ℝ :=
-  deletedChebyshev Q t - ∑ ρ ∈ J, c ρ * t ^ ρ
+/-- The remainder of a (complex) power expansion of the deleted Chebyshev function. -/
+def chebyshevRemainder (J : Finset ℂ) (c : ℂ → ℂ) (t : ℝ) : ℂ :=
+  (deletedChebyshev Q t : ℂ) - ∑ ρ ∈ J, c ρ * (t : ℂ) ^ ρ
 
 /-- The Mellin integral of the remainder. -/
-def remainderIntegral (J : Finset ℝ) (c : ℝ → ℝ) (z : ℂ) : ℂ :=
-  ∫ t in Ioi (1:ℝ), (chebyshevRemainder Q J c t : ℂ) * (t : ℂ) ^ (-(z + 1))
+def remainderIntegral (J : Finset ℂ) (c : ℂ → ℂ) (z : ℂ) : ℂ :=
+  ∫ t in Ioi (1:ℝ), chebyshevRemainder Q J c t * (t : ℂ) ^ (-(z + 1))
 
-theorem intervalIntegrable_remainder (J : Finset ℝ) (c : ℝ → ℝ) (y : ℝ) (hy : 1 ≤ y) :
-    IntervalIntegrable (fun t : ℝ => (chebyshevRemainder Q J c t : ℂ)) volume 1 y := by
+theorem intervalIntegrable_remainder (J : Finset ℂ) (c : ℂ → ℂ) (y : ℝ) (hy : 1 ≤ y) :
+    IntervalIntegrable (chebyshevRemainder Q J c) volume 1 y := by
   have hstep := intervalIntegrable_floorSum (deletedSeq Q) y
-  have hcont : ContinuousOn (fun t : ℝ => ((∑ ρ ∈ J, c ρ * t ^ ρ : ℝ) : ℂ)) (Set.uIcc 1 y) := by
-    refine Complex.continuous_ofReal.comp_continuousOn ?_
+  have hcont : ContinuousOn (fun t : ℝ => ∑ ρ ∈ J, c ρ * (t : ℂ) ^ ρ) (Set.uIcc 1 y) := by
     refine continuousOn_finsetSum _ fun ρ _ => continuousOn_const.mul ?_
-    refine continuousOn_id.rpow_const fun t ht => Or.inl ?_
+    intro t ht
     rw [Set.uIcc_of_le hy] at ht
-    exact (zero_lt_one.trans_le ht.1).ne'
+    exact ((Complex.continuous_ofReal.continuousAt).cpow continuousAt_const
+      (Complex.ofReal_mem_slitPlane.mpr (zero_lt_one.trans_le ht.1))).continuousWithinAt
   refine (hstep.sub hcont.intervalIntegrable).congr fun t _ => ?_
   simp only [chebyshevRemainder, deletedChebyshev, deletedSeq]
   push_cast
   rfl
 
-theorem differentiableAt_remainderIntegral {J : Finset ℝ} {c : ℝ → ℝ} {η : ℝ}
-    (hψ : (fun x : ℝ => deletedChebyshev Q x - ∑ ρ ∈ J, c ρ * x ^ ρ) =O[atTop] fun x => x ^ η)
-    {s : ℂ} (hs : η < s.re) : DifferentiableAt ℂ (remainderIntegral Q J c) s := by
-  refine differentiableAt_integral_cpow (intervalIntegrable_remainder Q J c) ?_ hs
-  refine IsBigO.of_norm_left ?_
-  refine hψ.norm_left.congr_left fun t => ?_
-  rw [Complex.norm_real]
-  rfl
+theorem differentiableAt_remainderIntegral {J : Finset ℂ} {c : ℂ → ℂ} {η : ℝ}
+    (hψ : (fun x : ℝ => (deletedChebyshev Q x : ℂ) - ∑ ρ ∈ J, c ρ * (x : ℂ) ^ ρ) =O[atTop]
+      fun x : ℝ => x ^ η)
+    {s : ℂ} (hs : η < s.re) : DifferentiableAt ℂ (remainderIntegral Q J c) s :=
+  differentiableAt_integral_cpow (intervalIntegrable_remainder Q J c) hψ hs
 
 theorem deletedSeq_isBigO : deletedSeq Q =O[atTop] fun n : ℕ => (n : ℝ) ^ ((2 : ℝ) - 1) := by
   refine IsBigO.of_bound 1 (Eventually.of_forall fun n => ?_)
@@ -401,20 +401,19 @@ theorem sum_deletedSeq_isBigO :
         rw [Finset.sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul, one_mul,
           Real.norm_eq_abs, abs_of_nonneg (by positivity), Real.rpow_two, sq]
 
-/-- `∫_1^∞ t^ρ t^{-(s+1)} dt = 1/(s-ρ)` for `Re s > ρ`. -/
-theorem integral_rpow_mul_cpow {ρ : ℝ} {s : ℂ} (hs : ρ < s.re) :
-    ∫ t in Ioi (1:ℝ), (t : ℂ) ^ (ρ : ℂ) * (t : ℂ) ^ (-(s + 1)) = 1 / (s - ρ) := by
-  have hre : ((ρ : ℂ) + -(s + 1)).re < -1 := by
-    simp only [Complex.add_re, Complex.ofReal_re, Complex.neg_re, Complex.one_re]
+/-- `∫_1^∞ t^ρ t^{-(s+1)} dt = 1/(s-ρ)` for `Re s > Re ρ`. -/
+theorem integral_cpow_mul_cpow {ρ s : ℂ} (hs : ρ.re < s.re) :
+    ∫ t in Ioi (1:ℝ), (t : ℂ) ^ ρ * (t : ℂ) ^ (-(s + 1)) = 1 / (s - ρ) := by
+  have hre : (ρ + -(s + 1)).re < -1 := by
+    simp only [Complex.add_re, Complex.neg_re, Complex.one_re]
     linarith
-  rw [setIntegral_congr_fun measurableSet_Ioi (g := fun t : ℝ => (t : ℂ) ^ ((ρ : ℂ) + -(s + 1)))
+  rw [setIntegral_congr_fun measurableSet_Ioi (g := fun t : ℝ => (t : ℂ) ^ (ρ + -(s + 1)))
     fun t ht => (Complex.cpow_add _ _ (by exact_mod_cast (zero_lt_one.trans ht).ne')).symm,
     integral_Ioi_cpow_of_lt hre zero_lt_one, Complex.ofReal_one, Complex.one_cpow]
-  have hne : (ρ : ℂ) + -(s + 1) + 1 ≠ 0 := by
+  have hne : ρ + -(s + 1) + 1 ≠ 0 := by
     intro h
     have := congr_arg Complex.re h
-    simp only [Complex.add_re, Complex.ofReal_re, Complex.neg_re, Complex.one_re,
-      Complex.zero_re] at this
+    simp only [Complex.add_re, Complex.neg_re, Complex.one_re, Complex.zero_re] at this
     linarith
   have hne' : s - ρ ≠ 0 := by
     intro h
@@ -423,46 +422,36 @@ theorem integral_rpow_mul_cpow {ρ : ℝ} {s : ℂ} (hs : ρ < s.re) :
   field_simp
   ring
 
-theorem integrableOn_rpow_mul_cpow {ρ : ℝ} {s : ℂ} (hs : ρ < s.re) :
-    IntegrableOn (fun t : ℝ => (t : ℂ) ^ (ρ : ℂ) * (t : ℂ) ^ (-(s + 1))) (Ioi 1) := by
-  have hre : ((ρ : ℂ) + -(s + 1)).re < -1 := by
-    simp only [Complex.add_re, Complex.ofReal_re, Complex.neg_re, Complex.one_re]
+theorem integrableOn_cpow_mul_cpow {ρ s : ℂ} (hs : ρ.re < s.re) :
+    IntegrableOn (fun t : ℝ => (t : ℂ) ^ ρ * (t : ℂ) ^ (-(s + 1))) (Ioi 1) := by
+  have hre : (ρ + -(s + 1)).re < -1 := by
+    simp only [Complex.add_re, Complex.neg_re, Complex.one_re]
     linarith
   refine (integrableOn_Ioi_cpow_of_lt hre zero_lt_one).congr_fun (fun t ht => ?_) measurableSet_Ioi
   exact Complex.cpow_add _ _ (by exact_mod_cast (zero_lt_one.trans ht).ne')
 
 /-- **Continuation of `L(Λ_Q)`.**  For `Re s` beyond every exponent,
 `L(Λ_Q)(s) = s (∑_ρ c_ρ/(s-ρ) + ∫_1^∞ R(t) t^{-(s+1)} dt)`. -/
-theorem LSeries_deletedSeq_eq {J : Finset ℝ} {c : ℝ → ℝ} {η : ℝ}
-    (hψ : (fun x : ℝ => deletedChebyshev Q x - ∑ ρ ∈ J, c ρ * x ^ ρ) =O[atTop] fun x => x ^ η)
-    {s : ℂ} (hs : 2 < s.re) (hηs : η < s.re) (hJ : ∀ ρ ∈ J, ρ < s.re) :
+theorem LSeries_deletedSeq_eq {J : Finset ℂ} {c : ℂ → ℂ} {η : ℝ}
+    (hψ : (fun x : ℝ => (deletedChebyshev Q x : ℂ) - ∑ ρ ∈ J, c ρ * (x : ℂ) ^ ρ) =O[atTop]
+      fun x : ℝ => x ^ η)
+    {s : ℂ} (hs : 2 < s.re) (hηs : η < s.re) (hJ : ∀ ρ ∈ J, ρ.re < s.re) :
     LSeries (deletedSeq Q) s =
-      s * (∑ ρ ∈ J, (c ρ : ℂ) / (s - ρ) + remainderIntegral Q J c s) := by
+      s * (∑ ρ ∈ J, c ρ / (s - ρ) + remainderIntegral Q J c s) := by
   have hsum : LSeriesSummable (deletedSeq Q) s :=
     LSeriesSummable_of_isBigO_rpow (x := 2) hs (deletedSeq_isBigO Q)
   rw [LSeries_eq_mul_integral _ (by norm_num : (0:ℝ) ≤ 2) hs hsum (sum_deletedSeq_isBigO Q)]
   congr 1
-  have hR : IntegrableOn (fun t : ℝ => (chebyshevRemainder Q J c t : ℂ) * (t : ℂ) ^ (-(s + 1)))
-      (Ioi 1) := by
-    refine integrableOn_mul_cpow (intervalIntegrable_remainder Q J c) ?_ hηs
-    refine IsBigO.of_norm_left ?_
-    refine hψ.norm_left.congr_left fun t => ?_
-    rw [Complex.norm_real]
-    rfl
+  have hR : IntegrableOn (fun t : ℝ => chebyshevRemainder Q J c t * (t : ℂ) ^ (-(s + 1)))
+      (Ioi 1) :=
+    integrableOn_mul_cpow (intervalIntegrable_remainder Q J c) hψ hηs
   have hsplit : ∀ t ∈ Ioi (1:ℝ),
       (∑ k ∈ Finset.Icc 1 ⌊t⌋₊, deletedSeq Q k) * (t : ℂ) ^ (-(s + 1)) =
-        (chebyshevRemainder Q J c t : ℂ) * (t : ℂ) ^ (-(s + 1)) +
-          ∑ ρ ∈ J, (c ρ : ℂ) * ((t : ℂ) ^ (ρ : ℂ) * (t : ℂ) ^ (-(s + 1))) := by
-    intro t ht
-    have ht0 : (0 : ℝ) ≤ t := (zero_lt_one.trans ht).le
+        chebyshevRemainder Q J c t * (t : ℂ) ^ (-(s + 1)) +
+          ∑ ρ ∈ J, c ρ * ((t : ℂ) ^ ρ * (t : ℂ) ^ (-(s + 1))) := by
+    intro t _
     have hcast : ∑ k ∈ Finset.Icc 1 ⌊t⌋₊, deletedSeq Q k =
-        (chebyshevRemainder Q J c t : ℂ) + ∑ ρ ∈ J, (c ρ : ℂ) * (t : ℂ) ^ (ρ : ℂ) := by
-      have hJsum : ∑ ρ ∈ J, (c ρ : ℂ) * (t : ℂ) ^ (ρ : ℂ) =
-          ((∑ ρ ∈ J, c ρ * t ^ ρ : ℝ) : ℂ) := by
-        push_cast
-        refine Finset.sum_congr rfl fun ρ _ => ?_
-        rw [Complex.ofReal_cpow ht0]
-      rw [hJsum]
+        chebyshevRemainder Q J c t + ∑ ρ ∈ J, c ρ * (t : ℂ) ^ ρ := by
       simp only [chebyshevRemainder, deletedChebyshev, deletedSeq]
       push_cast
       ring
@@ -474,11 +463,397 @@ theorem LSeries_deletedSeq_eq {J : Finset ℝ} {c : ℝ → ℝ} {η : ℝ}
   · rw [add_comm, remainderIntegral]
     congr 1
     refine Finset.sum_congr rfl fun ρ hρ => ?_
-    rw [integral_const_mul, integral_rpow_mul_cpow (hJ ρ hρ), mul_one_div]
+    rw [integral_const_mul, integral_cpow_mul_cpow (hJ ρ hρ), mul_one_div]
   · intro ρ hρ
-    exact (integrableOn_rpow_mul_cpow (hJ ρ hρ)).const_mul _
-  · refine integrable_finset_sum _ fun ρ hρ => ?_
-    exact (integrableOn_rpow_mul_cpow (hJ ρ hρ)).const_mul _
+    exact (integrableOn_cpow_mul_cpow (hJ ρ hρ)).const_mul _
+  · refine integrable_finsetSum _ fun ρ hρ => ?_
+    exact (integrableOn_cpow_mul_cpow (hJ ρ hρ)).const_mul _
+
+/-! ### The quantization theorem -/
+
+/-- `∏_{ρ ∈ J} (z − ρ)`. -/
+def exponentPoly (J : Finset ℂ) (z : ℂ) : ℂ := ∏ ρ ∈ J, (z - ρ)
+
+/-- `∏_{ρ ∈ J} (z − ρ)` times the continuation of `L(Λ_Q)`, written without denominators. -/
+def clearedLogDeriv (J : Finset ℂ) (c : ℂ → ℂ) (z : ℂ) : ℂ :=
+  (∑ ρ ∈ J, z * c ρ * ∏ ρ' ∈ J.erase ρ, (z - ρ')) +
+    exponentPoly J z * z * remainderIntegral Q J c z
+
+/-- `(s-1) L(1_S)(s)`, continued to `Re s > θ`. -/
+def deletionNumerator (a : ℝ) (z : ℂ) : ℂ :=
+  a * zetaResidueFactor z + (z - 1) * z * countDefectIntegral Q a z
+
+/-- `L(1_S)/ζ`, continued through the entire function `(s-1)ζ(s)`. -/
+def deletionQuotient (a : ℝ) (z : ℂ) : ℂ := deletionNumerator Q a z / zetaResidueFactor z
+
+theorem deletionNumerator_eq {a θ : ℝ} (hθ : 0 ≤ θ)
+    (hN : (fun x : ℝ => qFreeCount Q x - a * x) =O[atTop] fun x => x ^ θ) {z : ℂ}
+    (hz : 1 < z.re) (hθz : θ < z.re) :
+    deletionNumerator Q a z = (z - 1) * LSeries (qFreeSeq Q) z := by
+  have hz1 : z ≠ 1 := by
+    intro h
+    rw [h, Complex.one_re] at hz
+    exact lt_irrefl _ hz
+  have h := LSeries_qFreeSeq_sub Q hθ hN hz hθz
+  rw [deletionNumerator, zetaResidueFactor_of_ne hz1,
+    show (z - 1) * z * countDefectIntegral Q a z = (z - 1) * (z * countDefectIntegral Q a z) by
+      ring, ← h]
+  ring
+
+theorem deletionQuotient_eq {a θ : ℝ} (hθ : 0 ≤ θ)
+    (hN : (fun x : ℝ => qFreeCount Q x - a * x) =O[atTop] fun x => x ^ θ) {z : ℂ}
+    (hz : 1 < z.re) (hθz : θ < z.re) :
+    deletionQuotient Q a z = LSeries (qFreeSeq Q) z / riemannZeta z := by
+  have hz1 : z ≠ 1 := by
+    intro h
+    rw [h, Complex.one_re] at hz
+    exact lt_irrefl _ hz
+  have hζ : riemannZeta z ≠ 0 := riemannZeta_ne_zero_of_one_le_re hz.le
+  have hsub : z - 1 ≠ 0 := sub_ne_zero.mpr hz1
+  rw [deletionQuotient, deletionNumerator_eq Q hθ hN hz hθz, zetaResidueFactor_of_ne hz1]
+  field_simp
+
+theorem exponentPoly_mul_eq {J : Finset ℂ} {c : ℂ → ℂ} {z : ℂ} (hz : ∀ ρ ∈ J, z ≠ ρ) (R : ℂ) :
+    exponentPoly J z * (z * (∑ ρ ∈ J, c ρ / (z - ρ) + R)) =
+      (∑ ρ ∈ J, z * c ρ * ∏ ρ' ∈ J.erase ρ, (z - ρ')) + exponentPoly J z * z * R := by
+  classical
+  have hterm : ∀ ρ ∈ J, exponentPoly J z * (z * (c ρ / (z - ρ))) =
+      z * c ρ * ∏ ρ' ∈ J.erase ρ, (z - ρ') := by
+    intro ρ hρ
+    have hne : z - ρ ≠ 0 := sub_ne_zero.mpr (hz ρ hρ)
+    rw [exponentPoly, ← Finset.mul_prod_erase J (fun ρ' : ℂ => z - ρ') hρ]
+    field_simp
+  rw [mul_add, mul_add, Finset.mul_sum, Finset.mul_sum, Finset.sum_congr rfl hterm]
+  ring
+
+/-- The identity `F' · P = F · (P · L(Λ_Q))` far to the right. -/
+theorem deriv_deletionQuotient_mul {a θ η : ℝ} (hθ : 0 ≤ θ) {J : Finset ℂ} {c : ℂ → ℂ}
+    (hN : (fun x : ℝ => qFreeCount Q x - a * x) =O[atTop] fun x => x ^ θ)
+    (hψ : (fun x : ℝ => (deletedChebyshev Q x : ℂ) - ∑ ρ ∈ J, c ρ * (x : ℂ) ^ ρ) =O[atTop]
+      fun x : ℝ => x ^ η)
+    {z : ℂ} (hz : 2 + θ + |η| + ∑ ρ ∈ J, ‖ρ‖ < z.re) :
+    deriv (deletionQuotient Q a) z * exponentPoly J z =
+      deletionQuotient Q a z * clearedLogDeriv Q J c z := by
+  have hsumabs : 0 ≤ ∑ ρ ∈ J, ‖ρ‖ := Finset.sum_nonneg fun ρ _ => norm_nonneg ρ
+  have hJ : ∀ ρ ∈ J, ρ.re < z.re := by
+    intro ρ hρ
+    have := Finset.single_le_sum (fun ρ _ => norm_nonneg ρ) hρ
+    linarith [Complex.re_le_norm ρ, abs_nonneg η]
+  have hz2 : 2 < z.re := by linarith [abs_nonneg η]
+  have hθz : θ < z.re := by linarith [abs_nonneg η]
+  have hηz : η < z.re := by linarith [le_abs_self η]
+  have hopen : IsOpen {w : ℂ | 2 + θ + |η| + ∑ ρ ∈ J, ‖ρ‖ < w.re} :=
+    isOpen_lt continuous_const Complex.continuous_re
+  have hev : deletionQuotient Q a =ᶠ[𝓝 z] fun w => LSeries (qFreeSeq Q) w / riemannZeta w := by
+    filter_upwards [hopen.mem_nhds hz] with w hw
+    exact deletionQuotient_eq Q hθ hN (by linarith [abs_nonneg η])
+      (by linarith [abs_nonneg η])
+  rw [hev.deriv_eq, deriv_LSeries_div_riemannZeta Q (by linarith),
+    deletionQuotient_eq Q hθ hN (by linarith) hθz]
+  have hL : LSeries (fun n => (deletedVonMangoldt Q n : ℂ)) z =
+      z * (∑ ρ ∈ J, c ρ / (z - ρ) + remainderIntegral Q J c z) :=
+    LSeries_deletedSeq_eq Q hψ hz2 hηz hJ
+  rw [hL, clearedLogDeriv, ← exponentPoly_mul_eq (c := c) (fun ρ hρ h => by
+    have := congr_arg Complex.re h
+    linarith [hJ ρ hρ])]
+  ring
+
+/-- **Residue quantization.**  If the `Q`-free integers have counting function
+`a x + O(x^θ)` (`θ ≥ 0`) and the deleted Chebyshev function has the complex power expansion
+`∑_{ρ ∈ J} c_ρ x^ρ + O(x^η)`, then `ρ₀ c_{ρ₀}` is a natural number for every `ρ₀ ∈ J` with
+`Re ρ₀ > max θ η` at which `(s-1)ζ(s)` does not vanish. -/
+theorem residue_quantization_complex {a θ η : ℝ} (hθ : 0 ≤ θ) {J : Finset ℂ} {c : ℂ → ℂ}
+    (hN : (fun x : ℝ => qFreeCount Q x - a * x) =O[atTop] fun x => x ^ θ)
+    (hψ : (fun x : ℝ => (deletedChebyshev Q x : ℂ) - ∑ ρ ∈ J, c ρ * (x : ℂ) ^ ρ) =O[atTop]
+      fun x : ℝ => x ^ η)
+    {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ J) (hθρ : θ < ρ₀.re) (hηρ : η < ρ₀.re)
+    (hZρ : zetaResidueFactor ρ₀ ≠ 0) :
+    ∃ m : ℕ, ρ₀ * c ρ₀ = m := by
+  classical
+  set Z := zetaResidueFactor with hZdef
+  set Num := deletionNumerator Q a with hNumdef
+  set F := deletionQuotient Q a with hFdef
+  set P := exponentPoly J with hPdef
+  set PM := clearedLogDeriv Q J c with hPMdef
+  -- the half-plane `H`
+  set H : Set ℂ := {w | max θ η < w.re} with hHdef
+  have hHopen : IsOpen H := isOpen_lt continuous_const Complex.continuous_re
+  have hHconv : Convex ℝ H := convex_halfSpace_re_gt _
+  have hHθ : ∀ w ∈ H, θ < w.re := fun w hw => (le_max_left θ η).trans_lt hw
+  have hHη : ∀ w ∈ H, η < w.re := fun w hw => (le_max_right θ η).trans_lt hw
+  have hρ₀H : ρ₀ ∈ H := max_lt hθρ hηρ
+  -- analyticity
+  have hZdiff : Differentiable ℂ Z := differentiable_zetaResidueFactor
+  have hNumdiff : DifferentiableOn ℂ Num H := by
+    intro w hw
+    refine DifferentiableAt.differentiableWithinAt ?_
+    have hC := differentiableAt_countDefectIntegral Q hθ hN (hHθ w hw)
+    have hZw : DifferentiableAt ℂ zetaResidueFactor w := differentiable_zetaResidueFactor w
+    rw [hNumdef]
+    unfold deletionNumerator
+    fun_prop
+  have hNuman : AnalyticOnNhd ℂ Num H := hNumdiff.analyticOnNhd hHopen
+  have hZan : AnalyticOnNhd ℂ Z H := hZdiff.differentiableOn.analyticOnNhd hHopen
+  have hPdiff : Differentiable ℂ P := by
+    rw [hPdef]
+    unfold exponentPoly
+    fun_prop
+  have hPan : AnalyticOnNhd ℂ P H := hPdiff.differentiableOn.analyticOnNhd hHopen
+  have hPMdiff : DifferentiableOn ℂ PM H := by
+    intro w hw
+    refine DifferentiableAt.differentiableWithinAt ?_
+    have hR := differentiableAt_remainderIntegral Q hψ (hHη w hw)
+    have hPw := hPdiff w
+    rw [hPMdef]
+    unfold clearedLogDeriv
+    rw [← hPdef]
+    fun_prop
+  have hPMan : AnalyticOnNhd ℂ PM H := hPMdiff.analyticOnNhd hHopen
+  -- `F = Num / Z` and its derivative wherever `Z ≠ 0`
+  have hFeq : ∀ w, F w = Num w / Z w := fun w => rfl
+  have hderivF : ∀ w ∈ H, Z w ≠ 0 →
+      deriv F w = (deriv Num w * Z w - Num w * deriv Z w) / Z w ^ 2 := by
+    intro w hw hZw
+    have := deriv_div ((hNuman w hw).differentiableAt) (hZdiff w) hZw
+    simp only [Pi.div_def] at this
+    have hF' : F = fun i => Num i / Z i := rfl
+    rw [hF']
+    exact this
+  -- the cleared identity on `H`
+  set R₀ : ℝ := 2 + θ + |η| + ∑ ρ ∈ J, ‖ρ‖ with hR₀
+  have hsumabs : 0 ≤ ∑ ρ ∈ J, ‖ρ‖ := Finset.sum_nonneg fun ρ _ => norm_nonneg ρ
+  set z₀ : ℂ := ((R₀ + 1 : ℝ) : ℂ) with hz₀
+  have hz₀re : z₀.re = R₀ + 1 := Complex.ofReal_re _
+  have hz₀H : z₀ ∈ H := by
+    show max θ η < z₀.re
+    rw [hz₀re, hR₀]
+    refine max_lt ?_ ?_ <;> linarith [abs_nonneg η, le_abs_self η]
+  have hcleared_near : (fun w => (deriv Num w * Z w - Num w * deriv Z w) * P w) =ᶠ[𝓝 z₀]
+      fun w => Num w * Z w * PM w := by
+    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds
+      (show R₀ < z₀.re by rw [hz₀re]; linarith)] with w hw
+    have hw1 : 1 < w.re := by linarith [abs_nonneg η]
+    have hwH : w ∈ H := by
+      show max θ η < w.re
+      refine max_lt ?_ ?_ <;> linarith [abs_nonneg η, le_abs_self η]
+    have hw1' : w ≠ 1 := by
+      intro h
+      rw [h, Complex.one_re] at hw1
+      exact lt_irrefl _ hw1
+    have hZw : Z w ≠ 0 := by
+      rw [hZdef, zetaResidueFactor_of_ne hw1']
+      exact mul_ne_zero (sub_ne_zero.mpr hw1') (riemannZeta_ne_zero_of_one_le_re hw1.le)
+    have hid := deriv_deletionQuotient_mul Q hθ hN hψ hw
+    rw [← hFdef, ← hPdef, ← hPMdef, hderivF w hwH hZw, hFeq] at hid
+    field_simp at hid
+    linear_combination hid
+  have hcleared : Set.EqOn (fun w => (deriv Num w * Z w - Num w * deriv Z w) * P w)
+      (fun w => Num w * Z w * PM w) H :=
+    (((hNuman.deriv.mul hZan).sub (hNuman.mul hZan.deriv)).mul hPan).eqOn_of_preconnected_of_eventuallyEq
+      ((hNuman.mul hZan).mul hPMan) hHconv.isPreconnected hz₀H hcleared_near
+  -- `F` is not identically zero near `ρ₀`
+  have hNumz₀ : Num z₀ ≠ 0 := by
+    have hz₀1 : 1 < z₀.re := by rw [hz₀re]; linarith [abs_nonneg η]
+    have hθz₀ : θ < z₀.re := by rw [hz₀re]; linarith [abs_nonneg η]
+    rw [hNumdef, deletionNumerator_eq Q hθ hN hz₀1 hθz₀]
+    refine mul_ne_zero ?_ ?_
+    · refine sub_ne_zero.mpr fun h => ?_
+      have := congr_arg Complex.re h
+      rw [Complex.one_re, hz₀re] at this
+      linarith [abs_nonneg η]
+    · have hpos : 0 < LSeries (qFreeSeq Q) ((R₀ + 1 : ℝ) : ℂ) := by
+        refine LSeries.positive (fun n => ?_) ?_ ?_
+        · simp only [Pi.zero_apply, qFreeSeq]
+          exact Complex.zero_le_real.mpr (qFreeIndicator_nonneg Q n)
+        · simp [qFreeSeq, qFreeIndicator_one]
+        · refine (abscissa_qFreeSeq_le Q).trans_lt ?_
+          exact_mod_cast (show (1 : ℝ) < R₀ + 1 by linarith [abs_nonneg η])
+      exact hpos.ne'
+  have hZev : ∀ᶠ w in 𝓝 ρ₀, Z w ≠ 0 :=
+    (hZdiff.continuous.continuousAt).eventually_ne hZρ
+  have hFan : AnalyticAt ℂ F ρ₀ := (hNuman ρ₀ hρ₀H).div (hZan ρ₀ hρ₀H) hZρ
+  have hnot : ¬∀ᶠ w in 𝓝 ρ₀, F w = 0 := by
+    intro h
+    have hNum0 : Num =ᶠ[𝓝 ρ₀] 0 := by
+      filter_upwards [h, hZev] with w hw hZw
+      rw [hFeq, div_eq_zero_iff] at hw
+      exact hw.resolve_right hZw
+    exact hNumz₀ (hNuman.eqOn_zero_of_preconnected_of_eventuallyEq_zero hHconv.isPreconnected
+      hρ₀H hNum0 hz₀H)
+  obtain ⟨m, u, hu, hu0, hFu⟩ := (hFan.exists_eventuallyEq_pow_smul_nonzero_iff).mpr hnot
+  refine ⟨m, ?_⟩
+  -- local analysis at `ρ₀`
+  set P₀ : ℂ → ℂ := fun w => ∏ ρ ∈ J.erase ρ₀, (w - ρ) with hP₀
+  have hPfac : ∀ w, P w = (w - ρ₀) * P₀ w := fun w =>
+    (Finset.mul_prod_erase J (fun ρ : ℂ => w - ρ) hρ₀).symm
+  set φ₁ : ℂ → ℂ := fun w => (m * u w + (w - ρ₀) * deriv u w) * P₀ w with hφ₁
+  set φ₂ : ℂ → ℂ := fun w => u w * PM w with hφ₂
+  have hloc : ∀ᶠ w in 𝓝[≠] ρ₀, φ₁ w = φ₂ w := by
+    rw [eventually_nhdsWithin_iff]
+    filter_upwards [hFu.eventually_nhds, hu.eventually_analyticAt, hHopen.mem_nhds hρ₀H,
+      hFu, hZev] with w hwF hwu hwH hFw hZw hwne
+    have hwne' : w - ρ₀ ≠ 0 := sub_ne_zero.mpr hwne
+    have hderiv : HasDerivAt (fun w' => (w' - ρ₀) ^ m * u w')
+        (m * (w - ρ₀) ^ (m - 1) * 1 * u w + (w - ρ₀) ^ m * deriv u w) w :=
+      ((hasDerivAt_id w).sub_const ρ₀).pow m |>.mul hwu.differentiableAt.hasDerivAt
+    have hFeq' : F =ᶠ[𝓝 w] fun w' => (w' - ρ₀) ^ m * u w' := by
+      filter_upwards [hwF] with w' hw'
+      rw [hw', smul_eq_mul]
+    have hdF : deriv F w = m * (w - ρ₀) ^ (m - 1) * 1 * u w + (w - ρ₀) ^ m * deriv u w := by
+      rw [hFeq'.deriv_eq]
+      exact hderiv.deriv
+    -- the uncleared identity at `w`
+    have hkey : deriv F w * P w = F w * PM w := by
+      have hc := hcleared hwH
+      simp only at hc
+      rw [hderivF w hwH hZw, hFeq]
+      field_simp
+      linear_combination hc
+    rw [hdF, hPfac, hFw, smul_eq_mul] at hkey
+    have hpow : (w - ρ₀) * (m * (w - ρ₀) ^ (m - 1)) = m * (w - ρ₀) ^ m := by
+      rcases Nat.eq_zero_or_pos m with hm | hm
+      · subst hm
+        simp
+      · obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by omega⟩
+        rw [Nat.add_sub_cancel, pow_succ]
+        ring
+    have hcancel : (w - ρ₀) ^ m * φ₁ w = (w - ρ₀) ^ m * φ₂ w := by
+      simp only [hφ₁, hφ₂]
+      linear_combination hkey - (u w * P₀ w) * hpow
+    exact mul_left_cancel₀ (pow_ne_zero m hwne') hcancel
+  -- pass to the limit
+  have hPMcont : ContinuousAt PM ρ₀ := (hPMan _ hρ₀H).continuousAt
+  have hucont : ContinuousAt u ρ₀ := hu.continuousAt
+  have hu'cont : ContinuousAt (deriv u) ρ₀ := hu.deriv.continuousAt
+  have hP₀cont : Continuous P₀ :=
+    continuous_finsetProd _ fun ρ _ => continuous_id.sub continuous_const
+  have hφ₁cont : ContinuousAt φ₁ ρ₀ :=
+    ((continuousAt_const.mul hucont).add
+      ((continuousAt_id.sub continuousAt_const).mul hu'cont)).mul hP₀cont.continuousAt
+  have hφ₂cont : ContinuousAt φ₂ ρ₀ := hucont.mul hPMcont
+  have hlim : φ₁ ρ₀ = φ₂ ρ₀ :=
+    tendsto_nhds_unique ((hφ₁cont.tendsto.mono_left nhdsWithin_le_nhds).congr' hloc)
+      (hφ₂cont.tendsto.mono_left nhdsWithin_le_nhds)
+  -- evaluate at `ρ₀`
+  have hP₀ne : P₀ ρ₀ ≠ 0 := by
+    refine Finset.prod_ne_zero_iff.mpr fun ρ hρ => sub_ne_zero.mpr ?_
+    exact fun h => (Finset.mem_erase.mp hρ).1 h.symm
+  have hPρ₀ : P ρ₀ = 0 := Finset.prod_eq_zero hρ₀ (sub_self _)
+  have hPMρ₀ : PM ρ₀ = ρ₀ * c ρ₀ * P₀ ρ₀ := by
+    rw [hPMdef, clearedLogDeriv, ← hPdef, hPρ₀, zero_mul, zero_mul, add_zero]
+    rw [Finset.sum_eq_single ρ₀]
+    · intro ρ hρ hne
+      rw [Finset.prod_eq_zero (f := fun ρ' : ℂ => ρ₀ - ρ')
+        (Finset.mem_erase.mpr ⟨Ne.symm hne, hρ₀⟩) (sub_self _), mul_zero]
+    · intro h
+      exact absurd hρ₀ h
+  simp only [hφ₁, hφ₂, sub_self, zero_mul, add_zero, hPMρ₀] at hlim
+  have hmain : ((m : ℂ) - ρ₀ * c ρ₀) * (u ρ₀ * P₀ ρ₀) = 0 := by
+    linear_combination hlim
+  rcases mul_eq_zero.mp hmain with h | h
+  · linear_combination -h
+  · exact absurd h (mul_ne_zero hu0 hP₀ne)
+
+/-- **Residue quantization, real exponents.**  If `N_Q(x) = a x + O(x^θ)` and
+`ψ_Q(x) = ∑_{ρ ∈ J} c_ρ x^ρ + O(x^η)` with real exponents, then `ρ c_ρ ∈ ℕ` for every
+`ρ ∈ J` with `max θ η < ρ < 1`. -/
+theorem residue_quantization {a θ η : ℝ} (hθ : 0 ≤ θ) {J : Finset ℝ} {c : ℝ → ℝ}
+    (hN : (fun x : ℝ => qFreeCount Q x - a * x) =O[atTop] fun x => x ^ θ)
+    (hψ : (fun x : ℝ => deletedChebyshev Q x - ∑ ρ ∈ J, c ρ * x ^ ρ) =O[atTop] fun x => x ^ η)
+    {ρ₀ : ℝ} (hρ₀ : ρ₀ ∈ J) (hθρ : θ < ρ₀) (hηρ : η < ρ₀) (hρ1 : ρ₀ < 1) :
+    ∃ m : ℕ, ρ₀ * c ρ₀ = m := by
+  classical
+  have hinj : Set.InjOn (fun ρ : ℝ => (ρ : ℂ)) (J : Set ℝ) :=
+    fun _ _ _ _ h => Complex.ofReal_injective h
+  set J' : Finset ℂ := J.image fun ρ : ℝ => (ρ : ℂ) with hJ'
+  set c' : ℂ → ℂ := fun z => (c z.re : ℂ) with hc'
+  have hψ' : (fun x : ℝ => (deletedChebyshev Q x : ℂ) - ∑ ρ ∈ J', c' ρ * (x : ℂ) ^ ρ) =O[atTop]
+      fun x : ℝ => x ^ η := by
+    refine IsBigO.of_norm_left ?_
+    refine hψ.norm_left.congr' ?_ EventuallyEq.rfl
+    filter_upwards [eventually_ge_atTop (0:ℝ)] with x hx
+    rw [hJ', Finset.sum_image hinj, ← Complex.norm_real]
+    congr 1
+    push_cast
+    congr 1
+    refine Finset.sum_congr rfl fun ρ _ => ?_
+    simp only [hc', Complex.ofReal_re]
+    rw [Complex.ofReal_cpow hx]
+  have hρ₀' : (ρ₀ : ℂ) ∈ J' := Finset.mem_image_of_mem _ hρ₀
+  have hZρ : zetaResidueFactor (ρ₀ : ℂ) ≠ 0 := by
+    have hne : (ρ₀ : ℂ) ≠ 1 := by
+      intro h
+      have := congr_arg Complex.re h
+      simp at this
+      linarith
+    rw [zetaResidueFactor_of_ne hne]
+    exact mul_ne_zero (sub_ne_zero.mpr hne)
+      (riemannZeta_ne_zero_of_ofReal_mem_Ioo (hθ.trans_lt hθρ) hρ1)
+  obtain ⟨m, hm⟩ := residue_quantization_complex Q hθ hN hψ' hρ₀'
+    (by simpa using hθρ) (by simpa using hηρ) hZρ
+  refine ⟨m, ?_⟩
+  have hm' : ((ρ₀ * c ρ₀ : ℝ) : ℂ) = ((m : ℝ) : ℂ) := by
+    simp only [hc', Complex.ofReal_re] at hm
+    push_cast
+    exact hm
+  exact_mod_cast Complex.ofReal_injective hm'
+
+/-- **Odd-weight deletions obey the half-dimension uncertainty.**  Suppose the deleted
+Chebyshev function has the shape `(λ/κ)(x^κ + x^{κ/2}) + O(x^η)` with `λ` odd, `η < κ/2` and
+`0 < κ < 1`.  This is the shape produced by deleting primes with counting function
+`λ ∫^x t^{κ-1} dt / log t + O(x^{η'})`, `η' < κ/2`, whose squares contribute the `x^{κ/2}` term.
+Then the `Q`-free integers admit no power saving `x^θ` with `θ < κ/2`, although the deleted
+primes perturb the prime count by `x^κ`. -/
+theorem not_isBigO_qFreeCount_of_odd {a θ η κ : ℝ} {l : ℕ} (hl : Odd l) (hθ : 0 ≤ θ)
+    (hθκ : θ < κ / 2) (hηκ : η < κ / 2) (hκ0 : 0 < κ) (hκ1 : κ < 1)
+    (hψ : (fun x : ℝ => deletedChebyshev Q x - (l / κ) * (x ^ κ + x ^ (κ / 2))) =O[atTop]
+      fun x => x ^ η) :
+    ¬(fun x : ℝ => qFreeCount Q x - a * x) =O[atTop] fun x => x ^ θ := by
+  intro hN
+  have hne : κ ≠ κ / 2 := by
+    intro h
+    linarith
+  have hψ' : (fun x : ℝ => deletedChebyshev Q x -
+      ∑ ρ ∈ ({κ, κ / 2} : Finset ℝ), (fun _ : ℝ => (l : ℝ) / κ) ρ * x ^ ρ) =O[atTop]
+      fun x => x ^ η := by
+    refine hψ.congr_left fun x => ?_
+    rw [Finset.sum_pair hne]
+    ring
+  obtain ⟨m, hm⟩ := residue_quantization Q hθ hN hψ' (by simp) hθκ hηκ (by linarith)
+  have hl2 : (l : ℝ) = 2 * m := by
+    have hκne : κ ≠ 0 := hκ0.ne'
+    field_simp at hm
+    linarith
+  have hl2' : l = 2 * m := by exact_mod_cast hl2
+  obtain ⟨k, hk⟩ := hl
+  omega
+
+/-- **Zero-mimicking deletions.**  If the deleted Chebyshev function contains the term
+`(λ/ρ) x^{ρ/2}` with `λ` odd — the square-term of a deletion imitating a zero of odd
+multiplicity `λ` at `ρ` — and `ζ(ρ/2) ≠ 0`, then the `Q`-free integers admit no power saving
+`x^θ` with `θ < Re ρ / 2`. -/
+theorem not_isBigO_qFreeCount_of_odd_charge {a θ η : ℝ} {J : Finset ℂ} {c : ℂ → ℂ} {ρ : ℂ}
+    {l : ℕ} (hl : Odd l) (hθ : 0 ≤ θ) (hρ0 : ρ ≠ 0)
+    (hψ : (fun x : ℝ => (deletedChebyshev Q x : ℂ) - ∑ ρ' ∈ J, c ρ' * (x : ℂ) ^ ρ') =O[atTop]
+      fun x : ℝ => x ^ η)
+    (hmem : ρ / 2 ∈ J) (hc : c (ρ / 2) = l / ρ) (hθρ : θ < (ρ / 2).re) (hηρ : η < (ρ / 2).re)
+    (hζ : riemannZeta (ρ / 2) ≠ 0) :
+    ¬(fun x : ℝ => qFreeCount Q x - a * x) =O[atTop] fun x => x ^ θ := by
+  intro hN
+  have hZ : zetaResidueFactor (ρ / 2) ≠ 0 := by
+    by_cases h1 : ρ / 2 = 1
+    · rw [h1, zetaResidueFactor_one]
+      exact one_ne_zero
+    · rw [zetaResidueFactor_of_ne h1]
+      exact mul_ne_zero (sub_ne_zero.mpr h1) hζ
+  obtain ⟨m, hm⟩ := residue_quantization_complex Q hθ hN hψ hmem hθρ hηρ hZ
+  rw [hc] at hm
+  have hl2 : (l : ℂ) = 2 * m := by
+    field_simp at hm
+    linear_combination hm
+  have hl2' : l = 2 * m := by exact_mod_cast hl2
+  obtain ⟨k, hk⟩ := hl
+  omega
 
 end PrimeDeletion
 

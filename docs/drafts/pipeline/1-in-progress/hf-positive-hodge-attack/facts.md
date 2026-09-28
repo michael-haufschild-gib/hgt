@@ -211,3 +211,9 @@ Scope: frontier route HF. Facts and no-gos only.
 - **HF-F61 [Lean, `RHTower.abs_le_of_weilPositive`] The Weil cone lies in a box.**
   - Every Weil-positive `lam` satisfies `|lam(n)| ≤ √n(log n + C₀)` for all `n ≥ 2`, via the two-point resonators in the Weil–Toeplitz bound.
   - So W is a compact convex subset of `ℝ^ℕ` (product topology), and W ≠ ∅ iff every finite subsystem is feasible in the box (finite intersection property).
+- **HF-F62 [Lean, `RHTower.vonMangoldt_sub_measure_weilPositive_eq`] Beurling rigidity.**
+  - With ζ's archimedean term and pole fixed, no finite signed perturbation of the prime measure carried by `[ε,∞)` keeps Weil positivity: added, removed or moved atoms, or continuous mass.
+  - Corollary: no prime atom can be moved.
+- **HF-F63 [Lean, `RHTower.exists_weilPositive_iff_forall_level`] Minkowski split.**
+  - W ≠ ∅ ⟺ every finite level has a positive completion (free prime weights).
+  - Given uniqueness W ⊆ {Λ}: RH-positivity of Λ ⟺ finite-level existence.

@@ -40,11 +40,9 @@ Audit artifacts: `/tmp/chronological_weighted_manifest.json`,
 
 ## Remaining exact dependencies
 
-The [fixed-tail theorem](../2-fully-proven/chronological-finite-tail-obstruction.md)
-now has its critical Abel boundary limit and analytic continuation for this
-actual weighted source in the [weighted-boundary leaf](chronological-weighted-boundary.md).
-Heat-transform separation, discrete projection convergence, integer-scale
-transfer and the actual residual observation inequality still need Lean proofs.
+The [fixed-tail theorem](chronological-finite-tail-obstruction.md) is now
+Lean-complete, using this Mellin identity through the
+[weighted-boundary leaf](chronological-weighted-boundary.md).
 The [growing-moment source and logarithmic window](../2-fully-proven/chronological-growing-moment-source.md)
 also remain paper-only. No failed route has been retired on the strength of
 this component.

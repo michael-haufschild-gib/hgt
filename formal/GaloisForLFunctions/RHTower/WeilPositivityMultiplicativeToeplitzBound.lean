@@ -767,25 +767,22 @@ theorem sum_mul_conj_eq (N : ℕ) (c : ℕ → ℂ) :
 
 /-! ### The multiplicative Toeplitz bound -/
 
-/-- **The Weil–Toeplitz bound.**  If the finite-atom Weil symbol with weights `lam` (and the
-archimedean term of `ζ`) is nonnegative on every polar-constrained `C²` test at every level, then
-for every `N ≥ 1` and every coefficient vector `c` supported in `[1, N]`,
-`2 ∑_{2 ≤ n ≤ N} lam(n) n^{-1/2} Re ∑_m c(nm) conj(c m) ≤ (log N + C₀) ∑_m |c m|²`,
-with an absolute constant `C₀`.  Equivalently, the `N × N` multiplicative Toeplitz matrix
-`[lam(m/m') (m/m')^{-1/2} 1_{m' ∣ m}] + transpose` has top eigenvalue `≤ log N + C₀`.
-
-Tests: narrow polar-free bumps `g_w(x - log m)`, `w = 1/(N+1)`; their autocorrelation sees the
-atom `log n` only on the exact multiplicative diagonal `m = n m'`, and the archimedean symbol is
-bounded by `log(1/w) + O(1)` on their spectrum. -/
-theorem weil_multiplicativeToeplitz_bound {lam : ℕ → ℝ}
-    (hW : ∀ a : ℝ, 0 ≤ a → ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
+/-- **The Weil–Toeplitz bound at one level.**  For `N ≥ 1` and a coefficient vector `c` supported
+in `[1, N]`, positivity of the finite-atom Weil symbol with weights `lam` on the polar-constrained
+`C²` tests at the single level `a_N = log N / 2 + 1/(4(N+1))` gives
+`2 ∑_{2 ≤ n ≤ N} lam(n) n^{-1/2} Re ∑_m c(nm) conj(c m) ≤ (log N + C₀) ∑_m |c m|²`
+with the absolute constant `C₀ = log 2 + 9/2 + profileRatio/2`. -/
+theorem weil_multiplicativeToeplitz_bound_at {lam : ℕ → ℝ} {N : ℕ} (hN : 1 ≤ N) (c : ℕ → ℂ)
+    (hc : ∀ m, N < m → c m = 0)
+    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f →
+      tsupport f ⊆ Icc (-(Real.log N / 2 + 1 / ((N : ℝ) + 1) / 4))
+        (Real.log N / 2 + 1 / ((N : ℝ) + 1) / 4) →
       paperFT f (I / 2) = 0 → paperFT f (-(I / 2)) = 0 →
-      0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * weilAtomSymbol lam ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π))) :
-    ∃ C₀ : ℝ, ∀ N : ℕ, 1 ≤ N → ∀ c : ℕ → ℂ, (∀ m, N < m → c m = 0) →
-      2 * ∑ n ∈ Finset.Icc 2 N, lam n / Real.sqrt n *
-          (∑ m ∈ Finset.Icc 1 N, c (n * m) * conj (c m)).re ≤
-        (Real.log N + C₀) * ∑ m ∈ Finset.Icc 1 N, ‖c m‖ ^ 2 := by
-  refine ⟨Real.log 2 + 9 / 2 + profileRatio / 2, fun N hN c hc => ?_⟩
+      0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * weilAtomSymbol lam
+        ⌊Real.exp (2 * (Real.log N / 2 + 1 / ((N : ℝ) + 1) / 4))⌋₊ (τ / (2 * π))) :
+    2 * ∑ n ∈ Finset.Icc 2 N, lam n / Real.sqrt n *
+        (∑ m ∈ Finset.Icc 1 N, c (n * m) * conj (c m)).re ≤
+      (Real.log N + (Real.log 2 + 9 / 2 + profileRatio / 2)) * ∑ m ∈ Finset.Icc 1 N, ‖c m‖ ^ 2 := by
   have hN1 : (0 : ℝ) < N + 1 := by positivity
   have hNr : (1 : ℝ) ≤ N := by exact_mod_cast hN
   set w : ℝ := 1 / ((N : ℝ) + 1) with hwdef
@@ -809,7 +806,7 @@ theorem weil_multiplicativeToeplitz_bound {lam : ℕ → ℝ}
     hasCompactSupport_of_support_subset_abs (Λ := a) fun u hu => by
       by_contra h; push Not at h; exact hu (hFvan u h)
   obtain ⟨hp1, hp2⟩ := paperFT_resonator_pole (N := N) (c := c) hw
-  have hpos := hW a ha F hF2 hFs hp1 hp2
+  have hpos := hW F hF2 hFs hp1 hp2
   rw [integral_weilAtomSymbol_eq_arch_sub hF2 hFs lam] at hpos
   -- the autocorrelation masses
   set k0r : ℝ := ∫ t, gR w t ^ 2 with hk0r
@@ -958,6 +955,31 @@ theorem weil_multiplicativeToeplitz_bound {lam : ℕ → ℝ}
         rw [hα]; linarith
 
 /-! ### Density corollaries -/
+
+
+/-- **The Weil–Toeplitz bound.**  If the finite-atom Weil symbol with weights `lam` (and the
+archimedean term of `ζ`) is nonnegative on every polar-constrained `C²` test at every level, then
+for every `N ≥ 1` and every coefficient vector `c` supported in `[1, N]`,
+`2 ∑_{2 ≤ n ≤ N} lam(n) n^{-1/2} Re ∑_m c(nm) conj(c m) ≤ (log N + C₀) ∑_m |c m|²`,
+with an absolute constant `C₀`.  Equivalently, the `N × N` multiplicative Toeplitz matrix
+`[lam(m/m') (m/m')^{-1/2} 1_{m' ∣ m}] + transpose` has top eigenvalue `≤ log N + C₀`.
+
+Tests: narrow polar-free bumps `g_w(x - log m)`, `w = 1/(N+1)`; their autocorrelation sees the
+atom `log n` only on the exact multiplicative diagonal `m = n m'`, and the archimedean symbol is
+bounded by `log(1/w) + O(1)` on their spectrum. -/
+theorem weil_multiplicativeToeplitz_bound {lam : ℕ → ℝ}
+    (hW : ∀ a : ℝ, 0 ≤ a → ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
+      paperFT f (I / 2) = 0 → paperFT f (-(I / 2)) = 0 →
+      0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * weilAtomSymbol lam ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π))) :
+    ∃ C₀ : ℝ, ∀ N : ℕ, 1 ≤ N → ∀ c : ℕ → ℂ, (∀ m, N < m → c m = 0) →
+      2 * ∑ n ∈ Finset.Icc 2 N, lam n / Real.sqrt n *
+          (∑ m ∈ Finset.Icc 1 N, c (n * m) * conj (c m)).re ≤
+        (Real.log N + C₀) * ∑ m ∈ Finset.Icc 1 N, ‖c m‖ ^ 2 :=
+  ⟨Real.log 2 + 9 / 2 + profileRatio / 2, fun N hN c hc =>
+    weil_multiplicativeToeplitz_bound_at hN c hc (hW _ (by
+      have : (1 : ℝ) ≤ N := by exact_mod_cast hN
+      have := Real.log_nonneg this
+      positivity))⟩
 
 theorem sum_Icc_inv_le_one_add_log (N : ℕ) :
     ∑ m ∈ Finset.Icc 1 N, (1 : ℝ) / m ≤ 1 + Real.log N := by

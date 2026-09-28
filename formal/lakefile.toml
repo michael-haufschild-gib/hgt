@@ -28,3 +28,7 @@ rev = "cac1c55684ee31ed76a4c0573e974c01794851c5"
 
 [[lean_lib]]
 name = "GaloisForLFunctions"
+
+[[require]]
+name = "DifferentialGeometry"
+path = "vendor/differential-geometry"
