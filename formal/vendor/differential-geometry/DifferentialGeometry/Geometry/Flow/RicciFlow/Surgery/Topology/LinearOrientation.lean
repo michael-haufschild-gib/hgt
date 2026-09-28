@@ -1,3 +1,4 @@
+/- Local compatibility change: use Mathlib 4.32.2 block-triangular and Gram-Schmidt APIs. -/
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 import Mathlib.Analysis.Normed.Module.Connected
 import Mathlib.Topology.Homotopy.Basic
@@ -212,11 +213,11 @@ private theorem gramSchmidt_basis_det_pos
   exact gramSchmidtNormed_inner_pos f hli i
 
 private theorem positive_triangular_interpolation_det
-    (R : Matrix (Fin 3) (Fin 3) ℝ) (hR : R.IsUpperTriangular)
+    (R : Matrix (Fin 3) (Fin 3) ℝ) (hR : R.BlockTriangular id)
     (hdiag : ∀ i, 0 < R i i) (t : unitInterval) :
     0 < Matrix.det ((1 - (t : ℝ)) • R + (t : ℝ) • (1 : Matrix (Fin 3) (Fin 3) ℝ)) := by
   have htri : ((1 - (t : ℝ)) • R + (t : ℝ) •
-      (1 : Matrix (Fin 3) (Fin 3) ℝ)).IsUpperTriangular := by
+      (1 : Matrix (Fin 3) (Fin 3) ℝ)).BlockTriangular id := by
     intro i j hij
     have hne : i ≠ j := by
       intro he
@@ -224,7 +225,7 @@ private theorem positive_triangular_interpolation_det
       exact (lt_irrefl i) hij
     simp only [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul,
       hR hij, Matrix.one_apply_ne hne, mul_zero, add_zero]
-  rw [Matrix.det_of_isUpperTriangular htri]
+  rw [Matrix.det_of_upperTriangular htri]
   apply Finset.prod_pos
   intro i _
   simp only [Matrix.add_apply, Matrix.smul_apply, Matrix.one_apply_eq, smul_eq_mul, mul_one]
@@ -235,7 +236,7 @@ private theorem positive_triangular_interpolation_det
 
 private theorem positive_triangular_basis_homotopy
     (b g : OrthonormalBasis (Fin 3) ℝ E) (L : E ≃L[ℝ] E)
-    (htri : (LinearMap.toMatrix b.toBasis g.toBasis L.toLinearMap).IsUpperTriangular)
+    (htri : (LinearMap.toMatrix b.toBasis g.toBasis L.toLinearMap).BlockTriangular id)
     (hdiag : ∀ i, 0 < LinearMap.toMatrix b.toBasis g.toBasis L.toLinearMap i i) :
     ∃ H : (⟨L, L.continuous⟩ : C(E, E)).Homotopy
         (⟨b.equiv g (Equiv.refl (Fin 3)), (b.equiv g (Equiv.refl (Fin 3))).continuous⟩ : C(E, E)),
@@ -334,9 +335,9 @@ theorem positive_linear_homotopy
   have hcoeff : LinearMap.toMatrix b.toBasis g.toBasis L.toLinearMap = g.toBasis.toMatrix f := by
     ext i j
     simp [LinearMap.toMatrix_apply, Module.Basis.toMatrix_apply, f]
-  have htri : (LinearMap.toMatrix b.toBasis g.toBasis L.toLinearMap).IsUpperTriangular := by
+  have htri : (LinearMap.toMatrix b.toBasis g.toBasis L.toLinearMap).BlockTriangular id := by
     rw [hcoeff]
-    exact gramSchmidtOrthonormalBasis_inv_isUpperTriangular hdim f
+    exact gramSchmidtOrthonormalBasis_inv_blockTriangular hdim f
   have hdiag : ∀ i, 0 < LinearMap.toMatrix b.toBasis g.toBasis L.toLinearMap i i := by
     intro i
     rw [hcoeff]

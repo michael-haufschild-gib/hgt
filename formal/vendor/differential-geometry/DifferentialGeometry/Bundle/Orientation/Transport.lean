@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.Bundle.Orientation.Classes
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Topology.LocallyConstant.Basic
@@ -62,9 +63,9 @@ theorem continuousOn_orientation_transport (hdim : Module.finrank ℝ V = n)
     (hA : ContinuousOn (fun x => (A x : V →L[ℝ] V)) s) :
     ContinuousOn (fun z : X × Orientation ℝ V (Fin n) =>
       Orientation.map (Fin n) (A z.1).toLinearEquiv z.2) (s ×ˢ Set.univ) := by
-  have hA' := continuousOn_iff_continuous_domRestrict.mp hA
+  have hA' := continuousOn_iff_continuous_restrict.mp hA
   have h := continuous_orientation_transport hdim (fun x : s => A x) hA'
-  rw [continuousOn_iff_continuous_domRestrict]
+  rw [continuousOn_iff_continuous_restrict]
   have hc : Continuous (fun z : s ×ˢ (Set.univ : Set (Orientation ℝ V (Fin n))) =>
       (⟨z.val.1, z.property.1⟩, z.val.2) :
         s ×ˢ (Set.univ : Set (Orientation ℝ V (Fin n))) → s × Orientation ℝ V (Fin n)) :=

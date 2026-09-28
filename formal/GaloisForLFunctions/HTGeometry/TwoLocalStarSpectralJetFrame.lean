@@ -75,8 +75,8 @@ theorem sum_sq_realStarWalshPacket
     Real.norm_eq_abs, sq_abs, mul_pow] at h
   rw [← Finset.mul_sum] at h
   have hD : (2 : ℝ) ^ Fintype.card I ≠ 0 := pow_ne_zero _ (by norm_num)
-  field_simp at h
-  nlinarith [sq_nonneg ((2 : ℝ) ^ Fintype.card I)]
+  have hscale := congrArg (fun v : ℝ => ((2 : ℝ) ^ Fintype.card I) ^ 2 * v) h
+  simpa only [pow_two, mul_assoc, mul_inv_cancel_left₀ hD] using hscale
 
 /-- Real spectral action on a star slice through the common diagonal reference. -/
 def commonReferenceRealStarAction {n : ℕ}
@@ -88,7 +88,6 @@ def commonReferenceRealStarAction {n : ℕ}
         starJetReferenceField n j * (if z j then -1 else 1))
       (twoLocalStarGap (starJetReferenceField n i) c) p u
 
-set_option maxHeartbeats 800000 in
 theorem orderedStarCouplingDeriv_realAction {n : ℕ}
     (k : (Fin n → Bool) → ℝ) (i : Fin n)
     (S : Finset {j : Fin n // j ≠ i}) :
@@ -108,10 +107,12 @@ theorem orderedStarCouplingDeriv_realAction {n : ℕ}
           (fun z => k (edgeEquiv i (0,z)) - k (edgeEquiv i (1,z)))
           (twoLocalStarGap (starJetReferenceField n i) c) := by
     funext u
-    exact sum_blockSplitRoot_eq m _ (fun p => k (edgeEquiv i p)) u
-  simp_rw [haction]
-  exact orderedStarCouplingDeriv_actualSpectralCurvature _
-    (starJetReferenceField_pos_le_one n i).1 _ _ S
+    unfold commonReferenceRealStarAction
+    rw [sum_blockSplitRoot_eq]
+  simp_rw [haction, edgeEquiv_zero, edgeEquiv_one]
+  exact orderedStarCouplingDeriv_actualSpectralCurvature (starJetReferenceField n i)
+    (starJetReferenceField_pos_le_one n i).1
+    (fun z => k (edgeState i z false) - k (edgeState i z true)) _ S
 
 private theorem realWalshSign_edgeState {n : ℕ} (B : Finset (Fin n))
     (i : Fin n) (hi : i ∈ B) (z : qubitEnvironment n i) (b : Bool) :
@@ -164,9 +165,7 @@ theorem one_le_abs_commonReferenceStarJetAmplifier {n : ℕ} (i : Fin n)
     (S : Finset {j : Fin n // j ≠ i}) :
     1 ≤ |commonReferenceStarJetAmplifier i S| := by
   have ha := starJetReferenceField_pos_le_one n i
-  have hinv : 1 ≤ (starJetReferenceField n i)⁻¹ := by
-    have hh := mul_le_mul_of_nonneg_right ha.2 (inv_nonneg.mpr ha.1.le)
-    rwa [mul_inv_cancel₀ ha.1.ne', one_mul] at hh
+  have hinv : 1 ≤ (starJetReferenceField n i)⁻¹ := (one_le_inv₀ ha.1).mpr ha.2
   have hfac : (1 : ℝ) ≤ (S.card.factorial : ℝ) := by
     exact_mod_cast Nat.factorial_pos S.card
   have hp : (1 : ℝ) ≤ (starJetReferenceField n i)⁻¹ ^ (S.card + 1) :=
@@ -175,7 +174,7 @@ theorem one_le_abs_commonReferenceStarJetAmplifier {n : ℕ} (i : Fin n)
     abs_one, one_pow, one_mul,
     abs_of_nonneg (show (0 : ℝ) ≤ (S.card.factorial : ℝ) by positivity),
     abs_of_nonneg (inv_nonneg.mpr ha.1.le)]
-  nlinarith
+  exact one_le_mul_of_one_le_of_one_le hfac hp
 
 /-- One compensated actual star derivative for each nonempty parity mode.
 The empty mode is set to zero: it represents the global spectral shift. -/
@@ -228,7 +227,7 @@ theorem commonReferenceSpectralJet_parseval (n : ℕ)
     · rw [commonReferenceSpectralJet_eq_packet k B hB, if_neg hB.ne_empty, add_zero]
   have h := sum_sq_realStarWalshPacket k
   simp_rw [hterm] at h
-  simpa [Finset.sum_add_distrib] using h
+  simpa only [Finset.sum_add_distrib, Fintype.sum_ite_eq', Fintype.card_fin] using h
 
 private theorem exists_large_realStarWalshPacket {n : ℕ}
     (k : (Fin n → Bool) → ℝ) (hbalance : ∑ x, k x = 0) (hk : k ≠ 0) :
@@ -273,8 +272,8 @@ theorem balanced_real_character_commonBase_starJet_detection
   let S := B.subtype (fun j => j ≠ i)
   have hi : i ∈ B := B.min'_mem hB
   have henv : Fintype.card {j : Fin n // j ≠ i} < n := by
-    simpa using Fintype.card_subtype_lt (x := i) (p := fun j : Fin n => j ≠ i)
-      (by simp)
+    simpa only [Fintype.card_fin] using
+      Fintype.card_subtype_lt (x := i) (p := fun j : Fin n => j ≠ i) (not_not.mpr rfl)
   have hcard := Finset.card_le_univ S
   refine ⟨i, S, by omega, ?_⟩
   rw [orderedStarCouplingDeriv_realAction,
@@ -285,9 +284,7 @@ theorem balanced_real_character_commonBase_starJet_detection
     exact ⟨abs_nonneg _, by simpa only [sq_abs] using hlarge⟩
   rw [abs_mul]
   apply hp.trans
-  have ha := one_le_abs_commonReferenceStarJetAmplifier i S
-  have hk0 := abs_nonneg (realStarWalshPacket k B)
-  nlinarith
+  exact le_mul_of_one_le_left (abs_nonneg _) (one_le_abs_commonReferenceStarJetAmplifier i S)
 
 end
 end GaloisForLFunctions.HTGeometry

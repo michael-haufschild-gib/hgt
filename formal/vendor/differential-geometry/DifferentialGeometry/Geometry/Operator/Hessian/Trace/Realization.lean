@@ -1,3 +1,4 @@
+/- Local modification: omit reflexivity after local simplification already closes the differential evaluation. -/
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
@@ -151,7 +152,6 @@ theorem differential1FormFun_apply_eq_mvfderiv
     differential1FormFun (I := I) u x (fun _ : Fin 1 => v) =
       mvfderiv (I := I) u x v := by
   simp [differential1FormFun, mvfderiv, NormedSpace.fromTangentSpace]
-  rfl
 
 theorem dphi_apply_smooth
     (u : M -> Real) (hu : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) u)

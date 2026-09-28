@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.Bundle.Orientation.Transport
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.Topology.Covering.Basic
@@ -81,7 +82,7 @@ theorem orientationChange_locallyConstant (Z : VectorBundleCore ℝ B F J)
     intro x hx
     exact ContinuousLinearMap.ext (fun v => Z.localTriv_coordChange_eq i j hx v)
   apply (IsLocallyConstant.iff_continuous _).mpr
-  have hA := continuousOn_iff_continuous_domRestrict.mp hAon
+  have hA := continuousOn_iff_continuous_restrict.mp hAon
   convert (continuous_orientation_transport hdim
     (fun x : ↥(Z.baseSet i ∩ Z.baseSet j) => (Z.localTriv i).coordChangeL ℝ (Z.localTriv j) x)
     hA).comp (continuous_id.prodMk (continuous_const (y := o))) using 1

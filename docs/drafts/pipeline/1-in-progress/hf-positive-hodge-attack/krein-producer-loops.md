@@ -1852,3 +1852,69 @@ Next conjectures to test:
     - If yes, Gordan gives prime-blind radical combinations at every level, so `σ_pb = 0` and no slack points exist.
     - If no, the definite `T_c` is an explicit prime-weight perturbation that could carry slack.
   - The difficulty: `T_c` oscillates faster (frequencies up to `2a`) than the resolution `1/(a−R)` of `PW_{a−R}`.
+
+### L75 — Weil positivity forces a pole: sparse weight systems are never Weil-positive. PROVED [Lean]
+- **Conjecture (from L72).** The far-correction attack on PBAP (L72) fails on the integers because of their density. It should succeed exactly when the atoms are sparse. Then every Weil-positive completion of ζ's archimedean datum must carry atoms of prime-number-theorem density, i.e. a pole.
+- **Mechanism: the polar constraint is asymptotically free on the frequency side.**
+  - The corrected test is `f_X = ψ − c_X(ψ(·−X) + ψ(·+X))/2`, with `c_X = 1/cosh(X/2)` and `ψ` the corpus Fejér test (support `[−0.34, 0.34]`, `∫|ψ̂|²A < 0`).
+  - It has `f̂_X(z) = ψ̂(z)(1 − c_X cos(Xz))`. This vanishes at `z = ±i/2` exactly, since `cos(±iX/2) = cosh(X/2)`.
+  - On the real line the multiplier `1 − c_X cos(τX)` tends to `1` uniformly. So the archimedean energy of `f_X` tends to `∫|ψ̂|²A < 0`, with explicit error `(2c_X + c_X²)∫|ψ̂|²|A|`.
+  - The whole polar cost is carried by the atoms at the lags `X` and `2X`. Exactly: `∫|f̂_X|² cos(τ log n) = 2π((c²/4)R(log n − 2X) − cR(log n − X))`, with `R` the autocorrelation of `ψ`.
+- **Theorems [Lean, `RHTower.WeilPositivitySparseWeightsObstruction`].**
+  - `weilPositive_farPolar_inequality` (Chebyshev inequality at every scale). For Weil-positive `lam` and every `X ≥ 0`:
+    `η − (2c_X + c_X²)I ≤ 4π Σ_n lam(n) n^{−1/2}(c_X R(log n − X) − (c_X²/4)R(log n − 2X))`,
+    where `η = −∫|ψ̂|²A > 0` and `I = ∫|ψ̂|²|A|`.
+  - `not_weilPositive_of_localAtomMass`: if `Σ_{|log n − X| ≤ 1}|lam(n)|n^{−1/2} = o(e^{X/2})`, then `lam` is not Weil-positive.
+  - `not_weilPositive_of_sparse_support`: if `lam` vanishes off `P` with `#(P ∩ [2,N]) ≤ CN^θ` and `θ < ½`, then `lam` is not Weil-positive. This covers S-units of finitely many primes, k-th powers (k ≥ 3), and lacunary sets.
+  - Axioms: standard only.
+- **Meaning.**
+  - *Positivity produces the pole.* Any positive completion must reproduce the polar term `4πp₊p₋` of the Fejér test through its atoms at scales `e^X` and `e^{2X}`.
+    - For Λ, the prime number theorem gives local means `s₁(X) → 1` and `s₂(2X) → 1`. The combination `2s₁(X) − s₂(2X) → 1` then reproduces exactly Weil's pole term `ĝ(i/2) + ĝ(−i/2)`, so `Q_Λ(f_X) → W_Λ(ψ) = arch(ψ) + pole(ψ) ≥ 0` (Yoshida/Connes–Consani small-support positivity).
+    - For a general Weil-positive `lam`: `liminf [2s₁(X) − s₂(2X)] ≥ θ(ψ) = −arch(ψ)/(4πp²) > 0`. Using `ψ` with polar moments of opposite sign gives an upper window as well. This is a Chebyshev theorem for every positive completion, produced by positivity alone.
+  - *Sharp boundary for L72.* The integer density `e^X` (local mass `≍ e^{X/2}` after the `n^{−1/2}` weight) is exactly what blocks the far-correction counterexample to PBAP. Position sets with fewer than `√N/log N` elements in `[N, eN]` admit no completion at all.
+    - Open: whether the √N threshold is sharp, e.g. whether some weight system on the squares or on the prime squares (`#≍√N/log N`, at the box constant) is Weil-positive.
+  - *Existence half.* This is the first structural theorem on the existence side. Completions exist only with PNT-density atoms and a positive residue. It extends the corpus result for summable weights (`summable_weights_weilAtomSymbol_not_nonneg`) to all non-summable sparse systems (e.g. S-unit systems with box-size weights, whose `Σ|lam|n^{−1/2}` diverges).
+- **Novelty audit.**
+  - Corpus: the summable case and the unit-shift polar multipliers `(cos 2πξ − 1)(cos 2πξ − cosh ½)` exist. The far multiplier `1 − cos(τX)/cosh(X/2)`, uniformly close to 1, and the sparse/Chebyshev laws are new.
+  - Literature: Weil/Yoshida/Bombieri/Connes–Consani treat Λ (or semilocal Λ restricted to S) with fixed weights. The free-weight cone W and its density law are not in the literature I know of.
+
+### L76 — Rigidity across the √n barrier: the half-pole atom. PROVED [Lean]
+- **Why (stop-hook steer: find the producer).** In Minkowski's scheme, uniqueness turns *any* positive completion into Λ, so full uniqueness would make every construction of a positive completion a producer of Λ's positivity. Uniqueness had stopped at partial sums `O(n^θ)`, `θ < ½` (L71). At `θ = ½` sit the prime powers (`Σ_{p²≤x} log p ~ √x`) and the squares.
+- **Mechanism: the `√n` main term is an atom.**
+  - `β(n) = √n − √(n−1)` (partial sums `√n − 1`) satisfies `β(n)/√n = ∫_{log(n−1)}^{log n} ½ e^{(u−log n)/2} du`.
+  - Hence `2π Σ β(n) n^{−½} φ_f(log n) = π|ĥ_f(0)|² + ∫|ĥ_f|² P_β` (`pairing_sqrtStep`).
+    - The atom `π|ĥ_f(0)|²` comes from `½∫_0^∞ φ_f = ½|ĥ_f(0)|²`. It is the pole of `ζ(2s)` at `s = ½`, a *boundary* pole.
+    - `P_β = 2Σ K_n` with `|K_n| ≤ (1+|τ|)/(n−1)²` is continuous of linear growth.
+- **Theorems [Lean, `RHTower.WeilPositivityHalfPoleRigidity`].**
+  - `vonMangoldt_add_eq_zero_of_symbol_atom`: symbol = continuous `P` of linear growth plus `m|ĥ(0)|²`; Weil positivity of `Λ + w` ⇒ `w = 0`.
+    - Concentrated radical tests centred at `τ₀ ≠ 0` force `P ≤ 0`; there `|ĥ(0)|² = O(S^{−6})` (`vonMangoldt_sub_symbol_atom_violation`).
+    - Probes force `m ≥ 0`.
+    - Zero-mean probes `p_t − (κ̂(εt)/κ̂(0))p_0` (transform `0` at `0`, `≠ 0` at `t`, via the strict bound `|κ̂(v)| < κ̂(0)`) force `P ≡ 0`, then `m = 0`.
+    - Resonators finish.
+  - `vonMangoldt_add_halfPole_eq_zero`: partial sums `κ(√n − 1) + E(n)` with `Σ|E(n)|/(n√n) < ∞`, κ arbitrary ⇒ `w = 0`. The remainder uses the L69 Abel symbol under the weaker summable-weight hypothesis (`pairing_eq_integral_oscSymbol`).
+  - `vonMangoldt_add_squares_weilPositive_eq_zero`: `Λ + c·1_{n=m²}` Weil-positive ⇒ `c = 0`. This is the first uniqueness result *at* the √n barrier.
+  - Axioms: standard only.
+- **Meaning.**
+  - Weil positivity cannot absorb a boundary pole of either sign.
+    - A positive atom in the perturbation symbol would need a nonpositive continuous part with the same spectral gap. The zero-mean probes show this forces both to vanish.
+    - A negative atom is excluded directly.
+  - The uniqueness frontier moves from `O(n^θ)`, `θ<½` to "`κ√n` + summable-weight remainder". Remaining gap: genuinely oscillating `√n`-size partial sums (e.g. `Λχ`, whose Dirichlet series has zeros, not poles, on the boundary) and irregular growth.
+- **Next.** The arithmetic corollary "the prime powers are forced" (Λ restricted to primes is not Weil-positive) needs only `Σ_n |θ(√n) − √n|/(n√n) < ∞`, i.e. the medium PNT (Zeta23 `MediumPNT`) plus Chebyshev for the `k ≥ 3` powers.
+- **L76 corollary: the prime powers are forced. PROVED [Lean, `RHTower.WeilPositivityPrimePowersForced`].**
+  - `vonMangoldt_add_primePowerPart_weilPositive_eq_zero`: rescaling the weights on the non-prime prime powers by `1 + c` keeps Weil positivity only for `c = 0`.
+  - `primeWeights_not_weilPositive`: `n ↦ log p·1_{n = p}` is not Weil-positive.
+  - Inputs:
+    - the Mathlib sandwich `ψ(√x) ≤ ψ − θ ≤ ψ(√x) + ψ(x^{1/3}) + ψ(x^{1/5})`;
+    - Zeta23 `MediumPNT` (standard axioms);
+    - Cauchy condensation for `Σ e^{−b(log n)^{1/10}}/n`.
+  - Meaning: positivity sees the prime squares, through the boundary pole of `ζ(2s)`. A producer must generate the full prime-power structure `log p` at every `p^k`, not just the primes.
+
+### L77 — Weil positivity produces a Chebyshev lower bound. PROVED [Lean]
+- **Theorem [Lean, `RHTower.WeilPositivityChebyshevLowerBound`].**
+  - `weilPositive_smoothedMean_lower`: for Weil-positive `lam`, if `e^{−Y/2}Σ_n lam(n)n^{−½}R(log n − Y) → L`, then `4πL ≥ −∫|ψ̂|²A > 0`.
+  - `not_weilPositive_of_smoothedMean_zero`: zero smoothed mean density ⇒ not Weil-positive (e.g. Λχ for non-principal χ, Möbius-type weights, any mean-zero system).
+  - Axioms: standard.
+- **Proof.** Pass to the limit in the L75 far-polar inequality: `c_X e^{X/2} → 2`, so `4π(c_X S(X) − c_X²S(2X)/4) → 4π(2L − L)`.
+- **Meaning.**
+  - Positivity alone produces the Chebyshev phenomenon: the mean density of prime atoms is bounded below by an explicit archimedean constant.
+  - For Λ, `L = (∫ψe^{x/2})²` by the PNT, and the inequality is exactly small-support Weil positivity of `ψ` with its pole term (Yoshida / Connes–Consani). This is the consistency check.

@@ -1,3 +1,4 @@
+/- Local modifications: map path witnesses explicitly for Mathlib 4.32.2. -/
 import DifferentialGeometry.Topology.Homotopy.CubeInterior
 import DifferentialGeometry.Topology.Homotopy.CollapseMaps
 import DifferentialGeometry.Topology.Homotopy.BasedMappingSpace
@@ -69,8 +70,8 @@ theorem genLoopSphereHomeomorph_homotopic_iff (n : ℕ) (x : X)
   rw [← basedMappingSpace_joined_iff, genLoop_homotopic_iff_joined]
   constructor
   · intro h
-    simpa only [Homeomorph.symm_apply_apply] using
-      h.map (genLoopSphereHomeomorph n x).symm.continuous
-  · exact fun h => h.map (genLoopSphereHomeomorph n x).continuous
+    simpa only [Joined, Homeomorph.symm_apply_apply] using
+      h.map (fun P => P.map (genLoopSphereHomeomorph n x).symm.continuous)
+  · exact fun h => h.map (fun P => P.map (genLoopSphereHomeomorph n x).continuous)
 
 end DifferentialGeometry.Topology

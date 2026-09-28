@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.Analysis.Time
 import Mathlib.RingTheory.Derivation.Basic
 import Mathlib.Tactic
@@ -260,7 +261,7 @@ theorem of_union_closedOpen
           TotalSpace.mk' (Tensor0SModel s Real E)
             (E := fun x : M => Tensor0SSpace s I x) q'.2 (A q'.1.1 q'.2))
         {q' : {t : Real // t ∈ Set.Ico a b} × M | (q'.1.1 : Real) < c} := by
-      rw [continuousOn_iff_continuous_domRestrict]
+      rw [continuousOn_iff_continuous_restrict]
       refine h1.comp (f := fun w : {q' : {t : Real // t ∈ Set.Ico a b} × M //
           (q'.1.1 : Real) < c} =>
           (⟨w.1.1.1, Set.mem_Ico.mpr ⟨(Set.mem_Ico.mp w.1.1.2).1, w.2⟩⟩, w.1.2)) ?_
@@ -275,7 +276,7 @@ theorem of_union_closedOpen
           TotalSpace.mk' (Tensor0SModel s Real E)
             (E := fun x : M => Tensor0SSpace s I x) q'.2 (A q'.1.1 q'.2))
         {q' : {t : Real // t ∈ Set.Ico a b} × M | a < (q'.1.1 : Real)} := by
-      rw [continuousOn_iff_continuous_domRestrict]
+      rw [continuousOn_iff_continuous_restrict]
       refine h2.comp (f := fun w : {q' : {t : Real // t ∈ Set.Ico a b} × M //
           a < (q'.1.1 : Real)} =>
           (⟨w.1.1.1, Set.mem_Ioo.mpr ⟨w.2, (Set.mem_Ico.mp w.1.1.2).2⟩⟩, w.1.2)) ?_

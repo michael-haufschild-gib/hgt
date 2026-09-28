@@ -1,5 +1,6 @@
 /-
 Authors: Jack McCarthy (pattern), extended for slot permutation of smooth sections
+Local modifications: definitional pointwise zero/addition proofs for Mathlib 4.32.2.
 -/
 import DifferentialGeometry.Tensor.Multilinear.Bundle.TensorProduct
 open DifferentialGeometry.Tensor.Multilinear
@@ -85,8 +86,7 @@ noncomputable def domDomCongr {s s' : ℕ} (e : Fin s ≃ Fin s')
       = (0 : MultilinearSection 𝕜 F IB E n s') := by
   refine DFunLike.ext _ _ fun x => ?_
   ext V
-  simp [domDomCongr_apply, ContinuousMultilinearMap.domDomCongr_apply,
-    ContMDiffSection.coe_zero]
+  rfl
 
 theorem domDomCongr_id_of_valPres {s : ℕ} (e : Fin s ≃ Fin s)
     (he : ∀ i, ((e i : Fin s) : ℕ) = (i : ℕ))
@@ -109,7 +109,7 @@ theorem domDomCongr_add {s s' : ℕ} (e : Fin s ≃ Fin s')
       = domDomCongr (IB := IB) n e α + domDomCongr (IB := IB) n e β := by
   refine DFunLike.ext _ _ fun x => ?_
   ext V
-  simp [domDomCongr_apply, ContinuousMultilinearMap.domDomCongr_apply]
+  rfl
 
 theorem domDomCongr_smul {s s' : ℕ} (e : Fin s ≃ Fin s') (c : 𝕜)
     (α : MultilinearSection 𝕜 F IB E n s) :

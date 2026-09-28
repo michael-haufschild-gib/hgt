@@ -1,3 +1,4 @@
+/- Local modifications: map path witnesses explicitly for Mathlib 4.32.2. -/
 import DifferentialGeometry.Topology.Homotopy.CubePathExtension
 import DifferentialGeometry.Topology.Homotopy.Map
 
@@ -57,7 +58,8 @@ theorem genLoopTransport_homotopic (n : ℕ) (p : Path x y)
     GenLoop.Homotopic (genLoopTransport n p Γ) (genLoopTransport n p Δ) := by
   apply (genLoop_homotopic_iff_joined _ _).mpr
   exact ((genLoop_homotopic_iff_joined Γ Δ).mp h).map
-    ((continuous_genLoopTransport n).comp (continuous_const.prodMk continuous_id))
+    (fun P => P.map
+      ((continuous_genLoopTransport n).comp (continuous_const.prodMk continuous_id)))
 
 
 
@@ -69,7 +71,8 @@ theorem genLoopTransport_path_homotopic (n : ℕ) {p q : Path x y}
     ⟨⟨H.eval, Path.continuous_uncurry_iff.mp H.continuous⟩, H.eval_zero, H.eval_one⟩
   have hj : Joined p q := ⟨P⟩
   exact (genLoop_homotopic_iff_joined _ _).mpr
-    (hj.map ((continuous_genLoopTransport n).comp (continuous_id.prodMk continuous_const)))
+    (hj.map (fun Q => Q.map
+      ((continuous_genLoopTransport n).comp (continuous_id.prodMk continuous_const))))
 
 
 theorem genLoopTransport_natural (n : ℕ) (f : C(X, Y)) (p : Path x y)

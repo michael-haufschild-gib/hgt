@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import Mathlib.Topology.ContinuousMap.Basic
 import Mathlib.Topology.LocallyFinite
 import Mathlib.Topology.Homeomorph.Defs
@@ -14,8 +15,8 @@ noncomputable def liftClosedCover (S : ι → Set X) (φ : ∀ i, C(S i, Y))
     (hcov : ⋃ i, S i = univ) (hclosed : ∀ i, IsClosed (S i)) (hfinite : LocallyFinite S) :
     C(X, Y) :=
   mk (Set.liftCover S (fun i ↦ φ i) hφ hcov) <| hfinite.continuous hcov hclosed fun i ↦ by
-    rw [continuousOn_iff_continuous_domRestrict]
-    simpa +unfoldPartialApp only [Set.domRestrict, Set.liftCover_coe] using (φ i).continuous
+    rw [continuousOn_iff_continuous_restrict]
+    simpa +unfoldPartialApp only [Set.restrict, Set.liftCover_coe] using (φ i).continuous
 
 variable {S : ι → Set X} {φ : ∀ i, C(S i, Y)}
     {hφ : ∀ (i j) (x : X) (hxi : x ∈ S i) (hxj : x ∈ S j),

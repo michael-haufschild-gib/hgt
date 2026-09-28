@@ -1,3 +1,4 @@
+/- Local modification: remove two goals already closed by Mathlib 4.32.2 simplification. -/
 import DifferentialGeometry.Geometry.Connection.TensorNabla.FixedChart.Models
 import DifferentialGeometry.Bundle.TangentSpace
 
@@ -173,12 +174,10 @@ theorem fixedChartNabla0SModel_contDiffWithinAt (s : ℕ)
           =ᶠ[𝓝[range I] z₀] W := by
       filter_upwards with y
       simp [e, W, tangentSpaceModelContinuousLinearEquiv_apply]
-      rfl
     have heq₀ :
         (e (⟨z₀, Wraw z₀⟩ :
           TotalSpace E (TangentSpace 𝓘(𝕜, E) : E → Type _))).2 = W z₀ := by
       simp [e, W, tangentSpaceModelContinuousLinearEquiv_apply]
-      rfl
     simpa [Wraw, W, z₀] using
       hcoord.contDiffWithinAt.congr_of_eventuallyEq heq.symm heq₀.symm
   have hΓ :

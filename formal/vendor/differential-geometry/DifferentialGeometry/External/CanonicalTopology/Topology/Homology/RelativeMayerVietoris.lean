@@ -1,3 +1,4 @@
+/- Local compatibility change: explicit quotient-map congruences and reflexivity on Mathlib 4.32.2. -/
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.TwoSetSmallChains
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ChainCokernelElements
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeFunctoriality
@@ -188,6 +189,7 @@ private theorem integralRelativeTwoSetDifference_apply (n : ℕ) (A B : Set X)
     change biprod.desc (integralRelativeToTwoSetQuotient A B false)
       (-integralRelativeToTwoSetQuotient A B true) = _
     rw [biprod.desc_eq, Preadditive.comp_neg, ← sub_eq_add_neg]
+    rfl
   exact congrArg (fun f : integralRelativeChains A ⊞ integralRelativeChains B ⟶
     integralTwoSetQuotientChains A B => f.f n z) h
 
@@ -255,8 +257,10 @@ private theorem integralRelativeTwoSetSequence_exact (n : ℕ) (A B : Set X)
   obtain ⟨b, hb⟩ := chainCokernelπ_surjective
     (integralSingularChainMap (singularSubspaceInclusion B)) n
     ((biprod.snd : integralRelativeChains A ⊞ integralRelativeChains B ⟶ integralRelativeChains B).f n z)
-  rw [integralRelativeTwoSetDifference_apply, ← ha, ← hb,
-    integralRelativeToTwoSetQuotient_projection, integralRelativeToTwoSetQuotient_projection] at hz
+  rw [integralRelativeTwoSetDifference_apply, ← ha, ← hb] at hz
+  have hz := (congrArg₂ (fun x y : (integralTwoSetQuotientChains A B).X n => x - y)
+    (integralRelativeToTwoSetQuotient_projection n A B false a)
+    (integralRelativeToTwoSetQuotient_projection n A B true b)).symm.trans hz
   let πS : integralSingularChains X ⟶ integralTwoSetQuotientChains A B :=
     cokernel.π (integralSingularSmallInclusion (twoSetCover A B))
   change πS.f n a - πS.f n b = 0 at hz
@@ -629,9 +633,12 @@ theorem exists_relative_homology_inter_class (n : ℕ) (A B : Set X)
   have hzero : homologyMap δ n z = 0 := by
     apply (ModuleCat.mono_iff_injective (homologyMap ρ n)).mp inferInstance
     rw [hpair, map_sub, map_zero, homologyMap_comp_apply, homologyMap_comp_apply]
-    rw [integralRelativeToTwoSetQuotient_comp_comparison,
-      integralRelativeToTwoSetQuotient_comp_comparison]
-    exact sub_eq_zero.mpr hab
+    exact (congrArg₂ (fun x y : integralRelativeHomology n (A ∪ B) => x - y)
+      (congrArg (fun f : integralRelativeChains A ⟶ integralRelativeChains (A ∪ B) =>
+        homologyMap f n a) (integralRelativeToTwoSetQuotient_comp_comparison A B false))
+      (congrArg (fun f : integralRelativeChains B ⟶ integralRelativeChains (A ∪ B) =>
+        homologyMap f n b) (integralRelativeToTwoSetQuotient_comp_comparison A B true))).trans
+      (sub_eq_zero.mpr hab)
   obtain ⟨c, hc⟩ := (integralRelativeTwoSetHomology_exact n A B z).mp hzero
   refine ⟨c, ?_, ?_⟩
   · have h := congrArg (fun v => homologyMap (biprod.fst : K ⊞ L ⟶ K) n v) hc

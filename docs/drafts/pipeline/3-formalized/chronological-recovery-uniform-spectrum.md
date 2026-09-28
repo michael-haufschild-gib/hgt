@@ -1,6 +1,6 @@
 # Uniform recovery growth and the exact spectral disc
 
-**Status:** complete paper argument from the proved physical quotient norm and the paper-only weighted Chebyshev/rate results. Not formalized in Lean. No moment positivity or gap log-convexity is assumed. Priority of this application is unestablished.
+**Status:** Lean-complete (Stage 3-formalized): the growth inequality, the uniform root limit, `‖U^d‖`, the spectral radius, the spectrum, the adjoint eigenvectors, and the identification of `ℓ²(ℕ,ℂ)` with the complexification are proved in Lean; axioms `propext`, `Classical.choice`, `Quot.sound` only. No moment positivity or gap log-convexity is assumed. Priority of this application is unestablished.
 
 Let δ_k be the physical recovery gaps, and let ρ be the exact constant in [the exponential-rate proof](chronological-recovery-exponential-rate.md). Then
 
@@ -52,4 +52,25 @@ converges in Hilbert norm by the root test and is nonzero. Boundedness of U* and
 
 The [degree-17 numerical square witness](../1-in-progress/chronological-recovery-moment-problem.md) suggests that the squared gaps do not have a positive moment measure. Its sign still needs an exact proof. The uniform growth theorem above is independent of that sign and is a positive result exposed by investigating the obstruction. It does not prove the separate inequality δ_(k+1)²≤δ_kδ_(k+2), ratio convergence, or positivity of the recovery commutator.
 
-The formal dependency gap remains weighted alternation/coefficient duality and the potential-theory rate theorem. Do not represent this paper argument as a Lean theorem or add these facts as axioms.
+The former formal dependencies (weighted alternation/coefficient duality and the rate theorem) are now Lean theorems; see the table below.
+
+## Lean formalization
+
+Modules in `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/`, wired into `HTGeometry.lean`.
+
+| Card statement | Lean declaration | Module |
+|-|-|-|
+| Homogeneous lift `H_d = c^d T_d(u/c)` has physical norm `t_d` | `cubicHomogeneousLift`, `cubicHomogeneousCapacity_lift` | `CubicRecoveryUniformGrowth` |
+| Corrected lift `A_d = H_d + S_d c H_(d−1)`: `c⁰`-coefficient `u^d`, zero `c`-coefficient, norm `≤ t_d + S_d t_(d−1) ≤ t_d + (d/4) t_(d−1) = B_d` | `cubicCorrectedOptimizer`, `cubicCorrectedOptimizer_coeff_top/_pred`, `cubicWeightedIntervalNorm_corrected_le`, `cubicOptimizerRootSum_le` | same |
+| Physical norm is submultiplicative on products of homogeneous observations | `mul_mem_cubicHomogeneousSpace`, `cubicHomogeneousCapacity_mul_le` | same |
+| **`δ_(k+d) ≤ B_d δ_k`** for all `k ≥ 0`, `d ≥ 1` | `cubicGradedRecoveryGap_add_le` | same |
+| **`lim_d (sup_k δ_(k+d)/δ_k)^(1/d) = ρ`** | `tendsto_cubicRecoveryUniformGrowth` | same |
+| Complexification: `U_ℂ` on `ℓ²(ℕ,ℂ)`, `ι` (basis coordinates) isometric, `U_ℂ ∘ ι = ι ∘ U`, `(x,y) ↦ ιx + iιy` bijective | `complexRecoveryShift`, `recoveryRealEmbedding`, `norm_recoveryRealEmbedding`, `complexRecoveryShift_realEmbedding`, `recoveryComplexification_bijective`, `complexRecoveryShift_complexification` | `CubicRecoverySpectralDisc` |
+| `U^d` on the basis; **`‖U^d‖ = sup_k δ_(k+d)/δ_k`** | `complexRecoveryShift_pow_apply`, `norm_complexRecoveryShift_pow` | same |
+| Spectral radius `ρ` (outer inclusion via Gelfand's formula) | `spectralRadius_complexRecoveryShift`, `norm_le_of_mem_spectrum_complexRecoveryShift` | same |
+| For `|λ|<ρ`: `v_λ ∈ ℓ²`, `v_λ ≠ 0`, `U*v_λ = λv_λ`; `U − μ` not surjective | `memℓp_recoveryEigen`, `adjoint_complexRecoveryShift_eigenvector`, `not_surjective_complexRecoveryShift_sub` | same |
+| **Spectrum = `{|z| ≤ ρ}`** | `spectrum_complexRecoveryShift` | same |
+
+**Verification.** `lake env lean` on both modules: clean. `lake build` of the top module: passed.
+`#print axioms` for 10 capstones: `[propext, Classical.choice, Quot.sound]`.
+

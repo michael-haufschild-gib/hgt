@@ -20,7 +20,8 @@ Per-folder detail stays in the folder ledgers (`_STAGE3-LEDGER.md`, `_SWEEP-LEDG
 | 01 | six Böttcher cards | Brolin/cylinder monodromy; E–vS; q62 hole-free tip gap | TODO |
 | chrono | finite-tail-obstruction | — | **DONE → stage 3** (12 RHTower modules + quantitative weighted boundary) |
 | chrono | growing-moment-source | — | **DONE → stage 3** (8 RHTower modules) |
-| chrono | recovery-exponential-rate, recovery-uniform-spectrum | weighted potential theory (see chronological sweep log) | TODO |
+| chrono | recovery-exponential-rate | DONE 2026-09-28 → `3-formalized/`; HTGeometry/ChronologicalTensor CubicRecovery* + ArcsineLogIntegral + GaussianFrullaniLogKernel | DONE |
+| chrono | recovery-uniform-spectrum | DONE 2026-09-28 → `3-formalized/`; `CubicRecoveryUniformGrowth`, `CubicRecoverySpectralDisc` | DONE |
 | 11 | verified-height-one-zero-turing-extension | needs 10^13-zero certified computation | BLOCKED (rules) |
 
 ## AP-periodicity route (no Schwartz, no normalization)
@@ -46,3 +47,5 @@ Per-folder detail stays in the folder ledgers (`_STAGE3-LEDGER.md`, `_SWEEP-LEDG
   HalfTailGram, MobiusHalfPrefixMoments, GrowingMomentSource, BoseCothRemainder, BoseCothLocalBounds,
   GrowingSignedProjection (29 audited capstones). Reused HTGeometry `bernoulli_two_mul_ne_zero`,
   `iteratedDeriv_cexp`, `cosh_sub_one_le`, corpus Lambert regrouping and PNT little-o.
+- 2026-09-28: `chronological-recovery-exponential-rate` formalized (rate, E_{2m}, consequences, equilibrium measure with energy minimality + uniqueness, S_m/m → A) and moved to `3-formalized/`.
+- 2026-09-28: `chronological-recovery-uniform-spectrum` formalized (growth inequality, uniform limit, ‖U^d‖, spectrum = closed disc, complexification) and moved to `3-formalized/`. Chronological folder complete.

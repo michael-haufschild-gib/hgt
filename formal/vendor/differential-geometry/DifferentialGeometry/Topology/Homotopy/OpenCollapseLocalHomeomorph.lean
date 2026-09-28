@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.Topology.Homotopy.OpenCollapse
 import Mathlib.Topology.OpenPartialHomeomorph.Basic
 
@@ -29,7 +30,7 @@ def openCollapseOpenPartialHomeomorph [TopologicalSpace Y] [Nonempty Y]
   OpenPartialHomeomorph.ofContinuousOpenRestrict
     ((openCollapse_injOn U).toPartialEquiv (openCollapse U) U)
     (by
-      apply continuousOn_iff_continuous_domRestrict.mpr
+      apply continuousOn_iff_continuous_restrict.mpr
       change Continuous (fun y : U => openCollapse U y)
       have heq : (fun y : U => openCollapse U y) = fun y : U => (y : OnePoint U) :=
         funext (openCollapse_of_mem U)

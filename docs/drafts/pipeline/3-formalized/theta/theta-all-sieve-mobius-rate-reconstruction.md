@@ -1,11 +1,11 @@
 # Möbius reconstruction of the all-sieve theta rate cone
 
 - **ID:** `theta-all-sieve-mobius-rate-reconstruction`
-- **Stage:** 2-fully-proven (paper)
-- **Type:** THEOREM (paper); Lean formalization pending
+- **Stage:** 3-formalized (paper theorems formalized unconditionally in Lean; see `theta-all-sieve-mobius-rate-reconstruction-formalized.md`).
+- **Type:** THEOREM (paper); formalized in Lean
 - **Routes:** STC, CSB, U, MPLF, RG-HF, RHist
-- **Status:** `[PROVED HERE ON PAPER] [NOT AN RH PROOF]`
-- **Dependencies:** the exact theta Gaussian-rate flux and prime-shift law in [theta-prime-deletion-spectral-escape](../../3-formalized/theta/theta-prime-deletion-spectral-escape.md), and finite Bernstein--Widder/Laplace uniqueness in the Lean corpus. No numerical computation is used.
+- **Status:** `[PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
+- **Dependencies:** the exact theta Gaussian-rate flux and prime-shift law in [theta-prime-deletion-spectral-escape](theta-prime-deletion-spectral-escape.md), and finite Bernstein--Widder/Laplace uniqueness in the Lean corpus. No numerical computation is used.
 
 ## Exact rate-measure classification
 
@@ -124,11 +124,11 @@ If in addition `f` has the same ordinary mass and **both** reflected half-densit
 ∫e^(−s/2)dη(s)=∫e^(s/2)dη(s)=1.
 ```
 
-Their average is `∫cosh(s/2)dη=1`, forcing support at `s=0`. Evenness of `f` plus equality of the positive half-charge supplies the reflected charge automatically. This extends the [all-sieve translation-gauge theorem](../../3-formalized/theta/theta-all-sieve-seed-projector-translation-cone.md): the translation representation and positivity of its measure are conclusions rather than assumptions.
+Their average is `∫cosh(s/2)dη=1`, forcing support at `s=0`. Evenness of `f` plus equality of the positive half-charge supplies the reflected charge automatically. This extends the [all-sieve translation-gauge theorem](theta-all-sieve-seed-projector-translation-cone.md): the translation representation and positivity of its measure are conclusions rather than assumptions.
 
 ## Meaning and boundary
 
-The positive rate gap makes prime dilation **proper**: only finitely many arithmetic ancestors can reach a bounded rate window. The strict negative-moment condition (W1) replaces local finiteness by absolute summability. In either case Möbius inversion is a positive-measure reconstruction, not a formal alternating series. Cofinal deletion reads a unique Gaussian seed, and the corresponding all-sieve cone is exactly the positive cone of Euler reconstructions of seeds. The [single-prime pure-ray theorem](../../3-formalized/theta/theta-prime-deletion-bernstein-pure-ray.md) is a sharper extremality statement for `k` under weaker tests; the present theorem classifies the full finite-sieve cone under either control condition.
+The positive rate gap makes prime dilation **proper**: only finitely many arithmetic ancestors can reach a bounded rate window. The strict negative-moment condition (W1) replaces local finiteness by absolute summability. In either case Möbius inversion is a positive-measure reconstruction, not a formal alternating series. Cofinal deletion reads a unique Gaussian seed, and the corresponding all-sieve cone is exactly the positive cone of Euler reconstructions of seeds. The [single-prime pure-ray theorem](theta-prime-deletion-bernstein-pure-ray.md) is a sharper extremality statement for `k` under weaker tests; the present theorem classifies the full finite-sieve cone under either control condition.
 
 This is intrinsically an **all-prime completion** property. A finite smooth-number stage `ν_P=2πΣ_(n:P-smooth)n²δ_(πn²)` has a positive rate gap and survives deletion by primes in `P`, but for any prime `q∉P`, `D_qν_P` has coefficient `−2πq²` at rate `πq²`. Thus no proper finite-prime Euler stage belongs to the all-sieve cone; the full `k` enters it only at the infinite arithmetic completion. The classification does not replace that singular passage by a finite positive approximation.
 
@@ -155,4 +155,4 @@ This classification still does not orient Xi zeros. The literal `k` is a member 
 - [x] Paper proof that every proper finite smooth-number stage fails an undeclared-prime deletion test.
 - [x] Paper counterexample showing why a rate-zero boundary hypothesis cannot simply be dropped.
 - [x] Paper critical-scaling ghost with positive finite deletions and zero cofinal seed.
-- [ ] Formalize the locally finite and weighted measure incidence theorems and source-flux transfer with targeted Lean checks.
+- [x] Formalize the locally finite and weighted measure incidence theorems and source-flux transfer with targeted Lean checks (`RateMobiusInversion`, `ThetaRateLaplaceBernstein`, `ThetaRateMobiusSourceTransfer`, `ThetaRateMobiusBoundaryExamples`; certificate `theta-all-sieve-mobius-rate-reconstruction-formalized.md`).

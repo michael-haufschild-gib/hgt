@@ -1,3 +1,4 @@
+/- Local modification: use the Mathlib 4.32.2 restriction API and omit a redundant trailing tactic. -/
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeHomeomorphism
 import Mathlib.Geometry.Manifold.ChartedSpace
 
@@ -36,7 +37,6 @@ theorem integralLocalHomologyOpenPartialHomeomorphIso_natural (n : ℕ)
           (integralLocalHomologyNeighborhoodIso n (e x) e.target
             e.open_target (e.map_source hx)).hom := by
   simp [integralLocalHomologyOpenPartialHomeomorphIso]
-  rfl
 
 end DifferentialGeometry.Topology
 
@@ -50,7 +50,7 @@ theorem integralLocalHomologyOpenPartialHomeomorphIso_comp_neighborhood
     (integralLocalHomologyOpenPartialHomeomorphIso n e a (hUs haU)).hom.hom.comp
         (integralLocalHomologyNeighborhoodIso n a U hU haU).hom.hom =
       integralRelativeHomologyMap n
-        (⟨fun x : U => e x, (e.continuousOn.mono hUs).domRestrict⟩ : C(U, Y))
+        (⟨fun x : U => e x, (e.continuousOn.mono hUs).restrict⟩ : C(U, Y))
         (show MapsTo (fun x : U => e x)
           ({(⟨a, haU⟩ : U)}ᶜ : Set U) ({e a}ᶜ : Set Y)
           from fun x hx h => hx (Subtype.ext (e.injOn (hUs x.property) (hUs haU) h))) := by
@@ -66,7 +66,7 @@ theorem integralLocalHomologyOpenPartialHomeomorphIso_comp_neighborhood
     change q x = (⟨a, ha⟩ : e.source) at h
     have hval : (x : X) = a := congrArg (fun z : e.source => (z : X)) h
     exact hx (Subtype.ext hval)
-  let g : C(e.source, Y) := ⟨fun x => e x, e.continuousOn.domRestrict⟩
+  let g : C(e.source, Y) := ⟨fun x => e x, e.continuousOn.restrict⟩
   have hg : MapsTo g ({(⟨a, ha⟩ : e.source)}ᶜ : Set e.source) ({e a}ᶜ : Set Y) :=
     fun x hx h => hx (Subtype.ext (e.injOn x.property ha h))
   have hepair : MapsTo e.toHomeomorphSourceTarget
@@ -112,7 +112,7 @@ theorem integralLocalHomologyOpenPartialHomeomorphIso_trans
   let Jv := integralLocalHomologyNeighborhoodIso n (e a) f.source f.open_source hb
   let g : C(U, f.source) :=
     ⟨fun x => ⟨e x, x.property.2⟩,
-      ((e.continuousOn.mono hUe).domRestrict).subtype_mk _⟩
+      ((e.continuousOn.mono hUe).restrict).subtype_mk _⟩
   have hg : MapsTo g ({(⟨a, hUa⟩ : U)}ᶜ : Set U)
       ({(⟨e a, hb⟩ : f.source)}ᶜ : Set f.source) := by
     intro x hx h

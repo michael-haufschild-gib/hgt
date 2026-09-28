@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.LocalCharts
 import Mathlib.Topology.MetricSpace.ProperSpace
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.OpenExcision
@@ -106,7 +107,7 @@ theorem integralRelativeHomologyOpenPartialHomeomorphIso_comp_excision (n : ℕ)
         e.open_source
         (complement_union_eq_univ_of_subset (chart_inverse_image_subset_source e L hLt))).hom.hom =
     integralRelativeHomologyMap n
-      (⟨fun x : e.source => e x, e.continuousOn.domRestrict⟩ : C(e.source, Y))
+      (⟨fun x : e.source => e x, e.continuousOn.restrict⟩ : C(e.source, Y))
       (show MapsTo (fun x : e.source => e x)
         (subspaceIntersection (e.symm '' L)ᶜ e.source) Lᶜ from
           fun x hx he => hx ⟨e x.val, he, e.left_inv x.property⟩) := by

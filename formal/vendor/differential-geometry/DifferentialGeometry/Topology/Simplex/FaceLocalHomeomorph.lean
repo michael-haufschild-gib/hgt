@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 -- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Topology.Simplex.Face
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
@@ -91,7 +92,7 @@ def faceOpenPartialHomeomorph (i : Fin (n + 2)) :
       (continuous_subtype_val.comp continuous_subtype_val))
   continuousOn_toFun := (faceToBoundary i).continuous.continuousOn
   continuousOn_invFun := by
-    rw [continuousOn_iff_continuous_domRestrict]
+    rw [continuousOn_iff_continuous_restrict]
     let f : C(faceInterior i, face i) :=
       ⟨fun p => ⟨p.val.val, faceInterior_pivot_eq_zero i p.property⟩,
         (continuous_subtype_val.comp continuous_subtype_val).subtype_mk _⟩

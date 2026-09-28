@@ -3,6 +3,7 @@ Copyright (c) 2026 Bennett Chow. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bennett Chow, OpenAI
 -/
+/- Local modifications: map path witnesses explicitly for Mathlib 4.32.2. -/
 import DifferentialGeometry.Topology.VanKampen.FullGroupoid
 import DifferentialGeometry.Topology.VanKampen.Representative
 import DifferentialGeometry.Topology.VanKampen.RetractPushout
@@ -174,9 +175,9 @@ theorem isRepresentative_of_cover {X : Type u} [TopologicalSpace X]
   have hx : x ∈ U ∪ V := by rw [hcover]; trivial
   rcases hx with hxU | hxV
   · obtain ⟨a, haA, hax⟩ := hAU ⟨x, hxU⟩
-    exact ⟨a.1, haA, hax.map continuous_subtype_val⟩
+    exact ⟨a.1, haA, hax.map (fun P => P.map continuous_subtype_val)⟩
   · obtain ⟨a, haA, hax⟩ := hAV ⟨x, hxV⟩
-    exact ⟨a.1, haA, hax.map continuous_subtype_val⟩
+    exact ⟨a.1, haA, hax.map (fun P => P.map continuous_subtype_val)⟩
 
 noncomputable def leftRepresentativeChoice {X : Type u} [TopologicalSpace X]
     (A U V : Set X) (hAU : IsRepresentative (selectedIn A U))

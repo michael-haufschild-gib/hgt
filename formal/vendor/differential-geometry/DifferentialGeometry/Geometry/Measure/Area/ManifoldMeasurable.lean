@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldDensity
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Analysis.Calculus.FDeriv.Measurable
@@ -75,12 +76,12 @@ theorem measurable_riemannianAreaDensity_in_chart
     (chartAt E p).continuousOn.comp hu.continuousOn (fun _ hz => hz)
   have hm : Measurable (fun z : u ⁻¹' (chartAt E p).source =>
       ((chartAt E p) (u z), fderiv ℝ ((chartAt E p) ∘ u) z)) :=
-    (continuousOn_iff_continuous_domRestrict.mp hc).measurable.prodMk
+    (continuousOn_iff_continuous_restrict.mp hc).measurable.prodMk
       ((measurable_fderiv ℝ ((chartAt E p) ∘ u)).comp measurable_subtype_coe)
   have hmt := hm.subtype_mk
     (p := fun q : E × (ℂ →L[ℝ] E) => q.1 ∈ (chartAt E p).target)
     (h := fun z => (chartAt E p).map_source z.property)
-  have hd := (continuousOn_iff_continuous_domRestrict.mp
+  have hd := (continuousOn_iff_continuous_restrict.mp
     (continuousOn_chartAreaDensity g p)).measurable.comp hmt
   convert hd using 1
   funext z

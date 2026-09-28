@@ -1,3 +1,4 @@
+/- Local modification: map the path witness explicitly for Mathlib 4.32.2. -/
 import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.BasedCircle
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 
@@ -54,7 +55,7 @@ theorem joined_freeLoops (γ η : freeLoop Q) : Joined γ η := by
   obtain ⟨q, hq⟩ := circleLoop_nullhomotopic γ
   obtain ⟨r, hr⟩ := circleLoop_nullhomotopic η
   have hqr : Joined (ContinuousMap.const loopCircle q) (ContinuousMap.const loopCircle r) :=
-    (PathConnectedSpace.joined q r).map FreeLoop.constants.continuous
+    (PathConnectedSpace.joined q r).map (fun p => p.map FreeLoop.constants.continuous)
   exact ((FreeLoop.homotopic_iff_joined _ _).mp hq).trans
     (hqr.trans ((FreeLoop.homotopic_iff_joined _ _).mp hr).symm)
 

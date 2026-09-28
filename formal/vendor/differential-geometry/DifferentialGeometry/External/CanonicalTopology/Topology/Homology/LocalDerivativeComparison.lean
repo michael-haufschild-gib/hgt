@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.External.CanonicalTopology.Analysis.LocalDerivativeHomotopy
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeHomeomorphism
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeZero
@@ -235,7 +236,7 @@ private theorem exists_ball_local_homologyMap_translation_eq_det_sign
     have hx' := hrt (hsub ⟨x, hx⟩)
     change a + (x - a) ∈ s at hx'
     simpa only [hadd] using hx'
-  let h : C(V, E) := ⟨fun x => f x, (hc.mono hVs).domRestrict⟩
+  let h : C(V, E) := ⟨fun x => f x, (hc.mono hVs).restrict⟩
   let k : C(V, U) := ⟨fun x => ⟨(x : E) - a, hsub x⟩, by fun_prop⟩
   have hkp : MapsTo k ({(⟨a, Metric.mem_ball_self hr⟩ : V)}ᶜ : Set V)
       ({(⟨0, Metric.mem_ball_self hr⟩ : U)}ᶜ : Set U) := by
@@ -330,7 +331,7 @@ private theorem integralLocalHomologyOpenPartialHomeomorphIso_translation_eq_det
   let U := Metric.ball a r
   let I := integralLocalHomologyOpenPartialHomeomorphIso n e a ha
   let J := integralLocalHomologyNeighborhoodIso n a U Metric.isOpen_ball (Metric.mem_ball_self hr)
-  let g : C(U, E) := ⟨fun x => e x, (e.continuousOn.mono hrs).domRestrict⟩
+  let g : C(U, E) := ⟨fun x => e x, (e.continuousOn.mono hrs).restrict⟩
   have hgh : g = h := by
     apply ContinuousMap.ext
     intro x

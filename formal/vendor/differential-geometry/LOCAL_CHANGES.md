@@ -88,3 +88,57 @@ and corresponding regularity, expansion and evaluation lemmas. Upstream-owned
 - `DifferentialGeometry/Geometry/Curvature/Riemann/Basic/Field.lean` (4 replacements).
 
 - `Tensor/Multilinear/Bundle/TensorProduct.lean`: prove bilinearity and section product-zero pointwise, avoiding instance-sensitive model-coordinate simplification on Mathlib 4.32.2. Full-file scratch check passed.
+
+- `Tensor/Multilinear/Bundle/DomainPermutation.lean`: zero and addition compatibility use their definitional pointwise equalities rather than instance-sensitive simplification.
+
+- `External/CanonicalTopology/Topology/LoopSpace/SimplyConnectedTarget.lean`: replace newer `Joined.map` syntax with explicit `Nonempty.map` of `Path.map`; full-file scratch and local `Path.map` API check passed.
+
+- `Geometry/Connection/Realization/Embedding.lean`: both newer `MDifferentiableAt.mvfderiv` calls use the already-ported `mvfderiv_apply_eq_fderivWithin_writtenInExtChartAt` evaluation lemma. Remove a trailing `rfl` after `L.fderiv` already closes the linear-map evaluation identity.
+
+- `Geometry/Connection/TensorNabla/FixedChart/Nabla0S.lean`: remove two trailing `rfl` steps after simplification already closes their goals on Mathlib 4.32.2.
+
+- `Bundle/PartialMfderiv/Basic.lean`: omit a trailing `rfl` after the preceding simplification closes the bracket equality on Mathlib 4.32.2.
+
+## Continuous restriction API backport
+
+Backported 29 inspected uses in 16 modules: `continuousOn_iff_continuous_domRestrict` → `continuousOn_iff_continuous_restrict`, `ContinuousOn.domRestrict` → `ContinuousOn.restrict`, and `Set.domRestrict` → `Set.restrict`. All three local APIs passed minimal scratch checks.
+
+- `DifferentialGeometry/Bundle/Orientation/Cover.lean`
+- `DifferentialGeometry/Bundle/Orientation/Transport.lean`
+- `DifferentialGeometry/External/CanonicalTopology/Topology/Homology/LocalCharts.lean`
+- `DifferentialGeometry/External/CanonicalTopology/Topology/Homology/LocalCompactHomology.lean`
+- `DifferentialGeometry/External/CanonicalTopology/Topology/Homology/LocalDerivativeComparison.lean`
+- `DifferentialGeometry/External/CanonicalTopology/Topology/Homology/LocalOrientation.lean`
+- `DifferentialGeometry/Geometry/Connection/ChartFrame/RicciIdentitySmoothFrame.lean`
+- `DifferentialGeometry/Geometry/Exponential/Defs.lean`
+- `DifferentialGeometry/Geometry/Measure/Area/ManifoldMeasurable.lean`
+- `DifferentialGeometry/Geometry/Metric/Family/Basic.lean`
+- `DifferentialGeometry/Geometry/Metric/TensorInner/Fiber/CoerciveBilinearInverse.lean`
+- `DifferentialGeometry/Topology/ClosedCover.lean`
+- `DifferentialGeometry/Topology/Homology/LocalGerm.lean`
+- `DifferentialGeometry/Topology/Homotopy/OpenCollapseLocalHomeomorph.lean`
+- `DifferentialGeometry/Topology/Simplex/BoundaryGluing.lean`
+- `DifferentialGeometry/Topology/Simplex/FaceLocalHomeomorph.lean`
+
+- `Bundle/TangentSpace.lean`: add `DifferentialGeometry.mvfderiv_comp_apply`, proved from local `mfderiv_comp` and the definition of `mvfderiv`. The independent scratch/API check and standard-axiom audit pass; this supplies all four newer chain-rule calls in scalar calculus and tangent realization without strengthening hypotheses.
+
+- `Geometry/Operator/Hessian/Trace/Realization.lean`: remove a trailing `rfl` after Mathlib 4.32.2 simplification already proves the differential evaluation identity.
+
+- `Bundle/TangentSpace.lean`: add `DifferentialGeometry.mvfderivWithin_comp` from the local `mfderivWithin_comp`; the independent scratch/API check and standard-axiom audit pass. This supplies the derivative-within-set chain rule used in `Geometry/Operator/Laplacian/Minimum.lean` with unchanged hypotheses.
+
+- `External/CanonicalTopology/Topology/Homology/AffineChains.lean` and `Topology/Homology/Subdivision/Cone.lean`: prove the two finite-tuple face identities locally by `Fin.cases` and simplification, replacing the newer `Fin.cons_comp_succ_succAbove` and `Fin.cons_comp_succ` APIs. The general tuple identity passed an independent scratch check and standard-axiom audit. Remove the now-redundant final `rfl` in `AffineChains`.
+
+- `External/CanonicalTopology/Topology/Homology/OpenExcision.lean`: pass the already-proved small-relative comparison explicitly as `quasiIso_comp`'s second quasi-isomorphism argument. This avoids a local instance-inference failure without changing assumptions. The complete file passed a scratch check and standard-axiom audit.
+
+- `Topology/Homotopy/LoopTopology.lean`: replace two newer `Joined.map` calls by `Nonempty.map` of explicit `Path.map` witnesses; unfold `Joined` in the inverse-homeomorphism simplification. Full-file scratch, `Path.map` API check, and standard-axiom audit pass.
+
+- `Topology/Homotopy/CubeCompactification.lean`: the same two path-witness replacements and explicit `Joined` unfolding pass a full-file scratch check and standard-axiom audit.
+- `Topology/Homotopy/TransportContinuity.lean` and `Topology/VanKampen/SelectedObjects.lean`: four further inspected `Joined.map` calls use explicit path witnesses. Their full-file checks await the dependency frontier. The superficially similar uses in `SphereNaturality` and `SpherePrecomposition` already receive actual `Path` arguments through local `ZerothHomotopy.lift` and remain unchanged.
+
+- `External/CanonicalTopology/Topology/Homology/RelativeFunctoriality.lean`: after left reassociation, rewrite the quotient-projection composite with the unassociated lemma. Full-file scratch check and standard-axiom audit pass; theorem statements are unchanged.
+
+- `External/CanonicalTopology/Topology/Homology/LocalCharts.lean`: remove the trailing `rfl` after simplification already proves chart naturality on Mathlib 4.32.2. Full-file scratch check and standard-axiom audit pass.
+
+- `Geometry/Flow/RicciFlow/Surgery/Topology/LinearOrientation.lean`: four upper-triangular predicates use the equivalent `BlockTriangular id`, with the local `det_of_upperTriangular` and `gramSchmidtOrthonormalBasis_inv_blockTriangular` lemmas. The local API probe, complete scratch file, and standard-axiom audit of `positive_linear_homotopy` pass. Its public statement is unchanged.
+
+- `External/CanonicalTopology/Topology/Homology/RelativeMayerVietoris.lean`: close the biproduct equality by reflexivity, and use explicit congruence of quotient and homology maps where the older rewriter cannot cross reducible carrier aliases. Complete-file scratch check and standard-axiom audit pass; public hypotheses and statements are unchanged.

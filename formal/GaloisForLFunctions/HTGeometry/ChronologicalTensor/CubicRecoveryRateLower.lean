@@ -83,18 +83,27 @@ theorem arcsineRadius_sub_root {b φ r : ℝ} (hr : r ≤ 1 / 4) :
   unfold arcsineRadius
   nlinarith [hs]
 
-/-- **The Jensen lower bound.**  For every `b ∈ (0, 1)`, the optimizer norm satisfies
-`t_m ≥ ρ(b)^m`. -/
-theorem recoveryRateFun_pow_le {m : ℕ} (hm : 1 ≤ m) {T : Polynomial ℝ}
-    (hT : IsCubicChebyshev m T) {b : ℝ} (hb : b ∈ Ioo (0 : ℝ) 1) :
-    recoveryRateFun b ^ m ≤ cubicWeightedIntervalNorm m T := by
+/-- The Jensen integrand
+`m log(1 - b|cos φ|) + Σ_{r ∈ s} (log(b cos φ - √(1-4r)) + log(b cos φ + √(1-4r)) - log 4)`,
+equal to `log(W^m |T|)(r(φ))` for `T = ∏_{r ∈ s} (X - r)` off a countable set. -/
+def jensenIntegrand (m : ℕ) (s : Finset ℝ) (b φ : ℝ) : ℝ :=
+  (m : ℝ) * Real.log (1 - b * |Real.cos φ|) +
+    ∑ r ∈ s, (Real.log (b * Real.cos φ - Real.sqrt (1 - 4 * r)) +
+      Real.log (b * Real.cos φ - -Real.sqrt (1 - 4 * r)) - Real.log 4)
+
+/-- **The pointwise Jensen bound.**  For `T = ∏_{r ∈ s} (X - r)` with roots in `(0, 1/4)`, off a
+countable set of `φ` the Jensen integrand is at most `log ‖T‖_m`. -/
+theorem ae_jensenIntegrand_le {m : ℕ} {T : Polynomial ℝ} {s : Finset ℝ}
+    (hroots : ∀ r ∈ s, 0 < r ∧ r < 1 / 4) (hprod : T = ∏ r ∈ s, (X - C r)) {b : ℝ}
+    (hb : b ∈ Ioo (0 : ℝ) 1) :
+    ∀ᵐ φ ∂(volume : Measure ℝ), jensenIntegrand m s b φ ≤
+      Real.log (cubicWeightedIntervalNorm m T) := by
   classical
-  obtain ⟨s, hcard, hroots, hprod, -, -⟩ := isCubicChebyshev_roots m hm hT
-  obtain ⟨T₀, hT₀, hT₀pos⟩ := exists_isCubicChebyshev m
-  have htpos : 0 < cubicWeightedIntervalNorm m T :=
-    lt_of_lt_of_le hT₀pos (hT₀.2.2 T hT.1 hT.2.1)
   set tm := cubicWeightedIntervalNorm m T with htm
   set t : ℝ → ℝ := fun r => Real.sqrt (1 - 4 * r) with ht
+  set D : ℝ → ℝ := fun φ => jensenIntegrand m s b φ with hD
+  have hW : ∀ φ, 0 < 1 - b * |Real.cos φ| := fun φ => by
+    have := Real.abs_cos_le_one φ; nlinarith [hb.1, hb.2, abs_nonneg (Real.cos φ)]
   -- the pointwise bound on the arc
   have hbdd : BddAbove ((fun r : ℝ => cubicRadialWeight r ^ m * |T.eval r|) '' Icc 0 (1 / 4)) :=
     (isCompact_Icc.image_of_continuousOn ((cubicRadialWeight_continuous.pow m).mul
@@ -102,12 +111,6 @@ theorem recoveryRateFun_pow_le {m : ℕ} (hm : 1 ≤ m) {T : Polynomial ℝ}
   have hpt : ∀ φ, cubicRadialWeight (arcsineRadius b φ) ^ m *
       |T.eval (arcsineRadius b φ)| ≤ tm := fun φ =>
     le_csSup hbdd ⟨_, arcsineRadius_mem hb φ, rfl⟩
-  -- the logarithmic integrand
-  set D : ℝ → ℝ := fun φ => (m : ℝ) * Real.log (1 - b * |Real.cos φ|) +
-    ∑ r ∈ s, (Real.log (b * Real.cos φ - t r) + Real.log (b * Real.cos φ - -t r) - Real.log 4)
-    with hD
-  have hW : ∀ φ, 0 < 1 - b * |Real.cos φ| := fun φ => by
-    have := Real.abs_cos_le_one φ; nlinarith [hb.1, hb.2, abs_nonneg (Real.cos φ)]
   -- off a countable set, `D = log (W^m |T|) ≤ log t_m`
   have hE : ({φ : ℝ | ∃ r ∈ s, b * Real.cos φ - t r = 0 ∨ b * Real.cos φ - -t r = 0}).Countable := by
     have hsub : {φ : ℝ | ∃ r ∈ s, b * Real.cos φ - t r = 0 ∨ b * Real.cos φ - -t r = 0} ⊆
@@ -142,7 +145,7 @@ theorem recoveryRateFun_pow_le {m : ℕ} (hm : 1 ≤ m) {T : Polynomial ℝ}
         rw [cubicRadialWeight_arcsineRadius hb.1.le]; exact pow_ne_zero _ (hW φ).ne'
       rw [Real.log_mul hWm (abs_ne_zero.mpr hTne), Real.log_pow, Real.log_abs,
         cubicRadialWeight_arcsineRadius hb.1.le, heval, Real.log_prod hfac]
-      simp only [hD]
+      simp only [hD, jensenIntegrand]
       congr 1
       refine Finset.sum_congr rfl fun r hr => ?_
       have h1 := (hne r hr).1
@@ -153,6 +156,27 @@ theorem recoveryRateFun_pow_le {m : ℕ} (hm : 1 ≤ m) {T : Polynomial ℝ}
     exact absurd (Real.log_le_log (by
       rw [cubicRadialWeight_arcsineRadius hb.1.le]
       exact mul_pos (pow_pos (hW φ) _) (abs_pos.mpr hTne)) (hpt φ)) (not_le.mpr hφ)
+  exact hDle
+
+/-- **The Jensen lower bound.**  For every `b ∈ (0, 1)`, the optimizer norm satisfies
+`t_m ≥ ρ(b)^m`. -/
+theorem recoveryRateFun_pow_le {m : ℕ} (hm : 1 ≤ m) {T : Polynomial ℝ}
+    (hT : IsCubicChebyshev m T) {b : ℝ} (hb : b ∈ Ioo (0 : ℝ) 1) :
+    recoveryRateFun b ^ m ≤ cubicWeightedIntervalNorm m T := by
+  classical
+  obtain ⟨s, hcard, hroots, hprod, -, -⟩ := isCubicChebyshev_roots m hm hT
+  obtain ⟨T₀, hT₀, hT₀pos⟩ := exists_isCubicChebyshev m
+  have htpos : 0 < cubicWeightedIntervalNorm m T :=
+    lt_of_lt_of_le hT₀pos (hT₀.2.2 T hT.1 hT.2.1)
+  set tm := cubicWeightedIntervalNorm m T with htm
+  set t : ℝ → ℝ := fun r => Real.sqrt (1 - 4 * r) with ht
+  -- the logarithmic integrand
+  set D : ℝ → ℝ := fun φ => (m : ℝ) * Real.log (1 - b * |Real.cos φ|) +
+    ∑ r ∈ s, (Real.log (b * Real.cos φ - t r) + Real.log (b * Real.cos φ - -t r) - Real.log 4)
+    with hD
+  have hW : ∀ φ, 0 < 1 - b * |Real.cos φ| := fun φ => by
+    have := Real.abs_cos_le_one φ; nlinarith [hb.1, hb.2, abs_nonneg (Real.cos φ)]
+  have hDle : ∀ᵐ φ ∂(volume : Measure ℝ), D φ ≤ Real.log tm := ae_jensenIntegrand_le hroots hprod hb
   -- integrability of the pieces
   have hI1 : IntervalIntegrable (fun φ => (m : ℝ) * Real.log (1 - b * |Real.cos φ|))
       volume 0 π := by

@@ -475,7 +475,6 @@ theorem tendsto_add_mul_exp_neg {ε : ℝ} (hε : 0 < ε) (K : ℝ) :
   simp only [mul_zero, add_zero] at h3
   refine h3.congr fun X => ?_
   field_simp
-  ring
 
 /-- **Weight systems on sparse position sets are never Weil-positive.**  If `lam` vanishes off a
 set `P` of integers with `#(P ∩ [2, N]) ≤ C N^θ` for some `θ < 1/2`, then `lam` is not
@@ -513,8 +512,8 @@ theorem not_weilPositive_of_sparse_support {lam : ℕ → ℝ} {P : ℕ → Prop
         rw [abs_mul, abs_of_pos hsq] at hb
         rw [div_le_iff₀ hsq]
         have hlog : Real.log n ≤ X + 1 := by linarith [(abs_le.mp h).2]
-        have hl0 : 0 ≤ Real.log n := Real.log_nonneg (by linarith [(by exact_mod_cast hn2 :
-          (2 : ℝ) ≤ n)])
+        have h2r : (2 : ℝ) ≤ n := by exact_mod_cast hn2
+        have hl0 : 0 ≤ Real.log n := Real.log_nonneg (by linarith)
         have : |Real.log n + boxConst| ≤ X + K := by
           rw [hK]
           have := abs_add_le (Real.log n) boxConst

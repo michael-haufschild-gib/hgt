@@ -181,3 +181,23 @@ u^{−2}-weighted window averages of ψ and monotonicity of ψ:
     - Huxley gives K^{2−2σ} + T^{(11−12σ)/3} ≤ T^{(8/3)(1−σ)} for σ ≥ ¾, and its threshold holds for σ ≥ ¾ + c(ε₀)/2.
   - Next: zero-copy selection (1-separated ordinates, `ncard_xiOrdinateWindow_one_le_log`); block powers
     (`dirPoly_convPow`, `sum_card_divisors_pow_le_polylog`); density; transfer.
+- 2026-09-28 — **M1a Steps 1–5 closed in Lean: zero density with exponent 8/3 + ε.**
+  - Main theorem: `RHTower.exists_zeroHeightBox_ncard_le`. For every ε ∈ (0,1] there is T₀ such that for all
+    T ≥ T₀ and σ ∈ [½,1],
+    #{ρ with multiplicity : σ ≤ Re ρ, T ≤ Im ρ ≤ 2T} ≤ C (1 + log T)^{3·2^{136}+304} T^{(8/3+ε)(1−σ)}.
+    Axioms: propext, Classical.choice, Quot.sound.
+  - Module chain:
+    - `ZetaEulerMaclaurinThirdOrder` → `ZetaZeroDetectionThirdOrder` → `Sieve/DirichletAbscissaTaylorSelection`
+      → `ZetaZeroDetectionBlockTaylor` → `ZetaZeroDensitySeparatedSelection`;
+    - then `DirichletPowerDivisorMass`, `DirichletPolynomialLargeValueCounts`, `ZetaZeroClassPolynomialPower`,
+      `ZetaZeroClassLargeValueCounts`, `ZetaZeroDensityExponentLemmas`, `ZetaZeroClassExponentBookkeeping`,
+      `ZetaZeroClassCardArithmetic`, `ZetaZeroClassCardBound`, `ZetaZeroDensityEightThirds`.
+  - Lean lessons, generalizable:
+    - The log exponent 2^{136} (from the ℓ ≤ 34 power trick with d(n)^{4ℓ} moments) must never reach
+      `linarith`, `nlinarith`, `positivity` or `norm_num`. Their `ring_nf` expands (1+log T)^E binomially, or
+      `Nat.pow` panics.
+    - Fix: keep those facts in a `structure` (`ClassBigFacts`), keep exponents symbolic, and derive every
+      linear fact before the huge hypotheses enter the context.
+    - Long proofs exhaust the per-declaration heartbeat budget. Split them into pure-arithmetic lemmas
+      instead of raising limits.
+  - Next: Step 6, the transfer via `lag_explicit_formula` (zeros ↔ windows), then the consumer at κ < 3/4.

@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.Topology.Simplex.Face
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import DifferentialGeometry.Topology.Simplex.NormedBall
@@ -88,7 +89,7 @@ def boundaryDesc
         (continuous_subtype_val.comp continuous_subtype_val)) continuous_const
     apply (locallyFinite_of_finite F).continuous hcover hclosed
     intro i
-    rw [continuousOn_iff_continuous_domRestrict]
+    rw [continuousOn_iff_continuous_restrict]
     have he : (fun p : F i ↦ boundaryDescFun f p.val) =
         fun p : F i ↦ f i (faceDelete i ⟨p.val.val, p.property⟩) := by
       funext p

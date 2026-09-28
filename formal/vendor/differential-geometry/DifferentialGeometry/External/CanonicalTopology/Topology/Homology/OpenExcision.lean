@@ -1,3 +1,4 @@
+/- Local modifications: pass the proved quasi-isomorphism explicitly on Mathlib 4.32.2. -/
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ExcisionQuotient
 
 /-! # Excision for the original integral relative singular homology -/
@@ -29,9 +30,9 @@ theorem integralRelativeChainMap_openExcision (A B : Set X)
     rcases hx with hx | hx
     · exact ⟨false, hx⟩
     · exact ⟨true, hx⟩
-  let := integralSmallRelativeComparison_quasiIso (twoSetCover A B) false hU hc
   rw [← integralExcisionSmallMap_comparison]
-  infer_instance
+  exact quasiIso_comp _ _
+    (hφ' := integralSmallRelativeComparison_quasiIso (twoSetCover A B) false hU hc)
 
 /-- The excision isomorphism is induced by the SAME actual relative pair
 map, in every degree of the original integral singular homology. -/

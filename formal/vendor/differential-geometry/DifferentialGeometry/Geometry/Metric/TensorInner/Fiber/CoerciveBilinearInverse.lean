@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import Mathlib.Analysis.InnerProductSpace.LaxMilgram
 
 set_option autoImplicit false
@@ -308,7 +309,7 @@ theorem sharpCLM_cont_sub
     (hco : ∀ x ∈ S, IsCoercive (B x)) :
     Continuous (fun x : S => (hco x x.2).sharpCLM) := by
   have hsub : ContinuousOn
-      (fun x : S => B x) (Set.univ : Set S) := hB.domRestrict.continuousOn
+      (fun x : S => B x) (Set.univ : Set S) := hB.restrict.continuousOn
   have h := sharpCLM_contOn (fun x : S => B x) hsub
     (fun x => hco x x.2)
   exact continuousOn_univ.mp h

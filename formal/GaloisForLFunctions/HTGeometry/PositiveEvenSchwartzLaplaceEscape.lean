@@ -557,8 +557,9 @@ theorem bilateralLaplace_twoShellSource (a τ : ℝ) (w : ℂ) :
     bilateralLaplace (twoShellSource a τ) w =
       2 * cexp (w ^ 2 / 4) * positiveEvenTwoShellLaplace (a * (Real.pi / |τ|))
         (w * ((Real.pi / |τ| : ℝ) : ℂ)) := by
-  rw [twoShellSource, bilateralLaplace_schwartz_add ((hasEntireLaplace_evenPacket _).schwartz_smul _)
-    ((hasEntireLaplace_evenPacket _).schwartz_smul _), bilateralLaplace_schwartz_smul,
+  rw [twoShellSource,
+    bilateralLaplace_schwartz_add ((hasEntireLaplace_evenPacket _).schwartz_smul _)
+      ((hasEntireLaplace_evenPacket _).schwartz_smul _), bilateralLaplace_schwartz_smul,
     bilateralLaplace_schwartz_smul, bilateralLaplace_evenPacket_eq_cosh,
     bilateralLaplace_evenPacket_eq_cosh, positiveEvenTwoShellLaplace]
   push_cast

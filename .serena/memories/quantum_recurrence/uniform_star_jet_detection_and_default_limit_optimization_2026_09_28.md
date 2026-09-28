@@ -1,0 +1,30 @@
+# Uniform star spectral-jet detection and default-limit proof optimization
+
+Mission remains OPEN: same-draw fixed-q ordinary static local-Hamiltonian growth–plateau–first recurrence. Decisive growing-replica quenched incidence-action estimate after circuit-budget-dependent initial removal remains unproved. No Nature/black-hole conclusion or novelty certification follows from this turn.
+
+## New checked leaf
+`formal/GaloisForLFunctions/HTGeometry/TwoLocalStarUniformJetDetection.lean`, imported by HTGeometry umbrella immediately after TwoLocalStarSpectralJetFrame. Imports only that cached leaf. 501 source lines. No heartbeat/recursion overrides, numerical computation, added axioms or incomplete proofs.
+
+Use realStarWalshPacket β S (unnormalized Walsh transform), M(β)=starWalshMax β, ρ=sum |c_j|, p=1-ρ, d_c(z)=twoLocalStarGap 1 c z, R_r(z)=β_z d_c(z)^(-r).
+
+Multiplication by d_c becomes weighted subset-toggle adjacency in Walsh space. Finite maximum principle proves p^r M(R_r)≤Mβ and p^r M(R_r-β)≤(1-p^r)Mβ. Avoids exponential 2^m entrywise perturbation loss. For 4(m+1)ρ≤1 and r≤m+1, every packet changes by at most Mβ/2 (Bernoulli gives p^r≥3/4).
+
+Choose maximizing S ONCE BEFORE coupling. Then |D_S Curv_{1,β}(c)|≥Mβ/2≥sqrt(sum β²)/2 throughout that explicit l1 ball, total order |S|+2≤m+2. Explicit normalizedStarCoupling w_j=w_j/[4(m+1)(1+sum |w_j|)] supplies unconditional all-real-w family. Scale law a^-(|S|+1) transfers to bounded positive starJetReferenceField n i.
+
+Strongest theorem `balanced_real_character_uniform_starJet_detection`: for every n and nonzero balanced real k on Boolean n-cube, exists fixed i and S of total order≤n+1, for ALL w, the literal mixed S derivative of the transverse SECOND derivative at u=0 of commonReferenceRealStarAction k i, evaluated at c_j=a_i*normalizedStarCoupling w_j, has absolute value≥sqrt(sum k²)/2. Choose nonempty maximum global Walsh B, i=min B; edge identity gives edge M≥global M≥norm. Balance/nonzero are the domain restrictions, not assumed nondegeneracy/source-tail certificates. Unconstrained packet/constant capstone also provided.
+
+Public theorems: realStarWalshPacket_gap_error; starResolventPacket_zero; starResolventPacket_max_bound; starResolventPacket_deviation_bound; starResolventPacket_uniform_error; exists_uniform_twoLocalStarCurvature_detection; normalizedStarCoupling_small; exists_normalizedStar_actualSpectralJet_detection; exists_scaledStar_actualSpectralJet_detection; commonReferenceStar_uniform_actualSpectralJet_detection; balanced_real_character_uniform_starJet_detection.
+
+## Limits / next actual obstacle
+This is longitudinal stability on an explicit chosen-star slice. Transverse second derivative remains at zero. Different covectors can select different star Hamiltonian families away from common origin. NOT a full-dimensional neighborhood in all noncommuting local parameters; NOT first observer Jacobian, pseudodeterminant lower-tail, occupied endpoint image/fibre-sheet control, quenched tube suppression, circuit union or first-return law. Stars are two-local but not nearest-neighbor-chain support. Need quantitative stability under transverse/general local perturbations and actual finite-type sublevel/oscillatory measure production. Do not claim these done. Possible later idea: spectator diagonal interactions only alter mean and drop out of curvature, potentially based at common interacting diagonal Ising point; NOT yet formalized.
+
+## Optimization
+Removed unnecessary `set_option maxHeartbeats 800000 in` before `orderedStarCouplingDeriv_realAction` in TwoLocalStarSpectralJetFrame. Baseline whole source already passed defaults. Replaced implicit matching of sum_blockSplitRoot_eq with explicit unfold+rw, rewrote edgeEquiv_zero/one explicitly, supplied gap and real packet arguments to orderedStarCouplingDeriv_actualSpectralCurvature. Statements unchanged. Profile tactic component 64.2ms baseline vs18.4ms optimized, single samples only; NOT robust global speed benchmark. Baseline wall129.7s vs combined15.2s reflects machine/cache contention, do NOT quote speedup.
+
+## Verification
+One owned foreground Lean process at a time. Full old frame (including both direct callers) plus new leaf checked together in /tmp scratch with `lake env lean`; exit0, no warnings, DEFAULT limits. All11 new public theorems and changed old proof #print axioms: only propext, Classical.choice, Quot.sound. Source integration compared byte-for-byte to verified scratch, except removing temporary profiler/audit commands. No full/umbrella builds or git. Scratch removed after check; exact owned process check found no remaining Lean process. `python3 scripts/formal_tools.py lint` exited1: 24 unrelated modules unreachable from area umbrellas, plus existing large-file warnings. New leaf correctly wired and neither touched leaf reported a lint issue. Do not fix others' in-progress modules or claim global lint success.
+
+## Discovery
+Extensive broad hybrid/deep queries this turn (incidence; finite-type oscillatory sublevel; Walsh resolvent maximum principle; Cauchy spectral radius perturbation). Coverage semantic unmeasured, some deep partials. No applicable producer closing core found. Latest Cauchy query partialfalse mostly unrelated RH radial derivatives. Search orderedStarCouplingDeriv_realAction complete28s, source_only hits, coverage_snapshot_older_generation; verified actual declarations via scratch. No proof of external novelty. Literature skim: arXiv2607.26123 infinite-dimensional decoupling requires random operations; arXiv2605.24109 parabola decoupling needs AD-regularity. Neither transfers static ensemble source bound.
+
+User latest: optimize Lean, no heartbeat hacks. Do not add overrides. Fields-medalist requested path absent this turn; used explicit conjecture/proof workflow plus available l7 skill.

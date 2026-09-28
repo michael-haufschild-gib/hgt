@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.External.CanonicalTopology.Topology.Manifold.TangentOrientation
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.LocalDerivativeComparison
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.LocalCompactHomology
@@ -123,7 +124,7 @@ theorem integralLocalHomology_chart_maps_eq_det_sign
     exact hz.2
   let q : C(U, g.source) :=
     ⟨fun z => ⟨e z, hUeg z.property⟩,
-      ((e.continuousOn.mono hUe).domRestrict).subtype_mk _⟩
+      ((e.continuousOn.mono hUe).restrict).subtype_mk _⟩
   have hq : MapsTo q ({(⟨p, hpU⟩ : U)}ᶜ : Set U)
       ({(⟨e p, hga⟩ : g.source)}ᶜ : Set g.source) := by
     intro z hz heq
@@ -131,10 +132,10 @@ theorem integralLocalHomology_chart_maps_eq_det_sign
     apply Subtype.ext
     apply e.injOn z.property.1 hx
     exact congrArg (fun w : g.source => (w : E)) heq
-  let F : C(U, E) := ⟨fun z => f z, (f.continuousOn.mono hUf).domRestrict⟩
+  let F : C(U, E) := ⟨fun z => f z, (f.continuousOn.mono hUf).restrict⟩
   have hF : MapsTo F ({(⟨p, hpU⟩ : U)}ᶜ : Set U) ({f p}ᶜ : Set E) :=
     fun z hz heq => hz (Subtype.ext (f.injOn z.property.2 hy heq))
-  let G : C(g.source, E) := ⟨fun z => g z, g.continuousOn.domRestrict⟩
+  let G : C(g.source, E) := ⟨fun z => g z, g.continuousOn.restrict⟩
   have hG : MapsTo G ({(⟨e p, hga⟩ : g.source)}ᶜ : Set g.source)
       ({g (e p)}ᶜ : Set E) :=
     fun z hz heq => hz (Subtype.ext (g.injOn z.property hga heq))

@@ -20,14 +20,14 @@ noncomputable section
 open Complex Finset RHTower.Sieve
 
 theorem densityParameters_upper {T : ℝ} (hT : (2 : ℝ) ^ (120 : ℕ) ≤ T) :
-    ((densityBlockLength T * densityMollifierLength T : ℕ) : ℝ) ≤ 2 * T ^ (1249 / 1000 : ℝ) := by
+    ((densityBlockLength T * densityMollifierLength T : ℕ) : ℝ) ≤ 2 * T ^ (249 / 200 : ℝ) := by
   obtain ⟨_, hyT, _, hN2, _⟩ := densityParameters hT
   have hT0 : 0 < T := lt_of_lt_of_le (by positivity) hT
   push_cast
   calc (densityBlockLength T : ℝ) * densityMollifierLength T
       ≤ (2 * T ^ (61 / 50 : ℝ)) * T ^ (1 / 40 : ℝ) :=
         mul_le_mul hN2 hyT (Nat.cast_nonneg _) (by positivity)
-    _ = 2 * T ^ (1249 / 1000 : ℝ) := by
+    _ = 2 * T ^ (249 / 200 : ℝ) := by
         rw [mul_assoc, ← Real.rpow_add hT0]
         norm_num
 
@@ -45,7 +45,7 @@ theorem detBlockCount_le_log {T : ℝ} (hT : (2 : ℝ) ^ (120 : ℕ) ≤ T) :
     have := Real.log_le_log (by positivity) hpow
     rwa [Real.log_pow] at this
   have hmup := densityParameters_upper hT
-  have hlogm : Real.log m ≤ Real.log 2 + (1249 / 1000) * Real.log T := by
+  have hlogm : Real.log m ≤ Real.log 2 + (249 / 200) * Real.log T := by
     have := Real.log_le_log (by exact_mod_cast Nat.pos_of_ne_zero hm0) hmup
     rw [Real.log_mul (by norm_num) (Real.rpow_pos_of_pos hT0 _).ne', Real.log_rpow hT0] at this
     exact this
@@ -53,7 +53,7 @@ theorem detBlockCount_le_log {T : ℝ} (hT : (2 : ℝ) ^ (120 : ℕ) ≤ T) :
   have hl2' : Real.log 2 < 1 := Real.log_two_lt_d9.trans (by norm_num)
   have hlogT : 0 ≤ Real.log T := Real.log_nonneg hT1
   have hN : (Nat.log 2 m : ℝ) ≤ 2 + 2 * Real.log T := by
-    have h1 : (Nat.log 2 m : ℝ) * Real.log 2 ≤ 1 + (1249 / 1000) * Real.log T := by linarith
+    have h1 : (Nat.log 2 m : ℝ) * Real.log 2 ≤ 1 + (249 / 200) * Real.log T := by linarith
     have h2 : (Nat.log 2 m : ℝ) * 0.69 ≤ (Nat.log 2 m : ℝ) * Real.log 2 :=
       mul_le_mul_of_nonneg_left hl2.le (Nat.cast_nonneg _)
     nlinarith
@@ -130,20 +130,20 @@ theorem block_bounds_of_large {T : ℝ} (hT : (2 : ℝ) ^ (400 : ℕ) ≤ T) {j 
       rw [hsplit]
       exact mul_le_mul_of_nonneg_right h2 (Real.rpow_nonneg hT0.le _)
     linarith
-  · -- `2^j ≤ k ≤ Ny ≤ 2T^{1.249} ≤ T^{4/3}`
+  · -- `2^j ≤ k ≤ Ny ≤ 2T^{1.245} ≤ T^{4/3}`
     have hup := densityParameters_upper hT120
     have hkNy : ((2 ^ j : ℕ) : ℝ) ≤ ((N * y : ℕ) : ℝ) := by
       exact_mod_cast le_trans hkb.1 hks.2
     refine le_trans hkNy (le_trans hup ?_)
-    have hsplit : T ^ (4 / 3 : ℝ) = T ^ (253 / 3000 : ℝ) * T ^ (1249 / 1000 : ℝ) := by
+    have hsplit : T ^ (4 / 3 : ℝ) = T ^ (53 / 600 : ℝ) * T ^ (249 / 200 : ℝ) := by
       rw [← Real.rpow_add hT0]
       norm_num
-    have h2 : (2 : ℝ) ≤ T ^ (253 / 3000 : ℝ) := by
+    have h2 : (2 : ℝ) ≤ T ^ (53 / 600 : ℝ) := by
       calc (2 : ℝ) = ((2 : ℝ) ^ (400 : ℕ)) ^ (1 / 400 : ℝ) := by
             rw [← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]
             norm_num
         _ ≤ T ^ (1 / 400 : ℝ) := Real.rpow_le_rpow (by positivity) hT (by norm_num)
-        _ ≤ T ^ (253 / 3000 : ℝ) := Real.rpow_le_rpow_of_exponent_le
+        _ ≤ T ^ (53 / 600 : ℝ) := Real.rpow_le_rpow_of_exponent_le
             (le_trans (one_le_pow₀ (by norm_num)) hT) (by norm_num)
     rw [hsplit]
     exact mul_le_mul_of_nonneg_right h2 (Real.rpow_nonneg hT0.le _)

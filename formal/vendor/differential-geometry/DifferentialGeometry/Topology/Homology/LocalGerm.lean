@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.LocalCharts
 
 namespace DifferentialGeometry.Topology
@@ -24,7 +25,7 @@ theorem integralRelativeHomologyMap_eq_of_eqOn_openPartialHomeomorph
       (integralRelativeHomologyMap n _ _) = _
     rw [← integralRelativeHomologyMap_comp]
     have hmaps : f.comp (singularSubspaceInclusion U) =
-        (⟨fun z : U => e z, (e.continuousOn.mono hUs).domRestrict⟩ : C(U, Y)) := by
+        (⟨fun z : U => e z, (e.continuousOn.mono hUs).restrict⟩ : C(U, Y)) := by
       ext z
       exact hfe z.property
     simp only [hmaps]

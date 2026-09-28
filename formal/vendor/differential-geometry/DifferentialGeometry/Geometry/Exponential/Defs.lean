@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Local.Existence
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
@@ -144,7 +145,7 @@ theorem isMIntegralCurveOn_zero_section_eq_const
   have hf_cont : ContinuousOn f J := hf.continuousOn
   have hc_cont : Continuous c := continuous_const
   have hf_sub_cont : Continuous (fun t : ↥J => f (t : ℝ)) := by
-    refine continuousOn_iff_continuous_domRestrict.mp ?_
+    refine continuousOn_iff_continuous_restrict.mp ?_
     exact hf_cont
   have hc_sub_cont : Continuous (fun t : ↥J => c (t : ℝ)) :=
     hc_cont.comp continuous_subtype_val

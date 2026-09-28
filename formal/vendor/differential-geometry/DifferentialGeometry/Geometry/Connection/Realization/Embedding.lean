@@ -1,3 +1,4 @@
+/- Local modification: use the compatible tangent derivative evaluation lemma. -/
 import DifferentialGeometry.Geometry.Connection.Realization.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
@@ -194,11 +195,10 @@ private theorem mvfderiv_continuousLinearMap_self
     (L : E →L[ℝ] ℝ) (x : E) (v : TangentSpace 𝓘(ℝ, E) x) :
     mvfderiv (I := 𝓘(ℝ, E)) L x v =
       L (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) x v) := by
-  rw [L.mdifferentiableAt.mvfderiv]
+  rw [mvfderiv_apply_eq_fderivWithin_writtenInExtChartAt L.mdifferentiableAt]
   rw [writtenInExtChartAt_model_space, modelWithCornersSelf_coe,
     Set.range_id, fderivWithin_univ]
   rw [L.fderiv]
-  rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [IsManifold I ∞ M] in
@@ -209,7 +209,7 @@ private theorem mvfderiv_eq_chartFDeriv
         (extChartAt I x x)).comp
           (tangentSpaceModelContinuousLinearEquiv (I := I) x).toContinuousLinearMap := by
   ext v
-  rw [hh.mvfderiv]
+  rw [mvfderiv_apply_eq_fderivWithin_writtenInExtChartAt hh]
   rw [show writtenInExtChartAt I 𝓘(ℝ, ℝ) x h =
       h ∘ (extChartAt I x).symm from by
     unfold writtenInExtChartAt

@@ -1,8 +1,8 @@
 # Positive-even Schwartz off-axis-zero density and formation-properness no-go
 
 - **ID:** ULF-EAEM-2
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM + EXACT NO-GO + POSITIVE TOPOLOGY SURVIVOR
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `../../../1-in-progress/universal-law-field/exponential-admission-escape-mechanics/field-programme.md`
 - **Statement:** At every fixed point with nonzero real and imaginary parts, strictly positive even
   Schwartz sources with a bilateral-Laplace zero there are dense in the nonnegative even Schwartz
@@ -412,8 +412,40 @@ continuation, functional equation, recovery, and proper work.
 - [ ] source-generated exponential admission
 - [ ] selection consequence
 
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.PositiveEvenSchwartzLaplaceEscape`, `GaloisForLFunctions.HTGeometry.PositiveEvenSchwartzZeroDensity`, `GaloisForLFunctions.HTGeometry.PositiveEvenSourceFormationPackage`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules `GaloisForLFunctions.HTGeometry.PositiveEvenSchwartzLaplaceEscape` (70 constants), `GaloisForLFunctions.HTGeometry.PositiveEvenSchwartzZeroDensity` (50 constants), `GaloisForLFunctions.HTGeometry.PositiveEvenSourceFormationPackage` (21 constants), all axiom-audit clean; with the finite core `ConstitutivePositiveEvenLaplaceEscape`. Namespace `PositiveEvenLaplaceEscape`.
+
+| Claim | Lean declaration |
+|-|-|
+| (EA.1) bilateral Laplace transform; entire-Laplace sources | `bilateralLaplace`, `HasEntireLaplace`, `entireLaplaceSubmodule` |
+| entire-Laplace sources have entire (holomorphic) transform | `HasEntireLaplace.differentiable` |
+| even source: `𝓛_{-z} = 𝓛_z`; real source: `𝓛_{z̄} = conj 𝓛_z`; reduction to `a, τ > 0` | `bilateralLaplace_neg_of_even`, `bilateralLaplace_conj`, `bilateralLaplace_eq_zero_iff_abs` |
+| (EA.3)–(EA.4) `g = π^{-1/2}e^{-x²}` Schwartz, positive, even, `𝓛_z g = e^{z²/4}` | `gaussianPacket`, `gaussianPacket_apply`, `gaussianPacket_pos`, `gaussianPacket_neg`, `bilateralLaplace_gaussianPacket` |
+| (EA.3)–(EA.4) `g_R` positive even Schwartz, `𝓛_z g_R = 2G(z)cosh(zR)` | `evenPacket`, `evenPacket_pos`, `evenPacket_neg`, `hasEntireLaplace_evenPacket`, `bilateralLaplace_evenPacket_eq_cosh` |
+| §2 (EA.5)–(EA.10) explicit positive two-shell source, zero at `a+iτ`, full quartet | `twoShellSource`, `twoShellSource_pos`, `twoShellSource_neg`, `bilateralLaplace_twoShellSource`, `bilateralLaplace_twoShellSource_eq_zero`, `twoShellSource_quartet`, `positiveEvenTwoShellLaplace_offAxis_zero` |
+| (EA.13) Schwartz translation estimate | `seminorm_compSubConst_le`, `seminorm_evenPacket_le` |
+| Thm 3.1 (EA.11)–(EA.14) remote-packet escape | `remotePacketEscape`, `bilateralLaplace_remotePacket`, `tendsto_remotePacket_zero`, `exists_remote_periods` |
+| Thm 3.1 consequence: no continuous extension / discontinuity on the entire-Laplace subspace | `not_exists_continuous_extension`, `not_continuousAt_bilateralLaplace` |
+| Thm 4.1 Step 1 (EA.16) compact positive even approximation in Schwartz topology | `cutoffApprox`, `cutoffApprox_nonneg`, `cutoffApprox_neg`, `hasEntireLaplace_cutoffApprox`, `tendsto_cutoffApprox` |
+| Thm 4.1 Steps 2–3 (EA.17)–(EA.24) remote phases, exact nonnegative cancellation, topology-small mass | `phasePeriod`, `bilateralLaplace_evenPacket_phase`, `bilateralLaplace_phase_zero/quarter/half/neg_quarter`, `tendsto_smul_evenPacket_zero`, `exists_zeroInsertion` |
+| Thm 4.1 (EA.15) density, closure and neighborhood forms | `mem_closure_offAxisZeroSources`, `exists_offAxisZeroSource_mem_nhds` |
+| §5 (EA.25) normalized source law and exponential family | `sourceLaw`, `isProbabilityMeasure_sourceLaw`, `sourceFamily`, `integrable_exp_mul_sourceLaw` |
+| (EA.26) `A(-t) = A(t)`, `R_*P_t = P_{-t}` | `FormationPackage` (1st, 2nd), `ReflectedExponentialFamily.map_reflection_tilt` |
+| (EA.27) common recovery preserves relative entropy | `FormationPackage` (3rd), `klDiv_splitPacketLaw` |
+| (EA.28) `A'' > 0` | `iteratedDeriv_two_cumulant_pos` |
+| (EA.29) `J(t) = 4tA'(t) > 0`, retained by recovery | `FormationPackage` (5th–7th), `four_mul_deriv_cumulant_pos` |
+| §5 six-property package for every positive even entire-Laplace source and every Markov kernel | `sourceFamily_formationPackage` |
+| Countertheorem 6.1 | `exists_offAxis_formation_countermodel`, `no_generic_packet_selection` |
+| Corollary 6.2 empty interior; no Schwartz-open selection law | `interior_nonvanishing_eq_empty`, `no_open_admission_selection` |
+| Survivor (EA.30)–(EA.31) reporter bound and reporter-norm continuity | `norm_bilateralLaplace_le_reporter`, `norm_bilateralLaplace_sub_le_reporter` |
+
 ## Log
 
 - 2026-08-14 — dependency-closed after the packet functional-equation lift showed recovery was an
   isometry rather than a selector. The new theorem identifies ordinary Schwartz admission as the
   exact generic failure point.
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

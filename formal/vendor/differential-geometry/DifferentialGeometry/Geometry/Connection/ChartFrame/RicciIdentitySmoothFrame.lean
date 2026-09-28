@@ -1,3 +1,4 @@
+/- Local modification: use the continuous/set restriction API from Mathlib 4.32.2. -/
 -- Local compatibility change (2026-09-28): use the mathlib 4.32.2 set-predicate API.
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricci
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
@@ -1401,7 +1402,7 @@ private lemma metricInner_continuousOn_family
     ContinuousOn (fun q : ℝ × M => (g q.1).inner q.2 (X q) (Y q))
       (K ×ˢ U) := by
   classical
-  rw [continuousOn_iff_continuous_domRestrict]
+  rw [continuousOn_iff_continuous_restrict]
   have heval := tensor0SFamilyContinuousOnSet.eval_continuous (I := I) (M := M) (s := 2)
     (K := K) (A := fun t x => metricTensorField (I := I) (g t) x) hG
     (P := ↥(K ×ˢ U)) (τ := fun p : ↥(K ×ˢ U) => p.1.1)
@@ -1412,8 +1413,8 @@ private lemma metricInner_continuousOn_family
     (by
       intro a
       fin_cases a
-      · have hX' := continuousOn_iff_continuous_domRestrict.mp hX
-        have hfun : (K ×ˢ U).domRestrict (fun q : ℝ × M =>
+      · have hX' := continuousOn_iff_continuous_restrict.mp hX
+        have hfun : (K ×ˢ U).restrict (fun q : ℝ × M =>
             TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (X q)) =
             (fun p : ↥(K ×ˢ U) =>
               TotalSpace.mk' E (E := fun x : M => TangentSpace I x) p.1.2 (X p.1)) := by
@@ -1421,8 +1422,8 @@ private lemma metricInner_continuousOn_family
           rfl
         rw [hfun] at hX'
         exact hX'
-      · have hY' := continuousOn_iff_continuous_domRestrict.mp hY
-        have hfun : (K ×ˢ U).domRestrict (fun q : ℝ × M =>
+      · have hY' := continuousOn_iff_continuous_restrict.mp hY
+        have hfun : (K ×ˢ U).restrict (fun q : ℝ × M =>
             TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (Y q)) =
             (fun p : ↥(K ×ˢ U) =>
               TotalSpace.mk' E (E := fun x : M => TangentSpace I x) p.1.2 (Y p.1)) := by

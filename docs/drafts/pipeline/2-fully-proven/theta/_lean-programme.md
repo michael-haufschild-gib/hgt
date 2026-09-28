@@ -13,6 +13,7 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | L2 flux | normalized flux `b_f`, `b_k = 2π∑n²e^{-πn²t}`, shift law, CM ⇔ positive rate measure, dominated representation | `ThetaCriticalFluxBernstein` (+ `ThetaFluxSource`, linearity, deletion flux, rate lattice in `ThetaPrimeDeletionBernsteinPureRay`) | done |
 | L2b gauges | real-shift gauges `∑ c_i k(·+s_i)`: flux atom expansion, grouped Bernstein criterion, rate-coefficient cone, `L_w g = M(w) XiC(iw)`, zero-order transfer | `ThetaTranslationGaugeFlux` | done |
 | L2c measure gauges | `∫ k(·+s) dν`, Fubini flux, Laplace laws, CM under integrals/limits, seed limit, signed Laplace positivity, all-sieve theorem | `ThetaTranslationMeasureGauge` | done |
+| L2d rate measures | `A_n`, deletion parts, Euler sums, window-finite Möbius classification (gap / `M_q`, `q > 3/2`), unbounded Bernstein–Widder, Laplace order, deleted fluxes, Tonelli flux of positive (possibly infinite) translation mixtures | HTGeometry `RateMobiusInversion`; `ThetaRateLaplaceBernstein`, `ThetaRateMobiusSourceTransfer` | done |
 | L3 zero division | outward sine Green operator `T_α`, relative bounds, ODE, Fourier division | `ThetaZeroDivisionSource` | done (single division; iterates/partial fractions pending) |
 | L4 renewal | `P,ν,Q,D`, renewal log series, `Xi(2iλ)=(a+λ)D(λ)+(a-λ)D(-λ)`, cosh factorization, waiting-time law `μ`, phase `Φ`, exit density, compound workload, quadrant law | `ThetaRenewalIncrement`, `ThetaRenewalLogKernel`, `ThetaRenewalAnalyticContinuation`, `ThetaRenewalCoshFactorization`, `ThetaRenewalSeamGerm`, `ThetaRenewalWaitingTime`, `ThetaRenewalProbabilityPhase`, `ThetaRenewalPhaseSlope`, `ThetaRenewalPhaseLevel`, `ThetaRenewalExitDensity` (+ HTGeometry `VolterraConvolutionAlgebra`, `VolterraConvolutionCalculus`, `DecreasingSineTransformPositivity`) | done |
 | L5 quantile | CDF/quantile/`B,D,T,A` on `L²(0,1)` (partly in corpus) | existing Hedenmalm modules | audit |
@@ -33,7 +34,7 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | divisor-bernstein-gauge-rigidity | L2b, Möbius/totient | done → 3-formalized |
 | prime-deletion-bernstein-pure-ray | L2 | done → 3-formalized |
 | all-sieve-seed-projector-translation-cone | L1, L2, measure gauges `ThetaTranslationMeasureGauge` | done → 3-formalized |
-| all-sieve-mobius-rate-reconstruction | L2 | todo |
+| all-sieve-mobius-rate-reconstruction | L2 | DONE → 3-formalized (HTGeometry `RateMobiusInversion`; `ThetaRateLaplaceBernstein`, `ThetaRateMobiusSourceTransfer`, `ThetaRateMobiusBoundaryExamples`) |
 | sieve-zero-division-rate-tomography | L2, L3, Landau | todo |
 | positive-real-zero-division | L3 | done → 3-formalized (`ThetaZeroDivisionSource`) |
 | euler-zero-division-seed-transfer | L3 | todo |

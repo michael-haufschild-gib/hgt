@@ -1,3 +1,4 @@
+/- Local modification: omit a reflexivity step already closed by simplification on Mathlib 4.32.2. -/
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
@@ -192,7 +193,6 @@ theorem vderiv_mlieBracket
     rw [mfderiv_extChartAt_self (I := I)]
     erw [ContinuousLinearMap.id_apply (R₁ := Real)]
     simp only [Set.preimage_univ, Set.univ_inter]
-    rfl
   rw [bracket_eq]
   have hV'_y₀ : V' y₀ = X x := by
     simp only [V', VectorField.mpullbackWithin_apply, y₀]

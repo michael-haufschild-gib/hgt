@@ -332,4 +332,34 @@ theorem contMDiff_tangentFiber [IsManifold I 1 M] {n : ℕ∞ω} (p : M) :
   exact (show E →L[𝕜] E from
     (trivializationAt E (TangentSpace I) p).continuousLinearMapAt 𝕜 p).contMDiff.contMDiffAt
 
+/-- Vector-valued derivative chain rule, backported from the tangent-valued rule. -/
+theorem mvfderiv_comp_apply
+    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
+    {H' : Type*} [TopologicalSpace H'] {I' : ModelWithCorners 𝕜 E' H'}
+    {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    {f : M' → M} {g : M → F} (x : M')
+    (hg : MDifferentiableAt I 𝓘(𝕜, F) g (f x))
+    (hf : MDifferentiableAt I' I f x) (v : TangentSpace I' x) :
+    mvfderiv I' (g ∘ f) x v = mvfderiv I g (f x) (mfderiv I' I f x v) := by
+  unfold mvfderiv
+  rw [mfderiv_comp x hg hf]
+  rfl
+
+/-- Vector-valued derivative within a set, backported from the tangent-valued chain rule. -/
+theorem mvfderivWithin_comp
+    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
+    {H' : Type*} [TopologicalSpace H'] {I' : ModelWithCorners 𝕜 E' H'}
+    {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    {f : M' → M} {g : M → F} {s : Set M'} {u : Set M} {x : M'}
+    (hg : MDifferentiableWithinAt I 𝓘(𝕜, F) g u (f x))
+    (hf : MDifferentiableWithinAt I' I f s x) (hmap : s ⊆ f ⁻¹' u)
+    (huniq : UniqueMDiffWithinAt I' s x) :
+    mvfderivWithin I' (g ∘ f) s x =
+      (mvfderivWithin I g u (f x)).comp (mfderivWithin I' I f s x) := by
+  unfold mvfderivWithin
+  rw [mfderivWithin_comp x hg hf hmap huniq]
+  rfl
+
 end DifferentialGeometry

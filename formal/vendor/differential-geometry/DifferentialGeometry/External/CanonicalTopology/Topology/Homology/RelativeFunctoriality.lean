@@ -1,3 +1,4 @@
+/- Local compatibility change: use the unassociated quotient projection lemma after reassociation on Mathlib 4.32.2. -/
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeMaps
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CochainMaps
 
@@ -43,7 +44,7 @@ theorem integralRelativeChainMap_comp (f : C(X, Y)) (g : C(Y, Z))
     integralRelativeChainMap (g.comp f) (hg.comp hf) =
       integralRelativeChainMap f hf ≫ integralRelativeChainMap g hg := by
   apply (cancel_epi (cokernel.π (integralSingularChainMap (singularSubspaceInclusion A)))).mp
-  rw [integralRelativeChainMap_π, ← Category.assoc, integralRelativeChainMap_π_assoc, Category.assoc,
+  rw [integralRelativeChainMap_π, ← Category.assoc, integralRelativeChainMap_π, Category.assoc,
     integralRelativeChainMap_π, integralSingularChainMap_comp, Category.assoc]
 
 /-- Identity acts as identity on the original relative homology. -/

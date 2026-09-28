@@ -1,8 +1,8 @@
 # Fourier-kernel admission reconstruction and contact-localization law
 
 - **ID:** `ulf-grm-fourier-kernel-admission`
-- **Stage:** 2 — fully proven on paper
-- **Type:** THEOREM / CANONICAL FOUR-ORGAN FUSION
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [CLASSICAL BOCHNER/RADON--NIKODYM PARENTS]`
   `[CANONICAL OBSERVER GENERATION] [EXACT CONSERVATION] [FOURTH-ORGAN PREDICTION]`
   `[FINITE CORE LEAN-CERTIFIED] [ANALYTIC LIMIT PAPER-LEVEL] [NOT RH]`
@@ -393,7 +393,7 @@ an RH producer must prove.
 - [x] fourth-organ spectral contact/escape theorem;
 - [x] arithmetic reflection prediction and exact selector boundary;
 - [x] finite order-reflection, reconstruction, pencil-admission, and contact inequality formalized;
-- [ ] analytic Fourier uniqueness, Radon--Nikodym gauge, and cofinal limit formalized;
+- [x] analytic Fourier uniqueness, Radon--Nikodym gauge, and cofinal limit formalized;
 - [ ] literal pre-divisor arithmetic proof of zero reflection tension.
 
 ## 12. Lean certification boundary
@@ -410,4 +410,34 @@ an RH producer must prove.
 
 The module is imported by `GaloisForLFunctions.HTGeometry.UniversalLawField`. Its axiom audit uses
 only `propext`, `Classical.choice`, and `Quot.sound`. The analytic finite-measure statements
-`(FKA.6)`--`(FKA.23)` remain paper-certified and are not represented as Lean theorems.
+`(FKA.5)`--`(FKA.23)` are formalized in `PhasePacketOrderReflection`, `PhaseKernelAdmissionGauge`
+and `PhaseKernelContactLocalization`; see the Lean certificate below.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.PhasePacketOrderReflection`, `GaloisForLFunctions.HTGeometry.PhaseKernelAdmissionGauge`, `GaloisForLFunctions.HTGeometry.PhaseKernelContactLocalization`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules `GaloisForLFunctions.HTGeometry.PhasePacketOrderReflection` (45 constants), `GaloisForLFunctions.HTGeometry.PhaseKernelAdmissionGauge` (42 constants), `GaloisForLFunctions.HTGeometry.PhaseKernelContactLocalization` (44 constants), all axiom-audit clean; with the finite core `FourierKernelAdmission`. Namespace `PhaseKernel`.
+
+| Claim | Lean declaration |
+|-|-|
+| (FKA.1)–(FKA.2) Fourier transform, phase packets, quadratic form | `fourierTransform`, `phasePacket`, `packetForm`, `packetEnergy`, `signedFourier`, `signedPacketForm`, `signedPacketEnergy` |
+| Thm 3.1 (FKA.5) `Q_ν(t,z) = ∫ |p_{t,z}|² dν` | `packetForm_eq_packetEnergy`, `signedPacketForm_eq` |
+| Thm 3.1 (FKA.6) `ν ≥ 0` iff all packet forms `≥ 0` (Stone–Weierstrass on `AddCircle`, outer/inner regularity) | `nonneg_iff_forall_signedPacketEnergy_nonneg`, `le_iff_forall_packetEnergy_le`, `exists_rationalPacket_approx`, `le_of_forall_rationalPacketEnergy_le` |
+| Thm 3.1 (FKA.7) kernel matrices reconstruct `ν`; two-time packets read `ν̂` | `kernelMatrix`, `eq_of_kernelMatrix_eq`, `fourierTransform_eq_charFun` |
+| (FKA.3)–(FKA.4) gauge and packet thresholds | `admissionGauge`, `packetThreshold`, `packetThreshold_le_iff` |
+| Thm 4.1 (FKA.8), (FKA.11) gauge = worst threshold | `admissionGauge_eq_iSup_packetThreshold`, `nonneg_add_smul_iff` |
+| Thm 4.1 (FKA.9) least `c` with every Hermitian pencil PSD | `kernelPencil`, `kernelPencil_isHermitian`, `kernelPencil_posSemidef_iff`, `admissionGauge_le_iff_kernelPencil`, `admissionGauge_eq_iInf_kernelPencil` |
+| Thm 4.1 (FKA.10) Radon–Nikodym gauge, finiteness criterion | `nonneg_add_smul_iff_negPart_le`, `le_smul_iff_rnDeriv_le`, `admissionGauge_eq_essSup`, `admissionGauge_lt_top_iff` |
+| Thm 5.1 (FKA.12)–(FKA.13) rational enumeration, nested pencils, `κ_N ↑ κ` | `ratPhase`, `truncatedGauge`, `truncatedGauge_le_iff`, `truncatedGauge_mono`, `iSup_truncatedGauge`, `tendsto_truncatedGauge`, `le_iff_forall_rationalPacketEnergy_le` |
+| §6 rational phase polynomials dense in `L²((1+|h|)μ)` | `exists_ratPacket_eLpNorm_lt`, `exists_ratPacket_indicator_approx` |
+| Thm 6.1 (FKA.15) ground energy `= ess inf h` | `rationalRayleighSet`, `isGLB_rationalRayleighSet`, `essInf_mul_packetEnergy_le`, `exists_ratPacket_rayleigh_lt` |
+| Thm 6.1 `α < 0 ⇒ κ = -α` | `admissionGauge_withDensityᵥ`, `toReal_admissionGauge_withDensityᵥ_of_neg` |
+| Thm 6.1 (FKA.16)–(FKA.17) contact localization | `tendsto_contactMass_zero` |
+| Cor 8.1 (FKA.19)–(FKA.21) reflection gauges and tension `1_{a≠0}` | `reflectedScore`, `reflectionGauge_pair`, `reflectionTension_eq` |
+| Cor 8.1 (FKA.22) critical density, ground energy zero, no contact point | `reflectedScore_neg_add_one`, `isGLB_criticalRayleigh`, `criticalDensity_ne_ground` |
+| Cor 8.1 (FKA.23) escape to `+∞`; minimizing sequences exist | `tendsto_mass_Iic_zero`, `exists_escaping_minimizing_sequence` |
+
+## Log
+
+- 2026-09-28 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

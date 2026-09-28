@@ -1,3 +1,4 @@
+/- Local modifications: map path witnesses explicitly for Mathlib 4.32.2. -/
 import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.Basic
 import Mathlib.Topology.Homotopy.HomotopyGroup
 
@@ -52,8 +53,9 @@ theorem genLoopHomeomorph_homotopic_iff {K Y : Type*} [TopologicalSpace Y] {y : 
   rw [genLoop_homotopic_iff_joined, genLoop_homotopic_iff_joined]
   constructor
   · intro h
-    simpa only [e.symm_apply_apply] using h.map e.symm.continuous
-  · exact fun h => h.map e.continuous
+    simpa only [Joined, e.symm_apply_apply] using
+      h.map (fun P => P.map e.symm.continuous)
+  · exact fun h => h.map (fun P => P.map e.continuous)
 
 
 

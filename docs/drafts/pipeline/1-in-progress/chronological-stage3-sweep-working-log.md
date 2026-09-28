@@ -496,3 +496,41 @@ No general potential theory is needed for the rate. With `P(t) = (-4)^m T_m((1-t
 Module plan (HTGeometry): ArcsineLogIntegral, CubicRecoveryRateConstants, CubicRecoveryRateLower,
 WallisAbel, ArcsineMixtureEquilibrium, ChebyshevBlockProducts, CubicRecoveryExponentialRate;
 the zero-distribution statement `S_m/m → A` comes last (needs energy/lower-semicontinuity).
+
+### Exponential-rate card: Lean state (2026-09-28)
+
+Compiled clean (HTGeometry/ChronologicalTensor, not yet wired): `RecoveryDensitySeries` (Wallis,
+`I = Σ J_n a^n`, density `h`, log moment, Abel identity), `ArcsineMixturePotential` (equilibrium
+equality on `[0,b]`, strict off it), `CubicRecoveryRateLower` (Jensen, `ρ(b)^m ≤ t_m`),
+`CubicRecoveryRateUpper` (block Chebyshev products, `t_m ≤ 2^K 4^{⌊m/K⌋+1} ρ^m`),
+`CubicRecoveryExponentialRate` (`t_m^{1/m} → ρ`, eventually `1/8 < S_m`, `δ_k^{1/k} → ρ`,
+log-convex ratios `≤ ρ` and `→ ρ`, support max `ρ²`, Hausdorff inequalities).
+Remaining: `S_m/m → A` via Jensen with the positive weight `(1 + δ cos 2θ)/π`, `|δ| ≤ 1`
+(needs `∫_0^π log|cos θ - cos φ| cos 2θ dθ = -(π/2) cos 2φ` and
+`∫_0^{π/2} cos 2s log(1 - b cos s) ds = π/b² - 1/b - 5π/4` at the edge); the mixture measure `μ`
+as a `Measure`, its potential (needs the arcsine potential off the support, via
+`circleAverage_log_norm_sub_const₀`) and `∫ t² dμ = 1 - b/π - 3b²/4`.
+
+### Exponential-rate card: Lean state update (2026-09-28, later)
+
+Wired into `HTGeometry.lean` and built: `ArcsineLogIntegral` (+ `cos 2θ` moment, off-support
+potential via `circleAverage_log_norm_sub_const₀`), `CubicRecoveryRateConstants`,
+`RecoveryDensitySeries`, `ArcsineMixturePotential`, `CubicRecoveryRateLower`,
+`CubicRecoveryRateUpper`, `CubicRecoveryExponentialRate` (reuses corpus
+`HTGeometry.one_sub_sum_le_prod_one_sub`), `CubicRecoveryRootMean` (`S_m/m → b/(4π)+3b²/16`),
+`CubicRecoveryEquilibriumMeasure` (μ as a `Measure`, probability, potential equalities,
+constant/strictly increasing `U^μ+Q`, derivative `1/(2(1-t)) - ∫_0^b h/√(t²-a²) > 0` on `(b,1)`,
+Abel derivative form, `∫t²dμ = 1 - b/π - 3b²/4`).  Axioms: `propext, Classical.choice, Quot.sound`.
+Still to do before promotion: `E_{2m}(w) = 4^m t_m` (even monic reduction), continuity of `U^μ`,
+and energy minimality of μ (needs positive-definiteness of the log kernel on mass-zero measures:
+Frullani `log(2/|u|) = ∫_0^∞ (e^{-s u²} - e^{-4s})/(2s) ds` + Gaussian PD via
+`e^{2sxy} = Σ (2s)^n x^n y^n/n!`; nothing in the corpus, Bottcher/LogPotential has only the
+Bochner definitions).
+
+### Exponential-rate card: CLOSED (2026-09-28)
+
+All items done and wired: `CubicRecoveryEvenReduction` (`isLeast_evenWeightedNorm`),
+`continuousOn_potential_recoveryEquilibriumMeasure`, `GaussianFrullaniLogKernel` (general:
+Frullani, `log(2/|x-y|)` kernel, Gaussian Gram series, PD energy inequality, equality case, moment
+determinacy via Weierstrass), `CubicRecoveryEnergyMinimizer` (minimality + uniqueness).  Card moved
+to `3-formalized/chronological-recovery-exponential-rate.md`.  Next: uniform-spectrum.

@@ -1,6 +1,6 @@
 # Exact exponential rate of the recovery gaps
 
-**Status:** paper proof using classical weighted potential theory; not formalized in Lean. This attacks the actual unknown sequence rather than adding operator infrastructure. It does not settle log-convexity or existence of a moment measure. Priority of this specific application is unestablished.
+**Status:** Lean-complete (Stage 3-formalized). Every proven statement below — the angle, `0<ρ<1/16`, `lim δ_k^(1/k)=ρ`, `E_(2m)(w)=4^m t_m`, the root-sum bounds, the log-convexity and moment-measure consequences, the explicit equilibrium measure (probability, potential conditions, derivative, energy minimality and uniqueness), `∫t²dμ`, `A`, and `S_m/m→A` — is proved in Lean; axioms `propext`, `Classical.choice`, `Quot.sound` only. The Lean route replaces the cited Balogh–Bertola asymptotic by a self-contained argument (Jensen lower bound against the arcsine law, block products of scaled Chebyshev polynomials for the upper bound, Jensen against `(1+δcos2θ)/π` for `S_m/m`). Originally: paper proof using classical weighted potential theory. This attacks the actual unknown sequence rather than adding operator infrastructure. It does not settle log-convexity or existence of a moment measure. Priority of this specific application is unestablished.
 
 Let δ_k be the actual physical recovery gap at weight k+1. There is a unique θ∈(0,π/2) satisfying
 
@@ -95,3 +95,40 @@ If w_k=δ_(k+1)/δ_k is nondecreasing, its proved bound w_k≤1/4 gives a positi
 For a compact probability moment sequence, the nth root of the nth moment tends to the largest support point: the upper bound is immediate, and positive mass in every neighborhood below that point gives the lower bound. Applied to γ_n, this forces that point to be ρ². Therefore the scaled sequence γ_n/ρ^(2n) must satisfy every Hausdorff finite-difference inequality if a measure exists. This is a stronger concrete test than unspecified compact moment positivity.
 
 **Open:** prove all these inequalities or find an exact violation; obtain an actual representing measure; derive stronger than exponential asymptotics. The equilibrium measure μ in the proof is a distribution of approximation-polynomial zeros. It is not the sought representing measure for the recovery gaps.
+
+## Lean formalization
+
+Modules in `formal/GaloisForLFunctions/HTGeometry/` (`ArcsineLogIntegral`, `GaussianFrullaniLogKernel`)
+and `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/` (the rest), wired into `HTGeometry.lean`.
+
+| Card statement | Lean declaration | Module |
+|-|-|-|
+| Unique `θ ∈ (0,π/2)` with `2(π−θ)=3π sin θ`; `b = cos θ ∈ (0,1)`; `I(b)=3π/2` | `existsUnique_recoveryAngle`, `recoveryAngle_eq`, `recoveryEdge_mem`, `recoveryI_edge` | `CubicRecoveryRateConstants` |
+| `I(b)=(π/2+arcsin b)/√(1−b²)` (and `(π−θ)/sin θ`) | `recoveryI_eq_arcsin`, `recoveryI_cos` | `CubicRecoveryEquilibriumMeasure`, `CubicRecoveryRateConstants` |
+| `0<ρ<b²/16<1/16` | `recoveryRateFun_bounds`, `recoveryRate_bounds` | `CubicRecoveryRateConstants` |
+| Lower bound `t_m ≥ ρ(b)^m` for every `b∈(0,1)` (Jensen against the arcsine law) | `recoveryRateFun_pow_le`, `recoveryRate_pow_le`, `ae_jensenIntegrand_le` | `CubicRecoveryRateLower` |
+| Upper bound `t_m ≤ 2^K 4^(⌊m/K⌋+1) ρ^m` (block Chebyshev products at equal-`H`-mass nodes) | `cubicChebyshev_norm_le`, `sum_log_arcsineGauge_le`, `abs_eval_chebyshevBlock_le` | `CubicRecoveryRateUpper` |
+| Equilibrium inequality `∫_0^b log g(a,t)H'(a)da ≤ log C − ½log(1−t)`, equality for `t ≤ b`, strict for `t > b`; `C²/4=ρ` | `recoveryMixturePotential_le/_eq/_lt`, `recoveryCapacity_sq_div_four` | `ArcsineMixturePotential` |
+| `t_m^(1/m) → ρ` | `tendsto_cubicChebyshev_norm_rate` | `CubicRecoveryExponentialRate` |
+| `E_(2m)(w)=4^m t_m` (even monic reduction, attained by `(−4)^m T_m((1−t²)/4)`) | `isLeast_evenWeightedNorm`, `four_pow_mul_le_evenWeightedNorm`, `evenWeightedNorm_evenChebyshevLift` | `CubicRecoveryEvenReduction` |
+| `S_m<m/4`; `4^m t_m ≥ 1−4S_m`; eventually `1/8<S_m` | `one_sub_four_rootSum_le`, `eventually_rootSum_gt` | `CubicRecoveryExponentialRate` |
+| **`lim δ_k^(1/k) = ρ`** | `tendsto_cubicGradedRecoveryGap_rate`, `tendsto_log_cubicGradedRecoveryGap` | same |
+| Log-convex gaps: every `w_k ≤ ρ` and `w_k → ρ` | `cubicGradedRecoveryGap_ratio_of_monotone` | same |
+| Representing measure of `γ_n`: largest support point `ρ²` | `cubicRecoveryMoment_support_max` | same |
+| Hausdorff inequalities for `γ_n/ρ^(2n)` (measure on `[0,∞)`) | `cubicRecoveryMoment_hausdorff` | same |
+| `H(0)=0`, `H(b)=1`, `H'=h>0`, `H'(a)=π⁻¹Σ(n+1)J_(n+1)a^n`, `(n+1)J_nJ_(n+1)=π/2` | `recoveryMass_zero`, `recoveryMass_edge`, `hasDerivAt_recoveryMass`, `recoveryDensity_pos`, `recoveryDensity`, `wallisJ_mul` | `CubicRecoveryRateUpper`, `CubicRecoveryEquilibriumMeasure`, `RecoveryDensitySeries` |
+| Abel identity `∫_0^x H'(a)/√(x²−a²)da = 1/(2(1−x))` | `integral_recoveryDensity_div_sqrt` (integrated form `integral_arcsineExcess_mul_recoveryDensity`) | `CubicRecoveryEquilibriumMeasure`, `RecoveryDensitySeries` |
+| `μ=∫_0^b ν_a H'(a)da` is a probability measure, atomless, supported on `[−b,b]` | `recoveryEquilibriumMeasure`, instance `IsProbabilityMeasure recoveryEquilibriumMeasure`, `recoveryEquilibriumMeasure_singleton`, `ae_recoveryEquilibriumMeasure_abs_le` | `CubicRecoveryEquilibriumMeasure`, `CubicRecoveryEnergyMinimizer` |
+| Arcsine potential on/off support; `cos 2θ` moment | `integral_log_mul_cos_sub_of_abs_le`, `integral_log_mul_cos_sub_of_lt_abs`, `integral_log_mul_cos_sub_mul_cos_two` | `ArcsineLogIntegral` |
+| `U^μ+Q` constant on `[−b,b]`, `>` and strictly increasing on `[b,1)`; derivative `0` on `(0,b)` and `1/(2(1−t))−∫_0^b h/√(t²−a²) > 0` on `(b,1)`; potential continuous | `recoveryEquilibrium_potential_eq/_lt`, `recoveryWeightedPotential_strictMonoOn`, `hasDerivAt_recoveryWeightedPotential_of_lt`, `hasDerivAt_recoveryWeightedPotential`, `deriv_recoveryWeightedPotential_pos`, `continuousOn_potential_recoveryEquilibriumMeasure` | `CubicRecoveryEquilibriumMeasure` |
+| The potential conditions characterize the equilibrium measure: `μ` minimizes `I_Q(ν)=∫∫log(2/|x−y|)dνdν+2∫Qdν` over probability measures on `[−1,1]`, `I_Q(μ)<∞`, and the minimizer is unique | `recoveryWeightedEnergy_le`, `recoveryWeightedEnergy_lt_top`, `eq_recoveryEquilibriumMeasure_of_weightedEnergy_le` | `CubicRecoveryEnergyMinimizer` |
+| Positive-definiteness of the log kernel (Frullani/Gaussian), equality case, moment determinacy | `frullaniLogKernel_eq`, `frullaniLogKernel_self`, `two_mul_frullaniEnergy_le`, `exists_gaussianMoment_eq_of_energy_le`, `eq_of_gaussianMoment_eq` | `GaussianFrullaniLogKernel` |
+| `∫t²dμ = 1−b/π−3b²/4`; `A = b/(4π)+3b²/16` | `integral_sq_recoveryEquilibriumMeasure`, `recoveryRootMean_eq` | `CubicRecoveryEquilibriumMeasure` |
+| **`S_m/m → A`** | `tendsto_rootSum_div`, `abs_rootMoment_sub_le` | `CubicRecoveryRootMean` |
+
+The Lean proof does not use the card's extension `q̃` or the Balogh–Bertola citations; those
+were steps of the original route through the classical whole-line theory.
+
+**Verification.** `lake env lean` on each module: clean. `lake build` of the top modules: passed.
+`#print axioms` for 28 capstones: `[propext, Classical.choice, Quot.sound]`.
+

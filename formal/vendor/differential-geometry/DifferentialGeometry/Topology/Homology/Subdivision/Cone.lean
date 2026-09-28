@@ -1,3 +1,4 @@
+/- Local modifications: finite-tuple compatibility with Mathlib 4.32.2. -/
 import DifferentialGeometry.Topology.Homology.Subdivision.AffineSimplex
 import Mathlib.Algebra.Category.ModuleCat.Colimits
 import Mathlib.AlgebraicTopology.SingularHomology.Basic
@@ -27,8 +28,15 @@ theorem affineCone_boundary_generator {n : ℕ} (p : E) (v : Fin (n + 2) → E) 
         (TopCat.toSSet.obj (TopCat.of E)).ιChainComplex
           (affineSingularSimplex (Fin.cons p (v ∘ i.succAbove))) := by
   rw [SSet.ιChainComplex_d, Fin.sum_univ_succ]
+  have hzero : Fin.cons p v ∘ (0 : Fin (n + 3)).succAbove = v := by
+    funext i
+    simp
+  have hcons (i : Fin (n + 2)) :
+      Fin.cons p v ∘ i.succ.succAbove = Fin.cons p (v ∘ i.succAbove) := by
+    funext j
+    refine Fin.cases ?_ (fun k => ?_) j <;> simp
   simp only [δ_affineSingularSimplex, Fin.val_zero, pow_zero, one_zsmul,
-    Fin.succAbove_zero, Fin.cons_comp_succ, Fin.cons_comp_succ_succAbove,
+    hzero, hcons,
     Fin.val_succ, pow_succ, mul_neg_one, neg_zsmul, Finset.sum_neg_distrib]
   rw [sub_eq_add_neg]
   rfl

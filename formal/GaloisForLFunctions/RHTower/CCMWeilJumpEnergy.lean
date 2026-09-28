@@ -70,6 +70,8 @@ theorem ccmJumpEnergy_at_zero_source
   dsimp only at he ⊢
   linarith
 
+/-- A sufficient comparison at this individual source. It drops the positive jump
+energy; no bound uniform over all sources or apertures is asserted here. -/
 theorem ccmRestrictedWeilSourceQuadratic_pos_of_exact_row_bound
     (a : SuzukiPositiveAperture) (ha : Real.log 2 + Real.log 3 ≤ 2 * a.1)
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u)

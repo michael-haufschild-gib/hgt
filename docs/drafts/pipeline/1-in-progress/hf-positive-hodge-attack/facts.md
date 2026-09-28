@@ -220,3 +220,16 @@ Scope: frontier route HF. Facts and no-gos only.
 - **HF-F64 [Lean, `RHTower.vonMangoldt_add_oscillating_eq_zero`] Regular rigidity (partial sums `O(n^θ)`, `θ < ½`).**
   - Weil positivity of `Λ + c b` with bounded partial sums of `b` forces `c b = 0`, via the Abel-summed symbol, concentration, prime-blind probes and resonators.
   - In particular no real non-principal character is a Weil-positive direction (proved for `χ₋₄`).
+- **HF-F65 [Lean, `RHTower.not_weilPositive_of_sparse_support`] Positivity forces a pole.**
+  - The far polar multiplier `1 − cos(τX)/cosh(X/2)` kills `ĥ(±i/2)` and tends to `1` uniformly on ℝ. It transfers the polar constraint entirely onto the atoms at lags `X` and `2X` (`weilPositive_farPolar_inequality`).
+  - Every Weil-positive system has local atom mass `≫ e^{X/2}` at the scales `e^X` and `e^{2X}`, i.e. prime-number-theorem density and a positive residue.
+  - Weights with local mass `o(e^{X/2})` are never Weil-positive. Nor are weights supported on sets with `#(P∩[2,N]) = O(N^θ)`, `θ < ½` (S-units, cubes, lacunary sets).
+- **HF-F66 [Lean, `RHTower.vonMangoldt_add_halfPole_eq_zero`] Rigidity across the √n barrier.**
+  - Perturbations with partial sums `κ(√n − 1) + E(n)` and `Σ|E(n)|/(n√n) < ∞` keep Weil positivity only if they vanish.
+  - The `√n` main term pairs as an atom `πκ|ĥ(0)|²` (boundary pole of `ζ(2s)`) plus a continuous symbol. Example: `Λ + c·1_{squares}` ⇒ `c = 0`.
+- **HF-F67 [Lean, `RHTower.primeWeights_not_weilPositive`] The prime powers are forced.**
+  - `log p` on the primes alone is not Weil-positive, and rescaling the prime-power weights `Λ(p^k)`, `k ≥ 2`, by `1 + c` requires `c = 0`.
+  - Input: the medium PNT and the half-pole rigidity (HF-F66).
+- **HF-F68 [Lean, `RHTower.weilPositive_smoothedMean_lower`] Positivity ⇒ Chebyshev.**
+  - Every Weil-positive system has smoothed atom mean `L ≥ η/(4π) > 0` (Fejér test `ψ`, `η = −∫|ψ̂|²A`).
+  - Mean-zero systems (e.g. Λχ) are never Weil-positive with ζ's archimedean datum.

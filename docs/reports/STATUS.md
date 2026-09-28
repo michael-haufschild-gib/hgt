@@ -1501,3 +1501,11 @@ Notation: `δ=Re ρ−½`; angular energy of a zero = `Σ_{ρ′≠ρ}cos²θ`, 
   - ζ's positive completion is isolated among all finite signed perturbations of the prime measure carried by `[ε, ∞)`.
 - **MUST-503 [Lean: `RHTower.vonMangoldt_add_oscillating_eq_zero`]** Weil positivity with ζ's archimedean term determines the prime weights against every perturbation with bounded partial sums, not only summable ones.
   - A producer that would also certify `Λ + c·b` for an oscillating `b` (for example a character) with `c ≠ 0` proves a false statement.
+- **MUST-504 [Lean: `RHTower.not_weilPositive_of_sparse_support`]** Any positive completion of ζ's archimedean term must carry prime atoms of prime-number-theorem density with a positive pole.
+  - Weight systems whose local atom mass `Σ_{|log n − X| ≤ 1}|lam(n)|n^{−½}` is `o(e^{X/2})`, in particular those supported on `O(N^θ)`, `θ < ½`, positions (S-units, perfect powers of degree `≥ 3`), are never Weil-positive.
+  - A producer of positivity that would work with finitely many primes, or with any sparse set of prime positions, proves a false statement.
+- **MUST-505 [Lean: `RHTower.vonMangoldt_add_halfPole_eq_zero`]** A producer of Weil positivity for `ζ` must be sharp against perturbations of prime-power size `√n` (boundary poles), not only against `O(n^θ)`, `θ < ½`.
+  - Weights `Λ + w` whose perturbation has partial sums `κ√n + E(n)`, `Σ|E(n)|/(n√n) < ∞`, are Weil-positive only for `w = 0`; for example `Λ + c·1_{squares}` only for `c = 0`.
+- **MUST-506 [Lean: `RHTower.primeWeights_not_weilPositive`]** Any producer of Weil positivity for `ζ` must produce the prime-power weights `log p` at `p^k`, `k ≥ 2`, exactly.
+  - The weights `log p` on the primes alone are not Weil-positive.
+  - Rescaling the prime-power part by `1 + c` destroys positivity unless `c = 0`.

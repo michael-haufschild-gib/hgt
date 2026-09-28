@@ -1,3 +1,4 @@
+/- Local modifications: finite-tuple compatibility with Mathlib 4.32.2. -/
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.AffineSimplex
 import Mathlib.Data.Fin.Tuple.Basic
 
@@ -52,12 +53,15 @@ theorem affineSingularChain_cone_boundary (n : ℕ) (a : E) (v : Fin (n + 2) →
     funext i
     simp
   rw [hzero]
+  have hcons (i : Fin (n + 2)) :
+      Fin.cons a v ∘ i.succ.succAbove = Fin.cons a (v ∘ i.succAbove) := by
+    funext j
+    refine Fin.cases ?_ (fun k => ?_) j <;> simp
   simp only [Fin.val_zero, pow_zero, one_smul, Fin.val_succ,
-    Fin.cons_comp_succ_succAbove, pow_succ, mul_neg_one]
+    hcons, pow_succ, mul_neg_one]
   have hn (k : ℤ) (c : (integralSingularChains E).X (n + 1)) : (-k) • c = -(k • c) :=
     neg_zsmul c k
   simp only [hn]
   rw [Finset.sum_neg_distrib, sub_eq_add_neg]
-  rfl
 
 end DifferentialGeometry.Topology
