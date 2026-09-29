@@ -629,6 +629,12 @@ import GaloisForLFunctions.HTGeometry.ThetaCompletedPluckerSandwich
 import GaloisForLFunctions.HTGeometry.IntegralFormationOrderCharge
 import GaloisForLFunctions.HTGeometry.PhysicalOverlapSingularGaugeNondescent
 import GaloisForLFunctions.HTGeometry.MovingPluckerNullLineHomotopyDefect
+import GaloisForLFunctions.HTGeometry.HalfLineMellinUnitary
+import GaloisForLFunctions.HTGeometry.PoissonGammaCoherentLadder
+import GaloisForLFunctions.HTGeometry.SquareSummableFrameSynthesis
+import GaloisForLFunctions.HTGeometry.PrimeClockGammaTotality
+import GaloisForLFunctions.HTGeometry.PrimePoissonFormationFrame
+import GaloisForLFunctions.HTGeometry.PrimeGammaFrameInjective
 
 /-!
 # Universal-law-field Lean umbrella

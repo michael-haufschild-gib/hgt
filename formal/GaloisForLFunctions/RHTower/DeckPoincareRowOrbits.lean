@@ -47,7 +47,7 @@ theorem rowShift_val (k : ℤ) (p : gammaSet 1 1 0) :
 /-- Reduced rows: `c ≠ 0` and `0 ≤ d < |c|`. -/
 def ReducedRow : Type := {r : gammaSet 1 1 0 // r.1 0 ≠ 0 ∧ 0 ≤ r.1 1 ∧ r.1 1 < |r.1 0|}
 
-theorem rowShift_injective {r r' : gammaSet 1 1 0} {k k' : ℤ} (hr : r.1 0 ≠ 0)
+theorem rowShift_injective {r r' : gammaSet 1 1 0} {k k' : ℤ}
     (h0 : 0 ≤ r.1 1) (h1 : r.1 1 < |r.1 0|) (h0' : 0 ≤ r'.1 1) (h1' : r'.1 1 < |r'.1 0|)
     (h : rowShift k r = rowShift k' r') : r = r' ∧ k = k' := by
   have hc : r.1 0 = r'.1 0 := by
@@ -89,13 +89,13 @@ theorem exists_rowShift_eq {p : gammaSet 1 1 0} (hp : p.1 0 ≠ 0) :
   have hd₁ : d₀ < |c| := Int.emod_lt_of_pos d hc0
   obtain ⟨k, hk⟩ : c ∣ d - d₀ := by
     have h1 : |c| ∣ d - d₀ := by
-      rw [show d - d₀ = |c| * (d / |c|) by rw [Int.emod_def]; ring]
+      rw [show d - d₀ = |c| * (d / |c|) by linear_combination -(Int.emod_add_mul_ediv d |c|)]
       exact dvd_mul_right _ _
     exact (abs_dvd c _).1 h1
   have hcop : IsCoprime c d₀ := by
     have hp' := (gammaSet_one_mem_iff 1 p.1).1 p.2
     have hcd : IsCoprime c d := Int.isCoprime_iff_gcd_eq_one.2 hp'
-    have : d₀ = d + (-k) * c := by linear_combination -hk
+    have : d₀ = d + c * (-k) := by linear_combination -hk
     rw [this]
     exact hcd.add_mul_left_right (-k)
   let r : gammaSet 1 1 0 := ⟨![c, d₀], by
@@ -107,9 +107,9 @@ theorem exists_rowShift_eq {p : gammaSet 1 1 0} (hp : p.1 0 ≠ 0) :
   funext i
   fin_cases i
   · rfl
-  · simp only [r, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+  · simp only [r, Matrix.cons_val_zero, Matrix.cons_val_one]
     show d₀ + k * c = d
-    linear_combination hk
+    linear_combination -hk
 
 /-- Rows with `c ≠ 0`. -/
 def NonzeroRow : Type := {p : gammaSet 1 1 0 // p.1 0 ≠ 0}
@@ -119,7 +119,7 @@ def reducedRowShiftEquiv : ReducedRow × ℤ ≃ NonzeroRow :=
   Equiv.ofBijective (fun rk => ⟨rowShift rk.2 rk.1.1, by rw [rowShift_zero_coord]; exact rk.1.2.1⟩)
     ⟨fun ⟨r, k⟩ ⟨r', k'⟩ h => by
       have h' : rowShift k r.1 = rowShift k' r'.1 := congrArg Subtype.val h
-      obtain ⟨hr, hk⟩ := rowShift_injective r.2.1 r.2.2.1 r.2.2.2 r'.2.2.1 r'.2.2.2 h'
+      obtain ⟨hr, hk⟩ := rowShift_injective r.2.2.1 r.2.2.2 r'.2.2.1 r'.2.2.2 h'
       exact Prod.ext (Subtype.ext hr) hk,
     fun p => by
       obtain ⟨r, k, h1, h2, h3, h4⟩ := exists_rowShift_eq p.2

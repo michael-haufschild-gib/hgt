@@ -3337,3 +3337,43 @@ Next conjectures to test:
   - Modules: `HTGeometry/ShortBumpMellinSmoothedSums` and `RHTower/WeilPositiveShortIntervalSupport`, both wired.
   - Headline theorem: `RHTower.exists_prime_mem_Ioo_of_zetaWeilPositive`.
   - Every Weil-positive system has support in every `(x, x+x^{½+ε})`. Any **prime-supported producer for ζ's datum forces a prime in every such interval**, which is beyond the unconditional exponent `0.525`.
+
+### L149 — Construction batch in the design space left by L148, and the almost-all law in Lean. KILLS [P] + THEOREM [L]
+- **Constructions tested (dense composite support, as L148 requires).**
+  - **Zero-freeness is free.** Every system has `F_lam = exp(Σ lam(n)/log n · n^{−s})`, which is automatically zero-free wherever `D_lam` is holomorphic. For example `lam ≡ 1` gives `F = exp(∫_s^∞(ζ−1))`, with a pole at 1 and no zeros.
+    - So existence is **purely** the one-sided growth condition `Re(D − 1/(s−1)) ≤ Re Γ̃` on `σ > ½`. There is no zero problem.
+  - **Periodic / finite-Ramanujan weights** `lam = Σ_{q≤Q} a_q c_q`. Then `D = ζ·Σ_q a_qΣ_{d|q}dμ(q/d)d^{−s}` is ζ times a Dirichlet polynomial. KILL (L82/L88.2 large values).
+    - General lesson: integer-supported measures have a 1-periodic additive Fourier transform. The density pole is replicated at every integer frequency, which gives the ζ-dual. Only Ramanujan coefficients `μ(q)/φ(q)` (i.e. Λ) make the replicas incoherent, and then the dual is the explicit formula.
+  - **Integer Beurling primes with real multiplicity.** This is the same as a general `lam`, so there is nothing new. The additive large-values heuristic (alignment of `q ≤ log T` gives only `2√log T`) is irrelevant: the damage comes from the long Dirichlet sums, aligned multiplicatively through smooth numbers.
+  - **Half-pole repair** `lam = u − c(√n − √(n−1))`. The pole of `ζ(s+½)`-type at `s = ½` with negative residue adds a positive atom at `t = 0` to the Weil measure. It pays L131's low-frequency deficit `h(0) = −0.686` without a non-integer atom, but it leaves ζ's large values. KILL.
+    - Survivor: the half-pole is the integer-supported replacement for L131's point mass near 1.
+  - **Lebesgue-tail hybrid** (integer weights on `[2,N]`, Lebesgue beyond). Here `H = P_N − ∫_1^N y^{−s}dy` is entire, so Weil positivity is the **pointwise** inequality `Re H(½+it) ≤ h(t)`, via Phragmén–Lindelöf for `exp(−Φ)`.
+    - This gives a zero-free, prime-free sufficient criterion: `∀N ∃w: Re[Σ_{n≤N}w_n n^{−½−it} − ∫_1^N y^{−½−it}dy] ≤ h(t)` implies `W ≠ ∅`, by L68.
+    - With `w = Λ` this is Λ's level-`½log N` positivity (the sharp cutoff fails by Gibbs lobes even under RH; the Fejér taper works under RH). So the criterion does not escape RH for Λ-type `w`. Other `w` are untested.
+  - **CLT correction (self-audit of L127/L133).** Prime sums of length `T^α` at height `T` have Gaussian moments only up to order `< 1/α`. At `α ≈ 1` only the variance is determined.
+    - Tapered Λ at height `N^{1+δ}` is "at the cap except for dips" (zero windows contain 0 or 1 zero), with the same variance as the Gaussian model but bounded above.
+    - So the Gaussian kills in L117/L127/L133(b) are heuristic in exactly the α ≥ 1 sense. This confirms that they are not proofs.
+  - **L74 trace premise corrected.** On the near radical, `tr(P_V τ_{log n}) ≈ −tr(P_{zeros} τ_{log n})`, and this picks up Landau's `Σ_{γ≤T} n^{iγ} ≈ −(T/2π)Λ(n)/√n`. It is large at prime powers, not ≈ 0.
+    - L74's conclusion (prime-blind near-radical PSD combinations exist, hence no slack) survives by a different route. For any `c`, the symbol `Σ c_n n^{−½}cos(τ log n)` has mean zero, so it is negative on some frequency window below the Nyquist height. The near radical contains vectors localized there, so no `Σ c_n M_n` is positive definite on `V`, and Gordan applies.
+- **Theorem (Lean).** Almost all windows of length `X^ε` meet the support of any Weil-positive system. A prime-supported producer for ζ's datum forces primes in almost all such windows, for every `ε > 0` (`RHTower.volume_primeGapStarts_le_of_zetaWeilPositive`, module `RHTower/WeilPositiveAlmostAllShortIntervals`).
+- **Verdict.** Every construction in the dense design space fails in one of two ways: through ζ's large values (coherent dual) or through Λ's zeros (incoherent dual). The producer's existence is the one-sided pointwise Dirichlet-polynomial problem above, for every `N`.
+
+### L150 — Crystalline producers are Λ and force RH (no RH assumed). THEOREM [P] (card `2-fully-proven/11-rh-zero-divisor-geometry/weil-cone-crystalline-producer-rigidity.md`)
+- **Conjecture.** A Weil-positive system whose Weil measure is purely atomic, with atoms at zeta ordinates, is Λ, even if RH is not assumed. Its existence then implies RH.
+- **Proof idea.**
+  - Atomic Herglotz form gives `Φ̃ = (2(s−½)/π)Σc_j/((s−½)²+t_j²)`, which is odd under `s ↦ 1−s`.
+  - ζ's FE makes `ξ'/ξ` odd (unconditional). So `D_w = ξ'/ξ − Φ̃` is odd.
+  - `F = ζD_w` is entire apart from `s = 1`: ζ's zeros absorb all of `D_w`'s poles, on or off the line.
+  - Odd Hamburger gives `F ≡ 0`, hence `lam = Λ` and `ξ'/ξ = Φ̃`, which has poles only on the line: RH.
+- **Phase-4 attack.**
+  - *False?* No.
+  - *Circular?* No: RH is the conclusion.
+  - *Rediscovered?* L129/L140 have the same mechanism, but they assume `Λ ∈ W` (RH) and two-sidedness. Here a **single** crystalline system suffices, and off-line zeros are harmless because ζ cancels them.
+  - *Insignificant?* It settles the crystalline case of L105/L106 (second crystalline structures on the zeros) unconditionally.
+  - Verdict: **SURVIVES** (theorem).
+- **Extension.** Finitely many fake atoms are excluded too: the Hamburger residue argument survives finitely many poles on the line. Infinitely many fake atoms is the L142/L144 obstruction.
+- **Producer map after L148–L150.** A producer other than Λ must be:
+  - non-crystalline on the zeta spectrum (an absolutely continuous part, or infinitely many fake atoms), by L150;
+  - dense in composites, and not prime-supported without breaking short-interval records, by L148/L149;
+  - free of ζ-type large values, by L107/L133.
+  - The crystalline route to a second producer is closed.

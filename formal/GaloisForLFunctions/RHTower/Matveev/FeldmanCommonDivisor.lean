@@ -4,8 +4,8 @@ import Mathlib.Combinatorics.Enumerative.DoubleCounting
 /-!
 # Fel'dman's common divisor of bracket-deleted products
 
-Fix `N` and `s`.  For every block `y + 1, …, y + N` of consecutive positive integers and every way of
-deleting at most `s` of them, the product of the remaining integers is divisible by
+Fix `N` and `s`.  For every block `y + 1, …, y + N` of consecutive positive integers and every way
+of deleting at most `s` of them, the product of the remaining integers is divisible by
 
 `D(N, s) = ∏_{p^a ≤ N} p^{⌊N/p^a⌋ − s}`   (truncated subtraction):
 

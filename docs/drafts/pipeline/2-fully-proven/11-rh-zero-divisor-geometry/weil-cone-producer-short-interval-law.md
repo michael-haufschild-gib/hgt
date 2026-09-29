@@ -119,3 +119,8 @@ Take `δ = x^{−½+ε}` and `η = ε/2`. Then `Σ_n lam(n)ψ((n−x)/x^{½+ε})
   - `zetaArchimedeanDatum = ½ψ(s/2) − ½log π + 1/s` and `exists_log_bound_zetaArchimedeanDatum`;
   - **`exists_prime_mem_Ioo_of_zetaWeilPositive`**: a Weil-positive system for ζ's datum supported on the primes forces a prime in every `(x, x+x^{½+ε})`.
 - Still paper-only: (AA) (Plancherel in `log y`), (Q) (Montgomery–Vaughan and the Herglotz mean square), and (D).
+- **2026-09-29 (L149): Theorem AA is formal.** Module `RHTower/WeilPositiveAlmostAllShortIntervals` (wired after `WeilPositiveShortIntervalSupport`); standard axioms.
+  - `volume_gapStarts_le_of_herglotzWeilPositive`: for `0 < ε ≤ 1` and `X ≥ 1`, the `u ∈ [log X, log 2X]` whose window `(e^u, e^u + e^u X^{ε−1})` misses `supp lam` have measure `≤ C X^{−ε/2}`.
+  - `volume_primeGapStarts_le_of_zetaWeilPositive`: a prime-supported producer for ζ's datum forces primes in all but `O(X^{−ε/2})` (logarithmic measure) of the windows of length `X^ε`, for every `ε > 0`. The unconditional record for almost-all windows is a fixed exponent (about 1/20, Jia/Harman).
+  - Proof chain: `smoothedSum_sub_eq_shifted_integral` (factored out of `exists_const_abs_smoothedSum_sub_le`), the corpus Plancherel inequality `lintegral_norm_sq_angularFourier_le`, `integral_sq_lorentz_rpow_le`, and Markov.
+  - Still paper-only: (Q) and (D).

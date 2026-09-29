@@ -294,3 +294,27 @@ Master theorem to formalize: Parseval (3.14) on `L²(Γ(N)\ℍ)`, `N ≥ 3` (Γ�
   S²C³√((SR+N)RM)`; Theorem 11 (`a` = interval indicator): second term reduced by `M^{½}`.
   Theorem 12: `𝒦 = Σ_{r,s}Σ_{n≤N}b_{n,r,s}Σ_{c,d}g(c,d,n,r,s)e(n r̄d/sc) ≪ (CDNRS)^ε K‖b‖`,
   `K² = CS(RS+N)(C+DR) + C²DS√((RS+N)R) + D²NRS⁻¹`.
+
+## Log 2026-09-30 (K3a, K3b)
+- K3a DONE `RHTower/DeckPoincareSeries`: deck Poincaré series `P(z|h,v) = Σ_{(c,d)} h(M_{c,d}z)ρ(M_{c,d})⁻¹v`
+  for `T`-compatible `(h,v)`, equivariance, unfolding `∫_𝒟⟨P,G⟩ = 2∫_strip conj h ⟨v,G⟩`
+  (`integral_inner_poincSeries`, strip integrability `integrableOn_poincIntegrand_strip`), Selberg profile
+  `y^s e(μz)` with `ρ(T)v = e(μ)v`: continuity, `L²`, unfolding (`integral_inner_poincSeries_profile`).
+  `HTGeometry/ModularStripLIntegralUnfolding`: `[0,∞]`-valued unfolding with no integrability hypothesis.
+- K3b DONE `RHTower/DeckPoincareRowOrbits` + `RHTower/DeckPoincareFourier`:
+  reduced rows × ℤ ≃ rows with `c ≠ 0` (`reducedRowShiftEquiv`), `P_{rT^k}(z) = ρ(T^k)⁻¹P_r(T^k z)`;
+  `deckCuspCoeff μ v G y = ∫_0^1 e(-μx)⟨v,G(x+iy)⟩dx`; coordinate unfolding
+  `∫_𝒟⟨P(·|y^s e(μ·),v),G⟩ = 2∫_0^∞ y^{-2}y^{s̄}e^{-2πμy} deckCuspCoeff μ v G y dy`
+  (`integral_inner_poincSeries_eq_deckCuspCoeff`); Fourier coefficient of `P(·|h,w)`
+  (`deckCuspCoeff_poincSeries`) = `∫_0^1 e(-μx)h(x+iy)dx·⟨v, w+ρ(-1)⁻¹w⟩ + Σ_{reduced r}∫_ℝ coeffTerm r`,
+  each `coeffTerm r` integrable (`integrable_coeffTerm_and_hasSum`).  Rows `±(0,1)` reuse corpus
+  `RHTower.rowPlus/rowMinus/first_zero_iff`.  All wired after `DeckPoincareSeries`; axioms standard.
+- Route decision for K3c–K3f (no σ→1 limit, no Weil bound needed for (1.20)): pair `U(s₁,μ,v)` with
+  `conj U(s₂,ν,w)` = Poincaré series of profile `conj h` and vector `conj w` (no δ-term); geometric side by
+  `deckCuspCoeff_poincSeries` + DI Lemma 4.3 at `s₁ = σ+it, s₂ = σ−it`, σ > 1 fixed: `K_{2it}` with
+  `γ^{-2σ}`; spectral side: K2 Parseval, `⟨U,u_j⟩` from `deckMode_eq_whittaker` + (3.3), the four Γ's
+  `Γ(σ−½±i(t±κ))` = corpus Mellin product `integral_cpow_mul_modifiedBesselKOrder_mul_modifiedBesselKOrder`
+  (`∫K_{2it}K_{2iκ}x^{2σ−2}`), the `1/(Γ(σ+it)Γ(σ−it))` cancel exactly; integrate in `t` against
+  Kontorovich–Lebedev of `g(x) = φ(x)x^{2−2σ}·const` ⇒ (1.20) for compactly supported `φ`.
+- Next: K3c per-row integral `∫_ℝ coeffTerm r` for `h = conj(y^{s₂}e(νz))` (substitution `x ↦ x − d/c`,
+  deck Kloosterman weight `e((νa+μd)/c)⟨v,ρ(M_r)⁻¹conj w⟩`, `B(c,y)`), then the `y`-integral (Lemma 4.3).

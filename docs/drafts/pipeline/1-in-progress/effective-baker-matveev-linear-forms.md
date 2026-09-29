@@ -618,3 +618,49 @@ Layers, each a self-contained unconditional module:
   identity `F' = F_{σ+1,τ} + Σ ℓ_j F_{σ,τ+e_j}`; (L4) integer proxy `A_{σ,τ}(x)` and the `Λ`-error;
   (L5) lossless Hermite–Schwarz lemma; (L6) extrapolation induction; (L7) terminal generalized
   Vandermonde; (L8) parameters and the card interface.
+- 2026-09-29 (evening) — **Lean state of the Fel'dman route; parameter scheme simplified.**
+  - **Done in Lean.** All modules are in `RHTower/Matveev/` and wired into `RHTower.lean`. They are
+    warning-free and their capstones use only `[propext, Classical.choice, Quot.sound]`.
+    - (L1) `FeldmanCommonDivisor`.
+    - (L3/L4) `FeldmanJetPolynomials` and `FeldmanAuxiliaryFunction`.
+    - (L5) `HermiteApproximateSchwarz`.
+    - (L7) `ExponentialPolynomialZeros`.
+    - (B2) `FeldmanAuxiliaryBounds`:
+      - `norm_iteratedDeriv_feldmanAux_le`, the diagonal jet bound `(n+W)^t β`;
+      - `norm_feldmanAux_le`, the growth bound;
+      - `norm_feldmanAux_sub_feldmanTrueAux_le`, the `Λ`-error.
+    - (L2) `FeldmanSiegelSystem`:
+      - `exists_feldmanSiegel` gives box vanishing `σ<S, τ_j<S, x<X₀` with
+        `|C| ≤ U·max(1, A)`;
+      - `abs_feldmanCoeff_le` gives
+        `|a| ≤ 2^N(x+N+1)^N/D · (2qB)^{|τ|} · e^{xqW₊}`.
+    - (L6 input) `IntegerNodeHermite`, for the nodes `0..X−1`:
+      - `|Ω(x')| ≤ Y^{MX}`;
+      - `|Ω(w)| ≥ (ρ−X)^{MX}` on `|w|=ρ`;
+      - `∏_{y≠x}|x−y| = x!(X−1−x)!`;
+      - `|u_x(z)| ≤ (2^X e^{ρ+X})^M`;
+      - `|H(z)| ≤ X·2ε e^{ρ+X}·2^M(2^X e^{ρ+X})^{M²}`.
+  - **Simplification found while planning L6/L8: constant jet order.** Take the stage orders
+    `T_r = (R−r)M + 1` (so `S = RM+1`) instead of halving. Then:
+    - nodes are `X_r = 2^r X₀`, the radius is `ρ_r = 8X_r`, and the node ratio is `(2/7)^{MX_r} ≤ 3^{−MX_r}`;
+    - the growth-to-gain ratio `8·(1+2qW)/M` is independent of `r`;
+    - every constraint is polynomial in `R`, so `K = 2` suffices.
+  - **Parameters.** Master `Q = R`, with `W̄ ≥ W₊` a natural number.
+    - `E = 192(R+1)W̄`, `q = 4E^{m+1}(1+R)`, `M = 192W̄q`.
+    - `c = 16(m+1)(R+1)q`, `a = 2cE^{m+1}`, `N = an`, `X₀ = cn`, with `n = ⌈log B⌉`.
+  - **Requirements** (each term at most gain/8):
+    - Siegel: `2cS^{m+1} ≤ aq^{m+1}`, from `S ≤ Eq`.
+    - Growth: `M ≥ 64(1+2qW̄)`.
+    - Height: `8(m+1)S(1+log 2q) ≤ Mc`.
+    - Divisor: `336a(1+log₂S) ≤ Mc`, needing `S < 2^R`.
+    - Terminal: `3E^{m+1}q^{m+1} ≤ 2^R`.
+    - Only "poly(R) ≤ 2^R for R large" is needed.
+    - The `Λ`-side: `B^S(2Hb_r+β) < D/2` holds once `|Λ| < e^{−C₀(n−1)}` with `C₀` exceeding the
+      sum of the linear coefficients.
+  - **Remaining Lean.**
+    - (L6) Step lemma, stage induction, and the terminal lemma `C = 0` via
+      `eq_zero_of_expPoly_eval_eq_zero` and `eq_zero_of_sum_lagrangeShift_eq_zero`, with injectivity
+      of `ω_l = ∏p_j^{l_j}` from `primeLogForm_eq_zero_iff`.
+    - (L8) Parameter verification, the permutation/sign reduction to the pivot form, and
+      `EffectiveBakerBound` via `effectiveBakerBound_of_large`.
+    - Card-1 interface.

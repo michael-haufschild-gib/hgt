@@ -171,7 +171,7 @@ theorem halfLineMellinUnitary_ae_eq_mellin (f : HalfLineL2) (g : ℝ → ℂ)
 /-! ## Gamma profiles -/
 
 /-- `mellin (e^{-tr}) s = t^{-s} Γ(s)` for `Re s > 0`. -/
-theorem mellin_exp_neg_mul {t : ℝ} (ht : 0 < t) {s : ℂ} (hs : 0 < s.re) :
+theorem mellin_exp_neg_scale {t : ℝ} (ht : 0 < t) {s : ℂ} (hs : 0 < s.re) :
     mellin (fun r : ℝ => ((Real.exp (-(t * r)) : ℝ) : ℂ)) s =
       (t : ℂ) ^ (-s) * Complex.Gamma s := by
   have h := mellin_comp_mul_left (fun r : ℝ => ((Real.exp (-r) : ℝ) : ℂ)) s ht
@@ -183,6 +183,6 @@ theorem mellin_cpow_mul_exp_neg_mul {t : ℝ} (ht : 0 < t) (α s : ℂ) (hs : 0 
       (t : ℂ) ^ (-(s + α)) * Complex.Gamma (s + α) := by
   have h := mellin_cpow_smul (fun r : ℝ => ((Real.exp (-(t * r)) : ℝ) : ℂ)) s α
   simp only [smul_eq_mul] at h
-  rw [h, mellin_exp_neg_mul ht hs]
+  rw [h, mellin_exp_neg_scale ht hs]
 
 end GaloisForLFunctions.HTGeometry

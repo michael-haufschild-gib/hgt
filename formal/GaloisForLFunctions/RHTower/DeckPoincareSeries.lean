@@ -178,6 +178,43 @@ theorem poincIntegrand_T_zpow {h : ℍ → ℂ} {v : DeckSpace N} (hc : CuspComp
   rw [← (deckRho N (ModularGroup.T ^ n)).inner_map_map ((deckRho N (ModularGroup.T ^ n)).symm v) (G w),
     LinearIsometryEquiv.apply_symm_apply]
 
+/-- The unfolded integrand is integrable on the strip `0 ≤ Re w < 1`. -/
+theorem integrableOn_poincIntegrand_strip {h : ℍ → ℂ} {v : DeckSpace N} (hc : CuspCompatible h v)
+    (hhc : Continuous h) {G : ℍ → DeckSpace N} (hGc : Continuous G) (hGe : deckEquivariant N G)
+    (hGL : MemLp G 2 cellMeasure)
+    (hsum : ∀ z, Summable fun p : gammaSet 1 1 0 => ‖h (gammaSetMatrix p • z)‖)
+    (hH : MemLp (fun z => ∑' p : gammaSet 1 1 0, ‖h (gammaSetMatrix p • z)‖) 2 cellMeasure) :
+    IntegrableOn (poincIntegrand h v G) modularStrip volume := by
+  set f := poincIntegrand h v G
+  have hT : ∀ (n : ℤ) (w : ℍ), f (ModularGroup.T ^ n • w) = f w := poincIntegrand_T_zpow hc hGe
+  have hfc : Continuous f :=
+    (Complex.continuous_conj.comp hhc).mul (continuous_const.inner hGc)
+  refine ⟨hfc.aestronglyMeasurable, ?_⟩
+  rw [HasFiniteIntegral]
+  have hg : ∀ (n : ℤ) (z : ℍ), ‖f (ModularGroup.T ^ n • z)‖ₑ = ‖f z‖ₑ := fun n z => by rw [hT]
+  have hunf := tsum_lintegral_fd_eq_two_mul_lintegral_strip (g := fun z => ‖f z‖ₑ) hg
+  have hswap : ∑' p : gammaSet 1 1 0, ∫⁻ z in fd, ‖f (gammaSetMatrix p • z)‖ₑ =
+      ∫⁻ z in fd, ∑' p : gammaSet 1 1 0, ‖f (gammaSetMatrix p • z)‖ₑ :=
+    (lintegral_tsum fun p => (hfc.comp (continuous_modular_smul _)).enorm.aemeasurable).symm
+  have hpt : ∀ z, ∑' p : gammaSet 1 1 0, ‖f (gammaSetMatrix p • z)‖ₑ ≤
+      ENNReal.ofReal ((∑' p : gammaSet 1 1 0, ‖h (gammaSetMatrix p • z)‖) * (‖v‖ * ‖G z‖)) := by
+    intro z
+    rw [ENNReal.ofReal_mul (tsum_nonneg fun _ => norm_nonneg _),
+      ENNReal.ofReal_tsum_of_nonneg (fun _ => norm_nonneg _) (hsum z), ← ENNReal.tsum_mul_right]
+    refine ENNReal.tsum_le_tsum fun p => ?_
+    show ‖poincIntegrand h v G (gammaSetMatrix p • z)‖ₑ ≤ _
+    rw [← inner_poincTerm hGe, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
+    refine ENNReal.ofReal_le_ofReal ((norm_inner_le_norm _ _).trans ?_)
+    rw [norm_poincTerm, mul_assoc]
+  have hint : Integrable (fun z => (∑' p : gammaSet 1 1 0, ‖h (gammaSetMatrix p • z)‖) *
+      (‖v‖ * ‖G z‖)) cellMeasure := by
+    have h1 := hH.integrable_mul (hGL.norm.const_mul ‖v‖) (p := 2) (q := 2)
+    exact h1
+  have hfin : ∫⁻ z in fd, ∑' p : gammaSet 1 1 0, ‖f (gammaSetMatrix p • z)‖ₑ < ∞ :=
+    (lintegral_mono hpt).trans_lt (hint.lintegral_lt_top)
+  rw [← hswap, hunf] at hfin
+  exact lt_of_le_of_lt (le_mul_of_one_le_left' (by norm_num : (1 : ℝ≥0∞) ≤ 2)) hfin
+
 /-- **Unfolding of the deck Poincaré series** against square-integrable equivariant fields. -/
 theorem integral_inner_poincSeries {h : ℍ → ℂ} {v : DeckSpace N} (hc : CuspCompatible h v)
     (hhc : Continuous h) {G : ℍ → DeckSpace N} (hGc : Continuous G) (hGe : deckEquivariant N G)
@@ -190,33 +227,8 @@ theorem integral_inner_poincSeries {h : ℍ → ℂ} {v : DeckSpace N} (hc : Cus
   have hT : ∀ (n : ℤ) (w : ℍ), f (ModularGroup.T ^ n • w) = f w := poincIntegrand_T_zpow hc hGe
   have hfc : Continuous f :=
     (Complex.continuous_conj.comp hhc).mul (continuous_const.inner hGc)
-  -- integrability on the strip from the unfolding of `‖f‖`
-  have hstrip : IntegrableOn f modularStrip volume := by
-    refine ⟨hfc.aestronglyMeasurable, ?_⟩
-    rw [HasFiniteIntegral]
-    have hg : ∀ (n : ℤ) (z : ℍ), ‖f (ModularGroup.T ^ n • z)‖ₑ = ‖f z‖ₑ := fun n z => by rw [hT]
-    have hunf := tsum_lintegral_fd_eq_two_mul_lintegral_strip (g := fun z => ‖f z‖ₑ) hg
-    have hswap : ∑' p : gammaSet 1 1 0, ∫⁻ z in fd, ‖f (gammaSetMatrix p • z)‖ₑ =
-        ∫⁻ z in fd, ∑' p : gammaSet 1 1 0, ‖f (gammaSetMatrix p • z)‖ₑ :=
-      (lintegral_tsum fun p => (hfc.comp (continuous_modular_smul _)).enorm.aemeasurable).symm
-    have hpt : ∀ z, ∑' p : gammaSet 1 1 0, ‖f (gammaSetMatrix p • z)‖ₑ ≤
-        ENNReal.ofReal ((∑' p : gammaSet 1 1 0, ‖h (gammaSetMatrix p • z)‖) * (‖v‖ * ‖G z‖)) := by
-      intro z
-      rw [ENNReal.ofReal_mul (tsum_nonneg fun _ => norm_nonneg _),
-        ENNReal.ofReal_tsum_of_nonneg (fun _ => norm_nonneg _) (hsum z), ← ENNReal.tsum_mul_right]
-      refine ENNReal.tsum_le_tsum fun p => ?_
-      show ‖poincIntegrand h v G (gammaSetMatrix p • z)‖ₑ ≤ _
-      rw [← inner_poincTerm hGe, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
-      refine ENNReal.ofReal_le_ofReal ((norm_inner_le_norm _ _).trans ?_)
-      rw [norm_poincTerm, mul_assoc]
-    have hint : Integrable (fun z => (∑' p : gammaSet 1 1 0, ‖h (gammaSetMatrix p • z)‖) *
-        (‖v‖ * ‖G z‖)) cellMeasure := by
-      have h1 := hH.integrable_mul (hGL.norm.const_mul ‖v‖) (p := 2) (q := 2)
-      exact h1
-    have hfin : ∫⁻ z in fd, ∑' p : gammaSet 1 1 0, ‖f (gammaSetMatrix p • z)‖ₑ < ∞ :=
-      (lintegral_mono hpt).trans_lt (hint.lintegral_lt_top)
-    rw [← hswap, hunf] at hfin
-    exact lt_of_le_of_lt (le_mul_of_one_le_left' (by norm_num : (1 : ℝ≥0∞) ≤ 2)) hfin
+  have hstrip : IntegrableOn f modularStrip volume :=
+    integrableOn_poincIntegrand_strip hc hhc hGc hGe hGL hsum hH
   have hsum' : Summable fun p : gammaSet 1 1 0 => ∫ z in fd, ‖f (gammaSetMatrix p • z)‖ := by
     have hφ : ∀ (n : ℤ) (z : ℍ), ((‖f (ModularGroup.T ^ n • z)‖ : ℝ) : ℂ) = ((‖f z‖ : ℝ) : ℂ) :=
       fun n z => by rw [hT]

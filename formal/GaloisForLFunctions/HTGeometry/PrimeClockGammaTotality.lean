@@ -45,11 +45,11 @@ theorem rpow_mul_exp_neg_half_le {α : ℝ} {n : ℕ} (hα0 : 0 ≤ α) (hαn : 
     have hmul : Real.exp (r / 2) * Real.exp (-(r / 2)) = 1 := by
       rw [← Real.exp_add]; simp
     have hfpos : (0 : ℝ) < n.factorial := by exact_mod_cast Nat.factorial_pos n
+    have h2 : (r / 2) ^ n ≤ n.factorial * Real.exp (r / 2) := by
+      have := (div_le_iff₀ hfpos).1 hexp
+      linarith
     have hkey : r ^ n * Real.exp (-(r / 2)) ≤ 2 ^ n * (n.factorial : ℝ) := by
-      rw [hpow, div_le_iff₀ hfpos] at *
-      have h2 : (r / 2) ^ n ≤ n.factorial * Real.exp (r / 2) := by
-        rw [div_le_iff₀ hfpos] at hexp
-        linarith
+      rw [hpow]
       calc 2 ^ n * (r / 2) ^ n * Real.exp (-(r / 2))
           ≤ 2 ^ n * (n.factorial * Real.exp (r / 2)) * Real.exp (-(r / 2)) := by gcongr
         _ = 2 ^ n * n.factorial * (Real.exp (r / 2) * Real.exp (-(r / 2))) := by ring
@@ -72,8 +72,10 @@ theorem memLp_gammaDampedDatum {k : ℕ} (hk : k ≠ 0) (f : HalfLineL2) :
   · refine AEStronglyMeasurable.mul ?_ (Lp.memLp f).aestronglyMeasurable
     exact (Complex.measurable_ofReal.comp (by fun_prop)).aestronglyMeasurable
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
+    have hr' : (0 : ℝ) < r := hr
     rw [gammaDampedDatum, norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
-      Real.norm_of_nonneg (by positivity), Real.norm_of_nonneg (by positivity)]
+      Real.norm_of_nonneg (mul_nonneg (Real.rpow_nonneg hr'.le _) (Real.exp_pos _).le),
+      Real.norm_of_nonneg (by positivity)]
     exact mul_le_mul_of_nonneg_right (rpow_mul_exp_neg_half_le hα0 hαn hr) (norm_nonneg _)
 
 /-- `⟨ψ_t^{(k)}, f⟩ = √((2t)^k/(k-1)!) · 𝓛φ(t - 1/2)`. -/
@@ -132,7 +134,10 @@ theorem eq_zero_of_forall_inner_gammaCoherentVector_eq_zero (k : ℕ) [NeZero k]
         simp only [Set.mem_setOf_eq, Complex.sub_re]
         norm_num
         linarith
-      exact (hana _ hin).comp ((sectorRootMap_analyticOnNhd 1 R z hz).sub analyticAt_const))
+      have hsub : AnalyticAt ℂ (fun z => sectorRootMap 1 R z - 1 / 2) z :=
+        (sectorRootMap_analyticOnNhd 1 R z hz).sub analyticAt_const
+      exact AnalyticAt.comp (g := laplaceRay φ) (f := fun z => sectorRootMap 1 R z - 1 / 2)
+        (hana _ hin) hsub)
     (fun R hR => ⟨max 1 (rayL2Norm φ), le_max_left _ _, fun z hz => by
       have hre := sectorRootMap_one_re_gt (R := R) hz
       have hw : (0 : ℝ) < (sectorRootMap 1 R z - 1 / 2).re := by
@@ -164,7 +169,8 @@ theorem eq_zero_of_forall_inner_gammaCoherentVector_eq_zero (k : ℕ) [NeZero k]
       refine tendsto_nhdsWithin_iff.2 ⟨?_, Eventually.of_forall fun n => ?_⟩
       · have h0 : Tendsto (fun n : ℕ => (((n : ℝ) + 1)⁻¹ : ℝ)) atTop (𝓝 0) :=
           tendsto_inv_atTop_zero.comp (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds)
-        simpa using (tendsto_const_nhds (x := (2 : ℂ))).add (Complex.continuous_ofReal.tendsto 0 |>.comp h0)
+        simpa using (tendsto_const_nhds (x := (2 : ℂ))).add
+          (Complex.continuous_ofReal.tendsto 0 |>.comp h0)
       · simp only [Set.mem_compl_iff, Set.mem_singleton_iff, add_eq_left]
         exact Complex.ofReal_ne_zero.mpr (by positivity)
     exact htend.frequently (Frequently.of_forall fun n => by exact_mod_cast hzero_ray n)
@@ -176,8 +182,9 @@ theorem eq_zero_of_forall_inner_gammaCoherentVector_eq_zero (k : ℕ) [NeZero k]
   refine Lp.ext ?_
   have hf0 : ∀ᵐ r ∂(volume.restrict (Ioi (0 : ℝ))), (f : ℝ → ℂ) r = 0 := by
     filter_upwards [hφ0, ae_restrict_mem measurableSet_Ioi] with r hr hrpos
+    have hr' : (0 : ℝ) < r := hrpos
     have hne : ((r ^ (((k : ℝ) - 1) / 2) * Real.exp (-(r / 2)) : ℝ) : ℂ) ≠ 0 :=
-      Complex.ofReal_ne_zero.mpr (by positivity)
+      Complex.ofReal_ne_zero.mpr (mul_pos (Real.rpow_pos_of_pos hr' _) (Real.exp_pos _)).ne'
     exact (mul_eq_zero.1 hr).resolve_left hne
   filter_upwards [hf0, Lp.coeFn_zero ℂ 2 (volume.restrict (Ioi (0 : ℝ)))] with r h1 h2
   rw [h1, h2]

@@ -15,13 +15,13 @@ vanishes at the `(N+1)|L|` integers `x = 0, 1, …, (N+1)|L| − 1`, then every 
 
 The operator `(E − b)v(x) = v(x+1) − b v(x)` maps `Q(x) a^x` to `(a Q(x+1) − b Q(x)) a^x`.  For
 `a ≠ b` the polynomial map `Q ↦ a Q(X+1) − b Q` is injective and preserves the degree bound; for
-`a = b` it lowers the degree, so `(E − ω_{l₀})^{N+1}` annihilates the `l₀`-term.  Each application of
-`E − b` shortens the vanishing window by one, and induction on `|L|` finishes; the last polynomial
-has `N+1` zeros.
+`a = b` it lowers the degree, so `(E − ω_{l₀})^{N+1}` annihilates the `l₀`-term.  Each application
+of `E − b` shortens the vanishing window by one, and induction on `|L|` finishes; the last
+polynomial has `N+1` zeros.
 
 For the auxiliary polynomials of Fel'dman's construction we use the Lagrange-type basis
-`g_k(X) = ∏_{i ≤ N, i ≠ k} (X + i + 1)`, `k ≤ N`: `g_k` does not vanish at `−(k+1)` while every other
-`g_{k'}` does, so a vanishing combination has zero coefficients.
+`g_k(X) = ∏_{i ≤ N, i ≠ k} (X + i + 1)`, `k ≤ N`: `g_k` does not vanish at `−(k+1)` while every
+other `g_{k'}` does, so a vanishing combination has zero coefficients.
 -/
 
 noncomputable section

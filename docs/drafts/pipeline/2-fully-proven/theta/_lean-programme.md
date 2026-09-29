@@ -54,7 +54,7 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | quantile-critical-one-port-rigging | L5 | todo |
 | quantile-resistance-network | L5, Fourier series | todo |
 | compact-inverse-zero-jordan-history | L5 | todo |
-| deletion-cutoff-commutator-collapse | L1, PNT | todo |
+| deletion-cutoff-commutator-collapse | L1, PNT | partial: (1), (2), (3), (3a)–(3h), (3k), (4), (5), sign changes of C_∞ done (`ThetaCutoffCommutatorShell`, `ThetaCutoffCommutatorCofinalLimit`, `ThetaCutoffCommutatorMellin`, `ThetaCofinalCurrentSignChanges`, `ThetaPrimeScheduleSpectralObservation`); open: (3i) prime-sum asymptotic via Abel summation against θ, (3j) natural-schedule oscillation |
 | chronological-boundary-positive-transfer | L1, Laplace | todo |
 | prime-deletion-moving-cusp-dual-source | L1, Landau | todo |
 | rational-cusp-boundary-law | Poisson/Gauss sums | done → 3-formalized (`ThetaRationalCuspBoundary`, `ThetaCuspOneSidedConnection`, `ThetaCuspAbelBoundaryPairing`, `QuadraticGaussSumFourthPower`) |

@@ -14,7 +14,8 @@ On `H = L²((0,∞), dr)` put, for a degree `k ≥ 1` and a clock `t > 0`,
   `mellin ψ_t^{(3)} = a(s) mellin ψ_t^{(2)}` with the clock-free relative creator
   `a(s) = Γ(s+1)/Γ(s+1/2)`, whose modulus on the unitary line is
   `|a(1/2+iτ)|² = (τ²+1/4) tanh(πτ)/τ`, equal to `π/4` at `τ = 0` and asymptotic to `|τ|`.
-* **(E)** for `t ≠ u` no contraction of `H` maps `ψ_t^{(2)} ↦ ψ_t^{(3)}` and `ψ_u^{(2)} ↦ ψ_u^{(3)}`.
+* **(E)** for `t ≠ u` no contraction of `H` maps `ψ_t^{(2)} ↦ ψ_t^{(3)}` and
+  `ψ_u^{(2)} ↦ ψ_u^{(3)}`.
 -/
 
 open MeasureTheory Set Filter Topology
@@ -201,7 +202,7 @@ theorem gammaCoherentProfile_three_eq {t r : ℝ} (ht : 0 < t) (hr : 0 < r) :
 
 /-! ## Mellin transforms and the relative creator -/
 
-theorem mellin_congr_Ioi {f g : ℝ → ℂ} (h : EqOn f g (Ioi 0)) (s : ℂ) :
+theorem mellin_congr_of_eqOn_Ioi {f g : ℝ → ℂ} (h : EqOn f g (Ioi 0)) (s : ℂ) :
     mellin f s = mellin g s := by
   unfold mellin
   exact setIntegral_congr_fun measurableSet_Ioi fun r hr => by rw [h hr]
@@ -220,7 +221,7 @@ theorem mellin_gammaCoherentProfile {k : ℕ} {t : ℝ} (ht : 0 < t) {s : ℂ}
     simp only [gammaCoherentProfile, smul_eq_mul]
     rw [Complex.ofReal_mul, Complex.ofReal_mul, Complex.ofReal_cpow (le_of_lt hr)]
     ring
-  rw [mellin_congr_Ioi hcongr, mellin_const_smul, mellin_cpow_mul_exp_neg_mul ht _ _ hs,
+  rw [mellin_congr_of_eqOn_Ioi hcongr, mellin_const_smul, mellin_cpow_mul_exp_neg_mul ht _ _ hs,
     smul_eq_mul]
   have hsqrt : Real.sqrt (t ^ k) = t ^ ((k : ℝ) / 2) := by
     rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_mul ht.le]
