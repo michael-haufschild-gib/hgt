@@ -1,7 +1,7 @@
 # Entire-heat order-two exclusion by a circle bootstrap
 
 - **ID:** entire-heat-order-two-circle-bootstrap
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized / not new scientific knowledge (new proof of a classical consequence)
 - **Type:** THEOREM (paper) → THEOREM (Lean)
 - **Source:** `2-fully-proven/02-analytic-da-entire-functions/entire-heat-multiplicative-da-order-three-floor.md`
 - **Statement:** An infinite-spectrum entire-heat anchor satisfies no order-two ADE; proof by a
@@ -58,3 +58,7 @@ Step 2 hypothesis. So an infinite-spectrum heat anchor has no order-two ADE.
 - 2026-09-29 — created; the paper proof above replaces the Strelitz enlarged-set component
   argument for the heat class. It uses only the corpus log-jet compiler, the central-index asymptotic
   and elementary circle analysis.
+- 2026-09-29 — Lean complete. Modules `StrelitzSecondJetGap`, `StrelitzCircleJetCalculus`,
+  `StrelitzCircleBootstrap`, `SuperGaussianPlateauEulerJets` and `EntireHeatOrderTwoFloor` are wired
+  into `HTGeometry.lean`. The capstone `not_differentiallyAlgebraicOfOrder_two_entireHeat` has
+  axioms `[propext, Classical.choice, Quot.sound]`.

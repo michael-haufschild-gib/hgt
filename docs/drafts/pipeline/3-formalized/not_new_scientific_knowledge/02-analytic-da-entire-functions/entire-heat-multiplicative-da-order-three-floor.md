@@ -1,7 +1,7 @@
 # Entire-Heat Multiplicative DA Anchors Have Differential Order at Least Three
 
 - **ID:** entire-heat-multiplicative-da-order-three-floor
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized / not new scientific knowledge
 - **Type:** THEOREM (paper) / BRIDGE / ROUTE NO-GO
 - **Scientific status:** `[BRIDGE]` — a direct heat-decay consequence of the classical Valiron-Zimogljad-Strelitz growth wall for algebraic differential equations of order at most two
 - **Statement:** An infinite-spectrum one-sided periodic heat orbit that is entire for every complex time cannot have a first- or second-order DA anchor in its multiplicative Fourier coordinate.
@@ -16,96 +16,30 @@ Determine how much algebraic-differential complexity is forced by entire backwar
 - [x] Complete unconditional paper proof.
 - [x] No arithmetic or coefficient-height hypothesis.
 - [x] Parent-theory gate: **FAILS scientific novelty.** Once the zero-order estimate is written down, the conclusion is an immediate application of the classical order-two growth theorem.
-- [ ] Formalization: **in progress.**  Step 1 is Lean-proved in central-index form
-  (`HTGeometry/EntireHeatDifferentialOrderFloor.lean`): the literal heat summability hypothesis
-  gives `ν(r) = o(log r)`.  Order zero and order one are now excluded unconditionally; the latter
-  follows from the exact compiler in `HTGeometry/FirstOrderCoefficientDecomposition.lean` and the
-  corpus Newton-face theorem.  The four-variable order-two compiler is also Lean-proved in
-  `HTGeometry/SecondOrderCoefficientDecomposition.lean`.  The exact logarithmic-jet compiler is now
-  Lean-proved in `HTGeometry/StrelitzLogJetReduction.lean`: every order-two ADE produces a nonzero
-  polynomial-coefficient relation in `(f, zf'/f, z(zf'/f)')`, with the second-derivative identity
-  and every clearing power proved exactly.  `HTGeometry/StrelitzLogJetWimanAsymptotic.lean` also
-  proves the variable-accuracy Wiman input `zf'/f = nu + o(nu)` and
-  `z(zf'/f)' = o(nu^2)` at arbitrarily large selected radii.
-  `HTGeometry/StrelitzLogJetInitialData.lean` packages one fixed nonzero relation with an escaping
-  sequence of exact roots and errors `1/(n+1)`, while
-  `HTGeometry/StrelitzValueCoefficientDecomposition.lean` canonically splits that relation by
-  powers of `f`, proves every retained logarithmic-jet coefficient is nonzero, and proves exact
-  recombination after evaluation.  `HTGeometry/StrelitzLeadingCoefficientIsolation.lean` selects
-  a nonzero maximal value-degree coefficient and derives both its exact root identity and finite-sum
-  norm bound.  `HTGeometry/PolynomialCoefficientMvPolynomialGrowth.lean` supplies the uniform
-  polynomial bound in the coefficient variable and every logarithmic-jet variable, and
-  `HTGeometry/StrelitzNormalizedLeadingBound.lean` cancels the common function-value powers to gain
-  one full factor of `|f|` against the lower coefficients.
-  `HTGeometry/StrelitzCoefficientGrowthBound.lean` bounds the entire finite lower-coefficient
-  family by one explicit constant times one fixed radius power on the Wiman scale.  Remaining step
-  `HTGeometry/StrelitzHeatLeadingMaximumTerm.lean` combines these results with heat decay and
-  infinite-support maximum-term growth: any assumed order-two ADE yields a fixed nonzero leading
-  coefficient satisfying `|C_D(z,u,v)| mu(r) <= C_Q r^K` along escaping exact Wiman roots.
-  `HTGeometry/StrelitzHeatLeadingDecay.lean` sharpens this to
-  `r^j |C_D(z,u,v)| -> 0` for every fixed `j`.
-  `HTGeometry/StrelitzMaximumModulusPoint.lean` packages maximum points on every positive circle,
-  including nonvanishing, the maximum-term floor, and reality of `zf'/f`.
-  `HTGeometry/StrelitzMaximumModulusSet.lean` constructs the full closed maximum locus, proves it
-  meets every positive circle, and extends both the maximum-term floor and logarithmic-derivative
-  reality to every relevant point of that locus.  `HTGeometry/StrelitzJetCurveNewtonEdge.lean`
-  now defines the exact maximal Newton face and its leading-coefficient edge polynomial; the two
-  monomials determining every extracted rational slope both survive on that face, so the edge
-  polynomial has a nonzero complex root.  `HTGeometry/StrelitzJetCurveBranchDichotomy.lean` closes
-  the previously omitted zero-root case: every selected branch either has this nonzero Newton-edge
-  package or vanishes on a cofinal strict subsequence, where root proximity forces the observed
-  second logarithmic jet itself to tend to zero.  `HTGeometry/StrelitzJetCurveCoefficientPhase.lean`
-  retains the missing complex phase: the normalized first jet tends to the positive real phase,
-  and every fixed curve coefficient divided by the matching power of the first-jet norm converges
-  to its exact complex leading coefficient.  `HTGeometry/StrelitzJetCurveNormalizedRoot.lean`
-  removes the extracted real Newton power exactly and proves that the resulting numerical root has
-  logarithmic exponent zero.  `HTGeometry/StrelitzJetCurveNewtonFaceDominance.lean` upgrades that
-  subpolynomial control to a fixed compact annulus by proving that the extreme indices of the
-  maximal Newton face dominate any branch attempting to escape or collapse.
-  `HTGeometry/StrelitzJetCurveEdgeLimit.lean` then extracts a convergent nonzero normalized-root
-  subsequence, scales the complete exact curve equation, makes every subface term vanish, and proves
-  that the numerical limit is a root of the exact leading-edge polynomial.
-  `HTGeometry/StrelitzJetCurveMatchedDichotomy.lean` combines the whole local analysis into one
-  exhaustive theorem: either a further strict cofinal subsequence of normalized nonzero roots
-  converges to a nonzero root of its exact maximal-face polynomial, or exact zero roots recur and
-  force the observed second logarithmic jet to tend to zero.
-  `HTGeometry/StrelitzEntireHeatMatchedDichotomy.lean` now derives that exhaustive conclusion
-  directly from the card's original entire-coefficient, entire complex-time heat, infinite-support,
-  and order-two ADE assumptions while retaining all exact Wiman and selected-root data.  No local
-  Newton or convergence premise remains at the entire-heat interface.
-  `HTGeometry/StrelitzJetCurveQuadraticDecay.lean` additionally proves that every selected root is
-  `o(nu^2)` directly from the second-jet Wiman bound and absolute root proximity; this is the exact
-  scale restriction needed to bound the matched Newton slope.
-  `HTGeometry/StrelitzJetCurveSubquadraticEdge.lean` transfers this decay to the first-jet norm and
-  proves every matched nonzero Newton slope is strictly below `2`; its strengthened dichotomy still
-  treats recurrent exact-zero roots exhaustively.  `HTGeometry/StrelitzEntireHeatSubquadraticDichotomy.lean`
-  derives the strengthened result under exactly the card's original assumptions.
-  `HTGeometry/StrelitzJetCurveZeroBranch.lean` proves that recurrent exact-zero roots force the
-  constant-in-`v` coefficient of the fixed jet-curve polynomial to vanish identically, exposing an
-  exact factor by the second-jet variable for the degenerate branch.
-  `HTGeometry/StrelitzEntireHeatSubquadraticFactorDichotomy.lean` packages the strongest exhaustive
-  local conclusion under exactly the card's original assumptions: either a matched nonzero Newton
-  edge has slope strictly below `2`, or the fixed curve has the literal factor `v` and the observed
-  second jet tends to zero on a cofinal exact-zero branch.
-  `HTGeometry/StrelitzJetCurveSlopeSign.lean` refines the nonzero alternative without a new premise:
-  either `0 ≤ p < 2`, or `p < 0` and both the selected curve root and observed second jet tend to
-  zero along a further strict cofinal subsequence.  Together with the exact `v`-factor alternative,
-  this is an exhaustive positive/negative/zero branch trichotomy under the original assumptions.
-  `HTGeometry/StrelitzSublinearDerivativeObstruction.lean` closes the scalar integration endpoint
-  for the nonnegative branch: an escaping real branch whose derivative divided by a nonnegative
-  real power tends to any nonzero constant cannot be sublinear.  It proves the coefficient's sign
-  internally; no positivity premise is added.
-  `HTGeometry/StrelitzLogRadialDerivatives.lean` now supplies the exact analytic-to-real bridge:
-  on the normalized logarithmic radial path, the derivatives of `log ‖f‖`, the Euler logarithmic
-  derivative, and its real part are respectively `Re(u)`, `v`, and `Re(v)`.
-  `HTGeometry/StrelitzAngularCurvature.lean` adds the complementary maximum-circle identity and
-  proves unconditionally that every nonvanishing maximum point satisfies `Re(v) ≥ 0`.  What remains
-  is to construct the global Strelitz enlarged-set component and transfer the exact Newton
-  asymptotic to these radial identities and the scalar obstruction.
-  Remaining step is the global argument
-  in both branches, namely the
-  Valiron--Zimogljad--Strelitz Newton-branch/
-  connected-component argument for that relation; see `_STAGE3-LEDGER.md`.
+- [x] Formalization: **DONE (2026-09-29), unconditional.**  The card theorem is
+  `HTGeometry.EntireHeatOrderTwoFloor.entireHeat_eventually_zero_or_not_differentiallyAlgebraicOfOrder_le_two`
+  (either `a_n = 0` eventually, or no ADE of order `≤ 2`).  Its corollary
+  `three_le_of_differentiallyAlgebraicOfOrder_entireHeat` gives the minimal-order-three
+  consequence.  The theorem uses only the card's literal heat hypothesis (pointwise convergence at
+  every complex `(t, z)`), and `EntireCoeffs` is derived from it.
+  Proof step 1 is also formalized: the super-Gaussian bound is `superGaussianCoeffs_of_entireHeat`,
+  and `log M_h(r) = o((log r)^2)` is `entireHeat_norm_le_exp_mul_log_sq`.  Orders zero and one come
+  from `EntireHeatDifferentialOrderFloor`.
+
+  Order two is `not_differentiallyAlgebraicOfOrder_two_entireHeat`.  It replaces the
+  Valiron–Zimogljad–Strelitz component argument with a circle bootstrap, which the heat class makes
+  available:
+  - `StrelitzSecondJetGap`: lexicographic isolation of the order-two log-jet relation gives a gap
+    `ρ/2 < |v| ≤ ρ` forbidden once `|z|, |f|, |u|` are large.
+  - `StrelitzCircleJetCalculus`: `∂_θ u = i v`, and the circle average of `u` is constant across
+    zero-free annuli.  Radially, `d log|f| / d log r = Re u`.
+  - `StrelitzCircleBootstrap`: one clean circle propagates to all larger circles by continuous
+    induction, which forces `f` to be a polynomial.
+  - `SuperGaussianPlateauEulerJets`: at a plateau midpoint, `|u - n| ≤ 32q` and `|v| ≤ 64q`.
+    The plateau comes from the corpus `exists_wide_plateau` / `term_le_midplateau`.
+
+  All capstones audit to `[propext, Classical.choice, Quot.sound]`.  The paper proof of the
+  bootstrap is in `entire-heat-order-two-circle-bootstrap.md`.
 
 ## Theorem `[PROVED HERE] [BRIDGE]`
 
@@ -347,3 +281,10 @@ The theorem does not rule out the actual de Bruijn-Newman deformation, which has
   pass; axioms are `[propext, Classical.choice, Quot.sound]`.  Card remains stage 2: the enlarged
   set `H`, its relevant unbounded component, and global algebraic-branch continuation are still
   required.
+- 2026-09-29 — Order two closed in Lean without the Strelitz enlarged-set component argument.
+  - A second-jet gap from lexicographic isolation, together with a continuous circle bootstrap,
+    turns one clean circle into polynomial growth.
+  - Super-Gaussian plateaus supply clean circles with absolute jet errors `32q` / `64q`.
+  - Card theorem `entireHeat_eventually_zero_or_not_differentiallyAlgebraicOfOrder_le_two` is
+    unconditional, with axioms `[propext, Classical.choice, Quot.sound]`.
+  - Moved to `3-formalized/not_new_scientific_knowledge/02-analytic-da-entire-functions/`.

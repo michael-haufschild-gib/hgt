@@ -223,25 +223,51 @@ theorem integral_exp_mul_chebyshevLogDeficit_eq_laplace (σ : ℝ) :
     rw [chebyshevLogDeficit_eq, ← he]; ring
   rw [hc, hreal, Complex.ofReal_neg, Complex.ofReal_mul]
 
+theorem integrableOn_id_mul_real_exp_neg_mul {σ : ℝ} (hσ : 0 < σ) :
+    IntegrableOn (fun T : ℝ => T * Real.exp (-σ * T)) (Ioi 0) := by
+  have hmaj := (exp_neg_integrableOn_Ioi 0 (by linarith : (0:ℝ) < σ / 2)).const_mul (2 / σ)
+  refine hmaj.mono' (continuous_id.mul
+    (Real.continuous_exp.comp (continuous_const.mul continuous_id))).aestronglyMeasurable ?_
+  filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with T hT
+  have hT0 : (0:ℝ) < T := hT
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  have hx := Real.add_one_le_exp (σ * T / 2)
+  have hTle : T ≤ 2 / σ * Real.exp (σ * T / 2) := by
+    rw [div_mul_eq_mul_div, le_div_iff₀ hσ]; nlinarith
+  calc T * Real.exp (-σ * T) ≤ 2 / σ * Real.exp (σ * T / 2) * Real.exp (-σ * T) :=
+        mul_le_mul_of_nonneg_right hTle (Real.exp_pos _).le
+    _ = 2 / σ * Real.exp (-(σ / 2) * T) := by rw [mul_assoc, ← Real.exp_add]; congr 2; ring
+
+theorem integral_id_mul_real_exp_neg_mul {σ : ℝ} (hσ : 0 < σ) :
+    ∫ T in Ioi (0:ℝ), T * Real.exp (-σ * T) = 1 / σ ^ 2 := by
+  have h := Real.integral_rpow_mul_exp_neg_mul_Ioi (a := 2) (r := σ) (by norm_num) hσ
+  rw [Real.Gamma_two, mul_one] at h
+  have hcongr : ∫ T in Ioi (0:ℝ), T * Real.exp (-σ * T) =
+      ∫ t in Ioi (0:ℝ), t ^ ((2:ℝ) - 1) * Real.exp (-(σ * t)) := by
+    refine setIntegral_congr_fun measurableSet_Ioi (fun t _ => ?_)
+    rw [show (2:ℝ) - 1 = 1 by norm_num, Real.rpow_one, neg_mul]
+  rw [hcongr, h, Real.rpow_two, one_div_pow]
+
 /-! ## The one-sided Landau measure -/
 
-/-- The clipped density `max(B + ε e^{−T/2} D(T), 0)`, `ε = ±1`. -/
+/-- The clipped density `max(B(1+T) + ε e^{−T/2} D(T), 0)`, `ε = ±1`. -/
 def deficitOneSidedDensity (ε B : ℝ) (T : ℝ) : NNReal :=
-  Real.toNNReal (B + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T))
+  Real.toNNReal (B * (1 + T) + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T))
 
 theorem measurable_deficitOneSidedDensity (ε B : ℝ) : Measurable (deficitOneSidedDensity ε B) := by
   unfold deficitOneSidedDensity
-  exact (measurable_const.add (measurable_const.mul
+  exact ((measurable_const.mul (measurable_const.add measurable_id)).add (measurable_const.mul
     ((Real.continuous_exp.comp (continuous_id.neg.div_const 2)).mul
       continuous_deficitPrimitive).measurable)).real_toNNReal
 
-/-- `(B + ε e^{−T/2} D(T)) dT` on `(0,∞)` plus Lebesgue measure. -/
+/-- `(B(1+T) + ε e^{−T/2} D(T)) dT` on `(0,∞)` plus Lebesgue measure. -/
 def deficitOneSidedMeasure (ε B : ℝ) : Measure ℝ :=
   (volume.restrict (Ioi (0:ℝ))).withDensity (fun T => (deficitOneSidedDensity ε B T : ENNReal)) +
     volume
 
 theorem deficitOneSidedDensity_le {ε B : ℝ} (hε : |ε| ≤ 1) {T : ℝ} (hT : 0 < T) :
-    ((deficitOneSidedDensity ε B T : ℝ)) ≤ |B| + chebyshevDeficitConst * Real.exp (T / 2) := by
+    ((deficitOneSidedDensity ε B T : ℝ)) ≤
+      (2 * |B| + chebyshevDeficitConst) * Real.exp (T / 2) := by
   unfold deficitOneSidedDensity
   rw [Real.coe_toNNReal']
   have hD := abs_deficitPrimitive_le hT.le
@@ -261,22 +287,26 @@ theorem deficitOneSidedDensity_le {ε B : ℝ} (hε : |ε| ≤ 1) {T : ℝ} (hT 
         ≤ 1 * (chebyshevDeficitConst * Real.exp (T / 2)) :=
           mul_le_mul hε hprod (abs_nonneg _) zero_le_one
       _ = _ := one_mul _
-  have h1 := le_abs_self B
+  have h1T : 1 + T ≤ 2 * Real.exp (T / 2) := by
+    have := Real.add_one_le_exp (T / 2); linarith
+  have h1 : B * (1 + T) ≤ 2 * |B| * Real.exp (T / 2) := by
+    calc B * (1 + T) ≤ |B| * (1 + T) := mul_le_mul_of_nonneg_right (le_abs_self B) (by linarith)
+      _ ≤ |B| * (2 * Real.exp (T / 2)) := mul_le_mul_of_nonneg_left h1T (abs_nonneg B)
+      _ = 2 * |B| * Real.exp (T / 2) := by ring
   have h2 := le_abs_self (ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T))
-  have h3 : 0 ≤ |B| + chebyshevDeficitConst * Real.exp (T / 2) := by
+  have h3 : 0 ≤ (2 * |B| + chebyshevDeficitConst) * Real.exp (T / 2) := by
     have := chebyshevDeficitConst_pos; positivity
-  rcases le_or_gt (B + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T)) 0 with h | h
+  rcases le_or_gt (B * (1 + T) + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T)) 0
+    with h | h
   · rw [max_eq_right h]; exact h3
-  · rw [max_eq_left h.le]; linarith
+  · rw [max_eq_left h.le]; nlinarith
 
 theorem integrableOn_deficitMajorant {σ B : ℝ} (hσ : 1 / 2 < σ) :
-    IntegrableOn (fun T : ℝ => (|B| + chebyshevDeficitConst * Real.exp (T / 2)) * Real.exp (-σ * T))
-      (Ioi 0) := by
-  have h1 := (exp_neg_integrableOn_Ioi 0 (by linarith : (0:ℝ) < σ)).const_mul |B|
+    IntegrableOn (fun T : ℝ =>
+      (2 * |B| + chebyshevDeficitConst) * Real.exp (T / 2) * Real.exp (-σ * T)) (Ioi 0) := by
   have h2 := (exp_neg_integrableOn_Ioi 0 (by linarith : (0:ℝ) < σ - 1 / 2)).const_mul
-    chebyshevDeficitConst
-  refine IntegrableOn.congr_fun (h1.add h2) (fun T _ => ?_) measurableSet_Ioi
-  simp only [Pi.add_apply]
+    (2 * |B| + chebyshevDeficitConst)
+  refine IntegrableOn.congr_fun h2 (fun T _ => ?_) measurableSet_Ioi
   rw [show Real.exp (-(σ - 1 / 2) * T) = Real.exp (T / 2) * Real.exp (-σ * T) by
     rw [← Real.exp_add]; ring_nf]
   ring
@@ -334,9 +364,9 @@ theorem isAbscissa_deficitOneSided {ε B : ℝ} (hε : |ε| ≤ 1) :
 
 /-! ## The real Laplace transform -/
 
-/-- The candidate continuation `(B+1)/z + ε (ζ_u'/ζ_u(z+½) + 1)/(z+½)²`. -/
+/-- The candidate continuation `(B+1)/z + B/z² + ε (ζ_u'/ζ_u(z+½) + 1)/(z+½)²`. -/
 def deficitOneSidedContinuation (ε B : ℝ) (z : ℂ) : ℂ :=
-  (B + 1) / z + ε * ((logDeriv zetaResidueUnit (z + 1 / 2) + 1) / (z + 1 / 2) ^ 2)
+  (B + 1) / z + B / z ^ 2 + ε * ((logDeriv zetaResidueUnit (z + 1 / 2) + 1) / (z + 1 / 2) ^ 2)
 
 theorem analyticAt_deficitOneSidedContinuation (ε B : ℝ) {z : ℂ} (hz0 : z ≠ 0)
     (hz1 : z + 1 / 2 ≠ 0) (hζ : zetaResidueUnit (z + 1 / 2) ≠ 0) :
@@ -351,20 +381,23 @@ theorem analyticAt_deficitOneSidedContinuation (ε B : ℝ) {z : ℂ} (hz0 : z �
   have hlog : AnalyticAt ℂ (fun w : ℂ => logDeriv zetaResidueUnit (w + 1 / 2)) z := by
     simp only [logDeriv_apply]
     exact hdζ.div hζan hζ
-  refine (analyticAt_const.div analyticAt_id hz0).add (analyticAt_const.mul ?_)
+  refine ((analyticAt_const.div analyticAt_id hz0).add
+    (analyticAt_const.div (analyticAt_id.pow 2) (pow_ne_zero 2 hz0))).add (analyticAt_const.mul ?_)
   exact (hlog.add analyticAt_const).div (hshift.pow 2) (pow_ne_zero 2 hz1)
 
 theorem deficitOneSidedDensity_eq {ε B : ℝ}
-    (hB : ∀ T : ℝ, 0 ≤ T → 0 ≤ B + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T))
+    (hB : ∀ T : ℝ, 0 ≤ T →
+      0 ≤ B * (1 + T) + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T))
     {T : ℝ} (hT : 0 ≤ T) :
     ((deficitOneSidedDensity ε B T : ℝ)) =
-      B + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T) := by
+      B * (1 + T) + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T) := by
   unfold deficitOneSidedDensity
   exact Real.coe_toNNReal _ (hB T hT)
 
 /-- On real `σ > ½` the Laplace transform of the one-sided measure is the continuation. -/
 theorem laplaceReal_deficitOneSided_eq {ε B : ℝ} (hε : |ε| ≤ 1)
-    (hB : ∀ T : ℝ, 0 ≤ T → 0 ≤ B + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T))
+    (hB : ∀ T : ℝ, 0 ≤ T →
+      0 ≤ B * (1 + T) + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T))
     {σ : ℝ} (hσ : 1 / 2 < σ) :
     ((laplaceReal (deficitOneSidedMeasure ε B) σ : ℝ) : ℂ) =
       deficitOneSidedContinuation ε B (σ : ℂ) := by
@@ -391,22 +424,27 @@ theorem laplaceReal_deficitOneSided_eq {ε B : ℝ} (hε : |ε| ≤ 1)
       integral_exp_neg_mul_Ioi_real hσ0]
   have hdens : (∫ T in Ioi (0:ℝ), Real.exp (-σ * T) ∂((volume.restrict (Ioi (0:ℝ))).withDensity
         (fun T => (deficitOneSidedDensity ε B T : ENNReal)))) =
-      B / σ + ε * ∫ T in Ioi (0:ℝ),
+      B / σ + B / σ ^ 2 + ε * ∫ T in Ioi (0:ℝ),
         Real.exp (-(σ + 1 / 2) * T) * ccmLogChebyshevDeficitPrimitive T := by
     rw [restrict_withDensity measurableSet_Ioi, Measure.restrict_restrict measurableSet_Ioi,
       inter_self, integral_withDensity_eq_integral_smul (measurable_deficitOneSidedDensity ε B)]
     have hpt : ∀ T ∈ Ioi (0:ℝ), deficitOneSidedDensity ε B T • Real.exp (-σ * T) =
-        B * Real.exp (-σ * T) +
+        (B * Real.exp (-σ * T) + B * (T * Real.exp (-σ * T))) +
           ε * (Real.exp (-(σ + 1 / 2) * T) * ccmLogChebyshevDeficitPrimitive T) := by
       intro T hT
       rw [NNReal.smul_def, smul_eq_mul, deficitOneSidedDensity_eq hB (le_of_lt hT)]
       have he : Real.exp (-T / 2) * Real.exp (-σ * T) = Real.exp (-(σ + 1 / 2) * T) := by
         rw [← Real.exp_add]; congr 1; ring
       rw [← he]; ring
+    have hf : Integrable (fun T : ℝ => B * Real.exp (-σ * T) + B * (T * Real.exp (-σ * T)))
+        (volume.restrict (Ioi 0)) :=
+      (hexpInt.const_mul B).add ((integrableOn_id_mul_real_exp_neg_mul hσ0).const_mul B)
     rw [setIntegral_congr_fun measurableSet_Ioi hpt,
-      integral_add (hexpInt.const_mul B)
+      integral_add hf
         ((integrableOn_exp_mul_deficitPrimitive (by linarith : 1 < σ + 1 / 2)).const_mul ε),
-      integral_const_mul, integral_const_mul, integral_exp_neg_mul_Ioi_real hσ0]
+      integral_add (hexpInt.const_mul B) ((integrableOn_id_mul_real_exp_neg_mul hσ0).const_mul B),
+      integral_const_mul, integral_const_mul, integral_const_mul, integral_exp_neg_mul_Ioi_real hσ0,
+      integral_id_mul_real_exp_neg_mul hσ0]
     ring
   rw [hsplit, hdens, integral_exp_mul_deficitPrimitive (by linarith : 1 < σ + 1 / 2)]
   have hL := integral_exp_mul_chebyshevLogDeficit_eq_laplace σ
@@ -424,7 +462,8 @@ theorem laplaceReal_deficitOneSided_eq {ε B : ℝ} (hε : |ε| ≤ 1)
 /-! ## Landau: the abscissa is zero -/
 
 theorem abscissa_deficitOneSided_eq_zero {ε B : ℝ} (hε : |ε| ≤ 1)
-    (hB : ∀ T : ℝ, 0 ≤ T → 0 ≤ B + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T)) :
+    (hB : ∀ T : ℝ, 0 ≤ T →
+      0 ≤ B * (1 + T) + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T)) :
     IsAbscissa (deficitOneSidedMeasure ε B) 0 := by
   obtain ⟨hc, hc0⟩ := isAbscissa_deficitOneSided (B := B) hε
   set c : ℝ := sInf {σ : ℝ | laplaceMass (deficitOneSidedMeasure ε B) σ ≠ ⊤} with hcdef
@@ -512,7 +551,8 @@ theorem abscissa_deficitOneSided_eq_zero {ε B : ℝ} (hε : |ε| ≤ 1)
 Landau measure. -/
 def deficitOneSidedDefectExtension (ε B : ℝ) (u : ℂ) : ℂ :=
   1 / (u + 1) + ε * ((u + 1) ^ 2 *
-    (complexLaplace (deficitOneSidedMeasure ε B) (u + 1 / 2) - (B + 1) / (u + 1 / 2))) - 1
+    (complexLaplace (deficitOneSidedMeasure ε B) (u + 1 / 2) - (B + 1) / (u + 1 / 2) -
+      B / (u + 1 / 2) ^ 2)) - 1
 
 /-- Where the Laplace transform equals the continuation, the manufactured extension is the
 regularized critical-Mellin defect. -/
@@ -530,16 +570,17 @@ theorem deficitOneSidedDefectExtension_eq_regularized {ε B : ℝ} (hεsq : (ε 
   have hcancel : (u + 1) ^ 2 * ((logDeriv zetaResidueUnit (u + 1) + 1) / (u + 1) ^ 2) =
       logDeriv zetaResidueUnit (u + 1) + 1 := by
     field_simp
-  calc 1 / (u + 1) + (ε : ℂ) * ((u + 1) ^ 2 * (((B:ℂ) + 1) / (u + 1 / 2) +
+  calc 1 / (u + 1) + (ε : ℂ) * ((u + 1) ^ 2 * (((B:ℂ) + 1) / (u + 1 / 2) + (B:ℂ) / (u + 1 / 2) ^ 2 +
           (ε : ℂ) * ((logDeriv zetaResidueUnit (u + 1) + 1) / (u + 1) ^ 2) -
-          ((B:ℂ) + 1) / (u + 1 / 2))) - 1
+          ((B:ℂ) + 1) / (u + 1 / 2) - (B:ℂ) / (u + 1 / 2) ^ 2)) - 1
       = 1 / (u + 1) + ((ε : ℂ) * ε) *
           ((u + 1) ^ 2 * ((logDeriv zetaResidueUnit (u + 1) + 1) / (u + 1) ^ 2)) - 1 := by ring
     _ = 1 / (u + 1) + logDeriv zetaResidueUnit (u + 1) := by rw [hcancel, hεsq]; ring
 
 theorem riemannHypothesis_of_logChebyshevDeficitPrimitive_oneSided {ε B : ℝ}
     (hε : ε = 1 ∨ ε = -1)
-    (hB : ∀ T : ℝ, 0 ≤ T → 0 ≤ B + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T)) :
+    (hB : ∀ T : ℝ, 0 ≤ T →
+      0 ≤ B * (1 + T) + ε * (Real.exp (-T / 2) * ccmLogChebyshevDeficitPrimitive T)) :
     RiemannHypothesis := by
   have hε1 : |ε| ≤ 1 := by rcases hε with rfl | rfl <;> simp
   have hεsq : (ε : ℂ) * ε = 1 := by rcases hε with rfl | rfl <;> norm_num
@@ -563,7 +604,8 @@ theorem riemannHypothesis_of_logChebyshevDeficitPrimitive_oneSided {ε B : ℝ}
     unfold deficitOneSidedDefectExtension
     refine ((analyticAt_const.div (analyticAt_id.add analyticAt_const) hu1).add
       (analyticAt_const.mul (((analyticAt_id.add analyticAt_const).pow 2).mul
-        (hL.sub (analyticAt_const.div hshift hu12))))).sub analyticAt_const
+        ((hL.sub (analyticAt_const.div hshift hu12)).sub
+          (analyticAt_const.div (hshift.pow 2) (pow_ne_zero 2 hu12)))))).sub analyticAt_const
   refine riemannHypothesis_of_regularizedCriticalMellinDefect_extension _ hA ?_
   -- agreement on the right half-plane, from agreement on the positive reals
   let U : Set ℂ := {u : ℂ | 0 < u.re}
@@ -602,27 +644,28 @@ theorem riemannHypothesis_of_logChebyshevDeficitPrimitive_oneSided {ε B : ℝ}
   intro s hs
   exact heq (show s ∈ U from hs)
 
-/-- **A one-sided lower bound suffices.** If `−B e^{T/2} ≤ ∫_0^T (e^t − ψ(e^t)) dt` for all
+/-- **A one-sided lower bound suffices.** If `−B(1+T)e^{T/2} ≤ ∫_0^T (e^t − ψ(e^t)) dt` for all
 `T ≥ 0`, then RH holds. -/
-theorem riemannHypothesis_of_logChebyshevDeficitPrimitive_ge {B : ℝ}
-    (hB : ∀ T : ℝ, 0 ≤ T → -(B * Real.exp (T / 2)) ≤ ccmLogChebyshevDeficitPrimitive T) :
+theorem riemannHypothesis_of_logChebyshevDeficitPrimitive_ge_mul {B : ℝ}
+    (hB : ∀ T : ℝ, 0 ≤ T →
+      -(B * (1 + T) * Real.exp (T / 2)) ≤ ccmLogChebyshevDeficitPrimitive T) :
     RiemannHypothesis := by
   refine riemannHypothesis_of_logChebyshevDeficitPrimitive_oneSided (ε := 1) (B := B) (Or.inl rfl) ?_
   intro T hT
   have h := hB T hT
   have he : Real.exp (-T / 2) * Real.exp (T / 2) = 1 := by
     rw [← Real.exp_add, show -T / 2 + T / 2 = 0 by ring, Real.exp_zero]
-  have hpos := Real.exp_pos (-T / 2)
-  have hmul := mul_le_mul_of_nonneg_left h hpos.le
-  have hB' : Real.exp (-T / 2) * -(B * Real.exp (T / 2)) = -B := by
-    rw [show Real.exp (-T / 2) * -(B * Real.exp (T / 2)) =
-      -B * (Real.exp (-T / 2) * Real.exp (T / 2)) by ring, he, mul_one]
+  have hmul := mul_le_mul_of_nonneg_left h (Real.exp_pos (-T / 2)).le
+  have hB' : Real.exp (-T / 2) * -(B * (1 + T) * Real.exp (T / 2)) = -(B * (1 + T)) := by
+    rw [show Real.exp (-T / 2) * -(B * (1 + T) * Real.exp (T / 2)) =
+      -(B * (1 + T)) * (Real.exp (-T / 2) * Real.exp (T / 2)) by ring, he, mul_one]
   linarith
 
-/-- **A one-sided upper bound suffices.** If `∫_0^T (e^t − ψ(e^t)) dt ≤ B e^{T/2}` for all
+/-- **A one-sided upper bound suffices.** If `∫_0^T (e^t − ψ(e^t)) dt ≤ B(1+T)e^{T/2}` for all
 `T ≥ 0`, then RH holds. -/
-theorem riemannHypothesis_of_logChebyshevDeficitPrimitive_le {B : ℝ}
-    (hB : ∀ T : ℝ, 0 ≤ T → ccmLogChebyshevDeficitPrimitive T ≤ B * Real.exp (T / 2)) :
+theorem riemannHypothesis_of_logChebyshevDeficitPrimitive_le_mul {B : ℝ}
+    (hB : ∀ T : ℝ, 0 ≤ T →
+      ccmLogChebyshevDeficitPrimitive T ≤ B * (1 + T) * Real.exp (T / 2)) :
     RiemannHypothesis := by
   refine riemannHypothesis_of_logChebyshevDeficitPrimitive_oneSided (ε := -1) (B := B)
     (Or.inr rfl) ?_
@@ -630,11 +673,38 @@ theorem riemannHypothesis_of_logChebyshevDeficitPrimitive_le {B : ℝ}
   have h := hB T hT
   have he : Real.exp (-T / 2) * Real.exp (T / 2) = 1 := by
     rw [← Real.exp_add, show -T / 2 + T / 2 = 0 by ring, Real.exp_zero]
-  have hpos := Real.exp_pos (-T / 2)
-  have hmul := mul_le_mul_of_nonneg_left h hpos.le
-  have hB' : Real.exp (-T / 2) * (B * Real.exp (T / 2)) = B := by
-    rw [show Real.exp (-T / 2) * (B * Real.exp (T / 2)) =
-      B * (Real.exp (-T / 2) * Real.exp (T / 2)) by ring, he, mul_one]
+  have hmul := mul_le_mul_of_nonneg_left h (Real.exp_pos (-T / 2)).le
+  have hB' : Real.exp (-T / 2) * (B * (1 + T) * Real.exp (T / 2)) = B * (1 + T) := by
+    rw [show Real.exp (-T / 2) * (B * (1 + T) * Real.exp (T / 2)) =
+      B * (1 + T) * (Real.exp (-T / 2) * Real.exp (T / 2)) by ring, he, mul_one]
+  linarith
+
+/-- The square-root form without the linear factor. -/
+theorem riemannHypothesis_of_logChebyshevDeficitPrimitive_ge {B : ℝ}
+    (hB : ∀ T : ℝ, 0 ≤ T → -(B * Real.exp (T / 2)) ≤ ccmLogChebyshevDeficitPrimitive T) :
+    RiemannHypothesis := by
+  refine riemannHypothesis_of_logChebyshevDeficitPrimitive_ge_mul (B := max B 0) fun T hT => ?_
+  have h := hB T hT
+  have he := Real.exp_pos (T / 2)
+  have hm1 : B ≤ max B 0 := le_max_left B 0
+  have hm0 : 0 ≤ max B 0 := le_max_right B 0
+  have h1 : B ≤ max B 0 * (1 + T) := by nlinarith
+  have h2 : B * Real.exp (T / 2) ≤ max B 0 * (1 + T) * Real.exp (T / 2) :=
+    mul_le_mul_of_nonneg_right h1 he.le
+  linarith
+
+/-- The square-root form without the linear factor. -/
+theorem riemannHypothesis_of_logChebyshevDeficitPrimitive_le {B : ℝ}
+    (hB : ∀ T : ℝ, 0 ≤ T → ccmLogChebyshevDeficitPrimitive T ≤ B * Real.exp (T / 2)) :
+    RiemannHypothesis := by
+  refine riemannHypothesis_of_logChebyshevDeficitPrimitive_le_mul (B := max B 0) fun T hT => ?_
+  have h := hB T hT
+  have he := Real.exp_pos (T / 2)
+  have hm1 : B ≤ max B 0 := le_max_left B 0
+  have hm0 : 0 ≤ max B 0 := le_max_right B 0
+  have h1 : B ≤ max B 0 * (1 + T) := by nlinarith
+  have h2 : B * Real.exp (T / 2) ≤ max B 0 * (1 + T) * Real.exp (T / 2) :=
+    mul_le_mul_of_nonneg_right h1 he.le
   linarith
 
 end

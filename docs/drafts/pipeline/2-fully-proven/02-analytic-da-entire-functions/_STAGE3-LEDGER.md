@@ -14,7 +14,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 5 | quasianalytic-exponential-log-phase-jet-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
 | 6 | exponential-tower-exact-differential-order | both halves closed | **DONE → 3-formalized** (2026-08-29) |
 | 7 | first-order-meromorphic-compression-matching | 3-field factorization | **DONE → 3-formalized** (2026-09-02) |
-| 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | **IN PROGRESS** — orders 0/1, complete local order-two reduction, scalar obstruction, log-radial bridge, and maximum-circle second-jet sign are closed; global enlarged-set component continuation remains open |
+| 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | **DONE → 3-formalized** (2026-09-29) — `EntireHeatOrderTwoFloor.entireHeat_eventually_zero_or_not_differentiallyAlgebraicOfOrder_le_two`; order two by the circle bootstrap |
 | 9 | drifting-periodic-primitive-ramification-exclusion | closed with `card_totallyRamified_le_four` | **DONE → 3-formalized** (2026-08-29) |
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction — proved (interpolation + constant-target SMT) | **DONE → 3-formalized** (2026-09-29) |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
@@ -55,7 +55,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | ~~I5~~ | **CLOSED (2026-08-29)** — Nevanlinna ramification: `HTGeometry.NevanlinnaRamification.card_totallyRamified_le_four` gives `q ≤ 4` for an entire function, which is all card 9 needs | 9 |
 | ~~I11~~ | **CLOSED (2026-08-29)** — the general logarithmic-derivative lemma `m(r,f'/f) = O(log⁺T(R,f) + log(1/(R−r)) + log R)` — the single input the corpus's `SecondMainTheoremChain` still needs, and the common prerequisite of I1, I3, I5, I6, I7 | 3, 7, 8, 9, 10, 11, 12, 13, 14, 15 |
 | ~~I6~~ | **CLOSED (2026-09-29)** — `SteinmetzReduction.exists_polynomial_relation_outer` (Satz 1 + Korollar 1, entire case) | 10 |
-| I7 | Valiron–Zimogljad–Strelitz order-two growth wall | 8 |
+| ~~I7~~ | **CLOSED (2026-09-29)** for the heat class — `EntireHeatOrderTwoFloor.not_differentiallyAlgebraicOfOrder_two_entireHeat` (second-jet gap + circle bootstrap; the general order-zero wall is not needed) | 8 |
 | I8 | Ostrowski finite-coefficient-basis theorem for DA Dirichlet series | 16 |
 | ~~I9~~ | **CLOSED (2026-08-30)** — `HTGeometry.ArithmeticTaylorCoefficientFloor.exists_popken_floor_of_formalRelation` | 17 |
 | ~~I10~~ | **CLOSED (2026-08-30)** — `HTGeometry.LaurentShiftDichotomy.rational_or_hypertranscendental_of_shift`, proved from the internal Ostrowski criterion and the rational pole obstruction | 18 |
@@ -221,6 +221,18 @@ Steps 1–3 give a compact-base Schottky bound and Bohr's covering theorem — b
 beyond this card (they are the quantitative core of Picard/Montel).
 
 ## Log
+- 2026-09-29 — Card 8 **DONE**. Order two is excluded for infinite-spectrum heat anchors by a new
+  route, with no Strelitz component argument:
+  - lexicographic isolation of the order-two log-jet relation gives a second-jet gap
+    (`StrelitzSecondJetGap`);
+  - a continuous circle bootstrap with `∂_θ u = i v`, conservation of the circle average of `u`
+    across zero-free annuli, and radial growth `Re u ≥ N - 1/2` propagates one clean circle to all
+    larger ones, forcing a polynomial (`StrelitzCircleJetCalculus`, `StrelitzCircleBootstrap`);
+  - super-Gaussian plateau midpoints are clean circles (`SuperGaussianPlateauEulerJets`).
+
+  Card theorem, `log M = o((log r)^2)` and the minimal-order-three corollary are in
+  `EntireHeatOrderTwoFloor`; axioms `[propext, Classical.choice, Quot.sound]`.
+  Card and programme card moved to `3-formalized/not_new_scientific_knowledge/02-analytic-da-entire-functions/`.
 - 2026-09-04 — Card 8 maximum-circle curvature is closed in
   `HTGeometry/StrelitzAngularCurvature`.  The angular derivative of `log ‖f‖` is `-Im(zf'/f)`;
   its next derivative is `-Re(z(zf'/f)')`; therefore every nonvanishing point of the entire

@@ -1,8 +1,8 @@
 # Integral formation-order charge conservation
 
 - **ID:** `ULF-IFOCC-001`
-- **Stage:** `2-fully-proven`
-- **Type:** unconditional cross-organ conservation theorem
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parent:** `ULF-TPFOI-001`, `ULF-PHSGRC-001`
 - **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH SELECTION]`
 - **Lean status:** not formalized; no Lean was written or built in this research pass
@@ -226,3 +226,29 @@ derive the unit graph connection from literal integer/Poisson completion
   -> prove residual boundary zero
   -> formation-boundary fusion forces neutral grade.
 ```
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.IntegralFormationOrderCharge`, `GaloisForLFunctions.HTGeometry.ThetaPluckerFormationOrderIndex`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Module `GaloisForLFunctions.HTGeometry.IntegralFormationOrderCharge` (46 constants) on top of `GaloisForLFunctions.HTGeometry.ThetaPluckerFormationOrderIndex` (ULF-TPFOI-001) and the corpus cores `RHTower.PrimeHodgeHistorySurvivalFredholmColligation`, `RHTower.PrimeHodgeHistoryIntegralNuclearHomotopyDefect`; all axiom-audit clean. `P_e = gammaSewnCriticalPrimeDepthPacket_Partition e p q`, `π = pluckerDepthLaw p q`, `w = thetaCuspMellinSixFlux`, `s = formationHalfDensity p q`, `C = primeHodgeHistorySurvivalShift`, `T(1) = primeHodgeHistoryIntegralNuclearHomotopyDefect 1`.
+
+| Claim | Lean declaration |
+|-|-|
+| (IFOCC.1) `Res_form(h) = lim e log(h_{e+1}/h_e)`, unique when it exists | `HasFormationResidue`, `HasFormationResidue.unique` |
+| (IFOCC.2) `S(μ→ν)_e = √(ν_e/μ_e)` | `halfDensityTransport`, `halfDensityTransport_pos`, `formationHalfDensity_eq_halfDensityTransport` |
+| (IFOCC.3) regular laws of order `-α` (`e^α h_e = H(1/e)`, `H` differentiable at 0, `H(0) ≠ 0`; covers the rational case), charge `q = (α-β)/2`; order is unique | `IsRegularDepthLaw`, `formationCharge`, `IsRegularDepthLaw.hasFormationResidue`, `IsRegularDepthLaw.order_unique`, `tendsto_natCast_mul_log_succ_div`, `tendsto_mul_sub_comp_inv_succ` |
+| `Res_form(S(μ→ν)) = q(μ,ν)` | `HasFormationResidue.halfDensityTransport`, `hasFormationResidue_halfDensityTransport` |
+| (IFOCC.5) antisymmetry and additivity of charges and of half-density residues; `S(μ→ω) = S(ν→ω) S(μ→ν)` | `formationCharge_antisymm_add`, `halfDensityTransport_mul`, `halfDensityTransport_swap`, `HasFormationResidue.mul`, `HasFormationResidue.inv` |
+| `x⁶ P(x) = H(1/x)` with `H` rational, `H(0) = K_pq > 0`; physical packet and depth law regular of order `-6` | `pluckerMinorProfile`, `pow_six_mul_pluckerSq_eq_profile`, `contDiffAt_pluckerMinorProfile`, `pluckerPartitionProfile`, `pow_six_mul_partition_eq_profile`, `contDiffAt_pluckerPartitionProfile`, `pluckerPartitionProfile_zero`, `isRegularDepthLaw_partition`, `isRegularDepthLaw_pluckerDepthLaw` |
+| theta law regular of order `-4` with rational profile `630/((2+3t)(2+5t)(2+7t)(2+9t))` | `thetaExitProfile`, `pow_four_mul_thetaFlux_eq_profile`, `contDiffAt_thetaExitProfile`, `thetaExitProfile_zero`, `isRegularDepthLaw_thetaCuspMellinSixFlux` |
+| (1) `P_{e+1}/P_e = 1 - 6/e + O(e⁻²)`; (2) same for `π` | `isBigO_profile_ratio_sub_one`, `isBigO_div_succ_pow_six_sub`, `isBigO_partition_ratio`, `isBigO_pluckerDepthLaw_ratio` |
+| (3) `w_{e+1}/w_e = (2e+3)/(2e+11) = 1 - 4/e + O(e⁻²)` | `thetaCuspMellinSixFlux_succ_div`, `isBigO_thetaCuspMellinSixFlux_ratio` |
+| (4) and the risky consequence: `s_{e+1}/s_e = 1 + 1/e + O(e⁻²)` | `isBigO_formationHalfDensity_ratio` |
+| (IFOCC.4) `Res_form(s) = q(π,w) = (6-4)/2 = 1 = -ind(C) = Tr T(1)`, on every edge `p < q` | `hasFormationResidue_formationHalfDensity`, `integral_formation_order_charge_conservation` (corpus `primeHodgeHistorySurvivalShiftIndex_eq_neg_one`, `primeHodgeHistoryIntegralNuclearDefect_closed`) |
+
+The regularity class is the differentiable-profile class, which contains the card's rational class; the hostile review and RH-chain edge are interpretation and audit.
+
+## Log
+
+- 2026-09-29 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

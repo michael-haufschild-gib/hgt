@@ -226,3 +226,71 @@ Master theorem to formalize: Parseval (3.14) on `L²(Γ(N)\ℍ)`, `N ≥ 3` (Γ�
   Parseval plan without evaluating `ρ₁`: residual term is `κ·conj⟨f,1⟩⟨g,1⟩`; Parseval exact on
   `span{E(·|ψ;v)} ∩ 1^⊥`, dense in `ℰ₀ ⊖ 1` (continuous functional); needs `1 ⊥ CuspidalL2`.
   Next: K2(e) Mellin/contour-shift Parseval for incomplete Eisenstein series.
+- 2026-09-30 — **K2 complete: Parseval (3.14) on the deck carrier** (built, wired, axiom-clean):
+  `RHTower/HeightProfileMellin` (`ψ̂(s) = ∫ψ(y)y^{-s-1}dy` entire, `s(s-1)ψ̂ = ∫ψ''y^{1-s}`,
+  `|ψ̂(σ+it)| ≤ C(1+t²)⁻¹` on strips, inversion on every line), `HTGeometry/VerticalStripResidueShift`
+  (contour shift past a simple pole: `∫F(b+it) - ∫F(a+it) = 2πA`), `RHTower/DeckIncompleteEisensteinMellin`
+  (`E(·|φ,w) = π⁻¹∫φ̂(σ+it)Ẽ(σ+it;w)dt`; `⟨E_ψv,E_φw⟩` as a line integral on `Re s = σ > 1` by Fubini on
+  `𝒟×ℝ`), `RHTower/DeckScatteringExtension` (removable value of `Φ̃` at `½`; `‖Φ̃‖ ≤ 4` on the closed strip;
+  `Φ̃ᵀ = Φ̃` since `φ_{∞,g∞}` depends on `±g₁₀`; adjoint `Φ̃(½-it)* = Φ̃(½+it)`),
+  `RHTower/DeckIncompleteEisensteinParseval` (both parts shifted to `Re s = ½`, residue at `1`, symmetrized:
+  `⟨E_ψv,E_φw⟩ = π⁻¹∫⟨T_ψv,T_φw⟩ + 4φ̂(1)conj ψ̂(1)⟨v,Rw⟩`, `T_ψv(t) = ψ̂(½+it)v + ψ̂(½-it)Φ̃(½-it)v`),
+  `RHTower/DeckConstantCuspidalOrthogonal` (**`𝟙 ⊥ CuspidalL2`** by ergodicity of positive point-pair
+  averages: Jensen/Dirichlet-form identity ⇒ the projection of `𝟙` is locally constant ⇒ constant ⇒ 0),
+  `RHTower/DeckIncompleteEisensteinDensity` (`E(·|ψ,ρ(-1)v) = E(·|ψ,v)`, sup-norm Lipschitz in `ψ`,
+  mollification ⇒ `eisSpace` = closed span of `C²`/`V_∞` generators; `Cusp = Z ∩ eisSpace^⊥`),
+  `RHTower/DeckEisensteinSpectralIsometry` (residual `κ⟨f,𝟙⟩⟨𝟙,g⟩`, `κ = (2L²)⁻¹ρ₁` never evaluated;
+  transform extended to `eisSpace` (`eisTransformE`), `eisTransformL2 = T̄∘P_ℰ`, `𝟙 ∈ eisSpace`;
+  **`inner_eq_cusp_add_eisTransform`**: for central `f,g` with `⟨𝟙,g⟩ = 0`,
+  `⟨f,g⟩ = Σ_j⟨f,u_j⟩⟨u_j,g⟩ + π⁻¹⟨T̄f,T̄g⟩`; `eisTransformL2_incEisL2`: `T̄E(·|ψ,v) = T_ψv`).
+  Next: K3 — deck Poincaré series `U_m(·,s)`, `⟨U_m,U_n⟩` by unfolding (corpus `SelbergPeterssonKloosterman`),
+  identification of `T̄U_m` (pairing with generators + density of `{T_ψv}` in the symmetric `L²` space),
+  `⟨u_j,U_m⟩` via the Whittaker modes (K1), then Kuznetsov with the Bessel transform.
+
+## DI reference extract (scans `scratchpad/lit/di/p{canvas}.jpg`, paper page = canvas − 24)
+- (1.3) `S_𝔞𝔟(m,n;γ) = Σ'_{δ mod γℤ} e(mα/γ + nδ/γ)` over `(α β;γ δ) ∈ σ_𝔞⁻¹Γσ_𝔟`; (1.6) for `q = rs`, `(r,s)=1`,
+  `σ_{1/s} = (√r 1/√r ; s√r 1/√r)`-type: `γ = s√r C`, `(C,r)=1`, `S_{∞,1/s}(m,n;γ) = e(n s̄/r) S(m r̄, n; sC)`.
+  Lemma 2.6: `|S_𝔞𝔞(m,n;c)| ≤ (m,n,c)^{1/2} c^{1/2} τ(c)`.
+- (1.15) `u(σ_𝔞 z) = √y Σ_{m≠0} ρ_𝔞(m) K_{iκ}(2π|m|y) e(mx)`; (1.17) `E_𝔞(σ_𝔟z;s) = δ_𝔞𝔟 y^s +
+  π^{1/2}Γ(s-½)Γ(s)⁻¹φ_𝔞𝔟0(s)y^{1-s} + √y Σ_{n≠0} 2π^s|n|^{s-½}Γ(s)⁻¹φ_𝔞𝔟n(s)K_{s-½}(2π|n|y)e(nx)`,
+  `φ_𝔞𝔟n(s) = Σ_γ γ^{-2s} Σ_δ e(nδ/γ)`.  (1.18) `U_𝔞m(z;s) = Σ_{Γ_𝔞\Γ} Im^s(σ_𝔞⁻¹τz) e(mσ_𝔞⁻¹τz)`.
+- **Theorem 1** (`φ ∈ C³_c(0,∞)`): (1.19) `Σ_γ γ⁻¹S_𝔞𝔟(m,n;γ)φ(4π√mn/γ) = (2π)⁻¹Σ_{k even}Σ_j i^k(k-1)!
+  (4π√mn)^{1-k} conj ψ_jk(𝔞,m) ψ_jk(𝔟,n) φ̃(k-1) + Σ_j conj ρ_j𝔞(m) ρ_j𝔟(n) φ̂(κ_j)/ch πκ_j +
+  π⁻¹Σ_𝔠∫(m/n)^{-ir} conj φ_𝔠𝔞m(½+ir) φ_𝔠𝔟n(½+ir) φ̂(r) dr`;
+  (1.20) `Σ_γ γ⁻¹S_𝔞𝔟(m,-n;γ)φ(4π√mn/γ) = Σ_j ρ_j𝔞(m)ρ_j𝔟(n) φ̌(κ_j)/ch πκ_j +
+  π⁻¹Σ_𝔠∫(mn)^{ir} φ_𝔠𝔞m(½+ir)φ_𝔠𝔟n(½+ir) φ̌(r) dr`;
+  (1.21) `φ̃(l) = ∫J_l(y)φ(y)dy/y`, (1.22) `φ̂(r) = π/sh πr ∫(J_{2ir}-J_{-2ir})/(2i) φ dx/x`,
+  (1.23) `φ̌(r) = (4/π) ch πr ∫K_{2ir}(x)φ(x)dx/x`.
+- Lemma 3.2: `ρ_𝔞(m) = (4πm)^{s-½}π^{-½}Γ(s)/(Γ(s-½-iκ)Γ(s-½+iκ)) ⟨u, U_𝔞m(·,s̄)⟩` (Re s > 1), via
+  (3.3) `∫e^{-y}y^{s-3/2}K_ν(y)dy = π^{½}2^{½-s}Γ(s-½-ν)Γ(s-½+ν)/Γ(s)`.
+  Lemma 3.4/(3.7): `a_𝔞𝔟mn(y,s) = δδ e(b n) y^s e^{-2πny} + y^s Σ_γ γ^{-2s}S_𝔞𝔟(m,n;γ)B(γ,m,n,y,s)`,
+  `B = ∫(x²+y²)^{-s} e(-nx - m/(γ²(x+iy)))dx`; (3.8) `|B| ≤ 4σ/(2σ-1) y^{1-2σ}e^{-π|n|y}` (shift to Im x = ∓y/2).
+  Lemma 3.5: `m^{s-s₁}φ_𝔟𝔞m(s) = π^{s₁-s-1}2^{2s₁-2}Γ(s)Γ(s₁)/(Γ(s+s₁-1)Γ(s₁-s)) ⟨E_𝔟(·;s),U_𝔞m(·;s̄₁)⟩`.
+- (4.5) `⟨U_𝔞m(s₁),U_𝔟n(s̄₂)⟩ = ∫a_𝔞𝔟mn(y,s₁)y^{s₂-2}e^{-2πny}dy`; (4.6) `⟨U_𝔞m(s₁), conj U_𝔟n(s₂)⟩ =
+  Σγ^{-2s₁}S(m,-n;γ)∫y^{s₁+s₂-2}e^{-2πny}B(γ,m,-n,y,s₁)dy`.  **Lemma 4.3** (Kuznetsov):
+  `∫y^{s₁+s₂-2}e^{-2πny}B(γ,m,-n,y,s₁)dy = π2^{2-s₁-s₂}γ^{s₁-s₂}Γ(s₁+s₂-1)/(Γ(s₁)Γ(s₂)) (m/n)^{(s₂-s₁)/2}
+  K_{s₁-s₂}(4π√mn/γ)`; proof: `x = yξ`, swap, `∫y^{ν-1}e(ay-b/y)dy = 2e(ν/4)(b/a)^{ν/2}K_{-ν}(4π√ab)`
+  (Im a > 0) and `∫(1+ξ²)^{-s₁}(1-iξ)^{s₁-s₂}dξ = π2^{2-s₁-s₂}Γ(s₁+s₂-1)/(Γ(s₁)Γ(s₂))`.
+  Lemma 4.4 (`s₁=1+it,s₂=1-it`): `⟨U_𝔞m(1+it), conj U_𝔟n(1-it)⟩ = sh πt/t (n/m)^{it} Σγ^{-2}S(m,-n;γ)K_{2it}(4π√mn/γ)`.
+  Spectral: `⟨U_𝔞m(s₁), conj U_𝔟n(s₂)⟩ = πm^{½-s₁}n^{½-s₂}/((4π)^{s₁+s₂-1}Γ(s₁)Γ(s₂)){Σ_j conj ρ_j𝔞(m) conj ρ_j𝔟(n)
+  Λ(s₁,s₂;κ_j) + Σ_𝔠∫(mn)^{-ir} conj(φφ) Λ/|Γ(½+ir)|² dr}`, `Λ = ΠΓ(s_i-½±ir)`.
+  Lemma 4.6 ⇒ (4.9): `Σ_γ 4π√mn γ⁻² S(m,-n;γ)K_{2it}(4π√mn/γ) = πΣ_j ρ_j𝔞(m)ρ_j𝔟(n)H(κ_j,t)/ch πκ_j +
+  Σ_𝔠∫(mn)^{ir}φφ H(r,t)dr`, `H(r,t) = ch πr/(ch π(r-t) ch π(r+t))`.
+- §4.3: (4.11) `-∫ t sh 2πt H(r,t)K_{2it}(θ)dt = θK_{2ir}(θ)`; (4.16) Kontorovich–Lebedev
+  `(4/π²)∫t sh 2πt K_{2it}(x)(∫K_{2it}(θ)φ(θ)dθ/θ²)dt = x⁻¹φ(x)`; multiply (4.9) by
+  `(4/π²) t sh 2πt ∫K_{2it}(θ)φ(θ)dθ/θ²`, integrate in `t` ⇒ (1.20).  (1.19) via (4.8)/(4.10)–(4.14) + Prop. 1
+  (holomorphic: Petersson, `2Σ(-1)^k(2k-1)J_{2k-1} = -yJ₀`).
+- Prop 3: `B_𝔞(θ,c,N) = Σ_{N<m,n≤2N} b_m conj b_n S_𝔞𝔞(m,n;c)e(2√mn θ/c)`: (1.25) `≤ τ²(c)c^{½}N‖b‖²`,
+  (1.26) `≪ (c+N+√(θcN))‖b‖²` (hybrid Farey large sieve (5.1) + Mellin separation),
+  (1.27) `≪ θ^{-½}c^{½}N^{½+ε}‖b‖²` (θ<2, c<N; Cauchy–Schwarz + Poisson).
+- Theorem 2 (`μ(𝔞) = (w,q/w)/q`): (1.28)–(1.30) `≪ (K² + μ(𝔞)N^{1+ε})‖a‖²`. Theorem 4: `λ₁ ≥ 3/16`.
+  Theorem 5: `Σ_exc X^{2iκ}|Σa_nρ_j𝔞(n)|² ≪ (1+√(μNX))(1+√(μN^{1+ε}))‖a‖²`. Theorem 6 (level average):
+  `Σ_{q≤Q}Σ_exc X^{4iκ}|Σa_nρ_j∞(n)|² ≪ (QN)^ε(Q+N+NX)‖a‖²`; Theorem 7 (`a_n=1`): `(Q+N+√N X)N`.
+- Theorem 8 (`g = f(4π√mn/γ)`, supp f ⊂ [X,8X], ‖f‖∞≤1, ‖f'‖₁≤2, ‖f''‖₁≤6Y/X, `θ_q = √max(0,1-4λ₁)`):
+  `S_𝔞𝔟(a,b;g) ≪ (√Y + (1+|log X|+X^{-θ})/(1+X)·(1+X+√(μ(𝔞)M^{1+ε}))(1+X+√(μ(𝔟)N^{1+ε})))‖a‖‖b‖`.
+  Theorem 9 (`g ∈ C⁶` on `[M,2M]×[N,2N]×[C,2C]`, derivative bounds): `Σ_{(c,r)=1}Σa_mΣb_n g S(m r̄,±n;sc) ≪
+  C^ε(1+s√(rC)/√MN)^{θ_rs}(s√rC+√MN+√sMC)(s√rC+√MN+√sNC)/(s√rC+√MN)‖a‖‖b‖`.
+  Theorem 10: `𝓛^± ≪ (CMNRS)^ε L ‖a‖‖b‖`, `L² = SR(S²RC²+MN+SMC²)(S²RC²+MN+SNC²)/(S²RC²+MN) +
+  S²C³√((SR+N)RM)`; Theorem 11 (`a` = interval indicator): second term reduced by `M^{½}`.
+  Theorem 12: `𝒦 = Σ_{r,s}Σ_{n≤N}b_{n,r,s}Σ_{c,d}g(c,d,n,r,s)e(n r̄d/sc) ≪ (CDNRS)^ε K‖b‖`,
+  `K² = CS(RS+N)(C+DR) + C²DS√((RS+N)R) + D²NRS⁻¹`.

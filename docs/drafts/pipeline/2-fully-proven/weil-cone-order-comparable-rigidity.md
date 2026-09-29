@@ -83,6 +83,15 @@ The upward case needs neither RH nor the spectral gap.
 - Landau makes `D_w(σ) = Σ w(n) n^{−σ}` there, so `D_w(σ) ≥ D_w(1) > 0` unless `w = 0`. Contradiction.
 - Inputs: Herglotz positivity on the real segment `(½, 1]`, and analyticity of `D_lam` near the real ray.
 
+## Third proof of the upward case: Riemann's kernel is a null vector (cycle 143)
+- Riemann's kernel `Φ(u) = Σ_n (2π²n⁴e^{9u/2} − 3πn²e^{5u/2}) e^{−πn²e^{2u}}` has transform `Ξ`, which vanishes at every zero of `ζ`. So `Φ` lies in the radical of the zero side `W(f, g) = Σ_ρ m_ρ f̂(γ) \overline{ĝ(\bar γ)}`, unconditionally.
+- `Φ > 0`: `Φ(u) = Σ_n e^{u/2}(4π²Y² − 6πY)e^{−πY}` with `Y = n²e^{2u} ≥ 1` for `u ≥ 0`, and `4π²Y² − 6πY > 0` there; `Φ` is even.
+- Let `lam ≥ Λ` be Weil-positive (all tests, pole weight 1) with `lam(n₀) > Λ(n₀)`. The explicit formula gives, for every test `f` and `k = f ⋆ f̃`,
+  `Weil_lam(k) = W(f, f) − Σ_{n ≥ 2} (lam(n) − Λ(n)) n^{−½} (k(log n) + k(−log n))`.
+- Take `f = Φχ_L`, `χ_L` a smooth cutoff equal to 1 on `[−L+1, L−1]`. Then `k ≥ 0`, so every atom term is `≥ 0`, and `k(log n₀) ≥ ∫_0^{log n₀} Φ(t)Φ(t − log n₀) dt =: c₀ > 0` once `L ≥ log n₀ + 1`. The zero side satisfies `|W(f, f)| ≤ e^{−e^{2L−2}} ∫|f|²` (near-radical estimate). For large `L` the functional is `≤ −δc₀/2 < 0`, a contradiction.
+- No Landau step, Herglotz representation, or zero-sum constant is needed; the only analytic input is the explicit formula for `ζ` on `C²` compactly supported autocorrelations.
+- **Scope.** `Φ` itself is not a polar test (`Ξ(±i/2) = ½ ≠ 0`). Cycle 144 repairs this with the polar second difference `Φχ_L − αΦχ_L(·−c) − αΦχ_L(·+c)`, `α = 1/(2cosh(c/2))`. Its negative lobes at `±c` cost `≤ 8CΣ(w(n)/n)e^{−|log n − c|}`, which is small for a suitable `c ∈ [M, 2M]` because the excess of a Weil-positive supersystem has log-density zero (L61). It does not extend downward: a contradiction there needs `k_f ≤ 0` at every atom where `lam < Λ`, and autocorrelations of radical vectors are positive-definite functions of width ≍ 1, wider than the gaps between the `log n`.
+
 ## Corollaries (cycle 140)
 - **(E) Summable error.** The proof is unchanged if `lam − Λ = u₀ + e`, where `u₀` has constant sign and `Σ |e(n)| n^{−½} < ∞`.
   - `D_e` converges absolutely on `σ ≥ ½`, so Landau applies to `u₀`.
@@ -104,11 +113,48 @@ The upward case needs neither RH nor the spectral gap.
   - Majorants give no freedom: if `lam⁺ ≥ Λ` is Weil-positive on `𝒞₊`, the same duality yields `v ≥ 0` with `lam⁺ + v ∈ W`, and Theorem C(a) forces `lam⁺ + v = Λ`.
   - So sieve majorants of Λ, which have density `≥ 2` by the parity phenomenon, cannot certify (D). This is the majorant twin of the cycle-110 minorant wall.
 
+## Lean status (2026-09-29)
+The RH-implication (Landau) halves of Theorem C(a) and (b) are formal, and so is the uniqueness `w = 0` of Theorem C(a), in the full cone (cycle 143) and in the polar cone (cycle 144). Downward uniqueness remains paper, blocked on a formal Herglotz representation.
+- Module `RHTower/WeilFullConeRiemannKernelRigidity.lean` (414 lines), cycle 143:
+  - `weilFullFunctional lam k`: pole term `k̂(i/2) + k̂(−i/2)`, prime atoms `lam(n) n^{−½}(k(log n) + k(−log n))` on `n ≥ 2`, archimedean term `(1/2π)∫ k̂ γ`. `WeilPositiveFull lam`: nonnegative real part on every autocorrelation `f ⋆ f̃` of a `C²` compactly supported `f`.
+  - `zeta_W_eq_weilFullFunctional`: the zero side `W(f, f)` equals the full functional of Λ (Zeta23's explicit formula).
+  - `riemannKernelReal_pos`, `riemannPhiKernel_eq_ofReal`: `Φ` is real and positive.
+  - `exists_norm_W_truncatedRiemannKernel_le`: `W(Φχ_L, Φχ_L) → 0`.
+  - `eq_vonMangoldt_of_weilPositiveFull_of_ge`: **Theorem C(a) uniqueness, unconditional**: a Weil-positive `lam ≥ Λ` equals Λ on `n ≥ 2`.
+- Module `RHTower/WeilPositivityMajorantRigidity.lean` (1003 lines), cycle 144, in the corpus's polar cone `WeilPositive` (every level, tests with `f̂(±i/2) = 0`):
+  - `eq_vonMangoldt_of_weilPositive_of_ge`: **Theorem C(a) uniqueness for polar tests, unconditional**: a Weil-positive `lam ≥ Λ` equals Λ on `n ≥ 2`. This is strictly stronger than the full-cone statement, and it supersedes L61's log-density bound.
+  - Test: `polarRiemannDifference L c = u − αu(·−c) − αu(·+c)`, `u = Φχ_L`, `α = 1/(2cosh(c/2))`. Its transform `(1 − 2α cos cz)û` vanishes at `±i/2` and is `≤ 3|û|` on the strip.
+  - `polarAutocorr_ge`: `k_f(y) ≥ k(y) − 2α(k(y+c) + k(y−c))`. `exists_truncatedRiemannAutocorr_le`: `k(v) ≤ Ce^{−2|v|}` uniformly in `L`.
+  - `exists_excess_le_log`: from L61, `Σ_{n≤K}(lam − Λ)(n)/n = o(log K)`. `exists_mul_excessSmoothing_le`: averaging over `c ∈ [M, 2M]`.
+  - `riemannHypothesis_iff_weilPositive_vonMangoldt`: Weil's criterion for the corpus's `WeilPositive`. The corpus had no link from `WeilPositive` to Mathlib's `RiemannHypothesis`. The proof goes through the Hodge-index exclusion `zeta_re_eq_half_of_hodgeIndex` and the zero-free box `|γ| < 4`.
+  - `riemannHypothesis_iff_exists_weilPositive_ge`: **corollary (D) in Lean**: RH ⟺ some Weil-positive `lam ≥ Λ` exists, and then `lam = Λ`.
+- Module `RHTower/ChebyshevDeficitPrimitiveOneSidedRH.lean` (712 lines). With `D(T) = ∫_0^T (e^t − ψ(e^t)) dt`:
+  - `riemannHypothesis_of_logChebyshevDeficitPrimitive_ge`: if `−B e^{T/2} ≤ D(T)` for all `T ≥ 0`, then RH.
+  - `riemannHypothesis_of_logChebyshevDeficitPrimitive_le`: the reverse one-sided bound also gives RH.
+  - Mechanism: integration by parts gives the Laplace transform of `D`. The corpus's Landau theorem (`false_of_analyticAt_abscissa`) moves the abscissa of `(B ± e^{−T/2}D(T))dT + dT` to 0. The resulting transform continues the regularized critical-Mellin defect, and `riemannHypothesis_of_regularizedCriticalMellinDefect_extension` concludes.
+- Module `RHTower/WeilParityPoleOneSidedRH.lean` (399 lines), in the CCM restricted Weil framework (full form, pole term included):
+  - `riemannHypothesis_iff_evenParityPole_nonneg`: RH ⟺ the even literal pole `e^{x/2} + e^{−x/2}` has nonnegative Weil energy at every aperture.
+  - `riemannHypothesis_iff_oddParityPole_nonneg`: the same for the odd pole. The corpus previously needed both parities.
+  - `evenParityPole_atom_nonneg`: every visible prime atom has energy `2(2(e^a/n − e^{−a}) + (2a − log n)(1+1/n)) ≥ 0` on the even pole.
+  - `riemannHypothesis_of_evenParityPole_supersystem`: weights `lam ≥ Λ` with nonnegative even-pole energy at every aperture force RH. Only even-pole positivity of `lam` is needed, which is weaker than Weil positivity.
+  - `riemannHypothesis_iff_exists_evenParityPole_supersystem`: RH ⟺ such a majorant exists.
+- Downward (cycle 142, same module):
+  - `oddParityPole_atom_le`: every visible atom's odd-pole energy is at most `4e^a/n`.
+  - `riemannHypothesis_of_oddParityPole_subsystem`: weights `0 ≤ lam ≤ Λ` with nonnegative odd-pole energy at every aperture force RH. No density hypothesis is needed, because the literal pole vectors carry the pole weight.
+  - `riemannHypothesis_iff_exists_oddParityPole_subsystem`.
+  - The one-sided criteria are generalized to `D(T) ≥ −B(1+T)e^{T/2}` and `≤ B(1+T)e^{T/2}` (`riemannHypothesis_of_logChebyshevDeficitPrimitive_ge_mul` / `_le_mul`).
+- All theorems use only the axioms `propext, Classical.choice, Quot.sound`. They are wired into `RHTower.lean`, and the lint gate is clean for both modules.
+- Literature note: the one-sided deficit criterion is Landau's oscillation theorem in integrated form (classical in substance). The single-parity statements and the supersystem theorem are specific to the Weil-cone setting.
+
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven (paper; inputs: MUST-520 Herglotz representation, Landau's theorem, `Σ_ρ 1/(ρ(1−ρ)) = 2 + γ − log 4π`)
-- [ ] 2 → 3  formalized: blocked on a formal Herglotz representation of `WeilPositive` (positivity ⇒ analyticity). The existing formal tools (Toeplitz ceiling with crude constant; Mertens-constant tests) reach only the summable and exact-expansion cases.
+- [ ] 2 → 3  formalized: partial. Both Landau steps, the single-parity criteria and upward uniqueness (full and polar cones) are formal; see the Lean status section. Downward uniqueness still needs a formal Herglotz representation of Weil positivity (positivity ⇒ analyticity with boundary measure).
 
 ## Log
 - 2026-09-29 — cycle 139: conjectured, proved on paper, card created.
 - 2026-09-29 — cycle 140: real-axis proof of the upward case; corollaries (E) summable error, (D) majorant form of Weil's criterion.
+- 2026-09-29 — Lean: `ChebyshevDeficitPrimitiveOneSidedRH`, `WeilParityPoleOneSidedRH` (Landau step and single-parity criteria), axiom-clean.
+- 2026-09-29 — Lean (cycle 142): downward Landau step `riemannHypothesis_of_oddParityPole_subsystem`; both directions of the RH-implication are now formal in the CCM full Weil form.
+- 2026-09-29 — cycle 143: third proof of upward uniqueness (Riemann's kernel as a positive null vector), formalized in `WeilFullConeRiemannKernelRigidity` (axiom-clean).
+- 2026-09-29 — cycle 144: upward uniqueness in the polar cone (`WeilPositivityMajorantRigidity`, axiom-clean).

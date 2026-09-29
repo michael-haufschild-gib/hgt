@@ -1,8 +1,8 @@
 # Theta-completed Pluecker singular sandwich
 
 - **ID:** `ULF-TCPSS-001`
-- **Stage:** `2-fully-proven`
-- **Type:** unconditional nonseparable prime--history fusion theorem
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parents:** `ULF-TPFOI-001`, `ULF-IFOCC-001`
 - **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH SELECTION]`
 - **Lean status:** not formalized; no Lean was written or built in this research pass
@@ -191,3 +191,29 @@ literal integer/Poisson completion
 The first new obstruction is now precise: edgewise half-densities have the same unit order but
 prime-dependent constants. Global assembly must therefore glue graph connections, not identify all
 gauges with one prime-independent scalar.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.ThetaCompletedPluckerSandwich`, `GaloisForLFunctions.HTGeometry.ThetaPluckerFormationOrderIndex`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Module `GaloisForLFunctions.HTGeometry.ThetaCompletedPluckerSandwich` (80 constants) on top of `GaloisForLFunctions.HTGeometry.ThetaPluckerFormationOrderIndex` (ULF-TPFOI-001) and the corpus cores `HTGeometry.MaximalRealDiagonalSelfAdjoint`, `RHTower.GammaSewnMobiusApertureStokesPhysicalPluckerSpectralMatrix`; all axiom-audit clean. `H = DiagonalL2 (ℕ × Fin 4) = ℓ²(ℕ × Fin 4) = ⊕_e ℂ⁴`, `M_e = gammaSewnCriticalPrimeDepthPacket_PluckerSpectralMatrix e p q`, `v_e = gammaSewnCriticalPrimeDepthPacket_PluckerSpectralKernelVector e p q`, `π = pluckerDepthLaw`, `w = thetaCuspMellinSixFlux`, `s = formationHalfDensity`.
+
+| Claim | Lean declaration |
+|-|-|
+| `τ_e = tr M_e > 0`; `A_e = M_e/τ_e` is positive with trace one | `pluckerSpectralTrace`, `pluckerSpectralTrace_pos`, `normalizedPluckerBlock`, `normalizedPluckerBlock_posSemidef`, `normalizedPluckerBlock_trace`, `normalizedPluckerBlock_symm`, `abs_normalizedPluckerBlock_le` |
+| Block operators on `⊕_e ℂ⁴`: construction, entries, positivity, trace class with trace the sum of block traces (generic) | `depthBlockOperator`, `depthBlockOperator_apply`, `inner_single_depthBlockOperator_single`, `inner_depthBlockOperator`, `depthBlockOperator_isSymmetric`, `depthBlockOperator_isPositive`, `depthBlockOperator_traceClass`, with `posSemidef_real_abs_apply_le_trace` and `posSemidef_real_re_quadratic_nonneg` |
+| (TCPSS.1)–(TCPSS.3): `B = ⊕ π_e A_e`, `Θ = ⊕ w_e A_e`, `S = ⊕ s_e I₄` (maximal domain), `N+1` | `physicalPluckerOperator`, `thetaCompletedPluckerOperator`, `formationHalfDensityOperator`, `depthNumberSuccOperator` |
+| Statement 1: `B`, `Θ` positive Schatten-one, `Tr = 1` (and `‖·‖₁ = 1`) | `weightedPluckerOperator_traceClass`, `physical_and_theta_pluckerOperator_traceClass` |
+| Statement 2: `S` self-adjoint, closed, positive, unbounded, `Dom S = Dom(N+1)`, equivalent graph norms | `formationHalfDensityOperator_properties` (via `maximalRealDiagonal_isSelfAdjoint`, `maximalRealDiagonal_isClosed`, `re_inner_maximalRealDiagonal_nonneg`, `maximalRealDiagonal_not_bounded`, `maximalRealDiagonal_domain_eq_of_comparable`, `exists_formationHalfDensity_comparable`) |
+| Statement 3, (TCPSS.4): `S B S = Θ` on the finite-packet core; the core operator is closable with closure `Θ` | `finiteSupportCore`, `dense_finiteSupportCore`, `finiteSupportCore_le_domain`, `formationSandwich_eq`, `closure_toPMap_of_dense`, `formationSandwich_closure` |
+| Statement 4: uniqueness of the nonnegative block-scalar implementation | `eq_formationHalfDensity_of_sandwich` |
+| Statement 5: blocks of `Θ` are `w_e A_e`; rank three, kernel `span v_e`, nonzero off-diagonal entry | `inner_single_thetaCompletedPluckerOperator_single`, `normalizedPluckerBlock_rank`, `normalizedPluckerBlock_ker`, `exists_normalizedPluckerBlock_offDiagonal_ne_zero` |
+| (TCPSS.6): `v_e = ((e+1)I_p, (e+2)I_p, (e+1)I_q, (e+2)I_q)`; `v_e`, `v_{e+1}` not collinear; kernels move | `pluckerSpectralKernelVector_eq`, `pluckerSpectralKernelVector_ne_smul_succ`, `normalizedPluckerBlock_ker_ne_succ` |
+| Statement 6, (TCPSS.5) fails: no fixed `A` with `Θ = diag(w) ⊗ A` | `thetaCompletedPluckerOperator_not_separable` |
+| Theorem TCPSS (summary) | `theta_completed_plucker_singular_sandwich` |
+
+The hostile review, significance verdict and RH-chain edge are interpretation and audit.
+
+## Log
+
+- 2026-09-29 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

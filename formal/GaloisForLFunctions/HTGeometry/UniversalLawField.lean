@@ -625,6 +625,10 @@ import GaloisForLFunctions.HTGeometry.HardyRealBoundaryConstant
 import GaloisForLFunctions.HTGeometry.ArchimedeanSzegoCounterterm
 import GaloisForLFunctions.HTGeometry.GammaSixSaddleDoubleLogClock
 import GaloisForLFunctions.HTGeometry.ThetaPluckerFormationOrderIndex
+import GaloisForLFunctions.HTGeometry.ThetaCompletedPluckerSandwich
+import GaloisForLFunctions.HTGeometry.IntegralFormationOrderCharge
+import GaloisForLFunctions.HTGeometry.PhysicalOverlapSingularGaugeNondescent
+import GaloisForLFunctions.HTGeometry.MovingPluckerNullLineHomotopyDefect
 
 /-!
 # Universal-law-field Lean umbrella

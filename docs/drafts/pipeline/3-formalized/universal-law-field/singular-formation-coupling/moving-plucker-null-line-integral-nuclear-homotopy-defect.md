@@ -1,8 +1,8 @@
 # Moving Pluecker null-line integral--nuclear homotopy defect
 
 - **ID:** `ULF-MPNLIH-001`
-- **Stage:** `2-fully-proven`
-- **Type:** unconditional pre-divisor source-completion theorem
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parents:** `ULF-TPFOI-001`, `ULF-IFOCC-001`, `ULF-TCPSS-001`, `ULF-POSGND-001`
 - **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT RH SELECTION]`
 - **Lean status:** not formalized; current research stage is Lean read-only
@@ -374,3 +374,33 @@ literal completion on formation presentation
 The missing theorem is therefore a source-derived base-change identity plus residual positivity.
 Merely defining `R_pq` as the difference, or assuming its positivity, is exactly the old receiver
 and does not count.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.MovingPluckerNullLineHomotopyDefect`, `GaloisForLFunctions.HTGeometry.PhysicalOverlapSingularGaugeNondescent`, `GaloisForLFunctions.HTGeometry.ThetaCompletedPluckerSandwich`, `GaloisForLFunctions.HTGeometry.IntegralFormationOrderCharge`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Module `GaloisForLFunctions.HTGeometry.MovingPluckerNullLineHomotopyDefect` (113 constants) on top of `GaloisForLFunctions.HTGeometry.PhysicalOverlapSingularGaugeNondescent`, `GaloisForLFunctions.HTGeometry.ThetaCompletedPluckerSandwich`, `GaloisForLFunctions.HTGeometry.IntegralFormationOrderCharge` and the corpus cores `HTGeometry.ConstitutiveToeplitzDefectIndex`, `HTGeometry.CountableSeparableInteractionOperatorLaw`; all axiom-audit clean. `K = ToeplitzSpace = ℓ²(ℕ)`, `P_e = gammaSewnCriticalPrimeDepthPacket_Partition e p q`, `w_e = thetaCuspMellinSixFlux e`, `v_e = gammaSewnCriticalPrimeDepthPacket_PluckerSpectralKernelVector e p q`.
+
+| Claim | Lean declaration |
+|-|-|
+| (MPNLIH.1) `g_e`, `a_e = (g_e/g_{e+1})² = w_e P_{e+1}/(w_{e+1}P_e)`, `α_e = √a_e`; `g_e = √(F/Z) s_e`, `α_e = s_e/s_{e+1}` | `completionGauge`, `completionTransport`, `completionShiftWeight`, `completionTransport_eq_sq`, `completionShiftWeight_eq`, `completionGauge_eq`, `completionShiftWeight_eq_formation` |
+| (3) `a_e = 1 - 2/e + O(e⁻²)`; `a_e → 1`; `0 < inf α ≤ sup α < ∞` | `isBigO_completionTransport_sub`, `tendsto_completionTransport`, `tendsto_completionShiftWeight`, `bddAbove_completionShiftWeight`, `bddAbove_inv_completionShiftWeight` |
+| (MPNLIH.2) `u_e = v_e/‖v_e‖`, positive, unit, spans the null line; `K ⊂ ℓ²(ℕ,ℂ⁴)` isometrically | `nullLineVector`, `nullLineVector_pos`, `sum_nullLineVector_sq`, `mulVec_nullLineVector`, `nullLineEmbedding`, `norm_nullLineEmbedding_apply`, `adjoint_nullLineEmbedding_single` |
+| (MPNLIH.3)–(MPNLIH.4) `C ε_e = α_e ε_{e+1}` and `C = G⁻¹VG` coordinatewise | `completionShift`, `completionShift_single`, `completionShift_apply_succ`, `completionShift_apply_zero`, `completionShift_apply_succ_gauge` |
+| Statement 1, (MPNLIH.5): bounded, bounded below, injective, range `ε_0^⊥` closed, cokernel a line, `ind C = -1` | `exists_completionShift_bounded_below`, `ker_completionShift`, `mem_range_completionShift_iff`, `isClosed_range_completionShift`, `finrank_coker_completionShift`, `completionShiftIndex`, `completionShiftIndex_eq` |
+| `C* ε_0 = 0`, `C* ε_{e+1} = α_e ε_e`; `C*C = diag(a)`, `CC* = diag(0,a_0,a_1,…)` | `adjoint_completionShift`, `adjoint_completionShift_apply`, `adjoint_comp_completionShift_apply`, `completionShift_comp_adjoint_apply_zero`, `completionShift_comp_adjoint_apply_succ` |
+| Statement 2, (MPNLIH.6)–(MPNLIH.7): `T = C*C - CC*` is the self-adjoint nuclear diagonal `(a_0, a_1-a_0, …)`; `|a_e - a_{e-1}| = O(e⁻²)` | `completionSelfCommutator`, `completionBoundaryCurvature`, `isBigO_completionBoundaryCurvature_succ`, `summable_abs_completionBoundaryCurvature`, `completionSelfCommutator_eq`, `completionSelfCommutator_single`, `completionSelfCommutator_isSelfAdjoint`, `completionSelfCommutator_memSchattenClass_one` |
+| Statement 3, (MPNLIH.8)–(MPNLIH.9): `Tr(Q_N T Q_N) = a_N`, `Tr T = 1 = -ind C` | `historyHeadProjection`, `historyHeadProjection_sandwich`, `opTrace_historyHeadProjection_sandwich`, `sum_range_completionBoundaryCurvature`, `hasSum_completionBoundaryCurvature`, `opTrace_realSummableDiagonalOperator_nat`, `opTrace_completionSelfCommutator` |
+| Statement 4, (MPNLIH.10): depth blocks `(a_e - a_{e-1}) u_e u_eᵀ` of `J T J*`; zeroth block fully prime-mixed | `literalNullLineDefect`, `inner_single_literalNullLineDefect_single`, `literalNullLineDefect_zero_block_ne_zero` |
+| Statement 5: not history-diagonal ⊗ fixed packet matrix | `literalNullLineDefect_not_separable` |
+| Statement 6, (MPNLIH.10a): `a_e - a_{e-1} > 0` eventually (via the rational transport profile `a_e = Φ(1/e)`, `Φ(0) = 1`, `Φ'(0) = -2`); negative directions in a finite head | `completionTransportProfile`, `completionTransport_eq_profile`, `contDiffAt_completionTransportProfile_of`, `completionTransportProfile_zero`, `tendsto_mul_completionTransport_sub_one`, `deriv_completionTransportProfile_zero`, `eventually_completionTransport_lt_succ`, `exists_completionBoundaryCurvature_pos`, `exists_head_re_inner_completionSelfCommutator_nonneg` |
+| `D_pq` chiral Laplacians `C*C`, `CC*` non-nuclear, difference nuclear | `chiralLaplacians_not_memSchattenClass_one` |
+| (MPNLIH.11) `T = T_(2,3)` | `two_lt_three_primes`, `firstEdgeMovingNullLineDefect`, `firstEdgeMovingNullLineDefect_opTrace` |
+| (MPNLIH.12) five readings of the unit; (MPNLIH.13) `g_{N+1}/g_0 = ∏_{e≤N} a_e^{-1/2}` | `movingNullLine_unit_readings`, `completionGauge_succ_div_zero` |
+| Theorem MPNLIH (summary) | `moving_plucker_null_line_homotopy_defect` |
+
+The hostile review, verdict and RH-chain edge are interpretation and audit.
+
+## Log
+
+- 2026-09-29 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

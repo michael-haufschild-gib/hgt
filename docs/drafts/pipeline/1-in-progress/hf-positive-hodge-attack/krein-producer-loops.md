@@ -3307,3 +3307,33 @@ Next conjectures to test:
     - `coeff_eq_zero_of_odd_coeffTheta_relation`.
 - **Consequence.** The L140 chain in Lean needs no Schwarz reflection and no continuation of `D_w` left of the line. The only missing piece is the boundary regularity of two-sided perturbations: `Z·D_w` continuous up to the line with `Re D_w⁺` supported on the zeros (Herglotz sandwich plus atomic `ξ'/ξ` measure).
 - **Producer status: unchanged.** This certifies the extremality side (uniqueness among two-sided directions). It does not touch existence (PBAP) or the `α ≥ 1` wall.
+
+### L148 — Producer short-interval law: Weil positivity gives any producer RH-quality prime-number theory for its own weights. THEOREM [P] (card `2-fully-proven/11-rh-zero-divisor-geometry/weil-cone-producer-short-interval-law.md`)
+- **Conjecture (tested and proved).** Any `lam ∈ W` behaves, on its own support, like Λ under RH:
+  - smoothed PNT with error `x^{½+ε}`;
+  - support in every interval `(x, x+x^{½+ε})` and in almost every interval `(y, y+y^ε)`;
+  - polylogarithmic square mass.
+  - Consequently a producer supported on the primes forces primes in short intervals.
+- **Mechanism.** Borel–Carathéodory on the discs `B(2+it, 3/2)` gives `|Φ(σ+it)| ≤ (1 + 3/(σ−½))|Φ(2+it)|`. So `E = D − 1/(s−1)` has `|E(σ+it)| ≪ log|t|/(σ−½)` on the whole strip: RH-quality growth for free.
+  - The pole part of `(1/2πi)∫Dφ̃x^s` is exactly `x∫φ` (Mellin inversion of `u^{−1}∫_u^∞φ`, no residue calculus).
+  - The `E` part moves to `Re s = ½+η`.
+- **Results [P].**
+  - (S) every `(x, x+x^{½+ε})` meets `supp lam`;
+  - (AA) almost every `(y, y+2X^ε)` does, by Plancherel in `log y`;
+  - (Q) `Σ_{n≤X}lam²/n ≪ log³X(log log X)²`, by Montgomery–Vaughan and the Herglotz mean square;
+  - (D) `#(supp ∩ (x,2x)) ≫ x/log^{3+o(1)}x`, improving L75's `θ < ½` to every support of dyadic density `≤ x/log^{3+δ}x`;
+  - Corollary: prime-power support ⇒ `≫ x^{2ε}/log^{3+o(1)}x` primes in every `(x, x+x^{½+ε})`, and primes in almost every `(y, y+y^ε)`.
+- **Phase-4 attack.**
+  - *False?* No; every step is proved.
+  - *Circular?* No; only `lam`'s own Herglotz positivity is used, never ζ's zeros.
+  - *Rediscovered?* The mechanism is the classical "RH ⇒ short-interval PNT" (von Koch, Cramér, Selberg), transported to the free-weight cone. The new content: Weil positivity supplies the growth bound by Harnack, for every integer-supported system, and gives the resulting support and density laws. It is not in the log (L75 had only `θ < ½`; L119 was heuristic) and not in the literature (the free-weight cone is not studied).
+  - *Insignificant?* It is a BRIDGE: it turns "unconditional prime-supported producer" into the open short-interval prime problems (`0.525` for all intervals, fixed exponents for almost all).
+  - **Verdict: SURVIVES (bridge theorem).**
+- **Producer consequence.** An unconditional producer cannot be prime-supported without proving short-interval prime theorems beyond the state of the art. It must use dense composite support (S, AA, D) with anti-resonant weights (L107/L133) of polylogarithmic square mass (Q).
+  - Dense multiplicatively structured weights are killed by resonance, and prime-like weights are RH-hard (this entry).
+  - The remaining design space is **dense, non-multiplicative, polylog-bounded weights on composites**.
+- **Lean.** Target: Theorem S and the prime corollary (Borel–Carathéodory plus Mellin inversion plus one contour shift; no Montgomery–Vaughan).
+- **L148 Lean (same day).** Theorem S, the prime corollary and the ζ-datum instance are formal, with standard axioms.
+  - Modules: `HTGeometry/ShortBumpMellinSmoothedSums` and `RHTower/WeilPositiveShortIntervalSupport`, both wired.
+  - Headline theorem: `RHTower.exists_prime_mem_Ioo_of_zetaWeilPositive`.
+  - Every Weil-positive system has support in every `(x, x+x^{½+ε})`. Any **prime-supported producer for ζ's datum forces a prime in every such interval**, which is beyond the unconditional exponent `0.525`.

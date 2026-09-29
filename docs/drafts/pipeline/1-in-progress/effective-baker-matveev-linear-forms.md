@@ -553,3 +553,68 @@ Layers, each a self-contained unconditional module:
   `J ≍ log h`, `K ≍ 2^{d(d−1)}`, `L ≍ h^d/log h`, `T ≍ 2^J L K`, and would be worth banking as an
   intermediate Lean theorem: it is the historically correct 1966–68 statement, and every layer
   built for it is reused by the sharpening.
+- 2026-09-29 — **Parameter analysis of the ℤ-point schemes; a closure argument for why they all
+  fail.**
+
+  1. *Derivatives in the frequency directions must be bounded in number.*  Every derivative in a
+     `γ`-direction carries the denominator `b_pivot`, so the approximate-value error is
+     `≍ (2LB)^T |Λ|`.  A polynomial bound therefore needs `T = O(1)`, independent of `B`.  All of
+     `log B` must enter through a polynomial degree `L₀ ≍ log B` and the point count.
+  2. *With the polynomial part on the extrapolation variable, the Fel'dman derivatives are too
+     expensive.*  `lcm(1..L₀)^j Δ^{(j)}(s; L₀)/j! ∈ ℤ` costs `≍ L₀` per derivative order.  The gain
+     per derivative order is the point count `S`.  Hence `S ≳ L₀`, and the Siegel count
+     `S T^n ≍ L₀ L^n` forces `L ≳ T`.  Per-step exponential feasibility on integer points spaced
+     by `1` forces `T ≳ 12e·L·W·K·2^J`.  The two are incompatible for every choice of constants.
+  3. *Monomials `z^{λ₀}` avoid the derivative denominators but cost `L₀ log S` in the values.*
+     This gives `exp(-C log B log log B)`, the pre-Fel'dman bound.
+  4. *A separate grid variable for the polynomial part decouples.*  The Pascal matrix
+     `(binom(s+k,k))` is unimodular, so the problem splits into independent exponential problems.
+
+  **Consequence.**  A polynomial bound needs points of spacing `< 1`, which removes constraint 2's
+  exponential feasibility, i.e. Baker's Kummer descent at `ℓ/p^J`.  It also needs an arithmetic
+  step that does not pay the Kummer degree `p^{Jn}` in Liouville's inequality.
+
+  Sources checked:
+  - Waldschmidt's Madras notes (LIL.pdf, free) reach only `exp(-C(log B)^2 log A…)` without
+    derivatives (Thm 10.1).
+  - Soundararajan's Stanford notes reach `exp(-(log V)^κ)`, `κ > 2`, for two logs.
+  - Baker's book (Ch. 3, 1975) is access-restricted.
+
+  The next step is to obtain the 1972 *Sharpening I* construction, or Waldschmidt's book §9 ("The
+  rational case: Fel'dman's polynomials") with its Philippon multiplicity estimate.
+- 2026-09-29 (later) — **Source found: Fel'dman 1968, Mat. Sb. 77(119):3, 423–436 (mathnet sm4063,
+  free).**  It proves the polynomial bound; its Theorem 2 is our exact case (`S`-units over fixed
+  primes).  The device that my analysis above was missing:
+
+  - **Shifts, not degrees.**  The unknowns are `C(k, l)`, `k < N+1`, `l ∈ [0,q)^m`, attached to
+    `g(z+k) e^{ω_l z}` with one fixed product `g(z) = ∏_{i=1}^{N}(z+i)`.  The shifts are linearly
+    independent (Fel'dman, Lemma 6), so they span polynomials of degree `≤ N`.
+  - **One common divisor for all derivatives (Lemma 5).**  `g^{(σ)}(y)/σ!` is a sum of products with
+    `σ` brackets deleted.  All such products, for `σ ≤ s` and every block of `N` consecutive
+    integers, are divisible by
+    `D = ∏_{p^a ≤ N} p^{(⌊N/p^a⌋ − s)_+}`, where
+    `log D ≥ log N! − N(c₁ + c₂ log(s+1))` using only Chebyshev `ψ(y) ≤ c y`.
+    The derivative denominators are paid once, at cost `O(N log s)`, not `N` per derivative order.
+
+  **Parameters.**  `q`, `S` (derivative order), `K`, `R` (number of steps) are constants.  The
+  polynomial degree `N = c_N log B` and the initial point count `X₀ = c_X log B`.
+  - Siegel: `X₀ S^m ≤ (N+1) q^m / 2`.
+  - Step `r`: orders `S/2^r`, points `K^r X₀`.
+  - Exponential feasibility: `S/2^{R+1} ≳ 16 q W K`.
+  - Arithmetic: `c_X S/2^{R+2} ≳ 2S + c_N(C'' + c₂ log S + R log K)`.
+  - Terminal: `K^R X₀ ≥ (N+1) q^m`.
+
+  All of these are satisfiable: first `q^m ≍ 2^R S^{m−1}·polylog S`, then `S^{1/m} ≳ 2^{R(1+1/m)} W K·polylog`,
+  `K = 2^{m²+m+1}`, and `R` large.  Every loss is `O(log B)`, hence `|Λ| ≥ B^{−C}`.
+
+  **Lossless approximate Schwarz step (new; the corpus version loses `ρ^{−MT}`).**
+  - Let `H = Σ_x P_x Ω_x S_x`, where `P_x` is the Taylor polynomial of `f` at node `x`, `Ω_x = ∏_{y≠x}(z−y)^M`,
+    and `S_x` is the Taylor polynomial of `1/Ω_x` at `x`.
+  - Then `f − H` vanishes to order `M` at every node, so `f = H + Ω G` with `G` entire.
+  - The maximum principle bounds `G`, and `|H| ≤ ε·e^{O(MT log K + KT)}` for integer nodes.
+
+  **Lean plan (in order).**
+  (L1) divisor lemma; (L2) Siegel system; (L3) the functions `F_{σ,τ}` with the diagonal derivative
+  identity `F' = F_{σ+1,τ} + Σ ℓ_j F_{σ,τ+e_j}`; (L4) integer proxy `A_{σ,τ}(x)` and the `Λ`-error;
+  (L5) lossless Hermite–Schwarz lemma; (L6) extrapolation induction; (L7) terminal generalized
+  Vandermonde; (L8) parameters and the card interface.

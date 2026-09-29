@@ -10,7 +10,7 @@ Per-folder detail stays in the folder ledgers (`_STAGE3-LEDGER.md`, `_SWEEP-LEDG
 |---|---|---|---|
 | 02 | first-order-autonomous-algebraic-ap-periodicity | — | **DONE → stage 3** (4 HTGeometry modules) |
 | 02 | smooth-stein-order-two-autonomous-ade-frequency-rank | Taubes replaceable: Reeb field preserves Webster metric ⇒ flow closure is a torus ⇒ β closed | TODO |
-| 02 | entire-heat-multiplicative-da-order-three-floor | global Strelitz component argument | TODO |
+| 02 | entire-heat-multiplicative-da-order-three-floor | replaced by second-jet gap + circle bootstrap (`EntireHeatOrderTwoFloor`) | DONE 2026-09-29 |
 | 02 | asymptotically-exponential-algebraic-cascade-unit-cost | — | **DONE → stage 3** (6 HTGeometry modules; entire Briot–Bouquet) |
 | 02 | entire-composition-hypertranscendence-or-law | — | **DONE → stage 3** (Steinmetz Satz 1/2: `SteinmetzReduction`, `EntireCompositionSteinmetz`) |
 | 03 | combination-mode-reducibility-baker-bridge | polynomial effective Baker (Matveev) | TODO |

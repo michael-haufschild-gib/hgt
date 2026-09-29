@@ -1,8 +1,8 @@
 # Physical-overlap singular-gauge non-descent
 
 - **ID:** `ULF-POSGND-001`
-- **Stage:** `2-fully-proven`
-- **Type:** unconditional descent obstruction with positive connection survivor
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parents:** `ULF-TCPSS-001`, `ULF-IFOCC-001`
 - **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH SELECTION]`
 - **Lean status:** not formalized; no Lean was written or built in this research pass
@@ -163,3 +163,25 @@ integer formation cover
 
 Any route that identifies overlapping cells before completion necessarily destroys the only
 nontrivial source datum and falls into the existing flat-coboundary/scalar-ghost no-gos.
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.PhysicalOverlapSingularGaugeNondescent`, `GaloisForLFunctions.HTGeometry.IntegralFormationOrderCharge`, `GaloisForLFunctions.HTGeometry.ThetaPluckerFormationOrderIndex`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Module `GaloisForLFunctions.HTGeometry.PhysicalOverlapSingularGaugeNondescent` (12 constants) on top of `GaloisForLFunctions.HTGeometry.IntegralFormationOrderCharge` (ULF-IFOCC-001) and `GaloisForLFunctions.HTGeometry.ThetaPluckerFormationOrderIndex` (ULF-TPFOI-001); all axiom-audit clean. `λ(e,i) = gammaSewnOrderedPrimeDepthPlucker_cell e p q i`, `s = formationHalfDensity p q`, `c_pq = formationOrderSlope p q`.
+
+| Claim | Lean declaration |
+|-|-|
+| (POSGND.1) cover `ℕ × Fin 4 → {p,q} × ℕ`, overlaps `λ(e,1) = λ(e+1,0)`, `λ(e,3) = λ(e+1,2)` | `formationCover_overlap`, `formationCover_mem_physicalCells` |
+| Theorem POSGND-A, (POSGND.2): no function `g` on physical cells (any growth) with `g(λ(e,i)) = s_e` | `not_exists_physical_descent` |
+| (POSGND.3) `τ_e = s_{e+1}/s_e > 0` | `formationConnection`, `formationConnection_pos` |
+| (POSGND.4) `s_n = s_0 ∏_{e<n} τ_e` (exact coboundary on every finite interval) | `formationHalfDensity_eq_mul_prod` |
+| (POSGND.5) `τ_e = 1 + 1/e + O(e⁻²)`, `e log τ_e → 1` | `isBigO_formationConnection`, `tendsto_mul_log_formationConnection` |
+| (POSGND.6) `(∏_{e<n} τ_e)/n → c_pq/s_0 > 0`; the trivialization is unbounded | `tendsto_prod_formationConnection_div`, `not_bddAbove_prod_formationConnection` |
+| Theorem POSGND (summary) | `physical_overlap_singular_gauge_nondescent` |
+
+The hostile review and RH-chain consequence are interpretation and audit.
+
+## Log
+
+- 2026-09-29 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

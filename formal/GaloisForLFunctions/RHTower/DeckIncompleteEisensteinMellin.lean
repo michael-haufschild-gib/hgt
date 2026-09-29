@@ -66,8 +66,9 @@ theorem tsum_rowHeight_rpow_nonneg (σ : ℝ) (z : ℍ) :
 /-- The Eisenstein series is continuous along vertical lines `Re s = σ > 1`. -/
 theorem continuous_eisVec_line (hN : 2 ≤ N) {w : DeckSpace N} (hw : IsCuspVec w) (z : ℍ) {σ : ℝ}
     (hσ : 1 < σ) : Continuous fun t : ℝ => eisVec ((σ : ℂ) + t * Complex.I) w z := by
-  have he : (fun t : ℝ => eisVec ((σ : ℂ) + t * Complex.I) w z) = fun t => eisExt ((σ : ℂ) + t * Complex.I) w z :=
-    funext fun t : ℝ => eisVec_eq_eisExt hN (by simpa using hσ) hw z
+  have he : (fun t : ℝ => eisVec ((σ : ℂ) + t * Complex.I) w z) =
+      fun t : ℝ => eisExt ((σ : ℂ) + t * Complex.I) w z :=
+    funext fun t : ℝ => eisVec_eq_eisExt hN (s := (σ : ℂ) + t * Complex.I) (by simpa using hσ) hw z
   rw [he]
   refine continuous_deck_of_coords fun q => ?_
   refine continuous_iff_continuousAt.2 fun t => ?_

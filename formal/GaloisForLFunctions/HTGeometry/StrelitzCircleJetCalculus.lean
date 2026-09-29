@@ -45,9 +45,11 @@ theorem hasDerivAt_eulerLogDeriv_circleMap (hf : Differentiable ℂ f) {r θ : �
       (I * eulerLogDerivSecond f (circleMap 0 r θ)) θ := by
   have hu := (analyticAt_eulerLogDeriv hf hfz).differentiableAt.hasDerivAt
   have h := hu.comp θ (hasDerivAt_circleMap 0 r θ)
-  convert h using 1
-  done
-  done
+  have heq : deriv (eulerLogDeriv f) (circleMap 0 r θ) * (circleMap 0 r θ * I) =
+      I * eulerLogDerivSecond f (circleMap 0 r θ) := by
+    show _ = I * (circleMap 0 r θ * deriv (eulerLogDeriv f) (circleMap 0 r θ))
+    ring
+  exact h.congr_deriv heq
 
 /-- **Angular oscillation.**  On a zero-free circle with `|v| ≤ ρ`, the first Euler jet stays
 within `3πρ` of its circle average. -/
