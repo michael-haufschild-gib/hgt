@@ -1,0 +1,343 @@
+{
+  "date": "2026-09-29",
+  "upstream_revision": "7a48598d35109aa99d1cc678e2724c213cdf4ff3",
+  "toolchain": "Lean/mathlib 4.32.2",
+  "upstream_modules": 1284,
+  "modified_sources": 105,
+  "source_fingerprint": "aefef332a7a7d44aead57e09fa7b20c5559745b7d13e8be952866ba5c72d9534",
+  "source_fingerprint_recipe": "SHA-256 of sorted lines: module name, one space, current source SHA-256, newline; modules and paths from upstream-manifest.json.",
+  "configuration_sha256": {
+    "lean-toolchain": "2bdc48adfa58d0017e538a0ad117c5d73d35deec879978f909406a80c8037273",
+    "lakefile.toml": "a283640f70f1bb6e43330f0cbac66fae38cc4fa4471ca656421451894086a0d5",
+    "lake-manifest.json": "72ad703174717655bc4857ff65fb38415826e511c101da42238eaf2e8038dd26",
+    "vendor/differential-geometry/lakefile.toml": "50f50b570facca8b990b151bb8cbab31deb0e290f0be81964633055beaff30ce"
+  },
+  "upstream_endpoint_build": {
+    "status": "passed",
+    "modules": [
+      "DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity",
+      "DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedMixedTensor",
+      "DifferentialGeometry.Geometry.Curvature.ConformalGaussBonnet",
+      "DifferentialGeometry.Geometry.Curvature.RegularizedGaussBonnet",
+      "DifferentialGeometry.Geometry.HarmonicMap.WeakLowerSemicontinuity",
+      "DifferentialGeometry.Analysis.Spectral.Scalar.PoissonExistence",
+      "DifferentialGeometry.Tensor.Exterior.Cochain",
+      "DifferentialGeometry.Topology.Homology.HurewiczLowDegrees"
+    ],
+    "final_lake_jobs": 5463
+  },
+  "combined_geometry_import_check": "passed",
+  "axiom_audits": [
+    {
+      "declaration": "DifferentialGeometry.Geometry.Curvature.bochner_pointwise_abstract_of_smooth",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Analysis.Elliptic.weitzenbock_integrated_covGrad_l2_normSq_rs",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.gaussBonnet_conformalDisk",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.gaussBonnet_regularizedDisk_trace",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.exists_pullback_dirichlet_integral_le_liminf",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Analysis.Laplacian.existsUnique_meanZero_smooth_poisson",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.DifferentialForm.deRhamCochainComplex",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.DifferentialForm.pullbackCohomologyMap_comp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Topology.hurewicz_two_isomorphism",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Topology.hurewicz_three_isomorphism",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Topology.integralSphereHomology_subsingleton",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "HTGeometry.CompactPoissonGreen.laplacian_symmetric",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "HTGeometry.CompactPoissonGreen.laplacian_nonpositive",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "HTGeometry.CompactPoissonGreen.laplacian_bijective",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "HTGeometry.CompactPoissonGreen.green_symmetric",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "HTGeometry.CompactPoissonGreen.green_energy",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "HTGeometry.CompactPoissonGreen.green_nonpositive",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "HTGeometry.CompactPoissonGreen.endpointDressedGreen_isTwoSided",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  ],
+  "source_integrity": {
+    "original_hash_mismatches": 0,
+    "missing_sources": 0,
+    "missing_modification_notices": 0,
+    "changed_internal_import_edges": 0,
+    "license_notice_mismatches": 0,
+    "proof_debt_keyword_matches": 0
+  },
+  "native_adapters": {
+    "GaloisForLFunctions.HTGeometry.JumpBochner": {
+      "source_sha256": "f84fe4a491478d97074b70c601b7e418a87ed932a8fc0a1749050a597845af72",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.HTGeometry.JumpCurvatureBounds": {
+      "source_sha256": "9a782c62d2c675dfd1410d8ceaf5e469bbe7ebd915c96f6aa7cee358152b75b2",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.HTGeometry.ManifoldDeRhamCohomology": {
+      "source_sha256": "aef52c731ae61c284cf978d6df2a2aa6e10438eebe33aac3fe588ebd5e5fc95a",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.HTGeometry.ModelDeRhamPeriods": {
+      "source_sha256": "541c555d5b6a5e5cf43b407cca1aed490d0517f64e194a5383ff3144b3bdeb14",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.HTGeometry.RegularizedMonomialCharge": {
+      "source_sha256": "f59b2db4b77b511cb1f654149f5de4553ac0d4230a059ce65593f8a3e36c869c",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.HTGeometry.RegularizedMonomialWinding": {
+      "source_sha256": "bc5e3702883b8f2ec7f931d4aebc96be1cfc6138d78597d908f2395f9745cbe9",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.HTGeometry.RegularizedMonomialCurvature": {
+      "source_sha256": "39dc6bb116ae277ae49885337c71dbdee3c8b54135c794a114126cd6ecacfb24",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.HTGeometry.CompactMeanZeroLaplacian": {
+      "source_sha256": "f1c46e4876bc9a4df691a890a938689304db2fb6291d2620f3a49d0bbd459661",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.HTGeometry.CompactPoissonGreen": {
+      "source_sha256": "72db630a8aabdea06c0821d74339d60615978fdee367940c62fcad5510a98b4a",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.HTGeometry.CompactGreenEndpointDressing": {
+      "source_sha256": "b8cdbd7b0b10cfdaa1522a3e859181126cd68a18431731b7be187e283bbd2c7a",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.HTGeometry.GeometricHurewicz": {
+      "source_sha256": "19a235de35df3863f1c5357120c9c1e64fd8cdfd5738e1b352887895b7ad838c",
+      "current_dependency_certificate": true,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.RHTower.CCMPrimePoleJumpBochner": {
+      "source_sha256": "9354e09cde46b955283df86e347538321c63fe07b87bf634fce8944888d9bb95",
+      "current_dependency_certificate": false,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.RHTower.CCMPrimePoleCurvatureBounds": {
+      "source_sha256": "01c1220469c8a0db29e5b8bcb8379c882893c6bb7a4102eaac9bcf085cea9fab",
+      "current_dependency_certificate": false,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.RHTower.CCMPrimePoleJumpRates": {
+      "source_sha256": "509b2fc14062b999e11bf3e57d079e1727188be0893c23dc06784e15ed492186",
+      "current_dependency_certificate": false,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.RHTower.CCMWeilJumpEnergy": {
+      "source_sha256": "63f25177d4a5e71ece5daee5c3c1a80a58ecfa98a6279d4acd5929bab4ef0566",
+      "current_dependency_certificate": false,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    },
+    "GaloisForLFunctions.RHTower.CCMPrimePoleNegativeCurvature": {
+      "source_sha256": "2d1dff92891be6f20047fc33ced4587dde4499cd40e38a84b0f85ac3b5fed98f",
+      "current_dependency_certificate": false,
+      "targeted_compilation_and_axiom_audit": "passed; see implementation ledger for sequence"
+    }
+  },
+  "native_closure_freshness": {
+    "checked_modules": 2804,
+    "total_modules": 5286,
+    "stale_roots": [
+      "GaloisForLFunctions.RHTower.L2FourierIntegralBridge",
+      "GaloisForLFunctions.Bottcher.SlitAnnulus",
+      "GaloisForLFunctions.Bottcher.GreenContinuity",
+      "GaloisForLFunctions.Bottcher.BottcherInverse",
+      "GaloisForLFunctions.Bottcher.Q62KummerAssembly",
+      "GaloisForLFunctions.Bottcher.NonSquareWinding",
+      "GaloisForLFunctions.U0.U0MeroCarrier",
+      "GaloisForLFunctions.RHTower.DeckMonomial",
+      "GaloisForLFunctions.HTGeometry.WeldClassTable",
+      "GaloisForLFunctions.RHTower.PrimeLambertMobiusInversion",
+      "GaloisForLFunctions.HTGeometry.FredholmDeterminantExamples",
+      "GaloisForLFunctions.HTGeometry.DifferentialPowerElimination",
+      "GaloisForLFunctions.RHTower.MoebiusFloorInversion",
+      "GaloisForLFunctions.Hurwitz.Encoding",
+      "GaloisForLFunctions.HTGeometry.UpperEndRationalGauge",
+      "GaloisForLFunctions.HTGeometry.SummableSpectrumScrewAlmostPeriodic",
+      "GaloisForLFunctions.HTGeometry.SoninCosineRiemannLebesgue",
+      "GaloisForLFunctions.RHTower.EulerFisherCurvature",
+      "GaloisForLFunctions.HTGeometry.GammaPeriodicConstraintCorona",
+      "GaloisForLFunctions.HTGeometry.CompactSelfAdjointReducingTail",
+      "GaloisForLFunctions.HTGeometry.SimplicialPiZeroFree",
+      "GaloisForLFunctions.PNTPlus.PerronFormula",
+      "GaloisForLFunctions.HTGeometry.DirichletLeadingTerm",
+      "GaloisForLFunctions.RHTower.GammaConductorSchurCapacity",
+      "GaloisForLFunctions.HTGeometry.LocalSpectralJetCausality",
+      "GaloisForLFunctions.RHTower.FieldOneFiniteAdeleWeylCharacter",
+      "GaloisForLFunctions.HTGeometry.LocalAnalyticExponentialClock",
+      "GaloisForLFunctions.HTGeometry.AffineFirstOrderDifferentialAlgebraicity",
+      "GaloisForLFunctions.HTGeometry.EllipticGammaExternalDefectOstrowski",
+      "GaloisForLFunctions.HTGeometry.MeromorphicRationalCoordinateDifferentialAdjoin",
+      "GaloisForLFunctions.HTGeometry.MultipleEllipticGammaLogConvergence",
+      "GaloisForLFunctions.Bottcher.IndexFormula",
+      "GaloisForLFunctions.HTGeometry.SourceMarkedGibbsSplitting",
+      "GaloisForLFunctions.HTGeometry.DifferentialFamilyMatroidBaseGauge",
+      "GaloisForLFunctions.HTGeometry.ScalarLogCurrentReconstruction",
+      "GaloisForLFunctions.HTGeometry.CofiniteTailHilbertReconstruction",
+      "GaloisForLFunctions.HTGeometry.UpperEndLiteralTailIndependence",
+      "GaloisForLFunctions.HTGeometry.HypertranscendentalReporterFreeness",
+      "GaloisForLFunctions.HTGeometry.HardyCrossParseval",
+      "GaloisForLFunctions.HTGeometry.BernsteinRowDiagonalKernel",
+      "GaloisForLFunctions.HTGeometry.CompactIntervalL2Pairing",
+      "GaloisForLFunctions.RHTower.DeningerNuclearProduct",
+      "GaloisForLFunctions.HTGeometry.HarmonicResidueTransfer",
+      "GaloisForLFunctions.HTGeometry.PiecewiseExponentialFourier",
+      "GaloisForLFunctions.RHTower.CCMRationalAdelicEpsilonOneCyclic",
+      "GaloisForLFunctions.RHTower.ClosedCyclicModuleCokernel",
+      "GaloisForLFunctions.HTGeometry.FourierTranslationModulation"
+    ],
+    "dependent_modules_without_current_certificate": 2435,
+    "interpretation": "All eleven geometry adapter closures are current. Five arithmetic adapters have earlier targeted compilation/axiom evidence, but no fresh full arithmetic-closure build is claimed; the shared workspace contains pre-existing stale dependency roots."
+  },
+  "formal_lint": {
+    "exit_code": 1,
+    "generated_files_fresh": true,
+    "active_proof_debt_findings": 0,
+    "integration_wiring_errors": 0,
+    "unrelated_errors": [
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaSeedHalfLineDivision",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaSeedTransferQuartet",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaTailScalingAsymptotics",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.CompactObserverTraceBlindness",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.SourceStokesNormalizedChildUnit"
+    ]
+  }
+}

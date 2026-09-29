@@ -3,7 +3,7 @@
 - **ID:** DG-PRIME-CD0
 - **Stage:** 5-failed
 - **Type:** FALSIFIED; positive survivor formalized
-- **Source:** `../1-in-progress/differential-geometry-four-integrations.md`
+- **Source:** `../3-formalized/differential-geometry-four-integrations.md`
 - **Statement:** The actual pole-profile prime jump generator does not satisfy
   `Γ₂(f)(x) ≥ 0` for every smooth real function and every point inside the cutoff.
 

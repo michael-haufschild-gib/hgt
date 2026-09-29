@@ -253,17 +253,27 @@ theorem one_div_three_log_le_sum_inv_primes {Z : ℝ} (hZ : 0 < Z) (hlog : 0 < l
         mul_le_mul_of_nonneg_right hcard (by positivity)
     _ ≤ _ := hsum
 
-/-- **The long-window main term of the all-interval `E₃` theorem.**  With `P₁ = (log x)^a`,
-`R = √(x/P₁)/2`, `X = √(xP₁)` and `h₁ = x exp(-(c/8)√log x)`, the `E₃` window sum is at least
-`h₁/(2250 (log P₁)(log x)²)`, uniformly in `a ∈ [1, 2]` and `0 < ε ≤ 10⁻⁷`. -/
-theorem exists_mtAllIntervalSum_long_ge :
+/-- **The long-window pair bounds.**  With `P₁ = (log x)^a`, `R = √(x/P₁)/2`, `X = √(xP₁)` and
+`h₁ = x exp(-(c/8)√log x)`: every inner window `(x/(p₁p₂), (x+h₁)/(p₁p₂)]` with `p₁ ∼ P₁`, `p₂ ∼ R`
+carries `ρ⁻`-mass at least `h₁/(250 p₁p₂ log x)`, and the reciprocal prime sums over `(P₁, 2P₁]` and
+`(R, 2R]` are at least `1/(3 log P₁)` and `1/(3 log x)`; uniformly in `a ∈ [1, 2]`,
+`0 < ε ≤ 10⁻⁷`. -/
+theorem exists_mtAllInterval_long_pair_bounds :
     ∃ c > 0, ∀ᶠ x : ℝ in atTop, ∀ a ∈ Set.Icc (1 : ℝ) 2, ∀ ε : ℝ, 0 < ε → ε ≤ 1 / 10 ^ 7 →
-      x * exp (-(c / 8) * sqrt (log x)) / (2250 * log ((log x) ^ a) * (log x) ^ 2) ≤
-        mtAllIntervalSum (mtProposition22ZNat (sqrt (x * (log x) ^ a)))
-          (mtProposition22QNat (sqrt (x * (log x) ^ a)))
-          (mtProposition22DNat (sqrt (x * (log x) ^ a)) ε)
-          (mtProposition22ENat (sqrt (x * (log x) ^ a)) ε)
-          ((log x) ^ a) (sqrt (x / (log x) ^ a) / 2) x (x * exp (-(c / 8) * sqrt (log x))) := by
+      (∀ p₁ ∈ (Finset.Ioc ⌊(log x) ^ a⌋₊ ⌊2 * (log x) ^ a⌋₊).filter Nat.Prime,
+        ∀ p₂ ∈ (Finset.Ioc ⌊sqrt (x / (log x) ^ a) / 2⌋₊
+          ⌊2 * (sqrt (x / (log x) ^ a) / 2)⌋₊).filter Nat.Prime,
+        1 / 250 * (x * exp (-(c / 8) * sqrt (log x)) / ((p₁ * p₂ : ℕ) : ℝ)) / log x ≤
+          ∑ n ∈ Finset.Ioc ⌊x / (p₁ * p₂)⌋₊ ⌊(x + x * exp (-(c / 8) * sqrt (log x))) / (p₁ * p₂)⌋₊,
+            (rhoMinus (mtProposition22ZNat (sqrt (x * (log x) ^ a)))
+              (mtProposition22QNat (sqrt (x * (log x) ^ a)))
+              (mtProposition22DNat (sqrt (x * (log x) ^ a)) ε)
+              (mtProposition22ENat (sqrt (x * (log x) ^ a)) ε) n : ℝ)) ∧
+      1 / (3 * log ((log x) ^ a)) ≤
+        ∑ p ∈ (Finset.Ioc ⌊(log x) ^ a⌋₊ ⌊2 * (log x) ^ a⌋₊).filter Nat.Prime, 1 / (p : ℝ) ∧
+      1 / (3 * log x) ≤
+        ∑ p ∈ (Finset.Ioc ⌊sqrt (x / (log x) ^ a) / 2⌋₊
+          ⌊2 * (sqrt (x / (log x) ^ a) / 2)⌋₊).filter Nat.Prime, 1 / (p : ℝ) := by
   obtain ⟨c, hc, hW⟩ := exists_window_rhoMinus_ge
   obtain ⟨Y₀, hY₀⟩ := Filter.eventually_atTop.1 hW
   obtain ⟨c', hc', hPNT⟩ := exists_card_primesIn_window
@@ -395,14 +405,41 @@ theorem exists_mtAllIntervalSum_long_ge :
     have h1 : 2 * R * 1 ≤ 2 * R * X := mul_le_mul_of_nonneg_left hX1 (by linarith)
     have h2 : R ≤ x := by linarith
     exact Real.log_le_log hR0 h2
-  -- assemble
+  exact ⟨hpair, hS₁, (one_div_le_one_div_of_le (by positivity) (by linarith)).trans hS₂⟩
+
+/-- **The long-window main term of the all-interval `E₃` theorem.**  With `P₁ = (log x)^a`,
+`R = √(x/P₁)/2`, `X = √(xP₁)` and `h₁ = x exp(-(c/8)√log x)`, the `E₃` window sum is at least
+`h₁/(2250 (log P₁)(log x)²)`, uniformly in `a ∈ [1, 2]` and `0 < ε ≤ 10⁻⁷`. -/
+theorem exists_mtAllIntervalSum_long_ge :
+    ∃ c > 0, ∀ᶠ x : ℝ in atTop, ∀ a ∈ Set.Icc (1 : ℝ) 2, ∀ ε : ℝ, 0 < ε → ε ≤ 1 / 10 ^ 7 →
+      x * exp (-(c / 8) * sqrt (log x)) / (2250 * log ((log x) ^ a) * (log x) ^ 2) ≤
+        mtAllIntervalSum (mtProposition22ZNat (sqrt (x * (log x) ^ a)))
+          (mtProposition22QNat (sqrt (x * (log x) ^ a)))
+          (mtProposition22DNat (sqrt (x * (log x) ^ a)) ε)
+          (mtProposition22ENat (sqrt (x * (log x) ^ a)) ε)
+          ((log x) ^ a) (sqrt (x / (log x) ^ a) / 2) x (x * exp (-(c / 8) * sqrt (log x))) := by
+  obtain ⟨c, hc, hB⟩ := exists_mtAllInterval_long_pair_bounds
+  refine ⟨c, hc, ?_⟩
+  filter_upwards [hB, tendsto_log_atTop.eventually_ge_atTop 2, eventually_gt_atTop (0 : ℝ)]
+    with x hx hL2 hx0
+  intro a ha ε hε hε7
+  obtain ⟨hpair, hS₁, hS₂⟩ := hx a ha ε hε hε7
+  set L := log x with hLdef
+  have hL0 : 0 < L := by linarith
+  have hlogP : 0 < log (L ^ a) := by
+    rw [Real.log_rpow hL0]; exact mul_pos (by linarith [ha.1]) (Real.log_pos (by linarith))
+  set h₁ := x * exp (-(c / 8) * sqrt L) with hh₁
+  have hh0 : 0 < h₁ := by
+    positivity
   unfold mtAllIntervalSum
-  set S₁ := (Finset.Ioc ⌊P₁⌋₊ ⌊2 * P₁⌋₊).filter Nat.Prime with hS₁def
-  set S₂ := (Finset.Ioc ⌊R⌋₊ ⌊2 * R⌋₊).filter Nat.Prime with hS₂def
+  set S₁ := (Finset.Ioc ⌊L ^ a⌋₊ ⌊2 * L ^ a⌋₊).filter Nat.Prime with hS₁def
+  set S₂ := (Finset.Ioc ⌊sqrt (x / L ^ a) / 2⌋₊ ⌊2 * (sqrt (x / L ^ a) / 2)⌋₊).filter Nat.Prime
+    with hS₂def
   have hsum : 1 / 250 * (h₁ / L) * ((∑ p₁ ∈ S₁, 1 / (p₁ : ℝ)) * ∑ p₂ ∈ S₂, 1 / (p₂ : ℝ)) ≤
       ∑ p₁ ∈ S₁, ∑ p₂ ∈ S₂, ∑ n ∈ Finset.Ioc ⌊x / (p₁ * p₂)⌋₊ ⌊(x + h₁) / (p₁ * p₂)⌋₊,
-        (rhoMinus (mtProposition22ZNat X) (mtProposition22QNat X)
-          (mtProposition22DNat X ε) (mtProposition22ENat X ε) n : ℝ) := by
+        (rhoMinus (mtProposition22ZNat (sqrt (x * L ^ a))) (mtProposition22QNat (sqrt (x * L ^ a)))
+          (mtProposition22DNat (sqrt (x * L ^ a)) ε) (mtProposition22ENat (sqrt (x * L ^ a)) ε)
+          n : ℝ) := by
     rw [Finset.sum_mul_sum, Finset.mul_sum]
     refine Finset.sum_le_sum (fun p₁ hp₁ => ?_)
     rw [Finset.mul_sum]
@@ -411,14 +448,11 @@ theorem exists_mtAllIntervalSum_long_ge :
     push_cast
     field_simp
   refine le_trans ?_ hsum
-  have hA : 0 ≤ ∑ p₂ ∈ S₂, 1 / (p₂ : ℝ) := Finset.sum_nonneg (fun _ _ => by positivity)
-  have hprod : 1 / (3 * log P₁) * (1 / (3 * L)) ≤
-      (∑ p₁ ∈ S₁, 1 / (p₁ : ℝ)) * ∑ p₂ ∈ S₂, 1 / (p₂ : ℝ) := by
-    have h3 : 1 / (3 * L) ≤ 1 / (3 * log R) :=
-      one_div_le_one_div_of_le (by positivity) (by linarith)
-    exact mul_le_mul hS₁ (h3.trans hS₂) (by positivity) ((by positivity : (0 : ℝ) ≤ _).trans hS₁)
-  calc h₁ / (2250 * log P₁ * L ^ 2)
-      = 1 / 250 * (h₁ / L) * (1 / (3 * log P₁) * (1 / (3 * L))) := by
+  have hprod : 1 / (3 * log (L ^ a)) * (1 / (3 * L)) ≤
+      (∑ p₁ ∈ S₁, 1 / (p₁ : ℝ)) * ∑ p₂ ∈ S₂, 1 / (p₂ : ℝ) :=
+    mul_le_mul hS₁ hS₂ (by positivity) ((by positivity : (0 : ℝ) ≤ _).trans hS₁)
+  calc h₁ / (2250 * log (L ^ a) * L ^ 2)
+      = 1 / 250 * (h₁ / L) * (1 / (3 * log (L ^ a)) * (1 / (3 * L))) := by
         field_simp; ring
     _ ≤ 1 / 250 * (h₁ / L) * ((∑ p₁ ∈ S₁, 1 / (p₁ : ℝ)) * ∑ p₂ ∈ S₂, 1 / (p₂ : ℝ)) :=
         mul_le_mul_of_nonneg_left hprod (by positivity)

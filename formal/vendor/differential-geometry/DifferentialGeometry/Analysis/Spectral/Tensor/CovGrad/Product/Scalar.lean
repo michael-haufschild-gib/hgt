@@ -1,3 +1,5 @@
+-- Local modification: use support monotonicity for scalar multiplication,
+-- avoiding incidental compactness instances on Lean 4.32.2.
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -42,10 +44,9 @@ noncomputable def scalarSmul
         exact ContMDiff.smul_section ζ.contMDiff w.toSection.contMDiff }
   hasCompactSupport := by
     classical
-    refine HasCompactSupport.of_support_subset_isCompact w.hasCompactSupport ?_
+    refine HasCompactSupport.mono (f := w.toFun) w.hasCompactSupport ?_
     intro x hx
     rw [Function.mem_support] at hx
-    refine subset_tsupport w.toFun ?_
     rw [Function.mem_support]
     intro hw_zero
     apply hx
@@ -55,7 +56,7 @@ noncomputable def scalarSmul
       smul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
-    [SigmaCompactSpace M] in
+    [SigmaCompactSpace M] [T2Space M] in
 @[simp] lemma scalarSmul_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w : SmoothCcTensor g r s) (x : M) :
@@ -63,7 +64,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
       (ζ : M → ℝ) x • w.toSection x := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [SigmaCompactSpace M] in
+    [SigmaCompactSpace M] [T2Space M] in
 lemma scalarSmul_toFun_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w : SmoothCcTensor g r s) (x : M) :

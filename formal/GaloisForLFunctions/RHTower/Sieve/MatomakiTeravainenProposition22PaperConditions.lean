@@ -259,7 +259,7 @@ theorem eventually_mtProposition22CutoffConditions
       mtProposition22ZReal X := by
     calc
       (mtLowerCutoffNat X : ℝ) * (1 + mtPaperWidth A X) ≤
-          (2 * X ^ (1 / 11 : ℝ)) * 2 := by gcongr <;> linarith
+          (2 * X ^ (1 / 11 : ℝ)) * 2 := by gcongr; linarith
       _ = 4 * X ^ (1 / 11 : ℝ) := by ring
       _ < X ^ (1 / 11 : ℝ) * X ^ (1 / 11 : ℝ) := by
         exact mul_lt_mul_of_pos_right hroom hpow11Pos

@@ -16,7 +16,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 7 | first-order-meromorphic-compression-matching | 3-field factorization | **DONE → 3-formalized** (2026-09-02) |
 | 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | **IN PROGRESS** — orders 0/1, complete local order-two reduction, scalar obstruction, log-radial bridge, and maximum-circle second-jet sign are closed; global enlarged-set component continuation remains open |
 | 9 | drifting-periodic-primitive-ramification-exclusion | closed with `card_totallyRamified_le_four` | **DONE → 3-formalized** (2026-08-29) |
-| 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
+| 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction — proved (interpolation + constant-target SMT) | **DONE → 3-formalized** (2026-09-29) |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
 | 12 | autonomous-cap-derivative-shadow-law | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
 | 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | **DONE → 3-formalized** (2026-09-02) |
@@ -54,7 +54,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | I4 | Briot–Bouquet classification of autonomous first-order meromorphic solutions | 14, 15 |
 | ~~I5~~ | **CLOSED (2026-08-29)** — Nevanlinna ramification: `HTGeometry.NevanlinnaRamification.card_totallyRamified_le_four` gives `q ≤ 4` for an entire function, which is all card 9 needs | 9 |
 | ~~I11~~ | **CLOSED (2026-08-29)** — the general logarithmic-derivative lemma `m(r,f'/f) = O(log⁺T(R,f) + log(1/(R−r)) + log R)` — the single input the corpus's `SecondMainTheoremChain` still needs, and the common prerequisite of I1, I3, I5, I6, I7 | 3, 7, 8, 9, 10, 11, 12, 13, 14, 15 |
-| I6 | Steinmetz reduction / Huang–Ng Thm 3 | 10 (card 7 bypassed by unbounded fibres) |
+| ~~I6~~ | **CLOSED (2026-09-29)** — `SteinmetzReduction.exists_polynomial_relation_outer` (Satz 1 + Korollar 1, entire case) | 10 |
 | I7 | Valiron–Zimogljad–Strelitz order-two growth wall | 8 |
 | I8 | Ostrowski finite-coefficient-basis theorem for DA Dirichlet series | 16 |
 | ~~I9~~ | **CLOSED (2026-08-30)** — `HTGeometry.ArithmeticTaylorCoefficientFloor.exists_popken_floor_of_formalRelation` | 17 |
@@ -5165,3 +5165,15 @@ theorem has axiom set `[propext, Classical.choice, Quot.sound]`.
 Card 8 still remains in stage 2.  Exact residue: define paper's enlarged set `H`, prove a relevant
 unbounded connected component exists, and continue the selected algebraic branch on it.  Bounded
 maximum-locus components are not promoted to unbounded ones.
+
+## Card 10 closed: Steinmetz's reduction theorem (2026-09-29)
+
+The recorded wall ("no growth-only substitute; needs the second main theorem for small functions")
+was wrong about the literature proof.  Steinmetz's own proof (Math. Z. 170 (1980), §4, read from the
+GDZ scan) uses only the **constant-target** second main theorem: auxiliary functions
+`Σ P_μ(g) h_μ` vanishing on `s` level sets of `g`, with `s − deg P` large.  Here the auxiliary
+functions come from one interpolation (`P_μ(t_j) = c_j F_μ(t_j)`, `m + 1` more unknowns than
+equations), not from Steinmetz's iterated classes.  Modules: `SteinmetzInterpolation`,
+`SteinmetzNevanlinnaCore`, `SteinmetzReduction`, `EntireCompositionSteinmetz`,
+`EntireCompositionOrLaw`.  Capstone: `differentiallyAlgebraic_comp_iff`.  The same reduction is
+available to card 7's "Steinmetz state-independence" branch should it be reopened.

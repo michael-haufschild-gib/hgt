@@ -5,7 +5,7 @@
 - **Type:** exact shell identity, moving-boundary limit, cofinal Mellin classification
 - **Routes:** STC, CSB, U; theta source transport
 - **Status:** `[PROVED HERE ON PAPER] [LEAN FORMALIZATION OPEN] [NOT AN RH PROOF]`
-- **Dependencies:** [literal theta atom and boundary packet](theta-euler-critical-boundary-mass-escape.md), [finite prime deletion](../../3-formalized/theta/theta-prime-deletion-spectral-escape.md), ordinary Euler product for `1/ζ(s)` when `Re s>1`.
+- **Dependencies:** [literal theta atom and boundary packet](../../3-formalized/theta/theta-euler-critical-boundary-mass-escape.md), [finite prime deletion](../../3-formalized/theta/theta-prime-deletion-spectral-escape.md), ordinary Euler product for `1/ζ(s)` when `Re s>1`.
 
 ## What actually fails to commute
 

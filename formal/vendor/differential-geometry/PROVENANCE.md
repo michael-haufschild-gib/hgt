@@ -18,8 +18,43 @@ Namespace and import paths are preserved. Local compatibility edits are describe
 The local Lake configuration selects the parent's mathlib version and has no default build
 target. Only requested endpoints and their dependencies are built.
 
-Validation is in progress. Presence in this directory is not evidence of a completed
-backport or a local kernel check. The implementation ledger is
-`docs/drafts/pipeline/1-in-progress/differential-geometry-four-integrations.md` at repository
-root. The source closure scan found no active `sorry`, `admit`, `axiom`, `opaque`, `unsafe`
-or `native_decide`; compiled endpoint axiom audits remain required.
+All 1,284 modules and all eight endpoints compile on the local toolchain. The final
+combined endpoint build passes (5,463 Lake jobs), and the combined geometry-adapter
+import check passes. Eighteen endpoint/operator axiom audits contain only `propext`,
+`Classical.choice` and `Quot.sound`. All 105 modified sources carry notices.
+
+The original hashes match the pinned checkout, internal DifferentialGeometry import
+edges are unchanged, and all four license/NOTICE files match upstream. The complete
+vendored Lean source scan finds no `sorry`, `admit`, `axiom`, `opaque`, `unsafe` or
+`native_decide`. Machine-readable evidence and the current-source fingerprint are in
+[`validation.json`](validation.json).
+
+All eleven native geometry adapter closures have current dependency certificates.
+The five arithmetic adapters passed targeted compilation and axiom checks earlier;
+the final full-closure freshness scan encounters 47 pre-existing stale dependency
+roots, so it does not certify the entire current arithmetic dependency tree.
+The project lint/index gate finds zero active proof debt and current generated files,
+but fails on 14 unrelated modules missing from their theorem-area umbrellas.
+This is a checked dependency integration, not a claim of a clean whole-worktree build,
+a new RH proof, or a port of the full Poincaré proof.
+
+The completed implementation ledger is
+`docs/drafts/pipeline/3-formalized/differential-geometry-four-integrations.md` at repository
+root. For a normal dependency-aware endpoint rebuild, run from `formal/`:
+
+```sh
+python3 - <<'PYBUILD'
+import json, os, subprocess
+from pathlib import Path
+manifest = json.loads(Path("vendor/differential-geometry/upstream-manifest.json").read_text())
+subprocess.run(
+    ["lake", "build", *("+" + name for name in manifest["targets"])],
+    env=dict(os.environ, LEAN_NUM_THREADS="1"), check=True,
+)
+PYBUILD
+```
+
+Axiom probes belong in `/tmp`, importing the relevant endpoint and using `#print axioms`
+for the declarations recorded in `validation.json`. Generated project indexes are
+refreshed with `scripts/formal_tools.py index`; the authoritative source/wiring gate is
+`scripts/formal_tools.py lint --check-generated` from repository root.

@@ -14,9 +14,13 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | L2b gauges | real-shift gauges `∑ c_i k(·+s_i)`: flux atom expansion, grouped Bernstein criterion, rate-coefficient cone, `L_w g = M(w) XiC(iw)`, zero-order transfer | `ThetaTranslationGaugeFlux` | done |
 | L2c measure gauges | `∫ k(·+s) dν`, Fubini flux, Laplace laws, CM under integrals/limits, seed limit, signed Laplace positivity, all-sieve theorem | `ThetaTranslationMeasureGauge` | done |
 | L2d rate measures | `A_n`, deletion parts, Euler sums, window-finite Möbius classification (gap / `M_q`, `q > 3/2`), unbounded Bernstein–Widder, Laplace order, deleted fluxes, Tonelli flux of positive (possibly infinite) translation mixtures | HTGeometry `RateMobiusInversion`; `ThetaRateLaplaceBernstein`, `ThetaRateMobiusSourceTransfer` | done |
-| L3 zero division | outward sine Green operator `T_α`, relative bounds, ODE, Fourier division | `ThetaZeroDivisionSource` | done (single division; iterates/partial fractions pending) |
+| L3 zero division | outward sine Green operator `T_α`, relative bounds, ODE, Fourier division, complex divisions along lists, `P_L`, basis sources `ŝ_j P = F z^{2j}` | `ThetaZeroDivisionSource`, `ThetaZeroDivisionRealization`, `ThetaEndpointMomentFiltration` | done |
 | L4 renewal | `P,ν,Q,D`, renewal log series, `Xi(2iλ)=(a+λ)D(λ)+(a-λ)D(-λ)`, cosh factorization, waiting-time law `μ`, phase `Φ`, exit density, compound workload, quadrant law | `ThetaRenewalIncrement`, `ThetaRenewalLogKernel`, `ThetaRenewalAnalyticContinuation`, `ThetaRenewalCoshFactorization`, `ThetaRenewalSeamGerm`, `ThetaRenewalWaitingTime`, `ThetaRenewalProbabilityPhase`, `ThetaRenewalPhaseSlope`, `ThetaRenewalPhaseLevel`, `ThetaRenewalExitDensity` (+ HTGeometry `VolterraConvolutionAlgebra`, `VolterraConvolutionCalculus`, `DecreasingSineTransformPositivity`) | done |
 | L5 quantile | CDF/quantile/`B,D,T,A` on `L²(0,1)` (partly in corpus) | existing Hedenmalm modules | audit |
+| L7 tail calculus | theta-tail class, Laplace asymptotics, tail integrals `I`, shear Fubini, resolvent `T_β = β²I²(1−T_β)`, tail series and symbols, expansions in `e^{-2x}` (product, inverse), Gaussian-base integration by parts | `ThetaTailScalingAsymptotics`, `ThetaTailIntegralCalculus`, `ThetaTailGermExpansion` | done |
+| L8 causal kernels | quasi-polynomials `Σ p_μ(s)e^{μs}` (Laplace transform, pole orders, uniqueness, reality, top asymptotics, `limsup log‖E‖/s`), causal kernel `K` of a zero division with `u = ck + ∫K k(·+s)`, `r(−q²) = c + ℒK`, poles ↔ exponents; Gaussian-rate derivative towers of deleted fluxes | HTGeometry `QuasiPolynomialLaplaceCalculus`; `ThetaZeroDivisionCausalKernel`, `ThetaZeroDivisionRateDerivativeWitness` | done |
+| L9 ℓ²(ℕ₊) block operators | division-block operators `f ↦ w(m) f(⌊m/b⌋)` (Gram identity, adjoints, isometries, composition, HS, compact truncations, essential norm = limit of block masses), cell isometry, half-line translations `T_a`, `L_a`, synthesis operators; Blaschke steps as `L²` isometries of quasi-polynomials, derivative of the Laplace transform | HTGeometry `PositiveIntegerBlockOperators`; `ThetaEulerLogCellResidueChannels`, `QuasiPolynomialBlaschkeIsometry`, `ThetaEulerLogCellSeedVacuum` | done |
+| L10 index-set sources | termwise Laplace laws for `S_A = Σ_{n∈A} a_n`, flux potentials `H_A = ∫_x^∞ e^{t/2}S_A` (boundary values, exhaustions, IBP test limits), dilated Riemann sums, Laplace-class orbit transforms `T_k` (holomorphic, pairing, homogeneity), Laplace uniqueness via half-line pullback, parity sectors of involutive isometries | `ThetaCriticalBoundaryMellinCharge`, `ThetaCriticalBoundaryFluxPotential`, `ThetaIntegerCutoffMovingPacket`, `ThetaContinuousRateOrbitDensity` | done |
 | L6 complex analysis | Rouché/Hurwitz (max modulus on `1/G`), Jensen+RvM capacity, sector Phragmén–Lindelöf | HTGeometry `HurwitzMaxModulusZeros`, `JensenIntegratedCountBound`, `SectorPhragmenLindelof`; `ThetaTailDivisorCapacity`, `ThetaTailSectorialGammaBound` | done |
 
 ## Cards (status: todo / partial / done)
@@ -28,23 +32,23 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | sieve-bidirectional-cusp-variation | L1 | done → 3-formalized |
 | prime-square-two-level-normal-jet-rigidity | L1 (algebra in corpus) | done → 3-formalized |
 | prime-deletion-graded-terminal-admission | first-atom asymptotic | todo |
-| euler-critical-boundary-mass-escape | L1, flux potential | todo |
+| euler-critical-boundary-mass-escape | L1, flux potential | DONE → 3-formalized (`ThetaCriticalBoundaryMellinCharge`, `ThetaCriticalBoundaryFluxPotential`, `ThetaIntegerCutoffMovingPacket`, `ThetaContinuousRateOrbitDensity`) |
 | one-sided-bernstein-two-anchor-offline-zero | L1, L2 | done → 3-formalized |
 | prime-power-bernstein-gauge-rigidity | L2, gauge layer `ThetaTranslationGaugeFlux` | done → 3-formalized |
 | divisor-bernstein-gauge-rigidity | L2b, Möbius/totient | done → 3-formalized |
 | prime-deletion-bernstein-pure-ray | L2 | done → 3-formalized |
 | all-sieve-seed-projector-translation-cone | L1, L2, measure gauges `ThetaTranslationMeasureGauge` | done → 3-formalized |
 | all-sieve-mobius-rate-reconstruction | L2 | DONE → 3-formalized (HTGeometry `RateMobiusInversion`; `ThetaRateLaplaceBernstein`, `ThetaRateMobiusSourceTransfer`, `ThetaRateMobiusBoundaryExamples`) |
-| sieve-zero-division-rate-tomography | L2, L3, Landau | todo |
+| sieve-zero-division-rate-tomography | L2, L3, Landau | DONE → 3-formalized (HTGeometry `QuasiPolynomialLaplaceCalculus`; `ThetaZeroDivisionCausalKernel`, `ThetaZeroDivisionRateTomography`, `ThetaZeroDivisionRateDerivativeWitness`) |
 | positive-real-zero-division | L3 | done → 3-formalized (`ThetaZeroDivisionSource`) |
-| euler-zero-division-seed-transfer | L3 | todo |
-| endpoint-harmonic-completeness | L3, tail-capacity | todo |
+| euler-zero-division-seed-transfer | L3 | DONE → 3-formalized (`ThetaSeedHalfLineDivision`, `ThetaSeedTransferQuartet`, `ThetaTailScalingAsymptotics`, `ThetaGaussianBaseCommutator`, `ThetaTwoEndedTailLaw`, `ThetaTailIntegralCalculus`, `ThetaTailGermExpansion`) |
+| endpoint-harmonic-completeness | L3, tail-capacity | DONE → 3-formalized (`ThetaZeroDivisionRealization`, `ThetaEndpointDivisorClassification`, `ThetaEndpointHarmonicCompleteness`, `ThetaEndpointDefectIndex`, `ThetaEndpointMomentFiltration`, `ThetaEndpointPositiveDeformation`, `ThetaEndpointLpDefect`, `GaussianControlEndpointIncompleteness`; HTGeometry `FiniteMeasureL1Duality`, `PolynomialImagRaysLiouville`) |
 | tail-divisor-capacity-threshold | L6 | DONE → 3-formalized (`ThetaRelativeSourceRigidity`, `ThetaTailDivisorCapacity`, `ThetaTailSimpleCriticalThreshold`, `ThetaTailCapacitySharpness`, `ThetaTailSectorialGammaBound`; HTGeometry `GammaHorizontalRatio`, `SectorPhragmenLindelof`, `JensenIntegratedCountBound`, `GaussianPairControlQuotient`) |
 | derivative-dark-divisor-packets | L6 | DONE → 3-formalized (`ThetaDerivativePacketDivisor`, `ThetaSourceTailRatioCalculus`, `ThetaDerivativePacketLogConcavity`, `ThetaDerivativePacketSpectralBoundary`, `ThetaSourceTailDerivativeModeration`, `ThetaCompactTailInterpolation`, `ThetaCompactTailSchwartzConvergence`, `ThetaCompactTailImplant`; HTGeometry `HurwitzMaxModulusZeros`) |
 | compact-critical-strip-zero-engineering | bumps, Riemann–Lebesgue | done → 3-formalized (`ThetaCompactStripZeroEngineering`, `ThetaAnalyticStripZeroEngineering`, `ThetaSourceSurgeryToolkit`; HTGeometry `OscillatoryPacketFourier`, `EvenAnchorProjection`) |
 | global-riccati-order-one-offline-countermodel | Riccati Gaussian family `ThetaRiccatiGaussianCountermodel` | done → 3-formalized |
 | riccati-three-charge-offline-countermodel | L6 | done → 3-formalized (`ThetaRiccatiThreeChargeCountermodel`) |
-| euler-logcell-residue-highpass | ℓ² operators, Hardy separation | todo |
+| euler-logcell-residue-highpass | ℓ² operators, Hardy separation | DONE → 3-formalized (HTGeometry `PositiveIntegerBlockOperators`; `ThetaEulerLogCellResidueChannels`, `QuasiPolynomialBlaschkeIsometry`, `ThetaEulerLogCellSeedVacuum`) |
 | cdf-crossfrequency-rvm-capacity | L5, compact operators | todo |
 | cdf-no-finite-range-symmetrizer | L5 | todo |
 | quantile-critical-one-port-rigging | L5 | todo |

@@ -3,6 +3,7 @@ Copyright (c) 2026 Bennett Chow. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bennett Chow, OpenAI
 -/
+/- Local compatibility change: omit a trailing tactic after simplification closes the goal on Mathlib 4.32.2. -/
 import DifferentialGeometry.Topology.VanKampen.SelectedObjects
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 import Mathlib.Algebra.Category.Grp.Basic
@@ -112,7 +113,6 @@ theorem pointedDelooping_inv_hom_id {Y : Type u} [TopologicalSpace Y]
         eqToHom (selectedObject_eq_pointed A y₀ hy₀ huniq
           (pointedSelectedObject A y₀ hy₀))).1 = f
     simp only [eqToHom_refl, Category.id_comp, Category.comp_id]
-    rfl
 
 theorem pointedDelooping_hom_inv_id {Y : Type u} [TopologicalSpace Y]
     (A : Set Y) (y₀ : Y) (hy₀ : y₀ ∈ A) (huniq : ∀ y ∈ A, y = y₀) :

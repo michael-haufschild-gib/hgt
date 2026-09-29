@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper); no-go for a cutoff-independent two-parameter boundary invariant
 - **Routes:** theta source completion, CCM-FU, Suzuki finite-to-completed transport
 - **Status:** [PROVED HERE ON PAPER] [REAL ATOM MELLIN FORMALIZED] [SCALING LIMITS LEAN OPEN] [NOT RH] [EXTERNAL PRIORITY NOT CLAIMED]
-- **Dependencies:** [theta Euler critical boundary mass escape](../2-fully-proven/theta-euler-critical-boundary-mass-escape.md), unconditional Mertens third theorem and the asymptotic `sum_(p≤x) log(p)/p ~ log x` (both in the corpus). The standard Dickman transform is prior art; the claim here is its exact comparison with the two literal theta-source exhaustions, not novelty of that transform.
+- **Dependencies:** [theta Euler critical boundary mass escape](../3-formalized/theta/theta-euler-critical-boundary-mass-escape.md), unconditional Mertens third theorem and the asymptotic `sum_(p≤x) log(p)/p ~ log x` (both in the corpus). The standard Dickman transform is prior art; the claim here is its exact comparison with the two literal theta-source exhaustions, not novelty of that transform.
 
 ## Problem and failed reframe
 

@@ -34,7 +34,7 @@ The six replacement names were verified in `/tmp/hgt-dg-set-api.lean` on the loc
 toolchain. Every source occurrence was inspected before this mechanical rename.
 `Set.ofPred` becomes `setOf`; its membership, preimage, membership-set, existential
 and universal lemmas use their `setOf` names. Proof statements and logic are unchanged.
-Endpoint compilation of the affected closure remains in progress.
+All affected modules pass the final 1,284-module dependency build.
 
 - `DifferentialGeometry/Analysis/Calculus/AbsolutelyContinuous.lean` (3 replacements).
 - `DifferentialGeometry/Analysis/Elliptic/ComplexPlane/LogarithmicPotential/Distribution.lean` (1 replacements).
@@ -133,7 +133,7 @@ Backported 29 inspected uses in 16 modules: `continuousOn_iff_continuous_domRest
 - `Topology/Homotopy/LoopTopology.lean`: replace two newer `Joined.map` calls by `Nonempty.map` of explicit `Path.map` witnesses; unfold `Joined` in the inverse-homeomorphism simplification. Full-file scratch, `Path.map` API check, and standard-axiom audit pass.
 
 - `Topology/Homotopy/CubeCompactification.lean`: the same two path-witness replacements and explicit `Joined` unfolding pass a full-file scratch check and standard-axiom audit.
-- `Topology/Homotopy/TransportContinuity.lean` and `Topology/VanKampen/SelectedObjects.lean`: four further inspected `Joined.map` calls use explicit path witnesses. Their full-file checks await the dependency frontier. The superficially similar uses in `SphereNaturality` and `SpherePrecomposition` already receive actual `Path` arguments through local `ZerothHomotopy.lift` and remain unchanged.
+- `Topology/Homotopy/TransportContinuity.lean` and `Topology/VanKampen/SelectedObjects.lean`: four further inspected `Joined.map` calls use explicit path witnesses. Both full-file checks pass in the dependency-sensitive build. The superficially similar uses in `SphereNaturality` and `SpherePrecomposition` already receive actual `Path` arguments through local `ZerothHomotopy.lift` and remain unchanged.
 
 - `External/CanonicalTopology/Topology/Homology/RelativeFunctoriality.lean`: after left reassociation, rewrite the quotient-projection composite with the unassociated lemma. Full-file scratch check and standard-axiom audit pass; theorem statements are unchanged.
 
@@ -144,3 +144,45 @@ Backported 29 inspected uses in 16 modules: `continuousOn_iff_continuous_domRest
 - `External/CanonicalTopology/Topology/Homology/RelativeMayerVietoris.lean`: close the biproduct equality by reflexivity, and use explicit congruence of quotient and homology maps where the older rewriter cannot cross reducible carrier aliases. Complete-file scratch check and standard-axiom audit pass; public hypotheses and statements are unchanged.
 
 - `Topology/Algebra/Group/AmalgamatedProduct.lean`: apply `Monoid.PushoutI.of_apply_eq_base` directly for the identity leg; definitional equality handles the identity homomorphism where the older simplifier did not. Complete scratch and standard-axiom checks pass.
+
+- `Topology/VanKampen/Based.lean`: remove the trailing `rfl` after simplification proves pointed delooping naturality on Mathlib 4.32.2. Full-file scratch and standard-axiom checks of both the delooping identity and the fundamental-group pushout theorem pass.
+
+- `Topology/VanKampen/AmalgamatedProduct.lean`: three homomorphism equalities use direct proof terms, preserving definitional carrier and group aliases across Mathlib 4.32.2 elaboration. Full-file scratch and standard-axiom audit of `fundamentalGroupEquivAmalgamatedProduct` pass; statements unchanged.
+
+- `Topology/Homology/Algebra/EulerCharacteristic.lean`: explicitly expose the definitionally equal integer alternating sums before applying the rank telescope. This avoids residual unit casts in the older simplifier. Full-file scratch and standard-axiom audit pass, with unchanged hypotheses.
+
+- `Topology/Homology/Algebra/ExactSequenceEuler.lean`: the same explicit integer-sign target makes the exact-sequence alternating-sum identity available to linear arithmetic. Full-file scratch and standard-axiom audit of `homologyEulerChar_additive` pass.
+
+- `Topology/Homology/EulerCharacteristic.lean`: reflexivity identifies integer powers with the values of unit powers in the finite Euler sum. Full-file scratch and standard-axiom audit pass. The exhaustive `ComplexShape.χ` source search found no further uses after these three Euler backports.
+
+- `Topology/Homology/Algebra/CokernelHomotopy.lean`: use the general `dif_pos` simplification rule in both degree cases, allowing the older rewriter to discharge the normalized `True` condition. Complete scratch and standard-axiom checks pass.
+
+- `Topology/Homology/Subdivision/Cone.lean`: remove the redundant final `rfl` after rewriting subtraction closes the backported cone boundary identity. The full file and standard-axiom audit of `affineCone_boundary` pass.
+
+- `Topology/Homology/Subdivision/{Homotopy,Restriction,Singular,SingularSupport}.lean`: eight inspected chain-homotopy degree cases use general `dif_pos` simplification, matching the checked cokernel-homotopy backport. Explicit projection rewrites using `dif_pos rfl` remain unchanged. All four complete modules pass the dependency-sensitive normal build.
+
+- `Topology/SimplicialSet/ChainColimits.lean`: prove preservation of monomorphisms degreewise using the existing constant-coproduct functor instance, avoiding ambiguous higher-functor elaboration. Its complete dependency-sensitive build and local-toolchain API probe pass.
+
+- `Topology/Homology/Algebra/PushoutExact.lean`: explicitly reassociate and reduce biproduct projections in the cokernel universal property. The local API probe and complete dependency-sensitive build pass.
+
+- `Topology/Manifold/Orientation.lean`: after rewriting the derivative of identity, use definitional evaluation of the identity continuous linear map. The complete dependency-sensitive build passes.
+
+- `External/DeGiorgi/Common.lean`: replace `import Mathlib` with 30 dependency-directed Mathlib imports, retaining the tactic umbrella. The list comes from actual compiled constants in all 75 then-checked descendants, reduced using Lean's import graph. The standalone prelude probe passes and loads 5,295 modules rather than the roughly 10,400-module Mathlib closure. The file has no mathematical declarations. All 302 descendants in the selected closure now compile with the reduced imports, including both final analytic endpoints. The original manifest still records the upstream import and hash.
+
+- `Analysis/Sobolev/Nirenberg/MasterInequality/CrossBounds.lean` and `Analysis/Elliptic/Regularity/ChartBilinear/UniformDiffQuotBoundFromDomain/DataBounds.lean`: explicitly import `Mathlib.MeasureTheory.Function.L2Space` for `MemLp.integrable_sq`, previously supplied by the Mathlib umbrella. The local-toolchain API probe passes. All 16 uses in seven modules were checked by dependency: six modules are the first file or its descendants, while the independent data-bounds branch also lacked the import in a targeted probe. Both complete modules pass the strict dependency build. No theorem body or assumption changes.
+
+- `Analysis/Spectral/Tensor/CovGrad/Product/Scalar.lean`: prove scalar-product compact support directly with `HasCompactSupport.mono`. The compact-set argument on Lean 4.32.2 inadvertently captured `CompactSpace` and `SigmaCompactSpace` instances in `scalarSmul`, preventing six subsequent lemmas from omitting them. Direct support inclusion removes those dependencies and the unnecessary `T2Space` dependency; the two evaluation lemmas omit their now-unused `T2Space` variable. Scalar multiplication itself and all conclusions are unchanged, with no added hypotheses. The complete scratch file and three standard-axiom audits pass without warnings. No explicit `@scalarSmul` or `@scalarSmul_toSection_apply` call sites were found in the vendored closure.
+
+- `Geometry/Connection/SourceSectionPairing.lean`: explicitly close the residual chart-representation equality by reflexivity after simplification. The complete scratch file and the standard-axiom audit of `sourceSectionCovariantDerivative_chart` pass without warnings. Statements, hypotheses and existing compiler options are unchanged.
+
+- `Geometry/MinimalSurface/Plateau/DiskBoundaryAcceleration.lean`: restate the post-rewrite sum in the canonical tangent fibre at `U (c θ)` before bilinear simplification. This removes the older simplifier's mixed `U (c θ)` / `(U ∘ c) θ` fibre expression. Full-file scratch compilation and the standard-axiom audit pass without warnings. No assumptions or compiler settings change.
+
+- `Geometry/Comparison/Variation/Covariant/TwoParameterFields.lean`: use direct proof terms at three product-model alias boundaries and remove a trailing reflexivity step already closed by simplification. The complete scratch file and four standard-axiom audits, including curvature commutation and the Jacobi variation equation, pass without warnings. No statement, hypothesis or compiler option changes.
+
+- `Geometry/Metric/CurveUnitReparametrization.lean`: explicitly restate both post-chain-rule targets in the tangent fibre at `γ (φ t)` before bilinear and scalar-multiplication rewrites. Both reparametrization theorems pass a complete scratch check and standard-axiom audit, without warnings. Statements, assumptions and compiler options are unchanged.
+
+- `Geometry/Curvature/CurveReparametrization.lean`: explicitly normalize the post-chain-rule covariant derivative to the tangent fibre at `γ (φ t)` before combining scalar multiplications. The complete scratch file and standard-axiom audit pass without warnings. No statement, hypothesis or compiler option changes.
+
+- `Geometry/Curvature/DiskBoundary.lean`: unfold curve speed, rewrite zero velocity explicitly, and restate both zero vectors in the canonical boundary-point tangent fibre before simplification. The complete scratch file and standard-axiom audit of `diskMapBoundaryCurvature_density` pass without warnings. Statements, assumptions and compiler options are unchanged.
+
+- `Geometry/Metric/LocalChartDistance.lean`: use Mathlib 4.32.2 `setOf_riemannianEDist_lt_subset_nhds` and explicitly expose the composed chart-derivative application before rewriting its trivialization. The complete scratch file, local API probe and both standard-axiom audits pass without warnings. The exhaustive vendored search found only this remaining `setOfPred_` identifier. No assumptions, statements or compiler settings change.

@@ -1,3 +1,4 @@
+/- Local compatibility change: expose integer Euler signs before simplification on Mathlib 4.32.2. -/
 import Mathlib.Algebra.Homology.EulerCharacteristic
 import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
@@ -147,6 +148,8 @@ theorem eulerChar_eq_homologyEulerChar
       K (Finset.range (N + 1)) hhomology]
   have hd : K.d (N + 1) N = 0 := (hN (N + 1) (Nat.lt_succ_self N)).eq_of_src _ _
   have hzrank := finrank_range_eq_zero hd
-  simpa [ComplexShape.χ, hzrank] using sum_finrank_eq_sum_homology_add_range K N
+  change (∑ n ∈ Finset.range (N + 1), (-1 : ℤ) ^ n * Module.finrank k (K.X n)) =
+    ∑ n ∈ Finset.range (N + 1), (-1 : ℤ) ^ n * Module.finrank k (K.homology n)
+  simpa [hzrank] using sum_finrank_eq_sum_homology_add_range K N
 
 end DifferentialGeometry.HomologicalComplex

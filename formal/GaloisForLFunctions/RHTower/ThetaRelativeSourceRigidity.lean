@@ -296,9 +296,9 @@ theorem norm_quotient_imag_le (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource
 
 /-- **The quotient off the zero band.** For `|Im z| ≥ 5/2`,
 `|Q(z)| ≤ 3C exp[(|Re z|/2) arctan(|Re z|/(1/2 + |Im z|))]`. -/
-theorem norm_quotient_le_of_band (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x)
-    (hq : ∀ z, sourceTransform u z = q z * XiC z) {z : ℂ} (hz : 5 / 2 ≤ |z.im|) :
-    ‖q z‖ ≤ 3 * C * Real.exp (|z.re| / 2 * Real.arctan (|z.re| / (1 / 2 + |z.im|))) := by
+theorem norm_le_of_band_of_eq_mul (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x) {z : ℂ}
+    (hz : 5 / 2 ≤ |z.im|) {w : ℂ} (hw : sourceTransform u z = w * XiC z) :
+    ‖w‖ ≤ 3 * C * Real.exp (|z.re| / 2 * Real.arctan (|z.re| / (1 / 2 + |z.im|))) := by
   have hC0 : 0 ≤ C := by
     have := hC 0
     exact nonneg_of_mul_nonneg_left ((norm_nonneg _).trans this) (thetaCuspFullSource_pos 0)
@@ -313,10 +313,10 @@ theorem norm_quotient_le_of_band (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSou
     have := thetaSourceLaplace_pos z.im
     nlinarith [Real.exp_pos (HTGeometry.gammaRatioBound ((1 / 2 + |z.im|) / 2) (|z.re| / 2)),
       norm_nonneg (XiC z)]
-  rw [hq, norm_mul] at h1
-  have h3 : ‖q z‖ * ‖XiC z‖ ≤ 3 * C * Real.exp (|z.re| / 2 * Real.arctan (|z.re| / (1 / 2 + |z.im|)))
+  rw [hw, norm_mul] at h1
+  have h3 : ‖w‖ * ‖XiC z‖ ≤ 3 * C * Real.exp (|z.re| / 2 * Real.arctan (|z.re| / (1 / 2 + |z.im|)))
       * ‖XiC z‖ := by
-    calc ‖q z‖ * ‖XiC z‖ ≤ C * thetaSourceLaplace z.im := h1
+    calc ‖w‖ * ‖XiC z‖ ≤ C * thetaSourceLaplace z.im := h1
       _ ≤ C * (3 * Real.exp (HTGeometry.gammaRatioBound ((1 / 2 + |z.im|) / 2) (|z.re| / 2)) *
           ‖XiC z‖) := mul_le_mul_of_nonneg_left h2 hC0
       _ ≤ C * (3 * Real.exp (|z.re| / 2 * Real.arctan (|z.re| / (1 / 2 + |z.im|))) * ‖XiC z‖) := by
@@ -324,22 +324,27 @@ theorem norm_quotient_le_of_band (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSou
       _ = _ := by ring
   exact le_of_mul_le_mul_right h3 hF
 
+theorem norm_quotient_le_of_band (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x)
+    (hq : ∀ z, sourceTransform u z = q z * XiC z) {z : ℂ} (hz : 5 / 2 ≤ |z.im|) :
+    ‖q z‖ ≤ 3 * C * Real.exp (|z.re| / 2 * Real.arctan (|z.re| / (1 / 2 + |z.im|))) :=
+  norm_le_of_band_of_eq_mul hC hz (hq z)
+
 theorem norm_ofReal_mul_cexp (r β : ℝ) (hr : 0 ≤ r) : ‖(r : ℂ) * cexp (β * I)‖ = r := by
   rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real, Real.norm_of_nonneg hr]
 
-/-- **Ray bounds for the quotient.** For every `η > 0` the four rays `±r e^{±iα}`,
-`α = π/2 - δ`, `δ = min(2η, 1)`, carry `|Q| ≤ A e^{η r cos α}`. -/
-theorem quotient_rays (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x)
-    (hq : ∀ z, sourceTransform u z = q z * XiC z) (hqc : Continuous q) :
+/-- **Ray bounds from a band bound.**  A continuous `q` with
+`|q(z)| ≤ C(1+|z|)^N exp[(|Re z|/2) arctan(|Re z|/(1/2 + |Im z|))]` for `|Im z| ≥ 5/2` has, for
+every `η > 0`, the four ray bounds `|q| ≤ A(1+r)^N e^{η r cos α}` on `±r e^{±iα}`,
+`α = π/2 - δ`, `δ = min(2η, 1)`. -/
+theorem rays_of_band_bound {q : ℂ → ℂ} (hqc : Continuous q) {C : ℝ} (hC0 : 0 ≤ C) (N : ℕ)
+    (hband : ∀ z : ℂ, 5 / 2 ≤ |z.im| → ‖q z‖ ≤
+      C * (1 + ‖z‖) ^ N * Real.exp (|z.re| / 2 * Real.arctan (|z.re| / (1 / 2 + |z.im|)))) :
     ∀ η > 0, ∃ α ∈ Ioo 0 (Real.pi / 2), ∃ A : ℝ, ∀ r : ℝ, 0 ≤ r →
-      ‖q (r * cexp (α * I))‖ ≤ A * Real.exp (η * r * Real.cos α) ∧
-        ‖q (r * cexp (-α * I))‖ ≤ A * Real.exp (η * r * Real.cos α) ∧
-        ‖q (-(r * cexp (α * I)))‖ ≤ A * Real.exp (η * r * Real.cos α) ∧
-        ‖q (-(r * cexp (-α * I)))‖ ≤ A * Real.exp (η * r * Real.cos α) := by
+      ‖q (r * cexp (α * I))‖ ≤ A * (1 + r) ^ N * Real.exp (η * r * Real.cos α) ∧
+        ‖q (r * cexp (-α * I))‖ ≤ A * (1 + r) ^ N * Real.exp (η * r * Real.cos α) ∧
+        ‖q (-(r * cexp (α * I)))‖ ≤ A * (1 + r) ^ N * Real.exp (η * r * Real.cos α) ∧
+        ‖q (-(r * cexp (-α * I)))‖ ≤ A * (1 + r) ^ N * Real.exp (η * r * Real.cos α) := by
   intro η hη
-  have hC0 : 0 ≤ C := by
-    have := hC 0
-    exact nonneg_of_mul_nonneg_left ((norm_nonneg _).trans this) (thetaCuspFullSource_pos 0)
   have hπ := Real.pi_gt_three
   set δ := min (2 * η) 1 with hδdef
   have hδ0 : 0 < δ := lt_min (by linarith) one_pos
@@ -352,16 +357,17 @@ theorem quotient_rays (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x)
   have hsα : Real.sin α = Real.cos δ := Real.sin_pi_div_two_sub δ
   obtain ⟨M, hM⟩ := (isCompact_closedBall (0 : ℂ) (5 / (2 * Real.cos δ))).exists_bound_of_continuousOn
     hqc.continuousOn
-  refine ⟨α, ⟨by linarith, by linarith⟩, max (3 * C) M, fun r hr => ?_⟩
+  refine ⟨α, ⟨by linarith, by linarith⟩, max C M, fun r hr => ?_⟩
   have hpt : ∀ w : ℂ, |w.re| = r * Real.sin δ → |w.im| = r * Real.cos δ → ‖w‖ = r →
-      ‖q w‖ ≤ max (3 * C) M * Real.exp (η * r * Real.cos α) := by
+      ‖q w‖ ≤ max C M * (1 + r) ^ N * Real.exp (η * r * Real.cos α) := by
     intro w hre him hnorm
     have hexp1 : 1 ≤ Real.exp (η * r * Real.cos α) :=
       Real.one_le_exp (by rw [hcα]; positivity)
-    have hA0 : 0 ≤ max (3 * C) M := le_max_of_le_left (by linarith)
-    rcases le_or_gt (5 / 2) (r * Real.cos δ) with hband | hsmall
-    · have h := norm_quotient_le_of_band hC hq (z := w) (by rw [him]; exact hband)
-      rw [hre, him] at h
+    have hpow1 : 1 ≤ (1 + r) ^ N := one_le_pow₀ (by linarith)
+    have hA0 : 0 ≤ max C M := le_max_of_le_left hC0
+    rcases le_or_gt (5 / 2) (r * Real.cos δ) with hband' | hsmall
+    · have h := hband w (by rw [him]; exact hband')
+      rw [hre, him, hnorm] at h
       have hr0 : 0 < r := by
         by_contra h0; push Not at h0
         have : r * Real.cos δ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg h0 hcos.le
@@ -380,16 +386,19 @@ theorem quotient_rays (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x)
         have h2 : r * Real.sin δ / 2 * δ ≤ η * r * Real.sin δ := by
           nlinarith [mul_nonneg hr hsin]
         linarith
-      calc ‖q w‖ ≤ 3 * C * Real.exp (r * Real.sin δ / 2 *
+      calc ‖q w‖ ≤ C * (1 + r) ^ N * Real.exp (r * Real.sin δ / 2 *
             Real.arctan (r * Real.sin δ / (1 / 2 + r * Real.cos δ))) := h
-        _ ≤ max (3 * C) M * Real.exp (η * r * Real.cos α) :=
-            mul_le_mul (le_max_left _ _) (Real.exp_le_exp.mpr hexp) (Real.exp_pos _).le hA0
+        _ ≤ max C M * (1 + r) ^ N * Real.exp (η * r * Real.cos α) := by
+            gcongr
+            exact le_max_left _ _
     · have hw : w ∈ Metric.closedBall (0 : ℂ) (5 / (2 * Real.cos δ)) := by
         rw [mem_closedBall_zero_iff, hnorm, le_div_iff₀ (by positivity)]
         linarith
       calc ‖q w‖ ≤ M := hM w hw
-        _ ≤ max (3 * C) M := le_max_right _ _
-        _ ≤ max (3 * C) M * Real.exp (η * r * Real.cos α) := le_mul_of_one_le_right hA0 hexp1
+        _ ≤ max C M := le_max_right _ _
+        _ ≤ max C M * (1 + r) ^ N * Real.exp (η * r * Real.cos α) := by
+            rw [mul_assoc]
+            exact le_mul_of_one_le_right hA0 (one_le_mul_of_one_le_of_one_le hpow1 hexp1)
   have hre1 : ((r : ℂ) * cexp (α * I)).re = r * Real.cos α := by
     rw [Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re]
   have him1 : ((r : ℂ) * cexp (α * I)).im = r * Real.sin α := by
@@ -413,6 +422,21 @@ theorem quotient_rays (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x)
       (by rw [norm_neg, hn1]),
     hpt _ (by rw [Complex.neg_re, abs_neg, hre2, habs1])
       (by rw [Complex.neg_im, abs_neg, him2, abs_neg, habs2]) (by rw [norm_neg, hn2])⟩
+
+/-- **Ray bounds for the quotient.** For every `η > 0` the four rays `±r e^{±iα}`,
+`α = π/2 - δ`, `δ = min(2η, 1)`, carry `|Q| ≤ A e^{η r cos α}`. -/
+theorem quotient_rays (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x)
+    (hq : ∀ z, sourceTransform u z = q z * XiC z) (hqc : Continuous q) :
+    ∀ η > 0, ∃ α ∈ Ioo 0 (Real.pi / 2), ∃ A : ℝ, ∀ r : ℝ, 0 ≤ r →
+      ‖q (r * cexp (α * I))‖ ≤ A * Real.exp (η * r * Real.cos α) ∧
+        ‖q (r * cexp (-α * I))‖ ≤ A * Real.exp (η * r * Real.cos α) ∧
+        ‖q (-(r * cexp (α * I)))‖ ≤ A * Real.exp (η * r * Real.cos α) ∧
+        ‖q (-(r * cexp (-α * I)))‖ ≤ A * Real.exp (η * r * Real.cos α) := by
+  have hC0 : 0 ≤ C := by
+    have := hC 0
+    exact nonneg_of_mul_nonneg_left ((norm_nonneg _).trans this) (thetaCuspFullSource_pos 0)
+  simpa using rays_of_band_bound hqc (C := 3 * C) (by linarith) 0
+    (fun z hz => by simpa using norm_quotient_le_of_band hC hq hz)
 
 /-! ## The order-one envelope of the quotient -/
 
@@ -470,53 +494,53 @@ theorem meromorphicOrderAt_ne_top_of_differentiable {f : ℂ → ℂ} (hf : Diff
   intro h
   exact hw (by simpa using h)
 
-/-- **The quotient has an order-one envelope.** Via the Nevanlinna first main theorem the
-proximity of `Q = H/F` is bounded by those of `H` and `F`; the Poisson–Jensen bound then gives
-`|Q(z)| ≤ exp(K(1+|z|) log(2+|z|))`. -/
-theorem exists_quotient_envelope (hu : AEStronglyMeasurable u)
-    (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x) (hq : ∀ z, sourceTransform u z = q z * XiC z)
-    (hqd : Differentiable ℂ q) (hH : ∃ z, sourceTransform u z ≠ 0) :
+/-- **Order-one envelope of an entire quotient.**  If `G = q F` with `q` entire and `G` entire,
+nonzero, with `|G(z)| ≤ C exp(K₀(1+|z|) log(2+|z|))`, then `q` has such an envelope too.  Via the
+Nevanlinna first main theorem the proximity of `q` is bounded by those of `G` and `F`, and the
+Poisson–Jensen bound converts it to a pointwise envelope. -/
+theorem exists_quotient_envelope_of_bound {G : ℂ → ℂ} (hGd : Differentiable ℂ G) {K₀ : ℝ}
+    (hC0 : 0 ≤ C)
+    (hGenv : ∀ z, ‖G z‖ ≤ C * Real.exp (K₀ * (1 + ‖z‖) * Real.log (2 + ‖z‖)))
+    (hq : ∀ z, G z = q z * XiC z) (hqd : Differentiable ℂ q) (hG : ∃ z, G z ≠ 0) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ z, ‖q z‖ ≤ Real.exp (K * (1 + ‖z‖) * Real.log (2 + ‖z‖)) := by
-  obtain ⟨K₀, hK₀, hX⟩ := exists_norm_XiC_le_exp
-  have hC0 : 0 ≤ C := by
-    have := hC 0
-    exact nonneg_of_mul_nonneg_left ((norm_nonneg _).trans this) (thetaCuspFullSource_pos 0)
-  have hHd : Differentiable ℂ (sourceTransform u) :=
-    (measurableMomentSource_of_le hu hC).differentiable_sourceTransform
-  have hHenv : ∀ z, ‖sourceTransform u z‖ ≤ C * Real.exp (K₀ * (1 + ‖z‖) * Real.log (2 + ‖z‖)) := by
-    intro z
-    refine (norm_sourceTransform_le hC z).trans (mul_le_mul_of_nonneg_left ?_ hC0)
-    rw [← norm_XiC_I_mul]
-    refine (hX _).trans (Real.exp_le_exp.mpr ?_)
-    have hn : ‖I * (z.im : ℂ)‖ ≤ ‖z‖ := by
-      rw [norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
-      exact Complex.abs_im_le_norm z
+  obtain ⟨KX, hKX, hX0⟩ := exists_norm_XiC_le_exp
+  set K₁ := max KX K₀
+  have hK₁ : 0 ≤ K₁ := le_max_of_le_left hKX
+  have hshape0 : ∀ z : ℂ, 0 ≤ (1 + ‖z‖) * Real.log (2 + ‖z‖) := fun z => by
+    have := Real.log_nonneg (show (1 : ℝ) ≤ 2 + ‖z‖ by linarith [norm_nonneg z]); positivity
+  have hmono : ∀ {a : ℝ}, a ≤ K₁ → ∀ z : ℂ, a * (1 + ‖z‖) * Real.log (2 + ‖z‖) ≤
+      K₁ * (1 + ‖z‖) * Real.log (2 + ‖z‖) := fun ha z => by
     rw [mul_assoc, mul_assoc]
-    exact mul_le_mul_of_nonneg_left (shape_mono (norm_nonneg _) hn) hK₀
+    exact mul_le_mul_of_nonneg_right ha (hshape0 z)
+  have hX : ∀ z, ‖XiC z‖ ≤ Real.exp (K₁ * (1 + ‖z‖) * Real.log (2 + ‖z‖)) := fun z =>
+    (hX0 z).trans (Real.exp_le_exp.mpr (hmono (le_max_left _ _) z))
+  have hHenv : ∀ z, ‖G z‖ ≤ C * Real.exp (K₁ * (1 + ‖z‖) * Real.log (2 + ‖z‖)) := fun z =>
+    (hGenv z).trans (mul_le_mul_of_nonneg_left
+      (Real.exp_le_exp.mpr (hmono (le_max_right _ _) z)) hC0)
   have hA : ∀ f : ℂ → ℂ, Differentiable ℂ f → AnalyticOnNhd ℂ f univ :=
     fun f hf z _ => hf.analyticAt z
   have hqne : ∃ z, q z ≠ 0 := by
-    obtain ⟨z₀, hz₀⟩ := hH
+    obtain ⟨z₀, hz₀⟩ := hG
     exact ⟨z₀, fun h => hz₀ (by rw [hq, h, zero_mul])⟩
   obtain ⟨K, hK⟩ := GaloisForLFunctions.QuotientProximity.proximity_quotient_le
-    (F := XiC) (G := sourceTransform u) (H := q) (hA _ XiC_differentiable) (hA _ hHd) (hA _ hqd)
+    (F := XiC) (G := G) (H := q) (hA _ XiC_differentiable) (hA _ hGd) (hA _ hqd)
     (meromorphicOrderAt_ne_top_of_differentiable XiC_differentiable ⟨0, XiC_ne_zero_of_norm_le_one
       (by simp)⟩)
-    (meromorphicOrderAt_ne_top_of_differentiable hHd hH) hq
+    (meromorphicOrderAt_ne_top_of_differentiable hGd hG) hq
   have hprox : ∀ r : ℝ, 1 ≤ r → ValueDistribution.proximity q ⊤ r ≤
-      Real.posLog C + 2 * (K₀ * (1 + r) * Real.log (2 + r)) + K := by
+      Real.posLog C + 2 * (K₁ * (1 + r) * Real.log (2 + r)) + K := by
     intro r hr
     have hr0 : 0 ≤ r := by linarith
-    have hshape : 0 ≤ K₀ * (1 + r) * Real.log (2 + r) := by
+    have hshape : 0 ≤ K₁ * (1 + r) * Real.log (2 + r) := by
       have := Real.log_nonneg (show (1 : ℝ) ≤ 2 + r by linarith); positivity
     have hmX := GaloisForLFunctions.HTGeometry.proximity_top_le_posLog_of_norm (f := XiC) hr0
       (fun z _ => (XiC_differentiable.analyticAt z).meromorphicAt)
-      (M := Real.exp (K₀ * (1 + r) * Real.log (2 + r))) (fun z hz => by rw [← hz]; exact hX z)
+      (M := Real.exp (K₁ * (1 + r) * Real.log (2 + r))) (fun z hz => by rw [← hz]; exact hX z)
     rw [posLog_exp_of_nonneg hshape] at hmX
     have hmH := GaloisForLFunctions.HTGeometry.proximity_top_le_posLog_of_norm
-      (f := sourceTransform u) hr0 (fun z _ => (hHd.analyticAt z).meromorphicAt)
-      (M := C * Real.exp (K₀ * (1 + r) * Real.log (2 + r))) (fun z hz => by rw [← hz]; exact hHenv z)
-    have hpl := Real.posLog_mul (x := C) (y := Real.exp (K₀ * (1 + r) * Real.log (2 + r)))
+      (f := G) hr0 (fun z _ => (hGd.analyticAt z).meromorphicAt)
+      (M := C * Real.exp (K₁ * (1 + r) * Real.log (2 + r))) (fun z hz => by rw [← hz]; exact hHenv z)
+    have hpl := Real.posLog_mul (x := C) (y := Real.exp (K₁ * (1 + r) * Real.log (2 + r)))
     rw [posLog_exp_of_nonneg hshape] at hpl
     have := hK r hr
     linarith
@@ -527,7 +551,7 @@ theorem exists_quotient_envelope (hu : AEStronglyMeasurable u)
     have := Real.posLog_nonneg (x := C)
     have := abs_nonneg K
     linarith
-  refine ⟨72 * K₀ + (6 * (Real.posLog C + |K|) + 3 * K₂) / Real.log 2,
+  refine ⟨72 * K₁ + (6 * (Real.posLog C + |K|) + 3 * K₂) / Real.log 2,
     add_nonneg (by linarith) (div_nonneg hcpos hl2.le), fun w => ?_⟩
   set ρ := ‖w‖ with hρ
   have hρ0 : 0 ≤ ρ := norm_nonneg w
@@ -552,7 +576,7 @@ theorem exists_quotient_envelope (hu : AEStronglyMeasurable u)
     have hl2' : 0 ≤ Real.log (2 + ρ) := Real.log_nonneg (by linarith)
     nlinarith
   have hbound : Real.posLog ‖q w‖ ≤
-      (72 * K₀ + (6 * (Real.posLog C + |K|) + 3 * K₂) / Real.log 2) * (1 + ρ) * Real.log (2 + ρ) := by
+      (72 * K₁ + (6 * (Real.posLog C + |K|) + 3 * K₂) / Real.log 2) * (1 + ρ) * Real.log (2 + ρ) := by
     have hX2 : 0 ≤ 2 * ValueDistribution.proximity q ⊤ (2 * ρ + 2) + K₂ := by linarith
     have h1 : Real.posLog ‖q w‖ ≤ 3 * (2 * ValueDistribution.proximity q ⊤ (2 * ρ + 2) + K₂) :=
       hmain.trans (mul_le_mul_of_nonneg_right hfac hX2)
@@ -562,13 +586,37 @@ theorem exists_quotient_envelope (hu : AEStronglyMeasurable u)
         (6 * (Real.posLog C + |K|) + 3 * K₂) / Real.log 2 * ((1 + ρ) * Real.log (2 + ρ)) := by
       rw [div_mul_eq_mul_div, le_div_iff₀ hl2]
       exact mul_le_mul_of_nonneg_left hS0 (by positivity)
-    have hk6 : K₀ * (1 + (2 * ρ + 2)) * Real.log (2 + (2 * ρ + 2)) ≤
-        K₀ * (6 * ((1 + ρ) * Real.log (2 + ρ))) := by
-      rw [mul_assoc]; exact mul_le_mul_of_nonneg_left hR hK₀
+    have hk6 : K₁ * (1 + (2 * ρ + 2)) * Real.log (2 + (2 * ρ + 2)) ≤
+        K₁ * (6 * ((1 + ρ) * Real.log (2 + ρ))) := by
+      rw [mul_assoc]; exact mul_le_mul_of_nonneg_left hR hK₁
     nlinarith
   calc ‖q w‖ ≤ Real.exp (Real.posLog ‖q w‖) :=
         GaloisForLFunctions.HTGeometry.le_exp_posLog (norm_nonneg _)
     _ ≤ _ := Real.exp_le_exp.mpr hbound
+
+
+/-- **The quotient has an order-one envelope.** Via the Nevanlinna first main theorem the
+proximity of `Q = H/F` is bounded by those of `H` and `F`; the Poisson–Jensen bound then gives
+`|Q(z)| ≤ exp(K(1+|z|) log(2+|z|))`. -/
+theorem exists_quotient_envelope (hu : AEStronglyMeasurable u)
+    (hC : ∀ x, ‖u x‖ ≤ C * thetaCuspFullSource x) (hq : ∀ z, sourceTransform u z = q z * XiC z)
+    (hqd : Differentiable ℂ q) (hH : ∃ z, sourceTransform u z ≠ 0) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ z, ‖q z‖ ≤ Real.exp (K * (1 + ‖z‖) * Real.log (2 + ‖z‖)) := by
+  obtain ⟨K₀, hK₀, hX⟩ := exists_norm_XiC_le_exp
+  have hC0 : 0 ≤ C := by
+    have := hC 0
+    exact nonneg_of_mul_nonneg_left ((norm_nonneg _).trans this) (thetaCuspFullSource_pos 0)
+  refine exists_quotient_envelope_of_bound (K₀ := K₀)
+    (measurableMomentSource_of_le hu hC).differentiable_sourceTransform hC0 (fun z => ?_) hq
+    hqd hH
+  refine (norm_sourceTransform_le hC z).trans (mul_le_mul_of_nonneg_left ?_ hC0)
+  rw [← norm_XiC_I_mul]
+  refine (hX _).trans (Real.exp_le_exp.mpr ?_)
+  have hn : ‖I * (z.im : ℂ)‖ ≤ ‖z‖ := by
+    rw [norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
+    exact Complex.abs_im_le_norm z
+  rw [mul_assoc, mul_assoc]
+  exact mul_le_mul_of_nonneg_left (shape_mono (norm_nonneg _) hn) hK₀
 
 /-! ## Relative-source rigidity -/
 

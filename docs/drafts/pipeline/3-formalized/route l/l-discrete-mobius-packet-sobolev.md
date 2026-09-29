@@ -214,3 +214,5 @@ The finitely many `k<k_4` have a uniform absolute bound, and the full tail beyon
 ## Open arithmetic producer
 
 The identity isolates the exact sequence to control: the step-two second difference of `b_k`, with weight growing like `k^(4+delta)`. The source-index aperture further shows that only `4k/log k≲n≲k^a_delta` can carry the missing arithmetic gain. The corpus proves adjacent-order recurrences and sign laws for `b_k` in `MobiusPacketDifferenceSign`, but no cutoff-uniform weighted square bound for that wedge. The next conjecture must exploit the actual Möbius signs across its source indices and packets; the edge estimates do not supply that gain.
+
+Addendum (2026-09-29): the full cubic energy at level `δ` is bounded iff `2Θ < 1+δ` (`RHTower.CubicGamma.bddAbove_range_gammaEnergy_mobiusCubicSource_iff`). The wedge bound (8) is therefore equivalent to the zero-free half-plane `Re s > (1+δ)/2`. It is a receiver statement; no weaker producer is available inside Route L.

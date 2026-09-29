@@ -3,6 +3,7 @@ Copyright (c) 2026 Bennett Chow. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bennett Chow, OpenAI
 -/
+/- Local compatibility change: use definitional equality for GrpCat homomorphisms on Mathlib 4.32.2. -/
 import DifferentialGeometry.Topology.Algebra.Group.AmalgamatedProduct
 import DifferentialGeometry.Topology.VanKampen.Based
 
@@ -80,8 +81,7 @@ theorem fundamentalGroupFactorToAmbient_compatible {X : Type u} [TopologicalSpac
   | true =>
       have h := congrArg GrpCat.Hom.hom
         (fundamentalGroup_coverSquare_commutes U V x₀ hx₀)
-      simpa only [fundamentalGroupFactorToAmbient, fundamentalGroupAmalgamation,
-        GrpCat.hom_comp] using h.symm
+      exact h.symm
 
 noncomputable def amalgamatedProductToFundamentalGroup {X : Type u} [TopologicalSpace X]
     (U V : Set X) (x₀ : X) (hx₀ : x₀ ∈ U ∩ V) :
@@ -196,8 +196,7 @@ theorem canonicalMaps_inverse_forward
           fundamentalGroupAmalgamatedProductLeft U V x₀ hx₀ ≫ 𝟙 _ := by
         rw [← Category.assoc, fundamentalGroupAmalgamatedProductLeft_toFundamentalGroup,
           fundamentalGroupLeftToAmbient_toAmalgamatedProduct, Category.comp_id]
-      simpa only [fundamentalGroupAmalgamatedProductLeft, GrpCat.hom_comp,
-        GrpCat.hom_id, GrpCat.hom_ofHom] using congrArg GrpCat.Hom.hom hleft
+      exact congrArg GrpCat.Hom.hom hleft
   | true =>
       have hright : fundamentalGroupAmalgamatedProductRight U V x₀ hx₀ ≫
             (amalgamatedProductToFundamentalGroup U V x₀ hx₀ ≫
@@ -205,8 +204,7 @@ theorem canonicalMaps_inverse_forward
           fundamentalGroupAmalgamatedProductRight U V x₀ hx₀ ≫ 𝟙 _ := by
         rw [← Category.assoc, fundamentalGroupAmalgamatedProductRight_toFundamentalGroup,
           fundamentalGroupRightToAmbient_toAmalgamatedProduct, Category.comp_id]
-      simpa only [fundamentalGroupAmalgamatedProductRight, GrpCat.hom_comp,
-        GrpCat.hom_id, GrpCat.hom_ofHom] using congrArg GrpCat.Hom.hom hright
+      exact congrArg GrpCat.Hom.hom hright
 
 noncomputable def fundamentalGroupEquivAmalgamatedProduct
     {X : Type u} [TopologicalSpace X]

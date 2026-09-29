@@ -5,7 +5,7 @@
 - **Type:** source-faithful divisor/limit discontinuity and reflected-gauge obstruction
 - **Routes:** STC, CSB, U, K-RVM, MPLF, RHist; relevant to the Euler-deletion interface
 - **Status:** [PROVED HERE ON PAPER] [LEAN: `GaloisForLFunctions.RHTower.ThetaPrimeDeletionSpectralEscape`, see `theta-prime-deletion-spectral-escape-formalized.md`] [NOT AN RH PROOF]
-- **Dependencies:** literal atom expansion and compact-local summability in ThetaCuspFinitePrimeSource.lean; bilateral theta transform in ThetaTailFirstMomentKreinTransform.lean; completed critical moment in PrimeArchThetaWardLaplaceHalfDensity.lean; atom Mellin formula in [critical-boundary theorem](../../2-fully-proven/theta/theta-euler-critical-boundary-mass-escape.md); classical divergence of reciprocal-prime sum. No numerical computation is used.
+- **Dependencies:** literal atom expansion and compact-local summability in ThetaCuspFinitePrimeSource.lean; bilateral theta transform in ThetaTailFirstMomentKreinTransform.lean; completed critical moment in PrimeArchThetaWardLaplaceHalfDensity.lean; atom Mellin formula in [critical-boundary theorem](theta-euler-critical-boundary-mass-escape.md); classical divergence of reciprocal-prime sum. No numerical computation is used.
 
 ## Dual completion theorem
 

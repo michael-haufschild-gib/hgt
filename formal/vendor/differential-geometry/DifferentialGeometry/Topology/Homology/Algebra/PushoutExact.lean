@@ -1,3 +1,4 @@
+/- Local compatibility change: reassociate biproduct projections explicitly on Mathlib 4.32.2. -/
 import Mathlib.Algebra.Homology.ShortComplex.ShortExact
 import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Defs
 
@@ -23,13 +24,22 @@ def pushoutSumIsCokernel :
         rw [← Category.assoc, ← Category.assoc, ← Preadditive.sub_comp,
           sub_eq_add_neg, ← Preadditive.neg_comp, ← biprod.lift_eq, Cofork.condition c,
           zero_comp])
-    (fun c => by apply biprod.hom_ext' <;> simp [pushoutShortComplex, sq.inl_desc, sq.inr_desc])
+    (fun c => by
+      apply biprod.hom_ext'
+      · change biprod.inl ≫ biprod.desc r s ≫ _ = _
+        rw [← Category.assoc, biprod.inl_desc, sq.inl_desc]
+      · change biprod.inr ≫ biprod.desc r s ≫ _ = _
+        rw [← Category.assoc, biprod.inr_desc, sq.inr_desc])
     (fun c m hm => by
       apply sq.hom_ext
       · have h := congrArg (fun φ => biprod.inl ≫ φ) hm
-        simpa [pushoutShortComplex, sq.inl_desc] using h
+        change biprod.inl ≫ biprod.desc r s ≫ m = _ at h
+        rw [← Category.assoc, biprod.inl_desc] at h
+        simpa only [sq.inl_desc] using h
       · have h := congrArg (fun φ => biprod.inr ≫ φ) hm
-        simpa [pushoutShortComplex, sq.inr_desc] using h)
+        change biprod.inr ≫ biprod.desc r s ≫ m = _ at h
+        rw [← Category.assoc, biprod.inr_desc] at h
+        simpa only [sq.inr_desc] using h)
 
 theorem pushoutShortExact [Mono f] : (pushoutShortComplex sq).ShortExact where
   exact := ShortComplex.exact_of_g_is_cokernel _ (pushoutSumIsCokernel sq)

@@ -236,3 +236,14 @@ Scope: frontier route HF. Facts and no-gos only.
 - **HF-F69 [Lean, `RHTower.vonMangoldt_add_twoPole_eq_zero`] Regular uniqueness theorem.**
   - `Λ + w` Weil-positive with partial sums `κ₁(n−1) + κ₂(√n−1) + E(n)`, `Σ|E|/(n√n) < ∞`, forces `w = 0`.
   - The pole at `s = 1` pairs as a polar atom `4πκ₁Re(ĥ(i/2)conj ĥ(−i/2))`; the pole of `ζ(2s)` at `s = ½` as an atom `πκ₂|ĥ(0)|²`.
+- **HF-F70 [Lean, `RHTower.exists_weilPositive_iff_primeBlindPositive`] The existence half is exactly prime-blind archimedean positivity.**
+  - A Weil-positive weight system (ζ's archimedean term, polar `C²` tests) exists iff, at every level, every nonnegative combination of polar tests whose autocorrelation vanishes at all `±log n` has nonnegative archimedean energy.
+  - Two-point resonators realize every face of the level-wise box, so the dual certificate is exactly prime-blind.
+  - [P] Localization with a margin is equivalent to a slack completion. Λ never has slack (by cases on RH), so under uniqueness `M(A) → 0` and existence cannot be proved by open-condition arguments (CANNOT-478).
+- **HF-F71 [Lean, `RHTower.dilationPoly_im_eq_zero_of_weilPositive`] Weil positivity forces real residues at the critical zeros.**
+  - If `Λ + Σ_{m∈S} b(m)Λ(·/m)` is Weil-positive, then `B(s) = Σ b(m)m^{−s}` is real at every zero `½+iγ` of `ζ` on the critical line, i.e. `B(ρ) = B(1−ρ)`.
+  - Single dilation `Λ(n) + cΛ(n/m)`, `c ≠ 0`: all critical ordinates lie in `(π/log m)ℤ` (`single_dilation_critical_ordinates`).
+  - [P] With Selberg's `N₀(T) ≫ T log T`, this forces `b = 0`: dilated von Mangoldt weights are rigid.
+- **HF-F72 [Lean].** Dilated von Mangoldt weights are rigid: `Λ + Λ⋆b ∈ W` with `b` finitely supported forces `b = 0` (`RHTower.WeilDilationRigidity.dilatedVonMangoldt_eq_zero_of_weilPositive`).
+  - Proof: residue realness gives `Im B = 0` at critical zeros. The test `Σ b(m)(h(mx) − h(x/m)/m)` has Mellin transform `(B(s) − B(1−s))·Mh`. The superlinear simple-critical density (Alpöge–Furman, Zeta23) then gives `b(m) = 0` for `m ≥ 2`, and scaling rigidity gives `b(1) = 0`.
+  - Crossing arguments cannot replace the density input: `B = b₁(1 − 2^{½−s})` with `b₁ < 0` never enters `(0, ∞)`.

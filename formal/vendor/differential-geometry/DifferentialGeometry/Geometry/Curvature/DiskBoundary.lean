@@ -1,3 +1,5 @@
+-- Local modification: rewrite zero velocity explicitly, then normalize the zero
+-- vectors to the boundary point tangent fibre before simplification on Lean 4.32.2.
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskBoundaryAcceleration
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskBoundaryMetric
 import DifferentialGeometry.Geometry.Curvature.Curve
@@ -42,7 +44,10 @@ theorem diskMapBoundaryCurvature_density
     intro hzero
     have hpos := Real.sqrt_pos.mpr ha
     have hzeroSpeed : riemannianCurveSpeed g (U ∘ c) θ = 0 := by
-      simp [riemannianCurveSpeed, hzero]
+      unfold riemannianCurveSpeed
+      erw [hzero]
+      change Real.sqrt (g.inner (U (c θ)) 0 0) = 0
+      simp
     rw [hspeed] at hzeroSpeed
     linarith
   have horth : g.inner (U (c θ)) (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (U ∘ c) θ (1 : ℝ))

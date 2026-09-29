@@ -119,3 +119,19 @@ This agrees with the corpus's finite Möbius Laplace/Mellin receiver, now derive
 ## Consequence for the hard source bound
 
 Equation (4) replaces the original Möbius pair coefficients by correlations of the *actual Mertens prefixes* against an explicitly signed mixed Gram. The archimedean part now has a proved local-positive/far-negative structure and quantitative margins. The remaining obstruction is arithmetic: for abscissas `a=(1+delta)/2` cofinal from the right at `1/2`, upper-bound the full signed sum `sum M(m)M(n)D_delta(m,n)` together with its terminal cross term, uniformly in `N` **for each chosen `delta>0`**. The [formal cofinal cubic criterion](../l-cofinal-cubic-source-criterion.md) shows that constants may depend on `delta`; no bound at `delta=0` is part of the RH receiver. In particular, pointwise signs of `D_delta` alone do not control products `M(m)M(n)`. A productive next conjecture must quantify how Mertens-prefix signs and magnitudes interact across the comparable and separated scale regions of (5); it cannot replace those prefixes by absolute values.
+
+## Critical endpoint δ = 0 is unconditionally unbounded (2026-09-29, MC loop cycle 98)
+- `RHTower.CubicGamma.exists_forall_mul_log_le_gammaEnergy_mobiusCubicSource_zero` (module `RHTower/MobiusCubicSourceCriticalFloor.lean`, axiom-clean): `‖S_N‖_0² ≥ c log N` for every large `N`.
+- Proof:
+  - `|Γ(5/2+iτ)| = |3/2+iτ||1/2+iτ||Γ(1/2+iτ)| ≥ (3/4)|Γ(1/2+iτ)|`.
+  - Plugged into the card's Mellin–Plancherel form (10), this gives `‖S_N‖_0² ≥ (3/128)·Σ_{m,n≤N} μ(m)μ(n)/(m+n)`.
+  - The all-N logarithmic floor of the Möbius Hilbert form then applies.
+- Consequence for the frontier's "cutoff-uniform Γ-weighted Mertens-prefix Fourier mass":
+  - At `δ = 0` it is false.
+  - At `0 < δ < 1` a uniform bound is a zero-free half-plane statement: the exponent law gives boundedness iff `Θ < (1+δ)/2`, up to the boundary case.
+  - At `δ = 1` it follows from bounded partial sums of `Σ μ(n) n^{-1-iτ}`.
+- A Route L producer therefore has to work strictly inside `0 < δ`, where it is MC at exponent `(1+δ)/2`.
+- All levels (same module): `mul_energy_le_gammaEnergy_mobiusCubicSource` gives `‖S_N‖_δ² ≥ ((3+δ)(1+δ)/4)²/Γ(5+δ)·E_N(1+δ)` for every `δ ≥ 0`. Hence `tendsto_gammaEnergy_mobiusCubicSource_atTop_of_riemannZeta_eq_zero`: a zero of ζ with `Re ρ ≥ (1+δ)/2`, `0 ≤ δ < 1`, forces `‖S_N‖_δ → ∞`. A cutoff-uniform Route L bound at level δ implies that ζ has no zeros in `Re s ≥ (1+δ)/2`.
+- Exponent law, both directions (module `RHTower/MobiusCubicSourceExponentLaw.lean`, axiom-clean): `bddAbove_range_gammaEnergy_mobiusCubicSource_iff`. For `δ ≥ 0` with `1+δ ≠ 2Θ`, the energies `‖S_N‖_δ²` are bounded in `N` iff `2Θ < 1+δ`.
+  - Sufficiency: a Mertens bound `|M(n)| ≤ C₁(n+1)^b` gives `|S_N(t)| ≤ K t^{-b-2}` on `(0,1]` uniformly in `N` (`exists_abs_mobiusCubicSource_le_of_mertens`). The proof uses the Abel form (1), the dipole bound `|f_n − f_{n+1}| ≤ e^{-nt}(2(n+1)+t(n+1)²)` and the discrete Gamma sum `Σ(n+1)^c e^{-(n+1)t} ≤ (2c/t)^c e^{-c}·4/t`. For `t ≥ 1`, `|S_N(t)| ≤ 64e^{-1}e^{-t}`. So `t^{4+δ}S_N² ≤ K²t^{δ−2b}` near 0, integrable when `2b < 1+δ` (`exists_forall_gammaEnergy_mobiusCubicSource_le_of_mertens`).
+  - Route L's cubic source is an exact detector of the zero abscissa with threshold `δ = 2Θ−1`, the same as the Möbius Hilbert/Gamma–Hankel family. It carries no information beyond `Θ`.

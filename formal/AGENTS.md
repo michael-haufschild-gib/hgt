@@ -11,7 +11,7 @@ of six theorem areas:
 | General hypertranscendental geometry | `GaloisForLFunctions.HTGeometry` | Reusable differential, constraint, value-relation, moment, and operator geometry |
 | Hurwitz | `GaloisForLFunctions.Hurwitz` | `hurwitz_n2_unconditional` |
 | u0_pui | `GaloisForLFunctions.U0` | `U0CardTheorems.u0_phi_independence_all_parameters` |
-| q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap`, `Bottcher.q62_phiMero_linGap`, `Bottcher.q62_phiMero_linGap_roots`, `Bottcher.q62_phiMero_norm_gap_roots`, `Bottcher.q62_phiMero_mixed_far_roots`, `Bottcher.q62_phiMero_mixed_far_roots_swapped` |
+| q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap`, `Bottcher.q62_phiMero_linGap`, `Bottcher.q62_phiMero_linGap_roots`, `Bottcher.q62_phiMero_norm_gap_roots`, `Bottcher.q62_phiMero_mixed_far_roots`, `Bottcher.q62_phiMero_mixed_far_roots_swapped`, `Bottcher.noRelation_phiMero_of_ne` (all nonexceptional parameters, unconditional) |
 | Hilbert metrics | `GaloisForLFunctions.HilbertMetric` | finite graded Pluecker partitions and Gaussian feature-determinant laws |
 
 `GaloisForLFunctions.MainTheorems` imports all six, plus three vendored areas

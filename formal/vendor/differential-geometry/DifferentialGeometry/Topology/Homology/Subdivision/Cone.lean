@@ -39,7 +39,6 @@ theorem affineCone_boundary_generator {n : ℕ} (p : E) (v : Fin (n + 2) → E) 
     hzero, hcons,
     Fin.val_succ, pow_succ, mul_neg_one, neg_zsmul, Finset.sum_neg_distrib]
   rw [sub_eq_add_neg]
-  rfl
 
 
 theorem affineCone_boundary_generator_zero (p q : E) :

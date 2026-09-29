@@ -5,7 +5,7 @@
 - **Type:** exact infinite gauge classification and charge rigidity
 - **Routes:** STC, CSB, U, K-RVM, MPLF, RHist; source-side comparison with EDQ
 - **Status:** [PROVED HERE ON PAPER] [LEAN: `GaloisForLFunctions.RHTower.ThetaPrimePowerBernsteinGauge`, see `theta-prime-power-bernstein-gauge-rigidity-formalized.md`] [NOT AN RH PROOF]
-- **Dependencies:** the literal theta flux and half-charge in [theta-euler-critical-boundary-mass-escape.md](../../2-fully-proven/theta/theta-euler-critical-boundary-mass-escape.md), plus the finite Bernstein--Widder representation in [BernsteinWidder.lean](../../../../formal/GaloisForLFunctions/HTGeometry/BernsteinWidder.lean) and finite-measure Laplace uniqueness in [RepairedFrequencyDensityLaplace.lean](../../../../formal/GaloisForLFunctions/HTGeometry/RepairedFrequencyDensityLaplace.lean). No numerical computation is used.
+- **Dependencies:** the literal theta flux and half-charge in [theta-euler-critical-boundary-mass-escape.md](theta-euler-critical-boundary-mass-escape.md), plus the finite Bernstein--Widder representation in [BernsteinWidder.lean](../../../../formal/GaloisForLFunctions/HTGeometry/BernsteinWidder.lean) and finite-measure Laplace uniqueness in [RepairedFrequencyDensityLaplace.lean](../../../../formal/GaloisForLFunctions/HTGeometry/RepairedFrequencyDensityLaplace.lean). No numerical computation is used.
 
 ## Statement
 

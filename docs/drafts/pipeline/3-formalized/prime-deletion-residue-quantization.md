@@ -54,3 +54,23 @@ Conclusion: `ρ c_ρ ∈ ℕ` for every `ρ ∈ J` with `Re ρ > max(θ,η)` and
 
 ## Honest limits
 - The mechanism (log-derivative residues are integers) is classical complex analysis. What is new is the DMU reading, the λ-parity dichotomy, and the deletion construction on the DMU line.
+
+## Correction (2026-09-29, MC loop cycle 77): the even-λ reduction
+- Cycle 32's chain "super-regular Q ⇒ HN two-of-three on Q̃ = Q^κ ⇒ γ̃ ≥ ½" does not apply for even λ.
+  Q̃ has prime density λ, so ζ_{Q̃} ~ (s−1)^{−λ}, and the prime-square factor (2s−1)^{λ/2} is analytic for even λ.
+  Hilberdink–Neamah assumes a simple pole. The smooth part of E_Q branches first at κ/k₀, with k₀ the least
+  k ∤ λ (κ/3 for λ = 2).
+- Super-regular even-λ deletions exist unconditionally: run the cycle-33 greedy with target (λ/κ)x^κ, getting
+  remainder exponent κ − 0.2987 < κ/2 for κ < 0.5974.
+- Heuristically the κ/2 floor returns through prime-gap randomness in the greedy positions. The correction
+  series Σ_j(q_j^{−s} − t_j^{−s}) has mean square of order T^{3.3(κ−2σ)} for σ < κ/2, so E_Q is super-polynomial
+  there and β_S ≥ κ/2. A rigorous Ω-proof would confirm DMU on this family. An upper bound β_S ≤ κ/2 + ε would be
+  square-root cancellation over ⟨Q⟩. Status of DMU on even λ: OPEN, with the obstruction relocated from branch
+  points to prime-position randomness.
+
+## Resolution of the even-λ case (2026-09-29, MC loop cycle 89)
+- On paper, `β_S ≥ κ/2` for every regular deletion and every `λ`: `2-fully-proven/regular-prime-deletion-square-root-floor.md`.
+- The floor is ℓ²-divergence of `Σ_{q∈Q}q^{−2σ}` at `σ = κ/2`: a Borel–Carathéodory bound for `log ζ_Q` (with a Poisson–Jensen ceiling in place of zeta lower bounds) is compared with a linearized mean-square lower bound against a short prime head.
+- This is the Hilberdink / Broucke–Hilberdink Ω mechanism. The "prime-position randomness" reading above is superseded.
+- Lean: `RHTower.PrimeDeletion.not_isBigO_qFreeCount_of_multiplicity` (every `l > 0`) and the general `not_isBigO_qFreeCount_of_leading_chebyshev` in `RHTower/PrimeDeletionSquareRootFloor.lean`. Card: `3-formalized/regular-prime-deletion-square-root-floor.md`.
+- Complex exponents of every multiplicity (cycle 91): `not_isBigO_qFreeCount_of_leading_chebyshev_complex`. The alternative "even multiplicity or `ζ(ρ/2)=0`" in the complex corollary above no longer permits DMU-violating integer regularity. The leading real term alone forces `β ≥ κ/2 ≥ Re ρ/2`.

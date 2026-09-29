@@ -1,3 +1,4 @@
+/- Local compatibility change: prove chain-map monicity degreewise on Mathlib 4.32.2. -/
 import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic
 import Mathlib.Algebra.Homology.HomologicalComplexLimits
 import Mathlib.CategoryTheory.Limits.Preserves.SigmaConst
@@ -26,10 +27,9 @@ instance chainComplexFunctor_preservesColimits :
 instance chainComplexFunctor_preservesMonomorphisms :
     ((_root_.SSet.chainComplexFunctor (ModuleCat.{u} k)).obj R).PreservesMonomorphisms where
   preserves f _ := by
-    dsimp [_root_.SSet.chainComplexFunctor]
-    apply +allowSynthFailures Functor.map_mono
-    apply +allowSynthFailures Functor.map_mono
-    dsimp [_root_.SSet, SimplicialObject.whiskering, SimplicialObject]
+    apply HomologicalComplex.mono_of_mono_f
+    intro n
+    change Mono ((sigmaConst.obj R).map (f.app (op ⦋n⦌)))
     infer_instance
 
 end DifferentialGeometry.SSet

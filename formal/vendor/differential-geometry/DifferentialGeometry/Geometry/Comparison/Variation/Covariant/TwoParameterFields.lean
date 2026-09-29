@@ -1,3 +1,5 @@
+-- Local modification: use direct definitional equality across product-model aliases
+-- on Lean 4.32.2 and remove a reflexivity step already closed by simplification.
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.CurvatureCommutation
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
 
@@ -1069,7 +1071,6 @@ private theorem centeredChartTangentEquiv_riemannOp
     DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply]
   simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
     tangentSpaceModelContinuousLinearEquiv_apply]
-  rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem cov_commute_curv
@@ -1400,7 +1401,7 @@ theorem cov_snd_mdiff_at
     have hcomp := hext.comp (s, t) hF
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
       ← chartedSpaceSelf_prod]
-    simpa only [U, Function.comp_def] using hcomp
+    exact hcomp
   have hYunc : ContDiffAt Real 2
       (Function.uncurry
         (fun q : Real × Real ↦ fun v : Real ↦ Y (q.1, v)))
@@ -1537,7 +1538,7 @@ theorem cov_snd_mdiff_at
   · have hfiberCD := hZ.congr_of_eventuallyEq heq
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
       ← chartedSpaceSelf_prod] at hfiberCD
-    simpa only [F, β] using hfiberCD
+    exact hfiberCD
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private lemma cov_snd_coord_at
@@ -1862,7 +1863,7 @@ theorem cov_snd_smooth
   · have hfiberCD := hZ.congr_of_eventuallyEq heq
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
       ← chartedSpaceSelf_prod] at hfiberCD
-    simpa only [F, β] using hfiberCD
+    exact hfiberCD
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 theorem cov_fst_smooth

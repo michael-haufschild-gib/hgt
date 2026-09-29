@@ -1,7 +1,8 @@
 # DifferentialGeometry geometry/topology: RH mechanism audit
 
 - **Date:** 2026-09-28
-- **Stage:** 0-backlog; source audit complete, proposed integrations unimplemented.
+- **Stage:** 0-backlog; completed source assessment. The completed implementation is recorded in
+  [the four-integration ledger](../3-formalized/differential-geometry-four-integrations.md).
 - **Type:** Research assessment, not a new RH theorem or independently new proof route.
 - **Source:** qinz1yang/differential-geometry at `7a48598d35109aa99d1cc678e2724c213cdf4ff3`.
 - **Question:** Which additional geometric/topological mechanisms can reach an actual missing RH premise?
@@ -15,7 +16,7 @@
 - [x] Inspect smooth Poisson existence and its regularity producer; distinguish it from local disk Poisson kernels and abstract Green inverses.
 - [x] Record final ranking and applicability boundaries; correct the two overstatements in the prior note.
 
-No upstream endpoint in this audit has been compiled against the local toolchain. Four local scratch declarations combining existing results were checked as recorded below; this audit does not claim a fresh full-corpus build. Upstream uses Lean/mathlib 4.33.1; the local project uses 4.32.2, so imports require a dependency and compatibility audit.
+At assessment time, no upstream endpoint had been compiled against the local toolchain. Four local scratch declarations combining existing results were checked as recorded below; this historical audit does not claim a fresh full-corpus build. Upstream uses Lean/mathlib 4.33.1; the local project uses 4.32.2. The implementation ledger records the subsequent dependency backport, local adapters and current verification evidence.
 
 ## 1. Exact Bochner identities for the actual Weil operator
 

@@ -1,3 +1,5 @@
+-- Local modification: normalize the reparametrized covariant derivative to the
+-- tangent fibre at γ (φ t) before scalar-multiplication rewriting on Lean 4.32.2.
 import DifferentialGeometry.Geometry.Curvature.Curve
 import DifferentialGeometry.Geometry.Metric.CurveUnitReparametrization
 
@@ -41,6 +43,10 @@ theorem riemannianCurveCurvature_reparam_pos (g : SmoothRiemannianMetric 𝓘(�
   unfold riemannianCurveCurvature
   rw [riemannianCurveSpeed_reparam g (hgd _) (hpd _), abs_of_pos hpos]
   erw [hcov, hcomp]
+  change (deriv φ t * riemannianCurveSpeed g γ (φ t))⁻¹ •
+      (deriv φ t • covDerivAlong g γ (riemannianCurveUnitTangent g γ) (φ t)) =
+    (riemannianCurveSpeed g γ (φ t))⁻¹ •
+      covDerivAlong g γ (riemannianCurveUnitTangent g γ) (φ t)
   rw [smul_smul]
   congr 1
   field_simp

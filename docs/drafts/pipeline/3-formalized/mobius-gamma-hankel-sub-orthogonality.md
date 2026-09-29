@@ -68,3 +68,16 @@ laws.
 
 ## Log
 - 2026-09-28: conjecture formulated, Plancherel heuristic computed, implications formalized.
+
+## Correction (2026-09-29): SO lies beyond RH
+- `MobiusHilbertLogarithmicMertensBound.exists_shiftedMertensReal_sq_le_of_mobiusGammaHankelSubOrthogonal`:
+  SO on any band (1, 2σ₀) forces M(N)² ≤ K N (1 + log N) for every N (unconditional implication, Lean).
+- Mechanism: Abel form F_N(x) = M(N)q^N + (1−q)Σ_{k<N}M(k)q^k. At a record N, |F_N| ≥ |M(N)|/2 on
+  (0, 1/(4N)], so E_N(r) ≥ M(N)²/(4r(4N)^r). At r = 1 + 1/(1+log N) the diagonal is ≤ (1+log N)/2 and
+  (4N)^r ≤ 16N, so strong induction closes.
+- The pointwise bound |M(N)| ≪ √(N log N) is NOT known to follow from RH. The best RH bound is
+  √x·exp((log x)^{1/2+o(1)}); the Gonek–Ng conjecture predicts it. So SO is "RH + pointwise weak
+  Mertens", not "Γ-smoothed Mertens plausible under RH". The earlier margin heuristic (~10^{17}) ignored the
+  endpoint term M(N)²/N of the sharp cutoff.
+- RH-exact replacement: subpolynomial growth (`MobiusHilbertFormEquivalence`). RH-level sign conjecture:
+  smooth-cutoff sub-orthogonality (MC loop cycle 66).

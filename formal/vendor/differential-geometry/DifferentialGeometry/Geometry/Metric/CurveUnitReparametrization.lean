@@ -1,3 +1,5 @@
+-- Local modification: normalize composition basepoints to the canonical tangent fibre
+-- before bilinear and scalar-multiplication rewrites on Lean 4.32.2.
 import DifferentialGeometry.Geometry.Metric.CurveUnitTangent
 
 
@@ -36,6 +38,9 @@ theorem riemannianCurveSpeed_reparam (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     riemannianCurveSpeed g (γ ∘ φ) t = |deriv φ t| * riemannianCurveSpeed g γ (φ t) := by
   unfold riemannianCurveSpeed
   erw [velocity_reparam hγ hφ]
+  change Real.sqrt (g.inner (γ (φ t))
+    (deriv φ t • mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ (φ t) 1)
+    (deriv φ t • mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ (φ t) 1)) = _
   simp only [map_smul, smul_apply, smul_eq_mul]
   rw [← mul_assoc, ← pow_two, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq_eq_abs]
   rfl
@@ -50,6 +55,9 @@ theorem riemannianCurveUnitTangent_reparam (g : SmoothRiemannianMetric 𝓘(ℝ,
   unfold riemannianCurveUnitTangent
   rw [riemannianCurveSpeed_reparam g hγ hφ, abs_of_pos hpos]
   erw [velocity_reparam hγ hφ]
+  change (deriv φ t * riemannianCurveSpeed g γ (φ t))⁻¹ •
+      (deriv φ t • mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ (φ t) 1) =
+    (riemannianCurveSpeed g γ (φ t))⁻¹ • mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ (φ t) 1
   rw [smul_smul]
   congr 1
   field_simp

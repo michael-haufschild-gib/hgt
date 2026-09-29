@@ -17,9 +17,9 @@ Rules: no hypotheses wrapping unproven input; no umbrella builds; `lake env lean
 | 9 | ultrametric-one-loop-resolvent-hypertranscendence | the card's coefficientwise target is already formalized (see the promoted `ultrametric-resolvent-susceptibility-constraint` card); sole gate is ADH | GATED ON ADH |
 | 10 | reciprocal-q-ladder-kallen-lehmann-field | the card itself records that the finite constraint infrastructure is already in the corpus; gates are the infinite-soliton theorem, analytic Källén--Lehmann reconstruction and ADH | GATED ON ADH |
 | 11 | de-sitter-ultrametric-detailed-balance-hypertranscendence | `UltrametricThermalMahler.lean`, `FiniteKMSDetailedBalance.lean` and `UltrametricThermalTruncation.lean` already carry the constraint, uniqueness, detailed balance and the next-shell residual; gates are ADH and the theorem that an invertible differentially algebraic change of the independent variable preserves hypertranscendence | GATED ON ADH + DA CHANGE OF VARIABLE |
-| 12 | gadc-tree-population-rg-clock-hypertranscendence | the card's whole declared Lean boundary is already formalized in `HTGeometry/GADCTreePopulationRG.lean` (Bloch action, transition matrix, parameter gap, rational family, multiplier, endpoints); the HT half is a corollary of the Becker--Bergweiler/Fernandes classification.  Its two open gates are future programmes, not theorems of the card | GATED ON BECKER--BERGWEILER |
-| 13 | noisy-binary-tree-channel-rg-clock-hypertranscendence | the card's declared Lean boundary is already formalized in `HTGeometry/BetheHolographicIsingRG.lean`; the HT half is the same external classification.  Its three open gates are future programmes | GATED ON BECKER--BERGWEILER |
-| 14 | exact-rational-rg-generation-dichotomy | needs the unconditional analytic Poincaré theorem and Ritt's theorem (Di Vizio--Fernandes give a Galoisian proof); nothing of the card is formalizable without them | GATED ON RITT |
+| 12 | gadc-tree-population-rg-clock-hypertranscendence | all three damping regimes, endpoints, sequential DA interpolation and chart invariance: `TreeChannelClockRegimes.gadc_clock_hypertranscendental`, `gadc_abel_hypertranscendental` (parabolic: `ParabolicAbelHypertranscendence`), `not_differentiallyAlgebraicOn_comp_chart` | **PROMOTED** |
+| 13 | noisy-binary-tree-channel-rg-clock-hypertranscendence | all three noise regimes, both endpoints, chart invariance, threshold separation: `TreeChannelClockRegimes.bsc_clock_hypertranscendental`, `bsc_abel_hypertranscendental`, `noiselessTree_odds`, `bsc_kestenStigum_lt_bethe` | **PROMOTED** |
+| 14 | exact-rational-rg-generation-dichotomy | DONE — Ritt's `(1) ⇒ (4)`: `RittPoincareRittForm.rittForm_of_differentiallyAlgebraicOn_poincare` (c-family normal form + `P¹` orbifold theory + meromorphic germ frame) | **PROMOTED** |
 | 15 | exact-rg-clock-hypertranscendence-equivalence | needs analytic logarithm branches, local compositional inversion and a differentially algebraic germ category; the card itself refuses a hypothesis wrapper | GATED ON DA GERM CATEGORY |
 | 16 | rg-tower-differential-incoherence-obstruction | needs analytic local inversion, differential-algebraic transitivity and the Boshernitzan--Rubel uniform closure theorem | GATED ON BOSHERNITZAN--RUBEL |
 | 17 | erosion-threshold | the backbone `Re = 1/2` is the abscissa of a.s. convergence is already formalized (`RHTower/RandomEulerObservableAbscissa.lean`, `measure_coordSeriesConverges_randomEulerTerm_eq_one_iff`); 19a is split to its own card.  Remaining formalizable: the second-moment law `V(sigma)` and `Var(Re L) = V/2`.  The headline G19 is NOT proven on paper — the card's own `1 -> 2` gate is open — so it is not a formalization obligation | PARTIAL: BACKBONE DONE, VARIANCE LAW OPEN, HEADLINE NOT PAPER-PROVED |
@@ -1449,3 +1449,53 @@ so **`f_{X_0X_{n-1}} = C(n+1,2)`** — the linear-top coefficient, pinned.  `coe
 already supplies the right-hand side; what the Lean step needs is the degree-one coefficient of an
 affine substitution, i.e. `coeff (single k 1) (aeval g F) = ∑_j eval c (pderiv j F) · m_{j,k}` for
 `g` affine with constant terms `c` and linear coefficients `m`.
+
+## The scale-invariant residual is refuted for every n (2026-09-29)
+
+The "same bookkeeping for general `n`" is closed by a Lie-algebraic argument, not by coefficient
+bookkeeping.  Conjugating the residual identity by the weight scalings makes the top-jet graph
+`Φ = x_n − F` invariant under a unipotent polynomial family `M_ν`; its first two coefficients are
+the derivations `b₀·ξ₁` and `(b₁ − b₀²/2)·ξ₂`, where `ξ_k` is the action of `z^{k+1}∂` on connection
+jets.  `[ξ₁, ξ_k] = ((1−k)(k+2)/2)·ξ_{k+1}` generates `ξ_{n+1} = ∂/∂x_n`, contradicting `∂Φ/∂x_n = 1`.
+
+Lean: `ConnectionJetGenerators`, `PolynomialFamilyDerivations`,
+`RittLogTowerScaleInvariantRigidity.RittFrame.false_of_scaleInvariant_collapse` (hypotheses: seed
+constant `b₀ = −dρ/ρ²` nonzero, `b₁ ≠ b₀²/2`, i.e. non-affine and non-Möbius).  Axiom-clean, wired.
+Programme card: `1-in-progress/ritt-scale-invariant-residual-lie-rigidity.md`.
+
+**Audit finding.**  `RittLogTowerDescent.TowerObstruction` is satisfiable in every frame with
+`ρ ≠ 1` (`w = 1`, `h = 1 − ρ` solves its affine disjunct), so
+`obstruction_or_weightedHomogeneous_of_collapse` carries no information on its obstruction side.
+Above weight `n+1` the descent's obstructions are homogeneous (`ψ w = ρ^I w`, `I ≠ 0`: genuine);
+below it they are affine transport equations whose inhomogeneities must be tracked explicitly
+before the chain can feed the cards.
+
+## Log — Ritt's implication for rational maps (2026-09-29)
+
+- Card 14 promoted.  Ritt's `(1) ⇒ (4)` is unconditional Lean:
+  `RittPoincareRittForm.rittForm_of_differentiallyAlgebraicOn_poincare`.  Chain: normal form of a
+  DA log seed (`RittLogSeedNormalForm`), global orbifold theory on `P¹`
+  (`RationalSphereDynamics`, `RationalSimplePoleForms`, `RationalInvariantConnections`,
+  `RationalInvariantProjectiveConnections`), the rational-frame bridge
+  (`RittRationalLinearizerCocycle`), the frame on meromorphic germs at the fixed point
+  (`MeromorphicGermField`, `RittMeromorphicGermFrame`), the Ritt form of the linearizer
+  (`RittLinearizerRittForm`).
+- Cards 12, 13: regimes I and III closed by
+  `RittTreeChannelClock.treeRG_interior_clock_hypertranscendental` (every interior channel, every
+  `p ≥ 2`, multiplier `≠ 1`; no appeal to the Becker–Bergweiler list — the cocycle is refuted by
+  `treeRG_no_cocycle_interior`).  Remaining: regime II, the parabolic Abel coordinate.  Becker–
+  Bergweiler reduce it to the repelling case through Boshernitzan–Rubel coherence
+  (`R^n = A^{-1}(A + n)`); that reduction is the next target.
+
+## Log — parabolic regime and folder closure (2026-09-29)
+
+- Regime II closed.  A differentially algebraic Abel function at a parabolic fixed point forces a
+  rational cocycle: `ParabolicAbelHypertranscendence.ratTransport_of_differentiallyAlgebraicOn_abel`.
+  Chain: Boshernitzan–Rubel coherence through an ultraproduct germ derivation
+  (`AbelIterateCoherence`, `AbelIterateJetRelation`), the formal flow of the parabolic germ and the
+  lowest `t`-order extraction (`ParabolicFormalFlow`), the formal Laurent frame
+  (`ParabolicLaurentFrame`).
+- Card-level capstones in `TreeChannelClockRegimes` (BSC in `a`, GADC in `(d, N)`, chart invariance,
+  named message charts, noiseless conjugacy, threshold separation, sequential DA interpolation).
+- Cards 12 and 13 promoted to `3-formalized/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/`.
+  Every card of this folder is now formalized.

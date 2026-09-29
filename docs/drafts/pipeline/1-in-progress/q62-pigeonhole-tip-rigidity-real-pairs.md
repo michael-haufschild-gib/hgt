@@ -54,3 +54,8 @@ refutable by a constant function.
   FrontierPerfectGeneral, TipSmoothPiece, HbothconnAssembly, Q62TipRigidityCapstone);
   open-problems 03 answered vacuously (exceptional partner), restated as 04, answered for
   this class the same day.
+- 2026-09-29 — superseded: `Bottcher.noRelation_phiMero_of_mem_mandelbrot` proves independence for
+  every pair `c₁ ≠ c₂ ∈ M ∖ {0,−2}` unconditionally.  Neither the collar Prop nor
+  `SmoothPieceRigidity` is needed: the natural boundary from a single open access region
+  (`false_of_continuation_on_open_approach`) replaces both, since the identity theorem runs in the
+  connected exterior lune of the `w`-plane.

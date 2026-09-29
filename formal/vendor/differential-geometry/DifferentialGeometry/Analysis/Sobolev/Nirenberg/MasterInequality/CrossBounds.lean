@@ -1,3 +1,5 @@
+-- Local modification: import square integrability explicitly after narrowing the De Giorgi prelude.
+import Mathlib.MeasureTheory.Function.L2Space
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.Coercivity
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.CrossBoundsDiffQuotLocalEnergyBounds
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.CrossBoundsSummandContinuityIntegrability

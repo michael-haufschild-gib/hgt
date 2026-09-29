@@ -1,0 +1,454 @@
+import GaloisForLFunctions.HTGeometry.CoatomFixedField
+import GaloisForLFunctions.HTGeometry.NormalClosureEquivCardinality
+import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
+import Mathlib.RingTheory.AlgebraicIndependent.Adjoin
+import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
+
+/-!
+# The sheet action of a finite separable extension
+
+For a finite separable extension `S/O`, the *sheets* are the `O`-embeddings of `S` into its normal
+closure `N` inside an algebraic closure of `S`, and `Gal(N/O)` permutes them by postcomposition.
+
+* The action is faithful, there are `[S:O]` sheets, and the action is the full symmetric group
+  exactly when `|Gal(N/O)| = [S:O]!`.
+* A full symmetric action leaves no field strictly between `O` and `S`: the fixing group of the
+  canonical sheet is a point stabilizer, which is maximal.
+* Compatible field isomorphisms transport full symmetric action.
+* **Descent.**  Let `(O,S) → (O',S')` be a compatible extension, `O'/O` algebraic, whose image
+  generates `S'` over `O'`.  Then `[S':O'] ≤ [S:O]`.  If every `O`-embedding of `S` extends to an
+  `O'`-embedding of `S'`, the degrees agree, and then a full symmetric action on the sheets of
+  `S'/O'` forces one on the sheets of `S/O`: inside an algebraic closure of `S'` the normal closure
+  of `S'/O'` lies in the `O'`-span of the normal closure of `S/O`, so `[N':O'] ≤ [N:O]`.
+* A rational function field embeds sending its generators to any algebraically independent
+  family, and a finite family is independent once the field it generates contains at least as
+  many independent elements.
+-/
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+section SheetAction
+
+variable (O S : Type*) [Field O] [Field S] [Algebra O S]
+
+/-- The normal closure of `S/O` inside an algebraic closure of `S`. -/
+abbrev sheetNormalClosure : IntermediateField O (AlgebraicClosure S) :=
+  IntermediateField.normalClosure O S (AlgebraicClosure S)
+
+/-- The sheets of `S/O`: its `O`-embeddings into the normal closure. -/
+abbrev sheetEmbedding := S →ₐ[O] sheetNormalClosure O S
+
+/-- The Galois group of the normal closure permutes the sheets by postcomposition. -/
+def sheetAction :
+    (sheetNormalClosure O S ≃ₐ[O] sheetNormalClosure O S) →* Equiv.Perm (sheetEmbedding O S) where
+  toFun σ :=
+    { toFun := fun f => σ.toAlgHom.comp f
+      invFun := fun f => σ.symm.toAlgHom.comp f
+      left_inv := fun f => by
+        apply AlgHom.ext
+        intro x
+        simp
+      right_inv := fun f => by
+        apply AlgHom.ext
+        intro x
+        simp }
+  map_one' := rfl
+  map_mul' _ _ := rfl
+
+/-- The canonical sheet: the inclusion of `S` into its normal closure. -/
+def sheetCanonicalEmbedding : sheetEmbedding O S :=
+  (normalClosure.algHomEquiv O S (AlgebraicClosure S)).symm
+    (IsScalarTower.toAlgHom O S (AlgebraicClosure S))
+
+/-- The fixing group of the canonical sheet's image is the preimage of its stabilizer. -/
+theorem sheetCanonicalEmbedding_fixingSubgroup :
+    (sheetCanonicalEmbedding O S).fieldRange.fixingSubgroup =
+      (MulAction.stabilizer (Equiv.Perm (sheetEmbedding O S))
+        (sheetCanonicalEmbedding O S)).comap (sheetAction O S) := by
+  ext τ
+  rw [IntermediateField.mem_fixingSubgroup_iff]
+  constructor
+  · intro hfix
+    change sheetAction O S τ (sheetCanonicalEmbedding O S) = sheetCanonicalEmbedding O S
+    apply AlgHom.ext
+    intro x
+    exact hfix _ ⟨x, rfl⟩
+  · intro hstab y hy
+    obtain ⟨x, rfl⟩ := hy
+    change sheetAction O S τ (sheetCanonicalEmbedding O S) = sheetCanonicalEmbedding O S at hstab
+    exact DFunLike.congr_fun hstab x
+
+variable [FiniteDimensional O S] [CharZero O]
+
+instance sheetNormalClosure_isNormalClosure :
+    IsNormalClosure O S (sheetNormalClosure O S) := by
+  haveI : Algebra.IsAlgebraic O (AlgebraicClosure S) :=
+    Algebra.IsAlgebraic.trans O S (AlgebraicClosure S)
+  haveI : Normal O (AlgebraicClosure S) := { splits' _ := IsAlgClosed.splits _ }
+  infer_instance
+
+instance sheetNormalClosure_isGalois : IsGalois O (sheetNormalClosure O S) := by
+  haveI : Algebra.IsAlgebraic O (AlgebraicClosure S) :=
+    Algebra.IsAlgebraic.trans O S (AlgebraicClosure S)
+  haveI : Normal O (AlgebraicClosure S) := { splits' _ := IsAlgClosed.splits _ }
+  infer_instance
+
+instance sheetNormalClosure_finiteDimensional :
+    FiniteDimensional O (sheetNormalClosure O S) :=
+  normalClosure.is_finiteDimensional O S (AlgebraicClosure S)
+
+/-- There are exactly `[S:O]` sheets. -/
+theorem natCard_sheetEmbedding :
+    Nat.card (sheetEmbedding O S) = Module.finrank O S := by
+  rw [Nat.card_congr (normalClosure.algHomEquiv O S (AlgebraicClosure S))]
+  exact AlgHom.natCard_of_splits O S (AlgebraicClosure S) (fun _ => IsAlgClosed.splits _)
+
+instance sheetEmbedding_finite : Finite (sheetEmbedding O S) :=
+  Nat.finite_of_card_ne_zero (by
+    rw [natCard_sheetEmbedding]
+    exact Module.finrank_pos.ne')
+
+/-- **The sheet action is faithful.**  The normal closure is generated by the images of the
+sheets. -/
+theorem sheetAction_injective : Function.Injective (sheetAction O S) := by
+  intro σ τ hστ
+  let M : IntermediateField O (sheetNormalClosure O S) :=
+    { carrier := {x | σ x = τ x}
+      zero_mem' := by simp
+      add_mem' := by
+        intro x y hx hy
+        simp only [Set.mem_setOf_eq] at hx hy ⊢
+        rw [map_add, map_add, hx, hy]
+      one_mem' := by simp
+      mul_mem' := by
+        intro x y hx hy
+        simp only [Set.mem_setOf_eq] at hx hy ⊢
+        rw [map_mul, map_mul, hx, hy]
+      inv_mem' := by
+        intro x hx
+        simp only [Set.mem_setOf_eq] at hx ⊢
+        rw [map_inv₀, map_inv₀, hx]
+      algebraMap_mem' := by
+        intro x
+        simp only [Set.mem_setOf_eq]
+        exact (σ.commutes x).trans (τ.commutes x).symm }
+  have hle : IntermediateField.normalClosure O S (sheetNormalClosure O S) ≤ M := by
+    rw [normalClosure_le_iff]
+    intro f
+    rintro _ ⟨x, rfl⟩
+    change σ (f x) = τ (f x)
+    exact DFunLike.congr_fun (DFunLike.congr_fun hστ f) x
+  have htop : IntermediateField.normalClosure O S (sheetNormalClosure O S) = ⊤ :=
+    (Algebra.IsAlgebraic.isNormalClosure_iff.mp
+      (inferInstance : IsNormalClosure O S (sheetNormalClosure O S))).2
+  apply AlgEquiv.ext
+  intro x
+  have hx : x ∈ M := by
+    apply hle
+    rw [htop]
+    exact Set.mem_univ x
+  exact hx
+
+/-- **Full symmetric sheet action is a cardinality statement.**  The action is a bijection onto
+the symmetric group on the sheets exactly when the Galois group has order `[S:O]!`. -/
+theorem sheetAction_bijective_iff :
+    Function.Bijective (sheetAction O S) ↔
+      Nat.card (sheetNormalClosure O S ≃ₐ[O] sheetNormalClosure O S) =
+        (Module.finrank O S).factorial := by
+  have hperm : Nat.card (Equiv.Perm (sheetEmbedding O S)) = (Module.finrank O S).factorial := by
+    rw [Nat.card_perm, natCard_sheetEmbedding]
+  constructor
+  · intro h
+    rw [← hperm]
+    exact Nat.card_congr (Equiv.ofBijective _ h)
+  · intro h
+    have hcard : Nat.card (Equiv.Perm (sheetEmbedding O S)) ≤
+        Nat.card (sheetNormalClosure O S ≃ₐ[O] sheetNormalClosure O S) := (h.trans hperm.symm).ge
+    exact (sheetAction_injective O S).bijective_of_nat_card_le hcard
+
+/-- The Galois group has at most `[S:O]!` elements. -/
+theorem natCard_sheetNormalClosureAut_le :
+    Nat.card (sheetNormalClosure O S ≃ₐ[O] sheetNormalClosure O S) ≤
+      (Module.finrank O S).factorial := by
+  rw [← natCard_sheetEmbedding, ← Nat.card_perm]
+  exact Nat.card_le_card_of_injective _ (sheetAction_injective O S)
+
+/-- **Atomicity.**  A full symmetric sheet action leaves no intermediate field. -/
+theorem eq_bot_or_eq_top_of_sheetAction_surjective
+    (hsurj : Function.Surjective (sheetAction O S)) (M : IntermediateField O S) :
+    M = ⊥ ∨ M = ⊤ := by
+  by_cases hnt : Nontrivial (sheetEmbedding O S)
+  · let e := sheetCanonicalEmbedding O S
+    have hcoatom : IsCoatom e.fieldRange.fixingSubgroup := by
+      rw [sheetCanonicalEmbedding_fixingSubgroup]
+      exact Subgroup.isCoatom_comap_of_surjective hsurj (isCoatom_stabilizer_perm _)
+    have hle : M.map e ≤ e.fieldRange := by
+      rw [AlgHom.fieldRange_eq_map]
+      exact IntermediateField.map_mono e le_top
+    rcases eq_bot_or_eq_of_isCoatom_fixingSubgroup hcoatom hle with hbot | htop
+    · left
+      apply le_antisymm _ bot_le
+      intro x hx
+      have hex : e x ∈ M.map e := ⟨x, hx, rfl⟩
+      rw [hbot, IntermediateField.mem_bot] at hex
+      obtain ⟨c, hc⟩ := hex
+      rw [IntermediateField.mem_bot]
+      refine ⟨c, e.injective ?_⟩
+      change e (algebraMap O S c) = e x
+      rw [AlgHom.commutes]
+      exact hc
+    · right
+      apply top_unique
+      intro x _
+      have hex : e x ∈ M.map e := by
+        rw [htop]
+        exact ⟨x, rfl⟩
+      obtain ⟨y, hy, hyx⟩ := hex
+      rw [← e.injective hyx]
+      exact hy
+  · left
+    have hcard : Nat.card (sheetEmbedding O S) ≤ 1 := by
+      by_contra h
+      exact hnt (Finite.one_lt_card_iff_nontrivial.mp (by omega))
+    rw [natCard_sheetEmbedding] at hcard
+    have hS : Module.finrank O S = 1 := le_antisymm hcard Module.finrank_pos
+    have hmul := Module.finrank_mul_finrank O M S
+    rw [hS] at hmul
+    exact IntermediateField.finrank_eq_one_iff.mp (Nat.eq_one_of_mul_eq_one_right hmul)
+
+end SheetAction
+
+section Transport
+
+variable {O S O' S' : Type*} [Field O] [Field S] [Field O'] [Field S']
+  [Algebra O S] [Algebra O' S']
+  [FiniteDimensional O S] [CharZero O]
+  [FiniteDimensional O' S'] [CharZero O']
+
+/-- **Full symmetric sheet action is invariant under compatible field isomorphisms.** -/
+theorem sheetAction_bijective_iff_of_ringEquiv (eO : O ≃+* O') (eS : S ≃+* S')
+    (hcomp : (algebraMap O' S').comp eO.toRingHom = eS.toRingHom.comp (algebraMap O S)) :
+    Function.Bijective (sheetAction O S) ↔ Function.Bijective (sheetAction O' S') := by
+  rw [sheetAction_bijective_iff, sheetAction_bijective_iff,
+    natCard_aut_normalClosure_eq_of_ringEquiv (L := sheetNormalClosure O S)
+      (M := sheetNormalClosure O' S') eO eS hcomp,
+    Algebra.finrank_eq_of_equiv_equiv eO eS hcomp]
+
+end Transport
+
+section Descent
+
+variable {O S O' S' : Type*} [Field O] [Field S] [Field O'] [Field S']
+  [Algebra O S] [Algebra O' S'] [Algebra O O'] [Algebra O S'] [IsScalarTower O O' S']
+
+instance algebraicClosure_isScalarTower_of_tower :
+    IsScalarTower O O' (AlgebraicClosure S') :=
+  IsScalarTower.of_algebraMap_eq fun x => by
+    rw [IsScalarTower.algebraMap_apply O S' (AlgebraicClosure S') x,
+      IsScalarTower.algebraMap_apply O O' S' x,
+      ← IsScalarTower.algebraMap_apply O' S' (AlgebraicClosure S')]
+
+/-- **The degree cannot grow under a generating extension.**  If the image of `S` generates `S'`
+over `O'`, then `[S':O'] ≤ [S:O]`. -/
+theorem finrank_le_of_adjoin_range_eq_top [FiniteDimensional O S] (ι : S →ₐ[O] S')
+    (hgen : IntermediateField.adjoin O' (Set.range ι) = ⊤) :
+    Module.finrank O' S' ≤ Module.finrank O S := by
+  let R : IntermediateField O S' := (⊤ : IntermediateField O S).map ι
+  let eR : S ≃ₐ[O] R := IntermediateField.topEquiv.symm.trans (IntermediateField.equivMap ⊤ ι)
+  haveI : FiniteDimensional O R := eR.toLinearEquiv.finiteDimensional
+  have hrank := IntermediateField.adjoin_rank_le_of_isAlgebraic O' R (Or.inr inferInstance)
+  have hR : (R : Set S') = Set.range ι := by
+    rw [IntermediateField.coe_map, IntermediateField.coe_top, Set.image_univ]
+  rw [hR, hgen, IntermediateField.rank_top'] at hrank
+  calc Module.finrank O' S' ≤ Module.finrank O R :=
+        Cardinal.toNat_le_toNat hrank (Module.rank_lt_aleph0 O R)
+    _ = Module.finrank O S := eR.toLinearEquiv.finrank_eq.symm
+
+/-- **Degree equality from extension of embeddings.**  If every `O`-embedding of `S` into an
+algebraic closure of `S'` extends along `ι` to an `O'`-embedding of `S'`, then
+`[S:O] ≤ [S':O']`. -/
+theorem finrank_le_of_forall_exists_extension
+    [FiniteDimensional O S] [CharZero O]
+    [FiniteDimensional O' S'] [CharZero O'] (ι : S →ₐ[O] S')
+    (hext : ∀ σ : S →ₐ[O] AlgebraicClosure S',
+      ∃ τ : S' →ₐ[O'] AlgebraicClosure S', (τ.restrictScalars O).comp ι = σ) :
+    Module.finrank O S ≤ Module.finrank O' S' := by
+  classical
+  choose τ hτ using hext
+  have hinj : Function.Injective τ := by
+    intro σ₁ σ₂ h
+    rw [← hτ σ₁, ← hτ σ₂, h]
+  have h1 := AlgHom.natCard_of_splits O S (AlgebraicClosure S') (fun _ => IsAlgClosed.splits _)
+  have h2 := AlgHom.natCard_of_splits O' S' (AlgebraicClosure S') (fun _ => IsAlgClosed.splits _)
+  haveI : Finite (S' →ₐ[O'] AlgebraicClosure S') :=
+    Nat.finite_of_card_ne_zero (by rw [h2]; exact Module.finrank_pos.ne')
+  rw [← h1, ← h2]
+  exact Nat.card_le_card_of_injective τ hinj
+
+/-- **Descent of full symmetric monodromy.**  Let `ι : S → S'` be a compatible extension with
+`O'/O` algebraic whose image generates `S'` over `O'`, and suppose `[S:O] ≤ [S':O']`.  If the
+sheets of `S'/O'` carry the full symmetric action, so do the sheets of `S/O`. -/
+theorem sheetAction_bijective_of_descent [Algebra.IsAlgebraic O O']
+    [FiniteDimensional O S] [CharZero O]
+    [FiniteDimensional O' S'] [CharZero O'] (ι : S →ₐ[O] S')
+    (hgen : IntermediateField.adjoin O' (Set.range ι) = ⊤)
+    (hdeg : Module.finrank O S ≤ Module.finrank O' S')
+    (hfull : Function.Bijective (sheetAction O' S')) :
+    Function.Bijective (sheetAction O S) := by
+  have hD : Module.finrank O' S' = Module.finrank O S :=
+    le_antisymm (finrank_le_of_adjoin_range_eq_top ι hgen) hdeg
+  haveI : Algebra.IsAlgebraic O S' := Algebra.IsAlgebraic.trans O O' S'
+  haveI : Algebra.IsAlgebraic O (AlgebraicClosure S') :=
+    Algebra.IsAlgebraic.trans O S' (AlgebraicClosure S')
+  haveI : Normal O (AlgebraicClosure S') := { splits' _ := IsAlgClosed.splits _ }
+  let j : S →ₐ[O] AlgebraicClosure S' := (IsScalarTower.toAlgHom O S' (AlgebraicClosure S')).comp ι
+  let NΩ : IntermediateField O (AlgebraicClosure S') :=
+    IntermediateField.normalClosure O S (AlgebraicClosure S')
+  haveI : Nonempty (S →ₐ[O] AlgebraicClosure S') := ⟨j⟩
+  haveI : IsNormalClosure O S NΩ := inferInstance
+  haveI : FiniteDimensional O NΩ := normalClosure.is_finiteDimensional O S (AlgebraicClosure S')
+  have hcont : sheetNormalClosure O' S' ≤
+      IntermediateField.adjoin O' (NΩ : Set (AlgebraicClosure S')) := by
+    rw [normalClosure_le_iff]
+    intro τ
+    rw [AlgHom.fieldRange_eq_map, ← hgen, IntermediateField.adjoin_map]
+    apply IntermediateField.adjoin.mono
+    rintro _ ⟨_, ⟨s, rfl⟩, rfl⟩
+    exact AlgHom.fieldRange_le_normalClosure ((τ.restrictScalars O).comp ι) ⟨s, rfl⟩
+  have hrank := IntermediateField.adjoin_rank_le_of_isAlgebraic O' NΩ (Or.inr inferInstance)
+  haveI : FiniteDimensional O'
+      (IntermediateField.adjoin O' (NΩ : Set (AlgebraicClosure S'))) :=
+    Module.rank_lt_aleph0_iff.mp (lt_of_le_of_lt hrank (Module.rank_lt_aleph0 O NΩ))
+  have hfin1 := IntermediateField.finrank_le_of_le_right hcont
+  have hfin2 : Module.finrank O'
+      (IntermediateField.adjoin O' (NΩ : Set (AlgebraicClosure S'))) ≤ Module.finrank O NΩ :=
+    Cardinal.toNat_le_toNat hrank (Module.rank_lt_aleph0 O NΩ)
+  have hN : Module.finrank O NΩ = Module.finrank O (sheetNormalClosure O S) :=
+    (IsNormalClosure.equiv (F := O) (K := S) (L := NΩ)
+      (L' := sheetNormalClosure O S)).toLinearEquiv.finrank_eq
+  have hcard' := (sheetAction_bijective_iff O' S').mp hfull
+  rw [IsGalois.card_aut_eq_finrank] at hcard'
+  rw [sheetAction_bijective_iff, IsGalois.card_aut_eq_finrank]
+  apply le_antisymm
+  · have := natCard_sheetNormalClosureAut_le O S
+    rwa [IsGalois.card_aut_eq_finrank] at this
+  · rw [← hD, ← hcard', ← hN]
+    exact hfin1.trans hfin2
+
+end Descent
+
+section RationalExtension
+
+open scoped IntermediateField.algebraAdjoinAdjoin
+
+/-- A family generates, as a field over `K`, the field it generates inside that field. -/
+theorem adjoin_range_restrict_eq_top {K Ω : Type*} [Field K] [Field Ω] [Algebra K Ω]
+    {κ : Type*} (v : κ → Ω) :
+    IntermediateField.adjoin K (Set.range (fun k => (⟨v k,
+      IntermediateField.subset_adjoin K _ ⟨k, rfl⟩⟩ :
+        IntermediateField.adjoin K (Set.range v)))) = ⊤ := by
+  set A := IntermediateField.adjoin K (Set.range v)
+  set v' : κ → A := fun k => ⟨v k, IntermediateField.subset_adjoin K _ ⟨k, rfl⟩⟩
+  apply top_unique
+  intro x _
+  have hx : A.val x ∈ (IntermediateField.adjoin K (Set.range v')).map A.val := by
+    rw [IntermediateField.adjoin_map, ← Set.range_comp]
+    exact x.property
+  obtain ⟨y, hy, hyx⟩ := hx
+  rw [← A.val.injective hyx]
+  exact hy
+
+/-- **Independence from a spanning count.**  A finite family is algebraically independent over
+`K` if the field it generates contains an independent family with at least as many members. -/
+theorem algebraicIndependent_of_forall_mem_adjoin {K Ω : Type*} [Field K] [Field Ω]
+    [Algebra K Ω] {κ μ : Type*} [Finite κ] [Finite μ] (v : κ → Ω) (w : μ → Ω)
+    (hw : AlgebraicIndependent K w)
+    (hmem : ∀ j, w j ∈ IntermediateField.adjoin K (Set.range v))
+    (hcard : Nat.card κ ≤ Nat.card μ) : AlgebraicIndependent K v := by
+  set A := IntermediateField.adjoin K (Set.range v)
+  set v' : κ → A := fun k => ⟨v k, IntermediateField.subset_adjoin K _ ⟨k, rfl⟩⟩
+  let w' : μ → A := fun j => ⟨w j, hmem j⟩
+  have hwc : ⇑A.val ∘ w' = w := funext fun _ => rfl
+  have hw' : AlgebraicIndependent K w' :=
+    AlgebraicIndependent.of_comp A.val (by rw [hwc]; exact hw)
+  have htop : IntermediateField.adjoin K (Set.range v') = ⊤ := adjoin_range_restrict_eq_top v
+  haveI : Algebra.IsAlgebraic (IntermediateField.adjoin K (Set.range v')) A :=
+    ⟨fun a => by
+      have ha : a ∈ IntermediateField.adjoin K (Set.range v') := by rw [htop]; trivial
+      exact isAlgebraic_algebraMap (⟨a, ha⟩ : IntermediateField.adjoin K (Set.range v'))⟩
+  haveI : Algebra.IsAlgebraic (Algebra.adjoin K (Set.range v')) A :=
+    Algebra.IsAlgebraic.trans _ (IntermediateField.adjoin K (Set.range v')) A
+  have hle : ((Nat.card μ : ℕ) : Cardinal) ≤ Algebra.trdeg K A := by
+    have h := hw'.lift_cardinalMk_le_trdeg
+    rwa [← Nat.cast_card, Cardinal.lift_natCast, Cardinal.nat_le_lift_iff] at h
+  have hb := Algebra.IsAlgebraic.isTranscendenceBasis_of_lift_le_trdeg_of_finite K v'
+    (by
+      rw [← Nat.cast_card, Cardinal.lift_natCast, Cardinal.nat_le_lift_iff]
+      exact (Nat.cast_le.mpr hcard).trans hle)
+  have hv : ⇑A.val ∘ v' = v := funext fun _ => rfl
+  rw [← hv]
+  exact hb.1.map' A.val.injective
+
+/-- Two algebra homomorphisms out of a field agree once they agree on a generating family. -/
+theorem algHom_ext_of_adjoin_range_eq_top {F S Ω : Type*} [Field F] [Field S] [Field Ω]
+    [Algebra F S] [Algebra F Ω] {κ : Type*} {x : κ → S}
+    (hS : IntermediateField.adjoin F (Set.range x) = ⊤) {φ₁ φ₂ : S →ₐ[F] Ω}
+    (h : ∀ k, φ₁ (x k) = φ₂ (x k)) : φ₁ = φ₂ := by
+  have hext := IntermediateField.algHom_ext_of_eq_adjoin F (S := ⊤) hS.symm
+    (φ₁ := φ₁.comp IntermediateField.topEquiv.toAlgHom)
+    (φ₂ := φ₂.comp IntermediateField.topEquiv.toAlgHom)
+    (by
+      rintro _ ⟨k, rfl⟩
+      exact h k)
+  ext y
+  exact DFunLike.congr_fun hext ⟨y, trivial⟩
+
+/-- **Embeddings of a rational function field.**  If `x` is an algebraically independent generating
+family of `S'` over `K`, every algebraically independent family `v` in a `K`-field is the image of
+`x` under a `K`-embedding of `S'`. -/
+theorem exists_algHom_eq_of_algebraicIndependent {K S' Ω : Type*} [Field K] [Field S'] [Field Ω]
+    [Algebra K S'] [Algebra K Ω] {κ : Type*} (x : κ → S') (hind : AlgebraicIndependent K x)
+    (hS : IntermediateField.adjoin K (Set.range x) = ⊤) (v : κ → Ω)
+    (hv : AlgebraicIndependent K v) : ∃ τ : S' →ₐ[K] Ω, ∀ k, τ (x k) = v k := by
+  let e : FractionRing (MvPolynomial κ K) ≃ₐ[K] S' :=
+    hind.aevalEquivField.trans ((IntermediateField.equivOfEq hS).trans
+      IntermediateField.topEquiv)
+  let τ₀ : FractionRing (MvPolynomial κ K) →ₐ[K] Ω :=
+    IsFractionRing.liftAlgHom (algebraicIndependent_iff_injective_aeval.mp hv)
+  refine ⟨τ₀.comp e.symm.toAlgHom, fun k => ?_⟩
+  have he : e (algebraMap (MvPolynomial κ K) (FractionRing (MvPolynomial κ K))
+      (MvPolynomial.X k)) = x k := by
+    change ((hind.aevalEquivField (algebraMap (MvPolynomial κ K)
+      (FractionRing (MvPolynomial κ K)) (MvPolynomial.X k)) : S')) = x k
+    rw [hind.aevalEquivField_algebraMap_apply_coe, MvPolynomial.aeval_X]
+  have hsymm : e.symm (x k) = algebraMap (MvPolynomial κ K)
+      (FractionRing (MvPolynomial κ K)) (MvPolynomial.X k) :=
+    (AlgEquiv.symm_apply_eq e).mpr he.symm
+  change τ₀ (e.symm (x k)) = v k
+  rw [hsymm]
+  simp only [τ₀, IsFractionRing.liftAlgHom_apply, IsFractionRing.lift_algebraMap]
+  simp
+
+/-- **Linearity over an intermediate constant field.**  A `K`-embedding of `S'` that respects a
+generating family of an intermediate field `O'` is `O'`-linear. -/
+theorem exists_algHom_restrictScalars_eq_of_generators
+    {K O' S' Ω : Type*} [Field K] [Field O'] [Field S'] [Field Ω]
+    [Algebra K O'] [Algebra O' S'] [Algebra K S'] [IsScalarTower K O' S']
+    [Algebra O' Ω] [Algebra K Ω] [IsScalarTower K O' Ω]
+    (τ : S' →ₐ[K] Ω) {κ : Type*} (y : κ → O')
+    (hy : IntermediateField.adjoin K (Set.range y) = ⊤)
+    (h : ∀ k, τ (algebraMap O' S' (y k)) = algebraMap O' Ω (y k)) :
+    ∃ τ' : S' →ₐ[O'] Ω, τ'.restrictScalars K = τ := by
+  have heq : τ.comp (IsScalarTower.toAlgHom K O' S') = IsScalarTower.toAlgHom K O' Ω :=
+    algHom_ext_of_adjoin_range_eq_top hy h
+  refine ⟨{ τ with commutes' := fun o => DFunLike.congr_fun heq o }, ?_⟩
+  ext z
+  rfl
+
+end RationalExtension
+
+end
+
+end GaloisForLFunctions.HTGeometry

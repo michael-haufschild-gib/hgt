@@ -1,3 +1,4 @@
+/- Local compatibility change: integer and unit-valued Euler signs agree definitionally on Mathlib 4.32.2. -/
 import Mathlib.Algebra.Homology.EulerCharacteristic
 import Mathlib.Algebra.Category.ModuleCat.Abelian
 import Mathlib.Algebra.Category.ModuleCat.Colimits
@@ -121,7 +122,7 @@ theorem eulerChar_eq_sum (N : ℕ)
     (ComplexShape.down ℕ)
     (fun n ↦ ((singularHomologyFunctor (ModuleCat.{u} k) n).obj (ModuleCat.of k k)).obj X)
     (Finset.range (N + 1)) ?_ using 1
-  · simp [ComplexShape.χ]
+  · rfl
   · rw [GradedObject.finrankSupport_subset_iff]
     intro n hn
     have hz := hN n (by simpa [Finset.mem_range] using hn)

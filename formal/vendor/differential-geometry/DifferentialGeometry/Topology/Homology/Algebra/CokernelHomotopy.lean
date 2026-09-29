@@ -1,3 +1,4 @@
+/- Local compatibility change: simplify positive dependent conditionals before cokernel rewrites on Mathlib 4.32.2. -/
 import Mathlib.Algebra.Homology.Homotopy
 import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 import Mathlib.Algebra.Category.ModuleCat.Abelian
@@ -69,7 +70,7 @@ def cokernelHomotopy : Homotopy (cokernelEndomorphism i a b hab) (𝟙 (cokernel
     cases n with
     | zero =>
       rw [Homotopy.dNext_zero_chainComplex, Homotopy.prevD_chainComplex] at hh ⊢
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dif_pos, eqToHom_refl, Category.comp_id,
         _root_.HomologicalComplex.id_f, zero_add] at hh ⊢
       apply (cancel_epi ((cokernel.π i).f 0)).mp
       rw [hπ, Preadditive.comp_add, Category.comp_id, ← Category.assoc,
@@ -77,7 +78,7 @@ def cokernelHomotopy : Homotopy (cokernelEndomorphism i a b hab) (𝟙 (cokernel
       exact congrArg (fun f ↦ f ≫ (cokernel.π i).f 0) hh |>.trans (by simp)
     | succ n =>
       rw [Homotopy.dNext_succ_chainComplex, Homotopy.prevD_chainComplex] at hh ⊢
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dif_pos, eqToHom_refl, Category.comp_id,
         _root_.HomologicalComplex.id_f] at hh ⊢
       apply (cancel_epi ((cokernel.π i).f (n + 1))).mp
       rw [hπ]

@@ -1,3 +1,4 @@
+/- Local compatibility change: expose integer Euler signs before linear arithmetic on Mathlib 4.32.2. -/
 import DifferentialGeometry.Topology.Homology.Algebra.EulerCharacteristic
 import Mathlib.Algebra.Homology.HomologySequence
 import Mathlib.Algebra.Homology.HomologicalComplexAbelian
@@ -140,7 +141,9 @@ theorem homologyEulerChar_additive
     exact Module.finrank_zero_of_subsingleton
   have h := sum_homology_finrank_exactSequence S hS N
   rw [hzero, Nat.cast_zero, mul_zero] at h
-  simp [ComplexShape.χ]
+  change (∑ n ∈ Finset.range (N + 1), (-1 : ℤ) ^ n * Module.finrank k (S.X₂.homology n)) =
+    (∑ n ∈ Finset.range (N + 1), (-1 : ℤ) ^ n * Module.finrank k (S.X₁.homology n)) +
+    (∑ n ∈ Finset.range (N + 1), (-1 : ℤ) ^ n * Module.finrank k (S.X₃.homology n))
   linarith
 
 end DifferentialGeometry.HomologicalComplex

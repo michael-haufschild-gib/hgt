@@ -1,3 +1,5 @@
+-- Local modification: normalize the tangent fibre before bilinear simplification
+-- so Lean 4.32.2 does not retain a mixed composition/basepoint expression.
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskCovariantChain
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ConformalConnection
 import Mathlib.MeasureTheory.Integral.CircleIntegral
@@ -45,6 +47,9 @@ theorem diskMapBoundaryAcceleration_inner_radial
     unfold diskMapPartial
     exact map_neg _ _
   rw [hneg]
+  change g.inner (U (c θ))
+    (diskMapCovariantPartial g U (c θ) (Complex.I * c θ) (Complex.I * c θ) +
+      -diskMapPartial U (c θ) (c θ)) (diskMapPartial U (c θ) (c θ)) = _
   simp only [map_add, _root_.add_apply, map_neg, _root_.neg_apply]
   rw [diskMapCovariantPartial_inner_conformal_closedDisk g hs hU hDs hconf hz,
     (hconf _ hz).inner_partials]

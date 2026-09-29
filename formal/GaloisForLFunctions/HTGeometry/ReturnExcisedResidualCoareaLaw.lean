@@ -7,9 +7,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-/-- Return-excised minimal-rank coarea for targets in the closed Hilbert
-unit ball. This retains the norm loss created by scalar-return subtraction;
-renormalizing residual targets would erase the growing-replica gain. -/
+/-- Return-excised minimal-rank coarea for unnormalized targets in the closed
+Hilbert unit ball. The capture event retains target norms, but the projection
+action depends only on the occupied replica span. Quantitative radial gains
+require a norm-weighted reporter, such as the return-shell bound. -/
 theorem quenchedReplica_returnExcisedMinimalIncidence_bound_of_replicaNorm_le_one
     {X C α : Type*} [MeasurableSpace X] [Fintype C] [Fintype α]
     (μ : Measure X) [IsFiniteMeasure μ]
@@ -54,9 +55,10 @@ theorem quenchedReplica_returnExcisedMinimalIncidence_bound_of_replicaNorm_le_on
       μ E returnSet hreturn a (threshold ^ r) (pow_pos hthreshold r)
         hcapture hmeas hcoord
 
-/-- Closed-unit-ball version of incidence-normalized coarea. Occupied target
-image, surviving source sheets, and residual norm suppression all remain in
-the exact pair action. -/
+/-- Closed-unit-ball version of incidence-normalized coarea. The occupied
+replica target span and surviving source sheets remain in the exact pair
+action. Nonzero radial rescaling preserves that action; norm suppression is
+not encoded by the span itself. -/
 theorem quenchedReplica_returnExcisedMinimalRankCoareaIncidence_bound_of_replicaNorm_le_one
     {X C α : Type*} [MeasurableSpace X] [Fintype C] [Fintype α]
     (μ : Measure X) [IsFiniteMeasure μ]

@@ -1,3 +1,5 @@
+-- Local modification: import square integrability explicitly after narrowing the De Giorgi prelude.
+import Mathlib.MeasureTheory.Function.L2Space
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1Compl
 
 

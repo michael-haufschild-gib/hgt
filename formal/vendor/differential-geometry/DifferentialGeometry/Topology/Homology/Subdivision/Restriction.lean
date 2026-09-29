@@ -1,3 +1,4 @@
+/- Local compatibility change: simplify positive dependent conditionals in both chain-homotopy degree cases on Mathlib 4.32.2. -/
 import DifferentialGeometry.Topology.Homology.Subdivision.Support
 import DifferentialGeometry.Topology.Homology.Subdivision.Naturality
 import DifferentialGeometry.Topology.Homology.SmallChains.Subspace
@@ -91,12 +92,12 @@ def smallAffineSubdivisionHomotopy : Homotopy (smallAffineSubdivision hs R) (SA)
     cases n with
     | zero =>
       rw [Homotopy.dNext_zero_chainComplex, Homotopy.prevD_chainComplex]
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dif_pos, eqToHom_refl, Category.comp_id,
         smallAffineSubdivisionHomotopyMap_zero, zero_comp, zero_add,
         smallAffineSubdivision_f, smallAffineSubdivisionMap_zero, smallStraightening_zero]
     | succ n =>
       rw [Homotopy.dNext_succ_chainComplex, Homotopy.prevD_chainComplex]
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id]
+      simp only [dif_pos, eqToHom_refl, Category.comp_id]
       exact sub_eq_iff_eq_add.mp (smallHomotopy_comm hs R n)
 
 

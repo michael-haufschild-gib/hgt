@@ -1,3 +1,5 @@
+-- Local modification: use the Mathlib 4.32.2 setOf neighborhood lemma and
+-- normalize the chart derivative application across its reducible codomain alias.
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 
 set_option autoImplicit false
@@ -49,7 +51,7 @@ theorem exists_pos_short_path_mapsTo [RegularSpace M]
   let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  obtain ⟨c, hc, hball⟩ := setOfPred_riemannianEDist_lt_subset_nhds I hs
+  obtain ⟨c, hc, hball⟩ := setOf_riemannianEDist_lt_subset_nhds I hs
   refine ⟨c / 3, by positivity, ?_⟩
   intro γ hγ hstart hlength
   apply mapsTo_of_riemannianEDistOf_add_pathELength_lt g p s c hball γ hγ
@@ -150,8 +152,11 @@ theorem chart_displacement_le_pathELength
         · exact hγ.mdifferentiableOn one_ne_zero t ht
         · rw [uniqueMDiffWithinAt_iff_uniqueDiffWithinAt]
           exact hunique
-      rw [hder, hξder, ContinuousLinearMap.comp_apply,
-        ← TangentBundle.continuousLinearMapAt_trivializationAt (hchart ht)]
+      rw [hder, hξder]
+      change ‖S (mfderiv I 𝓘(ℝ, E) (extChartAt I p) (γ t)
+        (mfderivWithin 𝓘(ℝ) I γ (Icc 0 1) t 1))‖ₑ ≤
+          ENNReal.ofReal K * ‖mfderivWithin 𝓘(ℝ) I γ (Icc 0 1) t 1‖ₑ
+      rw [← TangentBundle.continuousLinearMapAt_trivializationAt (hchart ht)]
       have hnorm : ‖S (e.continuousLinearMapAt ℝ (γ t)
           (mfderivWithin 𝓘(ℝ) I γ (Icc 0 1) t 1))‖ ≤
           K * ‖mfderivWithin 𝓘(ℝ) I γ (Icc 0 1) t 1‖ := by

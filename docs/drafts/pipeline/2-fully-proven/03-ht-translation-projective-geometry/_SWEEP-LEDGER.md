@@ -1827,3 +1827,12 @@ Closed today, axiom-clean and wired:
 What card 7's Brick D still needs from this stack: the grade drop modulo a regular element, the
 depth transfer along a finite ring map, and the Auslander–Buchsbaum consequence
 (`pd_A M = 0` from a length-`dim A` regular sequence).  The route for each is recorded on the card.
+
+## 2026-09-28 — card 7 PROMOTED (`hypertranscendental-maximal-finite-horizon-galois-law`)
+
+The parent monodromy theorem reached stage 3 on 2026-09-04, so card 7 no longer depended on the
+local Cohen–Macaulay build.  Transported to an arbitrary characteristic-zero base (descent along
+`F ⊆ F̄`) and then to the actual divided-jet fields of a hypertranscendental element; the radical
+threshold needed the converse of Abel–Ruffini, now built (`SolvableGaloisRadicals`).  Full
+statement-to-theorem table on the card.  Remaining in this folder: card 1 (effective Baker) and
+card 11 (normality for `r ≥ 2`, rational singularities).

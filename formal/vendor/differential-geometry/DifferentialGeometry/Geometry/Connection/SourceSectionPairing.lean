@@ -1,3 +1,5 @@
+-- Local modification: close the chart-representation definitional equality
+-- explicitly after simplification on Lean 4.32.2.
 import DifferentialGeometry.Geometry.Connection.SectionAlongRegularity
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionAtBasepoint
@@ -145,6 +147,7 @@ theorem sourceSectionCovariantDerivative_chart
   have hrep : chartRepAt (U ∘ line) (fun t => W (line t)) 0 =ᶠ[𝓝 0] R ∘ line := by
     filter_upwards [] with t
     simp only [chartRepAt_apply, Function.comp_apply, hl0, R]
+    rfl
   have hd := ((hR.differentiableAt (by simp)).hasFDerivAt.comp_hasDerivAt_of_eq
     (x := 0) hl hl0.symm).congr_of_eventuallyEq hrep
   have hcurve : HasDerivAt (chartCurve (I := 𝓘(ℝ, E)) (U z) (U ∘ line))

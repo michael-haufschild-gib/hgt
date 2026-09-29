@@ -345,3 +345,47 @@ assembly → Type I twisted fourth moment → Watt (spectral).
   `T ≥ M₃/2 ≥ X^{1/3}`, where `X^{ε/1000}` divisor losses are affordable: three-factor split, Watt for
   `∫|M₃|⁴|M₂|²` (twist split into two integer blocks `(A,2A]`), amplified MVT for `M₁²M₂𝓜` with the fibrewise
   Cauchy–Schwarz energy `∑|(f⋆b)(n)|² ≤ D‖f‖²‖b‖²`; saving `X^{-ε/200}`.
+- 2026-09-28 — **Large-amplifier part of (5.2) closed mod E1/E2**
+  (`Sieve/MatomakiTeravainenLargeAmplifierSetMeanSquare.eventually_proposition22Source_setIntegral_le`):
+  `∫_U|P|² ≤ 2|F|²exp(-(log X)^{1/40}) + 2C_E(20πe + 40πX/Y)(log X)^{-A}` over the Prop 2.2 family.
+  **Remaining chain to Theorem 1.2 (design).**  (5.2) for `T ∈ [x/h, T_max]`, one-sided `∫_{T₀}^{T}`:
+  U part (done) + non-U part (`|P₁|² < P^{-ε/5}` times C1 for `∫_{-T}^{T}|P|²`: `SiftedPolyMeanSquare` with
+  `a_n = ρ⁻(n)/n`, `|ρ⁻| ≤ 156`, diagonal `|s|` by `RoughCount.card_rough_Ioc_le`) + heights `T > X`
+  (MVT for `P₁P`, coefficients `≤ 156` because a `z`-rough cofactor fixes the small prime).  §7: window
+  comparison `RealWindowCompareBound.norm_realWindowSum_compare_le`; `|t| ≤ T₀` by the kernel's low branch
+  `2|t|hh₁/x` and `sup|α|` (cost `exp(-(c/16)√log x)`); `T₀ < |t|` by a one-sided dyadic assembly of (7.1)
+  (CS of (5.2) against FS7), kernel `min(2h, 8x/t)`; conjugate symmetry for `t < 0`; long window from
+  `AllIntervalLongWindow`.
+- 2026-09-28 — **(5.2) closed mod E1/E2** (`Sieve/MatomakiTeravainenPrimeHarmanMeanSquare.eventually_harmanProduct_meanSquare_le`):
+  `∫_{T₀}^{T}|P₁P|² ≤ 2(log X)^{-2-ε/10} + 2(log X)^{-1-ε/10}PT/X` for all `T ≥ 1`; non-U input
+  `Sieve/MatomakiTeravainenHarmanSourceMeanValue` (sifted MVT via pair sieve + Brun–Titchmarsh diagonal;
+  product MVT with one term per coefficient).  Next: §7 window comparison → Theorem 1.2.
+- 2026-09-29 — **MT Theorem 1.2 (quantitative, uniform `a ∈ [1.0999, 1.1]`) closed mod E1/E2**
+  (`Sieve/MatomakiTeravainenAllIntervalTheorem.eventually_mtAllIntervalSum_short_ge`, hypotheses
+  `MTDeshouillersIwaniecBound`, `MTWattBound` only; axioms clean): for large `x`,
+  `mtAllIntervalSum(x, h = √(xP₁)·log x) ≥ h/(18000 log P₁ (log x)²)`, `P₁ = (log x)^a`, `ε = 10⁻⁷`.
+  Chain: `Sieve/MatomakiTeravainenAllIntervalFactorization` (coefficients of `P₁P₂P`, real/conjugate
+  symmetry, prime-polynomial improved MVT via the now generic `eventually_integral_normSq_LSeries_rough_le`
+  of `HarmanSourceMeanValue`) → `Sieve/MatomakiTeravainenAllIntervalWindowCompare` (Perron window comparison,
+  one-sided dyadic kernel assembly with cumulative mass `B(1+T/T₁)`, CS of (5.2) against `P₂`, explicit
+  error `(3+8J)√(αβ)h + 26000T₀²hh₁/x + 10400h(log 8x)²(1+log 8x)/2^J`) → theorem module (scales,
+  `J = ⌈12 log log x⌉`, `T₀ = exp((c/32)(log X)^{1/2})`, `Y = ⌊X/P₁⌋ - 1`). FS7 (`DyadicPrimeMeanSquareAffine`)
+  was not needed: its constant carries `(log log)²`; the sifted MVT gives the clean `(log R)^{-2}`.
+  Remaining for the two cards: card-specific extraction (row supply (6) for card 1, deleted-support
+  perturbation (FS4) for card 3), then E1 and E2.
+- 2026-09-29 — **Card `route-e-forbidden-support-e3-stability` formalized mod E1/E2** (axioms clean):
+  `Sieve/MatomakiTeravainenForbiddenSupport.eventually_mtCoprimeE3Sum_ge` ((FS2)–(FS3): coprime `E₃` sum
+  `≥ h/(40000 log P₁ L²)` for all `1 ≤ A ≤ x^B`, `a = 11/10`, distinct `p₂ ≠ n`), `eventually_exists_coprime_threePrime`
+  (squarefree `E₃` coprime to `A` in every `(x, x+√x(log x)^{1.55}]`), and
+  `Sieve/CoprimeE3BlockReplacement.eventually_block_admission` ((FS14): `r` blocks, sign reversal, pairwise
+  coprime, `ℓ_i ≤ (3K+3) log N`, prime factors `≤ max(C log N, √u_i)`).  Route: §7 comparison generalized to prime
+  subsets (`mtAllIntervalSumOn`, `…compare_small_on`), `(FS6)` with the source MVT up to `Y^{100/99}`, perturbed
+  long window (keeps `20/21`), deletions via `ρ⁻ ≤ 1_prime` + window counts.  Remaining for this card: E1, E2.
+- 2026-09-29 — **Card `route-e-cofactor-amplified-e3-token-supply` formalized mod E1/E2** (axioms clean):
+  `Sieve/CofactorAmplifiedTokenSupply.eventually_cofactor_amplified_supply` — for `0 < η < 1/6`, large `U`,
+  band `(⌊(log U)^{1.09}⌋, ⌊2(log U)^{1.1}⌋]`, height `⌊U^{2η}⌋`: (1) every `q ∈ Q(u)` squarefree,
+  `μ(q) = -μ(u)`, `0 < q-u ≤ 8U^{1/2+η}(log U)^{31/20}`; (2) `#Q(u) ≥ (η/10¹³)U^{1/2+η}/(log U)^{9/20}`;
+  (3) physical union over squarefree `u ∈ [U,2U]` `≥ (η/10¹³)U/log U`.  Row supply (6)/(6b):
+  `Sieve/MatomakiTeravainenSliceTokens` + `Sieve/MatomakiTeravainenBandTokens`; (7)/(9) from
+  `RouteECofactorBandMass`; (3) by sign `-1` sources on a grid of spacing `4√(Ut)(log 2U)^{31/20}`.
+  Remaining for both cards: E1 (`MTDeshouillersIwaniecBound`), E2 (`MTWattBound`).

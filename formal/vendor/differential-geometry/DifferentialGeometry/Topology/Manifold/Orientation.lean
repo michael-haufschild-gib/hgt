@@ -1,3 +1,4 @@
+/- Local compatibility change: evaluate the identity tangent map by reflexivity on Mathlib 4.32.2. -/
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.LinearAlgebra.Orientation
@@ -240,7 +241,8 @@ private theorem mfderivLinearEquiv_refl (x : M) :
       LinearEquiv.refl ℝ (TangentSpace I x) := by
   ext v
   change mfderiv I I id x v = v
-  simp only [mfderiv_id, ContinuousLinearMap.id_apply]
+  rw [mfderiv_id]
+  rfl
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M]
   [FiniteDimensional ℝ F] [IsManifold J ∞ N]
