@@ -157,21 +157,22 @@ theorem exists_atomDenom_lower_bound {s₀ : ℂ} (hs₀ : 1 / 2 < s₀.re) :
       _ ≤ _ := mul_le_mul hP1 hQ1 hr0.le (norm_nonneg _)
 
 /-- **The atomic series is holomorphic off the critical line** (on `Re s > ½`). -/
-theorem differentiableOn_atomicPairSeries {c t : ℕ → ℝ} (h : ZetaAtoms c t) :
+theorem differentiableOn_atomicPairSeries {c t : ℕ → ℝ} (hone : ∀ j, 1 ≤ t j)
+    (hsum : Summable fun j => |c j| / t j ^ 2) :
     DifferentiableOn ℂ (atomicPairSeries c t) {s : ℂ | 1 / 2 < s.re} := by
   intro s₀ hs₀
   obtain ⟨r, κ, hr, hκ, hb⟩ := exists_atomDenom_lower_bound hs₀
   have hts : DifferentiableOn ℂ
       (fun s : ℂ => ∑' j, (c j : ℂ) / ((s - 1 / 2) ^ 2 + (t j : ℂ) ^ 2)) (ball s₀ r) := by
     refine differentiableOn_tsum_of_summable_norm (u := fun j => κ⁻¹ * (|c j| / t j ^ 2))
-      (h.summable.mul_left _) (fun j => ?_) isOpen_ball (fun j w hw => ?_)
+      (hsum.mul_left _) (fun j => ?_) isOpen_ball (fun j w hw => ?_)
     · refine (differentiableOn_const _).div (by fun_prop) (fun w hw => ?_)
-      have := hb (t j) (h.one_le j) w hw
-      have ht := h.one_le j
+      have := hb (t j) (hone j) w hw
+      have ht := hone j
       have hpos : 0 < κ * t j ^ 2 := by positivity
       intro h0; rw [h0, norm_zero] at this; linarith
-    · have hd := hb (t j) (h.one_le j) w hw
-      have ht := h.one_le j
+    · have hd := hb (t j) (hone j) w hw
+      have ht := hone j
       have ht2 : 0 < t j ^ 2 := by positivity
       have hpos : 0 < ‖(w - 1 / 2) ^ 2 + (t j : ℂ) ^ 2‖ :=
         lt_of_lt_of_le (by positivity) hd
@@ -253,7 +254,7 @@ theorem tendsto_sub_one_mul_crystallineRemainderRaw {c t : ℕ → ℝ} (h : Zet
     have hm0 : (0 : ℝ) ≤ m := m.cast_nonneg
     simp at this; linarith
   have hΦc : ContinuousAt Φ 1 :=
-    ((differentiableOn_atomicPairSeries h).differentiableAt
+    ((differentiableOn_atomicPairSeries h.one_le h.summable).differentiableAt
       ((isOpen_re_gt _).mem_nhds (by norm_num))).continuousAt
   have hL0 : Continuous completedRiemannZeta₀ := differentiable_completedZeta₀.continuous
   have hdL0 : Continuous (deriv completedRiemannZeta₀) :=
@@ -740,7 +741,8 @@ theorem riemannHypothesis_of_completedZetaXiLogDeriv_eq {c t : ℕ → ℝ} (hat
     exact this.resolve_right (Gammaℝ_ne_zero_of_re_pos (by linarith))
   set g : ℂ → ℂ := fun z => atomicPairSeries c t z - (1 / z + 1 / (z - 1)) with hgdef
   have hΦd : DifferentiableAt ℂ (atomicPairSeries c t) ρ :=
-    (differentiableOn_atomicPairSeries hat).differentiableAt ((isOpen_re_gt _).mem_nhds hρ)
+    (differentiableOn_atomicPairSeries hat.one_le hat.summable).differentiableAt
+      ((isOpen_re_gt _).mem_nhds hρ)
   have hgc : ContinuousAt g ρ :=
     hΦd.continuousAt.sub ((continuousAt_const.div continuousAt_id hρ0).add
       (continuousAt_const.div (continuousAt_id.sub continuousAt_const) (sub_ne_zero.mpr hρ1)))

@@ -327,6 +327,43 @@ theorem exists_eq_exp_of_second_deriv {f f₁ f₂ : ℝ → ℝ} (h1 : ∀ y, H
         rw [mul_add, ← mul_assoc, hE']; ring
     _ = _ := by rw [h, hE'']; ring
 
+/-! ## Polynomial bounds -/
+
+/-- `Σ |w(n)| n^{−2} < ∞` bounds `w(n)` by a multiple of `n²`. -/
+theorem exists_abs_le_of_summable_div_sq {w : ℕ → ℝ}
+    (hs : Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ (2 : ℝ)) :
+    ∃ K : ℝ, ∀ n : ℕ, |w (n + 1)| ≤ K * ((n + 1 : ℕ) : ℝ) ^ 2 := by
+  refine ⟨∑' n : ℕ, |w (n + 1)| / ((n : ℝ) + 1) ^ (2 : ℝ), fun n => ?_⟩
+  have hle := hs.le_tsum n (fun j _ => by positivity)
+  have hpos : (0 : ℝ) < ((n : ℝ) + 1) ^ (2 : ℝ) := by positivity
+  rw [div_le_iff₀ hpos] at hle
+  have : ((n : ℝ) + 1) ^ (2 : ℝ) = ((n + 1 : ℕ) : ℝ) ^ 2 := by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; push_cast; ring
+  rw [this] at hle; exact hle
+
+/-- A polynomial bound on `w` passes to `1 ⋆ w` with one more power. -/
+theorem abs_oneConvWeight_le {w : ℕ → ℝ} {K : ℝ} {p : ℕ}
+    (hw : ∀ n : ℕ, |w (n + 1)| ≤ K * ((n + 1 : ℕ) : ℝ) ^ p) (k : ℕ) :
+    |oneConvWeight w (k + 1)| ≤ K * ((k + 1 : ℕ) : ℝ) ^ (p + 1) := by
+  have hK : 0 ≤ K := by
+    have := (abs_nonneg _).trans (hw 0); simpa using this
+  unfold oneConvWeight
+  have hmem : ∀ d ∈ (k + 1).divisors, |w d| ≤ K * ((k + 1 : ℕ) : ℝ) ^ p := by
+    intro d hd
+    have hd1 : 1 ≤ d := Nat.pos_of_mem_divisors hd
+    have hdk : d ≤ k + 1 := Nat.divisor_le hd
+    obtain ⟨e, rfl⟩ : ∃ e, d = e + 1 := ⟨d - 1, by omega⟩
+    have h2 : ((e + 1 : ℕ) : ℝ) ^ p ≤ ((k + 1 : ℕ) : ℝ) ^ p := by gcongr
+    exact (hw e).trans (mul_le_mul_of_nonneg_left h2 hK)
+  calc |∑ d ∈ (k + 1).divisors, w d| ≤ ∑ d ∈ (k + 1).divisors, |w d| :=
+        Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _d ∈ (k + 1).divisors, K * ((k + 1 : ℕ) : ℝ) ^ p := Finset.sum_le_sum hmem
+    _ = ((k + 1).divisors.card : ℝ) * (K * ((k + 1 : ℕ) : ℝ) ^ p) := by
+        rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ ((k + 1 : ℕ) : ℝ) * (K * ((k + 1 : ℕ) : ℝ) ^ p) := by
+        gcongr; exact_mod_cast Nat.card_divisors_le_self _
+    _ = _ := by rw [pow_succ]; ring
+
 /-! ## The theorem -/
 
 theorem cuspSeries_riemannCuspPoly_eq (u : ℝ) : cuspSeries riemannCuspPoly u = riemannKernelReal u := by
@@ -352,40 +389,9 @@ theorem eq_zero_of_riemannKernelTransform_eq_zero {w : ℕ → ℝ}
       (riemannKernelReal (y - Real.log ((n + 1 : ℕ) : ℝ)) +
         riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ))) = 0) :
     ∀ n : ℕ, w (n + 1) = 0 := by
-  -- polynomial growth
-  have hs2 := hsum 2 (by norm_num)
-  set K := ∑' n : ℕ, |w (n + 1)| / ((n : ℝ) + 1) ^ (2 : ℝ) with hKdef
-  have hw : ∀ n : ℕ, |w (n + 1)| ≤ K * ((n + 1 : ℕ) : ℝ) ^ 2 := by
-    intro n
-    have hle := hs2.le_tsum n (fun j _ => by positivity)
-    have hpos : (0 : ℝ) < ((n : ℝ) + 1) ^ (2 : ℝ) := by positivity
-    rw [div_le_iff₀ hpos] at hle
-    have : ((n : ℝ) + 1) ^ (2 : ℝ) = ((n + 1 : ℕ) : ℝ) ^ 2 := by
-      rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; push_cast; ring
-    rw [this] at hle; exact hle
-  have hK0 : 0 ≤ K := tsum_nonneg fun _ => by positivity
+  obtain ⟨K, hw⟩ := exists_abs_le_of_summable_div_sq (hsum 2 (by norm_num))
   set a := oneConvWeight w with hadef
-  have ha : ∀ k : ℕ, |a (k + 1)| ≤ (|w 0| + K) * ((k + 1 : ℕ) : ℝ) ^ 3 := by
-    intro k
-    unfold a oneConvWeight
-    have hmem : ∀ d ∈ (k + 1).divisors, |w d| ≤ (|w 0| + K) * ((k + 1 : ℕ) : ℝ) ^ 2 := by
-      intro d hd
-      have hd1 : 1 ≤ d := Nat.pos_of_mem_divisors hd
-      have hdk : d ≤ k + 1 := Nat.divisor_le hd
-      obtain ⟨e, rfl⟩ : ∃ e, d = e + 1 := ⟨d - 1, by omega⟩
-      have h1 := hw e
-      have h2 : ((e + 1 : ℕ) : ℝ) ^ 2 ≤ ((k + 1 : ℕ) : ℝ) ^ 2 := by
-        gcongr
-      nlinarith [abs_nonneg (w 0)]
-    calc |∑ d ∈ (k + 1).divisors, w d| ≤ ∑ d ∈ (k + 1).divisors, |w d| :=
-          Finset.abs_sum_le_sum_abs _ _
-      _ ≤ ∑ _d ∈ (k + 1).divisors, (|w 0| + K) * ((k + 1 : ℕ) : ℝ) ^ 2 :=
-          Finset.sum_le_sum hmem
-      _ = ((k + 1).divisors.card : ℝ) * ((|w 0| + K) * ((k + 1 : ℕ) : ℝ) ^ 2) := by
-          rw [Finset.sum_const, nsmul_eq_mul]
-      _ ≤ ((k + 1 : ℕ) : ℝ) * ((|w 0| + K) * ((k + 1 : ℕ) : ℝ) ^ 2) := by
-          gcongr; exact_mod_cast Nat.card_divisors_le_self _
-      _ = _ := by ring
+  have ha := abs_oneConvWeight_le hw
   -- the kernel sum as a weighted cusp series
   set S := weightedCuspSeries a 1 with hS
   set S₁ := weightedCuspSeries a (cuspDeriv 1) with hS₁

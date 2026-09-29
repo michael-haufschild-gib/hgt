@@ -59,10 +59,8 @@ theorem thetaMovingShellGammaAmplitude_eq_normalized (n : ℕ) (u : ℝ) :
     rw [← Real.exp_add]
     congr 1
     ring
+  rw [← he]
   field_simp
-  linear_combination
-    -(Real.pi * Real.exp (Real.log (1 + u / thetaMovingShellScale n) / 4) *
-      (2 * Real.pi * (thetaMovingShellScale n + u) - 3)) * he
 
 theorem integrableOn_thetaShellFrequencyJetIntegrand (n k : ℕ) (b : ℝ) :
     IntegrableOn (fun x : ℝ => (thetaCuspSourceTerm x (n+1) : ℂ) *
@@ -83,7 +81,7 @@ theorem integrableOn_thetaShellFrequencyJetIntegrand (n k : ℕ) (b : ℝ) :
           Complex.exp (Complex.I * (b : ℂ) * (x : ℂ)))).aestronglyMeasurable.restrict
   · filter_upwards with x
     simp [norm_mul, norm_pow, Complex.norm_exp, Complex.norm_real, Real.norm_eq_abs,
-      abs_mul, abs_pow, mul_comm]
+      mul_comm]
 
 /-- Exact normalization of every literal positive-index shell Fourier jet. -/
 theorem thetaMovingShellGammaJet_eq_normalized_shell (n k : ℕ) (lambda : ℝ) :
@@ -96,8 +94,11 @@ theorem thetaMovingShellGammaJet_eq_normalized_shell (n k : ℕ) (lambda : ℝ) 
   let P : ℝ → ℂ := fun x => (Complex.I * (x : ℂ))^k *
     Complex.exp (Complex.I * (b : ℂ) * (x : ℂ))
   have hP : Continuous P := by dsimp [P]; fun_prop
+  have hInt : IntegrableOn (fun x : ℝ => (thetaCuspSourceTerm x (n+1) : ℂ) * P x)
+      (Ioi 0) := by
+    simpa only [P, mul_assoc] using integrableOn_thetaShellFrequencyJetIntegrand n k b
   have hcoord := thetaCuspShellHalfLineTransform_eq_gammaIntegral P hP
-    (Nat.succ_pos n) (integrableOn_thetaShellFrequencyJetIntegrand n k b)
+    (Nat.succ_pos n) hInt
   have hshell : thetaShellFrequencyJet n k b =
       ∫ v : ℝ in Ioi a, thetaCuspShellGammaIntegrand P (n+1) v := by
     simpa only [thetaCuspShellHalfLineTransform, thetaShellFrequencyJet, P,
@@ -110,6 +111,7 @@ theorem thetaMovingShellGammaJet_eq_normalized_shell (n k : ℕ) (lambda : ℝ) 
       apply integral_congr_ae
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
       have ha := thetaMovingShellScale_pos n
+      have hu0 : 0 < u := hu
       have hav : 0 < u+a := by dsimp [a]; linarith
       rw [thetaCuspShellGammaIntegrand_eq_explicit P (Nat.succ_pos n) hav]
       dsimp [P, c, b]
@@ -119,11 +121,8 @@ theorem thetaMovingShellGammaJet_eq_normalized_shell (n k : ℕ) (lambda : ℝ) 
         thetaMovingShellGammaPhase_eq_coordinate]
       dsimp [a]
       push_cast
-      simp only [mul_pow]
-      congr 1
-      · ring
-      · congr 1
-        ring
+      simp only [mul_pow, mul_assoc]
+      ring
     _ = c * ∫ u : ℝ in Ioi 0, thetaCuspShellGammaIntegrand P (n+1) (u+a) :=
       integral_const_mul c _
     _ = c * ∫ v : ℝ in Ioi a, thetaCuspShellGammaIntegrand P (n+1) v := by

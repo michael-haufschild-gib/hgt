@@ -741,6 +741,40 @@ theorem exists_abs_atomPairing_truncated_sub_le {w : ℕ → ℝ}
   calc |atomPairing w D| ≤ 2 * (M * (C * Real.exp (-(2 * (L - 1)))) * (2 * R) * Real.exp (2 * R)) * Sw := hD
     _ = _ := by ring
 
+/-- **Injectivity of the Riemann-kernel transform on the atoms `n ≥ 2`.** If `G_w ≡ 0`, then
+`w(n) = 0` for all `n ≥ 2`. -/
+theorem eq_zero_of_weightKernelTransform_eq_zero {w : ℕ → ℝ}
+    (hsum : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ σ)
+    (hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2)
+    (hG : ∀ y, weightKernelTransform w y = 0) :
+    ∀ n, 2 ≤ n → w n = 0 := by
+  set w' : ℕ → ℝ := fun n => if 2 ≤ n then w n else 0 with hw'
+  have hsum' : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w' (n + 1)| / ((n : ℝ) + 1) ^ σ := by
+    intro σ hσ
+    refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun n => ?_) (hsum σ hσ)
+    simp only [hw']
+    split_ifs
+    · exact le_rfl
+    · rw [abs_zero, zero_div]; positivity
+  have hG' : ∀ y : ℝ, ∑' n : ℕ, w' (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) *
+      (riemannKernelReal (y - Real.log ((n + 1 : ℕ) : ℝ)) +
+        riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ))) = 0 := by
+    intro y
+    have h := hG y
+    simp only [weightKernelTransform] at h
+    rw [(summable_weightTerm hw2 y).tsum_eq_zero_add] at h
+    simp only [show ¬ (2 ≤ 0) by omega, if_false, zero_mul, zero_add] at h
+    rw [← h]
+    refine tsum_congr fun n => ?_
+    simp only [hw']
+    split_ifs <;> ring
+  have hzero := eq_zero_of_riemannKernelTransform_eq_zero hsum' hG'
+  intro n hn
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  have := hzero m
+  simp only [hw', if_pos hn] at this
+  exact this
+
 /-- **Vanishing of the pairing with Φ forces `w = 0`.** If `T_w(Φ, H) = 0` for every `C²` compactly
 supported `H`, then the Riemann-kernel transform of `w` vanishes, and `w(n) = 0` for all `n ≥ 2`. -/
 theorem eq_zero_of_forall_atomPairing_riemannKernel_eq_zero {w : ℕ → ℝ}
@@ -760,33 +794,7 @@ theorem eq_zero_of_forall_atomPairing_riemannKernel_eq_zero {w : ℕ → ℝ}
       rw [atomPairing_riemannKernel_eq_integral hw2 hg.continuous hgc] at h
       simpa [smul_eq_mul] using h
     exact (hGc.ae_eq_iff_eq volume continuous_const).mp hae
-  -- the Riemann-kernel transform is injective
-  set w' : ℕ → ℝ := fun n => if 2 ≤ n then w n else 0 with hw'
-  have hsum' : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w' (n + 1)| / ((n : ℝ) + 1) ^ σ := by
-    intro σ hσ
-    refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun n => ?_) (hsum σ hσ)
-    simp only [hw']
-    split_ifs
-    · exact le_rfl
-    · rw [abs_zero, zero_div]; positivity
-  have hG' : ∀ y : ℝ, ∑' n : ℕ, w' (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) *
-      (riemannKernelReal (y - Real.log ((n + 1 : ℕ) : ℝ)) +
-        riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ))) = 0 := by
-    intro y
-    have h := congrFun hG y
-    simp only [weightKernelTransform] at h
-    rw [(summable_weightTerm hw2 y).tsum_eq_zero_add] at h
-    simp only [show ¬ (2 ≤ 0) by omega, if_false, zero_mul, zero_add] at h
-    rw [← h]
-    refine tsum_congr fun n => ?_
-    simp only [hw']
-    split_ifs <;> ring
-  have hzero := eq_zero_of_riemannKernelTransform_eq_zero hsum' hG'
-  intro n hn
-  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  have := hzero m
-  simp only [hw', if_pos hn] at this
-  exact this
+  exact eq_zero_of_weightKernelTransform_eq_zero hsum hw2 (congrFun hG)
 
 /-- **`Λ` is an extreme point of the full Weil cone.** Let `w` be real weights with
 `Σ |w(n)| n^{−σ} < ∞` for every `σ > 1`. If `Λ + w` and `Λ − w` are both Weil-positive with the

@@ -1,0 +1,9 @@
+# TT natural critical Hilbert endpoint
+
+Validated new leaf: formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldNaturalSquareEnergyEndpoint.lean, wired into RHTower. Main theorem RHTower.not_woldNatResidualSquareEnergy_half : ¬ WoldNatResidualSquareEnergy (1/2), no premises. Existing strict t>1/2 theorem did not include equality.
+
+Proof: generic Hilbert current bounds atoms by |s||r_n|(n+1)^(-Re s-1), square summability gives local holomorphy inside Re s> -1/2. At s0+x on critical wall, scaled norm squared ≤ |s0+x|² Q(x²+x/2), hence scaled radial residue zero. Natural cutoff partial-sum identity identifies current+holonomy constant with safe Abel germ. RHTower.exists_woldNatAbelContinuation_forced_criticalWall_residue supplies nonzero -m, m≥1, unconditionally; contradiction.
+
+Verification: named lake build --old leaf passed; final lake env lean leaf exit 0; scratch #print axioms of capstone and generic current_radial_zero gives only propext, Classical.choice, Quot.sound. Global formal lint blocked by 13 unrelated unreachable modules, not this leaf.
+
+Goal is still ACTIVE and novelty is unresolved: no claim of absence from all public literature or inaccessible training data. Working log docs/drafts/pipeline/1-in-progress/tt-source-frontier-conjecture-loop-2026-09-29.md. C3 paper proof rejects even sum R(n+1)^2/(1+log(n+1)) finite, using normalized dual squared norm ≤(1+x)^2 and finite-head/tail splitting; Lean scratch in progress. C4 positive survivor candidate: quantized wall residue forces positive logarithmic prefix energy loading tied to m²/|s0|²; exact theorem unproved, do not close no-go until strongest positive survivor audited and formalized. No full/umbrella builds, numerical experiments, raised heartbeats, commits or pushes.

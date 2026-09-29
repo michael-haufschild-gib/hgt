@@ -62,10 +62,20 @@ existential statement uses only `propext`, `Classical.choice`, and `Quot.sound`.
   its arithmetic comparison remains open.
 
 This retires only the blanket nonnegative-curvature assertion for the prime
-jump generator. It is not a counterexample to Weil positivity or RH. The smooth
-witness is not claimed to belong to the compactly supported Weil source core.
+jump generator. It is not a counterexample to Weil positivity or RH. The original
+polynomial witness is not compactly supported. The subsequent
+`CCMConstrainedPrimeCurvatureInstability` theorem realizes its six samples on
+literal compact smooth exact-pole sources with arbitrarily small complete form
+norm and `|Q|`, making point curvature unbounded below there as well. Strong
+positive survivor: every finite physical sampling fibre is form-norm dense and
+has exactly the original constrained Rayleigh infimum; see
+`../3-formalized/rw-finite-sampling-ground-rigidity.md`.
 
 ## Log
 
 - 2026-09-28 — exact literal-operator obstruction and quantitative positive
   survivor formalized; no-go closed at this stated scope.
+- 2026-09-29 — compact exact-pole source strengthening and exact finite-sample
+  ground rigidity formalized; eight public theorems pass direct source and
+  standard-axiom audits. A sharper one-direction curvature survivor is under
+  final audit in `../2-fully-proven/rw-prime-curvature-one-negative-direction.md`.

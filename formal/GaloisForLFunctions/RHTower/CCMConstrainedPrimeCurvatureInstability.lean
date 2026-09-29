@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMFiniteSamplingGroundRigidity
-import GaloisForLFunctions.RHTower.CCMPrimePoleNegativeCurvature
+import GaloisForLFunctions.RHTower.CCMPrimePoleCurvatureRankOne
 
 /-!
 # Prime curvature is unbounded on the exact constrained smooth source core
@@ -140,5 +140,101 @@ theorem constrained_curvature_unbounded_below :
     have hp := mul_nonneg (sub_nonneg.mpr hk) (mul_nonneg (by linarith : 0 ≤ k) hd.le)
     nlinarith
   nlinarith [le_abs_self M]
+
+private def extremalSamples (q : ℝ) : ℝ :=
+  let C := -PrimeCurvatureRankOne.residualBC / (2 * PrimeCurvatureRankOne.delta)
+  let A := -(PrimeCurvatureRankOne.crossAB + PrimeCurvatureRankOne.crossAC * C) /
+    (2 * PrimeCurvatureRankOne.alpha)
+  if q = 1 then A else if q = 2/3 then 1 else if q = 1/2 then C
+    else if q = 4/3 then 2 else if q = 3/2 then 2 * C else 0
+
+private def extremalObservable (x : ℝ) : ℝ := extremalSamples (Real.exp x)
+
+private theorem extremal_curvature :
+    PrimeCurvatureRankOne.curvatureAtTwo extremalObservable = -PrimeCurvatureRankOne.penalty := by
+  rw [PrimeCurvatureRankOne.curvatureAtTwo_eq_four_squares]
+  norm_num [PrimeCurvatureRankOne.sampleDelta, extremalObservable, extremalSamples,
+    Real.exp_log (by norm_num : (0 : ℝ) < 1),
+    Real.exp_log (by norm_num : (0 : ℝ) < 2/3),
+    Real.exp_log (by norm_num : (0 : ℝ) < 1/2),
+    Real.exp_log (by norm_num : (0 : ℝ) < 4/3),
+    Real.exp_log (by norm_num : (0 : ℝ) < 3/2),
+    Real.exp_log (by norm_num : (0 : ℝ) < 2), PrimeCurvatureRankOne.penalty]
+  ring
+
+/-- Exact sharp curvature is attained on arbitrarily small actual compact source vectors. -/
+theorem exists_constrained_rankOne_curvature_extremizer (ε : ℝ) (hε : 0 < ε) :
+    ∃ g : CCMComplexSmoothInteriorSource aperture,
+      IsPolarConstrained aperture g.toCCMFormVector ∧
+      ‖g.toCCMFormVector‖ < ε ∧
+      |ccmRestrictedWeilSourceQuadratic aperture g.toCCMFormVector| < ε ∧
+      PrimeCurvatureRankOne.sampleDelta (sourceObservable g) (2/3) = 1 ∧
+      PrimeCurvatureRankOne.curvatureAtTwo (sourceObservable g) = -PrimeCurvatureRankOne.penalty := by
+  classical
+  let s := sampleRatios.image Real.log
+  obtain ⟨g, hg, hgv, hgn, hgq⟩ := exists_ccmPolarConstrained_finite_interpolant_source_small
+    aperture s (fun x => (primePoleProfile x * extremalObservable x : ℝ))
+    (by
+      intro x hx
+      obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hx
+      exact sample_log_interior hq) ε hε
+  have hsamples : ∀ q ∈ sampleRatios,
+      sourceObservable g (Real.log q) = extremalObservable (Real.log q) := by
+    intro q hq
+    have hv := hgv (Real.log q) (Finset.mem_image.mpr ⟨q, hq, rfl⟩)
+    rw [sourceObservable, hv, Complex.ofReal_re]
+    exact mul_div_cancel_left₀ _ (primePoleProfile_pos _).ne'
+  refine ⟨g, hg, hgn, hgq, ?_, ?_⟩
+  · rw [PrimeCurvatureRankOne.sampleDelta,
+      hsamples (2/3) (by simp [sampleRatios]), hsamples 2 (by simp [sampleRatios])]
+    norm_num [extremalObservable, extremalSamples,
+      Real.exp_log (by norm_num : (0 : ℝ) < 2/3),
+      Real.exp_log (by norm_num : (0 : ℝ) < 2)]
+  · exact (gammaTwo_six_sample_congr _ _ hsamples).trans extremal_curvature
+
+/-- The one-direction coefficient is optimal even on every positive form-norm ball
+of the exact constrained compact source core. -/
+theorem constrained_rankOne_compensation_iff (c ε : ℝ) (hε : 0 < ε) :
+    (∀ g : CCMComplexSmoothInteriorSource aperture,
+      IsPolarConstrained aperture g.toCCMFormVector → ‖g.toCCMFormVector‖ < ε →
+      -c * (PrimeCurvatureRankOne.sampleDelta (sourceObservable g) (2/3))^2 ≤
+        PrimeCurvatureRankOne.curvatureAtTwo (sourceObservable g)) ↔
+    PrimeCurvatureRankOne.penalty ≤ c := by
+  constructor
+  · intro h
+    obtain ⟨g, hg, hgn, _, hB, hcurv⟩ := exists_constrained_rankOne_curvature_extremizer ε hε
+    have hb := h g hg hgn
+    rw [hB, hcurv] at hb
+    norm_num at hb
+    linarith
+  · intro hc g _ _
+    exact (mul_le_mul_of_nonneg_right (neg_le_neg hc) (sq_nonneg _)).trans
+      (PrimeCurvatureRankOne.curvatureAtTwo_ge_rankOne (sourceObservable g))
+
+/-- Nonnegative pointwise prime curvature still admits every near-ground Rayleigh value. -/
+theorem exists_constrained_nonnegative_curvature_near_ground {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : CCMComplexSmoothInteriorSource aperture,
+      IsPolarConstrained aperture g.toCCMFormVector ∧
+      g (Real.log 2) = 0 ∧ g (Real.log (2/3)) = 0 ∧
+      ccmArchimedeanFormToAperture aperture g.toCCMFormVector ≠ 0 ∧
+      ccmRestrictedWeilSourceQuadratic aperture g.toCCMFormVector /
+        ‖ccmArchimedeanFormToAperture aperture g.toCCMFormVector‖^2 <
+          ccmRestrictedWeilPolarGroundEnergy aperture + ε ∧
+      0 ≤ PrimeCurvatureRankOne.curvatureAtTwo (sourceObservable g) := by
+  classical
+  let s : Finset ℝ := {Real.log 2, Real.log (2/3)}
+  have hs : ∀ x ∈ s, |x| < aperture.1 := by
+    intro x hx
+    simp only [s, Finset.mem_insert, Finset.mem_singleton] at hx
+    rcases hx with rfl | rfl
+    · exact sample_log_interior (by simp [sampleRatios])
+    · exact sample_log_interior (by simp [sampleRatios])
+  obtain ⟨g, hg, hgv, hgne, hgR⟩ := exists_ccmPolarConstrained_sampled_rayleigh_lt
+    aperture s (fun _ => 0) hs hε
+  have h₂ : g (Real.log 2) = 0 := hgv _ (by simp [s])
+  have h₃ : g (Real.log (2/3)) = 0 := hgv _ (by simp [s])
+  refine ⟨g, hg, h₂, h₃, hgne, hgR, ?_⟩
+  apply PrimeCurvatureRankOne.curvatureAtTwo_nonneg_of_sample_eq
+  simp [sourceObservable, h₂, h₃]
 
 end RHTower.PrimeCurvatureCounterexample

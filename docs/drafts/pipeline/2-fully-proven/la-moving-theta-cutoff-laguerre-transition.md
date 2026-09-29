@@ -80,7 +80,10 @@ frequency-derivative exchanges. Hence
 
 `exp(pi m^2) m^(2k-2) T_N^(k)(lambda m^2) -> H^(k)(lambda)`
 
-for `k=0,1,2` and every fixed real `lambda`.
+for every fixed natural `k` and every fixed real `lambda`. The same polynomial
+majorant works at each fixed order; only its degree and finite constant change.
+This stronger all-order statement was extracted during Lean transfer and
+returned to paper/novelty audit. It is not uniform as `k` grows with `N`.
 
 ### 3. Full source is negligible for lambda>4
 
@@ -140,4 +143,8 @@ approximation route and identifies its precise surviving scaling boundary.
   passed (one new leaf, 27 seconds); no axiom audit yet.
 - Open transfer: exact literal-shell connector; omitted-tail domination;
   full-source derivative decay; exact limit and unconditional 5/8 capstones.
+- All-order strengthening audit: the exact-coordinate proof and counting-measure
+  domination remain valid for every fixed natural order. Current searches found
+  no matching literal-theta joint-cutoff jet theorem; universal absence is not
+  claimed. Its status remains a candidate novelty assessment.
 - No Lean certificate yet; no axiom audit claim.

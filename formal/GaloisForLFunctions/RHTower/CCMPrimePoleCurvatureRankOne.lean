@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.CCMPrimePoleNegativeCurvature
 
 At `log 2` in aperture `log(21/10)`, four positive squares and one
 negative sample-difference square give the complete iterated prime energy.
-The negative direction is precisely the difference between the samples at
+The negative channel is the difference between the samples at
 `log(2/3)` and `log 2`. All coefficients retain the actual cutoff prime rates.
 -/
 
@@ -92,7 +92,6 @@ theorem delta_pos : 0 < delta := by
   have heq : delta = (4 * alpha * gamma - crossAC^2) / (4 * alpha) := by
     unfold delta
     field_simp [alpha_pos.ne']
-    ring
   rw [heq]
   exact div_pos blockDet_pos (mul_pos (by norm_num) alpha_pos)
 
@@ -102,9 +101,12 @@ private theorem reduced_complete (A B C : ℝ) :
     alpha * (A + (crossAB * B + crossAC * C) / (2 * alpha))^2 +
       delta * (C + residualBC * B / (2 * delta))^2 + kappa * B^2 := by
   have ha := alpha_pos.ne'
-  have hd : gamma - crossAC^2 / (4 * alpha) ≠ 0 := delta_pos.ne'
-  unfold kappa residualBC delta
-  field_simp [ha, hd]
+  have hg : gamma = delta + crossAC^2 / (4 * alpha) := by
+    unfold delta
+    ring
+  rw [hg]
+  unfold kappa residualBC
+  field_simp [ha, delta_pos.ne']
   ring
 
 /-- Four positive squares expose the sole possible negative sample direction. -/
@@ -153,5 +155,86 @@ theorem penalty_pos : 0 < penalty := by
 theorem curvatureAtTwo_nonneg_of_sample_eq (f : ℝ → ℝ)
     (h : f (Real.log (2/3)) = f (Real.log 2)) : 0 ≤ curvatureAtTwo f := by
   simpa [sampleDelta, h] using curvatureAtTwo_ge_rankOne f
+
+private theorem four_squares_zero_iff (w₁ w₂ w₃ w₄ A B C D : ℝ)
+    (h₁ : 0 < w₁) (h₂ : 0 < w₂) (h₃ : 0 < w₃) (h₄ : 0 < w₄) :
+    w₁*A^2 + w₂*B^2 + w₃*C^2 + w₄*D^2 = 0 ↔
+      A = 0 ∧ B = 0 ∧ C = 0 ∧ D = 0 := by
+  have hn₁ := mul_nonneg h₁.le (sq_nonneg A)
+  have hn₂ := mul_nonneg h₂.le (sq_nonneg B)
+  have hn₃ := mul_nonneg h₃.le (sq_nonneg C)
+  have hn₄ := mul_nonneg h₄.le (sq_nonneg D)
+  constructor
+  · intro h
+    have hz₁ : w₁*A^2 = 0 := le_antisymm (by linarith) hn₁
+    have hz₂ : w₂*B^2 = 0 := le_antisymm (by linarith) hn₂
+    have hz₃ : w₃*C^2 = 0 := le_antisymm (by linarith) hn₃
+    have hz₄ : w₄*D^2 = 0 := le_antisymm (by linarith) hn₄
+    exact ⟨sq_eq_zero_iff.mp ((mul_eq_zero.mp hz₁).resolve_left h₁.ne'),
+      sq_eq_zero_iff.mp ((mul_eq_zero.mp hz₂).resolve_left h₂.ne'),
+      sq_eq_zero_iff.mp ((mul_eq_zero.mp hz₃).resolve_left h₃.ne'),
+      sq_eq_zero_iff.mp ((mul_eq_zero.mp hz₄).resolve_left h₄.ne')⟩
+  · rintro ⟨rfl, rfl, rfl, rfl⟩
+    ring
+
+private theorem sum_last_eq_zero (X r : ℝ) : X + r = r ↔ X = 0 := by
+  constructor <;> intro h <;> linarith
+
+/-- Complete equality classification for the optimal compensated curvature. -/
+theorem curvatureAtTwo_eq_rankOne_iff (f : ℝ → ℝ) :
+    curvatureAtTwo f = -penalty * (sampleDelta f (2/3))^2 ↔
+      sampleDelta f (4/3) = 2 * sampleDelta f (2/3) ∧
+      sampleDelta f (3/2) = 2 * sampleDelta f (1/2) ∧
+      sampleDelta f 1 +
+        (crossAB * sampleDelta f (2/3) + crossAC * sampleDelta f (1/2)) / (2 * alpha) = 0 ∧
+      sampleDelta f (1/2) + residualBC * sampleDelta f (2/3) / (2 * delta) = 0 := by
+  obtain ⟨hl, hm, _⟩ := log_bounds
+  rw [curvatureAtTwo_eq_four_squares]
+  dsimp only [penalty]
+  simp only [neg_neg]
+  rw [sum_last_eq_zero,
+    four_squares_zero_iff _ _ _ _ _ _ _ _ (by positivity) (by positivity) alpha_pos delta_pos]
+  constructor
+  · rintro ⟨hD, hE, hA, hC⟩
+    exact ⟨by linarith, by linarith, hA, hC⟩
+  · rintro ⟨hD, hE, hA, hC⟩
+    exact ⟨by linarith, by linarith, hA, hC⟩
+
+/-- On the repaired sector, zero curvature is exactly constancy on all six samples. -/
+theorem curvatureAtTwo_flat_zero_iff (f : ℝ → ℝ) :
+    sampleDelta f (2/3) = 0 ∧ curvatureAtTwo f = 0 ↔
+      ∀ q ∈ ({1/2, 2/3, 1, 4/3, 3/2, 2} : Finset ℝ),
+        f (Real.log q) = f (Real.log 2) := by
+  constructor
+  · rintro ⟨hB, hzero⟩
+    have heq : curvatureAtTwo f = -penalty * (sampleDelta f (2/3))^2 := by simp [hzero, hB]
+    obtain ⟨hD, hE, hA, hC⟩ := (curvatureAtTwo_eq_rankOne_iff f).mp heq
+    have hC₀ : sampleDelta f (1/2) = 0 := by
+      simpa only [hB, mul_zero, zero_div, add_zero] using hC
+    have hA₀ : sampleDelta f 1 = 0 := by
+      simpa only [hB, hC₀, mul_zero, zero_add, zero_div, add_zero] using hA
+    have hD₀ : sampleDelta f (4/3) = 0 := by simpa only [hB, mul_zero] using hD
+    have hE₀ : sampleDelta f (3/2) = 0 := by simpa only [hC₀, mul_zero] using hE
+    intro q hq
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hq
+    rcases hq with rfl | rfl | rfl | rfl | rfl | rfl
+    · dsimp [sampleDelta] at hC₀; linarith
+    · dsimp [sampleDelta] at hB; linarith
+    · dsimp [sampleDelta] at hA₀; linarith
+    · dsimp [sampleDelta] at hD₀; linarith
+    · dsimp [sampleDelta] at hE₀; linarith
+    · rfl
+  · intro h
+    have hd : ∀ q ∈ ({1/2, 2/3, 1, 4/3, 3/2, 2} : Finset ℝ), sampleDelta f q = 0 := by
+      intro q hq
+      simp [sampleDelta, h q hq]
+    have hA := hd 1 (by simp)
+    have hB := hd (2/3) (by simp)
+    have hC := hd (1/2) (by simp)
+    have hD := hd (4/3) (by simp)
+    have hE := hd (3/2) (by simp)
+    refine ⟨hB, ?_⟩
+    rw [curvatureAtTwo_eq_four_squares]
+    simp only [hA, hB, hC, hD, hE, mul_zero, add_zero, zero_div, pow_two, sub_self]
 
 end RHTower.PrimeCurvatureRankOne
