@@ -1,7 +1,7 @@
 # Λ is an extreme point of the Weil cone (Hamburger rigidity of two-sided perturbations)
 
 - **ID:** weil-lambda-extreme-point
-- **Stage:** 2-fully-proven (paper, 2026-09-29)
+- **Stage:** 3-formalized (paper 2026-09-29; Lean 2026-09-29, Herglotz-free route)
 - **Type:** THEOREM (paper)
 - **Source:** `1-in-progress/hf-positive-hodge-attack/krein-producer-loops.md`, L140 (settles L129)
 - **Statement:** Let `w: ℕ_{≥2} → ℝ` with `Σ|w(n)|n^{−σ} < ∞` for `σ > 1`. If `Λ + w` and `Λ − w` are both Weil-positive for ζ's archimedean datum, then `w = 0`. Equivalently, if RH holds, Λ is an extreme point of the (convex, closed) Weil cone `W`.
@@ -25,7 +25,7 @@
 
 ## Gates
 - [x] 0 → 1, 1 → 2: proof above.
-- [ ] 2 → 3: Lean. Needs Hamburger's theorem (not in mathlib or the corpus) and the boundary-value dictionary.
+- [x] 2 → 3: Lean, by a Herglotz-free route: `RHTower.eq_zero_of_weilPositiveFull_add_of_sub` (see the last section).
 
 ## Log
 - 2026-09-29 — created from L140. Corrects L139's "multiplicative FE" (the relation is linear, `D_w(s) + D_w(1−s) = κ`).
@@ -55,3 +55,22 @@
     - (3) the sandwich `0 ≤ Re(Ψ ± D_w) ≤ 2Re Ψ` ⇒ atomic measures ⇒ `D_w = Σ r_ρ(pair kernels) + const` (Herglotz reconstruction: equal real parts ⇒ imaginary constant);
     - (4) continuity of `Z·D_w` up to the line, the odd boundary identity and the decay bound;
     - (5) the Weil-cone definition, `Λ ∈ W ⇒ RH` (corpus), and assembly with `coeff_eq_zero_of_critical_line_odd`.
+
+## Lean, complete (2026-09-29): a Herglotz-free proof
+**Theorem (Lean, unconditional).** `RHTower.eq_zero_of_weilPositiveFull_add_of_sub`, module `RHTower/WeilFullConeExtremePoint` (847 lines), standard axioms, wired.
+- Hypotheses: `w : ℕ → ℝ` with `Σ|w(n+1)|/(n+1)^σ < ∞` for every `σ > 1`, and `WeilPositiveFull (Λ + w)`, `WeilPositiveFull (Λ − w)`. Here `WeilPositiveFull` is the full Weil cone: pole weight 1, every `C²` compactly supported test.
+- Conclusion: `w(n) = 0` for all `n ≥ 2`.
+- Bricks (2)–(5) of the programme above are not needed. No Herglotz representation, boundary regularity, Schwarz reflection or continuation of `D_w` is used.
+
+**Proof (new).**
+1. The explicit formula makes the functional of `Λ ± w` on `f ⋆ f̃` equal to `W(f,f) ∓ T_w(f)`, with `T_w(f) = Σ w(n)n^{−½}(k_f(log n) + k_f(−log n))`. So `|T_w(f)| ≤ Re W(f,f)` (`abs_atomPairing_le`).
+2. Riemann's kernel Φ has `Φ̂ = Ξ`, so its truncations `Φχ_L` are near-null: `W ≤ (5/4)S_Z E_L²` with `E_L → 0`.
+3. Take `f = Φχ_L + εH`, `H` smooth and compactly supported. The first-order term gives `2ε|T_w(Φχ_L, H)| ≤ (5/4)S(E_L² + (E_L + εE_H)²) + ε²|T_w(H,H)|` (`two_mul_abs_atomPairing_le`). Let `L → ∞`, then `ε → 0`: `T_w(Φ, H) = 0`.
+4. By Fubini, `T_w(Φ, H) = ∫ H G_w` with `G_w(s) = Σ w(n)n^{−½}(Φ(s + log n) + Φ(s − log n))`. The fundamental lemma gives `G_w ≡ 0`.
+5. `RHTower/RiemannKernelTransformInjectivity` (530 lines) proves `G_w ≡ 0 ⇒ w = 0`:
+   - `Φ = Ψ'' − Ψ/4` with `Ψ = Σ_m e^{u/2}e^{−πm²e^{2u}}`;
+   - the scaling `cuspTerm_add_log` and the divisor rearrangement turn `G_w` into `F'' − F/4` with `F(y) = S(y) + S(−y)`, `S(y) = e^{y/2}θ_{1⋆w}(e^{2y})`;
+   - the ODE forces `F = A(e^{y/2} + e^{−y/2})`, which is the odd theta relation `θ_a(x) = −x^{−½}θ_a(1/x) + A + Ax^{−½}` for `a = 1 ⋆ w`;
+   - the corpus Hamburger lemma `coeff_eq_zero_of_odd_coeffTheta_relation` gives `a = 0`, and Möbius inversion gives `w = 0`.
+
+**What the new route shows.** Step 2 of the paper proof (atomic boundary measure) is replaced by one line: two-sided positivity forces the first variation of `T_w` to vanish at a near-null vector. The only arithmetic input is the vanishing of Ξ at the zeros, through Φ. The route also gives the one-sided tangent law `T_w(Φχ_L) ≤ W(Φχ_L) → 0` (cycles 143–144 of `mc-conjecture-loop-2026-09-28.md`).

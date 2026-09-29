@@ -11,7 +11,7 @@ For real weights `w` on `n ≥ 1` with `Σ |w(n)| n^{−σ} < ∞` for every `σ
 **Theorem** (`eq_zero_of_riemannKernelTransform_eq_zero`). If `G_w ≡ 0`, then `w = 0`.
 
 The kernel is `Φ = Ψ'' − Ψ/4` with `Ψ(u) = Σ_m e^{u/2} e^{−πm²e^{2u}}`. With
-`a = 1 ⋆ w` (`divisorWeight`) and `S(y) = Σ_k a(k) e^{y/2} e^{−πk²e^{2y}} = e^{y/2} θ_a(e^{2y})`, the
+`a = 1 ⋆ w` (`oneConvWeight`) and `S(y) = Σ_k a(k) e^{y/2} e^{−πk²e^{2y}} = e^{y/2} θ_a(e^{2y})`, the
 scaling `cuspTerm_add_log` rearranges `Σ_n w(n) n^{−1/2} Φ(y + log n)` into `S''(y) − S(y)/4`
 (`tsum_shift_cuspSeries_eq`). By evenness of `Φ`, `G_w(y) = F''(y) − F(y)/4` with
 `F(y) = S(y) + S(−y)`. So `F = A(e^{y/2} + e^{−y/2})`, which is the odd theta relation
@@ -28,7 +28,7 @@ noncomputable section
 
 /-! ## Scaling of cusp terms -/
 
-theorem exp_log_div_two {N : ℝ} (hN : 0 < N) : Real.exp (Real.log N / 2) = Real.sqrt N := by
+theorem exp_half_log_eq_sqrt {N : ℝ} (hN : 0 < N) : Real.exp (Real.log N / 2) = Real.sqrt N := by
   rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hN]; ring_nf
 
 /-- `cuspTerm R m (y + log N) = √N · cuspTerm R (N m) y`. -/
@@ -38,7 +38,7 @@ theorem cuspTerm_add_log (R : ℝ[X]) (m : ℕ) {N : ℕ} (hN : 0 < N) (y : ℝ)
   unfold cuspTerm
   have h1 : Real.exp ((y + Real.log N) / 2) = Real.sqrt N * Real.exp (y / 2) := by
     rw [show (y + Real.log N) / 2 = Real.log N / 2 + y / 2 by ring, Real.exp_add,
-      exp_log_div_two hNpos]
+      exp_half_log_eq_sqrt hNpos]
   have h2 : (m : ℝ) ^ 2 * Real.exp (2 * (y + Real.log N)) =
       ((N * m : ℕ) : ℝ) ^ 2 * Real.exp (2 * y) := by
     rw [show 2 * (y + Real.log N) = 2 * y + (Real.log N + Real.log N) by ring, Real.exp_add,
@@ -126,12 +126,12 @@ theorem weightedCuspSeries_riemannCuspPoly {a : ℕ → ℝ} {K : ℝ} {p : ℕ}
 /-! ## Divisor rearrangement -/
 
 /-- The divisor sum `(1 ⋆ w)(k) = Σ_{d ∣ k} w(d)`. -/
-def divisorWeight (w : ℕ → ℝ) (k : ℕ) : ℝ := ∑ d ∈ k.divisors, w d
+def oneConvWeight (w : ℕ → ℝ) (k : ℕ) : ℝ := ∑ d ∈ k.divisors, w d
 
 /-- **Rearrangement over factorizations.** `Σ_{n,m ≥ 1} w(n) F(nm) = Σ_{k ≥ 1} (1 ⋆ w)(k) F(k)`. -/
 theorem hasSum_divisorWeight_mul {w F : ℕ → ℝ}
     (hs : Summable fun q : ℕ × ℕ => w (q.1 + 1) * F ((q.1 + 1) * (q.2 + 1))) :
-    HasSum (fun k : ℕ => divisorWeight w (k + 1) * F (k + 1))
+    HasSum (fun k : ℕ => oneConvWeight w (k + 1) * F (k + 1))
       (∑' q : ℕ × ℕ, w (q.1 + 1) * F ((q.1 + 1) * (q.2 + 1))) := by
   set f₁ : ℕ+ × ℕ+ → ℝ := fun q => w q.1 * F (q.1 * q.2) with hf₁
   set e : ℕ × ℕ ≃ ℕ+ × ℕ+ := (Equiv.pnatEquivNat.prodCongr Equiv.pnatEquivNat).symm with he
@@ -142,7 +142,7 @@ theorem hasSum_divisorWeight_mul {w F : ℕ → ℝ}
     rw [← e.hasSum_iff, ← hcomp]; exact hs.hasSum
   have h2 := (sigmaAntidiagonalEquivProd.hasSum_iff (f := f₁)).mpr h1
   have h3 : ∀ k : ℕ+, HasSum (fun c : Nat.divisorsAntidiagonal (k : ℕ) =>
-      (f₁ ∘ sigmaAntidiagonalEquivProd) ⟨k, c⟩) (divisorWeight w k * F k) := by
+      (f₁ ∘ sigmaAntidiagonalEquivProd) ⟨k, c⟩) (oneConvWeight w k * F k) := by
     intro k
     have hfin := hasSum_fintype (fun c : Nat.divisorsAntidiagonal (k : ℕ) =>
       (f₁ ∘ sigmaAntidiagonalEquivProd) ⟨k, c⟩)
@@ -151,11 +151,11 @@ theorem hasSum_divisorWeight_mul {w F : ℕ → ℝ}
     simp only [Function.comp_apply, sigmaAntidiagonalEquivProd, Equiv.coe_fn_mk,
       divisorsAntidiagonalFactors, hf₁, PNat.mk_coe]
     rw [(Nat.divisorsAntidiagonal (k : ℕ)).sum_attach (fun x : ℕ × ℕ => w x.1 * F (x.1 * x.2)),
-      Nat.sum_divisorsAntidiagonal (fun a b => w a * F (a * b)), divisorWeight, Finset.sum_mul]
+      Nat.sum_divisorsAntidiagonal (fun a b => w a * F (a * b)), oneConvWeight, Finset.sum_mul]
     refine Finset.sum_congr rfl fun d hd => ?_
     rw [Nat.mul_div_cancel' (Nat.dvd_of_mem_divisors hd)]
   have h4 := h2.sigma h3
-  have h5 := (Equiv.pnatEquivNat.symm.hasSum_iff (f := fun k : ℕ+ => divisorWeight w k * F k)).mpr h4
+  have h5 := (Equiv.pnatEquivNat.symm.hasSum_iff (f := fun k : ℕ+ => oneConvWeight w k * F k)).mpr h4
   convert h5 using 1
   funext k
   simp [Equiv.pnatEquivNat_symm_apply, Nat.succPNat_coe]
@@ -210,7 +210,7 @@ theorem abs_mul_cuspTerm_prod_le {w : ℕ → ℝ} {K : ℝ} {p : ℕ}
 theorem tsum_shift_cuspSeries_eq {w : ℕ → ℝ} {K : ℝ} {p : ℕ}
     (hw : ∀ n : ℕ, |w (n + 1)| ≤ K * ((n + 1 : ℕ) : ℝ) ^ p) (R : ℝ[X]) (y : ℝ) :
     ∑' n : ℕ, w (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) * cuspSeries R (y + Real.log ((n + 1 : ℕ) : ℝ)) =
-      weightedCuspSeries (divisorWeight w) R y := by
+      weightedCuspSeries (oneConvWeight w) R y := by
   have hY : 0 < Real.exp (2 * y) := Real.exp_pos _
   have hsumN := summable_cuspTerm_bound (p + 2 * R.natDegree)
     (by positivity : 0 < π * Real.exp (2 * y) / 2)
@@ -364,10 +364,10 @@ theorem eq_zero_of_riemannKernelTransform_eq_zero {w : ℕ → ℝ}
       rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; push_cast; ring
     rw [this] at hle; exact hle
   have hK0 : 0 ≤ K := tsum_nonneg fun _ => by positivity
-  set a := divisorWeight w with hadef
+  set a := oneConvWeight w with hadef
   have ha : ∀ k : ℕ, |a (k + 1)| ≤ (|w 0| + K) * ((k + 1 : ℕ) : ℝ) ^ 3 := by
     intro k
-    unfold a divisorWeight
+    unfold a oneConvWeight
     have hmem : ∀ d ∈ (k + 1).divisors, |w d| ≤ (|w 0| + K) * ((k + 1 : ℕ) : ℝ) ^ 2 := by
       intro d hd
       have hd1 : 1 ≤ d := Nat.pos_of_mem_divisors hd
@@ -500,7 +500,7 @@ theorem eq_zero_of_riemannKernelTransform_eq_zero {w : ℕ → ℝ}
     have hdiv := (hasSum_divisorWeight_mul (w := fun n => |w n|)
       (F := fun k => 1 / ((k : ℕ) : ℝ) ^ σ) hpair).summable
     refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun n => ?_) hdiv
-    simp only [ha', Complex.norm_real, Real.norm_eq_abs, divisorWeight]
+    simp only [ha', Complex.norm_real, Real.norm_eq_abs, oneConvWeight]
     have habs : |∑ d ∈ (n + 1).divisors, w d| ≤ ∑ d ∈ (n + 1).divisors, |w d| :=
       Finset.abs_sum_le_sum_abs _ _
     have hpos : (0 : ℝ) < ((n : ℝ) + 1) ^ σ := by positivity
@@ -515,7 +515,7 @@ theorem eq_zero_of_riemannKernelTransform_eq_zero {w : ℕ → ℝ}
   induction n using Nat.strong_induction_on with
   | _ n ih =>
     have h := hzero n
-    unfold a divisorWeight at h
+    unfold a oneConvWeight at h
     rw [← Nat.cons_self_properDivisors (Nat.succ_ne_zero n), Finset.sum_cons] at h
     have hprop : ∑ d ∈ (n + 1).properDivisors, w d = 0 := by
       refine Finset.sum_eq_zero fun d hd => ?_

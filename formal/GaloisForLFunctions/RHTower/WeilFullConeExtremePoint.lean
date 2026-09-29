@@ -99,7 +99,6 @@ theorem atomPairing_add_smul (w : ℕ → ℝ) {g₁ g₂ g₃ : ℝ → ℝ} {R
   have s₃ := (summable_atomPairing w h₃).mul_left b
   rw [← tsum_mul_left, ← tsum_mul_left, ← s₁.tsum_add s₂, ← (s₁.add s₂).tsum_add s₃]
   refine tsum_congr fun n => ?_
-  simp only [Pi.add_apply]
   ring
 
 /-! ## The two-sided bound -/
@@ -209,7 +208,7 @@ theorem test_zero_bound {H : ℝ → ℝ} (hH : ContDiff ℝ 2 H) (hHc : HasComp
   · have h := one_add_abs_re_mul_norm_paperFT_le hG hG' hd hIm'
     rwa [Complex.conj_re, WeilEF.gammaOf_re] at h
 
-theorem integrable_ofReal_mul_cexp {H : ℝ → ℝ} (hH : Continuous H) (hHc : HasCompactSupport H)
+theorem integrable_ofReal_mul_cexp_of_hasCompactSupport {H : ℝ → ℝ} (hH : Continuous H) (hHc : HasCompactSupport H)
     (z : ℂ) : Integrable fun u : ℝ => (H u : ℂ) * Complex.exp (I * z * u) :=
   ((Complex.continuous_ofReal.comp hH).mul (by fun_prop)).integrable_of_hasCompactSupport
     (hHc.comp_left Complex.ofReal_zero).mul_right
@@ -255,7 +254,7 @@ theorem norm_W_perturbedKernel_le (L ε : ℝ) {H : ℝ → ℝ} (hH : ContDiff 
     unfold paperFT
     have h0 : Integrable fun u : ℝ => truncatedRiemannKernel L u * Complex.exp (I * z * u) := by
       simpa using integrable_translate_mul_cexp L 0 z
-    have h1 := (integrable_ofReal_mul_cexp hH.continuous hHc z).const_mul (ε : ℂ)
+    have h1 := (integrable_ofReal_mul_cexp_of_hasCompactSupport hH.continuous hHc z).const_mul (ε : ℂ)
     rw [← integral_const_mul, ← integral_add h0 h1]
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
     simp only; ring
@@ -698,7 +697,7 @@ theorem exists_abs_atomPairing_truncated_sub_le {w : ℕ → ℝ}
     exact ⟨M, fun t => by rw [← Real.norm_eq_abs]; exact hM t⟩
   have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
   set Sw := ∑' n : ℕ, |w n| / (n : ℝ) ^ 2 with hSw
-  have hΣ0 : 0 ≤ Sw := tsum_nonneg fun _ => by positivity
+  have hSw0 : 0 ≤ Sw := tsum_nonneg fun _ => by positivity
   refine ⟨2 * (M * C * (2 * R) * Real.exp (2 * R)) * Sw, by positivity, fun L => ?_⟩
   -- decay of the full correlation
   have hΦdecay : ∀ y, |crossCorr riemannKernelReal H y| ≤
@@ -710,10 +709,10 @@ theorem exists_abs_atomPairing_truncated_sub_le {w : ℕ → ℝ}
     nlinarith [abs_nonneg t]
   -- the defect correlation
   set D : ℝ → ℝ := fun y => crossCorr (truncatedRiemannKernelReal L) H y -
-    crossCorr riemannKernelReal H y with hD
+    crossCorr riemannKernelReal H y with hDdef
   have hDeq : ∀ y, D y = ∫ t, (truncatedRiemannKernelReal L t - riemannKernelReal t) * H (t - y) := by
     intro y
-    simp only [hD, crossCorr]
+    simp only [hDdef, crossCorr]
     rw [← integral_sub (integrable_mul_translate_right (continuous_truncatedRiemannKernelReal L) hH hHc y)
       (integrable_mul_translate_right continuous_riemannKernelReal hH hHc y)]
     refine integral_congr_ae (Eventually.of_forall fun t => ?_)
@@ -737,10 +736,57 @@ theorem exists_abs_atomPairing_truncated_sub_le {w : ℕ → ℝ}
     unfold atomPairing
     rw [← hsU.tsum_sub hsΦ]
     refine tsum_congr fun n => ?_
-    simp only [hD]; ring
+    simp only [hDdef]; ring
   rw [hsub]
   calc |atomPairing w D| ≤ 2 * (M * (C * Real.exp (-(2 * (L - 1)))) * (2 * R) * Real.exp (2 * R)) * Sw := hD
     _ = _ := by ring
+
+/-- **Vanishing of the pairing with Φ forces `w = 0`.** If `T_w(Φ, H) = 0` for every `C²` compactly
+supported `H`, then the Riemann-kernel transform of `w` vanishes, and `w(n) = 0` for all `n ≥ 2`. -/
+theorem eq_zero_of_forall_atomPairing_riemannKernel_eq_zero {w : ℕ → ℝ}
+    (hsum : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ σ)
+    (hstep1 : ∀ H : ℝ → ℝ, ContDiff ℝ 2 H → HasCompactSupport H →
+      atomPairing w (crossCorr riemannKernelReal H) = 0) :
+    ∀ n, 2 ≤ n → w n = 0 := by
+  have hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2 := by
+    refine (summable_nat_add_iff 1).mp ((hsum 2 (by norm_num)).congr fun n => ?_)
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; push_cast; ring
+  -- `G_w = 0`
+  have hGc := continuous_weightKernelTransform hw2
+  have hG : weightKernelTransform w = fun _ => 0 := by
+    have hae : ∀ᵐ x ∂(volume : Measure ℝ), weightKernelTransform w x = 0 := by
+      refine ae_eq_zero_of_integral_contDiff_smul_eq_zero hGc.locallyIntegrable fun g hg hgc => ?_
+      have h := hstep1 g (hg.of_le (WithTop.coe_le_coe.mpr le_top)) hgc
+      rw [atomPairing_riemannKernel_eq_integral hw2 hg.continuous hgc] at h
+      simpa [smul_eq_mul] using h
+    exact (hGc.ae_eq_iff_eq volume continuous_const).mp hae
+  -- the Riemann-kernel transform is injective
+  set w' : ℕ → ℝ := fun n => if 2 ≤ n then w n else 0 with hw'
+  have hsum' : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w' (n + 1)| / ((n : ℝ) + 1) ^ σ := by
+    intro σ hσ
+    refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun n => ?_) (hsum σ hσ)
+    simp only [hw']
+    split_ifs
+    · exact le_rfl
+    · rw [abs_zero, zero_div]; positivity
+  have hG' : ∀ y : ℝ, ∑' n : ℕ, w' (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) *
+      (riemannKernelReal (y - Real.log ((n + 1 : ℕ) : ℝ)) +
+        riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ))) = 0 := by
+    intro y
+    have h := congrFun hG y
+    simp only [weightKernelTransform] at h
+    rw [(summable_weightTerm hw2 y).tsum_eq_zero_add] at h
+    simp only [show ¬ (2 ≤ 0) by omega, if_false, zero_mul, zero_add] at h
+    rw [← h]
+    refine tsum_congr fun n => ?_
+    simp only [hw']
+    split_ifs <;> ring
+  have hzero := eq_zero_of_riemannKernelTransform_eq_zero hsum' hG'
+  intro n hn
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  have := hzero m
+  simp only [hw', if_pos hn] at this
+  exact this
 
 /-- **`Λ` is an extreme point of the full Weil cone.** Let `w` be real weights with
 `Σ |w(n)| n^{−σ} < ∞` for every `σ > 1`. If `Λ + w` and `Λ − w` are both Weil-positive with the
@@ -802,49 +848,11 @@ theorem eq_zero_of_weilPositiveFull_add_of_sub {w : ℕ → ℝ}
     have hεM : ε * M₂ ≤ τ / 2 := by
       rw [hε, div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
       nlinarith
-    have hdiff := (hK L).trans hLK
-    have htri : τ ≤ |T1| + |T1 - T| := by
-      have := abs_sub_abs_le_abs_sub T T1
-      rw [abs_sub_comm] at this
-      linarith
+    have hdiff : |T1 - T| ≤ τ / 4 := (hK L).trans hLK
+    have htri : |T| - |T1| ≤ |T - T1| := abs_sub_abs_le_abs_sub T T1
     rw [abs_sub_comm] at htri
     linarith
-  -- Step 2: `G_w = 0`
-  have hGc := continuous_weightKernelTransform hw2
-  have hG : weightKernelTransform w = fun _ => 0 := by
-    have hae : ∀ᵐ x ∂(volume : Measure ℝ), weightKernelTransform w x = 0 := by
-      refine ae_eq_zero_of_integral_contDiff_smul_eq_zero hGc.locallyIntegrable fun g hg hgc => ?_
-      have h := hstep1 g (hg.of_le (by simp)) hgc
-      rw [atomPairing_riemannKernel_eq_integral hw2 hg.continuous hgc] at h
-      simpa [smul_eq_mul] using h
-    exact (hGc.ae_eq_iff_eq volume continuous_const).mp hae
-  -- Step 3: the Riemann-kernel transform is injective
-  set w' : ℕ → ℝ := fun n => if 2 ≤ n then w n else 0 with hw'
-  have hsum' : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w' (n + 1)| / ((n : ℝ) + 1) ^ σ := by
-    intro σ hσ
-    refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun n => ?_) (hsum σ hσ)
-    simp only [hw']
-    split_ifs
-    · exact le_rfl
-    · rw [abs_zero, zero_div]; positivity
-  have hG' : ∀ y : ℝ, ∑' n : ℕ, w' (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) *
-      (riemannKernelReal (y - Real.log ((n + 1 : ℕ) : ℝ)) +
-        riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ))) = 0 := by
-    intro y
-    have h := congrFun hG y
-    simp only [weightKernelTransform] at h
-    rw [(summable_weightTerm hw2 y).tsum_eq_zero_add] at h
-    simp only [show ¬ (2 ≤ 0) by omega, if_false, zero_mul, zero_add] at h
-    rw [← h]
-    refine tsum_congr fun n => ?_
-    simp only [hw']
-    split_ifs <;> ring
-  have hzero := eq_zero_of_riemannKernelTransform_eq_zero hsum' hG'
-  intro n hn
-  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  have := hzero m
-  simp only [hw', if_pos hn] at this
-  exact this
+  exact eq_zero_of_forall_atomPairing_riemannKernel_eq_zero hsum hstep1
 
 end
 

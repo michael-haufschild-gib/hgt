@@ -1,8 +1,8 @@
 # Crystalline producers: a Weil-positive system with atomic Weil measure on the zeta spectrum is Λ, and forces RH
 
 - **ID:** weil-crystalline-producer-rigidity
-- **Stage:** 2-fully-proven (paper, 2026-09-29)
-- **Type:** THEOREM (paper); Lean in progress
+- **Stage:** 3-formalized (Lean closed 2026-09-29)
+- **Type:** THEOREM (paper + Lean, standard axioms)
 - **Source:** `1-in-progress/hf-positive-hodge-attack/krein-producer-loops.md`, L150. It settles L105/L106/L129 in the crystalline case **without RH**. L140 needed RH and two-sidedness.
 - **Statement.** Let `lam: ℕ_{≥2} → ℝ` with `Σ|lam(n)|n^{−σ} < ∞` for `σ > 1`. Suppose that on `σ > 1`
   `Γ̃(s) + 1/(s−1) − Σ lam(n)n^{−s} = Φ̃(s) := (2(s−½)/π) Σ_j c_j/((s−½)² + t_j²)`,
@@ -42,9 +42,33 @@
 
 ## Gates
 - [x] 0 → 1, 1 → 2: proof above.
-- [ ] 2 → 3: Lean (in progress).
-  - Available: Hamburger odd (reflection-free), ζ/ζ′ strip bounds (corpus), and dslope for removable singularities.
-  - To build: the atomic Mittag-Leffler series, its oddness and polynomial growth, the cancellation `ζΦ̃` holomorphic, and the final RH deduction.
+- [x] 2 → 3: Lean closed. See the Lean section.
+  - The finite-fake-atom extension is paper only.
 
 ## Log
 - 2026-09-29 — created from L150.
+- 2026-09-29 — Lean closed: `RHTower.crystalline_producer_rigidity`, standard axioms only.
+
+## Lean
+- `RHTower/ZetaSpectrumAtomicSeries.lean`: the atomic series and its ζ-cancelled form.
+  - `atomicPairSeries c t` is `Φ̃`.
+  - `atomQuot t = dslope (dslope Λ (½+it)) (½−it)`, which equals `Λ/((s−½)²+t²)` off the atoms.
+  - `atomicZetaPart c t = Σ (2c_j/π)(s−½) atomQuot(t_j)`, which equals `ΛΦ̃`.
+  - `ZetaAtoms c t` requires `t_j ≥ 1`, `ζ(½+it_j) = 0` and `Σ|c_j|/t_j² < ∞`.
+  - `differentiableOn_atomicZetaPart`: holomorphic on `ℂ∖{0,1}`. Local bound: maximum principle on unit discs about the atoms.
+  - `atomicZetaPart_one_sub`: odd.
+  - `exists_decay_atomicZetaPart`: `‖Z‖ ≤ C/(1+t²)` on `½ ≤ σ ≤ 3/2`, `|t| ≥ 4`.
+- `RHTower/CrystallineProducerRigidity.lean`: the odd Hamburger step and the RH deduction.
+  - `completedZetaXiLogDeriv = Λ₀' + Λ₀(1/s + 1/(s−1))`, which equals `Λξ'/ξ`.
+    - `completedZetaXiLogDeriv_one_sub`: odd.
+    - `exists_decay_completedZetaXiLogDeriv`: decay via Cauchy's estimate on radius-½ discs.
+  - `differentiableOn_atomicPairSeries`: `Φ̃` is holomorphic on `Re s > ½`, by a locally uniform lower bound `κt²` on the atom denominators.
+  - `crystallineRemainder = Λξ'/ξ − ΛΦ̃ − βΓ_ℝ(s−1)` with `β = (Λ₀(1) − Φ̃(1))/2`, and the removable singularity at 1 filled.
+    - `differentiableOn_crystallineRemainder` on `Re s > 0`.
+    - `exists_decay_crystallineRemainder`: decay on the closed strip.
+  - `Gammaℝ_mul_riemannZeta_mul_eq`: `Γ_ℝζ(Γ̃ + 1/(s−1) − φ + ζ'/ζ) = Λξ'/ξ − Λφ` on `Re s > 1`.
+  - `crystallineCoeff_eq_zero`: `1 ⋆ (lam − Λ) = 0`, via `HTGeometry.coeff_eq_zero_of_critical_line_odd`.
+  - `eventually_eq_zero_of_deriv_eq_mul`: if `f' = fg` with `g` continuous at a zero of analytic `f`, then `f ≡ 0` near it.
+  - `riemannHypothesis_of_completedZetaXiLogDeriv_eq`: `Λξ'/ξ = ΛΦ̃` on `Re s > 1` implies RH, via the identity theorem on `ℂ∖{0,1}` and the ODE lemma.
+  - `crystalline_producer_rigidity`: the card's statement. The hypotheses are `ZetaAtoms`, `Σ|lam n|n^{−σ} < ∞` for `σ > 1`, and `Γ̃ + 1/(s−1) − Σlam n^{−s} = Φ̃` on `Re s > 1`. The conclusion is `(∀ n ≠ 0, lam n = Λ n) ∧ RiemannHypothesis`.
+- `#print axioms`: `[propext, Classical.choice, Quot.sound]`.

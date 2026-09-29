@@ -1,8 +1,8 @@
 # Producer short-interval law: every Weil-positive system carries RH-quality prime-number theory for its own weights
 
 - **ID:** weil-producer-short-interval-law
-- **Stage:** 2-fully-proven (paper, 2026-09-29)
-- **Type:** THEOREM (paper); Lean in progress
+- **Stage:** 3-formalized (Lean closed 2026-09-29)
+- **Type:** THEOREM (paper + Lean, standard axioms)
 - **Source:** `1-in-progress/hf-positive-hodge-attack/krein-producer-loops.md`, L148
 - **Statement:** Let `lam: ℕ_{≥2} → ℝ` with `Σ|lam(n)|n^{−σ} < ∞` for `σ > 1`. Suppose `lam` is Weil-positive for an archimedean datum `A` of logarithmic growth, for example ζ's `Γ̃(s) = ½ψ(s/2+1) − ½log π`. Then:
   - (S) for every `ε > 0` and `x ≥ x₀(ε)`, every interval `(x, x + x^{½+ε})` meets `supp lam`;

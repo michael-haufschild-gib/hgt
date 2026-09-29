@@ -3377,3 +3377,12 @@ Next conjectures to test:
   - dense in composites, and not prime-supported without breaking short-interval records, by L148/L149;
   - free of ζ-type large values, by L107/L133.
   - The crystalline route to a second producer is closed.
+
+### L150 Lean — closed
+- `RHTower.crystalline_producer_rigidity` (module `RHTower/CrystallineProducerRigidity`, on top of `RHTower/ZetaSpectrumAtomicSeries`). Standard axioms only.
+- Both cards moved to `3-formalized/11-rh-zero-divisor-geometry/`.
+- Reusable pieces:
+  - `eventually_eq_zero_of_deriv_eq_mul` (a zero of an analytic solution of `f' = fg` is not isolated);
+  - `completedZetaXiLogDeriv` (`Λξ'/ξ`, odd, decaying);
+  - `atomicZetaPart` (ζ-cancelled atomic Herglotz series, odd, holomorphic, decaying);
+  - `coeffDirichlet_eq_LSeries`.
