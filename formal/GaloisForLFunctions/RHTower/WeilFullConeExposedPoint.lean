@@ -580,6 +580,108 @@ theorem riemannHypothesis_iff_exists_weilPositiveFull_atomPairing_nonneg :
     rw [weilFullFunctional_congr (lam' := lam) (fun n hn => (h n hn).symm)]
     exact hW f hf hfc
 
+/-! ## Quantitative exposedness -/
+
+theorem tendsto_mul_exp_neg_atTop (K : ℝ) :
+    Tendsto (fun L : ℝ => K * Real.exp (-(2 * (L - 1)))) atTop (𝓝 0) := by
+  have h : Tendsto (fun L : ℝ => 2 * (L - 1)) atTop atTop :=
+    Filter.tendsto_atTop_atTop.mpr fun b => ⟨b / 2 + 1, fun L hL => by linarith⟩
+  have := (Real.tendsto_exp_neg_atTop_nhds_zero.comp h).const_mul K
+  simpa [Function.comp_def] using this
+
+theorem tendsto_of_abs_sub_le {f : ℝ → ℝ} {a K : ℝ}
+    (h : ∀ L, |f L - a| ≤ K * Real.exp (-(2 * (L - 1)))) : Tendsto f atTop (𝓝 a) := by
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  exact squeeze_zero (fun _ => norm_nonneg _) (fun L => by rw [Real.norm_eq_abs]; exact h L)
+    (tendsto_mul_exp_neg_atTop K)
+
+theorem tendsto_nearRadicalEnergy :
+    Tendsto (fun L : ℝ => (5 / 4) * zetaInvSqSum * truncatedRiemannTailEnergy L ^ 2) atTop (𝓝 0) := by
+  rw [Metric.tendsto_atTop]
+  intro δ hδ
+  obtain ⟨L₀, hL₀⟩ := exists_nearRadicalEnergy_le (ε := δ / 2) (by positivity)
+  refine ⟨L₀, fun L hL => ?_⟩
+  have h0 : 0 ≤ (5 / 4) * zetaInvSqSum * truncatedRiemannTailEnergy L ^ 2 := by
+    have := zetaInvSqSum_nonneg; positivity
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg h0]
+  linarith [hL₀ L hL]
+
+/-- **Quantitative exposedness.** For a Weil-positive `lam` with deviation `w = lam − Λ`
+(`Σ|w|n^{−2} < ∞`) and a real `C²` compactly supported test `H`,
+`T_w(Φ, H)² ≤ (ℓ(Λ) − ℓ(lam)) · ((5/4) S E_H² − T_w(H, H))`.
+The `ℓ`-deficit controls every Riemann-kernel moment of the deviation. -/
+theorem sq_atomPairing_riemannKernel_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+    (hw2 : Summable fun n : ℕ => |lam n - ArithmeticFunction.vonMangoldt n| / (n : ℝ) ^ 2)
+    {H : ℝ → ℝ} (hH : ContDiff ℝ 2 H) (hHc : HasCompactSupport H) :
+    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n)
+        (crossCorr riemannKernelReal H) ^ 2 ≤
+      (-atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr) *
+        ((5 / 4) * zetaInvSqSum * testEnergy H ^ 2 -
+          atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) (crossCorr H H)) := by
+  set w : ℕ → ℝ := fun n => lam n - ArithmeticFunction.vonMangoldt n with hw
+  have hW' : WeilPositiveFull fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n := by
+    have : (fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n) = lam := funext fun n => by
+      simp only [hw]; ring
+    rw [this]; exact hW
+  set ℓ := atomPairing w riemannKernelAutocorr with hℓ
+  set T := atomPairing w (crossCorr riemannKernelReal H) with hT
+  set T2 := atomPairing w (crossCorr H H) with hT2
+  set EH := testEnergy H with hEH
+  set q := (5 / 4) * zetaInvSqSum with hq
+  have hq0 : 0 ≤ q := by have := zetaInvSqSum_nonneg; rw [hq]; positivity
+  obtain ⟨K₀, -, hK₀⟩ := exists_abs_atomPairing_truncatedAutocorr_sub_le hw2
+  obtain ⟨K₁, -, hK₁⟩ := exists_abs_atomPairing_truncated_sub_le hw2 hH.continuous hHc
+  have hT0 := tendsto_of_abs_sub_le hK₀
+  have hT1 := tendsto_of_abs_sub_le hK₁
+  have hE2 := tendsto_nearRadicalEnergy
+  -- `q E_L = √(q · q E_L²) → 0`
+  have hEL : Tendsto (fun L : ℝ => q * truncatedRiemannTailEnergy L) atTop (𝓝 0) := by
+    have hq2 := hE2.const_mul q
+    rw [mul_zero] at hq2
+    have h := (Real.continuous_sqrt.tendsto 0).comp hq2
+    rw [Real.sqrt_zero] at h
+    refine h.congr fun L => ?_
+    simp only [Function.comp_apply]
+    have hE0 := truncatedRiemannTailEnergy_nonneg L
+    rw [show q * ((5 / 4) * zetaInvSqSum * truncatedRiemannTailEnergy L ^ 2) =
+      (q * truncatedRiemannTailEnergy L) ^ 2 by rw [hq]; ring,
+      Real.sqrt_sq (by positivity)]
+  have hquad : ∀ ε : ℝ, ℓ + 2 * ε * T + ε ^ 2 * T2 ≤ q * (ε ^ 2 * EH ^ 2) := by
+    intro ε
+    have hL : ∀ L : ℝ,
+        atomPairing w (crossCorr (truncatedRiemannKernelReal L) (truncatedRiemannKernelReal L)) +
+          2 * ε * atomPairing w (crossCorr (truncatedRiemannKernelReal L) H) + ε ^ 2 * T2 ≤
+        q * truncatedRiemannTailEnergy L ^ 2 + 2 * |ε| * EH * (q * truncatedRiemannTailEnergy L) +
+          q * (ε ^ 2 * EH ^ 2) := by
+      intro L
+      have hone := atomPairing_le_re_W hW' (contDiff_perturbedKernel L ε hH)
+        (hasCompactSupport_perturbedKernel L ε hHc)
+      rw [atomPairing_perturbedKernel w L ε hH.continuous hHc, ← hT2] at hone
+      have hWb := (Complex.re_le_norm _).trans (norm_W_perturbedKernel_le L ε hH hHc)
+      rw [← hq, ← hEH] at hWb
+      have e : q * (truncatedRiemannTailEnergy L + |ε| * EH) ^ 2 =
+          q * truncatedRiemannTailEnergy L ^ 2 + 2 * |ε| * EH * (q * truncatedRiemannTailEnergy L) +
+            q * (ε ^ 2 * EH ^ 2) := by
+        rw [show ε ^ 2 = |ε| ^ 2 from (sq_abs ε).symm]; ring
+      linarith
+    have hleft : Tendsto (fun L : ℝ =>
+        atomPairing w (crossCorr (truncatedRiemannKernelReal L) (truncatedRiemannKernelReal L)) +
+          2 * ε * atomPairing w (crossCorr (truncatedRiemannKernelReal L) H) + ε ^ 2 * T2) atTop
+        (𝓝 (ℓ + 2 * ε * T + ε ^ 2 * T2)) :=
+      (hT0.add (hT1.const_mul (2 * ε))).add tendsto_const_nhds
+    have hright : Tendsto (fun L : ℝ => q * truncatedRiemannTailEnergy L ^ 2 +
+        2 * |ε| * EH * (q * truncatedRiemannTailEnergy L) + q * (ε ^ 2 * EH ^ 2)) atTop
+        (𝓝 (0 + 2 * |ε| * EH * 0 + q * (ε ^ 2 * EH ^ 2))) := by
+      refine ((?_ : Tendsto _ _ _).add (hEL.const_mul _)).add tendsto_const_nhds
+      simpa [hq, mul_assoc] using hE2
+    have := le_of_tendsto_of_tendsto' hleft hright hL
+    simpa using this
+  have hdisc := discrim_le_zero (a := q * EH ^ 2 - T2) (b := -(2 * T)) (c := -ℓ) fun ε => by
+    have := hquad ε
+    nlinarith
+  unfold discrim at hdisc
+  nlinarith
+
 end
 
 end RHTower

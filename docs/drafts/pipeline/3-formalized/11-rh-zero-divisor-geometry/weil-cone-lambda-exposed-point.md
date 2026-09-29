@@ -51,3 +51,10 @@
 
 ## Log
 - 2026-09-29 — cycle 146: conjectured, proved and formalized in one pass.
+- 2026-09-29 — RH criteria added in the same module:
+  - `riemannHypothesis_iff_weilPositiveFull_vonMangoldt` (Weil's criterion in the full cone);
+  - `riemannHypothesis_iff_exists_weilPositiveFull_atomPairing_nonneg`: RH ⟺ some full-cone Weil-positive `lam` in the class has `ℓ(lam) ≥ ℓ(Λ)`, and then `lam = Λ`.
+  - Duality reading: `ℓ(Λ) − ℓ(lam) = Q_lam(Φ)`, the `lam`-Weil energy of Riemann's kernel. So Φ is the optimal dual certificate for `sup_W ℓ ≤ ℓ(Λ)`, and RH is primal attainment.
+- 2026-09-29 — cycle 148: **quantitative exposedness** `sq_atomPairing_riemannKernel_le`. For Weil-positive `lam` and a real `C²` compactly supported `H`: `T_w(Φ,H)² ≤ (ℓ(Λ) − ℓ(lam))·((5/4)S E_H² − T_w(H,H))`.
+  - Proof: the first-variation inequality `ℓ(w) + 2εT_w(Φ,H) + ε²T_w(H,H) ≤ (5/4)Sε²E_H²` holds for every real ε (limit `L → ∞`), and its discriminant gives the bound.
+  - The ℓ-deficit therefore controls the Riemann-kernel transform `G_w` weakly. The equality case of the exposed-point theorem is the special case `ℓ(w) = 0`.

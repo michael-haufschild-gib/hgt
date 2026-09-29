@@ -128,6 +128,11 @@ The RH-implication (Landau) halves of Theorem C(a) and (b) are formal, and so is
   - `exists_excess_le_log`: from L61, `Σ_{n≤K}(lam − Λ)(n)/n = o(log K)`. `exists_mul_excessSmoothing_le`: averaging over `c ∈ [M, 2M]`.
   - `riemannHypothesis_iff_weilPositive_vonMangoldt`: Weil's criterion for the corpus's `WeilPositive`. The corpus had no link from `WeilPositive` to Mathlib's `RiemannHypothesis`. The proof goes through the Hodge-index exclusion `zeta_re_eq_half_of_hodgeIndex` and the zero-free box `|γ| < 4`.
   - `riemannHypothesis_iff_exists_weilPositive_ge`: **corollary (D) in Lean**: RH ⟺ some Weil-positive `lam ≥ Λ` exists, and then `lam = Λ`.
+- Module `RHTower/WeilFullConeCCMBridge.lean` (174 lines), cycle 147: **both RH halves of Theorem C in the full cone.**
+  - `ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull`: full-cone Weil positivity implies nonnegativity of the CCM restricted form with weights `lam` at every aperture, on the whole form domain, literal pole vectors included. The proof identifies the form on smooth interior sources (`ccmRestrictedWeilSourceQuadraticWith_smooth_eq`), then uses continuity and density.
+  - `riemannHypothesis_of_weilPositiveFull_of_le`: a full-cone Weil-positive `0 ≤ lam ≤ Λ` forces RH (via the odd pole of cycle 142).
+  - `riemannHypothesis_of_weilPositiveFull_of_ge`: the same for majorants (via majorant uniqueness).
+  - Remaining for Theorem C(b): uniqueness `lam = Λ` for minorants under RH. This needs the spectral step (Bochner–Schwartz: `P_d + 2πΣ m_ρ δ_γ` is a positive measure; the corpus has `HTGeometry/SchwartzPositiveMeasureRepresentation` for jointly continuous Schwartz forms), then the Fejér/zero-sum argument of Step 4.
 - Module `RHTower/ChebyshevDeficitPrimitiveOneSidedRH.lean` (712 lines). With `D(T) = ∫_0^T (e^t − ψ(e^t)) dt`:
   - `riemannHypothesis_of_logChebyshevDeficitPrimitive_ge`: if `−B e^{T/2} ≤ D(T)` for all `T ≥ 0`, then RH.
   - `riemannHypothesis_of_logChebyshevDeficitPrimitive_le`: the reverse one-sided bound also gives RH.
@@ -158,3 +163,4 @@ The RH-implication (Landau) halves of Theorem C(a) and (b) are formal, and so is
 - 2026-09-29 — Lean (cycle 142): downward Landau step `riemannHypothesis_of_oddParityPole_subsystem`; both directions of the RH-implication are now formal in the CCM full Weil form.
 - 2026-09-29 — cycle 143: third proof of upward uniqueness (Riemann's kernel as a positive null vector), formalized in `WeilFullConeRiemannKernelRigidity` (axiom-clean).
 - 2026-09-29 — cycle 144: upward uniqueness in the polar cone (`WeilPositivityMajorantRigidity`, axiom-clean).
+- 2026-09-29 — cycle 147: full-cone ⇒ CCM positivity bridge; both RH halves of Theorem C formal in the full cone (`WeilFullConeCCMBridge`).

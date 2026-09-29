@@ -3386,3 +3386,22 @@ Next conjectures to test:
   - `completedZetaXiLogDeriv` (`Λξ'/ξ`, odd, decaying);
   - `atomicZetaPart` (ζ-cancelled atomic Herglotz series, odd, holomorphic, decaying);
   - `coeffDirichlet_eq_LSeries`.
+
+### L151 — ζ-mass rigidity: a spectral measure with `∫|ζ(½+it)| d|μ| < ∞` forces `lam = Λ` and RH. THEOREM [P] (card `2-fully-proven/11-rh-zero-divisor-geometry/weil-cone-zeta-mass-rigidity.md`)
+- **Rediscovery audit first.** In this cycle's exploration I re-derived three corpus results before checking the log:
+  - prime-blind duality `W ≠ ∅ ⟺ PB` (L54);
+  - the Weil–Toeplitz law (L57);
+  - resonance kills (L131/L133).
+  None of them is claimed here.
+- **Conjecture.** If `Γ̃ + 1/(s−1) − L_lam = Φ_μ` (a Cauchy transform of a signed measure `μ` on the critical line) and `∫|ζ(½+iu)| d|μ|(u) < ∞`, then `lam(n) = Λ(n)` for `n ≥ 2`, and RH holds.
+- **Mechanism.**
+  - L144's defect identity holds **without RH**. The ζ-multiplier cancels every zero, and a thin-strip argument (lines `Re s = ¼, ¾`) replaces boundary values. It gives `θ(x) + x^{−½}θ(1/x) = β(1+x^{−½}) + K(x)` with `K(x) = −(1/π)∫w Λ(½+iu)x^{−¼}cos((u/2)log x)dν`.
+  - Zeta-spectrum atoms drop out, since `Λ(½+iγ) = 0`.
+  - The Laplace transform of `K` has the `1/sin` kernel, bounded by `(2/π)|τ|^{−½}∫|ζ| d|μ|`, which is finite. So Hamburger's residue comparison is unperturbed, and `1⋆(lam−Λ)` is constant.
+- **Phase-4 attack.**
+  - *False?* Sanity checks: Lebesgue `μ` (infinite ζ-mass) gives a genuine non-Λ solution `Λ − 2αδ₁`, and the theorem correctly does not exclude it. Atomic zeros reproduce L150.
+  - *Circular?* No. RH is the output.
+  - *Known?* L144 had the law under RH and read it as a tautology for density-`log t` defects. The finite-ζ-mass consequence and its unconditional form are new.
+  - *Insignificant?* It is an RH criterion, and it makes L132's narrow-smearing kill rigorous and positivity-free.
+  - Verdict: **SURVIVES** (theorem).
+- **Producer map after L151.** A second producer must carry **infinite ζ-weighted spectral mass**: its Weil measure must sit, in bulk, where `|ζ(½+it)|` is not small. Crystalline-like, sparse-fake-atom and narrowly smeared producers are all excluded unconditionally. Only "ζ-heavy" non-crystalline spectra remain, which is where the α ≥ 1 wall sits.
