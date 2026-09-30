@@ -3787,3 +3787,696 @@ Next conjectures to test:
 - **Producer status (explicit).** No non-Λ producer is known, and none is known even with constant conductor slack in the full cone. All evidence (L85 PC-85, L133, L168) says that an integer-supported producer for any Γℝ-type datum with the pole is an explicit formula of an L-function. For ζ's datum that means `Λ` itself, whose positivity is RH. The stop condition "a non-Λ producer" is therefore either false (uniqueness) or requires a counterexample to Conjecture Ω. Both remain behind the `α ≥ 1` wall.
 - **Next.** Attack Conjecture Ω on the pole carrier alone: show that every integer Dirichlet series with a simple pole at `1` and continuous boundary on `σ = ½` has `sup_t (Re A(½+it) − C log t) = ∞` for every `C`. This is the slack-uniform form of Ω and would settle the continuous branch of "W_c ≠ ∅ at every slack".
 - **L168 addendum [Lean].** Sign-twisted form: `χ_s(n) lam(n) ≥ c n^{−δ}` on the squarefree integers is excluded for every multiplicative sign pattern `s(p) = ±1` (`not_forall_squarefree_signChar_le_of_weilPositiveFull`). This includes Möbius-signed deviations `μ(n) lam(n) ≥ c n^{−δ}` (`…_moebius_…`). The resonator is `χ_s(m)1_{m∣y#}`. So the exclusion reaches 2^{#primes} dense sign classes, not only the positive one.
+
+### L169 — Probabilistic producers: random integer prime systems are almost surely not Weil-positive. THEOREM [Lean] + REMARK [P]
+- **Conjecture (bold, producer-side).** Randomization produces producers. Cramér's random primes satisfy the Beurling RH and RH-quality PNT almost surely, so their `Λ_M` might be Weil-positive with positive probability, giving an existence proof by the probabilistic method.
+- **Kill (rigorous).** False, with probability one (card `3-formalized/11-rh-zero-divisor-geometry/weil-cone-cramer-random-primes-not-positive.md`, MUST-573).
+  - Mechanism: the primorial resonance sum of L168 has mean `≍ 2^{π(y)}∏(1+p^{−½}/2)` and variance `≤ (log y#)² 4^{π(y)} ∏(...)`, while Weil positivity caps it at `(log y#+C₀)2^{π(y)}`.
+  - Apply Chebyshev at one large `y`, then take a countable union over integer `C₀`.
+  - Lean module `RHTower/WeilPositivityCramerRandomPrimes`. It needs only pairwise independence on the squarefree integers, so it covers `Λ_M` with its correlated prime powers.
+- **Positive survivor [P].** For integer Beurling systems, **Weil positivity for ζ's datum is strictly stronger than the Beurling RH**. The Cramér zeta is almost surely zero-free and holomorphic on `σ>½` (it has a natural boundary at `½`, cf. arXiv 2410.03044), yet it fails positivity at the finite level `log y#`. The missing content is multiplicative: no smooth squarefree composites among the "primes".
+- **Producer lesson.** The probabilistic method cannot produce producers from independent integer models with composite inclusion probability `≳ (log n)^{−A}`, and composite-free models are thinnings of Λ, killed by L156. A random producer would need correlations that suppress composites entirely: a model already carrying the multiplicative structure of the primes.
+- **Next.** Correlated random models. Take random multiplicative structures, e.g. `M` = the image of the primes under a random measure-preserving "prime-to-prime" perturbation, or random sub-semigroups. The question is whether Weil positivity can hold with probability one for a non-Λ random system whose composites are exactly suppressed.
+
+### L170 — Granville's model is not a producer either. THEOREM [Lean]
+- **Conjecture.** Granville's refined random model might escape L169: it discards integers with small prime factors, which the primorial resonator uses.
+- **Kill (Lean, MUST-574).** Resonate on `N = ∏_{p∈S} p`, where `S` is a set of `⌊b²/(3 log b)⌋` primes in `(b², b³]`.
+  - `log N ≤ b²`, so every divisor has all prime factors `> log n`, and the model's inclusion probability is `≥ 1/log n` there.
+  - `Q_S ≥ exp(|S|b^{−3/2}/4) ≥ b⁶` beats the Weil cap `log N ≤ b²`.
+  - Chebyshev on the resonance sum and a countable union over `C₀` finish, as in L169.
+- Module `RHTower/WeilPositivityRoughRandomPrimes` (namespace `RHTower.RoughRandomPrimes`, standard axioms).
+- **Lesson.** The amplification does not need small primes: any block of primes of size `≍ b²/log b` near `b²` amplifies. What the Weil cone forbids is independent inclusion of squarefree composites, at any scale.
+- **Side note (user question, 2026-09-30): does removing 2 (or all small primes) simplify?** No.
+  - RH itself is unchanged: `(1−2^{−s})ζ(s)` has the same zeros in `0<σ<1`.
+  - Weil positivity with the weights at `2^k` removed is false, unconditionally (L156 `eq_vonMangoldt_of_weilPositiveFull_of_le`: a Weil-positive `lam ≤ Λ` equals `Λ`). Any change supported on the powers of 2 is excluded by L159 (`…_of_powers_two`).
+  - Small primes are also not where the difficulty lives: positivity with `p = 2` visible is already proved at small support (corpus Lean past `√2`; certified to support `0.8` in the literature). The obstruction is the large-support limit, i.e. all large primes jointly.
+- **L170 addendum [Lean] (answers the user's question).** Module `RHTower/WeilFullConeRemovedPrimes`: `not_weilPositiveFull_vonMangoldtWithout` says that, for any set `R` containing a prime, `Λ` with the powers of the primes of `R` removed (the von Mangoldt function of `ζ(s)∏_{p∈R}(1−p^{−s})`) is not full-cone Weil-positive, unconditionally. `not_weilPositiveFull_without_two` is the `R = {2}` case. RH itself is unchanged by removing Euler factors; only the positivity criterion breaks.
+
+### L171 — Floors on sparse multiplicative sets are excluded. THEOREM [Lean]
+- **Conjecture.** A producer could hide a positive floor on a thin multiplicative set: the squarefree numbers built from a sparse set of primes `P'`. This would evade L168, which needs the floor on all squarefree integers.
+- **Kill (Lean, MUST-575, module `RHTower/WeilPositivitySparsePrimeFloor`).** If `(y, 2y]` holds at least `√y(log y)²` primes of `P'` infinitely often, no Weil-positive `lam ≥ c > 0` exists on the `P'`-generated squarefrees.
+  - Resonator: `1_{m∣N}` with `N` the product of those primes.
+  - Growth: `Q_S ≥ exp((log y)²/(4√2))`, against the cap `log N ≤ |S| log 2y`.
+- **Survivor [P].** The obstruction is purely about the size of the resonator's prime block. `|S| ≫ √y` primes near `y` suffice, whatever their arithmetic. So any producer's positive mass must avoid, up to sparse exceptions, every multiplicatively closed squarefree set with more than `√y` generators near `y`. The survivors are sign-indefinite deviations, or positive mass on sets that are not multiplicatively closed (e.g. semiprimes only).
+- **Producer status.** Unchanged: no non-Λ producer is known. Every construction route (L-functions, Beurling integer systems, smearing, combs, random models, sparse multiplicative floors) is excluded or needs Conjecture Ω.
+
+### L172 — Random signs, semiprime floors, and the ζ²-mass law. ANALYSIS [P] (three survivors recorded)
+- **(a) Random signs [P, sketch].** Let `lam_ω = Λ + ε_n a_n √n` with independent Rademacher `ε_n`.
+  - Positive definiteness of `−deviationPotential` (other agent's `positiveDefiniteOnReal_neg_deviationPotential`) gives `|P_ω(y)| ≤ −P_ω(0)`.
+  - `P_ω(0)` is a fixed random variable, dominated by small `n` because `K(log n)` decays super-exponentially.
+  - `P_ω(log X) ≈ Σ_{n≈X} ε_n a_n K(log X − log n)` has variance `≍ Σ_{X<n≤eX} a_n²`.
+  - If the dyadic mean square `Σ_{X<n≤2X}(lam−Λ)(n)²/n` is unbounded, a CLT on nearly independent windows makes `sup_y|P_ω(y)| = ∞` almost surely, so `lam_ω ∉ W` almost surely.
+  - Together with L169/L170 (random supports), the probabilistic method with independent randomness cannot produce a producer. Not formalized: it needs Berry–Esseen or small-ball bounds for Rademacher sums, which mathlib lacks.
+- **(b) Semiprime floors survive every multiplicative resonator.** For `lam(pq) ≥ c` on semiprimes only, with deficits allowed at primes:
+  - the primorial sum's `ω = 2` part is `≈ (c/8)(Σ_{p≤y}p^{−½})² ≍ c y/log² y`, below the cap `θ(y)/2`;
+  - multiplicative weights `g_p ≤ ½` cannot raise it.
+  - Floors `lam(pq) ≥ c log p log q` with `c > log 2` are excluded; constant semiprime floors are not. This is the exact edge of L171.
+- **(c) ζ²-mass law [P].** The smooth resonator `c_m = m^{−½}` on `[1,N]` has Weil energy `O(‖c‖²)` for every producer, because MUST-498 is saturated to `O(1)` by mean-1 weights (L148 partial sums). Its spectral profile is `|Σ_{m≤N} m^{−½−it}|² ≈ |ζ(½+it)|²` on `|t| ≲ N`. Hence `∫_0^T |ζ(½+it)|² dμ_lam(t) ≪ T log T` for every producer: spectral mass avoids large values of `ζ`, by a factor `log T` below a generic density-`log t` measure.
+  - Gap to rigidity: L152 needs `∫|ζ| dμ = o(T)`; Cauchy–Schwarz from (c) gives only `T log T`.
+  - Evaporation at rate `r_γ ≍ 1/log γ` sits exactly at the L152 threshold and satisfies (c) with room, so (c) does not reach the core.
+  - Lean would need the length-`t` approximation of `ζ` by partial sums; the corpus has only the `N ≫ t²` truncation (`norm_sum_range_criticalPt_le`).
+- **(d) Large deviations for Ω [P, negative].** Bohr–Jessen tails of `Re D(½+ε+it)` for prime-like `D` are super-Gaussian, with all exponential moments finite, so no contradiction arises in the limit distribution. The ceiling `½ log t` constrains only the *first passage heights* of large values, which need effective equidistribution at `T = e^{2M}` with `π(e^{O(√M)})` frequencies. That is the `α ≥ 1` wall again (`k log P > log T`).
+- **Status.** No producer. The remaining room for a non-Λ producer is a sign-indefinite deterministic deviation that is not log-summable and not multiplicatively floored, i.e. the evaporation core. It is equivalent to Conjecture Ω or its partial-atom version.
+
+### L173 — The evaporation core collapses to constant rate, i.e. to Ω. REDUCTION [heuristic, recorded]
+- **Setting (RH).** A second producer is `μ_lam = μ_ζ + τ` with `τ = ν − Σ_γ r_γ δ_γ` (`ν ≥ 0` continuous, `0 ≤ r_γ ≤ 1`) and `τ̂ ⊂ ±log ℕ_{≥2}` exactly. Unconditionally this is `Ξ(t)²·V(t) ≥ 0` for `V = Re D_{Λ−lam}` on the line: positive definiteness of `E_v`, whose content is the exposed-point inequality `ℓ(lam − Λ) = −∫Ξ²ν ≤ 0`.
+- **Observation.** Write `μ_ζ = θ'/π + O_P`, with `O_P` of exact spectrum (explicit formula).
+  - Constant rate `r`: `r μ_ζ ≡ r θ'/π` modulo exact spectra. So `ν ≡ r θ'/π`, and `ν/r` is a continuous producer: Ω.
+  - Profile `r_γ = F(γ)` with `F` non-constant:
+    - if `F` is smooth, `F·O_P` has spectrum smeared off `±log ℕ`;
+    - if `F` is almost periodic with spectrum in `±log ℕ`, `F·O_P` has frequencies `log(m/n)`, which are not in `±log ℕ` in general.
+  - Neither profile is exact modulo continuous measures. Only `F ≡` const survives.
+  - The claim cannot be made rigorous by Wiener-type arguments: the localized spectra at high frequency see `log n` densely (the `α ≥ 1` wall).
+- **Reading.** Heuristically the whole producer question beyond Λ is Conjecture Ω: continuous producers `C`, entering as `(1−r)Λ + rC`. L163's multiplier analysis ("the same fraction is removed from every zero") is the special case. The finite-energy evaporation of L155 (`r_γ ≍ 1/log γ`) is non-constant and so heuristically impossible.
+- **Next.** Ω itself. Its only known leverage is the large-values/first-passage structure at `α ≥ 1` (L172 d). A new idea is needed: an exact identity that sees the absence of atoms, not an estimate.
+
+### L174 — Continuous producers through the Bohr lift. ANALYSIS [P] (no exact identity found)
+- **Setting.** `C` is a continuous producer: `f := ν_C − θ'` is continuous, has mean zero, and satisfies `f ≥ −θ'`. Its Bohr spectrum lies in `±log ℕ_{≥2}`, with the coefficient identity `c(n) n^{−1/2} = −2 M(ν_C(t) cos(t log n))` (Wiener).
+- **On the torus.** Lifting to `T^∞`, `f` becomes `2 Re A` with `A(z) = Σ c(n) n^{−1/2} z^{v(n)}` "analytic" (non-negative exponent vectors, `A(0) = 0`).
+  - If `f` is uniformly almost periodic, then `A` is continuous on `T^∞`, so `f` is bounded: the tame class, excluded by Carlson (L172 c, and L152 B²-type remarks).
+  - The core is therefore Besicovitch-only almost periodicity: `A_ε ∈ H²(T^∞)` at `σ = ½ + ε`, unbounded.
+- **Orbit constraint.** Weil positivity constrains `Re A_ε` only along the orbit `t ↦ (p^{−it})` from `(1, 1, …)`, with the growing ceiling `½ log t`.
+  - Reaching a torus point that aligns `K` primes to precision `η` takes height `≈ η^{−K}`, where the ceiling is `≈ ½ K log(1/η)`.
+  - For prime-like `A` the aligned value is `≍ P^{1/2−ε}` with `K = π(P)`, far below the ceiling.
+  - Kronecker/orbit arguments therefore reproduce the `α ≥ 1` wall; no contradiction and no construction.
+- **Other identities tried, all inapplicable.**
+  - FE/Hamburger: a continuous producer has an absolutely continuous part, so it has no functional equation.
+  - Θ-kernel (Pólya): `E_C` is not entire.
+  - Exposed point: `ℓ(C − Λ) = −∫Ξ²ν_C < 0` is automatic.
+  - Reflection/inner function: `E_C` is not defined left of the line.
+- **Status.** The producer question equals Conjecture Ω (L173). Every linear identity is either tautological or blind to the absence of atoms. An attack would need a genuinely nonlinear invariant of the integer frequency set `log ℕ`, e.g. a multiplicative-convolution identity that distinguishes atomic from continuous boundary measures. None is known.
+
+### L175 — Helson-type (Hardy space of Dirichlet series) attack on Ω. KILL [P]
+- **Conjecture.** Nonlinear torus inequalities distinguish continuous producers from `Λ`. Candidates: Helson `Σ|a_n|²/d(n) ≤ ‖f‖²_{H¹}`, Bohnenblust–Hille, and Bohr-radius bounds for `H^∞` Dirichlet series, applied to `D_C`, `exp(−λD_C)` or `Z_C`.
+- **Kill.** Every such inequality is a statement about the Bohr lift on `T^∞`, i.e. about Haar-typical behaviour. The Weil ceiling `h(t) = θ'(t) + ½/(¼+t²) ≈ ½ log(t/2π)` is not almost periodic. The height `t` is not a continuous (or even measurable) function on the torus along the orbit `t ↦ (p^{−it})`. So the ceiling has no torus counterpart, and torus inequalities see only the unconstrained Haar distribution.
+  - Equivalent phase form: `E_C(½+it)/|E_C|` winds monotonically (`θ' + φ_Z' = ν_C > 0`, with `φ_Z = arg Z_C(½+it)` almost periodic). The chirp `θ(t)` is the only non-almost-periodic ingredient, and it is invisible to Bohr–Helson theory.
+  - `ζ` couples the chirp to the Dirichlet part through its functional equation (approximate functional equation, Hardy `Z` real). A continuous producer has no functional equation (L174), so no torus identity can couple them.
+- **Lesson.** Any proof of Ω must use the chirp `θ(t)` explicitly, i.e. the archimedean place, not only the Dirichlet (non-archimedean) structure. This locates the missing invariant: an archimedean–arithmetic coupling valid without a functional equation. Such an invariant is not known; its existence is a reformulation of the open core.
+
+### L176 — Random discrete producers: the granularity threshold for Weil positivity is exactly 1/4. THEOREM [P] ×2 (card `1-in-progress/weil-cone-random-discrete-granularity-threshold.md`)
+- **Conjecture.** L131's integrality heuristic ("unit granularity is 8× too coarse") has a sharp probabilistic form. Put one uniform random point per cell of length `κ` in `(1, ∞)`, each with mass `κ`, minus the L131 correction atom. Then the Weil density `2[d₀(t) − f_ω(t)]` is eventually positive iff `κ < κ_c`.
+- **Theorem A [P].** For `κ < 1/4`, positivity holds almost surely at all large heights. For `κ = 1/N` with `N` large, it holds at every height with probability close to one. Proof: Chernoff with exact cell cumulants (`σ² = (κ/2) log t + O(log log t)`), a two-level net and Borel–Cantelli.
+  - Consequence: discrete-support Weil-positive systems for ζ's datum exist, and their spectrum is absolutely continuous.
+- **Theorem B [P].** For `κ > 1/4`, almost surely `max_{[T,2T]} f_ω ≥ (√κ − o(1)) log T` infinitely often, so positivity fails at arbitrarily large heights. Proof:
+  - the exact cell covariance `(κ/2) sin(Δ log B)/Δ + O(κ)`;
+  - a truncated second moment of `W_λ = ∫ e^{λf}` up to `λ_c = 2/√κ`;
+  - log-convexity at two temperatures;
+  - Kolmogorov's zero–one law (a finite change of cells is a bounded shift in `f`).
+- **Reading.**
+  - `κ_c = (archimedean slope)²`: the random-energy-model maximum `√κ log T` meets the ceiling `θ' ~ ½ log t`.
+  - The integers sit at `κ = 4κ_c`, so generic systems at integer granularity are almost surely not Weil-positive. Lattices fail through Hurwitz/Dirichlet large values. `Λ` survives only by exact phase-locking, i.e. the FE, together with RH.
+  - Ω is the derandomization of Theorem B at the `α ≥ 1` wall: randomness over `ω` replaced by Bohr–Jessen randomness over `t`.
+  - Positive consequence: continuous producers do exist on discrete supports, so Ω genuinely needs the arithmetic of ℕ.
+  - Degree remark: `κ_c = d²/4` for archimedean slope `d/2`. Integer granularity is critical at degree 2.
+- **Verdict:** SURVIVES; both directions proved on paper. The existence half goes to Lean next.
+- **L176 Lean — existence closed.** `RHTower.RandomCellWeil.exists_cellSum_lt_archDensity` (modules `RHTower/{JitteredCellWeilTerms, JitteredCellWeilHoeffding, JitteredDiscreteWeilPositive}`; standard axioms; wired into `RHTower`).
+  - With `N = 2^26`, some positions `u_k ∈ [0,1]` make the discrete system `Σ_k 2^{−26} δ_{(N+k+u_k)/N} − e^{1/20000} δ_{e^{1/10000}}` have positive Weil density at every height.
+  - The proof is Hoeffding on `Measure.infinitePi`, a variance proxy `4(b+5)/N`, dyadic nets, and a union bound `≤ 1/2`.
+  - Card moved to `2-fully-proven/11-rh-zero-divisor-geometry/weil-cone-random-discrete-granularity-threshold.md`. Theorem B and the sharp constant of Theorem A remain paper only.
+- **Survivor for Ω (new, heuristic).** For every integer-supported system, Cauchy–Schwarz gives `½ Σ_{n≤T} lam(n)²/n ≥ ½ (Σ lam(n)/n)²/Σ 1/n ≈ ½ log T`.
+  - So its Bohr–Jessen random model has effective granularity `κ_eff ≥ 1 > 1/4`, and in that model no integer system is Weil-positive.
+  - Λ escapes only because its values are not random-like (the explicit formula; atoms carry the negative mass). For continuous producers the upper tail must be non-Gaussian at the edge `≍ log T`.
+  - Precisely: **Ω ⟸ "the Bohr–Jessen random model is correct in the upper tail at deviation `½ log T` for integer Dirichlet series with continuous boundary"**, which is the derandomization of Theorem B at the `α ≥ 1` wall.
+
+### L177 — Integer granularity is supercritical, formally: random unit-cell systems are almost surely not Weil-positive. THEOREM [P → Lean in progress]
+- **Statement (κ = 1).** Take one uniform atom of mass 1 in each unit cell `[k+1, k+2)`. Almost surely the Weil density `2(archDensity t − cellSum 1 u t)` is negative at arbitrarily large heights.
+- **Proof route chosen for Lean.** It avoids truncated second moments, which are unnecessary at κ = 1, and Fubini.
+  - Discrete partition functions over the integer net `t_i = T + i`, `i < T`: `W_λ = Σ_i e^{λ f(t_i)}`, with `f` truncated to `64T²` cells.
+  - Cell cumulants: `log E e^{λY} = λ²V/2 + O(|λ|³RV e^{|λ|R} + λ⁴V²)`, with `Σ R_k V_k`, `Σ V_k² < ∞`.
+  - Variance: `σ²(t) = Σ V_k = ½ log t + O(1)`, from the telescoping `∫_1^{K+1} wave² = ½ log(K+1) + sin(2t log(K+1))/(4t)` minus `Σ m_k² ≤ 16 Σ (k+2)/t²`.
+  - Covariance: `|Σ Cov_k(t,t')| ≤ 18` for `|t − t'| ≥ 1`, from `∫ wave_t wave_{t'} = ½[sin(Δ log x)/Δ + sin(S log x)/S]`.
+  - Second moment: `E W² ≤ K₁ (E W)²` for `λ² < 2`; the diagonal costs `T^{λ²/2 − 1} → 0`.
+  - Paley–Zygmund at `λ₂ = 6/5` and Markov at `λ₁ = 11/10` give `max_i f(t_i) ≥ 10(log W₂ − log W₁) ≥ 0.575 log T − C` with probability `≥ 1/(8K₁)`.
+  - The ceiling is `archDensity ≤ ½ log t + 2`. A clamped-coordinate tail event plus Kolmogorov's zero–one law upgrade this to almost surely.
+- **L177 Lean — closed.** `RHTower.RandomCellWeil.ae_exists_archDensity_lt_cellSum_one`: for one uniform atom of mass 1 per unit cell, almost surely the Weil density is negative at arbitrarily large heights. Standard axioms. Modules `RHTower/JitteredUnitCell{Integrals, Variance, Laplace, Partition, Supercritical}` (about 2300 lines), wired into `RHTower`.
+  - Constants used: block index `j ≥ 2000`, `λ₂ = 6/5`, `λ₁ = 11/10`.
+  - Second moment: `E W² ≤ (e^{330+30λ²} + 1)(E W)²` once `log T ≥ 1328`.
+  - Block probability: `≥ 1/(8(C+1))`.
+  - Lower bound on the block event: `cellSum ≥ (23/40) log T − C₀`, against the ceiling `½ log t + 2`.
+- **Reading.** Supercriticality of integer granularity is now a theorem. Together with L176's existence at `κ = 2^{−26}`, positivity on discrete supports has a phase transition between `2^{−26}` and `1`, and the sharp constant `1/4` is on paper. An integer-supported producer cannot be generic: it must beat the random-energy-model maximum by the factor 2, which only exact phase-locking (Λ, FE, RH) is known to do.
+
+### L178 — Construction side after L177: the de Branges / Schur-multiplier form of a producer, and a saturation audit. REFORMULATION [P] + corpus-overlap verdicts (no new theorem)
+- **Exact dictionary (paper, standard de Branges).** Put `F = Σ lam(n) n^{−s}`, `K = exp(∫_s^∞ F)` and `E = Γ_ℝ(s)K(s)`. Suppose `F − 1/(s−1)` is holomorphic on `σ > ½`, which temperedness forces for every producer. Then the Weil measure is `(1/π)·d arg E(½+it)`. So `lam ∈ W` iff `arg E` is nondecreasing on the critical line.
+  - If `E` continues to an entire function of order 1, this says `E` is Hermite–Biehler. Equivalently `K(1−s) = M(s)χ(s)K(s)` with `M = E^#/E` inner on `σ > ½`, where `χ(s) = ζ(1−s)/ζ(s)`.
+  - For `ζ` we have `M ≡ 1`. A constant `M` with `|M| < 1` would need conductor `< 1`, which is impossible for integer frequencies. A finite Blaschke `M` gives a rational gamma factor, and Hamburger's method then forces `K = cζ`.
+  - A non-Λ producer therefore has an **infinite** Blaschke multiplier. This is exactly L141/L142's "Hamburger with a nonnegative defect", written multiplicatively. Verdict: **REDISCOVERED** (L141, L175 phase form).
+- **Phase-velocity reading (heuristic, new wording only).**
+  - `d arg K(½+it) ≈ −`(the `|terms|`-weighted mean of `log n` over the dominant terms at height `t`).
+  - Weil positivity (`d arg K ≥ −θ'`) therefore says the dominant terms must have `log n ≤ ½ log(t/2π)` on average. That is the approximate-functional-equation length `√(t/2π)`.
+  - Integer mean-1 weights spread up to `n ≍ t` rotate the phase at rate `≈ log t = 2θ'`. This is L133's variance-at-the-cap law in phase language. No rigorous leverage, because the off-diagonal terms at length `≍ t` are as large as the diagonal.
+- **¬RH branch (paper).** If RH fails, then `lam ∈ W` iff `E := D_{lam−Λ}` is an integer Dirichlet series with the following properties:
+  - it has simple poles of residue `m_ρ` exactly at the off-line zeros;
+  - it is holomorphic elsewhere on `σ > ½`;
+  - `Re E(½+it) ≤ π Σ_{on-line} c_γ δ_γ` with `0 ≤ c_γ ≤ m_γ`.
+  - Frequency support `≥ log 2` gives, on `(−log 2, log 2)`: `FT(πρ_cont) = Σ_on c_γ e^{iγx} + Σ_off 2m cosh(δ₀x) e^{iγ₀x}`, where `ρ_cont ≥ 0` is the continuous part of the Weil measure.
+  - The `cosh` profile is not positive definite on any interval, so a producer must delete critical atoms (`c ≢ 0`) near every off-line zero. **REDISCOVERED**: this is the singular deficit law (P2 `weil-cone-singular-deficit-law`).
+  - Corollary: `ν_lam ≥ Σ_on m_γ δ_γ` forces RH and `lam = Λ`. It is near-trivial: small-support tests already see the indefinite off-line block.
+- **Construction attempts, all killed at known walls.**
+  - Kurasov–Sarnak stable-polynomial measures on prime frequencies have Fourier support on `±log ℕ ∪ {0}`, but a **constant** background. The archimedean background `A` (density `∼ (1/2π) log t`) cannot be assembled from them (L173 profile argument).
+  - Beurling systems with integer generators either include squarefree composites (L168/L169) or thin the primes (L156).
+  - Euler-factor pole shifting creates vertical progressions of zeros or poles on `σ = 1`.
+  - `ζ·(1 − p^{½−s})^b` needs negative atoms off the zero set, or negative continuous density.
+  - `Φ(ζ)` with entire `Φ` has an essential singularity at `s = 1` unless `Φ` is affine.
+  - Maass–Selberg's one-sided bound for `−ζ'/ζ(1+2ir)` lives on squares with the pole at `s = ½`: wrong mass and wrong pole.
+- **Saturation audit.** Every reformulation reached this cycle is already recorded:
+  - Herglotz: L131;
+  - phase: L175;
+  - Minkowski split (existence ⟺ PBAP at every level): `WeilPositivityFiniteLevelExistence`, `WeilPositivityPrimeBlindDuality`;
+  - compactness and Krein–Milman setting: `WeilFullConeCompactness`;
+  - extreme or exposed points: `WeilFullConeExtremePoint`, `…ExposedPoint`;
+  - M. Riesz one-sided criteria: `WeilFullConeOneSidedCriterion`.
+  - The construction side is equivalent to prime-blind archimedean positivity (PBAP), a statement about `A` and the set `log ℕ` only. Under the integrality dichotomy L131′ it is RH.
+- **Verdict:** no new theorem. The cycle confirms that the hook's reading of the target ("integer producer beyond Λ") amounts to either refuting L131′ (Ω, or a partial-atom producer) or proving PBAP. Every new mechanism tried lands on a recorded wall.
+- **Next.** Stop re-deriving reformulations. Candidate targets:
+  - (i) an exact **nonlinear** invariant seeing the absence of atoms: L174's missing identity, now phrased as "Hamburger with infinite Blaschke multiplier";
+  - (ii) the critical case `κ = 1/4` of L176. The random-energy-model second-order term predicts `max − ceiling ≈ +0.07 log log T → ∞`, i.e. failure at criticality; this is new and testable.
+
+### L179 — Degree does not rescue integer positions; FE families with rescaled zeros; the fixed-mass ledger. KILLS [P] + correction to L176's degree remark
+- **Correction to L176's degree remark.** The `κ_c = d²/4` statement holds for **real** random positions: pole weight 1, archimedean slope `d/2`, unit mass density. So Dedekind data with `d ≥ 3` admit random producers on real supports. For **integer positions** the obstruction is not granularity but L133's dichotomy, and neither half depends on `d`:
+  - multiplicative resonance grows like `exp(c√(log t/log log t))`;
+  - on independent positions the maximum of the random-energy model is `≍ log^{3/2} T`.
+  - Both beat any ceiling `(d/2) log T`. So integer supports are non-generic in every degree, and `Λ_K`'s positivity for `ζ_K` is equally an FE phenomenon.
+- **Rescaled-FE family (new objects, killed).**
+  - Construction: `Z_k(s) = ζ(ks − (k−1)/2)` and `L_k(s) = L(ks − (k−1)/2, χ)`.
+  - Properties: each satisfies a functional equation under `s ↦ 1−s`, has integer frequencies (the `k`-th powers), and has all its zeros on the critical line at ordinates `γ/k` (under GRH).
+  - Products `K = ζ^{a₁} Π L_{k_j}^{a_j}` have Weil density `(1−a₁)θ'(t) − Σ a_j k_j [θ'(k_j t) + ½ log q_j] + atoms`.
+  - Mass forces `a₁ = 1`, since `Z_k`'s pole at `(k+1)/(2k)` lies inside `σ > ½` and so only nonprincipal `L_k` are admissible.
+  - With `a₁ = 1`, positive-atom factors (`a_j > 0`) give a negative continuous density, and removing factors (`a_j < 0`) give negative atoms off the zeros of `ζ`.
+  - The same ledger kills `ζ·P^{±b}` for degree-0 Selberg-class polynomials `P` (for example `1 + a2^{−s} + 2·4^{−s}`, whose zeros lie on the line in an arithmetic progression).
+- **Fixed-mass ledger (exact, paper).** For any FE-type factorisation `K = ζ Π F_j^{a_j}` with all divisors on the line, the Weil measure is
+  `Σ_ζ δ + Σ_j a_j Σ_{F_j} δ − (1/π) Σ_j a_j (arch_j' + ½ log q_j)`.
+  - Positivity needs `a_j ≥ 0` wherever the zeros of `F_j` are not zeros of `ζ`.
+  - Then the archimedean term is `≤ 0`, with equality iff `a ≡ 0`.
+  - FE-type producers are therefore exactly `{Λ}`, for any finite family, any `k`-th-power rescaling and any conductor. This extends "ζ is archimedean-minimal" (L130/L131) to rescaled arguments.
+- **Verdict:** KILL. The construction side now has a complete ledger:
+  - FE-type producers are `Λ` only (this cycle plus Hamburger);
+  - generic integer systems fail in every degree (L133 plus this cycle);
+  - a producer beyond Λ would have to be a non-FE, non-generic Dirichlet series whose upper tail on the line is non-Gaussian. That is Ω, with no candidate mechanism in the corpus or the literature.
+
+### L180 — The archimedean-surplus law: reducible and large-conductor data carry producer polytopes, and ζ has zero surplus. THEOREM [P] (identity plus one numerical inequality; conditional positivity stated as an implication) + two kills
+- **Identity (exact).** Write `W_D` for the full Weil functional of a datum `D` (pole, archimedean part, conductor). For `K` real quadratic of discriminant `D`, with even character `χ_D` and weights `lam_b = Λ + b·Λχ_D`:
+  `W_{ζ_K}(lam_b) = W_ζ(Λ) + b·W_{χ_D}(Λχ_D) + (1−b)·(1/2π)∫|f̂|²(2θ'(t) + log D)dt`.
+  - Masses match: `Λχ_D` carries no pole, and `ζ_K` has a simple pole.
+  - The archimedean parts add: `Γ_ℝ² ` against `Γ_ℝ·Γ_ℝ`, and the conductor `D` sits with `χ`.
+- **Theorem L180.**
+  - Unconditionally, `θ'(t) + ½ log D ≥ 0` for all `t` iff `D ≥ e^{2·2.68609} ≈ 215.3`, since `θ'` attains its minimum `−2.68609` at `t = 0`.
+  - Hence, for every real quadratic field with `D ≥ 216`: RH together with GRH(`χ_D`) implies that the whole segment `{Λ + bΛχ_D : 0 ≤ b ≤ 1}` lies in the Weil cone of `ζ_K`.
+  - The same holds for the datum of `L(s,χ_D)` alone: `lam = 0` is **unconditionally** Weil-positive there, because the archimedean density `θ' + ½ log D` is pointwise `≥ 0`. So under GRH that cone contains `[0, Λχ_D]`.
+  - More generally, for a datum `A = A_ζ + Σ_j A_{χ_j}` the cone contains the polytope `{Λ + Σ b_j Λχ_j : 0 ≤ b_j ≤ 1}` whenever each removed factor has nonnegative archimedean density (`q_j ≥ 216`).
+- **Reading: why ζ is rigid.** Producers beyond the FE point exist exactly when the datum has **archimedean surplus**: a summand whose archimedean density is pointwise nonnegative, so it can be "left empty" (weight 0) at no cost.
+  - ζ's datum has zero surplus: `θ'(0) = −2.686 < 0`, and the pole cannot be left empty. Any scaling split `cA_ζ + (1−c)A_ζ` has non-positive pieces.
+  - The function-field `P¹` producer (L130) is the same mechanism: there the genus density `2g` is constant and nonnegative.
+  - This puts L130's contrast and "ζ is archimedean-minimal" into one law. Uniqueness of the producer is a statement about an **irreducible, surplus-free** datum.
+- **Kill 1 (quantum star graph / additive Herglotz decomposition).**
+  - Idea: couple one Herglotz Weyl function per prime at a Kirchhoff vertex, `H = H_∞ + Σ_p H_p`. Sums of Herglotz functions are Herglotz, so positivity would be automatic.
+  - Obstruction: each `H_p = c_p − F_p(p^{−s})` needs a budget `c_p ≥ max_t Re F_p(p^{−½−it}) ≍ lam(p)p^{−½}`. The pole forces `Σ lam(p)/p = ∞`, so `Σ c_p ≳ Σ log p/√p = ∞` exceeds any archimedean budget.
+  - Time-dependent budgets collapse back to the original condition. Verdict: FALSE (the resonance of L133 in operator form).
+- **Kill 2 (point-interaction Schrödinger model).**
+  - Idea: a self-adjoint operator with smooth Γ-background and δ-interactions at `½ log n` has a Herglotz Weyl function for free.
+  - Obstruction: its Simon amplitude `A(α)` picks up multiple-scattering atoms at `½ log(n₁n₃/n₂)`, i.e. rational, non-integer frequencies. Only single-prime lattices are closed under these paths.
+  - Integer-frequency closure therefore forces background tuning equivalent to the Krein/Gel'fand–Levitan positivity itself (circular). Verdict: CIRCULAR.
+- **Status of the hook's target.** A non-Λ producer for ζ's datum needs either archimedean surplus, which ζ lacks (L180), or a non-FE exact phase lock (Ω, L178/L179). L180 is new to the corpus, but the conditional segment is elementary. Its value is diagnostic: it says precisely which datum property makes uniqueness plausible.
+
+### L181 — Dominant-prime-factor supports: the first positive-density class that passes the rigorous resonance test; killed on the dual (AFE) side. The mass-carrier principle. CONSTRUCTION ATTEMPT [P] → KILL [heuristic] + survivor
+- **Candidate.** Take `S = {n : P⁺(n)² > n} = {pm : m < p}`, where `P⁺(n)` is the largest prime factor of `n`. Its density is `log 2` (Dickman). Put `lam = (1/log 2)·1_S` plus bounded mean-zero corrections, which gives mass 1.
+- **It passes the rigorous primorial/Toeplitz resonance test (MUST-498).** For `N = y#`:
+  `2Σ_{n|N, n∈S} n^{−½} 2^{−ω(n)} ≤ Σ_{p≤y} p^{−½} Σ_{m<p} m^{−½} ≤ 2π(y) ≪ θ(y) = log N`.
+  - This is unlike all squarefree floors (L168/L171), which fail that test. Dominant-prime-factor supports are the first **positive-density** integer class that is invisible to every rigorous resonator in the corpus.
+  - Aligned-height resonance is harmless as well. The aligned value is `≈ 2π(y)`, while the ceiling is `≈ ½π(y) log(1/ε)`.
+- **Kill (heuristic, dual side).** `F_S(s) = Σ_p p^{−s} ζ_{<p}(s)`, where `ζ_{<p}` is the partial sum over `m < p`.
+  - For `√t < p ≤ t` the approximate functional equation gives `ζ_{<p}(½+it) = ζ(½+it) − χ·Σ_{m≤t/2πp} m^{−½+it} + …`. So `F_S ⊃ ζ(½+it)·Σ_{√t<p≤t} p^{−½−it}`: ζ's large values multiplied by an unaligned prime sum of typical size `√(log log t)`.
+  - At resonant heights this is `≍ exp(c√(log t/log log t))`, far above `½ log t`.
+  - The tail `p > t` is harmless: there `ζ_{<p} ≈ ζ + p^{½−it}/(it−½)`, and both prime sums over `p > t` have no stationary point.
+  - This is L134's Poisson self-duality in a new guise. Direct-side resonance is removed, but every mean-1 inner sum of length above `√t` reproduces `ζ` through the approximate functional equation.
+- **Mass-carrier principle (stated precisely, heuristic).** In any integer system the mass (the pole) is carried either:
+  - (i) by mean-1 sums of length `≫ √t` at height `t`, which are `ζ`-like through the AFE and resonate on the direct or dual side; or
+  - (ii) by prime-supported weights `≍ log p`, whose fluctuation has variance `≍ log² T` and needs FE phase-locking (Λ).
+  Mean-zero decorations change neither. Every construction in L107–L181 falls into (i) or (ii).
+- **Survivor (open, rigorous side).** No theorem in the corpus excludes dominant-prime-factor supports. Excluding them rigorously needs a resonance method that runs through the AFE, i.e. a large-value theorem for `ζ(½+it)·P(½+it)` with `P` a prime sum over `(√t, t]`. That is the `α ≥ 1` wall. Recorded as the sharpest unexcluded integer class.
+
+### L182 — Cofactor-exponent supports `n = pm, m < p^c`: removing the dual resonance at `p ≤ t` does not remove ζ. The inner-sum dichotomy. KILL [heuristic] + sharpened principle
+- **Candidate.** Refine L181: take `S_c = {pm : m < p^c}` with `0 < c ≤ ½`, with bounded density-restoring weights, mass 1.
+  - For `p ≤ t` the inner sums `Σ_{m<p^c} m^{−½−it}` have length `≤ t^c ≤ √t`. They stay below the approximate-functional-equation threshold `√(t/2π)`, so the L181 dual resonance at `√t < p ≤ t` disappears.
+  - Direct resonance is still absent, and the MUST-498 primorial test still passes (`≤ 2π(y)`).
+- **Kill (heuristic).** At scales `p > t^{1/(2c)}` the inner sums are long again, and `ζ_{<p^c}(½+it) = ζ(½+it) − χ·(short sum) + …`.
+  - Their outer coefficient `Σ_{p>X} p^{−½−it}` (with `X ≥ t`) has no stationary phase. Its non-smooth part is the explicit-formula fluctuation `≍ Σ_ρ X^{ρ−s}/((ρ−s) log X)`, which is `≍ log t/log X` near the critical ordinates.
+  - Summing over dyadic `X ≥ t` leaves `ζ(½+it)×O(1)`, and hence the resonant large values of `ζ`.
+- **Inner-sum dichotomy (sharpened mass-carrier principle).** Write any integer mass carrier as `n = (outer part)·(inner cofactor)`.
+  - If the inner cofactors carry mean-1 weight over ranges that grow unboundedly with the outer part, then at every height some scale has inner length `≥ √(t/2π)`. The system then contains `ζ(½+it)` times an `O(1)` coefficient, and resonance kills it.
+  - If the inner ranges stay bounded (`m ≤ C`), the carrier is prime-supported up to bounded cofactors: `Λ`-type, with fluctuation variance `≍ log² T`, needing FE phase-locking.
+  - The dominant-prime-factor class (L181) and the cofactor-exponent class (this cycle) sit on the first branch.
+- **Status.** No construction survives. The sharpest open **rigorous** target is unchanged: a large-values theorem for `ζ(½+it)·Q(½+it)` with `Q` an explicit prime-fluctuation factor. It would turn L181/L182 into theorems. That is the `α ≥ 1` wall.
+
+### L183 — Does a producer force RH? Prime-blind detection of off-line zeros: the effective-support cap and its cost. CONJECTURE → heuristic KILL of the "weak-RH" branch
+- **Question.** The Minkowski split gives `W ≠ ∅ ⟺ PBAP` (prime-blind archimedean positivity at every level), and `RH ⇒ Λ ∈ W`.
+  - If PBAP were **strictly weaker** than RH, then in a world where RH fails with hugging zeros, a non-Λ producer would exist. That would be the only non-RH route to the hook's object.
+- **Conjecture L183.** `PBAP ⟺ Z(C)`, where `Z(C)` says every zero has `|β − ½| ≤ C/log(|γ|+2)`. The idea is that prime-blind tests cannot resolve zeros that hug the line.
+- **Mechanism for the conjecture.**
+  - A prime-blind `G` whose spectrum is concentrated near `γ₀` (bandwidth `≍ γ₀`) vanishes on `log n` at spacing `1/n < π/γ₀` once `n > γ₀/π`. So it is effectively supported on `|x| ≤ log(γ₀/π)`.
+  - The off-line gain is then `≍ e^{δ₀ X} ≤ γ₀^{δ₀}`, with `X = log(γ₀/π)`. This beats the `O(1)` on-line mass in the `1/X` window only if `δ₀ log γ₀ ≳ C`. So hugging zeros look invisible at their own height.
+- **Kill (heuristic).** The support cap is a cost, not a wall.
+  - Add a high-frequency correction `G_corr` that cancels `G_main` on the dense points `log n ∈ [log(γ₀/π), X]`. Its archimedean cost is `≍ X·‖G_main‖²` on that region, i.e. polynomial in `X`.
+  - The gain `e^{δ₀X}` grows exponentially in `X` for every fixed `δ₀ > 0`. So every off-line zero is detected at a large enough level. Positive definiteness of `G_main + G_corr` is kept by building the correction from autocorrelation sums of narrow pieces, which is the corpus's standard `h ± h(·−log j)` density device.
+  - Hence `¬RH ⇒ ¬PBAP` heuristically, and **`W ≠ ∅ ⟺ RH`**, with no uniqueness assumption needed. This refines L138 ("RH ⟺ PBAP under uniqueness").
+- **Consequence for the hook.** Any integer producer, Λ or not, is at least as hard as RH, and a non-Λ producer additionally requires the failure of uniqueness (L131′). The two readings of "the producer of positivity" (a structural proof of Λ's positivity, or a second system) are therefore both RH-hard. The hook's target is at least as hard as RH.
+- **Rigour gap.** Two steps are not yet proved: controlling `G_corr` inside the positive cone at polynomial cost, and handling clusters of off-line zeros (the tilted-cluster tests of MUST-484 are the right tool). Formalizing this would give the corpus theorem "`W ≠ ∅ ⇒ RH`". That is a concrete, significant next target, stronger than every exclusion so far because it covers all producers at once.
+
+### L184 — Correction to L183, and the construction side at finite level: fixing an off-line zero with finitely many atoms. EXISTENCE HEURISTIC [P] → blocked by the near-radical subspace; new uniqueness mechanism (trace argument), open
+- **Correction to L183.** L183 claimed the prime-blind correction `G_corr` costs only polynomially in `X`. That is unjustified: `G_corr` must meet `≍ e^X` atom conditions, and the corpus device `h ± h(·−log j)` costs `≍ √j log j` per unit `ℓ_j`. So the cost is `≍ e^X ≫ e^{δ₀X}`. L183's conclusion (`¬RH ⇒ ¬PBAP`) is **not** established by that argument.
+- **Existence side reopened (Farkas dual view).** `PBAP_a` holds iff some `d` on `n ≤ e^{2a}` makes `W_Λ − Q_d ≥ 0` at level `a`, where `Q_d` has Fourier multiplier `D̂(t) = Σ d(n) n^{−½} 2cos(t log n)`.
+  - Suppose RH fails with a zero of excess `δ₀`. The off-line block needs a spike `D̂(γ₀) ≳ e^{δ₀a}` of width `1/a`.
+  - Build it from `K ≍ e^{2δ₀a}a²` primes with `|e_p| = M/K` and `sign(e_p) = sign cos(γ₀ log p)`, for `M = e^{δ₀a}`. Then `D̂(γ₀) ≍ M`, `D̂(0) ≍ M/√K ≍ 1/a`, and the generic values have size `≍ 1/a`.
+  - Near-alignments giving `|D̂| ≍ M·(fraction)` need heights `≳ exp(fraction·K)`, where `log t ≫ M·fraction`, so the smoothed critical density absorbs them. The prime budget `π(e^a) ≍ e^a/a ≥ e^{2δ₀a}a²` holds because `δ₀ < ½`.
+  - So at the level of generic sizes, finitely many prime atoms **can** patch an off-line zero at every finite level. If that held at all levels, Tychonoff would give `W ≠ ∅` unconditionally: a producer, non-Λ under ¬RH.
+- **Block: the near-radical subspace.**
+  - At level `a`, `W_Λ` has a near-null subspace `V_a` of dimension `≥ (2−η)e^{2a}` and energy `≤ exp(−η²e^{2a}/(300a))` (corpus `SharpWeilNearRadicalCount`; theta-radical tests MUST-478).
+  - The patch must satisfy `Q_d ≤ W_Λ ≤ ε_a` on `V_a`, where `ε_a` is exponentially small. That rules out the "generic size `1/a`" allowance: on `V_a` the multiplier `D̂` must be `≥ −ε_a` wherever `V_a` carries spectral mass, i.e. almost everywhere below height `≍ e^{2a}` except within `1/a` of critical zeros.
+  - A multiplier with only `e^{2a}` atoms, negative only near critical zeros, is Λ-type (explicit formula) and cannot carry the `γ₀` spike. The existence heuristic therefore fails at the near-radical blocks, and L183's conclusion (`¬RH ⇒ ¬PBAP`) is restored heuristically, now by this mechanism.
+- **New uniqueness mechanism (conjecture L184, open).** For `lam ∈ W` put `d = lam − Λ`. On `V_a`, `Q_d ≤ ε_a`. If in addition `Tr(Q_d|_{V_a}) = Σ_n d(n)n^{−½}·2Re Tr(P_{V_a} τ_{log n} P_{V_a}) ≈ 0`, then `Q_d|_{V_a}` is small in trace norm (a one-sided bound plus zero trace give a two-sided bound).
+  - If the `e^{2a}` atom forms restricted to `V_a` (dimension `≈ 2e^{2a}`) are uniformly linearly independent, then `d(n) → 0` for `n ≤ e^{(1−η)2a}`. That gives **evaporation, hence `W ⊆ {Λ}`, and `W ≠ ∅ ⇒ RH`**.
+  - Needed inputs:
+    - (i) the spectral occupancy of `V_a` has Fourier transform `o(n^{½}/log n)` at `x = log n`, so the trace terms vanish against the box `|d(n)| ≤ √n(log n + C₀)`;
+    - (ii) a lower frame bound for `{P_{V_a} τ_{log n} P_{V_a}}_{n ≤ e^{2a}}`.
+  - This is the first mechanism in the programme that could exclude **all** non-Λ producers at once rather than class by class. It matches the frontier note "a producer must control these blocks" (HF section).
+- **Status.** The construction side is blocked at the near-radical blocks. The decisive next step is the trace/frame argument on `V_a`, which is a finite-level linear-algebra problem with explicit inputs available in the corpus.
+- **L184 follow-up (same cycle): the Landau trace on the near-radical subspace [P, heuristic constants].**
+  - In `SharpWeilNearRadicalCount`, `V_L` is the level-`L` trigonometric test space with frequencies up to `T = 2πe^{2ℓ}`, cut down by vanishing at **every** zero with `|γ| ≤ T` (off-line ones included; unconditional).
+  - The atom forms `A_n(f) = 2Re(f⋆f̃)(log n)` have near-zero trace on the full trigonometric space (Dirichlet-kernel values at `log n`). Their trace on the removed zero-evaluation directions is `≈ Σ_{|γ|≤T} 2cos(γ log n)·(1 − log n/2ℓ)`.
+  - By the Landau–Gonek formula this is `≈ −(2T/π) Λ(n)/√n`. Hence, for any weights `lam`, with `d = lam − Λ`:
+    `Tr(W_lam|_{V_L}) ≈ (2T/π) Σ_{n≤e^{2L}} (Λ(n) − lam(n)) Λ(n)/n`.
+  - For a producer the left side is `≥ 0`, which gives `Σ_{n≤x} lam(n)Λ(n)/n ≤ Σ_{n≤x} Λ(n)²/n + o(1)`. This is a Landau-trace form of the corpus exposed-point inequality `ℓ(lam − Λ) ≤ 0` (`WeilFullConeExposedPoint`).
+  - Consistency check: an Ω-type producer with density `≍ (1/2π) log t` has `Tr(W_lam|_{V_L}) ≍ T ℓ²`, matching `Σ(Λ−lam)Λ/n ≍ ℓ²`.
+- **Verdict on conjecture L184.** The trace argument gives only the **one-sided** exposed-point inequality. Two-sided control on `V_L` would need an **upper** bound for `W_lam` on the near-radical subspace, and continuous producers violate any such bound by design, since their density fills the zero gaps. So the near-radical mechanism cannot prove uniqueness by itself: REDUCES TO the exposed point, already formal.
+  - The identity "trace of the Weil form on the zero-annihilated subspace = Landau-weighted `Λ`-correlation deficit" is new to the corpus and exact up to Dirichlet-kernel and plateau errors. It is the cleanest explanation of why `Λ` is exposed: the zero-annihilated subspace is exactly where `Λ` is null.
+
+### L185 — Surplus limits: producers for `A_ζ + εS` and the compactness bridge `ε → 0`. CONJECTURE → REDUCTION (no gain)
+- **Idea.** L180 showed that data with archimedean surplus carry producer polytopes. Add an artificial surplus: `A_ε = A_ζ + ε·(unit density)`, i.e. `W_ε(lam) = W_ζ(lam) + ε‖f‖²`.
+  - The cones `W(A_ε)` decrease as `ε ↓ 0`, with `∩_ε W(A_ε) = W(A_ζ)` because the conditions are closed.
+  - All of them lie in the corpus box `|lam(n)| ≤ √n(log n + C₀)`; the box proof uses only pole and archimedean terms, uniformly for `ε ≤ 1`.
+  - So `W(A_ε) ≠ ∅` for all `ε > 0` would give `W(A_ζ) ≠ ∅` by Tychonoff, i.e. a producer. This bridge is exact.
+- **Is `W(A_ε) ≠ ∅` easier?** It asks for `lam` with `W_ζ(lam) ≥ −ε‖f‖²` for all tests (ε-almost producers). By the Minkowski/Farkas split it is equivalent to `A(G) ≥ −ε‖G‖` on prime-blind tests: ε-PBAP.
+  - Under ¬RH, the off-line block of a zero of excess `δ₀` produces prime-blind-compatible negativity `≍ −e^{2δ₀a}‖f‖²` at level `a`. By the L184 near-radical mechanism, the patch cannot absorb it without Λ-type structure, and it outgrows any fixed `ε`.
+  - So ε-PBAP for all `ε` is as hard as PBAP. Verdict: REDUCTION, no gain. The surplus must be **arithmetic** (a genuine second factor, L180), not artificial.
+- **Loop status after L178–L185.** The construction side is exhausted in every direction available to the corpus and the literature:
+  - FE-type producers: Λ only;
+  - generic integer systems: fail by resonance or variance;
+  - structured supports: fail by direct or dual resonance;
+  - operator and additive-Herglotz constructions: divergent or circular;
+  - finite-level patches: blocked by the near-radical subspace;
+  - surplus limits: reduce to PBAP.
+  The target is at least as hard as RH.
+
+### L186 — Uniqueness side: Ω as a boundary-regularity property, and why the mean-value theorem cannot kill it. ANALYSIS [P] (no theorem)
+- **Reformulation (exact).** Under RH, `W = {Λ}` iff no nonzero "Dirichlet measure" is dominated by `πν_Λ`.
+  - A Dirichlet measure is the boundary value `μ_d = Re E(½+i·)` of an integer Dirichlet series `E = Σ d(n)n^{−s}`, holomorphic on `σ > ½`.
+  - Dominated means `μ_d ≤ π Σ_γ δ_γ`: positive part only at zeros, with mass `≤ π·mult`, and continuous part `≤ 0`.
+  - The prototype `Re(ζ'/ζ) = πν_Λ − θ'` is dominated but carries the pole at `s = 1`. Removing the pole by a Dirichlet series `G` with `Re G ≤ θ'` is exactly a second producer (circular; L141, L173).
+- **Ω as boundary regularity.** For a continuous producer, the Fejér-smoothed partial sums `Re Σ_{n≤e^{1/w}} lam(n) n^{−½} φ̂_w(log n) n^{−iT}` converge in `L¹_loc` as `w → 0` to `θ' − πρ`, a function with no singular part. For `Λ` they converge to `θ' − πΣδ_γ`.
+  - So Ω asks for an integer Dirichlet series with pole whose critical-line boundary value is a locally integrable function, bounded above by `θ'`, although `Σ_{n≤N} lam(n)²/n ≥ log N` diverges.
+- **Mean-value test (no kill).** Montgomery–Vaughan gives `Var_{[T,T+U]}(ρ_w) ≍ Σ_{n≤e^{1/w}} lam²/n ≍ 1/w` for `U ≫ e^{1/w}`. Hence `(1/U)∫_T^{T+U} ρ² ≳ log U`: long-window mean squares grow logarithmically.
+  - This is compatible with `mean(ρ)² ≍ (log(T+U))²`, so there is no contradiction at second order. The obstruction, if any, is at the level of large deviations: the upper tail of `Re F` at `½ log t`. That is the `α ≥ 1` wall (L172 d, L176).
+- **Verdict.** No new leverage. The uniqueness side needs a large-deviation input that no current method reaches, and the construction side needs an exact phase lock without a functional equation. Both are at the corpus's recorded open core.
+
+### L187 — Manufacturing archimedean surplus from large sparse weights: comb algebra and character differences. KILLS [P, exact]
+- **Idea.** L180 says producers beyond Λ need surplus. The box allows `|lam(n)| ≤ √n(log n + C₀)`, so large weights on geometric progressions could create a positive constant density ("surplus"), paid for by atoms.
+- **Comb algebra (exact).** Changing `lam` by `w(m^k) = a·m^{k/2}` (`k ≥ 1`) changes the Weil measure by
+  `−(a/π) Re Σ_{k≥1} m^{−ikt} = a/(2π) − (a/log m) Σ_j δ(t − 2πj/log m)`.
+  - Surplus (a positive constant) forces negative atoms on the progression `2πℤ/log m`.
+  - Take combinations over powers `m^{k'}`. Points of the finest lattice are covered only by the finest comb, which forces its weight `≥ 0`. Möbius inversion over `k | k'` then forces the total constant to be `≤ 0`.
+  - So no comb combination produces surplus with nonnegative atoms. This is the finite-lattice case of "a positive measure with Fourier transform vanishing near 0 is zero".
+  - Negative comb atoms could only be absorbed by `ζ`-zeros forming arithmetic progressions `2πℤ/log m`. None are expected (Putnam; Lapidus–van Frankenhuysen).
+- **Character differences.** `lam = Λ + b(Λχ_D − Λχ_{D'})` gives
+  `W_ζ(lam) = W_ζ(Λ) + b W_{χ_D}(Λχ_D) − b W_{χ_{D'}}(Λχ_{D'}) − (b/2) log(D/D')·‖f‖²`.
+  - The third term carries negative atoms at the zeros of `L(s,χ_{D'})`, which are not zeros of `ζ`.
+  - Anti-producers (`W_χ(μ) ≤ 0` on all tests) do not exist: a mean-zero almost-periodic multiplier cannot dominate `θ' + ½ log D`. So the decomposition `W_ζ = W_K − W_χ` gives no route either.
+- **Verdict.** Surplus cannot be manufactured inside ζ's datum. Every source of positive continuous density comes with negative atoms off the zero set of `ζ`. This closes the L180 surplus loophole.
+
+### L188 — Producers as spectra of self-adjoint dynamics (quantum graphs, Berry–Keating xp with integer scatterers). CONSTRUCTION ATTEMPT → KILLS [P] + structural reading
+- **Idea.** The spectral counting measure of a self-adjoint operator is automatically positive. So a producer is any self-adjoint system whose exact trace formula has smooth (Weyl) part `A` and periodic-orbit lengths in `log ℕ`.
+- **Quantum star and flower graphs.**
+  - With edge lengths `½ log p` (star) or petal lengths `log p` (flower), every periodic orbit has length `log(Π p_i^{n_i})`, which is an integer logarithm. The Kottos–Smilansky/Roth trace formula is exact, and the eigenvalue measure is positive.
+  - But the Weyl term is the constant `(total length)/π`. With finitely many edges this is a Kurasov–Sarnak background, not `A` (density `∼ (1/2π) log t`). With all primes the total length diverges.
+  - Energy-dependent edge opening (barriers transparent only for `E ≳ n`) gives the wrong growth, `N(E) ∼ E² log E`.
+- **Berry–Keating / Sierra `xp` with scatterers.**
+  - Sierra's `H = x(p + ℓ_p²/p)` has the right smooth counting `(E/2π)(log(E/2π) − 1)`, i.e. the `θ` term.
+  - Under the `xp` flow `x(t) = x₀e^t`, a scatterer at `x = n` is reached at time `log n`, which gives integer orbit lengths for excursions from `x = 1`.
+  - Self-adjointness forces reversible couplings, and reversible paths between scatterers `n < m` have length `log(m/n)`: rational frequencies. One-way resets `m → 1` keep integer lengths but break self-adjointness and hence positivity.
+  - This is L180 kill 2 in dynamical form: **reversibility generates quotients**.
+- **Structural reading.** The explicit formula for `Λ` has orbit lengths `k log p` only (prime powers, no products). The prime orbits are therefore dynamically **disjoint** (a disjoint union of circles of length `log p`), not coupled through a vertex, and their amplitudes are **negative** (`−Λ(n)/√n`).
+  - This is Connes' absorption picture: `ν_Λ` = smooth continuum minus a superposition of prime combs. Positivity of such a difference is RH.
+  - A second producer would need another absorption system: continuum `A` minus integer combs, still positive. As in L187, every such construction needs a coherent cancellation that only the FE is known to supply.
+- **Verdict.** KILL. Self-adjoint realizations give positivity for free but cannot produce integer-only orbit lengths together with the archimedean Weyl term. The constant Weyl term and reversibility are the two obstructions.
+
+### L189 — Averaging and lifting constructions: Bohr-torus averages, Rankin–Selberg squares, two-variable restrictions. KILLS [P, short]
+- **Bohr-torus average.** `lam = Λ·E_χ[Re χ(n)]` over characters `χ` of `ℚ₊*`. The average vanishes for every `n ≥ 2`, so the mass disappears. Any nonuniform measure on the torus that keeps mass 1 is a multiplicative weight, and L133(a) resonance kills it.
+- **Rankin–Selberg squares.** `F × F̄` has nonnegative Dirichlet coefficients, but its datum has degree `d²` and pole order `≥ 1`. Only `F = ζ` has degree-1 square datum, and then `F × F̄ = ζ`. There is no degree-1 datum other than ζ's to transfer.
+- **Two-variable restriction (F₁ surface).** Following the `C × C` Hodge-index proof over `F_q`, a producer would be the diagonal restriction of a positive intersection form on an "arithmetic surface".
+  - Over `F_q` the cone for a given genus is every positive measure of mass `2g` (L130), so producers are plentiful.
+  - Over `ℚ` the same construction must reproduce the archimedean datum `A` exactly, together with integer point counts. That is the HF open core (frontier HF: "no construction exists").
+- **Verdict.** KILL / REDUCTION. Averaging destroys the mass, squaring changes the degree, and lifting to a surface is the open HF core itself.
+
+### L190 — Sparse supports carrying the full mass with box-size weights. KILL [P, exact example + general law]
+- **Example.** Put `lam(m²) = 2m` on the squares. Then `Σ_{m²≤x} 2m ≈ x` gives mass 1. `F(s) = 2ζ(2s−1)` has a simple pole at `s = 1` with residue 1, integer support, and weights inside the box `√n(log n + C₀)`.
+  - On `σ = ½`, `F(½+it) = 2ζ(2it) = 2χ(2it)ζ(1−2it)` has modulus `≍ |t|^{½}|ζ(1−2it)|`, oscillating with amplitude `√t ≫ θ'`. Positivity fails.
+  - The natural critical line of `ζ(2s−1)` is `σ = ¾`, so the critical line `σ = ½` lies to the **left** of it.
+- **General law.** If the mass is carried on a support of counting function `≍ x^{α}` (`α < 1`), the weights have size `≍ x^{1−α}`. Then `Σ_{n≤x} lam(n)²/n ≍ x^{1−α}` diverges polynomially, and the boundary values on `σ = ½` grow polynomially: the `½`-line lies left of the support's own critical line `σ = 1 − α/2`.
+  - Hence mass carriers must have density `x^{1−o(1)}`. That puts us back in the L133 dichotomy (dense resonant vs prime-type), with sparse supports excluded outright.
+- **Blocked record.** Thirteen construction families since L178 are closed. The two remaining cores are recorded in L178/L186:
+  - construction by exact phase-locking without a functional equation;
+  - uniqueness by an upper-tail large-deviation theorem at `½ log t`.
+  Neither has a known mechanism. The loop continues only with mechanisms that do not reduce to one of the recorded walls.
+
+### L191 — Inner-function deformations: unimodular and singular-inner Dirichlet factors `G`, and `K = ζG`. KILLS [P]
+- **Real factors (`G(1−s) = G(s)`, real on the line).** Then `K = ζG` satisfies ζ's functional equation, so `K = cζ` by Hamburger (L139/L140).
+- **Unimodular singular-inner factors.** Take `G = exp(−(1+w)/(1−w))` with `w = 2^{−s}/2^{−½}`. It is a Dirichlet series in `2^{−s}`, `|G| = 1` on `σ = ½`, and it has no zeros.
+  - Away from `t_k = 2πk/log 2` its phase velocity is `(log 2/2) csc²(t log 2/2) ≥ (log 2)/2 > 0`: apparent surplus.
+  - But `G` has winding number 0. The phase derivative is the Hadamard finite part `Pf csc²`, whose singular part at each `t_k` is negative and not a measure. It would have to be absorbed at the progression `2πℤ/log 2`, which is the L187 comb obstruction in inner-function form.
+- **Singular inner factors carried by the ζ-zeros.** `G = exp(−C(s))`, with `C` the Cauchy transform of `Σ c_γ δ_γ`, gives `G'/G = Σ c_γ/(s−ρ_γ)²`. Its boundary real part is `Pf 1/(t−γ)²` times `c_γ`. That is not a measure, and a unit atom cannot absorb it.
+- **Law.** Every factor that adds positive continuous phase velocity to `ζ` has winding number 0. It must therefore carry compensating negative singular mass, either an atom or a finite-part singularity. That mass can only be absorbed at `ζ`-zeros, with simple poles of residue `≤` the multiplicity, which brings us back to `G = K/ζ` with `K` a second producer (circular). **Surplus cannot be imported by any Dirichlet-series factor.**
+- **Verdict.** KILL. This closes the inner-function loophole (L139's near-miss) for producer construction.
+
+### L192 — Continuity of the Weil measure as super-regularity (Wiener), and "ζ minus its resonant core": the resonant core has size exactly `√X`. OBSERVATION [P] + KILL [heuristic]
+- **Wiener's criterion for Ω (exact reformulation).** For a smooth window `w` in `t`, the Fourier transform of `wν_lam` at large `x` is `Σ_n lam(n)n^{−½} ŵ(x − log n) − (pole growth)`. This equals `e^{−x/2}·[weighted count of lam on [e^{x−O(1)}, e^{x+O(1)}] − integral]` plus `o(1)`.
+  - By Wiener's lemma (the atomic mass of a finite measure is the Bohr mean of `|μ̂|²`), `ν_lam` has no atoms iff lam is **super-regular**: `Σ_{n∈[X,eX]} lam(n)w(n/X) = ∫ + o(√X)` in quadratic mean over `X`.
+  - For `Λ` the error is `Θ(√X)` (the zeros), which gives atoms. `lam ≡ 1` (Euler–Maclaurin error `O(1)`) and jittered real systems (L176) are super-regular, and their measures are absolutely continuous.
+  - So Ω asks for an integer system that is **more regular than Λ** (error `o(√X)`) and still positive.
+- **"ζ minus its resonant core".**
+  - The resonance of `ζ(½+it)` at heights `t ≍ e^y` is carried by `y`-smooth `n` with `log n ≍ √y log y`, i.e. by the very smooth numbers `P⁺(n) ≤ (log n)²`.
+  - By de Bruijn, `Ψ(X, (log X)²) = X^{½+o(1)}`. **The resonant core of the integers has size exactly `√X`**, the critical-line scale. So `lam = 1 − 1_{P⁺(n) ≤ (log n)²}` is super-regular up to `X^{o(1)}` and removes the direct-side resonance.
+  - **Kill (heuristic).** `F = ζ − V`, with `V` the Dirichlet series of the removed core. `V` cancels the direct approximate-functional-equation sum's resonant part, but not the dual sum `χ(½+it)Σ_{m≤√(t/2π)} m^{−½+it}`. That sum resonates at the same heights with the same smooth `m`, because the conjugate phases are aligned too, and `V` has no functional equation to supply a dual.
+  - Removing a sparse set cannot touch the Poisson dual of `ℤ` (L134). Killing both sides needs `lam` non-ζ-like at every scale, i.e. prime-type (L133), and then super-regularity fails (`Θ(√X)`, as for Λ).
+- **Reading.** The borderline coincidence is exact. The set that must be removed to kill resonance has size `√X`, the same scale at which Wiener's criterion separates continuous from atomic Weil measures. A resonance-free integer system is forced to the `√X` discrepancy scale, where atoms appear. This is a new heuristic link between the resonance obstruction and the atomic (zero) structure of `Λ`, and it supports L131′.
+
+### L193 — Ω as a moving-target problem for the Kronecker flow on `𝕋^∞`; the moment-order barrier quantified. REFORMULATION [P] + wall quantification
+- **Moving-target form.** Write `ι(t) = (p^{−it})_p` for the Kronecker orbit and `f_lam` for the Bohr lift of `Σ lam(n) n^{−½} z^{v(n)}`. Then `lam` is a continuous producer iff the orbit avoids the moving region `{Re f_lam > θ'(t)}` for all `t`, with the non-avoidance set carrying no mass.
+  - For `Λ` the orbit lies **on** the moving level set `{Re f = θ'(t)}` for almost every `t` (the FE phase lock), which is maximally non-generic.
+  - A coercive producer (`ν ≥ c > 0`) would satisfy an **open** condition, so coercive producers form an open subset of `W`. By the corpus Hahn–Banach duality, `int W ≠ ∅ ⟺` strict PBAP.
+- **Tail requirement.** At height `t` the truncation `f_t` has Haar variance `V_t ≍ ½ log t` (mass 1, Cauchy–Schwarz). The orbit samples about `t log t` effectively independent points in `[t, 2t]`.
+  - Avoiding `½ log t` needs `P(Re f_t > ½ log t) ≪ 1/(t log t)`. At `√(½ log t)` standard deviations this is a one-sided sub-Gaussian tail with proxy `≤ V_t/4`, i.e. strong skewness.
+  - For Bohr-independent coordinates, the CLT's moderate-deviation range covers `x ≪ M^{1/6}` with `M ≍ π(t)`. So the Haar tail is Gaussian there, and the requirement fails.
+- **Why this does not kill Ω (the wall, quantified).** The orbit over `[T, 2T]` reproduces Haar moments of order `k` only for Dirichlet polynomials of length `N` with `N^k ≤ T` (Montgomery–Vaughan).
+  - The tail at `√(log T)` standard deviations needs `k ≍ log T`, hence `N ≤ T^{1/log T} = e`. So no nontrivial truncation of `f` has its orbit tail at the required depth determined by Haar statistics.
+  - This is the precise form of the `α ≥ 1` wall. Only exact identities (the FE) control the orbit there, and FE-type producers are `{Λ}` (L179).
+- **Verdict.** REFORMULATION + quantified wall. Ω is a moving-target avoidance problem for the Kronecker flow at moment order `≍ log T`, a regime no current equidistribution or large-deviation method reaches.
+
+### L194 — Uniqueness via prime-blind near-radical tests: an unconditional mechanism that would pin every producer's spectrum to the ζ-zeros, and the exact cost that breaks it. CONJECTURE → KILL [P, quantitative]
+- **Mechanism (exact part, unconditional).** Let `C_L` be the cone of sums `G = Σ f_i⋆f̃_i` with `f_i` in the near-radical subspace `V_L` (`SharpWeilNearRadicalCount`).
+  - If `G ∈ C_L` is prime-blind (`G(±log n) = 0`, `2 ≤ n ≤ e^{2L}`), then **for every weight system** `lam`, `W_lam(G) = A(G) = W_Λ(G) + P_Λ(G) = W_Λ(G)`.
+  - The last term satisfies `|W_Λ(G)| ≤ ε_L Σ‖f_i‖²` with `ε_L = exp(−η²e^{2L}/(300L))`, unconditionally.
+  - So every producer's Weil measure gives mass `≤ ε_L Σ‖f_i‖²` to `Ĝ = Σ|f̂_i|²`.
+  - If prime-blind elements of `C_L` covered every point of `[−T, T]` (`T = 2πe^{2L}`) away from zeros, at bounded cost, then every producer's measure would be carried by the ζ-zeros. L150 would then give **`W ⊆ {Λ}` and `W ≠ ∅ ⇒ RH`**. It would also exclude coercive producers (`int W = ∅`, i.e. strict PBAP fails).
+- **Kill (the cost).** A localized `f ∈ V_L` has atom vector `Φ(f⋆f̃) = (Re(f⋆f̃)(log n))_{n≤e^{2L}}` of size `≍ ‖f‖²√K`, with `K ≍ e^{2L}`.
+  - Cancelling it inside `C_L` costs `|Φ|/κ_L`, where `κ_L = min_{|c|=1} (−λ_min(Σ c_n A_n|_{V_L}))` is the uniform indefiniteness of the atom forms on `V_L`.
+  - The atom forms are translation autocorrelations of norm `≤ 2`, so `κ_L ≲ 1`. The cost `≍ √K‖f‖² = e^{L}‖f‖²` swamps the gain `‖f‖²`.
+  - Tests with small atom vectors need `supp f` of length `< log 2`. Such an `f` has type `< ½ log 2` and cannot vanish at ζ's zeros (zero density `(1/2π) log t` against at most `log 2/2π`), so it is `0`.
+- **Survivor (open, sharp).** The mechanism works iff the prime-blind elements of `C_L` achieve a localized spectral covering with cost `o(1/ε_L)`. Because `ε_L` is **doubly exponentially** small, a cost of `e^{O(L)}` would be ample. So the real question is whether a correction of size `e^{L}` is affordable once gains are measured against `ε_L`.
+  - Recompute: a producer puts mass `ν(window at t₀)·c‖f‖² ≤ W_lam(G_main + G_corr) = W_Λ(G_main + G_corr) ≤ ε_L(‖f‖² + ‖corr‖²) ≤ ε_L e^{O(L)}‖f‖²`. That still gives `ν(window) ≤ ε_L e^{O(L)} → 0`.
+  - **The cost does not break the mechanism after all, provided `G_corr` can be chosen inside `C_L`** (so that `W_Λ(G_corr)` is also `ε_L`-small). The real requirement is feasibility, not cost: the atom map `Φ` must be surjective from `C_L` onto (a neighbourhood of) `Φ(G_main)`, with `‖G_corr‖ ≤ e^{O(L)}‖G_main‖`.
+- **Corrected status.** OPEN and promising. The obstruction is only the **feasibility** of cancelling the atom vector within the near-radical cone, a finite-dimensional conic problem (`dim V_L ≍ 2K`, `K` constraints).
+  - By Farkas, it is infeasible iff some `Σ c_n A_n` is positive definite on `V_L` with a margin. Its trace on `V_L` is `≈ (2T/π) Σ c_n Λ(n)/n` (L184). That leaves room for a definite combination only along the "Λ direction" `c_n ∝ −Λ(n)`, which is exactly Λ's own prime form.
+  - **Next (L195):** decide whether `−Σ_n Λ(n)n^{−½} A_n` (equivalently `W_Λ − A` on `V_L`) is positive definite on `V_L` with margin. If it is not, the mechanism proves uniqueness. If it is, that definiteness is itself a new positivity statement about `A` on `V_L`.
+- **L194 self-audit (same cycle): the feasibility is circular.** A second producer `lam = Λ + d` satisfies `W_Λ − Σ_n d(n)n^{−½}A_n ⪰ 0` on `V_L`, hence `Σ_n (−d(n)n^{−½})A_n ⪰ −ε_L` there. So `c = −d n^{−½}` lies (up to `ε_L`) in the dual cone of the atom image `Φ(C_L)`.
+  - Exactly the targets `−Φ(G_main)` with `G_main` localized where `ν_lam` has mass violate `⟨c, ·⟩ ≥ −ε`, so the correction is infeasible precisely there.
+  - Hence "prime-blind near-radical covering is feasible" is **equivalent** to "no second producer carries mass off the zeros". The mechanism restates uniqueness; it gives no independent leverage. The "OPEN and promising" status above is withdrawn.
+  - Surviving fact (exact, unconditional): **every** weight system has the same Weil energy on prime-blind elements of the near-radical cone, namely `W_Λ(G)`, which is `ε_L`-small. Producers can differ from Λ only through the atom directions that `Φ(C_L)` fails to fill.
+  - Verdict for L194: CIRCULAR. The dual-cone obstruction to covering is the second producer itself.
+
+### L195 — Rigorous route to exclude the dominant-prime-factor class (L181): joint large values of `ζ·P` via resonance on `|ζ|²` plus phase rotation. CONJECTURE + proof plan [P-sketch]
+- **Target (survivor from L181).** `S = {pm : m < p}` with weights `1/log 2`. It passes every rigorous resonance test in the corpus (MUST-498).
+- **Why the naive resonator fails.** `∫ ζ(½+it) P(½+it) |R(t)|² Φ(t/T) dt ≈ 0` when `R` lives on primes `≤ log T` and `P = Σ_{√T<p≤T} p^{−½−it}`: a main term needs `p | m` with `m` in `R`'s support. So resonator averages of `ζP` vanish and cannot see its large values.
+- **Conjecture L195.** `max_{t∈[T,2T]} Re(ζ(½+it)·P_{(√t,t]}(½+it)) ≥ exp(c√(log T/log log T))` for all large `T`.
+  - *Plan.* (i) A resonance lower bound for `∫|ζ|²|P|²|R|²Φ`, using asymptotic independence of `P` (primes `> √T`) from `R` (primes `≤ log T`). The mean value of `|P|²` is `≍ log 2`, which gives `max|ζP| ≥ exp(c√(log T/log log T))`.
+    (ii) Phase rotation. Across a window of width `≍ 1/log T` at a large value, `arg P` rotates by `≳ 1` because `P` has frequencies `≍ log T`, while `log|ζ|` changes by `O(1)`. So `Re(ζP) ≥ ½|ζP|` somewhere in the window.
+    (iii) Show the remaining pieces of `F_S` are bounded at the chosen heights: the short-sum part `Σ_{p≤√t} p^{−½−it} ζ_{<p}` and the tail `p > t`. Then local Weil positivity (window tests of width `≍ 1/log T`) fails.
+  - *Hard step.* (iii). The short-sum part is a bilinear form of length up to `√t × √t`, and its large values at the resonant heights are not controlled. It may itself resonate, which would also kill the class, but it must be bounded **or** shown to align with `ζP`.
+- **Status.** OPEN (proof plan). If it closes, L181's survivor falls rigorously and the sharpest unexcluded integer class becomes the cofactor-exponent class of L182, where (iii) is easier because the inner sums are shorter. Next cycle: attack step (iii) for `S_c` with `c ≤ ½`.
+
+### L196 — Step (iii) for the cofactor-exponent class `S_c` (`c ≤ ½`): both L181 and L182 reduce to one joint-large-values statement. REDUCTION [P] + a gap in L195 (ii)
+- **Split** `F_{S_c}(½+it) = Σ_{p ≤ X} p^{−½−it} ζ_{<p^c}(½+it) + Σ_{p > X}(…)`, with `X = t^{1/(2c)} ≥ t`.
+  - *Head (`p ≤ X`).* The inner lengths are `p^c ≤ √t`: short polynomials with no ζ. Their bilinear large values at heights `≍ t` are Montgomery–Vaughan controlled in mean, but not pointwise at resonant heights.
+  - *Tail (`p > X`).* The inner sums are `ζ(½+it) − χ·(dual short) + …`. The outer prime sum has no stationary phase. After subtracting the pole's smooth mass, what remains is the explicit-formula fluctuation `Z_X(t) = Σ_ρ X^{ρ−½−it}/((ρ−½−it) log X)`, of size `≍ log t/log X ≍ c`.
+  - So the tail is `ζ(½+it)·Z_X(t)`, with `Z_X` oscillating at frequencies `≍ log X` and independent of the small primes that drive ζ's resonance.
+- **Unified target (Joint Resonance Theorem, conjectural).** For any real oscillation `Q(t)` built from primes (or zeros) at scales `≥ t^{δ}` and not correlated with primes `≤ log t`,
+  `max_{t∈[T,2T]} Re(ζ(½+it) Q(t)) ≥ exp(c√(log T/log log T))·‖Q‖`.
+  - This would exclude L181 (`Q = P_{(√t,t]}`) and L182 (`Q = Z_X`) rigorously.
+- **Gap found in L195 step (ii) (phase rotation).** The resonant peak of `|ζ(½+it)|` has width `≍ 1/log t` (zero spacing). `Q` varies on the same scale (frequencies `≍ log t`). So the claim "`Re(ζQ) ≥ ½|ζQ|` somewhere in the peak" is not automatic: the two phases rotate at comparable speeds.
+  - A correct route has to average `Re(ζQ)` against a resonator weighted by `|ζ|` itself, i.e. a third-moment-type quantity `∫ ζ|ζ|Q̄… `. That is the known hard regime (moments of order `> 2` twisted by long prime sums).
+- **Status.** Both unexcluded integer classes (L181, L182) now stand or fall with the Joint Resonance Theorem. It is a clean, literature-level open problem about joint extreme values of `ζ` and independent oscillations, a precise instance of the `α ≥ 1` wall. Logged as the rigorous target for the exclusion side. No producer.
+
+### L197 — The head term of `S_c`, and the no-man's-land law for cofactor length. KILL [heuristic] + principle
+- **Head of `S_c` (`p ≤ X = t^{1/(2c)}`).**
+  - For `t < p ≤ X` (no stationary phase), rearranging gives `Σ_{m≤√t} m^{−½−it}·(prime-sum fluctuation over p ∈ (max(t, m^{1/c}), X])`. That is the direct half of ζ's approximate functional equation times an `O(c)` oscillation, which resonates.
+  - For `p ≤ t`, the bilinear piece behaves like `P_{≤t}(t)·ζ_{≤t^c}(t)`. Both factors pick up the aligned small primes, so this resonates too.
+  - The head fails on the same mechanism as the tail. `S_c` dies on every piece (heuristic; rigorous only via the L196 Joint Resonance Theorem).
+- **No-man's-land law (cofactor length `M(p)`).** Take `n = pm` with `m ≤ M(p)` and density-restoring weights.
+  - *Resonance amplitude.* The inner sums have length `M`. At resonant heights their smooth part is `≈ exp(u(½ log y − log u))` with `u = log M/log y` and `y ≍ log t`. This beats `log t` as soon as `log M ≫ (log log t)²`.
+  - *Variance.* The support density is `≍ log M/log x`, so the weights are `≍ log x/log M` and `V ≍ log² T/log M ≥ ½ log T` (Cauchy–Schwarz, L176). The random-energy-model maximum `√(2V log T) ≥ log T` exceeds the ceiling `½ log T` for **every** `M`.
+  - So no cofactor length works. Short cofactors give Gaussian variance at or above the cap (supercritical `κ_eff ≥ 1`), long cofactors resonate, and at every intermediate length the variance alone already fails.
+  - **The variance obstruction (κ_eff ≥ 1) is structure-independent.** The only escape is a non-Gaussian upper tail at moment order `≍ log T`, i.e. an exact identity (FE) or the Ω mechanism. Cofactor and support engineering cannot supply that, being sums of many weakly dependent terms.
+- **Consequence for the loop.** Support-engineering constructions are exhausted in principle: every scheme built as a sum of weakly dependent pieces is killed by `κ_eff ≥ 1`. Future construction cycles must target **non-Gaussian mechanisms** (exact identities, rigid algebraic structure), not supports.
+
+### L198 — The Cayley construction (the only non-Gaussian candidate): `K = ζ(1 + C)` with `C` Herglotz. CONSTRUCTION → KILL [P, exact at the decisive step]
+- **Why this candidate.** L197 showed every support-engineered system is Gaussian and supercritical. Non-Gaussian control on the line needs an exact identity, and by L178 a continuable producer is `K` with `K(1−s) = M(s)χ(s)K(s)`, `M` inner. The Cayley transform turns inner functions into Herglotz functions: `M = (1 − C)/(1 + C)`.
+- **Construction (exact).** Assume RH. Let `C(s) = b + k(s−½) + Σ_γ r_γ/(s − ρ_γ)` with `b, k ≥ 0` and `r_γ > 0`: a pure-atomic Herglotz function on `σ > ½` with poles at the ζ-zeros. Put `K = ζ(1 + C)`.
+  - `1 + C` has real part `≥ 1`, and `K(ρ_γ) = ζ'(ρ_γ) r_γ ≠ 0`, so `K` is zero-free on `σ ≥ ½`.
+  - On the line, `1 + C = 1 + b + iS(t)` with `S' = k + Σ r_γ/(t−γ)² > 0` between poles. So `arg(1 + C)` increases by `π` between consecutive zeros and drops by `π` at each zero, exactly cancelling ξ's `+π` jumps.
+  - Hence `ν_K = (1/π)(S'(t)(1+b))/((1+b)² + S²) dt ≥ 0`: a **continuous producer (Ω)**, provided `K` is an integer Dirichlet series.
+- **Decisive step: is `D := ζC` a Dirichlet series?**
+  - Pure-atomic means `Re C = 0` on the line off the zeros. With real coefficients that is `C(1−s) = −C(s)`, hence `D(1−s) = −χ(s)D(s)`: ζ's functional equation with the **odd** sign.
+  - The odd Hamburger theorem (corpus L140/L147) gives `D = 0` (the terms `k(s−½)`, `b` are not Dirichlet-compatible). **Killed exactly.**
+- **General Herglotz `C` (with continuous boundary part).** Then `K = ζ + D` with `D = ζC` Dirichlet, a genuinely additive combination.
+  - Monotonicity of `arg(1 + C)` is no longer automatic: `(S/(1+a))' ≥ 0` must hold with `a = Re C` on the line.
+  - More decisively, additive combinations `ζ + D` of Dirichlet series with independent Euler structure have zeros in `σ > ½`, even in `σ > 1` (Davenport–Heilbronn; Saias–Weingartner; Booker–Thorne for combinations of `L`-functions). A zero of `K` on the right puts a pole into `F = −K'/K` inside `σ > ½`, so there is no producer.
+  - A producer's `K = exp(−∫F)` must be zero-free on the right, i.e. Euler-like. Additive Cayley combinations are not.
+- **Verdict.** KILL. The Cayley transform of the inner-multiplier FE reduces the continuous-producer problem to an odd functional equation (Hamburger kills it) or to additive combinations (right-half-plane zeros kill them). This is new to the corpus: it closes the most natural explicit construction of an HB completion `Γ_ℝ K` and shows that "FE up to inner multiplier" with an explicit Herglotz parametrization is empty.
+
+### L199 — Determinantal producers: `K = det(I − T(s))` with operator-valued Dirichlet series `T(s) = Σ_n A_n n^{−s}`. CONSTRUCTION → KILL [P]
+- **Why this is a new exact identity.** A Fredholm determinant has an exactly monotone phase whenever `T(½+it)` is unitary with eigenphases turning one way, the secular-equation mechanism of quantum graphs. Its log-derivative `Tr(T'(I−T)^{−1}) = Σ_k Tr(T'T^{k−1})` has frequencies in products of the `n`'s, so integer support is automatic. This is neither a functional equation nor an additive combination.
+- **Computation.** With `T = S·diag(p_j^{−s})` (`S` unitary, `p_j` primes), `arg det(I − U(t)) = Σ_j (φ_j(t) − π)/2` plus jumps.
+  - The eigenphases turn clockwise (`p^{−it}`), so the continuous phase velocity is `−(Σ_j log p_j)/2`: a constant of the **wrong** sign, i.e. a Kurasov–Sarnak constant Weyl term, together with `+π` jumps at the graph eigenvalues.
+  - With `Γ_ℝ`: `ν = (1/π)(θ'(t) − L/2) + Σ δ`. This is negative for `t` below `θ'^{−1}(L/2)` and near `t = 0`. There is also no pole at `s = 1`, so the mass is `0`.
+  - Adding the pole through `K = ζ·det(I−T)` costs `−L/2` from ζ's already exhausted budget, so the continuous part is negative. `K = ζ/det` puts negative atoms at the graph eigenvalues.
+  - Infinitely many primes: `Σ log p_j = ∞`. The regularized infinite determinant `Π_p(1 − p^{−s}) = 1/ζ` has its "Weyl term" supplied **only** by ζ's FE, which gives back Λ.
+- **Graph analogy (Ihara).** For finite regular graphs, the Ihara zeta has an FE, and "Weil positivity" is the Ramanujan property, which many graphs satisfy. As in the function-field case (L130) the cone is large, because the Weyl term is constant and nonnegative. The number-field datum is irreducible and has a negative low-frequency density, and no determinantal object reproduces it.
+- **Verdict.** KILL. Determinants give exact phase monotonicity but with a constant, wrong-signed Weyl term. The archimedean chirp `θ` again appears only through ζ's own functional equation.
+
+### L200 — Decorations: what surplus buys, and why ζ's datum buys nothing. THEOREM [P, elementary] + principle
+- **Setting.** A datum `A = A_ζ + S` with surplus `S` (L180), where `S`'s archimedean density is pointwise `≥ s₀ > 0`, e.g. `S = A_{χ_D}` with `½ log D > 2.687`.
+- **Theorem L200 (elementary; conditional only on RH for ζ).**
+  - (a) **Summable decorations.** If `Σ_n |d(n)| n^{−½} ≤ s₀/2`, then `Λ + d ∈ W(A)`. The Weil measure is `ν_Λ + (1/π)(S − Re D_d) ≥ ν_Λ + s₀/(2π) ≥ 0`.
+  - (b) **Random decorations.** For independent signs `σ_n` and `d(n) = ε σ_n` on all `n ≥ 2` (mean zero, so the mass stays 1), `Re D_d(½+it)` has Bohr–Jessen variance `≍ ε² log t`. By the L176 mechanism (subcritical, since the ceiling is the surplus `≍ log t`), `Λ + d ∈ W(A)` almost surely at all large heights for `ε` small, and at all heights with positive probability for `D` large.
+  - (c) With no pole at all (the datum `A_{χ_D}` alone), `lam = d` itself is a producer, **unconditionally**: there are integer-supported, nonzero, non-`Λχ` producers for Dirichlet-`L` data of large conductor.
+- **Mass-carrier principle across data.** In every datum with a simple pole, the pole is carried by an FE-locked `Λ`-type part (L133, L197). Surplus only buys room for mean-zero decorations whose fluctuation fits under `S`.
+  - ζ's datum has `S = 0` (L180) and a negative low-frequency density. So a decoration of `Λ` must itself be absorbed by atoms: it must **remove** zero-mass (evaporation), which is the Ω core (L141, L173).
+  - Surplus-free data admit no decorations, while data with surplus admit a full-dimensional family of them. This separates ζ from every other datum in the corpus, and it is the precise sense in which "the producer" for ζ is unique if it exists.
+- **Verdict.** THEOREM (elementary, for surplus data) + principle. For the hook's datum it gives no producer, but it isolates the rigidity mechanism: **zero surplus ⇒ no room for decorations ⇒ W_ζ ⊆ {Λ} ⟺ no evaporating decoration (Ω false)**.
+
+### L201 — The Landau trace pins the prime profile of a continuous producer; the pinned candidate fails at the zeros. NECESSARY CONDITION [P, heuristic constants] + KILL
+- **Trace computation.** On the near-radical subspace `V_L`, the occupancy density is `occ(t) = ℓ/π − (1/2π) log(|t|/2π)` for `|t| ≤ T = 2πe^{2ℓ}`. A continuous producer with density `ρ ≈ (1/2π) log(|t|/2π)` has `Tr(W_C|_{V_L}) = ∫ occ·ρ ≈ Tℓ/π²`, dominated by `|t|` near `T`. For `Λ` it is `≈ 0`, because `V_L` annihilates the atoms.
+- **Pinned deficit.** Combined with the L184 Landau identity `Tr(W_lam|_{V_L}) ≈ (2T/π) Σ (Λ − lam)Λ/n`:
+  `Σ_{n≤x} (Λ(n) − c(n)) Λ(n)/n ≈ (1/4π) log x`.
+  - So a continuous producer equals `Λ` on primes to leading order, and its deficit behaves like a **constant `1/(4π)` per prime** on average. This is exactly the uniform-evaporation profile `r_γ ≍ 1/log γ` of L172/L173.
+  - New: the constant `1/(4π)` is forced by the trace, not chosen. A continuous producer cannot have a smaller or larger prime deficit, to leading order.
+- **Pinned candidate.** `c = Λ − (1/4π)·1_P + (1/4π)/log n` (mass restored by a Cramér-type density).
+  - Its Dirichlet deviation is `(1/4π)(P(s) − ∫_s^∞(ζ−1))`, with `P(s) = log ζ(s) + (holomorphic on σ > ½)`.
+  - So `ν = ν_Λ + (1/4π²)[log|ζ(½+it)| − Re∫ζ + …]`. The term `log|ζ|` is `≍ log|t−γ|` near each zero: an integrable **negative density** next to each atom. The atom (a point mass) cannot absorb it, so `ν < 0` on punctured neighbourhoods of the zeros. KILL.
+  - Lesson: removing zero atoms needs a deviation whose real part is `−π δ_γ` exactly at `γ` (a **pole** of `D_d` with residue `−1`). Log-singular deviations (`log ζ`) and the pinned constant deficit only create integrable negative densities. By L198 the pole-type deviations lead back to the Cayley or odd-Hamburger dead ends.
+- **Verdict.** New heuristic necessary condition (prime deficit `1/(4π)`), and the natural candidate meeting it dies at the zeros. Consistent with L131′.
+
+### L202 — Deformations of ν_Λ that preserve positivity: tilting, zero displacement, max-entropy completion. KILLS [P]
+- **Exponential tilting / isospectral flows.** `ν_τ = w_τ(t)ν_Λ` with `w_τ ≥ 0` (Toda-type flows on the canonical system) keeps positivity. But `FT(ν_τ) = ŵ_τ * (A − P_Λ)` smears the atoms at `log n` and the archimedean part. The only multipliers preserving the class "A minus atoms on `±log ℕ`" have `ŵ` supported at `{0}`, i.e. are constants. KILL.
+- **Zero displacement (pushforward).** `ν' = Σ_γ δ_{γ + δ(γ)}`. To first order, `FT(ν') − FT(ν_Λ) = ix·Σ_γ δ(γ)e^{iγx}`.
+  - Keeping the archimedean part forces `Σ_γ δ(γ)δ_γ` to be a signed measure on the zeros whose Fourier transform (times `x`) is atomic on `±log ℕ`: a crystalline measure supported on the zeros.
+  - By L129/L150 (crystalline producers are Λ; integer spectral masses force `lam = Λ`), only `δ ≡ 0` survives, already at first order. KILL.
+- **Max-entropy (Burg) completion.** At each finite level `a`, strictly positive data (Λ under RH) have a unique max-entropy Krein extension, with absolutely continuous density `1/|E_a|²`.
+  - Its Fourier transform beyond `2a` is the de Branges continuation, not atoms on `log ℕ`, so it is not an integer system at higher levels.
+  - The integer-constrained max-entropy element of `W` is finite-entropy iff `W` contains a continuous producer. So the variational principle **characterizes** Ω (`sup_{lam∈W} ∫ log ρ_lam · w > −∞ ⟺ Ω`) but does not construct it. REFORMULATION.
+- **Verdict.** Positivity-preserving deformations of Λ either leave the integer class (tilting, Burg) or are pinned by crystalline rigidity (displacement). The loop's construction side has no remaining positivity-preserving operation on `ν_Λ`.
+
+### L203 — Sign-indefinite dense decorations (corpus survivor 1): Möbius/Liouville, modular-form coefficients, fake explicit formulas. KILLS [P]
+- **Möbius decoration `d = cμ(n)`, `D_d = c/ζ(s)`.** Near a zero, `1/ζ ~ 1/(ζ'(ρ)(s−ρ))` has a complex residue. The boundary real part is `π Re(1/ζ'(ρ)) δ_γ + Im(1/ζ'(ρ))·p.v. 1/(t−γ)`.
+  - The principal-value term is a non-measure, sign-changing singularity that no atom absorbs. It vanishes only if `ζ'(ρ) ∈ ℝ` for all `ρ`, which is false (`ζ'(ρ)` rotates with `γ`).
+  - `|1/ζ|` is also unbounded on the line. KILL. Liouville `d = cλ(n)` (`D = cζ(2s)/ζ(s)`) has the same defect, plus an atom at `t = 0` from `ζ(2s)`'s pole at `s = ½`.
+- **Modular-form decoration `d(n) = c·a_f(n)/n^{(k−1)/2}`** (mean zero, Ramanujan-bounded), `D = cL(s,f)`. It has degree 2 and mean square `≍ log t` on the line, and Euler-product resonance gives values up to `exp(c√(log t/log log t))`, which exceed any surplus. ζ's datum has none anyway (L200). KILL.
+- **Fake explicit formulas.** `d(n) = −n^{−½} Σ_{γ'∈Γ'} w(γ') n^{iγ'}` for a model zero set `Γ'` (Gram points, arithmetic progressions, GUE samples).
+  - `D_d` adds atoms `w(γ')` at `Γ'` together with a compensating smooth density `−(density of Γ')`, since it has mean zero.
+  - With `w > 0` the smooth negative part is unabsorbable (ν_Λ is atomic). With `w < 0` the negative atoms must sit on the ζ-zeros, so `Γ' ⊂` zeros, which is the evaporation core again. Integer frequencies also force `Γ'`'s explicit formula to close on `log ℕ`: a crystalline condition (L150). KILL.
+- **Verdict.** All three classes of dense sign-indefinite decorations die, by singular principal-value parts, by resonance, or by the atom/density mismatch. Corpus survivor (1) is reduced to decorations with **real residues at the zeros**, i.e. the pole-type decorations of L201/L198 (Cayley / odd Hamburger), which are dead.
+
+### L204 — Riemann–Siegel truncations and interpolation of real producers onto ℤ. KILLS [P]
+- **Riemann–Siegel truncations.** For `K = P_N = Σ_{n≤N} n^{−s}`, the measure `μ_N = (1/π)(θ' + Re(P_N'/P_N)(½+it))` is exactly the Weil-measure formula for `lam = Λ_{P_N}`, with integer frequencies. It is the "`j = 0` mode" of the zero counting of `Z_N(t) = 2Σ_{n≤N} n^{−½} cos(θ − t log n)`, and it is positive once `θ' > |arg P_N'|`.
+  - But `P_N` has no pole, so the mass is `0` and the pole term `2cosh(x/2)` is unmatched: not tempered, not Weil-positive. Moreover `P_N` has zeros in `σ > 1` for large `N` (Montgomery; partial sums of ζ), which puts poles of `Λ_{P_N}`'s series inside `σ > ½`.
+  - Restoring the pole needs an infinite ζ-tail (`K = ζ + (P_N − ζ)`), which brings back ζ's resonance. KILL.
+- **Interpolating real producers onto the integers.**
+  - Take L176's subcritical jittered producer (granularity `κ < ¼`) and split each atom at `x ∈ (n, n+1)` linearly onto `n` and `n+1`. The result is `lam ≈ 1 + (noise)` on all integers.
+  - The interpolation error at height `t` is `≍ (t/n)²` per atom, so it is exact only for `n ≫ t`. For `n ≲ t`, which carry the value at height `t`, the system is ζ-like plus noise, and resonance kills it.
+  - The sub-integer randomness that made `κ < ¼` subcritical does not survive projection to ℤ. KILL (this is the precise sense in which L177's κ = 1 supercriticality is intrinsic).
+- **Verdict.** Exact-phase objects without a pole (truncations) and pole-carrying projections of real producers (interpolation) both fail. The pole and the integer lattice cannot be reconciled without ζ's functional equation.
+
+### L205 — Corpus survivor 2 (semiprime floors, L172 b) killed by the log-power principle. KILL [P, heuristic at one step] + principle
+- **Setting.** `lam = Λ + d`, with `d` a floor on semiprimes (`d(pq) = c`) plus any mass-restoring correction. L172(b) showed that multiplicative resonators cannot exclude constant semiprime floors.
+- **Dirichlet structure.** `Σ_{pq} (pq)^{−s} = ½(P(s)² + P(2s))`, and `P(s) = log ζ(s) − ½P(2s) − …`. So `D_d = (c/2)(log ζ(s))² + (terms regular near the critical zeros)`, up to corrections involving `P(2s)`, which is log-singular only at `s = ½` (`t = 0`) and at `σ = ¼`.
+- **Boundary behaviour at a zero.** On the line, `Re(log ζ)² = log²|ζ(½+it)| − π²S(t)²`, and `log|ζ| ≍ log|t−γ|` near `γ`. Then `ν = ν_Λ − (1/π) Re D_d` carries the density `−(c/2π) log²|t−γ|` next to each atom.
+  - For `c > 0` this is an integrable **negative** density on punctured neighbourhoods of the zeros. The point mass cannot absorb it. KILL.
+  - For `c < 0` the near-zero part is positive, but the bulk term `(|c|/2π)(log²|ζ| − π²S²)` has negative mean. Both `log|ζ|` and `πS` are Gaussian with variance `½ log log t` (Selberg), and `π² > 1`. So the density is negative on a set of positive proportion. KILL.
+  - Cancelling the `(log ζ)²` singularity with a correction `−(c/2)[(log ζ)²]` leaves `−(c/2)P(2s) log ζ(s)`. This has sign-indefinite `log|t−γ|` singularities weighted by `P(1+2iγ)`, whose sign varies with `γ`. KILL.
+- **Log-power principle (new).** Decorations supported on `k`-almost-primes have Dirichlet series `≈ (log ζ)^k/k!` plus lower-order terms. For every `k ≥ 2`, and for `k = 1` without the exact log-derivative (FE-locked) structure, their boundary real parts carry integrable `log^k|t−γ|` singularities of indefinite or wrong sign next to the zero atoms, and atoms cannot absorb integrable singularities.
+  - Only the log-**derivative** `ζ'/ζ` has a genuine `πδ` (pole-type) singularity. So any decoration able to move zero mass is pole-type, and pole-type decorations are dead (L198, L201).
+- **Verdict.** Corpus survivor 2 (semiprime floors) is killed, with a mechanism that also covers every `k`-almost-prime floor. Of the corpus survivor list only survivor 3, uniform evaporation, remains, and L201 pinned and killed its natural realization.
+
+### L206 — Survivor 3 (uniform evaporation): the strong-almost-periodicity / diffraction attack and why it is blind. ANALYSIS [P] → localization of the core at the GUE scale
+- **Structure theorem used.** An evaporation producer has deviation `D = r·ν_Λ − μ₀` with `r(γ) ≍ c/log γ` and `μ₀ ≥ 0` continuous. `D` is translation-bounded (both parts have bounded density) and has pure-point Fourier transform (atoms on `±log ℕ`). By Gil de Lamadrid–Argabright, `D` is then strongly almost periodic, and so is its pure-point part `r·ν_Λ`, the weighted zero measure.
+- **Attempted contradiction.** A strongly almost periodic discrete measure has pure-point diffraction. The zeros have a continuous pair-correlation component (Montgomery, `F(α) = |α|` for `|α| < 1` under RH).
+- **Why it fails.** With weights `c/log γ`, the continuous diffraction part scales like `(c²/(2π log² T))|x|`, which tends to `0`. The self-term `Σ r(γ)²/T ≍ c²/(2π log T)` tends to `0` as well. What survives is the density `δ₀`.
+  - At unit scale the weighted zero measure is locally constant (`c/2π`), up to count fluctuations `≍ c√(log log T)/(π log T)` (Selberg), so strong almost periodicity holds up to vanishing errors. The evaporation atoms are invisible in every unit-scale or Bohr/Besicovitch statistic (cf. L155: `B²`-null).
+- **Localization (new, precise).** Every test of fixed width sees evaporation as a constant density. The only place where `r·ν_Λ` differs from a smooth measure is the **GUE scale** `1/log T`, where the atoms are resolved.
+  - So an exclusion of survivor 3, and hence of Ω, must use local zero statistics at scale `1/log T` jointly with the integrality of the frequencies (`log ℕ`). At that scale the relevant frequencies are `x ≍ log T`, i.e. `n ≍ T`: the `α ≥ 1` wall again, now as "GUE-scale structure × integer frequencies at length `T`".
+- **Verdict.** No contradiction. The core is localized: Ω and uniform evaporation live precisely at the GUE scale, where pair-correlation information (`α ≥ 1`) is conjectural.
+
+### L207 — Pontryagin-index view of the Weil cone, and GUE-scale smearing revisited. FAILED ATTEMPTS [P] (both reduce to recorded results)
+- **Pontryagin index.** Let `ind(lam)` be the number of negative squares of `W_lam`, the full cone at all levels. Then `ind(Λ) = #`(off-line zero pairs), and `W = ind^{−1}(0)`.
+  - Conjecture tested: "the finite-index cone `W_fin` is strictly larger than `W ∪ {Λ}`, and producers can be reached as limits of finite-index systems".
+  - A deviation `d` whose `D_d` has a nonzero continuous boundary part makes `W_Λ + Q_d` negative on a set of positive density. That gives **infinite** index, because atoms cannot absorb continuous negativity.
+  - So finite-index systems near Λ are atomic modifications only, and these are pinned by crystalline rigidity (L150) and summable-perturbation rigidity. Result: Λ is isolated in `W_fin` for continuous-boundary perturbations. This is already covered by the corpus (`WeilPositivitySummablePerturbationRigidity`). FAILED (rediscovered).
+- **GUE-scale smearing of the zero atoms** (the L206 localization, attempted constructively). Replace each atom at `γ` by a bump of width `w_γ ≍ 1/log γ`, the GUE scale, keeping total mass.
+  - This is exactly the crossover of L132's Landau–PD squeeze. The fill condition needs `w_γ ≳ 2π/log γ`. Landau divergence at the primes needs reach `ℓ₀(γ) ≫ (log γ)/2π`, i.e. `w_γ ≪ 2π/log γ`. At `w_γ ≍ 1/log γ` both constants are marginal, and the positive-definite doubling lemma (L132 A) forces corrections `≥ ¼(log p/ℓ₀)²` at all primes `p ≤ e^{ℓ₀}`.
+  - Summed over zeros up to `T` (`≍ T log T`) at `p` fixed: `Σ_γ (log p/log γ)² ≍ T(log p)²/log T`, which diverges. FAILED (L132 squeeze holds at the GUE scale too).
+- **Verdict.** Both attempts reduce to recorded rigidity (summable/crystalline) or to L132. No producer. Status of the corpus survivors: 1 (L203) and 2 (L205) killed; 3 (uniform evaporation) localized at the GUE scale (L206), with its constructive realizations (L201, L207) failing.
+
+### L208 — Repairing L196's phase-rotation gap: the resonator scale is `1/√log T`, not `1/log T`. Joint Resonance Theorem for short `Q`, proof plan. PROGRESS [P-sketch]
+- **The gap (L196).** At a large value of `ζ(½+it)`, both `arg ζ` and `arg Q` rotate on the zero-spacing scale `1/log T`, so positivity of `Re(ζQ)` inside a peak of width `1/log T` is not guaranteed.
+- **Repair.** Soundararajan's resonator `R` lives on `y`-smooth numbers (`y ≍ log T log log T`) of size `≤ T^{θ}`. The weight `|R|²` is smooth at scale `≍ 1/√(log T)`, which is **wider** than `1/log T`. On such a peak write `ζ = D + χ·D̄ + (error)` (approximate functional equation), with `D = Σ_{n≤√(t/2π)} n^{−½−it}`.
+  - The resonance (`∫ ζ|R|² ≈ ∫ D|R|²` large) sits in the **slowly varying** direct part: `D ≈ D₀ e^{iφ₀}` across the peak, with `|D₀| ≥ exp(c√(log T/log log T))`.
+  - The dual part `χD̄` rotates with the chirp at rate `log(t/2π)`. `Q` (primes in `(T^δ, T^{2δ}]`) rotates at rate `≍ δ log T`. Across the peak both make `≍ √log T` full turns.
+  - So `Re(ζQ) ≈ |D₀|·Re(e^{iφ₀}Q(t)) + (rotating, mean zero)`. The real trigonometric polynomial `Re(e^{iφ₀}Q)`, with correlation length `≍ 1/(δ log T)`, exceeds `c‖Q‖` on a positive proportion of the peak.
+- **Joint Resonance Theorem, short version (conjecture with a concrete proof plan).** For `Q = Σ_{T^δ<p≤T^{2δ}} q_p p^{−½−it}` with `2δ + θ < ½`:
+  `max_{t∈[T,2T]} Re(ζ(½+it)Q(t)) ≥ c‖Q‖₂·exp(c'√(log T/log log T))`.
+  - *Plan.* (i) First-moment resonance with the twist: `∫ ζ |QR|² Φ ≈ ‖Q‖²·M₂(R)`. The main term factorizes, because `Q`'s primes are coprime to `R`'s support (verified: off-diagonal `p' ≠ p` needs `p | m'` with `m'` `y`-smooth, which is impossible).
+    (ii) The dual contribution `∫ χD̄|QR|²` is negligible (standard for the first moment twisted by length `< T^{1−ε}`).
+    (iii) A local second-moment estimate for `Q` over resonator-weighted windows: `∫ |Q|²|R|² ≈ ‖Q‖²∫|R|²` and `∫ |Q|⁴|R|² ≪ ‖Q‖⁴∫|R|²` (both need lengths `< T^{1−ε}`). By Paley–Zygmund applied to `Re(e^{iφ}Q)` under the probability measure `|DR|²/∫|DR|²`, the measure of `{Re(e^{iφ₀}Q) ≥ c‖Q‖}` inside peaks is `≫ 1`.
+  - Steps (i) and (ii) are standard (twisted first moment of ζ). Step (iii) needs a phase-localized version (Q's phase relative to `φ₀(t)`); the random model says it holds.
+- **Scope.** This covers `Q` of length `T^{O(δ)}`. The L181/L182 classes need `Q` up to length `t`, where step (iii) meets the `α ≥ 1` wall. It does give the first **rigorous route** for excluding truncated dominant-prime-factor systems (primes in `(T^δ, T^{2δ}]`), i.e. finite-scale versions of survivors L181/L182.
+
+### L209 — Joint Resonance, modulus version: a proof via Balasubramanian–Conrey–Heath-Brown, and the exact obstacle for the real part. THEOREM [P-sketch, standard tools] + obstacle
+- **Statement (modulus version).** Let `Q(t) = Σ_{p∈I} q_p p^{−it}` with `I ⊂ (T^δ, 2T^δ]`, `|q_p| ≤ 1`, `‖Q‖² = Σ|q_p|²`, and `θ + 2δ < ½`. Then
+  `max_{t∈[T,2T]} |ζ(½+it) Q(t)| ≥ (1 − o(1))·√2·‖Q‖·exp((1+o(1))√(log T/log log T))`.
+- **Proof sketch.** Take Soundararajan's resonator `R` (multiplicative on squarefree `y`-smooth `m ≤ T^θ`, `r(p) = L/(√p log p)` on `L² ≤ p ≤ exp(log² L)`, `L = √(log T log log T)`).
+  - With the weight `W = |R|²|Q|²Φ(t/T) ≥ 0` we have `max|ζQ|² ≥ ∫|ζ|²|Q|²W / ∫|Q|²W = (∫|ζ RQ²|²Φ)/(∫|RQ²|²Φ)·(∫|RQ²|²Φ)/(∫|RQ|²Φ)`.
+  - First factor: the BCHB twisted second moment with `A = RQ²` (length `T^{θ+2δ} < T^{½}`). The `gcd(h,k)` structure factors into an `R`-part times a `Q`-part, because `I`'s primes are coprime to `R`'s support. The `Q`-part is diagonal to leading order (`{p,p'} = {l,l'}`, off-diagonal `≪ T^{−δ}`). So the ratio is the standard resonance gain `exp(2(1+o(1))√(log T/log log T))` times `log T`-factors.
+  - Second factor: mean-value theorem, `(∫|RQ²|²)/(∫|RQ|²) ≈ 2‖Q‖⁴/‖Q‖² = 2‖Q‖²`.
+- **Real-part version: the exact obstacle.** For Weil positivity one needs `Re(ζQ)` large. Under the resonator probability measure `μ_R ∝ |ζR|²Φ`, the polynomial `Q` is **isotropic** to second order: `E[Q] ≈ 0`, `E[Q²] ≈ 0`, `E[|Q|²] ≈ ‖Q‖²`, since `I`'s primes do not meet `R`'s support.
+  - What is missing is isotropy **conditional on `arg ζ(½+it)`**, i.e. joint equidistribution of `(arg ζ, arg Q)` under `μ_R`. That is a two-dimensional central limit theorem at the resonance level (Radziwiłł–Soundararajan-type), for `ζ` weighted by its own extreme values. It is not available.
+- **Status.** The modulus theorem is provable with standard tools (BCHB + resonance). The sign version, which is what excludes the truncated L181/L182 systems, reduces to one missing ingredient: conditional isotropy of an independent prime polynomial on ζ's resonance set. It is recorded as the precise open lemma of the exclusion side. No producer.
+
+### L210 — The conditional-isotropy lemma (L209): first-order correlation computed; why second moments cannot reach it; a Selberg-type route. ANALYSIS [P]
+- **First-order correlation (exact main term).** `ζ` contains `Q`'s primes, since `ζ = Σ_n n^{−s}` includes `n = p ∈ I`. So `ζ` and `Q` are not independent under `μ_R ∝ |R|²Φ`.
+  - `∫ ζ(½+it) Q̄(t) |R|² Φ` has main term `(Σ_{p∈I} q̄_p p^{−½})·M₂(R)`, from diagonal matching `n = p·(m'/m)`.
+  - For `|q_p| ≤ 1` the normalized correlation is `≍ (Σ_{p∈I} p^{−½})/(‖Q‖ √(log T)) ≍ 1/(√δ · log T) → 0`. So `ζ` and `Q` are asymptotically uncorrelated on the resonance set: consistent with isotropy, with an explicit `O(1/log T)` defect.
+- **Why second moments cannot reach it.** Conditional isotropy of `arg Q` given `arg ζ` needs the joint law of `(arg ζ, Q)` under `μ_R`. Polynomial moments `E[ζ^a ζ̄^b Q^c Q̄^d |R|²]` with `a + b ≤ 2` are the only ones available: BCHB and twisted first moments of `ζ²` (with the divisor function) for short twists.
+  - The phase `ζ/|ζ|` is not a polynomial in `ζ, ζ̄`, and approximating it needs `a + b` up to `≍ log T` (moment order `≍ log T`, as in L193). Twisted moments of `ζ` beyond the fourth are out of reach, so this is the same wall.
+- **Selberg-type route (proposal).** Replace `ζ` by `exp(P_x(t))` with `P_x = Σ_{p≤x} p^{−½−it}` (Selberg's approximation of `log ζ` off a small exceptional set), `x = T^{ε}`.
+  - The resonance set of `ζ` is (up to the exceptional set) where `Re P_x` is large. `Q`'s primes (`> T^δ ≥ x` for `ε < δ`) are **disjoint** from `P_x`'s primes. Joint moments of `(P_x, Q)` are then exactly computable by Montgomery–Vaughan, with a Gaussian limit and independence, even at high order, because `P_x` is short.
+  - The remaining problem is to control the exceptional set (zeros close to the line) on the resonance set. That is the Selberg–Tsang technology, which works at **typical** points. Extending it to the resonance set, a density-`exp(−c√(log T log log T))` set, is the new difficulty.
+- **Status.** The exclusion side is reduced to Selberg–Tsang control of the exceptional set on extreme-value sets of `ζ`, a concrete analytic-number-theory problem. No producer.
+
+### L211 — Random-matrix and theta-function paradigms for construction. KILLS [P]
+- **CUE / random-matrix producers.** For `U ∈ U(N)`, `det(I − Uz)` satisfies an exact functional equation and has all its zeros on the circle. Its "explicit formula" is `Σ_j f(θ_j) = N f̂(0) − Σ_{k≠0} Tr(U^k) f̂(k)`.
+  - Every `U` gives a positive measure with a **constant** background `N` and integer frequencies `k`, so producers are abundant. This is the constant-surplus situation of L130/L180.
+  - Keating–Snaith model ζ at height `T` by `N = log(T/2π)`. A height-dependent ensemble is not a single Dirichlet series, and its frequencies are the lattice `ℤ` in the rescaled variable, not `log ℕ`. Gluing CUE blocks along heights reproduces ζ's background only through the height dependence of `N`, i.e. the chirp `θ`, which (L175) only the FE supplies. KILL.
+- **Theta/Pólya paradigm.** `Γ_ℝ(s)K(s)` is the Mellin–Fourier transform of `φ(u) = e^{u/4}Θ_K(e^u)`, with `Θ_K(x) = Σ k(n)e^{−πn²x}`. HB-ness of the transform needs `φ` to be suitably skewed.
+  - As `u → +∞`, `φ` decays like `e^{u/4}e^{−πe^u}` for every `K` (from `k(1)`). As `u → −∞`, `φ = ½e^{−u/4}` (pole) `+ e^{u/4}·Σ e(n)e^{−πn²e^u}` (fluctuation).
+  - For ζ the fluctuation is exponentially small (Jacobi modularity), which makes `φ` even and `ξ` real. For `k = 1 + e` with RH-quality partial sums, the fluctuation is `O(1)` and oscillating as `u → −∞`. A non-decaying oscillating tail produces singular boundary behaviour, not an HB skew.
+  - HB-skew would need the fluctuation to be one-signed and decaying. That is the "Hamburger with nonnegative defect" of L141–L142 in theta form, whose Laplace step fails (L142). KILL / REDUCTION.
+- **Verdict.** Random-matrix producers exist only with constant backgrounds. Theta-function skewing reduces to the recorded Hamburger-with-defect obstruction. No producer.
+
+### L212 — Existence side: a direct archimedean attack on PBAP via Poisson summation on ℤ in the log scale. ATTEMPT → CIRCULAR [P]
+- **Motivation.** `W ≠ ∅ ⟺ PBAP`, which involves only the archimedean datum and the set `log ℕ`. A direct proof would give a producer by Tychonoff: Λ, or a second one. This is the only existence route that bypasses the zeros.
+- **Computation.** For a prime-blind `G` (vanishing at `±log n`, `n ≥ 2`), put `h(y) = G(log y) y^{−½}` for `y ≥ 1` and `h = 0` for `y < 1`. Then `h(n) = 0` for `n ≥ 2`, and Poisson summation on `ℤ` gives `∫h = ½G(0) − Σ_{k≠0} ĥ(k)`.
+  - The pole term is `∫_1^∞ h(y)(1 + 1/y) dy`. So `A(G) = arch(G) + ½G(0) + ∫h/y − Σ_{k≠0} ĥ(k)`.
+  - Stationary phase: for `G` with spectral content at `t`, `ĥ(k)` localizes at `y = t/(2πk)`. The dual sum samples `G` at `log(t/(2πk))`, the Poisson-dual (approximate-functional-equation reflected) points, which are **not** in `log ℕ`. Prime-blindness does not constrain them.
+- **Outcome.** PBAP becomes "arch + gap term `≥` the Poisson-dual sum of `G` at the reflected points", i.e. L138's values-of-ζ formulation with ζ's approximate functional equation made explicit. After the dual is expanded, the inequality is PBAP again. CIRCULAR, as L138 found; recorded to prevent reuse. The existence side has no route that avoids either the zeros or an equivalent reflected-point inequality.
+
+### L213 — Selberg-type decorations: `d = c·(Λ⋆Λ + (ζ'/ζ)'-coefficients)/log n` and the higher Λ_k. KILL [P]
+- **Candidate.** Selberg's `Λ₂ = Λ·log + Λ⋆Λ = μ⋆log²` and its relatives are the natural integer weights beyond Λ, with exact Dirichlet series (`ζ''/ζ = (ζ'/ζ)² + (ζ'/ζ)'`). Test `lam = Λ + c·d` with `D_d(s) = ∫_s^∞ (ζ''/ζ)(w) dw`, i.e. `d(n) = [coefficient of ζ''/ζ](n)/log n`.
+- **Mass.** `ζ''/ζ ∼ 2/(s−1)²` at `s = 1`, so `D_d ∼ 2/(s−1)`. The pole weight changes by `2c`, and needs a mass correction of ζ type (resonance) or Λ type (which rescales to `(1+2c)Λ`, not in `W` for `c ≠ 0`; L140/L156).
+- **Zeros.** At a simple zero, `ζ''/ζ` has a simple pole with residue `r_ρ = ζ''(ρ)/ζ'(ρ)`, which is complex and varies with `γ`. Integrating gives `D_d ∼ −r_ρ log(s−ρ)`. The boundary real part is `−Re(r_ρ) log|t−γ| + Im(r_ρ)(π/2) sign(t−γ)`: log singularities and **jumps** of indefinite sign next to each atom. Atoms absorb neither (log-power principle, L205).
+- **Higher `Λ_k = μ⋆log^k`.** Their series are `(−1)^k ζ^{(k)}/ζ`, with poles of residue `ζ^{(k)}(ρ)/ζ'(ρ)` at the zeros. After normalizing by `log^{k−1}`, the same log/jump singularities appear. KILL for all `k ≥ 2`.
+- **Verdict.** The Selberg hierarchy, the most natural family of integer weights beyond Λ with exact Dirichlet series, cannot produce positivity. Only `Λ = Λ₁` has real residues (`= 1`) at every zero, which is what makes its atoms pure `πδ`. Reading: **realness of the residues of `D` at the zeros is the arithmetic signature of a producer**, and among `ζ^{(k)}/ζ`-type series only `k = 1` has it.
+
+### L214 — The Selberg-completion line: partial evaporation is exactly the MC (mollifier) terminus. THEOREM [P, exact algebra] + unification of survivor 3 with the corpus MC lane
+- **Real-residue ansatz (from L213).** A producer's deviation must have real residues in `[0,1]` at the zeros. The simplest Dirichlet series `H` that are real at every zero are `H = a₀ + ζ·A`, since `ζ(ρ) = 0` forces `H(ρ) = a₀`. This leads to
+  `lam_{a₀,A} := (1 − a₀)Λ − a⋆log`, `F_lam = (1−a₀)(−ζ'/ζ) + Aζ'`, with `A = Σ a(n)n^{−s}`, `A(1) = 0`, `A'(1) = −a₀`, `a₀ ∈ (0,1]`.
+  - Integer support: yes. Mass: `Aζ' ∼ a₀/(s−1)`, so the residue is 1: yes.
+- **Exact Weil measure (assuming RH).** `ν = (1−a₀) Σ_γ δ_γ + (1/π)[a₀θ'(t) − Re(ζ'A)(½+it)]`, because `ζ'A` has no poles on the line.
+  - Hence **`lam_{a₀,A} ∈ W ⟺ Re(ζ'(½+it)A(½+it)) ≤ a₀θ'(t)` for all `t`.**
+  - `a₀ = 1` gives the corpus's Selberg completions `Λ_w = (μw)⋆log` (take `A = −M_w`, a mollifier). There the condition is the pointwise mollifier-defect bound of the MC terminus (frontier HF; memory: mollified second moment is the common terminus).
+  - `0 < a₀ < 1` is **partial, constant-rate evaporation**: a fraction `1−a₀` of every zero atom is kept, and the rest is replaced by the continuous density `(1/π)(a₀θ' − Re ζ'A)`.
+- **Decomposition `A = −a₀/ζ + B`** (always possible, with `B(1) = B'(1) = 0`).
+  - The condition becomes `Re(ζ'B) ≤ a₀ π Σ δ_γ`: the continuous part of `Re(ζ'B)` is `≤ 0`, and positive atoms are allowed at the zeros.
+  - *Tame `B`* (`ζ'B` has no poles, so no atoms). `Re(ζ'B) ≤ 0` with Bohr mean `0`: the twisted first moment has main term `(−log ⋆ b)(1) = 0`. Then the Fourier–Bohr coefficients `(log⋆b)(n) n^{−½} = 0` for all `n`, so `B = 0` and `lam = Λ`. **Rigid**, a special case of corpus `WeilRegularDeviationRigidity` (holomorphic `D_d = Bζ'` across the line).
+  - *Non-tame `B`* (e.g. `A` a mollifier, so that `B ∋ a₀/ζ` has poles at the zeros). Atoms `a₀πΣδ` let the continuous part of `Re(ζ'B)` be negative with mean balanced by the atoms. This is exactly the MC terminus, scaled by `a₀`.
+- **Unification (new).** Survivor 3 (uniform evaporation) and the corpus MC/mollifier lane are the same problem. Constant-rate evaporation producers of Selberg type exist iff some Dirichlet `A` satisfies the one-sided mollified-`ζ'` bound `Re(ζ'A) ≤ a₀θ'` on the line, for any one `a₀ ∈ (0,1]`. The problem is scale-invariant in `a₀`: if `A` works for `a₀ = 1`, then `a₀A` works for `a₀`.
+  - So partial evaporation is no easier than full Selberg completion, and both are the MC terminus (RH-strength: the mollified second moment).
+- **Verdict.** REDUCTION + unification: the last corpus survivor reduces exactly to the MC terminus. No producer.
+
+### L215 — The MC condition of L214, written through the mollifier defect: a Levinson-type sign at every zero plus a gap condition. REDUCTION [P, exact] → corpus route-1 cycle 41 and the MC/Levinson lanes
+- **Setting (`a₀ = 1`, tame `A = −M`).** `M` is a Dirichlet series (a mollifier) with `M(1) = 0`, `M'(1) = 1`, mimicking `1/ζ ∼ (s−1)`. The system `lam = μw⋆log`-type (`F = −Mζ'`) is a **continuous** producer (no atoms, Ω) iff `−Re(ζ'M)(½+it) ≤ θ'(t)` for all `t`.
+- **Exact rewriting.** On the line, `ζ'/ζ = −θ' − iZ'/Z`. With the mollifier defect `δ := ζM − 1`:
+  `θ' + Re(ζ'M) = θ' + Re[(ζ'/ζ)(1+δ)] = Re(δ·ζ'/ζ)` (off the zeros).
+  So **Ω of Selberg type `⟺ Re((ζM − 1)·ζ'/ζ)(½+it) ≥ 0` for all `t`.**
+  - At a zero, `δ → −1`, and `δζ'/ζ = −1/(s−ρ) + ζ'(ρ)M(ρ) + O(s−ρ)`. The pole term has zero real part on the line off `γ`. So the condition **at the zeros** reads **`Re(ζ'(ρ)M(ρ)) ≥ 0` for every zero `ρ`**. This is exactly the sign in Levinson's method and in corpus route-1 cycle 41 (`XiEntireMollifierForcesSimpleZeros`: an entire `g` with `Re(gξ) > 0` on `σ > ½` gives RH, simple zeros and `g(ρ)ξ'(ρ) > 0`).
+  - **Between zeros**, `Re(δ ζ'/ζ) = −θ' Re δ + (Z'/Z) Im δ ≥ 0`. The defect must lie in the half-plane selected by the phase of `ζ'/ζ`, which rotates between consecutive zeros. This is a pointwise sign constraint on `δ`, not a mean-square one.
+- **Consequence.** A continuous producer of Selberg type needs a mollifier with (i) `Re(ζ'(ρ)M(ρ)) ≥ 0` at **all** zeros (Levinson-type positivity, 100% of zeros), and (ii) a pointwise half-plane condition on the defect in every gap.
+  - (i) alone is beyond Levinson–Conrey (mean-square methods give only positive proportions). Cycle 41 shows that a strict, entire version of it already forces RH.
+  - So the Selberg-type Ω producer is at least as hard as "Levinson positivity at 100% of the zeros", i.e. RH-strength, as the corpus found for the MC terminus.
+- **Verdict.** Exact REDUCTION of the last survivor to Levinson-type positivity at all zeros. Every route in L178–L215 now terminates in RH-strength positivity (MC/Levinson), in Ω's moving-target / `α ≥ 1` wall, or in a recorded kill.
+
+### L216 — Program for the conditional-isotropy lemma (L209/L210): resonator-weighted Selberg–Tsang via a resonator-weighted zero-density estimate. PROOF PLAN [P-sketch]
+- **Goal.** Under `μ_R ∝ |R|²Φ(t/T)` (Soundararajan resonator, length `T^θ`), show that `(log ζ(½+it), Q(t))` is jointly Gaussian-independent to the precision needed. Then `Re(ζQ)` exceeds `½|ζ||Q|` on a `μ_R`-positive set, which closes L208/L209 (joint resonance, sign version) for short `Q`.
+- **Step 1 (Selberg's approximation, explicit).** `log ζ(½+it) = P_x(t) + Σ_{|γ−t| ≤ 1/log x} log|(t−γ) log x| + E_x(t)`. Here `P_x = Σ_{p≤x} p^{−½−it}`, and `E_x` involves the prime sum over `(x, x²]` and the zeros with `β − ½ ≥ 1/log x` (Selberg–Tsang form).
+- **Step 2 (independence of the prime parts).** `R` lives on `y`-smooth `m` with `y ≍ log T log log T`. `P_x` with `x = T^{ε}` shares only the primes `≤ y` with `R`, and `Q` (primes in `(T^δ, 2T^δ]`, `δ > 2ε`) is disjoint from both. Mixed moments `E_{μ_R}[P_x^a P̄_x^b Q^c Q̄^d]` for `a+b+c+d ≤ K ≍ log T/(log x)` follow from the mean-value theorem (lengths `x^K T^{2δ}T^θ < T`).
+  - They factor into (resonator-tilted `P_x` moments) × (Gaussian `Q` moments). Under `μ_R`, `P_x` is shifted by `≍ Σ_{p≤y} r(p)/√p` (the resonance), and `Q` is untouched.
+- **Step 3 (zero term, the new difficulty).** One needs `μ_R`-weighted control of `Σ_{|γ−t|≤1/log x} log|(t−γ)log x|` and of zeros with `β > ½ + 1/log x`, i.e. a **resonator-weighted zero-density estimate** `N_R(σ,T) := Σ_{β>σ} |R(γ)|² ≪ (∫|R|²)·T^{−c(σ−½)} log T`.
+  - Route: the Littlewood lemma applied to `ζM·R` (mollifier `M` of length `T^{κ}`) and to `log|ζMR|`. This needs the BCHB twisted second moment `∫|ζ M R|²`, valid when `κ + θ < ½`. Since `θ` (resonator) can be taken `→ 0⁺` in Soundararajan's construction at the cost of a constant, this is within the known range.
+  - The Selberg–Tsang argument then gives `E_x = O(1)` except on a set of `μ_R`-measure `≪ x^{−c}`, and the zero term is `O(√(log log T))` in `μ_R`-mean square.
+- **Step 4 (conclusion).** On the resonance set, `log ζ ≈ P_x + O(1)`, with `P_x` independent of `Q`. Then `arg(ζQ)` is equidistributed under `μ_R`, and `max_{[T,2T]} Re(ζQ) ≥ c‖Q‖ exp(c'√(log T/log log T))`.
+- **Status.** A concrete, plausibly closable plan built from standard tools (BCHB, Littlewood lemma, Selberg–Tsang, Soundararajan resonance). The one nonstandard input is the resonator-weighted zero-density estimate of Step 3. Closing it would give the first rigorous exclusion of the truncated L181/L182 survivor classes. No producer.
+
+### L217 — Step 3 of L216 closed modulo standard inputs: a resonator-weighted zero-density estimate. LEMMA [P, proof sketch with explicit steps]
+- **Lemma.** Let `R(t) = Σ_{m≤T^θ} r(m) m^{−it}` with `r ≥ 0`, and `W = |R|²`. Let `D = θ log T` be the exponential type of `W`. For `½ + 1/log T ≤ σ ≤ 1` and `0 < θ + κ < ½`:
+  `Σ_{T<γ≤2T, β≥σ} W(γ) ≪ D · T^{−c(σ−½)} (log T) · ∫_{T−1}^{2T+1} W(t) dt`.
+- **Proof sketch.**
+  1. *Local reproducing bound for nonnegative band-limited functions.* `W ≥ 0` is a trigonometric polynomial of type `D`. Plancherel–Pólya and Bernstein give `W(γ) ≤ C·D·∫_{γ−1/D}^{γ+1/D} W(t) dt`. Hence
+     `Σ_{β≥σ} W(γ) ≤ C·D·∫ W(t)·n_σ(t) dt`, with `n_σ(t) = #{ρ : β ≥ σ, |γ−t| ≤ 1/D}`.
+  2. *Jensen on discs.* For the mollified function `F = ζM` (`M` of length `T^κ`, Selberg–Levinson mollifier), Jensen's formula on the disc of radius `r₂ = σ₁ − ½ + 2/D` about `σ₁ + it` (`σ₁ = σ + 1/D`) bounds `n_σ(t) ≤ (1/log(r₂/r₁)) · (1/2π)∮ log|F| − log|F(σ₁+it)|`.
+  3. *Weighted concavity.* Integrate against `W(t)` and apply Jensen's inequality to `log`:
+     `∫W(t)·(1/2π)∮log|F| ≤ ½ (∫W) log( ∫W|F|²_{avg on circles} / ∫W )`.
+  4. *Twisted second moment (BCHB).* `∫ W(t)|ζM(σ'+it)|² dt = ∫ |ζ(σ'+it)·M(σ'+it)·R(t)|² dt`, with twist `MR` of length `T^{κ+θ} < T^{½}`. The standard evaluation gives `∫W(t)(1 + O(T^{−2κ(σ'−½)}/((σ'−½) log T))) dt`: the Selberg mollification saving, uniform in the nonnegative smooth-supported twist `R`, because `R`'s support is coprime to the mollifier's large primes up to lower-order terms.
+  5. Combining: `∫W·n_σ ≪ (∫W)·T^{−2κ(σ−½)} log T`, which gives the lemma with `c = 2κ`.
+- **Consequence for L216.** The Selberg–Tsang exceptional set has `μ_R`-measure `≪ D·x^{−c'}`. So `log ζ = P_x + O(1)` on `μ_R`-most of the resonance set, and L216 Steps 1–4 go through. The sign version of the short Joint Resonance Theorem follows:
+  `max_{t∈[T,2T]} Re(ζ(½+it)Q(t)) ≥ c‖Q‖ exp(c'√(log T/log log T))`
+  for `Q` on primes in `(T^δ, 2T^δ]` (`δ` small, fixed).
+- **Status.** A complete proof architecture from standard tools (Plancherel–Pólya, Jensen, BCHB, Selberg–Tsang, Soundararajan). The one point to check carefully is the uniformity in step 4 of the BCHB main term under the resonator twist; in the literature the twisted second moment holds for arbitrary coefficients of length `< T^{½}`, so it is expected to be routine. This gives a rigorous route to excluding the truncated L181/L182 systems (exclusion side). No producer.
+
+### L218 — Correction to L215, and the Selberg-type Ω criterion is unconditional. CORRECTION [P, exact] + KILL [heuristic]
+- **Error in L215.** The expansion of `δ·ζ'/ζ` at a zero omitted the regular part of `ζ'/ζ`. On the line `Re(ζ'/ζ) = −θ'` off the zeros, and the pole `1/(s−ρ)` contributes zero real part. So the regular part `c_ρ` has `Re c_ρ = −θ'(γ)`, and
+  `Re(δ ζ'/ζ)|_{t≈γ} = −Re c_ρ + Re(ζ'(ρ)M(ρ)) = θ'(γ) + Re(ζ'(ρ)M(ρ))`.
+  - The condition at the zeros is therefore **`Re(ζ'(ρ)M(ρ)) ≥ −θ'(γ) ≍ −½ log γ`**, not `≥ 0`. This is far weaker than Levinson positivity (Conrey: `ζ'(ρ)M(ρ) ≈ 1` on average). L215's claim "at least as hard as Levinson at 100% of zeros" is **withdrawn**.
+- **Unconditional criterion (new).** For `a₀ = 1`, `F = Aζ'` with `A = −M` is holomorphic on `σ > ½` except for `s = 1`, **without RH** (ζ' has no poles). So for any tame Dirichlet series `M` (absolutely convergent at `σ = ½`) with `M(1) = 0`, `M'(1) = 1`:
+  `lam = μ_M ⋆ log ∈ W ⟺ θ'(t) + Re(ζ'M)(½+it) ≥ 0` for all `t`, i.e. `−θ' Re δ + (Z'/Z) Im δ ≥ 0` with `δ = ζM − 1`.
+  - Near the zeros the condition is automatically satisfied up to `O(1)`, since `δ → −1` gives `θ' > 0`. The binding constraint is in the **gaps**, where it is roughly the **one-sided mollification bound** `Re(ζM) ≤ 1 + (Z'/Z) Im(ζM)/θ'`.
+  - Such an `M` would be an **unconditional** producer. `Λ` corresponds to `M = 1/ζ`, which is tame iff RH holds.
+- **Kill (heuristic, resonance).** A tame `M` is bounded on the line and cannot follow `1/ζ` at ζ's resonance points (small primes aligned beyond `M`'s effective Euler range). There `ζM` has modulus `≍ |ζ|` with phase decorrelated from `Z'/Z`, so `Re δ ≫ θ'` somewhere and the condition fails.
+  - Finite Euler products `M = Π_{p≤P}(1−p^{−s})·(normalization)` cancel resonance from `p ≤ P` only. The infinite product is `1/ζ`, which is not tame.
+  - Rigorous version: the Joint Resonance Theorem (L196–L217) with `Q` replaced by the tame `M`. The short-`M` case is covered by L217's plan.
+- **Verdict.** Corrected record: the Selberg-type Ω problem is an **unconditional one-sided mollification problem**, not Levinson positivity at all zeros. It dies by resonance (heuristic, with a rigorous route via L217 for short mollifiers). No producer.
+
+### L219 — Two more construction sources: heat-flow zero measures and prime permutations. KILLS [P]
+- **Heat-flow zero measures.** For `t ≥ 1/8` the de Bruijn–Newman deformations `H_t` have only real zeros (corpus, formal: `riemannHeat_zeros_real`; `0 ≤ Λ_DN < 1/8`). So their zero-counting measures `ν_t` are positive, unconditionally.
+  - But `H_t = e^{t∂²}H₀` is a vertical Gaussian average of `ξ` (corpus `DeBruijnHeatGaussianAverage`). Its Mellin structure is `Σ_n n^{−s}·∫Γ_ℝ(s+y)(s+y)(s+y−1) n^{−y} G_t(y) dy`, a Dirichlet series with `s`-dependent coefficients.
+  - So `ν̂_t` is not "archimedean datum minus atoms on `log ℕ`" for any fixed datum. The heat flow smears the prime atoms, and `ν_t` is a positive measure of the wrong class. KILL.
+  - Note: `ν_t → ν_Λ` as `t → 0⁺` weakly, and Weil positivity of the limit is RH (`Λ_DN = 0`). The corpus's heat lane already records this.
+- **Prime permutations.** `lam(π(p)^k) = log p` for a bijection `π` of the primes with `π(p)/p → 1`.
+  - The deviation from `Λ` is `log(p/π(p)) ≍ |π(p) − p|/p` at the primes. For gap-sized permutations this is `≪ log p/p`, which is summable against `n^{−½}`.
+  - Summable-perturbation rigidity (corpus, formal) gives `lam = Λ`, so `π = id`, if `lam ∈ W`. Larger permutations break the mass or the RH-quality partial sums (L148). KILL.
+- **Verdict.** Unconditionally positive zero measures (heat flow) exist, but not in the Weil class for ζ's datum. Arithmetic rearrangements of Λ are rigid.

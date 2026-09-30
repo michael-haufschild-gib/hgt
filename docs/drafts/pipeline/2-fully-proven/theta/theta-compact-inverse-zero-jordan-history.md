@@ -707,3 +707,162 @@ This certifies the finite-jet kernel component of (8). The explicit
 unscaled-source transport, actual Schwartz-valued analytic translation
 curve, supported-distribution representation and full local/global
 tempered converse remain open. The card stays Stage 2.
+
+## Lean coverage: exact unscaled physical source-jet transport
+
+`ThetaTemperedSourceJets.lean` supplies 29 public exports. The actual
+invertible Schwartz Fourier map is exactly
+`F_phys φ(t)=F_mathlib φ(-t/(2π))`. Its actual continuous tempered
+pullback is injective. Every ordinary derivative of the original
+unscaled source has an actual Schwartz representative and transforms
+exactly to `(-it)^n XiC(t)`.
+
+Physical pullbacks of actual spectral Dirac derivatives are nonzero,
+with every finite prefix independent. Each order below actual Xi
+multiplicity annihilates every literal ordinary source derivative.
+The first excluded order survives on the original source itself.
+The lower-jet span has dimension precisely the actual multiplicity
+and lies in the literal unscaled source derivative annihilator.
+The order-zero pullback is the literal real exponential evaluator.
+
+Named native and final literal checks pass with an empty direct log.
+All 29 export witnesses and axiom reports pass using exactly the three
+standard Lean axioms. All 77 compiler-recorded API witnesses, 29 exact
+catalogue entries and unique umbrella registration pass. The recursive
+ledger records every gate and unrelated global lint failures.
+
+Explicit unscaled-source transport and the genuine Schwartz complex
+translation derivative, exact scalar source jets and analytic uniqueness
+are closed. Full (8) still requires the Fourier-correlation identity and
+the full supported-distribution local/global converse.
+The card stays Stage 2.
+
+## Lean coverage: genuine Schwartz complex translation derivative
+
+`ThetaCuspSchwartzComplexTranslation.lean`,
+`ThetaCuspStripTaylorRemainder.lean` and
+`ThetaCuspSchwartzTranslationCurve.lean` supply 25 public exports.
+For every literal strip parameter, the function
+`x ↦ thetaCuspStripSource (↑x+a)` is constructed in actual Schwartz
+space. All spatial jets equal the literal source's complex jets.
+Cauchy estimates give closed-substrip exponential decay of every jet,
+and two complex mean-value estimates give quadratic Taylor control.
+
+Every defining Schwartz seminorm of the first-order translation
+remainder is locally quadratic. Its normalized remainder tends to zero
+in the actual Schwartz topology. The resulting complex `HasDerivAt`
+has the actual spatial `SchwartzMap.derivCLM` as derivative. Every
+genuine continuous complex-linear scalar observer has an analytic
+orbit on the literal strip. At zero, the curve is exactly the original
+`thetaCuspSchwartz`; real parameters give literal unscaled translations.
+
+Named native and all three final literal audits pass, each direct log
+empty. All 25 exact export witnesses and axiom reports pass using
+exactly the three standard Lean axioms. All 166 compiler-recorded
+API witnesses, 25 exact catalogue pairs and three unique umbrella
+registrations pass. The recursive ledger records the complete gates
+and unrelated global lint failures.
+
+Exact scalar higher jets/ordinary-source identification and analytic
+uniqueness are closed. Fourier-correlation and the complete
+supported-distribution local/global converse remain open. Full (8) is
+not certified; this card stays Stage 2.
+
+## Lean coverage: exact source jets and tempered translation annihilation
+
+`ThetaTemperedTranslationAnnihilator.lean` supplies 13 public theorems.
+Every scalar complex orbit jet equals the observer applied to the actual
+spatial Schwartz jet. At zero, these are exactly the ordinary derivatives
+of the original real source followed by complex postcomposition; every
+real scalar-restriction jet has the same identification.
+
+For every actual tempered functional, annihilation of all original
+unscaled source derivatives is equivalent to annihilation of every
+literal complex-strip translate, every real translate and every actual
+`MellinL2.schwartzTranslate a thetaCuspSchwartz`. Infinite analytic order
+and scalar uniqueness on the actual preconnected strip prove the forward
+implication. Exact real-restriction derivatives prove the reverse one.
+No presumed Schwartz holomorphy or additional functional interface is used.
+
+Named native and final literal checks pass; direct/export/API logs are
+empty. All 13 export witnesses and matching axiom reports pass using
+exactly the three standard Lean axioms. All 43 compiler-recorded API
+witnesses, 13 exact catalogue/module pairs and unique umbrella registration
+pass. The recursive ledger records all gates and unrelated global lint
+failures.
+
+Source-jet identification and analytic translation uniqueness are closed.
+Full (8) still requires Fourier-correlation and the complete supported-
+distribution local/global converse. This card stays Stage 2.
+
+## Lean coverage: actual finite Banach observers of tempered functionals
+
+`ThetaTemperedFiniteJetFactorization.lean` supplies 11 public exports.
+Actual weighted spatial-jet maps land in bounded continuous functions;
+their norms equal the original Schwartz seminorms exactly. Their finite
+product is an actual complete complex normed space. Continuity of every
+actual tempered functional gives a finite seminorm bound, hence a norm
+bound on its induced observer on the actual weighted-jet range. Complex
+Hahn–Banach extends that observer to the concrete Banach product.
+
+Unconditionally, for every actual tempered functional `T`, there exist
+actual finite `s` and continuous complex-linear `L` such that
+`L(thetaSchwartzFiniteJetCLM s phi)=T phi` for every original Schwartz
+test. No norm is installed on the original Schwartz space, and no
+factorization or integral interchange is assumed.
+
+Named native and final literal checks, all 11 export/axiom witnesses,
+all 59 native API witnesses and all 11 exact catalogue/module pairs
+pass. Each export uses exactly the three standard Lean axioms. The
+recursive ledger records the full certificate and unrelated global lint
+failures. General Fourier-correlation, cutoff approximation and the
+complete local/global supported-distribution classification remain open.
+Full (8) is not certified; this card stays Stage 2.
+
+## Lean coverage: literal physical Fourier orbit and inverse
+
+`ThetaTemperedFourierOrbit.lean` supplies 16 public exports. Every actual
+Schwartz translation has the literal negative phase for the original
+positive-exponent physical Fourier transform. Precomposition by its actual
+inverse proves both inverse laws on the entire actual tempered dual,
+yielding a genuine continuous linear equivalence and original-pullback
+surjectivity. Actual Schwartz modulation has its literal exponential value,
+real-parameter continuity and equality with the genuine multiplier CLM.
+The scalar inverse integral has the exact `1/(2*pi)` normalization for
+every original test and reconstructs it from its own physical transform.
+
+Named native, literal, all 16 export/axiom and all 51 native API gates
+pass; every axiom report contains exactly the three standard Lean axioms.
+All 16 exact catalogue pairs and unique umbrella registration pass. The
+recursive ledger records complete evidence and unrelated global lint
+failures. Arbitrary-functional Fourier correlation, cutoff approximation
+and complete supported-distribution classification remain open. Full (8)
+is not certified; this card stays Stage 2.
+
+## Lean coverage: unconditional physical Fourier correlation
+
+`ThetaTemperedFourierCorrelation.lean` supplies 14 public exports, including
+the actual correlation identity for every tempered functional `Q` and every
+original Schwartz pair `psi,phi`:
+
+```text
+Q(psi*phi) = (1/(2*pi)) * integral_a F_phys(phi)(a) * Q(modulation_a(psi)).
+```
+
+Every physical spatial jet has exact multiplier `(-i*a)^n`, genuine inverse
+moments and actual moment integrability. Full modulation Leibniz gives a
+finite polynomial bound using the original weighted seminorms. The resulting
+integral is genuinely integrable in the existing complete finite Banach
+observer, including its empty-product case. Coordinate evaluation identifies
+the integral with the actual weighted product jets. The already-proved
+unconditional finite-jet factorization then proves the arbitrary-functional
+formula and genuine scalar integrability.
+
+Named native and final literal gates, all 14 export witnesses, all 95 native
+API witnesses and every axiom report pass. Every export uses exactly the
+three standard Lean axioms. All 14 exact catalogue pairs, unique actual
+umbrella registration and unchanged source hash pass. The recursive ledger
+records complete gates and unrelated global lint failures; global lint is
+not green. Cutoff approximation, the full two-way actual Xi-kernel identity
+and complete local/global supported-distribution classification remain open.
+Full (8) is not certified; this card stays Stage 2.

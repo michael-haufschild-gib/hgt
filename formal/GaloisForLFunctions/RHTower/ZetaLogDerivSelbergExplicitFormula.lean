@@ -224,4 +224,203 @@ theorem norm_selberg_right_pole_le {x c T₁ T₂ : ℝ} {s₀ : ℂ} (hx : 1 < 
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [this, show 0 < Real.log x * T₁ by positivity]
 
+/-- **Selberg's explicit formula for `ζ'/ζ` at a point of the strip.** -/
+theorem norm_logDeriv_zeta_add_selberg_le {x c σL T₁ T₂ H BH BL : ℝ} {s₀ : ℂ}
+    (hx : 1 < x) (hc : 1 < c) (hc2 : c ≤ 2) (hσL : σL < s₀.re) (hσc : s₀.re < c)
+    (hT₁ : 0 < T₁) (hH : 0 < H) (hH1 : H ≤ s₀.im - T₁) (hH2 : H ≤ T₂ - s₀.im)
+    (hs₀ : riemannZeta s₀ ≠ 0)
+    (hbot : ∀ u ∈ Icc σL c, zetaResidueUnit ((u : ℂ) + (T₁ : ℂ) * I) ≠ 0 ∧
+      ‖logDeriv zetaResidueUnit ((u : ℂ) + (T₁ : ℂ) * I)‖ ≤ BH)
+    (htop : ∀ u ∈ Icc σL c, zetaResidueUnit ((u : ℂ) + (T₂ : ℂ) * I) ≠ 0 ∧
+      ‖logDeriv zetaResidueUnit ((u : ℂ) + (T₂ : ℂ) * I)‖ ≤ BH)
+    (hleft : ∀ y ∈ Icc T₁ T₂, zetaResidueUnit ((σL : ℂ) + (y : ℂ) * I) ≠ 0 ∧
+      ‖logDeriv zetaResidueUnit ((σL : ℂ) + (y : ℂ) * I)‖ ≤ BL) :
+    ‖logDeriv riemannZeta s₀ + selbergVonMangoldtPoly x s₀ +
+      ∑ w ∈ zetaResidueUnitClosedRectangleZeros ((σL : ℂ) + (T₁ : ℂ) * I)
+          ((c : ℂ) + (T₂ : ℂ) * I),
+        ((analyticOrderAt zetaResidueUnit w).toNat : ℂ) * selbergKernel x (w - s₀)‖ ≤
+      (2 * ((Real.exp (2 * (c - s₀.re) * Real.log x) + Real.exp ((c - s₀.re) * Real.log x)) /
+          (Real.log x * H ^ 2) * BH * (c - σL)) +
+        8 / (c - 1) ^ 2 *
+          ((Real.exp (2 * (c - s₀.re) * Real.log x) + Real.exp ((c - s₀.re) * Real.log x)) /
+            Real.log x) * (2 * Real.pi / H) +
+        (Real.exp (2 * (c - s₀.re) * Real.log x) + Real.exp ((c - s₀.re) * Real.log x)) /
+          (Real.log x * T₁) * (Real.pi / (c - s₀.re)) +
+        BL * (2 * Real.exp ((σL - s₀.re) * Real.log x) / Real.log x) *
+          (Real.pi / (s₀.re - σL))) / (2 * Real.pi) + 1 / T₁ := by
+  have hT₁₀ : T₁ < s₀.im := by linarith
+  have hT₂₀ : s₀.im < T₂ := by linarith
+  have hT : T₁ ≤ T₂ := by linarith
+  have hσLc : σL ≤ c := by linarith
+  set z₁ : ℂ := (σL : ℂ) + (T₁ : ℂ) * I with hz₁
+  set z₂ : ℂ := (c : ℂ) + (T₂ : ℂ) * I with hz₂
+  have hz₁re : z₁.re = σL := by simp [hz₁]
+  have hz₁im : z₁.im = T₁ := by simp [hz₁]
+  have hz₂re : z₂.re = c := by simp [hz₂]
+  have hz₂im : z₂.im = T₂ := by simp [hz₂]
+  set φ : ℂ → ℂ := fun z => selbergKernelPhi x (z - s₀) with hφdef
+  have hφ : AnalyticOnNhd ℂ φ Set.univ := by
+    intro z _
+    have h1 : AnalyticAt ℂ (fun w : ℂ => w - s₀) z := analyticAt_id.sub analyticAt_const
+    exact AnalyticAt.comp (g := selbergKernelPhi x) (f := fun w : ℂ => w - s₀) (x := z)
+      (analyticAt_selbergKernelPhi x (z - s₀)) h1
+  have hs₁ : s₀ ≠ 1 := by
+    intro h
+    have := congrArg Complex.im h
+    simp at this
+    linarith
+  have hs₀G : zetaResidueUnit s₀ ≠ 0 := (zetaResidueUnit_ne_zero_iff hs₁).2 hs₀
+  have hin : z₁.re < s₀.re ∧ s₀.re < z₂.re ∧ z₁.im < s₀.im ∧ s₀.im < z₂.im := by
+    rw [hz₁re, hz₂re, hz₁im, hz₂im]; exact ⟨hσL, hσc, hT₁₀, hT₂₀⟩
+  have hre : z₁.re < z₂.re := by rw [hz₁re, hz₂re]; linarith
+  have him : z₁.im < z₂.im := by rw [hz₁im, hz₂im]; linarith
+  have hbot' : ∀ u ∈ uIcc z₁.re z₂.re, zetaResidueUnit ((u : ℂ) + z₁.im * I) ≠ 0 := by
+    intro u hu
+    rw [hz₁re, hz₂re, uIcc_of_le hσLc] at hu
+    rw [hz₁im]
+    exact (hbot u hu).1
+  have htop' : ∀ u ∈ uIcc z₁.re z₂.re, zetaResidueUnit ((u : ℂ) + z₂.im * I) ≠ 0 := by
+    intro u hu
+    rw [hz₁re, hz₂re, uIcc_of_le hσLc] at hu
+    rw [hz₂im]
+    exact (htop u hu).1
+  have hright' : ∀ y ∈ uIcc z₁.im z₂.im, zetaResidueUnit ((z₂.re : ℂ) + y * I) ≠ 0 := by
+    intro y hy
+    rw [hz₁im, hz₂im, uIcc_of_le hT] at hy
+    rw [hz₂re]
+    have hne : (c : ℂ) + (y : ℂ) * I ≠ 1 := by
+      intro h
+      have := congrArg Complex.im h
+      simp at this
+      linarith [hy.1]
+    refine (zetaResidueUnit_ne_zero_iff hne).2 (riemannZeta_ne_zero_of_one_lt_re ?_)
+    simp [hc]
+  have hleft' : ∀ y ∈ uIcc z₁.im z₂.im, zetaResidueUnit ((z₁.re : ℂ) + y * I) ≠ 0 := by
+    intro y hy
+    rw [hz₁im, hz₂im, uIcc_of_le hT] at hy
+    rw [hz₁re]
+    exact (hleft y hy).1
+  have hrect := rectIntegral_mul_inv_sub_mul_logDeriv_zetaResidueUnit hφ hre him hin hs₀G
+    hbot' htop' hright' hleft'
+  -- the zero sum and the residue at `s₀`
+  have hzeros : ∀ w ∈ zetaResidueUnitClosedRectangleZeros z₁ z₂, w ≠ s₀ := by
+    intro w hw heq
+    have := (mem_zetaResidueUnitClosedRectangleZeros.mp hw).2
+    rw [heq] at this
+    exact hs₀G this
+  have hsum : ∑ w ∈ zetaResidueUnitClosedRectangleZeros z₁ z₂,
+      ((analyticOrderAt zetaResidueUnit w).toNat : ℂ) * (φ w * (w - s₀)⁻¹) =
+      ∑ w ∈ zetaResidueUnitClosedRectangleZeros z₁ z₂,
+        ((analyticOrderAt zetaResidueUnit w).toNat : ℂ) * selbergKernel x (w - s₀) := by
+    refine Finset.sum_congr rfl fun w hw => ?_
+    rw [hφdef]
+    simp only
+    rw [selbergKernelPhi_mul_inv (sub_ne_zero.mpr (hzeros w hw))]
+  have hφs₀ : φ s₀ = 1 := by rw [hφdef]; simp only [sub_self]; exact selbergKernelPhi_zero hx
+  have hlogG : logDeriv zetaResidueUnit s₀ = logDeriv riemannZeta s₀ + (s₀ - 1)⁻¹ := by
+    rw [logDeriv_zeta_eq hs₁ hs₀G]; ring
+  rw [hsum, hφs₀, one_mul, hlogG] at hrect
+  -- the four edges
+  set f : ℂ → ℂ := fun z => φ z * (z - s₀)⁻¹ * logDeriv zetaResidueUnit z with hfdef
+  set Bt : ℂ := ∫ u in σL..c, f ((u : ℂ) + (T₁ : ℂ) * I) with hBt
+  set Tp : ℂ := ∫ u in σL..c, f ((u : ℂ) + (T₂ : ℂ) * I) with hTp
+  set R : ℂ := ∫ y in T₁..T₂, f ((c : ℂ) + (y : ℂ) * I) with hR
+  set Lf : ℂ := ∫ y in T₁..T₂, f ((σL : ℂ) + (y : ℂ) * I) with hLf
+  have hrectE : rectIntegral f z₁ z₂ = (Bt - Tp) + I * R - I * Lf := by
+    unfold rectIntegral
+    rw [hz₁re, hz₂re, hz₁im, hz₂im, smul_eq_mul, smul_eq_mul]
+  rw [hrectE] at hrect
+  -- the right edge splits into the von Mangoldt part and the polar part
+  set Rw : ℂ := ∫ y in T₁..T₂, selbergRightEdge x c s₀ y with hRw
+  set P : ℂ := ∫ y in T₁..T₂, selbergKernel x ((c : ℂ) + (y : ℂ) * I - s₀) *
+    ((c : ℂ) + (y : ℂ) * I - 1)⁻¹ with hP
+  have hRsplit : R = Rw + P := by
+    have hpt : ∀ y ∈ uIcc T₁ T₂, f ((c : ℂ) + (y : ℂ) * I) =
+        selbergRightEdge x c s₀ y +
+          selbergKernel x ((c : ℂ) + (y : ℂ) * I - s₀) * ((c : ℂ) + (y : ℂ) * I - 1)⁻¹ := by
+      intro y hy
+      rw [uIcc_of_le hT] at hy
+      have hne1 : (c : ℂ) + (y : ℂ) * I ≠ 1 := by
+        intro h
+        have := congrArg Complex.im h
+        simp at this
+        linarith [hy.1]
+      have hne0 : (c : ℂ) + (y : ℂ) * I ≠ s₀ := by
+        intro h
+        have := congrArg Complex.re h
+        simp at this
+        linarith
+      have hG : zetaResidueUnit ((c : ℂ) + (y : ℂ) * I) ≠ 0 :=
+        (zetaResidueUnit_ne_zero_iff hne1).2 (riemannZeta_ne_zero_of_one_lt_re (by simp [hc]))
+      rw [hfdef]
+      simp only
+      rw [hφdef]
+      simp only
+      rw [selbergKernelPhi_edge_eq hne0, selbergRightEdge,
+        show logDeriv zetaResidueUnit ((c : ℂ) + (y : ℂ) * I) =
+          logDeriv riemannZeta ((c : ℂ) + (y : ℂ) * I) + ((c : ℂ) + (y : ℂ) * I - 1)⁻¹ by
+          rw [logDeriv_zeta_eq hne1 hG]; ring]
+      ring
+    rw [hR, intervalIntegral.integral_congr hpt]
+    have hc1 : ContinuousOn (fun y : ℝ => selbergKernel x ((c : ℂ) + (y : ℂ) * I - s₀) *
+        ((c : ℂ) + (y : ℂ) * I - 1)⁻¹) (uIcc T₁ T₂) := by
+      have hK : Continuous (fun y : ℝ => selbergKernel x ((c : ℂ) + (y : ℂ) * I - s₀)) := by
+        have hw : ∀ y : ℝ, (c : ℂ) + (y : ℂ) * I - s₀ ≠ 0 := by
+          intro y h
+          have := congrArg Complex.re h
+          simp at this
+          linarith
+        exact ((differentiable_selbergKernelNum x).continuous.comp (by fun_prop)).div
+          (by fun_prop) (fun y => pow_ne_zero 2 (hw y))
+      refine hK.continuousOn.mul ((Continuous.continuousOn (by fun_prop)).inv₀ ?_)
+      intro y hy
+      rw [uIcc_of_le hT] at hy
+      intro h
+      have := congrArg Complex.im (sub_eq_zero.mp h)
+      simp at this
+      linarith [hy.1]
+    rw [intervalIntegral.integral_add
+      ((continuous_selbergRightEdge hc hσc).intervalIntegrable _ _)
+      (hc1.intervalIntegrable)]
+  set D : ℂ := selbergVonMangoldtPoly x s₀ with hD
+  set Δ : ℂ := (∫ y : ℝ, selbergRightEdge x c s₀ y) - Rw with hΔ
+  have hRw : Rw = -(2 * Real.pi) * D - Δ := by
+    rw [hΔ, integral_selbergRightEdge hx hc hσc, hD, selbergVonMangoldtPoly]
+    ring
+  rw [hRsplit] at hrect
+  have halg := selberg_contour_algebra hrect.symm hRw
+  refine halg.trans ?_
+  -- edge bounds
+  have hBt : ‖Bt‖ ≤ (Real.exp (2 * (c - s₀.re) * Real.log x) +
+      Real.exp ((c - s₀.re) * Real.log x)) / (Real.log x * H ^ 2) * BH * (c - σL) := by
+    have h := norm_selberg_horizontal_edge_le (T := T₁) (s₀ := s₀) hx hσLc hH
+      (by rw [abs_of_neg (by linarith)]; linarith) (fun u hu => (hbot u hu).2)
+    simpa only [hBt, hfdef, hφdef] using h
+  have hTp : ‖Tp‖ ≤ (Real.exp (2 * (c - s₀.re) * Real.log x) +
+      Real.exp ((c - s₀.re) * Real.log x)) / (Real.log x * H ^ 2) * BH * (c - σL) := by
+    have h := norm_selberg_horizontal_edge_le (T := T₂) (s₀ := s₀) hx hσLc hH
+      (by rw [abs_of_pos (by linarith)]; linarith) (fun u hu => (htop u hu).2)
+    simpa only [hTp, hfdef, hφdef] using h
+  have hΔb : ‖Δ‖ ≤ 8 / (c - 1) ^ 2 *
+      ((Real.exp (2 * (c - s₀.re) * Real.log x) + Real.exp ((c - s₀.re) * Real.log x)) /
+        Real.log x) * (2 * Real.pi / H) :=
+    norm_integral_selbergRightEdge_sub_window_le hx hc hc2 hσc hH hH1 hH2
+  have hPb : ‖P‖ ≤ (Real.exp (2 * (c - s₀.re) * Real.log x) +
+      Real.exp ((c - s₀.re) * Real.log x)) / (Real.log x * T₁) * (Real.pi / (c - s₀.re)) :=
+    norm_selberg_right_pole_le (T₂ := T₂) hx hσc hT₁ hT
+  have hLb : ‖Lf‖ ≤ BL * (2 * Real.exp ((σL - s₀.re) * Real.log x) / Real.log x) *
+      (Real.pi / (s₀.re - σL)) := by
+    have h := norm_selberg_left_edge_le (s₀ := s₀) hx hσL hT (fun y hy => (hleft y hy).2)
+    simpa only [hLf, hfdef, hφdef] using h
+  have hinv : ‖(s₀ - 1)⁻¹‖ ≤ 1 / T₁ := by
+    rw [norm_inv, one_div]
+    refine inv_anti₀ hT₁ ?_
+    have := Complex.abs_im_le_norm (s₀ - 1)
+    simp only [Complex.sub_im, Complex.one_im, sub_zero] at this
+    rw [abs_of_pos (by linarith)] at this
+    linarith
+  have hπ : (0 : ℝ) < 2 * Real.pi := by positivity
+  gcongr
+  linarith
+
 end RHTower

@@ -1,7 +1,7 @@
 # Weil-cone rigidity for deviations of absolute abscissa below 1 (Gaussian |ζ|² notch)
 
 - **ID:** weil-cone-abscissa-below-one
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized (MUST-576)
 - **Type:** CONJECTURE → paper proof below; Lean programme planned
 - **Source:** MC conjecture loop, cycle 169. It extends MUST-571 (`3-formalized/11-rh-zero-divisor-geometry/weil-cone-log-summable-deviation-rigidity.md`).
 - **Statement.**
@@ -117,3 +117,41 @@ Fix `η` and `n₀`; take `P = P_y` as in MUST-571.
 - `A_y`, and `B_y − v(n₀)/1`, are bounded by `(2+√n₀) Σ_{n>y}|v(n)| n^{−1/2} → 0`, since `Σ|v| n^{−1/2} ≤ S`.
 
 Hence `v(n₀) = 0` for every `n₀ ≥ 2`. ∎
+
+## Lean formalization (2026-09-30) — FORMALIZED [L], axioms `propext, Classical.choice, Quot.sound`
+
+Main theorems (module `RHTower/WeilAbscissaRigidity.lean`, namespace `RHTower.WeilAbscissa`):
+- `eq_zero_of_positiveDefinite_neg_nullPotential_of_rpow_summable`: `v(0) = v(1) = 0`, `|v(n)| ≤ 2 log n + A`, `Σ|v(n)| n^{−σ} < ∞` (`σ < ½`), `−ψ_v` PD ⇒ `v = 0` (`…_nullPotential_…` for `+ψ_v`).
+- `eq_vonMangoldt_of_weilPositiveFull_of_rpow_summable`: `Σ|lam − Λ| n^{−s} < ∞`, `s < 1` ⇒ `lam = Λ`.
+- `eq_vonMangoldt_of_weilPositiveFull_of_sparse_rpow`: `lam = Λ` off `S` with `Σ_{n∈S} n^{−τ} < ∞`, `τ < ½` ⇒ `lam = Λ`.
+
+New modules, all wired into `RHTower.lean`:
+- `ZetaNotchScaleMixture` — the notch profile `B`, `notchWindow_eq_notchProfile`, the mixed window `mixWindow`/`mixWindowReal` and `differentiable_mixWindow`. Also:
+  - horizontal bound `norm_mixWindow_le`;
+  - Gaussian bounds;
+  - scale superposition `mixWindowReal_eq_integral_scale`;
+  - Fubini `integral_Ioi_mixWindowReal_mul`;
+  - quadratic moment `exists_integral_mixWindowReal_mul_sq_le` (`≤ C(1+L²)`).
+- `WeilNullPotentialExpPairing` — `integral_riemannAutocorr_mul_le_exp` and `nullPotential_pairing_exp`. The Bochner pairing needs only `Σ|u(n)| n^{−b} < ∞`.
+- `ZetaNotchStripExtensions`:
+  - `gammaWeightC` (holomorphic on `|Im| < ½`, `‖·‖ ≤ Ce^{π|Re|}`);
+  - `exists_norm_zetaPairC_le` (`≤ C(1+|Re|)²`);
+  - the Bohr extension `notchWeightC`;
+  - `norm_integral_mul_cexp_le_of_strip`, exponential decay of transforms by a horizontal shift.
+- `ZetaNotchAnalyticPairing`:
+  - `sum_mul_re_mixMoment_nonpos` (pairing inequality);
+  - `exists_norm_mixMoment_le` (analytic tail `C(1+L²)e^{−cy}`);
+  - `mixMoment_eq` (scale split);
+  - `exists_norm_mixMomentNeg_le`.
+- `ZetaNotchDecayingEnvelope` — `nearEnvelope` (near-resonant mass kept), `mul_nearMass_mode_le`, and `exists_norm_weightedMoment_sub_mainWeight_le_decay`. The per-twist error is `D((L + δL^{3/2+a})n^{−a} + L²/(Lδ)^K + L²e^{−L²/32})`.
+- `WeilAbscissaScaleBounds` — the finite-sum/scale-integral swap, the per-scale lower bound with `δ = u^{−(1/2+a)}`, the small-scale bound, the main scale integral `≥ 2e^{−1}log(L−1)`, and Gaussian bookkeeping.
+- `WeilAbscissaRigidity` — the scale error envelope, truncation `N = ⌈(1+L)^M⌉`, `exists_scale_bound`, `nonpos_of_scale_family`, and the theorems above.
+
+Refactor: `WeilLogSummableRigidity` now exposes the fibre limit `eq_zero_of_forall_mainWeight_nonpos` (and `isSmoothOver_primesUpTo`), used by both MUST-571 and MUST-576.
+
+Parameter choices in Lean:
+- `c = (a+½)/2`, `θ = c − a`, `M = ⌈2/θ⌉`, `K = ⌈(M+2)/(½−a)⌉`;
+- scale weight `ρ_L(u) = e^{−(u−L)²}` (width 1);
+- `δ(u) = u^{−(1/2+a)}`, so the near-resonant term equals the diagonal order `u n^{−a}`.
+
+The error is `O(1)` against the main term `≍ log L`.

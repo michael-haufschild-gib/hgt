@@ -69,7 +69,11 @@ Historical audit rows remain after cards move. Matching Stage 3 basenames requir
 | `theta/theta-cdf-crossfrequency-rvm-capacity.md` | exact audit pending |
 | `theta/theta-cdf-no-finite-range-symmetrizer.md` | exact audit pending |
 | `theta/theta-chronological-boundary-positive-transfer.md` | exact audit pending |
-| `theta/theta-compact-inverse-zero-jordan-history.md` | actual Jordan/history/quotient/Riesz/Fourier/prime-deletion results, exact interweight law (5), weighted properness and q=0 endpoint (7), real/off-real tempered boundary, canonically normalized all-order quotient decay, and actual finite-Dirac-jet Xi kernel certified; full tempered annihilator/multiplicity classification (8) open |
+| `theta/theta-compact-inverse-zero-jordan-history.md` | actual Jordan/history/quotient/Riesz/Fourier/prime-deletion results, exact interweight law (5), weighted properness and q=0 endpoint (7), real/off-real tempered boundary, canonically normalized all-order quotient decay, actual finite-Dirac-jet Xi kernel, explicit unscaled physical source-jet transport, genuine Schwartz complex translation derivative, exact scalar source jets and derivative/translation annihilator equivalence certified; full tempered annihilator/multiplicity classification (8) open |
+| `li-clock-infinite-partition-critical-transition.md` | externally moved to Stage 3; complete updated 589-line card read; exact critical Gaussian transition for both literal kernels, ratios/gaps, signed/absolute/complex-norm errors and shared quarter-disk obstructions retain every original target; all five groups and all 64 externally claimed declarations require this ledger's complete exact proof/API and whole-card audit |
+| `li-clock-infinite-partition-supercritical-window.md` | moved externally to Stage 3; complete exact certificate audit pending for both literal complex exterior bounds and numerator/polynomial refinements, all weighted error limits and shared disk obstructions |
+| `11-rh-zero-divisor-geometry/weil-cone-random-discrete-granularity-threshold.md` | externally moved to Stage 3 with partial endpoint coverage; complete updated 131-line card read; both sharp directions for every admissible κ, all-height high-probability positivity, actual discrete Weil producer and full sharp fluctuation growth still require complete paper/exact Lean audits; external κ = 2^(−26) and κ = 1 components are not an owned whole-card certificate |
+| `li-clock-infinite-partition-supercritical-ratio.md` | externally moved to Stage 3; complete updated 569-line card read, claiming 37 public exports across three leaves; all 23 original/exposed equations and targets, actual/reference positive prefactors and arbitrary qualified-sequence full ratio, angular asymptotic, periodic endpoint averaging, logarithmic rates and separate parameter boundary limits retained pending this ledger's exact whole-card proof/API certification |
 | `theta/theta-deletion-cutoff-commutator-collapse.md` | exact audit pending |
 | `theta/theta-prime-deletion-graded-terminal-admission.md` | certified; moved to Stage 3 |
 | `theta/theta-prime-deletion-moving-cusp-dual-source.md` | exact audit pending |
@@ -1375,7 +1379,7 @@ recursive objective continues with exact tempered clause (8).
   actual analytic multiplicity lie in its kernel.
 - [x] Prove sharp first excluded jet using the actual nonzero Xi jet and
   a literal positive theta Schwartz test; audit finite-jet classification.
-- [ ] Transport these actual spectral jets to the unscaled source with
+- [x] Transport these actual spectral jets to the unscaled source with
   explicit Fourier normalization; no silent replacement by scaled theta.
 - [x] Run exact native/direct/export/axiom/API/catalogue/lint gates,
   persist exact partial coverage and retain full (8) as open until the
@@ -1478,18 +1482,18 @@ with the documented physical source-jet transport search.
   background refresh incomplete. The actual unscaled source derivative
   integral and scaled Schwartz Fourier identity apply. The proposed
   arithmetic log-dilation ingredient does not apply to Schwartz dilation.
-- [ ] Pin Fourier, linear-equivalence, precomposition and actual source
+- [x] Pin Fourier, linear-equivalence, precomposition and actual source
   derivative APIs in this toolchain before writing the candidate proof.
-- [ ] Construct the actual invertible Schwartz map
+- [x] Construct the actual invertible Schwartz map
   `F_phys φ(t)=F_mathlib φ(-t/(2π))` and its continuous tempered pullback.
-- [ ] Represent every ordinary unscaled theta derivative as an actual
+- [x] Represent every ordinary unscaled theta derivative as an actual
   Schwartz function, and prove its physical transform is
   `(-it)^n XiC(t)` with every normalization explicit.
-- [ ] Transport every lower real Dirac jet to a nonzero independent
+- [x] Transport every lower real Dirac jet to a nonzero independent
   source annihilator and prove the first excluded jet survives on the
   actual unscaled source. Retain full supported-distribution converse
   and Schwartz-valued analytic-curve construction as separate obligations.
-- [ ] Run exact native/direct/export/axiom/API/catalogue/index/lint
+- [x] Run exact native/direct/export/axiom/API/catalogue/index/lint
   gates; persist complete partial coverage and clean owned scratch.
 
 Paper mechanism: pull back `δ_t^(r)` through the literal physical
@@ -1500,3 +1504,1058 @@ order below the actual Xi multiplicity. At the first excluded order,
 the original unscaled source exposes the nonzero terminal Xi jet.
 Invertibility transports finite-prefix independence. These positive
 source statements do not supply the full annihilator identity (8).
+
+### Actual Schwartz-valued complex translation curve work plan
+
+- [x] Audit all 20 new candidate statements, all 20 source arguments and
+  available methods, zero standalone proof ideas and the ingredient set.
+  Search is nonpartial with complete 63,316-file inventory and no errors;
+  compiler results remain source-only/not-checked, semantic coverage is
+  unmeasured and background refresh incomplete. Existing Sobolev bounds
+  are potentially reusable; the suggested radial-weight derivative chain
+  does not prove the literal translated theta source's holomorphy.
+- [x] Identify literal `thetaCuspStripSource`, its actual scalar analytic
+  strip and two-sided closed-substrip exponential bound. Read actual
+  fixed-radius Cauchy derivative estimate. This source-side bound avoids
+  introducing a new gamma/Stirling dependency.
+- [x] Pin Cauchy, scalar restriction, Schwartz seminorm and general TVS
+  derivative APIs against this toolchain before new Lean implementation.
+- [x] Prove uniform exponential decay of every actual complex source
+  derivative on every closed substrip; construct every literal translated
+  source as an actual Schwartz function, with its exact spatial jets.
+- [x] Prove actual complex derivative in Schwartz topology through
+  seminorm remainder bounds and `IsLittleOTVS`; identify its derivative
+  with the actual spatial Schwartz derivative.
+- [x] Compose every genuine tempered functional with that actual curve,
+  prove scalar holomorphy and exact derivative/source-jet identification,
+  then apply analytic uniqueness to the literal source annihilator.
+- [x] Run exact leaf gates and retain the Fourier-correlation identity
+  and full supported-distribution local/global converse as open until
+  their separate exact proofs pass.
+
+Paper mechanism: choose a fixed complex-disc radius within a closed
+substrip. The actual bound `|k(z)|≤C exp(-|Re z|)` and Cauchy's estimate
+give uniform exponential bounds for all complex spatial derivatives.
+Their real restrictions give every actual Schwartz seminorm. On a
+smaller disc, the second-derivative bound gives, for each seminorm,
+`p(k_(a+h)-k_a-h k'_a)≤C_p |h|²`. This proves the genuine complex
+derivative using the actual Schwartz seminorm topology and Mathlib's
+general-TVS derivative definition. Scalar analytic uniqueness is applied
+only after this literal construction, without an assumed holomorphy
+interface for the source orbit.
+
+### Exact unscaled physical source-jet certificate
+
+`ThetaTemperedSourceJets.lean` supplies 29 public exports in 248 lines.
+The actual continuous linear Schwartz equivalence is exactly
+`F_phys φ(t)=F_mathlib φ(-t/(2π))`, with its actual continuous inverse.
+Its actual continuous tempered pullback is injective. Every ordinary
+derivative of the original unscaled theta source is constructed as an
+actual Schwartz function, with literal pointwise representative
+`((iteratedDeriv n thetaCuspFullSource x:ℝ):ℂ)` and exact physical
+transform `(-it)^n XiC(t)`.
+
+The pulled-back spectral Dirac jet has signed actual derivative pairing
+on this physical Fourier transform. Its order-zero member equals the
+previous literal real exponential evaluator. Every jet is nonzero;
+every finite prefix is independent. Every order below the actual Xi
+multiplicity annihilates every ordinary unscaled source derivative.
+The first excluded jet survives on the original unscaled source itself.
+The lower-jet span lies in the literal source derivative annihilator
+and has dimension exactly the actual Xi multiplicity. No scaled source
+is substituted for the original source.
+
+Named native build passes (12 seconds, 13,580 jobs). Final literal
+`lake env lean GaloisForLFunctions/RHTower/ThetaTemperedSourceJets.lean`
+passes with an empty log. All 29 exact public export witnesses and
+matching axiom reports pass, each with exactly `propext`,
+`Classical.choice`, `Quot.sound`. The final 77 native-reference API
+witnesses (58 Mathlib, 19 project dependencies) pass with an empty log.
+All 29 exact generated-catalogue pairs appear, with no missing or
+extra pair. Umbrella import appears once; source whitespace passes.
+Final index refresh passes (1 changed, 0 removed).
+
+Global lint exits 1: 172 large-file warnings and sixteen unrelated
+unreachable modules, no other error and no owned diagnostic. Modules:
+`CCMApertureChainProfile`, `CCMApertureTranslationChains`,
+`CCMExponentialRampPrimeMoment`, `CCMExponentialRampSourceDissipation`,
+`CCMExponentialRampTerminalEntropy`, `CCMRetainedChainKernelLower`,
+`MoebiusMollifiedCriticalMoment`, `MoebiusMollifiedErrorThreeLines`,
+`RectanglePoleWeightedLogDeriv`, `ThetaMovingShellFirstOrderPhase`,
+`ZetaLogDerivSelbergExplicitFormula`, `ZetaNotchScaleMixture`,
+`ZetaResidueUnitPoleWeightedRectangle`, `ZetaSelbergKernel`,
+`ZetaSelbergRightEdge`, `ZetaZeroDensityPowerSaving`. Global lint
+is not claimed green; unrelated work remains untouched.
+
+Fresh exhaustive recursive census: 100 Stage 2 Markdown files,
+nine support and 91 theorem cards, zero unqueued; 31 unique historical
+Stage 3 matches comprise five owned whole-card certificates and
+26 external promotions requiring complete exact audits. No ambiguity
+and no owned whole-card promotion. Full clause (8) remains open:
+actual Schwartz-valued analytic translation, Fourier-correlation
+identity and full supported-distribution local/global converse are
+separate outstanding proofs. The history card stays Stage 2.
+
+Scoped `git diff --check` passes. All 23 explicit physical source-jet
+scratch files were removed after every owned process exited, and their
+namespace is absent. Certificate evidence was persisted before deletion.
+The next Schwartz-curve API scratch is running in its separate namespace.
+
+### Actual Schwartz translation construction checkpoint
+
+`ThetaCuspSchwartzComplexTranslation.lean` constructs the literal
+`x ↦ thetaCuspStripSource (↑x+a)` in the actual Schwartz space for
+every `a` in the actual complex strip. Fixed-radius Cauchy estimates
+prove uniform exponential decay of every complex source jet on every
+closed substrip. The real spatial jets equal those actual complex jets.
+The global curve's value at zero is the original `thetaCuspSchwartz`;
+its restriction to real parameters is the literal unscaled translation.
+
+The scratch literal compile passes with an empty log. Named native
+build passes (8.8 seconds, 8,955 jobs). Initial 25 exact API witnesses
+and three additional triangle/identity witnesses pass with empty logs.
+Actual Schwartz-valued complex differentiation and scalar tempered
+analytic continuation remain open; the next step proves quadratic
+Taylor remainder bounds in every actual Schwartz seminorm. This is
+a construction checkpoint, not a whole-card or clause (8) certificate.
+
+The next owned leaf, `ThetaCuspStripTaylorRemainder.lean`, proves a
+uniform quadratic remainder estimate for every actual complex theta
+jet on every closed substrip. Two complex mean-value estimates on
+nested discs preserve the exponential real-spatial decay. Its scratch
+literal compile passes with an empty log. Named native build passes
+(8,956 jobs; translate leaf 3.0 seconds, Taylor leaf 3.9 seconds).
+Ten exact mean-value/filter API witnesses and fourteen further
+scalar/Schwartz/TVS witnesses pass with empty logs. The translate leaf's
+unused mean-value import was moved to the Taylor leaf. The actual
+Schwartz seminorm derivative proof is the next outstanding step.
+
+`ThetaCuspSchwartzTranslationCurve.lean` now proves the literal
+quadratic remainder bound in every defining Schwartz seminorm,
+normalized-remainder convergence in the actual Schwartz topology,
+and the genuine complex `HasDerivAt` with derivative equal to the
+actual spatial `SchwartzMap.derivCLM`. It also proves differentiation
+after every genuine continuous complex-linear observer into any TVS,
+and scalar analyticity for every actual tempered observer. Scratch
+literal compile passes with an empty log. The eighteen further exact
+basis API witnesses pass with an empty log. Release gates remain
+pending; exact scalar higher jets and analytic uniqueness are next.
+
+### Genuine Schwartz complex translation certificate
+
+Three owned leaves contain 25 exact public exports:
+`ThetaCuspSchwartzComplexTranslation.lean` (218 lines, 13 exports),
+`ThetaCuspStripTaylorRemainder.lean` (156 lines, one export), and
+`ThetaCuspSchwartzTranslationCurve.lean` (194 lines, 11 exports).
+They construct the literal unscaled theta translate in actual Schwartz
+space throughout the actual complex strip; identify every spatial jet;
+prove closed-substrip Cauchy decay and quadratic Taylor bounds; prove
+the quadratic remainder estimate in each defining Schwartz seminorm;
+and obtain the genuine complex TVS derivative with the actual spatial
+Schwartz derivative as its value. Every continuous complex-linear scalar
+observer has an analytic orbit on the literal strip.
+
+Named native gates pass: final translate/Taylor build has 8,956 jobs
+(3.0/3.9 seconds), final Schwartz derivative build has 8,957 jobs
+(8.3 seconds). All three final literal `lake env lean FILE` audits
+ran sequentially and pass with empty logs. All 25 exact export witnesses
+and matching axiom reports pass, each with exactly `propext`,
+`Classical.choice`, `Quot.sound`. All 166 compiler-recorded API
+witnesses (151 Mathlib, 15 project dependencies) pass with an empty log.
+All 25 exact generated-catalogue pairs match, with no extra or missing
+pair; all three umbrella imports occur once. Source whitespace and
+scoped `git diff --check` pass. Final index refresh passes (one changed,
+zero removed).
+
+Global lint exits 1 with 172 large-file warnings and 17 unrelated
+unreachable modules; no other diagnostic and no diagnostic in the
+three new leaves. The complete error set was inspected:
+`CCMApertureChainProfile`, `CCMApertureTranslationChains`,
+`CCMExponentialRampPrimeMoment`, `CCMExponentialRampSourceDissipation`,
+`CCMExponentialRampTerminalEntropy`, `CCMRetainedChainKernelLower`,
+`ConvexLogModulusTransport`, `MoebiusMollifiedCriticalMoment`,
+`MoebiusMollifiedErrorThreeLines`, `ThetaMovingShellFirstOrderPhase`,
+`XiSliceLogDerivArcTail`, `ZetaLogDerivTypicalBox`,
+`ZetaLogDerivTypicalBoxDensity`, `ZetaLogDerivTypicalScale`,
+`ZetaLogDerivTypicalZeroSum`, `ZetaRightZeroWeightedCount`,
+`ZetaZeroDensityPowerSaving`. Global lint is not claimed green.
+
+Fresh exhaustive recursive census: 101 Stage 2 Markdown files,
+nine support files and 92 theorem cards, zero unqueued. The two new
+critical/supercritical partition cards were read completely, including
+recovery of the first display's omitted ranges, and added pending every
+exact paper target. Historical theorem matches: 26 unique Stage 3
+matches, five owned whole-card certificates and 21 external promotions
+pending complete audits. No ambiguity. A preliminary count included
+six support rows; the census now excludes support filenames from both
+current theorem counts and historical theorem matching.
+
+This closes the genuine Schwartz complex derivative and scalar orbit
+analyticity infrastructure. Exact scalar higher jets/ordinary-source
+identification and analytic uniqueness remain open, followed by the
+Fourier-correlation identity and complete supported-distribution
+local/global converse. No owned whole-card promotion; full (8) and the
+entire recursive Stage 2 objective remain open.
+
+All 47 explicit owned Schwartz-curve scratch files were removed after
+every owned process exited. The namespace is absent; certificate evidence
+was persisted before deletion. Scoped `git diff --check` also passes
+after the ledger/card certificate edits.
+
+### Exact scalar source jets and analytic uniqueness work plan
+
+- [x] Run the documented prior search for literal source jets and
+  analytic uniqueness; audit all 20 candidate statements, all 20 source
+  arguments and available methods, all ten prose hits and ten source
+  passages. No standalone proof idea or ingredient set was returned.
+  Deep search is partial: final filtering/judging returned malformed
+  local-model JSON. Inventory is complete (63,371/63,371); retrieved
+  compiler candidates remain source-only/not-checked, semantic coverage
+  is unmeasured and background refresh incomplete. Actual real Schwartz
+  translation is reusable; the L²-history result cannot act on every
+  tempered functional. No corpus-wide absence claim is inferred.
+- [x] Pin actual pointwise-tempered, real-to-complex derivative,
+  iteration, analytic order and uniqueness APIs against this toolchain.
+  All 24 exact basis witnesses pass; actual tempered data also compiles
+  as a genuine scalar CLM and with the established scalar analytic orbit.
+  Universe levels are explicitly pinned from this toolchain's output.
+- [x] Prove the actual spatial jet CLM at zero is exactly
+  `thetaUnscaledSchwartzDerivative n`, retaining the original real
+  source and its complex postcomposition.
+- [x] Prove every scalar observer's nth complex derivative throughout
+  the strip equals its value on that actual nth spatial jet.
+- [x] Prove the literal unscaled tempered derivative annihilator equals
+  annihilation of every literal real/complex-strip translate, using
+  scalar analytic uniqueness on the actual connected strip.
+- [x] Complete every leaf gate, recursive census and explicit cleanup;
+  retain Fourier-correlation and full local/global classification open.
+
+Paper mechanism: real-to-complex postcomposition commutes with the
+actual spatial Schwartz derivative. Induction identifies the exact
+unscaled source representatives. For scalar higher derivatives, use
+the established genuine continuous-linear observer derivative and
+local equality of germs on the open strip; the nth spatial-jet CLM is
+continuous and linear. If all original source derivatives are killed,
+all scalar complex jets at zero vanish. A finite analytic order would
+force a nonzero terminal derivative, so analytic order is infinite and
+the scalar germ is zero. The identity principle propagates zero across
+the actual preconnected strip, including every real translate. The
+reverse direction uses exact higher derivatives of the real scalar
+restriction: vanishing on every real translate makes that restriction
+identically zero, and its derivatives at zero are the literal ordinary
+source jets. Thus real vanishing supplies every original annihilator
+condition without assuming an open complex germ from real vanishing.
+
+The exact 169-line candidate compiles with an empty log, retaining every
+original real source derivative and the actual Schwartz translation CLM.
+`ThetaTemperedTranslationAnnihilator.lean` is installed and registered;
+the release certificate below supersedes this construction checkpoint.
+No whole-card or full-clause (8) certificate is inferred.
+
+### Exact scalar source jets and translation-annihilator certificate
+
+`ThetaTemperedTranslationAnnihilator.lean` contains 13 public theorems
+in 169 lines. Complex postcomposition commutes with the actual spatial
+Schwartz derivative; all spatial jets at zero are exactly the original
+`thetaUnscaledSchwartzDerivative n`. Every scalar orbit derivative on
+the strip, and every higher derivative of its real restriction, equals
+the observer applied to the actual spatial jet. No scalar normalization
+or substitute source is introduced.
+
+For every actual tempered distribution, killing every ordinary unscaled
+source derivative is equivalent to killing every literal strip translate,
+every literal real translate, and every actual
+`MellinL2.schwartzTranslate a thetaCuspSchwartz`. The forward proof uses
+infinite analytic order and scalar uniqueness on the actual preconnected
+strip. The reverse proof differentiates the identically zero real scalar
+restriction. The genuine tempered functional's data supplies continuity;
+no assumed holomorphy or extra functional interface is used.
+
+Named native build passes (13,584 jobs, 30 seconds). Final literal
+`lake env lean GaloisForLFunctions/RHTower/ThetaTemperedTranslationAnnihilator.lean`
+passes with an empty log. All 13 export witnesses and all 43 native-reference
+API witnesses (28 Mathlib, 15 project) pass with empty logs; all 56 exact
+preflight checks pass. Every one of the 13 axiom reports contains exactly
+`propext`, `Classical.choice`, `Quot.sound`. All 13 exact catalogue/module
+pairs match, with no extra or missing pair, and the umbrella import occurs
+once. Source whitespace and unchanged-source equality with the compiled
+scratch candidate pass. Index refresh passes (three changed, zero removed).
+
+Global lint exits 1 with 172 large-file warnings and 12 unrelated
+unreachable modules, no other diagnostic and none in the new leaf.
+The entire error set was inspected: `CCMApertureChainProfile`,
+`CCMApertureTranslationChains`, `CCMExponentialRampPrimeMoment`,
+`CCMExponentialRampSourceDissipation`, `CCMExponentialRampTerminalEntropy`,
+`CCMRetainedChainKernelLower`, `JitteredUnitCellIntegrals`,
+`JitteredUnitCellVariance`, `MoebiusMollifiedCriticalMoment`,
+`MoebiusMollifiedErrorThreeLines`, `ThetaMovingShellFirstOrderPhase`,
+`ZetaZeroDensityPowerSaving`. Global lint is not claimed green.
+
+Fresh exhaustive recursive census: 102 Stage 2 Markdown files, nine
+support files and 93 theorem cards, zero unqueued paths. Both newly added
+cards were read completely (121-line random Weil granularity threshold,
+451-line supercritical partition ratio) and queued for every exact target.
+Historical theorem matches: 27 unique Stage 3 paths, comprising five
+owned whole-card certificates and 22 external promotions pending complete
+audits. No ambiguity. The supercritical-window card moved externally;
+its complete certificate remains pending in this ledger.
+
+Exact scalar source identification and analytic translation uniqueness
+are closed. Fourier-correlation and full supported-distribution local/global
+classification remain open. The history card stays Stage 2; no owned
+whole-card promotion. All owned compiler/build/index/lint jobs have exited.
+Explicit scratch cleanup and final scoped whitespace check are next;
+this durable evidence precedes deletion.
+
+Scoped `git diff --check` passes. All 25 explicitly owned scalar-germ
+scratch files were removed by the finite guarded cleanup (exit 0), after
+every owned compiler/build/index/lint job exited and evidence was saved.
+Their namespace is absent. Source SHA256:
+`9d6746a2369ebfbd2cf9dde3a3f93a394314f780412c78da0e9b2de45f85b8ee`.
+
+### Actual tempered Fourier-correlation work plan
+
+- [x] Run documented prior research for actual Schwartz/tempered
+  Fourier-correlation; read all 20 candidate statements, all 20 source
+  arguments and available methods, ten prose hits, ten source passages
+  and the proposed ingredient set (zero proof ideas). Search is
+  nonpartial, errors/unfinished empty, inventory complete (63,397 files).
+  Index/coverage generation 1,159,668 is older than current 1,159,670;
+  semantic coverage unmeasured, background refresh incomplete. Retrieved
+  compiler records remain source-only/not-checked. Actual scalar inversion,
+  Schwartz seminorm bounds, existing convolution and the literal Xi
+  multiplier are useful. The proposed correlation-decay/regular-L²
+  compatibility chain does not supply arbitrary-tempered interchange.
+  No corpus-absence or novelty conclusion is inferred.
+- [ ] Pin the actual physical Fourier translation phase, scalar
+  inversion, literal Xi multiplier, tempered pullback inverse and
+  continuity/seminorm/integration APIs against this toolchain.
+- [ ] Prove the actual physical transform of a real unscaled translate
+  is the negative phase `exp(-i*a*t)` times the literal actual Xi source.
+- [ ] Prove genuine tempered interchange with scalar Fourier inversion,
+  deriving finite-seminorm control from the actual continuous functional.
+  If a Banach factor is required, construct its actual seminorm quotient
+  and completion; never replace the original Schwartz topology by a norm
+  or assume a functional/interchange interface.
+- [ ] Prove both exact directions between all literal translation
+  annihilation and the actual Xi tempered multiplier kernel, including
+  any cutoff approximation needed for non-Schwartz plane waves.
+- [ ] Construct and verify the actual continuous tempered pullback
+  inverse; identify the entire original unscaled source annihilator
+  with the physical pullback of that actual multiplier kernel.
+- [ ] Complete every leaf gate, recursive census and explicit cleanup;
+  retain full supported-distribution local/global classification open.
+
+Planned paper mechanism: physical positive-phase Fourier inversion has
+coefficient `1/(2*pi)` and negative inversion phase. For a Schwartz
+spectral source `psi`, the desired scalar pairing identity is
+`Q(psi*phi)=(1/(2*pi))*integral F_phys(phi)(a)*Q(exp(-i*a*t)*psi(t)) da`.
+This is an obligation, not an assumed interchange. The actual source
+Fourier identity and real translation phase then match the established
+literal annihilator equivalence. Conversely, a zero Xi multiplier must
+annihilate its Xi-weighted plane-wave probes through proved Schwartz
+cutoff approximation; the bare plane wave itself is not a Schwartz test.
+Only after both directions and the actual invertible pullback are proved
+is the full source/multiplier identity certified. Global locally finite
+real-zero jet representation is a separate remaining proof.
+
+### Concrete finite-jet Banach observer component
+
+- [x] Pin actual bounded-continuous-function, finite-product,
+  seminorm-bound, quotient/range and complex Hahn–Banach APIs.
+- [x] Construct the genuine continuous weighted-jet maps
+  `phi ↦ (x ↦ x^k*iteratedDeriv n phi x)` into bounded continuous
+  functions and prove their norms equal the defining Schwartz seminorms.
+- [x] Construct their finite product as an actual Banach target and
+  derive every actual tempered functional's norm bound from continuity.
+- [x] Descend the actual functional through the weighted-jet map's
+  algebraic kernel/range, prove boundedness there, and extend it to the
+  Banach product by the actual complex Hahn–Banach theorem.
+- [x] Certify the exact unconditional factorization for every tempered
+  functional; run all leaf gates and preserve the still-open integral,
+  cutoff, multiplier and global supported-distribution obligations.
+
+Dependency-closed paper mechanism: for each `(k,n)`, the bounded function
+is the actual polynomial multiplier after the actual spatial-jet CLM,
+followed by the actual inclusion into bounded continuous functions.
+Pointwise seminorm bounds and the defining supremum show its norm is
+exactly `p_(k,n)(phi)`. For actual `T`, the continuous seminorm `‖T(phi)‖`
+is bounded by `C*sup_(k,n in s) p_(k,n)(phi)` for a finite set `s`.
+This supremum is controlled by the norm of the concrete finite product
+`J_s(phi)`. Hence `ker J_s ⊆ ker T`; the algebraic first isomorphism
+theorem descends `T` to `range J_s`. Its proved norm bound supplies a
+genuine continuous linear map on this normed subspace. Complex
+Hahn–Banach extends it to an actual scalar continuous linear observer
+`L` on the complete bounded-function product, with
+`L(J_s(phi))=T(phi)` for every original Schwartz test. No norm is
+installed on the original Schwartz space. This classical infrastructure
+component supplies actual observer data; it does not assume the desired
+interchange or classify the Xi multiplier kernel.
+
+### Concrete finite-jet Banach factorization certificate
+
+`ThetaTemperedFiniteJetFactorization.lean` contains 11 public exports
+(three data definitions and eight theorems) in 137 lines. The actual
+weighted-jet CLM has literal value
+`(x : Complex)^k * iteratedDeriv n phi x`; its bounded-function norm is
+exactly `SchwartzMap.seminorm Complex k n phi`. The genuine finite
+product is `s → (Real →ᵇ Complex)`, with its existing complete normed
+space structure. Its norm controls the finite supremum of the original
+defining Schwartz seminorms, including the empty-product case.
+
+For every actual `T : S'(Real,Complex)`, continuity in the original
+Schwartz topology derives a finite set and a positive nonnegative-real
+bound. That bound proves `ker J_s ⊆ ker T`. The actual algebraic
+quotient/range equivalence descends `T`; the proved bound makes the
+descended map continuous on the concrete normed range. Actual complex
+Hahn–Banach extends it to the finite Banach product. The unconditional
+capstone `thetaTempered_exists_finiteJetFactorization` supplies actual
+`s` and actual `L : thetaSchwartzFiniteJetBanach s →L[Complex] Complex`
+such that `L(thetaSchwartzFiniteJetCLM s phi)=T phi` for every original
+Schwartz test. No norm or replacement topology is installed on Schwartz
+space; no assumed factorization or interchange interface is introduced.
+
+The 41 dependency API witnesses, literal polynomial-growth witness and
+concrete Banach instance pass. Named native build passes (8,958 jobs,
+110 seconds), with only unrelated replayed informational suggestions.
+Final literal `lake env lean GaloisForLFunctions/RHTower/ThetaTemperedFiniteJetFactorization.lean`
+passes with an empty log. All 11 exact export witnesses and all 59
+native-reference API witnesses (57 Mathlib, two project) pass with empty
+logs. All 70 release preflight checks pass; the three printed aliases
+`Complex → ℂ`, `Real → ℝ`, `MulZeroClass.mul_zero → mul_zero` are recorded
+and their exact universe arities are pinned. Every axiom report contains
+exactly `propext`, `Classical.choice`, `Quot.sound`. All 11 exact
+catalogue/module pairs match; umbrella import occurs once. Source
+equality with the compiled candidate and scoped whitespace checks pass.
+Index refresh passes (two changed, zero removed).
+
+Global lint exits 1 with 172 large-file warnings and 12 unrelated
+unreachable modules: `CCMApertureChainProfile`,
+`CCMApertureTranslationChains`, `CCMExponentialRampPrimeMoment`,
+`CCMExponentialRampSourceDissipation`, `CCMExponentialRampTerminalEntropy`,
+`CCMRetainedChainKernelLower`, `LogWindowPrimeNumberTheorem`,
+`MoebiusMollifiedCriticalMoment`, `MoebiusMollifiedErrorThreeLines`,
+`ThetaMovingShellFirstOrderPhase`, `ZetaLogDerivTypicalBoxScaledLength`,
+`ZetaZeroDensityPowerSaving`. All errors were inspected. No other
+diagnostic or new-leaf diagnostic; global lint is not claimed green.
+
+Fresh exhaustive census: 101 Stage 2 Markdown files, nine support files,
+92 theorem cards, zero unqueued paths. There are 28 unambiguous historical
+theorem-card Stage 3 matches: five owned whole-card certificates and
+23 external promotions pending complete audits. The random granularity
+card's updated 131 lines were read completely. Its external endpoint
+coverage at `kappa = 2^(−26)` and `kappa = 1` does not discharge the
+original sharp threshold, all-height probability, actual producer and
+sharp maximum-growth targets; its queue row retains every target.
+
+The finite Banach observer component is closed. The actual Fourier
+integral identity, negative physical phase, inverse tempered pullback,
+cutoff approximation and full supported-distribution local/global
+classification remain open. The history card stays Stage 2; no owned
+whole-card promotion. All owned compiler/build/index/lint/metadata jobs
+have exited. Durable source SHA256:
+`7f25545f3e78aec93d530a922519edd458083b061e0612e8fe67eadd552374f4`.
+Guarded static-manifest cleanup exited 0, removed exactly 23 owned
+factorization scratch files and verified that namespace absent. The two
+previously audited Fourier research files remain for the next proof
+phase. Durable evidence preceded deletion; final scoped whitespace
+check passes.
+
+### Literal physical Fourier orbit and inverse bridge work plan
+
+- [x] Pin exact actual translation, scalar inverse/Jacobian, original
+  physical Fourier CLE, pointwise-dual precomposition and real-orbit
+  continuity APIs against this toolchain.
+- [x] Prove for every original Schwartz test the literal phase identity
+  `F_phys(phi(.+a))(t)=exp(−i*a*t)*F_phys(phi)(t)`.
+- [x] Construct actual inverse precomposition on tempered distributions
+  and its two inverse laws, hence an actual continuous linear equivalence.
+- [x] Construct the genuine Schwartz modulation CLM, prove its literal
+  exponential value and actual real-parameter continuity.
+- [x] Prove the exact physical inverse integral with `1/(2*pi)`
+  normalization on every actual Schwartz test.
+- [x] Run all named-leaf, literal, export, API, axiom, catalogue,
+  index/lint, census and static-manifest cleanup gates. Keep full (8),
+  arbitrary-functional correlation, cutoff and classification open.
+
+Paper mechanism: translation changes variable `y=x+a` in the literal
+positive-exponent Fourier integral. Its phase is `exp(−i*a*t)`.
+Precomposition by the inverse of the original physical Fourier CLE
+is the actual inverse tempered map. Conjugating actual Schwartz
+translation by that original CLE gives a genuine modulation CLM;
+the literal phase identity identifies it with exponential multiplication.
+Existing strong continuity of actual Schwartz translation gives its
+real-parameter continuity. Finally, the actual scalar Fourier inverse
+of `psi(−2*pi*xi)` becomes
+`(1/(2*pi))*integral(exp(−i*a*t)*psi(a),a)` by the genuine real linear
+Jacobian formula. These are concrete inputs to the remaining Banach
+integral proof, not assumptions of the desired interchange.
+
+### Literal physical Fourier orbit and inverse bridge certificate
+
+`ThetaTemperedFourierOrbit.lean` contains 16 public exports (three data
+definitions and 13 theorems) in 170 lines. For every original Schwartz
+test and every real translation, its original positive-exponent physical
+Fourier transform has literal phase `exp(−i*a*t)`, using the already
+defined `HTGeometry.modulation a t`. Actual precomposition by the original
+Schwartz Fourier inverse gives a continuous inverse on the actual pointwise
+tempered dual; both inverse laws, the actual tempered CLE and surjectivity
+of the original pullback are proved. No regular-distribution restriction,
+additional functional interface or substitute transform is introduced.
+
+Conjugating actual Schwartz translation by the original physical CLE
+constructs a genuine Schwartz modulation CLM. Its literal exponential
+value, real-parameter continuity and equality with the actual temperate
+multiplier CLM are proved. Every fixed real wave is proved to have
+temperate growth from its actual derivative norms. The original physical
+Schwartz inverse is exactly
+`((2*pi)^(-1) : Complex) * integral(modulation a t * psi a,a)`;
+the same formula reconstructs every original test from its own physical
+transform. Genuine real change of variables supplies the normalization.
+
+All 37 initial exact-universe API witnesses pass. Named native build
+passes (13,590 jobs, 24 seconds); every replayed warning header was read,
+all unrelated, no new-leaf diagnostic. Final literal
+`lake env lean GaloisForLFunctions/RHTower/ThetaTemperedFourierOrbit.lean`
+passes with an empty log. All 16 export witnesses and all 51 native-reference
+API witnesses (41 Mathlib, ten project) pass with empty logs. All 67
+release preflight checks pass; exact printed aliases `Complex → ℂ`,
+`Real → ℝ`, `Inner.inner → inner`,
+`MeasureTheory.MeasureSpace.volume → MeasureTheory.volume` are recorded
+and universe arities pinned. Four opened-namespace aliases in the initial
+37-check probe were also resolved explicitly. Every one of the 16 axiom
+reports contains exactly `propext`, `Classical.choice`, `Quot.sound`.
+All 16 exact catalogue/module pairs, unique umbrella import, unchanged
+source equality and scoped whitespace checks pass. Index refresh passes
+(one changed, zero removed).
+
+Global lint exits 1 with 172 large-file warnings and 12 unrelated
+unreachable modules: `CCMApertureChainProfile`,
+`CCMApertureTranslationChains`, `CCMExponentialRampPrimeMoment`,
+`CCMExponentialRampSourceDissipation`, `CCMExponentialRampTerminalEntropy`,
+`CCMRetainedChainKernelLower`, `MoebiusMollifiedCriticalMoment`,
+`MoebiusMollifiedErrorThreeLines`, `SelbergPrimeRangeCascade`,
+`ThetaMovingShellFirstOrderPhase`, `ZetaLogDerivTypicalBoxPrimeCascade`,
+`ZetaZeroDensityPowerSaving`. Every error was read; no other or owned-leaf
+diagnostic. Global lint is not claimed green.
+
+Fresh exhaustive census: 100 Stage 2 Markdown files, nine support files,
+91 theorem cards, zero unqueued paths. There are 29 unambiguous historical
+theorem-card matches: five owned whole-card certificates and 24 external
+promotions pending complete exact audits. The critical-transition card
+was externally moved to Stage 3; all updated 589 lines were read in three
+complete bounded ranges. All original five target groups, all 17 paper
+equations and all 64 externally claimed public declarations remain in
+the full audit queue. External metadata is not an owned whole-card
+certificate. No owned card was promoted.
+
+Physical phase, actual inverse tempered pullback, Schwartz modulation
+continuity and normalized scalar inversion are closed. Arbitrary-functional
+Fourier correlation, cutoff approximation and full supported-distribution
+local/global classification remain open; full (8) is not certified.
+All owned compiler/build/index/lint/metadata jobs have exited. Source SHA256:
+`4cd09f7ad7c11a3400273bee83e96e3d517309a0f1883efbf6adaed693234ee6`.
+Guarded static-manifest cleanup exited 0, removed exactly 23 owned orbit
+scratch files and verified that namespace absent. The two audited Fourier
+research files remain. Durable evidence preceded deletion.
+
+### Actual Banach Fourier-correlation proof work plan
+
+- [x] Pin generic physical spatial-jet transform, complete Leibniz,
+  Schwartz polynomial integrability, finite Banach norm, coordinate
+  evaluation and genuine Banach integral APIs. The initial 35 jet, 30 bound
+  and 12 integral API packets compile as exact universe-zero witnesses;
+  the final leaf's complete 95 native API packet also passes.
+- [x] Prove the exact physical transform of every spatial jet of every
+  original Schwartz test, with multiplier `(−i*a)^n`. Scratch candidate
+  `10003` exited zero with an entirely empty log; its exact scalar jet
+  inverse and actual moment integrability also compiled. Release pending.
+- [x] Prove exact modulated spatial jets and a finite-product polynomial
+  norm bound, derived from the original seminorms. Scratch candidate
+  `82274` exited zero with an entirely empty log; release pending.
+- [x] Prove genuine Banach integrability of
+  `a ↦ F_phys(phi)(a) • J_s(modulation_a(psi))`. The same scratch
+  candidate proves an explicit finite polynomial norm majorant and its
+  actual Schwartz-weighted integrability, including empty `s`. A direct
+  real-source second-countability witness resolves typeclass search;
+  no search-limit changes or Banach structure on Schwartz are used.
+- [x] Prove the Banach integral's exact weighted-jet value by coordinate
+  evaluation, full Leibniz and the actual scalar inverse formula. Complete
+  scratch `69965` exited zero with an entirely empty log.
+- [x] Apply the already-unconditional actual factorization of every
+  tempered functional and the genuine Banach integral commutation theorem
+  to obtain the full arbitrary-functional scalar correlation identity.
+  The same scratch proves the full identity and actual scalar integrability.
+- [x] Run all leaf gates with complete lint disposition; static cleanup is
+  the final release step below. Retain cutoff approximation,
+  both directions of the original Xi-kernel identity, and complete
+  supported-distribution local/global classification as separate obligations.
+
+Dependency-closed paper mechanism: for fixed Schwartz `psi`, the exact
+Leibniz expansion of a modulated `n`th jet is a finite sum with wave
+coefficients `(−i*a)^j`, `j≤n`, times original `psi` jets. Weighted
+pointwise bounds give seminorm bounds. For finite `s`, put `K` equal to
+the largest derivative order in `s`; sum the nonnegative finite Leibniz
+seminorm constants to obtain `C_s`. Then
+`norm(J_s(modulation_a(psi))) ≤ C_s*(1+a^2)^K`, since
+`|a|^j ≤ (1+a^2)^K` for `j≤K`. The empty-product case gives zero.
+The implementation now targets the sharper explicit finite-sum majorant
+`sum_(k,n)∈s sum_j≤n choose(n,j)*|a|^j*p_(k,n−j)(psi)` directly.
+After multiplication by `norm(F_phys(phi)(a))`, every summand is integrable
+by the installed actual Schwartz polynomial-norm integrability theorem;
+finite summation proves the full majorant integrable. This removes the
+auxiliary smooth polynomial and maximum-degree estimate without adding an
+assumption. Actual modulation continuity gives strong measurability.
+Coordinate evaluation commutes with this genuine Banach
+integral. The scalar inverse formula applied to every actual spatial
+jet of `phi` identifies its moments; full Leibniz identifies their finite
+sum with `J_s(psi*phi)`. Thus the exact Banach integral is
+`2*pi • J_s(psi*phi)`. For actual arbitrary `Q`, the already-derived
+factorization `Q=L∘J_s` allows genuine Banach integral commutation and
+gives `Q(psi*phi)=(1/(2*pi))*integral(F_phys(phi)(a)*Q(modulation_a(psi)),a)`.
+No Bochner integral on the original non-normed Schwartz space and no
+assumed functional interchange is used. Bare waves are not Schwartz;
+the remaining kernel-to-wave direction still needs an actual proved
+cutoff approximation.
+
+### Fourier-correlation release work plan
+
+- [x] Install the exact complete correlation leaf and register every public
+  export, with unique actual `RHTower.lean` umbrella import.
+- [x] Named native build `91622`: exit zero, 13,595 jobs, owned leaf 80 seconds.
+  All 128 replayed warning headers from 53 external modules read; no owned
+  diagnostic and no build error. Final literal leaf `14346`: exit zero,
+  completely empty log.
+- [x] Check all 14 complete export headers and all 95 native referenced APIs.
+  All 109 headers `28309` exit zero, no error or warning.
+- [x] Compile explicit universe-zero witnesses for all 14 exports and 95 APIs.
+  Exports `9858` and APIs `87962` exit zero with entirely empty logs.
+- [x] Print and inspect every export's axioms; verify exact source/catalogue
+  pairs, unchanged hash, candidate equality and unique umbrella registration.
+  All 14 reports `94019` exit zero and use exactly the three standard axioms.
+- [x] Refresh index and run authoritative global lint; classify every finding.
+  Index `51614` exits zero, 0 changed and 0 removed (background refresh
+  had already indexed the leaf). Post-index exact catalogue checks pass.
+  Lint `37590` exits one: all 183 lines read; 172 existing size warnings
+  plus the 11 unrelated unreachable modules listed below, no other finding.
+- [x] Persist the complete release certificate and recursive census, then
+  perform only the audited static scratch cleanup and confirm absence.
+  All 42 audited regular scratch files removed; complete owned namespace
+  absence verified after all handles were terminal and evidence persisted.
+
+The current recursive census is 99 Stage-2 Markdown files: 9 support files
+and 90 theorem cards, with zero unqueued theorem cards. There are 30 unique,
+unambiguous historical theorem-card matches in Stage 3: five owned exact whole
+certificates and 25 external promotions pending this ledger's whole audit.
+The newly moved supercritical ratio card has been read completely through all
+569 updated lines; its claimed 37 declarations and all 23 source-pure paper
+equations remain in the queue. Historical metadata is not an owned certificate.
+
+### Unconditional physical Fourier-correlation certificate
+
+Actual leaf: `formal/GaloisForLFunctions/RHTower/ThetaTemperedFourierCorrelation.lean`; 337 lines, 14 public exports (one definition,
+13 theorems). Frozen SHA256 `f94ad6ad208a6663bd5b9cca57d12c1d36d353fba0637e7fa143d150dc353660`. The full actual arbitrary
+tempered-functional identity and scalar integrability are unconditional;
+every integral interchange occurs in the existing complete finite Banach
+observer. Original Schwartz tests retain their installed seminorm topology.
+
+Complete scratch 69965: exit zero, empty log. Named native 91622: exit zero,
+13,595 jobs, owned leaf 80 seconds; all 128 replayed warning
+headers from 53 external modules read, no owned diagnostic.
+Final literal project 14346, all 14 export witnesses 9858, and all 95 native
+API witnesses 87962: each exits zero with entirely empty logs. All 109 complete
+headers 28309: exit zero, no error or warning. Every one of the 14 axiom
+reports 94019 uses exactly `propext`, `Classical.choice`, `Quot.sound`.
+All 14 exact public name/module catalogue pairs, candidate/source equality,
+unchanged SHA256, unique actual `RHTower.lean` registration and whitespace
+checks pass, including post-index verification. Observed printer aliases are
+`Complex→ℂ`, `ENat→ℕ∞`, `Inner.inner→inner`,
+`MeasureTheory.MeasureSpace.volume→MeasureTheory.volume`, `Real→ℝ`;
+every witness uses the exact requested native constant and explicit zero universes.
+
+Index 51614 exits zero: 0 changed, 0 removed; managed background refresh had
+already indexed this source. Authoritative lint 37590 exits one; all 183
+lines read. Exactly 172 existing size warnings plus these 11 unrelated
+unreachable modules, no other or owned leaf finding:
+
+- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`
+- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`
+- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`
+- `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`
+- `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`
+- `GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase`
+- `GaloisForLFunctions.RHTower.ZetaNotchTruncatedDiagonal`
+- `GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving`
+
+Global lint is not green. The whole theta card remains Stage 2: actual cutoff
+approximation, both directions of its original Xi-kernel identity and complete
+local/global supported-distribution classification remain open. No partial
+support theorem or externally asserted promotion is a whole-card certificate.
+
+Complete public export inventory:
+
+- `RHTower.thetaPhysicalFourierCLE_derivCLM_apply` (theorem, source line 29)
+- `RHTower.thetaPhysicalFourierCLE_spatialJet_apply` (theorem, source line 51)
+- `RHTower.thetaPhysicalFourierCLE_spatialJet_inverse_integral` (theorem, source line 62)
+- `RHTower.thetaPhysicalFourierCLE_spatialJet_moment_integrable` (theorem, source line 77)
+- `RHTower.thetaPhysicalModulationCLM_iteratedDeriv_apply` (theorem, source line 92)
+- `RHTower.thetaPhysicalModulationCLM_seminorm_le` (theorem, source line 115)
+- `RHTower.thetaModulationFiniteJetMajorant` (def, source line 147)
+- `RHTower.thetaPhysicalModulationCLM_finiteJet_norm_le` (theorem, source line 154)
+- `RHTower.thetaModulationFiniteJetMajorant_fourier_integrable` (theorem, source line 170)
+- `RHTower.thetaPhysicalFourierCLE_modulation_finiteJet_integrable` (theorem, source line 196)
+- `RHTower.thetaPhysicalFourierCLE_modulation_jet_inverse` (theorem, source line 215)
+- `RHTower.thetaPhysicalFourierCLE_modulation_finiteJet_inverse` (theorem, source line 260)
+- `RHTower.thetaTempered_physicalFourier_correlation` (theorem, source line 312)
+- `RHTower.thetaTempered_physicalFourier_correlation_integrable` (theorem, source line 328)
+
+Complete native API inventory: 76 Mathlib and 19 project references. Every
+one has an explicit universe-zero witness compiled in the all-95 API gate.
+
+`GaloisForLFunctions.HTGeometry.FlowTemperedGrowth`:
+
+- `GaloisForLFunctions.HTGeometry.cexpLin`
+- `GaloisForLFunctions.HTGeometry.contDiff_cexpLin`
+- `GaloisForLFunctions.HTGeometry.iteratedDeriv_cexpLin`
+- `GaloisForLFunctions.HTGeometry.modulation`
+- `GaloisForLFunctions.HTGeometry.norm_modulation`
+- `GaloisForLFunctions.HTGeometry.norm_neg_I_mul`
+
+`GaloisForLFunctions.RHTower.ThetaCuspSchwartzTranslationCurve`:
+
+- `RHTower.thetaSchwartzSpatialJetCLM`
+- `RHTower.thetaSchwartzSpatialJetCLM_apply`
+
+`GaloisForLFunctions.RHTower.ThetaTemperedFiniteJetFactorization`:
+
+- `RHTower.thetaSchwartzFiniteJetBanach`
+- `RHTower.thetaSchwartzFiniteJetCLM`
+- `RHTower.thetaSchwartzFiniteJetCLM_apply_apply`
+- `RHTower.thetaSchwartzFiniteJetCLM_component_norm`
+- `RHTower.thetaTempered_exists_finiteJetFactorization`
+
+`GaloisForLFunctions.RHTower.ThetaTemperedFourierOrbit`:
+
+- `RHTower.thetaPhysicalFourierCLE_inversion`
+- `RHTower.thetaPhysicalModulationCLM`
+- `RHTower.thetaPhysicalModulationCLM_apply`
+- `RHTower.thetaPhysicalModulationCLM_continuous`
+
+`GaloisForLFunctions.RHTower.ThetaTemperedSourceJets`:
+
+- `RHTower.thetaPhysicalFourierCLE`
+- `RHTower.thetaPhysicalFourierCLE_apply`
+
+`Mathlib.Algebra.BigOperators.Group.Finset.Basic`:
+
+- `Finset.sum_congr`
+
+`Mathlib.Algebra.BigOperators.Ring.Finset`:
+
+- `Finset.mul_sum`
+
+`Mathlib.Algebra.Group.Action.Defs`:
+
+- `smul_eq_mul`
+
+`Mathlib.Algebra.Group.Defs`:
+
+- `mul_assoc`
+- `mul_comm`
+- `pow_succ`
+
+`Mathlib.Algebra.Order.BigOperators.Group.Finset`:
+
+- `Finset.single_le_sum`
+- `Finset.sum_le_sum`
+
+`Mathlib.Algebra.Order.GroupWithZero.Defs`:
+
+- `mul_le_mul_of_nonneg_left`
+
+`Mathlib.Analysis.Calculus.ContDiff.Defs`:
+
+- `ContDiff.contDiffAt`
+- `ContDiffAt`
+- `ContDiffAt.of_le`
+
+`Mathlib.Analysis.Calculus.Deriv.Basic`:
+
+- `fderiv_apply_one_eq_deriv`
+
+`Mathlib.Analysis.Calculus.IteratedDeriv.Defs`:
+
+- `iteratedDeriv`
+
+`Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas`:
+
+- `iteratedDeriv_mul`
+
+`Mathlib.Analysis.Complex.Norm`:
+
+- `Complex.norm_natCast`
+
+`Mathlib.Analysis.Distribution.DerivNotation`:
+
+- `LineDeriv.lineDerivOp`
+
+`Mathlib.Analysis.Distribution.SchwartzSpace.Basic`:
+
+- `SchwartzMap.contDiffAt`
+- `SchwartzMap.continuous`
+- `SchwartzMap.hasTemperateGrowth`
+- `SchwartzMap.integrable`
+- `SchwartzMap.integrable_pow_mul`
+- `SchwartzMap.le_seminorm'`
+- `SchwartzMap.seminorm`
+- `SchwartzMap.seminorm_le_bound'`
+- `SchwartzMap.smulLeftCLM`
+- `SchwartzMap.smulLeftCLM_apply_apply`
+
+`Mathlib.Analysis.Distribution.SchwartzSpace.Deriv`:
+
+- `SchwartzMap.derivCLM`
+- `SchwartzMap.lineDerivOp_apply_eq_fderiv`
+
+`Mathlib.Analysis.Distribution.SchwartzSpace.Fourier`:
+
+- `SchwartzMap.fourier_lineDerivOp_eq`
+
+`Mathlib.Analysis.Distribution.TemperateGrowth`:
+
+- `Function.hasTemperateGrowth_inner_left`
+
+`Mathlib.Analysis.InnerProductSpace.Basic`:
+
+- `RCLike.inner_apply`
+
+`Mathlib.Analysis.InnerProductSpace.Defs`:
+
+- `Inner.inner`
+
+`Mathlib.Analysis.Normed.Group.Basic`:
+
+- `norm_nonneg`
+- `norm_sum_le`
+
+`Mathlib.Analysis.Normed.Group.Constructions`:
+
+- `pi_norm_le_iff_of_nonneg`
+
+`Mathlib.Analysis.Normed.Group.Real`:
+
+- `Real.norm_eq_abs`
+
+`Mathlib.Analysis.Normed.MulAction`:
+
+- `norm_smul`
+
+`Mathlib.Analysis.Normed.Ring.Basic`:
+
+- `norm_mul`
+- `norm_pow`
+
+`Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic`:
+
+- `Real.pi`
+- `Real.pi_ne_zero`
+
+`Mathlib.Data.Complex.Basic`:
+
+- `Complex`
+- `Complex.I`
+- `Complex.real_smul`
+
+`Mathlib.Data.ENat.Defs`:
+
+- `ENat`
+
+`Mathlib.Data.Finset.Defs`:
+
+- `Finset`
+
+`Mathlib.Data.Finset.Range`:
+
+- `Finset.range`
+
+`Mathlib.Data.Fintype.Defs`:
+
+- `Finset.mem_univ`
+- `Finset.univ`
+
+`Mathlib.Data.Nat.Choose.Basic`:
+
+- `Nat.choose`
+
+`Mathlib.Data.Real.Basic`:
+
+- `Real`
+
+`Mathlib.MeasureTheory.Constructions.BorelSpace.Basic`:
+
+- `SecondCountableTopologyEither`
+
+`Mathlib.MeasureTheory.Function.L1Space.Integrable`:
+
+- `ContinuousLinearMap.integrable_comp`
+- `MeasureTheory.Integrable`
+- `MeasureTheory.Integrable.const_mul`
+- `MeasureTheory.Integrable.mono'`
+- `MeasureTheory.Integrable.mul_const`
+- `MeasureTheory.integrable_finsetSum`
+
+`Mathlib.MeasureTheory.Function.StronglyMeasurable.AEStronglyMeasurable`:
+
+- `Continuous.aestronglyMeasurable`
+
+`Mathlib.MeasureTheory.Integral.Bochner.Basic`:
+
+- `MeasureTheory.integral_congr_ae`
+- `MeasureTheory.integral_const_mul`
+- `MeasureTheory.integral_finsetSum`
+
+`Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap`:
+
+- `ContinuousLinearMap.integral_comp_comm`
+
+`Mathlib.MeasureTheory.Measure.MeasureSpaceDef`:
+
+- `MeasureTheory.MeasureSpace.volume`
+
+`Mathlib.Order.Basic`:
+
+- `LE.le.trans`
+
+`Mathlib.Order.BoundedOrder.Basic`:
+
+- `le_top`
+
+`Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic`:
+
+- `ContinuousLinearMap.comp`
+- `ContinuousLinearMap.continuous`
+- `ContinuousLinearMap.map_smul`
+
+`Mathlib.Topology.Algebra.Module.ContinuousLinearMap.PiProd`:
+
+- `ContinuousLinearMap.proj`
+
+`Mathlib.Topology.Algebra.MulAction`:
+
+- `Continuous.smul`
+
+`Mathlib.Topology.Continuous`:
+
+- `Continuous.comp`
+
+`Mathlib.Topology.ContinuousMap.Bounded.Basic`:
+
+- `BoundedContinuousFunction.evalCLM`
+- `BoundedContinuousFunction.ext`
+
+`Mathlib.Topology.Defs.Basic`:
+
+- `Continuous`
+
+Recursive census: 99 Stage-2 Markdown files = 9 support + 90 theorem cards; zero unqueued theorem cards. Historical 30 unique unambiguous theorem-card
+Stage-3 matches = five owned whole-card certificates + 25 external pending.
+
+42-file static cleanup manifest (prefix `/tmp/hgt_stage2_theta_fourier_correlation_`;
+each literal suffix below specifies exactly one file, with no wildcard deletion):
+
+- `research.json`
+- `research_audit.py`
+- `jets_preflight.lean`
+- `jets_preflight.log`
+- `jets_gate.py`
+- `jets_basis.lean`
+- `jets_basis.log`
+- `jets_candidate.lean`
+- `jets_candidate.log`
+- `jets_cast.lean`
+- `jets_cast.log`
+- `bounds_preflight.lean`
+- `bounds_preflight.log`
+- `bounds_gate.py`
+- `bounds_basis.lean`
+- `bounds_basis.log`
+- `bounds_candidate.lean`
+- `bounds_candidate.log`
+- `integral_preflight.lean`
+- `integral_preflight.log`
+- `integral_gate.py`
+- `integral_basis.lean`
+- `integral_basis.log`
+- `integral_candidate.lean`
+- `integral_candidate.log`
+- `integral_extension.lean`
+- `release_audit.py`
+- `release_native.log`
+- `release_native_diagnostics.json`
+- `release_literal.log`
+- `release_metadata.json`
+- `release_checks.lean`
+- `release_checks.log`
+- `release_exports.lean`
+- `release_exports.log`
+- `release_api.lean`
+- `release_api.log`
+- `release_axioms.lean`
+- `release_axioms.log`
+- `release_census.json`
+- `release_index.log`
+- `release_lint.log`
+
+All owned compiler, build, index and lint handles are terminal. Full evidence
+is persisted here and in the theta card and Serena before cleanup. The audited
+manifest equals the whole owned namespace; all 42 entries are regular, non-symlink
+files. Actual deletion result and absence verification will be recorded next.
+
+Static cleanup completed: guarded runner exits zero; exactly the 42 literal
+manifest entries removed. Complete owned namespace absence verified. Scoped
+whitespace validation remains the final bookkeeping check before the next
+original-theorem obligation.
+
+### Actual expanding Schwartz cutoff and full Xi-kernel work plan
+
+- [ ] Run the documented prior-research search and inspect every returned
+  record, coverage and freshness before new cutoff code.
+- [ ] Pin the installed scaled cutoff's actual values, complete derivative
+  formula, compact support and uniform derivative bounds; pin the original
+  Schwartz seminorm convergence criterion and every needed API.
+- [ ] Prove every original weighted seminorm of
+  `psi-cutoffSchwartz R psi` is bounded by an explicit constant divided by
+  `R≥1`, without a seminorm assumption or replacement topology.
+- [ ] Prove actual compact Schwartz cutoffs converge to every original test
+  in its installed topology and supply genuine compactly supported wave tests.
+- [ ] Combine actual compact wave approximation with the completed arbitrary
+  functional correlation theorem to prove the full modulation-orbit/multiplier
+  kernel equivalence for every actual tempered functional.
+- [ ] Specialize the whole physical Fourier equivalence to the original
+  theta derivative annihilator and actual Xi multiplier, preserving both
+  directions and every original source test.
+- [ ] Run complete leaf gates and audited static cleanup; keep the complete
+  actual local/global supported-distribution classification as the next
+  separate obligation of original (8).
+
+Paper mechanism to audit: the installed `cutoffScaled R` is one on
+`|x|≤R`, supported in `|x|≤2R`, and has `j`th derivative bounded by
+`B_j/R^j`, with `B_j` a proved bound on the fixed smooth compact profile.
+Full Leibniz expands the actual difference. Its `j=0` term vanishes on
+`|x|<R`; outside, the extra original spatial weight gives
+`|x|^k*norm(psi^(n)(x))≤p_(k+1,n)(psi)/R`. For each `j≥1`, `R≥1`
+gives `R^(-j)≤R^(-1)` and the original `p_(k,n−j)(psi)` controls
+the remaining weighted derivative. The finite binomial sum is therefore
+`C_(k,n,psi)/R`. Every original seminorm tends to zero for `R=N+1`,
+so the actual installed Schwartz topology gives convergence. A compact
+wave test times actual `psi` is exactly the cutoff of its actual modulation.
+The multiplier-kernel premise annihilates every such product; continuity
+and actual Schwartz convergence give all real modulation probes. Conversely,
+the now-proved full correlation formula gives the entire actual product
+kernel from those probes. Actual physical Fourier transport and the already
+proved original theta derivative/translation annihilator equivalence give
+the full Xi-kernel identity. No bare wave is inserted into Schwartz, and no
+assumed approximation, inverse-integral interchange or artificial norm is used.

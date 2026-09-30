@@ -1,8 +1,8 @@
 # Actual infinite partition: density-tail and limit-order boundary
 
 - **ID:** LI-CLOCK-INFINITE-PARTITION-DENSITY-TAIL-BOUNDARY
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (complete author, root and independent paper/source audits PASS; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (complete paper, source, Lean and independent audits PASS; all four leaves FINAL/wired)
 - **Source:** [fixed-source endpoint boundary](../3-formalized/li-clock-partition-density-ratio-endpoint-boundary.md), [actual finite Volterra partition](../3-formalized/li-clock-finite-partition-volterra-positive-area.md)
 - **Statement:** Literal infinite odd/even interval source has raw difference-density tail `(log(2)/2)*exp(-abs(x)/2)` with sharp error order `exp(-3*abs(x)/2)`. Normalized moment and complete Borel ratios tend `lambda=2*log(2)/Z_A^2<5040/5041<1`. Actual finite sources converge uniformly on growing complex disks `norm(z)<=c*log(2N)`, `0<=c<1/16`, forcing the opposite ratio and kernel-gap limits from fixed-prefix endpoint limits. Exact spatial bulk ratios tend the same lambda. No inverse-clock, compensation or RH sign follows.
 
@@ -14,10 +14,10 @@
 - [x] Every moment and full real/complex Borel term retained; exact quantitative finite-source and growing-window exchange.
 - [x] Both noncommuting source/order/clock limits and exact spatial-bulk survivor.
 - [x] Root READ ALL508+84 proof lines and literal installed source; independent pole READ ALL592/source/overlap PASS.
-- [ ] Exact Lean formalization, independent full source review, named/direct/all-public foundational checks and wiring.
+- [x] Exact Lean formalization, independent full source review, named/direct/all-public foundational checks and wiring.
 - [ ] Publication/novelty audit.
 
-Root owns this card and integration. `LiClockPairedEtaInfinitePartitionMeasure.lean`, `LiClockPairedEtaInfinitePartitionDensityTail.lean` and `LiClockPairedEtaInfinitePartitionBorel.lean` are FINAL/wired for complete M1–M8, T1–T7 and B1–B8 plus the four audited raw-loss interfaces. Current owns the remaining `LiClockPairedEtaInfinitePartitionBoundary.lean`; actual consumers import only exact FINAL dependencies. Boundary L1–L7 implementation is released with every spatial D1–D6 and joint/iterated target retained. Existing FINAL leaves remain frozen. Full relative Volterra/cumulant forcing expansion remains a separate open formal target. The actual residual `Re(C-K_N+H_N)>=0` and RH remain OPEN.
+Root owns this card and integration. All four leaves are FINAL/wired: `LiClockPairedEtaInfinitePartitionMeasure.lean` (1210 lines/99 public declarations), `LiClockPairedEtaInfinitePartitionDensityTail.lean` (1510/74), `LiClockPairedEtaInfinitePartitionBorel.lean` (1877/52), and `LiClockPairedEtaInfinitePartitionBoundary.lean` (702/29). Complete M1–M8, T1–T7, B1–B8 plus four raw-loss interfaces, L1–L7 and every spatial D1–D6/joint/iterated target are formalized: 5299 lines/254 public declarations, complete author/root/independent source audits and named/direct/all-public foundational gates PASS. Existing FINAL leaves remain frozen. Full relative Volterra/cumulant forcing expansion remains a separate open formal target. The actual residual `Re(C-K_N+H_N)>=0` and RH remain OPEN.
 
 ## Immutable paper certificates and source coverage
 
@@ -661,7 +661,7 @@ Measure integration: index46764 exit0 (3 changed/0 removed); global lint84994 ex
 
 2026-09-30 12:00 UTC — Borel actual-source scratch1528 compiler97509 exit0/empty; root full review PASS, SHA256 `d329eac873f03b3308d36ad95c737a252a9c0f4b61c63623bc0cb083d8bc2168`. Every466 actual-adapter line plus exact preserved1059 core covered; all36 complete public definitions/headers match source. Entire kernels, exact factorial reference moments, compact limits and both growing-complex-disk errors are instantiated. Tail B2/B4 and full final certification remain pending. Boundary78-line implementation ledger READ ALL/root PASS; all L1–L7 and D1–D6 preserved, sole planned leaf released with imports only after dependency FINAL_READY.
 
-2026-09-30 12:06 UTC — Current independent ALL466 actual Borel adapter review PASS, completing independent coverage of frozen1528. Root opened separate [weighted complex quarter-window](li-clock-infinite-partition-quarter-window.md), with full author paper argument and documented prior search; independent audit subsequently PASS/Stage2 at12:12, no Lean released. It proves exponential-weighted complex estimates for c<1/4 and resulting real joint limits. This card's unweighted c<1/16 scope and all four formal targets remain unchanged.
+2026-09-30 12:06 UTC — Current independent ALL466 actual Borel adapter review PASS, completing independent coverage of frozen1528. Root opened separate [weighted complex quarter-window](../3-formalized/li-clock-infinite-partition-quarter-window.md), with full author paper argument and documented prior search; independent audit subsequently PASS/Stage2 at12:12, no Lean released. It proves exponential-weighted complex estimates for c<1/4 and resulting real joint limits. This card's unweighted c<1/16 scope and all four formal targets remain unchanged.
 
 2026-09-30 12:12 UTC — Tail complete canonical scratch1510 compiler41763 exit0/empty, root complete proof/API audit PASS; SHA256 `f490c3e186a0141e60b27dfa1cce037b8317412cd58e933d8d1dc3d7e607479f`,74public(6defs/68theorems),65private. Exact prior1296 body preserved except cubic log2 proof/import delta; all canonical density/H/normalizer/ratio/sharp-lattice/non-little-o and strict lambda certificates inspected. All74 complete headers source matched, including nested-let lattice statements. Current independent final-delta review pending, then identical promotion/named/direct/all74 gates released. Whole card remains Stage2.
 
@@ -684,3 +684,7 @@ Measure integration: index46764 exit0 (3 changed/0 removed); global lint84994 ex
 2026-09-30 13:08 UTC — Complete Boundary702 scratch40939 exit0/empty, SHA256 `5c5cdde756c6a3b11e1c9c82e1a1b07a697203f7dcf6df5171945e7dfcece356`; root READ ALL209 final delta and full29-interface/targetmatrix PASS. Exact prior492 retained after one FINAL Borel import. Every L1–L7/D1–D6 target, explicit epsilon bulk claim, arbitrary qualified4limits, uniformclockgap, both nested orders, N1 equality and opposite escapes closed in scratch. Producer independent final209 audit pending, then identicalpromotion/named/direct/ALL29 gates released. Whole card remains Stage2 until FINAL artifact certified/wired.
 
 2026-09-30 13:11 UTC — Producer independent complete final209 audit PASS; root READ ALL certificate/source claims checked. Combined prior492 and final209 prove all702/29 declarations and every L1–L7/D1–D6 target. Identical planned Boundary leaf promoted, SHA256 `5c5cdde756c6a3b11e1c9c82e1a1b07a697203f7dcf6df5171945e7dfcece356`; named77054 running, exact direct/ALL29 gates next. Parent remains Stage2 until artifact certification/root integration; RH and actual completion compensation remain OPEN.
+
+2026-09-30 13:19 UTC — Boundary L1–L7/D1–D6 FINAL/wired:702 lines/29public, SHA256 `5c5cdde756c6a3b11e1c9c82e1a1b07a697203f7dcf6df5171945e7dfcece356`. Complete root/producer proof audits PASS; named77054 exit0(own14s/13001jobs), exactdirect71944 exit0/empty, ALL29axioms44085 exit0/foundations only. Root independently verified tree/frozen bytes, all source-order unique reports, directempty and namedolean; final certificate `/tmp/li_current_infinite_boundary_final_certificate.md`. Unique umbrella import added. All original four-leaf paper targets now complete:5299 lines/254public; parent promoted Stage3. Weighted quarter-window remains separate formal work; inverse-clock compensation and RH remain OPEN.
+
+2026-09-30 13:22 UTC — Boundary integration index30321 exit0 (0 changed/0 removed); authoritative global lint58642 exit1, all16 errors inspected: unrelated unreachable CCM, Moebius, RectanglePole, ThetaMovingShell and Zeta modules. No owned-leaf or proof-debt errors; existing large-file warnings retained. Logs `/tmp/hgt-li-infinite-boundary-{index,lint}.log`. No broad build or unrelated repair.

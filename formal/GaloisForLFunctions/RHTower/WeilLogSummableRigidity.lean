@@ -898,26 +898,19 @@ theorem tendsto_roughTail {v : ℕ → ℝ} (hsum : Summable fun n : ℕ => |v n
   simp only [Function.comp_apply]
   rw [e]
 
-/-- **Weil-cone rigidity for log-summable deviations.** If `v(0) = v(1) = 0`,
-`|v(n)| ≤ 2 log n + A`, `Σ_n |v(n)|(1 + log n)^{−J} < ∞` and `−ψ_v` is positive definite, then
-`v = 0`. -/
-theorem eq_zero_of_positiveDefinite_neg_nullPotential_of_logSummable {v : ℕ → ℝ} (hv0 : v 0 = 0)
-    (hv1 : v 1 = 0) {A : ℝ} (hA : 0 ≤ A) (ha : ∀ n, |v n| ≤ 2 * Real.log n + A) {J : ℕ}
-    (hs : Summable fun n : ℕ => |v n| * ((1 + Real.log n) ^ J)⁻¹)
-    (hPD : PositiveDefiniteOnReal fun y => ((-RHTower.WeilRegular.nullPotential v y : ℝ) : ℂ)) :
+theorem isSmoothOver_primesUpTo {y n₀ : ℕ} (hn₀2 : 2 ≤ n₀) (hy : n₀ ≤ y) :
+    IsSmoothOver (primesUpTo y) n₀ :=
+  ⟨hn₀2, fun _ hp => mem_primesUpTo.mpr
+    ⟨(Nat.le_of_mem_primeFactors hp).trans hy, Nat.prime_of_mem_primeFactors hp⟩⟩
+
+/-- **The fibre limit.** If `Σ_n |v(n)| n^{−1/2} < ∞` and, for every truncation `P_y` with
+`n₀ ≤ y` and both signs `ε = ±1`, the main-term functional `Σ_n v(n) mainWeight(n)` is `≤ 0`,
+then `v = 0`: the two fibres of the functional isolate `v(n₀)` up to `(2 + √n₀) Σ_{n>y}|v(n)|n^{−1/2}`. -/
+theorem eq_zero_of_forall_mainWeight_nonpos {v : ℕ → ℝ} (hv0 : v 0 = 0) (hv1 : v 1 = 0)
+    (hsq : Summable fun n : ℕ => |v n| * (Real.sqrt n)⁻¹)
+    (hY : ∀ y n₀ : ℕ, 2 ≤ n₀ → n₀ ≤ y → ∀ ε : ℝ, (ε = 1 ∨ ε = -1) →
+      ∑' n, v n * mainWeight (primesUpTo y) ε n₀ n ≤ 0) :
     v = 0 := by
-  have hs2 : Summable fun n : ℕ => |v n| * ((1 + Real.log n) ^ (J + 2))⁻¹ := by
-    refine Summable.of_nonneg_of_le (fun n => by have := one_add_log_nonneg n; positivity)
-      (fun n => ?_) hs
-    have h1 : 1 ≤ 1 + Real.log n := by linarith [Real.log_natCast_nonneg n]
-    exact mul_le_mul_of_nonneg_left (inv_anti₀ (by positivity)
-      (pow_le_pow_right₀ h1 (by omega))) (abs_nonneg _)
-  obtain ⟨hsR, -⟩ := tsum_abs_mul_log_inv_sqrt_le hs2
-  have hsq : Summable fun n : ℕ => |v n| * (Real.sqrt n)⁻¹ := by
-    refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_) hsR
-    have h1 : 1 ≤ 1 + Real.log n := by linarith [Real.log_natCast_nonneg n]
-    have : 0 ≤ |v n| * (Real.sqrt n)⁻¹ := by positivity
-    nlinarith
   funext n₀
   by_contra hne
   have hn₀2 : 2 ≤ n₀ := by
@@ -929,13 +922,9 @@ theorem eq_zero_of_positiveDefinite_neg_nullPotential_of_logSummable {v : ℕ �
     intro y hy
     set P := primesUpTo y with hPdef
     have hP : ∀ p ∈ P, p.Prime := prime_of_mem_primesUpTo
-    have hn₀s : IsSmoothOver P n₀ := ⟨hn₀2, fun p hp => mem_primesUpTo.mpr
-      ⟨(Nat.le_of_mem_primeFactors hp).trans hy, Nat.prime_of_mem_primeFactors hp⟩⟩
-    have hYneg : ∀ ε : ℝ, (ε = 1 ∨ ε = -1) → ∑' n, v n * mainWeight P ε n₀ n ≤ 0 := by
-      intro ε hε
-      obtain ⟨C, -, hC⟩ := exists_key_bound_trunc hP hv0 hA ha (J := J + 2) (by omega) hs2 hPD
-        hn₀s hε
-      exact nonpos_of_scale_bound (by omega) (eulerProduct_pos hP) hC
+    have hn₀s : IsSmoothOver P n₀ := isSmoothOver_primesUpTo hn₀2 hy
+    have hYneg : ∀ ε : ℝ, (ε = 1 ∨ ε = -1) → ∑' n, v n * mainWeight P ε n₀ n ≤ 0 :=
+      hY y n₀ hn₀2 hy
     -- the two fibres
     have hsq₀ : 1 ≤ Real.sqrt n₀ := Real.one_le_sqrt.mpr (by exact_mod_cast (by omega : 1 ≤ n₀))
     set g₀ : ℕ → ℝ := fun n => if vecOf P n = 0 then v n * (Real.sqrt (roughPart P n))⁻¹ else 0
@@ -1055,6 +1044,32 @@ theorem eq_zero_of_positiveDefinite_neg_nullPotential_of_logSummable {v : ℕ �
     rwa [mul_zero] at this
   have hle : |v n₀| ≤ 0 := ge_of_tendsto hlim (eventually_atTop.mpr ⟨n₀, hbound⟩)
   exact hne (abs_nonpos_iff.mp hle)
+
+/-- **Weil-cone rigidity for log-summable deviations.** If `v(0) = v(1) = 0`,
+`|v(n)| ≤ 2 log n + A`, `Σ_n |v(n)|(1 + log n)^{−J} < ∞` and `−ψ_v` is positive definite, then
+`v = 0`. -/
+theorem eq_zero_of_positiveDefinite_neg_nullPotential_of_logSummable {v : ℕ → ℝ} (hv0 : v 0 = 0)
+    (hv1 : v 1 = 0) {A : ℝ} (hA : 0 ≤ A) (ha : ∀ n, |v n| ≤ 2 * Real.log n + A) {J : ℕ}
+    (hs : Summable fun n : ℕ => |v n| * ((1 + Real.log n) ^ J)⁻¹)
+    (hPD : PositiveDefiniteOnReal fun y => ((-RHTower.WeilRegular.nullPotential v y : ℝ) : ℂ)) :
+    v = 0 := by
+  have hs2 : Summable fun n : ℕ => |v n| * ((1 + Real.log n) ^ (J + 2))⁻¹ := by
+    refine Summable.of_nonneg_of_le (fun n => by have := one_add_log_nonneg n; positivity)
+      (fun n => ?_) hs
+    have h1 : 1 ≤ 1 + Real.log n := by linarith [Real.log_natCast_nonneg n]
+    exact mul_le_mul_of_nonneg_left (inv_anti₀ (by positivity)
+      (pow_le_pow_right₀ h1 (by omega))) (abs_nonneg _)
+  obtain ⟨hsR, -⟩ := tsum_abs_mul_log_inv_sqrt_le hs2
+  have hsq : Summable fun n : ℕ => |v n| * (Real.sqrt n)⁻¹ := by
+    refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_) hsR
+    have h1 : 1 ≤ 1 + Real.log n := by linarith [Real.log_natCast_nonneg n]
+    have : 0 ≤ |v n| * (Real.sqrt n)⁻¹ := by positivity
+    nlinarith
+  refine eq_zero_of_forall_mainWeight_nonpos hv0 hv1 hsq fun y n₀ hn₀2 hy ε hε => ?_
+  have hP : ∀ p ∈ primesUpTo y, p.Prime := prime_of_mem_primesUpTo
+  obtain ⟨C, -, hC⟩ := exists_key_bound_trunc hP hv0 hA ha (J := J + 2) (by omega) hs2 hPD
+    (isSmoothOver_primesUpTo hn₀2 hy) hε
+  exact nonpos_of_scale_bound (by omega) (eulerProduct_pos hP) hC
 
 /-- The same with `+ψ_v` positive definite. -/
 theorem eq_zero_of_positiveDefinite_nullPotential_of_logSummable {v : ℕ → ℝ} (hv0 : v 0 = 0)

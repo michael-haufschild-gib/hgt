@@ -962,3 +962,1260 @@ one and are continuous, so the finite product integral and finite-sum expansions
 Consequently the exact second moment of any finite complex-weighted carrier retains precisely
 those pairs. Regrouping by the exterior factorisation gives positive squares; neither this
 identity nor positivity alone provides a bound uniform in `S` or the C19 covariance budget.
+
+**C20.2 — possible centre route, OPEN/source search.** A stronger probability statement could
+avoid the cell-mass/Markov circularity: if the actual normalized reflected smooth carrier tends
+to zero in probability, then its background at the fixed threshold `N/(2K)` does too once the
+large-prime part has vanishing second moment. For fixed `K`, the latter reads only bounded
+cofactors and has coefficient mass of order at most `1/log N`. For every fixed C19 event of mass
+`m_H>0`, background convergence in probability would eventually leave at least `m_H/2` of that
+event with background norm at most one, independently of `H`; the cutoff threshold may depend
+on `H` and `m_H`. This order of quantifiers is sufficient for a later slow diagonal, unlike a
+centre norm bound proportional to `m_H^(-1/2)`. The normalized-carrier vanishing statement is
+not established here: deep corpus search is running before any proof or formal premise is
+introduced. Prime-only central-limit theorems do not supply this completely multiplicative sum.
+
+
+**C20.1 FINAL — frozen-prefix source formula, LEAN PROVED.**
+`SteinhausFrozenPrefixSecondMoment.lean` proves the explicit frozen-phase product kernel,
+its exact exterior-factorisation selection rule, the finite complex quadratic identity, and
+`integral_normSq_frozenPrefix_dpoly`: a positive sum of squared grouped coefficient sums.
+No positivity restriction on indices or unproved analytic input is needed. Final leaf passes
+without warnings; all seven public theorem axiom audits use only standard axioms. Wired and
+indexed; targeted whitespace clean. Global lint reports seventeen unrelated unreachable modules
+and no BAG issue. This closes the source identity, not the centre bound.
+
+**C20.2 research result and revised paper attack.** Deep search
+`/tmp/bag-centre-vanishing-deep.json` completed with full file inventory and no execution errors,
+but compiler metadata is largely pending/stale and semantic coverage was not measured. Its
+candidate/source lists contain no applicable completely multiplicative low-moment theorem;
+the proposed prime-sum ingredient set is unverified and does not fit this carrier. Direct source
+search finds Harper mentioned in `SecondMoment.lean`'s historical motivation, not a formal
+low-moment theorem there. Granville–Harper–Soundararajan mean-value leaves are a different result.
+
+Primary external evidence, read directly: [Harper, arXiv:1703.06654](https://arxiv.org/abs/1703.06654),
+Theorem 1 and Corollary 1 (PDF page 10), proves that the unweighted Steinhaus partial sum divided
+by its square-root second-moment scale tends to zero in probability, indeed in first mean. This
+is paper evidence, not a Lean input. It supplies a concrete analytic target for C20.2.
+
+The following weighted transfer is our inference and needs its own proof: Abel summation with
+`n^(-beta)*W(r*n/N)`, `0<beta<1/2`, transfers an unweighted first-mean `o(sqrt N)` estimate to
+`N^(-(1/2-beta))*sum_{n<=N} X_n*n^(-beta)*W(r*n/N) -> 0` in first mean. Positivity, monotonicity
+and the bound `0<=W<=1` should make the transfer uniform over positive `r`; fixed logarithmic
+node twists are handled by coordinatewise phase rotation. Then prove that the fixed-cofactor
+large-prime sector has second moment tending to zero, and subtract it to obtain the background
+statement. The main missing dependency is an unconditional Lean proof of the unweighted
+low-moment decay. Do not replace it with an assumed receiver or cite the paper as a Lean axiom.
+
+**C20.3 — fixed-cofactor channel upper envelope, paper proof.** Fix `K>0`. For
+`p>N/(2K)` in the natural-number sense, `N < 2K*p`; hence every channel coefficient
+at `n=p*m`, `1<=m<=N/p`, has `N/(2K)<n<=N`. On a fixed right node
+`1/2+d+i*t`, `0<d<1/2`, with `N<=t<=2N`, the proved chi envelope gives
+`|chi|<=C*N^(-d)`, while `|n^(s-1)|=n^(d-1/2)` and `|W|<=1`. Therefore
+`|a_n|<=C*(2K)^(1/2-d)*N^(-1/2)`. Each channel has fewer than `2K` terms,
+so its norm is bounded by a fixed constant times `N^(-1/2)`, for every phase
+and every positive smoothing scale. The prime number theorem bounds the number
+of channels by `2N/log N` eventually; summing squared norms yields `O_K(1/log N)`
+uniformly. Fixed height offsets are absorbed by the common `[5N/4,7N/4]` window.
+This closes neither full-carrier low-moment decay nor the same-event target law;
+it supplies the vanishing large-prime sector needed by C20.2 and the maximal-channel
+control needed by a later local target law. Constants may depend on the fixed
+cofactor cutoff and nodes, never on phase, smoothing scale, or conductor.
+
+**C20.2 dependency audit, after the remainder estimate.** The next genuinely missing
+analytic source is the normalized full multiplicative first moment, not another conditional
+second-moment receiver. Harper's [primary paper](https://arxiv.org/pdf/1703.06654), sections
+4.1–4.3 (PDF pages 34–39), obtains its upper low-moment bound from an Euler-product
+reduction and two barrier estimates: restricted mass under the barrier and small probability
+of barrier failure. The restricted-mass proof uses the tilted random-walk estimate in
+Proposition 5. This identifies concrete source obligations; no such estimate is imported
+as a premise. Corpus applicability must be checked before reproducing this argument.
+
+The weighted transfer has an elementary dependency-closed *deterministic inequality*:
+for decreasing nonnegative weights `w_n=n^(-beta)*W(r*n/N)`, finite Abel summation gives
+`sum w_n*X_n = w_N*S_N + sum_{n<N}(w_n-w_(n+1))*S_n`. Its expected norm is bounded by
+the same positive combination of `E|S_n|`. Splitting at a fixed `M`, the finite prefix
+contributes a constant independent of `N,r`, while an `epsilon*sqrt(n)` tail bound contributes
+at most `epsilon*C_beta*N^(1/2-beta)`, since Abel summation again bounds the weighted
+square-root increments by that power. Thus the proposed uniform weighted transfer is valid
+once the full unweighted first-mean decay is actually proved. This is a paper derivation,
+not a new assumed Lean input or a claim that C20.2 is closed.
+
+**C20.3 / F45 — uniform small channels and actual nonsmooth remainder, LEAN PROVED.**
+`SmoothAFEReflectedChannelUpper.lean` proves eight exports: the literal coefficient bound,
+individual-channel envelope, scalar conditional energy ceiling, simultaneous finite-node
+maximal-channel envelope, finite-node energy ceiling and uniform vanishing, exact nonsmooth
+remainder second moment, and its uniform `C/log N` upper bound. The remainder statement is
+for the actual full coefficient carrier minus `steinhausSmoothCarrier`, not a frozen surrogate.
+The cutoff is any fixed positive natural `D` (use `D=2K` for C19). No analytic input is
+assumed: the proof uses the existing chi envelope, Gaussian cutoff bound, arithmetic
+largest-prime decomposition, Parseval, and proved prime-counting asymptotics. The finite-node
+bounds retain all phases, all positive smoothing scales, all directions, and the common-height
+window. Final leaf and the shared cutoff-bound export both compile without warnings; axiom
+and index checks are running. Independent recurrence remains open at C20.2 full-carrier
+low-moment decay, same-event target control, and deterministic orbit transfer.
+
+**F45 verification and next-source search.** All nine axiom audits (eight new exports plus
+shared cutoff bound) use only `propext`, `Classical.choice`, and `Quot.sound`. Global lint
+reports 21 unrelated unreachable modules and no BAG issue. Targeted whitespace checks pass.
+
+`/tmp/bag-critical-barrier-deep.json` completed with `partial=false`, no execution errors,
+and 63,337/63,337 files inventoried. Compiler evidence is mostly pending/stale; semantic
+coverage is unmeasured, and refresh deferred to the running background indexer. Its candidates
+include finite-circle Laplace/cumulant facts but no applicable tilted Euler-product random-walk
+barrier theorem. The proposed ingredient set combines a scalar sign inequality with circle
+convexity; it does not establish the required barrier law and is rejected as inapplicable.
+A targeted lexical query for `"random walk" barrier` found zero hits. Exhaustive matching of
+barrier/random-walk and multiplicative-chaos phrases in project Lean, probability dependencies,
+and notes likewise found contextual mentions, a Rajchman transport interface already audited,
+and unrelated substring matches, not the required estimate. This is a search result, not a
+claim that all possible alternate proofs have been excluded. Next: construct or find a genuine
+low-moment source argument, beginning with its Euler-product/barrier dependencies; keep the
+proved remainder and covariance-event gates closed and do not substitute a new assumption.
+
+**C20.4 — audited alternatives and next source lemma.** Primary sources now checked:
+[Gorodetsky–Wong, arXiv:2405.19151](https://arxiv.org/abs/2405.19151) and
+[Hamdan, arXiv:2604.05563](https://arxiv.org/abs/2604.05563). The former short proof imports
+Gaussian-chaos comparison; the latter section 2 supplies a direct level-set approach, but still
+needs Gaussian increment comparison, a barrier estimate, and a spatial maximum bound. Thus
+neither citation alone closes a Lean dependency. We will use their common deterministic source
+step first: a uniform quadratic approximation to the literal random Euler product logarithm.
+
+Paper proof of this step: for `|z|<1`, the third-order logarithm remainder is at most
+`|z|^3/(3*(1-|z|))`. At a prime `p` and any `Re(s)>=1/2`,
+`z=X_p*p^(-s)` has norm at most `p^(-1/2)<=2^(-1/2)<1`. Summing remainders over any finite
+prime set therefore gives one bound independent of that set, all phases, and all imaginary
+parts, since `sum_p p^(-3/2)` converges. The real part of the logarithmic sum is exactly the
+logarithm of the product norm. Consequently the squared product norm lies between two fixed
+positive multiples of `exp(2*Re(sum_p(z+z^2/2)))`. Formalize this exact arithmetic source
+statement next, not a theorem assuming the desired critical-mass or recurrence bound.
+
+**C20.5 — qualitative barrier route, new paper attack (OPEN).** We need qualitative
+first-mean decay, not the sharp double-logarithmic rate. This suggests replacing Gaussian
+increment comparison by a zero-one/anti-concentration argument. The following is our proposed
+derivation, not a result imported from either source paper.
+
+Let `L_j(h)=log|F_(exp(exp j))(1/2+ih)|` and
+`M_j=E exp(2 L_j(0))=prod_(p<=exp(exp j))(1-1/p)^(-1)`. Tilt each independent prime circle
+by its normalized squared Euler factor (the Poisson kernel). Under this consistent product law,
+the exact mean of the prime logarithmic factor is `-log(1-1/p)`, so `L_j(0)-log M_j` is a
+centered independent sum. Its variance grows proportionally to `j`, and a uniform fourth-moment
+bound would force a fixed positive probability of exceeding `c*sqrt(j)` on the positive side.
+The event that this centered sum stays below `A+2 log(j+1)` for some finite `A` is invariant under
+finite prime changes. Zero-one plus that positive-side bound should force its tilted measure
+to zero. Thus every fixed finite-time barrier survival probability tends to zero, without a
+quantitative ballot theorem.
+
+Separately, a planar mean-value bound for the holomorphic finite Euler product, on discs of
+radius proportional to `exp(-j)` contained in one rectangle around `[1/2,1/2+i]`, should give
+`E sup_(0<=h<=1)|F_(exp(exp j))(1/2+ih)|^2 <= C exp(2j)`. The arithmetic input is a bounded
+ratio of Euler second moments at real parts within `O(exp(-j))` of `1/2`. Markov and a union
+bound then control failure of `L_j(h)<=log M_j+A+2 log(j+1)` at any scale and height by
+`C exp(-2A) sum_j(j+1)^(-4)`. On the complementary event, the normalized integrated Euler
+mass equals its barrier-restricted version. The expectation of that restricted mass is exactly
+the tilted survival probability, which tends to zero. Sending the conductor to infinity first,
+then `A` to infinity, yields mass convergence in probability; unit mean gives vanishing moments
+of every fixed order below one. The existing arithmetic reduction would then yield the missing
+full multiplicative low-moment decay once its own sieve/Parseval dependencies are formalized.
+
+Audit next: exact Poisson-kernel tilt law and its centered variance/fourth moments; applicability
+of the generic product zero-one theorem; uniform planar mean-value and Euler second-moment
+bounds; finite-event measurability and change of measure. Do not treat this outline as closed.
+
+**C20.5 source applicability checkpoint.** The exact tilted mean can use
+`GaloisForLFunctions.HTGeometry.circleAverage_poissonKernel_log_norm` with
+`f(z)=1-r*z`, centre zero, unit radius, and evaluation point `r`: its value is
+`log(1-r^2)`, and the Poisson kernel on the unit circle equals
+`(1-r^2)/|1-r*z|^2`. Negating yields the stated mean of the negative log factor.
+This source has the right literal integrand; the coordinate-interval measure conversion still
+needs proof. By contrast, `EulerTiltCovariance.eulerTiltMass` is a Bernoulli occupancy variance
+with weight `p^(-sigma)/(1+p^(-sigma))^2`, not this Poisson tilt; its name alone is no bridge.
+
+`FiniteModificationZeroOne.measure_infinitePi_eq_zero_or_one_of_invariant` already accepts
+general coordinate probability laws. The centered tilted factor has a uniform `O(p^(-1/2))`
+bound; for a variance floor one can compare its tilted circle density to Haar and use separated
+arcs (or the first Fourier coefficient). The sum of single-factor fourth moments is bounded by
+`sum_p O(p^(-2))`, while total variance diverges. Independence then supplies a fourth-moment
+bound proportional to the squared total variance. No symmetry under the tilted law may be
+assumed: derive positive-side anti-concentration from mean zero, a lower bound on `E|Z|` via
+second/fourth moments, and Cauchy–Schwarz for `Z_+`.
+
+The available planar L2 submean leaves require an entire function; a finite Euler product is
+only holomorphic in a half-plane. A local disc variant is required before using them. For the
+spatial second-moment comparison, the key arithmetic difference is bounded by
+`delta*exp(2*delta*log Y)*sum_(p<=Y) log(p)/p`, with `delta=O(1/log Y)`. This explicitly
+identifies the Mertens input needed to make the rectangle bound uniform.
+
+**C20.4 / F46 FINAL — quadratic Euler comparison, LEAN PROVED.**
+`SteinhausEulerQuadraticApprox.lean` (172 lines) defines the literal prime argument, finite
+Euler product, and quadratic logarithmic field. Its six public theorems prove the uniform
+prime-argument bound, exact exponential/log-norm identities, complex and real uniform remainder
+bounds, and two-sided squared-norm exponential comparison. Final leaf compiles without warnings;
+six axiom audits use only `propext`, `Classical.choice`, and `Quot.sound`. Wired, exact-name index
+visibility verified, whitespace clean. Global lint reports fifteen unrelated unreachable modules,
+no BAG issue. Passing scratch and audit retained; no owned build/search process remains live.
+C20.5 remains an open proof strategy, with exact Poisson tilt mean/moments and local maximum
+bound still required. Neither full-carrier low-moment decay nor independent recurrence is yet proved.
+
+**C20.5a — coordinate moment source, paper proof.** Write `r=p^(-1/2)`, so
+`0<=r<=3/4`, and `Z_r(x)=-log|1-r*e(x)|+log(1-r^2)`. The proposed Poisson law has density
+`K_r=(1-r^2)/|1-r*e(x)|^2`. Its mass and mean identities follow from the exact Poisson
+formula and the angle-to-interval conversion described above. Pointwise,
+`1-r<=|1-r*e(x)|<=1+r`; hence `|log|1-r*e(x)||<=4r`, using
+`1-u^(-1)<=log u<=u-1`. Also `|log(1-r^2)|<=2r`, so `|Z_r|<=6r` and
+`E_tilt Z_r^4<=1296*r^4`. The same norm upper bound gives `K_r>=1/7`.
+For `x` in `[1/3,2/3]`, cosine is at most `-1/2`, so `|1-r*e(x)|^2>=1+r`.
+The inequality `log(1+r)>=r/2` gives `Z_r<=-r/4` on that arc, since `log(1-r^2)<=0`.
+Integrating there yields `E_tilt Z_r^2>=r^2/336`. The pointwise bound also gives
+`E_tilt Z_r^2<=36*r^2`. These are concrete coordinate estimates, without a symmetry
+assumption. The corpus far-arc lemma for the *complex* log norm does not by itself establish
+this centered *real* variance lower bound; the signed real argument above must be proved.
+
+**C20.5b — positive-tail step, paper proof.** No tilted symmetry is needed. For a mean-zero
+real random variable `Z`, put `V=E Z^2>0` and suppose `E Z^4<=C*V^2`, `C>0`.
+For every `t>0`, splitting at `|Z|=t` gives the pointwise inequality
+`Z^2<=t*|Z|+Z^4/t^2`. Choose `t=sqrt(2*C*V)` to get `E|Z|>=V/(2t)`.
+Mean zero implies `E Z_+=E|Z|/2>=V/(4t)`. Set `a=V/(8t)`. Splitting the positive
+mean at `a`, then applying Cauchy–Schwarz on `{Z>a}`, gives
+`V/(4t)<=a+sqrt(V*P(Z>a))`, hence `P(Z>a)>=1/(128*C)`. Thus the threshold is a
+fixed positive multiple of `sqrt(V)`. All these moment and integrability premises must be
+derived for the actual product-law prime sums before use in the recurrence producer.
+The corpus `FourthMomentEscape.measure_sq_gt_half_ge` bounds a two-sided squared tail,
+so it does not directly supply this signed statement. `IntegralCauchySchwarz.sq_integral_mul_le`
+is applicable to the last step. This is a paper derivation, not a formalized barrier theorem.
+
+**C20.5a / F47–F48 FINAL — exact tilted coordinate law and moments, LEAN PROVED.**
+`SteinhausEulerPoissonTilt.lean` (189 lines) constructs the normalized squared Euler density
+and its probability measure, proves positivity and continuity, exact change of measure,
+mean `-log(1-r^2)`, and zero centered mean. `SteinhausEulerPoissonTiltMoments.lean`
+(169 lines) proves density lower bound `1/7`, centered pointwise bound `6r`, negative
+far-arc bound `-r/4`, second-moment floor `r^2/336`, and every absolute-moment upper
+bound `(6r)^k` for `0<=r<=3/4`. Both final leaves compile warning-free; fourteen public
+theorem axiom audits use only `propext`, `Classical.choice`, and `Quot.sound`. Both are
+wired; exact-name index visibility and whitespace checks pass. Global lint reports nineteen
+unrelated unreachable modules, no BAG error. This closes the literal coordinate input,
+not the independent recurrence producer. Next: actual infinite product tilt, independent
+prime-sum second/fourth moments, signed positive-tail estimate, and zero-one barrier decay;
+the spatial maximum, arithmetic reduction, local target, and orbit-transfer gates remain open.
+
+**C20.5c — actual product-law sum moments, paper proof.** Use the coordinate probability
+law from F47 at `r_n=randomEulerRadius (1/2) n`, which is zero off primes. The countable
+product is a probability measure and the centered log increments are independent. For any
+finite set `P`, exact centering and independence give
+`E S_P=0` and `E S_P^2=sum_P E Z_n^2`. F48 therefore bounds this variance between
+`(sum_P r_n^2)/336` and `36 sum_P r_n^2`. If `n` is outside `P`, expansion and
+independence give `E(S_P+Z_n)^4=E S_P^4+6 E S_P^2 E Z_n^2+E Z_n^4`; the cubic-linear
+terms vanish by the proved means. Induction gives `E S_P^4<=3888*(sum_P r_n^2)^2`.
+Thus the fourth moment is at most `3888*336^2` times the squared variance. The identity
+`r_n^2=1/n` at primes and zero elsewhere, together with proved prime harmonic divergence,
+forces growing-cutoff variance to infinity. This uses the actual tilted product law.
+
+**C20.5d — variance-indexed barrier, next paper target (OPEN in Lean).** Write `V_N=E S_N^2`
+for the actual tilted sum over `range N`. For any cofinal increasing cutoff sequence `u_j`,
+consider `E_A={all j: S_(u_j)<=A+2 log(1+V_(u_j))}`. The positive-tail estimate has
+threshold `c sqrt(V_(u_j))`; variance divergence and `log x=o(sqrt x)` eventually make
+that threshold exceed `A+2 log(1+V_(u_j))`, for each fixed `A`. Consequently each `E_A`
+has probability at most `1-delta`. The increasing union over natural `A` has the same upper
+bound. Changing finitely many coordinates changes every partial sum by a uniformly bounded
+amount, so this union is invariant under finite modifications. The proved product zero-one
+law forces its measure to zero. Fixed-A finite-horizon survival then tends to zero.
+This choice of barrier postpones quantitative Mertens asymptotics until the spatial maximum
+step: at `u_j=floor(exp(exp j))+1`, the already-proved prime reciprocal asymptotics give
+`V_(u_j)` comparable to `j`, so global barrier failure still has a summable `j^(-4)` bound.
+Prove this literal event and its measurability; do not infer selected-scale barrier death
+merely from unboundedness over all integer cutoffs.
+
+**C20.5b–c / F49–F50 FINAL — actual prime-sum moments and signed tail, LEAN PROVED.**
+`SteinhausEulerTiltPrimeSum.lean` (331 lines) constructs the actual countable product
+probability law and independent centered prime variables, establishes all required finite
+power integrability, exact variance additivity, the explicit second/fourth moment bounds,
+the uniform fourth-to-variance-squared ratio, and variance divergence. Its eighteen public
+theorems pass axiom audits. `SteinhausEulerTiltPositiveTail.lean` (167 lines) proves positive
+variance for every cutoff `N>=3`, the explicit positive-tail probability bound, and fixed
+`c,delta>0` with `P(S_N>c*sqrt(V_N))>=delta` for all those cutoffs. Its three public
+theorems also pass axiom audits. Both final leaf builds are warning-free, both modules are
+wired and indexed at their final export lines, and all twenty-one audits use only
+`propext`, `Classical.choice`, and `Quot.sound`. Whitespace clean; global lint has fifteen
+unrelated unreachable modules and no BAG error. C20.5d's literal zero-one barrier theorem
+is next. No barrier decay, full multiplicative low-moment decay, or independent recurrence
+producer has yet been claimed.
+
+
+**C20.5d / F51 FINAL — literal tilted barrier death, LEAN PROVED.**
+`SteinhausEulerTiltBarrier.lean` (234 lines) retains every selected cutoff and the exact
+barrier `A+2*log(1+V_(u j))`, where `V_N` is the actual F49 variance. For every cofinal
+`u : Nat -> Nat`, the union over finite offsets has tilted measure zero, every fixed
+real-offset barrier is null, and finite-horizon survival probabilities tend to zero.
+No monotonicity of `u`, Gaussian approximation, ballot premise, or recurrence assumption
+is required. The proof uses F50's actual signed positive tail, `log(V)=o(sqrt(V))`,
+uniform `9*card(D)` finite-phase perturbation bounds, the product zero-one law,
+continuity from below (as the monotone-union measure formula), and continuity from above.
+Final leaf compiles warning-free; all nine public theorem audits have only `propext`,
+`Classical.choice`, `Quot.sound`. Wired into the theorem-area umbrella; exact-name search
+finds the survival theorem at line 214. Global lint has seventeen unrelated unreachable
+modules and no BAG error. This closes tilted survival, not critical-mass decay or the
+independent recurrence producer.
+
+**C20.5e — finite-event change of measure, dependency-closed paper proof.**
+For finite cutoff `N`, write `D_N(omega)=prod_(n<N) W_(r_n)(omega_n)`, with the exact
+F47 coordinate density. The projection of either actual infinite product law onto
+its first `N` coordinates is its corresponding finite product measure. Multiplying
+the original finite product measure by `D_N` gives the finite product of the tilted
+coordinate measures. Thus for every nonnegative measurable head observable `f`,
+`E_original[D_N*f(head_N)]=E_tilt[f(head_N)]`, including indicators.
+For the literal finite barrier through `J` cutoffs, choose
+`N_J=sup_(j<J) u(j)`. Every sum in the barrier depends only on coordinates `<N_J`;
+zero-extending a head changes none of its summands. Its weighted original measure
+therefore equals the actual tilted survival probability, and F51 makes this weighted
+mass tend to zero for cofinal `u`. No infinite-product Radon--Nikodym derivative is
+asserted. Corpus source: `GaussianShiftInformation.pi_withDensity` is a generic
+finite-product theorem despite its file name; `Measure.map_infinitePi_infinitePi_of_inj`
+and `Measure.infinitePi_eq_pi` supply the exact head distributions. Verify these
+sources in the pinned Lean toolchain before finalizing the new leaf.
+
+
+**C20.5f — variance-selected cutoffs remove the quantitative Mertens clock gate
+(PAPER REDUCTION; source bounds still OPEN).** F49's divergent variance permits
+cofinal integer cutoffs `u_j>=j+3` with `V_(u_j)>=j`; no prescribed double-exponential
+clock is necessary. Write `M_N=prod_(p<N)(1-1/p)^(-1)` and
+`F_N(s)=prod_(p<N)(1-X_p*p^(-s))^(-1)`. The needed spatial estimate can be weakened to
+`E sup_(0<=h<=1)|F_N(1/2+ih)|^2 <= C*log(N)*M_N` for `N>=3`.
+A disc radius `r=c/log(N)` gives this by planar submean: the enclosing rectangle has
+area `O(r)`, and the disc prefactor is `O(r^(-2))`. It suffices to prove the uniform
+Euler second-moment ratio for `|Re(s)-1/2|<=r`; its logarithm is bounded using
+`sum_(p<N) log(p)/p <= C*log(N)`, an elementary Chebyshev/partial-summation input.
+Also `M_N>=sum_(1<=n<N)1/n>=log(N)`: every integer below `N` uses only primes below
+`N`, and the finite Euler expansion has nonnegative coefficients. Thus the spatial
+failure probability at cutoff `u_j` is at most
+`C*exp(-2A)*(1+V_(u_j))^(-4) <= C*exp(-2A)*(j+1)^(-4)`.
+This removes both quantitative variance/clock synchronization and an upper Mertens
+asymptotic from the proposed barrier argument; it does not remove the stated
+prime-sum, Euler expansion, second-moment ratio, or local submean obligations.
+
+Audit of passage from selected scales to all final cutoffs: for fixed `J`, the
+barrier through `J` uses only the head `N_J=max_(j<J)u_j`. The change-of-measure
+identity holds with *any* density cutoff `N>=N_J`. Hence the expected restricted
+mass equals the same tilted survival probability, uniformly in every such `N`.
+On the global good barrier event all spatial pointwise restrictions are inactive,
+so original and restricted integrated masses agree. First choose `A` to make the
+global bad event small, then `J` to make tilted survival small, and finally allow
+all `N>=N_J`. Markov gives full-cutoff convergence in probability, with no separate
+martingale interpolation premise. This audit still requires phase-rotation
+invariance and measurable spatial integration; those are not yet claimed formal.
+
+
+**C20.5e / F52 FINAL — exact finite-event tilt bridge, LEAN PROVED.**
+`SteinhausEulerTiltFiniteDensity.lean` (171 lines) proves the exact finite-head
+projection law, normalized product density, change of measure for every nonnegative
+measurable head observable, and the literal finite-barrier identity for every density
+cutoff containing all tested cutoffs. Taking the maximum tested cutoff yields vanishing
+restricted original density mass. No global infinite-product density or unproved
+probabilistic premise is used. Final leaf compiles warning-free; all six public theorem
+axiom audits are standard-only. Wired; exact-name index finds the limit theorem at
+line 157. Latest global lint reports twenty unrelated unreachable modules, no BAG error.
+Combined F51/F52 close selected-cutoff barrier death and its exact finite-density
+transfer. They do not yet prove decay of the spatially integrated critical mass or
+independent recurrence.
+
+**C20.5f corpus checkpoint.** Deep arithmetic and second-moment searches completed
+non-partial; all twenty candidates and twenty source arguments from each were inspected.
+Compiler freshness is mostly pending/stale and semantic coverage unmeasured. Direct
+sources found: `Sieve.MertensFirst.mertensFirst_upper` gives
+`sum_(p<=N)log(p)/p<=log(N)+log(4)`; `CreaseBudgetPrimeMass.harmonic_le_prod_primesBelow`
+gives the required Euler lower bound; mathlib `log_add_one_le_harmonic` supplies its
+logarithmic consequence. The second-moment search did not supply an existing theorem
+for the literal finite Euler product: finite Dirichlet-polynomial moment identities
+are not substitutes for that statement. Derive it from the exact coordinate Poisson
+normalization and independence/phase rotation. `HolomorphicBallMeanSq` still assumes
+an entire function; its planar bound must be localized to a pole-free closed disc.
+
+
+**C20.6 — literal Euler second moment, dependency-closed paper proof.**
+For complex `z` with `|z|<1` and unit `w`,
+`|w-conj(z)|^2=|1-z*w|^2`; hence the Poisson kernel at `conj(z)` on the unit circle
+is `(1-|z|^2)/|1-z*w|^2`. Its circle average is one. Pulling out the positive
+constant gives `E_x |(1-z*exp(2*pi*i*x))^(-1)|^2=(1-|z|^2)^(-1)` under the original
+uniform coordinate law. This handles an arbitrary complex `z`, so no phase-rotation
+premise is needed for the second moment. For a prime `p`, the actual Steinhaus
+character reads just the `p` coordinate and `|(p:Complex)^(-s)|=p^(-Re(s))<1` on
+`Re(s)>0`. Finite-product integration thus proves the literal identity
+`E |steinhausFiniteEulerProduct(P,s)|^2=prod_(p in P)(1-p^(-2*Re(s)))^(-1)`.
+Measurability follows from continuous nonvanishing coordinate denominators; the
+projection of the original infinite product onto `P` has the exact finite product law.
+Prove this identity for the actual existing F46 product, then use its literal partition
+function in the uniform second-moment ratio and local planar estimate.
+
+
+**C20.7 — uniform second-moment strip ratio, dependency-closed paper proof.**
+For `N>=3`, set `r_N=1/(16*(1+log N))` and let `sigma>=1/2-r_N`.
+For prime `p<N`, put `a=1/p`, `b=p^(-2*sigma)`, `t=2*r_N*log p`.
+Then `0<=t<=1`, `sigma>=1/4`, and `0<=b<=p^(-1/2)<=3/4`. Since
+`b<=a*exp(t)` and `exp(t)-1<=t*exp(t)<=t*exp(1)`,
+`b-a<=2*r_N*exp(1)*log(p)/p`. Therefore
+`(1-a)/(1-b)=1+(b-a)/(1-b)
+ <=1+8*r_N*exp(1)*log(p)/p
+ <=exp(8*r_N*exp(1)*log(p)/p)`.
+Multiplying the positive factor inequalities and using the verified prime-log bound
+`sum_(p<N)log(p)/p<=log N+log 4` gives
+`M_N(sigma)<=C*M_N(1/2)` with one fixed positive constant; for example
+`C=exp(8*exp(1)*(1+log 4))` suffices, using `r_N<=1` and `r_N*log N<=1`.
+This is uniform in the imaginary part by C20.6. No asymptotic Mertens error or
+unproved second-moment estimate enters. The generic Euler-product search produced
+no applicable replacement theorem (absolute-convergence Euler products apply only
+right of one, not in this finite critical strip). Formalize this exact finite ratio.
+
+
+**C20.6 / F53 FINAL — literal Euler-product second moment, LEAN PROVED.**
+`SteinhausEulerSecondMoment.lean` (160 lines) proves complex-coordinate Poisson
+normalization, phase-factor continuity, exact prime-character/circle identity, positive
+arithmetic partition function, its critical reciprocal-prime specialization, and the
+exact squared-norm expectation of the existing F46 finite Euler product throughout
+`Re(s)>0`, uniformly in the imaginary part. Final leaf compiles warning-free; all six
+public theorem axiom audits use only standard axioms. Wired; exact-name index sees
+`integral_norm_sq_steinhausFiniteEulerProduct` at line 121. This closes the literal
+second-moment source, not the spatial maximum or recurrence producer.
+
+
+**C20.8 — local planar mean square, paper proof and source audit.**
+The existing `HolomorphicBallMeanSq` result assumes an entire function and cannot
+be applied unchanged to finite Euler products. Its proof does localize. Gutzmer's
+`HardyDiskSpace.hasSum_circleAverage_normSq_diskCoeffOn` already accepts only
+holomorphy on `ball(0,R)`; for every `0<=rho<R`, its constant term gives the circle
+mean-square lower bound. For a function continuous on `closedBall(0,R)`, extend its
+restriction continuously to the plane using the complex Tietze theorem. This extension
+agrees on the closed ball and remains differentiable on the open ball by pointwise
+congruence there. The existing polar-shell/Fubini calculation now applies to its
+globally continuous squared norm, while every circle estimate uses only local
+holomorphy. Integrating `2*pi*rho*|F(0)|^2` gives `pi*R^2*|F(0)|^2`. Restricting the
+integral back to the ball and translating proves the desired local planar inequality.
+For the actual finite Euler product, every prime factor is holomorphic on `Re(s)>0`:
+`|X_p*p^(-s)|=p^(-Re(s))<1` excludes all denominator zeros. Thus every closed disc
+of radius `R<c.re` satisfies both local hypotheses. Formalize the local result and
+its literal Euler-product specialization; do not assume entire continuation.
+
+
+**C20.7 / F54 FINAL — uniform literal second moments on spatial discs, LEAN PROVED.**
+`SteinhausEulerSpatialPartition.lean` (206 lines) uses the explicit radius
+`r_N=1/(16*(1+log N))`, proves it positive and at most `1/16` for `N>=3`, and proves
+`M_N(sigma)<=C*M_N(1/2)` for every `sigma>=1/2-r_N`, with one fixed positive `C`.
+The theorem is instantiated as an actual squared-norm expectation bound for F46's
+Euler product at every complex point in that half-strip. The exact critical partition
+is at least one and at least `log N`, giving `1+log N<=2*M_N(1/2)`.
+Final leaf compiles warning-free; all eight public theorem axiom audits are standard-only;
+wired and exact-name index-visible. Thus the arithmetic moment ratio and radius-cost
+absorption are closed. The local planar estimate and global spatial envelope remain
+separate obligations, with C20.8 now in scratch.
+
+**C20.9 — explicit measurable spatial envelope, dependency-closed paper proof.**
+Write `r=r_N`, `M=M_N(1/2)` and let `Q_N` be the closed rectangle with real
+coordinates `[1/2-r,1/2+r]` and imaginary coordinates `[-r,1+r]`. Every disc
+`ball(1/2+it,r)` for `t in [0,1]` lies in this rectangle. Its planar area is
+`2*r*(1+2*r)<=4*r`. Define the nonnegative extended-real random variable
+`Z_N=(pi*r^2)^(-1)*integral_Q_N |F_N(z)|^2 dz`, using the nonnegative Lebesgue
+integral. Joint measurability follows from the finite product, measurable prime
+characters, continuous nonzero-base complex powers, and measurable inversion.
+C20.8 and monotonicity of the nonnegative integral give `|F_N(1/2+it)|^2<=Z_N`
+simultaneously for every `t in [0,1]` and every sample. Tonelli and F54 give
+`E Z_N <= 4*C*M/(pi*r) = (64*C/pi)*(1+log N)*M <= (128*C/pi)*M^2`.
+The exact F53 expectation is positive and finite, which also certifies integrability
+of every pointwise squared norm; thus the Bochner and nonnegative moment formulas
+agree. All constants and measures are explicit. The envelope replaces an uncountable
+supremum and will supply the global barrier estimate through Markov's inequality.
+This closes a spatial domination mechanism on paper only; phase rotation, global
+barrier assembly, critical-mass decay, and deterministic recurrence remain open.
+
+**C20.8 / F55 FINAL — literal local planar mean square, LEAN PROVED.**
+`SteinhausEulerLocalMeanSq.lean` (224 lines) proves the local planar inequality,
+holomorphy of the actual finite Euler product on the positive half-plane, its mean
+square on every disc with `R<c.re`, and the canonical critical-line-disc specialization.
+Final leaf compiles warning-free; all four public axiom audits are standard-only.
+Wired; exact-name index sees the canonical-disc theorem at line 212. Global lint
+exit 1 lists 18 unrelated unreachable modules, no BAG error. The C20.9 spatial
+envelope is now in scratch; it is not yet claimed formalized.
+
+**C20.10 — one geometric aggregate controls every selected scale (paper proof).**
+After C20.9 set `C_* = 128*C/pi` and, for any `u_j>=3`, define
+`W_u = sum_j 2^(-j-1)*Z_(u_j)/M_(u_j)^2` as a nonnegative Lebesgue sum.
+Measurability and Tonelli give `E W_u <= C_*`, since the geometric weights sum to
+one and every partition is strictly positive. Consequently
+`P(W_u>exp(2A)) <= C_* exp(-2A)`. Every summand is at most the sum, so on
+`W_u<=exp(2A)` the bound
+`|F_(u_j)(1/2+it)|^2 <= 2^(j+1)*exp(2A)*M_(u_j)^2`
+holds simultaneously for all `j` and `t in [0,1]`.
+Select the cofinal cutoffs more sparsely, using F49's actual variance divergence:
+`u_j>=j+3` and `V_(u_j)>=2^j`. No upper bound or quantitative clock is needed.
+Then `2^(j+1)<= (1+V_(u_j))^4`, giving exactly the spatial logarithmic barrier
+`log|F_(u_j)(1/2+it)|-log M_(u_j)<=A+2*log(1+V_(u_j))`.
+This replaces a countable union and a p-series calculation with one explicit random
+variable and a geometric series; F51's survival theorem already accepts every
+cofinal sequence, and F52 already accepts all later density cutoffs. The exact
+field/centered-log identity, phase-rotation covariance, and spatial change of measure
+must still be formalized before using this argument for critical-mass decay.
+
+**C20.9 / F56 FINAL — measurable spatial envelope, LEAN PROVED.**
+`SteinhausEulerSpatialEnvelope.lean` (204 lines) proves the rectangle containment
+and area, joint measurability of the literal finite Euler product, its exact
+nonnegative second moment, and measurability and simultaneous pointwise domination
+by the explicit rectangle envelope. Tonelli and F54 yield
+`E Z_N <= (128*C/pi)*M_N(1/2)^2` for every `N>=3`.
+Final leaf compiles warning-free; all eight public axiom audits are standard-only;
+wired and exact-name index-visible. Global lint exit 1: 16 unrelated unreachable
+modules, no BAG error. The spatial maximum obligation is now replaced by a proved
+explicit envelope. The multiscale aggregate, phase covariance, centered-log identity,
+critical-mass decay and independent recurrence remain subsequent obligations.
+
+**C20.11 — literal density and centered-log identification (paper proof).**
+At a prime `p`, F53 identifies `X_p` with the coordinate circle phase, and the
+positive real base identity gives `p^(-1/2)` as the critical radius. Thus the one-prime
+weight is `(1-1/p)*|(1-X_p*p^(-1/2))^(-1)|^2`. At a nonprime coordinate the radius
+is zero, the weight is one, and the centered logarithmic increment is zero.
+Multiplying through coordinates below `N`, then filtering to primes, gives exactly
+`D_N=ofReal(|F_N(1/2)|^2/M_N)`. Summing centered logs gives
+`S_N=log|F_N(1/2)|-log M_N`. All logarithm product rules are justified: prime
+Euler denominators are nonzero and `M_N>0`; alternatively the existing F46
+`steinhausFiniteEulerProduct_eq_exp` and `log_norm_steinhausFiniteEulerProduct`
+provide the log-norm sum without branch ambiguity.
+For a vertical shift `t`, use the existing measure-preserving coordinate rotation
+with shift `a_t(p)=-t*log(p)/(2*pi)`. At every prime this multiplies `X_p` by
+`p^(-it)`, so evaluating `F_N` at `1/2+it` equals evaluating the critical-real field
+at the rotated sample. The same rotation must transport the entire finite-barrier
+event, not only each individual moment. For Tonelli, define the spatial barrier
+directly from `log|F_(u_j)(1/2+it)|-log M_(u_j)` and the normalized squared norm.
+F56 already gives joint measurability of the field; measurable logarithm and finite
+intersections give joint measurability of this restricted density. Only the existing
+rotation at each fixed `t` is needed for its expectation, so no joint-measurability
+theorem for the rotation map is required. These exact identities and event transport
+are next formal obligations; no critical-mass conclusion is claimed yet.
+
+**C20.10 / F57 FINAL — one exceptional event for all selected fields, LEAN PROVED.**
+`SteinhausEulerGlobalEnvelope.lean` (134 lines) defines the geometric aggregate
+`W_u` and proves its measurability, expectation bound by `C_*=128*C/pi`, literal
+Euler-field domination at every selected cutoff and every `t in [0,1]`, and
+`P(W_u>=R)<=C_*/R` for every positive real threshold. Only `u_j>=3` is needed.
+Final leaf compiles warning-free; all five public axiom audits are standard-only;
+wired and exact-name index sees the Markov theorem at line 122. Global lint exit 1
+lists 16 unrelated unreachable modules, no BAG error. The actual variance-selected
+cutoffs, C20.11 identities/event transport, critical-mass decay and independent
+recurrence remain open. F57 is an unconditional ingredient, not a recurrence result.
+
+**C20.11a / F58 FINAL — literal field/tilt identities, LEAN PROVED.**
+`SteinhausEulerExactIdentities.lean` (122 lines) proves the exact critical prime
+argument, the finite coordinate density identity `D_N=ofReal(|F_N(1/2)|^2/M_N)`,
+and the centered-sum identity `S_N=log|F_N(1/2)|-log M_N`, for every cutoff and
+sample. Nonprime coordinates are eliminated exactly; no almost-everywhere or
+asymptotic identification is substituted. Final leaf warning-free; three public
+axiom audits standard-only; wired and index-visible. Latest lint exit 1: ten
+unrelated unreachable modules, no BAG error. Phase covariance and whole-barrier
+transport are now in scratch; spatial critical-mass decay remains open.
+
+**C20.12 — actual cutoff selection and global good barrier (paper implementation).**
+For each integer `j`, let `u_j` be the least `N>=j+3` for which the actual tilted
+variance `V_N>=2^j`. F49's divergence proves this set nonempty; the lower bound
+forces cofinality without any monotonicity assumption on the selected sequence.
+On `W_u<=exp(2A)`, F57 bounds the squared norm by `M_(u_j)^2*2^(j+1)*exp(2A)`.
+Since `V>=2^j>=1`, one has `2^(j+1)<=2V<=(1+V)^2<=(1+V)^4`. Taking nonnegative
+square roots and then logarithms of the nonzero literal Euler product yields
+`log|F_(u_j)(1/2+it)|-log M_(u_j)<=A+2log(1+V)` for all `j` and `t in [0,1]`.
+Thus the same good event lies in every F59 finite spatial barrier. F57's Markov
+bound gives exceptional measure at most `C_*exp(-2A)`. These operations use the
+actual field, variance, and selected cutoffs, not witnesses assumed to have these
+properties. Next combine joint measurable spatial integration with F59/F51.
+
+**C20.11b / F59 FINAL — exact whole-barrier vertical transport, LEAN PROVED.**
+`SteinhausEulerVerticalBarrier.lean` (132 lines) proves measurable, measure-preserving
+vertical rotation; exact prime-character and finite-product covariance (at arbitrary
+complex abscissa); exact rotated density and centered-log identities; the whole
+finite spatial barrier as a preimage; and its literal restricted-energy expectation
+as the tilted survival probability, for every final cutoff containing the tested heads.
+Final leaf warning-free; all nine public axiom audits standard-only; wired and index
+visible (main theorem line 111). Latest lint exit 1: eleven unrelated unreachable
+modules, no BAG error. C20.12 actual cutoff/global good-barrier assembly is now in
+scratch; spatial integration and critical-mass convergence remain open.
+
+**C20.13 — full-cutoff critical spatial mass decay (dependency-closed paper proof).**
+Define the literal normalized mass `Y_N(omega)=integral_(0<=t<=1) D_N(t,omega) dt`,
+using the nonnegative integral and F59's actual spatial density. Let `Y_N^(A,J)`
+insert the indicator of the first `J` spatial barriers for C20.12's selected sequence.
+F56's joint field measurability gives joint density measurability; measurable real
+logarithm and finite intersections give joint restricted-density measurability.
+Tonelli and F59 show `E Y_N^(A,J)=nu(B_(A,J))` whenever every tested head is at most
+`N`, because the unit spatial interval has measure one. On the single good event
+`W_u<exp(2A)`, C20.12 makes all spatial indicators equal one, hence `Y_N=Y_N^(A,J)`
+for every final `N`. Markov and set inclusion therefore give, for every `epsilon>0`,
+`P(Y_N>=epsilon)<=C_*exp(-2A)+nu(B_(A,J))/epsilon` uniformly over all such final
+cutoffs. First choose `A` to make the first term at most `eta/2`; F51 and actual
+cofinality then choose `J` making the second term at most `eta/2`; every
+`N>=max_(j<J)u_j` now satisfies the desired estimate. Thus the literal normalized
+critical spatial mass tends to zero in probability along all natural cutoffs.
+No subsequence interpolation, quantitative Mertens clock, uncountable supremum,
+or recurrence hypothesis enters this proof. Formalize measurability, exact restricted
+expectation, good-event equality, quantitative probability bound, and the limit.
+
+**C20.12 / F60 FINAL — actual selected global barrier, LEAN PROVED.**
+`SteinhausEulerSelectedBarrier.lean` (118 lines) constructs least actual cutoffs
+`u_j>=j+3` with variance at least `2^j`, proves cofinality, proves the literal
+logarithmic-variance barrier everywhere on the unit segment whenever the global
+envelope is at most `exp(2A)`, puts that one good event inside every finite spatial
+barrier, and bounds the complementary threshold event by `C_*exp(-2A)`.
+Final leaf warning-free; all five public axiom audits standard-only; wired and
+index-visible. Global lint exit 1: twelve unrelated unreachable modules, no BAG error.
+The full-cutoff mass assembly in C20.13 is now in scratch and is not yet claimed proved.
+
+
+**C20.14 — all subunit moments of critical mass (dependency-closed paper proof).**
+For any `0<q<1`, any nonnegative threshold `epsilon`, and `B={Y_N>=epsilon}`,
+pointwise `Y_N^q<=epsilon^q+Y_N^q*1_B^(1-q)`. Integrate and apply Holder with
+exponents `q` and `1-q` in its weighted mean form. F61's exact unit expectation
+then gives `E Y_N^q<=epsilon^q+P(B)^(1-q)`. For positive finite `epsilon`, F61
+makes the second term tend to zero along all cutoffs. Given positive finite
+`delta`, take `epsilon=(delta/2)^(1/q)` and then make the second term at most
+`delta/2`. This proves `E Y_N^q -> 0` for every `0<q<1`, particularly the
+square-root moment. Infinite thresholds/tolerances require only the extended-real
+order conventions; no domination or uniform integrability premise is introduced.
+This closes the probabilistic critical-mass input only. The arithmetic reduction
+from Euler-product moments to Steinhaus summatory first mean remains a separate
+obligation before weighted/frozen-prefix centre control and deterministic recurrence.
+
+
+**C20.13 / F61 FINAL — all-cutoff critical mass decay, LEAN PROVED.**
+`SteinhausEulerCriticalMass.lean` (181 lines) defines the literal normalized unit-segment
+critical mass and its finite-barrier restriction. Ten public theorems prove joint and
+integrated measurability, exact restricted expectation, exact unit mean, equality on
+the global good event, the two-term probability estimate, and convergence to zero in
+probability along all natural cutoffs. The final limit is at line 168. Final leaf
+passes warning-free; all ten public axiom audits are standard-only; wired and exact-name
+index-visible. Lint exit 1 lists fourteen unrelated unreachable modules, no BAG error.
+F62 now formalizes C20.14's fractional-moment consequence. The arithmetic first-mean
+reduction and independent recurrence producer remain open.
+
+
+**C20.14 / F62 FINAL — all fractional critical-mass moments, LEAN PROVED.**
+`SteinhausEulerCriticalMoments.lean` (88 lines) proves the exact tail-controlled
+fractional-moment inequality, vanishing of every moment `0<q<1` along all natural
+cutoffs, and the square-root specialization. Scratch and final leaf pass warning-free;
+all three public axiom audits standard-only; wired and exact-name index-visible
+(main theorem line 48). Lint exit 1 lists fifteen unrelated unreachable modules.
+
+**C20.15 — fixed-prefix qualitative arithmetic bridge (paper proof; Lean obligations open).**
+For a fixed prime cutoff `y`, split each positive integer uniquely as `a*b`, with
+`a` supported on primes below `y` and `b` having none. Conditioning on the prefix,
+exterior-character orthogonality gives conditional variance
+`V_(y,x)=sum_(b rough, b<=x)|sum_(a smooth, a<=x/b) X_a|^2`.
+Finite inclusion-exclusion gives `R_y(T)/T -> alpha_y=prod_(p<y)(1-1/p)=1/M_y`.
+Expand the squared sums to pairs `(a,c)`. Their coefficient is
+`R_y(x/max(a,c))/x`, bounded by `1/max(a,c)<=1/sqrt(ac)`, and converges to
+`alpha_y/max(a,c)`. For this fixed finite prime set,
+`sum_(a smooth) a^(-1/2)=prod_(p<y)(1-p^(-1/2))^(-1)<infinity`.
+Thus dominated convergence for the pair series gives uniformly in all prefix phases
+`V_(y,x)/x -> K_y=alpha_y*sum_(a,c smooth) X_a*conj(X_c)/max(a,c)`.
+The Cauchy Fourier identity, or Mellin Parseval, gives exactly
+`K_y=(1/(2*pi))*integral_R (|F_y(1/2+it)|^2/M_y)/(1/4+t^2) dt`.
+Absolute convergence follows from the same finite-prime geometric majorant.
+Conditional Cauchy--Schwarz and prefix integration yield
+`limsup_(x->infinity) E|sum_(n<=x)X_n|/sqrt(x) <= E sqrt(K_y)` for every fixed `y`.
+To show the latter tends to zero, use vertical stationarity and F61 on each of finitely
+many unit intervals in a compact window. Markov bounds the complementary weighted
+mass by the deterministic Cauchy-kernel tail, uniformly in `y`, since each normalized
+pointwise density has mean one. First enlarge the compact window, then send `y` to
+infinity: `K_y -> 0` in probability. Its exact mean is one because the chosen
+Cauchy density integrates to one, so the same Holder argument as F62 gives
+`E sqrt(K_y)->0`. This proves the qualitative first-mean target without any growing
+sieve cutoff, rate comparison, or uniform-in-y rough-number estimate.
+
+The limit order is essential: first the summation length with a fixed finite prefix,
+then the prefix. All five formal obligations remain explicit: finite-prefix resampling
+and conditional norm bound; smooth Dirichlet-series absolute convergence; rough-count
+asymptotic and dominated pair limit; Cauchy/Mellin identity; whole-line weighted-mass
+decay. The existing frozen-prefix second-moment formula is the exact conditioning
+input. Current mathlib's finite-prime geometric theorem already provides the smooth
+series once the actual multiplicative coefficient is supplied. Harper's primary paper
+[section 2](https://arxiv.org/pdf/1703.06654) supplies adjacent quantitative reduction
+and Mellin Parseval context; the fixed-prefix double-limit argument above is derived
+here and is not treated as an imported formal theorem. No recurrence claim yet.
+
+
+**C20.16 — actual smooth Dirichlet expansion (dependency-closed paper proof).**
+For fixed sample and complex `s`, extend `X_n*n^(-s)` by zero at `n=0` to a
+multiplicative map on naturals. At positive inputs, character multiplicativity and
+positive-real-base complex powers give the product law; zero cases and value one
+are exact. Its prime norm is `p^(-Re(s))<1` when `Re(s)>0`. Apply current mathlib's
+finite-prime geometric theorem to obtain both absolute summability over
+`Nat.smoothNumbers N` and exact sum equal to the literal finite Euler product.
+Smooth numbers are nonzero, so the artificial zero convention disappears entirely
+from the exported series. Norms equal `n^(-Re(s))`; specializing the real part gives
+absolute summability of every fixed-prime smooth power majorant `n^(-sigma)` for
+all `sigma>0`. No convergence of the full natural-number Dirichlet series is used.
+
+
+**C20.17 — translated unit masses (dependency-closed paper proof).**
+Vertical covariance from F59 gives `D_N(a+t,omega)=D_N(t,rotation_a(omega))`.
+Lebesgue translation sends `[0,1]` to `[a,a+1]`, so the literal mass on that interval
+is exactly `Y_N(rotation_a(omega))`. F59's measure-preserving rotation therefore
+preserves every measurable nonnegative test expectation, hence every fractional
+moment and threshold probability. F61/F62 transfer to every translated interval.
+The pointwise density itself has exact mean one, by the empty-barrier case of F59.
+These identities provide both compact-window decay and uniform tail expectation
+for C20.15's whole-line Cauchy weight; no independence between spatial intervals is
+asserted or needed.
+
+
+**C20.16 / F63 FINAL — literal smooth series, LEAN PROVED.**
+`SteinhausEulerSmoothSeries.lean` (76 lines) proves the exact coefficient norm,
+absolute summability of the literal smooth Dirichlet series for every `Re(s)>0`,
+its exact sum and Euler-product identity, and summability of the deterministic
+smooth power majorant for every positive exponent. The zero extension is confined
+to a private multiplicative map; all exported sums use the actual positive smooth
+numbers and actual Steinhaus coefficients. Scratch/final pass warning-free; all
+five public axioms standard-only; wired and index-visible (HasSum theorem line 58).
+Lint exit 1: thirteen unrelated unreachable modules, no BAG error.
+
+
+**C20.18 — literal rough-count pair coefficients (dependency-closed paper proof).**
+The corpus already contains `roughCount`, exact finite-prime inclusion-exclusion,
+and `|X*prod_(p in P)(1-1/p)-roughCount(P,X)|<=card(P.powerset)` in
+`ThetaCutoffCommutatorShell.lean`. For every real `d>0` and `x>0`, substitute
+`X=x/d` and divide by `x`. This gives
+`|roughCount(P,x/d)/x-M_P(1/2)^(-1)/d|<=card(P.powerset)/x`, uniformly in `d`.
+Also the literal rough count is bounded by `floor(x/d)`, so its coefficient lies
+between zero and `1/d`. Thus it converges to the required inverse-partition
+coefficient as `x->infinity`, on both real and natural cutoffs. Taking
+`d=max(a,c)` gives precisely C20.15's smooth-pair kernel and domination. No new
+sieve estimate is needed; formalize these actual endpoint specializations.
+
+
+**C20.17 / F64 FINAL — exact spatial stationarity, LEAN PROVED.**
+`SteinhausEulerTranslatedMass.lean` (73 lines) proves density covariance, exact
+pointwise density mean one, actual translated-interval mass equality with a rotated
+unit mass, measurability, stationarity of every measurable nonnegative test, exact
+power-moment equality, and subunit-moment convergence on every translated unit
+interval. Final leaf warning-free; seven public axioms standard-only; wired and
+index-visible at line 66. Lint exit 1: twelve unrelated unreachable modules.
+
+
+**C20.19 — compact-window fractional moments (dependency-closed paper proof).**
+Every `t in [-m,m]` lies in `[floor(t),floor(t)+1]` with the integer floor in
+`[-m,m]`. Nonnegative integration and a finite union bound therefore dominate the
+literal compact-window mass by the sum of these `2m+1` translated unit masses.
+For `0<q<1`, subadditivity of the q-th power gives an expectation at most
+`(2m+1)*E Y_N^q`, using F64's exact stationarity. F62 makes this vanish for each
+fixed compact window. Endpoint overlaps only enlarge the upper bound; no disjointness
+or spatial independence is needed. This supplies C20.15's compact term while leaving
+the uniformly integrable Cauchy tail as a separate next step.
+
+
+**C20.20 — whole-line Cauchy mass (dependency-closed paper proof).**
+Use the actual Cauchy probability measure `nu` with location zero and scale one half;
+its density is `1/(2*pi*(1/4+t^2))`, bounded by one since `pi>2`. Define
+`K_N=integral D_N(t) dnu(t)`. Joint measurability and F64's pointwise unit mean give
+measurability and `E K_N=1`; restricting the spatial integral to any set `B` gives
+exact expectation `nu(B)`. Split at `[-m,m]`. Domination `nu<=Lebesgue` bounds the
+head by C20.19's compact mass. Subadditivity of powers and Holder on the probability
+space bound the q-th moment of the tail by `nu([-m,m]^c)^q`, so
+`E K_N^q<=E compactMass_(N,m)^q+nu([-m,m]^c)^q` for every `0<q<1`.
+Continuity from above of the finite Cauchy measure makes the second term vanish
+as `m->infinity`; C20.19 makes the first vanish as `N->infinity` for each fixed `m`.
+Thus every subunit moment of the literal whole-line Cauchy mass vanishes. This is
+exactly C20.15's required kernel normalization, with no change of abscissa or moving
+spatial window. Formalization follows the compact-window leaf.
+
+
+**C20.18 / F65 FINAL — exact rough-pair coefficient limit, LEAN PROVED.**
+`SteinhausEulerRoughCount.lean` (75 lines) identifies the exact rough density with
+the reciprocal critical partition, proves the uniform discrepancy bound for every
+positive pair scale and summation length, proves reciprocal-scale domination, and
+proves the real, natural and literal smooth-pair maximum-kernel limits. Final leaf
+warning-free; six public axiom audits standard-only; wired and index-visible (pair
+limit line 66). Lint exit 1: fourteen unrelated unreachable modules, no BAG error.
+
+
+**C20.19 / F66 FINAL — compact-window subunit moments, LEAN PROVED.**
+`SteinhausEulerCompactMass.lean` (86 lines) proves joint-integral measurability,
+finite translated-interval domination, the exact finite-cover moment bound, and
+vanishing of every subunit moment on every fixed compact window. Final leaf passes
+warning-free; all four public axiom audits use only standard axioms; wired.
+Lint exit 1: sixteen unrelated unreachable modules, no BAG error. Initial API probe
+used the wrong namespace for `withDensity_one`/`withDensity_mono` and omitted
+`noncomputable` for a density definition; corrected probe passes. No theorem changed.
+
+**C20.21 — literal prefix resampling (dependency-closed paper proof).**
+Take two independent Steinhaus samples `(omega,eta)`. Regard them as one independent
+family indexed by `Nat + Nat`, using the corpus product-measure splitting theorem.
+For each index p select `inl p` if p belongs to S and `inr p` otherwise. This selector
+is injective, so its coordinate pullback still has the original infinite product
+law. It is exactly `freezeSteinhausPrefix S omega eta`, not a conditional-model
+surrogate. Every measurable nonnegative test therefore has the same expectation
+under double resampling as under the original law. Apply Holder with exponent one
+half to the inner integral of the square of a nonnegative measurable test, then
+integrate in omega. This proves the needed first-moment bound by the mean square
+root of the literal frozen-prefix second moment, without postulating conditional
+expectation or independence of repeated exterior factorizations.
+
+
+**C20.22 — existing smooth/rough split and exterior classes (paper proof).**
+Use the literal `RHTower.Sieve.smoothPart (y-1) n` and `roughPart (y-1) n`.
+For prime p, `p <= y-1` is equivalent to `p < y`, including y=0 because primes
+are at least two. Their factorizations are the inside/outside filters of
+`n.factorization`; current mathlib recovers a filtered prime-power product's
+factorization exactly. The latter outside filter is exactly F41's
+`steinhausExteriorFactorization (Nat.primesBelow y) n`. Both factors are positive;
+for positive n their product is n, by the existing sieve theorem. The first is
+literally in `Nat.smoothNumbers y`; no prime in the prefix divides the second.
+Conversely, if a is y-smooth and b is positive with no prefix-prime divisor,
+filtering `(a*b).factorization = a.factorization+b.factorization` recovers a and b.
+Factorization injectivity on positive naturals gives uniqueness. Thus two positive
+integers have the same exterior index precisely when they share their rough factor.
+This supplies the exact arithmetic reindexing for C20.15, with no new surrogate
+notion of roughness and no additional probability hypothesis.
+
+
+**C20.23 — exact Cauchy smooth-pair kernel (dependency-closed paper proof).**
+The corpus theorem `HTGeometry.integral_inv_sq_add_sq_mul_cexp_neg` evaluates
+`integral exp(-i*L*t)/(a^2+t^2) dt = (pi/a)*exp(-a*abs(L))` for every a>0.
+At a=1/2, multiplying by the literal Cauchy density normalization `1/(2*pi)`
+gives characteristic function `exp(-abs(L)/2)` for precisely C20.20's measure.
+For positive a,b, expand positive-real-base complex powers via real logarithms:
+`a^(-1/2-it)*conj(b^(-1/2-it))` equals
+`exp(-(log(a)+log(b))/2)*exp(-i*t*(log(a)-log(b)))`.
+Its Cauchy integral is therefore
+`exp(-(log(a)+log(b)+abs(log(a)-log(b)))/2) = 1/max(a,b)`.
+The last equality follows by either order of a,b and monotonicity of logarithm.
+Multiplying by the actual characters gives the required pair coefficient.
+F63's absolute smooth-series majorant at 1/2 makes the double series of integrated
+norms finite, uniformly in height: its bound is `(sum_smooth a^(-1/2))^2`.
+Thus two sum/interchange steps identify the literal squared Euler integral with
+the smooth-pair maximum kernel. F58's exact normalization by M_y then identifies
+C20.15's arithmetic limit with the literal Cauchy mass from F67. No Plancherel
+normalization or boundary-value premise remains implicit in this calculation.
+
+
+**C20.20 / F67 FINAL — literal whole-line Cauchy mass, LEAN PROVED.**
+`SteinhausEulerCauchyMass.lean` (139 lines) proves measurability, exact unit mean,
+compact-head/Cauchy-tail fractional-moment control, vanishing of every subunit
+moment along all natural cutoffs, and the square-root specialization needed by
+C20.15. All five public axiom audits use only standard axioms; final leaf is
+warning-free, wired and index-visible (general limit line 118). Lint exit 1:
+ten unrelated unreachable modules, no BAG error. Holder uses the explicit original
+probability measure; no conditional moment or arithmetic reduction is assumed.
+
+
+**C20.24 — literal summatory smooth/rough reindexing (paper proof).**
+Let R be exactly the finite set counted by `roughCount(P,N)`, with
+`P=Nat.primesBelow y`; let A=`Nat.smoothNumbersUpTo N y`. Multiplication bijects
+`{(a,b) in A*R : a*b<=N}` with `{1,...,N}`. Positivity gives image membership;
+C20.22 gives injectivity; existing sieve factors give surjectivity because both
+divide each positive n and their product is n. Hence any finite arithmetic sum
+reindexes as `sum_b in R sum_a in A [a*b<=N]*F(a*b)`, including N=0.
+For smooth a the frozen-prefix character is `X_a(omega)`, and for rough b it is
+`X_b(eta)`, directly from the original prime-factor phase sum. Multiplicativity
+therefore gives
+`sum_(n<=N) X_n(freeze(omega,eta)) = sum_b in R X_b(eta)*
+  sum_a in A [a*b<=N]*X_a(omega)`.
+Full-law orthogonality on the positive distinct rough indices gives the exact
+frozen-prefix variance as the sum over b of squared norms of these inner sums.
+Expanding the finite squares and reversing finite sums counts b subject to
+`b*max(a,c)<=N`; this is exactly `roughCount(P,N/max(a,c))`, since max(a,c)>0.
+This proves C20.15's literal coefficient identity before any infinite-series limit.
+
+
+**C20.21 / F68 FINAL — literal prefix-resampling law, LEAN PROVED.**
+`SteinhausPrefixResampling.lean` (80 lines) proves joint measurability, exact
+pushforward of the independent product law, preservation of every measurable
+nonnegative test expectation under double resampling, and the first-moment bound
+by the average square root of the literal frozen-prefix second moment. Final leaf
+warning-free; all four public axiom checks standard-only; wired/index-visible
+(bound line 62). Lint exit 1: ten unrelated unreachable modules. The combined
+audit's separate future density-conversion probe had a wrong namespace; all four
+F68 checks printed successfully and no F68 theorem was affected. That API is at
+root namespace and its corrected probe is combined with the next scratch check.
+
+
+**C20.25 — uniform arithmetic kernel error (paper proof).**
+For fixed y define the deterministic nonnegative pair error
+`e_(y,N)=sum_(a,c smooth) abs(roughCount(P,N/max(a,c))/N-alpha_y/max(a,c))`,
+where `alpha_y=M_y(1/2)^(-1)`. Every coefficient tends to zero by F65. For N>=1,
+its absolute value is bounded by `(1+abs(alpha_y))/max(a,c)` and hence by
+`(1+abs(alpha_y))*a^(-1/2)*c^(-1/2)`. F63 makes this double majorant summable.
+Dominated convergence of series gives `e_(y,N)->0`. Extend the finite coefficient
+formula by zero outside bounded smooth pairs; its count already vanishes there.
+Character norms are exactly one, so the normalized literal frozen-prefix variance
+V satisfies `abs(V_(y,N)/N-K_y(omega))<=e_(y,N)` for every omega, with K_y the
+literal Cauchy mass identified in C20.23. This bound is uniform in all prefix phases.
+Thus `sqrt(V_(y,N)/N)<=sqrt(K_y(omega))+sqrt(e_(y,N))`. F68 and integration give
+`E abs(sum_(n<=N) X_n)/sqrt(N)<=E sqrt(K_y)+sqrt(e_(y,N))` for every fixed y.
+F67 first lets y make the first term arbitrarily small, then series convergence
+lets N make the second term small for all sufficiently large N. This realizes
+C20.15's order of limits without a separate outer dominated-convergence theorem,
+and supplies an explicit deterministic error object for the weighted transfer.
+
+
+**C20.22 / F69 FINAL — literal smooth/rough exterior classification, LEAN PROVED.**
+`SteinhausSmoothRoughSplit.lean` (122 lines) identifies both existing sieve-factor
+factorizations, proves actual smooth-number membership and prefix-prime exclusion,
+identifies equality of exterior indices with equality of rough factors, recovers
+both factors from arbitrary smooth/rough products, and proves pair uniqueness.
+All eight public axiom checks standard-only; final leaf warning-free, wired and
+index-visible (exterior classification line 67). Lint exit 1: twelve unrelated
+unreachable modules, no BAG error. No new arithmetic decomposition object added.
+
+
+**C20.23 / F70 FINAL — exact normalized Cauchy pair kernel, LEAN PROVED.**
+`SteinhausEulerCauchyKernel.lean` (70 lines) proves the characteristic function of
+the literal half-scale Cauchy probability measure and its exact critical-power
+pair integral `1/max(a,b)` for all positive real a,b. Both public axiom audits
+standard-only; final leaf warning-free, wired/index-visible (pair identity line40).
+Lint exit 1: eleven unrelated unreachable modules, no BAG error. This discharges
+the kernel normalization itself; the absolute smooth-series interchange and
+identification with the normalized Euler mass remain separate required steps.
+
+
+**C20.24 / F71 FINAL — literal finite split and rough variance, LEAN PROVED.**
+`SteinhausSmoothRoughSum.lean` (119 lines) proves the exact finite multiplication
+reindex for every arithmetic test, the literal smooth and rough frozen-character
+identities, the summatory polynomial split, and its exact conditional variance as
+a sum of squared smooth-coefficient norms over actual rough integers. Existing
+complex-coefficient Parseval discharges orthogonality; no surrogate covariance is
+introduced. All five public axiom audits standard-only; final leaf warning-free,
+wired/index-visible (rough variance line107). Lint exit 1: twelve unrelated
+unreachable modules. Finite-square expansion into literal rough-count pair
+coefficients remains required before the limit handoff.
+
+
+**C20.25 / F72 FINAL — deterministic total pair-count error, LEAN PROVED.**
+`SteinhausSmoothPairError.lean` (109 lines) proves summability of the literal
+smooth-pair majorant, an all-N absolute coefficient-error bound, absolute
+summability and nonnegativity of the total error, and its convergence to zero.
+All five public axiom audits standard-only; final leaf warning-free, wired and
+index-visible (limit line90). Lint exit1: ten unrelated unreachable modules.
+F73 exact integral/series API probes also pass. The uniform comparison with the
+literal frozen variance still needs the finite count identity and mass identity.
+
+
+**C20.23 / F73 FINAL — actual Euler mass equals the smooth-pair series, LEAN PROVED.**
+`SteinhausEulerCauchySeries.lean` (179 lines) proves the exact complex smooth-pair
+expansion of the whole-line squared finite Euler integral and identifies its
+inverse-partition normalization with the original Cauchy mass. Uniform smooth
+absolute convergence proves integrability; summable integral norms justify the
+series interchange. Both public audits standard-only; final leaf warning-free,
+wired/index-visible (mass identity line157). Lint exit1: twelve unrelated
+unreachable modules. No arithmetic variance identity or recurrence assumed.
+
+
+**C20.24 / F74 FINAL — literal finite rough-count pair coefficients, LEAN PROVED.**
+`SteinhausSmoothRoughPairCount.lean` (111 lines) proves exact rough quotient
+cardinality, zero coefficients beyond the arithmetic cutoff, and the full
+finite smooth-pair expansion of the original frozen-prefix variance. All three
+public axiom audits standard-only; final leaf warning-free, wired/index-visible
+(variance identity line98). Lint exit1: twelve unrelated unreachable modules.
+The finite-square expansion and exact maximum constraint are now discharged.
+
+
+**C20.24 / F75 FINAL — exact infinite arithmetic coefficient series, LEAN PROVED.**
+`SteinhausSmoothRoughPairSeries.lean` (69 lines) extends the literal finite pair
+count by zero to all smooth pairs, proving its HasSum is exactly the original
+frozen-prefix variance and its normalized counterpart for every natural cutoff.
+Both public audits standard-only; final leaf warning-free, wired/index-visible
+(normalized identity line59). Lint exit1: twelve unrelated unreachable modules.
+Finite support and both subtype reindexings are explicit; no infinite arithmetic
+interchange or moment asymptotic is assumed.
+
+
+**C20.25 / F76 FINAL — uniform original variance-to-Cauchy comparison, LEAN PROVED.**
+`SteinhausFrozenVarianceCauchyLimit.lean` (104 lines) defines the literal normalized
+frozen-prefix summatory variance, proves its nonnegativity, proves pointwise finite
+Cauchy mass and its exact real smooth-pair form, and bounds the absolute difference
+by F72's deterministic total coefficient error for every cutoff and every phase.
+The actual normalized variance therefore converges to the original Cauchy mass at
+each fixed prefix. All five public audits standard-only; final leaf warning-free,
+wired/index-visible (uniform bound line45). Lint exit1: twelve unrelated
+unreachable modules. This closes C20.15's arithmetic variance handoff. The first-
+mean consequence, weighted transfer and same-event centre control remain next.
+
+
+**C20.26 — uniform monotone-weight transfer via a global mean envelope (paper proof).**
+The unweighted first-mean limit implies, for every epsilon>0, a constant C>=0 with
+`E|S_n| <= C+epsilon*sqrt(n)` for every n (use `E|S_n|<=n` below the threshold).
+For any nonnegative decreasing weights at positive indices, exact finite Abel
+summation with terminal weight w_(N+1) gives expected weighted magnitude at most
+`C*w_1 + epsilon*(w_(N+1)*sqrt(N)+sum_(n=1..N)(w_n-w_(n+1))*sqrt(n))`.
+A second finite Abel identity rewrites the parenthesized cost as
+`sum_(n=1..N) w_n*(sqrt(n)-sqrt(n-1))`. If `w_n<=n^(-beta)` and
+`0<beta<1/2`, the square-root increment is at most `n^(-1/2)`. Existing
+`Sieve.sum_rpow_neg_subcritical_le` bounds this cost by
+`N^(1/2-beta)/(1/2-beta)+1`. Also w_1<=1. Divide by `N^(1/2-beta)`;
+first send N to infinity, then epsilon to zero. This proves uniformity over the
+whole weight class, including every positive smoothing scale. The existing
+`BourgainPartialSummation.sum_Ioc_weight_mul_eq` supplies the exact finite identity;
+its applicability and all new mean/weight interfaces remain to be checked in Lean.
+
+
+**C20.15 / F77 FINAL — unconditional original arithmetic first-mean decay, LEAN PROVED.**
+`SteinhausSummatoryFirstMoment.lean` (151 lines) proves measurability of the literal
+normalized summatory norm, its exact frozen conditional square, the first-mean
+Cauchy/error inequality, vanishing of the nonnegative normalized moment, its exact
+ordinary-real integral form, and
+`E abs(sum_(n=1..N) X_n)/sqrt(N) -> 0` along all natural cutoffs.
+The fixed-prefix double limit is fully discharged from the original product law;
+no low-moment theorem or conditional variance asymptotic is assumed. All six
+public axiom audits standard-only; final leaf warning-free, wired/index-visible
+(real first-mean limit line138). Lint exit1: ten unrelated unreachable modules.
+C20.15 is now closed. Uniform weighted transfer, fixed-cofactor subtraction,
+same-event centre/target control and deterministic recurrence remain open.
+
+
+**C20.26 / F78 FINAL — actual weighted mean Abel envelope, LEAN PROVED.**
+`SteinhausWeightedSummatoryAbel.lean` (129 lines) proves finite weighted-norm
+integrability, the all-cutoff unweighted mean ceiling, an unconditional global
+`C+epsilon*sqrt(n)` mean envelope at every positive tolerance, the exact positive
+Abel combination bounding the original weighted mean, and its transfer to the
+square-root Abel cost. All five public audits standard-only; final leaf warning-
+free, wired/index-visible (envelope transfer line95). Lint exit1: ten unrelated
+unreachable modules. Existing sharper power-sum theorem also axiom-audited.
+The uniform weight-class limit still needs the explicit cost bound and limit step.
+
+
+**C20.26 / F79 FINAL — explicit uniform square-root Abel cost, LEAN PROVED.**
+`SteinhausAbelSqrtCost.lean` (69 lines) proves the exact increment decomposition,
+reciprocal-square-root increment bound, and sharper cost bound
+`N^(1/2-beta)/(1/2-beta)` for every nonnegative weight below `n^(-beta)` when
+`0<beta<1/2`. Monotonicity is needed by the mean inequality, not this cost bound.
+All three public audits standard-only; final leaf warning-free, wired/index-visible
+(cost bound line39). Lint exit1: eleven unrelated unreachable modules and two
+proof-debt occurrences in unrelated `WeilPrimeDeficitSetRigidity.lean`; no BAG error.
+
+
+**C20.26 / F80 FINAL — uniform original weighted first-mean decay, LEAN PROVED.**
+`SteinhausUniformWeightedMean.lean` (65 lines) proves eventual normalized first-mean
+bounds uniformly over all admissible weights at each cutoff, and convergence for
+arbitrary cutoff-dependent weight families. Both public axiom audits standard-only;
+final leaf warning-free, wired/index-visible (uniform theorem line13). Lint exit1:
+twelve unrelated unreachable modules; no proof-debt errors. All four existing
+Gaussian-cutoff positivity, upper-bound, monotonicity and reality results also
+axiom-audited standard-only. The Gaussian specialization and exact logarithmic
+phase/reflected carrier transfer remain to be formalized.
+
+**C20.27 — logarithmic-phase transport, paper proof.**
+For n>0, unique prime factorization gives sum_p v_p(n)*log(p)=log(n).
+The existing coordinate rotation by -t*log(p)/(2*pi), reduced to the unit cell,
+therefore sends X_n to X_n*n^(-it), for every n, not just primes. This rotation
+preserves the original product probability law. Consequently every finite
+coefficient sum has exactly the same absolute first mean after multiplication
+of its n-th coefficient by n^(-it). Combining this identity with the uniform
+Gaussian estimate proves uniformity over all real phases t and all positive
+smoothing scales r. It does not assert invariance of a fixed conditioning event;
+conditional event bounds must be derived separately from the unchanged original
+law and actual event mass. Existing rotation/map and finite factorization sources
+have been read; the all-integer and integral identities remain to be checked.
+
+**C20.28 — actual reflected-carrier first mean, paper proof.**
+For a fixed right displacement 0<d<1/2 set beta=1/2-d. The literal positive-index
+coefficient is exactly chi(1/2+d+i*tau)*n^(-beta+i*tau)*W(r*n/N).
+Taking the common chi factor outside the finite sum and its norm outside the
+integral, C20.27 identifies the remaining mean with the untwisted Gaussian mean.
+When tau>=N>0 the existing global chi envelope bounds its norm by C/N^d.
+C20.26 therefore gives E|actual reflected carrier|->0, uniformly for tau>=N
+and every r>0. For a prescribed epsilon use the Gaussian bound at epsilon/(C+1),
+then C*epsilon/(C+1)<=epsilon. No moving-height equidistribution is used here;
+this is an estimate in the original phase probability space. Combining it with
+F45's fixed-cofactor nonsmooth remainder bound will yield vanishing of the
+literal smooth background and hence the bounded-centre subset of each fixed
+positive-mass covariance event. Neither local target probabilities nor orbit
+transfer follow from this alone.
+
+
+**C20.26 / F81 FINAL — literal Gaussian weight specialization, LEAN PROVED.**
+`SteinhausGaussianWeightedMean.lean` (80 lines) proves nonnegativity, power
+majorization, monotonicity, and exact real-to-complex equality for the actual
+Gaussian cutoff weights, then uniform normalized first-mean decay over every
+positive scale r. All five public audits standard-only; final leaf warning-free,
+wired/index-visible (uniform bound line59). Lint exit1: ten unrelated unreachable
+modules, no BAG errors. Exact logarithmic phase/reflected-carrier transport next.
+
+**C20.29 — exact smooth projection, stronger paper transfer.**
+Averaging X_n after retaining the prime coordinates in a finite set S gives X_n
+itself if every prime factor of n lies in S, and zero otherwise. This is the
+m=1 case of F44's exact exterior-factorization kernel. Thus the conditional
+mean of the literal finite coefficient carrier is precisely its S-smooth sum.
+The triangle inequality for this inner integral, followed by Fubini and F68's
+resampling law, gives E|smooth sum|<=E|full sum|. With S=primesLE(Y), this is
+exactly steinhausSmoothCarrier, for every Y; no fixed-cofactor or Y^2>N
+restriction is needed. Combining with C20.28 proves uniform background first-
+mean decay over every cutoff Y, every tau>=N and every r>0. This strengthens
+C20.2's proposed subtraction transfer. F45 remains useful for small channels
+and local limit work, but is unnecessary for this first-mean contraction.
+Next audit the literal averaging identity and product integrability in Lean,
+then apply Markov on each fixed positive-mass C19 event without rotating it.
+
+**C20.30 — same-event bounded-centre selection, paper proof.**
+For finitely many fixed right-strip nodes, sum the uniform first-mean background
+bounds, using tolerance epsilon/(J+1) for each component. Markov at threshold
+one makes the probability that any component norm exceeds one at most epsilon,
+uniformly over the smoothing scale, retained cutoff, and node heights above N.
+Hence for every event E with original probability at least m>0, taking epsilon=m/2
+leaves probability at least m/2 in E intersected with the event that every
+background component has norm at most one. E may depend on height: only its
+uniform mass lower bound enters. For the existing C19 covariance cells, every
+node height tau+b_j exceeds N throughout tau in [5N/4,7N/4] once N dominates
+the finitely many offsets. Intersecting preserves the existing channel-energy
+lower bound and the small-prime measurability seam. This closes the centre/mass
+quantifier gap if formalized; it does not yet produce the simultaneous local
+target probability or its deterministic vertical-flow transfer.
+
+
+**C20.27 / F82 FINAL — exact logarithmic-phase first-mean transport, LEAN PROVED.**
+`SteinhausGaussianPhaseMean.lean` (93 lines) proves all-positive-integer character
+covariance under the actual unit-cell rotation, exact finite-sum first-mean
+stationarity, the actual Gaussian complex-exponent identity, and uniform mean
+decay for every real phase and every positive smoothing scale. All four public
+audits standard-only; existing chi-envelope/coefficient-factorization source
+audits standard-only. Final leaf warning-free, wired/index-visible (uniform bound
+line80). Lint exit1: ten unrelated unreachable modules; no BAG errors.
+
+### C21 — prescribed-mean circle densities for the local target law
+
+**Paper candidate, not yet Lean proved.** The current source searches found the
+regular-variation planar LDP and generic tilt material, but no theorem matching
+these finite complex vector channels. A direct product-density construction may
+supply the required lower bound without a central limit theorem.
+
+Let independent uniform unit complex variables Z_p have vector coefficients
+A_p in C^J. Use Euclidean norms here. Suppose the Gram operator
+G=sum_p A_p A_p* satisfies G>=lambda*I with lambda>0. For a target v put
+w=G^(-1)v and m_p=A_p* w. Then sum_p A_p m_p=v,
+sum_p |m_p|^2=<v,G^(-1)v><=|v|^2/lambda, and
+max_p |m_p|<=max_p |A_p|*|v|/lambda. Assume this last bound is at most 1/2.
+
+On the p-th original circle use density
+q_p(z)=1+2 Re(conj(m_p)*z). It is nonnegative, has mean one, and its tilted
+circle mean is exactly m_p. Also E q_p^2=1+2|m_p|^2. The product density
+Q=prod_p q_p therefore defines an independent probability law with
+E_Q sum_p A_p Z_p=v and
+E_Q |sum_p A_p Z_p-v|^2=sum_p |A_p|^2*(1-|m_p|^2)<=V,
+where V=sum_p |A_p|^2. If V<=rho^2/2, Chebyshev gives tilted probability at
+least 1/2 for the radius-rho target ball. Cauchy-Schwarz in the original law gives
+
+`P(|sum A_p Z_p-v|<rho) >= (1/4)*exp(-2*|v|^2/lambda)`,
+
+because E_P Q^2=prod_p(1+2|m_p|^2)<=exp(2 sum_p|m_p|^2).
+For an open ball use Markov on the complement |sum-v|>=rho; the same estimate
+holds. These are finite exact identities and inequalities, not a limiting law.
+
+For C19/F45, the proved lower bound uses the sup norm on C^J, hence supplies
+Euclidean lambda=H/(J*log N). The fixed-cofactor upper bound gives
+max|A_p|=O(N^(-1/2)) and V=O(1/log N), uniformly on the same small-prime
+conditioning event. A bounded-centre target with sup norm at most B has
+|v|^2<=J*B^2. Thus the displayed lower bound is at least
+`(1/4)*N^(-2*J^2*B^2/H)` eventually. For each fixed H the covariance event mass
+is a fixed positive prefactor; choose H after the desired power loss and B,
+then let N grow. No comparison of H with the inverse cell mass is required.
+
+Required audits: literal one-prime circle identities; finite product-law and
+second-moment computations; actual Gram right-inverse estimates with the correct
+complex conjugations; measurability in the retained phases; integration of the
+conditional lower bound on the bounded-centre covariance event. The direct-edge
+constraints, boundary interpolation, deterministic growing-prime orbit transfer,
+and full-strip zero-density gate remain separate. This candidate claims no
+recurrence or RH result and no literature novelty.
+
+
+**C20.28 / F83 FINAL — actual reflected-carrier first-mean decay, LEAN PROVED.**
+`SmoothAFEReflectedCarrierFirstMean.lean` (79 lines) proves the exact identity
+between the literal reflected carrier's absolute first mean and the untwisted
+Gaussian mean times the actual chi norm. It then proves unconditional decay
+uniformly for every tau>=N and every positive smoothing scale. Both public
+audits standard-only; final leaf warning-free, wired/index-visible (decay line40).
+Lint exit1: ten unrelated unreachable modules. Smooth projection, same-event
+bounded centres and local target/orbit transfer remain to be formalized.
+
+**C21 quantifier refinement.** The auxiliary biased density need only exist for
+each retained phase separately. Prove the original conditional target probability
+lower bound pointwise, then integrate that original probability. Joint measurability
+comes from the literal finite carrier and the actual target event, not from any
+chosen Gram inverse or auxiliary tilted-law family. Thus a measurable choice of
+inverses or biases is unnecessary. The bounded target premise still must be
+verified on the same event with the direct-edge constraints retained.
+
+
+**C20.29 / F84 FINAL — exact smooth projection and first-mean contraction, LEAN PROVED.**
+`SteinhausSmoothCarrierProjection.lean` (101 lines) proves exact averaging of each
+character after exterior resampling, exact averaging of the literal finite
+carrier to its smooth sum, and first-mean contraction for every finite retained
+set, hence every actual smooth-carrier cutoff Y. All four public audits standard-
+only; final leaf warning-free, wired/index-visible (actual contraction line96).
+A concurrent umbrella edit removed the initial import; restored it and reran
+lint. Latest lint exit1: eleven unrelated unreachable modules, no proof-debt or
+BAG errors. Combining this with F83 and applying same-event Markov remains next.
+
+
+**C20.29 / F85 FINAL — actual finite-node smooth first-mean decay, LEAN PROVED.**
+`SmoothAFEReflectedSmoothFirstMean.lean` (50 lines) combines the literal reflected
+mean theorem and exact smooth projection. It proves uniform background decay
+for every retained cutoff and every positive smoothing scale, then simultaneous
+summed first-mean decay for any finite collection of fixed right-strip nodes
+whose actual heights exceed N. Both public audits standard-only; final leaf
+warning-free, wired/index-visible (finite-node estimate line23). Lint exit1: ten
+unrelated unreachable modules. Same-event probability selection is next.
+
+**C21 Gram source audit.** The existing complex-Hilbert theorem
+`GaloisForLFunctions.HTGeometry.exists_inverse_of_coercive` passes its axiom
+audit. Apply it to `G=sum_p rankOne(A_p,A_p)`, whose quadratic form is exactly
+`sum_p |inner(A_p,w)|^2`. Choosing `w=G^(-1)v` and
+`m_p=inner(A_p,w)` fixes the complex-conjugation convention and gives the
+required synthesis and energy bounds directly. Existing `pi_withDensity` and
+`SteinhausModel.charInt` also pass standard-only axiom audits. The new affine
+circle identities and their local-target assembly are still unformalized.
+
+
+**C20.30 / F86 FINAL — same-event bounded-centre mass retention, LEAN PROVED.**
+`SmoothAFEReflectedBoundedCentreEvent.lean` (81 lines) defines the literal event
+that all finite-node smooth backgrounds have norm at most one; proves its
+measurability and dependence only on the conditioning primes; bounds its
+complement probability by the summed actual first mean; and proves eventual
+half-mass retention inside every event of fixed positive original mass. All four
+public axiom reports standard-only, as is the existing covariance-event source.
+Final leaf warning-free, wired/index-visible (half-mass theorem line64). Lint
+exit1: ten unrelated unreachable modules. The audit job's only error was a
+future noncomputable rank-one API probe, corrected separately; no public theorem
+failed. The actual covariance-cell intersection remains to be assembled in Lean.
+
+
+**C20 / F87 FINAL — actual same-event covariance and bounded centres, LEAN PROVED.**
+`SmoothAFEReflectedCovarianceCentreEvent.lean` (80 lines) constructs a measurable
+selected event of fixed positive original mass inside the prescribed rotated
+finite-character cell. It reads only the conditioning primes and simultaneously
+supports every finite-node background norm at most one and the literal
+`H/log N` channel-energy lower bound in every direction, uniformly throughout
+the common-height window and over all sufficiently small positive smoothing
+scales. The unrotated cell centre preserves the supplied finite phase prefix;
+the explicit selected-event containment retains that link. No comparison with
+the inverse covariance-cell mass is required. This closes C20's bounded-centre
+quantifier gap. The public theorem's axiom audit is standard-only; final leaf
+warning-free, wired/index-visible (line12). Lint exit1: ten unrelated unreachable
+modules and two temporary proof-debt occurrences in unrelated
+`ZetaNotchTruncatedDiagonal.lean`, no BAG error. C21 local target probability,
+direct-edge constraints and deterministic orbit transfer remain open.
+
+
+**C21 / F88 FINAL — exact target synthesis with controlled circle biases, LEAN PROVED.**
+`SteinhausFiniteTargetBiases.lean` (57 lines) defines the literal finite rank-one
+Gram operator, proves its exact application and energy identities, and derives
+biases synthesizing every target from a coercive complex frame. Total squared
+bias is at most `norm(v)^2/c`; each bias is at most `norm(a_i)*norm(v)/c`.
+The proof uses the audited coercive inverse and fixes all complex conjugations
+through the inner product's linear second argument. All three public audits
+standard-only; final leaf warning-free, wired/index-visible (synthesis line30).
+Lint exit1: twelve unrelated unreachable modules, no proof-debt or BAG error.
+Affine circle moments, product probability comparison, and actual conditional
+local-target specialization remain open in Lean.
+
+
+**C21 / F89 FINAL — exact affine circle normalization and target mean, LEAN PROVED.**
+`SteinhausAffineCircleMean.lean` (105 lines) proves the circle character algebra,
+unit phase norm, continuity and integrability, then the concrete affine density
+`q_m(x)=1+2*Re(conj(m)*charFactor(1,x))`. This density is nonnegative for
+`norm(m)<=1/2`, has exact original integral one and exact weighted phase mean m.
+All ten public axiom reports standard-only; final leaf warning-free, wired and
+index-visible (normalization line83). Lint exit1: twelve unrelated unreachable
+modules, no proof debt or BAG error. The audit's only error was a future API
+probe for an unavailable `MeasureTheory.lintegral_mono_measure`; the actual
+source is `lintegral_mono'`, now read. The normalized probability law, density
+second moment and finite-product target event are still to be formalized.

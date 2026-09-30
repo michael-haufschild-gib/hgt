@@ -1,10 +1,10 @@
 # Infinite partition: weighted complex quarter-window
 
 - **ID:** LI-CLOCK-INFINITE-PARTITION-QUARTER-WINDOW
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM; complete author/root and independent paper/source/overlap audit PASS; Lean pending
-- **Source:** [complete infinite-partition boundary](../2-fully-proven/li-clock-infinite-partition-density-tail-boundary.md)
-- **Owner:** root, paper only; no new Lean released
+- **Stage:** 3-formalized
+- **Type:** THEOREM; complete paper/source/overlap and independent Lean audits PASS; FINAL/wired
+- **Source:** [complete infinite-partition boundary](../3-formalized/li-clock-infinite-partition-density-tail-boundary.md)
+- **Owner:** root integration; pole sole Lean leaf; complete author/root/producer proof audits PASS
 
 ## Exact target
 
@@ -17,7 +17,7 @@ lambda=2log(2)/Z². For 0<=c<1/4 put
     Q_N(c)=(2/s²)(L+1/delta(c))exp(−eta(c)L)
               +(32/s⁴)exp(−L/2).
 
-For every N>0 and every complex z with |z|<=cL, conjecture
+For every N>0 and every complex z with |z|<=cL, proved
 
     exp(−2|z|)|B_A,N(z)−B_A,infinity(z)| <= Q_N(c),
     exp(−2|z|)|B_U,N(z)−cosh(2z)| <= Q_N(c).
@@ -132,8 +132,8 @@ Q_N(c)<=(1−lambda)/16. For all T<=t<=cL, the scaled gap is at most
 ## Outstanding gates
 
 - [x] Independent complete paper/source/overlap audit PASS; no endpoint or optimality claim.
-- [ ] Exact Lean plan and complete formalization after parent dependencies are FINAL.
-- [ ] Every proof and public interface audited; named/direct/all-public foundational checks; integration.
+- [x] Exact Lean plan and complete formalization after parent dependencies are FINAL.
+- [x] Every proof and public interface audited; named/direct/all-public foundational checks; integration.
 - [ ] Publication novelty audit.
 
 2026-09-30 12:05 UTC — Created before proof formalization. Parent's full four-leaf
@@ -157,3 +157,11 @@ unverified by Lean and does not settle the actual compensation sign or RH.
 2026-09-30 12:56 UTC — Current independent READ ALL116 Q5/Q6 proof audit PASS; root complete certificate read/source claims checked, Pole full mathematical applicability review also PASS. Exact private reuse released after all2 foundational checks. All root Q2/Q5/Q6 scratch helper certificates consolidated in `/tmp/hgt-li-quarter-root-helpers-final-certificate.md`; actual Q1–Q6 source callers and full final leaf remain ongoing. Borel named52487 exit0/success13000jobs/own157s; exact direct57678 active, ALL52 axiom gate pending.
 
 2026-09-30 13:08 UTC — Pure Quarter316-line scratch39981 exit0/empty, SHA256 `6346501a715b66a587081d39388c8213d8dbe90a21c8ab432fbb72cded9a5161`,9public/14private; full root/producer proof audits PASS. Root matched every complete API block and exact original Q2 private body mapping. Genuine whole-axis envelope integration/factor2, vanishing Q_N and weighted normalization cancellation preserved. Earlier315-line metadata was off by one; file has316 newline-terminated lines, source unchanged. Full actual582 source callers remain in toolchain work; no final quarter claim.
+
+2026-09-30 13:19 UTC — Full Quarter582 scratch35770 exit0/empty, SHA256 `9cbc148b21ac6e974ee5370a1bb19c73c348e7e3bd1e225139330d1a83c734a5`: root READ ALL new actual151lines and all14 headers/proof packet PASS. Mechanically verified exactpure316 preservation, exactroot116 private/name-only adaptation, all14 unique publics/no existing-tree collisions. All Q1–Q6 actual callers present, including both complex errors, arbitrary qualified4limits and uniform gap. Producer independent final audit pending; no tree promotion yet. Parent source boundary now complete Stage3.
+
+2026-09-30 13:22 UTC — Producer independent ALL582/14public/23private review PASS; root READ ALL52-line certificate `/tmp/hgt-li-quarter-full-independent-audit.md` and checked source claims. Both full audits and exact mapping complete. Identical sole-leaf promotion, named build, exact direct and ALL14 foundational gates released to owner; no umbrella import until FINAL_READY.
+
+2026-09-30 13:29 UTC — QuarterWindow Q1–Q6 FINAL/wired:582 lines/14public(3defs11theorems)/23private, SHA256 `9cbc148b21ac6e974ee5370a1bb19c73c348e7e3bd1e225139330d1a83c734a5`. Full root/producer proof audits before identical promotion. Named48794 exit0(own61s/13001jobs), exactdirect52060 exit0/empty, ALL14axioms46759 exit0/foundations only. Root read full certificate `/tmp/li_pole_quarter_final_certificate.md`, verified exacttree/frozen bytes, all14 complete literal API blocks including all3definition bodies, unique/source-order axiom reports, directempty and namedolean. Unique umbrella import added; card promoted Stage3. Every original weighted whole-complex-disk/qualified4limits/uniformnegativegap target retained; c=1/4 and inverse-clock/RH claims remain excluded.
+
+2026-09-30 13:30 UTC — Quarter integration index28457 exit0 (4 changed/0 removed); authoritative global lint16982 exit1, all18 unrelated umbrella-reachability errors inspected, no owned-leaf/proof-debt errors. Logs `/tmp/hgt-li-quarter-final-{index,lint}.log`; scoped git diff --check empty. Both promoted cards have every relative Markdown link resolved. Five infinite-source/window leaves now total5881 lines/268public; each has full source/independent proof review and named/direct/all-public foundational certification. This closes only the stated source/Borel targets; completed-clock compensation and RH remain OPEN.

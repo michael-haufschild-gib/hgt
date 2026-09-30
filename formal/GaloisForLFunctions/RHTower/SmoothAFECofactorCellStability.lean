@@ -176,4 +176,8 @@ theorem exists_corrected_cofactor_mode_cell_blocks
     _ < ε / 2 + ε / 2 := add_lt_add hpert hbase
     _ = ε := by ring
 
+/-- The positive Gaussian smoothing cutoff has norm at most one at every scale. -/
+theorem norm_smoothAFECutoff_le_one {r : ℝ} (hr : 0 < r) : ‖smoothAFECutoff r‖ ≤ 1 :=
+  norm_cutoff_le_one hr
+
 end RHTower
