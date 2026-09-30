@@ -557,12 +557,131 @@ Native build, final direct check, all 20 export checks and all 26 axiom
 reports pass; only the standard three axioms occur. A 40-entry API witness,
 single umbrella registration and complete regenerated catalogue pass.
 
+`ThetaWeightedHistoryProperness.lean` certifies positive-weight properness
+in 17 public declarations. The complementary exponent `2-q` discharges
+the literal reciprocal-density moment and every phase-twisted source's
+admission. The two actual density unitaries cancel their square-root
+weights, identifying the bounded functional with the physical integral
+`∫f exp(itx)`. The admitted source test has value `M>0`; every actual
+derivative has transform `(-it)^n XiC(t)`. Hardy's actual real Xi zero
+annihilates their closed history, proving properness for every `0<q<2`.
+
+`ThetaUnweightedDerivativeHistory.lean` certifies the endpoint in 18
+public declarations. The exact `q=0` measure is Lebesgue measure. One
+strengthening of the existing rectangle-majorant theorem includes the
+nonnegative endpoint while preserving its original public signature.
+Those literal Gaussian majorants give a Hilbert-holomorphic curve on the
+full connected strip `|Im z|<π/4`. Its origin jets are the actual ordinary
+derivatives, so analytic uniqueness includes the entire real translation
+orbit in their history. Exact `2π` dilation identifies the existing
+normalized cyclic orbit with this literal unscaled orbit; hence
+`thetaWeightedDerivativeHistory 0 = ⊤`. The unconditional capstone
+`thetaDerivativeHistory_endpoint_dichotomy` certifies both halves of (7).
+
+All 36 new public declarations, including the majorant strengthening,
+pass exhaustive export checks. Native named leaf builds and all three
+final direct source checks pass without leaf warnings. All 36 exports
+and ten existing capstones have 46 complete axiom reports containing
+only `propext`, `Classical.choice`, and `Quot.sound`. A 63-entry API
+witness passes; both new leaves are registered exactly once in the area
+umbrella. Final catalogue, global lint and recursive queue evidence are
+recorded in the formalization ledger.
+
 The full card remains Stage 2. Complete exact certificates are still
-required for the inter-weight bounded translation and operator-norm law
-(5), the full positive-weight properness law and unweighted endpoint
-collapse (7), the tempered annihilator classification with multiplicity
-jets (8), and rapid normalized eigenmode decay in the quotient.
+required for the tempered annihilator classification with multiplicity
+jets (8) and rapid normalized eigenmode decay in the quotient.
 No computational certificate or RH/zero-location premise was introduced.
 External novelty has not been established. Global lint diagnostics are
 recorded in the recursive formalization ledger; other concurrent modules
 remain outside this card's write scope.
+
+### Exact inter-weight translation certificate
+
+`ThetaTranslationDensityRatio.lean` supplies 20 public declarations for
+the literal ratio `k(y-a)^(-q')/k(y)^(-q)`. Its envelope quotient tends to
+the exact positive constant `(4π²)^(q-q')`. Both strict-margin tails decay;
+the dangerous tail diverges beyond the threshold and at equality, where
+the remaining positive linear exponent excludes boundedness. The exact
+bounded-ratio classification includes every shift and the zero-shift
+boundary for all real exponents.
+
+`LpContinuousMultiplierNorm.lean` supplies four public declarations.
+Actual finite-interval indicators force every continuous multiplication
+symbol below its operator norm. Positive-volume open level sets identify
+the literal essential supremum, including the squared norm.
+
+`ThetaInterWeightTranslation.lean` supplies 28 public declarations. The
+actual density unitaries construct the bounded translation when the ratio
+is bounded, preserving `f(x+a)` for every actual input. Conversely every
+bounded operator with that representative law conjugates to the literal
+continuous multiplier and forces a bound on the ratio. Thus no extra
+source-admission or operator-existence premise is imposed on (5).
+The representative law is equivalent for Lebesgue and the actual output
+weighted measure and determines the operator uniquely.
+
+For `q,q'>0`, nonzero shifts admit that bounded operator exactly when
+`q'<q exp(-2|a|)`; zero shift admits it exactly when `q'≤q`. Its squared
+norm is precisely the essential supremum of the displayed actual ratio,
+as both an extended-nonnegative and a real-valued equality. Equality at
+the nonzero-shift threshold fails; no nonzero shift is bounded on a fixed
+positive-weight carrier. Every prime specialization is exactly
+`q'<q/p²`. These certificates discharge every assertion in paper (5).
+
+All 52 public declarations pass exhaustive export checks. Named native
+builds and final literal direct checks of all three sources pass with
+empty direct logs. All 52 exports and eight prior capstones have 60 axiom
+reports containing exactly `propext`, `Classical.choice`, and `Quot.sound`.
+The 105-entry API witness passes. Final area-registration, catalogue,
+global-lint and recursive-queue evidence is recorded in the formalization
+ledger. The remaining exact obligations are (8) and rapid normalized
+quotient eigenmode decay; no whole-card promotion is claimed.
+
+### Exact real/off-real tempered evaluation boundary certificate
+
+`ThetaTemperedEvaluationBoundary.lean` supplies 11 public declarations.
+The actual complex tempered dual admits no off-real physical exponential
+evaluator, even on the embedded real Schwartz functions with entire
+Laplace transform. Conversely, at every real frequency `t`, the actual
+Fourier transform of the Dirac at `-t/(2π)` agrees with `∫ exp(itx)f(x)dx`
+on every complex Schwartz function. A tempered extension on the entire
+exponential domain exists exactly when `Im z = 0`.
+
+This proves the positive sharp boundary exposed by the off-real
+obstruction. It certifies that subclause of (8), without replacing the
+full annihilator identity or its local/global multiplicity classification.
+The named native build, final literal direct check, all 11 export checks,
+20-entry API witness, unique umbrella registration and regenerated
+catalogue pass. All 15 export/capstone axiom reports contain exactly
+`propext`, `Classical.choice`, and `Quot.sound`. Global lint remains
+non-green on unrelated modules; exact diagnostics and complete recursive
+queue evidence are recorded in the formalization ledger.
+
+The card stays Stage 2. The full tempered annihilator/multiplicity claim
+and rapid normalized quotient eigenmode decay remain open.
+
+
+## Lean coverage: canonical all-order quotient decay
+
+The exact rapid quotient-decay statement is now formalized by
+`formal/GaloisForLFunctions/RHTower/HedenmalmThetaDerivativeOscillatoryPrimitive.lean`,
+`formal/GaloisForLFunctions/RHTower/HedenmalmThetaDerivativePrimitiveBounds.lean`,
+and `formal/GaloisForLFunctions/RHTower/HedenmalmThetaQuotientEigenmodeDecay.lean`
+(12 + 18 + 19 public exports).
+
+The quotient is the literal source quotient `H_s/(U⁻¹R)`. Exact
+integration by parts removes every finite derivative term. The
+remaining primitive is bounded by a constructed, actually admitted
+`L²(k⁻¹dx)` majorant uniformly throughout `|Im z|≤1/2` at actual
+Xi zeros. The existing canonical source vector keeps its integral
+`M`, and its quotient is nonzero. For every natural `A`, the exact
+bound `‖πf_z‖≤C_A(1+|z|)^(-A)` holds with threshold `|Re z|≥1` and
+`C_A=2^A‖B_(A+1)‖`. No RH premise, free rescaling, assumed remainder
+bound or admission hypothesis is used.
+
+All named native and final literal leaf checks pass. All 49 export
+witnesses and matching axiom reports pass using only the three standard
+Lean axioms; 266 pinned API witnesses and exact generated-catalogue
+coverage pass. The recursive ledger records the complete evidence and
+unrelated global lint failures. This card stays Stage 2: the full
+actual tempered annihilator/multiplicity classification (8) remains
+open. The earlier real/off-real tempered-evaluation boundary is closed.

@@ -69,7 +69,7 @@ Historical audit rows remain after cards move. Matching Stage 3 basenames requir
 | `theta/theta-cdf-crossfrequency-rvm-capacity.md` | exact audit pending |
 | `theta/theta-cdf-no-finite-range-symmetrizer.md` | exact audit pending |
 | `theta/theta-chronological-boundary-positive-transfer.md` | exact audit pending |
-| `theta/theta-compact-inverse-zero-jordan-history.md` | actual Jordan chains, centered obstruction, proper quasinilpotent history, full nonzero quotient root spaces, literal Riesz/Fourier descent, sharp translation admission, original closed-history equality and graded finite arithmetic/Euler quotient vanishing certified; bounded scale transport and full properness/endpoint/dual/decay audit pending |
+| `theta/theta-compact-inverse-zero-jordan-history.md` | actual Jordan/history/quotient/Riesz/Fourier/prime-deletion results, exact interweight law (5), weighted properness and q=0 endpoint (7), real/off-real tempered boundary, and canonically normalized all-order quotient decay certified; full tempered annihilator/multiplicity classification (8) open |
 | `theta/theta-deletion-cutoff-commutator-collapse.md` | exact audit pending |
 | `theta/theta-prime-deletion-graded-terminal-admission.md` | certified; moved to Stage 3 |
 | `theta/theta-prime-deletion-moving-cusp-dual-source.md` | exact audit pending |
@@ -761,9 +761,15 @@ unbounded exact-certificate queue; their paper status is not a Lean audit.
 | `li-clock-first-prefix-gamma-exact-sign.md` | moved externally to Stage 3; complete exact certificate audit pending |
 | `li-clock-positive-gamma-dyadic-completion.md` | moved externally to Stage 3; complete exact certificate audit pending |
 | `li-clock-completion-arithmetic-cancellation-boundary.md` | moved externally to Stage 3; complete exact certificate audit pending |
-| `li-clock-contiguous-comparison-window.md` | newly added; complete exact certificate audit pending |
+| `li-clock-contiguous-comparison-window.md` | moved externally to Stage 3; complete exact certificate audit pending |
 | `li-clock-finite-partition-volterra-positive-area.md` | moved externally to Stage 3; complete exact certificate audit pending |
-| `li-clock-joint-arithmetic-cancellation-window.md` | newly added; complete exact certificate audit pending |
+| `li-clock-joint-arithmetic-cancellation-window.md` | moved externally to Stage 3; complete exact certificate audit pending |
+| `li-clock-partition-density-ratio-endpoint-boundary.md` | moved externally to Stage 3; complete exact certificate audit pending |
+| `li-clock-positive-borel-ratio-transfer.md` | moved externally to Stage 3; complete exact certificate audit pending |
+| `11-rh-zero-divisor-geometry/weil-cone-finitely-generated-support-rigidity.md` | newly added; complete exact certificate audit pending |
+| `11-rh-zero-divisor-geometry/weil-cone-first-zero-window-lacunary-rigidity.md` | moved externally to Stage 3; complete exact certificate audit pending |
+| `li-clock-infinite-partition-density-tail-boundary.md` | newly added; complete exact certificate audit pending |
+| `li-clock-partition-relative-volterra-forcing.md` | newly added; complete exact certificate audit pending |
 
 The original-carrier bridge is certified in
 `ThetaQuantileTranslationHistory.lean` (23 public declarations). The canonical source translation
@@ -926,29 +932,469 @@ guarded manifest, with absence verified. No owned Lean job remains.
   exponent `2-q`, rather than add an admission premise.
 - [x] Identify every actual derivative's transform, annihilate its
   closed history at a real Xi zero, and prove that history is proper.
-- [ ] Identify the actual `q=0` measure, derivative representatives and
+- [x] Identify the actual `q=0` measure, derivative representatives and
   holomorphic translation orbit, then prove dense endpoint history.
-- [ ] Run the complete exact certificate gates, preserve the recursive
+- [x] Run the complete exact certificate gates, preserve the recursive
   queue, update card/memory and clean owned scratch.
 
-The complementary-weight construction now passes a native named leaf build
-and a direct source check in `ThetaWeightedHistoryProperness.lean`. Its
-literal density-unitary cancellation identifies the bounded functional with
-`∫f exp(itx)`, the source test with mass `M>0`, and the actual derivative
-transform with `(-it)^n XiC(t)`. Hardy's real zero proves properness throughout
-`0<q<2`. Exhaustive final export/axiom/index/lint gates remain pending for
-this work block; no whole card is promoted.
+### Exact weighted properness and endpoint certificate checkpoint
 
-Endpoint source audit found that the existing rectangle-majorant proof
-never uses its strict-positive exponent argument. Its new nonnegative
-form includes `q=0`, while the original public signature is preserved by
-a wrapper. The exact endpoint paper construction is: use the same literal
-Gaussian majorants on compact rectangles throughout `|Im z|<π/4`; apply
-the existing dominated Hilbert-holomorphy and jet theorem; identify all
-origin jets with actual ordinary derivatives; use analytic uniqueness to
-include every real translate in their closed span. The actual normalized
-translation orbit is then `sqrt(2π)` times the `2π` dilation of those
-literal translates, so the existing unconditional normalized cyclicity
-certificate proves endpoint density. This passage still requires its own
-Lean certificate. The broader recursive formalization goal remains active
-and unbounded.
+`ThetaWeightedHistoryProperness.lean` contains 17 public declarations.
+The complementary exponent `2-q` proves the literal positive moment and
+phase-source admission. Actual density unitaries cancel their square-root
+weights, so the continuous functional equals `∫f exp(itx)`. Its source test
+has value `M>0`; every actual derivative has transform `(-it)^n XiC(t)`.
+Hardy's actual real zero proves properness for all `0<q<2`.
+
+`ThetaUnweightedDerivativeHistory.lean` contains 18 public declarations.
+The literal endpoint measure equals Lebesgue measure; its canonical
+isometry preserves representatives. The strengthened Gaussian rectangle
+majorant includes `q=0`, with the old strict-positive signature preserved.
+Actual dominated sections give Hilbert holomorphy throughout the full
+connected strip. Their jets equal actual ordinary derivative generators,
+so their closed span includes every real translate. Exact `2π` dilation
+transfers the existing normalized cyclicity certificate to the literal
+unscaled orbit. The actual endpoint history is therefore top. Capstone
+`thetaDerivativeHistory_endpoint_dichotomy` proves both halves of (7).
+
+All 36 new public declarations (17+18+one majorant strengthening) pass the
+exhaustive export witness. Named native leaf builds pass; endpoint build
+also rebuilt the final properness leaf. Three final literal `lake env lean
+FILE` checks pass with empty logs. All 36 exports plus ten prior capstones
+have 46 complete axiom reports, each containing exactly `propext`,
+`Classical.choice`, `Quot.sound`. The final 63-entry API witness passes.
+Both new leaves occur exactly once in `RHTower.lean`; all 36 exports occur
+in the regenerated catalogue with their exact owner modules. Catalogue
+names are unqualified, so verification matches name and module together.
+Index refresh includes the lexical index (five changed sources, no removals).
+Scoped whitespace and both new untracked-source whitespace checks pass.
+
+The full history card stays Stage 2. Remaining exact clauses: inter-weight
+translation boundedness and operator norm (5), full tempered annihilator
+classification with multiplicity jets (8), and rapid normalized quotient
+eigenmode decay. No partial-card promotion, additional analytic/source
+admission premise, RH premise, computational certificate, heartbeat hack,
+subagent, full/umbrella build or commit is used.
+
+Authoritative final lint exits 1: all 170 warnings are baseline large-file
+warnings; ten other leaves remain unreachable, with no owned-leaf finding:
+
+- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`
+- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`
+- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`
+- `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`
+- `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`
+- `GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase`
+- `GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving`
+
+Global lint is non-green. Recursive census: 99 Stage 2 Markdown files,
+nine support files and 90 theorem cards; zero unqueued paths. Two new LI
+ratio/endpoint cards are queued. Contiguous-comparison and joint-arithmetic
+window cards moved externally and remain complete-audit pending. The
+historical queue has 19 unique Stage 3 matches: five owned whole-card
+certifications and fourteen external promotions requiring exact audits.
+
+### Sharp inter-weight translation work plan
+
+- [x] Check prior research, literal two-tail envelopes and existing
+  bounded-multiplier/source-metric infrastructure in this toolchain.
+- [x] Prove the actual density-ratio two-tail law and strict threshold,
+  including dangerous-tail equality failure and the zero-shift boundary.
+- [x] Construct the actual bounded translation between weighted carriers
+  and prove necessity without an added admission/operator premise.
+- [x] Identify its squared operator norm with the literal density-ratio
+  essential supremum; discharge every paper specialization.
+- [x] Run exact native/direct/export/axiom/index/lint gates, update the
+  complete coverage ledger and clean owned scratch.
+
+Initial Theta-filtered hybrid search inspected all 20 candidate lemmas and
+20 source arguments. It was nonpartial with complete inventory; sources
+were source-only/not-checked and the background refresh was incomplete.
+Useful material includes actual density unitaries, bounded multipliers,
+and the old fixed-carrier theta shift obstruction. These are ingredients,
+not a complete sharp transport certificate. The broader recursive goal
+remains active and unbounded.
+
+`ThetaTranslationDensityRatio.lean` passes the literal direct Lean check.
+Its 20 public declarations prove the actual first-atom relative limit,
+both strict-margin tail limits, dangerous-tail blow-up beyond the boundary
+and at equality, and the exact bounded-ratio classification for every
+shift. Positive output exponent is the sole exponent premise in the
+nonzero-shift classification; the zero-shift classification holds for all
+real exponents. Native/export/axiom/index gates remain open for this leaf.
+This scalar classification alone does not discharge paper clause (5).
+
+The second, multiplier-filtered deep search inspected all 20 candidate
+lemmas, all 20 source arguments and its one ingredient set; it returned
+no proof ideas. Coverage was complete/nonpartial, with unchecked source
+status and incomplete background refresh. Existing multipliers supply
+construction and upper bounds, but not the required necessity or exact
+essential-supremum norm. The next proof uses actual finite-interval
+indicators in ordinary complex Lebesgue L², then conjugates with the
+already verified theta density unitaries.
+
+### Exact inter-weight translation certificate checkpoint
+
+The actual sharp translation law (5) is now certified. Three new leaves
+contain 52 public declarations: `LpContinuousMultiplierNorm.lean` has
+four theorems, `ThetaTranslationDensityRatio.lean` has 20 declarations,
+and `ThetaInterWeightTranslation.lean` has 28 declarations. Total: six
+definitions and 46 theorems.
+
+The scalar leaf proves the actual two-cusp envelope law, strict-margin
+decay and dangerous-tail divergence, including the zero Gaussian
+coefficient at equality. The generic norm leaf tests the actual operator
+on positive-volume finite-interval indicators and identifies the exact
+essential supremum. The operator leaf constructs literal translations
+with the already verified density unitaries. Conversely every bounded
+operator satisfying the actual representative law forces a bound on the
+literal density ratio. The existence iff statements therefore add no
+admission or operator-existence premise to the paper theorem.
+
+The exact certificate includes all shifts, the zero-shift boundary,
+unique actual operators, the squared essential-supremum norm as both
+extended-nonnegative and real equalities, failure at dangerous-tail
+equality, absence of nonzero fixed-weight translations, and the exact
+prime inequality `q'<q/p²`. Positive output exponent alone suffices for
+the nonzero-shift theorem, so it covers the paper's positive input and
+output exponents without weakening the result.
+
+Named native builds of all three leaves pass. The operator leaf's final
+native build took 8.4 seconds. Three final literal `lake env lean FILE`
+checks pass with empty logs. All 52 declarations pass the exhaustive
+export witness; all 52 plus eight prior capstones give 60 complete axiom
+reports, each containing exactly `propext`, `Classical.choice`, and
+`Quot.sound`. The 105-entry API witness passes. Scoped tracked whitespace
+and each new untracked-source whitespace check pass.
+
+All 52 exact name/module pairs occur in `formal/LEAN_API.md`. Each leaf
+has exactly one import in its own theorem-area umbrella. Initial lint
+found a missing HTGeometry registration for the generic norm leaf;
+that owned defect was fixed and the authoritative lint rerun confirms
+zero owned-leaf findings. Final catalogue and lexical-index refresh
+reports three changed sources and no removals.
+
+Authoritative final lint exits 1: 170 baseline large-file warnings and
+13 other unreachable leaves remain:
+
+- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`
+- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`
+- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`
+- `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`
+- `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`
+- `GaloisForLFunctions.RHTower.RiemannKernelModulatedWindowTests`
+- `GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase`
+- `GaloisForLFunctions.RHTower.ZetaNotchDualCarrier`
+- `GaloisForLFunctions.RHTower.ZetaNotchDualContour`
+- `GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving`
+
+Global lint remains non-green. The exhaustive recursive census contains
+100 Stage 2 Markdown files: nine support files and 91 theorem cards, with
+zero unqueued paths after adding both new Weil support/window cards.
+The positive Borel ratio card moved externally and remains complete-audit
+pending. Historical queue matches 20 unique Stage 3 cards: five owned
+whole-card certifications and 15 external promotions needing exact audits.
+
+The history card stays Stage 2. Exact remaining obligations are the full
+tempered annihilator classification with multiplicity jets (8) and rapid
+normalized quotient eigenmode decay. Whole recursive goal remains active
+and unbounded. No subagent, computational certificate, heartbeat/depth
+hack, full/umbrella build or commit was used. The prior endpoint work's
+23 owned scratch files have been removed and their absence verified.
+
+All 26 owned transport scratch files were removed through the exact
+finite manifest after checking regular-file/non-symlink ownership.
+The transport namespace's absence is verified; all owned processes exited.
+
+### Full tempered annihilator work plan
+
+- [ ] Check prior research and this toolchain's actual Schwartz/distribution
+  infrastructure against every assertion in paper clause (8).
+- [ ] Construct the actual theta translation curve in the Schwartz space,
+  with every seminorm bound required for smoothness and analytic uniqueness.
+- [ ] Prove annihilation of all literal theta derivatives iff the actual
+  Fourier-transformed tempered distribution is killed by multiplication
+  with XiC, without a replacement multiplier/admission premise.
+- [ ] Classify the full kernel: local real-zero jets below exact
+  multiplicity, compatible globally tempered sums, and exclusion of
+  off-real evaluations from tempered functionals.
+- [ ] Run exact native/direct/export/axiom/index/lint gates, retain the full
+  recursive queue and separately preserve rapid quotient eigenmode decay.
+
+The first deep search inspected all 20 candidates, all 20 source
+arguments and its one ingredient set (zero proof ideas). It was
+nonpartial, with complete 63,247-file inventory and no errors; retrieved
+certificates were source-only/unchecked and background refresh remained
+incomplete. A Theta-filtered OR/deep search also inspected all 20
+candidates, all 20 arguments and its one ingredient set. That result
+was partial, with text/source retrieval reported interrupted; the
+63,250-file inventory was complete and background refresh incomplete.
+Available hits are used as ingredients, not asserted as compiler-verified
+or a complete solution to (8).
+
+The actual `xiCSchwartz` restriction and normalized theta Fourier identity
+already exist. The positive-form tempered-null theorems require momentum
+symmetry and positivity and cannot replace (8) for arbitrary tempered
+functionals. Existing scalar Schwartz coordinate division is a local
+classification ingredient. Existing remote positive even packets prove
+off-real Laplace discontinuity and are being lifted to the literal
+complex Schwartz dual. Physical Fourier normalization must be retained:
+the unscaled source transforms at `t/(2π)` to XiC(t), whereas the existing
+normalized source has the direct mathlib-frequency transform XiC(t).
+No source scaling is being silently substituted in (8).
+
+The off-real scratch lift already passes: actual complex tempered
+functionals cannot agree with the literal exponential evaluator even on
+the embedded real Schwartz functions with entire Laplace transforms.
+The negative boundary will be paired with the exact positive survivor:
+for every real frequency the Fourier transform of the actual Dirac at
+`-t/(2π)` gives that evaluator on every complex Schwartz function. The
+full real/off-real existence iff is being checked; this subclause alone
+does not certify the complete annihilator or multiplicity classification.
+
+For the full curve, preserve the genuine Fréchet topology. Schwartz space
+is controlled by all its seminorms; do not impose a norm or import a
+Hilbert-analytic premise. One available bridge is the existing concrete
+Schwartz Sobolev estimate: a tempered functional has a finite-seminorm
+bound, and polynomial-weighted derivative seminorms can be controlled by
+finitely many weighted L² derivatives. Actual dominated analytic theta
+sections can then be tested through that derived Sobolev observer. The
+source construction, observer extension and exact derivative identities
+must be proved, not assumed.
+
+### Exact tempered evaluation boundary certificate checkpoint
+
+`ThetaTemperedEvaluationBoundary.lean` contains 11 public declarations:
+four definitions and seven theorems. They exclude every literal off-real
+Fourier–Laplace evaluator from the actual complex tempered dual, even
+when agreement is required only on the complexification of real Schwartz
+sources with entire Laplace transform. The stronger complex-domain
+exclusion follows without any extra zero-location premise.
+
+The positive survivor is proved exactly: for every real frequency `t`,
+the actual Fourier transform of the Dirac distribution at `-t/(2π)`
+equals the physical evaluator `∫ exp(itx) f(x) dx` on every complex
+Schwartz function. Existence of a tempered extension on the entire
+exponential domain is therefore equivalent to `Im z = 0`. This closes
+the real/off-real evaluation boundary inside (8), not the complete
+annihilator or multiplicity classification.
+
+The named native build passes in 2.3 seconds. Final literal direct Lean
+check and the 20-entry API witness pass with empty logs. Every one of the
+11 public declarations passes the exhaustive export witness. All 11
+exports plus four prior capstones have 15 complete axiom reports, each
+containing exactly `propext`, `Classical.choice`, and `Quot.sound`.
+All 11 exact name/module pairs occur in `formal/LEAN_API.md`; the leaf
+is imported exactly once by its area umbrella. Scoped tracked and new
+source whitespace checks pass. Final catalogue and lexical-index refresh
+reports six changed sources and no removals.
+
+Authoritative lint exits 1, with zero findings for this leaf. Global
+diagnostics are 170 baseline large-file warnings and 18 unrelated
+unreachable modules:
+
+- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`
+- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`
+- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`
+- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`
+- `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`
+- `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`
+- `GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase`
+- `GaloisForLFunctions.RHTower.XiSliceSaddleStrip`
+- `GaloisForLFunctions.RHTower.ZetaNotchDiagonalSum`
+- `GaloisForLFunctions.RHTower.ZetaNotchDualCarrier`
+- `GaloisForLFunctions.RHTower.ZetaNotchDualContour`
+- `GaloisForLFunctions.RHTower.ZetaNotchDualJets`
+- `GaloisForLFunctions.RHTower.ZetaNotchDualOscillation`
+- `GaloisForLFunctions.RHTower.ZetaNotchDualOscillationBound`
+- `GaloisForLFunctions.RHTower.ZetaNotchDualWeightBounds`
+- `GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving`
+
+The exhaustive current census has 100 Stage 2 Markdown files: nine
+support files and 91 theorem cards. Both new infinite-partition/relative
+Volterra cards are now queued, leaving zero unqueued paths. Two additional
+external promotions are marked audit-pending. Historical queue matches
+22 unique Stage 3 cards: five owned whole-card certifications and 17
+external promotions requiring complete exact audits. No whole-card
+promotion is claimed for this boundary certificate. The recursive goal
+remains active and unbounded; (8) and rapid normalized quotient decay
+remain explicit obligations.
+
+All 13 owned tempered-boundary scratch files were removed through their
+exact finite manifest after checking regular-file/non-symlink ownership.
+Their namespace is absent; all owned processes have exited. The final
+census after queue edits again confirms zero unqueued Stage 2 paths.
+
+### Rapid normalized quotient eigenmode decay work plan
+
+- [x] Audit prior research and actual canonical mode, normalization,
+  derivative history and two-ended weighted tail bounds.
+- [x] Prove repeated integration by parts for the literal theta
+  derivative primitives, including their zero total integral at each
+  actual Xi zero.
+- [x] Derive a uniform actual `L²(k⁻¹dx)` remainder bound throughout
+  `|Im z|≤1/2`, without replacing it by an admission/bound hypothesis.
+- [x] Kill the finite derivative sum with the actual quotient map and
+  prove, for every integer `A≥0`, `‖π f_z‖≤C_A(1+|z|)^(-A)` for
+  actual Xi zeros with sufficiently large `|Re z|`.
+- [x] Run exact leaf/export/axiom/catalogue/lint gates, record coverage
+  and preserve the still-open full tempered annihilator classification.
+
+The exact paper statement permits a sufficiently-large-real-part
+threshold. The canonical mode is the existing literal `sourceModeF`,
+whose integral is already proved equal to the source mass; no free
+rescaling of eigenvectors is allowed. The actual source/quantile unitary
+and history quotient must transport this mode and its derivative
+remainder without silently changing the quotient norm.
+
+The first rapid-decay deep search inspected all 20 candidate lemmas,
+all 20 source arguments and its one ingredient set (zero proof ideas).
+It was nonpartial, with complete 63,261-file inventory and no errors;
+hits were source-only/unchecked and background refresh incomplete.
+Generic eigenbasis/norm conservation results do not prove this bound.
+The HedenmalmTheta-filtered OR/deep follow-up inspected all 20 candidates,
+all 20 arguments and one ingredient set. It was partial with interrupted
+text/source retrieval, complete 63,262-file inventory and incomplete
+background refresh. Its useful exact ingredients are the actual
+derivative Fourier integrals, derivative vectors, quantile unitary and
+history quotient; none is a rapid-decay certificate by itself.
+
+Existing source derivative ratios are moderate in the literal first-atom
+scale. Combined with the complete theta tail envelope, this bounds every
+derivative by an exponential times the same double-exponential source
+envelope. At actual Xi zeros, every derivative's full modulated integral
+vanishes, allowing the primitive to use the nearer tail. Those actual
+bounds will supply the uniform weighted remainder, independent of the
+real frequency. No numerical tail computation is involved.
+
+The literal derivative-primitive scratch proof now passes with an empty
+log. `HedenmalmThetaDerivativeOscillatoryPrimitive.lean` contains the
+exact all-order finite source-mode expansion and actual oscillatory
+remainder. Its named native build passes (23 seconds). Every actual Xi
+zero kills the full modulated integral of every derivative, so either
+tail represents the same primitive. Uniform weighted remainder bounds,
+quotient decay and final exhaustive gates remain open.
+
+The complete derivative-primitive bound scratch proof passes with an
+empty log. `HedenmalmThetaDerivativePrimitiveBounds.lean` constructs one
+actual nearest absolute-tail majorant for every derivative, continuous
+and nonnegative, and proves its literal reciprocal-density L² energy
+finite. Its norm bounds the actual oscillatory primitive's `toLp` class
+uniformly for all real frequencies and all actual Xi zeros in
+`|Im z|≤1/2`. The constant is the actual majorant norm, not a new bound
+hypothesis. This closes the analytic remainder estimate; quotient
+recurrence, rapid-decay capstone and final gates remain open.
+
+
+### Exact canonical rapid quotient decay certificate (49 exports)
+
+The rapid-decay block is now certified in three actual source leaves:
+
+| Module | Public exports | Exact role |
+| --- | ---: | --- |
+| `HedenmalmThetaDerivativeOscillatoryPrimitive` | 12 | Literal oscillatory integrals, their all-order Fourier totals, zero-total right tails, exact primitive recurrence and finite source-mode expansion. |
+| `HedenmalmThetaDerivativePrimitiveBounds` | 18 | Actual strip-uniform majorant, finite literal weighted energy, source-space admission and a constructed uniform norm constant. |
+| `HedenmalmThetaQuotientEigenmodeDecay` | 19 | Literal source quotient, exact quotient remainder, canonical mean normalization, nonzero quotient mode and all-order rapid decay. |
+
+Write `P_n(z,x)=exp(-izx)∫_{-∞}^x k^(n)(y)exp(izy)dy`.
+The exact recurrence is `P_(n+1)=k^(n)-izP_n`. At an actual Xi
+zero its integral representation can use either end. Throughout
+`|Im z|≤1/2` it obeys the constructed pointwise bound
+`|P_n(z,x)|≤B_n(x)`, where
+`B_n(x)=exp(|x|/2)∫_{|x|}^∞ exp(|y|/2)|k^(n)(y)|dy`.
+The actual full-source derivative ratios and double-exponential theta
+bounds prove `∫ B_n²/k < ∞`, with no bound or admission premise.
+
+The quotient is literally `H_s/(U⁻¹R)`. Its projection kills every
+actual source derivative. Consequently the existing canonical source
+mode, whose literal integral is `M`, satisfies exactly
+`πf_z=-(-iz)^(-A)πP_(A+1)` for every natural `A`. The norm constant
+is the actual norm of `B_(A+1)` in `L²(k⁻¹dx)`. Thus the paper's rapid
+decay holds with explicit `C_A=2^A‖B_(A+1)‖` and threshold
+`|Re z|≥1`, stronger than a merely sufficiently-large threshold.
+The same actual quotient mode is nonzero. No rescaling, RH premise,
+or assumed remainder bound appears.
+
+All three named native builds pass, followed by final literal
+`lake env lean FILE` checks with empty logs for each project leaf.
+All 49 public exports have exact scratch witnesses and 49 matching
+`#print axioms` reports, each exactly
+`{propext, Classical.choice, Quot.sound}`. The fresh native `.ilean`
+references supply 266 pinned API witnesses: 201 Mathlib names and
+65 actual project dependencies; all compile with an empty log.
+The generated catalogue contains exactly all 49 export/module pairs,
+with no missing or extra pair. Each umbrella import appears once;
+source whitespace and scoped `git diff --check` pass. Final index
+refresh succeeds (1 changed, 0 removed).
+
+Authoritative global lint exits 1: 170 existing large-file warnings,
+29 unrelated unreachable modules, and one unrelated active proof-debt
+finding. There are no diagnostics in the three owned leaves.
+Unreachable modules: `CCMApertureChainProfile`, `CCMApertureTranslationChains`, `CCMExponentialRampPrimeMoment`, `CCMExponentialRampSourceDissipation`, `CCMExponentialRampTerminalEntropy`, `CCMRetainedChainKernelLower`, `MoebiusMollifiedCriticalMoment`, `MoebiusMollifiedErrorThreeLines`, `SmoothNumberLogSeries`, `ThetaMovingShellFirstOrderPhase`, `WeilNullPotentialSpectralPairing`, `XiSliceLogLogOrderDensity`, `XiSliceLogLogOrderPositivity`, `ZetaNotchBohrLift`, `ZetaNotchCriticalAFE`, `ZetaNotchCrudeTail`, `ZetaNotchDiagonalSum`, `ZetaNotchDualCarrier`, `ZetaNotchDualContour`, `ZetaNotchDualJets`, `ZetaNotchDualOscillation`, `ZetaNotchDualOscillationBound`, `ZetaNotchDualWeightBounds`, `ZetaNotchPairingInequality`, `ZetaNotchResonanceCount`, `ZetaNotchSmoothTest`, `ZetaNotchTwistedDiagonal`, `ZetaNotchTwistedOffDiagonal`, `ZetaZeroDensityPowerSaving`.
+The proof-debt finding is exactly
+`formal/GaloisForLFunctions/RHTower/XiSliceLogLogOrderDensity.lean:402`,
+`sorry` in `eventually_volume_xiSliceCoeff_nonpos_loglog_le`.
+Global lint is not claimed green; unrelated work is left untouched.
+
+Fresh exhaustive recursive census: 100 Stage 2 Markdown files,
+9 support files, 91 theorem cards, zero unqueued cards. Historical
+Stage 3 matches remain 22 unique paths: 5 owned whole-card certificates
+and 17 externally promoted cards still pending exact-proof audit;
+no ambiguous basename match. No whole card is promoted here.
+The history card remains Stage 2. Its remaining exact mathematical
+obligation is the full tempered annihilator/multiplicity classification
+(8); the real/off-real boundary is already certified.
+
+Rapid-block scratch cleanup verified: all 27 explicitly owned files
+removed after every owned process exited. The rapid scratch namespace
+is absent. Evidence above is persisted before deletion. The unbounded
+recursive objective continues with exact tempered clause (8).
+
+
+### Actual tempered multiplicity-jet subplan
+
+- [x] Run documented prior-research search and inspect all 20 candidate
+  lemmas, all 20 source arguments, zero standalone proof ideas and the
+  proposed ingredient set. Search is nonpartial with complete inventory
+  of 63,283 files and no errors; candidates are source-only/not-checked
+  and background index refresh is incomplete. Existing literal theta
+  Schwartz/Fourier source and internal physical Xi jets are useful;
+  no retrieved statement gives the required Dirac-jet classification.
+- [x] Pin actual Schwartz/tempered derivative APIs and prove exact
+  signed Dirac-jet pairing, including real/complex Xi derivative bridge.
+- [x] Construct the actual real Xi multiplier from its literal Schwartz
+  Fourier representative, and prove all Dirac jets strictly below the
+  actual analytic multiplicity lie in its kernel.
+- [ ] Prove sharp first excluded jet using the actual nonzero Xi jet and
+  a literal positive theta Schwartz test; audit finite-jet classification.
+- [ ] Transport these actual spectral jets to the unscaled source with
+  explicit Fourier normalization; no silent replacement by scaled theta.
+- [ ] Run exact native/direct/export/axiom/API/catalogue/lint gates,
+  persist exact partial coverage and retain full (8) as open until the
+  actual analytic translation curve and full local/global converse pass.
+
+Pinned Mathlib has `TemperedDistribution.derivCLM`, whose pairing is
+negative Schwartz differentiation, and `SchwartzMap.derivCLM`.
+Official documentation was searched and opened; actual local toolchain
+names will be witnessed in scratch before use. The multiplicity used
+here must be `(analyticOrderAt XiC (t:ℂ)).toNat`, with its finiteness
+and vanishing/nonvanishing jets proved from actual entire Xi. No
+assumed finite-jet vanishing interface may replace that actual order.
+
+Actual tempered-jet scratch now passes with an empty log: literal real
+Xi symbol has an actual Schwartz Fourier representative and temperate
+growth; real and complex Xi derivatives agree on the real axis; actual
+analytic order is finite with exact lower vanishing/terminal nonvanishing.
+The signed pairing of iterated actual Dirac derivatives is proved. Every
+jet below actual multiplicity is killed by the literal Xi multiplier,
+and its first excluded jet is nonzero, witnessed by the actual positive
+theta Schwartz source. Finite-jet independence/classification and final
+project gates remain open. No full-clause certificate is claimed.

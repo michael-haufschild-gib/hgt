@@ -3698,3 +3698,72 @@ Next conjectures to test:
     - YES is exactly radical-level evaporation.
     - Natural candidates `V_Λ + W` fail at `|t| < 14`: `h(0) = −0.686`, and no bounded integer cosine series is `≥ 0.7` on `(−14,14)` without negative mass off the zeros, since the spectral gap `(−log 2, log 2)` forces sign changes. This is weak evidence for NO.
     - Certificates of type `Λ` (`P = ±V_Λ`, `Ξ²P ≤ 1`) give only `O(1)` lower bounds on annihilator norms.
+
+### L165 — Lacunary rigidity at ratio 4/3 from the first-zero spectral window; the design space of radical tests beyond it. THEOREM [P] + EXPLORATION [P]
+- **Theorem [P]** (card `2-fully-proven/11-rh-zero-divisor-geometry/weil-cone-first-zero-window-lacunary-rigidity.md`). If `lam` is full-cone Weil-positive and `lam = Λ` off a set whose consecutive elements have ratio `≥ 4/3`, then `lam = Λ`. The deviation sizes are arbitrary up to the universal box.
+  - Covers `{2^j} ∪ {3·2^j}` and every lacunary sequence of ratio `≥ 4/3`. L158 needed ratio `3`; L159 needed exact powers of `2`.
+  - The only zero input is `Ξ(t) ≠ 0` for `|t| ≤ 13.8` (classical).
+- **New test class.** Band-limited radical tests: `ĝ = s(1 ± e^{2πiξλ_j})/(√2 X)` with `s` supported in the zero-free window `|ξ| ≤ 13.8/2π`. Their spectral weight `X²|ĝ|² = s²(1 ± cos)` is an arbitrary window, so the resolution is `≈ 1/(2L) = 0.23` in `log n`. The `Φχ_L`-pairs of L158/L159 are limited by the width of `K`: `K(log 2) = 0.143 K(0)`.
+- **Admissibility.** L160's pairing lemma holds for deviations of size `O(log n)` (the box). With the decay version (`k = 3`) it covers Schwartz tests on any set whose logarithms grow linearly. The contraction for the `cos²` window gives `θ ≤ 0.78`.
+- **Resolution law and its limit [P, analysis].**
+  - Zero-free radical tests resolve log-gaps down to `≈ π/γ₁ = 0.222`: exactly, for lattices, via L164 periodization; with `θ < 1` down to `log(4/3)` for arbitrary lacunary sets.
+  - Going past `γ₁` needs notches at the zeros. Their crosstalk at the samples is `Σ_γ e^{iγ log n}` times the notch transform. Notches narrower than the zero spacing have transform range `≍ log T`. So these sums are needed at `x ≍ T^C` with `C > 1`, which is beyond Landau–Gonek even under RH and beyond Selberg density (`x ≤ T^{1/4}`) unconditionally.
+  - A random-bump design avoids zero knowledge but has a bias term equal to the same zero sum. For `S ⊇` prime powers this is the Landau spike `Λ(n)/√n`, forced exactly by the near-null identity `2Σ_n Λ(n)n^{−½}k(log n) = arch(k) + pole(k)`.
+  - Conclusion: polylog-sparse large-deviation rigidity (open since L161/L163) is not reachable by radical tests of this design, under RH or not. The first zero is the natural resolution limit.
+- **Lean status.** Blocked on a certificate `Ξ ≠ 0` on `|t| ≤ 13.8`.
+  - The corpus has `|Im ρ| > 4.5`. Pairing each copy with `ρ̄` in `xiZeroCopy_im_sq_ge_endpoint_source_inverse_gap` would give `> 6.5`. That window reaches only ratio `≈ 2.2`, which does not beat L159.
+  - High-pass radical tests `K⋆(δ₀ − ρφ)` need no zero knowledge, but they only trade the `K(log 2)` shoulder for a negative plateau.
+- **Checked against the corpus this cycle.**
+  - E_v positive-definiteness for every `lam ∈ W` is already formal: Codex, `RHTower.WeilExcess.positiveDefiniteOnReal_neg_deviationPotential`, with the spectral measure in `WeilDeviationSpectralPairing`.
+  - The pole-forced Toeplitz saturation `½ log N` versus the cap `½ log(T/2π)` is MUST-498.
+  - Q_ann has no regular witness (MUST-564).
+- **Verdict:** SURVIVES. A new theorem [P]; the frontier in the lacunary class moves from ratio 2 to ratio 4/3. It is moderate: the class is still log-sparse, and the dense and polylog cores stay at the Nyquist wall.
+- **L165 Lean (closed).** `RHTower.eq_vonMangoldt_of_weilPositiveFull_of_threeHalves_lacunary`: full-cone positivity plus `lam = Λ` off a ratio-`3/2` lacunary set gives `lam = Λ`. Modules `RiemannKernelModulatedWindowTests` (37 declarations) and `WeilFullConeThreeHalvesLacunaryRigidity` (42 declarations); axioms standard, `lake build` green, wired.
+  - Zero-free window `|t| ≤ 10.26` in Lean, from the fourth reciprocal trace: two conjugate critical copies give `2/γ⁴ < 9/50000`.
+  - Band-limited tests as `cos²`-superpositions of L160's localized tests, now modulated by `(1 + σe^{2πiξa})`. The exact identity `Σ v(n)[2B(ηλ)W(λ) + σ(B·W)(λ ± a)] ≥ 0` holds with `W` in closed form `L sin(πu)/(πu(1−u²))`.
+  - L160's pairing lemma is extended to deviations of size `O(log n)`, the box size.
+  - Contraction `θ ≤ 0.963` from explicit cubic majorants and telescoping tails.
+  - Ratio `4/3` stays [P] pending a `|t| ≤ 13.8` certificate.
+
+### L166 — Floquet annihilation on two geometric progressions; the lattice Nyquist wall is arithmetic progressions of zeros. THEOREM [P + Lean] + REDUCTION [P] + rediscovery audit
+- **Conjecture phase: candidates tested and killed as rediscoveries.** Recorded so they are not proposed again.
+  - Producers on δ-fattened integers with a weak limit: = L134.
+  - Integral or rational spectral masses force Λ via Hamburger: = L153.
+  - Total positivity (`RH ⟺ 𝓕(1/ξ(½+·))` is Pólya-frequency, via Schoenberg): Gröchenig 2020 plus the corpus no-margin bucket.
+  - Third-moment and variance kills: = L109.
+  - Pair correlation beyond α = 1 via the upper-bound sieve: reaches only `α = 1 + O(log log T/log T)`, because the sieve bounds `|Σ_h|`, not its sign.
+  - Nonnegative coefficients with a positive-definite window centred at 0: the near-diagonal divergence is the pole's mean field (Landau abscissa), so there is no lever.
+  - Krein–Milman reduction (uniqueness ⟺ every extreme point of W is Λ, with extreme ⟺ no integer-frequency distribution dominated by `μ_lam`): new framing, but it reduces to the L141 one-sided core.
+- **Theorem [P + Lean]** (card `3-formalized/11-rh-zero-divisor-geometry/weil-cone-two-geometric-floquet-rigidity.md`).
+  - Statement: for `b ≥ 4`, `c ≥ 2`, `frac(log c/log b) ∈ (1/6, 1/4)`, a full-cone Weil-positive `lam` equal to Λ off `{b^(q+1)} ∪ {c b^q}` equals Λ, with arbitrary deviation sizes.
+  - Instance `{4^(q+1)} ∪ {21·4^q}`: ratio `21/16 < 4/3`, beyond L165's paper threshold.
+  - Lean: `RHTower.eq_vonMangoldt_of_weilPositiveFull_of_two_geometric`, `RHTower.eq_vonMangoldt_of_weilPositiveFull_of_four_twentyOne`; standard axioms.
+- **Mechanism.** Exact annihilating radical tests built fiber by fiber over `(log b)ℤ`.
+  - A smooth period partition `Σψ(ξ+nP)² = 1`, with unfolding over three periods and `e^{2πi mPqℓ} = 1`.
+  - Three blocks at offsets `−2, 0, 1`, weighted by barycentric coordinates of a target `(u, x)` with respect to the vertices `e^{2πikPα}`.
+  - The vertex triangle contains 0 iff the fractional part lies in `(1/6, 1/4)` (or its mirror).
+  - A shifted point is isolated by the moment `x = s e^{−2πit(α+q₀ℓ)} conj Ψ_α / max(|Ψ_α|², 1/4)`; a base point by the mass `1 + 2s cos(2πtq₀ℓ)`.
+  - The pairing collapses to `2sP·v(n₀)` for both signs of `s`.
+- **Correction to L164.** The multi-coset "fiberwise construction" needs the fiber-cone condition: the orbit phases of admissible fiber points must surround 0. The resolution for periodic supports is a cone law with gap threshold about `π/(2γ)`, half the gap law `π/γ` of L165.
+- **Reduction [P]: beyond the window.**
+  - Fiber constructions may use any fiber points that avoid zeros. A fiber is obstructed only if the zeros fill a half-space of its orbit, i.e. a positive-density subset of an arithmetic progression `2πξ* + (2π/log b)ℤ` in the ordinates.
+  - One-sided (Hardy) boundary structure kills all other singular parts at such a fiber. The surviving one is a first-order, evaporation-type defect.
+  - So full rigidity on finite unions of common-ratio progressions, at all gaps, follows from "no positive-density arithmetic-progression concentration of zeta ordinates". That is implied by LI and open unconditionally (Putnam and van Frankenhuijsen exclude only full progressions). For periodic supports the Nyquist wall is exactly this arithmetic-progression structure; cf. the comb in CANNOT-464.
+- **Verdict.**
+  - THEOREM, moderate: a new mechanism and a new rigidity class beyond the previous paper threshold, still log-sparse.
+  - REDUCTION: identifies the lattice form of the Nyquist wall.
+  - The producer core (dense, evaporation) is untouched. Its walls are unchanged: α ≥ 1 and exact identities.
+
+### L167 — Bohr-restricted non-vanishing of ζ on vertical progressions removes the lattice Nyquist wall: rigidity on every finite union of common-ratio progressions. THEOREM [P] ×2
+- **Card:** `2-fully-proven/11-rh-zero-divisor-geometry/weil-cone-common-ratio-unions-bohr-nonvanishing.md`.
+- **Theorem A [P].** For `α > 0`, `β`, `θ ∈ ℝ^K` and open `U` meeting the orbit closure `H`:
+  `liminf T^{−1}#{T ≤ ℓ ≤ 2T : ℓθ ∈ U, ζ(½+i(αℓ+β)) ≠ 0} ≥ μ_H(U)²/3`.
+  - Proof: expand the Bohr weight in Fourier series. The characters become twists `Q_m^{it}` with `Q_m = e^{2π⟨m,θ⟩/α}`.
+  - In the mollified first moment (Li–Radziwiłł Prop. 3) a twist gives a main term only if `⟨m,θ⟩ ∈ ℤ`. All other contributions are `O(T/log T)` because `Σ_{d|N} b(d) ≪ d(N)log N/log T`.
+  - The untwisted mollified second moment (their Theorem 3) bounds the denominator.
+- **Theorem B [P].** Full-cone `lam = Λ` off `⋃_i c_i b^ℕ` implies `lam = Λ`, for every `b ≥ 2` and every finite set of `c_i`, at all gaps (e.g. `{1000·2^j} ∪ {1001·2^j}`).
+  - Proof: the L166 Floquet blocks, now placed at fiber points that avoid zeros (no window).
+  - Theorem A makes the unblocked orbit points dense on every fiber, so the fiber-cone condition holds everywhere.
+  - Charts, a partition of unity and one test per (block, chart) give exact annihilators.
+- **Lesson.** The lattice wall of L166 was a zero-*position* question: arithmetic progressions of ordinates. Here it is answered by a zero-*value* statement, which mollified moments below `α = 1` can reach. The dense core has no rank-one lattice, so this does not transfer to it.
+- **Producer status (explicit).** No non-Λ producer is known. Every class now proved rigid, including every finite common-ratio union, excludes one. The remaining room is the dense evaporation core, which is equivalent to Conjecture Ω for partial atoms (L143/L153/L166).

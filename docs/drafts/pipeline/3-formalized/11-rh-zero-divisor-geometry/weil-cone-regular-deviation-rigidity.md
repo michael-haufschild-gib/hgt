@@ -4,8 +4,8 @@
 - **Stage:** 3-formalized (MC loop cycle 165)
 - **Type:** THEOREM (Lean, unconditional)
 - **Statement.**
-  - **Setting.** Let `w : ℕ → ℝ` with `w(0) = w(1) = 0` and `Σ|w(n)|n^{−5/4} < ∞`. Suppose there is `E`, holomorphic on a neighbourhood of the strip `½ ≤ Re s ≤ 5/4`, with:
-    - `E(s) = Σ w(n) n^{−s}` on `Re s = 5/4`;
+  - **Setting.** Let `w : ℕ → ℝ` with `w(0) = w(1) = 0` and `Σ|w(n)|n^{−7/4} < ∞`. Suppose there is `E`, holomorphic on a neighbourhood of the strip `½ ≤ Re s ≤ 7/4`, with:
+    - `E(s) = Σ w(n) n^{−s}` on `Re s = 7/4`;
     - `E(½ − it) = conj E(½ + it)`;
     - `‖E(s)‖ ≤ C(1+|Im s|)` on the strip.
   - **Conclusion.** If `Λ + w` is Weil-positive on pole-free tests (the corpus `WeilPositive`), then `w = 0`.

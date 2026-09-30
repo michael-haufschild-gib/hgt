@@ -59,7 +59,7 @@ theorem integrable_thetaSource_rpow_of_lt_two (q : ℝ) (hq : 0 < q) (hq2 : q < 
   congr 1
   norm_num
 
-/-- Every real Fourier phase twist of the source is genuinely admitted. -/
+/-- Every real Fourier phase twist of the source belongs to the weighted carrier. -/
 theorem thetaRealFourierTest_memLp (q : ℝ) (hq : 0 < q) (hq2 : q < 2) (t : ℝ) :
     MemLp (fun x : ℝ => (thetaCuspFullSource x : ℂ) *
       Complex.exp (-(Complex.I * (t : ℂ) * (x : ℂ)))) 2

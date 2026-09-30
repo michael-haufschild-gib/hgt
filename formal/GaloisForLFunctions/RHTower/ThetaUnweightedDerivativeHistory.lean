@@ -104,7 +104,7 @@ private theorem thetaUnweightedTranslationFamily_pointwise_jet (n : ℕ) (x : �
   rw [iteratedDeriv_comp_const_add]
   simp only [add_zero, thetaCuspStripSource_iteratedDeriv_ofReal]
 
-/-- Each ordinary derivative is genuinely admitted at the endpoint. -/
+/-- Each ordinary derivative belongs to the endpoint carrier. -/
 theorem thetaUnweightedDerivative_memLp (n : ℕ) :
     MemLp (fun x : ℝ => ((iteratedDeriv n thetaCuspFullSource x : ℝ) : ℂ)) 2
       (thetaPowerWeightedMeasure 0) := by
@@ -189,8 +189,8 @@ theorem xiThetaTranslationOrbit_eq_dilation (a : ℝ) :
     exact_mod_cast (by rw [← pow_two, Real.sq_sqrt (by positivity)] :
       Real.sqrt (2*Real.pi) * Real.sqrt (2*Real.pi) = 2*Real.pi)
   rw [← mul_assoc, hscale]
-  congr 2
-  ring
+  push_cast
+  rw [mul_add]
 
 /-- Wiener cyclicity for the actual unscaled theta source. -/
 theorem isCyclicFamily_thetaUnweightedRealTranslation :

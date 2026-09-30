@@ -155,3 +155,81 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   `O(1)` and gives no lower bound for `|W_R|`. Positive survivor: F18's reflected AFE moves the
   terminal carrier to the ordinary primal cutoff, where a fixed inner fraction can be treated by
   the independent cutoff estimate. F19 completes that surviving transfer.
+
+## 2026-09-30 independent producer continuation
+
+- **F25 — Uniform literal finite-node mean Gram floor.** For fixed distinct nodes
+  `1/2+d_j+i*b_j`, `0<d_j<1/2`, there exist `r,c>0` such that eventually for all
+  `tau in [5N/4,7N/4]` the actual reflected-primal arithmetic Gram determinant over
+  `terminalPrimePowerWindow N` is at least `c`. Exact common-height phases drop out of minor
+  norms; positive cutoff and chi envelopes give `N^(-J/2)`, while colored multiplicity gives
+  `N^J` squared minors. Evidence:
+  `RHTower.exists_eventually_reflectedPrimalFiniteNode_gram_det_lower_height_window`,
+  `SmoothAFEZetaReflectedFiniteNodeGram.lean`. Leaf audit and six axiom audits pass with standard
+  axioms only. Umbrella wired; index refreshed. Global lint still reports unrelated unreachable
+  modules. No recurrence or RH claim; conditional covariance/target law/orbit transfer remain.
+- **F26 — Next exact quantity.** Joint synthesis requires the conditional matrix, not its mean.
+  Product-frequency collisions in a determinant expansion must be combined before Parseval.
+  C16/C16a in the main card record the live producer attack; no substitute receiver was added.
+- **F27 — Exact conditional determinant fibres and common-height removal.**
+  `SmoothAFEZetaConditionalGramFibres.lean` proves the literal determinant carrier identity,
+  collision-faithful Parseval, the full Gram energy identity, its exact expectation, and subpower
+  fourth moments. `SmoothAFEZetaConditionalGramShape.lean` proves that each complete signed fibre
+  has one common height phase; its norm loses that phase exactly. Main identity:
+  `integral_reflectedPrimalConditionalGram_det_eq_shape`. The conditional mean determinant is
+  the chi/conductor row scale squared times an explicit height-independent shape mass. Both leaf
+  compilations passed without warnings. The lower shape-mass estimate remains open.
+- **F28 — Probabilistic scale and alternate source construction.** C16b now asks for a same-event
+  inverse-covariance target cost `o(log N)`, allowing a slowly shrinking covariance floor. Hardy's
+  scalar critical-chaos result is evidence for that scale, not a weighted matrix/orbit theorem.
+  C17 records a slow-cofactor, multi-mode phase construction as an unproved paper candidate.
+  Corpus Selberg--Delange assembly still takes the fractional Kato asymptotic as a premise and
+  cannot supply this construction. No new receiver, RH premise, or numerical experiment added.
+- **F27 validation checkpoint.** Final leaf audits used `lake --old env lean -o ...`; all eight
+  exported theorem axiom audits passed in `/tmp/BagConditionalFibresAudit.lean`, with only
+  `propext`, `Classical.choice`, `Quot.sound`. Both new modules are wired into `RHTower.lean`.
+  Global formal lint exited 1: unrelated unreachable modules and a concurrent `sorry` in
+  `XiSliceLogLogOrderDensity.lean:403`. It reported no issue in these BAG modules. The formal
+  index is refreshed after integration. Independent recurrence and RH remain unproved; goal active.
+- **F29 — Unconditional finite-prefix means.** `SteinhausFinitePrimeCofactorMean.lean` evaluates
+  the nonzero mean of every finite prime-phase defect by a finite Euler product and proves an
+  exact coherent twist extension preserving the prescribed prefix. Final leaf compilation passed.
+- **F30 — Weighted coherent cofactor modes.** `SteinhausFinitePrimeWeightedCofactor.lean` proves
+  the normalized weighted limit `A_S(t)/(s_j+i*t)` directly by divisor convolution and dominated
+  Tannery. Final leaf compilation passed without warnings. All eleven exported results across F29
+  and F30 passed axiom audit in `/tmp/BagFinitePrefixAudit.lean`, with standard axioms only.
+  Both modules are wired into the umbrella. Next: assemble one full-rank cofactor packet while
+  preserving earlier finite prefixes. Quantitative covariance, same-event background/target cost,
+  uniform moving-height control, and orbit transfer remain open.
+
+- **F31 — Compatible full-rank cofactor packet.** `SteinhausFinitePrimeCofactorRank.lean`
+  constructs one phase extending any finite prescription and a nonzero node determinant with
+  all cutoffs above any prescribed bound. Cauchy modes escape every proper subspace; freezing
+  earlier prefixes keeps earlier rows fixed. Final leaf and all four exported axiom audits pass
+  with standard axioms only. Umbrella wired and index refreshed. Global lint reports ten
+  unrelated unreachable modules, no issue in these BAG leaves. C17.4 strengthens isolated
+  cutoffs to whole coherent blocks before attempting literal covariance growth.
+
+- **F32 — Prescribed separated cofactor blocks with arbitrary energy budget.**
+  `SteinhausFinitePrimeCofactorModes.lean` constructs one phase preserving any finite prescription
+  and approximating prescribed Cauchy modes on whole blocks `[M_i,2*M_i]`. Blocks are separated,
+  every prefix mean `A_i` is nonzero, and `M_i*|A_i|^2` exceeds any prescribed budget. Final leaf
+  and both exported axiom audits pass with standard axioms only. This retains the intended energy
+  gain when passing to reciprocal prime intervals. Smooth cutoff and literal channel transfer
+  remain; no conditional centre bound or recurrence claim is made.
+
+- **F33 — Gaussian cutoff transfer on every constructed block.**
+  `SmoothAFEFinitePrimeCofactorModes.lean` proves convergence of each literal finite Gaussian
+  cofactor vector to its hard-cutoff vector and preserves every prescribed mode uniformly for
+  all `0<r<=r0`, with one common threshold across the separated blocks. Final leaf and both
+  exported theorem axiom audits pass with standard axioms only. The complete F29–F33 chain has
+  five warning-free leaf compilations and nineteen exported theorem axiom audits, all standard.
+  All five modules are wired into `RHTower.lean`; index refreshed. Latest global lint exits 1
+  on eleven unrelated unreachable modules, with no issue in these BAG leaves. Targeted
+  whitespace checks pass. No full/umbrella build or numerical experiment was run.
+- **Producer checkpoint after F33.** Next exact obligation: remove common height and factor
+  literal largest-prime channels through F33's cofactor vectors; control the floor-normalization
+  node factor; count primes in the new proportional intervals; prove the resulting conditional
+  Gram lower bound. The old half-to-two-thirds-power terminal window does not contain these
+  primes. Same-event centre/target control, uniform prefix/cell constants, and deterministic
+  orbit transfer remain open. Independent recurrence and RH remain unproved; goal active.

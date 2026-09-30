@@ -634,6 +634,42 @@ theorem eq_zero_of_positiveDefinite_neg_nullPotential (hR : RegularDeviation w E
   have h' : w m * (autoCorr (narrowG m) 0 / Real.sqrt m) = 0 := by exact_mod_cast hRep
   exact (mul_eq_zero.mp h').resolve_right hk0.ne'
 
+theorem RegularDeviation.neg (hR : RegularDeviation w E) :
+    RegularDeviation (fun n => -w n) (fun s => -E s) where
+  zero := by simp [hR.zero]
+  one := by simp [hR.one]
+  summable := by simpa only [abs_neg] using hR.summable
+  series := fun s hs => by
+    rw [hR.series s hs, ← tsum_neg]
+    congr 1; funext n; push_cast; ring
+  differentiableAt := fun s h1 h2 => (hR.differentiableAt s h1 h2).neg
+  growth := by
+    obtain ⟨C, hC, hb⟩ := hR.growth
+    exact ⟨C, hC, fun s h1 h2 => by rw [norm_neg]; exact hb s h1 h2⟩
+  conj_line := fun ξ => by rw [hR.conj_line, map_neg]
+
+theorem nullPotential_neg (u : ℕ → ℝ) (y : ℝ) :
+    nullPotential (fun n => -u n) y = -nullPotential u y := by
+  unfold nullPotential
+  rw [← tsum_neg]
+  congr 1; funext n; ring
+
+/-- **Near-null regular rigidity, other sign.** If `+ψ_u` is positive definite, `u = 0`. -/
+theorem eq_zero_of_positiveDefinite_nullPotential (hR : RegularDeviation w E) {A : ℝ}
+    (hA : 0 ≤ A) (hu : ∀ n, |w n / Real.sqrt n| ≤ A)
+    (hPD : GaloisForLFunctions.HTGeometry.PositiveDefiniteOnReal
+      fun y => ((nullPotential (fun n => w n / Real.sqrt n) y : ℝ) : ℂ)) (m : ℕ) : w m = 0 := by
+  have hPD' : GaloisForLFunctions.HTGeometry.PositiveDefiniteOnReal
+      fun y => ((-nullPotential (fun n => -w n / Real.sqrt n) y : ℝ) : ℂ) := by
+    have e : ∀ y, -nullPotential (fun n => -w n / Real.sqrt n) y =
+        nullPotential (fun n => w n / Real.sqrt n) y := fun y => by
+      rw [show (fun n => -w n / Real.sqrt n) = fun n => -(w n / Real.sqrt n) from
+        funext fun n => neg_div _ _, nullPotential_neg, neg_neg]
+    simp_rw [e]; exact hPD
+  have h := eq_zero_of_positiveDefinite_neg_nullPotential hR.neg hA
+    (fun n => by rw [neg_div, abs_neg]; exact hu n) hPD' m
+  simpa using h
+
 end
 
 end RHTower.WeilRegular
