@@ -72,12 +72,6 @@ theorem summable_integral_le_of_tsum_le {f : ℕ → ℝ → ℝ} (hf0 : ∀ n x
 def weightPairing (w : ℕ → ℝ) (φ : ℝ → ℂ) : ℂ :=
   ∑' n : ℕ, (w n : ℂ) * (φ (Real.log n) + φ (-Real.log n))
 
-/-- A weight with a uniform Cauchy-profile bound. -/
-def CauchyBounded (w : ℕ → ℝ) (D : ℝ) : Prop :=
-  ∀ η : ℝ, 0 < η → η ≤ 1 → ∀ s : ℝ,
-    Summable (fun n : ℕ => w n * (cauchyProfile η s (Real.log n) + cauchyProfile η s (-Real.log n)))
-      ∧ ∑' n : ℕ, w n * (cauchyProfile η s (Real.log n) + cauchyProfile η s (-Real.log n)) ≤ D
-
 theorem summable_weightPairing_of_profile {w : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n) {D : ℝ}
     (hD : CauchyBounded w D) {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) {s C : ℝ} {φ : ℝ → ℂ}
     (hφ : ∀ u, ‖φ u‖ ≤ C * cauchyProfile η s u) :

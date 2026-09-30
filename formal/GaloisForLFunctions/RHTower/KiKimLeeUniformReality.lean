@@ -40,7 +40,7 @@ theorem kklError_le_uniform {t₀ t α : ℝ} (ht₀ : 0 < t₀) (ht : t₀ ≤ 
   unfold kklError kklErrorUniform kklR1 kklR2 kklRA kklRC kklRB
   have h1 : Real.exp (5 / 2 * α - 3 / 4 * t * α ^ 2) ≤
       Real.exp (5 / 2 * α - 3 / 4 * t₀ * α ^ 2) := by
-    gcongr; nlinarith
+    gcongr
   have h2 : Real.exp (-α ^ 2 + 1 / 2 + t) ≤ Real.exp (-α ^ 2 + 1 / 2 + 1 / 8) := by
     gcongr
   have h3 : 9 / 2 * (5 / (2 * t) + α + 1) * (4 * Real.pi * t) ^ (-(1 / 2 : ℝ)) * 200 *
@@ -72,7 +72,6 @@ theorem kklError_le_uniform {t₀ t α : ℝ} (ht₀ : 0 < t₀) (ht : t₀ ≤ 
       nlinarith [sq_nonneg (α ^ 2 - 1 / 2)]
     have e2 : t * α ^ 2 ≤ α ^ 2 / 8 := by nlinarith
     gcongr
-    linarith
   linarith
 
 theorem tendsto_kklErrorUniform {t₀ : ℝ} (ht₀ : 0 < t₀) :

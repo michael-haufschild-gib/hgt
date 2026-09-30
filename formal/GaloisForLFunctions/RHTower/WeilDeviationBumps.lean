@@ -147,7 +147,7 @@ theorem hasCompactSupport_pdConv : HasCompactSupport pdConv := by
   exact pdBaseBump.hasCompactSupport.convolution _ pdBaseBump.hasCompactSupport
 
 theorem pdConv_nonneg (x : ℝ) : 0 ≤ pdConv x :=
-  integral_nonneg fun t => mul_nonneg pdBaseBump.nonneg pdBaseBump.nonneg
+  integral_nonneg fun _ => mul_nonneg pdBaseBump.nonneg pdBaseBump.nonneg
 
 theorem pdConv_le_zero (x : ℝ) : pdConv x ≤ pdConv 0 := by
   have hm : Continuous (pdBaseBump : ℝ → ℝ) := pdBaseBump.continuous

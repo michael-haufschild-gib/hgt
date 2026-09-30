@@ -95,16 +95,16 @@ theorem packet_eq_zero_of_far {B : ℝ → ℂ} (hB : ∀ x, 2 ≤ |x| → B x =
 
 /-- The deviation pairing with the transform of any smooth compactly supported function is
 absolutely convergent. -/
-theorem summable_deviation_fourier_smooth {lam : ℕ → ℝ} (hexc : Summable (deviationExcess lam))
+theorem summable_deviation_fourier_smooth {lam : ℕ → ℝ} {Dₑ : ℝ}
+    (hexc : CauchyBounded (deviationExcess lam) Dₑ)
     {D : ℝ} (hD : CauchyBounded (deviationDeficit lam) D) {f : ℝ → ℂ} (hs : ContDiff ℝ ∞ f)
     (hc : HasCompactSupport f) :
     Summable fun n : ℕ => (weilDeviation lam n : ℂ) * (𝓕 f (Real.log n) + 𝓕 f (-Real.log n)) := by
   obtain ⟨C, hC0, hC⟩ := exists_fourier_profile_smooth hs hc
   have hprof : ∀ u, ‖𝓕 f u‖ ≤ C * cauchyProfile 1 0 u := fun u => by
     rw [cauchyProfile_one_zero]; exact (hC u).trans (le_of_eq (by ring))
-  have hbd : ∀ u, ‖𝓕 f u‖ ≤ C := fun u => (hprof u).trans (by
-    have := cauchyProfile_le_self one_pos 0 u; nlinarith)
-  exact summable_deviation_of (summable_excess_pairing hexc hbd).1
+  exact summable_deviation_of
+    (summable_weightPairing_of_profile (deviationExcess_nonneg lam) hexc one_pos le_rfl hprof).1
     (summable_weightPairing_of_profile (deviationDeficit_nonneg lam) hD one_pos le_rfl hprof).1
 
 /-! ## The packet remainder -/
@@ -175,7 +175,7 @@ theorem packetSumReal_le_one {Z : Finset ℝ} {δ ε : ℝ} (hS : Separated Z δ
       norm_num
 
 theorem packetSumReal_nonneg (Z : Finset ℝ) (ε δ ξ : ℝ) : 0 ≤ packetSumReal Z ε δ ξ :=
-  add_nonneg (pdPacket_nonneg _) (Finset.sum_nonneg fun γ _ => excessFlatPacket_nonneg _ _)
+  add_nonneg (pdPacket_nonneg _) (Finset.sum_nonneg fun _ _ => excessFlatPacket_nonneg _ _)
 
 /-- **The remainder vanishes near every zero of `Ξ`.** -/
 theorem remainder_eventuallyEq_zero {h : ℝ → ℂ} {Z : Finset ℝ} {δ ε : ℝ} (hS : Separated Z δ)
@@ -282,7 +282,8 @@ theorem fourier_packet_decomposition {h : ℝ → ℂ} (hs : ContDiff ℝ ∞ h)
     _ = _ := by rw [fourier_add_eq i₀ iS u, fourier_finset_sum Z iγ u]
 
 /-- **The deviation pairing splits along the packet decomposition.** -/
-theorem deviationPairing_packet_decomposition {lam : ℕ → ℝ} (hexc : Summable (deviationExcess lam))
+theorem deviationPairing_packet_decomposition {lam : ℕ → ℝ} {Dₑ : ℝ}
+    (hexc : CauchyBounded (deviationExcess lam) Dₑ)
     {D : ℝ} (hD : CauchyBounded (deviationDeficit lam) D) {h : ℝ → ℂ} (hs : ContDiff ℝ ∞ h)
     (hc : HasCompactSupport h) (Z : Finset ℝ) (ε δ : ℝ) :
     deviationPairing lam (𝓕 h) =
@@ -318,7 +319,7 @@ theorem deviationPairing_packet_decomposition {lam : ℕ → ℝ} (hexc : Summab
 
 /-- **Near-null positivity for the remainder.** -/
 theorem deviationPairing_packetRemainder {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (hexc : Summable (deviationExcess lam)) (σ : Measure ℝ) [IsFiniteMeasure σ]
+    {Dₑ : ℝ} (hexc : CauchyBounded (deviationExcess lam) Dₑ) (σ : Measure ℝ) [IsFiniteMeasure σ]
     (hσ : ∀ t, charFun σ t = ((-deviationPotential lam t : ℝ) : ℂ)) {h : ℝ → ℂ}
     (hs : ContDiff ℝ ∞ h) (hc : HasCompactSupport h) {Z : Finset ℝ} {δ ε : ℝ}
     (hS : Separated Z δ) (hε0 : 0 < ε) (hε : ε ≤ 1)
@@ -341,7 +342,7 @@ theorem deviationPairing_packetRemainder {lam : ℕ → ℝ} (hW : WeilPositiveF
 
 /-- For a nonnegative real amplitude, the remainder pairs nonpositively. -/
 theorem re_deviationPairing_packetRemainder_nonpos {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (hexc : Summable (deviationExcess lam)) (σ : Measure ℝ) [IsFiniteMeasure σ]
+    {Dₑ : ℝ} (hexc : CauchyBounded (deviationExcess lam) Dₑ) (σ : Measure ℝ) [IsFiniteMeasure σ]
     (hσ : ∀ t, charFun σ t = ((-deviationPotential lam t : ℝ) : ℂ)) {r : ℝ → ℝ}
     (hr0 : ∀ ξ, 0 ≤ r ξ) (hs : ContDiff ℝ ∞ fun ξ => (r ξ : ℂ))
     (hc : HasCompactSupport fun ξ => (r ξ : ℂ)) {Z : Finset ℝ} {δ ε : ℝ}

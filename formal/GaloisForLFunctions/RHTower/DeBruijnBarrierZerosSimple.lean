@@ -1,18 +1,20 @@
 import GaloisForLFunctions.RHTower.DeBruijnHeatLocalModel
 
 /-!
-# Zeros on the de Bruijn barrier are simple
+# Multiple zeros of `H_s` shed non-real zeros backward in time
 
-Every zero of `H_s` (`s > 0`) satisfies `(Im z)² ≤ max(¼ − 2s, 0)`. A zero `z₀` on this barrier
-(`(Im z₀)² = ¼ − 2s > 0`) is simple (`deriv_riemannHeat_ne_zero_of_barrier`).
-
-**Proof.** If `z₀` had order `k ≥ 2`, then backward in time, at the parabolic scale,
+If `z₀` is a zero of order `k ≥ 2` of `H_s` (`s > 0`), then backward in time, at the parabolic scale,
 `H_{s−q²}(z₀ + qσ) = (a/k!) q^k P_k(σ) + O(q^{k+1})` with `P_k = e^{D²}σ^k`. For `k ≥ 2`,
 `P_k(σ) = σ^{k mod 2} S(σ²)` where `S` has positive coefficients, so `S` has no root in `[0, ∞)`
 and `P_k` has a root `τ` off the real axis (`exists_heatModel_root_im_pos`). By the minimum modulus
-principle (`exists_zero_of_norm_lt_sphere`) `H_{s−q²}` has a zero within `qρ` of `z₀ + qτ`, whose
-imaginary part exceeds `|Im z₀| + q|Im τ|/2`. For small `q` this violates the barrier
-`(Im z)² ≤ ¼ − 2(s − q²)` at the earlier time `s − q²`.
+principle (`exists_zero_of_norm_lt_sphere`) `H_{s−q²}` has a zero within `qρ` of `z₀ + qτ`, so
+`|Im ζ| ≥ |Im z₀| + cq` (`exists_zero_off_multiple_zero`). Consequences:
+
+* zeros on the de Bruijn barrier `(Im z)² = ¼ − 2s > 0` are simple
+  (`deriv_riemannHeat_ne_zero_of_barrier`): the shed zero would violate the barrier at `s − q²`;
+* for `t > newmanConstant` every zero of `H_t` is simple
+  (`deriv_riemannHeat_ne_zero_of_newmanConstant_lt`, Csordas–Smith–Varga): the shed zero would be a
+  non-real zero of the real-rooted `H_{t−q²}`.
 -/
 
 open Complex Filter Topology Set Metric
@@ -177,12 +179,13 @@ theorem exists_iteratedDeriv_riemannHeat_ne_zero {s : ℝ} (hs : 0 ≤ s) (z₀ 
   simp only [hall, mul_zero, zero_mul, tsum_zero] at h
   exact riemannHeat_zero_ne hs h.symm
 
-/-- **Zeros on the de Bruijn barrier are simple.** If `H_s(z₀) = 0` with `s > 0`, `Im z₀ ≠ 0` and
-`(Im z₀)² ≥ ¼ − 2s`, then `H_s'(z₀) ≠ 0`. -/
-theorem deriv_riemannHeat_ne_zero_of_barrier {s : ℝ} (hs : 0 < s) {z₀ : ℂ}
-    (hz : riemannHeat s z₀ = 0) (hbar : 1 / 4 - 2 * s ≤ z₀.im ^ 2) (him : z₀.im ≠ 0) :
-    deriv (riemannHeat s) z₀ ≠ 0 := by
-  intro hd
+/-- **A multiple zero sheds a zero off its horizontal line backward in time.** If `z₀` is a
+multiple zero of `H_s` (`s > 0`), there is `c > 0` such that for arbitrarily small `q > 0` the
+function `H_{s−q²}` has a zero `ζ` with `|Im ζ| ≥ |Im z₀| + cq`. -/
+theorem exists_zero_off_multiple_zero {s : ℝ} (hs : 0 < s) {z₀ : ℂ}
+    (hz : riemannHeat s z₀ = 0) (hd : deriv (riemannHeat s) z₀ = 0) :
+    ∃ c > 0, ∀ ε > 0, ∃ q : ℝ, 0 < q ∧ q ≤ ε ∧ q ^ 2 < s ∧ ∃ ζ : ℂ,
+      riemannHeat (s - q ^ 2) ζ = 0 ∧ |z₀.im| + c * q ≤ |ζ.im| := by
   classical
   set H := riemannHeat s with hH
   have hex := exists_iteratedDeriv_riemannHeat_ne_zero hs.le z₀
@@ -196,12 +199,12 @@ theorem deriv_riemannHeat_ne_zero_of_barrier {s : ℝ} (hs : 0 < s) {z₀ : ℂ}
   -- a root of the model off the real axis, on the side of `z₀`
   obtain ⟨τ₀, hτ₀, hη⟩ := exists_heatModel_root_im_pos hk
   set η := τ₀.im
-  set τ : ℂ := if 0 < z₀.im then τ₀ else (starRingEnd ℂ) τ₀ with hτdef
+  set τ : ℂ := if 0 ≤ z₀.im then τ₀ else (starRingEnd ℂ) τ₀ with hτdef
   have hτ : heatModel k τ = 0 := by
     rw [hτdef]; split_ifs
     · exact hτ₀
     · rw [heatModel_conj, hτ₀, map_zero]
-  have hτim : τ.im = if 0 < z₀.im then η else -η := by
+  have hτim : τ.im = if 0 ≤ z₀.im then η else -η := by
     rw [hτdef]; split_ifs <;> simp [η]
   obtain ⟨ρ, δ, hρ, hρη, hδ, hsph⟩ := exists_sphere_heatModel_lower k τ (ε := η / 2)
     (by positivity)
@@ -209,17 +212,16 @@ theorem deriv_riemannHeat_ne_zero_of_barrier {s : ℝ} (hs : 0 < s) {z₀ : ℂ}
     (S := ‖τ‖ + ρ) (by positivity)
   set A := ‖iteratedDeriv k H z₀‖ / (k.factorial : ℝ)
   have hA : 0 < A := div_pos (norm_pos_iff.mpr ha) (by exact_mod_cast Nat.factorial_pos k)
-  have hy : 0 < |z₀.im| := abs_pos.mpr him
-  set q := min (min q₀ 1) (min (s / 2) (min (A * δ / (4 * (|C| + 1))) (|z₀.im| * η / 4)))
+  refine ⟨η / 2, by positivity, fun ε hε => ?_⟩
+  set q := min (min q₀ 1) (min (s / 2) (min (A * δ / (4 * (|C| + 1))) ε))
   have hq : 0 < q := lt_min (lt_min hq₀ one_pos) (lt_min (by positivity)
-    (lt_min (by positivity) (by positivity)))
+    (lt_min (by positivity) hε))
   have hqq₀ : q ≤ q₀ := (min_le_left _ _).trans (min_le_left _ _)
   have hq1 : q ≤ 1 := (min_le_left _ _).trans (min_le_right _ _)
   have hqs : q ≤ s / 2 := (min_le_right _ _).trans (min_le_left _ _)
   have hqC : q ≤ A * δ / (4 * (|C| + 1)) :=
     (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _))
-  have hqy : q ≤ |z₀.im| * η / 4 :=
-    (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _))
+  have hqε : q ≤ ε := (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _))
   have hq2 : q ^ 2 ≤ q := by nlinarith
   have hq2s : q ^ 2 < s := by linarith
   -- the error is below half the model on the circle
@@ -267,34 +269,66 @@ theorem deriv_riemannHeat_ne_zero_of_barrier {s : ℝ} (hs : 0 < s) {z₀ : ℂ}
       mul_le_mul_of_nonneg_left h2 (by positivity)
     nlinarith
   obtain ⟨σ₁, hσ₁, hf0⟩ := exists_zero_of_norm_lt_sphere hfd hρ hsphere
-  -- the zero lies above the barrier at time `s − q²`
-  have hbarrier := riemannHeat_zeros_im_sq_le (t := s - q ^ 2) (by linarith) hf0
+  refine ⟨q, hq, hqε, hq2s, z₀ + q * σ₁, hf0, ?_⟩
   have hζim : (z₀ + q * σ₁).im = z₀.im + q * σ₁.im := by simp
-  rw [hζim] at hbarrier
+  rw [hζim]
   have hσim : |σ₁.im - τ.im| < η / 2 := by
     have := (Complex.abs_im_le_norm (σ₁ - τ)).trans_lt (mem_ball_iff_norm.mp hσ₁)
     rw [Complex.sub_im] at this
     linarith
-  have hlow : z₀.im ^ 2 + |z₀.im| * q * η < (z₀.im + q * σ₁.im) ^ 2 := by
-    rw [hτim] at hσim
-    split_ifs at hσim with hpos
-    · rw [abs_of_pos hpos]
-      have hs1 : η / 2 < σ₁.im := by rw [abs_lt] at hσim; linarith
-      have : z₀.im + q * (η / 2) < z₀.im + q * σ₁.im := by
-        have := mul_lt_mul_of_pos_left hs1 hq; linarith
-      nlinarith [mul_pos hq hη]
-    · have hneg : z₀.im < 0 := lt_of_le_of_ne (not_lt.mp hpos) him
-      rw [abs_of_neg hneg]
-      have hs1 : σ₁.im < -(η / 2) := by rw [abs_lt] at hσim; linarith
-      have : z₀.im + q * σ₁.im < z₀.im - q * (η / 2) := by
-        have := mul_lt_mul_of_pos_left hs1 hq; linarith
-      nlinarith [mul_pos hq hη]
-  have hgap : 2 * q ^ 2 < |z₀.im| * q * η := by
-    have : 4 * q ≤ |z₀.im| * η := by linarith
-    nlinarith
+  rw [hτim] at hσim
+  split_ifs at hσim with hpos
+  · have hs1 : η / 2 < σ₁.im := by rw [abs_lt] at hσim; linarith
+    have h1 : q * (η / 2) < q * σ₁.im := mul_lt_mul_of_pos_left hs1 hq
+    rw [abs_of_nonneg hpos, abs_of_nonneg (by nlinarith)]
+    linarith
+  · have hneg : z₀.im < 0 := not_le.mp hpos
+    have hs1 : σ₁.im < -(η / 2) := by rw [abs_lt] at hσim; linarith
+    have h1 : q * σ₁.im < q * (-(η / 2)) := mul_lt_mul_of_pos_left hs1 hq
+    rw [abs_of_neg hneg, abs_of_neg (by nlinarith)]
+    linarith
+
+/-- **Zeros on the de Bruijn barrier are simple.** If `H_s(z₀) = 0` with `s > 0`, `Im z₀ ≠ 0` and
+`(Im z₀)² ≥ ¼ − 2s`, then `H_s'(z₀) ≠ 0`. -/
+theorem deriv_riemannHeat_ne_zero_of_barrier {s : ℝ} (hs : 0 < s) {z₀ : ℂ}
+    (hz : riemannHeat s z₀ = 0) (hbar : 1 / 4 - 2 * s ≤ z₀.im ^ 2) (him : z₀.im ≠ 0) :
+    deriv (riemannHeat s) z₀ ≠ 0 := by
+  intro hd
+  obtain ⟨c, hc, hoff⟩ := exists_zero_off_multiple_zero hs hz hd
+  have hy : 0 < |z₀.im| := abs_pos.mpr him
+  obtain ⟨q, hq, hqε, hqs, ζ, hζ, hζim⟩ := hoff (|z₀.im| * c / 2) (by positivity)
+  have hbarrier := riemannHeat_zeros_im_sq_le (t := s - q ^ 2) (by linarith) hζ
   have hmax : max (1 / 4 - 2 * (s - q ^ 2)) 0 ≤ z₀.im ^ 2 + 2 * q ^ 2 :=
     max_le (by linarith) (by positivity)
-  linarith
+  have hlow : (|z₀.im| + c * q) ^ 2 ≤ ζ.im ^ 2 := by
+    rw [← sq_abs ζ.im]
+    exact pow_le_pow_left₀ (by positivity) hζim 2
+  have hgap : 2 * q ^ 2 < 2 * |z₀.im| * c * q := by
+    have : q < |z₀.im| * c := by linarith [mul_pos hy hc]
+    nlinarith
+  have hsq : (|z₀.im| + c * q) ^ 2 = z₀.im ^ 2 + 2 * |z₀.im| * c * q + c ^ 2 * q ^ 2 := by
+    rw [add_sq, sq_abs]; ring
+  nlinarith [sq_nonneg (c * q)]
+
+/-- **Csordas–Smith–Varga: simplicity above the de Bruijn–Newman constant.** For every
+`t > newmanConstant`, every zero of `H_t` is simple. A multiple zero would shed a non-real zero of
+`H_{t−q²}` for small `q`, while `H_{t−q²}` is still real-rooted. -/
+theorem deriv_riemannHeat_ne_zero_of_newmanConstant_lt {t : ℝ} (ht : newmanConstant < t)
+    {z : ℂ} (hz : riemannHeat t z = 0) : deriv (riemannHeat t) z ≠ 0 := by
+  intro hd
+  have ht0 : 0 < t := lt_of_le_of_lt newmanConstant_nonneg ht
+  obtain ⟨c, hc, hoff⟩ := exists_zero_off_multiple_zero ht0 hz hd
+  obtain ⟨q, hq, hqε, hqs, ζ, hζ, hζim⟩ := hoff (min 1 ((t - newmanConstant) / 2))
+    (lt_min one_pos (by linarith))
+  have hq1 : q ≤ 1 := hqε.trans (min_le_left _ _)
+  have hq2 : q ^ 2 ≤ q := by nlinarith
+  have hqΛ : q ≤ (t - newmanConstant) / 2 := hqε.trans (min_le_right _ _)
+  have hmem : t - q ^ 2 ∈ realRootedTimes :=
+    (mem_realRootedTimes_iff (by linarith)).mpr (by linarith)
+  have h0 := hmem.2 ζ hζ
+  rw [h0, abs_zero] at hζim
+  have : 0 < c * q := mul_pos hc hq
+  linarith [abs_nonneg z.im]
 
 end
 

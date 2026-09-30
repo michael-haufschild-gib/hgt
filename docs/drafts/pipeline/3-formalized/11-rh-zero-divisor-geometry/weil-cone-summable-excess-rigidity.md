@@ -1,8 +1,8 @@
 # A Weil-positive system with summable excess over Λ is Λ
 
 - **ID:** MC-WEIL-SUMMABLE-EXCESS
-- **Stage:** 1-in-progress (paper proof complete; Lean in progress)
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** MC conjecture loop, cycle 157 (`1-in-progress/mc-conjecture-loop-2026-09-28.md`). It is the downward half of Theorem C′ (cycle 155) and the mirror of `3-formalized/11-rh-zero-divisor-geometry/weil-cone-summable-deficit-rigidity.md`.
 - **Statement:** If `lam` is full-cone Weil-positive (`WeilPositiveFull lam`) and `Σ_{n≥2} (lam(n) − Λ(n))⁺ n^{−½} < ∞`, then `lam(n) = Λ(n)` for every `n ≥ 2`. Nothing is assumed about the deficit.
 
@@ -106,3 +106,25 @@ Put `A_δ := ∫δǦ(δu)dW_v(u) ≥ 0`. By translation boundedness, `A_δ` stay
   - `WeilDeviationFejerTest`: `F = |𝓕ρ|²`, with `F(0) = 0.4356`, `F(ξ) ≤ 1/(πξ)²`, `𝓕F = 0` on `|u| > 17/25`, and zero budget at most `3/8`.
   - `WeilDeviationDecomposition`: finite zero windows, division by `Ξ²`, the excess/deficit split, and `tendsto_deviationPairing_tail`.
 - The flattening error does not need second derivatives. It is the packet-limit lemma applied at scale `εδ` with amplitude `h₁((·−γ)/δ)`, where `h₁(0) = 0`; by scale covariance the error is `ε·∫|𝓕h₁||t|(1+t²)`.
+- 2026-09-30 — FORMALIZED. Stage 3. Fourteen modules, all in namespace `RHTower.WeilExcess`, wired into `RHTower.lean` after `WeilFullConeSummableDeficitRigidity`. `#print axioms` gives `propext, Classical.choice, Quot.sound` only.
+  - `WeilFullConeSummableExcessRigidity`:
+    - `eq_vonMangoldt_of_weilPositiveFull_of_summable_excess`, the main theorem, stated with the hypothesis in the form `Summable fun n => max (lam n − Λ n) 0 / √n`.
+    - `riemannHypothesis_iff_exists_weilPositiveFull_summable_excess`.
+    - `not_summable_excess_of_ne` and `not_summable_deficit_of_ne`: a Weil-positive `lam ≠ Λ` has infinite excess and infinite deficit.
+  - `WeilDeviationDeficitMeanVanishes`: `tendsto_deficitMean` (Steps 5–6). The deficit mean `A_δ` tends to 0.
+  - `WeilDeviationFourierAnnihilation`: `deviationPairing_fourier_eq_zero` (Step 7). `Σ a(n)(𝓕h(log n) + 𝓕h(−log n)) = 0` for every smooth compactly supported `h`.
+- Changes from the paper plan:
+  - **Step 7 needs no measure-support statement.** The remainder of `h` is dominated pointwise by `C` times the remainder of the cut-off dilated Fejér test `F(·/s)χ(·/Γ)`, and `F(ξ/s) ≥ F(0)/2` on `supp h` once `s` is large. The remainder of the Fejér test is controlled by the triangle inequality: its full pairing is minus the tail, and its packets are small. So `σ(ℝ∖Z) = 0` is never stated.
+  - Dilation keeps the Fourier support inside `|u| ≤ 17/25`.
+  - **Step 8** uses `Φ(ξ) = F(ξ/(m+1))e^{2πiξ log m}`. The gap `|log n − log m| ≥ 1/(m+1)` isolates `log m`, and `∫F > 0`. The cut-off tests pair to zero, and the tail lemma passes to the limit.
+- 2026-09-30 — (MC cycle 161) **Generalized from summable excess to density-zero excess, and made quantitative.** The whole chain now assumes only a translation-bounded excess (`CauchyBounded (deviationExcess lam) Dₑ`); summable excess is recovered via `cauchyBounded_of_summable` and `excessMeanVanishes_of_summable`.
+  - **Mean balance** (`RHTower.WeilExcess.meanBalance`). For every full-cone Weil-positive `lam` with translation-bounded excess, `(F(0) − 3/8)·A_δ ≤ (F(0) + 3/8)·E_δ + o(1)`, where `A_δ` and `E_δ` are the deficit and excess means over windows of length `1/δ`. The deficit density is at most about 13.4 times the excess density.
+    - Proof: the origin packet now carries `F(0)(E_δ − A_δ)`, each zero packet carries `F(γ)(A_δ + E_δ)`, and the zero budget is `3/8`.
+  - **Density rigidity** (`eq_vonMangoldt_of_weilPositiveFull_of_excessMeanVanishes`). If the excess is translation-bounded with vanishing mean, then `lam = Λ`.
+    - `not_excessMeanVanishes_of_ne`: a second member of the cone with translation-bounded excess has an excess of positive upper density.
+  - Only the one direction `A ≲ E` holds. The remainder sign `P(𝓕R) ≤ 0` is one-sided, so no bound `E ≲ A` follows from this mechanism.
+- 2026-09-30 — (MC cycle 162) **Two-sided comparison and density-zero deficit rigidity.** Module `WeilDeviationMeanComparison`.
+  - **`exists_excessMean_le_deficitMean`: `E_δ ≤ A_δ + Cδ`.** Near-null positivity applied to `g = χG_δ ≥ 0` gives `W_a(𝓕(Ξ²χG_δ)) ≤ 0`, and the packet limit gives `W_w(𝓕(Ξ²χG_δ)) = Ξ(0)²M_δ(w) + O(δ)`.
+  - **Symmetric translation bound** (`exists_tsum_excess_cauchyProfile_le`). A translation-bounded deficit forces a translation-bounded excess, because `|ψ| ≤ −ψ(0)` works in both directions.
+  - **`eq_vonMangoldt_of_weilPositiveFull_of_deficitMeanVanishes`.** A translation-bounded deficit with vanishing mean forces `lam = Λ`. This extends HF's summable-deficit rigidity from `ℓ¹` to density zero.
+  - **Two-sided law.** For every Weil-positive `lam` with translation-bounded deviation: `E_δ ≤ A_δ + o(1)` and `A_δ ≤ 13.4·E_δ + o(1)`. Excess and deficit densities are comparable, and either vanishes only at `Λ`.

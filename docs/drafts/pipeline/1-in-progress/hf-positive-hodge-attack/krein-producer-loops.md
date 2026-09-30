@@ -3555,3 +3555,146 @@ Next conjectures to test:
   - the deficit is translation-bounded;
   - there is a spectral pairing with `𝓕(Ξ²g)`.
   To avoid duplicating that lane, L160 attacks dense two-sided deviations.
+
+### L160 — Zero-free-window rigidity: square-summable deviations on log-accumulating supports. PROVED [Lean]
+- **Conjecture.** If `lam ∈ W`, `v = (Λ − lam)/√n` is in `ℓ²`, and the support of `v` has polynomially separated logarithms (`|log m − log n| ≥ c(1+log mn)^{−D}`), then `lam = Λ`.
+  - This covers every finitely generated multiplicative semigroup `⟨p₁,…,p_r⟩`, via Baker.
+  - It is the first rigidity class whose logarithms accumulate. L158/L159 needed gaps `≥ log 2`.
+- **Kill attempts.**
+  - The kernel-incoherence method of L158 fails: about `X` support points lie within distance 1 of each other at height `X`.
+  - The Kronecker-torus method fails without Diophantine input. Liouville gaps `e^{−X}` exactly balance the zero density.
+  - With Baker, polynomial gaps suffice. The verdict is SURVIVES.
+- **Mechanism (new).** Divide by `Ξ` on windows free of zeta zeros.
+  - For `X = 𝓕Φ = Ξ(2π·)` and a window `(ξ₀ − η, ξ₀ + η)` free of real zeros, the test `𝓕⁻(φ((·−ξ₀)/η)/X)` is Schwartz.
+  - Near-null Weil positivity makes `Y(ξ₀) = Σ v(n)B(η log n)cos(2πξ₀ log n)` nonnegative there.
+  - Bad windows have total length `≲ ηT log T`.
+  - Under polynomial gaps, mean values over `[T,2T]` separate the coefficients.
+  - `ℓ²` bounds `∫_{bad}|Y|`, and `η → 0` with `T = η^{−(2J+1)}`.
+- **Proof [Lean].** The theorem is `RHTower.eq_vonMangoldt_of_weilPositiveFull_of_sq_summable_separated`, in three modules:
+  - `WeilFullConeConvolutionPositivity`;
+  - `RiemannKernelSpectralLocalization`;
+  - `WeilFullConeZeroFreeWindowRigidity`.
+  Axioms are standard.
+- **Law exposed (uncertainty principle).**
+  - Resolving at scale `η` needs zero-free windows (`η log T → 0`), hence mean values of Dirichlet polynomials of length `e^{R/η}` at height `T`.
+  - This works exactly when the support's log-gaps at height `X` are `e^{−o(X)}`.
+  - For the full support `ℕ` the gaps are `e^{−X}`, and the method closes only under `E(X)Γ(X) = o(X)`, i.e. `v = 0`.
+  - This makes the `α ≥ 1` wall of L127/L133/L149 a theorem-level boundary rather than a heuristic.
+- **Producer consequence.** A producer `≠ Λ` cannot deviate from `Λ` in `ℓ²` on any log-separated support, in particular on any finitely generated semigroup. Its deviation must be:
+  - non-`ℓ²` on such supports (large, as in L158/L159);
+  - or spread over sets whose log-gaps are exponentially small, i.e. essentially all of `ℕ`.
+- **Card.** `3-formalized/11-rh-zero-divisor-geometry/weil-cone-zero-free-window-rigidity.md`.
+- **Next.** Full support with the weighted Montgomery–Vaughan Hilbert inequality (`Σ v(n)²/(δ_n n^ε) < ∞`), then combine large-sparse (L158) with small-dense (L160) deviations.
+
+### L161 — After L160: six conjectures on dense deviations, all killed or reduced. EXPLORATION [P]
+- **(1) L-function deviations** (`D_{lam−Λ}` continues to `σ ≥ ½` with polynomial growth) are rigid. The proof would go through the identity theorem in `δ`, Fejér localization and Phragmén–Lindelöf.
+  - Verdict: REDISCOVERED. Power-saving partial sums are already MUST-507 (L78), which covers periodic mean-zero deviations and degree ≤ 3 coefficients.
+- **(2) Full ℕ with a weighted Montgomery–Vaughan inequality** (`Σ(lam−Λ)² n^{−ε} < ∞ ∀ε`).
+  - Verdict: INSIGNIFICANT. Almost every such deviation has power-saving partial sums, so it falls under L78.
+  - Survivor: pointwise `|lam(n)−Λ(n)| ≤ C n^{−½}(log n)^B`, which has partial sums at the √x scale. Taken up as L162.
+- **(3) Hybrid** (large sparse part plus separated `ℓ²` part).
+  - Verdict: no proof. The `ℓ²` part breaks the L158 contraction, and the large part breaks the L160 diagonal (`E(X) ~ X³`).
+- **(4) Smooth-profile evaporation** (removals `r(γ)`, `r` slowly varying).
+  - Explicit-formula bookkeeping plus integrality cancels the variable part of the removals exactly, leaving a constant ratio `r(∞)`. Superlinear ζ-mass then forces `r(∞) = 0`.
+  - Verdict: REDISCOVERED (the L152 ζ-mass mechanism).
+- **(5) Sublinear removal** (`Σ_{γ≤T}r_γ = o(T)`) implies `lam = Λ` by the Bohr mean. A positive `ν⁺` with zero mean has zero coefficients.
+  - Verdict: REDISCOVERED (the L155 balance "Σ r_γ ≍ T").
+- **(6) Constant-removal reduction for arbitrary profiles.** If the only Fourier-atomic distributions (spectrum in `±log ℕ`) with atoms on the zeta zeros were `c·A_Λ` with `A_Λ = Ω/2π − μ_Λ`, then:
+  - every second producer would be `(1−r₀)Λ + r₀·lam''`, where `lam''` is a producer with no spectral mass at any zero;
+  - uniqueness would be equivalent to nonexistence of zeta-atom-free integer producers.
+  - Verdict: REDUCES to the open "second crystalline structure on the zeros" question (L105/L106/L139, with singular-inner near-misses). Not provable with present tools. The step "the pure-point part of an a.p. measure is a.p." fails here because the density `log t` is not translation-bounded.
+- **Map after L161.** Rigidity is known for:
+  - one-sided deviations (L156/L157);
+  - `ℓ¹` (L64);
+  - power-saving partial sums (L78);
+  - sparse deviations (L158/L159);
+  - `ℓ²` on separated supports (L160);
+  - sublinear spectral removals or ζ-mass (L152/L155).
+
+  Everything left is dense, two-sided, at the √x scale, with pointwise size `≫ n^{−½}`, i.e. evaporation or crystalline near-misses.
+
+### L162 — Square-root-scale rigidity: pointwise `n^{−½}(log n)^B` deviations are excluded. PROVED [Lean]
+- **Statement.** `lam ∈ W` and `|lam(n)−Λ(n)| ≤ C(1+log n)^B/√n` imply `lam = Λ`. Corollary: RH ⟺ such a `lam` exists.
+- **Why new.**
+  - The partial sums of such deviations can be `√x·f(log x)` with `f` oscillating, so this goes beyond MUST-507's `θ < ½` gate (L78) and beyond `ℓ¹(n^{−½})` (L64).
+  - It is the first rigidity result at the `√x` scale, the scale of the frontier map's open core.
+- **Mechanism.**
+  - L160's zero-free windows are combined with an integer Schur bound in place of separation.
+  - The key inequality is `|log n − log m| ≥ |n−m|/max`, with the harmonic sum `Σ_{n<m}1/(m−n) ≤ 1+log m`.
+  - Pointwise size `n^{−½}` makes near-diagonal interactions `O(polylog)`.
+- **Sharpness.** The method reaches exactly pointwise `n^{−½+o(1)}`. The remaining frontier consists of dense deviations of pointwise size `≫ n^{−½}` with partial sums at the `√x` scale: evaporation, with `|a(p)| ≍ 1`.
+- **Lean.** Module `RHTower.WeilFullConeSquareRootScaleRigidity`, with standard axioms.
+- **Card.** `3-formalized/11-rh-zero-divisor-geometry/weil-cone-square-root-scale-rigidity.md`.
+
+### L163 — Log-weighted square-summable rigidity: polylogarithmic square mass at arbitrary positions is excluded. PROVED [Lean]
+- **Statement.** `lam ∈ W` and `Σ_n (lam(n)−Λ(n))²/(1+log n)^K < ∞` imply `lam = Λ`. Corollary: RH ⟺ such a `lam` exists.
+  - Equivalent hypothesis: square mass `Σ_{n≤N}(lam−Λ)² ≪ (log N)^{K'}`.
+  - Contains L162. It also covers bounded deviations on any polylogarithmically sparse set with no separation (e.g. `{2^k, 2^k+1}`), which L160 cannot treat.
+- **Mechanism.** The L162 integer Schur bound is replaced by an `ℓ²` bound:
+  - `κ ≤ 3 + N` with the near-diagonal kernel `N(n,m) = (n+m)/|n−m|`;
+  - `Σ_n N(n,m) ≤ 5m(1+log m)`;
+  - symmetric Schur `Σ_m|c_m|Σ_n|c_n|N ≤ Σ c_m²·5m(1+log m)`;
+  - `c_m²·m = (lam−Λ)(m)²B(η log m)²`, so all errors are `O(η^{−2J})`.
+- **Reach.** Polylogarithmic square mass is exactly the limit with polynomially decaying bump transforms. Gevrey bumps would give `exp((log N)^{θ})`, `θ < ½`. Evaporation needs `≍ N/log N`.
+- **Exploration in this cycle (paper, recorded to prevent reuse).**
+  - *Multiplier evaporation.* For `w = Λ·f(log n)` with `f` bounded, the explicit formula gives `D_w = f̃(s−1) − Σ_ρ f̃(s−ρ) − …`.
+    - The spectral atom at every critical zero from the `ρ' = ρ` term is `−lim εf̃(ε)` = the residue of `D_w` at `s = 1`, which must vanish. So multiplier deviations remove the same fraction from every zero, and that fraction is 0.
+    - The remaining atoms can only come from boundary poles of the continued `f̃` on `Re z = −½`, i.e. `f(u) ∋ e^{−u/2}Σ r_γe^{iγu}`. By Landau's drift, `Σ_γ r_γ n^{iγ}` diverges at prime powers once `Σ_{γ≤T}r_γ ≫ T`. So bounded multipliers cannot carry evaporation (heuristic at the last step; rigorous for summable `r_γ` via L162).
+  - *Flat evaporation with unit masses.* Take `ν = c·Leb − Σ_{γ∈S}δ_γ` with `S ⊂` zeta zeros and `ν̂ ⊂ ±log ℕ≥2`.
+    - The Cauchy transform gives a degree-0 functional equation `F(s) = Ke^{−2πcs}F(1−s)` for `F = exp(∫B)`.
+    - By the degree-0 classification (Kaczorowski–Perelli, extended class) `F` is a Dirichlet polynomial on the divisors of `q = e^{2πc}`, whose zeros must all be zeta zeros.
+    - For prime `q` these zeros form an arithmetic progression, excluded by Putnam / van Frankenhuijsen. General `q` and fractional masses remain the branch problem of L153.
+  - *Finite energy does not see evaporation.* Evaporation atoms at rate `r_γ ≍ 1/log γ` are `B²`-null: their Poisson smoothing is `B²`-equivalent to a smooth density. So any Bohr/Parseval argument is blind to them. Only local (non-`B²`) structure of `D_w` near the zeros can exclude them.
+- **Verdict.** THEOREM [Lean] (incremental extension of L160/L162 to the natural `ℓ²` class). The evaporation core is unchanged, and the α ≥ 1 barrier (L111/L117/L127) stands.
+- **Lean.** Module `RHTower.WeilFullConeLogSquareMassRigidity`, standard axioms, 16 new names, collision sweep clean.
+- **Card.** `3-formalized/11-rh-zero-divisor-geometry/weil-cone-log-square-mass-rigidity.md`.
+
+### L164 — Annihilating radical tests and the Müntz–Blaschke law for Weil-cone rigidity. CONJECTURE + mechanism [P] + no-go [P]
+- **Unconditional dual form of L160.** For every `lam ∈ W` with `v = normDeficit lam`, the function `E_v(y) = Σ_n v(n)·½[K(y−log n) + K(y+log n)]` (`K = Φ⋆Φ̃`, `𝓕K = Ξ²`) is positive definite on ℝ. This is `normDeficit_pairing_nonneg` for all `g⋆g̃`, read through Bochner.
+  - `E_v(0) = −ℓ(lam−Λ)` recovers the exposure inequality.
+  - `|E_v(y)| ≤ E_v(0)` is a uniform smoothed-deviation law.
+- **Annihilation principle.** Suppose `v` is supported on `S`, `m ∈ S`, and there is a PD `F` (a limit of `g⋆g̃`, `g ∈ C_c`) with `(K⋆F)(log n) = 0` for `n ∈ S∖{m}` and `(K⋆F)(log m) = ±1`. Then positivity gives `±v(m) ≥ 0`, hence `v(m) = 0`. No size or separation condition on `v` is needed beyond admissibility (bounded `v` for L160's lemma).
+- **Geometric supports: exact annihilators by periodization (new proof mechanism).** Take `S ⊂ {b^j}`, `ℓ = log b`.
+  - Let `Π(ξ) = Σ_k Ξ̃(ξ+k/ℓ)²`. It is `1/ℓ`-periodic and continuous. It is positive, because some translate lands in `(−14.13, 14.13)` or else all translates would be zeta zeros. So `min Π > 0`.
+  - Set `F̂_ε = (1 + 2ε cos(2πξ j₀ℓ))/Π`. By Poisson summation `(K⋆F_ε)(jℓ) = ℓ(δ_{j0} + ε δ_{|j|,j₀})`. `F_ε` is a PD lattice measure; by Fejér–Riesz it is `p⋆p̃`, and smoothing gives `g ∈ C_c`.
+  - Hence `v(b^{j₀}) = 0` for every `b ≥ 2`. This reproves L158/L159 uniformly, with no lacunarity constant.
+  - The same fiberwise construction handles `S` inside finitely many shifted copies `{c_i b^j}` of one progression (e.g. `{2^j, 3·2^j}`, ratio 3/2 < 3, not covered by L158 or L163).
+- **Blaschke no-go for full prime-blindness [P].** A PD radical test cannot vanish at `log p` for all primes.
+  - `G(w) = (K⋆F)(log w)` is of bounded type in `Re w > 0`, because `Ξ²` decays like `e^{−π|t|/2}` and this is exactly the half-plane angle.
+  - Zeros at all primes violate the Blaschke condition `Σ1/p < ∞`. So the radical has no prime-blind vector, and `Σ1/p = ∞` (Mertens) is exactly why.
+  - The same computation in the dual (certificate) picture gives the rates. `K(y) ≍ exp(−2πe^{|y|})` makes `K(log n − x)/K(log n) ≈ e^{2πnx}`, so certificates are Müntz systems `{e^{2πnx}}_{n∈S}` on a small aperture. By Müntz–Szász they are complete iff `Σ_{n∈S} 1/n = ∞`.
+- **Conjecture L164 (Müntz–Blaschke rigidity).** If `lam ∈ W` and `lam = Λ` off a set `S ⊂ ℕ` with `Σ_{n∈S} 1/n < ∞`, then `lam = Λ`, with no size condition beyond the universal `|λ(n)| ≤ √n(log n + C₀)`.
+  - Contains L158, L159, squares, `{⌊n^{1+δ}⌋}`, Hadamard-lacunary sets of any ratio, and Blaschke-sparse sets of primes.
+  - Consequence if true: the support of `lam − Λ` for any second completion is Müntz-dense (`Σ1/n = ∞`). This is consistent with L148 (dense composite support) and with the α ≥ 1 wall.
+- **Failed shortcuts (recorded).**
+  - The moment/Widder argument (Krein extension of `E_v` near 0, alternating moments) proves nothing: the moment signs are automatic from `Ξ²V ≥ 0`.
+  - The `cosh(2πnx)` gap-series picture is only a Taylor approximation; `E_v` is analytic only in a horizontal strip.
+  - Near-radical PSD combinations cannot be prime-blind at high frequency, because the archimedean form dominates there.
+- **Verdict.** CONJECTURE with a verified mechanism on geometric supports. OPEN CORE: existence of PD annihilators for general Blaschke-sparse `S`, i.e. a positive analogue of Blaschke products for `K⋆F`.
+- **L164 self-audit (correction, same cycle).** The "Blaschke no-go" above is WRONG as stated.
+  - `G(w) = (K⋆F)(log w)` is bounded in closed subsectors but grows like `(|w|/Re w)^{9/2}` at the boundary rays. So it is not of bounded (Nevanlinna) type, and the Blaschke condition does not apply.
+  - Jensen in disks of radius `r < π/2` allows `≈ 2πe^{x−2a}/log(R/r)` zeros near `x`. The real-axis size `K⋆F ≍ exp(−2πe^{x−2a})` supplies exactly that dynamic range, which is enough for zeros at every `log n`.
+  - Hence neither full prime-blindness nor full integer annihilation by PD radical tests is excluded by complex analysis. The Müntz threshold `Σ1/n` is only heuristic.
+- **What the annihilation route really is (exact duality, [P]).** For `m ≥ 2` and aperture `a > 0`, define
+  `B(m,a) = inf{G(0) : G PD, supp G ⊂ [−2a,2a], (K⋆G)(log n) + (K⋆G)(−log n) = 2δ_{nm} ∀n ≥ 2}`, with ℓ¹-approximate versions.
+  - `B(m,a) < ∞` for all `m` ⟺ there is no nonzero bounded `u` with `Ξ²·Σu(n)cos(t log n) ≥ 0` (Hahn–Banach, ℓ¹/ℓ^∞).
+  - Either way, every full-cone Weil-positive `lam` with `|lam−Λ| ≤ A√n` would equal `Λ` (L160's `normDeficit_pairing_nonneg`). This is the radical (E-PD) half of uniqueness, and it is stated with no reference to zeros or mean values.
+  - Finite windows are always solvable exactly (no finite certificate: the Krein extension plus moment determinacy force `P ≤ 0`, then `P = 0`). The open question is the growth of the norms.
+  - Heuristic scale-by-scale bookkeeping with Laplace/Cauchy (Müntz) conditioning shows a competition between three quantities:
+    - the tail `exp(−2πn e^{−2a})`;
+    - the interpolation conditioning `e^{C n}` on `λ ∈ [2πn, 2πen]`;
+    - the aperture gain `e^{−4πan}` from centring the base test.
+    The constants are too close to decide by heuristics. This is a sharp, purely analytic open problem (Q_ann). The corpus's `α ≥ 1` wall is not visibly present in it.
+- **L164 second pass (annihilation design space, [P] heuristics, recorded to steer later cycles).**
+  - *Lag-piece annihilators cascade.* Correcting at `log p` with PD pair pieces `s(2δ₀ ± δ_{±log p})` leaves tails `K(log n − log p) ≍ exp(−2πn/p)` at every larger `n`.
+    - For dense `S` the induced demands are `≈ e^{−4π√n}`, far above the natural `e^{−2πn}`, and the correction cascade diverges.
+    - For Hadamard-lacunary `S` the tails are `exp(−2πq^{k−j})`, which is doubly exponential, so the cascade converges.
+    - With Gershgorin on `M_{jk} = K(log(n_j/n_k)) + K(log(n_jn_k))` (using `K(log 2) ≤ 0.143K(0)`), this gives a concrete route to rigidity for *every* 2-lacunary sequence. That extends L158 (ratio 3) and L159 (powers of 2).
+  - *Small-aperture (Laplace) annihilators avoid the cascade.* Take `G ⊂ [−2a,2a]` with `K(log n − y) ≈ K(log n)e^{2πn(1−e^{−y})}`. The problem becomes Müntz interpolation for `{e^{−2πns}}` on `[e^{−2a}, e^{2a}]`.
+    - *Signed* annihilation of `n ≤ N₀` costs `ρ^{N₀}` (Chebyshev/Bernstein parameter of 0) and is beaten by the tail `u₀^{N₀} = e^{−2πN₀e^{−2a}}` even for `S = ℕ`.
+    - The obstruction is therefore entirely the **PD constraint**: `|ĉ| ≤ Ĝ_base`. Relative corrections at small `n` grow like `ρ^{N₀}(u_base/u₀)^n`, so positivity is lost as `N₀ → ∞`.
+  - **Q_ann (sharp open problem).** Is there a nonzero bounded `u` on `ℕ≥2` with `Ξ(t)²·Σ u(n)cos(t log n) ≥ 0` (positive measure)?
+    - NO would give uniqueness of the full Weil cone among `|lam − Λ| ≤ A√n` via L160.
+    - YES is exactly radical-level evaporation.
+    - Natural candidates `V_Λ + W` fail at `|t| < 14`: `h(0) = −0.686`, and no bounded integer cosine series is `≥ 0.7` on `(−14,14)` without negative mass off the zeros, since the spectral gap `(−log 2, log 2)` forces sign changes. This is weak evidence for NO.
+    - Certificates of type `Λ` (`P = ±V_Λ`, `Ξ²P ≤ 1`) give only `O(1)` lower bounds on annihilator norms.

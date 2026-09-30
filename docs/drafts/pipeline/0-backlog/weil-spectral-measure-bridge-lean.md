@@ -31,3 +31,8 @@
 ## Log
 - 2026-09-30: created from MC cycles 154–155.
 - 2026-09-30: item (a) done. `HTGeometry/BochnerPositiveDefiniteReal.exists_charFun_eq_of_positiveDefinite` (continuous PD ⇒ `charFun` of a finite measure), axiom-clean and wired into `HTGeometry.lean`. Lattice-Fejér route: nonnegative lattice densities, lattice characteristic values `(#pairs/(N+1))φ(lh)`, Fejér tail bound, Prokhorov, Lévy, dyadic density. Items (b) and (c) remain.
+- 2026-09-30 — The spectral bridge is used in `3-formalized/11-rh-zero-divisor-geometry/weil-cone-summable-excess-rigidity.md`:
+  - `RHTower.WeilExcess.exists_spectralMeasure` gives `−ψ = charFun σ`.
+  - `deviationPairing_fourier_riemannXi_sq_mul` gives `W_a(𝓕(Ξ²g)) = −∫g(t/2π)dσ`.
+  - `deviationPairing_fourier_eq_zero` gives `W_a(𝓕h) = 0` under summable excess.
+  - Open items: none for the excess side. A support theorem for `σ` was not needed.

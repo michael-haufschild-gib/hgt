@@ -100,11 +100,12 @@ def deviationPairing (lam : ℕ → ℝ) (φ : ℝ → ℂ) : ℂ :=
 
 /-- **The deviation paired with `𝓕(Ξ²g)` is `∫ ψ 𝓕g`.** -/
 theorem deviationPairing_fourier_riemannXi_sq_mul_eq_integral {lam : ℕ → ℝ}
-    (hW : WeilPositiveFull lam) (hexc : Summable (deviationExcess lam)) {g : ℝ → ℂ}
-    (hg : Integrable g) (hFg : Integrable (𝓕 g)) :
+    (hW : WeilPositiveFull lam) {Dₑ : ℝ} (hexc : CauchyBounded (deviationExcess lam) Dₑ)
+    {g : ℝ → ℂ} (hg : Integrable g) (hFg : Integrable (𝓕 g)) :
     deviationPairing lam (𝓕 fun ξ => riemannXi ξ ^ 2 * g ξ) =
       ∫ v, (deviationPotential lam v : ℂ) * 𝓕 g v := by
-  obtain ⟨B, hB0, hB⟩ := exists_kernelPotential_deficit_le hW hexc
+  obtain ⟨Bₑ, hBe⟩ := kernelPotential_le_of_cauchyBounded (deviationExcess_nonneg lam) hexc
+  obtain ⟨B, hB0, hB⟩ := exists_kernelPotential_deficit_le hW hBe
   set P : ℝ → ℝ := fun v => ‖𝓕 g v‖ with hP
   have hPc : Continuous P := (continuous_fourier_integrable hg).norm
   have hPi : Integrable P := hFg.norm
@@ -151,37 +152,26 @@ theorem deviationPairing_fourier_riemannXi_sq_mul_eq_integral {lam : ℕ → ℝ
     ring
   have hks0 : ∀ u, 0 ≤ kernelSmooth P u := fun u =>
     integral_nonneg fun y => mul_nonneg (riemannAutocorr_nonneg _) (hP0 y)
-  have hks_le : ∀ u, kernelSmooth P u ≤ riemannAutocorr 0 * ∫ y, P y := by
-    intro u
-    unfold kernelSmooth
-    rw [← integral_const_mul]
-    exact integral_mono (integrable_riemannAutocorr_mul hPc hPi u) (hPi.const_mul _)
-      fun y => mul_le_mul_of_nonneg_right (riemannAutocorr_le_zero _) (hP0 y)
   obtain ⟨hvs, -⟩ := tsum_mul_kernelSmooth_le (deviationDeficit_nonneg lam)
     (summable_deficit_term hW) hB hP0 hPc hPi
+  obtain ⟨hes, -⟩ := tsum_mul_kernelSmooth_le (deviationExcess_nonneg lam)
+    (summable_excess_term hW) hBe hP0 hPc hPi
   have hsumnorm : Summable fun n => ∫ v, ‖F n v‖ := by
     simp only [hnorm]
     refine Summable.of_nonneg_of_le (fun n => mul_nonneg (abs_nonneg _)
       (add_nonneg (hks0 _) (hks0 _))) (fun n => ?_)
-      ((hexc.mul_right (2 * (riemannAutocorr 0 * ∫ y, P y))).add hvs)
+      (hes.add hvs)
     have ha : |weilDeviation lam n| ≤ deviationExcess lam n + deviationDeficit lam n := by
       rw [weilDeviation_eq_sub]
       exact (abs_sub _ _).trans (by
         rw [abs_of_nonneg (deviationExcess_nonneg lam n),
           abs_of_nonneg (deviationDeficit_nonneg lam n)])
     have hs := add_nonneg (hks0 (Real.log n)) (hks0 (-Real.log n))
-    have h2 := add_le_add (hks_le (Real.log n)) (hks_le (-Real.log n))
     calc |weilDeviation lam n| * (kernelSmooth P (Real.log n) + kernelSmooth P (-Real.log n))
         ≤ (deviationExcess lam n + deviationDeficit lam n) *
             (kernelSmooth P (Real.log n) + kernelSmooth P (-Real.log n)) :=
           mul_le_mul_of_nonneg_right ha hs
-      _ ≤ deviationExcess lam n * (2 * (riemannAutocorr 0 * ∫ y, P y)) +
-            deviationDeficit lam n *
-              (kernelSmooth P (Real.log n) + kernelSmooth P (-Real.log n)) := by
-          rw [add_mul]
-          gcongr
-          · exact deviationExcess_nonneg lam n
-          · linarith
+      _ = _ := by ring
   unfold deviationPairing
   rw [tsum_congr hterm, integral_tsum_of_summable_integral_norm hFi hsumnorm]
   refine integral_congr_ae (Eventually.of_forall fun v => ?_)
@@ -217,7 +207,6 @@ theorem integral_deviationPotential_mul_fourier {lam : ℕ → ℝ} (σ : Measur
     rw [fourierInv_eq_integral] at h
     rw [← h]
     refine integral_congr_ae (Eventually.of_forall fun v => ?_)
-    congr 2
     push_cast; field_simp
   calc ∫ v, (deviationPotential lam v : ℂ) * 𝓕 g v
       = ∫ v : ℝ, -(∫ t : ℝ, Complex.exp ((v : ℂ) * t * I) * 𝓕 g v ∂σ) := by
@@ -233,7 +222,7 @@ theorem integral_deviationPotential_mul_fourier {lam : ℕ → ℝ} (σ : Measur
 
 /-- **Near-null positivity in spectral form.** -/
 theorem deviationPairing_fourier_riemannXi_sq_mul {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (hexc : Summable (deviationExcess lam)) (σ : Measure ℝ) [IsFiniteMeasure σ]
+    {Dₑ : ℝ} (hexc : CauchyBounded (deviationExcess lam) Dₑ) (σ : Measure ℝ) [IsFiniteMeasure σ]
     (hσ : ∀ t, charFun σ t = ((-deviationPotential lam t : ℝ) : ℂ))
     {g : ℝ → ℂ} (hgc : Continuous g) (hg : Integrable g) (hFg : Integrable (𝓕 g)) :
     deviationPairing lam (𝓕 fun ξ => riemannXi ξ ^ 2 * g ξ) = -∫ t, g (t / (2 * π)) ∂σ := by

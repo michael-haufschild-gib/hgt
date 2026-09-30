@@ -504,11 +504,64 @@ complete axiom reports containing only `propext`, `Classical.choice`,
 and `Quot.sound`. The leaf is wired into `RHTower.lean`; final generated
 index and global lint results are recorded in the recursive ledger.
 
+`ThetaRealShiftHistory.lean` certifies the sharp real-translation boundary
+and both closed-span inclusions in 21 public declarations. For every
+positive `q`, the literal translate is admitted exactly when
+`q < 2 exp(-2|a|)`; equality fails, and both shift signs are covered. For
+every `0 < q < 2`, actual weighted derivative history equals the closed
+span of all intrinsically admitted real translates. This gives the exact
+`log(2/q)/2` radius and its original `q=1` specialization.
+
+`ThetaWeightedTranslationDomain.lean` adds 19 public declarations for the
+full complex domain determined by Gaussian slack. For `0 < q < 2` it is
+open, star-convex and connected;
+every point has a strict weighted `L²` rectangle majorant. The literal
+translation family is Hilbert-holomorphic throughout the domain, has the
+actual ordinary theta derivatives as origin jets, and lies in derivative
+history. Its reciprocal measure is exactly the original source measure.
+
+`ThetaQuantileTranslationHistory.lean` adds 23 public declarations proving
+the original-carrier form of (4). The canonical measure-congruence class
+equals the original literal `toLp` vector. Actual derivative and
+translation vectors transport through the original quantile unitary;
+both closed-span inclusions hold, hence their closed histories are equal.
+Every admitted local translate is killed by the actual history quotient.
+Every nonzero finite prime word fails original source-space admission,
+including arbitrary complex coefficients and zero coefficients. For
+complex coefficients, a nonzero real or imaginary component reduces this
+exclusion to the signed real terminal-prime case.
+
+`L2MeasureCongruence.lean` supplies six public transport declarations.
+These four leaves contain 69 public declarations. Native builds, all four
+final direct source checks, and the exhaustive 69-export witness pass.
+All 69 declarations and eight existing analytic/transport capstones have
+77 complete axiom reports containing only `propext`, `Classical.choice`,
+and `Quot.sound`. Current-toolchain API witnesses cover 145 entries.
+All four leaves are registered once in their area umbrellas and included
+in the regenerated catalogue. Exact diagnostics and recursive census are
+recorded in the formalization ledger.
+
+`ThetaGradedFiniteHistory.lean` certifies the finite arithmetic/Euler
+clause in 20 further public declarations. The explicit weight
+`q_D = exp(-2 Σ_(d∈D) |log d|)` lies in `(0,2)` and admits every letter,
+independently of its complex coefficients. The full literal finite word's
+`toLp` class equals its sum of actual translation classes, belongs to
+ordinary derivative history, and is zero in the actual submodule quotient.
+The existing exact Möbius expansion identifies the literal Euler deletion
+source. Applying this weight to its squarefree alphabet admits every
+individual prime letter and the whole Euler deletion simultaneously,
+including the empty prime set. The capstone
+`exists_pos_weight_finitePrimeEuler_history` discharges admission,
+history membership and quotient vanishing for this one common carrier.
+Native build, final direct check, all 20 export checks and all 26 axiom
+reports pass; only the standard three axioms occur. A 40-entry API witness,
+single umbrella registration and complete regenerated catalogue pass.
+
 The full card remains Stage 2. Complete exact certificates are still
-required for the sharp translation boundary and local-translation history
-identity, the full positive-weight properness law and unweighted endpoint
-collapse, the tempered annihilator classification with multiplicity jets,
-and rapid normalized eigenmode decay in the quotient.
+required for the inter-weight bounded translation and operator-norm law
+(5), the full positive-weight properness law and unweighted endpoint
+collapse (7), the tempered annihilator classification with multiplicity
+jets (8), and rapid normalized eigenmode decay in the quotient.
 No computational certificate or RH/zero-location premise was introduced.
 External novelty has not been established. Global lint diagnostics are
 recorded in the recursive formalization ledger; other concurrent modules

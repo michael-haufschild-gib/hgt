@@ -44,7 +44,7 @@ Historical audit rows remain after cards move. Matching Stage 3 basenames requir
 | `11-rh-zero-divisor-geometry/weil-cone-explicit-real-producer.md` | exact audit pending |
 | `11-rh-zero-divisor-geometry/weil-cone-finite-type-uniqueness.md` | exact audit pending |
 | `11-rh-zero-divisor-geometry/weil-cone-singular-deficit-law.md` | exact audit pending |
-| `11-rh-zero-divisor-geometry/weil-cone-zero-free-window-rigidity.md` | newly added; exact audit pending |
+| `11-rh-zero-divisor-geometry/weil-cone-zero-free-window-rigidity.md` | moved externally to Stage 3; complete exact certificate audit pending |
 | `beurling-prime-deletion-perron-region.md` | exact audit pending |
 | `li-even-euler-jet-small-mass-crossover.md` | moved externally out of Stage 2; exact certificate audit pending |
 | `li-actual-clock-sine-growth-boundary.md` | newly added; exact audit pending |
@@ -53,7 +53,7 @@ Historical audit rows remain after cards move. Matching Stage 3 basenames requir
 | `li-clock-paired-eta-central-source.md` | moved externally to Stage 3; exact certificate audit pending |
 | `li-clock-finite-eta-deflation.md` | moved externally to Stage 3; exact certificate audit pending |
 | `li-clock-off-line-negative-response.md` | moved externally to Stage 3; exact certificate audit pending |
-| `li-clock-damped-endpoint-sum-rule.md` | newly added; exact audit pending |
+| `li-clock-damped-endpoint-sum-rule.md` | moved externally to Stage 3; complete exact certificate audit pending |
 | `theta-derivative-packet-full-score-floor.md` | moved externally to Stage 3; exact certificate audit pending |
 | `pm-bounded-spurious-classification.md` | certified; moved to Stage 3 |
 | `pm-correlation-jet-kernel.md` | certified; moved to Stage 3 |
@@ -69,7 +69,7 @@ Historical audit rows remain after cards move. Matching Stage 3 basenames requir
 | `theta/theta-cdf-crossfrequency-rvm-capacity.md` | exact audit pending |
 | `theta/theta-cdf-no-finite-range-symmetrizer.md` | exact audit pending |
 | `theta/theta-chronological-boundary-positive-transfer.md` | exact audit pending |
-| `theta/theta-compact-inverse-zero-jordan-history.md` | actual Jordan chains, centered obstruction, proper quasinilpotent history, full nonzero quotient root spaces and literal Riesz descent certified; left functional, translation/scale/dual/decay audit pending |
+| `theta/theta-compact-inverse-zero-jordan-history.md` | actual Jordan chains, centered obstruction, proper quasinilpotent history, full nonzero quotient root spaces, literal Riesz/Fourier descent, sharp translation admission, original closed-history equality and graded finite arithmetic/Euler quotient vanishing certified; bounded scale transport and full properness/endpoint/dual/decay audit pending |
 | `theta/theta-deletion-cutoff-commutator-collapse.md` | exact audit pending |
 | `theta/theta-prime-deletion-graded-terminal-admission.md` | certified; moved to Stage 3 |
 | `theta/theta-prime-deletion-moving-cusp-dual-source.md` | exact audit pending |
@@ -689,3 +689,266 @@ pass. Every owned foreground command has a terminal exit result; no owned
 Lean/build, index, lint or scratch job remains running. External jobs and
 files were left untouched. Cross-session memory records exact coverage,
 toolchain details, the complete recursive queue, and remaining obligations.
+
+### Sharp real translation boundary and complete history orbit work plan
+
+- [x] Check prior research, actual tail/weighted-family infrastructure,
+  and every required current-toolchain API.
+- [x] Prove literal real and complex `L²(k^(-q) dx)` shift admission iff
+  `q < 2 exp(-2|a|)` for every positive `q`, with equality excluded.
+- [x] Prove every admitted real shift, including negative shifts, belongs
+  to the actual weighted derivative history.
+- [x] Prove every actual derivative lies in the closed span of admitted
+  real shifts, then exact equality of both closed histories for
+  every `0 < q < 2`; record the literal `log(2/q)/2` boundary and `q=1` case.
+- [x] Certify the paper's full open connected complex domain and the
+  literal Hilbert-holomorphic translation map on that domain.
+- [x] Check needed leaves, final sources, all exports and axioms; wire,
+  index, inspect authoritative lint, preserve the full recursive queue,
+  update paper/memory and clean owned scratch.
+
+The direct prior-research query returned six candidate lemmas and six
+source arguments; all were inspected. Inventory coverage is complete,
+`partial` is false, semantic coverage is unmeasured, compiler freshness
+is mixed/pending/stale/source-only, and refresh remains incomplete.
+Useful source candidates are the existing explicit Gaussian envelope,
+all-parameter real tail ratio, local holomorphic weighted family and
+its exact derivative jets. The old history membership theorem covers
+nonnegative real shifts only. Strict complex rectangles centered at zero
+cover either sign directly. On the dangerous cusp, the literal energy
+has positive limiting ratio to the exact envelope, which stays bounded
+below at and above the boundary. The reverse closed-span inclusion
+uses bounded duals: a functional zero on all admitted real shifts is
+zero near the complex origin by analytic isolated-zero uniqueness,
+so all its actual derivative jets vanish. Current-toolchain verification
+and the exact original-carrier transport are now complete below.
+The full history card remains Stage 2. Its separate inter-weight bounded
+translation/operator-norm classification, graded finite prime/Euler words,
+positive-weight properness/unweighted collapse, tempered annihilator jets
+and rapid quotient decay remain exact obligations.
+
+`ThetaRealShiftHistory.lean` now has a successful warning-free native
+leaf build and final direct source audit. Its exact boundary and both
+closed-span inclusions are proved for the literal full source; negative
+shifts and equality failure are included. A 61-name infrastructure/mathlib
+scratch witness passes. Complete export/axiom/index/lint gates remain,
+alongside the full complex-domain holomorphy construction recorded above.
+
+`ThetaWeightedTranslationDomain.lean` now builds without warnings in its
+19-declaration final form. The full Gaussian-slack domain is open and
+star-convex, hence path connected when `q < 2`. Every point has a strict
+enclosing rectangle with one genuine weighted `L²` majorant. The actual
+full-domain translation family is Hilbert-holomorphic, has the actual
+ordinary theta derivatives as origin jets, and lies in derivative history
+throughout the connected domain. The `q=1` measure is proved equal to the
+literal Hedenmalm source measure; the sharp source-carrier membership
+theorem is stated explicitly. A 22-name domain API witness and 12-name
+additional witness pass. Final direct source and exhaustive certificate
+gates follow.
+
+Before counting the original quantile-history identity as complete,
+transport both literal weighted origin jets and admitted real translation
+classes through the actual quantile unitary. Construct the canonical
+measure-equality isometry, verify its representatives, then prove both
+closed-span inclusions using the already certified bounded-dual criterion.
+This is a required identification, not a new history premise.
+
+The fresh recursive census finds two new Stage 2 cards. Both join the
+unbounded exact-certificate queue; their paper status is not a Lean audit.
+
+| Stage 2 path | Audit status |
+|---|---|
+| `li-clock-first-prefix-gamma-exact-sign.md` | moved externally to Stage 3; complete exact certificate audit pending |
+| `li-clock-positive-gamma-dyadic-completion.md` | moved externally to Stage 3; complete exact certificate audit pending |
+| `li-clock-completion-arithmetic-cancellation-boundary.md` | moved externally to Stage 3; complete exact certificate audit pending |
+| `li-clock-contiguous-comparison-window.md` | newly added; complete exact certificate audit pending |
+| `li-clock-finite-partition-volterra-positive-area.md` | moved externally to Stage 3; complete exact certificate audit pending |
+| `li-clock-joint-arithmetic-cancellation-window.md` | newly added; complete exact certificate audit pending |
+
+The original-carrier bridge is certified in
+`ThetaQuantileTranslationHistory.lean` (23 public declarations). The canonical source translation
+class is the proved measure-congruence transport of the actual weighted
+class; its separate literal `toLp` identity discharges source admission.
+Derivative classes and both vector families have exact physical and
+quantile identifications. Closure transport is factored through abstract
+isometry preimages and direct `Lp` measure-congruence lemmas. An isolated
+kernel timeout exposed expensive transport of the whole isometry structure.
+The isometry now casts the vector directly and proves linearity and norm
+preservation separately. Both concrete theta `toLp` specialization tests
+pass, and all six generic measure-congruence declarations build. No
+heartbeat or depth limits were changed. Both original physical and
+quantile closed-span inclusions are exact; the actual quotient kills
+every admitted local translate. Prime-word
+exclusion includes arbitrary complex coefficients by real/imaginary
+components, with zero coefficients removed before the terminal-prime audit.
+
+The final named bridge build `lake build --old
+GaloisForLFunctions.RHTower.ThetaQuantileTranslationHistory` passes in
+12 seconds without leaf warnings. A prior default build was stopped after
+it began unrelated dependency refreshes; its completed generic cast leaf
+built successfully. All four final direct source audits pass with empty
+logs. The exhaustive export witness checks all 69 declarations across
+the four leaves (6/21/19/23); all 69 and eight existing analytic/transport
+capstones have 77 complete axiom reports containing exactly the standard
+three axioms. The five earlier infrastructure witnesses plus the explicit
+cast prototype cover 145 API entries. Every public export is present in
+`formal/LEAN_API.md`, every leaf has exactly one umbrella import, and
+`scripts/formal_tools.py index` refreshes the generated catalogue and
+lexical index. No umbrella build or numerical experiment ran.
+
+Authoritative `scripts/formal_tools.py lint` reports 170 existing large-file
+warnings and these 15 other unreachable modules; none concerns the four
+new leaves:
+
+```text
+GaloisForLFunctions.RHTower.CCMApertureChainProfile
+GaloisForLFunctions.RHTower.CCMApertureTranslationChains
+GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
+GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
+GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
+GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+GaloisForLFunctions.RHTower.LiClockPairedEtaCompletionAsymptotic
+GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
+GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
+GaloisForLFunctions.RHTower.Sieve.BarbanVehovGcdFormSharp
+GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
+GaloisForLFunctions.RHTower.XiLaguerreShadowDensity
+GaloisForLFunctions.RHTower.ZetaGateProductAFESharpHighBlock
+GaloisForLFunctions.RHTower.ZetaOffLineMomentExplicit
+GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving
+```
+
+Global lint remains non-green. All 15 diagnostics were inspected and
+recorded; no unrelated module was edited to clear this gate. The original
+history card retains every remaining exact obligation and stays Stage 2.
+
+The fresh census has 100 current Stage 2 Markdown files: nine support files
+and 91 theorem cards, all queued. The historical queue also retains ten
+externally moved Stage 3 candidates whose complete exact-certificate audits
+remain pending, alongside the five owned whole-card certifications. The
+newly moved zero-free-window rigidity, damped endpoint sum-rule, first-prefix
+gamma sign, and positive-gamma dyadic completion cards are marked explicitly;
+external promotion is not counted as certification.
+
+Scoped whitespace checks pass. The card and cross-session memory record
+the exact completed clauses and every remaining obligation. All 49
+explicitly owned translation-checkpoint scratch files were removed by a
+finite guarded manifest, with absence verified. No owned Lean job remains.
+
+### Graded finite arithmetic/Euler history work plan
+
+- [x] Check prior research and literal finite arithmetic/Euler sources.
+- [x] Construct one positive weight admitting the whole finite word.
+- [x] Identify its literal `toLp` class and prove membership in actual
+  weighted derivative history, then zero class in that history quotient.
+- [x] Discharge the finite prime/Euler specializations without an added
+  source-admission premise.
+- [x] Run targeted native/direct/export/axiom/index/lint gates; update the
+  exact coverage map, queue and memory, then clean owned scratch.
+
+Paper closure for this clause: for a finite arithmetic alphabet `D`, set
+`q_D = exp(-2 * Σ_(d∈D) |log d|)`. Each summand is nonnegative, so
+`0 < q_D ≤ 1 < 2`; each individual absolute log is at most the sum, hence
+`q_D ≤ exp(-2|log d|) < 2 exp(-2|log d|)`. Every literal shift is therefore
+admitted at this single weight. Finite complex linear combinations are
+admitted and belong to the actual closed derivative submodule, because
+their `toLp` classes are the corresponding finite sums of actual shift
+classes. The submodule quotient kills each such sum. Apply the same
+construction to all squarefree words of the actual finite Euler deletion;
+its previously certified Möbius expansion gives the literal Euler source,
+including the empty prime alphabet. A singleton prime word is in that
+squarefree alphabet, so this weight admits every individual prime letter
+and the entire Euler word simultaneously. No nonzero-coefficient or
+source-admission premise is needed.
+
+Prior research: the hybrid query's 20 candidate lemmas and 20 source
+arguments were inspected; inventory is complete, `partial=false`, semantic
+coverage unmeasured and compiler freshness mixed/source-only. The lexical
+OR follow-up returns the exact existing finite arithmetic/Euler history
+lemmas. Both current source proofs were read; their weight-margin premise
+is now discharged explicitly. The 40-entry API witness passes. The new
+`ThetaGradedFiniteHistory.lean` leaf has 20 public declarations and passes
+its native named build in 19 seconds without leaf warnings, exact final
+direct source check, and exhaustive 20-export witness. All 20 declarations
+and six prior analytic/transport capstones have 26 complete axiom reports
+containing exactly `propext`, `Classical.choice`, and `Quot.sound`. The
+explicit literal `toLp` classes equal their actual finite translation sums;
+one coefficient-independent weight handles arbitrary complex coefficients,
+empty support and cancellation. The actual Euler source and every prime
+letter share a single carrier and have zero history quotient class.
+No admission, nonzero terminal coefficient, density or RH premise was added.
+The leaf has exactly one umbrella import and all 20 exports appear in the
+regenerated catalogue. Index refresh includes the lexical index.
+
+Authoritative lint now has 170 large-file warnings and these 14 other
+unreachable modules, with no finding on this leaf or the four earlier
+translation leaves:
+
+```text
+GaloisForLFunctions.RHTower.CCMApertureChainProfile
+GaloisForLFunctions.RHTower.CCMApertureTranslationChains
+GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
+GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
+GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
+GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+GaloisForLFunctions.RHTower.LiClockPairedEtaFinitePartitionVolterra
+GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
+GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
+GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
+GaloisForLFunctions.RHTower.WeilDeviationLineRepresentation
+GaloisForLFunctions.RHTower.WeilRegularDeviationRigidity
+GaloisForLFunctions.RHTower.ZetaFixedSigmaDensity
+GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving
+```
+
+Every diagnostic was inspected. Global lint remains non-green; no unrelated
+source was edited to clear it. The latest recursive census has 99
+Stage 2 Markdown files, nine support and 90 theorem cards, all queued.
+The newly added joint arithmetic cancellation-window card is queued;
+the previous completion/arithmetic cancellation-boundary and finite-partition
+Volterra area cards moved externally to Stage 3 and remain exact-audit pending. Seventeen historical
+queue cards have unique Stage 3 matches: five owned whole-card certificates
+and twelve external promotions still awaiting full exact audits.
+The whole history card stays Stage 2 with (5), (7), (8) and rapid normalized
+quotient decay still open. These five new leaves supply 89 fully audited
+public declarations across the two completed construction blocks.
+
+Card and memory coverage are updated; scoped whitespace passes. All 21
+explicitly owned finite-history scratch files were removed through a finite
+guarded manifest, with absence verified. No owned Lean job remains.
+
+### Positive-weight properness and unweighted endpoint work plan
+
+- [x] Check prior research, existing ordinary theta `L²` cyclicity,
+  literal density unitaries and actual real Xi-zero certificates.
+- [x] Construct the literal bounded real Fourier evaluation for
+  `0 < q < 2`; discharge its integrability from the complementary
+  exponent `2-q`, rather than add an admission premise.
+- [x] Identify every actual derivative's transform, annihilate its
+  closed history at a real Xi zero, and prove that history is proper.
+- [ ] Identify the actual `q=0` measure, derivative representatives and
+  holomorphic translation orbit, then prove dense endpoint history.
+- [ ] Run the complete exact certificate gates, preserve the recursive
+  queue, update card/memory and clean owned scratch.
+
+The complementary-weight construction now passes a native named leaf build
+and a direct source check in `ThetaWeightedHistoryProperness.lean`. Its
+literal density-unitary cancellation identifies the bounded functional with
+`∫f exp(itx)`, the source test with mass `M>0`, and the actual derivative
+transform with `(-it)^n XiC(t)`. Hardy's real zero proves properness throughout
+`0<q<2`. Exhaustive final export/axiom/index/lint gates remain pending for
+this work block; no whole card is promoted.
+
+Endpoint source audit found that the existing rectangle-majorant proof
+never uses its strict-positive exponent argument. Its new nonnegative
+form includes `q=0`, while the original public signature is preserved by
+a wrapper. The exact endpoint paper construction is: use the same literal
+Gaussian majorants on compact rectangles throughout `|Im z|<π/4`; apply
+the existing dominated Hilbert-holomorphy and jet theorem; identify all
+origin jets with actual ordinary derivatives; use analytic uniqueness to
+include every real translate in their closed span. The actual normalized
+translation orbit is then `sqrt(2π)` times the `2π` dilation of those
+literal translates, so the existing unconditional normalized cyclicity
+certificate proves endpoint density. This passage still requires its own
+Lean certificate. The broader recursive formalization goal remains active
+and unbounded.

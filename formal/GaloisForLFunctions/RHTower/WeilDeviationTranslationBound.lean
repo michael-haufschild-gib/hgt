@@ -234,35 +234,24 @@ theorem deviationPotential_eq_sub {lam : ℕ → ℝ} (hW : WeilPositiveFull lam
   refine tsum_congr fun n => ?_
   rw [weilDeviation_eq_sub]; ring
 
-/-- **The deficit potential is bounded** when the excess is summable. -/
-theorem exists_kernelPotential_deficit_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (hexc : Summable (deviationExcess lam)) :
+/-- **The deficit potential is bounded** when the excess potential is. -/
+theorem exists_kernelPotential_deficit_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Bₑ : ℝ}
+    (hBe : ∀ y, kernelPotential (deviationExcess lam) y ≤ Bₑ) :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ y, kernelPotential (deviationDeficit lam) y ≤ B := by
   have hpd := positiveDefiniteOnReal_neg_deviationPotential hW
-  set E := ∑' n, deviationExcess lam n with hE
-  have hE0 : 0 ≤ E := tsum_nonneg (deviationExcess_nonneg lam)
-  refine ⟨2 * riemannAutocorr 0 * E + (-deviationPotential lam 0), ?_, fun y => ?_⟩
+  have hBe0 : 0 ≤ Bₑ := le_trans (tsum_nonneg fun n => mul_nonneg (deviationExcess_nonneg lam n)
+    (add_nonneg (riemannAutocorr_nonneg _) (riemannAutocorr_nonneg _))) (hBe 0)
+  refine ⟨Bₑ + (-deviationPotential lam 0), ?_, fun y => ?_⟩
   · have h := GaloisForLFunctions.HTGeometry.PositiveDefiniteOnReal.norm_le hpd 0
     have h0 : 0 ≤ -deviationPotential lam 0 := by
       have := (norm_nonneg _).trans h
       simpa using this
-    have := riemannAutocorr_nonneg 0
     positivity
   · have hnorm := GaloisForLFunctions.HTGeometry.PositiveDefiniteOnReal.norm_le hpd y
     simp only [Complex.norm_real, Real.norm_eq_abs, Complex.ofReal_re] at hnorm
-    have hexcle : kernelPotential (deviationExcess lam) y ≤ 2 * riemannAutocorr 0 * E := by
-      unfold kernelPotential
-      calc ∑' n, deviationExcess lam n *
-            (riemannAutocorr (y + Real.log n) + riemannAutocorr (y - Real.log n))
-          ≤ ∑' n, deviationExcess lam n * (2 * riemannAutocorr 0) :=
-            (summable_excess_term hW y).tsum_le_tsum (fun n => mul_le_mul_of_nonneg_left
-              (by linarith [riemannAutocorr_le_zero (y + Real.log n),
-                riemannAutocorr_le_zero (y - Real.log n)]) (deviationExcess_nonneg lam n))
-              (hexc.mul_right _)
-        _ = 2 * riemannAutocorr 0 * E := by rw [tsum_mul_right, hE]; ring
     have heq := deviationPotential_eq_sub hW y
     have h1 : -deviationPotential lam y ≤ -deviationPotential lam 0 := (le_abs_self _).trans hnorm
-    linarith
+    linarith [hBe y]
 
 /-! ## Cauchy profiles -/
 
@@ -294,6 +283,73 @@ theorem integrable_cauchyProfile {δ : ℝ} (hδ : 0 < δ) (s : ℝ) :
   have := integral_undef h
   rw [integral_cauchyProfile hδ s] at this
   exact Real.pi_pos.ne' this
+
+/-- A weight with a uniform Cauchy-profile bound: its pairing with every Cauchy profile of scale
+at most one is at most `D`. For a nonnegative weight this is translation boundedness on the
+`log`-line. -/
+def CauchyBounded (w : ℕ → ℝ) (D : ℝ) : Prop :=
+  ∀ η : ℝ, 0 < η → η ≤ 1 → ∀ s : ℝ,
+    Summable (fun n : ℕ => w n * (cauchyProfile η s (Real.log n) + cauchyProfile η s (-Real.log n)))
+      ∧ ∑' n : ℕ, w n * (cauchyProfile η s (Real.log n) + cauchyProfile η s (-Real.log n)) ≤ D
+
+theorem cauchyProfile_le_one {δ : ℝ} (hδ1 : δ ≤ 1) (s u : ℝ) :
+    cauchyProfile δ s u ≤ 1 := by
+  unfold cauchyProfile
+  rw [div_le_one (by positivity)]
+  nlinarith [sq_nonneg (δ * (u - s))]
+
+/-- A summable nonnegative weight is Cauchy-bounded. -/
+theorem cauchyBounded_of_summable {w : ℕ → ℝ} (hw0 : ∀ n, 0 ≤ w n) (hw : Summable w) :
+    CauchyBounded w (2 * ∑' n, w n) := by
+  intro η hη0 hη1 s
+  have hb : ∀ n : ℕ, w n * (cauchyProfile η s (Real.log n) + cauchyProfile η s (-Real.log n)) ≤
+      w n * 2 := fun n => mul_le_mul_of_nonneg_left (by
+        linarith [cauchyProfile_le_one hη1 s (Real.log n),
+          cauchyProfile_le_one hη1 s (-Real.log n)]) (hw0 n)
+  have h0 : ∀ n : ℕ, 0 ≤ w n * (cauchyProfile η s (Real.log n) + cauchyProfile η s (-Real.log n)) :=
+    fun n => mul_nonneg (hw0 n) (add_nonneg (cauchyProfile_nonneg hη0.le s _)
+      (cauchyProfile_nonneg hη0.le s _))
+  have hs := Summable.of_nonneg_of_le h0 hb (hw.mul_right 2)
+  refine ⟨hs, (hs.tsum_le_tsum hb (hw.mul_right 2)).trans (le_of_eq ?_)⟩
+  rw [tsum_mul_right]; ring
+
+theorem exp_neg_two_abs_le_cauchyProfile (x : ℝ) :
+    Real.exp (-(2 * |x|)) ≤ cauchyProfile 1 0 x := by
+  have h := Real.quadratic_le_exp_of_nonneg (by positivity : 0 ≤ 2 * |x|)
+  have h2 : 1 + x ^ 2 ≤ Real.exp (2 * |x|) := by nlinarith [sq_abs x, abs_nonneg x]
+  unfold cauchyProfile
+  rw [one_mul, sub_zero, Real.exp_neg, ← one_div]
+  exact one_div_le_one_div_of_le (by positivity) h2
+
+/-- **The kernel potential of a Cauchy-bounded weight is bounded.** -/
+theorem kernelPotential_le_of_cauchyBounded {w : ℕ → ℝ} (hw0 : ∀ n, 0 ≤ w n) {D : ℝ}
+    (hD : CauchyBounded w D) :
+    ∃ B : ℝ, ∀ y, kernelPotential w y ≤ B := by
+  obtain ⟨C, hC0, hC⟩ := exists_riemannAutocorr_le
+  refine ⟨C * D, fun y => ?_⟩
+  obtain ⟨hs, hle⟩ := hD 1 one_pos le_rfl y
+  have hb : ∀ n : ℕ, w n * (riemannAutocorr (y + Real.log n) + riemannAutocorr (y - Real.log n)) ≤
+      C * (w n * (cauchyProfile 1 y (Real.log n) + cauchyProfile 1 y (-Real.log n))) := by
+    intro n
+    have h1 := (hC (y + Real.log n)).trans (mul_le_mul_of_nonneg_left
+      (exp_neg_two_abs_le_cauchyProfile (y + Real.log n)) hC0)
+    have h2 := (hC (y - Real.log n)).trans (mul_le_mul_of_nonneg_left
+      (exp_neg_two_abs_le_cauchyProfile (y - Real.log n)) hC0)
+    have e1 : cauchyProfile 1 0 (y + Real.log n) = cauchyProfile 1 y (-Real.log n) := by
+      simp only [cauchyProfile]; ring_nf
+    have e2 : cauchyProfile 1 0 (y - Real.log n) = cauchyProfile 1 y (Real.log n) := by
+      simp only [cauchyProfile]; ring_nf
+    rw [e1] at h1; rw [e2] at h2
+    have := mul_le_mul_of_nonneg_left (add_le_add h1 h2) (hw0 n)
+    linarith
+  have h0 : ∀ n : ℕ, 0 ≤ w n * (riemannAutocorr (y + Real.log n) + riemannAutocorr (y - Real.log n)) :=
+    fun n => mul_nonneg (hw0 n) (add_nonneg (riemannAutocorr_nonneg _) (riemannAutocorr_nonneg _))
+  unfold kernelPotential
+  calc _ ≤ ∑' n : ℕ, C * (w n * (cauchyProfile 1 y (Real.log n) + cauchyProfile 1 y (-Real.log n))) :=
+        (Summable.of_nonneg_of_le h0 hb (hs.mul_left C)).tsum_le_tsum hb (hs.mul_left C)
+    _ = C * ∑' n : ℕ, w n * (cauchyProfile 1 y (Real.log n) + cauchyProfile 1 y (-Real.log n)) :=
+        tsum_mul_left
+    _ ≤ C * D := mul_le_mul_of_nonneg_left hle hC0
 
 theorem exists_riemannAutocorr_ge :
     ∃ κ : ℝ, 0 < κ ∧ ∀ z ∈ Icc (-1 : ℝ) 1, κ ≤ riemannAutocorr z := by
@@ -349,13 +405,14 @@ theorem cauchyProfile_le_kernelSmooth {κ : ℝ} (hκ : 0 < κ)
 /-- **Translation bound for the deficit.** Its pairing with every Cauchy profile of scale at
 most one is bounded, uniformly in the scale and the centre. -/
 theorem exists_tsum_deficit_cauchyProfile_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (hexc : Summable (deviationExcess lam)) :
+    {Dₑ : ℝ} (hexc : CauchyBounded (deviationExcess lam) Dₑ) :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ δ : ℝ, 0 < δ → δ ≤ 1 → ∀ s : ℝ,
       Summable (fun n : ℕ => deviationDeficit lam n *
         (cauchyProfile δ s (Real.log n) + cauchyProfile δ s (-Real.log n))) ∧
       ∑' n : ℕ, deviationDeficit lam n *
         (cauchyProfile δ s (Real.log n) + cauchyProfile δ s (-Real.log n)) ≤ D := by
-  obtain ⟨B, hB0, hB⟩ := exists_kernelPotential_deficit_le hW hexc
+  obtain ⟨Bₑ, hBe⟩ := kernelPotential_le_of_cauchyBounded (deviationExcess_nonneg lam) hexc
+  obtain ⟨B, hB0, hB⟩ := exists_kernelPotential_deficit_le hW hBe
   obtain ⟨κ, hκ, hκK⟩ := exists_riemannAutocorr_ge
   refine ⟨3 / (2 * κ) * (B * π), by positivity, fun δ hδ0 hδ1 s => ?_⟩
   obtain ⟨hsum, hle⟩ := tsum_mul_kernelSmooth_le (deviationDeficit_nonneg lam)
@@ -382,6 +439,63 @@ theorem exists_tsum_deficit_cauchyProfile_le {lam : ℕ → ℝ} (hW : WeilPosit
           kernelSmooth (cauchyProfile δ s) (-Real.log n))) :=
         hsum'.tsum_le_tsum hdom (hsum.mul_left _)
     _ = 3 / (2 * κ) * ∑' n : ℕ, deviationDeficit lam n *
+        (kernelSmooth (cauchyProfile δ s) (Real.log n) +
+          kernelSmooth (cauchyProfile δ s) (-Real.log n)) := tsum_mul_left
+    _ ≤ 3 / (2 * κ) * (B * π) := mul_le_mul_of_nonneg_left hle (by positivity)
+
+/-- **The excess potential is bounded** when the deficit potential is: positive definiteness of
+`−ψ` bounds `|ψ(y)|` by `−ψ(0)` in both directions. -/
+theorem exists_kernelPotential_excess_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Bᵥ : ℝ}
+    (hBv : ∀ y, kernelPotential (deviationDeficit lam) y ≤ Bᵥ) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ y, kernelPotential (deviationExcess lam) y ≤ B := by
+  have hpd := positiveDefiniteOnReal_neg_deviationPotential hW
+  have hBv0 : 0 ≤ Bᵥ := le_trans (tsum_nonneg fun n => mul_nonneg (deviationDeficit_nonneg lam n)
+    (add_nonneg (riemannAutocorr_nonneg _) (riemannAutocorr_nonneg _))) (hBv 0)
+  have h0 : 0 ≤ -deviationPotential lam 0 := by
+    have h := GaloisForLFunctions.HTGeometry.PositiveDefiniteOnReal.norm_le hpd 0
+    have := (norm_nonneg _).trans h
+    simpa using this
+  refine ⟨Bᵥ + (-deviationPotential lam 0), by positivity, fun y => ?_⟩
+  have hnorm := GaloisForLFunctions.HTGeometry.PositiveDefiniteOnReal.norm_le hpd y
+  simp only [Complex.norm_real, Real.norm_eq_abs, Complex.ofReal_re] at hnorm
+  have heq := deviationPotential_eq_sub hW y
+  have h1 : deviationPotential lam y ≤ -deviationPotential lam 0 := by
+    have := (neg_le_abs (-deviationPotential lam y)).trans hnorm
+    rwa [neg_neg] at this
+  linarith [hBv y]
+
+/-- **A translation-bounded deficit forces a translation-bounded excess.** -/
+theorem exists_tsum_excess_cauchyProfile_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+    {D : ℝ} (hdef : CauchyBounded (deviationDeficit lam) D) :
+    ∃ Dₑ : ℝ, 0 ≤ Dₑ ∧ CauchyBounded (deviationExcess lam) Dₑ := by
+  obtain ⟨Bᵥ, hBv⟩ := kernelPotential_le_of_cauchyBounded (deviationDeficit_nonneg lam) hdef
+  obtain ⟨B, hB0, hB⟩ := exists_kernelPotential_excess_le hW hBv
+  obtain ⟨κ, hκ, hκK⟩ := exists_riemannAutocorr_ge
+  refine ⟨3 / (2 * κ) * (B * π), by positivity, fun δ hδ0 hδ1 s => ?_⟩
+  obtain ⟨hsum, hle⟩ := tsum_mul_kernelSmooth_le (deviationExcess_nonneg lam)
+    (summable_excess_term hW) hB (cauchyProfile_nonneg hδ0.le s) (continuous_cauchyProfile δ s)
+    (integrable_cauchyProfile hδ0 s)
+  rw [integral_cauchyProfile hδ0 s] at hle
+  have hdom : ∀ n : ℕ, deviationExcess lam n *
+      (cauchyProfile δ s (Real.log n) + cauchyProfile δ s (-Real.log n)) ≤
+      3 / (2 * κ) * (deviationExcess lam n * (kernelSmooth (cauchyProfile δ s) (Real.log n) +
+        kernelSmooth (cauchyProfile δ s) (-Real.log n))) := by
+    intro n
+    have h1 := cauchyProfile_le_kernelSmooth hκ hκK hδ0 hδ1 s (Real.log n)
+    have h2 := cauchyProfile_le_kernelSmooth hκ hκK hδ0 hδ1 s (-Real.log n)
+    have hv := deviationExcess_nonneg lam n
+    nlinarith
+  have hsum' : Summable (fun n : ℕ => deviationExcess lam n *
+      (cauchyProfile δ s (Real.log n) + cauchyProfile δ s (-Real.log n))) :=
+    Summable.of_nonneg_of_le (fun n => mul_nonneg (deviationExcess_nonneg lam n)
+      (add_nonneg (cauchyProfile_nonneg hδ0.le s _) (cauchyProfile_nonneg hδ0.le s _)))
+      hdom (hsum.mul_left _)
+  refine ⟨hsum', ?_⟩
+  calc _ ≤ ∑' n : ℕ, 3 / (2 * κ) * (deviationExcess lam n *
+        (kernelSmooth (cauchyProfile δ s) (Real.log n) +
+          kernelSmooth (cauchyProfile δ s) (-Real.log n))) :=
+        hsum'.tsum_le_tsum hdom (hsum.mul_left _)
+    _ = 3 / (2 * κ) * ∑' n : ℕ, deviationExcess lam n *
         (kernelSmooth (cauchyProfile δ s) (Real.log n) +
           kernelSmooth (cauchyProfile δ s) (-Real.log n)) := tsum_mul_left
     _ ≤ 3 / (2 * κ) * (B * π) := mul_le_mul_of_nonneg_left hle (by positivity)

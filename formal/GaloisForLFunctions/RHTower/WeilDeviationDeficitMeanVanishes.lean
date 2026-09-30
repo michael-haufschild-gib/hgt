@@ -1,12 +1,17 @@
 import GaloisForLFunctions.RHTower.WeilDeviationPacketDecomposition
 
 /-!
-# The deficit of a Weil-positive system with summable excess has mean density zero
+# Mean balance: the deficit of a Weil-positive system is controlled by its excess
 
-Let `lam` be full-cone Weil-positive with summable excess, and `v` its deficit. The *deficit mean*
-`A_δ = W_v(𝓕G_{0,δ})` is the average of `v` against the window `δ𝓕G(δu)` of length `1/δ`.
+Let `lam` be full-cone Weil-positive, with translation-bounded (`CauchyBounded`) excess `e` and
+deficit `v`. For a weight `w`, the *mean* `M_δ(w) = W_w(𝓕G_{0,δ})` is the average of `w` against
+the window `δ𝓕G(δu)` of length `1/δ`. Write `A_δ = M_δ(v)` and `E_δ = M_δ(e)`.
 
-**Theorem** (`tendsto_deficitMean`). `A_δ → 0` as `δ → 0⁺`.
+**Theorem** (`meanBalance`). `(F(0) − 3/8) A_δ ≤ (F(0) + 3/8) E_δ + o(1)` as `δ → 0⁺`. Here
+`F(0) = 0.4356`, so the deficit density is at most about `13.4` times the excess density.
+
+**Corollary** (`tendsto_deficitMean`). If `E_δ → 0`, then `A_δ → 0`. This holds in particular when
+the excess is summable (`excessMeanVanishes_of_summable`).
 
 **Proof.**
 - **Fejér identity.** The Fejér test `F` has `𝓕F = 0` at `±log n` for every `n ≥ 2`, so the
@@ -16,10 +21,10 @@ Let `lam` be full-cone Weil-positive with summable excess, and `v` its deficit. 
   zeros `γ` of `Ξ` in `[−2Γ, 2Γ]`, and a nonnegative remainder vanishing near the zeros.
 - **Estimate the pieces.**
   - The remainder pairs nonpositively (near-null positivity).
-  - The origin packet contributes `−F(0) A_δ`, up to `O(δ)` and the excess part.
-  - Each zero packet contributes at most `F(γ)(A_δ + K'ε)`, up to `O_ε(δ)`.
-- **Conclude.** `(F(0) − Σ_γ F(γ)) A_δ ≤` errors. The zero budget `Σ_γ F(γ) ≤ 3/8 < F(0)`
-  forces `A_δ → 0`.
+  - The origin packet contributes `F(0)(E_δ − A_δ)` up to `O(δ)`.
+  - Each zero packet contributes at most `F(γ)(A_δ + E_δ + K'ε)` up to `O_ε(δ)`.
+- **Conclude.** `F(0)(A_δ − E_δ) ≤ Σ_γ F(γ)(A_δ + E_δ) +` errors. The zero budget
+  `Σ_γ F(γ) ≤ 3/8` finishes the proof.
 -/
 
 open Complex MeasureTheory Filter Topology Set FourierTransform
@@ -237,11 +242,12 @@ theorem mul_le_of_eq_sub {P We Wv : ℂ} {c A e k : ℝ} (hP : P = We - Wv) (he 
   rw [hP, Complex.sub_re]
   linarith
 
-/-! ## The deficit inequality -/
+/-! ## The mean-balance inequality -/
 
 /-- The origin packet of the cut-off Fejér test is controlled by the tail and the zero packets. -/
-theorem neg_re_originPairing_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (hexc : Summable (deviationExcess lam)) {D : ℝ} (hD : CauchyBounded (deviationDeficit lam) D)
+theorem neg_re_originPairing_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Dₑ : ℝ}
+    (hexc : CauchyBounded (deviationExcess lam) Dₑ) {D : ℝ}
+    (hD : CauchyBounded (deviationDeficit lam) D)
     {Γ ε δ : ℝ} (hΓ : 0 < Γ) (hS : Separated (zeroWindow (2 * Γ)) δ) (hε0 : 0 < ε) (hε1 : ε ≤ 1) :
     -(deviationPairing lam (𝓕 fun ξ => fejerCutoff Γ ξ * packet pdPacketC 0 δ ξ)).re ≤
       ‖deviationPairing lam (tailTransform fejerTestC Γ)‖ +
@@ -259,51 +265,66 @@ theorem neg_re_originPairing_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
   exact re_deviationPairing_packetRemainder_nonpos hW hexc σ hσ (fejerCutoffReal_nonneg Γ) hs hc
     hS hε0 hε1 hZ
 
-/-- **The deficit inequality.** For the cut-off Fejér test at `Γ`, flat packets of flatness `ε` and
-packets of width `δ`, the deficit mean satisfies `(F(0) − 3/8) A_δ ≤` tail `+ O(Nε) + O_ε(δ)`,
-where `N` is the number of zeros of `Ξ` in `[−2Γ, 2Γ]`. -/
-theorem exists_deficitMean_inequality {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (hexc : Summable (deviationExcess lam)) :
+/-- If `P = W_e − W_v` with `W_e ≈ cE` and `W_v ≈ cA`, then `cA − cE ≤ k_e + k_v − Re P`. -/
+theorem mul_sub_le_of_eq_sub {P We Wv : ℂ} {c A E ke kv : ℝ} (hP : P = We - Wv)
+    (he : ‖We - (c : ℂ) * (E : ℂ)‖ ≤ ke) (hv : ‖Wv - (c : ℂ) * (A : ℂ)‖ ≤ kv) :
+    c * A - c * E ≤ ke + kv - P.re := by
+  have h1 := Complex.abs_re_le_norm (We - (c : ℂ) * (E : ℂ))
+  have h2 := Complex.abs_re_le_norm (Wv - (c : ℂ) * (A : ℂ))
+  have e1 : (We - (c : ℂ) * (E : ℂ)).re = We.re - c * E := by simp
+  have e2 : (Wv - (c : ℂ) * (A : ℂ)).re = Wv.re - c * A := by simp
+  rw [e1] at h1
+  rw [e2] at h2
+  rw [hP, Complex.sub_re]
+  linarith [(abs_le.mp h1).2, (abs_le.mp h2).1]
+
+/-- **The mean-balance inequality at fixed parameters.** For the cut-off Fejér test at `Γ`, flat
+packets of flatness `ε` and packets of width `δ`:
+`(F(0) − 3/8) A_δ ≤ (F(0) + 3/8) E_δ +` tail `+ O(Nε) + O_ε(δ)`, where `N` is the number of zeros of
+`Ξ` in `[−2Γ, 2Γ]`. -/
+theorem exists_meanBalance_inequality {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Dₑ : ℝ}
+    (hexc : CauchyBounded (deviationExcess lam) Dₑ) :
     ∃ K₀ K' : ℝ, 0 ≤ K₀ ∧ 0 ≤ K' ∧ ∀ ε : ℝ, 0 < ε → ε ≤ 1 → ∃ Kε : ℝ, 0 ≤ Kε ∧
       ∀ Γ δ : ℝ, 0 < Γ → 0 < δ → δ ≤ 1 → Separated (zeroWindow (2 * Γ)) δ →
       (fejerTest 0 - 3 / 8) * deficitMean (deviationDeficit lam) δ ≤
+        (fejerTest 0 + 3 / 8) * deficitMean (deviationExcess lam) δ +
         ‖deviationPairing lam (tailTransform fejerTestC Γ)‖ +
         2 * ((zeroWindow (2 * Γ)).card : ℝ) * K' * ε +
         (K₀ + ((zeroWindow (2 * Γ)).card : ℝ) * Kε) * δ *
-          (∫ s, ‖𝓕 (fejerCutoff Γ) s‖ * (|s| * (1 + s ^ 2))) +
-        4 * δ * (∑' n, deviationExcess lam n) *
-          ((∫ x, ‖pdPacketC x‖) + ((zeroWindow (2 * Γ)).card : ℝ) * ∫ x, ‖flatPacketC ε x‖) := by
+          (∫ s, ‖𝓕 (fejerCutoff Γ) s‖ * (|s| * (1 + s ^ 2))) := by
   obtain ⟨D, -, hD'⟩ := exists_tsum_deficit_cauchyProfile_le hW hexc
   have hD : CauchyBounded (deviationDeficit lam) D := hD'
   have hv0 := deviationDeficit_nonneg lam
   have he0 := deviationExcess_nonneg lam
-  obtain ⟨K₀, hK₀, hOP⟩ := exists_originPacket_bound hv0 hD
-  obtain ⟨K', hK', hZP⟩ := exists_zeroPacket_bound hv0 hD
-  refine ⟨K₀, K', hK₀, hK', fun ε hε0 hε1 => ?_⟩
-  obtain ⟨Kε, hKε, hZPε⟩ := hZP hε0 hε1
-  refine ⟨Kε, hKε, fun Γ δ hΓ hδ0 hδ1 hS => ?_⟩
+  obtain ⟨K₀v, hK₀v, hOPv⟩ := exists_originPacket_bound hv0 hD
+  obtain ⟨K₀e, hK₀e, hOPe⟩ := exists_originPacket_bound he0 hexc
+  obtain ⟨K'v, hK'v, hZPv⟩ := exists_zeroPacket_bound hv0 hD
+  obtain ⟨K'e, hK'e, hZPe⟩ := exists_zeroPacket_bound he0 hexc
+  refine ⟨K₀v + K₀e, K'v + K'e, add_nonneg hK₀v hK₀e, add_nonneg hK'v hK'e,
+    fun ε hε0 hε1 => ?_⟩
+  obtain ⟨Kεv, hKεv, hZPεv⟩ := hZPv hε0 hε1
+  obtain ⟨Kεe, hKεe, hZPεe⟩ := hZPe hε0 hε1
+  refine ⟨Kεv + Kεe, add_nonneg hKεv hKεe, fun Γ δ hΓ hδ0 hδ1 hS => ?_⟩
   have hs := contDiff_fejerCutoff Γ
   have hc := hasCompactSupport_fejerCutoff hΓ
   have hA0 := deficitMean_nonneg hv0 hD hδ0 hδ1
+  have hE0 := deficitMean_nonneg he0 hexc hδ0 hδ1
   -- the origin packet
-  obtain ⟨hvs₀, hv₀⟩ := hOP hs hc hδ0 hδ1
-  obtain ⟨hes₀, he₀⟩ := norm_weightPairing_excess_packet_le he0 hexc (norm_fejerCutoff_le_two Γ)
-    (hs.mul (contDiff_packet contDiff_pdPacketC 0 δ)).continuous integrable_pdPacketC hδ0
-  rw [fejerCutoff_zero hΓ] at hv₀
-  have h1 := mul_le_of_eq_sub (deviationPairing_eq_sub hes₀ hvs₀) he₀ hv₀
+  obtain ⟨hvs₀, hv₀⟩ := hOPv hs hc hδ0 hδ1
+  obtain ⟨hes₀, he₀⟩ := hOPe hs hc hδ0 hδ1
+  rw [fejerCutoff_zero hΓ] at hv₀ he₀
+  have h1 := mul_sub_le_of_eq_sub (deviationPairing_eq_sub hes₀ hvs₀) he₀ hv₀
   -- the decomposition
   have h2 := neg_re_originPairing_le hW hexc hD hΓ hS hε0 hε1
   -- the zero packets
   have hPγ : ∀ γ ∈ zeroWindow (2 * Γ),
       ‖deviationPairing lam (𝓕 fun ξ => fejerCutoff Γ ξ * packet (flatPacketC ε) γ δ ξ)‖ ≤
-        4 * δ * (∫ x, ‖flatPacketC ε x‖) * (∑' n, deviationExcess lam n) +
-        (‖fejerCutoff Γ γ‖ * (deficitMean (deviationDeficit lam) δ + K' * ε) +
-          Kε * δ * ∫ s, ‖𝓕 (fejerCutoff Γ) s‖ * (|s| * (1 + s ^ 2))) := by
+        ‖fejerCutoff Γ γ‖ * ((deficitMean (deviationDeficit lam) δ +
+          deficitMean (deviationExcess lam) δ) + (K'v + K'e) * ε) +
+        (Kεv + Kεe) * δ * ∫ s, ‖𝓕 (fejerCutoff Γ) s‖ * (|s| * (1 + s ^ 2)) := by
     intro γ _
-    obtain ⟨hvsγ, hvγ⟩ := hZPε hs hc γ hδ0 hδ1
-    obtain ⟨hesγ, heγ⟩ := norm_weightPairing_excess_packet_le he0 hexc
-      (norm_fejerCutoff_le_two Γ) (hs.mul (contDiff_packet (contDiff_flatPacketC ε) γ δ)).continuous
-      (integrable_flatPacketC hε0 hε1) hδ0
+    obtain ⟨hvsγ, hvγ⟩ := hZPεv hs hc γ hδ0 hδ1
+    obtain ⟨hesγ, heγ⟩ := hZPεe hs hc γ hδ0 hδ1
     rw [deviationPairing_eq_sub hesγ hvsγ]
     have := norm_sub_le (weightPairing (deviationExcess lam)
       (𝓕 fun ξ => fejerCutoff Γ ξ * packet (flatPacketC ε) γ δ ξ))
@@ -311,13 +332,16 @@ theorem exists_deficitMean_inequality {lam : ℕ → ℝ} (hW : WeilPositiveFull
       (𝓕 fun ξ => fejerCutoff Γ ξ * packet (flatPacketC ε) γ δ ξ))
     linarith
   have h3 := Finset.sum_le_sum hPγ
-  rw [Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.sum_const, Finset.sum_const,
-    nsmul_eq_mul, nsmul_eq_mul, ← Finset.sum_mul] at h3
+  rw [Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul, ← Finset.sum_mul] at h3
   -- the zero budget
-  have h4 := mul_le_mul_of_nonneg_right (sum_norm_fejerCutoff_le Γ) hA0
-  have h5 := mul_le_mul_of_nonneg_right (sum_norm_fejerCutoff_le_card Γ) (mul_nonneg hK' hε0.le)
+  have hAE : 0 ≤ deficitMean (deviationDeficit lam) δ + deficitMean (deviationExcess lam) δ :=
+    add_nonneg hA0 hE0
+  have h4 := mul_le_mul_of_nonneg_right (sum_norm_fejerCutoff_le Γ) hAE
+  have h5 := mul_le_mul_of_nonneg_right (sum_norm_fejerCutoff_le_card Γ)
+    (mul_nonneg (add_nonneg hK'v hK'e) hε0.le)
   have h6 := mul_add (∑ γ ∈ zeroWindow (2 * Γ), ‖fejerCutoff Γ γ‖)
-    (deficitMean (deviationDeficit lam) δ) (K' * ε)
+    (deficitMean (deviationDeficit lam) δ + deficitMean (deviationExcess lam) δ)
+    ((K'v + K'e) * ε)
   linarith
 
 /-! ## Choice of parameters -/
@@ -354,19 +378,20 @@ theorem exists_small_width {C₁ C₂ η₁ d : ℝ} (hC₁ : 0 ≤ C₁) (hC₂
       (lt_min (lt_min one_pos (by linarith)) (lt_min p1 p2)).le
     linarith
 
-/-- **The deficit mean vanishes.** -/
-theorem tendsto_deficitMean {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (hexc : Summable (deviationExcess lam)) :
+/-! ## Mean balance -/
+
+/-- **Mean balance.** For a full-cone Weil-positive system with translation-bounded excess,
+`(F(0) − 3/8) A_δ ≤ (F(0) + 3/8) E_δ + η` for all sufficiently small `δ`. -/
+theorem meanBalance {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Dₑ : ℝ}
+    (hexc : CauchyBounded (deviationExcess lam) Dₑ) :
     ∀ η : ℝ, 0 < η → ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₀ →
-      deficitMean (deviationDeficit lam) δ ≤ η := by
+      (fejerTest 0 - 3 / 8) * deficitMean (deviationDeficit lam) δ ≤
+        (fejerTest 0 + 3 / 8) * deficitMean (deviationExcess lam) δ + η := by
   intro η hη
-  obtain ⟨K₀, K', hK₀, hK', hineq⟩ := exists_deficitMean_inequality hW hexc
+  obtain ⟨K₀, K', hK₀, hK', hineq⟩ := exists_meanBalance_inequality hW hexc
   obtain ⟨D, -, hD'⟩ := exists_tsum_deficit_cauchyProfile_le hW hexc
   have hD : CauchyBounded (deviationDeficit lam) D := hD'
-  have hF0 : 3 / 8 < fejerTest 0 := three_eighths_lt_fejerTest_zero
-  obtain ⟨η₁, hη₁0, hη₁⟩ : ∃ η₁ : ℝ, 0 < η₁ ∧ 4 * η₁ ≤ (fejerTest 0 - 3 / 8) * η :=
-    ⟨(fejerTest 0 - 3 / 8) * η / 4, div_pos (mul_pos (sub_pos.mpr hF0) hη) four_pos,
-      le_of_eq (by ring)⟩
+  obtain ⟨η₁, hη₁0, hη₁⟩ : ∃ η₁ : ℝ, 0 < η₁ ∧ 3 * η₁ = η := ⟨η / 3, by positivity, by ring⟩
   -- the cut-off
   have htail := tendsto_deviationPairing_tail hexc hD (Φ := fejerTestC)
     contDiff_fejerTestC.continuous integrable_fejerTestC integrable_fourier_fejerTestC
@@ -388,24 +413,61 @@ theorem tendsto_deficitMean {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
   -- the width
   obtain ⟨d, hd, hsep⟩ := exists_separation (insert 0 (zeroWindow (2 * Γ)))
   have hM := moment_nonneg (fejerCutoff Γ)
-  have hE : 0 ≤ ∑' n, deviationExcess lam n := tsum_nonneg (deviationExcess_nonneg lam)
-  have hBG : 0 ≤ ∫ x, ‖pdPacketC x‖ := integral_nonneg fun _ => norm_nonneg _
-  have hBβ : 0 ≤ ∫ x, ‖flatPacketC ε x‖ := integral_nonneg fun _ => norm_nonneg _
   have hC₁ : 0 ≤ (K₀ + ((zeroWindow (2 * Γ)).card : ℝ) * Kε) *
       ∫ s, ‖𝓕 (fejerCutoff Γ) s‖ * (|s| * (1 + s ^ 2)) :=
     mul_nonneg (add_nonneg hK₀ (mul_nonneg hN0 hKε)) hM
-  have hC₂ : 0 ≤ 4 * (∑' n, deviationExcess lam n) *
-      ((∫ x, ‖pdPacketC x‖) + ((zeroWindow (2 * Γ)).card : ℝ) * ∫ x, ‖flatPacketC ε x‖) :=
-    mul_nonneg (mul_nonneg four_pos.le hE) (add_nonneg hBG (mul_nonneg hN0 hBβ))
-  obtain ⟨δ₀, hδ₀, hδ₀1, hδ₀d, hδ₀C₁, hδ₀C₂⟩ := exists_small_width hC₁ hC₂ hη₁0 hd
+  obtain ⟨δ₀, hδ₀, hδ₀1, hδ₀d, hδ₀C₁, -⟩ := exists_small_width hC₁ hC₁ hη₁0 hd
   refine ⟨δ₀, hδ₀, fun δ hδ0 hδ => ?_⟩
   have hS := separated_of_separation (zero_notMem_zeroWindow (2 * Γ)) hsep hδ0 (hδ.trans hδ₀d)
   have key := hineqε Γ δ hΓ hδ0 (hδ.trans hδ₀1) hS
   have e1 := (mul_le_mul_of_nonneg_left hδ hC₁).trans hδ₀C₁
-  have e2 := (mul_le_mul_of_nonneg_left hδ hC₂).trans hδ₀C₂
-  have hfin : (fejerTest 0 - 3 / 8) * deficitMean (deviationDeficit lam) δ ≤
+  linarith
+
+/-- The excess mean tends to zero. -/
+def ExcessMeanVanishes (lam : ℕ → ℝ) : Prop :=
+  ∀ η : ℝ, 0 < η → ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₀ →
+    deficitMean (deviationExcess lam) δ ≤ η
+
+/-- A summable excess has vanishing mean. -/
+theorem excessMeanVanishes_of_summable {lam : ℕ → ℝ} (hexc : Summable (deviationExcess lam)) :
+    ExcessMeanVanishes lam := by
+  intro η hη
+  set E := ∑' n, deviationExcess lam n with hE
+  have hE0 : 0 ≤ E := tsum_nonneg (deviationExcess_nonneg lam)
+  set BG := ∫ x, ‖pdPacketC x‖ with hBG
+  have hBG0 : 0 ≤ BG := integral_nonneg fun _ => norm_nonneg _
+  refine ⟨η / (2 * BG * E + 1), div_pos hη (by positivity), fun δ hδ0 hδ => ?_⟩
+  obtain ⟨-, hle⟩ := norm_weightPairing_excess_packet_le (deviationExcess_nonneg lam) hexc
+    (h := fun _ => (1 : ℂ)) (B := pdPacketC) (γ := 0) (H := 1) (fun _ => by simp)
+    (continuous_const.mul (contDiff_packet contDiff_pdPacketC 0 δ).continuous)
+    integrable_pdPacketC hδ0
+  have hfun : (fun ξ => (fun _ => (1 : ℂ)) ξ * packet pdPacketC 0 δ ξ) = packet pdPacketC 0 δ := by
+    funext ξ; simp
+  rw [hfun] at hle
+  have h1 : deficitMean (deviationExcess lam) δ ≤ 2 * (1 * (δ * BG)) * E :=
+    (Complex.re_le_norm _).trans hle
+  rw [le_div_iff₀ (by positivity)] at hδ
+  nlinarith [mul_nonneg hBG0 hE0]
+
+/-- **The deficit mean vanishes** when the excess mean does. -/
+theorem tendsto_deficitMean {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Dₑ : ℝ}
+    (hexc : CauchyBounded (deviationExcess lam) Dₑ) (hmean : ExcessMeanVanishes lam) :
+    ∀ η : ℝ, 0 < η → ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₀ →
+      deficitMean (deviationDeficit lam) δ ≤ η := by
+  intro η hη
+  have hF0 : 3 / 8 < fejerTest 0 := three_eighths_lt_fejerTest_zero
+  have hc : 0 < fejerTest 0 - 3 / 8 := sub_pos.mpr hF0
+  have hc' : 0 < fejerTest 0 + 3 / 8 := by linarith
+  obtain ⟨δ₁, hδ₁, hB⟩ := meanBalance hW hexc ((fejerTest 0 - 3 / 8) * η / 2) (by positivity)
+  obtain ⟨δ₂, hδ₂, hE⟩ := hmean ((fejerTest 0 - 3 / 8) * η / (2 * (fejerTest 0 + 3 / 8)))
+    (by positivity)
+  refine ⟨min δ₁ δ₂, lt_min hδ₁ hδ₂, fun δ hδ0 hδ => ?_⟩
+  have h1 := hB δ hδ0 (hδ.trans (min_le_left _ _))
+  have h2 := hE δ hδ0 (hδ.trans (min_le_right _ _))
+  rw [le_div_iff₀ (by positivity)] at h2
+  have h4 : (fejerTest 0 - 3 / 8) * deficitMean (deviationDeficit lam) δ ≤
       (fejerTest 0 - 3 / 8) * η := by linarith
-  exact le_of_mul_le_mul_left hfin (sub_pos.mpr hF0)
+  exact le_of_mul_le_mul_left h4 hc
 
 end
 

@@ -174,10 +174,10 @@ private theorem integrable_even_of_ratio_tendsto
   rw [hcover] at hwhole
   exact integrableOn_univ.mp hwhole
 
-/-- The single rectangle majorant belongs to the literal power-weighted L² carrier. -/
-theorem thetaRectangleGaussianMajorant_memLp
+/-- The Gaussian rectangle majorant includes the unweighted endpoint. -/
+theorem thetaRectangleGaussianMajorant_memLp_of_nonneg
     (δ A q : ℝ) (hA : 0 ≤ A) (hδ0 : 0 ≤ δ) (hδ4 : 2 * δ < Real.pi / 2)
-    (_hq : 0 < q) (hmargin : q < 2 * Real.exp (-2 * A) * Real.cos (2 * δ)) :
+    (_hq : 0 ≤ q) (hmargin : q < 2 * Real.exp (-2 * A) * Real.cos (2 * δ)) :
     MemLp (thetaRectangleGaussianMajorant δ A) 2 (thetaPowerWeightedMeasure q) := by
   have hcos : 0 < Real.cos (2 * δ) :=
     Real.cos_pos_of_mem_Ioo ⟨by linarith [Real.pi_pos], hδ4⟩
@@ -197,6 +197,13 @@ theorem thetaRectangleGaussianMajorant_memLp
   intro x
   simp only [thetaPowerWeightedEnergy, thetaRectangleGaussianMajorant,
     thetaRectangleGaussianEnvelope, abs_neg, thetaCuspFullSource_neg]
+
+/-- The single rectangle majorant belongs to the positive power-weighted carrier. -/
+theorem thetaRectangleGaussianMajorant_memLp
+    (δ A q : ℝ) (hA : 0 ≤ A) (hδ0 : 0 ≤ δ) (hδ4 : 2 * δ < Real.pi / 2)
+    (hq : 0 < q) (hmargin : q < 2 * Real.exp (-2 * A) * Real.cos (2 * δ)) :
+    MemLp (thetaRectangleGaussianMajorant δ A) 2 (thetaPowerWeightedMeasure q) :=
+  thetaRectangleGaussianMajorant_memLp_of_nonneg δ A q hA hδ0 hδ4 hq.le hmargin
 
 theorem continuous_thetaCuspStripSource_translation {z : ℂ} (hz : z ∈ thetaCuspStrip) :
     Continuous (fun x : ℝ => thetaCuspStripSource ((x : ℂ) + z)) := by

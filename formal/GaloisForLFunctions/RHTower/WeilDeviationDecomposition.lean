@@ -204,7 +204,7 @@ theorem fourier_sub_eq {f g : ℝ → ℂ} (hf : Integrable f) (hg : Integrable 
     ← integral_sub (integrable_exp_mul hf u) (integrable_exp_mul hg u)]
   exact integral_congr_ae (Eventually.of_forall fun ξ => by ring)
 
-theorem integrable_mul_cutoff {Φ : ℝ → ℂ} (hΦc : Continuous Φ) (hΦi : Integrable Φ) (Γ : ℝ) :
+theorem integrable_mul_cutoff {Φ : ℝ → ℂ} (hΦi : Integrable Φ) (Γ : ℝ) :
     Integrable fun ξ => Φ ξ * packet cutoffC 0 Γ ξ :=
   hΦi.mul_bdd (c := 1) (contDiff_cutoffC.continuous.comp (by fun_prop)).aestronglyMeasurable
     (Eventually.of_forall fun ξ => norm_cutoffC_le _)
@@ -214,7 +214,7 @@ theorem tailTransform_eq {Φ : ℝ → ℂ} (hΦc : Continuous Φ) (hΦi : Integ
     tailTransform Φ Γ u = ∫ y, (𝓕 Φ u - 𝓕 Φ (u - y / Γ)) * 𝓕 cutoffC y := by
   have hsplit : (fun ξ => Φ ξ * (1 - packet cutoffC 0 Γ ξ)) =
       fun ξ => Φ ξ - Φ ξ * packet cutoffC 0 Γ ξ := funext fun ξ => by ring
-  rw [tailTransform, hsplit, fourier_sub_eq hΦi (integrable_mul_cutoff hΦc hΦi Γ),
+  rw [tailTransform, hsplit, fourier_sub_eq hΦi (integrable_mul_cutoff hΦi Γ),
     fourier_mul_cutoff_eq hΦc hΦi hFΦ hΓ]
   have hb : ∀ v, ‖𝓕 Φ v‖ ≤ ∫ ξ, ‖Φ ξ‖ := norm_fourier_le_integral_norm Φ
   have hi2 : Integrable fun y => 𝓕 Φ (u - y / Γ) * 𝓕 cutoffC y :=
@@ -342,13 +342,15 @@ theorem tendsto_tailTransform {Φ : ℝ → ℂ} (hΦi : Integrable Φ) (u : ℝ
     exact ((tendsto_const_nhds.sub h1).const_mul (Φ ξ)).const_mul _
 
 /-- **The tail pairing tends to zero.** -/
-theorem tendsto_deviationPairing_tail {lam : ℕ → ℝ} (hexc : Summable (deviationExcess lam))
+theorem tendsto_deviationPairing_tail {lam : ℕ → ℝ} {Dₑ : ℝ}
+    (hexc : CauchyBounded (deviationExcess lam) Dₑ)
     {D : ℝ} (hD : CauchyBounded (deviationDeficit lam) D) {Φ : ℝ → ℂ} (hΦc : Continuous Φ)
     (hΦi : Integrable Φ) (hFΦ : Integrable (𝓕 Φ)) {b : ℝ} (hb : 0 ≤ b)
     (hsupp : ∀ u, b < |u| → 𝓕 Φ u = 0) :
     Tendsto (fun Γ => deviationPairing lam (tailTransform Φ Γ)) atTop (𝓝 0) := by
   obtain ⟨C, hC0, hC⟩ := exists_norm_tailTransform_le hΦc hΦi hFΦ hb hsupp
   obtain ⟨hvs, -⟩ := hD 1 one_pos le_rfl 0
+  obtain ⟨hes, -⟩ := hexc 1 one_pos le_rfl 0
   have ha : ∀ n, |weilDeviation lam n| ≤ deviationExcess lam n + deviationDeficit lam n := by
     intro n
     rw [weilDeviation_eq_sub]
@@ -358,9 +360,11 @@ theorem tendsto_deviationPairing_tail {lam : ℕ → ℝ} (hexc : Summable (devi
   unfold deviationPairing
   rw [h0]
   refine tendsto_tsum_of_dominated_convergence
-    (bound := fun n : ℕ => C * (2 * deviationExcess lam n) + C * (deviationDeficit lam n *
-      (cauchyProfile 1 0 (Real.log n) + cauchyProfile 1 0 (-Real.log n))))
-    ((hexc.mul_left 2 |>.mul_left C).add (hvs.mul_left C)) (fun n => ?_) ?_
+    (bound := fun n : ℕ => C * (deviationExcess lam n *
+        (cauchyProfile 1 0 (Real.log n) + cauchyProfile 1 0 (-Real.log n))) +
+      C * (deviationDeficit lam n *
+        (cauchyProfile 1 0 (Real.log n) + cauchyProfile 1 0 (-Real.log n))))
+    ((hes.mul_left C).add (hvs.mul_left C)) (fun n => ?_) ?_
   · have h1 := (tendsto_tailTransform hΦi (Real.log n)).add (tendsto_tailTransform hΦi (-Real.log n))
     rw [add_zero] at h1
     simpa using h1.const_mul (weilDeviation lam n : ℂ)
@@ -368,28 +372,19 @@ theorem tendsto_deviationPairing_tail {lam : ℕ → ℝ} (hexc : Summable (devi
     intro n
     have h1 := hC Γ hΓ (Real.log n)
     have h2 := hC Γ hΓ (-Real.log n)
-    have hc1 := cauchyProfile_le_self one_pos 0 (Real.log n)
-    have hc2 := cauchyProfile_le_self one_pos 0 (-Real.log n)
     have hp1 := cauchyProfile_nonneg zero_le_one 0 (Real.log n)
     have hp2 := cauchyProfile_nonneg zero_le_one 0 (-Real.log n)
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     have hsum : ‖tailTransform Φ Γ (Real.log n) + tailTransform Φ Γ (-Real.log n)‖ ≤
         C * (cauchyProfile 1 0 (Real.log n) + cauchyProfile 1 0 (-Real.log n)) :=
       (norm_add_le _ _).trans (by linarith)
-    have he := deviationExcess_nonneg lam n
-    have hv := deviationDeficit_nonneg lam n
     calc |weilDeviation lam n| *
           ‖tailTransform Φ Γ (Real.log n) + tailTransform Φ Γ (-Real.log n)‖
         ≤ (deviationExcess lam n + deviationDeficit lam n) *
           (C * (cauchyProfile 1 0 (Real.log n) + cauchyProfile 1 0 (-Real.log n))) :=
-          mul_le_mul (ha n) hsum (norm_nonneg _) (by positivity)
-      _ ≤ _ := by
-          have hcs : cauchyProfile 1 0 (Real.log n) + cauchyProfile 1 0 (-Real.log n) ≤ 2 := by
-            linarith
-          have hk : deviationExcess lam n * (C * (cauchyProfile 1 0 (Real.log n) +
-              cauchyProfile 1 0 (-Real.log n))) ≤ deviationExcess lam n * (C * 2) :=
-            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hcs hC0) he
-          linarith
+          mul_le_mul (ha n) hsum (norm_nonneg _)
+            (add_nonneg (deviationExcess_nonneg lam n) (deviationDeficit_nonneg lam n))
+      _ = _ := by ring
 
 end
 

@@ -1,8 +1,8 @@
 # Zero-free-window rigidity: square-summable deviations on log-separated supports
 
 - **ID:** L160 / weil-cone-zero-free-window-rigidity
-- **Stage:** 2-fully-proven (Lean in progress)
-- **Type:** THEOREM (paper, complete)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** hf-positive-hodge-attack/krein-producer-loops.md (L160)
 
 ## Statement
@@ -82,7 +82,15 @@ So `c_m → 0` as `η → 0`. But `c_m = a(m)B(η log m) → a(m)B(0)` with `B(0
 ## Gates
 - [x] 0 → 1
 - [x] 1 → 2 (paper proof above)
-- [ ] 2 → 3: Lean module `RHTower/WeilFullConeZeroFreeWindowRigidity` (in progress; see Log)
+- [x] 2 → 3: `RHTower.eq_vonMangoldt_of_weilPositiveFull_of_sq_summable_separated`.
+  - Three modules, wired after `WeilFullConeDyadicRigidity`:
+    - `RHTower/WeilFullConeConvolutionPositivity` (Steps 1a/1b);
+    - `RHTower/RiemannKernelSpectralLocalization` (Step 2 and the bump transform);
+    - `RHTower/WeilFullConeZeroFreeWindowRigidity` (Steps 0, 3–5 and the theorem).
+  - Each `lake build` is green.
+  - Axioms: `[propext, Classical.choice, Quot.sound]`.
+  - Lint reports nothing for these modules.
+  - Collision sweep over 140 names (ilean plus source) is clean after renaming the generic helpers.
 - [ ] 3 → 4 (not pursued)
 
 ## Log
@@ -94,3 +102,16 @@ So `c_m → 0` as `η → 0`. But `c_m = a(m)B(η log m) → a(m)B(0)` with `B(0
   4. bad-set measure from `ncard_xiOrdinateWindow_le_log`;
   5. mean values under (Gap);
   6. assembly.
+- **Lean (same day).** Each step of the paper proof has a formal counterpart:
+  - Step 1a: `normDeficit_pairing_nonneg`. Convolution tests `g ⋆ Φχ_L` need only continuous, compactly supported `g`, and the limit uses `tendsto_truncatedRiemannAutocorr_atTop`.
+  - Step 1b: `normDeficit_pairing_nonneg_of_decay`, with a piecewise-linear cutoff and a Peetre-type weight.
+  - `𝓕K = X²`: `fourier_riemannAutocorr_eq`. `X² ∈ L¹` comes from one integration by parts (`Real.fourier_deriv`).
+  - The pairing in spectral form: `riemannPairForm_eq_integral_fourier`.
+  - The Schwartz test `𝓕⁻(φ((·−ξ₀)/η)/X)`: `localTest` (Mathlib `HasCompactSupport.toSchwartzMap`).
+  - Step 2: `localized_deviation_nonneg`.
+  - Step 3: `realZeroSet_multi`, from `ncard_xiOrdinateWindow_le_log`.
+  - Step 4: `abs_integral_windowCosSeries_mul_cos_sub_le` and `abs_integral_windowCosSeries_sq_sub_le`.
+  - Step 5: `half_mul_abs_le_of_zeroFree`.
+  - Step 0: `summable_support_inv_pow`, a packing argument by measure.
+  - The limit: filters at `0⁺`, with `T = η^{−(2J+1)}` and `x log x → 0`.
+- **Not formalized.** The Baker corollary. Effective Baker (Matveev) is the corpus project `effective-baker-matveev-linear-forms`.
