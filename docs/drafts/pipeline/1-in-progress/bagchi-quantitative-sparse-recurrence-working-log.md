@@ -233,3 +233,119 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   Gram lower bound. The old half-to-two-thirds-power terminal window does not contain these
   primes. Same-event centre/target control, uniform prefix/cell constants, and deterministic
   orbit transfer remain open. Independent recurrence and RH remain unproved; goal active.
+
+- **F34 — Exact literal reflected-primal cofactor transfer.**
+  `SmoothAFEReflectedCofactorTransfer.lean` absorbs common height by an exact logarithmic phase
+  shift, factors the actual largest-prime channel through F33's Gaussian cofactor vector, and
+  separates conductor scale, common row phase, cofactor length, and the fixed-node floor factor.
+  It proves the floor ratio is in `(L/(L+1),1]` and its fixed complex powers approach one uniformly
+  as `L` grows. The complete final leaf compilation passes without warnings; all six exported
+  theorem axiom audits pass with standard axioms only. An earlier scratch assembly omission was
+  caught and fixed before this complete audit; only the basic identity had been checked then.
+- **F35 — Actual reciprocal prime counts and common conditioning seam.**
+  `SteinhausCofactorPrimeBlocks.lean` proves exact cofactor membership `[M,2M)`, disjointness for
+  separated blocks, and eventual cardinality at least `N/(4*M*log N)`. Blocks with `M<=K` lie
+  above the common threshold `N/(2K)`, which eventually contains all constructed cofactors and
+  satisfies `N<(N/(2K))^2`. Final leaf and all five exported axiom audits pass with standard
+  axioms only. Combined audit: `/tmp/BagLiteralPrimeBlockAudit.lean`. Both modules are wired
+  into the umbrella. Next: robust Cauchy direction and literal conditional Gram coercivity;
+  same-event centre/target control and orbit transfer remain open.
+- **F36 — Robust Cauchy-row coercivity.** `SteinhausCofactorModeCoercivity.lean` proves fixed
+  positive constants `epsilon,c` such that every node coefficient vector has one prescribed
+  Cauchy mode whose entire `epsilon` row-neighborhood pairs with it by at least `c*norm(u)`.
+  Final leaf compilation and exported theorem axiom audit pass without warnings or nonstandard axioms.
+  This is the direction estimate used for a whole reciprocal prime block, not an averaged Gram
+  substitute. C17.9 now assembles F33 with F34's exact floor correction before applying it.
+
+- **F37 — Uniform literal floor-corrected mode blocks.**
+  `SmoothAFECorrectedCofactorModes.lean` controls F34's exact corrected rows for every actual
+  channel with cofactor cutoff in a selected block, uniformly over all sufficiently small
+  positive common smoothing scales. It retains any finite prescribed phase prefix, separated
+  positive cutoffs, nonzero means, and arbitrary `M_i*norm(A_i)^2` budgets. Final leaf compilation
+  passes without warnings; F36 and F37's exported theorem axiom audits pass with standard axioms
+  only in `/tmp/BagCorrectedCofactorAudit.lean`.
+- **F34–F37 final checks.** Four leaf compilations and thirteen exported theorem axiom audits
+  pass. Umbrella wiring and index refresh complete; targeted whitespace check passes. Global
+  lint exits 1 on fourteen unrelated unreachable modules, with no issue in these BAG leaves.
+  Superseded owned scratch fragments and failed name probes were moved into a separate temporary
+  archive; passing proof sources and final audit files remain available. No Lean process remains
+  running after the completed audits. Independent recurrence and RH remain unproved; goal active.
+- **Next exact step.** Apply F36 at half its row tolerance, obtain F37's corrected blocks with a
+  sufficiently large budget, and use F35 to count every prime in the block selected for each node
+  coefficient vector. F34 then transfers this energy to actual channels; the proved chi envelope
+  supplies the conductor factor. Aim for an arbitrarily large constant over `log N` in the actual
+  pointwise conditional Gram bound, uniformly over the prescribed common-height window, before
+  constructing phase cells or attempting same-event centre/target and orbit estimates.
+
+- **F38 — Pointwise normalized conditional energy.**
+  `SmoothAFENormalizedChannelEnergy.lean` proves that, for any requested real constant `H`, one
+  phase extending an arbitrary finite prescription and one conditioning threshold `N/(2K)`
+  give normalized channel energy at least `H*N/log N * norm(u)^2` in every coefficient direction,
+  eventually in `N` and uniformly for all sufficiently small positive smoothing scales. The
+  proof uses F36's selected direction, F37's exact corrected rows, and F35's actual prime count.
+  Final leaf compilation passes without warnings. A redundant positivity premise on `H` was
+  removed because the proof establishes the statement for every real `H`. All three exported
+  axiom audits pass with standard axioms only.
+
+- **F39 — Actual reflected conditional energy.**
+  `SmoothAFEReflectedConditionalEnergy.lean` proves a common conductor lower envelope, the exact
+  norm transfer, and the actual reflected-primal conditional energy lower bound `H/log N` in
+  every direction. One fixed prefix, inverse-rotated by common height, works throughout
+  `[5*N/4,7*N/4]`, eventually in `N`, for every sufficiently small positive smoothing scale.
+  Final leaf compilation is warning-free; all three exported theorem axiom audits report only
+  standard axioms. Both new leaves are wired. `/tmp/BagPointwiseCovarianceAudit.lean` checks all
+  six F38–F39 exports. This closes C18 at phase points; independent recurrence remains open.
+- **Next C19.** Prove positive measure of fixed finite-character cells, then uniform stability
+  of corrected rows on one such cell. The working card records the dependency-closed paper
+  mechanism and keeps the separate height-rotation and centre/target obligations explicit.
+
+- **F38–F39 integration checks.** Index refresh completed. Global formal lint reports eleven
+  unrelated unreachable modules and no BAG issue; targeted whitespace check passed.
+- **F40 — Positive finite-character cells.** `SteinhausFiniteCharacterCells.lean` proves
+  character continuity, exact integer-period invariance, fractional-part reduction, positive
+  measure of unit-cube open neighborhoods, and positive measure of every positive-radius finite
+  character cell around an arbitrary real phase prescription. Final leaf compiles without
+  warnings and is wired. Axiom audit is prepared; uniform corrected-row perturbation is the
+  active mathematical assembly.
+
+- **F41 — Uniform corrected-row cell stability.** `SmoothAFECofactorCellStability.lean`
+  proves finite-character perturbation control and a prescribed block construction valid
+  throughout one fixed cell. Final leaf passes without warnings and is wired. Normalized and
+  actual energy theorems are now being strengthened to retain that cell, with their original
+  pointwise statements preserved as corollaries. Coordinatewise measure transport is the next
+  C19 assembly; its paper argument is recorded on the main card.
+
+- **C19 energy strengthening.** The normalized and reflected-primal covariance proofs now
+  quantify over every phase in one fixed finite-character cell. Their original pointwise
+  statements are short corollaries, avoiding duplicate prime-count and conductor proofs.
+  Both scratch checks pass; normalized final leaf passed without warnings, reflected final
+  leaf is running. The exact phase-translation measure proof also passes its scratch check.
+- **Centre-cost audit.** Recorded the circularity in dividing an unconditional background
+  moment by a covariance-cell mass that itself depends on the desired covariance constant.
+  No centre or local-target conclusion is being inferred from the covariance event.
+
+- **F42 — Height-uniform phase-cell mass.** `SteinhausFiniteCharacterCellRotation.lean`
+  proves a measure-preserving representative for every coordinatewise real phase translation,
+  exact character transport, and equal cell mass at every translated centre. Final leaf passes
+  without warnings and is wired. Both strengthened energy leaves also pass final compilation.
+- **F43 — Actual positive covariance event.** Scratch assembly passes. The final leaf
+  `SmoothAFEReflectedCovarianceEvent.lean` is wired and compiling; it includes measurability,
+  a fixed strictly positive event mass independent of height, eventual placement of the entire
+  cell prefix below the conditioning threshold, and the actual channel lower bound in every
+  direction. Combined twenty-theorem axiom audit prepared at
+  `/tmp/BagPhaseCellProducerAudit.lean`.
+- **C20 frontier preparation.** Corpus search `/tmp/bag-prefix-centre-search.json` finds exact
+  largest-prime decomposition, unconditional Parseval and frozen channel covariance, but no
+  finite-prefix conditional background bound. Source inspection confirms that ordinary Parseval
+  diagonalises all primes, whereas freezing a prefix retains off-diagonal pairs agreeing outside
+  it. The next paper obligation is the exact grouped second-moment source formula, then an audit
+  of its budget dependence; no background bound or recurrence claim has been assumed.
+
+- **F38–F43 FINAL.** Six final leaf compilations pass without warnings. Initial C18 six-export
+  audit and final C19 twenty-export audit use only `propext`, `Classical.choice`, `Quot.sound`.
+  `/tmp/bag-fixed-covariance-cell-axioms.log` records the final audit and exact main statement.
+  All leaves are wired, index refreshed, targeted whitespace check passed. Formal lint reports
+  fourteen unrelated unreachable modules and no BAG issue. Current owned Lean jobs are complete.
+  Superseded scratch proof/name-probe files were archived; passing current proof and audit files
+  remain available. C18–C19 are closed. Independent recurrence and RH remain open; goal active.
+  Next: C20 finite-prefix conditional background source formula and same-event target-cost audit.

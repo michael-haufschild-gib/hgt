@@ -685,3 +685,25 @@ coverage pass. The recursive ledger records the complete evidence and
 unrelated global lint failures. This card stays Stage 2: the full
 actual tempered annihilator/multiplicity classification (8) remains
 open. The earlier real/off-real tempered-evaluation boundary is closed.
+
+## Lean coverage: actual finite-Dirac-jet Xi kernel
+
+`ThetaTemperedMultiplicityJets.lean` supplies 38 public exports. At every
+real `t`, let `m(t)` be the actual finite analytic order of Xi. The literal
+Xi multiplier on the actual tempered dual kills precisely the span of
+Dirac derivatives of orders below `m(t)` inside the span of all finite
+Dirac jets at `t`. This kernel has dimension `m(t)`. Every finite prefix
+is independent, and the first excluded jet survives. Actual polynomial
+times positive-theta Schwartz probes prove the sharp classification.
+No assumed vanishing or multiplier-admission interface replaces Xi.
+
+Named native and final literal leaf checks pass, the latter with an
+empty log. All 38 export witnesses and axiom reports pass using exactly
+the three standard Lean axioms. All 111 compiler-recorded API witnesses,
+38 exact catalogue entries and unique umbrella registration pass.
+The recursive ledger records all gates and unrelated global lint errors.
+
+This certifies the finite-jet kernel component of (8). The explicit
+unscaled-source transport, actual Schwartz-valued analytic translation
+curve, supported-distribution representation and full local/global
+tempered converse remain open. The card stays Stage 2.

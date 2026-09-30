@@ -1,8 +1,8 @@
 # Weil-cone rigidity for log-summable deviations (rough-fiber truncation of the |ζ|² notch)
 
 - **ID:** weil-cone-log-summable-rigidity
-- **Stage:** 2-fully-proven (Lean in progress)
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** MC conjecture loop, cycle 168. It extends MUST-570 (`3-formalized/11-rh-zero-divisor-geometry/weil-cone-finitely-generated-support-rigidity.md`) and answers the target of HF L165 ("polylog-sparse large-deviation rigidity is not reachable by radical tests") in full generality.
 - **Statement.**
   - **Theorem.** Let `v : ℕ → ℝ` with `v(0) = v(1) = 0` and `|v(n)| ≤ 2 log n + A`. Assume `Σ_n |v(n)| (1 + log n)^{−J} < ∞` for some `J`. If `ψ_v` or `−ψ_v` is positive definite, then `v = 0`.
@@ -59,3 +59,17 @@ Both tend to `0`, because `Σ |v(n)| n^{−1/2} ≤ C_J Σ |v(n)| (1 + log n)^{�
 
 ## Log
 - 2026-09-30 — created (MC cycle 168) with a complete paper proof; Lean plan: refactor the pairing inequality to take log-summability; the twist main term for general coprime `(h, k)`; rough-part decomposition; general mode main term; key inequality; `y`-limit.
+- 2026-09-30 — **Formalized.** Module `RHTower/WeilLogSummableRigidity.lean` (namespace `RHTower.WeilLogSummable`):
+  - `eq_zero_of_positiveDefinite_neg_nullPotential_of_logSummable` and `…_nullPotential_of_logSummable`: Theorem, both signs.
+  - `eq_vonMangoldt_of_weilPositiveFull_of_logSummable`: Corollary for log-summable `weilDeviation`.
+  - `eq_vonMangoldt_of_weilPositiveFull_of_sparse`: `lam = Λ` off any `S` with `Σ_{n∈S}(1 + log n)^{−K} < ∞`.
+
+  Proof components:
+  - `smoothPart` / `roughPart` over `primesUpTo y`.
+  - `sum_modeCoeff_mul_weight_general`: truncated Poisson cancellation, with rough fibers.
+  - `exists_norm_weightedMoment_sub_main_le_general`: coprime twist `(h(b) n_R, k(b))`.
+  - `exists_key_bound_trunc`: `X_y · Π(1 − 1/p) · L log L ≤ C_y L`, via the Rankin bookkeeping lemmas `sum_abs_mul_le_of_pointwise` and `abs_tsum_compl_le`.
+  - `nonpos_of_scale_bound`.
+  - `tendsto_roughTail`, for the limit `y → ∞`.
+
+  Refactors used: `sum_mul_re_weightedMoment_nonpos_of_summable` (the pairing now takes log-summability directly); `exists_norm_twistedMoment_hk_sub_le` (twist main term for any coprime `(h, k)`); `weight_mode_le_prod` / `log_mode_norm_le_prod`.

@@ -737,11 +737,228 @@ height transfer, first remove the common-height row phase and rotate the cofacto
 only then estimate the fixed-node factor `((p/N)*L)^(s_j-1)`. Its imaginary part must not still
 contain the unbounded common height.
 
-**C17.6 — literal channel transfer, active proof.** For `L=N/p>0`, shift cofactor phases by
+**C17.6 — literal channel transfer.** `[LEAN-PROVED]` For `L=N/p>0`, shift cofactor phases by
 `tau*log(q)/(2*pi)` to absorb the common height into `X_m`. The actual reflected-primal channel
 then factors into
 `chi(s_j+i*tau) * p^(s_j+i*tau-1) * L^s_j`
 times F33's smoothed cofactor vector at effective scale `r*p*L/N`, with fixed node `s_j`.
 Extracting `N^(s_j+i*tau-1)` leaves one common unit row phase, `L`, and the fixed-node floor
-factor `(p*L/N)^(s_j-1)`. This exact identity is the current formalization target; it must precede
-any covariance estimate so that no large imaginary-height error is hidden in the floor factor.
+factor `(p*L/N)^(s_j-1)`. This exact identity is proved in `SmoothAFEReflectedCofactorTransfer.lean`; its floor factor
+contains only the fixed node, with no hidden large imaginary-height error.
+
+**C17.7 — reciprocal cofactor prime blocks.** `[LEAN-PROVED]` For each fixed `M>=1`, take actual
+primes `N/(2M)<p<=N/M`, with integer endpoints interpreted by floor. Their cofactors obey
+`M<=N/p<2M`, and different F32 blocks give disjoint prime sets. The corpus PNT window bound at
+ratio `2` gives eventually `card>=N/(4M*log N)`, retaining the necessary `1/M` factor.
+Combining this count with a channel of squared size `L^2*|A|^2/N` gives the intended
+`M*|A|^2/(4*log N)` directional energy. This is only the arithmetic source target; no target law
+or recurrence conclusion is assumed.
+
+**C17.6 scratch validation.** The complete scratch file now contains and compiles the literal
+channel factorization, the shrinking floor interval, the uniform fixed-exponent floor bound,
+and the conductor-normalized channel identity. A scratch assembly omission was caught and
+corrected before the full final leaf/axiom audit; the earlier compile covered only the basic
+channel identity. No covariance conclusion was inferred from that incomplete audit.
+
+**C17.7 common conditioning seam.** For finitely many blocks with `M_i<=K`, all selected primes
+lie in `largePrimes N (N/(2K))`. Once `N/(2K)>=2K+2`, the elementary bound
+`N<2K*(N/(2K)+1)` gives `N<(N/(2K))^2`, and all constructed cofactors are below that cutoff.
+Thus the full exact largest-prime decomposition can use this one conditioning threshold;
+it need not be the old square-root power-window threshold. The prime-block source proof has
+no analytic input beyond the corpus's proved PNT interval bound.
+
+**C17.8 — robust Cauchy direction.** `[LEAN-PROVED]` The covariance lower bound does not require
+averaging over all choices of a prime from each block. Invertibility of the fixed Cauchy matrix
+gives a constant `c>0` such that, for every node coefficient vector `u`, one mode row has pairing
+at least `c*norm(u)`. Every row sufficiently close to that same mode preserves half this bound.
+Thus every prime in the corresponding cofactor block contributes, and C17.7's count can be
+applied to that single block. This avoids a determinant-moment or concentration substitution:
+the desired bound is pointwise for every direction `u`. The robust row statement is proved by `exists_cofactorCauchyMode_robust_row_lower`; insertion
+into the literal conditional channel energy remains open.
+
+**Pointwise covariance assembly target.** For fixed distinct right-strip nodes and any requested
+`A>0`, construct a finite phase extension, a smoothing scale, and a conditioning parameter `K`.
+Eventually in `N`, uniformly over the permitted common-height window and all coefficient vectors
+`u`, the actual conditional channel energy should exceed `A/log N * norm(u)^2` at the phase
+obtained by undoing the exact common-height shift. Use F34 to write each channel as its nodewise
+conductor factor times `L*A_i` times a unit row phase and a row close to the selected Cauchy mode.
+F35 gives `N/(4*M_i*log N)` primes, while F32 gives `M_i*norm(A_i)^2` as large as needed.
+The existing proved chi envelope supplies the remaining `1/sqrt N` conductor scale. The robust
+row argument chooses one block for each `u`, so all primes in that block contribute a common
+lower bound. This is a proposed full conditional Gram estimate, not yet a proved theorem.
+Even after that estimate, a positive-volume phase cell, prescribed-prefix uniformity, same-event
+centre/target cost, and deterministic orbit transfer remain to be established.
+
+**C17.9 — uniformly corrected cofactor rows.** `[LEAN-PROVED]` F33 controls the smoothed mode,
+whereas F34's literal row also contains `q^(s_j-1)` with `q=p*floor(N/p)/N`. Choose a positive
+floor tolerance from the finite maximum Cauchy-row norm, then choose the initial cofactor bound
+using F34 before constructing the F33 blocks. For `V` within `epsilon/4` of its Cauchy row `C`,
+`|q^(s_j-1)-1|<=delta<=1` gives
+`|q^(s_j-1)*V_j-C_j| <= 2*(epsilon/4)+delta*|C_j| < epsilon`.
+The actual effective cutoff scale is `r*q`, and F33 applies since `0<q<=1`. `exists_corrected_cofactor_mode_blocks` proves one
+finite phase certificate uniform over all actual channels with cofactor cutoffs in the selected
+blocks, before the prime counts and robust-row lower bound are applied.
+
+
+C17.9's final module `SmoothAFECorrectedCofactorModes.lean` now compiles without warnings. Its
+statement is uniform over all `N,p` with `M_i<=N/p<=2*M_i`, all positive common smoothing scales
+below one fixed threshold, and every node. It retains exact finite-prefix agreement, separated
+blocks, positive cutoffs, nonzero means, and arbitrary budgets `M_i*norm(A_i)^2>=K`. Together
+with F34's identity, these are the actual normalized rows rather than uncorrected mode limits.
+The pointwise conditional covariance inequality described above remains the next unproved
+assembly. No probability or recurrence conclusion is being inferred from row control alone.
+
+
+**F34–F37 validation checkpoint.** All four final leaf compilations passed without warnings.
+All thirteen exported theorem axiom audits in `/tmp/BagLiteralPrimeBlockAudit.lean` and
+`/tmp/BagCorrectedCofactorAudit.lean` report only `propext`, `Classical.choice`, and `Quot.sound`.
+All modules are wired into the umbrella; the formal index is refreshed. Global lint exits 1 on
+fourteen unrelated unreachable modules and reports no issue in these BAG leaves. No full build,
+numerical experiment, commit, or new analytic premise was used. Independent recurrence and RH
+remain unproved; the active obligation is the pointwise conditional covariance assembly above.
+
+**C18 — pointwise conditional covariance producer, LEAN PROVED.** First prove the normalized
+literal cofactor channel energy can exceed `H*N/log N * norm(u)^2`, for every prescribed `H>0`,
+using one finite phase extension and the common conditioning threshold `N/(2K)`. Use the mode
+budget `4*H/c^2`, where `c` is F36's robust row constant. For each `u`, F36 selects a block whose
+every prime contributes at least `M_i^2*norm(A_i)^2*c^2*norm(u)^2`. F35's count cancels one `M_i`.
+Then transfer through F34's exact common-height identity and the proved chi envelope to the
+actual reflected-primal channels, with lower bound `H/log N * norm(u)^2` throughout the height
+window. This is a phase-point covariance construction; no phase-cell probability, centre bound,
+or deterministic recurrence is assumed in this step.
+
+**C18 normalized proof checkpoint.** The full scratch argument has no remaining mathematical
+obligation; two redundant tactics were removed before the final leaf compilation. The normalized
+channel retains the exact scalar `L*A*L^(i*t)` of each corrected mode. Squared norms and the
+actual prime count prove the lower bound using one selected block for each coefficient vector.
+The main statement preserves an arbitrary finite prefix and works for every sufficiently small
+positive smoothing scale at every sufficiently large cutoff. Both final leaves compile without
+warnings. The six exported theorem axiom audits report only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+**Next probability obligation after C18.** The selected conditioning threshold is proportional
+to `N`: all its large-prime channel cofactors are bounded by the fixed integer `2K`. Thus the
+conditional covariance depends on finitely many prime phases even as `N` grows. A uniform
+phase-cell argument must quantify that finite dependence and preserve the covariance margin;
+pointwise existence alone does not imply a fixed positive phase-cell measure. Common height
+rotates those finite phases, so the eventual probability statement must handle periodicity and
+measure uniformly. This does not address the separate conditional-centre/target cost.
+
+**Common-height sign audit.** In F34 the cofactor phase shift is `+tau*log(p)/(2*pi)`.
+Consequently C18's randomized phase point is obtained by applying the inverse shift to one fixed
+constructed prefix. For the literal unrandomized carrier (`omega=0`), that same shifted prefix
+is the ordinary fixed-prime logarithmic flow. A future covariance phase-cell condition can
+therefore target a fixed finite torus cell in the shifted coordinates; it need not prescribe a
+moving target there. This concerns only the bounded cofactors. It does not supply independence,
+a local target law, or orbit transfer for the growing family of large-prime channels.
+
+
+**C18 actual-channel closure.** `SmoothAFEReflectedConditionalEnergy.lean` proves the exact
+node-conductor transfer and a uniform positive conductor lower envelope on
+`[5*N/4, 7*N/4]`. Its main theorem constructs the reflected-primal conditional energy bound
+`H/log N * norm(u)^2` for every requested `H>0`, eventually in `N`, for every node direction
+and every sufficiently small positive smoothing scale. The phase is explicitly the inverse
+common-height rotation of the fixed constructed prefix. Finite-prefix agreement belongs to
+that unrotated prefix. No probability, conditional-centre, target or orbit assertion is hidden
+in the statement.
+
+**C19 — finite character cells, paper mechanism.** Define a cell by simultaneous strict
+character inequalities `norm(X_n(eta)-X_n(omega))<epsilon` for `1<=n<=B`, where `B` is fixed.
+Each character is continuous in finitely many prime coordinates and invariant under integer
+translations of those coordinates. Reduce the centre coordinatewise modulo one. Every open
+neighborhood of a point of the closed unit cube has positive Steinhaus product measure: extract
+a finite open rectangle and intersect each factor with `[0,1]`; all finitely many factors have
+positive interval length, including boundary points. This proves positive cell measure without
+assuming the chosen real phase prescription already lies in the unit cube.
+
+For covariance stability, first retain half the robust-row tolerance in C17.9. Its relevant
+cofactor lengths are bounded. The cutoff satisfies `norm(W(x))<=1` for positive arguments;
+the floor factor stays on `[1/2,1]`, hence has a fixed bound at each fixed node. Finite sums then
+bound each corrected-row perturbation by a fixed constant times the maximum character error.
+A sufficiently small fixed character cell preserves the mode margin simultaneously for all
+cutoffs and allowed smoothing scales. Only after this uniform statement is proved may its
+positive cell measure be applied. Common-height measure invariance and same-event centre/target
+control remain further obligations.
+
+
+**C19.1 — finite character cell positivity, LEAN PROVED.**
+`SteinhausFiniteCharacterCells.lean` gives integer-period invariance and positive measure around
+arbitrary real centres. The final leaf passes without warnings. The argument handles unit-cube
+boundary points through genuine positive-length interval intersections.
+
+**C19.2 — uniform cell stability, LEAN PROVED.**
+`SmoothAFECofactorCellStability.lean` bounds each finite cofactor sum's perturbation by its
+finite absolute coefficient sum times the maximum character error. Norm of the Gaussian cutoff
+is at most one; norm of each floor power is at most two. One minimum tolerance over all modes
+preserves the corrected rows simultaneously for every admissible `N,p` and positive smoothing
+scale. The final leaf passes without warnings. The energy assembly is being strengthened to
+quantify over every phase in this one cell; the original point theorem remains a corollary.
+
+**C19.3 — common-height transport, paper proof.** Coordinatewise translation by arbitrary real
+`a_p` is represented on `[0,1]` by the existing interval rotation with `fract(a_p)`, using identity
+when that fraction is zero. Each coordinate map preserves uniform measure, so their countable
+product preserves Steinhaus measure. The representative differs from the raw phase translation
+by integer coordinates. Character periodicity removes that difference; multiplicativity under
+phase addition shows character differences acquire only a common unit factor. Consequently
+finite-character cells have exactly equal mass at every translated centre, in particular under
+inverse common-height logarithmic rotation. This proves the required uniform cell mass once
+formalised; it leaves the conditional-centre and target law untouched.
+
+**Centre-cost quantifier audit.** A fixed positive covariance-cell mass may depend arbitrarily
+badly on the requested covariance constant `H`. Applying an unconditional second-moment bound
+and Markov after conditioning on that cell only gives a centre threshold involving the inverse
+cell mass. It does not prove that the inverse-covariance target cost divided by `log N` tends
+to zero as `H` grows. A slow diagonal in `H` cannot repair that circular comparison by itself.
+The next centre argument must work on the same phase event and control the ratio of target
+cost to the available covariance, or directly produce a local target lower law. Keep this
+obligation explicit when strengthening the phase-point theorem to a positive-measure theorem.
+
+
+**C19.4 — positive-mass actual covariance event, LEAN PROVED.**
+`SmoothAFEReflectedCovarianceEvent.lean` constructs one positive-radius finite-character cell
+whose centre is inverse-rotated with common height. Its exact Steinhaus mass is strictly
+positive and independent of height. Eventually in `N`, its entire prefix lies below
+`Y=N/(2K)`, and every phase in the cell gives the actual reflected-primal lower bound
+`H/log N * norm(u)^2` throughout `[5*N/4,7*N/4]`, in every direction and for every common
+positive smoothing scale below one threshold. The cell reads only primes below its prefix
+bound. The centre before rotation preserves any supplied finite phase prescription.
+
+The normalized and conductor-scaled energy proofs were strengthened to retain the cell; their
+old pointwise statements are corollaries. No duplicate arithmetic-count or conductor argument
+was introduced. All six affected final leaves pass without warnings, including the strengthened energy
+modules. The combined twenty-theorem axiom audit reports only `propext`, `Classical.choice`,
+and `Quot.sound`. This closes the fixed positive-measure covariance gate, not the independent
+recurrence producer as a whole.
+
+**Next exact mathematical obligation — C20, same-event target cost.** Search and derive the
+conditional background law on the finite-character event, preserving the literal reflected
+coefficients and the base direct-edge constraints. The first useful algebraic computation is
+integration with a finite prime prefix frozen: cross terms survive precisely when the two
+integer factorisations agree outside that prefix. Grouping by those exterior frequencies gives
+an exact positive sum of squared grouped coefficients. This is a source formula to audit the
+centre cost, not an assumed bound. Any proposed bound must keep its dependence on the frozen
+prefix and covariance budget visible. The ordinary unconditional Parseval identity and a
+cell-mass division are insufficient for the required ratio, as noted above.
+
+
+**C18–C19 final integration checkpoint.** Six final leaf compilations pass; the initial six-export
+C18 audit and final twenty-export C19 audit use only standard axioms. All new leaves are wired,
+the search index is refreshed, and targeted whitespace checks pass. Global formal lint exits 1
+on fourteen unrelated unreachable modules; no issue is reported in these BAG leaves. No full
+build, numerical experiment, new analytic premise, commit or push was used. The RH goal remains
+active. The sole research focus remains the independent recurrence producer, with C20's same-event
+conditional centre/target law next and deterministic orbit transfer still open.
+
+**C20.1 — frozen-prefix covariance kernel, dependency-closed paper proof.** Let `F_S(omega,eta)`
+use the prescribed coordinates `omega_p` on finite `S` and the random coordinates `eta_p`
+outside it. For every `n,m`, expand `X_n * conj(X_m)` as the finite product of integer-frequency
+characters on the union of their prime factors. Integrate the free coordinates: each contributes
+one exactly at zero frequency and zero otherwise, while coordinates in `S` remain fixed. Thus
+
+`E_eta[X_n(F_S) conj(X_m(F_S))] = X_n(F_S(omega,0)) conj(X_m(F_S(omega,0)))`
+
+when `v_p(n)=v_p(m)` for every `p` outside `S`, and equals zero otherwise. All factors have norm
+one and are continuous, so the finite product integral and finite-sum expansions are integrable.
+Consequently the exact second moment of any finite complex-weighted carrier retains precisely
+those pairs. Regrouping by the exterior factorisation gives positive squares; neither this
+identity nor positivity alone provides a bound uniform in `S` or the C19 covariance budget.

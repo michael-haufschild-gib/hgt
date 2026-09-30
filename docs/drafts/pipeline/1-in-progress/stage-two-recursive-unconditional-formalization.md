@@ -69,7 +69,7 @@ Historical audit rows remain after cards move. Matching Stage 3 basenames requir
 | `theta/theta-cdf-crossfrequency-rvm-capacity.md` | exact audit pending |
 | `theta/theta-cdf-no-finite-range-symmetrizer.md` | exact audit pending |
 | `theta/theta-chronological-boundary-positive-transfer.md` | exact audit pending |
-| `theta/theta-compact-inverse-zero-jordan-history.md` | actual Jordan/history/quotient/Riesz/Fourier/prime-deletion results, exact interweight law (5), weighted properness and q=0 endpoint (7), real/off-real tempered boundary, and canonically normalized all-order quotient decay certified; full tempered annihilator/multiplicity classification (8) open |
+| `theta/theta-compact-inverse-zero-jordan-history.md` | actual Jordan/history/quotient/Riesz/Fourier/prime-deletion results, exact interweight law (5), weighted properness and q=0 endpoint (7), real/off-real tempered boundary, canonically normalized all-order quotient decay, and actual finite-Dirac-jet Xi kernel certified; full tempered annihilator/multiplicity classification (8) open |
 | `theta/theta-deletion-cutoff-commutator-collapse.md` | exact audit pending |
 | `theta/theta-prime-deletion-graded-terminal-admission.md` | certified; moved to Stage 3 |
 | `theta/theta-prime-deletion-moving-cusp-dual-source.md` | exact audit pending |
@@ -1373,11 +1373,11 @@ recursive objective continues with exact tempered clause (8).
 - [x] Construct the actual real Xi multiplier from its literal Schwartz
   Fourier representative, and prove all Dirac jets strictly below the
   actual analytic multiplicity lie in its kernel.
-- [ ] Prove sharp first excluded jet using the actual nonzero Xi jet and
+- [x] Prove sharp first excluded jet using the actual nonzero Xi jet and
   a literal positive theta Schwartz test; audit finite-jet classification.
 - [ ] Transport these actual spectral jets to the unscaled source with
   explicit Fourier normalization; no silent replacement by scaled theta.
-- [ ] Run exact native/direct/export/axiom/API/catalogue/lint gates,
+- [x] Run exact native/direct/export/axiom/API/catalogue/lint gates,
   persist exact partial coverage and retain full (8) as open until the
   actual analytic translation curve and full local/global converse pass.
 
@@ -1398,3 +1398,105 @@ jet below actual multiplicity is killed by the literal Xi multiplier,
 and its first excluded jet is nonzero, witnessed by the actual positive
 theta Schwartz source. Finite-jet independence/classification and final
 project gates remain open. No full-clause certificate is claimed.
+
+### Newly added recursive audit rows, 2026-09-30
+
+All three newly discovered cards were read in full. Their paper claims
+enter the exact audit queue; external partial plans are not certificates.
+
+| Stage 2 path | Audit status |
+|---|---|
+| `11-rh-zero-divisor-geometry/weil-cone-common-ratio-unions-bohr-nonvanishing.md` | exact audit pending; both Bohr-restricted zeta nonvanishing and finite common-ratio union rigidity require unconditional certificates |
+| `11-rh-zero-divisor-geometry/weil-cone-log-summable-deviation-rigidity.md` | exact audit pending; log-summable positive-definite rigidity and every stated Weil-cone corollary require unconditional certificates |
+| `li-clock-infinite-partition-quarter-window.md` | exact audit pending; both explicit weighted complex bounds, vanishing error, all qualified real limits and uniform negative gap require complete certificates |
+
+### Exact finite-Dirac-jet Xi kernel certificate
+
+`ThetaTemperedMultiplicityJets.lean` supplies 38 public exports in 457
+lines. The multiplier is the literal real Xi function, with its actual
+Schwartz Fourier representative and proved temperate growth. Its order
+is the finite actual analytic order `m(t)` of entire Xi at `(t:ℂ)`.
+Actual tempered derivatives of Dirac have pairing
+`δ_t^(r)(φ)=(-1)^r φ^(r)(t)`. Real and complex Xi derivatives agree.
+
+At every real point, each jet of order below `m(t)` is killed; the first
+excluded jet survives. Explicit polynomial-times-positive-theta Schwartz
+probes prove independence of every finite jet prefix. A triangular
+probe argument proves that a finite jet sum is killed exactly when all
+coefficients of order at least `m(t)` vanish. Consequently
+`ker(Xi·) ∩ span{δ_t^(r): r∈ℕ} = span{δ_t^(r): r<m(t)}`,
+and this kernel has dimension exactly `m(t)`. This is the full exact
+classification inside the algebraic finite-jet span, with no assumed
+vanishing interface or multiplier-admission premise.
+
+The named native build passes (5.2 seconds, 9,108 jobs). Final literal
+`lake env lean GaloisForLFunctions/RHTower/ThetaTemperedMultiplicityJets.lean`
+passes with an empty log. Every public export has an exact scratch
+witness and a matching axiom report: all 38 reports contain exactly
+`propext`, `Classical.choice`, `Quot.sound`. The fresh native `.ilean`
+references supply 111 successful pinned API witnesses (103 Mathlib,
+8 project dependencies), with an empty final log. All 38 expected
+export/module catalogue pairs appear, with no extra pair; the umbrella
+import appears once. Source whitespace passes. The final index refresh
+passes (0 changed, 0 removed).
+
+Authoritative global lint exits 1: 171 large-file warnings and eleven
+unrelated unreachable modules; no active proof-debt finding and no
+diagnostic in this owned leaf. The unreachable modules are
+`CCMApertureChainProfile`, `CCMApertureTranslationChains`,
+`CCMExponentialRampPrimeMoment`, `CCMExponentialRampSourceDissipation`,
+`CCMExponentialRampTerminalEntropy`, `CCMRetainedChainKernelLower`,
+`MoebiusMollifiedCriticalMoment`, `MoebiusMollifiedErrorThreeLines`,
+`ThetaMovingShellFirstOrderPhase`, `WeilLogSummableRigidity`, and
+`ZetaZeroDensityPowerSaving`. Global lint is not claimed green.
+
+The fresh recursive census has 102 Stage 2 Markdown files: nine support
+files and 93 theorem cards, zero unqueued paths. Historical Stage 3
+matches are 29 unique paths: five owned whole-card certificates and
+24 external promotions still requiring complete exact audits. There
+are no ambiguous basename matches. No whole card is promoted here.
+
+Full clause (8) remains open: explicit transport to the unscaled physical
+source, its genuine Schwartz-valued holomorphic translation curve, every
+point-supported distribution's finite-jet representation, and the full
+local/global tempered converse are not consequences claimed by this
+finite-span certificate. The history card stays Stage 2 and the recursive
+objective continues.
+
+All 23 explicitly owned finite-jet scratch files were removed after every
+owned process exited; their namespace is absent. Certificate evidence was
+persisted before deletion. Scoped `git diff --check` passes. Work continues
+with the documented physical source-jet transport search.
+
+### Exact unscaled physical source-jet transport work plan
+
+- [x] Audit all 20 candidate statements, all 20 source arguments and
+  available methods, zero proof ideas and the proposed ingredient set.
+  Deep search is nonpartial, inventory 63,307/63,307 complete, errors
+  empty; compiler candidates are source-only/not-checked, coverage
+  snapshot older than current generation, semantic coverage unmeasured,
+  background refresh incomplete. The actual unscaled source derivative
+  integral and scaled Schwartz Fourier identity apply. The proposed
+  arithmetic log-dilation ingredient does not apply to Schwartz dilation.
+- [ ] Pin Fourier, linear-equivalence, precomposition and actual source
+  derivative APIs in this toolchain before writing the candidate proof.
+- [ ] Construct the actual invertible Schwartz map
+  `F_phys φ(t)=F_mathlib φ(-t/(2π))` and its continuous tempered pullback.
+- [ ] Represent every ordinary unscaled theta derivative as an actual
+  Schwartz function, and prove its physical transform is
+  `(-it)^n XiC(t)` with every normalization explicit.
+- [ ] Transport every lower real Dirac jet to a nonzero independent
+  source annihilator and prove the first excluded jet survives on the
+  actual unscaled source. Retain full supported-distribution converse
+  and Schwartz-valued analytic-curve construction as separate obligations.
+- [ ] Run exact native/direct/export/axiom/API/catalogue/index/lint
+  gates; persist complete partial coverage and clean owned scratch.
+
+Paper mechanism: pull back `δ_t^(r)` through the literal physical
+Fourier map. Its value is `(-1)^r` times the `r`th real derivative of
+the transformed Schwartz test. The actual unscaled source derivative
+transforms to a polynomial times actual Xi. Leibniz then kills every
+order below the actual Xi multiplicity. At the first excluded order,
+the original unscaled source exposes the nonzero terminal Xi jet.
+Invertibility transports finite-prefix independence. These positive
+source statements do not supply the full annihilator identity (8).
