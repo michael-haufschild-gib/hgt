@@ -89,7 +89,7 @@ proves it loses positivity and endpoint charge. Thus (2)–(3)
 reduce the desired phase law to a concrete two-grade boundary
 comparison, but do not prove that comparison. The graded
 admission theorem in
-[terminal admission](../../2-fully-proven/theta/theta-prime-deletion-graded-terminal-admission.md)
+[terminal admission](theta-prime-deletion-graded-terminal-admission.md)
 shows the `p` and `p²` sources live at different weighted
 thresholds, `2/p²` and `2/p⁴`; a source-faithful comparison must
 cross those grades without discarding the singular cusp term.

@@ -8,7 +8,7 @@
 
 ## Goal
 
-Contribute a significant Lean theorem toward proof or falsification of RH. A receiver reformulation does not discharge its source premise. Public-source searches can establish absence from inspected sources, not absence from all public literature or inaccessible training data.
+Contribute significant new unconditional Lean knowledge toward RH; continue conjecture/proof/failure loops until a proof or falsification of RH is fully formalized without premises. A receiver reformulation does not discharge its source premise. Public-source searches can establish absence from inspected sources, not absence from all public literature or inaccessible training data.
 
 ## Plan
 
@@ -112,3 +112,54 @@ Exact survivor theorem to formalize: existence of an unconditional wall coordina
 - 2026-09-29 — C3 scratch axiom audit passed: both `not_woldNatResidualLogCriticalEnergy` and `log_current_radial_zero` depend only on `propext`, `Classical.choice`, `Quot.sound`. Required final exact leaf audit running. C4b generic scratch prepared: finite real Abel identity, real-power increment bound, discounted boundary bound, and shifted power-series helpers. No C4b theorem claimed verified yet.
 
 - 2026-09-29 — C3 required final audit `lake env lean GaloisForLFunctions/RHTower/XiHeatCassiniWoldNaturalLogCriticalEnergy.lean` exit 0, no output/warnings. C2 and C3 both built, wired, directly checked and axiom-audited. Neither goal novelty nor mandatory positive no-go closure is claimed complete. C4b generic prefix scratch first Lean check running; actual quantified prefix-loading capstone not yet created.
+
+- 2026-09-29 — Positive-survivor strength audit: fixed coefficient `1/8` is safe but not strongest paper-closed consequence. The refined discounted bound `4c/x+2c+C(x+1)` forces `m²<=4c|s0|²`, so every coefficient strictly below `m²/(4|s0|²)` must occur infinitely often. Formalization target strengthened to that exact quantified statement; `1/8` becomes a useful corollary. Do not close the no-go at the weaker fixed-coefficient result.
+- 2026-09-29 — Refined bound adds no new external premise: first establish discounted summability with coarse finite-prefix bound; then use vanishing `(c log N+C)N^(-x)` and finite Abel sums to recover the sharper `4c` estimate. Bound `log N N^(-x) <= (2/x)N^(-x/2)` supplies the boundary limit with the existing negative-power tail law, without numerical computation.
+
+- 2026-09-29 — User extended goal: multiple significant contributions, with completion only at fully formalized unconditional proof or falsification of RH. C2/C3 are groundwork, not goal completion. Continue C4 source-loading survivor, then TT open source laws.
+
+- 2026-09-29 — Generic C4 charge scratch `lake env lean -j1 /tmp/hgt-tt-prefix-energy-charge.lean` exit 0, no errors or warnings. Verified finite Abel identity; increment bound; coarse discounted summability; vanishing logarithmic boundary; refined discounted bound `4c/x+2c+C(x+1)`; local current holomorphy; and scaled norm-square bound. Actual source-loading bridge in `/tmp/hgt-tt-prefix-loading-actual.lean` under first Lean check. No RH claim and no goal-complete status.
+
+- 2026-09-29 — Named incremental build of `XiHeatCassiniWoldNaturalCriticalPrefixLoading` passed, including its new generic bounds dependency. Scratch axiom audit of the unconditional capstone, scaled bound, and discounted bound reports only `propext`, `Classical.choice`, `Quot.sound`. Required final exact generic-file audit passed; actual-source file audit running. Global formal lint still fails on unrelated unreachable modules; neither new module appears among errors.
+
+- 2026-09-29 — Required final actual-source audit `lake env lean GaloisForLFunctions/RHTower/XiHeatCassiniWoldNaturalCriticalPrefixLoading.lean` exit 0, no output or warnings. C4b fully built, wired, directly checked, and axiom-audited. Sharp C4c refinement underway; do not close the no-go card at the weaker coefficient.
+
+### C4c — sharp single-pole loading
+
+Frozen refinement of C4: replace the coarse logarithmic bound by harmonic-prefix comparison. If `E_N <= c log N+C`, then `E_N <= c H_N+C`. Nonnegative decreasing discount weights and finite Abel summation yield directly
+
+`sum_(n<=N) e_n n^(-x) <= c sum_(n<=N) n^(-1-x)+C`.
+
+Here the constant contribution telescopes exactly, and the harmonic comparison converts back to its reciprocal increments. Thus `D(x) <= c(1+1/x)+C`, instead of `4c/x+O(1)`. Equal exponent splitting now gives
+
+`|x A(s0+x)|^2 <= |s0+x|^2 [c+(c+C)x](1+x)`.
+
+The forced residue proves `m^2 <= c|s0|^2`, so every `0<c<m^2/|s0|^2` is exceeded infinitely often by `E_N/log N`. This is the original C4 coefficient, now paper-closed by finite harmonic comparison; no logarithmic-tail asymptotic is required. Formalize before retiring the failed critical-energy producer. Stronger real/reflected-frequency or joint multi-pole bounds remain separate conjectures.
+
+### C9 — viable strict-subhalf energy criterion
+
+Candidate, not yet paper-closed: `RH iff (forall 0<t<1/2, WoldNatResidualSquareEnergy t)`. Existing cofinal-three-quarter producer is dead. Direct weighted Abel holomorphy appears to remove the quarter-exponent loss in the corpus's square-energy-to-pointwise-spectrum transfer. This is a criterion, not an unconditional source estimate or RH proof. Corpus and public novelty audit required before promotion; develop after the sharp positive survivor's audit.
+
+- 2026-09-29 — C4c generic scratch accepted finite harmonic majorization and sharp discounted bound except one rational-to-real harmonic cast normalization; corrected using `Rat.cast_add` and `Rat.cast_one`. Serena symbol lookup rejects the new untracked Lean files as ignored paths; normal text editing is the fallback, after source reads. Dependency audit: generic Hilbert lemmas currently import the actual-source forced-residue chain unnecessarily. Separating the existing generic body into a small leaf to reduce subsequent proof-check cost; no theorem statement or axiom changes in that extraction.
+- 2026-09-29 — C4c and C9 deep corpus searches both have complete file inventories but partial semantic retrieval at deadline; all returned candidate/source statements inspected. No sharp harmonic prefix charge or cofinal-strict-subhalf energy criterion among hits. Compiler freshness mostly pending/stale, so applicability is checked independently. Public Mertens mean-square overlap remains unresolved; no novelty certificate claimed.
+
+## Paper proof for C9
+
+`[PROVED HERE — FORMALIZATION PENDING]` Assume every energy `E(t)` for `0<t<1/2` is finite. For any `q<-1/2`, choose `0<t<1/2` with `q<t-1`. Normalize the actual shifted row by `a_n=R_(n+1)(n+1)^(t-1/2)`. Its squared sum is exactly the shifted `E(t)`. The squared dual row with exponent `q-t+1/2` is summable because that exponent is below `-1/2`. Cauchy–Schwarz gives `sum |R_(n+1)|(n+1)^q<infinity`. Thus every interior ball of `Re s>-1/2` has a common absolutely summable majorant for the unit-step Abel atoms, and their sum is holomorphic there.
+
+Add the holonomy constant to this sum to obtain `F`. The exact finite natural partial-sum identity and the mesh telescope identify `F` with the literal Abel germ on `Re s>0`. The corpus's cleared continuation identity therefore identifies `F` with the canonical singular carrier wherever zeta is nonzero in the positive-imaginary sector.
+
+If RH fails, the corpus supplies a zero `rho` with `1/2<Re rho<1`. It is nonreal by the established real-strip nonvanishing theorem; conjugation chooses positive imaginary part. At the strict-interior point `s0=rho-1`, the canonical carrier has punctured residue `-m`, `m>=1`. Zeta's isolated-zero theorem and the cleared identity identify the canonical carrier with `F` along a sufficiently small positive real displacement. But `F` is holomorphic at that interior point, so its scaled radial limit is zero, contradiction.
+
+Conversely, RH gives the corpus's natural pointwise power spectrum. For `0<t<1/2`, choose `t<c<1/2` and obtain an eventual `|R_N|<=B N^(-c)` bound. Then the energy terms are bounded by `B^2 N^(2t-1-2c)`, whose exponent is below `-1`; finite initial terms do not affect summability. Hence every strict-subhalf energy is finite.
+
+No RH proof or unconditional energy producer has been obtained: the closed equivalence identifies the corrected source target. External novelty remains an independent unresolved gate.
+
+- 2026-09-29 — Generic Hilbert extraction checked independently with only complex-power tail, real square root and Cauchy-dominated holomorphy imports: `lake env lean -j1 /tmp/hgt-tt-abel-hilbert.lean` exit 0. Promoted the small helper leaf, wired it into RHTower, and made the endpoint leaf import it. Named builds and final audits after this dependency change remain required.
+- 2026-09-29 — Sharp prefix light scratch checks all inequalities except harmonic rational/real cast normalization. Corrected in two stages: cast rational harmonic sums to real first, then expand natural successor casts. No heartbeat adjustment. Once accepted, remove superseded coarse energy-majorant and boundary-limit helpers; exhaustive source references show they have no external callers.
+- 2026-09-29 — Public novelty audit broadened to Bhattacharya–Martin–Simpson, "Correlations of error terms for weighted prime counting functions" (2025), https://arxiv.org/html/2507.13504v1. Their normalized reciprocal-prime errors use the same shifted zero denominator `rho-1`; persistent bounded differences characterize RH, while joint distributions require RH and LI. This is relevant overlap in mechanism and source coordinates, not evidence of global novelty for our unconditional prefix lower law or energy criterion. Numerical sections not used.
+
+- 2026-09-29 — Sharp light scratch passed (exit 0): finite harmonic order comparison, discounted summability, sharp `c(1+1/x)+C` bound, local holomorphy and scaled `c` charge. Diagnostic tracing located a harmless ring-normalization hint in the increment telescope; replaced that tactic with `ring_nf` and removed traces before promotion. Generic bounds leaf now imports the small Hilbert leaf, deletes superseded coarse majorant/boundary machinery, and exposes the sharp bound. Actual capstone strengthened in place to every `0<c<m^2/|s0|^2`; explicit source-residue import added. Named incremental sharp build running. Previously checked versions are now stale until these revised files' builds and final audits pass.
+
+- 2026-09-29 — Sharp named build passed: new Hilbert leaf 24s, sharp prefix bounds 77s, actual source-loading capstone 206s. No own warnings. Rebuilding the endpoint/log-energy target incrementally after the Hilbert extraction; scratch axiom audit and required final exact audits of revised modules remain pending.
+- 2026-09-29 — New developer delegation mode permits proactive agents. Delegated disjoint C9 implementation, read-only public novelty audit, and read-only TT source-candidate investigation; each has explicit file scopes, one objective, constraints, and its own log/report. Root continues sharp-source audits; no shared write scope or duplicate owned build process.

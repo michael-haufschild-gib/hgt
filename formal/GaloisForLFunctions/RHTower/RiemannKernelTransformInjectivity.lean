@@ -1,14 +1,14 @@
 import GaloisForLFunctions.RHTower.WeilFullConeRiemannKernelRigidity
-import GaloisForLFunctions.HTGeometry.HamburgerFunctionalEquation
+import GaloisForLFunctions.HTGeometry.HamburgerSquareSummable
 import Mathlib.NumberTheory.TsumDivisorsAntidiagonal
 
 /-!
 # The Riemann-kernel transform of a weight system is injective
 
-For real weights `w` on `n ≥ 1` with `Σ |w(n)| n^{−σ} < ∞` for every `σ > 1`, put
+For real weights `w` on `n ≥ 1` with `Σ |w(n)| n^{−2} < ∞`, put
 `G_w(y) = Σ_n w(n) n^{−1/2} (Φ(y − log n) + Φ(y + log n))`, with `Φ` Riemann's kernel.
 
-**Theorem** (`eq_zero_of_riemannKernelTransform_eq_zero`). If `G_w ≡ 0`, then `w = 0`.
+**Theorem** (`eq_zero_of_riemannKernelTransform_eq_zero_of_sq`). If `G_w ≡ 0`, then `w = 0`.
 
 The kernel is `Φ = Ψ'' − Ψ/4` with `Ψ(u) = Σ_m e^{u/2} e^{−πm²e^{2u}}`. With
 `a = 1 ⋆ w` (`oneConvWeight`) and `S(y) = Σ_k a(k) e^{y/2} e^{−πk²e^{2y}} = e^{y/2} θ_a(e^{2y})`, the
@@ -16,7 +16,7 @@ scaling `cuspTerm_add_log` rearranges `Σ_n w(n) n^{−1/2} Φ(y + log n)` into 
 (`tsum_shift_cuspSeries_eq`). By evenness of `Φ`, `G_w(y) = F''(y) − F(y)/4` with
 `F(y) = S(y) + S(−y)`. So `F = A(e^{y/2} + e^{−y/2})`, which is the odd theta relation
 `θ_a(x) = −x^{−1/2} θ_a(1/x) + A + A x^{−1/2}`. Hamburger's theorem in its odd form
-(`coeff_eq_zero_of_odd_coeffTheta_relation`) forces `a = 0`, and Möbius inversion gives `w = 0`.
+(`coeff_eq_zero_of_odd_coeffTheta_relation_of_sq`) forces `a = 0`, and Möbius inversion gives `w = 0`.
 -/
 
 open Complex MeasureTheory Filter Topology Set Polynomial
@@ -364,6 +364,31 @@ theorem abs_oneConvWeight_le {w : ℕ → ℝ} {K : ℝ} {p : ℕ}
         gcongr; exact_mod_cast Nat.card_divisors_le_self _
     _ = _ := by rw [pow_succ]; ring
 
+/-- `Σ |w(n)| n^{−2} < ∞` passes to `1 ⋆ w`. -/
+theorem summable_oneConvWeight_div_rpow_two {w : ℕ → ℝ}
+    (hw2 : Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ (2 : ℝ)) :
+    Summable fun n : ℕ => |oneConvWeight w (n + 1)| / ((n : ℝ) + 1) ^ (2 : ℝ) := by
+  set σ : ℝ := 2 with hσdef
+  have hσ : 1 < σ := by norm_num [hσdef]
+  have hone : Summable fun m : ℕ => 1 / ((m : ℝ) + 1) ^ σ := by
+    have := (summable_nat_add_iff 1).mpr (Real.summable_one_div_nat_rpow.mpr hσ)
+    simpa using this
+  have hpair : Summable fun q : ℕ × ℕ =>
+      |w (q.1 + 1)| * (1 / (((q.1 + 1) * (q.2 + 1) : ℕ) : ℝ) ^ σ) := by
+    have h := hw2.mul_of_nonneg hone (fun _ => by positivity) (fun _ => by positivity)
+    refine h.congr fun q => ?_
+    rw [show (((q.1 + 1) * (q.2 + 1) : ℕ) : ℝ) = ((q.1 : ℝ) + 1) * ((q.2 : ℝ) + 1) by push_cast; ring,
+      Real.mul_rpow (by positivity) (by positivity)]
+    field_simp
+  have hdiv := (hasSum_divisorWeight_mul (w := fun n => |w n|)
+    (F := fun k => 1 / ((k : ℕ) : ℝ) ^ σ) hpair).summable
+  refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun n => ?_) hdiv
+  simp only [oneConvWeight]
+  have habs : |∑ d ∈ (n + 1).divisors, w d| ≤ ∑ d ∈ (n + 1).divisors, |w d| :=
+    Finset.abs_sum_le_sum_abs _ _
+  rw [show ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 by push_cast; ring, div_eq_mul_one_div]
+  exact mul_le_mul_of_nonneg_right habs (by positivity)
+
 /-! ## The theorem -/
 
 theorem cuspSeries_riemannCuspPoly_eq (u : ℝ) : cuspSeries riemannCuspPoly u = riemannKernelReal u := by
@@ -381,15 +406,15 @@ theorem weightedCuspSeries_one_eq (a : ℕ → ℝ) (y : ℝ) :
   push_cast
   ring_nf
 
-/-- **Injectivity of the Riemann-kernel transform.** If
+/-- **Injectivity of the Riemann-kernel transform.** If `Σ |w(n)| n^{−2} < ∞` and
 `Σ_n w(n) n^{−1/2} (Φ(y − log n) + Φ(y + log n)) = 0` for every `y`, then `w = 0`. -/
-theorem eq_zero_of_riemannKernelTransform_eq_zero {w : ℕ → ℝ}
-    (hsum : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ σ)
+theorem eq_zero_of_riemannKernelTransform_eq_zero_of_sq {w : ℕ → ℝ}
+    (hw2 : Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ (2 : ℝ))
     (hG : ∀ y : ℝ, ∑' n : ℕ, w (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) *
       (riemannKernelReal (y - Real.log ((n + 1 : ℕ) : ℝ)) +
         riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ))) = 0) :
     ∀ n : ℕ, w (n + 1) = 0 := by
-  obtain ⟨K, hw⟩ := exists_abs_le_of_summable_div_sq (hsum 2 (by norm_num))
+  obtain ⟨K, hw⟩ := exists_abs_le_of_summable_div_sq hw2
   set a := oneConvWeight w with hadef
   have ha := abs_oneConvWeight_le hw
   -- the kernel sum as a weighted cusp series
@@ -491,30 +516,12 @@ theorem eq_zero_of_riemannKernelTransform_eq_zero {w : ℕ → ℝ}
     rw [hθ x, hθ x⁻¹, hpow, hreal, hAB']
     push_cast
     ring
-  have ha'sum : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => ‖a' (n + 1)‖ / ((n : ℝ) + 1) ^ σ := by
-    intro σ hσ
-    have hone : Summable fun m : ℕ => 1 / ((m : ℝ) + 1) ^ σ := by
-      have := (summable_nat_add_iff 1).mpr (Real.summable_one_div_nat_rpow.mpr hσ)
-      simpa using this
-    have hpair : Summable fun q : ℕ × ℕ =>
-        |w (q.1 + 1)| * (1 / (((q.1 + 1) * (q.2 + 1) : ℕ) : ℝ) ^ σ) := by
-      have h := (hsum σ hσ).mul_of_nonneg hone (fun _ => by positivity) (fun _ => by positivity)
-      refine h.congr fun q => ?_
-      rw [show (((q.1 + 1) * (q.2 + 1) : ℕ) : ℝ) = ((q.1 : ℝ) + 1) * ((q.2 : ℝ) + 1) by push_cast; ring,
-        Real.mul_rpow (by positivity) (by positivity)]
-      field_simp
-    have hdiv := (hasSum_divisorWeight_mul (w := fun n => |w n|)
-      (F := fun k => 1 / ((k : ℕ) : ℝ) ^ σ) hpair).summable
-    refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun n => ?_) hdiv
-    simp only [ha', Complex.norm_real, Real.norm_eq_abs, oneConvWeight]
-    have habs : |∑ d ∈ (n + 1).divisors, w d| ≤ ∑ d ∈ (n + 1).divisors, |w d| :=
-      Finset.abs_sum_le_sum_abs _ _
-    have hpos : (0 : ℝ) < ((n : ℝ) + 1) ^ σ := by positivity
-    rw [show ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 by push_cast; ring, div_eq_mul_one_div]
-    exact mul_le_mul_of_nonneg_right habs (by positivity)
+  have ha'sum : Summable fun n : ℕ => ‖a' (n + 1)‖ / ((n : ℝ) + 1) ^ (2 : ℝ) := by
+    refine (summable_oneConvWeight_div_rpow_two hw2).congr fun n => ?_
+    simp only [ha', Complex.norm_real, Real.norm_eq_abs, hadef]
   have hzero : ∀ k : ℕ, a (k + 1) = 0 := fun k => by
     have h : (a (k + 1) : ℂ) = 0 :=
-      GaloisForLFunctions.HTGeometry.coeff_eq_zero_of_odd_coeffTheta_relation ha'sum htheta k
+      GaloisForLFunctions.HTGeometry.coeff_eq_zero_of_odd_coeffTheta_relation_of_sq ha'sum htheta k
     exact_mod_cast h
   -- Möbius inversion
   intro n
@@ -530,6 +537,15 @@ theorem eq_zero_of_riemannKernelTransform_eq_zero {w : ℕ → ℝ}
       obtain ⟨e, rfl⟩ : ∃ e, d = e + 1 := ⟨d - 1, by omega⟩
       exact ih e (by omega)
     linarith
+
+/-- **Injectivity of the Riemann-kernel transform** under absolute convergence on `σ > 1`. -/
+theorem eq_zero_of_riemannKernelTransform_eq_zero {w : ℕ → ℝ}
+    (hsum : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ σ)
+    (hG : ∀ y : ℝ, ∑' n : ℕ, w (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) *
+      (riemannKernelReal (y - Real.log ((n + 1 : ℕ) : ℝ)) +
+        riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ))) = 0) :
+    ∀ n : ℕ, w (n + 1) = 0 :=
+  eq_zero_of_riemannKernelTransform_eq_zero_of_sq (hsum 2 (by norm_num)) hG
 
 end
 

@@ -62,7 +62,8 @@ theorem XiC_jet_eq_fullHalfFrequencyJet_add_conj (k : ℕ) (b : ℝ) :
       apply integral_congr_ae
       exact Eventually.of_forall hpoint
     _ = (∫ x : ℝ in Ioi 0, p x) + ∫ x : ℝ in Ioi 0, conj (p x) :=
-      integral_add hp.integrableOn hp.conj.integrableOn
+      integral_add hp.integrableOn
+        (Complex.conjCLE.toContinuousLinearMap.integrable_comp hp).integrableOn
     _ = _ := by rw [integral_conj]; rfl
 
 theorem thetaFullHalfFrequencyJet_re (k : ℕ) (b : ℝ) :
@@ -80,9 +81,9 @@ theorem hasSum_thetaShellFrequencyJet (k : ℕ) (b : ℝ) :
     simpa only [P, mul_assoc] using (integrable_thetaFullFrequencyJetIntegrand k b).integrableOn
   have hs := hasSum_thetaCuspShellHalfLineTransform P hP hi
   have ht := (hasSum_nat_add_iff' 1).mpr hs
+  simp only [Finset.sum_range_one, thetaCuspShellHalfLineTransform_zero, sub_zero] at ht
   simpa only [thetaShellFrequencyJet, thetaCuspShellHalfLineTransform, P,
-    thetaFullHalfFrequencyJet, Finset.sum_range_one,
-    thetaCuspShellHalfLineTransform_zero, sub_zero, mul_assoc] using ht
+    thetaFullHalfFrequencyJet, mul_assoc] using ht
 
 theorem thetaShellPrefixFrequencyJet_add_tail (N k : ℕ) (b : ℝ) :
     thetaShellPrefixFrequencyJet N k b + thetaShellTailFrequencyJet N k b =
@@ -112,7 +113,8 @@ theorem tendsto_normalized_thetaShellPrefixRealJet (k : ℕ) {lambda : ℝ} (hla
     rw [Complex.add_re, thetaFullHalfFrequencyJet_re] at heq
     simp only [Function.comp_def, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
       zero_mul, sub_zero]
-    nlinarith [heq]
+    linear_combination (Real.exp (Real.pi * thetaMovingShellScale N) /
+      thetaMovingShellScale N * thetaMovingShellScale N^k) * heq
   · simp
 
 end

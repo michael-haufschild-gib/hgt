@@ -1,0 +1,14 @@
+# Literal-mass calibrated score floor obstruction — paper closed, exact envelope Lean active
+
+Card docs/drafts/pipeline/2-fully-proven/li-mass-calibrated-score-floor-obstruction.md (moved from1-in-progress). Independent li_current_audit hostile paper audit closed all constants; root checked massnormalization/R0 lowerbound and stronger surplus arithmetic. Not RH/literalthetaF counterexample. Actual lattice/modular-Euler membership/Xi growthorder/full prescribedmoments unmatched; Gaussian-Hermite characteristic is order2, do not imply actualXi order1 matched. Actual source route remains in progress; no no-go retirement/fullanalyticLeanclosure.
+
+Use P=-He4+He6-2He8+He10, probabilists' Gaussian. rho_tau(x)=6 phi(6x)(1+tau P(6x)). For sufficientlysmallpositivetau, rho_tau>=.9rho0 and -(logrho_tau)''>=30. Literal amplitude A=thetaCuspRawEvenMoment0>=9/20 from XiCentralDiscBound.norm_XiC_zero_ge:93 and PrimeArchThetaCumulantMinor.iteratedDeriv_XiC_zero_eq_rawEvenMoment:439 +rawpositivity. Normalizedmasswhole1 so rawR0=A exactly, not adjustable largeamplitude. Score d=1-16x rho'/rho-303x²>=1+177x² onx>=0. Determinant6^-18 tau²(-196+324tau+16tau²)<0; exactWick/scaling/algebra alreadyPrimeArchHermiteMomentBoundary:161,169,178.
+
+Strongestpositive survivor unconditional actualthetafirstatom envelope allx>=0:
+pi*(thetaCuspBornWittenAmplitude1x)^2*(x-1)^2 <= (110843/111104)*(243/(100sqrt(2pi)))*exp(-18x²)*(1+177x²).
+Thuscalibratedmodel polynomialscorefloor has uniformsurplus factor111104/110843 while cumulantdetnegative. RetainP²insideintegrals; signedscalarinequalitysumminginvalid.
+
+Exactpapercerts: splitx1/3. Largeinterval (x-1)²/(1+177x²)<=2/93 from(3x-1)(87x+91)>=0. E=pi e2x-18x²-4.5x>0: fourthTaylor/Bernsteincoeffon[0,3/4]=[157/50,2779/800,2167/800,4117/3200,1991/6400]; FIFTH lowerbounds E(3/4)>=32627/64000>1/2,E'≥-111373/32000>-7/2; E''>=30791/1600>18. Gives9(h-7/36)²+23/144. Scalar800pi²sqrt2pi<22599 usespi<=22/7,sqrt<=251/100.
+Smallinterval D<=15/16 fromexpπ>T9(157/50)>23; exp17/6<69/4<35/2 viaT8+geometrictail. expu<=1+u+7u²/4 on0..17/6 givesexp(18x²+2.5x)<=1+3x+177x². Polynomial residualq=1/15-x+84x²/5=84/5(x-5/168)²+29/560,denom<=62/3 givesc=(15/16)(16/15-87/34720)=110843/111104. Uniformperturbationlogcurrection≤C(tau+tau^(1/5)+tau²)->0 vialeadingy10 denominator+derivbounds, so choose<=1/6 then spatialcurvature30. Exactrationalcertificatesallowed, no numericalexperiments/sampling.
+
+ACTIVE agentli_current_audit exclusiveNEW formal leaves PrimeArchThetaGaussianScoreEnvelopeCertificates.lean and PrimeArchThetaGaussianScoreFloorEnvelope.lean. Target exactc inequality, scalarcerts; source-envelope only, no fullanalyticcountermodelLeanclaim. Agent foundinstalledComplex.exp_bound' reuse. No otheragentwrites thosefiles; rootownsdocs/umbrella/integration. Needfinalnamed--old +exactdirect +publicaxiomsbeforepromotion. WholegoalRHactive.

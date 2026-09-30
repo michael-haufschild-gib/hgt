@@ -3,8 +3,7 @@ import GaloisForLFunctions.RHTower.WeilPolarConeFirstVariation
 /-!
 # Two-sided polar positivity confines the Riemann-kernel transform to a plane
 
-Let `w` be real weights with `Σ |w(n)| n^{−σ} < ∞` for every `σ > 1`, and suppose that `Λ + w` and
-`Λ − w` are both Weil-positive on polar tests. Write `G = G_w` (`weightKernelTransform`),
+Let `w` be real weights, and suppose that `Λ + w` and `Λ − w` are both Weil-positive on polar tests. Write `G = G_w` (`weightKernelTransform`),
 `e₊(y) = e^{y/2}`, `e₋(y) = e^{−y/2}`, and `S` for the weighted cusp series of `a = 1 ⋆ w'`
 (`w' = w · 1_{n ≥ 2}`) against `e^{y/2} e^{−πk²e^{2y}}`.
 
@@ -143,7 +142,6 @@ theorem exists_eq_exp_of_forall_polar_integral_eq_zero {f : ℝ → ℝ} (hf : C
       hf c₁ c₂
     rw [hp2] at hm
     rw [hq2] at hpl
-    have hE : Real.exp (1 / 2) * Real.exp (-(1 / 2)) = 1 := by rw [← Real.exp_add]; simp
     have hm0 : x - c₁ * p - c₂ * (Real.exp (-(1 / 2)) * p) = 0 := by
       simp only [c₁]; field_simp; ring
     have hpl0 : z - c₁ * q - c₂ * (Real.exp (1 / 2) * q) = 0 := by
@@ -277,7 +275,7 @@ theorem hasDerivAt_mul_expDiff (y : ℝ) :
       ((Real.exp (y / 2) - Real.exp (-(y / 2))) +
         y * (Real.exp (y / 2) + Real.exp (-(y / 2))) / 2) y :=
   ((hasDerivAt_id' y).mul ((hasDerivAt_exp_div_two' y).sub (hasDerivAt_exp_neg_div_two' y))).congr_deriv
-    (by simp only [Pi.add_apply, Pi.sub_apply]; ring)
+    (by simp only [Pi.sub_apply]; ring)
 
 /-- `((e₊ − e₋) + y (e₊ + e₋)/2)' = (e₊ + e₋) + y (e₊ − e₋)/4`. -/
 theorem hasDerivAt_mul_expDiff_deriv (y : ℝ) :
@@ -288,7 +286,7 @@ theorem hasDerivAt_mul_expDiff_deriv (y : ℝ) :
   (((hasDerivAt_exp_div_two' y).sub (hasDerivAt_exp_neg_div_two' y)).add
     (((hasDerivAt_id' y).mul ((hasDerivAt_exp_div_two' y).add
       (hasDerivAt_exp_neg_div_two' y))).div_const 2)).congr_deriv
-    (by simp only [Pi.add_apply, Pi.sub_apply]; ring)
+    (by simp only [Pi.add_apply]; ring)
 
 /-- `(y² (e₊ + e₋))' = 2y (e₊ + e₋) + y² (e₊ − e₋)/2`. -/
 theorem hasDerivAt_sq_mul_expSum (y : ℝ) :
@@ -297,7 +295,7 @@ theorem hasDerivAt_sq_mul_expSum (y : ℝ) :
         y ^ 2 * (Real.exp (y / 2) - Real.exp (-(y / 2))) / 2) y :=
   ((hasDerivAt_pow 2 y).mul ((hasDerivAt_exp_div_two' y).add
     (hasDerivAt_exp_neg_div_two' y))).congr_deriv
-    (by simp only [Pi.add_apply, Pi.sub_apply]; push_cast; ring)
+    (by simp only [Pi.add_apply]; push_cast; ring)
 
 /-- `(2y (e₊ + e₋) + y² (e₊ − e₋)/2)' = 2 (e₊ + e₋) + 2y (e₊ − e₋) + y² (e₊ + e₋)/4`. -/
 theorem hasDerivAt_sq_mul_expSum_deriv (y : ℝ) :
@@ -311,6 +309,278 @@ theorem hasDerivAt_sq_mul_expSum_deriv (y : ℝ) :
     (((hasDerivAt_pow 2 y).mul ((hasDerivAt_exp_div_two' y).sub
       (hasDerivAt_exp_neg_div_two' y))).div_const 2)).congr_deriv
     (by simp only [Pi.add_apply, Pi.sub_apply]; push_cast; ring)
+
+theorem summable_rpow_two_of_div_sq {w : ℕ → ℝ} (hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2) :
+    Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ (2 : ℝ) :=
+  ((summable_nat_add_iff 1).mpr hw2).congr fun n => by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; push_cast; ring
+
+/-! ## The Riemann-kernel transform as a theta derivative -/
+
+/-- The atoms `n ≥ 2` of a weight system. -/
+def restrictAtoms (w : ℕ → ℝ) (n : ℕ) : ℝ := if 2 ≤ n then w n else 0
+
+/-- `S_j = Σ_k (1 ⋆ w')(k) · cuspTerm (cuspDeriv^[j] 1) k`, the `j`-th derivative of the theta
+primitive `S_0(y) = e^{y/2} Σ_k (1 ⋆ w')(k) e^{−πk²e^{2y}}`. -/
+def atomCuspSeries (w : ℕ → ℝ) (j : ℕ) (y : ℝ) : ℝ :=
+  weightedCuspSeries (oneConvWeight (restrictAtoms w)) (cuspDeriv^[j] 1) y
+
+theorem abs_restrictAtoms_le {w : ℕ → ℝ} {K : ℝ}
+    (hK : ∀ n : ℕ, |w (n + 1)| ≤ K * ((n + 1 : ℕ) : ℝ) ^ 2) (n : ℕ) :
+    |restrictAtoms w (n + 1)| ≤ K * ((n + 1 : ℕ) : ℝ) ^ 2 := by
+  unfold restrictAtoms
+  split_ifs
+  · exact hK n
+  · rw [abs_zero]; exact (abs_nonneg _).trans (hK n)
+
+theorem hasDerivAt_atomCuspSeries {w : ℕ → ℝ} {K : ℝ}
+    (hK : ∀ n : ℕ, |w (n + 1)| ≤ K * ((n + 1 : ℕ) : ℝ) ^ 2) (j : ℕ) (y : ℝ) :
+    HasDerivAt (atomCuspSeries w j) (atomCuspSeries w (j + 1) y) y := by
+  unfold atomCuspSeries
+  rw [Function.iterate_succ_apply']
+  exact hasDerivAt_weightedCuspSeries (abs_oneConvWeight_le (abs_restrictAtoms_le hK)) _ y
+
+/-- `G_w(y) = (S₂ − S₀/4)(y) + (S₂ − S₀/4)(−y)`. -/
+theorem weightKernelTransform_eq_atomCuspSeries {w : ℕ → ℝ}
+    (hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2) {K : ℝ}
+    (hK : ∀ n : ℕ, |w (n + 1)| ≤ K * ((n + 1 : ℕ) : ℝ) ^ 2) (y : ℝ) :
+    weightKernelTransform w y =
+      (atomCuspSeries w 2 y - atomCuspSeries w 0 y / 4) +
+        (atomCuspSeries w 2 (-y) - atomCuspSeries w 0 (-y) / 4) := by
+  have hK' := abs_restrictAtoms_le hK
+  have ha := abs_oneConvWeight_le hK'
+  have hshift : ∀ y, ∑' n : ℕ, restrictAtoms w (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) *
+      riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ)) =
+      atomCuspSeries w 2 y - atomCuspSeries w 0 y / 4 := by
+    intro y
+    have h := tsum_shift_cuspSeries_eq hK' riemannCuspPoly y
+    simp_rw [cuspSeries_riemannCuspPoly_eq] at h
+    rw [h, weightedCuspSeries_riemannCuspPoly ha y]
+    rfl
+  have hsumm : ∀ y, Summable fun n : ℕ => restrictAtoms w (n + 1) /
+      Real.sqrt ((n + 1 : ℕ) : ℝ) * riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ)) := by
+    intro y
+    have h := summable_shift_cuspSeries hK' riemannCuspPoly y
+    simpa only [cuspSeries_riemannCuspPoly_eq] using h
+  unfold weightKernelTransform
+  rw [(summable_weightTerm hw2 y).tsum_eq_zero_add]
+  simp only [show ¬ (2 ≤ 0) by omega, if_false, zero_mul, zero_add]
+  have hterm : ∀ n : ℕ, (if 2 ≤ n + 1 then w (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) else 0) *
+      (riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ)) +
+        riemannKernelReal (y - Real.log ((n + 1 : ℕ) : ℝ))) =
+      restrictAtoms w (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) *
+          riemannKernelReal (y + Real.log ((n + 1 : ℕ) : ℝ)) +
+        restrictAtoms w (n + 1) / Real.sqrt ((n + 1 : ℕ) : ℝ) *
+          riemannKernelReal (-y + Real.log ((n + 1 : ℕ) : ℝ)) := by
+    intro n
+    have hev : riemannKernelReal (y - Real.log ((n + 1 : ℕ) : ℝ)) =
+        riemannKernelReal (-y + Real.log ((n + 1 : ℕ) : ℝ)) := by
+      unfold riemannKernelReal
+      rw [show -y + Real.log ((n + 1 : ℕ) : ℝ) = -(y - Real.log ((n + 1 : ℕ) : ℝ)) by ring, abs_neg]
+    rw [hev]
+    simp only [restrictAtoms]
+    split_ifs <;> ring
+  rw [tsum_congr hterm, (hsumm y).tsum_add (hsumm (-y)), hshift y, hshift (-y)]
+
+theorem weightKernelTransform_neg {w : ℕ → ℝ} (hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2)
+    {K : ℝ} (hK : ∀ n : ℕ, |w (n + 1)| ≤ K * ((n + 1 : ℕ) : ℝ) ^ 2) (y : ℝ) :
+    weightKernelTransform w (-y) = weightKernelTransform w y := by
+  rw [weightKernelTransform_eq_atomCuspSeries hw2 hK, weightKernelTransform_eq_atomCuspSeries hw2 hK,
+    neg_neg]
+  ring
+
+/-! ## The form of `G_w` -/
+
+/-- A combination `α e^{y/2} + β e^{−y/2}` that is even has `α = β`. -/
+theorem eq_of_exp_combination_even {α β : ℝ}
+    (h : α * Real.exp (2 / 2) + β * Real.exp (-(2 / 2)) =
+      α * Real.exp (-2 / 2) + β * Real.exp (-(-2 / 2))) : α = β := by
+  have hne : Real.exp (-1) < Real.exp 1 := Real.exp_lt_exp.mpr (by norm_num)
+  norm_num at h
+  have : (α - β) * (Real.exp 1 - Real.exp (-1)) = 0 := by linarith
+  rcases mul_eq_zero.mp this with h' | h'
+  · linarith
+  · linarith
+
+/-- **Polar annihilation confines `G_w`.** If `∫ H · L_c G_w = 0` for every real polar `C²` test
+`H` along shifts `c_k → 0⁺`, then `G_w(y) = ν y (e^{y/2} − e^{−y/2}) + A (e^{y/2} + e^{−y/2})`, and
+the theta primitive `F(y) = S₀(y) + S₀(−y)` equals
+`(ν/2) y² (e₊ + e₋) + (A − ν) y (e₊ − e₋) + C₊ e₊ + C₋ e₋`. -/
+theorem exists_weightKernelTransform_form_of_polarShift {w : ℕ → ℝ}
+    (hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2) {c : ℕ → ℝ} (hc0 : ∀ k, 0 < c k)
+    (hc : Tendsto c atTop (𝓝 0))
+    (hA : ∀ k (H : ℝ → ℝ), ContDiff ℝ 2 H → HasCompactSupport H →
+      paperFT (fun u => (H u : ℂ)) (I / 2) = 0 → paperFT (fun u => (H u : ℂ)) (-(I / 2)) = 0 →
+      ∫ s, H s * polarShift (c k) (weightKernelTransform w) s = 0) :
+    ∃ ν A Cp Cm : ℝ,
+      (∀ y, weightKernelTransform w y = ν * (y * (Real.exp (y / 2) - Real.exp (-(y / 2)))) +
+        A * (Real.exp (y / 2) + Real.exp (-(y / 2)))) ∧
+      ∀ y, atomCuspSeries w 0 y + atomCuspSeries w 0 (-y) =
+        ν / 2 * (y ^ 2 * (Real.exp (y / 2) + Real.exp (-(y / 2)))) +
+          (A - ν) * (y * (Real.exp (y / 2) - Real.exp (-(y / 2)))) +
+          Cp * Real.exp (y / 2) + Cm * Real.exp (-(y / 2)) := by
+  obtain ⟨K, hK⟩ := exists_abs_le_of_summable_div_sq (summable_rpow_two_of_div_sq hw2)
+  set G := weightKernelTransform w with hGdef
+  have hGc : Continuous G := continuous_weightKernelTransform hw2
+  have hGe : ∀ y, G (-y) = G y := weightKernelTransform_neg hw2 hK
+  set S := atomCuspSeries w with hS
+  have hd : ∀ j y, HasDerivAt (S j) (S (j + 1) y) y := hasDerivAt_atomCuspSeries hK
+  have hGS : ∀ y, G y = (S 2 y - S 0 y / 4) + (S 2 (-y) - S 0 (-y) / 4) :=
+    weightKernelTransform_eq_atomCuspSeries hw2 hK
+  -- symmetric and antisymmetric combinations
+  have hsym : ∀ j y, HasDerivAt (fun y => S j y + S j (-y)) (S (j + 1) y - S (j + 1) (-y)) y := by
+    intro j y
+    have := (hd j y).add ((hd j (-y)).comp y (hasDerivAt_neg y))
+    exact this.congr_deriv (by ring)
+  have hasym : ∀ j y, HasDerivAt (fun y => S j y - S j (-y)) (S (j + 1) y + S (j + 1) (-y)) y := by
+    intro j y
+    have := (hd j y).sub ((hd j (-y)).comp y (hasDerivAt_neg y))
+    exact this.congr_deriv (by ring)
+  set G₁ : ℝ → ℝ := fun y => (S 3 y - S 1 y / 4) - (S 3 (-y) - S 1 (-y) / 4) with hG₁
+  set G₂ : ℝ → ℝ := fun y => (S 4 y - S 2 y / 4) + (S 4 (-y) - S 2 (-y) / 4) with hG₂
+  have hG1 : ∀ y, HasDerivAt G (G₁ y) y := by
+    intro y
+    have e : G = fun y => (S 2 y + S 2 (-y)) - (S 0 y + S 0 (-y)) / 4 := by
+      funext t; rw [hGS t]; ring
+    rw [e]
+    exact ((hsym 2 y).sub ((hsym 0 y).div_const 4)).congr_deriv (by simp only [hG₁]; ring)
+  have hG2 : ∀ y, HasDerivAt G₁ (G₂ y) y := by
+    intro y
+    have e : G₁ = fun y => (S 3 y - S 3 (-y)) - (S 1 y - S 1 (-y)) / 4 := by
+      funext t; simp only [hG₁]; ring
+    rw [e]
+    exact ((hasym 3 y).sub ((hasym 1 y).div_const 4)).congr_deriv (by simp only [hG₂]; ring)
+  have hG₂c : Continuous G₂ := by
+    have hc : ∀ j, Continuous (S j) := fun j =>
+      continuous_iff_continuousAt.mpr fun y => (hd j y).continuousAt
+    simp only [hG₂]
+    exact ((hc 4).sub ((hc 2).div_const 4)).add
+      (((hc 4).comp continuous_neg).sub (((hc 2).comp continuous_neg).div_const 4))
+  -- the polar second differences lie on the line through `e₊ + e₋`
+  set E : ℝ → ℝ := fun y => Real.exp (y / 2) + Real.exp (-(y / 2)) with hE
+  have hline : ∀ k : ℕ, ∀ y, 2 * polarShift (c k) G y = polarShift (c k) G 0 * E y := by
+    intro k y
+    have hcont : Continuous (polarShift (c k) G) := by
+      unfold polarShift
+      exact (hGc.sub (continuous_const.mul (hGc.comp (continuous_id.sub continuous_const)))).sub
+        (continuous_const.mul (hGc.comp (continuous_id.add continuous_const)))
+    obtain ⟨α, β, hαβ⟩ := exists_eq_exp_of_forall_polar_integral_eq_zero hcont
+      fun H hH hHc h1 h2 => hA k H hH hHc (by rw [paperFT_ofReal_I_half, h1]; simp)
+        (by rw [paperFT_ofReal_neg_I_half, h2]; simp)
+    have hev : ∀ y, polarShift (c k) G (-y) = polarShift (c k) G y := by
+      intro y
+      unfold polarShift
+      rw [hGe, show -y - c k = -(y + c k) by ring, hGe, show -y + c k = -(y - c k) by ring, hGe]
+      ring
+    have hαβ' : α = β := by
+      apply eq_of_exp_combination_even
+      rw [← hαβ, ← hαβ, show (-2 : ℝ) = -(2 : ℝ) by norm_num, hev]
+    rw [hαβ y, hαβ 0, hαβ', hE]
+    simp only [zero_div, neg_zero, Real.exp_zero]
+    ring
+  -- the limit `c → 0`
+  have hE1 : ∀ y, HasDerivAt E ((Real.exp (y / 2) - Real.exp (-(y / 2))) / 2) y := fun y =>
+    ((hasDerivAt_exp_div_two' y).add (hasDerivAt_exp_neg_div_two' y)).congr_deriv (by ring)
+  have hE2 : ∀ y, HasDerivAt (fun y => (Real.exp (y / 2) - Real.exp (-(y / 2))) / 2)
+      (E y / 4) y := fun y =>
+    (((hasDerivAt_exp_div_two' y).sub (hasDerivAt_exp_neg_div_two' y)).div_const 2).congr_deriv
+      (by simp only [hE]; ring)
+  have hEc : Continuous fun y => E y / 4 := by simp only [hE]; fun_prop
+  have hlimE := tendsto_secondDifference hE1 hE2 (y := 0) hEc.continuousAt
+  have hlimG : ∀ y, Tendsto (fun c => (G (y + c) + G (y - c) - 2 * G y) / c ^ 2) (𝓝[>] 0)
+      (𝓝 (G₂ y)) := fun y => tendsto_secondDifference hG1 hG2 hG₂c.continuousAt
+  have hE0 : E 0 = 2 := by simp only [hE]; norm_num
+  -- `E(c) · L_c G(y) / c²` converges to `G(y)/4 − G''(y)`
+  have hD : ∀ c : ℝ, 0 < c → ∀ y, E c * polarShift c G y =
+      (E (0 + c) + E (0 - c) - 2 * E 0) / 2 * G y - (G (y + c) + G (y - c) - 2 * G y) := by
+    intro c hc y
+    have hpw : E c * polarWeight c = 1 := by
+      unfold polarWeight; simp only [hE]
+      rw [Real.cosh_eq]
+      have : 0 < Real.exp (c / 2) + Real.exp (-(c / 2)) := by positivity
+      field_simp
+    have hEs : E (0 - c) = E c := by simp only [hE]; ring_nf
+    unfold polarShift
+    rw [hEs, zero_add, hE0]
+    have : E c * (G y - polarWeight c * G (y - c) - polarWeight c * G (y + c)) =
+        E c * G y - (E c * polarWeight c) * (G (y - c) + G (y + c)) := by ring
+    rw [this, hpw]; ring
+  have hlim : ∀ y, Tendsto (fun c => E c * polarShift c G y / c ^ 2) (𝓝[>] 0)
+      (𝓝 (E 0 / 4 / 2 * G y - G₂ y)) := by
+    intro y
+    have h := ((hlimE.div_const 2).mul_const (G y)).sub (hlimG y)
+    refine h.congr' (eventually_nhdsWithin_of_forall fun c hc => ?_)
+    show _ = E c * polarShift c G y / c ^ 2
+    rw [hD c hc y]; ring
+  have hc' : Tendsto c atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.mpr ⟨hc, Eventually.of_forall fun k => hc0 k⟩
+  have hrel : ∀ y, 2 * (E 0 / 4 / 2 * G y - G₂ y) = (E 0 / 4 / 2 * G 0 - G₂ 0) * E y := by
+    intro y
+    have h1 := ((hlim y).comp hc').const_mul 2
+    have h2 := ((hlim 0).comp hc').mul_const (E y)
+    refine tendsto_nhds_unique h1 (h2.congr' (Eventually.of_forall fun k => ?_))
+    have := hline k y
+    simp only [Function.comp_def]
+    rw [show 2 * (E (c k) * polarShift (c k) G y / c k ^ 2) =
+      E (c k) * (2 * polarShift (c k) G y) / c k ^ 2 by ring, this]
+    ring
+  rw [hE0] at hrel
+  obtain ⟨ν, hν⟩ : ∃ ν : ℝ, ν = (G₂ 0 - G 0 / 4) / 2 := ⟨_, rfl⟩
+  have hODE : ∀ y, G₂ y - G y / 4 = ν * E y := by
+    intro y; have := hrel y; rw [hν]; linarith
+  -- first equation: `G = ν y (e₊ − e₋) + A e₊ + B e₋`
+  obtain ⟨A, B, hAB⟩ := exists_eq_add_exp_of_second_deriv hG1 hG2
+    (fun y => (hasDerivAt_mul_expDiff y).const_mul ν)
+    (fun y => (hasDerivAt_mul_expDiff_deriv y).const_mul ν)
+    (fun y => by rw [hODE y, hE]; ring)
+  have hAB' : A = B := by
+    apply eq_of_exp_combination_even
+    have h1 := hAB 2
+    have h2 := hAB (-2)
+    rw [show (-2 : ℝ) = -(2 : ℝ) by norm_num, hGe] at h2
+    have e : ν * ((-2 : ℝ) * (Real.exp (-2 / 2) - Real.exp (-(-2 / 2)))) =
+        ν * (2 * (Real.exp (2 / 2) - Real.exp (-(2 / 2)))) := by
+      rw [show (-2 / 2 : ℝ) = -(2 / 2) by ring, neg_neg]; ring
+    rw [show (-(2 : ℝ)) = -2 by norm_num, e] at h2
+    linarith
+  subst hAB'
+  have hGform : ∀ y, G y = ν * (y * (Real.exp (y / 2) - Real.exp (-(y / 2)))) +
+      A * (Real.exp (y / 2) + Real.exp (-(y / 2))) := fun y => by rw [hAB y]; ring
+  refine ⟨ν, A, ?_⟩
+  -- second equation: the theta primitive
+  obtain ⟨Cp, Cm, hC⟩ := exists_eq_add_exp_of_second_deriv (hsym 0) (hasym 1)
+    (fun y => ((hasDerivAt_sq_mul_expSum y).const_mul (ν / 2)).add
+      ((hasDerivAt_mul_expDiff y).const_mul (A - ν)))
+    (fun y => ((hasDerivAt_sq_mul_expSum_deriv y).const_mul (ν / 2)).add
+      ((hasDerivAt_mul_expDiff_deriv y).const_mul (A - ν)))
+    (fun y => by
+      have h := hGS y
+      rw [hGform y] at h
+      simp only [Pi.add_apply]
+      linear_combination -h)
+  exact ⟨Cp, Cm, hGform, fun y => by have h := hC y; simp only [Pi.add_apply] at h; linarith⟩
+
+/-- **Two-sided polar positivity confines `G_w`.** If `Λ ± w` are Weil-positive on polar tests,
+then `G_w(y) = ν y (e^{y/2} − e^{−y/2}) + A (e^{y/2} + e^{−y/2})`, and the theta primitive
+`F(y) = S₀(y) + S₀(−y)` equals `(ν/2) y² (e₊ + e₋) + (A − ν) y (e₊ − e₋) + C₊ e₊ + C₋ e₋`. -/
+theorem exists_weightKernelTransform_form {w : ℕ → ℝ}
+    (hp : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n)
+    (hm : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) - w n) :
+    ∃ ν A Cp Cm : ℝ,
+      (∀ y, weightKernelTransform w y = ν * (y * (Real.exp (y / 2) - Real.exp (-(y / 2)))) +
+        A * (Real.exp (y / 2) + Real.exp (-(y / 2)))) ∧
+      ∀ y, atomCuspSeries w 0 y + atomCuspSeries w 0 (-y) =
+        ν / 2 * (y ^ 2 * (Real.exp (y / 2) + Real.exp (-(y / 2)))) +
+          (A - ν) * (y * (Real.exp (y / 2) - Real.exp (-(y / 2)))) +
+          Cp * Real.exp (y / 2) + Cm * Real.exp (-(y / 2)) := by
+  have hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2 := by
+    have h := summable_sub_vonMangoldt_div_sq_of_weilPositive hp
+    simp only [add_sub_cancel_left] at h
+    exact h
+  refine exists_weightKernelTransform_form_of_polarShift hw2 (c := fun k => 1 / ((k : ℝ) + 1))
+    (fun k => by positivity) tendsto_one_div_add_atTop_nhds_zero_nat
+    fun k H hH hHc h1 h2 => integral_mul_polarShift_weightKernelTransform_eq_zero hp hm hw2
+      (by positivity) hH hHc h1 h2
 
 end
 

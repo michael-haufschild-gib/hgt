@@ -351,6 +351,31 @@ same finite-dimensional `λ`-root block. Therefore its algebraic
 multiplicity is unchanged. The corpus's determinant identity
 identifies these blocks with the nonzero Xi divisor.
 
+This uses the literal contour projector. Choose an isolating circle
+`|ζ−λ|=r` with `0<r<|λ|`, so zero lies outside its closed disc.
+Since `B^(n+1)v_n=0`, the resolvent on `v_n` is the finite sum
+`Σ_(j=0)^n ζ^(-j-1) B^j v_n`. Every scalar term has its only
+pole at zero, outside this disc; its contour integral vanishes.
+Thus the actual Riesz projector kills each `v_n`. Its closed kernel
+contains their closed span `R`. The bounded factor through `H/R`
+induces `P̄_λπ=πP_λ`, with
+`ran(P̄_λ)=⋃_(m≥0) ker((B̄−λI)^m)` and `ker(P̄_λ)=π(ker(P_λ))`.
+Quotient projection itself identifies the two finite spectral
+ranges and intertwines their operator actions. Both decompositions
+are topological direct sums because their projectors are bounded.
+
+There is an exact finite-level formulation. Write `π:H→H/R` and
+fix `λ≠0`. For every integer `n≥0`, quotient projection identifies
+`ker((B−λI)^n)` with `ker((B̄−λI)^n)`. The restriction
+`(B|_R−λI)^n` is invertible. Given a quotient root vector, lift it
+to `x`; then `(B−λI)^n x∈R`. Choose the unique `r∈R` whose
+restricted shifted power equals this vector. The corrected lift
+`x−r` is a full root vector with the same quotient class. Conversely,
+a full root vector in `R` vanishes by restricted invertibility.
+Thus projection is a linear isomorphism at every root level and
+on their maximal union. Its intertwining identity also preserves
+the operator action on these blocks.
+
 There is a further quantitative consequence. Let `f_z` be the
 canonical source eigenmode at a Xi zero, normalized by
 `∫f_z=M`, and let `π:H_s→H_s/U⁻¹R` be the quotient map.
@@ -409,15 +434,82 @@ where all translations are unitary. The needed arithmetic law
 must control a boundary defect of this singular passage. Merely
 taking the endpoint quotient gives the zero space.
 
-**Audit:** The source action and dense-range inputs are already
-Lean-proved. The full-operator no-intertwiner theorem is checked in
-`HedenmalmThetaZeroHistoryNoGo.lean` by `lake env lean` and a targeted
-`lake build GaloisForLFunctions.RHTower.HedenmalmThetaZeroHistoryNoGo:olean`
-audit. Weighted admission of `k⁽ʳ⁾`, the
-quotient Jordan theorem, translation boundary, weighted-scale
-transport law, endpoint collapse, tempered-dual survivor, and quotient spectral theorem are paper-proved here
-and remain to be formalized. No computation or RH/zero-location
-premise was used. External novelty has not been established. The
-frontier map was read only. Repository-wide lint was run once; it
-failed on the separate unwired `DivisorTateCohomology` module, while
-the targeted OLean audit of this card's new module passed.
+**Lean audit:** `ThetaPowerWeightedDerivativeHistory.lean` proves actual
+derivative admission for every `0 < q < 2`. The literal source-coordinate
+classes, their quantile images, both infinite zero-Jordan chains, linear
+independence, orthogonally centered dense range and no-injective-intertwiner
+theorem are now certified in `HedenmalmThetaDerivativeJordan.lean`.
+`HedenmalmThetaDerivativeHistorySpectrum.lean` certifies invariance,
+compactness, spectrum exactly `{0}` on history, and properness using
+Hardy's actual real Xi zeros. The full-operator obstruction remains
+certified in `HedenmalmThetaZeroHistoryNoGo.lean`.
+
+Both new native leaf builds and final direct source audits passed without
+warnings. All 44 new public declarations and four existing operator
+capstones were audited in scratch with `#print axioms`: only the standard
+`propext`, `Classical.choice`, and `Quot.sound` axioms appeared. Both leaves
+are wired into `RHTower.lean`; generated indexes were refreshed.
+
+Three additional leaves now certify the literal history quotient:
+`GeneralizedEigenspaceQuotient.lean` gives exact transport of every
+generalized root level and the maximal root space;
+`CompactInvariantQuotient.lean` constructs the continuous quotient
+operator and proves compactness through its bounded orthogonal section;
+`HedenmalmThetaDerivativeHistoryQuotient.lean` discharges shifted
+invertibility from the actual history spectrum `{0}`. It preserves the
+entire nonzero spectrum, the canonical nonzero source eigenmodes, and
+the full analytic Xi multiplicity at every complex zero. These three
+leaves contain 41 public declarations. Their final native and direct
+source checks passed without warnings; all 41 declarations and four
+existing capstones had 45 complete standard-axiom reports. A 47-name
+current-toolchain API witness passed. The leaves are wired into their
+area umbrellas. No new source premise or zero-location hypothesis was
+introduced.
+
+`HedenmalmThetaDerivativeHistoryRiesz.lean` now certifies the literal
+contour-projection clause in 24 public declarations. The existing
+isolating theta radius excludes zero; the generalized-zero contour
+lemma kills every actual derivative, and continuity kills their closed
+history. The bounded projection factors through the literal quotient.
+The induced projection commutes with the quotient inverse and gives a
+topological range/kernel decomposition. Its range is exactly the full
+quotient root block; its kernel is exactly the image of the original
+kernel. Quotient projection itself is the equivalence of both finite
+Riesz ranges, preserves the source action, and retains the analytic Xi
+multiplicity. Final native leaf build and direct source audit passed
+without warnings. A 22-name infrastructure witness and a 24-export
+witness passed; all 24 exports and seven existing capstones have 31
+complete axiom reports containing only `propext`, `Classical.choice`,
+and `Quot.sound`. The leaf is wired into `RHTower.lean`.
+
+`HedenmalmThetaDerivativeHistoryFourier.lean` certifies the literal
+bounded left Fourier functional in 35 public declarations. For every
+complex parameter and every actual weighted source vector, the bounded
+conormal functional equals the ordinary integral `∫f exp(izx)`. Its
+admitted test `k exp(-izx)` has exact value `M > 0`. The complete
+centered-space shifted-range identity, with the actual source-density
+vector separated off, gives the full mass correction. The existing
+source-equation bridge identifies the output with the literal physical
+centered primitive, so both the all-parameter integral identity and the
+reciprocal formula for `z ≠ 0` hold for every source input. Every ordinary
+source derivative is admitted under every complex tilt and has exact
+transform `(-iz)^n XiC(z)`. At an actual Xi zero, closed-kernel minimality
+annihilates the entire history. The bounded functional descends to the
+literal quotient, retains the test value `M`, is surjective and nonzero,
+and has exact left eigenvalue `-z⁻¹`. No density, source-admission,
+zero-location or RH premise was added. Final native leaf build and direct
+source audit pass without warnings. The exhaustive 35-export witness
+passes; all 35 exports and seven existing analytic capstones have 42
+complete axiom reports containing only `propext`, `Classical.choice`,
+and `Quot.sound`. The leaf is wired into `RHTower.lean`; final generated
+index and global lint results are recorded in the recursive ledger.
+
+The full card remains Stage 2. Complete exact certificates are still
+required for the sharp translation boundary and local-translation history
+identity, the full positive-weight properness law and unweighted endpoint
+collapse, the tempered annihilator classification with multiplicity jets,
+and rapid normalized eigenmode decay in the quotient.
+No computational certificate or RH/zero-location premise was introduced.
+External novelty has not been established. Global lint diagnostics are
+recorded in the recursive formalization ledger; other concurrent modules
+remain outside this card's write scope.

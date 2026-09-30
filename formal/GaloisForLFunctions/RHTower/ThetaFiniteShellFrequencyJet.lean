@@ -37,7 +37,7 @@ theorem hasDerivAt_thetaShellFrequencyJet (n k : ℕ) (b : ℝ) :
   have hnorm : (fun x => ‖F' 0 x‖) =
       (fun x : ℝ => |thetaCuspSourceTerm x (n+1)| * |x|^(k+1)) := by
     ext x
-    simp [F', norm_mul, norm_pow, Complex.norm_exp, Complex.norm_real, Real.norm_eq_abs]
+    simp [F', norm_pow, Complex.norm_real, Real.norm_eq_abs]
   have hmajor : IntegrableOn (fun x : ℝ =>
       |thetaCuspSourceTerm x (n+1)| * |x|^(k+1)) (Ioi 0) := by
     rw [← hnorm]
@@ -45,15 +45,11 @@ theorem hasDerivAt_thetaShellFrequencyJet (n k : ℕ) (b : ℝ) :
   have hdiff (t x : ℝ) : HasDerivAt (fun t => F t x) (F' t x) t := by
     have hphase : HasDerivAt (fun z : ℂ => Complex.I * z * (x : ℂ))
         (Complex.I * (x : ℂ)) (t : ℂ) := by
-      simpa only [mul_one] using
+      simpa only [mul_one, id_eq] using!
         ((hasDerivAt_id (t : ℂ)).const_mul Complex.I).mul_const (x : ℂ)
     have he := (((Complex.hasDerivAt_exp _).comp (t : ℂ) hphase).comp_ofReal).const_mul
       ((thetaCuspSourceTerm x (n+1) : ℂ) * (Complex.I * (x : ℂ))^k)
-    convert he using 1
-    · rfl
-    · dsimp [F']
-      rw [pow_succ]
-      ring
+    simpa only [F, F', Function.comp_def, pow_succ, mul_assoc, mul_left_comm, mul_comm] using! he
   have h := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (μ := volume.restrict (Ioi (0 : ℝ))) (F := F) (F' := F')
     (bound := fun x => |thetaCuspSourceTerm x (n+1)| * |x|^(k+1))
@@ -62,14 +58,16 @@ theorem hasDerivAt_thetaShellFrequencyJet (n k : ℕ) (b : ℝ) :
     (integrableOn_thetaShellFrequencyJetIntegrand n k b)
     ((hcont (k+1) b).aestronglyMeasurable.restrict)
     (Eventually.of_forall fun x t _ => by
-      simp [F', norm_mul, norm_pow, Complex.norm_exp, Complex.norm_real, Real.norm_eq_abs])
+      simp [F', norm_pow, Complex.norm_exp, Complex.norm_real, Real.norm_eq_abs])
     hmajor (Eventually.of_forall fun x t _ => hdiff t x)
   exact h.2
 
 theorem hasDerivAt_thetaShellPrefixFrequencyJet (N k : ℕ) (b : ℝ) :
     HasDerivAt (thetaShellPrefixFrequencyJet N k)
       (thetaShellPrefixFrequencyJet N (k+1) b) b := by
-  exact HasDerivAt.sum (fun n _ => hasDerivAt_thetaShellFrequencyJet n k b)
+  convert HasDerivAt.sum (u := Finset.range N)
+    (fun n _ => hasDerivAt_thetaShellFrequencyJet n k b) using 1
+  all_goals first | rfl | (ext t; simp [thetaShellPrefixFrequencyJet])
 
 theorem hasDerivAt_thetaShellPrefixRealJet (N k : ℕ) (b : ℝ) :
     HasDerivAt (fun t => (thetaShellPrefixFrequencyJet N k t).re)
@@ -94,7 +92,14 @@ theorem thetaShellPrefixCosine_eq_literal (N : ℕ) (b : ℝ) :
   rw [Complex.re_sum]
   have hterm (n : ℕ) : (thetaShellFrequencyJet n 0 b).re =
       ∫ x : ℝ in Ioi 0, thetaCuspSourceTerm x (n+1) * Real.cos (b*x) := by
-    rw [thetaShellFrequencyJet, ← integral_re (integrableOn_thetaShellFrequencyJetIntegrand n 0 b)]
+    unfold thetaShellFrequencyJet
+    have hr := integral_re (𝕜 := ℂ) (integrableOn_thetaShellFrequencyJetIntegrand n 0 b)
+    change (∫ x : ℝ in Ioi 0,
+      ((thetaCuspSourceTerm x (n+1) : ℂ) * (Complex.I * (x : ℂ))^0 *
+        Complex.exp (Complex.I * (b : ℂ) * (x : ℂ))).re) =
+      (∫ x : ℝ in Ioi 0, (thetaCuspSourceTerm x (n+1) : ℂ) * (Complex.I * (x : ℂ))^0 *
+        Complex.exp (Complex.I * (b : ℂ) * (x : ℂ))).re at hr
+    rw [← hr]
     apply integral_congr_ae
     filter_upwards with x
     simp only [pow_zero, mul_one, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,

@@ -127,7 +127,7 @@ theorem stdGaussian_twoLocalPauli_measure_returnExcisedCircuitAllTimeReturnEvent
             (twoLocalPauliUnitaryAnticommutingIncidenceMass_ge_sixNSubFour_traceDeficit
               V.1)
       exact mul_le_mul_of_nonpos_left hinc (neg_nonpos.mpr (by positivity))
-    _ = _ := by simp [mul_assoc]
+    _ = _ := by simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_assoc]
 
 /-- The former polynomial-window event satisfies the stronger horizon-free
 bound for every qubit count. -/
@@ -215,7 +215,7 @@ theorem twoLocalPauliUnitaryAnticommutingIncidenceMass_le_localDirections
       apply Finset.sum_le_sum
       intro Q _
       exact sub_le_self _ (sq_nonneg _)
-    _ = _ := by simp
+    _ = _ := by simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one]
 
 /-- The static incidence partition function cannot decay faster than its
 cardinality times the coefficient-dimension exponential.  This is a lower
@@ -233,7 +233,8 @@ theorem card_mul_exp_neg_localDirections_le_incidencePartition
   calc
     _ = ∑ _c : C, Real.exp
         (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
-          Fintype.card (boundedLocalPauliLabel n 2)) := by simp
+          Fintype.card (boundedLocalPauliLabel n 2)) := by
+      simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     _ ≤ _ := by
       apply Finset.sum_le_sum
       intro c _

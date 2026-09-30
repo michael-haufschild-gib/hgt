@@ -1,0 +1,148 @@
+# RH goal loop (Opus session, 2026-09-29)
+
+- **ID:** RHG-OPUS-20260929
+- **Stage:** 1-in-progress
+- **Type:** CONJECTURE LOOP (working log)
+- **Source:** docs/reports/rh-current-frontier-map.md (all routes); STATUS gates; corpus search.
+- **Objective:** unconditional Lean proof or falsification of RH. Endless loop: conjecture → proof or
+  kill → mandatory positive salvage → next conjecture. Survivors that are dependency-closed on paper are
+  formalized (foreground, one Lean process, `lake env lean` final audit, `--old` leaf builds, umbrella
+  wiring without umbrella build, no heartbeat raises, no computations).
+
+## Operating constraints
+
+- Other agents run loops today on WL, LA, LI, TT, PM, RW, MC, HF(Krein). This loop avoids editing their
+  modules/cards; it may cite their results.
+- Search the corpus before each topic; do not judge novelty from training data.
+- Every cycle row: conjecture, mechanism, verdict, positive survivor, Lean status.
+
+## Shared open core (read before each cycle)
+
+Every active route lands on one RH-strength statement with no slack: a one-sided bound at scale `√X`
+for the integrated Chebyshev deficit (WL/MC/RW/SZ are exact restatements), equivalently no zero with
+`Re ρ > ½`. Known killers every producer must survive:
+- continuous Beurling countermodel with arbitrarily regular integers and a prescribed off-line zero
+  (R:BeurlingRegularIntegersOffLineZeros); integer-supported Beurling floor (MUST-526);
+- Davenport–Heilbronn type (functional equation without Euler product);
+- single-prime deletion (R:WeilSinglePrimeDeletion), Mellin-diagonal/Helson blindness (KR-R2);
+- real-support Weil-positive systems exist (MUST-523), so integrality of `log ℕ` must be used.
+
+## Cycles
+
+| # | Conjecture | Mechanism | Verdict | Positive survivor | Lean |
+|-|-|-|-|-|-|
+| 1 | Sign-constrained Weil tests `C={g=f⋆f̃: g(±log n)≤0 ∀n≥2}`: C-positivity (reducible to archimedean+pole positivity) implies RH | only the sign of Λ enters | KILLED by MUST-389 / R:WeilSinglePrimeDeletion: C-positivity survives deleting any prime, and the deleted system has spectral atoms at `Re s=0,1` (from `1−p^{−s}`), so C cannot detect off-line points unless archimedean positivity fails on C | none new (class kill "deformation-robust") | — |
+| 2 | Redheffer route: `det R_N=M(N)`; RH content in the `⌊log₂N⌋+1` nontrivial eigenvalues | rank-one perturbation of unipotent divisor matrix; char. poly `(x−1)^N(1−Σ_k F_k(N)(x−1)^{−k−1})`, `F_k` = ordered k-factorization counts | RESTATEMENT (CANNOT-24): eigenvalue equation is `z·S_z(N)=1` with `S_w` the summatory function of `w(ζ−1)/(1−w(ζ−1))`; its poles are a-points `ζ(s)=1+1/w`, off-line for every `a≠0`; only `a=0` (Mertens) is RH-sensitive | exact spectral reduction to a-points (paper only; receiver, not formalized) | — |
+| 3 | Bagchi dilation limit: uniform-in-`d` self-approximation `ζ(s+iτ)≈ζ(s+idτ)` as `d→0` | unconditional for `d∉{0,±1}` via independence of `log p, d log p` | RESTATEMENT: per compact K, strong recurrence ⇔ ζ zero-free on K (Rouché + N(σ,T)=o(T)); uniformity fails exactly on the initial segment `τ≤δ/d` iff an off-line zero lies in K | none | — |
+| 4 | de Bruijn–Newman flow as producer (concrete `H_t`, local strip contraction + large-height absorption) | cos(λ∂) pair inequality `D=8Yλ(X²+Y²+λ²−b²)`; absorption time `≈b/log T` | KILLED (KR-CAL): RH content sits at `t=0`; computer-free bounds reach `Λ≤½` (de Bruijn) / `Λ<½` (Ki–Kim–Lee) only; any `Λ≤t<½` needs zero verification up to `exp(C/t)` | local de Bruijn pair law (paper); Lean infra exists (OrderOneHadamard, HurwitzClosedZeroLocus) — deferred as infrastructure | — |
+| 5 | Euler product + FE at finite depth, then `N→∞`: `Z_N=E_N+χ·E_N(1−s)`, `E_N=exp(Σ_{2≤n≤N}Λ(n)n^{−s}/log n)`, is RH-safe at every depth; pass to ζ | `n^{−(1−s)}=n^{2σ−1}conj(n^{−s})` ⇒ `log|E_N(1−s)/E_N(s)|≤(2σ−1)ψ(N)`; `log|χ(s)|≤−(σ−½)(log(t/2π)−4/t²−π/t)` | KILLED as producer (cofinal gate): the Gamma decay pays only for depth `ψ(N)<½log(t/2π)−½`, i.e. Euler depth logarithmic in height; `E_N` does not converge in the strip, so nothing transfers to ζ. Contrast: additive carriers `g_N` (corpus ZetaCarrier) have no zero-free factor | **THEOREM [L]**: for any finite real exponent `D=Σc(n)n^{−s}` with `K=Σ|c(n)|log n`, every strip zero of `e^{D(s)}+χ(s)e^{D(1−s)}` with `|t|≥8`, `log(|t|/2π)>2K+1` is on `Re s=½`; Euler case `K=Σ_{2≤n≤N}Λ(n)` | R:EulerExponentialCarrierCriticalLine (`re_eq_half_of_carrier_eq_zero`, `eulerCarrier_re_eq_half`); `lake env lean` clean, `--old` leaf build ok, axioms standard, wired |
+| 6 | Transfer cycle-5 rigidity to ζ by domination `|2ζ−Z_N|<|Z_N|` (Rouché) | `Z_N` RH-safe at depth `ψ(N)<½log(t/2π)` | KILLED: domination needs `E_N≈ζ`, true only where the depth-`N` Euler product converges, i.e. `σ≥1+C/log log t`; there ζ is already zero-free. Euler depth ~log t sees nothing new | none | — |
+| 7 | Additive symmetrized carriers are critical-line rigid at every finite depth (as Euler exponentials are) | torus triangle zero of `1+2^{−z}W₂+3^{−z}W₃` at `σ₀=3/5` (`2^{−3/5}+3^{−3/5}>1`); `log3/log2` irrational ⇒ forward irrational rotation hits `W₃` with `2^{−iτ}=W₂` exact; `|χ|` decay; sphere domination | KILLED at depth 3: additive truncations have zeros of their own in the right half-strip, an Euler exponential never does | **THEOREM [L]**: `gN 3` has a zero with `½<Re s<1` above every height; not eventually critical. With `CarrierDepthTwoRigidity` (depth 2 rigid) and cycle 5 (Euler exponentials rigid at all depths): exact boundary of finite-carrier rigidity | R:CarrierDepthThreeOffLineZeros (`exists_offLine_zero_gN_three`, `not_eventually_critical_gN_three`, `exists_nat_mul_near`, `irrational_log_three_div_log_two`); clean compile, leaf build, axioms standard, wired |
+| 8 | Heat flow as producer: RH for the de Bruijn–Newman deformation `H_t` at all `t>0`, then `t→0` | de Bruijn pair law `8Yλ(X²+Y²+λ²−b²)>0`; conjugate pairing in the order-one Hadamard product; `cosh(λx)^n ↑ e^{tx²}`; Hurwitz closed-locus transfer | KILLED as producer (KR-CAL): the strip contracts only as `√(Δ²−2t)`; with the unconditional `Δ=½` (zeros of ξ in the open strip) reality starts at `t=1/8` (Newman `Λ≤½`); RH is `Λ≤0` | **THEOREM [L]**: `H_t(z)=∫Φ(x)e^{tx²}e^{izx}dx` has `(Im z)²≤max(¼−2t,0)` for `t>0`, only real zeros for `t≥1/8`; RH ⇔ `H_0=Ξ` has only real zeros. General: any super-exponential even positive kernel | R:DeBruijnShiftContraction (`add_shift_ne_zero`), R:DeBruijnHeatFlowRealZeros (`cosTransform_heat_zeros_im_sq_le`), R:DeBruijnNewmanHalfBound (`riemannHeat_zeros_real`, `riemannHypothesis_iff_riemannHeat_zero_real`); clean compile, leaf builds, axioms standard, wired |
+| 9 | Concrete RH gap: the set of heat times with real-rooted `H_t` is `[Λ₊,∞)`, `Λ₊≤1/8`, RH ⇔ `Λ₊=0` | strip contraction with width 0 (real zeros persist); locally uniform continuity in `t` from the right (dominated convergence); Hurwitz closed-locus | SURVIVED as receiver package (not a producer): RH is exactly the vanishing of one explicit real number | **THEOREM [L]**: `newmanConstant := sInf realRootedTimes`, `mem_realRootedTimes_iff`, `newmanConstant_le`, `riemannHypothesis_iff_newmanConstant_eq_zero`; grounds the corpus's abstract WeilIndexExtinctionTime/FinitenessThreshold modules | R:DeBruijnNewmanConstant; clean compile, leaf build, axioms standard, wired |
+| 10 | Explicit Ki–Kim–Lee finiteness: for every `t>0`, `H_t` has finitely many non-real zeros | Gaussian average `H_t=∫g_tξ(½+iz+u)du`; reflection split `H_t(X+iy)=Q(−y)+conj Q(y)`; log-linear model of `ξ` in the Euler window (`‖ξ'/ξ−a‖≤1/8`, Grönwall); `Q'=aQ+R` by IBP; `Re(Q'Q̄)>0` ⇒ `‖Q(y)‖²` increasing | SURVIVED (unconditional partial producer at `t>0`; not RH: window leaves the Euler region as `t→0`, threshold `~exp(c/t)`) | **THEOREM [L]**: `riemannHeat_nonreal_zeros_finite` (every `t>0`), `exists_riemannHeat_zeros_real`, `eventually_riemannHeat_ne_zero`; tools: `HTGeometry.norm_sub_mul_exp_le` (log-linear Grönwall), `norm_xi_horizontal_le_mul_norm_xi_five`, `monotoneOn_norm_Gamma_horizontal`, `hasDerivAt_halfGaussTransform` | 12 modules (DeBruijnHeatGaussianAverage … KiKimLeeFiniteness, HTGeometry/LogLinearGronwallModel); clean compile, leaf builds, axioms standard, wired; collisions fixed |
+| 11 | Strict de Bruijn bound `Λ₊<1/8` (KKL's `Λ<½`) from finiteness: at some `t₀` the finitely many non-real zeros have `max(Im)² < ¼−2t₀` | if `Λ₊=1/8` then `m(t)=¼−2t` for every `t∈(0,1/8)` (flow from `t` for time `m(t)/2`); extremal zeros must escape to infinity as `t→0` (Hurwitz excludes bounded limits: ξ has no zero on `Re s∈{0,1}`) | KILLED as a short formal target: excluding escape needs height-local contraction, but the discrete cosh step has dependence radius `Δ` per step, so `n` steps are global; strictness is lost in the Hurwitz limit; the continuum zero ODE is required | [P] one-step locality: `f(z+iλ)+f(z−iλ)≠0` if `Im z≠0` and every zero obeys `X_ζ²+Y²+λ²≥b_ζ²` with one strict (pointwise pair law); zeros at horizontal distance `≥Δ` never obstruct. Not formalized (low leverage) | — |
+| 12 | Large-height zeros of `H_t` are simple | differentiate `H_t(X+iy)=Q(−y)+conj Q(y)` at `y=0`: `H_t(X)=2Re Q(0)`, `H_t'(X)=−2Im Q'(0)`; at a zero `Re Q(0)=0`, so `Re(Q'Q̄)(0)=Im Q'(0)Im Q(0)>0` | SURVIVED (completes KKL for `0<t≤1/8`) | **THEOREM [L]**: `exists_riemannHeat_zeros_simple`, `riemannHeat_nonreal_or_multiple_zeros_finite` | R:KiKimLeeSimpleZeros; clean, leaf build, axioms standard, wired, no collisions |
+| 13 | LA receiver F0269 (`|Ξ(x+iy)|` nondecreasing in `y≥0`) along the flow: unconditional at large height for `t>0`; RH ⇔ at every `x`, every `t>0` | local pair law: `8Yλ(X²+Y²+λ²−b²)` only needs `b² ≤ X_ζ²+Y²+λ²` per zero, so zeros at horizontal distance `≥|Im ζ|` never obstruct; with KKL only real zeros are near large `|x|` | SURVIVED as receiver + partial producer; not RH (threshold `X₀(t)→∞` as `t→0`, KR-CAL) | **THEOREM [L]**: `norm_sub_shift_le_local`, `monotoneOn_norm_vertical`, `exists_monotoneOn_norm_riemannHeat_vertical`, `riemannHypothesis_iff_forall_monotoneOn_norm_riemannHeat` | R:DeBruijnLocalPairLawMonotonicity; clean, leaf build, axioms standard, wired, no collisions |
+| 14 | TH receiver F0103 (Gaussian heat-Hankel PSD at one fixed heat time, all degrees) via de Bruijn–Newman transfer: `T_s(P,t)=Σ_{H_s-zeros}P(γ²)²e^{−tγ²}` is `≥0` for `s≥1/8` and continuous in `s` | sign can only change where zeros of `H_s` leave the real axis | KILLED (KR-CAL): the transfer is exactly `Λ₊=0`; the TH trace lives on ξ's zeros (`s=0`) and inherits no positivity from `s>0`; the prime-side Gaussian explicit formula has no window deep in the Euler region at fixed `t` | none new (the finite-degree small-`t` positivity is already corpus [L]) | — |
+| 15 | Tilted Jensen: a sub-unit zero count in strict-right discs from `G(s)=ξ(s)e^{−a(s−c)}`, `a=½log(T/2π)+iπ/4`, whose modulus is nearly constant along horizontal lines in the Euler window, so Jensen's budget loses the `(σ/2)log T` growth | Jensen: `N(r) ≤ log(M_R(G)/|G(c)|)/log(R/r)` with the log-linear model supplying `|G|≈|G(c)|` | KILLED: the disc must cross the critical line; left of it `|G|` grows like `e^{L(½−σ)}` (FE mirror) and inside the strip `log|ζ|` fluctuates at Lindelöf size, while `log(R/r) ≈ ε/σ_c`; the bound is `≍ σ_c log T/ε`, never `<1`. Same wall as TG's global budgets (CANNOT-211/212) | horizontal model constancy is already [L] (`HTGeometry.norm_sub_mul_exp_le`, `norm_xiLine_sub_model_le`) | — |
+| 16 | Push the corpus's unconditional 2/3 (Zeta23 rank–trace, Montgomery–Taylor window) to the 75% HCF gate with better test functions | rank `≥ (Tr A)²/Tr A²` on a zero Gram matrix with explicit-formula traces | KILLED: Zeta23 Theorem D is already the optimal window for Fourier support `[−1,1]`; any gain needs pair-correlation input beyond `|α|≤1`, unavailable unconditionally | none | — |
+| 17 | Slice positivity `c_{2k}(t)≥0` for `ξ(½+x+it)ξ(½−x+it)` at low order via the local pair law (a conjugate off-line pair contributes `x⁴+2x²(d²−δ²)+(δ²+d²)²`, negative only when `d=|t−γ|<δ`) | same shadow cone as cycle 13 | RESTATEMENT: low-order slice signs are exactly the absence of off-line zeros in the cones `|t−γ|<|β−½|`; the corpus's high-order positivity is the saddle in the Euler region (`k≥κ log t`), the heat window again | the cone form of the obstruction, recorded; no new formal content | — |
+| 18 | LA route: first Laguerre inequality `H_t'(x)² ≥ H_t(x)H_t''(x)` at large height for `t>0` (the all-height Laguerre sign for `Ξ` is open and weaker than RH) | `ψ(w)=H(x+iw)H(x−iw)` is entire, even, `=|H(x+iy)|²` on reals, `ψ''(0)=2(H'²−HH'')`; vertical monotonicity forces `ψ''(0)≥0` (else `ψ'` falls from `0` and `|H|²` decreases) | SURVIVED as partial producer at `t>0` (threshold from KKL); not RH | **THEOREM [L]**: `laguerre_of_monotoneOn_norm_vertical` (any real entire `H`), `exists_laguerre_riemannHeat`, `laguerre_xi_of_riemannHypothesis` | R:DeBruijnLaguerreLargeHeight; clean, leaf build, axioms standard, wired, no collisions |
+| 19 | LA ↔ MC bridge at `t=0`: the first Laguerre inequality and vertical monotonicity of `Ξ` hold at every `x` outside the shadow `S=⋃_{β>½}(γ−(β−½), γ+(β−½))`, so their failure set in `[0,V]` has measure `≤ 2Σ_{γ≤V}(β−½)⁺` | local pair law of cycle 13 applied to `Ξ=H_0` (only FE pairs whose shadow covers `x` obstruct) | SURVIVED [P] as a cross-route receiver, not a producer: with the corpus's gate-conditional off-line moment `≈0.0535V` it gives Laguerre on `≳89%` of heights; unconditionally the corpus moment bound has an unspecified constant, so no proportion follows | exact failure-set description (sharper than LA's 'copies within ½ in ordinate'); formalization deferred (receiver bookkeeping) | — |
+| 20 | `t=0` shadow form of the LA receivers: `Ξ` is vertically monotone and Laguerre-positive at every `x` outside `S=⋃(γ−|β−½|,γ+|β−½|)`; RH ⇔ `S=∅`; `vol(S∩[a,b]) ≤ Σ 2|Im ζ|` over zeros with `Re ζ∈[a−½,b+½]` | cycle-13 local pair law at `t=0`, countable zero set, `measure_biUnion_le` | SURVIVED (unconditional structure theorem at `t=0`; receiver-level) | **THEOREM [L]**: `monotoneOn_laguerre_of_not_mem_xiShadow`, `riemannHypothesis_iff_xiShadow_eq_empty`, `volume_xiShadow_inter_Icc_le` | R:XiLaguerreShadow; clean, leaf build, axioms standard, wired, no collisions |
+| 21 | Make the shadow small unconditionally: `vol(S∩[0,T]) = o(T)` via Littlewood (`2πΣ(β−½)⁺ = ∫_0^T log|ζ(½+it)|dt + O(log T)`) | Selberg density `N(½+u,T) ≪ T^{1−u/4}log T` + near-line count | KILLED: the density split gives `min_δ(δ/2π + 4Ce^{−δ/4})·T`, a fixed positive fraction, never `o(T)`; `Σ(β−½)⁺=o(T)` is itself an open strong-density statement (RH ⇔ `=0`). With the corpus's gate-conditional `0.0535V` the shadow is `≤ 0.107V` | the Littlewood form `vol(S∩[0,T]) ≤ (1/π)∫_0^T log|ζ(½+it)|dt + O(log T)` [P] | — |
+| 22 | Zero-dynamics programme, phase A: `H_t` solves `∂_tH_t = −∂_z²H_t` | dominated differentiation of `∫G(x)e^{izx}dx` in `z` (twice) and of `Φe^{tx²}` in `t` | SURVIVED (infrastructure) | **THEOREM [L]**: `hasDerivAt_expTransform`, `deriv_riemannHeat`, `hasDerivAt_deriv_riemannHeat` (`H_t''=−∫x²Φe^{tx²}e^{izx}`), `hasDerivAt_riemannHeat_time` | R:DeBruijnHeatEquation; clean, leaf build, axioms standard, wired. Remaining for strict `Λ<½`: quantitative zero motion at a simple top zero (`z(t+h)=z+hH''/H'+O(h²)` by Taylor, no IFT), Hadamard velocity `Im(H''/H')(z)≤−1/Im z−c` with a real zero present, uniform-in-`t` KKL threshold on compact time intervals, Hurwitz proximity, multiple top zeros |
+| 23 | Zero-dynamics phase B: simple zeros of `H_t` move with velocity `H''/H'` | generic estimate: zeros of `f+hg+E` near a simple zero of `f` lie within `O(h²)` of `z₀−hg(z₀)/f'(z₀)`; for the flow `g=−H_t''`, `E=H_{t+h}−H_t+hH_t''`; all constants are weighted integrals `∫|x|^kΦe^{tx²}e^{c|x|}`, `k=2,3,4` (exponential remainders from `norm_exp_sub_sum_le_exp_norm_sub_sum`) | SURVIVED (infrastructure) | **THEOREM [L]**: `norm_sub_predicted_le`, `norm_riemannHeat_taylor_le`, `norm_deriv_deriv_riemannHeat_sub_le`, `norm_riemannHeat_time_remainder_le`, `exists_im_zero_le_of_simple_zero` | R:DeBruijnZeroMotion; clean, leaf build, axioms standard, wired, no collisions. Next (phase C): at a simple top zero `z*` with a real zero `x_r`, `Im(H''/H')(z*) ≤ −1/y* − 2y*/((x_r−x*)²+y*²)` from the pair law in finite differences `[log|H(z*+iλ)|−log|H(z*−iλ)|]/(2λ)` plus third-order Taylor |
+| 24 | Zero-dynamics phase C: at a simple top zero `z*` of `H_t` (`t≥0`, `y*=Im z*>0` maximal) with a real zero `x_r`, `Im(H''/H')(z*) ≤ −1/y* − 2y*/((x_r−Re z*)²+y*²)` | Hadamard lower bound for `D(λ)=log|H(z*+iλ)|−log|H(z*−iλ)|` (all pair orbits ≥0 by the local pair law; the pair `z*,z̄*` gives `log((2y*+λ)/(2y*−λ))≥λ/y*`, the real zero `½log` of its distance ratio `≥2y*λ/(X²+(y*+λ)²)`) against the third-order Taylor upper bound `D(λ)≤−λIm(H''/H')+Cλ²`; `λ→0⁺` | SURVIVED (infrastructure) | **THEOREM [L]**: `le_log_sub_of_top_zero(_of_hadamard)`, `log_sub_le_of_simple_zero`, `abs_log_norm_sub_le_of_taylor`, `exists_zeroCopy_of_eq_zero`, `im_ratio_le_of_top_zero` | R:DeBruijnTopZeroVelocity; clean, leaf build, axioms standard, wired, no collisions. With phase B: `d/dt (Im z*)² ≤ −2 − 4y*²/((x_r−x*)²+y*²)` at simple top zeros. Phase D: uniform KKL on compact `t`-intervals, multiple top zeros, contradiction with `m(t)=¼−2t` |
+| 25 | Multiple top zeros block phase D (the max functional needs simple top zeros). Conjecture: a zero of `H_s` (`s>0`) on the de Bruijn barrier `(Im z)²=¼−2s>0` is simple | backward local heat model at the parabolic scale: `H_{s−q²}(z₀+qσ)=(a/k!)q^kP_k(σ)+O(q^{k+1})`, `P_k=e^{D²}σ^k=σ^{k mod 2}S(σ²)` with `S` positive-coefficient ⇒ `P_k` has a root off ℝ for `k≥2`; minimum modulus ⇒ `H_{s−q²}` has a zero with `|Im|≥|Im z₀|+q·Im τ/2`, violating `(Im z)²≤¼−2(s−q²)` | SURVIVED (no Hermite real-rootedness needed) | **THEOREM [L]**: `deriv_riemannHeat_ne_zero_of_barrier`; `exists_norm_riemannHeat_sub_heatModel_le`, `norm_riemannHeat_time_taylor_le` (order-`M` time expansion), `iteratedDeriv_riemannHeat`, `exists_norm_sub_monomial_le`, `exists_heatModel_root_im_pos`, `exists_zero_of_norm_lt_sphere` | R:DeBruijnHeatLocalModel, R:DeBruijnBarrierZerosSimple; clean, leaf builds, axioms standard, wired, no collisions. Phase D now needs: uniform KKL on `[t₀,1/8]`, a real zero of `H_{s₀}`, Hurwitz continuity in the box, assembly via the restart theorem |
+
+## Log
+
+- 2026-09-29 — Card created. Session init: Serena memories listed, frontier map, STATUS gates, hub
+  memories read. Corpus checks: Robin/Nicolas/colossally-abundant criteria absent from corpus (0 hits);
+  Beurling integer-discretization floor already owned (MUST-526); de Branges/Salem present.
+- 2026-09-29 — Cycles 1–5. Corpus already owns χ-symmetrized additive carriers (`ZetaCarrier.gN`,
+  anneal lane), de Bruijn–Newman abstract modules (KR-CAL), prime-blind duality (HF L54). Cycle 5
+  survivor formalized: `RHTower/EulerExponentialCarrierCriticalLine.lean` (15 declarations).
+  Lint: only other sessions' unreachable modules fail; mine reachable via umbrella.
+- 2026-09-29 — Cycle 6 killed (Euler-depth wall σ≥1+C/loglog t). Cycle 7 formalized:
+  `RHTower/CarrierDepthThreeOffLineZeros.lean`. Finite-carrier picture now exact: additive depth 2
+  rigid (corpus), additive depth 3 not rigid (new), Euler exponentials rigid at every depth (new).
+- 2026-09-29 — Cycle 8 opened (heat-flow partial producer, RH-gap scale). Plan, paper-closed:
+  (i) pair law: for ζ with Im ζ = b and w = z ± iλ, `|ζ−w⁺||ζ̄−w⁺|² − |ζ−w⁻||ζ̄−w⁻|²`-product
+  difference `= 8Yλ(X²+Y²+λ²−b²)` (Y = Im z, X = Re z − Re ζ); (ii) one step: F entire, even,
+  conj-real, order-one envelope, zeros in `|Im| ≤ Δ` ⇒ `F(z+iλ)+F(z−iλ) ≠ 0` when `Im z ≠ 0`,
+  `Im z² + λ² > Δ²` (Hadamard product `f = f(0)∏E₁(z/ζ)`; conjugate pairing kills the `e^{z/ζ}`
+  factors; absolutely summable logs); (iii) cosine transforms `T_Ψ(z)=∫Ψ(x)e^{izx}dx` of even
+  nonnegative kernels with `|Ψ| ≤ A e^{−Be^{b|x|}}`: step = multiply Ψ by `cosh(λx)`; n steps with
+  `λ² = 2t/n` converge to `Ψe^{tx²}` (dominated, `cosh y ≤ e^{y²/2}`); Hurwitz closed-locus transfer;
+  (iv) Riemann's Φ: zeros of `Ξ = T_Φ` in `|Im| < ½` ⇒ `∫Φ(x)e^{tx²}e^{izx}dx` has only real zeros
+  for every `t ≥ 1/8` (Newman normalization: Λ ≤ ½). Killed as RH producer by KR-CAL (content at t=0);
+  survivor is the unconditional heat-time bound.
+- 2026-09-29 — Cycle 8 closed in Lean (3 modules). The corpus's abstract de Bruijn–Newman modules
+  (WeilIndexExtinctionTime, FinitenessThresholdCriterion) now have a concrete flow with an
+  unconditional reality time. Next: the gap `0 < t < 1/8` needs zero-free information at every
+  height (Ki–Kim–Lee strictness uses large-height absorption); computer-free improvement below 1/8
+  requires uniform `Δ < ½`, i.e. a zero-free vertical strip.
+- 2026-09-30 — Cycle 10 opened: C10 (explicit Ki–Kim–Lee finiteness). Paper mechanism: Gaussian
+  representation `H_t(z) = ∫ ξ(½+iz+u) g_t(u) du` (`g_t` = normal density of variance `2t`); with
+  `F(w) = ξ(½+w+iX)`, reality + FE give `F(−w) = conj F(w)` and `H_t(X+iy) = Q(−y) + conj Q(y)`,
+  `Q(y) = ∫_0^∞ F(w) g_t(w−y) dw`. Completing the square, `|F(w)|g_t(w−y)` is a Gaussian centred at
+  `w* = y + t log(X/2π)` of width `√(2t)`; for `t log(X/2π) = c ≥ 6` all mass lies in `σ ∈ [c−1, c+2]`
+  (Euler region, `|ζ−1| < 1`), the strip part is killed by `(c−2.5)² > c` against convexity growth.
+  The phase of `F` moves at `π/4 ± 0.6` per unit `w`, so for small `t` the mass is in a sector of
+  half-angle `< π/4`, `Re(N D̄) > 0` and `d/dy log|Q(y)| > 0` on `|y| ≤ ½`: no zero with `y ≠ 0`.
+  RH-unknown region becomes `{t < 1/8, t·log(X/2π) < 6}`. Formalization in phases; phase 1 =
+  Gaussian representation.
+- 2026-09-30 — C10 phases 1–2 closed in Lean: `RHTower/DeBruijnHeatGaussianAverage.lean`
+  (`riemannHeat_eq_integral_gaussian_xi`: `H_t(z)=∫g_t(u)ξ(½+iz+u)du`, Fubini with product
+  integrability from the MGF `∫g_t(u)e^{ux}du=e^{tx²}`; `riemannHeat_eq_halfGaussAverage`:
+  `H_t(X+iy)=Q(−y)+conj Q(y)`, `Q(y)=∫_0^∞g_t(w−y)ξ(½+w+iX)dw`). Clean, leaf build, axioms standard,
+  wired. Corpus has no Ki–Kim–Lee theorem (FinitenessThresholdCriterion/FinitenessTransition only
+  assume it), so phase 3 would be the first formal KKL finiteness.
+- 2026-09-30 — C10 phase 3 paper proof (derivative form; replaces the sector sketch). Fix
+  `t ∈ (0,1/8]`, `α=½log(X/2π)`, `a=α+iπ/4`, `F(w)=ξ(½+w+iX)`, `|y|≤½`, `u₀=y+2tα`, `w₁=5/2`,
+  `W=X/4`, `η=1`, `P=|F(u₀)|e^{−tα²}`.
+  (1) Euler model: on `[w₁,W]`, `|ξ'/ξ−a| ≤ |ζ'/ζ| + 2/X + ½|ψ(s/2)−log(s/2)| + ½|log(1−iσ/X)|
+  ≤ (π²/6−1) + small + 0.15 ≤ 1` (four-factor formula, Stirling defect `6/|z|²`, `Λ≤log n≤n−1`).
+  Grönwall: `|F(w)−F(u₀)e^{(w−u₀)a}| ≤ |F(u₀)|e^{(w−u₀)α}(e^{η|w−u₀|}−1)`.
+  (2) Gaussian MGF `∫g_t(w−y)e^{wc}dw=e^{yc+tc²}` (c ∈ ℂ) gives: main part
+  `|∫_{w₁}^W gF| ≥ P(e^{−tπ²/16} − 2(e^{tη²}−1) − tails)`, mass `M=∫_{w₁}^W g|F| ≤ P(2e^{tη²}−1)`;
+  tails by Chernoff `1_{w≤b} ≤ e^{λ(b−w)}`.
+  (3) `Q'(y)=∫_0^∞((w−y)/2t)g(w−y)F(w)dw` (domination by `C·g_{4t}(w)|F(w)|`, integrable by phase 1
+  at time 4t); IBP on `[w₁,W]`: `Q'=aQ+R`, `R=∫_{w₁}^W gεF + ∫_out((w−y)/2t−a)gF + g(w₁−y)F(w₁) −
+  g(W−y)F(W)`, `|R| ≤ ηM + OUT`.
+  (4) OUT ≪ P: strip `[0,w₁]` via `ξ=s(s−1)/2·π^{−s/2}Γ(s/2)ζ(s)`, `|Γ(σ/2+iX/2)|` increasing in σ
+  (Re ψ>0), `|ζ(s)|≤2+2|s|`, `|ζ(3+iX)|≥2−ζ(3)`: `|F(w)|≤C(1+X)|F(w₁)|`; far `[W,∞)` via
+  `|ξ'/ξ| ≤ α+2+σ/(2X)` Grönwall and `e^{−(w−y)²/8t}` absorption; ratio `e^{−tα²+O(α)}·poly(X) → 0`.
+  (5) `Re(Q'Q̄) ≥ |Q|(α|Q|−|R|) > 0` once `α(0.65−τ) > 1.27+τ`: `|Q(y)|²` strictly increasing on
+  `[−½,½]`, so `|Q(y)|≠|Q(−y)|` and `H_t(X+iy)≠0` for `0<|y|≤½`; zeros have `y²≤¼−2t`. Hence for every
+  `t>0` all zeros of `H_t` with `|Re z|` large are real, and the non-real zero set is finite (KKL).
+  Modules planned: GaussianChernoff (generic), LogLinearGronwall (generic), XiHorizontalEulerModel,
+  XiHorizontalStripComparison, HalfGaussAverageDerivative, KiKimLeeFiniteness.
+- 2026-09-30 — C10 phase 3 progress (all compile clean, not yet wired): `RHTower/HeatGaussianTiltedMoments`
+  (shifted MGF, Chernoff tails, model error `≤2ηe^{t(1+η)²}e^{yα+tα²}`), `HTGeometry/LogLinearGronwallModel`
+  (`‖F(w)−F(u)e^{(w−u)a}‖ ≤ ‖F(u)‖e^{(w−u)Re a}(e^{η|w−u|}−1)` from `‖F'−aF‖≤η‖F‖`),
+  `RHTower/XiHorizontalLogDerivativeModel` (`‖ξ'/ξ(σ+iX)−a‖≤1/8` on `5≤σ≤X/32`, `X≥200`;
+  `‖ξ'/ξ‖≤α+2+σ/2X` on `σ≥5`; `‖ζ'/ζ‖≤π⁴/90−1` on `Re≥5`), `RHTower/XiHorizontalStripComparison`
+  (`|Γ(x+iY)|` nondecreasing in `x>0` for `|Y|≥4`; `|ξ(σ+iX)|≤200(6+X)|ξ(5+iX)|` on `½≤σ≤5`),
+  `RHTower/HalfGaussTransformDerivative` (`Q'` under the integral), `RHTower/HalfGaussTransformMonotonicity`
+  (IBP on window, `Re(DQ̄)>0` criterion, `‖Q(−y)‖<‖Q(y)‖`), `RHTower/HalfGaussTransformWindowEstimates`
+  (`‖Q−Main‖≤E₁`, `‖D−aQ‖≤E₂`), `RHTower/XiLineHalfGaussInstance` (ξ supplies all hypotheses).
+  Remaining: relative bounds of the out-of-window terms against `P=‖F(u₀)‖e^{−tα²}`, eventual
+  smallness as `X→∞`, final theorem and finiteness corollary.
+- 2026-09-30 — C10 closed in Lean. `RHTower/KiKimLeeRelativeBounds` (window `[9/2, 2tα+α²]`, error
+  ratios `kklR1…kklRB` against `P=‖F(u)‖e^{−tα²}`), `RHTower/KiKimLeeLargeHeightReality`
+  (`re_slope_mul_conj_pos`, `tendsto_kklError`, `eventually_riemannHeat_ne_zero`,
+  `exists_riemannHeat_zeros_real`), `RHTower/KiKimLeeFiniteness` (`riemannHeat_nonreal_zeros_finite`).
+  Collision sweep via `.ilean`: renamed `norm_le_mul_exp_of_norm_deriv_le` → `_Icc`, privatised
+  `norm_Gammaℝ_eq`. STATUS MUST-531. Not reached: `newmanConstant < 1/8` (Ki–Kim–Lee's strict `Λ<½`)
+  — contraction bounds are non-strict through the Hurwitz limit; strictness needs a quantitative
+  one-step gain from the real zeros, which is the next conjecture candidate.
+- 2026-09-30 — Cycles 12–14. KKL completed with simplicity (`R:KiKimLeeSimpleZeros`) and the
+  local pair law (`R:DeBruijnLocalPairLawMonotonicity`: zeros at horizontal distance `≥|Im ζ|` never
+  obstruct vertical growth; RH ⇔ `|H_t(x+iy)|` nondecreasing in `y≥0` for all `x`, all `t>0`;
+  unconditional at large `|x|`). Heat lane is at its computer-free frontier: below KKL every step
+  needs either the continuum zero ODE (strict `Λ<½`) or zero verification (KR-CAL). Next cycles
+  leave the heat lane.

@@ -7,14 +7,13 @@ Let `K = Φ ⋆ Φ̃` be the autocorrelation of Riemann's kernel (`riemannKernel
 function with double-exponential decay, and put
 `ℓ(v) = Σ_{n ≥ 2} v(n) n^{−1/2} (K(log n) + K(−log n))`.
 
-**Theorem** (`atomPairing_riemannKernelAutocorr_nonpos`,
-`eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero`, unconditional). Let `lam` be
-Weil-positive with the pole term, with `Σ |lam(n) − Λ(n)| n^{−σ} < ∞` for every `σ > 1`. Then
-`ℓ(lam − Λ) ≤ 0`, and `ℓ(lam − Λ) = 0` only if `lam = Λ` on `n ≥ 2`.
+**Theorem** (`weilFullCone_exposed_at_vonMangoldt`, unconditional). Let `lam` be Weil-positive
+with the pole term. Then `ℓ(lam − Λ) ≤ 0`, and `ℓ(lam − Λ) = 0` only if `lam = Λ` on `n ≥ 2`.
 
-The inequality needs no growth hypothesis (`atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull`):
-the level-wise box `|lam(n)| ≤ √n (log n + C₀)` of Weil-positive weights suffices
-(`weilPositive_of_weilPositiveFull`, `summable_sub_vonMangoldt_div_sq`).
+No growth hypothesis is needed. The level-wise box `|lam(n)| ≤ √n (log n + C₀)` of Weil-positive
+weights gives `Σ |lam(n) − Λ(n)| n^{−2} < ∞` (`summable_sub_vonMangoldt_div_sq`), which is all
+the injectivity of the Riemann-kernel transform uses. For the same reason `Λ` is an extreme point
+with no hypothesis on the direction (`weilFullCone_extreme_at_vonMangoldt`).
 
 So the Weil cone lies in the half-space `ℓ(lam) ≤ ℓ(Λ)` and touches its boundary only at `Λ`:
 `Λ` is the unique maximizer of `ℓ` over the cone. This strengthens both the majorant rigidity
@@ -97,19 +96,22 @@ theorem integrable_riemannKernel_mul_shift {Z : ℝ → ℝ} {A : ℝ} (hZc : Co
     _ = A * C * (Real.exp (-(2 * |t|)) * Real.exp (-(4 * |t - y|))) := by ring
     _ ≤ A * C * Real.exp (-(2 * |t - y|)) := mul_le_mul_of_nonneg_left hexp (by positivity)
 
-/-- **Truncation limit for the autocorrelation pairing.**
-`|T_w(Φχ_L, Φχ_L) − ℓ(w)| ≤ K e^{−2(L−1)}`. -/
-theorem exists_abs_atomPairing_truncatedAutocorr_sub_le {w : ℕ → ℝ}
-    (hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2) :
-    ∃ K : ℝ, 0 ≤ K ∧ ∀ L : ℝ,
-      |atomPairing w (crossCorr (truncatedRiemannKernelReal L) (truncatedRiemannKernelReal L)) -
-        atomPairing w riemannKernelAutocorr| ≤ K * Real.exp (-(2 * (L - 1))) := by
+/-- **Decay of the autocorrelation and of its truncation defect.** For some `C₁, C₂ ≥ 0`,
+`|Φχ_L ⋆ Φχ_L~ − K|(y) ≤ C₁ e^{−2(L−1)} e^{−2|y|}` and `|K(y)| ≤ C₂ e^{−2|y|}`. -/
+theorem exists_riemannKernelAutocorr_decay :
+    ∃ C₁ C₂ : ℝ, 0 ≤ C₁ ∧ 0 ≤ C₂ ∧
+      (∀ L y, |crossCorr (truncatedRiemannKernelReal L) (truncatedRiemannKernelReal L) y -
+        riemannKernelAutocorr y| ≤ C₁ * Real.exp (-(2 * (L - 1))) * Real.exp (-(2 * |y|))) ∧
+      ∀ y, |riemannKernelAutocorr y| ≤ C₂ * Real.exp (-(2 * |y|)) := by
   obtain ⟨C, hC0, hC⟩ := exists_riemannKernelReal_le
   set G₂ := ∫ v : ℝ, Real.exp (-(2 * |v|)) with hG₂
   have hG₂0 : 0 ≤ G₂ := integral_nonneg fun _ => (Real.exp_pos _).le
-  set Sw := ∑' n : ℕ, |w n| / (n : ℝ) ^ 2 with hSw
-  have hSw0 : 0 ≤ Sw := tsum_nonneg fun _ => by positivity
-  refine ⟨2 * (2 * (C * C * G₂)) * Sw, by positivity, fun L => ?_⟩
+  refine ⟨2 * (C * C * G₂), C * C * G₂, by positivity, by positivity, fun L => ?_, fun y =>
+    abs_integral_mul_shift_le hC0 hC0 (fun t => by
+      rw [abs_of_pos (riemannKernelReal_pos t)]
+      exact (hC t).trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr
+        (by nlinarith [abs_nonneg t])) hC0)) (fun t => by
+      rw [abs_of_pos (riemannKernelReal_pos t)]; exact hC t) y⟩
   set E := Real.exp (-(2 * (L - 1))) with hE
   have hE0 : 0 < E := Real.exp_pos _
   -- pointwise bounds
@@ -170,8 +172,24 @@ theorem exists_abs_atomPairing_truncatedAutocorr_sub_le {w : ℕ → ℝ}
         |∫ s, (truncatedRiemannKernelReal L s - riemannKernelReal s) * riemannKernelReal (s - -y)| :=
           abs_add_le _ _
       _ ≤ _ := by linarith
-  have hKbound : ∀ y, |riemannKernelAutocorr y| ≤ C * C * G₂ * Real.exp (-(2 * |y|)) :=
-    fun y => abs_integral_mul_shift_le hC0 hC0 hΦ2 hΦ4 y
+  intro y
+  exact hDbound y
+
+/-- **Truncation limit for the autocorrelation pairing.**
+`|T_w(Φχ_L, Φχ_L) − ℓ(w)| ≤ K e^{−2(L−1)}`. -/
+theorem exists_abs_atomPairing_truncatedAutocorr_sub_le {w : ℕ → ℝ}
+    (hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ L : ℝ,
+      |atomPairing w (crossCorr (truncatedRiemannKernelReal L) (truncatedRiemannKernelReal L)) -
+        atomPairing w riemannKernelAutocorr| ≤ K * Real.exp (-(2 * (L - 1))) := by
+  obtain ⟨C₁, C₂, hC₁, hC₂, hDbound', hKbound⟩ := exists_riemannKernelAutocorr_decay
+  set Sw := ∑' n : ℕ, |w n| / (n : ℝ) ^ 2 with hSw
+  have hSw0 : 0 ≤ Sw := tsum_nonneg fun _ => by positivity
+  refine ⟨2 * C₁ * Sw, by positivity, fun L => ?_⟩
+  set E := Real.exp (-(2 * (L - 1))) with hE
+  set D : ℝ → ℝ := fun y => crossCorr (truncatedRiemannKernelReal L) (truncatedRiemannKernelReal L) y -
+    riemannKernelAutocorr y with hDdef
+  have hDbound : ∀ y, |D y| ≤ (C₁ * E) * Real.exp (-(2 * |y|)) := hDbound' L
   obtain ⟨hsD, hDsum⟩ := summable_atomPairing_of_decay hw2 hDbound
   obtain ⟨hsK, -⟩ := summable_atomPairing_of_decay hw2 hKbound
   have hU : ∀ t, |L| < |t| → truncatedRiemannKernelReal L t = 0 := fun t ht =>
@@ -186,7 +204,7 @@ theorem exists_abs_atomPairing_truncatedAutocorr_sub_le {w : ℕ → ℝ}
     refine tsum_congr fun n => ?_
     simp only [hDdef]; ring
   rw [hsub]
-  calc |atomPairing w D| ≤ 2 * (2 * (C * C * G₂) * E) * Sw := hDsum
+  calc |atomPairing w D| ≤ 2 * (C₁ * E) * Sw := hDsum
     _ = _ := by rw [hE]; ring
 
 theorem riemannKernelAutocorr_pos (y : ℝ) : 0 < riemannKernelAutocorr y := by
@@ -276,8 +294,7 @@ theorem atomPairing_riemannKernelAutocorr_nonpos {lam : ℕ → ℝ} (hW : WeilP
 `lam = Λ` on `n ≥ 2`. -/
 theorem eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero {lam : ℕ → ℝ}
     (hW : WeilPositiveFull lam)
-    (hsum : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ =>
-      |lam (n + 1) - ArithmeticFunction.vonMangoldt (n + 1)| / ((n : ℝ) + 1) ^ σ)
+    (hw2 : Summable fun n : ℕ => |lam n - ArithmeticFunction.vonMangoldt n| / (n : ℝ) ^ 2)
     (h0 : atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr = 0) :
     ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n := by
   set w : ℕ → ℝ := fun n => lam n - ArithmeticFunction.vonMangoldt n with hw
@@ -285,9 +302,6 @@ theorem eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero {lam : ℕ →
     have : (fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n) = lam := funext fun n => by
       simp only [hw]; ring
     rw [this]; exact hW
-  have hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2 := by
-    refine (summable_nat_add_iff 1).mp ((hsum 2 (by norm_num)).congr fun n => ?_)
-    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; push_cast; ring
   obtain ⟨K₀, hK₀0, hK₀⟩ := exists_abs_atomPairing_truncatedAutocorr_sub_le hw2
   have hstep1 : ∀ H : ℝ → ℝ, ContDiff ℝ 2 H → HasCompactSupport H →
       atomPairing w (crossCorr riemannKernelReal H) = 0 := by
@@ -370,11 +384,9 @@ theorem eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero {lam : ℕ →
     have h1 := hsign 1 (Or.inl rfl)
     have h2 := hsign (-1) (Or.inr rfl)
     linarith
-  have hsum' : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ σ := hsum
-  have := eq_zero_of_forall_atomPairing_riemannKernel_eq_zero hsum' hstep1
+  have := eq_zero_of_forall_atomPairing_riemannKernel_eq_zero hw2 hstep1
   intro n hn
-  have h := this n hn
-  simp only [hw] at h
+  have h : lam n - ArithmeticFunction.vonMangoldt n = 0 := this n hn
   linarith
 
 /-! ## The supporting inequality for every Weil-positive system -/
@@ -435,11 +447,11 @@ theorem weilPositive_of_weilPositiveFull {lam : ℕ → ℝ} (hW : WeilPositiveF
   have hπ : 0 < π := Real.pi_pos
   nlinarith
 
-/-- Weil-positive weights have `Σ |lam(n) − Λ(n)| n^{−2} < ∞`, by the level-wise box
+/-- Polar Weil-positive weights have `Σ |lam(n) − Λ(n)| n^{−2} < ∞`, by the level-wise box
 `|lam(n)| ≤ √n (log n + C₀)`. -/
-theorem summable_sub_vonMangoldt_div_sq {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
+theorem summable_sub_vonMangoldt_div_sq_of_weilPositive {lam : ℕ → ℝ} (hW : WeilPositive lam) :
     Summable fun n : ℕ => |lam n - ArithmeticFunction.vonMangoldt n| / (n : ℝ) ^ 2 := by
-  obtain ⟨C₀, hC₀⟩ := abs_le_of_weilPositive (weilPositive_of_weilPositiveFull hW)
+  obtain ⟨C₀, hC₀⟩ := abs_le_of_weilPositive hW
   set B := 8 + |C₀| with hB
   have hbound : ∀ n : ℕ, |lam (n + 2) - ArithmeticFunction.vonMangoldt (n + 2)| / ((n + 2 : ℕ) : ℝ) ^ 2 ≤
       B * (((n + 2 : ℕ) : ℝ) ^ ((5 / 4 : ℝ)))⁻¹ := by
@@ -491,6 +503,11 @@ theorem summable_sub_vonMangoldt_div_sq {lam : ℕ → ℝ} (hW : WeilPositiveFu
     exact (this.mul_left B).congr fun n => by push_cast; ring_nf
   refine (summable_nat_add_iff 2).mp (Summable.of_nonneg_of_le (fun _ => by positivity) hbound hs)
 
+
+/-- Full-cone Weil-positive weights have `Σ |lam(n) − Λ(n)| n^{−2} < ∞`. -/
+theorem summable_sub_vonMangoldt_div_sq {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
+    Summable fun n : ℕ => |lam n - ArithmeticFunction.vonMangoldt n| / (n : ℝ) ^ 2 :=
+  summable_sub_vonMangoldt_div_sq_of_weilPositive (weilPositive_of_weilPositiveFull hW)
 /-- **Supporting hyperplane, unconditional.** Every Weil-positive `lam` satisfies
 `Σ_{n ≥ 2} lam(n) n^{−1/2}(K(log n) + K(−log n)) ≤ Σ_{n ≥ 2} Λ(n) n^{−1/2}(K(log n) + K(−log n))`,
 in the form `ℓ(lam − Λ) ≤ 0`. -/
@@ -499,20 +516,26 @@ theorem atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull {lam : ℕ 
     atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0 :=
   atomPairing_riemannKernelAutocorr_nonpos hW (summable_sub_vonMangoldt_div_sq hW)
 
-/-- **`Λ` is an exposed point of the full Weil cone.** For a Weil-positive `lam` with
-`Σ |lam(n) − Λ(n)| n^{−σ} < ∞` for every `σ > 1`: `ℓ(lam − Λ) ≤ 0`, with equality only if
-`lam = Λ` on `n ≥ 2`. The exposing functional `ℓ` has the strictly positive kernel `Φ ⋆ Φ̃`. -/
-theorem weilFullCone_exposed_at_vonMangoldt {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (hsum : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ =>
-      |lam (n + 1) - ArithmeticFunction.vonMangoldt (n + 1)| / ((n : ℝ) + 1) ^ σ) :
+/-- **`Λ` is an exposed point of the full Weil cone.** Every Weil-positive `lam` has
+`ℓ(lam − Λ) ≤ 0`, with equality only if `lam = Λ` on `n ≥ 2`. The exposing functional `ℓ` has
+the strictly positive kernel `Φ ⋆ Φ̃`. No summability hypothesis: Weil positivity bounds
+`|lam(n)| ≤ √n (log n + C₀)`. -/
+theorem weilFullCone_exposed_at_vonMangoldt {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
     atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0 ∧
       (atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr = 0 →
-        ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) := by
-  have hw2 : Summable fun n : ℕ => |lam n - ArithmeticFunction.vonMangoldt n| / (n : ℝ) ^ 2 := by
-    refine (summable_nat_add_iff 1).mp ((hsum 2 (by norm_num)).congr fun n => ?_)
-    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; push_cast; ring
-  exact ⟨atomPairing_riemannKernelAutocorr_nonpos hW hw2,
-    eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero hW hsum⟩
+        ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) :=
+  ⟨atomPairing_riemannKernelAutocorr_nonpos hW (summable_sub_vonMangoldt_div_sq hW),
+    eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero hW (summable_sub_vonMangoldt_div_sq hW)⟩
+
+/-- **`Λ` is an extreme point of the full Weil cone**, with no hypothesis on `w`: if `Λ + w` and
+`Λ − w` are both Weil-positive, then `w(n) = 0` for all `n ≥ 2`. -/
+theorem weilFullCone_extreme_at_vonMangoldt {w : ℕ → ℝ}
+    (hp : WeilPositiveFull fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n)
+    (hm : WeilPositiveFull fun n => (ArithmeticFunction.vonMangoldt n : ℝ) - w n) :
+    ∀ n, 2 ≤ n → w n = 0 := by
+  have hw2 := summable_sub_vonMangoldt_div_sq hp
+  simp only [add_sub_cancel_left] at hw2
+  exact eq_zero_of_weilPositiveFull_add_of_sub hw2 hp hm
 
 /-! ## RH criteria -/
 
@@ -558,23 +581,19 @@ theorem weilFullFunctional_congr {lam lam' : ℕ → ℝ} (h : ∀ n, 2 ≤ n �
   · rw [if_neg hn, if_neg hn]
 
 /-- **RH as an extremal value of `ℓ` on the Weil cone.** RH holds iff some full-cone
-Weil-positive `lam` with `Σ|lam − Λ| n^{−σ} < ∞` (`σ > 1`) reaches `ℓ(lam) ≥ ℓ(Λ)`. Such a `lam`
-then equals `Λ`. -/
+Weil-positive `lam` reaches `ℓ(lam) ≥ ℓ(Λ)`. Such a `lam` then equals `Λ`. -/
 theorem riemannHypothesis_iff_exists_weilPositiveFull_atomPairing_nonneg :
     RiemannHypothesis ↔ ∃ lam : ℕ → ℝ, WeilPositiveFull lam ∧
-      (∀ σ : ℝ, 1 < σ → Summable fun n : ℕ =>
-        |lam (n + 1) - ArithmeticFunction.vonMangoldt (n + 1)| / ((n : ℝ) + 1) ^ σ) ∧
       0 ≤ atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr := by
   constructor
   · intro hRH
     refine ⟨fun n => (ArithmeticFunction.vonMangoldt n : ℝ),
-      weilPositiveFull_vonMangoldt_of_riemannHypothesis hRH, fun σ _ => ?_, ?_⟩
-    · simp only [sub_self, abs_zero, zero_div]; exact summable_zero
-    · simp only [sub_self]
-      unfold atomPairing
-      simp
-  · rintro ⟨lam, hW, hsum, hge⟩
-    obtain ⟨hle, heq⟩ := weilFullCone_exposed_at_vonMangoldt hW hsum
+      weilPositiveFull_vonMangoldt_of_riemannHypothesis hRH, ?_⟩
+    simp only [sub_self]
+    unfold atomPairing
+    simp
+  · rintro ⟨lam, hW, hge⟩
+    obtain ⟨hle, heq⟩ := weilFullCone_exposed_at_vonMangoldt hW
     have h := heq (le_antisymm hle hge)
     refine riemannHypothesis_iff_weilPositiveFull_vonMangoldt.mpr fun f hf hfc => ?_
     rw [weilFullFunctional_congr (lam' := lam) (fun n hn => (h n hn).symm)]

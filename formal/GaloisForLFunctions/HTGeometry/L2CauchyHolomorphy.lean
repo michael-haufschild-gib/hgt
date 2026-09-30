@@ -18,13 +18,15 @@ def l2Family (μ : Measure A) (F : ℂ → A → ℂ) (z : ℂ) : Lp ℂ 2 μ :=
 theorem l2Family_eq_toLp (μ : Measure A) (F : ℂ → A → ℂ) (z : ℂ) (h : MemLp (F z) 2 μ) :
     l2Family μ F z = h.toLp (F z) := by simp only [l2Family,dif_pos h]
 
-/-- A common L² bound on pointwise holomorphic functions controls the genuine complex L² slope limit. -/
-theorem differentiableAt_l2Family_of_cauchy_dominated (μ : Measure A) (F : ℂ → A → ℂ)
+/-- The genuine L² derivative is the class of the pointwise complex derivative. -/
+theorem exists_memLp_deriv_hasDerivAt_l2Family_of_cauchy_dominated
+    (μ : Measure A) (F : ℂ → A → ℂ)
     (z : ℂ) (R : ℝ) (hR : 0 < R) (b : A → ℝ) (hb : MemLp b 2 μ)
     (hm : ∀ u ∈ ball z R, AEStronglyMeasurable (F u) μ)
     (hd : ∀ a, DifferentiableOn ℂ (fun u => F u a) (ball z R))
     (hbound : ∀ a, ∀ u ∈ ball z R, ‖F u a‖ ≤ b a) :
-    DifferentiableAt ℂ (l2Family μ F) z := by
+    ∃ h : MemLp (fun a => deriv (fun u => F u a) z) 2 μ,
+      HasDerivAt (l2Family μ F) (h.toLp _) z := by
   have hz : z ∈ ball z R := mem_ball_self hR
   have hhalf : 0 < R/2 := by positivity
   have hsub : ball z (R/2) ⊆ ball z R := ball_subset_ball (by linarith)
@@ -104,7 +106,31 @@ theorem differentiableAt_l2Family_of_cauchy_dominated (μ : Measure A) (F : ℂ 
     apply hasDerivAt_iff_tendsto_slope.mpr
     apply tendsto_iff_norm_sub_tendsto_zero.mpr
     simpa only [Function.comp_def,Real.sqrt_zero,Real.sqrt_sq (norm_nonneg _),slope_def_module] using hnorm
-  exact hderiv.differentiableAt
+  exact ⟨hdf, hderiv⟩
+
+/-- A common L² bound on pointwise holomorphic functions controls the genuine complex L² slope limit. -/
+theorem differentiableAt_l2Family_of_cauchy_dominated (μ : Measure A) (F : ℂ → A → ℂ)
+    (z : ℂ) (R : ℝ) (hR : 0 < R) (b : A → ℝ) (hb : MemLp b 2 μ)
+    (hm : ∀ u ∈ ball z R, AEStronglyMeasurable (F u) μ)
+    (hd : ∀ a, DifferentiableOn ℂ (fun u => F u a) (ball z R))
+    (hbound : ∀ a, ∀ u ∈ ball z R, ‖F u a‖ ≤ b a) :
+    DifferentiableAt ℂ (l2Family μ F) z := by
+  obtain ⟨h, hd⟩ := exists_memLp_deriv_hasDerivAt_l2Family_of_cauchy_dominated
+    μ F z R hR b hb hm hd hbound
+  exact hd.differentiableAt
+
+/-- The canonical L² families commute with the actual pointwise derivative at an admitted point. -/
+theorem hasDerivAt_l2Family_of_cauchy_dominated (μ : Measure A) (F : ℂ → A → ℂ)
+    (z : ℂ) (R : ℝ) (hR : 0 < R) (b : A → ℝ) (hb : MemLp b 2 μ)
+    (hm : ∀ u ∈ ball z R, AEStronglyMeasurable (F u) μ)
+    (hd : ∀ a, DifferentiableOn ℂ (fun u => F u a) (ball z R))
+    (hbound : ∀ a, ∀ u ∈ ball z R, ‖F u a‖ ≤ b a) :
+    HasDerivAt (l2Family μ F)
+      (l2Family μ (fun u a => deriv (fun w => F w a) u) z) z := by
+  obtain ⟨h, hd⟩ := exists_memLp_deriv_hasDerivAt_l2Family_of_cauchy_dominated
+    μ F z R hR b hb hm hd hbound
+  rw [l2Family_eq_toLp μ (fun u a => deriv (fun w => F w a) u) z h]
+  exact hd
 
 end
 end GaloisForLFunctions.HTGeometry

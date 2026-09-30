@@ -87,3 +87,31 @@ geometry of iterated 2×2 commutators; arXiv:2609.14585 describes single
 commutators in C*-algebras. Neither abstract supplies a lower-tail estimate
 for a prescribed random local generator or the surviving circuit image.
 No transfer from these papers is claimed.
+
+## 2026-09-29: optimize exclusion-proof elaboration
+
+Maintenance only; the growing-replica incidence-action frontier remains open.
+Changed four proof bodies in `PauliReturnExcisedCircuitContinuumLaw.lean`
+and `PauliAllTimeCircuitExclusionLaw.lean`, preserving every statement and import.
+Restricted constant-sum simplification to explicit lemmas; replaced nonlinear
+arithmetic, congruence search and ring normalization with order/associativity
+lemmas. Broad simplification had attempted expensive failed typeclass searches
+on unitary endpoint subtypes.
+
+Same combined-source scratch, synchronous elaboration and native profiler:
+
+- Continuum exclusion proof value: 51,509,745 → 4,703,540 raw heartbeat ticks.
+- All-time return-excised exclusion: 36,505,575 → 3,085,771.
+- Combined two dominant proofs: 88,015,320 → 7,789,311, a 91.2% reduction.
+- Incidence ceiling: 5,271,834 → 1,144,590.
+- Certificate-floor proof now falls below the 1,000,000-tick logging threshold.
+
+These are proof-elaboration counters, not whole-project wall-clock speedups.
+The profiler threshold filters output only; no proof heartbeat or recursion
+limits were changed. Both integrated sources matched the measured combined
+scratch byte-for-byte. Final combined-source `lake --old env lean` audit passed
+without warnings. Exactly the four changed proofs were axiom-audited: only
+`propext`, `Classical.choice`, `Quot.sound`. Existing umbrella wiring retained;
+no builds, new oleans, git operations or agents. Global lint still reports 15
+unrelated unwired RHTower modules and no failures for the edited leaves.
+Owned Lean/search/lint processes exited; temporary optimization files removed.

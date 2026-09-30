@@ -3405,3 +3405,153 @@ Next conjectures to test:
   - *Insignificant?* It is an RH criterion, and it makes L132's narrow-smearing kill rigorous and positivity-free.
   - Verdict: **SURVIVES** (theorem).
 - **Producer map after L151.** A second producer must carry **infinite ζ-weighted spectral mass**: its Weil measure must sit, in bulk, where `|ζ(½+it)|` is not small. Crystalline-like, sparse-fake-atom and narrowly smeared producers are all excluded unconditionally. Only "ζ-heavy" non-crystalline spectra remain, which is where the α ≥ 1 wall sits.
+
+### L151 Lean — closed (atomic form)
+- `RHTower.zeta_mass_rigidity` (module `RHTower/ZetaMassRigidity`, on top of `RHTower/SpectralAtomThinStrip` and `HTGeometry/HamburgerThetaDefect`). Standard axioms only.
+  - Hypotheses: `t_j ≥ 1`; `Σ|c_j|/t_j² < ∞`; `Σ|c_j||ζ(½+it_j)| < ∞`; `Γ̃ + 1/(s−1) − L_lam = atomicPairSeries c t` on `Re s > 1`.
+  - Conclusion: `lam(n) = Λ(n)` for `n ≥ 2`, and RH. The ordinates are otherwise arbitrary.
+- Card moved to `3-formalized/11-rh-zero-divisor-geometry/weil-cone-zeta-mass-rigidity.md`. The measure form (Fubini over `ν`) is still paper-only.
+- Reusable pieces:
+  - `gamma_thin_strip_inverse_mellin`: the Γ jump across a strip containing one pole;
+  - `atom_thin_strip`: the jump of `Λ Q_u` is `Λ(ρ)/2·x^{−ρ/2} + Λ(ρ̄)/2·x^{−ρ̄/2}`;
+  - `norm_completedRiemannZeta_mul_Gamma_laplace_le`: the `1/sin` kernel is at most `3|ζ|·|τ|^{−½}`;
+  - `coeff_eq_of_hamburgerSeries_periodic_re_pos_of_defect`: Hamburger's residue comparison with a vanishing perturbation;
+  - `riemannHypothesis_of_completedZetaXiLogDeriv_add_eq_mul`: `Λξ'/ξ + cΛ = ΛP` with `P` holomorphic on `Re > ½` forces RH.
+
+### L152 — Sublinear ζ-mass rigidity. THEOREM [P+L] (card `3-formalized/11-rh-zero-divisor-geometry/weil-cone-sublinear-zeta-mass-rigidity.md`)
+- **Conjecture.** L151 holds with `Σ_{t_j≤T}|c_j||ζ(½+it_j)| = o(T)` in place of finite ζ-mass.
+- **Mechanism.** The atom Laplace kernel is damped by `e^{−|u|Re τ/|τ|}`. On the ray `τ = ε+in` the damping rate is `ε/(n+1)`, so `εJ(ε+in) → 0` exactly when the Abel-damped ζ-mass is `o(1/δ)`. Radial limits suffice in Hamburger's residue comparison, because all other terms have limits.
+- **Phase-4 attack.**
+  - *False?* No.
+  - *Circular?* No.
+  - *Known?* It is the natural sharpening of L151. The Abelian step is classical; the statement is new.
+  - *Significance.* Moderate. Every spectrum whose average ζ-weight is `o(1/log T)` is exactly the zero spectrum. In particular no smearing or displacement of the zeros costing `o(T)` ζ-mass exists, with or without RH.
+  - Verdict: **SURVIVES** (theorem).
+- **Exact law behind L150–L152.** Radial limits exist unconditionally (step 4), and they give `1⋆(lam−Λ)(n) + 2β = 2π·lim_{ε→0⁺} εJ(ε+in)`. The right side is the Abel-regularized Bohr coefficient at `log n` of `ζ(½+iu)dμ(u)`. For a genuine pair `(lam, μ)` the law holds identically (L144's tautology), so it constrains nothing by itself. The rigidity comes only from bounding the right side.
+- **Lean.** `RHTower.zeta_mass_sublinear_rigidity_of_truncated` (module `RHTower/ZetaMassSublinearRigidity`), standard axioms.
+
+### L153 — Integer spectral masses alone force `lam = Λ` and RH (arbitrary ordinates). THEOREM [P], verdict BRIDGE (Hamburger in log-derivative form)
+- **Statement.**
+  - Let `Σ|lam(n)|n^{−σ} < ∞` for `σ > 1`, and suppose `Γ̃ + 1/(s−1) − L_lam = Σ_j m_j·2(s−½)/((s−½)²+t_j²)` on `Re s > 1`.
+  - Here `m_j ∈ ℤ`, all but finitely many are positive, the ordinates `t_j` are arbitrary, and `Σ|m_j|/t_j² < ∞`.
+  - Then `lam = Λ`, the `t_j` are the zero ordinates of `ζ` with `m_j` their multiplicities, and RH holds.
+- **Proof.**
+  1. `Φ` is meromorphic on `ℂ` with simple poles at `½ ± it_j` and integer residues `m_j`. So `E := exp(∫Φ)` is meromorphic, with only finitely many poles, and even (`Φ` is odd about `½`).
+  2. `E` is the canonical product `Π(1 + (s−½)²/t_j²)^{m_j}`. Since `Σ|m_j|/t_j² < ∞`, it has order `≤ 2`.
+  3. On `Re s > 1`, `E = C·s(s−1)Γ_ℝ(s)F(s)` with `F = exp(Σ lam(n)n^{−s}/log n)`, an absolutely convergent Dirichlet series with `F(σ) → 1`.
+  4. Hence `P(s)(s−1)F(s)` is entire of finite order, where `P` clears the finitely many negative-mass atoms. Moreover `Γ_ℝ(s)F(s) = ±Γ_ℝ(1−s)F(1−s)`.
+  5. Hamburger gives `F = ζ`: the sign `−` would force `F = 0`. Then `lam = Λ`, and the zeros of `ξ` are the atoms, all on the line. ∎
+- **Phase 4.**
+  - The mechanism is exactly Hamburger's converse theorem, after exponentiating the Weil function. The statement is new in this form: no ζ-mass condition and no RH input are needed, only integrality of the spectral masses.
+  - In Fourier-quasicrystal language: the only integer-mass crystalline measure with ζ's archimedean background and Fourier support in `±log ℕ` is the zero measure of `ζ`, and its existence is RH. The unit-mass Fourier-quasicrystal classification (Olevskii–Ulanovskii) excludes the zeta zeros because of the archimedean background; this closes that gap for integer masses.
+  - Verdict: **BRIDGE** (a corollary of Hamburger). No Lean now; queued as low priority.
+- **Relentless interrogation (what survives).**
+  - Two independent mechanisms restore a functional equation for a Weil function:
+    - (i) multiplication by `ζ`, which works when the non-zero spectrum is ζ-light (L151/L152);
+    - (ii) exponentiation, which works when the masses are integral (L153).
+  - With masses in `(1/k)ℤ`, `F^k` has a degree-`k` FE, but `F` branches at the atoms. The Hamburger contour then picks up root-of-unity jumps `(1−ω)Γ_ℝF` along the line, which is an `F`-mass condition. So rational masses reduce to a mass condition and are not free.
+  - **Producer map after L150–L153.** A second producer must:
+    - have non-integral or continuous spectrum;
+    - carry ζ-mass `≫ T`;
+    - be dense in composites without being prime-supported (L148);
+    - avoid ζ-type resonance (L107/L133).
+
+### L154 — Measure capstone: ζ-mass rigidity for arbitrary signed spectral measures, formal. THEOREM [L] (closes the frontier's "measure/Dirichlet capstone")
+- **Abstract engine** (`RHTower/OddWeilFunctionRigidity`).
+  - Call `Φ` an odd Weil function if it is holomorphic on `Re s > ½`, odd about `½`, and of polynomial growth `B(|Im|+1)³` for `¼ ≤ |Re − ½| ≤ 1`.
+  - For any such `Φ` with `Γ̃ + 1/(s−1) − L_lam = Φ`, the theta relation holds with the thin-strip defect `K_Φ` (`coeffTheta_weil_defect_relation`).
+  - `weil_defect_rigidity`: if the defect's Laplace transform `J` continues holomorphically to `Re τ > 0` and `εJ(ε+im) → 0` for all `m`, then `lam = Λ` on `n ≥ 2` and RH holds.
+  - Includes a general parametric-holomorphy lemma, `differentiableOn_integral_of_locally_bounded` (Cauchy estimate plus dominated differentiation).
+- **Measure instance** (`RHTower/SpectralMeasureZetaMassRigidity`).
+  - `Φ = (2(s−½)/π)∫c/((s−½)²+t²)dν` for data `(X, ν, c, t)`.
+  - The defect is the `ν`-integral of atom jumps, by Fubini on each line. The Laplace identity also comes by Fubini. `J` is holomorphic via the parametric lemma.
+  - The damped bound is `(3/π)|τ|^{−½}∫|c||ζ|e^{−t Re τ/|τ|}dν`. The Abelian step is done in `lintegral` form.
+  - Headlines: `zeta_mass_sublinear_rigidity_measure_of_truncated` (`∫_{t≤T}|c||ζ(½+it)|dν = o(T)`) and `zeta_mass_rigidity_measure` (finite ζ-mass). Standard axioms.
+- **Reading.**
+  - Every represented completion `lam ≠ Λ` of ζ's archimedean datum has ζ-weighted spectral mass `≫ T` along a sequence. This is now formal for arbitrary signed spectral measures, including absolutely continuous ones.
+  - The atomic theorems L150–L152 are instances of the same engine.
+- **Phase 4.** This is the formalization of the L151/L152 paper theorems in full generality. No new conjecture. Verdict: [L] closure of a listed open gate.
+
+### L155 — The exact Bohr–ζ law and the ζ-mass deficit law. THEOREM [P+L] (card `3-formalized/11-rh-zero-divisor-geometry/weil-cone-zeta-mass-deficit-law.md`)
+- **Exact law.** With no ζ-mass hypothesis, `(1⋆(lam−Λ))(n) + 2β = 2π·lim_{ε→0⁺} εJ(ε+in)` for every `n ≥ 1`.
+- **Deficit law.** `|lam(p) − log p| ≤ 6(p+3)·A`, where `A` bounds the Abel-damped ζ-mass density.
+- **Consequence.** The ζ-mass density is a convex functional on `W` that dominates a weighted sup-norm of `lam − Λ`. Rigidity (L152) is the `A = 0` case.
+- **Positivity still does not enter.** The law is linear in `μ`.
+- **The open core, restated.** One-sided uniqueness under RH is the following question.
+  - Can a positive `ν⁺` off the zeros, balanced by removals `R` at zeros of equal mean density, be the boundary of an integer Dirichlet series?
+  - L152 excludes `ν⁺` concentrated near the removed zeros, since that would be ζ-light.
+  - The energy heuristic excludes macroscopic removals at finite `ℓ²(n^{−½})` distance: atom peaks cost `r²/a`.
+  - The only surviving scenario is "evaporation": dense, tiny removals `r_γ → 0` with `Σ_{γ≤T} r_γ ≍ T`, balanced by a spread positive density.
+  - For uniform evaporation (`r_γ ≈ c/log γ`), the Landau–Gonek heuristic gives `w ≈ Λ(n)/log n` with energy `≍ log log N`, which is borderline divergent.
+- **Next target (L156).** Make the evaporation obstruction rigorous. A second producer at finite energy from `Λ` would need `Σ_{γ≤T} r_γ ≍ T` with `Σ r_γ² = o(T)`, and the Landau–Gonek duality should force infinite energy.
+
+### L156 — Downward order rigidity of the full Weil cone, Herglotz-free. PROVED [Lean]
+- **Conjecture.** Full-cone Weil positivity together with `lam ≤ Λ` forces `lam = Λ`. No sign or growth condition on `lam` is assumed.
+  - It can fail if Riemann's kernel is too coherent with `log ℕ`, i.e. if `Σ_{n≥2}K(log n) ≥ K(0)/2`.
+- **Kill attempt.** None succeeded.
+  - The corpus had only the `0 ≤ lam` RH corollary (via the CCM odd pole) and the polar constant-shift case.
+  - The frontier map lists this downward uniqueness as Lean-open.
+- **Proof [Lean, `RHTower.WeilFullConeMinorantRigidity`].**
+  - Test: log-shift difference `Φχ_L − Φχ_L(· − log m)`, with `m` the argmax of `(Λ−lam)/√n` on the window `n ≤ e^{2L}`.
+  - Analytic input: `Σ_{n≥2}K(log n) ≤ (23/50)K(0)`, from the sandwich `φ₁ ≤ Φ ≤ 1.01φ₁` and the exact shift law `φ₁(|s+h|)φ₁(|s−h|) ≤ R(e^{2h})φ₁(|s|)²`.
+  - The zero-side cost `(1+√m)² ≤ 4e^{2L}` is absorbed by `E_L² ≲ e^{−e^{2L−2}}`.
+  - Corollary: RH ⟺ some full-cone Weil-positive `lam ≤ Λ` exists.
+- **Reading.** `Λ` is order-isolated in the full cone from both sides.
+  - Producer consequence: no Weil-positive completion can be sought by lowering `Λ` pointwise, nor by raising it.
+  - Any producer differs from `Λ` by a sign-changing weight, so the producer question lives entirely in sign-changing deviations.
+  - The obstruction mechanism is quantitative prime-lattice incoherence of `Φ`, a positive statement about the kernel alone.
+- **Card.** `3-formalized/11-rh-zero-divisor-geometry/weil-cone-minorant-rigidity.md`.
+
+### L157 — Summable-deficit rigidity: excess over Λ is paid by deficit below Λ. PROVED [Lean]
+- **Conjecture.** Full-cone Weil positivity together with `Σ(Λ−lam)⁺n^{−½} < ∞` forces `lam = Λ`.
+  - This contains upward rigidity, eventual upward rigidity (new) and L64.
+- **Kill attempt.** The boundary picture was checked for a counterexample; none was found.
+  - Upward excess with summable deficit gives the near-null measure `P̂` a negative atom at `t = 0` or a negative a.c. part, and neither is allowed.
+  - The obstruction is detected by wide near-null tests.
+- **Proof [Lean, `RHTower.WeilFullConeSummableDeficitRigidity`].**
+  - Comb `Σ_{j<M}Φχ_L(·−j)`. Its autocorrelation is a discrete triangle: `k(y) ≥ (M−⌊y⌋)m²`, `k(0) ≤ 3CM`, `k ≤ k(0)`.
+  - Positivity gives `Σ_{n<N}(lam−Λ)⁺n^{−½} ≤ (1 + 12C·Σ(Λ−lam)⁺n^{−½})/m²` uniformly in `N`, and L64 finishes.
+  - Corollary: RH ⟺ ∃ full-cone Weil-positive `lam` with summable deficit.
+- **Producer consequence.** Every producer `≠ Λ` has infinite ℓ¹(n^{−½}) deficit below `Λ` (L157) and some excess above `Λ` (L156).
+- **Open core (L158 target).** The mirror case: summable excess with infinite deficit, e.g. eventually `≤ Λ`.
+  - The near-null regime cannot decide it. The boundary picture lets the Weil measure carry an atom at `t = 0` (the half-pole mechanism), paid for by a `√x`-slope deficit.
+  - Needed: a non-near-null test that sees the atom at 0, or a Bohr-density argument that `Re D_v(it)` with `v ≥ 0` eventually and log-density `m₀ > 0` is negative on a set of positive measure away from zero ordinates.
+
+### L158 — Lacunary rigidity: sparse deviations of any sign and size are excluded. PROVED [Lean]
+- **Conjecture.** Full-cone Weil positivity with `lam = Λ` off a 3-lacunary set forces `lam = Λ`.
+  - Special case: arbitrary changes at the powers of a single prime `p ≥ 3`.
+  - This lies beyond L78 (whose remainder condition fails for box-size lacunary jumps) and beyond L64 (non-summable).
+- **Kill attempts.**
+  - Two-generator sets `{p^a q^b}` escape, because their log-differences are dense. This is the sharp boundary of the method.
+  - `p = 2` needs `K(log 2)/K(0) ≲ 0.24`. The pointwise shift bound gives only `0.388`, while the true pointwise supremum is about `0.09`. So `p = 2` is left for a sharper piecewise bound.
+- **Proof [Lean, `RHTower.WeilFullConeLacunaryRigidity`].**
+  - Pair test `Φχ_L ± Φχ_L(·−log n_j)` with the sign chosen against `v_j`.
+  - Decay `(1+D)K(D) ≤ 4.08e^{3D−π(e^D−1)}K(0)`.
+  - Lacunary sums are at most `0.218`, and the weighted-supremum contraction is `M ≤ 0.873M`.
+- **Producer consequence.** A producer `≠ Λ` cannot be `Λ` modified on a sparse set. Its deviation must be dense in log-scale, consistent with L148.
+- **State of the one-sided and sparse classes** (all unconditional, all in Lean):
+  - downward (L156);
+  - summable deficit (L157);
+  - lacunary (L158);
+  - regular (L78);
+  - `ℓ¹` (L64).
+- **Open.** Dense two-sided deviations with infinite deficit, including the mirror case of summable excess with infinite deficit (the half-pole design). Next: the `p = 2` sharpening, then the mirror case via Bohr-density negativity of `Re D_v(it)`.
+
+### L159 — Dyadic rigidity: the powers of 2 are pinned too. PROVED [Lean]
+- **Conjecture.** Full-cone Weil positivity with `lam = Λ` off `{2^k : k ≥ 1}` forces `lam = Λ`. This is the ratio-2 line left open by L158.
+- **Kill attempt.** The L158 budget fails at ratio 2 in two ways:
+  - the generic shift bound gives `K(log2)/K(0) ≤ 0.388`;
+  - the weight `1 + log n` has cross-ratio `1 + D`, too large at `D = log 2`.
+  Both are repaired, so the verdict is SURVIVES.
+- **Proof [Lean, `RHTower.WeilFullConeDyadicRigidity`].**
+  - Sharp pointwise lead-term bound: `φ₁(|s+d|)φ₁(|s−d|) ≤ (7/50)φ₁(|s|)²` at `d = ½log 2`. It rests on a four-piece elementary inequality in `V = e^{2d}` (`dyadic_core_le`), which gives `K(log2) ≤ 0.1429·K(0)`.
+  - The weight becomes `3 + log n`, with cross-ratio `1 + D/3`.
+  - Weighted decay: `0.177·18^{1−k}`, summing to `≤ 0.1875`.
+  - Contraction `M ≤ 0.7605M`.
+- **Producer consequence.** A producer `≠ Λ` cannot deviate on any single prime-power line. Its deviation must reach log-dense sets.
+- **Card.** `3-formalized/11-rh-zero-divisor-geometry/weil-cone-dyadic-rigidity.md`.
+- **Context.** New modules by another agent (`WeilFullConeNearNullPositiveDefinite`, `WeilDeviationTranslationBound` and `WeilDeviationSpectralPairing`, not wired) take the mirror case through Bohr/Bochner:
+  - `−K⋆W_a` is positive definite;
+  - the deficit is translation-bounded;
+  - there is a spectral pairing with `𝓕(Ξ²g)`.
+  To avoid duplicating that lane, L160 attacks dense two-sided deviations.

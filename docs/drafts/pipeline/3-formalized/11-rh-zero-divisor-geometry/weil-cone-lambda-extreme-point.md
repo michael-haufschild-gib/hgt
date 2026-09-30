@@ -74,3 +74,6 @@
    - the corpus Hamburger lemma `coeff_eq_zero_of_odd_coeffTheta_relation` gives `a = 0`, and Möbius inversion gives `w = 0`.
 
 **What the new route shows.** Step 2 of the paper proof (atomic boundary measure) is replaced by one line: two-sided positivity forces the first variation of `T_w` to vanish at a near-null vector. The only arithmetic input is the vanishing of Ξ at the zeros, through Φ. The route also gives the one-sided tangent law `T_w(Φχ_L) ≤ W(Φχ_L) → 0` (cycles 143–144 of `mc-conjecture-loop-2026-09-28.md`).
+
+## Lean update (cycle 150)
+- `RHTower.weilFullCone_extreme_at_vonMangoldt`: extremality with no hypothesis on `w`. `eq_zero_of_weilPositiveFull_add_of_sub` now takes `Σ|w(n)|n^{−2} < ∞` instead of the σ > 1 class. That bound is automatic for Weil-positive `Λ + w`.

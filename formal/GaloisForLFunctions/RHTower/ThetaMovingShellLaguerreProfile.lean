@@ -1,4 +1,8 @@
-import GaloisForLFunctions.RHTower.ThetaMovingShellBoundaryLayer
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import Mathlib.Data.Nat.Factorial.Basic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-! # Exact rational profile and its sharp first-Laguerre sign boundary -/
 
@@ -22,14 +26,14 @@ theorem thetaMovingShellJetLimit_re_zero (lambda : ℝ) :
   have hp := Real.pi_pos
   have hd : 4*Real.pi^2+lambda^2 ≠ 0 := ne_of_gt (by positivity)
   simp only [thetaMovingShellJetLimit, pow_zero, zero_add, pow_one, Nat.factorial_zero,
-    Nat.cast_one, mul_one, mul_div_assoc]
+    Nat.cast_one, mul_one, ← mul_div_assoc]
   rw [Complex.div_re]
   rw [normSq_fourierDen]
   simp only [Complex.ofReal_re, Complex.ofReal_im, Complex.sub_re, Complex.sub_im,
     Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im, zero_mul, mul_zero,
     one_mul, sub_zero, Complex.div_ofNat_re, Complex.div_ofNat_im]
   field_simp [hd]
-  <;> ring
+  ring
 
 theorem thetaMovingShellJetLimit_re_one (lambda : ℝ) :
     (thetaMovingShellJetLimit 1 lambda).re =
@@ -37,25 +41,25 @@ theorem thetaMovingShellJetLimit_re_one (lambda : ℝ) :
   have hp := Real.pi_pos
   have hd : 4*Real.pi^2+lambda^2 ≠ 0 := ne_of_gt (by positivity)
   simp only [thetaMovingShellJetLimit, pow_one, Nat.factorial_one, Nat.cast_one,
-    mul_div_assoc, ← mul_assoc]
+    ← mul_div_assoc]
   rw [Complex.div_re]
-  simp [map_pow, normSq_fourierDen, Complex.mul_re, Complex.mul_im, pow_succ,
+  simp [normSq_fourierDen, Complex.mul_re, Complex.mul_im, pow_succ,
     Complex.div_ofNat_re, Complex.div_ofNat_im]
   field_simp [hd]
-  <;> ring
+  ring
 
 theorem thetaMovingShellJetLimit_re_two (lambda : ℝ) :
     (thetaMovingShellJetLimit 2 lambda).re =
       16*Real.pi^3*(3*lambda^2-4*Real.pi^2)/(4*Real.pi^2+lambda^2)^3 := by
   have hp := Real.pi_pos
   have hd : 4*Real.pi^2+lambda^2 ≠ 0 := ne_of_gt (by positivity)
-  simp only [thetaMovingShellJetLimit, Nat.factorial_succ, Nat.factorial_one,
-    Nat.cast_mul, Nat.cast_one, mul_one, mul_div_assoc, ← mul_assoc]
+  simp only [thetaMovingShellJetLimit, Nat.factorial_succ, Nat.factorial_zero,
+    Nat.cast_add, Nat.cast_one, zero_add, mul_one, ← mul_div_assoc]
   rw [Complex.div_re]
-  simp [map_pow, normSq_fourierDen, Complex.mul_re, Complex.mul_im, pow_succ,
+  simp [normSq_fourierDen, Complex.mul_re, Complex.mul_im, pow_succ,
     Complex.div_ofNat_re, Complex.div_ofNat_im]
   field_simp [hd]
-  <;> ring
+  ring
 
 theorem thetaMovingShellJetLimit_firstLaguerre (lambda : ℝ) :
     (thetaMovingShellJetLimit 1 lambda).re^2 -
@@ -66,7 +70,7 @@ theorem thetaMovingShellJetLimit_firstLaguerre (lambda : ℝ) :
   have hp := Real.pi_pos
   have hd : 4*Real.pi^2+lambda^2 ≠ 0 := ne_of_gt (by positivity)
   field_simp [hd]
-  <;> ring
+  ring
 
 end
 end RHTower

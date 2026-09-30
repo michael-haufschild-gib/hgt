@@ -77,5 +77,27 @@ has exactly the original constrained Rayleigh infimum; see
   survivor formalized; no-go closed at this stated scope.
 - 2026-09-29 — compact exact-pole source strengthening and exact finite-sample
   ground rigidity formalized; eight public theorems pass direct source and
-  standard-axiom audits. A sharper one-direction curvature survivor is under
-  final audit in `../2-fully-proven/rw-prime-curvature-one-negative-direction.md`.
+  standard-axiom audits. Sharper positive survivor now formalized in
+  `../3-formalized/rw-prime-curvature-one-negative-direction.md`: exact four
+  positive squares minus one sample-difference square; strictly positive optimal
+  compensation coefficient even on arbitrarily small compact source vectors;
+  full equality classification. Removing the sample difference restores local
+  nonnegative curvature while its two-zero compact source sector still approaches
+  the unchanged actual ground infimum. Twelve additional theorems pass direct
+  source and standard-axiom audits. Integrated full-source compensation remains
+  open; RH is neither proved nor falsified.
+- 2026-09-29 — aperture survivor audited in
+  `../3-formalized/rw-prime-curvature-aperture-plateau.md`: all four literal rows,
+  complete curvature and sharp compact-source compensation remain fixed for
+  `log 2<a<log(5/2)`. Every higher index `n≥5` is invisible there, independent of
+  cutoff membership. Six additional public theorems pass named old-mode build,
+  final direct source check and standard-axiom audit; twenty-six total audited
+  theorems across the four owned leaves. Endpoint sign classification and
+  integrated compensation remain open.
+- 2026-09-29 — stronger positive survivor: at any aperture and any finite set
+  of literal probes, simultaneous zero generator, jump energy and curvature
+  leaves a dense exact-pole smooth fibre with exactly the original ground
+  infimum. Card `../3-formalized/rw-finite-curvature-probes-ground-rigidity.md`;
+  four public theorems pass named old-mode build, final direct source check and
+  standard-axiom audit. Thirty audited public theorems across five owned leaves;
+  all-aperture full-source sign remains unresolved.

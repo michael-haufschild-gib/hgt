@@ -58,3 +58,7 @@
 - 2026-09-29 — cycle 148: **quantitative exposedness** `sq_atomPairing_riemannKernel_le`. For Weil-positive `lam` and a real `C²` compactly supported `H`: `T_w(Φ,H)² ≤ (ℓ(Λ) − ℓ(lam))·((5/4)S E_H² − T_w(H,H))`.
   - Proof: the first-variation inequality `ℓ(w) + 2εT_w(Φ,H) + ε²T_w(H,H) ≤ (5/4)Sε²E_H²` holds for every real ε (limit `L → ∞`), and its discriminant gives the bound.
   - The ℓ-deficit therefore controls the Riemann-kernel transform `G_w` weakly. The equality case of the exposed-point theorem is the special case `ℓ(w) = 0`.
+
+## Lean update (cycle 150)
+- Hypothesis-free: `weilFullCone_exposed_at_vonMangoldt (hW : WeilPositiveFull lam)` gives `ℓ(lam − Λ) ≤ 0` and equality ⇒ `lam = Λ`, with no summability class. `riemannHypothesis_iff_exists_weilPositiveFull_atomPairing_nonneg` drops the class too.
+- Mechanism: `summable_sub_vonMangoldt_div_sq` (from the corpus box `abs_le_of_weilPositive`), plus `eq_zero_of_riemannKernelTransform_eq_zero_of_sq` (Hamburger under `Σ‖a_n‖/n² < ∞`, module `HTGeometry/HamburgerSquareSummable`).

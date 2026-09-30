@@ -38,38 +38,57 @@ theorem tendsto_normalized_thetaShellPrefixFirstLaguerre {lambda : ℝ} (hlambda
       thetaShellPrefixCosine, pow_zero, pow_one, mul_one]
     rw [← he]
     field_simp [ha]
-    <;> ring
-  · simp only [thetaMovingShellJetLimit] at *
-    rw [← thetaMovingShellJetLimit_firstLaguerre]
+  · rw [← thetaMovingShellJetLimit_firstLaguerre]
     simp only [thetaMovingShellJetLimit, neg_sq, neg_mul_neg]
+
+/-- Sharp sign classification on all fixed quadratic rays beyond the Xi boundary. -/
+theorem thetaShellPrefixFirstLaguerre_quadratic_ray_sign :
+    (∀ lambda ∈ Ioo (4 : ℝ) (2*Real.pi), ∀ᶠ N : ℕ in atTop,
+      0 < thetaShellPrefixFirstLaguerre N (lambda*thetaMovingShellScale N)) ∧
+    (∀ lambda ∈ Ioi (2*Real.pi), ∀ᶠ N : ℕ in atTop,
+      thetaShellPrefixFirstLaguerre N (lambda*thetaMovingShellScale N) < 0) := by
+  constructor
+  · intro lambda hlambda
+    have hl := tendsto_normalized_thetaShellPrefixFirstLaguerre hlambda.1
+    have hs : 0 < 128*Real.pi^6*(4*Real.pi^2-lambda^2)/(4*Real.pi^2+lambda^2)^4 := by
+      have hp := Real.pi_pos
+      have hnum : 0 < 4*Real.pi^2-lambda^2 := by
+        have hprod := mul_pos (sub_pos.mpr hlambda.2)
+          (by linarith [hlambda.1] : 0 < 2*Real.pi+lambda)
+        nlinarith [hprod]
+      positivity
+    filter_upwards [hl.eventually_const_lt hs] with N hN
+    exact pos_of_mul_pos_right hN (Real.exp_pos _).le
+  · intro lambda hlambda
+    have hp := Real.pi_pos
+    have hpi := Real.pi_gt_three
+    have hratio : 4 < lambda := by change 2*Real.pi < lambda at hlambda; linarith
+    have hl := tendsto_normalized_thetaShellPrefixFirstLaguerre hratio
+    have hs : 128*Real.pi^6*(4*Real.pi^2-lambda^2)/(4*Real.pi^2+lambda^2)^4 < 0 := by
+      have hnum : 4*Real.pi^2-lambda^2 < 0 := by
+        have hprod := mul_neg_of_neg_of_pos (sub_neg.mpr hlambda)
+          (by linarith : 0 < 2*Real.pi+lambda)
+        nlinarith [hprod]
+      exact div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg (by positivity) hnum) (by positivity)
+    filter_upwards [hl.eventually_lt_const hs] with N hN
+    have hmul : Real.exp (2*Real.pi*thetaMovingShellScale N) *
+        thetaShellPrefixFirstLaguerre N (lambda*thetaMovingShellScale N) <
+          Real.exp (2*Real.pi*thetaMovingShellScale N) * 0 := by simpa using hN
+    exact (mul_lt_mul_iff_right₀ (Real.exp_pos _)).mp hmul
 
 /-- Concrete positive ray, with no analytic or arithmetic premise. -/
 theorem eventually_thetaShellPrefixFirstLaguerre_five_pos :
     ∀ᶠ N : ℕ in atTop,
       0 < thetaShellPrefixFirstLaguerre N (5*thetaMovingShellScale N) := by
-  have hl := tendsto_normalized_thetaShellPrefixFirstLaguerre (lambda := 5) (by norm_num)
-  have hs : 0 < 128*Real.pi^6*(4*Real.pi^2-(5:ℝ)^2)/(4*Real.pi^2+(5:ℝ)^2)^4 := by
-    have hp := Real.pi_gt_three
-    have hnum : 0 < 4*Real.pi^2-(5:ℝ)^2 := by nlinarith
-    positivity
-  filter_upwards [hl.eventually_const_lt hs] with N hN
-  exact pos_of_mul_pos_left hN (Real.exp_pos _).le
+  exact thetaShellPrefixFirstLaguerre_quadratic_ray_sign.1 5
+    ⟨by linarith, by linarith [Real.pi_gt_three]⟩
 
 /-- Concrete negative ray, with no analytic or arithmetic premise. -/
 theorem eventually_thetaShellPrefixFirstLaguerre_eight_neg :
     ∀ᶠ N : ℕ in atTop,
       thetaShellPrefixFirstLaguerre N (8*thetaMovingShellScale N) < 0 := by
-  have hl := tendsto_normalized_thetaShellPrefixFirstLaguerre (lambda := 8) (by norm_num)
-  have hs : 128*Real.pi^6*(4*Real.pi^2-(8:ℝ)^2)/(4*Real.pi^2+(8:ℝ)^2)^4 < 0 := by
-    have hp := Real.pi_pos
-    have hu := Real.pi_lt_four
-    have hnum : 4*Real.pi^2-(8:ℝ)^2 < 0 := by nlinarith
-    exact div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg (by positivity) hnum) (by positivity)
-  filter_upwards [hl.eventually_lt_const hs] with N hN
-  have hmul : Real.exp (2*Real.pi*thetaMovingShellScale N) *
-      thetaShellPrefixFirstLaguerre N (8*thetaMovingShellScale N) <
-        Real.exp (2*Real.pi*thetaMovingShellScale N) * 0 := by simpa using hN
-  exact (mul_lt_mul_left (Real.exp_pos _)).mp hmul
+  exact thetaShellPrefixFirstLaguerre_quadratic_ray_sign.2 8
+    (by change 2*Real.pi < (8 : ℝ); linarith [Real.pi_lt_four])
 
 end
 end RHTower

@@ -227,5 +227,22 @@ left form `−2^{−z}z(1−z)Φ₀(1−z)/Ξ(1−z)` of its conjugate has nonne
 `Ξ(1−z)` in `Re z < ½` — no RH hypothesis. Isolated zeros now come from the identity theorem
 (`eventually_zetaEntire_one_sub_ne_zero`); the zero-free ladder is a corollary. So the kernel of the principal-part
 map at the points `1 − ρ` (`Re ρ > ½`) is exactly the self-similar class: `dim(W₂/S₀) ≤` total pole order, and with
-PM-18, `#zeros ≤ ind₋(q) ≤ dim(W₂/S₀)`. Remaining for the exact count (PM-19b): principal-part space of dimension
-`Σ m_ρ` as an explicit linear map, and the multiplicity-aware lower bound via `t^{ρ̄−1} log^j t`.
+PM-18, `#zeros ≤ ind₋(q) ≤ dim(W₂/S₀)`. PM-19b's former multiplicity and upper-count obligations are closed below.
+
+## PM-19b (proved, Lean, 2026-09-29) — exact analytic-multiplicity index
+
+`witnessNegIndex_eq_rightStripMultiplicityCount` (`FermiNymanMultiplicityIndex`) proves the
+unconditional extended equality. Normalized logarithmic zero jets and confluent spurious duals
+give literal `−I_M`, `+I_M`, zero-cross blocks for every finite multiplicity packet. Complex-linear
+correlation-Mellin jets give the matching upper bound: a zero packet clears every left-defect pole,
+hence forces self-similarity and zero quadratic form; a negative Gram span therefore injects into
+the multiplicity target. Finite/infinite zero cases are discharged internally. No simplicity,
+finite-zero, RH or positivity premise. Five new leaves wired; targeted builds, direct actual-leaf
+audits and axiom audits passed (only `propext`, `Classical.choice`, `Quot.sound`).
+
+E: `FermiNymanLogarithmicWitness`, `FermiNymanConfluentCoupling`,
+`FermiNymanMultiplicitySignature`, `FermiNymanCorrelationJets`, `FermiNymanMultiplicityIndex`;
+`3-formalized/pm-fermi-multiplicity-hyperbolic-signature.md`.
+Open: an independent source bound on this index, witness nonnegative half-mass or Haar-target
+approximation. Difference-rank equality and exact bounded correlation-jet kernel are next paper
+mechanisms under formal audit; neither is a source positivity producer.

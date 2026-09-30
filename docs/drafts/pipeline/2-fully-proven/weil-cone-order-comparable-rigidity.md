@@ -164,3 +164,31 @@ The RH-implication (Landau) halves of Theorem C(a) and (b) are formal, and so is
 - 2026-09-29 — cycle 143: third proof of upward uniqueness (Riemann's kernel as a positive null vector), formalized in `WeilFullConeRiemannKernelRigidity` (axiom-clean).
 - 2026-09-29 — cycle 144: upward uniqueness in the polar cone (`WeilPositivityMajorantRigidity`, axiom-clean).
 - 2026-09-29 — cycle 147: full-cone ⇒ CCM positivity bridge; both RH halves of Theorem C formal in the full cone (`WeilFullConeCCMBridge`).
+
+## Herglotz-free, RH-free downward uniqueness (MC loop cycle 154) [paper]
+**Statement.** Let `d ≥ 0` be supported on `n ≥ 2`. If `Λ − d` is Weil-positive in the full cone, then `d = 0`. The proof assumes neither RH nor a Herglotz representation of `Λ − d`.
+
+**Proof.**
+1. **Near-null tests.** For every compactly supported `q`, the zero side of `Q_Λ(Φ⋆q)` is `Σ_ρ |Ξ(γ_ρ) q̂(γ_ρ)|²`-type and vanishes, because `Ξ(γ_ρ) = 0` at every zero, on the line or off it. So `Q_{Λ−d}(Φ⋆q) = ⟨d, K⋆q⋆q̃⟩ ≥ 0`, with `K = Φ⋆Φ̃`. Hence `h_d := K⋆W_d` is a continuous positive-definite function, where `W_d = Σ d(n) n^{−½}(δ_{log n} + δ_{−log n})`.
+2. **Thinness.** Positive definiteness gives `h_d(u) ≤ h_d(0)`. Since `K > 0` and `K ≥ c₀` on `[−1, 1]`, `W_d` is translation-bounded: `Σ_{e^{U−1} ≤ n ≤ e^{U+1}} d(n) n^{−½} ≤ h_d(0)/c₀`. So `T := FT(W_d)` is tempered, and it is positive-definite because `W_d ≥ 0`.
+3. **Positivity off the zeros.** Bochner applied to `h_d` gives `Ξ²T = FT(h_d) ≥ 0`. Off the real zeros `Z` of `Ξ`, `T` is a positive measure. The PD bound `|T⋆P_η(t)| ≤ T⋆P_η(0) = O(1/η)`, with `P_η` the Poisson kernel, excludes `δ'` terms and non-integrable parts at `Z`. So `T` is a signed measure: nonnegative off `Z`, with atoms `c_γ` of either sign at `γ ∈ Z`.
+4. **Atoms at zeros.** Let `a₀ = T({0}) ≥ 0`, which is `2π` times the mean density of `W_d`. Positive definiteness at scale `η → 0` gives `|c_γ| ≤ a₀`.
+5. **Spectral gap.** `W_d` vanishes on `(−log 2, log 2)`, so `T⋆K_b ≡ 0` for the Fejér kernel `K_b`, `b < log 2`.
+6. **Contradiction when `a₀ > 0`.** At `0`, `0 = T⋆K_b(0) ≥ a₀(K_b(0) − Σ_{γ∈Z} K_b(γ))`. Unconditionally, `Σ_{γ∈Z} 1/(¼+γ²) ≤ Σ_ρ Re(1/(ρ(1−ρ))) = 2 + γ_E − log 4π < 0.0462`, because every zero contributes positively. This forces `|γ| > 6.5`, and with `b = 0.69`, `Σ_Z K_b(γ) ≤ 0.39 K_b(0)`. Hence `a₀ = 0`.
+7. **Conclusion.** With `a₀ = 0`, every `c_γ = 0` by step 4, so `T ≥ 0`. Together with `T⋆K_b ≡ 0` this gives `T = 0`, hence `d = 0`. ∎
+
+**What changes.**
+- Theorem C (downward) no longer needs RH or the Herglotz representation of Weil positivity. It needs Bochner's theorem for one continuous positive-definite function, `h_d`.
+- With cycle 142 (subsystems force RH), a Weil-positive subsystem of Λ exists iff RH holds, and then it is Λ itself.
+- **Formal status.** Blocked on Bochner's theorem on `ℝ`. Neither Mathlib nor the corpus has it. The corpus has the Herglotz representation on the disc (`HTGeometry/HerglotzRepresentationDisc`) and Bochner–Schwartz for jointly continuous Schwartz forms.
+
+## Theorem C′: constant sign up to a summable error (MC loop cycle 155) [paper]
+**Statement.** Let `w = w₁ + w₂` on `n ≥ 2`, where `w₁` has constant sign and `Σ_n |w₂(n)| n^{−½} < ∞` (or, more generally, `Σ w₂(n) n^{−½−it}` converges for every `t`). If `Λ + w` is Weil-positive in the full cone, then `w = 0`.
+
+**Proof.**
+1. The distribution `T = ±(μ_lam − μ_Λ)` splits as `T₁ + T₂`, where `T₂ = FT(W_{w₂})`.
+2. `T₂ ⋆ P_η` is bounded uniformly in `η`. Under conditional convergence it is `o(1/η)`, by Abel's theorem. So `T₂` adds no atoms.
+3. The positive-definite bound is applied to `T₁` alone, where `w₁` has constant sign. It gives the same atom inequalities as Theorem C: upward, `d_ρ ≤ 0`; downward, `d_ρ ≤ a₀`. The errors from `T₂` are `O(1)` or `o(1/η)`.
+4. The Fejér and spectral-gap steps use only that the whole `w` is supported on `n ≥ 2`. They therefore apply unchanged and give `T = 0`, hence `w = 0`. ∎
+
+**Consequence.** Theorem C and the formal `ℓ¹(n^{−½})` uniqueness (MUST-357) are both special cases. A second completion `lam ≠ Λ` must have `w₊ = (lam − Λ)₊` and `w₋ = (lam − Λ)₋` both of infinite `n^{−½}`-mass. Moreover `w` cannot be written as constant-sign plus summable.

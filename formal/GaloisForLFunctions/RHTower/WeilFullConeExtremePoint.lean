@@ -5,8 +5,8 @@ import GaloisForLFunctions.RHTower.WeilPositivityMajorantRigidity
 # `Λ` is an extreme point of the full Weil cone
 
 **Theorem** (`eq_zero_of_weilPositiveFull_add_of_sub`, unconditional). Let `w` be real weights with
-`Σ |w(n)| n^{−σ} < ∞` for every `σ > 1`. If both `Λ + w` and `Λ − w` are Weil-positive with the
-pole term (`WeilPositiveFull`), then `w(n) = 0` for all `n ≥ 2`.
+`Σ |w(n)| n^{−2} < ∞`. If both `Λ + w` and `Λ − w` are Weil-positive with the pole term
+(`WeilPositiveFull`), then `w(n) = 0` for all `n ≥ 2`.
 
 No Herglotz representation, Schwarz reflection or continuation of `Σ w(n) n^{−s}` is used.
 
@@ -19,7 +19,7 @@ No Herglotz representation, Schwarz reflection or continuation of `Σ w(n) n^{�
   truncated kernel tends to `0`, so `T_1 → 0`.
 * **Transform.** `T_1` tends to `∫ H G_w`, where `G_w(s) = Σ_n w(n) n^{−1/2}
   (Φ(s + log n) + Φ(s − log n))`. So `G_w ≡ 0`, and the injectivity of the Riemann-kernel
-  transform (`eq_zero_of_riemannKernelTransform_eq_zero`, Hamburger) gives `w = 0`.
+  transform (`eq_zero_of_riemannKernelTransform_eq_zero_of_sq`, Hamburger) gives `w = 0`.
 -/
 
 open Complex MeasureTheory Filter Topology Set
@@ -741,18 +741,19 @@ theorem exists_abs_atomPairing_truncated_sub_le {w : ℕ → ℝ}
   calc |atomPairing w D| ≤ 2 * (M * (C * Real.exp (-(2 * (L - 1)))) * (2 * R) * Real.exp (2 * R)) * Sw := hD
     _ = _ := by ring
 
-/-- **Injectivity of the Riemann-kernel transform on the atoms `n ≥ 2`.** If `G_w ≡ 0`, then
-`w(n) = 0` for all `n ≥ 2`. -/
+/-- **Injectivity of the Riemann-kernel transform on the atoms `n ≥ 2`.** If `Σ |w(n)| n^{−2} < ∞`
+and `G_w ≡ 0`, then `w(n) = 0` for all `n ≥ 2`. -/
 theorem eq_zero_of_weightKernelTransform_eq_zero {w : ℕ → ℝ}
-    (hsum : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ σ)
     (hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2)
     (hG : ∀ y, weightKernelTransform w y = 0) :
     ∀ n, 2 ≤ n → w n = 0 := by
   set w' : ℕ → ℝ := fun n => if 2 ≤ n then w n else 0 with hw'
-  have hsum' : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w' (n + 1)| / ((n : ℝ) + 1) ^ σ := by
-    intro σ hσ
-    refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun n => ?_) (hsum σ hσ)
+  have hsum' : Summable fun n : ℕ => |w' (n + 1)| / ((n : ℝ) + 1) ^ (2 : ℝ) := by
+    have h := (summable_nat_add_iff 1).mpr hw2
+    refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun n => ?_) h
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
     simp only [hw']
+    push_cast
     split_ifs
     · exact le_rfl
     · rw [abs_zero, zero_div]; positivity
@@ -768,7 +769,7 @@ theorem eq_zero_of_weightKernelTransform_eq_zero {w : ℕ → ℝ}
     refine tsum_congr fun n => ?_
     simp only [hw']
     split_ifs <;> ring
-  have hzero := eq_zero_of_riemannKernelTransform_eq_zero hsum' hG'
+  have hzero := eq_zero_of_riemannKernelTransform_eq_zero_of_sq hsum' hG'
   intro n hn
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
   have := hzero m
@@ -778,13 +779,10 @@ theorem eq_zero_of_weightKernelTransform_eq_zero {w : ℕ → ℝ}
 /-- **Vanishing of the pairing with Φ forces `w = 0`.** If `T_w(Φ, H) = 0` for every `C²` compactly
 supported `H`, then the Riemann-kernel transform of `w` vanishes, and `w(n) = 0` for all `n ≥ 2`. -/
 theorem eq_zero_of_forall_atomPairing_riemannKernel_eq_zero {w : ℕ → ℝ}
-    (hsum : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ σ)
+    (hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2)
     (hstep1 : ∀ H : ℝ → ℝ, ContDiff ℝ 2 H → HasCompactSupport H →
       atomPairing w (crossCorr riemannKernelReal H) = 0) :
     ∀ n, 2 ≤ n → w n = 0 := by
-  have hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2 := by
-    refine (summable_nat_add_iff 1).mp ((hsum 2 (by norm_num)).congr fun n => ?_)
-    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; push_cast; ring
   -- `G_w = 0`
   have hGc := continuous_weightKernelTransform hw2
   have hG : weightKernelTransform w = fun _ => 0 := by
@@ -794,19 +792,17 @@ theorem eq_zero_of_forall_atomPairing_riemannKernel_eq_zero {w : ℕ → ℝ}
       rw [atomPairing_riemannKernel_eq_integral hw2 hg.continuous hgc] at h
       simpa [smul_eq_mul] using h
     exact (hGc.ae_eq_iff_eq volume continuous_const).mp hae
-  exact eq_zero_of_weightKernelTransform_eq_zero hsum hw2 (congrFun hG)
+  exact eq_zero_of_weightKernelTransform_eq_zero hw2 (congrFun hG)
 
 /-- **`Λ` is an extreme point of the full Weil cone.** Let `w` be real weights with
-`Σ |w(n)| n^{−σ} < ∞` for every `σ > 1`. If `Λ + w` and `Λ − w` are both Weil-positive with the
-pole term, then `w(n) = 0` for all `n ≥ 2`. Unconditional. -/
+`Σ |w(n)| n^{−2} < ∞`. If `Λ + w` and `Λ − w` are both Weil-positive with the pole term, then
+`w(n) = 0` for all `n ≥ 2`. Unconditional. (Weil positivity itself gives the summability:
+`RHTower.weilFullCone_extreme_at_vonMangoldt`.) -/
 theorem eq_zero_of_weilPositiveFull_add_of_sub {w : ℕ → ℝ}
-    (hsum : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |w (n + 1)| / ((n : ℝ) + 1) ^ σ)
+    (hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2)
     (hp : WeilPositiveFull fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n)
     (hm : WeilPositiveFull fun n => (ArithmeticFunction.vonMangoldt n : ℝ) - w n) :
     ∀ n, 2 ≤ n → w n = 0 := by
-  have hw2 : Summable fun n : ℕ => |w n| / (n : ℝ) ^ 2 := by
-    refine (summable_nat_add_iff 1).mp ((hsum 2 (by norm_num)).congr fun n => ?_)
-    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; push_cast; ring
   -- Step 1: the pairing with `Φ` vanishes against every smooth compactly supported test
   have hstep1 : ∀ H : ℝ → ℝ, ContDiff ℝ 2 H → HasCompactSupport H →
       atomPairing w (crossCorr riemannKernelReal H) = 0 := by
@@ -860,7 +856,7 @@ theorem eq_zero_of_weilPositiveFull_add_of_sub {w : ℕ → ℝ}
     have htri : |T| - |T1| ≤ |T - T1| := abs_sub_abs_le_abs_sub T T1
     rw [abs_sub_comm] at htri
     linarith
-  exact eq_zero_of_forall_atomPairing_riemannKernel_eq_zero hsum hstep1
+  exact eq_zero_of_forall_atomPairing_riemannKernel_eq_zero hw2 hstep1
 
 end
 

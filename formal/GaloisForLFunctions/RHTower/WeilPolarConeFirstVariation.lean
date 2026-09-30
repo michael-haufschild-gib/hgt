@@ -72,8 +72,31 @@ theorem atomPairing_eq_sum_of_support (w : ℕ → ℝ) {F : ℝ → ℝ} {a : �
       rw [(hvan n h2 h).1, (hvan n h2 h).2, add_zero, mul_zero]
     · rw [if_neg h2, zero_mul]
 
-/-- **Two-sided polar bound.** If `Λ ± w` are Weil-positive on polar tests, then
-`|T_w(F)| ≤ Re W(F, F)` for every real polar `C²` test `F` supported in `[−a, a]`. -/
+/-- **One-sided polar bound.** If `Λ + w` is Weil-positive on polar tests, then for every real
+polar `C²` test `F` of compact support, `T_w(F) ≤ Re W(F, F)`. -/
+theorem atomPairing_le_of_weilPositive {w : ℕ → ℝ}
+    (hp : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n) {F : ℝ → ℝ} {a : ℝ}
+    (ha : 0 ≤ a) (hF : ContDiff ℝ 2 fun u => (F u : ℂ))
+    (hFs : tsupport (fun u => (F u : ℂ)) ⊆ Icc (-a) a)
+    (hp1 : paperFT (fun u => (F u : ℂ)) (I / 2) = 0)
+    (hp2 : paperFT (fun u => (F u : ℂ)) (-(I / 2)) = 0) :
+    atomPairing w (crossCorr F F) ≤
+      (zetaZeroConfig.W (fun u => (F u : ℂ)) (fun u => (F u : ℂ))).re := by
+  have hWf := zeta_W_eq_integral_weilAtomSymbol_vonMangoldt hF hFs hp1 hp2
+  have hre : (∫ τ : ℝ, ‖paperFT (fun u => (F u : ℂ)) τ‖ ^ 2 *
+      weilAtomSymbol (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) ⌊Real.exp (2 * a)⌋₊
+        (τ / (2 * π))) = 2 * π * (zetaZeroConfig.W (fun u => (F u : ℂ)) (fun u => (F u : ℂ))).re := by
+    rw [hWf, Complex.ofReal_re]; field_simp
+  have hsum := atomPairing_eq_sum_of_support w hF hFs
+  have h1 := hp a ha _ hF hFs hp1 hp2
+  rw [integral_weilAtomSymbol_eq_sub hF hFs, hre] at h1
+  simp only [add_sub_cancel_left] at h1
+  rw [hsum] at h1
+  have hπ : 0 < π := Real.pi_pos
+  nlinarith
+
+/-- **Two-sided polar bound.** If `Λ ± w` are both Weil-positive on polar tests, then
+`|T_w(F)| ≤ Re W(F, F)`. -/
 theorem abs_atomPairing_le_of_weilPositive {w : ℕ → ℝ}
     (hp : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n)
     (hm : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) - w n) {F : ℝ → ℝ} {a : ℝ}
@@ -83,22 +106,14 @@ theorem abs_atomPairing_le_of_weilPositive {w : ℕ → ℝ}
     (hp2 : paperFT (fun u => (F u : ℂ)) (-(I / 2)) = 0) :
     |atomPairing w (crossCorr F F)| ≤
       (zetaZeroConfig.W (fun u => (F u : ℂ)) (fun u => (F u : ℂ))).re := by
-  have hWf := zeta_W_eq_integral_weilAtomSymbol_vonMangoldt hF hFs hp1 hp2
-  have hre : (∫ τ : ℝ, ‖paperFT (fun u => (F u : ℂ)) τ‖ ^ 2 *
-      weilAtomSymbol (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) ⌊Real.exp (2 * a)⌋₊
-        (τ / (2 * π))) = 2 * π * (zetaZeroConfig.W (fun u => (F u : ℂ)) (fun u => (F u : ℂ))).re := by
-    rw [hWf, Complex.ofReal_re]; field_simp
-  have hsum := atomPairing_eq_sum_of_support w hF hFs
-  have h1 := hp a ha _ hF hFs hp1 hp2
-  have h2 := hm a ha _ hF hFs hp1 hp2
-  rw [integral_weilAtomSymbol_eq_sub hF hFs, hre] at h1 h2
-  simp only [add_sub_cancel_left] at h1
-  have e2 : ∀ n : ℕ, ((ArithmeticFunction.vonMangoldt n : ℝ) - w n - ArithmeticFunction.vonMangoldt n) /
-      Real.sqrt n = -(w n / Real.sqrt n) := fun n => by ring
-  simp only [e2, neg_mul, Finset.sum_neg_distrib] at h2
-  rw [hsum] at h1 h2
-  have hπ : 0 < π := Real.pi_pos
-  rw [abs_le]; constructor <;> nlinarith
+  have hm' : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + (fun n => -w n) n := by
+    have e : (fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + (fun n => -w n) n) =
+        fun n => (ArithmeticFunction.vonMangoldt n : ℝ) - w n := funext fun n => by ring
+    rw [e]; exact hm
+  have h1 := atomPairing_le_of_weilPositive hp ha hF hFs hp1 hp2
+  have h2 := atomPairing_le_of_weilPositive hm' ha hF hFs hp1 hp2
+  rw [atomPairing_neg] at h2
+  rw [abs_le]; constructor <;> linarith
 
 /-! ## General perturbations `D + εH` -/
 
@@ -489,16 +504,16 @@ theorem paperFT_polarPerturbed (L c ε : ℝ) {H : ℝ → ℝ} (hH : Continuous
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
   simp only; ring
 
-/-- The zero side of the perturbed polar vector bounds its atom pairing (two-sided positivity). -/
-theorem abs_atomPairing_polarPerturbed_le {w : ℕ → ℝ}
-    (hp : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n)
-    (hm : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) - w n) (L : ℝ) {c : ℝ}
-    (hc : 0 ≤ c) (ε : ℝ) {H : ℝ → ℝ} (hH : ContDiff ℝ 2 H) (hHc : HasCompactSupport H)
+/-- The perturbed polar vector `D_L + εH` is a polar `C²` test of compact support. -/
+theorem exists_polarPerturbed_test_data (L : ℝ) {c : ℝ} (hc : 0 ≤ c) (ε : ℝ) {H : ℝ → ℝ}
+    (hH : ContDiff ℝ 2 H) (hHc : HasCompactSupport H)
     (hH1 : paperFT (fun u => (H u : ℂ)) (I / 2) = 0)
     (hH2 : paperFT (fun u => (H u : ℂ)) (-(I / 2)) = 0) :
-    |atomPairing w (crossCorr (fun u => polarRiemannDifferenceReal L c u + ε * H u)
-        (fun u => polarRiemannDifferenceReal L c u + ε * H u))| ≤
-      (5 / 4) * zetaInvSqSum * (3 * truncatedRiemannTailEnergy L + |ε| * testEnergy H) ^ 2 := by
+    ∃ a : ℝ, 0 ≤ a ∧
+      ContDiff ℝ 2 (fun u => ((polarRiemannDifferenceReal L c u + ε * H u : ℝ) : ℂ)) ∧
+      tsupport (fun u => ((polarRiemannDifferenceReal L c u + ε * H u : ℝ) : ℂ)) ⊆ Icc (-a) a ∧
+      paperFT (fun u => ((polarRiemannDifferenceReal L c u + ε * H u : ℝ) : ℂ)) (I / 2) = 0 ∧
+      paperFT (fun u => ((polarRiemannDifferenceReal L c u + ε * H u : ℝ) : ℂ)) (-(I / 2)) = 0 := by
   obtain ⟨R, hR0, hR⟩ := exists_vanish_of_hasCompactSupport hHc
   set a := |L| + c + R with ha
   have ha0 : 0 ≤ a := by positivity
@@ -532,6 +547,32 @@ theorem abs_atomPairing_polarPerturbed_le {w : ℕ → ℝ}
       (-(I / 2)) = 0 := by
     rw [paperFT_polarPerturbed L c ε hH.continuous hHc, (paperFT_polarRiemannDifference_pole L c).2,
       hH2, mul_zero, add_zero]
+  exact ⟨a, ha0, hF, hFs, hp1, hp2⟩
+
+/-- **One-sided bound for the perturbed polar vector.** -/
+theorem atomPairing_polarPerturbed_le {w : ℕ → ℝ}
+    (hp : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n) (L : ℝ) {c : ℝ}
+    (hc : 0 ≤ c) (ε : ℝ) {H : ℝ → ℝ} (hH : ContDiff ℝ 2 H) (hHc : HasCompactSupport H)
+    (hH1 : paperFT (fun u => (H u : ℂ)) (I / 2) = 0)
+    (hH2 : paperFT (fun u => (H u : ℂ)) (-(I / 2)) = 0) :
+    atomPairing w (crossCorr (fun u => polarRiemannDifferenceReal L c u + ε * H u)
+        (fun u => polarRiemannDifferenceReal L c u + ε * H u)) ≤
+      (5 / 4) * zetaInvSqSum * (3 * truncatedRiemannTailEnergy L + |ε| * testEnergy H) ^ 2 := by
+  obtain ⟨a, ha0, hF, hFs, hp1, hp2⟩ := exists_polarPerturbed_test_data L hc ε hH hHc hH1 hH2
+  exact (atomPairing_le_of_weilPositive hp ha0 hF hFs hp1 hp2).trans
+    ((Complex.re_le_norm _).trans (norm_W_polarPerturbed_le L hc ε hH hHc))
+
+/-- The zero side of the perturbed polar vector bounds its atom pairing (two-sided positivity). -/
+theorem abs_atomPairing_polarPerturbed_le {w : ℕ → ℝ}
+    (hp : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + w n)
+    (hm : WeilPositive fun n => (ArithmeticFunction.vonMangoldt n : ℝ) - w n) (L : ℝ) {c : ℝ}
+    (hc : 0 ≤ c) (ε : ℝ) {H : ℝ → ℝ} (hH : ContDiff ℝ 2 H) (hHc : HasCompactSupport H)
+    (hH1 : paperFT (fun u => (H u : ℂ)) (I / 2) = 0)
+    (hH2 : paperFT (fun u => (H u : ℂ)) (-(I / 2)) = 0) :
+    |atomPairing w (crossCorr (fun u => polarRiemannDifferenceReal L c u + ε * H u)
+        (fun u => polarRiemannDifferenceReal L c u + ε * H u))| ≤
+      (5 / 4) * zetaInvSqSum * (3 * truncatedRiemannTailEnergy L + |ε| * testEnergy H) ^ 2 := by
+  obtain ⟨a, ha0, hF, hFs, hp1, hp2⟩ := exists_polarPerturbed_test_data L hc ε hH hHc hH1 hH2
   exact (abs_atomPairing_le_of_weilPositive hp hm ha0 hF hFs hp1 hp2).trans
     ((Complex.re_le_norm _).trans (norm_W_polarPerturbed_le L hc ε hH hHc))
 
