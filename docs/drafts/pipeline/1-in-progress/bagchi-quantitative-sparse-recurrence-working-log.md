@@ -1307,3 +1307,2420 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   indexer still running. Existing independent-coordinate mean-square theorem
   is scalar and countably indexed; read its proof as a finite orthogonality
   pattern. No ready actual affine-product vector local-target theorem found.
+
+- F90 FINAL: final2571 exit0 warning-free; audit96286 printed all4 public axioms
+  and existing lintegral_pi_prod as standard-only. Audit exit1 from future
+  polymorphic have probes with unconstrained universe metavariables; use explicit
+  .{0,...} in next probe. Lint42144 exit1 thirteen unrelated unreachable modules;
+  exact squared-density index11. F91 scratch13181 now sole live Lean.
+  F93 exact centered-circle variance is a complete uncompiled /tmp draft.
+
+- F91 scratch13181 exit0 warning-free on first run after source-correcting
+  measure monotonicity to lintegral_mono'. Generic exact second-density-moment
+  event inequality and real/exponential lower bounds now checked. Final leaf
+  written and wired; final running alone. Next audit includes corrected
+  concrete-universe probes from F90. No recurrence or target-concentration
+  assertion has been added to these generic inequalities.
+
+- F91 FINAL: final10300/audit23502 exit0, all3 public axioms standard-only.
+  All corrected F90 future API probes pass. Exact index39; lint59614 exit1
+  fourteen unrelated unreachable modules, no proof debt/BAG error. F92 finite
+  product scratch now sole live Lean. F93 circle centered variance, F94 finite
+  coordinate covariance and F95 Hilbert-column variance are complete uncompiled
+  /tmp drafts, not repository claims.
+
+- F92 first scratch47311: one lambda-redex rewrite in squared-density integral
+  failed; fixed with an explicitly typed Integrable lambda. Lean also showed
+  the product withDensity identity needs no bias-size assumption: finite real
+  densities are sigma-finite automatically. Removed that redundant premise;
+  probability and moment claims keep the essential half-unit bound. Corrected
+  scratch72436 exit0 warning-free. Final leaf written/wired; final now sole Lean.
+- F96 centered target-ball half-mass and F97 original finite local-target theorem
+  are complete uncompiled /tmp drafts. F97's exact proposed statement uses only
+  actual frame coercivity c>0, columnwise norm(a_i)*norm(v)/c<=1/2, total column
+  energy<=radius²/2 and positive radius; conclusion original target-ball mass
+  >=(1/4)*exp(-2*norm(v)²/c). No assumed local probability input, no measurably
+  chosen inverse. This remains a proposed generic finite theorem until checked,
+  and does not yet instantiate the actual conditional prime carrier or flow.
+
+- F92 final46079 exit0 warning-free, 98 lines; exact event-transfer index88.
+  Lint99689 exit1 thirteen unrelated unreachable modules; public audit now sole
+  live Lean. Search45090 for original-carrier embedding completed nonpartial;
+  all20 candidates+20source arguments inspected, semantic coverage unmeasured,
+  index refresh pending in background. Useful original sources are exact
+  largest-prime carrier decomposition and coordinate projection laws. The hit
+  finiteEulerPrimePhase_forwardTail_dense is for a fixed finite prime set; it
+  does not resolve the growing-prime/common-height orbit transfer obligation.
+
+- F92 FINAL: final46079/audit41568 exit0, all7 public reports standard-only,
+  exact index88, lint13 unrelated. F93 circle-variance scratch now sole Lean.
+  To avoid redundant import startup, F94/F95/F96/F97 scratch drafts each include
+  the predecessor's public axiom audits. Strip these #print lines before writing
+  repository leaves. Public audits count only after predecessor final has passed.
+
+- F93 first scratch36221: only failure was rewriting charFactor(-1) as the
+  conjugated phase under an Integrable function argument. Replaced that simp
+  with an explicit function-extensional equality; corrected scratch62934 sole
+  running Lean. No F93 repository leaf yet. Exact remaining /tmp drafts:
+  BagFiniteAffineCovariance (F94), BagFiniteAffineVariance (F95),
+  BagFiniteAffineTargetMass (F96), BagFiniteLocalTarget (F97).
+  Each carries predecessor public #print audits to remove from final leaves.
+- Original-law assembly review: finite-coordinate projection may use
+  Measure.map_infinitePi_infinitePi_of_inj followed by infinitePi_eq_pi, as in
+  existing SteinhausEulerTiltFiniteDensity head-map source. Exact largest-prime
+  decomposition and F87's small-prime event dependence let a conditional lower
+  bound integrate through the already-proved freeze-prefix resampling law.
+  Preserve explicit event containment in the prescribed cell throughout.
+
+- F93 corrected scratch62934 and final25643 exit0 warning-free; final59lines,
+  wired/index-visible27; lint34141 exit1 fourteen unrelated unreachable modules,
+  no proof debt/BAG error. Public axiom audit is at the start of sole running
+  F94 scratch. F94 also probes original finite-coordinate projection after its
+  end namespace; omit the FUTURE PROBE block from the repository leaf.
+
+- F93 FINAL: all3 public axiom reports standard-only in F94 scratch74842.
+  F94 itself failed only at under-specified integral_comp_eval functions and
+  a pointwise product hidden behind function multiplication. Added explicit
+  measure/index/function arguments and a pointwise change. Corrected scratch
+  now sole Lean. Original finite-coordinate injection-map probe passed.
+
+- F94 scratch11877 resolved means, integrability and diagonal variance; its
+  remaining off-diagonal rewrite failed because Independence.comp retained
+  composition syntax. Give the exact pointwise IndepFun type before using the
+  factorized integral. Corrected scratch85934 exit0 warning-free. Passed F93
+  audit/projection probes removed from this scratch before rerun. Final leaf
+  now written/wired; sole final running. F95 scratch will audit its five public
+  results. F98 /tmp/BagOriginalFiniteLocalTarget.lean is now a complete uncompiled
+  projection/transfer draft, using the successfully checked coordinate-map proof.
+
+- F94 final99325 exit0 warning-free; final88lines, wired/index-visible57.
+  Lint64378 exit1 fourteen unrelated unreachable modules/no proof debt/BAG error.
+  Sole F95 Hilbert-column variance scratch now runs with F94's five public axiom
+  audits at its start. F95/96/97/98 remain uncompiled drafts, no repository leaves.
+
+- F94 FINAL: all5 public reports standard-only in F95 scratch26196. F95 failed
+  only at reverse inner-self rewriting with an unresolved scalar field. Added
+  explicit complex field and exact sum argument, removed passed predecessor
+  audits, and launched corrected scratch alone. All other F95 proof blocks
+  elaborated in the first run, pending this dependency correction.
+
+- F95 scratch89157 still could not reverse-rewrite the scalar-cast inner-self
+  formula. Replaced it with norm_sq_eq_re_inner followed by inner_self_ofReal_re;
+  this passes in scratch95439. That run exposed sum-order normalization:
+  simp expanded the right inner-product sum first. Explicitly expand the left
+  sum first with rw [sum_inner], then distribute scalar products. Corrected
+  scratch running alone; no repository leaf or target-law claim yet.
+
+- F95 scratch83009 exit0 with one unused simp argument; initial final44957
+  also exit0. Removed unused Finset.mul_sum; final47703 exit0 warning-free.
+  Final98lines, wired/index-visible88; lint70114 exit1 fifteen unrelated
+  unreachable modules/no proof debt/BAG error. F96 centered target-ball
+  half-mass scratch now sole Lean, carrying all4 F95 public axiom audits.
+
+- F95 FINAL: all4 public axiom reports standard-only in F96 scratch67542.
+  F96 first scratch67542 exit0 warning-free: actual centered target-ball mass
+  at least one half under the biased product when total column energy<=r²/2.
+  Final F96 written/wired with #print lines stripped; final now sole Lean.
+
+- Euclidean-frame research58319 completed nonpartial; all20 candidate lemmas and
+  all20 source arguments inspected. Semantic coverage unmeasured/background
+  refresh pending. Existing F88 synthesis is relevant; no ready actual channel
+  sup-norm-to-Hilbert assembly found. Read exact PiLp.inner_apply,
+  EuclideanSpace.norm_sq_eq, PiLp.norm_apply_le, pi_norm_le_iff_of_nonneg and
+  Pi.norm_single sources.
+- C21 next deterministic bridge, paper proof: pair a complex column with w
+  by conjugating the sup-norm test direction. Euclidean squared norm is at most
+  J times squared sup norm, so channel coercivity H becomes H/J. A uniform dot
+  upper bound L yields column Euclidean norm<=L by testing against its own
+  conjugated coordinates and cancelling its norm. Testing the quadratic upper
+  bound C at each coordinate unit vector and summing yields total column
+  energy<=J*C. These preserve the actual coefficients and all parameter
+  quantifiers. F99 draft will formalize this bridge; actual specialization and
+  integration over the retained event remain separate obligations.
+
+- F96 FINAL: final13248 exit0 warning-free; standard public audit in F97
+  scratch10644; 47lines,index15,lint46652 sixteen unrelated unreachable modules.
+  F97 first scratch10644 failed only at final linear arithmetic across the
+  divided exponent. Replaced linarith by explicit ring equality plus neg_le_neg.
+  Corrected F97 scratch runs alone; F99 Euclidean frame bridge is now a complete
+  uncompiled /tmp/BagChannelEuclideanFrame.lean draft. No F97/F98/F99 repo leaves.
+
+- F97 corrected scratch15818 exit0 warning-free: the full finite original-law
+  target lower bound (1/4)*exp(-2*norm(v)²/c) follows from frame coercivity,
+  small individual columns and small total energy. Final leaf written/wired;
+  final now sole Lean. No assumed local probability result enters this theorem.
+  Its public audit is queued at the start of F98 original-coordinate transfer.
+
+- F97 FINAL: final71711 exit0 warning-free, public audit standard in F98
+  scratch58406, 41lines/index15; lint28712 seventeen unrelated unreachable
+  modules/no proof debt/BAG error. F98 scratch58406 exit0 warning-free on first
+  run: exact arbitrary injective coordinate law and original infinite Steinhaus
+  target bound. Final leaf written/wired, audit stripped. Sole final now running.
+  F99 scratch now includes the F98 import/audits TEMPORARILY; strip that import
+  and #print lines from F99 final geometry leaf.
+
+- F98 final77802 exit0 warning-free; original finite-coordinate target law
+  written/wired. F99 Euclidean-frame scratch now sole Lean, with both F98 public
+  axiom audits. F99 temporary F98 import must be omitted from its final leaf.
+
+- F98 FINAL: final77802 exit0 warning-free, both public reports standard-only
+  in F99 scratch26667; 45lines/index22; lint8223 seventeen unrelated unreachable
+  modules/no proof debt/BAG error. F99 first scratch26667 established all four
+  deterministic bridge statements except a redundant ring after field_simp
+  already closed its goal. Removed that ring and two unused simp arguments;
+  removed passed F98 audits and temporary import. Corrected F99 now compiles
+  alone with only Mathlib.Analysis.InnerProductSpace.PiL2, as intended for final.
+
+- F99 corrected scratch94479 exit0 warning-free with bare PiL2 import only;
+  final written/wired and running alone. F100 complete uncompiled draft
+  /tmp/BagFiniteChannelLocalTarget.lean reindexes the original-law bound to
+  literal finite sets and combines all four Euclidean-frame bridges into an
+  actual finite channel-matrix local bound. Its exact smallness premises are
+  L*norm(v)/(H/J)<=1/2 and J*C<=r²/2; coefficient lower/dot/energy bounds are
+  literal sup-norm channel sums. No target-probability premise is introduced.
+
+- F99 FINAL: final1621 exit0 warning-free; all4 public reports standard-only
+  in F100 scratch22303; 79lines/index21; lint61128 twenty-one unrelated
+  unreachable modules/no proof debt/BAG error. F100 first scratch22303 failed
+  at higher-order sum reindexing simp and apply-generated goal ordering.
+  Replaced simp by instantiated sum equalities plus trans_eq/trans_le, and
+  apply holes by explicit refine goals. Corrected scratch7429 sole live Lean.
+  No F100 repository leaf; F101 conditional-carrier draft not yet written.
+
+- F100 corrected scratch7429 exit0 warning-free. Exact finite-set reindexing
+  and original-law local target bound from literal channel lower/dot/upper
+  bounds all checked. Final leaf written/wired; final now sole Lean. F101 next
+  paper assembly: freeze small-prime coordinates, use exact below-seam carrier
+  decomposition, keep every channel coefficient unchanged by small-prime
+  congruence, and identify exterior prime characters with unit circle phases.
+  The vector carrier minus target is exactly the linear exterior channel sum
+  minus (target - smooth background). Apply F100 at that literal shifted target.
+  This supplies conditional probability, before retained-event integration.
+
+- F100 final22026 exit0 warning-free; final leaf wired. F101 complete draft
+  /tmp/BagFrozenCarrierLocalTarget.lean now runs alone with F100's two public
+  axiom audits. It proves the exact frozen scalar/vector carrier identities
+  and applies the literal channel local law to target minus actual smooth
+  background. No reflected-parameter asymptotic or retained-event integration
+  is claimed yet. Used actual X_prime_eq source namespace
+  GaloisForLFunctions.RHTower; the phase is charFactor1 after cast normalization.
+
+- F100 FINAL: final22026 exit0 warning-free, both public reports standard-only
+  in F101 scratch33607; 76lines/index42; lint98153 nineteen unrelated unreachable
+  modules/no proof debt/BAG error. F101 scratch33607 exit0: all four public
+  claims pass, only unused PiLp.toLp_apply warning. Removed that unused argument
+  and passed predecessor audits, wrote/wired final leaf. Sole final now running.
+  Asymptotic source search6160 completed; results still need full compact review.
+
+- F101 FINAL: final73748 exit0 warning-free; four public audits standard-only
+  in F102 scratch41739. Index line77; lint89707 twenty-one unrelated unreachable
+  modules, no BAG error/proof debt. F102 first scratch41739 failed: mathlib
+  isLittleO_log_rpow_atTop is ROOT, not Real namespace. Corrected source-verified
+  name, stripped completed F101 audits; successor82771 runs alone. No F102 repo
+  leaf yet. Research6160 nonpartial all20 candidates/20source arguments reviewed.
+
+- F102 corrected scratch82771 exit0. Actual reflected conditional cost proved
+  as `(1/4)*N^(-2*J*B^2/H)`, uniformly in common-height window and positive
+  smoothing. Removed unused nonnegative-target-bound premise (the norm bound
+  already forces it) and unreachable final ring. Final3827 sole Lean running;
+  leaf written/wired. F103 /tmp/BagPrefixTargetEvent.lean drafted: exact
+  integration to original retained-event intersection; F104
+  /tmp/BagReflectedLocalTargetEvent.lean drafted: choose H from arbitrary ε,
+  bound Euclidean background by J, discharge event assumptions with F87 and
+  preserve prescribed rotated cell. Neither F103 nor F104 checked yet.
+- Prefix-integration search49490 nonpartial; all20 candidates and20 source
+  arguments inspected. Existing generic conditional-probability interfaces
+  add unnecessary hypotheses; use already-proved literal resampling map and
+  product-measure section integration. No biased-kernel measurability needed.
+
+- F102 FINAL: final3827 exit0 warning-free; public audit in F103scratch63769
+  standard-only; 76lines/index13; lint71539 eleven unrelated unreachable
+  modules/no BAG error/proof debt. F103scratch63769 failed on beta-redex before
+  rewrite, ENNReal zero_le namespace, and continuous_toLp needing explicit
+  parameters. Corrected to dsimp only, bot_le, explicit p=2/component space.
+  Scratch30370 now sole Lean. F104 revised to prescribed-cell event refinement
+  in /tmp/BagReflectedPrescribedCellEvent.lean; integrated local-target draft
+  /tmp/BagReflectedLocalTargetEvent.lean is now F105 and retains B₀≤B, δ≤δ₀.
+  Both uncompiled. Broad direct-edge search11715 nonpartial but poorly matched;
+  inspected all20 candidates+20source names, then broadened lexical source search.
+
+- F103 corrected scratch30370 exit0 warning-free, final35290 exit0 warning-free.
+  Leaf SteinhausPrefixTargetEvent written/wired; index12; lint83732 eleven
+  unrelated unreachable modules/no BAG error. Two public audits pending in
+  sole F104scratch48649. F104 prescribed-cell refinement draft reviewed.
+  F105 now also has original-prescribed-cell corollary (P,omega,delta), using
+  primesLE P in the finite phase prescription and exact prime-factor congruence.
+- Scope audit: F102/F105 concern the actual FINITE reflected carrier through N
+  with smoothing x=N/r. Exact reflected AFE has an additional infinite reflected
+  tail and complementary series; these still require same-event control before
+  a recurrence claim. RightComplementCoefficient exact lexical search finds
+  its definition, no tailored recurrence/tail theorem. Do not use first-mean
+  o(1) as if it were o(N^-epsilon), or fixed-support Kronecker as a growing
+  support/common-height transfer. Existing card C4 already records a failed
+  deterministic deep-tail/classical-replacement schedule.
+
+- F103 FINAL: final35290 exit0 warning-free; both public audits in F104scratch
+  48649 standard-only, 57lines/index12, lint11unrelated/noBAGdebt. F104scratch
+  48649 exit0 warning-free, refinement proof checked. Stripped F103 audit-only
+  import/reports; final SmoothAFEReflectedPrescribedCellEvent written/wired,
+  sole final running. F105 /tmp/BagReflectedLocalTargetEvent.lean now contains
+  F104 public axiom audit plus both integrated target-event theorem drafts.
+
+- F104 final78588 exit0 warning-free. 99lines, index13, lint43918 eleven
+  unrelated unreachable modules/no BAG debt. Its public axiom report is pending
+  in sole F105scratch2108. Deep full-cofactor search93740 nonpartial but poorly
+  matched; all20 candidate/20source names + sole ingredient set inspected.
+  No ready full-Gaussian covariance/tail-control handoff found. Existing source
+  HighBlockDualWeightRightShift proves large-argument dual-weight decay, d≤1/4;
+  combined with chi power bound this may control the complementary series at
+  x=N/r. Full reflected tail remains distinct and cannot be thrown away from
+  a mere o(1) mean against N^-epsilon event mass.
+
+- F104 FINAL: public audit in F105scratch2108 standard-only; card/frontier
+  updated. F105 first scratch2108 failed because B implicit in F102 has no
+  explicit binder after removing redundant hB; add (B:=T) at application.
+  Stripped completed audit. Corrected scratch94064 sole Lean running.
+
+- F105 corrected scratch12060 exit0 warning-free. Final3192 exit0 warning-free,
+  SmoothAFEReflectedLocalTargetEvent written/wired (121lines/index pending
+  inspection). Lint38691 ten unrelated unreachable modules/no BAG debt. Two
+  public axioms pending in sole new C22/F106 scratch
+  /tmp/BagGaussianCofactorModeSeparation.lean. F106 proves Gaussian Mellin mode
+  separation via entire pole-clearing and imaginary-axis identity theorem;
+  exact linear independence corollary. No full cofactor mean/covariance claimed.
+  Source search72415 nonpartial all20 candidates+20source names and sole
+  ingredient reviewed; used core analytic identity theorem, not broad RH wrapper.
+
+- F105 FINAL: final3192 exit0 warning-free; both public reports standard-only
+  in F106scratch45046. Card/frontier updated: C21 finite random-carrier target
+  law closed with any prescribed phase cell. Actual full tails/boundary/orbit
+  still open. F106scratch45046 failed only unspecified ContinuousAt point and
+  missing explicit hden j in field_simp. Corrected, removed completed F105
+  audit/import, added existing FiniteEvaluationPacket span and full-rank packet
+  applications plus their public audits. Successor scratch now sole Lean.
+
+- F106 corrected scratch29752 exit0 warning-free, including actual kernel
+  coefficient separation, function linear independence, full mode span and
+  nonsingular finite Gaussian response matrix. Both reused FiniteEvaluationPacket
+  exports print standard-only. Final SmoothAFEGaussianCofactorModes written/wired;
+  sole final98667 running. Four public audits queued in uncompiled F107 scratch
+  /tmp/BagSmoothCutoffGaussianTail.lean. F107 derives exact Gaussian logarithmic
+  tail formula for the literal cutoff using source derivative and endpoint decay.
+  No full-cofactor mean convergence is claimed. Broad FTC research76345 nohits;
+  direct mathlib source gave integral_Ioi_of_hasDerivAt_of_nonpos'. Evaluation
+  source search32189 nonpartial, all20+20 names/soleingredient inspected.
+
+- F106 final98667 exit0 warning-free; 104lines/index96. Lint37972 eleven
+  unrelated unreachable modules including concurrent HamburgerCriticalLineEvenDefect;
+  no BAG debt. Sole F107scratch now runs with all four F106 public audits.
+  Gaussian cutoff source contains no existing exact log-tail formula; derivative
+  and monotone FTC supply the concrete source derivation.
+
+- F106 FINAL: all four public audits in F107scratch42927 standard-only.
+  F107scratch42927 failed on function-composition goal before derivative
+  normalization and direct positivity on a nonpositive goal. Changed convert
+  to simplify Function.comp_def and derivative jointly; use neg_nonpos.mpr
+  positivity. Stripped completed F106 audit/import. Corrected scratch sole Lean.
+
+- F107 scratch80197 exit0 warning-free. Explicit composition followed by
+  h.congr_deriv and field_simp [Real.exp_ne_zero] fixes derivative conversion.
+  All4 claims checked: log derivative, endpoint zero, exact real and complex
+  Gaussian tail formula. Final SmoothAFECutoffGaussianTail written/wired;
+  sole final running. F108 /tmp/BagGaussianLogMoment.lean fully drafted with
+  F107's four public audits, complex tilted Gaussian integrability and exact
+  exp(s²) moment, plus real exponential majorant integrability.
+
+- F107 FINAL: final60503 exit0 warning-free; all4 audits standard-only in
+  F108scratch1659; 56lines/index49; lint44494 eleven unrelated unreachable
+  modules/noBAGdebt. F108scratch1659 failed on nonexistent integral_div_const
+  (actual API integral_div) and RCLike.re needing RCLike.ofReal_re. Corrected
+  source-verified names, removed completed F107 audit/import. Corrected scratch
+  sole Lean. F109 /tmp/BagCofactorRealScale.lean drafted, uncompiled: lift actual
+  coherent weighted mean to real floor cutoffs and obtain all-cutoff power
+  majorant from bounded normalized sequence. Search99015 nonpartial all20+20
+  plus soleproofidea/ingredient reviewed; mathlib provides floor-ratio limit.
+
+- F108scratch84788 exit1: explicit Complex/Real half-exponent cast needed
+  before ofReal_cpow rewrite; RCLike.re cast needs pointwise Integrable.congr.
+  Corrected. Scratch53204 exit1 only sqrt(4)=2 normalization (generic norm_num
+  did not close under complex cast). Replaced with explicit Real.sqrt_sq
+  identity and ofReal multiplication. Scratch now sole Lean. No F108 repo leaf.
+  F109 draft now carries F108 audits and explicit nonzero complex powers in
+  floor-normalization lemma. Gaussian-prefix-integral search16034 lexical
+  20 displayed hits reviewed; no exact cofactor averaging theorem.
+
+- F108 corrected scratch6215 exit0 warning-free after explicit sqrt4 rewrite.
+  Final9178 exit0 warning-free; SmoothAFELogGaussianMoment written/wired.
+  Three public audits queued/running in sole F109scratch /tmp/BagCofactorRealScale.lean.
+  F110 /tmp/BagGaussianPrefixIntegral.lean drafted, uncompiled: exact series
+  Gaussian average of sharp range-prefix sums via integral_tsum and actual
+  cutoff tail; assumes weighted norm summability, to discharge for arithmetic
+  cofactor coefficients with existing summable_smoothAFE_direct and
+  summable_norm_iff for complex scalars. F109 still uncompiled.
+
+- F108 FINAL: all three public audits in F109scratch18329 standard-only;
+  card/frontier updated. F109scratch18329 exit1 composition normalization and
+  inferred-prefix elaboration timeout; scratch36023 exit1 only timeout in public
+  real-scale application. No heartbeat increase. Added explicit P,z,L arguments
+  to avoid higher-order inference through floor. Corrected scratch sole Lean.
+
+- F109 scratch16285 exit0 warning-free after explicit P,z,L; final leaf
+  SteinhausCofactorRealScale written/wired, sole final running. Both public
+  audits queued in F110 scratch, exact weighted Gaussian averaging identity.
+  Real-cutoff convergence and all-cutoff power majorant now compile.
+
+- F109 final12304 exit0 warning-free; index37, lint36507 exit1 thirteen
+  unrelated unreachable modules/no BAG debt. Sole F110 scratch running, with
+  F109 public audits. F111 /tmp/BagGaussianPrefixLimit.lean drafted: exact
+  Gaussian average limit from real-cutoff normalized convergence and all-cutoff
+  power bound, via actual complex moment and dominated convergence. No repo leaf.
+
+- F109 FINAL: both public reports in F110scratch47456 standard-only;
+  card/frontier updated. F110 first scratch47456 exit0 warning-free, exact
+  series-to-prefix Gaussian identity including norm-integral interchange.
+  Final SmoothAFEGaussianPrefixIntegral written/wired, sole final running.
+  F111 draft carries F110 audit; F112 /tmp/BagFullGaussianCofactorMean.lean
+  drafted to discharge summability for actual characters and assemble full mean.
+
+- F110 FINAL: final25409 exit0 warning-free, public audit in F111scratch2948
+  standard-only; index31, lint27781 thirteen unrelated unreachable/no BAG debt.
+  F111scratch2948 exit1 on field-notation newline and redundant tactic after
+  field_simp already solved norm algebra. Corrected, stripped completed audit.
+  Exact-tail lexical search84026: seven total hits, four displayed entries
+  reviewed; existing SmoothAFETruncation supplies uniform absolute tail bound
+  at arbitrary power saving. F112 actual full-mean draft remains uncompiled.
+
+- F111 scratch63244 exit1 only unreduced id in rescaled limit. Added id to
+  dsimp; corrected scratch2834 exit0 warning-free. SmoothAFEGaussianPrefixLimit
+  written/wired, sole final running. Public audit queued in F112 actual full
+  cofactor-mean scratch. F113 /tmp/BagFullGaussianCofactorTail.lean drafted:
+  phase-uniform arbitrary-power tail estimate and preservation under finite
+  character-prefix agreement. No F112/F113 repo leaf yet.
+
+- F111 final14141 exit0 warning-free; index49; lint36045 exit1 twelve
+  unrelated unreachable modules/no BAG debt. Sole F112scratch now runs with
+  F111 public audit. Source packet inspection confirms sharp-prefix preservation
+  was exact; full Gaussian packets instead need quantitative tail preservation.
+  F113 supplies that planned replacement. No recurrence completion claimed.
+
+- F111 FINAL: public audit in F112scratch41648 standard-only; card/frontier
+  updated. F112scratch41648 exit1 only range-to-Icc rewrite unable to infer
+  shifted summand lambda. Supplied explicit summand via congr 1/exact. F114
+  /tmp/BagFullGaussianPrefixStability.lean drafted: one finite phase prefix
+  preserves complete Gaussian cofactors uniformly for 0<R<=U within epsilon.
+  F112 corrected scratch sole Lean; F113/F114 not compiled.
+
+- F112 corrected scratch93056 exit0 warning-free: actual arithmetic full
+  Gaussian cofactor identity and limit both compile. Summability discharged,
+  all positive indices retained, original finite phase prescription arbitrary.
+  Final SteinhausFullGaussianCofactorMean written/wired, sole final running;
+  both public audits queued in F113 scratch. F115 /tmp/BagFullGaussianCofactorModes.lean
+  drafted: finite-node convergence and one coherent Gaussian mode block beyond
+  arbitrary scale with large mean-weighted length. F113/F114/F115 uncompiled.
+
+- F112 final10195 exit0 warning-free, index59; lint94340 exit1 eleven
+  unrelated unreachable modules/no BAG debt. Sole F113scratch now runs,
+  carrying both F112 public audits. Full Gaussian cofactor realization is
+  compiled; audit pending. Uniform tail/prefix preservation remains in drafts.
+
+- F112 FINAL: both public reports in F113scratch47730 standard-only;
+  card/frontier updated with actual full Gaussian cofactor mean. F113 first
+  scratch47730 exit0 warning-free. Final SteinhausFullGaussianCofactorTail
+  written/wired; sole final running, three public audits queued in F114scratch.
+  F115 draft now also includes normalized finite-node prefix stability, so it
+  depends on F114 as well as F112/F113. F114/F115 not yet compiled.
+
+- F113 FINAL: final29232 exit0 warning-free, three public audits in
+  F114scratch40925 standard-only; index64, lint49545 eleven unrelated unreachable.
+  F114 first scratch40925 exit0 warning-free. Final
+  SteinhausFullGaussianPrefixStability written/wired, sole final running;
+  public audit queued in F115. F116 /tmp/BagFullGaussianModePackets.lean drafted:
+  induction with half-error budget, one phase realizing every prescribed twist
+  on separated real scale blocks while preserving the original finite prefix.
+  F115/F116 still uncompiled. Current full reflected covariance/orbit open.
+
+- C22 source refinement (paper candidate, not Lean claim): with full Gaussian
+  cofactors one can choose smoothing x=N (r=1). For R=N/p the exact normalized
+  exterior-prime channel is sqrt(N)/p times fullGaussianCofactorNodeVector s R;
+  no floor correction or small-r sharp-cutoff approximation remains. Prime
+  blocks R in [M,2M] give energy proportional to M*norm(A)^2/log N. Freeze
+  primes <=N/D for D>2*max M and truncate at N^(1+delta), delta<1; the arithmetic
+  seam and phase-uniform Gaussian tail then separate at large N. Still needed:
+  uniform finite-character-cell stability, literal truncated channel transfer,
+  actual upper/max-column bounds and bounded background, then complete AFE.
+  F117 /tmp/BagGaussianCofactorModeCoercivity.lean drafted from audited matrix
+  norm argument plus F106 full-rank Gaussian packet. F115/F116/F117 uncompiled.
+
+- F114 FINAL: final35252 exit0 warning-free, public audit in F115scratch53942
+  standard-only; index25, lint6672 ten unrelated unreachable/no BAG debt.
+  F115 first scratch53942 exit0 warning-free, all three exports: finite-node
+  coherent Gaussian mode convergence, normalized prefix stability, and one
+  arbitrarily late large-energy block. Final SteinhausFullGaussianCofactorModes
+  written/wired, sole final running; three public audits queued in F116scratch.
+  F116/F117 uncompiled.
+
+- F115 final97341 exit0 warning-free; index99, lint65370 eleven unrelated
+  unreachable modules/no BAG debt. Sole F116scratch now running with F115's
+  three public audits. Latest memory full-gaussian-cofactor-mean-closed-packets-next
+  has comprehensive source checkpoint but runtime immediately superseded here.
+
+- F118 /tmp/BagFullGaussianCharacterStability.lean drafted, uncompiled:
+  uniform full-cofactor finite-character tolerance on every 0<R<=U. Uses two
+  phase-uniform tails below epsilon/4 and a finite head bound from norm(V)<=1;
+  a positive character tolerance controls the remaining epsilon/4. Prior
+  lexical research cofactor/character/tolerance returned exactly existing
+  corrected finite-cofactor tolerance; source inspected, no full-series version.
+  F116 scratch9927 still sole Lean, F117/F118 pending.
+
+- F115 FINAL: all three reports in F116scratch9927 standard-only; card/frontier
+  updated. F116 first scratch9927 exit0 warning-free: simultaneous prescribed
+  Gaussian mode packets under one extending phase, separated real-scale blocks,
+  original finite assignment preserved and arbitrary mean-weighted budgets.
+  Final SteinhausFullGaussianModePackets written/wired; sole final running.
+  Public audit queued in F117 coercivity scratch. F117/F118 still uncompiled.
+  C22 initial overview synchronized with already FINAL full mean/mode separation.
+
+- F116 final64207 exit0 warning-free; index10; lint4328 unrelated unreachable
+  modules only (count in log). Sole F117 scratch now running with F116 public
+  audit. F119 /tmp/BagFullGaussianModeCells.lean drafted: normalized finite-node
+  character tolerance plus all simultaneous mode blocks on one fixed positive
+  character-radius cell. F118/F119 still uncompiled. Existing reciprocal prime
+  blocks are exactly (N/(2M),N/M], so their real cofactor scales already lie in
+  [M,2M); no new PNT count is needed for the full Gaussian channel transfer.
+
+- F116 FINAL: public audit in F117scratch3952 standard-only; card/frontier
+  updated. F117 first scratch3952 exit0 warning-free, robust finite Gaussian
+  mode row lower bound. Final SmoothAFEGaussianCofactorModeCoercivity written/wired;
+  sole final running; public audit queued in F118. F120
+  /tmp/BagFullGaussianNormalizedChannel.lean drafted: exact real-scale channel,
+  common scalar identity/norm pairing, real reciprocal prime-block bounds and
+  literal full-channel conductor normalization. Source research92889 terminal0:
+  fourteen total, ten displayed lexical entries reviewed, reused existing prime
+  blocks and counts. F118/F119/F120 uncompiled.
+
+- F117 final82716 exit0 warning-free after removing temporary F116 import;
+  index50, lint28046 eleven unrelated unreachable modules/no BAG debt. Sole
+  F118scratch now running with F117 public audit. F119/F120 still uncompiled.
+
+- F121 /tmp/BagFullGaussianChannelEnergy.lean drafted, uncompiled, from the
+  existing source energy/count proof with F117 Gaussian frame, F119 cell blocks,
+  F120 exact real-scale normalization. Its conclusion is full-cofactor source
+  energy H*N/log N on a fixed cell, not yet the literal finite conditional Gram.
+  Selected primes already obey R=N/p in [M,2M). Later truncate the actual carrier
+  at L=floor(N^(1+delta)),0<delta<1, use L<(N/D)^2 and the uniform Gaussian
+  cofactor tail to transfer selected rows. Upper/max-column bounds and full
+  Gaussian random first-mean/bounded background are still separate obligations.
+  F118scratch9534 remains sole Lean; F119/F120/F121 pending.
+
+- F117 FINAL: public audit in F118scratch9534 standard-only; card/frontier
+  updated. F118scratch9534 exit1 only triangle-bound add_le_add_right orientation;
+  replaced by explicit add_le_add with le_refl. All tail/finite-head estimates
+  compiled. Removed completed audit/import; corrected F118 scratch sole Lean.
+
+- Future truncation simplification (paper option only): reparameterize height/
+  smoothing scale as n^2 and truncate at n^3. Selected primes p<=n^2 then have
+  cofactor cutoff n^3/p>=n exactly, while n^3<(n^2/D)^2 eventually. This is the
+  previous delta=1/2 choice without real-power floors; cofinal square scales
+  suffice for an existence-of-recurrence producer. Must check receiver
+  quantifiers before choosing this implementation. No such transfer claimed.
+
+- F118 corrected scratch16099 exit0 warning-free. Final
+  SteinhausFullGaussianCharacterStability written/wired, sole final running;
+  public audit queued in F119. F119/F120/F121 still uncompiled.
+- Receiver quantifier audit: BAG card requires a quantitative count exceeding
+  right-strip zero density, not merely unboundedly many returns. The square-scale
+  option is usable only while retaining the full quantitative window return
+  count along that cofinal sequence. One shift per square scale would not meet
+  the producer requirement. No receiver edits/extensions made.
+
+- F118 final18069 exit0 warning-free; index42, lint23486 twelve unrelated
+  unreachable modules/no BAG debt. Sole F119scratch running with F118 public
+  audit. F120/F121 remain uncompiled; quantitative return count remains required.
+
+- F118 FINAL: public audit in F119scratch44644 standard-only; card/frontier
+  updated. F119 first scratch44644 exit0 warning-free, normalized character
+  tolerance and all full Gaussian mode blocks on one fixed positive-radius cell.
+  Final SteinhausFullGaussianModeCells written/wired; sole final running; both
+  public audits queued in F120scratch. F122 /tmp/BagFullGaussianTruncation.lean
+  drafted: literal truncation/Icc identity, phase-uniform full-cofactor error
+  at every bounded scale, and uniform normalized finite-node mode error for
+  large cofactor cutoffs. F120/F121/F122 remain uncompiled.
+
+- F119 final28138 exit0 warning-free; index58, lint84656 eleven unrelated
+  unreachable modules/no BAG debt. Sole F120scratch now runs with both F119
+  public audits. Latest mode-cell-source memory runtime superseded here.
+
+- F119 FINAL: both public reports in F120scratch92637 standard-only; card/frontier
+  updated. F120scratch92637 exit1 only backward rewrite of hpowers replaced
+  every literal 1, including exponent s-1. Replaced with a structured calc
+  factor and forward hpowers rewrite. Other three exports compiled. Removed
+  completed F119 audit/import; corrected scratch sole Lean.
+- Selected-free-prime refinement (paper candidate): choose free primes only in
+  the union of constructed reciprocal blocks P_N (all<=N), retain all other
+  primes through polynomial cutoff L. Then S_N=primesLE L minus P_N is finite.
+  Existing integral_norm_smoothUpTo_carrier_le accepts ANY finite S_N, so the
+  background Jensen bound survives this conditioning. Existing prefix event
+  integration also accepts arbitrary finite S. Under L<Y^2 and P_N above Y,
+  each term has at most one selected free prime; its cofactors are retained.
+  Need formal selected-free frozen identity. This avoids requiring vanishing
+  variance over all primes up to L: selected count<=pi(N), max channel C/sqrtN
+  gives O(1/log N) trace. Covariance lower bound already uses selected blocks.
+  Prime-tail deep search71224 remains running but may now be unnecessary.
+
+- F120 corrected scratch80792 exit0 warning-free. Final
+  SteinhausFullGaussianNormalizedChannel written/wired, sole final running;
+  all four public audits queued in F121. F123
+  /tmp/BagReflectedTruncatedGaussianTransfer.lean drafted: actual positive-index
+  reflected channel at independent smoothing N and polynomial cutoff L equals
+  the literal truncated full-Gaussian cofactor at R=N/p, cutoff L/p, with exact
+  common-height phase shift. No floor smoothing approximation.
+- Conditioning refinement: use free window P_N=largePrimes N Y, retaining
+  S_N=primesLE L minus P_N, rather than just the constructed union. It contains
+  the useful blocks and still has at most pi(N) free coordinates; F121 already
+  sums over exactly this window. Retain primes>N up to L. Arbitrary finite-S
+  Jensen and resampling exports are verified; selected-window frozen identity
+  still to formalize. This makes the weighted prime-tail bound unnecessary.
+- Deep prime-tail search71224 terminal0, partial=true, complete inventory but
+  compiler freshness mostly pending/stale; all20 candidate/20 source names
+  reviewed, no proofideas/ingredientsets. Not used in current proof.
+- Background mean paper refinement: existing sqrt envelope and exact positive
+  Abel-cost identity permit uniform-in-polynomial-cutoff Gaussian first mean
+  at smoothing scale N. Split cost at N; head<=N^d/d, tail bounded via V(n/N)
+  <=K*N/n and sum_(n>N)n^(-beta-3/2), giving C_beta*N^d independent of cutoff L.
+  Then envelope C+epsilon*sqrt n gives o(N^d), uniformly L. Existing Abel and
+  Gaussian-weight exports read; new uniform Gaussian cost not yet drafted.
+
+- F120 final66772 exit0 warning-free; index61, lint49627 twelve unrelated
+  unreachable modules/no BAG debt. Sole F121scratch now runs with all four
+  F120 public audits. Read complete F121 draft; annotated hMi:0<M_i before
+  real cast to avoid 1<=M versus real positivity elaboration. F122/F123 pending.
+
+- F120 FINAL: all four public reports in F121scratch5212 standard-only;
+  card/frontier updated. F121 first scratch5212 exit0 warning-free: arbitrary
+  H*N/log N full-Gaussian source energy in every node direction throughout one
+  fixed finite-character cell, with the original finite phase prescription.
+  Final SteinhausFullGaussianChannelEnergy written/wired, sole final running;
+  public audit queued in F122. F122/F123 pending. No finite conditional Gram or
+  deterministic recurrence completion claimed.
+
+- F121 final95681 exit0 warning-free; index14; lint24043 unrelated unreachable
+  modules only. Sole F122scratch now runs with F121 public audit. F124
+  /tmp/BagSteinhausFreeWindow.lean drafted: exact affine frozen-carrier identity
+  for P_N=largePrimes N Y and retained S=primesLE L minus P_N, under Y<=N<=L
+  and L<Y^2. Background identified as the actual S-smooth projection by original
+  expectation; all coefficients are literal channels at polynomial length L.
+  Prior lexical research11225 terminal0: three displayed hits reviewed, existing
+  general prefix projection used. F123/F124 uncompiled.
+
+- F121 FINAL: public audit in F122scratch61373 standard-only. F122 first scratch
+  exit0 warning-free: literal uniform truncation and normalized finite-node
+  error at every bounded real scale, uniformly all phases. Final
+  SteinhausFullGaussianTruncation written/wired; public audits queued in F123.
+  F123/F124 remain uncompiled. Full source energy is not yet the finite Gram.
+
+- F122 final97061 exit0 warning-free; index27; lint82290 twelve unrelated
+  unreachable modules/no BAG debt. Sole F123scratch runs with all three
+  F122 public audits. F121 card/frontier FINAL synchronized.
+
+- F122 FINAL: all three public audits standard-only in F123scratch81732.
+  F123 scratch exit0 warning-free; final reflected truncated transfer leaf
+  written/wired. Exact coefficient identity permits independent smoothing N
+  and polynomial cutoff L, with original common-height phase rotation.
+  Public audit queued in F124; sole F123 final running.
+
+- F123 final89281 exit0 warning-free; index12; lint89108 thirteen unrelated
+  unreachable modules/no BAG debt. Sole F124scratch runs with F123 public
+  audit. F125 /tmp/BagTruncatedGaussianChannelEnergy.lean drafted, uncompiled:
+  exact truncated normalization, fixed-cell modes uniformly above a fixed
+  cofactor cutoff, and arbitrary H*N/log N energy for all polynomial L>=N*D.
+  No conductor/conditional Gram transfer claimed. Gaussian Abel-cost lexical
+  search52795 terminal0: displayed25 hits reviewed, existing Abel cost remains
+  relevant; broad query otherwise mostly unrelated. Uniform background mean
+  at smoothing scale N is still open.
+
+- F123 FINAL: public audit in F124scratch93161 standard-only. F124 first
+  scratch exit0 warning-free, exact literal frozen decomposition for a bounded
+  free window and arbitrary longer polynomial under Y<=N<=L, L<Y^2.
+  Final SteinhausFreePrimeWindow written/wired; sole final running. Public
+  audit queued in F125; F125 still uncompiled.
+
+- F124 final5404 exit0 warning-free; sole F125scratch now runs with F124
+  public audit. F126 /tmp/BagGaussianIndependentCutoffMean.lean drafted,
+  uncompiled: complete absolute Gaussian sum power bound, uniform Gaussian
+  Abel cost and original first-mean decay at smoothing N for every independent
+  cutoff L. Proof uses existing direct-edge power tail at cutoff N, avoiding
+  a new p-series estimate. No growth restriction on L in this mean estimate.
+
+- F124 FINAL: index17; lint6240 eleven unrelated unreachable modules;
+  public audit in F125scratch10167 standard-only. F125 first scratch exit0,
+  only two unused simp arguments removed before final. Exact truncated
+  normalization, fixed-cell mode uniformity and H*N/log N source energy
+  for every L>=N*D compiled. Final leaf written/wired; sole final running;
+  all five public audits queued in F126. F126 remains uncompiled.
+
+- F125 exact index126; lint84030 eleven unrelated unreachable modules, no
+  BAG debt. Final56782 still running (no successor Lean launched).
+- F127 /tmp/BagReflectedWindowConditionalEnergy.lean drafted, uncompiled:
+  exact conductor/row-phase separation and literal H/log N Gram floor for
+  all polynomial L>=N*D across the common-height window on a fixed cell.
+- F128 /tmp/BagReflectedWindowFirstMean.lean drafted, uncompiled: arbitrary
+  cutoff phase transport, reflected first-mean decay uniform L and height>=N,
+  and Jensen transfer to any retained finite prime set. F126 predecessor
+  still uncompiled. No full random target law or deterministic return count.
+
+- F125 final56782 terminal0 warning-free. Sole F126scratch runs with all
+  five F125 public audits. F129 /tmp/BagReflectedWindowChannelUpper.lean
+  drafted, uncompiled: phase/cutoff-uniform bounded real-scale cofactors,
+  actual bounded-free-window channel O(N^-1/2), and finite-node directional
+  energy O(1/log N), uniformly every independent polynomial cutoff L.
+  Uses F126 absolute Gaussian mass; no weighted prime-tail estimate needed.
+
+- F130 /tmp/BagSquareScaleWindowSeam.lean drafted, uncompiled: smoothing n^2,
+  polynomial n^3 eventually satisfy n^2*D<=n^3<(n^2/(2K))^2 and retain any
+  fixed character prefix B. Quantitative window return count remains required.
+- Tail-source search34164 terminal0 no hits; broadened reflected-tail lexical
+  search terminal0, all six hits reviewed. Existing direct cofactor tail F113
+  already gives the needed literal reflected tail after chi multiplication;
+  other AFE dual/deep derivative tails are not substituted for it.
+
+- F125 FINAL: all five public audits in F126scratch14923 standard-only;
+  card/frontier synchronized. F126 first scratch14923 exit0: all three new
+  theorems compiled, only a ring suggestion emitted. Replaced ring with ring_nf
+  in final leaf to remove the diagnostic. Final independent-cutoff mean leaf
+  written/wired; sole final running; three audits queued in F127. No analytic
+  mean or summability assumption added.
+
+- F131 /tmp/BagFullReflectedCubicTail.lean drafted, uncompiled: literal full
+  reflected carrier identified with original coefficient series and finite
+  positive-index carrier, then deterministic all-phase tail bound C*n^-q for
+  every q>0 at smoothing n^2, polynomial n^3, height>=n^2. Existing arbitrary
+  Gaussian cofactor tail and chi envelope suffice; no rare-event subtraction.
+- Began deep return-count source search (budget300) while sole F126 final
+  runs. This searches actual common-height growing-prime quantitative transfer,
+  which remains the central open recurrence input. No deterministic inference
+  is made from the random target law alone.
+
+- F126 final34074 terminal0 warning-free after ring_nf cleanup; index100;
+  lint25738 ten unrelated unreachable modules/no BAG debt. Sole F127scratch
+  now runs with all three F126 public audits. F128-F131 remain uncompiled.
+  Deep deterministic-return source search15877 still running; no other owned
+  Lean. Latest memory runtime14923 superseded by this entry.
+
+- Deep return-count search15877 terminal0, partial=false, inventory complete,
+  compiler freshness mostly pending/stale. All20 candidate and20 source-argument
+  statements plus the sole proposed ingredient set reviewed. No applicable
+  growing-prime return-count theorem found; model_suggests_sufficient_sources
+  is not accepted as a proof. Relevant source is only fixed-dimensional
+  pigeonhole recurrence with exponential (Q+1)^d clock, already below BAG's
+  needed quantifier strength. Proposed Gaussian-tail/height ingredient set
+  does not bridge deterministic occupation. Prose/source passages include
+  unrelated lanes; no unreviewed passage used. A narrower lexical phase
+  recurrence search also completed, for the next source audit.
+
+- Narrow phase-recurrence lexical search: 178 total, 25 displayed names/docs
+  reviewed; relevant results are fixed-dimensional or summable-tail clocks,
+  not the growing-prime height-window count. Read prime-log capacity card
+  1031-1095: signed near-collision pressure is explicitly still the arithmetic
+  gate; crude integer spacing loses moment depth. Read primorial local-REM
+  card124-192: bulk deterministic REM is conjectural and does not close the
+  zero-edge signed-pressure problem. Neither adjacent programme is imported
+  as a producer premise. F127scratch73418 remains sole running Lean.
+
+- F126 FINAL: all three public audits in F127scratch73418 standard-only;
+  card/frontier synchronized. F127 first scratch73418 exit0 warning-free:
+  exact conductor factor, common-unit-row norm identity and actual reflected
+  H/log N channel energy floor for every L>=N*D throughout fixed cell and
+  height window. Final leaf written/wired; sole final running; three public
+  audits queued in F128. F128-F131 still uncompiled.
+
+- F127 final22680 terminal0 warning-free; index81; lint50464 eleven unrelated
+  unreachable modules/no BAG debt. Sole F128scratch runs with all three
+  F127 public audits. F132 /tmp/BagFrozenWindowLocalTarget.lean drafted,
+  uncompiled: Euclidean retained-prime carrier, exact bounded-free-window
+  frozen vector decomposition, and original conditional target law from
+  the actual lower/maximal/upper channel bounds and exact shifted target.
+  Uses F124 and existing original finite local-target law; no law assumed.
+
+- F127 FINAL: three public audits in F128scratch87432 standard-only. F128
+  first scratch87432 exit0 warning-free: exact independent-cutoff phase and
+  chi mean transport, literal Gaussian/reflected first-mean decay uniform L,
+  and Jensen contraction to every finite retained prime set. Final leaf
+  written/wired; sole final running; five public audits queued in F129.
+
+- F128 final13628 terminal0 warning-free. Sole F129scratch runs with all
+  five F128 public audits. F133 /tmp/BagReflectedWindowBoundedCentreEvent.lean
+  drafted, uncompiled: measurable retained-centre event, retained-coordinate
+  dependence, original Markov cost, finite-node uniform first mean and half
+  fixed-event mass after bounded-centre selection, uniformly independentL/S.
+  F130-F133 uncompiled. No deterministic return-count source was discharged.
+
+- F128 index128; lint40589 terminal1: eleven unrelated unreachable modules
+  plus two unrelated active sorry lines in WeilIntegerMassAtomicRigidity,
+  theorem logDeriv_atomProduct (149/150). No BAG debt; no edits outside BAG.
+  Sole F129scratch57497 running. F131 draft now explicitly casts square
+  smoothing N=n^2 at real-scale call sites to avoid coercion ambiguity.
+
+- F128 FINAL: five public audits in F129scratch57497 standard-only. F129
+  first scratch57497 exit0 warning-free: bounded cofactors uniformly allL,
+  literal window channel C*N^-1/2, finite-node maximal-dot bound, and actual
+  total directional energy C/log N uniformly allL. Final leaf written/wired;
+  sole final running. Four public audits queued in F130. F130-F133 uncompiled.
+
+- F132 draft now also exports the exact retained-prefix inclusion
+  primesLE B subset windowRetained whenever B<=Y<=N<=L. This is the needed
+  dependence bridge for the rotated fixed character cell in general finite-S
+  conditional integration; no new product-law premise is introduced.
+
+- F129 final3386 terminal0 warning-free; index152; lint38838 twelve unrelated
+  unreachable modules/no proof debt reported in this run. Sole F130scratch
+  runs with all four F129 public audits. F131-F133 remain uncompiled.
+
+- F129 FINAL: four public audits in F130scratch74049 standard-only. F130
+  first scratch74049 exit0 warning-free: square/cubic cutoff choice meets all
+  affine-seam, long-cofactor and fixed-prefix requirements eventually.
+  Final leaf written/wired; sole final running; public audit queued in F131.
+  Latest memory runtime74049 superseded here. F131-F133 still uncompiled.
+
+- F130 final95469 terminal0 warning-free; index11; lint1867 twelve unrelated
+  unreachable modules/no BAG debt. Sole F131scratch runs with F130 public
+  audit. Deep holomorphic-mode-density search58709 (budget300) running.
+- Next boundary candidate, not proved: upgrade Gaussian mode density from
+  finite nodes to a disc algebra. If a continuous functional annihilates
+  K(s+it), K(z)=exp(z^2)/z, its translated-kernel transform is analytic on the
+  connected exterior of the reflected disc and vanishes by identity theorem.
+  Contour integration against w^m should recover (-s)^m from the sole residue,
+  forcing all polynomial moments to vanish; polynomial density then gives
+  the functional zero. Need source audit and exact functional/contour proof.
+  Uniform-on-compact coherent means might follow from Cauchy formula plus
+  pointwise F112 convergence and a locally uniform absolute Gaussian bound.
+  This is a potential random holomorphic target-event bridge, NOT a
+  deterministic vertical-flow transfer. No new Lean code for it yet.
+
+- Boundary candidate sharpened on paper: polynomial density is unnecessary.
+  If L annihilates K(s+it), define F(w)=L_s K(s+w) off the reflected compact
+  disc. F is holomorphic there; its imaginary-axis zeros force F=0 on the
+  connected exterior. For f holomorphic on a larger disc, integrate
+  f(-w)*F(w) on a circle enclosing the reflected smaller disc. Commuting L
+  and contour integration, Cauchy's formula applied to
+  f(-w)*exp((s+w)^2)/(s+w) gives 2*pi*i*L(f), since residue at w=-s is f(s).
+  Thus L(f)=0; Hahn-Banach gives mode-span density on the smaller disc.
+  Still requires actual Banach-valued holomorphy/contour interchange and Lean
+  verification. Source-read HTGeometry/DiscPolynomialDensity (66 lines) and
+  RungeInterfaceDischarge (49 lines); neither itself proves Gaussian span
+  density, and algebra-generation density cannot replace linear-span density.
+
+- F130 FINAL: public audit F131scratch46365 standard-only. F131scratch46365
+  terminal1: sole error positivity cannot directly solve Nat1<=n^3. Replaced
+  with explicit 0<n^3 from pow_pos and omega. Removed completed F130 audit
+  and its temporary import. Corrected F131 scratch is sole Lean next.
+
+- Deep Gaussian-density search58709 terminal0 partial=false, complete63592
+  file inventory, compiler mostlypending/stale, semanticcoverageunavailable.
+  All20candidate/20sourceargument statements andoneproposedingredient reviewed.
+  No ready disc-density bridge; known finite-node source exports retrieved.
+  CauchyKernelDensityVanishing lines1-190 read, not imported: real-line support
+  has two half-plane components, unlike the connected reflected-disc exterior.
+  C22.3 card records exact direct-Cauchy/Hahn-Banach candidate and its remaining
+  verification gates. No Lean file or premise added for that candidate.
+
+- F131 corrected scratch67946 terminal0 warning-free: actual full reflected
+  series/finite-carrier identities and deterministic all-phase C*n^-q tail
+  at square smoothing/cubic cutoff. Final leaf written/wired; sole final
+  running; three public audits queued in F132. F132/F133 uncompiled.
+
+- F131 final9758 terminal0 warning-free; index43; lint46946 thirteen unrelated
+  unreachable modules/no BAG debt. Sole F132scratch runs with all three F131
+  public audits. F133 remains uncompiled. All searches terminal/reviewed.
+- Read old SmoothAFEReflectedCovarianceCentreEvent, PrescribedCellEvent, and
+  CovarianceEvent source needed for next assembly. F134 planned (not drafted):
+  refine F127 cell to max(Bc,B0),min(delta_c,delta0), use phase-rotation measure
+  identity for fixed mass, intersect F133 bounded retained centres, retain
+  dependence through F132 primesLE-prefix inclusion into windowRetained.
+  Require N<=L and N*D<=L; affine seam L<Y^2 only needed for the following
+  conditional target integration, not for this covariance/centre event itself.
+
+- F132 scratch36120 terminal0 warning-free; all three F131 public audits
+  standard-only. F131 FINAL. F132 final leaf written/wired; its three audits
+  queued in F133. F134 covariance/centre subcell event drafted in /tmp,
+  uncompiled; no repo leaf. No owned Lean carried across checkpoint.
+- First F132 final launch33442 terminal1: file write used wrong working
+  directory and failed before mutation; corrected root-relative write.
+
+- F132 final73721 terminal0 warning-free; index56; lint47831 terminal1:
+  twelve unrelated unreachable modules, no BAG/proof debt.
+- F133 scratch56656 terminal1 before elaboration: missing transitive compiled
+  dependency SmoothAFEZetaSquareDualIntegrability. No source edit needed;
+  compiling that existing leaf only before retry. F132 audits not run yet.
+
+- Dependency rebuild32345 cancelled by owned PIDs22892/22591 after read-only
+  process inspection showed another session already compiling the same exact
+  dependency output (PID21661). Await that artifact to avoid concurrent writes.
+  No other-session process signalled. F135/F136 source adaptations drafted
+  in /tmp; both uncompiled. Corrected an old-call remnant in F135 before compile.
+
+- Dependency owned rebuild32345 terminal143; other session supplied artifact.
+  Retrying F133. F137 drafted full finite-node tail and full reflected original
+  target mass at square smoothing/cubic cutoff. Uncompiled. Mathlib
+  Filter.tendsto_pow_atTop signature checked against this toolchain source;
+  explicit @ audit included in scratch. No full AFE or deterministic return
+  assertion follows from this random target-event bridge.
+
+- F133 retry49319 terminal1 before elaboration: next absent transitive output
+  SmoothAFEZetaSquareFourthMomentRouteTBudget. Existing other-session PID24663
+  is already compiling it; no duplicate launched. Import chain traced from
+  WindowFirstMean through IndependentCutoffMean and finite-prime mode sources
+  into EulerDeletion/Hardy fourth moments. No unrelated source edits.
+- Focused deep corpus search started for the genuinely open rare-event
+  Steinhaus-to-common-height transfer with growing prime cutoff. Existing
+  fixed-dimensional equidistribution/pigeonhole clocks do not supply it.
+
+- Deep rare-event orbit-transfer search71824 terminal0; partial=false,
+  inventory63602 complete, compiler mainly pending/stale, semantic coverage
+  unavailable. All20 candidate/all20 source-argument statements, zero proof
+  ideas, and one unverified ingredient set reviewed. Finite Fourier discrepancy
+  theorems require a not-VWMA hypothesis and weighted Fourier L1 cost; neither
+  establishes the growing prime-log rare-event count. Suggested generic Fourier
+  cutoff ingredient is inapplicable. No premise imported.
+- Complement lexical search74967 terminal0; 20 displayed names/docs reviewed.
+  Literal complement is n^(-s)*displacedDualWeight(d,-tau,n*N), so its uniform
+  tail needs a positive-edge conductor/scale bound; negative-edge sub-one
+  estimates alone grow in n and cannot justify that tail. Source audit ongoing.
+
+- F132 public-only audit58613 produced all three standard-only axiom reports.
+  Audit file then failed on two auxiliary polymorphic @ witnesses with unresolved
+  universe levels; these are unrelated to the audited declarations. Concrete
+  Nat/Complex witnesses queued in F133. F132 final source remains warning-free.
+  Missing transitive fourth-moment artifact now present. Retrying F133 without
+  already completed F132 audits.
+
+- F133 retry11048 terminal1 before elaboration: only remaining missing local
+  transitive output is Sieve.ZetaInvStripBound (4946 local ancestors checked);
+  other-session PID32069 already compiles it. No duplicate launched.
+- Complement source audit found a better existing route: coupled deep edge
+  d-4 has fixed chi numerator -7/2 and exact x^(d-4). Expose this factor in
+  existing fourth-power coefficient proof, multiply reflected chi N^-d, and
+  cancel conductor powers for N<=tau<=2N to obtain a uniform n^(-9/2) majorant.
+  C22.4 records exact candidate and the existing 0<d<=1/4 source limitation.
+  General strip extension/pole/control not yet proved. No complement leaf yet.
+
+- F138 /tmp/BagReflectedComplementScale.lean drafted and scratch launched
+  while the other session supplies the sole missing F133 dependency. Two
+  public statements: exact smoothing-uniform deep coefficient bound; literal
+  complement = minus right chi times the identified deep coefficient. Both
+  preserve the source restriction 0<d<=1/4. No repo leaf yet. F133-F137 still
+  await compilation, except the F132 law already final/audited.
+
+- F139 /tmp/BagReflectedComplementBound.lean drafted, uncompiled. Public
+  exists_norm_reflectedComplementCoefficient_le_conductor keeps 0<d<=1/4
+  and proves a C*(n+1)^(-9/2) bound for all real N>=1,N<=tau<=2N.
+  Constant independent of N,tau. Exact cancellation uses
+  N^(d-4)*N^4=N^d. Real.rpow_natCast and rpow_add signatures checked in
+  this toolchain; explicit monomorphic @ witnesses added to scratch.
+  No new repository source since F132, no owned Lean except F138scratch62631.
+
+- F138scratch62631 terminal0 with one unnecessarySeqFocus warning. Replaced
+  convert ... <;> ring by sequential convert/ring in final leaf; written/wired.
+  Two public audits queued in F133. Last missing F133 dependency now present.
+- F140 /tmp/BagReflectedComplementTail.lean drafted, uncompiled: absolute
+  admission, uniform all-phase full complementary bound, and fixed-cutoff
+  L^(-7/2) tail. Uses reciprocal character, preserving physical AFE orientation.
+  F139/F140 no repository leaves.
+
+- F138 final60915 terminal0 warning-free; exact index10; lint35368 terminal1
+  eleven unrelated unreachable modules, no BAG/proof debt. Sole F133 scratch
+  restarted with both F138 public audits and concrete API witnesses.
+
+- F133 retry37342 terminal1 before elaboration: cached import chain now needs
+  absent Sieve.ZetaLowerStripMultiplicative. No F138 audits ran. Moved both
+  audits to independent F139 scratch; continuing complement verification while
+  shared compiled dependency chain is restored. No source changes in other lanes.
+
+- F139scratch20096 terminal0 warning-free; both F138 public audits standard-only
+  and Real.rpow API witnesses verified. F138 FINAL. F139 final leaf written/wired;
+  single public audit queued in F140. Sieve/ZetaLowerStripMultiplicative source
+  read fully (79 lines); if still absent after complement finals, build only
+  that existing dependency before F133 retry, avoiding duplicate if active.
+
+- F139 final58244 terminal0 warning-free; index10; lint13464 terminal1
+  eleven unrelated unreachable modules, no BAG/proof debt. F140scratch61083
+  sole owned Lean, with F139 public audit.
+- F141 /tmp/BagReflectedComplementCharacterStability.lean drafted, uncompiled.
+  Uniform fixed-prefix character stability of the full reciprocal-character
+  complement, from F140 tail and F139 coefficient bound; choose tail<epsilon/4
+  and delta=epsilon/(4*(1+B*C)). Source Real.one_le_rpow signature verified,
+  concrete witness in scratch.
+
+- F140scratch61083 terminal0 warning-free; F139 public audit standard-only.
+  F139 FINAL. F140 final leaf written/wired; three public audits queuedF141.
+- Pole source audit: exact residue formula has denominator |1-s_left|>=tau.
+  For N>=1,tau>=N, reflected chi contributes N^-d; numerator N^(.5+d),
+  denominator N, and Gaussian<=constant give a uniform original pole bound.
+  Keep pole in target translation; no need to discard it or use a rare-event
+  subtraction. Source PoleDecay47–80 read; no pole leaf yet.
+
+- F140 final9884 terminal0 warning-free; index47; lint18052 terminal1
+  unrelated unreachable modules (see exact log), no BAG proof debt.
+  F141 scratch next with three F140 public audits. F142 pole bound drafted
+  /tmp/BagReflectedPoleBound.lean, no repo leaf, uncompiled. It keeps full
+  0<d<1/2 range and only N>=1,tau>=N; denominator is used before bounding.
+  Complex.abs_im_le_norm signature verified, @ witness in scratch.
+
+- Correction: F140 index is48 (not47). Lint18052 exactly13 unrelated
+  unreachable modules. F141scratch50767 terminal0 warning-free; all three
+  F140 public audits standard-only, Real.one_le_rpow witness verified.
+  F140 FINAL. F141 written/wired, public audit queuedF142. Missing
+  Sieve.ZetaLowerStripMultiplicative artifact now present.
+
+- F141 final74565 terminal0 warning-free; index15; lint83875 terminal1
+  unrelated unreachable modules/no BAG debt (exact log retained). F142 scratch
+  sole owned Lean, includes F141 public audit. F133 retry follows pole final
+  now that shared lower-strip dependency appeared.
+- C22.4 broader-range audit: deep-strip differentiability already assumes only
+  d>=0. Deep-integrand bound/integrability use d<=1/4 only to keep d-4<0;
+  horizontal proof uses it for d-4<=-1. All these order conditions remain
+  valid for d<1/2. Need full copied/generalized proofs checked in Lean before
+  broadening complement range. No wider theorem asserted yet.
+
+- Correction: F141 index16 (not15); lint83875 exactly12 unrelated unreachable modules.
+
+- F142scratch78055 terminal1: sole proof error `dsimp made no progress` after
+  exp comparison had already unfolded E. Removed redundant dsimp. F141
+  public audit standard-only; no need to repeat its print/import on retry.
+  F142 corrected scratch next.
+
+- F143 /tmp/BagReflectedDeepFullStrip.lean drafted, uncompiled, no repo leaf.
+  Four source lemmas generalized from d<=1/4 to d<1/2: deep pointwise norm,
+  deep integrability, horizontal decay, exact coefficient identification.
+  C22.4a records paper range audit. Existing source proofs copied with exact
+  new names; no assumption weakened without compiler verification.
+
+- F142 corrected scratch38353 terminal0 warning-free. Final leaf written and
+  wired; public audit queued in F133. F142 final build next, no other owned Lean.
+
+- F142 final6115 terminal0 warning-free; exact lexical index1. Lint88102
+  terminal1: eleven unrelated unreachable modules, no BAG proof debt.
+  F133 scratch5018 running with F142 public audit and concrete API witnesses.
+
+- F133 scratch5018 terminal1, now past shared-cache obstacles. Explicit
+  finite-sum function needed to avoid isDefEq heartbeat timeout; integral-sum
+  rewrite needed a concretely typed integrability witness. Added both without
+  changing heartbeat limits. F142 public audit standard-only; F142 FINAL.
+
+- F133 corrected scratch93911 terminal1 before elaboration: newly missing
+  Sieve.InvZetaUniformStrip.olean. Read its existing90-line source, no edits;
+  no same-module process seen. Building only that required existing leaf.
+- Deep affine-resonator search35081 terminal0, partialfalse,63617 inventory
+  complete; compiler mostly pending/stale, semantic reporting not measured.
+  All20 candidates/20 source arguments inspected,0 proof ideas,1 irrelevant
+  proposed ingredient set. Prime logarithm height bound is the existing
+  exponential-frequency-height cost, not a growing-prime return count.
+  Narrower common-height resonator deep search35805 running.
+
+- Narrow resonator search35805 terminal0; same63617 complete inventory,
+  mostly uncompiled/stale metadata. All20 candidates/20 arguments,1 proof
+  idea and1 ingredient set inspected: no applicable target-count theorem.
+  C22.5 records exact full-AFE finite-node translation assembly before code.
+
+- InvZetaUniformStrip dependency38708 terminal0 warning-free, source unchanged.
+  F133 corrected scratch retry next. Exhaustive repo reference search for
+  F138-F141 public names finds only the four owned complement leaves; full
+  strict-strip widening can update that closed chain once F143 is verified.
+
+- F133 scratch96971 terminal0 warning-free. Concrete Nat/Complex API witnesses
+  also passed. Final source strips witnesses, leaf written/wired, five public
+  axiom audits queued in F134. F133 final next.
+
+- F133 final3524 terminal0 warning-free; exact lexical index7. Lint78882
+  terminal1: eleven unrelated unreachable modules, no BAG proof debt.
+  F134 scratch next with all five F133 public axiom audits.
+
+- F134 scratch91589 terminal0 warning-free; all five F133 public audits
+  standard-only. F133 FINAL, card/frontier recorded. F134 leaf written/wired,
+  public audit queuedF135, final next.
+- F144 /tmp/BagFullReflectedAFE.lean drafted, uncompiled: literal complete
+  scalar AFE/physical-zero identity, uniformly bounded vector correction and
+  fixed-prefix correction stability. Depends on pendingF137; quarter-strip
+  restriction preserved until verified full-strip extension.
+
+- F145 /tmp/BagFullReflectedAFELocalTarget.lean drafted, uncompiled; planned
+  SmoothAFEFullReflectedAFELocalTarget. Public
+  exists_fullReflectedAFE_prescribedPhase_localTarget, via exact bounded
+  correction translation on a refined fixed phase cell. Requires pending
+  F137/F144, retains quarter-strip range. No deterministic count claimed.
+- F144 adds exact vector/scalar AFE identity. Mathlib generated subtraction
+  cancellation name found in installed source uses; concrete @ witness is
+  queued in that scratch, not yet compiler-verified.
+
+- F134 final16966 terminal1 before elaboration: missing existing transitive
+  Sieve.MoebiusContourKappaTwo.olean. Existing138-line source read in full;
+  no edits and no active same-module build observed. Required leaf build next.
+  Exact lexical index1; lint47136 eleven unrelated unreachable modules, no
+  BAG proof debt. F134 remains FINAL-PENDING despite clean scratch.
+
+- MoebiusContourKappaTwo dependency43607 terminal0 warning-free; source
+  unchanged. Read-only import graph of F134:4994 local ancestors, only the
+  not-yet-final F134 output missing. F134 final retry next; same source, so
+  prior lint/index remain applicable.
+
+- F134 final83451 terminal0 warning-free. Existing index1/lint47136 eleven
+  unrelated errors apply unchanged. F135 scratch next with F134 public audit.
+
+- F135 scratch27878 terminal0, F134 public audit standard-only. Compiler
+  emitted a ring-normalization suggestion (no errors); final uses JSON
+  diagnostics to locate it. F134 FINAL card/frontier. F135 written/wired,
+  public audit queuedF136.
+
+- F135 final57349 terminal0. JSON diagnostic is severity=information only,
+  ring normalization advice at line46; no errors/warnings. Exact index1;
+  lint63493 twelve unrelated unreachable modules, no BAG proof debt. F136
+  scratch next with F135 public audit. No redundant check for harmless info.
+
+- F136 scratch78538 terminal0 warning-free; F135 public audit standard-only.
+  F135 FINAL card/frontier. F136 written/wired; two public audits queuedF137.
+  F136 final next.
+
+- F136 final51511 terminal0 warning-free; exactindex2; lint7431 exactly
+  thirteen unrelated unreachable modules, no BAG proof debt. F137 scratch
+  next, with both F136 public audits.
+
+- F137 scratch61827 terminal1: sole error final linarith treats target set
+  membership as an atom. Gave target its explicit norm-inequality type; no
+  mathematical change. Both F136 audits standard-only; F136 FINAL card/frontier.
+  Removed audit prints on retry. Applied same explicit-target fix to pendingF145.
+
+- F137 corrected scratch42833 terminal0 warning-free. Full random finite-node
+  primal target law now scratch-verified. Final leaf written/wired; two public
+  audits queued in F143 (temporary import), before widening complement chain.
+  F137 final next.
+
+- Prepared four uncompiled full-strip replacement scratches after reading
+  all current F138-F141 source bodies: /tmp/BagReflectedComplement{Scale,Bound,
+  Tail,CharacterStability}FullStrip.lean. No repo range changed. F138 scratch
+  uses pendingF143 strip pointwise/identification lemmas; redundant derived
+  hdhalf locals removed. Audits queuedF143->F138->F139->F140->F141.
+
+- F137 final60504 terminal0 warning-free; exactindex3; lint41466 twelve
+  unrelated unreachable modules, no BAG proof debt. F143 scratch next with
+  both F137 public audits. Full random primal target law awaits those reports
+  before FINAL card/frontier update.
+
+- F143 scratch62120 terminal0 warning-free; all four full-strip contour
+  lemmas scratch-verified, both F137 public audits standard-only. F137 FINAL
+  card/frontier; C22.2 full random primal target law closed. F143 written/wired
+  stripping temporaryF137 import/prints; four public audits already queued
+  in /tmp/BagReflectedComplementScaleFullStrip.lean. FinalF143 next.
+
+- Validation plan for range propagation: F138-F141 changes only substitute
+  the verified full-strip lemmas and weaken range bounds. All mathlib names
+  were already compiler-checked. Apply prepared replacements and build each
+  final leaf directly, once, in dependency order; no duplicate scratch builds.
+  Batch lint/index after the four-source update; audit F143 plus all seven
+  broadened public results inside F144 scratch. Failures still require fixes
+  and rerun of the affected leaf before any successor.
+
+- F143 final88365 terminal0 warning-free; index4; lint94476 twelve unrelated
+  unreachable modules, no BAG debt. Rechecked all F138-F141 public references:
+  only the four owned leaves. Applied prepared full-strip replacements to
+  those four source files (guarded against concurrent changes), now FINAL-PENDING
+  wider range. Build order F138,F139,F140,F141, one foreground at a time.
+  F144/F145 drafts updated to hdhalf; F144 queues eleven audits (F143four +
+  seven broadened complement results). No wider FINAL card claim yet.
+- C22.3 API search61379 terminal0, partialtrue, inventory63629 complete;
+  semantic reporting unmeasured, compiler metadata mostly pending/stale. All
+  20candidates/20arguments/0ideas/1ingredient inspected. Relevant source
+  ConvexDomainEulerCompleteness.lean read in full192lines: existing compact
+  carrier extension, dual density criterion and Cauchy-Pompeiu annihilation
+  infrastructure are reusable candidates, not a Gaussian density proof.
+
+- Full-strip F138 final76251 terminal0 warning-free; F139 final next.
+  Four-leaf batch exactindex9 includes all seven public results plus two
+  definitions; lint11731 twelve unrelated unreachable modules, no BAG debt.
+  Public audits still queuedF144; no wider-chain FINAL claim yet.
+- C22.3 additional source reads: LocallyConvexDenseOfVanishingDual22-76
+  supplies separation from a closed real submodule and dense-dual criterion;
+  CarrierAnnihilatesHolomorphicPompeiu24-60 gives exact holomorphic-annihilation
+  interface. ContinuousMapCauchyTransform signatures reveal existing compact
+  resolventUnit/resolventInv and differentiableAt_resolventInv, useful for
+  Banach-valued Gaussian kernel analyticity. No new Gaussian proof asserted.
+
+- Full-strip F139 final47389 terminal0 warning-free; full-strip F140 final
+  next. Shared batch lint/index already reviewed, audits queuedF144.
+
+- Full-strip F140 final66505 terminal0 warning-free; F141 final next, final
+  dependent in this range extension. Eleven audits queued inF144.
+- F146 /tmp/BagCompactGaussianKernel.lean drafted, UNCOMPILED, no repo leaf.
+  C22.3a paper step recorded first. Defines C(K,C)-valued Gaussian Cauchy
+  kernel via existing resolventInv and Banach exponential; proves literal
+  coefficient formula, kernel differentiability and functional analyticity.
+  API signatures read in installed source; concrete Complex exponential/
+  inverse witnesses included. Must check after full-AFE assembly F144/F145.
+  New mathlib sources read: Exponential exp_analytic/map_exp sections,
+  SpecialFunctions.Exponential comparison209, ContinuousMap.Algebra evalCLM/
+  evalAlgHom, CircleIntegral385definition, CauchyIntegral563-584,
+  IntervalIntegral.Basic858-878. ContinuousMapCauchyTransform25-129 read.
+
+- F144 vector correction norm proof uses the exact installed sq_le_sq₀
+  equivalence instead of requiring nonlinear automation to infer a product
+  sign. Source GroupWithZero.Basic715 verified; concrete witness queued.
+  Exhaustive search of all broadened leaves and F144/F145 finds no retained
+  hdq or d<=1/4 binder. F141 full-strip final71233 still running, no diagnostics.
+
+- Full-strip F141 final71233 terminal0 warning-free. All four broadened
+  final leaves now compiled. F144 scratch next: complete physical AFE, bounded
+  vector correction, fixed-prefix vector stability, concrete API witnesses,
+  and all eleven queued F143/F138-F141 public axiom audits.
+
+- F144 scratch82466 terminal1: soleerror vector/scalar identity used untyped
+  underscore arithmetic in change. Named the three actual complex terms
+  explicitly; all other proofs and concrete API witnesses passed. All eleven
+  F143/full-strip-complement public audits standard-only. F143 plus widened
+  F138-F141 FINAL card/frontier; stripped audit prints from F144 retry.
+- Identity API lexical search37350 terminal0 total3, allnames/docs inspected;
+  useful exact source AutonomousReciprocalAperture182-204 supplies the
+  reciprocal-natural sequence identity argument. Mathlib IsolatedZeros208-235
+  read. Exterior closed-disc connectivity not located by exhaustive relevant
+  repo/mathlib searches; source Normed.Module.Connected205-258 gives punctured
+  plane/sphere path-connected image template if needed. No geometry proof yet.
+
+- F144 corrected scratch7708 terminal0 warning-free. Complete scalar AFE
+  physical-zero identity, exactvectorassembly, uniformcorrectionbound and
+  fixedprefixvectorstability all scratch-verified for fullstrictstrip. Written
+  final/wired, examplesstripped; fourpublicaudits queuedF145. FinalF144 next.
+- F147 /tmp/BagCompactGaussianExterior.lean drafted, UNCOMPILED, norepoleaf.
+  C22.3b paper step recorded: explicitradial exteriorconnectedness +imaginary
+  axisidentitytheorem usingreciprocalnaturalsequence. Geometry algebra/API
+  cleanup pending; compile only afterF145/F146. No density claim yet.
+
+- F144 final88884 terminal0 warning-free; index8; lint86770 ten unrelated
+  unreachable modules, no BAG proof debt. F145 scratch next with fourF144
+  public audits. F147 scratch corrected smul_smul orientation and explicit
+  real reciprocal-sequence limit, stilluncompiled.
+
+- F145 scratch58809 terminal0 warning-free; all fourF144 audits standard-only.
+  F144 FINAL card/frontier. F145 complete-AFE original finite-node target law
+  scratch-verified, written/wired, public audit queuedF146 temporaryimport.
+  FinalF145 next. Cauchy integral API read CircleIntegral168-206/252-286: its
+  CircleIntegrable.out supplies the weighted interval-integrability needed
+  to commute any continuous complex linear map with the circle integral.
+
+- F145 final6325 terminal0 warning-free; exact index1; lint81066 terminal1
+  with eleven unrelated unreachable modules, no BAG proof debt. F146 scratch
+  49838 running, with the single F145 public axiom report queued. F145 FINAL
+  card/frontier promotion awaits that report. F146/F147 are still unproved.
+
+- F146 scratch49838 terminal1: sole error differentiable_const needs its
+  constant argument before .add. The other kernel proofs and API witnesses
+  passed. F145 public audit standard-only; F145 FINAL card/frontier, C22.5
+  closed for random finite nodes. Corrected F146 scratch9532 running after
+  stripping the temporary F145 import/audit. C22.3c paper assembly recorded;
+  F148 /tmp/BagCompactGaussianAnnihilator.lean drafted, uncompiled.
+
+- F146 corrected scratch9532 terminal0 warning-free. Written/wired final
+  SmoothAFECompactGaussianKernel; final89700 running, public3 audits queued
+  F147. Lint73747/index28254 pending. C22.3d paper reproduction recorded;
+  F149 /tmp/BagCompactGaussianCauchy.lean drafted, uncompiled. Source API
+  check corrected the complex exponential chain to .pow 2 then .cexp.
+
+- F146 final89700 terminal0 clean, index5, lint73747 thirteen unrelated
+  unreachable modules. F147 scratch26928 terminal1 with two API/elaboration
+  errors: complex rank needs its explicit theorem/import; reciprocal sequence
+  comparison needs Function.comp_def. Its full radial-surjection algebra and
+  identity-theorem conclusion passed. All three F146 audits standard-only;
+  F146 FINAL card/frontier. Corrected F147 retry next, old audits stripped.
+- F150 /tmp/BagCompactGaussianHolomorphicAnnihilator.lean drafted, uncompiled.
+  Continues C22.3d using compact-valued contour integration and evaluation.
+  Read Analysis/RCLike/Extend actual StrongDual.extendRCLike_apply formula;
+  density separation can use this directly, without extra carrier extension.
+
+- F147 corrected scratch18828 terminal0 with one unnecessarySeqFocus warning;
+  simplified the sequence to ordinary successive tactics. Final60365 terminal0
+  warning-free; index2; lint65056 thirteen unrelated unreachable modules.
+  F148 scratch next with both F147 public audits. C22.3e exact linear-span
+  separation recorded; F151 /tmp/BagCompactGaussianDensity.lean drafted,
+  uncompiled. All drafts remain outside the repository until scratch passes.
+
+- F148 scratch90507 terminal1 solely from hrc.not_le (wrong field orientation);
+  replaced with not_le_of_gt hrc, imported F147 audits standard-only and
+  stripped for retry. F147 FINAL card/frontier. New deep compact-uniform
+  cofactor source search50012 running; no uniform-convergence theorem claimed.
+
+- F148 corrected scratch64928 terminal0 warning-free; final38137 terminal0
+  warning-free, exact index1, lint82712 twelve unrelated unreachable modules.
+  Written/wired SmoothAFECompactGaussianAnnihilator; single public audit
+  queued F149 scratch, now next. F151 density draft uses explicit finite
+  Finsupp coefficients, not an algebra generated by the modes.
+
+- F149 scratch85072 terminal0 clean; F148 imported audit standard-only, now
+  FINAL card/frontier. Wrote/wired SmoothAFECompactGaussianCauchy, final next;
+  its two public audits queued F150. Actual complex differentiability and
+  contour-map API usages all checked in the successful scratch.
+- Existing HTGeometry/VitaliConvergence has the full normal-family theorem
+  (unlike MultivariableVitali's closure-only interface). Read1-83,146-175,
+  280-308: sequence-indexed holomorphic locally bounded families, pointwise
+  uniqueness-set limit -> locally uniform convergence. Potential reuse after
+  proving actual Gaussian normalized bounds/holomorphy; not yet applied.
+
+- F149 final57261 terminal0 warning-free, exact index2, lint8363 twelve
+  unrelated unreachable modules, no BAG debt. F150 scratch next with both
+  F149 public audits. Deep search50012 terminal0, partialtrue with complete
+  inventory63647 and mostly pending/stale compiler metadata; no ready compact
+  cofactor limit established by retrieval. Actual full-cofactor summability
+  and arbitrary-power all-phase tails are reusable inputs.
+
+- F150 scratch77062 terminal1: sole error simp needed circleIntegral unfolded
+  at its zero integrand. Added that definition; both F149 public audits
+  standard-only, F149 FINAL card/frontier; prints stripped for retry.
+- C22.6 paper programme recorded; F152 /tmp/BagFullGaussianHolomorphy.lean
+  drafted, uncompiled, using exact installed summable-series holomorphy and
+  norm_natCast_cpow_le_norm_natCast_cpow_of_pos. No compact limit yet.
+
+- F150 corrected scratch46480 terminal0 warning-free. Written/wired final
+  SmoothAFECompactGaussianHolomorphicAnnihilator, final next; single public
+  audit queued F151. Its Banach-valued reproduction, functional commutation,
+  and exact nonzero 2*pi*i cancellation all compiler-checked.
+
+- F150 final6950 terminal0 warning-free; exact index1; lint91139 twelve
+  unrelated unreachable modules. F151 density scratch next with the F150
+  public audit. Holomorphy F152 draft remains uncompiled; no active searches.
+
+- F151 scratch29100 terminal1 with three elaboration/coercion issues:
+  complexification needed explicit RCLike.I_to_complex and 𝕜:=C re projection;
+  closure membership needed explicit set-level change, not a coercion rewrite.
+  Corrected retry81796 running, old audit stripped. F150 imported public audit
+  standard-only; F150 FINAL card/frontier.
+- F153 /tmp/BagFullGaussianAbsoluteMass.lean drafted, uncompiled. Gives actual
+  normalized positive coefficient mass, identifies its real zero-phase
+  cofactor, obtains its scalar finite limit, and bounds every phase/twist by
+  that mass. Endpoint interpolation/uniform cofactor convergence still open.
+
+- F151 corrected scratch81796 terminal0 warning-free. Closed complex linear
+  span membership and explicit finite Finsupp approximation now scratch-
+  verified. Written/wired SmoothAFECompactGaussianDensity, final next; both
+  public audits queued in F152 via temporary import. Do not claim the random
+  holomorphic target event or any deterministic recurrence count from density.
+
+- F151 final36112 terminal0 warning-free; exact index2; lint17461 eleven
+  unrelated unreachable modules, no BAG debt. F152 scratch next, with both
+  density public audits. F153 absolute-mass scratch remains uncompiled.
+
+- F152 scratch90732 terminal0 warning-free, both F151 audits standard-only.
+  F151 FINAL card/frontier: full finite-linear Gaussian mode approximation
+  for targets holomorphic on a larger disc. F152 written/wired as
+  SteinhausFullGaussianHolomorphy; final next. Three public audits queuedF153;
+  temporary density import/audits stripped from F152 final. F153 also includes
+  public summability of its actual normalized positive terms (four public
+  theorems total), still uncompiled.
+
+- F152 final96414 terminal0 warning-free, exact index3; lint15695 pending
+  terminal confirmation. F153 scratch next, with all three F152 public audits.
+
+- F152 lint15695 terminal1: ten unrelated unreachable modules, no BAG debt.
+  F153 scratch4457 terminal1 with cast-normalization and real-projection API
+  errors: added Nat.cast_add/one, used direct complex ext components, explicit
+  equality for the empty zero-twist extension, and continuous_re composition
+  instead of missing Tendsto.re. F152 three public audits standard-only;
+  F152 FINAL card/frontier, old audit import/prints stripped for F153 retry.
+- F154 /tmp/BagFullGaussianEndpointEnvelope.lean drafted, uncompiled. Actual
+  mass interpolation between two real abscissae yields an eventual bound
+  across the whole band, uniform in all phases, twists and imaginary parts.
+
+- F153 corrected scratch83036 terminal0 warning-free. Written/wired
+  SteinhausFullGaussianAbsoluteMass; final next. Four public audits queued
+  F154. Exact untwisted positive-mass identity and all-phase norm bound now
+  scratch-verified; endpoint interpolation remains uncompiled.
+
+- F153 final63402 terminal0 warning-free, exact index7, lint74376 eleven
+  unrelated unreachable modules, no BAG proof debt. F154 scratch next with
+  all four F153 public audits. F155 /tmp/BagFullGaussianCompactMean.lean
+  drafted, uncompiled: actual coherent mean, full real atTop uniform-on-disc
+  convergence using endpoint envelope, existing Vitali, and sequential uniform
+  convergence criterion. C22.6a paper assembly recorded first.
+
+- F154 scratch51282 terminal1: sole norm-comparison error because the simp
+  list expanded Nat.cast_add before matching norm_natCast_cpow_of_pos.
+  Split normalization into two passes. The endpoint interpolation algebra
+  and final eventual-band bound passed. Four F153 audits standard-only;
+  F153 FINAL card/frontier; audit prints stripped for corrected retry.
+
+- F154 retry7215 terminal1: the norm rewrite now succeeds, leaving only
+  real Nat.succ cast normalization. Added Nat.cast_succ to the second pass;
+  all other declarations passed again. New checkpoint memory written before
+  this result, so its runtime7215 is now stale; working log remains current.
+
+- F154 corrected scratch52659 terminal0 warning-free. Written/wired
+  SteinhausFullGaussianEndpointEnvelope, final next; both public audits queued
+  F155. Actual whole-band all-phase envelope now scratch-verified. F155
+  compact real-scale convergence remains uncompiled until this final exits.
+
+- F154 final53431 terminal0 warning-free; exact index4; lint95650 ten
+  unrelated unreachable modules, no BAG proof debt. F155 scratch next with
+  both F154 public audits. No other owned jobs or unreviewed searches remain.
+
+- F155 scratch73659 terminal1: two filter elaboration issues, no analytic
+  proof failure. Replaced heq.symm by explicit eventual mono/symmetry; typed
+  the punctured-neighbourhood eventual membership before .frequently.
+  Both F154 audits standard-only, F154 FINAL card/frontier. Old prints stripped
+  for retry. Existing Vitali import cache available; no dependency rebuild.
+
+- F155 corrected scratch56851 terminal0 warning-free. Actual coherent mean
+  now converges uniformly on smaller closed discs along full real R->infty,
+  scratch-verified. Written/wired SteinhausFullGaussianCompactMean, final next;
+  its public audit queued F156 via temporary import.
+- C22.6b paper uniform-abscissa tail/character stability recorded. F156
+  /tmp/BagFullGaussianCompactStability.lean drafted, uncompiled, using actual
+  public truncatedFullGaussianCofactor rather than another private head.
+  Existing CharacterStability1-96 and Truncation1-24 read; new proof preserves
+  exact all-phase tail and finite-character dependence across Re(s)<=b.
+
+- F155 final60001 terminal0 warning-free; exact index1; lint17447 twelve
+  unrelated unreachable modules, no BAG debt. F156 scratch next with F155
+  public audit. Compact-mean FINAL promotion awaits that imported report.
+
+- F156 scratch93190 terminal0 warning-free; F155 public audit standard-only,
+  including the full existing Vitali dependency. F155 FINAL card/frontier,
+  C22.6a closed. F156 written/wired as SteinhausFullGaussianCompactStability,
+  final next; two public audits to queue in F157. Read existing finite-node
+  mode block proof99-130; C22.6c normalized compact block paper recorded.
+
+- F156 final7973 terminal0 warning-free; exact index2; lint89011 ten unrelated
+  unreachable modules, no BAG debt. F157 /tmp/BagFullGaussianCompactModes.lean
+  drafted and scratch next, with both F156 public audits. It defines the exact
+  scalar normalized response, proves whole-disc relative convergence and
+  arbitrary mean-weighted single-block budgets, and gives normalized compact
+  character tolerance on 1<=R<=U, 0<=Re(s)<=b. New uniform-limit API checked
+  against Metric.Pseudo.Basic144-147; no event/count claim yet.
+
+- F157 scratch60205 terminal1: sole error a left-associativity rewrite
+  unfolded the local F product before reaching A^-1*(A*G). Isolated that
+  cancellation first, then used its exact identity. All other proofs passed;
+  both F156 audits standard-only, F156 FINAL card/frontier. Prints stripped
+  for corrected retry. Existing ModePackets is97lines, not yet read in full.
+
+- F157 corrected scratch53480 terminal0 warning-free. Written/wired
+  SteinhausFullGaussianCompactModes, final next; three public audits to queue
+  F158. Existing ModePackets full97lines now read. Corpus text search found
+  public X_congr_of_eqOn_primeFactors (used by SmoothCarrierProjection), so
+  exact prefix preservation can avoid duplicating its private X proof.
+
+- F157 final84241 terminal0 warning-free, exact index5, lint80535 ten unrelated
+  unreachable modules, no BAG proof debt. F158 /tmp/BagFullGaussianCompactPackets.lean
+  drafted and scratch next with all three F157 public audits. It derives exact
+  prefix preservation using public RouteBFullSupport.X_congr_of_eqOn_primeFactors
+  (source95-102 checked), then upgrades separated finite mode packets to
+  whole-disc accuracy. C22.6d paper argument recorded first.
+
+- F158 scratch5466 terminal0 warning-free; all three F157 audits standard-only.
+  F157 FINAL card/frontier. F158 written/wired SteinhausFullGaussianCompactPackets,
+  final next; its two public audits to queueF159. Read normalized-channel
+  exact factor sources1-90 and reflected truncated transfer1-46: common row
+  factor N^(s-1)*chi times R*A*R^(it), R=N/p, with literal p^(i*tau) phase.
+  No physical-height counting inference made from those identities.
+
+- F158 final59786 terminal0 warning-free; exact index2; lint66638 eleven
+  unrelated unreachable modules, no BAG debt. F159 common whole-disc mode-cell
+  scratch56920 launched with both F158 public audits. C22.6e paper and scratch
+  drafted; retained actual CompactPackets dependency. No other owned Lean live.
+
+- F159 scratch56920 terminal1: only error ambiguous Set.Icc versus Finset.Icc.
+  Removed unused Set open, stripped audit prints. Both F158 public audits
+  standard-only; F158 FINAL card/frontier. Corrected scratch retry next.
+
+- Compact-truncation corpus search79990 terminal0, partial=false, complete
+  inventory63679; compiler coverage mostly pending/stale. All20 candidates
+  and20 source arguments inspected. Reuses literal finite-node truncation
+  mechanism and F156 band tail, no pre-existing compact packet theorem found.
+  C22.6f paper recorded; F160 /tmp/BagFullGaussianCompactTruncation.lean drafted,
+  uncompiled while corrected F159scratch41673 remains the sole owned Lean.
+
+- F159 corrected scratch41673 terminal0 warning-free. Written/wired
+  SteinhausFullGaussianCompactModeCells; final next. Its public audit queued
+  F160, which now contains whole-band normalized truncation and common compact
+  truncated mode-cell assembly. F160 remains uncompiled.
+
+- Prime synthesis search52115 terminal0, partial=false, complete inventory63679;
+  all20 candidates/20 source arguments inspected, mostly unrelated. Existing
+  exact cofactor block count and literal channel factors directly supply the
+  relevant ingredients. C22.7 records exact scalar-amplitude synthesis,
+  positive partition-of-unity error control and logarithmic bias cost on paper,
+  with remaining holomorphic row/centre/variance/count obligations explicit.
+
+- F159 final11287 terminal0 warning-free; exact index1; lint84044 ten unrelated
+  unreachable modules, no BAG debt. F160 scratch next, with F159 public audit
+  and exact square-root API probes needed by the drafted F161 literal channel
+  factorization. F161 /tmp/BagReflectedCompactChannel.lean remains uncompiled.
+
+- F160 scratch27518 terminal0 warning-free. F159 public audit standard-only;
+  sqrt API probes passed. F159 FINAL card/frontier. F160 written/wired as
+  SteinhausFullGaussianCompactTruncation, final next. Two audits queued F161.
+  F162 /tmp/BagCompactPrimeBlockEnergy.lean drafted, uncompiled, proving actual
+  block amplitude bounds and logarithmic energy floor from existing PNT count.
+
+- Scalar-amplitude deep search40601 terminal0 partial=false; all20 candidates,
+  20 source arguments and one unverified ingredient set inspected. Useful
+  existing WeightedPortCapacity183lines read in full: its exact conjugate
+  minimizer already proves scalar target synthesis and reciprocal energy cost.
+  F163 /tmp/BagScalarAmplitudeSynthesis.lean drafted around those exact results,
+  adding whole-mode perturbation control through unit absolute contribution
+  mass. No duplicate minimizer implementation. F163 uncompiled; F162 import
+  for audits only, strip before final. Imported port axioms also queued.
+
+- F160 final35529 terminal0 warning-free, exact index3, lint25501 ten unrelated
+  unreachable modules, no BAG debt. F161 exact reflected compact channel
+  factorization scratch next with both F160 public audits and norm/division
+  API probes. No other owned Lean live before successor launch.
+
+- F161 scratch81040 terminal0. Only warning an unnecessary trailing ring
+  after field_simp; removed before final. Both F160 public audits standard-only;
+  norm/division/conjugation API probes passed. F160 FINAL card/frontier.
+  F161 written/wired SmoothAFEReflectedCompactChannel, final next. Three
+  public audits queued F162. C22.8 records normalized whole-disc fluctuation
+  mechanism and its remaining measurability/integration obligations.
+
+- F161 lint8959 terminal1: ten unrelated unreachable modules; exact index99870
+  terminal0 total5, no BAG proof debt. F161 final21122 remains sole owned Lean.
+  Log/sqrt search47957 terminal0 partial=false, complete inventory63681; all20
+  candidates/20 source arguments inspected. F164 /tmp/BagCompactPrimeBlockBiases.lean
+  drafted, uncompiled; uses the existing conditional-target log/rpow limit
+  mechanism, exact block energy floor and F163 positive-weight synthesis.
+  Promises arbitrary fixed individual bias tolerance and precise logarithmic
+  total cost, uniformly in both coherent frequencies.
+
+- Existing public norm_sq_value_mul_area_le_integral_ball_local in
+  SteinhausEulerLocalMeanSq120-168 and the SpatialEnvelope82-128,163-207
+  construction inspected. A translated inner ball inside the larger disc
+  gives an explicit planar lintegral envelope uniformly over the compact
+  target disc, avoiding a new contour-square estimate. Existing finite-affine
+  scalar variance theorem can supply its pointwise expected integrand. This
+  refines C22.8; no compact probability theorem claimed yet.
+
+- F161 final21122 terminal0 warning-free; exact index5; lint8959 ten unrelated
+  unreachable modules, no BAG debt. F162 scratch next with all three F161
+  public audits and the division/log-sqrt API probes for F164.
+
+- F162 scratch54758 terminal0. Only warning unnecessary ring after field_simp,
+  removed before final. Three F161 audits standard-only; division/log-sqrt
+  probes passed. F161 FINAL card/frontier. F162 written/wired as
+  CompactGaussianPrimeBlockEnergy, final next; two public audits queued F163.
+  C22.8 planar-envelope refinement and C22.9 fixed-reference-correction
+  catalogue ordering recorded, with compact analytic obligations explicit.
+
+- Compact Cauchy-envelope deep search63315 terminal0 partial=false, complete
+  inventory63683; all20 candidates/20 source arguments and one proposed
+  ingredient set reviewed. Suggested Cauchy line/dbar bounds do not directly
+  solve the compact fluctuation obligation. Already-read BAG local planar
+  mean-square theorem and spatial lintegral envelope remain the exact reuse
+  path. No searches remain live.
+
+- F162 final84188 terminal0 warning-free; exact index3; lint90205 ten unrelated
+  unreachable modules, no BAG debt. F163 scalar-amplitude synthesis scratch
+  next, with both F162 public audits and both reused port-minimizer dependency
+  audits. F164 remains drafted and uncompiled.
+
+- F163 scratch40443 terminal1: sum rewrite already closed its goal (removed
+  trailing rfl); field_simp needed an explicitly typed nonzero E rather than
+  the unfolded sum proof. Added hEne. Both F162 audits and both reused port
+  dependency audits standard-only. F162 FINAL card/frontier. Removed old
+  audit prints and temporary F162 import before corrected retry.
+- F165 /tmp/BagCompactNormalizedChannel.lean drafted uncompiled: mode-independent
+  literal normalized channel, exact mode/common-row identities, finite-cofactor
+  and normalized-channel holomorphy, exact size. Its F164 import is audit-only
+  and must be removed before final. F164 remains uncompiled.
+
+- Normalized compact-channel search14885 terminal0 partial=false, complete
+  inventory63684; all20 candidates/20 source arguments reviewed. Existing
+  literal normalized node channel and exact factorization reused in F165;
+  no existing entire finite-cofactor/scalar normalized-channel theorem found.
+  No search/lint jobs remain live. F163 corrected scratch80618 sole owned Lean.
+
+- F163 corrected scratch80618 terminal0 warning-free. Written/wired
+  SteinhausScalarAmplitudeSynthesis, importing only actual WeightedPortCapacity
+  dependency. Final next; public audit queued F164. Exact reciprocal energy
+  cost and unit absolute contribution mass now scratch-verified together.
+
+- F166 /tmp/BagCompactNormalizedChannelUpper.lean drafted uncompiled, implementing
+  C22.8's fixed-head plus unit-tail bound for every literal cofactor truncation
+  over Re(s)<=b, then a whole-band normalized column bound C/sqrt(N). Both
+  estimates are uniform in all phases, cutoffs and bounded R>=1 scales.
+  Five F165 public audits queued there. No F167 draft yet.
+
+- F163 final89508 terminal0 warning-free; exact index1; lint82045 ten unrelated
+  unreachable modules, no BAG debt. F164 actual prime-block bias theorem scratch
+  next with F163 public audit. F165/F166 remain drafted and uncompiled.
+
+- Future whole-band energy assembly source checked: SmoothAFEReflectedWindowChannelUpper
+  50-96 gives exact real scale 1<=N/p<=D on largePrimes N (N/D); 100-111
+  derives primeCounting<=2N/logN from public isLittleO_primeCounting_sub;
+  155-186 supplies the cardinality/energy sum mechanism. No public matching
+  eventual prime-count upper theorem found by symbol-name text search. The
+  compact analogue can reuse that arithmetic argument with F166's uniform
+  normalized column bound. No F167 draft yet.
+
+- F164 scratch76211 terminal1: cost field_simp already closed its goal.
+  A replacement-script assertion initially failed before any edits; accidental
+  unchanged retry40978 also terminal1, no live job remains. Applied an exact
+  newline-anchored correction now, removed old audit/probe prints. F163 audit
+  standard-only; F163 FINAL card/frontier. Differentiable.sum/div_const probes
+  passed. Pointwise bound algebra unchanged for the corrected retry.
+
+- F164 corrected scratch24478 terminal0; no errors/warnings, but ring emitted
+  a normalization suggestion. Replaced its three remaining ring calls by
+  ring_nf before final verification. Written/wired CompactGaussianPrimeBlockBiases;
+  final next. F165 carries its public audit. Actual logarithmic bias cost,
+  arbitrary individual tolerance, and uniform mode-error transfer now passed
+  the scratch kernel check.
+
+- F164 final97765 terminal0 warning-free, normalization suggestion gone after
+  ring_nf change; exact index1; lint98379 ten unrelated unreachable modules,
+  no BAG debt. F165 scratch next with F164 public audit. Read full existing
+  FiniteAffineVariance and FiniteAffineTargetMass: exact scalar variance and
+  half-mass Markov mechanism available for compact-envelope assembly.
+
+- F165 scratch35253 terminal1: Differentiable.sum is a sum of functions,
+  requiring fun_sum for this pointwise-sum goal; verified fun_sum declaration
+  at FDeriv.Add476. Norm simplification missed zero_mul, leaving p^0 after
+  ring normalization. Added it. Other identities and normalized holomorphy
+  passed. F164 public audit standard-only; F164 FINAL card/frontier. Removed
+  temporary F164 import and audit; fun_sum probe retained for corrected retry.
+- F145 complete-AFE target source1-88 checked: prescribed reference is
+  logPhaseShift omega (-tau) in the original law. Added explicit C22.9 phase
+  clarification; no unrotated-centre or physical-orbit inference made.
+
+- F167 /tmp/BagCompactNormalizedChannelEnergy.lean drafted uncompiled. Uses
+  F166's actual whole-band column bound, existing exact free-window real-scale
+  bounds, and the public PNT asymptotic to prove C/log(N) energy uniformly in
+  s across the whole band, all heights, phases and cutoffs. Two F166 audits
+  queued. No compact target probability or physical return count asserted.
+
+- F165 corrected scratch73490 terminal0 warning-free; fun_sum probe passed.
+  Written/wired CompactGaussianNormalizedChannel, only actual F161 dependency.
+  Final next; five public audits queued F166. The literal mode-independent
+  normalized channel is now scratch-verified entire, with exact size and
+  exact relation to both Gaussian modes and the reflected AFE coefficient.
+
+- F168 /tmp/BagCompactMeanSqEnvelope.lean drafted uncompiled: explicit planar
+  envelope, joint measurability, whole-inner-disc domination and Tonelli
+  expectation bound, reusing the proved local mean-square theorem. F167 import
+  is audit-only and must be removed before final; actual dependency is existing
+  SteinhausEulerSpatialEnvelope. Audits F167 and the local analytic inequality
+  queued. No F169 draft yet.
+
+- F165 final87367 terminal0 warning-free; exact index6; lint86573 ten unrelated
+  unreachable modules, no BAG debt. F166 scratch next with all five F165
+  public audits. F167/F168 remain drafted and uncompiled.
+
+- Envelope/half-mass search6226 terminal0 partial=false, complete inventory63691;
+  all20 candidates/20 source arguments reviewed. Exact finite-affine density
+  transfer and existing global-envelope Markov theorem are applicable reuse.
+  Read Markov50-108, ENNReal.Real67/158-169, Complex.volume_ball at
+  Lebesgue.VolumeOfBalls424-428, and centered-phase continuity in
+  FiniteAffineCovariance1-55. For future compact half-mass: delta may be
+  epsilon^2*(rho-r)^2/(2*rho^2), giving envelope expectation <=epsilon^2/2.
+  No F169 draft yet; all searches terminal, no pending search jobs.
+
+- F166 scratch91374 terminal0 warning-free; all five F165 public audits
+  standard-only. F165 FINAL card/frontier. F166 written/wired as
+  CompactGaussianNormalizedChannelUpper; final next. Its two public audits
+  queued F167. Whole-half-plane all-cutoff cofactor bound and whole-band
+  normalized C/sqrt(N) column bound both scratch-verified.
+
+- F169 /tmp/BagCompactAffineFluctuation.lean drafted uncompiled following
+  C22.8b paper: explicit positive outer-disc energy threshold, actual finite
+  affine variance, measurable half-mass envelope event, and exact original
+  finite-phase probability cost. Imports F168 and existing finite-affine
+  results; its three public audits queued. No F170 draft yet.
+
+- F166 final32764 terminal0 warning-free; exact index2; lint8251 ten unrelated
+  unreachable modules, no BAG debt. F167 scratch next with two F166 audits.
+  F168 additionally queues exact VolumeOfBalls/ENNReal/Markov API probes for
+  F169; its VolumeOfBalls import is temporary alongside F167 and must be
+  stripped after probes before final if unused by the envelope proof itself.
+
+- F167 scratch9952 terminal0 warning-free; both F166 public audits standard-only.
+  F166 FINAL card/frontier. F167 written/wired CompactGaussianNormalizedChannelEnergy,
+  final next; public audit queued F168. Whole-band all-height/all-phase/all-cutoff
+  literal normalized free-window energy C/log(N) now scratch-verified.
+  C22.8c actual compact fluctuation threshold discharge recorded on paper.
+
+- F167 lint93614 terminal1: eleven unrelated unreachable modules (new unrelated
+  WeilPositivityLinearDuality among them); exact index2655 terminal0 total1.
+  No BAG debt. Existing original-law finite-coordinate map theorem read in
+  SteinhausOriginalFiniteLocalTarget1-57. Future F170 can bound any injective
+  prime enumeration by the full-window sum via Finset.sum_image and subset
+  monotonicity; sum_image probe queued F169. No F170 draft yet.
+
+- F167 final4793 terminal0 warning-free; exact index1; lint93614 eleven
+  unrelated unreachable modules, no BAG debt. F168 explicit compact mean-square
+  envelope scratch next with F167/local analytic inequality audits and queued
+  exact APIs. F169 remains drafted and uncompiled.
+
+- F170 planned as actual-window compact centered fluctuation in the original
+  infinite Steinhaus law: apply the F169 threshold to any injective finite
+  enumeration of free-window primes, compare its energy with the whole F167
+  sum via sum_image, then lift its measurable finite-phase event using the
+  proved finite-coordinate pushforward law. This still controls fluctuations
+  around the chosen biased mean; target synthesis/retained-centre assembly
+  and the deterministic height count remain separate.
+
+- F170 /tmp/BagCompactWindowFluctuation.lean now drafted uncompiled, suggested
+  final CompactGaussianWindowFluctuation. Assembles actual uniform free-window
+  energy, entire columns, compact affine threshold and exact finite-coordinate
+  pushforward into an original infinite-law compact centered event with the
+  quarter-exponential bias cost. F169 public audit queued. No F171 draft.
+
+- F168 scratch76186 terminal1: sole error lintegral_const_mul rewrite could
+  not infer the restricted inner measure from an inferred composition-valued
+  measurability proof. Typed the joint integrand and inner lintegral explicitly.
+  Measurability and whole-disc pointwise domination already passed. F167 and
+  local mean-square audits standard-only; all queued API probes passed.
+  F167 FINAL card/frontier. Removed temporary F167/VolumeOfBalls imports and
+  audit/probes before corrected retry; only actual SpatialEnvelope import remains.
+
+- F168 corrected scratch25293 terminal0 warning-free. Typed inner-integral
+  measurability resolves the only elaboration issue. Written/wired
+  CompactDiscMeanSqEnvelope; final next. Three public audits queued F169.
+
+- F168 final33042 terminal0 warning-free; exact index5; lint13580 ten
+  unrelated unreachable modules, no BAG debt. F169 scratch52270 terminal0
+  with all three F168 public audits standard-only; sum_image probe passed.
+  F169 written/wired SteinhausCompactAffineFluctuation, final next.
+- Finite-mode-sum search49267 terminal0, partial false, inventory63699 complete;
+  all20 candidates and20 source arguments reviewed. Elementary finite
+  Cauchy-Schwarz already in mathlib suffices; exact APIs queued F170.
+
+- F169 final24731 terminal0 warning-free; exact index33208 total1; lint39225
+  ten unrelated unreachable modules, no BAG debt. F170 actual normalized-window
+  compact fluctuation scratch next with F169 audit and finite-synthesis API probes.
+- F171 /tmp/BagCompactModeSynthesis.lean drafted uncompiled. It constructs
+  a prescribed-prefix common cell and literal full-window biases, uniformly
+  over every retained phase in that cell and every later cutoff. Arbitrarily
+  small logarithmic cost absorbs fixed mode-count Cauchy-Schwarz factor.
+  F170 public audit queued. No deterministic height-count conclusion yet.
+
+- F170 scratch31919 terminal1: sum_image inferred its untyped q binder as
+  real from the channel argument, conflicting with natural cutoff L/q and
+  exhausting elaboration. Added explicit q : Nat, no heartbeat change.
+  F169 public audit standard-only, all queued finite-sum APIs passed.
+  Removed audit/probes before retry. F169 FINAL card/frontier.
+
+- F170 corrected scratch37900 terminal0 warning-free. Explicit natural sum
+  binder resolves both the type mismatch and elaboration timeout. Written/wired
+  CompactGaussianWindowFluctuation, final next. F171 queues its public audit.
+  C22.11 canonical closed joint target event paper recorded.
+
+- F170 final8509 terminal0 warning-free; exact index1; lint28363 ten
+  unrelated unreachable modules, no BAG debt. F171 synthesis scratch next.
+- C22.11 target-event search80215 terminal0, partial false, inventory63700
+  complete; all20 candidates/20 source arguments reviewed. Existing finset
+  local-target proof supplies exact equivFin sum transport. No ready whole-disc
+  target theorem found. F172 /tmp/BagCompactWindowModeTarget.lean drafted
+  uncompiled: joint closed canonical target event, retained-phase column
+  continuity, joint measurability, and actual finite-mode target section mass
+  >=quarter*exp(-2*kappa*logN). F171 public audit queued.
+
+- F171 scratch63371 terminal1 with two local elaboration errors only: max
+  budget let K needed explicit unfolding, and Nat cutoff multiplication proof
+  needed an expected type before transitivity. Fixed both. F170 public audit
+  standard-only; all finite-sum/closed-intersection/enumeration probes passed.
+  Temporary F170/EquivFin audit imports and prints removed before retry.
+
+- F171 corrected scratch8412 terminal0 warning-free. Written/wired
+  CompactGaussianWindowModeSynthesis; final next. Whole-disc actual mean
+  synthesis with arbitrarily small logarithmic bias cost is scratch-verified.
+  F172 queues its public audit plus density-to-pointwise APIs for F173.
+
+- F171 final85934 terminal0 warning-free; exact index1; lint78495 eleven
+  unrelated unreachable modules (new EisensteinCutoffConstantTermLineLaw),
+  no BAG debt. F172 canonical compact mode target scratch next.
+- F173 /tmp/BagCompactHolomorphicWindowTarget.lean drafted uncompiled,
+  suggested CompactGaussianWindowHolomorphicTarget. Uses F151 density,
+  support padded by frequency zero, exact compact kernel evaluation and
+  F172 canonical target inclusion to reach any fixed larger-disc holomorphic
+  target under original free-phase law. Four F172 public audits queued.
+  C22.12 paper recorded. Full AFE compact target and physical count remain open.
+
+- F172 scratch93087 terminal1: Continuous.sub_const does not exist in this
+  toolchain; use Continuous.sub with continuous_const. A queued F173 probe
+  found the actual Finsupp name is notMem_support_iff (camel-case), fixed
+  source and queued replacement probe. F172 mass proof itself had no errors.
+  F171 public audit standard-only; other density/enumeration probes passed.
+  Removed temporary GaussianDensity import and inspected audits before retry.
+
+- F172 corrected scratch8544 terminal0 warning-free; replacement Finsupp
+  API probe passed. Written/wired CompactGaussianWindowModeTarget, final next.
+  Actual canonical joint target closed/measurable, section probability cost
+  quarter*exp(-2*kappa*logN) for all fixed finite Gaussian lists verified.
+- Row-bound search42764 terminal0 partial false inventory63704, all20/20
+  candidates/arguments inspected but unrelated. Refined zetaChi search82524
+  terminal0 partial false inventory63707, all20/20 inspected; existing moving
+  right/left power bounds are directly applicable. Both source statements
+  and proofs read; zetaChi_mul_one_sub_of_mem_strip gives inverse factor.
+
+- F172 final23526 terminal0 warning-free; lint32404 and index2298 terminal.
+  F173 larger-disc holomorphic normalized target scratch next, with all four
+  F172 audits plus two reused moving-chi bound audits and exact row APIs.
+
+- F173 scratch31188 terminal0 warning-free on first run. All four F172
+  public audits standard-only, both moving-chi dependency audits standard-only,
+  all queued row APIs passed. Temporary chi imports and audits/probes removed.
+  Written/wired CompactGaussianWindowHolomorphicTarget, final next.
+- F174 /tmp/BagCompactGaussianRow.lean drafted uncompiled, suggested final
+  CompactGaussianReflectedRowBounds: exact row norm, open-strip nonvanishing
+  and holomorphy of row/inverse, uniform bounds on a right band when
+  N/2<=max(1,|Im(s)+tau|)<=3N. F173 public audit queued. C22.13 paper recorded.
+
+- F173 final39274 terminal0 warning-free, exact index1; lint82631 pending
+  terminal inspection. F174 draft includes the actual fixed-disc dyadic
+  specialization, so its uniform row bounds will directly cover tau in [N,2N].
+  Replaced unavailable cpow_ne_zero with inspected cpow_ne_zero_iff before
+  first compile; typed real/imag distance bounds before transitivity.
+
+- F174 scratch54567 terminal1: main exact row norm, nonvanishing, both
+  holomorphy statements and generic uniform row/inverse bounds passed. Only
+  disc specialization used old abs_add name twice; source confirms abs_add_le.
+  Fixed, queued direct probe, removed one unnecessary sequence-focus warning.
+  F173 public audit standard-only; inv_eq_of_mul_eq_one_right probe passed.
+  Removed temporary F173 import/audit before retry. F173 FINAL card/frontier.
+- Catalogue search43619 terminal0 partial false inventory63709, all20/20
+  candidates/arguments inspected. Read Bottcher.Montel and MontelNormal full
+ 86/98 lines plus ArzelaAscoli109-121 and finite-cover APIs. C22.14 paper
+  derives arbitrary-gap equicontinuity by centering the existing local Cauchy
+  estimate at each inner-disc point, then finite representatives from actual
+  family range. No F175 draft yet.
+
+- F174 corrected scratch67037 terminal0 warning-free, abs_add_le probe
+  passed. Written/wired CompactGaussianReflectedRowBounds; final next.
+- F175 /tmp/BagHolomorphicFiniteCatalogue.lean drafted uncompiled, suggested
+  HolomorphicDiscFiniteCatalogue. Arbitrary-gap bounded-holomorphic
+  equicontinuity via existing local Cauchy theorem; Arzela-Ascoli and finite
+  range-centred cover give actual-family finite representatives. Five F174
+  public audits plus reused Cauchy dependency audit queued. No F176 draft.
+
+- F174 final78215 terminal0 warning-free; index6; lint48414 ten unrelated
+  unreachable modules, no BAG debt. F175 finite catalogue scratch next.
+- Read ComplementScale1-100, ComplementBound1-56, ComplementCharacterStability
+ 1-90, FullReflectedAFE1-130, DeepFullStrip1-140. Explicit deep coefficient
+  constant depends on d only through exp((d-4)^2)/|d-4| <= exp16 on full
+ 0<d<1/2, so a uniform displacement bound is available from its proof.
+  More useful for holomorphy: translate the deep contour variable to keep
+  chi(-7/2+i*v) and the integer exponent -9/2+i*v independent of spectral z.
+  Complement holomorphy search33540 running; no F176 draft yet.
+
+- F175 scratch88188 terminal1: final pointwise sup-distance inequality
+  required explicit bounded-function arguments and Complex.dist_eq. All
+  earlier equicontinuity/Arzela-Ascoli/finite representative steps passed.
+  Five F174 public audits and reused Cauchy audit standard-only. Removed
+  F174 temporary import/prints, queued real integral translation API for F176.
+- Complement holomorphy search33540 terminal0 partial false inventory63710,
+  all20 candidates/20 source arguments inspected. Existing height derivatives
+  do not supply complex holomorphy; exact deep-identification theorem is reusable.
+
+- F175 retry36172 terminal1: explicit distance arguments fixed inference,
+  but mkOfCompact evaluation needed explicit simplification through bcf/cmap.
+  Added those definitions and verified mkOfCompact_apply. Integral translation
+  API probe passed; removed temporary Group.Integral import/probe.
+- F176 /tmp/BagReflectedCompactComplementIntegral.lean drafted uncompiled,
+  suggested ReflectedCompactComplementIntegral. Exact old-deep/new-complex
+  integral identity by real translation, exact original complement prefactor,
+  and integrand spectral holomorphy on Re(z)<9/2. F175 two public audits queued.
+
+- F175 corrected scratch82065 terminal0 warning-free. Explicit evaluation
+  simplification resolves final endpoint. Written/wired
+  HolomorphicDiscFiniteCatalogue; final next. Two public audits queued F176.
+
+- F175 final2237 terminal0 warning-free; exact index3677 total2; lint26927
+  eleven unrelated unreachable modules (new WeilBoundedDatumPoleObstruction),
+  no BAG debt. F176 exact translated complementary integral scratch next
+  with F175 audits, GaussianMomentFourier integrability audit, CauchyDominated
+  integral holomorphy audit and rpow monotonicity probe. C22.16 local majorant
+  paper recorded. F177 not drafted yet.
+
+- F176 scratch87429 terminal1: both exact contour/coefficient identities
+  passed; only integrand holomorphy denominator contradiction needed explicit
+  hz : z.re<9/2 from set membership. Fixed. Both F175 public audits plus
+  GaussianMomentFourier moment integrability and CauchyDominated integral
+  holomorphy dependency audits standard-only; rpow API probe passed.
+  Removed three temporary imports and all audits/probes before retry.
+- F177 /tmp/BagReflectedCompactComplementDomination.lean drafted uncompiled,
+  suggested ReflectedCompactComplementDomination. Local spectral-rectangle
+  integrable polynomial Gaussian majorant retains summable n^-9/2 factor.
+  Three F176 public audits queued. No F178 draft.
+
+- F176 corrected scratch5960 terminal0 warning-free. Written/wired
+  ReflectedCompactComplementIntegral; final next. F177 majorant draft ready.
+
+- F176 final36035 terminal0 warning-free; exact index5; lint87028 eleven
+  unrelated unreachable modules, no BAG debt. F177 majorant scratch next.
+- F178 /tmp/BagReflectedCompactComplementHolomorphy.lean drafted uncompiled.
+  Continuous real integrand, open-strip complex coefficient holomorphy via
+  local Cauchy-dominated integration, and compact summable coefficient bound.
+  F177 public audit queued.
+
+- F177 scratch55580 terminal1: polynomial Gaussian integrability and all
+  bounds passed except real-to-complex coercion in final chi bound. Replaced
+  exact with simpa; all three F176 audits standard-only, removed before retry.
+
+- Complement tsum search11829 terminal0 partial true (text/source retrieval
+  interrupted), inventory63719 complete. All20 candidate statements and20
+  source arguments inspected. Existing local M-test/Cauchy-dominated tsum
+  theorems apply, or direct mathlib differentiableOn_tsum_of_summable_norm
+  on bounded open rectangles. Read exact mathlib signature and the existing
+  summable_smoothAFEZetaMajorant signature; C22.17 paper recorded.
+
+- F179 /tmp/BagSteinhausCompactReflectedComplement.lean drafted uncompiled.
+  Absolute admission and holomorphy of literal deep reciprocal series, full
+  complement holomorphy and exact identification with original complement.
+  Three F178 audits queued.
+
+- F177 corrected scratch37036 terminal0 warning-free. Written/wired
+  ReflectedCompactComplementDomination; final next.
+
+- F177 final34332 terminal0 warning-free; exact index2; lint64404 eleven
+  unrelated unreachable modules, no BAG debt. F178 holomorphy scratch next.
+- Uniform-displacement search96525 terminal0 partial false inventory63723;
+  all20 candidates/20 source arguments inspected. Existing uniform-scale
+  bound keeps d fixed; uniform displacement follows by exp16 kernel bound.
+
+- F180 /tmp/BagReflectedCompactDeepUniformScale.lean drafted uncompiled.
+  Strengthens existing deep scale proof to one constant for all 0<d<1/2
+  by replacing exp((d-4)^2)/|d-4| with exp16 before integration.
+  Four F179 audits queued through temporary predecessor import.
+
+- F178 scratch51679 terminal1: continuity, dominated integration and
+  coefficient envelope passed; only two local-radius inequalities needed
+  explicit hz.1/hz.2 projections. Fixed and removed F177 audit (standard-only).
+- F181 /tmp/BagReflectedCompactComplementConductor.lean drafted uncompiled.
+  Wider conductor band coefficient envelope uniform over 0<d<=d0<1/2,
+  via F174 common-row norm and F180 deep scale cancellation. Audit queued.
+
+- F178 corrected scratch28165 terminal0 warning-free. Written/wired
+  ReflectedCompactComplementHolomorphy; final next. F179 audits queued.
+
+- First-moment envelope search31224 terminal0 partial true (text/source
+  retrieval interrupted), inventory63725 complete; all20 candidates/20 source
+  arguments inspected. Available squared-disc envelope is insufficient for
+  original first-mean decay. Mathlib MeanValue gives exact circle Cauchy
+  representation DiffContOnCl.circleAverage_smul_div, avoiding a new radial
+  L1 mean-value development. Read GaussianIndependentCutoffMean and
+  UniformWeightedMean; uniform beta-band Abel cost follows from two endpoints.
+
+- F178 final91931 terminal0 warning-free; exact index3; lint53082 twelve
+  unrelated unreachable modules, no BAG debt. F179 reciprocal sum scratch next.
+
+- F179 scratch38579 terminal0 warning-free; all three F178 audits
+  standard-only. Stripped audits, written/wired SteinhausCompactReflectedComplement.
+  Final next; F180 uniform deep strip estimate draft queued.
+
+- F182 /tmp/BagReflectedCompactComplementDisc.lean drafted uncompiled.
+  Specializes wider coefficient band to every point of a fixed strict right
+  disc, then sums original reciprocal coefficients for one all-phase
+  holomorphic complement bound across dyadic conductor windows. F181 audit queued.
+
+- F179 final34936 terminal0 warning-free; exact index5; lint16839 13
+  unrelated unreachable modules, no BAG debt. F180 uniform deep strip scale scratch next.
+
+- F180 scratch80303 terminal0 warning-free. Four F179 audits standard-only.
+  Stripped temporary import/audits; written/wired ReflectedCompactDeepUniformScale.
+  Final next. F181/F182 drafts remain uncompiled.
+
+- F180 final45592 terminal0 warning-free; index66944 total1; lint59980
+  fourteen unrelated unreachable modules, no BAG debt. F181 wider conductor
+  band scratch next with F180 public audit and tendsto_sum_nat_add API probe.
+- Uniform-character search19179 terminal0 partial true (text retrieval
+  interrupted), inventory63729; all20/20 statements and source arguments
+  inspected, mostly irrelevant. Refined lexical character_tolerance search.
+  C22.22 paper uniform summable-family phase tolerance recorded.
+
+- Refined character_tolerance lexical search total9 inspected. Existing
+  fixed-d complement and full Gaussian tolerance proofs are relevant but
+  none supplies arbitrary uniformly summable reciprocal families.
+- F183 /tmp/BagSteinhausReciprocalSeriesStability.lean drafted UNCOMPILED.
+  One character prefix and radius control every member of any coefficient
+  family dominated by a single nonnegative summable sequence. Two F182
+  audits queued via temporary import; strip before final. C22.22 exact paper.
+
+- F181 scratch88491 terminal1 solely from polymorphic API probe's unresolved
+  universe. Main conductor-band proof passed and F180 audit standard-only.
+  Stripped audits/probe, written/wired ReflectedCompactComplementConductor;
+  final compile will verify clean leaf. Concrete real tail-sum probe queued F182.
+
+- F184 /tmp/BagReflectedCompactComplementStability.lean drafted UNCOMPILED.
+  Discharges generic reciprocal stability against the actual compact conductor
+  coefficient family. One B,delta controls all disc points, reference phases
+  and eventual conductor windows; F183 audit queued.
+
+- F181 final98792 terminal0 warning-free; exact index1; lint1151 fourteen
+  unrelated unreachable modules, no BAG debt. F182 disc coefficient and
+  full complement bounds scratch next.
+
+- Pole search9269 terminal0 partial false inventory63735; all20 candidates
+  and20 source arguments inspected. Fixed-d pole bound and displacement/height
+  derivatives exist; no compact holomorphic bound. Read exact shifted residue
+  definition, recorded C22.23: chi*N^z*exp(z^2)/z, row cancellation and
+  |z|>=N/2 give one 2*C*exp1 bound on physical compact windows.
+
+- F182 scratch61511 terminal0 warning-free; F181 audit standard-only, concrete
+  tendsto_sum_nat_add probe passed. Stripped audit/probe, written/wired
+  ReflectedCompactComplementDisc; final next.
+
+- F185 /tmp/BagReflectedCompactPole.lean drafted UNCOMPILED, temporary F184
+  import for audit. Exact original pole identity, open-strip holomorphy and
+  compact conductor bound through common-row cancellation. C22.23 paper.
+
+- F182 final32531 terminal0 warning-free; exact index2; lint52121 fourteen
+  unrelated unreachable modules, no BAG debt. F183 generic reciprocal-family
+  character stability scratch next. C22.24 correction/target catalogue assembly
+  paper records precise phase-prefix dependence and remaining physical-count gap.
+
+- C22.20 simplification found in existing F153/F154 source: normalized
+  Gaussian Abel cost is bounded by normalizedGaussianAbsoluteMass at
+  sigma=1/2-beta. Its exact positive-coefficient series is the cost's
+  square-root-increment majorant. Reuse normalizedGaussianAbsoluteMass_le_endpoints
+  and existing endpoint convergence/band bound; do not redo endpoint algebra.
+  Read F154 full, F153 through64, GaussianIndependentCutoffMean full and
+  UniformWeightedMean full. No new first-mean draft yet.
+
+- F183 scratch79386 terminal1: K positivity needs explicit finite-sum
+  nonnegativity, and norm summability transfers by of_norm_bounded (not
+  .summable). Fixed both; all remaining head/tail estimates passed. Both
+  F182 audits standard-only. Removed temporary import/audits before retry.
+
+- F186 /tmp/BagReflectedCompactCorrection.lean drafted UNCOMPILED. Assembles
+  full scalar correction with holo, all-phase compact conductor bound, prefix
+  tolerance and exact original full-AFE identity. Four F185 audits queued.
+
+- F183 corrected scratch82262 terminal1: default heartbeat timeout during
+  shifted-tail summability elaboration. Added explicit sequence argument
+  f:=fun n:Nat=>norm(F i xi n) and f:=u to both summable_nat_add_iff calls.
+  No heartbeat increase. If unresolved, extract generic tail norm lemma to
+  avoid unfolding the Steinhaus family during elaboration.
+
+- Uniform Abel/mass search46936 terminal0 partial false inventory63739; all20
+  candidate statements and20 source arguments inspected. Exact normalized
+  positive mass and two-endpoint comparison are available; no new assumption.
+- Deep independent physical-producer research92093 running, 300-second budget,
+  /tmp/bag-independent-physical-producer-deep-search.json. Query asks literal
+  conductor-window common-height count from logarithmic-cost original law
+  without an assumed orbit discrepancy premise. No inference from probability
+  to physical count is licensed merely by the current compact analytic work.
+
+- F183 explicit-sequence retry72414 terminal0 warning-free. Typed tail
+  sequence removes elaboration timeout without heartbeat changes. Written/wired
+  SteinhausReciprocalSeriesStability; final next, public audit queued F184.
+
+- F183 final70173 terminal0 warning-free; exact index1; lint7354 fourteen
+  unrelated unreachable modules, no BAG debt. F184 actual compact complement
+  prefix stability scratch next. Deep physical-producer search92093 terminal0,
+  output awaiting full applicability inspection.
+
+- Deep physical-producer search92093 terminal0 partial false inventory63739.
+  Inspected all20 candidate statements,20 source arguments, zero proof ideas
+  and one proposed ingredient set. Proposal is inapplicable: Poisson tilt
+  lower/deviation bounds concern product measure; Beurling prime-count
+  additivity counts prime labels, not physical heights. It contains no bridge
+  to deterministic recurrence despite retrieval sufficiency label. No theorem
+  or route is retired on that metadata. Bagchi-filter lexical refinement had
+  zero hits; broadened to orbit discrepancy. Existing relevant filenames are
+  BohrFiniteRecurrence, BohrMomentDensity and ZetaStrongRecurrenceReceiver.
+
+- F184 scratch42851 terminal0 warning-free; F183 public audit standard-only.
+  Stripped audit, written/wired ReflectedCompactComplementStability; final next.
+- Read fixed-finite-family Bohr polynomial moment convergence, arbitrary-large
+  finite-frequency recurrence, and original strong-recurrence receiver window
+  bound signatures. None has conductor-coupled growing support. Broader orbit
+  discrepancy search67838 pending.
+
+- F184 final32922 terminal0 warning-free; exact index1; lint32475 15
+  unrelated unreachable modules, no BAG debt. F185 exact compact pole scratch next.
+- Orbit discrepancy search67838 terminal0 partial false inventory63741; all20/20
+  statements and source arguments inspected, no matching transport theorem.
+  Exact lexical evenMoment search found BohrMoments195; BohrTransfer contains
+  explicit second-moment discrepancy. Need inspect that bound against growing
+  support, rather than applying fixed-family Cesaro convergence diagonally.
+
+- Read BohrTransfer1-84, BohrMoments160-214, BohrOrbitHaarLaw88-145.
+  The effective bound is the literal coefficient-weighted inverse-log-gap sum
+  B(a,s)/U. Higher even moments apply that bound to powConv/powSupport.
+  Thus fixed-support convergence does not itself bound growing-support error;
+  the actual B at the required conductor scale must be controlled. Haar orbit
+  theorem likewise fixes its continuous observable and asymptotic-path premise.
+  No new physical recurrence producer verified by these searches.
+
+- F185 scratch29165 terminal0 warning-free; F184 public audit standard-only.
+  Stripped temporary import/audit; written/wired ReflectedCompactPole. Final next.
+
+- F185 final87330 terminal0 warning-free; exact index5; lint46886 now17
+  unrelated unreachable modules, no BAG debt. F186 scratch82189 running,
+  including four F185 public audits. Physical producer remains unresolved.
+
+- F186 scratch82189 terminal0 warning-free; all four F185 audits standard-only.
+  Stripped audits, written/wired ReflectedCompactCorrection; final next.
+
+- F186 final27622 terminal0 warning-free; exact index5; lint5632 eighteen
+  unrelated unreachable modules, no BAG debt. F187 catalogue scratch69716
+  running, including four F186 public audits. Catalogue search9222 terminal0;
+  twenty declarations and five exploration hits inspected. Existing F175
+  supplies exactly the fixed-family compact catalogue needed for C22.24.
+
+- F187 scratch69716 terminal1: one untyped intermediate in the elementary
+  disc-to-strip inclusion. All three main proofs elaborated; four F186 audits
+  standard-only and new Mathlib API probes passed. Typed the intermediate,
+  stripped probes/audits; retry next. Card/frontier FINAL through F186.
+
+- F187 corrected scratch67401 terminal0 warning-free. Written/wired
+  ReflectedCompactTargetCatalogue; final next. F188 band first-mean draft
+  /tmp/BagSteinhausGaussianBandFirstMean.lean UNCOMPILED. It compares exact
+  normalized Abel cost with positive Gaussian mass, then uses two endpoint
+  limits and the universal summatory first-mean envelope. Three F187 audits queued.
+
+- F187 final99748 terminal0 warning-free; index5; lint59311 ten unrelated
+  unreachable modules. F188 scratch79618 terminal1: ambiguous Set/Finset Icc
+  in the finite term bound. Qualified finite intervals; three F187 audits
+  standard-only, API probes passed. Temporary catalogue import/audits stripped.
+- F189 /tmp/BagCompactGaussianRetainedFirstMean.lean UNCOMPILED: exact
+  retained normalized carrier, entire dependence, norm identity and phase/projection
+  transport of the band first mean. Refined lexical search gives existing exact
+  smooth projection contraction; zero-hit initial query broadened.
+
+- F188 retry87037 terminal1: remaining Set/Finset ambiguity in the finite
+  interval shift. Qualified Finset.Ico_add_one_right_eq_Icc and normalized
+  the elementary exponent identity with ring_nf, as elaborator suggested.
+- Boundary first-mean search94619 terminal0 partialfalse inventory63751; all20
+  candidate statements,20 source arguments and proposed ingredient set inspected.
+  Retrieved exterior-transform proposal is unnecessary; exact installed Mathlib
+  generalized circle mean supplies C22.21 directly. F190 scratch draft
+  /tmp/BagCompactDiscFirstMeanBound.lean UNCOMPILED: boundary L1 bound with
+  explicit R/(R-r) loss, avoiding a non-vanishing squared-moment substitute.
+
+- F188 corrected scratch24463 terminal0 warning-free. Written/wired
+  SteinhausGaussianBandFirstMean; final next. Added explicit joint measurability
+  and fixed-parameter integrable norm to F189 draft, for boundary Tonelli transfer.
+
+- F188 final71232 terminal0 warning-free; index3; lint27442 twelve unrelated
+  unreachable modules, no BAG debt. F189 scratch63321 running, including three
+  F188 public audits. F191 /tmp/BagCompactDiscFirstMeanEnvelope.lean drafted
+  UNCOMPILED: measurable ENNReal boundary envelope, pointwise whole-disc bound
+  and Tonelli expectation from uniform first moments. F190 public audits queued.
+
+- F189 scratch63321 terminal1: explicit argument needed for differentiable_const,
+  unused ring after simp, rw hit division in exponent before outer normalization,
+  and actual Bochner name is integral_div. Fixed these directly; all three F188
+  public audits standard-only. Card/frontier FINAL through F188.
+
+- C22.25 paper recorded before implementation: choose boundary tolerance
+  delta*(R-r)/R, then Markov at epsilon preserves half of any fixed-mass
+  prescribed event; retained-coordinate dependence remains exact. F192
+  /tmp/BagCompactGaussianRetainedEnvelope.lean UNCOMPILED: actual envelope
+  measurability, whole-disc domination, uniformly vanishing expectation and
+  retained-coordinate congruence. F191 public audits queued.
+
+- F189 retry44008 terminal1 only normalization simplifier order: expanding
+  division inside 1/2 prevents matching the real-part identity. Rewrite that
+  identity and rpow_neg first, then simplify all divisions. Main first-mean,
+  measurability and integrability proofs passed; integral_div probe passed.
+
+- F189 corrected scratch10286 terminal0 warning-free. Written/wired
+  CompactGaussianRetainedFirstMean; final next. Five public audits queued F190.
+- F193 /tmp/BagCompactGaussianRetainedSmallCentre.lean UNCOMPILED: measurable
+  retained-coordinate small-centre event, pointwise whole-disc smallness,
+  uniform vanishing discarded mass, and half-mass retention inside any prescribed
+  positive-mass event. Four F192 audits queued.
+- Growing-prime signed off-diagonal physical-count deep research77437 running,
+  300-second budget, /tmp/bag-growing-prime-signed-offdiagonal-search.json.
+
+- F189 final31880 terminal0 warning-free; index6; lint67643 ten unrelated
+  unreachable modules, no BAG debt. F190 Cauchy boundary bound scratch next.
+- Physical off-diagonal deep search77437 terminal0 partialfalse inventory63756;
+  all20 candidate statements,20 source statements and proposed set inspected.
+  Absolute inverse-log-gap upper bound plus a height-relabeling identity does
+  not establish the requested signed transport. Refined mean-value search39599
+  terminal0 found exact DirichletMeanValueSharp: error104*sum(n+1)*norm(a_n)^2.
+  Read its statement/proof setup through107, MVTWindow1-75 and TwistedMeanValueError1-74.
+  This sharper Hilbert-form bound is relevant but requires the actual frequency-
+  weighted density coefficient cost at conductor scale. New search63320 running
+  for target-bias weighted cost, /tmp/bag-frequency-weighted-bias-search.json.
+
+- Full compact assembly audit: F173 packet phase is the rotated retained phase.
+  Its fixed centre can preserve the original prescribed prefix omega; rotating
+  back gives the moving reference shift(omega,-tau). Thus no new uniformity
+  over arbitrary packet-prefix centres is required. Finite catalogue branches
+  may retain separate B,D,delta/windows; finite minimum masses and common
+  eventual thresholds suffice. Still need exact normalized retained/free
+  factorization and compact-uniform full-primal cubic tail, beyond finite-node
+  tail, before claiming the complete compact original-law target.
+
+- Weighted-bias search63320 terminal0 partialfalse inventory63758; all20/20
+  statements and proposed set inspected. Baker frequency norm plus generic
+  product-with-density identity do not supply a target-energy lower bound or
+  physical transport. C23.1 remains under audit, not a no-go or new producer.
+- C22.26 paper recorded: exact normalized square/cubic Gaussian tail exponent
+  collapses to 1+Re(s)-A. Choosing A=q+b+1 gives uniform n^-q on Re(s)<=b.
+  Original full-tail theorem located in SteinhausFullGaussianCofactorTail25-31;
+  avoid redoing p-series tails.
+
+- F190 scratch51368 terminal1: circleAverage lives in namespace Real, and
+  ContinuousOn.sub_const is unavailable. Opened Real, used .sub continuousOn_const,
+  made generalized mean-value parameters explicit. All five F189 audits
+  standard-only. Stripped temporary F189 import/audits, leaving only Mathlib
+  Analysis.Complex.MeanValue; retry next. Card/frontier FINAL through F189.
+- F194 /tmp/BagCompactGaussianNormalizedCubicTail.lean drafted UNCOMPILED,
+  five F193 audits queued. Real tail source is FullGaussianCofactorTail25-31;
+  actual import FullGaussianTruncation already contains it.
+
+- F190 corrected scratch27848 terminal0 warning-free. Written/wired
+  CompactDiscFirstMeanBound; final next. Actual dependency only Mathlib
+  Analysis.Complex.MeanValue. Two public audits queued F191.
+
+- C23.1 source refinement: existing WeightedPortCapacity.portValue_normSq_le
+  and isLeast_portEnergy already give the exact weighted cost reciprocity.
+  Read definitions/Cauchy theorem20-91 and minimum law154-184. Actual prime-
+  weight specialization should reuse this law, not add a duplicate generic
+  inequality. Exact lexical portValue_normSq_le search confirms the source.
+  A claimed sharp-MV obstruction still requires the exact spectral-factor
+  coefficient weights for the original affine density; not proved yet.
+
+- F190 final32257 terminal0 warning-free; index2; lint82405 eleven unrelated
+  unreachable modules, no BAG debt. F191 measurable boundary envelope scratch
+  next, including two F190 public audits.
+
+- F191 scratch82886 terminal0 warning-free; both F190 public audits
+  standard-only and interval-integral/volume probes passed. Written/wired
+  CompactDiscFirstMeanEnvelope with probes/audits stripped; final next.
+  Card/frontier FINAL through F190.
+
+- Runtime checkpoint: F191 final56580 running, lint79954 running, exact index
+  command terminal0 but output uninspected. All research jobs terminal and
+  inspected. Pending compile chain: F192 retained envelope, F193 small-centre
+  event, F194 normalized cubic tail; all exact /tmp paths recorded above.
+  F190 final audited standard-only. No independent physical return count proved.
+
+- F191 final56580 terminal0 warning-free; index5; lint79954 eleven unrelated
+  unreachable modules, no BAG debt. F192 actual retained-envelope scratch next,
+  including three F191 public audits.
+
+- F192 scratch88407 terminal1: implicit envelope function/cast inference timed
+  out in measurability. Made F and positive real N explicit, unfolded only
+  the envelope. Corrected explicit X_congr application to apply/intro; circleMap
+  theorem is global, not Complex-qualified (body already passed). Three F191
+  audits standard-only; stripped probes/audits. No heartbeat increase.
+  Card/frontier FINAL through F191.
+
+- Rechecked card goal1-28 and physical transfer obligation2947-3002: task is
+  coefficient-faithful zeta self-return, not arbitrary-target universality.
+  C23.2 target-class compatibility audit recorded after reading only source
+  statement/setup379-413 of concurrently unwired ZetaZeroDensityPowerSaving;
+  no edits/import/build of that lane and no unverified power-saving claim.
+
+- F192 corrected scratch46546 terminal0 warning-free. Explicit function and
+  cast types removed the measurability elaboration timeout without heartbeat
+  changes. Written/wired CompactGaussianRetainedEnvelope; final next.
+  Four public audits queued F193.
+
+- F192 final92554 terminal0 warning-free; index5; lint13159 ten unrelated
+  unreachable modules, no BAG debt. F193 small-centre scratch next, four F192
+  public audits included.
+- F195 /tmp/BagCompactGaussianFrequencyWeightedBias.lean drafted UNCOMPILED.
+  Reuses exact port Cauchy and actual C/logN channel energy to prove
+  floor(N/D)*logN*norm(sum mu*channel)^2 <= C*sum p*norm(mu_p)^2.
+  This is the actual necessary synthesis budget from C23.1, not a transport
+  theorem or no-go. Refined lexical normalized/weighted/bias had one unrelated
+  Burnol source. F194 and existing port Cauchy audits queued.
+
+- F193 scratch39410 terminal0 warning-free; four F192 public audits standard-only
+  and mul_div_cancel_right probe passed. Written/wired
+  CompactGaussianRetainedSmallCentre with audits/probe stripped; final next.
+  Card/frontier FINAL through F192.
+
+- F193 final50971 terminal0 warning-free. F194 normalized cubic tail scratch
+  next, including five F193 public audits.
+- C22.27 paper recorded; F196 /tmp/BagCompactGaussianReflectedCarrierIdentity.lean
+  drafted UNCOMPILED: exact common-row normalization, original retained identity
+  after log-phase shift, and complete original affine free-window factorization.
+  F195 audit queued. Source common-row query found current definition only;
+  reuse exact existing coefficient, phase and channel identities.
+
+- F194 scratch22250 terminal0 warning-free; all five F193 public audits
+  standard-only. Stripped temporary import/audits, written/wired
+  CompactGaussianNormalizedCubicTail; final next. Card/frontier FINAL through
+  F193; retained compact small-centre obligation now closed.
+
+- F197 /tmp/BagReflectedCompactPrimalCubicTail.lean drafted UNCOMPILED.
+  Exact norm cancellation row*normalized error = original chi-weighted error;
+  F194 half-plane tail plus compiled row bound gives arbitrary-power original
+  primal tail uniformly on whole discs/all phases/full square-conductor windows.
+  Three F196 audits queued. Avoids assuming any probabilistic tail transfer.
+
+- Target-specific physical-producer deep search launched: exact arithmetic
+  zeta self-target correlations and quantitative physical heights, without a
+  nonvanishing assumption. /tmp/bag-arithmetic-self-target-producer-search.json,
+  300-second budget. This refines C23.2 rather than asking again for generic
+  all-holomorphic-target transport.
+
+- F194 final52043 terminal0 warning-free; public audit in F195 scratch6370
+  standard-only. F195 scratch6370 terminal1 only missing mul_one/B simplification
+  in reused port Cauchy; corrected, rerun next.
+- Physical self-target search24379 terminal0 but partial semantic worker
+  disconnection; inventory63770 complete, compiler metadata mostly pending/stale.
+  All20 candidate and20 source-argument statements inspected; generated
+  analytic-continuation ingredient set does not supply self-return counts.
+  No relevant independent producer hit. Refine to source mechanism queries.
+
+- F195 corrected scratch73014 terminal0 warning-free. F194 and reused
+  port Cauchy audits standard-only. Written/wired actual frequency-weighted
+  compact-window synthesis bound, temporary audit imports stripped; final next.
+- Chi-ratio search26055 terminal0 partialfalse inventory63772;20 candidate
+  statements and20 source-argument statements inspected. Actual ratio
+  derivative bounds located, no asymptotic self-target count. No unsupported
+  complement asymptotic is adopted.
+
+- F195 final79939 terminal0 warning-free, exactindex1; lint74206 terminal1
+  ten unrelated unreachable modules inspected. F196 exact-carrier scratch
+  next with F195 public audit.
+- Spectral-factor lexicalsearch54541 terminal0,146matches;20ranked and5
+  exploration hits inspected. Existing affine density has exact modes -1,0,1
+  and product second-density law; no spectral-factor weighted-cost theorem hit.
+
+- F196 scratch44685 terminal0 warning-free, F195 public audit standard-only,
+  Complex.ofReal_cpow probe passed. Written/wired exact normalized carrier
+  identities with audit/probe removed; final next.
+
+- F196 final83589 terminal0 warning-free, exactindex3; lint71523 terminal1
+  ten unrelated unreachable modules inspected. F197 original compact cubic
+  tail scratch next, including three F196 public audits.
+- C22.28 recorded; F198 /tmp/BagReflectedCompactTargetEvent.lean drafted
+  UNCOMPILED: phase continuity of both full series, exact complex-coordinate
+  AFE and zero-phase zeta identity, canonical closed measurable compact event.
+  Corpus full/Gaussian/continuous/phase lexical query returned one unrelated
+  XiGaussianAnnihilatorPhaseControl result; use summable-majorant continuity.
+
+- F197 scratch27360 terminal0; three F196 public audits standard-only.
+  Removed redundant ring after coordinate simp, written/wired original
+  reflected primal compact cubic tail; final next. F198 same redundant tactic
+  removed before its first compile.
+
+- Spectral-factor deep84335 terminal0 partialfalse inventory63774; all20
+  candidate and20 source-argument statements, generated ingredient set inspected.
+  Affine variance is relevant but no spectral-factor identity/cost found;
+  generated spectral-point bridge unrelated. C23.3 exact constructive paper
+  factorization and squarefree frequency cost recorded for transport audit.
+
+- F199 /tmp/BagSteinhausAffineSpectralFactor.lean drafted UNCOMPILED.
+  Actual degree-one factor construction a=sqrt((1+sqrt(1-4|m|^2))/2),
+  b=conj(m)/a; normalized factor and nonconstant coefficient cost>=|m|^2.
+  Exact affine density identity first. F198 seven public audits queued.
+
+- F197 final87202 terminal0 warning-free; index2, lint30923 terminal1 ten
+  unrelated unreachable modules. F198 compact full event scratch next, with
+  both F197 public audits.
+- Squarefree spectral coefficient lexical query total39;20ranked+5exploration
+  hits inspected. Existing Sieve.EulerExpansion has prime subset-product
+  injectivity; RHProofLab finite Euler expansion is generic product-add.
+  Actual two-coefficient factor expansion/weighted energy remains to assemble.
+
+- F198 scratch15084 terminal1 only conjugation elaborated as star in the
+  continuous-series majorant; add norm_star. Both F197 public audits
+  standard-only. Corrected scratch next.
+- F200 /tmp/BagSteinhausSpectralProductCost.lean drafted UNCOMPILED: literal
+  subset coefficients, exact prime-character expansion, exact weighted squared
+  coefficient mass and lower bound from actual affine biases. Reuses
+  Sieve.prod_injOn_powerset for no arithmetic collisions (audit queued),
+  Finset.prod_add for expansion; no orbit mean-value conclusion yet.
+
+- F198 corrected scratch63745 terminal0 warning-free, both F197 public
+  audits standard-only and continuous_tsum probe passed. Written/wired
+  ReflectedCompactTargetEvent with only actual imports, audit/probe stripped;
+  final next. Seven public audits queued F199.
+
+- Next C23.3 synthesis: F195 and exact spectral product cost give
+  N*log(N)*|normalized target displacement|^2 <= C*(actual frequency cost),
+  uniformly in the full conductor window. For fixed nonzero displacement,
+  the sharp-MV frequency-cost/N certificate cannot vanish. This concerns
+  that upper-bound certificate only, not the actual signed error. Need
+  explicit exact spectral coefficients before declaring the audit closed.
+
+- F198 final31679 terminal0 warning-free; exactindex9, lint15612 ten unrelated
+  unreachable modules. F199 spectral factor scratch next, seven F198 public
+  audits included. Full event admission now compiled; original-law compact
+  probability assembly and independent physical self-return count remain open.
+
+- F199 scratch99727 terminal0; all seven F198 public audits standard-only.
+  Removed unused norm_div simp argument, written/wired exact affine spectral
+  factor; final next. Two public audits queued F200.
+- F201 /tmp/BagCompactGaussianSpectralTransportCost.lean drafted UNCOMPILED:
+  exact normalized spectral factors realizing an actual window bias obey
+  N*logN*|target displacement|^2 <= C*frequency-weighted coefficient cost.
+  Generic factor normalization implies squared nonconstant coefficient >=
+  squared bias, so no extra unproved cost premise. Three F200 audits queued.
+
+- F199 final73156 terminal0 warning-free; index6845 terminal0 total2;
+  lint46371 terminal1 ten unrelated unreachable modules. F200 exact product
+  frequency-cost scratch next, with two F199 and existing subset-product
+  injectivity audits.
+- Compact phase-rotation search one hit: F196 retained identity. Existing
+  measure-preserving steinhausEulerVerticalRotation(-tau) has the same
+  characters as raw logPhaseShift(omega,tau), but raw translation itself
+  does not preserve unit-interval measure. Use the actual rotation for
+  original-law selected compact retained events.
+
+- F202 /tmp/BagCompactGaussianRotatedRetainedEvent.lean drafted UNCOMPILED.
+  Exact character and retained-carrier identities for verticalRotation(-tau)
+  versus raw logarithmic shift; actual measure-preserving preimage gives one
+  positive-mass retained-coordinate event supporting the compact cell and
+  small centre uniformly in all tau/cutoffs/retained sets. F201 audit queued.
+
+- F200 scratch45074 terminal1 only add_le_add_left orientation; replaced
+  with add_le_add le_rfl. Both F199 audits and existing prime-subset product
+  injectivity audit standard-only; exact character expansion and cost
+  product identity already accepted. Corrected scratch next.
+
+- F200 corrected scratch8934 terminal0 warning-free. Before finalizing,
+  strengthened to literal distinct integer-frequency sum and cost, using
+  audited primeFactors recovery/injective subset-product map; no collision
+  premise remains. Expanded scratch next; five public audits queued F201.
+- F203 /tmp/BagReflectedCompactTargetAssembly.lean drafted UNCOMPILED: exact
+  full-AFE five-error assembly, row nonzero discharged on the strip, no
+  approximation/coefficient replacement. C22.30 paper recorded; lexical
+  compact/reflected/target/assembly/error search zero. F202 audits queued.
+
+- F200 expanded scratch6800 terminal0 warning-free. Added literal integer
+  coefficient polynomial and frequency cost, with prime-factor recovery
+  discharging all collisions. Written/wired SteinhausSpectralProductCost,
+  temporary F199 audit import stripped; final next. Five public audits F201.
+- New physical-producer search50175 running, signed off-diagonal cancellation
+  for multiplicative spectral products on growing prime windows; 300sec.
+  /tmp/bag-signed-spectral-product-transport-search.json.
+
+- Signed spectral transport search50175 terminal0 partialfalse inventory63778,
+  all20candidate and20source-argument statements plus ingredient set inspected.
+  No count theorem: generated off-diagonal cancellation step explicitly
+  unresolved. Prime-product injectivity and Ramare diagonal decomposition
+  are arithmetic inputs only. Refine lexical offDiagonal within Sieve.
+
+- F200 final80859 terminal0 warning-free, index8, lint13319 ten unrelated
+  unreachable modules. F201 actual compact-window spectral transport cost
+  scratch next, five F200 public audits included.
+
+- Sieve offDiagonal lexical inventory26 exhausted across two pages. Source
+  checks: OffDiagonalBound19 is absolute inverse-gap bound; ShiftBound29 and
+  UniformBound30 consume actual correlation bounds, not supplied for these
+  spectral coefficients. MR/vanishing interfaces retain explicit correlation
+  premises. CorrelationBounds17/62 concern masked curved reciprocal phases,
+  not current prime spectral factors. Ramare conditional-negativity56/97 is
+  exact incidence Gram subtraction, no missing physical common-height seam
+  supplied. No independent recurrence producer inferred.
+
+- F201 scratch79743 terminal0 warning-free, all five F200 public audits
+  standard-only; Nat.div_add_mod/mod_lt probes passed. Written/wired actual
+  spectral transport cost lower bound, audits/probes stripped; final next.
+
+- F204 /tmp/BagCompactGaussianSpectralBudgetRigidity.lean drafted UNCOMPILED:
+  bounded actual frequency cost <=A*N forces every normalized compact-window
+  synthesized displacement below every epsilon eventually, uniformly in all
+  heights/phases/cutoffs. Positive survivor of the sharp-MV certificate audit;
+  no signed-error lower bound. Lexical exact concept query zero. F203 audit
+  queued. C23.4 paper precedes draft.
+
+- F201 final30389 terminal0 warning-free; index15815 terminal0 total1;
+  lint78589 terminal1 eleven unrelated unreachable modules. F202 rotated
+  retained compact event scratch next, including F201 public audit. F203
+  exact error decomposition sign checked before compilation: use href,
+  not -href.

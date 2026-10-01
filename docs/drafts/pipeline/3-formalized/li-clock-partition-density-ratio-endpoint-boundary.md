@@ -2,7 +2,7 @@
 
 - **ID:** LI-CLOCK-PARTITION-DENSITY-RATIO-ENDPOINT-BOUNDARY
 - **Stage:** 3-formalized
-- **Type:** THEOREM (exact density/source/classification and endpoint comparison Lean certificates FINAL; separate relative-clock expansion OPEN)
+- **Type:** THEOREM (exact density/source/classification and endpoint comparison Lean certificates FINAL; relative-clock expansion separately FINAL)
 - **Source:** [actual Volterra partition](../3-formalized/li-clock-finite-partition-volterra-positive-area.md), [literal gap cancellation](../3-formalized/li-clock-completion-arithmetic-cancellation-boundary.md), [joint cancellation](../3-formalized/li-clock-joint-arithmetic-cancellation-window.md)
 - **Statement:** For each actual fixed `N>=2`, the tilted difference-density ratio against the literal contiguous source is neither nondecreasing nor nonincreasing, including a.e. monotone versions on the positive half-support; on retained support-edge neighborhoods it equals `κ_N=(Z_U/Z_A)^2>1`. Full normalized even-moment and Borel-kernel ratios tend `κ_N`, with quantitative moment error and sharp uniform ceilings. Both kernel differences escape to positive infinity. These fixed-`N` results leave the actual growing-window residual sign open.
 
@@ -20,9 +20,9 @@ where `a_N=Σ_{n<N}1/(2n+1)`, `b_N=Σ_{n<N}1/(2n+2)`, `q_N=1/(2N)`. Its right de
 
 At the support edges, the actual and contiguous unnormalized overlap densities coincide exactly: `r_N(x)=κ_N` when **`L-ε_N<abs(x)<L`**. At and outside `abs(x)>=L` both densities vanish; no quotient claim there. The strict upper endpoint is essential. The difference is supported in the smaller interval, so its full raw even-moment contribution decays geometrically relative to a retained edge rectangle. Raw product-measure domination also suggests `d_A,j<=κ_N*d_U,j` at every order and `B_A(t)<=κ_N*B_U(t)` at every nonnegative clock. The endpoint limits would make `κ_N` the optimal uniform coefficient for both families; for `N>=2`, strict comparison below `κ_N` and eventual `B_A>B_U` must be audited explicitly. Normalize only after proving this domination. Fixed `N` is essential: `ε_N` shrinks with `N` and no uniform growing-window estimate follows.
 
-## Relative Volterra overlap (separate formal-open target)
+## Relative Volterra overlap (separately formalized)
 
-Exact central-clock expansion is tracked by [relative Volterra forcing](../2-fully-proven/li-clock-partition-relative-volterra-forcing.md). The density and endpoint consumer certificates cover their stated classification/source/comparison interfaces; they do not certify this separate convolution-clock identity.
+Exact central-clock expansion is now separately formalized by [relative Volterra forcing](./li-clock-partition-relative-volterra-forcing.md): four modules and38 public declarations, with complete source/series admissions, literal clock subtraction and both common-disk guards. The density and endpoint consumer certificates retain their original classification/source/comparison scope.
 
 
 The existing full positive kernels permit the candidate exact identity
@@ -41,7 +41,7 @@ Pole ran the documented research directly: `/tmp/li_pole_joint_relative_research
 - [x] Dependency-closed full moment-ratio proof, quantitative remainder, Borel-ratio audit and independent source checks.
 - [x] No-go and strongest positive survivor independently audited; exact survivor stated before route retirement.
 - [x] Exact assigned density/source/classification and endpoint Lean formalization, named/direct/all-public foundational checks and umbrella wiring.
-- [ ] Separate [relative Volterra central-clock expansion](../2-fully-proven/li-clock-partition-relative-volterra-forcing.md) formalization; preserved target, outside these two consumer certificates.
+- [x] Separate [relative Volterra central-clock expansion](./li-clock-partition-relative-volterra-forcing.md) formalization: all38 declarations certified; outside these two original consumer certificates.
 - [ ] Publication/novelty audit.
 
 ## Ownership
@@ -64,7 +64,7 @@ Every real clock satisfies `B_A<κ*B_U`; the full positive-clock ratio tends `κ
 - 2026-09-30 08:08 UTC — Reference base `LiClockPairedEtaContiguousMeasure.lean` FINAL/FROZEN and wired:600 lines,54 public declarations,SHA256 `9564ce2fce59b915d8256429fa187c50d4c6c274eb0f1227bcda87d286f63dcd`. Root and pole read every private/public proof; exact tree snapshot matches both audits. Named1282 exit0,own26s; exact direct5907 exit0 EMPTY; all54 public axioms81145 exit0,only foundational axioms. Logs `/tmp/li_current_contiguous_measure_{named,direct,axioms}.log`; full literal headers and audit certificates `/tmp/li_current_contiguous_measure_{api_ledger,proof_audits}.md`. Exact filled reference transform/MGF, both tilt normalizers, all moments and complete real/complex Borel series, actual full-union restriction/raw-product domination, normalized all-order comparison, N1 equality and N>=2 strict normalizer gap closed. Density/no-go and sharp endpoint consumers still required; card remainsStage2.
 - 2026-09-30 08:20 UTC — Both dependencies FINAL: reference54 and [generic full-series transfer11](../3-formalized/li-clock-positive-borel-ratio-transfer.md),65 public foundational certificates. Exact source/header audits and unique umbrella imports PASS; closure index78758 exit0. Global lint83316 exit1 on11 unrelated unreachable modules, no owned-leaf/proof-debt error; full error list and logs recorded on generic card. Endpoint may use the direct product-defect decomposition and literal/local scale/width to avoid depending on the larger density/no-go leaf; every original214/272 paper target remains required before this card advances.
 
-2026-09-30 09:17 UTC — Root and independent auditors READ ALL consumer proofs: endpoint1208/33 public and density1446/83 public PASS. Header-only sole-leaf promotions released; final certification underway. Original section7 central-clock relative Volterra expansion is explicitly preserved on [separate Stage2 card](../2-fully-proven/li-clock-partition-relative-volterra-forcing.md), with every source/factorial/common-disk obligation retained. No claim that signed-density identities alone formalize relative clocks.
+2026-09-30 09:17 UTC — Root and independent auditors READ ALL consumer proofs: endpoint1208/33 public and density1446/83 public PASS. Header-only sole-leaf promotions released; final certification underway. Original section7 central-clock relative Volterra expansion is explicitly preserved on [separate Stage2 card](./li-clock-partition-relative-volterra-forcing.md), with every source/factorial/common-disk obligation retained. No claim that signed-density identities alone formalize relative clocks.
 
 ## FINAL exact consumer certificates
 

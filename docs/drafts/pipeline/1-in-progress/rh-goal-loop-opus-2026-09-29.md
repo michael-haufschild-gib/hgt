@@ -96,6 +96,54 @@ for the integrated Chebyshev deficit (WL/MC/RW/SZ are exact restatements), equiv
 | 63 | RB, primorial side: Nicolas's criterion (RH ⇔ primorials satisfy `N/φ(N) > e^γ log log N`) can only be tested near primorials, and `e^γ` is sharp (Landau) | `n/φ(n) = ∏_{p∣n}(1−1/p)^{−1}`; the primes `≤ log n` missing from `n` cost `e^{−Σ1/p}` against the inverse Mertens product; Landau's lower half from Gronwall's via `σ(n)/n ≤ n/φ(n)` | PROVED | **THEOREM [L]**: `eventually_div_totient_lt_of_missing`, `eventually_div_totient_le_landau`, `frequently_div_totient_ge_landau` | R:NicolasTotientLandau; clean, builds, axioms standard, wired, no collisions. STATUS MUST-592. Residual: the primorials themselves (RH-equivalent, no slack) |
 | 64 | Speiser's criterion (RH ⇔ `ζ' ≠ 0` on `0<Re s<1/2`) at typical heights: zeros of `ζ'` at distance `≥ κ/log T` left of the line have exceptional-height density `e^{−cκ}` | reflection `ζ'/ζ(s) = χ'/χ(s) − ζ'/ζ(1−s)`; right-box bound `B = 10^{−9}log T` vs. Riemann–Siegel slope `Re χ'/χ ≤ −log(t/2π)+1`; dyadic grid pinned at `R=1/24` tiles `[κ/log T, 1/4]` | CLOSED [L] MUST-593, `R:SpeiserTypicalHeightDensity`; residual = scale-data failures = near-line concentration; `Re s < 1/4` not covered |
 | 65 | LA/F0242 mirror of row 64: `Re(ξ'/ξ) > 0` on `½+κ/log T ≤ Re s ≤ ¾` outside heights of density `e^{−cκ}` (vs. the corpus `1−O(1/c)` on one line) | `ξ'/ξ = archFactor'/archFactor + ζ'/ζ`; winding floor `stripFloor ≥ ½log(t/2π) − 1/25` beats the scale-data bound `10^{−9}log T`; same pinned dyadic grid as row 64 | CLOSED [L] MUST-594, `R:XiHadamardSignTypicalHeight`; residual = NLC |
+| 66 | Pointwise Speiser: every zero of `ζ'` in `0<Re s<½`, `|Im s|≥100`, lies in the Speiser disk `D(½+iγ, |β−½|)` of an off-line zero `ρ` | at `w=1−s̄`: reflection gives `Re ζ'/ζ(w)=Re χ'/χ(s) ≤ −log(t/2π)+3/50`; archimedean part `≤ ½log(t/2π)+1/25`; so `Re ξ'/ξ(w)<0`; disk criterion | CLOSED [L] MUST-595, `R:SpeiserLocalDisk`; corollaries: RH ⇒ local Speiser; `ζ'≠0` on `0<Re s<1/(58 log(t+½))`. Open: Levinson–Montgomery count |
+| 67 | Horizontal ζ-monotonicity left of the line (Saidak–Zvengrowski reformulation) holds pointwise off the Speiser disks | run row 66 forwards: outside all disks the disk criterion gives `Re ξ'/ξ(1−s̄) ≥ 0`, so `Re ζ'/ζ(s) ≤ −½log(t/2π)+1/10`; then `d/dσ |ζ|² = 2|ζ|² Re ζ'/ζ < 0` | CLOSED [L] MUST-596, `R:SpeiserLocalDisk`; RH ⇒ strict horizontal monotonicity on `(0,½)`, `τ≥100` |
+| 68 | Levinson–Montgomery without error term: between unshadowed heights `ζ` and `ζ'` have exactly equal left-half-strip zero counts; hence eventual Speiser ⟺ eventual RH | the ratio `ζ'/ζ` maps the whole rectangle boundary into `Re<0` (MUST-596 on the horizontals and the left edge; the critical-line identity `2Re ζ'/ζ = χ'/χ` + peeling + compactness on the right edge), so its winding is 0; the shadow measure `≤0.42V` supplies unshadowed heights | CLOSED [L] MUST-600, `R:SpeiserExactCount`, `R:SpeiserEventualEquivalence`, `R:RectangleLeftHalfPlaneWinding`. Open: the `O(log T)` version at arbitrary heights; all-height Speiser needs low-height verification |
+| 69 | At unshadowed heights the entire horizontal line carries Speiser, horizontal monotonicity and Hadamard at once, on ≥ 58% of heights | combine MUST-596 (left) with the disk criterion (right); shadow measure ≤ 0.42V | CLOSED [L] MUST-600 addendum, `R:SpeiserCleanHeights`; clean-height density = 1 − 2·(off-line moment)/V, density 1 ⟺ (L) |
+| 70 | One exceptional set: Laguerre, vertical monotonicity, all slice coefficients, Hadamard, Speiser and horizontal monotonicity all hold at every unshadowed height | shadow set = complement of `SpeiserUnshadowed`; corpus shadow lemmas + MUST-600 clean lines | CLOSED [L] MUST-600 addendum II; no local criterion in this family beats `2·offLineMoment` |
+| 71 | Zeros of `ξ'` off the line lie in Speiser disks (Jensen-disk analogue for `ξ`) | strict disk criterion (corpus `XiLogDerivRePositiveStrict`) at a critical point; reflection for the left half | CLOSED [L] MUST-595 addendum, `R:XiDerivSpeiserDisk`; RH ⇒ `ξ'` zeros on the line |
+| 72 | The κ-shadow set (heights shadowed by zeros with `|β−½| ≥ κ/L`) has density `≤ A'e^{−κ/2400}`; off it Hadamard/Speiser hold at distance `≥ κ/L` | layer decomposition of the tail moment in steps `2/L` against MUST-571's exponential near-line density; shadow measure ≤ 2·tail | CLOSED [L] MUST-602, `R:SpeiserShadowExponentialDensity`; rate `1/2400` replaces `10^{−9}/180` of MUST-593/594 |
+| 73 | Dyadic-window form of MUST-602 | `U = 4T` in the admissible-window theorem | CLOSED [L] `eventually_speiserShadow_dyadic_le` (MUST-602 card addendum) |
+| 74 | Differentiation creates no off-line zeros of `ξ` (windowed Laguerre–Pólya) | six-segment winding bound for `ξ'/ξ` between good heights + Rolle on the line | CLOSED [L] MUST-604, `R:XiDerivOffLineCount`, `R:RectangleHalfPlaneSegmentsWinding` |
+| 75 | Row 45's open core (`ZZ'' ≤ 0` at `Z' = 0`) in counting form: extra critical points of `Ξ` are paid for by off-line zeros of `ξ` | keep the Rolle surplus `E` in the MUST-604 inequality | CLOSED [L] MUST-604 addendum; RH ⇒ `E ≤` on-line multiplicity excess + 4 in good windows |
+| 76 | Conjecture: each off-line pair of `ξ` forces more than two extra critical points of `Ξ` (would contradict row 75 and give RH in good windows) | two-sided form of MUST-604: `E + O' = O + (M−A) + θ`, `θ ∈ [−2,4]` | KILLED (sharp: a complex pair yields exactly one wrong-sign extremum); survivor = the two-sided accounting law [L], MUST-604 addendum II |
+| 77 | Littlewood-width zero-free strip for `ζ'` next to `Re s = 0` | local Speiser disks + corpus Littlewood region | CLOSED [L] MUST-595 addendum II, `R:SpeiserLittlewoodStrip` |
+| 78 | Hermite–Biehler count: for `λ>0`, `ξ+λξ'` has exactly as many zeros right of the line as `ξ` (unshadowed windows); RH ⇒ none | `ξ+λξ' = ξ(1+λξ'/ξ)`, Re > 0 on the boundary of `[½+δ,2]×[T₁,T₂]` (Hadamard; line identity + peeling + compactness at `½+δ`) | CLOSED [L] MUST-605, `R:XiHermiteBiehlerCount` |
+| 79 | Exact Laguerre–Pólya on the right: `N_right(ξ') ≤ N_right(ξ)` between unshadowed heights | Hurwitz on small squares via `ξ + λξ'`, `λ` large, + MUST-605 | CLOSED [L] MUST-605 addendum, `R:XiDerivRightCountLe` |
+| 80 | Levinson exactness: for `λ>0`, `λ(½log(T₂/2π)+1/20)<1`, `ζ+λζ'` has exactly the off-line zeros of `ξ` right of the line (unshadowed windows) | `G/ζ = 1−λA+λξ'/ξ`, Re A ≤ ½log(t/2π)+1/20, ε-right-edge lemma, winding of `(s−1)²G` vs `(s−1)²ζ` | CLOSED [L] `R:LevinsonDetectorRightCount` |
+| 81 | Right zeros of `ξ+λξ'` (λ>0) and of `ζ+λζ'` (Levinson range) lie in closed Speiser disks of zeros of `ξ` | zero of partner ⇒ `Re ξ'/ξ ≤ −1/λ` (resp. `≤ −c₀/λ`) < 0 ⇒ strict disk criterion fails | CLOSED [L] `R:LevinsonDetectorRightCount` (`exists_xi_zero_disk_of_{xiHermiteBiehler,levinsonG}_eq_zero`) |
+| 82 | Levinson positivity `Re(GΨ)>0` on right-window boundaries as RH producer (via MUST-607) | winding consistent; zero-side floor absent for λ>0 above spawn line; mollifier floor `1+1/θ` | FAILED (MC/HF Nehari terminus); see log |
+| 83 | Spawn-distance law: non-ζ zeros of `ζ+λζ'` (0<λL<1) lie `≥ c/L` left of the line | `Re ξ'/ξ(½+δ+it)=1/λ−Re A` with `Im` balance | KILLED [P]: an on-line pair at spacing `2ε` gives a detector zero at `δ ≈ Kε²/2`, `K≈L(1/(λL)−½)`; arbitrarily close to the line |
+| 84 | Levinson's Littlewood budget bounds exactly `N_right(ξ)+Σ_on(m−1)` (λ>0, Y>0 range) | MUST-607 + `ord_ρ G♯ ≥ ord_ρ ξ − 1` via `G♯ = aξ+bξ'` and `ord ξ' + 1 = ord ξ` + corpus mass lemma | CLOSED [L] `R:LevinsonDetectorDefectCount` |
+| 85 | Mean-square form of MUST-609: off-line count + multiplicity defect ≤ Levinson budget `½(T₂−T₁)log(Msq/(T₂−T₁))+C+K(…)` | corpus gauge cancellation + `exists_levinson_mollified_budget_le` + MUST-609 | CLOSED [L] MUST-609 addendum |
+| 86 | Integrality certificate: MUST-609 budget `< 2π(½−σ₀)` in one window forces `N_right = 0` there | budget `≥ C + K log T₂` with fixed `C,K>0`, while `2π(½−σ₀) ≤ π/2` | KILLED [P]: the edge terms exceed the integrality gap for large `T`; no single-window certificate ("Individual zeros" gate) |
+| 87 | First-variation law: `I(λ)=∫_{T₁}^{T₂}log|1+λζ'/ζ(½+it)|dt = −2πλN_right(ζ) + O(λ²·…) + O(log T)` | on-line zero contributes `+πλ` (`∫½log(1+λ²/τ²)dτ=πλ`), regular part `−λ∫Re A ≈ −πλN`; equivalently each right zero of order `m` moves left at speed `m` (`ρ'(0)=−1` for simple zeros) | SURVIVOR [P], receiver only: computing `I(λ)` to `o(λ)` is RH-hard. Equally spaced (cot) model: `∫₀¹log((1−ℓ/2)²+(ℓ/2)²cot²πu)du = 2log 1 = 0`, consistent with RH |
+| 88 | New route seed (Sturm–Liouville carrier): Pólya's theorem — zeros of `K_ν(a)` in the order are purely imaginary | argument system from corpus derivative + recurrence; energy identity `h=xf'f̄`, `h'=ν²|f|²/x+x(|f|²+|f'|²)`; decay `e^{1−x}`; `Re K_ν(x)>0` for large `x` (window/tail split) | CLOSED [L] `H:BesselOrderPolyaRealZeros` |
+| 89 | Sturm–Liouville carrier for ξ: `Ξ` is the Dirichlet value of one positive SL family in an auxiliary variable (as `K_{iz}(a)` is) | Pólya energy method (MUST-610) needs a single scale; theta kernel `Σ_n ψ(πn²e^{2u})` mixes scales; a general SL/Krein-string realization of Ξ exists iff RH (de Branges/Krein inverse theory) | KILLED as producer: receiver equal to the retired HB/de Branges route; positive survivor = MUST-610 itself (kernels `e^{−a cosh t}∏cosh(λ_j t)` are real-rooted via MUST-610 + corpus de Bruijn shift, [P]) |
+| 90 | Pólya–Bessel kernel sits in the de Bruijn heat class with `Λ_K ≤ 0`; all cosh-power multiples real-rooted | MUST-610 + corpus `SuperExpKernel`, `zeros_mul_cosh_pow`, `cosTransform_heat_zeros_real` | CLOSED [L] `R:PolyaBesselHeatKernel`; open: `Λ_K < 0` (contrast with Newman) |
+| 91 | Pólya universal-factor decomposition: `Φ(u) = e^{−2π cosh 2u}·ω(u)` with `ω` a de Bruijn universal factor (entire, zeros on `iℝ`) ⇒ RH via MUST-610 | `Φ` is analytic only in `|Im u| < π/4` (theta natural boundary at `Re x = 0`, `x = e^{2u}`), while universal factors are entire in `u` | KILLED [P]: `ω = Φe^{2π cosh 2u}` is not entire. The theta boundary is what blocks every Pólya–de Bruijn multiplier route |
+| 92 | Energy identity with defect for weighted kernels `F(a,ν)=∫₀^∞e^{−a cosh t}cosh(νt)Ψ(t)dt` (Ψ even). If the defect had a sign, `F(a,·)` would be real-rooted for all `a>0`, and Hurwitz as `a→0⁺` would give RH for `Ψ=Φ(·/2)` | system `∂_aF(ν)=−½(F(ν+1)+F(ν−1))`; recurrence `F(ν+1)−F(ν−1)=(2ν/a)F+(2/a)G`, `G=∫e^{−a cosh t}sinh(νt)Ψ'`; so `(a f')' = (a+ν²/a)f + (2ν/a)G + (1/a)F_{Ψ''}` | FAILED [P]: the defect `(2ν/a)G+(1/a)F_{Ψ''}` has no sign; `Im⟨defect,f⟩` would need a source law. For `Ψ ≡ 1` it vanishes and gives Pólya (MUST-610). The defect is exactly the non-cosh part of the kernel |
+| 93 | Chowla–Selberg/Fourier route: `ξ(2s)E(z,s)` at a CM point is `γ(s)ζ_K(s)`. Its non-constant Fourier coefficients carry `K_{s−½}(2πn y)`, and by MUST-610 each vanishes only on `Re s=½`. Conjecture: the sum inherits this | at large `|Im s|`, `K_{s−½}(2πn)` has amplitude independent of `n`, so all `n` mix | KILLED by the Davenport–Heilbronn Epstein countermodel: Epstein zetas of class-number>1 forms have the same K-Bessel Fourier structure but off-line zeros. Survivor: the per-coefficient line law (MUST-610 at order `s−½`) |
+| 94 | Critical-line census beyond `T^{2/7}`: first-moment window averaging gives `N₀(T) ≫ √T/(1+log T)²` from corpus pieces alone | constant sign on zero-free windows; `∫|Z| ≥ 3T/4`; `K≍√T` windows, `K·ME ≤ 3T/8` (cutoff `x=16QT`); Cauchy–Schwarz with `∫Z² ≪ T log²T` | CLOSED [L] `R:HardySquareRootCensus` |
+| 95 | Census to `T/log²T` (Hardy–Littlewood shape) via the grid-offset form of the first-moment census, given a window mean square `∫_T^{2T}|∫_t^{t+H}Z|² ≪ TH` | Euler–Maclaurin length-`T` approximant: off-diagonal `H²T log T` ≫ `TH` ⇒ FAILS. Symmetric AFE: off-diagonal `H²√T log T` ✓. Needs the dual edge with height-dependent weights, i.e. corpus `HardyZDualEdgeFreezing`/`FrozenDualEdgeCellBound` plus MVT in blocks | OPEN [P]: plan recorded on card `3-formalized/hardy-square-root-census.md`. Intermediate target `T^{3/4}`: sharp dual-edge window mean `O(T^{1/4}log T)` |
+| 96 | Finite-object receiver: for `X ≥ T^A`, `log X·(ζ+ζ'/log X)(s) = P_X(s) − X^{1−s}/(1−s)² − J(s)`, where `P_X = Σ_{n≤X}log(X/n)n^{−s}` (Perron with `1/w²`; residues at `w=0`, `w=1−s`) and `|J| ≪ (T/X)^{½+δ}`. With MUST-607 plus Rouché on a Cartan-chosen boundary, `N_right(ζ;W) = N_right(P_X;W)` | `λ = 1/log X < 2/L` ✓; on the boundary `|G| ≥ T^{−B}` outside Cartan disks, so `A > 2B+1` | RECEIVER [P]: RH ⟺ the logarithmic Riesz means `P_X` are zero-free in `½<Re s<2, |Im s| ≤ X^{1/A}`. The positive coefficients `log(X/n)` give no off-axis control. Finite-packet gate: `X` grows with `T`, so the object is cofinal, not finite |
+| 97 | Horizontal-shift partner `ξ(s)+ξ(s+h)`: exact right count against `ξ(s+h)` via horizontal monotonicity | the left edge `½+δ` crosses shadowed heights, where `|ξ(½+δ+h+it)| > |ξ(½+δ+it)|` fails | KILLED [P]: no boundary positivity in shadows; unlike `1+λξ'/ξ`, there is no first-order line identity |
+| 98 | Pseudo-Laplacian (Lax–Phillips cutoff `a`) self-adjointness: zeros of `F_a(s)=a^{s−½}ξ(2s)+a^{½−s}ξ(2s−1)` lie on `Re s=½` or are real, unconditionally (SL energy as in MUST-610) | the HB comparison `|ξ(2s)|` vs `|ξ(2s−1)|` for `Re s>½` lives in the Euler region `Re 2s>1`; ζ-zeros enter `ξ(2s)` at `Re s<½` only as resonances | KILLED as producer [P]: RH-blind; same mechanism as the retired HB/Eisenstein route. Survivor: an MUST-610-type energy identity for the cutoff Eisenstein constant term (model, not pursued) |
+| 99 | Heat–Bessel family `∫e^{−a cosh u−|t|u²}cosh(νu)du`: energy method for `Λ_K<0` | `Ψ=e^{−|t|u²}` gives `G=−2|t|∂_νF` and `F_{Ψ''}=4t²∂²_νF−2|t|F`, so the defect couples `ν`-derivatives (a PDE, not an SL problem in `a`) | KILLED as energy proof [P]. The conjecture `Λ_K<0` (Newman's phenomenon is arithmetic) stays OPEN, motivated by the single-sine picket-fence asymptotics |
+| 100 | Density version of the Hadamard/Speiser criteria by area: the failure set has area `o(ΔT)` (was 58%) | product set `[0,1]×κ-shadow` + MUST-602 at fixed `κ(ε)`, near-line strip `(2κ/L)ΔT` | CLOSED [L] `R:SpeiserShadowAreaDensity` |
+| 101 | Hadamard failure area has critical order: `≤ C·ΔT/log T` (MUST-618 gave `o(ΔT)`) | near strip `(4/L)ΔT` + rectangles `2Σmb²`; `b² ≤ (4/L)Σ_k[b≥2k/L]b` turns the squared moment into a sum of MUST-602 tails | CLOSED [L] `R:HadamardFailAreaCriticalScale` |
+| 102 | Census programme (`T^{3/4}`, then Hardy–Littlewood `T/log²T`, then Selberg) as the next critical-line producer | audit of the pinned dependency `Zeta23` (vendored, sorry-free, standard axioms): Weil explicit formula + Gram matrix, Sylvester inertia, rank–trace `rank ≥ (tr A)²/tr A²`; zero side `n₊(Ã) ≤ s₁+s₂+p` (an off-line pair counts once); `H(λ)=2−1/λ−λ/3`, Fourier support `λ<1` | SUPERSEDED: the corpus already has `N₀ˢ(T) ≥ (0.6725−ε)N(T)` (`lamzouri_montgomeryTaylor_simpleCritical_epsilon`), so MUST-615 and the HL backlog card are obsolete (card retired). Proportion barrier: `λ ≥ 1` is past Nyquist and needs prime-pair correlations to asymptotic precision. `H` peaks at `λ=√3` (`2−2/√3 ≈ 0.845`). A sieve upper bound for prime pairs (constant 4) buys essentially nothing |
+| 103 | Quantitative Speiser/derivative signs from Zeta23: `#ζ'` left zeros, `#ξ'` right zeros, `#(ζ+λζ')` right zeros `≤ ((1−HD 1)/2+ε)N ≈ 0.164N` | exact counts (MUST-600/605/607) + `2·N_left = N_off` via `z ↦ 1−z̄` + Montgomery–Taylor `N₀ˢ ≥ (HD 1−ε)N` | CLOSED [L] `R:SpeiserDeficitTwoThirds` (MUST-623) |
+| 104 | Inertia/trace route to `(L)`: the explicit-formula Gram matrix of Zeta23 has `n₋(Ã) ≤ p`; read off the off-line displacement from `tr Ã`, `tr Ã²` (or higher traces), aiming at `(L₂)`: `Σ_off (bL)² = o(N)`, which implies `(L)` by Cauchy–Schwarz | the zero side is holomorphic in the complex ordinate `z = γ − ib`. A pair contributes `φ̂(γ−ib)² + φ̂(γ+ib)² = 2φ̂(γ)² − b²(φ̂²)''(γ) + O(b⁴)`, so `tr Ã` sees `−Σ b² G₀''(γ)`. `G₀''` has mean zero, so the term averages out. Individual entries would need PNT at `√x` precision | KILLED [P]: holomorphic traces see horizontal displacement only through even derivatives, which average out (curvature blindness); a sharp form of the pair-even gate (CANNOT-182r). Survivor: `(L₂) ⇒ (L)` (Cauchy–Schwarz, `p ≤ N`) |
+| 105 | Positive survivor of row 98: Lax–Phillips/Lagarias–Suzuki line law `Λ(2s)Y^s + Λ(2s−1)Y^{1−s} ≠ 0` off `Re s = ½` and `ℝ` in the strip, `Y > 1` | corpus Maass–Selberg on `Ω×Ω` at `v = −ū`; at a zero `R(u,−ū,Y) ≡ 0` (`B = −AY^{2u}`), so `‖Λ^Y E_u‖ = 0`; the band pairing with `conj c(y)` gives `c ≡ 0` on `(1,Y)`, which forces `A = B = 0` | CLOSED [L] `R:EisensteinCutoffConstantTermLineLaw` (RH-blind by construction) |
+| 106 | (a) `Λ_K < 0` via the contour shift `u = v + iπ/2`: `H_t(z) = e^{|t|π²/4 − πz/2} J_t(z − π|t|)`, `J_t = ∫e^{−ia sinh v − |t|v²}e^{iwv}dv` (exact for `t < 0`); (b) mollified Zeta23 (CGG + inertia) beyond 2/3 | (a) `J_t = e^{|t|D²}J_0` is the same backward flow. Reality needs uniform WKB for Gaussian-smoothed chirps (zero shift `≈ π|t|`, relative error `O(|t|/x)`). (b) audited against the corpus | (a) PARKED [P] (identity exact; no shortcut). (b) REDISCOVERED as a known kill: `5-failed/inertia-robust-mollified-simple-zeros.md` (A-F extremal survives robust CGG; beating 2/3 needs `p ≤ 0.026N` near-line pairs, ≈95% on the line, circular) |
+| 107 | Critical-line proportion for `ξ'` from Zeta23 | Rolle on `t ↦ ξ(½+it)` between consecutive distinct critical zeros (`exists_finset_between_card`) gives `N₀(ξ') ≥ N₀ˢ(ξ) − 1`; Montgomery–Taylor gives `N₀ˢ ≥ (HD 1−ε)N` | CLOSED [L] `R:XiDerivCriticalLineProportion` (MUST-626) |
+| 108 | Critical-line proportion for every `Ξ^{(k)}` | iterated Rolle (`exists_deriv_zeros_card`) on the smooth real `Ξ` + Zeta23 | CLOSED [L] `R:XiHigherDerivRealZeros` (MUST-627) |
+| 109 | Two cheap levers on the corpus density constants: (a) raise the mollifier length `θ = 1/15` of the sharp high block (crude `c_R(θ) ≈ e^{2R(1+2θ)}/(2Rθ)`, so the off-line moment `(log((1/3+4θ)/2θ)+1)/4π` drops from `0.20` at `θ = 1/15` to `0.147` at `θ = 1/2`); (b) the WD zeta tradeoff with the actual Zeta23 window `v*(s) = cos(√2 s)` (sharp edge) | (a) `θ` is forced: the product-AFE pair-error envelopes need `N ≤ a^{2/25}` on blocks `a ≥ U^{5/6}`. A longer mollifier needs a bilinear off-diagonal analysis. (b) closed-form `K(x) = ∫cos²(√2s)cosh(xs)/∫cos²`, `2K²/B ≈ 5.46/x`, deficit `≈ 1 − 5.46/x`, `κ' = sup d(x)/x ≈ 0.046`; with the corpus moment `0.42T` the loss is `≈ 0.12N` | DEFERRED (both are density constants): (a) needs a redesign of the high block; (b) yields horizontally simple `≈ 0.55` (corpus `0.5087`) at the cost of explicit cosh-integral inequalities, taper errors and the Zeta23 endgame with a deficit term |
+| 110 | Horizontal singleton density beyond `0.5087` by the overlap-deficit tradeoff | Zeta23 seam with per-point deficits `1 − 2J²/(I₀I₂)` (exact sampled Parseval), window bound `≤ εL/12 + 20w/L`, deficits charged to the log-weighted off-line moment, dyadic + `λ → 1` | CLOSED [L] `R:HorizontalSimplicityTradeoffDensity` (MUST-634): density `≥ HD(1) − 7π/200 ≈ 0.5625`; sharper `κ'` would give ≈ 0.63 |
+| 111 | Sharpen the window slope of the tradeoff | weight comparison `J²A₂ ≥ m A₁² I₂` (keeps the `cos θ` edge factor in `I₂`), window constant `θcotθ ≥ 4/5`, sharp `(1−y/24)y(y+sinh y) ≤ (32/5)(cosh y−1)` | CLOSED [L] (MUST-636): singleton density `≥ HD(1) − 7π/400 ≈ 0.6175`; window slack now ≤ 0.005, the moment constant `0.21` is the binding input |
+| 112 | Far off-line pairs are Frobenius-visible: a pair at displacement `x` puts `≈2K(2x)²` (`K ~ eˣ/x`) into `‖Â‖_F² ≈ N/c`, so `Σ_pairs e^{2x} ≲ N` (rate `e^{−2a}`, beyond Conrey's `8/7`) | self-block of `gg^T − hh^T` vs. the prime-side Frobenius budget | KILLED as stated (duplicate): two far pairs at equal displacement and ordinate offset `π/L` cancel to leading order (`Σ_p e^{L(2b_p+iγ_p)} ≈ 0`); this is the corpus's Nyquist lattice masking (`ClusterRobustHodgeExclusion`, `offLineLattice_weil_positive_iff`). Unmatched pairs give only `x ≲ log log T` after the worst-case `‖P‖_op = O(log T)`. No positive survivor beyond the recorded masking law |
+| 113 | Full horizontal Lamzouri for actual zeros via energy slack: the far pair's odd vector `h` (`‖h‖² = (K(2x)−1)/2`) contributes leakage `4Σ m‖P_{A⊥}h‖²`, which dwarfs every deficit (`d ≤ 1`; at `x = 8` the flat window gives gain `≈ 370`) | packet frame pieces `A ⊂ C ⊂ B ⊂ W`, `exists_mixed_range` (`+4·leakage`), parity `⟪g_p,h_p⟫ ≈ 0` | REDUCED, not closed: deficits are paid unless `h_p ∈ span(g_q, f₂)` approximately, i.e. Nyquist-matched far clusters (ordinate offset `≡ π/L`, equal displacement). These are masked at every bandwidth `≤ 1` by the off-line lattice (`offLineLattice_weil_positive_iff`), so averaged prime data cannot exclude them. Residual of the WD step = matched far mixed clusters. The unnormalized inequality used in MUST-634/636 keeps only `P_{B⊥}`-leakage (`≈ 0`, since `d ≈ λN < N` makes `B` everything); the `P_{A⊥}` gain is in the normalized `exists_mixed_range` only |
 
 ## Log
 
@@ -188,3 +236,91 @@ for the integrated Chebyshev deficit (WL/MC/RW/SZ are exact restatements), equiv
   leave the heat lane.
 - 2026-09-30 — Cycle 49 closed in Lean (MUST-571): exponential near-line density via the two-length
   Barban–Vehov mollifier; gate and three-lines tail generalized to every length in `[U^{1/200}/2, U^{1/100}]`.
+
+- 2026-10-01 — Speiser lane closure note (cycles 64–69).
+  - MUST-595/596/600 use only three inputs: the functional equation (`χ'/χ` growth), the Hadamard
+    disk criterion for `ξ`, and the corpus zero-free region and off-line moment.
+  - The first two hold verbatim for any FE-symmetric Dirichlet series with an order-1 completion,
+    e.g. Davenport–Heilbronn, which has off-line zeros. So the local disk law, the exact count and
+    the clean-line law cannot by themselves exclude off-line zeros.
+  - The only arithmetic inputs are the zero-free region (left edge) and the off-line moment
+    (existence of unshadowed heights).
+  - Positive survivor: the theorems themselves. Every RH-sign failure (Speiser, horizontal
+    monotonicity, Hadamard, Laguerre) lies in the union of Speiser disks, and the clean-height
+    density is exactly `1 − 2·offLineMoment/V`.
+  - A producer must shrink the Speiser disks using the Euler product. That is the (L)/NLC wall.
+
+- 2026-10-01 — Levinson threshold observation (after cycle 78, paper-level; not formalized).
+  - Levinson's detector `ζ + ζ'/L` equals `ξ + λξ'` up to a slowly varying archimedean factor,
+    with `λ = 2/L`. Indeed `ξ'/ξ = ζ'/ζ + arch'`, `arch' = ½ log(t/2π) + O(1/t)`, and
+    `λ/(1 + λL/2) = 1/L` forces `λ = 2/L`.
+  - On the left edge `σ = −1`, `Re(1 + λξ'/ξ) = 1 − λ(½ log(t/2π) + O(1))`, which changes sign
+    exactly at `λ = 2/L`.
+  - For `λ < 2/L` the left-edge winding is trivial. The remaining obstruction is the horizontal
+    edges near on-line zeros, where `λ Re ξ'/ξ` can exceed 1; that would need heights at distance
+    `≫ 1/L` from ordinates.
+  - For `λ ≥ 2/L` (Levinson's side) left zeros of `ξ + λξ'` can proliferate, and the Levinson
+    inequality `N₀ ≥ N − 2N_left(V)` carries information.
+  - RESOLVED by cycle 80 [L].
+    - The corpus Levinson detector `ζ + λζ'` with `λ > 0` in the `Y > 0` range has exactly
+      `N_right(ζ)` zeros right of the line.
+    - Its spawned zeros go left.
+    - The window inequality's `[½, 4]` count is `N_right + Σ_on(m − 1)`.
+    - The earlier "Levinson ⟺ `N_left(V) ≥ N_left(ξ)`" sentence was wrong and is withdrawn.
+
+- 2026-10-01 — cycle 82 (direct attack, FAILED). Levinson positivity as an RH producer.
+
+  **Target.**
+  - Exactness (MUST-607) turns the windowed RH statement into "`ζ + λζ'` has no zeros in the right window".
+  - Sufficient: some mollifier `Ψ` with `Re(GΨ) > 0` on the boundary of `[½+δ, 2] × [T₁, T₂]`.
+  - On the line, `GH = ξ(1 − λA) + λξ'`, so `GΨ` need not vanish at on-line zeros of `ζ`.
+  - Winding check: `Δ_line arg G = −2πN_right(ζ) + O(log T)`, and `Δ_line arg Ψ = −2πZ_Ψ + O(log y)`.
+    So pointwise positivity is consistent with the argument principle. There is no topological
+    obstruction. (A first computation with `ξ`'s winding `πN` was wrong: that term belongs to the
+    Gamma factor, not to `G`.)
+
+  **Zero-side floor.**
+  - Spawned zeros sit left of the line, at `s − ρ₀ ≈ −λ/(1 − λA)`.
+  - For `σ₀` between the line and the spawned zeros, Littlewood's mass of `G` in `Re s > σ₀` is
+    exactly the off-line mass.
+  - So the CANNOT-322 exponential floor (which comes from on-line zeros at `λ = 0`) is absent for
+    `λ > 0`. Jensen then only forces `Msq ≥ T(1 − o(1))`.
+
+  **Obstruction.**
+  - Mean-square level: Selberg's diagonal loss `∫|GΨ|² ≳ T(1 + (1/θ)∫P'²) ≥ T(1 + 1/θ)` for
+    mollifiers of length `T^θ` as `R → 0`. Then `N_right ≤ N·log(1 + 1/θ)/(2R)`, which is useless
+    for small `R`. 100% would need `θ → ∞`: the length barrier.
+  - Pointwise level: `Re(GΨ) > 0` needs control of large values of `GΨ − 1`, whose variance is
+    `≍ 1/θ`, so the event `|GΨ − 1| ≥ 1` has positive measure.
+  - Both are the MC/HF terminus (`Re(gξ) > 0` on `∂D`, Nehari). No new producer.
+
+  **Survivor.** For `λ > 0`, Levinson's method has no zero-side floor at abscissae above the spawn
+  line. Its entire loss is the mollifier floor `1 + 1/θ` [P, heuristic; the spawn-distance law is not
+  proved — on-line zero clusters could move spawned zeros].
+
+- 2026-10-01 — session summary (cycles 78–99).
+  - **Formal results [L]:**
+    - MUST-605: Hermite–Biehler exact count.
+    - MUST-605 addendum: `N_right(ξ') ≤ N_right(ξ)`.
+    - MUST-607: Levinson detector exact right count.
+    - Speiser confinement of the partners' right zeros.
+    - MUST-609 + addendum: Levinson's budget bounds `N_right + Σ(m−1)` exactly, with the mean-square form.
+    - MUST-610: Pólya's theorem (`K_ν(a)` zeros imaginary) by an SL energy identity.
+    - Pólya–Bessel kernel in the de Bruijn heat class, `Λ_K ≤ 0`.
+    - MUST-615: census `N₀(T) ≫ √T/log²T`, up from `T^{2/7}`, by first-moment window averaging.
+  - **Closed or killed (paper):**
+    - spawn-distance law (cycle 83);
+    - Levinson positivity as an RH producer (82; mollifier floor `1+1/θ`, Nehari);
+    - single-window integrality (86);
+    - SL carrier for ξ (89);
+    - Pólya universal factor (91; theta natural boundary);
+    - weighted-kernel energy (92) and heat–Bessel energy (99): the defect has no sign;
+    - Chowla–Selberg Fourier route (93; Davenport–Heilbronn Epstein);
+    - horizontal-shift partner (97);
+    - pseudo-Laplacian (98; RH-blind).
+  - **Receivers recorded:**
+    - first-variation law (87);
+    - log-Riesz finite-polynomial reformulation (96): `N_right(ζ;W) = N_right(Σ_{n≤X}log(X/n)n^{−s};W)` for `X ≥ T^A`.
+  - **Programmes identified:**
+    - census `T^{3/4}` (sharp dual-edge window mean) and `T/log²T` (window mean square);
+    - the mollified-mean-square terminus (sharp `S₁` lower asymptotic), still the highest-value bottleneck.

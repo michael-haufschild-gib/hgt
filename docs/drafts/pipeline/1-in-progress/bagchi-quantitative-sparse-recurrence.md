@@ -2219,3 +2219,1979 @@ modules, no proof debt or BAG error. The audit's only error was a future API
 probe for an unavailable `MeasureTheory.lintegral_mono_measure`; the actual
 source is `lintegral_mono'`, now read. The normalized probability law, density
 second moment and finite-product target event are still to be formalized.
+
+
+**C21 / F90 FINAL — actual affine circle law and exact density energy, LEAN PROVED.**
+`SteinhausAffineCircleMeasure.lean` (91 lines) proves the exact density second
+moment `1+2*norm(m)^2`, constructs the actual withDensity law, proves probability
+normalization for half-unit biases, provides its exact Bochner change of measure
+and proves its phase mean is m. All four public axiom reports and the existing
+finite-product Tonelli result are standard-only. Final leaf warning-free and
+wired; exact second-moment index line11. Lint exit1: thirteen unrelated
+unreachable modules, no proof debt or BAG error. Future generic API probes in
+the audit failed solely from uninstantiated universe levels; their names resolved
+and typed statements were printed. Corrected concrete-universe probes are queued
+with the next audit. Event transfer and actual finite-product concentration remain open.
+
+
+**C21 / F91 FINAL — exact original-event probability from density cost, LEAN PROVED.**
+`SteinhausDensityEventCost.lean` (52 lines) proves the squared withDensity event
+mass inequality by the existing generic squared Cauchy theorem, then the real
+lower bound `q^2/C` and its specialization `(1/4)*exp(-A)` for tilted mass at
+least one half and second density moment at most `exp(A)`. All three public
+axiom audits standard-only; final leaf warning-free, wired/index-visible (line39).
+The corrected concrete-universe future API probes also pass. Lint exit1:
+fourteen unrelated unreachable modules, no proof debt or BAG error. These are
+source inequalities; the actual affine-product target concentration remains open.
+
+
+**C21 / F92 FINAL — actual finite affine product and exponential event cost, LEAN PROVED.**
+`SteinhausFiniteAffineDensity.lean` (98 lines) defines the original finite uniform
+phase law, the explicit affine product density and the independent biased phase
+law. It proves probability normalization for half-unit biases, exact product
+withDensity identification, exact second density moment `prod(1+2*norm(m_i)^2)`,
+its upper bound `exp(2*sum norm(m_i)^2)`, and the original event lower bound
+`(1/4)*exp(-2*sum norm(m_i)^2)` for every measurable event with at least half the
+biased mass. The product density identification itself needs no bias-size
+premise; the probability and moment theorems retain that essential premise.
+All seven public axiom reports standard-only; final leaf warning-free,
+wired/index-visible (event transfer line88). Lint exit1: thirteen unrelated
+unreachable modules, no proof debt or BAG error. Exact centered variance and
+concentration for the actual finite-vector target are next.
+
+
+**C21 / F93 FINAL — exact centered affine-circle variance, LEAN PROVED.**
+`SteinhausAffineCircleVariance.lean` (59 lines) proves every circle character
+integrable under the actual biased law, exact centering after subtracting m,
+and centered second moment `1-norm(m)^2`. All three public axiom reports in the
+successor scratch are standard-only; final leaf warning-free, wired and
+index-visible (variance line27). Lint exit1: fourteen unrelated unreachable
+modules, no proof debt or BAG error. Product coordinate orthogonality and its
+finite-Hilbert-sum variance remain next.
+
+
+**C21 / F94 FINAL — exact covariance under the finite affine product, LEAN PROVED.**
+`SteinhausFiniteAffineCovariance.lean` (88 lines) defines the literal centered
+coordinate phases and proves continuity, a uniform norm bound, zero mean,
+integrability of every pair product and exact diagonal covariance:
+`E(conj(Z_i-m_i)*(Z_j-m_j))=delta_ij*(1-norm(m_i)^2)`. Off-diagonal vanishing
+uses the actual independent product law and the exact centered mean. All five
+public axiom reports in the successor scratch are standard-only; final leaf
+warning-free, wired/index-visible (covariance line57). Lint exit1: fourteen
+unrelated unreachable modules, no proof debt or BAG error.
+
+
+**C21 / F95 FINAL — exact biased Hilbert-column variance, LEAN PROVED.**
+`SteinhausFiniteAffineVariance.lean` (98 lines) defines the actual centered finite
+sum of complex Hilbert columns, proves continuity and integrability of its
+squared norm, and proves exact variance `sum_i (1-norm(m_i)^2)*norm(a_i)^2`.
+It is therefore at most the original total column energy. No finite-dimensional
+assumption on the Hilbert target space is needed for this identity. All four
+public axiom reports in the successor scratch standard-only; final leaf
+warning-free, wired/index-visible (upper bound line88). Lint exit1: fifteen
+unrelated unreachable modules, no proof debt or BAG error.
+
+
+**C21 / F96 FINAL — actual biased target-ball half mass, LEAN PROVED.**
+`SteinhausFiniteAffineTargetMass.lean` (47 lines) proves that the actual centered
+Hilbert-column sum lies in the open radius-r ball with at least half the biased
+probability whenever the original total column energy is at most `r^2/2` and
+r is positive. It uses the exact variance bound, integrability, measurable ball
+and Markov inequality; no concentration premise is assumed. Its public axiom
+report in the successor scratch is standard-only; final leaf warning-free,
+wired/index-visible (line15). Lint exit1: sixteen unrelated unreachable modules,
+no proof debt or BAG error. Target synthesis and original-law density cost are
+ready to combine into the local lower law.
+
+
+**C21 / F97 FINAL — finite original-law local target theorem, LEAN PROVED.**
+`SteinhausFiniteLocalTarget.lean` (41 lines) proves the quantitative bound
+`P(norm(sum_i Z_i*a_i-v)<r) >= (1/4)*exp(-2*norm(v)^2/c)` under the original
+independent uniform finite phase law. Its exact structural premises are `c>0`,
+`r>0`, actual frame coercivity `c*norm(w)^2<=sum_i |inner(a_i,w)|^2`, each
+`norm(a_i)*norm(v)/c<=1/2`, and total column energy at most `r^2/2`.
+It constructs the biases from the audited frame inverse, proves half the
+actual biased mass lies in the target ball, and pays the explicitly proved
+original-law density cost. No local-probability or Gaussian-approximation
+premise is assumed. The public axiom report in the successor scratch is
+standard-only; final leaf warning-free, wired/index-visible (line15). Lint
+exit1: seventeen unrelated unreachable modules, no proof debt or BAG error.
+This closes the generic finite local-target mechanism in Lean. Actual prime
+carrier specialization, integration on the same retained event, direct-edge
+constraints and deterministic orbit transfer remain open.
+
+
+**C21 / F98 FINAL — local target law under the original infinite product, LEAN PROVED.**
+`SteinhausOriginalFiniteLocalTarget.lean` (45 lines) proves that every injective
+finite coordinate family in the original Steinhaus space has exactly the finite
+uniform product law. It transfers F97's same quantitative target-ball lower
+bound to the original infinite Steinhaus law with the same frame, individual
+column and total-energy premises. Both public axiom reports in the successor
+scratch are standard-only; final leaf warning-free, wired/index-visible (target
+bound line22). Lint exit1: seventeen unrelated unreachable modules, no proof
+debt or BAG error. Prime-carrier specialization and retained-event integration
+remain open; this is an exact distribution transfer, not an orbit assertion.
+
+
+**C21 / F99 FINAL — literal channel bounds to Hilbert frame bounds, LEAN PROVED.**
+`SteinhausChannelEuclideanFrame.lean` (79 lines) proves the exact conjugation
+identity between the original bilinear channel test and the complex Hilbert
+functional. Sup-norm coercivity H becomes Euclidean coercivity H/J for positive
+node count J; a uniform dot bound L bounds each Euclidean column norm by L;
+a quadratic directional upper bound C bounds total column energy by J*C.
+All four public axiom reports in the successor scratch standard-only; final
+leaf warning-free using only its PiL2 import, wired/index-visible (lower bound
+line21). Lint exit1: twenty-one unrelated unreachable modules, no proof debt or
+BAG error. These formulas retain the original coefficients and supply the exact
+interfaces required by the already-proved original-law local target theorem.
+
+
+**C21 / F100 FINAL — original-law bound for literal finite channel matrices, LEAN PROVED.**
+`SteinhausFiniteChannelLocalTarget.lean` (76 lines) reindexes the original local
+target law to an arbitrary finite coordinate set, then combines the exact
+channel-to-Hilbert bounds into a theorem expressed solely in the original
+channel lower, maximal-dot and quadratic-upper inequalities. Its smallness
+conditions are `L*norm(v)/(H/J)<=1/2` and `J*C<=r^2/2`; conclusion is original
+probability at least `(1/4)*exp(-2*norm(v)^2/(H/J))` for the literal channel sum.
+Both public axiom reports in the successor scratch standard-only; final leaf
+warning-free, wired/index-visible (channel theorem line42). Lint exit1:
+nineteen unrelated unreachable modules, no proof debt or BAG error.
+
+
+**C21 / F101 FINAL — actual frozen-carrier target law, LEAN PROVED.**
+`SteinhausFrozenCarrierLocalTarget.lean` (104 lines) identifies the actual
+prime character with the first circle character, proves exact scalar and
+Euclidean frozen-carrier decompositions, and applies the original local law
+to target minus the literal smooth background. All actual large-prime channel
+coefficients are unchanged. Final73748 exit0 warning-free; four public axiom
+reports in successor scratch41739 standard-only; wired/index-visible (line77).
+Lint89707 exit1: twenty-one unrelated unreachable modules, no BAG error or
+proof debt. Actual reflected asymptotics and retained-event integration remain.
+
+**C21 / F102 paper assembly — polynomial conditional cost.**
+At fixed cofactor denominator D, original maximal channels are C*N^(-1/2),
+and directional energy tends uniformly to zero. A covariance floor H/log N
+and shifted Euclidean target norm at most B give eventual admissible biases
+since log N/sqrt N tends to zero. F101 then gives conditional original mass
+at least `(1/4)*N^(-2*J*B^2/H)`, uniformly in the common height window and
+positive smoothing. This is conditional on the actual lower-bound event;
+its hypotheses must be discharged with F87, then integrated under F68.
+
+
+**C21 / F102 FINAL — polynomial actual reflected conditional cost, LEAN PROVED.**
+`SmoothAFEReflectedConditionalLocalTarget.lean` (76 lines) combines the actual
+maximal-channel and vanishing-energy theorems with F101. On the literal
+covariance floor `H/log N`, every shifted Euclidean target bounded by B has
+original conditional target probability at least `(1/4)*N^(-2*J*B^2/H)`
+eventually, uniformly over common heights and every positive Gaussian scale.
+No extra local law or asymptotic input remains in this statement.
+Final3827 exit0 warning-free; public axiom report in successor63769 standard-only;
+wired/index-visible (line13). Lint71539 exit1: eleven unrelated unreachable
+modules, no proof debt/BAG error. Retained-event integration still in scratch.
+
+**C21 prescribed-cell audit and repair (paper).** The existing event's centre
+preserves a prescribed finite phase assignment, but its statement does not
+guarantee a requested minimum cell prefix or maximum radius. Direct-edge
+control needs those additional quantifiers. Starting with the covariance cell,
+replace its prefix Bc by max(Bc,B₀) and radius δc by min(δc,δ₀). The smaller
+cell still has fixed positive mass under every height rotation and inherits
+all covariance inequalities. Its bounded-centre intersection retains half
+that fixed mass for all sufficiently large N. Thus arbitrary prescribed
+finite-character accuracy is compatible with the polynomial target mechanism.
+
+
+**C21 / F103 FINAL — integrate the original conditional target law, LEAN PROVED.**
+`SteinhausPrefixTargetEvent.lean` (57 lines) proves
+`q*mu(E) <= mu(E intersect A)` when E reads only the retained prime coordinates
+and every frozen exterior target section has original probability at least q.
+The exact prefix-resampling pushforward and product section integral supply
+the proof; no measurable selection of auxiliary biases is needed. It also
+proves measurability of the literal Euclidean carrier. Final35290 exit0
+warning-free; both public audits in F104scratch48649 standard-only; wired/index
+visible (line12). Lint83732 exit1: eleven unrelated unreachable modules, no
+proof debt/BAG error. Prescribed-cell refinement scratch also passes; final
+and its public audit remain before integrated actual-target assembly.
+
+
+**C21 / F104 FINAL — preserve any requested finite-cell accuracy, LEAN PROVED.**
+`SmoothAFEReflectedPrescribedCellEvent.lean` (99 lines) strengthens the actual
+covariance/bounded-centre event with arbitrary prescribed `B₀<=B` and
+`δ<=δ₀`. It retains the original finite phase prescription, exact rotated
+cell containment, fixed positive mass, small-prime dependence, arithmetic seam,
+bounded actual backgrounds and every-direction covariance lower bound.
+Final78588 exit0 warning-free; public audit in F105scratch2108 standard-only;
+wired/index-visible (line13). Lint43918 exit1: eleven unrelated unreachable
+modules, no BAG error or proof debt. F105 integrated assembly still in scratch.
+
+
+**C22 — full Gaussian cofactor source (OPEN; conditional recurrence assembly remains).**
+C21 controls the literal finite reflected carrier. Its smoothing is x=N/r;
+for small r the omitted reflected tail beyond N is not automatically negligible.
+An unconditional o(1) first mean cannot be subtracted from a lower mass
+c*N^(-epsilon). Preserve the full Gaussian weight in the cofactor source instead.
+
+The actual inverse-Mellin kernel is `K(w)=exp(w^2)/w`
+(`SmoothAFEGaussianKernel.lean:31`), and the proved cutoff derivative is
+`-exp(-(log x)^2/4)/(2*sqrt(pi)*x)`
+(`HighBlockCutoffMonotone.lean:153`). F112 now proves the full cofactor mean
+`A*K(s+i*t)` for a coherent twist with finite-prefix mean A, after the same
+complex-power normalization as the sharp cofactor mean. F107 derives the literal
+cutoff's Gaussian logarithmic tail formula; F108-F111 supply the exact moment,
+real-scale limit, series-to-prefix identity and dominated convergence. The full
+source identity is proved; actual full reflected conditional covariance remains
+open.
+
+The required mode separation has a direct paper proof. For distinct nodes s_j
+with positive real parts, suppose sum_j c_j*K(s_j+i*t)=0 for all real t.
+Multiplying by product_j(s_j+z) gives the entire function
+`F(z)=sum_j c_j*exp((s_j+z)^2)*product_(k!=j)(s_k+z)`. It vanishes on the
+imaginary axis, hence everywhere by the identity theorem. Evaluation at
+z=-s_j leaves `c_j*product_(k!=j)(s_k-s_j)=0`, so every c_j=0. This proves
+full mode separation without assuming a determinant formula for Gaussian
+weights. Lean status: mode separation F106 and actual full-cofactor mean F112 proved.
+Prefix-preserving simultaneous packets are proved in F116; conditional covariance, complete AFE
+control, boundary interpolation and growing-prime orbit transfer remain open.
+
+
+**C21 / F105 FINAL — actual finite reflected target event, LEAN PROVED.**
+`SmoothAFEReflectedLocalTargetEvent.lean` (121 lines) constructs, for every
+finite family of distinct right-strip nodes, every requested original finite
+character cell, target norm bound M, tolerance rho>0 and epsilon>0, constants
+r0,c>0 such that eventually every common height tau in [5N/4,7N/4], every
+0<r<=r0 and every Euclidean target t with norm(t)<=M satisfy
+`mu(requested rotated cell intersect {norm(actual finite reflected carrier-t)<rho})
+ >= c*N^(-epsilon)`. The original phase prescription is arbitrary. The proof
+chooses H=2J(M+J)^2/epsilon, uses the actual bounded-centre event to bound the
+shifted target by M+J, applies F102, and integrates with F103. No local-law or
+covariance premise remains. The finer event/cell construction is also public.
+Final3192 exit0 warning-free; both public audits in F106scratch45046 standard-only;
+wired/index-visible (prescribed-cell theorem line82). Lint38691 exit1: ten
+unrelated unreachable modules, no BAG error/proof debt. This closes C21's
+finite random-carrier target law with arbitrary finite phase constraints.
+Full reflected tail/complement control, boundary interpolation and deterministic
+growing-prime common-height recurrence remain open; RH is not proved.
+
+
+**C22 / F106 FINAL — full Gaussian mode separation, LEAN PROVED.**
+`SmoothAFEGaussianCofactorModes.lean` (104 lines) proves that the actual kernel
+`exp(w^2)/w` has linearly independent imaginary-shift response functions at
+every finite family of distinct right-half-plane nodes. Clearing poles gives
+an entire function; the identity theorem and evaluation at each distinct pole
+force every coefficient to vanish. The corresponding mode vectors span the
+whole finite node space and admit a finite nonsingular response matrix.
+Final98667 exit0 warning-free; all four public reports in F107scratch42927
+standard-only; reused finite-evaluation exports also audited standard-only.
+Wired/index-visible (packet theorem line96); lint37972 exit1: eleven unrelated
+unreachable modules, no BAG error/proof debt. This closes the mode-separation
+part of C22. The actual full-cofactor mean and covariance remain open.
+
+
+**C22 / F107 FINAL — literal cutoff is a Gaussian log-tail, LEAN PROVED.**
+`SmoothAFECutoffGaussianTail.lean` (56 lines) proves the exact logarithmic
+derivative, upper-endpoint limit zero, and real/complex identities
+`V(exp x)=integral_(y>x) exp(-y^2/4)/(2*sqrt(pi)) dy`. The proof uses the actual
+cutoff derivative and rapid-decay source plus the nonpositive-derivative FTC.
+Final60503 exit0 warning-free; all four public reports in F108scratch1659
+standard-only; wired/index-visible (complex identity line49). Lint44494 exit1:
+eleven unrelated unreachable modules, no BAG error/proof debt. Full-cofactor
+Gaussian averaging and its mean limit remain to be identified formally.
+
+
+**C22 / F108 FINAL — exact tilted Gaussian moment, LEAN PROVED.**
+`SmoothAFELogGaussianMoment.lean` (57 lines) defines the normalized logarithmic
+Gaussian and proves complex exponential integrability, its exact moment
+`integral phi(y)*exp(s*y) dy = exp(s^2)`, and integrability of the real
+exponential majorants. Final9178 exit0 warning-free; all three public reports
+in F109scratch18329 standard-only; wired/index-visible (line28). Lint50176
+exit1: thirteen unrelated unreachable modules, no BAG error/proof debt.
+Full-cofactor Gaussian averaging and its mean limit remain open.
+
+
+**C22 / F109 FINAL — real cutoff mean and global power majorant, LEAN PROVED.**
+`SteinhausCofactorRealScale.lean` extends the actual coherent weighted cofactor
+mean from natural cutoffs to all real floor cutoffs. Boundedness of the original
+normalized sequence gives one constant C>0 bounding every prefix at x>=0 by
+C*x^Re(s). Final12304 exit0 warning-free; both public audits in F110scratch47456
+standard-only; wired/index-visible (line37). Lint36507 exit1: thirteen unrelated
+unreachable modules, no BAG error/proof debt. These close the real-scale and
+domination inputs for the full Gaussian cofactor mean.
+
+
+**C22 / F110 FINAL — full Gaussian series as prefix integral, LEAN PROVED.**
+`SmoothAFEGaussianPrefixIntegral.lean` proves the exact identity
+`sum a_n*V((n+1)/R) = integral phi(y)*sum_(n<floor(R*exp(y))) a_n dy`
+for R>0 and summable cutoff-weighted coefficient norms. Its proof identifies
+the threshold indicators and their norm integrals, justifying the interchange.
+Final25409 exit0 warning-free; public audit in F111scratch2948 standard-only;
+wired/index-visible (line31). Lint27781 exit1: thirteen unrelated unreachable
+modules, no BAG error/proof debt. The arithmetic summability discharge and
+Gaussian normalized limit are drafted, not yet claimed.
+
+
+**C22 / F111 FINAL — Gaussian prefix-limit transfer, LEAN PROVED.**
+`SmoothAFEGaussianPrefixLimit.lean` proves that a real-cutoff sharp-prefix limit
+`P(floor x)*x^(-z) -> L`, together with the all-cutoff bound
+`norm(P(floor x)) <= C*x^Re(z)`, transfers to the exact Gaussian averaged limit
+`(integral phi(y)*P(floor(R*exp y)) dy)*R^(-z) -> L*exp(z^2)`.
+The Gaussian times a real exponential dominates the integrand; all measurability,
+complex-power cancellation and moment evaluation are discharged. Final14141
+exit0 warning-free; public audit in F112scratch41648 standard-only; wired/index
+line49. Lint36045 exit1: twelve unrelated unreachable modules, no BAG proof debt.
+
+
+**C22 / F112 FINAL — actual full Gaussian cofactor mean, LEAN PROVED.**
+`SteinhausFullGaussianCofactorMean.lean` proves, for every finite prescribed
+phase assignment S,omega, real twist t and 0<Re(s)<1, the literal full-series limit
+`(sum_(n>=1) X_n(finitePrimeTwistExtension S omega t)*n^(s-1)*V(n/R))*R^(-z)
+ -> A*exp(z^2)/z`, where z=s+i*t and A is the existing explicit nonzero
+finite-prime mean. It also proves the exact arithmetic Gaussian-prefix integral
+identity. Summability and the limiting argument are discharged; no analytic
+mean premise is assumed and no reflected tail is discarded in this identity.
+Final10195 exit0 warning-free; both public audits in F113scratch47730 standard-only;
+wired/index-visible (line59). Lint94340 exit1: eleven unrelated unreachable
+modules, no BAG error/proof debt. This closes C22's actual full-cofactor mean.
+Simultaneous prefix-preserving Gaussian mode packets, actual full reflected
+conditional covariance, complete AFE/boundary control, and deterministic
+common-height growing-prime recurrence remain open. RH is not proved.
+
+
+**C22 / F113 FINAL — phase-uniform full Gaussian tail control, LEAN PROVED.**
+`SteinhausFullGaussianCofactorTail.lean` defines the literal full cofactor and
+proves summability for A>0, Re(s)<A; the error after L terms is at most
+`C*R^A*L^(Re(s)-A)/(A-Re(s))`, uniformly in every phase. Two phases whose
+characters agree through L satisfy the same bound with a doubled constant.
+Final29232 exit0 warning-free; all three public audits in F114scratch40925
+standard-only; wired/index-visible (line64). Lint49545 exit1: eleven unrelated
+unreachable modules, no BAG error/proof debt. This is deterministic tail control
+for the full cofactor; it does not yet assert a full reflected target law.
+
+
+**C22 / F114 FINAL — uniform finite-prefix preservation, LEAN PROVED.**
+`SteinhausFullGaussianPrefixStability.lean` proves that, for every node s,
+finite upper scale U and tolerance epsilon>0, some finite phase prefix B
+preserves the literal full Gaussian cofactor within epsilon simultaneously
+for every 0<R<=U and all later phase choices. Final35252 exit0 warning-free;
+public audit in F115scratch53942 standard-only; wired/index-visible (line25).
+Lint6672 exit1: ten unrelated unreachable modules, no BAG error/proof debt.
+
+
+**C22 / F115 FINAL — normalized full Gaussian modes and one block, LEAN PROVED.**
+`SteinhausFullGaussianCofactorModes.lean` proves finite-node convergence to the
+actual Gaussian Mellin mode, normalized finite-prefix stability on 1<=R<=U,
+and a prefix-preserving coherent extension realizing any one twist beyond an
+arbitrarily late block start M, with arbitrarily large M*norm(A)^2. The mode
+approximation holds at every real scale R>=M. Final97341 exit0 warning-free;
+all three public audits in F116scratch9927 standard-only; wired/index-visible
+(line99). Lint65370 exit1: eleven unrelated unreachable modules, no BAG debt.
+
+
+**C22 / F116 FINAL — simultaneous full Gaussian mode packets, LEAN PROVED.**
+`SteinhausFullGaussianModePackets.lean` constructs one extension of any finite
+phase prescription realizing any finite list of Gaussian Mellin twists on
+separated real-scale blocks [M_i,2*M_i]. Every block starts beyond a requested
+bound and has M_i*norm(A_i)^2 above any requested budget. Quantitative prefix
+preservation and a half-tolerance induction retain all earlier full responses.
+Final64207 exit0 warning-free; public audit in F117scratch3952 standard-only;
+wired/index-visible (line10). Lint4328 exit1: eleven unrelated unreachable
+modules, no BAG error/proof debt. Character-cell stability, literal full-channel
+conditional covariance and deterministic orbit transfer remain open.
+
+
+**C22 / F117 FINAL — robust full Gaussian mode lower bound, LEAN PROVED.**
+`SmoothAFEGaussianCofactorModeCoercivity.lean` chooses a finite family of actual
+Gaussian Mellin twists and positive constants epsilon,c such that every node
+coefficient vector has a selected mode whose epsilon-neighborhood retains
+pairing norm at least c times the vector norm. The inverse matrix norm and
+finite-row perturbation estimate discharge the quantitative frame bound.
+Final82716 exit0 warning-free; public audit in F118scratch9534 standard-only;
+wired/index-visible (line50). Lint28046 exit1: eleven unrelated unreachable
+modules, no BAG error/proof debt.
+
+
+**C22 / F118 FINAL — uniform full-cofactor character-cell tolerance, LEAN PROVED.**
+`SteinhausFullGaussianCharacterStability.lean` constructs a positive tolerance
+on finitely many literal characters that controls the complete Gaussian cofactor
+uniformly at every 0<R<=U, for arbitrary phase centres. Two uniform tails and
+the finite head are bounded separately; no tail is discarded or assumed small.
+Final18069 exit0 warning-free; public audit in F119scratch44644 standard-only;
+wired/index-visible (line42). Lint23486 exit1: twelve unrelated unreachable
+modules, no BAG error/proof debt.
+
+
+**C22 / F119 FINAL — simultaneous full Gaussian mode cell, LEAN PROVED.**
+`SteinhausFullGaussianModeCells.lean` proves normalized finite-node character
+stability and places all prescribed Gaussian mode blocks on one fixed
+positive-radius finite-character cell. The centre preserves the original finite
+phase assignment; every separated real-scale block retains its prescribed
+mode and arbitrary mean-weighted energy budget throughout that cell.
+Final28138 exit0 warning-free; both public audits in F120scratch92637 standard-only;
+wired/index-visible (line58). Lint84656 exit1: eleven unrelated unreachable
+modules, no BAG error/proof debt. Literal conditional Gram transfer remains open.
+
+
+**C22.1 — finite free-prime window (paper refinement; assembly OPEN).**
+At smoothing/height scale N and polynomial cutoff L>N, use free primes
+`P_N=largePrimes N Y`, retaining the finite set `S_N=primesLE L minus P_N`.
+Thus primes above N through L belong to the background. The constructed
+reciprocal blocks lie in P_N, and `card(P_N)<=pi(N)` retains the logarithmic
+variance saving from the existing prime-count bound. Under `L<Y^2`, every
+positive index through L contains at most one free prime, with exponent one;
+its remaining cofactor has only retained prime factors. The exact frozen-carrier identity is now Lean proved (F124).
+
+The existing original-law resampling and Jensen projection theorems accept
+arbitrary finite S_N, so this conditioning does not require a new probabilistic
+law. F129 now proves a uniform Gaussian cofactor absolute bound, each free channel
+norm O(N^(-1/2)), and total directional energy O(1/log N). The source covariance
+lower bound already sums over this same free window. This avoids an unnecessary
+variance estimate over every prime through L.
+
+For the background, a further required source estimate is uniform first-mean
+decay with smoothing scale N and independent polynomial cutoff L. The proved
+square-root summatory envelope and exact positive Abel-cost identity reduce it
+to a Gaussian cost bound: split at N, use the existing N^d/d head bound and
+`V(n/N)<=C*N/n` in the tail. The tail p-series then has the same N^d scale,
+independent of L. The uniform Gaussian cost and original first-mean consequence are now Lean
+proved (F126); the literal reflected/Jensen consequences are being assembled. Complete AFE/boundary control and a quantitative deterministic
+common-height return count remain required.
+
+
+**C22 / F120 FINAL — exact full Gaussian channel normalization, LEAN PROVED.**
+`SteinhausFullGaussianNormalizedChannel.lean` proves the exact common-scalar
+mode identity, its norm pairing, real cofactor-scale bounds for the existing
+reciprocal prime blocks, and
+`p^(s-1)*fullCofactor(s,N/p) = N^(s-1)*normalizedFullChannel(s,N/p)`.
+The normalization has no floor correction. Final66772 exit0 warning-free;
+all four public audits in F121scratch5212 standard-only; wired/index-visible
+(line61). Lint49627 exit1: twelve unrelated unreachable modules, no BAG debt.
+
+
+**C22 / F121 FINAL — full Gaussian source energy, LEAN PROVED.**
+`SteinhausFullGaussianChannelEnergy.lean` proves an arbitrary H*N/log N
+lower bound in every node direction throughout one fixed character cell,
+for the full Gaussian channels on the exact free window
+`largePrimes N (N/(2*K))`. The centre preserves the original finite phase
+assignment. This is full cofactor source energy; the literal finite conditional
+Gram transfer remains open. Final95681 exit0 warning-free; public audit in
+F122scratch61373 standard-only; wired/index-visible (line14). Lint24043 exit1:
+twelve unrelated unreachable modules, no BAG error/proof debt.
+
+
+**C22 / F122 FINAL — phase-uniform literal Gaussian truncation, LEAN PROVED.**
+`SteinhausFullGaussianTruncation.lean` proves literal finite cofactors converge
+to full Gaussian responses uniformly in all phases and bounded positive real
+scale ranges. The exact coherent finite-node normalization converges uniformly
+on 1<=R<=U. Final97061 exit0 warning-free; all three public audits in
+F123scratch81732 standard-only; wired/index-visible (line27). Lint82290 exit1:
+twelve unrelated unreachable modules, no BAG error/proof debt.
+
+
+**C22 / F123 FINAL — exact enlarged-cutoff reflected channel, LEAN PROVED.**
+`SmoothAFEReflectedTruncatedGaussianTransfer.lean` identifies the literal
+reflected-primal channel at independent smoothing N and polynomial cutoff L
+with the truncated Gaussian cofactor at scale N/p and cutoff L/p, after the
+exact common-height phase shift. Final89281 exit0 warning-free; public audit
+in F124scratch93161 standard-only; wired/index-visible (line12). Lint89108
+exit1: thirteen unrelated unreachable modules, no BAG error/proof debt.
+
+
+**C22.1 / F124 FINAL — literal bounded-free-window decomposition, LEAN PROVED.**
+`SteinhausFreePrimeWindow.lean` proves the exact frozen affine decomposition
+for free primes (Y,N], retaining all other primes through polynomial cutoff L,
+under Y<=N<=L and L<Y^2. Its background is the literal projection onto the
+retained primes, and every free channel is the actual length-L channel.
+Final5404 exit0 warning-free; public audit in F125scratch10167 standard-only;
+wired/index-visible (line17). Lint6240 exit1: eleven unrelated unreachable
+modules, no BAG error/proof debt.
+
+
+**C22 / F125 FINAL — literal truncated Gaussian source energy, LEAN PROVED.**
+`SteinhausTruncatedGaussianChannelEnergy.lean` proves exact finite-channel
+normalization and mode pairing, uniform fixed-cell mode stability for all
+sufficiently long cofactor truncations, and arbitrary H*N/log N directional
+energy for every polynomial cutoff L>=N*D. Smoothing N and polynomial L remain
+independent. Final56782 exit0 warning-free; all five public audits in
+F126scratch14923 standard-only; wired/index-visible (line126). Lint84030
+exit1: eleven unrelated unreachable modules, no BAG error/proof debt.
+
+
+**C22.2 — enlarged-cutoff assembly (paper proof; Lean verification in progress).**
+Keep free primes in (N/(2K),N] and retain every other prime through L.
+F125 supplies arbitrary directional source energy for every L>=N*D. The
+existing chi lower bound and exact common-height unit row phase should transfer
+this to the actual H/log N Gram floor (F127 FINAL). Gaussian monotonicity and
+the absolute Gaussian mass bound give a uniform cofactor bound over
+0<R<=2K, independently of L. Thus each actual free column is O(N^-1/2),
+and at most pi(N) free columns give total directional energy O(1/log N)
+(F129 FINAL). These constants may depend on the fixed cell and nodes.
+
+The uniform independent-cutoff Abel-cost/first-mean proof is now FINAL in F126. Exact phase transport and arbitrary
+finite-S Jensen projection then bound the actual retained background uniformly
+in L (F128 FINAL). The fixed cell can therefore retain bounded-centre mass
+without discarding an o(1) event against the rare target probability.
+
+Choose smoothing N=n^2 and polynomial length L=n^3. Eventually L>=N*D,
+L<(N/(2K))^2, and every fixed character prefix is retained (F130 FINAL).
+The original full reflected-primal tail is uniformly O(n^-q) for every q>0:
+use Gaussian tail exponent A=q+d+2 and the chi bound at height>=n^2.
+The resulting exponent is -q-1/2, stronger than required (F131 FINAL).
+This is pointwise in all phases; it requires no subtraction from rare-event
+mass. The polynomial target law, full AFE/complement and boundary control,
+and deterministic quantitative common-height return count are still open.
+Cofinal square windows must carry the full return count, not one shift each.
+
+
+**C22.1 / F126 FINAL — Gaussian mean uniform in polynomial length, LEAN PROVED.**
+`SteinhausGaussianIndependentCutoffMean.lean` proves the absolute Gaussian
+Dirichlet mass bound at smoothing N, the resulting square-root Abel cost
+C*N^(1/2-beta) for every independent cutoff L, and unconditional original
+first-mean decay normalized by that smoothing power, uniformly all L.
+Final34074 exit0 warning-free; all three public audits in F127scratch73418
+standard-only; wired/index-visible (line100). Lint25738 exit1: ten unrelated
+unreachable modules, no BAG error/proof debt.
+
+
+**C22.2 / F127 FINAL — actual enlarged-cutoff reflected Gram floor, LEAN PROVED.**
+`SmoothAFEReflectedWindowConditionalEnergy.lean` proves exact conductor and
+unit row-phase separation and arbitrary H/log N directional energy for the
+literal reflected channels at every L>=N*D. One fixed character cell works
+throughout the common-height window; the original prescribed phases survive.
+Together with F124 this is the actual conditional Gram floor when the affine
+seam holds. Final22680 exit0 warning-free; all three public audits in
+F128scratch87432 standard-only; wired/index-visible (line81). Lint50464 exit1:
+eleven unrelated unreachable modules, no BAG error/proof debt.
+
+
+**C22.2 / F128 FINAL — literal retained-background mean decay, LEAN PROVED.**
+`SmoothAFEReflectedWindowFirstMean.lean` proves exact Gaussian phase and
+reflected chi mean transport with independent cutoff L, then unconditional
+first-mean decay of the actual reflected carrier and every finite retained-prime
+projection, uniformly all L and heights above smoothing N. Final13628 exit0
+warning-free; all five public audits in F129scratch57497 standard-only;
+wired/index-visible (line128). Lint40589 exit1: eleven unrelated unreachable
+modules and two unrelated sorry lines in WeilIntegerMassAtomicRigidity;
+no BAG error/proof debt.
+
+
+**C22.2 / F129 FINAL — independent-cutoff channel upper bounds, LEAN PROVED.**
+`SmoothAFEReflectedWindowChannelUpper.lean` proves phase-uniform truncated
+cofactor bounds on every bounded real scale range, actual bounded-free-window
+channels O(N^-1/2), and their finite-node maximal-dot and total directional
+energy O(1/log N) bounds. Every estimate is uniform over all polynomial lengths
+L and the stated height window. Final3386 exit0 warning-free; all four public
+audits in F130scratch74049 standard-only; wired/index-visible (line152).
+Lint38838 exit1: twelve unrelated unreachable modules, no BAG/proof debt.
+
+
+**C22.2 / F130 FINAL — compatible square/cubic cutoff scales, LEAN PROVED.**
+`SteinhausSquareScaleWindowSeam.lean` proves that smoothing n^2 and polynomial
+cutoff n^3 eventually satisfy the long-cofactor condition n^2*D<=n^3, affine
+seam n^3<(n^2/(2K))^2, and every fixed retained-prefix bound. Final95469 exit0
+warning-free; public audit in F131scratch46365 standard-only; wired/index-visible
+(line11). Lint1867 exit1: twelve unrelated unreachable modules, no BAG debt.
+This scale choice retains the requirement of a quantitative return count in
+each selected height window; one return per square scale does not suffice.
+
+
+**C22.3 — Gaussian mode density on a disc (larger-disc formulation FINAL below).**
+Target: for a closed disc K centred at c with 0<r<Re(c), every function
+holomorphic on a neighbourhood of K is uniformly approximable on K by finite
+complex linear combinations of `exp((s+i*t)^2)/(s+i*t)`, with real t.
+This is linear-span density, not merely density of the generated algebra.
+
+Paper argument: take a continuous complex-linear functional Lambda on C(K)
+annihilating every such mode. The translated-kernel transform
+`F(w)=Lambda_s(exp((s+w)^2)/(s+w))` is holomorphic on the connected exterior
+of -K: locally, the pole denominator is uniformly separated from zero over K,
+so the kernel is holomorphic as a C(K)-valued map. F vanishes on the imaginary
+axis, hence throughout that exterior by the identity theorem. Choose a slightly
+larger disc on which f is holomorphic and its reflected boundary circle Gamma.
+Then the contour integral of `f(-w)*F(w)` is zero. Continuous linearity permits
+Lambda to commute with this continuous C(K)-valued contour integral. For each
+s in K, Cauchy's formula for
+`f(-w)*exp((s+w)^2)/(w+s)` gives `2*pi*i*f(s)`: the numerator at w=-s is f(s).
+Thus Lambda(f)=0. Complex Hahn-Banach separation puts f in the closed mode span.
+The Banach-valued holomorphy, connected-exterior, contour-interchange and
+linear separation steps are now checked in F146-F151, in the exact
+larger-disc formulation recorded below.
+
+This suggests a route to the random holomorphic target event: prove locally
+uniform full-cofactor mean convergence, preserve mode packets in the C(K) norm,
+and use bounded-background families on a larger disc plus tilted free-channel
+variance control on that disc. Pointwise F112 convergence alone is insufficient.
+A possible compact-uniform upgrade uses Cauchy's formula on a larger circle,
+pointwise convergence there, and a uniform absolute Gaussian majorant across
+its abscissa interval. The literal complementary AFE edge and deterministic
+common-height return count remain separate open inputs.
+
+Source audit: deep Gaussian-density search returned no ready theorem closing
+this statement; finite-node Gaussian mode separation is available. Read
+HTGeometry/DiscPolynomialDensity and RungeInterfaceDischarge: useful nearby
+infrastructure, but neither supplies this Gaussian linear-span theorem.
+Read CauchyKernelDensityVanishing lines1-190: its real-line support requires
+two half-plane controls and does not replace the compact-disc argument.
+
+
+**C22.2 / F131 FINAL — full reflected tail at square/cubic scales, LEAN PROVED.**
+`SmoothAFEFullReflectedCubicTail.lean` identifies the full reflected-primal
+series and its literal finite carrier, then proves a pointwise all-phase
+C*n^-q tail for every q>0 at smoothing n^2 and cutoff n^3, uniformly over
+heights at least n^2. Final9758 exit0 warning-free; all three public audits
+in F132scratch36120 standard-only; wired/index-visible (line43). Lint46946
+exit1: thirteen unrelated unreachable modules, no BAG/proof debt.
+
+
+**C22.2 / F132 FINAL — original conditional free-window target law, LEAN PROVED.**
+`SteinhausFrozenWindowLocalTarget.lean` proves prefix retention, the exact
+finite-node frozen decomposition with literal retained background, and the
+original conditional local-target probability bound. Final73721 exit0
+warning-free; all three public axiom reports in audit58613 standard-only
+(the separate auxiliary API witnesses in that scratch failed universe inference).
+Wired/index-visible (line56). Lint47831 exit1: twelve unrelated unreachable
+modules, no BAG/proof debt. Arithmetic bounds and retained-event integration
+are still being assembled.
+
+
+**C22.4 — conductor-uniform literal complement (paper candidate; NOT LEAN PROVED).**
+The existing coupled deep edge Re(w)=d-4 fixes the chi numerator on Re(s+w)=-7/2.
+Its sharp fourth-power height bound yields an explicit factor
+`C(d)*x^(d-4)*(1+|tau|)^4*(n+1)^(-9/2)` for the literal deep coefficient.
+The published local lemma hides x inside its constant; its proof exposes x
+exactly and permits a new bound with the constant chosen before x.
+Coefficient-by-coefficient contour identification and reflection give
+`complement(d,tau,x,n) = -chi(right(d,tau))*deep(d,-tau,x,n)`.
+For x=N and N<=tau<=2N, the chi factor is O(N^-d); hence
+`N^-d*N^(d-4)*(1+tau)^4` is bounded uniformly in N. This supplies a summable
+`C(d)*(n+1)^(-9/2)` envelope for the actual complement, preserving every term.
+Consequently a fixed sufficiently long character prefix controls the entire
+complement uniformly in this window, and full-primal targets can be translated
+by its bounded centre and the actual pole term. No deterministic orbit count follows.
+
+Current source lemmas for this deep edge assume 0<d<=1/4. Extending their
+analytic/contour estimates to all 0<d<1/2, or explicitly restricting the resulting
+theorem, is mandatory; that wider range is not supplied by the existing statement.
+Needed Lean work: expose x before the constant, exact reflected coefficient
+identity, conductor cancellation, all-phase summability/tail and prefix control,
+and uniform pole bound. No new complement Lean leaf has been written yet.
+
+
+**C22.4 / F138 FINAL — explicit complement smoothing scale, LEAN PROVED.**
+`SmoothAFEReflectedComplementScale.lean` puts x^(d-4) outside the deep-coefficient
+constant and proves the exact original complement = minus right chi times the
+literal deep coefficient. Both statements retain 0<d<=1/4. Final60915 exit0
+warning-free; both public audits in F139scratch20096 standard-only; wired/index10.
+Lint35368 exit1: eleven unrelated unreachable modules, no BAG/proof debt.
+
+
+**C22.4 / F139 FINAL — uniform literal complement envelope, LEAN PROVED.**
+`SmoothAFEReflectedComplementBound.lean` proves `C*(n+1)^(-9/2)` for the actual
+complementary coefficient, for every real smoothing N>=1 and N<=tau<=2N,
+with one constant independent of N,tau. Restriction 0<d<=1/4 retained.
+Final58244 exit0 warning-free; public audit F140scratch61083 standard-only;
+wired/index10. Lint13464 exit1: eleven unrelated unreachable modules, no BAG debt.
+
+
+**C22.4 / F140 FINAL — full reciprocal-phase complement and tail, LEAN PROVED.**
+`SmoothAFEReflectedComplementTail.lean` proves absolute admission, a uniform
+all-phase full-series bound, and a cutoff tail at most `C*L^(-7/2)/(7/2)`
+throughout N>=1,N<=tau<=2N, for 0<d<=1/4. The reciprocal character is retained.
+Final9884 exit0 warning-free; all three public audits in F141scratch50767
+standard-only; wired/index48. Lint18052 exit1: thirteen unrelated unreachable
+modules, no BAG/proof debt.
+
+
+**C22.4a — full strict-strip complement extension (paper audit; Lean pending).**
+The d<=1/4 restriction in the coupled deep-edge proof is not analytically
+necessary. Source audit of the pointwise bound, integrability, horizontal
+decay and coefficient identification finds only these upper-range uses:
+`d-4 != 0`, `d-4 <= -1`, and `0 < 1/2-d`. They all hold for 0<d<1/2.
+The shifted numerator stays exactly on Re=-7/2. Along the connecting rectangle
+its real part stays in [-7/2,-1/2], so the existing polynomial chi majorant
+and holomorphy argument remain applicable. Both horizontal edges retain
+Gaussian decay, and the base parameter has real part 1/2-d in (0,1),
+as required by the original -1-edge integrability theorem.
+Thus the same coefficient-level contour proof and conductor cancellation
+should supply C22.4 throughout 0<d<1/2. All broadened statements must compile
+and pass axiom audits before changing the verified range of F138-F141.
+
+
+**C22.4 / F141 FINAL — fixed-prefix full-complement stability, LEAN PROVED.**
+`SmoothAFEReflectedComplementCharacterStability.lean` proves that one finite
+character prefix and one positive tolerance control the whole reciprocal-phase
+complement uniformly over N>=1,N<=tau<=2N, for 0<d<=1/4. Final74565 exit0
+warning-free; public audit F142scratch78055 standard-only (that scratch's
+separate pole proof then failed one redundant dsimp). Wired/index16.
+Lint83875 exit1: twelve unrelated unreachable modules, no BAG/proof debt.
+
+**C22.4 / F142 FINAL — actual reflected pole bound, LEAN PROVED.**
+`SmoothAFEReflectedPoleBound.lean` keeps the literal shifted-pole correction
+and bounds it uniformly for 0<d<1/2, N>=1 and tau>=N. The denominator
+|1-s_left|>=tau cancels the smoothing growth after the actual chi factor.
+Final6115 exit0 warning-free; public audit F133scratch5018 standard-only
+(the independent F133 proof errors do not affect that report). Exact lexical
+index1; lint88102 reports eleven unrelated unreachable modules, no BAG debt.
+This supplies a bounded target translation, not a deterministic return count.
+
+**C22.5 — complete reflected AFE finite-node target law (paper assembly; now FINAL below).**
+Use the full primal law F137, keeping the original complement
+with reciprocal character and the actual pole. For each fixed node j, F141
+chooses a prefix B_j and tolerance delta_j making the complement oscillation
+less than rho/(2*(J+1)); F140 and F142 bound its centre and pole uniformly.
+Refine the requested prefix to max(P,B_j over j), and its tolerance to the
+minimum of the requested tolerance and all delta_j. The centre is the same
+rotated prescribed phase omega(-tau) used by F137. Apply F137 at radius rho/2
+to the target t minus the complement at that centre plus the actual pole.
+This translated target stays in one fixed bounded ball independently of
+smoothing and tau. On the refined cell, the complement-error vector has norm
+less than rho/2, by summing coordinate squares; the exact pole cancels.
+Thus the original product measure of the full-AFE finite-node target event
+has the same c*(n^2)^(-epsilon) lower bound for all sufficiently large n.
+At the zero phase assignment, the literal full AFE equals zeta by
+`riemannZeta_rightDisplaced_eq_reflectedPrimal_add_complement`; this identity
+alone supplies no probability-to-orbit transfer. The verified complement
+range is the full 0<d<1/2 after C22.4a. No deterministic count,
+holomorphic boundary event, or RH consequence is claimed here.
+
+**C22.2 / F133 FINAL — all-retained bounded centres, LEAN PROVED.**
+`SmoothAFEReflectedWindowBoundedCentreEvent.lean` proves measurability and
+retained-coordinate invariance of the actual background event, its original
+Markov cost, uniform summed first-mean decay for every polynomial cutoff and
+retained prime set, and half-mass retention for any fixed-mass event.
+Final3524 exit0 warning-free; all five public audits F134scratch91589
+standard-only; exact lexical index7; lint78882 eleven unrelated unreachable
+modules, no BAG proof debt. This closes the retained-background selection
+step at independent cutoff; the complete target/count assembly remains open.
+
+**C22.2 / F134 FINAL — retained covariance-and-centre event, LEAN PROVED.**
+`SmoothAFEReflectedWindowCovarianceCentreEvent.lean` constructs one measurable
+retained-coordinate event of fixed positive original mass, inside any
+prescribed refinement of the rotated character cell. It simultaneously bounds
+all literal retained centres and supplies the actual H/log(N) Gram floor,
+uniformly for every L>=N*D with L>=N and common height in [5N/4,7N/4].
+Final83451 exit0 warning-free after rebuilding one existing cache dependency;
+public audit F135scratch27878 standard-only. Exact index1; lint47136 eleven
+unrelated unreachable modules, no BAG proof debt. No vertical count inferred.
+
+**C22 transfer obligation — moving actual coefficients and the physical phase.**
+The finite-node random law is pointwise in common height: for each tau in the
+conductor window, the original product measure of E(N,tau) is bounded below.
+The arithmetic producer instead needs a lower bound for the height set
+{tau : zeroPhase belongs to E(N,tau)}, followed by boundary zero transfer and
+distinct-zero counting. Integrating the product-law lower bound over tau
+only controls an average over phase assignments; it does not select the
+physical zero phase. Moreover, E(N,tau) includes the actual varying chi and
+complement coefficients, so fixed-target torus equidistribution cannot be
+applied without deriving the precise transport and quantitative error.
+F133-F145 and the C22.4a range extension are ingredients for this obligation,
+not its discharge. Fixed-smoothing long-time limits do not preserve the
+conductor-sized scaling used in their covariance and complement estimates.
+
+**C22.2 / F135 FINAL — independent-cutoff conditional target cost, LEAN PROVED.**
+`SmoothAFEReflectedWindowConditionalLocalTarget.lean` proves the actual frozen
+carrier target probability is at least (1/4)*N^(-2*J*B^2/H), for every compatible
+independent cutoff L, whenever its actual retained-shifted target has norm<=B
+and its actual Gram matrix has floor H/log(N). The small-bias and variance
+conditions follow from the unconditional column and energy estimates.
+Final57349 exit0 with no errors/warnings (one informational ring suggestion);
+public audit F136scratch78538 standard-only. Exact index1; lint63493 twelve
+unrelated unreachable modules, no BAG proof debt. This is conditional on the
+explicit Gram event already constructed by F134, not an assumed producer.
+
+**C22.2 / F136 FINAL — original independent-cutoff target law, LEAN PROVED.**
+`SmoothAFEReflectedWindowLocalTargetEvent.lean` integrates the actual
+conditional law over the fixed-mass retained event. Every prescribed finite
+character cell supports every bounded finite-node target with original
+probability >=c*N^(-epsilon), for any fixed epsilon>0, uniformly over common
+heights and all compatible independent cutoffs L>=N*D, N<=L<floor(N/(2K))^2.
+Final51511 exit0 warning-free; both public audits F137scratch61827
+standard-only (that scratch has an independent final set-membership
+normalization error). Exact index2; lint7431 thirteen unrelated unreachable
+modules, no BAG proof debt. Full-series and deterministic-count steps remain.
+
+**C22.2 / F137 FINAL — literal full-primal target law, LEAN PROVED.**
+`SmoothAFEFullReflectedLocalTarget.lean` combines the uniform all-phase cubic
+tail at square smoothing with the independent-cutoff original target law.
+For every prescribed finite character cell, every bounded finite-node target
+and every epsilon>0, its full reflected-primal target event has original
+probability >=c*(n^2)^(-epsilon), uniformly over tau in [5*n^2/4,7*n^2/4]
+for all sufficiently large n. No subtraction of a tail exceptional event
+is used. Final60504 exit0 warning-free; both public audits F143scratch62120
+standard-only; exact index3; lint41466 twelve unrelated unreachable modules,
+no BAG debt. C22.2 is closed for the full random primal. The complete AFE,
+holomorphic boundary target, and deterministic physical-height count remain open.
+
+**C22.3a — compact Gaussian kernel holomorphy (paper step; Lean pending).**
+On a plane compact K, write Q(w)=coord_K+w*1 in C(K,C). Off -K, the existing
+compact resolvent inverse gives Q(w)^(-1)=-resolventInv(K,-w). Therefore
+exp(Q(w)^2)*(-resolventInv(K,-w)) evaluates exactly to exp((z+w)^2)/(z+w).
+Banach-algebra exponential is entire; the existing resolvent derivative and
+composition/product rules make this C(K,C)-valued map holomorphic off -K.
+Every continuous complex functional composed with it is holomorphic there.
+This verifies the analytic-transform input of C22.3 once formalized; identity
+continuation, weighted Cauchy reproduction, and annihilator separation still
+remain. Reuse compact-resolvent infrastructure, with no heartbeat increases.
+
+**C22.4a / F143 and F138-F141 FULL-STRIP FINAL — LEAN PROVED.**
+`SmoothAFEReflectedDeepFullStrip.lean` proves the deep-line norm bound,
+absolute integrability, horizontal contour decay, and exact identification
+with the original reflected coefficient throughout 0<d<1/2. Final88365 exit0
+warning-free; index4; lint94476 twelve unrelated unreachable modules.
+The four dependent complement leaves now use that exact wider range:
+explicit smoothing scale (final76251), conductor coefficient envelope
+(final47389), full reciprocal-phase series and tail (final66505), and fixed
+character-prefix stability (final71233). Every final build exited0 without
+warnings. The combined lexical index has9 declarations; lint11731 reports
+twelve unrelated unreachable modules, no BAG debt. All eleven public axiom
+reports in F144scratch82466 use only propext/Classical.choice/Quot.sound;
+that scratch's separate vector-expression type-inference error does not
+affect these imported reports. This supersedes the earlier quarter-strip
+restriction. Complete-AFE finite-node assembly and the boundary/count gates
+remain open.
+
+**C22.3b — exterior continuation geometry (paper step; Lean pending).**
+For r>=0, the exterior of closedBall(c,r) is the continuous image of C\{0}
+under z |-> c+(1+r/|z|)*z. For a point w in the exterior, its preimage is
+(1-r/|w-c|)*(w-c), with norm |w-c|-r>0. Thus the exterior is path connected.
+An analytic scalar transform vanishing at every it has zeros at i/(n+1)
+approaching0 through nonzero points; if0 belongs to its connected domain,
+the identity theorem kills it on that domain. For the reflected right-half-
+plane disc,0 lies outside it. This supplies the continuation part of C22.3
+once formalized. Weighted Cauchy reproduction and annihilator separation
+still remain; no full Gaussian density theorem is claimed by these steps.
+
+**C22.5 / F144 FINAL — exact complete AFE and bounded correction, LEAN PROVED.**
+`SmoothAFEFullReflectedAFE.lean` defines the literal full reflected carrier
+with its reciprocal-phase complement and unchanged pole. At zero phase it
+is exactly zeta, node by node. The whole finite-node complementary correction
+has a conductor-uniform norm bound and fixed finite-character tolerance,
+throughout 0<d_j<1/2. Final88884 exit0 warning-free; all four public audits
+F145scratch58809 standard-only. Exact index8; lint86770 ten unrelated
+unreachable modules, no BAG proof debt. Its target-event assembly is F145;
+physical-phase equality alone is not an orbit count.
+
+**C22.3c — annihilator continuation outside the reflected disc (paper assembly).**
+For K=closedBall(c,r), r>=0 and r<Re(c), its reflected complement is exactly
+the exterior of closedBall(-c,r). The origin belongs to this exterior since
+r<Re(c)<=|c|. Combining C22.3a and C22.3b, any continuous complex functional
+annihilating all imaginary translates of the Gaussian Cauchy kernel has zero
+transform everywhere outside -K. This is the precise input for the weighted
+Cauchy reproduction argument, not yet the full density or recurrence result.
+
+**C22.3a / F146 FINAL — compact Gaussian kernel holomorphy, LEAN PROVED.**
+`SmoothAFECompactGaussianKernel.lean` identifies the exact translated Gaussian
+Cauchy kernel in C(K,C), proves its Banach-valued differentiability off -K,
+and proves analyticity of every continuous functional transform. Final89700
+exit0 warning-free; all three public audits F147scratch26928 standard-only.
+The latter's separate rank/sequence errors do not affect those reports.
+Exact index5; lint73747 thirteen unrelated unreachable modules, no BAG debt.
+Exterior continuation, Cauchy reproduction and full mode density remain open.
+
+**C22.3b / F147 FINAL — exterior geometry and analytic uniqueness, LEAN PROVED.**
+`SmoothAFECompactGaussianExterior.lean` proves path connectedness of every
+closed-disc exterior with nonnegative radius, and the imaginary-axis identity
+principle on a connected domain containing zero. Final60365 exit0 warning-free;
+both public audits F148scratch90507 standard-only. That scratch's separate
+not_le projection error does not affect these reports. Exact index2;
+lint65056 thirteen unrelated unreachable modules, no BAG proof debt.
+
+**C22.3c / F148 FINAL — Gaussian annihilator exterior continuation, LEAN PROVED.**
+`SmoothAFECompactGaussianAnnihilator.lean` proves the transform vanishes
+everywhere outside the reflected right-half-plane disc when it annihilates
+the imaginary Gaussian modes. Final38137 exit0 warning-free; public audit
+F149scratch85072 standard-only; exact index1; lint82712 twelve unrelated
+unreachable modules, no BAG proof debt. Cauchy reproduction remains next.
+
+**C22.3d / F149 FINAL — Gaussian Cauchy reproduction, LEAN PROVED.**
+`SmoothAFECompactGaussianCauchy.lean` proves exact scalar reproduction of
+holomorphic values by the Gaussian Cauchy contour and commutation of compact-
+carrier contour integration with any continuous complex functional.
+Final57261 exit0 warning-free; both public audits F150scratch77062 standard-only
+(that scratch's separate zero-integral simplification error does not affect
+them). Exact index2; lint8363 twelve unrelated unreachable modules, no BAG debt.
+
+**C22.3d / F150 FINAL — holomorphic target annihilation, LEAN PROVED.**
+`SmoothAFECompactGaussianHolomorphicAnnihilator.lean` proves that every
+continuous complex functional annihilating the imaginary Gaussian modes
+annihilates the restriction of every function holomorphic on a larger disc.
+It constructs the continuous C(K)-valued contour, checks evaluation against
+the exact scalar reproduction, and cancels the nonzero 2*pi*i factor.
+Final6950 exit0 warning-free; public audit F151scratch29100 standard-only
+(separate complexification/coercion errors in that scratch do not affect it).
+Exact index1; lint91139 twelve unrelated unreachable modules, no BAG debt.
+
+**C22.3e / F151 FINAL — finite linear Gaussian mode approximation, LEAN PROVED.**
+`SmoothAFECompactGaussianDensity.lean` puts every target holomorphic on a
+larger disc in the closed complex linear span of imaginary Gaussian Cauchy
+modes on the smaller right-half-plane disc. Its second theorem supplies
+explicit finitely supported complex coefficients with arbitrary positive
+supremum-norm accuracy. This closes the larger-disc form of C22.3 without
+substituting a generated algebra. Final36112 exit0 warning-free; both public
+audits F152scratch90732 standard-only; exact index2; lint17461 eleven unrelated
+unreachable modules, no BAG proof debt. Compact-uniform actual cofactor
+convergence, the random holomorphic target event, and deterministic counts
+remain open.
+
+**C22.5 / F145 FINAL — complete reflected-AFE finite-node target law, LEAN PROVED.**
+`SmoothAFEFullReflectedAFELocalTarget.lean` proves that the literal full AFE
+hits every bounded finite-node target in every prescribed finite phase cell
+with original probability at least c*(n^2)^(-epsilon), for each epsilon>0,
+uniformly across the conductor window and full strict strip 0<d_j<1/2.
+The exact reciprocal complement and pole remain in the carrier. Final6325
+exit0 warning-free; public audit F146scratch49838 standard-only. The latter
+scratch's unrelated missing constant argument in its kernel proof does not
+affect this imported report. Exact index1; lint81066 eleven unrelated
+unreachable modules, no BAG proof debt. C22.5 is closed at finite nodes;
+holomorphic boundary control and physical common-height counting remain open.
+
+**C22.3d — weighted Gaussian Cauchy reproduction (paper step).**
+For z in closedBall(c,r), choose R>r on whose closed disc f is holomorphic.
+The function w |-> f(-w)*exp((z+w)^2) is holomorphic on closedBall(-c,R).
+Its value at the interior point -z is f(z), so Cauchy's formula yields
+the exact integral of f(-w)*exp((z+w)^2)/(z+w) as 2*pi*i*f(z).
+The corresponding C(K)-valued contour integral exists by continuity on the
+outer circle; evaluation and any continuous complex functional commute with
+it via their interval-integral commutation theorem. Thus an annihilating
+functional vanishes on f restricted to K. Formalization pending.
+
+**C22.3e — closed complex span separation (paper step).**
+If the restriction g of f is outside the closed complex Gaussian mode span,
+real Hahn-Banach separation supplies a continuous real functional l vanishing
+on that closed subspace and nonzero at g. Its complexification is
+L(x)=l(x)-i*l(i*x). Because the subspace is complex-linear, both terms vanish
+on every mode, whereas Re(L(g))=l(g) is nonzero. C22.3d forces L(g)=0,
+a contradiction. Membership in the closed span gives arbitrarily small
+supremum-norm error from finite complex mode sums. No generated algebra or
+closure under products is substituted for the required linear span.
+
+**C22.6 — compact-uniform actual cofactor modes (paper programme).**
+First establish that the literal full Gaussian cofactor is entire in s for
+every positive fixed scale R and every phase. On Re(s)<b, each summand's
+norm is dominated by its norm at the real abscissa b, since n>=1. Existing
+Gaussian absolute summability at b supplies the local uniform majorant.
+The normalized function F_R(s)=cofactor(s,R)*R^(-(s+i*t)) is then entire.
+
+For 0<a<=Re(s)<=b<1, its norm is bounded by the sum of the positive real
+normalized cofactors at a and b: termwise use q^Re(s)<=q^a+q^b with q=n/R.
+The two endpoint sums have finite limits by the existing scalar mean theorem
+at the untwisted zero character, hence give an eventual uniform bound in s.
+The existing pointwise coherent-twist limit is the Gaussian mode. A compact
+Cauchy/dominated-convergence or existing Vitali argument should upgrade it
+to uniform convergence on smaller discs. Holomorphy F152, endpoint-majorant
+F154 and the actual compact-uniform limit F155 are now FINAL. Whole-disc
+mode packets and their quantitative holomorphic target law remain next.
+
+Source audit: deep search50012 returned partial results (inventory63647
+complete, compiler metadata largely pending/stale, semantics unmeasured).
+All20 candidate lemmas,20 source arguments,one proof idea andone ingredient
+set inspected. They supply actual cofactor summability/tails and scalar
+means, not this compact-uniform conclusion. Existing VitaliConvergence
+supplies a sequence normal-family theorem once actual bounds are discharged.
+
+**C22.6 / F152 FINAL — actual full-cofactor holomorphy, LEAN PROVED.**
+`SteinhausFullGaussianHolomorphy.lean` proves the literal infinite Gaussian
+cofactor is entire in s for every positive fixed scale and every phase,
+including the actual coherent normalization by R^(-(s+i*t)). The summable
+majorant is an actual real-abscissa coefficient sequence. Final96414 exit0
+warning-free; all three public audits F153scratch4457 standard-only (its
+separate cast/limit projection errors do not affect these reports).
+Exact index3; lint15695 ten unrelated unreachable modules, no BAG proof debt.
+
+**C22.6a — actual real-scale compact convergence (paper assembly).**
+Choose a larger disc strictly inside 0<Re(s)<1. The two-endpoint envelope
+is uniform on this whole disc for all scales above one threshold R0.
+For any real scale sequence tending to infinity, replace finitely many
+small scales by max(R_n,R0). The resulting holomorphic family is bounded
+on the disc and has the actual coherent Gaussian mode as its pointwise
+limit there. Existing Vitali identification gives locally uniform convergence,
+hence uniform convergence on the smaller closed disc. The sequential
+criterion for uniform convergence over the countably generated real atTop
+filter gives the full real-scale limit; no integer-only limit is substituted.
+This assembly remains pending the exact envelope and Lean API checks.
+
+**C22.6 / F153 FINAL — actual positive coefficient mass, LEAN PROVED.**
+`SteinhausFullGaussianAbsoluteMass.lean` defines the normalized absolute
+coefficient mass, proves summability of its exact positive terms, identifies
+it with the real zero-phase cofactor, proves its finite scalar limit for
+0<sigma<1, and bounds every normalized phase/twist by that mass.
+Final63402 exit0 warning-free; all four public audits F154scratch51282
+standard-only (its separate cast-rewrite ordering error does not affect them).
+Exact index7; lint74376 eleven unrelated unreachable modules, no BAG debt.
+
+**C22.6 / F154 FINAL — uniform endpoint envelope, LEAN PROVED.**
+`SteinhausFullGaussianEndpointEnvelope.lean` proves the exact positive-mass
+interpolation inequality and one eventual bound for the literal normalized
+cofactor throughout any closed abscissa band inside (0,1), uniformly over all
+imaginary parts, phases and coherent twists. Final53431 exit0 warning-free;
+both public audits F155scratch73659 standard-only (separate filter-elaboration
+errors in that scratch do not affect these reports). Exact index4;
+lint95650 ten unrelated unreachable modules, no BAG proof debt.
+
+**C22.6b — full-cofactor stability across an abscissa half-plane (paper step).**
+The existing actual Gaussian tail bound has one constant for all Re(s)<A.
+Fix b and A=|b|+2. For Re(s)<=b and L>=1, compare L^(Re(s)-A) to L^(b-A)
+and A-Re(s) to A-b. For 0<R<=U this gives the common tail bound
+C*U^A*L^(b-A)/(A-b), tending to zero as L grows. Thus one cutoff works for
+all spectral points in that half-plane and all phases. The finite head is
+uniformly continuous in its characters because each coefficient norm is
+bounded by its value at b and the cutoff norm is at most1. Two small tails
+plus this finite head give one character tolerance for the entire half-plane
+and every positive scale below U. This preserves a whole-disc mode packet,
+not merely a finite node list. Formalization pending.
+
+**C22.6a / F155 FINAL — actual compact-uniform coherent mean, LEAN PROVED.**
+`SteinhausFullGaussianCompactMean.lean` proves the exact coherent Gaussian
+cofactor mean converges uniformly on every smaller closed disc inside the
+open unit strip, along the full real smoothing-scale filter. The finite
+prescribed prefix and its actual scalar remain unchanged. Final60001 exit0
+warning-free; public audit F156scratch93190 standard-only, including the
+existing Vitali dependency; exact index1; lint17447 twelve unrelated
+unreachable modules, no BAG debt. This closes C22.6a. Whole-disc mode packets
+and the random holomorphic target event still remain before physical counts.
+
+**C22.6c — normalized compact mode blocks (paper assembly).**
+Divide the exact compact coherent limit by its nonzero finite-prefix mean A.
+This yields exp((s+i*t)^2)/(s+i*t) uniformly on the disc. The convergence
+threshold can be enlarged so M>=B and M*|A|^2>=K for any prescribed budget K.
+For 1<=R<=U and Re(s)>=0, the norm of R^(-(s+i*t)) is R^(-Re(s))<=1.
+Thus the uniform character tolerance from C22.6b, tightened by |A^-1|+1,
+preserves the normalized mode on the entire disc. These are the exact
+single-block inputs for the existing separated-block induction, now with
+supremum-norm accuracy. Formalization pending.
+
+**C22.6b / F156 FINAL — whole-half-plane cofactor stability, LEAN PROVED.**
+`SteinhausFullGaussianCompactStability.lean` proves one cutoff controls the
+actual full Gaussian tails throughout Re(s)<=b, at every bounded positive
+scale and in every phase. One finite-character tolerance then preserves the
+full cofactor over that whole half-plane and scale range. Final7973 exit0
+warning-free; both public audits F157scratch60205 standard-only (its separate
+associativity-rewrite error does not affect them). Exact index2;
+lint89011 ten unrelated unreachable modules, no BAG proof debt.
+
+**C22.6d — simultaneous whole-disc mode packets (paper assembly).**
+Repeat the existing finite-node separated-block induction with whole-disc
+error bounds. At each step use half the remaining tolerance for old blocks
+and half for the new mode. Freeze every old block's finite character prefix
+before choosing the next coherent extension; exact phase agreement gives
+exact character agreement via the existing prime-factor congruence theorem.
+Choose the new lower scale beyond twice every prior scale, retaining every
+mean-weighted budget. The induction preserves the original prescribed prefix
+and realizes the entire finite mode list uniformly on the disc. Lean pending.
+
+**C22.6c / F157 FINAL — normalized compact mode blocks, LEAN PROVED.**
+`SteinhausFullGaussianCompactModes.lean` defines the exact scalar normalized
+response, proves whole-disc convergence to its Gaussian mode, constructs a
+prefix-preserving block with any minimum scale and mean-weighted length
+budget, and gives a finite-character tolerance preserving that normalized
+response across its entire bounded scale interval and abscissa band.
+Final84241 exit0 warning-free; all three public audits F158scratch5466
+standard-only; exact index5; lint80535 ten unrelated unreachable modules,
+no BAG proof debt. The simultaneous packet/cell and target-event assembly
+remain separate steps.
+
+**C22.6e — one finite character cell for all compact mode blocks (paper assembly).**
+Construct the separated packet with half the target error. Each block has a
+whole-disc normalized character tolerance on its bounded scale interval.
+Take the minimum of the finitely many positive tolerances and one prefix
+containing every individual prefix, all 2*M_i and the prescribed lower bound.
+Every phase in that same cell then approximates every mode on its entire
+scale block and whole disc, by the triangle inequality. The original
+prescribed phase coordinates and every mean-weighted budget remain intact.
+The existing finite-character cell theorem gives positive original mass;
+this does not yet construct a tilted holomorphic target event or height count.
+
+
+**C22.6d / F158 FINAL — simultaneous compact-disc mode packets, LEAN PROVED.**
+`SteinhausFullGaussianCompactPackets.lean` proves exact-prefix stability and
+constructs one phase assignment realizing any finite list of Gaussian modes
+on separated scale blocks, uniformly on the whole disc, preserving the
+original prefix and arbitrary mean-weighted budgets. Final59786 exit0 clean;
+both public audits F159scratch56920 standard-only. Its separate Icc ambiguity
+was in the uncompiled successor. Exact index2; lint66638 eleven unrelated
+unreachable modules, no BAG proof debt. Common-cell and target-event assembly
+remain separate obligations.
+
+
+**C22.6f — compact-uniform literal truncation (paper assembly).**
+For nonzero scalar A and 1<=R<=U, 0<=Re(s)<=b, the coherent normalizer
+R^(-(s+it)) has norm at most one. Apply F156's whole-half-plane tail with
+absolute error epsilon*|A|; division by A then gives normalized error less
+than epsilon, uniformly in every phase and every cutoff above one fixed C.
+Apply F159 with half the final tolerance and choose one such C for each of
+the finitely many mode blocks. The sum of those cutoffs works for every
+block, every phase in the same character cell, every point on the disc and
+every later cutoff. Triangle inequality transfers the Gaussian mode packet
+to the literal truncated cofactors. This establishes a coefficient-faithful
+compact approximation step, not yet a probability or physical-height count.
+
+**C22.7 — direct compact Gaussian synthesis (paper candidate, obligations explicit).**
+Write the literal prime channel at s+i*tau, R=N/p, as the common row
+lambda(s)=sqrt(N)*chi(s+i*tau)*N^(s-1) times
+alpha_p=(R/sqrt(N))*A*R^(it)*p^(i*tau) times the normalized truncated
+cofactor mode. This is an exact identity, with |alpha_p|=R*|A|/sqrt(N).
+For p in a reciprocal block, M<=R<2M and the proved prime count gives
+E=sum_p|alpha_p|^2 >= M*|A|^2/(4*log N). The scalar bias
+mu_p=gamma*conj(alpha_p)/E satisfies sum_p mu_p*alpha_p=gamma and
+sum_p|mu_p|^2=|gamma|^2/E. Moreover mu_p*alpha_p is gamma times a positive
+partition of unity. A whole-disc mode error eta therefore contributes at
+most |gamma|*eta, with no inverse-frame loss. The maximal bias tends to zero
+for fixed blocks, since |alpha_p|<=2M*|A|/sqrt(N) and E has the preceding
+lower bound. Disjoint reciprocal blocks synthesize a finite Gaussian linear
+combination with total cost at most sum_i 4|gamma_i|^2*log N/(M_i|A_i|^2).
+Arbitrary mean-weighted budgets make this coefficient of log N arbitrarily
+small. These algebraic and prime-block estimates still need Lean assembly.
+
+Remaining analytic obligations are uniform holomorphic control of the row
+lambda and its inverse, bounded-centre selection and tilted variance on a
+larger disc, and a finite mode catalogue for the normalized varying target
+family chosen before the phase cell. None follows from finite-node target
+laws alone. Even a completed random holomorphic target probability law would
+leave the deterministic common-height quantitative return count open.
+
+
+**C22.6e / F159 FINAL — one common compact mode cell, LEAN PROVED.**
+`SteinhausFullGaussianCompactModeCells.lean` constructs one finite character
+cell preserving all prescribed modes on their separated scale blocks and
+throughout the closed disc, retaining original phase coordinates and every
+mean-weighted budget. Final11287 exit0 warning-free; public audit
+F160scratch27518 standard-only; exact index1; lint84044 ten unrelated
+unreachable modules, no BAG debt. This closes the common-cell step.
+
+**C22.8 — normalize before compact fluctuation control (paper candidate).**
+The exact C22.7 row factor should also remove chi from the random fluctuation
+estimate. A normalized literal channel is (R/sqrt(N))*R^(-s) times its
+truncated cofactor, up to a unit prime phase. On the whole free window
+N/(2K)<p<=N, one has 1<=R<2K. F156's half-plane tail and a fixed finite
+head give a bound for every literal cofactor truncation, uniformly in phase,
+cutoff, R<=2K and Re(s)<=b; the head is bounded by the positive real-b
+coefficients because the Gaussian cutoff has norm at most one. The coherent
+normalizer has norm at most one when Re(s)>=0. Thus every normalized column
+is O(N^(-1/2)) uniformly on the disc and its larger boundary. The prime-count
+upper bound gives total pointwise variance O(1/log N). A Cauchy boundary
+inequality should then turn this into a compact supremum fluctuation bound
+under the actual finite affine tilted law. This still needs an explicit
+measurable envelope and integral interchange; no uncountable supremum or
+uniform-in-s estimate is being assumed from the finite-node law.
+
+
+**C22.6f / F160 FINAL — literal compact truncated mode packets, LEAN PROVED.**
+`SteinhausFullGaussianCompactTruncation.lean` defines the exact scalar
+truncated normalization, proves a cutoff-uniform normalized tail across the
+whole abscissa band, and transfers every compact mode packet to literal
+finite cofactors in the same character cell. Final35529 exit0 warning-free;
+both public audits F161scratch81040 standard-only; exact index3; lint25501
+ten unrelated unreachable modules, no BAG debt. This closes C22.6f.
+
+**C22.8 refinement — reuse the proved planar mean-square envelope.**
+The public `norm_sq_value_mul_area_le_integral_ball_local` supplies the
+analytic inequality already. For z in closedBall(c,r), choose a fixed small
+radius a>0 with r+a<rho. Then ball(z,a) lies in ball(c,rho). The local
+inequality and monotonicity of the nonnegative planar lintegral give
+|F(z)|^2 <= (pi*a^2)^(-1) integral_ball(c,rho) |F(w)|^2, simultaneously for
+all z. `SteinhausEulerSpatialEnvelope` already demonstrates the measurable
+lintegral and Tonelli mechanism. Reuse it for the finite affine centered
+holomorphic channel sum; the remaining new estimates concern the actual
+normalized channels and the selected target, not the analytic mean-square law.
+
+**C22.9 — choose the target catalogue before the coherent phase cell.**
+To avoid circular dependence of the mode catalogue on its eventual phase
+centre, first choose a finite character prefix controlling the complete AFE
+correction near the originally prescribed reference phase. Preserve this
+prefix exactly in every coherent extension. Approximate the normalized
+reference targets lambda^(-1)*(f-referenceCorrection) by a finite Gaussian
+catalogue on the inner disc, using a uniform holomorphic bound on a larger
+disc. Only then choose packet tolerances and mean-weighted budgets from the
+finite catalogue coefficients and construct the mode cell. Its radius is
+also bounded by the earlier correction tolerance. The fixed reference
+correction, rather than the subsequently constructed phase centre, breaks
+the circularity. Still OPEN: compact-uniform complete-correction stability,
+holomorphy and bounds for the reference correction and lambda inverse, and
+the finite-catalogue compactness argument. This is an assembly candidate,
+not an assumed producer or a proved probability law.
+
+
+**C22.7a / F161 FINAL — exact compact-channel factorization, LEAN PROVED.**
+`SmoothAFEReflectedCompactChannel.lean` identifies the scalar and node-vector
+normalizations, defines the common spectral row and literal prime amplitude,
+proves its exact phase-independent norm R*|A|/sqrt(N), and factors the actual
+reflected-primal coefficient channel into that row, amplitude and truncated
+compact mode. Final21122 exit0 warning-free; all three public audits
+F162scratch54758 standard-only; exact index5; lint8959 ten unrelated
+unreachable modules, no BAG debt. Both coherent prime phases and the exact
+floor cofactor cutoff are retained.
+
+
+**C22.7b / F162 FINAL — actual prime-block amplitude energy, LEAN PROVED.**
+`CompactGaussianPrimeBlockEnergy.lean` gives both endpoint bounds for each
+literal prime amplitude and the eventual energy floor
+M*|A|^2/(4*log N), uniformly in both coherent frequencies and the scalar A.
+Final84188 exit0 warning-free; both public audits F163scratch40443
+standard-only (successor algebra normalization errors were separate).
+Exact index3; lint90205 ten unrelated unreachable modules, no BAG debt.
+
+
+**C22.7c / F163 FINAL — exact scalar synthesis with uniform error control, LEAN PROVED.**
+`SteinhausScalarAmplitudeSynthesis.lean` reuses the corpus's exact conjugate
+port minimizer. Its finite supported biases synthesize gamma, have squared
+cost |gamma|^2/sum|alpha|^2 and the exact individual norm formula, and transfer
+any uniform mode error epsilon to at most |gamma|*epsilon. This last estimate
+uses unit absolute contribution mass. Final89508 exit0 warning-free; public
+audit F164scratch76211 standard-only; both reused port audits were also
+standard-only. Exact index1; lint82045 ten unrelated unreachable modules,
+no BAG debt. This is an algebraic synthesis theorem, not a recurrence premise.
+
+**C22.9 phase-coordinate clarification.**
+The prescribed reference is fixed in cofactor coordinates. At physical
+height tau its original-law phase is xi_tau=steinhausLogPhaseShift(omega,-tau),
+exactly as in the proved finite-node complete-AFE theorem F145. Thus the
+reference correction in the target catalogue is evaluated at xi_tau, not at
+one unrotated original-law phase for every height. Character-distance
+rotation preserves the fixed prefix tolerance. The catalogue may vary through
+this bounded reference target family before choosing its finite approximation
+list; the final coherent extension preserves omega's controlling prefix.
+This clarification retains the original product law and does not assert
+that the zero-phase physical orbit enters those moving events.
+
+
+**C22.7d / F164 FINAL — actual prime-block bias budgets, LEAN PROVED.**
+`CompactGaussianPrimeBlockBiases.lean` combines actual prime-block energy
+with the exact minimizer. For every fixed block, nonzero mean scalar A,
+mode coefficient gamma and positive individual tolerance, all sufficiently
+large N admit supported biases at every pair of coherent frequencies. Their
+squared cost is at most 4*|gamma|^2*log(N)/(M*|A|^2), every bias is smaller
+than the requested tolerance, and uniform mode error is multiplied by only
+|gamma|. Final97765 exit0 warning-free; public audit F165scratch35253
+standard-only; exact index1; lint98379 ten unrelated unreachable modules,
+no BAG debt. Compact event and deterministic return-count assembly remain open.
+
+
+**C22.8a / F165 FINAL — one literal normalized holomorphic channel, LEAN PROVED.**
+`CompactGaussianNormalizedChannel.lean` defines the channel independently of
+any chosen Gaussian mode. It proves exact agreement with every coherent
+mode representation and the actual reflected-primal common-row factorization,
+entire dependence on the spectral variable for every finite cofactor and
+normalized channel, and the exact phase-independent norm formula.
+Final87367 exit0 warning-free; all five public audits emitted by F166scratch91374
+standard-only; exact index6; lint86573 ten unrelated unreachable modules,
+no BAG debt. Bounds for the removed row and its inverse remain separate.
+
+**C22.8b — compact tilted fluctuation event (paper assembly).**
+For entire finite columns a_i and actual affine-circle means |m_i|<=1/2,
+the centered sum is entire and jointly measurable. Its pointwise second
+moment is at most sum_i|a_i(z)|^2 by the proved finite affine variance law.
+Choose delta=epsilon^2*(rho-r)^2/(2*rho^2), rho>0 and r<rho. If the actual
+outer-disc column energy is at most delta, the planar envelope has expectation
+at most epsilon^2/2. Its measurable sublevel event below epsilon^2 therefore
+has at least half the tilted probability and controls the centered sum by
+epsilon at every point of the inner closed disc. Existing affine-density
+transfer gives original finite-phase mass at least (1/4)*exp(-2*sum|m_i|^2).
+The proposed whole-band C/log(N) bound will discharge this energy threshold
+for actual normalized channels. This is the compact fluctuation component;
+it does not yet assemble the retained centre, reference correction or target.
+
+**C22.8c — discharge compact fluctuation energy for literal windows (paper assembly).**
+Apply the compact affine threshold to the actual normalized columns indexed
+by any injective finite enumeration of primes in largePrimes N (N/D).
+Their entire dependence is F165. The sum of their squared norms is bounded
+by the complete window energy, uniformly in height, polynomial cutoff and
+retained phase. On a larger disc contained in Re(s)>=0, the proposed F167
+whole-band C/log(N) estimate is eventually below the fixed threshold delta.
+Thus every admissible family of half-unit biases obtains a measurable
+whole-inner-disc fluctuation event with the same half tilted mass and exact
+original finite-phase density cost. This assembly has no growing-dimension
+loss. Lifting to the retained infinite product event still requires the
+actual compact target event's measurability, rather than selecting arbitrary
+conditional witness sets as a measurable family.
+
+
+**C22.8a / F166 FINAL — compact-uniform column bound, LEAN PROVED.**
+`CompactGaussianNormalizedChannelUpper.lean` bounds every literal cofactor
+truncation uniformly over Re(s)<=b, all phases and bounded positive scales.
+It then bounds the literal normalized column by C/sqrt(N) uniformly over
+the nonnegative abscissa band, every cutoff and retained phase, every common
+height and every scale 1<=R<=U. Final32764 exit0 warning-free; both public
+audits F167scratch9952 standard-only; exact index2; lint8251 ten unrelated
+unreachable modules, no BAG debt. No chi-factor bound is assumed here.
+
+
+**C22.8a / F167 FINAL — whole-band literal normalized window energy, LEAN PROVED.**
+`CompactGaussianNormalizedChannelEnergy.lean` proves total squared column
+energy at most C/log(N) on the complete actual free-prime window, uniformly
+over the entire nonnegative abscissa band, imaginary part, common height,
+retained phase and independent polynomial cutoff. Final4793 exit0 warning-free;
+public audit F168scratch76186 standard-only; exact index1; lint93614 eleven
+unrelated unreachable modules, no BAG debt. The analytic local mean-square
+dependency audit in the same scratch run was also standard-only.
+
+**C22.10 — assemble the fixed finite mode list with harmless finite-k cost (paper candidate).**
+For a fixed list of k Gaussian modes and coefficients gamma_i, choose packet
+mode tolerance below targetError/(2*(1+sum|gamma_i|)). F164 supplies block
+biases mu_i with the correct scalar coefficient and error at most
+|gamma_i| times that tolerance. Extend each by zero and set mu=sum_i mu_i
+on the full free window containing every block. Linearity and finite sum
+interchange give the required mean approximation uniformly on the disc,
+all later cofactor cutoffs and all retained phases in the common cell.
+
+Using triangle and finite Cauchy–Schwarz costs a fixed factor k in squared
+bias energy: sum_p|sum_i mu_i(p)|^2 <= k*sum_i sum_p|mu_i(p)|^2. Arbitrary
+mean-weighted block budgets absorb this factor, so no optimal disjoint-support
+gluing theorem is needed for an arbitrarily small logarithmic probability
+cost. Choose each individual tolerance below 1/(2*(k+1)) to keep every
+combined bias below 1/2. The blocks are already disjoint, but that sharper
+fact is unnecessary for these bounds. The number k is fixed before N grows;
+no factor proportional to the number of free primes is introduced.
+
+The resulting mean theorem should quantify the biases before the retained
+phase and cutoff: for each sufficiently large N and common height tau,
+one finite supported bias family works for every retained phase in the cell,
+every sufficiently long literal cutoff, and every point of the compact disc.
+This is the next synthesis assembly after the compact fluctuation component.
+
+
+**C22.8b / F168 FINAL — measurable planar compact envelope, LEAN PROVED.**
+`CompactDiscMeanSqEnvelope.lean` constructs a measurable outer-disc
+mean-square envelope, bounds every inner-disc value of every entire sample,
+and transfers pointwise second-moment bounds to its expectation by Tonelli.
+Final33042 exit0 warning-free; all three public audits F169scratch52270
+standard-only; exact index5; lint13580 ten unrelated unreachable modules,
+no BAG debt. No uncountable supremum measurability premise is required.
+
+
+**C22.8b / F169 FINAL — whole-disc tilted fluctuation event, LEAN PROVED.**
+`SteinhausCompactAffineFluctuation.lean` proves the explicit outer-disc
+energy threshold gives one measurable event controlling the centered affine
+sum everywhere on the inner closed disc, with at least half the tilted mass
+and original mass at least one quarter times exp(-2*sum squared biases).
+Final24731 exit0 warning-free; public audit F170scratch31919 standard-only;
+exact index1; lint39225 ten unrelated unreachable modules, no BAG debt.
+
+
+**C22.11 — canonical compact target event avoids conditional selection (paper candidate).**
+For fixed N, cutoff, height and target f, define the joint event in retained
+phase eta and free phase xi by the literal normalized window sum having
+error at most epsilon at every s in the closed disc. At each fixed s this
+sum is continuous in (eta,xi): it is a finite sum of continuous characters
+and finite Gaussian cofactors. The canonical event is therefore an arbitrary
+intersection of closed sets, hence closed and measurable; no measurable
+selection of fluctuation witness sets is needed.
+
+Use synthesis and fluctuation at epsilon/2 each. Every witness fluctuation
+event lies inside the corresponding section of this one canonical closed
+event, by the exact centered-plus-mean identity and triangle inequality.
+Its section mass is at least (1/4)*exp(-2*kappa*log(N)), uniformly for every
+retained phase in the chosen cell and every sufficiently long cutoff. This
+proves the actual compact normalized free-window target component. Integrating
+against retained variables still requires its exact retained/free coefficient
+identity and good retained-centre/correction event. Physical orbit transfer
+remains independent and open.
+
+
+**C22.8c / F170 FINAL — literal-window compact fluctuation, LEAN PROVED.**
+`CompactGaussianWindowFluctuation.lean` discharges the compact energy
+threshold with the actual normalized whole-window C/log(N) estimate. For
+every height, cutoff and retained phase, every selected injective prime
+enumeration and every half-unit bias family, one measurable original-law
+event controls centered fluctuations on the full inner closed disc. Its mass
+is at least one quarter times exp(-2*sum squared biases). Final8509 exit0
+warning-free; public audit F171scratch63371 standard-only; exact index1;
+lint28363 ten unrelated unreachable modules, no BAG debt.
+
+
+**C22.12 — fixed holomorphic normalized target (paper candidate).**
+Apply the proved Gaussian linear-span density to any target holomorphic on
+a larger closed disc, at half the final tolerance. Enumerate the finite
+coefficient support after adjoining frequency zero with zero coefficient
+when absent; this guarantees a nonempty mode list without changing its sum.
+Apply C22.11 to that list at half tolerance. Triangle inequality embeds
+its canonical target event in the canonical event for the original target.
+The same original section mass lower bound and prescribed-prefix retained
+cell survive. This closes only the fixed holomorphic normalized free-window
+target component: the full AFE target depends on height through its common
+row and correction and still needs the finite-catalogue/retained-centre
+assembly described in C22.9.
+
+
+**C22.10 / F171 FINAL — actual compact mode mean synthesis, LEAN PROVED.**
+`CompactGaussianWindowModeSynthesis.lean` constructs one finite retained
+character cell preserving any prescribed prime prefix. At all large N and
+every height, literal full-window biases have norm at most one half and
+squared cost at most kappa*log(N), for arbitrary kappa>0. The same biases
+approximate the fixed finite Gaussian target sum uniformly on the inner
+disc, for every retained phase in that cell and every later cutoff.
+Final85934 exit0 warning-free; public audit F172scratch93087 standard-only;
+exact index1; lint78495 eleven unrelated unreachable modules, no BAG debt.
+
+
+**C22.13 — uniform analytic common row and inverse (paper candidate).**
+For lambda(s,N,tau)=sqrt(N)*chi(s+i*tau)*N^(s-1), the exact norm is
+|chi(s+i*tau)|*N^(Re(s)-1/2). For 1/2<=Re(s)<=1/2+d0<1, existing
+moving-line chi estimates give constants Kr,Kl independent of displacement:
+|chi|<=Kr/T^d and |chi|^(-1)<=Kl*T^d, where d=Re(s)-1/2 and
+T=max(1,|Im(s)+tau|). The second uses the exact chi reflection product.
+If N/2<=T<=3N, the row norm is at most Kr*(N/T)^d<=2Kr and its inverse
+at most Kl*(T/N)^d<=3Kl. Thus one fixed positive bound controls both.
+Analyticity and nonvanishing on the open critical strip follow from the
+proved Gamma and cpow identities; the inverse is holomorphic there.
+On every fixed right-half-strip disc and tau in [N,2N], the height comparison
+holds for all large N. This supplies the bounded analytic normalizers for
+the finite target catalogue; no physical return count is assumed.
+
+
+**C22.11 / F172 FINAL — canonical compact mode target, LEAN PROVED.**
+`CompactGaussianWindowModeTarget.lean` proves the literal joint retained/free
+target event is closed and measurable, and every fixed finite Gaussian mode
+target has section mass at least quarter*exp(-2*kappa*log(N)) for arbitrary
+kappa>0 throughout one prescribed-prefix cell, all heights and later cutoffs.
+Final23526 exit0 warning-free; all four public audits F173scratch31188
+standard-only; exact index3; lint32404 eleven unrelated unreachable modules,
+no BAG debt. No conditional witness-selection premise is used.
+
+
+**C22.14 — finite catalogue of a bounded holomorphic family (paper candidate).**
+Let every f_i be holomorphic and bounded by C on ball(c,rho), and r<rho.
+For each z in closedBall(c,r), the ball of radius rho-r centered at z lies
+inside the outer ball. Apply the existing local Cauchy derivative estimate
+there to obtain |f_i'(z)|<=2C/(rho-r), uniformly in i and z. Convexity
+of the inner disc gives one Lipschitz modulus, hence equicontinuity.
+Arzela-Ascoli makes the closure of the restrictions compact in supremum
+norm. Total boundedness then gives finitely many representatives from the
+actual family, each function within epsilon uniformly on the inner disc.
+Choosing representatives from the family preserves outer-disc holomorphy;
+no properties of unknown limit functions are needed. This catalogue is
+chosen before constructing any coherent phase cells.
+
+
+**C22.12 / F173 FINAL — fixed holomorphic compact window target, LEAN PROVED.**
+`CompactGaussianWindowHolomorphicTarget.lean` reaches every target
+holomorphic on a larger closed disc with the literal normalized free-window
+sum on the whole inner disc. A retained cell preserves any prescribed finite
+prime prefix; the original section mass is at least quarter*exp(-2*kappa*log(N))
+for arbitrary kappa>0, every height and every sufficiently long cutoff.
+Final39274 exit0 warning-free; public audit F174scratch54567 standard-only;
+exact index1; lint82631 ten unrelated unreachable modules, no BAG debt.
+The full AFE compact target and physical height-count producer remain open.
+
+
+**C22.15 — translate the complementary contour to expose spectral holomorphy (paper candidate).**
+At full spectral point z=1/2+d+i*t, the complementary coefficient is minus
+chi(z) times the deep coefficient at 1-z. Its contour w=d-4+i*v_old has
+1-z+w=-7/2+i*(v_old-t). Substitute v=v_old-t. Then
+
+    w = z-9/2+i*v,
+    1-z+w = -7/2+i*v.
+
+Thus the literal coefficient becomes -chi(z)/(2*pi) times the integral of
+chi(-7/2+i*v)*(n+1)^(-9/2+i*v)*N^(z-9/2+i*v)*K(z-9/2+i*v).
+The chi numerator and integer exponent are independent of z. The remaining
+parameter dependence is holomorphic on the strip, with the Gaussian denominator
+away from zero. After division by the common row, the N power has real
+exponent -4, cancelling the polynomial growth of chi near v=-Im(z) on
+conductor windows. Exact translation invariance must identify this representation
+with the original coefficients before using it; local dominated holomorphic
+integration and summable n^(-9/2) bounds should then give the complete
+complement holomorphy, compact bounds and prefix stability. No theorem from
+this candidate has yet been formalized.
+
+
+**C22.13 / F174 FINAL — compact row and inverse bounds, LEAN PROVED.**
+`CompactGaussianReflectedRowBounds.lean` proves the exact common-row norm,
+nonvanishing and holomorphy of both row and inverse on the open strip,
+and simultaneous uniform bounds on any fixed right-strip disc throughout
+the actual dyadic height window tau in [N,2N] for every large N.
+Final78215 exit0 warning-free; five public audits F175scratch88188 and
+reused Cauchy audit standard-only; exact index6; lint48414 ten unrelated
+unreachable modules, no BAG debt.
+
+
+**C22.16 — locally uniform integrable complementary majorant (paper candidate).**
+For fixed N>0, 0<=Re(z)<=1 and |Im(z)|<=B, the translated deep integrand
+is bounded by (n+1)^(-9/2) times one integrable function of v, independent
+of z and n. The chi numerator is bounded by K*(1+|v|)^4. The conductor
+power is bounded by N^(-9/2)+N^(-7/2). The Gaussian denominator is at
+least one and its real-square exponent at most 81/4. The inequality
+(v+Im(z))^2>=v^2/2-Im(z)^2 gives the common majorant
+
+    K*(N^(-9/2)+N^(-7/2))*exp(81/4+B^2)
+      *(1+|v|)^4*exp(-v^2/2).
+
+Polynomial Gaussian integrability is already available. The corpus theorem
+differentiableAt_integral_of_cauchy_dominated then supplies local complex
+holomorphy without a derivative-majorant premise. Integrating the same bound
+retains the summable n^(-9/2) coefficient envelope for every compact spectral
+set, allowing reciprocal-character tsum holomorphy and phase continuity.
+Conductor-uniform bounds remain the separate cancellation in C22.15.
+
+
+**C22.14 / F175 FINAL — finite holomorphic catalogue, LEAN PROVED.**
+`HolomorphicDiscFiniteCatalogue.lean` gives equicontinuity on any strictly
+smaller closed disc for a uniformly bounded holomorphic family, followed by
+finitely many representatives from that actual family approximating every
+member uniformly. No half-radius restriction is needed. Final2237 exit0
+warning-free; both public audits F176scratch87429 standard-only; exact
+index2; lint26927 eleven unrelated unreachable modules, no BAG debt.
+
+
+**C22.15 / F176 FINAL — exact compact complementary contour, LEAN PROVED.**
+`ReflectedCompactComplementIntegral.lean` translates the original deep
+coefficient exactly into complex spectral coordinates, identifies the actual
+complement with its original negative chi prefactor, and proves integrand
+holomorphy on Re(z)<9/2. Final36035 exit0 warning-free; three public audits
+F177scratch55580 standard-only; exact index5; lint87028 eleven unrelated
+unreachable modules, no BAG debt.
+
+
+**C22.17 — full reciprocal-character complement holomorphy (paper candidate).**
+For fixed positive N and arbitrary phase, multiply each translated deep
+coefficient by the original conjugate character, of norm one. C22.16 gives
+one summable n^(-9/2) bound on every bounded rectangle in the open unit strip.
+The Weierstrass theorem makes the complete series holomorphic there. Multiply
+by the original -chi(z), which is holomorphic on that strip. C22.15 identifies
+this function exactly with the original complementary series at every right
+spectral point, with no conductor restriction needed for the identity.
+This step supplies holomorphy, not a conductor-uniform bound; the latter still
+requires the cancellation between the N power and translated chi growth.
+
+
+**C22.18 — displacement-uniform deep scale estimate (paper candidate).**
+The original deep-contour norm estimate depends on 0<d<1/2 only through
+N^(d-4) and exp((d-4)^2)/|d-4|. Since |d-4|>=1 and (d-4)^2<=16, replace
+the latter factor by exp(16) before integration. The same integrable
+(1+|v|)^4*exp(-v^2) majorant then gives one D, independent of d, N and t,
+with deep coefficient norm at most
+D*N^(d-4)*(1+|t|)^4*(n+1)^(-9/2).
+For z=s+i*tau on a fixed right-strip disc and tau in [N,2N], common-row
+normalization cancels the chi factor exactly, and divides this bound by
+N^(Re(s)-1/2). The resulting N^-4 cancels the height polynomial. This is
+the conductor-uniform summable envelope needed for compact prefix stability;
+the local majorant in C22.16 serves a separate holomorphy purpose.
+
+
+**C22.19 — compact conductor cancellation for original coefficients (paper candidate).**
+Fix 0<=d0<1/2. On 0<d<=d0, N>=1 and N/2<=max(1,|t|)<=3N,
+F174 bounds |chi(1/2+d+it)|*N^d by a constant independent of d,N,t.
+C22.18 bounds the deep coefficient by D*N^(d-4)*(1+|t|)^4*(n+1)^(-9/2).
+Since 1+|t|<=4N, the exact original complement identity combines these
+into one 256*D*C*(n+1)^(-9/2) bound. Every fixed right-strip disc shifted
+by tau in [N,2N] eventually satisfies this same wider height band. This
+retains the exact original coefficients and leaves a summable, compact-uniform
+arithmetic envelope for tail control and finite-prefix phase stability.
+
+
+**C22.16 / F177 FINAL — local summable integral majorant, LEAN PROVED.**
+`ReflectedCompactComplementDomination.lean` gives one integrable polynomial
+Gaussian majorant on each compact spectral rectangle, preserving the literal
+summable (n+1)^(-9/2) coefficient factor. Final34332 exit0 warning-free;
+public audit F178scratch51679 standard-only; exact index2; lint64404 eleven
+unrelated unreachable modules, no BAG debt. Holomorphy assembly is next.
+
+
+**C22.20 — uniform first means across an abscissa band (paper candidate).**
+For 0<a<=beta<=b<1/2, normalize the Gaussian Abel square-root cost by
+N^(1/2-beta). In its positive-increment representation, each normalized
+weight equals N^(-1/2)*(N/n)^beta*cutoff(n/N). Monotonicity in beta,
+split at n=N, bounds it by the sum of the two endpoint normalized weights.
+The already proved endpoint costs therefore give one constant uniform in
+beta, polynomial cutoff L and smoothing N>=1. Apply the original universal
+summatory first-mean envelope C_epsilon+epsilon*sqrt(n) before Abel summation.
+The finite-constant contribution satisfies C/N^(1/2-beta)<=C/N^(1/2-b)
+and vanishes uniformly. This extends actual normalized Gaussian
+first-mean decay across every compact beta-band, all cutoffs and phase shifts.
+It will also control every retained-coordinate projection by contraction.
+
+**C22.21 — one circle first-moment envelope for the whole disc (paper candidate).**
+For r<R and f holomorphic near the closed outer disc, Cauchy's exact circle
+average gives f(z) as the average of ((w-c)/(w-z))*f(w), for every inner
+point z. On the outer circle, the multiplier norm is at most R/(R-r).
+Thus the same boundary L1 integral bounds every inner value. The resulting
+nonnegative measurable random envelope has expectation bounded by
+R/(R-r) times the uniform original first mean on the outer circle, by Tonelli.
+Together with C22.20 it gives compact-uniform vanishing first means for the
+literal retained normalized background. This uses first moments directly;
+the nonvanishing second moment is not substituted for them.
+
+
+**C22.16 / F178 FINAL — compact complementary coefficient holomorphy, LEAN PROVED.**
+`ReflectedCompactComplementHolomorphy.lean` proves continuous real contour
+integrands, complex holomorphy of every deep coefficient on 0<Re(z)<1,
+and one summable coefficient envelope on every compact spectral rectangle.
+Final91931 exit0 warning-free; three public audits F179scratch38579 standard-only;
+exact index3; lint53082 twelve unrelated unreachable modules, no BAG debt.
+
+
+**C22.17 / F179 FINAL — full holomorphic reciprocal complement, LEAN PROVED.**
+`SteinhausCompactReflectedComplement.lean` admits the complete original deep
+reciprocal-character series absolutely for every positive scale, proves its
+holomorphy throughout the open unit strip, restores the original negative chi
+factor, and identifies it exactly with the literal full complementary series.
+Final34936 exit0 warning-free; four public audits F180scratch80303 standard-only;
+exact index5; lint16839 thirteen unrelated unreachable modules, no BAG debt.
+
+
+**C22.22 — one character tolerance for a uniformly summable family (paper candidate).**
+For arbitrary coefficients a_i(n) bounded by one nonnegative summable u(n),
+the full reciprocal-character series has a finite-prefix tolerance uniform
+in i and in the reference phase. Choose B so the u-tail is below epsilon/4.
+The two phase tails each obey that same bound. On n<B, a character cell
+of radius delta controls the difference by delta*sum_{n<B}u(n). Choose
+delta=epsilon/(4*(1+sum_{n<B}u(n))). The head plus two tails is below epsilon.
+C22.19 supplies the actual family's u(n)=C*(n+1)^(-9/2), indexed by every
+smoothing, height and spectral point after its eventual threshold. Thus
+one fixed prefix controls the whole compact complement simultaneously.
+
+
+**C22.18 / F180 FINAL — displacement-uniform deep scale bound, LEAN PROVED.**
+`ReflectedCompactDeepUniformScale.lean` strengthens the actual deep coefficient
+scale estimate to one constant for every 0<d<1/2, positive smoothing and
+real height. The exact N^(d-4), height polynomial and summable n-factor remain.
+Final45592 exit0 warning-free; public audit F181scratch88491 standard-only;
+exact index1; lint59980 fourteen unrelated unreachable modules, no BAG debt.
+
+
+**C22.23 — exact compact pole correction (paper candidate).**
+Write the original reflected pole in spectral coordinates as
+chi(z)*N^z*exp(z^2)/z, where z=s+i*tau. This identity retains its denominator.
+It is holomorphic on the open unit strip. On a fixed right-strip disc and
+large dyadic conductor windows, |z|>=N/2 and Re(z)^2<=1, hence
+|exp(z^2)|<=exp(1). The exact row identity gives
+|pole|=|row(s,N,tau)|*sqrt(N)*|exp(z^2)|/|z|.
+For N>=1, sqrt(N)<=N, so F174 gives the uniform bound 2*C*exp(1).
+The pole has no phase dependence, so the compact correction inherits all
+complement prefix tolerances unchanged. Combined with complement holomorphy,
+this supplies the bounded holomorphic correction family needed by the finite
+catalogue, with every original AFE term retained.
+
+
+**C22.19 / F181 FINAL — original conductor-band coefficient envelope, LEAN PROVED.**
+`ReflectedCompactComplementConductor.lean` combines the displacement-uniform
+deep scale estimate with the exact common-row norm. One summable coefficient
+bound now holds for every 0<d<=d0<1/2, N>=1 and
+N/2<=max(1,|tau|)<=3*N. Final98792 exit0 warning-free; public audit
+F182scratch61511 standard-only; exact index1; lint1151 fourteen unrelated
+unreachable modules, no BAG debt.
+
+
+**C22.24 — bounded holomorphic reference-target catalogue (paper candidate).**
+Assemble the exact scalar correction as full reciprocal complement minus
+original reflected pole. C22.17 and C22.23 give its spectral holomorphy;
+C22.19 and C22.23 give one compact conductor bound over all phases. C22.22
+controls its phase difference uniformly on the same disc, since the pole
+cancels from that difference. For a fixed larger-disc holomorphic target f,
+form h_{N,tau,xi}(s)=row(s,N,tau)^(-1)*(f(s)-correction(s+i*tau,N,xi)).
+F174 gives a uniform inverse-row bound and holomorphy. Thus the entire
+reference-target family is bounded and holomorphic on one larger disc.
+F175 gives finitely many actual representatives on a strictly smaller disc,
+before any coherent phase cell is selected. Each representative can use its
+own F173 prefix-preserving cell, window constants and eventual threshold;
+finite minima and maxima suffice. No common free window across representatives
+is required. Phase-prefix stability ties the reference xi to the eventual
+retained phase; C22.20-21 make the retained normalized background small on a
+positive-mass part of each fixed cell. The physical common-height return count
+remains a separate open producer after this original-law compact assembly.
+
+**C22.20 refinement — reuse the actual positive Gaussian mass.**
+The normalized Abel square-root-increment bound is exactly bounded by
+normalizedGaussianAbsoluteMass(1/2-beta,N). F153 already gives the actual
+summable positive coefficient series and endpoint limits; F154 bounds its
+intermediate masses by the two endpoints. These existing results supply
+the uniform beta-band cost directly, without a second endpoint-power proof.
+
+
+**C22.19 / F182 FINAL — compact conductor complement bound, LEAN PROVED.**
+`ReflectedCompactComplementDisc.lean` bounds every original complementary
+coefficient uniformly on a fixed strict right-strip disc throughout all large
+dyadic conductor windows. Summing the original reciprocal series gives one
+bound for the complete holomorphic complement, uniform in every phase.
+Final32531 exit0 warning-free; both public audits F183scratch79386 standard-only;
+exact index2; lint52121 fourteen unrelated unreachable modules, no BAG debt.
+
+
+**C22.22 / F183 FINAL — uniform reciprocal-family prefix tolerance, LEAN PROVED.**
+`SteinhausReciprocalSeriesStability.lean` proves one finite character prefix
+and positive radius control every reciprocal series dominated by one
+nonnegative summable coefficient sequence, uniformly in the reference phase.
+Final70173 exit0 warning-free; public audit F184scratch42851 standard-only;
+exact index1; lint7354 fourteen unrelated unreachable modules, no BAG debt.
+Explicit tail-sequence types resolved elaboration cost at default heartbeats.
+
+
+**C22.22 / F184 FINAL — actual compact complement prefix stability, LEAN PROVED.**
+`ReflectedCompactComplementStability.lean` discharges the summable-family
+bound against the actual conductor coefficients. One finite prefix and positive
+radius now control the complete literal complement simultaneously on every
+point of a fixed right-strip disc, for all reference phases and every large
+dyadic conductor window. Final32922 exit0 warning-free; public audit
+F185scratch29165 standard-only; exact index1; lint32475 fifteen unrelated
+unreachable modules, no BAG debt.
+
+
+**C22.23 / F185 FINAL — exact compact pole, LEAN PROVED.**
+`ReflectedCompactPole.lean` retains the exact original residue, proves its
+open-strip holomorphy and bounds it uniformly on fixed right-strip discs
+throughout all large dyadic conductor windows. Final87330 exit0 warning-free;
+four public audits F186scratch82189 standard-only; exact index5; lint46886
+seventeen unrelated unreachable modules, no BAG debt.
+
+
+**C22.24 / F186 FINAL — complete compact correction, LEAN PROVED.**
+`ReflectedCompactCorrection.lean` assembles the original reciprocal complement
+minus its pole, proves open-strip holomorphy, a uniform compact conductor bound
+and one phase-prefix tolerance, and identifies the original full AFE exactly
+as primal carrier plus this correction. Final27622 exit0 warning-free; four
+public audits F187scratch69716 standard-only; exact index5; lint5632 eighteen
+unrelated unreachable modules, no BAG debt.
+
+
+**C22.24 / F187 FINAL — actual reference-target catalogue, LEAN PROVED.**
+`ReflectedCompactTargetCatalogue.lean` proves the original row-inverted target
+family is holomorphic and uniformly bounded on every fixed larger right-strip
+disc, across all phases and large conductor windows. One finite collection of
+actual holomorphic members approximates this entire family on a smaller disc,
+before any coherent cell is selected. Final99748 exit0 warning-free; three
+public audits F188scratch79618 standard-only; exact index5; lint59311 ten
+unrelated unreachable modules, no BAG debt.
+
+
+**C22.20 / F188 FINAL — uniform band first moment, LEAN PROVED.**
+`SteinhausGaussianBandFirstMean.lean` bounds the exact normalized Abel cost by
+the actual positive Gaussian coefficient mass. Two endpoint limits and the
+unconditional summatory first-mean envelope give one decay threshold for every
+exponent in a fixed compact subcritical band, uniformly over all independent
+polynomial cutoffs. Final71232 exit0 warning-free; three public audits
+F189scratch63321 standard-only; index3; lint27442 twelve unrelated unreachable
+modules, no BAG debt.
+
+
+**C22.25 — actual retained compact small-centre event (paper candidate).**
+For the exact normalized retained carrier N^(1/2-s)*sum_smooth n^(s-1)*cutoff*X,
+phase stationarity and smooth projection contract the band first moment from
+C22.20. On an outer circle of radius R and inner disc radius r<R, C22.21
+defines a measurable ENNReal envelope G from the boundary absolute integral,
+with pointwise norm<=G and E[G]<=R/(R-r)*eta. Choose
+eta=delta*(R-r)/R to make E[G]<=delta uniformly in every retained prime set
+and polynomial cutoff. G depends only on those retained coordinates. Taking
+delta=m*epsilon/2, Markov removes at most m/2 mass at threshold epsilon,
+so every prescribed event of mass at least m retains at least m/2 on which
+the entire compact background is smaller than epsilon. This is original
+product measure, not a physical-height count; the latter remains open.
+
+
+**C23.1 — sharp mean-value transport budget (candidate under audit).**
+The corpus theorem Sieve.dirichlet_meanValue_sharp controls the signed second-
+moment error by 104*sum_n (n+1)*|a_n|^2. It is stronger than the absolute
+inverse-log-gap sum used in the initial physical-count search. Applying it
+to an actual tilt still requires its frequency-weighted coefficient cost.
+A necessary synthesis budget follows from Cauchy-Schwarz: if all free primes
+exceed Y, total channel energy is E and |sum_p mu_p*a_p|>=v, then
+Y*v^2 <= E*sum_p p*|mu_p|^2. Since the actual normalized channel energy is
+O(1/log N), macroscopic target displacement across a conductor-sized prime
+window forces a large frequency-weighted bias budget. Whether that lower
+budget defeats a proposed spectral-factor mean-value transfer must be checked
+against its exact coefficients; no physical transport or no-go is claimed yet.
+The positive cost law is the next concrete audit target if this transfer fails.
+
+
+**C22.26 — compact normalized cubic tail (paper candidate).**
+For any fixed b>=0, Re(s)<=b, square smoothing N=n^2 and cubic cutoff L=n^3,
+the existing full Gaussian tail is at most K*N^A*L^(Re(s)-A)/(A-Re(s)).
+Multiplying by the exact normalized carrier factor N^(1/2-s) changes its
+size to K*n^(1+Re(s)-A)/(A-Re(s)). Choose A=q+b+1 for any q>0.
+Then A-Re(s)>=q+1 and 1+Re(s)-A<=-q, uniformly over the entire half-plane
+and every phase. Thus one K/(q+1) gives arbitrary power decay, and the
+compiled common-row bound transports it to the complete reflected primal
+on every fixed right-strip disc and dyadic physical window. No probabilistic
+tail subtraction is required.
+
+
+**C22.20 / F189 FINAL — actual retained carrier first mean, LEAN PROVED.**
+`CompactGaussianRetainedFirstMean.lean` defines the exact normalized retained
+Gaussian arithmetic sum, proves it entire and jointly measurable, identifies
+its normalization and integrable norm, and proves first-mean decay uniformly
+across every fixed strict right-strip abscissa band, all imaginary parts,
+retained prime sets and independent cutoffs. Final31880 exit0 warning-free;
+five public audits F190scratch51368 standard-only; index6; lint67643 ten
+unrelated unreachable modules, no BAG debt.
+
+
+**C22.21 / F190 FINAL — compact boundary first-mean bound, LEAN PROVED.**
+`CompactDiscFirstMeanBound.lean` proves the norm of the circle average is
+bounded by the average norm and derives one Cauchy boundary L1 bound for
+every point on a smaller closed disc, with exact factor R/(R-r). No second
+moment replaces the needed first mean. Final32257 exit0 warning-free; both
+public audits F191scratch82886 standard-only; index2; lint82405 eleven unrelated
+unreachable modules, no BAG debt.
+
+
+**C22.21 / F191 FINAL — measurable compact first-mean envelope, LEAN PROVED.**
+`CompactDiscFirstMeanEnvelope.lean` supplies one measurable ENNReal boundary
+integral dominating every point on the inner disc. Tonelli bounds its expectation
+from the actual boundary first moments, with explicit radius-gap and circle-length
+factors. Final56580 exit0 warning-free; three public audits F192scratch88407
+standard-only; index5; lint79954 eleven unrelated unreachable modules, no BAG debt.
+
+
+**C23.2 — target-class compatibility check (audit pending).**
+The required physical producer is zeta self-return. The proved random target
+laws are stronger in target class and allow arbitrary holomorphic functions,
+including a linear target with a zero inside the disc. A future transport
+lemma must not silently preserve this entire target class: Rouche would turn
+sufficiently many returns to such a fixed zero-bearing target into many
+right-strip zeta zeros. The source statement of the currently unwired
+ZetaZeroDensityPowerSaving.exists_zetaZeroDensity_powerSaving gives exponent
+1-delta/40, but has not been independently compiled or axiom-audited in this
+continuation. Audit this compatibility before proposing a target-independent
+rare-event transport. The actual arithmetic self-target may need a feature
+absent from arbitrary holomorphic targets. No no-go or physical count is
+claimed from this source-level observation.
+
+
+**C22.25 / F192 FINAL — actual retained compact envelope, LEAN PROVED.**
+`CompactGaussianRetainedEnvelope.lean` applies the boundary first-mean envelope
+to the exact normalized retained Gaussian carrier. Its expectation tends to
+zero uniformly over all retained prime sets and polynomial cutoffs; it
+dominates every point on the disc and depends only on retained coordinates.
+Final92554 exit0 warning-free; four public audits F193scratch39410 standard-only;
+index5; lint13159 ten unrelated unreachable modules, no BAG debt. Explicit
+function and cast types resolve elaboration at default heartbeats.
+
+
+**C22.27 — exact normalized retained/free assembly (paper candidate).**
+For N>0, the common row lambda=sqrt(N)*chi(s+i*tau)*N^(s-1) satisfies
+lambda*N^(1/2-s)=chi(s+i*tau), by the exact positive-real complex-power law.
+The existing all-integer logarithmic phase identity then identifies every
+original retained coefficient sum with lambda times the new normalized
+retained carrier at shifted phase. The already proved affine free-window
+identity and exact normalized channel factorization give the complete frozen
+finite carrier as lambda*(retained normalized background + normalized free
+window sum), preserving the original polynomial cutoff and all phases.
+
+
+**C22.25 / F193 FINAL — compact retained small-centre event, LEAN PROVED.**
+`CompactGaussianRetainedSmallCentre.lean` constructs one measurable event
+depending only on retained coordinates, on which the entire compact normalized
+background is smaller than any prescribed positive threshold. The discarded
+original mass tends to zero uniformly over retained sets and cutoffs; every
+fixed positive-mass phase event retains at least half its mass. Final50971
+exit0 warning-free; five public audits F194scratch22250 standard-only; index6;
+lint27915 ten unrelated unreachable modules, no BAG debt.
+
+
+**C22.26 / F194 FINAL — normalized compact cubic tail, LEAN PROVED.**
+`CompactGaussianNormalizedCubicTail.lean` proves arbitrary-power deterministic
+error for square smoothing and cubic truncation, uniformly over every phase
+and every point in a fixed left half-plane. The exact normalization cancels
+the conductor exponent before the tail estimate is applied. Final52043 exit0
+warning-free; public audit F195scratch6370 standard-only; index1; lint30544
+eleven unrelated unreachable modules, no BAG debt.
+
+
+**C23.1 / F195 FINAL — actual frequency-weighted synthesis cost, LEAN PROVED.**
+`CompactGaussianFrequencyWeightedBias.lean` proves the necessary exact bound
+floor(N/D)*log(N)*|sum_p mu_p*channel_p|^2 <= C*sum_p p*|mu_p|^2
+for the literal compact-window channels, uniformly over heights, retained
+phases, independent cutoffs and bounded nonnegative abscissas. This is not
+an orbit-transfer theorem or a no-go. Final79939 exit0 warning-free; public
+audit F196scratch44685 standard-only; index1; lint74206 ten unrelated
+unreachable modules, no BAG debt.
+
+
+**C22.28 — full compact event admission (paper candidate).**
+At each fixed spectral point the Gaussian primal and reciprocal complement
+are sums of continuous phase characters with phase-independent summable norm
+majorants. The literal full reflected AFE is therefore continuous in phase.
+A closed error bound at every point of a compact disc is an arbitrary
+intersection of closed phase sets, hence closed and measurable. Exact
+zero-phase identification preserves the original zeta self-return event.
+This supplies admission for original-law disintegration, not a physical count.
+
+
+**C22.27 / F196 FINAL — exact normalized carrier assembly, LEAN PROVED.**
+`CompactGaussianReflectedCarrierIdentity.lean` proves exact cancellation of
+the common spectral row, identifies the literal retained background after
+one logarithmic phase shift, and assembles the entire original frozen finite
+carrier into that background plus the actual normalized free-window channels.
+No coefficient or cutoff is replaced. Final83589 exit0 warning-free; three
+public audits F197scratch27360 standard-only; index3; lint71523 ten unrelated
+unreachable modules, no BAG debt.
+
+
+**C23.3 — exact spectral-factor transport cost (paper candidate).**
+For a literal affine circle density 1+2*Re(conj(m)*z), |m|<=1/2, set
+x=(1+sqrt(1-4*|m|^2))/2, a=sqrt(x), b=conj(m)/a. Then
+a^2+|b|^2=1, a*conj(b)=m, and the density is exactly |a+b*z|^2.
+Since 0<a<=1, |b|^2>=|m|^2. Multiplying these degree-one factors over
+actual free primes yields squarefree Dirichlet coefficients. Their exact
+frequency-weighted squared mass is product_p(a_p^2+p*|b_p|^2), which is
+at least 1+sum_p(p-1)*|m_p|^2. Combine this actual coefficient cost with
+F195 before testing a sharp-MV transfer certificate. This is a proposed
+exact positive cost law, not a claim that actual signed orbit error is large.
+
+
+**C22.26 / F197 FINAL — original compact primal tail, LEAN PROVED.**
+`ReflectedCompactPrimalCubicTail.lean` transports the normalized cubic bound
+through the exact original chi factor and common-row norm. The complete
+original primal has arbitrary-power deterministic tail decay uniformly on
+every fixed strict-right-strip disc, every phase and full square-conductor
+height window. Final87202 exit0 warning-free; both public audits
+F198scratch15084 standard-only; index2; lint30923 ten unrelated unreachable
+modules, no BAG debt.
+
+
+**C22.28 / F198 FINAL — complete compact target event, LEAN PROVED.**
+`ReflectedCompactTargetEvent.lean` proves phase continuity of both literal
+full series, exact complex-coordinate full AFE identity and zero-phase
+equality with zeta. Simultaneous closed target error throughout a compact
+disc is a closed measurable event. Final31679 exit0 warning-free; seven
+public audits F199scratch99727 standard-only; index9; lint15612 ten unrelated
+unreachable modules, no BAG debt.
+
+
+**C22.29 — rotated compact retained event (paper candidate).**
+The existing measure-preserving vertical phase rotation at -tau has exactly
+the characters of raw logPhaseShift(omega,tau), for all integer characters.
+Pull back the intersection of a fixed finite-character cell and the compact
+small-centre event under this actual rotation. Its original probability is
+the unrotated intersection probability, hence at least half the fixed cell
+mass eventually, uniformly in tau, cutoff and retained set. If the retained
+set contains primes through the cell cutoff, this event depends only on
+retained coordinates. Every point gives both the raw shifted cell condition
+needed by compact mode synthesis and the small shifted retained background.
+No raw real translation is treated as measure preserving.
+
+
+**C23.3 / F199 FINAL — exact affine spectral factor, LEAN PROVED.**
+`SteinhausAffineSpectralFactor.lean` constructs a normalized degree-one factor
+for every actual admissible affine circle bias. Its squared modulus equals
+the original density pointwise, and its nonconstant squared coefficient is
+at least the squared bias. Final73156 exit0 warning-free; both public audits
+F200scratch45074 standard-only; index2; lint46371 ten unrelated unreachable
+modules, no BAG debt.
+
+
+**C22.30 — exact full target error assembly (paper candidate).**
+Write the actual finite frozen primal as lambda*(B+W), reference target
+H=lambda^-1*(f-C0), and original full primal as finite primal plus tail T.
+Then the complete AFE error is exactly
+T + lambda*(B+(W-g)+(g-H)) + (C-C0).
+Consequently its norm is at most eT+Crow*(eB+eW+eG)+eC whenever
+those five literal errors are bounded. The row is nonzero on the strip,
+so no reference-target cancellation premise is needed. Apply this identity
+pointwise to the canonical whole-disc event before original-law disintegration.
+
+
+**C23.4 — spectral budget rigidity (paper candidate).**
+F201's proposed actual cost law forces every synthesis displacement to
+vanish uniformly when its frequency-weighted spectral cost is at most A*N
+for a fixed A. Indeed |displacement|^2 <= C*A/log(N). Hence a nonzero
+macroscopic target cannot be obtained from a spectral factor with a bounded
+normalized sharp-MV cost, much less a vanishing one. This is a precise
+limitation of the frequency-cost certificate. It does not forbid actual
+signed cancellation, another density, or an arithmetic self-target argument.
+The positive survivor is the exact spectral-cost/target-size rigidity law.
+
+
+**C23.3 / F200 FINAL — literal spectral product coefficients and cost, LEAN PROVED.**
+`SteinhausSpectralProductCost.lean` expands the original phase factor product
+into its exact distinct squarefree integer frequencies and proves the exact
+frequency-weighted squared coefficient mass equals the product of local
+weighted masses. Normalization gives the lower bound
+1+sum_p(p-1)*|bias_p|^2. Prime-factor recovery excludes all collisions.
+Final80859 exit0 warning-free; five public audits F201scratch79743 standard-only;
+index8; lint13319 ten unrelated unreachable modules, no BAG debt.

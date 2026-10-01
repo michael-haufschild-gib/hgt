@@ -100,3 +100,24 @@ Let `F_N(x)=Σ_{n≤N}μ(n)e^{−nx}`, so `E_N(r)=Γ(r)Σ_{m,n≤N}μ(m)μ(n)(m+
   - Gaussian windows cost `e^{c/w²}` and stop at `√log N` (the old cycle-67 obstruction). The band-limited window removes it.
 - **Divergence [Lean: `RHTower.tendsto_finiteMobiusGammaHankelEnergy_atTop`, `…_of_riemannZeta_eq_zero`].** A bound for infinitely many `N` already makes `Γ/ζ` square integrable on `Re s = r/2` (Fatou along a subsequence), so any zero with `Re ρ ≥ r/2` forces `E_N(r) → ∞`.
 - **Threshold [Lean: `RHTower.bddAbove_range_finiteMobiusGammaHankelEnergy_iff`].** For `r ≠ 2Θ`, `E_N(r)` is bounded iff `r > 2Θ`. The bounded side uses Littlewood `|M(n)| ≪ n^{Θ+ε}`, which gives `|F_N(x)| ≪ x^{−b}` uniformly on `(0,1]`.
+
+## Sharp logarithmic constant (MC loop cycle 191, 2026-10-01; STATUS MUST-630)
+- **Theorem [Lean: `RHTower.sum_normSq_gamma_div_deriv_zeta_le_of_hilbert_log`].** Suppose `E_N ≤ c log(N+1) + C` for all `N`. Then:
+  - every critical zero is simple;
+  - `Σ_{γ∈S}|Γ(½+iγ)|²/|ζ'(½+iγ)|² ≤ c` for every finite set `S` of critical ordinates.
+- **Corollaries.**
+  - `exists_hilbert_gt_log_of_lt_sum` (sharp Ω): if a finite set has `Σ|Γ/ζ'|² > c`, then `E_N > c log(N+1) + C` for some `N`, for every `C`.
+  - `deriv_riemannZeta_ne_zero_of_hilbert_log`: a logarithmic bound forces simple critical zeros.
+- **Proof.**
+  - Lossless tail: compare `F_N` with `F_M`, `M ≈ (3 + 2log(1/y))/y`, using `(a+b)² ≤ (1+η)a² + (1+1/η)b²`. This gives `∫_y^1F_N² ≤ (1+η)²c log(1/y) + O_η(1)`.
+  - Layer cake and Fatou give the line energy `∫|Γ/ζ|²(½+r+it)dt ≤ π(1+η)²c/r + O_η(1)`.
+  - Local floor `|Γ(s)/ζ(s)| ≥ K/|s−ρ|` for every `K < |Γ(ρ)/ζ'(ρ)|`, and for every `K` when `ζ'(ρ) = 0`.
+  - Window integral `(2K²/r)arctan(δ/r) ≥ K²(π/r − 2/δ)`.
+  - Disjoint windows over a separated finite set; then `r → 0`, `η → 0`, `K ↑`.
+- **Comparison with the earlier constant.** It improves `exists_pos_forall_not_hilbert_le_log` (`c ≥ c₀²/(4π)` from one zero, with a lossy factor 4 in the tail) to the full zero sum. That sum is the coefficient `c_Z` of the RH heuristic above, so the Ω-constant is sharp.
+- **Reading.** `c_Z ≈ 10^{-19}`, dominated by `|Γ(ρ₁)|²`. A logarithmic bound on `E_N` is therefore not a statement about zeros' residues. Its content is the term `M(N)²/N`, i.e. the pointwise weak Mertens bound `MobiusHilbertLogarithmicMertensBound`.
+- Module `RHTower/MobiusHilbertSharpLogarithmicConstant.lean` (~690 lines):
+  - standard axioms;
+  - collision scan clean (the names `criticalPoint` and `zetaLinePoint` were taken, so the point is called `criticalOrdinatePoint`);
+  - wired after `MobiusHilbertLogarithmicOmega`.
+- **Literature parallel (honest).** This is the Abel-smoothed analogue of Titchmarsh §14.29. There, a mean-square bound `∫_1^Y M(x)²x^{−2}dx ≪ log Y` forces simple zeros and `Σ 1/|ρζ'(ρ)|² < ∞`. The Hilbert form replaces `1/(sζ(s))` by `Γ(s)/ζ(s)`. The novelty is the exact constant for the corpus' Hilbert energy, not the mechanism.

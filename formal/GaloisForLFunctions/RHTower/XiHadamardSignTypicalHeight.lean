@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SpeiserTypicalHeightDensity
-import GaloisForLFunctions.RHTower.CompletedLogDerivStrip
+import GaloisForLFunctions.RHTower.SpeiserLocalDisk
 import GaloisForLFunctions.RHTower.LateralWindingFloor
 
 /-!
@@ -50,24 +50,8 @@ theorem xi_ne_zero_and_re_logDeriv_pos_rightBox {t R B : ℝ}
     intro h0
     have := hdata.zeroFree s h0 (by linarith)
     linarith
-  have hs0 : s ≠ 0 := fun h => by rw [h, Complex.zero_re] at hre0; exact lt_irrefl 0 hre0
-  have hs1 : s ≠ 1 := fun h => by rw [h, Complex.one_re] at hre1; exact lt_irrefl 1 hre1
-  have hstrip : 0 < s.re ∧ s.re < 1 := ⟨hre0, hre1⟩
-  have hxi : xi s = archFactor s * riemannZeta s :=
-    xi_eq_archFactor_mul_zeta hs0 hs1 (Gammaℝ_ne_zero_of_re_pos hre0)
-  refine ⟨by rw [hxi]; exact mul_ne_zero (archFactor_ne_zero_strip hstrip) hζ, ?_⟩
-  have hU : {z : ℂ | 0 < z.re ∧ z.re < 1} ∈ nhds s :=
-    ((isOpen_lt continuous_const Complex.continuous_re).inter
-      (isOpen_lt Complex.continuous_re continuous_const)).mem_nhds hstrip
-  have hev : xi =ᶠ[nhds s] fun z => archFactor z * riemannZeta z := by
-    filter_upwards [hU] with z hz
-    exact xi_eq_archFactor_mul_zeta
-      (fun h => by rw [h, Complex.zero_re] at hz; exact lt_irrefl 0 hz.1)
-      (fun h => by rw [h, Complex.one_re] at hz; exact lt_irrefl 1 hz.2)
-      (Gammaℝ_ne_zero_of_re_pos hz.1)
-  have hlog : logDeriv xi s = logDeriv (fun z => archFactor z * riemannZeta z) s := by
-    rw [logDeriv_apply, logDeriv_apply, hev.deriv_eq, hev.eq_of_nhds]
-  rw [logDeriv_completed_split_strip hstrip hζ] at hlog
+  obtain ⟨hxi, hlog⟩ := logDeriv_xi_eq_archFactor_add_of_strip hre0 hre1 hζ
+  refine ⟨hxi, ?_⟩
   have hsP : s = stripPt s.re s.im := by
     apply Complex.ext <;> simp [stripPt]
   have harch : stripFloor s.re s.im ≤ (logDeriv archFactor s).re := by

@@ -120,7 +120,136 @@ On a negative orthonormal family, a nonzero coefficient vector gives quadratic f
 - Weighted corpus search reported `partial: true`: hits expose existing `L^p` exclusion and general Mellin-exponent removability, plus current unweighted index, but no weighted multiplicity-index theorem. Preferred parameterization is `0<a≤1/2`, weight `t^(2a-1)`, form coefficient `2^(-2a)`, zero threshold `Re rho>1-a`. Weighted spurious coupling should be `2^(1-2a) c(rho)/(rho-(d_l+1-2a))`; this follows directly by integrating the power exponent. No weighted theorem claimed or implemented yet.
 
 - Mean-classification scratch passed exit 0 without warnings after explicit Pi reductions and replacing a recalled unavailable name with the verified `div_lt_one`. Actual `FermiNymanBoundedSpuriousClassification.lean` created, including unconditional bounded-class and full jet-kernel set equalities. Targeted old-mode leaf build underway; then final actual-leaf/axiom audits of rank, kernel and this source classification.
-- Weighted candidate now has its own `1-in-progress/pm-weighted-multiplicity-tomography.md` card. Extended parameter range `0<a<1` is proposed, with an explicit warning that `a>1/2` uses a new weighted witness class rather than ordinary `L²` membership. No weighted source file edited yet.
+- Weighted candidate now has its own `3-formalized/pm-weighted-multiplicity-tomography.md` card. Extended parameter range `0<a<1` is proposed, with an explicit warning that `a>1/2` uses a new weighted witness class rather than ordinary `L²` membership. No weighted source file edited yet.
 
 - Mean-classification actual leaf targeted old-mode build passed (118s leaf); wired. Direct final actual-leaf audit of `FermiNymanDyadicDifferenceRank.lean` underway, then kernel/classification audits and combined `/tmp/pm_structural_axioms.lean`. No full or umbrella build.
 - Hardy search returned `partial: false`, no lexical conjunction hits but useful source candidates. Actual `HardyDyadicWindowTheorem.lean` declares unconditional `exists_riemannZeta_line_zero_dyadic` and `exists_pow_le_xiPosCriticalZeroCount`; inspected proof mechanisms and exact types. These support a proposed weighted index cliff for `a>1/2`, once weighted admission/pairing are proved and this dependency is compiler/axiom-audited. No cliff theorem claimed yet.
+
+- 2026-09-30 resumption: current Stage-3 rank/kernel/classification certificates confirm prior progress. Continued in `pm-weighted-multiplicity-tomography.md`. New `FermiNymanWeightedWitness` and `FermiNymanWeightedSignature` are built, directly audited, axiom-audited and wired. Exact power admission, all-order sufficient log admission, source-neutral weighted Cauchy pairing and finite negative blocks are proved; unconditional Hardy zeros give infinite index for `1/2<a<1`. At `a=1/2` canonical PM index is recovered, still uncontrolled. Stage-3 card: `pm-weighted-critical-index-saturation.md`. Deep cross-corpus energy search completed; full-line dilation isometry and moving-boundary Ramaré covariance do not supply the missing PM source estimate. Full weighted multiplicity equality and RH remain active objectives; no goal-completion claim.
+
+- 2026-09-30 — full weighted multiplicity tomography is now Stage 3. Three new leaves prove weighted Mellin/correlation cancellation, exact normalized logarithmic coupling, multiplicity hyperbolic blocks, and `weightedWitnessNegIndex a = weightedStripMultiplicityCount a` for every `0<a<1`. All targeted builds and three final actual-leaf checks passed; all 48 new declarations have only the standard three axioms. Final global lint fails solely for 17 unrelated unwired modules, with generated indexes current. Source positivity at `a=1/2` remains unproved. Next conjecture/card: `pm-weight-zero-domain-boundary.md`. Goal remains active.
+
+- 2026-09-30 — zero-weight domain boundary formalized in `FermiNymanWeightDomainBoundary`: source witnesses vanish on `(0,1]` for every `a≤0`; nontrivial witnesses exist iff `a>0`. Fixed spurious mode energy is exactly `1/(2a)`, unbounded in every positive neighborhood of zero. Targeted build, final direct actual-leaf audit and all eight axiom checks passed; only standard axioms. Global lint flags 11 unrelated unwired modules. Endpoint card promoted to Stage 3. Two complete deep source-approximation searches returned transfers and mean-value estimates, not an independent producer. Existing raw Möbius critical-energy obstruction suggests the next candidate: exact Fermi Haar head with an unavoidable positive tail floor. New card `pm-raw-mobius-haar-tail-floor.md`; no raw-Fermi Lean code yet.
+- 2026-10-01 — raw Möbius Fermi convergence is unconditionally false. The exact head, shrinking support, lower bound `(N+1)H_N²/6`, and cofinal positive error floor are formalized in `FermiNymanRawMobiusTailFloor` (24 declarations, 339 lines). Targeted old-mode build, final direct leaf audit and all axiom checks passed; only the standard three axioms. Leaf wired and indexes current; global lint flags 12 unrelated unwired modules. Card moved to `5-failed/pm-raw-mobius-haar-tail-floor.md` with its exact positive survivor. Three complete deep searches now inspect logarithmic smoothing, its divisor/Chebyshev head identity, and possible prime-discrepancy energy producers. Active card: `pm-log-smoothed-mobius-haar.md`; RH goal remains active.
+- 2026-10-01 — logarithmic smoothing has an exact continuous source bridge in `FermiNymanLogMobiusHead` (13 declarations, 217 lines): finite real-floor inversion, literal Chebyshev head error, and complete head/tail energy decomposition. Targeted build, final actual-leaf and all standard-axiom audits passed. Canonical error decay is not proved. A partial variance search located unconditional Chebyshev-error integrability; together with the inspected linear Barban–Vehov mass bound, it supports a new weighted `t dt` endpoint candidate with explicit rate. Card `pm-log-mobius-weighted-endpoint.md` records the paper argument; no endpoint Lean yet. Further complete weighted search found no matching convergence theorem in reviewed hits. RH goal remains active.
+
+- 2026-10-01 — weighted logarithmic Möbius Fermi convergence proved unconditionally: `∫t|h-A_N|² ≤ (N+1)^(-2)+(C+9)/(log N)² →0`. `ChebyshevDyadicWeightedEnergy` and `FermiNymanLogMobiusWeightedEndpoint` add 23 declarations / 325 lines. Targeted build, final direct actual-leaf checks and every axiom audit passed; standard axioms only. Leaves wired, indexes refreshed, all API/name checks passed. Global lint flags 11 unrelated unwired modules, listed on the promoted Stage-3 card. Two complete follow-up searches locate `B_N→1` but no critical variance rate. Next audited paper candidate `pm-log-mobius-auxiliary-variance.md` retains the exact finite variance and its possible mean/variance decomposition. Canonical norm and RH remain open; goal remains active.
+
+- 2026-10-01 — canonical logarithmic auxiliary variance formalized: exact reciprocal tail energy, lower bound `V_N/log²N≤6 E_Fermi(N)`, and decomposition into scalar normalization and intrinsic prime-profile variance. `FermiNymanFiniteCoefficientError` plus `FermiNymanLogMobiusAuxiliaryVariance`: 31 declarations / 378 lines; targeted build, both final actual-leaf checks and all standard-axiom audits passed. Card promoted to Stage 3. Final plain lint flags only 12 unrelated unwired modules. Four complete corpus queries supplied no critical variance upper producer. Next paper candidate `pm-weighted-source-input-power-boundary.md` classifies explicit power profiles admitted by the analytic inputs; positive optimal-variance survivor recorded, no model Lean yet. Actual canonical convergence and RH remain open; goal active.
+
+- 2026-10-01 — analytic-input power boundary fully formalized: 46 declarations / 543 lines in three leaves, exact optimal variance and unique minimizer, sharp half-exponent threshold, arbitrary-centering divergence, unconditional input obstruction. Three old-mode targeted builds and final actual-leaf checks passed; every axiom audit standard only. Imports/names/API entries unique, indexes refreshed. Lint reports 11 unrelated unwired modules only. Positive survivor recorded; card moved to `5-failed/pm-weighted-source-input-power-boundary.md`. Actual arithmetic candidate and RH remain open. Two further complete searches identify the actual Λ-weighted Selberg recursion and signed prime-work balance; next card `pm-selberg-recursion-power-response.md`.
+
+- 2026-10-01 — PM-28 complete: literal Λ-weighted power floor operator classified,
+  with exact series response and full half-interval initial-cell correction.
+  Explicit same-constant Selberg counterexample retains divergent canonical
+  variance. Three leaves / 45 declarations / 541 lines; all targeted builds,
+  final actual-leaf and standard-axiom audits passed. Names/imports/API unique;
+  index current; lint only 10 unrelated unwired modules. Card moved to
+  `5-failed/pm-selberg-recursion-power-response.md`, retaining its positive
+  survivor. Next PM-29 rescaled-response scratch is under verification. A
+  separate corpus audit tests whether fixed logarithmic coefficients force
+  critical simplicity; no implication claimed. Actual RH goal remains active.
+
+- 2026-10-01 — PM-29 complete: exact affine actual-prime floor response, unique
+  positive cancelling amplitude, preserved analytic bounds and quantitative
+  finite-cell variance comparison. Explicit sublinear response coexists with
+  every-centering variance divergence and both unchanged Selberg inequalities.
+  Two leaves / 32 declarations / 387 lines; all builds, final actual-leaf and
+  standard-axiom audits passed. Wiring/names/API/body checks passed, indexes
+  current; lint only 11 unrelated unwired modules. Stage-5 card retains the
+  exact positive survivor. Next actual-source candidate is fixed logarithmic
+  coefficient convergence versus critical-zero multiplicity; no implication
+  formalized yet. RH goal remains active.
+
+- 2026-10-01 — PM-30 first ingredient fully audited:
+  `PMLogMobiusMellinPair` (161 lines / 11 declarations), exact coefficient
+  Mellin pair and finite-cutoff bridge. General arithmetic dilation interchange
+  also passes targeted/direct-leaf/axiom checks; remaining name/index/lint audit
+  pending. Prime mean transform scratch now checking. Reused the existing
+  exact coefficient unit-cell identity and public harmonic boundedness theorem.
+  Full fixed-coefficient simplicity implication remains unproved; actual RH
+  goal stays active.
+
+- 2026-10-01 — PM-30 now has five fully audited leaves / 56 declarations:
+  exact literal transforms, sharp unit-cell transfer, continuous little-o budget
+  and analytic continuation of the cleared identity under canonical error
+  convergence. Quadratic Abel draft checking; actual-source simplicity assembly
+  drafted but unchecked. No proof of canonical convergence or RH.
+
+- 2026-10-01 — PM-30 closed in Stage 3: six leaves / 64 declarations / 1,196 lines, all targeted/direct-leaf/standard-axiom audits passed. Canonical fixed logarithmic error convergence implies critical simplicity. Literal transforms, continuous budget, analytic continuation and quadratic Abel transfer are certified. Canonical convergence and unconditional RH remain open. Higher-log and damped-source corpus searches supplied no canonical bound; alternate-source investigation remains preparation only.
+- 2026-10-01 — PM-31 source ingredient fully audited: `PMPowerDampedMobiusSource`,
+  250 lines / 14 declarations, literal finite source, pointwise Haar limit,
+  Chebyshev parameter derivative and canonical `MemLp` for `ε>1/2`. All targeted,
+  final actual-leaf and standard-axiom checks passed. Exact Mellin scratch now
+  checking. Admission at arbitrarily small positive damping remains the proposed
+  producer; no RH proof. Card: `pm-power-damped-mobius-haar.md`.
+
+- 2026-10-01 — PM-31 Mellin leaf fully audited: exact arithmetic quotient with
+  absolute convergence; explicit canonical `MemLp` gives the analytic transform
+  on `Re s>1/2`. Two leaves / 450 lines / 28 declarations now certified. The
+  pole-cleared continuation and cofinal-admission RH criterion are next; no
+  small-positive-damping norm bound or unconditional RH proof.
+
+- 2026-10-01 — PM-31 receiver fully audited: `PMPowerDampedMobiusCriterion`,
+  146 lines / 5 declarations; combined 596 lines / 33 declarations. Cofinal
+  positive canonical admission implies RH; failure of RH forces an interval
+  of nonadmission. Targeted build, final actual leaf and all standard-axiom
+  checks passed. Endpoint `ε=1/2` investigation now uses existing unconditional
+  Mertens and modular-energy logarithmic savings. Small damping remains open.
+
+- 2026-10-01 — PM-31 full-prefix energy leaf fully audited: 342 lines / 17
+  declarations, combined 938 lines / 50 declarations. Exact reciprocal carrier
+  identity and harmonic correction yield unconditional arbitrary logarithmic
+  savings for literal Fermi square energy relative to N. All targeted/direct-leaf/
+  standard-axiom checks passed. Endpoint Abel/Fatou scratch now checking; no RH.
+
+- 2026-10-01 — PM-31 endpoint leaf fully audited: 246 lines / 12 declarations;
+  combined five leaves / 1184 lines / 62 declarations. Abel summation and Fatou
+  prove canonical admission for every `ε≥1/2`. All targeted/direct-leaf/standard-axiom
+  and exhaustive body/name/API/import checks passed. The Gram investigation now
+  separates exact summable diagonal geometry from unresolved signed cross terms.
+  No arbitrarily small positive admission or RH proof.
+
+- 2026-10-01 — PM-31 Gram diagonal fully audited: 259 lines / 18 declarations;
+  combined six leaves / 1443 lines / 80 declarations. Exact norm `log(2)/a`,
+  summable actual diagonal for every positive damping, and positive-block
+  failure of coefficient-independent diagonal bounds. All targeted/direct-leaf/
+  standard-axiom and exhaustive source/API gates passed. Signed arithmetic
+  cancellation remains open; no RH claim.
+
+- 2026-10-01 — PM-31 norm-floor and canonical prime-growth leaves fully audited:
+  292 lines / 19 declarations, combined eight leaves / 1735 lines / 99 declarations.
+  Every positive damping neighborhood contains a strictly increasing canonical
+  prime step and a finite source exceeding any prescribed subunit norm budget.
+  Exact finite-cutoff budget transfer and unit limiting budget floor are the
+  positive survivor. Prime contraction retired on its failed-route card.
+  Next: audit actual-source monotonicity in the damping parameter through a
+  symbolic first-prime asymptotic. No small-positive admission or RH proof.
+
+- 2026-10-01 — PM-31 actual-source damping monotonicity refuted and closed.
+  `PMPowerDampedMobiusLargeDamping`: 415 lines / 22 declarations; combined nine
+  leaves / 2150 lines / 121 declarations. Positive survivor: canonical first-prime
+  expansion and `2^ε(E_ε−log 2)→−2κ`, `κ≥1/12`. All gates passed; formal lint
+  has only 11 unrelated unwired modules. Next: exact all-positive canonical L¹
+  mean and source/error energy decomposition toward the unproved unit budget.
+
+- 2026-10-01 — PM-31 exact mean leaf fully audited, 203 lines / 12 declarations;
+  combined ten leaves / 2353 lines / 133 declarations. Every positive damping
+  admits canonical L¹ with mean log 2/ζ(1+ε) and slope log 2 at zero. The exact
+  admitted L² source/error decomposition isolates the missing upper estimate.
+  Next shrinking-error L¹ convergence scratch is checking. RH remains open.
+
+- 2026-10-01 — PM-31 canonical L¹ Haar convergence fully audited: 260 lines /
+  19 declarations; combined twelve leaves / 2917 lines / 181 declarations.
+  The explicit finite reciprocal raw-error sum bounds L¹ error by Cε for all
+  positive ε. Targeted186s/final leaf/standard3axioms/all-source/API audits passed.
+  Global lint still has ten unrelated unwired modules and concurrent generated
+  staleness. Next L¹ derivative scratch is running; no small-positive L² or RH.
+
+- PM-31 derivative audit closed: `PMPowerDampedMobiusDerivative` (304 lines /
+  29 declarations) passed targeted old build, final actual leaf, every axiom
+  report (standard three only), exact body/API/name/unique-import gates.
+  The actual difference quotients converge in canonical L¹ to the dyadic
+  Chebyshev source, whose signed integral is log 2. Combined: twelve audited
+  leaves / 2917 lines / 181 declarations. Small-positive L² admission and RH
+  remain open; the derivative's proposed L² exclusion is not yet certified.
