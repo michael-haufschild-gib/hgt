@@ -39,3 +39,9 @@ L150 (`crystalline_producer_rigidity`) needed the atoms at zeta ordinates. L153 
 
 ## Log
 - 2026-10-01 — created at stage 3
+
+## Weil-form version: a converse explicit formula (MUST-642, Lean, 2026-10-01)
+- `RHTower.WeilSpectral.converse_explicit_formula`: if `W_lam(f⋆f̃) = Σ_j m_j(|f̂(t_j)|² + |f̂(−t_j)|²)` for all `C²` compactly supported `f` (`m_j ∈ ℕ`, `t_j ≥ 1`, `Σm_j/t_j² < ∞`), then `lam = Λ` on `n ≥ 2` and RH holds.
+- This removes the Herglotz-form hypothesis of `integer_mass_rigidity`. The route is the stage-1 Poisson tests of `WeilFullConeHerglotzRightHalfPlane`, dominated convergence on the atomic sum, and `eq_of_re_eq_zero`.
+- Module `formal/GaloisForLFunctions/RHTower/WeilFormConverseExplicitFormula.lean`. Axioms standard.
+- Maintenance: importing it exposed a name collision, `HTGeometry.convPow` defined in both `ConvolutionAtomBounds` and `DirichletConvolutionExponential`. Both are imported by the HTGeometry umbrella, so the umbrella was broken. The newer definition is renamed to `dirichletConvPow`, and its two dependents are recompiled.

@@ -10,12 +10,13 @@ RH is equivalent to `Re(ξ'/ξ)(s) ≥ 0` on `Re s > ½`.  By the disk criterion
 `½ < Re s ≤ Re ρ`, `|Im s − Im ρ| ≤ Re ρ − ½` of an off-line zero, normalised by the functional
 equation and conjugation to `Re ρ > ½`, `Im ρ ≥ 0` (`exists_boxZero_of_hadamard_fail`).  The rectangle
 has area `2(Re ρ − ½)² ≤ Re ρ − ½`, so the failure set in `{Re s > ½, 0 ≤ Im s ≤ V}` has area at most
-the off-line first moment `Σ_{0 ≤ Im ρ ≤ V + ½} m(ρ)(Re ρ − ½)` (`volume_hadamardFail_le`).  With the
-unconditional bound `≤ (21/100) V`:
+the off-line first moment `Σ_{0 ≤ Im ρ ≤ V + ½} m(ρ)(Re ρ − ½)` (`volume_hadamardFail_le`).  With a
+moment bound `≤ μ V`:
 
-  `vol{s : ½ < Re s < 1, 0 ≤ Im s ≤ V, ξ(s) ≠ 0, Re(ξ'/ξ)(s) ≥ 0} ≥ (29/100) V − 21/200`
+  `vol{s : ½ < Re s < 1, 0 ≤ Im s ≤ V, ξ(s) ≠ 0, Re(ξ'/ξ)(s) ≥ 0} ≥ (½ − μ) V − μ/2`
 
-for all large `V` (`eventually_volume_hadamardSign_ge`), `58%` of the area `V/2`.
+for all large `V` (`eventually_volume_hadamardSign_ge_of_moment`); `μ = 21/100` gives
+`(29/100) V − 21/200`, `58%` of the area `V/2` (`eventually_volume_hadamardSign_ge`).
 -/
 
 open Complex Filter Topology Set MeasureTheory
@@ -165,20 +166,20 @@ theorem volume_rightHalfStrip (V : ℝ) :
   congr 1
   ring
 
-/-- **`Re(ξ'/ξ) ≥ 0` on more than half of the right half of the critical strip.** For all large
-`V` the set of `s` with `½ < Re s < 1`, `0 ≤ Im s ≤ V`, `ξ(s) ≠ 0` and `Re(ξ'/ξ)(s) ≥ 0` has area at
-least `(29/100) V − 21/200`, against the total area `V/2`. -/
-theorem eventually_volume_hadamardSign_ge :
-    ∀ᶠ V in atTop, ENNReal.ofReal (29 / 100 * V - 21 / 200) ≤
+/-- **`Re(ξ'/ξ) ≥ 0` from an off-line moment bound.**  If `Σ m(ρ)(Re ρ − ½) ≤ μ V` for all large
+`V`, `μ ≥ 0`, then for all large `V` the set of `s` with `½ < Re s < 1`, `0 ≤ Im s ≤ V`, `ξ(s) ≠ 0`
+and `Re(ξ'/ξ)(s) ≥ 0` has area at least `(½ − μ) V − μ/2`. -/
+theorem eventually_volume_hadamardSign_ge_of_moment {μ : ℝ} (hμ : 0 ≤ μ)
+    (hmom : ∀ᶠ V in atTop, offLineMoment V ≤ μ * V) :
+    ∀ᶠ V in atTop, ENNReal.ofReal ((1 / 2 - μ) * V - μ / 2) ≤
       volume {s : ℂ | 1 / 2 < s.re ∧ s.re < 1 ∧ 0 ≤ s.im ∧ s.im ≤ V ∧
         xi s ≠ 0 ∧ 0 ≤ (logDeriv xi s).re} := by
-  have h := (tendsto_atTop_add_const_right atTop (1 / 2 : ℝ) tendsto_id).eventually
-    ZetaGateProductAFE.eventually_offLineMoment_le
+  have h := (tendsto_atTop_add_const_right atTop (1 / 2 : ℝ) tendsto_id).eventually hmom
   filter_upwards [h, eventually_ge_atTop 0] with V hV hV0
   simp only [id] at hV
   set Ω := {s : ℂ | 1 / 2 < s.re ∧ s.re < 1 ∧ 0 ≤ s.im ∧ s.im ≤ V}
   set F := {s : ℂ | 1 / 2 < s.re ∧ 0 ≤ s.im ∧ s.im ≤ V ∧ ¬ (xi s ≠ 0 ∧ 0 ≤ (logDeriv xi s).re)}
-  have hF : volume F ≤ ENNReal.ofReal (21 / 100 * (V + 1 / 2)) :=
+  have hF : volume F ≤ ENNReal.ofReal (μ * (V + 1 / 2)) :=
     (volume_hadamardFail_le V).trans (ENNReal.ofReal_le_ofReal hV)
   have hsub : Ω \ F ⊆ {s : ℂ | 1 / 2 < s.re ∧ s.re < 1 ∧ 0 ≤ s.im ∧ s.im ≤ V ∧
       xi s ≠ 0 ∧ 0 ≤ (logDeriv xi s).re} := by
@@ -187,8 +188,8 @@ theorem eventually_volume_hadamardSign_ge :
       by_contra hc
       exact hnF ⟨h1, h3, h4, hc⟩
     exact ⟨h1, h2, h3, h4, hg.1, hg.2⟩
-  calc ENNReal.ofReal (29 / 100 * V - 21 / 200)
-      = ENNReal.ofReal (V / 2) - ENNReal.ofReal (21 / 100 * (V + 1 / 2)) := by
+  calc ENNReal.ofReal ((1 / 2 - μ) * V - μ / 2)
+      = ENNReal.ofReal (V / 2) - ENNReal.ofReal (μ * (V + 1 / 2)) := by
         rw [← ENNReal.ofReal_sub _ (by positivity)]
         congr 1
         ring
@@ -197,6 +198,17 @@ theorem eventually_volume_hadamardSign_ge :
         exact tsub_le_tsub_left hF _
     _ ≤ volume (Ω \ F) := le_measure_sdiff
     _ ≤ _ := measure_mono hsub
+
+/-- **`Re(ξ'/ξ) ≥ 0` on more than half of the right half of the critical strip.** For all large
+`V` the set of `s` with `½ < Re s < 1`, `0 ≤ Im s ≤ V`, `ξ(s) ≠ 0` and `Re(ξ'/ξ)(s) ≥ 0` has area at
+least `(29/100) V − 21/200`, against the total area `V/2`. -/
+theorem eventually_volume_hadamardSign_ge :
+    ∀ᶠ V in atTop, ENNReal.ofReal (29 / 100 * V - 21 / 200) ≤
+      volume {s : ℂ | 1 / 2 < s.re ∧ s.re < 1 ∧ 0 ≤ s.im ∧ s.im ≤ V ∧
+        xi s ≠ 0 ∧ 0 ≤ (logDeriv xi s).re} :=
+  (eventually_volume_hadamardSign_ge_of_moment (by norm_num)
+    ZetaGateProductAFE.eventually_offLineMoment_le).mono fun V h =>
+      le_trans (le_of_eq (by congr 1; ring)) h
 
 end
 

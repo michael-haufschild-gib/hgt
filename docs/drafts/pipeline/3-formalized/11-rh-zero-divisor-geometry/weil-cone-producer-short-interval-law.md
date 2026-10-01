@@ -124,3 +124,12 @@ Take `δ = x^{−½+ε}` and `η = ε/2`. Then `Σ_n lam(n)ψ((n−x)/x^{½+ε})
   - `volume_primeGapStarts_le_of_zetaWeilPositive`: a prime-supported producer for ζ's datum forces primes in all but `O(X^{−ε/2})` (logarithmic measure) of the windows of length `X^ε`, for every `ε > 0`. The unconditional record for almost-all windows is a fixed exponent (about 1/20, Jia/Harman).
   - Proof chain: `smoothedSum_sub_eq_shifted_integral` (factored out of `exists_const_abs_smoothedSum_sub_le`), the corpus Plancherel inequality `lintegral_norm_sq_angularFourier_le`, `integral_sq_lorentz_rpow_le`, and Markov.
   - Still paper-only: (Q) and (D).
+
+## Lean (2026-10-01, MC loop cycle 219): exact square-root error (MUST-652)
+- `RHTower/WeilFullConeSquareRootPNT.norm_sqrt_pnt_sub_le`: for every full-cone producer and every `K = f⋆f̃` (`f` `C²` with compact support in `[−R, R]`), for all `y > R`:
+  `‖e^{y/2}Σ_{n≥2} lam(n)n^{−½}K(log n − y) − e^{y}K̂(−i/2)‖ ≤ ‖K̂(i/2)‖ + e^{y/2}(A_f + B_f)`.
+  - `A_f = (1/2π)∫|K̂||γ|`.
+  - `B_f = ν_f(ℝ) = W_lam(f⋆f̃)`.
+- With `x = e^y` this is `Σ lam(n)ψ(n/x) = x∫ψ + O(√x)`, which improves Theorem S's `x^{½+ε}` to the exact half power for these weights.
+- **Mechanism.** No contour shift. The explicit formula is the definition of `W_lam` on `transl_y K`. The spectral side is `charFun` of the Bochner measure `ν_f`, so it is bounded by its total mass.
+- **Wiener reading (paper).** The mean square in `y` of the error `W_lam(K_y)` tends to `Σ_atoms ν_f{r}² = Σ|f̂(r)|⁴μ_lam{r}²`. So the PNT error of a producer oscillates at full `√x` size iff `μ_lam` has atoms (L192, now with formal `charFun` backbone).

@@ -45,13 +45,15 @@ theorem speiserUnshadowed_of_not_mem_xiShadow {T : ℝ} (h : T ∉ DeBruijn.xiSh
     rw [hre, him]
     nlinarith [hlt]
 
-/-- **Unshadowed heights exist in long intervals.** There is `V₀` such that every `[a, b]` with
-`0 ≤ a`, `V₀ ≤ b` and `(43/100)(b + 1) < b − a` contains an unshadowed height. -/
-theorem exists_speiserUnshadowed_mem_Icc :
-    ∃ V₀ : ℝ, ∀ a b : ℝ, 0 ≤ a → V₀ ≤ b → 43 / 100 * (b + 1) < b - a →
+/-- **Unshadowed heights in long intervals, from an off-line moment bound.**  If
+`Σ m(ρ)(Re ρ − ½) ≤ μ V` for all large `V`, there is `V₀ ≥ 0` such that every `[a, b]` with
+`0 ≤ a`, `V₀ ≤ b` and `2μ(b + 1) < b − a` contains an unshadowed height. -/
+theorem exists_speiserUnshadowed_mem_Icc_of_moment {μ : ℝ} (hμ : 0 ≤ μ)
+    (hmom : ∀ᶠ V in atTop, offLineMoment V ≤ μ * V) :
+    ∃ V₀ : ℝ, 0 ≤ V₀ ∧ ∀ a b : ℝ, 0 ≤ a → V₀ ≤ b → 2 * μ * (b + 1) < b - a →
       ∃ T ∈ Icc a b, SpeiserUnshadowed T := by
-  obtain ⟨V₁, hV₁⟩ := eventually_atTop.mp ZetaGateProductAFE.eventually_offLineMoment_le
-  refine ⟨max V₁ 0, fun a b ha hb hlen => ?_⟩
+  obtain ⟨V₁, hV₁⟩ := eventually_atTop.mp hmom
+  refine ⟨max V₁ 0, le_max_right _ _, fun a b ha hb hlen => ?_⟩
   by_contra hno
   push Not at hno
   have hsub : Icc a b ⊆ DeBruijn.xiShadow ∩ Icc 0 b := by
@@ -63,6 +65,7 @@ theorem exists_speiserUnshadowed_mem_Icc :
   rw [Real.volume_Icc] at hvol
   have hm := hV₁ (b + 1 / 2) (by linarith [le_max_left V₁ 0])
   have hb0 : 0 ≤ b := le_trans (le_max_right V₁ 0) hb
+  have hμb : 0 ≤ 2 * μ * (b + 1) := by positivity
   have hle : b - a ≤ 2 * offLineMoment (b + 1 / 2) := by
     have h0 : 0 ≤ 2 * offLineMoment (b + 1 / 2) := by
       by_contra hneg
@@ -71,6 +74,18 @@ theorem exists_speiserUnshadowed_mem_Icc :
       have := (ENNReal.ofReal_eq_zero.mp (le_antisymm hvol zero_le))
       linarith
     exact (ENNReal.ofReal_le_ofReal_iff h0).mp hvol
+  nlinarith
+
+/-- **Unshadowed heights exist in long intervals.** There is `V₀` such that every `[a, b]` with
+`0 ≤ a`, `V₀ ≤ b` and `(43/100)(b + 1) < b − a` contains an unshadowed height. -/
+theorem exists_speiserUnshadowed_mem_Icc :
+    ∃ V₀ : ℝ, ∀ a b : ℝ, 0 ≤ a → V₀ ≤ b → 43 / 100 * (b + 1) < b - a →
+      ∃ T ∈ Icc a b, SpeiserUnshadowed T := by
+  obtain ⟨V₀, hV₀, h⟩ :=
+    exists_speiserUnshadowed_mem_Icc_of_moment (by norm_num)
+      ZetaGateProductAFE.eventually_offLineMoment_le
+  refine ⟨V₀, fun a b ha hb hlen => h a b ha hb ?_⟩
+  have : 0 ≤ b := hV₀.trans hb
   linarith
 
 /-- A zero of `ζ` off the pole has multiplicity at least one. -/

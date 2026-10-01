@@ -9,10 +9,11 @@ RH is equivalent to the nonnegativity of every Taylor coefficient at `x = 0` of 
 `|Re ρ − ½| ≤ |Im ρ − t|` suffices (`xiSliceCoeff_nonneg_of_cone`); it fails at `t` exactly when
 `t` lies in the shadow of the off-line zeros, since for `ζ = −i(ρ − ½)` the failure
 `(Im ρ − t)² < (Re ρ − ½)²` reads `(Re ζ − t)² < (Im ζ)²` (`xiSliceCoeff_nonneg_of_not_mem_xiShadow`).
-With the unconditional shadow bound, for all large `V`
+An off-line moment bound `Σ m(ρ)(Re ρ − ½) ≤ μ V` gives, for all large `V`,
 
-  `vol{t ∈ [0, V] : every slice coefficient at t is ≥ 0} ≥ (29/50) V − 21/100`
+  `vol{t ∈ [0, V] : every slice coefficient at t is ≥ 0} ≥ (1 − 2μ) V − μ`
 
+(`eventually_volume_sliceCoeff_nonneg_ge_of_moment`); `μ = 21/100` gives `(29/50) V − 21/100`
 (`eventually_volume_sliceCoeff_nonneg_ge`).
 -/
 
@@ -44,23 +45,26 @@ theorem xiSliceCoeff_nonneg_of_not_mem_xiShadow {t : ℝ} (ht : t ∉ xiShadow) 
     have := sq_lt_sq.mpr hlt
     nlinarith [this]
 
+/-- **All-order slice positivity from an off-line moment bound.**  If
+`Σ m(ρ)(Re ρ − ½) ≤ μ V` for all large `V`, `μ ≥ 0`, then for all large `V` every slice coefficient
+is nonnegative on height measure at least `(1 − 2μ) V − μ` in `[0, V]`. -/
+theorem eventually_volume_sliceCoeff_nonneg_ge_of_moment {μ : ℝ} (hμ : 0 ≤ μ)
+    (hmom : ∀ᶠ V in atTop, offLineMoment V ≤ μ * V) :
+    ∀ᶠ V in atTop, ENNReal.ofReal ((1 - 2 * μ) * V - μ) ≤
+      volume {t ∈ Icc (0 : ℝ) V | ∀ n : ℕ, 0 ≤ xiSliceCoeff t n} := by
+  filter_upwards [eventually_volume_xiShadow_inter_Icc_le_of_moment hmom, eventually_ge_atTop 0]
+    with V hV hV0
+  have h := ofReal_sub_le_volume_of_not_mem_xiShadow
+    (fun t ht => xiSliceCoeff_nonneg_of_not_mem_xiShadow ht) (by positivity) hV
+  rwa [show V - (2 * μ * V + μ) = (1 - 2 * μ) * V - μ by ring] at h
+
 /-- **All-order slice positivity on more than half of the heights.** -/
 theorem eventually_volume_sliceCoeff_nonneg_ge :
     ∀ᶠ V in atTop, ENNReal.ofReal (29 / 50 * V - 21 / 100) ≤
-      volume {t ∈ Icc (0 : ℝ) V | ∀ n : ℕ, 0 ≤ xiSliceCoeff t n} := by
-  filter_upwards [eventually_volume_xiShadow_inter_Icc_le, eventually_ge_atTop 0] with V hV hV0
-  have hsub : Icc 0 V \ (xiShadow ∩ Icc 0 V) ⊆ {t ∈ Icc (0 : ℝ) V | ∀ n : ℕ, 0 ≤ xiSliceCoeff t n} :=
-    fun t ht => ⟨ht.1, xiSliceCoeff_nonneg_of_not_mem_xiShadow fun h => ht.2 ⟨h, ht.1⟩⟩
-  calc ENNReal.ofReal (29 / 50 * V - 21 / 100)
-      = ENNReal.ofReal V - ENNReal.ofReal (21 / 50 * V + 21 / 100) := by
-        rw [← ENNReal.ofReal_sub _ (by positivity)]
-        congr 1
-        ring
-    _ ≤ volume (Icc (0 : ℝ) V) - volume (xiShadow ∩ Icc 0 V) := by
-        rw [Real.volume_Icc, sub_zero]
-        exact tsub_le_tsub_left hV _
-    _ ≤ volume (Icc (0 : ℝ) V \ (xiShadow ∩ Icc 0 V)) := le_measure_sdiff
-    _ ≤ _ := measure_mono hsub
+      volume {t ∈ Icc (0 : ℝ) V | ∀ n : ℕ, 0 ≤ xiSliceCoeff t n} :=
+  (eventually_volume_sliceCoeff_nonneg_ge_of_moment (by norm_num)
+    ZetaGateProductAFE.eventually_offLineMoment_le).mono fun V h =>
+      le_trans (le_of_eq (by congr 1; ring)) h
 
 end
 

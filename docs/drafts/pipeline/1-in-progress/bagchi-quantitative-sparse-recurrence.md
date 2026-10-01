@@ -4195,3 +4195,720 @@ weighted masses. Normalization gives the lower bound
 1+sum_p(p-1)*|bias_p|^2. Prime-factor recovery excludes all collisions.
 Final80859 exit0 warning-free; five public audits F201scratch79743 standard-only;
 index8; lint13319 ten unrelated unreachable modules, no BAG debt.
+
+
+**C23.3 / F201 FINAL — actual synthesis/transport cost, LEAN PROVED.**
+`CompactGaussianSpectralTransportCost.lean` proves
+N*log(N)*|actual normalized synthesis displacement|^2 <= C*frequency cost
+for every normalized spectral factor realizing those actual free-window biases,
+uniformly over heights, retained phases, independent cutoffs and the abscissa
+band. Final30389 exit0 warning-free; public audit F202scratch49221 standard-only;
+index1; lint78589 eleven unrelated unreachable modules, no BAG debt. This is
+not a lower bound on actual signed orbit error.
+
+
+**C22.31 — complete original-law compact target assembly (next dependency plan).**
+For one fixed catalogue member g, choose error e=epsilon/(10*(Crow+1)).
+Use the correction tolerance at epsilon/4 and requested phase tolerance to
+set a fixed preserved prime prefix. The compact holomorphic target theorem
+chooses one coherent centre preserving that prefix, window B,D and cell
+radius; shrink the radius to satisfy both correction and prescribed-cell
+conditions. C22.29 intersects that rotated cell with the compact small-centre
+event at e, preserving fixed positive mass. On square/cubic scales the
+retained set includes the whole cell prefix and the affine window seam holds.
+Every selected retained section has original free-phase target probability
+>=exp(-2*kappa*log(N))/4 by the compiled compact target theorem. Exact
+C22.30 error assembly, the fixed correction prefix and uniform cubic tail
+place this section in the full compact target event. The compiled prefix
+resampling inequality then integrates the conditional bound. The moving
+reference target is compared to g at error e; this is the only conditional
+branch of this intermediate fixed-g result. C22.24 supplies a finite
+catalogue of such g. Take finite minima of positive masses and common
+eventual thresholds, and choose the applicable member separately for each
+N,tau. This requires no measurable branch selection. It closes only the
+original product-law compact target mass, not the physical count.
+
+
+**C22.29 / F202 FINAL — actual rotated retained event, LEAN PROVED.**
+`CompactGaussianRotatedRetainedEvent.lean` proves exact character/carrier
+compatibility of raw logarithmic shift with the measure-preserving vertical
+rotation, exact shifted-cell/moving-centre equivalence, and one positive-mass
+retained event supporting both the prescribed cell and small compact centre
+uniformly in height and cutoff. Final11447 exit0 warning-free; four public
+audits F203scratch25808 standard-only; index4; lint28678 thirteen unrelated
+unreachable modules, no BAG debt. Raw translation was not used as a
+measure-preserving map. Physical recurrence remains open.
+
+
+**C22.30 / F203 FINAL — complete target error assembly, LEAN PROVED.**
+`ReflectedCompactTargetAssembly.lean` proves the exact five-error estimate
+for the original full AFE, retaining the true row, free-prime channels,
+retained background, reciprocal correction and cubic polynomial cutoff.
+Row nonvanishing is discharged on the strict strip. Final72858 exit0
+warning-free; public audit F204scratch82317 standard-only; index1;
+lint94037 twelve unrelated unreachable modules, no BAG debt.
+
+
+**C22.32 — finite catalogue removal of the fixed-branch condition (paper proof).**
+C22.31 fixes one approximation accuracy before choosing any holomorphic
+catalogue member. Apply the compiled finite catalogue to the literal moving
+reference family at this accuracy. Each member has its own positive branch
+mass and eventual cutoff; finitely many members give one positive minimum
+mass and one common cutoff. At each conductor/height choose the applicable
+member, then apply its branch estimate. No measurable choice across heights
+is used. Choosing kappa=epsilon/2 turns the factor exp(-2*kappa*log(N)) into
+N^(-epsilon). This yields the full complex original-law compact target event
+inside every prescribed moving finite-character cell. It still contains no
+statement about the physical zero-phase point or a count of return heights.
+
+
+**C23.4 / F204 FINAL — exact spectral budget rigidity, LEAN PROVED.**
+`CompactGaussianSpectralBudgetRigidity.lean` proves that actual normalized
+window synthesis tends uniformly to zero whenever its spectral frequency
+cost is bounded by A*N. No separate nonnegative-A premise is needed.
+Final47796 exit0 warning-free; public audit F205scratch76437 standard-only;
+index1; lint88426 thirteen unrelated unreachable modules, no BAG debt.
+This closes the positive rigidity survivor for this mean-value certificate;
+actual signed-orbit cancellation remains outside the statement.
+
+
+**C23.5 — general Dirichlet square-density transport cost (paper proof).**
+For finite nonzero integer support S and complex coefficients with
+sum_S |a_n|^2=1, set D=sum_S a_n X_n and let mu_p be the original-law
+integral of X_p*|D|^2. Character orthogonality gives exactly
+mu_p=sum_{n in S, p*n in S} a_n*conj(a_(p*n)). Cauchy bounds |mu_p|^2
+by sum_{m in S, p divides m}|a_m|^2: the first coefficient mass is <=1,
+and multiplication by p injects the second indices into the divisible support.
+For any finite prime set P, one+sum_{p in P, p divides m}(p-1)<=m:
+finite product growth bounds one+sum by the product of distinct divisors,
+and that product divides m. Sum over m to obtain the unconditional law
+1+sum_{p in P}(p-1)|mu_p|^2 <= sum_S m|a_m|^2.
+Thus the earlier cost/mean constraint is not restricted to product-factor
+densities. The strongest immediate positive survivor is this exact arithmetic
+first-moment budget. Fourier identification and coefficient inequalities are
+separate Lean obligations; no actual signed orbit-error lower bound follows.
+
+
+**C22.31 / F205 FINAL — exact compact target branch mass, LEAN PROVED.**
+`ReflectedCompactTargetBranch.lean` supplies one target accuracy before the
+holomorphic branch is chosen. Each branch has a fixed positive original-law
+mass factor, uniform over later square conductors, whole height windows and
+all targets whose actual moving references lie within that accuracy.
+The prescribed finite cell, full reciprocal correction, retained centre and
+original cubic tail are all included. Final39192 exit0 warning-free; public
+audit F206scratch55874 standard-only; index1; lint53852 fourteen unrelated
+unreachable modules, no BAG debt.
+
+
+**C23.6 — logarithmic frequency budget (paper proof).**
+The same exact coefficient-correlation Cauchy bound used in C23.5 can be
+charged by log(p), rather than p-1. For each nonzero frequency n, the sum
+of log(p) over distinct selected prime divisors is at most log(n), because
+their product divides n. Hence every normalized Dirichlet square density
+satisfies sum_p log(p)*|mu_p|^2 <= sum_n |a_n|^2*log(n). Concavity of log
+and normalization give the stronger bound by log(sum_n n*|a_n|^2).
+On the actual window p>N/D, eventually log(p)>=log(N)/2. Combined with the
+compiled O(1/log(N)) channel energy and Cauchy, this forces
+(log(N))^2*|normalized target mean|^2 <= C*log(frequency cost).
+Thus any fixed polynomial frequency-cost budget forces target means to
+vanish. This is a stronger positive rigidity law for certificate design,
+not a claim that actual signed orbit errors are large. Each logarithmic
+and Jensen step requires Lean verification before promotion.
+
+
+**C22.32 / F206 FINAL — full original-law compact target mass, LEAN PROVED.**
+`FullReflectedAFECompactTarget.lean` proves that every target holomorphic on
+a larger strict right-strip disc is reached on the whole inner compact disc,
+inside every prescribed moving finite-character cell, with original-law
+probability at least c*(n^2)^(-epsilon) for every epsilon>0 and all sufficiently
+large square conductors and every height in [n^2,2*n^2]. All actual AFE terms
+remain present. Finite catalogue choice is fully discharged. Final14664
+exit0 warning-free; public audit F207scratch35952 standard-only; index1;
+lint64754 twelve unrelated unreachable modules, no BAG debt. C22 compact
+original-law target assembly is closed. Physical zero-phase common-height
+recurrence MUST-270 remains OPEN.
+
+
+**C23.5 / F207 FINAL — arithmetic prime-correlation budget, LEAN PROVED.**
+`SteinhausPrimeCorrelationBudget.lean` bounds distinct prime divisor charge
+by frequency minus one, bounds squared multiplicative coefficient correlation
+by mass on divisible frequencies, and proves the normalized total weighted
+frequency-cost inequality for arbitrary finite complex coefficient families.
+Final93256 exit0 warning-free; three public audits F208scratch97454 standard-only;
+index5; lint14290 twelve unrelated unreachable modules, no BAG debt. The
+literal density/Fourier identification is the next leaf, not assumed here.
+
+
+**C23.7 — density-weighted window second moment (paper proof and next audit).**
+Let W=sum_{p in P} v_p X_p for a finite prime set, and let
+D=sum_{n in S} a_n X_n have unit coefficient mass on nonzero frequencies.
+Write b_m=sum_{p*n=m} v_p*a_n, with the exact multiplicative product support.
+Parseval gives integral |W*D|^2=sum_m|b_m|^2. Put d(m)=number of distinct
+selected primes dividing m. Each coefficient fibre contains at most d(m)
+pairs, because p determines n. Cauchy therefore gives
+sum_m|b_m|^2 <= sum_{p,n} d(p*n)*|v_p|^2*|a_n|^2.
+Primality gives d(p*n)<=1+d(n), including repeated prime factors. Thus
+integral |W|^2*|D|^2 <= (sum_p|v_p|^2)*(1+sum_n d(n)|a_n|^2).
+If all p>Y>1, d(n)*log(Y)<=log(n); normalized Jensen bounds the last mean
+by log(total frequency cost)/log(Y). For the actual compact window, energy
+O(1/log(N)) and polynomial cost imply a vanishing weighted second moment.
+Markov then rules out fixed positive density-weighted probability of a target
+ball separated from zero. This is stronger than mean rigidity but remains a
+restriction on this family of positive density certificates. Exact complex
+convolution, collision-fibre bounds, prime occupation and the final event
+inequality are separate Lean obligations; none is promoted as proved yet.
+
+
+**C23.5 / F208 FINAL — actual Dirichlet-density moment cost, LEAN PROVED.**
+`SteinhausDirichletDensityCost.lean` identifies the literal original-law
+prime moment of every finite complex Dirichlet square density with its exact
+multiplicative coefficient correlation. Normalized densities obey the
+frequency-cost lower bound without any product-factor assumption. Original
+complex Parseval and all F207 ingredients audited standard-only. Final44478
+exit0 warning-free; both public audits F209scratch76149 standard-only;
+index2; lint68661 eleven unrelated unreachable modules, no BAG debt.
+
+
+**C23.6 / F209 FINAL — logarithmic density frequency cost, LEAN PROVED.**
+`SteinhausDirichletLogCost.lean` proves the exact selected prime-divisor
+logarithmic charge and applies normalized Jensen to obtain
+sum_p log(p)*|actual density prime moment|^2 <= log(sum_n n*|a_n|^2)
+for arbitrary normalized finite complex Dirichlet square densities.
+Final62572 exit0 warning-free; all three public audits F210scratch56076
+standard-only; index3; lint70721 twelve unrelated unreachable modules,
+no BAG debt. No actual signed orbit-error bound is inferred.
+
+
+**C23.6 / F210 FINAL — polynomial density-cost mean rigidity, LEAN PROVED.**
+`CompactGaussianDirichletTransportRigidity.lean` proves the exact integer-window
+logarithm lower bound, then log(N)^2*|mean window displacement|^2 <= C*log(cost)
+for every normalized finite Dirichlet square density. Every fixed cost budget
+N^A forces the normalized window mean to vanish uniformly. Final26038 exit0
+warning-free; all three public audits F211scratch94536 standard-only; index3;
+lint66426 twelve unrelated unreachable modules, no BAG debt. Mean rigidity
+alone does not rule out concentration with cancellation elsewhere; C23.7 tests
+that gap with actual weighted second moments. Physical return count OPEN.
+
+
+**C23.7 / F211 FINAL — exact complex convolution energy, LEAN PROVED.**
+`SteinhausComplexConvolution.lean` extends finite multiplicative convolution
+and product Parseval to arbitrary complex coefficients, preserving every
+frequency collision. Final50195 exit0 warning-free; two public audits
+F212scratch19082 standard-only; index3; lint69438 thirteen unrelated
+unreachable modules, no BAG debt. The occupation estimate is next.
+
+
+**C24.1 — exact nonzero chi grades (paper audit; physical sum still open).**
+The actual critical-line identity is chi(1/2+i*t)=exp(-2*i*theta(t)). Hence
+its integer grade k, twisted by frequency omega, has exact real phase
+omega*t-2*k*theta(t). On every subinterval of [T,2*T], T>=4, the audited
+Hardy phase-rate curvature gives 2*theta''(t)>=1/(100*T). For every nonzero
+integer k the second derivative has constant sign and magnitude at least
+|k|/(100*T). The existing positive/negative van der Corput tests therefore
+give integral norm <=6/sqrt(|k|/(100*T)), uniformly in omega and subinterval.
+This includes negative grades and uses no gamma asymptotic approximation.
+The grade-zero terms require separate arithmetic cancellation. Nonzero-grade
+atom bounds alone do not control their growing-support sum or height-dependent
+amplitude variation, and give no positive recurrence count. Corpus chi-power
+lexical search returned no existing extension; filtered aggregate search is
+pending. Formalize the exact grade atom before testing aggregate mechanisms.
+
+
+**C23.7 / F212 FINAL — exact prime occupation energy bound, LEAN PROVED.**
+`SteinhausPrimeConvolutionEnergy.lean` proves that a convolution frequency
+has at most one representation per selected prime divisor. Its actual
+Dirichlet-density-weighted prime-polynomial second moment is bounded by
+original prime energy times weighted cofactor occupation plus one. Repeated
+prime factors cause no extra loss. Final1064 exit0 warning-free; all three
+public audits F213scratch92352 standard-only; index4; lint95689 fourteen
+unrelated unreachable modules, no BAG debt. Jensen/log-cost assembly next.
+
+C24.1 amplitude extension: anchor each grade primitive at a. The preceding
+subinterval bound controls it at every x in [a,b]. Exact integration by parts
+therefore multiplies the same oscillatory constant by |u(b)|+integral|u'| for
+any complex amplitude with integrable derivative. This is the required cost
+when actual target coefficients depend on height; fixed-coefficient estimates
+cannot silently cover that dependence. Grade aggregation remains open.
+
+
+**C23.7 / F213 FINAL — actual density second-moment log-cost law, LEAN PROVED.**
+`SteinhausDirichletDensityEnergy.lean` proves selected-prime occupation
+<=log(frequency cost)/ell whenever each selected prime has logarithm at
+least ell>0. Consequently integral |W|^2*|D|^2 is at most original window
+energy times (1+log(cost)/ell), for every normalized finite complex Dirichlet
+square density. Final38773 exit0 warning-free; both public audits
+F214scratch27630 standard-only; index2; lint80879 sixteen unrelated
+unreachable modules, no BAG debt. This exact quantitative positive law is
+the survivor of the proposed low-cost density transport mechanism.
+
+
+**C24.2 — actual compact chi-amplitude variation (paper proof; Lean pending).**
+Corpus source `ChiLogDerivHigherDerivatives.norm_iteratedDeriv_logDeriv_zetaChi_le`
+gives every derivative order, in particular |(chi'/chi)'(z)|<=5/|Im z| on
+-2<Re z<3 and |Im z|>=2. Its cached leaf exists; standard-axiom audit is
+still required before adoption. For 0<=Re s<=1, tau>=4 and 2|Im s|<=tau,
+the segment from 1/2+i*tau to s+i*tau stays in that strip with imaginary
+part at least tau/2. Complex mean value therefore gives
+|chi'/chi(s+i*tau)-chi'/chi(1/2+i*tau)|<=10*|s-1/2|/tau.
+The exact quotient derivative then makes the common reflected row divided
+by critical-line chi slowly varying: derivative norm <= row norm times
+10*|s-1/2|/tau. Existing compact row bounds make its dyadic total variation
+bounded uniformly in conductor. This pays height dependence of actual row
+amplitudes. It does not bound the Fourier coefficient mass of a target
+minorant or sum growing-support resonant terms; those remain the producer gap.
+
+
+**C23.7 / F214 FINAL — polynomial density-cost energy vanishes, LEAN PROVED.**
+`CompactGaussianDirichletDensityEnergy.lean` combines exact log-cost energy
+with the original compact-channel C/log(N) bound. Every normalized finite
+Dirichlet square density of cost <=N^A, for any fixed A, gives uniformly
+vanishing actual window second moment. Final70110 exit0 warning-free; public
+audit F215scratch81865 standard-only; index1; lint73177 fifteen unrelated
+unreachable modules, no BAG debt. Actual weighted tail mass is the next leaf.
+
+
+**C23.7 / F215 FINAL — polynomial density-cost concentration boundary, LEAN PROVED.**
+`CompactGaussianDirichletDensityTail.lean` discharges all finite-polynomial
+integrability/measurability obligations and proves weighted Markov for the
+literal Dirichlet square density. Under every fixed polynomial frequency-cost
+budget, weighted mass above every fixed positive normalized-window amplitude
+vanishes uniformly. Final36637 exit0 warning-free; both public audits
+F216scratch15452 standard-only; index6; lint36451 ten unrelated unreachable
+modules, no BAG debt. The proposed polynomial-cost positive square-density
+concentration certificate is excluded. Positive survivor: F212/F213 exact
+occupation/log-cost energy law, paper and Lean closed. This does not exclude
+signed transport mechanisms or prove anything about actual return counts.
+
+
+**C24.1 / F216 FINAL — actual nonzero integer chi-grade oscillation, LEAN PROVED.**
+`ZetaChiIntegerGradeOscillation.lean` proves the exact Hardy phase and both
+derivatives for chi^k, for every integer k, then the physical subinterval
+integral bound 6/sqrt(|k|/(100*T)) whenever k!=0 and [a,b] lies in [T,2*T],
+T>=4. The estimate is uniform in the Dirichlet frequency. Final6077 exit0
+warning-free; all four public audits F217scratch84172 standard-only; index5;
+lint31218 ten unrelated unreachable modules, no BAG debt. Summing growing
+support and selecting an actual self-return minorant remain open.
+
+C24.2 literal-row consequence: multiply the slow row back by its exact
+critical chi phase and apply C24.1 with integer grade one. The bounded
+endpoint-plus-variation then gives a uniform square-root physical integral
+bound for the full common reflected row times any Dirichlet frequency,
+throughout every fixed compact right-strip disc. This keeps the actual
+complex row, not a frozen or critical-line replacement. Its finite/growing
+coefficient aggregate still needs an independent arithmetic estimate.
+
+
+**C24.1 / F217 FINAL — integer chi grades with moving amplitudes, LEAN PROVED.**
+`ZetaChiIntegerGradeAmplitude.lean` proves continuity and bounds each actual
+integer-grade physical integral with complex differentiable amplitude by
+6/sqrt(|k|/(100*T)) times its endpoint norm plus derivative variation.
+Final24306 exit0 warning-free; both public audits F218scratch9881 standard-only;
+index2; lint31621 thirteen unrelated errors (eleven unreachable modules,
+two sorry occurrences in WeilFormConverseExplicitFormula), no BAG debt.
+Actual compact-row amplitude variation remains the next obligation.
+
+
+**C24.2 / F218 FINAL — actual compact chi-slope variation, LEAN PROVED.**
+`ZetaChiCompactHeightVariation.lean` proves differentiability of chi'/chi
+off the real axis and bounds its actual compact-strip displacement by
+10*|s-1/2|/tau when 0<=Re s<=1, tau>=4 and 2|Im s|<=tau. The segment
+mean-value proof reuses the corpus's all-order chi derivative bound, now
+audited standard-only. Final38558 exit0 warning-free; both public audits
+F219scratch27876 standard-only; index2; lint27295 eleven unrelated unreachable
+modules, no BAG debt. Literal slow-row derivative assembly is next.
+
+
+**C24.2 / F219 FINAL — literal slow reflected row, LEAN PROVED.**
+`CompactGaussianSlowRow.lean` defines the actual common row divided by
+critical-line chi, proves its exact quotient identity and norm preservation,
+and identifies its height derivative through the actual chi-slope difference.
+Derivative norm is bounded by row norm times 10*|s-1/2|/tau on the conductor
+window. Final17044 exit0 warning-free; all four public audits F220scratch85195
+standard-only; index5; lint1659 eleven unrelated unreachable modules, no BAG
+debt. Compact uniform derivative and total variation are the next assembly.
+
+
+**C24.2 / F220 FINAL — compact slow-row variation, LEAN PROVED.**
+`CompactGaussianSlowRowVariation.lean` proves uniform compact bounds
+|u|<=C and |u'|<=C/N throughout the dyadic conductor window, discharges
+derivative integrability, and bounds endpoint norm plus total variation
+by one constant independent of N. Final50575 exit0 warning-free; both
+public audits F221scratch88541 standard-only; index2; lint18282 fourteen
+unrelated unreachable modules, no BAG debt. Physical row integral follows.
+
+
+**C24.2 / F221 FINAL — literal compact row physical cancellation, LEAN PROVED.**
+`CompactGaussianRowOscillation.lean` bounds the physical integral of the
+full reflected row times any Dirichlet frequency by C/sqrt(1/(100*N)),
+uniformly on each compact right-strip disc and all sufficiently large N.
+The proof retains the complex row and pays its exact height variation.
+Scratch88541/final15566 exit0 warning-free; public audit15841 standard-only;
+index1; lint7653 fourteen unrelated unreachable modules, no BAG debt.
+C24.2 is closed. This is an individual-frequency upper estimate; an actual
+self-target lower count and growing-support signed aggregate remain open.
+
+**C25 — self-target structure and moving-cofactor transport (OPEN, source audit).**
+The next producer must use the target f=riemannZeta itself. C23.2 forbids
+silently treating the random arbitrary-holomorphic-target law as a physical
+law. Searches for self-recurrence and self-target positive kernels returned
+only the existing dual-target equivalence, the receiver, and generic kernel
+positivity; none gives a physical lower count. A coefficient-positive
+Dirichlet polynomial does not automatically make its value-return kernel
+translation-positive: for F(z,w)=z+w, H=|F-2|^2 on two independent circles,
+the mixed Fourier coefficient of H at z*conj(w) is +1. The same coefficient
+of exp(-beta*H) is therefore -beta+O(beta^2), negative for small beta>0.
+Thus positivity of the original coefficients alone cannot justify a Bochner
+lower bound for the self-value kernel. This rules out that inference, not
+all self-target kernels; no new Lean no-go is claimed.
+
+A separate live possibility is to let the cofactor range grow with N, using
+primes between N^alpha and N (alpha>1/2 at linear cutoff). F215 excludes
+polynomial-cost square-density concentration only for each fixed ratio
+window (N/D,N]. Its constant and threshold depend on D; substituting a
+moving D is unjustified. For a growing cofactor range the actual energy may
+remain order one, so the fixed-window argument does not settle it. Required
+before formalization: a source-faithful joint compact cofactor energy law,
+a positive self-target certificate, and a physical signed-error bound at
+the same height. The existing largest-prime decomposition requires cutoff
+L<Y^2; with L=n^3 and N=n^2 this forces alpha>3/4, not merely alpha>1/2.
+No chosen moving window, certificate or count is yet proved.
+
+
+**C25.1 — testing a short linear self-target certificate (paper proof).**
+Let W=sum_p u_p X_p, B=sum_p b_p X_p over a finite prime set, and
+D=a+B with |a|^2+sum|b_p|^2=1. Put V=sum|u_p|^2,
+c=sum u_p*conj(b_p), and J=sum |u_p|^2|b_p|^2. Exact prime-pair
+collisions give E|W|^2|B|^2=V*sum|b_p|^2+|c|^2-J,
+E(W|D|^2)=a*c, and hence
+E(|W-g|^2|D|^2)=V+|g|^2+|c|^2-J-2Re(conj(g)*a*c).
+If |u_p|^2<=eta, then J<=eta and |a*c|<=sqrt(V)/2. Therefore
+E(|W-g|^2|D|^2)>=3|g|^2/4-eta. Increasing conditional variance
+alone cannot make this normalized linear square density certify small
+mean-square error at a fixed nonzero self-target. This is only a boundary
+for a linear positive mean-square certificate, not for signed minorants,
+higher-degree densities, or actual recurrence. Positive survivor is the
+exact collision/target-error identity, now selected for formalization.
+Corpus search: 32 fourth-moment hits fully inventoried; existing real prime
+fourth moment and general complex convolution Parseval do not already give
+the mixed complex prime identity. General character fourth correlation and
+prime product two-diagonal classification provide its source proof.
+
+C25.1 scale refinement, still OPEN as an actual transport construction:
+a coherent cofactor range D~log(N), with primes p~N/D, suggests individual
+normalized channels of size D/sqrt(N) and conditional energy D/log(N).
+These are scale calculations, not an established moving-D uniform theorem.
+They explain why widening the window can remove the fixed-D energy decay,
+but not why the physical target event occurs. Exact product-density cost
+retains every prime product, while a degree-k truncation reaches frequencies
+of order (N/D)^k. Neither finite-prime equidistribution nor a mean-square
+bound over height N controls that target-selecting aggregate automatically.
+C25.1's linear target-error identity tests the k=1 alternative without
+assuming a conditional physical distribution. A future extension to short
+integer supports would need the actual prime-degree decomposition and its
+same-event retained target; neither is claimed here.
+
+
+**C25.1 / F222 FINAL — exact complex prime mixed moment, LEAN PROVED.**
+`SteinhausPrimeMixedFourthMoment.lean` proves
+E|W|^2|B|^2=V_W*V_B+|sum u_p*conj(b_p)|^2-sum |u_p|^2|b_p|^2.
+Both prime-pair matchings and their common diagonal are preserved. Scratch47754
+and final58373 exit0 warning-free; public audit F223scratch64813 standard-only;
+index2 (one private); lint31040 eleven unrelated unreachable modules, no BAG
+debt. Exact target-error assembly is next; no physical count follows.
+
+
+**C25.1 / F223 FINAL — exact linear-density target energy, LEAN PROVED.**
+`SteinhausLinearPrimeTargetEnergy.lean` proves the actual total density mass
+|a|^2+sum|b_p|^2 and decomposes the target-error product into its disjoint
+constant, prime and prime-product frequencies. Parseval and F222 give the
+exact error energy, retaining every collision. Scratch64813/final89723
+exit0 warning-free; both public audits F224scratch23084 standard-only;
+index2; lint8835 twelve unrelated unreachable modules, no BAG debt.
+The quantitative nonzero-target floor is the next formal leaf.
+
+
+**C25.1 / F224 FINAL — linear self-target mean-square floor, LEAN PROVED.**
+`SteinhausLinearPrimeTargetGap.lean` proves the exact-diagonal lower bound
+3|g|^2/4-sum |u_p|^2|b_p|^2 for every coefficient-normalized linear prime
+square density. If each |u_p|^2<=eta, the error is at least 3|g|^2/4-eta.
+Scratch23084/final69309 exit0 warning-free; both public audits56787 standard-only;
+index2; lint75343 ten unrelated unreachable modules, no BAG debt. C25.1's
+linear positive mean-square certificate is closed as a failed mechanism when
+the target stays nonzero and maximal channel tends to zero. Positive survivor:
+F222/F223 exact mixed collision law and target-energy decomposition, paper
+and Lean closed. This does not exclude positive event mass, higher-degree
+or signed certificates, moving retained targets, or physical recurrence.
+
+**C26 — coherent chi stationary terms (OPEN; source and paper audit).**
+C24 controls absolute atom sizes; a producer needs signed arithmetic sums.
+Search for an actual chi stationary leading term found reflection identities
+but no applicable aggregate lower theorem. The literal Hardy source currently
+bounds rate error by O(1/t), giving only phase error o(t), insufficient to
+retain a common oscillatory orientation. A stronger existing source is
+HTGeometry.GammaDigammaStirlingBound.norm_digammaStirlingDefect_le:
+|psi(z)-log(z)+1/(2z)|<=6/|z|^2 for Re(z)>0, |z|>=2.
+It still needs current-toolchain axiom audit before reuse.
+
+At z=1/4+i*t/2, t>=4, Q=|z|^2>=t^2/4 and
+Re(1/(2z))=1/(8Q). Hence the Hardy rate differs from
+(1/4)log(Q)-(1/2)log(pi) by at most 49/(16Q)<=49/(4t^2).
+The exact radial logarithm correction is nonnegative and <=1/(16t^2),
+so |theta'(t)-(1/2)log(t/(2*pi))|<=13/t^2. This paper bound is
+integrable at infinity. It would give a fixed limiting phase offset and
+O(1/t) phase error, preserving a common orientation without first identifying
+the offset numerically. Formalize this exact bound and its integration before
+any stationary leading term. A uniform stationary-phase remainder, coherent
+integer-frequency aggregate, and self-return minorant are all still open;
+no leading-term formula or physical count has been adopted as a premise.
+
+C26 phase-model consequence (dependency-closed paper step, Lean pending):
+integrating the 13/t² rate error gives a real constant C with
+|theta(t)-thetaMain(t)-C|<=13/t. Set kappa=exp(-2*i*C), of norm one.
+The elementary unit-circle Lipschitz inequality then gives, for every
+integer k and t>=4,
+|chi(1/2+i*t)^k-kappa^k*exp(i*k*(t-t*log(t/(2*pi))))|
+<=26*|k|/t. This retains a common phase across all frequencies and includes
+negative grades. The bound alone does not prove stationary-phase main terms
+or control a growing coefficient aggregate; those remain separate tasks.
+
+
+**C26 / F225 FINAL — integrable Hardy phase-rate error, LEAN PROVED.**
+`HardyPhaseIntegrableError.lean` proves
+|theta'(t)-(1/2)log(t/(2*pi))|<=13/t^2 for all t>=4, keeping the
+real part of the reciprocal Stirling term. The reused complex digamma
+bound is now axiom-audited standard-only. Corrected scratch58729 and
+final80469 exit0 warning-free; public audit F226scratch29417 standard-only;
+index1; lint47835 ten unrelated unreachable modules, no BAG debt. The
+fixed phase-offset limit and quantitative phase error remain in scratch.
+
+
+**C26 / F226 FINAL — fixed Hardy phase offset, LEAN PROVED.**
+`HardyPhaseOffset.lean` defines the actual limiting offset and proves both convergence and the quantitative phase error <=13/t for t>=4. Corrected scratch15383/final51290 exit0 warning-free; both public audits F227scratch11528 standard-only. Index6 includes definition/private helpers; lint37406 ten unrelated unreachable modules, no BAG debt. The common-unit integer-grade model passed scratch11528 and is awaiting its final/audit.
+
+C26.1 local coherent integer packets (dependency-closed paper step; Lean pending):
+write a=2*pi*n, n>=1, t>=4 and D=t*log(t/a)-t+a. The inequalities
+1-1/x<=log(x)<=x-1 give 0<=D<=(t-a)^2/a. The conductor phase at
+frequency log(n) equals a-D, and exp(i*a)=1 exactly for integer n.
+F227 and unit-circle Lipschitz therefore imply one common unit kappa with
+|chi(1/2+i*t)*exp(i*t*log(n))-kappa|<=26/t+(t-2*pi*n)^2/(2*pi*n).
+For t>=104 and every selected n satisfying (t-2*pi*n)^2<=2*pi*n/4,
+the real part after rotation by conjugate(kappa) is at least 1/2.
+Thus every finite sum with nonnegative real coefficients on this actual
+stationary packet has rotated real part at least half its coefficient mass.
+This is a signed physical aggregate on a localized integer window, with no
+random phase or RH premise. It does not cover arbitrary complex cofactor
+weights, the packet complement, or target-event minorants. Those are required
+before any self-return count; no recurrence producer is claimed.
+
+
+**C26 / F227 FINAL — coherent integer chi phase model, LEAN PROVED.**
+`ZetaChiCoherentPhaseModel.lean` proves one fixed unit kappa approximates every integer chi grade by its conductor phase with error26abs(k)/t for t>=4. Scratch11528/final95020 exit0 warning-free; sole public audit F228scratch48678 standard-only; index1; lint89909 ten unrelated unreachable modules, no BAG debt. Negative grades included. Actual self-return count remains open.
+
+C26.1 capacity audit (paper consequence; Lean pending, source audit pending):
+local alignment does not make a square-root-width free-prime packet large.
+The actual normalized channel has norm <=C/sqrt(N), uniformly in all phases,
+cutoffs, heights and a fixed abscissa band, when 1<=N/p<=D. Existing
+`Sieve.primesBetween_le_div_log` bounds every positive interval of length
+H>1 by 292H/log(H) primes. Hence a sum of actual channels over primes in
+any interval of length sqrt(N), N>1, has norm <=584C/log(N), uniformly even
+with unit phase multipliers. This applies to every location, not only the
+stationary center. For any fixed finite number of such windows it vanishes.
+Thus a finite collection of narrow coherent prime packets cannot alone
+synthesize a fixed nonzero normalized target. The positive survivors are
+the exact complex aggregate error and common-direction lower bound from
+C26.1, together with this quantitative capacity law. A growing collection,
+wide signed transform or source-specific rare-event mechanism remains open;
+the whole stationary route is not retired by this limited obstruction.
+
+
+**C26.1 / F228 FINAL — integer stationary alignment, LEAN PROVED.**
+`ZetaChiIntegerStationaryPackets.lean` proves the exact quadratic pointwise error from C26.1, uniformly for all positive integer frequencies and t>=4, with one fixed unit. Scratch69506 passed; final18948 passed warning-free after tactic cleanup. Public audit F229scratch99858 standard-only; index2 (includes private entropy helper); lint87231 ten unrelated unreachable, no BAG debt. Complex aggregate and positive cone consequences passed F229scratch99858, final/audits pending.
+
+
+**C26.1 / F229 FINAL — signed packet sum and positive cone, LEAN PROVED.**
+`ZetaChiStationaryPacketSums.lean` proves the exact complex-coefficient aggregate error and the common-direction half-coefficient-mass lower bound for nonnegative coefficients in the explicit stationary window, t>=104. Scratch99858/final40592 exit0 warning-free; both public audits25170 standard-only; index3 includes private rotation helper; lint40878 ten unrelated unreachable, no BAG debt. The actual prime-window capacity obstruction remains in scratch.
+
+**C27 — growing cofactor physical mean (OPEN; investigation only).**
+A fixed finite collection of sqrt(N)-width prime packets is too small under the pending C26.1 capacity law. A power-growing cofactor range could expose many centers for the composite frequencies p*k; the actual zero-phase height rotation includes both factors. A first-moment calculation would require a full stationary leading term with summed remainder, uniform in the growing range and compact target variable. It would still need a source-specific return minorant or deviation lower bound; a nonzero first mean is insufficient. The cubic cutoff enforces the existing seam Y^2>L, hence Y=N^alpha with alpha>3/4 when L=N^(3/2). No growing-cofactor mean, variance law, arithmetic density asymptotic or self-return count is assumed. Deep search77002 returned partial results with no applicable theorem. Continue from exact actual coefficients, not an independent product-law replacement.
+
+C27.1 analytic next step (paper target; no Lean claim): a full stationary
+leading term must control both the center and exterior tails. Put
+D_a(t)=t*log(t/a)-t+a, a>0. For |t-a|<=a/2, the elementary log bounds give
+|log(t/a)-(t-a)/a|<=2*((t-a)/a)^2. Applying the mean-value bound on the
+segment from a to t gives
+|D_a(t)-(t-a)^2/(2*a)|<=2*|t-a|^3/a^2.
+Together with F227 this gives a local quadratic model for actual chi times
+frequency log(a/(2*pi)), with error26/t+2*|t-a|^3/a^2, when t>=4.
+On |t-a|<=R*sqrt(a), the integrated cubic error is O(R^4); after dividing
+by sqrt(a), it vanishes for fixed R as a grows. The exterior model phase
+has monotone derivative -log(t/a), bounded away from zero by a constant
+multiple of R/sqrt(a) when t is between a/2 and 2a and outside the center;
+a first-derivative integral bound would give O(sqrt(a)/R) tails. A verified
+Fresnel limit then permits R to grow after taking the height limit. This
+proposes a uniform stationary leading term; exact constants, endpoint
+conditions and aggregate error must be formalized before use. No physical
+first mean or recurrence conclusion follows from this paper sketch alone.
+
+
+**C26.1 / F230 FINAL — actual narrow prime-packet capacity, LEAN PROVED.**
+`CompactGaussianPrimePacketCapacity.lean` proves <=C/logN for sums of literal normalized channels over any prime interval of length sqrtN, for N>1, fixed abscissa band and 1<=N/p<=D. Uniform in all heights, retained phases, per-prime cutoffs and arbitrary unit-bounded multipliers. Corrected minimal-import scratch83400/final58908 exit0 warning-free; public audit F231scratch23187 standard-only; index4 includes private sieve-error helpers; lint34455 eleven unrelated unreachable modules, no BAG debt. Underlying BrunTitchmarsh source also standard-only audited. The narrow-prime-packet standalone synthesis mechanism is closed as insufficient for a fixed nonzero normalized target. Positive survivors F228/F229 physical phase alignment and exact complex sum error, plus F230 quantitative capacity law, are paper/Lean closed. This does not retire growing cofactor or wider signed aggregate mechanisms, nor prove a recurrence no-go.
+
+C27.1 sharpened full-integral paper target (Lean pending): corpus search
+found `GaloisForLFunctions.RHTower.norm_integral_quadPhase_conj_sub_le`
+in `QuadraticPhaseStationary.lean`, giving the exact reversed Fresnel value
+and error8/(mu*h). Current-toolchain axiom audit is still required.
+For a>=8, 0<h<=a/2, a/2<=l<=a-h and a+h<=u<=2a, the intended bound is
+|integral_l^u chi(1/2+i*t)*exp(i*t*log(a/(2*pi))) dt
+ -kappa*exp(i*a)*sqrt(2*pi*a)*exp(-i*pi/4)|
+<=78+4*h^4/a^2+40*a/h.
+Derivation: actual conductor-model error <=26/t<=52/a integrated over
+length<=3a/2 costs78; local cubic phase error bounded by2h^3/a^2 over
+length2h costs4h^4/a^2; reversed Fresnel truncation costs8a/h; two
+nonstationary tails cost16a/h each. All factors have unit norm except the
+explicit sqrt main amplitude. This avoids a new improper-integral proof.
+For integer saddles a=2*pi*n the exponential exp(i*a) is exactly one,
+so the leading direction is common. Summing weighted errors and controlling
+endpoints/actual cofactor masks remain required before a physical first
+mean, and first means alone remain insufficient for the recurrence producer.
+
+**C27.1 / F231 FINAL — cubic saddle entropy remainder, LEAN PROVED.**
+`ChiStationaryQuadraticError.lean` proves
+|t*log(t/a)-t+a-(t-a)^2/(2a)|<=2|t-a|^3/a^2 for a>0 and |t-a|<=a/2.
+Corrected scratch17148/final42854 exit0 warning-free; public audit F232scratch14823
+standard-only; index2 includes private log bound; lint48693 eleven unrelated
+unreachable modules, no BAG debt. Only Mathlib log-derivative/MVT imports
+remain in this leaf. The actual global entropy/local quadratic chi models
+are being packaged with one shared unit before integration.
+
+
+**C27.1 / F232 FINAL — shared global and quadratic chi models, LEAN PROVED.**
+`ZetaChiStationaryQuadraticModel.lean` exposes one common unit for the global conductor entropy model (error26/t) and local quadratic saddle model (error26/t+2|t-a|^3/a²). Revised scratch80012/final63654 exit0 warning-free; public audit F233scratch6669 standard-only; index2 includes private phase-addition helper; lint72585 ten unrelated unreachable modules, no BAG debt. Source first-derivative test and reversed Fresnel integral theorem also axiom-audited standard-only in F233scratch6669. Full stationary integral still pending.
+
+**C27.1 / F233 FINAL — both exterior model tails, LEAN PROVED.**
+`ChiStationaryExteriorBound.lean` proves <=16a/h on either side of the
+stationary point, for every comparable-height subinterval, for both phase
+signs. Scratch6669/final75112 exit0 warning-free; both public audits
+F234scratch79410 standard-only; index3 includes entropy definition;
+lint48535 eleven unrelated unreachable modules, no BAG debt. Exact reversed
+Fresnel and first-derivative source inputs audited standard-only. Central
+quadratic approximation and these tails still need final assembly.
+
+
+**C27.1 / F234 FINAL — actual chi integral model error, LEAN PROVED.**
+`ZetaChiStationaryIntegralModel.lean` proves one common unit gives actualchi-to-conductor-model integral error at most78 on every interval a/2<=l<=u<=2a with a>=8. Scratch79410/final12949 exit0 warning-free; public audit F235scratch55342 standard-only; index1; lint5847 eleven unrelated unreachable modules, no BAG debt. Full pure-entropy stationary value is still being checked.
+
+C27.2 next aggregate (paper consequence conditional only on completion of
+C27.1 formal proof, not adopted as a Lean premise): set a_n=2*pi*n for
+positive integers n. For any finite S, complex coefficients c_n and
+positive margins h_n satisfying the full-integral endpoint conditions,
+one common unit psi=kappa*exp(-i*pi/4) should give
+|integral_l^u sum_(n in S) c_n*chi(1/2+i*t)*exp(i*t*log(n)) dt
+ -psi*sum_(n in S) c_n*sqrt(2*pi*a_n)|
+<=sum_(n in S) |c_n|*(78+4*h_n^4/a_n^2+40*a_n/h_n).
+This follows by finite integral linearity, exact exp(i*2*pi*n)=1 and
+triangle inequality. It retains complex coefficients and the full growing
+support error. It would be a coherent physical aggregate, not yet a
+self-target event lower count. Actual compact slow amplitudes, endpoint
+bands, growing cofactor masks and a source-specific return minorant remain
+required. Positive first means do not supply that minorant.
+
+
+**C27.1 / F235 FINAL — full model stationary integral, LEAN PROVED.**
+`ChiStationaryEntropyIntegral.lean` proves positive-interval integrability and the full reversed entropy stationary value with error4h^4/a²+40a/h, retaining the left and right exterior integrals. Corrected scratch93346/final30205 exit0 warning-free; both public audits F236scratch31298 standard-only; index4 includes private center helpers; lint24631 eleven unrelated unreachable modules, no BAG debt. Actualchi assembly passed scratch31298, final/audit pending.
+
+
+**C27.1 / F236 FINAL — full actual chi stationary leading term, LEAN PROVED.**
+`ZetaChiStationaryLeadingTerm.lean` proves one fixed unit kappa and the full actual critical-chi leading term kappa*exp(i*a)*sqrt(2*pi*a)*exp(-i*pi/4), with error78+4h^4/a²+40a/h under the explicit comparable-height endpoint/margin conditions. Scratch31298/final10008 exit0 warning-free; public audit F237scratch69915 standard-only; index1; lint79829 eleven unrelated unreachable modules, no BAG debt. All center/exterior/model errors retained. This is an integral theorem, not a physical self-return lower count.
+
+**C27.2 / F237 FINAL — coherent finite physical sums, LEAN PROVED.**
+`ZetaChiCoherentIntegralSum.lean` proves one fixed unit psi for every finite complex-coefficient physical integer-frequency sum with eligible saddles a_n=2*pi*n. Main term psi*sum c_n*sqrt(2*pi*a_n); exact total error sum |c_n|*(78+4h_n^4/a_n²+40a_n/h_n). Arbitrary finite/growing supports are allowed, but their complete weighted error must be paid. Scratch69915/final69220 exit0 warning-free; standalone audit87433 standard-only; index1; lint38776 ten unrelated unreachable modules, no BAG debt. C27.1/C27.2 analytical targets are closed. Actual compact slow amplitudes, endpoint bands, cofactor masks and a source-specific return minorant remain open; no physical mean asymptotic or event count is inferred.
+
+
+**C28 — signed physical self-target minorant (OPEN).**
+The next candidate uses a polynomial event minorant for the literal full reflected carrier, retaining all chi grades and the exact arithmetic phase of every mixed term. Neither positive first means nor product-law mass determines its physical sign. Before proposing a lower count, identify the fixed unit in C27 and audit the higher-grade terms; no such minorant or moment lower bound is assumed.
+
+C28.1 phase identification (paper argument; Lean pending): the C27 unit should be kappa=exp(i*pi/4), so the integer-saddle integrated direction psi is exactly1. This follows from Gamma duplication and horizontal Gamma ratios without evaluating an absolute logarithmic Gamma constant. Put z=1/4+i*t/2, w=1/4+i*t, and write Gamma(z+1/2)=Gamma(z) exp(I_t), Gamma(w+1/4)=Gamma(w) exp(J_t). The exact integrated-digamma shifts give Im(I_t)->pi/4 and Im(J_t)->pi/8. Duplication gives Gamma(w)=Gamma(z)^2 exp(I_t-J_t) 2^(-1/2+i*t)/sqrt(pi). Taking conjugate ratios yields
+chi(1/2+2i*t)=chi(1/2+i*t)^2 exp(-2i*t*log2) exp(-2i*(Im(I_t)-Im(J_t))).
+The already formal conductor model has q(2t)=q(t)^2 exp(-2i*t*log2), hence its fixed unit satisfies kappa=kappa^2 exp(-i*pi/4), and unit nonvanishing forces kappa=exp(i*pi/4). Corpus `GammaShiftRatioAsymptotic`/`GammaShiftRatioTube` supplies horizontal ratios; source and toolchain audits are required before reuse. This identifies a sign needed by mixed-moment analysis; it does not establish a return-event minorant or count.
+
+
+**C28.1 / F238 FINAL — exact horizontal Gamma log shift, LEAN PROVED.**
+`GammaHorizontalLogShift.lean` defines the literal integrated digamma shift, proves its exact Gamma exponential identity, and proves both full complex asymptotic and imaginary limit lam*pi/2. Corrected scratch53582/final19887 exit0 warning-free; all three public audits F239scratch38575 standard-only. Index5 includes definition/private integrability helper. Lint38951 reports twelve unrelated unreachable leaves and one unrelated active sorry in ZetaLocalWindowTail; no BAG debt. The duplication identity is still being formalized, so the exact C27 leading unit is not yet promoted.
+
+C28.2 certificate shape (OPEN, no positivity claim): for a finite compact-target error observable E(t)>=0 and a source-built finite chi/Dirichlet polynomial D(t), the signed expression (rho²-E(t))*|D(t)|² is nonpositive outside E(t)<rho². A positive physical integral, together with an explicit upper bound on |D|² inside that target event, would force a quantitative return count. This keeps the sign and the complete nonzero-chi mixed moments. C23.7 already forbids obtaining the needed concentration from a fixed polynomial-cost positive Dirichlet density under the independent product law; inserting chi grades requires actual physical mixed-moment estimates, not a product-law substitution. No D with a positive lower integral is yet constructed, and a finite-node observable still needs a compact-disc error transfer. Search of the existing signed-kernel/moment corpus is in progress.
+
+
+**C28.1 / F239 FINAL — exact chi phase doubling, LEAN PROVED.**
+`ZetaChiDuplicationPhase.lean` proves the critical chi factor's pi-phase/Gamma quotient and its exact doubling identity with the two literal horizontal shift corrections. Corrected scratch66174 passed; corrected final45174 exit0 warning-free after cast/style cleanup; both public audits F240scratch18497 standard-only. Index5 includes three private algebra helpers; lint85830 twelve unrelated unreachable leaves, no BAG debt. Combining this identity with the shift limits and conductor model is still in scratch; the limiting unit is not yet promoted.
+
+C28.3 arithmetic cross-term target (paper consequence of pending exact phase identification): the existing `zetaChiCriticalDirichletCross` expands frequencies log(m/n), not only log of integers. Its grade-one saddle is a=2*pi*m/n, so the intended leading coefficient is sqrt(2*pi*a)*exp(2*pi*i*m/n). At fixed denominator n this is an additive residue-class character, with positive direction only on integer ratios. Thus identifying the unit does not make every mixed term positive. A complete signed finite cross transform should retain these rational phases and the full weighted saddle remainder; endpoint/nonstationary terms remain separate. This exposes an arithmetic matrix for a source-built certificate D. No additive-character sum, growing-modulus cancellation or positive target-kernel integral is assumed. A corpus search for an existing physical rational-saddle transform is in progress.
+
+
+**C28.1 / F240 FINAL — exact conductor orientation, LEAN PROVED.**
+`ZetaChiConductorOrientation.lean` proves exp(-2i*gammaHardyPhaseOffset)=exp(i*pi/4) from exact Gamma duplication and horizontal shift limits, then the explicit model for every integer grade with error26abs(k)/t. Corrected scratch82878 passed; final19543 exit0 warning-free after unit-exponential cleanup; both public audits F241scratch5988 standard-only. Index3 includes private continuity helper; lint45925 eleven unrelated unreachable leaves, no BAG debt. The real offset is not identified beyond this phase identity. Full explicit stationary integral and rational cross transform remain in scratch. No target-event lower count follows from phase identification alone.
+
+C28.4 higher-grade analytical paper target (OPEN; no Lean draft): the phase identification also fixes the orientation of every higher chi grade. For a positive integer k, the exact entropy dilation is D_(k*a)(k*t)=k*D_a(t). Applying the full entropy integral at parameters (k*a,k*h,k*l,k*u) and dividing by k gives main sqrt(2*pi*a/k)*exp(-i*pi/4) and error4*k*h^4/a²+40*a/(k*h). The actual grade-k conductor error adds78*k, while its prefactor contributes exp(i*k*pi/4+i*k*a). Hence the intended actual main phase is exp(i*(k*a+(k-1)*pi/4)). At perfect-power arithmetic frequencies q=n^k, a=2*pi*n and the surviving grade phase is exp(i*(k-1)*pi/4), not universally+1. Negative grades should follow by conjugation. This must be formalized with exact dilation/endpoint conditions before expanding any signed target certificate; full mixed-grade moment sums and target positivity remain open.
+
+
+**C28.1 / F241 FINAL — explicit actual stationary phase, LEAN PROVED.**
+`ZetaChiExplicitStationaryTerm.lean` proves actual critical chi times frequency log(a/(2*pi)) has full integral leading term exp(i*a)*sqrt(2*pi*a), with the unchanged error78+4h^4/a²+40a/h and all comparable-height endpoint/margin conditions. Corrected scratch88544 passed; final54915 exit0 warning-free; public audit F242scratch66110 standard-only; index2 includes private pointwise model; lint98381 twelve unrelated unreachable leaves, no BAG debt. Integer saddles now have positive real leading value; rational saddles retain their signed additive phase. No physical return-event lower bound is inferred.
+
+
+**C28.3 / F242 FINAL — signed finite physical transform, LEAN PROVED.**
+`ZetaChiFiniteStationaryTransform.lean` proves the complete coefficient-weighted stationary transform for finite real frequencies, preserving exp(2*pi*i*x). A second theorem covers an arbitrary complete finite family and any eligible selected saddle subset: every unselected term is charged the existing actual chi O(sqrt(T)) bound, with its full coefficient norm. Rational-frequency phases are periodic in the numerator modulo the denominator. Corrected scratch58997/final45407 exit0 warning-free; all3 public audits F243scratch71918 standard-only; index5 includes2 private helpers; lint26865 ten unrelated unreachable leaves, no BAG debt. The signed residue-class sums and complementary error may still be large. This is no target-event lower bound.
+
+
+**C28.4 / F243 FINAL — exact graded entropy dilation, LEAN PROVED.**
+`ChiGradedStationaryEntropy.lean` proves integrability for every real grade on positive compact intervals, exact simultaneous entropy scaling and integral dilation, and the full positive-real-grade model error4*k*h^4/a²+40*a/(k*h). The exact main scalar is k^-1*sqrt(2*pi*k*a), with reversed Fresnel phase. Corrected scratch91830/final2768 exit0 warning-free; all4 public audits F244scratch2987 standard-only; index4; lint82782 eleven unrelated unreachable leaves, no BAG debt. Actual higher-chi-grade assembly and negative grades remain in scratch.
+
+C28.4 grade-cost audit (paper calculation, not an additional Lean claim): choosing h=a^(3/5)*k^(-2/5) in the proposed positive-grade estimate gives stationary remainder44*a^(2/5)*k^(-3/5), plus78*k from the actual conductor model. Relative to sqrt(2*pi*a/k), these are (44/sqrt(2*pi))*(a*k)^(-1/10) and (78/sqrt(2*pi))*k^(3/2)/sqrt(a). Thus the analytical error can in principle accommodate growing grades k<=a^eta with eta<1/3, provided the stated interior margin fits the endpoints. This does not control the sum of coefficient norms, rational/root phases, the complement or target-event positivity; those remain separate arithmetic requirements. No uniform growing-grade limit theorem is yet formalized.
+
+
+**C28.4 / F244 FINAL — actual positive-grade stationary value, LEAN PROVED.**
+`ZetaChiPositiveGradeStationary.lean` proves every positive Nat grade k has full main scalar k^-1*sqrt(2*pi*k*a), phase exp(i*(k*a+(k-1)*pi/4)), and full remainder78*k+4*k*h^4/a²+40*a/(k*h) under the stated interior saddle conditions. Corrected scratch57421/final90118 exit0 warning-free; public audit F245scratch78577 standard-only; index2 includes private pointwise model; lint71177 eleven unrelated unreachable modules, no BAG debt. Negative grades passed scratch; no aggregate signed lower bound or physical recurrence count is inferred.
+
+C28.5 full signed-grade audit (paper consequence of C28.4): for every nonzero integer k, put mu=abs(k), A(k,a)=mu^-1*sqrt(2*pi*mu*a), and theta(k,a)=k*a+(k-k/mu)*pi/4. Positive and negative-grade conjugation give actual main A(k,a)*exp(i*theta(k,a)) and error78*mu+4*mu*h^4/a²+40*a/(mu*h). For an arbitrary complete finite family of nonzero grades, select any subset of eligible interior saddles and retain its complex coefficient-weighted main sum. Charge every unselected term its full coefficient norm times6/sqrt(mu/(100*T)). This gives a complete signed physical transform, including root/rational phases, not positivity. Grade-zero terms and actual height-dependent compact amplitudes remain separate. Candidate next test: whether a source-built resonator makes the full target-error quadratic form strictly positive after these costs; no such resonator is assumed.
+
+C28.6 height-dependent amplitude audit (paper target, not a Lean claim): constant-coefficient stationary matrices do not yet apply to actual compact rows. For a complex differentiable amplitude v with norm(v)<=U and norm(v-prime)<=L on [l,u], splitting at a+-h gives a model freezing correction at most2*L*h²+40*L*a²/(k*h) for k>0. The central bound uses norm(v(t)-v(a))<=L*abs(t-a); each exterior bound follows by Abel summation and the graded entropy primitive bound16*a/(k*h). The left endpoint plus derivative variation costs at most L*a/2; the right costs at most2*L*a, hence total40*L*a²/(k*h). Add norm(v(a))*(4*k*h^4/a²+40*a/(k*h)) for the pure model, and78*k*U for the actual conductor approximation. At L=O(U/a) the freezing error is smaller than U*sqrt(a/k) for suitable h, but coefficient sums and target positivity still require independent arithmetic control. No frozen-amplitude replacement is assumed.
+
+
+**C28.4 / F245 FINAL — exact negative-grade conjugation, LEAN PROVED.**
+`ZetaChiNegativeGradeStationary.lean` proves every negative natural chi grade with reversed frequency is the exact complex conjugate of its positive partner. Its full stationary value has conjugate phase and identical amplitude/remainder. Scratch78577/final50494 exit0 warning-free; both public audits F246scratch91635 standard-only; index2; lint51379 ten unrelated unreachable modules, no BAG debt. Complete mixed-grade summation remains in scratch; physical target-kernel positivity remains open.
+
+
+**C28.5 / F246 FINAL — complete mixed-grade physical transform, LEAN PROVED.**
+`ZetaChiMixedGradeStationaryTransform.lean` gives an explicit signed stationary value for every nonzero integer grade, combines arbitrary positive/negative grades with their full complex coefficients, and covers complete finite support by retaining selected main terms and charging every complementary term6*norm(c)/sqrt(abs(k)/(100*T)). Corrected scratch64020/final58749 exit0 warning-free; all3 public audits F247scratch68064 standard-only; index7 includes2 definitions/2 private helpers; lint87464 ten unrelated unreachable modules, no BAG debt. The full signed sum and error are explicit; no source-built coefficient choice with positive target integral is proved.
+
+
+**C28.6 / F247 FINAL — graded exterior amplitudes, LEAN PROVED.**
+`ChiGradedExteriorAmplitude.lean` proves global continuity of every real-grade entropy phase, the full positive-grade exterior primitive bound16*a/(k*h), and its complex-amplitude version with the complete endpoint-plus-derivative-variation cost. Scratch68064/final86332 exit0 warning-free; all3 public audits F248scratch64234 standard-only; reused Abel and continuous_mul_log audits standard-only; index3; lint54827 eleven unrelated unreachable modules, no BAG debt. Full saddle freezing passed scratch and still awaits final/audit.
+
+C28.7 actual compact-row stationary target (paper consequence of C28.6): the existing exact factorization is reflectedCompactGaussianRow(s,N,t)=compactGaussianSlowRow(s,N,t)*chi(1/2+i*t). Uniformly on any fixed right-strip disc, the slow row has norm<=C and derivative norm<=C/N on [N,2N], with integrable derivative. Thus each eligible saddle a has actual row main compactGaussianSlowRow(s,N,a)*sqrt(2*pi*a)*exp(i*a), with full error bounded by C*(78+2*h²/N+40*a²/(N*h)+4*h^4/a²+40*a/h). The coefficient is evaluated at that saddle, not at a common frozen height. This closes an actual-source amplitude requirement if formalized; it still leaves cofactor/endpoint coefficient summation and the signed self-target minorant unresolved.
+
+
+**C28.6 / F248 FINAL — full saddle-amplitude freezing, LEAN PROVED.**
+`ChiStationaryAmplitudeFreezing.lean` derives norm(v(t)-v(a))<=L*abs(t-a) from the actual derivative bound, and proves full freezing error2*L*h²+40*L*a²/(k*h) with both exterior intervals retained. It then supplies the full graded model stationary value with the literal factor v(a) and its complete weighted phase remainder. Scratch64234/final28148 exit0 warning-free; both public audits F249scratch28149 standard-only; index2; lint32635 eleven unrelated unreachable modules, no BAG debt. Actual chi assembly passed scratch; no physical return count follows from freezing alone.
+
+
+**C28.6 / F249 FINAL — actual chi with full complex amplitude, LEAN PROVED.**
+`ZetaChiAmplitudeStationary.lean` proves the full actual positive-grade stationary value v(a)*k^-1*sqrt(2*pi*k*a)*exp(i*(k*a+(k-1)*pi/4)). All errors remain explicit:78*k*U+2*L*h²+40*L*a²/(k*h)+norm(v(a))*(4*k*h^4/a²+40*a/(k*h)), given the actual amplitude/derivative bounds and integrable derivative. Scratch28149/final27856 exit0 warning-free; public audit F250scratch50084 standard-only; index2 includes private pointwise conductor model; lint57508 twelve unrelated unreachable modules, no BAG debt. No certificate positivity is assumed or proved.
+
+C28.8 canonical saddle coefficient audit (OPEN; paper mechanism only): set delta=s-1/2. The exact critical logarithmic derivative is -2*gammaHardyPhaseRate(t), so its difference from -log(t/(2*pi)) has norm<=26/t². Along the compact complex segment from1/2 to s, the existing log-slope difference bound gives an intended normalized ratio chi(s+i*t)/chi(1/2+i*t)*exp(delta*log(t/(2*pi)))=exp(E_s(t)), with norm(E_s(t))<=26*norm(delta)/t²+10*norm(delta)^2/t. Derive this from the actual nonvanishing chi factor along the segment; no zeta nonvanishing is used. Consequently the slow-row model should be exp(delta*log(2*pi*N/t)) times this controlled relative error. At integer saddle t=2*pi*n, multiplying by the literal unweighted dual coefficient N^(1/2-s)*n^(s-1) and the stationary scalar2*pi*sqrt(n) cancels the compact s-dependence in the leading value, leaving2*pi. This identifies the canonical dual coefficient only; smoothing/cofactor masks, full pole/primal cancellation and mixed target-error moments must still be retained. No full reflected mean or recurrence conclusion follows.
+
+
+**C28.7 / F250 FINAL — literal compact-row stationary main, LEAN PROVED.**
+`CompactGaussianRowStationary.lean` proves, uniformly on every fixed right-strip disc, the actual reflected row has main compactGaussianSlowRow(s,N,a)*sqrt(2*pi*a)*exp(i*a), with full errorC*(78+2*h²/N+40*a²/(N*h)+4*h^4/a²+40*a/h) at every eligible interior saddle. The coefficient is the literal slow row at that saddle. Corrected scratch26548/final25587 exit0 warning-free; public audit F251scratch42863 standard-only; index1; lint99266 twelve unrelated unreachable modules, no BAG debt. Cofactor/mixed-moment summation and a positive self-target minorant remain open.
+
+
+**C28.8 / F251 FINAL — full complex conductor log slope, LEAN PROVED.**
+`ZetaChiConductorLogSlope.lean` proves the full complex critical chi slope differs from -log(t/(2*pi)) by at most26/t², and every compact strip shift differs by at most10*norm(s-1/2)/t+26/t² under the explicit conductor-window conditions. Scratch42863/final64271 exit0 warning-free; both public audits F252scratch59648 standard-only; reused critical-slope/compact-shift audits standard-only; index2; lint15095 ten unrelated unreachable modules, no BAG debt. Exact segment integration and normalized ratio error remain in scratch.
+
+
+**C28.8 / F252 FINAL — exact normalized chi transport, LEAN PROVED.**
+`ZetaChiSegmentLogRatio.lean` defines the literal segment integral of chi logarithmic slope and proves both exact shift quotient=exp(segmentLog) and its conductor-normalized exponential form. The strict-strip chi nonvanishing follows from the Gamma factors; zeta nonvanishing is not used. Corrected scratch49985/final33013 exit0 warning-free; both public audits F253scratch83428 standard-only; imported interval FTC and ZetaNotch continuity audits standard-only; index3 includes definition; lint82011 eleven unrelated unreachable modules, no BAG debt. The quantitative error bound remains in scratch.
+
+C28.8 actual-atom handoff (paper consequence, Lean draft pending): b(s,N,n)=n^(s-1)/(sqrt(N)*N^(s-1)) cancels the compact-row normalization exactly. Multiplying the full F250 integral by b and applying the canonical saddle bound gives the literal unweighted dual atom chi(s+i*t)*n^(s-1)*exp(i*t*log n) main2*pi with errornorm(b)*C*E(N,2*pi*n,h)+K(s)/n. No smoothing, cofactor or complementary term is absorbed into this statement. With n comparable to N and h=N^(3/5), the expected single-atom error is O(N^(-1/10)); coefficient normalization and growing-support summation still need proof. Even a positive unweighted first mean is not the signed target-error lower integral.
+
+
+**C28.8 / F253 FINAL — quantitative normalized chi error, LEAN PROVED.**
+`ZetaChiNormalizedShiftBound.lean` proves the exact segment error bound26*norm(delta)/t²+10*norm(delta)^2/t, and actual normalized chi ratio differs from1 by at most(52*norm(delta)+20*norm(delta)^2)/t above the explicit compact-shift threshold. Corrected scratch29131/final74560 exit0 warning-free; both public audits F254scratch46975 standard-only; index2; lint52896 eleven unrelated unreachable modules, no BAG debt. Canonical saddle cancellation remains in scratch.

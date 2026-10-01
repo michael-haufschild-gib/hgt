@@ -48,3 +48,12 @@
   - Side condition: `L ≥ 24 w e²⁵`, which holds eventually.
   - The seam takes a general slope `κ`. Crude `κ = 1/12` modules were replaced, not kept. Axioms are standard; collisions 0.
   - Remaining window slack: `1/24` against the numerical `≈ 0.038` of the exact window, worth ≤ 0.005. Further gains need the off-line moment constant.
+- 2026-10-01 — **Moment `0.21 → 0.17`; density `HD(1) − 17π/1200 ≈ 0.628` (MUST-638).**
+  - `Sieve/TwistedSelbergMollifier`: Selberg `Λ²` weights for density `n^{−s}` (PNT+ `SelbergSieve`, no new sieve code), `gcdPowKernel_mono`, gcd form `≤ 1/Σ m^{−s}`.
+  - `ZetaGateProductAFEWeightedHighBlock`: weight-generic high block and dyadic law (any real `|w| ≤ 1`, `N ≤ U^{1/15}`, main-term factor `F → c`).
+  - `ZetaOffLineMomentSelbergWeights`: `s = 1 + 2R/log(U−1)`, constant `e^{2R}/(1−e^{−2R/15})`, `R = 5/2`, `μ ≤ 17/100`.
+  - `horizontalSingleton_density_of_moment`: density `HD(1) − πμ/12` for any moment `μ ≤ 1`.
+  - Cap at `θ = 1/15`: `μ ≈ 1/6`. Next lever is the mollifier length, not the weights.
+- 2026-10-01 — All moment consumers parametrized by `μ` (`…_of_moment` in `XiLaguerreShadowDensity`, `XiSliceCoeffDensity`, `XiHadamardSignDensity`, `XiCriticalScaleDiscSeamExplicitDensity`, `SpeiserEventualEquivalence`, `SpeiserCleanHeights`); `0.21` versions kept as instances. `ZetaOffLineMomentSelbergDensities`: `μ = 17/100` gives `33/50` (Laguerre, slice, Speiser), `33/100` (Hadamard area), `49/100` (disc seams). Dependents rebuilt; collisions 0; axioms standard.
+- 2026-10-01 — **Critical-scale tail law (MUST-641).** `ZetaCriticalScaleTailFromGate`: wide Littlewood consumer (left zeros charged), reflection identity, `4πΣ(β−½−R/log V)⁺ ≤ (log c − 2R + η)V` from any gate. `ZetaCriticalScaleTailSelberg`: `g(R) = −log(1−e^{−2R/15})`, zero count beyond `2R/log V` `≤ (g+η)V log V/(4πR)`, bad critical-scale discs `≤ (3K+4)(g+η)/(2π)`.
+- 2026-10-01 — **Mollifier length `U^{1/9}` (MUST-644): `μ ≤ 7/50`, singleton `≥ HD(1) − 7π/600 ≈ 0.636`.** Deep left-line shift to `Re w = −9/20`, pair error `u^{−33}` for `N ≤ u^{13}`, high blocks `a ≥ U^{7/8}`, `‖Ψ‖² ≤ 9e^{4R/9}N` in the middle/low ranges. Tail consequences refactored to `…_of_tail` (any tail law). Note: `RHTower.integrable_mul_cexp` is declared in three other agents' modules (`IsolatedDeepZeroHodgeIndex`, `WindowTransformSamplingParseval`, `WeilFullConeHerglotzRightHalfPlane`), so the singleton consequence lives in its own module `HorizontalSingletonDensityNinth`.

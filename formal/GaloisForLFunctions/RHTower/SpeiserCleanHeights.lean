@@ -104,36 +104,27 @@ theorem allRHSigns_of_speiserUnshadowed {T : ℝ} (hT : 101 ≤ T) (hu : Speiser
   exact ⟨DeBruijn.monotoneOn_laguerre_of_not_mem_xiShadow hsh,
     DeBruijn.xiSliceCoeff_nonneg_of_not_mem_xiShadow hsh, cleanLine_of_speiserUnshadowed hT hu⟩
 
+/-- **Density of clean heights from an off-line moment bound.**  If `Σ m(ρ)(Re ρ − ½) ≤ μ V` for all
+large `V`, `μ ≥ 0`, then eventually the unshadowed heights in `[0, V]` have measure at least
+`(1 − 2μ) V − μ`. -/
+theorem eventually_volume_speiserUnshadowed_ge_of_moment {μ : ℝ} (hμ : 0 ≤ μ)
+    (hmom : ∀ᶠ V in atTop, offLineMoment V ≤ μ * V) :
+    ∀ᶠ V in atTop, ENNReal.ofReal ((1 - 2 * μ) * V - μ) ≤
+      volume {T : ℝ | T ∈ Icc 0 V ∧ SpeiserUnshadowed T} := by
+  filter_upwards [DeBruijn.eventually_volume_xiShadow_inter_Icc_le_of_moment hmom,
+    eventually_ge_atTop 0] with V hV hV0
+  have h := DeBruijn.ofReal_sub_le_volume_of_not_mem_xiShadow
+    (fun T hT => speiserUnshadowed_of_not_mem_xiShadow hT) (by positivity) hV
+  rwa [show V - (2 * μ * V + μ) = (1 - 2 * μ) * V - μ by ring] at h
+
 /-- **Density of clean heights.** Eventually, the unshadowed heights in `[0, V]` have measure at
 least `(29/50) V − 21/100`. -/
 theorem eventually_volume_speiserUnshadowed_ge :
     ∀ᶠ V in atTop, ENNReal.ofReal (29 / 50 * V - 21 / 100) ≤
-      volume {T : ℝ | T ∈ Icc 0 V ∧ SpeiserUnshadowed T} := by
-  have h := (tendsto_atTop_add_const_right atTop (1 / 2 : ℝ) tendsto_id).eventually
-    ZetaGateProductAFE.eventually_offLineMoment_le
-  filter_upwards [h, eventually_ge_atTop 0] with V hV hV0
-  simp only [id] at hV
-  have hsub : Icc 0 V ⊆ {T : ℝ | T ∈ Icc 0 V ∧ SpeiserUnshadowed T} ∪
-      (DeBruijn.xiShadow ∩ Icc 0 V) := by
-    intro T hT
-    by_cases hS : T ∈ DeBruijn.xiShadow
-    · exact Or.inr ⟨hS, hT⟩
-    · exact Or.inl ⟨hT, speiserUnshadowed_of_not_mem_xiShadow hS⟩
-  have hvol := (measure_mono (μ := volume) hsub).trans (measure_union_le _ _)
-  rw [Real.volume_Icc] at hvol
-  have hsh := DeBruijn.volume_xiShadow_inter_Icc_le_offLineMoment V
-  have hsh' : volume (DeBruijn.xiShadow ∩ Icc 0 V) ≤ ENNReal.ofReal (42 / 100 * V + 21 / 100) :=
-    hsh.trans (ENNReal.ofReal_le_ofReal (by linarith))
-  have htot : ENNReal.ofReal (V - 0) ≤ volume {T : ℝ | T ∈ Icc 0 V ∧ SpeiserUnshadowed T} +
-      ENNReal.ofReal (42 / 100 * V + 21 / 100) := hvol.trans (add_le_add_right hsh' _)
-  have hfin : volume {T : ℝ | T ∈ Icc 0 V ∧ SpeiserUnshadowed T} ≠ ⊤ := by
-    refine ne_top_of_le_ne_top (b := volume (Icc (0 : ℝ) V)) ?_
-      (measure_mono fun T hT => hT.1)
-    rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top
-  rw [← ENNReal.ofReal_toReal hfin] at htot ⊢
-  rw [← ENNReal.ofReal_add ENNReal.toReal_nonneg (by linarith)] at htot
-  have := (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp htot
-  exact ENNReal.ofReal_le_ofReal (by linarith)
+      volume {T : ℝ | T ∈ Icc 0 V ∧ SpeiserUnshadowed T} :=
+  (eventually_volume_speiserUnshadowed_ge_of_moment (by norm_num)
+    ZetaGateProductAFE.eventually_offLineMoment_le).mono fun V h =>
+      le_trans (le_of_eq (by congr 1; ring)) h
 
 end
 

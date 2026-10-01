@@ -12,10 +12,11 @@ lie in `½ + r ≤ Re s ≤ ½ + 3r`.  A disc containing a zero of `ξ` receives
   `r · #{exceptional discs} ≤ Σ_{0 ≤ Im ρ ≤ 3rK + r} m(ρ)(Re ρ − ½)`
   (`mul_card_badCriticalScaleDiscs_le_offLineMoment`),
 
-and the unconditional off-line moment bound `≤ (21/100)·height` gives, uniformly in the radius,
+and an off-line moment bound `≤ μ·height` gives, uniformly in the radius,
 
-  `#{k ≤ K : D_k zero-free} ≥ (37/100) K − 21/100`   once `3rK + r` is large
+  `#{k ≤ K : D_k zero-free} ≥ (1 − 3μ) K − μ`   once `3rK + r` is large
 
+(`exists_card_goodCriticalScaleDiscs_ge_of_moment`); `μ = 21/100` gives `(37/100) K − 21/100`
 (`exists_card_goodCriticalScaleDiscs_ge`).  On every zero-free disc the adjoint Hankel seam of the
 `ξ` phase is a strict contraction (`criticalScaleDisc_adjointSeam_lt_one`), so the TG seam
 criterion holds on at least `37%` of the right discs at every scale, including the zero-spacing
@@ -89,32 +90,44 @@ theorem mul_card_badCriticalScaleDiscs_le_offLineMoment {r : ℝ} (hr : 0 < r) (
     _ ≤ offLineMoment T :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub fun z hz _ => hre z hz
 
+/-- **Exceptional discs from an off-line moment bound.**  If `Σ m(ρ)(Re ρ − ½) ≤ μ T` for all large
+`T`, then at every scale at most `3μK + μ` of the discs `D_1, …, D_K` are exceptional. -/
+theorem exists_card_badCriticalScaleDiscs_le_of_moment {μ : ℝ}
+    (hmom : ∀ᶠ T in Filter.atTop, offLineMoment T ≤ μ * T) :
+    ∃ T₀ : ℝ, ∀ r : ℝ, 0 < r → ∀ K : ℕ, T₀ ≤ 3 * r * K + r →
+      ((badCriticalScaleDiscs r K).card : ℝ) ≤ 3 * μ * K + μ := by
+  obtain ⟨T₀, hT₀⟩ := Filter.eventually_atTop.mp hmom
+  refine ⟨T₀, fun r hr K hK => ?_⟩
+  have h1 := mul_card_badCriticalScaleDiscs_le_offLineMoment hr K
+  have h2 := hT₀ _ hK
+  have h3 : r * ((badCriticalScaleDiscs r K).card : ℝ) ≤ r * (3 * μ * K + μ) := by
+    have : μ * (3 * r * K + r) = r * (3 * μ * K + μ) := by ring
+    linarith
+  exact le_of_mul_le_mul_left h3 hr
+
 /-- **At most `63%` exceptional discs, at every scale.** -/
 theorem exists_card_badCriticalScaleDiscs_le :
     ∃ T₀ : ℝ, ∀ r : ℝ, 0 < r → ∀ K : ℕ, T₀ ≤ 3 * r * K + r →
       ((badCriticalScaleDiscs r K).card : ℝ) ≤ 63 / 100 * K + 21 / 100 := by
-  obtain ⟨T₀, hT₀⟩ := Filter.eventually_atTop.mp ZetaGateProductAFE.eventually_offLineMoment_le
-  refine ⟨T₀, fun r hr K hK => ?_⟩
-  have h1 := mul_card_badCriticalScaleDiscs_le_offLineMoment hr K
-  have h2 := hT₀ _ hK
-  have h3 : r * ((badCriticalScaleDiscs r K).card : ℝ) ≤ r * (63 / 100 * K + 21 / 100) := by
-    have : 21 / 100 * (3 * r * K + r) = r * (63 / 100 * K + 21 / 100) := by ring
-    linarith
-  exact le_of_mul_le_mul_left h3 hr
+  obtain ⟨T₀, hT₀⟩ :=
+    exists_card_badCriticalScaleDiscs_le_of_moment ZetaGateProductAFE.eventually_offLineMoment_le
+  exact ⟨T₀, fun r hr K hK => (hT₀ r hr K hK).trans_eq (by ring)⟩
 
-/-- **Contracting seams on `37%` of the right discs, at every scale.** Once `3rK + r` is large,
-at least `(37/100) K − 21/100` of the discs `D_1, …, D_K` of radius `r ≤ 1/8` are zero-free, and on
-each of them the adjoint Hankel seam of the `ξ` phase has norm `< 1`. -/
-theorem exists_card_goodCriticalScaleDiscs_ge :
+/-- **Contracting seams from an off-line moment bound.**  If `Σ m(ρ)(Re ρ − ½) ≤ μ T` for all large
+`T`, then once `3rK + r` is large at least `(1 − 3μ) K − μ` of the discs `D_1, …, D_K` of radius
+`r ≤ 1/8` are zero-free, and on each of them the adjoint Hankel seam of the `ξ` phase has norm
+`< 1`. -/
+theorem exists_card_goodCriticalScaleDiscs_ge_of_moment {μ : ℝ}
+    (hmom : ∀ᶠ T in Filter.atTop, offLineMoment T ≤ μ * T) :
     ∃ T₀ : ℝ, ∀ r : ℝ, ∀ hr : 0 < r, ∀ K : ℕ, T₀ ≤ 3 * r * K + r →
-      37 / 100 * (K : ℝ) - 21 / 100 ≤
+      (1 - 3 * μ) * (K : ℝ) - μ ≤
         ((Finset.Icc 1 K \ badCriticalScaleDiscs r K).card : ℝ) ∧
       ∀ k ∈ Finset.Icc 1 K \ badCriticalScaleDiscs r K,
         ∃ hne : ∀ ζ ∈ sphere (criticalScaleCenter r k) r, xi ζ ≠ 0,
           ‖(xiDiscDatum (criticalScaleCenter r k) r hr hne).circlePhase.datum.adjointHankelSeam‖
             < 1 := by
   classical
-  obtain ⟨T₀, hT₀⟩ := exists_card_badCriticalScaleDiscs_le
+  obtain ⟨T₀, hT₀⟩ := exists_card_badCriticalScaleDiscs_le_of_moment hmom
   refine ⟨T₀, fun r hr K hK => ⟨?_, fun k hk => ?_⟩⟩
   · have hbad := hT₀ r hr K hK
     have hsub : badCriticalScaleDiscs r K ⊆ Finset.Icc 1 K := by
@@ -134,6 +147,21 @@ theorem exists_card_goodCriticalScaleDiscs_ge :
     apply hkb
     unfold badCriticalScaleDiscs
     exact Finset.mem_filter.mpr ⟨hkI, z, hz, hz0⟩
+
+/-- **Contracting seams on `37%` of the right discs, at every scale.** Once `3rK + r` is large,
+at least `(37/100) K − 21/100` of the discs `D_1, …, D_K` of radius `r ≤ 1/8` are zero-free, and on
+each of them the adjoint Hankel seam of the `ξ` phase has norm `< 1`. -/
+theorem exists_card_goodCriticalScaleDiscs_ge :
+    ∃ T₀ : ℝ, ∀ r : ℝ, ∀ hr : 0 < r, ∀ K : ℕ, T₀ ≤ 3 * r * K + r →
+      37 / 100 * (K : ℝ) - 21 / 100 ≤
+        ((Finset.Icc 1 K \ badCriticalScaleDiscs r K).card : ℝ) ∧
+      ∀ k ∈ Finset.Icc 1 K \ badCriticalScaleDiscs r K,
+        ∃ hne : ∀ ζ ∈ sphere (criticalScaleCenter r k) r, xi ζ ≠ 0,
+          ‖(xiDiscDatum (criticalScaleCenter r k) r hr hne).circlePhase.datum.adjointHankelSeam‖
+            < 1 := by
+  obtain ⟨T₀, hT₀⟩ :=
+    exists_card_goodCriticalScaleDiscs_ge_of_moment ZetaGateProductAFE.eventually_offLineMoment_le
+  refine ⟨T₀, fun r hr K hK => ⟨le_trans (le_of_eq (by ring)) (hT₀ r hr K hK).1, (hT₀ r hr K hK).2⟩⟩
 
 end
 

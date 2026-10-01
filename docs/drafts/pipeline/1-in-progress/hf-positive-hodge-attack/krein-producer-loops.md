@@ -5035,3 +5035,264 @@ Notation: `lam ∈ W`, `F = exp(Σ lam(n)n^{−s}/log n) = Σ b_n n^{−s}`, `E 
 - **Verdict.** The `V₃` door gives existence of fake ζ³'s (Theorem A, new) but no RH-independent producer, modulo detection.
 - **Survivors.** Theorem A; the dictionary `a = 2/λ_H`; Lemma G; Theorem R; the conservation law.
 - **Next decisive question:** the detection lemma. Do prime-blind positive-definite tests see every off-line zero? If not, the `V₃` door reopens.
+
+### L257 — Datum-twin barrier: `W ≠ ∅ ⇒ RH` cannot be proved from datum and integer support alone. BARRIER [P, conditional on RH + simple zeros]
+- Fakes `ζ³ + εE` (`E ∈ W`, `E(ρ) ≠ 0` at some simple zero) have off-line zeros (120° splitting). Their weights `Λ_F/3` are integer-supported with ζ's exact datum and pole.
+- Under RH, `W ∋ Λ`, so "an off-line zero of an integer-supported system with this datum ⇒ `W = ∅`" is false.
+- Any proof of detection or uniqueness-free `W ≠ ∅ ⇒ RH` must use Λ-specific arithmetic (positivity, prime support, the Euler product).
+- This reclassifies the L183/L184 programme: it is a statement about Λ, not about the datum.
+- The conservation law (L256) explains it: the prime-blind functional is a datum invariant shared by all twins.
+
+### L258 — Correction to L183/L185 ("the target is at least as hard as RH"): that claim depends on the unproven detection lemma, which needs Λ-specific arithmetic (L257). The producer problem is the datum-level statement PBAP. META-CORRECTION [P]
+- **What is proven.** `W ≠ ∅ ⟺ PBAP`, by the formal duality plus the single-function reduction (L248). PBAP mentions only the archimedean distribution `w_A`, the pole kernel `2cosh(x/2)`, and the set `±log ℕ_{≥2}`; no primes and no zeros. RH implies PBAP.
+- **What is not proven.** That PBAP implies RH. Every route (uniqueness `W ⊆ {Λ}`, or the detection `¬RH ⇒ ¬PBAP` of L183/L184) needs Λ-specific arithmetic. Prime-blind tests vanish at every `log n`, so they cannot see the Euler product directly; any detection proof must reach Λ's structure indirectly (e.g. through the positions of ζ's zeros).
+- **Consequence.** The repeated ledger verdict "the hook's object is at least as hard as RH" (L183, L185, line ~4041) is **conditional on detection**. Without detection, the producer problem PBAP is a datum-level harmonic-analysis statement that may be strictly weaker than RH.
+  - Fake ζ³'s show that zero sets with off-line points can coexist with PBAP in the RH world.
+- **Equivalent forms of the target** (all datum-level):
+  1. `∫g(x)[w_A(x) + 2cosh(x/2)]dx ≥ 0` for every positive-definite `g` vanishing on `±log ℕ_{≥2}`.
+  2. Some `c` makes `w_A + 2cosh(x/2) + Σ c_n(δ_{log n} + δ_{−log n})` positive definite.
+  3. (Theorem R) For each `T₀`, some fake ζ³ with controlled coefficients has all zeros below height `T₀` on the line.
+- **Redirect.** Attack PBAP as datum-level harmonic analysis, i.e. form 1 or 2 directly, and stop treating it as RH.
+
+### L259 — First direct datum-level attack on PBAP: the pole gain of a dipole is translation invariant and capped by prime-blindness. PARTIAL [P]
+- **Dipole tests.** Let `f = φ(·−a) − εφ(·−b)` with `∫φ = 1` and `d = a − b > 0`. Then `pole(f⋆f̃) = 2Re[f̂(i/2)·conj f̂(−i/2)]`.
+  - The pole term is negative exactly when `e^{−d/2} < ε < e^{d/2}`. Its most negative value, at `ε = 1`, is `pole = −4(cosh(d/2) − 1)`, **independent of the position `a`**: the `e^{±a/2}` weights cancel.
+- **Prime-blindness caps `d`.** The cross-correlation sits at `±d`, so `d` must avoid every `log n`. Either `d < log 2` or `d` lies in a gap of length `≍ e^{−d}`; the latter forces `φ` narrower than `e^{−d}`, at a cost of `≍ d` in the archimedean term.
+  - So the pole gain is at most `4(cosh(½log 2) − 1) ≈ 0.24` times `(∫φ)²`.
+  - The archimedean cost is `(1/π)∫|f̂|²θ'`. The `|e^{iτa} − e^{iτb}|² ≈ τ²d²` factor suppresses the low-frequency (negative-`θ'`) region, and width-`w` bumps cost `≍ (1/w)log(1/w)`.
+  - Hence `Q > 0` on every prime-blind dipole, with an explicit margin.
+- **Consequence.** Any PBAP violator must have many components, coordinated so that cross-correlations cancel at the dense `log n` while the pole moments add coherently. That is L244's resonance at Kronecker heights, where `θ' ≍ ½log τ` pays.
+- **Open.** Is there a multi-component bound on the pole gain in terms of the archimedean cost? Equivalently, a *linear* inequality `−pole(g) ≤ arch(g)` on the prime-blind cone: PBAP itself, attacked directly.
+- **L259 addendum: multi-bump configurations [P-heuristic, explicit].**
+  - For `f = Σ_j c_jφ(·−a_j)` (`∫φ = 1`, width `w`), the pole form is the rank-2 indefinite kernel `C = vuᵀ + uvᵀ`, with `v_j = e^{a_j/2}` and `u_j = e^{−a_j/2}`. Its negative eigenvalue is `J − ‖u‖‖v‖`, which is `≤ 0` by Cauchy–Schwarz.
+  - The archimedean diagonal is `D ≍ log(1/w)/(2πw)`.
+  - **Collision count.** A configuration whose difference set avoids `±log ℕ` (generically) needs `J²e^{2a}w ≲ 1`, so `‖u‖‖v‖ ≲ w^{−½}/a`. Then `‖u‖‖v‖/D ≲ πw^{½}/(a·log(1/w)) < 1`, and **PBAP holds on collision-free configurations**.
+  - **Divisibility antichains.** Take `a_j = log m_j` with all `m_j ∈ (M, 2M)`: no `m_j` divides another, so the configuration is automatically prime-blind. But the spread is `≤ log 2`, so the negative eigenvalue is only `≍ 0.06J`, against `D ≳ M log M`; positive.
+  - Violators would therefore need collisions with **coefficient cancellation at every `log n`** while the pole moments add coherently: the resonance structure of L244. An inequality controlling the pole gain under such cancellations is the remaining content of PBAP.
+
+### L260 — The prime-blind cone is a multiplicative ideal; the shifted-pole family `PBAP_ε` interpolates from known positivity (`ε ≥ ½`) to PBAP (`ε → 0`). STRUCTURE [P]
+- **Ideal property.** If `g` is prime-blind and positive-definite and `h` is any positive-definite function, then `g·h` is prime-blind and positive-definite (Schur product; `g` vanishes on `±log ℕ`).
+  - Hence PBAP for `K = w_A + 2cosh(x/2)` implies PBAP for every damped datum `K·h`, `h` positive-definite. The converse fails in general.
+- **Shifted-pole family.** Take `h_ε = e^{−ε|x|}` (positive-definite). Then `K·h_ε` is the datum whose pole sits at `1 − ε`, with archimedean density `θ' ∗ P_ε` (Poisson smoothing).
+  - The candidate `lam_ε(n) = Λ(n)n^{−ε}` (`D = −ζ'/ζ(s+ε)`) is a producer for `K·h_ε` iff every zero has `β < ½ + ε`.
+  - So `PBAP_ε` holds unconditionally for `ε ≥ ½` (the unit-shift / Lagarias–Suzuki positivity of L246). Quasi-RH(`ε`) implies `PBAP_ε`, and `PBAP = PBAP_0`.
+- **Reading.** The producer problem is the `ε → 0` end of a datum-level family whose `ε ≥ ½` end is known. By the datum-twin barrier (L257), `PBAP_ε` need not be equivalent to quasi-RH(`ε`). Monotonicity in `ε` is automatic by the ideal property: `PBAP_ε ⇒ PBAP_{ε'}` for `ε' ≥ ε`.
+- **Question for the next cycle.** Lower the known threshold below `½`, i.e. prove `PBAP_ε` for some `ε < ½`. This would be a datum-level existence result (a producer for a shifted datum) not known from zero-free regions: no zero-free strip `σ > ½ + ε` with `ε < ½` is known.
+
+### L261 — Attack on `PBAP_ε`, `ε < ½`: a hybrid producer that is unconditionally analytic, whose positivity needs power-saving prime exponential sums. PARTIAL [P] + exact obstruction
+- **Hybrid weights.** `lam(n) = Λ(n)` for `n ≤ P₀`. For primes `p > P₀`, `lam(p) = p − p⁻` (gap weights). For prime powers above `P₀`, `lam = 0`.
+  - Then `G = A + 1/(s−1) − Σ_{n≤P₀}Λ(n)n^{−s} − Σ_{p>P₀}(p−p⁻)p^{−s}`. **There is no `ζ'/ζ` in it**, and `G` is analytic on `σ > 0.525` unconditionally (Baker–Harman–Pintz gaps; the pole at 1 is cancelled by the tail).
+- **Positivity on `σ ≥ ½ + ε`.**
+  - Near `s = 1` the margin is that of `ξ'/ξ` (`≈ 0.018` at `σ = 0.9`, `t = 0`). It is met once the tail discrepancy `Σ_{n>P₀}(Λ − lam)(n)n^{−0.9} ≪ P₀^{−0.375}` is below it, i.e. `P₀ ≳ 5·10^4`.
+  - At heights where the tails are smooth (`t ≪ P₀^{3/8}`), `G ≈ ξ'/ξ`. Numerical RH (`3·10^{12}`) gives positivity there.
+  - At large heights, `Re G ≥ 0` needs `Re Σ_{p>P₀} gap_p p^{−σ−it} ≤ ½log t + O(1)` uniformly. Heuristically (Kronecker alignment and Gaussian tails) this holds with room. A proof needs power-saving bounds for gap-weighted prime exponential sums; Vinogradov-type savings give only `exp(c(log t)^{2/3})`.
+- **Dense weights fail provably.** Taking `lam ≡ 1` (`D = ζ − 1`) fails: by Ω-results `Re ζ(σ+it)` reaches `exp(c(log t)^{1−σ}/loglog t)` on every line `σ < 1`, which eventually beats `½log t`.
+- **Verdict.** Every construction tried for `PBAP_ε` with `ε < ½` needs either a zero-free strip, or power-saving prime (or gap-weighted prime) exponential-sum bounds of the same strength. No datum-only route has appeared, although the barrier of L257 does not forbid one.
+- **Survivor.** The hybrid `G` is an explicit, unconditionally analytic Herglotz candidate. Its positivity reduces exactly to one uniform exponential-sum inequality at height `t`.
+
+### L262 — Universality obstruction for fake-ζ³ producers and for `PBAP_ε` constructions. BARRIER [P-heuristic, built on Voronin/Bagchi]
+- **Statement.** Let `F = ζ³ + E` with `E ∈ W`. Suppose the pair `(ζ, E)` is jointly universal on a strip `½ + ε < σ < 1`: the shifts `(ζ(s+it), E(s+it))` approximate any pair of non-vanishing analytic functions on compact disks.
+  - Then `F` has zeros in that strip: take targets `(g, −g³)`.
+  - So `Λ_F/3` is not a producer, not even for the shifted datum of `PBAP_ε`.
+- **When joint universality is expected.** It is expected whenever `E`'s coefficients are not multiplicatively entangled with ζ (Bagchi/Laurinčikas-type joint universality needs only linear independence or "Bohr-independence" conditions).
+  - Elements of `W` come from a linear closed-range construction on integer nodes (KNS frames), so generic elements should satisfy it.
+- **Consequences.**
+  1. A real-rooted fake ζ³ needs `E` arithmetically entangled with ζ, strongly enough to defeat joint universality in every strip. That is Euler-product-type structure, which the linear construction does not provide (L252(b): `F` must be `exp(H)` in Bohr's sense).
+  2. For `PBAP_ε` (`ε < ½`), any producer built as "ζ-dependent part + independent correction" fails the same way. The remaining candidates are pure log-derivatives (needing a zero-free strip) or prime-supported weights (needing power-saving prime exponential sums, L261).
+- **Combined picture (L251–L262).**
+  - Existence of datum twins: proved (Theorem A).
+  - Their prime-blind invariant: conserved (L256).
+  - Real-rooted twins: need Euler-type entanglement (L262).
+  - Producers for the shifted data `PBAP_ε`, `ε < ½`: need zero-free-strip-strength prime information (L261).
+  - Every RH-independent route found so far demands arithmetic of Euler-product strength. This is consistent with the L257 barrier, which says only that such arithmetic is necessary, not that it is equivalent to RH.
+
+### L263 — Theorem A promoted to stage 2 (fully proven on paper). THEOREM [P]
+- Card `2-fully-proven/degree-three-fake-zeta-cubed-abundance.md`: a complete proof that `W` (cuspidal Dirichlet series with `Γ_ℝ(s)³` symmetry) is infinite-dimensional, so ζ³ is not determined by its functional equation.
+- Steps: exact triplication factorization (Lean); holomorphy and bound of the twist `v` on `−1 < Re w < 2`; Lemma B (KNS for `S∘V`); admissible cube-root node set; closed-range self-dual relations on `E₋`; Hecke's theta argument.
+- Audit: Bochner 1958 is an equivalence (FE ⟺ modular relation), not a dimension result; no prior abundance statement found in degree 3.
+
+### L264 — Rediscovery audit of this cycle; correction of L261 at `ε = 0`. AUDIT [P]
+- **Tried this cycle.** All four mechanisms below are already in the ledger:
+  - Hermite–Biehler/Pólya form of a producer without a functional equation (`|s(s−1)Γ_ℝF|` nondecreasing in `σ`; `F = exp(−∫D)`): L252(b), L178.
+  - Bohr-safety (support must avoid smooth numbers; bilinear `pm`-supports re-amplify the smooth boost): L174, L182, L196.
+  - CLT/skew variance ceiling for supports with analytic boundary: L108–L111, L128.
+  - Reflection classification of critical producers (atomic boundary measure ⇒ functional equation ⇒ Hamburger / fake `ζᵏ`): L82, L140, L222.
+- **Correction to L261.** The hybrid gap-weighted producer has heuristic room only for `PBAP_ε` with `ε > 0` fixed. There the variance `Σ_p gap_p² p^{−1−2ε}` converges.
+  - At `ε = 0` the weights `c_p = gap_p/log p` have `mean(c²) = 2` (exponential gap law). This puts the variance of `Re D` at height `T` near `½·log²T`, above the skew-free ceiling `¼log²T` of L109/L111.
+  - So gap weights are killed at `ε = 0` by the same heuristic that makes Λ (`c ≡ 1`, variance-minimal) exactly critical. The L109 cap (`mean(c²) ≤ 6`, unconditional) does not reach them; the kill is heuristic at `α ≥ 1`, as in L133.
+- **Reading.** Within prime-supported systems, the variance ceiling selects `c ≡ 1`. Non-prime supports fail Bohr-safety. Critical producers are fake `ζᵏ` (L222). No new mechanism appeared this cycle.
+
+### L265 — Theorem A, gate 2→3: the twist symbol in Lean. THEOREM [L]
+- Module `RHTower/DegreeThreeHankelTwistSymbol`, namespace `RHTower.DegreeThreeHankel` (axioms: propext, Classical.choice, Quot.sound):
+  - `twistSymbol w = R((2−w)/3)/R((1+w)/3)` (`twistSymbol_eq_tripR_mul_inv`);
+  - `differentiableOn_twistSymbol` on `−3 < Re w < 2`;
+  - `twistSymbol_ne_zero` on `−1 < Re w < 2`;
+  - `norm_twistSymbol_critical`: `|v(½+it)| = 1`;
+  - `voronoi_multiplier_eq_sine_mul_twist`: `3^{w−½}Γ_ℝ((w+1)/3)³/Γ_ℝ((2−w)/3)³ = Γ_ℝ(w+1)/Γ_ℝ(2−w)·v(1−w)` on `−1 < Re w < 2`, i.e. `H̃ = S∘V` at the symbol level.
+- **L265 addendum.** Module `RHTower/DegreeThreeHankelTwistSymbolBound`:
+  - `norm_twistSymbol_three_halves`: `|v(3/2+it)| = |Γ(z)|³|z|/|Γ(z+⅓)|³` with `z = 1/12 + it/6`;
+  - `norm_twistSymbol_three_halves_le_of_large`: `≤ 2e²` for `|t| ≥ 24`, via the corpus sharp vertical Gamma ratio;
+  - `exists_bound_twistSymbol_three_halves`: `κ < ∞`.
+  - The constant of §1 and Lemma B of Theorem A is now formal. Axioms: standard three.
+- **L265 addendum 2 (Lemma B input).**
+  - `HTGeometry.dirichlet_wirtinger_intervalIntegral`: sharp Dirichlet Wirtinger, by odd reflection onto the corpus periodic inequality.
+  - `HTGeometry.stable_wirtinger_intervalIntegral`: the endpoint-stable form (KNS Lemma 1).
+  - Both use the standard three axioms. Lemma B now needs only the summation over node gaps and the `F'`–`YG` bound.
+
+### L266 — Certificates with atomic factors: the divisor-chain law. REFORMULATION [P] + heuristic; no producer
+- **Idea.** Certify `T = B − ν_lam ⪰ 0` directly as a sum of autocorrelations `Σ_k ψ_k⋆ψ̃_k`, with `ψ_k = A_k + φ_k`: `A_k` a finite atomic measure and `φ_k` Schwartz. This is a constructive form of Krein–Akhiezer in which atoms of `T` come from atoms of the factors.
+- **Divisor-chain law [P, elementary].**
+  - `A⋆Ã` has atoms at `x_i − x_j`. Cross terms `A⋆φ̃` and `φ⋆φ̃` are smooth.
+  - So `T` has atoms only on `±log ℕ ∪ {0}` iff every `supp A_k` is a translate of `{log d : d ∈ C}` with `C` a **divisor chain** `d₁ | d₂ | …`. Three points `0, log m, log n` need `m | n`.
+  - The atoms produced by a chain are at `log(d_j/d_i)`.
+- **Link to Bohr-safety.**
+  - Single-prime chains `{1, p, p², …}` produce atoms only at prime powers. This is exactly Λ's support, and the supports that pass the Bohr-safety test (L174–L196).
+  - Mixed chains such as `1 | 2 | 6` force atoms at composites like `3` and `6`. These are the supports the alignment and variance heuristics reject.
+  - Heuristic reading: a producer built from factors of this kind is a superposition of one-prime "local" certificates plus smooth corrections, i.e. an Euler-type object, consistent with L222/L252(b).
+- **Why it is not a producer.**
+  - Krein–Akhiezer gives smooth factors, with atoms of `T` arising only in limits. So the atomic-factor form is a sufficient certificate format, not a necessary one.
+  - Inside this format, the smooth parts must reproduce B's `log|x|` singularity at 0 and the `2cosh(x/2)` growth on every gap. Matching the growth forces chain weights `≈ n^{−½}` per unit density, i.e. the PNT-quality mass condition of L148.
+  - Single-prime test (self-corrected: a constraint, not a kill).
+    - `ν` needs negative atoms at the prime powers. One factor `ψ = εδ₀ − (c/ε)p^{−½}δ_{log p}` has atom `−c·p^{−½}` at `log p`. By AM–GM its atomic mass at 0 is `≥ 2c·p^{−½}`, i.e. `≥ 2log p·p^{−½}` for Λ's atom.
+    - `Σ_p log p·p^{−½} = ∞` is *not* a contradiction: the archimedean density `Ω(t)/2π ~ (1/2π)log t` is unbounded.
+    - Locally it is a constraint. At height `t`, factors with `φ̂_k ≉ −Â_k` contribute their atomic mass. So the factor serving `p` must be **switched off** (smooth part cancelling its atoms) below a height `t_p`, with `Σ_{t_p ≤ t} 2log p·p^{−½} ≲ (1/2π)log t`, i.e. `t_p ≥ exp(c√p)` for an absolute `c > 0`.
+    - **Switch-on law [P, heuristic in its factor model].** In an atomic-factor certificate, the factor carrying prime `p` cannot be active below height `exp(c√p)`.
+      - This is the certificate-level analogue of the Kronecker alignment heights of L174 (alignment of `p ≤ y` needs height `e^{≍y}`), with `√p` in place of `p` because masses scale as `p^{−½}`.
+      - It is consistent with Λ: under RH, `T̂ = 2πΣδ_γ` is atomic at the zeros, and individual primes are "felt" only through long-range averages.
+- **Survivor.** The divisor-chain law plus the switch-on law `t_p ≥ exp(c√p)`.
+  - The divisor-chain law: within atomic-factor certificates, the support of `ν` is a union of chain-difference sets, and prime-power support corresponds to single-prime chains.
+  - No certificate was constructed. Verdict: `NO PRODUCER`. Next test: whether single-prime factors with switch-on heights `exp(c√p)` can reproduce B on the gaps. This is a concrete design problem for the smooth parts `φ_p`.
+
+### L267 — The atomic-factor certificate format certifies only fully slack producers. THEOREM [P, elementary] + KILL of the L266 design problem (conditional on PC-82)
+- **Format theorem.** Suppose `T = B − ν_lam` has a certificate `T = Σ_k ψ_k⋆ψ̃_k` that converges as a countable sum of positive-definite distributions, with each `ψ_k = A_k + φ_k` (finite atomic plus Schwartz). Then the spectral measure `T̂ = Σ_k |ψ̂_k|²` is **absolutely continuous**.
+  - *Proof.* Each `|Â_k + φ̂_k|²` is a locally integrable function. The partial sums form an increasing sequence of a.c. measures with limit `T̂`. If `Leb(E) = 0`, every partial sum gives `E` mass 0, so `T̂(E) = sup_n μ_n(E) = 0`. ∎
+- **Consequences.**
+  1. Under RH, Λ's spectral measure `2πΣ m_γ δ_γ` is purely atomic. So **Λ has no certificate in this format**, however the chains and smooth parts are chosen.
+  2. A certificate in this format would produce a producer with *purely a.c.* boundary measure, i.e. no zeros on the line and full slack. By PC-82 (L82) none exists.
+     - With single-prime chains (divisor-chain law, L266) the producer is prime-power supported with analytic-type boundary. That is the class the third-moment ceiling kills rigorously above density `√2·κ₀` (L109), and heuristically everywhere (L108/L111).
+  3. So the L266 design problem has no solution unless PC-82 fails. Conversely, any solution would **refute** PC-82, which is a result in itself.
+- **What survives.**
+  - Producer certificates for ζ's datum must be *weak limits* in which factors concentrate: the atoms of `T̂` (zeros) appear only in the limit, as in de Branges chains (L178) and Krein's string.
+  - The switch-on law (L266) then reads as the rate at which prime `p`'s factor concentrates: its spectral mass may sit only above height `exp(c√p)`.
+- **Next.** Weak-limit certificates. Look for a one-parameter family `T_τ` of slack certificates (a.c. spectra, e.g. de Bruijn–Newman-type `Λ_τ` deformations of the datum) whose limit `τ → 0` preserves the support of `ν` on `±log ℕ`. The obstruction to locate is where the support constraint breaks under the deformation.
+
+### L268 — Weak-limit certificates via heat flow: the support constraint breaks at first order. KILL [P] + rediscovery audit
+- **Test (from L267).** Use the de Bruijn–Newman family `Ξ_τ(z) = ∫e^{τu²}Φ(u)cos(zu)du`. It is real-rooted for `τ ≥ 0.2` (Polymath; L-row at line ~1107 records it as a producer for `t ≥ 0.2`). Ask whether its spectral measures `T̂_τ = 2πΣδ_{γ_ρ(τ)}` have prime-side distributions `ν_τ` supported on `±log ℕ`, so that `τ → 0` would be a weak limit inside the producer cone.
+- **First-order obstruction [P].**
+  - For simple zeros, `d/dτ ⟨T̂_τ, ĝ⟩ = 2πΣ γ̇_ρ ĝ'(γ_ρ)`. The x-space side is the dipole distribution `D_τ := (Σγ̇_ρ δ'_{γ_ρ})^∨`.
+  - Keeping `ν_τ` on `±log ℕ` with ζ's datum fixed requires `D_τ` supported on `±log ℕ`. That makes the dipole measure on the zeros **crystalline**, with spectrum in `±log ℕ`.
+  - Heat flow has `γ̇_ρ = −2Σ_{ρ'≠ρ} 1/(γ_ρ − γ_ρ')` (Csordas–Smith–Varga pairwise repulsion). Its x-transform is the Hilbert-transform pair correlation of the zeros. That is a continuous, nonzero function on gaps (its local mean is the derivative of the archimedean density), so the support leaves `log ℕ` at first order.
+  - Equivalently, heat flow changes the archimedean datum: `e^{τu²}` multiplies the theta side. It does not reweight the primes.
+- **Rediscovery audit.** The heat flow as a producer at `t > 0` is in the ledger (≈ line 1107, "finite-level de Bruijn–Newman"). So is the crystalline rigidity of weighted zero measures (L105/L129). The new element is only the first-order statement: a weak-limit certificate along any zero flow requires a crystalline dipole measure. Repulsion flows are never crystalline, because their transform has an archimedean drift.
+- **Survivor.** Weak-limit certificates must move the zeros along a flow whose dipole measure is crystalline over `±log ℕ`. By L105/L129-type rigidity, the only such flows are generated by Dirichlet-series perturbations `D_w`. That is the L140/L141 one-sided Hamburger-with-defect problem again.
+  - So the weak-limit route reduces to the uniqueness core already isolated, not to a new mechanism. Verdict: `NO PRODUCER`; the loop returns to L141/L142 (one-sided defect).
+- **L268 caveat.**
+  - The zero-flow formula `γ̇_ρ = ∓2Σ 1/(γ_ρ − γ_ρ')` (sign by convention) is recalled from the heat-flow literature (Csordas–Smith–Varga; Rodgers–Tao), not re-derived here.
+  - The kill uses only that the flow's dipole transform has a nonzero archimedean drift on gaps.
+
+### L269 — Re-entry at the one-sided defect (L141–L142): mean balance. AUDIT [P]
+- **Setting.** `lam = Λ + w ∈ W` (with RH). The boundary measure of `−Re D_w` on the line is `ν_ac + Σ_γ r_γ δ_γ`, with `ν_ac ≥ 0` and `r_γ ≥ −m_γ`.
+- **Mean balance [P].** For `σ > 1`, `D_w` has zero mean in `t`. Passing to the boundary through the Poisson representation gives `(1/T)∫_T^{2T} ν_ac = −(1/T)Σ_{γ∈[T,2T]} r_γ + o(1)`. The a.c. defect is paid for exactly by net zero removal.
+  - This is the deficit law L126, so not new.
+- **Reading.** Every route after L250 (fake `ζ³`, atomic certificates, weak limits) returns to one inequality: can a nonnegative a.c. defect `ν_ac` with zero-removal budget `Σ r_γ` coexist with a Dirichlet-series `D_w` on `σ > ½`?
+- **Next conjecture (to attack after compaction).** **Defect–Dirichlet incompatibility:** `ν_ac ≠ 0` forces `D_w` to have natural-boundary behaviour on the line (no meromorphic continuation across any interval). Then `F = ζ·D_w` violates the Paley–Wiener growth that L144 established for the continued defect.
+  - Test: L144's continuation to the imaginary axis, combined with the Format theorem (L267) applied to `ν_ac` alone.
+
+### L270 — The defect–Dirichlet incompatibility test (L269): it splits into two known cases; L266's switch-on law is L180's time-dependent budget. AUDIT [P]
+- **Exact reduction [P].** Under RH, with `lam = Λ + w ∈ W` and `−D_w = C_ν − S + const` (L141):
+  - `D_w` continues analytically across an interval `I` of the line iff `ν|_I` has a real-analytic density. `S` is meromorphic across the line, and `C_ν^+ = ν + iH[ν]` (Plemelj).
+  - So "natural boundary" in L269 means "`ν_ac` is nowhere real-analytic".
+  - Real-analytic (indeed any slowly varying) `ν_ac` is excluded by L243 (twisted mean-value identity against L242's mean-square bound), modulo L224.
+  - The complementary case, rapidly varying or quasi-atomic `ν_ac`, is L243's residual door, i.e. L224(i).
+  - The conjecture adds nothing beyond L243. Verdict: REDISCOVERED.
+- **Pure-defect lemma [P, elementary; recorded for completeness].** A Dirichlet series `D_w` (no constant term) with `Re D_w ≤ 0` on a half-plane of absolute convergence is `0`. On such a half-plane `t ↦ Re D_w(σ+it)` is uniformly almost periodic with mean 0, and a nonnegative a.p. function with mean 0 vanishes.
+  - Consequence: the negative part of the boundary measure `τ = ν − πΣ r_ρδ_γ` cannot be absolutely continuous. A second producer must **remove** zero mass (`r_ρ > 0`) on a set of zeros, with mean density `ν̄/π` (the deficit law L126).
+- **Local balance law [P, from crystallinity].** Convolve with a Fejér kernel `K_L` (`K̂_L` supported in `[−L, L]`). `K_L⋆τ` is a trigonometric polynomial with frequencies `log n ≤ L`, hence bounded by `C_L` uniformly in `t`. So in every window of length `≍ 1/L`, `|ν(I) − πΣ_{γ∈I} r_ρ| ≤ C_L/L` at all heights: defect and zero removal balance locally at every scale `1/L`.
+- **Audit of L266.** The switch-on law (the factor for `p` inactive below `exp(c√p)`) is the time-dependent budget form of L180 Kill 1 (Kirchhoff star graph, `Σ c_p ≳ Σ log p/√p = ∞`). L180 notes that time-dependent budgets collapse back to the original condition. The divisor-chain law and the L267 format theorem stand as stated.
+- **State.** The uniqueness core is L224(i)/L243's residual door. Existence is `PBAP`, unchanged. Every constant-slack variant `PBAP_c` coincides with `PBAP` at large heights (L239's "no free lunch").
+
+### L271 — Lean: Lemma B on finite partitions and Hecke's step for arbitrary kernels; a modulation lemma for PBAP_A. THEOREM [L] + OBSERVATION [P]
+- **Lean (standard axioms).**
+  - `HTGeometry.partition_weighted_wirtinger`: the sampling inequality of Lemma B on finite supercritical partitions.
+  - `RHTower.hecke_theta_converse` (module `ThetaSymmetryMellinConverse`): theta symmetry plus rapid decay at ∞ gives decay at 0. The Mellin transform is then entire and symmetric, and equals the Dirichlet series times the kernel's Mellin transform on a right half-plane.
+  - This is Theorem A's Claim 0 for any kernel. Lemma B's local estimate and Claim 0 are now formal; Theorem A still lacks the kernel `K₃` with its decay, the infinite-node limit of Lemma B with the `F'`–`YG` bound, and the closed-range relations (card gates).
+- **Modulation lemma [P, elementary].** For `f_t₀ = e^{it₀x}φ(x)`, `⟨f_t₀, τ_h f_t₀⟩ = e^{−it₀h}⟨φ, τ_hφ⟩`. So prime-blindness is invariant under modulation, and every prime-blind level-`A` profile `φ` gives prime-blind tests at every height `t₀`.
+  - The pole term of such a test equals `2g(0) − (1/π)∫|φ̂(t−t₀)|² Re ζ(½+it)dt` (L239). So PBAP_A at height `t₀` is the bound "prime-blind-kernel average of `Re ζ` near `t₀` `≤ ½log(t₀/2π) + O(1)`".
+  - The kernel `|φ̂|²` annihilates `n^{it}` for `n ≤ e^A`, so its width is `≳ e^A/A` (exponential-type zero density). In the approximate functional equation, the first sum `Σ_{n≤√(t₀/2π)}` is annihilated exactly once `e^A ≥ √(t₀/2π)`. Only the dual (χ-twisted) sum survives, sampled at the non-integer frequencies `log(t₀/2πn)`.
+  - **Reading.**
+    - Below the Nyquist height `t₀ ≤ 2πe^{2A}` (L85), only the χ-dual sum enters PBAP_A.
+    - Above it, the tail `e^A < n ≤ √(t₀/2π)` of the first sum also enters, unannihilated.
+    - This matches L204's Riemann–Siegel picture. There is no new mechanism; what is new is a precise split of PBAP_A into a dual-sum regime (below `2πe^{2A}`) and a first-sum-tail regime (above).
+
+### L272 — Gap fakes and Gram dominance in `ζ³ + W`: constraint formula, a θ-model kill, and the exact remaining crux. ANALYSIS [P] + KILL (exact θ-model) + REDUCTION
+- **Idea.** Theorem R (card §18) needs, for each `T₀`, a coefficient-controlled member with real zeros up to `T₀`, and allows `log B = o(T₀^{1/s₀})` for any Gevrey order `s₀ > 1`.
+  - A "gap fake" `F_N = 1 + Σ_{2≤n≤N}u_n n^{−s} + Σ_{n>N}v_n n^{−s} ∈ ζ³ + W` with `u` small would satisfy `Z_F ≈ 2cos 3θ` (first-term dominance) at heights whose dependence range `n ≲ (t/2π)³/x₀` (card §15) lies inside `[1, N]`.
+  - Gram dominance plus Rouché would then give real zeros, and Theorem R would give PBAP.
+- **Constraint formula [P].** Let `K_N = {k ∈ E₋ : k(n) = 0 ∀n > N}` (the gap kernel; finite-dimensional, of order `L²` with `L = √3N^{1/3}` the chart gap length).
+  - Voronoi for ζ³ on `E₋` gives `2Σd₃(n)k(n) = M(k)` (the residue functional).
+  - Hence membership forces `Σ_{2≤n≤N}u_n k(n) = ℓ(k) := M(k)/2 − k(1)` for all `k ∈ K_N`.
+  - Equivalently, `u ≡ d₃|_{[2,N]}` modulo `(R_≤K_N)^⊥`. `u` can be small only in the directions invisible to `K_N`.
+  - Coefficient control of the tail `v` is achievable heuristically by removing the near-kernel of the restriction to `n > N` (plunge-region count), so Theorem R's allowance is not the bottleneck.
+- **θ-model kill [P, modulo tail control].** No controlled member can have its zeros **exactly** at the θ-points `3θ(t_k) ≡ π/2 (mod π)` up to `T₀` with `T₀ → ∞`.
+  - By the zero conservation law (L256), `μ_F^∨ ≡ 3(w_A + 2cosh(x/2))` modulo atoms on `±log ℕ_{≥2}` on prime-blind tests.
+  - Poisson in `θ` gives `ν_θ^∨ = 3w_A + c(x)`. Here `c` is a chirp (stationary point `t* = 2πe^{x/3}`, amplitude `≍ x e^{x/6}`, phase `≍ −6πe^{x/3}`), which is not of the form `6cosh(x/2) − (atoms)`.
+  - Prime-blind tests resolving the Gram scale see the mismatch.
+- **Exact remaining crux (= PBAP).** Gram dominance only localises one zero per Gram interval. The conservation law then requires the within-interval displacements `δ_k` to convert the chirp `c(x)` into the pole kernel `6cosh(x/2)` modulo `log ℕ`-atoms. For real-rooted `F` this is exactly the producer condition for `Λ_F/3`, so the gap/Gram route is PBAP-equivalent: no free lunch.
+- **Reading.** Any real-rooted member must have its zeros "know the pole" through their displacement pattern, which is the Euler-product information. Gram-type designs supply the archimedean density and nothing else.
+- **Verdict.** The exact θ-model is killed. Gram dominance is reduced to PBAP. No producer.
+- **L272 addendum (Lean).** Module `RHTower/GammaRealPowerKernel`:
+  - kernels `K_d = (2e^{−πx²})^{⋆(d+1)}` with `HasMellin K_d s (Γ_ℝ(s)^{d+1})` on `Re s > 0`;
+  - continuity and all power bounds;
+  - `gammaRPow_theta_converse`: Claim 0 of Theorem A in every degree.
+  - Theorem A's remaining formal gap is the functional-analytic construction of the relations (function space `𝓗`, infinite-node Lemma B, closed range).
+- **L272 addendum 2 (Lean).** `HTGeometry.exists_weighted_sampling_representation`: the abstract closed-range/relations step of Theorem A (Lax–Milgram + Riesz; standard axioms). Theorem A's remaining formal work is concrete harmonic analysis: the space `E₋` and Lemma B on it.
+- **L272 addendum 3 (Lean).** `RHTower/GammaRCubeVoronoiL2`: the `L²` Voronoi transform of `ζ(s)³`'s functional equation, `gammaRCubeVoronoi`, is a unitary involution of `L²((0,∞))`.
+  - It is built from the corpus Mellin unitary, the reflection, and a general unimodular-multiplier unitary.
+  - Theorem A's plan F1 is done; next are F2 (theta pairs) and F3 (`E₋` and point evaluations).
+- **L272 addendum 4 (Lean).** `RHTower/GammaRCubeThetaPairsL2`: theta pairs `H(K₂(y·)) = y⁻¹K₂(·/y)` in `L²` (F2 done).
+  - Theorem A's formal chain now lacks only F3/F4/F7:
+    - F3: the regular subspace of `E₋` with bounded point evaluations;
+    - F4: the infinite-node Lemma B;
+    - F7: assembly and independence.
+- **L272 addendum 5 (Lean).** `RHTower/GammaRCubeRegularClass` + `HTGeometry/DecayingStripVerticalShift`:
+  - the strip-regular class;
+  - theta test symbols regular and antisymmetric, with Mellin inversion to `K₂(yx) − y⁻¹K₂(x/y)`.
+  - Theorem A's remaining formal steps are chart norms (Plancherel on the lines `Re s = 1/6, 1/2, 5/6`), the derivative bound, and the infinite-node Lemma B plus assembly.
+- **L272 addendum 6 (Lean).** `HTGeometry/MellinLinePlancherel`: Mellin–Plancherel on vertical lines (function-level Plancherel, `x = e^{−u}` substitution, `L²` norm identity). Theorem A's remaining chain is listed in the card's formal plan, items (c)–(i).
+- **L272 addendum 7 (Lean).** `HTGeometry/MellinRegularStrip` and `RHTower/GammaRCubeChartDerivativeBound`: the KNS derivative estimate `‖F'‖ ≤ 2πκ‖XF‖` for antisymmetric chart functions is formal. Lemma B's remaining pieces are elementary real analysis: the infinite-partition Wirtinger inequality and the Bessel bounds.
+- **L272 addendum 8 (Lean, stage 3).** Theorem A is formal.
+  - `gammaRCube_functional_equation_abundance` (standard axioms): there are infinitely many `ℂ`-independent coefficient sequences of growth `O(n²)` whose `Γ_ℝ³`-completed Dirichlet series are entire and symmetric under `s ↦ 1−s`.
+  - Formal route: sampling lower bound on the antisymmetric chart space → dominated-functional representation in `ℓ²` → block elimination of non-integer nodes → theta relation → Hecke.
+  - Consequence for the producer: the datum-twin space `W` of L257 is now a Lean object. Any producer must separate ζ³ from an infinite-dimensional space of formally admissible twins, so prime-blind data cannot be the input.
+
+### L273 — The fractional-mass door after Theorem A: RTE₃, divisibility rigidity, and coefficient freedom. THEOREM [Lean] + LEMMA [P] + CONJECTURE
+- **Where the producer can come from (exact).**
+  - A singular producer has `D̂_lam = Σ m_k δ_{γ_k}` with real `γ_k`.
+  - With integer masses it is `Λ` (L233, `integer_mass_rigidity`).
+  - With masses `1/k` it is `lam_F/k` for a real-rooted `F ∈ V_k`: a Dirichlet series with `Γ_ℝ(s)^k` functional equation and order-`k` poles at `0, 1`.
+  - So the non-`Λ` singular door is exactly **RTE_k** (real-rooted twin existence) for some `k ≥ 3`. By Theorem A, `V_3 = ℂζ³ ⊕ W_3` with `dim W_3 = ∞`, so the door is not closed by rigidity.
+- **Conjecture RTE₃ (exclusion).** If `F ∈ V_3` has all its zeros on `Re s = ½`, then `F = cζ³`.
+  - PC-82 (uniqueness) ⇒ RTE₃.
+  - ¬RTE₃ ⇒ an unconditional full-cone producer `lam_F/3 ≠ Λ` (with the pole). It also falsifies PC-82.
+- **Theorem [Lean] (no finite data determines ζ³).** `RHTower.DegreeThreeHankel.gammaRCube_functional_equation_abundance_vanishing_below N`, standard axioms.
+  - For every `N` there are infinitely many independent `E ∈ W_3` with `e_n = 0` for `n < N`.
+  - So `ζ³ + E` keeps the functional equation, the triple poles and the first `N−1` coefficients.
+  - Contrast: degree 1 (Hamburger) and degree 2 at level 1 (Maass) are determined by the functional equation alone.
+  - Consequences: `lam_{ζ³+E}/3 = Λ` on `n < N`, so these twins are invisible to every level `A < ½ log N`. On compacts, `|Λ_E| ≪ exp(−3πN^{2/3})·poly(N)`: `θ_E(y) = Σ_{n≥N} e_n K₂(ny)` is super-exponentially small for `y ≥ 1`, and the frame constants are uniform in `N₀` (bracket `≥ 1/2`).
+- **Lemma L273.1 [P] (divisibility rigidity).** If `E ∈ W_3` and `Λ_E` vanishes at every zero of `ξ` (with multiplicity), then `E = 0`.
+  - *Proof.*
+    1. `Λ_D := Λ_E/Λ_ζ = s(s−1)(Λ_E/ξ)/2` is entire and symmetric, and it is the completion `Γ_ℝ(s)²D(s)` of `D = E/ζ = Σ(e⋆μ)(n)n^{−s}`. Its coefficients are polynomially bounded.
+    2. `Λ_D` is bounded in vertical strips: absolute convergence and the Γ-decay on `σ = 4` and `σ = −3`, then Phragmén–Lindelöf (order ≤ 1).
+    3. By Maass's converse theorem at level 1 (even case; one functional equation suffices because `h = u − u∘S` and `∂_x h` vanish on `iℝ₊`), `u = Σ b_n √y K₀(2πny) cos 2πnx` is an even Maass cusp form for `SL₂(ℤ)` with `λ = ¼`. Entireness means there is no constant term.
+    4. Roelcke–Selberg (`λ₁(SL₂(ℤ)) > 3π²/2`) gives `u = 0`, so `D = 0` and `E = 0`. ∎
+  - *Extension (sketch).* The same holds if `Λ_E` vanishes at all but finitely many ξ-zeros. A pole of `Λ_D` at `ρ ∉ {0,1}` forces a constant term `y^{a}` with `a ≠ ½`, which is not a `¼`-eigenfunction of `−y²∂_y²`.
+- **Local law at a simple critical zero.** Let `ρ = ½+iγ` with `ξ(ρ) = 0` simple, and let `E` be small near `ρ`. Then `Λ_{ζ³+E} ≈ c(t−γ)³ + E(ρ) + E'(ρ)(t−γ)`.
+  - If `E(ρ) ≠ 0`, two of the three zeros near `ρ` leave the line (120° split).
+  - If `E(ρ) = 0`, all three stay real iff the sign condition `E'(ρ)/c < 0` holds.
+  - With L273.1, every real-rooted twin `F ≠ cζ³` is **non-perturbative at infinitely many ζ-zeros**: `|Λ_E| ≳ |ξ'(ρ)|³(log γ)^{−3}` near infinitely many `ρ`.
+  - So RTE₃ can only fail through twins that are globally far from ζ³. These carry their own oscillation of triple density, i.e. `Ξ_E` itself must be almost real-rooted (sign-change count `≥ 3N(T)(1−o(1))` where `E` dominates).
+- **Verdict.** No producer. The singular door is reduced to: does `W_3` contain an `E` with a real-rooted completion of triple zero density? (Its completion has no pole, so it gives only a polar-cone producer. With `cζ³` added, the full cone needs domination away from `s ∈ {0,1}`.)
+  - Known real-rootedness mechanisms (Euler product + automorphy; Pólya kernels; Hermite–Biehler splits) are all unavailable inside `W_3`. The `θ_E`-kernels are `K₂`-Dirichlet sums, not Pólya kernels.
+- **Next.** Test whether some `E ∈ W_3` has `Ξ_E` with eventually constant sign, i.e. Hardy's theorem for fake ζ³'s.
+  - If every nonzero `E` had infinitely many real zeros, that would be the first unconditional real-zero statement inside `W_3`.
+  - Hardy's method needs the boundary behaviour of `θ_E(e^{iα})` as `α → 3π/4`. With no modularity this is open.

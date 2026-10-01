@@ -13,9 +13,9 @@
 - [x] Independent root ALL475/ALL N1–N17 audit and primary-source spot checks.
 - [x] Leaf A: actual positive Gamma foundation, all14 exports locally formalized and integrated.
 - [x] Leaf B: exact signed jumps, all19 exports locally formalized and integrated.
-- [ ] Leaf C: exact probability coupling and no-go closure formalized with all gates.
+- [x] Leaf C: exact probability coupling and no-go closure formalized with all gates.
 
-The ordinary discrete degree compound-Poisson proposal is false for every z>0 because its second log-PGF coefficient is negative on the actual source. The continuously Gamma-smoothed law is a different object. Positive CP representation of one whole mu_p is equivalent to the already-audited P>=0/RH receiver; fixed-p derivative signs only give the known strip boundary. Neither the positive raw law nor integer-time coupling supplies the missing pointwise signed density comparison. RH and original all-order source sign remain OPEN. No-go closure remains pending exact Lean formalization of the positive survivor; parent route is not retired.
+The ordinary discrete degree compound-Poisson proposal is false for every z>0 because its second log-PGF coefficient is negative on the actual source. The continuously Gamma-smoothed law is a different object. Positive CP representation of one whole mu_p is equivalent to the already-audited P>=0/RH receiver; fixed-p derivative signs only give the known strip boundary. Neither the positive raw law nor integer-time coupling supplies the missing pointwise signed density comparison. RH and original all-order source sign remain OPEN. The ordinary degree-CP subroute is closed with its exact N10–N15 positive survivor formalized. N16 remains a paper receiver here; parent source-sign route is not retired.
 
 ## Formal plan
 
@@ -33,7 +33,7 @@ addendum `/tmp/li_root_theta_signed_gamma_formal_plan_addendum.md` preserves
 all public contracts. The foundation retains actual
 single-Xi normalization, j0 atom and Gamma rate p. Later stages retain full
 signed L1/TV, actual probability-law equalities and every integer-time product
-coupling. Leaves A/B are now locally FINAL_READY; C remains an open formal obligation.
+coupling. Leaves A/B/C are now locally FINAL_READY; N16 remains a separate paper receiver, and N17 remains open.
 
 ## Formal foundation now installed
 
@@ -54,8 +54,13 @@ dual all-body reviews, named10613/direct19051/importedALL19axes37011 and
 scratchALL98 foundational-axiom gates pass. Root wired/indexed all19 exports;
 lint has11 unrelated unreachable errors and the owned large-file warning.
 Complete certificate `/tmp/li_root_theta_signed_gamma_jumps_final_certificate.md`.
-Coupling/no-go C10 remains unfinished; generic carrier, order, transform and
-atom helpers are in progress. Original source sign and RH remain OPEN.
+Coupling/no-go C10 is now [locally formalized](../3-formalized/li-clock-signed-gamma-coupling.md):
+exact1235 SHA `8bacfaed9c4b7ca9edbb8205b6507e23aad5d2932a8d2d20000bf013935ecec5`,
+dual all-body reviews, named11077/direct77473/importedALL10axes28836 and
+scratchALL74 foundational-axiom gates pass. Unique import, index3197 and all10
+API rows verified. Lint95728 has12 unrelated unreachable errors, zero C issue.
+N10–N15 positive salvage and ordinary degree-CP obstruction are formally closed;
+N16 remains paper-only here. Original source sign and RH remain OPEN.
 
 ## Audited complete paper
 

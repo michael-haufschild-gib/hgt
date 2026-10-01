@@ -5,7 +5,7 @@
 - **Type:** CANDIDATE
 - **Source:** Route PM; replacement-source investigation after PM-30.
 - **Statement:** For every `ε>0`, the literal power-damped Möbius Fermi source has finite canonical `L²(dt)` norm; investigate whether these sources converge to Haar as `ε↓0`.
-- **Status:** Twelve fully audited leaves / 2917 lines / 181 declarations: literal source, canonical admission for `ε≥1/2`, exact Mellin quotient, cofinal-admission RH receiver, full-prefix energy savings and endpoint Abel/Fatou admission. Exact Fermi diagonal geometry, the unit limiting norm budget and mandatory canonical prime-cutoff growth and the exact large-damping first-prime asymptotic are certified. Canonical L¹ admission, exact mean, residue slope, admitted error-energy identity and linear-rate canonical L¹ convergence to Haar are now certified; small-positive-damping L² admission remains open.
+- **Status:** Fifteen fully audited leaves / 3595 lines / 226 declarations: literal source, canonical admission for `ε≥1/2`, exact Mellin quotient, cofinal-admission RH receiver, full-prefix energy savings and endpoint Abel/Fatou admission. Exact Fermi diagonal geometry, the unit limiting norm budget and mandatory canonical prime-cutoff growth and the exact large-damping first-prime asymptotic are certified. Canonical L¹ admission, exact mean, residue slope, admitted error-energy identity and linear-rate canonical L¹ convergence to Haar are now certified; small-positive-damping L² admission remains open.
 
 ## Goal
 
@@ -1044,3 +1044,317 @@ not canonically L²; together with the strong L¹ derivative and weighted
 control and the canonical Hilbert tangent. It does not rule out L² admission
 for every positive damping. All source/continuation/boundary assembly gates
 remain Lean-open at this point; no failed card has been closed.
+
+- Unit-budget query 1035 returned partial results: reranking disconnected,
+  but all forty available candidate/source statements and query chain were
+  inspected. Inventory 63,784 files; result generation 1,171,693, coverage
+  1,171,708/current 1,171,712; semantic coverage unmeasured and background
+  refresh incomplete. Exact PM finite-prime budget transfer is already
+  certified; other four-unit/Hardy Gram receivers concern different carriers
+  and retain unproved budget premises. No literal unit-ceiling producer was
+  supplied by these hits. A narrower finite-prime/Fermi query 1036 is running.
+- Scratch 1034 now contains the exact supported-Haar/von-Mangoldt Mellin
+  representation, entire-unit cleared continuation, canonical boundary decay,
+  critical-zero contradiction, carrier transfer and actual difference-quotient
+  norm exceedance near zero. The support/Mellin/continuation/decay portion
+  elaborated; final residue and tangent assembly is still checking. The new
+  in-progress `pm-power-damping-hilbert-tangent.md` records full paper proof
+  and already-certified positive L¹ survivor.
+
+- Query 1036: partial=false, no errors, 63,786-file inventory, result/coverage
+  generation 1,171,725/current 1,171,726; query 1037: partial=false, no errors,
+  same inventory, result 1,171,732/coverage 1,171,725/current 1,171,739. Semantic
+  coverage unmeasured; background refresh incomplete. All forty statements
+  and query chains per query reviewed. Generic prime Laplace translation
+  energies and distinct Haar packet carriers supply no PM ceiling. The actual
+  PM finite-prime budget receivers and Haar norm are reusable.
+- A sharper next test is omission of prime 2. Paper construction: the complete
+  odd-Möbius Fermi source at zero damping solves B(t)−B(2t)=H₀(t), hence
+  B(t)=Σ_{k≥0}H₀(2^k t). The dilated Haar summands are orthogonal, with norms
+  squared 2^(−k), so B is canonical L² with exact energy 2 and mean zero.
+  Odd-prime cutoffs converge pointwise to B; therefore a unit budget over ALL
+  finite prime subsets near zero damping is impossible. This does not exclude
+  a unit budget for canonical full prime cutoffs or the actual complete source.
+  Exact source identification and energy are not yet formalized. Corpus
+  inspection found `moebius_two_mul` in MertensOddWindowKnapsack and the finite
+  coefficient prime-factor support test in MobiusFinitePrimeApertureSourceConsumption;
+  the inverse-square CoprimeMoebiusSeries has the same reindexing mechanism
+  but only that special Dirichlet exponent. No exact PM deleted-dyadic theorem
+  was supplied by the reviewed search hits.
+- Full 1034 assembly is down to one neighborhood API mismatch, now corrected
+  to `isOpen_compl_singleton.mem_nhds`. Other pieces, including the carrier
+  nonadmission and actual quotient exceedance statements, elaborated. Final
+  clean scratch run is active; no obstruction leaf promoted yet.
+
+- Full 1034 scratch passed all sixteen declarations. Removed one redundant
+  post-`field_simp` ring tactic and promoted two dependency-separated leaves:
+  `PMPowerDampedMobiusDerivativeMellin` (153 lines / 10 declarations) and
+  `PMPowerDampedMobiusDerivativeBoundary` (226 lines / 6 declarations).
+  Both are wired. One targeted old build with the two explicit leaf targets
+  is running. No umbrella build. Final actual leaf and axiom/artifact gates
+  are pending; fourteen-leaf totals will be 3296 lines / 197 declarations.
+  The scratch proves canonical nonadmission of D and arbitrarily small
+  positive parameters exceeding every fixed quotient L² budget, alongside
+  the already-certified exact strong L¹ derivative survivor.
+
+- Both new targeted leaf builds passed (Mellin 5.7s, boundary 4.4s). Final
+  actual `lake env lean` checks passed empty for each leaf, serially. All
+  sixteen promoted bodies, exhaustive names, API entries and unique imports
+  passed. Standard-axiom reports are running. Latest lint has thirteen
+  unrelated unwired modules and concurrent LEAN_API staleness; no owned or
+  proof-debt finding. No repeated source check or full build needed.
+
+- PM-31 Hilbert-tangent obstruction audit closed: two additional leaves,
+  `PMPowerDampedMobiusDerivativeMellin` (153/10) and
+  `PMPowerDampedMobiusDerivativeBoundary` (226/6), passed targeted builds,
+  both final actual leaf checks, every standard-axiom report, exact body,
+  exhaustive name, public API and unique-import audits. Combined PM-31:
+  fourteen fully audited leaves / 3296 lines / 197 declarations. The exact
+  strong L¹ Chebyshev tangent is outside canonical L²; actual quotient norms
+  exceed every finite budget arbitrarily near zero. Closed failed card:
+  `5-failed/pm-power-damping-hilbert-tangent.md`, retaining the positive L¹
+  convergence and exact mean log 2. Small-positive L² admission and RH remain
+  open. Next: exact prime-two-deleted Haar resolvent and the all-subset unit
+  ceiling, tracked in `pm-dyadic-prime-deletion-unit-budget.md`.
+
+- Completed 1034 compiler/audit artifacts and reviewed 1035–1037 search
+  files cleaned. Initial eleven-declaration dyadic Haar scratch 1038 is now
+  checking. The full tangent obstruction and its positive survivor are closed;
+  prime-two deletion is the next active test, with no RH inference.
+
+- Dyadic resolvent ingredient fully audited: `PMPowerDampedMobiusDyadicResolvent`
+  (299 lines / 29 declarations), targeted old build 18s, final actual leaf empty,
+  all standard-axiom/body/name/API/unique-import gates passed. Exact canonical
+  energy 2, mean 0, norm sqrt 2 and pointwise support/recurrence uniqueness are
+  certified. Combined PM-31: fifteen leaves / 3595 lines / 226 declarations.
+  Odd-Möbius identification and all-subset budget obstruction remain pending;
+  no closure of the prime-deletion no-go yet. Small-positive L² admission and
+  RH remain open. Latest lint: twelve unrelated unwired modules and concurrent
+  LEAN_API staleness; no owned or proof-debt finding.
+
+- PM-31 prime-two deletion audit closed: `PMPowerDampedMobiusDyadicDeletion`
+  (257 lines / 26 declarations), targeted old build 7.3s, final actual leaf
+  empty, all bodies/names/API/unique-import/standard-axiom gates passed.
+  The literal odd-Mobius source equals the Haar resolvent: canonical L2,
+  exact energy 2, mean 0, norm sqrt 2. Every finite-prime all-subset budget
+  below sqrt 2 fails arbitrarily near zero damping, with admitted actual
+  finite sources as witnesses. Moved `pm-dyadic-prime-deletion-unit-budget`
+  to `5-failed`, preserving the fully proved positive survivor. Combined:
+  sixteen leaves / 3852 lines / 252 audited declarations. Latest global lint:
+  twelve unrelated unwired modules; no owned or proof-debt finding.
+  Next conjecture: `pm-finite-prime-deletion-energy` tests whether every
+  finite all-subset budget fails via the nonnegative Haar Gram kernel and
+  smooth-number harmonic energy. Canonical full cutoffs and RH remain open.
+
+- PM-31 Haar Gram leaf fully audited: `PMPowerDampedMobiusHaarGram`
+  (211 lines / 26 declarations), targeted old build 152s, final actual leaf
+  empty, all exact-body/name/API/unique-import/standard-axiom gates passed.
+  It proves K(a,b)=max(0,2/max(a,b)-1/min(a,b)), finite Haar-sum energy,
+  diagonal lower bounds and energy monotonicity under finite inclusion.
+  Combined PM-31: seventeen leaves / 4063 lines / 278 audited declarations.
+  Latest lint: thirteen unrelated unwired modules; no owned/proof-debt finding.
+  Hilbert-series scratch1045 is checking; smooth-source scratch1046 is
+  prepared but unrun. The stronger all-subset budget no-go is not closed.
+  Canonical small-positive admission and RH remain open.
+
+- PM-31 Hilbert-series leaf fully audited: `PMPowerDampedMobiusHaarSeries`
+  (151 lines / 16 declarations), targeted old build 92s, final actual leaf
+  empty, all exact-body/name/API/unique-import/standard-axiom gates passed.
+  Summable dilation norms identify the actual pointwise series with its
+  Hilbert sum; exact energy is the iterated Gram sum and dominates every
+  finite reciprocal diagonal. Combined: eighteen leaves / 4214 lines /
+  294 audited declarations. Latest global lint: seventeen unrelated unwired
+  modules and three concurrently stale generated files; no owned or proof-debt
+  finding. Sixteen-declaration smooth-source scratch1046 checks next;
+  nine-declaration arithmetic scratch1047 is prepared and unrun. The broader
+  no-go and canonical small-positive admission/RH remain open.
+
+- PM-31 smooth-source leaf fully audited: `PMPowerDampedMobiusSmoothHaar`
+  (147 lines / 16 declarations), targeted old build 4.6s, final actual leaf
+  empty, all exact-body/name/API/unique-import/standard-axiom gates passed.
+  Each fixed smooth-number Haar source is canonically L2/L1, supported in
+  (0,1], with zero mean and exact nonnegative Gram energy. Its energy
+  dominates the harmonic sum and diverges with the prime cutoff. Combined:
+  nineteen leaves / 4361 lines / 310 audited declarations. Latest global
+  lint: ten unrelated unwired modules and three concurrent generated-file
+  changes; no owned/proof-debt finding. Full 23-declaration arithmetic/budget
+  scratch1047 checks next. The broader all-subset no-go is not closed yet.
+  A separate paper candidate `pm-canonical-prime-aperture-threshold` tests
+  divergence at fixed epsilon<1/2 even for canonical prime cutoffs, paired
+  with explicit all-subset bounds for epsilon>1/2. No Lean proof of that
+  stronger candidate is claimed. Actual small-positive admission/RH stay open.
+
+- PM-31 arithmetic/deletion leaf fully audited: `PMPowerDampedMobiusFiniteDeletion`
+  (283 lines / 23 declarations), targeted old build115s, final actual leaf empty,
+  every exact-body/name/API/unique-import/standard-axiom gate passed. Literal
+  deleted Mobius sources equal smooth Haar sums. For every finite budget and
+  every positive damping neighborhood, an admitted actual finite prime source
+  exceeds that budget. Combined: twenty leaves / 4644 lines / 333 declarations.
+  Global lint: eleven unrelated unwired modules and three concurrently stale
+  generated files; no owned/proof-debt finding. The strongest arbitrary-finite-set
+  positive survivor is prepared in scratch1050 (22 declarations), now checking.
+  No-go closure awaits that exact generality; actual small-positive admission
+  and unconditional RH remain open.
+
+- PM-31 arbitrary finite-deletion survivor fully audited:
+  `PMPowerDampedMobiusFiniteSmoothSource` (220 lines / 22 declarations), targeted
+  old build7.7s, final actual leaf empty, all exact-body/name/API/unique-import/
+  standard-axiom gates passed. For every finite E, the literal deleted-Mobius
+  source equals its strongly summable smooth Haar series, is canonically L2/L1,
+  has zero mean and exact nonnegative double-Gram energy, with reciprocal Euler
+  product diagonal lower bound. Combined: twenty-one leaves / 4864 lines /
+  355 audited declarations. Global lint: thirteen unrelated unwired modules
+  and two concurrently stale generated files; no owned/proof-debt finding.
+  Retired `pm-finite-prime-deletion-energy`: every finite all-subset bound
+  uniform in damping near zero is impossible, with the exact arbitrary-finite-E
+  positive survivor now on paper and in Lean. This does not exclude a finite
+  C(epsilon), canonical-only bounds, or actual small-positive admission.
+  Next candidate: `pm-canonical-prime-aperture-threshold`; scratch1051 checks
+  the upper boundary and real Euler decay, while1053/1055 remain unrun.
+  Unconditional RH/negRH remain unproved.
+
+- PM-31 canonical prime threshold fully audited: `PMPowerDampedMobiusPrimeThreshold`
+  (436 lines / 22 declarations), targeted old build197s, final actual leaf empty,
+  all exact-body/name/API/unique-import/standard-axiom gates passed. For every
+  fixed0<epsilon<1/2, canonical prime-aperture norms tend to infinity and
+  eventually exceed every finite budget. The exact positive survivor is the
+  explicit common finite budget `3 sum_d d^(-epsilon-1/2)` for epsilon>1/2,
+  valid for every finite integer aperture, together with the proved finite
+  Mellin identity and bounded-cofinal Mellin transfer. Endpoint1/2 unclassified.
+  Combined: twenty-two leaves /5300 lines /377 audited declarations. Latest
+  global lint: eleven unrelated unwired modules and two concurrently stale
+  generated files; no owned/proof-debt finding. Retired canonical prime-budget
+  producer with the strict-interval classification fully proved on paper and
+  in Lean. Actual source admission at arbitrarily small positive damping and
+  unconditional RH/negRH remain open. Next card:
+  `pm-centered-divisor-haar-criterion`, an exact mean-centered discrepancy
+  energy criterion with paper argument and corpus audit; no new Lean yet.
+
+- PM-31 centered-divisor arithmetic leaf fully audited:
+  `PMPowerDampedMobiusDivisorHaar` (295 lines /29 declarations), targeted old
+  build24s, final actual leaf empty, all exact-body/name/API/unique-import/
+  standard-axiom gates passed. Positive divisor coefficients have exact
+  Euler factors; their summatory mean is `1/zeta(1+epsilon)`. The actual
+  Fermi source is both a finite weighted Haar sum and the dyadic difference
+  of its mean-centered reciprocal summatory remainder. The backward boundary
+  vanishes and the finite dyadic sums converge pointwise to that literal
+  centered source. Combined: twenty-three leaves /5595 lines /406 audited
+  declarations. Global lint has ten unrelated unwired modules and three
+  concurrently stale generated files; no owned/proof-debt finding.
+  Scratch1063 now checks reverse L2 admission with constant `1+sqrt2`,
+  forward admission, and reciprocal weighted-energy equivalence. The actual
+  small-positive arithmetic energy bound remains open; RH/negRH unproved.
+
+- PM-31 centered-energy criterion fully audited:
+  `PMPowerDampedMobiusCenteredEnergy` (226 lines /22 declarations), targeted
+  old build119s, final actual leaf empty, all exact-body/name/API/unique-import/
+  standard-axiom gates passed. For epsilon>0, actual Fermi-source canonical
+  L2 admission is equivalent to integrability of the literal centered divisor
+  discrepancy squared against dx/x^2. Backward finite-sum norms have the
+  explicit bound (1+sqrt2) times the source norm; Fatou identifies the actual
+  boundary-normalized remainder. The reciprocal energy identity, inherited
+  epsilon>=1/2 admission, and cofinal weighted-energy RH receiver are proved.
+  Combined: twenty-four leaves /5821 lines /428 audited declarations.
+  Global lint has eleven unrelated unwired modules and three concurrently
+  stale generated files; no owned/proof-debt finding. The energy receiver's
+  small-positive premise remains open. New producer card:
+  `pm-centered-divisor-dyadic-energy-budget`; scratch1068 checks the exact
+  pointwise absolutely summable damped Nyman/fractional-part representation.
+  No RH/negRH proof or small-positive geometric energy bound is claimed.
+
+- PM-31 literal Nyman-series leaf fully audited:
+  `PMPowerDampedMobiusNymanSeries` (95 lines /11 declarations), targeted old
+  build34s, final actual leaf empty, every exact-body/name/API/unique-import/
+  standard-axiom gate passed. The centered discrepancy is the negative
+  damped fractional-part series, pointwise absolutely summable at every
+  positive damping and positive physical time. Its natural integer prefixes
+  converge pointwise to the actual centered source; the density is real.
+  Combined: twenty-five leaves /5916 lines /439 audited declarations.
+  Global lint: eleven unrelated unwired modules and three concurrently stale
+  generated files; no owned/proof-debt finding. The actual small-positive
+  dyadic/cumulative energy bound remains open. Next: exact unrestricted
+  discrete weighted-energy/covariance bridge, then the signed arithmetic
+  bound. No global L2 interchange or RH/negRH proof is asserted.
+
+- PM-31 unrestricted discrete-energy leaf fully audited:
+  `PMPowerDampedMobiusDiscreteEnergy` (224 lines /18 declarations), targeted
+  old build143s, final actual leaf empty, every exact-body/name/API/unique-
+  import/standard-axiom gate passed. Unit-cell integrability and countable
+  assembly remove the old bounded-sequence premise. For every epsilon>0,
+  actual canonical admission is equivalent to summability of
+  D_epsilon(n)^2/(n(n+1)), where D is the cumulative centered divisor
+  coefficient. Equivalently, its exact finite signed maximum-index
+  covariance has a common bound in the cutoff. The epsilon>=1/2 range is
+  unconditional; cofinal small-positive budgets would imply RH but remain
+  unproved. Combined: twenty-six leaves /6140 lines /457 audited declarations.
+  Global lint reports eleven unrelated unreachable modules; no owned or
+  proof-debt finding. No RH/negRH proof is claimed.
+
+- PM-31 positive-divisor Haar prefix leaf fully audited:
+  `PMPowerDampedMobiusPositiveHaarPrefix` (239 lines /21 declarations),
+  targeted old build64s, final actual leaf empty, all exact-body/name/API/
+  unique-import/proof-debt/standard-axiom gates passed. The exact clipped
+  counts give stabilization to the actual source and the initial plateau
+  -C_epsilon(N), with energy contribution C_epsilon(N)^2/(2N). Rescaled
+  prefixes converge pointwise to alpha_epsilon times the universal boundary
+  profile beta, with common 3min(1,1/u) envelope. Each finite prefix has zero
+  integral. Combined: twenty-seven leaves /6379 lines /478 declarations.
+  Strong L2 profile/leading energy is checking in scratch1080; do not retire
+  this cutoff candidate until that positive survivor is fully audited.
+  Actual small-positive source admission and RH remain open. Global lint:
+  eleven unrelated unwired modules and concurrent generated-document
+  staleness, no owned or proof-debt finding.
+
+- PM-31 universal boundary profile fully audited: `PMPowerDampedMobiusHaarBoundaryProfile`
+  (292 lines /19 declarations), targeted old build46s, final actual leaf
+  empty, all exact-body/name/API/unique-import/proof-debt/standard-axiom
+  gates passed. Rescaled raw positive-Haar prefixes converge strongly in
+  L2 to alpha_epsilon*beta; integral beta^2=2-2log2 and integral beta=-log2.
+  Their energy divided by the cutoff tends to the strictly positive
+  |alpha_epsilon|^2*(2-2log2), so raw-prefix common budgets fail at EVERY
+  positive damping. Their L1 error is at least |alpha_epsilon*log2|.
+  This does not refute actual-source admission. The exact positive survivor
+  closes this no-go; the raw cutoff card is retired. Combined: twenty-eight
+  leaves /6671 lines /497 audited declarations. Follow-up: centered Haar
+  cutoff/endpoint-trace criterion; the small-positive signed energy
+  producer and RH remain open. Global lint: eleven unrelated unwired
+  leaves and concurrently stale generated docs, no owned/proof-debt finding.
+
+- PM-31 clipped Haar source fully audited: `PMPowerDampedMobiusClippedHaarSource`
+  (242 lines /22 declarations), targeted old build49s, final actual leaf
+  empty, all exact-body/name/API/unique-import/proof-debt/standard-axiom
+  gates passed. Subtracting alpha_epsilon*N*beta(Nt) gives exactly the
+  dyadic difference of R_epsilon(min(N,1/t)); every finite corrected
+  prefix is admitted and stabilizes pointwise to the actual source.
+  Its primitive energy is exactly truncated divisor energy plus
+  |R_epsilon(N)|^2/N. Generic dyadic difference norms lie between
+  (sqrt2-1)||f|| and (sqrt2+1)||f||. Combined: twenty-nine leaves /6913
+  lines /519 audited declarations. The endpoint convergence and cofinal
+  selection proofs are in scratch, not yet certified. Small-positive
+  arithmetic admission remains open. Global lint: ten unrelated unwired
+  modules and stale LEAN_GAPS/LEAN_OVERVIEW, no owned/proof-debt finding.
+
+- PM-31 cutoff trace/cofinal criterion fully audited:
+  `PMPowerDampedMobiusHaarCutoffTrace` (324 lines /16 declarations),
+  targeted old build15s, final actual leaf empty, all exact-body/name/API/
+  unique-import/proof-debt/standard-axiom gates passed. Under actual
+  admission, both clipped-primitive and density-repaired-prefix L2
+  convergence are equivalent to |R_epsilon(N)|^2/N tending to zero.
+  Actual admission supplies a strict cofinal trace-zero sequence, and is
+  equivalent to a common cofinal repaired-prefix norm budget. The exact
+  criterion card moves to formalized. Combined: thirty leaves /7237 lines
+  /535 audited declarations. Full-sequence endpoint-atom correction is
+  the next paper-proved conjecture; actual small-positive energy admission
+  and RH remain open. Global lint: ten unrelated unwired leaves, all three
+  generated docs concurrently stale, no owned/proof-debt finding.
+
+- Endpoint correction fully audited: `PMPowerDampedMobiusEndpointHaar`
+  (215 lines /17 declarations), targeted old build294s, final actual-leaf
+  check with empty diagnostics, all17 standard-axiom reports, exact body,
+  exhaustive names/API, unique import and proof-debt checks passed. Its
+  exact truncated-source identity removes the endpoint trace, giving
+  full-integer-cutoff L2 convergence under actual admission and an exact
+  full-sequence energy-budget criterion. Global lint still reports twelve
+  unrelated unwired leaves, no owned/proof-debt issue. Combined: thirty-one
+  leaves /7452 lines /552 audited declarations. The actual small-positive
+  signed energy bound remains open. Next: divisor second-moment density.

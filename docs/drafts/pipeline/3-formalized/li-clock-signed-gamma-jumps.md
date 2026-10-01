@@ -38,8 +38,9 @@ Full evidence: `/tmp/li_root_theta_signed_gamma_jumps_final_certificate.md`.
 ## Boundary and log
 
 The original signed density comparison, undamped cutoff and RH remain OPEN.
-LeafC actual probability equalities, integer-time product/order coupling,
-and exact ordinary-Poisson no-go with its positive survivor remain separate
-formal obligations. The failed producer is not declared formally closed.
+[Leaf C](li-clock-signed-gamma-coupling.md) now formalizes actual probability
+equalities, integer-time product/order coupling, and exact ordinary-Poisson
+no-go. The failed producer is closed with its N10–N15 positive survivor;
+N16 positive Gamma CP iff RH remains a paper receiver here.
 
 - 2026-10-01 — All19 signed-Gamma exports locally finalized and integrated.

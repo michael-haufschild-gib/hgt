@@ -1,16 +1,18 @@
 import GaloisForLFunctions.RHTower.HorizontalSimplicityWindowSums
-import GaloisForLFunctions.RHTower.ZetaOffLineMomentExplicit
+import GaloisForLFunctions.RHTower.ZetaOffLineMomentSelbergWeights
 import GaloisForLFunctions.RHTower.Zeta23SimpleCriticalDensity
 import GaloisForLFunctions.RHTower.XiCensusVonMangoldtBridge
 import GaloisForLFunctions.RHTower.RiemannVonMangoldt
 
 /-!
-# Horizontal singleton fibres: density at least `HD(1) − 7π/400`
+# Horizontal singleton fibres: density at least `HD(1) − 17π/1200`
 
-**Theorem** (`horizontalSingleton_density_tradeoff`).  In lower density, at least
-`HD(1) − 7π/400 = 0.6175…` of the positive-ordinate zeros of `ξ` (counted with multiplicity) lie on
+**Theorem** (`horizontalSingleton_density_selberg`).  In lower density, at least
+`HD(1) − 17π/1200 = 0.628…` of the positive-ordinate zeros of `ξ` (counted with multiplicity) lie on
 a horizontal line carrying no other zero.  Here `HD(1) = 2 − 1/c₁* = 0.6725…` is the
-Montgomery–Taylor constant.
+Montgomery–Taylor constant.  In general an off-line moment bound `Σ (β − ½)⁺ ≤ μ T` gives
+`HD(1) − πμ/12` (`horizontalSingleton_density_of_moment`); `μ = 21/100` gives `HD(1) − 7π/400`
+(`horizontalSingleton_density_tradeoff`) and `μ = 17/100` the theorem.
 
 Proof.
 * For fixed `λ < 1`, Theorem D with overlap deficits (`thmD_horizontal_deficit_lam_abstract`) gives
@@ -20,9 +22,9 @@ Proof.
   logarithmic moment `M_log` (`zeta_block_deficit_lam`).
 * Dyadic summation (`Assembly.dyadic`) and `λ → 1` (`eps_form_HD`) give
   `(HD(1) − ε) N(T) ≤ N_iso(0,T) + M_log(0,T)/24` (`zeta_cumulative_deficit`).
-* `M_log(0,T) ≤ log T · Σ (β − ½)⁺ ≤ (21/100) T log T` by the unconditional off-line moment
-  bound (`ZetaGateProductAFE.eventually_offLineMoment_le`).  Riemann–von Mangoldt gives
-  `T log T ≤ (2π + o(1)) N(T)`, and `(21/2400)·2π = 7π/400`.
+* `M_log(0,T) ≤ log T · Σ (β − ½)⁺ ≤ μ T log T` by an off-line moment bound; unconditionally
+  `μ = 17/100` (`ZetaGateProductAFE.eventually_offLineMoment_le_selberg`).  Riemann–von Mangoldt
+  gives `T log T ≤ (2π + o(1)) N(T)`, and `(μ/24)·2π = πμ/12`.
 * A simple critical zero with no off-line zero on its horizontal line is alone on that line
   (`NisoH_half_le_xiSingletonFiberCount`).
 -/
@@ -281,10 +283,13 @@ theorem NisoH_half_le_xiSingletonFiberCount (T : ℝ) :
 
 /-! ## The density theorem -/
 
-/-- **Horizontal singleton fibres.**  In lower density at least `HD(1) − 7π/400 = 0.6175…` of the
-positive-ordinate zero copies of `ξ` lie on a horizontal line carrying no other zero. -/
-theorem horizontalSingleton_density_tradeoff :
-    HD 1 - 7 * Real.pi / 400 ≤ liminf xiSingletonFiberRatio atTop := by
+/-- **Horizontal singleton fibres from an off-line moment bound.**  If
+`Σ_{0 < Im ρ ≤ V} m(ρ)(Re ρ − ½) ≤ μ V` for all large `V`, `0 ≤ μ ≤ 1`, then in lower density at
+least `HD(1) − πμ/12` of the positive-ordinate zero copies of `ξ` lie on a horizontal line carrying
+no other zero. -/
+theorem horizontalSingleton_density_of_moment {μ : ℝ} (hμ0 : 0 ≤ μ) (hμ1 : μ ≤ 1)
+    (hmom : ∀ᶠ V in atTop, offLineMoment V ≤ μ * V) :
+    HD 1 - Real.pi * μ / 12 ≤ liminf xiSingletonFiberRatio atTop := by
   have hcob : IsCoboundedUnder (fun x y : ℝ => x ≥ y) atTop xiSingletonFiberRatio :=
     (isBoundedUnder_of ⟨1, fun T => xiSingletonFiberRatio_le_one T⟩).isCoboundedUnder_ge
   have hπ := Real.pi_pos
@@ -293,7 +298,7 @@ theorem horizontalSingleton_density_tradeoff :
   have hε'0 : 0 < ε' := by positivity
   obtain ⟨T₁, hT₁⟩ := zeta_cumulative_deficit (η / 2) (by linarith)
   obtain ⟨T₂, hT₂4, hT₂⟩ := exists_xiZeroCount_close ε' hε'0
-  obtain ⟨T₃, hT₃⟩ := eventually_atTop.mp ZetaGateProductAFE.eventually_offLineMoment_le
+  obtain ⟨T₃, hT₃⟩ := eventually_atTop.mp hmom
   refine le_liminf_of_le hcob ?_
   filter_upwards [eventually_ge_atTop T₁, eventually_ge_atTop T₂, eventually_ge_atTop T₃,
     eventually_pos_xiPosZeroCount_of_zeta23, eventually_l_pos] with T h1 h2 h3 hNpos hl
@@ -313,12 +318,12 @@ theorem horizontalSingleton_density_tradeoff :
   have hM0 := offMoment_nonneg zetaZeroConfig 0 T
   have hM1 := offMoment_zero_le_offLineMoment T
   have hM2 := hT₃ T h3
-  have hlogM : logMoment zetaZeroConfig 0 T ≤ Real.log T * (21 / 100 * T) := by
+  have hlogM : logMoment zetaZeroConfig 0 T ≤ Real.log T * (μ * T) := by
     have e1 := logMoment_le_mul_offMoment zetaZeroConfig (T₁ := 0) (T := T) le_rfl
     have e2 : max (l T) 0 ≤ Real.log T := max_le hlT hlog0
     calc logMoment zetaZeroConfig 0 T ≤ max (l T) 0 * offMoment zetaZeroConfig 0 T := e1
       _ ≤ Real.log T * offMoment zetaZeroConfig 0 T := mul_le_mul_of_nonneg_right e2 hM0
-      _ ≤ Real.log T * (21 / 100 * T) :=
+      _ ≤ Real.log T * (μ * T) :=
           mul_le_mul_of_nonneg_left (hM1.trans hM2) hlog0
   -- Riemann–von Mangoldt
   have hRvM : (1 / (2 * Real.pi) - ε') * (T * Real.log T) ≤ N := by
@@ -330,26 +335,26 @@ theorem horizontalSingleton_density_tradeoff :
     rw [this]
     linarith [hc.1]
   have hTl0 : 0 ≤ T * Real.log T := mul_nonneg hT0 hlog0
-  have hkey : logMoment zetaZeroConfig 0 T / 24 ≤ (7 * Real.pi / 400 + η / 2) * N := by
-    have e1 : logMoment zetaZeroConfig 0 T / 24 ≤ 21 / 2400 * (T * Real.log T) := by
+  have hkey : logMoment zetaZeroConfig 0 T / 24 ≤ (Real.pi * μ / 12 + η / 2) * N := by
+    have e1 : logMoment zetaZeroConfig 0 T / 24 ≤ μ / 24 * (T * Real.log T) := by
       linarith [hlogM]
-    have e2 : 21 / 2400 * (T * Real.log T)
-        ≤ (7 * Real.pi / 400 + η / 2) * ((1 / (2 * Real.pi) - ε') * (T * Real.log T)) := by
-      have hcoef : 21 / 2400 ≤ (7 * Real.pi / 400 + η / 2) * (1 / (2 * Real.pi) - ε') := by
-        have hpi1 : 7 * Real.pi / 400 ≤ 1 := by nlinarith [Real.pi_lt_d2]
+    have e2 : μ / 24 * (T * Real.log T)
+        ≤ (Real.pi * μ / 12 + η / 2) * ((1 / (2 * Real.pi) - ε') * (T * Real.log T)) := by
+      have hcoef : μ / 24 ≤ (Real.pi * μ / 12 + η / 2) * (1 / (2 * Real.pi) - ε') := by
+        have hpi1 : Real.pi * μ / 12 ≤ 1 := by nlinarith [Real.pi_lt_d2]
         have hε'b : ε' * (1 + η) = η / (4 * Real.pi) := by
           rw [hε']; field_simp
-        have hb : ε' * (7 * Real.pi / 400 + η / 2) ≤ η / (4 * Real.pi) := by
+        have hb : ε' * (Real.pi * μ / 12 + η / 2) ≤ η / (4 * Real.pi) := by
           rw [← hε'b]
           exact mul_le_mul_of_nonneg_left (by linarith) hε'0.le
-        have e : (7 * Real.pi / 400 + η / 2) * (1 / (2 * Real.pi))
-            = 21 / 2400 + η / (4 * Real.pi) := by
+        have e : (Real.pi * μ / 12 + η / 2) * (1 / (2 * Real.pi))
+            = μ / 24 + η / (4 * Real.pi) := by
           field_simp; ring
         nlinarith
       have := mul_le_mul_of_nonneg_right hcoef hTl0
       linarith
-    have e3 : (7 * Real.pi / 400 + η / 2) * ((1 / (2 * Real.pi) - ε') * (T * Real.log T))
-        ≤ (7 * Real.pi / 400 + η / 2) * N :=
+    have e3 : (Real.pi * μ / 12 + η / 2) * ((1 / (2 * Real.pi) - ε') * (T * Real.log T))
+        ≤ (Real.pi * μ / 12 + η / 2) * N :=
       mul_le_mul_of_nonneg_left hRvM (by positivity)
     linarith
   have hNpos' : (0 : ℝ) < N := by exact_mod_cast hNpos
@@ -358,6 +363,23 @@ theorem horizontalSingleton_density_tradeoff :
     exact_mod_cast hsing
   rw [xiSingletonFiberRatio, le_div_iff₀ hNpos']
   nlinarith
+
+/-- **Horizontal singleton fibres.**  In lower density at least `HD(1) − 7π/400 = 0.6175…` of the
+positive-ordinate zero copies of `ξ` lie on a horizontal line carrying no other zero. -/
+theorem horizontalSingleton_density_tradeoff :
+    HD 1 - 7 * Real.pi / 400 ≤ liminf xiSingletonFiberRatio atTop := by
+  have h := horizontalSingleton_density_of_moment (μ := 21 / 100) (by norm_num) (by norm_num)
+    ZetaGateProductAFE.eventually_offLineMoment_le
+  rwa [show Real.pi * (21 / 100) / 12 = 7 * Real.pi / 400 by ring] at h
+
+/-- **Horizontal singleton fibres, Selberg moment.**  In lower density at least
+`HD(1) − 17π/1200 = 0.628…` of the positive-ordinate zero copies of `ξ` lie on a horizontal line
+carrying no other zero. -/
+theorem horizontalSingleton_density_selberg :
+    HD 1 - 17 * Real.pi / 1200 ≤ liminf xiSingletonFiberRatio atTop := by
+  have h := horizontalSingleton_density_of_moment (μ := 17 / 100) (by norm_num) (by norm_num)
+    ZetaGateProductAFE.eventually_offLineMoment_le_selberg
+  rwa [show Real.pi * (17 / 100) / 12 = 17 * Real.pi / 1200 by ring] at h
 
 end
 

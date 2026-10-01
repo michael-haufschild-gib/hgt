@@ -15,13 +15,13 @@ counted once, and
 
   `vol(S ∩ [0, V]) ≤ 2 Σ_{0 ≤ Im ρ ≤ V + ½} m(ρ)(Re ρ − ½)`   (`volume_xiShadow_inter_Icc_le_offLineMoment`).
 
-With the unconditional bound `Σ_{0 < Im ρ ≤ V} m(ρ)(Re ρ − ½) ≤ (21/100) V` this gives, for all
-large `V`,
+An off-line moment bound `Σ_{0 < Im ρ ≤ V} m(ρ)(Re ρ − ½) ≤ μ V` gives, for all large `V`,
 
-  `vol{x ∈ [0, V] : Laguerre and vertical monotonicity hold at x} ≥ (29/50) V − 21/100`
+  `vol{x ∈ [0, V] : Laguerre and vertical monotonicity hold at x} ≥ (1 − 2μ) V − μ`
 
-(`eventually_volume_laguerre_monotone_ge`): a density version of the Laguerre–Pólya receiver,
-whose full form (`S = ∅`) is the Riemann hypothesis.
+(`eventually_volume_laguerre_monotone_ge_of_moment`); with `μ = 21/100` this is `(29/50) V − 21/100`
+(`eventually_volume_laguerre_monotone_ge`).  This is a density version of the Laguerre–Pólya
+receiver, whose full form (`S = ∅`) is the Riemann hypothesis.
 -/
 
 open Complex Filter Topology Set MeasureTheory
@@ -133,15 +133,54 @@ theorem volume_xiShadow_inter_Icc_le_offLineMoment (V : ℝ) :
         have hpos : 0 ≤ ρ.re - 1 / 2 := by linarith [(hB ρ hρ).1]
         nlinarith
 
-/-- For all large `V` the shadow occupies at most `(21/50) V + 21/100` of `[0, V]`. -/
-theorem eventually_volume_xiShadow_inter_Icc_le :
-    ∀ᶠ V in atTop, volume (xiShadow ∩ Icc 0 V) ≤ ENNReal.ofReal (21 / 50 * V + 21 / 100) := by
-  have h := (tendsto_atTop_add_const_right atTop (1 / 2 : ℝ) tendsto_id).eventually
-    ZetaGateProductAFE.eventually_offLineMoment_le
+/-- From an off-line moment bound `Σ m(ρ)(Re ρ − ½) ≤ μ V`, for all large `V` the shadow occupies
+at most `2μ V + μ` of `[0, V]`. -/
+theorem eventually_volume_xiShadow_inter_Icc_le_of_moment {μ : ℝ}
+    (hmom : ∀ᶠ V in atTop, offLineMoment V ≤ μ * V) :
+    ∀ᶠ V in atTop, volume (xiShadow ∩ Icc 0 V) ≤ ENNReal.ofReal (2 * μ * V + μ) := by
+  have h := (tendsto_atTop_add_const_right atTop (1 / 2 : ℝ) tendsto_id).eventually hmom
   filter_upwards [h] with V hV
   refine (volume_xiShadow_inter_Icc_le_offLineMoment V).trans (ENNReal.ofReal_le_ofReal ?_)
   simp only [id] at hV
   linarith
+
+/-- For all large `V` the shadow occupies at most `(21/50) V + 21/100` of `[0, V]`. -/
+theorem eventually_volume_xiShadow_inter_Icc_le :
+    ∀ᶠ V in atTop, volume (xiShadow ∩ Icc 0 V) ≤ ENNReal.ofReal (21 / 50 * V + 21 / 100) :=
+  (eventually_volume_xiShadow_inter_Icc_le_of_moment
+    ZetaGateProductAFE.eventually_offLineMoment_le).mono fun V h =>
+      h.trans_eq (by congr 1; ring)
+
+/-- A property holding at every real point outside the shadow holds on measure at least
+`V − c` of `[0, V]` once the shadow occupies at most `c ≥ 0` of `[0, V]`. -/
+theorem ofReal_sub_le_volume_of_not_mem_xiShadow {P : ℝ → Prop}
+    (hP : ∀ x : ℝ, x ∉ xiShadow → P x) {V c : ℝ} (hc : 0 ≤ c)
+    (hV : volume (xiShadow ∩ Icc 0 V) ≤ ENNReal.ofReal c) :
+    ENNReal.ofReal (V - c) ≤ volume {x ∈ Icc (0 : ℝ) V | P x} := by
+  have hsub : Icc 0 V \ (xiShadow ∩ Icc 0 V) ⊆ {x ∈ Icc (0 : ℝ) V | P x} :=
+    fun x hx => ⟨hx.1, hP x fun h => hx.2 ⟨h, hx.1⟩⟩
+  calc ENNReal.ofReal (V - c) = ENNReal.ofReal V - ENNReal.ofReal c := ENNReal.ofReal_sub _ hc
+    _ ≤ volume (Icc (0 : ℝ) V) - volume (xiShadow ∩ Icc 0 V) := by
+        rw [Real.volume_Icc, sub_zero]
+        exact tsub_le_tsub_left hV _
+    _ ≤ volume (Icc (0 : ℝ) V \ (xiShadow ∩ Icc 0 V)) := le_measure_sdiff
+    _ ≤ _ := measure_mono hsub
+
+/-- **Laguerre positivity and vertical monotonicity from an off-line moment bound.** If
+`Σ m(ρ)(Re ρ − ½) ≤ μ V` for all large `V`, `μ ≥ 0`, then for all large `V` the set of
+`x ∈ [0, V]` with `Ξ'(x)² − Ξ(x)Ξ''(x) ≥ 0` and `y ↦ |Ξ(x+iy)|` nondecreasing on `y ≥ 0` has measure
+at least `(1 − 2μ) V − μ`. -/
+theorem eventually_volume_laguerre_monotone_ge_of_moment {μ : ℝ} (hμ : 0 ≤ μ)
+    (hmom : ∀ᶠ V in atTop, offLineMoment V ≤ μ * V) :
+    ∀ᶠ V in atTop, ENNReal.ofReal ((1 - 2 * μ) * V - μ) ≤
+      volume {x ∈ Icc (0 : ℝ) V |
+        MonotoneOn (fun y : ℝ => ‖riemannHeat 0 ((x : ℂ) + I * y)‖) (Ici 0) ∧
+        0 ≤ (deriv (riemannHeat 0) x ^ 2 - riemannHeat 0 x * deriv (deriv (riemannHeat 0)) x).re} := by
+  filter_upwards [eventually_volume_xiShadow_inter_Icc_le_of_moment hmom, eventually_ge_atTop 0]
+    with V hV hV0
+  have h := ofReal_sub_le_volume_of_not_mem_xiShadow
+    (fun x hx => monotoneOn_laguerre_of_not_mem_xiShadow hx) (by positivity) hV
+  rwa [show V - (2 * μ * V + μ) = (1 - 2 * μ) * V - μ by ring] at h
 
 /-- **`Ξ` is Laguerre-positive and vertically monotone on more than half of the real line.** For
 all large `V` the set of `x ∈ [0, V]` with `Ξ'(x)² − Ξ(x)Ξ''(x) ≥ 0` and `y ↦ |Ξ(x+iy)|`
@@ -150,22 +189,10 @@ theorem eventually_volume_laguerre_monotone_ge :
     ∀ᶠ V in atTop, ENNReal.ofReal (29 / 50 * V - 21 / 100) ≤
       volume {x ∈ Icc (0 : ℝ) V |
         MonotoneOn (fun y : ℝ => ‖riemannHeat 0 ((x : ℂ) + I * y)‖) (Ici 0) ∧
-        0 ≤ (deriv (riemannHeat 0) x ^ 2 - riemannHeat 0 x * deriv (deriv (riemannHeat 0)) x).re} := by
-  filter_upwards [eventually_volume_xiShadow_inter_Icc_le, eventually_ge_atTop 0] with V hV hV0
-  have hsub : Icc 0 V \ (xiShadow ∩ Icc 0 V) ⊆ {x ∈ Icc (0 : ℝ) V |
-      MonotoneOn (fun y : ℝ => ‖riemannHeat 0 ((x : ℂ) + I * y)‖) (Ici 0) ∧
-      0 ≤ (deriv (riemannHeat 0) x ^ 2 - riemannHeat 0 x * deriv (deriv (riemannHeat 0)) x).re} :=
-    fun x hx => ⟨hx.1, monotoneOn_laguerre_of_not_mem_xiShadow fun h => hx.2 ⟨h, hx.1⟩⟩
-  calc ENNReal.ofReal (29 / 50 * V - 21 / 100)
-      = ENNReal.ofReal V - ENNReal.ofReal (21 / 50 * V + 21 / 100) := by
-        rw [← ENNReal.ofReal_sub _ (by positivity)]
-        congr 1
-        ring
-    _ ≤ volume (Icc (0 : ℝ) V) - volume (xiShadow ∩ Icc 0 V) := by
-        rw [Real.volume_Icc, sub_zero]
-        exact tsub_le_tsub_left hV _
-    _ ≤ volume (Icc (0 : ℝ) V \ (xiShadow ∩ Icc 0 V)) := le_measure_sdiff
-    _ ≤ _ := measure_mono hsub
+        0 ≤ (deriv (riemannHeat 0) x ^ 2 - riemannHeat 0 x * deriv (deriv (riemannHeat 0)) x).re} :=
+  (eventually_volume_laguerre_monotone_ge_of_moment (by norm_num)
+    ZetaGateProductAFE.eventually_offLineMoment_le).mono fun V h =>
+      le_trans (le_of_eq (by congr 1; ring)) h
 
 end
 

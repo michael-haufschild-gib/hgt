@@ -103,6 +103,7 @@ theorem integrable_poissonWeight_shift_mul_digammaHalfTerm {a c : ℝ} (ha : 0 <
   refine (((integrable_poissonWeight_shift ha t).const_mul (1 / ((n : ℝ) + 1))).sub
     ((integrable_poissonWeight_shift_mul_inv ha hcn t).const_mul (2 * (2 * (c + n))))).congr ?_
   filter_upwards with x
+  simp only [Pi.sub_apply]
   rw [digammaHalfTerm_eq hc n x]
   ring
 
@@ -145,6 +146,7 @@ theorem integral_norm_poissonWeight_shift_mul_digammaHalfTerm_le {a c : ℝ} (ha
     refine ((integrable_poissonWeight_shift ha t).sub
       ((integrable_poissonWeight_shift_mul_inv ha hcn t).const_mul ((2 * (c + n)) ^ 2))).congr ?_
     filter_upwards with x
+    simp only [Pi.sub_apply]
     have hne : (2 * (c + n)) ^ 2 + x ^ 2 ≠ 0 := by positivity
     field_simp
     ring
@@ -219,7 +221,7 @@ theorem digammaHalfShiftBound_le {a c : ℝ} (ha : 0 < a) (hc : 0 < c) (t : ℝ)
     calc (2 / B) * ((a * (a + B) + t ^ 2) / ((a + B) ^ 2 + t ^ 2))
         ≤ (2 / B) * (a / B + t ^ 2 / B ^ 2) :=
           mul_le_mul_of_nonneg_left hfrac (by positivity)
-      _ = 2 * a / B ^ 2 + 2 * t ^ 2 / B ^ 3 := by field_simp; ring
+      _ = 2 * a / B ^ 2 + 2 * t ^ 2 / B ^ 3 := by field_simp
   have hsq : 4 * min c 1 ^ 2 * ((n : ℝ) + 1) ^ 2 ≤ B ^ 2 := by
     have h0 : 0 ≤ 2 * min c 1 * ((n : ℝ) + 1) := by positivity
     nlinarith [hBlow]
@@ -328,11 +330,11 @@ theorem integral_poissonWeight_shift_mul_re_digamma_half {a c : ℝ} (ha : 0 < a
     rw [tsum_mul_left, tsum_digammaHalfTerm hc x]
     ring
   have hint := integrable_poissonWeight_shift_mul_re_digamma_half ha hc t
-  have htot := hkey.symm.trans hR
+  have htot := hkey.trans hR
   rw [hL, integral_add hint ((integrable_poissonWeight_shift ha t).const_mul _),
     integral_const_mul, integral_poissonWeight_shift ha t, mul_one] at htot
   linarith
 
-end
-
 end RHTower
+
+end

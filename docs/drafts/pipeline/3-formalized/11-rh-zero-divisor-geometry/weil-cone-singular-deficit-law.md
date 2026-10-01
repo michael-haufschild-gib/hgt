@@ -1,7 +1,7 @@
 # Singular deficit law for Weil-positive completions of ζ's archimedean datum
 
 - **ID:** weil-singular-deficit-law
-- **Stage:** 2-fully-proven (paper, dependency-closed 2026-09-29)
+- **Stage:** 3-formalized (paper 2026-09-29; Lean 2026-10-01, `RHTower/WeilConeSingularDeficitCounting`)
 - **Type:** THEOREM (paper)
 - **Source:** `1-in-progress/hf-positive-hodge-attack/krein-producer-loops.md`, L126; companion to `weil-cone-finite-type-uniqueness.md`
 - **Statement:** Let `lam` be Weil-positive for ζ's archimedean datum, with `w := lam − Λ`. Let `R⁺(T) := Σ_{0<γ≤T, β=½} (m_ρ − c_ρ)⁺`, where `c_ρ` is the atom of `lam`'s Weil measure at ρ, and let `N_off⁺(T)` count zeros with `β > ½`. Then `liminf_T [2N_off⁺(T) + R⁺(T)]/T ≥ sup_{σ>1} M₁(w,σ)/2π ≥ sup_{n≥2} |w(n)|/(4πn)`, where `M₁(w,σ)` is the Bohr mean of `|Re D_w(σ+it)|`.
@@ -55,7 +55,7 @@
 ## Gates
 - [x] 0 → 1 in-progress: well-posed, proof idea (Herglotz lower envelope + Bohr mean)
 - [x] 1 → 2 fully-proven: proof above; cited inputs are Bochner–Schwartz, Hadamard product, Bohr almost-periodicity, Weil explicit formula normalization
-- [ ] 2 → 3 formalized: the Bohr-mean step and the Poisson counting are elementary. The Herglotz dictionary needs Bochner–Schwartz, which is not in mathlib. A Lean version can take `Re Φ_lam ≥ 0` on `Re s > ½` as the definition of the cone, which is equivalent by step 1.
+- [x] 2 → 3 formalized (2026-10-01, MUST-643 + counting module below). Earlier note: the Bohr-mean step and the Poisson counting are elementary. The Herglotz dictionary needs Bochner–Schwartz, which is not in mathlib. A Lean version can take `Re Φ_lam ≥ 0` on `Re s > ½` as the definition of the cone, which is equivalent by step 1.
 - [ ] 3 → 4 publication-ready
 
 ## Log
@@ -82,3 +82,35 @@
   - Conclusion: `|a_m| ≤ 4E` for every `m ≥ 2`.
   - Supporting lemma: `tendsto_mean_logCosSeries_mul_cos` (Bohr coefficients via dominated convergence and Tannery). Axioms `[propext, Classical.choice, Quot.sound]`.
 - With `a_n = −w(n)n^{−σ}` and `E = π(2N_off⁺ + R⁺)`-density this is exactly `(2N_off⁺ + R⁺)/T ≥ |w(n)|n^{−σ}/(4π)`. The Herglotz dictionary (step 1) and the Poisson counting (step 4) remain paper-only; they need Bochner–Schwartz and the Hadamard product.
+
+## Lean (2026-10-01, MC loop cycle 202): envelope law formal (MUST-643)
+- Module `formal/GaloisForLFunctions/RHTower/WeilConeSingularDeficitEnvelope.lean` (namespace `RHTower.WeilSpectral`). It is built on the Herglotz bridge (MUST-639/640: the boundary measure `μ_lam` exists for every full-cone producer).
+- `abs_sub_vonMangoldt_le_of_envelope`: proof steps 1–3 and 5, with the deficit weights read off from the atoms of `μ_lam`.
+- `eq_vonMangoldt_of_envelope_mean_tendsto_zero`: Corollary (A) in envelope form.
+- **(Closed the same day, see the next section.)** Step 4, the Poisson counting `mean_T ε_σ ≤ π(R⁺(T) + 2N_off⁺(T))/T + o(1)`. It needs the corpus local zero density (`exists_card_near_xi_zeros_le`) for the tails.
+
+## Lean (2026-10-01, MC loop cycle 203): counting form formal; the card is at stage 3 (MUST-645)
+- Module: `formal/GaloisForLFunctions/RHTower/WeilConeSingularDeficitCounting.lean`. It is wired into `RHTower.lean`, with axioms `[propext, Classical.choice, Quot.sound]`.
+- **Deficit count.** `deficitCount hW T = Σ_{0<γ_q≤T} d_q` sums over the divisor copies of ξ.
+  - Off-line copies have weight 1; ρ and 1−ρ̄ are both counted, giving `2N_off⁺(T)`.
+  - Critical copies have weight `(1 − μ_lam({γ})/m_ρ)⁺`, giving `R⁺(T)`.
+- **Main theorem** `abs_sub_vonMangoldt_le_of_deficitCount`: if `D(T)/T ≤ E + η` frequently, for every `η > 0`, then `|lam(m) − Λ(m)| ≤ 4π m E`. This is exactly the card's statement `liminf (2N_off⁺ + R⁺)/T ≥ sup_n |w(n)|/(4πn)`.
+- **Corollaries.**
+  - `eq_vonMangoldt_of_deficitCount`: lower density zero forces `lam = Λ`.
+  - `riemannHypothesis_of_deficitCount`: lower density zero forces RH, via `riemannHypothesis_of_weilPositiveFull_of_ge`.
+- **The counting step**, `integral_deficitEnvelope_le`: for `T ≥ 64` and `σ ≤ √T`,
+  `∫_8^T ε_σ ≤ πD(T) + (2+4σ)√T(½log T + C_σ)`.
+  - Each Poisson term has `t`-mass `≤ π` (arctan antiderivative).
+  - With `H = √T`, the far copies are dominated by `(2σ/(H−1))·Re ξ'/ξ(H+it)`.
+  - The near-but-outside copies only matter for `t` within `H` of the ends.
+  - `Re ξ'/ξ(σ'+it) ≤ ½log T + C_σ` comes from the corpus Stirling bound `re_digamma_vertical_bound_uncond`.
+  - No zero-counting lemma is needed: the Hadamard sum at abscissa `H` does the counting.
+- The paper's σ ↓ 1 step is done by continuity of `m^{−σ}`.
+
+## Lean (2026-10-01, cycle 208): unit-scale upper control of `μ_lam` (MUST-648)
+- `WeilFullConeLocalMassBound.exists_boundaryMeasure_Icc_le_log` gives `μ_lam([t−1,t+1]) ≤ C log(|t|+3)` for every full-cone producer. This formalizes the unit-scale half of the L127 mass lemma. The positive-proportion extension still needs the same bound at scale `1/log T`, which positivity does not give.
+
+## Lean (2026-10-01, cycle 222): exact Poisson counting identity (MUST-656)
+- `WeilFullConePoissonCountingIdentity.poissonCount_sub_eq`: the Poisson-smoothed (width 3/2) spectral count of `μ_lam` minus the Poisson-smoothed zero count of ξ (abscissa 2) equals `Σ(Λ−lam)(n)n^{−2}sin(T log n)/log n` exactly.
+- This sharpens L127's mass lemma (`πN(T) + O(log T)`) to an exact identity with an `O(1)` almost-periodic error.
+- Consequence for the deficit law: zero-atom removal (`R⁺`) is compensated, within `O(1)` in Poisson-smoothed counts, by mass created elsewhere. This is L269's mean balance in exact form.

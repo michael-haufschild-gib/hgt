@@ -10,8 +10,9 @@
 
 Control the actual full signed history in the undamped cutoff D0. These
 positive conclusions expose a growing favorable interval and the complete
-age distribution. The remaining D/J correlation and crossing continuation
-are OPEN; neither these statements nor the paper prove D0>=0 or RH.
+age distribution. The remaining D/J correlation is OPEN. The later
+[correlation boundary](../3-formalized/li-clock-history-correlation-boundary.md) proves strict
+continuation conditional on original nonstrict M15; no unconditional D0/RH sign.
 
 ## Gates
 
@@ -29,10 +30,11 @@ K(t-s)/(B(t)-1) has a complete Beta mixture and exact two-factorial moments.
 Fixed-age and fractional-age limits keep every source row and their stated
 order of limits. No concentration claim at the moving ell scale follows.
 
-The sign attempt stops at paper M15 (or a sharper proof of M13) and a
-strict or otherwise valid crossing argument. It is an unfinished argument,
-not a falsification of the actual D sign or a retired RH route. New positive
-survivors M3–M12 are paper-closed and require source-faithful formalization.
+The sign attempt stops at paper M15 (or a sharper proof of M13). The later
+dual-reviewed683 paper proves a quantitative strict crossing argument from
+nonstrict M15 and rules out concentration below ell by an optimal7/16 ceiling.
+Actual M15/D sign remains open; no RH route is retired. New positive survivors
+M3–M12 and the later exact rigidity/crossing results require Lean formalization.
 
 ## Evidence and mandatory clarification
 

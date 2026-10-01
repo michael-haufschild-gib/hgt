@@ -3724,3 +3724,453 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   retained compact event scratch next, including F201 public audit. F203
   exact error decomposition sign checked before compilation: use href,
   not -href.
+
+- F202 scratch49221 terminal1 only raw-shift simplification target mismatch;
+  use explicit change to the coordinate function before existing character
+  rotation identity. F201 public audit standard-only. Added exact raw shifted
+  cell iff original moving-centre cell for upcoming event assembly; four
+  public audits now queued F203. Corrected scratch next.
+
+- Further transport-cost audit under source search: a general normalized
+  Dirichlet square density may satisfy E>=1+sum_p(p-1)|mean_p|^2, without
+  product factorization. Candidate paper mechanism: coefficient correlation
+  mean_p=sum_n a(np)conj(a(n)); Cauchy bounds its square by coefficient mass
+  on multiples of p; sum_p(p-1) over distinct divisors <=n-1. Need exact
+  original-density Fourier identity and arithmetic inequality checked before
+  promotion. No theorem or no-go claimed yet.
+
+- F202 corrected scratch75623 terminal0 warning-free, F201 audit standard-only.
+  Explicit coordinate-function change fixed initial mismatch. Added exact
+  shifted-cell iff moving-centre identity. Written/wired rotated compact
+  retained event; temporary F201 import/audit stripped; final next. Four
+  public audits queued F203. General density-cost deepsearch61232 running.
+
+- General density-cost search61232 terminal0 partialfalse inventory63784,
+  all20candidate/20source-argument statements and ingredient set inspected.
+  No required prime-moment/cost theorem. Residue-class Dirichlet mean-square
+  bound is only another upper certificate, not this lower constraint.
+  Correct exact mean orientation for |sum a_n Xn|^2: mean_p=sum_n
+  a_n*conj(a_(n*p)); the norm-only cost candidate is unchanged. Existing
+  prod_primeFactors_dvd plus finite product growth supplies arithmetic route.
+- F202 final11447 terminal0 warning-free; four public audits F203scratch25808
+  standard-only; index87523 total4; lint28678 terminal1 thirteen unrelated
+  unreachable modules. Card/frontier updated through F202.
+- F203 scratch25808 terminal0, only unnecessarySeqFocus warning in complex
+  coordinate proof; replaced final redundant sequencing. Written/wired exact
+  full-AFE five-error assembly, temporary F202 import/audits stripped; final next.
+
+- F203 final72858 terminal0 warning-free; index1, lint94037 terminal1 twelve
+  unrelated unreachable modules. F204 scratch82317 running with F203 audit.
+- F205 /tmp/BagReflectedCompactTargetBranch.lean drafted UNCOMPILED after
+  compact-target-branch lexical query returned0; exact dependencies inspected.
+  One e>0 precedes each fixed holomorphic g; original compact target mass
+  follows whenever g approximates actual moving reference. Coherent centre
+  preserves correction/user prefix, retained event supplies background and
+  cell, and full error assembly/disintegration preserve exact AFE. F204 audit
+  queued. C22.31 paper already records full mechanism.
+- Physical scale audit started: current cost obstruction uses N~height T.
+  At N<T the common row changes and the reciprocal complement length grows.
+  Need simultaneous source control; no smaller-scale escape claimed. Deep
+  query /tmp/bag-sublinear-smoothing-transport-search.json running, 300sec.
+
+- F204 scratch82317 terminal0, F203 audit standard-only. The proof does not
+  require A>=0 separately, so removed that unused premise before final.
+  Written/wired spectral budget rigidity; temporary F203 audit import stripped.
+  Card/frontier now FINAL through F203; F204 final next.
+
+- F204 final47796 terminal0 warning-free; index1; lint88426 thirteen
+  unrelated unreachable modules. F205 scratch76437 running, with F204 audit.
+- F206 /tmp/BagFullReflectedAFECompactTarget.lean drafted UNCOMPILED, exact
+  finite catalogue + positive minimum branch mass + common eventual threshold.
+  C22.32 paper recorded first. Reused exists_min_image source checked; API
+  probes and F205 public audit queued. No extra physical-transport conclusion.
+- Sublinear-scale deep61833 terminal0 partialfalse inventory63792, all20/20,
+  proofidea and ingredient set inspected. Query mostly irrelevant, no scale
+  transport producer. Actual coefficient source inspected: independent-scale
+  deep bound D*N^(d-4)*(1+|tau|)^4, and conductor-band envelope uses |tau|<=3N.
+  Hence reducing N/height invalidates the fixed compact-correction constants.
+  No diagonal choice or negligible complement silently assumed.
+
+- F205 scratch76437 terminal1: ambiguous mem_sdiff selected Filter namespace,
+  and reference argument elaborated real-square rather than Nat-square cast.
+  Explicit Finset membership and typed Nat square fixed both. F204 audit
+  standard-only, rpow_neg_one probe passed. Corrected scratch next.
+  Card/frontier FINAL through F204.
+
+- F205 corrected scratch21610 terminal0 warning-free, F204 audit standard-only.
+  Written/wired ReflectedCompactTargetBranch; probes and temporary F204 import
+  stripped. Final next, one public audit queued F206. Both initial errors were
+  elaboration/coercion only; all probabilistic and exact error steps accepted.
+
+- F205 final39192 terminal0 warning-free; public audit F206scratch55874
+  standard-only; index1; lint53852 fourteen unrelated unreachable modules.
+  Card/frontier FINAL through F205. Frontier was concurrently compressed into
+  thematic BAG bullets; preserved that structure and updated only BAG claims.
+- F206 scratch55874 terminal1 only Nat.cast_nonneg named parameter R should
+  be alpha. Corrected scratch6468 now running. Min-image/rpow probes passed;
+  F205 audit standard-only. Earlier update assertion stopped after card append;
+  frontier/log catch-up completed without duplicate card entry.
+- C23.5 dependency-closed paper recorded for arbitrary normalized Dirichlet
+  square density prime-moment cost. F207 /tmp/BagSteinhausPrimeCorrelationBudget.lean
+  UNCOMPILED: distinct-prime charge, correlation Cauchy, total cost. F206 audit
+  queued. F208 /tmp/BagSteinhausDirichletDensityCost.lean UNCOMPILED: exact
+  original Fourier first moment, original density cost; F207/Parseval audits queued.
+- Growing prime occupation deep31986 running, 300sec:
+  /tmp/bag-spectral-prime-occupation-search.json. Possible stronger logarithmic
+  cost law under audit; no theorem or physical error claim yet.
+
+- F206 corrected scratch6468 terminal0 warning-free; F205 audit standard-only.
+  Written/wired FullReflectedAFECompactTarget, API probes/audit stripped;
+  final next. Full original-law compact theorem has no remaining branch
+  approximation premise. F206 public audit queued F207.
+
+- F206 final14664 terminal0 warning-free; index1; lint64754 twelve unrelated
+  unreachable modules. F207 scratch35952 now running with F206 public audit.
+- Prime occupation search31986 terminal0 partialfalse inventory63798,
+  all20candidate/20source-arguments and generated idea/ingredient inspected;
+  no needed first-moment budget/transport theorem. Lexical prime-log query
+  total2: card_primeFactors_le_log is restricted squarefree primorial support;
+  source inspected. General divisor-log charge plus Jensen paper C23.6
+  recorded, source APIs Real.log_prod and strictConcaveOn_log_Ioi/le_map_sum
+  checked. No numerical computations or inferred physical-count theorem.
+
+- F207 scratch35952 terminal1: product cast normalization, let-T unfolding in
+  norm sum, and nested one-line tactic scope. All corrected explicitly.
+  F206 public audit standard-only; card/frontier FINAL through F206, whole
+  compact original-law mass obligation closed, physical count still OPEN.
+- F209 /tmp/BagSteinhausDirichletLogCost.lean drafted UNCOMPILED after C23.6
+  paper/source audit: divisor logarithmic charge, Jensen log total cost and
+  literal original-law prime-moment log bound. F208 audits queued; product
+  cast fix from F207 propagated before first compile.
+
+- F207 corrected scratch50983 terminal0 warning-free; F206 audit standard-only.
+  Written/wired SteinhausPrimeCorrelationBudget, temporary F206 import/probes
+  removed; final next. Three public audits queued F208.
+- F210 /tmp/BagCompactGaussianDirichletTransportRigidity.lean drafted UNCOMPILED:
+  literal density mean synthesis obeys log(N)^2*norm(target)^2<=C*log(cost),
+  hence arbitrary fixed polynomial cost forces all targets to vanish. Uses
+  actual normalized channel energy and exact density prime moments, no
+  density product factorization. C23.6 paper precedes draft. Three F209 audits
+  queued; no physical signed-error inference.
+
+- F207 final93256 terminal0 warning-free; index5; lint14290 twelve unrelated
+  unreachable modules. F208 scratch97454 running, including three F207 audits
+  and existing original complex Parseval audit.
+- Generic zero-target physical admission search62539 running (300sec),
+  /tmp/bag-zero-target-physical-admission-search.json. Existing compiled
+  ZetaStrongRecurrenceReceiver source gives exact zero transport and o(T)
+  self-return count near an off-line zero. The source-only
+  ZetaZeroDensityPowerSaving theorem claims a power saving, but no .olean
+  exists and the leaf is unreachable in global lint: NOT adopted as proved.
+  Its source signature alone cannot close the generic subpower-transfer audit.
+
+- F208 scratch97454 terminal1 only sum_filter argument shape (finset implicit).
+  Replaced final application by explicit definition/filter simplification;
+  Fourier expansion, integration and prime-moment budget accepted. Three
+  F207 public audits plus reused complex Parseval audit standard-only.
+  Card/frontier FINAL through F207. Corrected scratch next.
+
+- Zero-target physical admission deep62539 terminal0 partialfalse inventory63804;
+  all20/20 and ingredient inspected. Hits supply zero finiteness and existing
+  random compact branches, not quantitative physical-target admission. No
+  source-only power-saving theorem imported or claimed.
+- New candidate under search, not promoted: for arbitrary normalized D and
+  W=sum_p v_p Xp on primes p>Y, expand WD by integer frequency. Cauchy by
+  number of eligible prime divisors may give integral |W D|^2 <=
+  (sum_p|v_p|^2)*(1+sum_n |a_n|^2*number_selected_prime_divisors(n)).
+  Multiplication n=>p*n adds at most one distinct selected divisor. Jensen
+  could then control this second moment by energy*(1+log(cost)/log(Y)).
+  Would constrain actual target concentration, stronger than mean alone.
+  Must audit exact convolution/reindexing and no hidden multiplicity loss.
+  Deep search /tmp/bag-dirichlet-density-window-second-moment-search.json
+  running, 300sec. No theorem or universal transport no-go claimed yet.
+
+- F208 corrected scratch18036 terminal0 warning-free, all three F207 and
+  original Parseval audits standard-only. Written/wired exact literal
+  Dirichlet-density Fourier prime moments and frequency cost; final next.
+  Two public audits queued F209.
+- Second-moment search51867 terminal0 partialfalse inventory63804; all20/20
+  and ingredient set inspected. No exact occupancy bound supplied. Existing
+  SteinhausComplexFourthMomentBound source130-220 supplies concrete finite
+  convolution via sum_fiberwise_of_maps_to and exact Parseval, a useful
+  mechanism but not the new bound. BohrMoments prodSupport also a candidate
+  reindex API; not yet source-inspected. No live research.
+
+- F208 final44478 terminal0 warning-free; index3906 total2; lint68661 eleven
+  unrelated unreachable modules; both public audits F209scratch76149 standard.
+  Card/frontier FINAL through F208.
+- F209 scratch76149 terminal1 only namespace: strictConcaveOn_log_Ioi is
+  global, not Real-qualified. Source header checked; corrected both proof and
+  probe. Arithmetic log charge and original prime-moment rewrite accepted.
+  Corrected scratch next.
+- C23.7 paper recorded. F211 /tmp/BagSteinhausComplexConvolution.lean drafted
+  UNCOMPILED, exact complex finite convolution/model product/Parseval, reusing
+  BohrMoments.prodSupport (existing model_mul handles real coefficients only).
+  Two F210 audits queued. Existing RamareLadderErrorSharp82 already proves
+  card_primeFactorsIn_mul_le, including repeated primes; reuse/audit rather
+  than reprove. Source checked; future occupation leaf not yet drafted.
+
+- F212 /tmp/BagSteinhausPrimeConvolutionEnergy.lean drafted UNCOMPILED after
+  C23.7 paper/source audit. Reuses existing primeFactorsIn and compiled
+  RamareLadderErrorSharp.card_primeFactorsIn_mul_le. Proves collision fibre
+  card <= selected prime divisors, exact convolution energy bound and original
+  density-weighted second moment bound. Two F211 and reused occupation-lemma
+  axioms audits queued; card_le_card_of_injOn/sum_product probes included.
+  Cached BohrMoments and RamareLadderErrorSharp oleans verified present.
+
+- F209 corrected scratch82528 terminal0 warning-free; both F208 audits
+  standard-only; log_prod, global strictConcaveOn_log_Ioi, ConcaveOn.le_map_sum
+  probes passed. Written/wired SteinhausDirichletLogCost, audit/probes stripped;
+  final next. Three public audits queued F210.
+
+- F209 final62572 terminal0 warning-free; index16505 total3; lint70721 twelve
+  unrelated unreachable modules. F210 scratch56076 running; extracted reusable
+  eventually_largePrimes_log_lower into this leaf before compiling (integer
+  floor retained, logN<=2logp), now three F210 public audits queued F211.
+- Physical transport direction under source audit: actual target/density
+  coefficients depend on height through chi; a fixed-coefficient sharp-MV
+  bound does not cover that dependence. Chi-adapted graded stationary terms
+  are a possible signed-arithmetic mechanism, not a producer yet.
+  Lexical zetaChi stationary inventory9, first7 declarations inspected with
+  source: critical chi-twist exact phase, sqrt(T) atom bound, complex-amplitude
+  variation bound, displaced subinterval bounds, exact finite direct/reflected
+  cross expansion. Cross theorem sums absolute coefficient masses and supplies
+  no positive return count or uniform growing-support cancellation. Remaining
+  module-capped hits requested with --per-module0. No new asymptotic assumed.
+
+- F210 scratch56076 terminal1 only Nat cast of numeral2 after log_pow and
+  rw[B] misuse for local value. Added Nat.cast_ofNat and dsimp[B] before
+  mul_sum. All three F209 public audits standard-only. Card/frontier FINAL
+  through F209. Corrected scratch next; no mathematical premise changed.
+
+- F210 corrected scratch48201 terminal0 warning-free; all three F209 audits standard-only. Written/wired exact log-squared mean-displacement cost and arbitrary polynomial-cost vanishing. Final next. Chi source lexical inventory9 fully checked; chi-power lexical80772 terminal0 total0. Existing phase curvature and exact exponential identity suggest a positive-power extension, not a physical count. No live research.
+
+- F210 final26038 terminal0 clean, index3/lint66426 twelve unrelated. Three public audits F211scratch94536 standard-only. Card/frontier FINAL through F210. F211 scratch94536 terminal0 warning-free, written/wired exact complex convolution/product Parseval, temporary F210 import and probes/audits removed; final next. F213 /tmp/BagSteinhausDirichletDensityEnergy.lean drafted UNCOMPILED from C23.7: weighted occupation <= logcost/ell, actual second moment <= energy*(1+logcost/ell); three F212 audits queued.
+
+- F211 final50195 terminal0 clean, index3/lint69438 thirteen unrelated; two public and reused prime-occupation lemma audits F212scratch19082 standard-only. F212 terminal1: projection equality needed explicit change; final double sum needed sum_comm. Corrected, no mathematical change. F214 /tmp/BagCompactGaussianDirichletDensityEnergy.lean drafted UNCOMPILED, polynomial cost forces actual weighted window second moment to vanish; two F213 audits queued.
+
+- F212 corrected scratch15623 still owned/live, no next Lean started. F215 /tmp/BagCompactGaussianDirichletDensityTail.lean drafted UNCOMPILED: all finite-density integrability discharged, weighted Markov inequality, polynomial-cost density mass above any fixed window amplitude tends to zero. One F214 audit/API probes queued. C23.7 positive survivor is exact occupation/log-cost energy law; no physical-return no-go asserted. Started deep chi-graded growing-support signed-cancellation search, 300sec, /tmp/bag-chi-graded-growing-support-search.json; individual chi oscillatory atoms alone do not furnish aggregate recurrence.
+
+- F212 corrected scratch15623 terminal0 warning-free; F211 two public and reused Ramare cardinality audits standard-only. Written/wired SteinhausPrimeConvolutionEnergy, temporary audits/probes stripped; final next. Three public audits queued F213.
+
+- Deep chi-graded growing-support search1914 terminal0 partialfalse, complete inventory63818; refresh background indexer running, compiler mostly source-only. Inspected all20 candidate statements, all20 source arguments, empty proof ideas and proposed ingredient set. No applicable aggregate chi cancellation or return count; proposed Prouhet/Sonin chain does not supply it. Rephrased and filtered to ZetaChi modules: search77737 live /tmp/bag-chi-aggregate-filtered-search.json, 300sec. F212 final1064 still sole owned Lean; no errors so far.
+
+- F212 final1064 terminal0 warning-free, index4/lint95689 fourteen unrelated; three public audits F213scratch92352 standard-only. Card/frontier FINAL through F212. F213 scratch92352 terminal1 only add_le_add_left orientation; replaced with explicit add_le_add (le_refl 1), also corrected queued F214. Occupation/Jensen proof accepted. C24.1 exact all-nonzero-integer chi-grade paper recorded; /tmp/BagZetaChiIntegerGradeOscillation.lean drafted UNCOMPILED as F216, four public plus phase def, two F215 and original curvature audits queued. Temporary F215 import will be stripped. No physical count inferred.
+
+- Filtered chi aggregate search77737 terminal0 partialfalse inventory63819; all20 candidates,20 source arguments, empty proof ideas and proposed ingredient set inspected. Only exact finite cross expansions, L1 coefficient-mass upper bounds, subinterval atom/variation control and gamma ratio bounds; no signed growing-support count. Background index refresh incomplete/most compiler metadata pending; no source-only result promoted. Chi joint-equidistribution lexical search started to check the graded phase extension against prior work. F213 corrected75319 remains sole owned Lean.
+
+- F213 corrected scratch75319 terminal0 warning-free; three F212 audits standard-only. Written/wired SteinhausDirichletDensityEnergy, final next. Exact weighted occupation logarithmic cost and actual second-moment energy law. Chi joint-orbit lexical total0, no live research.
+
+- F213 final38773 terminal0 clean, index2/lint80879 sixteen unrelated; two public audits F214scratch27630 standard-only. Card/frontier FINAL through F213. F214 scratch27630 terminal1 only local v inferred real argument due channel signature; annotated v : Nat -> Complex, preserving integer cofactor division. Corrected next. F217 /tmp/BagZetaChiIntegerGradeAmplitude.lean drafted UNCOMPILED, continuous actual integer-grade integrand and exact derivative-variation bound; four F216 and generic Abel bound audits queued. New live search89266 /tmp/bag-chi-compact-amplitude-derivative-search.json examines actual compact shifted chi/critical-chi slow amplitudes, 300sec.
+
+- F214 corrected scratch3667 terminal0 warning-free, both F213 public audits standard-only. Written/wired actual polynomial-cost density weighted secondmoment vanishing, final next. Actual row bounds source checked: uniform compact row/inverse at tau~N already available; it does not give height derivative after removing critical chi phase. Search89266 still running.
+
+- F214 final70110 terminal0 clean, index26814 total1/lint73177 fifteen unrelated; public audit F215scratch81865 standard-only. Card/frontier FINAL through F214. F215 scratch81865 terminal0 warning-free, actual finite-density integrability and tail Markov bound accepted; written/wired, final next. Search89266 terminal0 partialtrue inventory63826, all20/20/ingredient inspected; exact quotient derivative and special shifts useful, no ready fullcompact variation. rg found stronger ChiLogDerivHigherDerivatives all-order bound5*n!/absIm^n, cachedolean present, source checked; audit queued. C24.2 paper recorded. F218 /tmp/BagZetaChiCompactHeightVariation.lean drafted UNCOMPILED (off-real differentiability + actual compact shift slope <=10norm(s-.5)/tau); two F217 and reused higherderivative audits queued; strip temporaryF217import. No live research/lint.
+
+- F215 final36637 terminal0 clean; index6/lint36451 ten unrelated, both public audits F216scratch15452 standard-only. F216 terminal1: derivative function eta/pointwise simplification, division normalization in curvature multiplier, and absolute-value rewrite needed also in goals. Fixed explicitly, corrected next. Exact chi integer-power identity accepted; reused gamma curvature audit standard-only. F219 /tmp/BagCompactGaussianSlowRow.lean drafted UNCOMPILED: literal row/criticalchi, exact quotient identity/norm/height derivative/slow derivative bound; two F218 + reused quotient/criticalnorm audits queued.
+
+- F216 corrected scratch35185 terminal1 only first derivative function definition not unfolded in target; all integer-grade identity/curvature/subinterval bounds and second derivative accepted. Moved unfold zetaChiCriticalGradePhase before construction, matching audited grade1 proof. Corrected scratch next. F215 frontier evidence updated, FINAL through F215; no live research/lint.
+
+- F216 corrected scratch36949 terminal0 warning-free; both F215 audits and reused gamma phase-curvature standard-only. Written/wired ZetaChiIntegerGradeOscillation, removed temporary F215 import/audits/probe, final next. Exact physical integral bound for every nonzero integer grade and every dyadic subinterval; no aggregate count. F220 /tmp/BagCompactGaussianSlowRowVariation.lean drafted UNCOMPILED: actual compact amplitude derivative C/N, derivative integrability and bounded dyadic endpoint-plus-total-variation; four F219 audits queued. Names/interval-integrability APIs source checked, still require Lean.
+
+- F216 final6077 terminal0 clean/index5/lint31218 ten unrelated; four public and generic Abel audits F217scratch84172 standard-only. Card/frontier FINAL through F216. F217 scratch84172 terminal0 warning-free, continuous integer-grade carrier and actual amplitude-variation estimate; written/wired final next. New search62691 /tmp/bag-product-afe-growing-moment-search.json deep300sec moduleProductAFE, for actual growing-order arithmetic chi-grade aggregates.
+
+- F217 final24306 terminal0 warning-free, index2 obtained; lint31621 running. Sole owned Lean now F218 scratch9881 log /tmp/bag-zeta-chi-compact-height-variation-scratch.log. F221 /tmp/BagCompactGaussianRowOscillation.lean drafted UNCOMPILED after C24.2 paper extension: actual full complex row dyadic frequency integral uniform on compact right-strip discs, combines future slow-row variation with proved chi-grade amplitude bound. Two F220 audits queued. Search62691 productAFE growing-moment still live. Card/frontier FINAL through F216 awaiting F217 audits/lint.
+
+- ProductAFE growing-moment search62691 terminal0 partialfalse inventory63834, all20/20, empty proof ideas and proposed ingredient set inspected. Actual two-factor AFE identities, source mean-square laws and offdiagonal bounds available; no growing-order target minorant/count. highBlock wrapper imposes polynomial mollifier length U^(1/15), not our prime window N~T. No source-only theorem adopted. No live research.
+
+- F217 lint31621 terminal1: thirteen unrelated errors, eleven unreachable modules plus two sorry occurrences in WeilFormConverseExplicitFormula lines196/203. No BAG debt; do not describe global gate as clean or these as only unreachable. Index2 inspected. F218 scratch9881 still live; no next Lean started.
+
+- F218 scratch9881 terminal1 only final real-half/complex-half cast in segment endpoint subtraction. Added push_cast before ring; same fix applied to both queuedF219 linePt shift identities. Entire differentiability/segment/derivative-bound/MVT accepted. Both F217 and reused higher logDerivChi derivative bound audits standard-only, now source reuse certified. Card/frontier FINAL through F217. Corrected F218 next.
+
+- F218 corrected scratch53365 terminal0 warning-free; both F217 and existing higherderivative audits standard-only. Written/wired ZetaChiCompactHeightVariation, temporary F217 import/probe/audits removed; final next. New deep search64120 /tmp/bag-prime-window-physical-mixed-moment-search.json (300sec), actual prime-window mixed high moments/near-diagonal products with growing order; nonzero chi atom bounds alone leave grade-zero arithmetic aggregates uncontrolled.
+
+- Physical mixed-moment search64120 terminal0 partialfalse inventory63837; all20/20 and proposed ingredientset inspected. Mostly unrelated physical-height/moment hits; only basic Sieve.offDiagonal_le, no growing-order prime product cancellation. Rephrased lexical prime moment integral under Sieve to isolate arithmetic inventory. F218 final38558 still sole owned Lean.
+
+- F218 final38558 terminal0 clean/index2/lint27295 eleven unrelated; both public plus reused exact quotient derivative/criticalnorm audits F219scratch27876 standard-only. F219 terminal1 only convert generated equality of Complex additive-group instances; replaced convert by explicit derivative-value equality, congr_deriv and eventual function congruence. Corrected next. Sieve lexical total41 allthreepages names/docs inspected; PrimeBlockPowerCofactorMeanSquare282 source retains Bmax^ell*X length loss, powered-prime Watt energy157 requires complete block2B<=height. Neither currently supplies our growing-order p~T aggregate. No live research.
+
+- F219 corrected scratch30400 terminal0 warning-free, both F218 plus exact quotient/criticalnorm audits standard-only. Written/wired CompactGaussianSlowRow; final next. Extra arithmetic source audit: canonical long-energy height dichotomy53 and one-unit long-energy53 retain prescribed prime scale/degree and restricted amplified upper moments; no actual target-mass lower count or p~T growing-order law supplied. Those source-only leaves not imported. No live research.
+
+- F219 final17044 terminal0 warning-free; index5 retrieved, lint1659 running. Current only owned Lean F220 scratch85195 /tmp/BagCompactGaussianSlowRowVariation.lean, log /tmp/bag-compact-gaussian-slow-row-variation-scratch.log. No research live. F218 card/frontier final; F219 awaits four public audits in F220 before promotion.
+
+- F220 scratch85195 terminal0 warning-free; all four F219 public audits standard-only and derivative-measurability/division probes passed. F219 final17044/index5/lint1659 eleven unrelated now card/frontier FINAL. Written/wired F220 CompactGaussianSlowRowVariation, two public actual compact C/N derivative and bounded endpoint+dyadictotalvariation withintegrability; final next. Two audits queued F221. Standalone /tmp/BagCompactGaussianRowOscillationAudit.lean already drafted for eventual sole F221 public audit.
+
+- Continuation: F220 final50575 terminal0 warning-free; index2, lint18282 terminal1 fourteen unrelated unreachable modules, no BAG debt. Sole owned Lean F221 scratch88541, literal reflected-row frequency integral. Deep self-recurrence producer search19511 running (module Recurrence), and independent actual self-target positive-kernel search running; both budget300. Corpus receiver source confirms positive-upper-density self-return implies RH but supplies no producer. C23.2 already records generic zero-bearing target compatibility gap; do not replace self-target proof by target-independent transfer.
+
+- F221 scratch88541 terminal0 warning-free; both F220 public audits standard-only. Written/wired CompactGaussianRowOscillation, temporary audits stripped; final next. F220 card FINAL. Self-recurrence search19511 terminal0 partialfalse, inventory63846; all20 candidates/20 source arguments and proposed ingredient set inspected. Mostly irrelevant recurrence algebra; exact fixed-scale dual-target equivalence is already closed C11, receiver only assumes recurrence. No producer. Refresh incomplete background indexer, compiler mostly pending/stale/source-only; semantic coverage unmeasured. Positive-kernel search92472 still running.
+
+- F221 final15566 terminal0 warning-free, public audit15841 terminal0 standard-only, index1, lint7653 terminal1 fourteen unrelated unreachable modules. Card/frontier FINAL through F221; no owned Lean live. C24.2 closed, actual count remains open. C25 paper/source audit recorded: coefficient positivity does not automatically make a self-value Gaussian kernel positive definite; moving cofactor windows escape the fixed-D quantifier but have stricter cutoff seam alpha>3/4 with cubic cutoff. No unproved claim exported to Lean. Positive-kernel search92472 partialfalse63846, all20/20 and proposed ingredients inspected, no applicable self-target lower bound. Lexical OR query overbroad total7403 (top20 inspected, not exhaustive); refined zeta-integral-Tendsto query total2 irrelevant integral-dilation limits. New growing-cofactor search86231 running, budget300.
+
+- C25.1 paper proof recorded: exact mixed prime fourth moment gives a target-error lower floor for normalized degree-one square densities, independent of total conditional variance up to the largest-channel diagonal. This tests a specific proposed short positive certificate; no physical no-go. Positive survivor exact collision/target-error law selected for Lean. /tmp/BagSteinhausPrimeMixedFourthMoment.lean (F222) drafted and sole owned scratch30563 now running, log /tmp/bag-steinhaus-prime-mixed-fourth-scratch.log. Reuses cached SteinhausFourthMoment and prime pair classification, both source audits queued in scratch. No F223 draft yet. Growing-cofactor deep search86231 terminal0 partialfalse63847, all20/20/idea/ingredient inspected: only prior fixed-block energy and ordinary mean-value upper bound, no target lower count. Cofactor-energy lexical22 fully inventoried, density-cost14 and fourth-moment32 fully inventoried; size-bias lexical0.
+
+- F222 scratch30563 terminal1: bare conj identifier unavailable; replaced with literal starRingEnd Complex. Both reused source axioms audits standard-only. Corrected48486 terminal1: ite_true simplification, neq implication rewriting, ofReal square cast, and four-sum order. Fixed explicit ordered expansion and casts. Corrected47754 now sole owned Lean. F223 /tmp/BagSteinhausLinearPrimeTargetEnergy.lean drafted UNCOMPILED: density normalization and exact constant/prime/prime-product target-error decomposition; one F222 audit queued. F224 /tmp/BagSteinhausLinearPrimeTargetGap.lean drafted UNCOMPILED: 3|g|²/4 minus exact diagonal (then maxchannel²) target-error floor under coefficient normalization, two F223 audits queued. No recurrence count or global no-go claimed.
+
+- F222 corrected scratch47754 terminal0 warning-free; general character fourth correlation and prime pair classification audits standard-only. Written/wired SteinhausPrimeMixedFourthMoment, temporary audits stripped; final next. Public audit queued F223.
+
+- F222 final58373 terminal0 warning-free; index retrieved, lint31040 running. Sole owned Lean now F223 scratch64813, log /tmp/bag-steinhaus-linear-prime-target-energy-scratch.log. F222 audit in that scratch before card promotion. F224 draft includes both F223 audits. No live research.
+
+- F223 scratch64813 terminal0 warning-free; F222 public audit standard-only. F222 card FINAL. Written/wired SteinhausLinearPrimeTargetEnergy, two public density normalization and exact target-error energy identities; temporary audit stripped. Final next. Two public audits queued F224.
+
+- F223 final89723 terminal0 clean; both public audits F224scratch23084 standard-only; index2/lint8835 twelve unrelated unreachable. Card FINAL through F223. F224 scratch23084 terminal0 warning-free first try, written/wired SteinhausLinearPrimeTargetGap; temporary F223 audits stripped, final next. Standalone audit /tmp/BagSteinhausLinearPrimeTargetGapAudit.lean prepared. New deep search52387 live /tmp/bag-chi-stationary-main-term-search.json, actual chi Mellin/Fourier stationary leading terms, budget300. Existing chi files found by rg only give oscillatory upper bounds; no main term inferred. Zeta-minorant lexical0.
+
+- F224 final69309 terminal0 warning-free; both public audits56787 terminal0 standard-only; index2/lint75343 ten unrelated unreachable modules. Card/frontier FINAL through F224. No owned Lean live. C25.1 exact positive collision/target-energy survivor formalized; only linear MSE certificate excluded. Search52387 terminal0 partialfalse63855 all20 candidates/20 arguments/emptyideas/proposedingredients inspected, no actual chi leading term. Refresh background-indexer/semantic unmeasured/compilermostlypending. Source HardyZPhaseAsymptotic716-795 only O(1/t) rate error and917 o(t) phase; BinetLogGamma real argument formula insufficient alone. Source GammaDigammaStirlingBound227 supplies stronger complex 6/norm² defect; exact defect definition GammaStirlingCubicLog127 read. C26 paper13/t² Hardy-rate proof recorded, source axiom audit pending. Defect lexical inventory5 fully inspected. No new scratch drafted yet.
+
+- F225 /tmp/BagHardyPhaseIntegrableError.lean initial scratch84997 terminal1 only positivity tactic used on a comparison, replaced with nlinarith. Entire reciprocal real-part calculation and 13/t² rate bound otherwise accepted. Reused norm_digammaStirlingDefect_le axiom audit standard-only. Corrected scratch next. No live research. Phase-offset lexical inventory0. Current-toolchain improper integral APIs located: tendsto_limUnder_of_hasDerivAt_of_integrableOn_Ioi711 and integral_Ioi_of_hasDerivAt_of_tendsto'813; rpow tail integrability/integral131/173. F226 offset proof not yet drafted.
+
+- F225 corrected scratch58729 terminal0 warning-free; reused complex digamma Stirling bound standard-only. Written/wired HardyPhaseIntegrableError, temporary audit stripped; final next. F226 /tmp/BagHardyPhaseOffset.lean drafted UNCOMPILED: actual offset limUnder, existence of phase-error limit, explicit |theta-main-offset|<=13/t for t>=4; one F225 audit queued. Uses source-checked Ioi FTC, derivative-integrability limit and rpow tail formulas; no phase value assumed. No live research.
+
+- F225 final80469 terminal0 warning-free; index fetched, lint47835 running. Sole owned Lean F226 scratch29417 /tmp/BagHardyPhaseOffset.lean. Next paper consequence all integer chi grades approximate a single fixed-unit phase model with error26*abs(k)/t; source Real.norm_exp_I_mul_ofReal_sub_one_le checked. No F227 scratch yet.
+
+- F225 final80469/index1/lint47835 ten unrelated and public audit F22629417 standard-only; card FINAL through F225. F226 initial29417 terminal1 only IntegrableOn type erasure for congr_fun and Ioi membership not unfolded for linarith. Added explicit IntegrableOn type and inequality coercion; corrected52767 sole owned Lean. Proposed common-unit all-integer phase model paper recorded.
+
+- F226 corrected52767 terminal1 only beta-reduction before rpow rewrite; explicit change fixed it. Corrected15383 terminal0 warning-free, F225 audit standard-only. Written/wired HardyPhaseOffset, temporary audit stripped; final next. F227 /tmp/BagZetaChiCoherentPhaseModel.lean drafted UNCOMPILED, all integer grades share one unit phase with error26abs(k)/t; F226 two public and Bourgain Lipschitz audits queued. Stationary-asymptotic lexical inventory6 fully inspected, no applicable main term. Fresnel source inventory found exact constant/tail leaves for source audit; no main-term claim yet.
+
+- F226 final51290 terminal0 warning-free/index6/lint37406 ten unrelated unreachable; both public audits F227scratch11528 standard-only. Card FINAL F226. F227 scratch11528 terminal0 warning-free first try, reused Bourgain phase Lipschitz audit standard-only; written/wired ZetaChiCoherentPhaseModel, temporary audits stripped. Final next. No owned Lean live before final.
+
+- F227 final95020 terminal0 warning-free; index/lint requested, public audit queued in F228. Local stationary packet deep search4520 terminal0 partialfalse inventory63861, all20 candidate statements/all20 source arguments/emptyideas/proposedingredients inspected. Mostly unrelated packet/coherent names; stationary_phase_split is log algebra only, no chi stationary lower aggregate. Refresh incomplete/background indexer, semantic unmeasured, source-only compiler metadata. No new corpus theorem adopted. C26.1 exact entropy/phase packet paper recorded, F228 /tmp/BagZetaChiIntegerStationaryPackets.lean drafted and scratch started; integer center identity + explicit quadratic pointwise error. Finite nonnegative aggregate consequence still to draft.
+
+- F227 final95020/public audit F22848678/index1/lint89909 ten unrelated; card/frontier FINAL through F227. F228 initial48678 terminal1 only unnecessary ring after solved field_simp and aggressive simp rewriting real logarithm into complex logarithm. Replaced norm simplification by exact Bourgain oscillation identity; corrected69506 still sole owned Lean. F229 /tmp/BagZetaChiStationaryPacketSums.lean drafted UNCOMPILED: exact complex-coefficient aggregate error and fixed-direction half-mass lower bound for every nonnegative packet in the explicit stationary window; F228 audit queued. No physical count asserted. New deep search for actual reflected stationary transform versus self-return gap started, budget300.
+
+- F228 corrected69506 terminal0 with only tactic sequencing warnings; removed unused ring and replaced convert chains by explicit exponent equality/sequential tactics. Written/wired final18948 terminal0 warning-free. Index/lint requested; sole owned Lean now F229scratch99858, F228 audit queued. Exact actual normalized channel source read: at zero phase after height rotation, cofactor k contributes frequency pk; the packet estimate must be applied to those composite integers, not just bare p. Positive packet size and the exterior contribution remain separate producer obligations. Prime-interval-upper lexical inventory6 all inspected, no applicable short-window upper bound; rephrased Brun Titchmarsh. Deep reflected-transform search46071 and physical moderate-deviation search13000 live.
+
+- F229 scratch99858 terminal0 warning-free first try; F228 public audit standard-only. F228 card FINAL. Written/wired ZetaChiStationaryPacketSums, audit stripped; final next. F230 /tmp/BagCompactGaussianPrimePacketCapacity.lean drafted UNCOMPILED, actual normalized channels in any sqrt(N)-width prime window <=C/logN, all retained phases/cutoffs/heights/unit multipliers. Temporary F229 import/audits will be stripped; reused BT audit queued, cached olean exists. Both deep searches46071/13000 terminal0 partialfalse63865, all20/20+ingredients inspected; no actual self-return lower theorem, reflected stationary algebra is a factorization only. BrunTitchmarsh lexical80 allfourpages inspected; applicable H/logH bound source checked at AdaptiveGallagherBrunTitchmarsh49. No live research/lint/index.
+
+- F229 final40592 terminal0 warning-free; index/lint requested. Sole owned Lean F230scratch now started, including two F229 public audits and reused BrunTitchmarsh H/logH audit. F230 per-prime cutoff K(p) corrected before first compile so the actual cofactor L/p is covered. New deep search77002 `/tmp/bag-growing-cofactor-physical-mean-search.json` budget300: physical reflected means for a power-growing cofactor window. No such mean assumed; the fixed-D narrow packet capacity test remains limited. C27 candidate requires a full coherent stationary transform and actual aggregate error before any recurrence consequence.
+
+- F230 initial4780 terminal1 before elaboration: broad AdaptiveGallagher import has missing cached HTGeometry.VerticalContourShift. No mathematical error evaluated; no unrelated module rebuilt. Minimal import/public audit25170 now sole owned Lean, `/tmp/BagBrunTitchmarshImportAudit.lean`, directly PNTPlus.BrunTitchmarsh plus F229. F230 draft narrowed to underlying BT source; three elementary sieve-error absorption helpers from inspected source localized privately, avoiding unrelated Gallagher dependencies. Reused underlying primesBetween_le audit replaces inaccessible broad theorem audit. Search77002 still live.
+
+- Minimal BT import/public audit25170 terminal0: underlying primesBetween_le and both F229 publics standard-only. F229 card/frontier FINAL. Corrected F230 minimal-import scratch83400 sole owned Lean. Search77002 terminal0 partialtrue63869; all20/20+emptyideas/proposed ingredients inspected, no actual growing-cofactor physical mean. Background indexer incomplete/semantic unmeasured/compiler mostly pending. C27 investigation recorded, no formula adopted. No live research/lint/index.
+
+- F230 corrected minimal-import scratch83400 terminal0 warning-free first try; both F229 public and underlying BrunTitchmarsh audits standard-only. Written/wired CompactGaussianPrimePacketCapacity, removed temporary F229 import/audits. Final next; standalone public audit prepared. Stationary-leading-term lexical inventory0. C27.1 local cubic phase remainder plus center/tail/Fresnel paper sketch recorded, not claimed formal; first derivative APIs source checked in VanDerCorputLocal56 and VanDerCorput604, current MVT API MeanValue695. No new scratch beyond audit.
+
+- F230 final58908 terminal0 warning-free; index/lint requested. Sole owned Lean F231 scratch now started: `/tmp/BagChiStationaryQuadraticError.lean`, cubic entropy remainder on both sides of saddle, current MVT API probe and F230 public audit queued. The actual chi quadratic-model consequence is not yet added; scratch currently one private logarithmic bound plus public entropy bound. Temporary F230 import must be stripped from final. Public F230 standalone audit prepared but not run because audit is in F231. No live research.
+
+- F230 public audit F23123187 standard-only; index4/lint34455 eleven unrelated unreachable (including newly seen WeilPositiveProducerLindelof), no BAG debt. Card/frontier FINAL through F230; C26.1 narrow-prime standalone mechanism closed with positive survivors fully formal. F231 initial23187 terminal1 only two redundant ring tactics after field_simp and unexpanded id in derivative algebra. Fixed; corrected17148 sole owned Lean. F232 /tmp/BagZetaChiStationaryQuadraticModel.lean drafted UNCOMPILED: one common unit actual critical-chi quadratic saddle model, error26/t+2abs(t-a)^3/a², for a>0,t>=4,abs(t-a)<=a/2; one F231 audit queued. No actual stationary integral or aggregate first mean proved. No research/lint/index live.
+
+- F231 corrected17148 terminal0 warning-free, F230 public audit standard-only. Written/wired ChiStationaryQuadraticError; final imports reduced to Mathlib log derivative + MVT, temporary proof-lane imports/audit/probe stripped. F232 draft explicitly imports F227. Final next. F233 /tmp/BagChiStationaryExteriorBound.lean drafted UNCOMPILED: model entropy tail on either side of saddle <=16*a/h throughout [a/2,2a], firstDerivTestOn source audit + F232 public audit queued. No live research.
+
+- F231 final42854 terminal0 warning-free with minimal Mathlib imports; index/lint requested. Sole owned Lean now F232scratch14823. Quadratic-Fresnel lexical inventory3 all inspected; source QuadraticPhaseStationary152 lines fully read, reversed quadratic explicit constant and error8/(mu*R) directly applicable, current-toolchain audit pending. This replaces proposed HTGeometry Fresnel reconstruction. C27.1 full actualchi integral target refined to error78+4h^4/a²+40a/h under a>=8, a/2<=l<=a-h<a+h<=u<=2a; no integral claim yet. F232 should expose its actual entropy-model bound as a separate public theorem before final, since exterior comparison needs it without the local quadratic condition; currently embedded in scratch proof. F233 draft tails uses entropy with separate logs and firstDerivTestOn, audits pending. No research live.
+
+- F232 initial14823 terminal0 warning-free; F231 public audit standard-only. F231 card FINAL/index2/lint48693 eleven unrelated. Before final, strengthened F232 to one joint public theorem `exists_zetaChi_stationary_phase_models`, exposing both global entropy and local quadratic estimates with exactly the same kappa; separate existentials would not suffice for adding center/tails. Revised scratch80012 sole owned Lean. F233 draft audit updated to new name and includes temporary QuadraticPhaseStationary import plus norm_integral_quadPhase_conj_sub_le audit; cached olean confirmed. No F234 draft, no live research/lint/index.
+
+- F232 revised scratch80012 terminal0 warning-free; F231 audit standard-only. Written/wired ZetaChiStationaryQuadraticModel with one joint public shared-unit theorem (global entropy + local quadratic bounds); temporary audit stripped. Final next. Planned assembly: global actualchi integral/model error<=78; pure entropy full stationary integral error<=4h^4/a²+40a/h; combine with same orientation. F233 tail scratch next after final terminal.
+
+- F234 /tmp/BagZetaChiStationaryIntegralModel.lean drafted UNCOMPILED: one unit actualchi-to-entropy integral error<=78 on all comparable-height subintervals, directly integrating26/t<=52/a over length<=3a/2. F233 public audit queued; its import will be temporary. F232 final63654 sole owned Lean. Full pure-entropy stationary integral assembly still not drafted; use audited future F233 tails, F231 cubic remainder and exact QuadraticPhaseStationary reversed Fresnel source (audit queued F233).
+
+- F232 final63654 terminal0 warning-free; index/lint requested. Sole owned Lean F233 scratch started. Before compile, added reversed-entropy exterior theorem via exact conjugation, since actualchi uses that sign; both F233 public audits now queued F234. F233 includes temporary QuadraticPhaseStationary import/reused reversed Fresnel audit and F232 shared-unit audit. No F235 draft; pure entropy full stationary assembly remains next after local pieces. No research live.
+
+- F233 scratch6669 terminal0 warning-free first try; F232 joint-model audit, firstDerivTestOn and exact reversed Fresnel audit all standard-only. F232 card FINAL/index2/lint72585 ten unrelated. Written/wired ChiStationaryExteriorBound with only BourgainPhasePerturbation+VanDerCorputLocal imports; temporary F232/QuadraticPhaseStationary audit imports removed. Final next. rg stationary-source inventory found CCMFirstRowStationaryPhase but source explicitly leaves actual stationary asymptotics open, no replacement theorem adopted. F234 draft ready; no F235 draft yet.
+
+- F233 final75112 terminal0 warning-free; index/lint requested. Sole owned Lean now F234scratch, actualchi-to-model integrated error78 and both F233 audits. F235 /tmp/BagChiStationaryEntropyIntegral.lean drafted UNCOMPILED: pure negative entropy full stationary leading term, three private central/integrability helpers and public error4h^4/a²+40a/h. Uses already axiom-audited reversed Fresnel theorem, current-toolchain translation/integral norm/subdivision APIs source checked. F234 audit and temporary import queued; strip it final. No actualchi final leading-term leaf yet; no research live.
+
+- F234 scratch79410 terminal0 warning-free first try; both F233 public audits standard-only. F233 card FINAL/index3/lint48535 eleven unrelated unreachable (new WeilFullConeHorizontalPotential). Written/wired ZetaChiStationaryIntegralModel, temporary F233 import/audits stripped; final12949 sole owned Lean. F235 draft integrability helper made public `intervalIntegrable_chiStationaryEntropy_neg` for actualchi assembly, so two public audits needed. F236 /tmp/BagZetaChiStationaryLeadingTerm.lean drafted UNCOMPILED: full actualchi leading term with error78+4h^4/a²+40a/h; both F235 audits queued. No coherent integer-frequency summed main term or physical return count yet.
+
+- F235 initial55342 terminal1 only interval translation rewrite needed explicit function/shift, redundant ring after solved field_simp, and linarith did not normalize inverse coefficients/let aliases. Fixed explicit substitution argument and exact addition of three bounds followed by ring. F234 public audit standard-only; card FINAL F234/index1/lint5847 eleven unrelated. Corrected F235 next; F236 draft unchanged.
+
+- C27.2 finite complex coefficient coherent integer-frequency aggregate paper recorded, exact leading direction from exp(i*2*pi*n)=1 and explicit sum of all coefficient-weighted errors. No F237 draft yet. Corrected F23593346 remains sole owned Lean; F236 actualchi assembly draft ready. No research/lint/index live.
+
+- F235 corrected93346 terminal0 warning-free; F234 public audit standard-only. Written/wired ChiStationaryEntropyIntegral, temporary F234 import/audit stripped; two public (positive-interval integrability and full pure-entropy stationary value), final next. F236 actualchi assembly ready. F237 /tmp/BagZetaChiCoherentIntegralSum.lean drafted UNCOMPILED from C27.2: common unit for every finite complex coefficient actual physical integer-frequency integral, complete weighted remainder retained; F236 public audit queued. No return-event count proved.
+
+- F235 final30205 terminal0 warning-free; index/lint requested. Sole owned Lean now F236scratch, full actualchi stationary leading term and both F235 audits. F237 coherent finite complex coefficient sum draft and standalone audit prepared. No research live. No next candidate arithmetic first-mean or recurrence lower theorem is assumed.
+
+- F236 scratch31298 terminal0 warning-free first try; both F235 public audits standard-only. F235 card FINAL/index4/lint24631 eleven unrelated. Written/wired ZetaChiStationaryLeadingTerm, temporary audits stripped, final next. Exact actualchi full stationary bound is now scratch-proved; no event lower count inferred. F237 coherent complex coefficient integral sum draft next.
+
+- F236 final10008 terminal0 warning-free; index/lint requested. Sole owned Lean now F237scratch, actual finite complex coefficient coherent integer-frequency integral plus F236 public audit. New graded-stationary-moment deep search9490 still live. F237 standalone public audit prepared. No first-mean asymptotic or return count claimed.
+
+- F237 scratch69915 terminal0 warning-free first try; F236 public audit standard-only. Written/wired ZetaChiCoherentIntegralSum (umbrella appended), temporary audit stripped, final next. Graded stationary-moment search9490 terminal0; output not yet inspected. No other research live. F237 standalone public audit prepared.
+
+- F237 final69220 terminal0 warning-free; standalone public audit87433 terminal0 standard-only; index1; lint38776 terminal1 with ten unrelated unreachable modules, no BAG debt. Card FINAL F236/F237. Graded stationary-moment search9490 fully inspected: partialfalse63889; all20 candidate/source statements, empty proofideas and proposed ingredientset. No applicable actual higher-grade physical moment or return lower theorem; proposal not adopted. No owned Lean live. Source-specific compact self-target minorant deep search launched next; coherent first moments alone cannot supply it.
+
+- Self-target minorant deep search67509 terminal0, partialfalse63900; all20 candidate and20 source statements inspected, empty proofideas and irrelevant proposed support/analyticity ingredientset not adopted. Compiler mainly source-only; semantic unmeasured/background refresh incomplete. Return-minorant lexical0; chi-mixed-integral lexical2 unrelated. Hardy-asymptotic inventory87 all5pages inspected; no exact limiting offset. Gamma-ratio inventory30 all2pages inspected, found existing complex horizontal ratio asymptotic/tube theorem; digamma-imaginary inventory4 found vertical sandwich/limit. C28 signed physical minorant investigation and C28.1 duplication-based exact leading unit paper recorded. No Lean live, no research live. Next source audits/draft: horizontal Gamma phase-shift limit, then exact duplication/conductor comparison. Missing guessed digamma filenames were rejected by rg; no edits to those paths.
+
+- F238 GammaHorizontalLogShift corrected scratch53582 terminal0 warning-free; reused uniform vertical digamma, exact Gamma shift and duplication audits standard-only. Initial72253 failed only definition unfolding/namespace/composed-im simp, fixed. Written/wired final leaf, temporary Beta import/audits/probes stripped. F239 duplication phase draft started but UNCOMPILED, currently exact chi/Gamma conjugate ratio only; remaining duplication algebra and limit comparison not yet formal. No research live.
+
+- F238 final19887 clean, index27906 terminal0 five items, lint38951 terminal1 twelve unrelated unreachable modules plus active sorry ZetaLocalWindowTail454 (not ours); all3 publics audited standard in F23938575. Card FINAL F238; frontier F237. F239 initial38575 terminal1: exact critical chi/Gamma quotient passed with style warnings, duplication blocked only map_div versus map_div₀ and explicit complex numeral log cast; corrected scratch56090 sole owned Lean. Final F238 first launcher wrong cwd had terminal1, fixed before retry; card append likewise wrong cwd failed harmlessly then completed here. No research/index/lint live.
+
+- F239 corrected scratch66174 terminal0; exact chi/Gamma quotient and duplication correction proved, with only three sequencing warnings. Cleaned sequencing and replaced two broad convert chains by exact argument identities before final; imports narrowed to Hardy phase+Bourgain phase (F227 now explicit in F240 draft). Written/wired ZetaChiDuplicationPhase, final next. F240 /tmp/BagZetaChiConductorOrientation.lean drafted UNCOMPILED: identifies offset phase B(-2C)=B(pi/4) via exact duplication and limits, then explicit all-integer-grade model error26abs(k)/t. Both F239 public audits queued. No research/lint/index live.
+
+- F239 final94718 terminal1 after warning cleanup: exact hA/hB needed real-quarter cast simplification. Fixed simpa[A,U,z]/[B,V,w]; corrected final45174 sole owned Lean, log /tmp/bag-zeta-chi-duplication-phase-final.log. F240 explicit conductor orientation draft complete and both F239 audits queued. Signed target-kernel deep search19989 live (/tmp/bag-signed-target-kernel-search.json). C28.2 source-built signed mean-square certificate shape recorded; no candidate D or positivity/lower count proved. No other live jobs.
+
+- F239 corrected final45174 terminal0 warning-free; index/lint launched. Sole owned Lean F240 conductor-orientation scratch now started, both F239 public audits queued. Signed target-kernel deep19989 still live. No unconditional sign/certificate lower count claimed.
+
+- Signed target-kernel search19989 terminal0 partialtrue63905; all20 candidate/20 source statements inspected, empty proofideas and irrelevant weighted-norm ingredientset not adopted. Background refresh incomplete/semantic unmeasured/compiler mainly source-only. No applicable actual signed target lower bound. F239 index5/lint85830 twelve unrelated unreachable leaves, no active sorry in this newer lint snapshot. F24018497 sole owned Lean. F241 /tmp/BagZetaChiExplicitStationaryTerm.lean drafted UNCOMPILED: actual full stationary leading term with explicit phase exp(i*a), same quantitative error, using F240 explicit conductor orientation and F235 entropy integral; both F240 publics audit queued. No first mean/event-count inferred.
+
+- F240 corrected82878 terminal0; exact offset phase B(-2C)=B(pi/4) and explicit all-integer-grade conductor bound proved in scratch. Only final exponential-unit convert emitted ring/style messages; replaced with explicit zero exponent identity before final. Written/wired ZetaChiConductorOrientation, temporary audits/probe stripped. F241 full explicit stationary term ready; F242 /tmp/BagZetaChiFiniteStationaryTransform.lean drafted UNCOMPILED: arbitrary finite real-frequency signed transform retaining B(2*pi*x), full weighted errors, and rational numerator-periodicity. F241 public audit queued there. Research38367 rational saddle still live. No return-event lower integral proved.
+
+- F240 final19543 terminal0 warning-free, both publics F2415988 standard-only; card/frontier FINAL F240, index3/lint45925 eleven unrelated unreachable. F241 initial5988 terminal1 only phase-product rewrite occurrence and untyped interval integral measure; fixed with simp_rw mul_assoc and volume annotation; corrected scratch next. F242 draft strengthened before first compile to full finite support with arbitrary selected interior saddles and entire complement charged the actual uniform chi oscillatory bound; three publics now (eligible transform, selected/full support transform, rational numerator periodicity), no terms discarded. Rational-saddle search38367 terminal0 partialfalse63907, all20/20/ingredients inspected; no existing signed physical transform found, multiplicative-character residue proposal not adopted. SmoothAFEZetaCriticalFrozenCross source defs/first112lines inspected; existing result only absolute cross bound, no new reuse/adoption. No research live.
+
+- F241 corrected88544 terminal0; full actual chi leading term B(a)*sqrt(2*pi*a) proved with exact error78+4h^4/a²+40a/h. Only unit-exponential convert warnings/messages, replaced by explicit zero exponent before final. Written/wired ZetaChiExplicitStationaryTerm, audits stripped. F242 complete finite selected-support signed transform draft ready; no discarded complement. C28.4 higher-grade dilation/phase paper recorded; no F243 draft yet. No research live.
+
+- F241 final54915 terminal0 warning-free; index/lint launched. Sole owned Lean F242 finite/full-selected stationary transform scratch started, F241 public audit queued. F243 /tmp/BagChiGradedStationaryEntropy.lean drafted UNCOMPILED: exact entropy scaling and integral dilation, complete grade-k realpositive model error4*k*h^4/a²+40*a/(k*h), three F242 audits queued (temporary F242 import). Graded-entropy lexical inventory inspected, no preexisting result. No research live.
+
+- F241 public audit F24266110 standard-only; index2/lint98381 twelve unrelated unreachable, card/frontier FINAL F241. F242 initial66110 terminal1 only redundant ring after field_simp in rational-periodicity proof; eligible/full-selected transform proofs passed, period final exp conversion emitted ring info. Removed redundant tactic and used exact exponent identity; corrected scratch next. F243 added public positive-interval integrability for all real grades, now4 publics planned. No research/index/lint live.
+
+- F242 corrected19442 terminal1 only exp-periodicity literal1 versus Nat-cast1; added Nat.cast_one simplification, corrected scratch next. Both finite transform statements already elaborate; final/public audits still pending. F243 graded entropy draft now4 publics including compact integrability. F244 /tmp/BagZetaChiPositiveGradeStationary.lean drafted UNCOMPILED: full actual positive integer-grade leading term with explicit grade phase, error78*k+4*k*h^4/a²+40*a/(k*h), all4 F243 audits queued. No negative-grade finite sum or source-kernel positivity theorem yet. No research/lint/index live.
+
+- F242 corrected58997 terminal0 warning-free; eligible and full-selected transforms plus rational periodicity now scratch-proved. Written/wired ZetaChiFiniteStationaryTransform, temporary audit/probe stripped. Final next; F243 then audits all3 F242 publics. No research/lint/index live. F243/F244 drafts remain uncompiled.
+
+- F242 final45407 terminal0 warning-free; index/lint launched. Sole owned Lean F243 graded-entropy scratch started, all3 F242 publics audit queued. F244 actual positive-grade draft ready. Rational-additive Hurwitz lexical inventory inspected, no applicable result. No deep research live.
+
+- F242 all3 publics F24371918 standard-only; index5/lint26865 ten unrelated unreachable, card/frontier FINAL F242. F243 initial71918 terminal1 only integral dilation rewrite needed explicit function (as earlier central translation), and redundant ring after field_simp; corrected next. F244 actual positive-grade draft unchanged. Broadened additive-Hurwitz lexical29 all2pages inspected; found HurwitzFiniteExpansion (full92lines read), exact finite DFT/Hurwitz expansion only, no physical signed moment lower. No new dependency adopted/audited. No research/lint/index live.
+
+- F243 corrected91830 terminal0 warning-free; real-grade integrability, exact entropy/integral dilation, full graded model remainder all scratch-proved. Written/wired ChiGradedStationaryEntropy with only F235 import; temporary F242 import/audits/probe stripped. Final next. F244 positive actual-grade draft ready with all4 F243 audits. Negative-grade conjugation wrapper planned; source intervalIntegral_conj901/norm_conj96 signatures checked, no F245 draft yet. No research/lint/index live.
+
+- F243 final2768 terminal0 warning-free; index/lint launched. Sole owned Lean F244 positive actual-grade scratch started, all4 F243 publics audited there. F245 /tmp/BagZetaChiNegativeGradeStationary.lean drafted UNCOMPILED: exact conjugate negative-grade integrand and full negative-grade leading term, F244 public audit queued. Source intervalIntegral_conj and norm_conj signatures verified. No full arbitrary mixed-grade finite transform or target-kernel lower theorem yet. No research live.
+
+- F243 all4 audits F2442987 standard-only/index4/lint82782 eleven unrelated unreachable, card FINAL F243/frontier F242. F244 initial2987 terminal1 only Nat-to-Real-to-Complex inverse cast normalization in main-term reassociation; switched local normalized inverse to (k:Complex)^-1, corrected scratch next. Pointwise graded model, actual integrated78k error and graded entropy remainder already elaborate. F245 negative-grade draft ready. Chi-Laurent certificate-algebra deep65627 live (/tmp/bag-chi-laurent-certificate-algebra-search.json). No other jobs live.
+
+- F244 corrected scratch57421 terminal0 warning-free; all4 F243 public audits standard-only. Written/wired ZetaChiPositiveGradeStationary with audits stripped, final next. F245 negative-grade draft ready. Laurent-certificate algebra deep65627 terminal0 partialfalse63922; all20 candidate and20 source statements, empty proofideas and proposed ingredientset inspected. Generic convolution/Laurent derivative results provide no actual signed physical certificate; proposal not adopted. No research live.
+
+- F244 final90118 terminal0 warning-free; public audit F24578577 standard-only/index2/lint71177 eleven unrelated unreachable, card FINAL F244. F245 scratch78577 terminal0 warning-free first try, exact negative-grade conjugation and full conjugate stationary term proved. Written/wired ZetaChiNegativeGradeStationary, audits stripped, final next. F246 plan: complete arbitrary nonzero integer-grade finite transform, retaining all signed phases and entire complementary cost. No research live.
+
+- F245 final50494 terminal0 warning-free; index/lint launched. Sole owned Lean F246 mixed-grade finite transform scratch now started; both F245 public audits queued. Draft includes signed single-grade main/error, eligible mixed finite sum and complete selected-support transform retaining every complement coefficient. Physical resonator Gram search47437 live. No actual source-built certificate positivity proved.
+
+- F245 both publics F24691635 standard-only/index2/lint51379 ten unrelated unreachable; card FINAL F245. F246 initial91635 terminal1 only polymorphic Nat.cast_nonneg inside absolute-value simp; all finite-sum/complement arguments elaborate. Explicit real type added, corrected scratch next. F247 /tmp/BagChiGradedExteriorAmplitude.lean drafted UNCOMPILED: global entropy-phase continuity, full graded exterior bound16a/(kh), and complex amplitude endpoint-plus-variation exterior bound; all3 F246 audits plus imported Abel/continuous_mul_log audits queued. Stationary-amplitude lexical inventory29 total/28 eligible, all eligible two pages and extras inspected; no full frozen-saddle amplitude theorem. C28.6 paper cost recorded. Resonator Gram47437 still live.
+
+- Resonator Gram deep47437 terminal0 partialtrue63931. All20 candidate/20 source statements inspected, proofideas/ingredientsets empty. Returned generic positive-matrix/Gram facts and unrelated chi parameters, no physical signed target lower bound. Filter/model malformed JSON, semantic timeout and reranker deadline reported; compiler mostly pending/source-only, semantic unmeasured/background refresh incomplete. No hit adopted. Frontier promoted F243-F245. Sole owned Lean F246corrected64020; no research/index/lint live. F247 graded exterior/amplitude draft ready, F248 full freezing draft in preparation.
+
+- F246 corrected scratch64020 terminal0 warning-free. Signed single-grade formula, eligible mixed finite sum and complete selected-support transform proved; written/wired ZetaChiMixedGradeStationaryTransform, temporary audits/probe stripped. Final next; F247 all3 public audits queued. No research live.
+
+- F246 final58749 terminal0 warning-free; index/lint launched. Sole owned Lean F247 graded exterior/complex amplitude scratch started; all3 F246 public audits and reused Abel/continuous_mul_log audits queued. F248 /tmp/BagChiStationaryAmplitudeFreezing.lean drafted UNCOMPILED: full complex saddle freezing bound2*L*h²+40*L*a²/(k*h), derives Lipschitz control from actual derivatives and retains both exterior integrals. All3 F247 audits queued. No research live.
+
+- F247 scratch68064 terminal0 warning-free first try, all3 F246 publics and imported Abel/Real.continuous_mul_log audits standard-only. F246 index7/lint87464 ten unrelated unreachable, card FINAL F246. Written/wired ChiGradedExteriorAmplitude, temporary F246 import/audits/probe stripped; final next. F248 draft now also includes full complex-amplitude model stationary term and unchanged explicit freezing costs, still UNCOMPILED. No research live.
+
+- F247 final86332 terminal0 warning-free; index/lint launched. Sole owned Lean F248 saddle-freezing scratch started; all3 F247 public audits queued. No research live. F249 actual chi amplitude assembly planned, not drafted. Every coefficient must be evaluated at its own arithmetic saddle; no common frozen coefficient or positive sum inferred.
+
+- F248 scratch64234 terminal0 warning-free first try; all3 F247 public audits standard-only/index3/lint54827 eleven unrelated unreachable, card FINAL F247. Written/wired ChiStationaryAmplitudeFreezing, temporary audits/probe stripped, final next. F249 /tmp/BagZetaChiAmplitudeStationary.lean drafted UNCOMPILED: full actual positive chi grade with complex amplitude evaluated at its saddle, complete error78*k*U+2Lh²+40La²/(kh)+norm(v(a))*(4kh^4/a²+40a/(kh)); both F248 audits queued. No research live.
+
+- F248 final28148 terminal0 warning-free; index/lint launched. Sole owned Lean F249 actual complex-amplitude stationary scratch started, both F248 audits queued. F250 actual compact reflected-row specialization planned from existing uniform amplitude C and derivative C/N bounds, derivative integrability and exact row/critical-chi ratio. No F250 draft yet. No research live.
+
+- F249 scratch28149 terminal0 warning-free first try; both F248 publics standard-only/index2/lint32635 eleven unrelated unreachable, card FINAL F248. Written/wired ZetaChiAmplitudeStationary, audits stripped, final next. F250 /tmp/BagCompactGaussianRowStationary.lean drafted UNCOMPILED: actual reflected compact row uniform stationary main at its literal slow-row saddle value, full errorC*(78+2h²/N+40a²/(Nh)+4h^4/a²+40a/h); F249 public audit queued. C28.7 actual-row paper target recorded. No research live.
+
+- F249 final27856 terminal0 warning-free; index/lint launched. Sole owned Lean F250 actual compact-row stationary scratch started, F249 public audit queued. F250 standalone public audit prepared. Signed Dirichlet resonator deep93303 live, no F251 draft.
+
+- F249 public audit F25050084 standard-only/index2/lint57508 twelve unrelated unreachable, card FINAL F249. F250 initial50084 terminal1 only wrong-sided addition-monotonicity application at final norm(v(a))<=C substitution; changed to add_le_add le_rfl, corrected scratch next. Signed resonator deep93303 terminal0 partialtrue63939, all20 candidates/20 source statements/emptyideas/proposed ingredientset inspected. Irrelevant proposed Dirichlet definitions+HB physical-transfer mix not adopted; no physical signed lower bound. Exact chi shift ratio lexical32 all2pages inspected, no ready normalized asymptotic. Broad chi-shift-asymptotic lexical0; log-conductor lexical3 existing difference bounds. Guessed missing ZetaChiShiftRatioAsymptotic/GammaHardyPhaseMonotone paths rejected by rg, no changes; corrected to source inventory. Segment-log-ratio deep25605 still live. No F251 draft.
+
+- F250 corrected scratch26548 terminal0 warning-free; actual full compact reflected-row stationary theorem proved. Written/wired CompactGaussianRowStationary, temporary audit stripped, final next. C28.8 normalized chi saddle coefficient mechanism recorded. Segment-log deep25605 terminal0 partialfalse63939 all20 candidates/20 source statements/emptyideas/proposed ingredient description inspected, no suitable path identity; generic log-bound proposal not adopted. Focused lexical exp-integral-logDeriv inventory18 all inspected: found Bottcher.IntervalLogDerivFTC and U0.ClosedLoopFTC exact path identities; source/audits pending. Critical complex log-slope identity found in existing ZetaChiDisplacedCriticalRatioOscillatoryIntegral, cachedolean present, theorem source inspected. No research live.
+
+- F251 /tmp/BagZetaChiConductorLogSlope.lean drafted UNCOMPILED: full complex critical log-slope remainder26/t² and compact shifted-slope remainder10*norm(s-.5)/t+26/t². Reuses exact critical slope identity from ZetaChiDisplacedCriticalRatioOscillatoryIntegral; its audit and F218 compact-shift audit plus F250 public audit queued. Exact segment FTC found by focused lexical inventory18, Bottcher.IntervalLogDerivFTC and U0.ClosedLoopFTC sources read. The open convex interval version applies to chi along a strict-strip complex segment without any zeta-nonvanishing condition; F252 exact normalized ratio draft next. Deep25605 full irrelevant ingredientset inspected, no adoption. No research live.
+
+- F250 final25587 terminal0 warning-free; index/lint launched. Sole owned Lean F251 conductor complex log-slope scratch started, F250 public and reused critical-slope/compact-shift audits queued. F252 /tmp/BagZetaChiSegmentLogRatio.lean drafted UNCOMPILED: exact actual strict-strip chi shift quotient exp of segment log integral, then exact conductor-normalized exponential error; both F251 and reused interval FTC audits queued. No numerical work or new source-nonvanishing premise. No research live.
+
+- F251 scratch42863 terminal0 warning-free first try; F250 public and reused critical-slope/compact-shift audits standard-only. F250 index1/lint99266 twelve unrelated unreachable, card FINAL F250. Written/wired ZetaChiConductorLogSlope, temporary F250 import/audits stripped, final next. F252 segment quotient draft ready UNCOMPILED; F253 /tmp/BagZetaChiNormalizedShiftBound.lean drafted UNCOMPILED: segment logarithm error26norm(delta)/t²+10norm(delta)^2/t and normalized actual chi ratio error(52norm(delta)+20norm(delta)^2)/t above explicit threshold. Both F252 audits and Complex.norm_exp_sub_one_le probe queued. No research live.
+
+- F251 final64271 terminal0 warning-free; index/lint launched. Sole owned Lean F252 exact segment log-ratio scratch started, both F251 and imported interval FTC public audits queued. F253 quantitative normalized ratio draft ready, still UNCOMPILED. Card/frontier FINAL F250. No research live.
+
+- F251 both publics F25259648 standard-only/index2/lint15095 ten unrelated unreachable, card FINAL F251/frontier F250. F252 initial59648 terminal1 only ofReal-one derivative cast, ZetaNotch namespace on continuity helper, and real-half cast at endpoint; corrected explicitly. Imported interval FTC audit standard-only; extra ZetaNotch continuity audit queued. Corrected scratch next; F253 quantitative normalized ratio draft ready. No research live.
+
+- F252 corrected14324 terminal1 only local segment-path derivative function/instance simplification; all other exact quotient/normalized-exponential algebra passes, reused ZetaNotch continuity audit standard-only. Changed derivative simpa to unfold local z, corrected scratch next. F254 /tmp/BagZetaChiCanonicalSaddleCoefficient.lean drafted UNCOMPILED: canonical unweighted dual coefficient*actual shift-ratio*stationary sqrt has exact normalized-ratio factorization, real-frequency phase bound, and universal positive2*pi integer-saddle value with reciprocal-integer error. Both F253 audits and cpow/log-sqrt source-name probes queued. Canonical-saddle lexical7 all inspected (existing BAG transforms plus unrelated chiral coefficients), no duplicate. F253 remains UNCOMPILED. No research/index/lint live.
+
+- F252 corrected scratch49985 terminal0 warning-free. Written/wired ZetaChiSegmentLogRatio with only ZetaNotch continuity and interval FTC imports; temporary F251 import/audits/probe stripped. F251 import made explicit in F253, which needs its quantitative slope bounds. Final next; F253 then audits both F252 publics. F254 canonical coefficient draft ready UNCOMPILED. No research/index/lint live.
+
+- C28.8 next source handoff plan (no F255 draft): exact canonical row coefficient b(s,N,n)=n^(s-1)/(sqrt(N)*N^(s-1)) cancels the normalization of reflectedCompactGaussianRow. Multiplying F250 by b and using F254 should give the actual unweighted dual summand integral main2*pi, with complete errornorm(b)*C*E(N,2*pi*n,h)+K(s)/n. This is a single-term arithmetic baseline, not a full smoothed/cofactor mean or a self-target lower integral. Actual source row definition at SmoothAFEReflectedCompactChannel22 and cpow nonzero iff source verified.
+
+- F252 final33013 terminal0 warning-free with narrowed imports; index/lint launched. Sole owned Lean F253 normalized-shift quantitative scratch started, both F252 audits queued. F254 canonical coefficient draft UNCOMPILED, no F255 draft. No research live.
+
+- F252 both public audits F25383428 standard-only/index3/lint82011 eleven unrelated unreachable, card FINAL F252/frontier F250. F253 initial83428 terminal1 only missing explicit u<=1 in upper-strip arithmetic and real-half cast in path equality; added hu.2/push_cast, corrected scratch next. Exact integrated error and exponential relative-error assembly otherwise elaborate. F254 draft ready UNCOMPILED, no F255 draft. No research/index/lint live.
+
+- F253 corrected41942 terminal1 exposed third initial83428 error: real-part expansion of q was not simplified. Replaced with simp[q,delta,Complex.mul_re];ring. Corrected29131 terminal0 warning-free; quantitative segment and normalized-ratio error proved, both F252 audits standard-only. Written/wired ZetaChiNormalizedShiftBound, audits/probe stripped; final next. F254 canonical coefficient draft remains uncompiled. No other owned job live.
+
+- F253 final74560 terminal0 warning-free; index2, lint52896 terminal1 inspection pending. Sole owned Lean F254 canonical coefficient scratch46975 running, both F253 audits queued. Unweighted-dual-stationary lexical6 all inspected, unrelated hits only. F255 /tmp/BagZetaChiDualAtomStationary.lean drafted UNCOMPILED: exact normalization cancellation and literal dual atom integer-saddle value2*pi with both complete row error and compact-shift error. F254 public audits queued there. No numerical work.
+
+- F253 both publics F25446975 standard-only/index2/lint52896 eleven unrelated unreachable, card FINAL F253. F254 initial46975 terminal1 only real-to-complex normalization: sqrt-exp equality needs final rfl; exact coefficient factorization needs matching ofReal multiplication casts. Added explicit push_cast normalization; corrected scratch next. F255 actual dual atom draft ready UNCOMPILED. Chi-dual-mean lexical3 all inspected: existing HighBlockDualMeanSquare upper bounds only, no signed target lower.

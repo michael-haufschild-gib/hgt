@@ -375,3 +375,19 @@ Then PBAP holds, hence `W_ζ ≠ ∅`: **an integer-supported full-cone Weil-pos
   - Lemma G and Theorem R.
   - The zero conservation law: an exact identity, `∫ĝ dμ_F = 3∫ĝ dμ_ζ` on prime-blind tests, for every member.
 - 2026-10-01 — §19: zero conservation law; the `V₃` route is RH-equivalent given detection.
+
+## 20. Datum-twin barrier: detection cannot be proved from the datum alone [P, conditional on RH + simple zeros]
+- **Fact 1.**
+  - Every nonzero cuspidal `E ∈ W` has `E(ρ) ≠ 0` at some zeta zero `ρ`: vanishing at all of them forces `E = ζE₁` with `E₁` in the degree-2 space, i.e. `E ∝ ζ³`, contradicting cuspidality (§5).
+  - At a simple on-line zero, `ζ³ + εE` splits the triple zero at 120°, giving off-line zeros.
+  - So, **assuming RH with simple zeros, there are integer-supported systems `lam_F = Λ_F/3` with ζ's exact datum and pole, polynomially bounded, whose zero measures have off-line points.**
+- **Fact 2.** Under RH, `Λ ∈ W`, so `W ≠ ∅` in that same world.
+- **Barrier.** Let S be a statement provable from the datum `(A, pole)`, integer support and growth bounds alone, of the form "if the zero measure of an integer-supported system with this datum has an off-line point, then `W = ∅`" (or "then some prime-blind test is negative").
+  - Under RH, S is **false**, with witness `lam_F`.
+  - The conservation law (§19) shows why: the prime-blind functional is a datum invariant shared by `Λ` and every `lam_F`, so it cannot see off-line zeros of one system without seeing them for all.
+  - Hence the L183/L184 detection lemma (`¬RH ⇒ W = ∅`) **must use arithmetic specific to Λ**: `Λ ≥ 0`, prime support, the Euler product. It cannot be a datum-only or support-only argument.
+- **Corollaries.**
+  - Uniqueness-free proofs of `W ≠ ∅ ⇒ RH` (L183) must separate `Λ` from its datum twins.
+  - All generic producer obstructions in the ledger that use only datum, support and positivity (L88, L133, L240, …) apply equally to fakes.
+  - Theorem A turns "datum twin" from a hypothetical into a concrete infinite-dimensional family.
+- 2026-10-01 — §20: datum-twin barrier.
