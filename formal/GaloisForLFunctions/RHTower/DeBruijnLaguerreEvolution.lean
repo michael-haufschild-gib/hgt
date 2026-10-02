@@ -250,6 +250,17 @@ theorem hasDerivAt_laguerreExpr_time_of_touch {t : ℝ} (ht : 0 < t) {z : ℂ}
   have h := hasDerivAt_laguerreExpr_time ht z
   rwa [laguerreNext_eq_zero_of_touch ht.le h0 hL hL', mul_zero, add_zero] at h
 
+/-- **Laguerre algebra.** `H_0² L₁ = H_0 H_1 ∂_z L − H_1² L + L²`.  With `w = L/H_0²` and
+`∂_z w = ∂_z L/H_0² − 2 L H_1/H_0³` this is the Riccati law
+`∂_t w = −∂_z² w − 2 (H_1/H_0) ∂_z w + 2 w²` of the Laguerre ratio. -/
+theorem sq_mul_laguerreNext_eq {t : ℝ} (ht : 0 ≤ t) (z : ℂ) :
+    riemannHeat t z ^ 2 * laguerreNext t z =
+      riemannHeat t z * iteratedDeriv 1 (riemannHeat t) z * deriv (laguerreExpr t) z -
+        iteratedDeriv 1 (riemannHeat t) z ^ 2 * laguerreExpr t z + laguerreExpr t z ^ 2 := by
+  rw [(hasDerivAt_laguerreExpr ht z).deriv]
+  simp only [laguerreExpr, laguerreNext]
+  ring
+
 /-! ## The touching law on the real axis -/
 
 /-- A local minimum of a real function has nonnegative second derivative. -/
@@ -311,6 +322,136 @@ theorem laguerreExpr_time_deriv_nonpos_of_touch {t : ℝ} (ht : 0 < t) {x₀ : �
   refine ⟨?_, by linarith⟩
   have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt t htime
   simp only [Function.comp_def, Complex.reCLM_apply, Complex.neg_re] at h
+  exact h
+
+/-! ## The Riccati law of the Laguerre ratio -/
+
+/-- The Laguerre ratio `w = L/H_t²`; off the zeros of `H_t` it equals `Σ_q (z − a_q)^{−2}`. -/
+def laguerreRatio (t : ℝ) (z : ℂ) : ℂ := laguerreExpr t z / riemannHeat t z ^ 2
+
+theorem hasDerivAt_riemannHeat_self {t : ℝ} (ht : 0 ≤ t) (z : ℂ) :
+    HasDerivAt (riemannHeat t) (iteratedDeriv 1 (riemannHeat t) z) z := by
+  have h := hasDerivAt_iteratedDeriv_riemannHeat ht 0 z
+  simpa only [iteratedDeriv_zero, zero_add] using h
+
+/-- `∂_z w = ∂_z L/H² − 2 H_1 L/H³` off the zeros. -/
+theorem hasDerivAt_laguerreRatio {t : ℝ} (ht : 0 ≤ t) {z : ℂ} (h0 : riemannHeat t z ≠ 0) :
+    HasDerivAt (laguerreRatio t)
+      (deriv (laguerreExpr t) z / riemannHeat t z ^ 2 -
+        2 * iteratedDeriv 1 (riemannHeat t) z * laguerreExpr t z / riemannHeat t z ^ 3) z := by
+  have hL : HasDerivAt (laguerreExpr t) (deriv (laguerreExpr t) z) z :=
+    (hasDerivAt_laguerreExpr ht z).differentiableAt.hasDerivAt
+  have h := hL.div ((hasDerivAt_riemannHeat_self ht z).pow 2) (pow_ne_zero 2 h0)
+  refine h.congr_deriv ?_
+  simp only [Pi.pow_apply, Nat.reduceSub, pow_one, Nat.cast_ofNat]
+  field_simp
+
+theorem deriv_laguerreRatio_eventuallyEq {t : ℝ} (ht : 0 ≤ t) {z : ℂ} (h0 : riemannHeat t z ≠ 0) :
+    deriv (laguerreRatio t) =ᶠ[𝓝 z] fun y => deriv (laguerreExpr t) y / riemannHeat t y ^ 2 -
+      2 * iteratedDeriv 1 (riemannHeat t) y * laguerreExpr t y / riemannHeat t y ^ 3 := by
+  have hne : ∀ᶠ y in 𝓝 z, riemannHeat t y ≠ 0 :=
+    (differentiable_riemannHeat ht).continuous.continuousAt.eventually_ne h0
+  filter_upwards [hne] with y hy
+  exact (hasDerivAt_laguerreRatio ht hy).deriv
+
+/-- `∂_z² w = ∂_z²L/H² − 4H_1 ∂_zL/H³ − 2H_2 L/H³ + 6H_1² L/H⁴` off the zeros. -/
+theorem hasDerivAt_deriv_laguerreRatio {t : ℝ} (ht : 0 ≤ t) {z : ℂ} (h0 : riemannHeat t z ≠ 0) :
+    HasDerivAt (deriv (laguerreRatio t))
+      (deriv (deriv (laguerreExpr t)) z / riemannHeat t z ^ 2 -
+        4 * iteratedDeriv 1 (riemannHeat t) z * deriv (laguerreExpr t) z / riemannHeat t z ^ 3 -
+        2 * iteratedDeriv 2 (riemannHeat t) z * laguerreExpr t z / riemannHeat t z ^ 3 +
+        6 * iteratedDeriv 1 (riemannHeat t) z ^ 2 * laguerreExpr t z / riemannHeat t z ^ 4) z := by
+  have hL : HasDerivAt (laguerreExpr t) (deriv (laguerreExpr t) z) z :=
+    (hasDerivAt_laguerreExpr ht z).differentiableAt.hasDerivAt
+  have hL' : HasDerivAt (deriv (laguerreExpr t)) (deriv (deriv (laguerreExpr t)) z) z :=
+    (hasDerivAt_deriv_laguerreExpr ht z).differentiableAt.hasDerivAt
+  have hH := hasDerivAt_riemannHeat_self ht z
+  have hH1 := hasDerivAt_iteratedDeriv_riemannHeat ht 1 z
+  have h := (hL'.div (hH.pow 2) (pow_ne_zero 2 h0)).sub
+    (((hH1.const_mul 2).mul hL).div (hH.pow 3) (pow_ne_zero 3 h0))
+  refine (h.congr_of_eventuallyEq (deriv_laguerreRatio_eventuallyEq ht h0)).congr_deriv ?_
+  simp only [Pi.pow_apply, Pi.mul_apply, Nat.reduceSub, Nat.reduceAdd, pow_one, Nat.cast_ofNat]
+  field_simp
+  ring
+
+/-- **The Riccati law.** Off the zeros of `H_t`, `t > 0`,
+`∂_t w = −∂_z² w − 2 (H_1/H_0) ∂_z w + 2 w²`. -/
+theorem hasDerivAt_laguerreRatio_time {t : ℝ} (ht : 0 < t) {z : ℂ} (h0 : riemannHeat t z ≠ 0) :
+    HasDerivAt (fun s => laguerreRatio s z)
+      (-deriv (deriv (laguerreRatio t)) z -
+        2 * (iteratedDeriv 1 (riemannHeat t) z / riemannHeat t z) * deriv (laguerreRatio t) z +
+        2 * laguerreRatio t z ^ 2) t := by
+  have hLt := hasDerivAt_laguerreExpr_time ht z
+  have hHt := hasDerivAt_iteratedDeriv_riemannHeat_time ht 0 z
+  simp only [iteratedDeriv_zero, zero_add] at hHt
+  have h := hLt.div (hHt.pow 2) (pow_ne_zero 2 h0)
+  have key := sq_mul_laguerreNext_eq ht.le z
+  have hN : laguerreNext t z = (riemannHeat t z * iteratedDeriv 1 (riemannHeat t) z *
+      deriv (laguerreExpr t) z - iteratedDeriv 1 (riemannHeat t) z ^ 2 * laguerreExpr t z +
+      laguerreExpr t z ^ 2) / riemannHeat t z ^ 2 := by
+    rw [eq_div_iff (pow_ne_zero 2 h0)]
+    linear_combination key
+  rw [(hasDerivAt_deriv_laguerreRatio ht.le h0).deriv, (hasDerivAt_laguerreRatio ht.le h0).deriv]
+  refine h.congr_deriv ?_
+  rw [hN]
+  unfold laguerreRatio
+  simp only [Pi.pow_apply, Nat.reduceSub, pow_one, Nat.cast_ofNat]
+  field_simp
+  ring
+
+/-- **The Riccati inequality at a minimum.** Let `t > 0` and `x₀` real with `H_t(x₀) ≠ 0`.  If
+`x ↦ w(t, x)` has a local minimum at `x₀`, then `∂_t w(t, x₀) = −∂_x² w + 2w² ≤ 2 w(t, x₀)²`.
+Backward in time a positive minimum therefore decays at most like the solution `m₀/(1 + 2m₀τ)` of
+`m' = −2m²`, and cannot reach zero without a collision. -/
+theorem laguerreRatio_time_deriv_le_of_isLocalMin {t : ℝ} (ht : 0 < t) {x₀ : ℝ}
+    (h0 : riemannHeat t x₀ ≠ 0) (hmin : IsLocalMin (fun x : ℝ => (laguerreRatio t x).re) x₀) :
+    HasDerivAt (fun s => (laguerreRatio s x₀).re)
+        (-(deriv (deriv (laguerreRatio t)) x₀).re + 2 * (laguerreRatio t x₀).re ^ 2) t ∧
+      -(deriv (deriv (laguerreRatio t)) x₀).re + 2 * (laguerreRatio t x₀).re ^ 2 ≤
+        2 * (laguerreRatio t x₀).re ^ 2 := by
+  have ht0 := ht.le
+  have real : ∀ {u : ℂ}, u.im = 0 → u = (u.re : ℂ) := fun hu => Complex.ext (by simp) (by simp [hu])
+  have eH := real (riemannHeat_ofReal_im ht0 x₀)
+  have eH1 := real (iteratedDeriv_riemannHeat_ofReal_im ht0 1 x₀)
+  have eL := real (laguerreExpr_ofReal_im ht0 x₀)
+  have eL' := real (deriv_laguerreExpr_ofReal_im ht0 x₀)
+  -- `w` and `∂_x w` are real at `x₀`
+  have hw_im : (laguerreRatio t x₀).im = 0 := by
+    unfold laguerreRatio
+    rw [eL, eH]
+    norm_cast
+  have hw'_eq := (hasDerivAt_laguerreRatio ht0 h0).deriv
+  have hw'_im : (deriv (laguerreRatio t) x₀).im = 0 := by
+    rw [hw'_eq, eL', eH, eH1, eL]
+    norm_cast
+  -- the real function and its derivatives
+  set ℓ : ℝ → ℝ := fun x => (laguerreRatio t x).re with hℓ
+  have hneR : ∀ᶠ x : ℝ in 𝓝 x₀, (riemannHeat t ∘ ((↑) : ℝ → ℂ)) x ≠ 0 :=
+    ((differentiable_riemannHeat ht0).continuous.comp Complex.continuous_ofReal).continuousAt.eventually_ne h0
+  have hd1 : ∀ x : ℝ, riemannHeat t x ≠ 0 →
+      HasDerivAt ℓ (deriv (laguerreRatio t) x).re x := fun x hx =>
+    (hasDerivAt_laguerreRatio ht0 hx).differentiableAt.hasDerivAt.real_of_complex
+  have hdℓ : deriv ℓ =ᶠ[𝓝 x₀] fun x => (deriv (laguerreRatio t) x).re := by
+    filter_upwards [hneR] with x hx
+    exact (hd1 x hx).deriv
+  have hd2 : deriv (deriv ℓ) x₀ = (deriv (deriv (laguerreRatio t)) x₀).re := by
+    rw [hdℓ.deriv_eq]
+    exact ((hasDerivAt_deriv_laguerreRatio ht0 h0).differentiableAt.hasDerivAt.real_of_complex).deriv
+  have hcrit : deriv (laguerreRatio t) x₀ = 0 := by
+    refine Complex.ext ?_ hw'_im
+    rw [← (hd1 x₀ h0).deriv]
+    exact hmin.deriv_eq_zero
+  have hsecond := deriv_deriv_nonneg_of_isLocalMin hmin (hd1 x₀ h0).continuousAt
+  rw [hd2] at hsecond
+  refine ⟨?_, by linarith⟩
+  have htime := hasDerivAt_laguerreRatio_time ht h0
+  rw [hcrit, mul_zero, sub_zero] at htime
+  have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt t htime
+  simp only [Function.comp_def, Complex.reCLM_apply, Complex.add_re, Complex.neg_re] at h
+  have hsq : (2 * laguerreRatio t x₀ ^ 2).re = 2 * (laguerreRatio t x₀).re ^ 2 := by
+    rw [real hw_im]
+    norm_cast
+  rw [hsq] at h
   exact h
 
 end

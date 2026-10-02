@@ -124,19 +124,20 @@ theorem paperFT_add_smul_real {f g : ℝ → ℂ} (hf : Integrable f) (hg : Inte
   have h2 : Integrable fun u => g u * cexp (I * (r : ℂ) * (u : ℂ)) :=
     hg.norm.mono' (hg.aestronglyMeasurable.mul hm.aestronglyMeasurable)
       (Eventually.of_forall fun u => by rw [norm_mul, hb u, mul_one])
-  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, add_mul, mul_assoc]
-  rw [integral_add h1 (by simpa [mul_assoc] using h2.const_mul c), integral_const_mul]
+  rw [show (fun u : ℝ => (f + c • g) u * cexp (I * (r : ℂ) * (u : ℂ))) =
+      fun u => f u * cexp (I * (r : ℂ) * (u : ℂ)) + c * (g u * cexp (I * (r : ℂ) * (u : ℂ))) by
+    funext u; simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring]
+  rw [integral_add h1 (h2.const_mul c), integral_const_mul]
 
 theorem polarization_four (a b : ℂ) :
     (1 / 4 : ℂ) * ∑ k : Fin 4, I ^ (k : ℕ) * ((‖a + I ^ (k : ℕ) * b‖ ^ 2 : ℝ) : ℂ) = a * conj b := by
-  simp only [Fin.sum_univ_four, Complex.sq_norm, ← Complex.mul_conj, map_add, map_mul, map_pow,
-    Complex.conj_I]
-  norm_num
-  ring_nf
-  simp only [Complex.I_sq, Complex.I_pow_four]
-  ring_nf
-  rw [show I ^ 3 = -I by rw [pow_succ, Complex.I_sq]; ring]
-  ring
+  have hexp : ∀ k : ℕ, ((‖a + I ^ k * b‖ ^ 2 : ℝ) : ℂ) = a * conj a + conj (I ^ k) * (a * conj b) +
+      I ^ k * (b * conj a) + I ^ k * conj (I ^ k) * (b * conj b) := by
+    intro k
+    rw [Complex.sq_norm, ← Complex.mul_conj, map_add, map_mul]
+    ring
+  simp_rw [hexp]
+  exact polarization_coeffs _ _ _ _
 
 /-- **Polarized spectral representation.** `W_lam(f ⋆ g̃) = ∫ f̂ · conj ĝ dμ_lam`. -/
 theorem weilFullFunctional_weilTest_eq_integral {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
@@ -146,22 +147,33 @@ theorem weilFullFunctional_weilTest_eq_integral {lam : ℕ → ℝ} (hW : WeilPo
       ∫ r, paperFT f r * conj (paperFT g r) ∂boundaryMeasure hW := by
   have hfi : Integrable f := hf.continuous.integrable_of_hasCompactSupport hfc
   have hgi : Integrable g := hg.continuous.integrable_of_hasCompactSupport hgc
-  have hhd : ∀ k : Fin 4, ContDiff ℝ 2 (f + I ^ (k : ℕ) • g) := fun k => hf.add (hg.const_smul _)
+  have hhd : ∀ k : Fin 4, ContDiff ℝ 2 (f + I ^ (k : ℕ) • g) := fun k =>
+    hf.add (hg.const_smul (I ^ (k : ℕ)))
   have hhc : ∀ k : Fin 4, HasCompactSupport (f + I ^ (k : ℕ) • g) := fun k =>
     hfc.add hgc.smul_left
   rw [weilTest_polarization hf.continuous hfc hg.continuous hgc, weilFullFunctional_smul,
-    weilFullFunctional_sum lam (fun k _ => (admissible_weilTest (hhd k) (hhc k)).smul _)]
+    weilFullFunctional_sum lam Finset.univ (fun k _ => (admissible_weilTest (hhd k) (hhc k)).smul _)]
   simp_rw [weilFullFunctional_smul, weilFullFunctional_weilTest_self_eq_integral hW (hhd _) (hhc _)]
   have hint : ∀ k : Fin 4, Integrable (fun r : ℝ => I ^ (k : ℕ) *
       ((‖paperFT (f + I ^ (k : ℕ) • g) r‖ ^ 2 : ℝ) : ℂ)) (boundaryMeasure hW) := fun k =>
     ((integrable_norm_sq_paperFT hW (hhd k) (hhc k)).ofReal).const_mul _
-  rw [← integral_const_mul]
-  simp_rw [← integral_const_mul]
-  rw [← integral_finset_sum _ fun k _ => hint k, ← integral_const_mul]
-  refine integral_congr_ae (Eventually.of_forall fun r => ?_)
-  simp only
-  simp_rw [paperFT_add_smul_real hfi hgi]
-  exact polarization_four _ _
+  calc (1 / 4 : ℂ) * ∑ k : Fin 4, I ^ (k : ℕ) *
+        ∫ r, ((‖paperFT (f + I ^ (k : ℕ) • g) r‖ ^ 2 : ℝ) : ℂ) ∂boundaryMeasure hW
+      = (1 / 4 : ℂ) * ∑ k : Fin 4, ∫ r, I ^ (k : ℕ) *
+          ((‖paperFT (f + I ^ (k : ℕ) • g) r‖ ^ 2 : ℝ) : ℂ) ∂boundaryMeasure hW := by
+        congr 1
+        exact Finset.sum_congr rfl fun k _ => (integral_const_mul _ _).symm
+    _ = (1 / 4 : ℂ) * ∫ r, ∑ k : Fin 4, I ^ (k : ℕ) *
+          ((‖paperFT (f + I ^ (k : ℕ) • g) r‖ ^ 2 : ℝ) : ℂ) ∂boundaryMeasure hW := by
+        rw [integral_finsetSum _ fun k _ => hint k]
+    _ = ∫ r, (1 / 4 : ℂ) * ∑ k : Fin 4, I ^ (k : ℕ) *
+          ((‖paperFT (f + I ^ (k : ℕ) • g) r‖ ^ 2 : ℝ) : ℂ) ∂boundaryMeasure hW :=
+        (integral_const_mul _ _).symm
+    _ = ∫ r, paperFT f r * conj (paperFT g r) ∂boundaryMeasure hW := by
+        refine integral_congr_ae (Eventually.of_forall fun r => ?_)
+        simp only
+        simp_rw [paperFT_add_smul_real hfi hgi]
+        exact polarization_four _ _
 
 /-- **Translated polarized representation.** -/
 theorem weilFullFunctional_transl_weilTest_eq_integral {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)

@@ -7,6 +7,23 @@
   `ThetaCuspFixedActionC5LikelihoodLiftReduction`, `ThetaCuspFixedActionC5Jacobian*`,
   `ThetaCuspReflectedActionVelocityBalance`
 
+## Current Lean frontier (2026-10-01)
+
+The global curvature signs and compact projective gap are now proved:
+`ThetaCuspCurvatureProjectiveGlobal.projectiveEnergy_pos` gives
+`c'c''-cc'''>0` for every positive source coordinate. Its
+`centerNumerator_neg` gives `H<0` throughout `0<t<=u`, with no
+source-scale cutoff. `ThetaCuspC5GlobalCurvatureSigns` already gives
+`2*action<=velocity`, hence the existing Bose floor is `W-30>=12*action`.
+Final leaf and axiom audits pass without added proof assumptions.
+
+The remaining hard gate is compensation growth itself. With `B=-H>0`,
+its exact form is `M(1)=(W-5)B-5tB'`. No sign for this complete expression
+has been proved globally. The new source-growth conjecture and its
+seventh-jet C5 seam connection are tracked in
+`theta-c5-curvature-defect-growth.md`. Older numerical discussion below
+is historical motivation, not evidence used in these formal proofs.
+
 ## Exact claim
 
 ```text

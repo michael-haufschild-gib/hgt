@@ -1358,3 +1358,208 @@ remain Lean-open at this point; no failed card has been closed.
   unrelated unwired leaves, no owned/proof-debt issue. Combined: thirty-one
   leaves /7452 lines /552 audited declarations. The actual small-positive
   signed energy bound remains open. Next: divisor second-moment density.
+
+- Second-moment density fully audited: `PMPowerDampedMobiusSecondMoment`
+  (268 lines /18 declarations), targeted old build36s, final actual-leaf
+  check with empty diagnostics, all18 standard-axiom reports, exact body,
+  exhaustive names/API, unique import and no-proof-debt checks passed.
+  It proves the literal coefficient square's summatory mean and Euler
+  product, the centered mean-square gamma-alpha^2>=0, and gamma<=alpha.
+  Combined: thirty-two leaves /7720 lines /570 audited declarations.
+  Strict positivity, small-damping variance and the logarithmic signed
+  covariance calibration remain on the second-moment card. The actual
+  small-positive cumulative-energy bound and RH remain open. Global lint
+  has eleven unrelated unwired leaves and three generated freshness
+  findings; no owned or proof-debt finding, no global pass claimed.
+
+- Signed covariance calibration fully audited:
+  `PMPowerDampedMobiusCovarianceCancellation` (269 lines /17 declarations),
+  targeted old build7.8s, final actual-leaf check with empty diagnostics,
+  all17 standard-axiom reports, exact body, exhaustive names/API, unique
+  import and no-proof-debt checks passed. The variance is strictly positive
+  at every positive damping. The actual centered diagonal/log N tends to
+  this variance and has no common finite budget, including the admitted
+  safe range. The exact off-diagonal/log N tends to its negative under
+  actual admission, unconditionally at epsilon>=1/2. Combined: thirty-three
+  leaves /7989 lines /587 audited declarations. Small-damping variance
+  asymptotic is drafted; the canonical small-positive energy bound and RH
+  remain open. Global lint has twelve unrelated unwired leaves and stale
+  API/overview, no owned/proof-debt finding; no global pass claimed.
+
+- Small-damping variance refinement fully audited:
+  `PMPowerDampedMobiusSmallDampingVariance` (251 lines /17 declarations),
+  targeted old build76s, final actual-leaf check with empty diagnostics,
+  all17 standard-axiom reports, exact body, exhaustive names/API, unique
+  import and no-proof-debt checks passed. The exact Euler correction
+  tends to one; gamma_epsilon/epsilon and v_epsilon/epsilon both tend to
+  1/2 as epsilon->0+. All pole identities use positive damping.
+  Combined: thirty-four leaves /8240 lines /604 audited declarations.
+  The coefficient second-moment card is now formalized; the actual
+  small-positive cumulative-energy bound and RH remain open. Global lint
+  reports ten unrelated unwired leaves, no generated freshness error and
+  no owned/proof-debt finding; no global pass claimed. Next candidate:
+  natural-denominator Ramanujan expansion and its anchored energy budget.
+
+- Actual Ramanujan expansion fully audited:
+  `PMPowerDampedMobiusRamanujanExpansion` (245 lines /21 declarations),
+  targeted old build37s, final actual-leaf check with empty diagnostics,
+  all21 standard-axiom reports, exact body, exhaustive names/API, unique
+  import and no-proof-debt checks passed. The literal coefficient has an
+  absolutely convergent Ramanujan expansion; centered natural-denominator
+  prefixes converge, as do every fixed cumulative sum and finite energy.
+  A common cutoff-energy budget would give actual PM admission, but that
+  budget remains unproved. Combined: thirty-five leaves /8485 lines /625
+  audited declarations. Global lint reports eleven unrelated unwired
+  leaves and stale API/overview, no owned/proof-debt finding; no global
+  pass claimed. The explicit multiple-weight Euler formula has a paper
+  proof and a draft Lean proof, not yet checked. RH remains open.
+
+- Actual Ramanujan weights fully audited:
+  `PMPowerDampedMobiusRamanujanWeights` (230 lines /17 declarations),
+  targeted old build160s, final actual-leaf check with empty diagnostics,
+  all17 standard-axiom reports, exact-body/exhaustive names/API/unique
+  import/no-proof-debt checks passed. The coefficient is exactly
+  alpha*mu(q)/product_(p|q)(p^(1+epsilon)-1), is real with Mobius-aligned
+  sign, and has total absolute mass one. These are unconditional for
+  every positive damping, including nonsquarefree vanishing and q=0.
+  Combined: thirty-six leaves /8715 lines /642 audited declarations.
+  Global lint reports twelve unrelated unwired leaves, no owned or
+  proof-debt finding; no global pass claimed. The finite cofactor rewrite
+  is checking next. No small-positive anchored energy budget or RH proof.
+
+- Actual Ramanujan cofactors fully audited:
+  `PMPowerDampedMobiusRamanujanCofactors` (286 lines /18 declarations),
+  targeted old build49s, final actual-leaf check with empty diagnostics,
+  all18 standard-axiom reports, exact-body/exhaustive names/API/unique
+  import/no-proof-debt checks passed. Natural-denominator cumulative
+  prefixes are exactly finite cofactor-weighted fractional-part sums,
+  with exact density cancellation. Absolute multiples inversion gives
+  the exact mass on squarefree multiples; cofactors preserve Mobius
+  signs and have norm at most d^(-epsilon). Combined: thirty-seven
+  leaves /9001 lines /660 audited declarations. Global lint has ten
+  unrelated unwired leaves and no owned/proof-debt finding; no global
+  pass claimed. A proposed logarithmic coefficient-square comparison
+  remains unproved; its summable coefficient side is being checked.
+  No small-positive anchored energy budget or RH proof.
+
+- Actual Ramanujan logarithmic square mass fully audited:
+  `PMPowerDampedMobiusRamanujanLogMass` (59 lines /5 declarations),
+  targeted old build47s, final actual leaf empty, all5 standard-axiom
+  reports and exact-body/exhaustive names/API/import/no-proof-debt
+  checks passed. Pointwise |a(q)|<=q^(-1-epsilon); the proposed
+  logarithmic square mass is dominated by
+  (2^epsilon/epsilon)*q^(-1-epsilon), hence summable for every positive
+  damping. Combined: thirty-eight leaves /9060 lines /665 audited
+  declarations. Global lint has eleven unrelated unwired leaves, no
+  owned/proof-debt finding; no global pass claimed. The energy
+  comparison remains unproved. The actual primitive-period mean is
+  the next check; no small-positive energy bound or RH proof.
+
+- Actual Ramanujan primitive fully audited:
+  `PMPowerDampedMobiusRamanujanPrimitive` (206 lines /18 declarations),
+  targeted old build37s, final actual leaf empty, all18 standard-axiom
+  reports and exact-body/exhaustive names/API/import/no-proof-debt
+  checks passed. The primitive is periodic and bounded for q>1. Its
+  exact period mean is -phi(q)/2, also its Cesaro and logarithmic
+  harmonic limits. Combined: thirty-nine leaves /9266 lines /683
+  audited declarations. Global lint has twelve unrelated unwired
+  leaves, no owned/proof-debt finding; no global pass claimed. The
+  fixed-q prime Gram asymptotic is checking next. No common cutoff
+  energy comparison, small-positive admission or RH proof.
+
+- Actual primitive Gram fully audited:
+  `PMPowerDampedMobiusRamanujanGram` (188 lines /13 declarations),
+  targeted old build9.9s, final actual leaf empty, all13 standard-axiom
+  reports and exact-body/exhaustive names/API/import/no-proof-debt
+  checks passed. Every fixed pair is absolutely summable; for fixed
+  q>1, K(p,q)/log(p)->phi(q)/2 along primes. The exact harmonic head
+  has a tail error bounded by the finite-period primitive norm bound.
+  Combined: forty leaves /9454 lines /696 audited declarations.
+  Lint1129 has fourteen unrelated unwired modules and two shared
+  generated-file staleness findings after concurrent changes; no owned
+  or proof-debt finding and no global pass claimed. Finite signed Gram
+  reduction draft1128 is next; common quadratic bound, small-positive
+  admission and RH remain unproved.
+
+- Actual finite signed Ramanujan quadratic fully audited:
+  `PMPowerDampedMobiusRamanujanQuadratic` (107 lines /12 declarations),
+  targeted old build238s, final actual leaf empty, all12 standard-axiom
+  reports and exact-body/exhaustive names/API/import/no-proof-debt
+  checks passed. Each fixed natural denominator cutoff has finite
+  total energy equal to its exact signed primitive Gram quadratic.
+  The common Q,T energy budget is equivalent to a common Q bound
+  on those literal quadratic forms. Combined: forty-one leaves
+  /9561 lines /708 audited declarations. Lint1132 has ten unrelated
+  unwired modules and three shared generated-file staleness findings;
+  no owned/proof-debt finding and no global pass claimed.
+  First-moment/centering draft1133 is checking. Uniform quadratic
+  upper bound, small-positive admission and RH remain unproved.
+
+- Actual primitive reciprocal first moment fully audited:
+  `PMPowerDampedMobiusRamanujanMoment` (200 lines /17 declarations),
+  targeted old build43s, final actual leaf empty, all17 standard-axiom
+  reports and exact-body/exhaustive names/API/import/no-proof-debt
+  checks passed. The primitive first moment under reciprocal energy
+  weights is exactly -Lambda(q), and their mass is1. Period centering
+  yields the explicit totient/Lambda correction; energy centering
+  R_q+Lambda(q) has weighted mean0 and splits K into Lambda(p)*Lambda(q)
+  plus its centered Gram. Combined: forty-two leaves /9761 lines /725
+  audited declarations. Lint1135 has eleven unrelated unwired modules
+  and two shared generated-file staleness findings; no owned/proof-debt
+  finding and no global pass claimed. Actual finite variance reduction
+  and centered mixed-Gram law draft1136 are checking. No uniform actual
+  variance bound, small-positive admission or RH proof.
+
+- Actual finite energy-centered variance fully audited:
+  `PMPowerDampedMobiusRamanujanVariance` (129 lines /12 declarations),
+  targeted old build43s, final actual leaf empty, all12 standard-axiom
+  reports and exact-body/exhaustive names/API/import/no-proof-debt
+  checks passed. Actual weighted mean M has a common finite bound at
+  each positive damping; G=M^2+V with V>=0, and common Gram/variance
+  budgets are equivalent. Centered prime Gram/log(p) tends to
+  phi(q)/2-Lambda(q), so logarithmic cross terms survive centering.
+  Combined: forty-three leaves /9890 lines /737 audited declarations.
+  Lint1139 has twelve unrelated unwired modules and two shared
+  generated-file staleness findings; no owned/proof-debt finding and
+  no global pass claimed. Absolute natural-cutoff control for damping
+  above1/2 is checking in draft1140. Uniform small-positive variance
+  upper bound, admission and RH remain unproved.
+
+- Strict absolute natural-denominator budget fully audited:
+  `PMPowerDampedMobiusRamanujanAbsolute` (111 lines /7 declarations),
+  targeted old build103s, final actual leaf empty, all7 standard-axiom
+  reports and exact-body/exhaustive names/API/import/no-proof-debt
+  checks passed. Common Q,T energy, Gram and centered-variance bounds
+  hold for epsilon>1/2 by the exact cofactor fractional-part bound and
+  two convergent power sums. No assertion at epsilon<=1/2.
+  Combined: forty-four leaves /10001 lines /744 audited declarations.
+  Lint1144 has ten unrelated unwired modules; no owned/proof-debt
+  finding and no global pass claimed. Endpoint transfer via finite
+  Dirichlet convolution remains a paper candidate. Small-positive
+  admission and RH remain unproved.
+
+- Exact finite Ramanujan-to-Mobius prefix transfer fully audited:
+  `PMPowerDampedMobiusRamanujanTransfer` (132 lines /14 declarations),
+  targeted old build55s, final actual leaf empty, all14 standard-axiom
+  reports and exact-body/exhaustive names/API/import/no-proof-debt
+  checks passed. Cofactor Fermi prefix equals the triangular sum of
+  actual dilated Mobius prefixes with the explicit convolution kernel;
+  no norm bound inferred before the kernel-mass audit.
+  Combined: forty-five leaves /10133 lines /758 audited declarations.
+  Lint1150 has ten unrelated unwired modules and three shared generated
+  file staleness findings; no owned/proof-debt finding, no global pass.
+  Kernel prime-factor formula is checking in draft1149. Endpoint and
+  small-positive natural-cutoff budgets remain open; RH unproved.
+
+- Exact transfer kernel prime-factor/norm formula fully audited:
+  `PMPowerDampedMobiusRamanujanKernel` (196 lines /14 declarations),
+  targeted old build62s, final actual leaf empty, all14 standard-axiom
+  reports and exact-body/exhaustive names/API/import/no-proof-debt
+  checks passed. The norm kernel equals |A(m)|*r^(-epsilon) times
+  product_(p|r)(if p|m then 1 else 1/(p^(1+epsilon)-1)); the finite
+  product lies in [0,1]. No squarefree premise on m is needed.
+  Combined: forty-six leaves /10329 lines /772 audited declarations.
+  Lint1156 has ten unrelated unwired modules and three shared generated
+  file staleness findings; no owned/proof-debt finding, no global pass.
+  Combined mass/Euler/budget draft1157 is checking. Uniform transfer
+  norm and endpoint natural-cutoff energy remain unproved; RH unproved.

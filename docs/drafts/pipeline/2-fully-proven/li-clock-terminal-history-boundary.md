@@ -3,7 +3,7 @@
 - **ID:** LI-CLOCK-TERMINAL-HISTORY-BOUNDARY
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper), exact source classification and positive survivors
-- **Source:** [actual source sign](../1-in-progress/li-clock-integrated-source-sign.md); [score budget](li-clock-score-budget-primitive-boundary.md); [source envelope](li-clock-source-correlation-envelope.md).
+- **Source:** [actual source sign](../1-in-progress/li-clock-integrated-source-sign.md); [score budget](li-clock-score-budget-primitive-boundary.md); [source envelope](../3-formalized/li-clock-source-correlation-envelope.md).
 - **Statement:** Literal logarithmic history D has a nonzero entire continuation. Its nonnegative-history zero set after20 is finite, empty exactly under RH; otherwise earlier even tangencies precede a last odd crossing. Exact adaptive normalized terminal-mass and fixed-clock endpoint laws retain the complete source.
 
 ## Goal and exact boundary
@@ -16,7 +16,8 @@ Finiteness makes any eventually guarded assertion vacuous, including eventual gu
 
 - [x] Literal full-copy source, factor ONE, genuine full-source and compact admissions.
 - [x] Root ALL295/T1–T16 mathematical review and independent Producer ALL295/full61 deep+3 lexical records/29 primary files PASS.
-- [ ] Exact full positive-survivor formal plan and Lean implementation.
+- [x] Exact full positive-survivor formal plan, dual complete review.
+- [ ] Lean implementation PARTIAL: [entire canonical history, origin order two and compact zero finiteness A01–A10](../3-formalized/li-clock-log-history-analytic.md) are locally final; conditional negative escape, global guarded-zero classification and terminal-mass leaves remain pending.
 - [ ] Publication/external novelty audit.
 
 ## Selected failure and positive salvage

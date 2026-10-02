@@ -5296,3 +5296,517 @@ Notation: `lam ∈ W`, `F = exp(Σ lam(n)n^{−s}/log n) = Σ b_n n^{−s}`, `E 
 - **Next.** Test whether some `E ∈ W_3` has `Ξ_E` with eventually constant sign, i.e. Hardy's theorem for fake ζ³'s.
   - If every nonzero `E` had infinitely many real zeros, that would be the first unconditional real-zero statement inside `W_3`.
   - Hardy's method needs the boundary behaviour of `θ_E(e^{iα})` as `α → 3π/4`. With no modularity this is open.
+
+### L274 — Theorem A in every degree `d ≥ 3` [Lean]: the fractional-mass doors `1/k` are open for every `k ≥ 3`. THEOREM [Lean]
+- **Statement.** `RHTower.GammaRPowTwins.gammaRPow_functional_equation_abundance (hk : 2 ≤ k) (N)`, standard axioms.
+  - For `d = k+1 ≥ 3` and every `N` there are infinitely many `ℂ`-independent `e_r`, of growth `O((n+1)^{d+1})` and vanishing below `N`.
+  - Each `Γ_ℝ(s)^d Σ e_r(n)(n+1)^{−s}` extends to an entire function invariant under `s ↦ 1−s`.
+  - Rigidity dichotomy: `d = 1` is determined (Hamburger, corpus); `d = 2` at level 1 is determined (Maass converse plus `λ₁(SL₂ℤ) > ¼`, paper); `d ≥ 3` is abundant, even modulo any finite set of coefficients.
+- **Why every `d ≥ 3` works (new formal input).** Use the unitary chart `x = X^d`, Mellin variable `s = (w+(d−1)/2)/d`.
+  - On `Re w = −½`, `Re s = (d−2)/(2d)`. Stirling (corpus `norm_Gamma_vertical_le_rpow_mul`) gives `|Γℝ(s)/Γℝ(1−s)|^d ≤ π e^{3d/4} y^{−1}`, so `|w·m_d(w)| ≤ πe^{3d/4}(2d+1)` for `|t| ≥ 8d`.
+  - The integer nodes `n^{1/d}` satisfy `X_{n+2}(X_{n+2}−X_n) ≤ 4/X_n` (geometric sum).
+  - The `d = 3` triplication twist is not needed: Stirling suffices.
+- **Modules.**
+  - `RHTower/GammaRPowAntiChartSpace`: degree-`d` theta symbols, chart multiplier bound, generic antisymmetric derivative bound `integral_norm_sq_deriv_le_of_antisymm`, chart identity, chart space.
+  - `RHTower/GammaRPowChartNodes`.
+  - `RHTower/GammaRPowFunctionalEquationAbundance`.
+- **Producer reading.**
+  - A real-rooted `F ∈ V_k \ ℂζ^k` gives the non-`Λ` singular producer `lam_F/k`, with masses `1/k`. RTE_k is now a question about an explicit, formally constructed infinite-dimensional affine space for every `k ≥ 3`.
+  - As `k → ∞` the masses `1/k → 0`. Weak limits of such producers would be absolutely continuous producers, exactly what PC-82 forbids. PC-82 therefore predicts RTE_k exclusion uniformly in `k`.
+  - **Conjecture L274 (large-degree exclusion):** for every `k ≥ 3`, the only real-rooted members of `V_k` are the multiples of `ζ^k`.
+    - Attack: the divisibility rigidity of L273.1 generalizes. If `E ∈ W_k` vanishes at all ξ-zeros to order `≥ k−2`, then `E/ζ^{k−2} ∈ W_2 = 0`.
+    - Hence near-`ζ^k` twins split non-really (rosette `x^k + εa₀`, `k ≥ 3`) at infinitely many zeros.
+    - Far twins: open (same wall as L273).
+
+### L275 — Large-degree reduction of PBAP, and the Γ-phase dip that kills dominated twins. THEOREM [P] + KILL [P] + CONJECTURE
+- **Reduction theorem [P].** Suppose that for every `η > 0` there are a degree `k` and a Dirichlet series `F = Σ f_n n^{−s}` such that:
+  - `Γ_ℝ(s)^k F(s)` satisfies the `ζ^k` functional equation, with poles at most of order `k` at `0, 1`;
+  - every zero of the completion lies in `|Re s − ½| ≤ η`;
+  - `S_F(T) = o(k·T)` uniformly (mild growth).
+
+  Then PBAP holds, i.e. `W ≠ ∅`.
+  - *Proof.* Fix a prime-blind polar positive-definite `Φ` at level `A`.
+    1. The prime side of `F`'s explicit formula vanishes for every `F` with integer frequencies. This is the conservation law of L256 in any degree. So `k·arch(Φ) = Σ_ρ Φ̂(γ_ρ)`.
+    2. By L90, a pair `½±δ+iγ` with `Aδ ≤ 1` contributes `≥ 2Φ̂(γ) − C(Aδ)²(P_δ⋆Φ̂)(γ)`.
+    3. Normalized by `1/k`, the zero count is `(1/2π)T log T + O(T)` uniformly. Hence `arch(Φ) ≥ −C(Aη)² ∫Φ̂(t)(1+log(2+|t|))dt`.
+    4. Let `η → 0`. ∎
+  - Under RH this holds trivially (`F = ζ^k`). The content is that **any** degree and **any** twin will do. Theorem A (L274) supplies infinite-dimensional families in every degree `≥ 3`.
+  - No convergence of weights is needed: PBAP is a datum statement, and the duality of L70 produces the weight system.
+- **Natural construction and its kill.** Try *dominated twins*: `E ∈ W_k` with `e_1 = 1` and `Σ_{n≥2}|e_n|n^{−½−η} < 1`. These would be zero-free on `|Re s − ½| > η`.
+  - The Kaczorowski–Perelli bound `σ_a ≥ ½ + 1/(2k)` allows `η ~ 1/k`, so this looked possible for large `k`.
+  - **Kill (Γ-phase dip) [P].** Put `σ₁ = ½ + η`. On the right edge of the box `[1−σ₁, σ₁] × [0, T]`, `arg Λ_E = k·arg Γ_ℝ(σ₁+it) + arg E(σ₁+it)`.
+    - `t ↦ arg Γ_ℝ(σ₁+it)` first decreases. For `σ₁ → ½` it reaches `min θ ≈ −3.53` at `t ≈ 6.29`; the derivative at `t = 0` is `½ψ(σ₁/2) − ½log π < 0` for `σ₁ < σ* ≈ 2.9`.
+    - Domination gives `|arg E| < π/2`. So at `T ≈ 6.29`, `N_E(T) = (1/π)[2k·Δarg Γ_ℝ + O(1)] < 0` for `k ≥ 1`. Impossible.
+    - The same holds for any zero-free `E` on `Re s ≥ σ₁` whose argument varies by less than `k|min_t Δarg Γ_ℝ(σ₁+it)| − O(1)`.
+  - **Positive survivor (Γ-phase dip law).** In degree `k`, the archimedean phase dip at `|t| ≲ 6.3` (exactly where `A(τ) < 0`) must be paid by the Dirichlet part.
+    - Any twin zero-free right of `σ₁ < σ*` needs `Δ_{[0,6.29]} arg F(σ₁+it) ≥ 1.12πk − O(1)`.
+    - Equivalently, `|(F'/F)(σ₁+it)| ≳ k/2` on average there. The normalized weights `lam_F/k` must carry an order-one Dirichlet series of size `≳ ½` at low height.
+    - This is the degree-`k` form of the PBAP difficulty: the low-frequency region `|τ| < 6.3` is where every producer works against the Γ-factor.
+- **Conjecture L275 (near-line twins).** For every `η > 0` and all large `k`, some `F ∈ V_k` has all completion zeros in `|Re s − ½| ≤ η`.
+  - Its exponential growth in `k` must come from winding, not domination.
+  - By the reduction this implies PBAP. It holds under RH.
+  - Open core: a mechanism that confines zeros to a strip without an Euler product. Candidates: Hermite–Biehler pairs inside `V_k`; heat-flow analogues within `V_k`, which are not available because `V_k` is not closed under the heat flow.
+
+### L276 — Function-field calibration of the twin door, finite-height openness, and the jet-lemma reduction. OBSERVATION [P] + REDUCTION [P]
+- **Function-field calibration.** For curves over `𝔽_q` the "datum" is `(q, g)`.
+  - Every curve of genus `g` is a producer for it, and so is every convex combination. Uniqueness fails massively.
+  - The fake zeta functions `P(T)/((1−T)(1−qT))` with palindromic `P` of degree `2g` (the analogues of `V_k`) are real-rooted (all roots on `|T| = q^{−½}`) on an **open** set of parameters, because the degree is finite.
+  - The producer there is the Hodge index theorem on `C × C`, not the functional equation. So in function fields the twin door is wide open, and it is geometry that fills it.
+- **Openness over ℚ at finite height [P].** In `V_k`, simple real zeros persist under small FE-preserving perturbations (the completion is real on the line). Hence "all zeros of height `≤ T` real and simple" is an open condition on `V_k`, as in the function-field case. What fails over ℚ is only uniformity in `T`.
+- **Jet-lemma reduction [P].** Suppose ζ's zeros of height `≤ T` are simple and critical (true for `T ≤ 3·10^{12}`, Platt–Trudgian). Suppose also that the jet map `W_k → ⊕_{j ≤ N(T)} J^{k−1}_{ρ_j}` (jets of order `< k` at those zeros) is surjective. Then for small `ε` there is `E ∈ W_k` with `ζ^k + E` real-rooted with simple zeros up to height `T`.
+  - Prescribe jets `ε^{k−i} a_{j,i}` equal to those of `Π_l(x − εb_l) − x^k` with distinct real `b_l`. Each `k`-fold zero splits into `k` simple real zeros. Elsewhere in the box `ζ^k` dominates.
+  - So, perturbatively, twin real-rootedness up to `T` is exactly ζ's RH up to `T`. Twins near `ζ^k` cannot repair an off-line ζ-zero; this is the datum-twin barrier of L257 in jet form.
+  - Through L275 this gives only `PBAP_A` for `A ≲ c·log(3·10^{12})`, which the literature already covers ([−0.8, 0.8], arXiv:2608.24827).
+- **Open lemma (jet surjectivity).** For every finite set `S` in the critical strip and every `m`, the map `W_k → ⊕_{ρ∈S} J^m_ρ` is surjective once `k ≥ 3`.
+  - L273.1 shows that `W_3` cannot vanish at **all** ξ-zeros. Finite jets are a different, presumably easier, question (L255's "density on compacts").
+- **Reading.** Over ℚ, a producer that is not perturbative in ζ needs the analogue of the function-field mechanism: a positivity source independent of the functional equation (Hodge index). The FE twins supply abundance but no positivity. The Hodge-type lanes (`hf-positive-hodge-attack`) are the right place for the existence half.
+
+### L278 — Geometric twins: unramified extensions break uniqueness, and Minkowski is the uniqueness input for ℚ. THEOREM [P, GRH-conditional] + BARRIER + CONJECTURE
+- **Observation.** Let `K` be a number field and `L/K` unramified at every place, finite and infinite (e.g. `L ⊆ H`, the Hilbert class field), with `n = [L:K]`.
+  - Then `d_L = d_K^n`, `r₁(L) = n r₁(K)`, `r₂(L) = n r₂(K)`. So `Λ_L(s) = |d_K|^{ns/2}Γ_ℝ^{n r₁}Γ_ℂ^{n r₂}ζ_L(s)` has exactly the datum of `ζ_K^n`.
+  - `ζ_L` is a Dirichlet series over ℚ with integer frequencies. It is a **geometric twin** of `ζ_K^n`, with an Euler product and a simple pole.
+- **Theorem [P] (non-uniqueness for fields with unramified extensions).** Assume GRH for `ζ_L`. Then `lam_mix := (Λ_L + (n−1)Λ_K)/n` is a full-cone, pole-carrying, Weil-positive weight system for `ζ_K`'s datum, and `lam_mix ≠ Λ_K`.
+  - *Proof.* The archimedean and conductor terms of `Λ_L` are `n` times those of `K`. The pole coefficient is `(1/n)·1 + (1−1/n)·1 = 1`. Hence `Q_{lam_mix}(f) = (1/n)Σ_{ρ_L} ĝ(γ) + (1−1/n)Σ_{ρ_K} ĝ(γ) ≥ 0` under GRH. It differs from `Λ_K` at primes that do not split completely. ∎
+  - So for every `K` with class number `h > 1`, `W(K)` is not a singleton (under GRH). Also, `Λ_L/n` alone is a polar-cone producer with pole deficit `1/n`.
+  - The difference `lam_mix − Λ_K` has partial sums `(ψ_L/n − ψ_K)(x) = O(√x log²x)` under GRH. It sits exactly in the uniqueness gap of L71 (`θ = ½`), so L71's `θ < ½` theorem is sharp datum-generically.
+- **Barrier for PC-82 / uniqueness over ℚ.** Any proof of `W(ℚ) ⊆ {Λ}` must use an input that fails for number fields with `h > 1`; otherwise it would refute GRH for all Hilbert class fields.
+  - Over ℚ that input is **Minkowski's theorem**: ℚ has no unramified extensions, hence no geometric twins. It is itself an unconditional explicit-formula positivity (Odlyzko–Stark discriminant bounds at `Re s > 1`).
+  - Consequence for the producer search over ℚ:
+    - geometric twins do not exist (Minkowski);
+    - non-geometric twins exist (Theorem A, all degrees `≥ 3`), but no positivity source is known for them (L273–L276).
+- **Large-degree limit (number-field analogue of L275).** Golod–Shafarevich towers `K ⊂ H₁ ⊂ H₂ ⊂ ⋯` are unramified over `K`. They give geometric twins of `ζ_K^{n_i}` with `n_i → ∞`.
+  - Their normalized weights converge to Tsfasman–Vlăduţ limit zeta data. TV's basic inequality is the positivity of these large-degree producers: under GRH with `√q` weights, and unconditionally only with the Odlyzko–Stark (shifted-datum, `ε ≥ ½`) weights.
+  - This is exactly the `PBAP_ε`, `ε ≥ ½` frontier of L260. The geometric large-degree limit is unconditional only at `ε ≥ ½`, consistent with L275.
+- **Conjecture L278 (real-rooted twins are geometric).** Over a number field `K`, every real-rooted element of the twin space of `ζ_K^n` with an order-`n` pole is a product of Dedekind zetas of fields unramified over `K`. Over ℚ, by Minkowski, only `ζ^n`.
+  - Calibration against function fields: the conjecture **fails** there. Weil polynomials with the datum `(q, g)` form an open set, mostly non-geometric. So any proof must use the infinite zero set plus the archimedean Γ-factor (finite-height openness, L276, does not survive).
+  - What it says: over ℚ, "real zeros + functional equation + integer frequencies ⇒ Euler product". That is RTE_k plus PC-82 with a geometric reason.
+
+### L279 — PBAP_ε below ½ via zero density: exact balayage identity, but single zeros are locally decisive. IDENTITY [P] + KILL [P-heuristic] + READING
+- **Exact balayage identity [P].** For the shifted datum `K·h_ε` and a prime-blind positive-definite test `Φ`, `(Φh_ε)^ = Φ̂ ⋆ P_ε`. A pair `½ ± δ + iγ` contributes `∫ Φ̂(τ)[P_{ε−δ} + P_{ε+δ}](γ−τ) dτ`.
+  - If `δ < ε` this is **exactly ≥ 0** (Cauchy balayage). So only "bad" zeros, `β > ½ + ε`, can make `arch(Φh_ε)` negative, through `−P_{δ−ε}` spikes. The good zeros give a positive density `≈ (1/2π) log τ`, smoothed at scale `ε`.
+- **Attempt.** Ingham's `N(½+ε, T) ≪ T^{1−(4/3)ε+o(1)}` is a power saving. Against a test whose spectrum is spread up to the Nyquist height `2πe^{2A}`, the bad mass is `≪ A e^{−(8/3)εA}` relative to the good mass. This would give `PBAP_ε` for all `ε > 0` **if** prime-blind tests could not concentrate near individual zeros.
+- **Kill (local decisiveness).** A prime-blind test's frequency-`γ` component can extend in `u` only to `|u| ≲ log(γ/π)`: beyond that the node spacing `e^{−u}` drops below the half-period `π/γ` (L85's Nyquist law, inverted).
+  - Its resolution at height `γ` is therefore `≈ π/log(γ/π)`, about half the zero spacing `2π/log(γ/2π)`. Prime-blind tests resolve **individual** zeros at every height, but no better.
+  - At that resolution a single bad zero with `δ − ε ≲ 1/log γ` contributes `≈ −(log γ/π)·m` against a good contribution of `≈ (log γ/2π)·m` on the same bump. One zero decides the local sign.
+  - So global density estimates cannot prove `PBAP_ε`. What is needed is the local absence of resolvable zeros with `β > ½ + ε`, i.e. a zero-free strip modulo detection (L257).
+- **Reading.** L260's question (prove `PBAP_ε` for some `ε < ½`) is, modulo the detection lemma, a zero-free strip `Re s > ½ + ε`, which is famously open. The shifted family offers no density-theoretic shortcut. The exact positivity for `δ < ε` (balayage) shows the slack is present, but it is spent zero by zero.
+
+### L280 — Finite-prime producers, the spectral-gap triangle, and why the pole and infinitely many primes are both forced. THEOREM [P] + REFORMULATION + KILL
+- **Monotonicity (trivial, recorded).** For `S ⊆ ℕ_{≥2}`, let `PBAP(S)` mean positivity on positive-definite polar tests vanishing on `±log S`. Then `PBAP(S) ⇒ PBAP(ℕ)`, and `PBAP(S) ⟺` a producer supported on `S` exists.
+  - Under RH, `PBAP(prime powers)` holds (`Λ`). So the non-prime-power nodes are not needed. ℕ-blindness is needed only for twins (L256), while `Λ`'s conservation law uses only prime-power blindness.
+- **Reformulation for finitely many primes.** For `S_r = ⟨p₁,…,p_r⟩`, `D_lam(s) = P(p₁^{−s},…,p_r^{−s})` with `P` holomorphic on a polydisk. On the line, `Re D = F∘θ(t)`, where `F` is a real function on `T^r` with Fourier support in `ℤ^r_{≥0} ∪ ℤ^r_{≤0}` (pluriharmonic). Mixed frequencies such as `log(3/2)` would be non-integer `n`.
+  - A pole-free producer means `F(θ(t)) ≤ g(t) := A(t)/2` for all `t`, with `g(0) = −2.686`, `g < 0` on `|t| < 6.29`, and `g ~ ½ log(t/2π)`.
+- **Theorem [P] (spectral-gap triangle).** No integer-supported weight system is Weil-positive for ζ's archimedean datum **without** the pole. This holds for every support, finite or not.
+  - Every `Re D_lam(½+it)` has spectrum in `|ξ| ≥ log 2`.
+  - Pair the inequality with the Fejér kernel `K` whose transform is the triangle on `[−log 2, log 2]`: `∫ Re D·K = 0`, so positivity needs `∫ g K ≥ 0`, which is `∝ arch(triangle_{log 2})`.
+  - Direct evaluation: `arch(Φ) = −5.37Φ(0) + 2∫₀^∞ e^{−u/2}(Φ(0)−Φ(u))/(1−e^{−2u}) du` gives `arch(triangle_{log 2}) ≈ −5.37 + 1.14 + 3.02 = −1.21 < 0`. ∎
+  - So the pole terms are what compensate the low-frequency dip at small support. This is the full-cone form of "the pole pays 89% of the Γ-phase dip" (L275).
+- **Kill with the pole (finitely many primes).**
+  - Once `D` carries the pole and is generated by finitely many primes, L240's Bohr recurrence applies quantitatively. Kronecker return times to `z(1+δ)` are polynomial (`≍ δ^{−(r−1)}`), so `Re D(1+δ+it_k) ≈ 1/δ ≫ ½ log t_k`.
+  - For `r = 1` it fails even earlier: the flow is periodic, and a mean-zero Fourier series cannot stay below a negative function on overlapping translates of the dip.
+- **Conclusion [P].** Every producer must (i) carry the pole and (ii) have infinitely many primes in its support, with Kronecker return times growing faster than any polynomial. `Λ` does both, with `exp(e^{c/δ})` return times.
+  - Polar-cone version with finitely many primes: the rank-2 polar freedom forces `β(1/s+1/(s−1))` with `β > 0`, hence a pole in `D` (Herglotz analyticity at `s = 1`), hence the same kill. **Every polar or full-cone producer is infinitely generated.**
+- **Status.** A clean unconditional exclusion of the "finitely many primes" class. The producer, if not `Λ`, must be an infinitely generated, pole-carrying Dirichlet series whose recurrence is at least as slow as `Λ`'s. This is consistent with L74/PC-82 and adds no route.
+
+### L281 — Anti-twins (root number −1) are abundant [Lean]; Hermite–Biehler certificates live in V_k × V_k^−, and they cannot certify ζ^k itself. THEOREM [Lean] + REFORMULATION [P]
+- **Theorem [Lean].** `RHTower.GammaRPowTwins.gammaRPow_odd_functional_equation_abundance (hk : 2 ≤ k) N`, standard axioms, module `RHTower/GammaRPowOddTwins`.
+  - For `d = k+1 ≥ 3` and every `N` there are infinitely many independent Dirichlet series, vanishing below `N`, whose `Γ_ℝ(s)^d`-completions are entire with `Λ(1−s) = −Λ(s)`.
+  - Degree 1 has none (odd Hamburger, corpus L147).
+  - Also formal: `gammaRPow_theta_converse_odd` and `hecke_theta_converse_odd` (Hecke with root number `−1`), and the symmetric chart class `symChartSpace`. Relations now annihilate the symmetric eigenspace, using the derivative bound applied to `−m_d`.
+- **Hermite–Biehler certificate [P].** Take `E ∈ V_k` (even, real on the line) and `A ∈ V_k^−` (odd, imaginary on the line). Put `G = Λ_E + Λ_A`, so `G^#(s) := G(1−s) = Λ_E − Λ_A`.
+  - If `Re(A/E) > 0` on `Re s > ½`, then `|G^#| < |G|` there. So `Λ_E = (G + G^#)/2` has only simple zeros, all on the line (Hermite–Biehler).
+  - So RTE_k ⟸ an interlacing pair `(E, A) ∈ V_k × V_k^−`. The certificate `H = A/E` is a meromorphic, odd (`H(1−s) = −H(s)`) Dirichlet series that is Herglotz on `Re s > ½`. Its poles are exactly the zeros of `E` (simple, positive residues).
+- **Two limits.**
+  - (i) No free lunch: an odd Dirichlet series without poles is constant (degree-0 functional equation), so `H` must carry `E`'s zeros. Searching for certificates is searching for real-rooted `E`.
+  - (ii) Strict Hermite–Biehler forces simple zeros, so `ζ^k` (`k`-fold zeros) has no strict partner in `V_k^−`, under RH or not. Certificates could only exist for twins with simple real zeros.
+  - In degree 1, ζ has no Dirichlet-series partner at all (odd Hamburger): the Hermite–Biehler route to RH through Dirichlet-series partners is closed in degree 1 and in `ζ^k`. It is open only for genuine twins, i.e. RTE_k.
+- **Reading.** The certificate space is formally infinite-dimensional in every degree `≥ 3`, but the certificate equation is equivalent to the real-rootedness it certifies. No producer.
+
+### L282 — The producer as a positive-definite quadrature of the pole measure; literature calibration of RTE. REFORMULATION [P] + CALIBRATION
+- **Quadrature form (exact).** In `u = log x`, the datum is `Θ(u) = 2cosh(u/2) − 2k(|u|) + (regularized δ₀)` with `k(u) = e^{−u/2}/(1−e^{−2u})`.
+  - A producer is a choice of point masses `c_n = λ_n n^{−½}` at `±log n` such that `Θ − Σ c_n(δ_{log n} + δ_{−log n})` is positive-definite.
+  - Since `2cosh(u/2)` is not positive-definite, the atoms must discretize the pole measure `e^{u/2}du` on the nodes `log n`, with an error that is positive-definite modulo the archimedean `−2k`. **A producer is a positive-definite-controlled quadrature of `e^{u/2}du` with fixed nodes `log n`.**
+  - Natural quadratures:
+    - *Euler–Maclaurin* (`λ ≡ 1`): the error transform is `ζ(½+it)`. Its large values (`Re ζ ≥ exp(c√(log t/loglog t))` i.o.) exceed the budget `θ'(t) ~ ½log t`. Fails (L261).
+    - *Resonance with generic nonnegative weights of density 1:* Dirichlet/Kronecker alignment only reaches `≈ 2√(log t/log 6)`, below budget. The obstruction for `ζ` is the multiplicative (Euler-product) resonance, not density.
+    - *Logarithmic derivative* (`λ = Λ`): the error is `−ζ'/ζ`, and `Re(−ζ'/ζ)(½+it) = θ'(t)` exactly between zeros. It **saturates** the budget: the quadrature-theoretic meaning of criticality (L74).
+    - *Mollified* (`D = ζM + B`, `M(1) = 1`): mollifiers tame `ζ` in mean square, not in sup. At `|t| < 6.3` a negative Dirichlet-polynomial correction `B` runs into the spectral gap `|ξ| ≥ log 2` (L280). Fails.
+  - At `t = 0` the margins are `D(½) ≤ θ'(0) = −2.686`. `λ ≡ 1` gives `ζ(½) − 1 = −2.46` (misses by `0.23`), while `Λ` gives `−ζ'/ζ(½) = −2.686` exactly (`ξ'(½) = 0`).
+- **Literature calibration of RTE / L278.** No non-arithmetic Dirichlet series with a Γ-functional equation is known to satisfy RH.
+  - Epstein zeta functions with class number `> 1` and Davenport–Heilbronn combinations have zeros off the line, including in `σ > 1`.
+  - Hecke's `λ > 2` families (Fuchsian groups of the second kind, the degree-2 analogue of Theorem A) are generic, with no Hecke operators. No real-rooted member is known (search: Cantillo; Bombieri–Hejhal-type results give 100% on the line only for linear combinations of genuine L-functions under GRH).
+  - This is consistent with "real zeros ⇒ arithmetic" (L278). No counter-evidence.
+- **Verdict.** No producer. The quadrature form isolates what `Λ` does uniquely well: its error has no large values on the line, because it is a logarithmic derivative of a function with a functional equation (exact phase lock). No other quadrature on the nodes `log n` is known to avoid the multiplicative resonance.
+- **L282 self-correction.** The "generic nonnegative weights stay below budget" item ignores analytic continuation.
+  - A producer needs `D − 1/(s−1)` holomorphic on `σ > ½`. That forces partial sums `x + O(x^{½+ε})` (L148), so `D = ζ + R` with `R` convergent on `σ > ½`.
+  - On the line, `ζ`'s multiplicative large values persist unless `R` correlates with them, and generic `R` does not.
+  - So the density-1 class reduces to Euler–Maclaurin plus noise, which fails. The kill list is unchanged.
+
+### L283 — The balayage producer: dividing by an inner Dirichlet series, and the Bohr-recurrence kill for ζ. THEOREM [P, Herglotz step P-sketch] + KILL [P] + CONJECTURE
+- **Observation (exact).** For any `F ∈ V_k` (ζ, `ζ^k`, or any twin), the boundary measure of `ξ_F'/ξ_F = Σ_ρ 1/(s−ρ)` on the line is **positive whatever the zeros are**.
+  - Each on-line zero contributes `πδ_γ`.
+  - Each off-line pair `½ ± β + iγ` contributes `Re[1/(−β+i(t−γ)) + 1/(β+i(t−γ))] = 0`.
+  - Weil positivity fails only through **interior poles** of `ξ_F'/ξ_F` at zeros with `Re ρ > ½`.
+- **Balayage producer [P].** Let `B = Σ b_n n^{−s}` be an **inner Dirichlet series** on `σ > ½` (`|B| ≤ 1`, `|B| = 1` a.e. on the line), with zero set in `σ > ½` equal to that of `F` (with multiplicity). Put `F̃ = F/B`, a Dirichlet series since `b_1 ≠ 0`.
+  - `ξ_{F̃}'/ξ_{F̃} = ξ_F'/ξ_F − B'/B` has no interior poles. Its boundary measure is `πΣ_{on-line}δ_γ + (−∂_σ log|B|)` with `−∂_σ log|B| ≥ 0`: the off-line zeros are **balayaged** to the line as Poisson densities.
+  - With growth control (Nevanlinna class) the function is Herglotz on `σ > ½`. Then `lam = Λ_F/k − (B'/B coefficients)/k` is an integer-supported, pole-carrying producer for ζ's datum (residue `k/k = 1`, `B(1) ≠ 0`).
+  - If `B ≠ const`, its Weil measure has an absolutely continuous part, so it would falsify PC-82.
+- **Kill for ζ (and near-`ζ^k` twins) [P].** Let `B` be a bounded Dirichlet series with a zero at `ρ₀`, `Re ρ₀ = σ₀ > ½`.
+  - By Bohr's theorem (`ℋ^∞` ⇒ uniform convergence on `σ ≥ ½ + δ`), `B` is uniformly almost periodic there. Rouché on a small circle around `ρ₀`, along a relatively dense set of `ε`-almost periods `τ`, gives zeros of `B` near `ρ₀ + iτ`.
+  - So `#{zeros of B in [σ₀−r, σ₀+r] × [0, T]} ≫ T`. Zero-density estimates give `N_ζ(σ₀ − r, T) = o(T)`.
+  - So `B` would vanish where ζ does not, and `ζ/B` would get poles in `σ > ½`. Hence `B` is zero-free, nothing is removed, and the balayage producer for ζ exists **iff RH** (`B = 1`).
+  - The same holds for twins `ζ^k + E` that are perturbative in strips `σ ≥ ½ + η`.
+- **Positive survivor.** The off-line zero set of a producer candidate can be repaired by inner division iff, in every strip `σ ≥ ½ + η`, it is **exactly** the zero set of a uniformly almost periodic bounded Dirichlet series (Bohr-recurrent, positive density). ζ's off-line zeros (density `o(T)`) can never be; only "Bohr-structured" off-line sets can.
+- **Conjecture L283 (no Bohr-structured twins).** No `F ∈ V_k \ ℂζ^k` has an off-line zero set (in `σ > ½`) equal to the zero set of an inner Dirichlet series.
+  - Equivalent, via the balayage producer, to excluding absolutely continuous producers of this specific form (PC-82 restricted).
+  - Candidates to test: Davenport–Heilbronn-type twins, whose off-line zeros have positive density `≍ T` in strips. Exact matching with an inner Dirichlet zero set is a strong rigidity condition (phase and position of every zero).
+
+### L284 — Family-averaged balayage: producers as averages of non-real-rooted twins; the star-geometry kill. MECHANISM [P] + CRITERION [P] + KILL [P]
+- **Mechanism.** For a measurable family `F_c ∈ V_k` and a probability density `w(c)`, the weights `lam̄ = ∫ (Λ_{F_c}/k) w(c) dc` are integer-supported and carry the pole (residue 1 for each `c`).
+  - `Q_{lam̄}(f) = ∫ (1/k)Σ_{ρ ∈ Z(F_c)} ĝ(γ_ρ) w(c) dc`. Only the **averaged zero measure** `ρ̄` (on ℂ) must be positive-type. No member needs to be real-rooted.
+- **Criterion [P] (Cauchy balayage).** Write the averaged off-line part as a density `ρ̄(t, δ)` on pairs `½ ± δ + it`. If for each `δ` the function `t ↦ ρ̄(t, δ)` continues analytically to `|Im| ≤ δ` with `Re ρ̄(t − iδ, δ) ≥ 0`, then its contribution `∫∫ ρ̄(t,δ)[h(t+iδ) + h(t−iδ)] = ∫∫ 2Re ρ̄(t−iδ,δ) h(t)` is positive for every `h = |f̂|²`. Hence `lam̄ ∈ W`.
+  - Example: a horizontal Cauchy spread `P_s(t − t₀)` with `s ≥ δ` gives `P_{s−δ} + P_{s+δ} ≥ 0` (L279's identity). The family must spread each off-line zero **horizontally** on a scale at least its displacement, with Cauchy-like (analytic) tails.
+- **Kill for the natural family `F_c = ζ³ + cE`, `c ∈ [−c₀, c₀]`, near simple critical ζ-zeros [P].**
+  - The three zeros near `γ` are `γ + (−cE(ρ)/C)^{1/3}ω_j`. As `c` runs over a symmetric interval they fill a **six-ray star**.
+  - Off-line points have horizontal offset `r cos 60° = r/2` and displacement `δ = r sin 60° = (√3/2) r`. So spread/displacement `= 1/√3 < 1`, violating `s ≥ δ`. The star is also not analytic-Cauchy.
+  - Directly: averaging over the star kills Taylor terms not divisible by 6. The first surviving correction `∝ E[c²] Re(e^{2iα} h^{(6)}(γ))` has no sign at tests with `h(γ) = 0`. Negative.
+  - Global families (large `c`, non-perturbative): zeros travel along curves with no reason to produce Cauchy-shaped horizontal spreads. Open, but the criterion is exact: positivity needs analytic, positive continuation of the averaged off-line density to depth `δ`.
+- **Relation to earlier rows.** This is the existence-side counterpart of L90's displacement kernel, now with the correct sign structure.
+  - Horizontal averaging of a *single* function's vertical translates gives exactly the shifted datum `PBAP_ε` (L260/L279), not ζ's datum.
+  - Averaging over *twins* stays at ζ's exact datum, which is the point of using the Theorem A family.
+- **Verdict.** No producer. New exact criterion (analytic Cauchy balayage of the averaged off-line zero density). The perturbative family fails by star geometry (`spread/displacement = 1/√3`). The non-perturbative family question joins RTE (L275/L278/L283) as the remaining door.
+
+### L285 — Working L275 (near-line twins): dilution form, the degree-0 quotient, and where the twin must be non-perturbative. REDUCTION [P] + REFORMULATION [P] + VERDICT
+- **Dilution form of the reduction [P].** L275 asks for *all* zeros within `η` of the line. Weaker hypotheses suffice. Suppose there are `F_j ∈ V_{k_j}` with pole order `m_j` such that:
+  - `m_j/k_j → 1`;
+  - `|Re ρ − ½| ≤ σ_max` for all zeros (uniform in `j`);
+  - for every `η > 0`, `(1/k_j) Σ_{ρ ∈ Z(F_j), |Re ρ−½|>η} (1+|γ_ρ|)^{−2} → 0`.
+
+  Then PBAP holds.
+  - *Proof.* For prime-blind positive-definite `Φ` at level `A`, `(1/k_j)Σ_ρ Φ̂(γ_ρ) = arch(Φ) + (m_j/k_j)pole(Φ)` (conservation law, L256).
+    - Near-line zeros: lower bound `−C(Aη)²(P_η⋆Φ̂)` (L90).
+    - Remaining zeros: `|Φ̂(t+iδ)| ≤ e^{Aσ_max}‖Φ''‖₁(1+|t|)^{−2}`, so their total is `o(1)` as `j → ∞`.
+    - Let `j → ∞`, then `η → 0`. ∎
+  - So "almost all zeros, weighted by height, in the large-degree limit" suffices. But the weight `(1+|γ|)^{−2}` makes **every fixed height window** count. Bohr–Landau-type statements (`T → ∞` at fixed `k`) are the wrong limit.
+- **Products do not dilute [P].** Normalized zero measures and pole ratios `m/k` average under products. Pole ratio `→ 1` forces the weight of pole-free factors to `→ 0`.
+  - So a dilution sequence must consist (asymptotically) of **non-factorizable** `F = cζ^k + E`, `c ≠ 0`, `E ∈ W_k`.
+  - If ζ had an off-line zero `ρ₀`, `F` must dominate `ζ^k` on a circle around `ρ₀` (Rouché), so `E` is non-perturbative there.
+- **Degree-0 quotient [P].** If `F ∈ V_k` has its zeros in `|σ−½| ≤ η`, then `Q := ζ^k/F` is a Dirichlet series (`f_1 ≠ 0`) with:
+  - `Q(1−s) = Q(s)` (degree 0, conductor 1);
+  - poles only in the `η`-strip;
+  - in `σ > ½+η`, zeros exactly at ζ's zeros there (with multiplicity `k·m_ρ`).
+
+  So L275 ⟺ a degree-0 symmetric meromorphic Dirichlet series whose zeros **absorb** all off-strip ζ-zeros, with `ζ^k/Q` free of poles off `{1}`.
+  - Degree-0 conductor-1 Dirichlet series that are entire (or have finitely many poles) are constant. `Q` must carry infinitely many poles, as many as `F` has zeros. This is the degree-0 shadow of L281's "no free lunch".
+- **Height split [P].** ζ's zeros are simple and critical below `H₀ = 3·10¹²` (Platt–Trudgian), and ζ has none below 14.
+  - `F = ζ^k + E` with `E` from Theorem A, vanishing below `N`, is super-exponentially small on compacts (L273). So `F` is near-line, with simple zeros, up to any fixed height below `H₀`, for **every** `k`.
+  - The whole content of L275 is therefore at heights `> H₀`. There `E` must dominate `ζ^k` wherever ζ might have off-line zeros, and have its own zeros near the line. So L275 needs near-line **entire** twins (`E ∈ W_k`, no pole) of dominant size at large height, which is an RTE-type object (L273 verdict).
+  - Large degree does not help in the approximate-functional-equation regime. Splitting at `√q(t) = (t/2π)^{k/2}`, the Hermite–Biehler ratio `|G(1−s)/G(s)|` at `σ = ½+δ` is `|Γ_ℝ(1−s)/Γ_ℝ(s)|^k·|M(1−s)/M(s)| ≈ (t/2π)^{−kδ}·(t/2π)^{kδ}·(fluctuation)`. The archimedean gain cancels exactly against the first-half Dirichlet polynomial. For `ζ^k` the ratio is the `k`-th power of ζ's, with no improvement.
+- **Verdict.** L275 does not close.
+  - Precise residue: **near-line entire twins at large height**, dominating `ζ^k`, i.e. RTE for `W_k` beyond `H₀`.
+  - Equivalently, a degree-0 symmetric `Q` absorbing every off-strip ζ-zero.
+  - No construction is available: Theorem A is existence-only, and the sampling/Hahn–Banach machinery carries no zero control.
+
+### L286 — Working L278 (real-rooted twins are geometric): the degree-0 on-line-divisor form, a calibration counterexample, and the rational-twin case via Hecke non-discreteness. REFORMULATION [P] + CALIBRATION [P] + THEOREM [P] + VERDICT
+- **Degree-0 form [P].** Let `F ∈ V_k` be real-rooted and assume RH. Then `Q := F/ζ^k` has the following properties:
+  - it is a Dirichlet series with `Q(1−s) = Q(s)`, real on the line;
+  - all its zeros and poles lie on `Re s = ½`;
+  - `div Q ≥ −k·div ξ` (since `F = ζ^kQ` is entire off `{0,1}`).
+
+  Its boundary measure `μ_Q = (1/π)Re(Q'/Q)(½+it) = μ_F − kμ_ζ` is a **signed measure with integer masses**. Its Fourier transform is supported in `{±log n : n ≥ 2}` (both explicit formulas have the same archimedean and pole parts), so it has the spectral gap `(−log 2, log 2)`.
+  - So L278 (given RH) ⟺ every degree-0, conductor-1, symmetric Dirichlet series with on-line divisor satisfying `div Q ≥ −k div ξ` is constant.
+  - Equivalently: no nonzero integer-mass signed measure with spectrum in `±log ℕ_{≥2}` has negative part `≤ k·μ_ζ`.
+- **Calibration: degree-0 rigidity alone fails [P].** For an integer `a ≥ 2` put `A_a(s) = 1 − a^{½−s}` and `B_a(s) = 1 + a^{½−s}`.
+  - These are Dirichlet polynomials with `A_a(1−s) = −a^{s−½}A_a(s)` and `B_a(1−s) = a^{s−½}B_a(s)`. Their zeros are the on-line lattices `½ + 2πim/log a` and `½ + (2m+1)πi/log a`.
+  - `Q_a := (A_a/B_a)²` is a Dirichlet series in `σ > ½`, with `Q_a(1−s) = Q_a(s)` (degree 0, conductor 1) and divisor entirely on the line (Poisson lattices).
+  - So the needed rigidity is **not** a degree-0 statement. It must use `div Q ≥ −k div ξ`: the poles of `Q` must sit on ζ-zeros.
+- **Theorem L286 [P] (rational twins are trivial).**
+  - *Lemma A.* No nonconstant Dirichlet polynomial `g` with `g(1-coeff) ≠ 0` and simple zeros has `Z(g) ⊆ Z(ξ)`. *Proof.*
+    1. *Zeros are on the line.* `g` is uniformly almost periodic. A zero at `ρ₀` with `Re ρ₀ ≠ ½` recurs (Rouché along a relatively dense set of almost periods), giving `≫ T` zeros of `ξ` near `Re s = Re ρ₀`. This contradicts Carlson's `N(σ,T) = o(T)`.
+    2. *`g` is self-reciprocal.* `g` and `s ↦ conj g(1−s̄)` have the same zeros, so their ratio is a zero-free exponential polynomial, i.e. an exponential. Hence `g(1−s) = εq^{s−½}g(s)` with `q ∈ ℕ`, and `q ≥ 2` since `g` is nonconstant.
+    3. *Reduction to a conductor-`1/q` functional equation.* `D = ζ/g` is entire off `{1}`, and `Λ** = q^{−s/2}Γ_ℝ(s)D(s)` satisfies `Λ**(1−s) = ε^{−1}Λ**(s)`. Its theta function `Σd_n e^{πiqn²z}` is a weight-½ form for the Hecke group `G(2/q)`.
+    4. *Case `q ≥ 3`.* `λ = 2/q < 1` is not `2cos(π/m)`, so `G(λ)` is not discrete, and Hecke's `λ < 2` theorem (Berndt–Knopp, ch. "The case λ < 2") gives `Λ** ≡ 0`. This contradicts the pole at `s = 1`.
+    5. *Case `q = 2`.* `g = c(1 ± 2^{½−s})`, with a zero at `t = 0` or `t = π/log 2 ≈ 4.53`, below ζ's first zero at `14.13`. ∎
+  - *Theorem.* Let `F ∈ V_k` with `F/ζ^k = P₁/P₂` for Dirichlet polynomials, `P₂(1-coeff) ≠ 0`. Assume that in one variable (`P_i ∈ ℂ[a^{−s}]`), or in general that the uncancelled zeros of `P₂` are simple. Then `F = cζ^k`.
+    - *Proof.* Entireness forces every uncancelled zero of `P₂` into `Z(ξ)`. Apply Lemma A to the squarefree part; in one variable, coprime polynomials have no common roots. ∎
+  - *Literature calibration.* The one-variable case contains Putnam's theorem (1954: no infinite arithmetic progression of ζ-zeros on the line). Lemma A extends it to zero sets of stable Dirichlet polynomials, which are Kronecker quasicrystals, with a proof through Hecke non-discreteness instead of Putnam's Fourier argument. Novelty is not verified; adjacent: van Frankenhuysen, Li–Radziwiłł, Martin–Ng.
+- **What this does and does not reach.**
+  - It excludes every *explicit* twin built from ζ by finitely many primes (rational `Q`).
+  - Theorem A's twins have `Q = F/ζ^k` with infinitely many primes and transcendental structure. There the Hecke argument has no handle: `Q`'s poles are not a quasicrystal, and the degree-`m` analogue of the conductor-`<1` exclusion is open for `m ≥ 2`.
+- **Verdict.** L278 does not close. Positive survivor: L278 holds on the rational class (one variable, or simple denominators), unconditionally.
+  - Residue: the transcendental `Q`. Equivalently, no integer-mass signed measure with spectrum in `±log ℕ_{≥2}` and negative part `≤ kμ_ζ`. This is a crystalline-measure uniqueness problem at ζ's zeros.
+
+### L287 — L284 continued: the Gaussian-probe theorem. Averaged producers need slice-analytic off-line densities; one-parameter families fail at every non-degenerate displacement maximum. THEOREM [P] + KILL [P] + SURVIVOR
+- **Setup.** Let `ν` be the averaged normalized zero measure of a family average `lam̄ = ∫ lam_{F_c}/k dw(c)`, a positive measure on the strip `{t − iδ}`, symmetric in `δ`. Weil positivity of `lam̄` ⟺ `∫ Φ̂(γ) dν(γ) ≥ 0` for every admissible positive-definite `Φ`, including Gaussians `Φ̂(t) = e^{−A²(t−t₀)²} + e^{−A²(t+t₀)²}`.
+  - The explicit formula converges absolutely for Gaussian tests, since all zeros lie in a strip.
+- **Probe identity.** For a zero at `t₀ + a − iδ`, the probe gives `e^{−A²(a−iδ)²} = e^{A²(δ²−a²)}·e^{2iA²aδ}`. Its modulus is maximal at `a = 0`, and its phase rotates once per `Δa = π/(A²δ)`.
+- **Theorem L287 [P] (non-degenerate maxima are visible).** Suppose the off-line part of `ν` contains a curve `c ↦ (t(c), δ(c))` carrying density `w(c) > 0`. Suppose also that at `c_m` the displacement has a non-degenerate local maximum `δ_m > 0` (`δ' = 0`, `δ'' < 0`), and that `(t_m, δ_m)` maximizes `δ² − (t−t_m)²` over `supp ν` near `t_m`.
+  - Laplace's method with the linear phase `−2A²δ_m t'(c_m)(c − c_m)` gives the contribution `≍ (w(c_m)/A)·exp(A²δ_m² · δ_m|δ''| / (t'² + δ_m|δ''|))·e^{iθ}`, where `θ` is adjustable through `t₀ = t_m + O(1/(A²δ_m))`.
+  - This grows like `e^{κA²}` with `κ > 0`. On-line zeros, archimedean and pole terms are `O(A)`. Choosing `t₀` so that `cos θ < 0` makes the total negative. **Positivity fails.**
+  - Degenerate tops (`δ` constant along the curve, i.e. vertical motion) give `κ = 0`. They are then governed by the slice criterion below.
+- **Slice criterion (necessity) [P].** Let the off-line part be a 2D density `ρ(t, δ)`. The probe gives `≈ ∫ e^{A²δ²} ρ̂_δ(2A²δ) e^{2iA²δt₀} dδ` (Gaussian-windowed Fourier transform of the slice `ρ(·, δ)` at frequency `2A²δ`).
+  - In Fourier variables the slice term is `e^{A²δ²}(√π/A)∫ρ̂_δ(ξ)e^{−(ξ−2A²δ)²/(4A²)}e^{iξt₀}dξ`. If `|ρ̂_δ(ξ)| ≍ e^{−δ'|ξ|}`, the maximum over `ξ` gives growth `exp(A²(δ−δ')²)` for `δ' < δ`. Boundedness in `A` therefore needs `ρ̂_δ(ξ) = O(e^{−δ|ξ|})`, i.e. analyticity of `ρ(·, δ)` in `|Im t| < δ` (Paley–Wiener). Width exactly `δ` is the borderline, as for the Cauchy profile `P_s`, `s ≥ δ`.
+  - A compactly supported smooth slice has `ρ̂` decaying more slowly than any exponential, so it is visible. Combined with L284 (sufficiency with `Re ρ(t ± iδ) ≥ 0`), the off-line averaged density must be **slice-analytic of width `δ`, hence non-compact in `t` with at most algebraic tails** (Cauchy-type), or stationary in `t`.
+- **Kill for one-parameter families [P].**
+  - For a linear family `F_c = A + cB` (`c ∈ ℝ`), zeros solve `R(z) = c` with `R = −Λ_A/Λ_B`. `R` is real on the critical line, so on-line zeros are always on-line, and off-line trajectories are arcs joining branch points (critical points of `R` on the line) to zeros of `B` (`c → ±∞`).
+  - These arcs are bounded and curve-supported, so every `δ`-slice is atomic. Their displacement maxima are either non-degenerate (visible) or lie at `c → ±∞` on `B`'s off-line zeros. In the latter case `w(c)e^{A²δ(c)²}` is maximized at `c_A ~ A^{2/3}` with exponent `A²δ_B² − O(A^{4/3})`, also visible.
+  - Conclusion: a one-parameter linear family average is Weil-positive only if `B` is real-rooted and the off-line arcs have no visible maxima, i.e. no off-line arcs at all. That means all `F_c` with `c ∈ supp w` are real-rooted. Back to RTE (L273).
+  - Finite-dimensional smooth families `c ∈ ℝ^d` push forward to densities with compact `t`-support, which the slice criterion excludes.
+- **Positive survivor (exact shape) [P].** A family-averaged producer exists only if its averaged off-line density is, slice by slice, the boundary trace of a function analytic in `|Im t| < δ` with `Re ρ(t ± iδ) ≥ 0` in the summed sense. Two shapes do this:
+  - Cauchy profiles of width `≥ δ`;
+  - `t`-stationary densities (constant in `t`: contour shift gives `2c_δ∫h ≥ 0`).
+
+  The stationary shape is exactly L283's Bohr-structured off-line sets (positive density, almost periodic). **L283 and L284 converge to one condition:** the off-line zeros of the producing objects must be statistically translation-invariant in height with analytic profile. ζ's off-line zeros (density `o(T)`, if any) are neither, and no finite-dimensional twin family produces either.
+- **Verdict.** L284's non-perturbative door is closed for one-parameter linear families and for finite-dimensional smooth averages. What remains is the shared L283/L284 condition: an infinite-dimensional (Bohr-torus-type) average of twins with stationary off-line density, which no datum-preserving operation is known to generate. (Vertical translations and Bohr twists change the datum, L260/L279.)
+
+### L288 — L284 in infinite dimensions: random twin ensembles. Circular averages are Weil-invisible, averaged weights are a geometric mean, and unbounded Gaussian ensembles fail through far-right zero combs. THEOREM [P] + IDENTITY [P] + KILL [P] + SURVIVOR
+- **Motivation.** L287 kills finite-dimensional smooth averages: their slices are compact or atomic. Infinite-dimensional Gaussian ensembles on `W_k` (`F = ζ^k + G`, `G = Σ c_jE_j` with the `E_j` vanishing below `N ≥ 2`, so `f_1 = 1` is deterministic) have real-analytic expected zero densities (Kac–Rice / Edelman–Kostlan). So they pass L287's necessary condition by construction, and need a separate test.
+  - `lam_F(n)` is a holomorphic polynomial in the `c_j` (Newton identities with `f_1 = 1`), so all moments are finite and `lam̄ := E[lam_F]/k` is a well-defined, real, integer-supported, pole-carrying weight system.
+- **Theorem L288.1 [P] (holomorphic barycenter).** Let `c ↦ F_c` be coefficientwise polynomial in `c ∈ ℂ^d` with `f_1` fixed. Let `ν` be any probability measure representing `c₀` on holomorphic polynomials (`∫P dν = P(c₀)`), for example any measure invariant under `c − c₀ ↦ e^{iθ}(c − c₀)`. Then `∫lam_{F_c} dν = lam_{F_{c₀}}`.
+  - *Proof.* `lam_{F_c}(n)` is a holomorphic polynomial in `c`. ∎
+  - Consequence: **circular complex noise is Weil-invisible.** It smears zeros, but the averaged Weil functional equals that of the center. This is Green's identity: circular smearing changes `E log|F|²` by a term whose Laplacian pairs to boundary terms only against holomorphic tests.
+  - Real families: a measure on `ℝ^d` represents a point only if it is a Dirac mass (`∫c² = (∫c)²`). So real averages are never trivial in this sense, and only non-circular noise can change the producer.
+- **Identity L288.2 [P] (geometric mean).** `lam` is linear in `log F`. So `lam̄ = lam_{F̄}` with `F̄ := exp(E[log F_c])`, taken coefficientwise as a formal Dirichlet series.
+  - For a centered real Gaussian `G` with pseudo-covariance `K₂(s) := E[G(s)²] = Σ_j E_j(s)²` (holomorphic, a sum of squares of twins), Wick's theorem gives `E[log F] = k log ζ + Ψ(K₂/ζ^{2k})`, where `Ψ(x) = E log(1+√x Z) = −Σ_{l≥1} ((2l−1)!!/(2l)) x^l` (formal; `Z` standard real normal; each Dirichlet coefficient receives finitely many terms because `K₂` vanishes below `N²`).
+  - So **the averaged producer depends only on `K₂`**, a sum of squares in `W_k·W_k ⊆ W_{2k}`. Circular noise has `K₂ = 0`, recovering L288.1.
+  - Expected zero density (centered part, for orientation): `E log|G|² = log K − γ − log 2 + log(1 + √(1 − |K₂/K|²))`, with `K = E|G|²`.
+    - The square-root term is singular on the line, where `|K₂| = K` because `Λ_G` is real there. Its Laplacian gives the expected density of real zeros, which is positive.
+    - The remaining off-line part is real-analytic.
+- **Kill L288.3 [P] (far-right zero combs).** Far to the right, `F ≈ 1 + g_N N^{−s}`. So `F` has zeros at `σ = log|g_N|/log N`, at the heights where `N^{−it} = −|g_N|/g_N`: **a vertical comb of period `2π/log N` whose offset is the phase of `g_N`.**
+  - *Real coefficients:* the offset is `0` or `π/log N`. Every slice is atomic in `t`, so the zeros are visible (L287) and the ensemble fails.
+  - *Elliptical (non-circular complex) noise:* given `|g_N| = R`, the phase density `p(φ|R) ∝ exp(−R²(α cos²φ + β sin²φ))` with `α ≠ β`. The slice criterion continues it by `η = (σ−½)log N = log R − ½log N`. Then `|p(φ+iη|R)| ≈ exp(c|α−β|R⁴/N)`, which beats the Gaussian weight `e^{−R² min(α,β)}`. The balayage diverges, so the ensemble fails.
+  - *Circular noise:* the phase is uniform, the slice is constant and passes, but L288.1 makes it invisible.
+  - So **no unbounded Gaussian ensemble is a new producer.** The obstruction is the large-deviation tail of the leading coefficient, the Dirichlet analogue of large real roots of Kac polynomials (whose power sums `E[e_1^d] = (d−1)!!σ^d` break `|E p_d| ≤ E p_0`).
+- **Survivor (exact shape) [P].** Bounded ensembles: coefficients in compact sets, with phase-uniform (circular) laws at the support edge of every leading coefficient, and non-circular structure only in directions that never reach the far right.
+  - Far-right zeros are then confined (`σ ≤ log R₀/log N`), with a flat top (constant in `t`) and a uniform slice at the edge. They pass L287.
+  - What remains is bulk positivity: the balayage `B(t) = ρ_on(t) + ∫[ρ(t+iδ,δ) + ρ(t−iδ,δ)]dδ ≥ 0` of the expected zero density near the line. There the `K₂` correction is the only producer-relevant datum.
+- **Conjecture L288 (bounded random-twin producer).** For some `k`, `N` and some bounded non-circular law on `W_k` (small below `H₀`, dominant above), the geometric-mean weights `lam_{F̄}`, `F̄ = exp E log(ζ^k + G)`, are Weil-positive.
+  - It is consistent with every kill so far: not finite-dimensional (L287), not circular (L288.1), not unbounded (L288.3).
+  - Open core: a sign for `B(t)` in the bulk. This needs a two-point (pair-correlation) analysis of random twins near the line, because `B` is a second-order balayage of `K₂`.
+
+### L289 — Random twins near ζ^k: the second-order kill at k-fold zeros; only the first intensity matters; stationary intensities balayage positively. THEOREM [P] + CORRECTION + LEMMA [P] + REDUCTION
+- **Correction to L288's open core.** The Weil functional is linear in the zero measure. So `E[Q_{lam_F}(h)] = ∫ h dρ₁`, where `ρ₁` is the **first intensity** (expected zero density) of the ensemble. Pair correlations play no role. The bulk question is whether `ρ₁` has a nonnegative balayage.
+- **Theorem L289.1 [P] (non-circular noise is indefinite at k-fold zeros, k ≥ 2).** Let `F = ζ^k + εG` with `G` a centered random twin, and let `ρ = ½+iγ` be an on-line zero of ζ where `G` is perturbative.
+  - Locally `F ∝ x^k + a` with `x = γ_F − γ` and `a = εG(ρ)/c`. On the line `a` is real (both completions are real there).
+  - Power sums of the roots of `x^k + a` are `p_m = 0` unless `k | m`, and `p_{jk} = k(−a)^j`. Hence `E Σ_{cluster} h(γ+x_j) = k h(γ) + Σ_{j≥1} k·h^{(jk)}(γ)·E[(−a)^j]/(jk)!`.
+  - The first nonzero correction is `j = 2`: `(k/(2k)!)·E[a²]·h^{(2k)}(γ)`, with `E[a²] ∝ ε²Λ_{K₂}(ρ)/Λ_ζ'(ρ)^{2k} ≠ 0` for non-circular noise. (For circular noise `E[a²] = 0`, which is L288.1 again.)
+  - For `k ≥ 2`, `h ≥ 0` with a double zero at `γ` still allows `h^{(2k)}(γ)` of **either sign**. At level `A > log γ` (L85 Nyquist), tests can vanish doubly at all ζ-zeros in a window. Scaling `h` at resolution `1/A` makes the correction `≍ ε²A^{2k−2}` against a bounded tail.
+  - So **for every fixed `ε > 0` there are tests with `E[Q] < 0`.** Non-circular noise that is perturbative at even one on-line multiple zero of the mean destroys positivity.
+  - For `k = 1` the correction is `h''(γ) ≥ 0` at a double zero of `h`, so it is benign. But `V_1 = ℂζ` has no twins.
+- **Consequences.**
+  - Under RH, small random twins of `ζ^k` are never producers, whatever the covariance. The k-fold zeros of the mean are unstable under every non-circular perturbation (this is the rosette of L273/L284, now quantitative and noise-independent).
+  - Without RH the same holds wherever ζ's zeros are where the noise is small. So the noise must be **non-perturbative at every ζ-zero** (heights `≥ 14.13`) and small near the pole (`s = 1`), so that the order-`k` pole keeps paying the Γ-dip (L275).
+- **Lemma L289.2 [P] (stationary intensities balayage positively).** Let the off-line first intensity, slice by slice, be `ρ(t, δ) = a(δ)·L(t)` with `L` analytic in `|Im t| < δ` and `Re[L(t+iδ)+L(t−iδ)] ≥ 0`. Then the off-line contribution is `≥ 0`.
+  - *Examples.* `L ≡ const` (stationary). `L(t) = log(|t|/2π)` for `|t| > δ`: `Re[L(t+iδ)+L(t−iδ)] = log((t²+δ²)/4π²) ≥ 2L(t)`. Slowly varying analytic profiles lose only `O(δ²|L''|)`.
+  - So at large heights, where twin statistics are locally stationary (density `(k/2π)log(t/2π)`), off-line expected zeros of a non-perturbative random ensemble are **harmless to leading order**. Negativity can only come from non-stationary structure (Γ-factor, pole, low heights) and from edges of the noise law (L288.3).
+- **Reduction [P].** PBAP ⟸ a bounded, non-circular random twin ensemble `F = ζ^k + G` such that:
+  - `G` dominates `ζ^k` on discs around all ζ-zeros;
+  - `G` is small near `s = 1`;
+  - `G` has flat-top phase-uniform edges;
+  - the first intensity has a nonnegative balayage in the **non-stationary zone** `|t| ≲ T₁` (`T₁` where the local-stationarity error drops below the on-line density).
+
+  The ensemble is a constructive handle on PBAP, and the difficulty is localized to a compact height range plus edge effects.
+- **Status.** No producer. The ensemble door survives with a sharp shape: dominant everywhere on ζ's zeros, recessive at the pole, locally stationary above `T₁`. The open core is a compact-height positivity problem for an explicit first intensity, `(1/4π)Δ[log K_Λ + log(1+√(1−|K₂/K|²))]` plus pole corrections. Here `K_Λ = Σ|Λ_{E_j}|²` is FE-symmetric, and the Γ-factor drops out of the Laplacian: it is harmonic off its poles.
+- **L289 self-correction (localization claim withdrawn).** The claim that "large heights are harmless to leading order" is wrong.
+  - The expected intensity of a twin ensemble is built from `K(s,s̄) = Σ c_{mn} m^{−s} n^{−s̄}`, which is almost periodic in `t` with frequencies `log(n/m)` up to `≈ k log t` (the approximate-functional-equation length).
+  - The balayage continues `t → t ± iδ` and multiplies each component by `2cosh(δ log(n/m))`. At the zero-scale displacement `δ ≈ c/log t`, that factor is `cosh(ck)`. The small fine structure of the intensity is amplified, and slow variation of the mean intensity says nothing about the sign.
+  - Consistency check through the conservation law: if ζ had a detectable off-line zero at height `T₀` (L279), a prime-blind test concentrated at `T₀` gives `arch + pole < 0`. Every ensemble's `B` has the same prime-blind pairings, so `B` must be negative near `T₀` for **every** ensemble. Positivity cannot be localized to compact heights.
+  - Lemma L289.2 stays true for genuinely translation-invariant intensities. The reduction stays true as stated (PBAP ⟸ ensemble with `B ≥ 0`), but its difficulty is global, as in L279.
+
+### L290 — Pólya twins: deleting ζ^k's low coefficients to make the n=1 term dominate, and the tail-inflation theorem that kills it. ATTEMPT + THEOREM [P] + KILL [P]
+- **Idea.** Take `F_M ∈ V_k` with `f_1 = 1`, `f_n = 0` for `2 ≤ n ≤ M`, and the polar part of `ζ^k`.
+  - Then `Λ_{F_M} = G*_P + (tail)`, where `G*_P(s) := ∫_1^∞ K_k(y)(y^s+y^{1−s})dy/y + P_{ζ^k}(s)` is the n=1 Riemann completion (degree-`k` analogue of Pólya's fake ξ).
+  - Below the AFE length `2πM^{2/k}` the zeros of `F_M` would be those of `G*_P`: Gram-type real simple zeros at large height and ζ^k-like behaviour (pole + n=1 term) at low height.
+  - If `G*_P` were real-rooted, L285's dilution reduction would give PBAP as `M → ∞` (bad zeros only above `2πM^{2/k}`, weight `≪ k log T_M/T_M`).
+- **Theorem L290 [P] (tail inflation).**
+  - *Exponential decay of the main term.* Suppose `F_M` exists with `|f_n| ≤ Cn^B` (C allowed to grow polynomially in M). Then the tail theta `Σ_{n>M} f_n K_k(ny) = O(M^{O(1)}e^{−πkM^{2/k}})` on `y ≥ 1`. So `G*_P(½+it) = O(e^{−kπ|t|/4}poly(t)) + O(M^{O(1)}e^{−πkM^{2/k}})` uniformly in `t`, and letting `M → ∞`, `G*_P` decays exponentially on the line.
+  - *But it cannot.* Integration by parts at the endpoint `y = 1` gives an asymptotic series of `G*_P(½+it)` in powers of `1/s`, with coefficients built from `K_k^{(j)}(1)` and the `2k` polar coefficients. For `k = 1` the leading term is `(1 + 2e^{−π})/(s(s−1)) ≠ 0`. In general, cancellation to all orders needs infinitely many identities among the `K_k^{(j)}(1)`, which the full `θ_{ζ^k}` satisfies (theta FE at the self-dual point) and the n=1 term alone does not. With finitely many polar coefficients they cannot all be met, so the decay fails.
+  - **So no polynomially bounded family `F_M` exists.** For fixed `M`, the tail must cancel an `O(1)` FE-defect at `y = 1`. That forces `max_{n>M}|f_n| ≳ exp(πkM^{2/k}(1+o(1)))`.
+  - General form: every polynomially bounded `E ∈ W_k` has its low part `Σ_{n≤M} e_n K_k(ny)` FE-balanced at `y = 1` to precision `e^{−πkM^{2/k}}`. Low coefficients cannot be edited; Theorem A twins satisfy this trivially by vanishing below `N`.
+- **Kill.** With inflated tails, `F_M ≈ 1 + f_{n₀}n₀^{−s}` far to the right, so zeros sit at `σ ≈ πkM^{2/k}/log M` **at every height** (far-right combs, L288.3), including low heights. Their weight `e^{Aσ}(1+γ)^{−2}` diverges, so the dilution reduction fails.
+- **Reading.** Pólya-type n=1 domination (the only classical source of real-rootedness for fake ξ's) is incompatible with the integer-frequency FE in every degree. The FE ties the low coefficients to the self-dual balance at `y = 1`, and any edit is paid for by far-right zeros. Positive survivor: the low-coefficient balance law (paper). Lean candidate: the k=1 endpoint coefficient `1 + 2e^{−π}`.
+
+### L291 — Operator producers: positivity for free, faithfulness as the whole problem. REFORMULATION [P] + CALIBRATION + KILL (via Krein pinning)
+- **Reformulation [P].** By Bochner, `W ≠ ∅` ⟺ there is a positive measure `μ` on `ℝ` with `μ̂ = D_∞ := pole + arch` off `{±log n : n ≥ 2}`. Any self-adjoint `H` (spectral measure `μ`, a regularized trace) whose trace formula has:
+  - **faithful smooth part**: the archimedean distribution `2cosh(u/2) − 2k(|u|) + δ-terms`, i.e. counting function `θ(T)/π + 1 + o(1)`;
+  - **log-integer orbit lengths**: atoms only at `±log n`;
+
+  is a producer. Positivity is automatic; only faithfulness has to be built.
+  - The Lefschetz reading of the datum: `k(u) = e^{−u/2}/(1−e^{−2u})` is exactly a fixed-point contribution (transversal contraction rate 2, half-density twist). `e^{±u/2}` are the `H⁰/H²` terms. So a faithful producer is a flow with one archimedean fixed point of that type, closed orbits of lengths `log n`, and a skew-adjoint generator on `H¹` (the Hodge/Weil producer in Deninger's dictionary). The requirement is exactly the user's "faithful positive Hodge/Weil producer".
+- **Calibration.**
+  - Quantum graphs with edge lengths `log p` have positive spectral measures and log-integer orbit lengths (Kottos–Smilansky / Kurasov–Sarnak), but their smooth part is a constant Weyl term `L·δ₀`: not faithful.
+  - Sonin-space and prolate constructions (Connes–Consani; CCM, *Zeta Spectral Triples*, arXiv:2511.22755) are self-adjoint with faithful-looking smooth parts at finite scale, but use primes `≤ λ²`; their convergence step needs positivity itself (STATUS 1461).
+- **Kill via Krein pinning (corpus).** Positive completions of the level-`L` Weil form live on zero ordinates below `≈ e^{2L}` (`krein-completion-pinning`, `landau-height-krein-pinning`). So any faithful operator producer has spectrum pinned to ζ's zeros at every finite level. Faithful operator producers are Hilbert–Pólya operators below every finite height. Positivity-by-construction does not decouple from RH: faithfulness plus integer orbits already forces the spectrum.
+- **Verdict.** No producer. The operator route is the right *shape* (positive by construction) but is equivalent to Hilbert–Pólya, finite level by finite level. Unlike twins or averages, it has no non-ζ freedom left.
+- **L291 self-correction.** Krein pinning is a statement about **Λ's** level-`L` form (prime weights fixed below `e^L`). A faithful operator producer with **different** integer weights `c_n` has its own finite-level form, whose positive completions are pinned to *its* spectral data, not to ζ's zeros. So the "kill via Krein pinning" applies only to producers that agree with `Λ` below `e^L`. The operator route stays open as stated: faithful smooth part plus log-integer orbits ⟺ PBAP. It is a re-encoding, not a kill.
+
+### L292 — Runge twins: reshape twins locally (Müntz–Szász completeness), then dilute. LEMMA [P] + KILL [P] (tail inflation) + CALIBRATION
+- **Idea.** If completed twins could approximate any FE-symmetric target `T` uniformly on compacts `K_j = [½−X_j, ½+X_j] × [−T_j, T_j]`, take `T` with only real simple zeros. Hurwitz then makes the approximants real-rooted on `K_j`, and L285's dilution limit would give PBAP **unconditionally**: no RH, no Euler product.
+- **Lemma [P] (local reshaping is available).** On `y ≥ 1`, `K_k(ny) ≍ exp(−πk(ny)^{2/k})`: exponentials `e^{−λ_n x}` in `x = y^{2/k}` with `λ_n = πk n^{2/k}`. Since `Σ 1/λ_n = ∞` for `k ≥ 2`, Szász's half-line Müntz theorem makes `{K_k(n·)}` complete on `[1, ∞)`. Combined with Theorem A's FE-consistent relations, twin thetas are plausibly dense in the FE-consistent class, so compact reshaping is not obstructed by linear algebra. (Paper sketch; the FE-consistency closure is the point to verify.)
+- **Kill [P] (tail inflation, L290 generalized).**
+  - Reshaping `Λ_F` on `K_j` changes the theta function on `y ≥ y₀(K_j)`, i.e. the coefficients `n ≲ M_j` with `M_j^{2/k} ≍ T_j/2π` (AFE length).
+  - L290's self-dual balance law then forces the compensating tail to have size `≳ exp(πkM_j^{2/k}) = exp(≍ kT_j/2)`.
+  - That produces far-right zero combs at `σ ≈ πkM_j^{2/k}/log M_j ≍ T_j/log T_j`, at every height including low ones.
+  - Their dilution weight `e^{A(σ−½)}(1+γ)^{−2}` diverges for every fixed level `A`, so the dilution fails. Uniform strip control would need `X_j = o(log T_j)`; tail inflation gives `X_j ≍ T_j/log T_j`.
+- **Circular escape is closed.** Averaging the comb over the tail coefficient's phase is circular, hence invisible (L288.1). The average returns `lam` of the tail-free centre, which is not a twin (no FE, no conservation law).
+- **Principle (consolidating L288.3, L290, L292).** *Twins cannot be reshaped anywhere on the critical line without far-right zero combs whose depth grows linearly with the reshaped height.* The functional equation's self-dual balance at `y = 1` is global: every local edit is paid for at `σ → ∞`.
+- **Literature check (this cycle).** The rational-twin lemma of L286 is a corollary of Kaczorowski–Perelli's degree-1 classification of `S♯` (conductor in `ℕ`). So L286's Hecke route is a re-proof, **REDISCOVERED as a theorem**; only the reformulation of L278 is new. Not worth formalizing.
+- **Status.** No producer. Every construction of non-ζ objects with ζ's exact datum has now been excluded in its natural class: twins (perturbative and reshaped), averages (finite, circular, Gaussian), Pólya-dominated twins, rational twins and operator producers with non-Λ weights (re-encoding only). They all reduce to a phase-locked object without off-line zeros, the corpus's MUST-650/662 terminus.
+
+### L293 — The pole cannot be weak, and transitions cannot be sharp: two quantitative obstructions to dilution sequences. THEOREM [P] ×2
+- **Pole rosette [P].** Let `F = cζ^k + E` (`E ∈ W_k`, `E(1) ≠ 0`). On a small circle around `s = 1` where `|cζ^k| > |E|`, `F` has the same zeros-minus-poles count as `cζ^k`, namely `−k`. On a larger circle where `|E| > |cζ^k|` it has the count of `E`, namely `0`.
+  - So `F` has exactly `k` zeros in the annulus `|s−1| ≍ r = (|c|/|E(1)|)^{1/k}` (and `k` mirrored around `s = 0`). They have displacement `≈ ½` and normalized mass `1`.
+  - The order-`k` pole's `k` "virtual zeros" (the `+k` in `N_F = kθ/π + k + S_F`) are absorbed by the Dirichlet part's winding only when the pole is not dominated nearby (`ζ^k`: `r = ∞`). A weak pole (`c → 0`) releases them next to `s = 1`.
+  - So the pole order is free, but **the pole's dominance region is not**: a producer twin must look like `ζ^k` on a neighbourhood of `s = 1` large enough to keep `r` away from every fixed window. This is the Γ-dip law (L275) in divisor form.
+- **Transition-width law [P].** Twins with polynomially bounded coefficients have `|F(½+it)| ≤ t^{O(k)}`, so `log|E/ζ^k|` along the line moves by at most `O(k log t)` per unit `log t`.
+  - Meanwhile `log|ζ(½+it)|^k` has spread `≍ k√(log log t)` (Selberg).
+  - Rosettes at ζ-zeros with radius in `[η, spacing]` therefore occur for a positive fraction of ζ-zeros over a height band of relative width `≍ √(log log T)/log T`. That band contains `≍ T√(log log T)` zeros, a positive normalized bad mass at fixed `η`.
+  - The transition from `ζ^k`-dominance to `E`-dominance cannot be made sharp. Dilution (L285) needs bad mass `→ 0` in every window. That forces the transition above every fixed height, so `ζ^k` dominates where its own off-line zeros (if any) live, and this is circular in RH.
+- **Reading.** Together with tail inflation (L290–L292): twins are rigid at `σ → ∞` (self-dual balance), rigid at `s = 1` (pole rosette) and soft only through slow, wide transitions. No dilution sequence avoids all three.
+
+### L294 — Function-field products and the archimedean window: the atomic p.d. cone cannot carry the datum near u = 0. OBSERVATION [P] + KILL [P]
+- **Atomic positive cone [P].** For curves `C_p/𝔽_p`, Weil's theorem makes each `Σ_m log p·p^{−m/2}(Σ_j α_{p,j}^m)(δ_{m log p}+δ_{−m log p})` positive-definite (its transform is the real zero measure of `P_p(p^{−s})`, local poles included via Poisson).
+  - Sums over `p`, Poisson combs `Σ_k δ_{k log a}` and their positive combinations give a large cone `C_atom` of positive-definite distributions supported on `±log ℕ ∪ {0}`.
+  - `W` is invariant under adding `C_atom` to `D_lam`, i.e. subtracting atomic positive pieces from the weights. So `W ≠ ∅` would make `W` a large convex set if it is nonempty.
+- **Kill [P].** A producer must equal `pole + arch = 2cosh(u/2) − 2k(|u|) + δ₀-terms` on the window `(−log 2, log 2) ∖ {0}`, where no atoms live.
+  - `C_atom` contributes nothing there. A Krein argument rules out splitting: a positive-definite `D₀` matching the datum near `0` (Connes–Consani's archimedean positivity at small support) plus a positive-definite remainder vanishing near `0` forces the remainder to be zero, since `|D(u)| ≤ D(0)`.
+  - The archimedean window must therefore be carried by the same positive-definite object that carries every prime atom. Archimedean and arithmetic positivity cannot be assembled from separate positive pieces.
+- **Reading.** This is the producer-level form of HF-F11/F12. Weil's function-field producers (Hodge index) live entirely in `C_atom`. Over ℚ the archimedean window couples to all `log n` through one positive-definite kernel, which is exactly the missing "surface".
+
+### L295 — Mechanism search I: positive-piece mechanisms (Herglotz sums / quantum graphs, Lee–Yang crystals). Both fail for one structural reason. THEOREM [P] ×2 + LAW
+- **Target form (exact).** `lam ∈ W` ⟺ `H := Ψ₀ − D_lam` is Herglotz on `σ > ½`. Here `Ψ₀ = Γ_ℝ'/Γ_ℝ + 1/s + 1/(s−1) = 1/(s−1) − Σ_{n≥1}1/(s+2n) + C`: residue `+1` at `s = 1`, anti-masses at the trivial points `−2n`.
+  - A mechanism is anything that manufactures `H` as a Herglotz function while forcing `Ψ₀ − H` to be a Dirichlet series over `ℕ`.
+- **(a) Herglotz sums (quantum graphs, Kirchhoff coupling, DtN additivity) [P].**
+  - A first-order edge of length `½log p` with reflection `r` has Weyl function `e_p = (1 + r p^{½−s})/(1 − r p^{½−s})`. It is Herglotz on `σ > ½` iff `|r| ≤ 1`, and `e_p − 1 = 2Σ_m r^m p^{m/2} p^{−ms}` is supported on powers of `p`.
+  - Writing `Ψ₀ − D_lam = m_∞ + Σ_p w_p e_p` with all pieces Herglotz forces `lam(p^m) = −2w_p r_p^m p^{m/2}`. Then `lam(p) > 0` needs `r_p < 0`, and `lam(p²) < 0` follows. The best case `r_p = −p^{−½}`, `w_p = ½log p` gives `D_lam = −(ζ/ζ(2s))'/(ζ/ζ(2s))`, the squarefree series, which again carries ζ's zeros.
+  - Worse, `Σ_p w_p = ∞` (forced by `Σ lam ~ x`) must be absorbed by `m_∞`, which is impossible for a fixed archimedean piece. Connes' cutoff divergence `2log Λ·h(1)` reappears.
+  - **Law.** In `Ψ₀ − D_Λ = Ψ₀ + ζ'/ζ = Ψ₀ − Σ_p (log p/2)(e_p − 1)` (with `r = +p^{−½}`) the Euler pieces enter with **negative** sign: they are anti-Herglotz. A sum of positive local pieces can never produce the prime sign. ζ's positivity, when it holds, is a global cancellation (the FE phase lock `Re(ζ'/ζ)(½+it) = −θ'(t)`), not a sum of positive parts.
+- **(b) Lee–Yang crystals (Kurasov–Sarnak) [P].**
+  - For a Lee–Yang polynomial `P` and lengths `ℓ_j = log p_j`, the zeros of `P(e^{iℓx})` are real. Their measure is a positive Fourier quasicrystal with spectrum in `±{⟨m,ℓ⟩ : m ≥ 0} ⊆ ±log ℕ`, because `log P` has nonnegative exponents on the polydisc.
+  - This is a genuine positive mechanism with integer-log spectrum, but its density is constant (finite exponential polynomial): no archimedean datum.
+  - Grafting the archimedean phase, `g = Re(e^{iθ(t)}P(t))`, keeps real zeros above the dip (Hermite–Biehler), but the zero measure picks up the sawtooth terms `FT[e^{2ikθ(t)}(P/P̄)^k]`: chirps with continuous spectrum. They reorganize into integer frequencies only under an exact Dirichlet FE, i.e. for twins (L273).
+  - **Law.** Discrete faithful producers = real-rooted twins. Every non-FE real-rooted construction is chirp-contaminated.
+- **Consequence.** A faithful mechanism must create positivity **non-additively**, as one global object whose archimedean phase and integer spectrum are locked. That is precisely a polarization (positive invariant form) on a single "H¹".
+
+### L296 — Mechanism search II: the Boolean/permutohedral dictionary for the prime part of the Weil Gram matrix, and where the archimedean place breaks it. OBSERVATION [P] + OBSTRUCTION [P] + PROGRAMME
+- **Dictionary [P].**
+  - Take tests `f = Σ_{d|N} a_d φ(x − log d)` with `N = p₁⋯p_k` squarefree and `1 < d < N`. The prime part of Λ's Weil Gram matrix is the Hasse adjacency of the Boolean lattice `B_k`, weighted by `log p/√p` in direction `p`. For a general producer, composite ratios add comparability edges `d' | d`.
+  - The boundary divisors `D_S` (`∅ ≠ S ⊊ [k]`) of the permutohedral variety `X_k` are in bijection with these `d`. `D_S·D_T ≠ 0` iff `S, T` are comparable.
+  - For `k = 3` the match is exact: the hexagon `p – pq – q – qr – r – rp – p` is both the prime-ratio graph and the boundary cycle of the del Pezzo hexagon surface (all `D_S² = −1`). The intersection matrix `−I + A` has signature `(1,3)`, the Hodge index. The Weil Gram matrix has the same sign pattern (positive diagonal, negative prime off-diagonals).
+  - So the arithmetic part of Weil positivity is combinatorially a Hodge–Riemann form on `H²(X_k)` (Adiprasito–Huh–Katz territory).
+- **Obstruction [P].**
+  - The archimedean kernel `K(log(d/d')) = 2cosh(½log(d/d')) − 2k(|log(d/d')|)` couples **incomparable** pairs, which have zero toric intersection.
+  - Arithmetic (Arakelov) toric geometry does couple disjoint divisors through Green currents (Burgos–Philippon–Sombra roof integrals), and the arithmetic Hodge index theorem (Gillet–Soulé, Yuan–Zhang) is unconditional. So the obstruction is not structural at fixed `N`.
+  - It is empty for a different reason: with bump width `ε → 0`, the divisor-test Gram matrix is diagonally dominant (`log(1/ε)` from the `1/|u|` singularity of `k`) and **trivially** positive. The content of PBAP lives in smooth tests, i.e. bumps at all real positions, not at `log d`.
+  - A toric dictionary indexed by `log ℚ_+` cannot see the continuous part. Over ℤ, translation-invariant families of arithmetic divisors exist only along `log ℚ_+` (rational torus translates), never along `ℝ`.
+- **Programme (what a faithful mechanism must be).** A polarized object carrying the archimedean place along a **continuous** parameter `u ∈ ℝ` and the primes as integer translates `log n` inside the same positive form. Candidates by elimination:
+  - (i) Connes–Consani's square of the scaling site (tropical, `ℝ`-parametrized Frobenius `Ψ(λ)`), where a tropical Hodge index is the missing theorem;
+  - (ii) CCM's spectral triples, where positivity at every level is the missing input.
+
+  Both reduce to one statement: **Hodge index on a surface whose Frobenius correspondences form an `ℝ_+^*`-family.** Combinatorial Hodge theory (AHK) proves Hodge–Riemann for the `log ℚ_+`-skeleton (`X_k`) at every `k`. The open step is passing from the toric skeleton to the continuous family, i.e. a tropical/continuous limit of permutohedral Hodge–Riemann forms that keeps the archimedean kernel.
+- **Next conjecture (bold, falsifiable).** *Conjecture L296 (permutohedral limit).* There are Kähler classes `ℓ_N` on `X_{k(N)}`, depending on `(log p)_{p|N}`, whose normalized Hodge–Riemann forms converge, as `N → ∞` through primorials and on bump tests of fixed width `ε`, to the Weil form of some integer-supported `lam`, via **canonical** classes `v_d = Σ_T M_{dT}((log p)_{p|N}) D_T` (incomparable boundary divisors are disjoint, so `D_S·D_T·ℓ^{k−2} = 0`; the archimedean coupling must come from the mixing matrix `M`, not from boundary self-pairings). AHK's signature then passes to the limit and would give `W ≠ ∅`.
+  - **Caveat (Sylvester).** Any Gram matrix with at most one positive eigenvalue is realizable by *some* vectors in a space of signature `(1, m)`. Realizability alone is circular. The content is canonicity: `M` must be defined from the toric/arithmetic data, independently of `lam`, and the identity `Q_ℓ(v_d, v_{d'}) = −G_{dd'}` proven, not fitted.
+  - First test: whether the natural choice `v_d = Σ_{T comparable to S(d)} (Σ_{p∈S△T} log p)^{−1} D_T`, or a Laplacian-type mixing on the Hasse graph, reproduces the profile `−2k(|u|)` as `k → ∞`.
+- **L296 self-correction (scope of the dictionary).** The Boolean/Hasse structure of the Gram matrix is exact only for bump widths `ε` below the minimal gap of the subset sums `log d`, which is the trivially positive, diagonally dominant regime.
+  - For fixed `ε` and `N → ∞` through primorials, the points `log d` become dense in `[0, θ(P)]`. Divisor-bump tests then do capture smooth tests, but every atom `log n` within `ε` of `log(d/d')` enters `G_{dd'}`, and the Boolean incidence is smeared into the discretized continuous Weil form.
+  - So the permutohedral skeleton is visible exactly where positivity is free and dissolves where PBAP lives. Conjecture L296 needs a structure that survives the smearing, i.e. the continuous `ℝ_+^*`-family itself. The dictionary is a guide to what that surface's combinatorics must restrict to, not a route by itself.
+
+### L297 — Direct-proof attempt of PBAP ("soft PBAP"): low/high frequency split. The exact failure point is one-sided sup control. ATTEMPT + REDUCTION [P]
+- **Hope.** Prime-blind positive-definite tests might be soft. Low-frequency ones are forced into a small window by Nyquist oversampling of the nodes `log n` (spacing `< π/6.3` for `n ≥ 3`), where positivity is known (Zhu `[−0.8, 0.8]`, corpus `μ₀`). High-frequency ones have `θ' ≳ ½log t > 0`. If the pole term were small on prime-blind tests, PBAP would follow unconditionally, and the producer would exist (L183, `W ≠ ∅ ⇒ RH?`, is open, so this does not contradict anything).
+- **Exact identity (prime-blind, all `n ≥ 2`).** Poisson summation for `g(x) = Φ(log|x|)|x|^{−½}` gives `pole(Φ) = 2Φ(0) − 2Σ_{m≥1}ĝ(m)`, i.e. `arch + pole = (1/π)∫Φ̂(t)[θ'(t) + 1 − Re ζ(½+it)]dt`. The pole is exactly the prime-blind pairing with `Re ζ` on the critical line (L239, L271).
+- **Where it fails.** Prime-blind positive-definite tests can localize at height `γ` with resolution `≈ π/log(γ/π)` (L279; Nyquist-modulated carriers `env(u)·cos(γu + φ̃(u))`, where `φ̃` is chosen to put zeros of `Φ` at the nodes). So the sign of `θ' + 1 − Re ζ` at every resolvable scale matters.
+  - The dual statement (Hahn–Banach) asks for a Dirichlet series `Q = Σ_{n≥2} q_n n^{−s}` with:
+    - residue `1` at `s = 1`;
+    - tempered: `Σ_{n≤x} q_n = x + O(x^{½+ε})`;
+    - **one-sided sup bound** `Re Q(½+it) ≤ θ'(t)` for every `t`.
+  - Two ways to meet the last condition, and both fail:
+    - *Kronecker/Bohr resonance.* Without strong multiplicative correlations, `Re Q` reaches `≈ Σ|q_p|p^{−½}`, which diverges.
+    - *FE phase lock.* `Re(−F'/F)(½+it) = kθ'` exactly for twins. Temperedness then means no off-line zeros.
+  - Mollified and Selberg-weighted choices tame mean squares, not sups (L3, L282).
+- **Reading.** "Soft PBAP" is false as a *method*: the high-frequency regime is not automatically positive, because prime-blind localization reaches the zero scale, where `Re ζ` (equivalently the dual sum) must be controlled pointwise. The producer problem is exactly: **an RH-quality prime number theorem plus a Lindelöf-quality one-sided bound on the critical line, for some integer-weighted Dirichlet series.** Only phase-locked series meet the one-sided bound, and phase-locked series are twins.
+
+### L298 — FE-free producer criterion (Hadamard–Hermite–Biehler), the universality kill, and the split "tempered (easy) + phase-locked (hard)". THEOREM [P] + KILL [P] + DECOMPOSITION
+- **Theorem L298.1 [P] (no functional equation needed).** Let `F` be a Dirichlet series over `ℕ` with `f_1 = 1` and a simple pole at `s = 1`. Suppose:
+  - `Λ_F(s) := s(s−1)Γ_ℝ(s)F(s)` is entire of order `1` (so `F` must vanish at the trivial points `−2n`, otherwise `Γ_ℝ`'s poles survive and contribute anti-Herglotz terms `−1/(s+2n)`);
+  - `Λ_F` has **no zeros in `Re s > ½`**;
+  - the Hadamard drift satisfies `Re(b + Σ_ρ 1/ρ) ≥ 0`.
+
+  Then `lam_F` (coefficients of `−F'/F`) is a full-cone producer for ζ's exact datum.
+  - *Proof.* `FT(D_lam) = 2Re[Ψ₀ − D_lam](½+it)` depends only on the right half-plane, and `Ψ₀ + F'/F = Λ_F'/Λ_F = b + Σ_ρ(1/(s−ρ) + 1/ρ)` is Herglotz on `σ > ½` when every `ρ` has `Re ρ ≤ ½`. ∎
+  - The spectral measure is `Σ_{on-line} πδ_γ + Σ_{Re ρ<½} πP_{½−Re ρ}(t − γ)`. Zeros strictly left of the line give **absolutely continuous** (Cauchy) mass, which is PC-82's forbidden shape.
+  - So "real-rooted twin" (L273/L278) was never necessary. A producer is any **Hermite–Biehler completion** `Γ_ℝ·s(s−1)·F` (zeros in the closed left half-plane, order 1) of an integer-frequency Dirichlet series. The FE forces symmetric zeros and hence the line; without the FE, the left half-plane suffices.
+- **Kill L298.2 [P] (universality).** Every such `F` is `ζ + V` with `V` analytic on `σ > ½`. If `V` is almost periodic there (Dirichlet polynomials, absolutely convergent series, `L(s,χ)` with even `χ` so the trivial zeros match, any Euler product jointly universal with ζ), then joint Voronin universality plus Bohr almost-periods give `ζ(s+iτ) ≈ −V(s+iτ) + c(s−s₀)` on small discs for a positive-density set of `τ`. Rouché then gives `≫ T` zeros of `F` in every strip `½ < σ₁ < σ < σ₂ < 1`. Davenport–Heilbronn phenomena are therefore forced for every combination independent of ζ.
+- **Decomposition L298.3 [P].** The producer conditions split into:
+  - **(a) tempered + pole + zero-free on `σ > ½`.** This is *easy*: `G = exp(Σ_{n≥2} c_n n^{−s}/log n)` with `Σ_{n≤x} c_n = x + O(1)` (Euler–Maclaurin, `c ≡ 1`) is zero-free on all of ℂ, with only the simple pole at `1`. With only prime support it is limited by prime gaps (`O(x^{0.525})` unconditionally, insufficient).
+  - **(b) one-sided boundary bound `Re(−G'/G)(½+it) ≤ θ'(t)`.**
+    - *Variance law [P].* For "generic" weights, `Re(−G'/G)(½+it)` behaves like a Dirichlet polynomial of length `t^{O(1)}` with variance `≍ log²t`. Its maximum over `[T, 2T]` is `≍ log T·√(log T) ≫ ½log T`, so (b) fails. (EM: `Re ζ(½+it)` large values, L282.)
+    - (b) holds only when the real part on the line has **zero variance**, i.e. it is phase-locked: `Re(−ζ'/ζ)(½+it) = θ'(t)` exactly by the FE.
+    - The Hadamard–Hermite–Biehler route (L298.1) is the only known way to get (b) from structure, and it turns (b) into a zero location for an order-1 completion. That needs trivial zeros at `−2n`, i.e. ζ-type archimedean coupling, and universality (L298.2) kills every combination not built from ζ itself.
+- **Status.** No producer, but the map is now exact.
+  - (a) is constructible unconditionally.
+  - (b) ⟸ a Hermite–Biehler order-1 completion. Hermite–Biehler order-1 completions with trivial zeros ⟹ ζ-correlated `F`.
+  - For ζ-correlated `F = ζ·U` (`U` zero-free), (a) needs ζ zero-free on `σ > ½`, which is RH. The remaining logical door is `F = ζ/B·(...)`, the Bohr/MUST-662 terminus.
+
+### L299 — Testing L298's Hermite–Biehler door: an unconditional left-zero completion of infinite order, the finite-order structure theorem, and the pole-cancelling shift. CONSTRUCTION [P] + THEOREM [P] + KILL [P] ×2
+- **Construction [P] (all zeros left, unconditionally).** Put `F := G₁(s)·ζ(2s)·(1 − 2^{½−s})`, with `G₁ = exp(Σ_{n≥2} n^{−s}/log n)`.
+  - `F` is a Dirichlet series over `ℕ` with `f₁ = 1` and a simple pole at `1` (from `G₁`).
+  - The pole of `ζ(2s)` at `½` is cancelled by the zero of `1 − 2^{½−s}`.
+  - The trivial zeros of `ζ(2s)` at `s = −n` cancel every pole of `Γ_ℝ`, so `E = s(s−1)Γ_ℝF` is entire.
+  - Zeros of `E`:
+    - `ρ/2` (`Re = β/2 < ½`, **unconditionally**);
+    - `−(2n+1)` (left);
+    - `½ + 2πik/log 2`, `k ≠ 0` (on the line).
+  - So every zero of `E` lies in `Re s ≤ ½`, with no hypothesis.
+  - **Failure:** `G₁` has infinite order (`log G₁ = −∫(ζ−1)` grows like the left continuation of ζ), so there is no Hadamard representation. `E'/E = Ψ₀ − (ζ−1) + 2(ζ'/ζ)(2s) + log2·2^{½−s}/(1−2^{½−s})`: the last two terms are bounded below on `σ > ½`, but `−Re(ζ−1)` carries the Euler–Maclaurin large values (L282). The left-zero property holds, and Herglotz fails through the exponential factor.
+- **Theorem L299.1 [P] (finite order forces zeros, and the pole forces ζ).**
+  - A Dirichlet series with a simple pole at `1`, finite order and **no zeros** is impossible. `(s−1)G` would be zero-free entire of finite order, hence `e^{a+bs}`, and `e^{a+bs}/(s−1)` is not a Dirichlet series.
+  - Every finite-order Dirichlet series with residue `1` at `1` is `ζ + V` with `V` entire of finite order. So in the order-1 Hermite–Biehler class of L298.1, the producer is `F = ζ + V` with all zeros of `Λ_ζ + s(s−1)Γ_ℝV` in `Re s ≤ ½`.
+  - L298.2 (universality) kills almost periodic `V` independent of ζ. Dependent `V = ζW + R` with `R, W` almost periodic reduces to universality of ζ against `−R/(1+W)`, so it is killed as well. `V = ζW` alone keeps ζ's zeros.
+  - **Within finite order, the Hermite–Biehler door is RH** (the only survivor is `V` correlated with ζ's zeros themselves). The infinite-order door has no Hadamard representation and falls back to the one-sided bound (L297).
+- **Kill [P] (pole-cancelling shift).** If ζ has an off-line zero `ρ₀` of multiplicity `m`, then `lam := Λ + 2m Re(n^{ρ₀−1})` is real, integer-supported and **tempered**: `ζ(s−ρ₀+1)` cancels the pole of `−ζ'/ζ` at `ρ₀`, and similarly at `ρ̄₀`.
+  - Its Herglotz function is `ξ'/ξ − m[ζ(s−ρ₀+1) + ζ(s−ρ̄₀+1)]`. On the line its real part is `πΣ_{on-line}δ_γ − m Re[ζ(1−δ+i(t−γ₀)) + ζ(1−δ+i(t+γ₀))]`.
+  - The smooth term is positive near `γ₀` (`ζ(1−δ) ≈ −1/δ`) but changes sign elsewhere, with size up to `|t|^{δ/2+ε}` (convexity). That beats the `log t` density, so it is not Herglotz.
+  - Localizing the correction is impossible: a Dirichlet series with a pole at `ρ₀` has Bohr-recurrent near-poles in `σ > ½+δ'`, i.e. two-signed bumps at a relatively dense set of heights. This is the L283/MUST-662 terminus reached from the constructive side.
+- **Reading.** The left half-plane can be reached unconditionally (`ζ(2s)`-type factors put every zero left), but only at infinite order. Finite order (Hadamard) is exactly what converts left zeros into positivity, and finite order plus the pole at `1` forces `ζ + V`. The phase lock and finite order are the same requirement seen twice.
+
+### L300 — The Riccati left-shift flow: a faithful, integer-frequency deformation that moves every zero of ζ left at unit speed with the pole pinned at 1, solved in closed form. It spawns poles at value-points. CONSTRUCTION [P] + THEOREM [P] + KILL [P]
+- **First order.** `V = ζ' + ζ²` is a Dirichlet series (`Σ(d(n) − log n)n^{−s}`) with a **simple** pole at `1` (residue `2γ`; the double poles cancel), and `V(ρ) = ζ'(ρ)` at every simple zero. So `ζ + εV` moves **every** simple zero, on or off the line, left by exactly `ε` to first order. Breaking the trivial zeros is benign: zero pairs at `≈ −2n−ε` stay left.
+  - Second order: `−(ε²/2)ζ''/ζ'` gives random-signed shifts of size `ε² log t`, which beat `ε` once `log t > 1/ε`.
+  - The endpoint `ζ' + ζ²` has zero pairs at `ρ ± i ζ'(ρ)^{−½}`, one typically right of the line.
+- **Exact flow [P].** `∂_εF = F' + F²/r(ε)`, where `r` is the residue at `1`.
+  - It preserves integer frequencies (`F'` and `F²` are Dirichlet series).
+  - It keeps a **simple pole at `s = 1`** (the double poles cancel; `ṙ = 2a₀`).
+  - At every simple zero `z` of `F_ε`: `ż = −(F' + F²/r)/F' = −1`. **All zeros move left at unit speed, exactly.**
+  - With `W = F/r`, `κ = ṙ/r`, the equation becomes `W_ε = W_s + W² − κW`, a Riccati equation along the characteristics `s = s₀ − ε`. Closed form:
+
+    `F_ε(s) = r(ε) e^{−K(ε)} · ζ(s+ε) / (1 − ζ(s+ε)/ζ(1+ε))`, with `K = ∫κ`.
+
+    The condition `I(ε) = 1/ζ(1+ε)` pins the pole at `1`.
+- **Kill [P].** `F_ε` has a pole wherever `ζ(s+ε) = ζ(1+ε)`, i.e. at every `ζ(1+ε)`-point of ζ.
+  - Since ζ is uniformly almost periodic on `Re w > 1`, the value-point at `w = 1+ε` recurs (Rouché along Bohr almost-periods) near `w = 1 + ε + it_k` for a relatively dense set of `t_k`.
+  - So `F_ε` has poles near `Re s = 1` at heights `t_k`. Each pole is a **negative** atom in the explicit formula, and its balayage onto the line gives two-signed Poisson bumps, so the result is not Herglotz.
+- **Conservation reading (new).** Within ζ's exact datum, moving zero mass left (which makes the balayage positive) is paid for by negative mass (poles) created at value-points of ζ. The explicit-formula balance is a conservation law, and the Riccati flow is its exact bookkeeping:
+  - shift zeros, and the datum (`Γ_ℝ(s+ε)`, pole `1−ε`) moves (L260);
+  - pin the datum, and poles appear at `ζ(1+ε)`-points.
+
+  This makes L279's "slack is spent zero by zero" exact: there is no datum-preserving deformation that is monotone in the right direction for every zero without creating singularities.
+- **Status.** No producer. New object: the Riccati flow (closed form, integer frequencies, pinned pole, uniform zero velocity). Its obstruction is the Bohr recurrence of value-points on `Re s > 1`. Avoiding it would need a flow whose spawned singularities sit at a non-recurrent value of ζ. Every `a ∈ ℂ` with `a ≠ 0` is taken by ζ recurrently on `Re s > 1` near the values it already takes, so such a flow would require the spawned poles to coincide with ζ's own zeros. That is again RH.
+- **L300 addendum (slack check, REDISCOVERED L74).** Tested the idea that prime-blind tests resolve zeros only to about half the spacing (L279), so they cannot dodge them. That would give `σ_pb := inf_{prime-blind p.d.}(arch+pole)/Φ(0) > 0`, i.e. strict producers with `μ_lam ≥ c·dt`, PBAP with slack, and an openness proof of existence.
+  - Already refuted in L74 and its refinement: Gordan's alternative on the near radical gives prime-blind **PSD combinations** `Σ f_i⋆f̃_i` with `arch/mass ≤ exp(−c e^{2a})`, because every `Σ c_n cos(τ log n)` has mean zero and is negative on a sub-Nyquist window where near-radical vectors localize.
+  - Single autocorrelations cannot dodge zeros, but combinations can. So `σ_pb = 0`, and `W` (if nonempty) consists only of critical, zero-slack points. Recorded so it is not re-proposed.
+
+### L301 — Target reframed: the phase-locked integer-frequency object is ζ in degree 1 (Hamburger, corpus) or a real-rooted twin in degree k ≥ 3. Hermite splitting is blocked by divisibility rigidity; large-degree zeros follow level sets of |ζ|. REDUCTION [L-corpus + P] + THEOREM [P] + LAW [P]
+- **Reduction.** On the line, phase lock means `e^{ikθ(t)}F(½+it) ∈ ℝ`, i.e. the functional equation `Λ_F(1−s) = Λ_F(s)` with `Γ_ℝ^k` (real coefficients). So the requested object is a real-rooted element of `V_k` with the order-`k` pole.
+  - `k = 1`: `V_1 = ℂζ` (corpus Hamburger theorem). The object exists iff RH.
+  - `k = 2`: `V_2 = ℂζ²` (Maass + spectral gap, paper). Again RH.
+  - `k ≥ 3`: an RTE question inside the formal Theorem A spaces. Existence would give an unconditional producer and refute PC-82/L278.
+- **Theorem [P] (Hermite splitting is impossible near `ζ^k`).**
+  - The heat flow is the classical way a `k`-fold real zero splits into `k` real zeros: `e^{−τD²}x^k` is a rescaled Hermite polynomial.
+  - A twin perturbation `ζ^k + E` that splits every on-line `k`-fold zero that way needs `E` to vanish to order `k−2` at every zero of ξ. Then `E/ζ^{k−2} ∈ W_2 = 0` (divisibility rigidity, L273.1), so `E = 0`.
+  - Partial splitting (rosettes, radius `|E(ρ)/ζ'(ρ)^k|^{1/k}`) gives near-line zeros only while `E` is small, which leaves ζ's own off-line zeros untouched.
+- **Large-degree level-set law [P].** For `F_k = cζ^k + G_k` with `R(s) := |G_k/c|^{1/k}` slowly varying, the zeros of `F_k` solve `ζ(s) = ω_j(−G_k/c)^{1/k}`: `k` value-point problems with targets equally spaced on the circle `|a| = R(s)`.
+  - As `k → ∞` the normalized zero measure converges to `(1/2π) d arg ζ` along the level set `{|ζ(s)| = R(s)}`.
+  - Level sets of `|ζ|` encircle ζ's zeros and reach far to the right, where `|ζ| ≈ 1`. The limit measure is off-line unless the level set is the critical line.
+  - By the functional equation, `{|ζ(s)| = |ζ(1−s̄)|} = {|χ(s)| = 1}` is the critical line (for `|t| > t₀`). But realizing `R(s) = |ζ(1−s̄)|^{...}` through a twin forces `|Λ_G| = |c||Λ_ζ|^k` on the line, hence `G = ±cζ^k` (identity theorem).
+  - So **the only way to make the large-degree level set equal the line is ζ itself**. This is the large-degree form of the phase lock.
+- **Verdict.** No new object. The phase-locked, no-off-line-zeros requirement is self-referential at every degree: near `ζ^k` (Hermite blocked by `W_2 = 0`), far from `ζ^k` (level sets of `|ζ|`), and at degree 1 (Hamburger).

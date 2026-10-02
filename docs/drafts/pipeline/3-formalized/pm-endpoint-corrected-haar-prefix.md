@@ -129,7 +129,7 @@ limit. Do not extrapolate the positive-damping classification to zero.
   successful scratch body were needed after promotion.
 - Final actual leaf passed with empty diagnostics. All17 declaration
   axiom reports are checking. Next arithmetic calibration has its own
-  paper card: [divisor second-moment density](../1-in-progress/pm-divisor-second-moment-density.md).
+  paper card: [divisor second-moment density](pm-divisor-second-moment-density.md).
   It seeks the exact centered diagonal's logarithmic coefficient and the
   cross cancellation required by admission, not an unsupported transfer
   from stationary variance to the anchored energy.

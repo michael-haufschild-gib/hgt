@@ -35,7 +35,7 @@ private theorem bagPacket_bt_error_le_main {H : ℝ} (hH : 1 < H) :
 
 /-- **Brun--Titchmarsh in `H/log H` form.**  The sieve level `√H` makes the error term a bounded
 multiple of the main term. -/
-private theorem bagPacket_primesBetween_le_div_log {a H : ℝ} (ha : 0 < a) (hH : 1 < H) :
+theorem bagPacket_primesBetween_le_div_log {a H : ℝ} (ha : 0 < a) (hH : 1 < H) :
     (BrunTitchmarsh.primesBetween a (a + H) : ℝ) ≤ 292 * H / Real.log H := by
   have hH0 : (0 : ℝ) < H := by linarith
   have hu : (0 : ℝ) < Real.log H := Real.log_pos hH

@@ -180,7 +180,8 @@ private lemma norm_nat_weighted_sum_le (f : ℕ→ℂ) (N : ℕ) (hN : 1≤N)
   have hn : (1:ℝ)≤N := by exact_mod_cast hN
   nlinarith only [hsum,htail,htri,mul_nonneg (sub_nonneg.mpr hn) hH]
 
-private theorem norm_reciprocal_weighted_sum_le
+/-- Quantitative reciprocal-phase estimate before choosing the moving split. -/
+theorem norm_divisor_reciprocal_weighted_sum_le
     (h T : ℝ) (N k : ℕ) (hh : 1≤h) (hk : 1≤k) (hN : 1≤N)
     (hTlo : (N:ℝ)^(2 : ℕ)≤T) (hThi : T≤4*(N:ℝ)^(2 : ℕ)) (hlarge : 8*h≤N) :
     ‖∑ d ∈ Icc 1 N,(d:ℂ)*Complex.exp (((2*Real.pi*(h*T/(d:ℝ)):ℝ):ℂ)*Complex.I)‖ ≤
@@ -228,7 +229,7 @@ private theorem eventually_reciprocal_weighted_sum_small (h : ℝ) (hh : 1≤h)
   rw [he] at hmul
   have hscaled := mul_le_mul_of_nonneg_right hmul.le hn.le
   have hkbound := mul_le_mul_of_nonneg_right hsmallk.le (sq_nonneg (N:ℝ))
-  have hb := norm_reciprocal_weighted_sum_le h T N k hh hk0 hN hTlo hThi hNlarge
+  have hb := norm_divisor_reciprocal_weighted_sum_le h T N k hh hk0 hN hTlo hThi hNlarge
   change _≤3*(N:ℝ)*((N:ℝ)/(k:ℝ)+1+C*Real.sqrt N) at hb
   simp only [div_eq_mul_inv] at hb hkbound ⊢
   nlinarith only [hb,hscaled,hkbound]
@@ -248,7 +249,8 @@ private lemma sqrt_window {M : ℕ} (hM : 1≤M) :
   · have h := Nat.lt_succ_sqrt' M
     exact_mod_cast (show M≤4*(Nat.sqrt M)^(2 : ℕ) by nlinarith only [h,hN])
 
-private def terminalReciprocalMode (M : ℕ) (k : ℤ) : ℂ :=
+/-- Normalized Fourier mode of the literal modulus-weighted terminal source. -/
+def divisorTerminalReciprocalMode (M : ℕ) (k : ℤ) : ℂ :=
   (∑ d ∈ Icc 1 (Nat.sqrt M),(d:ℂ)*fourier k (((M:ℝ)/(d:ℝ)):AddCircle (1:ℝ)))/(M:ℂ)
 
 private lemma fourier_reciprocal_eq (M d : ℕ) (k : ℤ) :
@@ -259,43 +261,45 @@ private lemma fourier_reciprocal_eq (M d : ℕ) (k : ℤ) :
   push_cast
   ring
 
-private lemma terminalReciprocalMode_tendsto_pos (k : ℤ) (hk : 0<k) :
-    Tendsto (fun M => terminalReciprocalMode M k) atTop (𝓝 0) := by
+private lemma divisorTerminalReciprocalMode_tendsto_pos (k : ℤ) (hk : 0<k) :
+    Tendsto (fun M => divisorTerminalReciprocalMode M k) atTop (𝓝 0) := by
   apply Metric.tendsto_atTop.mpr
   intro ε hε
   have hkR : (1:ℝ)≤k := by exact_mod_cast hk
   have hsmall := nat_sqrt_tendsto.eventually
     (eventually_reciprocal_weighted_sum_small (k:ℝ) hkR (ε/2) (by positivity))
-  have he : ∀ᶠ M : ℕ in atTop, dist (terminalReciprocalMode M k) 0<ε := by
+  have he : ∀ᶠ M : ℕ in atTop, dist (divisorTerminalReciprocalMode M k) 0<ε := by
     filter_upwards [eventually_ge_atTop (1:ℕ),hsmall] with M hM hMsmall
     obtain ⟨hN,hlo,hhi⟩ := sqrt_window hM
     have hb := hMsmall M hlo hhi
     have hpos : (0:ℝ)<M := by exact_mod_cast hM
-    rw [dist_zero_right, terminalReciprocalMode, norm_div, Complex.norm_natCast]
+    rw [dist_zero_right, divisorTerminalReciprocalMode, norm_div, Complex.norm_natCast]
     simp_rw [fourier_reciprocal_eq]
     rw [div_lt_iff₀ hpos]
     nlinarith only [hb,mul_le_mul_of_nonneg_left hlo (by positivity : 0≤ε/2),mul_pos hε hpos]
   exact eventually_atTop.mp he
 
-private lemma terminalReciprocalMode_neg (M : ℕ) (k : ℤ) :
-    terminalReciprocalMode M (-k)=star (terminalReciprocalMode M k) := by
-  simp only [terminalReciprocalMode, fourier_neg, star_div₀, star_sum, star_mul, star_natCast]
+/-- Negative terminal modes are exact conjugates. -/
+lemma divisorTerminalReciprocalMode_neg (M : ℕ) (k : ℤ) :
+    divisorTerminalReciprocalMode M (-k)=star (divisorTerminalReciprocalMode M k) := by
+  simp only [divisorTerminalReciprocalMode, fourier_neg, star_div₀, star_sum, star_mul, star_natCast]
   congr 1
   apply sum_congr rfl
   intro d _
   exact mul_comm _ _
 
-private lemma terminalReciprocalMode_tendsto {k : ℤ} (hk : k≠0) :
-    Tendsto (fun M => terminalReciprocalMode M k) atTop (𝓝 0) := by
+private lemma divisorTerminalReciprocalMode_tendsto {k : ℤ} (hk : k≠0) :
+    Tendsto (fun M => divisorTerminalReciprocalMode M k) atTop (𝓝 0) := by
   rcases lt_or_gt_of_ne hk with hneg|hpos
-  · have h := (terminalReciprocalMode_tendsto_pos (-k) (by omega)).star
-    simpa only [terminalReciprocalMode_neg,star_star,star_zero] using h
-  · exact terminalReciprocalMode_tendsto_pos k hpos
+  · have h := (divisorTerminalReciprocalMode_tendsto_pos (-k) (by omega)).star
+    simpa only [divisorTerminalReciprocalMode_neg,star_star,star_zero] using h
+  · exact divisorTerminalReciprocalMode_tendsto_pos k hpos
 
-private lemma terminalReciprocalMode_norm_le (M : ℕ) (k : ℤ) :
-    ‖terminalReciprocalMode M k‖≤1 := by
+/-- All terminal modes have the same unconditional unit envelope. -/
+lemma divisorTerminalReciprocalMode_norm_le (M : ℕ) (k : ℤ) :
+    ‖divisorTerminalReciprocalMode M k‖≤1 := by
   by_cases hz : M=0
-  · subst M; simp [terminalReciprocalMode]
+  · subst M; simp [divisorTerminalReciprocalMode]
   have hM : (0:ℝ)<M := by exact_mod_cast (show 0<M by omega)
   have hnorm : ‖∑ d ∈ Icc 1 (Nat.sqrt M),(d:ℂ)*fourier k (((M:ℝ)/(d:ℝ)):AddCircle (1:ℝ))‖≤
       ((Nat.sqrt M:ℕ):ℝ)^(2 : ℕ) := by
@@ -309,19 +313,20 @@ private lemma terminalReciprocalMode_norm_le (M : ℕ) (k : ℤ) :
         exact_mod_cast (mem_Icc.mp hd).2
       _ = _ := by simp; ring
   have hN : ((Nat.sqrt M:ℕ):ℝ)^(2 : ℕ)≤M := by exact_mod_cast Nat.sqrt_le' M
-  rw [terminalReciprocalMode,norm_div,Complex.norm_natCast,div_le_one hM]
+  rw [divisorTerminalReciprocalMode,norm_div,Complex.norm_natCast,div_le_one hM]
   exact hnorm.trans hN
 
-private lemma terminal_bernoulli_hasSum (M : ℕ) :
-    HasSum (fun k : ℤ => (DeletionMixedRefinement.bernoulliModeWeight k:ℂ)*terminalReciprocalMode M k)
+/-- The absolutely admitted Fourier series retains the full signed terminal mean. -/
+lemma hasSum_divisor_terminal_bernoulli_mean (M : ℕ) :
+    HasSum (fun k : ℤ => (DeletionMixedRefinement.bernoulliModeWeight k:ℂ)*divisorTerminalReciprocalMode M k)
       (((∑ d ∈ Icc 1 (Nat.sqrt M),(d:ℝ)*(bernoulliPeriodic ((M:ℝ)/(d:ℝ))+1/12))/(M:ℝ) : ℝ) : ℂ) := by
   have hs := hasSum_sum (s:=Icc 1 (Nat.sqrt M)) (fun d _ =>
     (DeletionMixedRefinement.hasSum_bernoulliModeWeight_fourier ((M:ℝ)/(d:ℝ))).mul_left (d:ℂ))
   have h := hs.mul_right ((M:ℂ)⁻¹)
-  have hf (k : ℤ) : (DeletionMixedRefinement.bernoulliModeWeight k:ℂ)*terminalReciprocalMode M k =
+  have hf (k : ℤ) : (DeletionMixedRefinement.bernoulliModeWeight k:ℂ)*divisorTerminalReciprocalMode M k =
       (∑ d ∈ Icc 1 (Nat.sqrt M),(d:ℂ)*((DeletionMixedRefinement.bernoulliModeWeight k:ℂ)*
         fourier k (((M:ℝ)/(d:ℝ)):AddCircle (1:ℝ))))*(M:ℂ)⁻¹ := by
-    simp only [terminalReciprocalMode,div_eq_mul_inv,← mul_assoc,mul_sum]
+    simp only [divisorTerminalReciprocalMode,div_eq_mul_inv,← mul_assoc,mul_sum]
     congr 1
     apply sum_congr rfl
     intro d _
@@ -340,21 +345,21 @@ theorem tendsto_terminal_reciprocal_bernoulli_mean :
       (∑ d ∈ Icc 1 (Nat.sqrt M),(d:ℝ)*(bernoulliPeriodic ((M:ℝ)/(d:ℝ))+1/12))/(M:ℝ))
       atTop (𝓝 0) := by
   have h := tendsto_tsum_of_dominated_convergence
-    (f:=fun M k => (DeletionMixedRefinement.bernoulliModeWeight k:ℂ)*terminalReciprocalMode M k)
+    (f:=fun M k => (DeletionMixedRefinement.bernoulliModeWeight k:ℂ)*divisorTerminalReciprocalMode M k)
     (g:=fun _ : ℤ => (0:ℂ)) DeletionMixedRefinement.hasSum_bernoulliModeWeight.summable
     (fun k => by
       by_cases hk : k=0
       · subst k
         simpa only [DeletionMixedRefinement.bernoulliModeWeight_zero,Complex.ofReal_zero,zero_mul]
           using (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0:ℂ)) atTop (𝓝 0))
-      · simpa only [mul_zero] using (terminalReciprocalMode_tendsto hk).const_mul
+      · simpa only [mul_zero] using (divisorTerminalReciprocalMode_tendsto hk).const_mul
           (DeletionMixedRefinement.bernoulliModeWeight k:ℂ))
     (Eventually.of_forall (fun M k => by
       rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,
         abs_of_nonneg (DeletionMixedRefinement.bernoulliModeWeight_nonneg k)]
-      simpa only [mul_one] using mul_le_mul_of_nonneg_left (terminalReciprocalMode_norm_le M k)
+      simpa only [mul_one] using mul_le_mul_of_nonneg_left (divisorTerminalReciprocalMode_norm_le M k)
         (DeletionMixedRefinement.bernoulliModeWeight_nonneg k)))
-  simp_rw [(terminal_bernoulli_hasSum _).tsum_eq] at h
+  simp_rw [(hasSum_divisor_terminal_bernoulli_mean _).tsum_eq] at h
   have hre := Complex.continuous_re.continuousAt.tendsto.comp h
   simpa only [tsum_zero,Complex.zero_re,Complex.ofReal_re,Function.comp_def] using hre
 

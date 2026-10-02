@@ -123,8 +123,13 @@ Let `Λ⁺ = −Λ⁺ ∋ 0` be discrete, uniformly supercritical (`max(|λ_j|,|
 - **Strengthening (Lean).** `gammaRCube_functional_equation_abundance_vanishing_below N`: for every `N`, infinitely many independent twins vanish below `N`. So ζ³ is not determined by its functional equation together with any finite set of its coefficients.
 - **Divisibility rigidity (paper, ledger L273.1).** No nonzero `E ∈ W` vanishes at every zero of `ξ`. Proof: Maass's converse theorem at level 1 plus the spectral gap `λ₁(SL₂(ℤ)) > ¼`.
 
+- **All degrees `d ≥ 3` (Lean, ledger L274).** `RHTower.GammaRPowTwins.gammaRPow_functional_equation_abundance`.
+  - Uses the unitary chart `x = X^d` and a direct Stirling bound for the chart multiplier; no multiplication twist is needed.
+  - Modules: `GammaRPowAntiChartSpace`, `GammaRPowChartNodes`, `GammaRPowFunctionalEquationAbundance`.
+
 ## Log
 - 2026-10-01 — stage 3: full Lean formalization, standard axioms. Lint clean.
+- 2026-10-01 — extended to all degrees `d ≥ 3` and to twins vanishing below any `N` (Lean).
 - 2026-10-01 — promoted from the in-progress card §6–§8 with full proof; Bochner 1958 checked (equivalence only).
 
 ## Formal plan (stage 2 → 3), 2026-10-01
@@ -155,3 +160,8 @@ Remaining:
   - `HTGeometry/MellinRegularStrip`: general strip class; abscissa independence; `w·Φ` regular; `d/dx Mellin⁻¹Φ = x⁻¹Mellin⁻¹(−wΦ)`.
   - `RHTower/GammaRCubeChartDerivativeBound`: `∫|F'|² ≤ K²∫X²|F|²` for antisymmetric chart-regular `Φ`, with `K = 2πκ`.
   - Remaining: (c') chart symbol of `Ψ` regular and the chart function `= 3^{−¼}X f(X³/(3√3))`; (f) infinite-partition Wirtinger; (g) lower bound; (h) Bessel and pointwise bounds; (i) assembly.
+
+## Follow-up: the twin doors (2026-10-01, krein-producer-loops L285–L289)
+- RTE / near-line twins (L275 → L285): reduce to near-line *entire* twins dominating `ζ^k` above `H₀ = 3·10¹²`. Equivalently, a degree-0 symmetric `Q = ζ^k/F` absorbing the off-strip ζ-zeros. Open.
+- Real-rooted ⇒ geometric (L278 → L286): proved on the rational class. If `F/ζ^k` is a ratio of Dirichlet polynomials with simple-zero denominator, then `F = cζ^k` (generalized Putnam via Hecke non-discreteness of `G(2/q)`). Transcendental `F/ζ^k` remains open. Calibration: `Q_a = ((1−a^{½−s})/(1+a^{½−s}))²` is a nonconstant degree-0 symmetric Dirichlet series with on-line divisor.
+- Averages of twins (L284 → L287–L289): one-parameter, finite-dimensional, circular and unbounded-Gaussian averages are all excluded. Small non-circular noise at the k-fold zeros of `ζ^k` is indefinite. What remains needs slice-analytic (Cauchy or stationary) off-line intensities, the same condition as L283.

@@ -29,10 +29,17 @@
 - **CP-2 [CONJECTURE, RH-sufficient, possibly false]:** the full kernel `k` is completely
   positive: `k(x,t) = ∫ m(x,u)m(t,u)dν(u)` with `m ≥ 0`. CP ⟹ PSD ⟹ RH. Could fail even under
   RH (doubly-nonnegative ≠ CP from order 5); a numerically non-CP section kills it cleanly.
-- **CP-3 [CONJECTURE, sufficient-only]:** the double-commutator comparison
+- **CP-3 [LEAN-FALSIFIED, 2026-10-02; original sufficiency claim withdrawn]:** the double-commutator comparison
   `2C₁(x,t) ⪰ (√x−√t)²·C₀(x,t)` as forms, `C₀ = ∫ΦΦ`, `C₁ = ∫ s·ΦΦ` (from
-  `{X,P} = 2√X P√X + [√X,[√X,P]]`). Sufficient for RH; expected false or tight — its failure
-  pattern calibrates the next splitting of the affine weight.
+  `{X,P} = 2√X P√X + [√X,[√X,P]]`). This is not the sufficient comparison supplied by
+  that identity: writing `D₀=[√X,[√X,C₀]]`, the full kernel is
+  `2√X C₀√X + D₀ + 2C₁`, so the required sufficient comparison has the opposite sign,
+  `2C₁ ⪰ -D₀`. The original comparison remains a separate unproved conjecture about the
+  literal theta kernel; no RH implication is claimed for it without another argument.
+- **CP-3′ [LEAN-FALSIFIED, 2026-10-02; sufficient-only]:**
+  `2C₁ ⪰ -[√X,[√X,C₀]]`. Together with `C₀ ⪰ 0`, this would make the full kernel PSD.
+  This corrects the algebraic implication, not the missing theta inequality. The endpoint
+  kernel `√X C₀√X` is distinct from the orbit-weighted geometric kernel `M` above.
 
 ## Corpus/no-go compliance
 
@@ -129,3 +136,20 @@ Next quantitative targets (unchanged): shrink the threshold (sharper slab, both-
 rate, non-lossy `x+t+1 ≤ 3t`), extend the node domain below 1 via the reflection seam, and the
 close-pair regime itself (CP-1's genuine frontier); the coincident-jet strata remain parked
 (razor-thin margins near x = 0, need certified numerics).
+
+## CP-3 and CP-3′ resolution: [LEAN-FALSIFIED] (2026-10-02)
+
+`ThetaTailEndpointCommutatorObstruction` proves strictly negative quadratic
+forms for both `2 C_1 - D_0` and `2 C_1 + D_0` on the literal complete theta
+source, on nodes `(r,r+1)` for every sufficiently large `r`. The normalized
+coefficient signs are respectively equal and opposite. On exactly those
+nodes the full `H` matrix is positive definite eventually.
+
+The new analytic ingredient is the first correction for `C_0`, proved from
+the complete-source score limit. It shows that the first moment is negligible
+at the endpoint-commutator scale. This excludes the auxiliary comparisons;
+it does not refute full-kernel positivity or RH. The leading endpoint Gram
+term cannot be discarded in this argument.
+
+Exact statements, paper proof, positive survivor, and audit record:
+[failed-comparison card](../5-failed/theta-endpoint-commutator-comparisons.md).

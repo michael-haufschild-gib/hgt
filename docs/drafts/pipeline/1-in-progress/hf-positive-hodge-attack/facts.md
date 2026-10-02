@@ -247,3 +247,12 @@ Scope: frontier route HF. Facts and no-gos only.
 - **HF-F72 [Lean].** Dilated von Mangoldt weights are rigid: `Λ + Λ⋆b ∈ W` with `b` finitely supported forces `b = 0` (`RHTower.WeilDilationRigidity.dilatedVonMangoldt_eq_zero_of_weilPositive`).
   - Proof: residue realness gives `Im B = 0` at critical zeros. The test `Σ b(m)(h(mx) − h(x/m)/m)` has Mellin transform `(B(s) − B(1−s))·Mh`. The superlinear simple-critical density (Alpöge–Furman, Zeta23) then gives `b(m) = 0` for `m ≥ 2`, and scaling rigidity gives `b(1) = 0`.
   - Crossing arguments cannot replace the density input: `B = b₁(1 − 2^{½−s})` with `b₁ < 0` never enters `(0, ∞)`.
+- **HF-F73 [paper; krein-producer-loops L285–L300].** Producer reduction map after Theorem A. Every non-Λ construction class with ζ's exact datum is closed:
+  - near-line, real-rooted, Pólya, rational and Runge-reshaped twins: tail inflation and rosettes;
+  - family averages and Gaussian ensembles: Gaussian-probe slices, circular invisibility, far-right combs, the `k`-fold indefiniteness law;
+  - positive-piece mechanisms: quantum-graph Herglotz sums are anti-Herglotz at primes; Lee–Yang crystals are chirp-contaminated;
+  - operator realizations: a re-encoding of PBAP;
+  - FE-free Hermite–Biehler completions: finite order with the pole at `1` forces `ζ + V`, which universality kills;
+  - the Riccati left-shift flow `∂_εF = F' + F²/r`, i.e. `1/F_ε = 1/ζ(s+ε) − 1/ζ(1+ε)`, exact unit-speed leftward motion of every zero with the pole pinned, which spawns poles at Bohr-recurrent value-points.
+
+  **Route:** the producer is "tempered + phase-locked". Tempered is easy (`exp Σ n^{−s}/log n`). Phase lock is the FE. With `σ_pb = 0` (L74), any producer is a critical, Λ-like object. On the Möbius side, the producer is a Dirichlet series `U = 1/F` with a single simple zero (at `1`) and no poles on `Re s > ½`, plus `Re(U'/U)(½+it) ≤ θ'(t)`; `U = 1/ζ` is the case `RH`.

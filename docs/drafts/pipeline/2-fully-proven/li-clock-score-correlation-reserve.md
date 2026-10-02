@@ -14,7 +14,7 @@
 
 - [x] 0 → 1: literal complete source and precise signed-history target.
 - [x] 1 → 2: complete dependency-closed paper survivors, dual full review.
-- [ ] 2 → 3: exact full positive-survivor Lean contracts, implementation and all gates pending.
+- [ ] 2 → 3: PARTIAL. [Literal score measure M01–M14](../3-formalized/li-clock-score-measure.md) and [profiles E01–E18](../3-formalized/li-clock-score-profile.md) are locally Lean-final with full gates. Signed history C01–C12 remains pending.
 - [ ] 3 → 4: standalone publication and external novelty review pending.
 
 ## Evidence and provenance

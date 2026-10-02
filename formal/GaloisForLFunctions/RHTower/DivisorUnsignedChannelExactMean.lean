@@ -64,10 +64,14 @@ private lemma centered_birth_channels_through_sqrt (M : ℕ) :
 private def terminalSum (M : ℕ) : ℝ :=
   ∑ d ∈ Icc 1 (Nat.sqrt M),(centeredModularMeanMagnitude d+centeredModularPrimitive d M)
 
-private lemma centered_mean_error (M : ℕ) :
+/-- Exact centered-channel remainder, retaining the signed terminal primitive. -/
+theorem centeredDivisorHyperbolaAbel_mean_error (M : ℕ) :
     |centeredDivisorHyperbolaAbel M+(Nat.sqrt M:ℝ)/24-
-      halfOrderAbelStep 0 M*terminalSum M|≤
+      halfOrderAbelStep 0 M*(∑ d ∈ Icc 1 (Nat.sqrt M),
+        (centeredModularMeanMagnitude d+centeredModularPrimitive d M))|≤
         (5/48:ℝ)*((harmonic (Nat.sqrt M):ℚ):ℝ) := by
+  change |centeredDivisorHyperbolaAbel M+(Nat.sqrt M:ℝ)/24-
+    halfOrderAbelStep 0 M*terminalSum M|≤_
   let f := fun d => (∑ k ∈ Ico (d*d) M,centeredModularRamp d k*halfOrderAbelStep 0 k)+1/24-
     (centeredModularMeanMagnitude d+centeredModularPrimitive d M)*halfOrderAbelStep 0 M
   have hpoint (d : ℕ) (hd : d ∈ Icc 1 (Nat.sqrt M)) : |f d|≤5/(48*(d:ℝ)) := by
@@ -177,7 +181,8 @@ theorem tendsto_centeredDivisorHyperbolaAbel_div_sqrt :
     apply squeeze_zero' (Eventually.of_forall (fun _ => norm_nonneg _)) _ hlim
     apply Eventually.of_forall
     intro M
-    have h := div_le_div_of_nonneg_right (centered_mean_error M) (Real.sqrt_nonneg (M:ℝ))
+    have h := div_le_div_of_nonneg_right (centeredDivisorHyperbolaAbel_mean_error M)
+      (Real.sqrt_nonneg (M:ℝ))
     have heq : centeredDivisorHyperbolaAbel M/Real.sqrt M+(Nat.sqrt M:ℝ)/Real.sqrt M/24-
         halfOrderAbelStep 0 M*terminalSum M/Real.sqrt M =
       (centeredDivisorHyperbolaAbel M+(Nat.sqrt M:ℝ)/24-halfOrderAbelStep 0 M*terminalSum M)/Real.sqrt M := by ring

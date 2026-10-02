@@ -13,7 +13,7 @@ The frontier lists the all-height first Laguerre sign for `Ξ = H_0` as open and
 - [x] 0 → 1: row 124 (paper identity and touching algebra).
 - [x] 1 → 2: proof below.
 - [x] 2 → 3: module `RHTower/DeBruijnLaguerreEvolution.lean`.
-  - Main declarations: `hasDerivAt_iteratedDeriv_riemannHeat_time`, `hasDerivAt_laguerreExpr_time`, `laguerreNext_eq_zero_of_touch`, `hasDerivAt_laguerreExpr_time_of_touch`, `laguerreExpr_time_deriv_nonpos_of_touch`, `deriv_deriv_nonneg_of_isLocalMin`.
+  - Main declarations: `hasDerivAt_iteratedDeriv_riemannHeat_time`, `hasDerivAt_laguerreExpr_time`, `laguerreNext_eq_zero_of_touch`, `hasDerivAt_laguerreExpr_time_of_touch`, `laguerreExpr_time_deriv_nonpos_of_touch`, `deriv_deriv_nonneg_of_isLocalMin`, `sq_mul_laguerreNext_eq`.
   - `lake env lean` is silent, the `--old` build passes, axioms are `propext`/`Classical.choice`/`Quot.sound`, there are 0 collisions and lint is clean for the module.
   - Wired into the umbrella after `DeBruijnStrictLaguerre`. STATUS MUST-657.
 
@@ -28,3 +28,13 @@ The frontier lists the all-height first Laguerre sign for `Ξ = H_0` as open and
 - As `t` decreases (the direction from `Λ` to `0`), `∂_{−t}L = ∂_x²L ≥ 0` at every zero-touching point with `H_t ≠ 0`. So the failure set `{L < 0}` can only open where `L = H_1²` vanishes, i.e. at a real double zero (a collision).
 - This holds to first order. A degenerate touching point with `∂_x²L = 0` needs higher jets and is not covered.
 - No RH content. The first Laguerre sign at `t = 0` is decided by whether every collision-born failure has healed. The pair of the collision must have moved off the axis by about `(Σ_real 1/(u−γ)²)^{−1/2}`. The corpus has no control of this collision history.
+
+## Riccati law of the Laguerre ratio (rows 144–145)
+- Lean declarations:
+  - `sq_mul_laguerreNext_eq`: `H_0²L₁ = H_0H_1∂_zL − H_1²L + L²`.
+  - `laguerreRatio`, `hasDerivAt_laguerreRatio`, `hasDerivAt_deriv_laguerreRatio`.
+  - `hasDerivAt_laguerreRatio_time`: `∂_tw = −∂_z²w − 2(H_1/H_0)∂_zw + 2w²` off the zeros.
+  - `laguerreRatio_time_deriv_le_of_isLocalMin`: at a real local minimum with `H_t ≠ 0`, `∂_tw ≤ 2w²`.
+- Audit: standard axioms, `--old` build 27 s, 0 collisions. STATUS MUST-657 addendum.
+- Paper consequence: backward in time between collisions a positive minimum obeys `m(τ) ≥ m₀/(1+2m₀τ)`. At a collision `w` drops to `−2/v² → −∞`.
+- The global inf-comparison (a parabolic maximum principle on `ℝ` with attained minima) is not formalized.

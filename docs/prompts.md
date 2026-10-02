@@ -18,8 +18,8 @@ also apply here noether´s theorem in both directions in the naive form "every c
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
-- docs/drafts/pipeline/2-fully-proven/ (ignore subfolders)
-  
+- docs/drafts/pipeline/2-fully-proven/ (including subfolders)
+   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:
@@ -47,7 +47,7 @@ GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF TH
 
 ## research Route
 
-Goal: Create a formal proof or falsification of the Ramanujan–Petersson conjecture for Maass forms.
+Goal: Create a formal proof or falsification of the Riemann Hypothesis using Route TT from docs/reports/rh-current-frontier-map.md
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -215,7 +215,7 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 
 ## hgtl7 create new knowledge
 /hgtl7
-contribute one significant piece of knowledge to our lean corpus that moves the frontier in any existing route or any new route towards a proof or falsification of the riemann hypothesis. the new knowledge cannot appear anywhere in public literature, your training data nor our lean corpus.
+contribute significant pieces of knowledge to our lean corpus that moves the frontier in route LI from docs/reports/rh-current-frontier-map.md towards a proof or falsification of the riemann hypothesis. the new knowledge cannot appear anywhere in public literature, your training data nor our lean corpus.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -232,4 +232,59 @@ do not conjecture or judge or assume or anything on your training data. your tra
 
 Keep a working log for yourself and do not pay too much attention what other agents are doing. 
 
-every continuous symmetry of the action of a physical system with conservative forces has a corresponding conservation law.
+The goal is met when a proof or falsificiation of the Riemann Hypothesis is fully formalized in lean - unconditionally without premises. 
+
+
+##
+the last paper we have written: docs/drafts/pipeline/4-publication-ready/universal-quantum-recurrence-anatomy more research is already in the lean corpus or as paper proof in the pipeline.
+
+continue our existing research and create novel and significant new knowledge about:
+- Brown–Susskind’s full growth–plateau–recurrence law
+- the black hole interior volume paradox
+- Quantum Recurrence
+
+collect enough novel and significant knowledge to write a paper that meets the publishing requirements of Nature: the paper must report a fundamental new insight or startling discovery that significantly shifts the scientific conversation across multiple fields.
+
+one step towards this goal is: 
+
+prove Brown–Susskind’s full growth–plateau–recurrence law for ordinary time-independent local Hamiltonians, and prove that maximal complexity occurs while locality remains permanently distinguishable from Haar randomness.
+
+your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+
+Keep a working log for yourself and do not pay too much attention what other agents are doing. 
+
+goal is met when paper is written and passes a hostile review that confirms that the paper is on a quality level to be published in Nature.
+
+## rh proof
+
+find and formalize an uncoditional proof or falsification of the riemann hypothesis using route PM from docs/reports/rh-current-frontier-map.md.
+
+your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+
+Do not use subagents.
+
+Keep a working log for yourself and do not pay too much attention what other agents are doing. 
+
+The goal is met when a proof or falsificiation of the Riemann Hypothesis is fully formalized in lean - unconditionally without premises.

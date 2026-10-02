@@ -3,7 +3,7 @@
 - **ID:** li-clock-compact-gamma-marking
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [complete source-correlation envelope paper](../2-fully-proven/li-clock-source-correlation-envelope.md), final404 plan M01–M10.
+- **Source:** [complete source-correlation envelope paper](li-clock-source-correlation-envelope.md), final404 plan M01–M10.
 - **Statement:** Actual positive and negative Gamma jump measures, restricted to Ioc(0,T) and marked by exp(pu), separately equal fixed finite common-density measures for every p>1. All compact bounded tests have genuine L1 and exact density integrals; their signed density difference is 1_(u>0)P(u)/u.
 
 ## Mathematical boundary

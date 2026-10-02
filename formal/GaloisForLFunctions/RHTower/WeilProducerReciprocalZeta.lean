@@ -23,16 +23,20 @@ noncomputable section
 
 namespace RHTower
 
-/-- **Continuation of the reciprocal zeta function of a producer.** -/
-theorem exists_reciprocalZeta_continuation {lam : ℕ → ℝ} {A : ℂ → ℂ}
+/-- **Primitive form of the reciprocal zeta function of a producer.**  If `Φ` is holomorphic on
+`Re s > 1/2` and equals `A + 1/(s−1) − Σ lam(n)n^{−s}` on `Re s > 1`, there are `c ≠ 0` and a
+primitive `P` of `A − Φ` on `Re s > 1/2` with `c (s−1) e^{P(s)} = exp(−Σ lam(n)n^{−s}/log n)` on
+`Re s > 1`. -/
+theorem exists_reciprocalZeta_primitive {lam : ℕ → ℝ} {A Φ : ℂ → ℂ}
     (hW : HerglotzWeilPositive lam A) (h1 : lam 1 = 0)
-    (hA : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re}) :
-    ∃ G : ℂ → ℂ, DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re} ∧
-      ∀ s : ℂ, 1 < s.re → G s = cexp (-LSeries (logZetaCoeff lam) s) := by
-  obtain ⟨Φ, hΦd, -, hΦid⟩ := hW.herglotz
+    (hA : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re})
+    (hΦd : DifferentiableOn ℂ Φ {s : ℂ | 1 / 2 < s.re})
+    (hΦid : ∀ s : ℂ, 1 < s.re → Φ s = A s + 1 / (s - 1) - LSeries (fun n => (lam n : ℂ)) s) :
+    ∃ (c : ℂ) (P : ℂ → ℂ), c ≠ 0 ∧
+      (∀ s : ℂ, 1 / 2 < s.re → HasDerivAt P (A s - Φ s) s) ∧
+      ∀ s : ℂ, 1 < s.re → c * ((s - 1) * cexp (P s)) = cexp (-LSeries (logZetaCoeff lam) s) := by
   have hsum := hW.summable
   set H : Set ℂ := {s : ℂ | 1 / 2 < s.re} with hH
-  have hHo : IsOpen H := isOpen_lt continuous_const Complex.continuous_re
   have hEd : DifferentiableOn ℂ (fun s => A s - Φ s) H := hA.sub hΦd
   obtain ⟨P, hP2, hPd⟩ := (GaloisForLFunctions.HTGeometry.isExactOn_rightHalfPlane hEd).with_val_at
     2 0
@@ -41,7 +45,7 @@ theorem exists_reciprocalZeta_continuation {lam : ℕ → ℝ} {A : ℂ → ℂ}
   have hGd : ∀ s ∈ H, HasDerivAt G (c * (1 * cexp (P s) + (s - 1) * (cexp (P s) * (A s - Φ s))))
       s := fun s hs =>
     (((hasDerivAt_id' s).sub_const 1).mul (hPd s hs).cexp).const_mul c
-  refine ⟨G, fun s hs => (hGd s hs).differentiableAt.differentiableWithinAt, ?_⟩
+  refine ⟨c, P, Complex.exp_ne_zero _, fun s hs => hPd s hs, ?_⟩
   set U : Set ℂ := {s : ℂ | 1 < s.re} with hU
   have hUo : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
   have hUH : U ⊆ H := fun s (hs : 1 < s.re) => show 1 / 2 < s.re by linarith
@@ -83,6 +87,18 @@ theorem exists_reciprocalZeta_continuation {lam : ℕ → ℝ} {A : ℂ → ℂ}
   calc G s = G s * cexp (L s) * cexp (-L s) := by
         rw [mul_assoc, ← Complex.exp_add, add_neg_cancel, Complex.exp_zero, mul_one]
     _ = cexp (-L s) := by rw [hQs, one_mul]
+
+/-- **Continuation of the reciprocal zeta function of a producer.** -/
+theorem exists_reciprocalZeta_continuation {lam : ℕ → ℝ} {A : ℂ → ℂ}
+    (hW : HerglotzWeilPositive lam A) (h1 : lam 1 = 0)
+    (hA : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re}) :
+    ∃ G : ℂ → ℂ, DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re} ∧
+      ∀ s : ℂ, 1 < s.re → G s = cexp (-LSeries (logZetaCoeff lam) s) := by
+  obtain ⟨Φ, hΦd, -, hΦid⟩ := hW.herglotz
+  obtain ⟨c, P, -, hPd, hGL⟩ := exists_reciprocalZeta_primitive hW h1 hA hΦd hΦid
+  exact ⟨fun s => c * ((s - 1) * cexp (P s)), fun s hs =>
+    ((((hasDerivAt_id' s).sub_const 1).mul (hPd s hs).cexp).const_mul c).differentiableAt
+      |>.differentiableWithinAt, hGL⟩
 
 /-- On a disc meeting `Re s > 1` at its centre, a holomorphic continuation of `exp(−L)` is
 `exp(−g)` for every holomorphic continuation `g` of `L`. -/
