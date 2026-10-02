@@ -1,7 +1,7 @@
-# TG C9.11n — trace current of the complete principal response
+# TG C9.11n–o — complete principal response and harmonic obstruction
 
 - **Stage:** 1-in-progress
-- **Status:** complete response, actual dilation/window traces, positivity and exact window asymptotic Lean-audited; original linear-prime transfer in progress
+- **Status:** complete response and original linear-prime harmonic obstruction pass final leaf audit; axiom audit running; canonical polar-source continuation is next
 - **Route:** TG, source-derived joint prime–Gamma relative admission
 - **Predecessor:** C9.11m, coherent proper-prime-power source assembly
 
@@ -219,3 +219,76 @@ large-frequency coefficient. It has not supplied joint prime–Gamma
 admission, Hardy cubic compatibility, a strict sub-unit law, or RH. The
 next conjecture remains the original linear-prime harmonic trace law
 above, followed by source-derived Gamma/pole cancellation.
+
+### C9.11o — original linear-prime harmonic law
+
+Next conjecture is the exact positive coefficient of the original weighted
+linear-prime correction response, with both dilation directions and correction
+legs intact. Its paper proof is dependency-closed: evenness and continuity of
+the verified sine-window current, square-root normalization of the complete
+trace identity, and the verified large-frequency limit give
+`p Re Tr S_p → 2(Phi_a(1)+1) > 0`. Prime reciprocal divergence then excludes raw
+Schatten-1 summability by the continuous ordinary trace functional. The exact
+coefficient is the positive survivor and required scalar cancellation datum;
+this does not exclude a joint prime–Gamma construction.
+
+Corpus search `/tmp/tg-c911o-linear-current-search.json` returned partial
+pending coverage, background refresh incomplete, reranking deadline expired.
+All candidate and source statements were inspected. They confirm proper-power
+assembly, the complete response trace identity, and the distinction between
+coefficient-energy divergence and the original linear source. The proof will
+use the original source, not the squared-energy proxy. Scalar transfer and
+Schatten-1 contradiction are now being formalized in scratch.
+
+
+### Original linear-prime transfer — final leaf passes
+
+`SoninLinearPrimeTraceObstruction.lean` defines the original source directly as
+`(sqrt p)⁻¹ C_a(soninPrimeDilationSignal p)` in `SchattenOneOperator SoninL2`.
+The literal double-window formula gives the exact identity
+
+`p Re Tr S_p = 2(Phi_a(1-p⁻¹) + p Phi_a(p-1))`.
+
+Evenness follows from evenness of sinc and oriented interval integration.
+Continuity at frequency 1 follows from continuity of its primitive. The second
+term factors as `p/(p-1) * ((p-1) Phi_a(p-1))`; its two factors tend to 1.
+Hence `p Re Tr S_p → K_a=2(Phi_a(1)+1)>0`. Eventually the trace dominates
+`K_a/(2p)`. Summability would contradict the corpus theorem
+`Nat.Primes.not_summable_one_div`. The private continuous trace reader on the
+genuine Schatten-one Banach space then rules out raw source summability.
+This retains both correction legs and both normalized dilation directions.
+
+Final foreground leaf command passed with an empty diagnostic log:
+`/tmp/tg-c911o-leaf-final.log`. Umbrella import added, no umbrella build.
+Axiom audit is running separately in `/tmp/tg-c911o-axioms.lean`.
+
+### Next conjecture — literal polar cancellation on the source operators
+
+Further searches are saved as `/tmp/tg-c911o-gamma-source-search.json`,
+`/tmp/tg-c911o-continuum-search.json`, and `/tmp/tg-c911o-polar-search.json`.
+All returned candidate/source statements were inspected; coverage was partial,
+with background refresh incomplete. The latter two had full source inventory
+snapshots but predominantly pending/stale compiler metadata. No new admission
+claim is inferred from search absence.
+
+Verified source files provide the actual log-dilation integral
+`ccmIntegratedScaling`, the Gamma normal form `LΓ=A₁+R₁-1`, and the literal
+polar density `2 cosh(u/2) du`. The critical prime atom is
+`Λ(n)/sqrt(n)`; division by its nonzero logarithmic position gives exactly
+`1/(k sqrt(p^k))` at `n=p^k`, including the linear source used here.
+Therefore the candidate logarithmic polar tail is determined by that same
+source: `(2 cosh(u/2)/u) du`, not by an arbitrary normalized trace probe.
+
+The next operator target pairs the original prime head with this polar
+continuum before any cofinal limit. Derive its actual two-leg kernel and prove
+or falsify trace-norm Cauchy convergence. The already admitted proper powers
+can then be restored without another convergence premise. The near-zero
+Gamma/pole normalization and meromorphic transport must also be derived from
+the existing source. A scalar trace match cannot establish this operator law.
+
+First paper diagnostic: separate prime and pole norm estimates cannot prove
+this signed limit; the harmonic trace identified here must cancel inside the
+source. The corpus's quantile result only supplies `o(e^a)` on the physical
+mass-plus-Gamma form domain, not trace-norm Cauchy control. Do not silently
+upgrade that result. Next derive the signed kernel using the actual right
+factorization `J=AB(1-AW)+BAW`, keeping the full adjoint response.

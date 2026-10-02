@@ -41,8 +41,10 @@ T_M>=2*M*sqrt(sqrt(M)). Also sqrt(M)>=722 eventually. Consequently
     Q_M = T_M^2-D_M >= M^2*sqrt(M) eventually,
     V(M)/(M^3*sqrt(M)) >= 1/M.
 
-The harmonic comparison would disprove the proposed absolute fibre
-admission. Its positive survivor is the actual complete semiprime-fibre
+The harmonic comparison would disprove this discrete critical-weight
+absolute fibre admission. It is a statement about the displayed series;
+no passage from sampled cutoffs to a continuous absolute integral is assumed.
+Its positive survivor is the actual complete semiprime-fibre
 contribution and its eventual harmonic floor at the critical weight.
 This is not divergence of the complete signed source and not RH falsification.
 It would force cancellation between different clipped LCM fibres; it does
@@ -59,8 +61,10 @@ are recorded in the RP-45 working log. No numerical experiment.
 
 ## Implementation status
 
-No new Lean file yet. First establish the complete clipped semiprime-fibre
-classification and comparison, then the source-derived harmonic floor and
-nonsummability. Do not stop at a generic reindexing or an assumed bound.
+RoutePLcmAbsoluteObstruction.lean now contains the complete clipped
+semiprime-fibre classification, a full-fibre comparison, the source-derived
+harmonic floor, and nonsummability. Final audit pending. The comparison does
+not discard hidden terms within a selected fibre: a fibre containing a late
+prime pair is proved equal to the full active carrier at that LCM.
 Only finished leaves will be wired; only foreground leaf audits, no umbrella
 builds, added axioms, or resource overrides.

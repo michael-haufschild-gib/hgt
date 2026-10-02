@@ -1901,3 +1901,58 @@ The Selberg diagonal lives on 1/lcm(a,b), not 1/(a+b); neither its bound nor its
 because floor(N/b)<=U and the complete Mobius floor sum equals one. Try to use these constraints inside the signed form while retaining their nonzero forcing. Generic positivity is unavailable; a new receiver, another stationarity identity, or solving the constraints by an uncontrolled Mobius inverse would not count as progress. The target remains an unconditional bound on the actual source, hence on C12.70's complete work, not a spectral statement for arbitrary replacement coefficients.
 
 **Audit.** Five deep searches terminated before parsing. Four partial; the bilinear request reported partial=false. Snapshot file counts 64480, 64480, 64486, 64487, 64487; compiler-pending 48617, 48617, 48622, 48622, 48622; each had 43 compiled snapshots and 2660 stale entries. Candidate statements, source arguments and proposed ingredient sets were inspected with these freshness limits. New direct reads included the short reconstruction, finite-entry profile, reconstruction action/tail symmetry, short quadratic work, Vaughan type-II coefficient bounds and product sign extraction. No computations, new axioms, Lean edits/builds, heartbeat changes, subagents, full/umbrella builds or commits. Owned search outputs cleaned after recording. RH goal active and unmet.
+
+## C12.73: actual short-vector constraints and signed quadratic control
+
+**1004l in progress.** Previous turn made no frontier advance. Revalidated the current MC Hilbert subpower target and C12.72's retained short quadratic form. Attempt to use the exact divisor-annihilation constraints of the actual Mobius vector to control that form's negative part, with every forcing and boundary contribution retained. No generic positivity or uncontrolled inverse estimate is assumed.
+
+**Outcome: no frontier estimate.** The constraint/Gram attempt retains Mertens values in its transformed matrix. The subsequent reciprocal-phase attempt has the correct actual arithmetic phase, but leaves bounded-frequency signed cancellation open. These are paper diagnostics; no new Lean theorem is claimed.
+
+**The constraints were used with their forcing intact.** For U=floor(sqrt N), the long rows satisfy sum_(a<=U)mu(a)*floor(N/(a*b))=1 when U<b<=N. More generally the short floor rows F(k,a)=floor(k/a), 1<=k,a<=U, satisfy F*mu=1. Their consecutive differences are the divisor incidence matrix Z(k,a)=1_(a|k), so Z*mu=e_1. This uses the actual complete-floor identity found in `FermiNymanRawMobiusTailFloor` and `BaezDuarteMobiusPrefixApproximation`; the omitted-floor-tail formula remains mandatory outside its cutoff.
+
+Tested a positive weighted Gram comparison with F^t W F (or Z^t W Z). Its value on mu is known, respectively sum_k w_k or w_1, but the comparison with the target signed matrix still needs proof. To see the retained arithmetic content exactly, restrict for this test to N=U^2. Let
+
+    A(a,b)=floor(U^2/(a*b)),
+    T(k,a)=1_(a|k)*mu(k/a)=Z^(-1)(k,a).
+
+Then, on paper, for 1<=r,s<=U,
+
+    (T^t A T)(r,s)
+      =M(floor(U/r))+M(floor(U/s))-M(floor(U^2/(r*s))).
+
+Proof: put u=floor(U/r), v=floor(U/s), X=U^2/(r*s). The unequal short inverse identity mu=A_u+A_v-A_u*A_v*1 holds through floor X, since (u+1)*(v+1)>X. Summing gives exactly the displayed entry. No cutoff coefficient was dropped. In particular entry (1,1) is 2*M(U)-M(U^2), the original short-source work. Congruence transfers the Gram comparison into this Mertens matrix; it does not prove that comparison. No bound on the inverse matrix, negative spectral projection or forcing cost was obtained. The corpus's harmonic floor-transform stability explicitly assumes a critical source bound, and was not used to produce one. The coprime-energy square-dilation identity is signed and retains its cross term.
+
+**An actual oscillatory phase, with the integer boundary paid.** Return to arbitrary integer N>=2 and U=floor(sqrt N). Define
+
+    S_h(N)=sum_(a,b<=U)mu(a)*mu(b)*exp(2*pi*i*h*N/(a*b)).
+
+The pointwise sawtooth series, with its midpoint value at integers, gives the finite-source identity
+
+    R_N=(1/2)*M(U)^2
+      -(1/pi)*lim_(H->infinity)sum_(1<=h<=H) Im(S_h(N))/h
+      -(1/2)*sum_(a,b<=U, a*b|N)mu(a)*mu(b).
+
+The last sum is exactly -mu(N), not an uncontrolled divisor error: apply the existing short-square coefficient identity at N, where N>U and N<(U+1)^2. Thus
+
+    M(N)=2*M(U)-N*m(U)^2+(1/2)*M(U)^2+(1/2)*mu(N)
+      -(1/pi)*lim_(H->infinity)sum_(1<=h<=H) Im(S_h(N))/h.
+
+The finite a,b sums justify exchanging them with the pointwise Fourier limit. This is a conditional-convergence identity, not a quantitative truncation estimate. The existing `SawtoothFourierSeries` supplies the noninteger series; integer phases have zero sine terms and the correction above. The Bernoulli primitive in `RoutePTerminalModularPowerSaving` has 1/h^2 coefficients, whereas this source has 1/h. Its absolute tail estimate cannot be transferred.
+
+**Tried the bilinear estimate on this phase.** The generic Cauchy/correlation expansion in `Sieve.BilinearCauchySchwarz` applies, but the ready-made Vaughan difference-phase theorem concerns log(1+r/u), not this reciprocal phase. On a balanced rectangle a,b comparable to U, N comparable to U^2, two b values with gap Delta give a reciprocal difference phase with second derivative of size h*Delta/U^3. The checked second-derivative test therefore gives the paper correlation envelope
+
+    C*(sqrt(h*Delta/U)+U^(3/2)/sqrt(h*Delta)),
+
+in its admissible curvature range, together with the trivial length bound and the diagonal. Summing that envelope through Cauchy gives the scale
+
+    |S_h(block)| <= C*(U^(3/2)*h^(1/4)+U^2*h^(-1/4)+U^(3/2))
+
+for the corresponding balanced block/range. This screens the method; constants, all dyadic blocks and Fourier truncation were not formalized, because it does not close the hard estimate. At fixed h the second term is U^2. Gaps Delta much smaller than U/h have little phase variation; taking absolute values of their correlations discards the actual Mobius cancellation needed there. This is a failure of that majorant, not a lower bound on the actual sum or a falsification of the desired estimate. Complete-residue Kloosterman bounds do not apply to this physical rectangle without a completion argument.
+
+Keeping the signs and summing Fourier modes jointly is therefore essential for this attempted route. No estimate for the combined low-frequency work with -N*m(U)^2+(1/2)*M(U)^2 was obtained. The next attack will keep this combination and its moving product cutoff together, and try to control its actual near-equal-cofactor correlations. Another individual-mode power bound or matrix congruence alone does not settle it. The global Hilbert subpower target and C12.70 complete-work target remain unproved.
+
+**Audit.** Three deep searches terminated before parsing: constraints partial=false; Gram and phase partial=true. Snapshots covered 64489, 64490, 64494 files, compiler-pending 48623, 48624, 48627; each had 43 compiled snapshots and 2660 stale entries. Candidate/source statements and proposed chains inspected. Unrelated aperture Gram positivity, monomial-frame inverse estimates and residue-class orthogonality were not transferred. Relevant source scopes included LogarithmicCoprimeEnergy, MoebiusResidualTailForm, the paired source in EulerDeletionNestedProjectionCovariance, FloorTransformHarmonicInverse, DivisorTerminalModularMean, RoutePTerminalModularPowerSaving, SawtoothFourierSeries, and the generic bilinear/second-derivative tests. No computations, Lean edits/builds, new axioms, heartbeat changes, subagents, full/umbrella builds, commits or route retirement. Owned JSON outputs cleaned after recording. RH goal active and unmet.
+
+## C12.74: coupled low-frequency work and arithmetic completion
+
+**1004m in progress.** Previous turn made no frontier advance. Revalidated C12.73 and the current MC energy target. Attack the joint reciprocal-phase sum with its rank terms and literal coefficient cutoffs retained. Individual-mode curvature and generic Gram positivity did not close it; seek cancellation in the actual complete arithmetic source.

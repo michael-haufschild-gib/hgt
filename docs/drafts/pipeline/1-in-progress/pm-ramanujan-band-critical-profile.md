@@ -775,3 +775,21 @@ current argument. See `../3-formalized/pm-complementary-prime-sector-cancellatio
 Contribution: the actual complementary interaction cancels the divergent growing-cofactor sector at leading order. Limitation: the residual upper estimate retains P^(1-2epsilon), so the global small-damping producer remains open. Closed card: `../3-formalized/pm-complementary-prime-sector-cancellation.md`.
 
 Search127 (index1188058, coverage1188071/current1188072, complete inventory, mixed compiler metadata, unmeasured semantic coverage) returned complete-period diagonalization, reciprocal means and joint residues. All20 candidates, all20 source arguments and generated ingredients inspected. Its period-diagonal chain leaves the original reciprocal-weight correction unbounded. Next attack must control that signed moving-boundary correction, or an equivalent full-source cancellation, rather than merely recenter or improve logarithmic powers.
+
+### Residual quadratic attack after closing complementary cancellation
+
+The next target remains the actual complete denominator band, not a selected prime sector. For X<q<=2X, write S_X(N)=sum a(q)P_q(N), m_a=-sum a(q)Lambda(q), m_p=-sum a(q)phi(q)/2 and D_X=(1/12)sum J_2(q)|a(q)|^2. The existing hard conjecture is
+
+    sum_N |S_X(N)-m_a|^2/[N(N+1)]
+      <= C_epsilon log(2X) D_X/X.
+
+It is unproved. A signed reciprocal-clock formulation may expose its required cancellation. For a common period L, put W_L(r)=sum_(k>=0)1/[(r+kL)(r+kL+1)], 1<=r<=L, and f=S_X-m_p. Exact period identities give, on paper,
+
+    Var_anchored(S_X)
+      = D_X + sum_(r=1..L) f(r)^2 (W_L(r)-1/L) - (m_a-m_p)^2.
+
+The correction and final mean square must be kept together. Merely exporting this identity would not move the upper-bound frontier. A proof must show that their signed sum cancels the order-D_X contribution down to the required scale. Uniform period averaging, a support-independent comparison, and fixed-cofactor limits do not do this; the latter's constants grow with the cofactor. No assertion of the conjectured estimate follows from the formula.
+
+Search128 completed (index1188117; coverage1188128/current1188129; complete inventory, mixed compiler metadata, semantic coverage unmeasured). All20 candidate statements, all20 returned source arguments and both generated ingredient steps inspected. It rediscovered the exact cutoff source difference and boundary, fixed-cofactor covariance bounds, and completed-aperture obstructions. The proposed dilation chain supplies no growing-cofactor constant and no complete-band bound. Direct inspection of PMRamanujanCutoffPrimeBalance confirms the physical input is not prime invariant, so its negative invariant-input cross form cannot be substituted here.
+
+Evaluation: the complementary cancellation theorem is genuine new signed-source knowledge. Subsequent retrieval did not improve the residual bound. The next proof attempt must work on the full signed quadratic above, rather than repeat coefficient estimates, scalar centering, or generic prime contraction. No new receiver with an energy premise has been added. All own Lean/search processes are terminal; owned completed scratch files and search outputs cleaned. Goal remains active and unmet.

@@ -1235,3 +1235,20 @@ than merely reducing it. The next route obligation is the actual mixed-row
 cubic limit and coordinate projection near the center; global comparison
 (3), global compensation, arbitrary rank and RH transfer remain unproved.
 The RH goal is active and unmet.
+
+### RN-P-7n: actual coordinate transfer after strict energy positivity
+
+Previous turn classified as progress: both current and strict integral sign
+were proved and audited. Fresh source inspection confirms those theorems.
+The new corpus query is partial with background refresh and source-only
+metadata; inspected candidates recover the existing source/determinant limits
+but no coordinate producer. The active mathematical target remains
+B_*(y)>0 and the actual finite-pair residual. The exact cubic center jet
+is the immediate bridge from the new E>0 theorem.
+
+Added a public mixed-row derivative API to CenterLimits, reusing its proved
+Schwartz correlation differentiation. A new CoordinatePort leaf retains
+literal inverse-Gram coefficients and proves their candidate confluent
+limit. Both are undergoing verification. Serena symbol lookup rejected the
+Lean path as ignored, so the existing source was edited with a read-based
+patch. No subagents or additional hypotheses were introduced.

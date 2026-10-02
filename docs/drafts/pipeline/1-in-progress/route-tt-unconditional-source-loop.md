@@ -3364,3 +3364,22 @@ kernel profiling showed expensive checking of that inflated certificate;
 exit 143 and process disappearance were verified. No sign result is
 claimed from the stopped attempt. Finite cofactor/term selectors now use
 literal natural-index cases so this defect cannot recur at indices 5/6.
+
+The uniform raw-pair floor is now falsified, not merely unproved:
+`reducedMinor4_upper_neg : reducedMinor4 45 8 < 0` passes a direct
+Lean audit with only the three standard axioms. The third interval
+minor sign also passes. The former fourth interval positivity failure
+was mathematical; its lower endpoint passed while its upper endpoint
+reduced to False. No C56/RH falsification follows from this auxiliary
+floor failure.
+
+Next exact source certificate keeps 8*exp(-3q) and uses the diagonal
+allowance 10000*(3q-14). The exponential payment is still 1/40 by
+exp(3q)>=20^5*(3q-14). All three new leading-minor signs, all six
+cofactors, and the exact fourth-determinant polynomial now compile
+with standard axioms. The remaining fourth interval sign is being
+audited in /tmp/TTC56WeightedDetSign.lean. Source congruence and final
+exponential payment are prepared in /tmp/TTC56SourceBridge.lean and
+/tmp/TTC56WeightedFloor.lean, not yet checked. A 938-line production
+assembly is prepared in /tmp/ThetaCuspMixedPairOddFourFloor.lean;
+it has not been published to the Lean tree or claimed as proved.

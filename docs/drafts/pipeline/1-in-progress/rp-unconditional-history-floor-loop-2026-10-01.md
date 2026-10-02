@@ -1172,3 +1172,59 @@ At fixed lcm k the unpaid source contains only complementary divisor
 allocations with d,e<=X<k, so complete divisor-row cancellation does not
 apply. Inspecting the corpus's truncated divisor-pair machinery before
 attempting an actual bound. No new Lean code or frontier certificate yet.
+
+RP-45 selected conjecture: complete-fibre absolute admission already fails
+for the clipped semiprime sector at critical damping epsilon=1/2. Unlike
+termwise pair variation, the proposed V(M) takes absolute values only after
+all active pairs in each LCM fibre are summed. A fibre containing two distinct
+primes in(M/2,M] has precisely the two ordered prime pairs: the product is
+beyond the cutoff and all other divisors are1 or that product. Thus V(M)
+dominates late-prime mass squared minus its diagonal. The existing diagonal
+ceiling722*M^2 and quantitative prime-mass floor supply an eventual harmonic
+floor for V(4N)/((4N)^3*sqrt(4N)). Paper card:
+rp-critical-absolute-lcm-fibre-budget-2026-10-02.md. The new leaf is being
+checked, not yet a verified certificate. This tests an absolute replacement;
+the complete signed cross-fibre payment remains open.
+
+RP-45 corpus audit: integrated-cross query had partial=false, no errors or
+unfinished stages,64477 indexed files/zero pending, query generation1187882,
+coverage1187902/current1187903. Prime-energy query likewise complete at
+64478 files, generations1187903/1187914/1187914. Partial-fibre query complete
+at64483 files, generations1188016/1188025/1188030. Relevant hits were source
+only; semantic coverage unmeasured within reporting budget. No proof_ideas.
+Candidate/source arguments inspected: fixed-core insertion producers are
+not uniform growing-core energy; Hilbert divisor rows have wrong kernel and
+live inside the already-paid sector; exact truncated-LCM reindexing has no
+critical bound. Generated ingredient recipes do not discharge these gaps.
+Fourth prime-pair-admission query was partial=true: semantic retrieval timed
+out,64486 indexed files/zero pending, query1188036, coverage1188066/current
+1188067. Available candidate lemmas concern residue classes, assumed seed
+decay, or unrelated carriers; retrieved finite-profile sign computations and
+prime-pair source definitions do not prove this admission. Proof_ideas empty;
+the generated gcd-to-LCM-residue recipe is algebra only. Existing
+EulerDeletionCenteredLcmSemiprimeSign classifies a different, unclipped
+physical discrepancy fibre; its elementary divisor-list proof is reusable,
+its sign is not transferred to the new source.
+
+Process correction: an owned production check was mistakenly launched while
+the second API scratch check was still running. Stopped only its owned PIDs
+62781/62733 and confirmed handle25012 exit143. API handle43792 subsequently
+exited0 before replacement leaf handle76282 was launched. No other process
+was stopped; one owned Lean process thereafter. No certificate inferred from
+the cancelled run.
+
+RP-45 signed follow-up search: mixed-cofactor query partial=false, no errors
+or unfinished stages,64494 indexed files/zero pending, generations
+1188245/1188256/1188258; semantic coverage unmeasured. Source-only hits and
+generated transfer proposals inspected. Late-prime insertion and corrected
+coarea action preserve the signed head overlap but do not estimate it.
+The critical triangular clock theorem absorbs the copied diagonal exactly;
+its complete nonpositive balance still includes the signed mixed correlation.
+Dropping that term is not licensed. XiMassCenteredDivisorMixedCurvature has
+unbounded negative prime-cofactor curvature for another coefficient carrier,
+not a bound for these clipped half-order channels. The literal finite LCM
+Möbius inversion retains squared divisor prefixes, but absolute estimation
+of the inversion would lose the cancellation under investigation. No new
+identity-only receiver is being added. The integrated native mixed lower
+bound, uniform in physical cutoff at each positive damping, remains the
+next hard target; the new discrete absolute obstruction does not settle it.

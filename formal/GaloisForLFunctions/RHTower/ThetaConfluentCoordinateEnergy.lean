@@ -47,6 +47,14 @@ private theorem second_eq (t : ℝ) : k₂ t = (p t^2-c t)*k t := by
   rw [h]
   ring
 
+/-- The center curvature retains the literal source mass. -/
+theorem source_second_center : k₂ 0 = -q*k 0 := by
+  have hp : p 0 = 0 := by
+    simp only [thetaCuspLogDecaySlope,
+      iteratedDeriv_thetaCuspLogSource_zero_of_odd (m := 1) ⟨0,rfl⟩, neg_zero]
+  rw [second_eq, hp]
+  simp only [zero_pow (by decide : 2 ≠ 0), zero_sub]
+
 private theorem third_eq (t : ℝ) : k₃ t = (-p t^3+3*p t*c t-v t)*k t := by
   have he : k₂ = fun t => (p t^2-c t)*k t := funext second_eq
   have hd : HasDerivAt (fun t => (p t^2-c t)*k t)
@@ -169,7 +177,7 @@ theorem polynomialCurrent_integrable : Integrable polynomialCurrent :=
     (mixed_second_integrable.const_mul (6*q))).sub
     (ThetaGeometricBoundaryAudit.source_times_derivative_integrable.const_mul (2*q))
 
-private theorem first_second_integral : (∫ t in Ioi 0, k₁ t*k₂ t) = 0 := by
+theorem first_second_integral : (∫ t in Ioi 0, k₁ t*k₂ t) = 0 := by
   have hd (t : ℝ) : HasDerivAt (fun t => k₁ t^2/2) (k₁ t*k₂ t) t := by
     convert! ((first_hasDerivAt t).pow 2).div_const 2 using 1
     ring
@@ -180,7 +188,7 @@ private theorem first_second_integral : (∫ t in Ioi 0, k₁ t*k₂ t) = 0 := b
     (fun t _ => hd t) first_second_integrable.integrableOn hl
   simpa only [first_zero, zero_pow (by decide : 2 ≠ 0), zero_div, sub_zero] using h
 
-private theorem mixed_third_integral : (∫ t in Ioi 0, t*k₁ t*k₃ t) = -secondMass := by
+theorem mixed_third_integral : (∫ t in Ioi 0, t*k₁ t*k₃ t) = -secondMass := by
   have hd (t : ℝ) : HasDerivAt (fun t => t*k₁ t*k₂ t)
       (k₁ t*k₂ t+t*k₂ t^2+t*k₁ t*k₃ t) t := by
     convert! ((hasDerivAt_id t).mul (first_hasDerivAt t)).mul

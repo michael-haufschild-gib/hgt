@@ -977,7 +977,8 @@ The constant raw-matrix conjecture M12(q) >= -10000 I failed at
 q=45/8: the fourth determinant of the shifted matrix is negative
 there, while the first three leading minors are strictly positive.
 The first three interval signs are kernel-checked. The exact fourth
-endpoint negative certificate is under final scratch audit. This
+endpoint negative certificate also passes Lean, using only propext,
+Classical.choice, and Quot.sound. This
 obstructs that uniform auxiliary floor, not C56 or RH.
 
 The discarded correlation is the unequal pair's literal weight

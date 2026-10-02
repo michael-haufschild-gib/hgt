@@ -359,4 +359,71 @@ theorem eventually_sourceResidual_pos {y : ℝ} (hy : 0 < y) :
     exact (div_lt_iff₀ kernel_center_pos).mpr (by nlinarith only [hcross])
   exact (sourceResidual_limit y).eventually (isOpen_Ioi.mem_nhds hp)
 
+/-- Differentiation of a half-line Schwartz correlation for higher mixed kernel jets. -/
+theorem schwartzCorrelation_hasDerivAt (f g : SchwartzMap ℝ ℝ) (y : ℝ) :
+    HasDerivAt (fun y => ∫ t in Ioi 0, f t*g (y+t))
+      (∫ t in Ioi 0, f t*deriv (g : ℝ → ℝ) (y+t)) y :=
+  correlation_hasDerivAt f g y
+
+theorem schwartzCorrelation_integrable (f g : SchwartzMap ℝ ℝ) (y : ℝ) :
+    Integrable (fun t => f t*g (y+t)) := correlation_integrable f g y
+
+/-- The literal mixed row at the center endpoint. -/
+def centerMixedRow (y : ℝ) : ℝ := ∫ t in Ioi 0,
+  thetaCuspFullSource t*thetaCuspFullSource (y+t)+
+    (y+2*t)*deriv thetaCuspFullSource t*thetaCuspFullSource (y+t)
+
+/-- The row is the actual kernel derivative, including at the coalescing node. -/
+theorem kernel_center_hasDerivAt (x : ℝ) :
+    HasDerivAt (thetaTailFirstMomentKernel x) (centerMixedRow x) 0 := by
+  have ha := (correlation_integrable (shiftedSource x) thetaCuspSchwartzReal 0).integrableOn (s := Ioi 0)
+  have hb := ((correlation_integrable (shiftedSource x) dsource 0).const_mul x).integrableOn (s := Ioi 0)
+  have hc := ((correlation_integrable (weightedSource (shiftedSource x)) dsource 0).const_mul 2).integrableOn (s := Ioi 0)
+  have hab : IntegrableOn (fun t => shiftedSource x t*thetaCuspSchwartzReal (0+t)+
+      x*(shiftedSource x t*dsource (0+t))) (Ioi 0) := ha.add hb
+  have he : rowFirst x 0 = centerMixedRow x := by
+    unfold rowFirst correlation centerMixedRow
+    simp only [add_zero]
+    rw [← integral_const_mul, ← integral_const_mul,
+      ← integral_add ha hb, ← integral_add hab hc]
+    apply integral_congr_ae
+    filter_upwards with t
+    simp only [weightedSource_apply, shiftedSource_apply, thetaCuspSchwartzReal_apply,
+      SchwartzMap.derivCLM_apply, zero_add]
+    rw [show (thetaCuspSchwartzReal : ℝ → ℝ) = thetaCuspFullSource from
+      funext thetaCuspSchwartzReal_apply]
+    ring
+  rw [← he]
+  exact kernel_hasDerivAt x 0
+
+theorem centerMixedRow_zero : centerMixedRow 0 = 0 := by
+  have h : HasDerivAt (thetaTailFirstMomentKernel 0) 0 0 := by
+    simpa only [rowFirst_center] using kernel_hasDerivAt 0 0
+  exact (kernel_center_hasDerivAt 0).deriv.symm.trans h.deriv
+
+/-- Third-order endpoint quotient retaining the exact first nonzero derivative. -/
+theorem third_quotient_limit {f g h : ℝ → ℝ} {a : ℝ}
+    (hf : ∀ x, HasDerivAt f (g x) x) (hg : ∀ x, HasDerivAt g (h x) x)
+    (hh : HasDerivAt h a 0) (hf0 : f 0 = 0) (hg0 : g 0 = 0) (hh0 : h 0 = 0) :
+    Tendsto (fun z => f z/z^3) (𝓝[>] 0) (𝓝 (a/6)) := by
+  have hq := second_quotient_limit hg hh hh0
+  rw [hg0] at hq
+  simp only [sub_zero] at hq
+  have hq' : Tendsto (fun z => g z/(3*z^2)) (𝓝[>] 0) (𝓝 (a/6)) := by
+    convert! hq.div_const 3 using 1
+    · ext z
+      ring
+    · congr 1
+      ring
+  apply HasDerivAt.lhopital_zero_nhdsGT
+    (Filter.Eventually.of_forall hf)
+    (Filter.Eventually.of_forall fun z => by
+      convert! (hasDerivAt_id z).pow 3 using 1; simp only [id_eq]; ring)
+    ?_ ?_ ?_ hq'
+  · filter_upwards [self_mem_nhdsWithin] with z hz
+    exact mul_ne_zero (by norm_num) (pow_ne_zero 2 (ne_of_gt hz))
+  · simpa only [hf0] using (hf 0).continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  · simpa using (tendsto_id : Tendsto (fun z : ℝ => z) (𝓝[>] 0) (𝓝[>] 0)).mono_right
+      nhdsWithin_le_nhds |>.pow 3
+
 end RHTower.ThetaConfluent

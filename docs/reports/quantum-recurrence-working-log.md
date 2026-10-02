@@ -115,3 +115,41 @@ without warnings. Exactly the four changed proofs were axiom-audited: only
 no builds, new oleans, git operations or agents. Global lint still reports 15
 unrelated unwired RHTower modules and no failures for the edited leaves.
 Owned Lean/search/lint processes exited; temporary optimization files removed.
+
+## 2026-10-02: return-free near-diagonal coherence test
+
+Full ordinary-ensemble incidence-action producer remains open. Hybrid and deep
+corpus searches inspected candidate lemmas, source methods, and ingredient sets.
+Coverage metadata lacks semantic statistics; source inspection checked actual
+applicability. StaticChoiCentralizerCarrierReplicaLaw and
+StaticChoiKurtosisNearActionLaw suppress transverse individual targets but leave
+the occupied high-centralizer circuit carrier unpaid. No complete-circuit bound
+follows from their conditional receivers.
+
+Conjecture under test: for every spectrum in positive dimension, every replica
+order r, cutoff a, and T >= max(1,4|a|), the return-excised full pair purity P is
+at least g^2/(16 sqrt(r+1) S T), where g=gaussianFloorTwo and S=staticChoiSpeed.
+Public unconditional specialization uses T=1+4|a|+u^2 and dimension n+1.
+
+Dependency-closed mathematical proof: set delta=1/(4 sqrt(r+1) S T).
+S,T,sqrt(r+1) >=1 imply 0<delta<=1/4. Restrict outer time x to [3/4,1]
+and inner time y to [x-delta,x+delta]. Both times lie above 1/2 and hence
+outside [-|a|/T,|a|/T]. Speed gives trace distance <=1/(4 sqrt(r+1)),
+so fidelity >=1-1/(16(r+1)). Bernoulli gives fidelity^r >=1-r/(16(r+1))
+>=1/2. The shifted Gaussian interval lower bound gives inner mass >=2g delta
+and outer mass >=g/4. Positivity, restriction monotonicity and Fubini yield
+P >= (1/2)(2g delta)(g/4)=g^2/(16 sqrt(r+1) S T).
+No nonresonance, ensemble mixing, lost source sheet, or target assumption enters.
+
+At errors epsn=1/2, epsw=3/4, receiver threshold is
+g^2(7/16)^(2r)/(64 S^2 T^2). Since sqrt(r+1)<=r+1<=2^r and
+2(7/16)^2<1, the purity lower bound strictly exceeds this threshold for
+every r, including r varying with T. This only falsifies full-purity substitution;
+it does not falsify actual projected action suppression or Brown--Susskind.
+
+Positive survivor to formalize: actual carrier compression ratio A/P must
+satisfy an explicit bound proportional to sqrt(r+1)(7/16)^(2r)/(N S T)
+whenever the exact incidence-action receiver succeeds. This is a necessary
+quantitative requirement, not a new ordinary-ensemble producer. Short-time
+coherence and Bernoulli are known ingredients; no external novelty or Nature
+claim is assigned to this diagnostic without a further novelty audit.

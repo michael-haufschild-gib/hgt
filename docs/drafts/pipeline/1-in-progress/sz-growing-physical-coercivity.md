@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Route:** SZ
 - **Date:** 2026-10-02
-- **Status:** source-based paper argument; Lean implementation under audit
+- **Status:** all five final leaf audits passed; public axiom audit in progress
 - **Target:** for every L>0, eventually in positive aperture a, every actual
   Ta vector w satisfies L*a*norm(Jw)^2 <= norm(w)^2.
 
@@ -102,7 +102,7 @@ channel and the full signed expression; no Wronskian sign is claimed here.
 - [x] Paper calculation retains actual shift, compression and both frequency regions.
 - [x] Audit arbitrary-Gamma Fourier tail comparison in Lean: final leaf52297 passed.
 - [x] Audit uniform growing physical coercivity in Lean: final leaf33070 passed.
-- [ ] Audit rescaled physical response-minus-Neumann error.
+- [x] Audit rescaled physical response-minus-Neumann error: final leaf74860 passed.
 - [ ] Test signed metric-work cancellation at original common aperture cutoffs.
 
 ## Implementation log
@@ -130,3 +130,13 @@ warnings. The actual root holds for every real L, with the nonpositive case
 discharged separately, and uniformly for every actual Ta vector. Both new
 leaves are wired. Rescaled physical approximation remains under scratch audit.
 The next signed source target is recorded in sz-matched-source-metric-balance.md.
+
+The rescaled physical approximation passed scratch audit90661: exp(a) times
+the squared norm of the actual response-minus-canonical-Neumann vector tends
+to zero along positive apertures. The finite vector is unchanged. The proof
+uses the existing exact Ta residual norm, fixed Gamma/residual constants, and
+the newly proved growing floor with arbitrary L. Final leaf audit is running.
+Unfolding the concrete local vector names before the residual conversion
+avoided a type mismatch and expensive diagnostic elaboration; no heartbeat
+limit was raised. Current Mathlib scalar cancellation uses
+le_of_mul_le_mul_left, not the older mul_le_mul_left iff interface.

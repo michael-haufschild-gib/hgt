@@ -1851,3 +1851,18 @@ log /tmp/th-growth-next-mixed-pair-probe-cached.log, handle30960. Corpus
 search91700 terminal0 generation1188087 partial; retrieved existing cubic
 and old mixed bounds plus new next-functional API, no applicable solved
 mixed-pair comparison in returned hits. No absence claim.
+
+Mixed-pair polynomial certificate PROVED: audit71683 terminal0, all eleven
+coefficient reserves strictly positive, standard3 axioms only. Cached probe
+30960 terminal1 only because row9 had no remaining slope term to unfold;
+corrected ninth-only probe96821 terminal0, exact coefficient text matches.
+Saved/wired GrowthMixedPairPolynomial. Source identification and transport
+remain pending; this certificate alone is not complete source positivity.
+
+GrowthMixedPairPolynomial final leaf audit99901 terminal0 (empty log).
+Corpus flow search71622 terminal0, gen1188237, partial=false, source-only
+candidates include actual atom derivative and convolution chain. Source
+coefficients/moment bridge and derivative numerator assembled in
+/tmp/th_growth_mixed_pair_kernel.lean; first audit started. Prepared
+/tmp/th_growth_mixed_pair_absorption.body derives Fbare=U/q8 and
+Fmixed=V/q8 by differentiating exact T moments; not yet audited.

@@ -162,3 +162,14 @@ zero at the center and B_*'''(0)=2KE/β>0. The exact next target is
 projection limit. This supplies an actual open chamber with both residual
 ports positive. It does not establish the global compensation barrier,
 arbitrary-rank positivity, or transfer to the arithmetic off-diagonal kernel.
+
+### RN-P-7n implementation in progress
+
+The mixed-row derivative and third-quotient APIs in CenterLimits have passed
+their targeted dependency build. `ThetaTailConfluentCoordinatePort` retains
+the exact inverse-Gram residual and its confluent limit. The new
+`ThetaTailConfluentCoordinateJets` implementation proves the three center
+mixed-row derivatives by Schwartz correlation differentiation and half-line
+integration by parts, then uses E>0 to target an actual ordered chamber
+`∀ᶠ y→0+, ∀ᶠ z→0+, z<y ∧ A_z(y)>0 ∧ B_z(y)>0`.
+Verification is still in progress; no global chamber propagation is claimed.

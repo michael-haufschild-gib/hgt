@@ -189,7 +189,7 @@ theorem exists_primeGaussianCubic_entry_error :
       field_simp
       nlinarith [sq_nonneg (Real.sqrt N)]
 
-private theorem primeProfileBand_card_log_le {N : ℝ} (hN : 1 < N) :
+theorem primeProfileBand_card_log_le {N : ℝ} (hN : 1 < N) :
     (primeProfileBand N).card * Real.log N ≤ (2 * Real.log 4) * N := by
   let S := primeProfileBand N
   have hsub : S ⊆ (Finset.Icc 0 ⌊2*N⌋₊).filter Nat.Prime := by

@@ -89,6 +89,23 @@ c_a*N_o,a-O_a -> 0.
 
 ## Even channel and signed consequence
 
+### Shorter odd-channel source identity (2026-10-02)
+
+Source inspection of SuzukiMatchedOddSourceBound:141 gives the exact private
+identity O_a=Re<p_a,f_a>. Exposing this already proved identity will avoid the
+separate comparison of squared Ta norms in the preceding paper calculation.
+Indeed, r_a=p_a-(c_a I+B_a)u_a gives exactly
+
+    O_a-c_a*norm(u_a)^2
+      = Re<p_a,f_a-u_a> + Re<r_a,u_a> + Re<B_a u_a,u_a>.
+
+The first term vanishes since norm(p_a)<=exp(a/2) and the rescaled physical
+error tends to zero. The second vanishes by the actual residual/norm estimates.
+The third is the same complete signed multiplier obligation above. Thus the
+new route reduces odd metric balance to that single retained prime--polar
+quadratic and the shift-weighted norm-square comparison. The latter now has
+a complete epsilon proof drafted in scratch; no new premise is used.
+
 The actual matched even source is (p_++p_-)/2. Both initial norm and finite
 exponential budget obey the same scale exp(a/2). The general budget contraction
 already applies to every certified source. Extend the finite recurrence,
