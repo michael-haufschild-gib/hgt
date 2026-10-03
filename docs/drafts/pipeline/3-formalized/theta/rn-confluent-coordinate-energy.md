@@ -7,6 +7,11 @@ leaf diagnostics. All eleven public theorem axiom checks contain only
 propext, Classical.choice and Quot.sound. Both leaves are wired into RHTower.
 Repository lint still fails on the same ten unrelated unreachable modules.
 
+The subsequent coordinate-chamber audit also checked three newly public
+energy helpers (`source_second_center`, `first_second_integral`,
+`mixed_third_integral`). All eight energy theorems pass the same standard
+axiom audit. That later lint reports twelve unrelated unreachable modules.
+
 For the literal theta source k, put p=−(log k)', c=p', q=c(0),
 I=∫₀∞t k'² and J₂=∫₀∞t k''². The theorem is
 
@@ -70,8 +75,9 @@ This avoids assuming improper integrability of Gk² before proving the sign.
 
 ## Remaining RN gates
 
-Formalize the actual mixed-row jets and B_*(y)/y³→k(0)E/(3β)>0;
-then prove the finite old-pair coordinate projection limit. Global
+The actual mixed-row jets, B_*(y)/y³→k(0)E/(3β)>0, and finite old-pair
+coordinate projection limit are now formalized in
+`theta/rn-confluent-coordinate-chamber.md`. Global coordinate comparison,
 compensation, arbitrary-rank positivity and the retained arithmetic
 RH transfer remain separate obligations. Equality of kernel diagonals
 alone does not identify their off-diagonal entries.

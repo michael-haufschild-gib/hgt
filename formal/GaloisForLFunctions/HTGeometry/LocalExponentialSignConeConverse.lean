@@ -27,6 +27,7 @@ variable {d : ℕ} {μ : Measure ℝ} [IsFiniteMeasure μ]
 noncomputable def directionDensity (J : ℝ → Matrix (Fin d) (Fin d) ℂ) (u : Fin d → ℂ)
     (x : ℝ) : ℝ := (matQuad (J x) u).re
 
+omit [IsFiniteMeasure μ] in
 theorem aestronglyMeasurable_directionDensity
     {J : ℝ → Matrix (Fin d) (Fin d) ℂ}
     (hmeas : ∀ k l, AEStronglyMeasurable (fun x => J x k l) μ) (u : Fin d → ℂ) :

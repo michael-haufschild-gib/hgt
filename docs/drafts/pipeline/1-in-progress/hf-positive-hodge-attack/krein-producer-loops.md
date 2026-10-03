@@ -5810,3 +5810,1762 @@ Notation: `lam ∈ W`, `F = exp(Σ lam(n)n^{−s}/log n) = Σ b_n n^{−s}`, `E 
   - By the functional equation, `{|ζ(s)| = |ζ(1−s̄)|} = {|χ(s)| = 1}` is the critical line (for `|t| > t₀`). But realizing `R(s) = |ζ(1−s̄)|^{...}` through a twin forces `|Λ_G| = |c||Λ_ζ|^k` on the line, hence `G = ±cζ^k` (identity theorem).
   - So **the only way to make the large-degree level set equal the line is ζ itself**. This is the large-degree form of the phase lock.
 - **Verdict.** No new object. The phase-locked, no-off-line-zeros requirement is self-referential at every degree: near `ζ^k` (Hermite blocked by `W_2 = 0`), far from `ζ^k` (level sets of `|ζ|`), and at degree 1 (Hamburger).
+
+### L302 — Far-right Bohr exclusion: a twin whose cusp part is absolutely convergent at `σ = 1` has zeros in `σ > 1`. LEMMA [P] (Bohr-type; likely folklore in general form) + twin corollary [P] + CONJECTURE C302
+- **Lemma L302.1 [P].** Let `k ≥ 1` and `E = Σ e_n n^{−s} ≢ 0` with `Σ|e_n|/n < ∞`. Then for every `η > 0`, `ζ^k + E` has zeros in `1 < σ < 1+η`, at a set of heights of positive lower density.
+- **Proof.**
+  1. *Lift.* For `χ ∈ 𝕋^∞` (completely multiplicative, unimodular), put `ζ_χ(σ) = ∏_p(1−χ(p)p^{−σ})^{−1}` and `E_χ(σ) = Σe_nχ(n)n^{−σ}`, both continuous on `𝕋^∞ × (1,2]`, and `E_χ` also at `σ = 1`.
+     - `χ ↦ E_χ(1)` has absolutely convergent Fourier series with coefficients `e_n/n` on distinct characters, so it is `≢ 0`.
+     - Fix `χ₀` with `w₀ := E_{χ₀}(1) ≠ 0`.
+  2. *Large primes do not move `E`.* Put `ε(P) := Σ_{n>P}|e_n|/n`. If `χ = χ₀` on `p ≤ P₀`, then `|E_χ(σ) − E_{χ₀}(σ)| ≤ 2ε(P₀)`.
+     - Choose `P₀` with `ε(P₀) < |w₀|/8`, and `σ` close to `1`. Then `E_χ(σ)` stays in a disc around `w₀` avoiding `0`, so a branch `τ(χ) := k^{−1}log(−E_χ(σ)) − Σ_{p≤P₀}−log(1−χ₀(p)p^{−σ}) + 2πij/k` is continuous.
+     - Its oscillation is `O(ε(P₀)/|w₀|)`. Choose `j` so that `|τ| ≥ π/k`; `|τ| ≤ M` with `M` independent of `σ`.
+  3. *Large primes move `ζ` a lot.* Split `{p > P₀}` into `𝒜, ℬ` with `|R_𝒜 − R_ℬ| ≤ P₀^{−1}`, where `R_𝒮 = Σ_{p∈𝒮}p^{−σ}` and `R := R_𝒜 + R_ℬ → ∞` as `σ ↓ 1`.
+     - Take `χ = e^{iφ}` on `𝒜` and `e^{i(φ+π−2α)}` on `ℬ`, with `(φ, α) ∈ S¹ × [0, π/2]`.
+     - Then `Σ_{p>P₀} −log(1−χ(p)p^{−σ}) = R sin α · e^{i(φ−α+π/2)} + O(P₀^{−1})`.
+  4. *Degree.* `H(φ,α) := (large-prime log ζ) − τ` is continuous on the cylinder.
+     - At `α = π/2` it is `≈ Re^{iφ}`, which has winding `1` once `R > M + 1`.
+     - At `α = 0` it is `≈ −τ`, which has winding `0` (`|τ| ≥ π/k` dominates the `O(P₀^{−1} + ε(P₀)/|w₀|)` errors).
+     - So `H` vanishes somewhere, i.e. `ζ_{χ*}(σ)^k = −E_{χ*}(σ)` for some `χ*`.
+  5. *Transfer.* `s ↦ ζ_{χ*}(s)^k + E_{χ*}(s)` is analytic on `σ > 1` and `≢ 0`.
+     - Kronecker gives a relatively dense set of `t` with `p^{−it} ≈ χ*(p)` for `p ≤ P₁`.
+     - Absolute convergence controls the tail, and Rouché puts a zero of `ζ^k + E` near `σ + it`. ∎
+- **Corollary L302.2 [P] (twins).** If `G = ζ^k + E ∈ V_k` with `E ≠ 0` and `Σ|e_n|/n < ∞`, then `G` has zeros in `σ > 1`. So `G` is not real-rooted and `lam_G/k` is not a producer.
+  - A real-rooted twin `G ≠ ζ^k` therefore has a cusp part **outside the Wiener algebra at `σ = 1`**.
+  - Mechanism: `ζ^k` has a Bohr "Liouville hole" (`inf_χ|ζ_χ(σ)| = ζ(2σ)/ζ(σ) → 0`, with every argument attained), and any cusp part that stays continuous on the hull fills it.
+- **Novelty audit.** For constant `E` this is Bohr's `a`-point theorem; for `E` with independent Euler structure it is the Davenport–Heilbronn / Saias–Weingartner / Booker–Thorne mechanism (L198 row 4249, L288.3, card §9(b)). The general lemma is a routine Bohr–Kronecker argument. **Verdict: REDISCOVERED-type lemma; new only as a constraint on `V_k`.**
+- **Conjecture C302 (far-right twin rigidity).** For `k ≥ 3`, every `G ∈ V_k \ ℂζ^k` has zeros in `σ > 1`.
+  - C302 ⇒ RTE_k unconditionally: the only possible phase-locked integer-frequency object of degree `k` without off-line zeros is `ζ^k`, so the fractional-mass doors close and a non-Λ producer must have unsettled phase (L237).
+  - *Failure mode.* A cusp part `E` whose Bohr hull blows up exactly along `ζ`'s hole, i.e. `E_χ/ζ_χ^k` bounded near the Liouville point and zero-free elsewhere. This is the multiplicative structure `G = ζ^k e^{C}` of card §9(b).
+  - **[OPEN CORE]** Abscissa control for `W_k`: either every `E ∈ W_k \ {0}` has `Σ|e_n|/n < ∞` after subtracting a `ζ`-correlated part, or there is an element with `σ_a(E) ≥ 1` whose lift avoids the hole. Nothing in the KNS construction controls `σ_a(E)`.
+
+### L303 — Phase lock is an almost-everywhere property, and it already forces integer atoms: the requested object (integer frequencies, locked to `Γ_ℝ`, no off-line zeros) is `ζ` under RH, with no continuation assumed. LEMMA [P, elementary] + THEOREM [P from MUST-642] + CLASSIFICATION
+- **Setting.** Let `lam` be any full-cone producer, `F = F_lam = exp(Σ lam(n)n^{−s}/log n)` and `E = s(s−1)Γ_ℝ(s)F(s)`.
+  - `E'/E = Ψ₀ − D_lam = H` is Herglotz on `σ > ½` with boundary measure `μ = μ_lam` (corpus `boundaryMeasure`).
+  - `E` has bounded type, so nontangential boundary values exist a.e. In the BV sense, `arg E(½+it) = μ((0,t]) + c` (`d/dt arg E = Re H`).
+  - Since `arg[s(s−1)]` is constant on the line and `arg Γ_ℝ(½+it) = θ(t)`, the user's "phase locked to ζ's archimedean factor" means: `e^{iθ(t)}F(½+it) ∈ e^{ic'}ℝ` for a.e. `t`, i.e. `μ((0,t]) ∈ c'' + πℤ` for a.e. `t`.
+- **Lemma L303.1 [P].** Let `μ ≥ 0` be locally finite on `ℝ`, and suppose `N(t) := μ((0,t])` lies in `c + κℤ` for a.e. `t`. Then `μ = κΣ m_jδ_{t_j}` with `m_j ∈ ℤ_{>0}`.
+  - *Proof.* Let `Y` be the full-measure set where `N ∈ c + κℤ`. For `t₁ < t₂` in `Y`, `μ((t₁,t₂]) ∈ κℤ_{≥0}`.
+  - Let `t₁ ↑ t` and `t₂ ↓ t` along `Y` (dense). Then `μ({t}) ∈ κℤ`.
+  - On an interval with no atom of mass `≥ κ`, `μ((t₁,t₂])` is a nonnegative multiple of `κ` that tends to `0`, hence is eventually `0`. So `μ` vanishes off its atoms: no a.c. part and no singular continuous part. ∎
+- **Theorem L303.2 [P; formal ingredients MUST-642/MUST-608].** If `e^{iθ}F_lam` has constant phase mod `π` a.e. on the critical line (no continuation, no regularity beyond producer boundary values), then `μ_lam = πΣ m_jδ_{±t_j}` with integer `m_j`. If the atoms avoid `(−1,1)` (the `t_j ≥ 1` hypothesis of the formal theorems), then `W_lam(f⋆f̃) = ∫|f̂|²dμ_lam` is an integer zero sum, and `converse_explicit_formula` gives `lam = Λ` and RH.
+  - **Answer to the user's literal target.** An integer-frequency object whose phase is locked to `ζ`'s archimedean factor and which has no zeros in `σ > ½` exists **iff RH**, and it is then `ζ`. A natural boundary on the line does not help: phase lock is a.e., and Lemma L303.1 removes every continuous part.
+- **Corollary L303.3 [P] (`k`-lock).** Lock to `Γ_ℝ^k`, i.e. `e^{ikθ}F^k` real a.e., gives atoms in `(π/k)ℤ`.
+  - An atomic Herglotz measure on real points makes `H = Σ m_j[(s−½−it_j)^{−1} + (s−½+it_j)^{−1}] + b` (Mittag-Leffler). It is meromorphic on `ℂ` and odd about `½`, so `D` continues and satisfies `D(s) + D(1−s) = φ(s)`.
+  - Hence `F^k ∈ V_k` (finite order from Lindelöf, MUST-646). **The continuation hypothesis in the twin theory is automatic.** Every locked producer is `Λ` (`k = 1`) or a real-rooted twin (RTE_k).
+- **Classification of producers by Weil-measure type (exact map).**
+  1. Atomic, integer masses: `Λ`, RH (MUST-608/642).
+  2. Atomic, masses in `(1/k)ℤ`: real-rooted twins, i.e. RTE_k (L273, L302).
+  3. Atomic, arbitrary real masses: `D − D_Λ` is an odd Dirichlet series with simple poles of real residue. Integer-residue parts exponentiate to degree-0 FE quotients of twins. Finitely many non-integer masses give `Λ` (MUST-613).
+  4. Singular continuous part: phase never locks (`N_μ` continuous and non-constant). `e^{−H}` is a singular inner function whose measure is the Weil measure, so `D` has a natural boundary on `supp μ_sc`. Wiener gives super-regularity (L192). **Not excluded by anything in the corpus.**
+  5. Absolutely continuous part: PC-82's forbidden shape (open).
+- **Reading.** Door 1 is RH. Door 2 is RTE_k. Doors 4–5 are the "unsettled phase" producers of L237, and only they can carry a non-Λ producer without a real-rooted twin. Door 4 (singular continuous) has never been attacked.
+- **Next (L304).** Attack door 4. Can an integer-frequency Dirichlet series have Herglotz boundary measure with a nonzero singular continuous part? Candidate mechanism: Riesz products, the canonical positive singular-continuous measures with discrete spectrum. Integer frequencies force single-prime chains (`λ_k = a_k log p`).
+
+### L304 — Door 4 (singular continuous Weil measures): a gap in `supp μ` forces the functional equation on `ℂ∖supp μ`; singular-continuous producers are continuous up to the line and merge with the Ω wall; Riesz-product constructions need slack. STRUCTURE [P] ×3 + KILL (conditional on L74) + VERDICT
+- **Gap reflection [P].** Let `lam` be a producer, `H = Ψ₀ − D_lam`, `μ = μ_lam`. Suppose `μ(I) = 0` on an open interval `I` of the critical line.
+  - On `I`, `Re H = 0` as a boundary distribution. By Schwarz reflection, `H` continues across `I` with `H(s) = −H(1−s)` (real coefficients), i.e. `D(s) + D(1−s) = φ(s)` with `φ = Γ_ℝ'/Γ_ℝ(s) + Γ_ℝ'/Γ_ℝ(1−s)`.
+  - `ℂ∖supp μ` is connected (it contains the gap). By the identity theorem, `D` extends to all of `ℂ∖supp μ`, given on `σ < 0` by `φ(s) − Σ lam(n)n^{s−1}`.
+  - **Any producer whose Weil measure has one gap satisfies the log-derivative functional equation globally; its only singularities are `supp μ` on the line.** For `Λ` this is the meromorphic case (`supp μ` = ordinates).
+  - The lock is on `D`, not on `E`. `E = exp∫H` is single-valued only if the masses of the clusters of `supp μ` cut out by gaps are integers. Otherwise `E(s) = C·E(1−s)` holds with monodromy, which is exactly the twin / fractional-mass mechanism (L303 doors 2–3) generalised to clusters.
+- **Continuity [P].** If `μ_sc` has positive local dimension (`μ(B(x,r)) ≤ Cr^d`, `d > 0`), its logarithmic potential is continuous. So `E` is continuous up to the line, with `arg E(½+it) = μ((0,t])` continuous and non-constant.
+  - The Hamburger-stability defect is `2i|E(½+it)| sin(μ((0,t]) + c)`, of mass `≍ T`. So L228/MUST-603 cannot apply, and the producer corollary (mean-square excess `≫ T`) is the only constraint.
+  - Door 4 therefore merges with door 5: the L224/L228 Ω wall (unsettled phase).
+- **Riesz products [P + kill conditional on L74].**
+  - The canonical positive singular-continuous measures with discrete spectrum are Riesz products `∏_k(1 + c_k cos(λ_k t))`.
+  - For spectrum inside `±log ℕ`, every signed sum `Σε_kλ_k` must be the log of an integer or of its reciprocal. With lacunary `λ_k` this forces a single prime: `λ_k = a_k log p`. The measure is then `2π/log p`-periodic with mean density 1.
+  - A producer containing `κ(R_p − 1)` needs `μ − κ(R_p − 1) ≥ 0`, hence an absolutely continuous floor `≥ κ dt`, which is slack. L74 (`σ_pb = 0`) forbids this, and products with the growing density `θ'` destroy integer spectrum.
+  - So **linear Riesz-product insertions require slack**. Only "nonlinear" singular-continuous parts survive, i.e. those not of the form floor + periodic Riesz product.
+- **Verdict.** No producer, and no kill of door 4 as such.
+  - New exact facts: gap ⇒ global FE on `ℂ∖supp μ`; cluster masses decide single-valuedness; singular-continuous ⇒ continuous `E` and defect `≍ T`.
+  - The whole producer problem is now one of three statements:
+    - (i) RH (door 1);
+    - (ii) RTE_k (door 2, and door 3 through affine twin combinations);
+    - (iii) a mean-square excess `≫ T` producer with unsettled phase (doors 4–5, the Ω wall).
+  - L74 (no slack) is the single structural input that would close every linear construction in doors 4–5. It is still a sketch.
+- **Next.** Make L74 rigorous. The open core is the Gordan step: no `Σ c_n M_n` is positive definite on the prime-blind-relevant subspace.
+  - Low-frequency reading: near-radical tests must carry spectrum where `θ' ≈ 0` (`|τ| ≈ 6.3`), below the first zero.
+  - Their supports must exceed `log n` for growing `n`, which forces mixtures.
+
+### L305 — L74 (no slack) via Gordan on modulated-bump subspaces: an exact critical race at lag `log T`, so dimension counting cannot prove it. ATTEMPT [P] + RACE LAW [P-heuristic] + VERDICT (L74 stays a conjecture)
+- **Set-up (unconditional).** Prime-blind p.d. `Φ` satisfy `(arch + pole)(Φ) = Σ_ρ Φ̂(γ_ρ)`, with complex `γ_ρ` allowed.
+  - Put `V_T = {f ∈ L²[−L,L] : f̂(γ_ρ) = f̂(γ̄_ρ) = 0 for |γ_ρ| ≤ T}`, of codimension `K ≈ (T/π)log(T/2πe)`.
+  - If a PSD Gram `G` on a finite-dimensional `W ⊂ V_T` has `Tr(G M_n) = 0` for `n ≤ e^{2L}`, then `Φ_G` is prime-blind with `(arch+pole)(Φ_G) =` (zero tail beyond `T`). With smooth modulated bumps this is `≤ ε Φ_G(0)`, which gives `σ_pb ≤ ε`.
+  - By Gordan, `G` exists iff no `Σ c_n M_n` is positive definite on `W`.
+- **What localization gives [P].** Take `S = ⊕_{i≤m} B_{x_i}`: bumps of width `δ < log 2` at positions `x_i`, modulated in `[−T, T]`, with `dim B ≈ Tδ/π`.
+  - Every `M_n` vanishes on each block (self-lags `< log 2`), so every `Σ c_n M_n` is a **hollow** block form on `S`.
+  - Frequency-separated pairs give `n_−` up to `#pairs`.
+  - But a hollow form can have `n_− = dim B`: the "attractive" adversary `C_{ij} = −A` for all `i ≠ j` has negative directions only along the sum vectors `(g, …, g)`.
+  - `V_T` avoids the sum vectors once `K > dim B` (`ĝ·Σ_i e^{−iγx_i}` cannot vanish at `K ≫ m·dim B / m` points). That adversary is then **positive definite on `W = V_T ∩ S`**, and Gordan fails on this `W`.
+- **Race law [P-heuristic].**
+  - The adversary must realise one symbol `−a(ω)` at every lag `ℓ_ij = x_j − x_i`, on the `Tδ/π` modulation frequencies. A lag window `|log n − ℓ| < δ` holds about `e^{ℓ}δ` integers, so it is fully controllable iff `e^{ℓ} ≳ T/π`, i.e. `ℓ ≳ log T`.
+  - The Gordan side needs `dim S > K`, i.e. `mδ > log T`, so positions spread over length `R > log T`.
+  - **Both thresholds sit at lag `log T`.** Below it the adversary is under-determined; above it the bumps are under-dimensioned.
+  - This is the prime-blind (integer-density) face of the critical Nyquist ratio `log T/2π` (zero density) versus `e^{ℓ}` (integer density on lag `ℓ`). It is the L72/L297 mechanism read at the critical scale.
+- **Verdict.** L74 cannot be proved by counting dimensions on localized subspaces: the race is exactly critical, and an adversarial weight system exists at every lag beyond `log T`.
+  - A proof needs an arithmetic input that breaks the tie, e.g. sign information from the explicit formula on the near radical, or zero-spacing statistics at scale `2π/log T`.
+  - This is consistent with the gate "no slack: RH sits exactly on its boundary". Even the *slack-exclusion* statement (weaker than existence) is critical.
+- **Status of the producer search after L301–L305.**
+  - Phase-locked producers: `Λ` (RH) or real-rooted twins (RTE_k), with continuation automatic (L303). Twins with absolutely convergent cusp part are dead (L302).
+  - Unlocked producers: singular continuous or absolutely continuous, with mean-square excess `≫ T` (L304); Riesz-type insertions need slack (L304).
+  - Slack itself is critical (L305).
+  - No unconditional construction route is left that has not been reduced to RH, RTE_k, or the Ω wall.
+
+### L306 — Prime-blind measures as multi-lattice tilings; product forms are impossible; a near-radical count with the `log(2πe)` margin; the Gordan step reduces to sign changes of high-pass symbols at a fixed factor-2 scale. REFORMULATION [P] + LEMMA [P] + COUNT [P] + REDUCTION [P]
+- **Multi-lattice tiling [P, elementary].**
+  - `Φ = ŵ` (with `w ≥ 0` finite) is prime-blind iff `Φ(k log n) = 0` for all `k ≥ 1`, `n ≥ 2` (the sets coincide: `{k log n} = {log m}`).
+  - By Poisson summation this holds iff `Σ_{j∈ℤ} w(τ + 2πj/log n) = (log n/2π)‖w‖` a.e. for every `n ≥ 2`.
+  - **Prime-blind spectral measures are exactly the positive measures that tile `ℝ` at constant level with every lattice `(2π/log n)ℤ`.** PBAP says such tilers (polar) satisfy `∫A dw ≥ 0`, with `A = 2θ' < 0` only on `|τ| < 6.29`.
+- **Lemma [P] (no product form).** If symmetric `w` has `ŵ(x₀) = 0`, then `1 = ∫(1 − cos τx₀)dw/‖w‖ ≤ (x₀²/2)·Var(w)`, so `Var(w) ≥ 2/x₀²`.
+  - Suppose a prime-blind `w` were an infinite convolution `*_m w_m` with each symmetric factor killing its own node `log m`. Then `Σ_m Var(w_m) ≥ Σ_m 2/(log m)² = ∞`, and the infinite convolution diverges.
+  - **Prime-blind measures are never products of independent node-killers; they must be entangled.** The sinc-products `∏_{n≤N} sinc(πu/log n)` are prime-blind up to `π^{−N}`, but their arch grows like `½log N`.
+- **Near-radical count [P].** `V_T = {supp f ⊂ [−U,U] : f̂(γ_ρ) = f̂(γ̄_ρ) = 0 for |γ_ρ| ≤ T}`, with `U = ½log T + O(1)`.
+  - Dimension about `2UT/π = (T/π)log T`. Zero constraints: `(T/π)log(T/2πe)`. Node constraints: `e^{2U} ≍ T`.
+  - The excess is `(T/π)log(2πe) − O(T) > 0` for the right `O(1)` in `U`. So the race of L305 has an archimedean margin (the `−1−log 2π` of Riemann–von Mangoldt).
+  - The zero sum on `V_T` is a tail beyond `T`; off-line zeros only enter with the factor `e^{2Uδ} ≤ e^{U}`. So unconditionally, **`σ_pb ≤ 0` (L74) ⟸ the Gordan step on `V_T`**: no `Σ_{n≤e^{2U}} c_n M_n` is positive definite on `V_T`.
+- **The Gordan step as a sign-change problem [P].**
+  - `Σ c_n M_n(f) = (1/2π)∫|f̂|²T_c` with `T_c = Σ c_n cos(τ log n)`, which has spectral gap `(−log 2, log 2)`.
+  - By Eremenko–Novikov (Grinevich's conjecture), a real function with spectral gap `(−a,a)` has at least `(2a/π)r(1−o(1))` sign changes on `[−r,r]`. Logan's theorem is the bounded-function case. So `T_c < 0` somewhere in every long window, including the zero-free band `|τ| < 14.13` where `V_T` needs no zero constraints.
+  - **The remaining gap is exactly a factor 2 in scales.** `T_c` has frequencies up to `2U` (nodes `log n ≤ 2U`), while `f ∈ L²[−U,U]` resolves `1/U`. A negative excursion of `T_c` can be as thin as `≍ 1/(2U)`.
+  - So L74 ⟸ **a quantitative "thick negative set" lemma**: every nonzero `T_c` with spectrum in `[log 2, 2U]` has a negative excursion of width `≥ κ/U` and depth `≥ η‖T_c‖`. For general high-pass trigonometric sums this can fail (thin deep dips, broad shallow positives), so integer-log spectrum must be used.
+- **Verdict.** No producer. L74 is sharpened to a single harmonic-analysis lemma about Dirichlet-type cosine sums (thick negative sets at scale `1/U` for spectra in `log ℕ ∩ [log 2, 2U]`), plus an archimedean margin in the count.
+  - Product constructions are excluded rigorously.
+  - Under the thick-negative-set lemma, σ_pb = 0 unconditionally: every producer is critical, and no slack or openness proof of PBAP can exist.
+
+### L307 — L303 is formal: an a.e. integer counting function (phase lock to `Γ_ℝ`, no continuation) forces `Λ` and RH. THEOREM [Lean] + a door-5 variance remark [P]
+- `RHTower.WeilSpectral.vonMangoldt_and_riemannHypothesis_of_integer_counting` (module `RHTower/WeilBoundaryIntegerCountingRigidity`, 495 lines; `lake build --old` green; axioms `propext, Classical.choice, Quot.sound`). Card `3-formalized/11-rh-zero-divisor-geometry/weil-cone-integer-counting-phase-lock-rigidity.md`.
+  - Hypotheses: `WeilPositiveFull lam`; `μ_lam((a,b]) ∈ ℕ` for `a < b` in a full-measure `Y`; `μ_lam(−1,1) = 0`.
+- **New reusable pieces.**
+  - `exists_isolating_interval`: integer counting on a dense set gives isolated integer atoms.
+  - `atoms_countable_and_compl_null`: Lindelöf.
+  - `weilContinuation_conj`: `Φ(s̄) = conj Φ(s)` on `Re s > ½`.
+  - `boundaryMeasure_singleton_neg`: atom symmetry. The corpus had no symmetry lemma for `boundaryMeasure`.
+- **Door-5 variance remark [P, likely L133/L243 territory].** For a producer, Carlson's mean value on `σ = ½+δ` gives `lim_T Var_{[T,2T]}(P_δ⋆μ_lam) = ½Σ lam(n)²n^{−1−2δ}`.
+  - Cauchy–Schwarz on dyadic blocks with `Σ_{n≤x} lam(n) ~ x` gives `Σ_{x<n≤2x} lam(n)² ≥ (1+o(1))x`. So this variance is at least `(1/(4 log 2) − o(1))/δ`.
+  - Hence no producer has an absolutely continuous Weil measure whose density has finite mean-square fluctuation about `θ'`. Door 5 needs densities that are not `L²`-regular at small scales (quasi-atomic, consistent with L243).
+
+### L308 — Competing conjecture C308 (`σ_pb > 0` under RH, i.e. slack producers exist), against L74 (`σ_pb = 0`). The Gordan step fails on near-radical subspaces for a reason that may be structural. CONJECTURE + ANALYSIS [P]
+- **Recap.**
+  - `σ_pb = inf{arch(Φ)/Φ(0) : Φ prime-blind, polar, p.d.}`.
+  - Under RH this is `inf Σ_γΦ̂(γ)/Φ(0)`.
+  - `σ_pb > 0` ⟺ some producer has a Weil measure `≥ σ_pb·dt` (slack).
+  - L74 conjectures `σ_pb = 0` (all producers critical).
+- **Hollow-block lemma [P, rigorous].** On any `S = ⊕_i B_{I_i}` of functions supported in short intervals (`|I_i| < log 2`), every `Σ c_n M_n` vanishes on each block.
+  - So on a pair `B_{I_1} ⊕ B_{I_2}` placed at a lag where some `c_{n₀} ≠ 0`, the form is `[[0,C],[C*,0]]` with `C ≠ 0` of infinite rank. It therefore has infinite negative inertia and meets every finite-codimension subspace.
+  - On all of `L²[−U,U]`, no `Σ c_nM_n` is positive definite, for trivial reasons.
+- **Why this does not give L74.** The near-radical constraint (zeros up to `T` annihilated) must hold at every frequency the test uses, so the bandwidth `Ω ≤ T`. The pair block then has dimension `≍ εΩ/π`, below the `(Ω/π)log Ω` zero constraints.
+  - With `m` positions spread over `R ≈ log Ω`, `dim(V ∩ S) ≈ (Ω/π)log(2πe)`: a thin subspace, about four blocks' worth out of `log Ω/ε`.
+  - A typical hollow form has about half positive directions, so a thin subspace can sit inside its positive cone. Gordan needs non-positive-definiteness on `V ∩ S` for every `c`, and that is no longer automatic.
+  - Adversaries `c` with attractive symbols (`C_ij = −A`) can be realized exactly on lags `≳ log Ω` (L305). Below that lag they are under-determined, so the sign of the race is undecided.
+- **Low-frequency route is capped [P].** Tests with spectrum below the first zero (`14.13`) must have effective support `U ≲ log(Ω/π) + O(1)`, because a type-`Ω` function has zero density `Ω/π` while the nodes `log n` have density `e^u`.
+  - So their time-bandwidth product is bounded, and their leakage to the zeros is bounded below by a fixed positive constant (of size `e^{−O(30)}`).
+  - Localized prime-blind carriers between consecutive zeros (L297, resolution `π/log γ` = half the spacing) leave sidelobe mass `≍` peak at the remaining zeros. Their ratio stays `≍ log γ`, not small.
+- **Conjecture C308.** Under RH, `σ_pb > 0`: every prime-blind polar positive-definite test has `arch(Φ) ≥ σ_pb Φ(0)`, with `σ_pb` positive (possibly astronomically small). Equivalently, `W` contains producers with an absolutely continuous floor `σ_pb·dt`.
+  - *If true:* PBAP is non-critical, so a soft or compactness proof of existence is not excluded in principle. L74, L149's corrected route and L300's addendum must be withdrawn.
+  - *If false (L74):* near-radical prime-blind mixtures exist at every level, and every producer is critical.
+  - *Unconditional reading:* `σ_pb > 0` without RH would give `W ≠ ∅` unconditionally (slack producers). With L183 detection (`¬RH ⇒ σ_pb < 0`), it would imply RH. So C308 unconditionally is RH-hard. Under RH it is a pure structure question.
+  - **[OPEN CORE]** The sign of the Gordan race on thin near-radical subspaces. Can every weight vector `c` on `n ≤ e^{2U}` be blocked from positive definiteness on `V_T ∩ S` (L74), or does an adversarial `c` exist (C308)?
+  - A finite semidefinite computation of `m(U) = inf_{level U} arch/Φ(0)` for `U ≤ 3` (nodes `n ≤ e^{6}`) would show plateau versus decay. It is not run: exploratory numerics are excluded by the session rules.
+
+### L309 — Door 2 is formal: a `1/k`-integer counting function makes a producer a real-rooted twin of degree `k`. THEOREM [Lean]
+- `RHTower.WeilSpectral.exists_realRooted_twin_of_fractional_counting` (module `RHTower/WeilBoundaryFractionalCountingTwin`, 455 lines; `lake build --old` green; axioms `propext, Classical.choice, Quot.sound`).
+  - **Hypotheses.** `WeilPositiveFull lam`; `k ≥ 1`; `k·μ_lam((a,b]) ∈ ℕ` for `a < b` in a full-measure set; `μ_lam(−1,1) = 0`.
+  - **Conclusion.** `G(s)^k = (s(s−1)Γ_ℝ(s))^k exp(Σ k·lam(n)n^{−s}/log n)` agrees on `Re s > 1` with an entire `Ĝ` such that `Ĝ(1−s) = Ĝ(s)` and `Ĝ ≠ 0` off `Re s = ½`. Concretely `Ĝ = K·atomQ m t`, the canonical product over the atoms with integer multiplicities.
+- **New reusable pieces.**
+  - `weilFunction_eq_atomicPairSeries`: an atomic boundary measure with real masses `c_j ≥ 0` at `±t_j` determines the Weil function, via the Poisson representation, real-part matching, constancy and reality at `s = 2`. This generalizes the internal step of `converse_explicit_formula` from integer to real masses.
+  - `lintegral_eq_tsum_pos_atoms`: a symmetric atomic measure integrates as a sum over its positive atoms.
+  - `tsum_decode₂_eq_ennreal`.
+  - `bigG_pow_eq_mul_atomQ`: `(G^k)'/G^k = k·A` is the integer atomic series.
+- **Status of the phase-locked target, now fully formal.** Phase lock to `Γ_ℝ^k` a.e. (counting in `(1/k)ℤ`):
+  - `k = 1`: `Λ` and RH (MUST-669);
+  - `k ≥ 1`: a real-rooted element of `V_k` with the order-`k` pole (this row).
+  - The corpus Theorem A (formal) makes `V_k` infinite-dimensional for `k ≥ 3`.
+  - So the user's object ("integer frequencies, locked to ζ's archimedean factor, no off-line zeros") is, in every degree, exactly `ζ^k` under RH or a real-rooted twin. RTE_k is the precise open door.
+- **Producer twins are exponential twins.** The twin produced here is `exp(k·L_lam)`, whose Bohr lift has no zeros. So L302's far-right obstruction (cusp part absolutely convergent at `σ = 1`) does not apply to it; card §9(b)'s "multiplicative KNS" problem is exactly door 2.
+
+### L310 — Construction batch after MUST-670: Hecke-type real-rootedness operators, conductor minimality, perturbative twins, real-position producers. Every route is either rediscovered or blocked by the same integrality wall. ATTEMPTS [P] + two observations
+- **Hecke-type operators preserve symmetry and real-rootedness but not integrality [P, observation].**
+  - On theta functions with `Θ(1/y) = yΘ(y)`, the operator `T_pΘ(y) = Θ(py) + p^{−1}Θ(y/p)` preserves the inversion law: `(T_pΘ)(1/y) = y·T_pΘ(y)` exactly.
+  - On completions it multiplies by `2p^{−½}cosh((s−½)log p)`, which is real with only real zeros on the line. So it preserves the functional equation and real-rootedness.
+  - It introduces rational frequencies `log(n/p)`. Its logarithmic derivative is integer-frequency (`p^{2m}` with weights `±2 log p·p^m`, of box size `√n`) plus the constant `−log p`. That constant is a conductor surplus `log p` (datum `A + log p`).
+  - So the rational-frequency twin space is closed under a real-rootedness-preserving Hecke algebra. Integer frequencies are the only obstruction, and removing the surplus would need negative exponents, i.e. poles on the line.
+- **Conductor minimality [P, observation; classical in spirit].** A degree-1 functional equation with conductor `Q` has theta nodes `n/√Q`.
+  - `Q < 1` is subcritical, so only `F = 0`. `Q = 1` is critical (Hamburger, `ℂζ`). Every integer-frequency real-rooted construction known (finite Euler FE pieces, Hecke cosh factors, towers) adds a surplus `≥ 0`.
+  - `ζ`'s datum is the unique critical point. This is the same fact as "no slack" read on the datum side.
+- **Rediscovered (no new content).**
+  - Perturbative twins real-rooted up to the verified height (Hermite splitting with prescribed jets) is L276.
+  - Real-position producers exist (formal, RandomCellWeil): L241. The obstruction is the multiplicative semigroup of `log ℕ`, i.e. Kronecker resonance (L176/L297).
+  - Twins from function-field geometry give positivity from the Hodge index theorem, not the functional equation: L276.
+  - Gaussian-damped weights `lam(n)e^{−t log²n}` give producers only for the smoothed datum, and lose the pole (exact thickenings excluded, L243).
+- **Verdict.** No producer. After MUST-669/670 the existence question is a choice between:
+  - (i) RTE_k: a real-rooted exponential twin;
+  - (ii) an unlocked producer;
+  - (iii) a positivity source independent of the functional equation (the Hodge-index lane).
+  Each has an exact formal interface. None has a mechanism.
+
+### L311 — Exact-radical version of the L74/L194 mechanism: under RH, Gordan on `R = {f̂ = Ξ·h}` has no resolution obstruction, but its dual obstruction is again the second producer. ATTEMPT [P] → CIRCULAR (= L194 self-audit); decides C308 only up to uniqueness
+- **Construction.** Under RH every `f` with `f̂ = Ξ·h` (with `h` analytic in `|Im τ| < ½+ε`) lies in the exact radical of `Q_Λ`. Unlike the level-`U` near radicals of L305/L306, `R` imposes no support or resolution constraint.
+  - For a prime-blind PSD mixture `Φ = Σ f_i⋆f̃_i` on `R`: `arch(Φ) + pole(Φ) = prime_Λ(Φ) = 0` exactly.
+  - So for every producer `lam`: `Σ_i Q_lam(f_i) = 0`. Each `f_i` lies in the radical of every producer, and every `μ_lam` vanishes where some `ĥ_i ≠ 0`.
+  - If such mixtures covered `ℝ` minus the zeros, every producer would be carried by ζ's ordinates. Then L150/L233 give `lam = Λ`, and `σ_pb = 0` (no slack, L74).
+- **Dual obstruction (decisive).** Gordan fails on `R` iff some `c` has `Σ c_nM_n ⪰ 0` on `R`, i.e. `T_c = Σc_n cos(τ log n) ≥ 0` away from the zeros of `Ξ` (the `R`-functions vanish there).
+  - For a second producer, `c = −(lam − Λ)n^{−½}` gives `T_c = μ_lam − μ_Λ`. This is `≥ 0` off the zeros automatically, with negative atoms at the zeros. So the mean-zero argument fails, because the negative mass hides exactly where `R` is blind.
+  - **The obstruction to the exact-radical covering is any second producer that moves mass off ζ's zeros.** This is the L194 self-audit, now without the near-radical `ε_L` and level-resolution artifacts.
+- **Consequence for C308/L74.** Under RH, "`σ_pb = 0`" and "every producer is carried by the zeros" both follow from the existence of covering prime-blind PSD mixtures on `R`. That existence is equivalent to uniqueness (`W = {Λ}`), so L74 under RH is implied by, and essentially as hard as, uniqueness. C308 (slack producers under RH) would be a uniqueness counterexample of a strong kind: the Weil measure carries an absolutely continuous floor off the zeros.
+- **Verdict.** CIRCULAR (rediscovers L194 in exact form). Recorded so that the exact-radical variant is not re-proposed.
+
+### L312 — Two more positivity-source attempts, both already in the corpus. REDISCOVERED ×2 (recorded to prevent reuse)
+- **(a) Per-prime sums of squares with archimedean continuous parts.** `W = Σ_p V_p⋆Ṽ_p` with `V_p = c_pδ + a_p − Σ_k b_{p,k}p^{−k/2}δ_{k log p}`.
+  - Single-prime chains keep the atoms on prime powers (divisor-chain law). The continuous parts `a_p` are meant to supply the archimedean distribution and the pole.
+  - This is L266's format, and L267 shows every such certificate yields an absolutely continuous spectral measure: Λ is excluded, and any solution refutes PC-82.
+  - Extra obstruction noted here: the archimedean log-growth `θ' ~ ½log τ` is not a sum over `p` of periodic squares `|c_p − β̂_p(τ)|²` (each with bounded mean) plus decaying `|â_p|²` terms, unless the sum diverges everywhere.
+- **(b) Spectral positivity of a geometric Laplacian (Selberg/Eisenstein, Maass–Selberg, pseudo-Eisenstein norms).**
+  - The Laplacian's self-adjointness is a genuine positivity source independent of ζ's functional equation, and ζ enters through the scattering determinant `φ = ξ(2s−1)/ξ(2s)`.
+  - But the positive quantities are inner products whose contour shifts see `ξ(2s)` at `Re s = β/2` together with `ξ(2s−1)`. They give one-sided scattering-phase bounds, not Weil positivity for ζ with integer frequencies `log p` (the geometric lengths are `log N(γ)`).
+  - This is the retired HB route (killed ledger; `Route HB (hub)`).
+- **Status.** No producer. The remaining unconstrained direction is a positivity source that sees `log p` frequencies directly; neither geometric Laplacians nor sums of squares do.
+
+### L313 — Local real-rooted pieces and the archimedean growth: the "active primes" identity `θ'(t) ≈ ½Σ_{p≤log(t/2π)} log p`, and why superpositions of local or geometric producers cannot carry it exactly. ATTEMPT [P] + OBSERVATION [P] + KILL [P]
+- **Local producers exist.** For each prime `p`, `1 − p^{½−s}` is real-rooted: its zeros `½ + 2πik/log p` lie on the line. Its logarithmic derivative is integer-frequency: weights `−log p·p^{m/2}` at `p^m`, which saturate the box `√n log n`. Its datum is the constant conductor density `½log p`.
+  - So `(lam_p, datum ½log p)` is a phase-locked producer at one finite place. Curves over `𝔽_q` (the `H¹` factor `P(q^{−s})`, real-rooted by Weil) give the same kind of object, with density `g log q/π` on powers of `q`.
+- **Observation (active primes) [P].** By the PNT, `½Σ_{p≤y} log p ≈ ½y`. With `y = log(t/2π)` this equals `θ'(t)`.
+  - The zero density `(1/2π)log(t/2π)` of `ζ` at height `t` equals the total zero density `Σ_{p≤log(t/2π)} log p/2π` of the local lattices of the primes up to `log t`.
+  - This is the same scale `X ≍ log t` as the Gonek–Hughes–Keating hybrid product and the Kronecker alignment length (L193).
+- **Attempt.** Superpose local or geometric producers with height-dependent selection `p ≤ y(t)`, so that the conductor density tracks `θ'(t)`.
+- **Kill [P].**
+  - Any superposition with height-independent weights has constant density, so it cannot match `θ'`. Producers add, and data add.
+  - A height-dependent selection `w(p,t)` multiplies each lattice comb by a function of `t`. That convolves its spectrum (atoms at `m log p`) with `ŵ`, which spreads the frequencies off `log ℕ`. Exactness fails at the first order of `t`-dependence, however slowly `w` varies.
+  - The growth of `θ'` therefore cannot be produced by an integer-frequency superposition of local real-rooted pieces. It must come from a single object whose phase is the Γ_ℝ chirp, which is the FE phase lock (`ζ` or twins, MUST-669/670).
+- **Positive survivor (heuristic reading).** The archimedean place behaves like a "local factor whose conductor is the height". A positivity source that sees both `log p` and the growth must treat the height as a geometric parameter (an analytic-conductor family), not as the spectral variable. This points to Deninger-type dynamical cohomology, where the archimedean contribution comes from fixed points of the flow (the HF lane), rather than to any construction at fixed conductor.
+
+### L314 — Attacking the slack question (L74 vs C308) at its reduction. The sup-norm "thick negative set" lemma of L306 is false; the Λ-direction is not a Farkas certificate on near-radical spaces; the true adversary is a finite-level fake-zero comb. KILL [P] ×2 + REDUCTION [P]
+- **Re-audit first.**
+  - Two attempts this cycle were already in the corpus:
+    - the Kaczorowski–Perelli degree-1 closure of "general `q`, unit masses" (closed in the L163/L165 block);
+    - a.p.-rigidity of `Q = F_lam/ζ` (the tame class of L172/L174).
+  - Recorded so they are not re-proposed.
+- **(a) The sup-norm lemma of L306 is false in the relevant window [P].**
+  - Put `g(x) = (1 − x/L)²_+` and `T_c(τ) = Σ_{n≥2} g(log n) n^{−1} cos(τ log n)`. This is a Dirichlet cosine sum with spectrum in `log ℕ ∩ [log 2, L]`; `L` can be taken as large as `2U`.
+  - Mellin: `T_c = Re P_g(τ) + Re R(τ) − 1`, where:
+    - `P_g(τ) = ∫_0^L g(x)e^{−iτx}dx` is the polar term. Since `g` is convex and decreasing, Pólya's criterion gives `Re P_g ≥ 0`, and `P_g(0) = L/3`.
+    - `R` is the Riesz-mean remainder. On windows `|τ| ≤ e^{cL}` it behaves like `ζ(1+iτ) − 1/(iτ)`.
+  - Vinogradov–Korobov gives `|ζ(1+iτ)| ≪ (log|τ|)^{2/3}`. Hence, on those windows, `max T_c ≍ L` (at `τ = 0`) while `min T_c ≥ −C L^{2/3}`.
+  - So "every `T_c` has a negative excursion of depth `≥ η‖T_c‖_∞`" fails for every fixed `η` (ratio `≍ L^{−1/3}`).
+  - Only a **local** version can be true: depth comparable to the positive level within distance `O(1/log 2)`. That version is forced by the spectral gap, because Fejér averages at scale `2π/log 2` vanish.
+- **(b) The Λ-direction is not a Farkas certificate on `V_T` [P].**
+  - On the near-radical space `V_T` (support `[−U, U]`, `U = ½log T + C`, `f̂` vanishing at every zero with `|γ| ≤ T`), the exact identity is `Σ_{n≤e^{2U}} Λ(n)n^{−½}M_n = arch + pole − tail_T`. So L194's "Next" asks whether `arch + pole` is definite on `V_T`.
+  - It is **indefinite**.
+    - Generic high-frequency `f` have `arch ≍ log T·‖f‖²`.
+    - A low-frequency prolate (band `|τ| < 6.29`, where `Ω < 0`) with `f̂(±i/2) = 0` lies in `V_T` after an interpolation correction of size `≪ T^{−6}` times the zero-interpolation constant. The correction exists by the Nyquist margin `U/π − (1/2π)log(T/2π) > 0`. It has `arch ≈ (1/2π)∫|f̂|²Ω < 0`.
+  - So no Farkas certificate is near `c = Λn^{−½}`. Any certificate must make `T_c` positive on the low-frequency region (|τ| ≲ 14, where no zeros can hide negativity).
+- **(c) Shape of an adversary (reduction) [P].**
+  - Suppose `Q_c` is positive definite on `V_T`. Spectral gap plus localization of `V_T` at resolution `≍ 1/U` everywhere in `[−T, T]` (multiplying by `(τ−γ)` keeps the exponential type, and the margin interpolates the far zeros) force the following.
+    - Every scale-`1/U` local average of `T_c` with weights vanishing doubly at zeros is `> 0`.
+    - Every Fejér average at scale `≍ 9` vanishes.
+    - Bernstein (`|T_c'| ≤ 2U‖T_c‖_∞`) caps each hidden dip at a zero at depth `≲ 8×` the surrounding positive level.
+  - The consistent shape is a comb at resolution `1/(2U)`: positive spikes between zeros and dips of comparable depth at zeros. That is, `T_c ≈ π(Σ_j δ_{s_j} − Σ_γ δ_γ)` smoothed at `1/(2U)`: a set of **fake zeros minus true zeros** whose difference measure has Fourier support in `±log ℕ` up to level `2U`.
+  - **So C308 at level `U` ⟺ a finite-level fake-zero set:** a point configuration of ζ's density whose explicit-formula difference with ζ's zeros is Dirichlet up to frequency `2U`, and that is positive against every near-radical profile. This is a finite-level twin, which the attractive adversary of L305 realizes on thin subspaces only.
+  - L74 ⟺ no such finite-level twin exists on the full `V_T` for large `U`. This is the same question as Krein pinning for non-Λ weights (L291 self-correction).
+- **Verdict.** No producer. L306's reduction is corrected: the sup-norm lemma is false (a), and the true L74 statement is a finite-level twin non-existence (c). The Λ-direction is excluded as a certificate (b).
+- **Next.** Decide finite-level twins on `V_T`, i.e. whether ζ's zero set at resolution `1/(2U)` admits a Dirichlet-difference companion. This is the finite-level analogue of RTE_k with `k = 1` and no functional equation.
+
+### L315 — Finite-level uniqueness via Fejér balance: it works iff a local Bernstein bound holds, and that bound is exactly the Montgomery–Vaughan diagonal, which the Nyquist margin overshoots by `2πe`. ATTEMPT [P] + REDUCTION [P] (same critical race as L305, now with constants)
+- **Setting (RH, level `U`).** Let `lam = Λ + εd ∈ W_U` with `d ≠ 0` (a finite-level second producer). On the near-radical `V` (zeros up to `T`, `U = ½log T + C`) we have `W_Λ ≤ e^{−πe^{2L}}`. So `Q_d ⪯ o(1)` on `V`, i.e. the symbol `T_d = Σ_{n≤e^{2U}} d(n)n^{−½}cos(τ log n)` has nonpositive local averages for every profile `|f̂|²`, `f ∈ V`.
+- **Fejér balance [P].**
+  - The spectral gap `(−log 2, log 2)` gives `∫T_d(τ)F(τ−τ₀)dτ = 0` for the Fejér kernel `F` of that band (width `≍ 9`, `F(τ) ≈ 8.4/τ²`).
+  - `V` localizes at resolution `M/U` everywhere in `[−T, T]`: `f̂ = Π_{nearby γ}(τ−γ)·bump(U(τ−τ₀))`. Far zeros are absorbed by the Nyquist interpolation margin with negligible corrections.
+  - So `T_d` can be positive only in bumps at zeros. Against the doubly vanishing profiles, a bump of height `H` and width `w` costs `≍ Hw³` versus a background `−B` costing `≍ B(M/U)³`.
+  - If `w ≳ 1/U`, each bump carries mass `≲ 8BM³/U`. Balancing at `τ₀` would then need `Σ_γ B_γ s_γ F(γ − τ₀) ≲ (8M³/U)Σ_γ B_γ F(γ − τ₀)`, where `s_γ = 2π/log γ` is the zero spacing. This is impossible once `s_γ ≫ M³/U`.
+  - **Hence `T_d ≡ 0` (in local averages) on `|τ| ≤ e^{cU}`.** Then MV mean values give `d(n) = 0` for `n ≲ e^{cU}`, and as `U → ∞`, `W = {Λ}` (uniqueness and L74).
+- **The gap (exact).** `w ≳ 1/U` is a **local Bernstein** bound: no thin tall bumps at zeros. Global Bernstein gives only `w ≥ H/(2U‖T_d‖_{∞,ℝ})`, and the Bohr sup `Σ|d(n)|n^{−½}` can exceed the local levels by any factor.
+  - A mean-square local Bernstein on `[−T, T]` holds in the Montgomery–Vaughan diagonal range `n ≤ T/2π`, from `∫_{−T}^{T}|P|² = Σ|a_n|²(2T + 2πθ(n+1))`.
+  - The near-radical needs `e^{2U} > 2πe·T` (the Nyquist margin `log(2πe)` of L306).
+  - **So the method needs coefficients up to `2πe·T` and controls them only up to `T/2π`. The race of L305 is lost by the explicit factor `(2π)²e`.**
+- **Reading.** Every finite-level uniqueness or slack argument meets the same structure. Near-radical spaces exist only beyond the MV diagonal (the archimedean margin `−1 − log 2π` of Riemann–von Mangoldt), while symbol control holds only inside it.
+  - A proof of L74 (or of uniqueness) therefore needs off-diagonal mean values for `T_d` on `[−T, T]` with `N = (2π)²e·T`, a fixed factor beyond the diagonal.
+  - This is far weaker than the `α ≥ 1` wall for general lengths, since the excess length factor is a constant. The large-sieve/Hilbert-inequality off-diagonal terms at a constant factor are `≍ Σ|a_n|²·n` with no saving. Saving even a constant there for symbols that are nonpositive off the zeros is the precise open input.
+- **Verdict.** No producer. New exact reduction: L74 / finite-level uniqueness ⟸ a constant-factor off-diagonal mean-value saving for zero-signed symbols.
+- **L315 correction (same cycle).** The "lost by `(2π)²e`" claim used `e^{2U} > 2πeT`. That is the wrong margin: the Nyquist condition for vanishing at the zeros is only `U/π > (1/2π)log(T/2π)`, i.e. `e^{2U} > T/2π`.
+  - The Montgomery–Vaughan lower bound on `[−T, T]` holds for `n < T/π`. So the window `T/2π < e^{2U} < T/π` satisfies both. Take `e^{2U} = 0.75T/π`:
+    - MV gives `∫_{−T}^{T}|P|² ≥ ½T·Σ|a_n|²`;
+    - the near-radical dimension is `(T/π)log(2e·0.75) − O(T)`, which beats the `0.24T` nodes.
+  - Then mean-square Bernstein holds on `[−T, T]`: `∫|T_d'|² ≤ 4U²·K·∫|T_d|²`, with `K = O(1)`. This bounds the mass²-weighted average bump width below by `w ≳ 1/(2U√K)`.
+  - Fejér balance with invisibility (`m_γ ≲ B_γ(M/U)³/w_γ²`) bounds the `B`-weighted average width above by `w ≲ M^{3/2}/(√π·U)`.
+  - **Both bounds sit at scale `1/U` with `O(1)` constants, so there is no contradiction.** The race is at the zero scale itself, and deciding L74 means comparing explicit constants (the localization resolution `M`, the MV constant `K`, the invisibility exponent 3).
+  - So L74 vs C308 is a **sharp-constant problem at resolution `1/U`**, not an asymptotic one. The Gordan, Fejér and Bernstein formulations all agree. This explains why every asymptotic method in the ledger is exactly critical there.
+
+### L316 — Two reformulations of the producer as a positivity hierarchy; both REDISCOVERED or equivalent to corpus rows. Recorded to prevent reuse
+- **(a) Infinite divisibility / complete monotonicity [P] → REDISCOVERED (literature).**
+  - Hadamard gives `ξ(½+s)/ξ(½) = Π_{γ>0}(1 + s²/γ_ρ²)` with `γ_ρ = (ρ−½)/i`, `Re γ_ρ > 0`. With `log(1+s²/a²) = 2∫_0^∞(1−cos sx)e^{−ax}dx/x` (valid for `Re a > 0`, `s ∈ ℝ`), this becomes `ξ(½)/ξ(½+s) = exp(−∫_0^∞(1−cos sx)K(x)dx/x)`, where `K(x) = 2Σ_{γ>0}Re e^{−γ_ρ x}`.
+  - `K > 0` holds with no hypothesis on `(0, π)`: each off-line pair term `2e^{−γx}cos(δx)` is positive, since `|δ| < ½`. It holds on `[π, ∞)` once the zeros below height ≈ 30 lie on the line.
+  - So `s ↦ ξ(½)/ξ(½+s)` (real `s`) is a symmetric infinitely divisible characteristic function, and RH ⟺ `K` is completely monotone. Equivalently, its density is a Pólya frequency function (Schoenberg), i.e. a generalized gamma convolution with an atomic Thorin measure at the ordinates.
+  - The Post–Widder inversion detects an off-line zero at order `k ≍ (γ/δ)² log γ`, through growth `(1+δ²/γ²)^{k/2}` at `u = γ`.
+  - Literature: Nakamura (Bernoulli 2015, `ξ(σ−it)/ξ(σ)`); Nakamura–Suzuki (arXiv:2306.08317, an ID characteristic function iff RH); and a recent paper stating that the reciprocal of Ξ has atomic Thorin measure and RH ⟺ complete monotonicity of the heat trace over the zeros. **REDISCOVERED.** The finite orders `k` are as uninformative as Jensen degrees (they see only heights up to `≍ δ√k`).
+- **(b) Krein systems / canonical systems [P] → equivalent to corpus.**
+  - Weil positivity at every level ⟺ the de Branges chain (canonical system) built from `arch + pole − primes` exists for all `x`.
+  - Failure at level `a` is a Krein–Langer singular point. Its index counts the visible off-line pairs, which is exactly the finite-level inertia law (`zeta-weil-finite-level-inertia`, Lean).
+  - "Global existence" has no monotone quantity beyond the reproducing-kernel growth `K_x(w,w)↑`, and that is monotone only while the form is positive. **No new leverage.**
+- **Status.** No producer. The two new hierarchies (TP/CM order `k`, Krein chain length `x`) are re-encodings of the same finite-level visibility law.
+
+### L317 — Gram twins: reopening the reshaping door closed by L292, and the Farkas certificate that closes it again. CORRECTION [P] + CONSTRUCTION PLAN + CIRCULARITY [P]
+- **Correction to L292 [P].** L292 killed "reshape `Λ_F` on compacts, then dilute" by tail inflation. The inflation law (L290) applies only to **unbalanced** low parts.
+  - Near `y = 1` the tail theta and its dual are `O(e^{−πkM^{2/k}})`. So the theta FE `Θ(1/y) = yΘ(y)` near `y = 1` is exactly the balance of the low part.
+  - FE symmetry of the completed function on compacts is the same condition, read through Mellin.
+  - Hence every **FE-symmetric** reshaping target corresponds to a balanced low-coefficient edit. Its tail is not forced to inflate.
+  - Count for `k ≥ 3`: the balance constraints number `≍ M^{2/k}` (jet order at `y = 1` at precision `e^{−πkM^{2/k}}`), against `M` unknowns. The balanced subspace has codimension `≍ M^{2/k}`. For `k = 2` it is critical (Hecke `λ = 2`); for `k = 1` it is rigid (Hamburger).
+  - L290's kill of Pólya twins stands: deleting `f_2,…,f_M` is unbalanced. L292's general kill does not; it assumed a generic edit.
+- **Construction plan (Gram twins).**
+  - Choose `f_1 = 1`, a pole of order `k` at `s = 1`, and low coefficients `n ≤ M` in the balanced subspace such that **Gram's law** holds at every degree-`k` Gram point `g_j ≤ T_M ≍ 2πM^{2/k}`: `(−1)^j Z_F(g_j) > 0`.
+  - These are `≍ (k/2π)T_M log T_M` linear inequalities in the AFE representation. Gram points sit exactly at the local Nyquist rate of `Z_F`, so prescribing their signs is critical-density interpolation, not over-determined.
+  - Complete the tail by a quantitative KNS closed-range step, then count zeros with Turing's method.
+  - Real zeros up to `T_M`, with uniform strip control, feed L285's dilution, giving PBAP.
+- **Circularity [P].**
+  - Conservation law (L256): every `F ∈ V_k` with these pole data has `(1/k)Σ_{ρ_F}Φ̂(γ_ρ) = arch(Φ) + pole(Φ)` for every prime-blind `Φ`.
+  - Suppose some prime-blind p.d. `Φ` has `arch + pole < 0` (detection of an off-line zero of ζ, L183). Then every twin has off-line zeros where `Φ̂` lives. The Gram inequalities near that height are then infeasible, and the Farkas certificate is `Φ` itself (a nonnegative combination of Gram functionals agreeing with `Φ̂` on the zero side).
+  - Conversely, if no such `Φ` exists at a level, that is PBAP at that level. **So Gram-twin feasibility at every height is PBAP, and the linear-algebra count cannot see the obstruction.** The dual cone of the Gram inequalities restricted to `V_k` contains exactly the prime-blind tests.
+  - This is L257's datum-twin barrier at the level of explicit constructions.
+- **Verdict.** CIRCULAR. The door is reopened in shape (no tail inflation for symmetric edits) but closed in substance: every twin construction is dual to the prime-blind cone.
+- **Positive survivor.** Correcting L292 matters for the twin programme. Balanced edits are free in codimension `≍ M^{2/k}`. So twin abundance is local as well as global (Theorem A): any FE-symmetric reshaping at heights `≤ 2πM^{2/k}` that respects the prime-blind cone is realizable with moderate coefficients, modulo the quantitative KNS completion (open).
+
+### L318 — Detection (PBAP vs RH) and slack (L74 vs C308) are one Gordan race; the random-cone heuristic and the structured problem point in opposite directions. ANALYSIS [P-heuristic] + UNIFICATION [P]
+- **Unification [P].**
+  - Detecting a hypothetical off-line zero `½+δ₀+iγ₀` needs a prime-blind p.d. `Φ` with `Σ_ρΦ̂(γ_ρ) < 0`. Since on-line zeros contribute `≥ 0`, `Φ̂` must be near-radical at the on-line zeros near `γ₀`. The off-line pair then gains `2∫Φcos(γ₀x)(cosh(δ₀x)−1)dx`, which is `≍ (δ₀X)²` (hugging) or `≍ γ₀^{δ₀}` (with `X ≍ log(γ₀/π)`, the effective blind support).
+  - So detection needs blind **and** near-radical mixtures at resolution `1/log γ₀`. That is exactly the Gordan step of L305/L306/L315.
+  - Hence: L74 (`σ_pb = 0`) ⟸ Gordan ⟹ detection (`¬RH ⇒ W = ∅`). C308 ⟸ failure of Gordan, which also blocks detection. **Slack and RH-equivalence of PBAP stand or fall together**, and both sit at the same sharp-constant race (L315).
+- **Random-cone heuristic (points to L74) [P-heuristic].**
+  - Optimize `U = ½log(T/2π) + c`: `dim V ≈ (T/π)(2c+1)` and #nodes `≈ (T/2π)e^{2c}`. The best ratio is nodes/dim `= ½` at `c = 0`.
+  - For random node forms, a codimension-`k` slice meets the PSD cone of `Sym_d` iff `k` is below its statistical dimension `≈ d²/4` (Amelunxen–Lotz–McCoy–Tropp). Here `k ≈ d/2 ≪ d²/4`, so blind mixtures exist with an enormous margin.
+  - A C308 adversary must therefore exploit the **structure** of the node forms: they are simultaneously "diagonal in frequency" (`Σc_nM_n` is multiplication by `T_c(τ) = Σc_n cos(τ log n)`).
+- **Structured problem (critical) [P].** PD on `V` ⟺ `T_c` has positive local averages at resolution `≍ 1/U` everywhere in `[−T, T]` except in hidden dips at zeros. The spectral gap makes every Fejér-type average with `K̂ ⊂ (−log 2, log 2)` vanish.
+  - With polynomial-tail Fejér kernels, far values of `T_c` (height `≍ T`) can balance any low-height positivity.
+  - With Beurling–Malliavin kernels (decay `e^{−|τ|^{1−ε}}`), balancing needs `T_c(low)/T_c(far) ≲ e^{−T^{1−ε}}`. Band-limited functions can reach exactly that ratio but not more (no exponential decay for compact spectrum).
+  - **The race is again exactly critical, now at the Beurling–Malliavin exponent.** It matches L315 (zero scale) and L305 (lag `log T`). Three independent formulations, three critical ties.
+- **Verdict.** No producer. The open core of the whole producer programme is now a single structured-cone question: *can the multiplier cone `{T_c}` with spectrum `log ℕ ∩ [log 2, 2U]` contain a function positive on the near-radical occupancy of `V_T`?* Random intuition says no (L74, and PBAP ⟺ RH). Every quantitative attempt ties.
+
+### L319 — Direct attack on the L318 core: a recurrence proof of Gordan works only without the band limit; a Fejér capacity budget puts any slack at `ε ≲ 0.12`, the same order as the short-support upper bound. ATTEMPT [P] + BUDGET [P] + QUANTITATIVE PREDICTION
+- **Recurrence attempt (fails exactly at the band limit) [P].**
+  - `T_c = Σ_{n≤e^{2U}} c_n cos(τ log n)` is uniformly almost periodic. If `Σc_nM_n` were positive definite on the unrestricted `V_T` (vanishing at zeros `|γ| ≤ T`, no band limit), every negative local average of `T_c` would recur at heights `> T`, where `V_T` localizes freely.
+  - So `T_c` would have nonnegative local averages everywhere, hence `Σc_nM_n ⪰ 0` on all of `L²[−U,U]`. The hollow-block lemma (L308) then forces `c = 0`. **So Gordan holds on the unrestricted `V_T`.**
+  - Useless for L74: blind mixtures from the unrestricted space may live above `T`, where the zero tail is not small.
+  - With the band limit (the Landau height `2πe^{2U}`, beyond which `W_Λ`'s floor is `O(1)`), recurrence would need Kronecker heights `≫ e^{2U}`, where `W_Λ` absorbs everything.
+- **Slack as an evaporation profile [P].**
+  - `lam = Λ + d` has slack `ε` at level `U` (under RH) iff, in local averages at resolution `≍ 1/U` below the Landau height `(1−η)2πe^{2U}` (Krein pinning), `T_d ≤ −ε` off zeros, with bumps at zeros of mass `≤ 2π` (each removes at most the full atom).
+- **Fejér capacity budget [P, explicit constants].**
+  - Spectral gap: `∫T_d F = 0` for `F = (sin(aτ/2)/(aτ/2))²`, `a = log 2`, with `∫F = 2π/a ≈ 9.06`.
+  - At `τ₀ = 0` there are no zeros on `|τ| < 14.13`. The negative mass needed is `≈ ε·8.4`. The capacity is `2π·Σ_{±γ}F(γ) ≈ 2π(2·(0.040 + 0.0136 + 0.006 + 0.0071 + …)) ≈ 1.0`, plus far heights, which are `o(1)` as `U → ∞`.
+  - **Any finite-level slack satisfies `ε ≲ 0.12`.**
+  - Constant evaporation (`d = −c'Λ`) only wastes budget (the `Ω/2 < 0` dip near 0). The optimum is `c' = 0`: evaporate the first few zeros heavily and the rest at rate `r_γ ≈ ε/log(γ/2π)`.
+- **Matching upper bound.** A single test supported in an interval of length `< log 2` is automatically blind, and arch + pole is translation-invariant on such tests. So `σ_pb ≤ μ₀(½log 2)`, which the corpus certifies `≥ 1/10` (the √2 trace certificate). **Both sides are `≈ 0.1`.**
+- **Quantitative prediction.**
+  - If C308 holds, `σ_pb ∈ (0, ≈0.12]`, and the extremal producer evaporates the first zeros (14.13, 21.02, 25.01, …) almost completely. Its slack is decided at the lowest heights, not asymptotically.
+  - If L74 holds, near-radical blind mixtures must spend their low-frequency budget below `14.13`, where the prolate leakage floor `e^{−O(30)}` (L308) is the only competition.
+  - Exactness of the profile `r_γ ∝ 1/log γ` is again a `1/U`-scale race: multiplier evaporation `d_n = −Λ(n)g(log n)` smears each bump to width `≍ 1/U`, exactly the visibility width.
+- **Decisive finite test (Lean-certifiable in principle).** A rational `lam` on `n ≤ e^{2U}` with an exact certificate `W_lam ⪰ ε` at one level `U` beyond Zhu's `[−0.8, 0.8]` would be a finite-level **slack producer**. That is evidence for C308 and a concrete "producer of positivity" at that level. The corpus certificate machinery (midpoint–radius enclosures, compressed negative-part trace) is the toolkit.
+- **Verdict.** No producer. The core is now quantified: slack, if it exists, is at most `≈ 0.12` and lives at the first zeros.
+
+### L320 — Function-field calibration of the slack question, and a correction to L319's "decisive test". CALIBRATION [P] (largely L130/L294) + CORRECTION
+- **Function fields (rediscovers L130/L294).**
+  - For `C/𝔽_q` of genus `g ≥ 1` the nodes are the lattice `k log q`. Let the shift move the Weil measure toward its mean: `T_d = 2πr(Σ_{j,k}δ_{γ_j+2πk/log q} − 2g log q/2π)`. Its spectrum lies on the dual lattice, and its mean is zero.
+  - This gives the producer segment `[Λ_C, Λ_flat]`, where `Λ_flat` has the **flat** Weil measure `(2g log q/2π)dτ`.
+  - So over `𝔽_q`, producers are non-unique and have slack `σ_pb ≥ g log q/π > 0`. **C308's analogue holds; L74's analogue fails.** (L130 already has "every positive measure of mass `2g`".)
+- **Why ℚ differs: the flat producer fails twice [P].** The ℚ-analogue of `Λ_flat` would have Weil measure `θ'(t)/π`.
+  - *(i) Archimedean dip.* `θ' < 0` on `|t| < 6.29`, with total deficit `≈ ∫_{|t|<6.29}|θ'|/π ≈ 4.8`. L319's Fejér budget (capacity `≈ 1.0` at the first zeros, `≈ 0.43` from `θ'` far away) shows that no exact-spectrum correction can repair it without atoms. This is the low-frequency face of L294's archimedean window.
+  - *(ii) The pole.* `Σδ_γ − θ'/π` has Fourier transform `pole − primes`, and the pole part `2cosh(x/2)` is not a discrete measure on `±log ℕ`. The flat producer would need integer atoms reproducing `2cosh(x/2)`, which is L88's "the pole must be logarithmic".
+  - Over `𝔽_q` neither obstruction exists. The datum has no archimedean dip (constant `2g log q/2π > 0`), and the pole part is the geometric series `Σq^{k(1−s)}`, an honest Dirichlet series in `q^{−s}`.
+- **Correction to L319.** A single-level slack certificate is **not decisive**: under RH, `σ_pb(U) ≥ λ_min(W_Λ|_U) > 0` at every finite level (`W_Λ` is strictly positive on `L²[−U,U]`, with `ε_U ≍ e^{−πe^{2U}}`). C308 versus L74 is about whether `sup_lam λ_min(W_lam|_U)` stays bounded below as `U → ∞`. Only the trend over levels discriminates, which is exploratory numerics and excluded.
+- **Reading.** Slack over `𝔽_q` comes from a flat Weil measure. Over ℚ, flatness is blocked by the archimedean dip and the non-Dirichlet pole, which are exactly the two places where `Γ_ℝ` and `1/(s−1)` differ from their function-field analogues. A C308 producer for ℚ must evaporate atoms at the lowest zeros to pay for the dip (L319). An L74 world is one where that payment is impossible at every level.
+- **Verdict.** No producer. Calibration recorded. The slack question is not decidable by finite computation at a single level.
+
+### L321 — Direct attempts at Ω: resonance on the critical line, a "price of continuity", and vertical-shift averages. All REDISCOVERED or known walls; one usable observation
+- **Resonance applies on the line for any producer [P].** For `lam ∈ W`, `D = Ψ₀ − H` is analytic on `σ > ½` with at most linear growth. So `∫D(½+it)|R(t)|²Φ(t/T)dt` can be computed by contour shift from `σ > 1`. The residue at `s = 1` has no factor `T`, hence is negligible for resonators shorter than `T^{1−ε}`.
+  - With a multiplicative resonator the gain is `Σ_p lam(p)p^{−½}r(p)/(1+r(p)²)` under `Σr(p)² ≤ θ log T`. The support constraint (typical resonator size `≤ T`) caps the primes at `P ≤ e^{3/(2θ)}`, so the gain is `≍ √(log T)`, below the ceiling `½log T`.
+  - This is L107's statement that log-derivative-type systems gain only `√(log T)`. **Rediscovered.**
+- **Price of continuity (heuristic, = L108).** A continuous (zero-free) prime-supported producer would need archimedean growth `≳ (log t)^{3/2}`, the Gaussian maximum over `T` samples of std `≍ log T`. ζ's datum `½log t` is affordable only through spikes (zeros). **Known.**
+- **Vertical-shift averages (= L243).** Averaging `Λ(n)n^{−iu}` against `w(u)du` gives the multiplier `Λ(n)ŵ(log n)`. The Weil measure is `w⋆μ_ζ` (positive under RH), but the datum is multiplied by `ŵ(x)`, so the archimedean distribution changes unless `ŵ ≡ 1`. **Thickening, excluded.**
+- **Usable observation.** The real-point pole budget is sharp at `s = ½`. Every producer has `H(½) = Ψ₀(½) − D(½) ≥ 0`, and `Λ` attains `H_Λ(½) = ξ'/ξ(½) = 0`. So **any second producer satisfies `D_{lam−Λ}(½) ≤ 0`** (boundary value at `t = 0`), in the same direction as L101.3's `C_w − β_w ≤ λ₁` at `s = 1`. Low-height evaporation (L319) must respect it.
+- **Status.** No producer. Since about L300 every new mechanism maps onto an existing wall (pole logarithmic L88, Gaussian L108, resonance L107, thickening L243, datum twin L257, critical race L305/L315/L318). The ledger is saturated in the analytic directions.
+
+### L322 — Exact on-line zero evaporators: `ζ(s+½∓iγ)` is a Dirichlet series with its pole at the zero; mollified versions have small side noise but need slack; a slack-decomposition law. CONSTRUCTION [P] + KILL (= L104) + DECOMPOSITION [P]
+- **Construction (exact, new for on-line zeros) [P].** For a critical zero `ρ₀ = ½+iγ₀` and `0 < β ≤ 2`, put
+  `D_e(s) = (β/2)[ζ(s+½−iγ₀) + ζ(s+½+iγ₀) − 2]`, with coefficients `d_n = β n^{−½}cos(γ₀ log n)` for `n ≥ 2` (real, integer-supported, tempered).
+  - `D_e` is analytic on `σ > ½` with simple poles exactly at `ρ₀` and `ρ̄₀`, residue `β/2`, and no pole at `s = 1`.
+  - Adding it to `Λ` removes `β/2` of the atom at `±γ₀` **exactly**. Finite evaporations are Dirichlet-exact, contrary to the naive objection that `FT(Σ_{γ∈S}δ_γ)` is not on `log ℕ`, because the shifted ζ carries the pole. L299 did the off-line analogue, where the side terms grow like `|t|^{δ/2}`; on the line they are `O(log)`.
+- **Side-noise law [P].** On the line `Re D_e(½+it) = (β/2)π(δ_{γ₀}+δ_{−γ₀}) + (β/2)Re[ζ(1+i(t−γ₀)) + ζ(1+i(t+γ₀)) − 2]`. The smooth part is two-signed of size `≪ (log t)^{2/3}` (Vinogradov–Korobov), typically `O(1)`.
+  - Mollifying with `M(s) = Π_{p≤y}`-type, using `(ζM)(s+½∓iγ₀)` with `M(ρ̄₀-shifted point) = 1`, cuts it to `O(β/log y)` typical noise with rare `O(β log(log t/log y))` alignments.
+- **Kill (= L104).** `Λ` has zero slack off the zeros, so any two-signed side noise makes `μ_{Λ+e}` negative somewhere. Finite evaporations attached to `Λ` are never producers. This is L104's unconditional exclusion of finite-type second completions, now with the explicit evaporator.
+- **Slack decomposition [P].** Let `lam` have slack `μ_lam ≥ ε dt` with evaporation rates `r_γ ≤ r₀`. Then `lam = (1−r₀)Λ + r₀E` with `E := (lam − (1−r₀)Λ)/r₀`. Here `E` has residue 1 and `μ_E = (μ_lam − (1−r₀)Σδ_γ)/r₀ ≥ (ε/r₀)dt + Σ(1 − r_γ/r₀)δ_γ ≥ 0`.
+  - So `E` is a producer with slack `ε/r₀`. L319's budget (slack `≲ 0.12`) forces `r₀ ≳ 8ε`: the evaporation rate must reach about `8×` the slack somewhere, at the first zeros.
+  - In the mollified-evaporator picture the slack must come from a **residue-carrying** component `E`. Evaporators carry no residue, and constant evaporation `(1−r₀)Λ` loses residue `r₀`. Restoring the residue needs `r₀E` with `E` itself satisfying the producer inequality, so the construction is self-similar (circular) for every slack producer.
+- **Verdict.** No producer. Positive survivors: the exact on-line evaporator (an explicit Dirichlet series removing any prescribed fraction of any critical atom) and the slack-decomposition law. The residue is again the obstruction: every slack-producing component must carry its own pole (L88).
+
+### L323 — Infinite evaporation diverges (Landau); off-line detection by near-pole recurrence is Bagchi's criterion; extreme producers via Douglas' theorem and the atomic-extreme conjecture C323. ANALYSIS [P] + REDUCTION + CONJECTURE (calibrated on 𝔽_q)
+- **Infinite evaporation (L322 summed) [P].** `d_n = Σ_γ β_γ n^{−½}cos(γ log n)` with `β_γ ≍ ε/log γ` (the floor-producing profile) **diverges** for every prime power `n`. Landau gives `Σ_{γ≤G}cos(γ log n) ≈ −(G/2π)Λ(n)n^{−½}`, so the partial sums grow like `−εGΛ(n)/(2π log G)`.
+  - Regularizing by subtracting the divergent `Λ`-multiple turns the profile into the smeared atoms `f̂(log m − log n)` of L173. Only constant `β` sums to an exact object, and that is constant evaporation, with the low-frequency dip (L320). **Closed.**
+- **Detection by recurrence = Bagchi [P].** Suppose ζ had an off-line zero and `lam ∈ W`. Then `E = D_lam + ζ'/ζ` has a pole there. If `E`'s near-poles recurred (`E(s+iτ) ≈ E(s)` for a positive-density set of `τ`), then `D_lam` would have large two-signed values in `σ > ½`, contradicting Herglotz.
+  - But `E` inherits its poles from ζ's off-line zeros, so its recurrence implies recurrence of off-line zeros. That is excluded by `N(σ,T) = o(T)` unless none exist. So this route is exactly **Bagchi's strong-recurrence criterion** (RH ⟺ ζ approximates itself). Corpus lane: `bagchi-quantitative-sparse-recurrence`.
+- **Extreme producers (Douglas) [P].** `W` is compact convex (corpus `WeilFullConeCompactness`), so `W ≠ ∅` implies an extreme point exists (Krein–Milman). By Douglas' theorem for moment-constrained measures, `μ ∈ W` is extreme iff there is no nonzero signed `ν = gμ` with `g ∈ L^∞(μ)` and `ν̂ ⊂ ±log ℕ_{≥2}` (no dominated Dirichlet measure). This is L166's framing.
+  - **New consequences [P].**
+    - (i) Slack producers (`μ ≥ ε dt`) are never extreme: every bounded almost periodic Dirichlet density is dominated.
+    - (ii) An extreme producer with an a.c. part `h` must admit no nonzero Dirichlet function `g` (Besicovitch, spectrum `log ℕ`) with `|g| ≤ Ch`. If `h` vanishes on a set of zero-like density, Putnam/KP-type rigidity makes this plausible. So extreme a.c. parts are **quasi-atomic** (densities vanishing on a dense lattice-like set).
+- **Conjecture C323 (atomic extremes).** Every extreme point of `W` is purely atomic.
+  - *Calibration (𝔽_q).* For `C/𝔽_q` the cone is `{μ ≥ 0` periodic of mass `2g}` (L130). Its extreme points are single atoms of mass `2g` per period. **C323 holds there.**
+  - *Consequence over ℚ.* `W ≠ ∅ ⇒` an atomic producer exists. With L153 (integer masses ⇒ Λ and RH) and MUST-669/670, the producer question reduces to atomic producers with **non-integral masses** (door 3, L153's open branch).
+  - *How it could fail.* A continuous producer whose density vanishes exactly on a set carrying no Dirichlet function (e.g. ζ's zero set, by Putnam/KP), and which is extreme without atoms.
+  - *[OPEN CORE]* A Douglas-type density lemma: if `h ≥ 0` is the a.c. density of a producer and `{h > 0}` has positive measure, construct a bounded Dirichlet function supported where `h` is bounded below.
+- **Verdict.** No producer. Two routes closed (evaporation sums, recurrence = Bagchi). One new conjecture (C323) with an 𝔽_q calibration and a precise open core.
+
+### L324 — Windowed evaporators: removing the Landau divergence with non-prime-power windows, and the three conditions that make an all-zero thickening residue-neutral. CONSTRUCTION [P] + CONDITIONS [P] + CRITICAL NOISE (= L108 at constant level)
+- **Windowed evaporator [P].**
+  - Replace `ζ` in L322 by `ζB`, with `B = Σ b_n n^{−s}` supported on **non-prime-powers** in a log-window `[a, a+w]`, `b_1 = 0` and `B(1) = 1`.
+  - `E_γ = (β_γ/2)[(ζB)(s+½−iγ) + (ζB)(s+½+iγ)]` still has residue `β_γ/2` exactly at `ρ, ρ̄` and no pole at 1.
+  - Now `(1∗b)(p^k) = 0` for every prime power. The Landau main term `−(G/2π)Λ(n)n^{−½}` that made L323's evaporation sum diverge is **absent**: for non-prime-powers, `Σ_{γ≤G}n^{iγ}` is oscillatory, `≍ log G·n^{iG}/(2πi log n)`. So `d_n = (1∗b)(n)n^{−½}Σ_γβ_γ cos(γ log n)` converges for every `n` when `β_γ` is slowly varying.
+- **Local shape [P].**
+  - For `|u| ≲ 2πe^a` the profile is `p(u) = Re(ζB)(1+iu) ≈ −b̂(u)sin(ua)/u`. With `w ≫ a/π` this is a **negative dip** of width `≍ π/a` and mass exactly `−π` (mass conservation). So each atom is thickened into a positive smooth bump in `μ_lam` that is Dirichlet-exact.
+  - For `|u| ≳ 2πe^a`, `B(1+iu)` is almost periodic (Poisson-dual terms of size `≍ b·e^{−a/2}`), so `p` has a non-decaying two-signed tail.
+- **Residue neutrality of the full sum (three conditions) [P].** The explicit formula applied to `Σ_γβ_γcos(γ log n)` produces a collective pole at `s = 1` unless:
+  - (i) `β(±i/2) = 0` (kills the pole term `∝ √n`);
+  - (ii) `β(0) = 0` (kills the PNT mean `2πβ(0)B(1)`);
+  - (iii) the remaining PNT-window fluctuations average to zero.
+  - The design `β(t) = t²(t²+¼)β₂(t)` with `β₂ ≥ 0` satisfies (i) and (ii). Then `D_d`'s coefficients are governed by the **prime-in-window fluctuations** `ψ(n + n/T_β) − ψ(n) − n/T_β`.
+- **Where it stands.**
+  - The thickening floor from neighbouring dips is `≍ (β/4π)log t`.
+  - The two-signed tails (aliasing plus PNT-window noise) add incoherently to `≍ β log t` with an unfavourable constant (`≈ 4π×` the floor, crude).
+  - **Critical at constant level again**: L108's Gaussian obstruction, now for an explicit, convergent, residue-neutral, Dirichlet-exact second completion.
+- **Verdict.** No producer. New survivor: a convergent all-zero evaporation operator (non-prime-power windows plus the `β(0) = β(±i/2) = 0` design) that thickens every critical atom exactly. Whether a second producer exists under RH is reduced to a constant-ratio comparison: the window floor `(β/4π)log t` against tail noise `c·β log t`, where `c` is controlled by `b`'s window (a, w).
+- **Next.** Optimize `(a, w, b)` to minimize the tail constant `c` relative to the floor. A ratio `< 1` would give a non-Λ producer under RH, refuting uniqueness (L141/L186). A provable lower bound `c ≥ 1/(4π)` for all windows would be a uniqueness theorem in this class.
+
+### L325 — Why L324 does not close: the sum of evaporators is not the Dirichlet series of the summed coefficients. Infinite evaporation leaves the Dirichlet class. KILL [P] + LAW [P-heuristic, mechanism explicit]
+- **Coefficient-side computation [P].** With L324's design (`β(0) = β(±i/2) = 0`, `B` on non-prime-powers, `β → β∞` at large height), the explicit formula gives:
+  - `Σ_γβ_γcos(γ log n) = n^{½}·0` (pole term killed) `+ 0` (PNT mean killed) `+ FT(βθ')(log n)/π` (arch) `+ o(1)`.
+  - The smeared prime terms vanish up to `e^{−c·ξm}`-small Euler–Maclaurin errors, because `(1∗b)` vanishes on prime powers.
+  - With `FT(log|τ|)(x) = −π/|x|`: `d_n ≈ −(β∞/2)(1∗b)(n)/(√n log n)`.
+  - Hence the coefficientwise sum is `D_d^{coef}(s) ≈ −(β∞/2)∫_s^∞(ζB)(w+½)dw`. This has **no poles at the zeros**, only a log singularity at `s = ½`, with `O(log log t)` two-signed boundary noise.
+- **Function-side [P].** Each `E_γ` has its pole at `ρ_γ`. A function-wise convergent `Σ_γE_γ(s)` has poles at every zero.
+- **Kill.** The two sums differ by a function with poles at all zeros, of `Σ_γβ_γ/(s−ρ_γ)` type (archimedean Herglotz structure). That is not a Dirichlet series. The interchange `Σ_γΣ_n ↔ Σ_nΣ_γ` fails because the convergence over zeros is only conditional.
+  - The genuine Dirichlet series (coefficient side) does **not** evaporate. `μ_{Λ+d} = μ_Λ − Re D_d^{coef}/π` = atoms plus two-signed noise, which is negative somewhere. **No producer.**
+- **Law (finite vs infinite evaporation) [P-heuristic, mechanism explicit].**
+  - Finite evaporations are Dirichlet-exact (L322) but need slack, which `Λ` lacks (L104).
+  - Infinite evaporations at a non-vanishing rate are never Dirichlet-exact. The coefficientwise limit converts "poles at zeros" into "archimedean smooth terms" via the explicit formula, because the arch term `FT(βθ')(log n)` and the zero sum `Σ_γβ_γ n^{iγ}` are the same object.
+  - This is the mechanism behind L173's "only constant rate survives, and constant rate is Ω". Even constant `β∞` leaves no evaporation in the limit: the zeros' residues are absorbed into `∫ζB`.
+- **Verdict.** No producer. L324's open ratio question is moot: the construction is not a Weil-cone element at all. The uniqueness heuristics (L141/L173/L186) are reinforced with an explicit mechanism (interchange failure at the conditional-convergence level).
+- **L322 Lean (positive survivor formalized).** Module `RHTower/CriticalZeroEvaporator`, wired after `WeilBoundaryFractionalCountingTwin`. `lake build --old` green; axioms `propext, Classical.choice, Quot.sound`.
+  - `criticalZeroEvaporator_eq_tsum`: on `Re s > ½`, `(ζ(s+½−iγ)+ζ(s+½+iγ))/2 − 1 = Σ_{n≥2} n^{−½}cos(γ log n)·n^{−s}`.
+  - `tendsto_mul_criticalZeroEvaporator`: for `γ ≠ 0`, residue `½` at `½+iγ`.
+  - `differentiableAt_criticalZeroEvaporator_one`: no pole at `s = 1`.
+  - Helpers: `shiftedZetaPair_eq_tsum`, `one_div_natCast_cpow_shift_pair`, `one_div_cexp_shift_pair`.
+
+### L326 — The ideal slack profile `r = ε/θ'` is automatically pole-compatible; its only singularities are the two real zeros of `θ'`, i.e. the archimedean dip. OBSERVATION [P] + LOCALIZATION [P]
+- **Setting (RH).** A slack-`ε` producer `Λ + d` evaporates fractions `r_γ` with `Σ_γ r_γδ_γ` balancing the floor. The explicit formula with a profile `r(t)` gives `πΣ_γ r(γ)δ_γ = r(t)θ'(t)dt + [pole term ∝ r(i/2)+r(−i/2)] + (smeared prime terms)`. A uniform floor needs `r(t)θ'(t) ≡ ε`, i.e. `r = ε/θ'`.
+- **Observation [P].** `θ'(t) = −½log π + ½Re ψ(¼+it/2)`. Its symmetric continuation `½[ψ(¼+it/2) + ψ(¼−it/2)]` has, at `t = ±i/2`, the term `ψ(0) = ∞`.
+  - So `θ'(±i/2) = ∞` and **`r(±i/2) = 0` automatically**. The ideal floor profile annihilates the pole term that blocked constant evaporation (L173, L320(ii), L324(i)). The pole and the floor are compatible at the profile level.
+- **Localization [P].** `r = ε/θ'` has real poles exactly where `θ' = 0`, at `t ≈ ±6.29` (`Ω(t) = 0`), and is negative on `|t| < 6.29`.
+  - These are the only obstructions to the explicit formula (which needs `r` analytic in a strip) at the profile level.
+  - Regularizing `r` on `|t| < 6.29+` breaks `rθ' ≡ ε` there. The leftover smooth term `(ε − rθ')` near the dip must then be produced exactly, which is L319's Fejér budget (`ε ≲ 0.12`).
+  - The remaining non-exactness is the smeared prime terms `Λ(n)n^{−½}(r̂⋆δ_{log n})`. For `r ≍ 2ε/log t` their commutator with atomic weights is `≍ (r(t) − r̄)Ω/2 = O(ε)`: critical (L315/L318).
+- **Reading.** Of the three obstructions to a slack producer (pole, dip, smearing), the ideal profile removes the pole for free. The problem localizes to the archimedean dip (`θ'`'s real zeros at `±6.29`, an O(1) finite-height design) and to the `O(ε)` smearing commutator at all heights. The latter is the genuine asymptotic core.
+- **Verdict.** No producer. Precise localization: slack producers under RH ⟺ (finite dip design) ∧ (smearing commutator `< ε` uniformly). The dip part is a finite problem; the commutator is the open core.
+
+### L327 — The smearing commutator is not O(ε) but `ε·√(log log t)`: within the evaporation class, slack fails asymptotically (evidence for L74). ESTIMATE [P-heuristic, mechanism explicit] + VERDICT (corrects the "critical" reading of L315/L318/L326 for this class)
+- **Cell-mass mechanism [P].** To realize `r(t)·T_Λ` with integer atoms, the smeared atom `Λ(n)n^{−½}r̂(x − log n)` must be distributed over nodes `log m`.
+  - The shoulders (`|x − log n| ≫ 1/n`) are smooth on the node scale. Their quadrature error is negligible.
+  - The **core** (`|x − log n| < 1/2n`, inside the node's own cell) can only be represented by the single atom at `n`. Its error in `τ`-space is `e^{iτ log n}∫_{cell}r̂(y)(1 − e^{iτy})dy`, which is `O((τ/n)²)·m_n` for `τ ≪ n` and `≍ m_n` for `τ ≳ n`, where `m_n = ∫_{cell}r̂`.
+- **Size [P-heuristic].** For the floor profile `r ≍ 2ε/log t`, `m_n ≍ r(n) ≍ 2ε/log n`. The commutator at height `t` is therefore `E(t) ≍ ε·Σ_{n≲t}Λ(n)n^{−½}(2/log n)cos(t log n + φ_n) ≍ 2ε Σ_{p≲t}p^{−½}cos(…)`. This is a prime sum of variance `≍ ε² log log t`.
+  - So `E` has standard deviation `≍ ε√(log log t)` (Selberg-CLT type), against a floor of exactly `ε`.
+  - Growing or decaying floors `ε(t)` do not help: the ratio noise/floor is `≍ √(Σ_{p≤t}ε(p)²/p)/ε(t) ≳ √(log log t)` for monotone `ε(·)`.
+- **Consequence.** Uniform-floor (slack) producers built by smooth evaporation of `Λ` fail at a positive proportion of heights once `√(log log t) ≫ 1`. Contrary to the "exactly critical" reading in L315/L318/L326, **within the evaporation class the race is lost by `√(log log t)`**. This is L108's Gaussian obstruction, now located in the node-cell cores.
+  - The general C308 question (slack via non-evaporation mechanisms or correlated noise) stays open, but every explicit route found is evaporation-type.
+- **Verdict.** No producer. Evidence for L74 (`σ_pb = 0`): the only known way to build slack (evaporating `Λ`'s atoms into a floor) produces prime-sum noise exceeding the floor by `√(log log t)`. Recorded as the quantitative form of "producers must be critical".
+
+### L328 — Rediscovery audit for this cycle (recorded to prevent reuse)
+- **Upward deviations.** Under RH, `lam ≥ Λ`, `lam ≠ Λ` cannot be a producer. Landau makes `Σd_n n^{−σ}` convergent and positive on `σ > ½`, while the real-point Herglotz budget forces `D_d(σ) ≤ ξ'/ξ(σ) ≈ 0.046(σ−½) → 0`.
+  - **= `eq_vonMangoldt_of_weilPositiveFull_of_ge` (Lean, cycle 143), which is stronger and unconditional.** Downward: L156 (Lean). Constant sign up to a summable error: MUST-527.
+- **M. Riesz / Arveson extension.** The prime-blind test space is cofinal in the p.d. order, so PBAP extends `arch + pole` to a positive functional, which must be `W_lam`. **= the corpus Minkowski/Farkas split `W ≠ ∅ ⟺ PBAP`.**
+- **Single-pair blind detection of an off-line zero.** A two-bump carrier needs the second bump narrower than the node spacing `e^{−L}`, which costs `e^{−L/2}` in `L¹` against the gain `e^{δ₀L}`. Since `δ₀ < ½` it fails. **= L183's correction (cost `e^X ≫ e^{δ₀X}`).**
+
+### L329 — Moduli calibration: slack and non-uniqueness come from moduli of real-rooted objects at fixed datum. Selberg (Teichmüller) and 𝔽_q have moduli; ℚ's only candidate moduli are the twins of `V_k`. CALIBRATION [P] + PRINCIPLE [P-heuristic] + CONJECTURE C329
+- **Selberg datum (new calibration) [P].** Fix genus `g ≥ 2`. The Selberg trace formula gives a Weil-type identity with datum (area term `(g−1)·r tanh(πr)`, identity and parabolic-free) and "primes" = closed-geodesic lengths `ℓ_γ` with weights `ℓ_γ/(2sinh(kℓ_γ/2))`.
+  - Every surface `X ∈ T_g` (Teichmüller space, `dim 6g−6`) is a producer for this datum: its spectral measure is positive by self-adjointness of `Δ_X`.
+  - So **uniqueness fails**: length spectra vary with `X`, and Huber/McKean make the producer determine the length spectrum.
+  - **Slack exists**: average the producers over a smooth probability measure on a compact region of `T_g`. Weil measures add, and the averaged spectral measure is a smooth positive density on the bulk of the spectrum, an a.c. floor where eigenvalues move with `X`. The averaged "weights" sit on a continuum of lengths, which is allowed because the Selberg datum does not fix positions.
+- **𝔽_q (L130).** The moduli are the open set of Weil polynomials of degree `2g`: slack and non-uniqueness.
+- **ℚ.** Positions are frozen at `log n`, so the only moduli at fixed positions are elements of `V_k` (`k ≥ 3`, Theorem A: `dim W_k = ∞`), and a producer needs real-rooted ones. L287–L289 show the twins near `ζ^k` are not real-rooted (rosettes), and the far ones carry far-right combs (L290, L292). Averaging over non-real-rooted moduli does not produce positivity (L288.1: circular averages are invisible).
+- **Principle [P-heuristic].** *Slack and non-uniqueness of producers ⟺ a positive-dimensional moduli space of real-rooted objects realizing the datum.* Selberg: `6g−6`. 𝔽_q: `g`-dimensional (`2g` roots up to symmetry). ℚ: conjecturally `0`.
+- **Conjecture C329.** For every `k ≥ 1`, the set of real-rooted `F ∈ V_k` with `f_1 = 1` and a pole of order `k` at `s = 1` is `{ζ^k}` under RH and empty otherwise.
+  - It implies uniqueness (`W = {Λ}`, through MUST-670 for phase-locked producers), and with C323 (atomic extremes) it would close the producer question to "Λ, iff RH".
+  - *How it could fail.* A real-rooted twin far from `ζ^k`, i.e. a nontrivial point of the moduli space. L286 excludes the rational ones; transcendental `Q = F/ζ^k` is the open core.
+- **Verdict.** No producer. New calibration: the Selberg datum has slack producers via Teichmüller averaging, which confirms that slack is a moduli phenomenon. Over ℚ the problem is the dimension of the real-rooted moduli at frozen positions.
+
+### L330 — C329's open core in quasicrystal language, and why Lev–Olevskii does not reach it. REFORMULATION [P] + LITERATURE BOUNDARY
+- **Reformulation [P] (from L286).** A real-rooted twin `F ∈ V_k`, under RH, gives `Q = F/ζ^k`. Its boundary measure `μ_Q = Σ(zeros of F) − k·Σ(zeros of ζ)` is an **integer-mass signed measure** on ℝ with:
+  - mean density 0 (degree 0);
+  - Fourier support in `±log ℕ_{≥2}`;
+  - negative part `≤ kμ_ζ`.
+  C329 (twin case) ⟺ every such measure vanishes.
+- **Literature boundary.**
+  - Lev–Olevskii (2015/16): measures with uniformly discrete support **and** uniformly discrete spectrum are generalized Dirac combs.
+  - Kurasov–Sarnak / Olevskii–Ulanovskii: positive unit-mass Fourier quasicrystals are zero sets of real-rooted exponential polynomials.
+  - Both need bounded support density. Here the positive and negative parts each have density `≍ (k/2π)log t` (unless `F` shares almost all zeros with `ζ^k`), and the spectrum `{log n}` accumulates (gaps `1/n`). Neither theorem applies.
+  - When `F` shares all but a bounded-density set of zeros with `ζ^k`, `μ_Q` has bounded density. The L286 calibration `Q = (A_a/B_a)²` (Poisson lattices) shows the measures then exist abstractly, and they are excluded only by `div Q ≥ −k div ξ` via Putnam/Kaczorowski–Perelli.
+- **Open core (precise).** A uniqueness theorem for integer-mass signed Fourier quasicrystals of **logarithmically growing** density with spectrum in `log ℕ`, with negative part dominated by `kμ_ζ`. This is a "Lev–Olevskii theorem with archimedean growth". No such result is known, and it is the quasicrystal form of C329.
+- **Verdict.** No producer. Open core restated in a form a harmonic-analysis specialist could attack directly.
+- **L330 addendum (attempt on the core; rediscovers L163).**
+  - `Q` is zero-free on `σ > ½`, so `arg Q(½+it) = πN_Q(t)`, an integer step function with jumps at the support of `μ_Q`, equals `Im log Q` on the line.
+  - If `Σ|b_n|²/n < ∞` (with `b` the coefficients of `log Q`, i.e. `(lam_F − kΛ)/log n` square-summable against `1/n`), then `N_Q` is Besicovitch-`B²` almost periodic. An integer step function whose jumps have growing density has fine-scale variance `≥ c` at every height, so it is not `B²`-approximable unless the jumps cancel to zero density.
+  - Hence `F` shares all but a density-zero set of zeros with `ζ^k`. This is weaker than L163 (Lean: `Σ(lam−Λ)²/(1+log n)^K < ∞ ⇒ lam = Λ`), applied to the producer `lam_F/k`. **Rediscovered.** The open core is again twins whose deviations are not log-square-summable: the evaporation core, at the twin level.
+
+### L331 — Dualizing L327: the core-noise law applies to Gordan certificates, so it gives a route to proving L74 **and** detection (W ≠ ∅ ⇒ RH). PROGRAMME [P-sketch] with three explicit gaps, each in a rigorous-capable regime
+- **Duality.** L74's Gordan step fails at level `U` iff some certificate `T_c = Σ_{n≤e^{2U}}c_n cos(τ log n)` is positive definite on the near-radical space `V_T`. By L314(c)/L315, such a `T_c` must, in local averages at resolution `1/U` below the Landau height, be a **floor minus a dip train at the zeros**. This is the mirror image of L327's evaporation profile (`T_c ≈ −T_d`).
+- **Steps.**
+  - **(S1) Pinning [rigorous-capable].** In L315's window `T/2π < e^{2U} < T/π`, Montgomery–Vaughan on `[−T, T]` is diagonal-dominant for all `n ≤ e^{2U}`. So the local-average profile of `T_c` on `[−T, T]` determines `c` up to `O(1/η)`-conditioned errors.
+  - **(S2) Identification [explicit formula].** A dip train with masses `m(γ)` (forced by the Fejér balance to `m ≍ (floor)/density ≍ 2ε/log γ`) has, by the explicit formula, coefficients equal to `Λ(n)n^{−½}` smeared by `m̂`, plus archimedean terms. The pole term vanishes automatically for the floor profile (L326: `θ'(±i/2) = ∞`).
+  - **(S3) Core noise [Selberg-CLT regime].** The node-cell cores (L327) force a residual `E(τ) ≍ 2ε Σ_{p≲τ}p^{−½}cos(τ log p + φ_p)` with variance `≍ ε² log log τ`. The variance is carried by all dyadic prime ranges, so the **short** part `p ≤ T^{δ}` alone has variance `ε²(log log T − log(1/δ))`, and Selberg's moment method gives its Gaussian law rigorously (diagonal regime). Exceeding the floor `ε` needs only a deviation of `≍ 1/√(log log T)` standard deviations, a positive-probability event (no large deviations). So `T_c < 0` on a set of heights of positive measure, at resolution `≫ 1/U`, where `V_T` localizes. **No certificate.**
+- **Consequences if (S1)–(S3) hold.**
+  - Gordan holds at every level, so prime-blind near-radical mixtures exist, `σ_pb = 0` (**L74: every producer is critical**).
+  - With the codimension-one enlargement of `V_T` at a hypothetical off-line zero (the off-line form is indefinite of rank 2, and the same certificate analysis applies), we get **detection: `¬RH ⇒ W = ∅`**.
+  - Together: **the producer of positivity exists iff RH, and has no slack.** Combined with the exposed-point and order-rigidity theorems, the producer is then `Λ` in every direction the corpus controls.
+- **Gaps (precise).**
+  - (G1) Making "local averages determine `c`" quantitative at the critical window. MV gives `L²`, and pointwise sign information needs the localization profiles of L315.
+  - (G2) Controlling the long-prime part `T^δ < p ≤ e^{2U}` of the residual in mean square. In the window `e^{2U} < T/π` this is MV-diagonal, hence `O(log(1/δ))`.
+  - (G3) The phases `φ_p` produced by the core quadrature must be generic enough for Selberg's CLT. They are determined by `m̂` near 0, and a conspiracy would need `φ_p` aligned with `p^{iτ}` over a positive-density set of heights.
+- **Status.** This is the first route in the ledger that turns the "critical race" into a strict inequality by a growing factor (`√(log log T)`), on the dual side where the target is a theorem (no certificate exists) rather than a construction. **No producer**, but a concrete programme for proving that the producer is exactly RH. Next: (G2) and (G3) with explicit constants; (G1) through the L315 localization lemma.
+
+### L332 — The noise–dip dichotomy: exact form of the core-noise law; constant-rate profiles are noise-free but hit the archimedean dip, every other profile carries Gaussian noise. LAW [P-heuristic, explicit] + CORRECTION of L327's factor
+- **Core-noise law (refined) [P-heuristic].** For an evaporation (or dual certificate) profile `r(t) = f(t)/θ'(t)` with floor `f`, the node-`n` cell core carries the error `≈ r(n) − r(τ)` at heights `τ ≫ n`: the core is exact for the profile value at its own scale, and mismatched at height `τ`. The residual at height `τ` is therefore
+  `E(τ) ≈ Σ_{n<τ}Λ(n)n^{−½}(r(n) − r(τ))cos(τ log n + φ_n)`, with `Var E(τ) ≈ ½Σ_{p<τ}(log p)²(r(p) − r(τ))²/p`.
+  - **`E ≡ 0` iff `r` is constant:** constant-rate evaporation, the Λ-direction, which is exact (L322, L325: `r̂ = cδ`).
+- **Power floors `f = c(log t)^b` (correction to L327).**
+  - `Var E/f² = 2I(b)` with `I(b) = ∫_0^1 v^{2b−1}(1−v^{1−b})²dv = 1/(2b) − 2/(1+b) + ½`.
+  - `I(1) = 0` (exact Λ-direction), `I(1/3) = ½` (noise standard deviation equals the floor), `I(b) → ∞` as `b → 0`. For the uniform floor (`b = 0`) the ratio grows like `√(log log τ)`, which is L327's case.
+  - So L327's "lost by `√(log log t)`" is the `b = 0` instance. For `0 < b < 1` the noise/floor ratio is the constant `√(2I(b))`.
+- **Dichotomy [P-heuristic].**
+  - **(Noise)** If `r` is non-constant on the primes below `τ`, `E(τ)` is a prime sum with positive variance. By Selberg's CLT (the variance is carried by short primes for every `b < 1`), it exceeds the floor `f(τ)` on a positive proportion of heights, at resolution `≍ 1/U`, where `V_T` localizes. **Positivity fails.**
+  - **(Dip)** If `r` is constant, `T = c·T_Λ`, which is negative on `|τ| < 6.29` (`Ω < 0`). The Fejér budget (L314(c)/L319) shows that no exact correction repairs it once `U` is large (needed `≈ 17.5c`, available `≈ 1.34c + o(1)`). **Positivity fails.**
+  - Applied to producers: **no slack** (L74). Applied to Gordan certificates on near-radical spaces: **no certificate**, hence Gordan, hence blind near-radical mixtures, hence detection. That is L331's programme, now with the profile-general noise law in place of the uniform-floor estimate.
+- **Remaining gaps (unchanged from L331).** (G1) pinning `c` from local averages, (G2) long primes, (G3) genericity of the phases `φ_n`. A phase conspiracy in (G3) would have to make `Σ_p(log p)(r(p) − r(τ))p^{−½}cos(τ log p + φ_p)` one-signed in `τ`. Bohr–Jessen independence of `p^{iτ}` forbids that for any fixed finite set of primes.
+- **Verdict.** No producer. The structure is now a clean dichotomy: **exactness forces constant rate; constant rate meets the archimedean dip; non-constant rate meets Gaussian prime noise.** This is the sharpest form of "the producer is Λ and its positivity is RH" in the ledger.
+
+### L333 — Working L331's detection half directly: a certificate against an off-line pair must be a zero-mean "wavelet" at `γ₀`, and its far-field moments leak into the near-radical bulk. ARGUMENT [P-sketch] + where the constants decide
+- **Set-up (¬RH, one off-line pair `ρ₀ = ½+δ₀+iγ₀`).** Detection at level `U` fails iff some `lam` has `W_lam ⪰ 0` on `V' = {supp f ⊂ [−U,U], f̂ = 0 at every on-line zero below `T`}`. On `V'`, `W_Λ = O_{ρ₀} + tail`, where `O_{ρ₀}(f) = 2Re f̂(γ₀+iδ₀)·conj f̂(γ₀−iδ₀)` is a rank-2 form of signature `(1,1)`.
+  - The antisymmetric step envelope `f_a = (1_{[0,U]} − 1_{[−U,0]})e^{iγ₀x}` gives `O(f_a) ≈ −2e^{2δ₀U}/δ₀²` against `‖f_a‖² = 2U`. So `M := e^{2δ₀U}/(Uδ₀²)` is exponentially large, provided the interpolation correction into `V'` does not undo it (the phase factor `Π(γ₀−γ+iδ₀)²` from the near zeros is tunable).
+- **Certificate shape [P].** `Q_d ⪯ W_Λ` on `V'` forces:
+  - (a) `T_d ≤ 0` in local averages off zeros below the Landau height, away from `γ₀`;
+  - (b) `∫T_d|f̂_a|² ≲ −M`;
+  - (c) at most a **one-dimensional** positive allowance near `γ₀`. `O` has one positive direction, and a multiplication operator positive on a bump of width `≥ 2/U` is positive on `≥ 2` dimensions.
+  - Hence near `γ₀`, `T_d` = (one minimal-width positive centre `≤ +M`) − (negative shoulders `≈ −M`): a zero-mean **wavelet**, as the spectral gap requires.
+- **Far-field leakage [P-sketch].** The Fejér balance at bulk points `τ₀` (`|τ₀−γ₀| = Δ`) picks up the wavelet's second moment: `m₂F''(Δ)/2` with `m₂ < 0` (negative shoulders outside a positive centre) and `F'' ≍ 50/Δ⁴ > 0`, i.e. a **negative** leakage `≍ −M/(U³Δ⁴)`.
+  - It must be offset by positive `T_d` in the bulk, which (a) forbids except through invisible bumps at on-line zeros. Invisibility needs bump height `h`, width `≥ h/(2U‖T_d‖_∞)` and `h·w³ ≪ ε_U ≍ e^{−πe^{2U}}`.
+  - With `‖T_d‖_∞ ≍ M = e^{2δ₀U}`, this fails for `Δ ≲ e^{U/2}`. **So no certificate exists, and detection holds**, modulo the constants in (b), (c) and the leakage (the higher moments `m_4, …` can have either sign, and a wavelet with `m₂ = 0` would push the leakage to `m₄F''''`).
+- **Where it can still fail.** If the certificate can choose a wavelet with `m₂ = m₄ = … = 0` up to high order (a "vanishing-moment" wavelet), the leakage drops to `M·Δ^{−2K}`, and the invisible-bump capacity at far zeros might absorb it. Vanishing moments to order `K` cost a wavelet width `≍ K/U`. That brings in `≍ K` dimensions near `γ₀`, against (c)'s single positive allowance. **The race is between vanishing-moment order and the one-dimensional positive allowance of `O_{ρ₀}`.** It is a clean, finite-dimensional linear-algebra question at the scale of one zero.
+- **Verdict.** No producer. Detection reduced to a local question: *can a multiplication symbol with spectrum in `log ℕ` be `⪯ O_{ρ₀}` on the zero-annihilated localizations at `γ₀`, given that `O_{ρ₀}` has one positive direction and vanishing moments need `K` dimensions?* If not (expected), `W ≠ ∅ ⇒ RH`.
+
+### L334 — Stress-testing L333: the wavelet leakage defeats every *bounded* certificate, but `V'`-certificates may be unbounded, and the far field then licenses invisible spikes. REFINEMENT [P-sketch] + LOOPHOLE (precise)
+- **Corrections to L333.**
+  - (i) The Fejér kernel oscillates: `F''(Δ) ≍ (2/Δ²)cos(aΔ)`, not `50/Δ⁴`. The leakage `m₂F''(Δ)/2` changes sign every `≍ π/a`, and at the negative phases it has size `≍ |m₂|/Δ²`, which is larger than claimed.
+  - (ii) Beyond the Landau height `T_d` is **bounded above** (`≤` the `W_Λ` floor `≍ log(τ/H)`), so the far field contributes at most `O(log H/H)` positive mass to any Fejér window in the bulk. The slowly-varying-reservoir escape is closed.
+  - With (i) and (ii), the bulk balance at negative-leakage phases needs positive mass `≍ M/(U³Δ²)`. Bulk local averages are `≤ 0`, so it must come from invisible spikes at bulk zeros.
+- **Spike capacity.** A spike of height `h` at a zero is invisible to doubly-vanishing localizations iff `h·w³U² ≲ ε_U`, with `ε_U` the near-radical energy. Bernstein gives `w ≳ h/(2U·S)`, `S = ‖T_d‖_∞`, so a spike carries mass `≲ √(ε_U S/U)`.
+  - **If `S` is bounded** (e.g. by the box bound `|lam(n)| ≤ √n(log n + C₀)`, which every full-cone producer satisfies), the capacity is `≍ √ε_U ≍ e^{−πe^{2U}/2}`. That cannot supply `M/(U³Δ²)`, so **no bounded certificate exists, and detection holds against bounded certificates.**
+- **Loophole (precise).** A Farkas certificate on `V'` need only satisfy `W_lam ⪰ 0` on `V'`, so box bounds are not automatic.
+  - `T_d` may be **hugely negative** in the far field (no lower bound there). Turán allows `S ≍ (τ_far/H)^{e^{2U}}·sup_{[−H,H]}|T_d|`, and that global `S` licenses (via Bernstein) arbitrarily narrow, hence invisible, positive spikes of large mass at bulk zeros.
+  - Using the full space `L²[−U,U]` instead restores box bounds, but then each zero has `O(1)` atom capacity (`W_Λ = Σ|f̂(γ)|² > 0` off `V'`), and the balance closes.
+- **Precise remaining question.** Detection ⟺ (for large `U`) no certificate on `V'` whose sup norm is at most `e^{O(e^{2U})}·poly`. Equivalently: can a trigonometric polynomial with spectrum in `log ℕ ∩ [log 2, 2U]`, nonpositive in local averages on `[−H, H]` off the zeros and carrying the `γ₀` wavelet, borrow narrowness from a far-field negative spike at distance `≳ He^{4πU}`?
+  - A **local** Bernstein inequality for exponential sums, with the global sup replaced by the sup on `[−2H, 2H]` up to a factor `e^{O(UH)}`, would close it. Such inequalities hold for entire functions of exponential type (Duffin–Schaeffer type) when the far field enters with weight `e^{−2U·dist}`. The question is whether `dist ≍ H` and `S ≤ e^{O(e^{2U})}` keep the far contribution below `ε_U`.
+- **Verdict.** No producer. Detection is reduced further: it holds against all certificates with sup norm `e^{o(UH)}`. The only escape is a far-field negative spike of height `e^{Ω(UH)}`, i.e. a doubly-exponential-in-`U` coefficient blow-up. Whether that is compatible with the near-radical constraints is a concrete exponential-sum question.
+
+### L335 — Detection sketch closed against far-field licensing by Ingham's inequality in the Montgomery–Vaughan window. Candidate theorem: `W ≠ ∅ ⇒ RH` (equivalently: the producer of positivity exists iff RH). PROOF SKETCH [P-sketch, all steps standard-type; NOT yet verified]
+- **Claim.** If ζ has a zero `ρ₀ = ½+δ₀+iγ₀` with `δ₀ > 0`, then PBAP fails at every sufficiently large level `U`. So `W = ∅`.
+- **Sketch.** Fix `U` with `πe^{2U} < H := (1−η)2πe^{2U}`, `γ₀ < H/2` and `T ≍ H`. Let `V'` be the functions supported in `[−U,U]` with `f̂ = 0` at every on-line zero `|γ| ≤ T`; this space is nonzero by the Nyquist margin. By Farkas, PBAP on `V'`-mixtures fails iff no certificate `lam` has `W_lam ⪰ 0` on `V'`. Suppose a certificate `T_d` exists.
+  - **(1) Negative direction [lemma A].** On `V'`, `W_Λ = O_{ρ₀} + R`, where `O` is the rank-2 off-line form and `R` (zeros beyond `T`, other off-line zeros) is tiny on localized tests. The projection of the off-line kernels `k_{γ₀±iδ₀}` onto `V'` keeps a constant fraction of their norm (interpolating, non-sampling regime), so `O|_{V'}` has a negative eigenvalue `≲ −c·e^{2δ₀U}U` with an eigenvector localized at `γ₀` at scale `1/U`.
+  - **(2) Positive index [Weyl, rigorous].** `Q_d ⪯ O + R` gives `n₊(Q_d − ε) ≤ 1` near `γ₀`. So near `γ₀`, `T_d` is (at most one minimal-width positive centre) plus (negative mass `≍ −M/U`, `M ≍ e^{2δ₀U}`) on the shoulders, and its second moment is `m₂ < 0`.
+  - **(3) Bulk sign [near-radical].** At localizations in `V'` below `H`, away from `γ₀`: `W_Λ ≤ ε_U` (tail beyond `T`, plus off-line terms decaying like `e^{−(UΔ)^{1−ε}}`). So `T_d ≤ 0` in local averages, except for spikes at zeros that are invisible to doubly vanishing profiles.
+  - **(4) Far field [rigorous].** Above `H`, `V'` localizations see an `O(log(τ/H))` floor of `W_Λ` (too many zeros to annihilate), so `T_d ≤ O(log(τ/H))` there. The far field adds at most `O(log H/H)` positive mass to any bulk Fejér window.
+  - **(5) Leakage [rigorous].** The spectral gap gives `∫T_dF(·−τ₀) = 0` for the Fejér kernel of band `log 2` (with `F̂(±log 2) = 0`). At bulk points with `aΔ ∈ 2πℤ`, the near-`γ₀` contribution is `≈ (2/(a²Δ²))(a²/2)m₂ < 0`, of size `≍ M/(U³Δ²)`. It must be offset by invisible spikes.
+  - **(6) Spike capacity + Ingham [key new step].** In the window `2H > 2πe^{2U}` the frequencies `{log n : n ≤ e^{2U}}` (minimal gap `≍ e^{−2U}`) satisfy Ingham's inequality `Σ|d_n n^{−½}|² ≲ H^{−1}∫_{−H}^{H}|T_d|²`. Hence `S := ‖T_d‖_{∞,ℝ} ≲ e^{U}(H^{−1}∫_{−H}^{H}|T_d|²)^{½} ≲ C·M` (self-consistently, since spikes contribute `≲ (mass)·(ε_U S³U)^{¼}`).
+    - Bernstein (`w ≥ h/(2US)`) plus invisibility (`h w³U² ≤ ε_U`) give spike mass `≤ √(2ε_U S) ≲ √(ε_U M)`.
+    - The required compensation `≍ M/U³` exceeds this by a factor `≍ √(M/ε_U)/U³`, which is doubly-exponentially large. **Contradiction: no certificate, so PBAP fails.**
+- **What needs verification.**
+  - (A) The negative eigenvalue of `O|_{V'}` with localized eigenvector (frame and interpolation constants of real kernels at zero density below Nyquist).
+  - The uniform near-radical energy `ε_U` for bulk localizations (corpus: `SharpWeilNearRadicalCount`, `weil-radical-margin-law`).
+  - Ingham's constant at the threshold with the `η` margin.
+  - Handling several off-line zeros (each adds a rank-2 form; use the one of largest `δ₀U` below `H`).
+- **If correct.** This answers L183's open question **W ≠ ∅ ⇒ RH**. With `RH ⇒ Λ ∈ W` it gives **`W ≠ ∅ ⟺ RH`**: the producer of positivity exists exactly when RH holds, and then `Λ` is one. Compared with L183/L184, the new ingredients are the Weyl positive-index bound (2), the Fejér multipole leakage (5), and Ingham's inequality in the Montgomery–Vaughan window, which kills the far-field licensing loophole of L334 (6).
+- **Status.** PROOF SKETCH, to be audited. Next cycle: try to break it (especially (A) and the self-consistency in (6)), then write the dependency-closed paper proof and a card.
+
+### L336 — Audit of L335: the only escape (a vanishing-moment wavelet) is closed by moment determinacy; several off-line zeros are handled by a Gauss-quadrature count. AUDIT [P-sketch] — L335 survives and is strengthened
+- **Escape found in the audit.** The leakage argument needs a non-vanishing low multipole of `T_d|_{near γ₀}`. A certificate could try to make `m₀, m₁, m₂, …` all `O(1)` despite local amplitudes `λ ≍ e^{2δ₀U}`.
+  - Trace bound: `Tr(Q_d|_{loc}) ≤ Tr(O|_{loc}) + o(1) = 2Re⟨r_+, r_−⟩ = 4U`, so `m₀ ≲ 4π` is allowed. The near-`γ₀` mass is not forced negative.
+  - In the regime `m₀ > 0`, `0 ≤ m₂ ≤ 4m₀/a²`, the leakage `(2/(a²Δ²))[m₀(1−cos aΔ) + (a²/2)m₂cos aΔ]` is nonnegative at every phase. So the escape is real unless the moments are pinned.
+- **Closing it (moment determinacy) [P].** Near `γ₀`, `n₊(Q_d − R) ≤ n₊(O) = 1` (Weyl). So `T_d = P·(one positive cell at x_+) − ν` with `ν ≥ 0`.
+  - Cancelling the multipoles to relative precision `e^{−2δ₀U}` through order 4 requires `∫dν ≈ P`, `∫u dν ≈ Px_+`, `∫u²dν ≈ Px_+²`, `∫u⁴dν ≈ Px_+⁴`.
+  - Cauchy–Schwarz (`(∫u²)² ≤ ∫1·∫u⁴`, with equality) forces `ν` onto `|u| = |x_+|`, and the odd moments force `x_+ = 0`. Then `T_d ≈ 0` near `γ₀`, contradicting `⟨T_d⟩_{f} ≤ O(f)/‖f‖² ≈ −λ` along the negative direction of `O`.
+  - So some multipole of order `j ≤ 4` survives with size `≍ λw_p(aw_p)^j`, `w_p ≍ 1/U`. That gives a negative leakage `≳ λU^{−5}/Δ²` at a suitable Fejér phase. This is `≫` the invisible-spike capacity `√(ε_U λ)` (`ε_U ≍ e^{−cH/log²H}`, `H ≍ 2πe^{2U}`). **Contradiction stands.**
+- **Several off-line zeros near `γ₀` [P].** With `K` pairs, `n₊ ≤ K`. The positive part is `K` cells, and a Gauss quadrature with `K` nodes can match `2K` moments of `ν`, but not `2K+2` (determinacy again). The leakage is then `≳ λU^{−(2K+3)}`, still `≫ √(ε_U λ)` for `K ≤ U^{O(1)}` (zero-density estimates give far fewer off-line zeros in a window of width `O(1)`). **Contradiction stands.**
+- **Other checks passed.**
+  - The exactness of the Fejér balance (`F̂(±log 2) = 0`).
+  - The cosine-sum form of `T_d` and its evenness.
+  - The off-line form's leakage into bulk localizations, `≲ e^{δ₀U−c(UΔ)^{1−ε}}`, which is negligible for `Δ ≳ 10`.
+  - Using only bulk points `|τ₀| ≤ H/2`, where the tail beyond `T` is doubly-exponentially small.
+- **Remaining verification list (L335 (A)–(D), refined).**
+  - (A) Existence of `f ∈ V'_{loc}` with `O(f) ≤ −λ‖f‖²`, `λ ≳ e^{2δ₀U}/poly(U)`. Explicit: edge bumps `A·b(x−U) − B·b(x+U)` modulated at `γ₀` give `O ∝ 2[A² + B² − AB(e^{2δ₀U}+e^{−2δ₀U})] < 0`. What remains is to project into `V'` without losing the sign: the interpolation correction has norm `≍ (local frame constant)×` the size of the values at nearby zeros.
+  - (B) `ε_U` for bulk localizations.
+  - (C) Ingham's constant with margin `η`.
+  - (E) The closure of the Farkas alternative on a finite-dimensional truncation `V'_K` containing all the test profiles used.
+- **Status.** PROOF SKETCH, strengthened. The detection theorem `W ≠ ∅ ⇒ RH` now rests on (A), (B), (C), (E): explicit Paley–Wiener interpolation and frame estimates, with no arithmetic input beyond the zero counting function.
+
+### L337 — RETRACTION of L335/L336: invisible mass at annihilated points is unlimited (Dirichlet-kernel bumps), and the fake-consistency test exposes it. KILL [P] + METHOD LESSON
+- **The error (step (6) of L335).** I bounded the mass of "invisible spikes" at on-line zeros by `√(ε_U S)` via Bernstein and a visibility estimate `h w³U²`. That is wrong.
+  - For `f ∈ L²[−U,U]`, `|f̂|²` has spectrum in `[−2U, 2U]`. A bump `m·D_{2U}(τ−γ)` with `D̂_{2U} = 1` on `[−2U,2U]` (the band-limited atom) pairs as `∫|f̂|²·mD_{2U}(·−γ) = m|f̂(γ)|²` **exactly**.
+  - On `V'` (where `f̂(γ) = 0`) such bumps are invisible for **every** mass `m`. The certificate can deposit unlimited positive mass at bulk zeros and offset any multipole leakage.
+  - Ingham does not prevent this: the bumps have height `≍ mU`, and `S` grows with them.
+- **Fake-consistency test (why the error had to exist) [P].** Let `F = ζ³ + εE` be a Theorem-A fake. Its rosettes put off-line zeros near every ζ-zero, and `lam_F/3` is integer-supported with ζ's exact datum.
+  - Run L335 with `(lam_F/3, F's zeros)` in place of `(Λ, ζ's zeros)`. It would produce a prime-blind p.s.d. `G` with `(arch+pole)(G) < 0`.
+  - By the conservation law (L256), that number also equals `Σ_{ζ zeros}Ĝ ≥ 0` under RH. Contradiction. So under RH a certificate must exist for the fake, and indeed `lam = Λ` is one. Its symbol `Λ − lam_F/3` is exactly a sum of band-limited atoms (`+` at `F`'s zeros, `−` at ζ's), which is the configuration L335 claimed impossible.
+  - (The Gauss-quadrature count of L336 does not save it: a fake has `O(1/η)` off-line pairs per localization window, the same order as for ζ near a cluster.)
+- **Method lesson.**
+  - (i) Any proposed proof of detection must **fail for fakes** (L257's datum-twin barrier). Running the argument on a Theorem-A fake is a mandatory sanity check.
+  - (ii) Near-radical spaces have **infinite invisible capacity** at annihilated points (band-limited atoms). Every certificate analysis must treat atoms at zeros as free, which is L194/L311's circularity: the dual obstruction is a second system that moves mass at zeros.
+  - (iii) Where ζ differs from fakes is **sparsity of off-line zeros** (zero-density estimates). A valid detection proof must use it essentially, not only through a count `K`.
+- **Verdict.** L335/L336 RETRACTED. Detection (`W ≠ ∅ ⇒ RH`) is open again, at the state of L183/L184/L318. The noise–dip dichotomy (L332) and L327's slack estimates are unaffected: they concern producers' own weights. Whether the L331 certificate side survives the same objection is to be re-checked: invisible band-limited atoms at **all** zeros are exactly the `c·T_Λ` direction, which fails at the dip, while non-constant atom profiles are smeared.
+
+### L338 — Running the twin test on L332: the noise–dip dichotomy misses the "twin-difference" certificates. L74 and detection both reduce to C329 (+ Ω). CORRECTION [P] + REDUCTION [P]
+- **Missed class.** L332 treated a Gordan certificate on `V_T` (`Σc_nM_n ≻ 0`) as "positive floor minus a dip train at ζ's zeros" and showed exactness forces a constant rate, which fails at the dip. But a certificate can also be
+  `T_c = (1/k)·π Σ_{γ' ∈ Z(G)} δ_{γ'} − π Σ_{γ ∈ Z(ζ)} δ_γ` (band-limited), for a real-rooted twin `G ∈ V_k`.
+  - It is exact (a difference of two zero measures with the same datum, so the archimedean parts cancel).
+  - On `V_T` it pairs as `(1/k)Σ|f̂(γ')|² ≥ 0`: positive atoms at `G`'s zeros are visible but positive, and the atoms at ζ's zeros are invisible.
+  - So **any real-rooted twin `G ≠ ζ^k` yields a certificate**, and Gordan fails on `V_T`. L332's dichotomy is correct only for certificates whose positive part is not atomic on another real-rooted configuration.
+- **Corrected reductions.**
+  - **L74 (no slack) ⟸ C329 (no real-rooted twins besides `ζ^k`) + the L332 dichotomy for non-atomic certificates.**
+  - **Detection (`W ≠ ∅ ⇒ RH`) ⟸ C329 + Ω (no continuous producers).** Under ¬RH, a real-rooted twin, or more generally any producer `lam`, gives a `V'`-certificate (L337's fake test is the mechanism).
+  - Both open questions of this session collapse onto the **moduli conjecture C329** (with Ω for the non-atomic door). Its open core is the archimedean-growth quasicrystal uniqueness of L330: integer-mass signed measures with spectrum in `log ℕ` and log-growing density.
+- **Status of the session's claims after the twin/fake test.**
+  - Lean evaporator (L322): stands.
+  - L325 (infinite evaporation leaves the Dirichlet class): stands; it concerns `Λ`-based evaporation.
+  - L327 / L332 noise laws: stand as laws about evaporation profiles. Their use for L74 is now conditional on C329.
+  - L335/L336: retracted (L337).
+  - C323/C329/L330: open.
+- **Verdict.** No producer. The loop has converged: every route to the producer question (existence beyond `Λ`, slack, detection) passes through the classification of real-rooted objects with ζ's frozen datum (C329/L330), plus Ω for non-atomic producers.
+
+### L339 — Attacking C329 directly: under RH, Gram twins exist at every finite height, and Gram's law keeps their limits away from `ζ³`. So C329 ⟺ coefficient blow-up of Gram twins. DICHOTOMY [P-sketch] + RE-CHECK of L317
+- **Re-check of L317 (where the Farkas certificate enters) [P].**
+  - The Gram-value inequalities `(−1)^jZ_F(g_j) > 0` alone are always feasible: evaluations at finitely many points are independent on the large balanced subspace of `W_3`.
+  - The obstruction is the **count**: real-rootedness up to `T_M` also needs `N_F(T_M) = #sign changes`, i.e. Turing-type control of `S_F`. The conservation law (L256) makes that count constraint dual to the prime-blind cone. A detectable off-line ζ-zero below `T_M` forces non-real `F`-zeros there.
+  - So L317's "feasibility ⟺ PBAP at that level" stands, with the certificate attached to the count, not to the Gram values.
+- **Under RH.** PBAP holds, so no blind obstruction exists. Modulo the quantitative KNS completion and Turing control, there are `F_M ∈ ζ³ + W_3` with **simple real zeros up to `T_M ≍ 2πM^{2/3}`, obeying degree-3 Gram's law**.
+- **Limit dichotomy [P].**
+  - Suppose the coefficients of `F_M` stay uniformly bounded (polynomially in `n`, uniformly in `M`). A subsequence converges coefficientwise to `F_∞ ∈ V_3`, real-rooted by Hurwitz.
+  - Gram's law places one zero in each degree-3 Gram interval (length `≍` one third of ζ's mean spacing). Three zeros of `F_M` therefore stay spread across each ζ-spacing and **cannot merge into ζ³'s triple zeros**. So `F_∞ ≠ ζ³`, which refutes C329 under RH: there would be a second producer `lam_{F_∞}/3 ≠ Λ`, with `1/3`-atoms (MUST-670 type).
+  - Hence, **under RH: C329 ⟺ the coefficients of every sequence of Gram twins blow up as `M → ∞`** (no uniform bound), i.e. the KNS completion constants for Gram-law reshaping are unbounded.
+- **Reading.** C329 becomes a quantitative statement about one explicit family. Do the degree-3 Gram-law twins have coefficients bounded uniformly in their height? Uniform boundedness gives non-uniqueness of the producer under RH (a new producer). Blow-up supports uniqueness.
+  - L290/L292's tail inflation suggests blow-up for **unbalanced** edits. The Gram reshaping is balanced (L317 correction), so the question is open in the right direction.
+- **Verdict.** No producer yet, but C329 now has a concrete constructive test. Building `F_M` for small `M` is a finite linear-algebra problem: balanced subspace + Gram signs + Turing count. Watching the coefficient norms would decide which side of the dichotomy ζ is on. This is exactly the exploratory computation the session rules exclude.
+
+### L340 — The non-blow-up side of L339 forces a "balanced Pólya twin": a real-rooted `F ∈ V_3` with **bounded** `S_F`, i.e. an anti-Selberg object. C329 (under RH) ⟺ no such object. CHARACTERIZATION [P] + HEURISTIC
+- **[P]** A limit `F_∞` of Gram twins (L339, bounded-coefficient case) satisfies degree-3 Gram's law at every Gram point, possibly non-strictly. So `N_{F_∞}(t) = (3/π)θ(t) + O(1)`, i.e. `|S_{F_∞}(t)| ≤ 1`.
+  - The boundary argument `πS_F(t) = Σ_n b_n n^{−½}sin(t log n)` (with `b` the coefficients of `log F`) is then a bounded Besicovitch function, so `Σ_n b_n²/n < ∞`.
+  - The pole of order 3 forces `Σ_{x<n≤2x}b_n log n ≈ 3x`. By dyadic Cauchy–Schwarz this is compatible with `Σb_n²/n < ∞` (e.g. `b_n ≈ 3/log n` spread over all `n`), but **incompatible with prime concentration**: `b_p ≈ 3` on primes gives `Σb_p²/p = ∞`.
+- **Consequence.** `F_∞`'s log-coefficients must be spread over composites, so `F_∞` is anti-Selberg (no Gaussian `S`).
+  - It is a "balanced Pólya twin": zeros within half a Gram interval of the Gram points at all heights, like Pólya's n=1-dominated fake ξ, but realized inside `V_3` by a balanced edit (L317), which L290's tail inflation does not forbid.
+  - Its producer `lam_{F_∞}/3` has `lam = b·log n/3` spread over all integers. It must still evade the resonance kill of L107, which applies only to nonnegative multiplicatively rich weights; `b` may be signed.
+- **Characterization.** Under RH: **C329 ⟺ `V_3` contains no real-rooted element with `f₁ = 1`, a pole of order 3, and bounded `S_F`.** Equivalently, Gram twins blow up.
+  - Euler products always have unbounded `S` (Selberg), so a counterexample would have to be strongly non-Euler.
+  - The corpus heuristic (L289: twins near `ζ³` form rosettes; L298.2: universality forces Davenport–Heilbronn zeros for combinations independent of ζ) predicts that non-Euler twins have off-line zeros. But L298.2 assumes almost periodicity of `V = F − ζ³` on `σ > ½`, which the balanced twin need not have.
+- **Verdict.** No producer. C329 is reduced to the existence of an anti-Selberg real-rooted twin in degree 3. This is the cleanest form of the producer question beyond `Λ`: *does ζ³'s datum admit a perfectly Gram-regular real-rooted Dirichlet series?*
+
+### L341 — Attempt to kill the anti-Selberg twin (L340) by a log-variance argument: fails. Gram-regular zero sets are compatible with `Σb_n²/n < ∞`. KILL ATTEMPT [P] → FAILED (recorded)
+- **Idea.** Carlson at fixed `σ = ½+ε` gives `lim_T Var_{[T,2T]} log|F(½+ε+it)| = ½Σ_n b_n² n^{−1−2ε}`. The log-singularities of `log|F|` at the `≍ log t` real zeros per unit length might force this to grow like `log²(1/ε)`, which would contradict `Σb_n²/n < ∞`.
+- **Why it fails [P].**
+  - At fixed `ε` and `T → ∞`, the zero spacing `≍ 2π/(3log T)` is `≪ ε`. The shot noise `Σ_γ log|ε + i(t−γ)|` then fluctuates by `∫g'(t−u)·πS_F(u)du` with `g'(v) = v/(ε²+v²)`.
+  - With `S_F` a bounded sawtooth (jumps `+1` at zeros, slope `−θ_3'/π`), the sub-spacing sawtooth averages out against `g'` at scale `ε`. What remains is `≍ S̄_F'·O(1)`, with `S̄_F` the smoothed `S_F`.
+  - So the variance stays bounded uniformly in `ε`: **crystal-like real zero sets are fully compatible with an anti-Selberg logarithm.** The `log²(1/ε)` growth appears only in the opposite order (`ε → 0` at fixed `T`), which Carlson does not see.
+- **Contrast with ζ³.** For `ζ³` the same computation gives `Var ≍ (9/2)Σ_p p^{−1−2ε} ≍ (9/2)log(1/ε)`. That is the Selberg variance, coming from prime concentration of `b`, not from the zeros' singularities.
+  - The anti-Selberg twin would need `b` spread over composites, so that `lam_F/3 = b·log n/3` is not `Λ`-like. Variance arguments cannot separate the two.
+- **Verdict.** No producer; L340's question stays open. Recorded so the variance route is not retried. Any obstruction to anti-Selberg real-rooted twins must use arithmetic beyond second moments, e.g. integrality of the Dirichlet coefficients `f_n` of `F = exp(Σb_n n^{−s})`, which must be integers if `F` is to be geometric, or the Hecke/KNS structure of `W_3`.
+
+### L342 — The ζ-mass deficit law (L155, Lean) against anti-Selberg twins: no constraint, because twins carry infinite Abel-damped ζ-mass. CHECK [P] (recorded)
+- **Hope.** L155 (`abs_sub_vonMangoldt_le_of_dampedZetaMass`) gives `|lam(p) − log p| ≤ 6(p+3)A`, with `A = limsup δ∫|c||ζ(½+it)|e^{−δt}dν`. A twin producer `lam_F/3` whose zeros avoid ζ's might have `A = 0`, which would force `lam = Λ` and kill the twin.
+- **Check [P].** The defect is `ν = (1/3)Σ_{γ_F}δ_{γ_F} − Σ_γδ_γ`. Atoms at ζ's zeros get weight `|ζ(½+iγ)| = 0`, but atoms at the twin's zeros get `|ζ(½+iγ_F)| > 0`.
+  - With density `(3/2π)log t` and mean `|ζ|` of size `≍ 1` (and large on average in `L¹`), `δΣ_{γ_F}(1/3)|ζ(½+iγ_F)|e^{−δγ_F} ≍ log(1/δ)·E|ζ| → ∞`.
+  - So `A = ∞` and the deficit law is vacuous for twins. **No constraint.**
+- **Reading.** ζ-light producers are excluded (L152/L155), but twins are maximally ζ-heavy: their atoms sit where `|ζ|` is generic. The rigidity theorems of the corpus act on deviations that are small or ζ-light. Anti-Selberg twins are large and ζ-heavy, which is the complement of everything proved so far.
+- **Session decision (user unavailable; rules exclude exploratory numerics).** The decisive Gram-twin coefficient test (L339) stays queued until the user authorizes a runpod run. Analytic attacks on C329/L340 continue; every attempt so far (variance L341, ζ-mass L342, universality L298.2) is blind to the anti-Selberg class.
+
+### L343 — A Bohr-inequality constraint on anti-Selberg objects: bounded `S_F` forces `Σ_p|f_p|/p < ∞`, so `E` must cancel `ζ³` on the primes. Also a correction to L339's "⟺". THEOREM [P-sketch, standard tools] + CORRECTION
+- **Correction to L339.** Only "bounded Gram twins ⇒ ¬C329" was shown. A real-rooted twin need not obey Gram's law, so it need not give a bounded Gram-twin sequence. The claimed equivalence C329 ⟺ blow-up is downgraded to "bounded Gram twins refute C329". The card is updated accordingly.
+- **Proposition [P-sketch].** Let `F` be a Dirichlet series with real coefficients, `f_1 = 1`, zero-free on `σ > ½`, with a pole of order `k` at `s = 1` and `|S_F(t)| = |π^{−1}arg F(½+it)| ≤ C` for all `t`. Then `Σ_p |f_p|/p < ∞`. (Here `f_p = b_p`, the prime coefficient of `log F`.)
+  - *Proof sketch.*
+    1. `Im log F` is harmonic on `{σ > ½}` minus the segment `[½,1]` (the cut through the pole), with bounded boundary values: `πS_F` on the line, and a jump of size `2πk` across the cut. It has logarithmic growth. Phragmén–Lindelöf gives `|Im log F| ≤ C'` on `σ > ½`.
+    2. For `ε > 0`, `h_ε := F^{iε} = exp(iε log F)` is analytic on `σ > 1` (the branch point `s = 1` is on the boundary) and satisfies `|h_ε| = e^{−ε Im log F} ≤ e^{εC'}`.
+    3. So `h_ε` is a bounded Dirichlet series on `σ > 1`. By the Bohr–Hedenmalm–Lindqvist–Seip correspondence its lift lies in `H^∞(D^∞)` with the same norm. The 1-homogeneous projection is contractive, and `sup_{T^∞}|Σc_pz_p| = Σ|c_p|`, so `Σ_p|iεf_p|p^{−σ} ≤ e^{εC'}` for every `σ > 1`.
+    4. Let `σ → 1⁺`. ∎
+  - The argument cannot be pushed below `σ = 1`: `h_ε` has a branch point at the pole, and Carlson fails on `½ < σ < 1`.
+- **Consequences.**
+  - An anti-Selberg twin `F = ζ³ + E` (L340) must have `Σ_p |3 + e_p|/p < ∞`. **`E` cancels `ζ³` on the primes**, and the log-pole `3log(1/(σ−1))` of `log F` must be carried entirely by composite `n`.
+  - Bounded `S` is therefore incompatible with any Euler-product-like prime structure (`Σ_p|f_p|/p = ∞` for `ζ³`, and for any `F` with `f_p ≥ c > 0` on a set of primes of positive relative density). This is a rigorous form of "Euler products have unbounded `S`" for Dirichlet series with a pole, proved via Bohr instead of Selberg's CLT.
+  - The degree-`m` (Bohnenblust–Hille) levels on `σ > 1` give `Σ_{Ω(n)=m}|c^{(m)}_n|^{2m/(m+1)}n^{−2mσ/(m+1)} ≤ C_m e^{εC'}`. These are compatible with composite-spread `b_n ≍ 3/log n`, so no contradiction at higher levels.
+- **Status of the anti-Selberg door (L340).** It is constrained (prime coefficients of `F` must be `ℓ¹(1/p)`) but not closed. It closes only if no `E ∈ W_3` has `e_p = −3 + ℓ¹(1/p)` together with a real-rooted `ζ³ + E`.
+- **Verdict.** No producer. One rigorous-in-sketch constraint (Bohr), and one overstatement of L339 corrected.
+
+### L344 — Two cycles. (a) ε-relaxed producers: the explicit candidate `lam_ε` is a relaxed producer exactly under quasi-RH(ε), so the relaxation cannot bypass the zeros. (b) An anti-Selberg twin in the Bohr lift: `log F^♯ ∈ H²(T^∞)` with bounded imaginary part, while `F^♯ ∉ H²`. This is consistent, so no kill. [P-sketch], recorded
+- **(a) Relaxation.**
+  - For a fixed Carathéodory `Φ` with `Re Φ(½+it) ≍ (1+|t|)^{¼+δ}`, let `W_ε := W(Ψ₀+εΦ)`. Then `W ≠ ∅ ⟺ ∀ε>0: W_ε ≠ ∅`.
+    - (⇒) because `Re Φ ≥ 0`.
+    - (⇐) by the box `|lam(n)| ≤ √n(log n+C₀)` uniformly for `ε ≤ 1`, Tychonoff, and `ε∫Ĝ Re Φ → 0` for each test (the `exists_weilPositive_iff_forall_level` mechanism).
+  - The canonical candidate is `lam_ε(n) := Λ(n)n^{−ε} + 1 − n^{−ε}`, i.e. `D_ε(s) = −ζ'/ζ(s+ε) + ζ(s) − ζ(s+ε)`. The pole at `1−ε` cancels, the residue at `1` is `1`, and `lam_ε → Λ` pointwise.
+  - On the line, `Re D_ε = Re(−ζ'/ζ)(½+ε+it) + Re(ζ(½+it) − ζ(½+ε+it))`.
+    - The first term is `≤ Re Ψ₀(½+ε+it) = θ'(t) + O(ε)` iff every zero has `β ≤ ½+ε`: the pair `(ρ, 1−ρ̄)` has Poisson sum `2a/(a²−x²) < 0` at `y = 0` when `x = β−½ > a = ε`.
+    - The second term is `O(ε·|ζ'|) = O(ε t^{¼+δ})` by convexity, which the surplus `εΦ` absorbs.
+  - **So `lam_ε ∈ W_ε` ⟺ quasi-RH(ε).** A zero with `β > ½+ε` puts a pole of `D_ε` at `ρ−ε` inside `σ > ½`.
+  - The relaxation turns the producer into a ladder of quasi-RH statements and buys nothing unconditionally. Any other `lam ∈ W_ε` must evaporate the zeros beyond `½+ε`, which brings back L325.
+- **(b) Anti-Selberg twin, Bohr lift.**
+  - Bounded `S_F` (L340) together with Littlewood's lemma on `[½,2]×[T,2T]` (F zero-free, bounded arg) gives `∫_T^{2T} log|F(½+it)|dt = O(1)`.
+  - `Σb_n²/n < ∞` gives a bounded variance of `log|F|`. Bessel on `[T,2T]` together with the pole of order 3 gives `E|F|² ≥ Σ_{n≤T^θ}|f_n|²/n ≳ (θlog T)^5`.
+  - Zygmund (`|Im log F| ≤ π+O(1)`) gives `E|F|^p = O(1)` only for `p < ½`. So nothing contradicts.
+  - In the Bohr lift this reads: `G := log F^♯ ∈ H²(T^∞)` and `|Im G| ≤ M`, but `‖F^♯‖_{H²}` truncated at `N` grows like `(log N)^5`. One-variable model: `G = c·log(1/(1−z))` with `c ≤ 2` has `G ∈ H²`, bounded `Im`, and `e^G ∉ H²`. So the configuration is not contradictory in the abstract.
+  - What would kill it: a **Gaussian or fixed-degree-chaos** control of `log|F|` (hypercontractivity at bounded degree). Bounded variance would then force `E e^{2 log|F|} = O(1)`, contradicting `(log T)^5`. So an anti-Selberg twin needs `log|F|` to be an **infinite-degree, heavy-tailed chaos**: `b_n` concentrated on `n` with many prime factors, which is consistent with L340's "spread over composites".
+- **Verdict.** No producer. (a) shows the relaxation is RH-equivalent along its natural path. (b) sharpens C329 to: *is there a real-rooted `F ∈ V_3` whose logarithm is a bounded-variance, bounded-imaginary-part, infinite-degree chaos with `(log T)^5` exponential second moment?* The open core is unchanged. The card `real-rooted-twin-moduli-c329.md` carries it.
+
+### L345 — Correction to L344(b): hypercontractivity kills only degree ≤ 2. CORRECTION [P]
+- Bonami gives `‖X‖_q ≤ (q−1)^{d/2}‖X‖_2` for a degree-`d` chaos `X`. Then `E e^{2X} = Σ 2^k E X^k/k!` converges for every `‖X‖_2` only when `d = 1` (sub-Gaussian: `E e^{2X} ≤ e^{‖X‖_2²}`). For `d = 2` it converges when the operator norm of the quadratic form is small. For `d ≥ 3` exponential moments are generically infinite. So "fixed-degree chaos is killed" (L344) is **false for `d ≥ 3`**.
+- **What survives.**
+  - `d = 1` (prime-supported `b`) is already dead by L343: `Σ|b_p|/p < ∞` cannot produce the `3log(1/(σ−1))` pole.
+  - `d = 2` is dead when the quadratic form's operator norm is small.
+  - So an anti-Selberg twin needs `b` with substantial mass on `Ω(n) ≥ 3`, or a degree-2 part with large operator norm.
+- The heuristic transfer from the `t`-average on `[T,2T]` to the polytorus law at `σ = ½` (no Bohr–Jessen at `σ = ½` in general) is itself unproved. L344(b) and L345 are heuristic constraints, not theorems.
+
+### L346 — The producer abscissa `σ_prod`. THEOREM: no producer lives on a half-plane beyond the critical line (`σ_prod ≥ ½`). Gap-weighted primes continue cheaply but see the zeros through growth. NEW INVARIANT [P] + EXAMPLE [P/heuristic]
+- **Definition.** For `σ₀ ∈ (0,1]`, let `W^{(σ₀)}` be the set of real `lam` (on `n ≥ 2`) such that `D = Σlam(n)n^{−s}` has residue 1 at `s=1`, and `H := Ψ₀ − D` is holomorphic with `Re H ≥ 0` on `σ > σ₀`. Then:
+  - `W^{(½)} = W`;
+  - `W^{(σ₀)}` increases with `σ₀`;
+  - `Λ ∈ W^{(σ₀)}` ⟺ every zero has `β ≤ σ₀`, so `Λ ∈ W^{(1)}` unconditionally.
+  - Define `σ_prod := inf{σ₀ : W^{(σ₀)} ≠ ∅} ∈ [?, Θ]`, with `Θ = sup β`.
+- **Attainment [P].** The box `|lam(n)| ≤ √n(log n + C₀)` at `σ = 2` is uniform in `σ₀`. Tychonoff and pointwise passage give `W^{(σ_prod)} ≠ ∅`. So **PBAP ⟺ `σ_prod = ½` is attained.**
+- **Theorem (no supercritical producers) [P].** `W^{(σ₀)} = ∅` for every `σ₀ ∈ (0, ½)`. Hence `σ_prod ≥ ½` unconditionally.
+  - *Proof.* Fix `σ₁ ∈ (σ₀, ½)`.
+    1. *Log growth.* Carathéodory's disc inequality on the disc centred at `2+it` of radius `2−σ₀` gives `|H(σ+it)| ≤ C(σ₀,σ₁)|H(2+it)|` for `σ ≥ σ₁`. Since `|H(2+it)| ≤ |Ψ₀(2+it)| + Σ|lam(n)|n^{−2} ≪ log(|t|+2)`, we get `|D(σ+it)| ≪ log(|t|+2)` on `σ ≥ σ₁`, `|t| ≥ 2`.
+    2. *Pole forces mass.* Perron with a smooth `w` supported in `[1,2]`, shifted to `σ₁` (holomorphy plus step 1), gives `Σlam(n)w(n/X) = W(1)X + O(X^{σ₁})`. Cauchy–Schwarz then gives `Σ_{X≤n≤2X}lam(n)²n^{−2σ₁} ≫ X^{1−2σ₁}`.
+    3. *Large sieve.* Shift `∫_T^{2T}D(σ₁+it)n^{it}dt` to `σ = 2`, using step 1 on the horizontal segments and the box for the off-diagonal terms. This gives `T^{−1}∫_T^{2T}D(σ₁+it)n^{it}dt = lam(n)n^{−σ₁} + O(n^{2−σ₁}log T/T)`. The dual large sieve (Montgomery–Vaughan) with `N = T^{1/3}` gives `Σ_{n≤N}lam(n)²n^{−2σ₁} ≪ T^{−1}∫_T^{2T}|D(σ₁+it)|²dt + o(1) ≪ log²T`.
+    4. Steps 2 and 3 together give `T^{(1−2σ₁)/3} ≪ log²T`, a contradiction. ∎
+  - *Reading.* Every producer is exactly critical. Its Herglotz function cannot be continued with nonnegative real part past `σ = ½`, so the zeros (or singularities) of `F_lam` accumulate at the line from the left.
+    - This is a Hardy-type theorem for **every** producer, with no functional equation: the FE-free analogue of "ζ has zeros on the line".
+    - The mechanism is Carlson's: log growth below `½` is incompatible with a pole. The theorem uses only the residue and the Carathéodory property; it is not specific to ζ.
+- **Abscissa-detection conjecture (new).** `σ_prod = Θ`. This would give detection (PBAP ⟹ `Θ = ½` ⟹ RH). It also makes sense above `½`, where on-line zeros give positive Poisson slack `≈ ‖h‖₁ log γ/2π` to the `σ₀`-line. An off-line zero with `β > σ₀` enters prime-blind tests of exponential type `τ` through complex evaluations of size up to `e^{(β−σ₀)τ}`. So `τ ≈ loglog γ/(β−σ₀)` should be enough to beat the slack (heuristic, supporting the conjecture).
+- **Example: gap-weighted primes [P for continuation].** `lam(p_k) := p_{k+1} − p_k` on primes, 0 elsewhere.
+  - `A(x) = Σ_{p_k≤x}lam(p_k) = p_{K+1} − 2` telescopes, so `|A(x) − x| ≤` the gap `≪ x^{0.525}` (Baker–Harman–Pintz). Hence `D_gap(s) = s/(s−1) + s∫(A(x)−x)x^{−s−1}dx` continues holomorphically to `σ > 0.525` with residue 1, **unconditionally**: prime-supported, yet no poles at ζ's zeros.
+  - Equivalently `D_gap(s) = ∫_2^∞ P(x)^{−s}dx`, with `P(x)` the previous prime.
+  - *Growth (heuristic).* For `x ≫ |t| log|t|`, write `(P(x)/x)^{−s} − 1 ≈ s(x−P(x))/x`. The local mean of `x − P(x)` carries the prime-density oscillation `Σ_ρ x^{ρ−1}`. This yields values `≍ |t|^{β−σ}log|t|` at `t ≈ γ`.
+  - So `D_gap ∈ W^{(σ₀)}` needs `σ₀ ≥ Θ`: **holomorphic continuation is cheap, but Carathéodory (log) growth brings the zeros back.** This is consistent with the abscissa-detection conjecture.
+- **Verdict.** No producer at `σ₀ = ½`. One new unconditional theorem (`σ_prod ≥ ½`), one new invariant, and one new conjecture (`σ_prod = Θ`, which implies detection) with a heuristic and an example in its favour. Card: `1-in-progress/producer-abscissa.md`.
+
+### L347 — `σ_prod ≥ ½` formalized. Lean module `RHTower/CarlsonHalfPlaneProducerFloor` (958 lines, standard axioms). THEOREM [L]
+- `RHTower.CarlsonFloor.not_isHalfPlaneProducer_of_lt_half`. Hypotheses:
+  - `Ψ` holomorphic on `Re s > σ₀` off `1`, with `‖Ψ‖ ≤ K₀ log Im s` on `σ₀ < Re s ≤ 3`, `Im s ≥ T₁`;
+  - `‖lam n‖ ≤ C n^θ` with `θ < 1`;
+  - `0 < σ₀ < ½`.
+  Conclusion: `lam` is not a producer on `Re s > σ₀`.
+  - Producer here means `IsHalfPlaneProducer`: continuation with residue-1 pole and `Re(Ψ − D) ≥ 0`.
+  - For ζ's archimedean `Ψ₀`, the growth hypothesis is Stirling, and the Weil box gives `θ = ¾`.
+- Reusable pieces:
+  - `LSeriesSummable_of_logGrowth`: Carlson's theorem (log growth on `[σ₁,3]` ⇒ absolute convergence on `Re > σ₁ + ½`).
+  - `exists_sum_sq_rpow_le_log_sq`: `Σ_{n≤N}|a(n)|²n^{−2σ₁} ≪ log² N`.
+  - `norm_twistedMean_sub_le`: rectangle recovery of `a(n)` from twisted means.
+  - `sum_normSq_integral_phase_le`: dual sharp Montgomery–Vaughan.
+  - `summable_mul_rpow_neg_of_sum_le`: Abel summation against a `log²` bound.
+- Built with `lake build --old`, axioms `propext, Classical.choice, Quot.sound`. Wired after `CriticalZeroEvaporator` in `RHTower.lean`. Lint flags nothing in this module.
+
+### L348 — Below abscissa 1, positive composite mass is fatal (Bohr–Landau by high moments). Producers in the abscissa ladder must be multiplicatively sparse. THEOREM-SKETCH [P], and an honest status of the existence side
+- **Claim.** Let `σ₀ < 1` and `lam ∈ W^{(σ₀)}`. Suppose `lam(n) ≥ c > 0` for every `n` with `Ω(n) ≥ 2` (prime-power and prime values free). Contradiction.
+  - *Sketch.*
+    1. Harnack (as in L347) gives `|D| ≪ log t` on `σ ≥ σ₁ > σ₀`.
+    2. For `σ ∈ (σ₁, 1)` and `k ≤ (log T)^{σ}/C`, the Carlson/MV mechanism of L347 applied to `D^k` gives `Σ_{n≤T^{1−ε}}(lam^{*k}(n))² n^{−2σ} ≪ (K log T)^{2k}`.
+    3. Positivity on composites gives `lam^{*k}(n) ≥ c^k d_k^{comp}(n)`. The Euler-type growth of `Σ d_k^{comp}(n)² n^{−2σ}` (dominated by `n` with `log n ≍ k^{1/σ} ≤ log T`) is `≥ exp(c′k^{1/σ}/log k)`.
+    4. At `k ≍ δ(log T)^σ` this is `exp(≍ log T/loglog T) ≫ (K log T)^{2k} = exp(O((log T)^σ loglog T))`. ∎ (The truncation and convolution-power steps still need writing out.)
+  - *Reading.* Composite mass with a positive floor creates smooth-number (Bohr–Landau) large values `exp((log t)^{1−σ}/loglog t)`. These are superlogarithmic, so log growth below 1 is impossible.
+    - Prime-supported mass only produces `y^{1−σ} ≪ log t`.
+    - So producers anywhere on the ladder `σ₀ ∈ [½,1)` are multiplicatively sparse: prime-like or signed on composites. This makes rigorous, at `σ₀ < 1` and for a positive floor, the corpus heuristic L181/L182 ("composite carriers are killed by resonance").
+- **Status of the existence side (summary, no new claim).**
+  - `W ≠ ∅` ⟺ PBAP (corpus) ⟺ `σ_prod = ½` (L346).
+  - The only non-RH routes to an element of `W` are an exotic real-rooted twin in `∪_k V_k` (C329 false) or a non-atomic producer (Ω false).
+  - Every unconditional construction tried (L322–L346: evaporators, relaxations, gap weights, smooth-number removal, composite carriers) either reproduces ζ's zeros (poles or growth) or breaks log growth through smooth-number alignment.
+  - The existence question is therefore RH-hard on both of its known branches, as L183 concluded.
+
+### L349 — Prime-blind positivity holds on the whole nonnegative cone, unconditionally (Riesz rearrangement + a dilation-free measure bound + window positivity). Any PBAP failure, and any prime-blind detection of an off-line zero, needs interference: sign-changing tests whose autocorrelations cancel at `log n`. THEOREM [P] (one external input)
+- **Notation** (additive variable `x = log y`).
+  - `Φ = g⋆g̃`, `ĥ(r) = ∫h e^{irx}`.
+  - Full Weil energy of a prime-blind `Φ` (prime terms vanish): `W(g) = pole(g) + arch(g)`.
+    - `pole(g) = ĥ(i/2) + ĥ(−i/2) = 2∫∫g(u)ḡ(v)cosh((u−v)/2)`.
+    - `arch(g) = (1/2π)∫|ĝ|²A`, with `A(r) = Re ψ(¼+ir/2) − log π`.
+- **Lemma 1 (Lévy–Khintchine form of the archimedean symbol) [P].**
+  - From `ψ(z) = −γ + ∫_0^∞(e^{−t} − e^{−zt})/(1−e^{−t})dt`: `A(r) = A(0) + 2∫_0^∞(1 − cos rx)ω(x)dx`, with `ω(x) = e^{−x/2}/(1 − e^{−2x})`. This `ω` is positive and **decreasing**, and `A(0) = ψ(¼) − log π = −5.372`.
+  - Hence `arch(g) = A(0)‖g‖² + ½∫∫|g(u) − g(v)|² ω(|u−v|) du dv`: a constant times the mass plus a nonlocal Dirichlet form with a symmetric decreasing kernel.
+- **Lemma 2 (rearrangement) [P].** For `g ≥ 0` with compact support, let `g*` be its symmetric decreasing rearrangement. Then `W(g) ≥ W(g*)`.
+  - The Dirichlet form decreases (Almgren–Lieb; truncate `ω` to `min(ω, c)`, then use Riesz on the cross term).
+  - The mass is unchanged.
+  - `pole(g) = 2∫∫g g cosh(·/2)` with `cosh` *increasing* in `|u−v|`. Write it as `cosh(M/2)(∫g)² − ∫∫g g (cosh(M/2) − cosh(·/2))₊` with `M ≥ diam supp g`; Riesz on the decreasing kernel shows `pole` decreases too.
+- **Lemma 3 (dilation-free sets are short) [P].** If `g ≥ 0` and `(g⋆g̃)(log n) = 0` for all `n ≥ 2`, then `S = {g > 0}` has `|S ∩ (S − log n)| = 0`. Translating the slices `S ∩ [j log 2, (j+1) log 2)` by `−j log 2` gives a.e. disjoint sets: an overlap would be an integer ratio `2^m`. So **`|S| ≤ log 2`**.
+- **Theorem L349.** Every prime-blind test `Φ = Σ_i g_i⋆g̃_i` with all `g_i ≥ 0` has `W(Φ) ≥ 0`.
+  - *Proof.* For `g_i ≥ 0` the values `(g_i⋆g̃_i)(log n) ≥ 0`, so prime-blindness of the sum forces each `g_i` to be prime-blind.
+  - By Lemma 3, `|supp g_i| ≤ log 2`. By Lemma 2, `W(g_i) ≥ W(g_i*)` with `supp g_i* ⊆ [−½log 2, ½log 2]`.
+  - On that window the full Weil form (with pole terms; the prime term at `log 2` sits on the boundary) is positive for every test. This is the external input: Zhu, arXiv 2608.24827, certifies `Q(f) ≥ 8.9·10⁻¹⁸‖f‖²` for all complex `f` with autocorrelation support `1.6 > 2 log 2`. The corpus's `μ₀(½log 2) ≥ 1/10` is the polar version; the two pole directions need a 2×2 Schur check to remove the external input. ∎
+- **Consequences.**
+  - (i) **Interference is necessary.** Any prime-blind PD test with negative energy (a refutation of PBAP, i.e. a proof that `W = ∅`), and any prime-blind detection of off-line zeros (L183), must use sign-changing `g` whose autocorrelations cancel at every `log n` with overlapping supports. This turns L70's "the danger is internal cancellation" into a theorem.
+  - (ii) Every nonnegative prime-blind test is supported, up to rearrangement, in Connes–Consani's window `[2^{−½}, 2^{½}]`: the window is the extremal dilation-free set (equality in Lemma 3).
+  - (iii) The Farkas dual of the nonnegative sub-cone is vacuous (those tests are blind to `lam`). So this does **not** yet produce a producer. It isolates the existence question in the signed cone. There the spectral measure `ν_G` of `G` under the `ℚ₊^×` dilation action has vanishing Fourier coefficients on `ℕ ∪ 1/ℕ` (Bochner on `T^∞`), but not on ratios `m/n` with `m, n ≥ 2`.
+- **Novelty check.** A web search finds no rearrangement treatment of Weil's archimedean form. Connes–Consani treat the polar form on the window, and Zhu the certified window. Literature audit still to be done properly.
+- **Next.**
+  - (a) Remove the external input (2×2 Schur complement over the corpus polar margin `1/10`).
+  - (b) Lean: Lemma 3 is easy. Lemma 2 needs symmetric decreasing rearrangement, not in mathlib.
+  - (c) The signed cone: is there a rearrangement-type inequality for prime-blind *signed* `g`, using the multiplicative (`ℚ₊^×`) structure, that reduces them to the window?
+
+### L350 — Three structural facts about the signed prime-blind cone: (a) the Nyquist lag of the negative archimedean band is `log 2`; (b) prime-blindness means spectral multi-tiling; (c) folding mod `log 2` preserves the L² norm. Folding-energy conjecture C350 (it would give PBAP, hence a producer). [P] + CONJECTURE
+- **(a) Nyquist identification [P].**
+  - `A(r) = 2θ'(r) < 0` exactly on `|r| < r*`. Here `θ'(r) = ½log(r/2π) − 1/(48r²) + …`, so `r* = 2π·exp(1/(24 r*²)) ≈ 6.2898`.
+  - An `r*`-band-limited autocorrelation can vanish on lag sets of density at most `r*/π ≈ 2.0021`. The lags `log n` have density `e^x` at `x`.
+  - So the negative band can be prime-blind only at lags `x < log(r*/π) = 0.6942 = log 2 + 0.0011`.
+  - **The automatic-positivity window of Connes–Consani, `[−log 2, log 2]` for `Φ`, is the Nyquist window of the negative archimedean band.** This explains its size: the `2π` of Stirling's `log(r/2π)` is the self-duality constant of `ℤ ⊂ ℝ`. It also explains why certified positivity extends slightly past `log 2` (corpus margin, Zhu's `0.8`).
+- **(b) Multi-tiling [P].** `Φ` is prime-blind ⟺ `Φ(m log n) = 0` for all `n ≥ 2`, `m ≠ 0` (same lag set) ⟺ for every `n ≥ 2` and every shift `ρ`, `Σ_k Φ̂(ρ + 2πk/log n) = (log n/2π)‖Φ̂‖₁`.
+  - So `Φ̂ ≥ 0` tiles at **every** period `2π/log n` with constant height.
+  - Consequence: `sup Φ̂ ≤ (log 2/2π)‖Φ̂‖₁`, a sharp spectral-density cap from the period `2π/log 2 ≈ 9.06`.
+  - The Farkas dual of the tiling constraints is exactly "`A` + a mean-zero almost-periodic function with frequencies in `log ℕ` ≥ 0", i.e. the producer again (no shortcut). The pole forces that function to have variance `≳ log T` while it is bounded below by `−A`: heavy positive skew (zero spikes for `Λ`).
+- **(c) Folding [P].** For `g` prime-blind, the `log 2`-periodization `g_per(z) = Σ_j g(z + j log 2)` has `‖g_per‖²_{L²(ℝ/log2·ℤ)} = Σ_m Φ(m log 2) = Φ(0) = ‖g‖²`. Folding is an isometry on the prime-blind cone (it only uses the lags `log 2^m`).
+- **Conjecture C350 (folding energy).** For prime-blind `g`, `W(g) ≥ W(g♭)`, where `g♭ = g_per·1_{[0, log 2)}`.
+  - If true, PBAP follows from window positivity (CC/Zhu), so **`W ≠ ∅`, i.e. a producer exists unconditionally**.
+  - *Heuristic test.*
+    - Folding is a piecewise translation; `arch` is translation-invariant, so only cross-block terms change.
+    - Same-sign blocks brought together: `−ω` becomes more negative and `cosh` smaller, so `W` decreases (good). This is consistent with L349.
+    - Opposite-sign blocks brought together: `W` increases (bad).
+    - So C350 needs prime-blindness to make opposite-sign far blocks *incoherent*. In the L183/L184 configurations, prime-blindness forces the far block to oscillate at frequency `≍ e^X`, which kills both the `cosh` pole gain and the near-kernel coupling (checked on the bump plus `sin(πe^x)` example: `W(g) ≈ W(g♭) ≈ W(g₁) + W(g₂) > 0`).
+  - *Status.* Open. The first thing to test: two-block signed `g` with blocks at lag `≈ log 2 + η`, the regime where the Nyquist argument is weakest.
+
+### L351 — C350 is false (two-block counterexample). Replacement C351: full Weil positivity on `L²(E)` for every dilation-free `E` (signed values). FALSIFIED → CONJECTURE
+- **Counterexample to C350.** Take `g = 1_{[0,w)} − 1_{[D, D+w)}` with `D = log 2 + η` and `w < η`, `D + w < log 3`.
+  - The support is dilation-free, so `g` is prime-blind for any signs.
+  - Folding moves the second block to `[η, η+w)`. The cross kernel changes from `K(D) = 2cosh(D/2) − ω(D) ≈ +1.19` to `K(η) ≈ 2 − 1/(2η) ≪ 0`.
+  - For opposite signs, `W(g♭) − W(g) = 2w²(K(D) − K(η)) > 0`. So `W(g) < W(g♭)` and folding *raises* the energy.
+  - (`W(g) > 0` anyway: each block costs `≍ w log(1/w) ≫ w²`.)
+- **What survives.**
+  - L349 (nonnegative values on dilation-free supports).
+  - Folding is an isometry (L350(c)) but not monotone for signed data. The `|g|` route (`Q(g) ≥ Q(|g|)`) loses the pole deficit `Δpole = 2∫∫(|g||g| − Re gḡ)cosh(·/2)`, up to `≍ 2.8‖g‖²`. The full-form window margin is tiny (Zhu: `8.9·10⁻¹⁸`, with an even simple ground state), so it cannot absorb that loss.
+- **Conjecture C351.** For every dilation-free `E` (`|E ∩ (E − log n)| = 0` for all `n ≥ 2`; `|E| ≤ log 2` by Lemma 3) and every complex `g ∈ L²(E)`, `W(g⋆g̃) ≥ 0`.
+  - This is the signed sub-cone of PBAP without autocorrelation cancellation. RH implies it.
+  - *Heuristic for an unconditional proof.* A dilation-free set is a window-sized core plus sprinkles. A sprinkle at distance `X` has width `≲ e^{−X}` (its lags must avoid `log ℕ` with spacing `e^{−X}`). An off-line zero is amplified by `e^{δX}` against width `e^{−X}`, so sprinkles cannot detect zeros.
+  - *Status.* Open. It would be the largest unconditional piece of PBAP. The remaining part of PBAP is exactly autocorrelation cancellation on overlapping supports (L183/L184 territory).
+
+### L352 — Polar PBAP is exactly a Poincaré inequality on the prime-blind variety; the sprinkle law for dilation-free sets reduces C351 to finitely many two-scale window problems. [P] + REDUCTION
+- **Poincaré form [P].** By Lemma 1 (L349), for polar `g` (`ĝ(±i/2) = 0`): `W(g) = A(0)‖g‖² + D(g)`, with `D(g) = ½∫∫|g(u)−g(v)|² ω(|u−v|)` and `−A(0) = log π + γ + π/2 + 3 log 2 = 5.3721`.
+  - So **polar PBAP ⟺ every prime-blind polar `g` satisfies `D(g) ≥ 5.3721‖g‖²`**: a Poincaré inequality on the quadratic variety `{g : (g⋆g̃)(log n) = 0 ∀n ≥ 2}`.
+  - Full PBAP ⟺ `D(g) + pole(g) ≥ 5.3721‖g‖²`. The corpus window margin `μ₀(½log 2) ≥ 1/10` says `D ≥ 5.47‖g‖²` on polar functions supported in a window of length `log 2`.
+  - The corpus already has the Lévy-kernel form (`connesLevyKernel*`, Suzuki's Dirichlet-form core). New here is the reading of PBAP as a constrained Poincaré constant.
+- **Sprinkle law [P].** Let `E` be dilation-free and let intervals `J, J′ ⊆ E` have lengths `a, b`. Then `J′ − J` is an interval of length `a + b` avoiding `{±log n}`, so it lies in `(−log 2, log 2)` or in one gap `(log n, log(n+1))`, `n ≥ 2`.
+  - Hence **two pieces at mutual lag in `(log n, log(n+1))` have combined length `< log(1 + 1/n) < 1/n`**.
+  - If `E` contains an interval of length `a > log(3/2)`, then `E` lies in an interval of length `2 log 2 − a < 0.99`.
+  - Pieces at lag `≈ x` from each other are `e^{−x}`-thin. This gives a second proof of `|E| ≤ log 2` in the clustered case.
+- **Reduction of C351.**
+  - (i) Diameter `≤ 0.8`: Zhu's certified window (all complex `g`) gives `W ≥ 0`.
+  - (ii) Pieces at lags in `(log n, log(n+1))` with `n ≥ 3` are thin (`< ⅓` combined, shrinking like `1/n`).
+    - A width-`w` piece has `D ≥ ½(A(π/2w) − A(0))‖g‖² ≈ ½ log(1/(4w))‖g‖² + 2.69‖g‖²`, and the off-diagonal kernel `K = 2cosh(·/2) − ω` is smooth there.
+    - Schur complements close the case once the core ground energy `λ₀(a)` is bounded below with `a < 1/n`, where `λ₀(a) ≍ log(1/a)`.
+  - (iii) **The only genuinely new configurations** are two-scale sets with a mutual lag in `(log 2, log 3)`, combined length `< log(3/2) = 0.405`, and diameter in `(0.8, ≈1.1)`. They need a certified two-interval window computation (Zhu-type), or an analytic lower bound for `λ₀` on two intervals.
+- **Status.** C351 is reduced to one certified two-interval family. It is a sub-cone of PBAP and does not yet give a producer.
+  - What separates C351 from full PBAP is exactly **overlapping supports with autocorrelation cancellation**. On the Poincaré reading, the open question is whether cancellation at all lags `log n` can be achieved with Dirichlet energy below `5.3721` per unit mass.
+  - Under RH it cannot. Unconditionally, L183/L184 suggest that cancellation costs `≳ e^{X}` against gains `≲ e^{δX}` with `δ < 1`: PBAP would then hold independently of RH, and a producer would exist whether or not RH holds.
+
+### L353 — Two attacks on overlapping-support PBAP. (a) Torus picture: product tests over primitive sets are positive by the mean value theorem. (b) Frequency splitting is exact but loses: robustness `√R` against gain `log R`, even under RH. [P] + FAILED ROUTE (recorded)
+- **(a) Torus picture [P].**
+  - The dilation spectral measure of `g` under `ℚ₊^×` is `ν_g = ι_*(|ĝ|²dr/2π)`, with `ι(r) = (p^{ir})_p` the Kronecker line in `T^∞`.
+  - Prime-blind ⟺ `ν̂_g(α) = 0` on `±(ℕ^{(∞)} ∖ {0})`. So only mixed-sign exponents (ratios `m/n`, `m, n ≥ 2` coprime) survive.
+  - **Product tests.** Take `ĝ = ĥ·P` with `P(r) = Σ_{n∈S} p_n n^{−ir}` over a **primitive** set `S` (an antichain for divisibility, so `|P|²` has only mixed exponents) and `h` narrow. Then `g = Σ p_n h(·+log n)` is prime-blind once `2|supp h| < min_{k≥2, m,n∈S} |log(km/n)|`.
+    - For `S` = primes `≤ N` this forces width `≲ N^{−2}` (`p ≈ kq`), hence spectral spread `≳ N² ≫ N`.
+    - By Montgomery–Vaughan, `|P|²` is equidistributed on scales `≫ N`, so `W ≈ |ĥ(0)|²·Σ|p_n|²·⟨A⟩_{[−N²,N²]} ≍ log N·Σ|p_n|² > 0`.
+  - **These overlapping-support tests are positive for an MVT reason:** blindness forces spectral spread beyond the length of the Dirichlet polynomial.
+- **(b) Frequency split [P].**
+  - Split `g = g_s + g_r` at `|r| = R`. Then `Φ̂ = |ĝ_s|² + |ĝ_r|²`, so **`Φ = Φ_s + Φ_r` exactly (no cross terms)**, and `arch` splits too.
+  - Prime-blindness reads `Φ_s(log n) = −Φ_r(log n)`, with `|Φ_r| ≤ ‖g_r‖² = ε`, and `arch(g_r) ≥ A(R)ε ≈ ε log(R/2π)`.
+  - Oversampled reconstruction makes `Φ_s = O(ε)` beyond lag `log(R/π) + 1`. So `g_s` is an approximately prime-blind test at finite level `≈ log R`.
+  - **Failure.** The best robustness for finite-level PBAP is `arch(g_s) ≥ −C(R) ε` with `C(R) ≍ Σ_{n≲R} Λ(n)n^{−½} ≍ √R`, even under RH (each `ε`-defect at `log n` is paid by the prime term). That exceeds the gain `log R`.
+  - **Lesson.** Splitting by frequency discards the *phase* of the defects `Φ_r(log n)`. Their prime-weighted sum `Σ Λ(n)n^{−½}Φ_r(log n)` is, by the explicit formula for `g_r`, `arch(g_r) + pole − Σ_ρ Φ̂_r(γ_ρ)`: coherent, not worst case. Any proof of PBAP must use this coherence, which is the explicit formula of the high part. That is the zero sum again: no route avoids the zeros.
+- **Verdict.** No producer. Overlapping-support PBAP has one positive mechanism (MVT spreading, (a)) and one dead route ((b)). Every attempt to bypass the zeros reintroduces them through the coherence of prime-weighted defects, consistent with the RH-hardness found in L183.
+
+### L354 — Spectral anti-concentration of prime-blind tests, and the resulting price of prime-blind detection. LEMMA [P] + quantitative heuristic
+- **Off-line pair identity [P].** A zero pair `β ± ...` at height `γ`, with `δ = β − ½`, contributes `2·(Φ·cosh(δ·))^(γ)` to `Σ_ρ Φ̂(γ_ρ)`, and an on-line zero contributes `Φ̂(γ) ≥ 0`.
+  - Multiplying by `cosh(δu)` preserves prime-blindness but destroys positive definiteness.
+  - Detection works by a double zero of `|ĝ|²` at `γ`, with gain `≈ −δ²|ĝ′(γ)|²`.
+- **Anti-concentration lemma [P].** From multi-tiling at period `P₂ = 2π/log 2` (L350(b)): for every interval `I` with `|I| ≤ P₂`, `∫_I Φ̂ ≤ |I|·(log 2/2π)‖Φ̂‖₁`.
+  - A prime-blind test puts at most a `0.110·|I|` fraction of its spectral mass in any window of length `|I|`. Every period `2π/log n` gives the same kind of bound at its own scale.
+- **Price of detection (heuristic, sampling-level).** Let `Φ` have support length `U`, so `ĝ` varies on scale `1/U`.
+  - The local gain at `γ` is `≲ δ²U³` times the mass in a `1/U`-window, i.e. `≲ δ²U³·(0.22/U)‖Φ̂‖₁ = 0.22δ²U²‖Φ̂‖₁` by anti-concentration.
+  - The mass the test cannot hide sits near height `γ`. In the sub-Nyquist regime `U < ½log γ` it pays the on-line sampling cost `≈ (log γ/2π)‖Φ̂‖₁`.
+  - **So detection needs `U ≳ √(log γ)/δ`.** In the supra-Nyquist regime `U ≳ ½log γ`, ĝ could vanish at the on-line zeros. But then prime-blindness up to lag `U` forces constant periodization down to period `2π/U ≈` the zero spacing: equidistribution at exactly the scale needed to vanish on the zeros.
+- **Reading.** Anti-concentration is a rigorous obstruction to *local* detectors. The open question (PBAP ⇒ RH or not) has moved to whether a test that equidistributes at the zero-spacing scale can still vanish at all the on-line zeros near `γ`. That is a question about how rigid the zero sequence is modulo the periods `2π/log n`: a Montgomery-type pair-correlation statement read inside the producer problem.
+- **Verdict.** No producer. One new rigorous lemma (anti-concentration) and a sharpened open core for detection.
+
+### L355 — Lemma 3 of L349 formalized. Lean module `RHTower/DilationFreeSetMeasure` (standard axioms). THEOREM [L]
+- `RHTower.DilationFree.volume_le_of_null_inter_shift`: if `S ∩ (S − mL)` is null for all `m ≥ 1`, then `|S| ≤ L`.
+- `RHTower.DilationFree.volume_le_log_two_of_dilationFree`: if `S ∩ (S − log n)` is null for all `n ≥ 2`, then `|S| ≤ log 2`.
+- Wired after `CarlsonHalfPlaneProducerFloor` in `RHTower.lean`. Built with `lake build --old`.
+- L349 still needs, for Lean:
+  - Lemma 1: Lévy–Khintchine form of `Re ψ(¼+ir/2)`; check the corpus `connesLevyKernel*` modules.
+  - Lemma 2: Riesz rearrangement (absent from mathlib).
+  - The full-form window positivity input (Zhu, certified; the corpus has only the polar margin).
+
+### L356 — Function-field analogue: PBAP holds there by total blindness. For ℚ the single obstruction is the negative archimedean density near 0. Finite-period tiling PBAP is false. Two-interval C351 family has margin (hand estimate). [P] + OBSERVATIONS
+- **Function fields [P].** For a curve over `F_q` of genus `g`, the lags are the norms' logs `(log q)ℤ_{≥1}`, and the zeros are periodic with period `P = 2π/log q`.
+  - Prime-blind means `Φ(m log q) = 0` for `m ≠ 0`. Then `Σ_k Φ̂(z + kP) = Φ(0)/P` for **every complex** `z`: Poisson summation on the entire `Φ̂`, with only the `m = 0` term surviving.
+  - So each zero, on or off the circle `|u| = q^{−½}`, contributes exactly `Φ(0)/P`. PBAP holds trivially (`2g·Φ(0)/P ≥ 0`) and **prime-blind detection fails completely**: producers exist whether or not the local RH holds.
+  - For ℚ the zero sum of a prime-blind test is `arch(Φ) = ∫Φ̂·(A/2π)`, with `A/2π` the smoothed zero density. The single difference from the function field: **this density is negative on `|r| < r* ≈ 2π`** (`A(0)/2π = −0.855`), while the curve's density `2g/P` is positive.
+  - Multi-tiling (L350(b)) replaces the single lattice period. PBAP for ℚ is the statement that tiling at all periods `2π/log n` beats a bounded negative density on a band of length `≈ 4π`.
+- **Finite-period tiling fails [P].** Tiling at `P_2, …, P_N` only means `Φ(log k) = 0` for `k` a perfect power of a base `≤ N`. Positivity under these weaker constraints would, by Farkas, give a producer supported on such powers, which is `≪ log x` sparse. The corpus `not_weilPositive_of_sparse_support` forbids that. So every finite set of periods fails. Mechanism: a finite sum of mean-zero periodic multipliers is almost periodic, and its negative values recur inside the protected band `|r| < 2πe^{m}`.
+- **C351 two-interval family (hand estimate, not certified).** Constants on intervals of length `0.2` have full-form energy `≈ 0.108` (`0.54` per unit length). The cross kernel `K = 2cosh(·/2) − ω` at lags in `(log 2, log 3)` is `≈ 1.2–1.7`. The worst opposite-sign two-block test `1_{J₁} − t 1_{J₂}`, with `|J_i| = 0.2`, has `min_t W ≈ 0.108 − (1.4·0.04)²/0.108 ≈ 0.079 > 0`. So C351 looks true with margin. It needs a certified ground-state bound, not just constants.
+- **Verdict.** No producer. The function-field case explains why PBAP is plausible independently of RH (blindness is total when the lag set is a lattice). It also pins the ℚ obstruction to the negative archimedean density on `|r| < 2π` against multi-period tiling.
+
+### L357 — The Kurasov–Sarnak dictionary: atomic producers are infinite-variable stable objects with an archimedean phase. The obstruction is again `θ′ < 0` on `|t| < 2π` (`e^{iθ}` is not inner there). CORRESPONDENCE [P] + reading
+- **Kurasov–Sarnak (finite `N`).** A real-symmetric stable polynomial `P(z₁,…,z_N)` gives a real-rooted `t ↦ P(e^{iλ₁t},…,e^{iλ_Nt})`. Its zero measure `μ` is positive and crystalline:
+  - `μ = (1/π) Re ∂_t log P(e^{iλ(t+i0)}) +` constant density;
+  - `μ̂` is supported on the semigroup `ℕλ`, because `log P` is a power series on the polydisc.
+- **Producer dictionary.**
+  - A producer's Weil measure `μ = Re(Ψ₀ − D)(½+it)` is a positive measure whose transform is the archimedean part `Ǎ` (plus the pole exponentials `e^{±x/2}`) plus a discrete part on `±log ℕ`.
+  - It is a "crystalline measure with an archimedean background".
+  - Atomic producers (L329-type) are exactly the Kurasov–Sarnak picture with infinitely many variables `z_p = p^{−it}` and an extra archimedean variable `w = e^{iθ(t)}`:
+    - stability ⟺ zero-free on `σ > ½`;
+    - real symmetry ⟺ the functional equation;
+    - real-rootedness ⟺ the twin condition (MUST-670).
+- **Where the dictionary breaks.**
+  - Kurasov–Sarnak need every variable to map the upper half-plane into the disc (inner maps). For `p^{−it}` this holds. For `w = e^{iθ(t)}` it needs `Im θ(t) > 0` for `Im t > 0` locally, i.e. `θ′ > 0`.
+  - But `θ′ < 0` exactly on `|t| < r* ≈ 2π`, the same negative-density band as L356.
+  - The symmetrization `G + χ·G(1−·)` (Hermite–Biehler route) produces real zeros but leaves the Dirichlet class unless `G = ζ` (Hamburger), or unless one passes to `V_k` twins.
+- **Reading.** Every constructive route (Kurasov–Sarnak stability, Hermite–Biehler, evaporation, relaxation, gap weights) meets one of two walls:
+  - the Dirichlet-class rigidity (Hamburger, Theorem A / C329);
+  - the low-frequency negativity of the archimedean density (`θ′ < 0` on `|t| < 2π`), which only the full multi-period tiling of all `log n` can absorb (L356).
+  These are the two walls of the producer problem.
+- **Verdict.** No producer. The dictionary is a new organizing principle. A "Kurasov–Sarnak theory with a non-inner archimedean variable" would be the field to build: stability notions for polynomials in `(w, (z_p)_p)` where `w` is inner only off a compact band.
+
+### L358 — Log-growth pole series (LGPS): the inequality-free core of the producer problem, the quadrature view of why prime weights see ζ's zeros, and why the band wall is not a compact tuning problem. REDUCTION + ANALYSIS [P/heuristic]
+- **LGPS.** Call `D = Σ_{n≥2} lam(n)n^{−s}` an LGPS on `σ > σ₀` if it has residue 1 at `s=1`, is holomorphic elsewhere on `σ > σ₀`, and satisfies `|D| ≪ log|t|` there.
+  - Let `σ_LGPS := inf{σ₀}`. Then `½ ≤ σ_LGPS ≤ σ_prod ≤ Θ`. The lower bound is the Lean Carlson floor; `Λ` gives the upper bound.
+  - The question "is `σ_LGPS < Θ`?" has **no archimedean datum at all**: can a Dirichlet series over ℕ with a pole have log growth beyond ζ's zero abscissa?
+- **Quadrature view [heuristic].** `D(σ+it)` is a quadrature of `∫x^{−s}dx` on the nodes `supp lam`.
+  - (i) Uniform nodes (`lam ≈ 1`, ζ) alias through smooth-number alignment (Bohr–Landau), so the growth is superlogarithmic.
+  - (ii) Prime nodes with smooth weights (`log p`) carry the explicit-formula oscillation `x^{ρ−1}`: poles at zeros.
+  - (iii) Prime nodes with local Voronoi or trapezoid weights (`g_p`, L346) cancel the poles. The remainder `s Σ g_p² p^{−s−1}/2 + …` involves local gap moments, which track local prime density at scale `x/t`, and so `x^{β−1}`: growth `t^{β−σ}`.
+  - **Every locally defined weight sees the density fluctuations.** Weights defined globally (solve for `Σ c_p p^{−it}` small for all `t`) are the Farkas dual of PBAP: circular.
+- **The band wall is not compact.**
+  - Even an LGPS with `Re D ≤ (½−ε) log t` does not give a producer by finite tuning.
+  - Right after the band, `θ′(t) ∈ (0, 0.6)` for `t ∈ (6.3, 20)`, so there is essentially no slack there.
+  - A finite Dirichlet polynomial pushing `Re D ≤ −0.69` on `|t| < 2π` must keep `Re D ≤ θ′ ≈ 0` just outside.
+  - `Λ` meets this with equality off the zeros. (W2) is a global sharp constraint, matching `θ′`'s zero at `r*` exactly.
+- **Verdict.** No producer. New clean sub-question (LGPS, `σ_LGPS` vs `Θ`). The quadrature analysis explains why each constructive weight family fails: local weights see the zeros, global weights are the dual problem.
+
+### L359 — Growth detection. Conjecture C359: `σ_LGPS = Θ`. It would give detection (`W ≠ ∅ ⇒ RH`) by pure growth, with no prime-blind tests. Evidence: a smooth-rich / prime-built dichotomy, including the Cramér model. The function-field analogue shows no soft argument can work. CONJECTURE + heuristic
+- **Implication [P].** `σ_LGPS ≤ σ_prod` (a producer is Carathéodory, hence has log growth: L347). If `σ_LGPS = Θ`, a producer at `½` forces `Θ = ½`, i.e. RH. Then the producer is `Λ` and existence ⟺ RH.
+- **Dichotomy [heuristic].** Let `D = Σ lam(n)n^{−s}` have a pole, so the mean mass is 1.
+  - (a) **Supports rich in smooth numbers.** Kronecker alignment of `p ≤ y ≈ log t` gives `D ≈ Σ_{n y-smooth} lam(n)n^{−σ}`. With mean weight `≍ 1` on smooth numbers this is `exp(y^{1−σ}/log y)`: superlogarithmic (Bohr–Landau). **This includes Cramér's random primes**: a random set of density `1/log n` with weights `log n` still has expected smooth mass `Π_{p≤y}(1−p^{−σ})^{−1}`. Randomness does not avoid smooth numbers. Only multiplicative structure does.
+  - (b) **Supports poor in smooth numbers** are built from primes (`n = p·m`, `m` small). Their Dirichlet series are combinations of prime sums.
+    - In the aliased range `p ≲ t log t` no locally defined weight can cancel a zero's oscillation `X^{iγ₀}`, whose period `X/γ₀` is below the gap scale.
+    - So `Σ_{p≤X} c_p p^{−iγ₀} ≍ X^{β₀}` survives, giving growth `γ₀^{β₀−σ}`.
+    - Global weights that cancel it are smooth evaporators (L325), which leave the class or grow.
+  - So the multiplicative independence of the primes is both what allows log growth and what ties every log-growth series to ζ's zeros.
+- **Function-field check.** Over a curve, `Z_C(u)` with `u = q^{−s}` is periodic in `t`, hence bounded on `|u| < q^{−σ₀}` away from the pole. So `σ_LGPS = 0 < Θ = ½` there.
+  - **Growth detection fails in function fields.** C359 is genuinely archimedean: any proof must use the aperiodicity of `log ℕ` (no lattice of periods). This also explains why PBAP holds trivially in function fields (L356).
+- **Status.** C359 is open. A proof needs:
+  - a rigorous version of (a): Bohr–Landau for weighted supports with mean mass on smooth numbers;
+  - a rigorous version of (b): an aliased-range lower bound for weighted prime sums at an off-line zero's height, uniform over weights with the right mean.
+  Part (b) is a "zeros as large values" theorem for arbitrary weights. It would be new and RH-strength in consequence. That makes it the sharpest form found so far of "the producer is `Λ`".
+
+### L360 — The two halves of C359, reduced to their rigorous cores. (a) is the L348 high-moment theorem, stated for nonnegative weights with smooth mass. (b) for gap weights is exactly a local gap-statistics law. `Λ` shows that "nonnegative + pole" alone does not force large values. REDUCTION [P]
+- **(a) [P-sketch].** Let `lam ≥ 0` with smooth mass `Σ_{n y-smooth} lam(n)n^{−σ} ≥ exp(c y^{1−σ}/log y)` for all large `y`, with `σ < 1`. Then `D` has no log growth on `σ`.
+  - High moments: by the Carlson/MV mechanism of L347 extended to polylog growth, `∫|D|^{2k} ≈ TΣ(lam^{*k})²n^{−2σ}`.
+  - Positivity restricted to the smooth part makes `Σ(lam_y^{*k})²n^{−2σ}` grow like `exp(c′k^{1/σ})`, against `(K log T)^{2k}` at `k ≍ (log T)^σ`.
+  - `Λ` (nonnegative, pole, log growth under RH) shows the smooth-mass hypothesis is necessary: prime supports have smooth mass only `y^{1−σ}`.
+- **(b) for gap weights [P].** `Σ_{p≤x}(g_p − log p) = x − θ(x) + O(x^{0.525}) = Σ_ρ x^ρ/ρ + O(x^{0.525})`. This is why `D_gap` has no poles at the zeros (the explicit-formula oscillation is absorbed).
+  - Its growth is `|s|·|∫δ⁺(x)x^{−s−1}dx|`, with `δ⁺(x) = p_next(x) − x`.
+  - So **C359(b) for gap weights ⟺ the local mean of `δ⁺` over windows `[X, X(1 + 1/t)]` oscillates like `X^{β−1}` at frequency `γ`.** That is a law for local second moments of prime gaps (`E[g²] ≈ 2λ²`, scale-invariant gap shape) at the density-oscillation scale.
+  - The law is true in Cramér-type models. Proving it for the primes is beyond current gap technology: Selberg/Heath-Brown give only averaged `Σg²` bounds.
+- **Reading.** C359's rigorous content splits into a provable half (smooth-mass large values, nonnegative weights) and a half that is equivalent, for the natural weights, to fine local statistics of prime gaps. The producer problem thus touches a *third* classical open area: local gap moments, besides zeros and FE rigidity.
+- **Verdict.** No producer. C359 reduced. No new rigorous theorem this cycle.
+
+### L361 — `σ_LGPS ≥ ½` in Lean. And C359 is RH-hard: it is false in any world with finitely many off-line zeros, by finite evaporation trees. THEOREM [L] + SELF-CORRECTION of L359 [P]
+- **Lean.** `RHTower.CarlsonFloor.false_of_logGrowth_pole_of_lt_half` (standard axioms): a Dirichlet series (`‖lam n‖ ≤ Cn^θ`, `θ < 1`) with residue-1 pole cannot continue with log growth to a strip left of `½`. The producer theorem `not_isHalfPlaneProducer_of_lt_half` now factors through it. Module rebuilt with `lake build --old`.
+- **Finite evaporation trees [P].** Suppose ζ had finitely many off-line zeros.
+  - For each such `ρ₀`, the evaporator `E_{ρ₀} = −½[ζ′/ζ(s+1−ρ₀) + ζ′/ζ(s+1−ρ̄₀)]` cancels the poles of `−ζ′/ζ` at `ρ₀, ρ̄₀`.
+  - It creates new poles at `ρ′ + ρ₀ − 1`. These lie on `Re = β₀ − ½ < ½` for on-line `ρ′`, and on `Re = β′ + β₀ − 1` for the finitely many off-line `ρ′`, which are evaporated in turn.
+  - The real parts drop by `1 − β` at each generation, so the tree is finite.
+  - On `σ > ½ + ε`, every `ζ′/ζ(w)` involved has `Re w > ½ + ε`. With finitely many off-line zeros it has polylog growth there.
+  - So `D = −ζ′/ζ + Σ (tree)` is an LGPS on `σ > ½ + ε`, i.e. `σ_LGPS = ½ < Θ`.
+- **Consequence.** C359 (`σ_LGPS = Θ`) is **false in every finite-off-line world**. So C359 implies "finitely many off-line zeros ⇒ none", an open RH-type statement. Growth detection cannot be proved without first excluding finitely many off-line zeros.
+  - L359's dichotomy (b) was too optimistic. Global (non-local) weights, namely finite trees of smooth evaporators, *do* cancel finitely many zeros with log growth. The obstruction in L325 is specifically about **infinitely many** off-line zeros.
+  - Detection itself is unsettled in finite-off-line worlds. Finite evaporation keeps the Dirichlet class and log growth, but the producer inequality needs slack (L104), because `Re E_{ρ₀}` on the line has no sign.
+- **Verdict.** No producer. Growth detection is now classified as RH-hard, at the level of "finitely many ⇒ none".
+
+### L362 — Detection in finite-off-line worlds is an LP over the cone `|Ξ_on|²·m`: the on-line zeros drop out exactly. Plus an unconditional identity for `(Ξ²)ˇ`. REFORMULATION [P]
+- **Identity [P].** `Φ_Ξ := (Ξ²)ˇ` (with `Ξ(r) = ξ(½+ir)`) is positive definite, and `Φ̂_Ξ` vanishes at every zero, on or off the line. Weil's explicit formula then gives, unconditionally:
+  `arch(Φ_Ξ) = 2Σ_n Λ(n)n^{−½} Φ_Ξ(log n) − (ξ(1)² + ξ(0)²)`, with `ξ(0)² + ξ(1)² = ½`.
+  - `Ξ²` decays like `e^{−πr/2}` and its mass sits in the negative band `|r| < 2π`, so `arch(Φ_Ξ) < 0` is expected. `Φ_Ξ` is far from prime-blind: its prime terms balance the archimedean negativity.
+- **Finite-off-line detection [P].** Suppose the off-line zeros are `z_1, …, z_J` (as complex ordinates). Let `Ξ_on = Ξ/Q` with `Q(z) = Π(z − z_j)`. For every PD test of the form `Φ̂ = |Ξ_on|²·m`, with `m = Σ k_i k_i^#` and `k_i` entire and real on ℝ:
+  - all on-line terms vanish;
+  - so for prime-blind such `Φ`, `pole(Φ) + arch(Φ) = Σ_j Ξ_on(z_j)Ξ_on^#(z_j)m(z_j)` (finite).
+  - **Detection ⟺ the LP "`m` in the cone, `∫|Ξ_on|² m n^{ir} dr = 0` for all `n ≥ 2`, and `Re Σ_j Ξ_on(z_j)Ξ_on^#(z_j)m(z_j) < 0`" is feasible.**
+  - The constraints are linear in `m`. Infeasibility has a Farkas certificate: a producer for the `|Ξ_on|²`-weighted cone.
+- **Reading.** In finite-off-line worlds, detection is a weighted moment problem. Infinitely many linear constraints `n^{ir}`, with density `n` at lag `log n`, against a weight `|Ξ_on|²` whose real zeros have density `(1/2π)log r`.
+  - The question: does the cone `{|Ξ_on|²m}` ∩ (prime-blind) still separate finitely many complex evaluations?
+  - This is an uncertainty principle between `{log n}`, where the time side vanishes, and `{γ}`, where the frequency side vanishes. Both sets are "dense" at their own scales. It is the same Nyquist duality as L350 and L354, now exact and finite-dimensional on the off-line side.
+- **Verdict.** No producer. A cleaner form of detection, restricted to finite-off-line worlds, which is the only regime where L361's evaporation shows the question has teeth.
+
+### L363 — Lean: nonnegative prime-blind tests are short. THEOREM [L]
+- `RHTower.DilationFree.volume_pos_le_log_two_of_primeBlind`: if `g ≥ 0` is measurable and `∫g(x + log n)g(x)dx = 0` for all `n ≥ 2`, then `|{g > 0}| ≤ log 2`. Standard axioms. Built with `lake build --old`.
+- With `volume_le_log_two_of_dilationFree` this closes L349 Lemma 3 in Lean, in its autocorrelation form.
+- Still unformalized from L349: Riesz rearrangement for the archimedean Dirichlet form and the `cosh` pole term (Lemma 2), and the Lévy–Khintchine form of `Re ψ(¼+ir/2)` (Lemma 1). Mathlib has `Complex.digamma = logDeriv Gamma`, but not its series or integral representation.
+
+### L364 — Scope expanded to all routes (user request). Cross-route card. Pairing D: the pole-free Weil operator is Markov (Beurling–Deny). It has a Perron–Frobenius ground state, and RH ⇒ index ≤ 1 at every aperture. [P] + SYNTHESIS
+- **Card.** `1-in-progress/cross-route-producer-synthesis.md`. Positivity sources P1–P10 against the premises of the 16 active routes.
+  - All routes have RH-strength receivers and no source producer (frontier "State").
+  - New links: criticality pair `σ_prod ≥ ½` ↔ Rodgers–Tao `Λ ≥ 0`; the three readings of the ℚ obstruction; PBAP/Laguerre-1 complementary blindness; finite-off-line worlds as the common battleground; MC's nonnegative-partner hypothesis being load-bearing against L361.
+- **Pairing D [P].** On `L²(I_B)` (aperture `B`), let `H_W := arch − primes = A(0)‖g‖² + D_ω(g) − 2Σ_{log n ≤ B} Λ(n)n^{−½} Re⟨τ_{log n}g, g⟩`.
+  - (i) **Beurling–Deny.** `H_W(|g|) ≤ H_W(g)`: the Dirichlet form decreases under `|·|`, and the prime term increases in modulus. So `e^{−tH_W}` is positivity preserving.
+  - (ii) Since `ω > 0` everywhere, the semigroup is irreducible. The log-type symbol gives compact resolvent. So **`H_W` has a simple ground state `φ₀ > 0`** (Perron–Frobenius).
+  - (iii) The pole form `2Re(P₋ conj P₊) = ½|P₊+P₋|² − ½|P₊−P₋|²` has signature (1,1). Weil's criterion gives `W = H_W + pole ≥ 0` under RH. On the codimension-1 space `{P₊ + P₋ = 0}` this reads `H_W = W + ½|P₊−P₋|² ≥ 0`. **So RH ⇒ `index(H_W) ≤ 1` at every aperture**: the only negative state is the positive Perron–Frobenius ground state, compensated by the even pole direction.
+  - (iv) Writing `D_Λ` for the Dirichlet form of the prime jumps (with killing on `I_B`): `H_W = (D_ω + D_Λ + killing) − (2Σ_{log n≤B}Λ(n)n^{−½} − A(0))`. The index-one property says the **second eigenvalue of an explicit Markov jump process on `I_B` exceeds `2Σ_{log n≤B}Λ(n)n^{−½} − A(0) ≍ 4e^{B/2}`**: a spectral-gap (Cheeger-type) form of an RH consequence.
+  - Under ¬RH with separated visible off-line pairs, the corpus index bound `index(W) ≥ #pairs − 2` gives `index(H_W) ≥ #pairs − 3`. So the index-one property for all `B` forces finitely many off-line pairs (heuristically, modulo clusters).
+  - **Status:** (i)–(iii) are rigorous at paper level; (iii) is a consequence of the corpus even-pole criterion. New here: the Markov/Perron–Frobenius reading and the spectral-gap form (iv). Open: a Cheeger or Gantmacher–Krein mechanism giving `λ₁(H_W) ≥ 0`. A totally positive kernel for `e^{−tH_W}` would give an oscillation count. The prime jumps at the incommensurable lags `log n` break total positivity, so a new idea is needed.
+- **Verdict.** No producer. Scope widened. The next cycles attack pairings A, B, C and D of the card across routes.
+
+### L365 — Pairing D read as a Hodge index statement: Perron–Frobenius supplies the ample direction, and RH is index ≤ 1 for an arithmetic Markov semigroup. HF ↔ RW bridge [P] + CONJECTURE C365
+- **Dictionary (Weil's proof for curves ↔ ℚ).**
+  - Intersection form on `C×C`, signature `(1, ρ−1)` ↔ the pole-free Weil form `H_W` on aperture-`B` tests.
+  - Ample class (positive direction) ↔ the **Perron–Frobenius ground state `φ₀ > 0`** of the positivity-preserving semigroup `e^{−tH_W}` (L364(ii)). It is structural, as an ample class is.
+  - Hodge index (negative definite on the complement) ↔ `H_W ≥ 0` on a codimension-1 complement, i.e. **index(H_W) ≤ 1**.
+  - In the curve proof the polarization comes from projectivity. Here the "polarization" is the even pole form `½|P₊+P₋|²`, the only positive part of the pole term.
+- **Precise content [P].**
+  - RH ⇒ index(H_W) ≤ 1 for all `B` (L364(iii)).
+  - Conversely, index ≤ 1 is weaker than RH. Off-line pairs force index ≥ #pairs − 3 (corpus inertia bounds). So index ≤ 1 for all `B` lies between RH and "finitely many off-line zeros", the same regime as L361/L362.
+- **Why the known curvature tools fail [P].**
+  - Bakry–Émery `Γ₂ ≥ 0` (pointwise CD(0)) fails for the prime jump process: corpus DG-PRIME-CD0, `R:CCMConstrainedPrimeCurvatureInstability`.
+  - Ollivier coarse Ricci curvature of a translation-invariant jump kernel is 0, so it gives no gap.
+  - Cwikel–Lieb–Rozenblum-type counts under the logarithmic kinetic symbol `A(r) − A(0) ≍ log r` allow many bound states for generic potentials. Index ≤ 1 needs the arithmetic, namely the cancellation of the truncated prime symbol against the zero measure on aperture-`B` tests.
+- **Conjecture C365 (arithmetic Hodge index).** For every aperture `B`, the second eigenvalue of `H_W` on `L²(I_B)` is nonnegative.
+  - Equivalently, the Markov jump process with jump density `ω(|x|)dx + Σ_{log n≤B}Λ(n)n^{−½}(δ_{log n} + δ_{−log n})`, killed outside `I_B`, has second Dirichlet eigenvalue `≥ 2Σ_{log n≤B}Λ(n)n^{−½} − A(0)`.
+  - Status: RH ⇒ C365 ⇒ (heuristically) finitely many off-line zeros. A proof would need a curvature notion that is integrated, not pointwise, and sees the incommensurability of the lags `log n`. None exists in the corpus or the literature known to me. This is the precise point where a "new field" (Hodge theory for arithmetic Markov semigroups) would have to enter.
+- **Verdict.** No producer. HF's missing Hodge index and RW's aperture positivity are the same Perron–Frobenius index statement. The ample class exists structurally; only the index bound is missing.
+
+### L366 — Krein–Langer correction to L365. C365 is RH-equivalent, not weaker: `index(H_W|_B) = 1 + #(off-line pairs resolved at aperture B)`. Integrality link to TG. CORRECTION [P]
+- **Krein–Langer count [P, sketch].** A Hermitian distribution with finitely many negative squares has the form (Krein–Langer) "positive-definite part + finitely many conjugate pairs of non-real exponentials", each pair carrying one negative square.
+  - The pole-free Weil distribution is `Σ_ρ e^{iγ_ρ x} − 2cosh(x/2)`.
+    - The `−2cosh(x/2) = −(e^{x/2} + e^{−x/2})` term is one non-real pair `±i/2` with negative weight: one negative square (signature (1,1), L364).
+    - Each off-line zero pair `γ ± iδ` is one more non-real pair, with one negative square once aperture `B` resolves it (Nyquist horizon `≍ e^{2B}`; corpus `TiltedWeilNyquistInertia`, `ZetaWeilFiniteLevelInertia`).
+  - So `index(H_W|_B) = 1 + N_off(B)`, up to cluster cancellations, which the corpus bounds as `≥ #pairs − 2`.
+- **Correction.** L365 said C365 lies "between RH and finitely many off-line zeros". That is wrong: C365 for all `B` ⟺ `N_off(B) = 0` for all `B` ⟺ RH. The "arithmetic Hodge index" is exactly RH, consistent with the HF target (weight-one purity ⇔ RH). The new content of L364/L365 is only the Perron–Frobenius identification of the ample direction (the pole direction is the positive ground state), not a weaker statement.
+- **Integrality link [P].** `index(H_W|_B)` is an integer `≥ 1`. A TG-style sub-unit gate becomes available: any analytic bound `index(H_W|_B) < 2` forces `N_off(B) = 0`.
+  - Candidate bound: `#neg ≤ Tr f(H_W)` for any `f ≥ 1_{(−∞,0)}`, e.g. `f(λ) = e^{−sλ}`, giving `#neg ≤ Tr e^{−sH_W}`, a heat trace.
+  - But the Perron–Frobenius ground state alone contributes `e^{s|λ₀|} ≫ 1`. Removing it needs the exact ground energy, which is the RW problem again. TG's cubic Hardy defect is the corpus's way around this: a trace that is *exactly* the index, bounded by `B_base < 1`.
+- **Verdict.** No producer. C365 is reclassified as RH-equivalent (HF ≡ RW ≡ Krein–Langer index). The integrality gate on the index is the TG mechanism in operator form.
+
+### L367 — Finite-level producers from RH verification: the honest horizon is double exponential. With `H = 3·10¹²` this caps the method at `a ≲ 2`, not the Nyquist value `13`. ANALYSIS [P]
+- **Setting.** At level `a` (tests supported in `[−a,a]`), the Weil form is the compression of the explicit multiplier `w_a(r) = A(r) − 2Σ_{n≤e^{2a}} Λ(n)n^{−½} cos(r log n)`, plus the pole term. Its positivity is a zero-free statement in the "producer at finite level" sense: `Λ ∈ W_a`.
+- **Trivial high band [P].** `w_a(r) ≥ A(r) − 4e^{a}(1+o(1)) > 0` for `|r| > R_a := 2π·exp(4e^{a})`.
+  - So negativity needs spectral mass at `|r| ≤ R_a`, where only zeros below `≈ R_a` matter.
+  - Verified RH up to `3·10¹²` covers `R_a` iff `4e^a ≤ log(3·10¹²/2π) ≈ 26.9`, i.e. **`a ≤ 1.9`**.
+  - This sharpens the corpus constant (`log H ≤ 7000e^a + …`, `R:ZetaWeilFormHeightReduction`) to `4e^a + O(1)`, but only up to the `−2‖f‖²` floor (below).
+- **Why not the Nyquist horizon `2πe^{2a}` (≈ `a ≤ 13`).** To show unverified zeros in `(2πe^{2a}, R_a)` cannot create negativity, one needs local zero statistics in windows of length `1/a` at those heights.
+  - Global density theorems (Selberg, `N(σ,T) ≪ T^{1−(σ−½)/4}log T`) allow sparse local clusters of off-line zeros with no on-line zeros nearby.
+  - A level-`a` test concentrated on such a cluster sees only the cluster: the symbol argument then needs `A(r) ≥ 4e^a`, i.e. the double-exponential horizon again.
+- **Why "≥ 0" and not just "≥ −C".** Verified on-line zeros give `Σ|ĝ(γ)|² ≥ 0`, but it can be arbitrarily small relative to `‖g‖²`. Example: prolate tests concentrated in `|r| < 5`, below the first zero `14.13`, whose on-line mass is `exp(−O(a))`. So bounded contributions from unverified zeros can only be absorbed up to a negative floor. That is the corpus `Re W_a ≥ −2‖f‖²`. Exact positivity at level `a` from verification needs a margin the verified zeros cannot supply.
+- **Verdict.** No producer. The verification route to finite-level producers is capped at `a ≈ 2` with a negative floor. Exact finite-level positivity beyond the certified window (Zhu `0.8`) needs either certified operator computations (RW style) or local zero statistics at double-exponential heights. Recorded so this route is not retried.
+
+### L368 — Positivity source P11, ferromagnetism (Lee–Yang / GKS): ζ's zeros are Fisher zeros, not Lee–Yang zeros. L349 is a ferromagnetic statement. OBSERVATION + CONJECTURE SKETCH [P]
+- **Lee–Yang.** Ferromagnetic pair couplings (GKS positivity) put the partition-function zeros on the unit circle *in the field variable*. That is the only classical theorem placing zeros on a line by a positivity mechanism. Newman's program (de Bruijn–Newman, corpus LA heat lane) is the Lee–Yang reading of RH: Rodgers–Tao `Λ ≥ 0` says ζ sits exactly at the Lee–Yang boundary.
+- **Obstruction.** In the Bost–Connes/KMS picture (corpus PA, F0052), the partition function is `ζ(β)` and the zeros of ζ are zeros in the *temperature* variable (Fisher zeros), for which no positivity theorem exists.
+  - The natural field deformation `Z(s,z) = Σ z^{Ω(n)}n^{−s} = Π_p(1 − zp^{−s})^{−1}` has no `z`-zeros for `σ > 1`.
+  - Lee–Yang has no purchase unless a two-variable system is found in which `s` acts as a field. That is the PA route's open "producer class".
+- **Ferromagnetic reading of L349.** Nonnegative test functions are the ferromagnetic configurations. On them, Weil positivity holds for prime-blind tests (L349) by rearrangement, a ferromagnetic-type inequality: Riesz is the continuum analogue of GKS/FKG monotonicity.
+  - PBAP can fail only on antiferromagnetic (sign-changing, cancelling) configurations (L349(i)).
+  - The analogy predicts the obstruction precisely: Lee–Yang fails without ferromagnetism, and PBAP's open core is exactly the antiferromagnetic sector.
+- **Conjecture sketch C368 (antiferromagnetic reduction).** Every prime-blind PD test splits as `g = g₊ − g₋` (positive and negative parts). The energy satisfies `W(g) ≥ W(g₊) + W(g₋) − 2X(g₊, g₋)`, where `X` is the cross term.
+  - PBAP holds iff `X(g₊, g₋) ≤ √(W(g₊)W(g₋))`, with `W(g_±)` controlled by L349 when `g_±` are individually prime-blind (they need not be).
+  - Status: L351's two-block example shows `X` can exceed what folding allows, but `W(g) > 0` there. No counterexample to the Cauchy–Schwarz form. A proof needs the cross-lag cancellation `(g₊⋆g̃₋)(log n) = (g₊⋆g̃₊ + g₋⋆g̃₋)(log n)/2`-type identities forced by prime-blindness: an exact antiferromagnetic constraint.
+- **Verdict.** No producer. The Lee–Yang analogy locates the gap in the right place, the antiferromagnetic sector, but gives no tool there.
+
+### L369 — C351 reduced to nonnegative short-window ground energies (Schur test). Antiferromagnetic identity for PBAP. [P] + REDUCTION
+- **Schur reduction of C351 [P].** Let `g = g₊ − g₋` be prime-blind with dilation-free support `E`, where `g_± ≥ 0` have disjoint supports `S_±`. Prime terms vanish, so `W(g) = Q(g)` with `Q = arch + pole`.
+  - `Q(g) = Q(g₊) + Q(g₋) − 2X`, where `X = ∫∫g₊(x)g₋(y)K(x−y)` and `K(u) = 2cosh(u/2) − ω(|u|)` (`K < 0` for `|u| < 0.28`, which helps).
+  - L349's rearrangement gives `Q(g_±) ≥ λ(|S_±|)‖g_±‖²`, where `λ(ℓ) := inf Q(h)/‖h‖²` over nonnegative symmetric-decreasing `h` on an interval of length `ℓ`.
+  - So **`W(g) ≥ 0` whenever `K⁺_max² |S₊||S₋| ≤ λ(|S₊|)λ(|S₋|)`**, with `K⁺_max` the positive part of `K` on the lags `S₊ − S₋`.
+  - By the sprinkle law (L352), large lags force thin pieces. For lags in `(log 2, log 3)`: `|S₊| + |S₋| < 0.405` and `K⁺_max ≤ K(log 3) ≈ 1.66`.
+  - Constant-function values (upper bounds on `λ`): `λ(0.1) ≈ 1.12`, `λ(0.2) ≈ 0.54`, `λ(0.3) ≈ 0.32`, `λ(0.4) ≈ 0.20`. The Schur condition then holds with margin, e.g. `0.12 ≤ 0.29` at `(0.2, 0.2)`.
+  - Diameters `≤ 0.8` are covered by Zhu's window. The core band `(0.8, 0.99)` with a long piece needs its own window bound.
+  - **What C351 needs:** rigorous *lower* bounds for `λ(ℓ)`, `ℓ ≤ 0.405`. These are nonnegative ground energies of `arch + pole` on short intervals. The crude uncertainty bound is too weak; the corpus prolate toolkit together with the trace-certificate method (`R:PoleVanishingWeilTraceCertificate`) is the right tool. This is certifiable without zeros.
+- **Antiferromagnetic identity [P].** For prime-blind `g = g₊ − g₋`, with `A_n := (g₊⋆g̃₊ + g₋⋆g̃₋)(log n) = (g₊⋆g̃₋ + g₋⋆g̃₊)(log n)` (prime-blindness):
+  `W(g) = W_full(|g|) + 4(Σ_n Λ(n)n^{−½}A_n − X)`.
+  - `W_full(|g|)` is the full Weil energy of the ferromagnetic modulus, nonnegative under RH.
+  - So PBAP on the antiferromagnetic sector ⟸ "the cross energy `X` never exceeds the prime-weighted same-sign overlap `Σ Λ(n)n^{−½}A_n` + `¼W_full(|g|)`". It is an exchange inequality between the archimedean cross kernel and the prime overlaps forced equal by blindness.
+- **Verdict.** No producer. C351 is reduced to a zero-free certified computation, the nonnegative short-window ground energies `λ(ℓ)`. The antiferromagnetic sector is reduced to one exchange inequality.
+
+### L370 — A rigorous zero-free lower bound for nonnegative short-window energies, and why it falls short of closing C351. LEMMA [P]
+- **Lemma [P].** For nonnegative `h` supported on a set of measure `ℓ`:
+  `Q(h) ≥ [A(0) + 2Ω(ℓ/2) + 2ℓe^{−ℓ/2}]‖h‖²`, with `Ω(a) := ∫_a^∞ ω = Σ_{k≥0} e^{−(2k+½)a}/(2k+½)`.
+  - *Proof.*
+    1. Rearrange (L349): reduce to an interval `I` of length `ℓ`.
+    2. Split `D_ω` into killing plus internal parts. The killing weight `κ(x) = Ω(d₁) + Ω(d₂) ≥ 2Ω(ℓ/2)`, by convexity of `Ω` (since `ω` is decreasing), with `d₁ + d₂ = ℓ`.
+    3. Internal part `≥ ω(ℓ)(ℓ‖h‖² − (∫h)²)`, using `ω ≥ ω(ℓ)` on `I²`.
+    4. Pole part `≥ 2e^{−ℓ/2}(∫h)²`.
+    5. If `ω(ℓ) > 2e^{−ℓ/2}`, bound `(∫h)² ≤ ℓ‖h‖²`. ∎
+- **Values (hand-summed series, not certified).**
+  - `Ω(0.1) = 2.605`, giving `λ(0.2) ≥ 0.200`.
+  - `Ω(0.15) = 2.390`, giving a bound `−0.077 < 0` at `ℓ = 0.3`.
+  - So the lemma certifies positivity of nonnegative energies only for `ℓ ≲ 0.25`.
+  - Constant functions give `λ(0.2) ≤ 0.54` and `λ(0.3) ≤ 0.32`. The average killing weight `(2/ℓ)∫_0^ℓΩ` exceeds `2Ω(ℓ/2)` because of the logarithmic boundary singularity, which the crude bound discards.
+- **Shortfall.**
+  - The Schur test of L369 at `(ℓ₊, ℓ₋) = (0.2, 0.2)` with lags `≤ log 3` needs `λ(0.2) ≳ 0.33`. The lemma gives `0.20` and constants suggest `0.54`.
+  - Pieces up to `0.35` need `λ(0.35) > 0`, which the lemma does not give.
+  - Closing C351 therefore needs the true ground energy of the killed log-symbol Lévy operator on short intervals, i.e. a certified variational computation. A natural method is a prolate basis plus the trace certificate `μ₀ ≥ α − ∫(α−W)₊ dist²` (corpus). It is zero-free and finite-dimensional, and within the corpus's demonstrated reach (`μ₀(½log 2) ≥ 1/10` was done this way).
+- **Verdict.** No producer. C351 is now exactly a finite certified computation of `λ(ℓ)` for `ℓ ∈ (0.25, 0.405)`. Its outcome decides the whole dilation-free sector. The overlapping-support sector (the L369 exchange inequality) remains the open core.
+
+### L371 — The archimedean Weil form is Beckner's logarithmic uncertainty operator. PBAP becomes "Beckner's inequality improves to the pole bound on dilation-orthogonal functions". REFORMULATION [P] + CONJECTURE C371
+- **Identification [P, sketch].** For even `F` on ℝ, with `y = e^u` and `g(u) = e^{u/2}F(e^u)`, Beckner's operator `ln|y| + ln|ξ|` (sharp constant `ψ(¼) + ln 2` in his normalization) is a Mellin multiplier.
+  - Reason: the Fourier transform on even functions is, in Mellin coordinates, the inversion `u ↦ −u` composed with the multiplier `e^{iφ(r)}`, `φ = 2θ` (the Riemann–Siegel phase of `π^{−s/2}Γ(s/2)`).
+  - Conjugating the position `u` by that multiplier shifts it by `φ′(r)`. So `ln|y| + ln|ξ| ≅ 2θ′(r) + const = A(r) + const`, the Weil archimedean symbol.
+  - Beckner's sharp inequality is the statement `A(r) ≥ A(0) = ψ(¼) − log π`, with Gaussian extremals.
+- **Consequences.**
+  - The negative archimedean band `|r| < r*` (L356, the ℚ obstruction) is exactly the near-saturation region of Beckner's uncertainty principle. The extremal is the Gaussian `e^{−πy²}`.
+  - `θ(y) − 1 = 2Σ_{n≥1} e^{−πn²y²}` is the sum of the **integer dilations of the Beckner extremal**, and `ξ` is its Mellin transform.
+  - Prime-blindness of `g` is orthogonality of `F` to its own integer dilations: `∫F(ny)F̄(y)dy = 0` for `n ≥ 2` (L349 Lemma 3 form).
+- **Conjecture C371 (dilation-improved Beckner, ⟺ PBAP).** If `F` is orthogonal to all its integer dilations (in the autocorrelation sense, with positive-definite combinations allowed as in PBAP), then `⟨F, (ln|y| + ln|ξ| − ψ(¼) − ln 2)F⟩ ≥ −(c + pole(F))`. Here `c` is the constant gap `−A(0)` written in Beckner's normalization: Beckner's deficit is at least the pole energy.
+  - Reading: the Gaussian extremal is maximally non-orthogonal to its dilations (`∫G(ny)G(y)dy > 0` for all `n`). So dilation orthogonality should keep functions away from Beckner saturation. The question is whether by enough.
+  - Known cases: dilation-free supports (L349 nonnegative; C351 signed, reduced to `λ(ℓ)`) and the window (Connes–Consani).
+- **Tools this opens.** Beckner's proof goes through the Stein–Weiss/Pitt operator family `|y|^{−α}|ξ|^{−α}` and differentiates at `α = 0`. The dilation constraint is compatible with that family, since dilations commute with homogeneous kernels.
+  - A **dilation-constrained Pitt inequality** (`α > 0`) with a sharp constant that improves under orthogonality to integer dilations would differentiate at `α → 0` into C371.
+  - Pitt's sharp constants come from Γ-ratios. The dilation constraint enters through the Mellin side as the tiling at periods `2π/log n` (L350(b)).
+- **Verdict.** No producer. PBAP is recast as a constrained sharp-uncertainty problem with a classical extremal (Gaussian), a classical proof template (Pitt → Beckner by differentiation), and an explicit dilation constraint. This is a candidate "new field" entry point: uncertainty principles with arithmetic (integer-dilation) orthogonality.
+- **L371 novelty audit.** The identification `arch ≅ ln|y| + ln|ξ|` is **Burnol's conductor operator** (J.-F. Burnol, "The explicit formula and a propagator", arXiv math/9809119, 1998; the corpus Burnol lane). REDISCOVERED.
+  - My derivation, conjugating position by the Γ-phase to get `φ′ = A`, is a short proof of the archimedean case.
+  - Still possibly new: the Beckner/Pitt reading of `A(0)` as the sharp log-uncertainty constant, with Gaussian extremals equal to the theta building blocks. Also the conjecture C371: PBAP restated as a dilation-constrained sharpening of the conductor-operator lower bound, attackable by differentiating a dilation-constrained Pitt inequality at `α = 0`.
+  - Next: check the corpus Burnol modules (`R:Burnol*`, Burnol–Sonin reciprocity F0116/F0013) for an existing dilation-constrained conductor bound before working on C371.
+
+### L372 — C371 by the Pitt route: interpolation loses at first order. A side result: dyadic orthogonality improves Pitt's constant from `(1−α)^{−2}` to `(1−α)^{−1}`. FAILED ROUTE + LEMMA [P]
+- **Corpus check.** The Burnol-conductor no-gos (`R:SoninBurnolConductorNoFloor` etc.) concern the completed Sonin packet channel, not the dilation-orthogonal cone. C371 is not covered.
+- **Pitt multiplier (N=1).** `T_α = |ξ|^{−α/2}·F·|y|^{−α/2}` is the Mellin multiplier `m_α(r) = π^{α/2}Γ((1−α)/4 + ir/2)/Γ((1+α)/4 + ir/2)`. Here `|m_α|²` is maximal at `r = 0` (Pitt/Beckner sharp constant) and `−∂_α log|m_α|²` at `α = 0` is `A(r)`.
+- **Lemma (dyadic Pitt) [P].** If `Φ(m log 2) = 0` for all `m ≠ 0` (orthogonality to the dyadic dilations), then `sup|ĝ|² ≤ (log 2)‖g‖²` (L350(b)). Splitting at `|r| = R`:
+  `‖T_α g‖² ≤ [(log 2/2π)∫_{|r|<R}|m_α|² + sup_{|r|≥R}|m_α|²]‖g‖² = O((1−α)^{−1})‖g‖²` as `α → 1⁻`,
+  while the unconstrained Pitt constant `|m_α(0)|² ~ 16/(1−α)²`. The singular Gaussian-type extremal at `r = 0` is suppressed by anti-concentration.
+- **Why it does not give C371.**
+  - Stein/convexity interpolation between `α = 0` (norm 1) and `α₁ > 0` gives `∫A|ĝ|² ≥ −(2/α₁)log C^{blind}_{α₁}‖g‖²`.
+  - At `α₁ = 0.9`: `C ≈ 28`, giving `−7.4`. At `α₁ = 0.5`: `−11.5`. Both are worse than the trivial Beckner bound `A(0) = −5.37`.
+  - The improvement from dilation orthogonality lives at first order in `α` at `α = 0`, which is exactly the original LP (L350). Interpolation from finite `α` cannot see it.
+- **Verdict.** No producer. C371 stays open. The Pitt family does not help, because the constraint acts only at the derivative. The dyadic Pitt lemma is a small genuine inequality: easy, and probably not in the literature in this form.
+
+### L373 — PBAP as a one-line kernel inequality for positive-definite functions. Pole term = quadrature defect on the nodes `log n`. REFORMULATION [P]
+- **Statement [P].** By the Lévy–Khintchine form (L349 Lemma 1) and `pole = Φ̂(i/2) + Φ̂(−i/2) = 4∫_0^∞Φ(x)cosh(x/2)dx` (even `Φ`):
+  **PBAP ⟺ for every even positive-definite `Φ` with `Φ(0) = 1` and `Φ(log n) = 0` for all `n ≥ 2`,**
+  `∫_0^∞ [2ω(x)(1 − Φ(x)) + 4cosh(x/2)Φ(x)] dx ≥ −A(0) = log π + γ + π/2 + 3 log 2 = 5.3721`,
+  with `ω(x) = e^{−x/2}/(1 − e^{−2x})`. (Full-cone version; the polar version drops the `cosh` term and imposes `Φ̂(±i/2) = 0`.)
+- **Check.** The Fejér triangle `Φ = (1 − x/L)₊` at `L = log 2` gives
+  - `2∫_L^∞ω = 2.992`, `(2/L)∫_0^L xω = 1.160`, `4∫_0^L cosh(x/2)(1−x/L) ≈ 1.414`;
+  - total `5.566 ≥ 5.372`, margin `0.194`. This is window positivity (Connes–Consani) on the explicit Fejér test.
+- **Reading.**
+  - The `ω`-term rewards `Φ ≈ 1` near 0, i.e. low spectral energy; `ω` is the Lévy density of the archimedean place.
+  - The `cosh`-term is the pole. It is the only term that can go very negative, through negative values of `Φ` at large `x`.
+  - Prime-blindness forces `Φ` to vanish on nodes of density `e^x` at `x`. So `4∫Φcosh` is a **quadrature defect**: compare `Σ_n Φ(log n)cosh(½log n)/n = Φ(0)·w₁` (all other nodes are zero).
+  - The defect is small where `Φ` is smooth at the node scale `e^{−x}`. Roughness of `Φ` at scale `e^{−x}` costs spectral energy, but only through `A(r) ≍ log r`, which the `ω`-term sees only logarithmically.
+  - PBAP is therefore a quantitative statement that **logarithmic spectral cost always pays for the pole's quadrature defect on the nodes `log n`**. That is Euler–Maclaurin for `Σ n^{−s}`, i.e. ζ's own summation formula, read as an inequality. It is circular as an identity (it is the explicit formula), but it makes the open core one inequality between two explicit integrals over positive-definite functions.
+- **Verdict.** No producer. Cleanest form of PBAP so far: an inequality for positive-definite functions with prescribed zeros on `{log n}`, with explicit kernels `ω` and `cosh`.
+
+### L374 — Λ-relative form of the producer problem, deficit propagation, and atomic producers ⇒ odd functional equation. REDISCOVERED (corpus singular deficit law) + consistency check [P]
+- **Λ-relative form [P].** With `G := D_lam − D_Λ` (a real Dirichlet series over `n ≥ 2`, holomorphic at `s = 1`): `lam ∈ W` ⟺ `G` has poles in `σ > ½` exactly at the off-line zeros (residue = multiplicity) and `Re G(½+it) ≤ π Σ_on mult_γ δ_γ` as measures, plus growth. Exact decomposition `G = (ξ′/ξ)_on + Q_off − H`, with `Q_off` the off-line quadruple sum (`Re Q_off = 0` on the line).
+- **Deficit propagation [P].** Let `r_γ⁺ = (mult_γ − h_γ)⁺` be the on-line mass the producer misses (`πh_γ` = atom of `μ_lam` at `γ`). Then `Re G ≤ Re Q_off + Re Herglotz(πΣ r⁺δ)` on all of `σ > ½`, and Bohr means give `mean_t |Re G(σ+it)| ≤ 2π·dens(r⁺)` for `σ > σ_a`. So any `lam ≠ Λ` misses a positive density of on-line zeros at every height, on a relatively dense set of windows. Corollary: a producer whose spectral measure contains every on-line zero with full multiplicity is `Λ`, and RH holds.
+  - **Audit: REDISCOVERED.** This is the corpus "singular deficit law for Weil-positive completions" (`R:CosineSeriesBohrEnvelope`, `abs_le_four_mul_of_logCosSeries_envelope`: `|a_m| ≤ 4E`).
+- **Atomic producers [P].** If `μ_lam` is purely atomic, then `G − Q_off` is an exact Mittag-Leffler sum, so `G(1−s) = −G(s)`. Then `|Λ_lam(1−s)| = C|Λ_lam(s)|` with `Λ_lam = s(s−1)Γ_ℝ Z_lam`.
+  - Integer residues: Hamburger gives `Z_lam = ζ`, i.e. the L303 integer-counting theorem.
+  - Rational residues: twins, C329 / MUST-670.
+  - Consistent with the corpus. New only as a direct route "atomic ⇒ modulus FE".
+- **Function-field contrast.** There every boundary measure on the circle `|u| = q^{−½}` has discrete spectrum automatically (compact torus), so `G = Σ r_j[(u_j+u)/(u_j−u) − 1]` gives many producers (atomic, `r_j ≤ 1`, negative constant smooth part). Over ℚ the requirement is that `ν = Re G|_line` be an almost-periodic measure with spectrum in `±log ℕ*` whose positive part sits on ζ's zeros. That is the whole difficulty, and it is archimedean (non-compact line, no period).
+- **Verdict.** No producer. Nothing new beyond the corpus except the atomic ⇒ odd-FE shortcut. Lesson: before deriving Λ-relative laws, grep `R:CosineSeriesBohrEnvelope`, `R:WeilBoundary*`.
+
+### L375 — Two-cluster prime-blind tests: exact reduction to a log-lattice anti-concentration law, its explicit-formula identity, and why only an arithmetic (prime-comb) certificate can prove it. REDUCTION [P] + OBSTRUCTION [heuristic]
+- **Family.** `β ∈ L²[0,W]` real with `W < log 2`, `L > 2W`, `X := e^L ∉ ℕ`, and `g = aβ − bβ(·−L)`.
+  - Self-lags lie in `(−W,W)`, so they are blind automatically.
+  - Prime-blindness ⟺ `ψ := β⋆β̃` vanishes on the shifted log-lattice `{log(n/X) : n ∈ ℕ} ∩ (−W,W)` (about `2WX` points with spacing `≈ 1/X`; together with the mirror points, two interleaved chirped lattices).
+- **Exact reduction [P].** With `P_± = ∫β e^{±u/2}`:
+  - `pole(g) = 2P₊P₋(a − bX^{½})(a − bX^{−½})`;
+  - `arch(g) = (a²+b²)arch(β) + 2ab∫ω(|L−y|)ψ(y)dy`.
+  - So `W(g) = (a²+b²)W(β) − 2ab[(X^{½}+X^{−½})P₊P₋ − ∫ω(L+y)ψ(y)dy]`.
+  - The `ω`-term equals `X^{−½}P₊P₋(1 + O(X^{−2}))`, so **two-cluster PBAP ⟺ `X^{½}|P₊P₋| ≤ W(β)` (+ `O(X^{−5/2})`)** on the constrained set. Here `W(β) ≥ 0` is single-window positivity.
+- **Explicit-formula identity [P].** For constrained `β`: `X^{½}P₊P₋ − W(β) = −Σ_ρ β̂(γ_ρ)β̂^#(γ_ρ)(1 − cos γ_ρL)` (up to the same `O(X^{−5/2})`).
+  - Under RH the right side is `−Σ_γ|β̂(γ)|²(1−cos γL) ≤ 0`, so it is trivially true.
+  - An off-line pair contributes about `X^{δ}|β̂(z₀)|²`. Pairs with `δ ≲ 1/log X` act like on-line zeros (`1 − cos γL·cosh δL ≥ −δ²L²/2`).
+  - Detection by this family would need many off-line zeros at `δ ≳ 1/log X`: about `X^{½}` of them at height `≍ X`, against the `log X` on-line floor. Known zero-density estimates (Selberg `N(½+δ,T) ≪ T^{1−δ/4}log T`) are far too weak to exclude this, so no unconditional proof via zeros.
+- **Certificate side (LP duality) [P].** Two-cluster PBAP ⟺ there are weights `c_n` on the window `n ∈ X(e^{−W},e^{W})` with `A_op − Σc_n Sym τ_{log(n/X)} ≥ (X^{½}−2)·(1⊗1)` on `L²[0,W]`.
+  - Under RH, `c_n ∝ Λ(n)n^{−½}` (the prime comb) works: its large values on the `r`-line are controlled by the zeros, and their density `(1/2π)log r` is exactly what `A(r)` absorbs.
+- **Obstruction for non-arithmetic certificates [heuristic].**
+  - The uniform comb `c_n ≡ −C` needs `C ≳ X^{−½}` for the rank-one direction.
+  - It also needs `C·|S_X(r)| ≤ A(r)` with `S_X(r) = Σ_{window}cos(r log(n/X))`.
+  - Resonance large values of Dirichlet polynomials over consecutive integers give `|S_X(r)| ≳ √X·exp(c√(log r/log log r))` at heights `log r ≍ (log X)^{2}`. That exceeds `X^{½}log r`, so the uniform comb fails for large `X`.
+  - This is the two-cluster, local form of L360(a): smooth-rich weights carry Bohr–Landau large values. Only multiplicatively structureless (prime) weights can certify.
+- **Verdict.** No producer. Exact two-cluster form of PBAP (`X^{½}|P₊P₋| ≤ W(β)` on the log-lattice-constrained set). The family is RH-sensitive only through `≳ X^{½}` far-off-line zeros. The certificate must be arithmetic. Consistent with L358–L360; the localization to two clusters is new.
+
+### L376 — Attempted proof of two-cluster PBAP by log-lattice Poisson + stationary phase. The flattening lemma fails (high-order aliases overlap); the exact obstruction is resonance of the window quadrature. FAILED PROOF + EXACT IDENTITY [P]
+- **Exact quadrature identity [P].** For constrained `β` (L375), put `H(x) = ψ(log(x/X))·X/x`. `H` vanishes at every integer, so Poisson gives
+  `X|β̂(0)|² = −Σ_{j≠0}Ĥ(j) = (X/2π)∫F(r)E_X(r)dr`, with `F = |β̂|²`.
+  - Here `E_X(r) = ∫η e^{iry}dy − Σ_n n^{−1}η(log(n/X))(n/X)^{ir}` is the quadrature error of the log-lattice rule (nodes `log(n/X)`, weights `1/n`).
+  - So `|β̂(0)|² ≤ ‖β‖²·sup_{supp F}|E_X|`.
+- **Why it does not flatten.**
+  - For `j ≲ 1/(2W)` the alias bands `2πjX·e^{(−W,W)}` are disjoint and give `|E_X(r)| ≲ X^{−½}`. That was the source of the hoped-for law `|β̂(0)|² ≲ e^{W/2}X^{−½}‖β‖²`.
+  - For `j ≳ 1/(2W)` they overlap. At heights `r ≫ X/W`, `E_X(r)` is a Dirichlet polynomial `Σ_{n∈window} n^{−1+ir}X^{−ir}` of length `2WX`. Its typical size is `√(2W/X)`, but at Kronecker resonances (`n^{ir} ≈ const` on the window, `r ≍ 2π·lcm(window) ≍ e^{cWX}`) it reaches `≍ 2W`.
+- **Two-point resonance construction [P-sketch].** `F ≈ ½m(δ_0 + δ_{r*})`, with `r*` a resonance and `e^{ir*L} ≈ −1` (Kronecker with `L` generic).
+  - Then `ψ ≈ ½m(1 + e^{ir*y})·env` vanishes on the lattice, after a finite-dimensional correction.
+  - So `|β̂(0)|² ≍ W‖β‖²`, with no flattening. Its pole gain is `X^{½}W‖β‖²`, but its arch cost is `½A(r*) ≍ cWX ≫ X^{½}`, so PBAP survives with exponential room.
+  - The real trade-off is between partial resonances at moderate heights (gain `X^{½}|E_X(r)|`) and the arch price `log r`.
+    - Gaussian large deviations for `E_X` give a safe margin.
+    - Resonance-method extremes (`|E_X| ≍ X^{−½}exp(c√(log r/log log r))`) would beat `log r` for `log r ≳ (log X)²`, if the single averaged constraint were all that mattered.
+  - So any proof must use **all** lattice constraints jointly, not one quadrature. Under RH, the joint certificate is the prime comb (L375).
+- **Consequence under RH [P].** No constrained `β` can hold a positive fraction of its spectral mass both near `0` and near a partial resonance of moderate height. Otherwise two-cluster PBAP, hence RH, would fail.
+- **Verdict.** No producer. The quick unconditional route to two-cluster PBAP is closed. The obstruction is the large-values theory of short Dirichlet polynomials over the window `X(e^{−W},e^{W})`, which is Lindelöf/RH territory, in line with L358–L360. Positive survivor: the exact identity `X|β̂(0)|² = (X/2π)∫F E_X` and the disjoint-band range `r ≤ X/W`, where flattening does hold. Positivity for two-cluster tests whose spectrum lies below `X/W` is a provable restricted statement, if wanted.
+
+### L377 — Is PBAP generic for exponentially dense node sets, or arithmetic? Variance and skew bookkeeping says arithmetic: a producer's boundary fluctuation must be a downward-spiky point process. ANALYSIS [P-sketch/heuristic] + CONJECTURE C377
+- **Variance floor [P-sketch].** If `D = Σ lam(n)n^{−s}` has residue 1, then `Σ_{x<n≤2x}lam(n) ≈ x`. Cauchy–Schwarz on each dyadic block gives `Σ_{x<n≤2x}lam(n)²/n ≥ x/|supp∩(x,2x]|`.
+  - With the Montgomery–Vaughan mean value on `σ = ½+ε`: `mean_t|D|² ≳ Σ_k x_k/|supp_k| ≳ 1/(2ε log 2)` for full support, and `≍ ε^{−2}` for prime-like support.
+  - At the effective scale `ε ≍ 1/log T`: `Var Re D ≳ c log T` with `c ≥ ¼`.
+- **One-sided bound.** A producer needs `Re D(½+it) ≤ ½A(t) ≍ ½log t`, with Bohr mean 0.
+  - Symmetric (Gaussian-like) fluctuations of variance `c log T` reach `≈ √(2c)·log T > ½log T` when `c > 1/8`.
+  - So **every producer's fluctuation must be strongly downward-skewed**: mostly near its ceiling `½A`, with negative spikes of total density `≍ (1/2π)log t`. `Λ` realizes this exactly: `Re D_Λ = ½A − πΣδ_γ` under RH.
+- **Generic node sets fail.** For `S` a Poisson set of intensity `e^x` (or `log` of a random subset of ℕ of density one), the certificate `D_S = Σ_{s∈S} c_s e^{−sz}` has compensated-Poisson (asymptotically Gaussian) fluctuations, so `max Re D_S > ½A`.
+  - Adaptive weights cannot create spikes without a multiplicative structure in which they can sit at the zeros of an Euler product.
+  - Finite Beurling modifications of the primes (e.g. replacing `2, 3` by `6`) add an absolutely convergent mean-zero almost-periodic correction and fail by rigidity (L140, `R:WeilPolarConeExtremePoint`).
+- **Conjecture C377 (PBAP is non-generic).** For a Poisson node set of intensity `e^x dx` on `(log 2, ∞)`, almost surely there is no one-sided PD quadrature (no producer) for ζ's archimedean datum.
+  - Equivalently, `S`-blind Weil positivity fails almost surely.
+  - Meaning: PBAP is not a density or sampling phenomenon. It holds for `log ℕ` (under RH) only because the multiplicative structure provides an Euler product whose zeros carry the required downward spikes.
+  - Falsification route: an explicit `S`-blind PD test with `arch + pole < 0` built from a resonance of the Poisson sum.
+- **Verdict.** No producer. Structural conclusion (consistent with L350(b), L358–L360, L375–L376): a producer is an arithmetic spike process. Its existence is the statement that the spikes (zeros) of `ζ`'s Euler product lie on the line. The search space for an unconditional producer is therefore empty of non-Euler-product candidates; the only candidates left are twins (C329) and continuous liquefactions (Ω).
+
+### L378 — Two-cluster PBAP is a ζ-free approximation problem for window Dirichlet polynomials. The required error profile `X^{−½}(A(r)+C)` is exactly the zero-density profile, so the prime comb is the RH certificate and smooth weights fail on the dual ζ-sums. REFORMULATION [P] + certificate audit
+- **Exact form [P].** Fix `η ∈ C_c^∞(−W′,W′)` with `η = 1` on `[−W,W]`. For constrained `β` (L375) and any weights `(c_n)` on the window `n ∈ X(e^{−W′},e^{W′})`:
+  `|β̂(0)|² = (1/2π)∫F(r)[η̂(r) − Σ_n c_n (n/X)^{ir}]dr`.
+  - The constraint kills every `Σ c_nψ(log(n/X))`.
+  - So `|β̂(0)|² ≤ ε·(arch(β) + C‖β‖²)` whenever `|η̂(r) − P_c(r)| ≤ ε(A(r) + C)` for all `r`.
+  - With `ε = X^{−½}/(1+o(1))` this gives two-cluster PBAP. By LP duality the converse holds for the optimal `F`, up to the `P₊P₋`/`|β̂(0)|²` and `O(W)` bookkeeping.
+- **Required profile.** `P_c` must approximate the bump `η̂` with uniform relative error `X^{−½}·log r`.
+  - **Prime comb `c_n = Λ(n)/n`:** by the explicit formula, `P_Λ − η̂ ≈ −Σ_ρ X^{ρ−1}·η̂_W(r + γ_ρ)` (window-localized).
+    - Zeros within `1/W` of `−r` number `≍ (W/2π)·log r`, each contributing `X^{β−1}`.
+    - On the line the error is `X^{−½}·O(log r)`: **exactly the arch profile.** An off-line zero gives `X^{β−1} ≫ X^{−½}`.
+    - The archimedean `log r` and the zero density `(1/2π)log r` are the same function. This is the explicit formula, now read as an approximation-theoretic identity.
+  - **Smooth weights `c_n = 1/n`:** Poisson/B-process gives `P − η̂ ≈ X^{−½}·Z_J(r)`, with `Z_J` a partial `ζ(½+ir)`-sum over `j ≍ r/(2πX)`.
+    - Fine for `r ≲ X/W` (first alias bands).
+    - Needs `|Z_J(r)| ≲ log r` for all `r` (Lindelöf-log), which fails at resonances (`exp(c√(log r/log log r))`).
+  - **Random signs:** they give the right fluctuation profile `X^{−½}√(log r)` (Salem–Zygmund, rigorous) but cannot carry the main term `P(0) ≈ η̂(0)`. Main term plus random part keeps the deterministic `Z_J` large values.
+- **Open question (ζ-free, sharp).** Is there any weight family `(c_n)` on `[X e^{−W}, X e^{W}]` with `sup_r |η̂ − P_c|/(A + C) ≤ X^{−½}`, uniformly in `X`?
+  - Under RH: yes, `Λ/n`.
+  - If no smooth-supported (non-arithmetic) family can work, by the resonance obstruction, then two-cluster PBAP is RH-hard in the sense of L359 (only Euler-product weights qualify).
+- **Verdict.** No producer. Two-cluster PBAP (the simplest cancellation sector) is equivalent to a uniform approximation problem for short Dirichlet polynomials whose required error profile is exactly the zero-density profile. Consistent with L358–L360 and L375–L377; the approximation-theoretic form is new.
+
+### L379 — Can two-cluster tests detect a single off-line zero? Windowed alias counting: the `X^{½}` penalty holds up to height `≈ X`, while aliases at height `≳ X^{3/2}` can each serve every window. Detection then reduces to a positive phase-matching problem. CONJECTURE C379 + correction to L376 bookkeeping [P-sketch]
+- **Windowed count (corrects L376).** Partition `(−W,W)` into windows of length `δ = X^{−½}`; on each the log-lattice is locally a lattice of spacing `h_k = e^{−y_k}/X`, up to `O(δ²X) = O(1)·h_k`, so use `δ = cX^{−½}`.
+  - The `j`-th alias band of window `k` is centred at `2πjXe^{y_k}` with **width `≍ jX^{½}`** (the local alias frequency varies across the window), not `X^{½}`.
+  - So `N(r) := #{(k,j): r ∈ B_{k,j}} ≈ 1 + W|r|/(πX)`. Local Poisson gives
+    `local mass at γ₀ ≲ (X^{−½}/4πW)·∫F(r)(1 + W|r|/(πX))dr`.
+  - So the rigorous flattening rate `X^{−½}` holds for spectral mass below height `≍ X`. Mass at height `r` is discounted by `r/X`, and at `r ≳ X^{3/2}` one alias frequency lies in the `j`-band of every window.
+- **Detection budget for one off-line zero** `z₀ = γ₀ + iδ₀`, separation `L = log X`.
+  - Gain `≍ X^{δ₀}m₀`, where `m₀` is the spectral mass near `γ₀`.
+  - Cost = on-line zero sum over the alias mass, `≍ log(height)/W` per unit mass.
+  - First-band aliases: `≍ X^{½}m₀` mass at height `X`, so cost `X^{½}log X ≫ X^{δ₀}`, no detection.
+  - High aliases (height `≍ X^{3/2}`): mass could be `≍ m₀` (each frequency reaches all windows), so cost `≍ m₀ log X ≪ X^{δ₀}m₀`, detection, **if** the phases can be matched.
+- **Phase-matching problem (open core).** Window `k` needs `Σ_f F_f e^{i f y_k}·(lattice phase_{k,f}) = −m₀e^{iγ₀y_k}`, with **nonnegative** masses `F_f` at alias frequencies `f ≍ X^{3/2}`, for all `≍ X^{½}` windows.
+  - With unimodular "random" phase vectors, a positive combination reaching a prescribed vector of norm `m₀√N` (`N ≍ X^{½}`) needs total mass between `m₀` (aligned) and `m₀√N` (random).
+  - Total mass `≲ X^{δ₀}m₀/log X` detects; total mass `≳ X^{½}m₀` does not. The answer sets the detection exponent of the two-cluster family.
+- **Conjecture C379.** The positive phase-matching cost is `≍ m₀·X^{½−o(1)}` (generic phases do not align). Hence two-cluster tests cannot detect any off-line zero with `δ₀ < ½`, and **two-cluster PBAP holds unconditionally**.
+  - It is then a theorem-candidate about lattice phases of `log(n/X)` modulo `2π/h`, i.e. an equidistribution statement for `{jXe^{y} : y ∈ log(n/X)}` with no ζ input.
+  - If false (phases align at specific heights), the two-cluster family detects single off-line zeros. Then PBAP ⇒ (finitely many off-line zeros ⇒ none), a nontrivial RH-type consequence of PBAP (cf. L361).
+- **Verdict.** No producer. The two-cluster cancellation sector is reduced to one equidistribution/phase-matching question for the log-lattice, which either proves the sector unconditionally (C379) or gives detection of single off-line zeros. Either outcome is new; neither is decided here.
+- **L379 addendum: chirp synthesis heuristic for C379.**
+  - At the integers `n = X + m` of the window, an alias frequency `f = 2πjX + φ` restricts to `n^{if} ≈ const·e^{−iπjm²/X + iφm/X}` (a discrete chirp, since `e^{2πijm} = 1`). The low-frequency target is `m₀ e^{iγ₀m/X}` (a pure linear phase).
+  - Over `|m| ≤ WX`: `⟨target, chirp_j⟩ ≍ m₀√(X/j)` (Gauss sum / stationary phase), while `‖chirp_j‖² = 2WX`.
+  - Reconstructing the target's energy `m₀²·2WX` from nearly orthogonal chirps needs `Σ_{j≤J}1/j ≈ 4W²X`, i.e. `J ≈ e^{4W²X}`. The arch cost of the alias mass is then `≳ (m₀/√X)·√J·log J`, astronomically larger than the gain `X^{δ₀}m₀`.
+  - So single-zero detection by two-cluster tests is expensive unless the lattice phases resonate. That is the same resonance set (lcm scale) as L376, where arch cost `≍ WX` again exceeds `X^{δ₀}`.
+  - This supports C379 (two-cluster PBAP unconditional). A proof needs the chirp near-orthogonality made rigorous, uniformly against nonnegative spectral measures (Weyl/Gauss-sum bounds), plus a resonance exclusion.
+
+### L380 — Log-lattice Poisson lemma and two-cluster PBAP below the Lindelöf horizon. Any failure of the cancellation sector lives at spectral heights `≳ X(log X)²`. LEMMA [P] + LOCALIZATION THEOREM [P]
+- **Lemma A (log-lattice Poisson / stationary phase) [P].**
+  - Setting: `0 < W ≤ W′ ≤ 0.3`, `η ∈ C_c^∞(−W′,W′)` with `η = 1` on `[−W,W]`. Let `h` be continuous, supported in `[−W,W]`, with `ĥ ∈ L¹`, and `h(log(n/X)) = 0` for every integer `n`.
+  - Conclusion: `|∫h| ≤ C_η [ X^{−2}∫|ĥ| + X^{−½}∫_{|r|≥cX}|ĥ(r)|(1 + √(|r|/X))dr ]`, with `c = 2πe^{−W′}/2` and `C_η` depending only on `η` (log factors absorbed for `X ≥ X₀(η)`).
+  - *Proof.*
+    1. `H(x) := h(log(x/X))·X/x` is continuous, compactly supported in `(0,∞)`, and vanishes at every integer. Poisson summation gives `X∫h = Ĥ(0) = −Σ_{j≠0}Ĥ(j)`, with `Ĥ(j) = (X/2π)∫ĥ(r)I_j(r)dr` and `I_j(r) = ∫η(y)e^{i(ry − 2πjXe^y)}dy`.
+    2. *Non-stationary* (`|r| ≤ cX`, or `j` far from the stationary range): two integrations by parts. With `φ′ = r − 2πjXe^y`, `|φ′| ≥ c′|j|X`, and `φ″, φ‴ = O(|j|X)`, each term is `O((jX)^{−2})`. Summing over `j` gives `O(X^{−2})`.
+    3. *Stationary* (`j ∈ r e^{[−W′,W′]}/(2πX)`, at most `1 + |r|(e^{W′}−e^{−W′})/(2πX)` values): van der Corput second-derivative test (`|φ″| ≥ 2π|j|Xe^{−W′}`; corpus `R:VanDerCorputWeightedSecondGeneral`, `R:VanDerCorputLocal`) gives `|I_j| ≤ C/√(|j|X) ≤ C′/√|r|`. Total `≤ C″X^{−½}(1 + √(|r|/X))` for `|r| ≥ cX`.
+    4. Near-stationary `j` use the minimum of the two bounds; that contributes `O(X^{−½})`. ∎
+- **Corollary B (two-cluster PBAP below the horizon) [P].**
+  - Apply Lemma A to `h = ψe^{y/2}·η` (vanishes on the lattice) for constrained `β` (L375), `F = |β̂|²`: `X^{½}|P₊P₋| ≤ C[X^{−3/2}‖β‖² + ∫_{|r|≥cX}F(r)(1+√(|r|/X))dr/2π]`.
+  - Split `W(β) ≥ θμ₀(W)‖β‖² + (1−θ)[arch(β) + 2P₊P₋]`, with `μ₀(W) > 0` the window ground energy, `θ = 5.37/(μ₀+5.37)`, and `arch ≥ ∫_{|r|≥cX}AF + A(0)·m_low`.
+  - Result: there are `X₀(W)` and `c₂ > 0` such that for `X ≥ X₀` **every constrained `β` whose spectral mass beyond `R₁ := c₂X(log X)²` satisfies `∫_{|r|>R₁}F√(|r|/X) ≤ c₂∫F·A⁺` gives `W(aβ − bβ(·−L)) ≥ 0` for all `a, b`**. Below `R₁`, `C(1+√(r/X)) ≤ (1−θ)A(r)`.
+- **Localization.** Two-cluster PBAP, i.e. two-cluster non-detection of off-line zeros, can fail only through constrained spectra that escape to heights `≥ X(log X)²`. There the dual stationary-phase sums over `j ≍ r/X` are partial `ζ(½+ir′)`-type sums, and bounding them needs Lindelöf-type cancellation (L378). Lemma A is ζ-free and unconditional.
+  - Novelty audit: corpus anti-concentration is L350(b) (exact lattice, `O(1)`), and the ledger only has a heuristic for far blocks oscillating at frequency `≍ e^X` (L350(c)). The log-lattice Poisson + stationary-phase lemma with the explicit horizon `X(log X)²` is new here.
+- **Verdict.** No producer. First unconditional positivity statement for a cancellation-sector family with arbitrarily long support (two clusters at any separation `L ≥ log X₀`), under a spectral non-escape condition. The open part is exactly the Lindelöf regime. Lean candidate: Lemma A, from mathlib Poisson summation plus the corpus van der Corput tests.
+- **L380 addendum: the Lindelöf regime of two-cluster PBAP is the LGPS question (L358), with no sign condition [P-sketch].**
+  - *Stationary-phase form of the quadrature error.* For `r ≥ R₁`, `E(r) ≈ √(2π/r)·e^{iΘ(r)}·D(r)` with `D(r) = Σ_j η(log(r/(2πjX)))·j^{−ir}`, a smooth dual sum of length `N ≍ Wr/(πX)`.
+    - `|E| ≤ X^{−½}(A+C)` ⟺ `|D(r)| ≲ √N·log r`: square-root cancellation with a log loss for short smooth `j^{ir}`-sums. Exponent pairs give only `r^{1/6}N^{½}`.
+  - *Mellin form for any certificate.* For weights `c_n = lam(n)/n` with Dirichlet series `C(s) = Σ lam(n)n^{−s}` (residue 1), shift the window Mellin integral to `σ = ½`: `|E_c(r)| ≲ X^{−½}·avg_{|t−r|≲1/W}|C(½+it) − pole part|`.
+    - So **two-cluster PBAP for all large `X` ⟸ there is an LGPS on `σ ≥ ½`**: a residue-1 Dirichlet series whose values on the line are `≪ log t` in window average.
+    - Only `|E|` enters, so the cancellation sector needs growth, not positivity. Conversely, certificates for all `X` are local LGPS at every scale.
+  - *Consequences.*
+    - ζ itself (quadrature weights) needs Lindelöf-log, which fails at resonances.
+    - Under RH, `−ζ′/ζ` works.
+    - **In every world with finitely many off-line zeros, the finite evaporation trees of L361 give an LGPS with window-averaged log bounds on the line. So two-cluster tests are blind to any finite set of off-line zeros** (consistent with the chirp heuristic, L379).
+    - Unconditional two-cluster PBAP ⟸ `σ_LGPS = ½` with line control. That is weaker than RH and implied by "finitely many off-line zeros", but open.
+  - *Reading.* Positivity (sign) matters only beyond two clusters. The multi-cluster/overlap sector is where the one-sided producer inequality (`Re D ≤ ½A`), rather than mere growth, is forced. This separates PBAP into a growth layer (LGPS, two-cluster) and a positivity layer (producer, many clusters).
+
+### L381 — The positivity layer. Multi-scale Lemma A recovers L138's exact values identity; the rank-two pole turns many-cluster PBAP into a Hilbert–Schmidt condition; lossy multiscale methods miss by a factor `≈ C/W ≈ 30` because the problem is critical. ANALYSIS [P] + NO-GO for lossy methods
+- **Globalization [P].** Run Lemma A's Poisson step on all of `log ℕ`, with `H(x) = Φ(log x)x^{−½}` (`x > 0`). The uncut Mellin kernel is exact: `∫_0^∞u^{−½+ir}e^{−2πiju}du = Γ(½+ir)(2πij)^{−½−ir}`, and `Σ_{j≠0}` collapses through the functional equation to `ζ(½−ir)`.
+  - So for prime-blind compactly supported `Φ`: `pole(Φ)/2 = (1/2π)∫Φ̂(r)(1 − Re ζ(½+ir))dr`, and PBAP ⟺ `∫Φ̂[A + 2 − 2Re ζ(½+ir)] ≥ 0`.
+  - This is L138's values identity (REDISCOVERED). Lemma A is its window-localized, ζ-free shadow: the dual `ζ(½+ir)`-sums become the stationary-phase sums `D(r)` of L380.
+  - Since `Re ζ(½+ir)` has mean 1 and variance `≍ ½log r`, PBAP says that prime-blind densities (orthogonal to every `n^{ir}`, `n ≥ 2`) cannot sit on the upward fluctuations of `Re ζ` beyond `θ′`.
+- **Rank-two pole, many clusters [P].** For `g = Σ_i a_iβ_i(·−L_i)` with well-separated lag windows: `W(g) ≈ aᵀ(D + uvᵀ + vuᵀ)a`, where `D = diag(arch(β_i))`, `u_i = e^{L_i/2}P₊(β_i)`, `v_i = e^{−L_i/2}P₋(β_i)`.
+  - Positivity ⟺ `|ũ||ṽ| − ⟨ũ,ṽ⟩ ≤ 1`, with `ũ = D^{−½}u`, `ṽ = D^{−½}v`. Equivalently the normalized couplings `ε_{ij} = e^{(L_i−L_j)/2}|P₊(β_i)P₋(β_j)|/√(arch_i arch_j)` satisfy `(Σ_{i>j}ε_{ij}²)^{½} ≤ 1 + Σ_i P₊P₋(β_i)/arch_i` (up to small `ω`-terms).
+  - Geometric/equally spaced clusters (`L_i = iL`): each block must obey the log-lattice constraint at every scale `X^d` with `c_d ≠ 0`. Lemma A applied at its own scale for each `d` gives pole `≤ 2C c₀∫F·log(r/c)/L`, against arch `c₀∫F·A`. **So PBAP holds below the horizons for `L ≥ 2C`.** Groups of blocks at similar separations reduce to wider two-cluster blocks.
+- **No-go for lossy methods.**
+  - A general test splits into pieces of width `W ≤ 0.3` at spacing `≍ W`. The pole coupling accumulates over `≍ log r/W` lag scales with constant `C ≈ 10` (van der Corput / stationary-phase constants), against `A(r) ≈ log r`. It misses by `C/W ≈ 30`.
+  - The truth has constant exactly 1: Λ is extreme, the slack `τ* = 0` under RH, and the window margin is `≈ 10^{−17}` (Zhu). **Any proof of the positivity layer must be sharp**: an exact mechanism (sum of squares / Hilbert-space realization of `arch + pole` on the prime-blind variety), not a localized inequality with constant `> 1`.
+  - This is Suzuki's 2026 self-adjoint realization question in producer language.
+- **Verdict.** No producer. The cancellation sector is now mapped:
+  - growth layer: two clusters ⟸ LGPS at `½`;
+  - geometric clusters: fine below the Lindelöf horizons with `L ≥ 2C`;
+  - dense/general tests: need a constant-1 mechanism.
+  The open core is a sharp positivity mechanism on the prime-blind variety, as L366 (Krein–Langer) and L140 (extremality) already indicated.
+
+### L382 — Degree-4 (Positivstellensatz) producers add no leverage; a windowed Diophantine-cost argument pushes the two-cluster horizon from `X(log X)²` toward `X^{3/2}`; above `X²` only phase matching remains. KILL [P-sketch] + HORIZON EXTENSION [heuristic→P-sketch]
+- **Degree-4 certificates.** `W(g)R(g) = σ(g) + Σ_n λ_n(g)q_n(g)`, with `q_n(g) = Φ_g(log n)`, `σ` a sum of squares of quadratics, `R ≻ 0`, `λ_n` quadratic.
+  - Dual: moment operators `Y ⪰ 0` on `Sym²` with `Tr₂[(I⊗T_n)Y] = 0` for all `n`. For a mixture `Σw_i g_i^{⊗4}` this forces `q_n(g_i) = 0` for each `i` when the `g_i` are independent, so degree 4 is essentially positivity on the rank-one **variety** `V`, not the convex cone.
+  - Cone and variety PBAP can differ in principle (infinitely many quadratic constraints, so the S-lemma can fail).
+  - But every known detector is rank-one compatible: the double-zero construction of L354, and L362 with `m = |k|²`. And every tool here (Lemma A, Poisson identities) is linear in `Φ`, so it treats cone and variety alike.
+  - Under RH the linear Λ-certificate already exists. **Verdict: no new unconditional leverage.** A gap would need a detector that requires rank `> 1`; none is known.
+- **Windowed Diophantine cost (two-cluster sector).** Use local Poisson identities window by window (each window must cancel its own low-frequency mean), not the single averaged identity.
+  - Window size `δ ≍ X^{−½}`. A frequency `r` serves window `k` only if it lies in an alias band, i.e. `|r − 2πjn_k| ≲ rX^{−½}` for some `j`, plus a phase condition.
+  - For `X(log X)² ≲ r ≲ X^{3/2}` the bands do not cover the line. Serving a set `S` of windows forces `|S|` near-independent Diophantine conditions, each of density `≍ r/X^{3/2}`.
+  - So typical cost is `log r ≳ |S|·log(X^{3/2}/r)`. Summed over windows: arch `≳ m₀·(#windows)·log(X^{3/2}/r)/…` against pole gain `X^{½}m₀`. The gain loses for `r ≤ X^{3/2−ε}`.
+  - This is a heuristic count. A rigorous version needs a lower bound for simultaneous approximation to the moduli `{2πn_k}` (`n_k` spaced `X^{½}` apart), i.e. a large-sieve or Siegel-lemma statement, **no ζ input**.
+  - For `X^{3/2} ≲ r ≲ X²` the bands cover and adapted windows `δ_j ≍ (jX)^{−½}` reinstate the count. Above `X²` every frequency is in a band of every adapted window, and only the phase-matching problem of L379 (chirp near-orthogonality) remains.
+- **Verdict.** No producer. Higher-degree certificates are not a new positivity source. The two-cluster growth layer can likely be pushed by ζ-free Diophantine counting to height `≍ X^{3/2−ε}` (perhaps `X^{2−ε}`). The residual is the phase-matching (chirp) regime above `X²`, the window analogue of the Lindelöf regime.
+
+### L383 — The certificate dilemma for the growth layer: sieve weights give square-root precision at low frequency but resonate at heights `≍ exp((log X)²)`; prime weights are resonance-free but need RH for low-frequency precision. A ζ-free "pseudo-prime" problem (C383) is the exact unconditional content of two-cluster PBAP. NO-GO for sieve and random certificates [P-sketch] + CONJECTURE C383
+- **Certificate requirements (L378, Mellin form).** Weights `c_n` on the window `X(e^{−W},e^{W})`, with `C_X(s) = Σ c_n n^{−s}`:
+  - (i) `X^{ir}C_X(1+ir) = η̂(r) + O(X^{−½})` for `|r| ≤ R₀` (low-frequency precision);
+  - (ii) `|C_X(½+ir)| ≲ log(|r|+2)` for all `r` (Lindelöf-log on the half-line, window-averaged).
+  - Two-cluster PBAP for all large `X` ⟸ such `c` exist for all large `X` (and ⟺ up to LP-duality bookkeeping).
+- **Smooth weights** `c_n = η(y_n)/n`: (i) holds to `O(X^{−A})` (Euler–Maclaurin), but `C_X(½+ir)` carries the dual partial-ζ sums, and resonance large values `exp(c√(log r/log log r)) ≫ log r` violate (ii).
+- **Random weights** (smooth mean plus independent noise): the noise is Gaussian (fine for (ii) by Salem–Zygmund), but the mean is the smooth certificate and keeps its resonance spikes. Fail.
+- **Sieve weights** (`y`-rough `n`, renormalized):
+  - (i) needs the fundamental lemma with relative error `u^{−u} ≤ X^{−½}`, so `y ≤ (log X)^{2+o(1)}`.
+  - (ii) needs the resonance primes at height `r` (about `p ≍ log r·log log r`) to be sieved out. That needs `y ≳ log r·log log r` for all `r ≤ exp(2WX^{½})`, i.e. `y ≳ X^{½}`.
+  - Incompatible. Also, at `log r ≍ (log X)²` the surviving resonance `exp(√(log r·log log r)) = X^{√(2log log X)}` beats `log r`. **No sieve certificate works.** This is a parity-type barrier: sieve weights cannot imitate primes.
+- **Prime weights** `c_p = log p/p·(1+φ(y_p))`:
+  - (ii) holds heuristically: no multiplicative relations among primes, and Dirichlet alignment of `k` primes costs `log r ≍ k log(1/ε)` for a gain `k log X/X ≪ X^{−½}k`.
+  - (i) needs the window PNT error `≤ X^{½}`, i.e. RH, or a correction `φ` cancelling the explicit-formula terms `X^{ρ−1}`. For finitely many off-line zeros that correction is the finite evaporation tree (L361), so a certificate exists. For infinitely many it is an infinite tree (L325).
+- **Conjecture C383 (ζ-free pseudo-primes).** For every `W ∈ (0, 0.3]` and every large `X`, there are real weights on the integers of `X(e^{−W},e^{W})` satisfying (i) and (ii) with absolute constants.
+  - RH ⇒ C383, with `c = Λ/n`.
+  - C383 ⇒ two-cluster PBAP.
+  - **An unconditional proof needs a construction that is neither sieve-like nor prime-supported**: weights with square-root equidistribution at low frequency and no multiplicative resonance at any height.
+  - If C383 were false for some `X`, two-cluster PBAP would fail for that `X`, hence RH would fail. So C383 is a ζ-free, RH-implied statement whose natural certificates all need RH.
+- **Verdict.** No producer. The growth layer is reduced to C383: the existence of short "pseudo-prime" Dirichlet polynomials, with a parity-type barrier for sieve constructions. This is the cleanest unconditional target in the cancellation sector, and it involves only the integers in one window.
+- **L383 self-audit (same cycle): the smooth certificate's failure zone is a band, not all large heights [heuristic correction].**
+  - The smooth-certificate error at height `r` is `≈ √(2π/r)·D_{J₀}(r)`, a **window** dual sum over `j ∈ J₀e^{(−W,W)}`, with `J₀ = r/(2πX)`.
+  - Resonance amplification needs the window's `j` to be built from resonator primes `≤ log r·log log r`. A window at `j ≍ J₀` contains a positive proportion of such smooth `j` only when `J₀ ≤ (log r)^{O(1)}`. For larger `J₀` smooth `j` have density `ρ(log J₀/log log r) → 0`, resonance is suppressed, and the Gaussian heuristic `|D| ≍ √(N log r)` meets (ii).
+  - Full alignment of a window is impossible in the relevant range: it needs `r ≳ e^{2WJ₀}`, i.e. `J₀ ≲ log X/(2W)`, while it would only matter for `J₀ ≳ (log X)²/W`.
+  - **So the smooth certificate is threatened only on the band `r ∈ X·[(log X)^{2}, X^{o(1)}]`** (polylog-size, smooth-rich dual windows), and is plausibly fine above it. The "all heights beyond `exp((log X)²)`" claim in L383's sieve paragraph is too pessimistic for window polynomials. That claim was based on full partial-ζ sums and must be redone for window duals.
+  - Revised dilemma: low-frequency precision is free for smooth weights (Euler–Maclaurin). The only obstruction is resonance in short smooth-rich dual windows at heights `X·(log X)^{O(1)}`. A sieve on the original variable at level `(log X)^{2}` acts on the dual windows through `Σ_d λ_d d^{−1}D_{dJ₀}`. Whether that kills the band resonance is undecided.
+  - C383 stays the target. Its open core is now localized to one band of heights, `r ≍ X(log X)^{A}`, for one window construction.
+
+### L384 — Ramanujan-expansion view of window certificates: every certificate is a combination of rational aliases `a/q`. Integer aliases (`q = 1`) carry the band resonance; Λ cancels it with all denominators. C383 becomes: how many denominators are needed? REFORMULATION [P] + correction of the L383 sieve heuristic
+- **Alias expansion [P].** For weights `c_n = f(n)·s(n)`, with `f` smooth (`f̂` the Fourier transform in `x`) and `s` an arithmetic weight with Ramanujan expansion `s(n) = Σ_q a_q c_q(n)`:
+  `Σ_n c_n = Σ_q a_q Σ_{(a,q)=1} f̂(a/q)` (Poisson on residue classes).
+  - Smooth weights: `s ≡ 1`, so only `q = 1` aliases `f̂(j)`. These carry the dual window sums `D_{J₀}(r)` and their resonance on the band `r ≍ X(log X)^{A}` (L383 audit).
+  - `y`-rough sieve: `a_q = ρ_y^{−1}·μ(q)/φ(q)·[q | P(y)]`-type. The `q = 1` aliases keep **full weight**, and fractional aliases `a/q` with `q | P(y)` are added.
+  - von Mangoldt: Hardy's `Λ(n) ~ Σ_q (μ(q)/φ(q))c_q(n)` uses **all** `q`.
+- **Correction to L383.** "Rough `n` cannot resonate" argued in the original variable. At heights `r ≫ X` the window sum oscillates faster than the lattice spacing, so its size is set by stationary phase at the aliases, not by multiplicative alignment of the summands.
+  - Sieving does not remove the integer-alias resonance. Only cancellation by fractional aliases can.
+  - Under RH, the full Ramanujan sum (Λ) achieves exactly this cancellation: the zero sums are what remains.
+- **C383 reformulated.** Are there coefficients `a_q`, `q ≤ Q(X)`, with `a₁ = 1`, such that:
+  - the alias combination `Σ_{q≤Q}a_q Σ_{(a,q)=1} f̂(a/q)·(stationary phase at height r)` stays `≲ X^{−½}log r` on the resonance band;
+  - and the low-frequency precision `O(X^{−½})` survives? This needs `Σ_q |a_q|·|aliasing at small r|` to be small, i.e. a fundamental-lemma-type truncation with `Q ≤ X^{o(1)}`.
+  - The open question is whether finitely many denominators (`Q ≍ J₀` up to the band's upper end, `exp(C(log log X)²)`) cancel the band resonance. If yes, C383 and two-cluster PBAP hold unconditionally. If cancellation requires `Q → ∞` with no truncation, the certificate is essentially Λ and needs RH.
+- **Verdict.** No producer. The growth layer's open core is now a concrete question about truncated Ramanujan expansions: which denominators cancel the resonance of the dual window sums. This links PBAP's cancellation sector to the circle method and major arcs (aliases `a/q` are major-arc points). New framing; undecided.
+
+### L385 — Goldston–Yıldırım (truncated Ramanujan) certificates: exact low-frequency precision unconditionally, and the Möbius structure cancels resonance to first order at every prime. The growth layer is "Montgomery-hard", not RH-hard. CANDIDATE CONSTRUCTION [P-sketch] + REDUCTION
+- **Construction.** `Λ_R(n) = Σ_{d|n, d≤R}μ(d)log(R/d)` with `R = X^{1−ε}`. Put `c_n = f(n)Λ_R(n)/κ_R`, where `f(x) = η(log(x/X))/x` and `κ_R = Σ_{d≤R}μ(d)log(R/d)/d` (an exact constant, `→ 1`).
+- **(i) Low-frequency precision [P].** Expand by `d` and apply Poisson in `m` to `Σ_m f(dm)(dm/X)^{ir}`.
+  - Alias `k ≥ 1` is stationary only if `k/d ∈ (r/2πX)e^{(−W,W)}`. For `|r| < 2πXe^{−W}/R` there is none, and each term is `O((kX/d)^{−A}) = O(X^{−εA})`.
+  - So `X^{ir}C(1+ir) = η̂(r) + O(X^{−A})` for `|r| ≤ cX^{ε}`, **exactly, with no PNT or zero input**. (Λ itself fails here unconditionally: its window PNT error is `X^{Θ}`.)
+- **(ii) High frequency: alias expansion.** For `|r| ≥ cX^{ε}`, stationary phase gives `P(r) ≈ √(2π/r)κ_R^{−1}·S(r)` with
+  `S(r) = Σ_{a/q ∈ J₀e^{(−W,W)}, q≤R} η·(a/q)^{−ir}·(μ(q)/q)·G(R/q,q)`, where `J₀ = r/2πX` and `G(Y,q) = Σ_{m≤Y,(m,q)=1}μ(m)log(Y/m)/m = q/φ(q) + O(e^{−c√(log Y)})`.
+  - So `S ≈ Σ_{a/q} (μ(q)/φ(q))(a/q)^{−ir}`: a Farey Dirichlet polynomial with variance `≍ 2WJ₀ log R`.
+  - Hence typical `|P| ≍ X^{−½}√(2W log R)`, which meets `X^{−½}log r`.
+- **Resonance cancellation (first order) [P].** Set the small-prime phases `p^{ir} ≈ f(p)` (`|f| = 1`) for `p ≤ L`.
+  - The smooth `a/q` contributions factor as `[Σ_{q|P(L)}μ(q)f(q)/φ(q)]·[Σ_{a L-smooth}f̄(a)…]`, i.e. `Π_{p≤L}(1 − f(p)/(p−1)) × Π_{p≤L}(1 − f̄(p)/p)^{−1}` up to density factors.
+  - Per prime, `|1 − f/(p−1)|/|1 − f̄/p| = 1 + O(1/p²)` for every unimodular `f`. **So no choice of resonator phases amplifies `S`**: the Ramanujan weights `μ(q)/φ(q)` divide out the Euler product that drives ζ-type resonance.
+  - The truncation `q ≤ R` is harmless: the fundamental lemma applies, since `log R/log L ≍ log X/log log X`.
+  - This is the mechanism by which Λ avoids resonance. GY weights keep it while dropping the minor arcs, where the zeros live.
+- **What remains [open].** (ii) is a pointwise bound at every height. The window polynomial has frequencies in `(−W′,W′)`, so local averaging over width `1/W` gains nothing (Plancherel–Pólya).
+  - Needed: `sup_r |S(r)|/√(Var·log(2+|r|)) ≤ C`, i.e. Gaussian-type sup norms (a Montgomery-type conjecture) for the GY Farey polynomial, uniformly in `X`.
+  - No RH, no zero-density, no Lindelöf for ζ is needed, only the absence of structured large values, which the per-prime identity supports.
+- **Consequences.**
+  - C383 ⟸ (Montgomery-type sup bound for GY window polynomials). Hence two-cluster PBAP ⟸ that bound.
+  - The growth layer of PBAP (L380) is thus **not RH-hard**: under RH, `Λ` certifies; under the sup-norm conjecture, `Λ_R` certifies regardless of the zeros.
+  - This is consistent with L379/L380: two-cluster tests cannot detect finitely many off-line zeros, and per this certificate cannot detect any off-line zeros.
+- **Verdict.** No producer. First certificate candidate for a nontrivial PBAP sector that needs neither RH nor zero information. The positivity layer (many clusters, constant-1 mechanism) is untouched. Next for this sector: rigorous sup-norm control of the GY Farey polynomial at heights `X·(log X)^{A}`, the only band where resonance was a threat.
+
+### L386 — Local-to-global: scale-adapted GY weights give a zero-free arithmetic function with exact smoothed sums at every scale, whose Dirichlet series has no spikes. So it cannot be a producer. The positivity layer is exactly the requirement of spikes, i.e. zeros. STRUCTURAL THEOREM-SKETCH [P-sketch] + verdict on GY as a global producer
+- **Scale-adapted GY function.** `lam_θ(n) := Λ_{n^θ}(n)/κ_{n^θ}`, with `θ = 1−ε` and `κ_R = Σ_{d≤R}μ(d)log(R/d)/d`.
+  - At each scale `X`, Poisson in `m` over `n = dm` (`d ≤ X^θe^{2W} ≪ X`) gives `Σ_n lam_θ(n)φ(n/X) = Xφ̂(0) + O_A(X^{−A})` for every smooth `φ` supported in `e^{(−W,W)}`.
+  - The variation of `R = n^θ` and `κ_R` across a window is smooth and only perturbs the bookkeeping.
+  - So `lam_θ` has **better than RH-quality** smoothed equidistribution, with no zero input. Its Dirichlet series `D_θ` continues to `σ > 0` with only the pole at `s = 1` (Mellin of exact smoothed sums). Formally `D_θ = −(2θ−1)ζ′/ζ + (correction)`, and the correction must cancel every zero pole.
+- **Local certificates (two-cluster growth layer).** At scale `X` the window restriction of `lam_θ` is the GY certificate of L385. It certifies two-cluster PBAP for that `X`, modulo the Gaussian sup-norm conjecture.
+- **Not a global producer.** On the line, `D_θ(½+it) = Σ_{windows}`(window polynomials). Per-window variance is `Σ lam_θ²/n ≍ 2Wθ log X` (GY second moment). Summed over `≍ log t/2W` windows: `Var Re D_θ ≍ (θ/2)(log t)²`, with Gaussian-type (two-sided) fluctuations and no spikes, since `D_θ` is holomorphic across the line.
+  - The producer condition `Re D ≤ ½A ≍ ½log t` fails at Gaussian maxima `≍ log t·√(θ log T)` (L377 variance/skew law).
+  - `Λ` has the same variance, but under RH it is one-sided: `Re(−ζ′/ζ) = ½A − πΣδ_γ`.
+- **Structural conclusion.** PBAP splits as local-to-global.
+  - Every scale admits a zero-free local certificate (GY). Two-cluster tests sit inside one scale pair and are handled by these.
+  - A test spanning many scales needs one arithmetic function whose boundary fluctuation is one-sided (downward spikes) at every height. Zero-free functions with exact smoothed sums are holomorphic across the line, hence two-sided, hence excluded.
+  - So **the global producer must have boundary singularities, and those singularities sit at points where an Euler product vanishes**. This is the cleanest form so far of "the producer is Λ and exists iff RH": the positivity layer is exactly the demand that the spike set be the zero set and lie on the line.
+- **Verdict.** No producer, and GY is closed as a global candidate. Local certificates (growth layer) are zero-free; the global producer (positivity layer) needs spikes. Combined with L140 (extremality of Λ) and C329/Ω, the remaining global candidates are exactly Λ (RH), real-rooted twins, and spiky liquefactions.
+
+### L387 — Where an unconditional producer could still come from: only real-rooted twins (C329) give a producer without RH. Status of the twin route after L378–L386. TRIAGE [P]
+- **Why twins.**
+  - Λ needs RH.
+  - Zero-free arithmetic functions are two-sided (L386) and fail.
+  - Liquefactions need boundary singularities left of the line together with the exact Γ_ℝ chirp. Shifting `ξ(s+ε)` fails because `Γ_ℝ(s+ε)/Γ_ℝ(s)` is not `exp`(Dirichlet).
+  - A real-rooted `F ∈ ζ³ + W₃` (Γ_ℝ³ FE, `f₁ = 1`, triple pole) gives the producer `lam = Λ_F/3` **unconditionally, whatever ζ's zeros do**. It is the unique remaining route to "find the producer" that does not pass through RH.
+- **Perturbative twins are dead (corpus L289/L301, rechecked).** Near a triple zero `γ` of `Z³`, `Z_F = Z³ + εZ_E` has local cubic `x³ + px + q`, with `p = εZ_E′(γ)/Z′(γ)³` and `q = εZ_E(γ)/Z′(γ)³`.
+  - Three real roots need `p < 0` and `|q| ≤ (2/√27)|p|^{3/2}`, i.e. `Z_E(γ) = O(ε^{½})`. So `E` vanishes at every zero to first order, and `E ∝ ζ³` (rosettes otherwise).
+  - The factorized ansatz `Z_E = −εZ·Z_G` needs a degree-2 FE series `G` with `Z_G > 0`. But `V₂ = ℂζ²`, so `Z_G = cZ²` and `Z_E(γ) = 0` trivially.
+- **Non-perturbative twins.** The corpus plan (card `real-rooted-twin-moduli-c329.md`, approach 1) is the bounded Gram-twin test: exact or rational linear algebra on `ζ³ + W₃` with Gram-sign and Turing-count constraints for `M ≤ 300`, tracking `max|f_n|/d₃(n)`. It is the **one decisive experiment** for the existence of a non-Λ producer.
+  - It is a runpod computation, not a Lean data computation, so it is outside the standing compute policy without explicit user authorization (requested 2026-10-03, unanswered).
+  - Analytic alternatives (anti-Selberg obstruction via L360(a) for signed weights, KNS/Hecke structure of `W₃`, quasicrystal uniqueness) have no new handle from L378–L386: the GY/local-to-global results concern zero-free functions, and twins are zero-carrying.
+- **Verdict.** No producer. Triage result: every remaining unconditional route to a producer runs through C329, whose decisive test is computational and awaits authorization. All other sectors are either reduced to RH or Montgomery-type statements (two-cluster: L385) or excluded (zero-free global: L386).
+
+### L388 — Lean: the log-lattice Poisson anti-concentration lemma (L380 Lemma A) is formalized. THEOREM [L]
+- **Module** `RHTower/LogLatticePoissonAnticoncentration` (946 lines; standard axioms; `lake build --old` green; wired into `RHTower.lean`). Card: `3-formalized/11-rh-zero-divisor-geometry/log-lattice-poisson-anticoncentration.md`.
+- **Main theorem** `norm_integral_le_of_vanish_logLattice`. Hypotheses:
+  - `h = specFn F` (integrable `F`), supported in `[−W,W]`;
+  - `h(log(n/X)) = 0` for all integers `n ≥ 1`;
+  - a `C²` cutoff equal to `1` on `[−W,W]`.
+
+  Conclusion: `‖∫h‖ ≤ ∫‖F(r)‖·(4K_far/X² + [|r|e^a/(πX) > 1]·4C√(|r|e^a/(πX)))`.
+  - Spectral mass below height `πXe^{−a}` costs only `X^{−2}`.
+  - Above it, the cost is `X^{−½}√(|r|/X)`.
+- **Proof chain in Lean:**
+  - exact double integration by parts with explicit density `p₁ = η″/ψ² − 3η′ψ′/ψ³ − ηψ″/ψ³ + 3ηψ′²/ψ⁴`;
+  - the corpus second-derivative test for the stationary aliases;
+  - alias sums over ℤ via `natAbs` folding;
+  - transport `x = Xe^y` (continuity, compact support, vanishing at integers);
+  - Fubini on `Ioc(−a,a) × ℝ` with domination `‖η(y)‖‖F(r)‖`;
+  - mathlib Poisson summation (`Real.tsum_eq_tsum_fourier_of_rpow_decay_of_summable`) at `x = 0`.
+- **Status.** First Lean-certified ingredient of the two-cluster (cancellation) sector of PBAP. Corollary B (two-cluster PBAP below `X(log X)²`) still needs the corpus Weil-form interface and window positivity; that is the next formalization target in this sector. No producer.
+
+### L389 — Twin rigidity core (C329 ⟺ L139 open core): the degree-0 inner class is nonempty and rich, so rigidity must come from the prescribed −3 multiplicity at ζ's zeros. The spectral gap is automatic; real-rootedness is the only content. ANALYSIS [P]
+- **Degree-0 inner class.** Meromorphic exp-Dirichlet series `H = exp(Σ_{n≥2}c(n)n^{−s})` (real `c`, finite order), with `H(s) = ±H(1−s)` and all zeros and poles on `Re s = ½`.
+  - **Nonconstant members exist** (correction to the reading of L139 "is every such H constant?"). Example: `H = ((1−2^{½−s})/(1+2^{½−s}))²`, using `(1−u)/(1+u) = exp(−2Σ_{m odd}u^m/m)` with `u = 2^{½−s}`. Its zeros are at `t = 2πk/log 2` and its poles at `(2k+1)π/log 2`.
+  - More generally, ratios of stable exponential polynomials in `p^{½−s}` with matching FE factors (Kurasov–Sarnak type). These have bounded zero density `O(1)` per unit height.
+- **Twins.** `F ∈ ζ³ + W₃` real-rooted ⟺ `H = F/ζ³` is in the inner class with divisor `(zeros of F) − 3·(zeros of ζ)`. A twin's `H` has `≍ (3/2π)T log T` divisor points up to `T`, so it cannot come from finitely many primes (L388 note). The finite-prime examples are irrelevant to C329.
+- **Automatic constraints.**
+  - The boundary measure `ν = Σ_{F-zeros}δ − 3Σ_{ζ-zeros}δ` has `ν̂` supported in `±log ℕ*` (spectral gap `(−log 2, log 2)`), i.e. `Σ_F φ = 3Σ_ζ φ` for every `φ` with `φ̂ ⊂ (−log 2, log 2)`.
+  - This holds for every `F ∈ V₃` by the two explicit formulas (same archimedean and pole data; prime terms invisible below `log 2`), so it gives no information.
+  - Gram-law and Turán-type necessary conditions hold asymptotically for high moments: `e(1) = 0` makes `Φ_E` decay faster than `Φ_{ζ³}`. Any obstruction lives at finite height.
+- **Consequence.** No soft (spectral-gap, moment, or finite-prime) argument decides C329. Rigidity, if true, must use real-rootedness of a non-automorphic, non-explicit element of `W₃` (Knopp-type abundance). The bounded Gram-twin computation stays the decisive instrument, still awaiting authorization.
+- **Verdict.** No producer. C329 is isolated as the unique non-RH route, with all soft obstructions shown vacuous.
+
+### L390 — Corollary B in corpus language: exact two-cluster Weil identity, and why the straightforward formalization would be nearly vacuous. AUDIT [P]
+- **Exact identity in Zeta23 conventions [P].**
+  - Setup: `β ∈ C²_c` with `tsupport β ⊆ [−w,w]`; `f = β − transl L β`; `ψ = EF.weilTest β β`; `X = e^L`; `L > 4w`.
+  - From `weilTest_sum_transl`: `EF.weilTest f f = 2ψ − transl L ψ − transl (−L) ψ`. Prime-blindness ⟺ `ψ(log n − L) = 0` for all `n ≥ 1`.
+  - From `paperFT_weilTest`, translation phases, and the jump form `integral_normSq_mul_arch_eq_jump` applied to `f`, with `∫|f̂|²(1−cos(τt/2)) = 2π(k(0) − Re k(t/2))`:
+    `Re W(f) = 2·Re W(β) − (X^{½}+X^{−½})·Re Q + ∫_0^∞ archJump(t)·Re ψ(t/2 − L) dt`,
+    where `Q = paperFT ψ(I/2) + paperFT ψ(−I/2)` and `W(β)` is the single-block energy.
+  - The cross term is supported on `t ∈ [2L−4w, 2L+4w]`, so its size is `≤ 2·archJump(2L−4w)·∫|ψ| = O(X^{−½})`.
+  - Single block, by killing: `Re W(β) ≥ (ψ(¼) − log π + ∫_{4w}^∞ archJump − 4we^{2w})‖β‖²`, positive for `w < 7·10^{−5}` via `archJump(t) ≥ e^{−1/4}/t` on `(0,1]`.
+- **Why it is nearly vacuous without frequency resolution.**
+  - Lemma A bounds `|Q|` by `∫‖F_±‖·Bnd`, where `F_±` is the spectral density of `ψe^{∓u/2}`.
+  - A prime-blind block must put spectral mass `≍ ‖β‖²` near the first aliases `r ≍ 2πX`, where the weight `4C√(thr)` is `≍ X^{−½}`. So `X^{½}|Q|` is `≍ C′‖β‖²`, the same order as the single-block margin.
+  - Positivity therefore needs **frequency-resolved absorption**: `A(r) ≍ log X` at `r ≍ X` beats `C′`. A total-mass window bound cannot supply this.
+  - The meaningful Lean statement needs:
+    (i) a frequency-resolved arch lower bound `∫|β̂|²A ≥ ∫|β̂|²·min(A, A(cX))`-type;
+    (ii) control of `|F_±|` by `|β̂(·±i/2)|²`, with a comparison of the `e^{∓u/2}`-twisted spectra on tiny supports.
+  - That is substantially more than the identity above. The value is a regime theorem (two-cluster PBAP below `X(log X)²`, for blocks of width `< 7·10^{−5}`), with the tail hypothesis remaining.
+- **Verdict.** Formalization deprioritized: cost is high and the payoff is a regime statement in the growth layer, which already reduces to C383 (Montgomery-type, not RH). No producer.
+
+### L391 — Hermite–Biehler pairs: a twin from a non-self-dual producer. VERDICT: CIRCULAR, with a survivor [P]
+- **Construction.** Take a pair `(A, B)` of Dirichlet series with `Λ_A(s) = Λ_B(1−s)`, where `Λ_A = Γ_ℝ(s)³A`. These are the KNS pair space of the degree-3 Hankel transform; the self-dual part is `W` (Theorem A).
+  - Put `E(s) = (s(s−1))³Λ_A(s)` and `F = A + B`. Then `ξ_F(s) = E(s) + E(1−s)`.
+  - The Gamma factors cancel in the ratio: `|E(s)|/|E(1−s)| = |A(s)|/|B(s)|`.
+  - Hence (Taylor–Lagarias mechanism): if `|A| > |B|` on `Re s > ½`, then `F` is real-rooted.
+- **Check on known examples.** Degree 0, conductor `q`: `A = 1`, `B = √q·q^{−s}` gives `1 + √q·q^{−s}`, real-rooted and without an Euler product for `q = 6`.
+- **Why it is circular.**
+  - On the line, `|A| = |B|`. So `Θ = B/A` must be inner on `Re s > ½`.
+  - Its boundary phase is monotone ⟺ `Re E'/E ≥ 0` on the line ⟺ (Phragmén–Lindelöf, `E` zero-free inside) `−A'/(3A)` is itself a producer (Herglotz).
+  - So an HB pair needs its half `A` to be a producer already.
+- **Survivor (exact).** A producer `A` lying in the Hankel pair space, with `B ≠ A`, gives the real-rooted twins `A ± B` (root numbers `±1`), and `A + cB` is zero-free on `Re s > ½` for `|c| ≤ 1`. Producers in the pair space therefore come with twin pairs. No new existence.
+
+### L392 — Twins as degree-0 inner functions; staircase sine series; finite-prime exclusion. [P, partial]
+- **Exact reformulation (under RH).** Let `F ∈ V₃` and `h = F/ζ³`. Then `h(s) = h(1−s)`, `log h` is a real Dirichlet series over `ℕ`, and `h` is real on the line.
+  - `F` is real-rooted ⟺ `h` is zero- and pole-free on `Re s > ½`, its divisor lies on the line, and its poles sit at ζ-zeros with order `≤ 3m_ρ`.
+  - Writing `log h = Σ b_n n^{−s}`, the phase identity on the line is `Σ_n b_n n^{−½} sin(t log n) = −π(N_h^{zero}(t) − N_h^{pole}(t))`.
+  - So the sine series of `b` is an integer staircase. Example: `h₀ = ((1−u)/(1+u))²`, `u = 2^{½−s}`, gives the square wave `−4Σ_{k odd} sin(kt log 2)/k = −π·sign sin(t log 2)`.
+- **Generalization to `W`.** `Λ + c·w_h ∈ W` (with `w_h` the coefficients of `−h'/h`) ⟺ `μ_ξ + c·div(h) ≥ 0` on the line, i.e. the polar divisor of `h` is `≤ (1/c)·div ζ`. Saturated atomic producers are exactly the "generalized inner" `h` with real-mass divisor `≥ −μ_Λ`.
+- **Finite prime support.**
+  - Suppose `log h` is supported on `⟨S⟩` with `S` finite, and `h = G(√p·p^{−s} : p ∈ S)` with `G` the Cayley transform of an inner function `Θ` on the polydisc (`Θ(0) = −i`).
+  - Then the poles of `h` form the Kurasov–Sarnak quasicrystal `{Θ∘z = 1}`. For a twin, ζ would have to vanish on all of it.
+  - `|S| = 1`: `h` is `2πi/log p`-periodic, so its poles form a vertical AP. Off-line APs are excluded by zero density; on-line APs by Li–Radziwiłł (positive proportion of nonvanishing on APs). Then `h` is constant, so `F = ζ³`. **Closed [P].**
+  - `|S| ≥ 2`: two gaps remain open.
+    (a) Representing `h` as `G∘z` on the critical annulus needs Bohr convergence there. Bohr's `σ_u = σ_b` only gives it on `σ > 1` and `σ < 0`, because `log ζ` is unbounded in the strip.
+    (b) The first moment `Σ_{τ∈{Θ∘z=1}, τ≤T} ζ(½+iτ)` heuristically equals `(T/2π)·[Re-positive Herglotz constant] ≠ 0`, but it is not proved.
+- **Verdict.** Genuine twins need infinitely many primes in `supp(Λ_F − 3Λ)`, and staircase sine series of log-integer frequency whose downward jumps all hit ζ-zeros. No construction and no exclusion.
+
+### L393 — Shifted cones `W_h`, prime-gap weights, and the variance–resonance tension. VERDICT: FALSE (gap producer); survivor = exact tension law [P/heuristic]
+- **`W_h`.** Herglotz on `Re s > ½ + h` for the same datum: `W = W₀ ⊆ W_h`.
+  - `Λ ∈ W_h` ⟺ `Θ ≤ ½ + h` (pair law `2x(x²−δ²+u²)/…`). So `Λ ∈ W_h` unconditionally for `h ≥ ½`; this is Taylor's mechanism, with `ξ(s+½) + ξ(s−½)` real-rooted.
+  - For `h > Θ − ½`, `W_h` has slack (absolutely continuous boundary measure), so it is not thin.
+- **Corpus check.** Single-prime twin exclusion (L392) is subsumed by `eq_vonMangoldt_of_weilPositiveFull_of_powers` (`WeilFullConeLacunaryRigidity`) and the dyadic case: a `lam ∈ W` differing from `Λ` only on `{p^k}` is `Λ`, unconditionally.
+- **Prime-gap weights.** Put `lam(p_k) = p_{k+1} − p_k` (zero off the primes).
+  - With `D(x) = (next prime after x) − x`, `Z_gap(s) = 2^{1−s}s/(s−1) + s∫_2^∞ D(x)x^{−s−1}dx`.
+  - Since `∫_{p_k}^{p_{k+1}} D·x^{−σ−1} ≤ g_k² p_k^{−σ−1}` and Heath-Brown gives `Σ_{p≤x} g² ≪ x^{23/18+ε}`, the function `Z_gap − 1/(s−1)` is **holomorphic on `Re s > 5/18` unconditionally** (on `Re s > 0` under RH).
+  - So it is a zero-free substitute for `−ζ'/ζ`, at the level of holomorphy: `Σ(g_p − log p)p^{−s}` carries exactly the poles of `ζ'/ζ`.
+- **Why it is not a producer, even in `W_h` for any `h < ½`.**
+  - Prime support plus mean-one partial sums force `lam(p) ≈ log p` in short windows. So the Bohr-lift variance on `Re s = ½+h` is `≥ Σ log²p·p^{−1−2h} ≈ 1/(4h²)`; for gap weights it is about `2×` that.
+  - The values are two-sided Gaussian. At heights `log t ≲ 2/h²`, `Re Z_gap` exceeds `a_∞ ≈ ½ log t` with positive frequency.
+  - Unconditionally, size bounds in the strip would need prime exponential-sum (zero-free-region) input. Phragmén–Lindelöf from `|Z_gap| ≤ C(σ)|t|` gives only polynomial bounds.
+- **Tension law (heuristic, exact constants).** Let `lam` be real with `Σ_{n≤x} lam ~ x`.
+  - Supported on multiplicatively independent integers (degree-1 Bohr chaos): boundary variance at `½+h` is `≳ 1/(4h²)`.
+  - Spread over all integers (variance `≈ 1/(2h)`): the multiplicative chaos creates Euler-type resonances, `sup_{t≤T} Re Z ≥ exp(c(log T)^{½−h}/log log T) ≫ log T`.
+  - A producer at `h = 0` must beat both. Only spike structures do (zeros on the line with `Re Z = a_∞` exactly between them): `Λ` under RH, or twins.
+  - This is L386 with constants. **No unconditional producer exists in the gap, sieve or mollified families.**
+
+### L394 — Zeros-first twins: staircase formulation and a phase-space count predicting that C329 is FALSE for k ≥ 3. VERDICT: SURVIVES PRELIMINARY ATTACK (heuristic); OPEN CORE stated
+- **Exact staircase formulation.** Put `Θ_k(t) = kθ(t)/π + k`, where `θ` is the Riemann–Siegel theta function; note `θ'(t) = a_∞(t)` exactly.
+  - A real-rooted `F ∈ V_k` (`f_1 = 1`, pole of order `k`) exists ⟺ there is a real sequence `(b_m)_{m≥2}` (tempered) such that `N(t) = Θ_k(t) + Σ_m b_m sin(t log m)` is a non-decreasing integer step function.
+  - Proof: (⇒) take `b` from `S_F`. (⇐) `μ = dN` is positive with `𝓕μ = kT_∞ − ν`, `ν` on `±log ℕ`. The converse explicit formula gives `lam = c_m√m/k ∈ W` with boundary masses in `(1/k)ℕ`; MUST-670 then gives the twin.
+  - Zeros are placed on the line by construction (Furmaniak 2601.18687 builds real-rooted Hadamard products this way, but with a non-Dirichlet residual `R(s)`). The only condition left is that the spectrum lie in `log ℕ`.
+- **Phase-space count (KNS-type).**
+  - `Γ` (density `(k/2π)log t`) controls `{|x| ≤ (k/2)log t}` (Nyquist). `L = ±log ℕ` controls `{|t| ≤ πe^{|x|}}`.
+  - Unknowns: point positions, `(k/2π)T log T` up to height `T`. Constraints (cells not covered by `L`): `≈ (1/π)T log T`. Excess `((k−2)/2π)T log T`.
+  - `k = 1`: overdetermined. The fundamental harmonic of the Gram sawtooth sits at `x = log(t/2π)`, inside the uncovered gap `½log t < x < log(t/π)`. A solution needs a miracle: ζ, iff RH.
+  - `k = 2`: critical; isolated solutions (KP: `V₂ = ℂζ²`).
+  - `k ≥ 3`: underdetermined, so a positive-dimensional family of real-rooted solutions is predicted. This is consistent with Theorem A (`dim V₃ = ∞`) and reproduces the Hecke/KNS degree threshold.
+- **Seed.** Degree-`k` Gram staircases `N = ⌊Θ_k + P⌋`.
+  - The residual is the sawtooth `−ψ(Θ_k + P)`. Its `j`-th harmonic sits at `x = jk·log(t/2π)`, which is `> log(t/π)` once `t > 2π√2` for `k = 3`.
+  - So the residual lies in `L`-controlled cells: small in the constrained region, `O(1)` in amplitude.
+- **Rigidity at `ζ^k` (paper).** A real-root-preserving unfolding of a `k`-fold zero needs a leading perturbation `ζ^{k−2}E₂` with `E₂` in the entire part of `V₂`, which is `0` (KP); or `ζ^{k−j}E_j` with `j ≥ 3`, whose local model `x^{k−j}(x^j + εc)` has non-real roots.
+  - So `ζ^k` is an isolated singular point of the solution variety. Twins must lie on a separate component of simple-zero configurations.
+- **Tension with Ω.** As `k → ∞`, `μ_k/k` tends to a producer.
+  - An absolutely continuous limit would contradict the L393 heuristics.
+  - An atomic integer-mass limit gives `Λ` and RH (integer-counting theorem).
+  - So twins at all large `k` force `S_{F_k} ≫ k` or exotic singular limits.
+- **Conjecture C394 (¬C329).** For `k ≥ 3`, `V_k` contains real-rooted elements other than `ζ^k`; hence `W ≠ ∅` unconditionally, with producer `Λ_F/k`.
+  - **[OPEN CORE]**
+    (i) a KNS frame/interpolation theorem for the pair `(Γ, log ℕ)`, `Γ` of density `(k/2π)log t`;
+    (ii) a seed with residual small in the frame norm (the Gram seed is `O(1)`);
+    (iii) Newton / Nash–Moser.
+  - **Decisive finite test:** the C329 Gram-twin computation, now with a sharp prediction: feasible for `k = 3`, zeros near degree-3 Gram points, bounded coefficients. It needs user authorization for a runpod run.
+
+### L395 — Attacking C394 (¬C329): nothing fatal; the open core sharpened to a Poincaré–Wirtinger weight mismatch. [P/heuristic]
+- **Attacks tried, none fatal.**
+  - Littlewood `∫S_F = O(log T)`: compatible.
+  - Montgomery pair correlation: a twin's simple zeros need `F_F(α)` to reach the diagonal `1` near `α ≈ 1/3` (degree-3 range). `Σ|Λ_F|²/n ~ 9·½log²x`, the same as `3Λ`, gives `3α`, which is consistent. `ζ³` reaches `3` at `α = 1` (triple diagonal). So the second moment cannot separate twins from `ζ³`.
+  - Bohr–Jessen: `F = exp(Dirichlet)` makes the Jessen function `0` automatically.
+  - Davenport–Heilbronn mechanism (paper): if `F = ζ³ + E` with `Σ|e_n|/n < ∞` and `E ≠ 0`, then `F` has zeros in `σ > 1`. The large-prime Euler tail of `ζ³` has log-range `E₁(η log P) → ∞` while `E`'s tail is uniformly small. So twins need `Σ|e_n|/n = ∞`: `E` must be Euler-like in the large-prime tail (compare L343).
+- **Free-mass count (general producers, not only twins).**
+  - Atoms with free positions and masses at density `(c/2π)log t` control `|x| < c·log t` (Hermite sampling doubles the bandwidth).
+  - `c = 1` (`Λ`'s density) is critical up to the unreliable constant `log π`, consistent with the corpus rigidity around `Λ`.
+  - `c > 1` predicts producers with masses `≈ 1/c`.
+  - As `c → ∞` the limit would be absolutely continuous, which L393 says fails, so large-`c` families must stay spiky (clustered). The count ignores the global positivity and Ω constraints, so it is only a heuristic.
+- **Open core (i), made precise.** Want: uniqueness/frame for the pair (`f|_Γ = 0`, `f̂|_{±log ℕ} = 0`), `Γ` of density `(c/2π)log|t|`, `c > 2`.
+  - Γ-side Poincaré–Wirtinger: `∫|f|²log²|t| ≤ (4/c²)∫|f'|² = (4/c²)∫x²|f̂|²`.
+  - L-side: `π²∫|f̂|²e^{2|x|} ≤ ∫t²|f|²`.
+  - The second needs `t²` while the first controls only `log²t`. The KNS global-weight argument does not close: the phase-space hyperbola `t ≍ e^{|x|}` needs wave-packet localization adapted to the `(t, log t)` geometry, while `f̂(log m) = 0` is a global constraint.
+  - This is the exact technical gap.
+
+### L396 — Gram producers: a linear construction route with fixed nodes; Farkas dual; the absorption inequality is the core. [P/heuristic]
+- **Idea.** Drop the twin requirement (FE, masses `1/k`). Fix the nodes at the degree-`c` Gram points `g_n` (`cθ(g_n)/π ∈ ℤ + const`, density `(c/2π)log t`) and solve **linearly** for masses `m_n` and lattice weights.
+  - Target: `μ = Σ m_n δ_{g_n}` with `𝓕μ = T_∞ − ν_lam` and `ν_lam` on `±log ℕ`.
+  - If `m_n ≥ 0`, then `lam ∈ W`: a producer, unconditionally. No Newton step is needed, positions never move, and positivity is an open condition near `m ≡ 1/c`.
+- **Exact obstructions to the naive versions.**
+  - Gram-exact twins (zeros exactly at Gram points, masses `1/c`) are impossible. They force `Z_F = A·cos(cθ)` with `A = Â(½+it) > 0`. So `Â(s) = Â(1−s)` is a degree-0, conductor-1 Dirichlet series with a pole, hence constant. Varying masses are necessary.
+  - With `lam ≡ 1` the masses are `m_n ≈ (1/c)(1 − 2Re ζ(½+ig_n)/log g_n)`, which become negative wherever `Re ζ > ½log t` (a positive linear density of bad nodes). The lattice weights must be redesigned, not just sampled.
+- **Comb aliasing.**
+  - Poisson summation in `u = cθ/π` gives `(1/c)Σδ_{g_n} = (θ'/π)[1 + 2Σ_{j≥1}cos(2jcθ(t))]`.
+  - The alias `j` is the chirp with stationary frequency `x = jc·log(t/2π)`, which is `> log(t/π)` for `c ≥ 2` and `t ≥ 9`. So the aliases lie in the `L`-controlled region.
+  - Chirp synthesis by lattice bands `m ≈ (T/2π)^{jc}` pollutes other heights by `≈ T^{(1−jc)/2}` (summable for `c ≥ 2`). This is a stationary-phase count; the needed exponential-sum bound is exactly the setting of the Lean-proved log-lattice Poisson lemma (`RHTower.LogLatticePoisson`).
+- **Farkas dual (exact).** A Gram producer exists ⟺ for every lattice-blind compactly supported `k` (`k(±log m) = 0` for all `m ≥ 2`) with `k̂(g_n) ≥ 0` at all Gram points, `pole(k) + arch(k) ≥ 0`.
+  - This strengthens PBAP: only node-wise positivity of `k̂` is assumed.
+  - **Dip heuristic.** `k` of support `X` makes `k̂` of type `X`. Below height `πe^X`, lattice-blindness controls `k` (Lemma A regime). Above it, `k̂` can dip between Gram nodes only if `X > (c/2)log t > (c/2)X`, impossible for `c ≥ 2`.
+  - For `c = 1` dips are possible at heights in `(πe^X, e^{2X})`, which explains why exact Gram behaviour fails for ζ.
+- **[OPEN CORE] = absorption inequality (precise).** For all `φ` in a weighted test space:
+  `|∫θ'(t)φ(t)dt − (π/c)Σ_n φ(g_n)| ≤ C·‖(φ̂(±log m))_m‖_w + η·‖(φ(g_n))_n‖_w`, with `η < 1/c`.
+  - Closed range plus this bound gives an exact solution `m = 1/c + δm` with `|δm_n| ≤ η' < 1/c`, hence `m > 0`.
+  - The left side is the comb-aliasing functional `∫φ'·(chirp sawtooth)`.
+  - Its proof needs a wave-packet partition of the `(t, x)` plane along `|x| = log(t/π)`. The `L` side is the local Lemma A estimate; the `Γ` side is Nyquist for Gram nodes (`c/2 > 1`).
+- **Status.** This is the most concrete unconditional producer route so far. Linear algebra plus one harmonic-analysis inequality, with no FE and no RH. No proof yet.
+- **Correction to the L396 absorption inequality (pole term omitted).** With `A = 2θ'`, the exact node identity for a lattice-blind `k` (`φ = k̂`) is `Σ m_nφ(g_n) = ∫θ'φ/π + φ(i/2) + φ(−i/2)`. The inequality to prove is therefore
+  `|∫θ'φ/π + φ(i/2) + φ(−i/2) − (1/c)Σφ(g_n)| ≤ C‖(φ̂(±log m))‖_w + η‖(φ(g_n))‖_w`, `η < 1/c`.
+  - The pole part is where Lemma A enters: a lattice-blind `k` of support length `L` has `pole(k)` small unless `k̂` carries mass at `|r| ≳ e^L`.
+  - At those heights the Gram nodes resolve `k̂`: Nyquist bandwidth `(c/2)log r ≥ (c/2)L > L = type(k̂)` for `c > 2`. So node-wise positivity of `k̂` is essentially global positivity there, and the remaining inequality is PBAP itself in the window `|r| ≳ e^L`.
+  - That is the two-cluster Lindelöf regime above `X(log X)²` (C383, `X = e^L`). **The Gram route inherits the C383 core; it does not bypass it.**
+
+### L397 — How hard is C383? Off-line-zero visibility in the Lindelöf regime (tension with L385). [heuristic; to resolve]
+- **Identity (two-cluster).** `X^{½}P₊P₋ − W(β) = −Σ_ρ ψ̂(γ_ρ)(1 − cos γ_ρL)`, with `ψ = β⋆β̃` and `X = e^L`.
+  - For a zero pair `½ ± δ + iγ`, put `Ψ = ψ̂(γ − iδ)` (ψ real and even, so `ψ̂(z̄) = conj ψ̂(z)`). The pair term is `2[Re Ψ(1 − cos γL·cosh δL) − Im Ψ·sin γL·sinh δL]`.
+  - Its magnitude is `≈ X^δ|Ψ|`. Its sign can be chosen by aligning the continuous parameter `L`.
+- **Low heights cannot see off-line zeros.** By Lemma A, prime-blindness suppresses `ψ̂` at bounded complex points by `X^{−2}` (the `Kfar` term) when the spectral mass lies below `πX`. So an off-line zero at bounded height is invisible; consistent with Corollary B.
+- **Lindelöf regime.** For `ψ̂` concentrated at height `r ≫ X(log X)²`, the on-line zeros near `r` contribute `≈ −(mass)·log r`, while an off-line zero at height `≈ r` contributes `≈ +X^δ|Ψ|` with `X ≤ r`.
+  - Heuristically, two-cluster PBAP then fails as soon as some zero has `δ ≳ log log γ/log γ` *and* prime-blind `ψ` can be localized at that height with `|Ψ|` of order its mass.
+  - This would make two-cluster PBAP (hence the Gram route, L396) essentially as strong as a near-RH zero-free region.
+- **Tension.** L385 says two-cluster PBAP ⟸ Montgomery-type sup-norm bounds, which are not known to give zero-free regions. One of the two is too optimistic. Either:
+  (a) prime-blind `ψ` cannot localize `Ψ` at an off-line zero (prime-blindness forces `|Ψ| ≪ X^{−δ}·mass`, a new rigidity statement); or
+  (b) the L385 reduction hides a zero-free-region input.
+  - Resolving this decides whether any unconditional producer construction (Gram, twin or KNS) is plausible, or is RH-strength in disguise.
+- **Next step.** Recheck L385's GY certificate for where off-line zeros enter: `Λ_R(n)`'s Dirichlet series is `ζ(s)·Σ_{d≤R}μ(d)log(R/d)d^{−s}`, which carries no poles at ζ-zeros. Then test (a) against Lemma A with complex spectral shift `γ − iδ`.
+- **L397 resolution (same session).**
+  - **Option (a) holds below the Lindelöf regime.** Apply Lemma A to `h(u) = ψ(u)e^{δu}e^{iγ₀u}`, which vanishes on the lattice. Its spectrum is `ψ`'s shifted to `{≈0, ≈2γ₀}`, so `|Ψ| ≲ mass·(X^{−2} + √(γ₀/X)·X^{−½})`. The off-line term `X^δ|Ψ|` is then `≪ mass·log γ₀` for `γ₀ ≪ X^{2−2δ}`.
+  - L397's heuristic wrongly assumed `|Ψ| ≍ mass`. Prime-blindness forces `|Ψ|` down to window-polynomial size `≍ X^{−½}·√log`, and then `X^{δ−½} ≪ log` for every `δ < ½`.
+  - So off-line zeros are invisible to two-cluster tests **provided** the window polynomials have Gaussian sup norms. No near-RH zero-free region is implied. L385 stands: two-cluster PBAP is Montgomery-hard, not RH-hard.
+  - **New sub-question (decisive for the Gram route).** By Poisson in `a`, the GY Farey polynomial `S(r) = Σ_{a/q}(μ(q)/φ(q))(a/q)^{−ir}` becomes a bilinear Möbius sum over `q ≤ R`, with dual frequencies `k ≈ X/q`.
+    - If its large values track those of `Σ_{q≤R}μ(q)q^{−½−ir}` (truncated `1/ζ`, which is large near zeros), then the "Montgomery-type" sup norm is itself zero-sensitive, and the growth layer is RH-hard after all.
+    - If the reciprocity `qk ≈ X` decouples the Möbius phases, it is genuinely zero-free.
+    - Test: compute the second and fourth moments of `S(r)` over `r ∈ [T, 2T]` (T = X(log X)^A) via Kloosterman/Farey reciprocity. This is a paper computation, not numerics.
+
+### L398 — CORRECTION to L385: the Goldston–Yıldırım sup-norm route is zero-sensitive and needs a near-RH zero-free region. VERDICT: L385's "Montgomery-hard, not RH-hard" is FALSE for the GY certificate [P-sketch]
+- **Mechanism.** By Perron with the log weight,
+  `M_R(s) = Σ_{d≤R}μ(d)log(R/d)d^{−s} = log R/ζ(s) + ζ'(s)/ζ(s)² + Σ_ρ R^{ρ−s}/((ρ−s)²ζ'(ρ)) + …`.
+  - So `ζM_R(s) = log R + ζ'/ζ(s) + ζ(s)Σ_ρ R^{ρ−s}/((ρ−s)²ζ'(ρ)) + …`.
+  - At `s = ½+it` near an off-line zero `ρ = ½+δ+iγ`, `ζ(½+iγ) ≈ −δζ'(ρ)` gives `ζM_R(½+iγ) ≈ −R^δ/δ·(δ) ≍ R^δ`.
+- **The window does not kill it.** The GY window sum `Σ_{n≈X}Λ_R(n)n^{−½+ir}w(n/X) = ∫_{Re s=½} ζM_R(s)·w̃(s−½−ir)X^{s−½−ir}ds` has no poles crossed. Near `r ≈ γ` the zero term contributes `R^δ·(Lorentzian FT at frequency log(X/R) = ε log X) ≍ R^δX^{−εδ} = X^{(1−2ε)δ}`.
+  - The window variance is `≍ log²X`. So the GY Gaussian sup-norm bound at heights `r ≍ X(log X)^A` fails whenever a zero at that height has `δ ≫ log log X/log X`.
+  - Running over all `X` gives: **GY sup norms ⟹ no zeros with `β − ½ ≫ log log γ/log γ`**, a near-RH zero-free region.
+- **What survives from L385.**
+  - (i) Exact low-frequency precision (no zeros needed).
+  - (ii) First-order per-prime resonance cancellation (correct, but irrelevant to zero-driven large values: those are global, from all `d ≤ R`, not from small primes).
+- **Consequence for the program.** The Gram route (L396) → C383 → GY certificate is RH-strength in disguise. No unconditional producer route is currently known that avoids near-RH input.
+  - Remaining non-RH door: twins (C394) by direct construction (KNS frame + seed). That needs no certificate, but also has no proof.
+- **Lesson (methodology).** Any certificate whose Dirichlet series is `ζ × (finite Möbius polynomial)` inherits `R^δ` large values from off-line zeros through the Perron residues of the mollifier. Check this before calling a weight system zero-free.
+
+### L399 — R4 analysis: `W`'s freedom density equals the zeros-first surplus; real-rootedness is open, so everything hinges on one seed; Rice/Wendel evidence cuts the other way. [P-sketch + heuristic]
+- **Freedom density of `W_d` (Hankel chart, KNS phase space).**
+  - Nodes `X_n = √d·n^{1/d}` control `|Y| < c·X^{d−1}`; the dual nodes control `|X| < c·Y^{d−1}`. Height `t` corresponds to the hyperbola `XY = dt/2π` (stationary phase of the `Γ_ℝ^d` kernel at `xy = (t/2π)^d`).
+  - On that hyperbola the overlap is `X ∈ (t^{1/d}, t^{(d−1)/d})`, of log-length `((d−2)/d)log t`. The area below gives a **freedom density of `((d−2)/2π)log t` per unit height**.
+  - `d = 1`: overdetermined (Hamburger). `d = 2`: `0` (Hecke/KP). `d = 3`: `(1/2π)log t`.
+  - This is exactly the zeros-first surplus of L394. The two counts agree, which supports both.
+- **Consequence: the real-rooted locus is open in `ζ³ + W`.**
+  - Its expected dimension density equals `dim W`. So real-rootedness with simple, separated zeros is an *open* condition on `ζ³ + W` (Hurwitz plus Turing control), and C394 ⟺ **existence of a single seed** with simple zeros.
+  - `ζ³` is not one: its triple zeros make it an isolated degenerate point (L301), not a boundary point of the open locus.
+- **Sampling is critical, so the values cannot be prescribed.** `Z_E` has local bandwidth `(3/2)log(t/2π)` (approximate functional equation of length `(t/2π)^{3/2}`), which equals the Nyquist rate of degree-3 Gram points. But `W` has only one third of that freedom. So `E ↦ (Z_E(g_j))_j` is far from onto, and "prescribe `Z_F = ±1` at Gram points" is unavailable.
+  - Real-rootedness must come from `(3/2π)log t` *sign* constraints on `(1/2π)log t` parameters.
+- **Evidence against existence.**
+  - (i) Rice: a random real `Z_F` with flat spectrum on `[0, B]` has real-zero density `B/(π√3)`, i.e. `1/√3 ≈ 58%` of the argument-principle count. Twins are large deviations, with probability `≈ exp(−c·T log T)` in the window up to `T`.
+  - (ii) Wendel: `m = 3n` structured-but-generic half-spaces in `ℝ^n` rarely intersect.
+  - (iii) Literature pattern: Davenport–Heilbronn, Epstein ζ, and Hejhal's non-arithmetic Hecke-group L-functions all have off-line zeros.
+  - Against that, the zeros-first construction (real zeros by design, equality constraints, positive surplus) predicts existence *if* the nonlinear solve has a seed. There is no seed.
+- **Updated verdict on C394.** UNDECIDED. The counting arguments only give openness, not existence. Existence is equivalent to one seed, and the generic-random heuristic predicts none.
+  - The finite Gram-twin computation (C329 approach 1) is the clean discriminator: it finds a seed at finite height or certifies infeasibility.
+
+### L400 — Correction to L399: openness of the real-rooted locus fails if twins have arbitrarily close zeros; the zeros-first surplus then contradicts marginality. Evidence shifts toward C329. [heuristic + exact local mechanism]
+- **Local mechanism (exact).** Suppose `F` is real-rooted and has a zero pair at height `t` with normalized gap `g`. Then `max |Z_F|` between the two zeros is `≍ g²·(local scale)`. A perturbation `εZ_E` of the wrong sign at that point pushes the pair off the line once `ε ≳ g²` (in local units).
+  - So if `inf` of the normalized gaps of `F` is `0`, **no** ball around `F` in a height-uniform norm on `ζ³ + W` is real-rooted: `F` is marginal, like ζ under Rodgers–Tao (`Λ ≥ 0`).
+- **Consequence for L394/L399.**
+  - The zeros-first count predicts a solution manifold of full dimension `(1/2π)log t` per unit height. That would make the real-rooted locus open, which requires twins with crystalline zeros (normalized gaps bounded below).
+  - A twin with Montgomery-type statistics (pair correlation from its own explicit formula, `Σ|Λ_F|²/n ~ 9·½log²x`) would be expected to have arbitrarily small normalized gaps, and hence to be marginal.
+  - These two pictures conflict. Either (a) the zeros-first nonlinear problem has **no** solution (C329 true), or (b) twins have crystalline zeros, the analogue of `Λ_F < 0`. Rodgers–Tao-type crystallization arguments would contest (b) via pair correlation, if Montgomery's method applies to `F` with `α` in the degree-3 range.
+- **Caveat.** Arbitrarily small normalized gaps are not proved even for ζ (Montgomery gives `< 0.68×` mean infinitely often; full GUE is conjectural). So this is a strong heuristic, not a theorem.
+- **Verdict update.** C394 is now **disfavoured**: counting gives only conditional openness, and openness conflicts with the expected zero statistics.
+  - Exact open question: can a real-rooted `F ∈ V₃` have normalized zero gaps bounded below (a "crystalline twin")? A no-answer that is Rodgers–Tao-rigorous for `F` would show twins are isolated, and with Ω would give `W ⊆ {Λ}`.
+
+### L401 — Sharpness dichotomy: Ω ⟺ PBAP has no slack, and a twin forces slack. Hence Ω ⟹ C329. ζ's zeros sit exactly at Nyquist density for prime-blind tests. [P-sketch, two rigour gaps]
+- **Slack ⇒ non-saturated producers (Hahn–Banach) [P].** Suppose PBAP holds with slack against a weight `w ≥ 0`: `pole(f) + arch(f) ≥ c∫|ĥ|²w` for every prime-blind `f`.
+  - Then the datum `T_∞ − c·𝓕w` is PBAP-positive, so some `μ' ≥ 0` has `𝓕μ' = T_∞ − c𝓕w − ν`.
+  - Then `μ = μ' + c·w` is a producer measure with an absolutely continuous part `≥ cw`.
+  - Conversely, a producer with `μ_lam ≥ cw` gives `pole + arch = ∫|ĥ|²dμ_lam ≥ c∫|ĥ|²w` on prime-blind tests.
+  - So **Ω (every producer is singular) ⟺ PBAP admits no slack against any `w ≢ 0`** (sharpness).
+- **Prime-blind tests live at critical density for ζ [P-sketch].** Let `h` be supported in `[−L/2, L/2]`, so `ĥ` has type `L/2` and Nyquist density `L/2π`, and let `k = h⋆h̃` be lattice-blind up to `e^L`.
+  - Lemma A forces a fixed fraction of the spectral mass to heights `≍ e^{x}` for the `x` where `k` lives, up to `e^L`.
+  - At `t ≍ e^L` ζ's zeros have density `(1/2π)log t ≈ L/2π`: **exactly Nyquist**.
+  - This is the structural reason `Λ` is extreme and the corpus rigidity holds: under RH, near-null prime-blind tests sit exactly on the critical boundary between interpolation (below Nyquist: they can vanish at all zeros) and sampling.
+- **Twin ⇒ slack (no RH needed) [P-sketch].** If `F ∈ V₃` is real-rooted, then for prime-blind `f` the explicit formula for `F` gives `pole + arch = (1/3)Σ_{Z_F}|ĥ(γ)|²`.
+  - At heights `t > e^{L/3}`, `Z_F` has density `(3/2π)log t > L/2π`, i.e. above Nyquist. A Landau-type stable-sampling lower bound gives `Σ_{Z_F}|ĥ|² ≥ c·∫_{t>e^{L/3}}|ĥ|²`.
+  - Together with the forced high-height mass, this gives `pole + arch ≥ c'∫|ĥ|²w_L` for a nonzero weight: **slack**. So by the above, Ω fails.
+- **Theorem-sketch.** Ω ⟹ C329 (no twins). Combined with the corpus integer-counting theorem and MUST-670, **W ⊆ {Λ} ⟸ Ω + (atomic producers have masses in `(1/k)ℕ`)**. The twin question is absorbed into Ω.
+- **Rigour gaps.**
+  - (G1) The forced-mass fraction, uniformly over all prime-blind tests: an effective-support version of Lemma A's high-frequency forcing (`E_high ≳ E_low` at heights `≍ e^{x}`).
+  - (G2) Stable sampling by `Z_F` above Nyquist: needs relative density plus a separated subsequence; zero clustering of `F` must be controlled (Beurling–Landau lower bounds).
+- **Dichotomy, as the program now stands.**
+  - Either PBAP is sharp: Ω holds, there are no twins, and producers are rigid (`W ⊆ {Λ}` likely; then the producer is `Λ` and its existence is RH).
+  - Or PBAP has slack: producers form a set with nonempty interior, including absolutely continuous ones.
+  - Deciding sharpness of the log-lattice LP bound `κ* = inf {I(Φ) : Φ prime-blind}` against `−A(0) = 5.3721` (L373) is now the single decisive question for the whole producer program.
+
+### L402 — Under RH, `W = {Λ}` reduces to two interpolation statements for prime-blind tests at ζ's critical zero density; twins are excluded by the same mechanism. [P-sketch; program]
+- **Setup (RH).** For prime-blind `f` (`k = h⋆h̃` vanishing on `±log ℕ_{≥2}`), every producer `lam` satisfies `Q(h) := pole + arch = ∫|ĥ|²dμ_lam = Σ_γ|ĥ(γ)|²`. The last equality is the explicit formula for `Λ` with real zeros. `Q` does not depend on `lam`.
+- **(N1) Near-null tests off the zeros.** For every `t₀ ∉ Z_ζ` and `δ < dist(t₀, Z_ζ)`, there are prime-blind `h_j` with `|ĥ_j|² ≥ 1` on `[t₀−δ, t₀+δ]` and `Q(h_j) → 0`.
+  - ⟹ `μ_lam([t₀−δ, t₀+δ]) ≤ Q(h_j) → 0`, so **every producer is supported on `Z_ζ`** (atomic). This gives Ω, and with it no twins (L401).
+- **(N2) Single-zero interpolation.** For every zero `γ₀`, there are prime-blind `h_j` with `ĥ_j(γ₀) = 1` and `Σ_{γ≠γ₀}|ĥ_j(γ)|² → 0`.
+  - ⟹ for `μ_lam = Σ m_γδ_γ`, `m_{γ₀} = lim Q(h_j) = 1`. So `μ_lam = μ_Λ`, hence `lam = Λ` (converse explicit formula plus uniqueness of `ν`).
+- **Why (N1) and (N2) are plausible.**
+  - Prime-blindness forces mass to heights `≍ e^{x}` (Lemma A), where the zero density `(1/2π)log t` equals the Nyquist density `L/2π` of the test class (L401). At exactly critical density, interpolation versus sampling is decided by the fluctuations.
+  - Selberg's CLT (unconditional) gives `S(t)` unbounded, `Var ≍ (1/2π²)log log t`. So there are arbitrarily deep local deficits ("holes") of zeros at every scale, where a type-`L/2` function has spare degrees of freedom and can vanish at all zeros in the window, plus at one extra point.
+  - Twins (density `3×` Nyquist) have no such holes, which is why they force slack.
+- **Conditional theorem target (RH ⟹ uniqueness of the producer).** RH + (N1) + (N2) ⟹ `W = {Λ}`. Then "the producer of positivity" is exactly von Mangoldt, uniquely: it exists iff RH, and if it exists it is `Λ`. This is the identification theorem.
+  - (N1) and (N2) are statements about entire functions of exponential type versus the zeros of ξ under RH. No new arithmetic input is needed beyond Selberg's CLT, Lemma A, and Beurling–Landau theory at critical density.
+- **Next concrete step.** Prove (N2) first, since it is local in height and uses one hole.
+  - Construct `ĥ = (sine-type generating function of the zeros in a window with deficit ≥ 2) × (localizing factor)`.
+  - Then enforce prime-blindness by the KNS-type correction at heights `≍ e^L`, inside a second hole.
+  - The quantitative input is the existence of deficits `S(t+ℓ) − S(t) ≤ −2` with `ℓ ≍ 1/log t` at heights `≍ e^L`, available from Selberg's CLT for short-interval increments (Tsang, Selberg).
+
+### L403 — (N2) attack: corrected density margin, the quadratic crux, and a favourable count. [P-sketch]
+- **Correction to L401 ("exactly Nyquist").** Let `h ⊂ [−a, a]`, so `ĥ` has type `a`, Nyquist density `a/π`, and `k = h⋆h̃ ⊂ [−2a, 2a]`.
+  - Lemma A suppresses the spectral content of `k` below `|r| ≈ πe^{x}` (where `thr < 1`), so prime-blindness needs mass only from the first alias, up to heights `T₀ ≈ πe^{2a}`.
+  - There ζ's zero density is `(1/2π)log(T₀/2π) = a/π − log 2/(2π)`: **subcritical with a constant margin `log 2/2π ≈ 0.11`**, not exactly critical. The Selberg holes of L402 are therefore not needed for interpolation, only as extra slack.
+  - Twins at `T₀`: `3(a/π − log2/2π) > a/π` for `a > 0.52`, i.e. oversampled. So L401's "twin ⇒ slack" survives with room to spare.
+- **(N2) as a mixed interpolation problem.** For a zero `γ₀ < T₀`, find `h ∈ C²_c[−a, a]` with:
+  - (i) linear conditions: `ĥ(γ₀) = 1`, `ĥ(±γ) = 0` for `γ ∈ Z_ζ ∩ (0, T₀]∖{γ₀}`; about `(T₀/2π)log T₀ ≈ a·e^{2a}` conditions;
+  - (ii) `∫_{|t|>T₀}|ĥ|² ≤ ε` (energy above the oversampled threshold);
+  - (iii) **quadratic** prime-blindness `(h⋆h̃)(log n) = 0` for `n ≤ e^{2a}`; about `e^{2a}` conditions.
+  - Freedom of `h` at resolution `T₀`: `≈ 2a·T₀/π ≈ 2a·e^{2a}`. Margin `(a − 1)e^{2a} > 0` for `a > 1`.
+- **The crux is (iii).** It is quadratic, so the admissible set is a real algebraic cone, not a subspace.
+  - Disjoint-support tricks (difference set avoiding `log ℕ`) work only for `2a < log 2`.
+  - Two-cluster blocks (Lemma A) make `(iii)` local but have too little freedom for `(i)`.
+  - Needed: a **multi-cluster ansatz** `h = Σ_j c_j β_j(· − x_j)` in which `(iii)` is linear in the outer coefficients `c` once the blocks `β_j` are fixed prime-blind (each `β_j⋆β̃_j` vanishes on its own dilated lattice) and the cross-correlations `β_i⋆β̃_j` are lattice-blind by placement. Then `(i)` is linear in `c`, and the count above applies to `c`.
+- **Status.** (N2) is reduced to constructing such a multi-cluster family with linear prime-blindness in `c` and enough clusters (`≳ a·e^{2a}`).
+  - The cross-correlation lattice-blindness is the remaining technical step. It is the multi-cluster generalization of Lemma A: `β_i⋆β̃_j` vanishing on `log(n/X_{ij}) − (x_i − x_j)`.
+
+### L404 — Convex duality for (N2): it is exactly one-sided crystalline uniqueness on `Z_ζ`. Corpus extremality covers the two-sided case. [P]
+- **Linearization.** Pass from `h` to `k = h⋆h̃`. Prime-blind PD compactly supported `k` form a convex cone `𝒦`, and `Q(k) = pole(k) + arch(k)` is linear. (N2) asks for `k ∈ 𝒦` with `k̂(γ₀) = 1` and `Σ_{γ≠γ₀}k̂(γ) → 0`. The quadratic crux of L403 disappears in the `k`-picture.
+- **Dual (Hahn–Banach + Bochner).** (N2) fails at `γ₀` ⟺ there is a signed measure `ρ` on `Z_ζ` with:
+  - spectrum `supp ρ̂ ⊆ ±log ℕ_{≥2}` (crystalline),
+  - `ρ({γ₀}) ≠ 0`,
+  - `μ_Λ + ρ ≥ 0`.
+  - Equivalently, there is a second producer measure supported on `Z_ζ` with a different mass at `γ₀`. So **(N2) is equivalent to the uniqueness it was meant to prove.** No circularity is introduced, but no reduction is gained either.
+- **What the corpus already gives.** `WeilPolarConeExtremePoint` (Λ extreme in `W`) excludes every *bounded* `ρ`: if `sup|ρ({γ})| < ∞`, then `μ_Λ ± ερ ≥ 0` for small `ε` and `Λ` would be a midpoint.
+  - The open case is one-sided: `ρ({γ}) ≥ −1` everywhere, but unbounded above.
+- **Sharpened open core of "producer = Λ, uniquely" (under RH).** Exclude crystalline measures `ρ` on `Z_ζ` with spectrum in `±log ℕ`, `ρ ≥ −μ_Λ`, and `ρ` unbounded above. Plus (N1): no producer mass off `Z_ζ`.
+  - One-sided unbounded `ρ` would be zero-concentrated: large positive masses at sparse zeros, compensated by `−1` at others.
+  - The natural tool is the Landau–Gonek formula: `Σ_γ x^{iγ}` detects `Λ(x)` at `n = x`. A crystalline `ρ` must reproduce lattice coefficients through its masses, and Landau–Gonek-type averages over windows of `Z_ζ` should force bounded masses.
+- **Status.** The entire producer question, under RH, reduces to one-sided crystalline uniqueness on `Z_ζ` plus (N1). Unconditionally it is RH or a twin, and twins are disfavoured (L400) and excluded by Ω (L401).
+
+### L405 — One-sided uniqueness on `Z_ζ` (RH): the difference is an antisymmetric, Gamma-free Dirichlet series with poles at ζ-zeros. All reformulations close up into one statement. [P]
+- **Structure [P].** Let `lam ∈ W` with `μ_lam = Σ_γ a_γδ_γ` on `Z_ζ` (`a_γ ≥ 0`), and put `c_γ = a_γ − 1 ≥ −1`.
+  - The Herglotz functions with atomic boundary measures extend meromorphically across the line by reflection. So `D := H_lam − H_Λ = Σ_n (Λ − lam)(n)n^{−s}` satisfies:
+    - (i) `D(1−s) = −D(s)`: a degree-0 functional equation with **no Gamma factor**;
+    - (ii) simple poles exactly at `ρ_γ` with residues `c_γ`, and none elsewhere;
+    - (iii) `D → 0` as `σ → ±∞`, of bounded type (Nevanlinna) in each half-plane.
+  - Equivalently `D = −(1/κ)·h'/h` for a generalized degree-0 inner function `h` (L392) with real-mass divisor `−κc` supported on `Z_ζ`.
+- **Closure of the reformulations.** These are now visibly one statement, proved equivalent across L392, L401, L402, L404 and L405:
+  - (a) one-sided uniqueness of producers on `Z_ζ`;
+  - (b) (N2);
+  - (c) nonexistence of generalized inner `h` with divisor on `Z_ζ` and masses `≤ 1` per zero (unbounded on the other side);
+  - (d) nonexistence of antisymmetric Gamma-free Dirichlet series with poles at ζ-zeros and residues `≥ −1`.
+  - Bounded residues are excluded by corpus extremality. Finite-prime `h` are excluded by Kronecker plus Li–Radziwiłł-type nonvanishing (`|S| = 1` corpus; `|S| ≥ 2` open, L392).
+- **Landau–Gonek consistency.** `(1/T)Σ_{γ≤T}c_γ n^{iγ} → const·(Λ − lam)(n)/√n`, with Cesàro mean of `c_γ` equal to `0`. This is compatible with unbounded sparse positive `c_γ`, so it gives no contradiction.
+- **Assessment.** The producer program has reached a fixed point.
+  - Unconditionally: producer ⟺ RH or twin (twins disfavoured, L400, and excluded by Ω, L401).
+  - Under RH: "producer = Λ uniquely" ⟺ (c) plus (N1).
+  - Every further reformulation found in L392–L405 is equivalent to one of these. Further progress needs either a genuinely new analytic idea for (c) (degree-0 Gamma-free functional equations with infinitely many poles on the line, a class outside Kaczorowski–Perelli `S♯`) or numerical evidence (the Gram-twin test for C329, or the log-lattice LP bound `κ*` for PBAP sharpness).
+
+### L278-CORR (2026-10-03, spark/T2 loop) — the geometric non-uniqueness theorem of L278 is false. CORRECTION [P]
+- **Error.** Let `L/K` be unramified with `[L:K] = n`. Then `Λ_L` carries `n·arch_K` and pole weight 1.
+  - For `lam_mix = (Λ_L + (n−1)Λ_K)/n`, the archimedean coefficient is `(1/n)·n + (1−1/n)·1 = 2 − 1/n`, not 1.
+  - Direct check: `pole + arch_K − Σ lam_mix = −((n−1)/n)·arch_K + (1/n)Σ_{ρ_L} ĝ + ((n−1)/n)Σ_{ρ_K} ĝ`.
+  - So `lam_mix` is a producer for the datum `((2−1/n)arch_K, pole 1)`, not for `ζ_K`'s.
+- **What survives.** Mixing producers of `ζ_K`'s exact datum needs equal archimedean weight, which forces the coefficient of `Λ_L` to be 0.
+  - `Λ_L/n` and `Λ_{ζ_L/ζ_K}/(n−1)` both carry `arch_K`, with pole weights `1/n` and `0`. They are pole-deficit (polar-cone) producers only.
+  - Full-pole twins of `ζ_K^n` built from Dedekind zetas of unramified extensions are only `ζ_K^n`, because each `ζ_{L_i}` has a simple pole and degree `[L_i:K]·deg K`.
+- **Consequences.**
+  - The "barrier" ("any proof of `W(ℚ) ⊆ {Λ}` must use an input that fails for `h_K > 1`, i.e. Minkowski") is **void**. No number field `K` is known with `W(K) ≠ {Λ_K}` under GRH.
+  - Conjecture L278 (real-rooted full-pole twins are geometric) is unaffected, but over every `K` it predicts only `ζ_K^n`. The "uniqueness input" need not be ℚ-specific.
+  - The ℤ/k torsion-lock (twin) question is the same over every number field. The class-field picture gives no ℤ/k lock at the exact datum.

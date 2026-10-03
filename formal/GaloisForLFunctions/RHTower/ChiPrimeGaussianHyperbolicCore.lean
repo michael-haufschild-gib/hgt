@@ -887,4 +887,164 @@ theorem primeGaussianNearPairs_mem {m r p : ℕ} (ht : (r,p) ∈ primeGaussianNe
       (corePrimeBand_frame (coreConductor_pos m) hp).1
       (corePrimeBand_frame (coreConductor_pos m) hs).1 hcell
 
+private theorem polylog_close_card (S:Finset ℕ) (r h:ℕ) :
+    (S.filter (fun (p:ℕ) => |(p:ℝ)-r|  ≤  (h:ℝ))).card  ≤  2*h+1 := by
+  have hsub : S.filter (fun (p:ℕ) => |(p:ℝ)-r|  ≤  (h:ℝ)) ⊆ Finset.Icc (r-h) (r+h) := by
+    intro p hp
+    obtain ⟨hl,hu⟩ := abs_le.mp (Finset.mem_filter.mp hp).2
+    have hpr : p ≤ r+h := by exact_mod_cast (show (p:ℝ) ≤ r+h by linarith)
+    have hrp : r ≤ p+h := by exact_mod_cast (show (r:ℝ) ≤ p+h by linarith)
+    exact Finset.mem_Icc.mpr ⟨by omega,hpr⟩
+  refine (Finset.card_le_card hsub).trans ?_
+  rw [Nat.card_Icc]
+  omega
+
+private theorem polylog_near_count {m:ℕ} (hm : coreBase ≤ m) (r:ℕ) :
+    (((corePrimeBand (primeGaussianHyperbolicConductor m)).filter
+      (fun q:ℕ => ((coreBase*m:ℕ):ℝ)*|(q:ℝ)-r|  ≤  (m^3:ℕ))).card:ℝ)  ≤ 
+      (m^3:ℕ)/(2048*Real.log (primeGaussianHyperbolicConductor m)) := by
+  let S := corePrimeBand (primeGaussianHyperbolicConductor m)
+  let D:ℝ := (m:ℝ)^2/(coreBase:ℝ)
+  have hmK : (coreBase:ℝ) ≤ m := by exact_mod_cast hm
+  have hm0 : (0:ℝ) < m := coreBase_real_pos.trans_le hmK
+  have hD0 : 0 ≤ D := by dsimp [D];positivity
+  have hsub : S.filter (fun q:ℕ => ((coreBase*m:ℕ):ℝ)*|(q:ℝ)-r|  ≤  (m^3:ℕ)) ⊆
+      S.filter (fun q:ℕ => |(q:ℝ)-r|  ≤  (⌈D⌉₊:ℝ)) := by
+    intro q hq
+    obtain ⟨hqS,hgap⟩ := Finset.mem_filter.mp hq
+    have hg : |(q:ℝ)-r|  ≤  D := by
+      apply (le_div_iff₀ coreBase_real_pos).mpr
+      have hh : |(q:ℝ)-r| * (coreBase:ℝ)*(m:ℝ)  ≤  (m:ℝ)^2*(m:ℝ) := by
+        push_cast at hgap
+        nlinarith only [hgap]
+      exact (mul_le_mul_iff_left₀ hm0).mp hh
+    exact Finset.mem_filter.mpr ⟨hqS,hg.trans (Nat.le_ceil D)⟩
+  have hc : ((S.filter (fun q:ℕ => ((coreBase*m:ℕ):ℝ)*|(q:ℝ)-r|  ≤  (m^3:ℕ))).card:ℝ)  ≤ 
+      2*(⌈D⌉₊:ℝ)+1 := by
+    exact_mod_cast (Finset.card_le_card hsub).trans (polylog_close_card S r ⌈D⌉₊)
+  have hD3 : 3 ≤ D := by
+    apply (le_div_iff₀ coreBase_real_pos).mpr
+    have hK : (3:ℝ) ≤ coreBase := by norm_num [coreBase]
+    have hs := mul_le_mul hmK hmK coreBase_real_pos.le hm0.le
+    have hh := mul_le_mul_of_nonneg_right hK coreBase_real_pos.le
+    nlinarith only [hs,hh]
+  have hlogK : Real.log (coreBase:ℝ) ≤ 100 := by
+    have he : (coreBase:ℝ)=(10:ℝ)^7 := by norm_num [coreBase]
+    rw [he,Real.log_pow]
+    have hh := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ)<10)
+    norm_num at hh ⊢
+    linarith
+  have hlog0 : 0<Real.log (primeGaussianHyperbolicConductor m:ℝ) := by
+    rw [core_log_conductor]
+    have hK := Real.log_pos (by norm_num [coreBase] : (1:ℝ)<coreBase)
+    positivity
+  have hbudget : 3*D  ≤  (m^3:ℕ)/(2048*Real.log (primeGaussianHyperbolicConductor m)) := by
+    dsimp [D]
+    rw [←mul_div_assoc]
+    apply (div_le_div_iff₀ coreBase_real_pos (by positivity : 0<2048*Real.log (primeGaussianHyperbolicConductor m:ℝ))).mpr
+    rw [core_log_conductor]
+    push_cast
+    have hcoeff : 24576*Real.log (coreBase:ℝ) ≤ (coreBase:ℝ) := by
+      norm_num only [coreBase,Nat.cast_ofNat] at hlogK ⊢
+      linarith
+    convert mul_le_mul_of_nonneg_left hcoeff (pow_nonneg hm0.le 3) using 1 <;> ring
+  change ((S.filter (fun q:ℕ => ((coreBase*m:ℕ):ℝ)*|(q:ℝ)-r|  ≤  (m^3:ℕ))).card:ℝ) ≤ _
+  refine (hc.trans ?_).trans hbudget
+  have hh := Nat.ceil_lt_add_one hD0
+  linarith
+
+private theorem eventually_polylog_width :
+    ∀ᶠ m:ℕ in atTop, coreBase ≤ m ∧ m^3 ≤ primeGaussianNearWidth m := by
+  have ht := tendsto_pow_const_div_const_pow_of_one_lt 3
+    (by norm_num [coreBase] : (1:ℝ)<coreBase)
+  filter_upwards [ht.eventually_le_const (by norm_num : (0:ℝ)<1),eventually_ge_atTop coreBase]
+    with m hm hmK
+  refine ⟨hmK,?_⟩
+  have hh := (div_le_iff₀ (pow_pos coreBase_real_pos m)).mp hm
+  have hle : (m:ℝ)^3 ≤ (coreBase:ℝ)^m := by simpa only [one_mul] using hh
+  change m^3 ≤ coreBase^m
+  exact_mod_cast hle
+
+/-- Central actual prime pairs in a polynomial-in-log gap band; order `(r,p)`. -/
+def primeGaussianPolylogPairs (m:ℕ) : Finset (ℕ×ℕ) :=
+  (corePrimeBand (primeGaussianHyperbolicConductor m)).biUnion (fun r =>
+    (coreFar (corePrimeBand (primeGaussianHyperbolicConductor m))
+      (primeGaussianHyperbolicConductor m) (m^3) (coreBase*m) r).image (fun p => (r,p)))
+
+private theorem card_polylogPairs (m:ℕ) :
+    (primeGaussianPolylogPairs m).card =
+      ∑ r∈corePrimeBand (primeGaussianHyperbolicConductor m),
+        (coreFar (corePrimeBand (primeGaussianHyperbolicConductor m))
+          (primeGaussianHyperbolicConductor m) (m^3) (coreBase*m) r).card := by
+  unfold primeGaussianPolylogPairs
+  rw [Finset.card_biUnion]
+  · apply Finset.sum_congr rfl
+    intro r _
+    exact Finset.card_image_of_injective _ (fun _ _ hh => (Prod.mk.inj hh).2)
+  · intro r _ s _ hrs
+    apply Finset.disjoint_left.mpr
+    intro z hz hz'
+    obtain ⟨p,_,hp⟩ := Finset.mem_image.mp hz
+    obtain ⟨q,_,hq⟩ := Finset.mem_image.mp hz'
+    exact hrs (congrArg Prod.fst (hp.trans hq.symm))
+
+/-- Global prime mass forces many genuine pairs in the widening logarithmic gap band. -/
+theorem exists_primeGaussianPolylogPairs_mass :
+    ∃ c:ℝ, 0<c ∧ ∀ᶠ m:ℕ in atTop,
+      c*(primeGaussianHyperbolicConductor m:ℝ)*(m:ℝ)^3/
+        (Real.log (primeGaussianHyperbolicConductor m))^2  ≤  (primeGaussianPolylogPairs m).card := by
+  obtain ⟨R,hR,hM⟩ := exists_corePrimeBand_mass
+  refine ⟨1/262144,by norm_num,?_⟩
+  filter_upwards [tendsto_primeGaussianHyperbolicConductor.eventually_ge_atTop R,
+    eventually_polylog_width] with m hmR hm
+  let N := primeGaussianHyperbolicConductor m
+  let h := m^3
+  let S := corePrimeBand N
+  have hN : 1<(N:ℝ) := by dsimp [N];linarith
+  have hlog : 0<Real.log (N:ℝ) := Real.log_pos hN
+  have hm0 : 0 < m := coreBase_pos.trans_le hm.1
+  have hh : 0<h := pow_pos hm0 3
+  have hhN : h ≤ N := hm.2.trans (nearWidth_le_conductor m)
+  have hG := coreAnchors_mass hN hh hh hhN hhN
+    (fun x hx => corePrimeBand_frame (coreConductor_pos m) hx) (hM _ hmR)
+  have hsub : coreAnchors S N h h ⊆ S := fun _ hx => (Finset.mem_filter.mp hx).1
+  rw [card_polylogPairs,Nat.cast_sum]
+  calc
+    _ = (N:ℝ)/(128*Real.log N)*((h:ℝ)/(2048*Real.log N)) := by dsimp [N,h];push_cast;ring
+    _  ≤  ((coreAnchors S N h h).card:ℝ)*((h:ℝ)/(2048*Real.log N)) :=
+      mul_le_mul_of_nonneg_right hG (by positivity)
+    _ = ∑ _r∈coreAnchors S N h h, (h:ℝ)/(2048*Real.log N) := by simp
+    _  ≤  ∑ r∈coreAnchors S N h h, ((coreFar S N h (coreBase*m) r).card:ℝ) := by
+      apply Finset.sum_le_sum
+      intro r hr
+      exact coreFar_mass hN (Finset.mem_filter.mp hr).2.1 (polylog_near_count hm.1 r)
+    _  ≤  _ := Finset.sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => Nat.cast_nonneg _)
+
+theorem primeGaussianPolylogPairs_mem {m r p:ℕ} (hm:0 < m)
+    (ht:(r,p)∈primeGaussianPolylogPairs m) :
+    r.Prime ∧ p.Prime ∧
+    3*(primeGaussianHyperbolicConductor m:ℝ)/2 < r ∧
+    (r:ℝ) ≤ 25*(primeGaussianHyperbolicConductor m)/16 ∧
+    3*(primeGaussianHyperbolicConductor m:ℝ)/2 < p ∧
+    (p:ℝ) ≤ 25*(primeGaussianHyperbolicConductor m)/16 ∧
+    (m:ℝ)^2/10000000 < |(p:ℝ)-r| ∧ |(p:ℝ)-r|  ≤  (m:ℝ)^3 := by
+  obtain ⟨s,hs,ht⟩ := Finset.mem_biUnion.mp ht
+  obtain ⟨q,hq,he⟩ := Finset.mem_image.mp ht
+  obtain ⟨rfl,rfl⟩ := Prod.mk.inj he
+  obtain ⟨hcell,hgap⟩ := Finset.mem_filter.mp hq
+  have hp := (Finset.mem_filter.mp hcell).1
+  have hrm := corePrimeBand_mem (coreConductor_pos m) hs
+  have hpm := corePrimeBand_mem (coreConductor_pos m) hp
+  refine ⟨hrm.1,hpm.1,hrm.2.1,hrm.2.2,hpm.2.1,hpm.2.2,?_,?_⟩
+  · have hm0 : (0:ℝ) < m := by exact_mod_cast hm
+    apply (div_lt_iff₀ (by norm_num : (0:ℝ)<10000000)).mpr
+    push_cast at hgap
+    have hh : (m:ℝ)^2*(m:ℝ) < (|(q:ℝ)-s| *10000000)*(m:ℝ) := by
+      norm_num only [coreBase,Nat.cast_ofNat] at hgap
+      nlinarith only [hgap]
+    exact (mul_lt_mul_iff_left₀ hm0).mp hh
+  · exact_mod_cast coreCell_close (pow_pos hm 3)
+      (corePrimeBand_frame (coreConductor_pos m) hp).1
+      (corePrimeBand_frame (coreConductor_pos m) hs).1 hcell
+
 end RHTower

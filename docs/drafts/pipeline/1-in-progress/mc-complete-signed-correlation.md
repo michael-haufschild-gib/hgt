@@ -1956,3 +1956,868 @@ Keeping the signs and summing Fourier modes jointly is therefore essential for t
 ## C12.74: coupled low-frequency work and arithmetic completion
 
 **1004m in progress.** Previous turn made no frontier advance. Revalidated C12.73 and the current MC energy target. Attack the joint reciprocal-phase sum with its rank terms and literal coefficient cutoffs retained. Individual-mode curvature and generic Gram positivity did not close it; seek cancellation in the actual complete arithmetic source.
+
+**Outcome: no frontier estimate.** Joint Abel summation retains an uncontrolled continuous argument. Integrating the short source makes the Fourier tail summable but leaves the complete low-frequency arithmetic work unbounded. Cutoff reflection and coprime-row control do not supply the missing bound. These are paper diagnostics, not new audited Lean theorems, a route retirement, or an RH proof/falsification.
+
+**Joint modes retain their winding.** With the exact S_h(N) of C12.73 and 0<r<1, put
+
+    L_N(r)=sum_(a,b<=U)mu(a)*mu(b)*[-log(1-r*exp(2*pi*i*N/(a*b)))].
+
+The corpus's Abel logarithm identity gives Im L_N(r)=sum_(h>=1)r^h*Im S_h(N)/h. Each logarithm is unambiguous since its argument has positive real part. The finite product C_N(r)=prod_(a,b<=U)(1-r*exp(2*pi*i*N/(a*b)))^(mu(a)*mu(b)) satisfies exp(-L_N(r))=C_N(r). Its continuous argument starting at zero is -Im L_N(r). Replacing it by the bounded principal argument drops an integer multiple of 2*pi, precisely a term still needing control. Off-diagonal pairs make even product exponents; this does not eliminate the unwrapped argument. At resonant endpoint phases the real logarithm may diverge while the sine series retains its prescribed midpoint value. C12.73's integer correction cannot be omitted. Completing fixed numerators N/(a*b) to full residue or cyclotomic orbits would change the literal a,b<=U source; no estimate of that change was obtained.
+
+**First integration, with all new weights paid.** For integer N>=2, U=floor(sqrt N), define
+
+    I(N)=sum_(n<=N)mu(n)*(N-n),
+    M_U=sum_(a<=U)mu(a), m_U=sum_(a<=U)mu(a)/a,
+    W_U=sum_(a<=U)a*mu(a), B2(t)=fract(t)^2-fract(t)+1/6.
+
+Integrating the existing short coefficient identity with this fixed U gives, on paper,
+
+    I(N)=2*N*M_U-2*W_U-(N^2/2)*m_U^2+(N/2)*M_U^2-W_U^2/12
+          +(1/2)*sum_(a,b<=U)a*b*mu(a)*mu(b)*B2(N/(a*b)).
+
+Indeed sum_(k<=N/z)(N-z*k)=N^2/(2*z)-N/2+(z/2)*(fract(N/z)-fract(N/z)^2). The corpus's Bernoulli series, converted to the displayed B2 normalization, changes the final term into
+
+    (1/(2*pi^2))*sum_(h>=1)h^(-2)*
+      sum_(a,b<=U)a*b*mu(a)*mu(b)*cos(2*pi*h*N/(a*b)).
+
+This finite-source Fourier exchange is absolutely convergent. The tail beyond H has the elementary envelope O(U^4/H); H=U pays it at O(U^3). The linear short terms also have envelope O(U^3). Neither fact controls the joint rank terms and modes 1<=h<=U: separate bounds still allow U^4. On balanced rectangles integration introduces the factor a*b of size U^2, so the C12.73 individual-mode estimate does not close the gap. No critical-scale estimate of I(N), nor a new RH transfer theorem for it, was proved. Elementary short-difference unsmoothing alone would also lose a power; faster Fourier decay must not be mistaken for cancellation of the original source.
+
+**Cutoff increments keep the same signed work.** Let N=exp T, H=ccmPrimeDeficitDivisorSource, and A_m=ccmPrimeDeficitTruncatedAction m T. The exact residual-square identity gives, for integers m>=1,
+
+    A_m-A_(m-1)
+      =2*mu(m)*sum_(m<b<=floor(N/m))mu(b)*H(T-log(m*b))
+        +mu(m)^2*H(T-2*log m).
+
+This follows by removing the m-th coefficient from the actual tail, with the diagonal retained. Terms outside the displayed cutoff vanish by causality. Summing through floor(sqrt N) recovers D(T), since A_0=0 and every surviving pair has a coordinate below that cutoff. It gives no contraction or sign. In the alternative residual-force formula, r_m=mu_(>m)*1 and ell_m=r_m*Lambda; prime work starts only at 2*(m+1)^2. Its absence before that time estimates no retained A_m. Changing m restores exactly the displayed increments. The narrow-window cubic estimate and thick-shell diagonal estimate already in the corpus remain valid, but do not control this full cumulative sum.
+
+**Coprime-row candidate checked at its endpoint.** The retrieved square-index estimate pays its stated block only. Write Q(t)=ccmPrimeDeficitMobiusCenteredWork t and R(t)=ccmPrimeDeficitDilationRemainder t. The full coprime row at a=1 is sum_(b<=exp T)Q(T-log b)=R(T). Hence its contribution to the complete quadratic form is Q(T)*R(T), not Q(T)^2. The full coprime form is Q(T)*R(T)+sum_(a>=2)Q(T-log a)*Row_a(T). Bounds on nontrivial rows therefore do not isolate the desired endpoint square. Subtracting the coprime cross terms restores the same unknown square; the explicit exponential/logarithmic work also remains mandatory for D(T). No coercive comparison on the actual source was established.
+
+**Next hard test.** Keep the integrated source's rank terms and its whole low-frequency block together. The concrete unproved estimate is an O_epsilon(U^(3+epsilon)) bound for
+
+    -(N^2/2)*m_U^2+(N/2)*M_U^2-W_U^2/12
+      +(1/(2*pi^2))*sum_(1<=h<=U)h^(-2)*
+        sum_(a,b<=U)a*b*mu(a)*mu(b)*cos(2*pi*h*N/(a*b)).
+
+Attack the signed low-frequency quadratic form using its actual coefficient constraints; do not replace it by a principal argument, absolute mode sum, or unpaid inverse estimate. This is a conjectured source bound, not an established recurrence. Original MC Hilbert subpower growth and C12.70's complete signed-work inequality remain open.
+
+**Audit.** Six deep searches terminated before parsing: joint, winding, Riesz, cutoff and action partial=true; rows partial=false. Snapshot file counts 64497, 64497, 64498, 64503, 64504, 64506; compiler-pending 48629, 48629, 48629, 48633, 48633, 48635. Each had 43 compiled snapshots and 2660 stale entries. Candidate statements, source arguments and proposed chains inspected. Unrelated reflection symmetries, opposite-debt controllers and source identities were not promoted to estimates. Additional source scopes: divisor clock product transport, Bernoulli Fourier tail, residual pairing/prime force/causality/reflection, coefficient action, shortened-cutoff window, boundary oscillator/impulse work/variation, coprime rows/head/square control and centered energy. No computations, Lean edits/builds, added axioms, heartbeat changes, subagents, full/umbrella builds, commits or route retirement. Owned JSON outputs cleaned after recording. RH goal active and unmet.
+
+## C12.75: the joint integrated short-source form
+
+**1004n in progress.** Previous turn made no frontier advance. Revalidated C12.74 and the current MC map. Attack the complete low-frequency form with all three rank terms retained. The hard target is cancellation in the actual short Mobius vector, not another Fourier representation or tail estimate. Test whether its source constraints give a usable bound for the full signed form, including any constants and losses needed for a scale recurrence.
+
+**Outcome: no frontier estimate.** Neither the primitive bootstrap nor the current averaged bilinear estimates close the full signed quadratic bound. A product-cutoff extension of the comparable-pair sign law was also tested, but its required arithmetic sign remains unproved. No new Lean theorem or RH conclusion.
+
+**The integrated kernel was kept joint.** With K_N(z)=sum_(k<=N/z)(N-z*k), C12.74's complete rank-plus-Bernoulli term is exactly -sum_(a,b<=U)mu(a)*mu(b)*K_N(a*b). This equality retains the rank terms; it does not allow bounding just the oscillating piece. Already on product ranges N/2<a*b<=N, K_N(a*b)=N-a*b. Thus the bounded modes include ordinary and first weighted short Mobius moments. They are not a high-curvature source. A full rectangle contained in that range has contribution N*(sum mu(a))*(sum mu(b))-(sum a*mu(a))*(sum b*mu(b)); a clipped rectangle retains its hyperbolic boundary. No estimate for those actual signed moments and boundary together was obtained.
+
+Tested a scale bootstrap through I(x)=integral_0^x M(t)dt. For integer N,h>=1, its exact difference is
+
+    I(N+h)-I(N)=h*M(N)+sum_(N<n<=N+h)mu(n)*(N+h-n).
+
+The last absolute value is at most h*(h-1)/2. Consequently a hypothetical local bound |I(t)|<=B gives |M(N)|<=2*B/h+(h-1)/2. If B is of size N^beta, this elementary recovery has size N^(beta/2), not N^(beta-1). In particular a putative N^(3/2) primitive bound does not give N^(1/2) by this finite-difference step. The corpus's RieszTauberian theorem likewise retains an explicit increment estimate; it is not a cost-free unsmoothing theorem. This does not refute a Mellin-analytic RH consequence of a critical primitive bound. It does show why feeding this elementary recovery back into the proposed quadratic induction supplies no proved contraction. No recurrence with a better exponent, controlled constants, and all boundary terms was established.
+
+**Averaged cancellation is not the missing rate.** Inspected the definitions, not just the headers: AveragedMeanSquare means
+
+    eta(x,h)=sum_(a in outerBlock) |sum_(b in innerFibre(a))mu(b)|^2
+               /(h^2*sqrt(x)) -> 0.
+
+It does not assert a variance bound of order h*sqrt(x). The unconditional all-length theorem applies when h tends to infinity and h<=sqrt(x). Its proof budget contains positive inverse-logarithmic terms, including 3000/log(headNu) and an inverse log(log x) term. Choosing the window does not turn this displayed budget into a critical power saving.
+
+At x comparable to U^2, discarding the outer Mobius sign and applying Cauchy gives an envelope of order h*U*sqrt(eta) for one admissible unweighted product band. Even if eta were uniformly controlled over all relevant bands and clipping were paid, applying this estimate absolutely over O(U/h) bands, with integrated kernel weights of order U^2, would leave an envelope of order U^4*sqrt(eta). Reaching U^(3+epsilon) by that majorant would require eta of order U^(-2+2*epsilon), which the retrieved statement does not provide. This is a diagnosis of that absolute-band argument, not a lower bound for the actual signed form, nor a claim that arbitrary clipped weighted fibres satisfy the retrieved theorem. The original rectangular coefficient cutoffs and their boundary costs have not been removed. Proposed frequency-to-average chains still assume their frequency/off-diagonal input at the stated scale.
+
+**Product-cutoff comparable pairs were tested with their exact coefficient.** Define, on paper,
+
+    P(X)=sum_(m|n, m<n, m*n<=X)mu(m)*mu(n).
+
+Nonzero terms have m,n squarefree. Writing n=m*r makes m,r squarefree and coprime, with pair sign mu(r). Adding the diagonal gives a bijection onto cube-free integers q=m^2*r. Hence
+
+    P(X)=sum_(q<=X, q cube-free)liouville(q)
+          -#{m<=sqrt(X): m squarefree}.
+
+This is an exact paper classification, not a sign theorem. The contemplated inequality P(X)<=0 therefore requires an upper bound for the complete cube-free Liouville sum. The existing MobiusDivisorMonotoneSignLaw concerns m+n<=K. Its proof sends a complementary omitted term to j=n/e and uses the fact that j*(e+1) is the next multiple after j*e; this makes that map injective. For the product boundary the conditions become j^2*e>K and j*e<=N, and distinct e may survive at the same j. No matching capacity bound for those collisions was proved. In the original short square a,b<=U, distinct comparable pairs already satisfy a*b<=U^2/2, so that law also leaves the large balanced-product region untouched.
+
+The cube-free coefficient has local polynomial 1-z+z^2=(1-z)*(1+z^3)/(1-z^2). Its formal arithmetic factorization is mu convolved with the nonnegative sequence counting a^2*b^3, b squarefree. Thus changing to this source has not supplied independent cancellation. No one-sided RH transfer for this particular source, global sign, bound, or counterexample was asserted or formalized. This test does not retire route MC or prove a new no-go.
+
+**Next hard attack.** Retain the outer mu(a) in the physical product-band pairing instead of estimating the absolute inner sums. Seek a signed estimate for its cumulative low-frequency work with the three C12.74 rank terms retained. The exact Ramaré denominator identity in NonRoughRamareBilinear is available; any use must retain the rough source, cross-prime terms and physical rectangular cutoff. Replacing the denominator by its mean, repeating the qualitative averaged estimate, or proving only another receiver would not settle this target. The Hilbert subpower bound and complete retained action remain open.
+
+**Audit.** Five deep searches terminal before parsing: low, hyperbola, average, product partial=true; bootstrap partial=false. Low/bootstrap snapshots: 64510 files, 48638 compiler-pending; average: 64512 files, 48640 compiler-pending; each reported 43 compiled snapshots and 2660 stale entries. Hyperbola/product coverage was pending (generations 1188571/1188638), so no completeness claim for those searches. Candidate/source statements and proposed chains inspected; unrelated geometric bilinear forms, Riesz boundary-zero facts and Liouville-constant results were not used as arithmetic estimates. Sources checked included the short reconstruction, RieszTauberian, averaged mean-square definitions and all-length budget, exact balanced fibres, MR interface/reduction, and divisor-comparable sign-law proof. No numerical computations, Lean edits/builds, axioms, heartbeat changes, subagents, full/umbrella builds, commits or formal route retirement. Owned JSON outputs cleaned after recording. RH goal active/unmet.
+
+## C12.76: exact prime allocation in the complete signed work
+
+**1004o completed attempt — no frontier advance.** Previous turn made no frontier advance. Revalidated C12.75 and read the exact non-rough Ramaré identity. Tested the full signed product work using its literal prime-count denominator on both coordinates, retaining the rough source, unequal-prime terms and physical cutoff. No critical-scale source estimate resulted. The following are paper diagnostics, not new Lean theorems or a retirement of route MC.
+
+**Double prime allocation retains the difficult pairs.** For a finite prime set P put w(n)=omega_P(n), r(n)=mu(n)*1_(w(n)=0), and b(m)=mu(m)/(1+w(m)). The exact square-multiple cancellation gives, for n>=1,
+
+    mu(n)=r(n)-sum_(p in P, n=p*m, p not dividing m)b(m).
+
+For any symmetric joint kernel K(a,b), inserting this on both coordinates leaves rough/rough, both rough/prime terms, and the complete double-prime sum
+
+    sum_(p,q in P) sum_(m<=U/p, p not dividing m)
+      sum_(l<=U/q, q not dividing l) b(m)*b(l)*K(p*m,q*l).
+
+At fixed original active a,b, the equal-prime allocation has weight
+
+    G_P(a,b)=|P(a) intersect P(b)|/(w(a)*w(b));
+
+the unequal-prime allocation has weight 1-G_P(a,b). Thus coprime a,b>1 remain entirely in the unequal-prime term. Entrywise bounds on G do not estimate this signed form. At fixed product a*b, the existing MobiusProductFibreVariation sign law says every nonzero mu(a)*mu(b) has the same Liouville sign. Positive prime allocation preserves that sign and its total weight. For K_N(a*b) it supplies no within-product cancellation. Factoring the actual reciprocal phase h*N/(a*b) as h*N/(p*q*m*l) likewise leaves its value and bounded-mode scale unchanged. No new phase gain or off-diagonal bound was obtained.
+
+**Joint boundary subtraction was tested, not a separate cofactor estimate.** Taking every prime through U makes the rough source just n=1, but the cofactor becomes exactly mu(m)/(1+omega(m)), whose slow boundary was already recorded in C12.21. In the absolute-convergence region sigma>1, write E(u,sigma)=product_p(1-u*p^(-sigma)) and A(sigma)=integral_0^1 E(u,sigma)du. Retaining every deleted-prime factor gives
+
+    sum_p p^(-sigma)*integral_0^1 E(u,sigma)/(1-u*p^(-sigma))du
+      =-integral_0^1 partial_u E(u,sigma)du
+      =1-E(1,sigma).
+
+Separating the first prime mass P(sigma)=sum_p p^(-sigma) leaves the exact remainder
+
+    P(sigma)*A(sigma)
+      +sum_p p^(-2*sigma)*integral_0^1 u*E(u,sigma)/(1-u*p^(-sigma))du
+      =1-E(1,sigma).
+
+Consequently subtraction of the common boundary recombines to the original Mobius series E(1,sigma). It does not produce a bound for the finite physical source. Absolute prime-square control of product_p((1-u*p^(-s))*exp(u*p^(-s))) does not continue the separate prime mass P(s) into Re(s)>1/2. No branch choice, zero-free region or contour shift was assumed. No critical estimate for the recombined remainder was proved.
+
+**Completed nonlinear cofactors were checked as a second attack.** Read the current RouteECofactorCutoffStability, RouteEDyadicCofactorKernel and RouteECompletedDoublePairParity results. Their actual nonlinear kernel is positive, but its coefficient is mu(a)*mu(q*d), with coprimality retained. The already proved completed a,2a pair has the sign of its odd core in the far cone. Neither fact is a common sign for the full sum.
+
+For the absolutely completed moment at s>=2, finite Euler products followed by absolute convergence give the paper expression
+
+    C_s(a)=sum_((d,a)=1)mu(d)/d^s
+          =zeta(s)^(-1)*product_(p|a)(1-p^(-s))^(-1).
+
+For odd a, 2*C_s(2*a)-C_s(a)=((1+2^(-s))/(1-2^(-s)))*C_s(a). Hence the completed core-moment aggregate retains a positive arithmetic weight times the original outer mu(a)*a. This is not a bound on that weighted sum or on the full nonlinear kernel. It supplies no independent cancellation; no approximation was extended from the far cone to the whole source. The full nonlinear signed aggregate, near-scale region and prime/cutoff dependence remain unpaid.
+
+**Next hard work.** Estimate the complete signed nonlinear aggregate across numerator and prime simultaneously, retaining the original cutoff and the interaction with the remaining source. Neither completing one cofactor, separating prime packets, nor bounding a positive kernel entry addresses that aggregate. A useful next result must be an actual bound on this joint source, not another equivalence or normalization identity. The subpower Hilbert estimate and unconditional RH proof/falsification remain open.
+
+**Audit.** Three deep searches terminal and partial: exact Ramaré allocation, boundary subtraction and completed cofactors. Their snapshots reported respectively 64517/64521/64525 files and 48642/48645/48648 compiler-pending entries, with 43 compiled snapshots and 2660 stale entries. Two subsequent lexical searches located the exact cofactor-series and Route-E kernel/moment declarations. The broad boundary search was mostly unrelated; the completed search's Mobius module filter excluded the named Route-E files, corrected by the exact lexical search and direct source reads. Candidate/source arguments and proposed chains were inspected, with no completeness or applicability claim for unrelated results. One read used an abbreviated missing Sieve path; rg --files located the actual RHTower/Sieve file before reading it. No numerical computation, Lean edit/build, axiom, heartbeat change, subagent, umbrella build, commit or new formal no-go. Owned search processes terminal; outputs cleaned after recording. Goal active/unmet.
+
+## C12.77: joint prime forcing of the complete signed source
+
+**1004p completed attempt — no frontier estimate.** C12.76 made no frontier advance. Revalidated its exact unpaid terms. Tested summing prime forcing before estimating the complete numerator–prime aggregate. Neither that sum nor the logarithmic energy argument below produced the required source bound. All new formulas below remain paper diagnostics; no Lean theorem or RH result was added.
+
+**The physical large-prime restriction remains.** In the completed-pair source, q is prime and a,d<q. Thus q is the unique prime factor of b=q*d above sqrt(b), and q>a. Let P retain the original allowed denominator primes, including their cutoff and any oddness restriction. Summing their log(q) contributions at fixed a,b selects the weight
+
+    kappa_P(a,b)=sum_(q in P, q|b, q>a, b/q<q)log(q).
+
+For squarefree b, 0<=kappa_P(a,b)<=log(b), but the omitted log(b)-kappa_P(a,b) still multiplies the signed mu(a)*mu(b) and the original kernel. The full identity mu*Lambda=-mu*log cannot replace this selected prime by all divisors at no cost. Coprimality and the original a,b cutoffs were retained. On completing the prime sum, the checked MoebiusLogRecursion and DeningerMobiusConnection give the logarithmically weighted source again. In the compensated carrier, EulerDeletionLogPrimeForcing.compensated_renewal retains logSource=-dilationPackets-forcing. Its known forcing-energy growth does not bound the cross term. No sign or estimate for the omitted source was obtained.
+
+**A proposed general logarithmic coercivity fails before reaching the arithmetic estimate.** Let H_(m,n)=1/(m+n), D_(n,n)=log(n), and V_(n,m)=Lambda(n/m) when m divides n, zero otherwise, on 1..N. Set A=D+V. The exact logarithmic convolution gives A*mu=0. Although A is triangular with eigenvalues log(n), this supplies no coercivity in H. For S=(H*A+A^t*H)/2, already at N=3 the submatrix on indices 2,3 is
+
+    [ log(2)/4,              (log(2)+log(3))/10 ]
+    [ (log(2)+log(3))/10,   log(3)/6           ].
+
+Writing u=log(2), v=log(3), its determinant is
+
+    -(3*v-2*u)*(2*v-3*u)/600 < 0,
+
+since 2*v>3*u follows from 3^2>2^3 and monotonicity of log. Hence a correction supported only on the first coordinate cannot make this form nonnegative: its negative vector can have first coordinate zero. This is an analytic finite diagnostic, not a numerical experiment or a newly formalized no-go. It rejects the attempted arbitrary-coefficient bound; it does not reject a bound using the complete actual Mobius constraints or retire route MC.
+
+**Using the actual harmonic constraint controls the opposite direction.** The corpus proves |sum_(n<=N)mu(n)/n|<=2. For the finite Stieltjes field
+
+    R_N(t)=sum_(n<=N)mu(n)/(n+i*t),
+
+finite Abel summation with g(u)=u/(u+i*t), |g|<=1 and integral_1^N |g'(u)|du<=pi/2 gives |R_N(t)|<=2+pi. Define the full signed logarithmic Hilbert work
+
+    L_N=sum_(m,n<=N)mu(m)*mu(n)*(log(m)+log(n))/(2*(m+n)).
+
+The rational kernel identity gives
+
+    L_N=(1/(2*pi))*integral_R log|t|*|R_N(t)|^2 dt.
+
+For completeness, its real scalar entry follows from
+
+    Re[1/((m-i*t)*(n+i*t))]
+      =(m/(m^2+t^2)+n/(n^2+t^2))/(m+n).
+
+Rescaling each scalar integral leaves pi*log(m); the log|u| part vanishes by u->1/u. All sums are finite and the logarithmically weighted rational integrals converge. The negative part |t|<1 is therefore bounded uniformly, giving on paper L_N>=-(2+pi)^2/pi. This is a possible auxiliary statement, not novelty-audited or Lean-verified, and was not counted as a frontier advance.
+
+The exact prime interaction is
+
+    W_N=sum_(d<=N)Lambda(d)*sum_(m<=N/d,n<=N)mu(m)*mu(n)/(d*m+n)
+       =-L_N.
+
+Thus the obtained direction is an upper bound for W_N. The energy argument needs a lower bound. Its unpaid part is exactly the positive integral over |t|>=1 of log|t|*|R_N(t)|^2. Uniform pointwise control of R_N does not control that expanding integral. No reversal of this inequality or critical decay of R_N was assumed.
+
+**Next hard attack.** Use the exact finite divisor constraints on this positive high-frequency integral rather than a positivity assertion for arbitrary coefficients. For N>=1 they give
+
+    sum_(k<=N)(1/k)*R_(floor(N/k))(t/k)=1/(1+i*t).
+
+This relation retains every truncated field and follows coefficientwise from mu*1=delta. A useful next step must estimate the actual high-frequency mass jointly across these dilations; merely formalizing this relation or a new RH receiver would not advance MC. The complete prime-work lower bound and subpower Hilbert upper bound remain open.
+
+**Audit.** Three deep searches terminal/partial (joint forcing, logarithmic energy, Stieltjes work), plus one exact lexical search. Snapshots respectively reported 64529/64536/64539 files and 48650/48654/48656 compiler-pending entries; 43 compiled snapshots and 2660 stale entries each. Candidate/source scopes and proposed chains inspected. Actual reads included MoebiusLogRecursion, MobiusLogDivisorParaproduct, VonMangoldtWeightAdditive, DeningerMobiusConnection 1-155, the compensated renewal and harmonic bound, and the mollified three-lines statement; the latter retains X-dependent growth and was not used as a critical estimate. An unmatched LogarithmicMobiusInverse glob was corrected by exact corpus search and rg. No numerical computation, Lean edit/build, added axiom, heartbeat change, subagent, umbrella build, commit or route retirement. All owned search processes terminal; outputs cleaned after recording. Goal active/unmet.
+
+## C12.78: the finite Stieltjes divisor constraints and high-frequency mass
+
+**1004q completed attempt — no frontier estimate.** Previous turn made no frontier advance. Revalidated C12.77. Tested the complete Stieltjes energy against its finite divisor identities, frequency localization, and reciprocal-source regularity. The missing upper bound was not proved. A further Liouville sign candidate is stated below with its failed induction step explicit; it is not assumed. All new calculations below are symbolic paper arguments, not numerical experiments or new Lean theorems.
+
+**The squared divisor constraint contains the unknown diagonal.** Let E_N be the actual Hilbert energy and R_N(t)=sum_(n<=N)mu(n)/(n+i*t). Its rational Gram identity is integral_R |R_N(t)|^2 dt=2*pi*E_N. The exact divisor sum for N>=1 is
+
+    sum_(k<=N)R_(floor(N/k))(t/k)/k=1/(1+i*t).
+
+Consequently the normalized diagonal in the squared identity is sum_(k<=N)E_(floor(N/k))/k, and the complete unequal-dilation cross term is exactly one half minus that sum. This is cancellation of a sum already containing the unknown energies, not an upper bound for any of them. The checked Hardy Cauchy-transform orthogonality concerns opposite Hardy subspaces. These dilated rational fields have their poles on the same side; that orthogonality cannot delete their mutual cross terms.
+
+**Frequency localization leaves the balanced arithmetic region.** For T>0 put theta_T(n)=arctan(2*T/n)-arctan(T/n). Direct integration of the rational Gram gives
+
+    integral_T^(2*T) |R_N(t)|^2 dt
+      =sum_(m,n<=N)mu(m)*mu(n)*(theta_T(m)+theta_T(n))/(m+n).
+
+This kernel is not a function of m+n alone, so the existing antitone divisor-comparable theorem cannot be substituted. When m,n,t are comparable to T, its shape in the scaled variables is fixed. The phase of 1/(n+i*t) does not acquire a growing oscillation parameter as T grows. The harmonic pointwise bound gives an estimate proportional to the band length, not a subpower bound. No estimate for the complete signed balanced region, or a valid reduction of that region to a controlled carrier, was obtained.
+
+**The infinite dilation limit has a compulsory boundary.** To state this without ambiguity, use S_N(z)=sum_(n<=N)mu(n)/(n+z), so R_N(t)=S_N(i*t), and m_N=sum_(n<=N)mu(n)/n. The current harmonic theorem gives m_N->0. For Re(z)>=0 the pointwise limit is the absolutely convergent expression
+
+    S(z)=-z*sum_(n>=1)mu(n)/(n*(n+z)).
+
+Absolute double summation then gives
+
+    sum_(k>=1)S(z/k)/k=-z/(1+z),
+
+whereas the finite divisor identity has right side 1/(1+z). The lost constant is exactly retained by
+
+    sum_(k<=N)m_(floor(N/k))/k=1,
+    sum_(k<=N)(S_(floor(N/k))(z/k)-m_(floor(N/k)))/k=-z/(1+z).
+
+The latter has a uniform summable majorant of order |z|/k^2 for fixed z. In the uncompensated identity the iterated limit of the k>K tail, first N->infinity and then K->infinity, is 1. Subtracting m_N as a constant makes the finite field approach -m_N at infinite frequency, destroying its L2 decay when m_N is nonzero. Using a decaying compensator instead requires retaining the resulting dilation forcing. None of these operations bounds the original energy.
+
+The Poisson-range classification in DeningerMobiusPoissonRangeClassification explicitly requires regularity of the canonical preimage; pointwise inversion does not supply it. MobiusReciprocalGammaFrequency gives a norm representation without an arithmetic bound. CriticalMellinBoundaryStieltjes retains its endpoint term. These source scopes do not justify an unproved reciprocal boundary regularity or a residue-free contour shift for the present source.
+
+**Further candidate: a sign for the complete Liouville Stieltjes source.** Revalidated C12.36 and the actual complete multiplicativity and square-indicator convolution in LiouvilleDirichletSeries. Define, on paper,
+
+    H_lambda(x)=sum_(n>=1)lambda(n)/(n*(n+x)),  x>0.
+
+This is absolutely convergent. The square convolution gives the exact equation
+
+    sum_(k>=1)H_lambda(x/k)/k^2
+      =sum_(j>=1)1/(j^2*(j^2+x)).
+
+The candidate is H_lambda(x)>=0. The right side is positive, but the inverse of I+T, T f(x)=sum_(k>=2)f(x/k)/k^2, has alternating Neumann terms. Its bounded-function contraction does not prove that its inverse preserves positivity. This is a proposed source sign, not a theorem or a substituted assumption. Its prospective one-sided Mellin argument would also require a full analytic audit before claiming an RH implication; no new conditional receiver was formalized.
+
+An explicit stronger finite-prime test avoids guessing the sign of the inverse. For a finite prime set P let
+
+    H_P(x)=sum_(n>=1 with all prime factors in P)lambda(n)/(n*(n+x)).
+
+For p outside P, exact prime-power splitting gives
+
+    H_(P union {p})(x)=sum_(e>=0)(-1)^e*p^(-2*e)*H_P(x/p^e).
+
+For P empty H_P(x)=1/(1+x); for one prime the terms alternate with decreasing magnitude, proving positivity on paper. Writing g_P(x)=x^2*H_P(x) turns the update into sum_e(-1)^e*g_P(x/p^e). A nonnegative increasing g_P would give a nonnegative updated value, but that class is not preserved by this operator in general: g(x)=1_(x>=1) updates to 1 on [1,p) and 0 on [p,p^2). This does not disprove positivity for the actual g_P. It shows precisely why the attempted monotonicity induction has not closed. No sign for all finite prime sets or for H_lambda was proved.
+
+**Next hard attack.** Prove or refute positivity for the actual finite-prime H_P family by establishing an invariant under the displayed prime-power update, retaining all exponents and the exact base kernel. Generic monotonicity is insufficient, and proving another one-prime result would not address the gap. If that candidate survives, justify the all-prime limit and its full RH connection; otherwise retain the actual counterexample and seek a weaker signed estimate. Route MC's original subpower energy target remains unchanged and open.
+
+**Audit.** Four deep searches terminal: Stieltjes, band and Liouville partial=true; reciprocal partial=false. Snapshots reported respectively 64541/64544/64546/64548 files and 48658/48661/48663/48665 compiler-pending entries, with 43 compiled snapshots and 2660 stale entries. Candidate/source arguments and proposed chains inspected; unrelated positive-measure Stieltjes transforms, geometric Mobius maps and the Liouville constant were not used as arithmetic positivity. Source reads and harmonic zero-limit scope checked. No Lean edit/build, numerical experiment, added axiom, heartbeat change, subagent, full/umbrella build, commit or formal route retirement. All owned searches terminal and JSON outputs cleaned. Goal active/unmet.
+
+## C12.79: actual finite-prime Liouville positivity and its induction constraints
+
+**Turn 1004r, 2026-10-02. Route MC. No frontier estimate or new Lean theorem.** Continued C12.78's exact source candidate, rather than assuming that an Euler product or positive square forcing proves its sign. The hard target remains the complete signed half-power estimate. All results below are paper deductions, not audited Lean results. The positivity conjecture is neither proved nor refuted.
+
+**The finite-prime candidate is not stronger than full-source positivity.** Let B_P be the squarefree positive integers whose prime factors all lie outside P. Absolute rearrangement gives
+
+    H_P(x) = sum_(d in B_P) d^(-2) H_lambda(x/d).
+
+Indeed the coefficient at n on the right is sum_(d|n,d in B_P) lambda(n/d). A prime outside P cancels its two adjacent exponent contributions, while primes inside P retain lambda. Absolute summation is bounded by zeta(2)^2. Thus H_lambda>=0 implies H_P>=0 for EVERY finite prime set P. Conversely, exhausting all primes and dominating each summand by 1/n^2 gives H_P(x)->H_lambda(x). Consequently the two global positivity assertions are equivalent. This corrects C12.78's description of the finite-prime assertion as stronger. It does not establish either assertion or their proposed RH transfer.
+
+**Exact Mellin test, with every prime retained.** For 0<Re(s)<1,
+
+    M_P(s) = integral_0^infty x^(s-1) H_P(x) dx
+           = pi/sin(pi*s) * product_(p in P) (1+p^(s-2))^(-1).
+
+If H_P>=0, its normalized vertical Mellin trace must be positive definite. In particular, with q_p=p^(sigma-2), 0<sigma<1,
+
+    |M_P(sigma+i*t)|/M_P(sigma)
+      = sin(pi*sigma)/|sin(pi*(sigma+i*t))|
+        * product_(p in P) (1+q_p)/|1+q_p*exp(i*t*log p)| <= 1,
+
+    (log M_P)''(sigma)
+      = pi^2/sin(pi*sigma)^2
+        - sum_(p in P) (log p)^2*q_p/(1+q_p)^2 >= 0.
+
+Every factor in the normalized modulus product is >=1. Adding primes therefore makes this necessary test harder, not easier; the complete prime family is its maximal case. The second displayed inequality is the variance condition and is only necessary. No violating actual prime set, proof of all moment-matrix inequalities, or sufficient positivity invariant was obtained. A positive-definite dyadic squared correlation from LiouvilleDyadicGramLaw is a different source and cannot replace this linear sign condition.
+
+The logarithm of each normalized prime factor is the absolutely convergent signed series
+
+    sum_(k>=1) (-1)^k*q_p^k/k * (exp(i*k*t*log p)-1).
+
+Odd grades have negative coefficients. Treating this expression as a positive compound-Poisson construction is unjustified. This observation is not a proof that its product with the exact sine factor fails positive definiteness; no such assertion is made.
+
+**An actual-family failure of a stronger induction cone.** The tempting invariant 1<=Dg_P/g_P<=2 for g_P=x^2 H_P would in particular make J_P=x H_P increasing. This cannot hold for every finite P. From lambda=mu*squareIndicator,
+
+    sum_(n<=N) lambda(n)/n
+      = sum_(d<=sqrt N) d^(-2) m_mu(floor(N/d^2)) -> 0,
+
+using the corpus's bounded harmonic Mobius prefixes and their zero limit, then dominated convergence with sum d^(-2)<infinity. Abel summation of this convergent harmonic Liouville series gives J_lambda(x)->0 as x->infinity. But H_lambda(0)=zeta(4)/zeta(2)>0 and continuity gives J_lambda(x)>0 for small positive x. If all J_P were increasing, their pointwise limit J_lambda would be increasing, a contradiction. Hence some actual finite-prime member fails that stronger cone. This does NOT refute H_P>=0 or the weaker candidate that g_P itself increases. Those remain the hard sign questions; there is no generic-operator-to-actual-source inference here.
+
+**Next hard attack.** Keep the actual all-prime sign candidate. Seek a source-specific bound on the negative part after prime insertion, allowing the decline of x H_P required above and retaining all prime-power grades. The positive square forcing and finite-prime equivalence are constraints on such a proof, not cancellation estimates. Do not formalize another positivity receiver, one-prime observation or the stronger-cone failure as a substitute for the missing all-prime argument.
+
+**Audit.** Two deep searches terminal and partial=true; first snapshot 64557 files, compiler-pending 48672; second compiler-pending 48673, both 43 compiled snapshots and 2660 stale. Lexical Liouville search also terminal. Candidate lemmas, source arguments, ingredient sets and scope inspected. Read the actual Liouville dyadic Gram law and positive-recurrence statements; neither proves the proposed sign. No Lean edit/build, numerical experiment, added axiom, heartbeat change, subagent, full/umbrella build, commit or formal route retirement. Goal active/unmet.
+
+## C12.80: the actual square forcing under the complete signed inverse
+
+**Turn 1004s, 2026-10-02. Route MC. No frontier estimate or new Lean theorem.** C12.79 changed the admissible induction conditions but did not solve a hard cancellation bound. This turn tested source-specific comparison for the same H_lambda; its global sign remains unproved and unrefuted. The deductions below are paper work, not Lean-audited results or a retirement of the sign candidate.
+
+Put
+
+    (T h)(x) = sum_(k>=2) k^(-2) h(x/k),
+    f(x) = sum_(j>=1) 1/[j^2(j^2+x)],
+    q = sum_(k>=2) k^(-2) = zeta(2)-1 < 1.
+
+The strict inequality follows by comparing 1/k^2 with 1/[k(k-1)]. The source convolution gives (I+T)H_lambda=f. On bounded functions T is positive and has norm q, hence the exact expansion
+
+    H_lambda = sum_(r>=0) (-T)^r f,
+    |H_lambda(x)-sum_(r=0..K)(-T)^r f(x)| <= zeta(2)*q^(K+1).
+
+Choosing K proportional to log x can make this remainder smaller than the critical target. It does not bound the retained alternating sum. Uniform convergence in the unweighted norm supplies no weighted half-power bound.
+
+**The proposed positive two-step forcing fails for the actual f.** Let g=f-Tf. Then
+
+    H_lambda = sum_(r>=0) T^(2r) g.
+
+A proof g>=0 would establish positivity, but g is eventually negative. Indeed x*f(x)->zeta(2), whereas
+
+    x*(Tf)(x) = sum_(k>=2) k^(-1) [(x/k)*f(x/k)] -> infinity.
+
+For the latter conclusion restrict to 2<=k<=sqrt(x); the bracket is eventually at least zeta(2)/2 uniformly there, and the harmonic sum diverges. At zero, continuously extending f, g(0)=(1-q)*zeta(4)>0. Thus the actual forcing has both signs. No generic test function is substituted.
+
+**Its two positive pieces cannot be estimated separately.** There is a unique rho in (1,2) with zeta(rho)=2, by the positive real Dirichlet series, its strict decrease, divergence at 1, and zeta(2)<2. Set s_*=2-rho in (0,1). On the Mellin weight x^(s_*-1) dx, T preserves the integral of every nonnegative integrable function because sum_(k>=2) k^(s_*-2)=1. Both f and Tf are integrable in this weight. Therefore g has integral zero, and g_+=max(g,0), g_-=max(-g,0) have equal strictly positive finite masses. For
+
+    U_+ = sum_(r>=0) T^(2r) g_+,
+    U_- = sum_(r>=0) T^(2r) g_-,
+
+the sums converge pointwise (even uniformly) by q<1, but each weighted integral is infinite by nonnegative interchange and the mass-preservation identity. Their difference is exactly H_lambda. In contrast H_lambda is absolutely integrable against every x^(s-1) dx with 0<s<1, directly from |lambda(n)|<=1 and the convergent series sum n^(s-2). This identifies an actual cancellation that positive-part bounds discard; it is below the required critical range and is not claimed as a frontier advance.
+
+**Even an explicit positive supersolution does not give inverse order.** For h_0(x)=zeta(2)/(1+x)^2,
+
+    (I+T)h_0(x) = zeta(2)*sum_(n>=1) 1/(n+x)^2 >= zeta(2)/(1+x) >= f(x).
+
+The first inequality is the decreasing integral comparison; the second uses j^2>=1. Nevertheless H_lambda<=h_0 everywhere is false. At zero h_0(0)>H_lambda(0)=zeta(4)/zeta(2). On real 0<s<1 the exact Mellin transforms are
+
+    M_H(s)=pi/sin(pi*s)*zeta(4-2*s)/zeta(2-s),
+    M_h0(s)=zeta(2)*Gamma(s)*Gamma(2-s),
+
+and both tend to zeta(2) as s increases to 1. If h_0-H_lambda were nonnegative everywhere, Fatou would give its ordinary integral <=0, contradicting its strict positivity near zero. This is an order-comparison failure on the literal square source, not a disproof of H_lambda>=0.
+
+**Source audit and next hard attack.** The LiouvilleChainFree inequalities retain sigma>1 and the displayed full Perron/sieve terms. LiouvilleCesaroUnconditional has x^sigma with sigma>=1. Neither supplies critical cancellation or a sign. ThetaRateMobiusSourceTransfer assumes all-deletion complete monotonicity and rate control; it does not produce them. A suggested complex negative-zeta interpolation argument was not established: the retrieved real-axis negativity theorem has a different domain and was not used. No claim about such level sets is made.
+
+The remaining task is to control the SIGNED renewal sum above, preserving the equal-mass cancellation, or prove the original exact prime-power sign invariant. A promising decomposition must retain its source forcing and cannot invoke inverse positivity, split U_+ and U_-, or label a logarithmic truncation of this same unknown sum as a bound. Do not formalize these comparison failures as a substitute for that hard estimate.
+
+**Audit.** Three deep searches terminal, all partial=true, compiler-pending 48677/48677/48678; all reported 43 compiled snapshots and 2660 stale entries. One lexical search terminal. Candidate/source arguments and ingredient-set scope inspected; no proposed retrieval chain treated as proof. No Lean edit/build, numerical experiment, added axiom, heartbeat change, subagent, full/umbrella build, commit or formal route retirement. Goal active/unmet.
+
+## C12.81: critical forcing after reference subtraction; the required one-sided target
+
+**Turn 1004t, 2026-10-02. Route MC. No frontier bound or new Lean theorem.** Previous turn ruled out positive-part comparison but did not control the full inverse. This turn retained the same source, subtracted an explicit reference, and checked whether positivity was an unnecessarily strong target. All deductions here are paper work. Neither the signed inverse bound nor RH is proved.
+
+Write A=I+T, h_0(x)=zeta(2)/(1+x)^2, r=H_lambda-h_0, and R=f-Ah_0, using C12.80's exact f and T. Then A r=R. Elementary integral comparisons give, for every x>0,
+
+    R(x) = zeta(2) * [1/x - sum_(n>=1) 1/(n+x)^2]
+           - (1/x) * sum_(j>=1) 1/(j^2+x),
+
+    0 <= R(x) + pi/(2*x^(3/2)) <= (zeta(2)+1)/x^2.
+
+Indeed the first bracket is between zero and 1/[x(1+x)], and
+0<=pi/(2*sqrt x)-sum_j 1/(j^2+x)<=1/x. These are full-sum comparisons, with neither a square tail nor an endpoint omitted. Separately C12.80 already gives R<=0 on the whole positive axis.
+
+**The negative forcing has an explicit positive Laplace density.** Exactly
+
+    -R(x) = integral_0^infty exp(-x*t) psi(t) dt,
+    psi(t) = zeta(2)*t/(exp(t)-1) - sum_(j>=1) exp(-j^2*t)/j^2 >= 0.
+
+The sign follows from sum_j exp(-j^2*t)/j^2<=zeta(2)*exp(-t) and t>=1-exp(-t). Thus -R is completely monotone and has the required critical decay. This is a bound for the FORCING, not its signed inverse. C12.80's literal supersolution failure already shows that A inverse need not preserve positivity even for this particular completely monotone forcing: A inverse(-R)=h_0-H_lambda is not everywhere nonnegative.
+
+**Why a generic critical-forcing estimate does not settle the inverse.** Initially on 0<Re s<1,
+
+    M_R(s) = pi/sin(pi*s)*zeta(4-2*s)
+             - zeta(2-s)*zeta(2)*Gamma(s)*Gamma(2-s),
+    M_r(s) = M_R(s)/zeta(2-s).
+
+The physical bound above makes M_R analytic on 0<Re s<3/2, with the displayed apparent singularity at s=1 removable. If rho is a zeta zero with Re rho>1/2, then at s=2-rho the second summand vanishes while the first is nonzero: zeta(2*rho) is zero-free in Re>1 and the sine factor does not vanish. Reference subtraction therefore does not cancel such a pole. Bounding r at the critical exponent still requires the missing arithmetic estimate; analytic continuation of its numerator is insufficient.
+
+**Global sign would impose an additional simplicity conclusion.** Assume, only to audit the proposed target, that H_lambda is eventually nonnegative. The real Mellin continuation is regular before 3/2 (including its removable point at 1); the real-strip zeta sign and Landau's positive-tail transfer extend the Mellin integral throughout 0<Re s<3/2. This excludes every zero with Re rho>1/2 and hence implies RH. Its real boundary singularity is simple:
+
+    M_H(s) ~ C/(3/2-s),  C=-pi/[2*zeta(1/2)]>0.
+
+For an eventually nonnegative source, the modulus of each vertical Mellin value is bounded by the real Mellin value plus a bounded compact-head correction. A critical zero rho=1/2+i*gamma of multiplicity m gives a pole of order m at 2-rho, because zeta(1+2*i*gamma) is nonzero on Re=1. The real simple-pole bound forces m<=1. Thus the proposed sign would also prove simplicity of all critical zeros. This implication is a paper deduction, not a newly formalized receiver; no logical strictness beyond RH is asserted. The goal itself does not require that extra conclusion.
+
+**Keep the epsilon-dependent target instead.** The sufficient lower bound to attack is
+
+    for every 0<epsilon<1/2, some C_epsilon>=0 satisfies
+    H_lambda(x) >= -C_epsilon*(1+x)^(-3/2+epsilon)  for all x>0.
+
+Equivalently one can use r, since h_0 decays as x^-2. Adding this positive comparison to H and applying the same positive-tail Landau argument only up to 3/2-epsilon excludes zeros with Re rho>1/2+epsilon; all epsilon give RH without a simplicity conclusion. Conversely the corpus's RH-to-Mertens bound and lambda=mu*squareIndicator give L_lambda(X)=O(X^(1/2+epsilon)). The zero harmonic lambda sum must be retained when estimating H:
+
+    H_lambda(x) = -(1/x) * integral_1^infty L_lambda(t)/(t+x)^2 dt.
+
+This follows by subtracting the zero sum lambda(n)/n before Abel summation. The displayed integral gives the corresponding two-sided x^(-3/2+epsilon) bound for 0<epsilon<1/2. Applying absolute values to the original 1/[n(n+x)] representation before this subtraction would leave an x^-1 term. This audit identifies the correct one-sided target; it does not prove it unconditionally.
+
+**Next hard step.** Establish that lower bound for the exact signed solution of A r=R, retaining the explicit positive density psi and its full arithmetic inverse. The critical decay and complete monotonicity of -R have now been derived on paper; the missing result concerns r, not R. Do not replace that result by an inverse-order assertion, an RH-equivalent resolvent assumption, or formalization of another receiver.
+
+**Audit.** Both deep searches terminal and partial=true. Renewal search coverage pending with background indexer running; boundary snapshot 64576 files, compiler-pending 48682, 43 compiled snapshots, 2660 stale. Candidate/source arguments and ingredient sets inspected. Read the symmetric hyperbola identity, LandauIntegralTransfer's actual positive-measure hypotheses, real-strip zeta negativity, the existing sharp-Hilbert simplicity conclusion, and mathlib's closed Re>=1 nonvanishing statement. None supplies the required inverse lower bound. No Lean edit/build, numerical experiment, added axiom, heartbeat change, subagent, full/umbrella build, commit or formal route retirement. Goal active/unmet.
+
+## C12.82: joint arithmetic density inversion and complete prime-root constraints
+
+**Turn 1004u, 2026-10-02. Route MC. No frontier estimate or new Lean theorem.** Tested the literal arithmetic inverse of C12.81's critical forcing, retaining the transition and tail. This did not produce the required epsilon-dependent lower bound. The work below is paper analysis, not a formal RH result or route retirement.
+
+**Critical expansion does not pay the joint remainder.** Absolute inversion on bounded functions gives
+
+    r(x)=sum_(n>=1) mu(n)/n^2 * R(x/n).
+
+For x>=1, inserting C12.81's exact critical expansion only on n<=x gives
+
+    r(x) = -pi/(2*x^(3/2))*sum_(n<=x) mu(n)/sqrt(n)
+           + E_head(x) + E_tail(x),
+    |E_head(x)| <= (zeta(2)+1)*floor(x)/x^2,
+    |E_tail(x)| <= sup|R| * sum_(n>x) 1/n^2.
+
+Both absolute remainders have scale x^-1. The head half-harmonic sum and the transition/tail must remain coupled; neither has been shown small enough. An asymptotic expansion for R does not justify summing its leading term over all n, where absolute convergence would fail.
+
+**The exact density inverse returns the harmonic Liouville profile.** For every t>0, all series in
+
+    B_psi(t)=sum_(k>=1) mu(k)/k * psi(k*t)
+            =zeta(2)*t*exp(-t)-Q_lambda(t),
+    Q_lambda(t)=sum_(n>=1) lambda(n)/n * exp(-n*t)
+
+are absolutely convergent. The Bose part collapses by the corpus's exact identity sum mu(k)/(exp(k*t)-1)=exp(-t). The square part uses sum_(k*j^2=n)mu(k)=lambda(n), retaining its weight 1/n. Hence
+
+    r(x)=-integral_0^infty exp(-x*t)*B_psi(t) dt.
+
+Absolute interchange follows from sum |mu(k)|/k^2*(-R(x/k))<infinity. No harmonic boundary or square contribution is lost. The desired rate for the signed inverse is still unproved; this identity does not supply a small-t bound on Q_lambda.
+
+**The located monotone-inversion theorem does not apply.** HTGeometry/MonotoneMobiusPositivity proves a lower bound for sum mu(k)/k^2*g(x/k) when g is nonnegative and NONDECREASING. Here -R is positive and decreasing. Reversing the dilation variable changes the operator, and subtracting its value at zero retains a nondecaying constant after inversion. No monotonicity premise or critical estimate was inferred from complete monotonicity. PositivePrimeDensityMobiusInversion has the same actual hypothesis. Chronological Bose remainders were not applied outside their local window or with the remaining signed arithmetic sum discarded.
+
+**Prime multiplication: retain all additive channels.** Rechecked C12.36 before proceeding: lambda(n)*lambda(p*n)=-1 alone controls only matched pairs, not the whole Hilbert form. To keep the other channels, set F_N(z)=sum_(1<=n<=N)lambda(n)z^n. For every prime p and p-th root omega=exp(2*pi*i/p), the exact finite identity is
+
+    sum_(j=0..p-1) F_N(omega^j*z) = -p*F_floor(N/p)(z^p).
+
+For squarefree q, the corresponding primitive-root sum is
+
+    sum_(a mod q, gcd(a,q)=1) F_N(exp(2*pi*i*a/q)*z)
+      = mu(q)*sum_(d|q) d*F_floor(N/d)(z^d).
+
+This follows from the full Ramanujan divisor expansion and complete multiplicativity; all cutoffs remain. It is a possible way to test a collective source estimate, not such an estimate itself. Basic Cauchy on a prime row gives
+
+    |F_N(z)+p*F_floor(N/p)(z^p)|^2
+      <= (p-1)*sum_(j=1..p-1)|F_N(omega^j*z)|^2.
+
+The factor p-1 and the signed child term cannot be dropped. The angular mean of the radial Hilbert energy is exactly (1/2)*sum_(n<=N)1/n, by Fourier orthogonality and lambda(n)^2=1. This does not bound its value on the positive real ray: arithmetic concentration and the full cross-scale terms remain unpaid. No false transfer from matched prime edges or angular average to pointwise source energy was made.
+
+**Next hard attack.** Test whether the complete prime-root constraints control the signed cross-scale contribution on the actual Liouville vector, rather than estimating each row or angle separately. This is an attempted new estimate for the same MC source, with the square forcing retained. Do not spend another turn building a density representation or a conditional receiver: the current inverse representations already return the original unknown source exactly.
+
+**Audit.** Three deep searches terminal, all partial=true. Inverse snapshot 64579 files, compiler-pending48684; density search coverage pending; prime-graph snapshot64585 files, compiler-pending48687. Available snapshots report43 compiled snapshots and2660 stale. Candidate/source arguments and ingredient-set scope inspected. Read MonotoneMobiusPositivity's full monotonicity requirement, PositivePrimeDensityMobiusInversion's matching hypotheses and the actual Lambert source law. No Lean edit/build, numerical experiment, added axiom, heartbeat change, subagent, full/umbrella build, commit or formal route retirement. Goal active/unmet.
+
+## C12.83: complete root averaging damps the source but does not bound its inverse
+
+**Turn 1004v, 2026-10-02. Route MC. No frontier estimate or new Lean theorem.** Attempted to use C12.82's simultaneous prime-root constraints to control the actual Liouville source on the positive ray. Neither separated-angle energy nor the signed complete Ramanujan average supplied the missing bound. The following is paper analysis of this attempt, not a formal result or route retirement.
+
+**The existing completed-cofactor result has a different source and conclusion.** `PMRamanujanComplementaryCancellation` retains all cofactors at denominator cutoff P^2 and proves relative cancellation of a growing sector by its complement. Its complete energy still has a positive-power bound; it does not prove a critical absolute bound for the Liouville root polynomial. `PMPowerDampedMobiusRamanujanQuadratic` gives an exact Gram identity and prefix comparison, not a uniform ceiling. `PMPowerDampedMobiusRamanujanCofactors` retains the exact cofactor floors/fractional parts. These results cannot be substituted for a bound on C12.82's different coefficients and cutoff-dependent child polynomials. `LiouvilleSignedCofactorDilation` likewise retains the full nondivisible residual and explicitly supplies no rate.
+
+**Separated-angle energy does not remove the row cost.** The inspected `Sieve/LargeSieveSeparated` theorem has coefficient
+
+    N + delta^(-1)*sum_(1<=k<=M) 1/k,   M >= 1/(2*delta).
+
+It is not a source-specific estimate for the real ray. The prime-row Cauchy identity from C12.82 still pays p-1 and retains its signed child. No removal of that cost, pointwise control from angular mean, or sign for the complete cross-scale contribution has been proved. A sharper large-sieve theorem was not assumed from memory.
+
+**Exact signed average and its loss of arithmetic weight.** Write c_q(n) for the Ramanujan sum, and take real a>1. Multiplicativity and the prime values c_p(n)=p-1 for p|n and -1 otherwise give
+
+    zeta(2a)/zeta(a) * sum_(q squarefree) mu(q)*c_q(n)/q^a
+      = b_a(n),
+    b_a(n)=product_(p|n) (1-(p-1)*p^(-a))/(1+p^(-a)).
+
+For each n this q-series converges absolutely. Each factor lies in [0,1]. At a decreasing to 1,
+
+    b_a(n) -> b(n)=product_(p|n) 1/(p+1).
+
+For F(t)=sum_n lambda(n)*exp(-n*t), t>0, the normalized sum of the *completed primitive-root rows* therefore converges to
+
+    D(t)=sum_n lambda(n)*b(n)*exp(-n*t).
+
+Interchange is justified at fixed a,t: the absolute q-series at coefficient n is bounded by a constant depending on a times rad(n), hence by that constant times n; the exponential n-sum converges. The limit a->1 uses 0<=b_a(n)<=1. This is a grouping of complete rows, not an absolutely summable measure of individual angular evaluations. Its total coefficient variation is proportional to sum_(q squarefree) phi(q)/q^a, which diverges for 1<a<=2, already on prime q. Consequently it does not give a bounded signed angular measure in that range.
+
+**The small damped source is real, but does not transfer.** For every eta>0,
+
+    sum_n b(n)/n^eta
+      = product_p (1+p^(-eta)/((p+1)*(1-p^(-eta)))) < infinity.
+
+Thus |D(t)|<=C_eta*t^(-eta) by an absolute estimate. This is not cancellation of the original lambda coefficients: b(n) has removed their large-prime mass. To track recovery exactly, put
+
+    b'(d)=mu(d)^2*product_(p|d) p/(p+1).
+
+Prime-power coefficients give lambda*b'=lambda*b pointwise (the right-hand multiplication here is pointwise). Consequently, with all positive integer cofactors retained,
+
+    D(t)=sum_d b'(d)*F(d*t),
+    H_D(x)=sum_d b'(d)/d^2 * H_lambda(x/d).
+
+Both rearrangements are absolute at the displayed positive physical parameters. In the initial Dirichlet region Re s>1,
+
+    L_(lambda*b)(s)=L_lambda(s)*B(s),
+    B(s)=product_p (1+(p/(p+1))*p^(-s))
+        =zeta(s)/zeta(2s)*U(s),
+    U(s)=product_p (1+(p/(p+1))*p^(-s))/(1+p^(-s)).
+
+U is an analytic nonvanishing Euler product on Re s>0: on each compact subregion its factors differ from 1 by O(p^(-1-Re s)), and neither numerator nor denominator vanishes there. The damped Dirichlet series is exactly U. The apparent improvement has canceled the original inverse-zeta factor. Recovering L_lambda requires its inversion again; no half-power estimate has been obtained.
+
+There is also an explicit change at the harmonic boundary. The absolutely convergent positive series sum_n b(n)/n equals zeta(2), so
+
+    H_D(x) >= (2-zeta(2))/(1+x) > 0.
+
+This follows by separating n=1 and bounding the remaining absolute terms with n+x>=1+x. Its positive 1/x scale is not the critical decay of H_lambda, whose harmonic coefficient sum is zero. Positivity of this full cofactor average therefore cannot be transferred to inverse positivity. This is a diagnostic of the attempted averaging, not a new RH producer.
+
+**Hard problem retained.** The needed result remains the actual full-source lower bound
+
+    H_lambda(x) >= -C_epsilon*(1+x)^(-3/2+epsilon)
+
+for every 0<epsilon<1/2. Equivalently, with C12.81's explicit positive critical forcing -R, the signed inverse sum sum_d mu(d)/d^2*(-R(x/d)) needs the corresponding upper budget (up to the already controlled reference). Root averaging and the damped positive source do not supply it. Continue on this joint signed estimate, retaining the transition and all cofactors; do not count another representation, damped bound, or conditional receiver as frontier progress.
+
+**Audit.** Three deep searches terminal: root search partial=true, 64589 files/compiler-pending48690; completed-cofactor search partial=false, 64590/48691; joint-constraint search partial=true, 64598/48698. Each available snapshot reports43 compiled snapshots and2660 stale. Candidate/source arguments and ingredient scopes inspected; unrelated dilation/heat-trace suggestions were not used. All owned search outputs removed after inspection. No Lean edit/build, numerical experiment, added axiom, heartbeat change, subagent, full/umbrella build, commit, formal route retirement or RH result. Goal active/unmet.
+
+## C12.84: the actual critical-forcing cores have both signs at late scales
+
+**Turn 1004w, 2026-10-02. Route MC. Previous turn: no frontier estimate. This turn: no RH bound or new Lean theorem.** Tested adjacent inverse scales and then the stronger proposal of bounding the finite initial-prime inverse from above uniformly in its cutoff. The paper argument below excludes that stronger proposal and identifies a signed late-prime correction. Neither is a bound on the required complete source. Formalization remains outstanding; this is not a completed no-go card or route retirement.
+
+Put g=-R, with the exact forcing and positive density psi from C12.81, and
+
+    G(x)=sum_(n>=1) mu(n)/n^2*g(x/n)=h_0(x)-H_lambda(x),
+    G_P(x)=sum_(d|product P) mu(d)/d^2*g(x/d),
+    P_y={p prime : p<=y},  G_y=G_(P_y).
+
+Here g(0)=g_0=zeta(2)^2-zeta(4)>0, 0<=g(x)<=g_0, and
+g(x)=pi/(2*x^(3/2))+O(x^-2). In particular G_P is uniformly bounded in P,x by g_0*zeta(2).
+
+**Adjacent-scale pairing does not supply the missing cofactor cancellation.** Pairing the factors 1 and 2 gives the exact absolutely convergent identity
+
+    G(x)=sum_(n odd) mu(n)/n^2*[g(x/n)-g(x/(2n))/4].
+
+For a fixed finite prime set P, its complete paired kernel satisfies
+
+    G_P(x)=pi/(2*x^(3/2))*product_(p in P)(1-p^(-1/2))+O_P(x^-2).
+
+Thus fixed prime pairing preserves a nonzero critical leading term; the remaining coprime cofactors still need a signed estimate. This asymptotic is not uniform in P and was not applied to a growing core. Moment-matched extraction does not pay the remaining mass: the inspected `MobiusCofactorLayerCofinal.layer_cofinal_reduction` explicitly retains an equivalent residual-source bound, and the selected packets have equal counts of the two signs. `LowBreadthMarkerTransport` covers the specified lower-tail breadth class, not the normal-breadth residual.
+
+**Paper obstruction to a uniform one-sided initial-core bound.** Fix 1<sigma<3/2 and put alpha=2-sigma, so 1/2<alpha<1. The Mellin integral of g is absolutely convergent on this line, and M_g(sigma)>0. Finite dilation gives exactly
+
+    M_(G_y)(s)=M_g(s)*product_(p<=y)(1-p^(s-2)).
+
+At the real point sigma the product is positive and at most 1. At t_y=pi/log y, however,
+
+    |product_(p<=y)(1-p^(-alpha)*exp(i*t_y*log p))|
+      >= exp(c_alpha*y^(1-alpha)/log y)
+
+eventually, for some c_alpha>0. This is the same whole-initial-prime mechanism already present in `RoutePDampedInitialPrimeEscape`: primes between sqrt(y) and y do not contract; the terminal fixed-ratio prime window contributes positive exponential gain; all smaller-prime losses are O_alpha(y^((1-alpha)/2)*log y) in the logarithm and are absorbed. The source file's `damped_initial_exponential` proves the squared-product version for 1/2<=alpha<1. Its sign convention is immaterial to the norm. Since t_y->0, continuity gives |M_g(sigma+i*t_y)|>=M_g(sigma)/2 eventually. Consequently |M_(G_y)(sigma+i*t_y)| grows faster than every fixed power of y.
+
+Let
+
+    P_y^+=integral_0^infinity x^(sigma-1)*max(G_y(x),0) dx,
+    P_y^-=integral_0^infinity x^(sigma-1)*max(-G_y(x),0) dx.
+
+Both are finite for each fixed y, because each finite dilation retains g's critical decay. They satisfy
+
+    0 < P_y^+ - P_y^- = M_g(sigma)*product_(p<=y)(1-p^(-alpha)) <= M_g(sigma),
+    P_y^+ + P_y^- >= |M_(G_y)(sigma+i*t_y)|.
+
+Hence BOTH signed masses grow faster than every fixed power of y. The uniform boundedness |G_y|<=g_0*zeta(2) bounds their mass below y^A by a fixed polynomial for every A>0. Both signs therefore retain superpolynomial weighted mass beyond every such horizon. This is a statement about the actual critical-forcing cores, not arbitrary coefficients or just squared energy.
+
+In particular, for any 0<epsilon<1/2 there is no constant C that bounds G_y(x) from above by C*(1+x)^(-3/2+epsilon) for all x,y. Choose sigma between 1 and 3/2-epsilon: that upper envelope would give a finite uniform bound for P_y^+, contradicting the preceding argument. The analogous uniform lower envelope also fails. This excludes an attempted stronger finite-core certificate; it does NOT refute the target bound for G itself.
+
+**Positive survivor: fixed-scale convergence and the sign of late insertions.** The same cores converge uniformly in absolute value:
+
+    |G_y(x)-G(x)| <= g_0*sum_(n>y)n^-2 <= 2*g_0/y,   y>=2,
+
+uniformly in x>=0. Indeed the finite-core and full coefficients agree unless n has a prime factor greater than y; every such n exceeds y. Large weighted excursions can thus escape to large x without contradicting pointwise convergence.
+
+There is also a uniform positive small-argument interval. Write L=integral_0^infinity t*psi(t)dt, which is finite and positive by the explicit exponential density bound. Then
+
+    G_P(0)=g_0*product_(p in P)(1-p^-2) >= g_0/zeta(2),
+    |G_P(u)-G_P(0)| <= L*zeta(3)*u.
+
+Choose u_0=g_0/[2*L*zeta(2)*zeta(3)] and c_0=g_0/[2*zeta(2)]. For every finite P and 0<=u<=u_0, G_P(u)>=c_0. The exact prime insertion
+
+    G_(P union {p})(x)-G_P(x)=-p^-2*G_P(x/p),  p notin P,
+
+therefore has negative sign whenever p>=x/u_0. Telescoping every subsequent prime and using absolute convergence gives, for y>=max(2,x/u_0),
+
+    c_0*sum_(p>y)p^-2 <= G_y(x)-G(x)
+      <= g_0*zeta(2)*sum_(p>y)p^-2.
+
+This is a definite sign for the complete late-prime correction. It does not estimate the earlier joint insertion work at the physical scale. In particular, an unsigned core-tail norm cannot stand in for their relative cancellation at the critical scale. Paper proof of this survivor is recorded here; its Lean status is OPEN, and no source-specific half-power bound follows from it.
+
+**Other shortcuts checked, not adopted.** The exact stationary Fourier inversion has a specially matched multiples transform and retains its stationary cutoff; its first-harmonic collapse is not an identity for g. A squared truncated inverse retains its full product-kernel quadratic form. The elementary Stieltjes kernel 1/(x+a*b) is already indefinite on two distinct positive indices: its determinant is -x*(a-b)^2 divided by a positive denominator. That defeats a generic Gram-positivity argument, not an actual-Mobius estimate. No generic counterexample was called a counterexample to MC.
+
+**Next hard step.** The full bound remains G(x)<=C_epsilon*(1+x)^(-3/2+epsilon). Keep the initial core and complete signed correction coupled near the physical scale. The late-prime sign above pays only that late sector; it supplies no bound for the earlier core. Do not seek a cutoff-uniform one-sided estimate over the entire positive ray: the actual-core Mellin argument rules that strengthening out on paper. Do not formalize another conditional receiver or use balanced extraction as a bound on unused atoms.
+
+**Audit.** Four deep searches terminal. Inverse search partial=true:64605 files/compiler-pending48702, compiled43/stale2660. Transport search partial=true with coverage pending. Quadratic search partial=false:64606 files/pending48702, compiled43/stale2660. Sign-escape search partial=true with coverage pending. Candidate/source arguments and ingredient sets inspected; relevant source statements read. The existing damped initial-prime theorem concerns a different physical head; only its literal Euler-factor estimate is reused in the paper argument above. No claimed new theorem has been Lean-audited. Owned search outputs cleaned; no Lean edits/builds, numerical experiments, new axioms, heartbeat changes, subagents, full/umbrella build, commit or RH result. Goal active/unmet.
+
+## C12.85: macroscopic transition loads of both signs and their first signed moments
+
+**Turn 1004x, 2026-10-02. Route MC. No half-power bound or new Lean theorem.** Previous turn produced paper evidence changing the next action: a globally uniform one-sided finite-core envelope is unavailable. This turn tested extending its actual late-prime sign through the transition p comparable to x. That extension fails on the actual source: both signs contribute macroscopic transition loads. Their first continuous average cancels, but no critical remainder estimate was obtained. All new deductions below remain PAPER / Lean OPEN; no route or no-go card is declared complete.
+
+Continue with C12.84's g=-R, G=h_0-H_lambda, and G_P its finite-prime inverse. Let G_(p-) denote the core containing every prime strictly below p. Its literal insertion at physical scale X is
+
+    I_p(X)=G_(p)(X)-G_(p-)(X)=-p^-2*G_(p-)(X/p).
+
+**The full inverse is absolutely integrable and has zero signed mass.** The inspected `Sieve.MoebiusHarmonicArbitraryLogRate.deningerMertensM_log_pow_rate` supplies the unconditional Mertens bound for each fixed logarithmic order. The square convolution lambda=mu*squareIndicator transfers it to L_lambda(T): split square cofactors at T^(1/4), use the chosen Mertens rate below that point, and bound the remaining square-cofactor sum by O(T^(3/4)). Hence L_lambda(T)=O_A(T/log^A T) for each fixed A.
+
+Retaining the zero harmonic lambda sum from C12.79 gives the exact Abel identity already used in C12.81,
+
+    H_lambda(x)=-(1/x)*integral_1^infinity L_lambda(t)/(t+x)^2 dt.
+
+Split this integral at sqrt(x) and x. The last interval must retain its logarithmic weight: its bound is O(log^(1-A) x), not a divergent integral with the logarithm replaced by a constant. Increasing the fixed order A as needed gives
+
+    H_lambda(x)=O_A(1/(x*log^A x)),
+    integral_1^infinity |G(x)|*|log x|^k dx < infinity
+
+for each fixed nonnegative integer k. Boundedness near zero handles the other endpoint. These are unconditional integrability statements, not half-power bounds or estimates uniform in k.
+
+Initially for 0<Re s<1, absolute inversion gives
+
+    M_G(s)=M_g(s)/zeta(2-s).
+
+At s=1 the right side has a simple zero, since M_g(1)>0 and 1/zeta(2-s)=1-s+O((s-1)^2). The preceding absolute logarithmic moments justify taking the left limit and its derivative under the integral. Therefore
+
+    integral_0^infinity G(x) dx = 0,
+    integral_0^infinity G(x)*log x dx = -M_g(1) < 0.
+
+The already proved-in-paper uniform small-argument positivity gives G>=c_0 on [0,u_0]. Its zero total mass and continuity then force a closed interval [a_-,b_-] contained in (u_0,infinity) on which G<=-delta for some delta>0. This also recovers C12.80's negative-value conclusion without a numerical test. Choose another fixed positive interval [a_+,b_+] inside (0,u_0), on which G>=c_0.
+
+**Exact transition profile for every fixed interval.** For fixed 0<a<b, set
+
+    J_[a,b](X)=sum_(X/b<p<=X/a, p prime) I_p(X).
+
+Uniform convergence of the initial cores gives
+
+    |G_(p-)(u)-G(u)| <= 2*g_0/p,
+    J_[a,b](X)=-sum_(X/b<p<=X/a) p^-2*G(X/p)+O_(a,b)(X^-2).
+
+The error retains every prime in the interval; it follows by summing p^-3, not by discarding a cofactor class. G is continuously differentiable on compact positive intervals: the density representation bounds the derivative terms by L/n^3, a summable majorant. Partial summation using the inspected `Sieve.PrimeCountingBigO.primeCounting_sub_logIntegral_isBigO` therefore yields
+
+    X*log X*J_[a,b](X) -> -integral_a^b G(u) du.
+
+Thus the interval [a_+,b_+] produces a negative transition block of size at least c_+/(X*log X), while [a_-,b_-] produces a positive one of size at least c_-/(X*log X), eventually with c_+,c_->0. Both blocks are literal initial-prime insertions at p proportional to X. Their size exceeds X^(-3/2+epsilon) for every fixed epsilon<1/2. C12.84's late insertion sign cannot be extended across the entire transition, and separate absolute estimates of these blocks cannot pay the target. The complete core and the other signed bands must remain in the estimate.
+
+**Why the signed moments do not finish the argument.** On a fixed compact interval [a,b], the prime-density substitution and expansion of 1/(log X-log u) give the leading coefficients -integral_a^b G and -integral_a^b G*log u. Sending a down to zero and b to infinity in the coefficients yields zero for the first and M_g(1)>0 for the second. This is NOT a uniform expansion for a moving interval, nor an estimate for the complete original insertion history. The core replacement and prime-discrepancy errors, small-prime endpoint, and moving tail must all be controlled at the requested power. Fixed-order inverse-log decay and fixed signed moments do not provide those bounds.
+
+In particular, choosing the logarithmic order as a function of X is not justified by the fixed-order corpus theorem. Even bounds on analytically continued signed Mellin derivatives would not on their own estimate the moving physical endpoint. No optimal-truncation claim or exchange of an expanding cutoff with an asymptotic expansion was made. C12.71--72 already show that an exact prime-discrepancy reconstruction can return the original unknown logarithmic source; that identity is not a new input here.
+
+**Related formal deletions checked for applicability.** `RoutePCompleteRegionCriticalDeletion` bounds the complete centered-divisor label region by sqrt(M)*(1+log sqrt(M)) and leaves the moving ramps plus smooth remainder; its remaining normalized bound is explicitly equivalent to RH. `RoutePHyperbolicPairDeletion` pays d*e<=M at M^2 normalization for its signed dilation-channel square and retains every complementary pair. Neither theorem is a bound for G's Stieltjes transition or for its moving endpoint. No change of source or normalization was silently made. The already existing exact terminal split in C12.2--3 was also rechecked; its smooth-head/child covariance still needs an estimate.
+
+**Hard target and next action.** Keep the same objective G(X)<=C_epsilon*(1+X)^(-3/2+epsilon). The actual transition has both positive and negative loads larger than this allowance. Its zero signed mass identifies leading cancellation, not a quantitative remainder. Attack the complete signed moving-endpoint/core contribution after that cancellation; do not add another fixed-window asymptotic, first-moment receiver, or per-band sign certificate and call it an RH advance.
+
+**Audit.** Two deep searches terminal: transition partial=false with64611 files/compiler-pending48705, compiled43/stale2660; joint search partial=true with coverage pending. Candidate/source arguments and ingredient sets inspected. Read the actual route-P remainder definitions, the critical simple-jet scope, Liouville Dirichlet identity, fixed-order Mertens theorem and prime-counting error theorem. No new claim was Lean-audited. Exact owned JSON outputs cleaned. No Lean edits/builds, computations, axioms, heartbeat changes, subagents, full/umbrella build, commit or RH result. Goal active/unmet.
+
+
+## C12.86 — proper-prime-power removal and the actual parameter endpoint (2026-10-02, 1004y)
+
+**Route/status.** MC, with the C12.81 actual positive forcing `g=-R` and complete inverse `G=h0-H_lambda`. C12.85 gave signed transition-block asymptotics and fixed Mellin moments, not the required half-power bound. This attempt tests whether removing proper prime powers leaves a controllable signed prime evolution. No critical bound, new Lean theorem, RH proof or falsification was obtained. The deductions below are PAPER, Lean OPEN; this is not a completed no-go card or route retirement.
+
+**Corpus basis.** Read `MobiusEnergyAnalyticUnitWallUniversalityLaw`, `PrimeZetaLogAsymptotic`, `SquarefreeCarlemanDeterminant`, `Sieve/PrimePowerWeightTail`, and the actual endpoint transfer/variance modules `EulerDeletionPrimeCountEndpointTransfer` and `EulerDeletionPrimeCountEndpointVariance`. The Carleman source supplies the analytic, nonzero proper-prime-power unit above real part one half. The tail theorem concerns a different von-Mangoldt/logarithmic weight and is not the needed operator estimate. Endpoint jet energy/variance is a lower bound; neither its scalar subtraction nor its exact prime-power convolution gives the missing upper bound. No such premise was silently promoted to a theorem.
+
+**Exact signed separation, on paper.** For bounded continuous functions on `[0,infinity)`, write
+
+```
+D_n f(x) = n^(-2) f(x/n)
+P = sum_prime p D_p
+K = sum_prime p sum_(k>=2) D_(p^k)/k
+G = exp(-P-K) g
+V = exp(-P) g = exp(K) G.
+```
+
+All these operator sums and exponentials are legitimate in the unweighted sup norm: `sum_p p^-2` converges and the operators commute. The logarithm of each Euler factor `I-D_p` gives the displayed identity. On `B_a`, with norm `sup_x (1+x)^a |f(x)|`, one has `||D_n||<=n^(a-2)`. For `1<a<3/2`, the series for `K` converges in operator norm, since its first prime exponent is `2(2-a)>1`; its later prime powers are bounded by a geometric tail. Hence `exp(K)` and `exp(-K)` are bounded inverse operators on `B_a`. Two-sided critical decay of `G` and `V` is equivalent. The first-prime generator `P` has divergent positive weighted mass on that space, so this argument supplies no weighted generator bound.
+
+The distinction between two-sided and one-sided estimates is essential. `exp(K)` is positive, so a one-sided upper bound for `G` transfers to `V`; `exp(-K)` is signed and does not give the converse order inequality. The existing Mellin/Landau reasoning can instead use a proved one-sided upper bound for `V`, because the added unit cannot cancel an off-line pole. That is a transfer argument, not a source estimate.
+
+The exact coefficients of `V` are
+
+```
+V(x) = sum_n a(n) n^(-2) g(x/n)
+a(n) = product_(p|n) (-1)^(v_p(n))/v_p(n)!.
+```
+
+On every squarefree integer, `a(n)=mu(n)`. Thus the complete squarefree source survives the separation. For `Re u>1`,
+
+```
+exp(-P(u)) = U(u)/zeta(u)
+U(u) = exp(sum_p sum_(k>=2) p^(-k*u)/k)
+     = zeta(2*u) * product_p (1+p^(-u))*exp(-p^(-u)).
+```
+
+The last expression identifies the unit with the corpus's Carleman determinant. `U` is holomorphic and nowhere zero for `Re u>1/2`. Consequently
+
+```
+M_V(s) = M_g(s) U(2-s)/zeta(2-s), initially 0<Re s<1.
+```
+
+At a hypothetical zero `rho` with `Re rho>1/2`, the C12.81 noncancellation of `M_g(2-rho)` and the nonvanishing of `U(rho)` remain intact. Removing proper prime powers has not paid any of the hard squarefree interaction.
+
+**Continuous parameter attempt and its exact limit.** Set `V_tau=exp(-tau*P)g`. This is an entire parameter family in the unweighted sup norm, with
+
+```
+partial_tau V_tau(x) = -sum_p p^(-2) V_tau(x/p).
+```
+
+For `0<tau<1`, put `w=1-s` and use the local nonzero pole unit `Z(u)=(u-1)zeta(u)`, with `Z(1)=1`. For positive small `w`,
+
+```
+M_Vtau(1-w) = w^tau A_tau(w)
+A_tau(w) = M_g(1-w) * exp(tau*K(1+w)) / Z(1+w)^tau
+A_tau(0) = M_g(1)*exp(tau*K(1)) > 0.
+```
+
+A local analytic branch of the nonzero unit suffices here; no global zeta logarithm is assumed. The derivative in `w` is unbounded at zero. Therefore `V_tau` cannot have a two-sided bound `O((1+x)^(-a))` for any `a>1`: that bound would make its Mellin transform holomorphic near `s=1`. This does **not** refute a one-sided upper bound; a negative nonintegrable tail is compatible with such an upper bound. No eventual-sign assertion is inferred from this Mellin calculation alone.
+
+Subtracting finitely many fractional Taylor terms leaves the first omitted noninteger singularity. Here `A_tau` cannot be a polynomial: along real `w` down to `-1/2`, `Z(1+w)` stays positive and tends to a finite nonzero value, whereas `M_g(1-w)` diverges positively by the critical forcing tail; `exp(tau*K(1+w))>=1`. A polynomial germ could not have that real continuation. Even an exact subtraction of the real branch would not remove off-line singularities. At `tau=1` the real branch becomes an ordinary zero automatically, while those possible off-line poles remain.
+
+**Still-hard target, without a replacement premise.** A common one-sided bound
+
+```
+V_tau(x) <= C_epsilon (1+x)^(-3/2+epsilon)
+for tau0 <= tau < 1, uniformly in x,
+```
+
+would pass to the endpoint, and the nonzero-unit/Landau argument would then exclude off-line zeros. No such estimate has been proved. Bounds for each fixed parameter, unweighted parameter continuity, or the endpoint jet's variance lower bound do not supply a uniform constant. The signed derivative reverses order under `P`, so an ordinary positive-semigroup comparison does not apply. The next attempt must control this actual joint squarefree derivative/remainder with the growing physical cutoff retained, rather than remove another analytic unit or accept parameterwise asymptotics as endpoint control.
+
+**Audit.** Three deep corpus searches were run directly and reached terminal exit zero. The prime-power query was partial: 64,622 files, 48,712 compiler-pending, 43 compiled and 2,660 stale, method invalidation pending. The Carleman/unit query was partial: 64,624 files, 48,714 compiler-pending, 43 compiled and 2,660 stale, no method invalidation pending. The parameter query was partial with coverage pending, background index refresh and a reranking deadline; candidate declarations and source arguments were inspected, with no generated proof ideas or ingredient sets. Its continuity results and unrelated endpoint inequalities do not imply source control. Exact owned JSON files were cleaned after terminal completion. No Lean edit/build, numerical mathematical computation, subagent, commit, or umbrella build. Goal active and unmet.
+
+
+## C12.87 — the full endpoint derivative and the retained signed exponential (2026-10-02, 1004z)
+
+**Route and prior-turn classification.** MC. C12.86 changed the admissible next attack by exposing the real fractional branch, but did not advance the critical source estimate or produce a Lean theorem. This turn tests a direct one-sided estimate on the *actual* parameter derivative before attempting to integrate it. The one-sided endpoint bound remains the hard open problem. All new arguments below are PAPER/Lean OPEN; no route/no-go retirement or RH conclusion is claimed.
+
+**Corpus checks.** Re-read the current MC ledger and C12.86. The derivative search suggested `MobiusFirstPrimeDilationCancellation.primeDilationGammaContribution_eq`; reading its source shows it controls the comparable `d,p*d` channel of a quadratic Gamma form, not the complete linear parameter derivative here. The suggested positive-part clamp identity supplies no arithmetic estimate. The current `Sieve/MoebiusHarmonicArbitraryLogRate` and `Sieve/PrimeCountingBigO` provide fixed logarithmic Mertens rates and the PNT error used below. The Mellin-convolution search still requires Mellin-convergent inputs; unrelated uniform cusp remainders do not bound this source. Checked `SquarefreeConvolutionHalfSelbergDelangeFactorization`: `moebiusBinomialHalf_mul_self` is genuine coefficient algebra, but it does not give a sign for a summatory half. `SquarefreeConvolutionHalfSelbergDelange` explicitly retains fractional Tauberian propositions. No half-source asymptotic or sign was assumed from the theorem names.
+
+**Conjecture tested.** Can the positive part of `partial_tau V_tau` at the endpoint itself be paid at the critical scale? For the actual C12.86 source the answer is negative on paper, for a specific arithmetic reason, not because a generic operator fails to preserve order.
+
+Write `V=V_1=exp(K)G`, `m=int_0^infinity g(u)du>0`, and `c=m*U(1)>0`. Then
+
+```
+partial_tau V_tau(x)|_(tau=1)
+    = -sum_prime p p^(-2)*V(x/p)
+    = c/(x*log(x)^2) + O(1/(x*log(x)^3)).
+```
+
+In particular this derivative is eventually positive and exceeds every fixed multiple of `(1+x)^(-a)` for any `a>1`. The conclusion concerns the derivative only. It does not refute a uniform one-sided bound for the values `V_tau`, or the desired bound for `V_1`.
+
+**Complete paper derivation, retaining both prime tails.** First the C12.85 Abel formula can be differentiated under its absolutely convergent integral:
+
+```
+H_lambda(x) = -I_2(x)/x,
+I_j(x) = int_1^infinity L_lambda(t)/(t+x)^j dt,
+H_lambda'(x) = I_2(x)/x^2 + 2*I_3(x)/x.
+```
+
+The fixed-order Mertens rates and `lambda=mu*squares` give, for every fixed `A`,
+
+```
+G(x)  = O_A(x^(-1)*log(x)^(-A)),
+G'(x) = O_A(x^(-2)*log(x)^(-A)).
+```
+
+For example take the input logarithmic exponent larger than `A+1` so that the tail integral for `I_2` is finite; split below and above `sqrt(x)` and `x`. Both `G` and `G'` are bounded at zero by their absolutely convergent defining series. These are fixed-order estimates, not a half-power improvement.
+
+Let `b(n)>=0` be the coefficients of `U`, so that
+
+```
+V(x) = sum_n b(n)/n^2 * G(x/n),
+sum_n b(n)/n^q < infinity for every q>1/2.
+```
+
+Split at `n=x^(3/4)` and use, for instance, the finite `q=3/5` moment. Below that cutoff the logarithm of `x/n` remains at least one quarter of `log x`; above it the coefficient tail is `O(x^(-21/20))`. For the derivative use the global bound on `u*G'(u)` to gain the extra `x^-1`, rather than the insufficient bound on `G'` alone. Thus the same displayed fixed-order bounds hold for `V,V'`. Differentiation is justified by `sum b(n)/n^3<infinity`. In particular
+
+```
+int |V(u)|*(1+|log u|^j) du < infinity  for each fixed j,
+int |u*V'(u)| du < infinity,
+int V(u) du = 0,
+int V(u)*log u du = -c.
+```
+
+The last two identities follow either from the C12.85 moments or from the Mellin derivative at one. Fubini retains the dilation's `log n` term; it vanishes only because `int G=0`. Its absolute summability follows from a coefficient moment with exponent strictly below one.
+
+Now split the prime sum into `p<=sqrt(x)`, `sqrt(x)<p<=x^(3/2)`, and `p>x^(3/2)`. For every fixed `A`, the small-prime part is `O_A(1/(x*log(x)^(A-1)))`, using the fixed-order bound for `V(x/p)` and even the crude harmonic integer majorant. The large-prime part is `O(x^-3/2)` by boundedness of `V` and the integer reciprocal-square tail. Neither part is silently omitted.
+
+On the central range apply the corpus's PNT error to
+
+```
+W_x(t)=t^-2*V(x/t),
+W_x'(t)=-t^-3*(2*V(x/t)+(x/t)*V'(x/t)).
+```
+
+Stieltjes integration by parts bounds the full prime-counting remainder by
+
+```
+O(x^-1*exp(-c1*sqrt(log x)))
+```
+
+for a positive PNT constant `c1`: after substituting `u=x/t`, its variation integral is bounded by `x^-1*int |2V(u)+uV'(u)|du`. Endpoint terms have the same bound since `uV(u)` is bounded. The main integral is
+
+```
+(1/x) * int_(x^-1/2)^(x^1/2) V(u)/(log x-log u) du.
+```
+
+On that complete central interval expand the reciprocal denominator through its linear term. The remainder is bounded by `2*|log u|^2/(log x)^3`. Replacing the first two truncated moments with the full ones costs a smaller fixed inverse-log error, by the already proved absolute logarithmic moments and the bounded head. The zero mass removes `1/(x log x)`; the first moment gives `-c/(x log(x)^2)`. Taking sufficiently large *fixed* `A` pays both discarded prime tails and proves the displayed derivative asymptotic. No growing-order expansion or Mellin contour shift is used.
+
+**Learning and positive survivor.** The actual endpoint tangent has a definite positive tail, with coefficient `c=(int g)U(1)`. This is the nontrivial positive statement exposed by the failed derivative-payment conjecture. It remains a paper result whose Lean formalization is open, not a completed negative result. It forces any successful parameter argument to retain cancellation over the whole parameter interval; bounding each tangent's positive part at the target scale cannot work.
+
+**Next conjecture tested in the same turn: complete signed truncation.** In the unweighted sup norm put `q=sum_p p^-2<1` and
+
+```
+Q_K(x)=sum_(k=0..K) (-1)^k/k! * (P^k g)(x).
+||V-Q_K||_infinity <= g(0)*exp(q)*q^(K+1)/(K+1)!.
+```
+
+This pays the factorial tail at a critical physical scale with `K` of order `log x/log log x`. It does not bound the retained signed sum. Indeed its exact coefficient formula is
+
+```
+Q_K(x) = sum_(Omega(n)<=K) a(n)/n^2 * g(x/n),
+a(n) = product_p (-1)^(v_p(n))/v_p(n)!.
+```
+
+There is no missing factorial damping on a squarefree coefficient: the ordered prime permutations cancel `k!`, leaving precisely `mu(n)`. For a schedule `K(x)~b*log x/log log x` with fixed `b>3/2`, every squarefree `n<=x` is retained eventually, since `n` with `k` distinct prime factors is at least `(k+1)!`. The hard ordinary squarefree head is therefore still present in full.
+
+A finite prime cutoff can also be made explicit without dropping a source term. For `P_y=sum_(p<=y)D_p`, the unweighted exponential difference is `O(1/y)` by the bounded-operator exponential identity and `sum_(p>y)p^-2<=2/y`. The same factorial bound applies to its finite polynomial. Taking `y=x^b`, `b>3/2`, pays that prime tail as well. The remaining polynomial is finite but keeps every prime-product term at its actual argument, including products beyond `x`; no numerical evaluation was performed. No bound for its full signed value follows from paying these two tails. This is a concrete localization of the still-open estimate, not a claimed mathematical frontier advance or a new receiver module.
+
+**Outstanding hard work.** Prove one-sided critical control of that entire signed polynomial (or of the equivalent complete parameter integral), with the normal squarefree head and all products beyond the physical cutoff retained. An upper bound on the endpoint tangent is now excluded by the actual-source asymptotic; parameter continuity, a small factorial tail, or a convolution-half identity cannot replace the signed estimate. No such estimate was obtained this turn.
+
+**Execution audit.** Four searches reached terminal exit zero. Derivative: partial, 64,631 files, 48,718 compiler-pending, 43 compiled/2,660 stale, semantic retrieval timeout. Moments: complete retrieval with the same snapshot counts and background refresh. Interval: partial, 64,633 files, 48,719 compiler-pending, same compiled/stale counts, semantic deadline. Half: partial, 64,635 files, 48,720 compiler-pending, same compiled/stale counts, semantic timeout. All four had no method invalidation pending. Candidate lemmas, source arguments and proposed ingredient sets were inspected; no proposal was treated as a proved source estimate. All four owned JSON outputs were cleaned after terminal completion. No Lean edit/build, numerical mathematical computation, subagent, commit or umbrella build. Goal active/unmet.
+
+
+## C12.88 — arithmetic order of complete Neumann remainders (2026-10-02, 1005a)
+
+**Active paper/formalization checkpoint.** Route MC; hard target remains the complete one-sided critical inverse bound. Prior turn supplied a paper endpoint-tangent obstruction, no critical bound or Lean theorem. Current square-forcing and quadratic-error attempts must not replace a signed estimate with delayed support or positive forcing. Corpus searches and source reads confirm that the Liouville recurrence is a lower result, the prime-error observable retains weighted Liouville sums, and the Euler renewal reconstruction retains unbounded positive critical mass.
+
+A source-specific order law emerged from the complete arithmetic inverse. Put `Z=zeta`, `R=Z-1` in the Dirichlet-convolution ring. Then `mu*R^2=Z-2+mu`, with coefficient `1+mu(n)>=0` at every n>1 and coefficient zero at0,1. As R is nonnegative, `mu*R^k>=0` coefficientwise for every k>=2. For `S_K=sum_(j=0..K)(-R)^j`, the exact remainder is `mu-S_K=mu*(-R)^(K+1)`. Consequently `S_(2m+1)<=mu<=S_(2m+2)` for every m>=0, coefficientwise. This gives genuinely one-sided complete inverse bounds against any nonnegative summable physical weight, without assuming the inverse itself is positive. It does not yet control the size of the upper polynomial when its depth grows with the physical cutoff.
+
+**Lean result.** The dependency-closed algebra/order proof is now formalized in `MobiusNeumannOrderBounds.lean`, namespace `RHTower.MobiusNeumann`. Its seven unconditional theorems are `tailCoeff_nonneg`, `residual_two`, `residual_two_nonneg`, `residual_nonneg`, `remainder`, `odd_prefix_le`, and `le_even_prefix`. Natural-number indices are parameters, with no unproved mathematical premise. The separate transfer to an infinite physical weighted sum is a paper consequence under its summability conditions, not a theorem claimed from this leaf. In particular the degree-zero prefix is not asserted to be an upper bound.
+
+**Validation.** Scratch proof, `lake --old build GaloisForLFunctions.RHTower.MobiusNeumannOrderBounds`, and final `lake --old env lean GaloisForLFunctions/RHTower/MobiusNeumannOrderBounds.lean` all exited zero. A separate `/tmp` import and `#print axioms` audit of all seven theorems exited zero and reported only `propext`, `Classical.choice`, and `Quot.sound`. No heartbeat change, added axiom, admitted proof, numerical mathematical computation, or full/umbrella build. The leaf is imported by the RHTower umbrella. Global `scripts/formal_tools.py lint` exited one on 11 other unreachable modules: `CCMApertureChainProfile`, `CCMApertureTranslationChains`, `CCMExponentialRampPrimeMoment`, `CCMExponentialRampSourceDissipation`, `CCMExponentialRampTerminalEntropy`, `CCMRetainedChainKernelLower`, `MoebiusMollifiedCriticalMoment`, `MoebiusMollifiedErrorThreeLines`, `ThetaMovingShellFirstOrderPhase`, `ThetaTailJointCorrelation`, and `ZetaZeroDensityPowerSaving`. No lint error named the new leaf.
+
+**Frontier assessment.** This is a new audited arithmetic order statement found by the current corpus search, not a critical source estimate. Small unweighted remainder and complete coefficient bracketing alone leave the retained growing-depth signed polynomial uncontrolled. Next attack: prove its actual one-sided critical bound with the full ordinary squarefree head and physical tail retained. RH remains unproved and unfalsified; goal active.
+
+**Growing-depth test, paper status only.** The arithmetic order allows an actual positive lower estimate for the error of a shallow even polynomial; it does not make that polynomial small. Write
+
+```
+U_K(x) = sum_n S_K(n)/n^2 * g(x/n),   K>=2 even,
+E_K(x) = U_K(x)-G(x)
+       = sum_n (mu*R^(K+1))(n)/n^2 * g(x/n) >= 0.
+```
+
+All these sums converge absolutely at every fixed K and x. The actual g from C12.81 is bounded, positive on a common head interval, and bounded by a constant times `(1+x)^(-3/2)`. Splitting its unsigned integer dilation sum at n=x therefore gives `|G(x)|<=C/x` for x>=1. No critical bound is used here.
+
+Put `r2=mu*R^2`. Besides nonnegativity, `r2(m)=1` for every positive multiple m of4, since mu(m)=0 there. Choose A>0 so that g is at least c0>0 on `[1/(2A),1/A]`. For d<=sqrt(x), retain only multiples of4 in `A*x/d<=m<=2*A*x/d`. For sufficiently large x their count and the maximum denominator give, uniformly in d,
+
+```
+sum_m r2(m)/m^2 * g(x/(d*m)) >= c1*d/x
+```
+
+with c1>0 independent of d,x,K. There are no negative discarded terms. Expand `mu*R^(K+1)=r2*R^(K-1)` and retain every ordered tuple of K-1 factors from `{2,...,B}`. If `B^(K-1)<=sqrt(x)`, their products all satisfy the required restriction, hence
+
+```
+E_K(x) >= (c1/x) * (sum_(n=2..B) 1/n)^(K-1).
+```
+
+Choose a fixed B so large that its displayed harmonic sum exceeds both1 and `2*C/c1`. It follows that `U_K(x)>=C/x` uniformly over every even K with `2<=K<=1+log(x)/(2*log B)`, for all sufficiently large x. Thus a sublogarithmic Neumann depth cannot give the required critical upper envelope. This is a paper diagnostic of this particular approximation, not a falsification of G's desired bound or a completed route retirement.
+
+Conversely, for `q=zeta(2)-1` in (0,1), positivity of the exact error coefficients gives
+
+```
+0 <= E_K(x) <= g(0)*q^(K+1)/zeta(2).
+```
+
+Here the coefficient sum is evaluated in the absolute-convergence chamber using the already checked Dirichlet inverse, not by continuation. Therefore a sufficiently large logarithmic depth pays the error at the critical scale. This identifies the necessary/sufficient order of approximation depth, without bounding U_K itself. In the simple schedule obtained from this sup bound, q>1/2 and a target exponent>1 imply `2^(K+1)>x`; every coefficient with n<=x is then exactly mu(n), because K+1 nontrivial factors have product at least `2^(K+1)`. The full ordinary head is still present. The hard next conjecture is an upper bound for this retained signed head together with its physical tail. The depth diagnostic and weighted transfer are not claimed as Lean theorems; only the arithmetic order result above has passed Lean.
+
+**Search/execution audit.** Six searches finished with exit zero: square-forcing, Liouville lexical, quadratic reconstruction, Neumann order, growing-depth, and depth lexical. The four deep snapshots respectively reported 64,638/64,649/64,652/64,661 files and 48,723/48,730/48,732/48,739 compiler-pending entries, each with43 compiled snapshots,2660 stale entries and no method invalidation pending. All four were partial; semantic deadlines/reporting limits and background refresh were retained in the assessment. The two lexical responses did not expose coverage fields. Candidate lemmas, source arguments, proof ideas and proposed ingredient sets were inspected. The growing-depth proposal only reassembled the existing floor-tail identity. The checked Gaussian Neumann source requires its absolute chamber and Gaussian ratio; the growing-depth current-payment theorem leaves nonnested cores and accumulated action open. Neither controls U_K. The quadratic short reconstruction was already in the corpus and receives no novelty credit. Owned temporary search/proof/audit files are removed after terminal completion; no commit or unrelated source edit.
+
+## C12.89 — critical comparison and complete signed centering (2026-10-02, 1005b)
+
+**Active research checkpoint.** Route MC, same hard target `G(x)<=C_epsilon*(1+x)^(-3/2+epsilon)`. Previous turn made verified arithmetic-order progress, not a critical estimate. Current source and frontier map rechecked. Testing a critical comparison barrier `B`: an exact representation `A*B-g=T^2*h` with h nonnegative would imply `B-G=(mu*R^2)*h>=0` by the new arithmetic theorem. A nonzero positive h contributes a logarithmic-over-x lower tail to T²h, while A*B-g is only O(1/x); this naive positive comparison cannot close. Current task is to retain the signed centering needed to remove that mass and then prove an actual order or cancellation estimate, rather than introduce another receiver. Initial polynomial/comparison searches terminal/partial with coverage pending; retrieved inversion identities do not supply the missing bound. No new Lean theorem or RH claim at this checkpoint.

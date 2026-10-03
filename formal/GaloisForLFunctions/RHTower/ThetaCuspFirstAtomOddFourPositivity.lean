@@ -34,7 +34,8 @@ private def d3 (v h : ℝ) : ℝ :=
   (5/7)*(1+7*h)-(15/2)*v*(1+8*h)+
     (15/4)*v^2*(7+45*h)-(75/4)*v^3*(1+4*h)
 
-private def centralMatrix (v h : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
+/-- Exact normalized first-atom odd matrix, including finite-scale corrections. -/
+def centralMatrix (v h : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
   ![![1+h,-h,0,0], ![-h,d1 v h,c12 v h,c13 v h],
     ![0,c12 v h,d2 v h,c23 v h], ![0,c13 v h,c23 v h,d3 v h]]
 
@@ -293,7 +294,8 @@ private theorem raw_seven (q B : ℝ) : affineRawMoment 7 q B = -m7 q B := by
   norm_num only [Finset.sum_range_succ,Nat.choose,raw_zero,raw_one,raw_two,raw_three,raw_four,raw_five,raw_six,m7]
   ring
 
-private def coordinates (q : ℝ) (c : Fin 4 → ℝ) : Fin 4 → ℝ :=
+/-- Triangular odd central coordinates of a native coefficient vector. -/
+def coordinates (q : ℝ) (c : Fin 4 → ℝ) : Fin 4 → ℝ :=
   let z3 := c 3
   let z2 := c 2-(56-168*q)*z3
   let z1 := c 1-(20-80*q)*z2-(784-3360*q+6720*q^2)*z3
@@ -392,6 +394,32 @@ theorem firstAtomOddFour_posDef {x : ℝ}
       ring
     rw [hid,affine_energy_eq q ((2*q-3)^2) hqp.ne' (pow_ne_zero 2 hBp.ne')]
     exact mul_pos (by positivity) (mul_pos (by positivity) hpos)
+
+/-- Exact first-atom source energy in odd central coordinates. -/
+theorem firstAtomOddFour_energy_eq {x : ℝ}
+    (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x) (c : Fin 4 → ℝ) :
+    let q := thetaCuspSingleAtomReflectionScale 1 x
+    (∑ i : Fin 4, ∑ j : Fin 4, c i*c j*firstAtomOddFour x i j) =
+      (4*q^2*Real.exp (x-2*q))*(8*q*(2*q-3)^2)*
+        (star (coordinates q c) ⬝ᵥ
+          (centralMatrix (1/(2*q)) (6/(2*q-3)^2)).mulVec (coordinates q c)) := by
+  dsimp only
+  let q := thetaCuspSingleAtomReflectionScale 1 x
+  have hqp : 0 < q := by dsimp [q]; linarith
+  have hBp : 0 < 2*q-3 := by dsimp [q]; linarith
+  have hid : (∑ i : Fin 4, ∑ j : Fin 4, c i*c j*firstAtomOddFour x i j) =
+      (4*q^2*Real.exp (x-2*q)) *
+      (∑ i : Fin 4, ∑ j : Fin 4, c i*c j*(-1 : ℝ)^(i.val+j.val+1)*
+        affineRawMoment (i.val+j.val+1) q ((2*q-3)^2)) := by
+    simp only [firstAtomOddFour,firstAtom_jet_affine,Finset.mul_sum]
+    dsimp [q]
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    ring
+  rw [hid,affine_energy_eq q ((2*q-3)^2) hqp.ne' (pow_ne_zero 2 hBp.ne')]
+  ring
 
 end
 end RHTower.ThetaCuspOddCentral

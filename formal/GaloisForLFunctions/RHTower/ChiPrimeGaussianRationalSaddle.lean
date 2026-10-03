@@ -397,7 +397,8 @@ private theorem primeGaussianProfile_regular :
 def primeRationalPhase (a q p : ℕ) : ℂ :=
   bourgainOscillation (2 * Real.pi * ((a : ℝ) / q) * p)
 
-private theorem primeRationalPhase_mod (a : ℕ) {q : ℕ} (hq : 0 < q) (p : ℕ) :
+/-- The actual rational saddle phase depends only on the residue class. -/
+theorem primeRationalPhase_mod (a : ℕ) {q : ℕ} (hq : 0 < q) (p : ℕ) :
     primeRationalPhase a q p = primeRationalPhase a q (p % q) := by
   have hqR : (q : ℝ) ≠ 0 := by exact_mod_cast hq.ne'
   have he : 2 * Real.pi * ((a : ℝ) / q) * p =

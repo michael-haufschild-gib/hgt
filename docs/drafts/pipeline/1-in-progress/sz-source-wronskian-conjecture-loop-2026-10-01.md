@@ -3293,3 +3293,415 @@ It recovers the actual even response/pole charges and the matched odd mass
 bound. Its proposed Neumann-flux cancellation step concerns a boundary-condition
 channel, not the finite inverse series used here; it is not an applicable
 substitute for the signed two-source asymptotic calculation.
+
+Current checkpoint: GrowingPhysicalCoercivity final33070 and
+MatchedOddNeumannApproximation final74860 pass. Public axiom audit47142
+passes fifteen queries, standard axioms only; root signatures checked. Three
+new leaves are wired. The first axiom harness was stopped at its owned PID
+after finding missing namespace qualification, before results; corrected
+harness completed normally. Formal lint9165 exits1 on twelve unrelated
+unreachable modules, none belonging to the changed/new leaves, with no
+prohibited proof declaration reported. Full list is retained on P3.
+
+The next hard target is actual odd/even metric balance. Search1188112 is
+partial/source_only, coverage pending; no ingredient set. Search1188324 is
+also partial/source_only, coverage pending, and returns finite telescoping
+and exact remainder decomposition, not the needed limit. Source inspection
+gives a shorter odd proof through O_a=Re<p_a,f_a>. The audited arbitrary
+Gamma tail also proves complete remainder-quadratic vanishing by choosing
+the exponential band width first, then applying low-band cancellation.
+Both source mechanisms and exact obligations are recorded on
+sz-matched-source-metric-balance.md. Metric norm-square transport and
+complete remainder quadratic are drafted in /tmp, under sequential audits.
+No complete metric balance or RH claim is made from these drafts.
+
+## Actual odd metric-balance checkpoint, 2026-10-02
+
+The complete bounded-remainder quadratic vanishes on the actual Neumann
+vector by the new arbitrary-Gamma tail: choose an exponential band width K
+first, then invoke signed symbol cancellation. MetricTransport58443 and
+CCMFiniteNeumannRemainderQuadratic66228 passed final audits. Exact source
+energy was exposed by a wrapper in OddSourceBound, final47712 passed.
+OddMetricBalance final16313 passed: abs(c_a*norm(Jw_a)^2-O_a)->0, along
+positive apertures, no unproved premise. Axiom58144 passes eight new public
+queries, standard axioms only, complementing the earlier fifteen.
+
+All eight current leaves are wired exactly once, with no trailing whitespace.
+Global lint38139 reports twelve unrelated unreachable modules, no prohibited
+proof declarations; exact list retained in P3:sz-matched-odd-metric-balance.
+No full/umbrella builds or new axioms; no numerical experiments or heartbeat
+increase. No subagents or commits.
+
+Two source checks prevent overclaiming: the actual discrete metric term
+uses covariance at b on the transported response from a, so same-aperture
+balance does not yet control it; the V2 anchor-I identity uses parameter1,
+whereas these estimates use matched parameter1/2. Both comparisons stay open.
+The quadratic proof exposes the vector-profile conjecture
+exp(-a)*norm(B_a u_a)^2->0, hence exp(a)*norm(f_a-p_a/c_a)^2->0. Its full
+paper mechanism and actual mixed-aperture purpose are on the active metric
+card. Next continuation should attack that vector statement and the actual
+even channel, then the mixed-response signed determinant. RH remains unmet.
+
+Final checkpoint cleanup: all owned Lean/search/lint sessions terminated.
+All sixteen exact owned /tmp files removed; valid audited leaf oleans retained.
+Targeted tracked-file whitespace gate passed; eight source whitespace checks
+passed; every current leaf has exactly one umbrella import. Memory
+rhtower/sz-growing-coercivity-odd-metric-balance-2026-10-02 records the new
+results, audit ledger, next vector-profile conjecture and the two corrected
+transfer gaps. Goal remains active and unmet. Continue the mathematical
+vector-profile attack; do not repeat completed audits or session init.
+
+## Explicit pole-profile continuation, 2026-10-02
+
+Previous turn classified PROGRESS: actual odd metric-balance root and its
+complete remainder/metric transport inputs passed final audits,23 public
+axiom checks standard. Current source inspection confirms the final files.
+Next hard target: the vector remainder vanishes after exp(-a) rescaling,
+then actual f_a is asymptotic to literal p_a/c_a. This attacks the mixed
+aperture comparison, while even balance, full shell cancellation, anchor
+transfer, canonical normalization, shift removal and Xi identification remain
+open. The source-based paper proof is on the active metric-balance card.
+The stronger norm theorem will supply the existing quadratic as a corollary,
+reusing the Gamma-tail argument instead of maintaining two parallel proofs.
+
+### Uniform source-profile checkpoint, 2026-10-02
+
+Route SZ; this continuation contributes PROGRESS to the hard source-control
+problem. The source-uniform finite inverse, actual Gamma admission, full
+prime-polar remainder norm, and exact actual covariance profile are all now
+final-audited. Both literal matched parity responses have explicit physical
+pole profiles. The actual parameter1/V2 source profile scratch50842 passes;
+its final17439 is running. This is a proved source-control advance, not an
+RH proof, a full shell estimate, or an assumed normalization transfer.
+
+Detailed dependency-closed proof and audit ledger:
+`docs/drafts/pipeline/3-formalized/sz-uniform-source-covariance-profile.md`.
+Active mathematical continuation and search evidence:
+`docs/drafts/pipeline/1-in-progress/sz-uniform-source-profile.md`.
+
+Next hard conjecture is the actual prescribed-shift first defect limit0,
+using the parameter1 profile and exact source pairings. The corpus's Xi
+target defect is strictly positive, so this would force a concrete
+shift-selection/shift-removal separation. The existing selected-negative-
+shift collapse theorem is insufficient for that claim. Full mixed-aperture
+signed cancellation, canonical normalization, shift removal, Xi identification
+and RH remain unresolved. No numerical experiments or subagents were used.
+
+Final checkpoint: all ten changed leaves pass final old-mode Lean audits;
+all 38 public axiom queries pass in audit4858, using only propext,
+Classical.choice and Quot.sound. Exact odd/even/V2 Tendsto signatures have
+no hypothesis binders. Lint54349 still fails on thirteen unrelated
+unreachable modules and reports no prohibited proof declarations. Every
+changed leaf is wired once. RH remains unresolved; goal remains active.
+Next: formalize P2:sz-prescribed-shift-first-defect-collapse, preserving its
+actual defect0 law as the positive survivor before any no-go is closed.
+
+Cleanup verified: all 19 exact owned /tmp search, Lean and audit files removed;
+all owned sessions terminal; valid audited leaf oleans retained.
+
+## Prescribed-shift parity continuation, 2026-10-02
+
+Route SZ. Previous actual-source profile work contributes directly: it closes
+the analytic error term in the literal V2 source pairings. Current stronger
+paper survivor uses t_a=c_a exp(-2a): t_a(E+O)->1/2 and t_a(E-O)->0,
+hence t_a E,t_a O->1/4 and actual first defect->0. This resolves a genuine
+normalization/identification obstruction if audited; it is not RH or full
+signed shell control. Current implementation is awaiting final leaf audits.
+Scratch failures so far are explicit complex scalar coercions and implicit
+inner-product arguments; no mathematical hypothesis was added. No heartbeat
+increase, numerical experiment, or parallel own Lean build was used.
+
+Next conjecture, based on search1189636 (partial, pending, source_only; no
+proof ideas or ingredient sets): the entire actual prescribed-shift V2
+Livsic family has zero as its sole upper-half-plane cofinal limit. The
+search's finite-shift generator statements concern an independent small
+shift and do not establish this growing-aperture claim. Existing actual
+raw-carrier identity and physical Fourier/Riesz bridge supply exact targets.
+Do not infer full collapse from the first derivative alone.
+
+Potential paper mechanism, still pending dependency-closed audit: fix
+1/2<s<1, p_s=exp(sx) cutoff[-a,a], f_1=actual physical raw deficiency1,
+and r_s=c_a exp(-(1+s)a). Comparison with the audited half-pole norm gives
+norm(p_s)<=exp(sa); reflection gives the opposite norm. Then
+r_s |<p_±s,f_1-p_1/c_a>|<=C delta_a->0. Literal Gram integration predicts
+
+    r_s <p_s,f_1> -> 1/(1+s),
+    r_s <p_-s,f_1> -> 0.
+
+The main terms are respectively
+(1-exp(-2(1+s)a))/(1+s) and
+(exp(-2sa)-exp(-2a))/(1-s). With exact Fourier evaluation at is and
+actual raw reflection, these force Livsic_a(is)->0. Existing Schur
+compactness then gives zero on an interior segment for any analytic cofinal
+limit; identity-theorem continuation would classify that limit globally.
+Every bridge must be proved against actual interval types; old free Ioo
+aperture integrals cannot silently replace actual Icc interval spaces.
+
+This conjecture would classify the failure of the prescribed norm shift,
+exposing the need for a different actual shift/renormalization retaining
+arithmetic data. It does not by itself supply such a shift, full shell
+cancellation, or Xi identification. Finish current positive parity and anchor
+survivors and strict Xi no-go before advancing the stronger conjecture.
+
+
+### Prescribed-shift closure checkpoint, 2026-10-02
+
+Classify current turn as PROGRESS: the actual V2 common-scale parity limits,
+first-defect0 law, independent-aperture normalized anchor Wronskian0 law and
+strict exclusion of all cofinal locally uniform Xi identifications are now
+formalized. This closes the selected hard first-defect problem, not RH.
+Final leaves66261/2082/13420 pass; all twelve public axiom queries60205 use
+only propext, Classical.choice and Quot.sound. Four exact root signatures
+have no hypothesis binders. All three leaves are wired once.
+
+P2:sz-prescribed-shift-first-defect-collapse was promoted to P3. The failed
+identification and strongest audited positive survivor are recorded on
+P5:sz-prescribed-shift-direct-xi-identification. Current source/search-based
+next conjecture is P1:sz-prescribed-shift-full-carrier-collapse, whose mixed
+imaginary-source mechanism is written in detail. Attack that actual carrier
+classification next; do not treat derivative0 alone as an identity theorem.
+
+Lint64122 reports eleven unrelated unreachable modules (exact list on the
+P3 card); no current leaf fails. Global lint is not green. Full signed
+shell/metric Wronskian, shift removal, canonical normalization, Xi
+identification and RH remain unresolved. Goal remains active and unmet.
+
+Cleanup verified: all eight exact owned /tmp files removed; all owned
+Lean/search/lint sessions terminal; valid audited leaf oleans retained.
+Targeted tracked-file whitespace gate passed; all three new Lean leaves
+have no trailing whitespace. No subagents, numerical experiments, full
+builds, heartbeat increases or commits.
+
+
+## Full prescribed-shift carrier classification, 2026-10-02
+
+Previous turn classified PROGRESS: actual first-defect0 and strict Xi
+separation passed audits. Current turn also PROGRESS: the stronger whole
+carrier conjecture is now proved. Exact root
+`RHTower.tendstoLocallyUniformlyOn_suzukiTaV2Livsic_prescribed_zero` has no
+hypothesis binders and asserts locally uniform convergence of the literal
+actual V2 family to0 on the entire upper half-plane along the full positive-
+aperture comap filter. This is not merely a subsequence or a jet law.
+
+Four final leaves pass: SuzukiTaV2MixedSourceGram88852,
+SuzukiTaV2MixedSourceLimit74510, SuzukiTaV2ImaginaryCarrierCollapse5798,
+SuzukiTaV2PrescribedCarrierCollapse20678. Thirteen public axiom checks22765
+pass using only propext, Classical.choice and Quot.sound. Each leaf is wired
+once. Exact mixed Gram integration and half-pole norm comparison remove the
+aperture-length loss; complex source errors retain both channels; actual
+Icc interval Fourier/reflection yields interior imaginary-segment collapse;
+corpus Vitali and Mathlib's sequential compact-set criterion yield the full
+filter. No full/umbrella build, numerical experiment, heartbeat increase,
+new axiom or subagent.
+
+P1 full-carrier card promoted to P3 with the dependency-closed paper proof.
+P5 direct-Xi no-go now records this stronger positive survivor. Frontier
+map updated. Lint68235 still fails on thirteen unrelated unreachable modules
+(exact list in P3), with no prohibited proof declarations and no current leaf
+among failures. RH remains unresolved, goal active.
+
+### Next hard conjecture: unshifted signed source production
+
+The next exact source target is nonnegativity, cofinally in head index, of
+`ccmRestrictedWeilActualHeadGammaBoundaryAutocorrelationProducer a
+  (ccmRestrictedWeilCanonicalGroundHead a n)` for every positive aperture.
+This is an EXISTING OPEN CORE, not a new equivalence or an already proved
+consequence of carrier collapse. The known reverse-prime and canonical-ground
+criteria are consumers only. It is the shared actual-head Suzuki/CCM source
+interface for recovering the unshifted arithmetic information; the prime
+wall-Gram bridge does not identify distinct common-clock and ground-head
+operators.
+
+Read current source in CCMActualHeadCompletedAutocorrelationProducer,
+CCMRestrictedWeilCanonicalHeadCompletedErrorControl,
+CCMRestrictedWeilCanonicalGroundHeadEnergy and
+CCMRestrictedWeilCanonicalGroundRemainderNumericalRange. Search1190162 had
+no useful deep hits (partial/pending); narrowed lexical ground-energy search
+recovered the current ground, continuity, floor and sign-equivalence
+interfaces. Search1190095 was partial/source_only with compiler enrichment
+pending; its seam-shift norm ingredient is irrelevant to the metric shift.
+The actual shiftEquation and the raw-exponential operator-domain theorem are
+available, but source anchor changes do not remove the metric shift.
+
+The full existing card
+`docs/drafts/pipeline/1-in-progress/ccm-canonical-head-completed-error-producer.md`
+was read in slices. It already closes Gamma and polar decomposition and
+forbids generic lag-metric, positive-autocorrelation, modulus-ground,
+separate chi-square budget and split-singular-Gamma shortcuts. The actual
+full screw form fails Beurling--Deny; no positivity-preserving semigroup may
+be assumed for its canonical head. The scalar phase-free chi-square budget
+is strictly negative. The next conjecture/proof loop should test the
+phase-preserving joint Gamma-increment/coherent-field inequality on the
+literal canonical heads, retaining the outgoing endpoint and all prime
+powers. Source definitions and prior attempts must be searched before new
+Lean. Proving another receiver or assuming the unknown ground sign would
+not count as progress.
+
+Remaining SZ obligations: signed shell/metric/cusp control where needed,
+lawful shift removal or an unshifted source producer, canonical Xi
+identification and unconditional RH. The proved zero-carrier limit makes
+direct identification in the original norm-shift coordinates unavailable;
+it does not make any of those remaining signs automatic.
+
+Full-carrier cleanup verified: all fourteen exact owned /tmp files removed;
+all owned Lean/search/lint sessions terminal; valid audited leaf oleans
+retained. Four exact umbrella imports and four source whitespace checks
+passed; targeted tracked-file whitespace gate passed. No commits or pushes.
+
+## Raised metric shifts and the remaining singular regime, 2026-10-02
+
+Route SZ. The previous whole-carrier classification was actual progress.
+This turn first tested whether the actual ground equation could close the
+unshifted joint coherent phase gap. Pure stationarity is insensitive to
+adding a scalar to the operator; it does not recover the needed central
+scalar. The existing completed-square/chi-square no-go also blocks the
+phase-free estimate. No new ground-sign proof or stationarity wrapper was
+claimed or added.
+
+New source-derived conjecture: increasing the actual prescribed metric
+shift cannot rescue Xi identification. For C=(A+c)^(-1) and t>=0, the
+constructed response x_t=C(I+tC)^(-1)p solves (A+c+t)x_t=p. Exact transfer
+gives norm((c+t)x_t-p)<=norm(c C p-p). This is a change of the metric shift
+of the same actual interval Friedrichs operator, not of the exponential
+source parameter.
+
+`SuzukiRaisedMetricShiftSource` scratch57265/final42847 and
+`SuzukiRaisedMetricShiftLimit` scratch21196/final93705 pass without warnings;
+both leaves are wired once. The latter proves both complex mixed pairings
+have limits 1/(1+s),0 for every 1/2<s<1 in the joint aperture/increment
+filter, uniformly over all nonnegative increment schedules. Actual
+reflection, Fourier quotient identification and Xi exclusion are being
+audited in the owned carrier scratch. Paper proof and audit details are on
+P1:sz-raised-metric-shift-source-collapse.
+
+Searches1190250/1190318/1190336-1190344/1190351/1190598 were partial, with
+source-only or pending compiler enrichment. Relevant candidate statements
+and source arguments were checked against actual files; retrieved consumers
+were never treated as proved producers. No novelty claim follows from a
+search miss.
+
+Next conjecture is P1:sz-spectral-edge-shift-necessity: below c, a nonzero
+target must force divergence of the exact transfer inverse and relative
+approach to the actual interval spectral floor. A fixed positive resolvent
+margin should still imply collapse. The existing simple-even-ground Cayley
+universality warns that relative approach cannot justify a one-mode limit:
+the actual moving-aperture source residues and parity leakage must survive.
+This attacks shift selection; unshifted canonical-head positivity, signed
+shell/metric control, Xi identification and RH remain unresolved.
+
+### Raised-shift closure checkpoint
+
+Classify this turn as PROGRESS on shift selection, not on unshifted ground
+positivity. Source42847, limit93705 and carrier61584 final leaf audits pass
+without warnings. All seventeen public axiom queries50108 pass using only
+propext, Classical.choice and Quot.sound. All three leaves are wired once.
+The no-go excludes even pointwise Xi identification on the interior
+imaginary segment for every cofinal schedule of nonnegative increments.
+Actual reflection and zero-increment identification are proved; no Schur
+or whole-upper-half-plane collapse claim is made for the raised family.
+
+The positive survivor card was promoted to P3; the existing direct-Xi
+failed-route card and SZ frontier map record the stronger class exclusion.
+Lint78784 reports eleven unrelated unreachable modules, listed on the P3
+card; no current leaf or prohibited proof declaration is among failures.
+Global lint is not green. Goal remains active and unmet. Next attack is
+the exact actual spectral-edge necessity recorded on its P1 card, followed
+by the surviving moving-aperture source-residue problem.
+
+### 2026-10-02: all-admissible spectral-margin necessity, paper closure
+
+Route SZ remains actual source/metric identification. The raised-shift
+exclusion contributed a real class obstruction. Current conjecture strengthens
+it to every shift above the actual attained spectral floor. Source search
+1190824 returned partial/pending coverage, source-only candidates and no proof
+ideas/ingredient sets; current source checks supply covariance positivity,
+exact ground floor, actual shift equation and the audited prescribed profile.
+No novelty claim rests on search absence.
+
+For m>0 use d=c+(m-1)/norm(C), q=min(1,m), T=I+(m-1)C/norm(C).
+Positivity and the operator-norm estimate give T>=qI, an actual inverse,
+and q*norm(d*C*T^-1*p-p)<=norm(c*C*p-p). Weighted normalized mixed errors
+therefore vanish uniformly over all admissible shifts. Nonzero carrier
+convergence, literal quotient cancellation, and the nonzero free denominator
+force q->0 and hence m->0. This is relative floor distance, not absolute gap.
+No source-overlap, simple-ground, parity, shift-sign or shift-growth premise.
+The exact positive statement is being formalized; RH is not proved.
+
+Process correction: a second scratch Lean command was accidentally started
+before session13394 exited. Owned replacement77328 was terminated (exit143);
+original13394 then exited with its coercion diagnostic. Subsequent checks are
+strictly serial. No unrelated process was touched.
+
+### SZ-SHIFT-EDGE closure
+
+Success: all-admissible relative-floor necessity now fully formalized.
+Source17124, Limit44729, Necessity15580 and reused Xi witness2368 passed final
+`lake --old env lean <leaf> -o <olean>` audits, warning-free. Axiom39186
+checked all15 new public theorems plus the witness: only propext,
+Classical.choice, Quot.sound. All3 new leaves wired once; no umbrella build.
+Lint63539 remains red on10 unrelated unreachable modules (listed on P3 card),
+none of these leaves. RH remains unresolved.
+
+This contributes a new actual source constraint, not only an equivalent RH
+receiver: every admissible fixed-source Xi schedule must satisfy
+(E+d)/(E+c)->0. Exact source inverses and weighted complex limits are proved
+without mathematical input premises. Xi convergence is the antecedent of
+a necessity theorem, not asserted as a discharged input to an RH proof.
+
+Next conjecture and paper mechanism are recorded in
+P1:sz-actual-source-defect-quasimode. A nonzero carrier limit should force
+actual normalized source defect to satisfy (I-C/norm(C))*y/norm(y)->0.
+The implication remains relative-scale only. It provides no ground parity
+or projection-overlap conclusion. The remaining hard arithmetic problem is
+the actual signed residue/current; canonical-head Gamma--prime--polar
+positivity and RH are still open. Corpus modulus search1191029 was partial
+and returned decompositions, not an actual ground-sign theorem. The
+limiting logarithmic operator's simplicity theorem cannot be transferred
+to the actual Weil operator with its polar term.
+
+Cleanup verified after closure: all10 owned /tmp files removed, no owned
+process remains, audited oleans retained, new imports once each. Targeted
+whitespace checks passed. Next source-defect conjecture remains active;
+no RH completion or goal-status change.
+
+### 2026-10-02 continuation: actual source-defect quasimode
+
+Previous goal turn classified progress: it proved and audited all-admissible
+relative-floor necessity. Current work attacks the actual vector created
+by the singular inverse. Revalidated current source/necessity definitions;
+search1191242 was partial with older snapshot1191238. Rejected its suggested
+mix of limiting-log covariance and actual source covariance.
+
+Current exact proof mechanism: y=d*x-p satisfies T*y=r_base. Literal carrier
+cancellation and two mixed Gram limits force exp(-a)*norm(y) eventually
+bounded below, hence norm(r_base)/norm(y)->0. With m->0, the exact residual
+identity (I-C/norm(C))*y=r_base-m*(C/norm(C))*y yields the actual relative
+quasimode. No source projection or overlap premise, no assertion of a
+uniform ground gap. Source and asymptotic proof drafts are being audited.
+
+### Actual-defect quasimode: verified closure
+
+Success. Source scratch67821/final5344 and quasimode scratch13322/final76442
+all exited0, warning-free. Both new modules wired once. Axiom52632 checks
+all nine public theorems: only propext, Classical.choice, Quot.sound.
+Final leaf commands used lake --old env lean with their explicit olean
+outputs. Lint28194 fails on11 unrelated unreachable modules, listed in P3;
+no current leaf is among them. No full/umbrella build or heartbeat change.
+
+The theorem supplies an actual source vector and its asymptotic normalized
+covariance equation; it does not prove its sign, projection overlap, or
+closeness to one ground eigenspace. This is progress on route SZ's source
+identification constraints, not discharge of RH. Next work changes focus
+from unsigned localization to the exact signed phase gap on canonical
+heads; P1:sz-canonical-head-joint-phase-credit records the precise target.
+Do not create another equivalence receiver. Current corpus searches for
+that target returned existing source/ground identities and finite-prime
+recurrence, not the missing sign. The recurrence gives an upper return-time
+bound, not the lower Gamma-cost bound a phase-credit argument would need.
+The prime--polar terminal and all Gamma cross phases must remain intact.
+
+Cleanup verified for this continuation: all eight owned /tmp files removed,
+all owned processes terminal, audited oleans retained, imports once each,
+whitespace checks passed. P3 source-defect card updated; direct phase card
+records the retrieved complex two-shear candidate and its unresolved scalar
+orientation transport. No proof of that sign or of RH is claimed.

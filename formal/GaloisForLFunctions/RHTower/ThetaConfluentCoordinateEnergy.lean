@@ -1,8 +1,10 @@
 import GaloisForLFunctions.RHTower.ThetaConfluentCoordinateCurrent
 import GaloisForLFunctions.RHTower.ThetaTailConfluentCenterGram
+import GaloisForLFunctions.RHTower.ThetaTailTwoPointPositivity
 import GaloisForLFunctions.RHTower.ThetaCuspNativeOddSchurFarTail
 
-/-! The strict center coordinate-energy sign, retaining the logarithmic boundary flux. -/
+/-! Strict center and joint-center coordinate-energy signs, retaining the logarithmic
+boundary flux and the complete inverse-Gram correction. -/
 
 noncomputable section
 open MeasureTheory Filter Topology Set
@@ -16,6 +18,7 @@ local notation "p" => thetaCuspLogDecaySlope
 local notation "c" => thetaCuspLogCurvature
 local notation "v" => thetaCuspLogCurvatureJet
 local notation "q" => thetaCuspLogCurvature 0
+local notation "J" => thetaTailFirstMomentKernel 0 0
 local notation "S" => thetaCuspSingleAtomReflectionScale 1
 
 private abbrev source := thetaCuspSchwartzReal
@@ -252,46 +255,149 @@ private theorem polynomialCurrent_continuous : Continuous polynomialCurrent := b
   unfold polynomialCurrent
   fun_prop
 
-private def cumulativeCurrent (b : ℝ) : ℝ := (∫ t in 0..b, polynomialCurrent t)-logarithmicFlux b
-
-private theorem cumulativeCurrent_hasDerivAt (b : ℝ) :
-    HasDerivAt cumulativeCurrent (coordinateCurrent b*k b^2) b := by
-  convert! (intervalIntegral.integral_hasDerivAt_right
-    polynomialCurrent_integrable.intervalIntegrable
-    (polynomialCurrent_continuous.stronglyMeasurableAtFilter volume (𝓝 b))
-    polynomialCurrent_continuous.continuousAt).sub (logarithmicFlux_hasDerivAt b) using 1
-  ring
-
-private theorem cumulativeCurrent_zero : cumulativeCurrent 0 = 0 := by
-  simp only [cumulativeCurrent, intervalIntegral.integral_same, logarithmicFlux, zero_mul,
-    zero_div, sub_zero]
-
-private theorem cumulativeCurrent_strictMono : StrictMonoOn cumulativeCurrent (Ici 0) := by
-  apply strictMonoOn_of_deriv_pos (convex_Ici _)
-  · intro t _
-    exact (cumulativeCurrent_hasDerivAt t).continuousAt.continuousWithinAt
-  · intro t ht
-    rw [(cumulativeCurrent_hasDerivAt t).deriv]
-    exact mul_pos (coordinateCurrent_pos (by simpa only [interior_Ici, mem_Ioi] using ht))
-      (sq_pos_of_pos (thetaCuspFullSource_pos_all t))
+private theorem integral_pos_of_logarithmicFlux {f g : ℝ → ℝ}
+    (hfi : Integrable f) (hfc : Continuous f)
+    (hflux : ∀ t, HasDerivAt logarithmicFlux (f t-g t*k t^2) t)
+    (hg : ∀ t, 0 < t → 0 < g t) : 0 < ∫ t in Ioi 0, f t := by
+  let F (b : ℝ) := (∫ t in 0..b, f t)-logarithmicFlux b
+  have hd (b : ℝ) : HasDerivAt F (g b*k b^2) b := by
+    convert! (intervalIntegral.integral_hasDerivAt_right hfi.intervalIntegrable
+      (hfc.stronglyMeasurableAtFilter volume (𝓝 b)) hfc.continuousAt).sub (hflux b) using 1
+    ring
+  have hz : F 0=0 := by
+    simp only [F, intervalIntegral.integral_same, logarithmicFlux, zero_mul, zero_div, sub_zero]
+  have hm : StrictMonoOn F (Ici 0) := by
+    apply strictMonoOn_of_deriv_pos (convex_Ici _)
+    · intro t _; exact (hd t).continuousAt.continuousWithinAt
+    · intro t ht
+      rw [(hd t).deriv]
+      exact mul_pos (hg t (by simpa only [interior_Ici,mem_Ioi] using ht))
+        (sq_pos_of_pos (thetaCuspFullSource_pos_all t))
+  have hl : Tendsto F atTop (𝓝 (∫ t in Ioi 0, f t)) := by
+    simpa only [F,id_eq,sub_zero] using
+      (intervalIntegral_tendsto_integral_Ioi 0 hfi.integrableOn tendsto_id).sub logarithmicFlux_limit
+  have hp : 0 < F 1 := by
+    have h := hm (show (0:ℝ) ∈ Ici 0 by simp) (show (1:ℝ) ∈ Ici 0 by norm_num)
+      (by norm_num : (0:ℝ) < 1)
+    rwa [hz] at h
+  have hle : F 1 ≤ ∫ t in Ioi 0, f t := by
+    apply ge_of_tendsto hl
+    filter_upwards [eventually_ge_atTop (1:ℝ)] with t ht
+    exact hm.monotoneOn (by norm_num) (show t ∈ Ici 0 by change 0 ≤ t; linarith) ht
+  exact hp.trans_le hle
 
 /-- Strict positivity of the actual cubic center coordinate-energy invariant. -/
 theorem coordinateEnergy_pos : 0 < coordinateEnergy := by
-  have hl : Tendsto cumulativeCurrent atTop (𝓝 (4*coordinateEnergy)) := by
-    have h := (intervalIntegral_tendsto_integral_Ioi 0
-      polynomialCurrent_integrable.integrableOn tendsto_id).sub logarithmicFlux_limit
-    change Tendsto (fun b => (∫ t in 0..b, polynomialCurrent t)-logarithmicFlux b)
-      atTop (𝓝 (4*coordinateEnergy))
-    simpa only [id_eq, sub_zero, polynomialCurrent_integral] using h
-  have hpos : 0 < cumulativeCurrent 1 := by
-    have h := cumulativeCurrent_strictMono (show (0:ℝ) ∈ Ici 0 by simp)
-      (show (1:ℝ) ∈ Ici 0 by norm_num) (by norm_num : (0:ℝ) < 1)
-    rwa [cumulativeCurrent_zero] at h
-  have hle : cumulativeCurrent 1 ≤ 4*coordinateEnergy := by
-    apply ge_of_tendsto hl
-    filter_upwards [eventually_ge_atTop (1:ℝ)] with t ht
-    exact cumulativeCurrent_strictMono.monotoneOn (by norm_num)
-      (show t ∈ Ici 0 by change 0 ≤ t; linarith) ht
+  have h := integral_pos_of_logarithmicFlux polynomialCurrent_integrable
+    polynomialCurrent_continuous logarithmicFlux_hasDerivAt (fun _ ht => coordinateCurrent_pos ht)
+  rw [polynomialCurrent_integral] at h
   linarith
+
+private theorem center_mass_pos : 0 < J := by
+  rw [ThetaTailTwoPoint.kernel_diag_eq_cut]
+  exact ThetaSourceWard.thetaPrimeGammaCutEnergy_pos 0
+
+private theorem center_mass_eq : J = 2*(∫ t in Ioi 0, t*k t^2) := by
+  rw [ThetaTailTwoPoint.kernel_diag_eq_cut,ThetaSourceWard.thetaPrimeGammaCutEnergy_eq_tail]
+  have he : (fun t : ℝ => 2*t*k t^2)=(fun t : ℝ => 2*(t*k t^2)) := by
+    funext t
+    ring
+  rw [he,integral_const_mul]
+
+private theorem weighted_source_square_integrable : Integrable (fun t => t*k t^2) := by
+  have h : Integrable (fun t => t*k t*k t) := weighted_product_integrable source source
+  simpa only [pow_two,mul_assoc] using h
+
+private def jointGapPolynomial (t : ℝ) : ℝ :=
+  t*k₁ t^2-t*k t*k₂ t+3*(k t*k₁ t)+2*q*(t*k t^2)
+
+private theorem jointGapPolynomial_eq (t : ℝ) :
+    jointGapPolynomial t = (t*c t-3*p t+2*q*t)*k t^2 := by
+  unfold jointGapPolynomial
+  rw [first_eq,second_eq]
+  ring
+
+private theorem jointGapPolynomial_integrable : Integrable jointGapPolynomial :=
+  (((ThetaGeometricBoundaryAudit.weighted_derivative_square_integrable.sub mixed_second_integrable).add
+    (ThetaGeometricBoundaryAudit.source_times_derivative_integrable.const_mul 3)).add
+    (weighted_source_square_integrable.const_mul (2*q)))
+
+private theorem jointGapPolynomial_integral : (∫ t in Ioi 0, jointGapPolynomial t) =
+    2*ThetaConfluent.derivativeMass-2*k 0^2+q*J := by
+  have hi : Integrable (fun t => t*k₁ t^2-t*k t*k₂ t) :=
+    ThetaGeometricBoundaryAudit.weighted_derivative_square_integrable.sub mixed_second_integrable
+  have hi' : Integrable (fun t => t*k₁ t^2-t*k t*k₂ t+3*(k t*k₁ t)) :=
+    hi.add (ThetaGeometricBoundaryAudit.source_times_derivative_integrable.const_mul 3)
+  unfold jointGapPolynomial
+  rw [integral_add hi'.integrableOn (weighted_source_square_integrable.const_mul (2*q)).integrableOn,
+    integral_add hi.integrableOn (ThetaGeometricBoundaryAudit.source_times_derivative_integrable.const_mul 3).integrableOn,
+    integral_sub ThetaGeometricBoundaryAudit.weighted_derivative_square_integrable.integrableOn
+      mixed_second_integrable.integrableOn,
+    integral_const_mul,integral_const_mul,ThetaConfluent.weighted_second_integral,
+    ThetaGeometricBoundaryAudit.source_times_derivative_tail,center_mass_eq]
+  change ThetaConfluent.derivativeMass-(k 0^2/2-ThetaConfluent.derivativeMass)+
+    3*(-k 0^2/2)+(2*q)*(∫ t in Ioi 0, t*k t^2) = _
+  ring
+
+/-- The linear energy paid by the stronger actual source current. -/
+def jointCoordinateEnergy : ℝ :=
+  2*secondMass-12*q*ThetaConfluent.derivativeMass+8*q*k 0^2-3*q^2*J
+
+private def jointPolynomialCurrent (t : ℝ) : ℝ :=
+  polynomialCurrent t-6*q*jointGapPolynomial t
+
+private theorem jointPolynomialCurrent_integrable : Integrable jointPolynomialCurrent :=
+  polynomialCurrent_integrable.sub (jointGapPolynomial_integrable.const_mul (6*q))
+
+private theorem jointPolynomialCurrent_continuous : Continuous jointPolynomialCurrent := by
+  have h0 : Continuous k := source.continuous
+  have h1 : Continuous k₁ := dsource.continuous
+  have h2 : Continuous k₂ := ddsource.continuous
+  have hj : Continuous jointGapPolynomial := by
+    unfold jointGapPolynomial
+    fun_prop
+  exact polynomialCurrent_continuous.sub (hj.const_mul (6*q))
+
+private theorem jointPolynomialCurrent_integral :
+    (∫ t in Ioi 0, jointPolynomialCurrent t) = 2*jointCoordinateEnergy := by
+  unfold jointPolynomialCurrent
+  rw [integral_sub polynomialCurrent_integrable.integrableOn
+    (jointGapPolynomial_integrable.const_mul (6*q)).integrableOn,
+    integral_const_mul,polynomialCurrent_integral,jointGapPolynomial_integral]
+  unfold coordinateEnergy jointCoordinateEnergy
+  ring
+
+private theorem joint_logarithmicFlux_hasDerivAt (t : ℝ) :
+    HasDerivAt logarithmicFlux (jointPolynomialCurrent t-jointCoordinateCurrent t*k t^2) t := by
+  convert! logarithmicFlux_hasDerivAt t using 1
+  unfold jointPolynomialCurrent jointCoordinateCurrent coordinateCurrent
+  rw [jointGapPolynomial_eq]
+  ring
+
+/-- Strict source sign paying the entire linear part of joint-center compensation. -/
+theorem jointCoordinateEnergy_pos : 0 < jointCoordinateEnergy := by
+  have h := integral_pos_of_logarithmicFlux jointPolynomialCurrent_integrable
+    jointPolynomialCurrent_continuous joint_logarithmicFlux_hasDerivAt
+    (fun _ ht => jointCoordinateCurrent_pos ht)
+  rw [jointPolynomialCurrent_integral] at h
+  linarith
+
+/-- The actual joint-center compensation includes the complete inverse-Gram correction. -/
+def jointCoordinateCompensation : ℝ :=
+  secondMass/6-2*q*ThetaConfluent.derivativeMass+2*q*k 0^2/3+
+    ThetaConfluent.derivativeMass^2/J
+
+theorem jointCoordinateCompensation_decomposition :
+    jointCoordinateCompensation = jointCoordinateEnergy/12+
+      (ThetaConfluent.derivativeMass-q*J/2)^2/J := by
+  unfold jointCoordinateCompensation jointCoordinateEnergy
+  field_simp [center_mass_pos.ne']
+  ring
+
+/-- The necessary joint-center sign is strict for the literal theta source. -/
+theorem jointCoordinateCompensation_pos : 0 < jointCoordinateCompensation := by
+  rw [jointCoordinateCompensation_decomposition]
+  exact add_pos_of_pos_of_nonneg (div_pos jointCoordinateEnergy_pos (by norm_num))
+    (div_nonneg (sq_nonneg _) center_mass_pos.le)
 
 end RHTower.ThetaCoordinate

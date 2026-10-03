@@ -1252,3 +1252,439 @@ literal inverse-Gram coefficients and proves their candidate confluent
 limit. Both are undergoing verification. Serena symbol lookup rejected the
 Lean path as ignored, so the existing source was edited with a read-based
 patch. No subagents or additional hypotheses were introduced.
+
+RN-P-7n targeted builds now pass: extended CenterLimits, extended
+CoordinateEnergy, CoordinatePort and CoordinateJets. The last leaf proves
+`confluentCoordinateResidual_cubic_limit`,
+`eventually_confluentCoordinateResidual_pos`, and
+`eventually_actual_ports_pos`. The final statement is nested: for sufficiently
+small y>0, then sufficiently small 0<z<y, both literal ports are positive.
+This is not a uniform two-variable neighborhood or global propagation.
+Both new leaves are wired. Direct file and axiom audits are next.
+
+Global attack note: put d_y(t)=[p(t+y)−p(t)]/y,
+C=t d_y−p(t), w_y=k(t)k(t+y)/(Kk(y)), and N=∫Cw_y.
+The exact differentiated current is
+N'=∫[∂y C−(p(t+y)−p(y))C]w_y. Subtracting one half of the
+vanishing t-boundary derivative gives integrand
+(1/2)[c(t)−d_y+(t/y)(c(t+y)+c(t)−2d_y)
+ +(2p(y)−y d_y)C]. A uniform negative pointwise extension is suspect:
+actual tail p(t+y)/p(y)→exp(2t) makes its dominant quadratic coefficient
+positive at fixed 0<t with exp(2t)<2. This tail calculation is paper-only,
+not a Lean no-go, and no route is retired on its basis.
+The source-adapted flow λ=[p(t+y)−p(y)]/[p(t)+p(t+y)] cancels the
+weight score, leaving ∂yC−λ∂tC−(∂tλ)C. The minus sign on ∂tλ is
+essential: an earlier working derivation had a plus sign and its claimed
+near-center obstruction was invalid. With a(y)=p(y)/y−c(0), the true
+leading term near t=0 is t[a'(y)−2c(y)a(y)/p(y)]. For fixed t>0 and
+y→∞, the leading term is [p(t+y)/y](exp(−2t)−1)<0. These are paper
+checks only; the global sign and the adapted flux boundary/integrability
+still require proof. The canonical current is now the direct global
+conjecture. The new local chamber supplies its proved starting region.
+
+### RN-P-7n final audit and next interior sign
+
+The four actual leaves (CenterLimits, CoordinateEnergy, CoordinatePort,
+CoordinateJets) passed final `lake env lean` with empty diagnostics.
+All 26 public theorem axiom queries passed with only propext,
+Classical.choice and Quot.sound. The new leaves are wired at the RHTower
+umbrella. No full or umbrella build ran. P3 certificate:
+`theta/rn-confluent-coordinate-chamber.md`; frontier and energy gates updated.
+Lint exited 1 with twelve unrelated unreachable modules: the previous ten
+plus CCMFiniteNeumannRemainderQuadratic and
+ThetaCuspCurvatureDefectGrowthMixedPairAbsorption. No owned proof violation.
+
+For the canonical current, write a=p(t), b=p(t+y), r=p(y),
+u=c(t), v=c(t+y), A=a+b. Direct paper algebra gives
+
+    y²A²J = y(2t+y)[a(a+r)v+b(b−r)u]
+             −(b²−a²)[tA+y(b−r)].
+
+The true endpoint coefficient is negative from the already audited chord
+reserve: with m=p(y)/y, it is −(m²+mc−2qc)/p(y).
+The bound m>q(2c+q)/(c+2q) makes the numerator strictly positive;
+at equality it is q²(c−q)²/(c+2q)². This corrects the discarded false
+endpoint obstruction; no global sign is inferred from it.
+
+A direct corpus query for projective three-point inequalities completed
+without partial truncation, but compiler metadata is source-only/stale and
+background refresh is incomplete. Candidate lemmas, source arguments and
+proposed ingredient sets were inspected. The suggested unrelated divided
+differences and Hawking-source identities do not prove this inequality.
+Direct source inspection recovers the actual global projective reserve and
+the existing two-point ratio-descent mechanism; no three-point producer.
+
+Next mathematical mechanism: in slope coordinates s=p(t), write
+F(s)=c'(p⁻¹(s)). Then F'=c''/c>0 and F''=(c''/c)'/c<0. Thus the actual
+acceleration is increasing and concave as a function of slope. This is a
+paper reformulation of the audited projective law, not an assumed global
+coordinate sign. Test whether it forces the exact three-point current
+inequality above; its weighted integral and vanishing canonical boundary
+still need an independent audit. If pointwise sign fails, retain the
+original integrated comparison rather than claiming a route obstruction.
+
+Assessment: this iteration closes the literal coordinate transfer and
+actual nested two-port chamber. The global-current exploration has produced
+an exact target and corrected a sign, but has not yet solved global
+compensation. Global comparison, arbitrary rank and RH transfer remain
+hard open obligations. RH goal remains active and unmet.
+
+### RN-P-7o: exact global-spacing boundary of the canonical current
+
+Previous turn: progress, with the literal nested chamber fully audited.
+Current source inspection confirms the projective theorem and pending
+global three-point conjecture. Fresh canonical-current corpus search is
+partial, compiler metadata source-only, with pending/background refresh;
+candidate and source-argument lists were inspected. No matching global
+producer was returned. Unrelated conditional RH receivers were not used.
+
+Interior work: projective descent implies that acceleration p'' is increasing
+and concave in the slope p. Attempted to derive the full three-point margin
+from two-point ratio descent and shifted chord reserves. The compensation
+terms retain p(y), so the existing two-point theorem does not directly close
+the inequality. No global proof or falsification resulted.
+
+The exact endpoint identity in the P1 card does close a stronger boundary:
+for every fixed y>0, the literal canonical current is negative for all
+sufficiently small t>0. New leaf ThetaCoordinateCanonicalBoundary defines
+the differential current (including −λ_t C), proves its exact negative
+margin formula, and targets this all-spacing boundary from the previously
+audited chord reserve. Its targeted build is in progress; no Lean success
+claim yet. No new RH premise, axiom, computation or heartbeat setting.
+
+Next interior attack: at a first zero Q(t,y)=0, retain the exact relation
+Q=(b²−a²)M−y(2t+y)S, M=t(a+b)+y(b−r),
+S=a(a+r)v+b(b−r)u. Its derivative uses
+M_t=a+b+t u+(t+y)v and
+S_t=2(a+b)uv+a(a+r)c'(t+y)+b(b−r)c'(t).
+Eliminating M with Q=0 may give a first-zero barrier using projective and
+chord reserves. This is an unproved next conjecture, not a consequence of
+the endpoint theorem alone.
+
+RN-P-7o final verification: the target passed `lake --old build`, then
+final direct `lake env lean` on the actual source path with empty diagnostics.
+All six public theorem axiom checks contain only propext, Classical.choice
+and Quot.sound. The leaf is wired; no umbrella build. Serena symbol lookup
+again rejected the ignored Lean path, so corrections used read-based patches.
+The failed checks exposed composition/instance normalization and generated
+scalar-goal handling; no mathematical premise changed.
+
+Formal lint exited 1 solely for twelve unrelated unreachable modules:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MoebiusMollifiedCriticalMoment, MoebiusMollifiedErrorThreeLines,
+SuzukiMatchedOddPoleProfile, ThetaCuspCurvatureDefectGrowthDeepNextReservePolynomial,
+ThetaMovingShellFirstOrderPhase, ZetaZeroDensityPowerSaving.
+No owned proof violation. P3 certificate and RN frontier updated.
+
+Assessment: the new theorem supplies the actual all-spacing boundary
+condition for the proposed global current comparison. It does not solve
+the interior sign, the weighted-integral transfer, Schur compensation,
+arbitrary rank or RH. The next turn should attack a first-zero barrier
+or the equivalent fixed-source-potential ratio decrease, not add another
+unrelated endpoint estimate. Search/probe/audit scratch is being removed;
+all owned build/search handles are terminal. RH goal remains active.
+
+### RN-P-7p: global interior cross compensation
+
+Previous turn: verified progress on the all-spacing boundary. Direct source
+inspection confirms it. The first-zero search is partial with stale/source-only
+metadata and background refresh; candidates and source arguments were inspected.
+The lexical tail query locates the exact actual jet limits but reports no
+coverage/freshness metadata. Direct source reads supply the scaled likelihood
+variance and third-cumulant error producers.
+
+Corrected a fresh product-rule error before using it: exp(−2t)(c'−2c)
+does not have curvature-defect derivative. The right current is
+exp(2t)(2c−c'), with derivative −exp(2t)(c''−4c)<0. Its eventual sign
+requires the subleading actual limit S(2c−c')→24, not only c/S→4 and
+c'/S→8. Exact first-atom algebra gives 24(S/q_a)^3; scaled likelihood
+variance/third-cumulant errors vanish. This proves global 2c−c'>0, then
+cc''−c'²=c(c''−4c)+(2c−c')(2c+c')>0.
+
+This curvature law yields an interior result: the slope elasticity tc/p
+strictly increases because M=pc+tpc'−tc² has
+(M/c)'=pc'/c+tp(cc''−c'²)/c²>0. A reciprocal-sum comparison then proves
+Q_cross(x,z)=p(z)²−p(x)²−(x+z)[p(z)c(x)−p(x)c(z)]>0 for ALL 0<x<z.
+The canonical margin decomposes exactly as Q_base+y[p(t+y)−p(t)−p(y)]Q_cross.
+Both factors in the added term have strict source signs. Full Q_base/Q
+compensation remains open; this is a global interior term, not another
+endpoint estimate.
+
+P1 paper card: rn-interior-cross-current.md. New leaves
+ThetaCuspCurvatureLogConvex and ThetaCoordinateCrossCurrent are implemented.
+The first curvature build found only an unresolved constant in a Tendsto
+expression; an explicit constant-one limit corrected it. Recheck is running.
+No proof-success claim yet; no new axiom or heartbeat setting.
+
+### RN-P-7q: global base compensation from source-potential geometry
+
+New dependency-closed paper proof: V=cc'−pc''>0 follows from the proved
+projective primitive. K=3tc²−3pc−tpc' has K(0)=0 and
+K'=tV+4c'(tc−p)>0. Thus c'/p strictly decreases and
+((tc−p)/p³)'=−K/p⁴<0. In the potential U=−log k, U'=p, these
+are strict concavity of c and strict convexity of t/p.
+For x<z, differentiating endpoint tangent gaps gives both strict trapezoids:
+Hc=p(z)²−p(x)²−(U(z)−U(x))(c(x)+c(z))>0 and
+Hg=(U(z)−U(x))(x/p(x)+z/p(z))−(z²−x²)>0.
+The exact base decomposition is
+Q_base=p(x)p(z)[Hc(x/p(x)+z/p(z))+Hg(c(x)+c(z))]>0.
+Together with RN-P-7p, this proves the paper-level global Q>0 and J<0.
+ThetaCoordinateCanonicalGlobal implements this proof; validation pending.
+
+Targeted build results so far: ThetaCuspCurvatureLogConvex passed;
+ThetaConfluentCoordinateCurrent (new projectiveSlopeReserve_pos) passed;
+ThetaCoordinateCrossCurrent passed after two elaboration repairs
+(explicit derivative function and endpoint set membership). Final direct
+Lean audits and axiom checks remain pending.
+
+The next weighted-transfer search returned unrelated partial/source-only
+flux candidates; none was used as a theorem. A lexical refinement recovered
+schwartzCorrelation_integrable, centerMixedRow_zero, and the existing
+cumulativeCurrent mechanism. Its metadata reports no coverage/freshness.
+The actual centerMixedRow differs from the canonical raw moment numerator
+L=(t+y)k'(t)k(t+y)−tk(t)k'(t+y) by the derivative of tk(t)k(t+y).
+Both endpoints of that correction vanish. The derivative of the normalized
+moment is a raw Schwartz correlation combination. Subtracting canonical
+flux from its finite primitive should give derivative Jw<0; the flux tends
+to zero since 0<speed<1 and L tends to zero. This supplies a direct path to
+global B_* positivity without assuming quotient-current integrability.
+
+Global leaf targeted build passed after removing one redundant tactic and two
+unused simp arguments. All four direct file audits completed without diagnostics;
+the 24-public-theorem axiom audit is running. The three new sign leaves are wired.
+The next leaf ThetaCoordinateCanonicalFlux is written, not yet checked: it proves
+bounded canonical speed, decay of the literal flux, an exact divergence identity,
+and strict negativity of the raw parameter-derivative integral by a finite
+primitive. Only raw Schwartz products enter its integrability claims.
+
+All 24 global-sign theorem axiom audits passed: propext, Classical.choice,
+Quot.sound only. P3 certificate is theta/rn-global-canonical-current.md;
+RN frontier map now records the closed interior sign problem.
+
+ThetaCoordinateCanonicalFlux first check found composition normalization,
+an invalid lambda character inside an identifier, and a finite-primitive
+limit elaboration issue. These are repaired; targeted recheck runs.
+The actual divergence algebra, raw integrability and canonical speed bound
+had no reported mathematical failure.
+
+ThetaTailConfluentCoordinateGlobal is now written, unbuilt. Its exact target
+is B_*(y)>0 for all y>0, followed by the literal two-port chamber at every
+fixed positive spacing. It identifies T with the raw moment using the
+zero-boundary derivative (tk(t)k(t+y))', identifies the negative transport
+integral with N'=d[T/(yk(0)k(y))]/dy, and obtains N(0+)=β/k(0)² from the
+already audited cubic residual limit. No new center-jet assumption or
+quotient-Schwartz premise is inserted. This is the next direct transfer,
+not finite-pair propagation or arbitrary-rank/RH closure.
+
+The cleaned ThetaCoordinateCanonicalFlux leaf now passes its targeted
+dependency rebuild without own diagnostics. The global residual leaf is
+compiling. The 12 flux and 7 residual public theorems have a prepared /tmp
+axiom audit; it will run after successful source checks.
+
+Next finite-pair card: rn-center-schur-coordinate-row-flow.md. It retains
+actual inverse-Gram coefficients and derives B_z(y)=yk(y)[1−E(z,y)/E(z,z)]
+for the center-removed normalized kernel E. The source-driven PDE exposes
+an explicit complete forcing for E_y. Its sign, not the confluent initial
+condition alone, is the new hard barrier. The deep search is partial with
+semantic/reranking timeouts and pending coverage; inspected source-only
+hits include known normalized rows and our unbuilt current file, which
+was not treated as evidence of a theorem.
+
+### RN-P-7r completed: global literal coordinate residual
+
+The first global residual check exposed explicit-function versus Pi-function
+integral rewrite mismatches and Schwartz coercions under derivatives. Typed
+integrability sums, the exact source coercion, and typed source derivative
+facts repaired these; two redundant closing tactics were removed. The
+corrected leaf builds cleanly. Both transport leaves passed final direct
+lake env lean file checks, followed by all19 public theorem axiom checks.
+Together with RN-P-7p/q: six directly checked leaves,43 public theorem
+axiom audits, all using only propext, Classical.choice, Quot.sound.
+
+Closed hard source problems this continuation: global curvature log-convexity,
+global canonical-current negativity, its actual weighted integral transfer,
+and B_*(y)>0 for EVERY y>0. The resulting actual two-port chamber is now
+valid at every fixed positive outer spacing; the small-z threshold still
+may depend on y. P3: theta/rn-global-confluent-coordinate-residual.md.
+
+All five new modules are wired. Repository lint reports11 unrelated
+unreachable modules listed in the P3 certificate; no owned proof violation.
+No full/umbrella build, computation experiment, added axiom, heartbeat
+increase, subagent or commit. Every owned build/search handle is terminal.
+Owned search/probe/build/audit scratch is being removed after recording
+these results. The RH goal remains ACTIVE and unachieved.
+
+Next hard mathematical problem: actual finite-pair contact compensation
+for Γ=E_y in rn-center-schur-coordinate-row-flow.md. The complete source
+forcing, with Γ=0 retained as its actual integral identity, must be proved
+negative. The proved N'<0 supplies the boundary on each y−z=d>0
+characteristic. It is not a replacement for this missing source law.
+Finite-pair propagation, general anchors, arbitrary rank and retained
+arithmetic RH transfer remain open. Do not repeat the completed audits or
+return to the now closed small-y or interior canonical-current questions.
+
+Cleanup complete: all26 owned search, probe, build, lint and audit scratch
+files removed. No owned job remains running. Completed proof sources,
+umbrella wiring, P3 certificates, current RN ledger and both checkpoint
+memories remain in the workspace. Next turn attacks the finite-pair
+source contact law; RH goal remains active.
+
+### RN-P-7s completed: global actual center Schur cross positivity
+
+Route RN. Previous global confluent closure was genuine progress, but did not
+supply finite-pair propagation. This turn retained that hard target. The direct
+contact-forcing route and the original double-integral integrand did not yield
+a sign: the latter has a negative diagonal term. Shifted-source Wronskian
+control alone was not shown to imply actual inverse-Gram compensation.
+No unproved contact or Wronskian theorem was installed as a premise.
+
+A new exact Gaussian coarea, u=t(t+x+y), removed the first-moment weight.
+The actual normalized kernel is the integral of exp(-V). Its exact mixed
+potential derivative is strictly negative from actual c''>0. Center amplitude
+ratios decrease in u and lie in(0,1]. Strict potential submodularity plus the
+complete nonnegative covariance prove, for EVERY x,y>0,
+
+    H(0,x)H(0,y) < H(0,0)H(x,y).
+
+This closes a genuine global finite-pair source comparison. The positive old-node
+coefficient of the actual center-anchored projection is therefore always
+strictly positive. No coefficient or Gram-positivity premise was assumed.
+It does not yet supply the strict upper bound needed by the coordinate port.
+
+Completed leaves: ThetaTailGaussianCoarea, ThetaTailGaussianSubmodular,
+ThetaTailCenterSchurCross. All three targeted --old leaf builds passed;
+all three final direct lake env lean file audits passed with no diagnostics.
+All34 public theorem axiom checks returned only propext, Classical.choice,
+Quot.sound. All three modules are wired into RHTower. P3 certificate:
+`theta/rn-gaussian-coarea-center-schur.md`; RN frontier map updated.
+
+Formal lint reports11 unrelated unreachable modules and no owned violation;
+exact list retained in the P3 certificate. No umbrella/full build, numerical
+experiment, heartbeat increase, subagent, added axiom, or commit.
+
+Next hard target remains E_y<0 for the actual center-removed normalized kernel,
+or a weaker direct coordinate-port upper bound. The new decomposition is
+G/C=expectation(B_xy)+covariance(A_x,A_y), with B_xy>0. Its derivative must
+retain the covariance. A partial corpus search found the actual full-line
+Brascamp--Lieb theorem and half-line Stein identity with its endpoint current.
+The latter is relevant because the coarea density is nonzero at0. The corpus
+also explicitly proves that subtracting the first Popescu correction from an
+upper bound requires zero retained resolvent remainder. Do not reuse that
+invalid shortcut. Exact statements and remaining sign target are recorded
+in rn-center-schur-coordinate-row-flow.md.
+
+All owned build, search, direct-audit and axiom handles are terminal.
+RH goal remains ACTIVE and unachieved. Finite-pair upper compensation,
+general anchors, arbitrary rank and arithmetic RH transfer remain open.
+
+RN-P-7s cleanup complete: all17 owned search/API/build/audit scratch files
+removed. No owned process remains running. The formal sources, umbrella wiring,
+P3 certificate, frontier update, working log and checkpoint memory are retained.
+
+
+### RN-P-7t completed: arbitrary-anchor actual Schur cross positivity
+
+Route RN. Previous center Schur closure was progress. This turn first tested
+the finite-coordinate monotonicity conjecture at joint coalescence. The exact
+inverse-Gram correction introduces the necessary sign
+S/6-2qI+2qP/3+I^2/J>=0; its sign and the joint Taylor remainder remain
+unproved. The paper diagnostic is recorded in the flow card and was not
+installed as a premise or claimed as a falsification.
+
+The same source coarea mechanism exposed a solvable missing anchor term.
+For s=a+t, r=x+t, L=s+r, P1=p(s)+p(r), the endpoint mass-rate numerator is
+
+    (x-a)(L*c(r)-P1)+L*s*(c(r)-c(s))
+      +a*(L*(c(s)+c(r))-2*P1) > 0.
+
+All terms have actual-source signs. Thus comparison amplitudes decrease
+above EVERY nonnegative anchor. Strict submodularity plus complete positive
+covariance closes
+
+    H(a,x)H(a,y)<H(a,a)H(x,y), 0<=a<x, a<y.
+
+The actual larger old-node projection coefficient is consequently positive.
+This extends the center-only finite-pair result; it does not solve the upper
+coordinate-port bound. The old proof code was generalized, with existing
+center declarations preserved as specializations.
+
+Modified Lean leaves: ThetaTailGaussianSubmodular, ThetaTailCenterSchurCross.
+Both targeted lake --old builds and both final direct lake env lean file
+checks passed. All29 public theorem axiom checks returned only propext,
+Classical.choice, Quot.sound. Existing umbrella imports cover both leaves.
+Formal lint found12 unrelated reachability errors, none in these leaves;
+exact list is in the new P3 certificate. No full/umbrella build, numerical
+experiment, subagent, added axiom, heartbeat increase, or commit.
+
+P3 certificate: theta/rn-gaussian-coarea-arbitrary-anchor.md. RN map and
+current flow card updated. Next hard step remains the compensated finite-pair
+upper sign, including its necessary joint-center invariant. Full port signs
+at general anchors, arbitrary rank and arithmetic transfer are also open.
+RH goal remains ACTIVE and unachieved.
+
+RN-P-7t cleanup complete: all9 owned /tmp search/build/audit files removed.
+All owned process handles are terminal. Formal sources, certificates, working
+log, frontier update and checkpoint memory retained.
+
+
+### RN-P-7u completed: actual joint-center inverse-Gram compensation
+
+Route RN. Previous arbitrary-anchor Schur lower sign was progress, but left
+coordinate-port upper compensation open. This turn attacked the necessary
+joint-center sign directly. Merely reusing coordinateEnergy>0 leaves an
+uncontrolled inverse-Gram correction; the sign of the stronger integrated
+diagonal-comparison shortcut also remained unknown.
+
+New knowledge: the actual source has the globally positive current
+
+    G=pc+3tc^2-tpv-12qtc+20qp-12q^2t
+     =t*slopeEnergy+(c+20q)/(c+2q)*chordReserve
+        +2t(c-q)^3/(c+2q)>0.
+
+Existing unconditional projective source reserves prove every term's sign.
+With I=integral t*k_prime^2, S=integral t*k_second^2, P=k(0)^2,
+q=c(0), J=H(0,0), the retained logarithmic flux gives
+
+    F=2S-12qI+8qP-3q^2J>0,
+    D=S/6-2qI+2qP/3+I^2/J
+     =F/12+(I-qJ/2)^2/J>0.
+
+The proof uses exact Schwartz polynomial integrals and the existing vanishing
+flux; it assumes no logarithmic-quotient integrability, projection coefficient
+bound, covariance sign, or new source axiom. Equivalently,
+F=2*coordinateEnergy-3q*(2I+qJ-2P); it pays the possible adverse diagonal
+comparison without resolving that comparison's sign.
+
+Five new public theorems in the existing ThetaConfluentCoordinateCurrent
+and ThetaConfluentCoordinateEnergy leaves. The old coordinateEnergy proof
+shares a private flux receiver with the new proof; public statements preserved.
+Both targeted --old builds and both final direct lake env lean checks passed
+without leaf diagnostics. All20 public theorem axiom queries returned only
+propext, Classical.choice, Quot.sound. Existing umbrella imports cover both
+leaves. Lint reports12 unrelated reachability errors, listed in the P3
+certificate, and no owned violation. No full/umbrella build, computation
+experiment, heartbeat increase, subagent, added axiom, or commit.
+
+P3 certificate: theta/rn-joint-center-coordinate-compensation.md.
+RN frontier and main flow card updated. The source sign is closed; the exact
+joint Taylor/Hessian identification is NOT yet formalized. The P3 card records
+a paper route to a uniform triangular chamber 0<z<y<epsilon using
+E_yy(0,0)<0 and E_yx(0,0)+E_yy(0,0)=-D/P<0. Then full finite-pair propagation,
+arbitrary rank and arithmetic transfer remain hard open obligations.
+RH goal remains ACTIVE and unachieved.
+
+Implementation lessons: field_simp normalized the denominator C+2Q to C+Q*2;
+provide both nonzero forms after scalar generalization. Explicit pointwise
+Integrable annotations are needed before integral_add rewrites, and a typed
+Schwartz product bridges source coercions. The Energy leaf had no actual H
+kernel import previously; ThetaTailTwoPointPositivity supplies the literal J.
+A shallow dslope search found Mathlib DSlope continuity/basic differentiation,
+but no ready joint smooth division theorem was verified. Its formal extension
+is still a next-step obligation, not an installed premise.
+
+RN-P-7u cleanup complete: all12 owned /tmp search, algebra, build and audit
+files removed. All owned process handles are terminal. Formal sources, existing
+umbrella wiring, P3 certificate, frontier update, working log and checkpoint
+memory retained.

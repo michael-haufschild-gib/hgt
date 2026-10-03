@@ -1006,3 +1006,440 @@ allowance changes. Prove its four leading-minor signs, then transfer
 to the actual exponential-weighted pair. The proposed complete-source
 neutral reserve remains 1/56 after the audited 1/10 tail payment and
 the still-to-be-audited first-atom drift coercivity 1/7.
+
+The weighted fourth minor now passes its direct Lean audit, with only
+propext, Classical.choice, and Quot.sound. All four leading-minor signs
+are established. The source congruence and exponential payment also
+elaborate; final quadratic glue currently has a finite-index/conditional
+simplification repair, not a source-sign failure. No full floor theorem
+or neutral positivity is claimed until this final audit succeeds.
+
+The complete source-weighted mixed-pair floor now passes the direct
+Lean scratch audit: mixedPairOddFour_exponential_floor has only
+propext, Classical.choice, Quot.sound. The actual radial source
+congruence, all four principal-minor signs, quadratic decomposition,
+and literal exponential payment are included. Production leaf
+ThetaCuspMixedPairOddFourFloor.lean is created and awaits its own
+full leaf audit. The actual canonical-drift coercivity audit is next;
+neutral-source positivity and global/all-rank closure remain open.
+
+Actual canonical drift coercivity now passes Lean: substituting the
+literal q(x), h(x), and normalizedCanonicalDrift(x), the complete
+first-atom central quadratic including the derivative cross term is
+at least (sum y_i^2)/7 on 5<=q<=45/8. Both the scalar coercivity and
+actual-source substitution print only propext, Classical.choice,
+Quot.sound. No free drift bound is assumed by the source theorem.
+The remaining neutral step is exact source-energy assembly with the
+mixed 1/40 and native-tail 1/10 payments; predicted reserve is 1/56.
+The new mixed-pair production leaf is wired and its targeted --old
+build is running. No umbrella or full build is used.
+
+Production axiom audit now exits 0 and prints exactly propext,
+Classical.choice, Quot.sound for mixedPairOddFour_exponential_floor.
+The temporary API-name probe was also fixed by explicit universe
+levels and passes. Seventeen superseded TTC56 scratch .olean artifacts
+were removed after the production replacement was fully audited.
+The complete source/neutral-anchor assembly is now being audited in
+/tmp/TTNeutralAssembly.lean, with one owned foreground Lean process.
+
+Global source reduction to retain after the neutral audit: eliminating
+the first two native odd coordinates gives p,r,s. Put a=168q-56,
+t=C3*x*Phi^2*a', P=p+C3*G. The actual coupled determinant numerator is
+
+    P*(s-2*a*r+a^2*p+C4*G) - (r-a*p+t)^2.
+
+The C3*G cross terms cancel exactly in this moving coordinate. In
+central coordinates, they contribute only sigma*y2^2, where
+sigma=C3*G/(4718592*q^5*f1^2); the C4 term contributes
+C4*G/(8*43008^2*q^7*f1^2)*y3^2. These are paper identities pending
+formal assembly, not a new positivity assumption. The literal G
+changes sign once, so a single fixed C4 must satisfy both sides.
+Corpus search found exact full-source lower/upper slope and mass
+lemmas, and G/(f1^2*q^5)->0; these support later source estimates.
+The active mathematical work remains the full neutral source audit
+and then the global coupled source sign, not an asymptotic-only closure.
+
+The COMPLETE neutral source theorem now passes its direct Lean scratch
+audit. native_canonical_drift_coercive proves the literal native energy
+plus actual canonical moving-coordinate drift >=(8*q*f1^2)/56*sum y_i^2
+on 5<=q<=45/8. exists_neutral_coupledOddFour_positive then proves an
+actual x>0 with G(x)=0 where the coupled form is strictly positive for
+every nonzero native coefficient vector and every real C4. Both
+print only propext, Classical.choice, Quot.sound. Full reflected tail,
+both unequal pairs, pure second pair, inverse coordinate transfer,
+actual C3 and actual neutral-anchor existence are included.
+
+This resolves C56's neutral source-sign obstruction. It does not
+produce a single global C4 or an all-rank/integrated sign. Production
+leaf ThetaCuspCoupledOddNeutral.lean is created from the audited proof;
+its own audit remains pending. The supporting first-atom energy
+identity is added to ThetaCuspFirstAtomOddFourPositivity.lean, whose
+targeted --old build is running. No full or umbrella build is run.
+
+### C57: source-selected fourth coefficient (open conjecture)
+
+Use the actual coupled matrix with C4=0. Let D4 be its determinant at
+x=0, and let D3>0 be the canonical corrected odd-three determinant at
+x=0. Both are literal source quantities, not free data. Consider
+
+    C4* = 1 + max(0, -D4/(D3*Phi(0)^2)).
+
+Conjecture: the actual coupled odd-four source matrix at C4* is positive
+definite for every x>=0. This is a concrete stronger candidate for the
+remaining C56 existence claim, not an established theorem. At zero,
+the determinant becomes D4+3*C4*D3*Phi(0)^2>0; the three-row head has
+the corpus's strict canonical margin. The new neutral theorem already
+handles the actual zero of G. The hard obligation is the same fixed
+source-defined coefficient on both sides of G, especially the compact
+negative-G region. A failure of this particular coefficient would not
+retire C56 or imply a falsification of RH.
+
+Grounding: the current corpus gives all-order literal seam derivatives
+via thetaCuspFullSource_seamJet_eq_formalJet; canonical odd-three
+positivity; actual neutral positivity; native odd-four cofinal
+positivity; and G/(f1^2*q^5)->0. Deep search for global odd-four coupled
+compensation returned the new neutral theorem and no applicable global
+producer among its hits; coverage was partial, generation 1189177,
+background refresh pending. The search's suggested ingredient set is
+unverified and only restates neutral positivity, not global closure.
+No new C57 Lean code or source-coefficient bound has been claimed.
+
+First hard C57 sub-obligation: establish the literal coupled source
+form with C4=0 throughout G<0. This is necessary for every admissible
+C4>=0, because adding C4*G*c3^2 can only decrease each source energy
+there. A negative actual-source direction anywhere in that region
+would rule out all such C4 for this moving u, not merely the proposed
+seam coefficient. The neutral theorem supplies the endpoint margin;
+no whole negative-G-ray sign is yet asserted.
+
+FINAL AUDIT CHECKPOINT: both new production leaves and the modified
+first-atom source leaf passed targeted --old builds and direct
+`lake env lean <leaf>` audits. Public theorem statement checks confirm
+no supplied neutral point or analytic source-sign hypothesis. Axiom
+prints for firstAtomOddFour_energy_eq, native_canonical_drift_coercive,
+exists_neutral_coupledOddFour_positive, and mixedPairOddFour_exponential_floor
+contain only propext, Classical.choice, Quot.sound. Umbrellas and
+index are updated; global lint has fourteen unrelated unwired-module
+errors and none for these changes. Superseded owned proof probes and
+caches were removed; production source is canonical. Audit logs and
+research queries remain in /tmp, and minimal axiom probes import only
+production modules. No owned Lean process remains live.
+
+Route TT goal remains ACTIVE. Neutral source positivity is resolved.
+C57/global fixed C4, integrated closure, all-rank repair, and RH remain
+open. First next mathematical obligation is the unloaded coupled
+source sign throughout G<0; any failure there rules out all C4>=0
+for this particular moving direction.
+
+### C58: global literal unequal-pair sign (open conjecture)
+
+For q>=5 define E7(q)=sum_{k=0}^7 (3*(q-5))^k/k!. Conjecture:
+
+    M12(q) + 10000*E7(q)*I is positive semidefinite for every q>=5.
+
+The existing exact radial certificate gives maximal numerator degree16
+and denominator degree9 in the last reduced mixed entry. Degree7
+therefore matches its actual normalized growth. The source exponential
+obeys exp(3q)>=20^5*E7(q), so the actual weighted energy payment stays
+1/40. This conjecture extends the current compact-interval matrix sign
+to the entire scale-five ray; it does not assume a mixed sign or use
+external numerical experimentation. Test four polynomial leading
+minors after q=5+u, u>=0, with the existing exact radial entries.
+This is an ingredient for the hard coupled C4=0 sign on G<0, not a
+replacement for global C56/C57 or all-rank closure.
+
+### C59: source-correlated unloaded coupled positivity (open)
+
+Conjecture: the actual coupled form at C4=0 is positive definite on
+q>=5, with the canonical coefficient C3 retained. This implies the
+necessary unloaded sign on G<0 in that ray. The remaining q<5 source
+problem, global fixed C4, and all-rank problem remain separate.
+
+Paper strategy from current source bounds: in central coordinates set
+sigma=C3*G/(4718592*q^5*f1^2),
+tau=C3*x*Phi^2/(786432*q^5*f1^2).
+The first-atom matrix is the exact centralMatrix(1/(2q),6/(2q-3)^2),
+with sigma added to (2,2) and -tau added to (2,3) and (3,2).
+Test this matrix >= (1/7)I at both drift endpoints tau=0,tau=T(q)
+and the lower compensation endpoint sigma=S(q). Convexity in tau
+and monotonicity in sigma then give the entire source box, rather
+than discarding q-dependence in unrelated uniform bounds.
+
+For 5<=q<=8 use existing quadratic compensation lower bound and the
+proved tangent 10x+107/40<=q:
+ S(q)=3000000000*(101/100)^2*(1+9q/5-2q^2/5)/(4718592*q^5),
+ T(q)=3000000000*(101/100)^2*(q-107/40)/(7864320*q^5).
+For q>=8 retain the positive 3*Phi^2 term in the existing scale-seven
+mass/slope argument and use 16x<=q:
+ S(q)=3000000000*(3-13q^2/50)/(4718592*q^5),
+ T(q)=3000000000*(101/100)^2/(12582912*q^4).
+These are proof candidates, not established matrix signs or source
+inequalities. Both S are nonpositive on their stated domains. The
+actual source coefficients, slope, mass, and tangent estimates are
+already corpus theorems; their combination and the two endpoint
+matrix signs need Lean proofs. If C58 supplies global mixed cost1/40,
+existing complete tail cost1/10 leaves source reserve1/56.
+
+C58 source proof checkpoint: all four global principal-minor signs,
+source diagonal congruence, exact radial identification, and actual
+exponential payment have passed direct scratch Lean audits. The
+result is exactly the existing mixedCentralMatrix source on every
+q>=5, with cost1/40. Axiom audit uses only the standard three axioms.
+Production now replaces the compact-only proof with this global
+proof; the old compact theorem is a corollary, with no duplicated
+certificate chain. Production target/direct audit are still pending.
+Index refreshed; formal lint reports twelve unrelated umbrella
+omissions and no error in this leaf. C59 model normalizations compile;
+source endpoint identification is running, endpoint sign tests pending.
+
+C59 scope refinement from literal source: the full statement of
+exists_thetaCuspCompensationNeutralAnchor already includes the unique
+sign transition and q(tau)>5. Therefore for x>=0, G(x)<0 forces x>tau
+and q(x)>5. A proof of C59 on the scale-five ray covers the ENTIRE
+negative-G region, not only its far subset. The positive-G small-scale
+region still matters for global fixed-C4 positivity. The combined C59
+entry identity exceeded the default heartbeat limit; it is now split
+into four row proofs, without changing the conjecture or raising limits.
+
+C58 COMPLETE: production --old target build, final direct leaf audit,
+and production public-statement/axiom audit all exit0. Both public
+floor theorems depend only on propext, Classical.choice, Quot.sound.
+Global theorem assumes only q>=5 and takes an arbitrary Fin4 vector;
+no source-sign or approximation hypothesis was introduced. Existing
+umbrella import retained; index refreshed; lint has twelve unrelated
+umbrella omissions and no error for this module. Superseded owned
+C58 prototypes and four compiled caches removed. Frontier map now
+records the global literal unequal-pair sign. C59 remains OPEN; its
+row-by-row exact source identity is now under audit.
+
+C59 mathematical sign checkpoint: all eight minor theorems in the
+scratch model passed direct Lean audit (exit0), covering both drift
+endpoints on the middle interval and the entire far ray. Axiom prints
+are standard3 only. Thus the four endpoint polynomial matrices have
+the proposed 1/7 reserve. Native-source positivity is NOT yet claimed:
+source identity still needs the last denominator normalization, actual
+source bounds are prepared but unverified, and matrix/source assembly
+is pending. The positive scalar-minor certificates are genuine progress
+on the coupled sign problem; no sign failure or route retirement occurred.
+
+C59 exact-model checkpoint: source_endpoint_identify passed standard3
+axioms, identifying every homogeneous entry with the exact first-atom
+matrix and endpoint corrections. Quadratic-form assembly now also
+passes: centralEnergy_middle and centralEnergy_far have standard3
+axioms. A rank-one coordinate-mask decomposition avoids full finite
+expansion and stays within default recursion/heartbeat limits. Actual
+source-bound audit is running. Native capstone proofs, reusing the
+complete pair/tail identities, are prepared but not yet checked.
+
+### C60: a common loaded coefficient on the complete adverse region
+
+C59 source bounds, full native assembly, and both nonzero-vector
+capstones have passed scratch audits with standard3 axioms. Production
+--old leaf build also passed; final direct audits remain in progress.
+
+Next conjecture, grounded in the actual C59 reserve and existing full
+compensation-source bounds: every fixed 0<=C4<=10^13 preserves strict
+coupled positivity on q>=5. The mathematical target is a nontrivial
+COMMON admissible coefficient interval on the entire adverse region,
+not a new asymptotic result or numerical fit. In central coordinates
+its last diagonal debit is C4*G/(8*43008^2*q^7*f1^2). Prove that this
+is at least -1/112, leaving half of C59's 1/56 reserve. On 5<=q<=8,
+use the complete-source quadratic lower bound and prove the polynomial
+8*43008^2*q^7/112+10^13*(101/100)^2*(1+9q/5-2q^2/5)>0.
+For q>=8 use the existing scale-seven normalized compensation bound.
+
+The remaining global candidate is C4=10^13 on pi<=q<=5. No small-scale
+sign or adequacy of this coefficient at the actual seam is assumed.
+C57's source-defined coefficient also remains open. Corpus deep search
+for odd-four seam/coupled inertia was partial, generation1190203,
+pending refresh; its relevant hits provide actual energy, cofinal
+positivity and seam-jet interfaces, not a global coefficient producer.
+Lexical search with Hawking excluded likewise found no applicable
+small-scale coupled-four theorem among the returned hits.
+
+C59 COMPLETE production checkpoint: targeted --old build and BOTH
+final direct `lake env lean` leaf audits exit0 without new diagnostics.
+The production statement/axiom probe confirms source_central_coercive,
+native_coupled_coercive, coupledOddFourEnergy_zero_pos_of_scale_five,
+and coupledOddFourEnergy_zero_pos_of_compensation_neg depend only on
+propext, Classical.choice, Quot.sound. The source first-atom reserve
+is 1/7; the actual native reserve after both complete payments is1/56.
+Thus no unloaded negative-G sign obligation remains. New RayModel is
+wired into the umbrella, existing Neutral import retained. Frontier
+map updated; index refresh and lint checkpoint follow. C60 source
+budget and fixed-coefficient ray proof are under scratch audit.
+Global positive coefficient, small-scale sign, integrated closure,
+all-rank repair and RH remain OPEN.
+
+C59 closure hygiene: index refresh completed. Lint reports thirteen
+unrelated unwired modules; no C59 error, no prohibited declaration.
+All seven owned TTC59 prototypes and matching compiled caches removed;
+production leaves are canonical. Audit logs and the minimal production
+axiom probe remain. C60's exact middle-budget and far-budget signs
+passed on the first audit; assembly needed let-unfolding and negative
+inequality proof repairs, not a change to the mathematical conjecture.
+
+### C61: fixed coefficient on the small-scale source (open)
+
+Conjecture: the actual coupled form at C4=10^13 is positive definite
+for x>=0 with q(x)<=5. Together with C60 this would prove C56. First
+attack the actual seam and its derivative-fourteen entry: current
+source interfaces identify all orders, and explicit exact scalar
+polynomials reach order12. Derive order14 by applying the existing
+mass-normalized modular Lie derivative twice to the proved order12
+polynomial. At S=W=0 only its transverse two-jet contributes:
+if A is the seam modular gap, s=3-3A/4 and w=2+A/2, then
+
+  L^2 Q = s^2 Q_SS + sw(Q_SW+Q_WS) + w^2 Q_WW
+          -2Aw Q_A - (s/6)Q
+
+at the seam. This is an exact structural derivative identity, not an
+asymptotic approximation. It permits the missing source14 entry without
+expanding the entire general-state fourteenth polynomial. Next use the
+literal source coefficient C3 and the seven existing seam moments to
+prove or refute the C61 seam sign, retaining its actual pi-dependent
+moving direction. No sign at the seam or on the compact region is
+claimed yet. Search tt_c61_fourteenth_source_search.json is partial,
+snapshot generation1190258 (current1190266), background refresh pending;
+it returns exact SourceJet12 and all-order/seam interfaces, but no
+fourteenth seam producer among the hits. Exhaustive source-text search
+also found no SourceJet13/14 or ReflectedScalar14 declaration.
+
+C60 COMPLETE: ThetaCuspCoupledOddLoaded.lean passed production --old
+leaf build, final direct `lake env lean` audit, and exact public-type/
+axiom probe. All three public theorems use only standard3 axioms.
+Every fixed 0<=C4<=10^13 retains reserve1/112 on q>=5 and is strictly
+positive for every nonzero native vector throughout the whole negative-G
+region. No analytic sign premise has been inserted. Umbrella wired;
+index updated; lint retains unrelated umbrella omissions only. Owned
+C60 scratch sources removed; production canonical. Frontier map updated.
+C61 seam transverse two-jet proof is now under direct scratch audit.
+The small-scale sign, global C56/C57/C61, integrated closure, all-rank
+repair and RH remain OPEN.
+
+C61 exact fourteen-jet checkpoint: scratch source_fourteen now passes
+with only propext, Classical.choice, Quot.sound. It identifies the
+literal derivative14 of the complete source at zero with the factored
+modular polynomial. The generic transverse two-jet identity and all six
+polynomial evaluations passed without raised limits. One redundant
+`dsimp` was removed; an output-cache root mismatch was corrected using
+the documented Lean --root option. No mathematical sign failure yet.
+The actual seam determinant still needs its sign proof. At the seam
+C3's correction is positive rank one, so test C3=10^9 first, then use
+its proved lower bound. Native third cofactor is negative there; the
+rank-one determinant formula is concave in the moving direction, so
+its two pi-enclosure endpoints suffice after exact identity proof.
+Only the order14 source identity is currently established, not this
+proposed determinant sign or compact propagation.
+
+C61 canonical coefficient refinement (paper identity, not yet Lean-audited):
+write normalized seam native head minors H2>0 and D3<0, native D4,
+and cofactors A=cof22, B=cof23. The literal canonical coefficient gives
+C3*G0=-3*D3/H2 exactly, since G0=3*Phi0^2. Thus the normalized coupled
+determinant at direction t=168*pi-56 obeys
+
+  H2*Dcoupled = H2*D4 - 3*D3*(A+2*t*B+t^2*D3)
+               -2*C4*G0*D3*H2.
+
+Here G0 is normalized by the common squared theta mass. This retains
+the exact source-selected C3 if the stronger C3=10^9 endpoint test is
+too conservative; it requires no improved numerical C3 enclosure.
+Jacobi's identity also gives H2*D4=D3*A-B^2. Any failure of the
+lower-C3 auxiliary test must not be called a failure of C61 before
+checking this exact canonical identity and sign.
+
+C61 order14 subproblem COMPLETE in production: ThetaCuspOddSeamFourteen
+passed targeted --old build, final direct leaf audit, and four public
+axiom checks (standard3 only). Its literal source_fourteen and
+native_fourteen have no source-sign or approximation premise. Umbrella
+wired; index refreshed. Superseded seam-jet/source/nonhomogeneous-model
+scratch files and source-jet cache removed. The production identity is
+canonical. C61 compact sign remains OPEN. Separate cofactor and Jacobi
+identities also pass scratch kernel audit, standard axioms only. The
+homogeneous endpoint sign still needs its normalization decomposition;
+failed combined proofs were default-limit/elaboration failures, never
+negative determinant witnesses. No proof limit was raised.
+
+C61 compact drift target (paper identity, awaiting Lean): for native
+moments m0..m6 at a center, let H2, D3, D4 be their leading minors,
+A=cof22, B=cof23, t=168q-56, s=C3*G,
+r=C3*x*Phi^2*(336q), L=C4*G. The actual lower-block correction is
+[[s,s*t+r],[s*t+r,s*t^2+2*t*r+L]]. Its exact determinant should be
+
+  D4+s*(A+2*t*B+t^2*D3)+2*r*(B+t*D3)
+    +L*(D3+s*H2)-r^2*H2.
+
+This exposes the precise compact obligation, including the adverse
+quadratic drift term. Existing global odd-three positivity supplies
+D3+s*H2>0; it does not supply this four-row sign. Search
+/tmp/tt_c61_compact_source_search.json completed (partial=false;
+source snapshot generation1190854/current1190858; many compiler
+records pending/stale). Candidate lemmas recover the compact odd-three
+polynomial proof and our q>=5 coupled source theorem, not the missing
+compact coupled-four producer. No new sign claim. Strict four-variable
+square completion passed scratch audit with standard3 axioms. Current
+endpoint normalization uses direct rewrites after recursive simp
+exceeded default limits; no heartbeat limit raised.
+
+C61 lower-C3 surrogate failed: after correcting Fin numeral projections,
+both homogeneous endpoint polynomials for C3=10^9,C4=10^13 have strictly
+negative coefficients. Exact negative endpoint audit is running. This
+refutes the proposed whole-box positive surrogate, not the actual
+canonical source and not RH. The canonical coefficient must be retained.
+Its cleared determinant model is now prepared without bounding C3.
+
+Positive survivor from the source correlation and Jacobi (paper proof):
+with actual seam H2>0,D3<0,D4, cofactor B, G=3*Phi0^2 and canonical C3,
+
+  H2*Dcanonical(t,C4) =
+    -2*H2*(D4+C4*G*D3) - 3*(D3*t+B)^2.
+
+Proof: substitute C3*G*H2=-3*D3 into the exact coupled cofactor formula,
+then substitute H2*D4=D3*A-B^2 and complete the square. This is an exact
+source-selected direction penalty: optimal seam direction is t=-B/D3;
+for any other t the loss is precisely 3*(D3*t+B)^2/H2. It supplies a
+sharp replacement criterion, not a reason to discard the coupled route.
+Source-specific Lean binding remains to be formalized. Canonical
+C4=10^13 sign test takes precedence; no global failure inferred from
+failure of the lower-C3 surrogate.
+
+C61 literal obstruction CLOSED IN SCRATCH: actual_seam_determinant_neg
+passed with standard3 axioms (/tmp/tt_c61_actual_seam_negative_closed.audit.log).
+It uses the complete theta source, actual pi, exact canonical C3, and
+C4=10^13 at direction168*pi-56. The optimized-direction homogeneous
+reserve also passed, standard3 (/tmp/tt_c61_optimal_seam_sign.audit.log).
+Thus C61's original direction is wrong at the seam, while the same load
+admits a positive optimal-direction determinant. Literal optimized
+bridge and full PosDef conclusion are prepared for production audit;
+no global-direction positivity is claimed. Four production leaves
+Direction/Model/Signs/Obstruction are now prepared and wired, but their
+production builds/final audits/index/lint remain pending.
+
+C62 NEXT HARD CONJECTURE: a smooth direction eta(x), equal to the
+original168*q(x)-56 on q>=5 and equal to -B(0)/D3(0) at zero, makes the
+literal coupled source strictly positive with the SAME C4=10^13.
+The actual correction for u=c2+eta*c3 is
+C3*(G*u^2+2*x*Phi^2*u*eta'*c3)+C4*G*c3^2.
+This is grounded in the audited original flux form and source-specific
+optimal-direction identity, not a new assumed source inequality.
+
+C62 paper mechanism (NOT YET LEAN): at each center let H2>0,D3,D4,A,B
+be the actual native head/cofactors, s=C3*G, rho=C3*x*Phi^2*eta', and
+R=H2*rho-D3*eta-B. Exact Schur algebra gives
+
+  H2*Dcoupled = (D3+s*H2)*(A+C4*G*H2+D3*eta^2+2*B*eta)-R^2.
+
+Choosing C3*x*Phi^2*H2*eta'=D3*eta+B cancels R. The canonical source
+coefficient makes this a regular-singular equation x*eta'+p(x)*eta=f(x)
+with p(0)=1 and f(0)=-B(0)/D3(0), so its regular initial direction is
+forced to be the proved optimal direction. Hard remaining obligations:
+construct the actual regular solution/control through the compact
+region; prove the scalar Schur gap A+C4*G*H2+D3*eta^2+2*B*eta positive;
+join the already proved q>=5 direction while retaining a controlled
+residual and the exact flux identity. None is assumed or claimed.
+Searches tt_c62_schur_direction_transport_search.json (partial snapshot
+1191448/current1191449) and tt_c62_direction_source_search.json
+(partial=false snapshot1191474) recover the literal coupled energy,
+canonical drift bounds and related modular drift equations, not this
+source-direction producer. Candidate/source-argument hits inspected;
+no training-data or external numerical conjecture used.

@@ -238,3 +238,49 @@ u^{−2}-weighted window averages of ψ and monotonicity of ψ:
       - On σ ≤ 3/4 it needs Ingham's σ-dependent 3/(2−σ). The current 8/3 fails there.
       - The slab inequality uses A only on its own slab, so `sum_zeroShortWeight_box_le` generalizes
         directly to a σ-dependent exponent.
+- 2026-10-03 — **Intermediate step towards M1 closed in Lean (MUST-682): uniform density `33/13`, windows `α > 20/33`,
+  consumer `κ < 26/33`.**
+  - `ZetaZeroDensityEdgeRanges`: the class count with window `[T^{33/52}, T^{33/26}]` (ratio 2, still above the
+    block support `2T^{249/200}`) gives `33/13` on `σ ≤ 7/10` (mean value) and `σ ≥ 26/33` (Huxley).
+  - `ZetaZeroDensityThirtyThreeThirteenths`: the Route-T Gabriel count covers `[7/10, 26/33]`; a fibre bound
+    transfers the residue-unit count to the Xi box.
+  - `PrimeShortIntervalsTwentyThirtyThirds`: `tendsto_tsum_zeroShortWeight_of_density` takes any `A < 4`; the
+    ψ/θ window steps are stated from the vanishing hypothesis; prime in `(x, x+x^α]`.
+  - `PrimeDeletionTwentySixThirtyThirds`: `α = 53/66 − κ/4`.
+  - Ceiling of the present tools: window ratio 2 caps the class count at `2/σ` on the Huxley side, and even an exact
+    Ingham `3/(2−σ)` meets it only at `σ = 4/5`, `A = 5/2`, `α = 3/5`. M1 (`7/12`) needs a Type II detector whose
+    critical-line integral is bounded by ζ moments on `σ ∈ [3/4, 4/5]`.
+- 2026-10-03 — **M1 paper plan (Huxley `A = 12/5 + ε` for every `σ`, no reflection needed).**
+  - Detector (Montgomery): `X = T^{ε₁}` (`ε₁ = 1/100`), `M_X = Σ_{n≤X} μ(n)n^{-s}`, `a = 1 ⋆ μ_{≤X}` (`a(1) = 1`,
+    `a(n) = 0` on `(1, X]`, `|a| ≤ d`). For a zero `ρ`, `β ≥ 7/12`, `γ ∈ [T, 2T]`, the Cahen–Mellin identity
+    (`mellinInv_gamma_mul_LSeries_eq_tsum_exp`) shifted to `Re w = ½ − β` gives
+    `e^{-1/Y} + Σ_{n>X} a(n)n^{-ρ}e^{-n/Y} = M_X(1)Γ(1−ρ)Y^{1−ρ} + (1/2π)∫ Y^wΓ(w)ζ(ρ+w)M_X(ρ+w)`
+    (the `w = 0` residue is `ζ(ρ)M_X(ρ) = 0`).
+  - Type I: some dyadic block of `Σ_{X<n≤Y log²T} a(n)e^{-n/Y}n^{-ρ}` is `≥ 1/(8J)`; Taylor-abscissa transfer and
+    separated classes as in the `8/3` chain. Type II: `∫_{|u−γ|≤log²T}|ζ(½+iu)| ≥ c Y^{σ−½}X^{-1/2}`; Hölder and
+    the critical fourth moment give `R₂ ≪ T Y^{2−4σ} X² log^{12}T`.
+  - One parameter set for all `σ`: `Y = T^{3/5}`, power window `[T^{4/5}, T^{6/5} log⁴T]` (ratio `3/2`: every block
+    `K ≤ L^{3/4}` has a power in `[L, L^{3/2}]`, and `K ∈ (L^{3/4}, Y log²T]` squares into the log-widened window).
+    Diagonal `(T^{6/5})^{2−2σ} = T^{(12/5)(1−σ)}`; MVT `T^{(9−8σ)/5}` (σ ≤ 3/4 + cε); Huxley `T^{(21−24σ)/5}`
+    (σ ≥ 3/4 + cε, threshold `X^{3/2−2σ} ≤ T^{-cε}`); Type II `T^{(11−12σ)/5 + 2ε₁}`, slack `1/5`.
+    `σ < 7/12`: trivial `N(2T) ≪ T log T`.
+  - Bricks: N1 detector identity (contour shift, Γ decay, ζ growth); N2 dichotomy; N3 Type II count; N4 Type I
+    classes; N5 powered-class MVT/Huxley counts with the new coefficients; N6 box count; N7 transfer (`u < 5/12`).
+- 2026-10-03 — M1 bricks N1–N3 in Lean (standard axioms, not yet wired):
+  - `ZetaZeroExponentialDetectorRectangle` / `ZetaZeroExponentialDetector`: `tsum_moebiusZetaDefect_exp_eq`
+    (Cahen–Mellin on `Re w = 2`, residues `1` and `−Y^{1−ρ}Γ(1−ρ)M_X(1)`, shift to `Re w = c ∈ [−½, 0)`).
+  - `ZetaZeroExponentialDetectorBounds` / `…Dichotomy`: `exists_expDetector_dichotomy` with `X = ⌊T^{1/100}⌋`,
+    `Y = T^{3/5}`, `Z = ⌊T^{3/5}log²T⌋`: Type I `|Σ_{n≤Z}| ≥ 1/8` or Type II
+    `∫_{|y|≤K₀log T}|ζ(½+i(γ+y))| ≥ c₀Y^{β−½}/X`.
+  - `ZetaZeroExponentialDetectorTypeTwo`: `card_mul_pow_four_le_typeTwo` (`#W V⁴ ≤ (2L)³(2L+1)∫_{−3T}^{3T}|ζ|⁴`),
+    fourth moment `≪ T(1+log T)⁴`.
+  - Next: N4 classes (blocks of `Σ_{n≤Z} D(n)e^{−n/Y}n^{−s}`, Taylor transfer), N5 generic powered-block MVT/Huxley,
+    N6 class count `T^{(12/5+ε)(1−σ)}` (window `[T^{4/5}, T^{6/5}log⁴T]`, `ℓ ≤ 200`), N7 box count + transfer.
+- 2026-10-03 — **M1 CLOSED in Lean (MUST-686): Huxley 7/12 and κ < 5/6.**
+  - `ZetaZeroGenericBlockCounts` (MVT/Huxley for any divisor-bounded dyadic block), `ZetaZeroExponentialDetectorClasses`
+    (blocks, Taylor transfer, separated selection with a Type II class), `ZetaZeroExponentialDetectorClassCount`
+    (`exists_expDet_class_card_le`, window `[T^{4/5}, T^{6/5}log⁴T]`, `X = T^{1/30}` keeps `ℓ ≤ 34`),
+    `ZetaZeroDensityTwelveFifths` (`exists_zeroHeightBox_ncard_le_twelve_fifths`), `PrimeShortIntervalsSevenTwelfths`
+    (`eventually_exists_prime_short_interval_seven_twelfths`, `exists_theta_window_lower_seven_twelfths`,
+    `exists_prime_deletion_half_dimension_uncertainty_five_sixths`).
+  - Next on this card: the BHP `0.525` window needs the Kuznetsov/DI/Watt track (K-steps) and the sieve assembly.

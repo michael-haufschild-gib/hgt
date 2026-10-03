@@ -162,7 +162,7 @@ theorem gammaRCubeVoronoi_cubeKernel {y : ℝ} (hy : 0 < y) :
   rw [gammaRCubeVoronoi, mellin_voronoiL2]
   apply Lp.ext
   have hneg := (Measure.measurePreserving_neg (volume : Measure ℝ)).quasiMeasurePreserving
-  have h1 := unimodularMulAux_ae gammaRCubeSymbol continuous_gammaRCubeSymbol norm_gammaRCubeSymbol
+  have h1 := continuousUnimodularMulAux_ae gammaRCubeSymbol continuous_gammaRCubeSymbol norm_gammaRCubeSymbol
     (l2Reflection (halfLineMellinUnitary (cubeKernelL2 hy)))
   have h2 := l2Reflection_ae' (halfLineMellinUnitary (cubeKernelL2 hy))
   have h3 := (mellin_cubeKernelL2 hy).comp_tendsto hneg.tendsto_ae

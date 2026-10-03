@@ -345,6 +345,13 @@ is retained. Three new final leaf audits and all eight public axiom queries
 pass, with only the standard three axioms; all leaves are wired. See
 P3:tg-unsquared-relative-source-assembly.
 
-Next: P1:tg-principal-source-trace-current. Its exact complete-response trace
-and commutator decomposition are proved on paper and await Lean. The actual
+Completed: P3:tg-principal-source-trace-current. Its exact complete-response trace,
+commutator decomposition and linear-prime harmonic obstruction are Lean-audited. The actual
 principal-prime/Gamma class, Hardy cubic and strict sub-unit law remain open.
+
+
+C9.11o: the original linear-prime harmonic law and raw Schatten-one obstruction
+are now audited in `SoninLinearPrimeTraceObstruction`. Exact positive survivor:
+`p Re Tr S_p → 2(Phi_a(1)+1)>0`. Next hard construction is
+P1:tg-principal-polar-operator-cancellation, using the literal polar density
+before cofinal operator passage. RH remains unproved.

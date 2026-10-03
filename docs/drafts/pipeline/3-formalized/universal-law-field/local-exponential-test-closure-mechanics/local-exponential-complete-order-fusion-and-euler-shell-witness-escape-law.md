@@ -1,0 +1,611 @@
+# Local-exponential complete-order fusion and Euler-shell witness-escape law
+
+- **ID:** ULF-LETCM-2
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Statement:** A finite local exponential window makes polynomial/Hankel and rational-phase
+  tests independently reconstruct every bounded Hermitian source density and its matrix order;
+  on the Euler-shell log source every negative atom is detected at finite depth, but the required
+  depth has no uniform bound and the complete positive chart stops at the normalization wall.
+- **Status:** `[PROVED HERE] [DEPENDENCY-CLOSED] [UNCONDITIONAL] [MATRIX-VALUED]`
+  `[THREE-ORGAN FUSION] [FOURTH-ORGAN WITNESS-ESCAPE] [LITERAL ARITHMETIC SOURCE]`
+  `[CLASSICAL PARENTS] [NOVELTY UNVERIFIED] [LEAN-PROVED] [NOT RH]`
+
+## 1. The mechanism
+
+This theorem is not another route receiver.  It proves that one source-generated clock calculus
+can be simultaneously complete for values, matrix order, phase history, and moment/Hankel
+response on an infinite arithmetic source.
+
+The load-bearing condition is local rather than entire exponential execution:
+
+\[
+  \exists a>0:\qquad \int_{\mathbb R}e^{a|x|}\,d\mu(x)<\infty.
+  \tag{LEF.1}
+\]
+
+For sources supported in a half-line `[b,infinity)`, it is enough to assume
+
+\[
+  \int e^{ax}\,d\mu(x)<\infty
+  \tag{LEF.2}
+\]
+
+for one `a>0`.  The difference matters for the Euler-shell source, whose positive exponential
+chart has finite width and can never have entire bilateral moments.
+
+## 2. Local-Laplace polynomial closure
+
+### Theorem 2.1 — scalar polynomial density
+
+Let `mu` be a finite positive Borel measure on `R` satisfying `(LEF.1)`.  Then real polynomials are
+dense in `L^2(mu;R)` and complex polynomials are dense in `L^2(mu;C)`.
+
+The same conclusion holds under `(LEF.2)` when `supp(mu) subset [b,infinity)`.
+
+### Proof
+
+It is enough to prove that the orthogonal complement of the polynomials is zero.  Let
+`f in L^2(mu;C)` be orthogonal to every monomial.  Under `(LEF.1)`, Cauchy--Schwarz gives
+
+\[
+ \int e^{a|x|/2}|f(x)|\,d\mu(x)
+ \le \|f\|_2\left(\int e^{a|x|}\,d\mu(x)\right)^{1/2}<\infty.
+ \tag{LEF.3}
+\]
+
+Hence
+
+\[
+ F(z)=\int e^{zx}f(x)\,d\mu(x)
+ \tag{LEF.4}
+\]
+
+is holomorphic on the strip `|Re z|<a/2`.  Differentiation under the integral is legitimate on
+every smaller closed strip, and
+
+\[
+ F^{(n)}(0)=\int x^nf(x)\,d\mu(x)=0
+ \tag{LEF.5}
+\]
+
+for every `n`.  Thus the Taylor germ of `F` at zero vanishes.  The identity theorem makes `F`
+zero on the connected strip.  In particular, the Fourier transform of the finite complex measure
+`f mu` vanishes on the whole imaginary axis.  Fourier uniqueness gives `f mu=0`, hence `f=0`
+almost everywhere.
+
+If `mu` is supported in `[b,infinity)` and satisfies `(LEF.2)`, translate the support to
+`[0,infinity)`.  The same estimate makes `(LEF.4)` holomorphic on the half-plane `Re z<a/2`, which
+again contains zero and the whole imaginary axis.  The proof is unchanged.  Taking real and
+imaginary parts gives the real statement.  QED.
+
+### Hostile scope
+
+Absolute continuity with respect to Lebesgue measure is not used.  The result applies to pure
+point measures.  A local exponential moment is sufficient, not necessary; the theorem makes no
+classification outside this chamber.
+
+## 3. Matrix-valued complete order reflection
+
+Fix `d>=1`.  Let
+
+\[
+ J:\mathbb R\longrightarrow\operatorname{Herm}_d(\mathbb C)
+ \tag{LEF.6}
+\]
+
+be weakly measurable and essentially bounded in operator norm.  Define
+
+\[
+ M_n(J)=\int x^nJ(x)\,d\mu(x)
+ \tag{LEF.7}
+\]
+
+and the order-`N` block Hankel section
+
+\[
+ \mathcal H_N(J)=[M_{i+j}(J)]_{0\le i,j<N}.
+ \tag{LEF.8}
+\]
+
+For a vector polynomial `p(x)=sum_(j=0)^(N-1)x^jv_j`, direct expansion gives
+
+\[
+ v^*\mathcal H_N(J)v
+ =\int p(x)^*J(x)p(x)\,d\mu(x).
+ \tag{LEF.9}
+\]
+
+### Theorem 3.1 — complete block-Hankel sign cone
+
+Under Theorem 2.1's hypotheses, the following are equivalent:
+
+\[
+ \boxed{
+ J(x)\succeq0\quad\mu\text{-a.e.}
+ \quad\Longleftrightarrow\quad
+ \mathcal H_N(J)\succeq0\quad\text{for every }N.}
+ \tag{LEF.10}
+\]
+
+### Proof
+
+The forward implication follows from `(LEF.9)`.
+
+Conversely, positivity of every block Hankel section makes the multiplier quadratic form
+
+\[
+ \mathfrak q_J(f)=\int f(x)^*J(x)f(x)\,d\mu(x)
+ \tag{LEF.11}
+\]
+
+nonnegative on every vector polynomial.  Scalar polynomial density in each coordinate makes
+vector polynomials dense in `L^2(mu;C^d)`.  Essential boundedness of `J` makes `(LEF.11)`
+continuous, so it is nonnegative on all of `L^2(mu;C^d)`.
+
+Let `D` be a countable dense subset of `C^d`.  For `u in D` and every measurable `E`, test
+`f=1_Eu`.  Then
+
+\[
+ \int_Eu^*J(x)u\,d\mu(x)\ge0.
+ \tag{LEF.12}
+\]
+
+The standard set-integral sign criterion gives `u^*J(x)u>=0` almost everywhere.  Intersect the
+resulting full-measure sets over countable `D`.  At every point in the intersection, continuity
+of the quadratic form in `u` extends the inequality from `D` to all `C^d`.  Therefore `J(x)` is
+positive semidefinite almost everywhere.  QED.
+
+### Corollary 3.2 — finite negative witness
+
+If `J` fails to be positive semidefinite on a set of positive measure, then some finite block
+Hankel section has a strict negative vector:
+
+\[
+ \boxed{
+ J\not\succeq0\text{ a.e.}
+ \Longrightarrow
+ \exists N,v:\ v^*\mathcal H_N(J)v<0.}
+ \tag{LEF.13}
+\]
+
+This is the contrapositive of `(LEF.10)`, with strict negativity because a Hermitian matrix is not
+positive semidefinite exactly when one quadratic value is negative.
+
+## 4. Rational-phase closure
+
+Let `P_Q` be the vector space of finite vector-valued phase packets
+
+\[
+ p(x)=\sum_{k=1}^re^{-iq_kx}v_k,
+ \qquad q_k\in\mathbb Q,
+ \quad v_k\in\mathbb C^d.
+ \tag{LEF.14}
+\]
+
+### Lemma 4.1 — rational phases are dense
+
+For every finite positive Borel measure `mu`, `P_Q` is dense in `L^2(mu;C^d)`.
+
+### Proof
+
+If a scalar `f in L^2(mu)` is orthogonal to all rational phases, the Fourier transform of the
+finite measure `f mu` vanishes on `Q`.  It is continuous, hence vanishes on `R`; Fourier uniqueness
+gives `f=0`.  Apply this coordinatewise.  QED.
+
+### Theorem 4.2 — phase/Hankel/source fusion
+
+Under Theorem 2.1's hypotheses, the following are equivalent:
+
+\[
+ \boxed{
+ \begin{aligned}
+ &J(x)\succeq0\quad\mu\text{-a.e.};\\
+ &\mathcal H_N(J)\succeq0\quad\text{for every }N;\\
+ &\int p(x)^*J(x)p(x)\,d\mu(x)\ge0
+   \quad\text{for every }p\in\mathcal P_{\mathbb Q}.
+ \end{aligned}}
+ \tag{LEF.15}
+\]
+
+The phase implication follows by the same bounded-multiplier extension used in Theorem 3.1 and
+Lemma 4.1.  Thus polynomial/Hankel and phase/Fourier tests independently close to the same matrix
+order.
+
+## 5. Exact compensation-gauge conservation
+
+Let `W,H` be essentially bounded Hermitian matrix fields, with `W(x)>=0` almost everywhere, and
+put
+
+\[
+ J_c(x)=cW(x)-H(x).
+ \tag{LEF.16}
+\]
+
+Define the source, Hankel, and phase feasible sets
+
+\[
+\begin{aligned}
+ \mathcal C_{\rm src}&=\{c\ge0:J_c\succeq0\text{ a.e.}\},\\
+ \mathcal C_{\rm H}&=\{c\ge0:\mathcal H_N(J_c)\succeq0\ \forall N\},\\
+ \mathcal C_{\rm F}&=\{c\ge0:Q_{J_c}(p)\ge0\ \forall p\in\mathcal P_{\mathbb Q}\}.
+\end{aligned}
+ \tag{LEF.17}
+\]
+
+### Theorem 5.1 — conservation
+
+\[
+ \boxed{
+ \mathcal C_{\rm src}=\mathcal C_{\rm H}=\mathcal C_{\rm F}.}
+ \tag{LEF.18}
+\]
+
+Consequently their extended sharp gauges agree:
+
+\[
+ \boxed{
+ \kappa_{\rm src}=\kappa_{\rm H}=\kappa_{\rm F}\in[0,\infty].}
+ \tag{LEF.19}
+\]
+
+### Proof
+
+Apply Theorem 4.2 separately to `J_c` for every `c>=0`.  The feasible sets themselves agree, so
+their infima agree, including the empty-set value `+infinity`.  QED.
+
+This is not a limiting equality inferred from approximate matrices.  It is exact conservation of
+the whole compensation law under two source-generated cofinal test closures.
+
+## 6. Literal Euler-shell arithmetic realization
+
+Fix the marked high-exponent shell coefficient `a_m(n)` and `sigma>1`.  Let
+
+\[
+ \mu_{m,\sigma}
+ =\frac1{S_m(\sigma)}\sum_{n\ge2}a_m(n)n^{-\sigma}\delta_{\log n}.
+ \tag{LEF.20}
+\]
+
+The measure is finite and supported in `[log 2,infinity)`.  For every `0<a<sigma-1`,
+
+\[
+ \int e^{ax}\,d\mu_{m,\sigma}(x)
+ =\frac{S_m(\sigma-a)}{S_m(\sigma)}<\infty.
+ \tag{LEF.21}
+\]
+
+Theorem 4.2 therefore gives the following unconditional source theorem.
+
+### Theorem 6.1 — Euler-shell complete test closure
+
+For every bounded Hermitian packet `J_n` on the active shell,
+
+\[
+ \boxed{
+ \begin{aligned}
+ &J_n\succeq0\quad\text{for every }n\text{ with }a_m(n)=1;\\
+ &\left[\sum_na_m(n)n^{-\sigma}(\log n)^{i+j}J_n\right]_{0\le i,j<N}
+   \succeq0\quad\text{for every }N;\\
+ &\sum_na_m(n)n^{-\sigma}p(\log n)^*J_np(\log n)\ge0
+   \quad\text{for every finite rational phase packet }p
+ \end{aligned}}
+ \tag{LEF.22}
+\]
+
+are equivalent.  Normalization by the positive scalar `S_m(sigma)` does not affect positivity.
+
+The clock powers `(log n)^k` are derivatives of the source Mellin flow; the phases `n^{-it}` are
+its imaginary-time characters.  Thus both test calculi are generated by the same pre-zero source,
+not imported from target routes.
+
+## 7. Fourth-organ theorem: finite detection with escaping depth
+
+The complete tower detects every negative active atom, but no test depth depending only on the
+source can do so.
+
+### Theorem 7.1 — no uniform finite depth
+
+For every `N>=1`, there is a bounded scalar packet `J^(N)` on the Euler shell such that
+
+1. `J^(N)` is negative at one active atom;
+2. every block Hankel section of order at most `N` is positive definite.
+
+### Proof
+
+Let `H_N(1)` be the order-`N` scalar Hankel matrix of the positive source.  It is positive
+definite because the active shell has at least `N` distinct clock values: a nonzero polynomial of
+degree less than `N` cannot vanish on all of them.  Let `lambda_N>0` be its smallest eigenvalue.
+
+Choose active atoms `x_r=log n_r -> infinity`.  Their masses satisfy
+
+\[
+ w_r\sum_{j=0}^{N-1}x_r^{2j}\longrightarrow0,
+ \tag{LEF.23}
+\]
+
+because `w_r` is a constant multiple of `n_r^{-sigma}` and every power of `log n_r` is
+`o(n_r^epsilon)`.  Fix `M>1` and choose `r` so large that
+
+\[
+ M w_r\sum_{j=0}^{N-1}x_r^{2j}<\lambda_N.
+ \tag{LEF.24}
+\]
+
+Set `J^(N)=1-M` at `x_r` and `J^(N)=1` elsewhere.  It is negative at `x_r`.  Its order-`N`
+Hankel matrix is
+
+\[
+ H_N(J^{(N)})=H_N(1)-Mw_rv_rv_r^*,
+ \qquad v_r=(1,x_r,\ldots,x_r^{N-1})^T.
+ \tag{LEF.25}
+\]
+
+The perturbation norm is `Mw_r||v_r||^2<lambda_N`, so `(LEF.25)` remains positive definite.  Every
+smaller section is a principal submatrix and is positive definite.  QED.
+
+### Consequence
+
+The negative witness promised by `(LEF.13)` must appear later than `N`.  Therefore complete order
+reflection is genuinely cofinal: the detecting degree may migrate to infinity even though every
+negative atom is eventually detected.
+
+This is a theorem in the cofinal spectral/admission organ derived from source, phase, and Hankel
+fusion.  It was not assumed in the construction of those tests.
+
+## 8. Normalization-wall law
+
+The source has positive exponential execution only while `sigma+t>1`.  Its exact negative-time
+lifetime is `sigma-1`.  The physical half-density matching condition in the high-exponent shell is
+`sigma=1/m<=1`, outside the normalized positive chart.
+
+Hence:
+
+\[
+ \boxed{
+ \text{complete phase/Hankel order on every safe fibre}
+ \not\Longrightarrow
+ \text{positive continuation across the normalization wall}.}
+ \tag{LEF.26}
+\]
+
+This is the sharp failure of the stronger conjecture.  Local test completeness is real arithmetic
+leverage, but it does not manufacture a positive critical fibre.
+
+## 9. RH selection consequence
+
+Only after Theorems 4.2--7.1 is the next selection statement well typed:
+
+> Construct a source-canonical continuation of the Euler-shell matrix intervention through the
+> normalization wall which preserves the complete feasible set `(LEF.18)`, and prove that every
+> strict-right divisor would create one negative active matrix atom.
+
+If such a continuation exists, `(LEF.13)` forces a finite negative Hankel/phase witness, while
+complete positivity of the continued source forbids it.  Reflection would then give RH.
+
+The continuation theorem is not proved here.  Ordinary meromorphic continuation of `S_m` is not
+enough: it must preserve the matrix order represented by the full test closure.  This separates a
+genuine selector from analytic relabeling.
+
+## 10. Hostile conjecture loops
+
+### Loop A — entire moments are load-bearing
+
+**Falsified.**  A single local exponential window proves density and complete order reflection.
+The positive survivor is Theorems 2.1--5.1.
+
+### Loop B — scalar tests imply matrix order without amplification
+
+**Falsified in general.**  Positive maps on noncommutative sources need not be completely positive.
+The theorem retains vector-polynomial and vector-phase packets at every fixed matrix channel.
+
+### Loop C — finite test depth is enough on the Euler source
+
+**Falsified by Theorem 7.1.**  Negative atoms can be placed far enough into the exponentially
+small tail to evade any prescribed finite Hankel depth.  Eventual finite detection is the sharp
+survivor.
+
+### Loop D — complete order reflection implies straight admission
+
+**Falsified.**  The centered Euler score is unbounded below, so its straight positive radius is
+zero, while its nonlinear exponential flow exists throughout a nontrivial real interval.  Test
+closure and execution domain are independent field coordinates.
+
+### Loop E — safe-fibre completeness crosses the critical fibre
+
+**Falsified by `(LEF.26)`.**  The normalization wall occurs before half-density.  The survivor is
+the exact type of required continuation: it must preserve complete order, not only coefficients.
+
+### Loop F — phase and Hankel closure are merely two formulas
+
+**Falsified.**  They require different completeness mechanisms: Fourier uniqueness for rational
+phases and local-Laplace quasi-analyticity for polynomials.  Their exact feasible-set equality is a
+nontrivial fusion through the source matrix cone.
+
+## 11. Literature and priority boundary
+
+- Labouriau, *The Laplace transform and polynomial approximation in L2*,
+  <https://arxiv.org/abs/1603.03473>, proves a scalar exponential-tail density theorem.
+- Bolotnikov, *On degenerate Hamburger moment problem and extensions of positive semidefinite
+  Hankel block matrices*, <https://arxiv.org/abs/0812.4567>, is a parent for block-Hankel moment
+  geometry.
+- Berg--Szwarc, *Self-adjoint operators associated with Hankel moment matrices*,
+  <https://arxiv.org/abs/2105.07252>, and Yafaev,
+  <https://arxiv.org/abs/1601.08042>, occupy Hankel-form closure theory.
+- The corpus's `CompleteHankelSignCone.lean` proves the scalar entire-moment chamber;
+  `FourierKernelAdmission.lean` supplies the phase-kernel parent.
+
+Polynomial density, Fourier uniqueness, bounded multipliers, and matrix moment problems are
+classical parents.  No priority claim is made for those pieces.  The exact local-exponential
+matrix sign-cone + rational-phase + compensation-gauge + Euler-shell witness-escape synthesis was
+not located in the internal corpus or broad arXiv search.  Mark it `[NOVELTY UNVERIFIED]`, not a
+priority theorem.
+
+## 12. Formalization boundary
+
+Lean: every theorem of §§2–8 is formalized; see the Lean certificate below.  The dependency-closed future Lean
+target belongs only in
+
+`formal/GaloisForLFunctions/HTGeometry/LocalExponentialTestClosure.lean`
+
+after the Stage-2 audit.  Required formal components are:
+
+1. local-exponential polynomial density for arbitrary finite Borel measures;
+2. bounded Hermitian multiplier sign-cone equivalence;
+3. rational-phase density and fusion;
+4. feasible-set conservation;
+5. abstract finite-witness implication;
+6. Euler-shell specialization only after the universal core is certified.
+
+## 13. Promotion gate
+
+- [x] local exponential density proof closed;
+- [x] matrix-valued sign-cone proof closed;
+- [x] rational-phase fusion and exact gauge conservation closed;
+- [x] literal Euler-shell source specialization closed;
+- [x] fourth-organ finite-witness/no-uniform-depth theorem closed;
+- [x] normalization wall and RH boundary stated without circularity;
+- [x] hostile internal collision audit completed;
+- [x] broad arXiv parent search completed;
+- [ ] independent hostile reread;
+- [x] Lean formalization and Stage-3 promotion.
+
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.LocalExponentialTestClosure`, `GaloisForLFunctions.HTGeometry.LocalExponentialMatrixSignCone`, `GaloisForLFunctions.HTGeometry.LocalExponentialSignConeConverse`, `GaloisForLFunctions.HTGeometry.LocalExponentialPhaseFusion`, `GaloisForLFunctions.HTGeometry.LocalExponentialEulerShell`, `GaloisForLFunctions.HTGeometry.EulerShellHeatOrbit`, `GaloisForLFunctions.HTGeometry.EulerShellTiltInformation`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules: `GaloisForLFunctions.HTGeometry.LocalExponentialTestClosure`, `GaloisForLFunctions.HTGeometry.LocalExponentialMatrixSignCone`,
+`GaloisForLFunctions.HTGeometry.LocalExponentialSignConeConverse` (Theorems 2.1, 3.1 and Corollary 3.2), and the new
+`GaloisForLFunctions.HTGeometry.LocalExponentialPhaseFusion` and `GaloisForLFunctions.HTGeometry.LocalExponentialEulerShell`
+(half-line window, Lemma 4.1, Theorems 4.2, 5.1, 6.1, 7.1, §8). The Euler-shell specialization uses
+`GaloisForLFunctions.HTGeometry.EulerShellHeatOrbit` and `GaloisForLFunctions.HTGeometry.EulerShellTiltInformation`. Every module is clean under
+`lake env lean`, builds as a module, and the axiom audit shows only `[propext, Classical.choice, Quot.sound]`.
+Matrix densities are handled entrywise (no matrix-valued Bochner integral); a density is "bounded Hermitian" when its entries
+are a.e. strongly measurable and a.e. bounded and it is a.e. Hermitian. The Euler-shell source is the atomic measure
+`Σ_n (n^{-σ}/S_m(σ)) δ_{log n}`; Theorem 6.1 is stated with the unnormalized sums of (LEF.22), related to the normalized measure
+by the positive factor `S_m(σ)`. Theorem 7.1 is stated for the unnormalized scalar Hankel sections with packet values `±1`.
+
+| Claim | Lean declaration |
+|-|-|
+| (LEF.1)–(LEF.5) Theorem 2.1: local-exponential moment determinacy; orthogonal complement of polynomials trivial (real and complex); polynomial density | `measure_eq_of_forall_moment_eq`, `ae_eq_zero_of_forall_moment_eq_zero`, `ae_eq_zero_of_forall_complex_moment_eq_zero`, `polySubmodule_orthogonal`, `dense_polySubmodule` |
+| (LEF.2) half-line window: `∫ e^{ax} < ∞` on `[b,∞)` gives (LEF.1); Theorem 2.1 under (LEF.2) | `integrable_exp_abs_of_halfLine`, `dense_polySubmodule_of_halfLine` |
+| (LEF.6)–(LEF.9) matrix moments, block Hankel sections, `v* H_N v = ∫ p* J p dμ` | `matrixMoment`, `blockHankel`, `vectorPoly`, `matQuad`, `multiplierForm`, `matQuad_blockHankel_eq_multiplierForm` |
+| Theorem 3.1 (LEF.10)–(LEF.12) complete block-Hankel sign cone | `re_matQuad_blockHankel_nonneg`, `ae_posSemidef_of_forall_blockHankel_nonneg`, `ae_posSemidef_iff_forall_blockHankel_nonneg`, `integral_normSq_poly_mul_matQuad_nonneg`, `ae_nonneg_of_forall_sq_poly_integral_nonneg` |
+| Corollary 3.2 (LEF.13) finite negative witness | `exists_blockHankel_neg_of_not_ae_posSemidef` |
+| (LEF.14) Lemma 4.1 rational phases dense in `L²(μ;ℂ)` for every finite measure (Fourier uniqueness) | `phaseFn`, `phaseLp`, `phaseSubmodule`, `ae_eq_zero_of_forall_fourier_eq_zero`, `ae_eq_zero_of_forall_complex_fourier_eq_zero`, `continuous_fourierDensity`, `phaseSubmodule_orthogonal`, `dense_phaseSubmodule`, `exists_phase_of_mem_phaseSubmodule` |
+| Theorem 4.2 (LEF.15) phase/Hankel/source fusion | `phasePacket`, `phaseForm`, `integrable_matQuad_phasePacket`, `re_phaseForm_nonneg_of_ae_posSemidef`, `ae_nonneg_of_forall_weightedSq_nonneg`, `ae_nonneg_of_forall_sq_phase_integral_nonneg`, `ae_posSemidef_of_forall_directionDensity_nonneg`, `ae_posSemidef_of_forall_phaseForm_nonneg`, `phase_hankel_source_fusion` |
+| Theorem 5.1 (LEF.16)–(LEF.19) exact feasible-set and sharp-gauge conservation; up-set under `W ⪰ 0` | `compensated`, `feasibleSource`, `feasibleHankel`, `feasiblePhase`, `sharpGauge`, `feasible_conservation`, `feasibleSource_mono` |
+| (LEF.20)–(LEF.21) the Euler-shell source measure, its normalization and exponential moments | `eulerShellAtomWeight`, `eulerShellMeasure`, `hasSum_eulerShellAtomWeight`, `eulerShellMeasure_univ`, `isFiniteMeasure_eulerShellMeasure`, `ae_eulerShellMeasure_iff`, `integral_eulerShellMeasure`, `integral_exp_eulerShellMeasure`, `integrable_exp_abs_eulerShellMeasure` |
+| Theorem 6.1 (LEF.22) Euler-shell complete test closure | `shellExtend`, `eulerShellHankel`, `eulerShellPhaseForm`, `blockHankel_eulerShellMeasure`, `phaseForm_eulerShellMeasure`, `eulerShell_complete_test_closure` |
+| Theorem 7.1 (LEF.23)–(LEF.25) no uniform finite depth; consequence: witnesses migrate beyond `N` | `eulerShellScalarHankel`, `hankelCoeffPoly`, `quadForm_eulerShellScalarHankel`, `exists_hankelCoeffPoly_ne_zero`, `no_uniform_finite_depth`, `witness_order_gt` |
+| §8 (LEF.26) normalization wall: exponential chart exactly `t < σ - 1`; divergence for exponents `≤ 1`, in particular at `σ = 1/m` | `not_summable_eulerShell_of_le_one`, `integrable_exp_eulerShellMeasure_iff`, `eulerShell_normalization_wall` |
+
+## Log
+
+- 2026-08-11 — conjecture frozen, scalar and matrix proofs closed, and literal Euler-shell
+  specialization derived.
+- 2026-08-11 — finite-depth completeness falsified by a far-tail rank-one perturbation; eventual
+  finite detection retained as sharp positive survivor.
+
+
+## 14. Formalization state (2026-08-12)
+
+Module: `GaloisForLFunctions.HTGeometry.LocalExponentialTestClosure`, wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (foreground umbrella build: 11,858 jobs).
+
+Closed so far — the analytic heart of Theorem 2.1:
+
+- `eventuallyEq_zero_of_iteratedDeriv_eq_zero`: an analytic germ with a vanishing jet vanishes
+  near the point (via `analyticOrderAt_eq_top`).
+- `momentStrip`, `momentStrip_convex`, `zero_mem_momentStrip`, `mul_I_mem_momentStrip`,
+  `momentStrip_subset_interior`: the open vertical strip of half-width `a`, its convexity, and its
+  inclusion in the interior of the exponential-integrability set.
+- `measure_eq_of_forall_moment_eq`: **local-exponential moment determinacy**.  Two finite measures
+  on `R` whose exponential-integrability sets both contain `(-a,a)` and whose moments all agree are
+  equal.  The proof runs the card's `(LEF.4)`/`(LEF.5)` argument on mathlib's `complexMGF`: it is
+  analytic on the strip, its jet at the origin is the moment sequence, the identity theorem
+  propagates the vanishing difference across the strip, and on the imaginary axis the strip value
+  is the characteristic function, so `Measure.ext_of_charFun` applies.
+
+Axiom prints: only `propext`, `Classical.choice`, `Quot.sound`.
+
+Also closed — **Theorem 2.1 itself**, in both the real and the complex form:
+
+- `pow_div_factorial_le_exp`, `abs_pow_le_const_mul_exp`: exponential domination of every monomial.
+- `memLp_two_exp_half`, `memLp_two_pow`, `memLp_two_complex_pow`: the half window and every
+  monomial lie in `L^2(mu)`, so `(LEF.3)` is available as an honest Cauchy-Schwarz pairing
+  (`integrable_mul_of_le_exp_half`).
+- `posWeight`, `negWeight` and their coefficient identities: the Jordan split of a real density.
+- `lintegral_toNNReal_ne_top`, `memLp_two_coe_weight`, `window_subset_integrableExpSet`: each
+  Jordan part gives a finite measure that inherits the half window `(-a/2, a/2)`.
+- `ae_eq_zero_of_forall_moment_eq_zero`: if `mu` is finite with `int e^{a|x|} dmu < infinity`, `f`
+  is in `L^2(mu)` and every moment `int x^n f dmu` vanishes, then `f = 0` almost everywhere.
+- `ae_eq_zero_of_forall_complex_moment_eq_zero`: the same for complex densities, by real and
+  imaginary parts.
+
+Together these say exactly that the orthogonal complement of the polynomials in `L^2(mu)` and in
+`L^2(mu;C)` is trivial, which is the content of Theorem 2.1.
+
+Also closed — **polynomial density in `L^2(mu;C)`**:
+
+- `monomialLp`, `coeFn_monomialLp`, `polySubmodule`, `monomialLp_mem`: the monomials and the
+  submodule they span inside `L^2(mu;C)`.
+- `polySubmodule_orthogonal`: the orthogonal complement of that submodule is trivial — Theorem 2.1
+  in Hilbert form.
+- `dense_polySubmodule`: hence the polynomials are dense in `L^2(mu;C)`.
+
+Also closed — the **block-Hankel / multiplier identity (LEF.9)** and the forward half of
+Theorem 3.1, in a second module
+`GaloisForLFunctions.HTGeometry.LocalExponentialMatrixSignCone`:
+
+- `matrixMoment`, `blockHankel`, `vectorPoly`, `matQuad`, `multiplierForm`: the entrywise matrix
+  moments `(LEF.7)`, the order-`N` block section `(LEF.8)`, the vector polynomial, the Hermitian
+  quadratic form, and the integrated multiplier form `(LEF.11)`.  Matrix-valued Bochner
+  integration is avoided: moments are defined entry by entry.
+- `integrable_abs_pow`, `integrable_pow_mul_entry`: every entrywise moment integrand of a bounded
+  matrix density is integrable in the exponential window.
+- `matQuad_blockHankel_eq_multiplierForm`: **(LEF.9)** exactly — the block-Hankel quadratic form
+  at a block coefficient family equals the integrated multiplier form of the associated vector
+  polynomial.
+- `matQuad_eq_dotProduct`: the bridge to the standard `star v ⬝ᵥ M *ᵥ v` pairing.
+- `integrable_matQuad_vectorPoly`, `re_matQuad_blockHankel_nonneg`: **Theorem 3.1, forward
+  direction** — a positive semidefinite density has positive semidefinite block Hankel sections.
+
+Also closed — the **rank-one reduction** of the converse:
+
+- `exists_polynomial_of_mem_polySubmodule` (in `LocalExponentialTestClosure`): every element of
+  the polynomial submodule of `L^2(mu;C)` is almost everywhere an honest polynomial function
+  `x -> eval x P`.  Proved by span induction over `Polynomial C`.
+- `conj_mul_self`, `matQuad_smul_vector`, `vectorPoly_rankOne`: the algebra of a rank-one block
+  coefficient family `v (i,k) = P.coeff i * u k`, whose vector polynomial is
+  `eval x P * u` and whose multiplier form is the squared modulus times the scalar density.
+- `integral_normSq_poly_mul_matQuad_nonneg`: **the rank-one test.**  Positivity of every block
+  Hankel section forces `int ‖eval x P‖^2 * (u* J(x) u).re dmu >= 0` for every polynomial `P` and
+  every direction `u`.
+
+Also closed — the **bounded weight multiplier** on `L^2(mu;C)`, the operator that makes the
+scalar endgame's continuity argument available:
+
+- `memLp_weight_mul`, `weightMul`, `coeFn_weightMul`: multiplication by a bounded real weight `g`
+  maps `L^2(mu;C)` to itself.
+- `weightMul_sub`, `norm_weightMul_le`: the multiplier is additive and has operator norm at most
+  the bound `C`, so it is Lipschitz.
+- `weightedSq`, `weightedSq_eq_re_inner`: the weighted quadratic functional
+  `f -> int ‖f‖^2 g dmu` is the real part of the multiplier form `<f, g.f>`.  Continuity of the
+  functional therefore reduces to continuity of the inner product and of the multiplier.
+
+Also closed — **the scalar endgame (item 3c)**:
+
+- `lipschitzWith_weightMul`, `continuous_weightedSq`: the weighted quadratic functional
+  `f -> int ‖f‖^2 g dmu` is continuous on `L^2(mu;C)`.
+- `weightedSq_nonneg`: nonnegativity propagates from the polynomial submodule to all of
+  `L^2(mu;C)` by density and continuity.
+- `ae_nonneg_of_forall_sq_poly_integral_nonneg`: **a bounded real density that pairs
+  nonnegatively with every squared polynomial modulus is nonnegative almost everywhere.**
+  Tested at the indicator of `E = {g < 0}`: `int_E g dmu >= 0` together with `g < 0` on `E`
+  forces `mu E = 0`.
+
+All remaining items (the converse assembly 3d, Corollary 3.2, Lemma 4.1, Theorem 4.2, Theorem 5.1,
+Theorem 6.1, Theorem 7.1 and the §8 normalization wall) are now closed; see the Lean certificate below.
+- 2026-10-03 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

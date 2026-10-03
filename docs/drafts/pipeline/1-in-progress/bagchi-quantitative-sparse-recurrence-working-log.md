@@ -4660,3 +4660,304 @@ Fourier source search52417 terminal0 partial deadline (coverage pending), all20+
 
 
 01a0 C28.45 analytic stage: publicized existing primeProfileCum/scaledAbel_profile_error in ChiPrimeGaussianRationalSaddle without changing proofs; direct11416 terminal0 with pre-existing ring diagnostic text (not warningfree claim). New /tmp/BagPrimeRowFourier01a0.lean proves uniform exact-log amplitude, twice-integrated Fourier bound and actual prime Fourier capstone; scratch3 terminal1 with derivative API/algebra and asymptotic-name errors, corrected in scratch4 session82917 (sole owned Lean). All other amplitude continuity/norm bodies and Abel assembly checked. The source Gaussian regularity theorem is C2, which suffices; no C3 premise required. Also publicized existing primeProfileBand_card_log_le in ChiPrimeGaussianCubicMain; its direct audit is pending and must run after current scratch exits. PNT search76304 terminalnonpartial64486/64486 all20+20+ingredients inspected; quantitative MediumPNT/source theta producer applicable, qualitative pi_asymp alone insufficient. No new production leaf or final C28.45 theorem yet.
+
+
+01a0 C28.45 checkpoint: scratch4 82917 terminal1; residual errors were profile endpoint definitional equality, complex/real log casts, typed Tendsto congruence and final field rearrangement. Corrected in scratch source, not yet checked. Source CubicMain publicization direct38734 is sole owned Lean. New draft /tmp/bag-cubic-row-physical-body-01a0.txt contains exact phase removal e(q)=1, compact derivative saddle-window perturbation, and complete physical-row to Fourier comparison including q=r subtraction and BOTH kernel remainders. Planned bound retains C(1+d)/(N logN)+8/N. Search75637 terminalnonpartial64495/64495, all20+20+ingredients inspected; mostly unrelated Fourier/other-route hits, no new applicable row producer; source-only compiler metadata and refresh incomplete/background indexer. No final Fourier or physical-row theorem claimed.
+
+
+01a0 C28.45 scratch5 21434 terminal1: exact-log theta rate, two integrations, uniform Fourier assembly and full physical-row comparison elaborated apart from one unweight cancellation, real/complex 2pi cast and redundant ring; corrected. Source CubicMain direct38734 terminal0 warningfree, olean current. Scratch6 42386 sole owned Lean checks corrected analytic/physical bodies plus actual gap-frequency bound and ALL-pair cardinal aggregation. /tmp/bag-cubic-row-limit-body-01a0.txt adds proposed cofinal vanishing capstone, awaiting next scratch: factor the exact budget into bounded (2+1/m^3),(1+1/m^3) times inverse powers or m^k/N, using the source exponential conductor. No final C28.45 claim yet; same-family divergent Jordan parts still require central-pair generalization and m^3-cell producer.
+
+
+01a0 C28.45 scratch7 47771 terminal1: all Fourier, actual complete-row bounds and ALL-pair band aggregation checked. Only final convergence had two lexical `0<m` collisions with Matroid notation and the omitted second `_atTop` in the Nat-cast limit name; corrected. Created/wired ChiPrimeGaussianCubicRowCancellation; direct43094 sole owned Lean, log /tmp/bag-cubic-row-cancellation-final-01a0.log. Proposed unconditional capstone tendsto_primeGaussianCubicGapRowMass states normalized sum of complete row norms over ALL full-band pairs m^2/K<d≤m^3 tends zero. Nine public/new/reused axiom audit declarations prepared /tmp/BagCubicRowCancellationAudit01a0.lean. Lint82228 pending. /tmp/BagCubicCentralSectors01a0.lean is an UNCHECKED draft generalization of existing F334 per-pair signed lower bounds; production F334 untouched. Same-band divergence and full complementary cubic stay OPEN.
+
+
+01a0 C28.45 final43094/29641 terminal1 only on final Nat-cast inverse-power limit presentation; replaced composed inverse limit by inspected existing tendsto_const_div_pow 1 k hk. Direct65060 now sole owned Lean (/tmp/bag-cubic-row-cancellation-final3-01a0.log). All other production bodies, including cofinal budget algebra and final squeeze, checked. Lint82228 terminal1 ten unrelated unreachable leaves, no BAG error; exact index locates capstone. Same-family closure drafts prepared but UNCHECKED: /tmp/BagCubicCentralSectors01a0.lean, /tmp/bag-polylog-pairs-body-01a0.txt plus /tmp/BagCubicPolylogPairs01a0.lean, /tmp/bag-cubic-band-balance-body-01a0.txt. Existing F333/F334 production sources unchanged. Card/frontier still no final C28.45 claim.
+
+
+01a0 C28.45 completed-row cancellation direct65060 terminal0, production olean written. Informational ring diagnostic only; no errors/warnings (do not call log silent). Actual unconditional tendsto_primeGaussianCubicGapRowMass now checks: ALL full-band pair rows m²/K<d≤m³ have normalized aggregate norm tending0, including exact logarithmic weight, moving W, q=r subtraction and both full physical kernel remainders. Nine-declaration /tmp axiom audit18797 is sole owned Lean. No full same-family Jordan-divergence claim yet. This is genuine signed cancellation progress beyond F334; full complementary gaps, growing moments, moving cofactors/target, MUST270 and RH remain open.
+
+
+01a0 F335 completed-row part FINAL: direct65060 terminal0, all9 axioms18797 standard-only0. Wired/exact-indexed; card/frontier reconciled with same-band variation explicitly OPEN. Source direct11416/38734 checked unchanged publicizations. Lint82228 ten unrelated unreachable leaves, no BAG error. Next scratch54224 is SOLE owned Lean: /tmp/BagCubicPolylogPairs01a0.lean, log /tmp/bag-cubic-polylog-pairs-scratch1-01a0.log. It checks actual m³-cell pair mass, integer exclusion of d≤m²/K, exact central/gap membership. Existing HyperbolicCore/F334 production files remain unchanged at this point. Continue C28.45 closure, not a new route.
+
+
+01a0 same-band pair producer scratch54224 terminal1: two `≤m` lexer collisions and references to eliminated r,p after tuple substitution caused downstream metavariable/AC timeout. No heartbeat raised. Replaced with spaced comparisons, surviving s,q names and direct cancellation via inspected mul_le_mul_iff_left₀/mul_lt_mul_iff_left₀, eliminating unnecessary commutative simp. Scratch88872 now SOLE owned Lean, /tmp/bag-cubic-polylog-pairs-scratch2-01a0.log. F335 completed-row theorem remains fully audited and unchanged. Eight superseded F335 scratch sources/bodies cleaned; active pair/sector/balance drafts retained.
+
+
+01a0 polylog-pair scratch88872 terminal1 with only nonexistent Real.abs field notation in the integer-gap helper; all scale, count, mass and membership bodies otherwise elaborated. Replaced by |...| notation; appended exact new producer to existing ChiPrimeGaussianHyperbolicCore. Source direct11994 is now sole owned Lean, /tmp/bag-cubic-polylog-pairs-source-final-01a0.log. New actual pairs/count/membership remain pending final source exit and axiom audit. F335 row-cancellation leaf and its nine axiom audits remain successful. Central-sector generalization /tmp/BagCubicCentralSectors01a0.lean and final same-family balance body still pending checks.
+
+
+01a0 polylog actual-pair source11994 terminal0; one unnecessarySeqFocus tactic-style warning at line950, no error; no heartbeat changes. Actual widening-band pair mass >=c*N*m³/logN² and precise central/gap membership proved. New source declarations await all-public axiom audit with final balance leaf. Generalized F334 source now applied after complete diff review: primeGaussianCentralPair predicate, public literal primeGaussianCubicSignedRow, and universal actual central-pair two-sign lower bound; existing full-family F334 capstone preserved through specialization. Direct signed-source audit launched as sole owned Lean, log /tmp/bag-cubic-central-sector-source-final-01a0.log. Final same-band Jordan divergence body still pending its check.
+
+
+01a0 C28.45 balance assembly checkpoint: direct54339 is SOLE owned Lean checking generalized ChiPrimeGaussianCubicSignedVariation; log /tmp/bag-cubic-central-sector-source-final-01a0.log. Hyperbolic source11994 passed with one style warning. Appended proposed same-family Jordan-divergence proof to production ChiPrimeGaussianCubicRowCancellation and changed its first import to SignedVariation; this EXTENSION is UNCHECKED until source54339 finishes and the leaf is directly re-audited. Original row-cancellation proof body unchanged and previously verified65060/18797. Final32-public-declaration axiom script /tmp/BagCubicBandBalanceAudit01a0.lean includes all public declarations from three touched leaves plus three reused/publicized helpers. Lint28148 pending; exact signed-capstone index search terminal. No final same-family balance claim yet.
+
+
+01a0 central-sector source54339 terminal0 clean. Both actual pair and uniform two-sign source components now directly checked. Extended RowCancellation direct79015 is SOLE owned Lean, /tmp/bag-cubic-band-balance-final-01a0.log. Proposed same-family normalized Jordan lower bound A*m² and Tendsto-atTop capstone included. Full32 axiom audit prepared, not yet run. Latest lint28148 terminal1 TWELVE unrelated unreachable leaves, no BAG error. Exact signed capstone indexed. Do not claim full C28.45 until direct79015 and all32 axioms pass.
+
+
+01a0 balance direct79015 terminal1 solely on `convert hnorm using 1` generating an equality of real-order instances; all pair inclusion, same-family mass transfer and divergence bodies otherwise elaborated. Replaced conversion by explicit scalar calc equality, retaining the exact normalization and hnorm comparison. Direct13687 now SOLE owned Lean, /tmp/bag-cubic-band-balance-final2-01a0.log. Thirty-two-public axiom audit still pending; no full balance final claim yet.
+
+
+01a0 complete SAME-family balance direct13687 terminal0: normalized completed-row norm mass tends0 and BOTH normalized Jordan parts tend infinity on the identical widening gap family. Two warnings identified a final unreachable ring tactic; removed it for the final source audit now running (/tmp/bag-cubic-band-balance-final3-01a0.log). All32 axiom audit still pending. New signed Mellin reciprocity corpus search99602 running for the complementary p,r sum; no new mechanism assumed. No full-cubic/RH claim.
+
+
+01a0 same-band balance final93703 terminal0 (info ring diagnostic, no error/warning); all32 public axiom audit1375 is now sole owned Lean. Search99602 terminalpartial64527/64527; all20+20+ingredients inspected despite reported local judge/reranker errors. Actual BV reciprocal-conjugate and prime-tail Mellin identities do not give the signed cubic bound; Heath--Brown source inspected and twist verified n^(-i*tau), no additive-phase transfer assumed. Maincard records applicability failure and still-open joint complement target. No external novelty claim or new conditional wrapper.
+
+
+01a0 C28.45/F335 FULL FINAL: source11994 exit0 (one tactic-style warning), source54339 clean0, extended leaf93703 exit0 (info ring diagnostic, no warnings/errors), all32 public axioms1375 standard-only0. SAME actual gap family has normalized completed-row norm mass→0 and each normalized real Jordan part→∞, with explicit pair/sector producers and no external premise. Frontier/maincard/no-go positive survivor reconciled. Latest lint28148 twelve unrelated unreachable leaves, no BAG error; global gate unclean. All owned Lean/search/lint processes terminal. Goal ACTIVE; remaining hard task is the full signed complementary p,r arithmetic (both small and large gaps), then growing moments/moving cofactors/self-target/MUST270/RH. Search99602 applicability failure recorded without changing route or creating a wrapper.
+
+01a0 C28.46: F335 superseded scratch cleaned; memory finalized with all processes terminal.
+New corpus search12480 completed nonpartial64532/64532, no query error; source compiler freshness mostly pending/stale. Broad ranking mostly unrelated prime displacement/affine density; source-path followup found applicable GenericMarkerAnalytic.generic_pair_le' and HarmonicLogBound. Exact proof above removes lower gap cutoff using source two-prime sieve and completed signed row decay. All pairs and finite sieve remainder retained. Next: formalize cutoff-free row norm limit, then large-gap joint signed arithmetic remains hard.
+
+01a0 C28.46 scratch: first50513 exposed only band-cast simplifier recursion and abs-cast facts; corrected without option changes. Full17009 exposed root-namespace/API, association and Matroid-token issues; full42360 reduced to three standard limit/inequality elaboration errors. Arithmetic fibre, literal pair sieve, complete physical row transport, polynomial/geometric remainder limits and two Jordan-part extension otherwise accepted. Corrected77375 currently running; source not installed yet.
+Large-gap joint-phase search57664 partial64540/64540 with semantic worker disconnect, unrelated monomial results. Rephrased Sieve reciprocal search19700 nonpartial64540/64540, all20 candidates/all20 source arguments and generated ingredients inspected. Stadlmann reciprocal phase is unit INVERSION modulo a fixed modulus, not the physical real reciprocal pq/r. Its Ramanujan cancellation cannot be substituted. VinogradovEmbeddedBilinear retains polynomial coefficients fixed across its two embeddings and full Holder/ambient moment costs; pq/r has a varying prime denominator. KloostermanPhysicalResidueModulusBilinear gives exact carrier expansion and a fixed-modulus operator baseline, not a source theorem removing the joint modulus loss. No missing saving or unproved transport assumed, no new wrapper created. Need a source-specific joint p,q,r cancellation argument in the large-gap region.
+
+01a0 C28.46/F336: corrected scratch77375 exit0 clean. Installed ChiPrimeGaussianCubicNearCancellation; production79689 exit0 clean, olean written, umbrella import wired. Final axiom9061 running; exact index50451 running. Lint8309 exit1 with15 unrelated unreachable leaves; no new BAG debt. Completed source eliminates entire lower-gap exclusion; paired capstone retains divergent two-sign parts on same larger family. No heartbeat changes, computations, subagents, added assumptions, full build or commit. Rational-ray/PNT search19857 finished nonpartial64544/64544; progression-PNT lexical has zero hits, but direct source read confirms qualitative AP density. No growing-modulus or growing-frequency rate inferred. Main hard target remains full signed large-gap discrepancy.
+
+01a0 C28.46/F336 FULL FINAL: scratch77375 and production79689 clean exit0; final axioms9061 exit0, both public capstones plus generic_pair_le' use only propext/Classical.choice/Quot.sound. Exact index50451 finds new capstone. Global lint8309 exit1:15 unrelated unreachable leaves, no BAG error. Frontier/maincard/no-go strongest positive survivor reconciled. Six owned C28.46 scratch source/body/API/audit files removed after success; logs and search JSON retained. All owned Lean/search/lint processes TERMINAL. No computations, added premises/axioms, heartbeat changes, subagents, umbrella/full builds or commits. Goal ACTIVE. Actual previous small-gap obstruction solved. Next frontier: signed large-gap prime/cofactor discrepancy; full cubic and downstream growing moments, moving cofactors, self-target recurrence, MUST270 and RH remain open. Do not substitute modular inverse identities or qualitative AP density for the missing joint source estimate.
+
+01a0 continuation: revalidated frontier/source/F336 axioms; previous turn PROGRESS, all former processes terminal. New C28.47 targets large-gap p/r≈3/2 on literal band. Key discovery: frozen W(3x/2)V(x) has nonzero lower endpoint, so previous quadratic Fourier decay is invalid here; retain boundary and use 1/frequency with actual dilation-sieve density. P1=3 removes slope primes2,3 and inverse singular factor≤abs(v)^(1/4) follows from a positive polynomial and distinct-prime product divisibility. Full mechanism recorded above before code. Half-resonance search59984 nonpartial64551/64551, all20+20/ingredients inspected, mostly unrelated; actual base is directly read RationalSaddle/CubicMain/F335/F323 source. Affine shift search33246 still running; no builds active yet.
+
+01a0 C28.47 continuation: source theta export66213 exit0. General boundary scratch66936 exit1 only add_le_add_right orientation; fixed explicitly with add_le_add. Actual frozen-profile Fourier scratch57418 exit0; physical half-resonance row scratch13363 exit0, one redundant ring removed. Installed ChiPrimeGaussianCubicHalfResonance and wired umbrella; production17659 RUNNING, no umbrella build. All band q retained except contraction, exact parity sign and zero-residual exclusion proved, lower boundary retained, moving-window and both physical errors included. New density scratch /tmp/BagCubicHalfSieve01a0.lean drafted, not built yet. Partial affine search33246 finalized: all20 candidates/20 sources/ingredients inspected, actual FullSieve source applicable; unrelated MT outputs not substituted. No aggregate or RH claim.
+
+01a0 C28.47: physical source17659 clean exit0, olean written. Density scratch28627 exposed product casts, explicit nonnegative subtraction needs, product simplification, gcongr over-decomposition, a ≤s graph token and final rational rearrangement; corrected77812 clean exit0. Installed Sieve/PrimeDilationThreeHalves; final source90739 RUNNING. Draft /tmp/BagCubicHalfAggregate01a0.lean joins exact Nat.dist fibres to both signed dilation sets, keeps all band pairs, and targets full normalized norm sum→0 for abs(2p-3r)≤m³. Not compiled yet. New source query62075 partial64568/64568 (decomposition deadline; compiler mostly pending/stale), all20+20 surfaced entries and ingredients screened: unrelated, no arithmetic joint producer. Lexical trilinear/Sieve has zero hits; no claim of global absence. Next hard joint phase remains unproved.
+
+01a0 C28.47/F337: aggregate96391 exposed only product-membership simp failure; explicit mem_product correction53515 clean0. Installed ChiPrimeGaussianCubicHalfCancellation; production55859 RUNNING. Source17659 and sieve90739 clean0. All3 imports wired. Lint7714 exit1:12 unrelated unreachable leaves, no BAG error. Index33564 exit0 finds public aggregate capstone at line300. Axiom scratch ready, pending sole current foreground55859. Reciprocal approximation78881 exact search finds one source theorem, entire source read: q≈1/ξ Dirichlet approximation only, no signed triple arithmetic. Bourgain cloud needs actual first/second spacing inputs and retains outer mass powers; GHS TripleConvolutionWindow is only a trivial convolution bound. No substitutions into pq/r accepted.
+
+Next-frontier sanity check: shrinking general rational strips through qualitative AP error diagonalization is insufficient progress if strip is so thin that prime-pair density plus trivial row norms already discards it. Do not count that as solving signed large-gap cancellation. Preserve substantive polynomial-width resonance or attack full joint p,q,r sum. General rational fixed-modulus extensions at the existing m³ width require an actual quantitative AP source estimate (qualitative PNT cannot absorb growing derivatives). Full joint complementary discrepancy remains the principal hard problem after F337.
+
+01a0 C28.47/F337 FULL FINAL: source17659,90739,55859 clean0; axioms66643 clean0, all7 printed only propext/Classical.choice/Quot.sound. Exact index33564 finds aggregate line300; umbrella all3imports wired. Lint7714 remains unclean solely12 unrelated unreachable modules, no BAG error. Frontier/maincard/no-go survivor finalized. All7 owned scratch sources/body/audit removed after success; logs/JSON retained. All Lean/index/lint processes TERMINAL. AP source discovery40711 remains running; no new production work from it. Goal ACTIVE. Full actual half-resonance solved; next hard joint complementary signed arithmetic remains unproved.
+
+01a0 end-of-audit checkpoint: AP search40711 exits0, partial64578/64578, reranking disconnect and Qdrant deadline; all20 candidate/20 source statements plus proposed ingredients inspected. Returned zeta zero-free and analytic-theta results do not transfer to Dirichlet AP rates; no such transfer claimed. Direct source evidence: DirichletLLineLowerBound only gives1/2 well right of1; DirichletLDiscBound is cubic height growth; DirichletLInverseBound works right of the unknown zero abscissa, hence cannot manufacture a near1 zero-free strip. Installed mathlib LSeries/Nonvanishing has exact `DirichletCharacter.norm_LFunction_product_ge_one` at307, the character three-four-one product, plus `LFunction_ne_zero_of_one_le_re` at397. Corpus ZetaZeroFreeRegion imports ZetaThreeFourOne and ZetaDerivGrowth and supplies the logarithmic strip. Thus a possible substantive general-rational extension must BUILD actual near1 logarithmic L-growth/derivative control, then character zero-free/Perron/AP rates; neither existing polynomial bounds nor qualitative AP density close m³ frequencies. No new conjecture beyond this source-grounded mechanism has been declared proved. All owned search/build/lint/index handles TERMINAL; no scratch sources remain.
+
+01a0 C28.48 begins: F337 was verified progress; current turn joint arithmetic searches
+78321 nonpartial64581/64581,86506 nonpartial64581/64581,77469 partial64584/64584
+(Qdrant timeout),82029 nonpartial64585/64585. Compiler freshness mostly pending/stale;
+refresh background indexer incomplete. Candidate/source/ingredient screening found no
+actual triple producer. GlobalCollisionCentered exact budget retains common-period
+terminal factor; PhysicalResidueModulusBilinear has a different complete kernel.
+VaughanBlockDecomposition is exact only. Do not manufacture the missing joint saving.
+New frozen C28.48 in main card constructs actual Dirichlet character log-strip control
+and zero exclusion, required for quantitative rational major arcs. Character-truncation
+search71252 running; no Lean process or new Lean source yet. Full cubic/growing moments/
+cofactors/positive self-target/MUST270/RH remain OPEN. No route retirement or no-go claim.
+
+01a0 C28.48 analytic source: character-truncation search71252 nonpartial64586/64586,
+no errors, all20 candidates/20 sources/ingredients read; actual UniformAbel receiver
+applicable. Built actual character period cancellation and identified conditional
+Abel limit with LFunction by analytic uniqueness. Scratch2 clean; logarithmic growth
+scratch4 clean; uniform principal/imprimitive extension plus Cauchy derivative
+scratch6 clean, WITHOUT heartbeat options. Installed DirichletLLogStrip;
+production40277 is sole owned Lean. /tmp/BagCharacterZero01a0.lean contains checked
+derivative and untested final zero-free contradiction. No AP theta, full cubic or RH
+claim. The final character3-4-1 keeps chi² actual, including its principal case.
+
+01a0 C28.48 checkpoint: production DirichletLLogStrip40277 clean0, olean written,
+leaf wired. High-height zero-free scratch22026 exit0 (one sequencing warning removed).
+It handles ALL characters of a fixed positive modulus; no primitive restriction and
+chi² principal case retained. Compact extension scratch96868 failed only isOpen_ne
+versus isOpen_ne_fun and an order-positivity tactic; corrected scratch85849 running.
+No heartbeat increases. Zero-free production and final axioms pending.
+Search94403 partial64598/64598 (malformed judge JSON/runtime deadlines),25900
+nonpartial64599/64599; all candidates/source/ingredient statements inspected. Actual
+mathlib compact-thickening theorem supplies low heights. Next analytic source reads:
+ZetaStripLowerBound quartic3-4-1 lower bound survives derivative drift; ZetaLogDerivBound
+then gives inverse log^7 and log-derivative log^9. These can be constructed for actual
+characters using the new uniform K, rather than assuming zero-free implies a numerical
+inverse bound. PerronPowerLogPNT is source-specific to zeta; its direct transfer is NOT
+proved. Unsmoothing of complex chi*Lambda needs domination by ordinary Lambda short
+interval mass or positive AP sums; the scalar monotonicity sandwich cannot be reused
+unchanged. Full cubic and all downstream hard BAG goals remain open.
+
+01a0 C28.48 verification checkpoint: complete-height scratch85849 clean0; installed
+DirichletLZeroFreeLogStrip, production64795 clean0, olean written; both new leaves wired.
+All10-public/reused axiom scratch47323 is sole current Lean process. Exact index finds
+complete-height capstone at318. Lint51021 exits1:13 unrelated unreachable leaves,
+no new BAG error. Global lint remains unclean. Source-specific positive progress is the
+new actual character zero-exclusion mechanism; neither a quantitative AP PNT nor the
+joint cubic cancellation has been inferred. C28.49 paper mechanism now recorded in
+main card; inverse/log-derivative strip estimates must be formally constructed next.
+
+01a0 C28.48/F338 FULL FINAL: growth40277 andzero64795 clean0; all10 axiom47323
+clean0, standard propext/Classical.choice/Quot.sound only. Actual fixed-modulus ALL-char
+high-height strip and each nonprincipal ALL-height strip proved. Both imports wired,
+exact indexed. Lint51021 has13 unrelated unreachable modules, no BAG error. Frontier
+and maincard reconciled with exact limits: analytic prerequisite closed, full joint
+cubic still open. C28.49 source-derived inverse/log-derivative construction frozen;
+Perron and unsmoothing transfer remain to build, no qualitative AP-rate shortcut.
+All owned builds/search/index/lint processes TERMINAL. Nine owned scratch source/body/
+API/audit files scheduled for cleanup immediately; retain all logs and JSON. Goal ACTIVE.
+
+01a0 final cleanup confirmed: all nine C28.48 scratch files removed; successful logs and
+corpus JSON retained. Targeted whitespace check clean. Serena checkpoint finalized at
+F338 with C28.49 exact next proof mechanism. No owned process remains active.
+
+01a0 continuation C28.49: revalidated F338 actual source/card/ten-axiom log; previous
+turn PROGRESS. The hard target remains joint signed cubic, with quantitative rational
+arithmetic under construction. New corpus inverse-source search14732 running. Generalized
+existing zero-based horizontal MVT to public two-endpoint norm_LFunction_sub_le_segment
+(nonstrict endpoints); old private zero lemma now specializes it. Source93386 is sole
+owned Lean. Next actual lower-floor/reciprocal/log-derivative proof will use the frozen
+3-4-1 contradiction from the card. Include bounded-height nonprincipal control for
+Perron, not just qualitative zero-freeness. No new source premise accepted.
+
+01a0 C28.49 construction checkpoint: generalized segment leaf93386 clean0. High-height
+actual floor and reciprocal pass; derivative fix made sigma explicit, now also passes.
+Scratch91724 checks two remaining compact/full-height elaboration fixes. No mathematical
+floor premise was introduced. Inverse-source search14732 terminal, nonpartial64607/64607;
+compiler mostlypending/stale, refreshbackground. Its log-equality/reflection proposed
+ingredients do not prove the needed reciprocal floor; actual 3-4-1 proof is constructed
+from verified source. Corpus Perron search77920 running. Source contour assembly/master
+is zeta-specific. Installed mathlib has exact twist-vonMangoldt and reduced-class L-series
+identities; these give a genuine character series bridge, not the missing contour errors.
+
+01a0 C28.49 production28928 clean0 andaxioms33128 clean0: new helper, preservedzero
+capstones, six new public declarations all standard axioms only. Leaf wired.
+C28.50 actual signed Perron scratch written; uses scalar absolute integral majorant
+with |chi|<=1 and literal character logarithmic derivative series. Source scalar
+Perron proof exports its existing two mathematical ingredients, keeping scalar capstone
+proof and statement; firstbuild18870 found one uninferred implicit a, fixed explicitly;
+source32340 is sole owned Lean. Added scratch constructive pole-free rectangles from
+C28.49 (both bound and nonvanishing constructed), not a zero-free-premise wrapper.
+
+01a0 C28.50a verification checkpoint: scratch30205 clean0; production8623 clean0,
+olean written, new DirichletCharacterPerron leaf wired beside log-derivative leaf.
+Axiom50502 is sole owned Lean. Exact index34843 terminal finds all3 queried capstones
+at logDeriv233, Perron35/98; lexical response has no compiler/coverage metadata.
+Lint68152 terminal exit1:10 unrelated unreachable leaves (CCMApertureChainProfile,
+CCMApertureTranslationChains, CCMExponentialRampPrimeMoment,
+CCMExponentialRampSourceDissipation, CCMExponentialRampTerminalEntropy,
+CCMRetainedChainKernelLower, MoebiusMollifiedCriticalMoment,
+MoebiusMollifiedErrorThreeLines, ThetaMovingShellFirstOrderPhase,
+ZetaZeroDensityPowerSaving). No BAG error; global gate remains unclean.
+All four affected production leaves pass: zero-free segment93386, logDerivative28928,
+scalarPerron32340, characterPerron8623. Source/card C28.50b freezes full contour-error
+and correctly signed unsmoothing mechanism. Full joint cubic still a separate hard gap.
+
+01a0 C28.49/C28.50a FULL FINAL: allfour production leaves clean0; audits33128 and
+50502 clean0, all15 public/new/preserved queries only standard axioms. Newleaveswired;
+no umbrella build. Index34843 terminal finds exact newcapstones. Lint68152 has10
+unrelated unreachable modules, no BAG error. Frontier and maincard reconciled.
+All owned build/search/index/lint processes TERMINAL. Six owned scratch source/body/
+audit files now scheduled for cleanup; logs/JSON retained. C28.50b exact full-error
+and signed-unsmoothing proof route frozen oncard; no AP rate or cubic proof inferred.
+Goal ACTIVE. Previous activities contributed by constructing missing actual analytic
+inputs; principal hard target remains full joint signed noncontracting cubic.
+
+01a0 cleanup complete: all six C28.49/C28.50a scratch/body/audit sources removed;
+production sources, logs and corpus JSON retained. Serena checkpoint updated with
+both FINAL results, exact remaining C28.50b construction and principal BAG gaps.
+
+01a0 C28.50b continuation: revalidated actual source signatures, both final axiom
+logs and cleanup state. Previous goal turn = PROGRESS (C49 and C50a proved).
+New deep corpus contour-errors search43933 running. Constructing all actual character
+contour errors; normalize to y=Im(s) if the source full-line substitution supports it,
+so both infinite tails and rectangle edges share one literal integrand. No source
+nonvanishing or log-derivative bound will remain a capstone premise. Full joint cubic,
+growing moments, moving cofactors and positive self-target recurrence still open.
+
+01a0 contour construction: firstscratch27004 proved actual right-line norm bound,
+continuity/integrability and signed-tail auxiliary; negative substitution required an
+explicit function, repaired. Scratch27213 proves full master except one coordinate
+simp normalization; repaired with restricted simp, rerun now. All tails and horizontal
+edges retained. Search43933 terminal nonpartial64624/64624, mostlycompilerpending/stale;
+actual previous character bridge/identity apply, zeta-only Landau and real-part bounds
+do not discharge character norm estimates. Full-line Measure.integral_comp_mul_left
+verified against corpus gives clean physical-y normalization.
+Rate proof refinement: no need alter the proved rectangle constructor to shrink c.
+Set D=1+c, u=(logx)^.1, T=exp(D*u)-3 and k=c/D^9. Then k<=c,
+D-k>=1 and2D-k>=1; vertical rate exp(-k*u), both tail/horizontal rates <=exp(-u).
+Use min1k and source polynomial absorption, preserving the actual source c.
+
+01a0 complete contour master: scratch4490 clean0; new production leaf
+DirichletCharacterPerronBounds (source82313) clean0, olean written, wired. The full
+actual master has no source analytic premise. Rate scratch BagCharacterPowerLog01a0
+written and compiling as sole owned Lean; it retains original c viaD=1+c and bounds
+ALL three error types by u18*x*exp(-min(1,c/D9)*u), then source absorption. No changes
+to previously proved rectangle constructor, no dropped tails or horizontals.
+
+01a0 signed tent rate: scratch53310 exposed broad nlinarith heartbeat exhaustion.
+Replaced with restricted linarith/explicit order arguments; no heartbeat change.
+Scratch30148 proved mathematical estimates, remaining final local-x equality fixed
+using ac_rfl rather than normalizing a factorial constant. Scratch77670 exits0
+(one ring tactic advisory, no errors). Installed DirichletCharacterPowerLog; production
+now sole owned Lean. Unsmoothing structural scratch independently written, not checked
+until that process exits. Search95442 terminal nonpartial64628/64628, mostlypending/stale;
+returned weight/log-moment proposals do not prove signed defect. Actual construction
+uses scalar corpus tent sandwich, positive kernel defect and |chi|<=1, keeping full
+complex character coefficients. Next quantitative transfer can choose y=(1+epsilon)x,
+epsilon=exp(-lambda*u), using log(1+epsilon)>=epsilon/2 and scalar psi rate.
+
+01a0 signed recovery checkpoint: tent-rate production37529 terminal0, one ring advisory.
+Structural unsmoothing scratch45979 found only a redundant dsimp; removed and omitted
+unused NeZero on private multiplier lemma. Appended actual quantitative unsmoothed
+characterChebyshevPsi rate using the proved character tent rate and corpus ordinary
+psi rate. New scratch now sole owned Lean. Source log lower bound and rpow monotonicity
+read directly from installed mathlib. Definitions keep actual complex character values;
+no prime progression or joint cubic conclusion inferred from the unsigned majorant.
+
+01a0 actual unsmoothed character rate: scratch15310 exits0, empty diagnostics. Earlier
+attempt61600 exposed an add_le_add_right name/orientation issue in the opened namespaces;
+fixed with explicit add_le_add and explicit tent arguments. No mathematical change.
+Installed/wired DirichletCharacterUnsmoothing, production audit sole owned Lean.
+Search29143 terminal nonpartial64636/64636 and source-only candidates: exact finite
+character orthogonality applies; returned prime-power-only identities do not construct
+quantitative cancellation. C28.51 freezes proper-power removal, principal finite-prime
+correction, then fixed-modulus reduced progression theorem. Theta scratch currently
+contains all-character source main-term construction; not yet checked. AP lexical36727
+terminal but no freshness/coverage fields; broad hits irrelevant, exhaustive rg no
+matching characterChebyshevTheta definitions. No conductor-uniform conclusion.
+
+01a0 C28.51 character-prime scratch49350: actual nonprincipal rate and principal
+main-term quantitative argument checked; failures were universe inference in the
+explicit API-name examples and one rewrite selecting the wrong nested Finset filter.
+Universe levels fixed; filter rewrite now targets RHS. Scratch92823 checking. Full
+AP scratch written separately with finite induction over all characters, exact actual
+prime orthogonality and uniformity over reduced classes. No analytic premise supplied.
+Search28266 terminal nonpartial64645/64645, mostlysource-only/pending/stale; suggested
+residue-martingale summability is inapplicable to pq/r. Actual cubic coefficient/entry
+and qualitative primeResidueLog density remain relevant. Direct read of half-resonance
+edge_abel_error confirms endpoint-inclusive error (normf1+2normf2+2L)*epsilon. This is
+the producer for next growing-frequency rational profiles after the AP source rate;
+it must be instantiated with actual residues and full physical amplitude, not wrapped
+as an assumed AP estimate. Joint complementary arithmetic remains open.
+
+01a0 C28.51 source AP theorem: character-prime scratch92823 and production35121
+exit0 clean. AP scratch71641 only exposed an underconstrained residue-filter binder
+and one simp advisory; explicit (p:Nat) fixes actual support type. Scratch25464 and
+production52221 exit0 clean. Installed/wired PrimeProgressionPowerLog with exact actual
+prime support, finite-character common rate, source orthogonality and every reduced
+class uniform over fixed Q. All five new leaf production audits passed; the tent-rate
+leaf has one ring advisory, others empty diagnostics. Source capstone exact index
+returns one hit at PrimeProgressionPowerLog:87. Combined22-public-declaration axiom
+scratch now sole owned Lean. Lint48654 exits1 on11 unrelated unreachable modules;
+new extra vs earlier gate: ThetaCuspCurvatureDefectPrimitiveTransport. No BAG leaf error.
+
+01a0 FINAL: audit73788 clean0, all22 declarations standard logical axioms only.
+Frontier map/main card updated C28.50b/C28.51 closed, C28.52 exact actual-profile
+paper mechanism frozen. Serena checkpoint updated. Nine owned scratch source/body
+files removed after audit; retained logs/corpusJSON. No owned processes remain.
+No full/umbrella build, computation experiment, heartbeat increase, commit/push or
+subagent. Goal ACTIVE; RH/full joint cubic not proved or falsified.
+
+01a0 C28.52 continuation: revalidated actual AP capstone and physical source. Exposed
+existing endpoint-inclusive Abel/Fourier identities as primeProfile_scaledAbel_error
+and primeProfile_fourier_once; only two local references changed, production90348
+clean0. Strengthened new target to uniform actual ratio xi in[1/2,2], retaining the
+moving W(xi*x) rather than freezing to a rational. Direct compact derivative bounds
+on W' in[0,4] and V' in[1,2] construct the family. Search20853 nonpartial64656/64656
+returns unrelated Gaussian/resolvent profiles; targeted lexical75087 finds the actual
+Abel, cutoff smoothness and AP source. Scratch42185 checked cumulative AP support
+conversion and most amplitude machinery, exposed abs-token spacing, composed-function
+normalization and a nested conjunction simplification. These are repaired; full
+source-instantiated progression main and Fourier corollary appended, sole Lean now.
+
+01a0 C28.52 scratch53497 and production78252 clean0. Actual moving profile uniform
+for xi in[1/2,2], all real tau, reduced class; full signed main and inverse-first-power
+corollary proved without analytic source premises. New leaf wired. C28.53 exact
+rational-profile and complete physical-row scratch both written. They retain every
+q, source phase bias, W(p*q/(r*N)) and both physical errors, removing only exact q=r.
+Old private primeRationalPhase_mod exposed (proof unchanged); parent source audit now
+sole Lean, before checking rational assembly. Corpus90851 partial64666/64666 usable
+band/finite-residue hints; direct source finite fibre partition applies, infinite
+residue-sum hits aren't automatically substitutes. No growing-modulus claim.

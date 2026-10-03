@@ -77,6 +77,15 @@ private theorem projectivePrimitive_pos {t : ℝ} (ht : 0 < t) :
 /-- A strict slope-curvature reserve obtained by integrating projective descent. -/
 def slopeEnergy (t : ℝ) : ℝ := c t^2-c 0^2-p t*v t
 
+/-- The slope-coordinate projective reserve controls curvature concavity in source potential. -/
+theorem projectiveSlopeReserve_pos {t : ℝ} (ht : 0 < t) :
+    0 < c t*v t-p t*a t := by
+  have he : c t*v t-p t*a t = c t*projectivePrimitive t := by
+    unfold projectivePrimitive thetaCuspCompletedCurvatureProjectiveRatio
+    field_simp [(thetaCuspLogCurvature_pos t).ne']
+  rw [he]
+  exact mul_pos (thetaCuspLogCurvature_pos t) (projectivePrimitive_pos ht)
+
 theorem slopeEnergy_hasDerivAt (t : ℝ) :
     HasDerivAt slopeEnergy (c t*v t-p t*a t) t := by
   convert! (((hasDerivAt_thetaCuspLogCurvature t).pow 2).sub_const (c 0^2)).sub
@@ -130,5 +139,37 @@ theorem coordinateCurrent_pos {t : ℝ} (ht : 0 < t) : 0 < coordinateCurrent t :
   exact add_pos_of_pos_of_nonneg
     (add_pos (mul_pos ht (slopeEnergy_pos ht)) (chordReserve_pos ht))
     (mul_nonneg (mul_nonneg (by norm_num) ht.le) (sq_nonneg _))
+
+/-- The joint-center current retains the correction required by the inverse Gram term. -/
+def jointCoordinateCurrent (t : ℝ) : ℝ :=
+  p t*c t+3*t*c t^2-t*p t*v t-12*c 0*t*c t+20*c 0*p t-12*c 0^2*t
+
+/-- Source reserves pay the complete joint-center correction, without a numerical bound. -/
+theorem jointCoordinateCurrent_decomposition (t : ℝ) :
+    jointCoordinateCurrent t = t*slopeEnergy t+
+      (c t+20*c 0)/(c t+2*c 0)*chordReserve t+
+      2*t*(c t-c 0)^3/(c t+2*c 0) := by
+  have hd : c t+2*c 0 ≠ 0 := by
+    have ht := thetaCuspLogCurvature_pos t
+    have h0 := thetaCuspLogCurvature_pos 0
+    positivity
+  unfold jointCoordinateCurrent slopeEnergy chordReserve
+  generalize c t=C at *
+  generalize c 0=Q at *
+  have hd' : C+Q*2 ≠ 0 := by simpa only [mul_comm] using hd
+  field_simp [hd,hd']
+  ring
+
+theorem jointCoordinateCurrent_pos {t : ℝ} (ht : 0 < t) :
+    0 < jointCoordinateCurrent t := by
+  rw [jointCoordinateCurrent_decomposition]
+  have hc := thetaCuspLogCurvature_pos t
+  have hq := thetaCuspLogCurvature_pos 0
+  have hd : 0 < c t+2*c 0 := by positivity
+  have hn : 0 < c t+20*c 0 := by positivity
+  exact add_pos (add_pos (mul_pos ht (slopeEnergy_pos ht))
+    (mul_pos (div_pos hn hd) (chordReserve_pos ht)))
+    (div_pos (mul_pos (mul_pos (by norm_num) ht)
+      (pow_pos (curvature_above_center ht) 3)) hd)
 
 end RHTower.ThetaCoordinate

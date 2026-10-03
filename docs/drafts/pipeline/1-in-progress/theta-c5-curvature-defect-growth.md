@@ -1,6 +1,6 @@
 # TH: C5 growth from the completed curvature defect
 
-Status: new source conjecture; not a C5 or RH proof.
+Status: global source growth AND exact all-center C5 seam orientation proved in Lean. Finite-displacement compensation and RH remain open.
 Working log: route-th-source-sign-working-log.md.
 
 ## Checked starting point
@@ -748,3 +748,91 @@ source flow and stable kernel signs, plus all-order D_i*M_j<=M0*D_(i+j).
 Hard signed absorption/global growth/C5/all-degree gaps remain; RH goal
 active and unachieved. Next exact proof plan stored in working log and
 Serena rh/route-th-pair-relative-absorption-plan-2026-10-02.
+
+### Exact dominant/deep mixed-pair absorption closed (2026-10-02)
+
+PROGRESS: five new GrowthMixedPair leaves (Polynomial, Moments, Kernel,
+Absorption, Source) saved/wired; every final lake --old env lean -o audit0,
+empty logs. Endpoints standard3 only. Exact point/ray/gamma moments give
+q*V<256*polynomialMoment(q,3,0)*U for every q>=3/2,d>=8. Parameter-flow
+identities identify Fbare=U/q8 and Fmixed=V/q8, hence each literal
+dominant/deep pair is absorbed by256 times dominant mass times its deep
+next-transfer. Countable transport proves the complete infinite-tail
+comparison and strict Fdeep>0. Actual normalized mixed-pair loss is
+strictly below (256/399)*Fdeep, using the existing399 activity theorem.
+Dominant single and self-pair vanish exactly; no source-sign premise,
+truncation, added axiom, numerical experiment or raised limit.
+
+This closes the previously conjectural mixed-pair producer. Remaining
+source gap is deep/deep and higher even4,6,8 absorption against deep and
+pure cubic reserves. Full E>0, sourceGrowth, C5 compensation, arbitrary
+packets and RH are still open. Next exact reserve tests are running in
+/tmp/th_growth_next_reserves_probe.lean; this tests both monomial envelope
+and integrated deep lower reserve coefficientwise. Pure cubic/quartic
+comparison is prepared in /tmp/th_growth_next_pure_probe.lean. No next
+reserve sign is assumed. Goal active; working log has exact paper algebra.
+
+### Next envelope and actual deep reserve closed (2026-10-02)
+
+Four new leaves GrowthNextEnvelopePolynomial, GrowthNextEnvelope,
+GrowthDeepNextReservePolynomial, GrowthDeepNextReserve pass final direct
+lake --old env lean -o audits and are wired. Endpoint axiom audits standard3.
+Exact Psi<Cnext*t^9 transports to every supported component. Complete deep
+lower reserve Cnext*D9/64<Fdeep holds for q>=pi-3/2; F(D*D)<=512*Cnext*D0*D9.
+The proposed extension to q=3/2 is formally false. Its exact obstruction
+and affine-margin positive survivor are closed in the failed-lemma card
+5-failed/theta-next-transfer-deep-reserve-wide-domain-obstruction.md.
+No reserve factor changed; the literal theta domain supplies the margin.
+
+The next proof is marked-deep domination of all mixed convolution moments,
+followed by exact pure cubic/quartic absorption and signed assembly.
+Complete E>0, global sourceGrowth, C5 compensation and all-degree positivity
+remain unproved. Prior pending reserve probe references are superseded by
+these audited leaves; current process/scratch state is in the working log.
+
+### All mixed sectors retain a deep moment (2026-10-02)
+
+GrowthMarkedMoments, GrowthMixedPowerBudget, GrowthMixedNextTransport
+all pass final direct lake --old env lean -o audits, empty logs, and are
+wired. Endpoint axiom audits standard3. The exact marked-factor induction
+gives mixedPowerMoment(q,k,j)<=k^(j+1)*M0^(k-1)*Dj for every q>0,k>=1,j<=9.
+Mixed next-transfer difference is nonnegative and <=Cnext times that
+ninth-moment difference for every k>=2. Exact source single equals Fdeep;
+source pair equals 2F(dominant*deep)+F(deep*deep). Generic convolution-flow
+transport is established for the forthcoming exact pure comparison.
+
+DeepSignedBudget is currently a scratch audit, not an established result.
+It attempts to absorb the source pair and every mixed even sector into
+weighted Fdeep and reduce full E to a literal dominant cubic-minus-even
+residual. Pure cubic/quartic producer, full E sign, global sourceGrowth,
+C5 compensation and all-degree positivity remain open.
+
+### Complete deep-source sign debt closed (2026-10-02)
+
+GrowthDeepSignedBudget final36200 exits0, empty log, wired; all four
+scratch endpoints standard3. completeDeep_even_absorption proves that
+weighted raw pair plus all mixed even4,6,8 is strictly below weighted
+deep single. pairRelativeSourceTransfer_gt_pure_residual retains the
+complete source and gives E>w3F(A^3)-w4F(A^4)-w6F(A^6)-w8F(A^8).
+This removes every deep-sector sign debt. Only the literal dominant
+residual remains for E; pure cubic/quartic comparisons are the next
+conjectures. Global sourceGrowth, C5 and all-degree positivity remain open.
+
+### Complete pair-relative source positivity closed (2026-10-02)
+
+GrowthPureNextMoments, GrowthPureNextPolynomial, GrowthPureNextSource all
+final lake --old env lean -o audit0, empty logs, wired. Endpoints standard3.
+Exact Wronskians prove the literal cubic reserve and quartic absorption;
+higher pure even powers use the ninth-moment transport and existing mass
+calibration. Pure residual is nonnegative. Since full E strictly exceeds
+that residual, pairRelativeSourceTransfer_coordinate_pos proves E(q(x))>0
+for every actual x>=0. No deep/pure source sign debt remains.
+
+Global source-growth propagation is now under audit. The older card's
+c'/c<2 gap is already closed by ThetaCurvature.velocityGap_pos in
+ThetaCuspCurvatureLogConvex; reuse that theorem. Exact C5 seam orientation,
+nonlocal compensation and arbitrary-packet positivity still need proof.
+
+Global source closure: GrowthGlobalPropagation final4153 exit0 empty log; sourceTransfer_coordinate_neg on x>=0 and sourceGrowth_coordinate_pos on x>0, scratch64741 axiom audit standard3. Complete signed E and two normalized monotonicity laws close the growth producer. Next exact C5 seam conjecture has a defect decomposition into positive remainders using H'−f1H, betaH−H'', 2c−c', and 18c+4+6f1−beta. Scratch th_growth_seam_bridge pending.
+
+Seam closure: GrowthSeamOrientation final72401 exit0 empty log, wired; scratch91799 all seven endpoints standard3. Exact orientation positive at every x>0 and local direct-J chamber at every positive center. Continued hard producer: theta-c5-nonlocal-defect-transport.md. Earlier statements here that c'/c<2 or the seam reserve are unproved are superseded by the audited source proof.

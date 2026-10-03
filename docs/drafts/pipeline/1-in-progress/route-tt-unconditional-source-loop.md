@@ -3383,3 +3383,235 @@ exponential payment are prepared in /tmp/TTC56SourceBridge.lean and
 /tmp/TTC56WeightedFloor.lean, not yet checked. A 938-line production
 assembly is prepared in /tmp/ThetaCuspMixedPairOddFourFloor.lean;
 it has not been published to the Lean tree or claimed as proved.
+
+The weighted fourth minor now passes its direct Lean audit, with only
+propext, Classical.choice, and Quot.sound. All four leading-minor signs
+are established. The source congruence and exponential payment also
+elaborate; final quadratic glue currently has a finite-index/conditional
+simplification repair, not a source-sign failure. No full floor theorem
+or neutral positivity is claimed until this final audit succeeds.
+
+The complete source-weighted mixed-pair floor now passes the direct
+Lean scratch audit: mixedPairOddFour_exponential_floor has only
+propext, Classical.choice, Quot.sound. The actual radial source
+congruence, all four principal-minor signs, quadratic decomposition,
+and literal exponential payment are included. Production leaf
+ThetaCuspMixedPairOddFourFloor.lean is created and awaits its own
+full leaf audit. The actual canonical-drift coercivity audit is next;
+neutral-source positivity and global/all-rank closure remain open.
+
+Actual canonical drift coercivity now passes Lean: substituting the
+literal q(x), h(x), and normalizedCanonicalDrift(x), the complete
+first-atom central quadratic including the derivative cross term is
+at least (sum y_i^2)/7 on 5<=q<=45/8. Both the scalar coercivity and
+actual-source substitution print only propext, Classical.choice,
+Quot.sound. No free drift bound is assumed by the source theorem.
+The remaining neutral step is exact source-energy assembly with the
+mixed 1/40 and native-tail 1/10 payments; predicted reserve is 1/56.
+The new mixed-pair production leaf is wired and its targeted --old
+build is running. No umbrella or full build is used.
+
+The 951-line mixed-pair production leaf built successfully in the
+targeted `lake build --old +GaloisForLFunctions.RHTower.ThetaCuspMixedPairOddFourFloor`
+run (454 seconds for the leaf). The mandatory direct `lake env lean`
+audit is now running. Existing dependency diagnostics were replayed;
+no umbrella/full build was requested.
+
+Rejected conjecture: canonical lower compensation is singular at the
+origin and would force an exact new-border compatibility. The actual
+source theorem thetaCuspNativeOddCompensatedDet_zero refutes this: its
+value is -2 times the strictly negative native determinant, hence is
+strictly positive. The coefficient has no missing factor 3; G(0)=3Phi(0)^2.
+This imagined obstruction must not be used to retire or modify C56.
+
+Mandatory direct production audit `lake env lean GaloisForLFunctions/RHTower/ThetaCuspMixedPairOddFourFloor.lean`
+exited 0 with no diagnostics. Umbrella wiring and formal index refresh
+are complete. Global lint exits 1 for twelve unrelated unwired modules;
+no error names the new leaf. Production public-theorem axiom inspection
+is running in /tmp only. The complete neutral-source assembly probe is
+prepared in /tmp/TTNeutralAssembly.lean (1019 body lines), including
+exact coefficient inversion, pure second-pair positivity, full native
+tail payment, literal drift identity, and the actual neutral anchor.
+No positivity conclusion from that unrun assembly is claimed yet.
+
+Production axiom audit now exits 0 and prints exactly propext,
+Classical.choice, Quot.sound for mixedPairOddFour_exponential_floor.
+The temporary API-name probe was also fixed by explicit universe
+levels and passes. Seventeen superseded TTC56 scratch .olean artifacts
+were removed after the production replacement was fully audited.
+The complete source/neutral-anchor assembly is now being audited in
+/tmp/TTNeutralAssembly.lean, with one owned foreground Lean process.
+
+The first full neutral assembly did not pass: failures were finite
+index representations, an omitted SignedPoisson namespace, swapped
+sum indices in the basis-contraction identity, ambiguous private
+coefficient names, and one denominator cancellation. The actual drift
+identity itself passed with standard axioms. No neutral positivity is
+claimed from that failed run. Repairs are prepared and its audited
+foundational source/first-atom/drift part is cached as TTNeutralBase;
+firstAtomOddFour_energy_eq now also prints standard axioms only.
+The smaller source-assembly audit is running. No new options/axioms
+and no concurrent owned Lean build were used.
+
+The COMPLETE neutral source theorem now passes its direct Lean scratch
+audit. native_canonical_drift_coercive proves the literal native energy
+plus actual canonical moving-coordinate drift >=(8*q*f1^2)/56*sum y_i^2
+on 5<=q<=45/8. exists_neutral_coupledOddFour_positive then proves an
+actual x>0 with G(x)=0 where the coupled form is strictly positive for
+every nonzero native coefficient vector and every real C4. Both
+print only propext, Classical.choice, Quot.sound. Full reflected tail,
+both unequal pairs, pure second pair, inverse coordinate transfer,
+actual C3 and actual neutral-anchor existence are included.
+
+This resolves C56's neutral source-sign obstruction. It does not
+produce a single global C4 or an all-rank/integrated sign. Production
+leaf ThetaCuspCoupledOddNeutral.lean is created from the audited proof;
+its own audit remains pending. The supporting first-atom energy
+identity is added to ThetaCuspFirstAtomOddFourPositivity.lean, whose
+targeted --old build is running. No full or umbrella build is run.
+
+Supporting production first-atom energy module built successfully
+with targeted --old (108 seconds). The 603-line production neutral
+source leaf is wired and its targeted --old build is now running.
+The only semantic additions to the first-atom file are public access
+to its exact central matrix and coordinates, plus the checked literal
+source-energy identity; existing positivity statements are unchanged.
+Direct final audits and production axiom prints remain required.
+
+The production neutral module targeted --old build passed (177 seconds).
+Final direct first-atom source-file audit also exited 0 with no
+diagnostics. Direct production neutral-file audit is now running.
+The Route TT frontier map records the new source-neutral result.
+Index refresh completed; final lint exits 1 for fourteen unrelated
+unwired modules (the shared corpus changed during this work), with
+no error for any of the three changed/added source modules.
+
+Final direct production neutral audit exited 0 with no diagnostics.
+Production theorem statement and axiom checks are running in /tmp.
+The working card now states C57: test the concrete source-selected
+fourth coefficient 1+max(0,-D4/(D3*Phi(0)^2)) globally. Its zero-center
+margin follows on paper from the actual canonical three-row head;
+the hard two-sided G comparison remains open. No global producer was
+found among the partial current-corpus search hits; the search's new
+ingredient suggestion restates the checked neutral result only.
+
+FINAL AUDIT CHECKPOINT: both new production leaves and the modified
+first-atom source leaf passed targeted --old builds and direct
+`lake env lean <leaf>` audits. Public theorem statement checks confirm
+no supplied neutral point or analytic source-sign hypothesis. Axiom
+prints for firstAtomOddFour_energy_eq, native_canonical_drift_coercive,
+exists_neutral_coupledOddFour_positive, and mixedPairOddFour_exponential_floor
+contain only propext, Classical.choice, Quot.sound. Umbrellas and
+index are updated; global lint has fourteen unrelated unwired-module
+errors and none for these changes. Superseded owned proof probes and
+caches were removed; production source is canonical. Audit logs and
+research queries remain in /tmp, and minimal axiom probes import only
+production modules. No owned Lean process remains live.
+
+Route TT goal remains ACTIVE. Neutral source positivity is resolved.
+C57/global fixed C4, integrated closure, all-rank repair, and RH remain
+open. First next mathematical obligation is the unloaded coupled
+source sign throughout G<0; any failure there rules out all C4>=0
+for this particular moving direction.
+
+2026-10-02, C58/C59 checkpoint: C58 global first three leading-minor
+positivity and fourth-minor nonnegativity all pass direct Lean audits
+on q>=5, as does the Taylor-credit exponential payment. Axiom prints
+contain standard three axioms only. Exact radial source base also
+passed. Source-congruence assembly is running; no production/global
+source theorem claimed yet. Searches tt_c58_global_pair_search.json
+and tt_c59_source_box_search.json are partial (index pending); C59
+hits confirm actual canonical drift and neutral source assembly,
+not a global producer. C59 source-dependent compensation/drift boxes
+are recorded on the main card; endpoint polynomial proofs prepared
+but not run. One owned foreground Lean process at a time, no numerical
+or external symbolic experimentation, no raised proof limits.
+
+C58 production checkpoint: targeted --old leaf build succeeded
+(258s); final direct `lake env lean` leaf audit exited0 with no
+messages. Production axiom/statement probe is running. The same
+literal mixed matrix is unchanged; only the proof scope expanded
+from the neutral interval to q>=5. Compact theorem remains as a
+corollary. C59 source identification needs row decomposition after
+a default-heartbeat timeout; no limit was raised. Prepared source
+bounds retain 3*Phi^2 in the far compensation estimate and actual
+canonical coefficient/mass/center bounds. Search confirms the unique
+neutral anchor places all negative G for x>=0 beyond q=5. No coupled
+negative-G positivity, fixed-C4 positivity, or RH conclusion yet.
+
+C59 identity audit: row decomposition stayed within default limits,
+but unresolved Fin4 equalities inside correction masks and expanded
+denominator inverses left goals open. This is an elaboration failure,
+not a source counterexample. Added Fin.ext_iff simplification and the
+explicit nonzero expanded square denominator, and reran the same
+exact identity. Signs and actual source-bound audits still pending.
+C58 production audits and cleanup remain complete.
+
+2026-10-02 C59 COMPLETE: exact endpoint matrices, actual correlated
+source bounds, and full native assembly passed scratch then production
+--old build. Both RayModel and Neutral final direct leaf audits exit0,
+production capstone axiom prints standard3 only. Literal C4=0 coupled
+energy has reserve1/56 for q>=5 and is positive on the whole G<0 region.
+RayModel wired in umbrella; frontier map records this source-sign advance.
+C60 now tests one common coefficient interval0<=C4<=10^13 on that ray,
+with target reserve1/112; exact source scalar budget audit is running.
+Remaining hard source problem: a compatible fixed coefficient on pi<=q<=5.
+No global odd-four, integrated closure, all-rank or RH claim.
+
+C60 COMPLETE: production leaf ThetaCuspCoupledOddLoaded passes --old
+build, direct leaf audit and three production capstone axiom checks
+(standard3). This proves a common positive coefficient interval on the
+entire adverse source region: every 0<=C4<=10^13 retains1/112 reserve
+q>=5. No supplied source bounds. Index/umbrella updated; lint only
+unrelated umbrella omissions. C60 scratch sources removed. C61 now
+attacks literal fixed-C4 small-scale sign, starting with exact missing
+seam derivative14 via the transverse two-jet of the existing source12
+polynomial. Generic structural formula and literal source bridge are
+prepared and under audit, not yet claimed.
+
+C61 source14 subproblem closed: production ThetaCuspOddSeamFourteen
+passes --old target build, direct audit, and standard3 axiom audits of
+transverse two-jet, modular source14, literal source14 and reflected14.
+Both exact native source formulas are unconditional. Source prototypes
+and cache cleaned; umbrella/index updated. Coupled determinant cofactor
+and Jacobi identities passed scratch. Homogeneous endpoint sign proof
+now splits native/cofactor/correction normalization into declarations
+within default limits. No seam sign or C61 global positivity claimed.
+
+C61 current audit checkpoint: strict four-variable positive-definite
+square completion passed scratch (standard3). Both binary-normalizer
+and direct-rewrite endpoint attempts failed while elaborating nested
+Subtype normal forms at default200k; neither is a sign verdict.
+Switching to explicit polynomial equality certificates emitted by the
+successful Lean ring proofs, so later proofs need not repeatedly reduce
+the proof-carrying data. Literal source/leading-minor/energy assembly is
+prepared in /tmp/TTC61SeamLiteral.lean but untested and not claimed.
+The compact exact drift determinant obligation is recorded on the main
+card. C61 seam/compact/global sign remains open; no proof-limit change.
+
+C61 normalization diagnosis: emitted proof states exposed unreduced
+`match ↑(2 : Fin 7)` etc inside supposedly normalized moment cofactors.
+The restricted `norm_num only` set omitted Fin numeral projection
+simplification. Replacing it with `norm_num [momentHom]` makes the same
+proof reduce these cases before ring normalization. No mathematical
+coefficient/interval changed. Certificates-only probe passed but its
+normal forms were not polynomial signs. Full corrected endpoint audit
+running; no endpoint positivity claimed yet.
+
+C61 stronger failure and survivor: lower-C3 endpoint NEGATIVITY passed
+scratch audit, standard3. Canonical degree32 model and b=1 incidence
+then passed. Canonical endpoint and quadratic Bernstein-middle controls
+are all strictly negative; canonical_neg_of_box passed, standard3,
+for every 191/10<=X<=96/5 and 157/50<=q<=63/20. Actual-source matrix
+identification is under audit in TTC61SeamLiteral. No actual source
+negative theorem is claimed until that bridge passes. This falsifies
+the proposed positive polynomial box, not RH.
+
+The positive survivor's FOUR actual-source theorems passed scratch:
+determinant_direction_square, determinant_pos_iff,
+determinant_le_optimal, optimal_determinant_pos_iff. They retain the
+canonical coefficient exactly, have no supplied source hypotheses,
+and use standard3 axioms. Promoted into new
+ThetaCuspCoupledOddSeamDirection.lean; production build/direct audit/
+axiom/index/lint checks pending. The same-C4 optimal-direction sign
+probe is prepared separately and untested. All work remains Route TT.

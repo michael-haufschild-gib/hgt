@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Route:** SZ
 - **Date:** 2026-10-02
-- **Status:** all five final leaf audits passed; public axiom audit in progress
+- **Status:** all five final leaf audits and fifteen public axiom queries passed
 - **Target:** for every L>0, eventually in positive aperture a, every actual
   Ta vector w satisfies L*a*norm(Jw)^2 <= norm(w)^2.
 

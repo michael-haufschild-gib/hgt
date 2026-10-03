@@ -148,38 +148,18 @@ theorem re_replicaTargetIncidenceCovariance_diag
     (i : Fin (Module.finrank ℂ (replicaTargetSpan r target))) :
     (replicaTargetIncidenceCovariance μ r target state i i).re =
       ∫ x, ‖replicaTargetCoordinate r target (state x) i‖ ^ (2 : ℕ) ∂μ := by
-  rw [replicaTargetIncidenceCovariance,
-    replicaSubspaceIncidenceCovariance]
-  change
-    (∫ x,
-      star (replicaSubspaceCoordinate r (replicaTargetSpan r target)
-        (state x) i) *
-      replicaSubspaceCoordinate r (replicaTargetSpan r target)
-        (state x) i ∂μ).re =
-      ∫ x, ‖replicaSubspaceCoordinate r (replicaTargetSpan r target)
-        (state x) i‖ ^ (2 : ℕ) ∂μ
-  rw [show
-      (fun x =>
-        star (replicaSubspaceCoordinate r (replicaTargetSpan r target)
-          (state x) i) *
-        replicaSubspaceCoordinate r (replicaTargetSpan r target)
-          (state x) i) =
-      (fun x =>
-        ((‖replicaSubspaceCoordinate r (replicaTargetSpan r target)
-          (state x) i‖ ^ (2 : ℕ) : ℝ) : ℂ)) by
-    funext x
-    rw [show star (replicaSubspaceCoordinate r
-        (replicaTargetSpan r target) (state x) i) *
-        replicaSubspaceCoordinate r (replicaTargetSpan r target) (state x) i =
-      ((starRingEnd ℂ) (replicaSubspaceCoordinate r
-        (replicaTargetSpan r target) (state x) i)) *
-        replicaSubspaceCoordinate r (replicaTargetSpan r target) (state x) i
-      from rfl, RCLike.conj_mul]
-    norm_cast]
+  let coord : X → ℂ := fun x => replicaSubspaceCoordinate r
+    (replicaTargetSpan r target) (state x) i
+  change (∫ x, star (coord x) * coord x ∂μ).re =
+    ∫ x, ‖coord x‖ ^ (2 : ℕ) ∂μ
+  have hpoint (x : X) : star (coord x) * coord x =
+      ((‖coord x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
+    change (starRingEnd ℂ) (coord x) * coord x = _
+    rw [RCLike.conj_mul]
+    norm_cast
+  simp_rw [hpoint]
   exact (congrArg Complex.re
-    (@integral_ofReal X _ μ ℂ _
-      (fun x => ‖replicaSubspaceCoordinate r
-        (replicaTargetSpan r target) (state x) i‖ ^ (2 : ℕ)))).trans
+    (@integral_ofReal X _ μ ℂ _ (fun x => ‖coord x‖ ^ (2 : ℕ)))).trans
     (Complex.ofReal_re _)
 
 /-- The quenched projection moment is exactly the trace of compressed

@@ -1228,3 +1228,760 @@ of the inversion would lose the cancellation under investigation. No new
 identity-only receiver is being added. The integrated native mixed lower
 bound, uniform in physical cutoff at each positive damping, remains the
 next hard target; the new discrete absolute obstruction does not settle it.
+
+RP-45 verification: the first complete leaf check76282 found a recursive
+simp_all call, an unreduced local carrier name, and a conversion-induced
+typeclass equality. Fixed these directly. The next check9251 exposed only
+no-progress simp calls in the explicit sixteen divisor cases. Replaced
+unrestricted simplification by optional three-rule simplification and exact
+case closure/omega. Final foreground command:
+lake --old env lean GaloisForLFunctions/RHTower/RoutePLcmAbsoluteObstruction.lean
+-o .lake/build/lib/lean/GaloisForLFunctions/RHTower/RoutePLcmAbsoluteObstruction.olean
+exited0 with no diagnostics (handle28407). No resource overrides. Main
+capstones have no mathematical premises. The exact geometric theorem uses
+only its explicit prime/active/product-beyond-cutoff conditions.
+
+The proof strengthens the paper geometry to every natural M: q>M/2 implies
+M<2q, and p>=2 gives2q<=pq. No N>=2 condition is needed. All-cutoff V(M)>=
+T_M^2-722*M^2, eventual critical-weight harmonic floor, and nonsummability
+are formalized; this is the no-go's positive survivor. Card moved to
+5-failed/rp-critical-absolute-lcm-fibre-budget-2026-10-02.md, retiring only
+the absolute-budget candidate. Frontier map now includes this result and
+the previously audited RP-44 native coprime signed-source frontier. One
+umbrella import added, no umbrella build. Axiom audit and lint pending.
+
+RP-45 lint handle55573 exited1. Twelve unrelated unreachable modules:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MoebiusMollifiedCriticalMoment, MoebiusMollifiedErrorThreeLines,
+ThetaMovingShellFirstOrderPhase, ThetaTailConfluentCoordinateJets,
+ThetaTailConfluentCoordinatePort, ZetaZeroDensityPowerSaving. This is not a
+green global gate. No finding concerns RoutePLcmAbsoluteObstruction.
+Scoped diff check, direct leaf whitespace/prohibited-token scan, and unique
+umbrella import check passed. All five search JSONs, API scratch, and lint
+redirect file removed; only the running axiom-audit scratch remains.
+
+Mathematical evaluation: the turn adds an actual-source full-fibre lower
+bound and an unconditional discrete critical-weight obstruction. It closes
+the attempted absolute admission, including its positive survivor, rather
+than paying the original signed square. Both native history debts and the
+integrated mixed lower bound remain open. The next attack must keep the
+entire signed sum and its moving physical boundary; neither positivity of
+individual fibres nor absolute summation of complete fibres is available.
+Exact inversion and triangular transport alone do not estimate the remaining
+signed correlation, so they were not repackaged as frontier progress.
+
+RP-45 final audit79559 exited0. All four public capstones printed only
+propext, Classical.choice, Quot.sound. API scratch checks passed on this
+toolchain. Axiom scratch removed after exit. All owned build/check/search
+processes have exited; all owned rp45 scratch files removed. Finished leaf
+retained with output olean and one umbrella import. No full/umbrella build,
+added axioms, resource overrides, numerical experiments, subagents, commits,
+or pushes. Earlier two-process overlap was corrected and recorded above;
+it is not silently reported as full process-rule compliance. RH is neither
+proved nor falsified; the goal remains active. Next turn: attack the signed
+mixed-cofactor/terminal budget, retaining the newly forced cross-fibre
+cancellation and the RP-44 native negative cross deficit.
+
+### RP-46: joint signed correlation with the physical terminal boundary
+
+Previous goal turn classified as progress: RP-45 proved full clipped-fibre
+absolute nonsummability and its native positive survivor, with leaf and
+axiom audits. Current source, partition, and frontier map revalidated. The
+unconditional RH goal is unchanged. Both history debts and the signed
+integrated lower bound remain open. This turn targets that complete signed
+work; no separate-fibre absolute bound or identity-only receiver will count
+as payment. Corpus search started before new mathematical code.
+
+RP-46 first attempt: use the actual complete coprime-row estimates to pay
+the integrated cross work. Read CCMPrimeDeficitCoprimeRows, HeadControl,
+SquareRows, Balance, and MobiusCenteredEnergy. The row carrier is the CCM
+centered inverse q, with explicit work still needed to reconstruct the full
+deficit; it was not silently identified with RP-44's native profile. Exact
+endpoint splitting on paper gives CE(q,T)=2*q(T)*r(T)-q(T)^2+bulk(q,T),
+where sum_a q(T-log a)=r(T). Removing index1 from complete controlled rows
+thus restores q(T)^2. No bound for this bulk follows by dropping that term.
+This is a failed deduction, not a new no-go theorem or a paid native debt.
+
+RP-46 second attempt: cancel the Mellin moment at the pole before using a
+coprime quadratic form. criticalAbel_boundary_mass_zero is an actual corpus
+input for criticalContinuousAbel. Its all-real identification with the
+RP-44 full head is not assumed. The full visible-coprime symbol is proved
+as zeta(s)*zeta(t)/zeta(s+t) only when both real parts exceed1; the corpus
+also proves that exact ordinary summability domain. At sigma=(1+epsilon)/2
+with0<epsilon<1, a proposed positive spectral symbol is not yet an admitted
+source formula. Even formal positivity does not give the required lower
+estimate for the native energy. No unproved zero-free division is used.
+
+Paper completion calculation exposes a nontrivial unpaid boundary quantity.
+If R(T)=integral_0^T exp(-t)*u(t) dt and a tail g cancels this moment, then
+weighted Cauchy--Schwarz forces
+  integral_T^infinity exp(-(1+epsilon)*t)*g(t)^2 dt
+    >=(1-epsilon)*exp((1-epsilon)*T)*R(T)^2
+for0<epsilon<1. Equality in the unrestricted weighted-L2 class is attained
+by g(t)=-(1-epsilon)*R(T)*exp((1-epsilon)*T)*exp(epsilon*t) on t>T.
+The two required integrals converge because1-epsilon>0. This is a paper
+calculation, not a native uniform bound or a new Lean theorem. For the
+literal c(n)=Lambda(n)-1+2*gamma*delta1, the read cumulative/source integral
+identifies H(x)=sum c(n)*(sqrt(x)-sqrt(n)). Finite integration gives
+  R(log N)=F_N(1)/3-P_N/N+(2/3)*Q_N/N^(3/2),
+retaining the harmonic coefficient sum F_N(1), coefficient prefix P_N, and
+sqrt-weighted prefix Q_N. Thus zero moment does not erase the finite
+terminal cost; existing logarithmic PNT savings do not bound it critically.
+Recorded in rp-moment-cancelled-coprime-payment-2026-10-02.md, still in
+progress. No generic minimization or identity wrapper added to Lean.
+
+Third input tested: RouteEAllQuotientEdgeDominance's signed two-edge section.
+Its(d,qd) pair is comparable and already paid in RP at an active cutoff;
+the(2d,qd) edge has a different Gamma--Hankel weight. No kernel comparison
+was proved, so the Route E sign was not transferred to the RP source.
+The remaining joint signed boundary/cofactor estimate is still open.
+
+RP-46 corpus audits: signed-payment query11082 complete, no errors,
+64501 indexed files/zero pending, query1188365/coverage=current1188388.
+Autocorrelation query15493 complete, no errors,64502 files, generations
+1188406/1188415/1188416. Moment-coercivity query67804 complete, no errors,
+64504 files, generations1188451/1188464/1188465. All relevant candidates
+source-only; semantic coverage unmeasured within reporting budget. Read
+candidate_lemmas, source_arguments, proof_ideas(empty), and ingredient_sets.
+Generated exponential-sum correlation recipes have different carriers;
+the signed boundary-moment recipe does not admit the positive square; the
+zero-Mellin recipe is conditional on a zeta zero and does not prove the
+needed source energy. No compiler certificate inferred from retrieval.
+
+Evaluation: no new verified critical estimate or Lean theorem this turn.
+The completion attempt identified the exact additional native terminal
+quantity, rather than assuming a free zero-moment repair. Continue on that
+joint signed boundary budget; do not repeat the endpoint-row or positive
+symbol deductions. This is hard mathematics, not an external blocker.
+RH goal remains active and unchanged. No Lean files changed, so no leaf or
+umbrella build, no new lint claim, and no added premises/axioms. All three
+owned searches exited0; their temporary JSON files removed after logging.
+
+### RP-47: joint native boundary and chronological signed payment
+
+Previous turn classified as no verified frontier advance. Revalidated its
+paper boundary combination and current log; no process remains from it.
+Goal unchanged: unconditional RH via RP, not a conditional receiver or a
+generic completion theorem. This turn tests the completion cost against
+the original signed chronological history and searches for a source-specific
+joint estimate. Both native debts remain open. Corpus search precedes any
+new mathematical code.
+
+RP-47 first search46179: complete, no errors,64512 indexed files/zero
+pending; query1188558, coverage1188587/current1188590. Semantic coverage
+unmeasured within reporting budget. Relevant hits source-only; proof_ideas
+empty. The history recipe gives an upper escape, not the sought lower
+floor; the two CCM balances retain signed work, not its critical bound.
+
+Second search18757 exited0 with partial semantic retrieval (Qdrant timed
+out within budget);64517 indexed/zero pending, query1188650,
+coverage1188658/current1188672. Refresh incomplete because background
+indexer running. Inspected candidate_lemmas, source_arguments,
+proof_ideas(empty), ingredient_sets. Suggested prime-gap/covariance recipe
+has different carriers; finite selection examples and Route E bounds do
+not pay native RP work. Used available hits and exhaustive rg references.
+
+Read literal normalized variance increment, CCM chronological work,
+prejump sampling, finite integrated deficit, and signed critical work.
+Positivity yields the wrong direction for the missing work estimate.
+On paper the zero-moment completion cost added to its interior square
+leaves +a*r(T)^2, where a=(1-epsilon)/2; no terminal cancellation results.
+Recorded exact formulas in the RP-46/47 moment-cancelled payment card.
+No new verified estimate; no Lean code or build yet. Next search41069
+targets complete prime insertion with damped physical clock and mixed
+correlation. The already proved diagonal absorption is not a new payment.
+
+Third search41069 exited0, partialfalse/errorsnone;64517 files, query1188679,
+coverage=current1188693. Source-only candidates, semantic coverage
+unmeasured, refresh deferred to background indexer. Read all candidate and
+source-argument statements plus recipes; the proposed insertion-cost bound
+still grows with core depth, and triangular finite-counting energy is not
+the literal continuous source moment.
+
+Fourth search27126 exited0, partialfalse/errorsnone;64517 files, query1188763,
+coverage=current1188766. Same source/semantic limitations. Inspected all
+candidate_lemmas, source_arguments, proof_ideas(empty), ingredient_sets.
+The suggested damped finite-array and Ramanujan recipes have different
+carriers. No native damped initial-core energy estimate was supplied.
+
+The attempted all-finite-core damped estimate is already contradicted on
+paper by reweighting the physical interval in MobiusDivisorShellAnchorDebt;
+this is not counted as new research. Narrowed to the entire initial-prime
+core, retaining every small prime. New paper candidate and proof recorded
+in ../5-failed/rp-damped-initial-prime-energy-escape-2026-10-02.md: for0<epsilon<1,
+natural initial-core full-ray damped energy, and its tail beyond any
+polynomial prime-scale cutoff, diverge. Proof uses a strictly interior
+Mellin functional, unit-source positivity, complete small-prime loss, and
+terminal-window resonance. Does not assert escape for the physical full
+head and does not falsify RH. Physical-cutoff payment remains open.
+
+Owned Lean API scratch62693 exited1: the two improper-integral names are
+root declarations, not MeasureTheory; Real.log_one_add is absent and the
+read inequality is Real.le_log_one_add_of_nonneg. Other queried names
+passed. No repository Lean file changed. Current symbolic prototype is
+/tmp/rp47-damped-factor.lean; owned foreground check73821 is running.
+Do not start another Lean process until that handle exits. No resource
+overrides, numerical experiment, full build, umbrella edit, or final audit
+claim. Current prototype has generalized local factor loss and the
+small-prime harmonic estimate; global amplification/physical transfer
+remain to implement and audit.
+
+RP-47 formal progress: prototype73821 exited1 (real-power coercion and
+harmonic normalization); copied the work into the new owned leaf
+formal/GaloisForLFunctions/RHTower/RoutePDampedInitialPrimeEscape.lean and
+corrected those issues. Leaf96953 exited1 (two invalid Complex API names,
+power rewrite normalization, one instance-conversion mismatch). Corrected
+these without changing the mathematics or resource limits. Energy scratch
+72588 exited1 (measurability hint, real-power rewrite, local-definition
+unfolding, parser spacing, redundant tactic). Corrected. Leaf4424 exited1
+with three remaining local normalization issues; corrected. The complete
+initial-product lower bound, source Mellin weld, positivity, and superpower
+comparison reported no separate errors, but no dependency-closed success
+is claimed while an earlier proof fails.
+
+Current owned foreground check89167 is /tmp/rp47-energy.lean. Wait for its
+terminal result before another Lean invocation. The repository leaf is
+currently 438 lines of private proof work, not wired into the umbrella.
+Energy scratch now includes the weighted Cauchy--Schwarz estimate, finite
+prefix estimate, and uniform upper bound for epsilon>1. Next: integrate
+checked energy code, prove the literal initial-core tail statement, final
+leaf build with explicit olean, axiom audit in /tmp, umbrella wiring, lint.
+The RH goal remains open; this candidate only tests a full-ray replacement.
+All four searches have exited and their audit data are logged. Old API and
+factor scratch files are superseded by the corrected source and removed;
+the energy scratch remains live until its owned check ends.
+
+RP-47 continuation: energy89167 exited1 with two normalization errors;
+both were corrected when merging its weighted Young/Cauchy--Schwarz,
+prefix, and strong-damping proofs into the repository leaf. Both public
+statements are now implemented: every polynomially rescaled natural-core
+tail escapes for0<epsilon<1, and every finite core has a uniform full-ray
+bound forepsilon>1. Neither concerns the exhaustive physical head.
+Leaf36482 exited1 with three local normalization errors. Leaf30124 then
+exited1 because a standalone cosine simplification made no progress.
+Removing it exposed the cosine parity goal only after ring normalization
+in leaf28159 (exit1). Changed the final two steps to ring_nf followed by
+controlled cosine-parity simplification. Owned foreground final candidate
+87557 is running with explicit olean output; no success or axiom audit is
+claimed yet. The earlier scratch handles are terminal.
+
+Next centered-Euler search48058 exited0 but partialtrue, with unfinished
+filter_and_judge and a local-worker disconnect/cancellation report.
+64540 files inventoried, zero pending; querygeneration1189178,
+coverage1189202/current1189203. Semantic coverage unmeasured and refresh
+delegated to background indexer. All candidate/source-argument statements,
+proof_ideas(empty), and ingredient_sets were inspected. Relevant results
+are source-only. The suggested integral/endpoint recipe repeats the known
+identity and supplies no upper bound for centered curvature. The renewal
+coefficient-energy estimates control another carrier, not the signed
+physical reconstruction. Read those source distinctions explicitly.
+
+Rechecked the old RP-5--RP-10 and RP-23 attempts before advancing a new
+curvature conjecture. A repeat of the inverse Euler identity, coarse
+Selberg recursion, or square-root stationary reconstruction would add no
+frontier progress; each already leaves the same signed arithmetic term.
+The search86028 instead asks for joint signed curvature/renewal energy
+mechanisms. No new finite-cutoff inequality is proved by these reads.
+
+Leaf87557 exited0: both public statements checked, with only three unused
+simp-argument warnings. Removed those three arguments, retaining ring_nf
+followed by Real.cos_neg. Clean final leaf audit90367 is running. This is
+a cleanup of the checked proof, not a change to the mathematical claim.
+
+Search86028 exited0 with partialtrue; filter_and_judge returned malformed
+JSON and semantic retrieval hit its Qdrant budget. 64542 files inventoried,
+zero pending; query1189212, coverage1189245/current1189247, semantic
+coverage unmeasured, background refresh incomplete. Inspected all candidate
+and source-argument statements, empty proof_ideas, and ingredient_sets.
+The proposed paired-prime recipe concerns a different deletion weight and
+does not transport to RP. No returned upper bound was adopted.
+
+Next paper mechanism examined: at a square-root processed core, every
+remaining prime has an already-complete child at the smaller quotient;
+two such late primes have inactive product. Combining that exact terminal
+sum with the native zero inverse-five-halves moment suggested cancellation
+of the leading continuum prime kernel. Source inspection found the stronger
+result already formalized in MobiusDivisorCriticalMovingHeadAsymptotic:
+the full moving-core head has all-cutoff asymptotic
+-divisorHarmonicBoundary*x^(3/2)/(3*log(x)^2). Its exact error decomposition
+retains the truncated Cauchy integral and Mertens-error/Abel-velocity mixed
+integral. MobiusDivisorCriticalMovingCoreObstruction retains the same
+negative child correction for every terminal extension. Thus this main-term
+cancellation is not new research and supplies no native critical bound.
+The hard question is the joint remainder of that actual core and complete
+late-prime correction, retaining both truncations. Search92130 for the
+half-cutoff/moment mechanism is running. No identity-only module is added.
+
+Search92130 exited0, partialfalse, no errors/unfinished stages. 64547 files
+inventoried, zero pending; query1189291, coverage1189311/current1189313.
+Semantic coverage unmeasured; background refresh incomplete. Candidate and
+source-argument statements, proof_ideas(empty), and ingredient_sets all
+inspected. The suggested boundary/energy recipe gives a moving-head Mellin
+limit and the already-known late-child identity, not joint remainder control.
+No fresh compiler status was inferred from source-only retrieval.
+
+Final leaf90367 exited0 with no diagnostics, explicit olean generated.
+Wired RoutePDampedInitialPrimeEscape once after RoutePLcmAbsoluteObstruction;
+no umbrella build. Axiom audit41983 is running in /tmp. Lint93355 exited1:
+eleven unrelated unreachable RHTower modules, no finding for the new leaf:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MoebiusMollifiedCriticalMoment, MoebiusMollifiedErrorThreeLines,
+ThetaCoordinateCanonicalGlobal, ThetaMovingShellFirstOrderPhase,
+ZetaZeroDensityPowerSaving. Global lint is not green. Existing large-file
+warnings also remain. No unrelated module was edited to clear this gate.
+
+Axiom audit41983 exited0: both public theorems depend only on propext,
+Classical.choice, Quot.sound. No added axiom or sorryAx. Closed the full-ray
+replacement candidate in5-failed with its exact positive tail survivor,
+updated the RP frontier map, and retained the successful olean and umbrella
+import. All owned searches and Lean/lint processes are terminal.
+
+Contribution assessment: new unconditional proof excludes full-ray
+initial-core replacement at every positive damping below one, with physical
+tail localization stronger than full-energy unboundedness. It advances a
+specific failed payment mechanism; it does not pay the native finite
+history, prove RH, or falsify RH. Further centered-Euler, Selberg, and
+square-root terminal tests supplied no new hard estimate. Do not count
+their existing identities or moving-head asymptotic again as progress.
+
+Next hard attack must retain the complete same-cutoff difference between
+the actual square-root core and its full late-prime child sum. At integer
+N the read extension identity is F_N=S_N+L_N, with S_N the native source
+and L_N retaining every child and endpoint. Both F_N and L_N have a large
+common negative main contribution; bounding either separately loses the
+critical cancellation. The zero source moment pays only the first
+continuum term, and its nonzero logarithmic moment already supplies the
+known next term. A new argument must control their joint remainder through
+the actual Mertens-error/Abel-velocity pairing, or derive a different
+source-specific signed payment. No contractive coefficient, positive-square
+admission, all-real carrier bridge, or RH premise is being assumed.
+The unconditional RH goal remains active and unmet.
+
+### RP-48: common-source core/late-prime remainder
+
+Previous verified advance remains RP-47's damped full-ray replacement
+obstruction. This turn kept the actual square-root core, complete late-prime
+correction, and common cutoff. New paper record:
+rp-joint-core-late-remainder-2026-10-02.md. No new Lean theorem or critical
+bound was established; the native high-LCM and coprime work remain unpaid.
+
+Read the exact log-profile, compensated Cauchy, prime-tail error, Mertens
+log-error, retained ordered-prime boundary, and moving-head Mellin laws.
+The known negative core main term is also the complete child's main term.
+The zero source moment kills the first continuum term, while its nonzero
+first logarithmic moment already accounts for the next term. Subtracting
+the full child expression recovers the native source by identity; it is
+not an independent forcing bound. No all-real full-head bridge was assumed.
+
+The new attempted mechanism was common-source symmetrization. Relating
+Mertens error to the actual q=exp(-t)*psiDefect(floor(exp t)) retains the
+integer harmonic comb, continuous subtraction, and proper-prime-power
+measure. Between entries q'=-q; its jump at log n is (Lambda(n)-1)/n.
+Replacing the floor source by a continuously centered psi source would
+erase a real term. For a smooth comparison profile the reflected
+2*g''+5*g'+3*g convolution leaves
+-2*g(t/2)*g'(t/2)-(5/2)*g(t/2)^2. No signed estimate pays this midpoint
+boundary. Native application additionally needs the Stieltjes/jump audit.
+These are paper diagnostics, not new distributional Lean declarations.
+
+The retained-prime transform keeps p<=y inside its integrand and only has
+the established one-sided damping-boundary result. Factoring it as a full
+prime-zeta transform or continuing an ordered source across the critical
+boundary is not justified. The critically weighted target is a uniform
+bound for integral_0^T exp((1-epsilon)*t)*g(t)^2,0<epsilon<1; polynomial
+logarithmic moment control does not imply it.
+
+Also tested a short reciprocal-Mobius square completion. Exact reflection
+retains a product-dependent sawtooth pairing; the terminal band contributes
+X*(sum mu(a)/a)^2-(sum mu(a))^2, with mixed head blocks still present.
+Prior RP-3/10/11/16 already exposed the proposed simpler cancellations.
+Read the exact second-grade hyperbola and Euler-renewal laws: the former
+keeps future-error work alongside the square; the latter keeps signed
+deficit values. Neither gives the required upper estimate from positivity.
+The positive-renewal comparison rigidity cannot be applied to that signed
+native source. Largest-prime decomposition was already checked in RP-28.
+No repeated identity, coefficient diagonal, or conditional recipe is counted
+as a frontier improvement.
+
+RP-48 search audits, all commands exit0:
+- Joint-remainder65041: partialtrue; semantic_retrieval unfinished after
+  local-worker disconnect/cancellation.64552 files,0pending;
+  query1189376,coverage1189398,current1189399.
+- Common-source41741: partialfalse,no errors/unfinished stages.64557 files,
+  0pending;query1189436,coverage1189457,current1189458.
+- Reciprocal-square62064: partialfalse,no errors/unfinished stages.64557
+  files,0pending;query1189449,coverage1189476,current1189477.
+- Joint-LCM86076: partialfalse,no errors/unfinished stages.64562 files,
+  0pending;query1189532,coverage=current1189543.
+- Signed-renewal63327: partialfalse,no errors/unfinished stages.64562 files,
+  0pending;query1189534,coverage1189561,current1189567.
+- Clipped-tail75772: partialtrue;semantic_retrieval unfinished after Qdrant
+  HTTP408.64563 files,0pending;query1189543,coverage1189567,current1189568.
+
+All six report unmeasured semantic coverage and incomplete background
+refresh. Candidate/source statements, proof_ideas, and ingredient_sets were
+inspected; relevant hits are source-only, not fresh compiler certificates.
+The reciprocal-square generated recipe assumes the approximation it would
+need to prove. Other recipes use known identities, a different Route-E
+weight, assumed nonpositive blocks, or fixed-core estimates. None provides
+the missing native signed bound. One guessed proper-prime-power path failed
+before being located with rg --files; no source content was inferred from
+that failed read. A verbose JSON print truncated; its candidate and source
+statements were subsequently inspected in compact output.
+
+Contribution assessment: no new hard estimate this turn. The exact failed
+steps are recorded to prevent repeating them. No production Lean edits,
+builds, new axioms, numerical experiments, resource overrides, subagents,
+commits, or frontier-map promotion. Prior successful leaf and axiom audits
+were not rerun; the previously reported unrelated lint failures remain
+unresolved. All owned searches are terminal. Scratch search outputs are
+removed after this record; only the paper card/log are retained.
+
+Next attack must estimate the full ordered arithmetic work jointly with
+its midpoint/terminal boundary, including integer entries and proper prime
+powers, rather than derive another product-convolution identity. The
+signed high-LCM bound, native coprime-work lower bound, both history debts,
+and unconditional RH proof/falsification remain open. Goal remains active.
+
+### RP-49: prime-entry signed correlation with native floor entries
+
+Previous turn classified as no frontier progress. Revalidated RP-48 and
+the current frontier map. This turn kept the actual integer jumps while
+testing a joint midpoint/terminal energy estimate. Paper record:
+rp-prime-entry-signed-correlation-2026-10-02.md. No new Lean theorem or
+critical bound was obtained.
+
+Read the exact chronological prime work, prejump pair identity, jump
+budget, entry-boundary correction, and critical Abel primitive. A finite
+paper calculation for F_n=psiDefect n, c_n=Lambda(n)-1 gives weighted
+q energy plus the terminal square equal to F_1^2, the signed prejump sum
+2*sum F_(n-1)*c_n/n^(1+epsilon), and squared jumps. This retains ordinary
+integer entries as well as all prime powers. The damped squared jumps
+are already payable; the signed middle sum has no new uniform upper bound.
+Direct Cauchy loses a factor of n between the sampled-state trace and the
+continuous energy. Weighted telescoping restores the positive terminal
+square and interior state energy. Neither calculation supplies absorption.
+
+Inspected the residue martingale as a possible arithmetic source of
+orthogonality. Its exact physical carrier has raw mu(n) coefficients and
+cell weights1/((j+1)*(j+2)); no identity with RP's chronological products
+was assumed. The bounded orthogonal component leaves predictableDrift.
+The follow-up source gives a stronger existing reduction to one signed
+logarithmic-clock quotient plus bounded/vanishing errors, still with the
+quotient norm unpaid. The existing raw-drift no-go excludes uniform
+integrability/strong convergence and retains a moving physical tail.
+It does not assert unbounded drift norms or falsify native RP. A supposed
+compactness completion would contradict that read no-go. No new bound or
+source-domain bridge was produced by these reads.
+
+Read criticalAbelLogAutocorrelation_negative_beyond: the actual source
+already has negative correlations beyond every lag cutoff. Blanket
+eventual positivity cannot pay its signed delay work. Its continued
+transform is not a positive critical-square admission theorem.
+
+RP-49 search audit, all three commands exit0:
+- Entry/midpoint33546: partialfalse,no errors/unfinished stages;64567 files,
+  0pending;query1189608,coverage1189622,current1189623. Many unrelated
+  affine-midpoint/ideal hits; used the relevant source results and issued
+  the more focused prejump query rather than treating the recipe as proof.
+- Prejump35115: partialtrue,semantic_retrieval unfinished after local-worker
+  disconnect/cancellation;64568 files,0pending;query1189623,
+  coverage1189631,current1189632. The generated power-spectrum recipe uses
+  the trivial-width endpoint or assumes the desired half-plane bound.
+- Drift97690: partialtrue,semantic_retrieval unfinished with local deadline
+  and worker-disconnect/cancellation errors;64568 files,0pending;
+  query1189623,coverage1189636,current1189637. Useful exact drift reductions
+  were read in source; no estimate for the retained signed quotient appeared.
+
+All report unmeasured semantic coverage and incomplete background refresh.
+All candidate/source statements and proof_ideas/ingredient_sets inspected;
+source-only retrieval was not treated as compiler evidence. No generated
+recipe supplied the hard signed bound.
+
+Contribution assessment: no new frontier estimate this turn. The finite
+jump diagnostic records the precise trace loss, and the carrier audit
+prevents an invalid martingale transfer; neither completes a required
+payment. No production Lean edits, builds, axioms, numerical experiments,
+resource overrides, subagents, commits, or frontier-map promotion. No lint
+or previous successful leaf audit rerun. All owned processes are terminal;
+three temporary search outputs are removed after this record.
+
+Next hard target remains an upper estimate of the actual signed prejump
+work with its terminal compensation, requiring arithmetic cancellation
+beyond squared-jump control or a product-only Selberg identity. High-LCM
+control, native coprime-work control, both history debts, and RH remain
+open. Goal remains active; no completion or external blocker is asserted.
+
+### RP-50: native zero-damping square obstruction and positive survivor
+
+The exact Selberg forcing did not pay the prejump work. Its n>N/2 band
+still contains (2 gamma-1)*sum mu(n)*log(N/n); the reciprocal-phase
+estimate does not bound that weighted sum. No Selberg absorption estimate
+was obtained. The detailed attempt and six-search audit are on
+rp-selberg-prejump-forcing-2026-10-02.md.
+
+New verified source result: the literal Route-P ray is not square
+integrable on t>0. A hypothetical L2 transform is analytic on Re z>0;
+the existing regularized-zeta analytic rigidity identifies it with the
+actual continuation. Cauchy-Schwarz forces zero boundary residue, while
+a literal Hardy zero supplies a nonzero quantized residue. No RH premise
+is used. Its finite-interval square energies are cofinally unbounded.
+
+New verified native result: H_full(x)=criticalContinuousAbel(x) for every
+real x. Finite Möbius inversion identifies integer values; a finite core
+covering one unit interval supplies exact square-root interpolation.
+The exponentially decaying Route-P correction transfers nonintegrability
+to h(t)=exp(-t)*H_full(exp t). Each finite interval admits h squared, but
+for every B,T some U>=T has integral_0^U h squared>B.
+
+Files: RoutePSourceCriticalSquareNonintegrability.lean and
+RoutePNativeCriticalSquareEnergy.lean. Final foreground --old leaf audits
+69078 and87829 exit0, with explicit oleans. Scratch/API/axiom audits46678
+and64016 exit0; all seven public theorems depend only on propext,
+Classical.choice, Quot.sound. Both leaves wired into the umbrella without
+building it. No new resource override, axiom, premise shortcut, numerical
+experiment, subagent, commit, or push.
+
+Lint8491 exits1 with fourteen other unreachable RHTower modules:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+DirichletLLogStrip, MoebiusMollifiedCriticalMoment,
+MoebiusMollifiedErrorThreeLines, SuzukiTaV2PrescribedCarrierCollapse,
+ThetaCuspCoupledOddRayModel, ThetaMovingShellFirstOrderPhase,
+ThetaTailGaussianCoarea, ZetaZeroDensityPowerSaving. No new-leaf error;
+global lint is not green. No unrelated file was changed to conceal this.
+
+No-go closure: ../5-failed/rp-native-undamped-square-budget-2026-10-02.md
+records the dependency-closed paper proof and exact positive survivor.
+This is a native critical-boundary advance, not a bound for positive
+damping or an RH proof. The coprime negative-part conjecture has a paper
+proof: an integrable zero-damping negative part would bound every damped
+native square by the admitted combined budget plus that mass; restricting
+to finite intervals and letting damping decrease gives a uniform bound,
+contradicting the new survivor. This transfer is not yet formalized.
+
+Next: formalize that native signed-work consequence with all admission
+steps, then attack the positive-damping signed payment itself. Do not
+seek a damping-independent finite square budget, now unconditionally
+excluded. Signed high-LCM control, coprime-work payment at each positive
+damping, both history debts, and RH remain open. Goal stays active.
+
+### RP-51: infinite negative work of the complete native coprime history
+
+Previous turn made a verified boundary advance, not a positive-damping
+payment estimate. This turn proved the proposed signed-work consequence
+with all separate-admission steps retained. Define
+C(t)=exp(-t)*CC(nativeProfile,t), N(t)=max(-C(t),0). The exact admitted
+balance is B=h^2+C. For each epsilon>0, exp(-epsilon*t)*B is integrable
+and its integral tends to zero as epsilon decreases to zero. A finite
+integral of N would first admit exp(-epsilon*t)*h^2 by domination, then
+bound its full integral by the combined Mellin value plus integral N.
+Finite-interval dominated convergence bounds every undamped partial
+square energy by integral N, contradicting RP-50. No separate square
+integrability premise or undamped combined integral is used.
+
+Positive survivor: N is locally integrable and its partial integrals
+exceed every real budget at arbitrarily late cutoffs. Consequently the
+literal native coprime cross term is negative arbitrarily late. This
+strengthens the earlier one-time native negative witness; it does not
+falsify any fixed-positive-damping payment conjecture or RH.
+
+RoutePNativeNegativeCoprimeWork.lean passed final foreground leaf audit
+51819, `lake --old env lean <leaf> -o <olean>`, exit0. Scratch/API/axiom
+audit18596 exit0; all three public results use only propext,
+Classical.choice, Quot.sound. Wired into RHTower.lean without building
+the umbrella. No new resource override, axiom, premise shortcut,
+numerical experiment, subagent, commit, or push.
+
+Lint63094 exit1: ten unrelated unreachable modules:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MoebiusMollifiedCriticalMoment, MoebiusMollifiedErrorThreeLines,
+ThetaMovingShellFirstOrderPhase, ZetaZeroDensityPowerSaving. No new-leaf
+error; global gate is not green.
+
+Three deep corpus searches completed partial=false, no errors or
+unfinished stages. Query/coverage/current generations: negative-work
+1190199/1190203/1190203, 64,600 files; positive-damping payment
+1190319/1190345/1190346, 64,608 files; conditioned coercivity
+1190363/1190363/1190363, 64,609 files. Zero pending files each; semantic
+coverage unmeasured, source-only hits, background refresh incomplete.
+The second query warned of older coverage. Candidate/source statements,
+proof ideas and ingredient sets inspected. Unrelated damping, gcd, and
+residue-class lower-bound recipes were not used as proof certificates.
+
+Positive-damping trial retained the complete short Mobius reconstruction
+and every pair in its double-short correction. The bounded source
+correction is already paid; the remaining actual quadratic form is
+explicitly RH-equivalent in riemannHypothesis_iff_shortQuadraticWork_bound.
+No new coercive inequality followed. This repeats the unresolved signed
+work rather than removing it; no identity-only leaf was added for it.
+
+The detailed dependency-closed paper proof, source audit, and positive
+survivor are in ../3-formalized/rp-native-negative-coprime-work-2026-10-02.md.
+The failed native undamped-budget card and RP frontier map now record
+the formally verified signed consequence. Assessment: new native
+zero-damping obstruction proved; no positive-damping payment obtained.
+The next hard target remains fixed-positive-damping signed work with
+physical cutoff retained, not a damping-independent finite negative
+budget or a bounded generic inverse. Signed high-LCM control, both
+native history debts, and unconditional RH remain open. Goal active.
+
+RP-51 cleanup: all three owned search JSON outputs and the API/axiom
+scratch removed after recording evidence. Every owned Lean/search/lint
+handle has exited. Scoped diff whitespace check passed. No stale owned
+scratch or running process remains.
+
+### RP-52: complete native undamped signed balance
+
+Previous turn made verified boundary progress. Hard target remains
+fixed-positive-damping signed payment, high-LCM control, and both history
+debts. Initial cutoff-integrated fibre trial did not produce a new bound.
+New formalized result: the full native combined balance is absolutely
+integrable at zero damping with total mass zero. Exact unit-head
+Lipschitz regularity pays each adjacent square-profile dilation in L1
+at inverse-square cost. Signed Abel summation then uses the proved
+inverse-square Mertens summability; the zero Mobius harmonic mass fixes
+the integral. Consequently complete signed coprime-work partial
+integrals tend to minus infinity, while their sum with native square
+energy tends to zero. In addition, all positive native coprime work is
+integrable even without damping, since max(C,0)<=|B|. This strengthens
+RP-51 negative-part escape and isolates damped negative work as the
+remaining admission/payment problem in this branch.
+
+Detailed paper proof and search evidence:
+../3-formalized/rp-native-undamped-signed-balance-2026-10-02.md. New leaf
+RoutePNativeUndampedBalance.lean passed final foreground --old audit2035
+with explicit olean. Wired without building the umbrella. Final API and
+axiom scratch37380 exited0 and printed only propext, Classical.choice,
+Quot.sound for all six public results, after two namespace repairs in
+the earlier scratch checks. No RH claim. No additional source bound,
+separate square admission, numerical experiment, subagent, resource
+override, commit, or push.
+
+Lint49480 exits1 with the same ten unrelated unreachable modules listed
+in RP-51; no new-leaf error. Global gate is not green.
+
+The successful single-Abel admission does not extend by simply taking
+absolute values after double Abel summation of the square. The native
+pair kernel has simultaneous scaling degree -1-epsilon; separate
+Mertens envelopes leave a growing dyadic majorant for epsilon<1.
+This diagnoses the estimate, not the actual signed sum. Next attack
+must retain joint arithmetic cancellation between the two coefficient
+variables or directly pay the native damped negative work. Signed
+high-LCM control, both history debts, and unconditional RH remain open.
+Goal active.
+
+RP-52 final cleanup: all owned processes terminal; API scratch and
+temporary research/lint files removed. Scoped whitespace check passed.
+
+### RP-53: joint-fibre and time-weighted payment trials
+
+Prior turn completed RP-52's final audits: verified progress. This turn
+produced no new audited frontier estimate. Hard target remains native
+negative work at each positive damping, signed high-LCM control, and
+both history debts. Detailed calculations and five search audits:
+rp-native-joint-fibre-payment-2026-10-02.md.
+
+The complete divisor-lattice trial retains exterior centered mass even
+when exterior raw source weights vanish. Gcd reindexing of the finite
+integrated square leaves nonnegative common-scale weights and the
+primitive Mobius signs, with upper endpoint X/g retained. Shifted-pair
+receivers assume the needed correlation budget and do not produce it.
+The square-root-core source balance was already formalized and retains
+the same signed terminal cancellation, so it was not duplicated.
+
+Time multiplication gives the exact corrected source
+w=t*u-D_Lambda(u), not t*u. Positive first-block source mass and native
+prime-window density expose dense forcing at exponential scale; RP-52's
+bounded-source Abel admission cannot be reused. Subtracting a leading
+exponential changes reconstruction by exp(t)*sum mu(n)/n and retains a
+new unpaid native term. No RH conclusion or new Lean claim follows.
+
+Next attempt keeps both coefficient variables and applies the exact
+log-weighted Mobius convolution identity jointly to the finite pair
+kernel before estimating; the physical endpoint must remain. Its
+two-variable forcing difference needs a signed payment, not just a new
+identity. This is an active mathematical problem, not an external
+blocker. Goal active. No Lean changes or builds; all five owned searches
+terminal and temporary JSONs removed. Scoped whitespace check passed.
+
+### RP-54: joint prime forcing, retained tail, and native self-convolution
+
+Route RP. RP-53 supplied diagnostics, not a frontier theorem. This turn
+also produced no new frontier inequality or Lean result. The exact finite
+log-weighted identity retains native prime-lag correlations. Completing
+their squares places the difference energy on the wrong side for an
+upper payment. Native zero-moment subtraction instead retains an
+exponentially weighted terminal square. Neither operation pays it.
+
+The actual source equations yield the paper identity
+L*a=u0+2*v*v+5*v*a+3*a*a-2*gamma*a, with causal convolution,
+a=criticalAbelLogProfile, v=criticalAbelLogVelocity, and harmonic prime
+measure L. The causal n=1 correction is retained. Existing L1 admissions
+give an unweighted convolution estimate, but the desired positive-damping
+work has additional weight exp((1-epsilon)*t). Its conjugated cubic term
+has no established sign. No exponential admission has been smuggled in.
+
+Detailed calculations, source provenance, and four search audits are in
+rp-joint-von-mangoldt-payment-2026-10-02.md. No identity-only leaf was
+added. Next attack must keep the inverse-dilation remainder and prime
+forcing together in their finite bilinear kernel; separate source norms
+lose the critical cancellation. Positive-damping negative work, signed
+high-LCM control, both history debts, and RH remain open. Goal active.
+
+### RP-55: joint log kernel and source-derivative tests
+
+Prior turn classified as no frontier progress. The finite joint log
+forcing was reindexed in both coefficient variables. Its two logarithmic
+kernels sum exactly to log(x)*H(x)^2; recombination yields no residual
+gain. Using the actual unit-source derivative instead gives
+(2+epsilon)*E = integral H*psiDefect*x^(-5/2-epsilon) minus the retained
+terminal square. A second derivative returns RP-49's signed prejump sum.
+
+The common-prime part of the ordered Lambda pair sum is summable already
+at harmonic weight: sum_p (log p)^2*p^(-2)/(1-p^(-1))^2. Distinct-prime
+correlation and ordinary-integer centering remain. The reciprocal-phase
+trial still contains RP-36's nonoscillating quotient-one source, and the
+exact finite Heath--Brown identity leaves a product-cutoff state to bound.
+No new critical estimate or Lean result was obtained. Detailed paper
+tests and four corpus audits are in
+rp-joint-log-kernel-cancellation-2026-10-02.md.
+
+Next attack uses finite bilinear dispersion on the complete short
+quadratic source, retaining smooth source and maximum-index boundary.
+Its target is the signed off-diagonal cancellation, not another
+reconstruction or conditional receiver. Positive-damping negative-work
+payment, signed high-LCM control, both history debts, and RH remain open.
+Goal active. No Lean source changes or builds; no external blocker.
+
+### RP-56: short quadratic dispersion and retained contour boundary
+
+Prior turn made no frontier progress. This turn retained the complete
+short source matrix, smooth main terms and physical cutoff. Its
+separable exponential part leaves a quadratic harmonic-Mobius moment
+correlation, with no proved sign. The far-right Laplace source has a
+divided-difference Hankel pairing; its analytically continued zero-mode
+cancellation does not admit the physical infinite pairing. The exact
+finite square retains two upper-triangle endpoint terms.
+
+The actual raw-prefix critical mollifier estimate loses a factor of its
+length even on a fixed ordinate window. Integration by parts instead
+retains a signed product with the logarithmic prefix, a finite contour
+boundary and the smooth pole residue. The logarithmic prefix times zeta
+has +Lambda coefficients in its short range; long and mixed coefficients
+are still uncontrolled. Tail extension freedom and the residual-square
+support gap recover existing reconstruction, not an estimate.
+
+Four searches and paper diagnostics are recorded in
+rp-short-quadratic-dispersion-2026-10-02.md. No new frontier theorem or
+Lean change; no build. Continue the joint finite-contour/physical-cutoff
+estimate with all these terms retained. Positive-damping negative-work
+payment, signed high-LCM control, both history debts and RH remain open.
+Goal active; no external blocker.

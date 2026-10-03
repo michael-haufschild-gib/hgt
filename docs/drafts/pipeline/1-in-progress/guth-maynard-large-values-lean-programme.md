@@ -333,3 +333,13 @@ oscillatory integrals). They contain **no** Heath-Brown estimate (no `T^{1/2}` o
 Iwaniec–Kowalski Ch. 9–10 for the refinements. The block stands: HB 1979 JLMS Thm 1 / Ivić / Iwaniec–Kowalski are the
 only proofs on record and none is open-access. Montgomery's Proposition 9 is a possible weaker substitute for the `S₂`
 bound; whether GM's Theorem 1.1 survives with it is not examined.
+
+### Heath-Brown Theorem 1.6, source audit continued (2026-10-03)
+* Checked: Kerr arXiv:1909.12075 (Theorem 1), Tao–Trudgian–Yang arXiv:2501.16779 (and the ANTEDB blueprint,
+  Lemma 10.18 `add_lver_heath_brown_1979`), Chen–Gupta–Li arXiv:2507.08296 (Theorem 10.1, character form). All
+  cite [HB79b, Theorem 1] or Ivić Lemma 11.5; none prove it. The PSU study-group notes (`Heath-Brown.pdf`) are
+  offline (404); the Wiley PDF is behind a bot wall.
+* Paper attempts at a proof from corpus tools (positivity reduction to `a_n ≡ 1`; Kusmin–Landau for `N ≥ T`;
+  reflection `N ↦ T/N`; Hölder lengthening; dual large sieve with ratio multiplicities; Halász with the
+  `|ζ|` kernel; pointwise twelfth moment) all stop at `|𝒯|^{3/2}T^{1/2}` or `|𝒯|^{11/6}T^{1/3}`; the `5/4`
+  needs an input beyond these. Still blocked on the source.

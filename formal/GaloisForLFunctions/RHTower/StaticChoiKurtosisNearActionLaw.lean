@@ -124,10 +124,9 @@ theorem normalizedSpectralQuarticActivation_le_centralizerDeficit
   let W := (U : Matrix (Fin d) (Fin d) ℂ)
   let M := normalizedSpectralFourthMoment (fun i => energy i - a)
   have hm0 : 0 ≤ M := normalizedSpectralFourthMoment_nonneg _
-  have hb0 : 0 ≤ 1 - unitaryDiagonalCentralizerMass W ^ (2 : ℕ) := by
-    have hl := unitaryDiagonalCentralizerMass_nonneg W
-    have hu := unitaryDiagonalCentralizerMass_le_one hdpos U.2
-    nlinarith
+  have hb0 : 0 ≤ 1 - unitaryDiagonalCentralizerMass W ^ (2 : ℕ) :=
+    sub_nonneg.mpr (pow_le_one₀ (unitaryDiagonalCentralizerMass_nonneg W)
+      (unitaryDiagonalCentralizerMass_le_one hdpos U.2))
   have hcomm := normalizedSpectralCommutatorEnergy_sq_le_fourthMoment_offDiagonal
     (fun i => energy i - a) U
   rw [normalizedSpectralCommutatorEnergy_sub_const] at hcomm
@@ -143,7 +142,7 @@ theorem normalizedSpectralQuarticActivation_le_centralizerDeficit
           16 * M * normalizedSpectralOffDiagonalMass W := hcomm
       _ ≤ 16 * M * (1 - unitaryDiagonalCentralizerMass W ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hoff (by positivity)
-      _ = _ := by ring
+      _ = _ := mul_comm _ _
 
 /-- Replica suppression from centered fourth moment, without a spectral-width factor. -/
 theorem directStaticChoiTargetNearActionMass_le_exp_centeredFourthMoment

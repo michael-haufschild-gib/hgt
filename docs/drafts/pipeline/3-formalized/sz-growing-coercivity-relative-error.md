@@ -84,14 +84,30 @@ Final foreground leaf audits passed for:
 - SuzukiGrowingPhysicalCoercivity, audit33070: uniform growing physical floor.
 
 SuzukiMatchedOddNeumannApproximation passed scratch90661 and final audit74860
-without warnings. All three new leaves are wired. Public axiom checks are
-running. Current formal lint9165 reports twelve unrelated unreachable modules;
+without warnings. All three new leaves are wired. Public axiom audit47142
+passes all fifteen queries: only propext, Classical.choice and Quot.sound.
+Both root signatures were checked. Current formal lint9165 reports twelve unrelated unreachable modules;
 it reports no prohibited proof declarations. The root result is not a global
 lint pass. The first axiom harness was cancelled after detecting missing
 namespace qualification, before any theorem result; the corrected harness
 uses fully qualified names.
 Every final leaf command uses `lake --old env lean <leaf> -o <leaf.olean>`.
 No umbrella or full build, numerical experiment or heartbeat increase is used.
+
+Unrelated unreachable modules reported by lint9165:
+
+- GaloisForLFunctions.RHTower.CCMApertureChainProfile
+- GaloisForLFunctions.RHTower.CCMApertureTranslationChains
+- GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
+- GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
+- GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
+- GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+- GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
+- GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
+- GaloisForLFunctions.RHTower.RoutePLcmAbsoluteObstruction
+- GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
+- GaloisForLFunctions.RHTower.ThetaTailConfluentCoordinatePort
+- GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving
 
 ## Remaining hard frontier
 

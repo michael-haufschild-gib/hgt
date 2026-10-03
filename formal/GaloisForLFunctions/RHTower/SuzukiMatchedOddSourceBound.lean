@@ -146,6 +146,15 @@ private theorem odd_source_eq (a : SuzukiPositiveAperture) :
   rw [← odd_source_pairing]
   exact (norm_sq_eq_re_inner (𝕜 := ℂ) _).symm
 
+/-- The actual matched odd energy is its literal physical pole-source pairing. -/
+theorem suzukiTaMatchedOdd_source_energy (a : SuzukiPositiveAperture) :
+    (inner ℂ (ccmMatchedOddPoleSource a)
+      (ccmArchimedeanFormToAperture a
+        (suzukiTaToFormCLM a (suzukiTaRawCoalescingOdd a (1 / 2))))).re =
+      suzukiTaCoalescingOddEnergy a (1 / 2) := by
+  rw [suzukiTaCoalescingOddEnergy_eq_norm_sq]
+  exact odd_source_eq a
+
 private theorem physical_odd_norm_le (a : SuzukiPositiveAperture) :
     let w := suzukiTaRawCoalescingOdd a (1 / 2)
     ‖ccmArchimedeanFormToAperture a (suzukiTaToFormCLM a w)‖ ≤ ‖w‖ := by

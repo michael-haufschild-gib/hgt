@@ -36,7 +36,7 @@ variable (m : ℝ → ℂ) (hmc : Continuous m) (hm : ∀ x, ‖m x‖ = 1)
 include hmc hm
 
 /-- Multiplying an `L²` function by a unimodular continuous function stays in `L²`. -/
-theorem memLp_unimodular_mul (f : Lp (α := ℝ) ℂ 2) :
+theorem memLp_continuousUnimodular_mul (f : Lp (α := ℝ) ℂ 2) :
     MemLp (fun x => m x * f x) 2 (volume : Measure ℝ) := by
   apply (Lp.memLp f).congr_norm
   · exact hmc.aestronglyMeasurable.mul (Lp.memLp f).1
@@ -44,68 +44,68 @@ theorem memLp_unimodular_mul (f : Lp (α := ℝ) ℂ 2) :
     simp [hm x]
 
 /-- The multiplication map on `L²` representatives. -/
-def unimodularMulAux (f : Lp (α := ℝ) ℂ 2) : Lp (α := ℝ) ℂ 2 :=
-  (memLp_unimodular_mul m hmc hm f).toLp _
+def continuousUnimodularMulAux (f : Lp (α := ℝ) ℂ 2) : Lp (α := ℝ) ℂ 2 :=
+  (memLp_continuousUnimodular_mul m hmc hm f).toLp _
 
 /-- Pointwise form of the multiplication map. -/
-theorem unimodularMulAux_ae (f : Lp (α := ℝ) ℂ 2) :
-    unimodularMulAux m hmc hm f =ᵐ[volume] fun x => m x * f x :=
-  (memLp_unimodular_mul m hmc hm f).coeFn_toLp
+theorem continuousUnimodularMulAux_ae (f : Lp (α := ℝ) ℂ 2) :
+    continuousUnimodularMulAux m hmc hm f =ᵐ[volume] fun x => m x * f x :=
+  (memLp_continuousUnimodular_mul m hmc hm f).coeFn_toLp
 
 /-- The multiplication map is linear. -/
-def unimodularMulLinear : Lp (α := ℝ) ℂ 2 →ₗ[ℂ] Lp (α := ℝ) ℂ 2 where
-  toFun := unimodularMulAux m hmc hm
+def continuousUnimodularMulLinear : Lp (α := ℝ) ℂ 2 →ₗ[ℂ] Lp (α := ℝ) ℂ 2 where
+  toFun := continuousUnimodularMulAux m hmc hm
   map_add' f g := by
     apply Lp.ext
-    filter_upwards [unimodularMulAux_ae m hmc hm (f + g), unimodularMulAux_ae m hmc hm f,
-      unimodularMulAux_ae m hmc hm g, Lp.coeFn_add f g,
-      Lp.coeFn_add (unimodularMulAux m hmc hm f) (unimodularMulAux m hmc hm g)]
+    filter_upwards [continuousUnimodularMulAux_ae m hmc hm (f + g), continuousUnimodularMulAux_ae m hmc hm f,
+      continuousUnimodularMulAux_ae m hmc hm g, Lp.coeFn_add f g,
+      Lp.coeFn_add (continuousUnimodularMulAux m hmc hm f) (continuousUnimodularMulAux m hmc hm g)]
       with x hfg hf hg hadd hout
     rw [hfg, hout]
     change m x * (f + g : Lp (α := ℝ) ℂ 2) x =
-      unimodularMulAux m hmc hm f x + unimodularMulAux m hmc hm g x
+      continuousUnimodularMulAux m hmc hm f x + continuousUnimodularMulAux m hmc hm g x
     rw [hadd, hf, hg]
     change m x * (f x + g x) = m x * f x + m x * g x
     ring
   map_smul' c f := by
     simp only [RingHom.id_apply]
     apply Lp.ext
-    filter_upwards [unimodularMulAux_ae m hmc hm (c • f), unimodularMulAux_ae m hmc hm f,
-      Lp.coeFn_smul c f, Lp.coeFn_smul c (unimodularMulAux m hmc hm f)] with x hcf hf hcin hcout
+    filter_upwards [continuousUnimodularMulAux_ae m hmc hm (c • f), continuousUnimodularMulAux_ae m hmc hm f,
+      Lp.coeFn_smul c f, Lp.coeFn_smul c (continuousUnimodularMulAux m hmc hm f)] with x hcf hf hcin hcout
     rw [hcf, hcout]
-    change m x * (c • f : Lp (α := ℝ) ℂ 2) x = c • unimodularMulAux m hmc hm f x
+    change m x * (c • f : Lp (α := ℝ) ℂ 2) x = c • continuousUnimodularMulAux m hmc hm f x
     rw [hcin, hf]
     change m x * (c * f x) = c * (m x * f x)
     ring
 
 /-- Unimodular multiplication preserves the `L²` norm. -/
-theorem norm_unimodularMulAux (f : Lp (α := ℝ) ℂ 2) : ‖unimodularMulAux m hmc hm f‖ = ‖f‖ := by
-  rw [Lp.norm_def, Lp.norm_def, eLpNorm_congr_ae (unimodularMulAux_ae m hmc hm f)]
+theorem norm_continuousUnimodularMulAux (f : Lp (α := ℝ) ℂ 2) : ‖continuousUnimodularMulAux m hmc hm f‖ = ‖f‖ := by
+  rw [Lp.norm_def, Lp.norm_def, eLpNorm_congr_ae (continuousUnimodularMulAux_ae m hmc hm f)]
   congr 1
   apply eLpNorm_congr_norm_ae
   filter_upwards with x
   simp [hm x]
 
 /-- Multiplication by a continuous unimodular function, as a linear isometry of `L²(ℝ)`. -/
-def unimodularMulIsometry : Lp (α := ℝ) ℂ 2 →ₗᵢ[ℂ] Lp (α := ℝ) ℂ 2 where
-  __ := unimodularMulLinear m hmc hm
-  norm_map' := norm_unimodularMulAux m hmc hm
+def continuousUnimodularMulIsometry : Lp (α := ℝ) ℂ 2 →ₗᵢ[ℂ] Lp (α := ℝ) ℂ 2 where
+  __ := continuousUnimodularMulLinear m hmc hm
+  norm_map' := norm_continuousUnimodularMulAux m hmc hm
 
 /-- The `L²` Voronoi transform with Mellin multiplier `m`: `𝓜(V f)(ξ) = m(ξ) 𝓜f(-ξ)`. -/
 def voronoiL2 : HalfLineL2 →L[ℂ] HalfLineL2 :=
   (halfLineMellinUnitary.symm.toLinearIsometry.toContinuousLinearMap).comp
-    ((unimodularMulIsometry m hmc hm).toContinuousLinearMap.comp
+    ((continuousUnimodularMulIsometry m hmc hm).toContinuousLinearMap.comp
       (l2Reflection.comp halfLineMellinUnitary.toLinearIsometry.toContinuousLinearMap))
 
 /-- Defining Mellin identity of the Voronoi transform. -/
 theorem mellin_voronoiL2 (f : HalfLineL2) :
     halfLineMellinUnitary (voronoiL2 m hmc hm f)
-      = unimodularMulAux m hmc hm (l2Reflection (halfLineMellinUnitary f)) := by
-  simp [voronoiL2, unimodularMulIsometry, unimodularMulLinear]
+      = continuousUnimodularMulAux m hmc hm (l2Reflection (halfLineMellinUnitary f)) := by
+  simp [voronoiL2, continuousUnimodularMulIsometry, continuousUnimodularMulLinear]
 
 /-- The Voronoi transform is an isometry. -/
 theorem norm_voronoiL2 (f : HalfLineL2) : ‖voronoiL2 m hmc hm f‖ = ‖f‖ := by
-  rw [← halfLineMellinUnitary.norm_map, mellin_voronoiL2, norm_unimodularMulAux,
+  rw [← halfLineMellinUnitary.norm_map, mellin_voronoiL2, norm_continuousUnimodularMulAux,
     show ‖l2Reflection (halfLineMellinUnitary f)‖ = ‖halfLineMellinUnitary f‖ from
       l2ReflectionIsometry.norm_map _, halfLineMellinUnitary.norm_map]
 
@@ -117,9 +117,9 @@ theorem voronoiL2_voronoiL2 (hsym : ∀ ξ, m ξ * m (-ξ) = 1) (f : HalfLineL2)
   set φ := halfLineMellinUnitary f
   apply Lp.ext
   have hneg := (Measure.measurePreserving_neg (volume : Measure ℝ)).quasiMeasurePreserving
-  have h1 := unimodularMulAux_ae m hmc hm (l2Reflection (unimodularMulAux m hmc hm (l2Reflection φ)))
-  have h2 := l2Reflection_ae' (unimodularMulAux m hmc hm (l2Reflection φ))
-  have h3 := (unimodularMulAux_ae m hmc hm (l2Reflection φ)).comp_tendsto hneg.tendsto_ae
+  have h1 := continuousUnimodularMulAux_ae m hmc hm (l2Reflection (continuousUnimodularMulAux m hmc hm (l2Reflection φ)))
+  have h2 := l2Reflection_ae' (continuousUnimodularMulAux m hmc hm (l2Reflection φ))
+  have h3 := (continuousUnimodularMulAux_ae m hmc hm (l2Reflection φ)).comp_tendsto hneg.tendsto_ae
   have h4 := (l2Reflection_ae' φ).comp_tendsto hneg.tendsto_ae
   filter_upwards [h1, h2, h3, h4] with x hx1 hx2 hx3 hx4
   rw [hx1, hx2]
@@ -133,7 +133,7 @@ section GammaRCube
 open Complex
 
 /-- `Γℝ(s̄) = conj Γℝ(s)`. -/
-theorem gammaR_conj (s : ℂ) : Gammaℝ ((starRingEnd ℂ) s) = (starRingEnd ℂ) (Gammaℝ s) := by
+theorem gammaR_starRingEnd (s : ℂ) : Gammaℝ ((starRingEnd ℂ) s) = (starRingEnd ℂ) (Gammaℝ s) := by
   have harg : (Real.pi : ℂ).arg ≠ Real.pi := by
     rw [Complex.arg_ofReal_of_nonneg Real.pi_pos.le]; exact Real.pi_ne_zero.symm
   have e : (starRingEnd ℂ) (-s / 2) = -(starRingEnd ℂ) s / 2 := by
@@ -178,7 +178,7 @@ theorem continuous_gammaRCubeSymbol : Continuous gammaRCubeSymbol := by
 /-- The symbol is unimodular: `Γℝ(1/2 - it)` is the conjugate of `Γℝ(1/2 + it)`. -/
 theorem norm_gammaRCubeSymbol (ξ : ℝ) : ‖gammaRCubeSymbol ξ‖ = 1 := by
   unfold gammaRCubeSymbol
-  rw [← conj_half_add, gammaR_conj, norm_div, norm_pow, norm_pow, Complex.norm_conj]
+  rw [← conj_half_add, gammaR_starRingEnd, norm_div, norm_pow, norm_pow, Complex.norm_conj]
   exact div_self (pow_ne_zero 3 (norm_ne_zero_iff.mpr (Gammaℝ_ne_zero_of_re_pos (re_half_add ξ))))
 
 /-- `m(ξ) m(-ξ) = 1`, the Mellin form of `G(s) G(1-s) = 1`. -/

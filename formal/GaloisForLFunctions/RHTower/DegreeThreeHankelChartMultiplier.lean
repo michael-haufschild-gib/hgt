@@ -42,7 +42,7 @@ theorem norm_mul_sineMultiplier_neg_half (t : ℝ) :
   have e2 : 2 - ((-1 / 2 : ℂ) + t * I) = z + 2 := by rw [hz]; ring
   have e3 : (-1 / 2 : ℂ) + t * I = -z := by rw [hz]; ring
   have hG : Gammaℝ z ≠ 0 := Gammaℝ_ne_zero_of_re_pos (by rw [hz]; simp)
-  rw [e1, e2, e3, Complex.Gammaℝ_add_two hz0, RHTower.gammaR_conj]
+  rw [e1, e2, e3, Complex.Gammaℝ_add_two hz0, RHTower.gammaR_starRingEnd]
   have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   have hsimp : -z * ((starRingEnd ℂ) (Gammaℝ z) * (Gammaℝ z * z / 2 / (Real.pi : ℂ))⁻¹)
       = -(2 * (Real.pi : ℂ)) * ((starRingEnd ℂ) (Gammaℝ z) / Gammaℝ z) := by

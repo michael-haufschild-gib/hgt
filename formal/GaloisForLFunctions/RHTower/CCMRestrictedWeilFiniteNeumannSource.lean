@@ -29,6 +29,22 @@ theorem norm_ccmMatchedOddPoleSource_le (a : SuzukiPositiveAperture) :
     (ccmPolarApertureVector a (-1 / 2))
   linarith
 
+private theorem matched_odd_budget (a : SuzukiPositiveAperture) :
+    CCMFiniteExponentialBudget (ccmMatchedOddPoleSource a : SoninL2) (Real.exp (a.1 / 2)) := by
+  simpa only [ccmMatchedOddPoleSource, Function.iterate_zero, id_eq, pow_zero, one_mul] using
+    ccmNormalizedWeilRemainder_odd_iterate_budget a 0
+
+private theorem source_iterate_budget (a : SuzukiPositiveAperture)
+    (p : suzukiApertureHilbert a) {V : ℝ} (hp : CCMFiniteExponentialBudget p.1 V) (n : ℕ) :
+    CCMFiniteExponentialBudget (((ccmNormalizedWeilRemainder a)^[n]) p : SoninL2)
+      ((2 * (‖ccmArchimedeanRemainderScalar‖ + 46)) ^ n * V) := by
+  induction n with
+  | zero => simpa only [Function.iterate_zero, id_eq, pow_zero, one_mul] using hp
+  | succ n ih =>
+      rw [Function.iterate_succ_apply']
+      convert CCMFiniteExponentialBudget.normalized_remainder a _ ih using 1
+      ring
+
 private theorem recurrence_bound (d : ℕ → ℝ) {q C E η : ℝ}
     (hq : 0 ≤ q) (hC : q + 1 ≤ C) (hη : 0 ≤ η) (hzero : d 0 ≤ E)
     (hstep : ∀ n, d (n + 1) ≤ q * d n + η * C ^ n) (n : ℕ) :
@@ -56,15 +72,14 @@ private theorem sum_geom_large {C : ℝ} (hC : 2 ≤ C) (n : ℕ) :
   have hprod := geom_sum_mul C n
   nlinarith
 
-/-- A growing number of actual source iterates has a uniform residual norm
-and a source-scale bound for its complete finite norm sum. -/
-theorem eventually_ccmMatchedOddPoleSource_finite_orbit_decay :
+/-- Source-uniform finite orbit control. The source amplitude is retained,
+so transported smaller-aperture sources keep their original scale. -/
+theorem eventually_ccmFiniteExponentialSource_finite_orbit_decay :
     ∃ M R : ℝ, 0 < M ∧ 0 < R ∧
-      ∀ᶠ a : ℝ in atTop, ∀ ha : 0 < a,
-        let p := ccmMatchedOddPoleSource ⟨a, ha⟩
-        let H := ccmNormalizedWeilRemainder ⟨a, ha⟩
-        ‖H^[⌈a⌉₊] p‖ ≤ R * Real.exp (-7 * a / 2) ∧
-          ∑ j ∈ range ⌈a⌉₊, ‖H^[j] p‖ ≤ M * Real.exp (a / 2) := by
+      ∀ᶠ a : ℝ in atTop, ∀ ha : 0 < a, ∀ p : suzukiApertureHilbert ⟨a, ha⟩, ∀ V : ℝ,
+        ‖p‖ ≤ V → CCMFiniteExponentialBudget p.1 V →
+        ‖(ccmNormalizedWeilRemainder ⟨a, ha⟩)^[⌈a⌉₊] p‖ ≤ R * V * Real.exp (-4 * a) ∧
+          ∑ j ∈ range ⌈a⌉₊, ‖(ccmNormalizedWeilRemainder ⟨a, ha⟩)^[j] p‖ ≤ M * V := by
   let C := 2 * (‖ccmArchimedeanRemainderScalar‖ + 46)
   let L := 4 * (‖ccmArchimedeanRemainderScalar‖ + 46) / Real.pi
   let q := Real.exp (-4)
@@ -79,32 +94,31 @@ theorem eventually_ccmMatchedOddPoleSource_finite_orbit_decay :
   let M := 1 / (1 - q) + L * C
   let R := 1 + L * C
   refine ⟨M, R, by dsimp [M]; positivity, by dsimp [R]; positivity, ?_⟩
-  filter_upwards [eventually_ccmNormalizedWeilRemainder_odd_norm_recurrence K q hK hq]
+  filter_upwards [eventually_ccmNormalizedWeilRemainder_budget_contraction K q hK hq]
     with a hrec
-  intro ha
-  let p := ccmMatchedOddPoleSource ⟨a, ha⟩
+  intro ha p V hpNorm hpBudget
   let H := ccmNormalizedWeilRemainder ⟨a, ha⟩
-  let E := Real.exp (a / 2)
-  let η := L * E / Real.sqrt (Real.exp (K * a))
-  have hE : 0 < E := Real.exp_pos _
-  have hE1 : 1 ≤ E := Real.one_le_exp (by positivity)
+  let η := L * V / Real.sqrt (Real.exp (K * a))
+  have hV : 0 ≤ V := hpBudget.nonneg
   have hη : 0 ≤ η := by dsimp [η]; positivity
   have hnlo : a ≤ (⌈a⌉₊ : ℝ) := Nat.le_ceil a
   have hnhi : (⌈a⌉₊ : ℝ) ≤ a + 1 := (Nat.ceil_lt_add_one ha.le).le
   have hstep (n : ℕ) : ‖H^[n + 1] p‖ ≤ q * ‖H^[n] p‖ + η * C ^ n := by
     rw [Function.iterate_succ_apply']
-    convert hrec ha n using 1
-    all_goals dsimp [p, H, ccmMatchedOddPoleSource, η, C, L, E]
+    convert hrec ha (H^[n] p) (C ^ n * V)
+      (source_iterate_budget ⟨a, ha⟩ p hpBudget n) using 1
+    all_goals dsimp only [H, η, C, L]
     all_goals ring
-  have hb (n : ℕ) : ‖H^[n] p‖ ≤ q ^ n * E + η * C ^ n :=
-    recurrence_bound (fun n => ‖H^[n] p‖) (q := q) (C := C) (E := E) (η := η)
-      hq.le (by linarith) hη (norm_ccmMatchedOddPoleSource_le ⟨a, ha⟩)
+  have hb (n : ℕ) : ‖H^[n] p‖ ≤ q ^ n * V + η * C ^ n :=
+    recurrence_bound (fun n => ‖H^[n] p‖) (q := q) (C := C) (E := V) (η := η)
+      hq.le (by linarith) hη hpNorm
       hstep n
-  have hqN : q ^ ⌈a⌉₊ * E ≤ Real.exp (-7 * a / 2) := by
-    dsimp [q, E]
-    rw [← Real.exp_nat_mul, ← Real.exp_add]
-    apply Real.exp_le_exp.mpr
-    linarith
+  have hqN : q ^ ⌈a⌉₊ * V ≤ V * Real.exp (-4 * a) := by
+    have hqBound : q ^ ⌈a⌉₊ ≤ Real.exp (-4 * a) := by
+      dsimp [q]
+      rw [← Real.exp_nat_mul]
+      exact Real.exp_le_exp.mpr (by linarith)
+    exact (mul_le_mul_of_nonneg_right hqBound hV).trans_eq (mul_comm _ _)
   have hCN : C ^ ⌈a⌉₊ ≤ C * Real.exp (Real.log C * a) := by
     calc
       _ = Real.exp ((⌈a⌉₊ : ℝ) * Real.log C) := by rw [Real.exp_nat_mul, Real.exp_log hCpos]
@@ -112,37 +126,57 @@ theorem eventually_ccmMatchedOddPoleSource_finite_orbit_decay :
       _ = C * Real.exp (Real.log C * a) := by
         rw [show (a + 1) * Real.log C = Real.log C + Real.log C * a by ring,
           Real.exp_add, Real.exp_log hCpos]
-  have htailRate : η * C ^ ⌈a⌉₊ ≤ (L * C) * Real.exp (-9 * a / 2) := by
+  have htailRate : η * C ^ ⌈a⌉₊ ≤ (L * C * V) * Real.exp (-5 * a) := by
     calc
       _ ≤ η * (C * Real.exp (Real.log C * a)) := mul_le_mul_of_nonneg_left hCN hη
-      _ = (L * C) * Real.exp (-9 * a / 2) := by
-        dsimp [η, E, K]
+      _ = (L * C * V) * Real.exp (-5 * a) := by
+        dsimp [η, K]
         rw [sqrt_exp_eq_exp_half, div_eq_mul_inv, ← Real.exp_neg]
-        rw [show L * Real.exp (a / 2) * Real.exp (-((2 * Real.log C + 10) * a / 2)) *
-            (C * Real.exp (Real.log C * a)) = L * C *
-              (Real.exp (a / 2) * Real.exp (-((2 * Real.log C + 10) * a / 2)) *
+        rw [show L * V * Real.exp (-((2 * Real.log C + 10) * a / 2)) *
+            (C * Real.exp (Real.log C * a)) = L * C * V *
+              (Real.exp (-((2 * Real.log C + 10) * a / 2)) *
                 Real.exp (Real.log C * a)) by ring]
-        rw [← Real.exp_add, ← Real.exp_add]
+        rw [← Real.exp_add]
         congr 2
         ring
-  have htail : η * C ^ ⌈a⌉₊ ≤ L * C := by
-    have hexp : Real.exp (-9 * a / 2) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
-    exact htailRate.trans (by nlinarith [mul_pos hL hCpos])
-  dsimp only
+  have htail : η * C ^ ⌈a⌉₊ ≤ L * C * V := by
+    have hexp : Real.exp (-5 * a) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+    exact htailRate.trans ((mul_le_mul_of_nonneg_left hexp (by positivity)).trans_eq (mul_one _))
   constructor
-  · have htailDecay : η * C ^ ⌈a⌉₊ ≤ L * C * Real.exp (-7 * a / 2) :=
+  · have htailDecay : η * C ^ ⌈a⌉₊ ≤ L * C * V * Real.exp (-4 * a) :=
       htailRate.trans (mul_le_mul_of_nonneg_left
-        (Real.exp_le_exp.mpr (by linarith)) (mul_nonneg hL.le hCpos.le))
+        (Real.exp_le_exp.mpr (by linarith)) (by positivity))
     exact (hb _).trans ((add_le_add hqN htailDecay).trans_eq (by dsimp [R]; ring))
   · calc
-      _ ≤ ∑ j ∈ range ⌈a⌉₊, (q ^ j * E + η * C ^ j) := sum_le_sum (fun j _ => hb j)
-      _ = (∑ j ∈ range ⌈a⌉₊, q ^ j) * E + η * (∑ j ∈ range ⌈a⌉₊, C ^ j) := by
+      _ ≤ ∑ j ∈ range ⌈a⌉₊, (q ^ j * V + η * C ^ j) := sum_le_sum (fun j _ => hb j)
+      _ = (∑ j ∈ range ⌈a⌉₊, q ^ j) * V + η * (∑ j ∈ range ⌈a⌉₊, C ^ j) := by
         rw [sum_add_distrib, sum_mul, mul_sum]
-      _ ≤ (1 / (1 - q)) * E + η * C ^ ⌈a⌉₊ :=
-        add_le_add (mul_le_mul_of_nonneg_right (sum_geom_small hq.le hq1 _) hE.le)
+      _ ≤ (1 / (1 - q)) * V + η * C ^ ⌈a⌉₊ :=
+        add_le_add (mul_le_mul_of_nonneg_right (sum_geom_small hq.le hq1 _) hV)
           (mul_le_mul_of_nonneg_left (sum_geom_large hC _) hη)
-      _ ≤ (1 / (1 - q)) * E + L * C := add_le_add (le_refl _) htail
-      _ ≤ M * E := by dsimp [M]; nlinarith [mul_nonneg hL.le hCpos.le]
+      _ ≤ (1 / (1 - q)) * V + L * C * V := add_le_add (le_refl _) htail
+      _ = M * V := by dsimp [M]; ring
+
+/-- A growing number of actual source iterates has a uniform residual norm
+and a source-scale bound for its complete finite norm sum. -/
+theorem eventually_ccmMatchedOddPoleSource_finite_orbit_decay :
+    ∃ M R : ℝ, 0 < M ∧ 0 < R ∧
+      ∀ᶠ a : ℝ in atTop, ∀ ha : 0 < a,
+        let p := ccmMatchedOddPoleSource ⟨a, ha⟩
+        let H := ccmNormalizedWeilRemainder ⟨a, ha⟩
+        ‖H^[⌈a⌉₊] p‖ ≤ R * Real.exp (-7 * a / 2) ∧
+          ∑ j ∈ range ⌈a⌉₊, ‖H^[j] p‖ ≤ M * Real.exp (a / 2) := by
+  obtain ⟨M, R, hM, hR, hbound⟩ := eventually_ccmFiniteExponentialSource_finite_orbit_decay
+  refine ⟨M, R, hM, hR, ?_⟩
+  filter_upwards [hbound] with a haBound
+  intro ha
+  have h := haBound ha (ccmMatchedOddPoleSource ⟨a, ha⟩) (Real.exp (a / 2))
+    (norm_ccmMatchedOddPoleSource_le ⟨a, ha⟩) (matched_odd_budget ⟨a, ha⟩)
+  refine ⟨?_, h.2⟩
+  convert h.1 using 1
+  rw [mul_assoc, ← Real.exp_add]
+  congr 2
+  ring
 
 /-- Coarse orbit bound retained for the uniform-energy interface. -/
 theorem eventually_ccmMatchedOddPoleSource_finite_orbit_bound :
@@ -165,6 +199,12 @@ def ccmShiftedBoundedWeil (a : SuzukiPositiveAperture) :
   (boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a) : ℂ) • 1 +
     ccmRestrictedWeilBoundedRemainder a
 
+/-- Literal finite Neumann vector for an arbitrary physical source. -/
+def ccmFiniteNeumannVector (a : SuzukiPositiveAperture) (p : suzukiApertureHilbert a)
+    (n : ℕ) : suzukiApertureHilbert a :=
+  ((boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a))⁻¹ : ℂ) •
+    ∑ j ∈ range n, (-1 : ℂ) ^ j • (ccmNormalizedWeilRemainder a)^[j] p
+
 /-- Literal finite Neumann vector, with the prescribed interval shift. -/
 def ccmMatchedOddNeumannVector (a : SuzukiPositiveAperture) (n : ℕ) :
     suzukiApertureHilbert a :=
@@ -172,39 +212,46 @@ def ccmMatchedOddNeumannVector (a : SuzukiPositiveAperture) (n : ℕ) :
     ∑ j ∈ range n, (-1 : ℂ) ^ j • (ccmNormalizedWeilRemainder a)^[j]
       (ccmMatchedOddPoleSource a)
 
+/-- The canonical finite vector preserves the full source endpoint budget. -/
+theorem ccmFiniteNeumannVector_budget (a : SuzukiPositiveAperture)
+    (p : suzukiApertureHilbert a) {V : ℝ} (hp : CCMFiniteExponentialBudget p.1 V) (n : ℕ) :
+    CCMFiniteExponentialBudget (ccmFiniteNeumannVector a p n : SoninL2)
+      ((2 * (‖ccmArchimedeanRemainderScalar‖ + 46)) ^ n * V /
+        boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a)) := by
+  let C := 2 * (‖ccmArchimedeanRemainderScalar‖ + 46)
+  let c := boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a)
+  let H := ccmNormalizedWeilRemainder a
+  have hc : 0 < c := boundedPerturbedFormShift_pos _
+  have hC : 2 ≤ C := by dsimp [C]; linarith [norm_nonneg ccmArchimedeanRemainderScalar]
+  have hj (j : ℕ) : CCMFiniteExponentialBudget
+      (((-1 : ℂ) ^ j • H^[j] p : suzukiApertureHilbert a) : SoninL2)
+      (C ^ j * V) := by
+    have h := CCMFiniteExponentialBudget.smul ((-1 : ℂ) ^ j)
+      (source_iterate_budget a p hp j)
+    simpa only [C, H, Submodule.coe_smul,
+      norm_pow, norm_neg, norm_one, one_pow, one_mul] using h
+  have hsum : CCMFiniteExponentialBudget
+      ((∑ j ∈ range n, (-1 : ℂ) ^ j • H^[j] p : suzukiApertureHilbert a) : SoninL2)
+      (∑ j ∈ range n, C ^ j * V) := by
+    simpa only [Submodule.coe_sum] using CCMFiniteExponentialBudget.finset_sum (range n)
+      (fun j => (((-1 : ℂ) ^ j • H^[j] p : suzukiApertureHilbert a) : SoninL2))
+      (fun j => C ^ j * V) (fun j _ => hj j)
+  apply (CCMFiniteExponentialBudget.smul (c⁻¹ : ℂ) hsum).mono
+  rw [norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hc, ← sum_mul]
+  change c⁻¹ * ((∑ j ∈ range n, C ^ j) * V) ≤ _
+  calc
+    _ ≤ c⁻¹ * (C ^ n * V) :=
+      mul_le_mul_of_nonneg_left
+        (mul_le_mul_of_nonneg_right (sum_geom_large hC n) hp.nonneg)
+        (inv_nonneg.mpr hc.le)
+    _ = _ := by ring
+
 /-- The actual finite test vector retains a certified Fourier endpoint budget. -/
 theorem ccmMatchedOddNeumannVector_budget (a : SuzukiPositiveAperture) (n : ℕ) :
     CCMFiniteExponentialBudget (ccmMatchedOddNeumannVector a n : SoninL2)
       ((2 * (‖ccmArchimedeanRemainderScalar‖ + 46)) ^ n * Real.exp (a.1 / 2) /
         boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a)) := by
-  let C := 2 * (‖ccmArchimedeanRemainderScalar‖ + 46)
-  let c := boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a)
-  let H := ccmNormalizedWeilRemainder a
-  let p := ccmMatchedOddPoleSource a
-  have hc : 0 < c := boundedPerturbedFormShift_pos _
-  have hC : 2 ≤ C := by dsimp [C]; linarith [norm_nonneg ccmArchimedeanRemainderScalar]
-  have hj (j : ℕ) : CCMFiniteExponentialBudget
-      (((-1 : ℂ) ^ j • H^[j] p : suzukiApertureHilbert a) : SoninL2)
-      (C ^ j * Real.exp (a.1 / 2)) := by
-    have h := CCMFiniteExponentialBudget.smul ((-1 : ℂ) ^ j)
-      (ccmNormalizedWeilRemainder_odd_iterate_budget a j)
-    simpa only [C, H, p, ccmMatchedOddPoleSource, Submodule.coe_smul,
-      norm_pow, norm_neg, norm_one, one_pow, one_mul] using h
-  have hsum : CCMFiniteExponentialBudget
-      ((∑ j ∈ range n, (-1 : ℂ) ^ j • H^[j] p : suzukiApertureHilbert a) : SoninL2)
-      (∑ j ∈ range n, C ^ j * Real.exp (a.1 / 2)) := by
-    simpa only [Submodule.coe_sum] using CCMFiniteExponentialBudget.finset_sum (range n)
-      (fun j => (((-1 : ℂ) ^ j • H^[j] p : suzukiApertureHilbert a) : SoninL2))
-      (fun j => C ^ j * Real.exp (a.1 / 2)) (fun j _ => hj j)
-  apply (CCMFiniteExponentialBudget.smul (c⁻¹ : ℂ) hsum).mono
-  rw [norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hc, ← sum_mul]
-  change c⁻¹ * ((∑ j ∈ range n, C ^ j) * Real.exp (a.1 / 2)) ≤ _
-  calc
-    _ ≤ c⁻¹ * (C ^ n * Real.exp (a.1 / 2)) :=
-      mul_le_mul_of_nonneg_left
-        (mul_le_mul_of_nonneg_right (sum_geom_large hC n) (Real.exp_pos _).le)
-        (inv_nonneg.mpr hc.le)
-    _ = _ := by ring
+  exact ccmFiniteNeumannVector_budget a (ccmMatchedOddPoleSource a) (matched_odd_budget a) n
 
 private theorem finite_neumann_identity (a : SuzukiPositiveAperture)
     (p : suzukiApertureHilbert a) (n : ℕ) :
@@ -232,22 +279,19 @@ private theorem finite_neumann_identity (a : SuzukiPositiveAperture)
   rw [htel]
   abel
 
-/-- A finite source-specific Neumann test vector for the actual bounded
-Weil operator. All constants and the source recurrence are discharged. -/
-theorem eventually_ccmMatchedOddPoleSource_neumann_decay :
+/-- Uniform finite inverse construction for every admitted physical source. -/
+theorem eventually_ccmFiniteExponentialSource_neumann_decay :
     ∃ M R : ℝ, 0 < M ∧ 0 < R ∧
-      ∀ᶠ a : ℝ in atTop, ∀ ha : 0 < a,
-        let u := ccmMatchedOddNeumannVector ⟨a, ha⟩ ⌈a⌉₊
-        ‖u‖ ≤ M * Real.exp (a / 2) /
-          boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder ⟨a, ha⟩) ∧
-        ‖ccmMatchedOddPoleSource ⟨a, ha⟩ - ccmShiftedBoundedWeil ⟨a, ha⟩ u‖ ≤
-          R * Real.exp (-7 * a / 2) := by
-  obtain ⟨M, R, hM, hR, hbound⟩ := eventually_ccmMatchedOddPoleSource_finite_orbit_decay
+      ∀ᶠ a : ℝ in atTop, ∀ ha : 0 < a, ∀ p : suzukiApertureHilbert ⟨a, ha⟩, ∀ V : ℝ,
+        ‖p‖ ≤ V → CCMFiniteExponentialBudget p.1 V →
+        let u := ccmFiniteNeumannVector ⟨a, ha⟩ p ⌈a⌉₊
+        ‖u‖ ≤ M * V / boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder ⟨a, ha⟩) ∧
+        ‖p - ccmShiftedBoundedWeil ⟨a, ha⟩ u‖ ≤ R * V * Real.exp (-4 * a) := by
+  obtain ⟨M, R, hM, hR, hbound⟩ := eventually_ccmFiniteExponentialSource_finite_orbit_decay
   refine ⟨M, R, hM, hR, ?_⟩
   filter_upwards [hbound] with a haBound
-  intro ha
+  intro ha p V hpNorm hpBudget
   let ap : SuzukiPositiveAperture := ⟨a, ha⟩
-  let p := ccmMatchedOddPoleSource ap
   let H := ccmNormalizedWeilRemainder ap
   let c := boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder ap)
   let S := ∑ j ∈ range ⌈a⌉₊, (-1 : ℂ) ^ j • H^[j] p
@@ -255,12 +299,12 @@ theorem eventually_ccmMatchedOddPoleSource_neumann_decay :
   have hc : 0 < c := boundedPerturbedFormShift_pos _
   have hnorm (j : ℕ) : ‖(-1 : ℂ) ^ j • H^[j] p‖ = ‖H^[j] p‖ := by
     rw [norm_smul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
-  have hS : ‖S‖ ≤ M * Real.exp (a / 2) := by
+  have hS : ‖S‖ ≤ M * V := by
     calc
       _ ≤ ∑ j ∈ range ⌈a⌉₊, ‖(-1 : ℂ) ^ j • H^[j] p‖ := norm_sum_le _ _
       _ = ∑ j ∈ range ⌈a⌉₊, ‖H^[j] p‖ := sum_congr rfl (fun j _ => hnorm j)
-      _ ≤ _ := (haBound ha).2
-  have hu : ‖u‖ ≤ M * Real.exp (a / 2) / c := by
+      _ ≤ _ := (haBound ha p V hpNorm hpBudget).2
+  have hu : ‖u‖ ≤ M * V / c := by
     change ‖(c⁻¹ : ℂ) • S‖ ≤ _
     rw [norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hc]
     simpa only [div_eq_mul_inv, mul_comm] using
@@ -271,12 +315,33 @@ theorem eventually_ccmMatchedOddPoleSource_neumann_decay :
     rw [smul_smul, mul_inv_cancel₀ (Complex.ofReal_ne_zero.mpr hc.ne'), one_smul, map_smul]
     rfl
   refine ⟨hu, ?_⟩
-  change ‖p - ccmShiftedBoundedWeil ap u‖ ≤ R * Real.exp (-7 * a / 2)
+  change ‖p - ccmShiftedBoundedWeil ap u‖ ≤ R * V * Real.exp (-4 * a)
   rw [hA]
   have hid := finite_neumann_identity ap p ⌈a⌉₊
   change p - (S + H S) = (-1 : ℂ) ^ ⌈a⌉₊ • H^[⌈a⌉₊] p at hid
   rw [hid, hnorm]
-  exact (haBound ha).1
+  exact (haBound ha p V hpNorm hpBudget).1
+
+/-- A finite source-specific Neumann test vector for the actual bounded
+Weil operator. All constants and the source recurrence are discharged. -/
+theorem eventually_ccmMatchedOddPoleSource_neumann_decay :
+    ∃ M R : ℝ, 0 < M ∧ 0 < R ∧
+      ∀ᶠ a : ℝ in atTop, ∀ ha : 0 < a,
+        let u := ccmMatchedOddNeumannVector ⟨a, ha⟩ ⌈a⌉₊
+        ‖u‖ ≤ M * Real.exp (a / 2) /
+          boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder ⟨a, ha⟩) ∧
+        ‖ccmMatchedOddPoleSource ⟨a, ha⟩ - ccmShiftedBoundedWeil ⟨a, ha⟩ u‖ ≤
+          R * Real.exp (-7 * a / 2) := by
+  obtain ⟨M, R, hM, hR, hbound⟩ := eventually_ccmFiniteExponentialSource_neumann_decay
+  refine ⟨M, R, hM, hR, ?_⟩
+  filter_upwards [hbound] with a haBound
+  intro ha
+  have h := haBound ha (ccmMatchedOddPoleSource ⟨a, ha⟩) (Real.exp (a / 2))
+    (norm_ccmMatchedOddPoleSource_le ⟨a, ha⟩) (matched_odd_budget ⟨a, ha⟩)
+  refine ⟨h.1, h.2.trans_eq ?_⟩
+  rw [mul_assoc, ← Real.exp_add]
+  congr 2
+  ring
 
 /-- Uniform-residual interface, obtained from the literal decaying vector. -/
 theorem eventually_ccmMatchedOddPoleSource_neumann_approximation :

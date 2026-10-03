@@ -39,8 +39,7 @@ theorem integrable_gaussianPair_staticChoi_fidelity_pow
     (hcpsi.comp continuous_snd).inner (hcpsi.comp continuous_fst)
   have hc : Continuous (fun p : ℝ × ℝ => finitePureStateFidelity
       (psi p.1).ofLp (psi p.2).ofLp ^ r) := by
-    simp_rw [finitePureStateFidelity_eq_norm_inner_sq]
-    simp only [WithLp.toLp_ofLp]
+    simp only [finitePureStateFidelity_eq_norm_inner_sq, WithLp.toLp_ofLp]
     exact (hcinner.norm.pow 2).pow r
   apply Integrable.of_bound hc.aestronglyMeasurable 1
   filter_upwards with p
@@ -52,11 +51,8 @@ theorem integrable_gaussianPair_staticChoi_fidelity_pow
       _ = 1 := by
         rw [staticSpectralChoiVector_norm hd,
           staticSpectralChoiVector_norm hd, one_mul]
-  have hsquare : ‖inner ℂ (psi p.2) (psi p.1)‖ ^ (2 : ℕ) ≤ 1 := by
-    nlinarith [norm_nonneg (inner ℂ (psi p.2) (psi p.1))]
-  simp only [finitePureStateFidelity_eq_norm_inner_sq,
-    WithLp.toLp_ofLp]
-  exact pow_le_one₀ (by positivity) hsquare
+  simp only [finitePureStateFidelity_eq_norm_inner_sq, WithLp.toLp_ofLp]
+  exact pow_le_one₀ (sq_nonneg _) (pow_le_one₀ (norm_nonneg _) hinner)
 
 /-- Pair-purity bound. Conditioning on either Gaussian time turns the other
 time into the uniform one-target moment; no target union remains. -/
@@ -89,11 +85,7 @@ theorem integral_gaussianPair_staticChoi_fidelity_pow_le_crowding
     exact integral_gaussian_staticChoi_fidelity_pow_le_crowding
       hd hmax (staticSpectralChoiVector d (T * y) energy)
       (staticSpectralChoiVector_norm hd (T * y) energy) r hT hδ
-  rw [show (∫ p : ℝ × ℝ, finitePureStateFidelity
-        (staticSpectralChoiVector d (T * p.1) energy).ofLp
-        (staticSpectralChoiVector d (T * p.2) energy).ofLp ^ r
-      ∂((gaussianReal 0 1).prod (gaussianReal 0 1))) =
-      ∫ p, f p ∂((gaussianReal 0 1).prod (gaussianReal 0 1)) by rfl]
+  change (∫ p, f p ∂((gaussianReal 0 1).prod (gaussianReal 0 1))) ≤ B
   rw [integral_prod_symm f hf]
   calc
     (∫ y, ∫ x, f (x, y) ∂gaussianReal 0 1 ∂gaussianReal 0 1) ≤
@@ -101,7 +93,6 @@ theorem integral_gaussianPair_staticChoi_fidelity_pow_le_crowding
       apply integral_mono_ae hf.integral_prod_right (integrable_const B)
       exact Filter.Eventually.of_forall hslice
     _ = B := by simp
-    _ = _ := rfl
 
 theorem integrable_sq_inner_staticChoiReplica
     {d r : ℕ} (hd : 0 < d) (energy : Fin d → ℝ) (T : ℝ)
@@ -145,20 +136,22 @@ theorem returnExcisedReplicaCarrierIncidenceAction_staticChoi_le_crowding
         (replicaActionCrowdingDegree energy r δ : ℝ) *
           ((r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r) +
         Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by
-  let f : ℝ × ℝ → ℝ := fun p => finitePureStateFidelity
-    (staticSpectralChoiVector d (T * p.1) energy).ofLp
-    (staticSpectralChoiVector d (T * p.2) energy).ofLp ^ r
+  letI : SecondCountableTopologyEither ℝ ℂ :=
+    secondCountableTopologyEither_of_left ℝ ℂ
+  letI : IsProbabilityMeasure (gaussianReal 0 1) :=
+    instIsProbabilityMeasureGaussianReal 0 1
+  let psi : ℝ → EuclideanSpace ℂ (Fin d × Fin d) :=
+    fun x => staticSpectralChoiVector d (T * x) energy
+  let f : ℝ × ℝ → ℝ := fun p =>
+    finitePureStateFidelity (psi p.1).ofLp (psi p.2).ofLp ^ r
+  have hcTensor : Continuous (fun x => finitePureTensorPowerEuclidean r (psi x)) :=
+    continuous_finitePureTensorPowerEuclidean_comp psi
+      (continuous_staticSpectralChoiVector_scaled hd energy T)
   have hcompression :=
     returnExcisedReplicaCarrierIncidenceAction_le_fullReplicaPurity
-      (gaussianReal 0 1) r S
-      (fun x => (staticSpectralChoiVector d (T * x) energy).ofLp)
-      returnSet
-      (fun u => (Continuous.inner continuous_const
-        (continuous_finitePureTensorPowerEuclidean_comp
-          (fun x : ℝ => staticSpectralChoiVector d (T * x) energy)
-          (continuous_staticSpectralChoiVector_scaled hd energy T))).aestronglyMeasurable)
-      (fun u => integrable_sq_inner_staticChoiReplica
-        hd energy T u returnSetᶜ)
+      (gaussianReal 0 1) r S (fun x => (psi x).ofLp) returnSet
+      (fun u => (continuous_const.inner hcTensor).aestronglyMeasurable)
+      (fun u => integrable_sq_inner_staticChoiReplica hd energy T u returnSetᶜ)
   have hf : Integrable f
       ((gaussianReal 0 1).prod (gaussianReal 0 1)) :=
     integrable_gaussianPair_staticChoi_fidelity_pow hd energy T r

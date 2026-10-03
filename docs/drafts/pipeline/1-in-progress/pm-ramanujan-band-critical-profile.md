@@ -793,3 +793,110 @@ The correction and final mean square must be kept together. Merely exporting thi
 Search128 completed (index1188117; coverage1188128/current1188129; complete inventory, mixed compiler metadata, semantic coverage unmeasured). All20 candidate statements, all20 returned source arguments and both generated ingredient steps inspected. It rediscovered the exact cutoff source difference and boundary, fixed-cofactor covariance bounds, and completed-aperture obstructions. The proposed dilation chain supplies no growing-cofactor constant and no complete-band bound. Direct inspection of PMRamanujanCutoffPrimeBalance confirms the physical input is not prime invariant, so its negative invariant-input cross form cannot be substituted here.
 
 Evaluation: the complementary cancellation theorem is genuine new signed-source knowledge. Subsequent retrieval did not improve the residual bound. The next proof attempt must work on the full signed quadratic above, rather than repeat coefficient estimates, scalar centering, or generic prime contraction. No new receiver with an energy premise has been added. All own Lean/search processes are terminal; owned completed scratch files and search outputs cleaned. Goal remains active and unmet.
+
+## 2026-10-02 — complete-band Mellin source and spectral escape attack
+
+The exact finite-source transform is now audited in `PMRamanujanBandMellin`: the reciprocal primitive is a finite signed Nyman combination, its Mellin transform is zeta(s)*J_s(q)/s, and the complete natural band retains every actual coefficient. Seven exports passed targeted old-mode build, final actual-file Lean and standard-axiom checks. Umbrella wired; no own lint finding. Closed card: `../3-formalized/pm-ramanujan-band-mellin.md`.
+
+New paper mechanism: normalize the complete band by X^epsilon and move it by the unitary spatial dilation. Its proposed two-variable transform has actual quotient zeta(1+z-s)/zeta(z), a normally summable Euler correction and the literal dyadic-band factor. A critical-zero residue, paired over a compact frequency interval, may force energy to escape every fixed profile. This is not yet a proved obstruction and would not disprove the weaker damping-margin bound sufficient for RH. Exact formula, continuation argument, integer-cutoff obligation and remaining gaps are recorded in `pm-ramanujan-band-spectral-escape.md`.
+
+Assessment: the finite-source identity closes a necessary input, but no global small-damping energy ceiling has been improved. Current attack keeps the full signed band and its moving spectral component. The next proof obligation is the actual Euler correction and its analytic nonvanishing, followed by the double-transform identity and bounded Hilbert test. Searches129/130 complete; 131 partial with interrupted text retrieval; all returned statements and ingredients inspected, mixed compiler freshness acknowledged. Goal remains active and unmet.
+
+### Actual analytic correction closed
+
+`PMRamanujanBandEulerCorrection` discharges the local analytic obligation: literal prime identity, absolutely and locally uniformly convergent correction, joint continuity, holomorphy in the scale variable, critical-diagonal nonvanishing and a joint nonzero neighborhood. Fifteen exports passed targeted old-mode build, final actual-file Lean and standard-axiom audits. Umbrella wired once. Lint reports thirteen unrelated unreachable modules, no own finding. Closed card: `../3-formalized/pm-ramanujan-band-euler-correction.md`.
+
+This removes one possible cancellation of the proposed critical-zero residue, but does not bound the physical energy or prove spectral escape. Next actual-source obligation: identify the infinite arithmetic series with its Euler product in Re(z)>1, using exact divisor-symbol convolution and absolute summability, then preserve the literal cutoff in the second Mellin transform. Search132 partial semantic retrieval; complete inventory, mixed compiler freshness; all20 candidates/source arguments inspected. The current series scratch is still being checked and is not a theorem claim.
+
+### Complete arithmetic Euler identity closed
+
+`PMRamanujanBandEulerSeries` now proves the actual infinite cleared identity, including coprime factorization and an unconditional absolute-convergence majorant. Its thirteen exports passed targeted old-mode build, final actual-file Lean and standard-axiom audits. Umbrella wired once; lint eleven unrelated unreachable modules, no own finding. Closed card: `../3-formalized/pm-ramanujan-band-euler-series.md`.
+
+Assessment: a previously missing exact source identity is now proved; the global small-damping upper bound has not improved. Next hard obligation is the literal cutoff Mellin integral, followed by a compact-frequency Hilbert test and critical-zero residue. Search133 was partial semantic retrieval, index1189028, coverage1189051/current1189053, complete inventory and mixed compiler freshness. All20 candidate statements and all20 source arguments inspected; unrelated Gamma bounds were rejected. Active cutoff scratch retains the exact interval [q/2,q), the q>=2 restriction and q=1 subtraction. No escape or RH conclusion claimed.
+
+### Literal cutoff integral — current proof attempt
+
+Search134 returned the generic integral/series interchange and compact-support dilation arguments, but no actual moving-band cutoff theorem. All twenty candidate statements, twenty source arguments and generated ingredient obligations were inspected. Retrieval was partial (text/source stages), inventory complete, compiler freshness mixed; no retrieved statement is treated as verified without Lean.
+
+The current proof keeps the exact half-open window [q/2,q). Its norm integral equals q^Re(r) times the fixed positive-window integral, so absolute convergence follows from the audited complete arithmetic majorant. The whole cutoff integrand is also being proved integrable via the ENNReal norm-sum bound; a totalized integral equality alone is insufficient. The arithmetic q=1 term must be subtracted exactly. Scratch proof is under foreground Lean checking; no closure or new energy estimate is claimed yet.
+
+
+### Literal cutoff identity closed
+
+`PMRamanujanBandCutoffMellin` now proves the complete scale integral, actual integrability, exact window norm identity and q=1 subtraction. All sixteen exports passed targeted old-mode build (only the new leaf, 192 seconds), final actual-file Lean and standard-axiom audits. Umbrella wired once. Lint has twelve unrelated unreachable modules and no finding for this leaf. Closed card: `../3-formalized/pm-ramanujan-band-cutoff-mellin.md`.
+
+Contribution: the actual cutoff/Fubini input is closed with no unknown energy premise. No global small-damping energy bound was improved. The next attack is the actual logarithmic Hilbert realization and compact tested continuation. The cleared identity removes the need for zero multiplicities or Laurent expansions: differentiability alone controls zeta(rho+delta)/delta. The explicit conjugate-residue test is recorded in the active spectral-escape card. RH remains unproved and unfalsified; goal remains active.
+
+
+The next Hilbert scratch prefix has now passed Lean with no diagnostics: actual log source, finite-band L1/L2 admission, complete critical Mellin trace, Fourier identification and Plancherel. It is not promoted yet: the original discrete-energy norm, moving dilation and bounded test remain to be connected. The scalar Abel refinement avoids an unnecessary operator-valued resolvent; the cleared identity avoids zero multiplicity. All own processes are terminal; only the active Hilbert scratch and empty log remain. Continue from that checked prefix rather than redoing the audited cutoff leaf.
+
+
+## 2026-10-02 — exact Hilbert energy and bounded frequency test
+
+Previous turn was verified progress: the actual cutoff integral was closed and fully audited, while the small-damping signed-energy ceiling stayed open. This turn revalidated the active scratch and frontier map. The logarithmic-source norm is now scratch-verified to equal the exact original discrete energy: exponential change of variables, removal of the zero head, and separate real/imaginary applications of `hasSum_stepGram` retain the complete square and every mixed contribution. One duplicate simp warning was removed.
+
+The actual critical trace is realized as an L2 vector. The new statements identify its literal frequency integral with the Hilbert inner product and bound its square by 2*pi*||test||² times the complete discrete energy. Pairing integrability is proved explicitly; no totalized-integral shortcut or unknown energy premise is used. The complete leaf is now fully audited. Closed card: `../3-formalized/pm-ramanujan-band-hilbert.md`.
+
+Search137 was complete in retrieval, with complete inventory and mixed compiler freshness (background refresh still running). All twenty candidate statements, twenty source-argument statements and generated ingredient obligations were inspected. The actual stepGram and L2 integral/pairing facts are relevant; the proposed log-curvature/product-derivation continuation concerns unrelated sources. Applicability of the actual energy mechanism has been checked in Lean. The growing-cutoff bound remains the hard RH-producing problem.
+
+### Hilbert audit closed; moving-carrier attack
+
+The Hilbert leaf passed its targeted old-mode build (249 seconds), final actual-file Lean audit and all twenty-two standard-axiom queries. Umbrella wired once; lint has eleven unrelated unreachable modules and no own finding. The P2 card is now P3. No cutoff-uniform or small-damping energy upper bound follows from this closure.
+
+The next scratch has passed exact phase and norm identities: at real cutoff X>=1, the actual normalized critical-frequency vector, multiplied by the unitary phase exp(i*tau*log X), represents X^(epsilon+i*tau)*T_X(tau). Its squared norm is exactly 2*pi*X^(2*epsilon) times the original complete band energy. The literal scale integral and its cleared zeta identity are now being checked. No moving-carrier project leaf has been promoted yet.
+
+The compact-test support can stay a positive distance d from the critical ordinate gamma. Its fixed-profile Abel contribution is then bounded by delta/d times the integrable frequency-pairing norm. This replaces a general dominated-convergence argument with the exact spectral-gap estimate. The source-specific analytic continuation and profile remainder remain missing, and no spectral-escape theorem or RH conclusion is claimed.
+
+The moving carrier is now fully audited in `PMRamanujanBandMovingMellin`: nine exports, targeted old-mode build261s, final actual-file audit, standard axioms only, umbrella wired once. Lint13 unrelated unreachable modules; no own finding. Closed card: `../3-formalized/pm-ramanujan-band-moving-mellin.md`. This closes the exact moving-source/scale-transform identification; it does not improve the small-damping energy ceiling.
+
+Active scratch files now separate two remaining analytic obligations: `/tmp/pm_band_abel.lean` is checking the exact L1 phase Laplace/resolvent identity and the L2 phase-unitary Abel zero limit for a test separated from the chosen ordinate. `/tmp/pm_band_residue.lean` is an unverified draft proving a whole punctured interval of nonzero literal residue numerator. The latter uses actual zeta-zero discreteness, Re>=1 zeta nonvanishing and the audited joint Euler correction. Complete tested continuation and the variable-profile remainder remain open.
+
+### Actual phase-unitary Abel term closed
+
+`PMRamanujanBandAbel` now proves the scalar Laplace/resolvent identity, frequency-gap Abel zero, actual scalar phase-pairing integrability and its L2 phase-unitary specialization. Four exports passed targeted old-mode build43s, mandatory final actual-file Lean with no diagnostics, and standard-axiom audits. Umbrella wired once. Lint13 unrelated unreachable modules; none own. Closed card: `../3-formalized/pm-ramanujan-band-abel.md`.
+
+Contribution: the fixed-profile Abel term is fully formalized with the literal phase unitary. The global small-damping energy ceiling has still not improved. Current next check is `/tmp/pm_band_residue.lean`: a punctured interval of nonzero complete numerator and continuity away from gamma. Initial API failures were repaired explicitly, without increased heartbeats. Compact positive testing, actual tested analytic continuation, profile remainder and spectral escape are not yet proved.
+
+The residue prefix now passes with no diagnostics. Its actual numerator includes alpha, both zeta factors, the literal dyadic factor and H. The proof finds a nonzero punctured interval beside every critical zero and proves continuity away from its ordinate, with no simplicity assumption. The positive compact-test paper proof is recorded in `../3-formalized/pm-ramanujan-band-residue-test.md`; its L2 admission, integrable pairing and strict positivity are the next Lean obligations. All processes terminal; only checked residue scratch and empty log remain. Completed artifacts cleaned. Search142 fully inspected and recorded in the spectral-escape card. The global small-damping energy problem remains open; goal active and unmet.
+
+
+### Positive complete-residue test fully audited
+
+`PMRamanujanBandResidueTest` is closed: nine exports, targeted old-mode leaf build172s, mandatory final actual-file Lean with no diagnostics, standard axioms only, umbrella wired once. Lint11 unrelated unreachable modules, none own. Card: `../3-formalized/pm-ramanujan-band-residue-test.md`. The actual compact test has a positive support gap and strictly positive pairing with the complete numerator. This advances the actual cleared-identity obstruction; it does not improve the global complete-energy ceiling or prove spectral escape/RH.
+
+The next foreground scratch checks actual tested-scale measurability, local norm boundedness, joint guarded-trace measurability and literal L2 pairing integrability/identity. Search146 completed, inventory64622 complete, compiler freshness mixed. All twenty candidate statements, twenty source arguments and both ingredient steps were inspected. The generic joint-integrability/Fubini mechanism is useful; separate product domination is not supplied for the actual moving family. The planned proof uses the integrated L2 square bound and derives the global source bound internally from a convergence contradiction.
+
+
+### Actual tested source continuation advances
+
+The complete thirteen-export tested-scale scratch passed with no diagnostics. `PMRamanujanBandTestedScale` is promoted and wired once. Targeted old-mode leaf build17s passed; mandatory final actual-file Lean passed with no diagnostics. Separate axiom queries are running; lint has ten unrelated unreachable modules and no own finding. The proof derives global boundedness internally from the proposed normalized-profile convergence, proves the full product integrable, applies actual Fubini, and identifies the literal scale integral with a holomorphic reciprocal Mellin transform. The complete initial arithmetic identity is retained. This closes actual-source obligations but does not improve the small-damping complete signed-energy ceiling.
+
+The next draft `/tmp/pm_band_kernel.lean` continues the literal compactly tested identity using joint Euler-correction continuity and holomorphy, compact-parameter domination, and analytic uniqueness on a connected ordinate tube. Its paper proof is `../3-formalized/pm-ramanujan-band-tested-continuation.md`. No Lean verification yet. The variable-profile Abel remainder has a direct rescaling/dominated-convergence paper mechanism, recorded in the spectral-escape card; it remains unformalized.
+
+
+The tested-scale leaf is fully audited: thirteen exports, targeted old-mode build17s, final actual-file Lean exit0 empty, standard axioms only, umbrella wired once. Card moved to `../3-formalized/pm-ramanujan-band-tested-scale.md`. Completed pairing/search artifacts are cleaned. The arithmetic continuation scratch is now in its first foreground check; its success is not yet claimed. The goal remains active and unmet.
+
+
+### Complete tested identity reaches the boundary approach
+
+`PMRamanujanBandTestedContinuation` now has a complete scratch proof and is promoted/wired. Its targeted old-mode leaf build185s and mandatory final actual-file Lean both passed, the latter with no diagnostics. Eight-export axiom audit is running; lint12 unrelated unreachable modules, none own. The exact complete arithmetic kernel is jointly continuous and holomorphic, compact L2 testing preserves holomorphy, and analytic uniqueness extends the actual cleared identity from Re(z)>1 to Re(z)>1/2 in the separated ordinate tube. No simplicity or extra arithmetic bound enters.
+
+The remaining actual Abel boundary term is drafted in `/tmp/pm_band_remainder.lean`: bounded-null rescaling, actual norm-null profile remainder, exact X=exp(u) substitution and combination with the audited fixed-profile gap limit. It is still unverified. The positive residue contradiction and unconditional positive-zero instantiation remain; global complete-energy control at small damping is still open.
+
+
+The complete tested-continuation leaf is fully audited: eight exports, targeted old-mode build185s, final actual-file Lean exit0 empty, standard axioms only, umbrella wired once. P3: `../3-formalized/pm-ramanujan-band-tested-continuation.md`. The remainder scratch is now in its first foreground check; no success is claimed yet. Completed kernel and search artifacts are cleaned. Goal remains active and unmet; the global small-damping signed-energy ceiling is unchanged.
+
+
+The profile-remainder leaf is fully audited: seven exports, targeted old-mode build73s, mandatory final actual-file Lean exit0 with no diagnostics, standard axioms only, umbrella wired once. P3: `../3-formalized/pm-ramanujan-band-profile-remainder.md`. Lint11 unrelated unreachable modules; none own. The scalar contradiction scratch is checking for the first time. The global small-damping complete-energy ceiling is still open.
+
+Search151 completed, inventory64656 complete, compiler freshness mixed. All twenty candidate statements, twenty source statements and both generated ingredient steps were inspected. The completion-construction chain is unnecessary: actual L2 is already complete. Current `Metric.cauchySeq_iff` and `cauchySeq_tendsto_of_complete` give a stronger positive survivor. No fixed limit implies a positive cofinal tail diameter; the triangle inequality yields one positive separation radius independent of the proposed profile. This new paper extension is recorded on the no-fixed-profile P2 card and awaits Lean checking.
+
+
+The complete spectral-escape scratch passed with no diagnostics. Four exports are promoted in `PMRamanujanBandSpectralEscape` and wired once; targeted old-mode leaf build is running. Unconditional Hardy supplies the positive critical zero. The literal cleared identity, actual Abel zero and positive complete residue rule out every fixed strong limit, and L2 completeness gives one positive cofinal separation radius independent of the profile. No RH or energy upper bound follows.
+
+Search152 completed, inventory64659 complete, compiler freshness mixed. All twenty candidate statements, twenty source statements and both generated ingredient steps were inspected. Its generated Frobenius/correlation chain does not apply to the anchored physical energy. The exact existing Plancherel identity can transport norm statements; the actual signed cutoff recurrence, rather than a selected sector or complete-period average, remains the next upper-bound mechanism to test. Search153 targets that recurrence.
+
+
+`PMRamanujanBandSpectralEscape` is fully audited: four exports, targeted old-mode build144s, final actual-file Lean exit0 empty, standard axioms only, umbrella once. P3: `../3-formalized/pm-ramanujan-band-no-fixed-profile.md`. The complete actual normalized critical-frequency family has a common positive cofinal distance from every fixed L2 vector. This is the strongest current positive survivor; it does not exclude bounded oscillation or prove the small-damping upper ceiling. Global lint13 unrelated unreachable modules, none own.
+
+Search154 completed with inventory64667 complete, mixed compiler freshness. All20 candidate and20 source statements plus both ingredients inspected. Coefficient variance, the half-damping endpoint and absolute remainder bounds do not supply the missing cumulative small-damping energy estimate. Search155 was partial with inventory64671 complete and mixed compiler freshness; all20+20 statements and both ingredient steps inspected. Actual `dilationUnitary` and existing AE Fourier transport suffice for the exact physical vector identity. `/tmp/pm_band_physical.lean` is now in its first check, seven exports drafted; paper proof in `../2-fully-proven/pm-ramanujan-band-physical-separation.md`. Original signed-energy norm and every denominator are retained. Goal remains active and unmet.

@@ -5474,9 +5474,503 @@ C28.44 reciprocal/trilinear search31247 completed nonpartial64480/64480; all20 c
 A proposed algebraic pairing also fails: swapping p,q preserves the phase; reflecting q to 2r-q conjugates it and therefore preserves its REAL part, even before the unresolved requirement that the reflected integer be prime. Thus reflection cannot pair opposite real sectors. The remaining C28.44 target is arithmetic cancellation of the full centered semiprime residue discrepancy with its coupled physical weight, or an explicit signed-zero-response construction achieving the same contraction-scale saving. Exact regrouping, norm-only completion and qualitative window equidistribution have not solved this target.
 
 
-**C28.45 complete-row cancellation across a widening near-diagonal band — OPEN.**
+**C28.45 complete-row cancellation across a widening near-diagonal band — LEAN PROVED (F335; final audit below).**
 Corpus basis: F332 complete physical entry/main error and exact gap phase; F334 actual opposite-sign sectors; `exists_chebyshev_theta_power_log`; the source scaled Abel proof in ChiPrimeGaussianRationalSaddle; the actual smooth Gaussian/window profile. Proposed producer: on N=K^(4m), complete each q-row for central actual prime pairs with m^2/K<|p-r|<=m^3. Prove the sum of NORMS OF COMPLETED ROWS is o(N/log(N)^2), while both Jordan parts of the SAME triple family diverge after normalization. This would establish actual cancellation of individually divergent contributions, rather than another absolute obstruction. It does not settle the wider-gap complement, which remains required for full BAG cubic control.
 
-Paper mechanism under verification: set L=logN and a=p/r. Replacing W(a*q/N) by W(q/N) costs O(m^3/(N*L)) per physical row by the actual window's uniform derivative bound. Retain exact unweighting through g_l(x)=V(x)W(x)/(1+l*logx), l=1/L. The compact profile and its first two derivatives have uniform bounds for 0<=l<=1; g_l and its first derivative vanish at both endpoints. Two signed integrations give its Fourier integral O(1/tau^2), tau=2*pi*(p-r)*N/r. Quantitative theta-Abel summation gives the actual prime row O((1/d^2+epsilon_N*(1+d))/L), with epsilon_N decaying faster than every log power. The number of prime pairs is at most O(N*m^3/L), using global prime count and the integer gap bound. After normalization, the Fourier term is O(1/m), the coupled-window and full physical-kernel errors vanish exponentially, and the PNT error vanishes. No prime-pair asymptotic or cancellation assumption is introduced.
+Paper mechanism, now verified: set L=logN and a=p/r. Replacing W(a*q/N) by W(q/N) costs O(m^3/(N*L)) per physical row by the actual window's uniform derivative bound. Retain exact unweighting through g_l(x)=V(x)W(x)/(1+l*logx), l=1/L. The compact profile and its first two derivatives have uniform bounds for 0<=l<=1; g_l and its first derivative vanish at both endpoints. Two signed integrations give its Fourier integral O(1/tau^2), tau=2*pi*(p-r)*N/r. Quantitative theta-Abel summation gives the actual prime row O((1/d^2+epsilon_N*(1+d))/L), with epsilon_N decaying faster than every log power. The number of prime pairs is at most O(N*m^3/L), using global prime count and the integer gap bound. After normalization, the Fourier term is O(1/m), the coupled-window and full physical-kernel errors vanish exponentially, and the PNT error vanishes. No prime-pair asymptotic or cancellation assumption is introduced.
 
-For signed variation, sparse-cell deletion at width m^3 retains >=c*N*m^3/L^2 actual pairs; deleting integer gaps <=m^2/K costs only O(m^2/K) partners per anchor. F334's q-sector mechanism applies since m^3<=N^(1/4) eventually, and gives both sign masses >=c'*N*m^3/L^3. Normalization grows like m^2. Every q is retained in the completed row. This is a proof plan, not yet audited mathematics. Exact logarithmic unweighting is essential: its crude O(1/logN) replacement error is too large after summing the growing family.
+For signed variation, sparse-cell deletion at width m^3 retains >=c*N*m^3/L^2 actual pairs; deleting integer gaps <=m^2/K costs only O(m^2/K) partners per anchor. F334's q-sector mechanism applies since m^3<=N^(1/4) eventually, and gives both sign masses >=c'*N*m^3/L^3. Normalization grows like m^2. Every q is retained in the completed row. This mechanism is now fully formalized and audited in F335 below. Exact logarithmic unweighting is essential: its crude O(1/logN) replacement error is too large after summing the growing family.
+
+
+**C28.45 / F335 intermediate checkpoint — row cancellation proved; superseded by full closure below.**
+`RHTower.tendsto_primeGaussianCubicGapRowMass` in `ChiPrimeGaussianCubicRowCancellation.lean` proves the normalized sum of complete ACTUAL physical row norms tends to zero over ALL full-band pairs m²/K<|p-r|≤m³, K=10000000, on the existing conductors. This is stronger in pair coverage than the central-pair paper target. The proof retains exact logarithmic unweighting, C² endpoint cancellation, source theta error, the coupled-window transport, exact q=r subtraction and both complete physical remainders. Uniform actual prime Fourier and physical row estimates are also proved, without an external mathematical hypothesis.
+
+Direct65060 passed via `lake --old env lean -o ... ChiPrimeGaussianCubicRowCancellation.lean`; its log contains an informational ring diagnostic, no errors or warnings. All nine public/new/reused declarations passed axiom audit18797, with only propext, Classical.choice and Quot.sound. Existing source publicizations passed direct11416 (RationalSaddle, informational ring diagnostic) and38734 (CubicMain, clean). New leaf wired and exact-indexed. Lint82228 reports ten unrelated unreachable leaves, no new BAG error; global gate remains unclean. No full/umbrella build, numerical experiment, heartbeat change or subagent.
+
+This is verified signed-cancellation progress beyond F334's obstruction. It does NOT yet establish that the same band has divergent Jordan parts. That remaining part uses a drafted actual m³-cell pair producer and a generalization of F334's central-pair sector argument, both pending Lean checks. Full complementary gaps, the complete signed cubic, growing moments, actual moving cofactors, C28.35 self-target error, MUST270 and RH remain OPEN.
+
+
+C28.44 continuation after completed-band cancellation: the remaining target retains the entire signed p,r average in the complementary gap ranges, including the small-gap range. Search99602 returned partial coverage64527/64527, with reranker/judge errors but usable20 candidate and20 source arguments plus ingredients, all inspected. Source compiler metadata is source-only; refresh incomplete/background indexer. Direct reads of BVPrimeWindowReciprocalReflection give reciprocal CONJUGATION, not an opposite-real-sign identity for the actual prime cubic. PrimeTailCoPoissonBoundary's Mellin identity is a right-half-plane Euler-log divided difference; it supplies no additive pq/r cancellation estimate. The Menon/Heath--Brown source retains a complete signed dyadic aggregate, but its actual `vonMangoldtTwist` is n^(-i*tau), as verified in VonMangoldtTwistPerron; its existing localization/box-selection bounds do not transport to pq/r or furnish the missing joint gain. No substitution, cancellation premise or wrapper was added. Building a source-specific joint additive-phase producer remains the mathematical task; the unsuccessful transfer is not a falsification of the full cubic conjecture.
+
+
+**C28.45 / F335 FINAL — actual cancellation of individually divergent signed parts, LEAN PROVED.**
+On the existing conductors N=10000000^(4m), `primeGaussianCubicGapPairs N (m²/10000000) (m³)` contains EVERY full-band pair in that gap annulus. Each `primeGaussianCubicCompleteRow` retains EVERY q in the literal prime band except its exact q=r contraction. The two unconditional capstones in `ChiPrimeGaussianCubicRowCancellation.lean` now establish:
+
+- `RHTower.tendsto_primeGaussianCubicGapRowMass`: log(N)²/N times the SUM OF NORMS OF COMPLETED ROWS tends to zero.
+- `RHTower.tendsto_primeGaussianCubicGapSignedVariation negative`: for EACH Bool sign, log(N)²/N times the real Jordan part of the EXACT SAME triple family tends to infinity.
+
+The positive mass is itself source-built: `exists_primeGaussianPolylogPairs_mass` constructs at least c*N*m³/log(N)² actual central pairs by sparse-cell deletion and an elementary count of the excluded smaller integer gaps. `primeGaussianPolylogPairs_mem` proves exact prime/central/gap membership. `exists_primeGaussianCentralPair_signed_row` generalizes the already proved two-sign physical sector mechanism to every actual central pair with 256<=d<=N^(1/4). Their combination gives normalized variation >=A*m², A>0, on the very band whose complete rows cancel. No prime-pair asymptotic, cancellation input, external hypothesis or added axiom appears.
+
+Final direct audits: HyperbolicCore11994 exit0 with one unnecessarySeqFocus style warning; generalized SignedVariation54339 exit0 clean; extended RowCancellation93703 exit0 with an informational ring diagnostic but no error or warning. Each used `lake --old env lean -o ... <leaf>`. Full32-public-declaration /tmp axiom audit1375 passed with only propext, Classical.choice and Quot.sound, including all three touched leaves and all reused publicized helpers. Leaf wired; both capstones exact-indexed. Lint28148 reports twelve unrelated unreachable leaves and no BAG error; global gate remains unclean. No umbrella/full build, numerical experiment, heartbeat change or subagent.
+
+This advances the actual signed arithmetic frontier beyond F334's necessary-cancellation obstruction: an explicit widening family has genuine cancellation between contributions individually diverging at the required scale. Its SMALL-gap and LARGE-gap complements remain uncontrolled. The full signed cubic, C28.37 growing mixed moments, actual moving cofactors, C28.35 self-target error, MUST270 and unconditional RH remain OPEN. Goal remains ACTIVE; F335 is not an RH proof or falsification.
+
+**C28.46 removing the small-gap obstruction — LEAN PROVED (F336; final audit below).**
+The next conjecture strengthens F335 to every actual noncontracting pair with
+`0 < |p-r| <= m^3`, with no lower cutoff, keeping the complete original physical q-row.
+This is a new cancellation regime, not a change to a numerical constant. Source
+`Sieve/GenericMarkerAnalytic.generic_pair_le'` gives, at the literal integer conductor N,
+the complete averaged shifted-prime count up to d at most
+`d*(2*pairMainConst*N/log(N)^2 + 2*N^(3/4))`. Thus its individual d-fibre is bounded by
+that same expression. Summing the F335 row's inverse-square term over both orientations
+gives at most `2*A_N*(1+log H)`, H=m^3, by the source harmonic-sum bound. After physical
+normalization and the row's 1/logN factor this is
+`O((1+log H)/logN + logN*(1+log H)/N^(1/4))`, which tends to zero.
+The row's remaining three errors are uniform for d<=H and use the already proved
+`#pairs <= #band*(2H+1)` and `#band*logN <= 2*log4*N`; their budgets still tend to zero.
+All source sieve remainders are retained. No prime-pair asymptotic or unproved uniformity
+is introduced. The large-gap range d>m^3, full signed cubic asymptotics, growing moments,
+self-target error and RH remain open. The exact cutoff-free capstones and final audits are recorded below.
+
+**C28.46 / F336 FINAL — all noncontracting near rows, LEAN PROVED.**
+The complete 312-line scratch77375 and production
+`ChiPrimeGaussianCubicNearCancellation.lean` direct79689 both pass with exit0 and no diagnostics.
+The leaf is wired into RHTower without an umbrella build. Its two unconditional capstones are
+`tendsto_primeGaussianCubicNearRowMass` and
+`tendsto_primeGaussianCubicNearSignedVariation`: at the same N=10000000^(4m), every full-band
+prime pair with `0 < abs(p-r) <= m^3` is retained, every physical q-row is complete apart from
+its exact q=r contraction, normalized row norms tend to zero, and both normalized Jordan
+parts tend to infinity. Thus the small-gap complement is closed, including fixed prime gaps.
+The source sieve remainder is absorbed through the proved log²(N)/N^(1/4) limit; the row's
+inverse-square term sums to a harmonic factor with an extra prime-density saving.
+Both public capstones and the reused literal pair-sieve producer pass axiom audit9061 with
+only `propext`, `Classical.choice`, `Quot.sound`. Authoritative lint8309 reports FIFTEEN unrelated unreachable modules,
+no new BAG error; global lint remains unclean. Large-gap joint signed arithmetic, full cubic,
+growing moments, self-target recurrence and RH remain open.
+
+**C28.44 next attack after F336 — full large-gap arithmetic remains unproved.**
+Organize the actual frequencies p/r into rational neighborhoods while retaining the complete
+signed prime/cofactor sum; the target remains the centered semiprime residue discrepancy
+averaged over prime moduli with its actual coupled weight. Source rational-profile and
+full affine-sieve theorems suggest studying b*p-a*r, but they do not by themselves control
+the joint complement. Search19857 is nonpartial64544/64544 with source/compiler freshness
+mostly pending/stale; all candidate/source/ingredient statements inspected. Its generic
+theta results are inapplicable. Directly checked `ChiPrimeGaussianRationalSaddle` and
+`PNTPlus/Consequences.chebyshev_asymptotic_pnt`: reduced-class theta density is qualitative.
+One cannot silently multiply this o(1) error by a growing frequency window or replace real
+pq/r by modular unit inversion. A uniform source cancellation estimate must be constructed;
+no such estimate, rational-ray capstone, full cubic asymptotic or RH theorem is claimed.
+
+**C28.47 actual large-gap half-integer resonance — LEAN PROVED (F337; final audit below).**
+Target the actual full q-rows with `abs(2*p-3*r)<=m^3`, p,r in the original full prime
+band, at N=10000000^(4m). This is a macroscopic p-r gap, disjoint from F336 eventually.
+Prime parity gives exact `exp(3*pi*i*q)=-1`; the residual frequency is
+`pi*(2*p-3*r)*N/r`. No AP equidistribution hypothesis is needed for this phase split.
+The actual frozen profile is `W(3*x/2)*V(x)`, whose lower band endpoint is NONZERO.
+Thus the previous two-IBP endpoint-vanishing proof does not apply. Retain both Abel
+endpoints and use one integration by parts, giving inverse-FIRST-power frequency decay.
+The moving W amplitude differs by at most C*abs(2*p-3*r)/N; both physical kernel
+remainders and q=r contraction exclusion remain explicit.
+
+Arithmetic mechanism: use F323's literal full dilation-pair sieve with A=2,B=3,
+P1=3 and its actual finite remainder. Every sifting prime is at least5, hence
+p/(p-1)<=p^(1/4), since (p-1)^4-p^3=p^3*(p-5)+2*p*(3*p-2)+1>=0.
+For nonzero v, the primes in the correction for6*abs(v) divide abs(v), so the entire
+inverse singular factor is at most abs(v)^(1/4). The exact anchor and source remainder
+are retained: each signed v-fibre is bounded by
+`1+C*N*abs(v)^(1/4)/log(N)^2+2*N^(3/4)` eventually. Multiplying by the completed-row
+1/abs(v) term and summing gives normalized budget
+`C*H^(1/4)*(1+log H)/logN + C*logN*(1+N^(3/4))*(1+log H)/N`, H=m^3, tending0.
+The other row errors use the elementary full-band pair count and also tend0.
+Exact v=0 cannot occur for large primes (or directly by odd parity). This proposed
+capstone would remove a genuine large-gap rational resonance while preserving the
+hard original boundary. It is not the full large-gap discrepancy estimate, a lower
+bound for affine prime pairs, a growing-moment theorem or RH. Formalization pending.
+
+**C28.47 intermediate formal results (aggregate audit pending).** The actual frozen-profile
+Fourier theorem and complete physical-row theorem are directly audited in
+`ChiPrimeGaussianCubicHalfResonance` (production17659 exit0). The exact correction bound
+and eventual actual dilation-pair producer passed scratch77812; production90739 is running
+for `Sieve/PrimeDilationThreeHalves`. The full finite remainder and anchor can be absorbed
+uniformly because every nonzero shift has fourth root≥1. This yields the cleaner total
+budget `C*[H^(1/4)*(1+logH)/logN + H²*((1+H)/logN^13+(1+H)/(N*logN)+1/N)]`.
+At H=m³ it tends to zero. Exact family aggregation is drafted; no aggregate theorem is
+yet certified, and no full cubic or RH result is asserted.
+
+**C28.47 / F337 FINAL — actual three-halves large-gap cancellation, LEAN PROVED.**
+`RHTower.tendsto_primeGaussianCubicHalfResonanceRowMass` in
+`ChiPrimeGaussianCubicHalfCancellation.lean` proves the complete stated family, with
+no prime-pair asymptotic or cancellation premise. The literal definition retains
+all band pairs at residual distance≤m³ and every q except the exact contraction.
+At these conductors this is a genuine macroscopic p-r region, outside F336 eventually.
+Unlike the old near family, no lower bound or divergence theorem for this family's
+Jordan parts is claimed.
+
+Exact proof: classify each nonzero Nat.dist(2p,3r) fibre into the positive and negative
+actual dilation sets. The source sieve with its entire denominator and finite remainder
+gives two prime-density savings. Combine the fourth-root singular cost with the actual
+1/residual row decay; bound the resulting harmonic sum, and retain all uniform row
+errors. The displayed normalized budget tends0 at H=m³. No endpoint, prime, coefficient,
+physical kernel term or source remainder is silently discarded.
+
+Scratch53515, physical source17659, arithmetic source90739 and aggregate source55859
+all exit0 cleanly. Final direct commands use `lake --old env lean` and write the three
+production oleans. All three leaves are wired in RHTower; no umbrella/full build.
+Axiom66643 exits0: all seven public/new/reused declarations, including the exported
+actual theta rate and prior complete-row/gap capstones, use only `propext`,
+`Classical.choice`, `Quot.sound`. Exact index33564 finds the new
+capstone. Formal lint7714 exits1 for12 unrelated unreachable modules, with no new BAG
+error. All seven owned scratch sources/body/audit files were removed after verified success;
+logs and search results remain. All owned Lean processes are terminal.
+
+This is PROGRESS on the hard signed cubic route: it closes a macroscopic resonance with
+an actual nonvanishing boundary, beyond the solved small-gap family. The full joint
+signed complementary p,q,r discrepancy is still unproved, followed by C28.37 growing
+moments, moving cofactors, C28.35 positive self-target error, MUST270 recurrence and RH.
+
+**C28.48 — BAG rational major-arc arithmetic: actual character zero-free strip (LEAN PROVED, F338; AP transport remains open).**
+F337 closes one parity resonance; the full joint signed cubic remains the target.
+The current joint-dispersion attempt does not close it: the centered Kloosterman receiver
+retains the common-period terminal-orbit budget, and the physical kernel is a complete
+Kloosterman sum rather than the actual e(pq/r). Vaughan's exact identity alone supplies
+no cancellation estimate. These are failed applications, not no-go theorems for BAG.
+
+Construct the missing arithmetic source for rational neighborhoods instead of assuming
+uniformity of the existing qualitative AP prime-density limit. Frozen target: for every
+fixed positive modulus, every character has a high-height zero-free strip of width
+c/(log|t|)^9. First prove the actual nonprincipal L-function's bounded-periodic-sum
+truncation formula and O(log|t|) growth in Re(s)>=1-1/log|t|; Cauchy gives O(log²|t|)
+derivative control. Apply the installed character 3-4-1 product (which couples chi and
+chi²) and the actual principal-character Euler factors. Low heights require separate
+compactness using installed nonvanishing on Re(s)>=1. Subsequent Perron transport to
+quantitative reduced-class theta, then growing-frequency rational profiles, remains
+part of this BAG input construction. No quantitative AP rate is inferred from a
+qualitative limit, no conditional receiver is counted as a new result, and closing
+this source input will not itself prove full joint cubic cancellation.
+
+Corpus basis: `DirichletAbel`, `DirichletUniformAbel`, `DirichletLSeriesBridge`,
+`ZetaVerticalGrowth`, `ZetaDerivGrowth`, `ZetaZeroFreeRegion`, installed
+`LSeries/DirichletContinuation` and `LSeries/Nonvanishing` (actual character product).
+Use the actual finite-period cancellation to discharge bounded sums; preserve conditional
+ordered convergence separately from absolute summability. This is a construction of a
+missing zero-exclusion mechanism, not optimization of F337's numerical constants.
+
+**C28.49 — actual character Perron control (next frozen target; not Lean-proved).**
+The C28.48 derivative and literal character 3-4-1 product suggest a stronger constructive
+input than qualitative nonvanishing. Write K=characterLogStripConstant(Q), L=log|t|,
+choose a=1/(4*32^4*K^8), and eta=a/L^9. Target all actual characters at |t|>=9 and
+|sigma-1|<=eta:
+`norm(L(chi,sigma+it)) > 16*K*a/L^7`, hence
+`norm(L'(chi,sigma+it)/L(chi,sigma+it)) <= L^9/(2*a)`.
+
+Paper argument to formalize: derivative control bounds the horizontal drift to 1+eta
+by 16*K*eta*L². If the displayed lower bound failed, the value at 1+eta would be at
+most32*K*eta*L². The principal pole factor is at mostK/eta and the actual chi² value
+at2t at most2*K*L. Their 3-4-1 product would be at most
+`(K/eta)^3*(32*K*eta*L²)^4*(2*K*L)=1/2`, contradicting its lower bound1.
+Thus the lower bound is source-produced; it is not an added inverse-function premise.
+Multiply its inverse by the proved derivative estimate to get the Perron integrand bound.
+This is needed to construct quantitative AP prime asymptotics, not to optimize constants.
+
+Next mathematical obligations: generalize the source zeta Perron contour argument to
+actual chi*Lambda, retain all tails and horizontal edges, and unsmooth correctly. Complex
+character sums are not monotone: either dominate their short-interval defect by the
+already proved ordinary Lambda estimate or combine characters into positive AP sums
+before applying the monotone sandwich. Then remove proper prime powers and perform
+exact reduced-class orthogonality. Only after those source obligations close can growing
+rational-frequency profiles use a quantitative AP error. The full joint complementary
+p,q,r cancellation remains the principal BAG arithmetic target throughout.
+
+**C28.48 / F338 FINAL — actual character zero-free input, LEAN PROVED.**
+`DirichletLLogStrip.lean` proves the actual truncation remainder throughout Re(s)>0,
+logarithmic growth for nonprincipal characters, then a common logarithmic bound for
+all characters using exact principal Euler factors. The coefficient partial sums are
+proved bounded by their period, and analytic uniqueness identifies the ordered Abel
+limit with the literal LFunction. No absolute convergence below Re(s)=1 is asserted.
+`DirichletLZeroFreeLogStrip.lean` proves the actual Cauchy derivative bound and
+`exists_character_zero_free_log_strip`: for every positive Q there is c>0, common to
+ALL characters modulo Q, excluding zeros for |t|>=9 and Re(s)>1-c/log^9|t|.
+The character 3-4-1 product retains chi², including its principal case; the proposed
+zero would force its norm to be at most1/2 instead of at least1.
+
+The stronger complete-height capstone
+`exists_nonprincipal_character_zero_free_log_strip` proves, for each actual
+nonprincipal character, a positive width c_chi/log^9(3+|t|) at EVERY height.
+A compact line segment thickens inside the actual nonvanishing locus, and the
+high-height theorem supplies the complement. Its width may depend on the character;
+no effective conductor-uniform low-height bound is claimed.
+
+Scratch6 proves the analytic/derivative construction; scratch85849 proves the full
+zero-exclusion package. Production40277 and64795 both pass cleanly with
+`lake --old env lean <leaf> -o <olean>`. Axiom47323 passes cleanly: all nine new public
+declarations and the reused exact character product depend only on `propext`,
+`Classical.choice`, `Quot.sound`. Both leaves are wired into RHTower; no umbrella/full
+build or heartbeat change. Exact lexical index finds the complete-height capstone at318.
+Formal lint51021 exits1 for13 unrelated unreachable modules, with no new BAG error.
+
+Evaluation: verified progress on a missing analytic prerequisite of quantitative
+rational major arcs. The main joint signed cubic problem is NOT solved, and no AP
+prime-rate or growing-frequency transfer follows without further proof. The next
+constructive target is C28.49, followed by actual Perron/AP arithmetic and the full
+joint p,q,r cancellation, growing moments, moving cofactors, self-target positivity,
+MUST270 recurrence and RH. The goal remains active.
+
+**C28.49 — constructive proof complete in scratch; production audit pending.**
+Scratch91724 passes cleanly. It proves the frozen actual lower floor, reciprocal
+bound, and log-derivative estimate, then constructs positive c_chi,B_chi with
+`|sigma-1| <= c_chi/log(3+|t|)^9` implying both actual nonvanishing and
+`norm(L'_chi/L_chi) <= B_chi*log(3+|t|)^9` at EVERY height. Bounded heights use a
+closed rectangle strictly inside the proved zero-free region and the continuous
+actual quotient. Constants can depend on the character; no conductor-uniform
+bounded-height claim. Source installed as DirichletLLogDerivativeStrip, audit28928.
+
+**C28.50 — actual signed character Perron transport (frozen construction).**
+Corpus search77920 (nonpartial64610/64610, compiler mostlypending/stale) confirms
+actual scalar PerronVonMangoldtSwap and zeta-specific contour assembly, plus
+mathlib's literal character twist identity. Proposed imaginary power twists are
+not periodic Dirichlet characters and cannot discharge this target.
+Construct the exact tent identity for chi(n)*Lambda(n) from the existing weighted
+kernel. Absolute integral summability follows by |chi(n)|<=1 domination by the
+source scalar von Mangoldt majorant; pointwise summation uses the actual character
+L-series/log-derivative identity. For nonprincipal chi the zero-free rectangle
+has zero contour integral (no pole main term). Use C28.49 to CONSTRUCT the rectangle
+and its bounds, rather than accepting zero-freeness as a new source premise.
+Tails, horizontal edges, quantitative decay and complex unsmoothing remain exact
+obligations; no AP prime rate or joint cubic cancellation is claimed at this stage.
+
+**C28.49 FINAL — LEAN PROVED.**
+Production28928 (`lake --old env lean` direct leaf with olean output) exits0 with
+empty diagnostics. Axiom33128 exits0: the new segment helper, both preserved zero-free
+capstones and all six new public declarations use only propext, Classical.choice,
+Quot.sound. New leaf is wired; no umbrella or full build. The lower floor and reciprocal
+are actual constructions, including principal-square degeneracy in the character
+product. No quantitative AP theorem or full joint cubic cancellation is inferred.
+
+**C28.50a — exact signed identity and constructed rectangles (scratch PROVED).**
+Scratch30205 exits0 with empty diagnostics. `LSeries_character_vonMangoldt_eq`
+identifies the actual twist with -L'_chi/L_chi on Re(s)>1.
+`smoothed_character_vonMangoldt_eq_perron_integral` keeps every complex character
+coefficient through the kernel integral and the absolutely justified sum/integral
+interchange. `exists_nonprincipal_character_perron_rectangles` constructs c,B>0,
+c<=log(3)^9/2, such that at every T>=0 the FULL rectangle
+`1-delta <= Re(s) <= 1+delta, |Im(s)|<=T`, delta=c/log(3+T)^9,
+has positive real part, actual nonvanishing and norm(L'/L)<=B*log(3+T)^9.
+For every x>0 its actual Perron integrand has zero boundary integral. This includes
+s=1 for nonprincipal chi and needs no pole subtraction. Source installed as
+DirichletCharacterPerron; final production8623 and axiom audit pending.
+The scalar source's existing integral-majorant and term/kernel proofs are exposed
+as reusable theorems; source32340 passes cleanly with its scalar capstone preserved.
+
+**C28.50b — all contour errors and signed unsmoothing (next formal target).**
+The corpus PerronTailBound and PerronEdgeBounds supply the proof mechanisms; their
+current theorems are zeta-specific. Construct the character right-line estimate
+`norm(L'_chi/L_chi)<=8/(a-1)^2` by the literal twisted series and |chi(n)|<=1.
+For b=1-delta, a=1+delta, M=B*log(3+T)^9, the exact identity plus zero boundary
+integral should give the complete bound
+`norm(S_chi(x)) <= 2*(8/(a-1)^2)*x^a/(2*pi*T)
+ + (2*pi)^(-1)*(M*x^b*pi/b + 2*M*x^a/T^2*(a-b))`.
+No tails or horizontal edges may be dropped. Integrability must also be proved.
+One can shrink c to <=1/4. Choose u=(log x)^(1/10), T=exp(u)-3, so log(3+T)=u
+exactly and eventually T>=exp(u)/2. Then the tails have polynomial u^18 times
+x*exp(-(1-c)u), the vertical edge u^9*x*exp(-c*u), and the horizontal edges
+x*exp(-(2-c)u) after cancellation of the width. Corpus polynomial absorption
+then gives an actual fixed-character tent rate C*x*exp(-k*u), k>0.
+This is a rate construction, not optimization of the exponents or constants.
+
+For complex unsmoothing, prove the actual finite identity/defect
+`norm(S_chi(y)-S_chi(x)-log(y/x)*Psi_chi(floor x))
+ <= log(y/x)*(psi(floor y)-psi(floor x))` for y>=x>0.
+It follows termwise from the tent kernel, preserving chi(n), and |chi(n)|<=1.
+Use the corpus ordinary-psi rate to dominate the short interval, and set
+log(y/x)=exp(-k'*u) with k' below half both source decay constants. The resulting
+fixed-character partial-sum rate feeds exact reduced-class orthogonality and
+prime-power removal. None of these rate/unsmoothing conclusions is yet claimed
+Lean-proved. Fixed-modulus AP information alone also does not settle the full
+joint cubic main; joint p,q,r cancellation remains a separate hard obligation.
+
+**C28.50a FINAL — LEAN PROVED; C28.50b remains open.**
+Production8623 passes cleanly with `lake --old env lean <leaf> -o <olean>`.
+Axiom50502 passes: all three actual character declarations, both exposed scalar
+ingredients and the preserved scalar Perron capstone depend only on propext,
+Classical.choice, Quot.sound. New leaf wired into RHTower. Exact corpus index
+finds the signed identity at35 and constructed rectangles at98. Formal lint68152
+exits1 for ten unrelated unreachable leaves; it reports no BAG error. No full
+or umbrella build, extra axioms, numerical computation or heartbeat changes.
+
+Turn evaluation: C28.49 and C28.50a close actual analytic source obligations
+needed for character prime sums. They do not settle C28.50b's quantitative rate
+or C28.44's full joint signed cubic. The next construction is the complete
+character contour error plus complex unsmoothing described above. Growing mixed
+moments, moving cofactors, positive signed self-target error, MUST270 physical
+recurrence and unconditional RH remain open. Goal ACTIVE.
+
+**C28.50b contour stage — complete master estimate proved in Lean.**
+Scratch4490 and production82313 pass cleanly. DirichletCharacterPerronBounds
+constructs the literal character right-line bound, absolute integrability, both
+infinite tails (without assuming chi is real), the physical-coordinate signed
+Perron identity, and the complete contour master bound. The final existential
+statement has no zero-free or norm-bound premise: it instantiates C28.50a's actual
+constructed rectangle and includes every edge and both tails. Leaf is wired;
+axiom audit pending after the dependent rate construction.
+
+**C28.50b rate refinement — actual source width retained.**
+The earlier paper choice suggested shrinking c<=1/4. The cleaner construction
+uses the rectangle theorem's actual c directly: D=1+c, k=c/D^9 and d=min(1,k).
+For u>=6, x=exp(u^10), T=exp(D*u)-3, log(3+T)=D*u and T>=exp(D*u)/2.
+The tail coefficient is (32*D^18/c²)*u^18*x*exp(-(D-k)u), the vertical coefficient
+at most(2*pi*B*D^9)*u^9*x*exp(-ku), and the horizontal coefficient at most
+16*B*c*x*exp(-(2D-k)u). Since k<=c, both D-k and2D-k>=1. Hence all terms are
+bounded by a fixed coefficient times u^18*x*exp(-d*u); source polynomial
+absorption gives exp(-(d/2)u). Scratch rate construction now checks this exact
+argument and then transfers from exp(u^10) to every sufficiently large real x.
+No prime-sum rate is asserted until this and signed unsmoothing are audited.
+
+**C28.50b tent-rate stage — production Lean check passed.**
+Scratch77670 and production37529 exit0. DirichletCharacterPowerLog gives actual
+κ>0,C>=0,x₀>=3 such that every x>=x₀ satisfies
+`norm(sum chi(n)*Lambda(n)*max(log(x/n),0)) <= C*x*exp(-κ*(logx)^(1/10))`.
+No zero-free, inverse-L, contour or convergence premise remains. One polynomial
+tactic advisory is emitted; no errors, heartbeat limits unchanged. Leaf wired.
+
+**C28.50b signed recovery — exact quantitative construction.**
+The structural defect proof uses D_n>=0 for the real tent-kernel remainder after
+subtracting the full n<=x step; multiplication by chi(n) has norm at most D_n.
+Summing D_n and applying the existing scalar tent upper sandwich gives the exact
+complex defect bound recorded above. For the final rate, take
+lambda=min(κ/2,κ_psi), epsilon=exp(-lambda*(logx)^(1/10)), y=(1+epsilon)*x.
+The installed log lower bound 2*epsilon/(epsilon+2)<=log(1+epsilon) implies
+log(y/x)>=epsilon/2 for epsilon<=1. The two tent values divided by log(y/x)
+are at most6*C*x*epsilon; the scalar psi short interval is at most
+(1+3*C_psi)*x*epsilon. Thus the actual unsmoothed character sum should have
+constant6*C+1+3*C_psi at rate lambda. Structural scratch and this source-specific
+quantitative transfer are under verification; no AP prime theorem is claimed yet.
+
+**C28.51 — source character prime sums and reduced progressions (frozen extension).**
+Search29143 returned the exact installed finite-character orthogonality and residueClass_apply,
+not an actual quantitative AP prime theorem. Coverage64636/64636, nonpartial; compiler metadata
+mostly pending/stale, semantic coverage unmeasured and refresh background. Proper-prime-power
+candidate transformations alone do not supply the character cancellation rate. From C28.50b,
+define theta_chi(x) with the actual chi(p)*log p on all primes p<=x. The exact difference from
+Psi_chi is supported on proper prime powers; norm is at most ordinary psi(x)-theta(x).
+The corpus psi-theta bound and sqrt_log_le_power_log_decay absorb this into the same character
+rate, giving norm(theta_chi)<= (C+1)*x*exp(-rho*(logx)^.1). For the principal character, only
+prime divisors of Q are removed, so the error against ordinary theta is at most theta(Q).
+Finite-character orthogonality then yields reduced-class AP theta, with constants dependent
+on Q and uniform over the finite reduced classes. This constructs missing arithmetic input;
+it does not establish any conductor-uniform rate or full p,q,r cubic cancellation.
+
+**C28.50b signed recovery — production LEAN PROVED.**
+Scratch15310 and production64709 exit0 with empty diagnostics. The exact positive
+kernel-defect domination and actual nonprincipal characterChebyshevPsi power-log
+rate are installed in DirichletCharacterUnsmoothing and wired. All contour edges,
+both tails and the signed-to-unsmoothed transfer have now passed direct leaf audits.
+The combined axiom audit remains pending until the dependent character-prime leaf.
+C28.51 character-prime and fixed-modulus AP source proofs are written in scratch;
+no AP claim is promoted before checking them.
+
+**C28.51 character-prime main terms — scratch LEAN PROVED.**
+Scratch92823 exits0, empty diagnostics. The norm of Psi_chi-theta_chi is at most the
+actual ordinary psi-theta proper-power mass. Thus the proved character cancellation
+rate survives on the full prime set. The principal difference is bounded by theta(Q),
+because only primes dividing Q are removed. Combining this with the actual scalar
+power-log theta theorem constructs the main term `if chi=1 then x else0` for EVERY
+character. DirichletCharacterTheta installed/wired; production35121 under audit.
+Fixed-modulus finite uniformity and reduced-class orthogonality are next to check.
+
+**C28.52 — growing-frequency rational prime profiles (next hard producer, not yet Lean).**
+Source search28266 is nonpartial64645/64645 with mostly pending/stale compiler metadata.
+Its residue-martingale summability proposal does not control the literal pq/r phase.
+Direct reads of the actual half-resonance edge_abel_error and primeResidueLogCoefficient
+identify the needed upgrade: for each fixed Q>0 and xi>0, construct c,C,N0 such that
+for all N>=N0, every reduced class a and every real tau, the full residue-restricted
+prime sum with weight W(xi*p/N)*V(p/N)*exp(i*tau*p/N), normalized by logN/N, differs
+from (1/phi(Q)) times the integral on[1,2] of
+`W(xi*x)*V(x)*exp(i*tau*x)/(1+log(x)/logN)` by at most
+`C*(1+abs(tau))*exp(-c*(logN)^(1/10))`.
+The source endpoint-inclusive Abel identity retains both f(1) and f(2); the actual
+smooth W,V profile supplies its derivative uniformly for 1/logN in[0,1]. C28.51
+will discharge the cumulative AP error rather than assume it. Summing the exact
+residue phases recovers the signed rational main, including nonzero arithmetic
+bias; one integration by parts pays all boundary terms and only claims 1/abs(tau).
+This would cover growing determinant neighborhoods b*p-a*r around each fixed rational
+ray. Full joint complementary cancellation, growing moduli, mixed moments, moving
+cofactors and positive self-target recurrence remain distinct unsolved obligations.
+
+C28.52 paper mechanism, with the actual AP input now production-checked: let
+G_l(x)=W(xi*x)*V(x)/(1+l*logx), l in[0,1], x in[1,2]. The denominator is>=1;
+source smoothness on this compact set gives one B bounding both G_l and its x-derivative.
+For f(x)=G_l(x)*exp(i*tau*x), norm(f)<=B and norm(f')<=B*(1+abs(tau)).
+C28.51 gives the cumulative class error<=C*x*exp(-c*(logN)^.1) for EVERY x in[N,2N],
+since log and positive rpow are monotone. The existing exact edge Abel identity then
+bounds the normalized full-band discrepancy by5*B*C*(1+abs(tau))*exp(-c*(logN)^.1),
+retaining both endpoints. At l=1/logN the exact identity
+G_l(p/N)*logp=logN*W(xi*p/N)*V(p/N) removes the prime logarithmic weight.
+No limit is multiplied by a growing parameter. Formal construction must establish
+these actual parameter-family regularity and cumulative-support equalities; it may
+expose the existing private edge Abel theorem for reuse but must not assume its AP
+premise in the new capstone. This is the next producer after the completed audits.
+
+**C28.50b and C28.51 FINAL — quantitative AP source input LEAN PROVED.**
+All five final leaf audits use `lake --old env lean <leaf> -o <olean>`:
+DirichletCharacterPerronBounds82313, DirichletCharacterPowerLog37529,
+DirichletCharacterUnsmoothing64709, DirichletCharacterTheta35121,
+PrimeProgressionPowerLog52221 all exit0. Only the tent-rate leaf emits one ring
+advisory; remaining diagnostics empty. Combined axiom audit73788 exits0: all22
+public theorem/definition queries depend only on propext, Classical.choice,
+Quot.sound. No added analytic premises, sorry, computation or heartbeat changes.
+All leaves wired; no umbrella or full build. Exact corpus index finds the actual
+AP capstone at PrimeProgressionPowerLog:87. Lint48654 exits1 solely on eleven
+unrelated unreachable leaves (full log /tmp/bag-character-ap-lint-01a0.log);
+no new BAG leaf lint error. Frontier map updated.
+
+Turn evaluation: this closes the precise missing quantitative character/AP arithmetic
+input recorded in C28.48, through actual contour, signed unsmoothing and prime removal.
+It does not prove contraction-scale cancellation for the full signed cubic. C28.52
+now attacks its rational neighborhoods with the actual frequency-dependent Gaussian
+profile and retained endpoints. Growing moduli, the full complementary p,q,r average,
+growing mixed moments, moving cofactors, positive signed self-target recurrence,
+MUST-270 and RH remain open. Goal remains ACTIVE.
+
+**C28.52 strengthened target — actual moving physical window.**
+Revalidated C28.51 production source and the existing endpoint-inclusive Abel/Fourier
+identities. Rather than constants depending on a fixed xi, construct ONE profile bound
+for all xi in[1/2,2], exactly the physical p/r range. The actual derivative of
+W(xi*x)*V(x) is xi*W'(xi*x)*V(x)+W(xi*x)*V'(x). Compact bounds for W' on[0,4]
+and V' on[1,2], together with normW,normV<=1, make this uniform. This retains the
+moving window itself and removes the need for freezing it to a rational ray.
+The exact logarithmic unweighting and quantitative AP error then give a common
+all-frequency signed main-term estimate; both nonzero band endpoints remain.
+Search20853 nonpartial64656/64656 returned unrelated Gaussian/resolvent profiles;
+those are not substitutes for this actual W,V family. A targeted corpus search
+uses the exact already-read Abel, cutoff smoothness and AP capstone names.
+
+C28.52 actual-row consequence to pursue after verification: take xi=p/r and
+ tau=2*pi*N*(p/r-A/Q). Exact phase splitting gives e(2*pi*p*q/r) as the
+Q-periodic rational phase times e(tau*q/N). For N>Q every prime q in the full band
+is a unit modulo Q; finite residue partition applies without discarded primes.
+The ratio-uniform profile theorem therefore controls the complete moving-window
+main row directly. The physical coefficient has norm<=8/N; the source stationary
+error over all q costs C/(N*logN), and removing q=r costs8/N. Unlike freezing the
+window, this construction needs no extra abs(Q*p-A*r)/N window-error term.
+A proof still needs the exact phase/partition transport; no row capstone is claimed
+from the currently checking profile alone. This addresses rational neighborhoods,
+not the full signed complementary three-prime average.
+
+**C28.53 — full actual rational-neighborhood q-row (frozen next construction).**
+For each fixed positive Q, seek c,C,N0 constructed from C28.52, uniform in every
+numerator A, physical primes p,r, and N>=N0. Set tau=2*pi*N*(p/r-A/Q).
+For tau!=0 the full contraction-removed physical q-row should satisfy
+`norm(row)<=C/logN*(1/abs(tau)+(1+abs(tau))*exp(-c*(logN)^.1))
+             +C/(N*logN)+8/N`.
+All q in the original prime band are retained. Exact finite unit-residue partition
+and the source primeRationalPhase_mod identity recover the signed rational main
+before taking its norm. The profile ratio xi=p/r stays in[1/2,2]. The entire physical
+stationary remainder costs C/(N*logN); q=r removal costs8/N. There is no freezing
+of the window and no added determinant-sized amplitude error. This constructs a
+q-row producer for fixed-denominator rational neighborhoods, not cancellation of
+the remaining full signed p,r sum. Corpus90851 partial64666/64666 has usable band
+and finite-residue hits; generic infinite residue sums do not themselves give this
+finite prime partition. Actual prior prime_periodic_profile proof supplies the
+finite fibre-sum mechanism, with complete support checked directly.
+
+**C28.52 — actual uniform moving-profile theorem scratch LEAN PROVED.**
+Scratch53497 exits0 with empty diagnostics. The source-instantiated capstone constructs
+one quantitative signed AP-profile main term for ALL xi in[1/2,2] and ALL real tau.
+The Fourier corollary retains both boundaries and proves the full residue prime sum
+bounded by C*N/logN times[1/abs(tau)+(1+abs(tau))*exp(-c*(logN)^.1)]. No AP error,
+amplitude regularity or Fourier estimate is left as a premise. Constants depend Q,
+not the class, xi or tau. Installed/wired ChiPrimeGaussianProgressionProfile; production
+under audit. Earlier derivative error was a real/complex instance-transparency issue,
+resolved with the source's using! pattern; norm aggregation required an explicitly
+typed integral bound, and reciprocal algebra was normalized before linarith.
+Limits unchanged. The exact rational-phase assembly is now in independent scratch.

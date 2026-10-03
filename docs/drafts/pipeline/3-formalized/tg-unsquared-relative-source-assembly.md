@@ -316,7 +316,7 @@ currently being audited with compiler profiling; no heartbeat limit was
 raised. The full proper-mode assembly remains unverified until that check
 and the final index-partition proof pass.
 
-Next principal-source question is recorded separately in P1
+The principal-source question is now closed in P3
 `tg-principal-source-trace-current.md`: the exact complete-response trace and
 its source-preserving commutator decomposition. No divergence of the full
 principal response is inferred from coefficient energy alone.
@@ -364,7 +364,8 @@ Its isolated kernel check took 20 ms. No heartbeat limit was raised.
 This closes the precise conjecture stated in this card. Full principal-prime
 and Gamma/pole admission, Hardy cubic compatibility and the strict sub-unit
 law remain open. The next source problem and its exact paper trace/commutator
-identities are in P1 `tg-principal-source-trace-current.md`. RH is not proved.
+identities and the original linear-prime obstruction are in P3
+`tg-principal-source-trace-current.md`. RH is not proved.
 
 ## Final repository checks
 

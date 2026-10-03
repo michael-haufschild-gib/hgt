@@ -19,7 +19,18 @@ open scoped Topology
 namespace RHTower
 open GaloisForLFunctions.RHTower PrimeCells
 
+/-- Actual central prime pairs, independent of any selected gap construction. -/
+def primeGaussianCentralPair (N : ℝ) (r p : ℕ) : Prop :=
+  r.Prime ∧ p.Prime ∧ 3*N/2 < r ∧ (r:ℝ) ≤ 25*N/16 ∧
+    3*N/2 < p ∧ (p:ℝ) ≤ 25*N/16
+
 private def sectorN (m : ℕ) : ℝ := primeGaussianHyperbolicConductor m
+
+private theorem nearPairs_central {m r p : ℕ} (h : (r,p) ∈ primeGaussianNearPairs m) :
+    primeGaussianCentralPair (sectorN m) r p := by
+  obtain ⟨hr,hp,hrl,hru,hpl,hpu,_,_⟩ := primeGaussianNearPairs_mem h
+  exact ⟨hr,hp,hrl,hru,hpl,hpu⟩
+
 private def sectorH (m : ℕ) : ℝ := primeGaussianNearWidth m
 
 private theorem sectorH_pos (m : ℕ) : 0 < sectorH m := by
@@ -259,14 +270,15 @@ private theorem sector_phase_sign (b : Bool) (k : ℕ) {x : ℝ}
     linarith
 
 private theorem sector_full_geometry {m r p q : ℕ} {b : Bool}
-    (hrp : (r,p) ∈ primeGaussianNearPairs m) (hd : 256 ≤ |(p:ℝ)-r|)
+    (hrp : primeGaussianCentralPair (sectorN m) r p) (hd : 256 ≤ |(p:ℝ)-r|)
     (hq : q ∈ sectorPrimes r |(p:ℝ)-r| (sectorShift b)) :
     r.Prime ∧ p.Prime ∧ q.Prime ∧
     sectorN m < r ∧ (r:ℝ) ≤ 2*sectorN m ∧
     sectorN m < p ∧ (p:ℝ) ≤ 2*sectorN m ∧
     sectorN m < q ∧ (q:ℝ) ≤ 2*sectorN m ∧ p ≠ r ∧ q ≠ r ∧
     (r:ℝ) < q ∧ (q:ℝ) ≤ (r:ℝ)+sectorN m/32 := by
-  obtain ⟨hrP,hpP,hrl,hru,hpl,hpu,hdl,hdu⟩ := primeGaussianNearPairs_mem hrp
+  have hcentral := hrp
+  obtain ⟨hrP,hpP,hrl,hru,hpl,hpu⟩ := hcentral
   have hN := sectorN_pos m
   change 3*sectorN m/2 < r at hrl
   change (r:ℝ) ≤ 25*sectorN m/16 at hru
@@ -286,10 +298,11 @@ private theorem sector_full_geometry {m r p q : ℕ} {b : Bool}
     exact (lt_irrefl _) hqs.2.1
 
 private theorem sector_cubic_phase_sign {m r p q : ℕ} (b : Bool)
-    (hrp : (r,p) ∈ primeGaussianNearPairs m) (hd : 256 ≤ |(p:ℝ)-r|)
+    (hrp : primeGaussianCentralPair (sectorN m) r p) (hd : 256 ≤ |(p:ℝ)-r|)
     (hq : q ∈ sectorPrimes r |(p:ℝ)-r| (sectorShift b)) :
     1/3 ≤ sectorSign b*(bourgainOscillation (2*Real.pi*((p:ℝ)*q/r))).re := by
-  obtain ⟨hrP,hpP,hrl,hru,hpl,hpu,hdl,hdu⟩ := primeGaussianNearPairs_mem hrp
+  have hcentral := hrp
+  obtain ⟨hrP,hpP,hrl,hru,hpl,hpu⟩ := hcentral
   have hN := sectorN_pos m
   change 3*sectorN m/2 < r at hrl
   change (r:ℝ) ≤ 25*sectorN m/16 at hru
@@ -307,10 +320,11 @@ private theorem sector_cubic_phase_sign {m r p q : ℕ} (b : Bool)
     exact hh
 
 private theorem sector_cubic_window {m r p q : ℕ} {b : Bool}
-    (hrp : (r,p) ∈ primeGaussianNearPairs m) (hd : 256 ≤ |(p:ℝ)-r|)
+    (hrp : primeGaussianCentralPair (sectorN m) r p) (hd : 256 ≤ |(p:ℝ)-r|)
     (hq : q ∈ sectorPrimes r |(p:ℝ)-r| (sectorShift b)) :
     bagPhysicalHeightWindow ((p:ℝ)*q/((r:ℝ)*sectorN m)) = 1 := by
-  obtain ⟨_,_,hrl,hru,hpl,hpu,_,_⟩ := primeGaussianNearPairs_mem hrp
+  have hcentral := hrp
+  obtain ⟨_,_,hrl,hru,hpl,hpu⟩ := hcentral
   have hN := sectorN_pos m
   change 3*sectorN m/2 < r at hrl
   change (r:ℝ) ≤ 25*sectorN m/16 at hru
@@ -347,7 +361,7 @@ private theorem sector_cutoff {x : ℝ} (hx : 0 < x) (hx2 : x ≤ 2) :
   · exact smoothAFECutoff_re_antitoneOn hx (by norm_num) hx2
 
 private theorem sector_main_signed {m r p q : ℕ} (b : Bool)
-    (hrp : (r,p) ∈ primeGaussianNearPairs m) (hd : 256 ≤ |(p:ℝ)-r|)
+    (hrp : primeGaussianCentralPair (sectorN m) r p) (hd : 256 ≤ |(p:ℝ)-r|)
     (hq : q ∈ sectorPrimes r |(p:ℝ)-r| (sectorShift b)) :
     sectorCutoffFloor^3/(3*sectorN m) ≤
       sectorSign b*(primeGaussianCubicMainEntry (sectorN m) p q r).re := by
@@ -414,14 +428,14 @@ private def sectorPhysicalEntry (N : ℝ) (r p q : ℕ) : ℂ :=
 
 private theorem eventually_sector_physical_signed :
     ∀ᶠ m : ℕ in atTop, ∀ b : Bool, ∀ r p q : ℕ,
-      (r,p) ∈ primeGaussianNearPairs m → q ∈ sectorPrimes r |(p:ℝ)-r| (sectorShift b) →
+      primeGaussianCentralPair (sectorN m) r p → 256 ≤ |(p:ℝ)-r| →
+      q ∈ sectorPrimes r |(p:ℝ)-r| (sectorShift b) →
       sectorCutoffFloor^3/(6*sectorN m) ≤ sectorSign b*(sectorPhysicalEntry (sectorN m) r p q).re := by
   obtain ⟨C,hC,herror⟩ := exists_primeGaussianCubic_entry_error
   have hv := sectorCutoffFloor_pos
-  filter_upwards [eventually_sector_gap,sectorN_tendsto.eventually_gt_atTop 1,
-    sectorN_tendsto.eventually_ge_atTop (6*C/sectorCutoffFloor^3)] with m hgap hN1 hscale
-  intro b r p q hrp hq
-  have hd := hgap r p hrp
+  filter_upwards [sectorN_tendsto.eventually_gt_atTop 1,
+    sectorN_tendsto.eventually_ge_atTop (6*C/sectorCutoffFloor^3)] with m hN1 hscale
+  intro b r p q hrp hd hq
   obtain ⟨hrP,hpP,hqP,hNr,hrN,hNp,hpN,hNq,hqN,_,_,_,_⟩ := sector_full_geometry hrp hd hq
   have hN := sectorN_pos m
   have hmain := sector_main_signed b hrp hd hq
@@ -441,34 +455,37 @@ private theorem eventually_sector_physical_signed :
   have heq : sectorCutoffFloor^3/(3*sectorN m) = 2*(sectorCutoffFloor^3/(6*sectorN m)) := by ring
   linarith [hreal.1]
 
-private def sectorJordanRow (b : Bool) (N : ℝ) (rp : ℕ × ℕ) : ℝ :=
+/-- Literal positive or negative physical q-variation for one ordered pair. -/
+def primeGaussianCubicSignedRow (b : Bool) (N : ℝ) (rp : ℕ × ℕ) : ℝ :=
   ∑ q ∈ primeProfileBand N,
     if rp.2 = rp.1 ∨ q = rp.1 then 0 else max (sectorSign b*(sectorPhysicalEntry N rp.1 rp.2 q).re) 0
 
 /-- Positive (`false`) or negative (`true`) real variation of the entire actual physical
 noncontracting Gaussian prime cubic. Every full-band triple is retained. -/
 def primeGaussianCubicSignedVariation (negative : Bool) (N : ℝ) : ℝ :=
-  ∑ rp ∈ primeProfileBand N ×ˢ primeProfileBand N, sectorJordanRow negative N rp
+  ∑ rp ∈ primeProfileBand N ×ˢ primeProfileBand N, primeGaussianCubicSignedRow negative N rp
 
 private theorem sectorJordanRow_nonneg (b : Bool) (N : ℝ) (rp : ℕ × ℕ) :
-    0 ≤ sectorJordanRow b N rp := by
+    0 ≤ primeGaussianCubicSignedRow b N rp := by
   apply Finset.sum_nonneg
   intro q _
   split_ifs
   · exact le_rfl
   · exact le_max_right _ _
 
-private theorem eventually_sectorJordanRow_lower :
-    ∀ᶠ m : ℕ in atTop, ∀ b : Bool, ∀ r p : ℕ, (r,p) ∈ primeGaussianNearPairs m →
-      (sectorCutoffFloor^3/147456)/Real.log (sectorN m) ≤ sectorJordanRow b (sectorN m) (r,p) := by
+private theorem eventually_sectorJordanRow_lower_central :
+    ∀ᶠ m : ℕ in atTop, ∀ b : Bool, ∀ r p : ℕ,
+      primeGaussianCentralPair (sectorN m) r p →
+      256 ≤ |(p:ℝ)-r| → |(p:ℝ)-r| ≤ sectorH m →
+      (sectorCutoffFloor^3/147456)/Real.log (sectorN m) ≤ primeGaussianCubicSignedRow b (sectorN m) (r,p) := by
   have hv := sectorCutoffFloor_pos
-  filter_upwards [eventually_sector_gap,eventually_sectorPrimes_count,eventually_sector_physical_signed,
-    sectorN_tendsto.eventually_gt_atTop 1] with m hgap hcount hsign hN1
-  intro b r p hrp
+  filter_upwards [eventually_sectorPrimes_count,eventually_sector_physical_signed,
+    sectorN_tendsto.eventually_gt_atTop 1] with m hcount hsign hN1
+  intro b r p hrp hd hdu
   have hN := sectorN_pos m
   have hlog : 0 < Real.log (sectorN m) := Real.log_pos hN1
-  have hd := hgap r p hrp
-  obtain ⟨_,_,hrl,hru,_,_,_,hdu⟩ := primeGaussianNearPairs_mem hrp
+  have hcentral := hrp
+  obtain ⟨_,_,hrl,hru,_,_⟩ := hcentral
   change 3*sectorN m/2 < r at hrl
   change (r:ℝ) ≤ 25*sectorN m/16 at hru
   have hc := hcount r |(p:ℝ)-r| (sectorShift b) (by linarith) hru hd hdu
@@ -489,13 +506,31 @@ private theorem eventually_sectorJordanRow_lower :
       intro q hq
       obtain ⟨_,_,_,_,_,_,_,_,_,hpr,hqr,_,_⟩ := sector_full_geometry hrp hd hq
       rw [if_neg (not_or.mpr ⟨hpr,hqr⟩)]
-      exact (hsign b r p q hrp hq).trans (le_max_left _ _)
+      exact (hsign b r p q hrp hd hq).trans (le_max_left _ _)
     _ ≤ _ := by
       apply Finset.sum_le_sum_of_subset_of_nonneg hsub
       intro q _ _
       split_ifs
       · exact le_rfl
       · exact le_max_right _ _
+
+private theorem eventually_sectorJordanRow_lower :
+    ∀ᶠ m : ℕ in atTop, ∀ b : Bool, ∀ r p : ℕ, (r,p) ∈ primeGaussianNearPairs m →
+      (sectorCutoffFloor^3/147456)/Real.log (sectorN m) ≤ primeGaussianCubicSignedRow b (sectorN m) (r,p) := by
+  filter_upwards [eventually_sectorJordanRow_lower_central,eventually_sector_gap] with m hm hg
+  intro b r p hrp
+  obtain ⟨_,_,_,_,_,_,_,hdu⟩ := primeGaussianNearPairs_mem hrp
+  exact hm b r p (nearPairs_central hrp) (hg r p hrp) hdu
+
+/-- Every central pair in the full admissible gap range supplies both signed q-variations. -/
+theorem exists_primeGaussianCentralPair_signed_row :
+    ∃ c:ℝ, 0<c ∧ ∀ᶠ m:ℕ in atTop, ∀ b:Bool, ∀ r p:ℕ,
+      primeGaussianCentralPair (primeGaussianHyperbolicConductor m) r p →
+      256 ≤ |(p:ℝ)-r| → |(p:ℝ)-r| ≤ (primeGaussianNearWidth m:ℝ) →
+      c/Real.log (primeGaussianHyperbolicConductor m:ℝ) ≤
+        primeGaussianCubicSignedRow b (primeGaussianHyperbolicConductor m) (r,p) := by
+  exact ⟨sectorCutoffFloor^3/147456,by have := sectorCutoffFloor_pos;positivity,
+    eventually_sectorJordanRow_lower_central⟩
 
 private theorem nearPairs_subset_full (m : ℕ) :
     primeGaussianNearPairs m ⊆ primeProfileBand (sectorN m) ×ˢ primeProfileBand (sectorN m) := by
@@ -526,7 +561,7 @@ private theorem exists_eventually_signedVariation_lower :
     _ ≤ ((primeGaussianNearPairs m).card:ℝ)*((sectorCutoffFloor^3/147456)/Real.log (sectorN m)) :=
       mul_le_mul_of_nonneg_right hm (by positivity)
     _ = ∑ _rp ∈ primeGaussianNearPairs m, (sectorCutoffFloor^3/147456)/Real.log (sectorN m) := by simp
-    _ ≤ ∑ rp ∈ primeGaussianNearPairs m, sectorJordanRow b (sectorN m) rp :=
+    _ ≤ ∑ rp ∈ primeGaussianNearPairs m, primeGaussianCubicSignedRow b (sectorN m) rp :=
       Finset.sum_le_sum (fun rp hrp => hrow b rp.1 rp.2 hrp)
     _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg (nearPairs_subset_full m)
       (fun rp _ _ => sectorJordanRow_nonneg b (sectorN m) rp)

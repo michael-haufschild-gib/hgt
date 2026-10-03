@@ -201,8 +201,9 @@ private theorem residualTwo_hasDerivAt_zero :
   convert! ((hd.const_mul 2).add ((hasDerivAt_id (0:ℝ)).mul hdd)).sub
     (((mixedTwo_hasDerivAt 0).const_mul (k 0)).div_const centerEntry) using 1
   simp only [one_mul, id_eq, zero_mul, add_zero, mixedThree_zero, source_second_center]
+  have hβ : 2*derivativeMass-k 0^2 ≠ 0 := centerEntry_pos.ne'
   unfold coordinateEnergy centerEntry
-  field_simp
+  field_simp [hβ]
   ring
 
 private theorem residual_zero : confluentCoordinateResidual 0 = 0 := by
@@ -211,6 +212,7 @@ private theorem residual_zero : confluentCoordinateResidual 0 = 0 := by
 private theorem residualOne_zero : residualOne 0 = 0 := by
   simp only [residualOne, zero_mul, add_zero, mixedOne_zero]
   field_simp [centerEntry_pos.ne']
+  ring
 
 private theorem residualTwo_zero : residualTwo 0 = 0 := by
   have hd : k₁ 0 = 0 := d_zero
@@ -234,9 +236,10 @@ theorem eventually_confluentCoordinateResidual_pos :
       (mul_pos (by norm_num) centerEntry_pos)
   have h := (tendsto_order.1 confluentCoordinateResidual_cubic_limit).1 0 hc
   filter_upwards [h,self_mem_nhdsWithin] with y hy hy0
-  have hp := mul_pos hy (pow_pos hy0 3)
+  have hypos : 0 < y := hy0
+  have hp := mul_pos hy (pow_pos hypos 3)
   have he : (confluentCoordinateResidual y/y^3)*y^3 = confluentCoordinateResidual y := by
-    field_simp [(ne_of_gt hy0)]
+    field_simp [hypos.ne']
   rwa [he] at hp
 
 /-- Both literal Schur ports are positive for an actual ordered center chamber. -/

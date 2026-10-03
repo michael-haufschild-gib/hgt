@@ -1866,3 +1866,494 @@ coefficients/moment bridge and derivative numerator assembled in
 /tmp/th_growth_mixed_pair_kernel.lean; first audit started. Prepared
 /tmp/th_growth_mixed_pair_absorption.body derives Fbare=U/q8 and
 Fmixed=V/q8 by differentiating exact T moments; not yet audited.
+
+Source bridge audit81807 terminal1: single nine-case moment expansion and
+source coefficient2 exceeded default200k; no inequality failure. Split
+expansion into nine individual proofs, cached row2 RHS, removed redundant
+zero rewrite, replaced brittle convert in final sum by exact finite-sum
+identity. Revised audit72134 running /tmp/th-growth-mixed-pair-kernel-audit2.log.
+
+Prepared next source-level bridges (unrun):
+/tmp/th_growth_mixed_pair_absorption.body and
+/tmp/th_growth_mixed_pair_source.body. First identifies Fbare=U/q8 and
+Fmixed=V/q8 via actual parameter derivatives. Second proves exact dominant
+zero, actual deep-atom bound, and full infinite-tail absorption using
+HasSum. No truncation and no positivity premise assumed.
+
+Further corpus-derived paper mechanism for higher mixed losses: extend
+existing sourceConvolution_moment_le to j<=9 using the existing induction
+and newly established spectralPowerMoment_succ_nine. For k>=1, convolve
+its k-factor estimate with D and use D_i*M_j<=M0*D_(i+j). Binomial sum
+gives moment_j(D*M^k)<=(k+1)^j*M0^k*D_j. Positive-measure telescoping
+M^k-A^k=sum_(r<k) D*A^r*M^(k-1-r) <= k copies D*M^(k-1) gives
+mixed remainder moment9<=k^10*M0^(k-1)*D9. This removes the old
+D0*M9 error structurally, rather than calibrating it. Corpus search96176
+terminal0 gen1188320 partial; source arguments include prior cubic-only
+marked-deep remainder and moment-power induction. All-degree formulation
+still to formalize; no closure claim.
+
+Revised audit72134 terminal1 only duplicate private cache lemma and redundant
+ring after norm_num closed a goal. All coefficient comparisons and finite
+expansions passed; removed duplicate/unused jet cache and redundant tactic.
+Split saved source into GrowthMixedPairMoments (exact moment/coeff algebra)
+and GrowthMixedPairKernel (derivative and absorption). Neither wired yet,
+pending clean final0. Moments final audit8263 running; one owned Lean.
+Further prepared, unrun: /tmp/th_growth_next_envelope_probe.lean, generated
+from exact NextKernelPolynomial caches. Conjecture is coefficientwise
+Cnext*t9-Psi>=0 for t>=9. No numerical evaluation used.
+
+Pure-sector exact paper reduction while moments final audit runs:
+for k copies of the bare dominant source, T=B_k/q^(k+7), with
+B_k from exact gamma-mixture polynomial moments. Differentiating gives
+F=W_k/q^(k+7), W_k=([q*(3k-6)+k-2]*B_k-q*B'_k)*P+q*B_k*P'.
+Thus W_2=0; desired cubic reserve becomes
+W_3>=P*g7*N*polynomialMoment(q,3,0)^2*polynomialMoment(q,3,9),
+and quartic absorption becomes W_4<=256*polynomialMoment(q,3,0)*W_3.
+These identities are derived from the checked flow functional; signs
+remain unproved. Exact fourth-power moment numerator is
+256*12^j*q^(j+4)+1152*q^3*sum choose(j,i)*12^(j-i)*i!*q^(j-i)
++1944*q^2*sum choose(j,i)*12^(j-i)*(i+1)!*q^(j-i)
++729*q*sum choose(j,i)*12^(j-i)*(i+2)!*q^(j-i)
++(2187/32)*sum choose(j,i)*12^(j-i)*(i+3)!*q^(j-i).
+To verify via convolution with the corpus tripleMomentPolynomial before
+using; no numerical evaluation or source sign asserted.
+
+MixedPairMoments final8263 exit0, MixedPairKernel final21178 exit0, both
+wired. Bare functional source comparison PROVED in scratch28284 exit0
+standard3: exactMixedPair_relative_absorption. Initial analytic audit11055
+had only redundant tactic and linarith treating reordered numerator terms
+as different division atoms; exact term alignment fixed it. Saved
+GrowthMixedPairAbsorption, final audit now running. Prepared source
+transport additionally proves strict positive full deep reserve and actual
+weighted mixed-pair loss <(256/399)*Fdeep, using existing399 activity bound.
+Neither source claim audited yet. Hard full E, source growth, C5, all-degree
+remain open. Next pure, monomial-envelope, deep-reserve probes pending.
+
+Full mixed source closure PROVED in scratch64634 exit0, standard3 all
+endpoints: deepTailPairRelativeTransfer_pos, dominantDeepTail_relative_absorption,
+and dominantDeepTail_weighted_relative_absorption. No truncation or sign
+premise; actual weighted mixed pair <(256/399)*Fdeep, Fdeep>0. Dominant
+single and pure self-pair cancel exactly. hasSum_deepAtomMoment gives
+full shifted n+3 atom sum at every order. GrowthMixedPairAbsorption final
+66735 exit0 and wired. GrowthMixedPairSource final82964 running, not yet
+wired; only warning in scratch removed by replacing unnecessary <;>.
+Next prepared exact reserve tests /tmp/th_growth_next_reserves_probe.lean
+(leading-monomial envelope plus integrated deep lower reserve) and
+/tmp/th_growth_next_pure_probe.lean (exact fourth-power moments and
+source-normal-form extraction). Goal active; E>0 still requires deep/deep
+pair and higher even4,6,8 absorption; C5/all-degree unchanged.
+
+MixedPairSource final82964 exit0, empty log; now wired. All five owned
+new leaves final0 and source endpoints standard3. Frontier/card updated
+only within TH, RN header preserved. Completed mixed scratches/generators
+and coefficient JSON removed; audit/corpus logs retained. Pending reserve
+probe6384 running /tmp/th-growth-next-reserves-probe.log; only owned Lean.
+Index97719 running, then lint due. Pending generators now read saved
+MixedPairMoments/Polynomial rather than deleted completed scratch files.
+
+Deep lower-reserve algebra being tested: for each gap coefficient k<=10,
+64*U_k - P*g7*N*shiftedAtomMomentCoeff(q,9,k)>0. This is equivalent
+to F(bare_d)>=(q*P*C/64)*bareMoment(q,d,9), using Fbare=U/q8 and
+q^2 cancellation. Monomial-envelope probe checks each coefficient below
+degree9 in Cnext*t9-Psi(q,t) shifted at t=9. Full coefficient tests,
+not pointwise sampling. Both mathematical signs remain pending.
+
+Reserve batch6384 terminal1: all nine monomial-envelope coefficient
+proofs passed. Deep lower reserve rows0..9 reached `not a positivity goal`
+because norm_num rewrote0<a-b into b<a before ring; no failed sign yet.
+Row10 also attempted to unfold a vanished PJet cache. Revised standalone
+deep probe now restores0<a-b with sub_pos and omits vanished unfold;
+/tmp/th-growth-deep-next-reserve-probe2.log. Envelope still needs own
+clean final leaf and source transport. No numerical falsification claim.
+
+Mixed closure lint26208 exit1:11 unrelated unreachable modules, no owned
+module issue. Index97719 exit0. Five MixedPair leaves marker scan clean.
+Envelope certificate now saved as GrowthNextEnvelopePolynomial (not yet
+final-audited/wired); all nine proof rows had no errors in batch6384.
+Generic endpoint added. Prepared source bridge /tmp/th_growth_next_envelope.lean
+identifies leading coefficient Cnext=q*P*C, proves Psi<Cnext*t9 on t>=9,
+and transports to every stable component/actual convolution. No source
+bridge claim yet. ONLY owned Lean55132 runs corrected standalone deep
+reserve probe. Search96585 terminal0 gen1188637 partial: returned
+existing moment bilinearity and prior cubic marked remainder; no
+applicable associative/mixed-power bound in returned hits, no absence claim.
+Prepared /tmp/th_growth_marked_moment_probe.lean extends the source moment
+bound to9 and proves D*M^(k+1) moment_j <=(k+2)^j*M0^(k+1)*D_j. Unrun.
+
+Deep reserve55132 terminal1: rows1..10 all passed after syntax fixes;
+only k=0 fails positivity. This is a genuine unresolved coefficient
+sign, not a proved counterexample to the inequality. Isolating its exact
+normal form in /tmp/th_growth_deep_next_reserve_zero.lean to inspect
+negative coefficients and derive a valid replacement if needed. No
+constant/domain relaxation assumed. Upper-envelope rows remain successful
+and saved polynomial leaf awaits final audit. Prepared deep source bridge
+/tmp/th_growth_deep_next_reserve.lean is UNRUN and depends on the still
+unproved k0 claim; do not save/claim it as a theorem until resolved.
+
+First-gap diagnosis56990 terminal1: exact normal form has negative
+constant -398543776414562021241793998349132018000172201025/134217728
+and positive linear coefficient
+8843962935035803044052618947439114695870880636785/16777216; remaining
+displayed coefficients positive. Thus the blanket q>=3/2 certificate
+is overextended below the physical theta ray. This is not an RH
+counterexample. Testing the exact affine lower certificate R0(y)>=c0+c1*y
+for y>=0, exact R0(0)=c0<0, and R0(y)>0 for y>=pi-3. The latter is
+the actual source domain q>=pi-3/2, not a changed reserve factor.
+Existing corpus uses Real.pi_gt_d2 in source_dominant_selfGrowthCooling_pos
+(BinaryGrowthCooling:188) to prove actual-coordinate entry. Direct source
+read verified it; narrow lexical search41584 had no hits and broad
+OR lexical33579 was launched.
+
+ONLY owned Lean86873: /tmp/th_growth_deep_next_reserve_actual.lean,
+/tmp/th-growth-deep-next-reserve-actual.log. This includes affine/negative
+boundary and all11 coefficient positives on actual domain, standard3
+checks pending. Prepared deep source bridge now uses q>=pi-3/2 for the
+lower reserve and includes source_deepTailPairRelativeTransfer_lower hx;
+upper deep/deep bound retains q>=3/2. No theorem depending on k0 is
+claimed yet. Exact upper envelope polynomial saved but final audit pending.
+
+Actual-domain repair86873 terminal0, all three endpoints standard3:
+exact negative R0(0), affine R0(y)>=c0+c1*y for y>=0, and all11
+coefficients positive for y>=pi-3. No reserve constant changed. The
+actual ray removes the artificial q=3/2 obstruction. Saved
+GrowthDeepNextReservePolynomial with reduced imports and explicit
+zero_neg theorem; final audit pending. GrowthNextEnvelopePolynomial
+final now running. Both saved new leaves not yet wired. Broad lexical
+33579 terminal0 returned GrowthResidualCenterObstruction activity lemma;
+actual coordinate lower-domain proof read directly from BinaryGrowthCooling.
+Need failed-lemma card with exact negative boundary and affine/actual
+positive survivor after final source audit. Route TH continues.
+
+Envelope polynomial final90592 exit0, empty log, wired. Envelope source
+bridge32396 running /tmp/th-growth-next-envelope-audit.log. Deep reserve
+polynomial saved (not final/wired yet), actual-domain proof86873 clean0
+standard3; added exact negative boundary lemma and reduced imports for
+final. Prepared DeepNextReserve source now also contains the reversed
+bare functional inequality at artificial q=3/2,d=8, and keeps the
+positive lower reserve only on q>=pi-3/2 with actual x>=0 endpoint.
+This supplies a proper positive survivor for the failed wide-domain claim.
+
+Envelope source32396 terminal0, standard3. Psi(q,t)<Cnext(q)*t9 for
+q>=3/2,t>=9, with exact leading-coefficient identification and integral
+transport to every stable component/actual source convolution k>=3.
+Saved GrowthNextEnvelope; final11668 running. Deep polynomial final
+next. Prepared mixed power budget /tmp/th_growth_mixed_power_budget.lean
+proves marked-factor domination algebraically (all sector k, jet j<=9),
+then combines the ninth-moment source bound with D_i*M_j<=M0*D_i+j.
+It avoids needing measure-scaling/ninth-power AE transport in the marked
+remainder comparison; all actual mixed kernel integrals still retain
+existing positive measures. Unrun, depends on future GrowthMarkedMoments
+leaf from /tmp/th_growth_marked_moment_probe.lean.
+
+GrowthNextEnvelope final11668 exit0, empty log; wired after correcting
+an import-membership check to compare whole lines (EnvelopePolynomial
+was only a prefix collision; no duplicate import). Deep polynomial final
+66088 running. Dominant moment corpus39892 terminal0 gen1188928 partial
+returned second-atom support and moment profiles, no directly applicable
+product comparison in hits; direct source proof reused DeepMomentOrdering
+positive-measure Chebyshev. Prepared MarkedMoments scratch now has a
+generic normalized moment-product induction plus both actual full and
+dominant convolution bounds through order9, and marked deep convolution.
+MixedPowerBudget scratch then handles every sector k algebraically. Both
+still unrun. Existing generators may lag these hand refinements; use
+ready scratch files, not generators, until final cleanup.
+
+DeepPolynomial final66088 terminal0, wired. Deep source20496 audit0; all four endpoints standard3, including actual-ray lower reserve, strict artificial-boundary reversal, and deep/deep upper estimate. Saved GrowthDeepNextReserve; final pending. No source positivity claim yet. Next attack: exact marked-moment budget for every mixed convolution sector.
+
+Deep source final5571 exit0 empty log, wired. Failed wide-domain lemma and exact actual-domain survivor recorded in 5-failed/theta-next-transfer-deep-reserve-wide-domain-obstruction.md. MarkedMoments audit next; mixed next-kernel transport prepared from existing exact positive-measure remainder. Pure-sector corpus93878 pending.
+
+MarkedMoments12599 audit0, dominant and marked-deep endpoints standard3. Exact source/dominant ninth-moment bounds and marked convolution bound proved; saved leaf final pending. Pure search93878 terminal0 partial/source-only generation1189102; relevant current arguments are exactCubic_pair_reserve_shift and dominantDeepTail_relative_absorption. No complete next pure-sector absorption returned. Prepared exact pure3/pure4 polynomial probe grounded in those sources.
+
+MarkedMoments final11008 exit0 empty log, wired. MixedPowerBudget64069 audit0 standard3: exact all-k mixed moment <=k^(j+1)*M0^(k-1)*Dj (j<=9), derived by marked-factor induction, not a numerical estimate. Saved leaf final pending. Next transport scratch includes exact source single/pair splits, mixed kernel positivity/envelope, and generic power-moment flow needed for pure sectors.
+
+Current unrun scratches (tree remains only audited source): mixed next transport /tmp/th_growth_mixed_next_transport.lean includes pair splits and power-flow; /tmp/th_growth_deep_signed_budget.lean contains actual deep mass transport, weighted deep/deep absorption, and every mixed sector absorbed into the deep reserve (depends on forthcoming transport leaf). /tmp/th_growth_next_pure_probe.lean is the exact symbolic cubic/quartic next-comparison starting point, still unrun. /tmp/th_growth_next_pure_flow.lean duplicated into transport scratch; clean after transport final. No numerical experiments or changed constants.
+
+MixedPowerBudget final15236 exit0 empty log, wired. MixedNextTransport22315 live, no output yet. Prepared DeepSignedBudget now includes completeDeep_even_absorption: absorbs the entire source pair plus all mixed even4,6,8 into weighted deep single. It uses existing mass calibration and the proven all-k marked bound; endpoint still unrun and depends on pending transport. Pure cubic/quartic is the remaining structural producer if this deep assembly passes.
+
+MixedNextTransport45073 audit0, all three endpoints standard3 (generic bare power flow, source mixed next bounds, exact source pair split). Two explicit finite-index proofs fixed; no sign assumption added. Saved leaf final pending. DeepSignedBudget scratch now targets complete absorption of all deep sectors and strict complete E > literal pure cubic-minus-even residual. Still unrun.
+
+MixedNextTransport final72320 exit0 empty log, wired. Completed transport/flow scratch duplicates removed; preserved axiom/final logs. DeepSignedBudget audit now running. Remaining pure probe contains exact fourth-convolution representation and old-transfer numerator identities plus symbolic shift traces; still unrun.
+
+Global propagation plan after E>0 (not yet an established theorem): work
+in actual x>=0, avoiding inverse-coordinate/surjectivity infrastructure.
+For f(x)=T(q(x))/J2(q(x)), combine hasDerivAt_sourceTransfer_relative
+with hasDerivAt_thetaCuspLikelihoodCoordinate (derivative 2*reflectionScale,
+not 4). E>0 implies f'<0; strictAntiOn_of_deriv_neg on Ici0 plus
+sourceCenter_growthTransfer_neg and J2>0 gives T(q(x))<0 everywhere.
+Then g(x)=sourceRelativeGrowth(q(x)) has positive derivative by
+hasDerivAt_sourceRelativeGrowth and positive coordinate derivative.
+strictMonoOn_of_deriv_pos plus sourceRelativeGrowth_coordinate_zero gives
+g(x)>0 for x>0; atom_growthFunctional_pos transfers to sourceGrowth>0.
+All cited names/sign formulas read from current corpus. E producer is
+still open; no conditional bridge saved as final progress.
+
+DeepSignedBudget73388 audit0; all four endpoints standard3. NEW SOURCE
+FRONTIER: completeDeep_even_absorption absorbs the entire source pair
+and all mixed even4,6,8 into weighted deep single. Therefore actual
+pairRelativeSourceTransfer > purePairRelativeResidual (pure cubic minus
+pure4,6,8). Complete infinite deep source is retained and controlled;
+no deep sign debt remains. The only remaining E producer is nonnegativity
+of the literal dominant residual. Saved leaf final pending. Pure exact
+probe now includes quadruple moment/source identities and generic
+all-k dominant next-transfer envelope, as well as cubic/quartic symbolic
+shift traces. Still unrun; no pure reserve sign assumed.
+
+DeepSignedBudget final36200 exit0 empty log, wired; completed scratch removed. Map/card updated: complete deep-source debt closed, pure residual sole remaining E producer. Pure exact probe starts next. No full/umbrella builds, no RH completion.
+
+Deep-source checkpoint index5966 exit0 (0 changed records; generated indexes refreshed). Lint55983 exit1: 10 unrelated unreachable modules, none owned; /tmp/th-growth-deep-source-lint-final.log. Owned new five leaves plus envelope/deep polynomial scans contain no forbidden declarations, native_decide, or raised heartbeat/recursion options. Current only live job is pure probe72626, /tmp/th-growth-next-pure-probe.log. All 13 saved leaves in this continuation final0/wired.
+
+Pure probe72626 exit0: exact fourth moment/numerator bridge and all-k dominant envelope endpoints standard3; symbolic B3/B4 shifts extracted verbatim, no Python arithmetic. Saved PureNextMoments final75847 exit0 empty log, wired. Prepared /tmp/th_growth_pure_next_certificate.lean (authoritative; generator removed) with 35-term coefficient tables, exact source identities, derivative jets and proposed W3 lower/W4 absorption. Audit begins next. No pure reserve claim before this audit.
+
+PureNextCertificate92945 audit0, no warnings, both reserve endpoints
+standard3. SUCCESS: W3>P*g7*N*poly0^2*poly9 and W4<256*poly0*W3 for every
+q>=3/2. Exact cubic/quartic polynomial source identities and derivative
+jets certified at default limits; no domain repair or changed factor.
+Saved GrowthPureNextPolynomial final pending. Prepared authoritative
+/tmp/th_growth_pure_next_source.lean links bare/actual F3,F4, absorbs
+pure6,8 via the all-k envelope, proves pure residual nonnegative and
+pairRelativeSourceTransfer_coordinate_pos. UNRUN until polynomial final.
+Only this source assembly remains for E; global monotonicity plan follows.
+
+Live checkpoint: PureNextPolynomial final69955 running (scratch92945
+already0 standard3); after terminal0 wire exact import, remove completed
+pure probe/certificate scratches, then audit /tmp/th_growth_pure_next_source.lean.
+That source scratch targets E(q(x))>0 through exact bare-to-actual
+bridges and pure residual nonnegativity. /tmp/th_growth_global_propagation.lean
+is prepared but UNRUN and depends on future GrowthPureNextSource; it
+uses actual-coordinate chain rules and center sign, no assumed sign.
+Names sourceGrowth_coordinate_pos/sourceTransfer_coordinate_neg checked
+absent in current RHTower source. C5 compensation corpus68099 pending
+/tmp/th-after-growth-c5-compensation-corpus.json. No other live jobs.
+
+MAJOR FRONTIER SUCCESS: PureNextSource56659 audit0; exact literal cubic
+lower, quartic absorption, and complete E coordinate positivity all
+standard3. pairRelativeSourceTransfer_coordinate_pos proves E(q(x))>0
+for every actual x>=0. All deep and pure signed sectors plus normalization
+correction retained; no source-sign premise. Cleaned redundant tactics
+without raising limits, saved GrowthPureNextSource final pending.
+PureNextPolynomial final69955 exit0 empty log and wired. Next audit
+/tmp/th_growth_global_propagation.lean supplies global negative original
+transfer and sourceGrowth(q(x))>0 via exact center signs and two monotonicity
+arguments. C5 compensation/all-degree positivity remain open; RH not done.
+
+Next C5 research evidence (no new claim): corpus78450 terminal0 partial
+1189574 returned ThetaCuspCurvatureLogConvex. Read exact source: its
+velocityGap_pos ALREADY proves 2c-c'>0 globally, via scaledVelocityGap_limit
+S(x)*(2c-c')->24 and decreasing exp(2x) gap current. Do not reprove this.
+Our earlier card called c'/c<2 open; that is now stale. Source card's seam
+identity is Omega=c'*(72c^3+36c^2 b+12cb+4b^2)+H*(18c^3+4c^2+2cb)
++3cc'H'-c^2H''. New E->global sourceGrowth gives H''<beta H;
+source_defect_eq/ratio_deriv_neg gives H'>f1 H. Together with 2c-c'>0,
+f1<0, b>0, a positive actual reserve 18c+4+6f1-beta would force Omega>0.
+Need prove that actual reserve and derivative bridge, not assume them.
+CAUTION: modular X>191/10 is NOT c(0)>191/10. centerRawJet gives
+c(0)=(X^2+90X-120)/(8*(X-6)); derive any needed floor from this actual
+identity. Potential clean reserve proof: c>18 plus exact rational
+328+6*f1(q)-beta(q)>0 on actual q>=8/5, no number optimization target.
+This is UNTESTED and not needed until global propagation audit0.
+Exact receiver eventually_c5CompletedCompensationMargin_pos_of_exactSeamOrientation
+in ThetaCuspExactCompletedC5SeamOrientation line791 only gives local t
+neighborhood at each u>0; full nonlocal compensation/all-degree remains.
+
+PureNextSource final65827 exit0 empty log, wired. COMPLETE E>0 is now a saved final-audited source theorem with standard3 only. Removed completed source scratch. Global propagation audit starts /tmp/th_growth_global_propagation.lean. All corpus searches terminal; only this Lean job live after launch.
+
+GlobalPropagation scratch64741 exit0: sourceTransfer_coordinate_neg and sourceGrowth_coordinate_pos both standard3. SUCCESS: full source growth strictly positive for all x>0; complete original transfer strictly negative for x>=0. Final leaf audit pending. First two failed audits were membership/beta-reduction syntax repairs only. New seam bridge scratch prepared; exact curvature floor and rational reserve need audit.
+
+GrowthGlobalPropagation final4153 exit0 empty log, wired; scratch removed. Global signed growth gap CLOSED. Next scratch /tmp/th_growth_seam_bridge.lean targets actual exact C5 seam orientation using positive defect decomposition; no assumed orientation/source-growth signs.
+
+Seam scratch67210 exit1: centerCurvature_gt_eighteen and factorSeamReserve_pos BOTH standard3. The structural source reserve is proved; derivative-factor Pi applications, negated division normalization and one neg-positivity tactic remain syntactic repairs. Exact defect decomposition ring proof itself closed. Repair audit90507 running. Nonlocal corpus15447 and60974 terminal0 partial generations1189738/1189756; complete gate=(W−30)(−K)+5(tK'−5K). Seam sign alone does not establish finite displacement transport. Next research: retain exact integral/projective determinant cancellation rather than separate absolute high-jet bounds.
+
+MAJOR FRONTIER SUCCESS: seam90507 exit0 standard3, then cleaned ring diagnostic and added exact receivers. seam91799 exit0 clean; all seven audited endpoints standard3, including exactCompletedSeamOrientation_pos for every x>0, normalized sixth invariant strictly increasing on Ici0, and local positive direct-J chamber at EVERY positive center. Source-specific local C5 orientation gap CLOSED. Saved GrowthSeamOrientation, final audit pending. Nonlocal compensation and arbitrary-packet/all-degree positivity still open.
+
+GrowthSeamOrientation final72401 exit0 empty log; exact umbrella import wired, completed scratch removed. Global source growth and all-center seam now SAVED/FINAL-AUDITED. All searches terminal. New card theta-c5-nonlocal-defect-transport.md records actual nonlocal N1 rational compensation conjecture and exact second-order operator. No N1 proof yet. Existing sixth-curvature global sign found in corpus, no duplicate work. RegimeOneKey1089 already covers t>=1/4 with scale(u-t)>=6; no missing-sign assumption removed there.
+
+Final checkpoint through seam: index9848 exit0 (1 changed); lint50847
+exit1 with 11 unrelated unreachable leaves (previous10 plus
+RoutePSourceCriticalSquareNonintegrability), none in our new leaf set.
+Latest PureNext*/Global/Seam marker and raised-limit scan clean. All18
+saved owned leaves final0/wired, completed scratches removed.
+
+N2 now under audit70944: /tmp/th_defect_sturm_transport.lean targets
+positive/decreasing Z=F H'-F'H and strict actual finite-interval bounds
+Z(b)*int F^-2 < H(b)/F(b)-H(a)/F(a) < Z(a)*int F^-2. It uses the new
+source-growth sign as the negative derivative of Z, and exact FTC;
+no assumed source sign and no conditional N1 receiver. If successful,
+this is the clock/Sturm transport input, not full nonlocal C5 closure.
+Corpus69033 terminal0 partial1189888, no checked duplicate. No other live
+jobs after audit launch.
+
+N2 scratch5107 exit0 clean, all three endpoints standard3. SUCCESS: actual defect Sturm flux positive/strictly decreasing on Ici0, and exact strict finite-interval clock bounds. Earlier70944 failed only Pi application normalization; repaired with Pi.sub_apply/Pi.mul_apply. Saved ThetaCuspCurvatureDefectSturmTransport, final pending. N1 full rational compensation still open; N2 supplies signed nonlocal comparisons, not the complete gate.
+
+SturmTransport final41396 exit0 empty log, exact umbrella import wired; completed scratch removed. N2 finite-interval comparison certified. New current hard target is N1 actual full displacement compensation, using source Z monotonicity with the J3 positive local ratio kernel and both varying-denominator descents. No proof of N1 or RH. All19 newly saved owned leaves final0/wired; no live Lean or search jobs. Refreshing index/lint after last new leaf.
+
+Settled checkpoint: index46136 exit0 (3 changed); lint8422 exit1 same
+11 unrelated unreachable modules as50847, no owned module error. New
+Sturm leaf scan clean. No live Lean, search, index or lint processes.
+All19 saved owned leaves final0/wired. Current hard N1 remains unproved.
+Paper developments in nonlocal card: exact positive integral decomposition
+of J3 using A=v*(8c+6b), endpoint-weighted H, and positive cross term;
+(A+k*cH)'' formula; k=3 cancels H' and yields a candidate subsolution
+(A+3cH)''<18c*(A+3cH). These are PAPER, not Lean claims. The endpoint
+H coefficient in J3 is different, so this alone does not close N1.
+Next turn must attack that coupled endpoint/denominator transport,
+not repeat source searches or reprove already closed seam/finite-interval
+signs. Goal remains active; no RH proof/falsification.
+
+Continuation after settled checkpoint: prior turn classified PROGRESS.
+Revalidated saved global/seam/Sturm declarations and exact umbrella
+membership. No running old jobs. Corpus descent37093 terminal0,
+nonpartial1190127: existing frozen-jet/ratio descent APIs only.
+Current paper attack derives positive double-integral representation
+J2=D3*int(D2*J3/D3^2), J1=D2*int(D1*J2/D2^2), with
+D1=tE,D2=E+te,D3=2e+te', F=-K=4J1. N1 is exactly strict decrease of
+J1/[t^(9/5)*Q^(8/5)*exp(6Q/5)]. Seek the actual source sign after both
+weighted descents, not an assumed blanket local-to-global principle.
+
+N3 exact single-integral descent scratch55377 exit0, standard3 on
+Green kernel positivity, actual local density positivity, and
+neg_centerNumerator_eq_positive_integral. New density w=J3/D3^2 has
+no singular denominator at zero. Adding companion outer derivative
+formula under audit12651; this should give the exact signed integral
+for C5, not merely another conditional receiver. N4 conjecture w/s
+strictly decreasing is not proved: scratch5921 failed positivity tactic
+on its modular necessary local sign. That tactic failure is NOT a
+counterexample. Inspect normalized symbolic polynomial next; actual
+modular scale is in (191/10,20), so a bound-free shift may be too strong.
+Corpus13655 partial1190249 and90276 partial1190318 were source-only;
+no exhaustive absence inference. Further projective shape search62590
+running, limited to ThetaCusp excluding Hawking. RH/N1 remain open.
+
+N3 companion62594 exit0 standard3: exact -K_t positive integral and
+strict centerTimeJet_neg. Extended15519 certified endpoint kernel
+negativity and increasing Green_t/Green with standard3, but integral
+assembly failed only unspecified measure in a local integrability
+binding. Repaired volume annotation; adding decreasing normalized
+compensation kernel and reducing imports before next scratch audit.
+N4 scratch51046 exit0 standard3: exact actual source eighth-order
+seam numerator c^2*c6-15*c*c2*c4+24*c2^3 is positive. Existing modular
+ceiling96/5, not a new numerical refinement, supplied the appropriate
+source interval. Polynomial raw negative-cast normalization repaired.
+Saved ThetaCuspC5DescentDensitySeam; final audit pending. Global N4
+and full C5 still unproved. New paper N5 Euler identity retains the
+weighted cancellation; local moments recover exactly proved seam S.
+
+DensitySeam final81072 exit0 empty log; exact umbrella import wired.
+Peano/coupling corpus90350 terminal0, nonpartial1190529; hits recover
+normalized sixth source invariant/projective derivative and existing
+spectral bounds, not a checked finite-displacement Peano producer.
+PositiveDescent extended8690: eight endpoints standard3, only final
+StrictAntiOn lambda reduction failed; repaired `dsimp only` before
+rewriting. Audit59522 running; do not treat empty log as completion.
+The N5 weighted Euler identity is now recorded in the nonlocal card;
+its leading kernel moments recover S exactly. Source S controls that
+weighted cancellation, not arbitrary separate endpoint/density bounds.
+
+Settled Green checkpoint: scratch59522 exit0, all nine principal endpoints
+standard3; PositiveDescentIntegral final69274 exit0 empty log. Both new
+leaves wired by exact import lines. DensitySeam final81072 also exit0.
+All21 newly saved owned leaves now final0/wired. No running owned Lean
+or search jobs. Formal lint15487 exit1 with11 unrelated unreachable
+modules (log /tmp/th-c5-green-lint-final.log), none from these two leaves.
+Current Route P item is RoutePNativeUndampedBalance, so the set is not
+identical to earlier lint even though the count remains11. Owned new
+leaf marker/heartbeat scans clean. Frontier TH updated; RN heading intact.
+Progress this turn: certified nonlocal Green representation, actual
+K_t<0, exact signed compensation, strict one-crossing law, and exact
+source eighth-order density seam sign. This does NOT close the hard
+weighted integral sign. N4 global density monotonicity remains open.
+Next hard attack: N5 weighted Euler cancellation or N6 linear Duhamel
+source-defect form, using the already-proved source Sturm inequality.
+Do not replace their weighted cancellation by independent endpoint
+bounds or a conditional receiver. N6's adjoint weight/sign and boundary
+terms are new mathematical work, not yet established. RH and all-degree
+positivity remain open; goal active. No commits or subagents.
+
+Continuation: previous turn PROGRESS (two saved Green/density leaves).
+Current hard target remains full finite-displacement C5, not another
+RH-equivalent receiver. Corpus73635 nonpartial1190693 recovers source
+H'/H'' signs and hyperbolic Gaussian core, no checked adjoint producer.
+Corpus75566 partial1190778 recovers private projective potential
+3v^2-2cB, whose derivative2J is J=2vB-cF. New cancellation J''=5BF-cG
+eliminates the H' term. N7 paper reserve and subsolution entered card.
+Scratch81215 exit0 standard3 on both derivative identities, the exact
+signed curvature reserve, and actual J''<18cJ. Earlier18838 only failed
+function equality normalization in the first derivative proof.
+N8 dependency-closed paper proof: P=3v^2/2-cB, P'=J; fixed endpoint
+k=18c(u+T), Y=P(u+s)-P(u-s), Y''<kY; compare to
+psi=s exp(k s^2/6) via decreasing Wronskian. Gives actual strict
+T(J(u+T)+J(u-T))<(1+6c(u+T)T^2)(P(u+T)-P(u-T)).
+Extended scratch audit97645 running. No saved new leaf yet. This closes
+one source-drive growth comparison if certified; remaining J3 coupled
+pieces/denominators and full M>0 are still hard open work.
+
+Settled drive/adjoint checkpoint: scratch73952 exit0, all six principal
+endpoints standard3; final36811 exit0 empty log. Saved/wired
+ThetaCuspC5DescentDriveTransport, with sourceDescentDrive_sturm_subsolution
+and sourceDescentGap_finite_growth. All22 newly saved owned leaves
+final0/wired. Marker/heartbeat scan clean; completed owned scratch and
+append staging removed. No running Lean/search/lint jobs. Lint96220
+exit1 eleven unrelated unreachable modules; current extra source is
+SuzukiSpectralMarginSource (not prior RouteP item). Full details in
+/tmp/th-c5-drive-transport-lint-final.log. No owned module errors.
+N8 audit97645 only failed Pi/lambda normalizations and positivity's
+missing explicit s>0 local fact; fixed and certified in73952.
+Progress: new actual source-drive curvature and nonlocal growth theorem.
+Hard full C5 weighted sign still open. N9 is now a precise denominator-
+coupled Sturm conjecture whose seam orientation equals existing S>0.
+A positive affine adjoint weight converts the H' endpoint pair into a
+single H'' integral. The resulting complete endpoint remainder is NOT
+proved positive. N9 paper details and exact primitives T'=cH, b'=-H
+are in the nonlocal card. Next turn should attack that coupled remainder,
+not claim positive weight alone proves the gate or redo existing audits.
+Frontier map TH updated; RN header intact. RH goal active, not achieved.
+
+N10 paper checkpoint: N9 coarse drift relaxation loses seam cancellation;
+retain fH. New exact tail primitive G=216(q+3/2)^2/q^4 satisfies G'=-F
+and G->0. b>0,b'=-H and (H/F)'>0 imply b>G H/F by monotone comparison
+with frozen R(x), then strict descent of b-GR. Consequently H<(4+12/q)b
+and b/G increases. This proof requires no unproved limit of b or H.
+Formalize and audit this actual source relation, then return to the
+coupled N9 adjoint remainder. Search57622 terminal0, partial1191071;
+no new Lean process or new saved leaf yet.
+
+N10 settled: scratch22024 exit0 all4 principal endpoints standard3;
+final65201 exit0 empty log. Leaf ThetaCuspCurvatureDefectPrimitiveTransport
+saved. N9 now has a candidate dependency-closed paper proof via exact
+positive affine-weight absorption. Key new endpoint reserve
+c_b^2-c_a^2>(b-a)c_a v_b follows from decrease of B/c. N10 makes g>0;
+J3-e integral H>np reserves enough lower-jet mass to absorb -8ndp.
+Factor beta-6f<324 and c_a>18 control the two source integrals together.
+Full derivation in N9 closure section of nonlocal card; Lean audit next.
+
+N9 audit in progress: /tmp/th_c5_adjoint_source.lean now contains the
+whole coupled positivity proof (session43368). Two previous audits failed
+only on derivative-lambda instance normalization and a missing unfold;
+no source-sign counterexample found. Paper now has an integral-free
+auxiliary T with T'<0. Exact final decomposition is
+18ed*(J3-e(b_a-b_b)-np)+ndp*(18e-8)+gJ3+T(a)-T(b).
+Each term has an actual source positivity proof. Do not report N9 as
+certified before this scratch exits0 and the saved leaf final audit passes.
+N10 leaf final65201 already0/wired; its scratch22024 standard3.
+
+N9 algebraic sign certified in scratch96096: localDescentSturmReserve_pos
+has standard3 only. Scratch exit1 was solely derivative bridge notation:
+unreduced Pi addition/subtraction under composition, plus an unnecessary
+funext. Fixed in current scratch63938 (completion pending). Derivative theorem not yet certified. All source signs,
+positive adjoint absorption, endpoint reserve and g>0 are already checked.
+
+Settled N10/N9 checkpoint: source primitive scratch22024 and final65201
+both0; full coupled Sturm scratch63938 and final45399 both0. Principal
+endpoints report standard3 only. Both leaves wired into umbrella; all24
+newly saved owned leaves final0/wired. No marker/heartbeat violations.
+Global lint74281 exit1 with12 unrelated unreachable modules, none ours.
+Current extra files include ThetaTailNormalizedSchurHessian and
+ThetaTailSchurAxisExtension; prior SuzukiSpectralMarginSource is absent.
+Exact full list: /tmp/th-c5-coupled-sturm-lint-final.log.
+Next hard conjecture N11: (9Q+6QV+8V)F-5QtF'>0, equivalently strict
+decrease of F^5/(t^9 Q^8 exp(6Q)), with F=-K,V=tQ'. N9's coefficient
+matches the exact seam only if the V/Q Bose contribution is retained;
+12Q alone loses 4B/(3c) at order t^2. The inverse Green identity
+4D1^2 J3=d D1 F''-(d'D1+dD2)F'+d^2F gives a concrete comparison-profile
+attack. Full C5 and arbitrary-degree positivity remain unproved, RH
+active. Search36379 terminal0 partial1191421; returned known Green/Bose
+source-only APIs, no checked closure. No remaining live owned jobs.
