@@ -64,3 +64,7 @@
   - Needs certified upper bounds on `Q_Λ(f±)`, via the x-space archimedean formula and series of `poly·e^{−cx}` with rational tail bounds; reuse `R:DigammaVerticalMinimum` and `R:PoleVanishingWeilTraceCertificate`.
   - The fine boxes above need Arb-level precision and stay computer-assisted.
 - 2026-10-03 — Next-cycle check: a semigroup/divisibility attack on PBAP is blocked by the gate "Mellin-diagonal inputs are blind" (KR-R2; the Hecke semigroup acts by characters).
+- 2026-10-03 — **v2 (computations/2026-10-03-certified-pinning-v2).** Combined cubic + order-8 test spaces at L = 2, high-precision flint-barrier duals, Arb verification at 400 bits.
+  - Certified δ_n = λ(n) − Λ(n): n = 2 [−2.13e-15, 1.74e-16]; n = 3 [−5.54e-14, 2.11e-13]; n = 4 [−4.83e-11, 2.41e-11]; n = 5 [−2.22e-8, 3.29e-8]; n = 6 [−1.80e-4, 1.31e-4]; n = 7 [−2.27, 2.85].
+  - This is 5–6 orders tighter than v1 at n = 2, 3, and matches the barrier optimum, so the certificates are sharp for this basis.
+  - Twins: `|Λ_F(2) − 3 log 2| ≤ 6.4e-15`. Integer-coefficient twins have f₂..f₆ = d₃(n).

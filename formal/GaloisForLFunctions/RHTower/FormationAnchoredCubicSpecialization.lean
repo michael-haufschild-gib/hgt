@@ -5,6 +5,8 @@ import GaloisForLFunctions.RHTower.FormationAnchoredCubicRelativeIndex
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangleExhaustion
 import GaloisForLFunctions.RHTower.XiRelativeResolventTrace
 import GaloisForLFunctions.RHTower.XiRelativeResolventFlux
+import GaloisForLFunctions.RHTower.CircleSzegoCommutatorKernel
+import GaloisForLFunctions.RHTower.GaussianFormationPrimeFactorization
 
 /-!
 # The formation-anchored cubic homotopy defect of a strict-right rectangle
@@ -360,6 +362,128 @@ theorem opTrace_anchoredCubicDefect_eq (x : Ioi (0 : ℝ)) :
     opTrace (R.anchoredCubicDefect x) = opTrace R.formationCubicDefect := by
   rw [formationCubicDefect, (R.opTrace_anchoredCubicDefect x).2,
     (R.opTrace_anchoredCubicDefect unitAnchor).2]
+
+/-! ## The relative phase form `(RUCRI.17)`–`(RUCRI.18)` -/
+
+/-- Relative boundary phase `v_{D,x} = u_{D,0} \overline{u_{D,x}}`. -/
+abbrev relativePhase (x : Ioi (0 : ℝ)) : PiecewiseSmoothCirclePhase :=
+  R.completedPhase.mulConj (R.gaussianPhase x)
+
+/-- **(RUCRI.18)** The restricted-unitary defect of the relative phase,
+`Tr (V† P V - P)³` with `V = M_{v_{D,x}}`, is the enclosed Xi multiplicity. -/
+theorem opTrace_relativePhaseCubicDefect (x : Ioi (0 : ℝ)) :
+    opTrace (restrictedProjectionCubicDefect (R.relativePhase x).polarization
+        ccmCircleHardyProjection) = ((xiZeroCopyClosedRectangle R.z₁ R.z₂).card : ℂ) := by
+  have h := (R.relativePhase x).opTrace_cubicDefect
+  change opTrace (restrictedProjectionCubicDefect (R.relativePhase x).polarization
+    ccmCircleHardyProjection) = _ at h
+  rw [h, PiecewiseSmoothCirclePhase.windingNumber_mulConj, R.windingNumber_gaussianPhase, sub_zero,
+    R.windingNumber_completedPhase, R.formationCompletedRectangleWinding_eq_card]
+
+end FormationRectangle
+
+/-! ## Relative cubic defects of two restricted unitaries (FACHD-A) -/
+
+namespace RestrictedUnitaryDatum
+
+variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+
+/-- For two restricted unitaries sharing one polarization, the relative displacement
+`R_U - R_V` is Hilbert–Schmidt. -/
+theorem relativeDisplacement_isHilbertSchmidt (D E : RestrictedUnitaryDatum H)
+    (h : D.projection = E.projection) :
+    (restrictedProjectionDisplacement D.conjugateProjection E.conjugateProjection).IsHilbertSchmidt := by
+  have heq : restrictedProjectionDisplacement D.conjugateProjection E.conjugateProjection =
+      restrictedProjectionDisplacement D.conjugateProjection D.projection -
+        restrictedProjectionDisplacement E.conjugateProjection E.projection := by
+    simp only [restrictedProjectionDisplacement, h]
+    abel
+  rw [heq]
+  exact D.displacement_isHilbertSchmidt.sub E.displacement_isHilbertSchmidt
+
+/-- **FACHD-A (1)–(5).**  The relative cubic defect `T(U,V) = (R_U - R_V)³` is self-adjoint and
+trace class, splits into its two positive channels, and its trace is the relative index. -/
+theorem relativeCubicDefect_laws (D E : RestrictedUnitaryDatum H)
+    (h : D.projection = E.projection) :
+    ContinuousLinearMap.adjoint (restrictedProjectionDisplacement D.conjugateProjection
+        E.conjugateProjection) =
+      restrictedProjectionDisplacement D.conjugateProjection E.conjugateProjection ∧
+    MemSchattenClass 1 (restrictedProjectionCubicDefect D.conjugateProjection
+      E.conjugateProjection) ∧
+    ContinuousLinearMap.adjoint (restrictedProjectionCubicDefect D.conjugateProjection
+        E.conjugateProjection) =
+      restrictedProjectionCubicDefect D.conjugateProjection E.conjugateProjection ∧
+    restrictedProjectionCubicDefect D.conjugateProjection E.conjugateProjection =
+      restrictedProjectionPositiveChannel D.conjugateProjection E.conjugateProjection -
+        restrictedProjectionPositiveChannel E.conjugateProjection D.conjugateProjection ∧
+    opTrace (restrictedProjectionCubicDefect D.conjugateProjection E.conjugateProjection) =
+      (restrictedProjectionRelativeIndex D.conjugateProjection E.conjugateProjection : ℂ) := by
+  have hHS := D.relativeDisplacement_isHilbertSchmidt E h
+  exact ⟨adjoint_restrictedProjectionDisplacement _ _ D.conjugateProjection_adjoint
+      E.conjugateProjection_adjoint,
+    restrictedProjectionCubicDefect_memSchattenClass_one _ _ hHS,
+    adjoint_restrictedProjectionCubicDefect _ _ D.conjugateProjection_adjoint
+      E.conjugateProjection_adjoint,
+    restrictedProjectionCubicDefect_eq_channels _ _ D.conjugateProjection_idempotent
+      E.conjugateProjection_idempotent,
+    opTrace_formationAnchoredCubicDefect_eq_relativeIndex _ _ D.conjugateProjection_idempotent
+      E.conjugateProjection_idempotent D.conjugateProjection_adjoint E.conjugateProjection_adjoint
+      hHS⟩
+
+/-- **(FACHD.7)–(FACHD.8)** For three restricted unitaries sharing one polarization the cubic
+trace is an exact cocycle, and the operator associator is trace class with zero trace. -/
+theorem relativeCubicDefect_cocycle (D E G : RestrictedUnitaryDatum H)
+    (hDE : D.projection = E.projection) (hEG : E.projection = G.projection) :
+    opTrace (restrictedProjectionCubicDefect D.conjugateProjection G.conjugateProjection) =
+      opTrace (restrictedProjectionCubicDefect D.conjugateProjection E.conjugateProjection) +
+        opTrace (restrictedProjectionCubicDefect E.conjugateProjection G.conjugateProjection) ∧
+    MemSchattenClass 1 (formationAnchoredCubicAssociator D.conjugateProjection
+      E.conjugateProjection G.conjugateProjection) ∧
+    opTrace (formationAnchoredCubicAssociator D.conjugateProjection E.conjugateProjection
+      G.conjugateProjection) = 0 := by
+  have h1 := D.relativeDisplacement_isHilbertSchmidt E hDE
+  have h2 := E.relativeDisplacement_isHilbertSchmidt G hEG
+  exact ⟨opTrace_restrictedProjectionCubicDefect_cocycle _ _ _ D.conjugateProjection_idempotent
+      E.conjugateProjection_idempotent G.conjugateProjection_idempotent h1 h2,
+    formationAnchoredCubicAssociator_memSchattenClass_one _ _ _ h1 h2,
+    opTrace_formationAnchoredCubicAssociator_eq_zero _ _ _ D.conjugateProjection_idempotent
+      E.conjugateProjection_idempotent G.conjugateProjection_idempotent h1 h2⟩
+
+end RestrictedUnitaryDatum
+
+/-! ## Kernel form and prime mixing of the anchored defect -/
+
+namespace FormationRectangle
+
+variable (R : FormationRectangle)
+
+/-- **(FACHD.9)–(FACHD.10)** `T_{D,x}` is the nuclear integral operator with threefold cyclic
+kernel `d ⋆ d ⋆ d`, `d(z,w) = (\overline{u_{D,0}(z)} u_{D,0}(w) - \overline{u_{D,x}(z)} u_{D,x}(w))
+S(z - w)`. -/
+theorem anchoredCubicDefect_eq_kernel_op (x : Ioi (0 : ℝ)) :
+    (szegoRelativeCubicSqIntKernel R.completedPhase.toHankelPhase
+      (R.gaussianPhase x).toHankelPhase).op = R.anchoredCubicDefect x :=
+  szegoRelativeCubicSqIntKernel_op _ _
+
+/-- **Prime mixing of the Gaussian endpoint.**  Along the boundary the Gaussian phase is
+`(h_∞/|h_∞|) · exp(i Im Aₓ) · exp(i Im Lₓ)` at `s = 1/2 + γ(t) i`, and `exp(i Im Lₓ)` is the product
+over all primes of the prime-local phases `exp(i Im ℓ_{x,p})`. -/
+theorem gaussianDatum_value_div_norm (x : Ioi (0 : ℝ)) (t : ℝ) :
+    (R.gaussianDatum x).value t / (‖(R.gaussianDatum x).value t‖ : ℂ) =
+        gaussianArchimedeanHalfFactor (1 / 2 + rectangleBoundaryPath R.z₁ R.z₂ t * I) /
+            (‖gaussianArchimedeanHalfFactor (1 / 2 + rectangleBoundaryPath R.z₁ R.z₂ t * I)‖ : ℂ) *
+          Complex.exp (I * ((gaussianContinuumPrimitive x.1
+            (1 / 2 + rectangleBoundaryPath R.z₁ R.z₂ t * I)).im : ℂ)) *
+          Complex.exp (I * ((gaussianEulerLog x.1
+            (1 / 2 + rectangleBoundaryPath R.z₁ R.z₂ t * I)).im : ℂ)) ∧
+      HasProd (fun p : Nat.Primes => Complex.exp (I * ((gaussianPrimeLocalLog x.1 p
+          (1 / 2 + rectangleBoundaryPath R.z₁ R.z₂ t * I)).im : ℂ)))
+        (Complex.exp (I * ((gaussianEulerLog x.1
+          (1 / 2 + rectangleBoundaryPath R.z₁ R.z₂ t * I)).im : ℂ))) := by
+  have hs : 0 < (1 / 2 + rectangleBoundaryPath R.z₁ R.z₂ t * I).re := by
+    rw [re_half_add_mul_I]; have := R.path_im_lt t; linarith
+  exact ⟨gaussianEulerContinuumFormation_div_norm x.1 hs,
+    hasProd_exp_im_gaussianPrimeLocalLog x.2 _⟩
 
 end FormationRectangle
 

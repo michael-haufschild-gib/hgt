@@ -133,3 +133,81 @@ in the working log `parity-drift-pi-working-log.md`.
 - 2026-10-03 — cycle 13: p ≡ 7 (mod 8) with 4 generating the squares ⇒ D(N_k) = 0 (`HTGeometry/StonehamPrimeSquareOrbit`; p = 7, 23, 47). Classification for ⟨4⟩ = squares, p ≡ 3 (mod 4) or 2 a primitive root: slope 3p·h(−p) > 0 iff p ≡ 3 (mod 8), else 0.
 - 2026-10-03 — cycle 14: symmetry laws (doubling F(C)+F(2C)=0, reflection F(−C)=−F(C)) ⇒ Wieferich-free zero drift whenever 2 ∈ ⟨4⟩ or −1 ∈ ⟨4⟩ mod p (`HTGeometry/StonehamPrimeDriftSymmetries`). General slope closed in cycle 15.
 - 2026-10-03 — cycle 15: general law D_{α_{2,p}}(N_k) = k·p·((p−1)/(2m))·Δ(2/p) (`HTGeometry/StonehamPrimeDriftLiftLaw`), via self-similarity of the drift weight under p-adic lifting; p = 43 gives 387k.
+
+## Two-forcing model (cycle 16+, paper plan)
+
+x = α_{2,3} + α_{2,5}. For 3^a, 5^b ≤ 2n < 3^{a+1}, 5^{b+1}: 4ⁿx = U/3^a + V/5^b + O(1/n), so the
+digits follow the orbit of 4 modulo Q = 3^a5^b over sub-windows of length L ≤ 2n ≈ √Q: incomplete at
+the square-root scale (completion alone gives L·log Q). Korobov step: choose m₀ = 3^{a₀}5^{b₀} with
+m₀² ∣ Q ∣ m₀³ and T₀ = 2·3^{a₀−1}5^{b₀−1}, so 4^{T₀} = 1 + m₀θ and, for i = j + T₀l,
+c4^i/Q ≡ c4^j/Q + l·c4^jθ/(Q/m₀) + C(l,2)·c4^jθ²/q (mod 1), q = Q/m₀².
+One Weyl differencing makes the l-sum geometric with slope c4^jθ²h/q; averaging over j < T₀ runs
+cθ²h4^j over complete orbits mod q, giving Σ_j |S_j|² ≲ L(1 + 16 log Q) and
+|Σ_{i<L} e(c4^i/Q)| ≲ √(T₀ L log Q) ≈ Q^{5/12}√log Q. Then the cycle-8 Fourier/threshold argument
+(thresholds now mod Q, tails O(1/n) handled by discrepancy) gives D_x(N) = o(N).
+
+**Cycle 16 result (Lean, axiom-clean).** For x = α_{2,3} + α_{2,5}: Σ_{n<N} e(k4ⁿx) = O_k(N^{11/12})
+for every k ≠ 0 (`tendsto_weylSum_pairOrbit`), so {4ⁿx} is equidistributed in every [a,b) ⊂ (0,1)
+(`tendsto_card_fract_pairOrbit`) and D_x(N) = o(N) (`not_parityDriftHypothesis_pairStoneham`).
+Modules: `ThreeFiveOrbitKorobovBound`, `DiscreteWeylCriterion` (Weyl's criterion for sequences mod 1,
+new to corpus), `StonehamPairNormality`. Barrier law for the ladder: the method needs the forcing
+modulus Q to stay fixed for L ≥ Q^{1/3+ε} consecutive digits (one differencing), or L ≥ Q^{ε} with
+higher-order Korobov expansions. For r forcings L ≈ Q^{1/r}; for π the modulus lcm(8k+j : k ≤ n)
+changes at every digit (L = 1, log Q ≍ n), so no fixed-modulus exponential-sum method applies.
+
+**Cycle 17 result (Lean, axiom-clean).** For every finite nonempty set S of odd primes,
+x_S = Σ_{p∈S} α_{2,p} has Σ_{n<N} e(k4ⁿx_S) = O_{k,S}(N^{1−2^{−|S|}/(|S|+1)}), hence {4ⁿx_S} is
+equidistributed in every [a,b) ⊂ (0,1) and D_{x_S}(N) = o(N)
+(`not_parityDriftHypothesis_superStoneham`). Modules: `OrbitSumIteratedDifferencing` (Korobov by
+iterated differencing: a differenced orbit block is an orbit block), `OrbitSumKorobovParameters`
+(complete orbit sums of g modulo any odd Q with rad(Q) ∣ g − 1 vanish unless Q ∣ (g − 1)w),
+`OrbitSumKorobovPowerSaving` (‖Σ_{i<L} e(ugⁱ/Q)‖ ≤ K Q^{θ_r} when L^r ≤ cQ),
+`StonehamSuperpositionNormality`. The ladder now stops exactly at infinitely many forcings: the
+saving 2^{−r}/(r+1) and the constants (base 4^{Π(p−1)}) degrade with r = |S|; π's BBP forcing
+has r(n) ≍ n active moduli at digit n.
+
+**Cycle 19 barrier (Lean, axiom-clean).** `HTGeometry/BBPShapeDriftBarrier`: every real
+|x| ≤ 1312/120 has a BBP-shaped expansion Σ_k 16^{−k}a(k)/((8k+1)(8k+4)(8k+5)(8k+6)) with integer
+|a(k)| ≤ 1312, so for |θ| ≤ 2/5 and every countable C some x ∉ C of BBP shape with bounded
+numerators has drift θ and irrationality exponent ≤ 7. Together with the Diophantine barrier: the
+only information that can decide PDH(π) is the arithmetic of the numerators 120k² + 151k + 47 (the
+orbits of 16 modulo (8k+1)(2k+1)(8k+5)(4k+3)). Direct attacks this cycle (coboundary, restricted Weyl
+sums, rounded-π approximants) failed; see log rows 40–41.
+
+**Barrier law (cycle 24).** Deciding PDH(π) through equidistribution requires cancellation in sums
+Σ_{n≤N} e(a 16ⁿ/M) with N ≍ log M (M = lcm of the BBP denominators up to N). Known methods: length
+≥ M^δ (Bourgain–Glibichuk–Konyagin); the Lean ladder of this card: length M^{1/r} (finite
+superpositions). Orders of 16 (Artin-type results, even under GRH) only control single terms.
+
+**Reach table (cycle 36).** Number of simultaneous forcings r(n) the orbit-sum method controls:
+Lean (current constants) bounded; LTE-refined constants r ≲ log log n; Vinogradov mean value
+r ≲ (log n)^c; π requires r ≍ 8n/log n.
+
+**Canonical open core (cycle 40, Lean).** `BBPPi.not_parityDriftHypothesis_pi_of_bbpProductSums`:
+PDH(π) is false as soon as N⁻¹ Σ_{n<N} Π_{k≤n} e(h·16^{n−k}·R(k)) → 0 for every integer h ≠ 0,
+R(k) = 4/(8k+1) − 2/(8k+4) − 1/(8k+5) − 1/(8k+6). The hypothesis involves only products of roots of
+unity of order dividing the BBP denominators — the exact arithmetic object any decision must control.
+
+## Barrier localisation (cycles 57–63)
+
+- The log-length barrier is intrinsic: in 𝔽_q[u] (no carries) the Weyl sums of a BBP-type Laurent series are one
+  additive character along ⟨u⟩ mod Π P_k at sub-logarithmic length, i.e. leading digits of a rational function.
+- It sits in the **first-power regime**: a denominator entering at p^j, j ≥ 2, is free (4ⁿ mod p^j along
+  n = τ + t·ord_p(4) is a polynomial phase of degree j−1 in t, removed by Weyl differencing); entering at p¹
+  costs a Gauss sum √p, which a power saving N^{−δ} cannot repay for N ∈ [p/2, p^{1+ε}]. π injects every
+  8k+j at the first power.
+- Fourier expansion in the Gauss-sum basis is exact (hence circular); Stickelberger/Katz give no angle control
+  across correlated prime tuples.
+- Denominator-free dyadic series exist for 1/π (Ramanujan, base 4⁴), not for π; there the barrier becomes the
+  middle 2-adic bits of C(2k,k)³.
+
+## Reach table update (cycle 66–68)
+
+| Injection type | Status |
+|---|---|
+| prime powers p^j, j ≥ 2 (nested or tails) | free (p-adic linearisation; Stoneham theory, row 84) |
+| first power, sparse, pairwise coprime periods | PROVED in Lean (`CoprimePeriodInjectionNormality`, escape bound q − 1/72) |
+| first power, sparse, fixed common order factor | reachable by the same escape argument for ×4^d cycles (not formalised) |
+| first power, dense (one new prime per digit), canonical | open — the logarithmic-length barrier in pure form (row 91) |
+| π: dense, first power, shared order factors, fixed numerators | open; numerators must be used (`BBPShapeDriftBarrier`) |
+

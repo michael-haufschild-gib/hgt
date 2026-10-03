@@ -33,3 +33,138 @@
   - MUST-603 forces `∫_{S₁∪S₂}|Z_F|^{1/3} w ≥ c₀∫w`, so `A_1 + A_2 ≥ c₀²∫w`.
   - **Hence `∫|Z_F|^{2/3}w ≥ R²∫w log t + (C₁ + 3c₀²/2)∫w`.** A twin's `F^{1/3}` exceeds its Dirichlet mean square by a positive amount per unit length.
   - A sharp mean-value theorem for producers, `∫|F_lam|²w = R²∫w log t + C₁∫w + o(T)`, would exclude every ℤ/3 twin. This is L224's missing input, now needed with the second-order constant.
+- **R4 audit — BRIDGE (MUST-712 + L224 Lemma C).**
+  - MUST-712 [L]: `ℰ(T) = ∫|F|²(1 − cos 2πN_ν) = o(T)` ⇒ Λ ∧ RH.
+  - Lemma C [P mod Gonek] gives `Re ∫|F|²e^{2πiN_ν}w = D(T) + o(T)`, with `D` the Dirichlet prediction `2πΣ(b⋆b)(n)w(2πn)`.
+  - **So `ℰ(T) = M(T) − D(T) + o(T)` for every producer.** MUST-712's hypothesis is equivalent to the sharp Hardy–Littlewood mean-square asymptotic for `F_lam`, and `Λ` holds iff `F_lam` obeys it.
+  - For ℤ/3 twins, `ℰ = (3/2)(A₁ + A₂)`, and MUST-603/712 hold along a sequence of `T`.
+  - Heuristic: `b = 1 + η` (the cube-root coefficients) gives `M − D ≈ var(η)·T log T`. Twins need noisy cube-root coefficients beyond the pinned prefix (`n ≤ 6`).
+  - The sector-law statement is a corollary of the corpus, not new. What it does is name the T2 analytic target: **a sharp second-order mean-value theorem for producer zeta functions.**
+
+## Experiments
+- **S29 — pinning race (computations/2026-10-03-pinning-race). Prediction (frozen): joint widths shrink super-exponentially in L, ~70%. Outcome: CONFIRMED at accessible L, basis-limited.**
+  - Every producer, hence every ℤ/3 twin, has `|Λ_F(n)/3 − Λ(n)| ≤ 3.7e-16, 1.9e-14, 1.4e-12, 1.75e-10, 1.4e-5` (n = 2, 3, 4, 5, 7; support [−1.2, 1.2]; order-8 splines; not certified).
+  - Joint/single amplification is 10²–10⁶. The cross-talk is real but loses to the support growth (L 2.0 → 2.4 gains ×50 to ×3·10⁴).
+  - LP-dual reading: `w_{n0}(L) = min Σ_γ ĝ(γ)` over PD `g`, `supp g ⊂ [−L, L]`, `g(±log n) = 0` (n ≠ n0), `g(log n0) = 1`.
+    - C-PIN ⟺ `Λ(n0)` equals the value of the archimedean-plus-pole LP over these n0-selective PD functions, for every n0.
+    - T2 is then the statement that this LP gap closes.
+- **S30/S31 (exact-null selective tests) — reformulation of C-PIN, no new handle.**
+  - For `g = K_Φ ⋆ h` (`K_Φ = Φ⋆Φ`, `h` PD, suitable decay), `ĝ = Ξ²ĥ` vanishes at every zero, on or off the line. So `Q_Λ(g) = 0` unconditionally.
+  - If such `g` were n0-selective (`g(±log n) = 0` for `n ≠ n0`, `g(log n0) = ±1`), then every `lam ∈ W` would have `lam(n0) = Λ(n0)`.
+  - Farkas: selective `h` exist (in closure) ⟺ no cosine series `T_c = Σ c_n cos(t log n)` (n ≥ 2) has `Ξ²T_c ≥ 0` with `c_{n0} ≠ 0`.
+    - For summable `c`, the mean-value argument kills `T_c` (Beurling rigidity).
+    - For non-summable `c`, the separator is exactly another producer's deviation (`c = −(lam' − Λ)`).
+  - So selective exact-null tests exist ⟺ C-PIN. This is the dual of the corpus's L318 multiplier-cone core.
+  - Compact support is impossible (`Ξ`'s zero density exceeds any exponential type), which is why finite-level widths are positive.
+  - **Construction target:** an explicit PD `h` with `K_Φ⋆h` n0-selective would prove C-PIN unconditionally, and with it T2 (no twins) and RH ⟺ PBAP.
+- **S32 (heuristic) — ℤ/k locks and roots of unity.**
+  - ℤ/2 locks have a metaplectic home over ℚ (half-integral weight); the corpus's parity wall applies to them.
+  - Cubic metaplectic covers need `μ₃ ⊂ K` (Kubota/Patterson), so ℚ carries no cubic metaplectic structure.
+  - Conjecture (untestable as stated): ℤ/k torsion-lock producers over `K` require `μ_k ⊂ K`. Twins need not be automorphic, so this is a heuristic, not an obstruction.
+- **S33 (Mertens extremality of Λ on the critical cone) — CONJECTURE [heuristic derivation + exact calibration].**
+  - **Identity (exact, unconditional).** For `ĝ = |ξ(½+it)|² w(t)/|Γ_ℝ(½+it)|²` (admissible; its pole terms vanish) and every `lam ∈ W`:
+    `∫ ĝ dμ_lam = Σ_n δ(n)(2/√n) g(log n)`, with `δ = Λ − lam`, because `Q_Λ(g) = 0`.
+    This is the corpus's L172(c) ζ²-mass setting.
+  - **Leading term.** Insert the twisted second moment `∫|ζ|²n^{it}w ≈ n^{−½}∫w(log(t/2πn) + 2γ)`. The coefficient of `log T` gives `∫|ζ|²w dμ_lam ≈ (1/π)(A log T + B)∫w`, with
+    `A(lam) = Σ_n δ(n)/n` (regularized) `= c₀(Λ) − c₀(lam)` and `c₀(lam) = lim(Σ_{n≤x} lam(n)/n − log x)`.
+  - **Conjecture.** `c₀(lam) ≤ c₀(Λ) = −γ` for every full-cone Weil-positive `lam`. Equality forces the `|ζ|²`-weighted density of `μ_lam` to be `o(log T)`, i.e. `μ_lam` is asymptotically carried by `Z_ζ`, and then (via a stable MUST-718) `lam = Λ`.
+    - The corpus's pole-point budget (`WeilFullConePolePointBudget`, single pole-vector test) gives only `c₀(lam) ≤ c₀(Λ) + 0.0231` (`Σ1/ρ`).
+    - Equivalently: `Φ_lam(1) ≥ Φ_Λ(1)`, i.e. every producer has at least ζ's Poisson-weighted spectral mass at `s = 1`.
+  - **Exact calibration.** At conductor `√N`, the identity gains the term `(½ log N) g(0)`. For the ℤ/2 producer `lam = Λ + Λ_{B_N}/2`:
+    - `A = −log N/(2(√N+1))`;
+    - the prediction for the mean of `|ζ|²` on the lattice `(2m+1)π/log N` is `log T·(1 − 2/(√N+1))`;
+    - Poisson summation over that lattice gives exactly this value. ✓
+  - **Proof obstruction.** For dense `δ`, the errors of the twisted second moment for `n ≍ T` (size `n^{½}T^ε` each) sum to `T^{1+ε}`, which beats the `A·T log T` main term. A smoothed (`K_Φ⋆h`) version avoiding twisted moments is the next attempt.
+  - Twin reading: `A(Λ_F/3) = (1/3)(Q'/Q)(1)` with `Q = F/ζ³`. A twin needs `(log Q)'(1) > 0`. This is a sign constraint, not an obstruction.
+- **S30 result — certificates are not Riemann-kernel based (forced).** The n0 = 2 dual certificate at L = 2.4, order-8 splines, has ĝ* with dips at 14.13, 21.0, 30.4, 48.0. Otherwise it decays like a spline transform, and ĝ*/Ξ² grows by ~10²⁸ on t ∈ [10, 80]. Compact support forbids the Φ-structure (Ξ's zero density exceeds any exponential type). Caveat: the extracted central-path dual was not fully centred; the qualitative conclusion stands.
+- **S33 duality form [P].** Let `P(x) = e^{−|x|/2}` (`P̂ ∝ 1/(¼+t²)`, the s = 1 Poisson test). If `P = K_Φ⋆h + β` with `h` PD and `β` vanishing on `±log ℕ_{≥2}` (β need not be PD), then
+  `∫P̂ dμ_lam − ∫P̂ dμ_ζ = ∫Ξ²ĥ dμ_lam ≥ 0` for every `lam ∈ W`, i.e. S33.
+  - Equivalent interpolation problem: a PD `h` with `(K_Φ⋆h)(log n) = n^{−½}` for all `n ≥ 2`.
+  - Necessary: `β̂ = P̂` to first order at every ζ-zero, since `ĥ = (P̂ − β̂)/Ξ²` must stay finite.
+  - This is the s = 1 analogue of the n0-selective problem (S31): one positive interpolation problem on `log ℕ` decides each linear inequality on the cone.
+- **S34 (pinned fraction) — FROZEN before the run.**
+  - Define `n*(L, θ) = max{n : w_j(L) < θ for all j ≤ n}` and the pinned fraction `f(L) = n*/e^L`. Measured at θ = 1e-6, 1e-3 with order-8 splines, hk = .05, L = 2.0, 2.4, 2.8, 3.2.
+  - **Reading.**
+    - Pinning ⇒ the twin deviation measure `μ_F/3 − μ_ζ` has an approximate spectral gap `|x| ≤ log n*`. So `F` has 3× ζ's zeros in every window of length ~`2π/log n*`.
+    - If `log n*(L) → ∞`, the twin's zeros are forced into triple clusters at ζ-zeros at every fixed height, and the rosette argument (perturbative death) takes over.
+    - `f(L)` bounded below is the empirical form of winning the L318 Gordan race.
+  - **Prediction.** `f` roughly constant ≈ 0.5 (55%); slowly decreasing (40%); increasing (5%). Caveat: fixed hk may cap large L.
+- **CORRECTION to S29 (pinning race).** The order-6/8 widths (3.7e-16 at n = 2, etc.) are barrier values, **not** upper bounds.
+  - Near-free edge coordinates make the barrier drift without centring.
+  - A verified-feasible point with δ₂ = 1.85e-14 exceeds the reported 1.79e-14 (L = 2, order 8).
+  - Only Arb dual certificates give rigorous widths. "Pinning wins the race" is therefore **unverified** beyond the certified cubic boxes.
+  - Box-barrier scan running to test whether the supremum is finite.
+- **Box-scan resolution.** The L = 2.0 order-8 δ₂ supremum is finite (≈ 1.87e-14, stable for B = 1e6…1e10). The S29 widths are 3–10% underestimates, and the orders of magnitude and the L-trend stand. Not certified. A combined cubic + order-8 run (block-diagonal LMIs, convergence-flagged) is running.
+- **S34 result — CONFIRMED (numerical, basis-limited).**
+  - Pinned fraction n*/e^L ≈ 0.6–0.8, stable for L = 2.0, 2.4, 2.8 (combined cubic ∪ order-8 LMIs).
+  - Self-similar profile `log₁₀ w ≈ floor + s·n/e^L`. The free edge layer has log-width ≈ basis support.
+  - Empirically the Gordan race is won with a fixed margin. The open part is a proof that the profile persists as L → ∞ with the floor → −∞ (hk → 0).
+- **S35 — exact-null selective LP (computations/2026-10-03-exact-null-lp): ONE-SIDED. BRIDGE to the evaporation core.**
+  - `ĝ = Ξ²ĥ` tests give `Q_Λ(g) = 0` unconditionally.
+  - The LP pins `lam(2) ≤ log 2 + ε` (ε ~ 5e-5…3e-3, shrinking with resources). The other side is stuck at the a priori tail-bound level (0.7…3.9 as b_m = m^{0.5…1.25}).
+  - Structural reason: exact-null tests see `μ_lam` only off `Z_ζ`, so deficits at zeros (evaporation) are blind directions. A ℤ/3 twin = total evaporation + positive redeposition; exact-null tests cannot see the evaporation.
+  - **T2 consequence.** Any twin obstruction must use tests with `Q_Λ > 0` on the evaporation side: MUST-718's first-order mixing, extended from "carried by Z" (pure re-weighting at zeros) to "no mass on Z" (pure redeposition, the twin extreme).
+- **S34 REVISED — not established.**
+  - At L = 3.2 (fixed hk = .05, most runs uncentred) the pinned fraction drops to 0.45/0.57/0.69.
+  - The small-n widths sit at the basis floor (n = 2: −16.7 vs −16.9 at L = 2.8).
+  - The race at fixed basis looks like a slow loss. That is a basis effect until shown otherwise: refining hk jointly with L is required.
+- **S36 — trigonal-cover language for ℤ/3 twins (new to the corpus; reformulation, no obstruction yet).**
+  - A twin defines `X: w³ = ξ_F(s)`, a cyclic 3-sheeted cover of ℂ totally ramified exactly at F's zeros, all on Re s = ½.
+    - Deck group ℤ/3 (`w ↦ ωw`). The FE lifts to a holomorphic involution `ι: (s, w) ↦ (1−s, w)`, and there is a real structure.
+    - Over Re s > ½ the sheets are `ω^i·s(s−1)Γ_ℝ F^{1/3}` (Dirichlet). Sheet `R_i` glues to `L_{i+N_F(t) mod 3}` across height t: the gluing **is** the step lock.
+  - Hierarchy:
+    - k = 1: unramified (ζ);
+    - k = 2: hyperelliptic `w² = ξ_E`, excluded by Kaczorowski–Perelli ("hyperelliptic rigidity at conductor 1");
+    - k = 3: trigonal, C329.
+  - Calibration: at conductor √N the existing ℤ/2 producer has `w = ξ·√B_N`, with periodic branch points (lattice zeros of B_N): a Hill-type periodic spectral curve.
+  - Spectral-curve reading: real branch points ↔ self-adjointness. A cyclic trigonal curve is the spectral curve of a ℤ/3-symmetric 3×3 Lax operator with `M(z)³ = ξ_F(z)·I`.
+  - Open: is there an infinite-genus rigidity theorem, "a cyclic trigonal cover branched along a line with Dirichlet sheets is unramified", whose hyperelliptic case is KP? Not attempted yet. Marchenko–Ostrovski-type abundance of real-branched curves shows the Dirichlet condition must carry the whole obstruction.
+- **S34 FINAL — inconclusive by method.**
+  - Refinement (hk .05 → .035) lowers all widths ~3 decades and raises the pinned fraction (L = 3.2: 0.45 → 0.57 at 1e-6). At fixed hk the fraction declines with L (floor).
+  - Widths ∝ hk^{16–19}: purely basis-limited. The race cannot be decided by spline SDPs.
+  - Numerical twin bound (L = 2.8, hk = .035): `|Λ_F(2)/3 − log 2| ≲ 4e-20`.
+- **S37 — C-PIN as Dobrushin uniqueness of a "Weil spin system" — REDISCOVERED paradigm.**
+  - The dictionary: coordinates λ(n), n ≤ e^L = spins; the Weil LMI = interaction; the edge layer = boundary condition; W = ∩W_L = infinite-volume state. Uniqueness ⟺ decay of boundary influence; a ℤ/3 twin = a symmetry-broken coexisting phase (Potts-like).
+  - The corpus already ran Dobrushin on the divisor side (`uniform-certificate-program.md`, Lane A): the influence matrix is exactly stochastic (`tsum_zeroInfluence_eq_one` [L]), so contraction fails with zero margin and the question becomes recurrence.
+  - Our cross-talk amplification (joint/single 10²–10⁶) shows naive contraction also fails on the Weil-cone side.
+  - Third independent "critical tie", alongside L318 and the corpus Dobrushin Lane A. No new handle.
+- **L325 vs twins (checked).** L325's law (infinite evaporation is not Dirichlet-exact) does not touch twins: a twin's redeposition μ_F/3 carries exactly ζ³'s archimedean signature, which cancels the smooth terms evaporation creates. Twin constraint = the redeposition is the zero measure of a Dirichlet series with ζ³'s datum (C329 itself).
+- **S38 — analytic Minkowski (twin = virtual unramified cyclic cubic cover of ℚ): restates the core.**
+  - Cyclic cubic fields give ℤ/3 locks (`ζ_L = ζ·L(χ)·L(χ̄)`, Γ_ℝ³) only with pole weight 1/3. Fixing the pole breaks the archimedean term (as in L278-CORR).
+  - Exact-datum ℤ/3 locks exist at conductor N^{1/3} for every N ≥ 2: `F = ζ³(1 + N^{½−s})`.
+  - Conductor 1 fails exactly at Kaczorowski–Perelli's degree-0 theorem with infinitely many poles (L223/L224).
+- **S39 — integer Fourier-quasicrystal rigidity on log ℕ: FALSE.**
+  - Conjecture: every integer-mass signed measure with spectrum in ±log ℕ_{≥2} is 0. Twins have `ν = μ_F − 3μ_ζ` of this type.
+  - **Counterexample:** `ν = Σ_j (−1)^j δ_{jπ/log 2}`. Poisson gives spectrum = {±(2k+1) log 2} = logs of odd powers of 2, with no mass at 0. This is L286's `Q_2`.
+  - Survivor: lattice counterexamples have their negative part on a lattice. Requiring the negative part to lie on `Z_ζ` (masses ≥ −3) is L286's reformulation of C329 (known).
+  - Lesson: integer FQs on the log-lattice are abundant (lattice/Dirichlet-polynomial type). All the content of C329 is in pinning the negative part to ζ's zeros.
+- **S40 — growing-density integer FQ: restatement.** `D = N_F − 3N_ζ = (1/π)arg Q` is integer-valued automatically (Q real on the line). Almost-periodic density arguments fail because the spectral weights are not square-summable. This is C329.
+- **S41 — Cohn–Elkies complementary slackness ⟹ C-PIN [P, reduction] — equivalent to the detection race.**
+  - A fully prime-blind (`g(log m) = 0` ∀m ≥ 2) exact-null (`ĝ = Ξ²ĥ`, ĥ > 0 a.e.) test forces `∫ĝ dμ_lam = Q_Λ(g) = 0`, hence `μ_lam ⊆ Z_ζ`, hence `lam = Λ` (MUST-718). This would be C-PIN unconditionally, with no twins and RH ⟺ PBAP.
+  - Stiemke: such `h` exists ⟺ no deviation δ has `Ξ²V_δ ≥ 0`, ≢ 0.
+  - The S35 LP's stuck side is exactly a numerical Stiemke separator (an exact-null-invisible pseudo-producer on the evaporation side). So the magic-function route reduces to the L318 detection race.
+  - Unification: **C-PIN ⟺ 0 is a Stiemke-interior point of the prime-blind exact-null image cone (modulo evaporation)**. Every certificate route (selective tests, magic functions, pinning SDPs, Dobrushin) is a face of this one cone question.
+- **S41 numerics (Stiemke LP).** Feasible with a tiny interior for MMAX ≤ 60; infeasible at MMAX = 150 with t ≤ 100. Truncation artifact: positivity windows of log-frequency cosine polynomials outlast any fixed TMAX, so a faithful test needs Kronecker-recurrence heights (L319). Closed: the route equals L318/L319.
+- **S42/S43 — conductor-N local twins (computations/2026-10-03-conductor-twins). Horizon law [numerical].**
+  - Degree 2: perturbing `ζ²(1 + N^{½−s})` by `G ∈ W₂(N)` splits every double zero at ζ-zeros into real pairs up to a height T*(N) ≈ (visible freedom ≈ zero count). T*(N) grows with N; at N = 20, T = 40 the result is fully real-rooted. N = 1: none (KP).
+  - So non-arithmetic real-rooted Dirichlet series exist **locally** at conductor > 4. Globally they are excluded by count (freedom ~T log(N/4) vs zeros ~T log T).
+  - Degree 3, conductor 1: freedom = 1 per zero against near-equality + sign per triple zero, a structural deficit at every height. Perturbative twins are impossible by count; twins (if any) are non-perturbative.
+  - Degree 3 Gram-law LP at N ≤ 300: no gain (wrong objective).
+- **S44 — non-perturbative zero completion: INCONCLUSIVE (weak optimizer).** Random far starts stall at T_RR ≈ 9–23. Needs a better non-convex search (homotopy from arithmetic points, or argument-principle penalties) before it can test "real zeros ⇒ arithmetic" beyond the count horizon.
+- **S45 — majorant reduction of C-PIN (FROZEN, testing).**
+  - Exact-null LP certificates with `I(n0) = +1` give `lam(n0) ≤ Λ(n0) + ε` for every producer, unconditionally.
+  - If ε → 0 for all n0, then `lam ≤ Λ` pointwise, and the corpus minorant theorem `eq_vonMangoldt_of_weilPositiveFull_of_le` [L] gives `lam = Λ`: C-PIN, no twins, RH ⟺ PBAP. The evaporation side (blind to exact-null tests) is already closed in Lean.
+  - **Self-attack before results.** `Ξ²·δ''_γ = 2Ξ'(γ)²δ_γ`, so second-order distributions at zeros become positive atoms. W₃ directions with `E(γ)/ζ'(γ)³ ≥ 0` (first-order rosette perturbations of ζ³, values prescribable via the critical interpolation W₃ ↔ zero values) are Ξ²-positive pseudo-producers and could have `lam(n0) > Λ(n0)`.
+  - Prediction: OPT₊(n0) plateaus (~60%) rather than → 0.
+- **S45 RESULT — FAILS (plateau, as predicted).** Majorant bounds with a priori `|δ(m)| ≤ m^{1.5}`: n0 = 2 ≈ 0.009, n0 = 3 ≈ 1, n0 = 4–7 ≈ 7–15, with no decay in resources. Exact-null tests cannot force `lam ≤ Λ`; Ξ²-positive pseudo-producers (tail / W₃-rosette directions) violate the majorant. Positive residue: the reduction C-PIN ⟸ (majorant certificates) + [Lean minorant rigidity] is valid, and its open step is exactly the exclusion of second-order-at-zeros pseudo-producers.
+- **Rosette-blindness lemma [P].**
+  - Setting: `F_ε = ζ³ + εE`, E ∈ W₃. Near each ζ-zero γ the three roots `u_k = z_k − γ` solve `c u³ + εe′u + εe ≈ 0` (c ∝ ζ′(γ)³, e = E(γ), e′ = E′(γ)).
+  - For exact-null tests (`ĝ = Ξ²ĥ ≈ Ξ′(γ)²ĥ(γ)u²` near γ): `Σu = 0` and `Σu² = −2εe′/c`. So the Weil functional `(1/3)Σĝ(z_k)` (symmetric in the roots, analytic in ε) equals `Q₁ε + O(ε²)`, with `Q₁ ∝ Σ_γ(−e′_γ/c_γ)Ξ′(γ)²ĥ(γ)`.
+  - Hence `Q₁ ≥ 0` iff the local sign condition `E′(γ)/ζ′(γ)³ < 0` holds. Exact-null tests then see no violation, although `F_ε` has a complex pair at every γ with `E(γ) ≠ 0` (discriminant < 0 for small ε).
+  - **Exact-null tests detect only the sign of E′ at zeros, never the discriminant** (E(γ) small vs `E′(γ)^{3/2}`).
+  - This is the structural reason for the S45 plateau. Detecting the discriminant needs tests positive at γ resolving scale `ε^{1/3}` (support ~log(1/ε)), i.e. the L318 resolution race.
+  - **Open step, sharpened:** a twin obstruction must detect split-triple-zero discriminants.
+- **S46 — trigonal cover, continued (user request).**
+  - (a) The cover adds no information beyond F ∈ V₃ ∩ RR. With the right characteristic normalization, Selberg's algebroid second main theorem holds for every cube root of an entire function with simple zeros, and Dirichlet-ness of F^{1/3} is automatic.
+  - (b) **Handle cost law [numerical]:** a local trigonal handle costs ≈ 2.5–3 FE-space directions, against ≈ 1 for a hyperelliptic handle. The trigonal horizon `T*₃(N) ≈ 2πN^{1/2…2/3}`; the 2πN prediction is REFUTED, since trigonal handles are stiffer. Conductor 1 has no handles at any height.
+  - (c) Large-loop monodromy of X is `ω^{D(T)}`, `D = N_F − 3N_ζ = S_F − 3S_ζ`. Its `|Z_F|^{2/3}`-weighted mean is fixed by L224 Lemma C (= the R4 sector law). Non-perturbative trigonal covers remain the open core.

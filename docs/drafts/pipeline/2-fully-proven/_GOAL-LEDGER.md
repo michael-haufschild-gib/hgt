@@ -59,12 +59,12 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 | 47 | theta/theta-prime-deletion-moving-cusp-dual-source | TODO |
 | 48 | theta/theta-quantile-critical-one-port-rigging | TODO |
 | 49 | theta/theta-quantile-resistance-network | TODO |
-| 50 | universal-law-field/constitutive-dilation-mechanics/laplace-formation-defect-history-recovery-and-passive-reconstruction-law | TODO |
-| 51 | universal-law-field/constitutive-reflection-space-mechanics/selfadjoint-dyson-word-reversal-twisted-reflection-realization-and-joint-selection-no-go | TODO |
-| 52 | universal-law-field/constitutive-reflection-space-mechanics/twisted-antipode-response-reflection-fusion-grade-reconstruction-and-joint-properness-law | TODO |
-| 53 | universal-law-field/direct-subunit-anchor/formation-anchored-cubic-homotopy-defect | TODO |
-| 54 | universal-law-field/direct-subunit-anchor/restricted-unitary-cubic-relative-index | TODO |
-| 55 | universal-law-field/eigen-pair-prime-identification-derivation | TODO |
+| 50 | universal-law-field/constitutive-dilation-mechanics/laplace-formation-defect-history-recovery-and-passive-reconstruction-law | DONE 2026-10-03 — HTGeometry.LaplaceFormationSplitCycle, LaplaceFormationDefectHistory, LaplaceFormationRecoveryKernel, LaplaceFormationCompletionTopology |
+| 51 | universal-law-field/constitutive-reflection-space-mechanics/selfadjoint-dyson-word-reversal-twisted-reflection-realization-and-joint-selection-no-go | DONE 2026-10-03 — HTGeometry.WordConvolutionBanachAlgebra, SelfAdjointDysonWordReversal, PositiveInvolutionIsIdentity |
+| 52 | universal-law-field/constitutive-reflection-space-mechanics/twisted-antipode-response-reflection-fusion-grade-reconstruction-and-joint-properness-law | DONE 2026-10-03 — HTGeometry.TwistedReversalReflectionSpace, CompleteGradedAlgebraExpLog, CompleteGradedHopfSignature, WordSeriesCompleteGradedAlgebra, FreeWordSeriesHopfModel, TensorAlgebraTwistedAntipode, CommonRecoveryFixedPackets |
+| 53 | universal-law-field/direct-subunit-anchor/formation-anchored-cubic-homotopy-defect | DONE 2026-10-03 — RHTower.FormationAnchoredCubicSpecialization, RectangleBoundaryPath/PhaseWinding/PhaseHomotopy, GaussianFormationAnchorContinuity, CircleSzegoCommutatorKernel, GaussianFormationPrimeFactorization (+ corpus FormationAnchoredCubic*) |
+| 54 | universal-law-field/direct-subunit-anchor/restricted-unitary-cubic-relative-index | DONE 2026-10-03 — RHTower.CircleHankelSeamEnergy, PiecewiseSmoothCirclePhaseWinding/Homotopy, RestrictedUnitaryCubicTraceConstancy, CircleSzegoCommutatorKernel, RestrictedUnitaryBurnolDefectCovariance, RestrictedUnitarySafeEulerZetaCurrent (+ corpus RestrictedProjectionCubic*/RestrictedUnitaryCubic*) |
+| 55 | universal-law-field/eigen-pair-prime-identification-derivation | DONE 2026-10-03 — RHTower.EigenPairFrequencyInversion, EigenPairGuinandWeilIdentity (+ corpus eigen-pair stage modules) |
 | 56 | universal-law-field/formation-compactification-mechanics/poisson-dust-formation-compactification-cumulant-separation-and-equivariant-neutrality-law | TODO |
 | 57 | universal-law-field/formation-excess-mechanics/ramification-gibbs-gns-defect-spectral-information-and-boundary-work-law | TODO |
 | 58 | universal-law-field/formation-laplacian-properness-mechanics/formation-quotient-interchange-tight-recovery-and-residual-coverage-law | TODO |
@@ -196,3 +196,22 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 - 2026-10-03 — ULF-RPBDT-001 (#82) promoted: existing corpus module audited claim-by-claim (RPBDT-A–E, all equations).
 - 2026-10-03 — ULF-PQSCH-001 (#81) promoted: corpus module audited; added the phase form on all and on finitely supported
   vectors, uniqueness of the Toeplitz lift, gauge strong continuity, and the weak Haar average on all vector pairs.
+- 2026-10-03 — ULF-RUCRI-001 (#54) and ULF-FACHD-001 (#53) promoted: H^{1/2} Hankel seam energies, piecewise-C¹ phase
+  winding = cubic trace, rectangle boundary phases (wind = (2πi)⁻¹ rectIntegral logDeriv), Gaussian anchor C¹-continuity ⇒
+  S₁ homotopy, Szegő/Douglas kernel forms, prime factorization of the formation phase, Burnol defect covariance operator.
+- 2026-10-03 — ULF-CDM-2 (#50) promoted: half-line formation laws, ℓ^∞ split cycle with ‖Q‖ = 1, marked sheet involution and
+  fibre uniqueness, positive-involution no-go, unique shift-intertwining history, recovery Markov kernel and Hausdorff
+  source reconstruction, convolution fusion cascade, ℓ² compactness ⟺ no delay atom, KL/Jeffreys packet isometry,
+  passive selection, five-way source determination (TFAE).
+- 2026-10-03 — ULF-CRSM-2 (#51) promoted: new Banach algebra ℓ¹(A*; E) with concatenation product (word adjoint,
+  relabelling automorphisms, constant term, closed multiplicative length filtration, exp Taylor truncation), Dyson
+  word reversal, twisted reversal, reflection fusion on fixed units, filtered ½[A,C] escape, joint fixed line ℝB with
+  F_t ≠ 1 (positive-involution iteration + derivative at 0).
+- 2026-10-03 — ULF-CRSM-1 (#52) promoted: complete graded algebras with power-series evaluation (exp∘log, log∘exp from the
+  chain rule), abstract complete connected graded Hopf structures (exp: P ≃ G, Q_θ(G) = exp(P⁻), grade reconstruction,
+  BCH⁺ ≡ ½[X,Y]), joint reversal Gramian, group reflection space + transvections, and the complete tensor Hopf algebra
+  k⟨⟨A⟩⟩ as a model (universal lift, antipode identity via m(S⊗id)(Δ(a)G) = 0) with the §10 countermodels.
+- 2026-10-03 — ULF-INV-10 (#55) promoted: eigen-pair Guinand–Weil identity ⟪U_α,U_β⟫_W = (2π)⁻¹(A_Y(α,β)+A_Y(−α,−β)) −
+  Σ Λ(n)n^{-1/2}(c(log n)+c(−log n)) for all Xi zeros (rectangle limit, evenness folding, termwise Λ swap, per-frequency
+  Fourier inversion, reflection of eigenfunctions, multiplicity-exact residue), and eigen-span positivity ⟺ RH+simplicity in
+  prime-sum form.
