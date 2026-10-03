@@ -1182,3 +1182,51 @@ The available finite-LCM Möbius inversion gives the first displayed theorem
 without any local-factor guess. Focused corpus search is running before its
 new Lean implementation. None of these identities proves critical energy
 finiteness; the actual weighted, polar-centered covariance remains the goal.
+
+C9.12b complete scratch audit passes for the negative jet LCM law, the
+Möbius/gcd two-coordinate formula, diagonal sign, product support and full
+finite kernel transport. In particular, incidence closure is proved even
+for LCM labels above the counting cutoff; no high-LCM term is removed.
+The generic kernel can be the actual reciprocal maximum. The native
+specialization is drafted with `b_n=alpha_n+1_(n+2 is a proper prime power)`
+and `c_n=1_IsPrimePow(n+2)-b_n`. Expansion keeps both unequal polar/power
+cross terms and b_i*b_j. Its exact reciprocal-maximum energy is being
+identified with the existing cumulative-plus-terminal energy before any
+upper-bound conjecture is accepted. The all-parameter damping search also
+completed nonpartial with snapshot coverage and incomplete refresh; no
+returned theorem controls the native covariance. No upper estimate is
+claimed from complete-fibre cancellation alone.
+
+### C9.12 audit / C9.13 arithmetic bound attack — 2026-10-03
+
+The two-coordinate jet and finite kernel draft has passed its arithmetic
+checks. Native ground covariance audit exposed only a real-projection
+coercion issue, currently under repair; no native production result is
+claimed before final verification. The critical-prime-energy deep search
+was partial with complete inventoried snapshot, predominantly source-only
+compiler metadata and incomplete background refresh. Its candidate lemmas
+and source arguments were inspected; no returned result bounds this native
+series. This is not an exhaustive absence claim.
+
+C9.13 target remains the concrete unsigned conclusion
+`Summable soninPrimePolarGridEnergy`, proved from the full signed C9.12
+formula, with no arithmetic input hypothesis. Two proposed arguments were
+examined against exact corpus statements:
+
+1. Complete LCM negative idempotence of the jet does not by itself give
+   a contraction in the physical reciprocal-maximum Gram geometry. Its
+   divisor-transform assertion is exactly `1_IsPrimePow^2=1_IsPrimePow`;
+   the finite cutoff keeps two separate incidence coordinates. Replacing
+   their kernel by a complete divisor prefix would lose the desired energy.
+   No such replacement or contraction has been used.
+2. A bounded prime-count damping family cannot supply a uniform derivative
+   estimate by itself. `EulerDeletionPrimeCountAmplification` proves no
+   uniform relative damping budget, and `EulerDeletionPrimeCountCircleGrowth`
+   proves growth on every fixed parameter circle. The actual polar-centered
+   derivative is different; the existing no-go does not refute its bound.
+
+Thus a genuine cross-label estimate for the complete centered physical
+covariance is still required. This attempt remains active, not retired for
+lack of a library lemma or effort. No energy bound, Gamma completion, Hardy
+compatibility, sub-unit law or RH result has been inferred from the finite
+identities.

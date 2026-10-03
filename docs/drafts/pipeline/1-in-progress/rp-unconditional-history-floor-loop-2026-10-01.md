@@ -1985,3 +1985,32 @@ Lean change; no build. Continue the joint finite-contour/physical-cutoff
 estimate with all these terms retained. Positive-damping negative-work
 payment, signed high-LCM control, both history debts and RH remain open.
 Goal active; no external blocker.
+
+### RP-57: residual mixed work and the physical maximum cutoff
+
+RP-56 made no frontier progress. The complete short mixed coefficient
+is log(N)*delta+(log(n)-2log(N))*E_N+Lambda-2*(E_N*Lambda).
+Retaining all terms in the contour derivative returns the existing
+source reconstruction; it supplies no contraction on the smaller
+physical arguments. The residual-prime identity was already in corpus.
+
+The moving square-cutoff ramp integration was derived on paper with
+lower endpoint max(a,b)^2. Its separate admitted ramp kernels are
+positive, but the original finite terminal terms are squares of the
+harmonic Mobius and Mertens prefixes. The full divisor source retains
+its mixed logarithmic work and the lower maximum with source entry.
+Neither positivity nor analytic continuation pays these terms.
+
+Cutoff innovation control leaves the known predictable drift. Complete
+Neumann coefficient ordering is unconditional but its growing-degree
+critical upper estimate is still missing. Current CCM finite inverse
+source bounds control the inverse vector, not the original RP source;
+the exponentially growing shift must be transported in the history
+form. Four search audits and exact diagnostic formulas are in
+rp-residual-mixed-work-2026-10-03.md. No new frontier bound or Lean edit.
+
+Next trial attacks the coefficient-faithful ordered-history transfer
+to that finite inverse source, retaining original coefficients, the
+shift, both debts and terminal boundary. No Xi-norm bounded transfer
+is assumed. Negative work at each positive damping, signed high-LCM
+control and RH remain open. Goal active; no external blocker.

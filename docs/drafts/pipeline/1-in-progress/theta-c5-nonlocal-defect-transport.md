@@ -562,3 +562,47 @@ unrelated unreachable modules (see /tmp/th-c5-coupled-sturm-lint-final.log),
 none in these two leaves. N9 is fully certified; N11 remains open.
 Search36379 completed0, partial generation1191421, source-only Green/Bose
 candidates; no checked transport closure was returned.
+
+### N12: retain the exact denominator clock in the Green comparison
+N11 remains open. A Gaussian numerator supersolution grows too quickly
+under Green integration; near the constant-curvature seam, its Gaussian
+mixture has an extra positive variance term. Do not infer the full gate
+from that profile. The exact rational-action inverse profile remains a
+candidate, with its fourth-order supersolution sign still unproved.
+
+New source-based comparison: fix u>0, c0=c(u), k=sqrt(9/(2c0)),
+y(t)=D2(u,t)=E+t e, y'=d. Convexity of c gives e(t)>=c0, and
+p=e'>=0 gives d>=2e. Therefore k^2*d^2>=18e. The explicit
+psi(t)=sinh(k*y(t)) satisfies
+
+    psi''-(d'/d)psi'=k^2*d^2*psi>=18e*psi.
+
+N9 and positivity of J3,psi imply that
+
+    (J3'*psi-J3*psi')/d
+
+strictly decreases from zero on [0,u]. Thus J3/psi strictly decreases
+on (0,u]. This is an actual finite-displacement density order in the
+source's denominator clock, not a Gaussian bound in displacement.
+Its positive Green pushforward gives a candidate explicit upper
+elasticity comparison for F=-K. That comparison still needs to be
+combined with the full Bose weight to close N11/full C5.
+
+N12 first scratch audit98975 exit0: the clock Wronskian is negative and
+J3/sinh(k D2) strictly decreases on the whole (0,u]; both endpoints
+standard3. Green pushforward paper proof: A=J3/d^2, B=psi/d^2, G=Green,
+T=Green_t. For a<b, A(a)B(b)-A(b)B(a)>0 and
+G(a)T(b)-T(a)G(b)>0. Their product is symmetric and nonnegative on the
+closed square, positive off the diagonal in the interior. Its double
+integral equals twice
+
+    (integral AG)*(integral BT)-(integral AT)*(integral BG)>0.
+
+Thus if F0=4 integral BG and F0_outer=4 integral BT,
+
+    F' * F0 < F * F0_outer.
+
+No numerical quadrature or assumed covariance sign enters. The current
+scratch is auditing this exact positive Green transfer. It compares
+actual flux growth against an explicit hyperbolic-sine integral; it does
+not yet prove that this comparison flux satisfies the Bose budget.

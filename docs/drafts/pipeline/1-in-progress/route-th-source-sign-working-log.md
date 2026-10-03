@@ -2357,3 +2357,12 @@ matches the exact seam only if the V/Q Bose contribution is retained;
 attack. Full C5 and arbitrary-degree positivity remain unproved, RH
 active. Search36379 terminal0 partial1191421; returned known Green/Bose
 source-only APIs, no checked closure. No remaining live owned jobs.
+
+2026-10-03 continuation: previous interrupted continuation added no new
+certified theorem. Search25806 handle missing now; completed JSON exists,
+partial1191583. Search52840 terminal0 partial1215359 supplied known N9
+source-only APIs. N11 inverse action profile remains unproved. New N12
+paper proof uses actual denominator clock y=D2 and psi=sinh(k y),
+k^2=9/(2c(u)); convex e>=c(u), d>=2e imply psi Sturm supersolution.
+Then N9 yields strict decrease J3/psi on the entire physical interval.
+Formalize that source shape comparison and its Green pushforward next.

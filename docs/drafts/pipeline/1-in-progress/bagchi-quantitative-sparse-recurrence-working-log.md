@@ -4961,3 +4961,13 @@ Old private primeRationalPhase_mod exposed (proof unchanged); parent source audi
 sole Lean, before checking rational assembly. Corpus90851 partial64666/64666 usable
 band/finite-residue hints; direct source finite fibre partition applies, infinite
 residue-sum hits aren't automatically substitutes. No growing-modulus claim.
+
+01a0 C28.53 rational profile scratch63944 and production83845 clean0; source
+RationalSaddle98983 exit0 with existing ring advisory. Physical row scratch38046
+found only algebra elaboration errors: extra tactics after field_simp closed goals,
+unexpanded nested product norm, and field_simp already cancelling positive Cp.
+Removed redundant tactics; used full norm_mul normalization and original card/log
+inequality after cancellation. Scratch27114 now sole Lean. Stronger signed main
+retains the exact contraction. C28.54 paper proof strengthened to uniform slopes
+and common threshold, retaining the singular factor abs(v)*a*b explicitly. Deep
+search71822 attacks the full signed complement while the row proof checks.

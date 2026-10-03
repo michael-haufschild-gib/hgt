@@ -2818,6 +2818,75 @@ Here the coefficient sum is evaluated in the absolute-convergence chamber using 
 
 **Search/execution audit.** Six searches finished with exit zero: square-forcing, Liouville lexical, quadratic reconstruction, Neumann order, growing-depth, and depth lexical. The four deep snapshots respectively reported 64,638/64,649/64,652/64,661 files and 48,723/48,730/48,732/48,739 compiler-pending entries, each with43 compiled snapshots,2660 stale entries and no method invalidation pending. All four were partial; semantic deadlines/reporting limits and background refresh were retained in the assessment. The two lexical responses did not expose coverage fields. Candidate lemmas, source arguments, proof ideas and proposed ingredient sets were inspected. The growing-depth proposal only reassembled the existing floor-tail identity. The checked Gaussian Neumann source requires its absolute chamber and Gaussian ratio; the growing-depth current-payment theorem leaves nonnested cores and accumulated action open. Neither controls U_K. The quadratic short reconstruction was already in the corpus and receives no novelty credit. Owned temporary search/proof/audit files are removed after terminal completion; no commit or unrelated source edit.
 
-## C12.89 — critical comparison and complete signed centering (2026-10-02, 1005b)
+## C12.89 — critical comparison and complete signed centering (2026-10-02–03, 1005b–c)
 
-**Active research checkpoint.** Route MC, same hard target `G(x)<=C_epsilon*(1+x)^(-3/2+epsilon)`. Previous turn made verified arithmetic-order progress, not a critical estimate. Current source and frontier map rechecked. Testing a critical comparison barrier `B`: an exact representation `A*B-g=T^2*h` with h nonnegative would imply `B-G=(mu*R^2)*h>=0` by the new arithmetic theorem. A nonzero positive h contributes a logarithmic-over-x lower tail to T²h, while A*B-g is only O(1/x); this naive positive comparison cannot close. Current task is to retain the signed centering needed to remove that mass and then prove an actual order or cancellation estimate, rather than introduce another receiver. Initial polynomial/comparison searches terminal/partial with coverage pending; retrieved inversion identities do not supply the missing bound. No new Lean theorem or RH claim at this checkpoint.
+**Outcome: no critical estimate.** Route MC, same hard target `G(x)<=C_epsilon*(1+x)^(-3/2+epsilon)`. C12.88 made verified arithmetic-order progress, not a critical estimate. The interrupted 1005b attempt had not made a verified frontier advance; 1005c revalidated it and completed the following paper diagnostics. These do not constitute a completed no-go or a formal route retirement. No new Lean theorem or RH result is claimed.
+
+Use physical dilation `D_n h(x)=n^-2*h(x/n)`, `A=sum_(n>=1)D_n`, `T=A-I`, with the arithmetic `R=zeta-1` from C12.88. Testing a critical comparison barrier `B`: an exact representation
+
+```
+A B-g=T^2 h
+```
+
+would give `B-G=(mu*R^2)h` whenever the inversions and interchanges converge. If h were nonnegative, C12.88's positive coefficients would sign this gap. The proposed representation has not been constructed for the actual source.
+
+**Why the nonnegative-source candidate fails in its stated regular class.** Take `|B(x)|<=C*(1+x)^(-a)`, a>1, and the actual bounded g with `g(x)=O((1+x)^(-3/2))`. Splitting the integer dilation sum at n=x gives `A B-g=O(1/x)`. If h is continuous, nonnegative and positive somewhere on `(0,infinity)`, it is bounded below on an interval `[b,c]` with0<b<c. For every integer `2<=r<=sqrt(x)`, retain integers m>=2 with `x/(c*r)<=m<=x/(b*r)`. For all large x these contribute at least `c1*r/x` to `sum_m m^-2*h(x/(r*m))`, uniformly in r. Multiplication by r^-2 and summing r gives
+
+```
+T^2 h(x) >= c2*log(x)/x
+```
+
+for c2>0. This contradicts that comparison identity. Continuity/nontriviality on an interval is essential to this elementary lower-tail argument; no assertion is made for arbitrary point-supported functions. The obstruction concerns this positive representation, not the desired inequality for G.
+
+**Signed-centering survivor: exact necessary moments.** A second pass keeps h signed. Assume its Mellin integral is absolutely convergent on a left neighborhood of1 and permits the limit and first derivative at1; for example, an absolute first logarithmic moment together with a slightly stronger integrable head bound suffices. Assume B has the critical decay above and a bounded head. Set `b0=int B`, with b0>0 for a nonzero positive barrier. In the absolute-convergence chamber s<1, the full comparison identity forces
+
+```
+M_h(s) = (zeta(2-s)*M_B(s)-M_g(s))/(zeta(2-s)-1)^2.
+```
+
+Put w=1-s>0. The corpus pole unit gives `zeta(1+w)=1/w+O(1)`, while the integrability of B,g gives `M_B(1-w)=b0+O(w)` and bounded `M_g(1-w)`. Consequently
+
+```
+M_h(1-w)=b0*w+O(w^2),
+int h=0,               int h(x)*log x dx=-b0.
+```
+
+The derivative conclusion follows by the explicitly assumed absolute logarithmic domination, not by differentiating an unproved continued integral. Thus a nonzero integrable positive h is also excluded directly by its zero mass. Every admissible h has both signs. These are necessary moment constraints, not an existence theorem or a bound for h.
+
+They have a concrete positive-primitive model: let k>=0 be smooth, supported in a compact subset of `(0,infinity)`, with `int k=1`, and take any b>1. Then
+
+```
+h_model(x) = b0/log(b) * (k(x)-k(x/b)/b)
+```
+
+has precisely these two moments, and its primitive is
+
+```
+H_model(x)=b0/log(b)*int_(x/b)^x k(u)du >=0.
+```
+
+However, matching moments is insufficient to identify the actual h. Even for an actual representation with H(x)=int_0^x h>=0, coefficient positivity yields only
+
+```
+int_0^x (B(u)-G(u))du = sum_n (mu*R^2)(n)/n * H(x/n) >=0,
+```
+
+provided the displayed interchange is justified. It does not give pointwise `B-G>=0`: differentiation of a nonnegative primitive has no such implication. The surviving hard obligation is the complete signed weighted sum, not its first two moments or integrated sign. All new physical comparison/moment statements here remain PAPER/Lean OPEN. No standalone receiver or generic primitive lemma was substituted for this obligation.
+
+**Full divisor-power attempt.** Exact finite algebra gives
+
+```
+S_K = sum_(j=0..K) (-1)^j*choose(K+1,j+1)*zeta^j.
+```
+
+Applying this to g keeps every complete divisor channel. The fixed-degree principal part at Mellin s=1 has order K for K>=1; its highest coefficient has sign `(-1)^K`. For even K its inverse-Mellin leading term is positive `(int g)*log(x)^(K-1)/((K-1)!*x)`. This is a fixed-K observation only; it does not justify a growing-K asymptotic. C12.88 already proves a stronger shallow-depth diagnostic without a contour shift. Bounding channel errors separately introduces the binomial coefficient sum `2^(K+1)-1`, and no uniform signed bound on their full sum was established. The checked `CriticalPolynomialZetaSignRigidity` concerns a critical-line Cesaro sign condition and does not control this physical polynomial. The exact Neumann polynomial is different from the earlier factor-count interpolant, so its growth theorem was not transferred.
+
+**Other source scope checks.** `HTGeometry/MonotoneMobiusPositivity` assumes an increasing nonnegative source and does not apply to the decaying barrier error. The initially attempted RHTower path was wrong and was corrected with file inventory before reading it. `DivisorCoreMellinBoundary` subtracts a finite-core pole but asserts no physical shift or distant-head mean; `Sieve/SelbergCoefficient.selbergTruncU_nonneg` is positivity of a different sieve mass. The generated proposal joining them does not prove signed cancellation. `MobiusCenteredSchurBoundary` gives Hardy limits on the line through zeta argument1, not the desired half-power line. `CCMPrimeDeficitCoprimeBalance` bounds energy plus signed cross work; its cross-work lower bound remains unproved. The primitive search's Abel definitions and complete-period covariance retain different cutoffs or unpaid actual source terms. None discharges the current bound.
+
+**Next attack.** Retain the complete physical signed source and its arithmetic dependence when comparing scales. The positive T² representation and first-moment/primitive replacement have failed to supply a critical estimate; do not repeat them as positivity arguments. Seek a direct estimate of the actual centered remainder, including the coupled head and tail, or an independently proved arithmetic sign for that exact remainder. The full RH goal remains active and unmet.
+
+**Execution audit.** Six owned searches across1005b–c reached terminal exit zero: polynomial, comparison, divisor, centered, mass, primitive. All partial. Polynomial/comparison/centered reported coverage pending (generations1191484/1191509/1215359); no fresh compiler counts were inferred. Divisor/mass/primitive snapshots reported64676/64999/65002 files, compiler-pending48748/49043/49046, compiled43 and stale2660 each, no method invalidation pending; later snapshots had older-generation/semantic-coverage warnings and background refresh. Candidate lemmas, source arguments, proof ideas and ingredient sets were inspected. A premature read of centered JSON while its live search handle66867 was running failed to parse an empty file; the same handle was polled to terminal success before the result was read, with no restart. All owned searches are terminal; exact temporary outputs are cleaned after recording. No Lean source edit/build, numerical mathematical computation, subagent, commit or umbrella build in1005b–c.
+
+## C12.90 — complete Liouville binomial sign test (2026-10-03, 1005d)
+
+**Active checkpoint.** Route MC; previous turn did not obtain a critical signed bound. Rechecked the actual low-breadth matching theorem and C12.10/C12.39/C12.64: target reuse does not prove fresh physical capacity or change residual sign imbalance. No capacity argument is claimed. Current source-specific conjecture tests `b_k=sum_(n>=1)lambda(n)/n^2*(1-1/n)^k<=0` for every k>=1. This is a conjecture, not a fact. For `y=x/(1+x)`, the exact geometric expansion would give `H_lambda(x)=(1-y)*sum_k b_k*y^k`; the zero harmonic Liouville sum controls the endpoint and must be justified before using the sign. Corpus search and analytic sign audit in progress. No computation or Lean/RH claim at this checkpoint.

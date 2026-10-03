@@ -69,11 +69,20 @@ derivatives, and all six raw origin entries above. Both are wired in RHTower.
 ThetaTailSchurAxisExtension has now also passed its targeted build: exact
 x*y*Q(x,y)=T(x,y) on all real nodes, continuous partial derivative families,
 and origin Q, Q_y, Q_x, Q_yx, Q_yy values are formalized. Two unused simp
-arguments were removed and that cleanup is being rebuilt by its dependent
-Hessian leaf. All three finished leaves are umbrella-wired.
+arguments were removed and that cleanup passed its dependent build.
+All finished leaves are umbrella-wired.
 Final direct-file and axiom audits are still pending in this checkpoint.
-ThetaTailNormalizedSchurHessian is under audit; its signs are not yet claimed
-verified in this checkpoint.
+ThetaTailNormalizedSchurHessian passed its targeted build after replacing an
+expensive inferred neighborhood expression by explicit Tendsto statements.
+It proves the exact normalized Hessian formulas and their strict negativity
+on a joint neighborhood. No heartbeat limit was raised.
+The diagonal-then-vertical propagation receiver passed a separate scratch
+audit. ThetaTailSmallNodeCoordinate and ThetaTailCenterSourceConvexity have
+now passed targeted builds. They establish a uniform coordinate-positive
+triangle and the source-deficit chord inequality. The combined
+ThetaTailSmallNodePorts theorem passed elaboration apart from a redundant
+ring in its projection identity; that tactic is removed and recheck is running.
+All final direct-file checks and axiom checks remain pending.
 
 Corpus check found ThetaTailConfluentCoordinateGlobal: it proves the
 confluent coordinate residual at every fixed y>0 and eventual actual ports

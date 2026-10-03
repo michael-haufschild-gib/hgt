@@ -86,3 +86,27 @@ Next attempt must carry its orientation through the actual coherent
 quantile/Gamma transport with every cross term retained. A positive norm
 of the oriented symbol cannot be substituted for a signed real pairing.
 No new Lean audit of that candidate module was run in this turn.
+
+### 2026-10-03: signed transport attempts and exact entropy debit
+
+The attempted inference from the two-shear carrier to scalar positivity
+fails at an already-proved source obstruction: the literal oriented prime
+reporter takes both signs. The self-polarized shear squares that reporter;
+it does not preserve its signed scalar readout. Existing midpoint odd/even
+and exterior-moment gauges preserve the complete action, so cancelling
+another moment supplies no missing phase credit. These are uses of
+existing corpus results, not new no-go theorems.
+
+Ground modulation was considered next. Normalized variational comparisons
+are invariant under adding a scalar multiple of physical mass. Without an
+independent arithmetic normalization law they still cannot determine the
+absolute floor. No receiver lemma was added for this observation.
+
+The source-normalized next attempt uses the literal Suzuki checkpoint
+reservoir and its cumulative prime load. An actual new paper mechanism is
+recorded in `sz-quantile-entropy-debit.md`: the exact outgoing quantile
+cell-centroid debit is summable over the full arithmetic exhaustion. It
+separates a finite positive nonlinear price from the signed node current.
+Lean verification is pending. This is not yet the full Gamma reservoir's
+Legendre-debit theorem, and neither version would by itself prove the
+remaining signed-current floor. Keep the canonical-head gap as the target.

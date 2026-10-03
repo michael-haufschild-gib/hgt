@@ -5974,3 +5974,55 @@ under audit. Earlier derivative error was a real/complex instance-transparency i
 resolved with the source's using! pattern; norm aggregation required an explicitly
 typed integral bound, and reciprocal algebra was normalized before linarith.
 Limits unchanged. The exact rational-phase assembly is now in independent scratch.
+
+C28.53 strongest survivor refinement: preserve the FULL SIGNED physical-row main,
+not only a pointwise norm. Define the actual main as
+`rowFactor*(N/logN)*rationalResidueMean*integral(G_(p/r,1/logN)(x)*e(tau*x))
+ - primeGaussianCubicMainEntry N p r r`.
+For all tau, including zero, seek row-minus-this-main norm<=
+`C/logN*(1+abs(tau))*exp(-c*(logN)^.1)+C/(N*logN)`.
+The contraction is subtracted exactly rather than charged by8/N. This retains the
+signed p,r dependence required by the full joint cancellation attack; the inverse-
+frequency norm theorem is only a corollary for nonzero tau. The actual q-kernel
+remainder is the only physical approximation. New main uses source-built AP/profile
+inputs, not a conjectural row estimate as premise.
+
+**C28.54 — slope-uniform arithmetic producer (paper proof frozen).**
+The actual full dilation sieve already treats arbitrary positive coprime slopes a,b.
+Its singular correction ranges over primes p>3 dividing D=abs(v)*a*b. For every
+such prime, (p/(p-1))^4<=p; the product of distinct primes divides D. Hence the
+entire inverse singular correction is <=D^(1/4). Retaining D, instead of deleting
+slope factors as in the three-halves special case, constructs ONE C and ONE eventual
+threshold in N, uniform over ALL positive coprime a,b and every nonzero shift v:
+`card(primeDilationPairs(2N,2N,a,b,sieveSiftN,v))
+ <= C*N*(abs(v)*a*b)^(1/4)/log(N)^2`.
+The source Mertens denominator supplies the logarithmic savings. Its anchor and
+finite sieve remainder are absorbed uniformly since D>=1. This keeps explicit
+slope cost and allows growing rational denominators on the arithmetic side; it
+assumes no affine-prime distribution estimate. The analytic AP constants still
+depend on fixed Q. No growing-denominator analytic estimate or complementary
+joint signed cubic cancellation is inferred. Corpus2249 nonpartial65000/65000
+found the actual full sieve and special-slope theorem; generic geometry suggestions
+do not supply this prime-pair producer.
+
+**C28.55 — all fixed rational cubic neighborhoods (next complete target).**
+For every fixed positive coprime A,Q, retain ALL original-band outer prime pairs
+p!=r with abs(Q*p-A*r)<=m^3, and each full physical q-row except q=r. Conjecture:
+the sum of row norms, normalized by log(N)^2/N at N=10000000^(4m), tends to zero.
+Paper mechanism: N>A and primality imply a zero determinant forces p=r, already
+excluded. The exact residual tau has d/Q<=abs(tau)<=8*d, d=abs(Q*p-A*r).
+C28.53 and exponential domination give inverse-first-power row decay plus every
+fixed log-power error. C28.54 counts signed determinant fibres with cost
+C*(A*Q)^(1/4)*N*d^(1/4)/log(N)^2. Summing 1/d gives at most
+H^(1/4)*(1+logH), so H=m^3 is negligible after dividing by logN. All other terms
+are polynomial/logarithmic or polynomial/exponential errors. No exceptional
+prime pairs, amplitude freezing or physical remainders are dropped.
+This extends the actual cancelled family from one rational ray to every fixed
+rational ray, but does not replace the remaining growing-denominator/complementary
+joint signed arithmetic problem with a pointwise row assumption.
+
+Corpus71822: nonpartial65005/65005, mostly pending/stale compiler enrichment,
+background refresh. Existing full-cubic error theorem and bilinear rational-product
+inequality are relevant structural sources; log-phase cube identities and Jordan
+nonnegativity do not control the signed complementary difference. Source-argument
+hits from finite Mobius selection examples are inapplicable to the actual cubic.

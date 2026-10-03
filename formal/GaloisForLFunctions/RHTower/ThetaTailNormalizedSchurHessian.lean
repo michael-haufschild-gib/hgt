@@ -82,7 +82,6 @@ theorem normalizedSchur_hasDerivAt_right (x y : ℝ) :
   convert! (dividedSchur_hasDerivAt_right x y).div ((k_hasDerivAt y).const_mul (k x)) hn using 1
   simp only [normalizedSchurRight]
   field_simp [(thetaCuspFullSource_pos_all x).ne', (thetaCuspFullSource_pos_all y).ne']
-  ring
 
 theorem normalizedSchurRight_hasDerivAt_right (x y : ℝ) :
     HasDerivAt (normalizedSchurRight x) (normalizedSchurRightTwice x y) y := by
@@ -96,7 +95,7 @@ theorem normalizedSchurRight_hasDerivAt_right (x y : ℝ) :
   convert! hnum.div hden
     (mul_ne_zero (thetaCuspFullSource_pos_all x).ne'
       (pow_ne_zero 2 (thetaCuspFullSource_pos_all y).ne')) using 1
-  simp only [normalizedSchurRightTwice]
+  dsimp only [normalizedSchurRightTwice, Pi.pow_apply]
   field_simp [(thetaCuspFullSource_pos_all x).ne', (thetaCuspFullSource_pos_all y).ne']
   ring
 
@@ -107,7 +106,7 @@ theorem normalizedSchurRight_hasDerivAt_left (x y : ℝ) :
   convert! hnum.div ((k_hasDerivAt x).mul_const (k y^2))
     (mul_ne_zero (thetaCuspFullSource_pos_all x).ne'
       (pow_ne_zero 2 (thetaCuspFullSource_pos_all y).ne')) using 1
-  simp only [normalizedSchurRightLeft]
+  dsimp only [normalizedSchurRightLeft, Pi.sub_apply]
   field_simp [(thetaCuspFullSource_pos_all x).ne', (thetaCuspFullSource_pos_all y).ne']
   ring
 
@@ -148,9 +147,14 @@ theorem normalizedSchurHessian_sum_origin_neg :
 theorem eventually_normalizedSchurHessian_neg :
     ∀ᶠ p : ℝ × ℝ in 𝓝 (0,0), normalizedSchurRightTwice p.1 p.2 < 0 ∧
       normalizedSchurRightLeft p.1 p.2+normalizedSchurRightTwice p.1 p.2 < 0 := by
-  exact ((normalizedSchurRightTwice_continuous.continuousAt.eventually
-    (isOpen_Iio.mem_nhds normalizedSchurRightTwice_origin_neg))).and
-      (((normalizedSchurRightLeft_continuous.add normalizedSchurRightTwice_continuous).
-        continuousAt.eventually (isOpen_Iio.mem_nhds normalizedSchurHessian_sum_origin_neg)))
+  have h₁ : Tendsto (fun p : ℝ × ℝ => normalizedSchurRightTwice p.1 p.2)
+      (𝓝 (0,0)) (𝓝 (normalizedSchurRightTwice 0 0)) :=
+    normalizedSchurRightTwice_continuous.continuousAt
+  have h₂ : Tendsto (fun p : ℝ × ℝ =>
+      normalizedSchurRightLeft p.1 p.2+normalizedSchurRightTwice p.1 p.2)
+      (𝓝 (0,0)) (𝓝 (normalizedSchurRightLeft 0 0+normalizedSchurRightTwice 0 0)) :=
+    (normalizedSchurRightLeft_continuous.add normalizedSchurRightTwice_continuous).continuousAt
+  exact ((tendsto_order.1 h₁).2 0 normalizedSchurRightTwice_origin_neg).and
+    ((tendsto_order.1 h₂).2 0 normalizedSchurHessian_sum_origin_neg)
 
 end RHTower.ThetaJoint

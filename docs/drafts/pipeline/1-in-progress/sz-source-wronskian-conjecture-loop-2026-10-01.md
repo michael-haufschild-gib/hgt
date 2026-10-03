@@ -3705,3 +3705,21 @@ all owned processes terminal, audited oleans retained, imports once each,
 whitespace checks passed. P3 source-defect card updated; direct phase card
 records the retrieved complex two-shear candidate and its unresolved scalar
 orientation transport. No proof of that sign or of RH is claimed.
+
+### 2026-10-03: absolute source sign and quantile entropy debit
+
+The intervening read-only turn changed the candidate mechanism but proved
+no new hard sign theorem. Two-shear positivity loses the scalar orientation
+already known to change sign; midpoint gauges preserve the source action;
+normalized ground modulation retains scalar-shift ambiguity. These were
+not promoted as new knowledge or formalized as additional RH receivers.
+
+Current source attempt: retain Suzuki's exact arithmetic normalization and
+separate its event-loading curvature cost from the signed first-order
+history. The first dependency-closed statement concerns the actual outgoing
+quantile cells. Their left-boundary centroid debit D_n is nonnegative,
+bounded by 2*w_n^2/(2+M_n), and summable by the corpus's actual mass lower
+bound and summable square-weight theorem. Exact cell displacement equals
+w_n*(log(n)-b_n)-D_n. P1:sz-quantile-entropy-debit records the proof and
+limits; /tmp draft is currently in a single foreground Lean audit. No
+claim of full checkpoint-reservoir dual control or RH is made.
