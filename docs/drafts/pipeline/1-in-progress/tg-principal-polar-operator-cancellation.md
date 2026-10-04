@@ -1263,3 +1263,432 @@ gap by replacing the bounded-ground candidate with its forced singular
 reference and an admitted relative remainder. Full-source identification,
 full response transport for this remainder, arithmetic energy finiteness,
 Hardy compatibility and the strict sub-unit law are not proved.
+
+## 2026-10-04: C9.18 full physical Gamma domain advances; arithmetic frontier unchanged
+
+C9.18a spectral maximal-domain iff and C9.18b literal even physical
+identification are fully audited. C9.18c full physical parity assembly,
+self-adjointness, exact original strong integral, arbitrary-cofinal
+cutoff limit iff and Fourier domain/action invariance pass final leaf
+audit0 empty (SoninGammaClockPhysicalDomain). Its foundations are running;
+working log: tg-gamma-maximal-clock-domain. These close a genuine analytic
+domain gap, with no new arithmetic premise and no RH conclusion.
+
+Fresh searches tg-c919-energy-search and tg-c919-hardy-search are
+nonpartial snapshots, with incomplete compiler refresh. Native covariance
+identities were found; no candidate bounds Summable soninPrimePolarGridEnergy.
+The signed residue energy estimate contains an uncontrolled modular norm.
+The complete-period Fourier identity concerns uniform gcd covariance,
+whereas TG retains the chronological reciprocal-maximum weight, original
+polar centering, cross terms and terminal square. The critical packet
+transport limit concerns a thermally rescaled metric and has no proved
+domination of the native TG energy. No such transfer was assumed.
+
+Next mathematical work must attack the actual cross-label cancellation
+in the retained C9.12 signed kernel. Repeating its equivalence to positive
+energy, or replacing the carrier by a complete period, does not supply a
+new bound. The current Gamma domain result supplies no such bound either.
+
+C18c foundations now COMPLETE: all15 standard only, no added axioms.
+All owned audits/searches terminal; C18b/c working scratch removed.
+The full Gamma-domain gap is closed and its P3 card/frontier map updated.
+Next turn must directly attack native arithmetic cross-label cancellation;
+no Gamma-domain gate or mere energy equivalence remains to re-prove.
+
+
+## 2026-10-04: C9.19a exact selector boundary; C9.20 source-specific cancellation
+
+C9.19a is fully formalized: bounded binary selection of the original B_n
+exists iff the mask is eventually constant; contractive selection iff it
+is constant. Exact duals supply the constructive converse. Genuine prime
+and prime-power selectors have no bounded extension. This kills the
+universal physical-contraction candidate suggested by LCM idempotence,
+not the particular signed source. P3 tg-critical-prime-selection and P5
+tg-universal-arithmetic-selector-contraction contain the paper proof and
+exact positive survivor. All12 public foundations standard only; final
+leaf0 empty, index0 all12, lint1 fourteen unrelated unreachable modules.
+
+Contribution assessment: a new sharp physical classification eliminates
+an invalid contraction mechanism. It does not prove any improvement in
+Summable soninPrimePolarGridEnergy. Do not count it as an arithmetic upper
+bound, Gamma-to-Xi identification or RH result.
+
+C9.20 retains the exact C9.12 two-coordinate covariance and polar terms.
+Current conjecture is that the full signed covariance has bounded cofinal
+returns, produced directly by cancellation between distinct arithmetic
+labels and the original polar centering. Its target is the existing
+soninPrimePolarGridEnergy, not a replacement carrier or a new conditional
+RH wrapper. Every LCM label above the physical cutoff, proper-power
+correction, both cross terms and terminal square must be retained.
+
+Two source-specific proof attempts were checked this turn:
+- GaussianFormationPrimeFactorization gives absolute convergence only
+  while Gaussian damping x>0 remains. It supplies no cutoff-independent
+  norm estimate as x tends to zero. The Euler logarithm identity checked
+  in ZetaEulerLogPrimeSum is on Re(s)>1; passing it to the critical source
+  would require precisely the uncontrolled continuation/energy argument.
+- CCMPrimeDeficitEulerRenewal gives an exact positive delay applied to
+  the signed deficit, with exponential work minus prime work. Its
+  factorial-half identity does not bound either signed difference.
+  CCMPrimeDeficitEulerFactorialEnergy and EulerDeletedMellin control a
+  different deleted-force coefficient square and retain horizon costs;
+  they have not been shown to control this chronological prefix energy.
+Neither attempt is a proof or falsification of the C9.20 conjecture. The
+missing step is mathematical signed cancellation, not an absent library
+API. No conditional wrapper was added as purported progress.
+
+Searches tg-c920-source-search and tg-c920-energy-search completed;
+nonpartial snapshots, compiler refresh incomplete/background indexer.
+All candidates, source arguments and proposed ingredients inspected.
+The latter recovers the exact native energy and chronological work laws;
+it supplies no bound. Next attack must use the actual unequal-label
+kernel to pay its harmonic diagonal, rather than replace it by a uniform
+period or the Dirichlet overlap measure. Arithmetic energy, full completed
+source-to-Hardy cubic compatibility and strict sub-unit control remain
+open. Goal ACTIVE; no RH conclusion.
+
+
+## 2026-10-04: C9.21 literal Gamma phase closed; C9.20 still open
+
+Further C9.20 attempts checked the actual critical weighted-error corpus.
+ChebyshevDyadicWeightedEnergy controls the weaker x^(-3) square, not the
+native x^(-2) energy. PrimePolarWeightedError uses the shifted exponent
+s+1/2>1 and a moving-tent error; it supplies no estimate of the original
+grid energy. Finite Euler identities retain the uncontrolled signed
+remainder. No arithmetic bound or falsification was obtained.
+
+C9.21 now identifies the literal compensated odd Gamma clock primitive,
+including its conductor and linear normalization, with gammaHardyTheta.
+It reconstructs the actual Hardy/Gamma phase, reflection symbol and CCM
+scattering symbol. Every original cofinal clock cutoff gives the same
+phase and a strongly convergent family of actual spectral unitaries.
+All17 public foundations standard only; final leaf0 empty, index0 all17,
+lint1 sixteen unrelated unreachable modules. P3 tg-gamma-clock-hardy-phase
+contains the full argument and exact audit scope.
+
+Contribution assessment: this is a new source-to-Hardy archimedean phase
+identification, beyond the previously proved modulus and physical domain.
+It does not pay the arithmetic energy or transport the relative cubic
+trace. Fresh cubic/Schwartz searches recover native commutator nuclearity
+and the existing Gamma phase trace formula, but not trace-norm convergence
+for these original clock cutoffs. Their source snapshots are nonpartial;
+compiler refresh remains incomplete. C9.22 attacks the varying tested
+commutator in its genuine trace norm; P3 tg-gamma-clock-nuclear-phase-admission.
+The C9.20 arithmetic conjecture remains active alongside that analytic
+compatibility work. RH is neither proved nor falsified.
+
+
+C9.22a now proves continuity of the literal Hardy quantized differential
+from Schwartz symbols into the genuine Schatten-one Banach space. Its
+proof uses the actual Volterra/Hankel derivative-field factorization,
+then reflection, adjoint and Fourier conjugation. Five public declarations
+pass final leaf0 empty and standard-foundation audit0; wired/indexed;
+lint1 sixteen unrelated unreachable modules. The pending C9.22 source
+phase convergence is stronger than C9.21 strong unitary admission and
+has not been assumed. The fixed-factor nuclear product-limit mechanism
+is being audited separately. No arithmetic energy bound has been gained.
+
+C9.22b fixed-factor product mechanism is now fully audited: bounded strong
+convergence against a fixed nuclear factor gives genuine trace-norm
+convergence, with the adjoint/right-action version. Three public theorems,
+final leaf0 empty, foundations0 standard three, index0 all3; wired; latest
+lint1 twelve unrelated unreachable modules. C9.22 now needs all-order
+Schwartz convergence of the literal clock symbols and the actual tested
+product/cubic application. The global discarded-moment phase-jet estimates
+in its P1 card give the next concrete proof attack. All owned jobs terminal;
+obsolete working scratch removed. Goal ACTIVE; no RH proof/falsification.
+
+
+## 2026-10-04: C9.22 original Gamma tested nuclear/cubic admission CLOSED
+
+New hard analytic progress: the literal finite clock phase times each fixed
+Schwartz test converges in the entire Schwartz topology. Every original phase
+error jet is the exact discarded source integral and is globally polynomially
+small, with vanishing moment coefficients. The exact scalar ODE and full
+Leibniz recurrence transport this to the exponentials; Schwartz decay absorbs
+all polynomial weights.
+
+The original M_g(U_i^* P U_i-P) is identified exactly with a genuine S1 bundle,
+(1/2) U_i^*(delta(U_i g)-delta(g)U_i). Both multiplier orderings, the inverse,
+the original Hardy projection and H=2P-1 are retained. Original source strong
+limits and the proved Schwartz-to-S1 continuity yield genuine trace-norm
+convergence. Successive nuclear products and ordinary trace continuity give
+the actual cubic-trace limit. No self-adjointness of a complex test is assumed.
+
+Four new leaves: SoninGammaClockPhaseJets (25 public),
+PolynomialJetMultiplierLimit (7), SoninGammaClockSchwartzLimit (6),
+SoninGammaClockNuclearLimit (4). All final foreground leaf audits exit 0 with
+empty diagnostics. Five existing helper proofs were exposed and their leaves
+re-audited unchanged. Separate /tmp foundations audit exits 0 for all 47 new
+or exposed declarations, standard three foundations only. All four leaves are
+wired; index exits 0 and contains all 42 new entries. Latest authoritative lint
+exits 1 for 17 unrelated unreachable modules; no own finding. No umbrella build,
+subagent, computation experiment, heartbeat increase, new axiom, commit or push.
+The completed dependency-closed paper/audit card was moved to P3
+`tg-gamma-clock-nuclear-phase-admission.md`; all previous backlinks updated.
+
+Contribution assessment: C9.22 is genuinely closed for fixed Schwartz tests,
+beyond the earlier strong phase limit. It does not remove the fixed test, admit
+the prime–polar source, identify the full joint cubic, or prove strict sub-unit
+control. Those remain the hard TG frontier. Next work returns to the actual
+C9.20 signed native energy, retaining the unequal-label kernel, proper powers,
+polar cross terms, LCM labels beyond cutoff and terminal square. Do not repeat
+Gamma admission or conditional equivalences. The fresh deep native-energy search
+`/tmp/tg-c923-native-energy-search.json` completed with partial snapshot coverage
+and incomplete compiler refresh. All available candidate declarations, source
+arguments and ingredient sets were inspected. Native signed-moment identities
+were recovered, alongside prime-count oscillation and zero-supremum exponent
+laws. The latter are lower/sign-change laws, not summable upper control of the
+native energy. One proposed ingredient explicitly assumes RH and is unusable
+as an unconditional producer. No new arithmetic upper bound or falsification
+was obtained from this search. The next conjecture must use the exact native
+unequal-label covariance, not those oscillation statements as an upper bound.
+All owned Lean, search, index and lint jobs have finished. Completed owned
+scratch files were removed; final audit artifacts and search evidence retained.
+RH is neither proved nor falsified; goal remains ACTIVE.
+
+
+## 2026-10-04: C9.23 actual signed fixed-Euler absorption FALSIFIED
+
+Route TG remains on the native prime-polar energy problem C9.20. The previous
+C9.22 work closed only fixed-test Gamma nuclear/cubic admission. This turn
+re-read the exact unequal-label covariance and chronological work, then
+attacked absorption of the actual signed source by the Euler renewal.
+
+The two initial deep searches (`/tmp/tg-c923-grid-covariance-search.json`,
+`/tmp/tg-c923-work-balance-search.json`) completed nonpartial with full source
+inventory snapshots and incomplete background compiler refresh. Candidate
+lemmas, source arguments and ingredient sets were inspected. Useful results
+were exact native identities; unrelated conservation-law and label-covariance
+suggestions did not prove signed cancellation. The renewal and finite-Euler
+searches likewise gave no native energy estimate. Their source proofs did
+expose a stronger source-specific test than the old positive-cone obstruction.
+
+New knowledge, now audited in `CCMPrimeDeficitEulerSignedPole`:
+
+- The complete doubled divisor source H has exact leading asymptotic
+  `H(T)/(T exp(T)) -> 1+gamma`.
+- Its full finite two-label shifted quadratic form has leading coefficient
+  `(1+gamma)*(sum_i v_i exp(-u_i))^2`, without coefficient sign restrictions.
+  Its normalized limit vanishes exactly on that moment-zero subspace.
+  Integer logarithmic shifts identify it as the signed harmonic nullspace.
+- The unchanged actual signed rough-squared renewal of the Chebyshev primitive
+  has strictly positive coefficient `(1+gamma)*(totient(P)/P)^2` for each
+  fixed positive P. The finite Euler action has the opposite coefficient.
+  Neither admits an O(exp(T)) absolute budget, so fixed-modulus critical
+  absorption fails on the actual source itself.
+
+The proof retains every pair. It uses the admitted elementary source,
+harmonic and square-root sum bounds, exact finite Euler action, Möbius
+inversion of the totient divisor sum, and the elementary Chebyshev bound.
+No arithmetic cancellation premise, RH premise, numerical experiment or
+added axiom is used. The rank-one classification and its exact nullspace
+are the positive survivor, not just the negative statement.
+
+Validation: seven public declarations; final foreground
+`lake --old env lean GaloisForLFunctions/RHTower/CCMPrimeDeficitEulerSignedPole.lean -o ...`
+exit0 with no diagnostics. Separate /tmp axioms audit exit0: only propext,
+Classical.choice, Quot.sound for all seven. Wired into RHTower, index exit0,
+all seven API rows verified. Authoritative lint exit1 with fifteen unrelated
+unreachable leaves and no owned finding. Artifacts:
+`/tmp/tg-c923-signed-pole-{final,axioms,index,lint}.log` and axioms `.lean`.
+P3 `tg-fixed-euler-signed-renewal-pole` contains the complete paper proof;
+P5 `tg-fixed-euler-signed-renewal-absorption` closes this candidate.
+
+Contribution assessment: this turn eliminated a concrete source-specific
+absorption mechanism and identified its exact signed cancellation condition.
+It did NOT prove any upper bound for `soninPrimePolarGridEnergy`. The fixed-P
+asymptotic is not uniform in a modulus depending on T; the corpus's
+factorial-half identity forbids silently exchanging those limits. Next attack
+must keep that moving dependence, all original native cross terms, the polar
+masses, proper powers, above-cutoff LCM labels and terminal square. A
+harmonic-neutral adaptive completion is a candidate to test, not an admitted
+estimate; a mere restatement of the finite rank-one law would be no progress.
+The hard goals remain native arithmetic energy summability, full joint Hardy
+cubic compatibility, and strict contraction. RH remains unresolved; goal ACTIVE.
+
+C9.23 closure: all owned jobs are terminal. Four completed scratch files
+removed; final audit logs, /tmp axioms source and corpus search evidence
+retained. Final indexing after card moves passes; seven public names and
+umbrella wiring reverified. No theorem source changed after its final audit.
+
+
+## 2026-10-04: C9.24 complete divisor pole — active
+
+C9.23 moved the source-specific obstruction but did not bound native energy.
+Current attack: complete exponential-affine pole subtraction, followed by
+the actual moving signed residual. The uniform bounded source and exact
+floor quadrature expose a new unconditional paper theorem: H(T) equals
+exp(T)(c T+d) plus a globally polynomial remainder. Its finite two-label
+pole is exp(T)((c T+d)m0²−2c m0 m1). Harmonic neutrality removes all of it.
+Negative shifted times retain the causal boundary in the remainder, so
+the result applies to adaptive nonnegative labels, not only fixed packets.
+
+Paper proof and search audit: P1 tg-complete-divisor-pole-cancellation.
+Scratch /tmp/tg-c924-full-pole.lean in foreground elaboration; no tree Lean
+file yet, no successful final audit yet. Hard actual signed residual bound,
+native energy, joint Hardy cubic and strict contraction remain OPEN.
+
+C9.24A CLOSED: five public theorems and two definitions in
+`CCMPrimeDeficitCompletePole`. Final foreground leaf audit exit0, no
+diagnostics; separate /tmp axioms audit exit0, standard propext,
+Classical.choice, Quot.sound only. Import wired in RHTower; index exit0,
+seven API entries verified. Authoritative lint exit1 on thirteen unrelated
+unreachable leaves and no owned finding. No full/umbrella build,
+computation, subagent, new axiom or heartbeat override.
+
+The complete pole cancels under harmonic neutrality even for adaptive
+labels: negative shifted-time pairs remain in the globally controlled
+remainder. This is stronger than C9.23's leading fixed-packet limit. The
+coefficient-mass-square debt remains; native energy is not bounded.
+Next B attack is now concrete: preserve mu through N=floor(exp(T/2)),
+choose a(N+1)=-(N+1)*sum_(n<=N)mu(n)/n and zero thereafter. This is a
+harmonic-neutral head extension with the same literal action. Bound its
+linear pole-subtracted source and attack its complete signed R quadratic
+form; do not silently use the universal absolute-mass-square bound as a
+critical bound. Exact candidate and corpus APIs are on the active C9.24
+card; A's dependency-closed proof and audit are on its P3 counterpart.
+RH unresolved; native energy, joint Hardy cubic and strict contraction
+still open. Goal ACTIVE.
+
+C9.24 cleanup: all owned Lean/search/lint jobs terminal; six superseded
+scratch files removed. Final audit logs, axioms source and search evidence
+retained. No proof source changed after final audit.
+
+
+## 2026-10-04: C9.25 actual diffuse neutral work
+
+Previous turn classified as progress: five audited complete-pole source
+theorems, no native energy bound. This turn applied that subtraction to
+the actual moving head. Single-point completion concentrated square mass
+(N+1)^2*h_N^2; diffuse completion on N<n<=2N removes that artificial
+diagonal cost while preserving every actual head coefficient and action.
+
+New audited leaf CCMPrimeDeficitNeutralWork (367 lines): harmonic moment
+zero; exact D=L-Q with all mixed and negative-time pairs; complete linear
+critical budget; entire absolute-diagonal critical budget. Four public
+theorems, five definitions. Final foreground leaf audit exit0, empty
+output; separate /tmp axioms audit exit0 with propext, Classical.choice,
+Quot.sound only. RHTower import wired; nine API entries verified after
+index exit0. Lint pending at this log entry.
+
+Both deep corpus searches were nonpartial with full source inventories
+and incomplete background compiler refresh. All candidate/source/ingredient
+sections inspected. The diagonal/chronological and midpoint-symmetry
+suggestions did not discharge signed work. Reflection gives a symmetric
+half-integral, not cancellation; actual first-half harmonic and Mertens
+terms remain coupled. Two-tail quadratic-zero cancellation would choose
+coefficients from the unknown work itself; no independent bound resulted.
+
+Contribution: two complete channels of a literal neutral reconstruction
+are now paid at critical scale. Full Q, including tail-tail correlation,
+is still unbounded here; native energy, full joint Hardy cubic and strict
+contraction remain open. Do not spend the next turn redesigning tails or
+re-proving an equivalence. Attack the actual signed unequal-label work.
+P3 tg-diffuse-neutral-mobius-work has the full proof; active target and
+failed proof-step learning are on P1 tg-complete-divisor-pole-cancellation.
+RH unresolved; goal ACTIVE.
+
+C9.25 closure: authoritative lint exit1 on sixteen unrelated unreachable
+leaves, no owned finding. All owned Lean/search/lint jobs terminal.
+Seven superseded scratch files removed; final logs, axioms source and
+search evidence retained. No proof source changed after final audit.
+
+## 2026-10-04: C9.26 complete signed work — no hard gap closed
+
+Route TG retains the C9.25 actual neutral quadratic target. No Lean source
+was changed this turn. Four corpus deep searches completed nonpartial with
+complete source inventories; background compiler refresh was incomplete.
+All candidate/argument/idea/ingredient sections were inspected.
+
+Attempts and precise failures are recorded on
+P1 tg-complete-divisor-pole-cancellation:
+- Complete coprime row estimates hide the endpoint energy in row 1.
+- Summed fast-clock sawtooth primitive bounds lose a factor N at the
+  midpoint, leaving the same unproved signed estimate.
+- Moving factorial-half renewal is the existing identity A=D; a smaller
+  cutoff does not turn coefficient orthogonality into profile control.
+- Keeping the logarithmic weight exposes a coupled first-half formula
+  involving the actual Chebyshev prime sum, h, hlog, M and Mlog. Its paper
+  derivation uses the exact first Möbius jet/divisor identity, but separate
+  absolute estimates again lose cancellation. No identity-only leaf added.
+- The corpus prefix oscillator conserves an indefinite h*M charge between
+  entries and has signed jump work; it does not close the energy gap.
+
+Assessment: these attempts eliminated invalid proof steps; they did not
+prove a bound for Q, native energy summability, joint Hardy cubic
+compatibility, or strict contraction. RH has neither been proved nor
+falsified. No conjecture was retired as false. The live task is a signed
+estimate for the coupled weighted reciprocal pairing, including endpoint,
+jump, main and error terms; proving another representation alone is not
+progress. All owned search jobs terminal. Goal ACTIVE.
+
+## 2026-10-04: C9.27 weighted jump cancellation — no hard gap closed
+
+Revalidated C9.26 as no progress toward the actual signed bound. The new
+paper integration attempt identifies the interior weighted-profile jump
+as -Lambda(n)+mu(n)*(T/2-1-log n)/2, with a separate initial entry. Thus the
+prime-current contribution survives integration by parts. A proposed
+boundary-at-infinity step fails at the moving midpoint, where the dilated
+argument remains near one. A prefix-charge/prime-deletion attempt leaves
+uncontrolled mixed-scale charge; no lower bound or RH implication proved.
+Detailed arguments and rejected search ingredients are on P1
+tg-complete-divisor-pole-cancellation. Two nonpartial corpus searches
+completed, all owned jobs terminal. No Lean changes or new audit. The next
+actual target is the full signed mixed jump/continuous work with both
+reflected halves and source corrections retained. Goal ACTIVE; no RH
+proof or falsification.
+
+## 2026-10-04: C9.28 signed-work attempts and C9.29 actual-current test
+
+C9.28 closed no hard gap. The auxiliary finite Euler Laplace packet has an
+exact covariance whose eventual sign depends on the number of Euler factors;
+it has no established identity or domination relation to the actual Q.
+Causal inverse truncation removes a tail-tail convolution beyond N² but leaves
+the mixed source energy. Combining chronological drift and prime jumps by
+parts reproduces the existing energy identity, without an upper work bound.
+Detailed paper calculations and search coverage are recorded on
+P1 tg-complete-divisor-pole-cancellation. No production Lean added for these
+representations, and no claim that the RH route was disproved.
+
+C9.29 is testing the separate meromorphic operator-continuation option in
+this card. P3 tg-native-damped-current-carrier specifies the actual symmetric
+all-prime-power differentiated current and full polar integral. Its physical
+head Mellin functional and a Hardy-zero negative-damping row obstruction
+passed scratch Lean checking. The full physical sum/integral identity and
+literal finite lower-endpoint correction are under audit. They do not yet
+prove a meromorphic operator-family obstruction, the original logarithmic
+source's critical admission, Gamma completion or a Q estimate. No production
+Lean result or final audit is claimed at this checkpoint. Goal ACTIVE.
+
+## 2026-10-04: C9.29 complete current carrier boundary
+
+The actual all-prime-power current now has a source-derived physical head
+Mellin formula, with both dilation legs and the full polar integral retained.
+The literal finite lower-endpoint correction is entire. New unconditional
+negated-existence theorems exclude fixed SoninL2-valued and bounded-operator-valued
+meromorphic families on any half-plane Re z>c, c<0, agreeing with V_b on Re z>1/2,
+for every b>=0. Two physical probes cancel the expanding-leg term before
+meromorphic uniqueness; the resulting negative row contradicts the corpus's
+actual Hardy-zero pole. Thus this is an exclusion of a complete source family,
+not an assumed-row receiver. Positive survivor: exact physical Mellin formula
+and finite-endpoint law, formalized in the same research round.
+
+Canonical P3: ../3-formalized/tg-native-damped-current-carrier.md.
+Failed candidate: ../5-failed/tg-fixed-carrier-meromorphic-current.md.
+Leaves: SoninDampedPrimePolarCurrent and SoninDampedCurrentMeromorphicObstruction.
+Both final foreground lake --old env lean audits pass with current oleans and
+wired imports. Separate /tmp API/axiom audit passes all 27 public declarations,
+using only propext, Classical.choice and Quot.sound. Index exit0; all API entries
+verified. Authoritative lint exit1 on 18 unrelated unreachable modules, no owned
+finding. No full/umbrella build, numerical experiment, hole, added axiom or
+heartbeat override. All owned jobs terminal.
+
+Contribution and remaining hard problem: the fixed physical current continuation
+candidate is closed. No bound for signed Q, original logarithmic source boundary
+admission, completed Gamma-relative class, Hardy cubic compatibility or strict
+sub-unit budget was proved. Varying carriers and relative quotients remain outside
+the obstruction. The original logarithmic/current derivative identity was not
+formalized here. Return to the actual signed boundary-admission problem with its
+original logarithmic weight; further current-only obstructions do not discharge
+that problem. RH neither proved nor falsified. Goal ACTIVE.

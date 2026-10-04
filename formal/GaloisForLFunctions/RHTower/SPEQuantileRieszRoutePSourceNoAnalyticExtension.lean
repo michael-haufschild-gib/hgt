@@ -10,13 +10,13 @@ private def routePSourceLogDerivFromExtension (L : ℂ → ℂ) (s : ℂ) : ℂ 
   -(s * ((s + 1 / 2) * L (s - 1 / 2) + 2 / 3)) - 1
 
 private theorem analyticOnNhd_routePSourceLogDerivFromExtension
-    {L : ℂ → ℂ}
-    (hL : AnalyticOnNhd ℂ L {z : ℂ | -(1 / 8 : ℝ) < z.re}) :
+    {L : ℂ → ℂ} {c : ℝ}
+    (hL : AnalyticOnNhd ℂ L {z : ℂ | c < z.re}) :
     AnalyticOnNhd ℂ (routePSourceLogDerivFromExtension L)
-      {s : ℂ | 3 / 8 < s.re} := by
+      {s : ℂ | c + 1 / 2 < s.re} := by
   intro s hs
-  change 3 / 8 < s.re at hs
-  have hshiftRe : -(1 / 8 : ℝ) < (s - 1 / 2).re := by
+  change c + 1 / 2 < s.re at hs
+  have hshiftRe : c < (s - 1 / 2).re := by
     norm_num [Complex.sub_re]
     linarith
   have hLAt : AnalyticAt ℂ L (s - 1 / 2) := hL _ hshiftRe
@@ -62,16 +62,16 @@ private theorem routePSourceLogDerivFromExtension_eq_logDeriv
   field_simp [hs0]
   ring
 
-/-- No holomorphic continuation of the literal source Laplace transform can cross the Hardy
-axis, even if it agrees with the transform only on the unconditional convergence half-plane. -/
-theorem no_routePSourceLaplace_analytic_extension_past_axis
-    (L : ℂ → ℂ)
-    (hL : AnalyticOnNhd ℂ L {z : ℂ | -(1 / 8 : ℝ) < z.re})
+/-- Every strictly negative abscissa is obstructed by a native Hardy zero.
+Agreement is required only on the unconditional convergence half-plane. -/
+theorem no_routePSourceLaplace_analytic_extension_negative_abscissa
+    {c : ℝ} (hc : c < 0) (L : ℂ → ℂ)
+    (hL : AnalyticOnNhd ℂ L {z : ℂ | c < z.re})
     (hagree : ∀ z : ℂ, 1 / 2 < z.re → L z = routePSourceLaplaceContinuation z) : False := by
-  let U : Set ℂ := {w : ℂ | 3 / 8 < w.re}
+  let U : Set ℂ := {w : ℂ | c + 1 / 2 < w.re}
   have hUopen : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
   have hUpre : IsPreconnected U :=
-    (convex_halfSpace_re_gt (3 / 8 : ℝ)).isPreconnected
+    (convex_halfSpace_re_gt (c + 1 / 2)).isPreconnected
   let A : ℂ → ℂ := routePSourceLogDerivFromExtension L
   have hA : AnalyticOnNhd ℂ A U :=
     analyticOnNhd_routePSourceLogDerivFromExtension hL
@@ -83,8 +83,8 @@ theorem no_routePSourceLaplace_analytic_extension_past_axis
     intro w hw
     exact (hregAn w).deriv.sub ((hA w hw).mul (hregAn w))
   have htwo : (2 : ℂ) ∈ U := by
-    change (3 / 8 : ℝ) < (2 : ℂ).re
-    norm_num
+    change c + 1 / 2 < 2
+    linarith
   have hHev : H =ᶠ[𝓝 (2 : ℂ)] 0 := by
     have hright : {w : ℂ | 1 < w.re} ∈ 𝓝 (2 : ℂ) :=
       (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by norm_num)
@@ -113,9 +113,9 @@ theorem no_routePSourceLaplace_analytic_extension_past_axis
     dsimp only [rho]
     exact linePt_re tau
   have hrhoU : rho ∈ U := by
-    change (3 / 8 : ℝ) < rho.re
+    change c + 1 / 2 < rho.re
     rw [hrhore]
-    norm_num
+    linarith
   have hrho1 : rho ≠ 1 := by
     intro heq
     have him := congrArg Complex.im heq
@@ -151,6 +151,13 @@ theorem no_routePSourceLaplace_analytic_extension_past_axis
   rw [horder] at hnonneg
   exact (show ¬ ((0 : WithTop ℤ) ≤ ((-1 : ℤ) : WithTop ℤ)) by
     exact_mod_cast (show ¬ (0 : ℤ) ≤ -1 by omega)) hnonneg
+
+/-- The original fixed-width obstruction, retained as a specialization. -/
+theorem no_routePSourceLaplace_analytic_extension_past_axis
+    (L : ℂ → ℂ)
+    (hL : AnalyticOnNhd ℂ L {z : ℂ | -(1 / 8 : ℝ) < z.re})
+    (hagree : ∀ z : ℂ, 1 / 2 < z.re → L z = routePSourceLaplaceContinuation z) : False :=
+  no_routePSourceLaplace_analytic_extension_negative_abscissa (by norm_num) L hL hagree
 
 end
 end RHTower

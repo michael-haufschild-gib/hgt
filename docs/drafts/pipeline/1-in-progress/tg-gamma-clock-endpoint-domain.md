@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Route:** TG, lower-end Gamma/pole normalization
-- **Status:** C9.14 endpoint obstruction and exact relative ground completion formalized; C9.15 scalar source identification formalized; C9.16 joint distant-clock obstruction formalized; C9.17 full remainder response and reference domain active
+- **Status:** C9.14 endpoint obstruction and exact relative ground completion formalized; C9.15 scalar source identification formalized; C9.16 joint distant-clock obstruction formalized; C9.17 full remainder response formalized; C9.18 maximal full Gamma domain and Fourier invariance formalized
 - **Original goal:** unconditional RH proof or falsification, not a no-go alone
 
 ## Corpus basis and exact question
@@ -358,3 +358,31 @@ previous ThetaTailPositiveBalancePrimitive finding). P2 moved to P3,
 P5 records exact positive local invariant. Obsolete scratch parts removed.
 C9.17 now constructs the actual remainder operator and nuclear completion;
 no arithmetic summability, reference-domain or Hardy/sub-unit claim is made.
+
+2026-10-04 — C9.17 closes actual full remainder response admission.
+SoninGammaRemainderOperator and SoninGammaRemainderResponse: final0 empty,
+all17 foundations standard, umbrella wired, index0 all17, lint13 unrelated.
+The finite strong-integral operators commute with transfer/parity/Fourier/
+reflection and are self-adjoint. Exact monomial energy plus actual Taylor
+columns gives a two-cutoff nuclear ground bound. Ground convergence
+constructs one genuine S1 time-band limit and complete original response
+limit for every cofinal cutoff pair. P3 tg-gamma-remainder-full-response.
+C9.18 retains the singular source and attacks maximal-domain identification;
+arithmetic energy summability, Hardy compatibility and strict contraction
+remain open. See active tg-gamma-maximal-clock-domain.
+
+C9.18a spectral maximal-domain iff is now formalized and audited:
+SoninGammaClockSpectralDomain, all14 standard foundations, final0 empty,
+index0 all14, lint14 unrelated. P3 tg-gamma-clock-spectral-domain.
+C9.18b physical finite-kernel Mellin identity and both parity blocks remain
+active; exact next proof plan and read APIs in tg-gamma-maximal-clock-domain.
+
+2026-10-04 — C9.18 closed across three production leaves. Exact finite
+Mellin identification retains the original strong integral, both dilation
+directions and clock-zero mass. The actual parity switch retains both
+physical sectors. Full self-adjoint Gamma domain is exactly the domain of
+cofinal original cutoff convergence; Fourier preserves it and commutes
+with the action. Final audits and all39 public foundations across C18a/b/c
+pass, no added axioms. P3 spectral-domain, even-physical-domain and
+full-physical-domain cards; authoritative log tg-gamma-maximal-clock-domain.
+Arithmetic summability and full source-to-Hardy/sub-unit production remain.

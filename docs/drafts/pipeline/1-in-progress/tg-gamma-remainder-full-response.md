@@ -43,3 +43,29 @@ This construction, even if completed, retains an unbounded homogeneous
 reference whose actual functional calculus/domain is open. Arithmetic
 soninPrimePolarGridEnergy summability, original Hardy compatibility and
 strict sub-unit control remain unproved. No RH conclusion is asserted.
+
+## 2026-10-04 operator progress
+
+The complete operator scratch passes with empty diagnostics, including
+its literal ground equality, transfer/parity/Fourier/reflection commutations,
+self-adjointness and exact positive all-degree defect for arbitrary pairs
+of lower and upper cutoffs. SoninGammaRemainderOperator.lean is wired and
+under targeted final audit. Nuclear completion scratch uses the actual
+Taylor columns, then the Cauchy property of the known ground limit. A
+canonical exhaustion constructs a genuine S1 element; comparison with
+that same exhaustion proves a bound for every finite cutoff, giving the
+same limit for every cofinal family. No arithmetic premise enters this step.
+
+Both production leaf final audits now pass with empty diagnostics. The
+complete nuclear construction and actual paired response convergence are
+verified for every countably generated cofinal cutoff family. Foundations
+(seventeen declarations) and index are running; no RH conclusion.
+
+2026-10-04 — C9.17 CLOSED. Both final leaf audits exit 0 with empty logs.
+All seventeen public declarations have only propext, Classical.choice and
+Quot.sound. Index0, all17 names verified. Global lint1 on13 unrelated
+unreachable leaves; ThetaTailCorrectionCurrent now occupies the changing
+thirteenth slot. Exact log /tmp/tg-c917-lint.log. P2 moved to P3. Obsolete
+operator/nuclear/response scratch files removed. C9.18 actual maximal
+Gamma domain is the next active construction; its first scalar source
+audit runs in /tmp/tg-c918-domain.lean.

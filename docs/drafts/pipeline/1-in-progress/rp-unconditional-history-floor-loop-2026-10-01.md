@@ -2227,3 +2227,665 @@ but pays no critical debt. Positive-damping negative work, signed
 high-LCM control, and both history debts remain open. Next attack
 must use joint prime-fibre structure with the native moving cutoff.
 Goal active; no RH proof or falsification, no external blocker.
+
+### RP-64: joint differences expose the moving quotient boundary
+
+Started the joint-prime attack rather than treating RP-63's single
+projection obstruction as a no-go for the full covariance. With
+a_S=A(M,product S), D_R=sum_(T subset R)(-1)^|R\T|theta(R\T)a_T,
+finite tensor Schur factorization gives on paper
+
+    E_P(M)=sum_(R subset P)gamma(P\R)*(D_R a)^2.
+
+For each fixed core P, E_P/M tends to c_0^2*product_(p in P)(2/p).
+The empty-coordinate floor divided by E_P tends to
+product_(p in P)(1-1/(2p)). This permits collective savings that
+the one-prime sharpness result does not exclude.
+
+Applying the corpus's uniform profile remainder to the whole tensor
+gives an explicit product bound only when M>=T_0*product P. That
+condition fails for the native moving core. Replacing channels
+beyond the cutoff by their limiting profile would create nonzero
+terms where the actual channels vanish. Therefore this estimate
+does not pay the critical covariance or any history debt.
+
+Card rp-joint-prime-difference-payment-2026-10-04.md records the
+finite proof, remaining joint quotient-boundary conjecture, and three
+search audits. No new Lean receiver for the unpaid estimate. Current
+hard target is the joint boundary contribution with original clipping;
+all critical RP gaps remain open, goal active.
+
+### RP-65/66: clipped boundary compression and causal covariance comparison
+
+Revalidated RP map: exact eventual native history linear floor still
+open. Deep joint-boundary search supplied zero-top-fibre and exact
+mixed-cutoff laws, but no joint bound. A partial direct floor search
+suggested the RH-assumed floor theorem; rejected that circular chain.
+
+The RP-64 tensor boundary does not vanish at large product labels:
+D_R=(-1)^|R|theta(R)H_R^+, where H_R^+ retains every proper divisor
+below the cutoff with coefficient mu(d)/theta(d). Its complete Schur
+sum is a probability-weighted square average with weights
+theta(R)^2 gamma(P\R). Exact finite compression returns the previous
+beta(r)F_r^2 divisor-fibre sum. No extra negative payment appears.
+Paper details/search audits are in rp-clipped-tensor-boundary-compression-2026-10-04.md.
+
+Then retained the causal gains in simultaneous prime deletion.
+On a finite log window, D_p f=p^(-1/2)f(.-log p) contracts L2 by
+p^(-1/2). Recovering a deleted weighted prime therefore costs
+(1-theta_p/sqrt(p))^(-1). Summing covariance costs leaves Euler
+increments (1-theta_p^2)/(p*(1-theta_p/sqrt(p))^2)=O(p^(-2)),
+so one absolute constant compares covariance energy above its
+biased mean-head energy, uniformly in cutoff and nonnegative damping.
+
+The reversible bias correction costs 1+1/(p*(sqrt(p)-1)) per prime,
+with summable O(p^(-3/2)) increments. Thus biased and original
+native mean-head energies are also uniformly comparable. Exact
+completion with primes up to exp(T) makes these true native finite-
+window comparisons; no full-ray fixed-core replacement is used.
+
+Complete paper proof, now advanced to pipeline/3-formalized/
+rp-native-biased-covariance-window-comparison-2026-10-04.md. The
+native comparison still needs Lean formalization. Began checking
+the finite-window causal recovery lemma in Lean. This result would
+remove the additional covariance norm debt, not bound the native
+energy itself; all absolute critical payment problems remain open.
+Goal active, no RH proof/falsification, no external blocker.
+
+RP-66 formal progress: RoutePCausalWindowRecovery.lean now proves
+shift_square_integral_le and delay_recovery_square. Minimal mathlib
+imports, no heartbeat changes. Final foreground leaf audit with
+lake --old env lean and explicit olean passed cleanly; both /tmp
+axiom audits use only propext/Classical.choice/Quot.sound. Wired
+RHTower, no umbrella build. Global lint still has the same 12
+unrelated unreachable-module errors and no error for this leaf.
+These are necessary analytic ingredients only. Full native-window
+covariance comparison is paper-proved but not yet Lean certified;
+finite prime-set induction and native identification remain required.
+
+RP-66 continuing formalization: RoutePFinitePrimeCovariance now proves
+the exact insertion recurrence and the integrated covariance/mean-head
+comparison by finite prime-set induction, retaining every delayed square.
+RoutePPrimeCovarianceBudget proves one uniform constant for the actual
+bias and noise gains. RoutePCausalBiasTransfer and RoutePFiniteBiasTransfer
+prove reversible bias removal with summable O(p^(-3/2)) energy costs.
+All four leaves passed clean final-style foreground `lake --old env lean`
+audits with explicit olean output and are wired into RHTower; no umbrella
+build. Axiom audit still pending. Native source identification and exact
+moving-cutoff stability are in progress, not yet certified.
+
+The square-energy transfer uses the two exact weighted Young identities
+recorded on the RP-66 paper card; no infinite inverse or full-ray premise.
+This removes an additional relative norm cost. It does not bound native
+energy growth or pay either history debt; all absolute critical gaps remain.
+
+Search audits: finite-covariance search generation 1221006, partial=false,
+coverage 65091 files with no pending/inventory errors; current generation
+1221023. Reversible-bias search generation 1221242, partial=false/errors=[],
+coverage snapshot 1221251/current 1221256, 65108 files, zero pending/errors.
+Both had unmeasured semantic coverage and incomplete background refresh;
+compiler states mostly pending/stale/unavailable. Candidate/source/idea/
+ingredient fields inspected. Causal recovery was the applicable ingredient;
+other returned energy bounds or causal-mode chains did not prove the native
+comparison. Exact local source statements and Lean audits control usage.
+
+### RP-66 completed native relative comparison
+
+Proved the full native-window inequalities in prime-subset coordinates:
+J(h_theta)<=V<=C J(h_theta), J(h)<=B J(h_theta), and
+J(h_theta)<=B J(h), uniformly for every epsilon>=0 and T>=0.
+Consequently J(h)<=B V and V<=C B J(h). C and B are absolute,
+independent of cutoff, prime core, and damping. No global admission,
+arithmetic cancellation budget, or RH premise was assumed.
+
+Native source identification is explicit. Each signed prime-subset
+channel at d=product(S) is mu(d)*sqrt(d)*U(exp(t)/d)/exp(t);
+their complete sum is the original mobiusDivisorFullHead/exp(t).
+The complete signed-pair kernel is product_(p in S symmetricDifference T)
+(1-1/p). Every common prime and off-diagonal pair remains. The cofactor
+identity, damping conjugation, and causal horizon stability are proved.
+The integration window uses the true moving native cutoff, with a fixed
+terminal core only where exact equality holds. No full-ray core exchange.
+A separate double-natural-number-sum reindexing theorem is not exported;
+the verified covariance is in coefficient-identified prime-subset form.
+
+Twelve new leaves passed clean final foreground `lake --old env lean`
+audits with explicit oleans. All 56 new public theorems passed `/tmp`
+axiom audits with only propext/Classical.choice/Quot.sound. All leaves
+are wired into RHTower; no full/umbrella build, no heartbeat changes,
+no subagents or numerical experiments. The earlier causal helper remains
+audited. Final global lint has the same 12 unrelated unreachable-module
+errors as RP-63 and no error for these leaves. An intermediate thirteenth
+orphan disappeared by the final lint. Scoped whitespace check passed.
+
+Capstones in RHTower.RoutePWindow: native_signed_pair_comparison
+(RoutePNativeSignedPairComparison.lean), native_covariance_mean_comparison
+and native_bias_comparison (RoutePNativeBiasedMeanComparison.lean), and
+nativePrimeChannel_eq_divisor (RoutePNativePrimeChannelDivisor.lean).
+The card is now in pipeline/3-formalized and the RP frontier map records
+the exact relative payment and its limitation. The signed-pair deep search
+(generation 1221378, partial=false/errors=[]) had 65121 inventoried files,
+zero pending/inventory errors, snapshot 1221385/current 1221386; semantic
+coverage unmeasured, refresh incomplete, compiler mostly pending/stale.
+Candidate/source/idea/ingredient fields were inspected. The additional
+filtered lexical product queries returned zero hits; installed sources
+and passing scratch API checks supplied the actual arithmetic lemmas.
+
+Contribution: an additional joint covariance norm debt is now removed;
+this is a new native-source inequality, not an abstract receiver. The
+absolute critical payment is not solved. The next research target remains
+an absolute fixed-positive-damping native energy/negative-work estimate,
+or the signed high-LCM payment with both history debts retained. RP-53–62
+already show that square-root-core identities, time multiplication,
+separated von Mangoldt forcing, and reciprocal boundary positivity alone
+return unpaid signed terms. Further norm transport alone would not advance
+that target. Goal remains active; no unconditional RH proof/falsification.
+
+### RP-67: absolute joint-deletion payment tests
+
+Prior turn made verified relative covariance progress (RP66); this turn
+made no new verified frontier advance. Target remains absolute native
+square/negative-work admission at each positive damping, signed high-LCM
+cancellation, and both physical history debts. Detailed calculations and
+six corpus search audits: rp-native-joint-deletion-payment-2026-10-04.md.
+
+The admitted balance h^2+C=B gives C_-=h^2+C_+-B. Damping preserves the
+coefficient one, so it supplies no absorption. For a complete late-prime
+block with all double children causally inactive, retained covariance is
+(f-L)^2+sum_p w_p*f_p^2. The full change is -2*f*L+L^2+sum_p w_p*f_p^2.
+Every different-prime child product survives inside L^2. Its joint mixed
+work has no proved sign or absolute budget. This is a paper diagnostic
+from the existing cofactor expansion, not a new theorem.
+
+The actual growing safe batches leave primes unprocessed. The complete
+terminal-order iff explicitly retains the unknown final scalar ceiling;
+fixed-core sublinear insertion thresholds are not uniform in the moving
+core. A radial half-bias test rediscovered the existing HalfSelection
+Euler correction/pole/growth obstruction. It was not counted as new
+knowledge and no duplicate leaf was added. No numerical experiment,
+conditional receiver, added axiom, or resource override was used.
+
+All six searches completed partial=false/errors=[]/unfinished_stages=[].
+Inventories65143,65145,65147,65149,65150,65151 had zero pending files;
+relevant statements are source-only with mostly pending/stale compiler
+coverage and background refresh. Candidate/source/idea/ingredient fields
+were read; unrelated generated suggestions were rejected. All owned
+search processes are terminal. No Lean edits or builds this turn.
+
+Next attack stays on the joint parent/complete-child mixed integral;
+ordering and independent-averaging arguments have not paid it. Do not
+repeat those wrappers or promote another norm comparison as absolute
+payment. RH is neither proved nor falsified. Goal active, no external
+blocker.
+
+## RP68 — absolute mixed admission obstruction and exact survivor (2026-10-04)
+
+Route RP. The hard open payments remain positive-damping negative work,
+signed high-LCM control, and both physical history debts. RP67 paid none.
+This turn tested the literal complete late-prime increment J, not a
+finite-core surrogate. Its exact split F=a+J and J=K+R retains the actual
+Mertens increment; expanding the square alone supplies no payment.
+
+New theorem: neither the literal source ray nor the complete native
+critical profile h is L1 on the positive ray. L1 admission makes the
+source Laplace transform analytic in Re z>0 and uniformly bounded to its
+boundary. Analytic rigidity identifies its actual continuation; the
+nonzero unconditional Hardy-zero residue contradicts the vanishing
+boundary residue. The existing exponentially decaying correction
+transfers this to h. The older L2 obstruction was not misused as L1.
+
+New exact positive survivor: mixedWork_epsilon=exp((1-epsilon)t)*a(t)*J(t)
+is Theta(exp((1/2-epsilon)t)*h(t)/t^2) at infinity, with equivalence of
+absolute integrability at infinity. Proof uses the literal sum and
+t^2*J(t)->-divisorHarmonicBoundary/3, not a replacement prime density.
+For every epsilon<1/2 it is nonintegrable on every late ray. Thus separate
+absolute mixed payment fails even at positive damping. This closes that
+proposed estimate, not the native joint-square payment or RH.
+
+Leaves RoutePNativeCriticalL1Nonintegrability and
+RoutePNativeLatePrimeMixedAdmission passed foreground final audits with
+explicit olean output and are wired into RHTower. The existing
+RoutePSourceCriticalSquareNonintegrability was factored to expose its
+analytic continuation identity without an L2-specific premise and also
+passed. No full/umbrella build or heartbeat override. The /tmp API audit
+passed. All 14 audited public theorems have only propext, Classical.choice,
+and Quot.sound. Global lint exited1 on14 unrelated unreachable modules:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MertensProductDiamondPintz, MoebiusMollifiedCriticalMoment,
+MoebiusMollifiedErrorThreeLines, ThetaFinitePairBoundaryCurrent,
+ThetaFinitePairBoundaryPackets, ThetaMovingShellFirstOrderPhase,
+ZetaZeroDensityPowerSaving, and HTGeometry.CompactMonoidMeasureAlgebra.
+Neither new leaf nor the edited source leaf has a lint error. Other
+unfinished modules were not wired or edited. Global lint is not claimed
+to pass.
+
+Five RP68 corpus searches were read, including candidate/source/idea/
+ingredient fields. Inventories65153,65155,65159,65160,65166 all had zero
+pending files; generations1221887,1221960,1221986,1222027,1222112,
+current1221887,1221962,1221987,1222028,1222113. Search3 was partial due
+to a semantic Qdrant timeout; available hits were used and broadened.
+The other four completed without errors or unfinished stages. Relevant
+hits were source-only with background refresh and mostly pending/stale
+compiler coverage; used facts were checked by Lean.
+
+Failed branch and complete positive proof:
+5-failed/rp-native-prime-increment-absolute-mixed-work-2026-10-04.md.
+Follow-up RP69 is in
+3-formalized/rp-native-signed-mixed-primitive-2026-10-04.md: test bounded
+signed partial mixed work using actual derivative/prime-removal jumps,
+weighted reciprocal variation, and the same source residue. Its search
+completed partial=false/errors=[]/unfinished_stages=[], inventory65168
+zero pending, generation=current1222219. It is a conjecture with a
+specified mechanism, not yet a completed paper proof or Lean theorem.
+
+RH is neither proved nor falsified. Goal active; no external blocker.
+
+RP68 closeout: all owned search/build/audit/lint processes terminal;
+six search JSONs and both /tmp Lean scratch files removed after evidence
+was recorded. Final tracked diff and new-file whitespace checks passed.
+No commit or subagent. Goal tool confirms active and unbounded.
+
+## RP69 — actual late-prime velocity and removal admission (2026-10-04)
+
+Route RP. Final hard gaps remain positive-damping absolute native square
+energy/negative coprime work, signed high-LCM cancellation and both
+physical history debts. RP68 ruled out separate absolute mixed payment;
+RP69 attacks the signed mixed primitive. Progress this turn supplies its
+previously missing native jump decomposition and weighted measure
+admission. It does not pay any of those final debts or prove the signed
+primitive conjecture yet.
+
+New exact theorem, with the original prime cutoff: for every t>=0,
+J(t)=integral_0^t V(s)ds-sum_(p<=exp(t/2)) a(log p)/p, where
+V(s)=sum_(p<=exp s) 1_(log p<s<=2 log p)*v(s-log p)/p.
+The velocity indicator is an a.e. convention; it is not a claim about
+the right derivative at a removal. Every prime-square endpoint is kept.
+Measurability, atom admission, and the legitimate finite-window prime
+freezing are also proved.
+
+New global admission: for every eta>0 and k:Nat,
+exp(-eta*t)*t^k*V(t) is integrable on the positive ray, and
+sum_p exp(-eta*(2 log p))*(2 log p)^k*|a(log p)|/p is summable.
+The continuous atom norm is bounded by p^(-1-eta)*integral|v|;
+the jump norm by p^(-1-2eta)*integral|v|. Finite terminal windows plus
+the inverse-power series justify the complete-family limit. An elementary
+polynomial/exponential comparison absorbs all polynomial losses without
+assuming a positive-damping energy estimate.
+
+Two new leaves, RoutePLatePrimeIncrementJumps and
+RoutePLatePrimeIncrementVariation, passed foreground final audits with
+`lake --old env lean <leaf> -o <olean>` (sessions86235 and50941, exit0).
+Both are wired into RHTower. API scratch audits passed (82685,76660,15660).
+No full/umbrella build, heartbeat change, computation, new axiom or
+subagent. The separate /tmp axiom audit passed (session17075, exit0);
+all ten public theorems use only propext, Classical.choice and Quot.sound.
+
+The active card rp-native-signed-mixed-primitive-2026-10-04.md records the
+next exact reciprocal identity, including jump
+c_p/[J(tau_p)*(J(tau_p)+c_p)], tau_p=2 log p. The inverse-square negative
+tail bounds both one-sided denominators. Finite-piece AC chain rules
+and the now-proved polynomial admission should give the finite signed
+Stieltjes measure of exp(-lambda*t)/J(t). The paper mechanism strengthens
+the conjecture: Q(T)=integral_0^T mixedWork_epsilon cannot have an
+eventual O(exp(b*T)) bound for any b<1/2-epsilon, 0<epsilon<1/2.
+The measure Laplace representation, native/source weld and residue
+contradiction still need formalization. Neither a primitive-growth
+theorem nor RH closure is claimed.
+
+Global lint (session72185, exit1) reports16 unrelated unreachable modules:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MertensProductDiamondPintz, MoebiusMollifiedCriticalMoment,
+MoebiusMollifiedErrorThreeLines, SoninGammaClockNuclearLimit,
+ThetaFinitePairPacketExtension, ThetaFinitePairPrefixLimit,
+ThetaFinitePairRegularizedBulk, ThetaMovingShellFirstOrderPhase,
+ZetaZeroDensityPowerSaving, and HTGeometry.CompactMonoidMeasureAlgebra.
+Neither new leaf has a lint error. Other unfinished leaves were not
+edited or wired; global lint is not claimed to pass.
+
+Four RP69 searches so far completed partial=false/errors=[]/unfinished=[]:
+inventories65174,65176,65184,65186, all zero pending files;
+generations1222351,1222371,1222559,1222593 with current generations each
+one higher. Background refresh and source-only compiler evidence were
+reported. Candidate/source/idea/ingredient fields were inspected and
+inapplicable generated recipes rejected. Details on the active card.
+The fifth, one-sided-limit search ended partial=true: text_retrieval and
+source_retrieval were interrupted. Available candidate/source/idea/
+ingredient fields were inspected. Inventory65195 had zero pending files,
+generation1222766/current1222770 with background refresh. Useful hit:
+ContinuousWithinAt.rightLim_eq; the generated unrelated finite-budget
+recipe does not prove native right continuity. Available hits suffice
+to proceed with finite step sums and the locally AC velocity primitive.
+
+Goal remains active and unbounded. RH neither proved nor falsified.
+
+RP69 closeout: every owned build/search/audit/lint process reached a
+terminal state. Seven owned /tmp artifacts were removed after evidence
+was persisted; the final one-sided search JSON was also removed. Both
+leaf sources and tracked edits passed whitespace checks. No commit.
+Next: prove the literal one-sided removal limits and reciprocal jump
+identity, then construct the transform representation. The analytic
+continuation candidate must be identified only on the far right first;
+do not assume source Bochner integrability on all Re z>0.
+
+## RP70 — literal reciprocal jumps and all-clock calculus (2026-10-04)
+
+Route RP. RP69 established the complete native velocity/removal
+decomposition and positive exponential admission of both coefficient
+families. This turn attacks its missing exact reciprocal FTC and the
+literal signed mixed primitive. Fixed-positive-damping negative coprime
+work, signed high-LCM payment and both physical history debts remain
+open. No RH proof, falsification or primitive-growth obstruction is
+claimed at this checkpoint.
+
+New verified leaves so far:
+- RoutePLatePrimeIncrementLimits: finite removal freezing, right
+  continuity, exact prime-removal left limit J(tau_p-)=J(tau_p)+c_p.
+  Final foreground audit99412 passed; wired.
+- RoutePLatePrimeReciprocalAdmission: one common native late ray controls
+  both reciprocal denominators, gives the actual jump
+  r_p=c_p/(J(tau_p)*(J(tau_p)+c_p)), and admits V/J^2 and the absolute
+  reciprocal jump series under every positive damping. Audit82030
+  passed; wired.
+- RoutePLatePrimeRightVelocity: exact right derivative at every clock
+  uses [log p,2 log p); it equals the admitted (log p,2 log p] velocity
+  almost everywhere. Audit7677 passed; wired.
+
+RoutePLatePrimeReciprocalFTC and RoutePNativeSignedMixedPrimitive are
+written and awaiting completion of audits. The former subtracts actual
+reciprocal jumps to get a continuous inverse with an everywhere right
+derivative, then applies right-derivative FTC. The latter proves local
+admission, continuity of Q and Q'_right=mixedWork at every positive clock.
+No a.e.-derivative-only FTC is used. The active signed-primitive card
+records precise proof details and build repairs.
+
+The new proof mechanism absorbs atoms before transformation. Put
+H_Q(t)=sum_(T<tau_p<=t)Q(tau_p)*r_p and P=Q/J-H_Q. Then the continuous
+P has right derivative exp(delta*t)*h-Q*V_right/J^2. Under a hypothetical
+Q=O(exp(b*t)), b<delta, the admitted absolute jump series bounds H_Q by
+every exp((b+eta)*t). Thus P and D=Q*V/J^2 have ordinary Laplace admission
+for every lambda>b. The native transform candidate becomes its finite
+head minus the endpoint term plus (z+delta)*Laplace(P)+Laplace(D).
+This avoids both a general signed-measure construction and a separate
+analytic atomic-series proof. The product identity, these admissions,
+far-right transform agreement and Hardy-barrier contradiction remain to
+be formalized. This is a concrete frontier attack, not a growth theorem.
+
+Five deep searches completed without partial/error/unfinished stages.
+Inventories65196,65198,65201,65233,65237, each zero pending files;
+generations1222806,1222871,1222975,1223158,1223199; reported current
+generations1222807,1222872,1222981,1223159,1223200. Background refresh;
+useful compiler evidence source-only. Candidate/source/idea/ingredient
+fields inspected. Generated unrelated recipes were not used as proofs.
+The focused source search and direct source reads exposed the existing
+arbitrary-candidate no-extension theorem, but its fixed crossing width
+-1/8 must not be applied to a narrower continuation domain. The same
+corpus contains a valid exponential-primitive shift proof for a different
+CCM carrier; it informs the proof mechanism without replacing our native
+transform identity.
+
+RP70 validation update: the inverse-only FTC passed audit81271. The
+literal primitive leaf passed audit5919 and is wired. The expanded FTC
+now also contains the actual Q/J product correction and native finite
+window identity; that extension is under audit. Installed-API scratch
+audits80497 and8853 passed. All builds use foreground
+`lake --old env lean <leaf> -o <olean>`; no full or umbrella build.
+
+Global formal lint (session50493) exited1 on14 unrelated unreachable
+modules: CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MertensProductDiamondPintz, MoebiusMollifiedCriticalMoment,
+MoebiusMollifiedErrorThreeLines, PMPowerDampedMobiusPrimeCurrent,
+ThetaCuspC5CurrentSourceQuadrature, ThetaMovingShellFirstOrderPhase,
+ZetaZeroDensityPowerSaving and HTGeometry.CompactMonoidMeasureAlgebra.
+No RP70 leaf has a lint error. Unrelated unfinished leaves were not
+edited or wired, and no global lint pass is claimed. The linter wrote
+diagnostics to stderr; the owned redirected stdout file is empty.
+
+The product extension passed its final foreground audit61643, exit0.
+All five new leaves are now built and explicitly wired. The actual
+P=Q/J-sum_(tau_p<=t)Q(tau_p)r_p is continuous on one native late ray for
+every epsilon, has the exact right derivative exp(delta*t)*h-Q*V_right/J^2,
+and satisfies the finite-window integral identity with the admitted V.
+The full early jump constant is retained; it cancels in finite differences
+and the eventual transform boundary formula. These are unconditional
+native statements, not hypothetical smooth receivers. Separate /tmp
+axiom auditing of all25 public theorems is running. Next mathematical
+obligation: admit P and Q*V/J^2 on the infinite ray under the contradiction
+hypothesis Q=O(exp(b*t)), then construct and identify the ordinary Laplace
+candidate. The frontier map now records the exact new calculus.
+
+RP70 final verification: /tmp axiom audit34722 passed, exit0. All25
+public theorems across the five leaves depend only on propext,
+Classical.choice and Quot.sound. No added axiom, sorry/admit, unsafe
+declaration, numerical experiment, heartbeat override, subagent, full
+build or umbrella build. All owned builds, searches and lint reached
+terminal states. Whitespace checks passed for the new sources and
+tracked edits. Ten owned /tmp artifacts were removed after their useful
+evidence was recorded. No commit. Goal remains active and unbounded;
+RH is neither proved nor falsified.
+
+Next attack stays on the signed primitive: prove infinite-ray admission
+of the actual P and D=Q*V/J^2 under a hypothetical Q=O(exp(b*t)),
+0<=b<delta=1/2-epsilon. Retain the finite early removal constant, or
+subtract it consistently. Use the admitted reciprocal-jump series to
+bound the late cumulative product jumps; use the existing V/J^2 admission
+for D. Choose lambda=(b+delta)/2 and c=lambda-delta<0. The two ordinary
+Laplace transforms then supply an analytic native candidate for Re z>c.
+Identify it with the actual transform only in the unconditional far-right
+half-plane, subtract the actual native/source correction, and use a
+variable-width Hardy crossing contradiction. This is the remaining
+growth proof, not an established conclusion. Positive-damping energy
+payment, signed high-LCM payment and both history debts are still open.
+
+## RP71 — signed primitive growth proved
+
+Route RP. RP70's finite-window calculus was a concrete advance; this
+turn discharged its remaining infinite-ray and analytic-identification
+obligations. No new RH premise, numerical experiment, subagent, full
+build, umbrella build, heartbeat increase, commit or push.
+
+The completed theorem is
+NativeMixedLaplace.nativeMixedPrimitive_exponential_escape: for every
+0<epsilon<1/2, b<1/2-epsilon and real C,A, some physical clock t>A has
+|Q(t)|>C*exp(b*t). The literal complete mixed primitive is retained.
+Thus a bounded separate signed mixed-work payment is impossible; the
+stronger cofinal exponential escape is the audited positive survivor.
+Neither one-sided escape nor two-sided sign oscillation is asserted.
+
+The proof bounds the actual finite cumulative Q-weighted reciprocal
+jumps by their admitted series and retains their finite early constant.
+A hypothetical Q envelope therefore admits P and D=Q*V/J^2 under every
+strictly larger exponential damping, with a vanishing terminal product.
+Ordinary indicator-supported complex tails are holomorphic there.
+The everywhere right-derivative FTC, with V_right replaced by V a.e.,
+gives the exact native tail identity. Absolute native admission is used
+only for Re(z)>1/2. The finite source head and actual correction
+2*h-source reconstruct a candidate source transform crossing a negative
+abscissa. The generalized native Hardy-zero obstruction excludes every
+such crossing. Negative b reduces to b=0 on a positive late ray.
+
+Final foreground leaf audits, all exit0:
+- RoutePNativeMixedLaplaceAdmission:18751.
+- RoutePNativeMixedLaplaceTransform:11514.
+- RoutePNativeMixedWeightedFTC:21166.
+- RoutePNativeMixedGrowthBarrier:55535.
+- Generalized SPEQuantileRieszRoutePSourceNoAnalyticExtension:16201;
+  the original fixed-width theorem remains a proved specialization.
+
+All four new leaves are explicitly wired. Final commands were
+`lake --old env lean <leaf> -o <olean>`. Installed-API audits87065,
+20600,71799 and35302 passed. Separate /tmp axiom audit78542 exited0:
+all13 new public theorems and the retained fixed-width specialization
+use only propext, Classical.choice and Quot.sound.
+Repairs were explicit subtype/filter alignment, integral measure
+unfolding, pointwise Pi multiplication and affine composition parameters;
+none introduced a mathematical hypothesis or computation.
+
+The full research and proof record moved to
+3-formalized/rp-native-signed-mixed-primitive-2026-10-04.md. The failed
+separate-payment mechanism and exact positive survivor are recorded in
+5-failed/rp-separate-signed-mixed-payment-2026-10-04.md. The route frontier
+map now records the completed growth barrier.
+
+Four deep corpus searches were inspected, including candidate lemmas,
+source arguments, ideas and ingredient sets. Cumulative admission and
+transform admission returned partial text/runtime results; variable
+barrier and next-energy searches completed without partial/error stages.
+Exact coverage/freshness and audit details are retained in the formalized
+card. Search evidence remained source-only; it was not used as a proof.
+The next-energy search confirms the joint native balance but supplies no
+absolute energy bound. Its Burnol recipe already requires square
+integrability and would be circular for the native carrier.
+
+Global lint44744 exited1 on12 unrelated unreachable modules:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MertensProductDiamondPintz, MoebiusMollifiedCriticalMoment,
+MoebiusMollifiedErrorThreeLines, ThetaMovingShellFirstOrderPhase,
+ZetaZeroDensityPowerSaving, HTGeometry.CompactMonoidMeasureAlgebra.
+No RP71 leaf has a lint error. No global lint pass is claimed; unrelated
+unfinished leaves were neither edited nor wired.
+
+Hard RH obligations remain: joint absolute native energy at every fixed
+positive damping (equivalently the still-unpaid negative coprime work),
+signed high-LCM payment and both physical history debts. The next attack
+must retain the full physical square and coprime work jointly and prove
+their causal absorption, rather than assume energy admission or split
+off the now-excluded mixed primitive budget. No such absorption theorem
+is claimed. RH is unproved and unfalsified; the unbounded goal stays active.
+
+RP71 final cleanup: all owned builds, searches and lint reached terminal
+states. Nine owned /tmp audit/search/lint artifacts were removed after
+their useful evidence was recorded. Whitespace checks passed. All four
+new leaf imports are present at RHTower.lean:8622–8625. No commit or push.
+
+## RP72 — active joint-coprime compensation audit (2026-10-04)
+
+Hard RP obligations remain positive-damping native square/negative coprime
+work, signed high-LCM payment, and both physical history debts. RP71 paid
+none of these, but excluded separate bounded signed mixed-work payment.
+RP72 keeps the full source and tests native zero-mass compensation.
+
+Working card: `rp-joint-coprime-native-coercivity-2026-10-04.md` in this
+directory. It records actual source identities, failed absorption attempts,
+and the now-explicit compensated coprime-source asymptotic target. No RH
+proof/falsification or positive-damping energy bound has been obtained.
+
+`RoutePNativeMassCompensation.lean` final leaf audit88214 exited0 and is
+wired. It proves the exact finite-window energy identity with the whole
+terminal mass square, the original mass-tail identity, and nonintegrability
+of the zero-damping compensated actual profile. The first audit78642
+exited1 on Pi-function/derivative alignment and equality orientation; these
+were repaired without new mathematical assumptions. API scratch79830
+exited1 on two unused guessed identifiers, which were removed/corrected.
+Its repaired version still needs its audit. No axiom audit yet.
+
+`RoutePNativeMassPrefixMoments.lean` is being audited and is not yet wired.
+First audit20854 exited1 on explicit IntegrableOn/Pi-function unfolding and
+set-membership arithmetic. Retry77570 is the sole owned live Lean process
+at this checkpoint. It targets absolute admission of the actual mass
+prefix and its exact total mass D/3. No theorem from this leaf is yet
+claimed verified.
+
+Stronger active conjecture: for the literal compensated coprime carrier
+g_lambda(t)=exp(t)*(a(t)+lambda*m(t)), the complete coprime quadratic
+source divided by exp(2t) tends to (lambda*D/3)^2/zeta(2). The card gives
+the source-preserving paper mechanism. The best implementation found is
+the existing exact primitive floor quadrature: its normalized floor kernel
+K(u)=exp(-u)*floor(exp(u)) lies in [0,1], vanishes for u<0, and tends to1.
+Dominated convergence against the admitted weighted native derivative
+would identify the normalized complete dilation source with lambda*D/3.
+Then the exact coprime/Mobius-square identity and summable inverse-square
+majorant retain every pair and give the claimed positive source asymptotic.
+This positive survivor must be formalized before retiring this particular
+compensation mechanism. The original native positive-damping energy is
+still a separate unresolved hard obligation.
+
+All six deep searches have terminated. Initial joint-energy, coercivity,
+truncation, correlation-pole, and compensated-energy searches returned
+partial=false/errors=[]/unfinished=[]. Primitive-source search returned
+partial=true, semantic_retrieval worker disconnect/cancellation; useful
+available source hits were inspected. All relevant retrieved candidates
+were source-only and background refresh remained incomplete. Own files
+still awaiting final cleanup: /tmp/rp72-joint-energy-search.json,
+/tmp/rp72-coprime-coercivity-search.json, /tmp/rp72-truncation-search.json,
+/tmp/rp72-correlation-poles-search.json, /tmp/rp72-compensated-energy-search.json,
+/tmp/rp72-primitive-source-search.json, /tmp/RP72API.lean,
+/tmp/RP72KernelAPI.lean. The kernel API file is prepared but has not run.
+No full or umbrella build, no subagents, no commit/push. Final axiom audit,
+lint, additional successful-leaf wiring and own scratch cleanup are pending.
+
+### RP72 completed subcase — causal residual source classification
+
+The original joint-energy conjecture remains open. A precise causal
+replacement subcase is now closed, with an exact positive survivor.
+For a=criticalAbelLogProfile, m(T)=integral_0^T a and D>0 the divisor
+boundary, Lean proves integral m=D/3 and admits m absolutely. For the
+literal coprime carrier g_lambda=exp(t)*(a+lambda*m), its full dilation
+source divided by exp(t) tends to lambda*D/3. Its complete critical
+coprime source divided by exp(t) tends to
+(lambda*D/3)^2*(6/pi^2), retaining every physical label and coprime pair.
+For each damping in [0,1], combined-source admission is equivalent to
+lambda=0. Thus every nonzero causal correction loses this source budget.
+
+The finite native energy identity retains the entire terminal mass
+square; its zero-damping compensated square is still nonintegrable.
+The new source coefficient is fixed by the actual signed first moment,
+not a numerical estimate or a toy counterexample. The separate zero-mass
+continuation chosen at each cutoff is a different family and remains
+uncontrolled. No statement here refutes that family or pays the original
+positive-damping native square.
+
+Final leaf audits, all `lake --old env lean <leaf> -o <olean>`, exit0:
+MassCompensation88214, MassPrefixMoments77570, MassDilation37084,
+MassCoprimeAsymptotic80287, MassCoprimeAdmission48568 (all prefixed
+RoutePNative). All five are explicitly wired. The combined repaired-API,
+kernel-example and all16-public-theorem axiom audit37812 exited0. Only
+propext, Classical.choice and Quot.sound occur. No heartbeat changes,
+axioms, sorries, numerical experiments, full builds or umbrella builds.
+
+Global lint18348 exited1, with unrelated unreachable-module diagnostics
+(including the existing CCM aperture/ramp, Mertens/Moebius, theta and
+HTGeometry work). Stderr exceeded the tool output budget and stdout log
+was empty; no exhaustive count/list of unrelated failures or global lint
+pass is claimed. All own leaves are wired and individually kernel-audited.
+No second full lint run was made merely to reproduce these diagnostics.
+
+Search snapshots: joint-energy1223893/65281 files; coprime-coercivity
+1223913/65282; truncation1223963/65286; correlation-poles1224029/65290;
+compensated-energy1224037/65291; primitive-source1224100/65305. All
+inventories reported pending0 and all relevant evidence was source-only;
+background refresh was incomplete. The first five returned no partial,
+error or unfinished stages. Primitive-source was partial after a semantic
+worker disconnect/cancellation; its available candidates, source arguments,
+ideas and ingredients were inspected. None of the returned generic
+coercivity recipes supplied the missing native admission.
+
+Formalized survivor card:
+3-formalized/rp-causal-mass-compensation-coprime-pole-2026-10-04.md.
+Failed causal replacement:
+5-failed/rp-causal-mass-compensation-budget-2026-10-04.md.
+The RP frontier map now records this exact classification. The original
+joint-coprime working card remains in progress, with scope distinctions.
+
+Evaluation: this turn closed one proposed causal carrier replacement and
+proved its exact positive source growth. It did not solve any final RH
+payment. Next attack: the signed terminal cancellation of the literal
+cutoff-dependent zero-mass completions, retaining both terminal source and
+exponential tail, with a uniform native square payment as the target.
+Original source admission cannot be transferred to those completions
+without proof, and the just-excluded causal residual cannot replace them.
+Hard obligations remain positive-damping native energy/negative coprime
+work, signed high-LCM payment and both physical history debts. Goal active;
+RH neither proved nor falsified. All owned processes have terminated.
+
+Final housekeeping: all eleven owned RP72 temporary artifacts were deleted.
+Owned-file whitespace checks and all five exact umbrella-import checks passed.
+At the final status read, the goal service reported `paused`, superseding the
+active-state note above. No further research started after that status read.

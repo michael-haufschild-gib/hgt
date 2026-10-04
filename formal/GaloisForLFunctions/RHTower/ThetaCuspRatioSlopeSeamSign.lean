@@ -1,0 +1,91 @@
+import GaloisForLFunctions.RHTower.ThetaCuspRatioSlopeSeamReal
+/-! # Exact positivity certificate for the two seam-cone edge polynomials. -/
+
+namespace HTGeometry.ThetaRatioSource
+noncomputable section
+
+private def unitAlphaReserve : ℝ := 227640919204924752890196626108874042001828369084416000000000000000000 - 4361168102712481241526899981812631588736860160000000 - 55508335114153587792244302284697576161673216000000 - 406570648741714156759126786588034316474777600000 - 2010840713166193754206553893733694261166080000 - 6846152999044841415549639709452574654464000 - 15464810816862869130938111297742018969600 - 20910865124375164468671504586773626880 - 12791937547871401453266108048998400
+
+private theorem unitAlphaReserve_pos : 0<unitAlphaReserve := by
+  norm_num [unitAlphaReserve]
+
+private theorem unitAlpha_decomposition (s : ℝ) :
+    alphaUnit s=unitAlphaReserve + s^1*34553592917992300830130457245252855536252568252416000000000000000000 + s^2*2418954426015218032581876974526943647959246087651328000000000000000 + s^3*103453554343321867684128846557842291552479163396915200000000000000 + s^4*3008841573158637065864672608432220459053828323409920000000000000 + s^5*62408752181516673301956709103688773403523622633472000000000000 + s^6*934090460790561421698650905643600497186638397440000000000000 + s^7*9786527843615531885858012979815808056024597790720000000000 + s^8*61949330558797181171853094392028934915154247680000000000 + s^9*27755966214240114900525617896106296953588940800000000 + (1-s^10)*4361168102712481241526899981812631588736860160000000 + (1-s^11)*55508335114153587792244302284697576161673216000000 + (1-s^12)*406570648741714156759126786588034316474777600000 + (1-s^13)*2010840713166193754206553893733694261166080000 + (1-s^14)*6846152999044841415549639709452574654464000 + (1-s^15)*15464810816862869130938111297742018969600 + (1-s^16)*20910865124375164468671504586773626880 + (1-s^17)*12791937547871401453266108048998400 := by
+  rw [(unitAlphaNorm s).property]
+  dsimp only [unitAlphaNorm,unitAlphaReserve]
+  ring
+
+theorem unitAlpha_pos {s : ℝ} (hs0 : 0≤s) (hs1 : s≤1) : 0<alphaUnit s := by
+  rw [unitAlpha_decomposition]
+  have hres := unitAlphaReserve_pos
+  have hp10 : 0≤1-s^10 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp11 : 0≤1-s^11 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp12 : 0≤1-s^12 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp13 : 0≤1-s^13 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp14 : 0≤1-s^14 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp15 : 0≤1-s^15 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp16 : 0≤1-s^16 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp17 : 0≤1-s^17 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  positivity
+
+private def unitEdgeReserve : ℝ := 452184252626813662569927487013530600866265409900544000000000000000000 - 10540976866927253176789444069585471603212288000000000 - 145452319245137346363092242652009593168723968000000 - 1108018772301845314883895236181381128336179200000 - 5635539569635351301276802815729691242004480000 - 19618685440093767919404706875453172875264000 - 45137041776875065798179551632410279936000 - 61965079120253209318818547277380976640 - 38375812643614204359798324146995200
+
+private theorem unitEdgeReserve_pos : 0<unitEdgeReserve := by
+  norm_num [unitEdgeReserve]
+
+private theorem unitEdge_decomposition (s : ℝ) :
+    edgeUnit s=unitEdgeReserve + s^1*71095730690286155214621932871907158410351577706168320000000000000000 + s^2*5157507690416819758811320936752108658736890168737792000000000000000 + s^3*228676102356296598043643842194654215569486245317836800000000000000 + s^4*6899800784040635225959916831959167156527154871664640000000000000 + s^5*148638252628939377107790658060914975309957310709760000000000000 + s^6*2315842162066535642577532374007204469814322633113600000000000 + s^7*25414647992108379515636612923060815666154171269120000000000 + s^8*172956152823421471993075999711153674981356863488000000000 + s^9*222876157019151615023734899175479561326847590400000000 + (1-s^10)*10540976866927253176789444069585471603212288000000000 + (1-s^11)*145452319245137346363092242652009593168723968000000 + (1-s^12)*1108018772301845314883895236181381128336179200000 + (1-s^13)*5635539569635351301276802815729691242004480000 + (1-s^14)*19618685440093767919404706875453172875264000 + (1-s^15)*45137041776875065798179551632410279936000 + (1-s^16)*61965079120253209318818547277380976640 + (1-s^17)*38375812643614204359798324146995200 := by
+  rw [(unitEdgeNorm s).property]
+  dsimp only [unitEdgeNorm,unitEdgeReserve]
+  ring
+
+theorem unitEdge_pos {s : ℝ} (hs0 : 0≤s) (hs1 : s≤1) : 0<edgeUnit s := by
+  rw [unitEdge_decomposition]
+  have hres := unitEdgeReserve_pos
+  have hp10 : 0≤1-s^10 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp11 : 0≤1-s^11 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp12 : 0≤1-s^12 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp13 : 0≤1-s^13 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp14 : 0≤1-s^14 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp15 : 0≤1-s^15 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp16 : 0≤1-s^16 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  have hp17 : 0≤1-s^17 := sub_nonneg.mpr (pow_le_one₀ hs0 hs1)
+  positivity
+
+theorem alphaReal_pos {k : ℝ} (hk0 : 5/4≤k) (hk1 : k≤19/15) :
+    0<alphaReal k := by
+  let s := 60*k-75
+  have hs0 : 0≤s := by dsimp [s]; linarith
+  have hs1 : s≤1 := by dsimp [s]; linarith
+  have hk : (75+s)/60=k := by dsimp [s]; ring
+  have hp := unitAlpha_pos hs0 hs1
+  rw [alphaUnit,hk] at hp
+  exact (mul_pos_iff_of_pos_left (by positivity : (0:ℝ)<(60:ℝ)^17)).mp hp
+
+theorem seamEdge_pos {k : ℝ} (hk0 : 5/4≤k) (hk1 : k≤19/15) :
+    0<3*alphaReal k+betaReal k := by
+  let s := 60*k-75
+  have hs0 : 0≤s := by dsimp [s]; linarith
+  have hs1 : s≤1 := by dsimp [s]; linarith
+  have hk : (75+s)/60=k := by dsimp [s]; ring
+  have hp := unitEdge_pos hs0 hs1
+  rw [edgeUnit,hk] at hp
+  exact (mul_pos_iff_of_pos_left (by positivity : (0:ℝ)<(60:ℝ)^17)).mp hp
+
+theorem seam_tangent_cone_pos {k z : ℝ} (hk0 : 5/4≤k) (hk1 : k≤19/15)
+    (hz0 : 0≤z) (hz1 : z≤1/3) : 0<alphaReal k+z*betaReal k := by
+  have ha := alphaReal_pos hk0 hk1
+  have he := seamEdge_pos hk0 hk1
+  rcases hz0.eq_or_lt with hz | hz
+  · rw [← hz]
+    simpa using ha
+  · have hw : 0≤1-3*z := by linarith only [hz1]
+    have h1 := mul_nonneg hw ha.le
+    have h2 := mul_pos hz he
+    have h := add_pos_of_nonneg_of_pos h1 h2
+    have hsum : (1-3*z)*alphaReal k+z*(3*alphaReal k+betaReal k)=
+        alphaReal k+z*betaReal k := by ring
+    rwa [hsum] at h
+
+end
+end HTGeometry.ThetaRatioSource

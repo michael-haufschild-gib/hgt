@@ -1836,3 +1836,554 @@ Checkpoint cleanup: all owned jobs terminated. Removed19 owned /tmp search,
 API and audit files after recording results. Formal leaves and certificates
 preserved. Final scoped git diff --check passed. No code changed after its
 successful direct-file audit. Memory rh/rn-finite-pair-positive-transport-primitive-2026-10-03 updated.
+
+### RN-P-7y: global correction-current proof — 2026-10-04
+
+Previous turn classified PROGRESS: three actual leaves,39 public theorems,
+closed positive primitive and improper finite-pair transfer. Current target:
+source sign Q_y-(p(t+y)-p(y))*Q<0 for positive D=B-t correction.
+
+Initial direct use of M=2pc-v>0 and N=a+s_x B>0 did not close this sign;
+the exact deficit involves two intervals. Derived complete paper proof of
+its cleared margin F, using existing corpus c>18, v<2c, c''<9c, increasing v.
+Two derivative comparisons give quadratic chord remainders and the finite
+curvature-increment inequality. Three analytic regions cover all t,y>0;
+no numerical experiment, source truncation, heartbeat increase, or optimized
+constant is used. See P1 rn-positive-correction-current.md for full proof.
+
+Corpus search for finite current/chord comparison: partial, complete inventory
+65058; mostly pending/source-only compiler metadata; no ready margin producer.
+Source arguments and candidate lemmas inspected. Exact used declarations from
+ThetaCuspCurvatureLogConvex, ThetaCuspC5ClockSourceOrientation,
+ThetaCuspCurvatureDefectGrowthSeamOrientation and C5GlobalCurvatureSigns read.
+A secondary endpoint/API search (partial, inventory65059) recovered
+continuousWithinAt_Ioi_iff_Ici for the later second improper transfer; its
+proposed non-differentiability ingredient set was irrelevant and rejected.
+
+New leaf ThetaTailCorrectionCurrent implements the full source sign, builds
+in progress. This does not assert payment of the C0=t*s_y-Sigma_x/2 term.
+The hard successor remains full signed finite-pair compensation, followed by
+general anchors, arbitrary rank and arithmetic RH transfer.
+
+Build routing correction: the --old target began rebuilding a large source-bound
+import closure despite the API scratch successfully loading its existing objects.
+Stopped only owned process group98214 (lake PID98214), observed session24721
+terminal143, then verified all owned children99632/99636/99637 gone. No unrelated
+process stopped. Switched to foreground `lake --old env lean -o <leaf.olean>
+<actual leaf>` to check/export only the new module, followed by required direct
+`lake env lean <actual leaf>` and axiom audits. Do not report the canceled target
+as a passing build. This changes build routing, not the mathematical target.
+
+RN-P-7y audit completed: direct leaf export and mandatory actual-file
+lake env lean both exit0, empty diagnostics; all nine public axiom closures
+exactly the standard three. Wired, no umbrella build. Fresh lint reports the
+same12 unrelated unreachable modules. Certificate and frontier updated.
+Gaussian search was partial, inventory65081 complete, mostly source-only;
+no ready rank-one calibration found. Exact paper calibration exposes the
+remaining cost instead of asserting strict compensation from component signs.
+
+RN-P-7z candidate: signed Sturm quotient j*s/s' strictly increases for every
+finite pair x>0 on t>0. New paper proof uses actual log-convex curvature and
+projective slope reserve, not numerical bounds. Full proof on new card.
+Corpus query returned non-partial inventory65086; candidate/source arguments
+include projectiveSlopeReserve_pos and actual signed Sturm energy. No ready
+crossing theorem. Unrelated cross-density ingredient proposal rejected.
+
+### RN-P-7z: exact finite-pair Sturm crossing — 2026-10-04
+
+Hard problem addressed: the genuinely signed forcing s'-2js in the finite
+transport packet, previously an open single-crossing question. The actual
+logarithmic-curvature and projective reserves prove three finite comparisons
+and strict increase of j*s/s'. This gives a unique positive zero, with
+positive forcing before and negative forcing afterward. The exact existing
+signed energy density is therefore negative before and positive afterward.
+
+ThetaFinitePairSturmCrossing.lean now exports22 public theorems. Its direct
+--old env lean -o check passes with empty diagnostics. Final actual-file audit
+running, axiom audit still pending. No heartbeat increase or numerical search.
+The last correction-current advance has9 audited public theorems; both results
+are source-specific and retain the remaining full-current cost.
+
+A further paper proof closes N=a+sB>0, including its endpoint. The key estimate
+is s*O<=C_x*H(0,x)*M*(-k'), where M is the finite first source moment, and
+p(t+x)/p(t) is bounded by decreasing c/p. The one-cross forcing then makes
+exp(-2 integral j)*k(t)k(t+x)*N increase and decrease to zero. Exact paper
+certificate: P2 rn-finite-pair-packet-positivity.md. Lean transfer is next;
+no N capstone or global coordinate-current sign is claimed yet.
+
+RN-P-7z final audit: actual-file lake env lean exit0 empty diagnostics; all22
+public #print axioms closures exactly [propext, Classical.choice, Quot.sound].
+Both new leaves wired; total31 public theorems this continuation. Fresh lint
+exit1:14 unrelated unreachable modules, adding RoutePFinitePrimeCovariance
+and RoutePPrimeCovarianceBudget to the earlier12. No own leaf error or forbidden
+proof declaration. No full build, umbrella build, subagent or source change
+after final verification. Next exact formal target is the P2 packet-positivity
+proof, then the full signed current. RH remains unproved; goal ACTIVE.
+
+Checkpoint cleanup: all owned Lean/search/lint sessions terminal; removed22
+owned /tmp search, API and audit files after recording results. Scoped git
+diff --check passed. Serena memories for correction current and finite-pair
+Sturm crossing updated with exact completed status and next paper proof.
+
+### RN-P-7aa: matched packet positivity transfer — 2026-10-04
+
+Prior turn PROGRESS:31 public theorems in correction-current and exact
+finite-pair Sturm-crossing leaves, all directly audited. This turn formalizes
+the P2 proof N=a+sB>0, including the nonlocal source-tail endpoint.
+
+Current corpus search was non-partial inventory65108; broad tail results were
+inapplicable exponential envelopes. Targeted diagonal lexical search found
+normalizedSource/strictMonoOn_normalizedSource, and reading their actual
+source revealed the stronger audited estimate p(t)H(t,t)<t*k(t)^2.
+Combined with decreasing p(t+x)/p(t), it gives sO<=C_x*h*t*k²->0 directly.
+No new improper-integral estimate or numerical bound is needed. New leaf
+ThetaFinitePairPacketTail is being checked. API scratch initially lacked a
+noncomputable section for a Schwartz map definition; corrected, rerun pending.
+Full coordinate-current compensation remains the harder next sign, followed
+by general anchors, arbitrary rank and arithmetic RH transfer.
+
+Packet-tail direct export passed (session81306 exit0). One informational ring
+normalization message remains at the zero-limit conversion; no error. The
+matched-packet positivity leaf is now in its first direct export check,
+owned foreground session31669, /tmp/rn_packet_positive.log. Do not start a
+second Lean until this session is terminal. Eleven public theorem axiom/API
+queries prepared in /tmp/rn_packet_axioms.lean; no final audit has run yet.
+
+Tail leaf export now passes with empty diagnostics and a smaller import closure
+(PositiveBalancePrimitive suffices). Positivity leaf's first check found only
+Pi-product normalization and missing explicit interval endpoints in FTC; both
+fixed, next direct check running. No mathematical gap was exposed.
+
+A further hard coefficient sign is now paper-proved: finite canonical speed
+lambda=(p(t+y)-p(y))/(p(t+x)+p(t+y)) strictly increases in t for x>0,y>=x.
+The new source invariant Q_d(u)=(c(u)p(u+d)-c(u+d)p(u))/(c(u)+c(u+d)) strictly
+decreases by logarithmic curvature convexity, giving Q_d(u)<p(d)<=p(y).
+This proves the negative coefficient of N in the full current. The remaining
+B coefficient still needs payment. Exact P2 proof: rn-finite-pair-canonical-speed.md.
+Search was non-partial inventory65123; the retrieved confluent derivative is
+not the new finite-pair sign. No speed module or full-current theorem claimed.
+
+Matched-packet positivity leaf export passed, session26660 exit0 with empty
+diagnostics. The actual N=a+sB>0 capstone is now checked, final direct audit
+still pending. The canonical-speed paper proof is now implemented in
+ThetaFinitePairCanonicalSpeed.lean and its first direct export check is running.
+It includes the strictly negative matched-packet contribution A*N. The other
+B coefficient and the full coordinate current remain open.
+
+All three required actual-file final audits passed sequentially with empty
+diagnostics (session86477 exit0). All21 public axiom queries printed only the
+standard three axioms. The combined scratch command also found an unqualified
+API name: tendsto_atTop_add_const_left belongs to namespace Filter. Qualified
+it and rerunning the combined scratch audit. Its right-hand analogue also
+exists: both are generated by to_additive in Order/Filter/AtTopBot/Group.lean.
+Do not record the earlier unqualified-name error as a missing Mathlib theorem.
+Fresh lint reports14 unrelated unreachable modules; no own-module error.
+
+RN-P-7aa final checkpoint: combined API/axiom scratch session66478 exited0.
+All21 public theorems across PacketTail(4), PacketPositivity(7), CanonicalSpeed(10)
+have only propext, Classical.choice, Quot.sound. All three required actual-file
+final audits already passed (session86477), with no later source edits. All
+three leaves wired. The two P2 proof cards moved to P3/theta; earlier P2 mentions
+above are historical. Full signed coordinate-current compensation remains OPEN.
+
+Next ratio/barrier deep search70508 exited0: non-partial inventory65134,
+compiler metadata mostly source-only/pending; refresh still running elsewhere,
+semantic coverage unavailable. Candidate/source arguments/ingredient set read.
+The retrieved secant>curvature and secant-velocity comparisons are applicable
+source inputs; the suggested ingredient set does not prove an actual packet
+ratio bound. No current-sign capstone was retrieved or inferred from this search.
+Next attack retains m=-a/B, its exact Riccati equation and the actual 1/B cost.
+
+RN-P-7ab: tested actual Riccati comparison rather than declaring a source sign.
+The stronger m<c(t) candidate is not adopted: the fixed-t large-spacing limit
+would give the actual diagonal hazard, which exceeds c near the center. This
+is diagnostic paper reasoning only. A symmetric mean-slope candidate remains
+unproved and is not inserted as a Lean premise.
+
+A more decisive paper center-variation calculation now targets the full current
+itself. Along y=x then x->0, its first variation contains I/J. Projective
+curvature descent gives the dependency-closed upper comparison
+I/J<=c(0)/2+c''(0)/(6c(0)); together with exact center jets it predicts a positive
+current near the center in an iterated parameter limit. P1 card:
+rn-finite-pair-current-center-variation.md. The moment comparison is ready for
+formal transfer; actual current limits still need audit. No no-go is claimed yet.
+
+RN-P-7ab moment export passed session5132 exit0, empty diagnostics. Nine public
+theorems establish projective cubic source comparisons, exact quadratic slope
+moment, actual center mass and derivative-mass upper comparisons, and positivity
+of q^2/2-q*(I/J)+5*c''(0)/12. The first two checks found only function/Pi
+normalization, a local-notation collision and one leftover renamed notation;
+all repaired without analytic hypotheses or heartbeat changes.
+
+The smooth profile is implemented in ThetaFinitePairCurrentCenterProfile. Its
+API scratch and first export are checking sequentially. The exact finite-node
+parameter-limit proof has been expanded on the P1 card using the cleared
+numerator A*Q1+D*Q2; cancellation at first order means only two kernel jets and
+one source-coefficient derivative are needed. The actual no-go is still pending.
+Search64896 ended partial: inventory65143, reranking incomplete/semantic coverage
+unavailable, compiler mostly pending/source-only. Available hits were inspected;
+unrelated second-derivative receivers were not used. Direct corpus source supplied
+the existing third_quotient_limit and exact joint kernel jets.
+
+RN-P-7ab profile export session55739 exited0. Four public theorems include the
+exact L(t)/t limit and eventual positivity of L. Unused simp arguments removed;
+clean profile re-export, coefficient API audit and first coefficient export run
+sequentially in session33969. Two new transfer leaves are written:
+ThetaFinitePairCurrentCoefficients (actual full current and smooth source averages)
+and ThetaFinitePairCurrentGerm (exact node limit, positive current, differential
+identification and strict-order continuity transfer). Their proofs remain unverified
+until compilation. The mathematical no-go proof is now dependency-closed on paper;
+Lean capstone is pending. Full integrated Schur sign and RH remain OPEN.
+
+Search audit details retained before scratch cleanup: hazard search97289 was
+non-partial inventory65135; it supplied diagonal_tail_lt_source_square but no
+hazard upper or packet barrier. Symmetric-packet search9774 was non-partial
+inventory65136 with older-generation/semantic-coverage warnings; proposed
+unrelated derivative-symmetrizer ingredients do not prove an RN comparison.
+Center-moment search24901 was non-partial inventory65138; candidate derivative
+mass and centerEntry_eq_integral were inspected and used with actual projective
+descent. Each search reported background refresh and mostly source-only/pending
+compiler metadata. No search output was treated as kernel validation.
+
+The original RN-P-7aa three leaves and21 public audits are fully recorded in
+P3 certificates and the frontier. Their15 owned temporary files are now removed.
+New RN-P-7ab source-time profile clean export and coefficient API audit passed
+inside session33969; the coefficient export found elaboration details only.
+Current check41023 fixes the function-product normalization, shifted-point
+instance conversion and explicit denominator types. No changed mathematical
+claim, extra premise or heartbeat increase.
+
+RN-P-7ab continuation: coefficient check84707 found only an extra `ring` after
+`field_simp` had already closed the shifted quotient derivative. Removed that
+line and its unused simplifier; clean coefficient export passed in sequence3375.
+The germ API scratch also passed; the final current leaf is now checking.
+The moment and profile claim has not changed. No RH conclusion is asserted.
+
+Successor search10104: non-partial inventory65155, older-generation and
+semantic-coverage warnings, compiler mostly pending/source-only. Its generic
+Schur complement candidates and unrelated source arguments do not prove RN's
+actual signed compensation. The exact frontier/Hessian prose is relevant;
+rephrased with actual centerCurrentProfile/logarithmicFlux names in search74269.
+The next mathematical issue is the weighted integrated compensation, including
+its boundary flux; the positive pointwise profile cannot be discarded.
+
+RN-P-7ab capstone export1440 exited0. The literal current is identified with
+C_y-lambda*C_t-lambda_t*C and has a positive value inside 0<x<y,t>0.
+The exact node quotient limit and strictly ordered continuity transfer pass.
+The global pointwise negative canonical current is therefore false; RH and
+integrated Schur compensation remain open. Two unused simp arguments removed;
+clean re-export, four mandatory actual-source audits and all25 public axiom
+queries now run sequentially in88345. All four new leaves are wired.
+
+The successor P1 rn-finite-current-integrated-compensation.md now targets the
+actual weighted prefix integral, retaining negative boundary mass and every
+positive region. A new exact center flux has been derived on paper, including
+the tail-moment coefficient b and inverse-Gram correction D. It is recorded
+as unaudited; no unjustified limit exchange or global prefix sign is asserted.
+
+RN-P-7ab final sequence88345 exited0: clean germ export, all four actual-source
+`lake --old env lean` audits, and25 public axiom queries passed. Every source
+audit log was empty; each theorem uses exactly propext, Classical.choice,
+Quot.sound. P1 proof card promoted to P3/theta; the failed pointwise conjecture
+and its positive survivor are recorded in P5/theta-finite-pair-pointwise-negative-current.
+The successor RN-P-7ac retains the actual weighted integral and boundary layer.
+
+Lint34138 exited1 on twelve unrelated unreachable modules, no own-leaf error:
+RHTower.CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MertensProductDiamondPintz, MoebiusMollifiedCriticalMoment,
+MoebiusMollifiedErrorThreeLines, ThetaMovingShellFirstOrderPhase,
+ZetaZeroDensityPowerSaving; HTGeometry.CompactMonoidMeasureAlgebra.
+All four RN-P-7ab leaves are wired. No umbrella build, new axiom, RH premise,
+numeric experiment, heartbeat increase, subagent, commit or push occurred.
+
+RN-P-7ab26 owned temporary files were removed after records and complete audits;
+no old build remains live. RN-P-7ac boundary search85256 finished partial:
+inventory65167 complete; some text/source/semantic retrieval and judging stages
+unfinished; semantic coverage unavailable, compiler mostly pending/source-only.
+Available hits were used: dividedSchur_product/origin/continuity and the actual
+source-deficit/center-source gap. Their source was read. No boundary-current
+limit was retrieved. The paper two-scale proof is recorded on the successor
+card; it uses the global divided-Schur identity to avoid an unproved joint
+Taylor remainder. A targeted API scratch is checking before new Lean transfer.
+
+RN-P-7ac transfer now uses two new leaves: ThetaFinitePairBoundaryPackets
+(scaled source/axis/joint jets and actual a,B limits) and
+ThetaFinitePairBoundaryCurrent (positive matched boundary coefficient and
+negative full-current scaled profile). API scratch90382 passed. The first
+packet checks found one elaboration timeout in a deeply defined integral
+composition; explicit typing of its parameter path removes the unfolding.
+The joint kernel limit now checks. Remaining repairs atomize the actual source
+values before field algebra, preventing polynomial normalization from changing
+function arguments. No heartbeat increase or mathematical premise added.
+Check19053 is the current sequential packet/current export. These leaves are
+NOT yet audited or wired; do not report the boundary profile as a Lean theorem.
+
+RN-P-7ac both boundary leaves now export cleanly: packets inside19053 and
+current52982 exit0, empty diagnostics. Nine public statements include the exact
+fixed-r negative current limit and positive matched-moment coefficient gamma.
+The two leaves are wired, and two mandatory actual-source audits plus all9
+axiom queries now run sequentially. The regularized-flux finite-prefix limit
+is the next hard analytic obligation, written on the successor card. A fixed-r
+limit alone does not establish the negative atom as a weak measure limit.
+
+RN-P-7ac boundary profile COMPLETE: final sequence8949 exit0, both actual-source
+`lake --old env lean` audit logs empty, all9 public #print axioms exactly
+propext/Classical.choice/Quot.sound. Two leaves wired. P3 certificate:
+theta/rn-finite-pair-boundary-layer.md. The first packet continuation removed
+an imported-function instance mismatch with `convert!`; final algebra treats
+source values as fixed variables, avoiding normalization of their arguments.
+Current52982 then passed cleanly. No raised heartbeat or added premise.
+
+Fresh lint61941 exit1: same12 unrelated unreachable modules recorded for34138,
+plus RHTower.PolynomialJetMultiplierLimit. No RN-P-7ab/ac leaf error.
+The strongest audited picture is positive interior current plus exact negative
+boundary profile. Actual finite-prefix integration/negative-atom transfer and
+global finite-pair Schur compensation remain open. Their explicit compact-average
+and regularized-flux paper route is saved on the successor P1 card.
+
+Continuation: removed all11 owned RN-P-7ac search/API/build/audit/lint scratch
+files after recording their completed results. No live owned Lean/search jobs
+remained. Serena boundary-layer memory now records the nine audited results.
+Current target is the actual finite-prefix integral limit, via continuous
+compact-average packet extensions and the retained endpoint flux. This attacks
+the boundary defect in integral transfer; it does not assert global finite-pair
+sign or a weak measure theorem from fixed-ray limits.
+
+RN-P-7ad compact-prefix transfer: paper proof simplified to differentiating
+the scalar compact bulk integral and subtracting its endpoint flux. Exact
+center cancellation integral G0=F0(T) removes the zero-order term. No uniform
+current bound is required. The resulting prefix variation integral G1-F1(T)
+has right T-boundary -gamma/2, hence predicts actual negative prefixes for
+small fixed T and sufficiently small diagonal nodes, despite positive interior
+current. PacketExtension export64967 passed with empty diagnostics after
+explicit integral parameters and Function.comp_apply repairs. RegularizedBulk
+and PrefixLimit have full draft proofs; their checks, final source audits and
+axiom audit remain pending. No sign or completed theorem is claimed yet.
+
+RegularizedBulk now passed clean export inside sequence96834; its final audit
+is still pending. The scalar compact bulk derivative is proved without any
+dominating-current hypothesis. PrefixLimit is next in the same sequential
+foreground command after the expanded API scratch. ProfileFlux is a draft
+successor: moving-tail second-kernel diagonal derivative -> exact b ODE ->
+F1'=G1-w0*L -> finite-prefix limit integral w0*L-gamma/2. All source identities
+used are actual theta identities. Final wiring/audits wait for all leaf checks.
+
+RN-P-7ad all four leaves now export: PacketExtension64967 clean,
+RegularizedBulk in96834 clean, PrefixLimit in63736 exit0 with an informational
+ring normal-form hint (no warning/error), ProfileFlux81707 clean. The exact
+actual finite-prefix limit is integral w0*L-gamma/2 for every fixed T>0.
+PrefixLimit additionally proves eventual short-prefix negativity with nested
+T->0+, x->0+ quantifiers. The positive boundary coefficient is supplied by the
+actual source gap, with no numerical experiment or extra premise.
+Four imports wired; final API/source/53-public-theorem axiom sequence launched.
+This is not an improper limit exchange, global finite-pair sign or RH proof.
+
+RN-P-7ad final sequence48501 exit0: all four actual source audits and53
+public theorem axioms (exactly propext, Classical.choice, Quot.sound) pass.
+PrefixLimit emits only an informational ring suggestion. Imports wired;
+P3 certificate and frontier map updated. Lint42205 exit1, no own-leaf or
+forbidden-declaration errors; unrelated unreachable modules:
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MertensProductDiamondPintz
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.PMPowerDampedMobiusPrimeSlab
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.RoutePLatePrimeReciprocalFTC
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspC5EnrichedClockCurrent
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.CompactMonoidMeasureAlgebra
+Search7631 complete but partial: inventory65228, source/semantic snapshot
+limitations; all4 candidates and4 source arguments inspected. Global target
+now the coupled coarea score integral; separate covariance-score monotonicity
+fails on paper at the mass boundary. No formal score obstruction claimed yet.
+RN-P-7ad cleanup: removed all17 owned completed prefix/API/search/build/axiom/
+lint scratch files after recording the evidence. No owned build remains from
+that batch. RN-P-7ae score proof and API audit are active; no final claim yet.
+
+RN-P-7ae closed: ThetaGaussianCoareaScore exports successfully (5123),
+final direct source audit and9 public axiom queries pass (29877), exactly
+propext/Classical.choice/Quot.sound. Import wired. P3 positive score-defect
+certificate and P5 separate-score no-go created; frontier updated. The actual
+score derivative limit, positive curvature quadrature, non-antitonicity and
+adverse covariance pair are established. No integrated covariance sign or
+global finite-pair sign is claimed. Serena symbol editing rejected the ignored
+Lean path, so the observed source was patched directly.
+
+RN-P-7ae lint72816 exit1:14 unrelated unreachable modules; no own-leaf
+or forbidden-declaration error. Exact errors:
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MertensProductDiamondPintz
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.PMPowerDampedMobiusPrimeCurrent
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspC5CurrentSourceQuadrature
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.CompactMonoidMeasureAlgebra
+No owned Lean or search process remains. Final source/axiom evidence and
+search conclusions below are recorded before deleting owned scratch files.
+RN-P-7ae cleanup complete: removed all11 owned API/build/final/axiom/lint/search
+scratch files after preserving results. All five RN7ad/7ae leaf imports are
+present. Targeted git diff --check passed. No owned process or temporary proof
+file remains. RH goal remains ACTIVE; next turn must attack the coupled global
+score sign rather than re-prove the now closed boundary or score obstructions.
+
+RN-P-7af active, 2026-10-04: whole-measure covariance obstruction, retaining
+its exact positive-variance survivor. Quadratic amplitude/score defect limits
+and uniform bounds export successfully (68182); final audit pending. Global
+domination uses the actual source's all-exponential moments and c'<2c.
+API sequence73600 stopped on an incorrect namespace for eqOn_open_of_ae_eq;
+source inspection located Measure.eqOn_open_of_ae_eq. Corrected API passed
+in sequence78585; CovarianceMeasure is now checking in that same sequential
+foreground job. CovarianceLimit is written but unchecked. It retains raw
+covariance and an exact coarea chart identity, not a renamed scaled defect.
+No integrated covariance sign is yet a verified result. Search provenance and
+paper proof remain in rn-finite-current-integrated-compensation.md.
+
+RN-P-7af covariance export8793 exit0: exact original-measure chart, positive
+variance, whole-half-line covariance/x^4 limit and eventual negative sign pass.
+Removed three reported unused rfl tactics. All three leaves are wired; final
+source and36 public-axiom sequence3029 is running. No RH sign is claimed.
+Lint22123 exit1: 18 unrelated unreachable modules; no own-leaf or forbidden-
+declaration errors. Exact errors:
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MertensProductDiamondPintz
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.PMPowerDampedMobiusBoundaryMoments
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.RoutePNativeMixedWeightedFTC
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioSquareCoefficients
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioSquareFlow
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioSquareMoments
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioSquareSlope
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.CompactMonoidMeasureAlgebra
+
+RN-P-7af final sequence3029 exit0. All three actual source checks and all36
+public axiom queries pass; exact closure propext/Classical.choice/Quot.sound
+for every theorem. Audit manifest and output compared:36 expected,36 audited,
+none missing/extra/nonstandard. No source errors or warnings, only ring hints.
+P3/P5 certificates and frontier updated; Serena memory
+rh/rn-integrated-coarea-covariance-variance-2026-10-04 saved. All owned Lean,
+search and lint processes terminal. Targeted git diff --check passed.
+Next: full coupled diagonal compensation RN-P-7ag, then finite-pair chamber.
+Its corrected paper reduction retains the right-node Ward feedback; the
+raw diagonal Mills bound alone does not pay it. No global diagonal or RH
+sign is claimed. Goal remains ACTIVE. Scratch cleanup follows this record.
+RN-P-7af cleanup complete: all15 owned temporary API/search/build/final/
+axiom/lint files removed and absence verified. No owned process remains.
+
+RN-P-7ag: paper proof of globally increasing, zero-total diagonal Ward
+forcing F, its unique positive zero, and unique maximum of the actual Schur
+energy E. This retains the signed inverse-Gram correction. Global normalized
+diagonal compensation remains open. Two leaves written; API40950 passed,
+Forcing59392 failed elaboration, repaired export77741 running; Crossing has
+not yet checked. Search65550 targets clock-curvature of the actual rows.
+No full/umbrella build, new axiom, heartbeat increase, numerical experiment,
+or subagent. No RH result claimed.
+
+RN-P-7ag direct source checks/exports28526 and89292 exit0. The two leaves
+prove global strict forcing increase, exact zero total mass, unique positive
+crossing and unique Schur-energy peak. Both imports wired. No further leaf
+edits followed these successful direct `lake --old env lean` checks. All29
+public axiom queries are running in23335.
+Lint46380 exit1: 24 unrelated unreachable modules, no own-leaf or forbidden-
+declaration error. Exact errors:
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MertensProductDiamondPintz
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.RoutePNativeMassCompensation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinityCone
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinityCurve
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinityFlow
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinityMinor
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinityMoment10
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinityMoment2
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinityMoment4
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinityMoment6
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinityMoment8
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinitySign
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioInfinitySlope
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.CompactMonoidMeasureAlgebra
+
+RN-P-7ag closure: source28526/89292 and all29 axiom queries23335 exit0.
+Every closure exactly propext/Classical.choice/Quot.sound; manifest matched
+29 expected/29 audited, none missing/extra/nonstandard. Both imports wired;
+P3 rn-diagonal-ward-single-crossing and frontier updated. Targeted diff
+whitespace check passed. Serena memory rh/rn-diagonal-ward-single-crossing-2026-10-04
+saved. All owned Lean/search/lint sessions terminal. All11 owned temporary
+files removed and absence verified. No unverified owned source remains.
+
+Next: actual coupled clock curvature RN-P-7ah, Q*(g*j)''-Q'*(g*j)'>0,
+j=1+n,Q=p+x*c. The current card records the exact mixed-jet expansion and
+centered-concavity comparison argument. The new global forcing crossing and
+raw Schur-energy peak do not prove normalized diagonal compensation. Full
+finite-pair sign, general anchors, arbitrary rank and RH transfer remain
+open. Goal ACTIVE; no RH proof/falsification claimed.
+
+RN-P-7ah: complete paper and Lean source proof of strict concavity of
+p/x in both source potential U and Ward clock x*p-1. Positive reserves
+B=x*M-2*A^2 and C=x*M-A^2 have exact positive derivative laws; strict
+chords hold for every positive ordered pair. API1601 and actual source
+check/export3895 exit0, no diagnostics. New ThetaDiagonalClockGeometry
+leaf wired. All20 public axiom queries26415 running. Main card records
+the still-open positive-mass rate inequality and retained mixed-row term.
+Lint36597 exit1: 18 unrelated unreachable modules, no own-leaf or forbidden-
+declaration error. Exact errors:
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.LiouvilleTriangularPoleSeparation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MertensProductDiamondPintz
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.RoutePNativeMassCoprimeAdmission
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.RoutePNativeMassCoprimeAsymptotic
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryDynamics
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryEscape
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioBoundarySelection
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.CompactMonoidMeasureAlgebra
+
+RN-P-7ah final closure: actual source3895 and all20 axiom queries26415
+exit0. Every closure exactly propext/Classical.choice/Quot.sound; manifest
+20 expected/20 audited, none missing/extra/nonstandard. No diagnostics.
+Leaf wired; P3 rn-source-clock-concavity and frontier updated. All owned
+search/API/Lean/lint processes terminal. All11 owned temporary files removed
+and absence verified. No unverified owned source remains.
+Next: complete coupled Ward forcing curvature. New global p/x concavity
+in U and x*p-1 pays the zero-mass boundary. Positive-mass two-endpoint
+comparison and mixed-row feedback remain open, with exact targets in the
+main card. Full finite-pair signs, general anchors, arbitrary rank and
+arithmetic RH transfer remain open. Goal ACTIVE, no RH proof claimed.

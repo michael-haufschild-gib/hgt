@@ -268,3 +268,39 @@ proves their exact improper-integral transport, then targets the full current.
 The conjecture N=a+s_x B>0 has genuinely signed forcing; positivity of N
 alone would also leave a second unproved current coefficient. Do not promote
 that conjecture to a closure criterion or drop the signed packet a.
+
+## RN-P-7y: correction current closed, 2026-10-04
+
+ThetaTailCorrectionCurrent proves the exact positive correction kernel has
+negative current throughout t,y>0; nine public theorems pass direct-file and
+standard-axiom audits. See P3 theta/rn-positive-correction-current.md. This is
+progress on the full compensation problem, but does not pay its retained
+positive cost. Gaussian saturation shows that B>t and this current sign alone
+are insufficient. The next source-dependent attack retains curvature variation
+through the actual signed Sturm forcing.
+
+RN-P-7z closes that forcing's exact sign pattern for every finite pair:
+ThetaFinitePairSturmCrossing gives a unique positive crossing,22 public
+theorems, all directly audited with standard axioms only. P3 certificate:
+theta/rn-finite-pair-sturm-crossing.md. The induced packet positivity N=a+sB>0
+is now audited in Lean, including the source-tail endpoint; see P3
+theta/rn-finite-pair-packet-positivity.md. Canonical-speed increase and the
+strictly negative full term A*N are also audited; see P3
+theta/rn-finite-pair-canonical-speed.md. These three new leaves contain21 public
+theorems with standard axioms only. The remaining B coefficient requires actual
+quantitative compensation; full coordinate-current closure remains open.
+
+## RN-P-7ab: pointwise current obstruction and positive survivor
+
+The global pointwise negative finite-pair canonical current is refuted for the
+literal source. ThetaFinitePairCurrentGerm supplies a positive current with
+0<x<y,t>0 and identifies it with C_y-lambda*C_t-lambda_t*C. The proof retains
+actual inverse-Gram data through exact kernel jets. Projective descent and Ward
+identities give alpha<=q/2+c''(0)/(6q); the exact center variation coefficient is
+at least c''(0)/4>0. This moment comparison and current germ are positive new
+knowledge, fully formalized and audited across four leaves/25 public theorems.
+Certificate: ../3-formalized/theta/rn-finite-pair-current-center-variation.md.
+The preceding pointwise Riccati barrier is therefore retired. The weighted
+integrated sign remains open; use rn-finite-current-integrated-compensation.md.
+The negative joint-center Schur Hessian and all earlier positive port results
+remain valid. No RH counterexample or arbitrary-rank closure is claimed.

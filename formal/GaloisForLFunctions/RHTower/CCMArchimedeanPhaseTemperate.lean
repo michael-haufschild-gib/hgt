@@ -421,7 +421,8 @@ private theorem contDiff_infty_of_deriv_eq_mul
         simpa using hsucc
   exact contDiff_iff_forall_nat_le.mpr fun n _ => hnat n
 
-private theorem hasTemperateGrowth_of_unitary_ode
+/-- A unit-modulus solution of a temperate scalar ODE has temperate growth at every order. -/
+theorem hasTemperateGrowth_of_unitary_ode
     {f a : ℝ → ℂ} (hf : Differentiable ℝ f)
     (ha : Function.HasTemperateGrowth a)
     (hode : ∀ x, deriv f x = a x * f x)

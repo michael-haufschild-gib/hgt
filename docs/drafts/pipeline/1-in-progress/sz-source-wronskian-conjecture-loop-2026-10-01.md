@@ -3912,3 +3912,510 @@ Cleanup: all9 exact owned temporary files removed after owned processes
 terminated. Audited olean retained; unique umbrella import and targeted
 whitespace checks passed. Memory saved as
 `rhtower/sz-exterior-negative-energy-escape-2026-10-03`.
+
+## 2026-10-04 — actual ramp cusp concentration
+
+Route SZ; hard target remains the complete canonical-head signed
+Gamma--prime--polar inequality, equivalently an actual sign producer
+for unshifted ground energy. Supported projection, pole-chamber
+identities and physical Dirichlet-moment expansion supplied no new
+absolute sign. No wrapper theorem was written for those identities.
+The attempted generic virial argument lacked a differentiated actual
+ground source and remained scalar-shift invariant; no regularity
+premise was inserted.
+
+Conjecture tested: uniform visible Gamma energy of the literal
+exponential ramp might bound its RH-equivalent signed action. New
+obstruction proved: for every radius delta>0 and bound B, cofinally
+the action has magnitude >poleSharpConstant/8 AND visible energy in
+|r|<delta exceeds B. The full signed current integral outside every
+fixed cusp window tends to zero. Thus localization cannot rescue
+uniform energy. This is not unbounded signed action or a negative
+Weil witness.
+
+New proof: actual incoming deficit I(T) has a nonzero tail amplitude.
+A uniform tail bound c gives |fluxState(T)|<=2c from the exact future
+convolution; outgoing<=3c then contradicts unconditional integer-lag
+recurrence near its positive ceiling. The ramp action differs from I
+by a decaying transient. PNT quantile heights localize every late
+cell and both terminal orientations at zero displacement; outside a
+fixed window only a finite exponentially decaying head remains.
+Localized weighted squares plus vanishing Gamma capacity then force
+cofinal cusp energy at nonvanishing-action times.
+
+This is the strongest positive survivor extracted here, not only a
+negative bound statement. Paper proof and Lean status are closed in
+P3:sz-ramp-cusp-energy-concentration; narrow failed candidate in
+P5:sz-uniform-ramp-gamma-energy. The physical moment investigation
+remains open and records why an identity alone did not advance sign.
+
+Corpus evidence: searches1220617 and1220649 were partial, coverage
+pending, with no useful primitive-oscillation ingredient. Direct
+source reads supplied CCMPrimeQuantileHeightLimit,
+CCMPrimeDeficitFluxBoundary, CCMPrimeDeficitWeilFlux and
+WeilLagFunctionOmega. Search1220786 was partial/coverage pending and
+returned the actual centered-age and moment-cancelled signed-current
+identities. Those retain the unresolved signed producer; no absence
+or novelty claim follows from retrieval.
+
+Lean: scratch39975 passed incoming nonvanishing. Combined14103/35423
+needed elaboration repairs;54437 had one extra tactic after a solved
+goal. Final93039 exited0 with no diagnostics:
+
+    lake --old env lean GaloisForLFunctions/RHTower/CCMExponentialRampCuspConcentration.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMExponentialRampCuspConcentration.olean
+
+Axiom45260 exited0 for all6 public declarations, only propext,
+Classical.choice, Quot.sound; explicit mathlib API checks included.
+One unique umbrella import. No full/umbrella builds, numerical
+experiments, custom axioms, heartbeat overrides, subagents or commits.
+
+Lint83841 exited1 on13 unrelated unreachable modules (full list in
+the P3 card); new leaf not reported. Source and umbrella whitespace
+checks passed. RH remains unresolved; goal active. The next hard
+conjecture is boundedness of the actual signed cusp action, attacked
+through the complete centered-age/moment-cancelled current rather
+than another uniform absolute-energy assertion. Its bound is not
+being assumed, and no new conditional RH receiver is needed.
+
+Cleanup: all18 exact owned temporary files removed after every owned
+process terminated. Audited olean retained, unique umbrella import and
+targeted whitespace checks confirmed. Memory saved as
+`rhtower/sz-ramp-cusp-energy-concentration-2026-10-04`.
+
+
+## 2026-10-04 — signed ramp flux, both signs retained
+
+Route SZ; hard target remains the full canonical-head Gamma--prime--polar
+inequality. The preceding cusp-energy result rejected uniform absolute
+energy. This turn tested eventual dominance in the exact signed age
+balance A+D=AgeForce+Entropy. Merely rewriting the centered-age derivative
+or cancelling an exterior moment did not supply a sign; no wrapper was
+counted as progress.
+
+New theorem: the actual incoming normalized deficit I and complete
+literal ramp action A each satisfy unconditional Omega-plus/minus(1).
+There is one positive threshold for both cofinal signs. Eventual A>=0
+or A<=0, hence either eventual direction of exact age-balance dominance,
+is excluded. No negative Weil witness, unbounded A, or RH conclusion follows.
+
+Positive survivor: the complete stable flux filter has an explicit
+asymptotic Bohr model under RH. Its coefficient map has unit modulus;
+every divisor multiplicity is retained. The actual flux O=Phi+r has
+|r|<=C exp(-T/2). The filtered state H solves H'+H/2=Phi; an integrating
+factor proves S-Re H=O((1+T)exp(-T/2)). Thus I approaches Re H-Phi.
+This model has zero Bohr mean and a source-certified negative value at
+zero. Almost periodicity and uniqueness give both cofinal signs. In the
+non-RH case either eventual one-sided bound on I would imply RH by the
+existing Landau theorem, after compact-head extension. That closes the
+case split with no hypothesis in either final Omega theorem.
+
+The boundary-residue approach was investigated but not declared false;
+the exact flux equation supplied the additional phase invariant and was
+selected for that reason. All conjectures used source-verified corpus
+statements. The broad signed-lag/boundary searches were partial; the
+Bohr derivative search completed at generation1221048 with full inventory
+but mostly pending/stale compiler metadata. A lexical primitive search
+returned no hits or freshness metadata; no absence/novelty claim follows.
+
+Leaf CCMPrimeDeficitBohrFlux: final47925 exited0 with no diagnostics;
+all9 public axiom queries passed in97972, standard axioms only. The
+99392 probe printed the same axiom results but needed two ancillary
+Filter API names qualified. Scratch34264 passed before
+moving to the leaf. Exactly one umbrella import; no umbrella/full builds,
+experiments, heartbeat overrides, subagents or commits. Lint89207 exited1
+with16 unrelated unreachable modules; complete list in
+P3:sz-ramp-signed-flux-oscillation. RH goal remains active.
+
+Next hard conjecture to test is boundedness of the *joint signed* cusp
+current through its exact age-force, dissipation and terminal balance.
+The new theorem shows that a proof cannot replace that balance by an
+eventual one-sign dominance assertion. Do not claim an advance on the
+canonical-head sign until an actual signed correlation estimate is proved.
+
+Closure: axiom/API97972 exited0; P3/P5 records and SZ frontier row updated.
+All9 exact owned scratch/search/lint files removed after owned processes
+terminated. Audited olean retained; unique umbrella import and targeted
+whitespace checks passed. Memory: rhtower/sz-ramp-signed-flux-2026-10-04.
+
+
+## 2026-10-04 — nonlinear forcing sign remains open
+
+Route SZ; hard goal unchanged: full Gamma--prime--polar sign on actual
+canonical heads. This turn did not prove a new signed estimate or move
+that frontier. In particular, the previous ramp Omega theorem does not
+decide the sign of the nonlinear forcing in the age equation.
+
+The exact source inspected was
+M+M^2/4-psi, with M the half-density prime cumulative. A preliminary
+attempt to transfer raw Chebyshev oscillation to this source was wrong:
+the normalized square involves M/2, and its linear Chebyshev contribution
+cancels the subtracted psi error. The corrected, Lean-checked formula is
+
+    E=(psi(exp T)-exp T)/exp(T/2), J=integral_0^T E,
+    y=1+M/2-exp(T/2)=1/2+E/2+J/4,
+    exp(-T/2)*(M+M^2/4-psi(exp T))
+      =1+J/2+exp(-T/2)*(y^2-1).
+
+Do not claim that Littlewood oscillation alone refutes an eventual
+negative nonlinear forcing. Do not discard its positive square. The
+candidate eventual negative sign, possibly with a constant margin,
+remains open in P1:sz-nonlinear-prime-forcing-sign. No implication from
+that candidate to the full canonical-head inequality was assumed.
+
+The exact next problem is unconditional accumulated compensation between
+J/2 and exp(-T/2)*y^2, using actual von Mangoldt arithmetic. The increment
+formula w*(1+M_before/2-sqrt(n))+w^2/4 shows precisely what a local
+displacement proof would need; the relative PNT limit does not give it.
+
+Source inspection also revisited actual canonical-ground fixed-point,
+numerical-range, and coprime-balance identities. Those were existing
+results and supplied no sign producer. Norm nonexpansion is stronger than
+the signed numerical-range wall and should not be silently substituted.
+No new conditional RH receiver, no-go, production Lean module, or
+numerical experiment was added.
+
+Corpus searches1221338,1221365,1221424,1221440,1221454 were partial, pending
+compiler coverage; useful sources read directly. Search misses were not
+used as absence or novelty claims. Scratch47059 failed on a multiplication
+order rewrite. Corrected audit33974 exited0 and printed only the three
+standard axioms, with one tactic-style warning. No production Lean
+changes, hence no umbrella or repeated full lint build. RH unresolved;
+goal remains active.
+
+## 2026-10-04 — actual nonlinear first contact
+
+Route SZ. The remaining final problem is the canonical-head joint
+Gamma--prime--polar sign. This turn advances its nonlinear prime-forcing
+subproblem: actual prime-power contact now controls the positive square,
+and permanent descent below a fixed barrier cannot coexist with
+nonnegative discrepancy. No final head sign or RH is claimed.
+
+For M_n=primeMassHalf(n), U_n=sqrt(n)*(M_n+2)-n-psi(n)-1 and
+D_n=M_n+M_n^2/4-psi(n), the new leaf proves D=U+(1+M/2-sqrt(n))^2,
+the exact jump-cancelled U increment, and the prime-power valley law
+D_(n+1)<U_(n+1)+w_(n+1)^2/4. The main new result is
+`ccmPrimeMoment_negative_forcing_of_deep_descent`: U_(n+1)<U_n and
+U_(n+1)<-1 force a later D_k<0. Contrary D>=0 prevents any subsequent
+valley, forces displacement below -1, and makes D+M/2 nonincreasing,
+contradicting M->infinity. The resulting tail minimum principle is
+`ccmPrimeMomentPotential_lower_of_forcing_nonneg`.
+
+Source searches1221540,1221567,1221621,1221798 were partial/pending;
+direct sources and Lean determined applicability. Search misses were
+not treated as evidence of absence. Scratch33523 proved the valley law;
+76107 proved global deep descent after natural-index normalization;
+49476 proved the tail minimum principle after clearing a redundant
+induction hypothesis. No failed proof entered the production leaf.
+
+`CCMPrimeMomentFirstContact.lean` final audit57414 exited0 with no
+diagnostics. Axiom audit24541 checked all9 public declarations: only
+propext, Classical.choice, Quot.sound. One RHTower umbrella import added;
+no umbrella/full build, heartbeat increase, numerical experiment, or
+subagent. Global lint89088 exited1 on16 other unreachable modules;
+this leaf had no lint error. P3:sz-prime-moment-first-contact and the SZ
+frontier row record the exact theorem and its limits.
+
+Next hard conjecture: U_n is unbounded below on every integer tail.
+The new contact theorem would then give cofinal negative D. The paper
+attack retained in P1:sz-nonlinear-prime-forcing-sign derives the full
+continuous-potential transform
+
+    L_U(s)=-logDeriv zetaResidueUnit(s)/(s*(2*s-1)), Re s>1.
+
+A contrary U>=-B makes U+B+1 a positive Laplace density. Landau should
+force its abscissa <=1/2, while its residue at1/2 is
+2+gammaHardyPhaseRate(0)<0. The actual U transform, positive-measure
+continuation, and exact concave cell interpolation still require Lean.
+The central equality and strict negative sign passed scratch32049 with
+only the three standard axioms. Initial37887 failed on a missing import;
+`VisibleCoprimeZetaZeroJet` supplied the real-axis nonvanishing theorem.
+The exact source names and proof outline are preserved in P1. This is
+an auxiliary residue check, not an audited potential-escape theorem.
+
+Closure: all owned processes terminated; all9 exact scratch/search/lint
+files removed, audited production olean retained. Targeted whitespace
+check passed. Memory: rhtower/sz-prime-moment-first-contact-2026-10-04.
+The active RH goal remains unresolved. Next work is the signed potential
+escape producer above, not another conditional RH receiver.
+
+## 2026-10-04 — negative escape of actual nonlinear prime forcing
+
+Route SZ. Last turn's first-contact law left the actual deep-descent
+producer open. This turn closes it and strengthens the result to
+unbounded negative D on every integer tail. The canonical-head joint
+Gamma--prime--polar sign remains unresolved.
+
+For M_n=primeMassHalf(n), U_n=sqrt(n)*(M_n+2)-n-psi(n)-1 and
+D_n=M_n+M_n^2/4-psi(n), the new continuous source is
+U(T)=exp(T/2)*(1+J(T)/2)-1, J=integral_0^T critical normalized Chebyshev
+error. Exact Abel summation identifies it with the literal arithmetic U.
+Finite/improper integration by parts gives
+
+    L_U(s)=-logDeriv zetaResidueUnit(s)/(s*(2*s-1)), s>1.
+
+Its central real residue is 2+gammaHardyPhaseRate(0)<0. Apply the existing
+negative-real-residue Landau theorem to (U+B)*exp(-T/4); compact-head
+corrections remain and only real-ray analyticity is used. This proves
+continuous unbounded negative escape. Between integer entries U(log x)
+is concave in sqrt(x), and prime jumps cancel at endpoints, so
+min(U_floor(x),U_(floor(x)+1))<=U(log x). Integer escape follows exactly.
+
+A second conjecture exposed by the proof also closes: arbitrary-level
+first contact. If U_(n+1)<U_n and U_(n+1)<A-1, some later D_k<A.
+Contrary D>=A again prevents valleys, forces displacement below -1, and
+makes D+M/2 nonincreasing despite M->infinity. Thus D>=A on a tail forces
+U>=min(U_start,A-1). Integer escape contradicts this for every A. The new
+terminal theorem `ccmPrimeMomentDiscrepancy_negative_escape B N` proves
+some n>=N has D_n<-B with no mathematical premises.
+
+Production leaves: CCMPrimeMomentPotentialLaplace (audit38295), extended
+CCMPrimeMomentFirstContact (37824), CCMPrimeMomentPotentialEscape (87799);
+all final commands were foreground `lake --old env lean <module> -o
+<olean>`, exit0 and no diagnostics. Initial escape probes77770,5368,52596
+failed on analytic composition/cast/rational elaboration. Scratch35106
+proved escape;89827 proved arbitrary-level contact. Production95916
+caught a warning-cleanup tactic-control-flow regression, fixed by
+explicit branches before87799 passed. All24-public-declaration axiom
+audit16658 exited0 with only propext, Classical.choice, Quot.sound.
+
+Two new unique umbrella imports were added; no full or umbrella build,
+heartbeat increase, numerical experiment, subagent, commit, or push.
+Global lint44412 exited1 on14 other unreachable modules, fully listed on
+P3:sz-prime-moment-potential-escape; no error named these leaves.
+Search1221960 and1222173 were partial/source-only or pending/stale; the
+latter had a semantic timeout. Candidate/source/proposed-ingredient
+sections were inspected. The lexical negative-residue search found the
+exact source lemma without freshness metadata. No absence/novelty claim
+was inferred from search misses.
+
+P3:sz-prime-moment-potential-escape contains the dependency-closed paper
+proof. P3:sz-prime-moment-first-contact, the active P1 nonlinear-forcing
+card, and the SZ frontier rows now reflect the stronger verified result.
+
+The next hard target is the original eventual sign of
+F=1+J/2+exp(-T/2)*(y^2-1), followed by the complete physical balance and
+canonical-head sign. Unbounded unnormalized D supplies no critical-scale
+bound. Deep negative basins now exist; ruling out their late returns
+to D>=0 requires control of accumulated actual admission work
+Delta D=w*(m_before-sqrt(n))+w^2/4. Do not assume entrywise negativity or
+replace this by another conditional RH receiver. The exact full balance
+action+dissipation+2*exp(-T/2)*D=ageMoment+terminalEntropy retains three
+other uncontrolled terms. RH remains unproved and unfalsified.
+
+Closure: all owned processes terminated; all8 exact scratch/search/lint
+files removed. Three audited production oleans retained, three unique
+umbrella imports checked, targeted whitespace clean. Memory:
+`rhtower/sz-prime-moment-negative-escape-2026-10-04`. No RH proof or
+falsification is claimed; the goal remains active.
+
+## 2026-10-04 — exact upper-contact return comparison
+
+Route SZ. Previous turn made verified progress by proving actual D and U
+unbounded below on every tail. Current turn proves that their positive
+returns cannot decouple: every eventual strict finite upper level is
+shared exactly. The final canonical-head Gamma--prime--polar sign remains
+open, and neither eventual upper bound is asserted to hold.
+
+Initial Riccati/Selberg attempts supplied no sign producer. The Riccati
+source theorem assumes a tail-wide quadratic Abel barrier; isolated
+negative excursions do not discharge it. The exact second-grade
+hyperbola formula retains a signed future-error pairing. Neither result
+was assumed or retired as false. Searches1222417 (partial/deadline),
+1222462 (retrieval complete but compiler pending/stale), and1222497
+(partial/source-only) were inspected across candidates, source arguments
+and proposed ingredients. No miss-as-absence or novelty claim.
+
+New paper conjecture and proof: if m_n=1+M_n/2>=sqrt(n), n>=1, then some
+first k>=n has m_k<sqrt(k+1). Otherwise every later U increment is
+nonnegative, contradicting actual negative U escape. Before k, each
+admission has DeltaD=w*(m_j-sqrt(j+1))+w^2/4>=0. Also m_k>=sqrt(k).
+Thus x=m_k^2 belongs to [k,k+1), floor(x)=k, and exact cell algebra gives
+U(log x)=D_k>=D_n. Upward D increments force their post-entry m above
+the square-root curve, so every first upward crossing forces a future U
+crossing. This is the new upper-contact mechanism, not an RH receiver.
+
+For every real A the main new theorem is
+
+    (exists N, forall n>=N, D_n<A)
+      iff (exists H, forall T>=H, U(T)<A).
+
+Backward implication uses actual negative D escape to choose a starting
+index below A after the U cutoff, then upper contact excludes any later
+return. Forward implication is the exact cell bound U(T)<=D_floor(exp T).
+No pointwise removal or bound of the positive square is claimed.
+The exported interval-return witness has T>=log(start), not necessarily
+T>=log(chosen terminal index).
+
+New module CCMPrimeMomentUpperContact has4 public theorems. Scratch3116
+failed on index/cast/case elaboration; repaired scratch73279 passed all
+four with standard axioms. Final foreground leaf73270 used
+`lake --old env lean GaloisForLFunctions/RHTower/CCMPrimeMomentUpperContact.lean
+-o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPrimeMomentUpperContact.olean`,
+exit0 no diagnostics. Final axiom audit72769 used /tmp scratch, exit0;
+only propext, Classical.choice, Quot.sound for all4 public declarations.
+One umbrella import. No full/umbrella build, heartbeat increase, numerical
+experiment, subagent, commit or push. Lint67589 exited1 on14 other
+unreachable modules, listed in P3:sz-prime-moment-upper-contact; this
+leaf had no error. P1 card promoted to P3 after the final audits.
+
+The nonlinear eventual-sign obstruction is now reduced to the linear
+primitive tail inequality J(T)<-2+2*exp(-T/2), because
+U(T)=exp(T/2)*(1+J(T)/2)-1. This producer remains unproved; no uniform
+critical margin or canonical-head sign follows from the new comparison.
+
+The constructed contact additionally has matched mass/time heads:
+x=(1+M_k/2)^2, floor(x)+1=k+1. Source reads of
+CCMQuantileDisplacementMass (ccmOutgoingPrimeCumulative_succ_eq_primeMassHalf),
+CCMActualHeadOutgoingQuantileTransportProducer (exp_half_ccmOutgoingPrimeQuantileBoundary),
+and CCMExponentialRampTerminalEntropy (boundaryMismatch and kernel0)
+show on paper that the terminal entropy mismatch vanishes there. This
+contact-to-entropy consequence has no dedicated new Lean export yet.
+A next source comparison can evaluate the full signed balance at these
+matched contacts, retaining age and bulk dissipation. Do not assume a
+sign for those remaining terms, and do not add another conditional RH
+receiver. Directly producing the linear J tail sign is the other exact
+remaining scalar attack. The active RH goal remains unresolved.
+
+Closure: all owned processes terminated and all7 exact scratch/search/lint
+files removed. Audited production olean retained, unique umbrella import
+checked, targeted whitespace clean. Cross-session memory:
+`rhtower/sz-prime-moment-upper-contact-2026-10-04`. RH goal remains active;
+no proof or falsification of RH is claimed.
+
+## 2026-10-04: critical normalized nonlinear forcing
+
+Route SZ. Previous upper contact removed the square obstruction for
+EVENTUAL finite upper levels, but did not produce the primitive tail sign.
+Direct PNT absolute estimates retain exponential growth at critical scale.
+The completed-source negative Stirling correction also leaves its signed
+completed response uncontrolled. Those attempts did not close a sign gap;
+no extra conditional RH receiver was added.
+
+A different source argument now closes negative amplitude at critical
+normalization. Write kappa=-(2+gammaHardyPhaseRate(0))>0. The potential's
+negative central Laplace residue survives adding c*exp(T/2), 0<c<kappa.
+Compact-head Landau and square-root cell concavity give critical-scale
+negative potential excursions at literal integers.
+
+Normalize W_n=U_n/sqrt(n). Its exact step has the sign of
+psi(n)+1-sqrt(n)*sqrt(n+1). Actual Chebyshev Omega-minus and Omega-plus
+supply arbitrarily late decreasing and increasing steps. A finite
+minimum bracketed by those steps can contain any later low W value.
+At this interior valley r, r<=psi(r)+1<r+Lambda(r). The admitted atom
+Lambda(r)/sqrt(r) tends to zero; together with W_r<-c this gives
+m_r<sqrt(r)-c/4, hence D_r<-(c/4)*sqrt(r). This retains the nonlinear
+positive square and every actual prime weight.
+
+Potential extension scratch85314 and final production7468 passed.
+Normalized forcing scratch44171 and new leaf final production32271
+passed; each scratch capstone reported only the standard three axioms.
+All-public production axiom audit31143 is running. New module:
+CCMPrimeMomentCriticalEscape, imported once after CCMPrimeMomentUpperContact.
+No full or umbrella build, numerical experiment, new axiom, heartbeat
+increase, subagent or commit was used.
+
+Search1222838 was partial with pending compiler coverage; search1222789
+completed retrieval but mostly pending/stale compiler metadata. Candidate,
+source-argument and ingredient sections were inspected; source reads and
+Lean checks determined applicability. Global lint42518 exited1 with37
+unrelated unreachable modules; neither touched leaf was reported.
+
+Remaining hard problem: prevent later upward crossings of the actual
+linear primitive barrier J(T)<-2+2*exp(-T/2), then establish the complete
+canonical-head Gamma--prime--polar sign with age, dissipation and terminal
+entropy retained. The new result concerns cofinal negative normalized
+amplitude, not an eventual sign or uniform bound. RH remains unresolved.
+The next conjecture/proof attempt must control signed recovery from these
+actual negative valleys; another conversion or conditional receiver
+would leave the hard problem unchanged.
+
+
+Final closure: all9 public declaration axiom queries61451 exited0 with
+only propext, Classical.choice, Quot.sound. The earlier axiom pass31143
+printed those same dependencies but failed on an ancillary polymorphic
+mathlib-name probe; concrete carrier types repaired that scratch probe.
+P1 critical-escape card promoted to P3, current frontier and forcing card
+updated. Both production oleans retained. All owned processes are terminal;
+all9 exact scratch/search/lint files are being removed. No RH proof or
+falsification is claimed; goal remains active.
+
+Cleanup complete: all9 exact scratch/search/lint files removed; unique
+imports and target whitespace checked. Memory persisted as
+`rhtower/sz-prime-moment-critical-negative-escape-2026-10-04`.
+
+
+## 2026-10-04: actual mixed-aperture metric reciprocity
+
+Route SZ. Critical negative prime-moment excursions did not solve signed
+recovery. Exact factorial/Selberg formulas retain the terminal signed
+remainder; chronological work gives a lower, not upper, bound. No new
+receiver was added. Corpus inspection found the proposed common source
+profile already proved, including prescribed-shift carrier collapse.
+
+The new argument attacks the retained mixed metric term. Self-adjointness
+moves larger-aperture covariance off the unknown extended old response
+and onto the explicit larger-aperture source. The exact coefficient is
+(c_a-c_b)*<F_b(t),F_a(s)>. Both actual responses have audited explicit
+profiles; their full complex Gram error vanishes jointly. Multiplication
+by exp(-b)*(c_a-c_b) is uniformly bounded for a<=b. Thus all four actual
+V2 sign channels have an explicit mixed metric profile even for unbounded
+aperture gaps. Paper mechanism is in sz-mixed-aperture-metric-profile.md.
+
+Scratch32088/11789 accepted the estimates but failed rewriting the
+continuous-linear-map coercion in reciprocity. The third audit95206 uses
+an explicit symmetric pairing equality. No numerical computation, full
+build, subagent, extra axiom or heartbeat increase. This result does not
+restore the already-falsified prescribed-shift Xi identification. The
+canonical-head sign, eventual primitive barrier and near-floor signed
+shell/metric transport remain hard open problems.
+
+Final mixed-metric closure: scratch95206 and76241 passed; optimized final
+production12976 passed; all four public axiom queries55330 passed with
+only propext/Classical.choice/Quot.sound. Leaf wired once; P1 card promoted
+to P3:sz-mixed-aperture-metric-profile. Current frontier distinguishes
+this actual V2 source-paired result from the still-open full vector and
+near-floor signed assertions. Global lint23382 has13 unrelated unreachable
+module errors, no new-leaf or prohibited-declaration error. No RH proof
+or falsification; goal active. All owned processes are now terminal.
+Exact owned scratch/search/lint cleanup is next.
+
+Cleanup complete: all9 exact owned temporary files removed; audited
+production olean retained. Cross-session memory saved as
+`rhtower/sz-mixed-aperture-metric-profile-2026-10-04`.
+
+## 2026-10-04: cusp recurrence versus complete pointwise symbol sign
+
+Route SZ. Mixed-aperture reciprocity did not solve canonical-head sign. Midpoint-even Gamma cancellation and ground stationarity also leave that sign unchanged. New conjecture tests full corrected pointwise symbol positivity. Existing absolute critical-mass escape does not choose a sign. New source mechanism uses the actual t log t cusp, uniform recurrence under an internally deduced RH, and one-sided Landau to remove that assumption. Target is both signed completed-current escape and positive-length late windows. Exact working proof and nontrivial positive survivor are recorded in sz-screw-cusp-signed-current.md. No RH conclusion or verified new result yet.
+
+Scratch2938 accepted the complete signed-current/window argument with no diagnostics. Production `SuzukiCompletedCurrentSignedWindows.lean` now contains three public declarations and is wired once. Final leaf60657 is running. Global lint38772 failed with truncated stderr; diagnostic repeat49877 captured the complete result:21 unreachable modules outside this change, no error for the new leaf and no prohibited-declaration error. The extra lint invocation recovered missing diagnostics, not a broader build. Exact source-window theorem gives a genuine both-sign obstruction, stronger than prior absolute unboundedness; RH and canonical-head positivity remain unresolved.
+
+Final production60657 passed with no diagnostics. The three public-declaration axiom audit53591 is now the only owned Lean process. Signed-current card promoted to P3; P5 retires the complete pointwise symbol floor with the source-window theorem as positive survivor. Current frontier and canonical-head card record the exact implication and remaining support/phase correlation problem. Four completed corpus-search temporary files have been removed; four proof/axiom/lint temporary files remain until the audit exits.
+
+Final signed-current closure: leaf60657 and all three public axiom queries53591 passed, with only propext/Classical.choice/Quot.sound. Capstone types have only B,L parameters and no RH premise. Unique umbrella import1497 and whitespace verified. Lint21 unrelated unreachable-module errors are recorded exactly in the P3 card. All owned processes terminal; all eight exact temporary files removed; production olean retained. Pointwise complete-symbol floor candidate retired with both signed actual source windows as positive survivor. Canonical-head phase credit, eventual primitive negativity and near-floor signed cancellation remain unresolved; RH goal active.
+
+
+## 2026-10-04 — actual first-contact multiplier attack
+
+Route SZ. Previous signed-current-window theorem closes the pointwise-floor shortcut, not the actual supported quadratic sign. Current ground-state/Schur and virial searches have produced no new result. Exact prime-edge rigidity and mixed Gamma interpolation are already known and cannot be recounted as frontier progress. Open attack recorded in `sz-first-contact-multiplier-identity.md`: retain actual first-null-ground boundary data; test bounded physical multiplier identities before assuming a dilation derivative. No numerical experiment, new axiom, or conditional RH receiver is proposed.
+
+### Supported modulation comparison: scratch closure
+
+Full combined scratch `sz_full_modulation.lean` passed (process 11443, exit 0, no diagnostics). New production leaf `CCMRestrictedWeilModulationPhaseRecovery.lean` contains the actual form-domain admission, vanishing Gamma increment, complete prime compensation, one aperture-dependent clock valid for every source and shift, and both signs of actual pole-profile increments after every frequency threshold. Eight public declarations. No heartbeat changes or computation.
+
+Production foreground audit is running with `lake --old env lean ... -o ...`; umbrella contains one import. Global lint ran once (24012, exit 1): fourteen unrelated unreachable modules, no new-leaf diagnostic or prohibited declaration. This is not a clean global lint result. Pending: production audit completion, all eight public axiom queries, final cards/frontier update, exact scratch cleanup. RH goal remains active. Canonical-head sign, ground-specific first-contact cancellation, eventual primitive sign and near-floor control remain open.
+
+Final supported-modulation closure: production73301 and all eight public axiom queries69365 passed; standard axioms only (`propext`, `Classical.choice`, `Quot.sound`). One umbrella import, no umbrella build. P3 `sz-supported-modulation-phase-recovery` records the complete paper argument and fixed-aperture/fixed-source quantifiers; P5 `sz-eventual-frequency-monotonicity` preserves the exact phase law as positive survivor. Global lint24012 has fourteen unrelated unreachable-module errors, recorded in P3; no clean-global-lint claim. All owned processes terminal, all twelve exact temporary files removed, audited olean retained. RH goal remains active. Next hard target: actual null-ground equation and ground-specific cancellation; the fixed-source carrier limit supplies no uniform moving-aperture control.
+
+Post-closure attack: search1224119 and direct first-contact/variance source inspection did not produce a ground-sign argument. Generic bounded-multiplier commutators erase the scalar normalization and cannot alone decide the absolute floor; this is prior obstruction, not new knowledge. No redundant receiver added. Next conjecture must retain the entire uncommuted Gamma--prime--polar source and actual ground equation. Search artifact removed after terminal exit; no owned build/search remains. The new supported phase-recovery theorem is the verified advance of this iteration, not a solution of the canonical-head inequality or RH.
+
+## 2026-10-04 — actual sharp Gamma boundary interaction
+
+Route SZ. The preceding modulation result and generic multiplier commutators did not settle canonical-head sign. New attack retains the actual interior ground forcing and constructs the missing global Gamma boundary action. Corpus searches and direct source reads show the cross-boundary block was outside the existing abstract null-log-regularity statement.
+
+Combined scratch75910 passed for the literal bounded Gamma Hankel operator, sharp test multiplier admission, and the complete opposite-half-line mixed-jump identity. Translation and reflection subsequently close both actual aperture endpoints. Final production37470 passed `CCMRestrictedWeilGammaBoundaryPairing.lean` with no diagnostics:23 public declarations, no analytic regularity premise in the actual boundary identities. One umbrella import added. Sharp-test production audit is running next; all27 public axiom checks and lint remain pending. No full build or added axiom.
+
+New inference from the proof: absolute integrability of the arbitrary-L2 cross term plus nonnegative diagonal jump energies should imply arbitrary sharp-cutoff form admission. Growing-cutoff form convergence then follows from the uniform boundary block, vanishing exterior L2 mass, Fatou, and the exact quadratic decomposition. This stronger conjecture is returned to paper/corpus audit in `sz-ground-global-gamma-domain.md`. It targets the remaining global ground-domain weld. Canonical-head sign, prime dilation derivative, near-floor signed cancellation and RH remain open.
+
+Final sharp-boundary closure: production37470 and54474 passed, all27 public axiom queries17789 passed with only propext/Classical.choice/Quot.sound. Both leaves wired exactly once; no umbrella build. P3 `sz-gamma-sharp-boundary-pairing` records the dependency-closed paper argument and exact audits. Frontier updated narrowly: both actual exterior pairings and sharp smooth-test admission are closed; global ground-domain admission and RH are not. Global lint99878 reports twelve unrelated unreachable modules, recorded verbatim in P3; no new-leaf or prohibited-declaration error. All owned processes terminal. All20 exact owned scratch/search/axiom/lint files removed; audited production oleans retained.
+
+Next conjecture remains C-next in `sz-ground-global-gamma-domain`: arbitrary sharp-cutoff form admission, then form-norm exhaustion. Search1224581 completed without partial results (compiler freshness still mostly pending/stale); no existing sharp admission result identified. The new arbitrary-L2 mixed boundary identity makes the nonnegative-energy splitting argument available. Build the converse finite-Gamma-energy-to-weighted-form lift from the actual Binet--Plancherel theorem, then use cross-term integrability for admission and Fatou for exhaustion. This addresses a specific obstruction in the actual global ground equation; do not switch to generic commutator identities that lose the scalar sign. RH goal remains active.

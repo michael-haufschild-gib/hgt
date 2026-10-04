@@ -77,15 +77,15 @@ private theorem causal_boundary_residue_zero {g : ℝ → ℂ}
   simpa only [Function.comp_def, Real.sqrt_sq (norm_nonneg _), Real.sqrt_zero, N]
     using hsqrt
 
-private theorem source_transform_eq_continuation
-    (hg : MemLp (fun t => (routePSourceRay t : ℂ)) 2 (volume.restrict (Ioi 0)))
+/-- Analytic admission identifies the literal source transform with its
+arithmetic continuation throughout the open right half-plane. -/
+theorem routePSource_transform_eq_continuation_of_analytic
+    (hL : AnalyticOnNhd ℂ (causalTransform (fun t => (routePSourceRay t : ℂ)))
+      {w : ℂ | 0 < w.re})
     {z : ℂ} (hz : 0 < z.re) :
     causalTransform (fun t => (routePSourceRay t : ℂ)) z =
       routePSourceLaplaceContinuation z := by
   let L : ℂ → ℂ := causalTransform (fun t => (routePSourceRay t : ℂ))
-  have hL : AnalyticOnNhd ℂ L {w : ℂ | 0 < w.re} :=
-    (differentiableOn_causalTransform hg).analyticOnNhd
-      (isOpen_lt continuous_const Complex.continuous_re)
   let A : ℂ → ℂ := fun s => -(s * ((s + 1 / 2) * L (s - 1 / 2) + 2 / 3)) - 1
   have hA : AnalyticOnNhd ℂ A {s : ℂ | 1 / 2 < s.re} := by
     intro s hs
@@ -142,6 +142,8 @@ private theorem source_transform_eq_continuation
 theorem not_memLp_two_routePSourceRay :
     ¬ MemLp (fun t => (routePSourceRay t : ℂ)) 2 (volume.restrict (Ioi 0)) := by
   intro hg
+  have hL := (differentiableOn_causalTransform hg).analyticOnNhd
+    (isOpen_lt continuous_const Complex.continuous_re)
   obtain ⟨T0, hT0, hT⟩ := exists_riemannZeta_line_zero_dyadic
   obtain ⟨τ, hτ, hzero⟩ := hT T0 le_rfl
   have hτ0 : 0 < τ := lt_of_lt_of_le hT0 hτ.1
@@ -168,7 +170,7 @@ theorem not_memLp_two_routePSourceRay :
       routePSourceLaplaceContinuation ((σ : ℂ) + z0)) (𝓝[>] 0) (𝓝 0) := by
     apply (causal_boundary_residue_zero hg z0 hz0).congr'
     filter_upwards [self_mem_nhdsWithin] with σ hσpos
-    rw [source_transform_eq_continuation hg (by simpa [hz0] using hσpos)]
+    rw [routePSource_transform_eq_continuation_of_analytic hL (by simpa [hz0] using hσpos)]
   have hne : -(m : ℂ) / (linePt τ * (linePt τ + 1 / 2)) ≠ 0 := by
     apply div_ne_zero (neg_ne_zero.mpr (Nat.cast_ne_zero.mpr (by omega)))
     apply mul_ne_zero

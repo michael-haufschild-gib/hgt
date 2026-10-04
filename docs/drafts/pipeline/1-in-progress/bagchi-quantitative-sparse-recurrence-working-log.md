@@ -5210,3 +5210,591 @@ natural lower-bound tactics and product notation rewriting; repaired without
 heartbeat changes. Scratch82964 now includes exact coefficient, PNT family,
 signed fibre energy, product injectivity and sampled-phase witnesses. No
 new production module or umbrella import yet; final audit still required.
+
+
+### 2026-10-04 — C28.56d production and C28.56e paper test
+
+BAG route remains the actual full signed Gaussian cubic at contraction scale.
+Scratch22580 passed the prime-cofactor modular-alias construction and its
+no-eventual-constant-times-diagonal capstone. Production leaf
+ChiPrimeVaughanIntegerAliases is wired; direct leaf audit pending. This is a
+proved source-coefficient obstruction, not a full-source lower bound.
+
+Process discipline correction: draft24205 was still running when draft29020
+was mistakenly started. Cancelled owned29020 (exit130), verified only24205
+remained, then waited for24205 exit0 before22580. No simultaneous owned Lean
+process will be started again. No heartbeat increase, computation or full build.
+
+Search45624: primitive-character large sieve, nonpartial65061/65061, source-only
+metadata with background refresh pending. Retrieved Farey sharp/additive sieve
+and actual character orthogonality; no matching multiplicative producer was
+verified. Search40609 lexical Gauss transfer returned only local-character
+norm and unrelated hits. Stronger next question uses additive residue Parseval
+directly: separate the exact zero mode of full signed cofactor convolution,
+then apply the sharp Farey large sieve to nonzero modes. Search8947 pending.
+
+PAPER SCALE CHECK (not a formal theorem): completing the integer long factor
+modulo r and Cauchy across r still gives conductor power N^(3/2), even if the
+centered cofactor residue energy has its expected large-sieve bound. The zero
+mode can retain a Möbius saving, but removing it alone does not fix that power
+loss. Therefore do not build a centered-energy wrapper and label the cubic
+solved. The hard producer must preserve the incomplete long-factor interval
+and signed cross-modulus correlations, or use another source-specific analytic
+mechanism. The alias construction identifies a real missing term; full cubic,
+growing moments, moving cofactors, positive self-target recurrence and RH open.
+
+
+2026-10-04 01a0 C28.56d FINAL: direct production46498 exit0, no diagnostics;
+all15 public axiom queries97162 exit0, exactly propext/Classical.choice/Quot.sound.
+Exact lexical index finds not_eventually_vaughanAliasOffDiagonal_le_card at279.
+Leaf wired; failed-estimate card moved to5-failed with the audited positive
+source construction. Main card/frontier updated. Lint68165 exit1 on14 unrelated
+unreachable leaves (13 RHTower plus HTGeometry.CompactMonoidMeasureAlgebra), no
+new BAG error. No umbrella/full build, numerical experiment or heartbeat change.
+Owned three scratch Lean files removed after audits. Relevant diff whitespace
+check passes; no forbidden declarations in the new leaf. All owned processes
+terminal, logs and search JSON retained.
+
+Search8947 centered residue energy: nonpartial65065/65065. Existing fibre
+identities and Farey bounds do not supply the needed incomplete joint saving.
+Search80073 incomplete product/Kloosterman: nonpartial65071/65071; direct sources
+verify complete-unit or complete-period estimates, and boundary remainders.
+Factored-modulus Kl3 bound concerns p*s², not this prime-modulus product phase.
+Search87494 flat trilinear: partial65072/65072 (reranking deadline); candidates
+are unrelated elementary product bounds or conditional product mean values.
+No absent-theorem claim inferred from that partial search. Search62747 HB:
+partial65072/65072 (semantic deadlines and malformed local-model judgment),
+but relevant actual identity and medium-factor hits verified directly in source.
+All candidate/source/idea/ingredient sections read for these results.
+
+Continuation card: 1-in-progress/bag-signed-medium-additive-factor.md.
+Corpus already proves finite compressed HB, dyadic free-factor identities,
+medium/long classification and actual medium Möbius LOGARITHMIC-phase estimates.
+A naive pointwise logarithmic estimate cannot be inserted into the ADDITIVE
+phase without proving its transform cost and retaining the q,r correlations.
+Full squarefree mask cannot be dropped to invent a free integer factor.
+Next hard conjecture stays the actual full signed joint source at o(N/log²N),
+with the medium additive branch and incomplete cross-modulus interval retained.
+No new bound, new RH premise, or RH completion asserted. Goal ACTIVE.
+
+2026-10-04 01a0 C28.56i/j: finite dilation tested against the actual joint source.
+Corpus-derived paper argument combines TuranKubilius variance, prime-square
+tail, actual Mobius multiplicativity and Mertens lower growth. For fixed
+irrational additive alpha, finite prime amplification gives normalized limsup
+at most 2/sqrt(H)+1/H, with H=sum_{p<=z}1/p. This is a paper argument, not a
+new Lean theorem. Rational arcs still need their own actual Mobius input.
+Do not formalize this scalar result and report the full medium branch closed:
+absolute q,r summation still misses the conductor power.
+
+For the joint weight G, the comparison error contains sqrt(sum |G|^2), not
+sqrt(M). Its required source energy is itself unproved. Squarefree restriction
+can kill the repeated-prime reindexing error, but leaves coprimality masks in
+G(pm). Joint cross correlations also retain m-dependent Gaussian/W amplitudes.
+They are not plain geometric sums without a proved partial-summation cost.
+
+The cross-modulus phase has signed numerator
+ell1*q1*r2 - ell2*q2*r1 - k*r1*r2. Distinct prime moduli, q1!=r1 and
+0<ell1<r1 exclude numerator zero by prime divisibility, but do not exclude
+the window of size r1*r2/M relevant to an incomplete length-M interval.
+The actual same-modulus alias obstruction from C28.56d also remains.
+Four-dimensional Bourgain double large sieve was inspected: its near-energy
+uses coefficient norms, so invoking it does not prove the missing signed
+determinant cancellation. Watt product mean-square was inspected: its useful
+height-linear estimate requires full product support below the height;
+MTWattBound and MTDeshouillersIwaniecBound themselves are propositions used
+as premises in the inspected receiver, not verified producers for this source.
+
+Search11842 joint dilation: partial65083/65083. Search75165 joint dispersion:
+partial result; candidate/source sections and proof/ingredient sections read.
+Broad semantic hits mostly concern other routes and are not applicable.
+All search processes exited0. No Lean process, production leaf, umbrella edit,
+numerical experiment, heartbeat increase or subagent in this continuation.
+No existing Lean result was re-audited without a source change.
+
+Detailed paper argument, exact transfer failures and next signed incomplete
+correlation obligation saved in bag-signed-medium-additive-factor.md.
+Turn evaluation: no hard analytic gap closed. Avoid counting scalar Mobius
+cancellation, exact collision classification or a conditional correlation
+receiver as cubic progress. Next attack must keep the signed full source and
+account for the joint comparison cost from the outset. C28.44, C28.37, moving
+cofactors, C28.35, MUST270 and RH remain OPEN. Goal ACTIVE.
+
+2026-10-04 01a0 C28.56l–q: continued the full signed cubic through actual zeros.
+New in-progress card bag-cubic-signed-zero-form.md records the full paper
+construction, correct nonzero main, signs and unresolved uniform estimates.
+No new production Lean theorem. The exact source ingredients are audited:
+Zeta23.WeilEF.EF_lit_zetaZeroConfig and primeGaussianCubicMain_eq_contractions
+(session6906); both Montgomery pair-correlation capstones (session54025).
+Both fresh /tmp probes used lake --old env lean, exited0, and printed only
+propext/Classical.choice/Quot.sound. Probe files removed, logs retained as
+/tmp/bag-ef-source-audit-01a0.log and /tmp/bag-zero-pair-source-audit-01a0.log.
+WeilProducerPerronExplicitFormula's positivity premise was not imported as an
+unconditional source. No umbrella/full build, heartbeat change or computation.
+
+Paper progress: the stationary middle-prime zero kernel has common physical
+window W(gamma/(2*pi*N)); its Gaussian ratio weight remains coupled. The
+density discrepancy D must equal the removed q=r contraction C plus little-o,
+not zero. Reflection preserves the compact EF arithmetic term; no negative
+involution exists from that reflection alone. Smooth interpolation between
+integers reproduces the exact sharp row, and finite mu(j)/j inversion cancels
+all proper powers. It shifts the Mellin kernel to K(rho/j) and preserves the
+negative sign of the complete zero sum. Pole/Gamma estimates are paper only.
+Correct target: the entire inverted zero sum is -C+o(N/log^2 N).
+
+Further paper mechanism: after q=u*v,r=v, the two-zero phase is
+2*pi*p*u-(gamma1/j)*log u+(gamma2/k-gamma1/j)*log v. Equal scaled ordinates
+give a stationary manifold, but an entire near-diagonal packet remains.
+For j=k=1 the subsequent prime rational mode b has saddle p=gamma/(2*pi*b),
+u=b and residual phase -gamma*log b. The b=1 mode therefore matches q=r,
+with cancelling Fresnel directions. All growing b-denominators, both original
+cutoffs, mixed EF terms and uniform zero-tail/saddle errors remain unproved.
+The new card records this as the next full-source conjecture, not a premise.
+
+Source pair correlation uses the actual all-zero Montgomery form and needs
+fixed alpha<1. Its strict range was verified from Lean output. The present
+j=k=1 kernel is at scale comparable to height and retains an extra signed
+prime twist. Source proof's x/T and x*log^3(T) errors do not vanish there.
+Improving only an untwisted endpoint mean square would not solve this twist;
+do not spend a production leaf claiming that as full cubic progress.
+
+Search5841: partial65118/65118, local-model malformed JSON and semantic timeout;
+all candidate/source/idea/ingredient sections inspected. Search16980:
+nonpartial65120/65120, no errors; exponent inversion hits do not instantiate
+the literal signed row. Search4356: nonpartial65123/65123, no errors; returned
+pair-frequency hits do not estimate the required zero-pair packet. All three
+searches terminal; compiler metadata mostly source-only, background refresh
+incomplete. Direct reads, not search summaries, supplied the EF and Montgomery
+applicability checks. Earlier searches11547/76566/32436/63567 and their outcomes
+were also inspected; no verified full signed zero-form producer was found in
+those returned candidates. This is not an exhaustive absence claim.
+
+Search84928: nonpartial65126/65126, no errors; all candidate/source/idea/
+ingredient sections inspected. Its averaged-short-interval hits assume the
+mean-square estimate, and the exponent-calculus hit supplies no prime variance
+producer. No such premise was substituted. Process terminal. All owned Lean
+and search processes terminal, both /tmp Lean probes deleted, logs retained.
+Scoped diff and new-card whitespace checks passed. Checkpoint memory updated.
+
+Turn evaluation: explicit source/phase structure sharpened, no hard analytic
+gap closed. C28.44, growing moments, moving cofactors, C28.35, MUST270 and RH
+remain OPEN. Keep attacking the complete stationary trace, not a scalar
+estimate, fixed rational mode, identity-only leaf or conditional receiver.
+
+### C28.56r–s continuation: actual cubic endpoint transfer
+
+C28.56r joint saddle has determinant -4*pi^2 and signature zero. After restoring
+dp, sequential saddle estimates give no extra free N saving. The literal sharp
+band has nonzero boundary amplitude, so rapid uniform Fourier tails were not
+justified. Recorded this obstruction in bag-cubic-signed-zero-form.md.
+
+C28.56s proposes removing growing endpoint strips in the actual full cubic,
+using fixed-index bilinear cancellation with W retained. New card:
+bag-cubic-sharp-edge-removal.md. Full integer Gram correlations, complex Abel,
+quarter-band frequency separation and harmonic Schur give the proposed slice
+bound O(sqrt(N log N)); H=N^(1/4) strips would then be negligible. This is a
+prerequisite for stationary analysis, not interior cubic cancellation.
+
+Search3573 nonpartial65129, no errors; search6429 partial65137 with malformed
+judge JSON. Candidate/source/idea/ingredient sections inspected; neither search
+supplied this producer. Directly read ChiDegreeTwoRootMatrix (proof pattern,
+not interchangeable phase), KuzminLandauInterval, AlmostOrthogonality,
+SeparatedRowSum and the actual window/profile sources. Both searches terminal.
+
+Lean construction underway in /tmp/BagCubicEdgeBilinear01a0.lean. First successful
+scratch pass (17501 exit0) checks complex Abel and full-integer linear prefixes.
+Actual W-product variation and weighted correlation added, under repair after
+scratch check47949. No new production theorem or completed edge bound claimed;
+no analytic main gap closed yet.
+
+C28.56s scratch construction continued. Check56098 exit0 verifies complete
+actual Gaussian prime slice bound, both noncontracting exclusions, three-edge
+telescoping and explicit ContDiffBump cutoff. Exact squared comparison:
+C*(H+1)^2*N*(1+log(N+1)). Source denominator-first summation was explicitly
+permuted, not silently identified with numerator-first ordering. No production
+file or umbrella edit yet. H=N^(1/4) little-o capstone is in the same scratch,
+current owned Lean check61998, log /tmp/bag-cubic-edge-bilinear-scratch-01a0.log.
+
+Log-power corpus search: first lexical conjunctive query had no hits; exact
+lemma requery returned HTGeometry.LogSquaredTailIntegral.summable_logSq_div_sq.
+Read its use of isLittleO_log_rpow_rpow_atTop and actual mathlib source; no
+unverified recalled lemma substituted. Both searches terminal, JSON files
+/tmp/bag-edge-log-power-search{,2}-01a0.json. Interior C28.44 still OPEN.
+
+C28.56s COMPLETE as an endpoint-transfer theorem. Created production leaf
+ChiPrimeGaussianCubicSharpEdges (1110 lines, two public theorems and one public
+definition). The capstone supplies smooth full-band representatives with
+H=N^(1/4) strips and error o(N/log(N)^2), along integer scales. It proves the
+actual full source comparison, with no assumed cancellation estimate. All
+three bands, prime masks, literal W/V and both exclusions are preserved.
+
+Production53962 exits0, no diagnostics, direct lake --old env lean leaf audit
+with output olean. Axiom96616 exits0: all three public declarations use only
+propext, Classical.choice, Quot.sound. Umbrella import inserted without any
+umbrella/full build. Lint68844 exits1 on the same 14 unrelated unreachable
+modules; no error for this leaf. All owned searches/builds now terminal.
+Final logs: /tmp/bag-cubic-sharp-edges-{final,axioms,lint}-01a0.log.
+Card moved to pipeline/3-formalized/bag-cubic-sharp-edge-removal.md; frontier
+map, main BAG card and zero-form continuation updated.
+
+Turn evaluation: a genuine analytic prerequisite is now discharged—literal
+sharp-to-smooth transfer at the contraction scale. This is not a full C28.44
+bound. Next attack must estimate the signed interior zero-pair/prime-mode
+aggregate, retaining the scale-dependent cutoff derivatives, nearby ordinate
+packets, growing rational modes and mixed terms. No uniform stationary
+expansion follows merely from C-infinity regularity. Growing moments, moving
+cofactors, positive self-return, MUST270 and RH remain OPEN; goal ACTIVE.
+
+Cleanup: removed superseded /tmp/BagCubicEdgeBilinear01a0.lean and
+/tmp/BagCubicSharpEdgesAxioms01a0.lean. Audit logs retained. Scoped diff and
+new-file whitespace checks pass. No live owned process or pending code audit.
+
+## 2026-10-04 — C28.56t growing twisted prime pairs, active
+
+BAG only. Previous C28.56s is fully audited sharp-to-smooth transfer. Current
+hard target remains the signed interior cubic/zero trace, with nearby distinct
+zero pairs, growing rational modes and cutoff derivative costs. A single-zero
+Landau estimate cannot remove the nearby distinct-zero packet. No such
+reduction is being used.
+
+Corpus searches in /tmp/bag-{interior-trace,twisted-zero-landau,
+twisted-critical-sieve,singular-average,fejer-kernel}-search-01a0.json were
+inspected, including candidate/source/idea/ingredient sections and coverage.
+Some deep searches were partial (local judgement/deadline errors); available
+hits were used and actual source signatures read. The full prime-dilation
+sieve retains floor(P/B), whereas the prior slope-uniform bound drops it.
+The source forbidden-support reciprocal mass bound permits starting the sieve
+above L=ceil(16 log K), with N=K^2 and slopes at most K. The surviving singular
+product is >=1/2; no power of the discriminant is needed.
+
+New card: bag-cubic-growing-twisted-pairs.md. Complete finite determinant
+kernel mechanism: each fibre costs 1+C*(N/B)*(log L/log h)^2+2*K^(3/4), the
+Gaussian kernel has total integer mass O(B), and original band coefficient
+products are <=1/N. Their normalized twisted correlation is bounded by
+C*((log L/log h)^2+K^(-1/4)). Its product with log N tends to zero. This covers
+all band prime pairs and all height centres. It is not yet the complete signed
+BAG mode sum; that cost is explicitly retained.
+
+Current scratch /tmp/BagTwistedPairs01a0.lean. The finite full-band estimate,
+Gaussian integer kernel and high-cutoff full sieve all checked in run93880;
+that run failed only two asymptotic rewrite steps. Those were repaired and the
+literal Gaussian height-integral bridge plus uniform capstone assembly added.
+Current owned foreground Lean run31166, log /tmp/bag-twisted-pairs-dev-01a0.log.
+No production leaf/umbrella/lint/axiom audit yet. No numerical experiments,
+added axioms, subagents or heartbeat changes. Superseded .part files removed.
+
+C28.56t COMPLETE. Production ChiPrimeGaussianGrowingTwists.lean (732 lines)
+exports GaussianPrimeTwist.average and GaussianPrimeTwist.exists_negligible_error.
+For N=K^2, log(N)*norm(full normalized Gaussian height average) has a vanishing
+envelope uniform in all height centres and positive reduced distinct A,B<=K.
+No prime-distribution/correlation premise. Full coefficients, all determinant
+fibres, exact Gaussian transform, every tail and sieve remainder remain.
+
+Direct production33237 exit0, no diagnostics, lake --old env lean leaf with
+output olean. Axiom80065 exit0: both public declarations depend exactly on
+propext, Classical.choice, Quot.sound. Umbrella wired without full/umbrella
+build. Index63106 exit0. Lint95490 --check-generated exit1: 16 unrelated
+unreachable modules and a stale generated overview after regeneration;
+no error names this new leaf. Logs /tmp/bag-growing-twists-{final,axioms,index,lint}-01a0.log.
+Card moved to pipeline/3-formalized/bag-cubic-growing-twisted-pairs.md;
+frontier map, main BAG card and zero-form card updated. Superseded scratch
+/tmp/BagTwistedPairs01a0.lean and axiom probe removed; .part files already
+removed. Proof uses default heartbeats, no numerical experiments or subagents.
+
+Turn contribution: a new critical-scale growing-family pair cancellation
+producer, beyond the old fixed rational estimates. This does NOT identify
+or estimate the complete signed weighted BAG zero trace. Cutoff derivative
+costs, nearby distinct zeros, mixed/exponent terms, full mode aggregation,
+growing moments, moving cofactors, positive self-return and RH remain OPEN.
+
+C28.56u is the next hard conjecture, not another fixed-slope estimate.
+Source Dirichlet approximation (Mathlib DiophantineApproximation/Basic:147)
+gives beta≈a/b, b<=K and |beta-a/b|<=1/((K+1)*b). For N=K^2 partition q-band
+into O(K/b) blocks of width b*K. The determinant centre b*delta*q drifts at
+most b across a block. Its full shifted Gaussian integer mass is O(b).
+Each fixed nonzero determinant's prime-anchor progression has length <=K,
+so the actual full affine sieve applies with the same logarithmic lower
+cutoff. Discriminant times slopes is O(K^5). Multiplying block count, kernel
+mass and fibre bound then dividing by N gives the SAME vanishing envelope,
+uniform for EVERY beta in [1/2,2], provided the exact p=q Gaussian packet is
+subtracted. This packet remains for near-identity nonzero twists; excluding
+beta=1 alone is insufficient. New card bag-all-real-connected-prime-pairs.md
+contains the exact proposed connected average and whole-source block proof.
+
+Next formal obligations: localized affine prime-pair anchor transport,
+translated integer Gaussian sum, Dirichlet partition of ALL prime pairs,
+and final uniform connected average. These are not assumed premises. Even
+that theorem will still leave the signed mode aggregate and moving zero-trace
+transfer. All modes are demodulated to residual lambda near zero, so bare
+log(beta) separation is NOT output-frequency orthogonality.
+
+Last searches: /tmp/bag-growing-twist-aggregate-search-01a0.json partial65195
+(local retrieval deadline; available sections inspected); /tmp/bag-real-twist-affine-search-01a0.json
+nonpartial65195/65195 no errors. Both terminal. Exact Dirichlet and full affine
+sieve source statements read. No owned running process; goal ACTIVE.
+
+## 2026-10-04 — C28.56u all-real connected producer, active formalization
+
+BAG route. C28.56t was genuine prior-turn progress; this turn attacks its
+rational-denominator restriction through the complete localized affine sieve.
+Scratch /tmp/BagConnectedPairs01a0.lean now has checked (run91284 exit0):
+least-q prime anchor transport on translated b*K blocks; full local affine
+sieve with every anchor and finite remainder; nonzero determinant for p!=q;
+real Dirichlet approximants with positive coprime a<=3b, b<=K; full shifted
+Gaussian kernel via integer floor; complete block partition and global
+connected spectral norm bound. The block count times b is <=3K. Every
+nonzero determinant times slopes is <=24*K^5; ceil(16 log K) still suffices.
+This proves the mathematical all-real sieve mechanism, not just fixed slopes.
+
+Current capstone run67090 (foreground lake --old env lean scratch) includes
+exact realAverage, entire diagonalPacket using primeGaussianBandEnergy,
+Fourier integral identity, exact diagonal subtraction and proposed
+exists_connected_negligible_error. No production update/audit yet. The prior
+checked kernel sum has no omitted pairs or numerical computations. Default
+heartbeats. No subagents. New search59302 targets complete cubic sources;
+no pairwise control is being claimed to sum the signed cubic automatically.
+
+C28.56u COMPLETE, BAG goal still ACTIVE. Production
+ChiPrimeGaussianGrowingTwists.lean is now 1351 lines. New public realAverage
+(line1169), diagonalPacket (1176), exists_connected_negligible_error (1332).
+For N=K^2, log(N)*norm(realAverage-diagonalPacket) has a source-constructed
+vanishing envelope, uniformly for every beta in[1/2,2] and all height centres.
+The exact primeGaussianBandEnergy diagonal packet remains near beta=1.
+
+Final proof retains all prime pairs, full Gaussian tails, every translated
+block including its partial endpoint block, least-prime anchor, singular
+factors and full affine-sieve remainder. Dirichlet gives 0<a<=3b, b<=K;
+progressions have length<=K; nonzero |v|ab<=24*K^5; floor-centred Gaussian
+mass is O(b), while (#blocks)*b<=3K. Lower cutoff ceil(16 log K) yields the
+same loglog/log saving. Reused high_sieve_main/high_sieve_remainder avoid
+copying the source analytic estimates. No distribution premise or heartbeat
+increase. Existing rational capstone remains verified.
+
+Audits: scratch73415 exit0; production63415 exit0 with no diagnostics;
+axiom51041 exit0, all five public declarations exactly
+[propext, Classical.choice, Quot.sound]. Final command was lake --old env lean
+GaloisForLFunctions/RHTower/ChiPrimeGaussianGrowingTwists.lean with output
+olean; #print axioms and #check were in /tmp only. Existing umbrella import
+verified, no umbrella/full build. Index22520 exit0. Lint46914 exit1: exactly
+16 unrelated unreachable modules, no generated-index error or finding for
+this leaf. Logs /tmp/bag-connected-{final,axioms,index,lint}-01a0.log.
+
+Card moved to 3-formalized/bag-all-real-connected-prime-pairs.md. Frontier,
+main BAG card, zero-form card and predecessor card updated. All owned proof
+fragments, scratch and axiom probe removed after audit; evidence logs/search
+JSON retained. No owned process remains. No subagents or numerical experiments.
+
+Turn contribution is a new unconditional all-real critical connected-pair
+producer, beyond growing rational slopes. Next hard conjecture remains the
+COMPLETE signed stationary trace Z_N=-C(N)+o(N/log^2 N), with original moving
+weights, nearby distinct-zero packet, finite exponent inversion and mixed
+terms. The new uniform pair estimate is NOT a signed aggregate bound; modes
+are demodulated to residual pair frequencies. Do not spend the next turn on
+another fixed mode, a receiver, or bare log(beta) orthogonality. Attack the
+joint signed trace and preserve its nonzero contraction main. C28.44,
+growing moments, moving cofactors, positive self-return and RH remain OPEN.
+
+This turn's source searches: bag-connected-local-sieve-search-01a0.json,
+nonpartial65199/65199, source-only compiler coverage with semantic coverage
+unavailable; useful exact full affine and Gaussian sources verified directly.
+bag-connected-to-cubic-search-01a0.json, nonpartial65233/65233, no errors;
+all candidate/source/ingredient sections inspected. Corpus still returns the
+literal cubic, exact Vaughan identity and contraction law, not a proved
+complete signed cancellation estimate. Both searches terminal.
+
+## 2026-10-04 — C28.56v simultaneous quadratic/cubic test
+
+BAG route. Previous turn progress: C28.56u fully formalized and audited.
+Current source revalidation confirms its exact all-real connected statement
+and the full signed cubic target. Kloosterman source inspection retains the
+terminal incomplete cross-modulus carrier; complete-period orthogonality does
+not estimate it. Subpower receiver search identified density machinery but
+no physical producer, so no receiver wrapper is being added.
+
+New conjecture/paper mechanism: thin the corpus's coherent ACTUAL prime
+packets to obtain simultaneously uniform all-real connected pair decay and
+divergent signed noncontracting physical cubic. This tests and may refute a
+generic promotion of C28.56u to the hard cubic estimate. Set m=K^8 in the
+source dense packet: H=K^32, N~K^64, M0>=K^24. Bernoulli1/K thinning seeks
+M>=M0/(2K), each nonzero difference fibre<=C*M0/K^2. Each fixed difference
+edge graph splits into two matchings; independent-edge Hoeffding plus finite
+union over H differences should construct a realization. This is a proof
+argument, not a numerical computation. Exact critical Gaussian covariance
+then has O(1/K) envelope after unit-energy normalization, while the source
+signed cubic/T is >=c*K^(5/2). Full proof/card:
+bag-connected-pair-cubic-separation.md. No Lean theorem yet, no formal no-go
+or retirement claimed. The positive survivor is the simultaneous construction.
+
+C28.56v continuation: finite Bernoulli law, independent matching concentration,
+parity matching split, finite simultaneous union bound developed in
+/tmp/BagPacketThinning01a0.lean. Generic selection reached only a trivial
+normalization-tactic fix before adding the actual-prime application; no audited
+production theorem yet. Actual-prime construction uses m=K^8, retains more than
+K^23/2 primes, and bounds each positive difference fibre by8card(S)/K.
+Paper cubic lower bound can be weakened to the convenient polynomial
+T*K^2/1024 (source T=4piN/3), avoiding fractional-power bookkeeping.
+Global real-twist kernel proof retains all tails. Pending exact physical
+Gaussian identity and final simultaneous capstone are prepared as /tmp parts.
+The finite Gaussian Gram search (nonpartial65256; source/compiler coverage
+mostly source-only; semantic coverage unmeasured) found no direct ready
+arbitrary-twist packet identity. Existing C28.56u phase/Fourier proof is being
+adapted, with complete diagonal normalization.
+
+
+### C28.56v CLOSED — simultaneous positive survivor audited
+
+Production leaf ChiPrimePacketConnectedCubicSeparation (955 lines) proves
+exists_prime_packets_connected_mixing_cubic_divergence unconditionally.
+One C>0 gives actual prime packets with all-real/all-centre connected Gaussian
+average<=C/K, exact unit energy, coefficient maximum<=1/K, and original signed
+noncontracting cubic>=T*K^2/1024. Positive and negative difference fibres and
+full tails retained; exact height-integral/diagonal identity proved.
+
+Production14031 exit0/no diagnostics; axioms13295 exit0/all SIX public
+declarations exactly propext, Classical.choice, Quot.sound; printed capstone
+has no outside hypotheses. Umbrella wired without building it. Index29684
+exit0. Lint18740 exit1:17 unrelated unreachable modules, no generated-index
+error, no finding for this leaf. Logs /tmp/bag-packet-separation-{final,axioms,
+index,lint}-01a0.log. Card moved to3-formalized/bag-connected-pair-cubic-separation.
+
+Mathematical evaluation: solved the generic promotion question negatively by
+constructing its strongest positive witness simultaneously on actual primes.
+This is new knowledge, not a proof of full Gaussian signed cancellation.
+Next conjecture must use the complete source-weighted trilinear/zero trace,
+including its nonzero contraction main. Do not substitute another generic
+quadratic or coefficient-flatness receiver for that hard problem. BAG/RH
+remain open; no goal completion asserted.
+
+Process note: one early scratch launch overlapped its predecessor before the
+predecessor's exit was confirmed. Owned older process57387/57420 was terminated;
+session23561 then reported exit143. Subsequent Lean checks were serialized.
+All production/axiom/index/lint handles are now terminal. Owned development
+Lean files and11 part files removed; production sources and audit logs retained.
+
+
+## 2026-10-04 — C28.56w full signed trace attack, still open
+
+BAG only. Previous C28.56v is audited new knowledge: actual-prime connected
+quadratic mixing does not control the signed cubic. This turn returned to the
+literal complete Gaussian cubic. Card bag-full-cubic-semiprime-dispersion.md
+records the mathematical attempts and their limits; no new Lean leaf/build.
+
+Source audit: inspected the exact cubic entry, both contraction masks, full
+joint prime-only Vaughan row, and later Watt product/numerator-range theorems.
+The latter still have an explicit product-length comparison and different
+unit-coefficient factors. They do not discharge the critical prime source.
+The semiprime regrouping was already in C28.41; do not count its rediscovery
+as progress. Ordinary Farey/Parseval and separate row norms retain the known
+power loss.
+
+New paper direction: simultaneous additive-mode factorization gives the
+resonance c=a*b, with the literal V/W profile on p=b*r, q=a*r. Its rational
+coefficients are signed. For distinct prime denominators Q,R their product
+is c_Q(B)*c_R(A)/((Q-1)^2*(R-1)^2), not a positive denominator-only weight.
+Numerator cancellations produce negative modes inside the actual physical
+support (6/5,5/7,6/7) as well as positive modes. Complete local residue cells
+cannot replace the shorter physical slope box. These are paper deductions,
+not an estimated prime trace or audited Lean theorem. The full reciprocal
+Vaughan/Poisson alternative leaves square-root phases, all signed factor
+branches and boundary costs. None has been silently made a hypothesis.
+
+Search records (JSON under /tmp/bag-*-01a0.json): full-signed-source-next was
+partial (semantic HTTP408); product-distribution-deep partial (decomposition
+deadline); signed-cubic-dispersion nonpartial; joint-trilinear-phase partial
+(worker disconnected); cubic-rational-trace nonpartial; prime-square-cubic-
+sector partial (decomposition deadline). Inspected all returned candidate and
+source statements plus proof/ingredient suggestions. Source coverage at the
+later queries65276/65276, predominantly source-only/pending compiler metadata;
+no applicable full signed estimate found. Several suggestions were unrelated
+algebraic square-root certificates or rational exponent arithmetic, not
+exponential-sum bounds. Watt/local-mode lexical searches were also inspected.
+No conclusion about absence of all possible corpus proofs follows from these
+limited/partial search results.
+
+Evaluation: this turn did not close a hard analytic gap. Do not add a new
+frontier-map theorem or call a conditional/identity wrapper progress. Continue
+the actual signed rational-mode trace / reciprocal B-process with full source
+weights and contractions. Growing moments, moving cofactors and positive
+self-target recurrence remain open. No subagent, numerical experiment,
+computation, heartbeat change, umbrella/full build, commit or push.
+
+Final search prime-root-restriction28670 exited0, nonpartial65281/65281;
+all20 candidate and20 source statements plus the proposed ingredient set
+inspected. Its complete-modulus Kloosterman norm and generic Bourgain L2
+receiver are not the required prime-restricted square-root-phase bound.
+All owned search handles terminal. Only the new C28.56w card and appended
+working-log section were edited this turn; targeted whitespace check passed.
+No new Lean theorem or audit result is claimed.
+
+## 2026-10-04 — C28.56x complete damped arithmetic cubic trace
+
+BAG only. C28.56w corrected individual rational signs but closed no hard
+analytic gap. This turn attacked the COMPLETE signed multiplicative rational
+resonance using the corpus's power-damped Ramanujan coefficients.
+
+New production leaf: ChiRamanujanCompleteCubicTrace, namespace RHTower.BAGTrace.
+For z=p^(-sigma), c(i)=1 for i>=0, c(-1)=-z/(1-z), c(i)=0 below -1.
+The complete local double sum of c(i)c(j)c(i+j)z^(i+j) is (1-z)^(-2),
+whereas the complete absolute sum is (1+4z)/(1-z)^2. Both negative strips,
+the two positive corners, and the entire positive quadrant are included.
+Finite-product HasSum proofs retain EVERY integer valuation pair. Passing
+through all finite prime sets, sigma>1, gives signed limit zeta(sigma)^2
+and absolute limit zeta(sigma)^2 prod_p(1+4p^(-sigma)). Both zero-vector
+axes have the same single-axis sum; literally deleting their union gives
+1-zeta(sigma)^2. `offAxesTrace_eq` identifies the masked sum, not merely
+an expression assigned the name connected trace. The prime coefficient is
+also proved equal to -1/(p^sigma-1). These are unconditional parameterized
+identities, with no supplied cancellation premise.
+
+Scratch full proof passed. First production audit passed with one unused
+ring tactic warning; that tactic was removed. Clean final production audit
+is in progress (owned handle29462, log /tmp/bag-rational-trace-final-01a0.log).
+Umbrella import added; no umbrella build. Prepared /tmp axiom probe for ALL
+27 public theorems. Final audit/axiom/index/lint outcome will be appended.
+The finite-product proof needed explicit functions in HasSum.mul and the
+reindexing equivalence to stop large Finset.prod unfolding; no heartbeat
+setting was changed. Removed an unnecessary coarse local-mass bound after
+the exact absolute Euler product supplied convergence directly.
+
+Hard continuation, recorded in bag-rational-product-trace-euler-cancellation:
+full two-variable Mellin factorization into four zeta factors divided by two,
+with an absolutely convergent Euler remainder H and exact H(u,0)=H(0,v)=1.
+The complete single-axis transform has a different Euler remainder K with
+K(0)=1 and K'(0)=0. After both subtractions the proposed critical boundary
+has a product principal value AND a point mass at their intersection. The
+point mass must not be dropped. This distributional theorem remains paper
+work, not a Lean result. Source pole/nonvanishing inputs checked locally.
+
+Transfer audit: arithmetic frequency axes are not yet identified with the
+literal physical prime diagonals. Their damping-dependent 1/epsilon scale
+must be matched to the actual log(N) contraction scale. Near-resonances,
+coupled damping/band limits and moving V/W amplitudes remain open. Therefore
+this solves a complete arithmetic aggregate, NOT the original signed prime
+cubic. Growing moments, moving cofactors, positive common-height self-return,
+and unconditional RH remain open.
+
+Current search evidence: product-trace-next and abel-rational-trace-source
+nonpartial; rational-allpass deep nonpartial; rational-connected-trace deep
+partial (source inventory65305/65305, compiler mostly pending/source-only).
+All returned declarations, candidate/source statements and proof/ingredient
+suggestions inspected. Zeta-boundary lexical returned meromorphy/analyticity;
+rg verified riemannZeta_ne_zero_of_one_le_re in mathlib LSeries/Nonvanishing.
+No full physical cancellation theorem was found or assumed. Search JSON
+files under /tmp/bag-*-01a0.json retained as evidence; all searches terminal.
+
+C28.56x final verification: clean production handle29462 exits0, no diagnostics.
+Axiom handle75944 exits0: ALL27 public theorems use only propext,
+Classical.choice, Quot.sound. Index handle4755 exits0, regenerated overview/API/
+gaps and refreshed four search-index files. Lint handle37951 exits1 solely on
+18 unrelated modules unreachable from their umbrellas; no new-leaf, proof-debt
+or generated-file error. Targeted whitespace check passes. The completed result
+is recorded in P3 bag-complete-damped-cubic-trace and frontier C28.56x; the P1
+card retains the full weighted/physical obligations. No full/umbrella build,
+subagent, numerical experiment, raised heartbeat, added axiom, commit or push.
+
+Contribution assessment: unlike C28.56w, this turn proves a complete infinite
+signed arithmetic aggregate with absolute convergence and literal axis
+removal. It does NOT close full physical cubic cancellation or any RH gap
+by itself. Next conjecture: the full weighted connected arithmetic trace has
+the pole-removed principal-value/point-mass boundary recorded in the P1 card;
+prove its exact Mellin factorization and uniform boundary action, then address
+actual finite-height near-resonances and physical contraction matching.

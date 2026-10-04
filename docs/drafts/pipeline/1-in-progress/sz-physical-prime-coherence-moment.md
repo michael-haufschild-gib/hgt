@@ -41,3 +41,18 @@ ground source term and remains scalar-shift invariant. It has not produced
 an absolute energy estimate; no regularity assumption or Lean wrapper was
 added. This is a limitation of that attempted argument, not a proof that
 all dilation methods fail.
+
+## Attempt assessment, 2026-10-04
+
+Physical Dirichlet moment expansion retains every close-product
+correlation, and the existing convolution/large-value results retain a
+length loss. Expanding that identity alone supplied no estimate of the
+signed canonical-head gap; no production Lean wrapper was added.
+
+The subsequent literal ramp-source investigation found a sharper,
+testable issue with absolute Gamma-energy control. The actual cell
+displacements shrink to zero while flux/lag identities force a nonzero
+signed action on cofinal times. See
+[sz-ramp-cusp-energy-concentration](../3-formalized/sz-ramp-cusp-energy-concentration.md).
+This tests a specific source-control mechanism; the physical moment
+approach and canonical-head sign remain open, not disproved.

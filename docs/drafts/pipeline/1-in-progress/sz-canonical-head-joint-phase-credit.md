@@ -207,3 +207,48 @@ task is still the displayed full canonical-head phase credit. Further
 constant-lift mass estimates cannot solve it; any selective exterior
 construction must account for its actual signed energy, not only compact
 approximation and coefficient bounds.
+
+### Literal ramp Gamma energy: actual cusp obstruction
+
+`CCMExponentialRampCuspConcentration` now proves that the scalar ramp's
+visible Gamma energy is cofinally unbounded inside every fixed cusp
+window, simultaneously with nonzero signed action. The complete signed
+current integral outside that window tends to zero. This uses literal
+prime powers, both terminal orientations, the actual deficit-flux
+convolution and unconditional Weil-lag recurrence.
+
+Uniform visible/full arithmetic ramp energy is disproved; localizing it
+to a fixed small window does not repair the candidate. The positive
+survivor is the simultaneous concentration/nonvanishing law, fully
+audited in P3:sz-ramp-cusp-energy-concentration. The narrow failed
+candidate is P5:sz-uniform-ramp-gamma-energy.
+
+This is progress on the topology required by signed source control. It
+does not bound the signed ramp action or prove the canonical-head gap.
+Next work must estimate the actual signed cusp pairing with its cross
+terms, retaining the complete source. Repackaging another absolute
+energy bound or an RH-equivalent receiver cannot discharge this target.
+
+
+### Signed ramp balance: no eventual dominance
+
+`CCMPrimeDeficitBohrFlux` proves unconditional Omega-plus/minus(1) for
+both the normalized deficit and literal full ramp action. Its positive
+survivor is an explicit stable-filter Bohr model under RH, approached by
+the actual flux, with a coefficient map of modulus one. A compact-head
+extension plus the existing one-sided Landau theorem discharges RH from
+the final oscillation statements. Leaf47925 passed; all9 axiom queries
+returned only propext, Classical.choice and Quot.sound.
+
+Therefore neither eventual direction of A+D=AgeForce+Entropy can supply
+a ramp sign. This rules out that dominance candidate, not bounded signed
+A or the canonical-head inequality above. The remaining task must bound
+the complete oscillating correlation, retaining the terminal current.
+P3:sz-ramp-signed-flux-oscillation contains the paper proof and audit;
+P5:sz-eventual-ramp-sign-dominance records the narrow failure.
+
+### 2026-10-04: complete pointwise symbol floor is impossible
+
+`SuzukiCompletedCurrentSignedWindows` proves unconditionally that both signs of the actual completed Mellin current exceed every fixed threshold on positive-length late windows. The full corrected Gamma–polar–prime symbol inherits both signed aperture-window excursions at frequency zero. Final direct leaf60657 passed. The argument uses the actual logarithmic cusp and right derivative at prime seams, then uniform recurrence under RH deduced internally from a supposed one-sided current bound; no independent-zero-phase premise remains.
+
+Retire the candidate of obtaining this canonical-head inequality from an eventual pointwise lower bound for the full symbol. The next direct sign argument must use the support-constrained Fourier profile or equivalent complete coherent field, retaining signed cross terms. Window depth alone cannot bound accumulated work: its duration and its correlation with the physical head remain essential. Exact positive survivor and full audit are in P3:sz-screw-cusp-signed-current; retired candidate is P5:sz-complete-pointwise-symbol-positivity. Canonical-head positivity itself remains open.

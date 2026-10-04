@@ -6197,3 +6197,156 @@ Continue with the actual prime-only factorization and its signed cross-modulus
 correlations; no energy-only surrogate or conditional saving receiver is accepted.
 C28.44 full cubic, C28.37 growing moments, moving cofactors, C28.35 positive
 self-target recurrence, MUST270 and RH remain OPEN; goal ACTIVE.
+
+
+**C28.56d — actual prime-cofactor modular aliases, LEAN PROVED.**
+Real-fraction injectivity does not identify the integer-sampled phase diagonal.
+The source PNT constructs P=(64k⁸,128k⁸] primes, Q=P_(2k²), and actual r∈Q.
+With q=r removed, all actual Vaughan short coefficients on m∈P are -1,
+products mq are injective and are units mod r, but their same-residue signed
+non-identical-pair energy is at least k times identical-pair energy, eventually
+uniformly for every r∈Q. There are distinct products with identical phases for
+EVERY integer long factor. No eventual constant-times-diagonal bound exists.
+
+This closes a failed ingredient together with its exact positive survivor;
+it does NOT bound the full signed squarefree-cofactor or Gaussian source from
+below. Composite cofactor signs and coupled W/V amplitudes remain. Production
+leaf46498 and all15 public axiom queries97162 pass, standard logical axioms only.
+Leaf wired; no umbrella/full build. Lint68165 reports14 unrelated unreachable
+leaves, no new BAG errors. Card: 5-failed/bag-prime-cofactor-integer-alias.md.
+
+**C28.56e/f — zero-mode separation and complete Kloosterman transfer, insufficient.**
+Paper scale accounting shows that removing the residue zero mode, then using
+ordinary Farey large sieve and completing the short long-factor interval,
+still loses a conductor power. This is a failure of that proof estimate, not
+a lower bound for the full source. Existing complete-period Kloosterman
+orthogonality leaves the actual incomplete physical interval in its remainder;
+its inverse-frequency collision theorem is not the product-frequency carrier.
+Do not substitute those theorems by name. The new positive survivor already
+formalized in C28.56d identifies exact aliases a valid replacement must retain.
+
+**C28.56h — actual short-factor additive branch, OPEN.**
+The corpus has a finite compressed Heath–Brown identity and a proved six-factor
+medium/long dichotomy. Applying squarefree restriction retains the exact prime
+source, but a medium Möbius factor remains a possible branch; a long free factor
+is not automatically available. Existing medium-factor estimates use logarithmic
+phases, not the joint additive product phase required here. Attack that actual
+medium-factor correlation with shared prime moduli and the physical interval
+retained; a conditional bound or another exact-source wrapper is not closure.
+
+Turn evaluation: a specific proposed diagonal estimate is falsified and its
+source-generated positive replacement is audited. No contraction-scale full
+cubic saving has been proved. C28.44, C28.37, moving cofactors, C28.35,
+MUST270 and RH remain OPEN; goal ACTIVE.
+
+**C28.56i/j — prime-dilation transfer audit, hard source still OPEN.**
+The Turan–Kubilius/Mobius/Mertens ingredients give a paper finite-amplification
+argument for fixed irrational additive frequencies. It does not close the
+actual medium branch: scalar cancellation followed by absolute q,r summation
+still misses the conductor power. Applying amplification directly to the
+joint row introduces an unproved joint squared-norm comparison cost, as well
+as incomplete correlations with m-dependent Gaussian/window amplitudes and
+coprimality masks. Distinct prime moduli exclude exact small-dilation integer
+aliases, but leave near-resonant determinant windows of width r1*r2/M.
+The signed contribution of those windows, with the original interval retained,
+is still unestimated. No new Lean producer or contraction-scale saving is
+claimed. Detailed paper argument and precise remaining costs are recorded in
+`bag-signed-medium-additive-factor.md`; continue the signed source problem,
+not a scalar cancellation or assumed-energy wrapper.
+
+**C28.56l–q — signed zero-form / stationary trace attack, OPEN.**
+The actual compact C² zeta explicit formula is unconditional and freshly
+audited. A paper construction matches the sharp prime band at every integer
+and uses finite exponent Möbius inversion to cancel proper powers exactly.
+It retains every zero, multiplicity, exponent, pole and Gamma term. The
+single-zero aggregate must have main **minus the removed contraction**, not
+zero; forgetting that main gives the wrong cubic target.
+
+The two-zero phase at q=u*v,r=v has stationary condition
+gamma1/j=gamma2/k and u=gamma1/(2*pi*j*p). The whole nearby-ordinate packet
+survives. For j=k=1, a further rational prime mode b=A/Q has stationary ratio
+u=b and remaining phase -gamma*log b. At b=1 the phases and Fresnel factors
+cancel and u=1 matches q=r. This proposes a spectral producer for the exact
+contraction, but no full stationary trace asymptotic is proved.
+
+The corpus's unconditional pair-correlation theorem was also freshly audited;
+its scale is strictly subcritical and its kernel lacks the remaining signed
+prime twist. Neither it nor a diagonal zero estimate closes the new source.
+All growing rational modes and all mixed/endpoint terms must be estimated
+together. Detailed construction, signs, source checks and next hard conjecture:
+`bag-cubic-signed-zero-form.md`. No production Lean leaf was added, and no hard
+analytic gap closed in this continuation. C28.44, growing moments, moving
+cofactors, positive self-return and RH remain OPEN; goal ACTIVE.
+
+**C28.56r–s — sharp boundary repair on the same signed-zero route.**
+The two-variable saddle contributes no extra free power saving; sharp endpoint
+amplitudes prevent assigning uniform rapid Fourier decay. C28.56s instead
+removes actual edge strips by a window-weighted bilinear Gram/Schur estimate.
+ChiPrimeGaussianCubicSharpEdges now proves the complete Gaussian prime slices,
+both contraction exclusions, all three edge comparisons and an explicit
+smooth cutoff, with squared error at most C*(H+1)^2*N*(1+log(N+1)). Its
+unconditional capstone takes H=N^(1/4) and proves error o(N/log(N)^2) along
+integer scales. Direct leaf and all three public axiom audits pass, standard
+logical axioms only; umbrella wired. Lint reports 14 unrelated unreachable
+modules. This closes literal sharp-to-smooth transfer; cutoff derivative costs
+and the signed interior correlation remain. See
+`../3-formalized/bag-cubic-sharp-edge-removal.md`. No C28.44 or RH closure.
+
+
+**C28.56t — critical growing rational pair family, FORMALIZED.**
+ChiPrimeGaussianGrowingTwists constructs a vanishing envelope for log(N)
+times the complete normalized Gaussian prime-pair average, uniformly for
+positive reduced distinct A,B<=sqrt(N), all height centres, N=K^2. All original
+prime pairs and coefficients remain. The high lower sieve cutoff controls
+singular factors without a discriminant power; the retained N/B progression
+length cancels the Gaussian determinant kernel's O(B) mass. Direct production
+and both public axiom audits pass, standard logical axioms only. Umbrella
+wired and index regenerated. Lint reports 16 unrelated unreachable modules
+plus a stale generated overview after regeneration; no error for this leaf.
+See ../3-formalized/bag-cubic-growing-twisted-pairs.md.
+
+This closes a critical growing-family pair estimate, not the moving weighted
+zero-trace transfer or full signed cubic.
+
+**C28.56u — all-real connected critical prime pairs, FORMALIZED.**
+The same production leaf now exports realAverage, diagonalPacket and
+exists_connected_negligible_error. Along N=K^2, log(N)*norm(realAverage-
+diagonalPacket) has a vanishing envelope uniformly for every beta in[1/2,2]
+and every height centre. Dirichlet approximation plus least-prime anchors
+reduces each translated b*K block to an affine progression of length K.
+Every block and Gaussian tail remains, and (#blocks)*b<=3K cancels the
+approximant denominator. The exact p=q packet remains near beta=1.
+
+Direct production63415 passed with no diagnostics. Axiom51041 passed for all
+five public declarations, exactly propext, Classical.choice and Quot.sound.
+Index regenerated and existing umbrella import checked without building it.
+Lint46914 reports 16 unrelated unreachable modules, no error for this leaf.
+See ../3-formalized/bag-all-real-connected-prime-pairs.md.
+
+Next hard conjecture stays the full signed stationary trace law, with its
+nonzero removed-contraction main, actual moving weights, nearby distinct-zero
+packet, finite exponent inversion and mixed terms. The all-real pair bound
+does not supply its complete mode aggregation. No bare-frequency orthogonality
+after demodulation is assumed. C28.44, growing moments, moving cofactors,
+positive self-return and RH remain OPEN.
+
+
+**C28.56v — connected mixing does not control the signed cubic, FORMALIZED.**
+ChiPrimePacketConnectedCubicSeparation constructs actual prime packets with
+exact unit coefficient energy, maximum coefficient<=1/K, and complete
+connected Gaussian average<=C/K for every real beta in[1/2,2] and every centre.
+The SAME selected packet has ORIGINAL signed noncontracting physical chi cubic
+>=T*K^2/1024. All positive and negative difference fibres, Gaussian tails,
+diagonal packets, contraction exclusions and physical remainders remain.
+
+Generic quadratic-to-cubic promotion is therefore refuted; its simultaneous
+positive survivor is fully formalized. Production14031 and all six public
+axiom queries13295 pass, exactly propext, Classical.choice and Quot.sound.
+Umbrella wired; index29684 refreshed. Lint18740 reports17 unrelated unreachable
+modules and no finding for this leaf. Record:
+../3-formalized/bag-connected-pair-cubic-separation.md.
+
+The actual full Gaussian weighted cubic/zero trace is still open. Next work
+must attack that complete signed source, retaining the nonzero contraction
+main, moving weights, nearby distinct zeros, exponent pairs and mixed terms.
+Growing moments, moving cofactors, positive self-return and RH remain open.

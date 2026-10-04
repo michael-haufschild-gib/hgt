@@ -1,7 +1,8 @@
 # RN-P-7x: finite-pair positive transport primitive
 
 Status: primitive sign and strict linear comparison formalized and directly audited.
-Global current sign open. Certificate: ../3-formalized/theta/rn-finite-pair-positive-transport-primitive.md.
+Integrated current sign open; global pointwise negativity is refuted below.
+Certificate: ../3-formalized/theta/rn-finite-pair-positive-transport-primitive.md.
 Route RN; successor to rn-center-schur-coordinate-row-flow.md.
 
 Let k be the actual source, H its literal first-moment kernel, J=H(0,0),
@@ -44,7 +45,9 @@ must retain both a and B; neither arbitrary coefficient substitution nor
 discarding a term is allowed. Actual integrability and vanishing flux are
 proved in ThetaTailFinitePairTransport. The x->0 diagnostic
 a->-p(t), B->t recovers the already audited confluent canonical moment.
-The transport identity is closed; the global current sign is still open.
+The transport identity is closed; the integrated current sign is still open.
+The proposed global pointwise negative current is now refuted by the actual
+center variation; see the final section below.
 
 ## Stronger positive survivor: B>t (formalized, 2026-10-03)
 
@@ -79,8 +82,11 @@ N=a+s*B>0, s=(p(t+x)-p(t))/x. Its exact prospective ODE is
     j=(t*p(t+x)-(t+x)*p(t))/x.
 
 The forcing s'-2*j*s is minus s^2 times the previously audited signed Sturm
-weight. Its sign cannot be assumed; this is the actual nonlocal compensation
-problem in the new variables. N>0 is conjectural, not supplied by B>t.
+weight. ThetaFinitePairSturmCrossing now proves that it is positive before
+exactly one positive zero and negative afterward. This source-specific
+classification now gives an audited Lean proof of N>0, including its tail
+endpoint (P3 theta/rn-finite-pair-packet-positivity.md). N>0 is not supplied
+by B>t alone.
 
 ## Full-current successor: keep both packet coordinates
 
@@ -95,7 +101,7 @@ gives current C_y-lambda*C_t-lambda_t*C as
 
 The constant term is negative for 0<x<y by strict convexity of p. Replacing
 a by N-s_x*B leaves a second coefficient D-A*s_x; no favorable sign of that
-coefficient has been established. Therefore N>0, even if proved, does not
+coefficient has been established. Therefore the now-proved N>0 does not
 yet close the full current. Keep its magnitude and the actual a/B relation.
 
 The corpus's strict normalized-row decrease gives, on paper,
@@ -137,7 +143,8 @@ give D/t->0. At infinity, w*B is proportional to the already vanishing
 balance flux, so w*D/t->0. The same monotone-primitive argument is a plausible
 way to prove the missing integrability, retaining C0 instead of dropping it.
 
-A source-only conjecture for this representation is
+A source-only conjecture for this representation, now proved globally in
+ThetaTailCorrectionCurrent (nine public theorems, direct audit 2026-10-04), is
 
     partial_y Q-(p(t+y)-p(y))*Q < 0.
 
@@ -150,7 +157,56 @@ The t->0 limit of the proposed sign expression is
 (y*c(y)-p(y))/y^2-(2*p(y)*c(y)-c'(y))/4. Positivity of the newly audited
 Schrodinger slope alone does not determine this difference. The literal
 corpus ThetaCuspCurvatureLogConvex additionally supplies c'<2c and logarithmic
-convexity of c, but no complete two-interval comparison has been derived here.
-Even a negative Q current would still require the explicit C0 contribution
+convexity of c. The complete two-interval comparison and proof are recorded in
+rn-positive-correction-current.md and its P3 certificate.
+The proved negative Q current still requires the explicit C0 contribution
 to be paid by the actual D term. This is a successor attack on compensation,
 not a proof of the coordinate current or a reason to discard its signed part.
+
+## Riccati form retaining the matched compensation
+
+For x,t>0 set m=-a/B and ell=k(t)^2/H(t,t). The actual coupled ODEs give
+  m'=2*t*m^2-2*p(t)*m+(s_x-m)/B,
+while the diagonal tail equation gives ell'=2*t*ell^2-2*p(t)*ell.
+The audited matched-packet positivity supplies m<s_x;
+the existing ordered-row identity supplies m<ell. These two comparisons keep
+actual coefficient dependence and can be used together, but neither alone
+has closed the coordinate current.
+
+For r=s_y and lambda=(p(t+y)-p(y))/(p(t+x)+p(t+y)), the full canonical current
+divided by positive B is exactly
+  r_y-lambda*r_t-(lambda*Sigma_x+lambda_t)*r
+    +(lambda*x*s_x+2*t*lambda*r+lambda_t)*m
+    +lambda*(s_x-r)/B.
+This is a paper algebra identity, not a new sign claim. For y>=x the final
+term is nonpositive; the coefficient multiplying m must also be handled.
+In the constant-curvature Gaussian calibration all terms cancel exactly.
+A next comparison must retain the 1/B term and actual Riccati evolution;
+replacing m by an arbitrary number below s_x loses essential information.
+
+## Retired conjecture: the actual canonical Riccati barrier
+
+The new packet and speed leaves now pass their direct source-file audits.
+For x>0,y>=x,t>0 let r=s_y, s=s_x, P=-A>0 and
+  D=r_y-lambda*r_t-(lambda*Sigma_x+lambda_t)*r,
+  E=lambda*(s-r), m=-a/B.
+The former exact full-current conjecture was
+  P*m+D+E/B<0,
+equivalently m<-(D+E/B)/P. The actual m satisfies
+  m'=2*t*m²-2*p(t)*m+(s-m)/B.
+The proved signs m<s, A<0 and E<=0 close the region where
+(D-A*s)*B+E<=0. The remaining positive-cost region requires a quantitative
+comparison with the actual N/B, not just N>0 or an unconstrained coefficient.
+Keep B's actual coupled ODE and endpoint data throughout this attack. No
+conditional restatement of this inequality counts as a source producer.
+
+RN-P-7ab now refutes this barrier in the strictly ordered chamber x<y.
+The literal finiteCanonicalCurrent is positive somewhere with t>0 and 0<x<y;
+its equality to the actual differential transport current is audited. The
+source-derived moment comparison alpha<=q/2+c''(0)/(6q) and exact positive
+center variation are retained as new positive knowledge. All four leaves and
+25 public standard-axiom audits passed. Certificate:
+../3-formalized/theta/rn-finite-pair-current-center-variation.md.
+No RH or integrated-Schur counterexample is asserted. The surviving hard
+target is rn-finite-current-integrated-compensation.md, including its boundary
+flux and every positive source-time contribution.

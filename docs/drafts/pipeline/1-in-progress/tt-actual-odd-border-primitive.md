@@ -1646,3 +1646,871 @@ the only repair was explicitly reducing pderiv of the numeral2 via
 TTC63SourceSixteen literal-source assembly is now under audit using
 this valid scratch module cache. C63 GapDerivative refreshed index
 passed; latest lint12 unrelated umbrella omissions, no owned errors.
+
+C63 GapDerivative production closure: final direct audit exit0; exact
+production capstone axiom reports standard3 in
+/tmp/tt_c63_moment_variation.audit2.log. That run exited1 only on the
+unfinished native-second variation's Real-instance conversion goal;
+its native_first theorem passed standard3. Fixed second conversion with
+rfl for instance equalities and ring for the scalar polynomial, rerun due.
+GapDerivative production index passed; lint12 unrelated umbrella omissions.
+Completed gap-derivative scratch/probe sources removed, logs retained.
+
+Source16 first audit: all eight remaining errors were partial derivatives
+of numeral constants. Added an OfNat-pattern derivative-zero rule backed
+by Derivation.map_natCast; removed unused pderiv_X in zeroth evaluation.
+Second actual-source audit running. Do not import its cache until exit0
+and standard3 capstones. TTC63SeamQuadratic now holds the proposed
+homogeneous source-quadratic model, source16-dependent first-diagonal
+sign attempt. It is NOT audited; full source incidence and determinant
+sign remain open. Literal model/paper formulas are recorded above.
+
+Source16 second audit still failed on the same numeral-derivative terms.
+The generic OfNat lemma itself passed but was not matched by simp.
+Replaced its use with six literal numeral specializations (2..7), each
+proved by Derivation.map_natCast, registered only as local simp rules.
+This follows the already successful literal2 fix in the fourth-Lie proof.
+No source coefficient or mathematical formula changed. Third audit due.
+
+C63 native variations scratch audit COMPLETE: native_first and
+native_second at every order and center pass, standard3 only
+(tt_c63_moment_variation.audit3.log, exit0). This also rechecks exact
+GapDerivative production capstone axioms with exit0. Promoted/wired
+ThetaCuspNativeMomentVariation using its original smaller dependency;
+production direct/axiom audit pending. Source16 third audit running.
+
+2026-10-04 C63 checkpoint: source-sixteen scratch audit3 PASSED (exit0),
+eval_source_sixteen/source_sixteen standard3 axioms. No source coefficient
+or formula changed; literal numeral derivative simplification closed it.
+Promoted the generic fourth seam variation and literal source-sixteen
+identity into ThetaCuspOddSeamSixteen; wired into RHTower umbrella.
+Production final direct audit still pending. NativeMomentVariation
+production final direct audit PASSED, empty log; production axioms pending.
+
+First full-quadratic Na sign attempt exceeded default heartbeats during
+simp; this says nothing about the sign. Replaced repeated full expansion
+with dependency-staged kernel-certified normal forms for jets, moments,
+cofactors, then cleared curvatures. Audit2 in progress, no limits raised.
+Curvature-incidence search returned no hits, partial because semantic
+retrieval unavailable (snapshot1220819/current1220823). Lexical broadened
+search pending; all-order moment variation plus the existing odd source
+seam vanishing theorem are the intended actual-incidence ingredients.
+The mathematical frontier remains actual compact source-quadratic/gap
+sign, controlled tail join, flux integration and all-rank closure.
+
+C63 full seam-curvature polynomial test SUCCEEDED: staged Na_pos and
+quadraticDet_pos both pass Lean (audit3 exit0, standard3). Thus the
+homogeneous matrix [[Na,Nb],[Nb,Nd]] is positive definite throughout the
+entire proved source-seam enclosure. This is still a polynomial result;
+actual second-derivative incidence is being assembled. No global compact
+sign follows yet. The previous simp timeout was resolved by named exact
+normal forms, never by raising limits. Next mathematical target is the
+same source-quadratic sign along the nonzero-center modular flow.
+Native source incidence scratch prepared through exact second variations
+of signed moments2..14. Source16 final production audit running.
+
+C63 source bridge checkpoint: TTC63SeamIncidence audit exit0, standard3
+for source_even through16, native_value through14, zero first center
+variations and exact second native moment derivatives through14.
+OddSeamSixteen and NativeMomentVariation production capstone axioms also
+passed in this combined audit. Both final direct production audits passed;
+index passed; lint remains12 unrelated umbrella omissions, no owned error.
+The auxiliary model b=1 bridge hit only definitional-equality mismatches
+from private source polynomial coefficients; exact scalar aliases now
+expose both sides to the same simplifier. Do not use audit4 model cache:
+it contains failed bridge declarations. Independent Na/determinant sign
+certificates still report standard3. Revised model audit pending.
+
+C64 candidate, derived from current C63 gap derivative and literal modular
+ODE source incidence: the source quadratic derivative matrix is positive
+semidefinite for 0<x and pi*exp(2*x)<=5. This is NOT proved or assumed.
+Its seam-leading matrix is the positive C63 curvature polynomial above.
+The hard task is propagation along the ACTUAL modular trajectory, not
+arbitrary static source-positive states. Search
+/tmp/tt_c64_source_quadratic_barrier_search.json is partial
+(snapshot1220986/current1220991); all candidate/source statements inspected.
+It supplies actual all-order Lyapunov incidence and the physical chamber,
+but no applicable cofactor-quadratic propagation sign. Existing static
+chamber no-go hits caution against replacing the trajectory by a generic
+positive state. No missing lemma is being treated as a premise.
+
+Paper reduction for C64: let Psi be the mass-free modular vector-field
+Lie derivative, p the normalized source-zero polynomial, q1 its normalized
+source-one polynomial, H the odd head polynomial, A/B/D the order-four
+cofactors/third minor. The mass cancels from a,b,d. Common denominator p^7
+has source derivative numerators
+  Nb=p*Psi(B)-6*B*Psi(p), Nd=p*Psi(D)-6*D*Psi(p),
+  Na=p*Psi(A)-6*A*Psi(p)+C4*(3*p^2*(p*Psi(H)-4*H*Psi(p))
+    +2*p^2*H*q1+2*x*p*(p*Psi(H*q1)-5*H*q1*Psi(p))).
+Thus C64 asks Na>=0, Nd>=0, Na*Nd>=Nb^2 along that actual trajectory.
+No global polynomial sign or actual cofactor-curvature bridge is yet
+claimed. If this uniform sign fails, keep the actual eta direction and
+nonnegative squared transport gain; do not retire the coupled route.
+
+C63 homogeneous source bridge repaired and PASSED audit5 exit0, all
+pH_one/mH_one/vH_one/Na_pos/quadraticDet_pos standard3. Exact scalar
+aliases copy the source coefficient expressions, with definitional
+identity to the original source definitions; no new coefficient claim.
+Promoted/wired ThetaCuspOddSeamCurvatureModel and CurvatureMoments.
+Their final production direct audits remain pending. Actual curvature
+assembly prepared in /tmp/TTC63ActualCurvature.lean: literal cofactor
+jets, the compensation-source second jet, quotient cancellation, then
+unconditional positivity of the actual normalized quadratic curvature
+for every real direction. NOT AUDITED YET. Its small even-two-jet algebra
+helper needs this toolchain's explicit ENat-to-ContDiffOrder coercion;
+current audit4 tests that repair and inverse-function simplification.
+
+C63 ACTUAL SOURCE RESULT PASSED: TTC63ActualCurvature audit3 exit0,
+standard3 on all three normalized second-derivative identities and
+actual_curvature_positive. For every real direction t,
+  a''(0)+2*b''(0)*t+d''(0)*t^2>0
+at the fixed C4=10^13. No source assumptions. Cofactor second variations
+retain all actual signed moments and the compensation jet G''=10*Phi*Phi''.
+The numerator identities divide Na,Nb,Nd by the common positive P0^7;
+the degree36 determinant and Na certificate then give strict positivity.
+This closes the actual seam-curvature sign question, not compact/global
+propagation or RH.
+
+Production CurvatureModel, CurvatureMoments and combined Curvature leaf
+all passed final direct lake env lean -o audits, empty logs. All wired.
+Exact production axiom probe running. Index/lint refresh and owned C63
+scratch cleanup follow that probe. Earlier Source16/NativeVariation
+superseded scratch/probes/caches already removed after their valid
+production audits. No full/umbrella builds or limits raised.
+
+C64 discovery: fresh corpus search found substantially stronger EXISTING
+actual-orbit coordinates and barriers, so do not rebuild drift monotonicity
+or merely repackage them. ThetaCuspModularRatio gives t=9-u^2>0,
+k=3*A/(4*t)-1/3>5/4, J=u*k-w, 0<=J<=u/3, k^2*t<361/25,
+u'=k*t, k'=2*(k+1/3)*J, and
+J'=k^2*t-6*k-4+2*u*(k+2/3)*J. Ratio monotonicity and u monotonicity are
+already proved. CompensationDeterminant already proves Phi=N*(k-1/6),
+Phi'=N*(u*(1/6-2*k)*(k-1/6)+2*(k+1/3)*J), N=M*t/12;
+BarrierFlux proves N'=N*u*(1/6-2*k). Therefore use this existing mass
+normalization: source jet0 is LINEAR k-1/6, and all jets have a polynomial
+covariant recurrence in (u,k,J), with denominator k-1/6 uniformly positive.
+This removes the vanishing t factor before the hard source-sign test.
+
+A second existing structural gain: center_le_retained_ratio gives
+0<=4*x<=u*(k-2/3)-J. The proposed first source-quadratic numerator is affine
+in x only in its first diagonal; hence endpoint matrix certificates at
+x=0 and x=(u*(k-2/3)-J)/4 would prove its sign throughout the allowed center
+interval. Those endpoint signs on the actual ratio cone are NEW CONJECTURES,
+not assumed. First focus is the necessary global normalized third-minor
+slope d'(x)>0. Search /tmp/tt_c64_third_slope_search.json pending.
+
+C63 COMPLETE production checkpoint: all three final curvature leaves pass,
+all eight production capstone axiom reports standard3 (axioms probe exit0),
+index pass. Refreshed lint now20 unrelated umbrella omissions, no owned
+error. All completed TTC63 scratch sources/caches and temporary axiom
+probe removed; audit logs retained. Frontier map updated with the actual
+all-direction seam curvature result. RH/global gap/tail join/integration/
+all-rank closure remain OPEN.
+
+C64 searches inspected: third-slope search partial=false, snapshot1221292
+(current1221306), no applicable normalized third-minor slope sign theorem.
+Ratio-jet search partial (generation1221306/pending); relevant source
+argument is existing compensation_source_eq_ratio, no all-order ratio jet
+recurrence found. Do not infer total absence from partial coverage.
+
+C64 exact polynomial bridge under audit (/tmp/TTC64RatioSourceJets.lean).
+Use new variables (U,K,J), tau=9-U^2, h=U*(1/6-2*K), polynomial vector field
+  U'=K*tau,
+  K'=2*(K+1/3)*J,
+  J'=K^2*tau-6*K-4+2*U*(K+2/3)*J.
+Define Q0=K-1/6, Q(n+1)=Lie(Qn)+h*Qn. Pull back old (S,A,W) through
+  S=-U, A=(4/3)*tau*(K+1/3), W=U*K-J.
+The proposed all-order identity is oldSourceJet(n) pulled back = (tau/12)*Qn.
+Paper proof: polynomial vector fields intertwine; Lie(tau/12)=-2*U*K*(tau/12),
+so the old mass weight +U/6 becomes h after factoring tau/12. Base source
+polynomial factors exactly. This uses existing actual ratio coordinates,
+not a new source premise. The first hard sign test will be
+  (K-1/6)*Lie(Dnew)-6*Dnew*Lie(K-1/6)>0
+on the actual positive-center orbit, where Dnew is the signed third minor
+of the Qn reflection moments. All-order actual-source incidence and this
+slope sign are pending; no C64 sign result yet.
+
+2026-10-04 C64 continuation: the all-order polynomial pullback now passes
+the direct leaf audit (audit3 exit0, standard3). Actual source incidence
+also passes (audit2 exit0): Phi^(n)=N*Qn, every native reflection moment
+has mass N^2, and normalizedD=eval(Dnew)/(k-1/6)^6. All four incidence
+capstones use standard3 only. These identities are exact source results,
+not a sign theorem. Fresh third-ratio-sign search was partial, returned
+unrelated slope/Schur lemmas, and supplied no applicable sign argument.
+
+Next algebraic attack clears every denominator before the hard sign test:
+Sn=6^(n+1)*Qn, S0=6K-1, and
+  S(n+1)=Lie6(Sn)+U*(1-12K)*Sn,
+where Lie6 has vector field
+  6K*(9-U^2), (12K+4)*J,
+  6K^2*(9-U^2)-36K-24+(12K+8)*U*J.
+All coefficients are integers; native reflection and determinant scaling
+are homogeneous. Staged kernel-proved polynomial normal forms are under
+audit, without numerical experiments or raised limits. The slope-sign
+conjecture and compact/full Schur-gap propagation remain OPEN.
+
+C64.1 candidate differential constraint: J'(x)>0 for x>0. This is intended
+to constrain the hard third-minor slope sign, not replace it with a generic
+receiver. Fresh defect-derivative corpus search was partial; it returned
+ratio_mono (monotonicity of k), not monotonicity of J. Exhaustive relevant
+modular-source text search found no J_deriv_pos/J_mono theorem.
+
+Paper mechanism from the actual ODE: set z=J/u, F=J'=k^2*(9-u^2)-6k-4+
+2*u^2*(k+2/3)*z, B=k^2-2*(k+2/3)*z. On k>5/4 and 0<=z<=1/3,
+B>0. Define C=-k^2*(3k+2)+z*(6k^2+9k+8/3)<0 and
+L=4*k^2/3+(2*k^2-8*k/3-16/9)*z-4*(k+1/3)*z^2>=0.
+The exact identity is B*F'=u*(4*k*(1-3*z)*C+F*L).
+If F<=0, the strict drift gap 9-u^2>0 forces z<1/3, hence F'<0.
+If F(b)<0 at one positive center, boundary comparison traps F below
+F(b) forever; integrating J'=F then makes J negative, contradicting
+the already proved global J>=0. Thus F>=0. At F=0 the strict negative
+derivative contradicts this nonnegativity, so F>0. The resulting new
+source inequality is 6*k+4<k^2*t+2*u*(k+2/3)*J.
+
+The complete algebraic acceleration sign passed Lean (audit2 exit0,
+standard3); actual ODE incidence and escape/strictness proof under audit.
+This is not yet an audited actual J monotonicity result or a third-minor
+sign result. Integer-jet normalization separately hit elaboration issues
+and a private rational constant; no mathematical conjecture is retired.
+
+C64.1 actual source proof PASSED scratch audit2, standard3 for J_deriv_pos
+and defect_velocity_constraint. Also proved StrictMonoOn J on [0,infinity)
+and J(x)>0 for x>0. Promoted and wired ThetaCuspRatioDefectSign and
+ThetaCuspRatioDefectMonotonicity; final production leaf audits pending.
+This is new actual-orbit knowledge: a nonpositive J' is impossible on
+the globally nonnegative source solution, rather than an assumed local
+phase restriction. Next sign test retains this strict differential
+constraint alongside the existing static ratio cone. RH and the actual
+normalized third-minor slope sign remain OPEN.
+
+C64 production checkpoint: all four final direct leaf audits PASSED:
+ThetaCuspRatioDefectSign, ThetaCuspRatioDefectMonotonicity,
+ThetaCuspRatioSourceJets and ThetaCuspRatioSourceIncidence. All ten exact
+production capstone axiom queries returned standard3 only (axiom audit
+exit0). All four wired; index refreshed four modules. Lint exit1 has15
+unrelated umbrella omissions and no owned error. Completed C64 scratch
+source/defect leaves, caches and temporary production axiom probe cleaned;
+logs retained. Frontier map records the new strict actual J velocity.
+
+Remaining hard target d'>0 is retained. Integer Sn recurrence and scaling
+identity have passed through source order8 within default proof limits;
+order9 hit ring_nf's output-cleanup recursion depth, not an algebraic
+counterexample. Split exact orders0..8 into a cached leaf and use raw
+ring normal form for orders9/10, without changing limits. Integer
+reflection moment/slope file prepared for the next exact sign test.
+Also prepared corrected actual third-slope incidence; its audit remains
+pending. Useful paper parameterization of the new source constraint:
+z=J/u, B=k^2-2(k+2/3)z>0, R=9k^2-6k-4, F=J'>0 give
+u^2=(R-F)/B and 0<F<R for x>0. This has not yet proved the third slope.
+
+Integer source checkpoint: exact scaling/all jets0..8 pass direct audit4
+standard3. Ninth raw polynomial passes High audit3 standard3. Tenth
+required reassociating the Lean-certified ninth polynomial into13 sums
+of at most16 summands; only source-text reassociation, no coefficient
+arithmetic. Lean independently proves equality of the balanced polynomial
+to jet9 and derives jet10. Ten audit1 now exit0, standard3. No heartbeat
+or proof-recursion limits changed (pp.deepTerms was used only to display
+the already certified polynomial). Exact reflected moments2..10 under
+audit. Hard third-slope sign still OPEN.
+
+2026-10-04 C64 continuation: fifth production leaf ThetaCuspRatioThirdSlope
+passed final direct audit and both exact production axiom probes (standard3).
+It identifies d'(x) with Re(eval thirdSlope/(k-1/6)^7) at every x>0;
+this is an exact source formula, not its sign proof. Wired/indexed. Latest
+lint has12 unrelated umbrella omissions and no owned error. Completed
+third-slope scratch source/cache and production axiom probe cleaned.
+Integer reflection moments2/4/6/8 passed default-limit audits; split
+reflection10 failed on intermediate expression representation and proof
+budget, not on a sign counterexample. Reassociating the already certified
+ninth jet for the problematic product; no limits raised. Hard actual d'>0,
+full source-quadratic sign, compact gap, tail join, integration and all ranks
+remain OPEN. Fresh gauge/cumulant search was partial (generation1222028),
+returned no directly applicable source-sign mechanism.
+
+2026-10-04 C64.2 strengthened sign-cone conjecture: the exact thirdSlope
+numerator is strictly positive whenever 0<u<3,k>5/4,0<=J<=u/3,
+k^2*(9-u^2)<361/25 and F=k^2*(9-u^2)-6*k-4+2*u*(k+2/3)*J>0.
+All these inequalities hold on the actual positive-center orbit; no
+claim the sign is proved on this larger cone. With z=J/u and w=1/3-z,
+F=(9-u^2)*(k^2-2*k/3-4/9)-2*u^2*(k+2/3)*w. Hence a certificate can
+retain this coupled defect/drift-gap relation, rather than discard it
+for independent boxes. This attacks the necessary third-slope diagonal
+of the full transported-gap source quadratic.
+
+Exact certificate preparation discovered that ring_nf raw output must
+have raw numeric casts normalized before reusing it; otherwise numeral
+exponents are treated as symbolic atoms and artificial expansion grows.
+The problematic S1*S9 product now passes standard3. Other five products
+pass separately. Combining their flat normal forms exceeds default
+expression depth, so only associativity/text regrouping of already
+certified terms is used. No proof limits or external coefficient
+computations. Source10 balanced representation under audit. No C64.2
+mathematical sign conclusion yet; RH/global gap still OPEN.
+
+C64.2 exact algebra checkpoint: balanced source10 and all five balanced
+products S1*S9,...,S5*S5 now pass individual direct Lean audits, standard3.
+S0*S10 also passes after balancing source10 before raw-cast normalization.
+Final reflection10 cancellation proof under audit, using all balanced
+products simultaneously. Latest transverse-seam corpus search partial
+generation1222323: existing static physical-clock D1 obstruction is a
+different polynomial/domain and does not decide the new third-slope
+cone. Its rational seam has gap25/4, outside the strengthened actual
+k>5/4 cone. No slope-sign conjecture proved or disproved here.
+
+C64.2 tenth reflection identity now PASSED direct audit, standard3
+(/tmp/tt_c64_reflection_ten_final.audit1.log). All failed/superseded
+reflection-product diagnostics, sources and caches were removed after
+the new dependency-closed chain passed. Balanced moments2..10 under
+audit. Before expanding the cubic determinant globally, test the
+necessary seam-ray sign of its slope numerator. In integer coordinates
+S0=6k-1, R=9k^2-6k-4, seam vector field=(54k,0,6R):
+ alpha=(6k-1)*(54k*D_UU+6R*D_UJ),
+ beta=(6k-1)*(54k*D_UJ+6R*D_JJ+(12k+4)*D_K)
+      -6*D*(72k+24).
+The numerator on U=epsilon,J=z*epsilon has first term
+epsilon*(alpha+z*beta). Thus the enlarged-cone conjecture requires
+alpha and alpha+beta/3 nonnegative across 5/4<k<19/15. This is a
+mathematical feasibility test of the strengthened cone, not a numerical
+experiment. These slope-gradient identities and endpoint signs remain
+to formalize; a negative endpoint would demand more actual-orbit
+transport information and would not falsify the actual d'>0 conjecture.
+
+C64.2 balanced and clean reflected moments2/4/6/8/10 all now PASS
+standard3. Seam moment values and first/second partials fororders2,4
+PASS. Fororder6, direct secondpartials exceeded default200k twice;
+no sign conclusion. Replaced this with <=12monomial secondpartial
+certificates and linear aggregation. Parts6 PASSstandard3; Parts8/10
+being audited serially. AggregateSeam6/8/10 and determinantseam model
+are prepared but not yet verified. No production source-sign theorem
+added; actuald'>0/fullquadratic/globalgap/RH remain OPEN.
+
+C64.2 all higher moment secondpartial PART certificates throughorder10
+now PASSstandard3 within defaultlimits (Parts6/8/10 audit1exit0).
+Auditing their exact sum assembly; determinantseam and slopealpha/beta
+identities prepared. No endpoint sign outcome yet.
+
+C64.2 correction after inspecting certificate data: prior norm_num-based
+seam certificates were true identities but NOT univariate normal forms.
+They retained if-branches comparing Coord constructors, and second
+pderiv applied to those branches. This caused the apparent proof-budget
+obstruction even in the sum of eight parts. A direct probe using full
+simp plus pderiv_one/C/mul/pow reduces one such expression to literal0
+and auditsstandard3. Replaced all five MomentSeam leaves with direct
+full-simp proofs on the clean balanced moments; audit4 serial loop
+underway. Old Parts certificates must not be treated as polynomial
+data, and will be removed after replacement validation. No sign claim
+was based on those unfinished expressions.
+
+C64.2 corrected MomentSeam2/4/6/8/10 audit4 ALL PASSstandard3.
+Inspected printed values: every seamU is literal0; every seamUU is a
+pure polynomial in k (orders2,4,6,8,10 degrees3,5,6,7,8). Full simp
+removed the coordinate if-branches, allowing direct proofs with default
+limits; the old Parts6/8/10 sources/caches and diagnostic sources were
+cleaned. Determinantseam audit1 now underway; source slope endpoint
+signs still UNDECIDED.
+
+C64.2 determinantseam model and value/U/J/K/UU/UJ/JU/JJ identities
+now PASS audit1; four queried capstones standard3. Exact slopealpha/beta
+incidence and univariate normal forms are under audit. Endpoints still
+UNDECIDED. These are necessary enlarged-cone tests, not RH conclusions.
+
+C64.2 seam tangent-cone test PASSED. Exact alpha and beta identities,
+real polynomial bridges, and both edge signs pass individual direct
+Lean audits with standard3. The kernel proves alpha+z*beta>0 for every
+5/4<=k<=19/15 and 0<=z<=1/3. Exact all-order integer scaling gives
+integerThirdSlope=6^26*thirdSlope; thirdSlope_seam_tangent_pos now
+proves this sign for the production numerator itself (audit1 exit0,
+standard3). No sign premise about the actual source was added.
+The stronger enlarged-cone boundary test succeeds, but positivity at
+nonzero distance from the seam remains OPEN. C63 already gives actual
+seam curvature, so another local continuity corollary adds little.
+Twenty-four dependency leaves are being promoted and audited directly,
+one foreground process at a time; no umbrella/full build.
+
+Next hard test: on the zero-speed face J=0, F=0, put
+u^2=9-6/k-4/k^2. The source vector field then has only its U component,
+so the sign of the thirdSlope is the sign of the U derivative of the
+third minor. Derive that entire one-parameter boundary polynomial
+symbolically; no sample sweeps or numerical experiment. A negative
+face would disprove the enlarged static cone (not the actual source
+slope) and identify missing orbit coupling. A positive face supplies
+another necessary face for a global polynomial certificate. No result
+on this face is asserted yet.
+
+C64.2 production integration: all24 leaves wired into RHTower umbrella;
+formal index exit0. Lint exit1 has14 unrelated umbrella omissions, none
+in the new ratio-source dependency chain. Individual production-name
+Lean audits still running serially in session2789, no errors so far.
+Exact final imported capstone axiom probe prepared at
+/tmp/TTC64ProductionSeamAxioms.lean, not run until dependencies finish.
+
+Zero-speed face paper reduction sharpened: J=0,F=0 gives
+u^2=9-6/k-4/k^2 and 5/4<k<87/50 from kineticGap<361/25.
+Writing reflected moments as polynomials in v=u^2, the integer slope
+is 2u*(6k-1)*6k*(9-u^2)*partial_v(D). Every displayed factor is
+positive on this face. The remaining sign is one univariate rational
+polynomial after substituting v; k^18 clears all three-moment products.
+No boundary sign claim yet. /tmp/TTC64ZeroSpeedSlice.lean prepared
+using production ReflectionsClean import; next data transcriber is
+/tmp/tt_c64_prepare_zero_speed_face.py (text-only, NOT yet executed).
+
+C64.2 ALL24 production-name leaf audits COMPLETE, exit0 (session2789
+terminal). No proof limit raises or full/umbrella build. Individual
+logs /tmp/tt_c64_prod_ThetaCuspRatio*.log; only unused-simp warnings.
+Final imported capstone axiom probe and then zero-speed slice audit
+are running serially in session17956. The production theorem is
+ThetaCuspRatioSlopeSeamCone.thirdSlope_seam_tangent_pos (namespace
+HTGeometry.ThetaRatioSource). Global source slope is still OPEN.
+
+C64.2 final imported seam capstones4 PASSstandard3; cleaned50
+superseded owned scratch/cache files. ZeroSpeedSlice audit1 PASS
+standard3 (all5 moments and exact vector-field restriction).
+ZeroSpeedFace audit1 FAILED: order2 value proof had a redundant ring
+after simp closed it; flat polynomial definitions at orders8,10 hit
+default elaboration heartbeats. Downstream error-recovery sorryAx
+artifacts were NOT imported; failed cache removed. No sign conclusion.
+Same polynomial terms regrouped into typed ten-term pieces (no coefficient
+arithmetic, no proof-limit change); audit2 session92400 running.
+Prepared determinant assembly /tmp/TTC64ZeroSpeedDeterminant.lean is
+NOT audited and must wait for clean Face success.
+
+ZeroSpeedFace audit3 COMPLETE exit0: all17 queried certificates
+standard3, including exact determinant transverse partial and complete
+integer-source slope incidence. All five cleared values/partials are
+pure univariate polynomials in k (no residual denominators or implicit
+polynomial parameters). Removed superseded transcriber/body helpers.
+The scaled third-minor partial assembly is now under audit in owned
+session13990: /tmp/TTC64ZeroSpeedDeterminant.lean, log
+/tmp/tt_c64_zero_speed_determinant.audit1.log. No sign outcome yet.
+
+C64.2 NEW POSITIVE FACE RESULT: zeroSpeedMinorPartial_eq and its
+univariate normal form PASS standard3. Exact real bridge plus shift
+k=(5+s)/4 turns 4^37 times the degree37 polynomial into a strictly
+positive constant and positive coefficients for all s>=0. Thus
+zeroSpeedFacePolynomial_pos proves positivity for EVERY k>=5/4,
+without the kinetic upper bound. The exact integer/source scale
+transfer closes thirdSlope_zeroSpeed_pos for u>0,k>=5/4,J=0,F=0
+in the PRODUCTION numerator (scratch capstone audit1 exit0 standard3).
+This is a new full nonzero boundary family, not a claim about actual
+interior centers. Both proposed cone boundary tests now pass.
+
+Five leaves ThetaCuspRatioZeroSpeed{Slice,Face,Determinant,FaceSign,Cone}
+are promoted/wired; direct individual production audits running serially
+in owned session5506. Module manifest /tmp/tt_c64_zero_speed_production_modules.json.
+Final imported axiom probe prepared /tmp/TTC64ProductionZeroSpeedAxioms.lean.
+Deep corpus query for an intrinsic/log-curvature factorization of the
+SAME third-slope target running session71419; no route pivot. Next
+hard task remains full interior numerator positivity and then the
+full source quadratic. RH and global fourth Schur gap remain OPEN.
+
+C64.2 next interior attack (paper derivation, NOT formalized yet):
+set v=u^2, z=J/u. The source cone has k>5/4, 0<=z<=1/3,
+0<v<9, k^2*(9-v)<361/25 and F=R-B*v>0, where
+R=9*k^2-6*k-4, B=k^2-2*(k+2/3)*z>0 (B positivity
+already established in ThetaCuspRatioDefectSign). Thus v<R/B; the
+kinetic constraint gives k^2*v>9*k^2-361/25. This retains the two
+coupled constraints as affine conditions in v.
+Let p(v,k,z) be integerThirdMinor after J=u*z and u^2=v. Its
+z partial is divisible by v. Exact real-flow derivation predicts
+integerThirdSlope=6*u*[(6*k-1)*(2*k*(9-v)*p_v +
+ 2*(k+1/3)*z*p_k + (F-z*k*(9-v))*(p_z/v))
+ -72*(k+1/3)*z*p]. Verify in Lean before relying on it.
+Use the already certified balanced reflected moments to build this
+polynomial with the square-drift substitution, retaining every mixed
+z term. The goal is a certificate on the complete affine-v chamber,
+not another local continuity corollary or unrelated curvature route.
+
+Latest deep curvature search /tmp/tt_c64_third_slope_curvature_search.json
+completed partialfalse, generation1223377, no pending source inventory;
+compiler status mostly source-only/pending. Candidates/arguments/ideas
+inspected. Generic log-jet identity ReflectionEighthJet is even rank3
+(order0..8), not this odd third slope (order2..10). Generic second-level
+concavity has a formal even-rank3 no-go; neither it nor prime/Gamma
+log-derivative matrices supplies the present sign. Focus stays on the
+actual modular-polynomial target.
+
+Interior representation refinement (paper identity, Lean audit pending):
+avoid p_z/v entirely by multiplying the target by u>0. In variables
+(V,K,Z)=(u^2,k,J/u), define the integer numerator vector field
+ W_V=12*V*K*(9-V),
+ W_K=(12*K+4)*V*Z,
+ W_Z=6*K^2*(9-V)-36*K-24+(12*K+8)*V*Z-6*Z*K*(9-V).
+For p the squared-coordinate third minor, define Lp=sum p_i*W_i.
+Then u*integerThirdSlope(u,k,u*z)=(6*k-1)*Lp-6*p*L(6*k-1).
+This follows from D_U+z*D_J=2*u*p_V, D_K=p_K, u*D_J=p_Z.
+It gives a polynomial target with no division; positivity is equivalent
+for u>0. Build the five exact reflected moment charts first, then the
+cubic determinant/operator identity, and attack the full affine-V
+chamber retaining the velocity and kinetic constraints. This is the
+chosen next conjecture mechanism; not yet a proved interior sign.
+
+C64.2 integration COMPLETE for both boundary results: all29 production
+leaf audits passed; final imported seam4 and zero-speed3 capstone
+axiom probes passed standard3. All29 leaves wired/indexed. Latest
+formal lint reports13 unrelated umbrella omissions and none in this
+chain. Five zero-speed scratch sources/caches and final probe cleaned
+(11 files), in addition to50 earlier seam scratch/cache/helper files.
+All owned processes terminal. No full/umbrella builds, external math
+experiments, proof-limit raises, added axioms, subagents, or commits.
+The chosen next work is the full-interior squared-drift polynomial
+mechanism above. Actual normalized third-slope sign, full source
+quadratic, compact/global fourth transported Schur gap, controlled
+join, integrated all-rank closure and RH remain OPEN.
+
+C65 full-interior attack, 2026-10-04: scratch SquareFlow audit2 passed
+with both intertwining laws standard3; SquareMoments audit1 passed
+all five full mixed-coordinate moment identities through order10,
+standard3. Determinant/slope conjugacy audit is in progress. These
+are exact representations, not an interior sign theorem. Broad deep
+search partialfalse (generation1223587, no pending source inventory)
+returned no applicable new sign theorem. Continuing against the
+complete velocity/kinetic chamber, not a further boundary corollary.
+
+C65 exact chart closure: SquareSlope audit2 exit0, minor_eq and
+slope_eq standard3. Explicit identity U*shear(integerThirdSlope)=
+square(seed*L minor-6*minor*L seed) is now checked. Source copies
+ThetaCuspRatioSquare{Flow,Moments,Slope} prepared for production
+audits, not yet wired. Direct full cubic normalization failed solely
+on default 200000 heartbeats; no mathematical sign conclusion.
+Replacement proof: group each moment by V=u^2, certify all degree
+tests in Lean, normalize the K,Z coefficients separately, then form
+the degree9 determinant by pair convolutions. Current scratch
+TTC65SquareCoefficients audit2 active; SquarePairs prepared, unaudited.
+No higher proof limits. The full cone sign remains the conjecture.
+
+C65 coefficient proof plan (paper algebra, sign not proved):
+Write p(V,K,Z)=sum_{i=0}^9 D_i(K,Z)*V^i. Then S(V,K,Z)=
+V*sum_{i=0}^9 G_i(K,Z)*V^i, where D_10=0 and
+ A=54*K^2-36*K-24-54*K*Z, B=-6*K^2+(18*K+8)*Z,
+ G_i=(6*K-1)*(108*K*(i+1)*D_(i+1)+A*partial_Z D_(i+1)
+      -12*K*i*D_i+(12*K+4)*Z*partial_K D_i+B*partial_Z D_i)
+      -(432*K+144)*Z*D_i.
+D_0 has no Z dependence, so the constant S coefficient vanishes.
+Use pair blocks H=-M2*M6+M4^2, C=M2*M8-2*M4*M6, Q=M6^2;
+p=H*M10+C*M8+Q*M6. This avoids one huge cubic normalization.
+SquareCoefficients audit2 exited0: all five expansion capstones
+standard3 and all20 coefficient normalizations compiled. SquarePairs
+audit1 active. Prepared SquareMinorCoefficients and ten separate
+coefficient normalization leaves, none audited yet.
+The strict-sign conjecture still needs a certificate on F=R-B0*V>0,
+k^2*(9-V)<361/25, k>5/4, 0<V<9, 0<=Z<=1/3, with
+R=9*k^2-6*k-4 and B0=k^2-2*(k+2/3)*Z. No interior sign
+result or counterexample has been obtained.
+
+C65 new mathematical attack, grounded in the exact source flow and
+its highest K monomials (no numerical search): let h=1/k,
+r=k^2*(9-u^2), t=k*(1-3*J/u), V=9-r*h^2, Z=(1-t*h)/3.
+The square derivation L, multiplied by h, has polynomial field H:
+ Hh=-(4/3)*h^2*(3+h)*V*(1-t*h),
+ Hr=(8/3)*r*h*(3+h)*V*(1-t*h)-12*V*r,
+ Ht=(4/3)*t*h*(3+h)*V*(1-t*h)-18*F+6*r*h*(1-t*h),
+ F=r-6*t-(2/3)*r*h-4*t*h+(2/3)*r*t*h^2
+   -(4/9)*r*h^2+(4/9)*r*t*h^3.
+At h=0: Hh=0, Hr=-108*r, Ht=-18*r+108*t, so
+H(r-12*t)=108*(r-12*t). This is VERIFIED in
+/tmp/TTC65InfinityFlow.lean: field_change, infinityField_zero,
+expandingMode_zero all audit1 exit0 and standard3.
+
+New counterconjecture (NOT yet proved): the previous coarse cone
+may contain a negative third-slope tail due to the expanding mode
+e=r-12*t. Source highest-K monomials predict the regularized moments
+h^3*M2 -> -6^4*24; h^4*M4 -> 6^6*1728;
+h^5*M6 -> 6^8*(-207360+1296*e);
+h^7*M8 -> 6^10*46656*e; h^9*M10 -> 6^12*1679616*e.
+The exact cubic determinant then predicts h^17*p -> -C*e with
+C=6^24*1990656*1679616>0 (quadratic e terms cancel).
+Since H expands e and Hh vanishes to second order, the full source
+slope predicts h^19*S -> -648*C*e. If confirmed, choose
+r=1,t=1/24 (strict interior Z<1/3, F -> 3/4>0, kinetic r=1)
+to refute the coarse-cone positivity, NOT actual-source positivity
+or RH. Positive survivor: exact leading-sign classification by e,
+and the missing actual-orbit mode control exposed by it. No route
+retirement or counterexample claim until full incidence is audited.
+
+Formalization underway: /tmp/tt_c65_infinity_moments.py is a syntax
+transcriber only; all arithmetic/degree tests remain in Lean. It
+generated TTC65InfinityMoment2/4/6/8/10. Each proves exact h^d
+rescaling, using low-degree monomials plus middle/upper K layers,
+then checks the predicted h=0 value. Moment2 audit1 active. The
+other four are unverified. Need the regularized cubic and derivative
+conjugacy next; do NOT differentiate a fixed-r,t family as if it were
+a source orbit. Use the full polynomial H field above.
+
+Four production Square{Flow,Moments,Slope,Coefficients} leaves all
+passed direct lake env lean audits, wired and indexed. Final imported
+axiom probe prepared /tmp/TTC65ProductionAudit.lean, not run yet.
+Formal lint active. Pair-convolution normalizations failed default
+recursion limits in both raw and cleaned forms; no limits raised,
+failed cache deleted. Their three structural convolution identities
+were individually standard3, but the failed file is NOT importable.
+
+C65 mathematical closure, 2026-10-04: all five regularized moment
+identities, full cubic cancellation, full-flow derivative conjugacy,
+strict sign persistence, and a strict-interior coarse-cone counterexample
+now pass direct scratch Lean audits with standard3 only. Exact results:
+h^17*p=P, P(0,r,t)=-C*(r-12*t);
+h^19*S=Q, Q(0,r,t)=-648*C*(r-12*t), C=6^24*1990656*1679616>0.
+The full vector field, not a fixed-r,t derivative, was used.
+For fixed r,t with r>12*t the slope is eventually negative as h->0+;
+for r<12*t it is eventually positive. Equality has no sign conclusion.
+The family r=1,t=1/24 satisfies EVERY strict coarse-cone condition
+for 0<h<1/2; continuity supplies a sufficiently small negative-slope
+member. Therefore coarse-cone positivity is FALSE; actual-source slope
+positivity and RH are NOT falsified. Strongest survivor is the exact
+expanding-mode sign classification and full-flow regularization.
+Scratch audits: InfinityFlow1; five Moment audit2; Minor1; Curve3;
+Slope3; Sign1; Cone2, all exit0/standard3. Eleven production copies
+ThetaCuspRatioInfinity{Flow,Moment2,4,6,8,10,Minor,Curve,Slope,Sign,Cone}
+created; production audits/wiring/indexing/cleanup pending.
+C65 square production imported axiom probe active. Earlier lint found
+12 unrelated umbrella omissions; no owned source errors.
+
+C66 next hard conjecture: the actual complete source selects the
+critical boundary t/r -> 1/12, so fixed nonzero r,t slices cannot
+settle its slope sign. Base this on the checked H dynamics and corpus
+J_pos, J_strictMonoOn, J_le_third_drift, kineticGap_lt, defectVelocity_pos.
+Broad deep search actual_mode was partialtrue, inventory complete,
+generation1224057, no applicable ratio theorem; narrow lexical search
+in ThetaCuspModularRatio now running. Planned attack is a complete-ray
+escape argument for the ratio t/r (then its next-order mode), not
+another loose numerical bound. Need prove actual k->infinity and
+kineticGap->0 from the existing differential source laws, and control
+the unstable quotient through boundedness. All these C66 claims are
+UNPROVED at this entry. No external mathematical computation.
+
+C66 paper mechanism, 2026-10-04 (Lean drafts UNVERIFIED): define
+q=(u-3J)/(u*k*(9-u²)), the compactified t/r. Positive J and monotonicity
+give k->infinity; the kinetic bound gives T=9-u²->0. Source velocity
+has exact form F=T*(k²-2k/3-4/9-(2/3)u²*k*(k+2/3)*q), so
+0<=q<3/(2u²). On x>=1, q is uniformly bounded by u(1)>0.
+Direct source differentiation predicts
+ q'=(k/u)*(36*(q-1/12)+e),
+ e=3/k+4/(3k²)-5Tq+(2/3)u²q/k-(2/9)u²q/k²
+   +(2/3)u²*(1+1/(3k))*q²T.
+Every term of e tends to zero using bounded q,u and T,1/k->0.
+A bounded complete solution of a scalar outward linear equation with
+vanishing forcing must approach its equilibrium: above/below any
+fixed band, comparison traps an outward ray and then violates its
+bound. Thus q->1/12. Drafts TTC66BoundedEscape,
+TTC66ActualBoundaryPrelim, TTC66ActualBoundarySelection prepared;
+audit waits behind C65 production (one owned build at a time).
+This settles no actual third-slope sign yet. Next-order source
+selection is needed at the critical mode. The checked boundary field
+suggests q=1/12-7/(72k)+o(1/k), but this is a NEW UNPROVED conjecture.
+Use moving comparison barriers, not an assumed series or numerics.
+Deep unstable-selection search partialfalse, generation1224104,
+complete inventory; no applicable existing selection lemma. Its
+proposed ingredient set was irrelevant (vanishing off-block derivatives).
+
+C65 integration COMPLETE: all11 production Infinity leaves passed
+foreground direct lake env lean audits (driver73061 exit0), wired
+into RHTower, indexed (30327 exit0). Imported capstones all standard3
+(3117 exit0), including full-flow slope and both sign laws and cone
+counterexample. Square imported capstones also standard3 (93758 exit0).
+Formal lint32354 exit1:13 unrelated umbrella omissions, no owned
+source/axiom errors. Frontier map corrected and P5 card
+`tt-third-slope-coarse-cone.md` records the complete paper proof,
+precise failure scope, positive survivor and Lean capstones.
+Owned C65 failed/superseded scratch sources, caches and helpers
+cleaned; audit/search logs retained. No umbrella/full build, no
+mathematical computation outside Lean, no limit raises or new axioms.
+C66 three-leaf scratch audit now active (driver serial, one build).
+
+C66 generic core audit2 passed: `no_bounded_escape` and
+`tendsto_equilibrium` standard3. Initial failure was missing
+Mathlib.Analysis.Calculus.Deriv.MeanValue import plus convertible
+trivial derivative goals; no mathematical obstruction and no limit
+increase. ActualBoundaryPrelim audit1 active; Selection still unverified.
+
+Prospective next-order selection, paper argument only: with h=1/k,
+c=1/12 and U=u²q, the exact error equation predicts e/h->7/2 using
+q->c, u²->9, k*T->0, h->0. Also h'=-2h(1+h/3)J->0 from0<=J<1.
+For f_a=q-c-a*h, rewrite f_a'=(k/u)*(36*f_a+h*R_a), where
+R_a=36a+e/h-a*u*h' ->36a+7/2. If a> -7/72, any f_a>0
+would be trapped outward and force an unbounded ray; if a< -7/72,
+the same holds for -f_a. This may prove k*(q-1/12)-> -7/72
+without assuming the rescaled quotient is bounded. NOT YET FORMALIZED.
+Do not infer a slope sign from the first-order mode alone.
+Alternative actual-tail mechanism, also UNPROVED: source r=k²T may
+be flat to every order in h because r'/r~ -6k while k'/k is bounded.
+The already proved q bound would give tcompact=q*r equally flat.
+Then exact Q(h,0,0) may determine the actual tail slope after the
+critical-mode cancellation; its leading coefficient has not been checked.
+
+C66 actual Prelim audits1/2: k_tendsto_atTop, t_tendsto_zero and
+boundaryRatio_lt all standard3. dBoundaryRatio failed conversion
+bookkeeping (audit1) then a tactic-layout parse error (audit2), not
+an algebraic counterexample. Failed caches removed. Audit3 active,
+with only the remaining scalar identity after reflexive conversions.
+C67 scratch drafts /tmp/TTC67BoundaryResidual.lean and
+/tmp/TTC67BoundarySelection.lean prepared, UNVERIFIED, implementing
+the first-order moving-barrier argument above. Do not import until
+C66 Selection is audited. C68 corpus search for thirdSlope negative
+region forward escape active. Possible later attack: cone S>=0 is
+false, but S<=0 may be outward-invariant under source differentiation;
+if proven, actual-tail positivity could rule it out globally. This
+is only an exploratory question, not a known sign law.
+
+C66 ActualBoundaryPrelim audit3 exit0: k_tendsto_atTop,
+t_tendsto_zero, boundaryRatio_lt, dBoundaryRatio all standard3.
+The exact actual-source quotient ODE is now verified. Generic
+BoundedEscape audit2 also exit0/standard3. ActualBoundarySelection
+audit1 active; it includes the exact compactified-coordinate ratio
+identification, uniform tail bound, vanishing error, and final
+unconditional boundaryRatio_tendsto. No convergence claim yet.
+C68 slope-escape search partialtrue generation1224244 complete
+inventory. It found only already known slope incidence, seam results,
+C65 classification and defectVelocity escape. Its suggested ingredient
+set does not establish any new global derivative sign; rejected as
+insufficient. No global negative-slope invariance theorem is available.
+New corpus search source_flatness active. Possible direct actual-tail
+attack: for every n, d(k^(n+2)*T)/(k^(n+2)*T)=
+2*(n+2)*(1+1/(3k))*J-2*u*k. Existing J<=u/3 and k->infinity
+make this uniformly negative on a tail. This should yield
+k^n*kineticGap->0 for every n, with compactified t=q*kineticGap
+also flat. This is an UNPROVED next source theorem, not a numerical
+bound optimization or assumed tail model.
+
+C66 critical-direction selection VERIFIED: ActualBoundarySelection
+audit2 exit0; boundaryError_tendsto_zero and boundaryRatio_tendsto
+both standard3. Thus actual q=(u-3J)/(u*k*T)=tcompact/rcompact ->1/12
+unconditionally. This is a new actual-source trajectory constraint,
+not a slope-sign theorem. Generic Escape2 and Prelim3 caches valid.
+C67 BoundaryResidual audit1 now active, BoundarySelection unverified.
+Source-flatness search partialfalse generation1224278 inventory
+complete; no ready actual flatness theorem. Mathlib has
+Asymptotics.SuperpolynomialDecay and Analysis/ODE/Gronwall.lean;
+use exact comparison lemma after reading its signature. Proposed
+search ingredient set not applicable (it assumed exponential decay).
+
+C67 residual audit2 exit0: boundaryError_scaled_tendsto proves
+k*e->7/2; boundaryResidual_tendsto proves R_a->36a+7/2, both
+standard3. The inverse-ratio velocity formula and its zero limit
+also compile. First audit failed only two redundant ring calls and
+a pointwise/function equality; fixed without limit changes.
+BoundarySelection audit1 active (moving barriers + first-order law).
+C68 /tmp/TTC68KineticFlatness.lean drafted, UNVERIFIED. It proves a
+signed scalar Gronwall decay lemma, differentiates every weighted
+kinetic gap k^(n+2)*T, and uses J<=u/3,k->infinity,u>=u(1)>0
+to get eventual derivative <=negative function. Target is the
+unconditional Asymptotics.SuperpolynomialDecay atTop k kineticGap.
+C66 production copies prepared: ThetaCuspRatioBoundaryEscape,
+ThetaCuspRatioBoundaryDynamics, ThetaCuspRatioBoundarySelection;
+not yet production-audited/wired. Retain valid C66 scratch caches
+until C67/C68 imports have been migrated.
+
+C67 BoundarySelection audit2 exit0: both eventual moving barriers
+and boundaryRatio_firstOrder_tendsto standard3. Actual
+k*(q-1/12)->-7/72 is VERIFIED, no free source/RH premises.
+C68 KineticFlatness audit1 exit0: all three printed capstones
+standard3, including unconditional kineticGap_superpolynomialDecay.
+Added compactifiedDeficit_superpolynomialDecay for k*(1-3J/u),
+using q*r and q->1/12; audit2 active. C66/C67 five production
+copies prepared, awaiting serial production audits. Driver prepared
+/tmp/tt_c66_68_audit_production.py for those5 plus anticipated
+ThetaCuspRatioKineticFlatness. No C68 production copy yet.
+P3 card tt-critical-boundary-source-selection.md contains complete
+C66/C67 paper proofs and scratch audit status, integration pending.
+
+C69 actual-slope tail attack, NEW UNPROVED conjecture, grounded in
+C65 exact moments and now verified source flatness: on r=t=0 the
+square field has V=9,Z=1/3, WK=36K+12 and WU=WZ=0; hence
+Hh=-36h²-12h³. First three boundary leading moments are checked
+-6⁴*24,6⁶*3*24²,-6⁸*15*24³. Predict next two are
+6¹⁰*105*24⁴ and -6¹²*945*24⁵ (the missing axis orders of the
+C65 regularized moments are h and h², respectively). These require
+Lean proofs, not coefficient guesses passed off as facts.
+If verified, axis P=h²*(A+O(h)), A=6²⁴*24⁹*720>0, because the
+3x3 odd Gaussian moment determinant of1,3,15,105,945 is720.
+Full H derivative then predicts Q=h³*(1944*A+O(h)).
+Thus k^(-16)*S_actual ->1944*A>0 after proving flat-coordinate
+polynomial evaluation differs from axis by every-order-flat error.
+No slope limit/sign claim yet. A direct polynomial induction can
+prove the latter transport: constants/add trivial, P*X_i via
+(deltaP)*coordinate + P_axis*(delta coordinate); all coordinate
+limits exist, and r,t are flat. Avoid external arithmetic; all
+axis coefficients/determinants must be certified by Lean.
+
+C66–C68 production integration COMPLETE: serial driver75875 exited0
+for all6 leaves. Wired into RHTower and indexed (82975 exit0).
+Imported type/axiom audit70177 exit0 explicitly shows the four
+actual capstones have NO premises, standard3 only. P3 card and TT
+frontier map updated; scratch sources/caches/helpers cleaned after
+migrating all dependencies. Lint37010 pending at this entry.
+New active proof: /tmp/TTC69Axis.lean audit1, independent production
+imports. It defines exact univariate axis specialization, normalizes
+only moments8 and10 with kernel tactics, and tests the predicted
+first nonzero coefficients. No external coefficient arithmetic.
+
+C69 update: C66–68 final lint had14 unrelated umbrella omissions, no
+owned errors. Polynomial flat-evaluation audit2 exit0, standard3:
+every actual-source polynomial differs from axis evaluation by a
+term flat to all powers of k. Cast-composition repair only.
+Axis coefficients VERIFIED: production ThetaCuspRatioAxisMoments
+foreground audit43700 exit0. s8 coefficient1=6^10*105*24^4;
+s10 coefficient1=0, coefficient2=-6^12*945*24^5. Prior proof failure
+was coeff_X2 simplification, no mathematical mismatch.
+ThetaCuspRatioFlatEvaluation production copy prepared, not yet audited.
+Next /tmp/TTC69AxisCore.lean: factor minor as h²*core, prove
+core(0)=6^24*24^9*720, restrict full flow to axis, factor slope as
+h³*coreSlope with coreSlope(0)=1944*core(0). Audit active. Actual
+slope tail sign still UNPROVED. Axis-flow search partialfalse,
+generation1224665 inventory complete; no exact flow lemma, proposed
+expand/Laurent ingredients did not fit. Build derivation specialization
+by polynomial induction using existing flow_C/add/mul/X laws.
+
+C69 actual tail COMPLETE mathematically: ActualTail audit2 exit0,
+all three capstones standard3, including premise-free eventual
+strict positivity of deriv normalizedD. Four production leaves
+passed direct lake env lean audits and wired into RHTower. Imported
+axiom audit29865 active. Frontier map/P3 card updated. This is actual
+source positivity, not coarse-cone positivity. Global slope remains
+open. Next C70 hard conjecture: the coarse-cone locus S<=0 is forward
+trapping (strict negative flow derivative at S=0 would suffice);
+actual tail positivity would exclude it globally. Deep search
+/tmp/tt_c70_slope_escape_search.json partialfalse generation1224781,
+complete inventory, no sign theorem; suggested invariant-flow generic
+facts do not discharge the mathematical sign. Narrow lexical ratio
+search finds prior defectAcceleration acceleration_neg and existing
+seam/zero-speed signs. Study exact defect proof as a model, do not
+claim or formalize a conditional wrapper as frontier progress.
+
+C69 integration final: imported audit29865 exit0 confirms all ten
+printed capstones standard3, actual types premise-free. Index73324
+exit0. Lint16833 exit1:12 unrelated umbrella omissions, no owned
+error. Four production leaves wired; all owned C69 scratch sources/
+caches cleaned. Audit/search logs retained. C70 critical tenth-moment
+first jet audit1 exit0 but normalization retained two impossible
+constructor equalities; simplifying these before reading the formula.
+No C70 sign result claimed.
+
+C70 SeamTail audit3 exit0: both criticalError_seam_pos and
+criticalError_eventually_pos standard3, no added source premises.
+Global audit2 active only after predecessor terminal success.
+Premature Global audit1 had exited immediately missing dependency;
+no duplicate build remains and its cache was removed. Generic
+TwoFunctionTrap audit2 complete. Strict global scratch prepared,
+not audited. All searches terminal. Next is global application then
+strictness by existing second-derivative local-minimum corpus lemma.
+
+C70 COMPLETE: strict actual barrier q>1/12-7/(72k) for every x>0.
+Seven production leaves passed sequential direct lake env lean audits;
+15 imported type/axiom checks exit0, standard3 only. RHTower umbrella
+wired; index exit0. Lint exit1 solely 12 unrelated missing umbrella
+imports (same kind as earlier); no owned C70 finding. P3 card:
+tt-global-critical-source-barrier.md. Frontier map updated. Scratch
+sources/caches and audit driver cleaned after successful migration;
+logs retained. Global third-slope, full quadratic, transported fourth
+gap, join and all-rank closure remain OPEN. C71 affine-boundary
+second jet / nonlinear source-defect attack active, not yet proved.
+
+C71 COMPLETE: unconditional exists_affineCone_negative_slope falsifies
+coarse-cone plus strict C70 affine barrier as a pointwise criterion.
+Positive survivor quadraticSlope_sign classifies both signs by the
+exact threshold 144a=r² along t=r*b(h)+a*h²; equality remains open.
+Seven production leaves passed direct serial leaf audits; eleven
+imported capstones standard3, audit exit0. RHTower umbrella wired;
+index exit0. P5 tt-third-slope-affine-cone contains dependency-closed
+paper proof; frontier map updated. C72 nonlinear actual invariant
+q−Tq²>b is now the active conjecture, with inward forcing sign open.
+Global actual slope/fullquadratic/fourthgap/join/allrank/RH remain OPEN.

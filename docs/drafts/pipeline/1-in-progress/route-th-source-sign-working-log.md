@@ -2524,3 +2524,632 @@ ThetaTailTransportPrimitiveFloor. All owned build/search processes are
 terminal. New memory rh/route-th-inverse-source-next-2026-10-04 records
 certified N17/N18 and the exact remaining N16/N19 source-jet problem;
 old memory points there. TH goal remains active, no RH proof claimed.
+
+2026-10-04 continuation: route TH N19 scratch7656 exited0; actual alpha/gamma
+strict growth, beta growth, affine fourth-jet transport and exact normalized
+inverse polynomial all printed standard3. Saved ThetaCuspC5CoupledShapeDynamics;
+final20860 exited0, empty log, wired once. The source affine helper edit had
+already passed final30201. N20 paper argument now proves strict normalized
+reserve growth using two explicit positive coefficient decompositions; full
+clock comparison still open. First N20 scratch39583 failed at import because
+ThetaCuspCurvatureDefectGrowthTransferKernel.olean was missing. Exact single
+leaf dependency repair41457 exited0, empty log. No full or umbrella build.
+Current N20 scratch includes actual derivative and source-bound bridges;
+audit ongoing. Do not count it as certified until terminal0 and axiom audit.
+N20 second scratch33924 failed at another missing import object. Read-only
+local import-closure inventory found exactly three further missing objects.
+Targeted direct-Lean repairs83195 (FiniteLogConvolution),84417
+(BinaryGrowthFlow),97071 (GrowthTransferEnvelope) all exited0 with empty
+logs. No dependency source changes. Full N20 audit restarted. Search19484
+returned partial source-only endpoint hits; explicit N21 endpoint primitive
+and N22 actual quartic inverse-clock cancellation recorded as PAPER only.
+N20 corrected scratch54341 exited0, all five printed endpoints standard3.
+Final67315 exited0, empty log; saved ThetaCuspC5InverseReserveGrowth and
+wired once. N19 final20860 also audited/wired. Total owned saved leaf count
+now31. Owned N19/N20 scratch and staging files removed after final success;
+audit/search logs retained. Map and card record certified growth separately
+from paper N21 recovery and N22 quartic germ. RN heading preserved exactly.
+Latest lint38543 running; no live owned Lean/search job.
+Lint38543 exited1:13 unrelated unreachable modules, none ours; log
+/tmp/th-c5-inverse-reserve-growth-lint.log. ThetaTailCorrectionCurrent now
+appears instead of prior ThetaTailFinitePairTransport. No active forbidden
+proof declarations reported. Memory rh/route-th-inverse-source-next-2026-10-04
+updated with N19/N20 certified endpoints and N21/N22 paper mechanisms.
+No live owned jobs; goal remains active and unmet.
+N21 current turn: revalidated saved N20 and map. Search85606 partial1220976
+had no applicable smooth real division closure; lexical97687 zero hits.
+Read actual SmoothAngularAverage/CompactSmoothParameterIntegral corpus
+proofs. Built /tmp/th_n21_regularized_action.lean using real unit-interval
+parameter integration. First5619 audit found elaboration/normalization
+errors;82831 reduced this to an invalid simp name, with actual smooth
+factors and exact E/Q factorizations already standard3. Extended with
+smooth F*/t^5, regular Rbar and J*/t. Audit11485 found only unavailable
+ContDiff.const_mul and redundant tactics; corrected audit72498 running.
+/tmp/th_n21_green_recovery.lean contains the full intended Green primitive,
+its regular s^3 factor, derivative identity and FTC reconstruction; not yet
+audited, imports proposed ThetaCuspC5RegularizedAction leaf. No tree Lean
+edits yet this turn, no second owned build.
+N21 regularization scratch72498 terminal0,11 endpoint axiom reports
+standard3; saved ThetaCuspC5RegularizedAction final51037 terminal0, empty
+log, wired once. Green recovery scratch35364 accepted exact primitive
+derivative (standard3) but found notation/continuity inference errors.
+Second22764 reduced these to redundant ring and an untyped interval
+restriction. Corrected complete reconstruction audit now running.
+N22 search15685 partial1221174 returned no checked actual inverse-clock
+germ; candidates/source arguments/ingredients inspected, all source-only
+or proposed. Existing real seam jet code uses iteratedDeriv_mul; do not
+copy its heartbeat overrides. N22's891 coefficient still PAPER only.
+N21 recovery scratch27413 and final77853 both exited0; primitive continuity,
+exact inverse derivative, full all-center Green reconstruction standard3.
+Saved/wired ThetaCuspC5IntrinsicGreenRecovery. Map updated: endpoint gap
+closed; full clock comparison and all-degree positivity remain open.
+N22 actual quotient scratch15458 and final63823 exited0, all5 endpoints
+standard3; saved/wired ThetaCuspC5RegularizedClockRatio. No monotonicity
+claim follows from smoothness. Search45419 partial1221292 inspected all
+candidates/source arguments/ingredient groups, none supplied checked germ
+closure; actual corpus SeamJet two-jet calculus motivates a local four-jet
+extension. Source jets scratch8925 exited0, all4 endpoints standard3;
+final43559 exited0, empty log. Saved/wired ThetaCuspC5RegularizedSourceJets.
+All-order exact Ebar/Qbar jets now certified from the primitive identities.
+New /tmp/th_n22_even_four_jet.lean assembles the actual N22 inverse-clock
+fourth jet and sign. First generic audit61276 found routine normalization
+issues; mul/Euler helper axioms already standard3. Corrected full actual
+assembly audit66306 running. Do not claim fourth jet or local sign yet.
+N22 scratch73998 terminal0: actual analytic classification, positive fourth
+jet and strict local original inverse-source/clock order all standard3.
+Saved ThetaCuspC5IntrinsicClockGerm. First final99561 failed on one redundant
+tactic introduced in cleanup; exact revert, final4115 exit0 with one harmless
+sequence warning. Wired once. Map now separates certified local order from
+open global order. Five new leaves certified/wired this continuation; total
+owned saved leaf count36. N23 intrinsic clock supersolution and exact cleared
+forcing written as PAPER CONJECTURE on card. Search1758 non-partial1221472/
+1221473 found no checked sign closure; every returned section inspected.
+Formal lint running. RH goal active, not achieved; no external blocker.
+Lint9350 exit1:13 unrelated unreachable modules, none ours, no active
+forbidden proof declarations reported. RoutePNativeBiasedMeanComparison
+replaces previous ThetaTailCorrectionCurrent in the unrelated set; full log
+/tmp/th-c5-intrinsic-clock-germ-lint.log. All eleven owned scratch/staging
+files removed after final success; logs/search JSON retained. No owned live
+jobs. Memory rh/route-th-inverse-source-next-2026-10-04 updated with N21/N22
+CERTIFIED and N23 exact PAPER sign target. RH remains unproved; goal active.
+2026-10-04 next goal turn: previous turn PROGRESS, revalidated N22 saved
+endpoints and current map/N20 flow. Search80711 non-partial1221586; all
+candidate/source/idea/ingredient sections inspected. No applicable actual
+supersolution producer. N23 paper forcing linearization exposes the exact
+block T=64(alpha-gamma)+92beta-108delta-155epsilon-25zeta. Positive quintic
+H=(1053/5)t4-(170/3)t2s2+16s5/(15t) gives exact identity
+E*T+64(tE-Q)^2/(tQ)+25t5*v(t)+integral H*v=0, v=e''''.
+Scratch65727 exit0: kernel positivity, full identity and strict affine-source
+reserve all standard3. Earlier89608/54326/55394 failed only positivity/
+continuity/measure/Pi.mul elaboration; exact identity was already standard3.
+Saved ThetaCuspC5InverseForceQuadrature, exporting actual w derivative for
+next second-flow calculation. Final audit pending. Prepared
+/tmp/th_n23_second_flow.lean with explicit actual second reserve Euler flow;
+NOT audited. No full supersolution sign or global clock order asserted.
+2026-10-04 N23 higher-source elimination CERTIFIED. Quadrature final6045
+exit0, wired once. Complete second-flow scratch39258 exit0, standard3;
+then added full shape operator and epsilon-coefficient sign. Scratch42584
+failed on notation/commutation/elaboration, not the coefficient algebra;
+corrected20823 exit0. Exact operator, complete shape-kernel identity,
+actual epsilon coefficient negativity and strict full-force lower bound
+by second-source-only expression all printed standard3. Saved
+ThetaCuspC5InverseClockOperator; final13593 exit0, harmless sequence
+warnings, wired once. No umbrella build. Both actual higher derivatives
+are now paid, with center-dependent kappa retained. Complete force sign
+is NOT established. Search98681 non-partial1221866/1221867; all candidate,
+source-argument, idea and ingredient sections inspected. Own recent fourth
+source bound retrieved; unrelated geometry/clock hits give no missing
+supersolution sign. Next research must control the complete second-source
+expression including the correlated center/displacement clock mass.
+N23 search56392 non-partial1221960/1221963; all candidate/source-argument/
+idea/ingredient sections inspected. Existing local order/clock comparison
+retrieved; no common-defect propagation or full remaining force sign found.
+Prepared exact common positive-defect representations for e,E,Q, plus
+center propagation retaining c''-4c and its clock-mass corollary. This is
+new PAPER structure attacking the remaining correlated sign, not a sign
+claim. Names76203 failed on top-level have syntax;25064 on one universe
+metavariable; corrected2105 exit0 verified this toolchain. New scratch
+/tmp/th_n23_defect_propagation.lean audit running. Lint32094 exit1:16
+unrelated unreachable modules; neither new TH leaf appears among errors.
+Defect-propagation scratch65127 failed on explicit function composition/
+Pi subtraction normalization and opaque e in the endpoint equality.
+Corrected these and added exact common-source slope representation;
+scratch26785 running. Paper learning: free positivity of the common defect
+B is insufficient for endpoint cancellation; retain B''<162B and the
+quintic identity. Full nonlinear force remains the target, not merely
+its center bound. Cleaned audited quadrature/operator scratch and staging;
+retained all logs/search JSON.
+Defect-propagation scratch26785 exit0: e,p,E,Q common-source identities,
+center identity and clock constraint all standard3. Final89702 exit0;
+saved ThetaCuspC5CommonDefectPropagation and wired once. All THREE new
+N23 leaves audited and wired; owned total39. No umbrella build. RN heading
+preserved. Source c/cosh monotonicity was not exported or claimed as a
+formal endpoint. This continuation is PROGRESS: full operator and both
+higher-source eliminations closed; exact common-source/center relations
+closed. Full force sign, global clock order and all-degree/RH still open.
+Final lint56432 exit1:14 unrelated unreachable modules, none of the three
+new TH leaves; no active forbidden proof declaration reported. Log
+/tmp/th-n23-common-defect-lint.log. Exact three imports verified once at
+22298..22300; RN heading432 unchanged. All owned N23 scratch/staging cleaned
+only after successful saved audits; logs and search JSON retained. No
+owned live jobs. Important PAPER clarification: free-kappa linearization
+is432Z-24kappa+T/5. The earlier Z cancellation requires actual leading
+kappa=18Z. Preserve exact -(kappa-18Z)Rbar in the global sign analysis.
+2026-10-04 N24 continuation: previous turn PROGRESS; revalidated saved N23
+operator, source quadrature, common defect and current map. Search6904
+non-partial1222184, all result groups inspected, source-only/not_checked;
+returned own full kernel and local germ, no full global sign producer.
+New source-coordinate energy argument: d<2c+18Z<c(2+Z), hence
+cZ(4+Z)-y^2>0 and z^2<18Z+9Z^2/2. Scratch58236 exit0, standard3.
+Stronger actual interval ratio rho=c''(u-t)/c(u-t) freezes the projective
+curvature on the actual interval, giving 4cZ+2rho Z^2-y^2>0. Scratch72118
+and44883 failed on <i/≤i lexical collisions, not mathematics; corrected
+audit running. Prepared exact positive clock mass debt integral and its
+full-force decomposition in /tmp/th_n24_clock_mass_debt.lean, NOT audited.
+Global first-/second-order comparison and RH remain open.
+N24 corrected energy scratch84104 exit0, all five endpoints standard3.
+Saved ThetaCuspC5ClockCoordinateEnergy; final32095 exit0/empty log;
+wired once. Owned saved total40. Exact mass debt scratch30900 failed
+on redundant ring and unfolded kernel;63719 exposed opaque e on one
+side of the identity. Corrected71001 exit0, all five endpoints standard3.
+Saved ThetaCuspC5ClockMassDebt; final65664 running, not yet wired.
+N25 search43698 non-partial1222460, all sections inspected; no corrected
+profile or global sign result. Prepared enriched profile F*(1+Q^2/15)
+with a two-step positive hyperbolic derivative proof of the full Bose
+budget in /tmp/th_n25_bose_enriched_profile.lean, not yet run. Next hard
+target is its COMPLETE inverse-source/clock current, retaining the
+actual source correlations and clock debt.
+Mass-debt final65664 exit0/empty log; wired once. N25 Bose scratch55418
+failed on Pi application normalization, corrected96954 exit0/standard3.
+Saved ThetaCuspC5EnrichedActionProfile; final74786 exit0/empty log,
+wired once. Owned saved total42. Prepared exact literal inverse-Green
+formula and strictly positive added inverse source; audit now running.
+Global corrected current still open. New paper cancellation of its delta
+coefficient recorded on the card. Search56882 underway for actual source
+defect decay/center control, to test the missing clock-current estimate.
+N25 inverse scratch10447 failed on rewriting every numeral2 in the
+iterated-derivative statement; localized conv_lhs repair23434 exit0,
+all four audited endpoints standard3. Saved ThetaCuspC5EnrichedActionInverse;
+final24984 exit0/empty log, wired once. Owned saved total43. No full build.
+Search56882 non-partial1222692/1222693, older-generation coverage warning;
+all groups inspected. Search64723 non-partial1222723, all groups inspected.
+Both have background refresh and source-only/not_checked hits. Existing
+PrimitiveTransport plus arbitrary scaled cumulant tail limits expose a
+new exact source domination: b/G increases to1, hence b<G. N26 scratch
+also contains the explicit primitive T=54(q+1)/q^3, T'=-G, and resulting
+endpoint bound p-4E<[T(u-t)-T(u+t)]/2. Audit running. These are intended
+to control the actual common-source contribution to the unresolved clock
+current. No global C5 comparison or all-degree/RH sign claimed.
+N26 scratch28389 failed on quotient simplification and limit-order lemma
+direction;56184 on Pi quotient normalization;15753 certified the main
+source domination and both source-jet comparisons but failed a Pi
+subtraction rewrite. Corrected87592 exit0; all TEN endpoints standard3.
+Saved ThetaCuspCurvatureDefectModelDomination; final84673 exit0/empty log,
+wired once. All five new leaves individually audited and wired, owned
+total44. The new global fact is b/G increasing to1, plus positive complete
+cumulant correction and endpoint-preserving source derivative comparisons.
+Full inverse-clock current and arbitrary-degree/RH still open. Next attack
+is the COMPLETE current using w<4p+(Fleft-Fright)/2, retaining clock debt
+and the common source correlations. All owned scratch/staging removed;
+logs/search JSON retained. No numerical experiments/subagents/full builds.
+Final lint running after the last wiring.
+Final lint77347 exit1:16 unrelated unreachable modules; none of the five
+new leaves appears in errors, and no forbidden proof declaration reported.
+Log /tmp/th-n26-model-domination-lint.log. All five imports verified once
+at22319..22323; RN heading preserved at442. No owned live jobs. Previous
+activities classified PROGRESS: complete source model domination and
+derivative comparisons proved, but the complete clock current is still
+the hard open mathematical obligation. Next turn must attack that sign
+using these actual source relations, not merely add local expansions.
+2026-10-04 N27: previous turn PROGRESS. Revalidated saved N25/N26 and TH
+map. Search2916 non-partial1222982; all result groups inspected, background
+refresh/source-only hits, no global current sign. Prepared complete
+enriched-current formula and actual endpoint-model elimination. Scratch
+40478 failed because local notations collided with generic kernel binders;
+moved notation scope. Scratch42702 verified generic Euler flow, both
+complete source coefficients and strict endpoint-model current comparison
+(standard3). Full clock-ratio derivative had only redundant unfold/ring
+errors; corrected audit running. No complete model-current positivity yet.
+N27 corrected scratch92400 exit0, all four endpoints standard3. Saved
+ThetaCuspC5EnrichedClockCurrent; final54168 exit0/empty log, wired once;
+owned total45. Exact complete current and actual endpoint-model inequality
+are now certified. The full current sign remains open. Paper next attack
+peels (Abar/125)*[coupledShapeBlock-25epsilon]; all explicit epsilon
+dependence cancels and remaining delta coefficient is
+Abar*(5C-9)/25+2D*(1+Q^2/15). Existing quadrature identifies the peeled
+block with positive variance minus one weighted source integral and its
+endpoint. That COMPLETE combined sign is the next mathematical obligation.
+Exact source-model gap integral/positive Sturm-flux decomposition also
+recorded on card, PAPER only. No sign assumption, numerical experiment,
+subagent or full build. Owned scratch/staging cleaned after saved audit.
+Final lint running after wiring.
+N27 final lint22246 exit1:14 unrelated unreachable modules; all diagnostics
+inspected, no new TH leaf or forbidden proof declaration. Import once,
+RN heading preserved. All owned jobs terminal before N28 search96069.
+N28: exact Peano peeling plus retained positive Sturm gap is current hard
+sign attack. No full-sign theorem yet. Avoid interpreting the algebraic
+reduction or source-gap positivity alone as a complete current proof.
+N28 search96069 terminal0, nonpartial1223207/1223208, inventory complete,
+background index refresh/source-only. All candidate/source/idea/ingredient
+groups inspected: no current sign; ingredient proposal mismatched odd-seam
+and degree12 facts. Scratch18641 failed only normalization/continuity and
+measure inference. Corrected62150 certified Peano current, positive source
+density decomposition, integrated positive kernel identity and positivity
+(all standard3); final model-current assembly needed one beta-reduction.
+Corrected saved ThetaCuspC5CurrentSourceQuadrature final32018 running.
+N29 PAPER now closes sign of the remaining delta coefficient globally:
+clock lower Padé plus z²>=18Z and tied enrichment h=Q²/15. Explicit
+positive polynomial certificate recorded on card. Search66009 running.
+Full coupled current sign and arbitrary-degree/RH remain open.
+N28 final32018 exit0/empty log, saved/wired ThetaCuspC5CurrentSourceQuadrature,
+owned total46. N29 scratch54367 running; also prints axioms of saved N28
+assembly and positive integral. N29 proof is a global source-coefficient
+orientation, not a numerical bound optimization or a full current claim.
+N28 imported axiom audit54367 confirms full model-Peano identity and
+positive source integral standard3. N28 scratch/staging removed; logs
+retained. N29 first scratch54367 failed only Pi beta reduction, rational
+normalization, explicit positivity and multiplication of the rate equation;
+no counterexample to the mathematical certificate. Corrected36037 running,
+including exact coefficient-to-remainder identity and strict contribution.
+N29 search66009 exit0, nonpartial1223288/1223299, complete inventory,
+background refresh/source_only/not_checked. All result groups inspected;
+retrieved existing Peano/clock APIs, no missing global coefficient theorem.
+N29 corrected scratch36037: scalar lower coth and actual lower clock energy
+standard3; remaining assembly failed only on two redundant ring calls.
+Removed them and unnecessary tactic sequencing. Saved
+ThetaCuspC5CurrentSourceOrientation final49792 running. Strong new endpoint
+is positivity of the complete remaining third-source coefficient, with
+all shape/clock premises discharged on the physical chamber, plus its
+strict positive contribution to the Peano remainder. No whole-current sign.
+N29 saved final49792 exit0; one harmless unnecessarySeqFocus warning174,
+no errors. Wired once; owned total47. Final import-only axiom64378 running.
+N27/N28/N29 imports verified exactly once at22367..22369; RN heading
+preserved at454. N29 scratch/staging removed after saved audit.
+Final lint19747 exit1,14 unrelated unreachable modules; every error
+inspected, no new TH leaf and no forbidden proof declaration reported.
+Log /tmp/th-n29-current-source-orientation-lint.log. The new source sign
+advances the hard current frontier but does not prove the whole current,
+C5, arbitrary-degree positivity or RH. Next target is the exact combined
+expression on card; preserve actual clock and all positive source terms.
+Final axiom64378 exit0; all seven imported N27-N29 endpoints standard3
+(propext,Classical.choice,Quot.sound), no added proof axiom. Final axiom
+scratch removed. No owned live jobs or scratch/staging. Three new leaves
+this continuation, owned total47. Assessment: PROGRESS, with one full-chamber
+source sign ambiguity solved; whole-current and arbitrary-degree gaps
+remain. Next turn stays on their complete coupled sign, not local jets.
+2026-10-04 N30: previous turn PROGRESS, current state revalidated. Deep
+search85884 exit0 nonpartial1223507/1223508 and search25733 exit0
+nonpartial1223549; complete inventory/background refresh/source_only.
+All result groups inspected. No full current sign producer; generated
+proposals either reused our Peano identities or mismatched reflection jets.
+Paper direct nonlinear attack uses actual e*r-p²>0, hence a*delta>b²,
+and positive delta coefficient. Generic Schur extraction and positive
+quadratic coefficient established on paper using actual source cone.
+Scratch62959 exit0: exact generic Schur identity standard3, entire pure
+quadratic positivity algebra compiled. Full actual-source assembly now
+running in scratch2. This targets the complete nonlinear remainder; all
+actual clock dependence retained in the unresolved affine slope part.
+N30 full scratch27696: exact complete-current Schur identity standard3;
+actual positivity assembly failed only on redundant ring and a lambda
+binder r colliding with local notation r=shapeCurvatureSecond. Corrected
+both, clarified documentation that the affine part still depends on b
+through actual clock C. Saved ThetaCuspC5CurrentSchurCoupling final audit
+running. Do not claim all physical nonlinear slope terms eliminated.
+The new positive reserve is exact, while residual quadratic clock
+interaction remains coupled to source constant/linear terms and integral.
+N30 saved final37266 exit0/empty log. Wired once; owned total48.
+ThetaCuspC5CurrentSchurCoupling closes the actual Schur coupling and global
+quadratic-coefficient sign and identifies the full positive reserve in the
+complete current. Full clock/source-integral sign still open. Imported
+axiom audit and final lint running. No numerical experiments, subagents,
+full/umbrella builds, commits or raised heartbeats.
+N30 final lint75676 exit1:17 unrelated unreachable modules, all errors
+inspected. No new TH leaf and no forbidden proof declaration reported.
+Log /tmp/th-n30-current-schur-lint.log. Import verified once at22375;
+RN heading preserved at457. Scratch/staging removed after saved audit;
+only final axiom14794 remains live. Positive reserve does not erase the
+remaining quadratic clock/source coupling. Next complete sign target
+must retain this reserve and actual clock together, not discard either.
+N30 final axiom14794 exit0, all six endpoints standard3. Final axiom
+scratch removed. No owned live jobs or scratch/staging; logs/search JSON
+retained. Assessment PROGRESS: source Schur correlation, quadratic
+coefficient and full extracted reserve positive on actual chamber.
+Not a proof of whole current or RH. N31 paper target on card is positivity
+of COMPLETE upper-clock-envelope current, with source/clock correlations
+and Schur reserve retained. Do not stop at another comparison wrapper.
+
+2026-10-04 N31: deep search81416 exit0, partial decomposition deadline;
+index1223695, coverage1223706/7 complete inventory, background refresh.
+All declarations/candidates/source arguments/proof ideas/ingredient sets
+inspected. Only actual quadrature identity relevant; rephrased to exact
+lexical enrichedClockCurrent, which retrieved all six existing endpoints
+and no full sign theorem. Center search6656 exit0 partial decomposition
+deadline and malformed filter JSON, coverage1223761/2; inspected all
+groups, useful source hyperbolic series facts confirmed directly.
+Full-current paper attack uses actual center coupling to close2<=t<=u;
+no threshold optimization. Positive enrichment flow derived globally.
+Scratch /tmp/th_n31_outer.lean written; name audit first failed on
+unconstrained universe parameters in generic have-lines only. Corrected
+types to ℕ,ℝ. One foreground name-audit process remains; no parallel
+owned Lean builds. Full sign for0<t<2 remains the hard next target.
+N31 name audit40968 exit0 after explicit universe/type specialization.
+First full scratch36138 exit1: q positivity needed explicit denominator
+proof; `<intrinsic...` tokenized as `<i`; one transitive-bound target
+needed a type; final assembly hit whnf heartbeat limit. Repaired by
+explicit lemmas and ring-verified flow identity, never raising heartbeats.
+Scratch48404 exit0/empty log. Saved final93552 exit0/empty log for
+ThetaCuspC5OuterClockCurrent, wired once (owned total49).
+Both complete rational-envelope and actual enriched currents are positive
+for2<=t<=u. Additional enrichment flow strictly positive on0<t<=u.
+Final lint35761 exit1:12 unrelated unreachable modules, all diagnostics
+inspected; no owned TH module or forbidden proof declaration.
+Final axiom78566 running. N32 source-moment search47277 running.
+Assessment PROGRESS: complete unbounded sign domain removed; no claim of
+global current positivity or RH. Inner full-sign obligation stays active.
+N31 final imported axiom78566 exit0: all three strongest endpoints use
+only propext, Classical.choice, Quot.sound. Final scratch removed; no
+owned live jobs or scratch/staging remain. Saved module warning-free,
+import once, exact RN heading preserved; scoped diff whitespace check0.
+N32 search47277 exit0 partial (malformed filter JSON, interrupted text/
+source stages and semantic deadline), index1223855 with complete inventory
+snapshot1223880/current1223893 and background refresh. All seven lexical
+declarations,20 candidates,20 source arguments,empty proof ideas and full
+ingredient proposal inspected. It supplies source derivatives and Peano
+identities, no inner-current closure. New simultaneous moment identities
+remain PAPER; their signed kernels must be kept in the full expression.
+
+2026-10-04 N32 continuation: exact signed-moment transfer and full-current
+comparison. Search16684 exit0/nonpartial, index1223951; complete inventory
+coverage1223957/background refresh, no errors. All candidates/source
+arguments/proof ideas/ingredient sets inspected: no global sign producer.
+Search89183 exit0/nonpartial, index1224104, coverage1224111/current1224118,
+complete inventory/background refresh; source-only metadata. All20
+candidates and20 source arguments plus empty proof ideas/full proposed
+ingredient set inspected. Retrieval was unrelated clock/curvature material;
+its proposed generic clock proof does not apply. Rephrased with ThetaCusp
+module filter; search34485 still running.
+N32 name audit71145 failed only on an unused nontransitively imported
+project theorem; min API verified, unused line removed. Scratch23815
+failed on unspaced inequality notation and an id simplification.
+Scratch75581 failed only on beta-reduction before a rewrite. Corrected
+scratch75978 exit0, empty log, with smaller CurrentSchurCoupling import.
+Saved ThetaCuspC5CurrentMomentTransfer and wired once; final90498 running.
+A first save command used a duplicated formal/ prefix and wrote nothing;
+its missing-file audit44948 exited1 before the corrected save/audit.
+New theorem retains the complete current and gives Rbase<Rnew<E*K on
+0<t<=u. Exact source-gap kernel admission and positive retained integral
+are certified in scratch. Rnew>=0 remains OPEN. This is a strict
+first-source comparison improvement, not inner-current or RH closure.
+N32 final90498 exit0/empty log; axiom89065 exit0, seven endpoints
+standard3. Lint7470 exit1:24 unrelated unreachable modules, all errors
+inspected; no owned TH leaf or forbidden proof declaration. Search34485
+exit0 partial: malformed filter JSON and semantic deadline, index1224119,
+coverage1224143/current1224144 complete inventory/background refresh.
+All20 candidates/20 source arguments/empty proof ideas/full ingredient
+set inspected. It confirms actual fourth-source affine control and
+model comparison separately; it does not justify applying actual affine
+control to the model. N33 paper mechanism on card avoids that step by
+using the positive backward kernel against the actual fourth source.
+Assessment: strict complete-current lower comparison improved; whole
+inner sign and arbitrary-degree/RH remain open. No numerical experiments,
+subagents, full/umbrella builds, commits, or heartbeat increases.
+N33 lexical60544 exit0: all20 declaration hits inspected; candidate,
+source-argument, proof-idea and ingredient groups absent in lexical mode.
+This output has no compiler/freshness metadata. Relevant source verified
+directly: ThetaCuspC5InverseForceQuadrature exposes literal fourth
+source, its derivative bridge and its actual affine upper theorem.
+The analogous older second-order force quadrature does not prove the
+new first-order current sign. N33 remains a paper full-sign attack.
+N32 scratch/staging removed; saved source and logs/search JSON retained.
+Exact import occurs once, RN heading preserved, scoped diff check0.
+All owned build, lint and search jobs terminal; no owned live processes.
+
+2026-10-04 N33: search13570 exit0/nonpartial index1224180, complete
+inventory coverage1224184/current1224185, background refresh, no errors.
+All20 candidates and20 source arguments, empty proof ideas/full proposed
+ingredient set inspected. Relevant literal fourth-source derivative and
+affine inequality confirmed in source. Name audit40876 exit1 only due
+to bad specialization of the already-used integral_sub API; other new
+project names checked. Removed redundant bad name line. Scratch67559
+exit1 only on Pi.mul_apply simplification and a malformed derivative
+expression. Repaired without raising heartbeats; scratch77058 running.
+Search17566 exit0/nonpartial index1224230, coverage1224251/current1224255
+complete inventory/background refresh. All20 candidates20 source
+arguments+empty proof ideas/full ingredient proposal inspected. It
+supplies beta monotonicity/normalization ingredients but no comparison
+of the two fourth-source envelopes. The generated proposed monotonicity
+proof from a zero slope alone is insufficient and was not used.
+N34 new paper comparison derived from exact source factors: unique
+center-to-tail envelope crossing, using strictly decreasing normalized
+difference h(q)-162beta. Detailed paper proof recorded on card, scratch
+prepared but not yet run. No source/current positivity claim from it yet.
+N33 scratch77058 exit1 on a function-equality branch of the kernel
+derivative proof; split function and derivative goals explicitly.
+Combined N33/N34 scratch33450 exit1: N33 actual-affine current and
+even-integral derivation had no further errors; new crossing proof
+needed named-argument spacing/context repair, beta reduction, negative
+division normalization, and replacement of a nonexistent convenience
+lemma by mul_lt_mul_left. No heartbeat increase. Scratch93930 now
+auditing corrected complete source plus exact affine tail correction.
+One combined leaf is planned to keep the actual current/source envelope
+comparison together; no new leaf has yet been saved.
+N33/N34 combined scratch93930 exit1 solely on an inapplicable ordered
+field convenience lemma (MulRightStrictMono). Replaced it by direct
+positive-times-negative and nonnegative-product arguments. Saved
+ThetaCuspC5CurrentAffineEnvelope, containing the actual affine current
+transport and unique actual source-envelope crossing. Wired once, owned
+total51. Final18156 running with lake --old env lean and explicit olean;
+no umbrella build. Removed temporary name-audit declaration from saved
+source. Lint running separately; imported axiom audit will follow final.
+
+N33/N34 SAVED FINAL18156 exit0, empty log. Exact actual fourth-source
+quadrature, positive affine slack, complete affine-current lower
+comparison, interior even-curvature identity, unique source-envelope
+crossing, best pointwise source bound and exact affine tail correction
+are Lean-certified in ThetaCuspC5CurrentAffineEnvelope. Wired once,
+owned total51. Imported axiom audit now running. Lint50718 exit1:
+16 unrelated unreachable modules, all errors inspected; none owned
+new TH leaf or forbidden proof declaration. This closes the source
+envelope order classification, not the complete inner sign or RH.
+N35 combined-current identity and nonnegativity are still PAPER targets.
+
+N33/N34 final imported axiom10414 exit0: all ten audited endpoints
+use only propext, Classical.choice, Quot.sound. Saved leaf warning-free.
+N35 STRONGER PAPER consequence from the exact source slope comparison:
+retain h(q)=16+120/q+180/q²=-f(q)*(4+12/q). Positive Sturm flux
+and H<(4+12/q)B give c4<4*c2+h(q)*B, with B=c2-4c. This smooth,
+source-correlated envelope is STRICTLY below BOTH previous envelopes
+everywhere: Affine-Correlated=(162-h)B>0, and
+Model-Correlated=h*(G-B)>0. Thus it also strictly improves their minimum.
+The exact slack is flux/F+h*sourcePrimitiveReserve, both terms strictly
+positive. This preserves the local source-coordinate correlation lost
+in the constant affine coefficient and in replacing B by G. It is not
+a numerical optimization. The min-envelope N35 current mechanism above
+is valid but is now superseded as the strongest NEXT SIGN TARGET by
+this correlated envelope; neither full sign has yet been proved.
+Search76041 running; direct paper proof prepared for Lean audit.
+
+N35 scratch49181 exit1 only on a misplaced unfold; corrected, then
+complete scratch5621 exit0, empty log. Actual fourth-source correlation
+strictly improves BOTH affine and model envelopes, with exact slack
+flux/F+h*sourcePrimitiveReserve. Full current identity retains its Schur
+reserve and correlated-source gap integral, both nonnegative and the
+latter strictly positive. Raff<Rcorr<E*current is certified in scratch.
+Rcorr>=0 remains OPEN. New leaf ThetaCuspC5CorrelatedFourthSource saved
+and wired once; final audit pending. Search76041 partial: judging stage
+malformed JSON, inventory complete, source-only candidates checked
+against actual source/Lean. All20 candidates/20source arguments and
+proposed ingredient set inspected; no existing inner-sign producer.
+
+N35 saved final48190 exit0, empty log; wired once (owned total52).
+Imported axiom75705 exit0: all nine endpoints standard3 only.
+Lint59199 exit1: twelve unrelated unreachable modules, all errors
+inspected; no owned TH leaf or forbidden proof declaration.
+N36 search55443 nonpartial, complete inventory, background refresh;
+all candidate/source/ingredient groups inspected. Generated inner-current
+proposal mixed unrelated Hawking current APIs and is inapplicable.
+Local inverse-clock positivity was ALREADY proved in IntrinsicClockGerm;
+rebuilding that local germ would not move frontier.
+
+N36 PAPER next full-current mechanism: let B=c''-4c, G=source primitive,
+F=-G', H=-B', h=-F'/G. N35 gives sigma=hB+H'>0. Exact source flux
+J=F*B-G*H=F*PrimitiveReserve is positive and satisfies J'=-G*sigma<0.
+Also (B/G)'=J/G². Thus normalized defect has strictly decreasing slope
+in its intrinsic coordinate integral dx/G². Test this finite-interval
+constraint inside the complete current, retaining boundary and clock
+terms. Full Rcorr>=0 remains the actual conjecture, not implied by
+J>0 or J'<0 separately. New flux law paper only pending search/audit.
+
+N36 search35042 partial (malformed filter/judge JSON), index1224658,
+complete inventory1224661/current1224663, refresh in background. All20
+candidate and20 source argument records and empty proof/ingredient sets
+inspected. The actual primitive derivative and normalized slope are
+relevant; no existing primitive-Wronskian concavity theorem was found.
+Scratch19259 exit1 only redundant ring after field_simp; removed.
+Scratch26254 exit1 only reversed integral_symm argument order; verified
+actual Mathlib signature and repaired. Flux dissipation, strict flux
+monotonicity, finite intrinsic-clock bounds and three-point source
+concavity had no mathematical proof errors. Scratch3520 auditing repair.
+
+N37 PAPER intended full-sign use of N36, not an achieved sign theorem:
+T_u(x)=G(x)[B(u)/G(u)+J(u)*integral_u^x G(s)^(-2) ds]. Strict clock
+concavity gives B(x)<T_u(x) for x!=u on the nonnegative source axis,
+with exact common center B(u),H(u). T_u solves T''=h*T and matches
+B,B' at u; actual B''=hB-sigma. Hence the difference has a positive
+Green representation on either side of u. Solving c''=4c+B then gives
+a single center-matched fourth-order comparison model, whose forcing
+is the SAME sigma already retained in the current. Next hard task:
+prove the COMPLETE inverse-clock current sign using this coupled
+Green representation. Ordering c alone does not imply ordering the
+nonlinear current; do not infer it. Keep full clock and action terms.
+
+N36 scratch3520 exit0, empty log. Saved
+ThetaCuspCurvatureDefectPrimitiveFlux; final56414 exit0, empty log.
+Wired once after N35, owned count53. Certified J>0, exact J'=-G*sigma,
+strict decrease, exact normalized-defect interval integral, strict
+clock slope bounds, two-sided common-center tangent and three-point
+clock concavity. Imported axiom audit follows. Lint30156 exit1, fifteen
+unrelated unreachable modules; all errors inspected, no owned TH leaf
+or forbidden declaration. Scoped diffcheck passes. The full inner
+current sign, C5 compensation and arbitrary-degree/RH remain OPEN.
+Assessment: new interval source structure and sharper complete-current
+lower comparison, but no newly closed inner-current subdomain.
+N37 must use the common Green slack in the complete nonlinear current;
+repeating source-envelope comparisons alone will not settle this sign.
+
+N37 PAPER audit of the proposed next mechanism: do NOT assume that
+raising a center-matched curvature decreases the raw enriched current.
+For a constant-center curvature scale c with fixed positive displacement,
+the exact action-power kernel has leading enriched term
+(576/625)*(2*alpha+beta)*Z^3*Q^2. Under a center-preserving positive
+curvature variation v, its leading relative first variation is
+[v+(t/2)v'+2*V1/t+2*V2/t²]/c, with V1=integral_0^t v and
+V2=2*integral_0^t (t-s)v(s). This is positive when those terms are
+positive, while highest-jet variations are adverse near the germ.
+This is a PAPER diagnostic of a likely overstrong raw-current
+monotonicity statement, not an actual-source counterexample or Lean
+no-go. Check this carefully before investing in that lemma. The
+surviving exact source Green representation remains valid; the
+complete current must retain its positive bulk and signed variation,
+or use an appropriate positive normalization. No route is retired.
+
+N36 final imported axiom26531 exit0: all eight endpoints depend only
+on propext, Classical.choice, Quot.sound. Saved module warning-free.
+All N35/N36 owned scratch and staging files removed; audit logs and
+search JSON retained. No owned running build/search process remains.
+Both modules wired once; RN heading preserved. RH goal not achieved.
+
+N38 exact clock-cancellation attack, using corpus search33789 (nonpartial,
+complete inventory1224817/current1224818, background refresh). All20
+candidate/20 source/empty proof/one ingredient groups inspected. Energy
+upper/lower and rational envelope are applicable; proposed energy-only
+sign inference is not sufficient. Saved source APIs read directly.
+Scratch19455 exit0: complete constant-shape current with coarse clock
+C=1+6Z is EXACTLY
+ -(5968/75)Z²-(4464/125)Z³-(336/25)Z⁴-(1728/625)Z⁵<0 for all Z>0.
+This is a no-go for that clock relaxation, not a theta-source counterexample.
+Rational envelope retains exact correction
+ Clinear(z)=1+z²/3-z⁴/[3(15+3z+z²)].
+Positive survivor under audit: complete enriched constant-shape current
+with Clinear(z), Z=z²/18, is positive globally. The unenhanced term follows
+from saved linearEnvelope_lt_constantInverseClockGrowth; enrichment has
+positive cross reserve 4R36R16+Flow36R16-Flow16R36. Paper proof is closed;
+new positive survivor added to scratch for audit. For actual source,
+retain this quartic clock correction together with the N35/N36 common
+source slack in the FULL current; independent quadratic clock estimates
+cannot prove even the zero-defect comparison. No actual-source sign closed.
+
+N38 positive scratch3183 exit0, empty log. Saved/wired
+ThetaCuspC5ClockQuarticCancellation (owned count54). Final74609 running;
+lint18373 running. Failed-relaxation card created at
+5-failed/theta-c5-quadratic-clock-current-relaxation.md, with exact
+negative theorem, full positive survivor and dependency-closed proof.
+Do not call the actual-source current falsified: constant-shape model
+has zero source derivatives and only diagnoses the quadratic relaxation.
+
+N39 PAPER next hard current attack: keep clock/action and fourth source
+in ONE moment representation. N38 positive comparison uses z²=18Z,
+whereas actual z²>=18Z with exact source excess
+ z²-18Z=k²[(E-t*e)²+4*t*E*(e-c(u))].
+Equivalently, writing vmean=E/(c(u)*t), actual
+ z²=(9/2)*Z*vmean*(1+alpha)².
+Do not replace this excess by an independent arbitrary variable.
+With r0=c''(u), v(s)=reflected fourth curvature and the odd reflected
+jets zero, the common Peano representations are
+ e(t)=c(u)+r0*t²/2+integral_0^t (t-s)^3*v(s)/6,
+ E(t)=c(u)*t+r0*t³/6+integral_0^t (t-s)^4*v(s)/24,
+ Q(t)=c(u)*t²+r0*t⁴/12+integral_0^t (t-s)^5*v(s)/60.
+These formulas use e''''=v (NOT e'''=v); preserve the displayed orders.
+The N36 center-matched model and SAME positive sigma Green remainder
+then constrain all moments jointly. Target: prove the full rational-clock
+current polynomial after clearing only positive denominators, retaining
+quartic clock correction and these common source moments. This is a
+paper attack, not a proved sign or a reason to repeat comparison wrappers.
+
+N38 saved final74609 exit0/empty log; imported axiom20364 exit0,
+all three endpoints standard3 only. Wired once, owned count54.
+Lint18373 exit1: twelve unrelated unreachable modules, all inspected;
+no owned TH or forbidden declaration error. Scoped diffcheck clean.
+Failed-relaxation card finalized with its positive survivor audited.
+All owned N38 scratch/staging removed, logs/searchJSON retained.
+No owned live build/search processes. Actual inner sign and RH remain open.

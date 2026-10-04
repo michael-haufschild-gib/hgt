@@ -437,4 +437,196 @@ Active paper card: `mc-complete-signed-correlation.md`. The joint quadratic boun
 
 **Complete density/quadratic-source continuation (2026-10-03, 1005e) — no critical estimate:** C12.91 retains C12.90's sampling error; its exact zeta anomaly multiplier still acts on the unknown source. Actual J(t)=sum lambda(n)*exp(-n*t)/n has H_lambda as its Laplace transform. The full identity lambda=mu*mu*(1*squares) gives a product quadratic kernel K with K(z)~exp(-z); every fixed distinct two-point minor is negative eventually, so generic PSD cannot pay the actual mu vector. The density prime-insertion attempt proves one-prime positivity/antitonicity and two-prime positivity on paper, but two comparable large primes make the derivative positive at t=P^(-3/2), ruling out that inductive cone. Full J>=0 remains open, as does the sufficient weaker lower bound -C_epsilon*t^(1/2-epsilon). The positive square forcing retains every unknown dilation. All new deductions/positive survivors remain PAPER/Lean OPEN; no no-go card or route is retired. Current critical mollifier and three-lines statements permit cutoff growth, not cofinal convergence near1/2; their full signed second moment still needs an estimate. Five searches terminal (four partial, one partial=false with semantic coverage unavailable); all candidate/argument/ingredient scopes and freshness recorded. Owned outputs cleaned; no Lean edit/build, numerical computation, subagent, commit or RH result. Next attack stays on the complete signed density/dilation work or cofinal mollified moment, not a generic cone, PSD carrier or receiver. Goal active/unmet.
 
-**Exponential-weight square test / fixed-twist phase gap (2026-10-03, 1005f) — one analytic obligation closed, no critical estimate:** C12.92 tests an absolutely summable Dirichlet square root of the actual weight exp(-nt)/n. A new full-source paper argument in `mc-exponential-weight-phase-zero.md` constructs a proposed simple prime-phase zero for every sufficiently small t: twist prime2 to i, align a moving prime interval, retain the actual center and every multiple-band term. Fixed-log center decay, a strict delta/logN linear capacity gap and an exponentially small nonlinear tail would give a simple zero and forbid the square root. The exact survivor remains Lean OPEN; no no-go or RH route is retired. `LiouvilleTwistedDensityPhase.lean` now proves the actual fixed-twist phase separation and the strict weighted integral gap, with a premise-free existence theorem. Leaf build, direct `lake --old env lean` and all13 public axiom audits passed (only propext/Classical.choice/Quot.sound); umbrella import added, no umbrella build. Global formal lint fails on13 other unreachable modules, not this leaf. Seven corpus searches terminal, four partial/three partial=false, snapshot and semantic/compiler limits recorded in main card; no generated chain substituted for a source estimate. All owned temporary files are cleaned after this entry. No numerical mathematical computation, heartbeat change, subagent or commit. Next: formalize the actual twisted center and moving-prime limit to complete the simple-zero survivor; the main hard target remains the complete Liouville negative-part half-power bound. Goal active/unmet.
+**Exponential-weight square test / fixed-twist phase gap (2026-10-03, 1005f) — one analytic obligation closed, no critical estimate:** C12.92 tests an absolutely summable Dirichlet square root of the actual weight exp(-nt)/n. A new full-source paper argument in `../3-formalized/mc-exponential-weight-phase-zero.md` constructs a proposed simple prime-phase zero for every sufficiently small t: twist prime2 to i, align a moving prime interval, retain the actual center and every multiple-band term. Fixed-log center decay, a strict delta/logN linear capacity gap and an exponentially small nonlinear tail would give a simple zero and forbid the square root. The exact survivor remains Lean OPEN; no no-go or RH route is retired. `LiouvilleTwistedDensityPhase.lean` now proves the actual fixed-twist phase separation and the strict weighted integral gap, with a premise-free existence theorem. Leaf build, direct `lake --old env lean` and all13 public axiom audits passed (only propext/Classical.choice/Quot.sound); umbrella import added, no umbrella build. Global formal lint fails on13 other unreachable modules, not this leaf. Seven corpus searches terminal, four partial/three partial=false, snapshot and semantic/compiler limits recorded in main card; no generated chain substituted for a source estimate. All owned temporary files are cleaned after this entry. No numerical mathematical computation, heartbeat change, subagent or commit. Next: formalize the actual twisted center and moving-prime limit to complete the simple-zero survivor; the main hard target remains the complete Liouville negative-part half-power bound. Goal active/unmet.
+
+**Actual twisted-center continuation (2026-10-04, 1005g) — two new audited leaves:** `LiouvilleTwistedHarmonicDecay.lean` proves the exact square and prime-two harmonic convolutions and unconditional logarithmic cancellation for Liouville and its actual fixed twist. `LiouvilleTwistedDensityCenter.lean` proves the full Abel identity and log(N+1)*F(1/(N+1)^2)->0. Both targeted leaf builds, both final direct `lake --old env lean` checks, and all14 public axiom audits passed; only propext/Classical.choice/Quot.sound. Both umbrella imports added; no umbrella build. Global lint14 unrelated unreachable modules, neither new leaf. C12.92's cofinal center is now proved, while its full simple-zero survivor remains open. New paper attack replaces a weighted prime-integral limit by two phase-separated prime intervals: the exact pairwise triangle-deficit identity plus existing ordinary prime-window counts yields the needed c/logT capacity gap, after complete cofactor errors are paid. The actual finite capacity theorem, nonlinear band decomposition and simple-zero contradiction are next; no critical Liouville half-power lower bound or RH conclusion was obtained. Five searches terminal, two complete/three partial, compiler freshness and source mismatches recorded in the dedicated card. All owned temporary files cleaned after this entry. No numerical mathematical computation, heartbeat change, subagent or commit. Goal active/unmet.
+
+**Actual prime capacity and complete band decomposition (2026-10-04, 1005h) — four new audited leaves:** `LiouvilleTwistedPrimeCapacity.lean` proves a premise-free eventual kappa/logT capacity surplus for the actual unrestricted prime responses on two fixed intervals. `LiouvillePrimeBandAlgebra.lean` counts selected-prime multiplicity exactly, retaining prime squares. `LiouvillePrimeBandAnalysis.lean` proves complete cofactor errors and nonlinear source/derivative bounds by (T+1)*exp(-T), with termwise complex differentiation. `LiouvillePrimeBandDecomposition.lean` proves the exact full series and baseline identities, including all multiples and cofactors. Four targeted builds, four required direct `lake --old env lean` checks and all34 public axiom audits passed; only propext/Classical.choice/Quot.sound. Imports wired; no umbrella build. Lint15 unrelated unreachable modules, none new. Three corpus searches partial=false, freshness and applicability audited in the dedicated C12.92 card. New paper dependency reduction: a moving zero-isolating disc avoids a separate exact-capacity upper asymptotic; elementary total reciprocal mass suffices for cofactor error transfer. Next attack is the actual cofinal simple zero and square-evaluation contradiction. Those remain open, as do the literal Liouville half-power lower bound and RH; no no-go retired. No numerical mathematical computation, added axioms, placeholders, heartbeat increase, subagents or commits. Owned scratch cleaned after recording. Goal active/unmet.
+
+**Full simple-zero and no-square closure (2026-10-04, 1005i):** C12.92 is now complete. Full real-scale center logT*F(1/T)->0; actual simple prime-phase zero at every sufficiently large real scale; no complex l1 Dirichlet square root of exp(-nt)/n throughout some0<t<delta. Three leaf builds, three required direct `lake --old env lean` audits and all eight public axiom checks passed (standard axioms only). Umbrella imports wired; no umbrella build. Lint13 unrelated unreachable modules. Positive survivor moved to `../3-formalized/mc-exponential-weight-phase-zero.md`; root proposal retired in `../5-failed/mc-exponential-weight-scalar-square-root.md`; frontier map and STATUS updated. Seven searches terminal (five complete, two partial), applicability and freshness retained in cards. No numerical mathematical experiment, axiom, placeholder, heartbeat increase, subagent or commit. C12.93 (`mc-scaled-liouville-density-cone.md`) tests K_P=J_P-t*J_P'>=0 for the actual full finite-prime source. First derivative-hierarchy attempt does not close; exact complete square-cofactor average retains the new sign obligation. This candidate has no new proof or critical estimate yet. The RH-producing Liouville half-power lower bound remains open. Owned scratch cleanup follows; goal active/unmet.
+
+**1005i cleanup complete:** removed all25 exact owned /tmp search/proof/audit files after recording results. Every owned search, Lean and lint process reached a terminal exit; no owned live handle remains.
+
+**Complete density / squarefree discrepancy (2026-10-04, 1005j) — no critical estimate:** C12.93's full finite-prime K_P sign remains open. Extending C12.79's positive deletion to J and K shows equivalence with the full-source sign; this is not a new arithmetic cancellation law. Exact lambda*mu^2=delta, full Abel summation and tail-primitive inversion give rho*K(t)=t*exp(-t)+t*integral_1^infinity E(x)*K'(tx)/x dx. The continuum term is positive, but the actual signed correlation still lacks its sufficient -C_epsilon*t^(-1/2-epsilon) lower bound. Completing x below1 retains the unknown K boundary. Real power modes have a positive deficit tending to zero at1/2; a fixed negative interval of E makes the absolute comparison multiplier exceed1 near that exponent. Complex unit modes still coincide with possible off-line zeta zeros. These are PAPER / Lean OPEN diagnostics, not a completed no-go, source bound or RH result. Ordinary critical-moment convergence was not inferred from an Abelian limit. Nine documented searches terminal/partial=false; candidate, argument, ingredient and freshness audit retained in `mc-scaled-liouville-density-cone.md`. No Lean source/build, numerical mathematical experiment, axiom, placeholder, heartbeat raise, subagent, umbrella build or commit. Main card updated. Next work must estimate the actual signed E/K' dependence; real-mode or positive-density substitution cannot pay it. Goal active/unmet.
+
+**1005j cleanup complete:** removed all nine exact owned /tmp JSON outputs and verified absence. All owned searches exited0; no owned live handle or Lean scratch remains. Documentation diff check passed. Serena checkpoint saved as `rh/mc-squarefree-discrepancy-signed-correlation-2026-10-04`.
+
+
+**Exact squarefree-discrepancy response closure (2026-10-04,1005k):** two new audited leaves
+prove the literal Mellin identity, q(a)=1 iff zeta(1-a)=0 in the complex subcritical strip,
+real q(a)<1 and q(a)->1, a uniform positive cost of absolute values, and eventual absolute
+response>1. Both targeted builds, both required direct `lake --old env lean` audits and all23
+public theorem axiom checks passed, standard axioms only. Umbrella imports wired, generated
+indexes refreshed; no umbrella build. Global lint has13 unrelated reachability errors.
+An accidental overlap of two audit processes was corrected by stopping only the exact
+owned axiom-audit child/wrapper; it was rerun after direct-audit terminal success.
+Positive survivor: `../3-formalized/mc-squarefree-discrepancy-response.md`; failed absolute
+comparison: `../5-failed/mc-squarefree-discrepancy-absolute-contraction.md`. C12.93 itself
+and RH remain open. No numerical mathematical experiment, added axiom, placeholder,
+heartbeat increase, subagent or commit.
+
+**Hard-frontier assessment:** this completes a real obstruction and its positive survivor,
+but supplies no critical signed estimate. The next negative-record test subtracts the
+actual record's power profile, isolating rho*(1-q(a))K(t). Its remainder is the complete
+signed discrepancy/derivative work, equivalently a compensated squarefree sampling error.
+Nonnegative profile values do not control its derivative pairing; direct dyadic deletion
+retains an unsigned odd-cofactor remainder. Keep the full signed source in the next
+conjecture; do not formalize another receiver or improve constants instead. Exact paper
+algebra, corpus searches, coverage and process audit retained in the main and survivor cards.
+Goal active/unmet.
+
+
+**1005k search completion:** four deep corpus searches reached terminal exit0, two partial=false
+and two partial=true. Full metadata and source-applicability ledger retained in the survivor
+card. The final rational-approximation/entire-orbit proposal is unrelated to arithmetic
+Liouville and was rejected; actual prime-two/cofactor identities keep their whole remainder.
+
+
+**1005k cleanup complete:** removed all15 exact owned /tmp search, proof, fragment, lint,
+index-output and axiom-audit files; absence verified. All owned processes reached terminal
+exit, including the explicitly terminated overlapping audit. No owned live handle remains.
+Documentation/source diff check passed. Goal remains active and unmet.
+
+
+**Signed-record/logarithmic continuation (2026-10-04,1005l) — no critical estimate:** revalidated
+C12.36/77; actual K's complete log-coefficient identity has a justified Frullani form with
+J boundary and all even-prime-power forcing retained. Subtracting the record power in its
+prime/continuous terms requires a weighted Chebyshev-error compensation whose ordinary
+limit is not justified by fixed-log bounds. Keep the finite cutoff; do not replace it by a
+continued log derivative. The squarefree discrepancy still admits its subcritical power
+comparison, so the joint source work remains the target. A real-square proposal yields the
+same J positivity obligation through chi=lambda*b_chi, b_chi>=0. Generic damping does not
+preserve the finite sign-group positivity cone; the actual square-aggregated source is not
+falsified by that diagnostic. No receiver, new Lean theorem or no-go retirement. Two corpus
+searches terminal0/partial=false; full freshness/applicability and paper proofs in the active
+C12.93 card. No numerical mathematical experiment, axiom, placeholder, heartbeat increase,
+subagent, full/umbrella build or commit. Goal active/unmet.
+
+
+**1005l cleanup complete:** removed both exact owned search outputs and verified absence.
+Both search handles exited0; no owned live process or Lean scratch. No unchanged Lean
+audit was rerun. Documentation diff check passed.
+
+
+**Joint product/cutoff continuation (2026-10-04,1005m) — no critical estimate:** complete
+lambda*mu-square fibres cancel exactly, unlike the fixed-sign Mobius-pair fibres. At
+cutoff R the first product band(R,2R] has coefficient -mu², while all later bands remain.
+At t=c/R its mass has a positive order-one limit. Full signed tail retains the actual
+profile rho*integral_c∞K(u)/u with O_c(R^-1/2) error by the squarefree count bound and full
+Abel endpoints. This paper estimate diagnoses a moving boundary; it does not bound K at
+zero. Positive-weight head comparison gives the wrong direction at a negative record,
+and recovering K from the signed primitive still lacks critical stability. No elementary
+identity or tail lemma was formalized in place of this hard step. Two searches terminal0,
+partial=false with freshness/applicability in active C12.93 card. No Lean change/build,
+numerical experiment, axiom, placeholder, heartbeat raise, subagent, umbrella build, commit
+or no-go retirement. Goal active/unmet. Next estimate must retain joint signed head and
+moving boundary, not discard either via fixed-t decay or first-band sign.
+
+
+**1005m cleanup complete:** both exact owned search JSONs removed; absence verified. Both
+searches exited0. No owned live process or Lean scratch. Unchanged Lean audits not rerun.
+
+
+**Complete retained-boundary continuation (2026-10-04,1005n) — no critical estimate:**
+full product-boundary cumulative has exact profile -rho*P(u), P(u)=integral_1^u h(v)dv
+for the actual harmonic Liouville prefix. Its entire moving limit retains the signed
+primitive I(c); recovering K uses the sign-changing kernel(t*u-1)*exp(-t*u). Neither
+primitive positivity nor logarithmic decay proves the needed lower bound. Expanding
+the squarefree discrepancy into its Mobius square-divisor source gives an absolute
+fixed-t double sum whose kernel starts at1/m^2. Grouping by n*m^2 cannot erase this
+endpoint: completing it adds -rho*K(t), and the completed absolute n-expansion has a
+harmonic divergence. Paper deductions only; no Lean receiver or no-go retirement.
+Three corpus searches terminal0 (partial=false/true/false), applicability and freshness
+recorded in active C12.93 card. No critical frontier movement, Lean change/build/audit,
+numerical experiment, axiom, placeholder, heartbeat raise, subagent, full/umbrella build
+or commit. RH goal remains active and unmet. Next conjecture must bound this retained
+arithmetic coupling directly; rearrangement without such a bound is insufficient.
+
+**1005n cleanup complete:** all three exact owned search JSONs removed and absence
+verified; all search handles terminal0. No owned live process or Lean scratch. Final
+documentation diff check passed. Unchanged Lean audits not rerun.
+
+
+**Coupled quadratic continuation (2026-10-04,1005o):** prior turn no critical progress.
+Zero harmonic mass alone does not make the product kernel PSD; retain actual Mobius
+coefficients and centering boundaries. New PAPER source order: after full square-divisor
+completion, the noncomparable sector has nonnegative coefficients with explicit even-
+subset expansion. Its zero class is1, prime powers and odd-factor squarefree numbers.
+The comparable orientation is positive too, and J=2B-D+N exactly. B(0) finite and its
+positive loss B(0)-B(t) has every subcritical half-power bound. Hard new ceiling candidate
+D(t)-N(t)<=2B(0) would pay J's negative part, but is neither proved nor refuted. Separate
+positivity leaves the full squarefree parity comparison. No new critical estimate or
+Lean theorem. Detailed proof/status and four corpus searches in active C12.93 card;
+all searches terminal0, partial=true/false/true/false. No numerical mathematical
+experiment, axiom, placeholder, heartbeat increase, subagent, full/umbrella build,
+commit or no-go retirement. Goal active/unmet; continue the full centered comparison.
+
+**1005o cleanup complete:** all four exact owned search JSONs removed and absence
+verified. All four search handles terminal0; no owned live process or Lean scratch.
+Final documentation diff check passed; unchanged Lean audits not rerun.
+
+
+**Centered-ceiling continuation (2026-10-04,1005p): no critical progress.** Exact
+lcm comparison retains correction mu(k)*H_k(t), H_k>0, at every squarefree label.
+A fixed prime negative correction diverges at zero, whereas the centered allowance
+vanishes; termwise payment cannot work. Direct harmonic-prefix plus powerful-tail
+comparison and finite-prime centered insertion were attacked, but neither sign was
+proved. The insertion retains a nonnegative forcing and a signed dilation term;
+discarding the latter would assume the result. Details and all five corpus search
+audits in active C12.93 card. No Lean change/build/audit or numerical mathematical
+experiment. No new critical estimate, RH theorem, axiom, placeholder, heartbeat raise,
+subagent, full/umbrella build, commit or retired route. Goal active/unmet. Continue
+the complete coupled comparison, not generic lcm positivity or coefficient bookkeeping.
+
+**1005p cleanup complete:** all five exact owned search JSONs removed and absence
+verified; all five search handles terminal0. No owned live process or Lean scratch.
+Documentation diff check passed. No unchanged Lean audit rerun.
+
+
+**Coupled-prefix continuation (2026-10-04,1005q): no critical progress.** Actual
+prime-interval test: second-order Euler-baseline deficit is ~S^2/2 while powerful
+tail is o(S^2), so h_P>=ell_P-C*T_bP fails for every fixed C. G_P itself stays positive
+in this family; no target falsification. Nonnegative fractional counting error leaves
+a compensated, unsigned-at-record sampling defect paired with the actual K source.
+Return directly to triangular primitive P: its sign or all-epsilon square-root lower
+bound would control J without requiring the stronger K sign. Exact finite hyperbola
+source retained, with no generic PSD transfer. All new arguments PAPER/Lean OPEN.
+Four corpus searches terminal0, partial=false; details and freshness in active card.
+No Lean change/build/audit, numerical experiment, axiom, placeholder, heartbeat raise,
+subagent, umbrella/full build, commit or no-go retirement. Goal active/unmet.
+
+**1005q cleanup complete:** all four exact owned search JSONs removed and absence
+verified. All four search handles terminal0; no owned live process or Lean scratch.
+Documentation diff check passed; unchanged Lean audits not rerun.
+
+**Actual short-head continuation (2026-10-04,1005r):** proved a source-specific
+obstruction and its positive survivor in Lean. At x=U^2, the literal first short
+term satisfies `A-Z*U^2*H=o(U*sqrt(U))` but `A!=o(U*sqrt(U))`. This closes separate
+absolute payment at the desired half-plus-epsilon scale. It does not sign A or
+its quadratic companion and does not advance the full P lower-bound exponent.
+Next attack must retain joint cancellation in P=2A-B. Survivor and failed-method
+cards linked from the active C12.93 card. Leaf `LiouvilleTriangularShortHead.lean`:
+targeted old-build and required direct leaf audit passed; four public axiom checks
+standard-only. Unique umbrella import, indexes regenerated, global lint13
+unrelated reachability errors. Four deep corpus searches terminal0, partial=false;
+coverage recorded in survivor card. No numerical experiment, added axiom,
+placeholder, heartbeat change, subagent, full/umbrella build, commit or push.
+Goal active/unmet. Owned scratch cleanup follows this entry.
+
+**1005r cleanup complete:** all16 exact owned search, Lean, fragment and log
+scratch files removed; absence verified. All search, Lean, build, index and lint
+handles terminal. New leaf's compiled artifacts retained. Final scoped whitespace,
+new-file trailing whitespace, stage move, seven API entries and unique umbrella
+import checked. Persistent memory: `rh/mc-triangular-short-head-scale-law-2026-10-04`.
+
+
+## Turn1005s — shifted triangular pole separation (2026-10-04,1005s)
+
+Route MC still needs the complete one-sided half-power bound for P=2A-B. Joint positivity and rough-prime attempts left their signed remainder unbounded. New unconditional Lean progress: `LiouvilleTriangularPoleSeparation` supplies an actual shifted zeta zero w with Re(w)>=3/4 at which both competing denominators are nonzero, and proves that the full three-term pole model is analytic exactly when its short-head coefficient vanishes. Endless affine propagation of zeros would converge to the nonzero residue unit at1, so no numerical zero information or simplicity premise is needed.
+
+The parent card `mc-triangular-quadratic-pole-cancellation.md` records a paper route to two-sided excursions of P+c*A for c!=0, hence of the actual B. The physical Mellin identity, bounded remainder's holomorphy and Landau transfer remain unformalized. No corresponding no-go is retired, no actual-source oscillation theorem is claimed from this leaf, and no RH-critical estimate improved. Audited component: `../3-formalized/mc-triangular-shifted-pole-separation.md`.
+
+Targeted old-build, required direct leaf audit and two public standard-only axiom checks passed. Umbrella wired once; indexes regenerated and three API entries checked. Global lint has16 unrelated unreachable modules. Six corpus searches completed; detailed coverage and failed applicability checks are in the active density-cone card. Goal active/unmet; next complete the actual-source connection and return to the surviving joint lower bound.
+
+
+**1005s cleanup complete:** all11 exact owned search, Lean and log scratch files removed and absence verified. All owned tool handles terminal. Compiled leaf artifacts retained. Scoped diff check, three new-file whitespace checks, three generated API entries and unique umbrella import passed. Persistent memory: `rh/mc-triangular-shifted-pole-separation-2026-10-04`. The physical Mellin/Landau connection remains open; goal active/unmet.

@@ -1,6 +1,8 @@
 # RN-P-7y: global positive-correction current
 
-Route RN. Status: dependency-closed paper proof, Lean pending, 2026-10-04.
+Route RN. Status: global correction-current sign formalized and directly audited, 2026-10-04.
+Certificate: ../3-formalized/theta/rn-positive-correction-current.md.
+Full signed compensation and the second improper identity remain open.
 Parent: rn-finite-pair-positive-transport-primitive.md.
 
 Target for the exact positive correction D=B-t:
@@ -50,3 +52,62 @@ Remaining hard problem: transport the negative Q current through the exact
 D=B-t correction and show that it pays the signed C0=t*s_y-Sigma_x/2
 contribution. The second improper identity is still paper-only. General
 anchors, arbitrary-rank positivity and arithmetic RH transfer remain open.
+
+## Nonlocal compensation successor
+
+The Q-current sign retains D's sign but does not retain enough of its size.
+For the corrected density ratio r2_x, let F0(t)=integral_0^t 2s*k(s)^2 ds
+and Htt=J-F0(t). The exact paper Green candidate is
+  O2_x(t)=integral G(t,s)*(-r2_x'(s)) ds,
+  G(t,s)=F0(min(t,s))*(J-F0(max(t,s))).
+The factor -r2_x'(s)=finiteSecantEnergy(x,s)*k(x+s)/(2*k(s)) is positive.
+The normalization is exact: O2'=J*w*(r2-mean(r2)), total w mass=J.
+This is not yet a formalized integral identity; integrability and endpoint
+terms must be proved. It is the next source-dependent representation to use
+when paying C0's derivative, not permission to discard C0 or replace D by a
+free positive variable. The target remains the full signed current.
+
+## Renormalized positive-mass identity
+
+A further exact paper simplification eliminates C0 without estimating it.
+With w=k(t+x)k(t+y)/(k(x)k(y)), the previously formalized density satisfies
+  w*(a+s_y B) = (w*B/(2t))' + w*(Q*B-1/(2t)).
+The new mass density is strictly positive because B>t and
+Q*t-1/(2t)=(p(t+y)-p(t))*(t/y+1/2)>0. The boundary flux tends to1/2 at zero
+(B/t->1, w->1) and to0 at infinity. Thus a primitive of the new positive
+mass has finite limit E(x,y)+1/2. The same nonnegative-derivative improper
+integral theorem can prove its integrability without separately estimating
+C0 or p(t)*k(t+x). This complete analytic transfer is still Lean pending.
+
+The formal derivative target for the whole row then becomes
+  E_y = integral w*(correctionCurrent(t,y)*B_x(t)
+                     +(p(t+y)-p(y))/(2t)) dt.
+Differentiation/integrability of this formula remain obligations. Its exact
+compensation question is a positive cost paid by a positive kernel:
+  integral w*correctionMargin(t,y)*B_x(t)/(2*t²*y²)
+    > integral w*(p(t+y)-p(y))/(2t).
+The left kernel's sign is the new theorem being audited. B>t alone does not
+pay the cost pointwise near zero. Use the actual Green representation of B
+or B-t; never replace it by an arbitrary positive function. This is the
+next nonlocal mathematical problem, not a completed global Schur sign.
+
+Lean capstone also targets strict decrease of the literal positive kernel
+  weightedCorrection(t,y)=k(t+y)/k(y)*Q(t,y)
+for every fixed t>0 on y>0. Its derivative is exactly k(t+y)/k(y) times
+the correction current. Multiplication by the fixed positive x-factor and
+D_x(t) then preserves the strict node comparison; whole-row compensation
+still needs the retained positive cost.
+
+## Gaussian calibration of the missing compensation
+
+Exact paper diagnostic (corpus search inspected; no ready calibration found): for k(t)=exp(-c*t²/2),
+c>0, integration of the product derivative gives H(x,y)=k(x)k(y)/c. Hence
+E(x,y)=0. The actual finite-pair variables in this model are
+  B_x(t)=(exp(c*x*t)-1)/(c*x), a_x(t)=-c*B_x(t).
+Thus B>t and the correction current is strictly negative, while the whole
+row derivative is zero. The cost is exactly paid, not strictly exceeded.
+This rejects any sufficiency shortcut using only those two strict signs.
+The positive survivor is the exact saturation calibration: strict full-row
+compensation must use the actual curvature variation or an equivalent
+Gaussian-cancelling source invariant. For this model N=a+s_x B=0 exactly.
+No statement about a counterexample for the literal theta source is made.
