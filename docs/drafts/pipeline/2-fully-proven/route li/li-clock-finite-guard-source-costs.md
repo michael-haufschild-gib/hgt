@@ -354,12 +354,12 @@ Zero-based C/S/P/T indices match each raw array exactly. Every table row dispose
 |S17|RHTower.thetaCuspSchwartzReal_apply|Actual Schwartz representative admission, no history comparison.|
 |S18|RHTower.ccmLocalPotentialLocalizationDefect_eq|Full returned ready IMS-localization method read; needs another Weil quadratic test/cost, not M15.|
 |S19|RHTower.ofReal_thetaCuspFullSourceReflectionEighthHankelCurvature_eq_generalModular|Finite order-eight modular reflection identity only.|
-|P0|docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md|Historical compact-theta inverse/Jordan history report; different operator and no M15 producer.|
+|P0|docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md|Historical compact-theta inverse/Jordan history report; different operator and no M15 producer.|
 |P1|docs/drafts/pipeline/2-fully-proven/li-clock-cutoff-marking-boundary.md|Prior signed cutoff/marking boundary; retains unsmoothed source gap.|
 |P2|docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md|Recursive compact division/support proof ledger, not budget producer.|
-|P3|docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md|Compact Hilbert-history certificate, different inverse/observable.|
+|P3|docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md|Compact Hilbert-history certificate, different inverse/observable.|
 |P4|docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md|Recursive source admission ledger, no scalar history comparison.|
-|P5|docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md|Original Schwartz-core report, not source sign.|
+|P5|docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md|Original Schwartz-core report, not source sign.|
 |P6|docs/drafts/pipeline/2-fully-proven/li-clock-source-correlation-envelope.md|Prior source-envelope record dispositions, no new budget proof; card relocated during root reconciliation.|
 |P7|docs/drafts/pipeline/2-fully-proven/li-clock-source-correlation-envelope.md|Prior source-envelope source/no-M15 boundary, card relocated during root reconciliation.|
 |P8|docs/drafts/pipeline/2-fully-proven/li-clock-score-correlation-reserve.md|Prior score-correlation hit ledger, not a new source proof.|
@@ -606,12 +606,12 @@ Indexes below are zero-based exact raw-array indexes. Complete names, source/pro
 |source_arguments[17]|`RHTower.thetaCuspSchwartzReal_apply`|Actual Schwartz representative admission, no history comparison.|
 |source_arguments[18]|`RHTower.ccmLocalPotentialLocalizationDefect_eq`|Full returned ready IMS-localization method read; needs another Weil quadratic test/cost, not M15.|
 |source_arguments[19]|`RHTower.ofReal_thetaCuspFullSourceReflectionEighthHankelCurvature_eq_generalModular`|Finite order-eight modular reflection identity only.|
-|prose[0]|`docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md`|Historical compact-theta inverse/Jordan history report; different operator and no M15 producer.|
+|prose[0]|`docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md`|Historical compact-theta inverse/Jordan history report; different operator and no M15 producer.|
 |prose[1]|`docs/drafts/pipeline/2-fully-proven/li-clock-cutoff-marking-boundary.md`|Prior signed cutoff/marking boundary; retains unsmoothed source gap.|
 |prose[2]|`docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md`|Recursive compact division/support proof ledger, not budget producer.|
-|prose[3]|`docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md`|Compact Hilbert-history certificate, different inverse/observable.|
+|prose[3]|`docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md`|Compact Hilbert-history certificate, different inverse/observable.|
 |prose[4]|`docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md`|Recursive source admission ledger, no scalar history comparison.|
-|prose[5]|`docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md`|Original Schwartz-core report, not source sign.|
+|prose[5]|`docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md`|Original Schwartz-core report, not source sign.|
 |prose[6]|`docs/drafts/pipeline/2-fully-proven/li-clock-source-correlation-envelope.md`|Prior source-envelope record dispositions, no new budget proof; card relocated during root reconciliation.|
 |prose[7]|`docs/drafts/pipeline/2-fully-proven/li-clock-source-correlation-envelope.md`|Prior source-envelope source/no-M15 boundary, card relocated during root reconciliation.|
 |prose[8]|`docs/drafts/pipeline/2-fully-proven/li-clock-score-correlation-reserve.md`|Prior score-correlation hit ledger, not a new source proof.|

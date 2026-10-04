@@ -50,13 +50,13 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | riccati-three-charge-offline-countermodel | L6 | done → 3-formalized (`ThetaRiccatiThreeChargeCountermodel`) |
 | euler-logcell-residue-highpass | ℓ² operators, Hardy separation | DONE → 3-formalized (HTGeometry `PositiveIntegerBlockOperators`; `ThetaEulerLogCellResidueChannels`, `QuasiPolynomialBlaschkeIsometry`, `ThetaEulerLogCellSeedVacuum`) |
 | cdf-crossfrequency-rvm-capacity | L5, compact operators | todo |
-| cdf-no-finite-range-symmetrizer | L5 | todo |
+| cdf-no-finite-range-symmetrizer | L5 | DONE → 3-formalized (`ThetaCdfFixedShiftAction`, `ThetaCdfFiniteRangeSymmetrizerNoGo`) |
 | quantile-critical-one-port-rigging | L5 | todo |
 | quantile-resistance-network | L5, Fourier series | todo |
-| compact-inverse-zero-jordan-history | L5 | todo |
-| deletion-cutoff-commutator-collapse | L1, PNT | partial: (1), (2), (3), (3a)–(3h), (3k), (4), (5), sign changes of C_∞ done (`ThetaCutoffCommutatorShell`, `ThetaCutoffCommutatorCofinalLimit`, `ThetaCutoffCommutatorMellin`, `ThetaCofinalCurrentSignChanges`, `ThetaPrimeScheduleSpectralObservation`); open: (3i) prime-sum asymptotic via Abel summation against θ, (3j) natural-schedule oscillation |
-| chronological-boundary-positive-transfer | L1, Laplace | todo |
-| prime-deletion-moving-cusp-dual-source | L1, Landau | todo |
+| compact-inverse-zero-jordan-history | L5 | DONE → 3-formalized (46 modules; last: `TwoGaussianDerivativeCenteredHistory`) |
+| deletion-cutoff-commutator-collapse | L1, PNT | DONE → 3-formalized (`ThetaCutoffCommutatorShell`, `ThetaCutoffCommutatorCofinalLimit`, `ThetaCutoffCommutatorMellin`, `ThetaCofinalCurrentSignChanges`, `ThetaPrimeScheduleSpectralObservation`, `ThetaNaturalScheduleEulerOscillation`) |
+| chronological-boundary-positive-transfer | L1, Laplace | DONE → 3-formalized (`ThetaChronologicalCutoffCurrent`, `ThetaChronologicalPositiveTransfer`, `ThetaChronologicalCausalJumps`, `ThetaChronologicalSingularDeconvolution`, `ThetaChronologicalPacketResolution`) |
+| prime-deletion-moving-cusp-dual-source | L1, Landau | DONE → 3-formalized (`ThetaMovingCuspDualSource`, `ThetaMovingCuspTotientReconstruction`, `ThetaMovingCuspSpectralShear`, `ThetaMovingCuspWeightedEscape`) |
 | rational-cusp-boundary-law | Poisson/Gauss sums | done → 3-formalized (`ThetaRationalCuspBoundary`, `ThetaCuspOneSidedConnection`, `ThetaCuspAbelBoundaryPairing`, `QuadraticGaussSumFourthPower`) |
 | prime-modular-commutator-crossing | Jacobi, Hardy sign, PNT | done → 3-formalized (`ThetaDeletionInversionCommutator`, `ThetaQuadratureDefectSpectralKernel`, `ThetaCommutatorKernelInertia`) |
 | renewal-phase-cosh-factorization | L4 | done → 3-formalized |

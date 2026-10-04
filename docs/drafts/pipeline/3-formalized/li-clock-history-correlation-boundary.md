@@ -531,12 +531,12 @@ ALL 10 `prose` retained records:
 
 |ID|Exact returned source/name/range|Disposition|
 |---|---|---|
-|RP0|docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md:2179–2263|Compact theta inverse-history/core metadata, different operator.|
+|RP0|docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md:2179–2263|Compact theta inverse-history/core metadata, different operator.|
 |RP1|docs/drafts/pipeline/2-fully-proven/li-clock-cutoff-marking-boundary.md:492–562|Prior cutoff-marking record/dispositions; actual sign still open.|
 |RP2|docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:3042–3131|Recursive compact support/division/localization metadata.|
-|RP3|docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md:3063–3148|Original theta compact-history certificate, different inverse.|
+|RP3|docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md:3063–3148|Original theta compact-history certificate, different inverse.|
 |RP4|docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:2720–2817|Recursive compact-test metadata; no actual D comparison.|
-|RP5|docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md:1688–1769|Original theta Schwartz compact-core certificate.|
+|RP5|docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md:1688–1769|Original theta Schwartz compact-core certificate.|
 |RP6|docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:3662–3745|Recursive discrete zero reconstruction; different observable.|
 |RP7|docs/drafts/pipeline/3-formalized/jas-critical-singleton-prime-multiplication-escape.md:1–42|Prime singleton tensor multiplication escape; mismatch.|
 |RP8|docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:6054–6141|Recursive global Schwartz metadata.|

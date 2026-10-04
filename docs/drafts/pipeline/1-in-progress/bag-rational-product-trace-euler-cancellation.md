@@ -5,9 +5,13 @@
 - **Target:** evaluate the complete signed rational-product resonance exposed by
   C28.56w, then control its finite-height neighborhood with the original V/W
   profile. This is work on the full BAG cubic; RH is not proved.
-- **Status:** balanced prime-valuation trace formalized in
-  `ChiRamanujanCompleteCubicTrace`; weighted critical boundary and physical
-  transfer remain open. Direct production audit passes without diagnostics.
+- **Status:** the full balanced positive-rational sum, absolute mass and
+  fixed-dilation orthogonality are formalized in C28.56ab, P3
+  `bag-complete-rational-cubic-orthogonality.md`. C28.56y/aa close the weighted
+  arithmetic trace and its compact-test critical boundary. C28.56ac proves
+  frequency-weighted rational/tested identification and termwise integration.
+  Global Schwartz/growing-profile control and physical transfer remain open. Earlier
+  conjecture calculations below are retained as the research history.
 
 ## Corpus basis
 

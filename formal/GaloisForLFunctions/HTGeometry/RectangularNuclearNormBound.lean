@@ -40,7 +40,7 @@ theorem HasRectRankLE.add {S T : E →L[ℂ] F} {m n : ℕ}
   refine ⟨V ⊔ W, inferInstance, ?_, fun z ↦ ?_⟩
   · have hdim := Submodule.finrank_sup_add_finrank_inf_eq V W
     omega
-  · rw [ContinuousLinearMap.add_apply]
+  · rw [add_apply]
     exact Submodule.add_mem (V ⊔ W)
       ((show V ≤ V ⊔ W from le_sup_left) (hSV z))
       ((show W ≤ V ⊔ W from le_sup_right) (hTW z))

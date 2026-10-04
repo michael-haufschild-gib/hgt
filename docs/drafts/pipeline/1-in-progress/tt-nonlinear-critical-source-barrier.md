@@ -151,3 +151,131 @@ Low-clock upper certificate normalization audit1 exit0, all negative
 coefficients after h=(2/3)s/(1+s). Next use that identity to prove P<0
 for 0<h≤2/3 with kinetic incidence; also attack completed remainder
 on h≥2/3 using q≤(6/5)b from small-branch separation.
+
+LowBoundary audit1 and LowCrossing audit1 exit0, standard3. New proved
+sign: at y=0, 0<h≤2/3, full source cone and kinetic constraint imply
+R<0 and Hy<0. Proof uses P≤pTail+w*pWUpper, an exact positive-remainder
+identity, w≤18h²b, then a homogeneous all-negative clock polynomial.
+No numeric evaluation used; all identities checked by Lean ring/field algebra.
+ActualLowCrossing audit1 failed only on `(boundaryRatio ^ 2) x` versus
+`boundaryRatio x ^ 2` (missing Pi.pow_apply); its source sign capstone
+already passed standard3, derivative declaration carried sorryAx and the
+failed olean was deleted. Audit2 applies Pi.pow_apply before normalization.
+HighForcingTrial audit1 hit default200000 heartbeat in whnf. No limit
+raised. This does not establish or refute the proposed high-clock box sign.
+Box-certificate search partialfalse generation1226597, no model errors;
+all returned candidates/source/ingredient sets inspected. Bernstein algebra
+exists; no applicable forcing sign certificate found. Do not replace the
+hard sign by a conditional final theorem.
+
+ActualLowCrossing audit2 exit0: actual derivative and actual low-clock
+zero-crossing sign standard3. ScaledForce audit1 exit0 proves unconditionally
+ k(x)*R_actual(x) → −7/16.
+The proof is exact polynomial first-order assembly from the corpus limits
+h→0, V→9, q→1/12, kT→0, k(q−1/12)→−7/72. It introduces no source-sign
+assumption. NormalizedDynamics audit2 exit0 (audit1 had redundant ring after
+field_simp): E=y/T obeys E′=(k/u)(rate E+R), rate→54, and E≥−(3/(2u(1)²))²
+on x≥1. Tail and full low-clock positivity audits next.
+
+New hard-sign trial, based on low-clock certificate and small branch:
+R<0 on the box 2/3≤h≤3/4, 0≤V≤9, b≤q≤(6/5)b. If proved, R=0 on the
+failure region must have h>3/4, where q≤1/80 considerably simplifies
+the completed forcing sign. This is a structural zero-set exclusion,
+not a final bound objective. Trial not yet audited. Full completed
+remainder high-clock sign still OPEN.
+
+PositiveTail audit2 exit0; LowClockGlobal audit1 exit0. Main new actual
+capstone: boundaryRatio_gt_quadratic_barrier_of_low_clock, standard3,
+proves q−Tq²>b(h) for every actual x>0 with h≤2/3. PositiveTail audit1
+was a parsing failure from unparenthesized squared argument; failed cache
+deleted before audit2. The low-clock result is unconditional within its
+stated domain. Whole-ray C72 and all later TT/RH targets remain open.
+Nine production leaves have been prepared under ThetaCuspRatioQuadratic*;
+serial final audits use lake --old env lean, beginning with Algebra.
+Paper proof /tmp/tt-c72-low-clock-paper.md ready for P3 after production audit.
+
+New structural high-clock proof mechanism (paper algebra, not yet audited):
+put T=9−V, f=1−2Tq, m=−(4/3)h(3+h)(h−Tq),
+E0=−7m/72−12Tq², L=qDerivativeRemainder, y=quadraticError.
+The existing L simplifies exactly to
+ L=−(7/162)h(3+h)[h−2Tq(1−Tq)]
+      +4q(1−Tq)+f²q²*(2/3)(1+h/3)T.
+For h≥3/4 and q≤(6/5)b≤1/80, failure y≤0 gives L<0 by
+Tq(1−Tq)≤Tb and Tb≤3/32. This avoids expansion of the completed K.
+At R=0, the verified f*Rq identity gives a second completion
+ f*completedK = f²*M + L*(V*E0+6*f*A*y),
+ M=m*Rh+12T*Rv+2q*A*E0.
+The last bracket is nonnegative: C70 supplies y≥−Tq²; A≤(25/4)V,
+f≤1, −m≥153/64, Tq²≤9/6400. Thus it is bounded below by
+V[(7/72)(153/64)−(99/2)(9/6400)]>0 when V>0.
+Writing mh=∂h m, mv=∂V m, exact cancellation yields
+ M=m(f Dh−7qA/36+7Tq/18)+f*m*q²*Ah+(7/216)Vq*m*mh
+   +12Tf*Dv+12Tf*q²*Av+(7/18)VTq*mv+24Tq²+24TqD.
+Two displayed terms are nonpositive. On the same box use
+f≥31/40, Dh≥7/12, A≤48, Av≤25/4, D≤1/30,
+−m∈[153/64,13/4], −mh≤9, Dv≤19/25920.
+The first term is ≤−(153/64)(161/480); all five positive upper
+terms sum to less than 1/2. Hence M<0, so completedK<0.
+These constants merely certify the sign; the research object is this
+exact source-force cancellation. None of this high-clock sign is yet
+kernel-verified. Mid-clock R-zero exclusion is also still required.
+
+MidForcingTrial audit4 exit0, standard3. The mid-clock box has a positive
+homogeneous certificate for −R: 2/3≤h<3/4, 0≤V<9, b≤q<(6/5)b.
+Audits1–3 did NOT expose a negative coefficient or counterexample:
+positivity did not recognize NNRat.rawCast. A tiny /tmp probe confirmed
+that cause. Explicitly unfolding NNRat.rawCast/Nat.rawCast after raw-mode
+normalization closed the proof without raising any limit. The rational
+parameterization-to-box theorem /tmp/TTC72MidRegion.lean is now auditing,
+followed serially by rebased ForcingDecomposition/CompletedForcing and
+new HighBounds/HighCoefficients/SecondCompletion. No concurrent Lean build.
+The actual low-clock production theorem already excludes y≤0 at h≤2/3;
+therefore this new box sign should force h≥3/4 whenever actual y≤0,R=0.
+The remaining mathematical work is the second-completion high-clock
+sign and source/global propagation. Nine completed low-clock production
+leaves are wired, indexed, imported-axiom audited; lint has seventeen
+unrelated umbrella omissions, none in C72.
+
+MidRegion pass2 exit0, standard3: full real box parameterization proved.
+ForcingDecomposition and CompletedForcing rebase pass2 exit0, standard3;
+now import production QuadraticBarrierAlgebra. Superseded low-clock
+scratch sources/caches and failed full-box trial were cleaned after rebase.
+HighBounds passes2–3 failed only tactic/elaboration details: redundant exact
+after gcongr, nonpositive goal passed to positivity, and an all-numeric
+calc RHS inferred as Nat (9*(1/80)=0). Use explicit ℝ on such calc RHS.
+No mathematical bound failed. Pass4 active, then HighCoefficients,
+SecondCompletion, HighMiddle, HighSign, serially. These high sign lemmas
+remain unverified until successful terminal exits and axiom audit.
+
+HighBounds, HighCoefficients, SecondCompletion, HighMiddle, HighSign pass5
+all exited 0. The high-clock second completion and strict forcing sign are
+kernel-proved, printed capstones standard3. Together with MidRegion pass2,
+this closes the remaining polynomial obstruction. ForceChain pass1 exited0,
+both composition/source derivative capstones standard3. Seam pass1–2 failed
+only parsing (≤s notation consumed first letter of seamRatio), eta-expansion
+of slope limits, and redundant ring after field_simp. ActualTrap and global
+strict propagation scripts now written; serial audits in progress. These
+source/global capstones remain unverified until their successful exits.
+
+WHOLE-RAY BREAKTHROUGH: Seam, ActualTrap, Global, Strict pass3 all exited0.
+Every printed capstone standard3. Actual-source theorem for every x>0:
+q−(9−u²)q²>1/12−7/(72k), no source-sign/RH premise. The actual forcing trap
+combines low-clock positivity, mid-clock exclusion, high-clock second
+completion; positive seam and tail imply global nonnegativity by the
+existing two-function trap. Strictness follows from negative second
+derivative at a putative zero/global minimum. Fourteen production leaves
+prepared; final direct lake --old env lean audits running serially.
+
+Next hard conjecture C73: Does the full strict coarse source cone, strengthened
+by t−h²t²>r*b(h), force the normalized third-slope numerator positive?
+Corpus basis: C71 exact second jet and C72 actual nonlinear invariant.
+This is a pointwise sufficiency conjecture, not an RH claim. Its boundary
+has cancelled the C71 adverse second jet, so the next test is the third jet
+of the exact nonlinear boundary, retaining full source-field conjugacy.
+Search tt_c72_to_third_slope_search: partialfalse, gen1227432; coverage snapshot
+older, semantic unmeasured, source-only candidates. Broad deep hits mostly
+irrelevant, no sufficient theorem. Focused lexical scaledSlope search locates
+InfinitySlope exact polynomial field and ActualSlopeTail capstone. C73
+will derive its missing sign mechanism from those exact source polynomials.
+
+C72 global nonlinear barrier COMPLETE: for every actual x>0, q−Tq²>b(1/k). Fourteen new production leaves passed final lake --old env lean; twenty imported capstones standard3; umbrella wired; index exit0; lint exit1 only seventeen unrelated umbrella omissions. Scratch sources/caches cleaned. Proof and audit: P3 tt-global-nonlinear-source-barrier. Next hard target C73 global third-slope sign under t−h²t²>rb(h), P1 tt-third-slope-nonlinear-cone. No RH/global-third-slope/fourth-gap closure claimed.

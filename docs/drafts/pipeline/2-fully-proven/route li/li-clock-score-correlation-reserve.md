@@ -531,12 +531,12 @@ Every original field reviewed: candidate/source statement, indexed/source/compil
 |A19|`RHTower.ccmLocalPotentialLocalizationDefect_eq`|Weil/CCM localization defect identity. Sole generated method fully read: assumptions/steps/obligations/evidence/model/prompt/status/error. Different IMS observable; not an M15 proof.|
 |A20|`RHTower.ofReal_thetaCuspFullSourceReflectionEighthHankelCurvature_eq_generalModular`|Finite eighth general modular curvature identity; no D-history orientation.|
 |I1|`generated ingredient set`|Unverified ingredient set combines Steinhaus scalar bound with paired-eta orientation; explicit relation to moving-history source remains an obligation. No source or API instantiation claimed.|
-|P1|`docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md`|Compact inverse/tempered Xi history and generic extension certificate; different original-Schwartz functional.|
+|P1|`docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md`|Compact inverse/tempered Xi history and generic extension certificate; different original-Schwartz functional.|
 |P2|`docs/drafts/pipeline/2-fully-proven/li-clock-cutoff-marking-boundary.md`|Prior cutoff-marking boundary; unsmoothed source sign remains open.|
 |P3|`docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md`|Recursive compact division/isolated-zero plan; different target.|
-|P4|`docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md`|Prior 41-leaf compact-core certificate and Gaussian background; not actual D or sign producer.|
+|P4|`docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md`|Prior 41-leaf compact-core certificate and Gaussian background; not actual D or sign producer.|
 |P5|`docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md`|Recursive compact-test/point-support cleanup; different target.|
-|P6|`docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md`|Compact original-Schwartz core extension and seminorm bound; different target.|
+|P6|`docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md`|Compact original-Schwartz core extension and seminorm bound; different target.|
 |P7|`docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md`|Finite compact reconstruction cleanup; different target.|
 |P8|`docs/drafts/pipeline/2-fully-proven/li-clock-source-correlation-envelope.md`|Prior exact source-correlation envelope evidence; useful overlap with already-audited355/319.|
 |P9|`docs/drafts/pipeline/3-formalized/jas-critical-singleton-prime-multiplication-escape.md`|JAS prime-Poisson tensor escape; different observable.|

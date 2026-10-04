@@ -157,3 +157,10 @@ index exit0. P5 tt-third-slope-affine-cone contains dependency-closed
 paper proof; frontier map updated. C72 nonlinear actual invariant
 q−Tq²>b is now the active conjecture, with inward forcing sign open.
 Global actual slope/fullquadratic/fourthgap/join/allrank/RH remain OPEN.
+
+
+2026-10-04 C72 partial frontier advanced: actual q−Tq²>b(h) proved on the full ray portion h≤2/3, not merely eventually. Nine ThetaCuspRatioQuadratic production leaves passed lake --old env lean; seventeen imported capstones standard3. Wired/indexed; lint exit1 from seventeen unrelated umbrella omissions, no C72 findings. Full paper proof P3:tt-nonlinear-source-low-clock. Remaining hard work: extend through 2/3<h<4/5 via mid-clock force-zero exclusion and the new second-completion sign mechanism recorded in P1:tt-nonlinear-critical-source-barrier. Global third-slope, source quadratic, fourth gap and RH remain open.
+
+C72 global nonlinear barrier COMPLETE: for every actual x>0, q−Tq²>b(1/k). Fourteen new production leaves passed final lake --old env lean; twenty imported capstones standard3; umbrella wired; index exit0; lint exit1 only seventeen unrelated umbrella omissions. Scratch sources/caches cleaned. Proof and audit: P3 tt-global-nonlinear-source-barrier. Next hard target C73 global third-slope sign under t−h²t²>rb(h), P1 tt-third-slope-nonlinear-cone. No RH/global-third-slope/fourth-gap closure claimed.
+
+C73 frontier advanced: exact cubic boundary contact Q(h,r,B)=h³L with L(0)=1944A−63Cr²; uniform strict nonlinear-cone third-slope positivity near infinity, with no actual-flatness or fixed-r premise; exact seam factors S=V*R and Q=(9−rh²)*Rbar. Seventeen new production leaves passed final lake --old env lean; thirty-four imported capstones standard3; wired/indexed. Final lint exit1: eighteen unrelated umbrella omissions, no C73 findings. P3 tt-third-slope-nonlinear-boundary and tt-nonlinear-cone-uniform-tail; P1 tt-third-slope-nonlinear-cone records next exact-boundary and transverse-monotonicity conjectures for the remaining interior. Global slope, full source quadratic, fourthgap/join/allrank/RH remain OPEN.

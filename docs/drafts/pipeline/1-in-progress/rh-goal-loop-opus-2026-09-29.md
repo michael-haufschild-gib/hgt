@@ -271,6 +271,16 @@ for the integrated Chebyshev deficit (WL/MC/RW/SZ are exact restatements), equiv
 | 238 | Is the sharp lag ceiling `a₁` approached along primes (unconditionally)? | near-maximal `k` (recurrence) bracketed by Huxley primes; MUST-734 interpolation | PROVED (MUST-736) — `frequently_prime_integerLag_gt` | prime lags reach `a₁ − ε` i.o.; no slack along primes |
 | 239 | Does Landau's theorem hold for the Mertens error `R(x) = A(x) − log log x − γ`? | Laplace `log(sζ(1+s)/(1+s))/s` removable at 0 (dslope); Landau measure with `Ein` and `M e^{−t}` | PROVED (MUST-737) — receivers, `R = O(x^{−1/2})` ⇒ RH, `Ω±(x^{b−1})` ∀ b < Θ | Diamond–Pintz RH branch remains (needs Abel identity + `∫E` cancellation) |
 | 240 | Is `R(x) = Ω±(L₃/(√x log x))` unconditionally (Diamond–Pintz for `A`)? | RH: Abel + by parts against the deficit primitive, constant pinned by sign changes; ¬RH: MUST-737 at `b = ½` | PROVED (MUST-740) — `mertensError_omega_pm_littlewood` | constant-free Cauchy trick reusable for any Abel remainder |
+| 241 | Does the Mertens product `∏(1−1/p)^{−1}` cross `e^γ log x` infinitely often (Diamond–Pintz)? | `P − A = Σ_p` prime tails, `≤ 8 log 4/(√x log x)`; transfer MUST-740 | PROVED (MUST-742) — `mertensProduct_inv_sub_exp_gamma_log_sign_changes` | card diamond-pintz complete |
+| 242 | RH ⇒ Nicolas inequality for all large primorials? (forward half of Nicolas's criterion) | sharp remainder via WL lag primitive `e^L v = e^{L/2}Φ + log 2π − S`, `|Φ| ≤ a₁` | PROVED (MUST-743) — `eventually_nicolas_inequality_of_riemannHypothesis` | converse open: Θ = 1 second-order obstruction |
+| 243 | Converse of Nicolas: does Nicolas-eventually force RH? | upper bound on the defect with the `ε²` term; inversion of `G ↦ v`; lower lag receiver; `Θ < 1` makes `ε² = O(x^{2b−2})` subordinate | PARTIAL, PROVED (MUST-744) — Nicolas eventually ⇒ RH ∨ Θ = 1 | Θ = 1 gap = localization of sign changes of `θ − x` (card nicolas-primorial-criterion) |
+| 244 | Do prime lags bounded below force RH? | transfer via lag primitive + Huxley primes; bootstrap `Θ ≤ 3/5` then exponent law | PROVED (MUST-745) — `riemannHypothesis_iff_primeLag_bddBelow` | lower-side prime criterion; Θ-bootstrap substitutes for missing lower interpolation |
+| 245 | Do prime lags take values ≤ −η infinitely often (unconditionally)? | RH: downward transfer of corpus low values to Huxley primes; ¬RH: MUST-745 | PROVED (MUST-746) — `prime_integerLag_oscillation` | global low-lag population along primes; local opposing population still open |
+| 246 | Is Nicolas's constant `2 + β` (limsup of the scaled primorial defect) two plus the WL ceiling, formally? | four-piece decomposition of `Nic√x log x`; MUST-736 along primes | PROVED (MUST-747) — `tendsto_nicolasDefect_scaled_sub_lag` | the cycle-232 bridge is now a theorem under RH |
+| 247 | Is Robin's inequality at `lcm(1,…,n)` (all large n) equivalent to RH, with no Θ<1 gap? | Robin defect = Δ + G + ψ-bracket − E(n); E√n log n → 2 by PNT; upper inversion of G | PROVED (MUST-748, MUST-749) — `riemannHypothesis_iff_eventually_robin_lcmUpto` | the favourable second-order sign removes the Nicolas Θ = 1 obstruction; new one-sided remainder criterion |
+| 248 | Does Nicolas-eventually force RH also when Θ = 1 (the MUST-744 gap)? | minimum of the scaled remainder `s = G e^{T/2}T` between two points `s ≥ −K`; one-sided comparisons make `ψ(x_m) ≈ x_m`; lower remainder criterion | PROVED (MUST-750) — `riemannHypothesis_iff_eventually_nicolas` | Nicolas criterion complete; extremal-point selection kills second-order terms |
+| 249 | Robin's criterion (eventual): RH ⟺ σ(n) < e^γ n log log n for all large n? | extremal numbers maximizing σ(m)/m^{1+ε}; ε = 1/(ℓ log ℓ) kills the interpolation; thresholds (5/4)√x, (3/2)√x; converse via MUST-748 | PROVED (MUST-751) — `riemannHypothesis_iff_eventually_robin` | the three classical arithmetic criteria (Nicolas, Robin, Robin-lcm) all formal |
+| 250 | Lagarias's criterion (eventual): RH ⟺ σ(n) ≤ H_n + e^{H_n} log H_n eventually? | Robin ⇒ Lagarias by `γ < H_n − log n`; Lagarias at lcm ⇒ defect `O(1/(ψ log ψ))`; Robin-lcm converse generalized to defect `≤ 1/(√n log n)` | PROVED (MUST-752) — `riemannHypothesis_iff_eventually_lagarias` | lcm route robust to sub-√ slack |
 
 ## Log
 
@@ -529,3 +539,13 @@ for the integrated Chebyshev deficit (WL/MC/RW/SZ are exact restatements), equiv
 - 2026-10-03 — Cycle 238 (MUST-736): sharp lag ceiling approached along primes.
 - 2026-10-03 — Cycle 239 (MUST-737): Landau theorem for the Mertens error; MertensProductLaplace.lean.
 - 2026-10-03 — Cycle 240 (MUST-740): Littlewood/Diamond–Pintz for the Mertens prime-power error; MertensErrorLittlewoodOmega.lean.
+- 2026-10-04 — Cycle 241 (MUST-742): Diamond–Pintz theorem for Mertens' product; MertensProductDiamondPintz.lean.
+- 2026-10-04 — Cycle 242 (MUST-743): RH ⇒ Nicolas's inequality eventually; sharp Mertens remainder (a₁); NicolasPrimorialInequalityRH.lean.
+- 2026-10-04 — Cycle 243 (MUST-744): Nicolas eventually ∧ Θ < 1 ⇒ RH; NicolasInequalityQuasiRiemannConverse.lean.
+- 2026-10-04 — Cycle 244 (MUST-745): RH ⟺ prime lags bounded below; PrimeLagLowerBoundRH.lean.
+- 2026-10-04 — Cycle 245 (MUST-746): prime lags oscillate (high ≥ a₁ − ε and low ≤ −η i.o.).
+- 2026-10-04 — Cycle 246 (MUST-747): Nicolas's constant 2 + a₁ under RH; NicolasScaledDefectRH.lean.
+- 2026-10-04 — Cycle 247 (MUST-748, MUST-749): RH ⟺ Robin at L_n eventually; RH ⟺ G(T) ≤ Be^{−T/2}/T; RobinLcmCriterion.lean + RobinLcmRiemannCriterion.lean.
+- 2026-10-04 — Cycle 248 (MUST-750): Nicolas's criterion complete (both directions, no Θ restriction); NicolasInequalityRiemannConverse.lean.
+- 2026-10-04 — Cycle 249 (MUST-751): Robin's criterion (eventual form) complete; RobinExtremalNumbers/Thresholds, RobinCriterionRiemann.
+- 2026-10-04 — Cycle 250 (MUST-752): Lagarias's criterion (eventual form); LagariasCriterionRiemann.lean.

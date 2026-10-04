@@ -19,6 +19,7 @@ open scoped BigOperators InnerProductSpace
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [CompleteSpace H]
 
+omit [CompleteSpace H] in
 theorem hsTruncation_apply_basis {ι : Type*} [DecidableEq ι]
     (b : HilbertBasis ι ℂ H) (T : H →L[ℂ] H) (s : Finset ι) (j : ι) :
     hsTruncation b T s (b j) = if j ∈ s then T (b j) else 0 := by
@@ -172,7 +173,7 @@ theorem isHilbertSchmidt_and_hsNorm_le_of_tendsto
     have hsumlim : Filter.Tendsto
         (fun n ↦ ∑ i ∈ s, ‖T n (b i)‖ ^ (2 : ℕ)) Filter.atTop
         (nhds (∑ i ∈ s, ‖S (b i)‖ ^ (2 : ℕ))) := by
-      apply tendsto_finset_sum
+      apply tendsto_finsetSum
       intro i _
       have heval : Filter.Tendsto (fun n ↦ T n (b i)) Filter.atTop
           (nhds (S (b i))) :=

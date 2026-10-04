@@ -504,11 +504,11 @@ admission. Primary source was followed where any useful claim was invoked.
 |---|---|---|
 |P0|docs/drafts/pipeline/2-fully-proven/li-clock-cutoff-marking-boundary.md:558–638|Prior frozen609 cutoff/marking report: exact overlap, target I25 remains open.|
 |P1|docs/drafts/pipeline/2-fully-proven/li-clock-cutoff-marking-boundary.md:492–564|Same report prior-hit audit: reused coverage, no new sign.|
-|P2|docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md:2179–2263|Compact original Schwartz/tempered signed jets, different inverse.|
+|P2|docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md:2179–2263|Compact original Schwartz/tempered signed jets, different inverse.|
 |P3|docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:3042–3131|Recursive compact support/cleanup metadata; not D orientation.|
-|P4|docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md:3063–3148|Whole original theta inverse-history certificate; different operator.|
+|P4|docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md:3063–3148|Whole original theta inverse-history certificate; different operator.|
 |P5|docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:2720–2817|Compact point-support plan/cleanup; no D comparison.|
-|P6|docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md:1688–1769|Compact-core topology certificate; no signed history sign.|
+|P6|docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md:1688–1769|Compact-core topology certificate; no signed history sign.|
 |P7|docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:3662–3745|Compact localization/reconstruction plan; wrong inverse.|
 |P8|docs/drafts/pipeline/3-formalized/jas-critical-singleton-prime-multiplication-escape.md:1–42|Prime singleton multiplication escape; different tensor carrier.|
 |P9|docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:6054–6141|Recursive whole history metadata; no D source estimate.|

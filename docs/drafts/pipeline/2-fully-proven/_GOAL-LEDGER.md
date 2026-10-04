@@ -19,16 +19,16 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 | 7 | 11-rh-zero-divisor-geometry/weil-cone-finite-type-uniqueness | TODO |
 | 8 | 11-rh-zero-divisor-geometry/weil-cone-rational-mass-atomic-producers | TODO |
 | 9 | beurling-prime-deletion-perron-region | TODO |
-| 10 | li-actual-clock-sine-growth-boundary | TODO |
+| 10 | route li/li-actual-clock-sine-growth-boundary | DONE 2026-10-04 — RHTower.LiEvenCrossActualClockSineOscillation, XiOrdinateCosineMass, LiEvenCrossActualClockSineMeanLaw, HTGeometry.OneSubCosKernelIntegral |
 | 11 | li-clock-causal-log-history-boundary | TODO |
 | 12 | li-clock-cutoff-marking-boundary | TODO |
-| 13 | li-clock-derivative-cofinal-sign-boundary | TODO |
+| 13 | route li/li-clock-derivative-cofinal-sign-boundary | DONE 2026-10-04 — RHTower.LiEvenCrossActualClockDerivative{,Oscillation} (Codex lane, re-audited) |
 | 14 | li-clock-finite-guard-source-costs | TODO |
 | 15 | li-clock-gamma-cumulative-reserve-marking | TODO |
-| 16 | li-clock-integrated-cumulant-boundary | TODO |
-| 17 | li-clock-integrated-source-boundary | TODO |
-| 18 | li-clock-massive-completion-comparison | TODO |
-| 19 | li-clock-mixed-kernel-sign-boundary | TODO |
+| 16 | route li/li-clock-integrated-cumulant-boundary | DONE 2026-10-04 — RHTower.LiEvenCrossActualClock{ThirdLahBracket,CumulantBoundary}, RHTower.LiClockTheta{ReciprocalRawGerm,TiltedWardHierarchy} |
+| 17 | route li/li-clock-integrated-source-boundary | DONE 2026-10-04 — RHTower.LiEvenCrossActualClockPrimitive{Laplace,Cumulant}, HTGeometry.{LaplaceMomentPositivity,InverseArgumentLahFormula} |
+| 18 | route li/li-clock-massive-completion-comparison | DONE 2026-10-04 — RHTower.LiClockMassiveCompletionComparison, HTGeometry.OddEvenFactorialSeriesCalculus |
+| 19 | route li/li-clock-mixed-kernel-sign-boundary | DONE 2026-10-04 — RHTower.LiClockPairedEtaPartitionMixed{Limit,SignBoundary,ComparisonHistory} |
 | 20 | li-clock-moving-history-retention | TODO |
 | 21 | li-clock-reciprocal-raw-degree-pole-boundary | TODO |
 | 22 | li-clock-score-budget-primitive-boundary | TODO |
@@ -36,27 +36,27 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 | 24 | li-clock-signed-gamma-jump-coupling | TODO |
 | 25 | li-clock-single-damping-strip-boundary | TODO |
 | 26 | li-clock-terminal-history-boundary | TODO |
-| 27 | li-clock-theta-exact-ratio-band | TODO |
-| 28 | li-clock-theta-forcing-inverse-boundary | TODO |
-| 29 | li-clock-theta-kernel-flattening | TODO |
-| 30 | li-clock-theta-resolvent-signed-mass-boundary | TODO |
-| 31 | li-clock-theta-source-history-boundary | TODO |
-| 32 | li-clock-theta-tail-inverse-boundary | TODO |
-| 33 | li-mass-calibrated-score-floor-obstruction | TODO |
+| 27 | route li/li-clock-theta-exact-ratio-band | DONE 2026-10-04 — RHTower.LiClockTheta{GeneratorLogSlope,ExactRatioBand} |
+| 28 | route li/li-clock-theta-forcing-inverse-boundary | DONE 2026-10-04 — RHTower.LiClockTheta{ReciprocalSource,InverseContourGrowth,MassiveForcing,ResolventSignChange}, HTGeometry.{BorelSeriesConvolution,BorelSeriesParityLaplace,RectangleBorelLaplaceInversion} |
+| 29 | route li/li-clock-theta-kernel-flattening | DONE 2026-10-04 — RHTower.LiEvenCrossActualClockBorel{Flattening,Growth} (Codex lane, re-audited) |
+| 30 | route li/li-clock-theta-resolvent-signed-mass-boundary | DONE 2026-10-04 — RHTower.LiClockThetaResolventSignedMass (+ theta inverse stack) |
+| 31 | route li/li-clock-theta-source-history-boundary | DONE 2026-10-04 — RHTower.LiClockTheta{InverseClass,ForcingRatioShape,ForcingHistoryMajorant}, HTGeometry.BorelSeriesSmoothRatio |
+| 32 | route li/li-clock-theta-tail-inverse-boundary | DONE 2026-10-04 — RHTower.LiClockTheta{TailInverse,TailCounterInput} |
+| 33 | route li/li-mass-calibrated-score-floor-obstruction | DONE 2026-10-04 — RHTower.PrimeArchGaussianHermiteDensity, PrimeArchThetaGaussianHermiteCountermodel |
 | 34 | pm-ramanujan-band-integer-separation | TODO |
 | 35 | pm-ramanujan-band-physical-separation | TODO |
 | 36 | rn-two-node-signed-sturm-energy | TODO |
 | 37 | route e/route-e-cofactor-amplified-e3-token-supply | TODO |
 | 38 | route e/route-e-forbidden-support-e3-stability | TODO |
-| 39 | rw-free-lag-trace-boundary-layer | TODO |
+| 39 | rw-free-lag-trace-boundary-layer | DONE 2026-10-04 — RHTower.FreeLagTraceCertificateObstruction |
 | 40 | theta/causal-mobius-theta-boundary-criterion | TODO |
 | 41 | theta/causal-mobius-theta-primorial-transition | TODO |
 | 42 | theta/theta-cdf-crossfrequency-rvm-capacity | TODO |
-| 43 | theta/theta-cdf-no-finite-range-symmetrizer | TODO |
-| 44 | theta/theta-chronological-boundary-positive-transfer | TODO |
-| 45 | theta/theta-compact-inverse-zero-jordan-history | TODO |
-| 46 | theta/theta-deletion-cutoff-commutator-collapse | TODO |
-| 47 | theta/theta-prime-deletion-moving-cusp-dual-source | TODO |
+| 43 | theta/theta-cdf-no-finite-range-symmetrizer | DONE (promoted to 3-formalized/theta) |
+| 44 | theta/theta-chronological-boundary-positive-transfer | DONE (promoted to 3-formalized/theta) |
+| 45 | theta/theta-compact-inverse-zero-jordan-history | DONE (promoted to 3-formalized/theta) |
+| 46 | theta/theta-deletion-cutoff-commutator-collapse | DONE (promoted to 3-formalized/theta) |
+| 47 | theta/theta-prime-deletion-moving-cusp-dual-source | DONE (promoted to 3-formalized/theta) |
 | 48 | theta/theta-quantile-critical-one-port-rigging | TODO |
 | 49 | theta/theta-quantile-resistance-network | TODO |
 | 50 | universal-law-field/constitutive-dilation-mechanics/laplace-formation-defect-history-recovery-and-passive-reconstruction-law | DONE 2026-10-03 — HTGeometry.LaplaceFormationSplitCycle, LaplaceFormationDefectHistory, LaplaceFormationRecoveryKernel, LaplaceFormationCompletionTopology |
@@ -69,15 +69,15 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 | 57 | universal-law-field/formation-excess-mechanics/ramification-gibbs-gns-defect-spectral-information-and-boundary-work-law | TODO |
 | 58 | universal-law-field/formation-laplacian-properness-mechanics/formation-quotient-interchange-tight-recovery-and-residual-coverage-law | TODO |
 | 59 | universal-law-field/formation-laplacian-properness-mechanics/source-response-laplacian-properness-pluecker-and-adaptive-escape-law | TODO |
-| 60 | universal-law-field/formation-tangent-geometry/prime-harmonic-logarithmic-end-haar-frame-trichotomy | TODO |
+| 60 | universal-law-field/formation-tangent-geometry/prime-harmonic-logarithmic-end-haar-frame-trichotomy | DONE 2026-10-04 — HTGeometry.TranslationFrameHaarDiscrepancy, TranslationFrameOperators, PrimeHarmonicEndHaarFrame, PrimeHarmonicEulerFormationTangent |
 | 61 | universal-law-field/law-generated-polarization-dynamics/legendre-residual-transduction-fusion-work-and-cubic-response-law | TODO |
 | 62 | universal-law-field/local-exponential-test-closure-mechanics/local-exponential-complete-order-fusion-and-euler-shell-witness-escape-law | DONE 2026-10-03 — HTGeometry.LocalExponential{TestClosure,MatrixSignCone,SignConeConverse,PhaseFusion,EulerShell} |
 | 63 | universal-law-field/nomological-homotopy-geometry/length-three-partial-flattening-holonomy-spectrum-recurrence-and-properness-law | TODO |
 | 64 | universal-law-field/nonvacuous-independence-and-polarization-import-law | TODO — needs: L² spectral theory of the Laplacian on cofinite Γ\ℍ (λ₁ via min-max), a pinched cusped surface with λ₁ < 1/4 (Buser/Randol), Selberg zeta function and its spectral-zero dictionary (trace formula) |
 | 65 | universal-law-field/odd-coordinate-mechanism-universal-law-set | DONE 2026-10-03 — RHTower.CriticalLocusQuadrupleEvenness, CriticalLocusHessianClassification, CrystallineShadowTransversality, FiniteProbeRHNonselection, OddCoordinateSelfClosure (Laws 4–5 synthesis) |
-| 66 | universal-law-field/orbit-induction-selection-mechanics/atomless-phase-formation-ideal-escape-rank-and-entropy-law | TODO |
-| 67 | universal-law-field/orbit-induction-selection-mechanics/character-transgression-positive-resonance-and-small-divisor-formation-law | TODO |
-| 68 | universal-law-field/orbit-induction-selection-mechanics/conditional-orbit-information-and-essential-coupling-no-cancellation-law | TODO |
+| 66 | universal-law-field/orbit-induction-selection-mechanics/atomless-phase-formation-ideal-escape-rank-and-entropy-law | DONE 2026-10-04 |
+| 67 | universal-law-field/orbit-induction-selection-mechanics/character-transgression-positive-resonance-and-small-divisor-formation-law | DONE 2026-10-04 |
+| 68 | universal-law-field/orbit-induction-selection-mechanics/conditional-orbit-information-and-essential-coupling-no-cancellation-law | DONE 2026-10-04 |
 | 69 | universal-law-field/orbit-induction-selection-mechanics/mixed-spectral-formation-atomic-retention-continuous-escape-and-closed-range-law | TODO |
 | 70 | universal-law-field/ordered-fusion-chronology-mechanics/permutation-averaged-first-failure-symmetric-convolution-tomography-and-compact-properness-law | TODO |
 | 71 | universal-law-field/poisson-scale-history-completion-mechanics/burnol-frame-completion-classification | DONE 2026-10-03 (BurnolHalfLineWeightedShift, BurnolWeightedShiftSingularSequence, ContractionCayleyTransform, BurnolValuationCayleyFrame, BurnolDoubledValuationFrame, RHTower.PrimeBurnolMatrixFrameSaturation) |
@@ -87,7 +87,7 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 | 75 | universal-law-field/poisson-scale-history-completion-mechanics/spectral-aperture-cone-wiener-hopf-transgression | TODO — needs: C*-algebra structure on the corona Q, spectrum/C*(e_c) ≅ C_0((0,1]), K₁ winding of the cone extension, Wiener–Hopf crossed product (SAC.14) |
 | 76 | universal-law-field/polarized-contact-formation-geometry/primitive-work-character-transmutation-and-wold-signature-wall-law | TODO |
 | 77 | universal-law-field/polarized-contact-formation-geometry/reflection-contact-parity-minimal-oriented-rank-and-recovery-neutrality-law | TODO |
-| 78 | universal-law-field/projective-gamma-completion-mechanics/theta-prime-beta-gamma-projective-recovery | TODO |
+| 78 | universal-law-field/projective-gamma-completion-mechanics/theta-prime-beta-gamma-projective-recovery | DONE 2026-10-04 — HTGeometry.BetaGammaFactorization, IndependentCoordinateLift, ThetaPrimeBetaGammaRecovery |
 | 79 | universal-law-field/reciprocal-fusion-topology-mechanics/reciprocal-fusion-work-classification-weighted-compactness-and-factorization-law | TODO |
 | 80 | universal-law-field/recurrent-boundary-density-geometry/common-radial-subunit-harmonic-completion | DONE 2026-10-03 — RHTower.CommonRadialSubunitHarmonicCompletion (audited), RHTower.CommonRadialReachabilityKernel |
 | 81 | universal-law-field/recurrent-boundary-density-geometry/phase-quotient-stationary-completion-homotopy | DONE 2026-10-03 — RHTower.PhaseQuotientStationaryCompletionHomotopy (audited), RHTower.PhaseQuotientWeakHaarAverage |
@@ -215,3 +215,14 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
   Σ Λ(n)n^{-1/2}(c(log n)+c(−log n)) for all Xi zeros (rectangle limit, evenness folding, termwise Λ swap, per-frequency
   Fourier inversion, reflection of eigenfunctions, multiplicity-exact residue), and eigen-span positivity ⟺ RH+simplicity in
   prime-sum form.
+
+## 2026-10-04 goal (top-level cards only; subfolders out of scope)
+
+| Card | Status |
+|-|-|
+| rn-two-node-signed-sturm-energy | DONE 2026-10-04 — RHTower.ThetaTwoNodeProjectionSturmIdentity (+ corpus ThetaTwoNodeSignedSturmEnergy, ThetaTwoNodeCenterFeedback) |
+| rw-free-lag-trace-boundary-layer | DONE 2026-10-04 — RHTower.FreeLagTraceCertificateObstruction |
+| weil-cone-order-comparable-rigidity | DONE 2026-10-04 — RHTower.{WeilConeOrderComparableRigidity, WeilPolarMajorantCriterion, WeilConditionalDeviationRH, WeilConditionalConstantSignRigidity, WeilConePoleWeightRigidity, WeilPartialSumLandau, WeilMonotoneConeCriterion}, HTGeometry.DirichletSeriesBoundedPartialSums; profile-monotone/polar monotone cone spun off to 0-backlog |
+| pm-ramanujan-band-integer-separation | DONE 2026-10-04 — RHTower.PMRamanujanBandIntegerSeparation |
+| beurling-prime-deletion-perron-region | TODO — theorem is conditional on RH (statement `RiemannHypothesis → …`); needs BDR §5 construction, Perron, Lindelöf under RH, Vaaler, stationary phase |
+- 2026-10-04 — Route li session started (cards now under `2-fully-proven/route li/`; Codex li lane idle since 10-01). #10 promoted: non-RH top-packet oscillation via bounded primitive + shifted recurrence, unconditional liminf|S|=0, unconditional ordinate cosine-mass asymptotic Σ(1−cos(T/γ))=(T/2)log T+O(T) by Abel summation vs RVM, RH mean law.

@@ -5,7 +5,7 @@
 - **Type:** THEOREM and graded source-transport boundary
 - **Routes:** STC, CSB, U, K-RVM, MPLF, RHist
 - **Status:** `[PROVED HERE ON PAPER] [FORMALIZED IN LEAN 4] [NOT AN RH PROOF]`
-- **Dependencies:** the exact finite-prime source expansion in [prime-deletion spectral escape](theta-prime-deletion-spectral-escape.md); the all-order theta first-atom approximation in `ThetaCuspFirstAtomAllOrderApproximation.lean`; the weighted theta history in [zero-Jordan history](../../2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md), with the exact needed history theorem independently certified below.
+- **Dependencies:** the exact finite-prime source expansion in [prime-deletion spectral escape](theta-prime-deletion-spectral-escape.md); the all-order theta first-atom approximation in `ThetaCuspFirstAtomAllOrderApproximation.lean`; the weighted theta history in [zero-Jordan history](../../3-formalized/theta/theta-compact-inverse-zero-jordan-history.md), with the exact needed history theorem independently certified below.
 
 ## Theorem
 

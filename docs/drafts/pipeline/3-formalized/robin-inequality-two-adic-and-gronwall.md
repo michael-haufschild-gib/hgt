@@ -71,3 +71,6 @@ third theorem `tendsto_mertensPrimeProduct_mul_log`.
   `limsup n/(φ(n) log log n) = e^γ`. The lower half comes from Gronwall's through `σ(n)/n ≤ n/φ(n)`.
 - `div_totient_primorialPow`: at `∏_{p≤y}p^m`, `n/φ(n)` is exactly the inverse Mertens product.
 
+
+## Update 2026-10-04
+Robin's equivalence (eventual form) is now formal: `RHTower.riemannHypothesis_iff_eventually_robin` (MUST-751, card `robin-criterion-eventual.md`); Nicolas's criterion both directions: `riemannHypothesis_iff_eventually_nicolas` (MUST-750).

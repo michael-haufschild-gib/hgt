@@ -357,12 +357,12 @@ I1 `Theta zero identity and weighted moment definition`, status=not_verified: EV
 
 |Index|Exact returned passage|Disposition|
 |---|---|---|
-|P1|`docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md:2179–2263`|Archived compact theta inverse/core and tempered jets, different inverse; no M15 bound.|
+|P1|`docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md:2179–2263`|Archived compact theta inverse/core and tempered jets, different inverse; no M15 bound.|
 |P2|`docs/drafts/pipeline/2-fully-proven/li-clock-cutoff-marking-boundary.md:492–562`|Prior actual cutoff-marking dispositions. Sign remains open, no new source producer.|
 |P3|`docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:3042–3131`|Recursive compact division/support localization metadata; no D-weighted source inequality.|
-|P4|`docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md:3063–3148`|Full compact-history certification and unrelated two-Gaussian example. Different operator; not an actual-source counterexample to M15.|
+|P4|`docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md:3063–3148`|Full compact-history certification and unrelated two-Gaussian example. Different operator; not an actual-source counterexample to M15.|
 |P5|`docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:2720–2817`|Recursive Schwartz compact-test/support metadata; no orientation.|
-|P6|`docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md:1688–1769`|Original compact theta inverse/core-extension metadata; different mechanism.|
+|P6|`docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md:1688–1769`|Original compact theta inverse/core-extension metadata; different mechanism.|
 |P7|`docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:3662–3745`|Finite compact reconstruction cleanup, not actual moving correlation.|
 |P8|`docs/drafts/pipeline/3-formalized/jas-critical-singleton-prime-multiplication-escape.md:1–42`|Prime Poisson multiplication/tensor escape, different observable.|
 |P9|`docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md:6054–6141`|Recursive endpoint/source component reconciliation metadata; not M15.|
@@ -655,7 +655,7 @@ Whole-file hashes below certify byte freshness only for unrelated modules; seman
 |---|---|---|
 |F01|`docs/drafts/pipeline/1-in-progress/stage-two-recursive-unconditional-formalization.md`|`33d0a5bdcba09f5e1c72b8cc6abcc402a938f6cab01fe89ecca971ce4e1faeef`|
 |F02|`docs/drafts/pipeline/2-fully-proven/li-clock-cutoff-marking-boundary.md`|`aa112469013a731e72cc52a17ae6f295d2684d2d4b22a78f18d5d6485b975f48`|
-|F03|`docs/drafts/pipeline/2-fully-proven/theta/theta-compact-inverse-zero-jordan-history.md`|`9c582377feed839511bfa6d9aa7f28e8e4bdb0e53f9ffe09ca76a48aeed20190`|
+|F03|`docs/drafts/pipeline/3-formalized/theta/theta-compact-inverse-zero-jordan-history.md`|`9c582377feed839511bfa6d9aa7f28e8e4bdb0e53f9ffe09ca76a48aeed20190`|
 |F04|`docs/drafts/pipeline/3-formalized/jas-critical-singleton-prime-multiplication-escape.md`|`0ab34ce383931053706c919ff8f255f3b28bd4d1243f5a4fe0879d9dc56d2a42`|
 |F05|`formal/.lake/packages/mathlib/Mathlib/NumberTheory/Chebyshev.lean`|`7660e466d974683ab0ed75ed5ee2d2e0f899d9dd7f755c419392904f711edf94`|
 |F06|`formal/.lake/packages/mathlib/Mathlib/RingTheory/MvPolynomial/WeightedHomogeneous.lean`|`9fa09f4ed3906b58fdbf40d804ebb74844a5876d861786ce7287002d6cf0a14c`|

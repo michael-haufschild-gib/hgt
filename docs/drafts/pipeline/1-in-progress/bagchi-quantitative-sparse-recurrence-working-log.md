@@ -5798,3 +5798,505 @@ by itself. Next conjecture: the full weighted connected arithmetic trace has
 the pole-removed principal-value/point-mass boundary recorded in the P1 card;
 prove its exact Mellin factorization and uniform boundary action, then address
 actual finite-height near-resonances and physical contraction matching.
+
+## 2026-10-04 — BAG C28.56y: full weighted arithmetic trace
+
+Proof route: BAG, full signed cubic trace through its weighted critical
+boundary. Previous balanced trace helped but did not control physical
+profiles. This turn proves the COMPLETE weighted six-zeta trace, the normal
+Euler correction through the critical plane, and joint holomorphy of H.
+The mixed local factor has both axis vanishing factors, derived and verified
+without discarding positive or negative sectors. All integer valuation
+pairs and all finite-prime subsets remain in the complete directed limit.
+
+Both complete contraction transforms are evaluated. K(0)=1 and K'(0)=0 are
+proved AFTER the infinite prime product. The literal zero-valuation-vector
+mask gives Z-D(beta)-D(alpha)+1, restoring its intersection. Production:
+ChiRamanujanWeightedCubicLocal (11 public theorems),
+ChiRamanujanWeightedCubicTrace (19),
+ChiRamanujanWeightedCubicContractions (16).
+Direct production audits56774,16460,41569 exit0 without diagnostics. All46
+public axiom queries1895 exit0: only propext, Classical.choice, Quot.sound.
+All leaves wired; no full or umbrella build. Index74952 exits0, generated
+API/overview/gaps refreshed; all46 public API names checked. Lint pending.
+
+Conjecture failures were implementation failures, not arithmetic counterexamples:
+field simplification needed the factored nonzero cross denominators; generic
+complex differentiation required multiplication by inverse rather than the
+scalar-domain div lemma; coordinate composition needed explicit functions
+and small private lemmas to avoid a 200000-heartbeat unification timeout.
+No heartbeat limit raised. The complete weighted conjecture succeeded.
+
+Corpus: weighted-critical-trace, multivariable-normal-search and boundary-next
+deep results inspected, including candidate/source/proof/ingredient sections.
+Multivariable search nonpartial, inventory65404/65404, found the existing
+MultivariableVitali/PolydiscWeierstrass theorem; no missing joint-holomorphy
+principle was assumed. Boundary-next nonpartial, inventory65411/65411,
+identified entire zetaResidueFactor and regular invZeta. Coverage/compiler
+freshness qualifications retained in the search JSON logs.
+
+Contribution: closes complete weighted arithmetic factorization and critical
+correction regularity, NOT the critical distributional action or physical
+cubic. New continuation: construct actual smooth B and M by integral
+Hadamard/Taylor remainders, prove a uniformly bounded double compensated
+principal-value action, retain the -pi^2 intersection mass, and eliminate
+the epsilon^2 moving remainder only with that uniform bound. Detailed paper
+mechanism is in bag-weighted-cubic-critical-trace. No source-specific physical
+contraction matching, near-resonance estimate, growing-moment control, moving
+cofactor control, positive common-height return or unconditional RH proof
+is claimed. Do not rediscover the six-zeta factorization next turn.
+
+C28.56y final verification: lint42395 terminal exit1 solely on14 unrelated
+unreachable modules; no new-leaf, proof-debt or generated-file error. Scoped
+whitespace check passes. Owned weighted-local/sum/normal/axis/axiom Lean
+probes removed; only intended production artifacts and evidence logs remain.
+No live owned job. No full/umbrella build, subagent, numerical experiment,
+raised heartbeat, added axiom, commit or push. Goal remains active.
+
+## 2026-10-04 — BAG C28.56z: actual regular source and intersection boundary
+
+Proof route: BAG, complete signed arithmetic cubic boundary, then physical
+near-resonance transfer. Prior weighted six-zeta factorization contributed
+actual source information but did not prove its critical distributional
+boundary. This cycle attacked that boundary directly.
+
+NEW PROVED SOURCE: entire residue factor F removes all six pole factors.
+J=F(sigma+alpha)F(sigma-alpha) is nonzero on closed sigma>=1 imaginary
+frequencies, using source zeta nonvanishing and F(1)=1. A=J(alpha)J(beta)H/
+J(alpha-beta), T=J(alpha)K are jointly smooth through every critical
+frequency. Joint K holomorphy is proved, not inferred from its slices.
+The exact connected trace is decomposed into two axis finite-part terms,
+one intersection term, the mixed term and constant1. Both vanishing axes
+and A(1,0,0)=1 are proved. No signed sector is removed.
+
+NEW PROVED BOUNDARY: the LITERAL signed intersection summand paired with
+ANY continuous compactly supported complex test tends to -pi^2*Phi(0,0).
+Both frequencies scale together. A compact-source bound on [1,2] times
+support(Phi) permits one product-space DCT with the integrable density
+((1+x^2)(1+y^2))^-1. The epsilon-squared numerator does not justify dropping
+this term. The explicit complex/cast bridge ties the limit to the original
+connected-trace summand. Literal integrability is proved for every epsilon>0.
+
+Conjecture loop: replacing a proposed tensoring of separate limits by joint
+Haar scaling removed the missing uniformity step without weakening the
+source. No mathematical counterexample arose to the resulting intersection
+conjecture; it succeeded. Lean failures exposed under-specified scalar/Pi
+instances and compact-support elaboration costs. Explicit functions and
+small local facts resolved them; no heartbeat limit was changed.
+
+Production leaves: ChiRamanujanCubicRegularSource (26 public theorems),
+ChiRamanujanCubicIntersectionMass (9). Direct production3941 and52688
+exit0 with no diagnostics, using lake --old env lean. All35 public axiom
+queries2309 exit0, only propext, Classical.choice, Quot.sound; every expected
+query checked. Leaves wired into RHTower; no umbrella/full build.
+Scoped whitespace checks passed. Index70100 exit0, all35 API names checked;
+lint1295 exit1 solely on14 unrelated unreachable modules, with no new-leaf,
+proof-debt or generated-freshness error.
+
+Hard continuation: both finite parts and mixed product-PV action. The
+current card gives explicit reflected second/mixed integral remainders,
+uniform actual-source derivative bounds and the DCT assembly. Scalar
+Hadamard division alone does not supply joint parameter regularity. This
+is a proof mechanism to formalize, not a claimed closed boundary theorem.
+After it remain actual-profile growth, rational orthogonality, physical
+contraction matching, finite-height near-resonances, coupled damping/band
+limits, growing moments, moving cofactors and positive common-height
+self-return. RH remains unproved. Do not redo the intersection mass.
+
+Corpus searches: quotient-search inventory65413/65413, kernels-search
+65441/65441, targeted-PV-search65452/65452, all nonpartial. All candidate,
+source-argument, proof-idea and ingredient sections inspected. Reported
+compiler freshness qualifications retained in /tmp JSON. Suggested
+unrelated Cauchy-sequence/filtration and derivative-at-zero ingredients were
+not accepted as boundary proofs. The actual APIs used are entire zeta
+residue factors, normal Euler products, multivariable Weierstrass, real
+smooth restriction, compactness, Haar scaling and product Bochner DCT.
+
+C28.56z cleanup: owned source/intersection/axiom /tmp Lean probes removed
+after production and axiom audits. Evidence logs and search JSON retained.
+No live owned build/search/index/lint job remains. No full/umbrella build,
+subagent, numerical experiment, added axiom, heartbeat increase, commit or
+push. Goal remains active. The completed part is source regularity plus
+intersection mass; the next hard work is the actual finite-part/PV assembly.
+
+
+## C28.56aa — complete actual-source compact-test boundary
+
+Route BAG only. Previous intersection/source cycle advanced the frontier;
+this cycle closes the two finite parts and mixed product PV, not a generic
+conditional receiver. Corpus remainders search was nonpartial, inventory
+65454/65454; candidate lemmas, source arguments, proof ideas and ingredient
+sets were inspected. Corpus MeanValue APIs and actual joint source smoothness
+supply the proof.
+
+Conjecture cycle: a smooth quotient-extension construction was unnecessary.
+Two mean-value arguments prove uniform actual-source rectangular cancellation.
+The resulting bounded measurable totalized quotients suffice for DCT with
+both exact damping factors. This preserves all signed sectors and keeps the
+moving zeta/Euler source. Exact interval reflection and Fubini connect the
+limits to the ORIGINAL kernels. Source frequency symmetry proves the other
+axis for arbitrary, not necessarily symmetric, tests. Linearity adds both
+finite parts, the actual -pi^2*Phi(0,0) mass, -2 times the product PV, and the
+ordinary test integral.
+
+New production leaves: ChiRamanujanCubicBoundaryCancellation (8 public
+lemmas), ChiRamanujanCubicCompensatedBoundary (10), and
+ChiRamanujanCubicCriticalBoundary (12). Main result
+exists_cubicCriticalBoundary proves the full-plane limit for EVERY smooth
+compact test. complete_weighted_offAxes_connectedKernel explicitly identifies
+the finite-prime trace limit with the tested kernel. Positive-damping
+integrability and containing-box independence are also proved. Test-class
+regularity is not an unproved arithmetic/RH premise.
+
+Foreground production audits48689,29471,11675 exit0, clean diagnostics, each
+using lake --old env lean on its leaf with explicit olean output. Axiom58033
+exit0: all30 public theorems use only propext, Classical.choice, Quot.sound.
+All three leaves wired into RHTower; no umbrella/full build. Index67141 exit0,
+all30 names verified in LEAN_API. Lint48319 exit1: exactly19 unrelated
+unreachable modules, no new-leaf/proof-debt/generated-freshness error. The
+prior14 count changed outside this task's leaves; no unrelated edits made.
+
+Evidence: /tmp/bag-cubic-cancellation-production-01a0.log,
+/tmp/bag-cubic-compensated-production-01a0.log,
+/tmp/bag-cubic-critical-production-01a0.log,
+/tmp/bag-cubic-boundary-axioms-01a0.log,
+/tmp/bag-cubic-boundary-index-01a0.log,
+/tmp/bag-cubic-boundary-lint-01a0.log. P3 bag-cubic-critical-boundary records
+the exact dependency-closed proof. Frontier map C28.56aa advances the open
+boundary to physical transfer; earlier rows now point to this closure.
+
+Next hard problem: positive-rational reindexing and fixed-dilation
+orthogonality, matching valuation-axis subtraction to literal physical
+prime contractions. Then actual noncompact/growing-profile control,
+finite-height near-resonances and coupled damping/band limits; growing
+moments, moving cofactors, positive common-height self-return remain open.
+The fixed compact-test boundary does NOT justify prime-net/integral
+exchange or identify the physical cubic. RH remains unproved, goal active.
+
+Owned cancellation/compensated/reflection/axiom scratch Lean probes removed
+after successful production audits. Search JSON and evidence logs retained.
+No owned job remains live; no subagent, numerical experiment, new axiom,
+heartbeat increase, full/umbrella build, commit or push.
+
+## C28.56ab — complete rational cubic and exact dilation orthogonality
+
+BAG route. C28.56aa closed the complete compact-test arithmetic boundary.
+This turn closed the full balanced positive-rational reindexing and the
+fixed-dilation orthogonality, with literal normalized Ramanujan coefficients.
+This is progress on the source-to-physical bridge, not a physical cubic or RH
+proof. Next is frequency-weighted rational/tested identification (C28.56ac).
+
+The local signed row is evaluated at every integer shift. Full Finsupp
+summability follows by trapping each finite subsum inside its union of prime
+supports and using the convergent absolute Euler product. The actual energy
+sum controls each translated dilation row. A nonzero dilation has a zero
+local factor in every sufficiently large prime cutoff; Tannery yields exact
+full-lattice orthogonality. No division by a possibly zero coefficient.
+
+An explicit prime-product bijection with positive rationals is proved using
+p-adic valuations and numerator/denominator factorizations. Coprimality removes
+numerator contributions; multiplicative Mobius factorization identifies the
+literal denominator coefficient. This proves actual rational orthogonality,
+complete rational cubic signed/absolute sums, and literal two-axis exclusion.
+Exact positive survivor: full signed sum zeta(sigma)^2; absolute mass
+zeta(sigma)^2*product_p(1+4p^(-sigma)); off-axis sum 1-zeta(sigma)^2.
+
+Production leaves FinsuppTrace47237, PositiveRationalTrace84654 and
+RationalCubicTrace95789 exit0, clean logs; lake --old env lean <leaf> -o <olean>.
+All52 public-theorem axiom queries91107 exit0: only propext, Classical.choice,
+Quot.sound. Three leaves wired into RHTower; no full/umbrella build.
+Index45675 exit0, all52 names present in LEAN_API. Lint91425 exit1: exactly23
+unrelated unreachable modules, no new-leaf/proof-debt/generated-freshness error.
+The previous19 count changed outside this task; unrelated files not modified.
+
+Evidence: /tmp/bag-finsupp-production-01a0.log,
+/tmp/bag-rational-production-01a0.log,
+/tmp/bag-rational-cubic-production-01a0.log,
+/tmp/bag-rational-axioms-01a0.log,
+/tmp/bag-rational-index-01a0.log,
+/tmp/bag-rational-lint-01a0.log. P3 bag-complete-rational-cubic-orthogonality.md
+records the dependency-closed proof. Frontier row C28.56ab and active cards
+updated. No physical contraction identification or finite-height transfer
+claimed. Noncompact/growing profiles, near-resonances, coupled limits,
+growing moments, moving cofactors and positive common-height return remain.
+
+Research queries rational bridge and Finsupp Euler each nonpartial65483/65483;
+all relevant sections inspected. A further global-growth search was
+nonpartial65497/65497. It surfaced Zeta23.FromPNTPlus.ZetaBounds.ZetaInvBnd
+(logarithmic reciprocal-zeta bound in a zero-free log strip); this is only a
+candidate until its exact dependencies/axioms are audited. Not used here.
+
+C28.56ac now active: twist the actual rational cubic by imaginary Mellin
+characters; retain its exact absolute mass; identify support cutoffs with
+weightedTrace and both axes with weightedAxisTrace; transfer the complete
+compact-test boundary. Paper card bag-weighted-rational-critical-transfer.md.
+Search25978 partial65498/65498 (judge JSON failure); useful actual-source hit
+rationalCubic, irrelevant matrix/aperture candidates rejected. Scratch
+formalization underway. RH unproved; goal active.
+
+## C28.56ac — full weighted rational series and tested critical boundary
+
+BAG route. C28.56ab's balanced rational sum and orthogonality have now been
+extended to every imaginary Mellin frequency, with literal source coefficients.
+The main mathematical conjecture succeeded: imaginary twists preserve the
+exact absolute mass, support-cutoff exhaustion identifies the full six-zeta
+sum and both two-zeta axes, and the ACTUAL termwise tested rational series
+has the complete compact-test critical boundary. This moves the source-to-
+physical frontier; it does not prove a physical finite-height approximation.
+
+Positive rational complex powers are explicitly identified with their prime
+character products. Norm-one phases preserve the complete balanced mass;
+Tannery converts the full lattice sum to the old finite-prime trace limit.
+The analogous square-energy argument supplies each weighted axis. Literal
+inclusion-exclusion gives Z-D(beta)-D(alpha)+1. Uniqueness of the complete
+finite-prime limits identifies this rational sum with cubicConnectedKernel.
+
+The stronger tested statement was also proved: for ANY integrable complex
+frequency test Phi and positive damping, abs(Gamma_off(a,b))*norm(Phi(u,v))
+is summable in the rational pair and integrable after summation in frequency.
+Series DCT therefore gives HasSum of the ACTUAL termwise integrals, not just
+an integral of an abstract limit. For every fixed smooth compact Phi, the
+full rational tested sum tends to cubicCriticalBoundaryValue, retaining both
+finite parts, -pi^2 Phi(0,0), mixed product PV and the ordinary test integral.
+No frequency band, signed sector or prime is discarded.
+
+New leaves ChiRamanujanWeightedRationalTrace (17 public theorems,275 lines)
+and ChiRamanujanRationalCriticalBoundary (10 public theorems). Production35695
+and85951 exit0, clean diagnostics, lake --old env lean leaf -o olean. Both
+wired into RHTower; no full/umbrella build. Axiom61723 exit0: all27 public
+results use only propext, Classical.choice, Quot.sound. Index93281 exit0;
+all27 public API names checked. Lint51208 exit1: exactly15 unrelated unreachable
+modules; no new-leaf/proof-debt/generated-freshness error. No unrelated repairs.
+
+Scratch failures were local elaboration issues: finite subtype lambdas,
+real norm/absolute simplification, opening the ContDiff notation scope,
+abs-bar token spacing, and an omitted argument under tsum. They exposed no
+counterexample to the conjecture. Fixed and production-audited without
+heartbeat changes, computations, added axioms or admitted arithmetic inputs.
+
+Search25978 deep300 partial65498/65498 due judge JSON failure; all result
+sections inspected. Source basis was the audited actual rational and weighted
+trace leaves, not unrelated matrix/aperture suggestions. Lexical43777 supplied
+existing integral interchange sources; the applied HasSum series-DCT API was
+read and checked. Further focused global-growth search26948 nonpartial65505/65505;
+all candidate/source/idea/ingredient sections inspected, mostly source-only
+compiler metadata, background refresh incomplete.
+
+Next hard conjecture C28.56ad: actual A_sigma(u,v) and T_sigma(u), with their
+needed frequency derivatives, have global polynomial bounds uniform through
+sigma=1. Use those bounds to prove the full Schwartz boundary and uniform
+seminorm control, then handle actual growing physical profiles. Paper mechanism
+and exact corpus inputs: P1 bag-global-cubic-source-growth.md. Four required
+source ingredients were additionally audited in61723: ZetaInvBnd, ZetaZeroFree,
+RHTower.norm_riemannZeta_le_quarter and Sieve.norm_LSeries_moebius_le_uniform,
+all standard logical axioms. Totalized reciprocal upper bounds alone do NOT
+prove nonvanishing: the separate zero-free ingredient is necessary for Cauchy
+disks. A polynomially shrinking zero-free radius suffices; optimizing exponents
+is not the target. No global-source theorem is claimed yet.
+
+Physical arithmetic-axis/prime-contraction matching, the finite-prime integral
+net, finite-height near-resonances, coupled damping/band limits, growing moments,
+moving cofactors and positive common-height self-return remain open. RH unproved;
+goal active. Frontier map C28.56ac, earlier relevant rows and active cards updated.
+P3 bag-weighted-rational-critical-boundary.md records the exact new proof.
+
+Evidence: /tmp/bag-weighted-rational-production-01a0.log,
+/tmp/bag-rational-critical-production-01a0.log,
+/tmp/bag-weighted-rational-axioms-01a0.log,
+/tmp/bag-weighted-rational-index-01a0.log,
+/tmp/bag-weighted-rational-lint-01a0.log. Four owned ac scratch Lean probes
+removed after successful audits; logs/search JSON retained. No owned process
+remains live; no subagents, full builds, commit or push.
+
+## C28.56ad: actual global source control, in progress
+
+BAG route unchanged. C28.56ac supplied the actual full tested rational sum;
+compact frequency support remained the obstruction to physical test profiles.
+The current attack is global polynomial control of the ACTUAL A_sigma and
+T_sigma, including derivatives, uniformly on sigma in [1,2].
+
+New proofs checked so far: a genuine polynomial-width zeta zero-free region
+with reciprocal control; global complex zero-free disks for F=(s-1)zeta(s)
+with its pole removed; polynomial bounds for every scalar derivative of F and
+1/F. Low height uses a compact nonvanishing neighborhood including F(1)=1.
+High height combines the separately audited zero-free and reciprocal bounds;
+no inference from a totalized reciprocal upper bound to nonvanishing.
+ChiRamanujanGlobalResidueControl production12824 passed, no warnings.
+
+The normal-product majorants give global tube bounds for actual cubic and axis
+Euler corrections. Combining them with the F disks gives actual source balls,
+lying in the actual analytic domains, with polynomial radii and norms. Leaf
+ChiRamanujanGlobalSourceNeighborhoods production98490 passed, no warnings.
+An all-order Banach-valued local Cauchy argument now checks in scratch52474,
+including application to both actual complex sources. Real-frequency pullback
+is under audit41374. No Schwartz boundary or physical transfer claimed yet.
+
+Learning from Lean failures: implicit tuple/source inference unfolded the full
+Euler factors until the default heartbeat limit; explicit source arguments
+removed this cost. Expanding frequency-dependent powers through local lets
+likewise caused expensive ring normalization; prove the polynomial identity
+with independent scalar variables, then instantiate. No heartbeat changes.
+
+Search17172: nonpartial65507/65507, compiler metadata mostly pending/source-only,
+refresh incomplete. Search93538: nonpartial65510/65510, same freshness caveat;
+all candidate/source/proof/ingredient sections inspected. It retrieved the
+scalar entire-function Cauchy argument in EntireSeriesJointHolomorphy. Current
+proof extends its mechanism to LOCAL analytic balls and Banach-valued targets,
+then iterates it. Lexical70337 for product/exponential bounds inspected;
+no coverage/freshness fields supplied. All applied APIs checked in scratch.
+Search JSON and audit logs retained under /tmp/bag-global-* and
+/tmp/bag-euler-tube-bound-search-01a0.json.
+
+
+### C28.56ad closed: all-order actual real-source growth
+
+The real-frequency pullback now passed scratch37757. Production37747 for
+ChiRamanujanGlobalSourceDerivatives exited0 without diagnostics, joining
+production12824 and98490. All three leaves wired exactly once; no umbrella
+build. Axiom94140 passed for ALL12 public theorems, only propext,
+Classical.choice and Quot.sound. Index24249 passed and all12 names are in
+LEAN_API. Lint13364 exited1: exactly21 unrelated unreachable modules,
+no new-leaf/proof-debt/freshness error. Targeted diff whitespace check passed.
+
+Main unconditional producers:
+- exists_realCubicSource_derivative_polynomial_bound n, full joint real
+  derivative bound C_n*(1+|u|+|v|)^(54+9*n), sigma in [1,2];
+- exists_realAxisSource_derivative_polynomial_bound n, corresponding
+  C_n*(1+|u|)^(18+9*n).
+Complex versions and genuine actual-source analytic neighborhoods are also
+public. Parameter derivatives included. No source-growth assumption used.
+
+This advances the BAG route by removing the global actual-source obstruction;
+it does not prove RH or the noncompact critical boundary. The next conjecture
+C28.56ae is the complete Schwartz critical boundary with uniform seminorm
+control, including both finite parts, product PV and the moving intersection
+mass. P1 bag-global-cubic-source-growth was rewritten around that exact open
+problem. P3 of the same name records the dependency-closed new proof.
+Frontier map C28.56ad added; predecessor C28.56ac and relevant cards updated.
+
+Search79976 returned nonpartial65519/65519, compiler metadata mostly pending/
+source-only and background refresh incomplete; all result sections inspected.
+General Schwartz reflection/DCT suggestions do not solve the actual-source
+problem. Direct aa source inspection gives a useful sharper mechanism:
+(A_sigma(u,v)-T_sigma(u))*Phi(u,v) vanishes identically at u=0, so short-segment
+even cancellation near zero and Schwartz decay outside it can dominate the
+literal finite-part quotient. For product PV split the two coordinates into
+four small/large regions. For intersection use global boundedness of A*Phi
+and the existing scaled Cauchy-product density. Build uniform tested-source
+derivative decay next, then the full-plane integrable dominators.
+
+Eight owned scratch sources/fragments removed after successful audits; no
+owned jobs remain live. All production files, logs and search JSON retained.
+Evidence /tmp/bag-global-residue-production-01a0.log,
+/tmp/bag-global-source-neighborhoods-production-01a0.log,
+/tmp/bag-global-source-derivatives-production-01a0.log,
+/tmp/bag-global-source-axioms-01a0.log,
+/tmp/bag-global-source-index-01a0.log,
+/tmp/bag-global-source-lint-01a0.log. Goal remains active; no subagents,
+full builds, commit or push.
+
+## C28.56ae in progress: uniform Schwartz tested-source control
+
+Previous turn classified as progress: actual global source derivatives closed.
+BAG route remains actual rational cubic -> noncompact critical boundary ->
+physical matching. New hard attack is integrable domination of the literal
+singular terms. No route pivot; RH unproved.
+
+Search9492 (deep300 "Schwartz polynomial multiplier uniform derivative decay
+seminorm") finished nonpartial65524/65524. All candidate/source/proof/ingredient
+sections inspected; compiler mostly pending/source-only, refresh incomplete.
+General polynomial-decay and unrelated Lipschitz sources do not supply the
+actual uniform multiplier estimate. Applied mathlib source:
+SchwartzSpace/Basic.one_add_le_sup_seminorm_apply; ContDiff/Bounds local
+Leibniz; local linear composition of iterated derivatives. Names checked
+in scratch /tmp/bag-schwartz-source-decay-01a0.lean.
+
+The strengthened theorem now checks in scratch17967:
+exists_cubicTestedSource_schwartz_bound k n. It controls T^k times EVERY
+joint nth derivative of BOTH cubicTestedSource Phi and
+cubicTestedAxisNumerator Phi by C(k,n)*S_(k+54+9n,n)(Phi), where S is the
+supremum of the finite standard Schwartz seminorm family Iic(weight,order).
+The constant is independent of Phi and of sigma in [1,2]. This is actual
+A and actual A-T, not an assumed source. Scratch80610 also verified the
+single-seminorm bound uniform over n<=N; its only error was a final vector
+simplification in the zeroth-order boundedness corollary, now repaired.
+Production23588 of new ChiRamanujanSchwartzSourceDecay is LIVE at this
+checkpoint; do not start another owned Lean build before its terminal result.
+No axiom audit or umbrella wiring for this new leaf yet.
+
+Owned /tmp/bag-schwartz-intersection-01a0.lean is PREPARED, NOT BUILT. It
+uses the new unconditional globally bounded A*Phi to extend the existing
+actual moving intersection-mass proof to all Schwartz tests. It retains
+both-frequency scaling and the full Cauchy product density, with limiting
+mass pi^2 and the literal trace sign minus. It imports the prospective
+SchwartzSourceDecay olean. Build only after production23588 succeeds.
+
+Mathematical next step beyond intersection: weight4, derivatives0,1,2 from
+the single finite seminorm S_(76,2) control reflected quotients. For axis
+cancellation use the short segment at FIXED v, keeping transverse decay;
+centered expanding boxes discard that information. Mixed quotient: both
+coordinates small -> rectangular second derivative; one small -> first
+partial along that short segment at fixed large coordinate; both large ->
+direct rapid decay. Candidate common integrable envelope is a constant
+multiple of cubicIntersectionDensity = 1/((1+u^2)*(1+v^2)). Need prove it,
+then full-plane DCT/reflection and assemble the literal connected kernel.
+
+Scratch failures were elaboration/API issues, not mathematical counterexamples:
+explicit function arguments avoid expanding the actual zeta source during
+higher-derivative unification; direct add_le_add replaces expensive nlinarith
+on opaque derivative norms; specify the exact pow_add instance so rewriting
+does not expand the unrelated source-growth power. No heartbeat changes.
+
+### C28.56ae continuation: actual quotient domination
+
+SourceDecay production23588 and SchwartzIntersectionMass production70465 both
+exited0 clean; both are now wired once. Current batch still awaits axiom/index/lint
+audit. Intersection theorem retains actual moving source and signed mass
+-pi^2 Phi(0,0), and its noncompact pairings are proved integrable near damping0.
+Axis quotient scratch25375 exited0 after explicit fixed-transverse central
+difference proof. The envelope is 2*C*S_(76,2)(Phi)*product Cauchy density.
+Mixed quotient four-region proof is now being checked, using first derivatives
+in strips and second derivatives at the intersection. Full Schwartz critical
+boundary is still open until DCT, full-plane reflection, and assembly are proved.
+
+Process discipline correction: accidentally launched duplicate scratch80087
+before receiving scratch25375 terminal result. Immediately terminated only owned
+newer PIDs15843/15806; session80087 exited143, original25375 exited0. No other
+agent process touched. Continue strictly waiting for each terminal result before
+starting the next owned build. No full/umbrella builds, heartbeat raises, axioms,
+numeric experiments, or subagents.
+
+Quotient scratch2026 exited0. The actual axis, actual mixed, combined full-plane,
+and actual tested-source product-density bounds all check. Every bound uses one
+finite Schwartz seminorm S_(76,2), uniformly sigma in[1,2]. One harmless tactic
+sequencing warning corrected in production; production leaf now under final
+lake --old env lean audit. This is genuine domination closure, not full boundary
+closure yet. Compensated-limit, original-kernel-integrability/reflection and
+final-rational-boundary scratch files are prepared for sequential dependent checks.
+
+Search98755 for BAG physical cubic Schwartz/contraction matching completed
+nonpartial65533/65533; no search errors, compiler mostly source-only/pending,
+background refresh incomplete. All candidate/source/idea/ingredient sections
+inspected (compact extraction after verbose output truncated). Proposed ingredient
+pair physicalLogWindow compactness + Burnol sum-reindexing does NOT identify
+arithmetic and physical contractions. Useful actual sources read: full cubic
+prime main and its exact contraction formula, plus actual height-window Schwartz
+Fourier scaling. Physical contraction and complete signed near-resonance control
+remain hard open obligations; unrelated retrieved contractions do not solve them.
+
+Production68160 for ChiRamanujanSchwartzQuotientBounds exited0 clean; wired once.
+Consolidated the remaining DCT/reflection/final-rational proof into a SINGLE
+prospective ChiRamanujanSchwartzCriticalBoundary leaf (under500 source lines),
+avoiding separate dependency builds for small consecutive parts. Current owned
+foreground Lean session9952 checks /tmp/bag-schwartz-boundary-assembly-01a0.lean;
+DO NOT start another owned Lean process until its terminal result. Log is
+/tmp/bag-schwartz-boundary-assembly-01a0.log. Older separate prepared scratch
+files are source fragments only; edit the combined assembly from now on.
+
+Physical-source followup search87795 is live at checkpoint, JSON destination
+/tmp/bag-physical-damping-source-search-01a0.json. It is independent of Lean.
+Current new production batch has only THREE leaves: SchwartzSourceDecay,
+SchwartzIntersectionMass, SchwartzQuotientBounds. All three production checks
+passed, each wired once. No current-batch axiom/index/lint audit yet. Full
+Schwartz critical-boundary theorem remains unverified until assembly check and
+its production audit. Goal remains active; RH unproved.
