@@ -1443,3 +1443,206 @@ Searches tt_c62_schur_direction_transport_search.json (partial snapshot
 canonical drift bounds and related modular drift equations, not this
 source-direction producer. Candidate/source-argument hits inspected;
 no training-data or external numerical conjecture used.
+
+2026-10-03 C62 transport producer: prepared the actual global continuous
+regular solution (not merely an existence receiver). Set
+K=C3*Phi^2*H2>0, p=-D3/K, f=B/K. The exact canonical coefficient gives
+p(0)=1 and f(0)=t_opt. Since the complete reflected jets are differentiable,
+k=dslope p 0 is continuous and x*k(x)=p(x)-1. Let
+
+  mu(x)=exp(integral_0^x k),
+  y(x)=mu(x)^(-1)*integral_0^x(mu*f),
+  eta(x)=dslope y 0 x.
+
+Then eta is continuous, eta(0)=t_opt, differentiable off zero, and
+x*eta'+p*eta=f at every x (the x=0 equation uses the literal endpoint).
+Thus K*x*eta'-D3*eta-B=0 with no source premise. At the latest scratch
+checkpoint p/f endpoint values, coefficient differentiability and
+continuous removable k are audited; integral/direction assembly is
+being repaired for two Lean elaboration/no-goal issues. No limit raised.
+Do not call the full direction theorem proved until its audit passes.
+
+The full actual determinant identity is separately prepared in
+TTC62SchurTransport. It retains the exact residual square and reduces
+the constructed direction's determinant sign to its actual Schur gap.
+The initial gap is strictly positive by the C61 optimal source repair.
+The next substantive inequality is positivity of this gap across the
+compact region; local continuity alone does not close that problem.
+C62 must also retain a controlled transition to the established
+adverse-ray direction: no inherited C60 bound applies automatically
+when eta differs from168*q-56.
+
+C62 source construction scratch audit COMPLETE: the explicit direction,
+its continuity, optimal seam value and exact residual cancellation all
+passed with standard3 axioms (tt_c62_source_transport_complete.audit.log).
+The continuous removable coefficient requires only differentiability of
+the actual source moments and the exact canonical coefficient identity.
+The general solution is differentiable away from zero; smoothness at zero
+is not claimed. The corrected flux needs that punctured derivative and
+continuous zero-boundary value. A production source-transport leaf is
+prepared/wired; its build and direct audits are still pending.
+
+C63 proposed gap attack (sign conjecture, NOT PROVED): normalize the
+actual gap by Phi^6. Write a=A/Phi^6, b=B/Phi^6, d=D3/Phi^6,
+l=C4*G*H2/Phi^6. Along the residual-free direction on x>0,
+
+  (gap/Phi^6)' = a'+l'+d'*eta^2+2*b'*eta
+      +2*(D3*eta+B)^2/(x*(C3*Phi^2*H2)*Phi^6).
+
+The last term is nonnegative. A source-native nonnegative quadratic
+[a'+l',b';b',d'] on the compact interval would propagate the proved
+initial gap. This is a substantive new source-sign conjecture, not an
+assumed inequality. If that uniform quadratic is false, the exact
+identity still exposes the needed inequality along the constructed
+trajectory; its negative component must be paid by the retained square.
+Search tt_c63_gap_derivative_search.json is in progress. Do not claim
+any derivative sign or interval propagation before kernel proof.
+
+C62 exact Schur scratch audit COMPLETE: determinant_residual_square,
+determinant_direction, determinant_direction_pos_iff, schurGap_zero_pos,
+and eventually_schurGap_pos all pass, standard3 axioms only.
+The Schur identity retains the actual derivative and all native moments;
+the determinant sign equivalence uses the already proved global canonical
+third-minor positivity. No global fourth-gap sign is asserted. Prepared
+and wired ThetaCuspCoupledOddTransportSchur for production audit.
+C63 derivative search was partial (snapshot1215642/current1215643);
+candidate/source-argument hits give generic quadratic algebra, not the
+actual normalized source-sign theorem. Compact source coordinates and
+all-order literal Lyapunov jet incidence are available and being used.
+
+C63 source test: write P_j for exact source seam derivatives of order 2j,
+and m_k for signed reflected derivatives of order 2(k+1). Native second
+center variations (all odd source jets vanish at the seam) are
+
+  v0=-(2P0P2-2P1^2),
+  v1=2P0P3-2P1P2,
+  v2=-(2P0P4+8P1P3-10P2^2),
+  v3=2P0P5+26P1P4-28P2P3,
+  v4=-(2P0P6+52P1P5+30P2P4-84P3^2).
+
+The candidate curvature of D3/Phi^6 has cleared numerator
+P0*(gradient detThree(m) dot v)-6P1*detThree(m).
+All ingredients are the existing exact source polynomials through twelve.
+This is a symbolic source-sign conjecture, not a numerical experiment.
+First audit failed at positivity (goal-shape diagnostic); no sign verdict
+has been inferred. Exact all-order native first/second variations and
+literal normalized-gap derivative are prepared as separate scratch proofs.
+Compact-coordinate search partial snapshot1215680 recovers the all-order
+literal Lyapunov polynomial incidence but no needed quadratic sign law.
+
+Potential sharper C63 continuation if uniform quadratic positivity fails:
+for D3<0 let r=-B/D3 and Smax=A+C4*G*H2-B^2/D3. Then gap equals
+Smax+D3*(eta-r)^2 exactly. The actual regular solution obeys
+eta'=(p/x)*(r-eta), p=-D3/K>0, so it is a weighted running average
+of the moving optimal direction, with (x*mu)'=mu*p. A source-derived
+bound on tracking error could retain the positive chamber even when
+an arbitrary-direction quadratic derivative is indefinite. Neither a
+tracking bound nor Smax positivity beyond the seam is yet proved.
+
+C61/C62 production checkpoint: all four C61 leaf --old builds and final
+direct audits passed. C62 DirectionTransport and TransportSchur each
+passed direct lake env lean -o audits against the current source.
+All current production capstone axiom reports are standard3 only in
+/tmp/tt_c63_gap_derivative.audit.log. That combined scratch run exited1
+only because C63's function-valued derivative expression needed an
+explicit eta expansion before rewriting; its sorryAx is confined to
+that failed scratch theorem, not any production declaration. Fix made,
+rerun pending. Index passed. All owned superseded TTC61 and TTC62
+scratch sources/caches were removed; retained audit logs as evidence.
+
+C63 auxiliary homogeneous seam-curvature certificate passed (exit0,
+/tmp/tt_c63_seam_curvature_hom.audit.log): degree17 cleared candidate
+curvature is strictly positive on the full proved seam-scale interval,
+via positive homogeneous coordinates. This only checks the algebraic
+necessary entry; actual second-derivative incidence is not yet audited,
+and full quadratic PSD or compact gap monotonicity is NOT established.
+To test the other entries, the normalized A-cofactor curvature requires
+the order16 source jet. Corpus search tt_c63_source_sixteen_search.json
+running. Existing exact source14 proof retains transverse two-jet of
+source12; order16 needs its transverse four-jet or an equivalent exact
+Lie iteration. Missing source algebra must be constructed, not assumed.
+Current lint has13 unrelated umbrella omissions (including a newly
+listed ThetaTailPositiveBalancePrimitive); no C61/C62 module errors.
+
+2026-10-04 C63 order16 source construction (paper proof, Lean scratch prepared):
+source-sixteen search completed, partial=false, generation1215863;
+no applicable source16 jet was found in candidate/source-argument hits.
+For the exact corpus vector field S'=3-S^2/3-3A/4,
+A'=-2AW, W'=2+A/2+2S^2/9-2SW/3 and mass'/mass=-S/6,
+put s=3-3a/4, w=2+a/2, a2=-2aw,
+s3=-2s^2/3+3aw/2, w3=-aw+4s^2/9-4sw/3,
+a4=12aw^2-2aw3. At the seam v=(s,0,w), acceleration=(0,a2,0),
+third variation=(s3,0,w3), fourth=(0,a4,0). Thus
+
+  (mass*Q)''''/mass = D4Q[v,v,v,v]+6a2*D3Q[A,v,v]
+    +3a2^2*Q_AA+4D2Q[(s3,0,w3),v]+a4*Q_A
+    -s*(D2Q[v,v]+a2*Q_A)+(-s3/6+s^2/12)*Q.
+
+Applying this to the existing exact source12 polynomial uses only its
+transverse terms through degree4. Prepared TTC63FourthSeamLie with the
+generic identity and coefficient-level partial-derivative commutation;
+prepared TTC63SourceSixteen with copied existing monomial text, fourteen
+exact partial-jet identities, and literal source16 assembly. NOT audited.
+No external coefficient evaluation, source truncation estimate, limit
+increase or source hypothesis is used by this proposed construction.
+C63 normalized-gap derivative second audit failed only on function-power
+eta expansion; fixed Pi.pow_apply, third audit running. Native moment
+variation scratch had the same function-product issue plus one missing
+parenthesis; patched, rerun pending. No mathematical sign failure claimed.
+
+C63 normalized-gap derivative scratch audit COMPLETE (exit0, standard3,
+tt_c63_gap_derivative.audit3.log). Both exact derivative and unconditional
+nonnegative squared-gain lower bound on x>0 passed. Promoted/wired
+ThetaCuspCoupledOddGapDerivative; final production audit pending.
+This proves the new actual-source differential identity, NOT positivity
+of the remaining source quadratic or of the compact gap. Now auditing
+the fourth covariant seam identity needed for source16 and the full
+seam quadratic-variation sign test.
+
+C63 planned full seam quadratic test, grounded in exact source16 construction:
+Let P_j be source derivative2j divided by literal seam mass, and m_r be
+signed reflected derivative2r divided by its squared mass. Exact proposed
+second center variation (r>=1) is
+
+  v_r = 2*(-1)^r * sum_(j=0)^r
+    (choose(2r,2j)-choose(2r,2j+1))*P_(j+1)*P_(r-j).
+
+This follows by pairing the two even-index terms in the finite Leibniz
+second variation; odd-index terms contribute the negative cross term.
+It gives all seven needed variations using P0..P8, where P7 is existing
+source14 and P8 is the pending source16. The actual polynomial incidence
+must be audited; do not infer it from the displayed formula alone.
+
+For actual cofactor values A,B,D and their native second variations A2,B2,D2,
+let H=m0*m2-m1^2 and H2=v0*m2+m0*v2-2*m1*v1 (here m0 is signed order2).
+At the seam G=3Phi^2, G''=10Phi*Phi'', and all first variations vanish.
+The normalized quadratic derivative's first nonzero candidate matrix,
+after multiplying by the positive P0^7, has entries
+
+  Na=P0*A2-6*P1*A+C4*(3*P0^3*H2-8*P0^2*P1*H),
+  Nb=P0*B2-6*P1*B,
+  Nd=P0*D2-6*P1*D.
+
+The auxiliary Nd polynomial positivity already passed on the actual seam
+scale interval. Na*Nd-Nb^2 is the next decisive test for the proposed
+uniform quadratic sign. Its homogeneous degree is36 after inserting the
+fixed C4 load with its proper degree. No sign is yet known or assumed.
+If this uniform test fails, the actual-direction survivor is instead
+D^2*Na-2*B*D*Nb+B^2*Nd at eta(0)=-B/D; do not retire the route without
+attacking the actual trajectory and retaining the nonnegative gain.
+
+Fourth seam formula diagnostic: the reduced residual consists entirely
+of pderiv_S(2) and pderiv_W(2) factors. Thus no mathematical formula
+correction is indicated. Added the explicit derivative-of-constant fact
+from pderiv_C to the simplifier; third audit running. Partial-derivative
+commutation itself passed. C63 GapDerivative production direct audit
+passed; exact production axiom probe and refreshed lint pending.
+
+C63 fourth covariant seam identity AUDITED: TTC63FourthSeamLie exit0,
+standard3 axioms (tt_c63_fourth_seam_lie.audit4.log). The displayed
+paper fourth-variation formula is now a kernel-checked generic theorem;
+the only repair was explicitly reducing pderiv of the numeral2 via
+2=1+1, additivity and pderiv_one. No formula change or limit increase.
+TTC63SourceSixteen literal-source assembly is now under audit using
+this valid scratch module cache. C63 GapDerivative refreshed index
+passed; latest lint12 unrelated umbrella omissions, no owned errors.

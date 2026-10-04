@@ -289,6 +289,20 @@ private theorem pmbp_mellin_reciprocal_eq (ε : ℝ)
       dsimp only
       rw [indicator_of_mem hX]
 
+/-- Holomorphy of the actual tested source from a bound on its complete moving vector. -/
+theorem differentiableAt_pmRamanujanBandTestedScale_integral_of_bound
+    (ε : ℝ) {C : ℝ}
+    (hb : ∀ X ∈ Ici (1 : ℝ), ‖pmRamanujanMovingBandMellinVector ε X‖ ≤ C)
+    (h : Lp ℂ 2 (volume : Measure ℝ)) {z : ℂ} (hz : 1/2 < z.re) :
+    DifferentiableAt ℂ (fun w : ℂ => ∫ X in Ici (1 : ℝ),
+      (X : ℂ)^(-w-(1/2 : ℂ)) * pmRamanujanBandTestedScale ε h X) z := by
+  have hC : 0 ≤ C := (norm_nonneg _).trans (hb 1 (by norm_num))
+  obtain ⟨hli,htop,hbot⟩ := pmbp_reciprocal_bounds ε h hC hb
+  have hd := mellin_differentiableAt_of_isBigO_rpow_exp one_pos hli htop hbot
+    (show (0 : ℝ) < (z-(1/2 : ℂ)).re by simp; linarith)
+  have hh := hd.comp z (differentiableAt_id.sub_const (1/2 : ℂ))
+  simpa only [Function.comp_def, id_eq, pmbp_mellin_reciprocal_eq] using hh
+
 /-- Holomorphy of the actual tested scale integral, derived from the proposed convergence
 inside the spectral-escape contradiction. No separate source-regularity premise is used. -/
 theorem differentiableAt_pmRamanujanBandTestedScale_integral_of_tendsto
@@ -297,12 +311,8 @@ theorem differentiableAt_pmRamanujanBandTestedScale_integral_of_tendsto
     (h : Lp ℂ 2 (volume : Measure ℝ)) {z : ℂ} (hz : 1/2 < z.re) :
     DifferentiableAt ℂ (fun w : ℂ => ∫ X in Ici (1 : ℝ),
       (X : ℂ)^(-w-(1/2 : ℂ)) * pmRamanujanBandTestedScale ε h X) z := by
-  obtain ⟨C,hC,hb⟩ := exists_bound_pmRamanujanMovingBandMellinVector_of_tendsto hε hc
-  obtain ⟨hli,htop,hbot⟩ := pmbp_reciprocal_bounds ε h hC hb
-  have hd := mellin_differentiableAt_of_isBigO_rpow_exp one_pos hli htop hbot
-    (show (0 : ℝ) < (z-(1/2 : ℂ)).re by simp; linarith)
-  have hh := hd.comp z (differentiableAt_id.sub_const (1/2 : ℂ))
-  simpa only [Function.comp_def, id_eq, pmbp_mellin_reciprocal_eq] using hh
+  obtain ⟨C,_hC,hb⟩ := exists_bound_pmRamanujanMovingBandMellinVector_of_tendsto hε hc
+  exact differentiableAt_pmRamanujanBandTestedScale_integral_of_bound ε hb h hz
 
 theorem integrableOn_pmRamanujanBandTestedScale_integrand (ε : ℝ)
     (h : Lp ℂ 2 (volume : Measure ℝ)) {C : ℝ}

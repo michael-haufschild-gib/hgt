@@ -3723,3 +3723,192 @@ bound and summable square-weight theorem. Exact cell displacement equals
 w_n*(log(n)-b_n)-D_n. P1:sz-quantile-entropy-debit records the proof and
 limits; /tmp draft is currently in a single foreground Lean audit. No
 claim of full checkpoint-reservoir dual control or RH is made.
+
+### Quantile-debit closure and direct-sign continuation
+
+Scratch32191 and final19866 exited0 without diagnostics. Leaf
+`CCMOutgoingQuantileEntropyDebit` has12 public declarations, all checked
+by axiom43695 with only propext, Classical.choice, Quot.sound. One umbrella
+import; no umbrella build. P3:sz-quantile-entropy-debit records the exact
+proof and limits. Lint22137 exited1 on12 unrelated reachability errors:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MertensProductDiamondPintz, MoebiusMollifiedCriticalMoment,
+MoebiusMollifiedErrorThreeLines, ThetaMovingShellFirstOrderPhase,
+ZetaZeroDensityPowerSaving; HTGeometry.CompactMonoidMeasureAlgebra.
+
+This proves a new finite correction in the literal source. It does NOT
+prove the hard canonical-head sign. Search1215522/1215533 investigated
+Selberg forcing, both partial/source-only. Exact log-derivation identity
+subtracts the positive convolution when solved for the needed moment;
+discarding it is the wrong direction. Exact factorial cancellation leaves
+the terminal Chebyshev remainder. Existing PMSelbergPowerInputBoundary
+already shows the coarse recursion and second inequality admit a3/4-power
+comparison error, so they do not suffice for critical control.
+
+Next direct attempt inspected quantitative prime-phase cost, using
+search1215559 (partial/source-only). PrimeLogPhaseBudget gives independence
+and rank, not a lower bound on recurrence time. Constructed positive prime
+cliques do not yet approximate arbitrary canonical heads. The retrieved
+SteinhausPrimeCorrelationBudget and SteinhausDirichletDensityEnergy give
+actual coefficient-frequency costs for arbitrary finite Dirichlet square
+densities; they are not Gamma-form bounds on the actual physical source.
+Any proposed transfer must construct that map and keep its normalization,
+the signed polar term, all prime powers, and the complete head. No such
+transfer or hard sign theorem is claimed.
+
+Normalization follow-up: index dilation preserves finite prime
+correlations but changes raw coefficient-frequency cost. Do not substitute
+this cost for physical Gamma energy. Searches1215577 and1215595 were
+partial; no applicable transfer was verified. Continue directly with the
+actual head's Fourier spectral measure and complete phase/polar source.
+Current successful result remains the finite quantile debit, not the hard
+signed gap. Goal stays active; no RH proof or falsification claimed.
+
+Cleanup: all17 exact owned temporary paths removed after owned build and
+search handles reached terminal status. Audited olean retained; umbrella
+import occurs once; targeted whitespace check passed. Memory saved as
+`rhtower/sz-quantile-entropy-debit-2026-10-03`.
+
+### 2026-10-03: actual two-prime phase law and exact spectral recovery
+
+Route SZ, hard target unchanged: actual canonical-head joint Gamma--prime--polar
+sign. The preceding source inspections did not prove it. Ground localization
+still uses the unknown energy budget; positive boundary Gram denominator
+retains a signed forcing numerator; finite parity Fourier theorems retain
+unproved matrix inputs; pole-compression positivity is an existing equivalent
+criterion. None was promoted as new knowledge or used as a hidden premise.
+Searches1215615/1215617/1215641/1215652 were partial, as were1215688 and1215699;
+source/compiler coverage cannot certify absence or novelty.
+
+New proved result: the actual Fourier measure, pushed onto the fractional
+log(2), log(3) phases, is supported on a countable union of affine lines.
+That set has zero product-uniform phase mass, while its physical mass is
+exactly norm(f)^2. The actual normalized ground therefore has no density
+relative to independent phases. This kills exact identification, not
+finite-correlation approximation. The initial single-coordinate scalar
+pushforward result cannot be substituted for this joint law.
+
+Positive survivor: the same phase pair is a Borel injection, using the
+corpus's irrational prime-log ratio. Its map on spectral measures is
+injective; a measurable inverse recovers real frequency on the full image.
+Every nonnegative physical spectral cost is recovered exactly, including
+the shifted Gamma weight. This is stronger than a null-set obstruction and
+is formalized in the same leaf. It does not compare that weight with the
+signed complete prime--polar energy. No hard sign or RH conclusion follows.
+
+Audit: scratch23431 failed only at the unqualified restrict_univ name;
+scratch65020 failed at an implicit weight rewrite in the Gamma corollary.
+The corrected final leaf command25304 exited0 without diagnostics:
+
+    lake --old env lean GaloisForLFunctions/RHTower/CCMPhysicalTwoPrimePhaseLaw.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPhysicalTwoPrimePhaseLaw.olean
+
+Axiom6552 checked all19 public definitions/theorems from /tmp; every result
+uses only propext, Classical.choice, Quot.sound. One umbrella import,
+no umbrella/full build, no heartbeat override, no numerical experiment.
+P3:sz-physical-two-prime-phase-law and
+P5:sz-exact-independent-phase-density-transfer record the exact closure.
+
+Lint7116 exited1 on13 unrelated unreachable modules:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MertensProductDiamondPintz, MoebiusMollifiedCriticalMoment,
+MoebiusMollifiedErrorThreeLines, ThetaMovingShellFirstOrderPhase,
+ThetaTailPositiveBalancePrimitive, ZetaZeroDensityPowerSaving;
+HTGeometry.CompactMonoidMeasureAlgebra. The new leaf is not named by lint.
+
+Next direct sign investigation: search1215808 was partial/source-only.
+The actual autocorrelation is zero beyond twice the aperture. The existing
+Selberg/Krein completion leaves the visible form unchanged and preserves
+all prime weights; it supplies no positive completed symbol. The existing
+exterior-cosine dual mass wall shows why uniform constant approximation on
+growing windows cannot be declared affordable under logarithmic Gamma
+coercivity. A selective exterior correction adapted to the negative set
+of the complete symbol remains a candidate, with its full tail unpaid.
+No new equivalence wrapper or claimed dual certificate was added.
+
+Assessment: this continuation resolves an exact transfer obstruction and
+retains its full-cost positive survivor. It does not solve the hard
+canonical-head sign. Continue at that source-dependent sign, preserving
+all prime powers and the polar endpoint, rather than deriving further
+formal consequences of the singularity theorem. Goal remains active.
+
+Cleanup verified: all11 exact owned temporary files removed after all owned
+build/search/lint sessions terminated. Audited olean retained; unique import,
+card promotion and whitespace verified. Cross-session memory saved as
+`rhtower/sz-physical-two-prime-phase-law-2026-10-03`.
+
+### 2026-10-03: full corrected-symbol negative energy escapes exterior packets
+
+Route SZ; hard target remains the actual canonical-head joint
+Gamma--prime--polar sign. The previous phase-law result did not establish
+that sign. This continuation attacked the proposed exterior correction
+construction using its actual physical energy, rather than improving
+coefficient-mass bounds.
+
+Searches1215863/1215872/1215932 were partial with source/compiler freshness
+limitations. Direct reads verified exact null-gauge cancellation, compact
+packet convergence, existing mass walls and the odd-degree negative-point
+obstruction. New conjecture: the literal constant-lifting packet exports
+negative energy against the actual normalized ground, even for even
+degrees. Paper proof succeeds: integral D=1, integral G_N D=0, S*D is
+integrable, and the complex binomial formula bounds the packet uniformly
+on every compact set. Therefore
+
+    integral_tail (S+G_N)D -> integral_tail SD - integral_head D.
+
+As the fixed window exhausts the line, this limiting value tends to -1.
+For every fixed R and c<1, eventually every degree N has negative
+corrected-symbol energy greater than c beyond R. This concerns the full
+Gamma/polar/prime symbol and actual ground density. It does not prove a
+negative Weil quadratic or decide the absolute ground energy.
+
+Positive survivor: exact signed tail balance. It identifies the spatial
+compensation required by local lifting. Other dampings retaining exact
+zero average and local L1(D) convergence to one obey the same paper
+argument; only the literal packet family is formalized here. Arbitrary
+selective corrections and route SZ are not retired.
+
+Lean: initial scratch2633 and12244 failed at elaboration/rewrite details;
+repaired scratch26419 exited0. Final33353 exited0 with no diagnostics:
+
+    lake --old env lean GaloisForLFunctions/RHTower/CCMExteriorPacketNegativeEnergyEscape.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMExteriorPacketNegativeEnergyEscape.olean
+
+Axiom90720 inspected all10 public declarations from /tmp: only propext,
+Classical.choice, Quot.sound. One umbrella import, no full/umbrella build,
+no added axioms, heartbeat override or numerical experiment.
+P3:sz-exterior-negative-energy-escape and narrow
+P5:sz-exterior-constant-lift-positivity record paper and Lean closure.
+
+Lint5598 exited1 with13 unrelated unreachable modules:
+CCMApertureChainProfile, CCMApertureTranslationChains,
+CCMExponentialRampPrimeMoment, CCMExponentialRampSourceDissipation,
+CCMExponentialRampTerminalEntropy, CCMRetainedChainKernelLower,
+MertensProductDiamondPintz, MoebiusMollifiedCriticalMoment,
+MoebiusMollifiedErrorThreeLines, ThetaMovingShellFirstOrderPhase,
+ThetaTailFinitePairTransport, ZetaZeroDensityPowerSaving;
+HTGeometry.CompactMonoidMeasureAlgebra. New leaf not reported.
+
+Return to the hard sign: search1216079 was noisy/partial; narrowed
+search1216087 found the literal coherent phase-square, exact supported
+field projection and existing signed-current identities. Both had full
+inventory65049 but mostly pending/stale compiler evidence. Source reads
+confirm that outward terminal support can be removed exactly while the
+inward terminal and prime sum remain coupled. The existing support
+saving still subtracts a nonnegative reciprocal-Gamma cost from a
+negative central scalar. It is not a positive source certificate.
+No new sign theorem or receiver was added for these existing identities.
+
+Assessment: new result closes an actual physical obstruction to constant
+lifting, not the hard canonical-head inequality. Continue with the signed
+pairing of the translation increment and the supported complete coherent
+field, preserving the inward terminal and all cross-prime terms. A norm
+bound or further constant-lift refinement cannot discharge its absolute
+normalization. RH remains unresolved; goal active.
+
+Cleanup: all9 exact owned temporary files removed after owned processes
+terminated. Audited olean retained; unique umbrella import and targeted
+whitespace checks passed. Memory saved as
+`rhtower/sz-exterior-negative-energy-escape-2026-10-03`.

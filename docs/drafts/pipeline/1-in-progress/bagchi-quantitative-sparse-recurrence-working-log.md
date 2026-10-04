@@ -4971,3 +4971,242 @@ inequality after cancellation. Scratch27114 now sole Lean. Stronger signed main
 retains the exact contraction. C28.54 paper proof strengthened to uniform slopes
 and common threshold, retaining the singular factor abs(v)*a*b explicitly. Deep
 search71822 attacks the full signed complement while the row proof checks.
+
+01a0 C28.53 physical signed row scratch27114 and production52642 clean0.
+Installed/wired ChiPrimeGaussianCubicRationalRows: both all-frequency signed main
+with exact contraction subtraction and nonzero-frequency full-row bound. Combined
+axiom audit prepared but waiting behind sole Lean45304. C28.54 scratch77793 found
+one unavailable helper name one_le_mul₀; replaced it by explicit mul_le_mul, preserving
+all slopes and shift factors. C28.55 complete all-fixed-rational cancellation scratch
+written from actual row theorem plus slope-uniform sieve; no omitted pairs or q rows.
+The only excluded outer pairs are literal p=r contractions. Primality proves the
+rational determinant nonzero for every remaining pair once N>A.
+
+Lint2615 exits1: thirteen unrelated unreachable leaves (full log retained at
+/tmp/bag-growing-rational-profile-lint-01a0.log), zero BAG leaf errors. Relative to
+previous lint the unrelated list changed; no claim of a clean repository gate.
+Corpus97363 nonpartial65007/65007, background index/compiler enrichment incomplete.
+Source Vaughan pieces are for ndPhaseExp, not this actual additive rational phase.
+Pole-box prime lower bounds and proposed log-prime-sum mechanism do not provide
+joint signed cubic cancellation. They are not substituted as premises.
+
+01a0 C28.54 scratch45304 clean0; installed/wired PrimeDilationUniformSlopes,
+production36031 sole Lean. The theorem's existential C and eventual N threshold
+precede every slope and shift quantifier. Thus this is genuinely uniform over
+slopes, with explicit discriminant cost, not a hidden fixed-slope threshold.
+C28.55 full scratch ready, including actual determinant-frequency conversion,
+all-frequency exponential-to-log decay, primality zero-determinant exclusion,
+complete signed fibre sieve, full q-row mass and cofinal limiting argument.
+Direct inspection of DirichletLZeroDensityRange confirms finite-modulus-dependent
+Jensen aggregation only, not the required conductor-uniform density exponent.
+
+01a0 C28.55 checks:7814 exposed redundant post-field_simp ring, nested unit
+normalization, and lexical 0<|tau| parsing;25231 exposed only reciprocal inequality
+commutation and a nonzero-left positivity goal;7044 left one unit multiplication.
+All repaired by explicit scalar inequalities, with no change to the statement,
+assumptions or limits. Scratch32226 sole Lean. All determinant support, primality,
+full fibre aggregation and cofinal limit bodies otherwise elaborated.
+
+Next hard joint attack source inspection: generic sum_vonMangoldt_block_decomp
+(VaughanBlockDecomposition:18) applies to arbitrary complex weights, so it can
+retain the entire coupled q,r sum when decomposing the p-prime variable. Existing
+ndPhaseExp is T/(2*pi)*log(1+offset/n), not the literal pq/r. The closed sharp
+hybrid envelope depends on T*offset (and a small-offset constraint); a reciprocal
+phase limit is plausible, but a pointwise estimate followed by absolute outer
+aggregation repeats the already failed C28.41 scale loss. Do not add a module for
+that insufficient corollary. The required producer is a JOINT signed Type-I/II
+aggregate retaining the common denominator prime and actual W/V weights.
+Corpus47441 partial65015/65015, source/compiler enrichment pending: suggested
+Euler-product and generic exponential-series arguments do not establish it.
+Actual full integer root-matrix theorem remains available; it neither replaces
+prime denominator weights by density nor gives the needed coupled remainder.
+
+01a0 C28.55 production56241 exits0 with one ring advisory, no error/warning. All
+five new leaf final audits now passed. Combined25-public-declaration audit36647
+is sole owned Lean. Frontier map updated to actual moving profiles, signed physical
+rows, uniform-slope density and complete cancellation at every fixed rational slope;
+no full-cubic or RH closure claimed. Latest lint80474 exits1 on12 unrelated
+unreachable leaves, zero new BAG leaf errors. All owned new modules wired, no
+umbrella/full build. C28.56 records the next actual JOINT signed Type-I/II target;
+a reciprocal pointwise limit alone would repeat the established outer-sum loss.
+
+01a0 FINAL C28.52–55: combined audit36647 exits0, all25 public theorem/definition
+queries standard-only (propext, Classical.choice, Quot.sound), including exposed
+parent lemmas and preserved capstones. All five direct leaf audits passed; latest
+lint80474 has12 unrelated unreachable modules and no BAG errors. Frontier/main card
+updated. Removed ten owned scratch/body/audit source files explicitly, retained
+logs/JSON and all wired production leaves. No owned process remains. Goal ACTIVE.
+Next C28.56 must attack full signed mixed-block arithmetic, preserving shared q,r
+correlations and exact endpoint phases; pointwise reciprocal bounds followed by
+absolute outer aggregation cannot pay the recorded scale deficit.
+
+01a0 C28.56a: BAG joint cubic remains target. Deep joint-Vaughan search78565
+nonpartial65018/65018; rational-phase search87660 partial/pending; cubic-packet
+search44885 nonpartial65024/65024, compiler enrichment largely source-only.
+All candidate/source/idea/ingredient sections inspected. No applicable full
+joint cancellation producer found in these hits. Independent rational residue
+averaging would require unproved moving short-interval prime decorrelation;
+do not use it. Pointwise reciprocal limit plus absolute outer aggregation
+repeats C28.41 loss and was not formalized.
+Actual cubic phase and source-produced dense prime packets expose a new cubic
+energy-only obstruction: full physical chi*P²*conj(P) retains positive coherent
+mass. Dependency-closed paper proof recorded in bag-prime-energy-only-cubic-moment.md;
+formalizing strongest positive survivor and no-go together. Unlike the existing
+fourth-grade obstruction this is the literal grade-one adjacent cubic. It does
+not decide actual full-window Gaussian coefficients. Scratch name probe64158
+verified needed sqrt/phase/conjugation APIs; Nat.tendsto_pow_atTop is absent and
+will not be used. One owned direct scratch audit now running.
+
+C28.56a strengthening on paper: discard exactly p=r and q=r, as in the open
+noncontracting cubic. M(M-1)^2 triples remain, all with positive original real
+physical mass; for M>=2 their unit-energy normalization gives >=T*sqrt(m)/256.
+Thus this tests the net noncontracting tensor, not its Jordan parts. Exact
+polynomial identity P²conj(P)-(2M-1)P is included in the draft audit. Generic
+energy-only falsification does NOT settle or falsify C28.44's full Gaussian
+coefficient family. Search91267 partial65030/65030 inspected all candidate,
+source, idea and ingredient sections: cube regrouping and Euler-product bounds
+are not signed additive-phase estimates; retained Kloosterman terminal-source
+formula does not itself supply the missing joint gain. No such premise imported.
+
+C28.56a physical kernel production8716 exits0, clean. New leaf wired; no umbrella
+build. Prime packet draft21590 checks exact contraction identity, finite mass,
+PNT-produced prime family and no-go argument apart from one sqrt normalization
+rewrite. Repaired it without heartbeat changes; direct production5145 running.
+Lint51430 exits1: thirteen unrelated unreachable leaves (previous twelve plus
+ThetaTailPositiveBalancePrimitive), no errors in either new BAG leaf. Global lint
+is not clean. Full14 public axiom queries prepared in /tmp, not the source tree.
+
+C28.56b full joint continuation: search20632 nonpartial65036/65036, compiler
+metadata source-only; all candidates/source/ideas/ingredients inspected. Direct
+VaughanBlockDecomposition:sum_vonMangoldt_block_decomp indeed accepts arbitrary
+complex weight. Therefore the full q,r aggregate may be kept INSIDE w(n), with
+literal W(nq/(rN)), V weights, denominator r and noncontraction masks. Direct
+VaughanTypeIIEstimate is specialized to ndPhaseExp and its norm bound discards
+short-coefficient signs after Cauchy; it is not the required additive-phase
+producer. A useful next proof must retain actual signed typeIIShort coefficients
+in the correlation m1*q1/r1-m2*q2/r2 and pay prime-power unweighting exactly.
+Merely copying the structural identity, or applying the available absolute
+correlation bound, does not move C28.44 and is not being added as a new module.
+
+C28.56b paper scale check: replacing the p-prime selector by Λ(p)/log(p)
+introduces proper prime powers. They cannot be declared negligible from their
+one-variable count: even an O(sqrt(N)) count followed by absolute q,r aggregation
+and the physical 1/r main gives O(N^(3/2)/log(N)^2), above the N/log(N)^2 target.
+This is a failure of that absolute correction argument, NOT a lower bound or a
+falsification of the signed correction. Any Vaughan producer must retain these
+terms jointly and prove their cancellation, or keep an exact prime-only source
+through its factorization. Do not silently import the standard one-variable
+prime-power error as a full cubic error. This newly explicit debt is part of the
+hard C28.56 continuation, not a new assumed Lean receiver.
+
+01a0 C28.56a FINAL: production8716 and4748 both exit0 without warnings. All14
+public axiom queries58026 exit0, only propext/Classical.choice/Quot.sound.
+Exact index33760 finds both final capstones (its broad lexical OR inventory is
+not a completeness claim). Both new leaves wired, no umbrella/full build.
+Frontier and main card updated; failed-estimate card moved to 5-failed with the
+exact nontrivial positive survivor formalized. Global lint51430 has13 unrelated
+unreachable leaves, zero new BAG errors. C28.56b remains the actual hard joint
+signed producer, with shared prime moduli, actual signed Vaughan coefficients
+and the non-negligibility of the naive absolute prime-power error all explicit.
+No full Gaussian signed cancellation, growing-moment or RH closure claimed.
+01a0 cleanup: all owned builds/searches/lint terminal. Removed six owned scratch
+Lean sources after final production and axiom verification; retained all logs,
+JSON search evidence and wired production leaves. Cross-session checkpoint
+rh/bag-joint-cubic-packet-checkpoint-2026-10-03-01a0 saved. Goal ACTIVE.
+
+
+2026-10-03 01a0 C28.56c: exact prime-only joint Vaughan source LEAN PROVED.
+Corpus searches9453,50969 nonpartial65041/65041; source definitions and all result
+sections inspected. Squarefree restriction multiplies the complete signed Vaughan
+identity pointwise, so sf(n)Λ(n)=1_prime(n)log n. TypeII long factor becomes a
+literal prime d>U, short factor stays signed and squarefree, and gcd(d,m)=1 stays
+explicit. On n≤U² the coprimality condition is automatic. TypeI squarefree masks
+are retained: they must not be replaced by bare integer sums. The exact capstone
+uses the whole Gaussian q,r row, with denominator, W/V amplitudes and contraction
+masks unchanged. This removes the prime-power correction branch algebraically;
+it does NOT establish the remaining cancellation or a new asymptotic estimate.
+
+Scratch6239 and final production49037 exit0, no diagnostics. Leaf
+ChiPrimeGaussianCubicPrimeOnlyVaughan wired into RHTower. All11 public axiom queries
+19626 exit0, only propext/Classical.choice/Quot.sound. No umbrella/full build,
+heartbeat change, computation or assumed analytic input. Lint56927 pending.
+
+C28.56d continuation: joint semiprime search80520 nonpartial65046/65046, source
+metadata mostly pending, refresh incomplete; all candidate/source/idea/ingredient
+sections inspected. Returned prime-convolution norm and Kloosterman baseline
+bounds retain the known scale loss. Search30739 nonpartial65047/65047 returns
+mostly inapplicable phase/algebra facts. Its proposed prime-sqrt ingredient is
+misstated: Nat.prime_def_le_sqrt is a primality criterion, NOT prime≤sqrt(prime).
+No such claim or ingredient used. Direct VinogradovBilinearExplicitSaving,
+EmbeddedBilinear and RouteTBilinear carry polynomial phases and coordinate costs;
+for a lone linear coordinate the displayed integer saving exponent must be zero.
+No substitution gives the needed shared-prime-modulus cubic cancellation.
+BourgainDoubleLargeSieve has actual weighted spacing energies; treating pq as a
+single cloud gives the known near-product energy debt, not a free improvement.
+EstermannKloostermanSaving averages complete unit numerators at fixed prime
+modulus; it does not average our prime moduli with numerator fixed to one.
+
+Next hard question remains cancellation of the factorized joint source, including
+its TypeI squarefree masks. Fractions m*q/r in the long-prime TypeII branch have
+special exact collisions because m<r and q,r are primes, q≠r. Exact collision
+control alone does not bound near collisions at the actual long-variable scale.
+Do not add a collision identity as if it solved C28.44. Searches13702 and the new
+TypeII fraction search are examining actual correlated, centered source inputs.
+
+
+C28.56c FINAL: lint56927 exits1 solely on13 unrelated unreachable leaves (current
+Theta leaf is ThetaTailFinitePairTransport); no BAG source error. Exact lexical
+source index finds the final capstone. Main card/frontier updated, construction
+card moved to 3-formalized. Production and axiom logs retained in /tmp.
+C28.56d searches13702 (nonpartial65049/65049) and31183 (65050/65050) inspected all
+candidate/source/idea/ingredient sections. EDQ exact divisor-window/lcm identities
+do not provide a prime semiprime residue discrepancy estimate. The retrieved
+TypeI/II coefficient classification and power-series additivity are not additive
+phase cancellation. Direct StadlmannEquidistributionParameters is a parameter
+certificate family, not the sought distribution producer. No estimates inferred
+from module or theorem names, and no conditional cancellation theorem added.
+
+Net evaluation: exact prime-only correction branch solved; full signed joint
+analytic saving still open. Preserve original signs before Cauchy/completion,
+and pay the squarefree TypeI masks explicitly. Next conjecture is that the actual
+factorized Gaussian aggregate admits a contraction-scale signed estimate through
+its cross-modulus short-cofactor correlations. Exact fraction injectivity alone
+is insufficient: approximate collisions are the hard part. C28.44, growing
+moments, moving cofactors, positive self-target recurrence and RH OPEN.
+All owned build/search/lint processes terminal. Removed only the three owned
+scratch Lean sources after final production and all11 axiom audits; logs and
+search evidence retained. Goal ACTIVE, no full or umbrella build, no commits.
+
+
+2026-10-04 01a0 C28.56d: hard signed cofactor continuation.
+Previous turn classified PROGRESS: exact prime-only source and11 axiom audits.
+Search28030 (/tmp/bag-vaughan-signed-cofactor-c56d-01a0.json) partial65051/65051;
+61697 (/tmp/bag-mobius-additive-c56d-01a0.json) partial65051/65051; all candidates,
+source arguments and ingredient/idea sections inspected. Existing TypeII norm
+estimates discard coefficient signs. Existing low-frequency cofactor theorem
+is a logarithmic twist, not the needed joint additive estimate. VK Möbius
+summation is unconditional, but a one-variable saving followed by outer norms
+still leaves the conductor-power loss; do not add that insufficient wrapper.
+
+New failure learned: real-fraction injectivity DOES NOT identify the diagonal
+for an integer long factor. Congruence modulo one gives exact aliases. For a
+prime cofactor m>V≥1, the actual squarefree Vaughan coefficient is exactly -1.
+Using P=(64k^8,128k^8] primes and Q=(64(2k²)^8,128(2k²)^8] primes, remove q=r
+and fix any actual r∈Q. The source PNT forces |P|*|Q\{r}|≥(k+1)r eventually.
+Fibre Cauchy forces ordered nontrivial modular alias energy≥k*|P|*|Q\{r}|.
+All coefficient products on this prime-cofactor subfamily are +1; no freely
+chosen coefficient model. Products mq are distinct by prime factorization,
+but congruent products have equal sampled phase for EVERY integer d. Thus
+a genuine same-modulus signed alias block cannot be replaced by identical
+pairs. This is NOT a lower bound for the full Gaussian cubic or its remaining
+squarefree-cofactor sum, which may cancel this subfamily.
+
+Search48303 nonpartial65055/65055, source metadata pending/refresh incomplete;
+all candidates/source/ideas/ingredients inspected. The existing Kloosterman
+source collision theorem bounds a different residue inverse-sum carrier, not
+this actual prime-cofactor family. New card bag-prime-cofactor-integer-alias.md
+records the paper proof and its scope. Scratch12993/8675 failed on API spelling,
+natural lower-bound tactics and product notation rewriting; repaired without
+heartbeat changes. Scratch82964 now includes exact coefficient, PNT family,
+signed fibre energy, product injectivity and sampled-phase witnesses. No
+new production module or umbrella import yet; final audit still required.

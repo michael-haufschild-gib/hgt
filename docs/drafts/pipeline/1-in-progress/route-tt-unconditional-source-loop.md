@@ -3615,3 +3615,60 @@ and use standard3 axioms. Promoted into new
 ThetaCuspCoupledOddSeamDirection.lean; production build/direct audit/
 axiom/index/lint checks pending. The same-C4 optimal-direction sign
 probe is prepared separately and untested. All work remains Route TT.
+
+2026-10-03 continuation: previous turn was progress (kernel-audited
+source obstruction and optimal-direction polynomial reserve). Revalidated
+terminal process state before continuing. Production Model and Direction
+--old builds passed; Signs --old build now passed (278s). Obstruction
+leaf build running; direct leaf audits and production axioms pending.
+C62 actual-source transport construction prepared in TTC62SourceTransport:
+p=-D3/(C3*Phi^2*H2), f=B/(C3*Phi^2*H2), p(0)=1,
+k=dslope p 0, mu=exp(integral k), y=mu^-1*integral(mu*f),
+eta=dslope y 0. This removes the singularity without any denominator D3.
+Prepared proofs of continuous eta, exact optimal initial direction, and
+cancellation C3*Phi^2*H2*x*eta'-D3*eta-B=0. NOT YET AUDITED.
+The remaining hard source problem is positive Schur gap and controlled
+join to the q>=5 direction, then integration and all-rank closure.
+
+C62 source transport CLOSED IN SCRATCH: continuous_direction,
+direction_zero, direction_cancels_residual all audit standard3 in
+/tmp/tt_c62_source_transport_complete.audit.log, exit0. The actual
+canonical source now supplies a globally continuous, punctured-differentiable
+solution cancelling K*x*eta'-D3*eta-B identically, with no source premise.
+Promoted ThetaCuspCoupledOddDirectionTransport (one derivative-proof
+spelling changed to avoid unused simp warnings), wired; production
+build/direct/axiom audits pending. Full exact determinant residual-square
+and initial positive Schur-gap assembly currently under scratch audit.
+C61 Direction final direct audit passed; Model/Signs/Obstruction final
+direct audits and production axiom probe still pending, not forgotten.
+
+2026-10-03 C61/C62 continuation: all four C61 production leaf builds
+and final direct lake env lean audits now passed. Obstruction current
+source rebuilt directly to its .olean; production axiom check pending.
+C62 residual-square identity and source-gap equivalence passed scratch
+with standard3. Both transport production leaves wired, production
+checks pending. C63 aims at source-normalized gap monotonicity. Its
+uniform quadratic condition is not presumed: checking exact third-minor
+seam curvature via source jets through twelve; current tactic failure
+is NOT evidence of a mathematical sign failure. Prepared exact source
+moment first/second variation and normalized gap derivative proofs.
+Lean builds remain serial, foreground, leaves only, no limits raised.
+
+2026-10-04 continuation: C61/C62 production source results complete.
+All six final direct leaf audits passed, all production capstone axiom
+reports standard3. Index passed; lint13 unrelated umbrella omissions.
+Superseded TTC61/TTC62 scratch sources and caches cleaned. C63 exact
+normalized-gap derivative and nonnegative gain passed scratch standard3;
+promoted/wired ThetaCuspCoupledOddGapDerivative, final direct audit due.
+Auxiliary seam Nd curvature polynomial strictly positive over whole
+actual seam scale interval, homogeneous degree17 symbolic certificate.
+Source incidence/full matrix sign NOT yet proved. Constructing source16
+from order12 fourth transverse jet to test full quadratic derivative.
+TTC63FourthSeamLie prepared; first invocation with -o failed before
+elaboration because /tmp input outside package root. Retrying with
+explicit -R /private/tmp (verified --help) so scratch module can be
+imported into the prepared literal TTC63SourceSixteen assembly.
+TTC63MomentVariation first/second exact source derivatives require a
+rerun after fixing function-product expansion and a missing parenthesis.
+Hard open problems unchanged: actual compact gap sign, controlled tail
+join, flux integration, all-rank closure. No RH claim.

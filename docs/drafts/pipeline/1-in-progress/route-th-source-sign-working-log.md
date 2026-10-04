@@ -2366,3 +2366,161 @@ paper proof uses actual denominator clock y=D2 and psi=sinh(k y),
 k^2=9/(2c(u)); convex e>=c(u), d>=2e imply psi Sturm supersolution.
 Then N9 yields strict decrease J3/psi on the entire physical interval.
 Formalize that source shape comparison and its Green pushforward next.
+
+N12 scratch57573: source-ratio order, strict Green growth comparison,
+comparison mass positivity and full Bose-weighted compensation transfer
+all standard3. Exit1 was solely an unnecessary funext in the moving-
+endpoint mass derivative; removed and reauditing. No math sign failure.
+Search71459 completed0 partial1215499; source-only moment/denominator
+hits, no checked N13 producer. Search97653 completed0 partial1215449;
+no checked hyperbolic curvature floor producer. Remaining hard target
+is denominatorClockGreenCompensation>=0, equivalently the weighted-mean
+bound recorded under N13. Keep physical t<=u and actual center rate.
+
+N12 scratch4542 exit0, six principal endpoints standard3. New saved leaf
+ThetaCuspC5DenominatorClockComparison, umbrella wired. Final94111 and
+lint14270 are live owned jobs (not yet passed). It proves strict actual
+source ratio decrease, strict Green growth comparison, positive model
+mass, exact model mass derivative, and strict full Bose transfer
+F*modelComp<actualComp*modelMass. Remaining modelComp sign is N13.
+No new axioms/markers/heartbeat raises. Next frontier attack should use
+the actual center-dependent rate and the exact weighted-mean expression;
+no Gaussian profile substitution or assertion that N12 proves full C5.
+
+Settled N12 checkpoint (2026-10-03): scratch4542 exit0, six principal
+endpoints standard3 only; final94111 exit0 empty log. Leaf
+ThetaCuspC5DenominatorClockComparison wired exactly once. All25 newly
+saved owned leaves final0/wired. Marker/heartbeat scan clean. Global
+lint14270 exit1 with13 unrelated unreachable modules; none ours. Current
+extra files versus prior include CCMOutgoingQuantileEntropyDebit,
+MertensProductDiamondPintz and HTGeometry.CompactMonoidMeasureAlgebra;
+prior two ThetaTailSchur entries gone. Exact log:
+/tmp/th-c5-denominator-clock-lint-final.log. No live owned jobs.
+Scratch and append staging cleaned. Frontier-map TH updated, RN heading
+intact. RH remains active and unproved. The next hard task is N13's
+actual source weighted-mean/Bose sign, not redoing the now-closed N12
+Green transfer. Paper scalar form and an unaudited local diagnostic are
+in the nonlocal card; do not treat that diagnostic as a Lean theorem.
+
+N13 continuation: searched current corpus22992 terminal0 partial1215573;
+source-only N12 and sixth-jet hits, no N13 closure. N14 paper proof now
+closes the literal-source sign of diagnostic P=1311c4-1017c²B-122cC+176B²
+via modular projective transport and N10's exact defect comparison. It
+does not yet establish the Taylor identification or global N13 sign.
+Formalization targets this invariant, not improved numerical constants.
+
+N14 source invariant certified: scratch57076 exited0; both public positive
+endpoints report only propext, Classical.choice, Quot.sound. Saved
+ThetaCuspC5ClockSourceOrientation; final leaf55454 exited0 with empty log,
+exact umbrella import added once. This proves the literal source invariant
+P>0 and the algebraic candidate coefficient P/(315c^2)>0. It does not
+identify that coefficient with the analytic clock-model germ, establish
+N13, or imply arbitrary-degree positivity/RH.
+
+N13 clock-dilation search50347 exited0: partial generation1215672,
+source-only N12 and elementary jet-scaling hits; no checked N13 closure.
+Paper test of dropping clock damping fails as a sharp comparison:
+using x(y) concavity and replacing d(y)^(-3) by a constant gives
+(t*d/y)*[1+z*(z*cosh(z)-sinh(z))/(z*sinh(z)-2*cosh(z)+2)], z=k*y.
+Its t^2 coefficient contains 5*c''/(3c), exceeding the needed
+4*c''/(15c). This rejects only that relaxed bound, not N13. Retain
+weight variation and Green shape together in the next adjoint proof.
+
+### N15: positive inverse-Green source for the intrinsic action profile
+Keep the N13 sign as the target. Candidate F*=t^(9/5)*Q^(8/5)*exp(6Q/5)
+has logarithmic derivative h=9/(5t)+12E/5+16E/(5Q), E=Q'/2.
+Write D1=tE, y=E+t e, d=2e+t p, d'=3p+t r, e=E', p=e', r=e''.
+Its inverse Green source is F*R/(4D1^2), where
+
+    R=d D1*(h^2+h')-(d'D1+d y)*h+d^2.
+
+New dependency-closed PAPER sign proof, audit pending: R>0 on0<t<=u.
+The full source gives p<2e, r<9e, d>=2e, E>=c(u)t>18t. Hence
+
+    t*d'/d < 1+3tE/8,
+
+using 3t<=1+9t^2/4. Set Z=tE>0, gamma=tE/Q>=1,
+alpha=t e/E>0, beta=t^2 p/E>=0, D=2alpha+beta.
+Then R=(E^2/t^2)*D times a quantity strictly greater than
+
+    [ (243/2)Z^2+354Z*gamma+(633/8)Z
+       +96gamma^2+128gamma-54+5alpha+25beta ]/25 >0.
+
+This is positivity of the actual inverse-source reserve, not a claim
+that the profile is a supersolution. That remaining global differential
+obligation is explicit: with m=h-2y/D1,
+
+    R''+(2m-d'/d)R'
+      +(m'+m^2-(d'/d)m-k^2*d^2)*R >=0.
+
+It is exactly the denominator-clock Sturm operator applied to the
+positive inverse source after removing F*/(4D1^2). Near-zero matching
+alone cannot prove this sign. It remains the next hard nonlocal task.
+Serena find_symbol rejected the new Lean path as ignored; the small
+visibility edit exposing the reused projective ceiling uses exact text.
+
+N14 public-helper leaf audit75591 exited0 with empty log. Lint45078 exited1 with12 unrelated unreachable modules, listed in /tmp/th-c5-clock-source-orientation-lint.log; no new-leaf error. The earlier count13 changed because CCMOutgoingQuantileEntropyDebit is now reachable. N15 scratch is auditing the denominator budget, its exact logarithmic-rate derivative, and the positive inverse-source reserve.
+
+N15 scratch47551 exited0: positive inverse-Green reserve and literal
+second-order operator, with derivative bridges, all standard3. Extended
+scratch54256 exited0: intrinsicActionInverseSource_pos and
+intrinsicActionProfile_bose_budget also standard3. Saved
+ThetaCuspC5IntrinsicActionProfile; final leaf63547 pending. The saved
+version removes only API-check examples, axiom-print commands and
+reported redundant simplification tactics. No heartbeat overrides.
+The candidate is an actual positive full-chamber inverse source meeting
+the Bose budget, but its ordering relative to psi remains open (N16).
+N14's analytic germ identification, N13, full C5, all-degree positivity
+and RH are not proved.
+
+N15 saved leaf final63547 exited0 with empty log. Exact umbrella import
+added once; no umbrella build. Scratch54256 axiom audits are standard3
+for positive inverse source, literal inverse-Green operator, full Bose
+budget, denominator budget and derivative/reserve endpoints. Owned
+scratch and extension staging files removed after successful final audit.
+N16 remains open; TH/RH goal is not complete.
+
+Final lint31544 exited1:13 unrelated unreachable modules, none in the
+new owned leaves; /tmp/th-c5-intrinsic-action-profile-lint.log has the
+full list. Since lint45078, ThetaTailTransportPrimitiveFloor was added
+to the reported unreachable set. No unrelated module was edited.
+Search17707 exited0, partial generation1215924; coarse coth/CothInfra
+hits, no checked sharp rational envelope. N16 paper derivative chain
+and exact algebraic target are recorded above. All owned build/search
+jobs are terminal; no temporary Lean/staging files remain from N14/N15.
+Frontier TH updated; RN heading preserved. Goal remains active.
+
+2026-10-03 continuation: previous turn classified progress (N14/N15 saved
+Lean results), TH N16 remains hard open. Source reads confirm N15 and map.
+Search29253 terminal0 partial1215957; source-only inverse-profile/clock
+hits. New N17 linear rational envelope is certified in scratch45006
+(three public endpoints standard3) and final26866 exit0 empty log.
+First final command used wrong cwd, exited1 missing relative file;
+corrected final26866 is the authoritative audit. New leaf
+ThetaCuspC5LinearClockEnvelope wired once. Scratch still retained until
+end cleanup. Source fourth-curvature helper exposed for N18 reuse;
+final39294 exit0 empty log. No axioms/heartbeat changes.
+N18 new mathematical target: coupled finite shape block equals a positive
+variance minus one positive-weight integral of reflected c'''. Explicit
+primitive closes the identity; c''''<846c and the E chord control its
+negative part. Full formulas and proof are on the nonlocal card. Source
+search60699 terminal0 partial=false generation1216118; method candidates
+are unverified and do not prove this identity. N18 scratch audit started;
+no claim yet for N18 or complete N16/RH.
+
+2026-10-04: N18 scratch58774 exited0, standard3 on exact variance
+identity, actual third-jet/primitive control and complete coupled-block
+lower reserve. Saved ThetaCuspC5CoupledShapeQuadrature; final92615
+exited0 with empty log. Umbrella wired once; no umbrella build.
+N17 scratch45006/final26866 also exited0; all three endpoints standard3.
+Source fourth-curvature helper visibility edit audited final39294 exit0.
+Owned scratch files removed after successful leaf audits. N16 remains
+open, including full comparison and endpoint recovery; RH not proved.
+
+Final lint67896 exited1:13 unrelated unreachable modules, none in N17/N18;
+full output /tmp/th-c5-coupled-shape-quadrature-lint.log. The error set
+now includes ThetaTailFinitePairTransport rather than the prior
+ThetaTailTransportPrimitiveFloor. All owned build/search processes are
+terminal. New memory rh/route-th-inverse-source-next-2026-10-04 records
+certified N17/N18 and the exact remaining N16/N19 source-jet problem;
+old memory points there. TH goal remains active, no RH proof claimed.

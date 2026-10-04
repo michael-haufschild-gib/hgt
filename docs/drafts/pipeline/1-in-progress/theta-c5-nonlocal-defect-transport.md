@@ -606,3 +606,391 @@ No numerical quadrature or assumed covariance sign enters. The current
 scratch is auditing this exact positive Green transfer. It compares
 actual flux growth against an explicit hyperbolic-sine integral; it does
 not yet prove that this comparison flux satisfies the Bose budget.
+
+### N13: the explicit denominator-clock Bose budget (open)
+N12's Green growth comparison and full Bose transfer now have standard3
+in scratch80655; the scratch exited1 only on a positivity lemma's Pi
+normalization. A derivative bridge for the moving-endpoint comparison
+integral is being audited next.
+
+The remaining candidate is actual M0=(W-5)F0-5t F0_outer>=0 throughout
+0<t<u, where B(s)=sinh(k D2(s))/d(s)^2, k^2=9/(2c(u)). Then N12's
+strict transfer, F>0 and F0>0 would prove actual full compensation.
+This is a concrete source integral sign, not an assumed gate.
+
+A useful exact scalar form retains both geometry and source weight.
+Let I1=integral B(s)D1(s), I2=integral B(s)D2(s),
+I3=integral s B(s)D2(s), and A=I1+t I2-I3>0. Then
+
+    F0=4(D2(t)A-D1(t)I2),  F0_outer=4d(t)A,
+    M0/4=((W-5)D2(t)-5t d(t))*A-(W-5)D1(t)*I2.
+
+Thus the outstanding sign is a weighted-mean bound for
+x(s)=s-D1(s)/D2(s), whose derivative is D1(s)d(s)/D2(s)^2>0:
+A/I2=t-(weighted mean of x), weight B(s)D2(s). This form avoids
+separately bounding the negative endpoint part of the Green kernel.
+
+Keep k's actual center dependence and t<=u. A growth objection based
+on holding k fixed while letting t exceed u does not apply to the
+physical chamber. The source identity c''-4c>0 suggests proving
+c(u)>c(0)cosh(2u) by its positive hyperbolic Wronskian, if a global
+clock-size comparison is needed. That source comparison is not yet
+formalized here. N13 has no proof yet; RH and all-degree positivity
+remain open.
+
+N13 local diagnostic (paper algebra, NOT Lean-audited): writing
+c=c(u), B=c''(u), C=c''''(u), the clock model has
+F0=positive_constant*t^5*(1+A t^2+D t^4+...), with
+
+    A=6c/5+2B/(15c),
+    D=81c^2/140+59B/140+C/(42c)-31B^2/(1260c^2).
+
+The first nonzero candidate coefficient of
+((W-5)F0-5t F0')/F0 is
+
+    (1311c^4-1017c^2 B-122c C+176B^2)/(315c^2) * t^4.
+
+This is a diagnostic for the comparison model, not another proof of
+the already-positive actual seam. Verify the formal series algebra and
+its literal-source sign before claiming a local N13 chamber. The full
+finite-displacement weighted-mean sign remains the primary target.
+
+N12 complete scratch audit4542 exited0. denominatorClockWronskian_neg,
+denominatorClockSourceRatio_strictAntiOn, denominatorClockGreen_growth_comparison,
+denominatorClockGreenMass_pos, denominatorClock_compensation_transfer and
+hasDerivAt_denominatorClockGreenMass all report standard3 only. Saved
+ThetaCuspC5DenominatorClockComparison; final94111 and lint14270 pending.
+The comparison mass's derivative is exactly its defined outer integral,
+including the moving endpoint. The full Bose transfer now reads
+
+    F*M0 < actualCompensation*F0,
+
+with F=-K>0 and F0>0 on the physical chamber. No sign for M0 is assumed
+or proved. N13 is therefore the precise remaining comparison-sign task.
+
+Final N12 audit94111 exited0 with empty log. Saved leaf is wired once;
+no umbrella build. Global lint14270 exit1 reports13 unrelated unreachable
+modules, none in this new leaf. Full error list is retained in
+/tmp/th-c5-denominator-clock-lint-final.log. N12 is fully audited; N13's
+comparison-compensation sign and arbitrary-degree positivity remain open.
+Search71459 completed0, partial1215499; no checked N13 closure returned.
+
+### N14: actual-source orientation of the N13 diagnostic
+Target the full source invariant
+
+    P=1311c^4-1017c^2*c''-122c*c''''+176(c'')^2 >0
+
+on x>=0. This removes a source-sign obstruction in the comparison model;
+it is not a claim that the diagnostic expansion or full N13 is proved.
+Dependency-closed paper proof: exact modular raw jets give
+c''(0)<9c(0). Decrease of c''/c propagates this relation globally.
+The exact N10 slope comparison and positive defect Sturm flux give
+c''''<4c''-f*(4+12/q)*(c''-4c). The explicit factor identity
+-f*(4+12/q)=16+120/q+180/q^2<162 on the actual q>=8/5 yields
+c''''<846c. Together with c>18, the adverse terms in P are absorbed by
+c^2*(1311c^2-9153c-103212); after c=18+z this bracket is
+1311z^2+38043z+156798>0. The numerical envelopes are private proof
+steps; the research target is the literal full-source invariant P>0,
+not an optimized bound. Formalize this sign, then verify its relationship
+to the actual comparison germ before using it in a global N13 proof.
+
+N13 canonical-clock formulation (paper, no sign conclusion): fix u,t and
+write y(s)=D2(s), d=y', k^2=9/(2c(u)),
+A=(W-5)y(t)-5t d(t), C=(W-5)D1(t). The compensation kernel is
+
+    H(s)=A*(D1(s)+(t-s)y(s))-C*y(s).
+
+Its derivatives in the clock coordinate satisfy
+
+    dH/dy=A*(t-s)-C,   d^2H/dy^2=-A/d(s).
+
+The actual comparison integral is 4 integral sinh(k y)*H(y)/d(y)^3 dy.
+This retains the essential interaction between kernel curvature and
+clock damping. If A>0, H is concave and its signed endpoint cannot be
+discarded. Concavity alone does not prove the weighted integral sign.
+
+N14 source invariant certified: scratch57076 exited0; both public positive
+endpoints report only propext, Classical.choice, Quot.sound. Saved
+ThetaCuspC5ClockSourceOrientation; final leaf55454 exited0 with empty log,
+exact umbrella import added once. This proves the literal source invariant
+P>0 and the algebraic candidate coefficient P/(315c^2)>0. It does not
+identify that coefficient with the analytic clock-model germ, establish
+N13, or imply arbitrary-degree positivity/RH.
+
+N13 clock-dilation search50347 exited0: partial generation1215672,
+source-only N12 and elementary jet-scaling hits; no checked N13 closure.
+Paper test of dropping clock damping fails as a sharp comparison:
+using x(y) concavity and replacing d(y)^(-3) by a constant gives
+(t*d/y)*[1+z*(z*cosh(z)-sinh(z))/(z*sinh(z)-2*cosh(z)+2)], z=k*y.
+Its t^2 coefficient contains 5*c''/(3c), exceeding the needed
+4*c''/(15c). This rejects only that relaxed bound, not N13. Retain
+weight variation and Green shape together in the next adjoint proof.
+
+### N15: positive inverse-Green source for the intrinsic action profile
+Keep the N13 sign as the target. Candidate F*=t^(9/5)*Q^(8/5)*exp(6Q/5)
+has logarithmic derivative h=9/(5t)+12E/5+16E/(5Q), E=Q'/2.
+Write D1=tE, y=E+t e, d=2e+t p, d'=3p+t r, e=E', p=e', r=e''.
+Its inverse Green source is F*R/(4D1^2), where
+
+    R=d D1*(h^2+h')-(d'D1+d y)*h+d^2.
+
+New dependency-closed PAPER sign proof, audit pending: R>0 on0<t<=u.
+The full source gives p<2e, r<9e, d>=2e, E>=c(u)t>18t. Hence
+
+    t*d'/d < 1+3tE/8,
+
+using 3t<=1+9t^2/4. Set Z=tE>0, gamma=tE/Q>=1,
+alpha=t e/E>0, beta=t^2 p/E>=0, D=2alpha+beta.
+Then R=(E^2/t^2)*D times a quantity strictly greater than
+
+    [ (243/2)Z^2+354Z*gamma+(633/8)Z
+       +96gamma^2+128gamma-54+5alpha+25beta ]/25 >0.
+
+This is positivity of the actual inverse-source reserve, not a claim
+that the profile is a supersolution. That remaining global differential
+obligation is explicit: with m=h-2y/D1,
+
+    R''+(2m-d'/d)R'
+      +(m'+m^2-(d'/d)m-k^2*d^2)*R >=0.
+
+It is exactly the denominator-clock Sturm operator applied to the
+positive inverse source after removing F*/(4D1^2). Near-zero matching
+alone cannot prove this sign. It remains the next hard nonlocal task.
+Serena find_symbol rejected the new Lean path as ignored; the small
+visibility edit exposing the reused projective ceiling uses exact text.
+
+N14 public-helper leaf audit75591 exited0 with empty log. Lint45078 exited1 with12 unrelated unreachable modules, listed in /tmp/th-c5-clock-source-orientation-lint.log; no new-leaf error. The earlier count13 changed because CCMOutgoingQuantileEntropyDebit is now reachable. N15 scratch is auditing the denominator budget, its exact logarithmic-rate derivative, and the positive inverse-source reserve.
+
+N15 comparison endpoint also has a PAPER Bose certificate:
+W-5-5t*h=2tE*[4+8/(exp(Q)-1)-8/Q]>=0,
+since multiplication by Q*(exp(Q)-1)>0 gives four times the
+existing exp_padé_floor. Thus F* meets the full Bose budget.
+This is being added to the Lean audit after the positive inverse-source
+reserve. Still missing: comparison of the inverse source with psi.
+A weaker sufficient target than its full Sturm supersolution is
+
+    psi*R'+(m*psi-psi')*R >=0, m=h-2y/D1,
+
+which is the derivative of the inverse-source/psi ratio after removing
+positive factors. The fourth-order supersolution test remains another
+route to this same comparison. Neither has been proved. Green recovery
+of F* also requires its zero-endpoint behavior, not merely the inverse
+operator identity.
+
+Search49636 exited0, partial generation1215779: source-only action-jet
+and Green-operator analogues, no checked inverse-profile sign closure.
+Scratch29532 and39284 exited1 on Lean normalization/elaboration errors;
+no mathematical counterexample. Corrected scratch47551 is pending.
+
+### N16: direct normalized inverse-source order (next hard conjecture)
+Prefer the first-order comparison to introducing a stronger fourth-order
+requirement. With J*=F*R/(4D1^2)>0 and psi=sinh(k*y), target
+
+    psi*R'+((h-2y/D1)*psi-psi')*R >0 on0<t<=u.
+
+This is exactly strict increase of J*/psi after multiplication by
+positive factors. Coupled with zero-endpoint Green recovery of F* and
+N15's Bose certificate, it would prove N13. No implication is asserted
+without this sign and endpoint recovery.
+Useful PAPER differential identities for the actual positive reserve:
+
+    R'=(d'D1+d y)*h^2+dD1*(2h h'+h'')
+       -(d''D1+2d'y+d^2)*h+2d d',
+    h''=18/(5t^3)+12p/5+16p/(5Q)-96E e/(5Q^2)+128E^3/(5Q^3),
+    d''=4r+t e''',
+    e'''=4p-(H(u+t)-H(u-t))/2.
+
+The last identity retains the actual N10/Sturm defect transport instead
+of replacing the clock weight by a constant. N14 also provides the
+private source bound c''''<846c if an integrated remainder comparison
+is needed. Effort or missing corpus lemmas are not grounds to retire
+this finite-displacement sign problem.
+
+N15 scratch47551 exited0: positive inverse-Green reserve and literal
+second-order operator, with derivative bridges, all standard3. Extended
+scratch54256 exited0: intrinsicActionInverseSource_pos and
+intrinsicActionProfile_bose_budget also standard3. Saved
+ThetaCuspC5IntrinsicActionProfile; final leaf63547 pending. The saved
+version removes only API-check examples, axiom-print commands and
+reported redundant simplification tactics. No heartbeat overrides.
+The candidate is an actual positive full-chamber inverse source meeting
+the Bose budget, but its ordering relative to psi remains open (N16).
+N14's analytic germ identification, N13, full C5, all-degree positivity
+and RH are not proved.
+
+N16 PAPER analytic tool candidate (not yet Lean-audited): a rational
+hyperbolic envelope retaining the first three nonconstant seam terms,
+
+    z*cosh(z)/sinh(z) < (105+45z^2+z^4)/(105+10z^2), z>0.
+
+Dependency-closed sign proof by a positive derivative chain:
+
+    j=z*cosh(z)-sinh(z),                    j'=z*sinh(z),
+    h=(z^2+3)*sinh(z)-3z*cosh(z),            h'=z*j,
+    g=(z^3+15z)*cosh(z)-(6z^2+15)*sinh(z),   g'=z*h,
+    f=(105+45z^2+z^4)*sinh(z)
+      -(105z+10z^3)*cosh(z),                f'=z*g.
+
+All four vanish at zero, hence are positive at z>0. This envelope
+preserves the negative quartic correction lost by the Gaussian coth
+bound. Multiplying the desired inverse-source/psi comparison by the
+positive rational denominator would leave an algebraic source-jet
+inequality. Its sign still needs proof; the envelope alone is not N16.
+Corpus search for an existing version is pending.
+
+N15 saved leaf final63547 exited0 with empty log. Exact umbrella import
+added once; no umbrella build. Scratch54256 axiom audits are standard3
+for positive inverse source, literal inverse-Green operator, full Bose
+budget, denominator budget and derivative/reserve endpoints. Owned
+scratch and extension staging files removed after successful final audit.
+N16 remains open; TH/RH goal is not complete.
+
+N16 concrete next algebraic target: put w=9*y^2/(2*c(u)). It suffices to
+prove
+
+    (105+10w)*y*(R'+mR)-d*(105+45w+w^2)*R >=0.
+
+The strict rational hyperbolic envelope and R>0 then give the strict
+inverse-source/psi order. This preserves the finite clock and removes
+hyperbolic quotients from the source-jet sign problem. For the constant
+curvature diagnostic, let X=(6c/5)t^2 and P=1+3X/2+X^2/3. Clearing
+the positive denominators reduces the normalized comparison to
+(385/2)X^2+(415/2)X^3+25X^4>0. This diagnostic identity is PAPER only;
+the actual varying-curvature algebraic target remains unproved.
+
+Final lint31544 exited1:13 unrelated unreachable modules, none in the
+new owned leaves; /tmp/th-c5-intrinsic-action-profile-lint.log has the
+full list. Since lint45078, ThetaTailTransportPrimitiveFloor was added
+to the reported unreachable set. No unrelated module was edited.
+Search17707 exited0, partial generation1215924; coarse coth/CothInfra
+hits, no checked sharp rational envelope. N16 paper derivative chain
+and exact algebraic target are recorded above. All owned build/search
+jobs are terminal; no temporary Lean/staging files remain from N14/N15.
+Frontier TH updated; RN heading preserved. Goal remains active.
+
+### N17: a globally linear hyperbolic comparison for N16
+The old envelope grows like z^2/10; this is a potential obstruction to
+its global use when the actual clock grows faster than sqrt(action).
+No formal counterexample to the source-jet target has been claimed.
+Use instead the PAPER bound
+
+    z*coth(z) < (15+3z+6z^2+z^3)/(15+3z+z^2), z>0.
+
+It retains 1+z^2/3-z^4/45 locally and grows linearly globally. Its
+cleared error, after multiplication by 2exp(z), is
+
+    F0=exp(2z)*(3z^2-12z+15)-(2z^3+9z^2+18z+15).
+
+Let F1,F2,F3 be its first three literal derivatives. They vanish at0,
+and F3'=48z^2 exp(2z)>0 forz>0; successive integration gives F0>0.
+This is an exact analytic proof, not a numerical bound optimization.
+It replaces N16's sufficient rational source target by
+
+    (15+3z+z^2)*y*(R'+mR)-d*(15+3z+6z^2+z^3)*R >=0,
+    z=k*y, m=h-2y/D1.
+
+The actual source-jet sign is still open. The constant-curvature
+comparison clears, after a positive z^4 factor, to
+
+    11/90-19z/450+2z^2/135-z^3/1125+2z^4/10125
+      =(z-19/10)^2/90+739/9000
+        +z^2*(2*(z-9/4)^2/10125+73/27000)>0.
+
+Both identities require Lean audit before reuse. Search29253 terminal0,
+partial generation1215957, returns N15's positive inverse source and
+N12's opposite source ratio order; no checked N16 comparison closure.
+
+### N18: finite coupled shape cancellation inside N16
+Normalize Z=tE, gamma=tE/Q, alpha=te/E, beta=t^2*p/E,
+delta=t^3*r/E. The inverse source is exactly F*Rbar/(4t^4),
+Rbar=R*t^2/E^2; hence its logarithmic derivative uses H-4+tRbar'/Rbar,
+H=(9+12Z+16gamma)/5. The geometric alpha terms cancel exactly.
+The first adverse shape block in the N16 comparison is
+
+    S=64(gamma-1)-22(alpha-1)+57beta-55delta.
+
+New exact PAPER decomposition, with w=e''' and
+K(t,s)=(170/3)t^2*s-7s^3+16s^4/(3t):
+
+    E*S + integral_0^t K(t,s)*w(s) ds = 64*(tE-Q)^2/(tQ) >=0.
+
+The weight has the manifestly positive form
+s*[54t^2+s^2+(8/(3t))*(t+2s)*(t-s)^2]. An explicit primitive is
+K*r-K_s*p+K_ss*e-K_sss*E+(64/t)*Q; its derivative is K*w.
+Its zero boundary vanishes and its t boundary is
+55t^3*r-57t^2*p+22t*e-86E+64Q/t. This avoids Fubini and retains
+all finite-displacement cancellation. N14's c''''<846c implies
+w(s)<846E(s), and convex E with E(0)=0 gives E(s)<=sE(t)/t.
+The positive weight then bounds integral K*w above by
+(827*846/45)*t^4*E(t). Thus S>-(827*846/45)*t^4 throughout the
+physical chamber. This controls one actual adverse block, not the
+whole N16 sign. Every new identity and inequality awaits Lean audit.
+
+2026-10-04: N18 scratch58774 exited0, standard3 on exact variance
+identity, actual third-jet/primitive control and complete coupled-block
+lower reserve. Saved ThetaCuspC5CoupledShapeQuadrature; final92615
+exited0 with empty log. Umbrella wired once; no umbrella build.
+N17 scratch45006/final26866 also exited0; all three endpoints standard3.
+Source fourth-curvature helper visibility edit audited final39294 exit0.
+Owned scratch files removed after successful leaf audits. N16 remains
+open, including full comparison and endpoint recovery; RH not proved.
+
+### N19: retain normalized curvature dynamics in the remaining N16 sign
+Paper normalization (not yet a Lean theorem): put D=2alpha+beta,
+L=3beta+delta, A=9+12Z+16gamma and
+P=144Z^2+384Zgamma+96gamma^2+156Z+208gamma-9+5alpha+25beta.
+Then Rbar=R*t^2/E^2=D*P/25-L*A/5 and J*=F*Rbar/(4t^4).
+Writing dot=t*d/dt gives
+
+    dot Z=Z(1+alpha), dot gamma=gamma(1+alpha-2gamma),
+    dot alpha=alpha+beta-alpha^2,
+    dot beta=(2-alpha)beta+delta,
+    dot delta=(3-alpha)delta+epsilon, epsilon=t^4 e'''/E.
+
+N16's actual remaining sign is therefore
+
+    (15+3z+z^2)*[(A/5-4)*Rbar+dot Rbar]
+      -[D/(1+alpha)]*(15+3z+6z^2+z^3)*Rbar >=0,
+    z=k*y.
+
+Do not infer it from the constant-curvature diagnostic. N18 controls
+its coupled linear shape block; higher mixed terms remain.
+
+Next exact source mechanisms, PAPER proofs/dependencies only:
+1. e''>4e and0<=e'<2e give e*e''-(e')^2>0. Thus e'/e
+   strictly increases. For alpha=t e/E, freeze t and differentiate
+   (e(t)+t e'(t))*E(s)-e(t)*s*e(s); its derivative is
+   t e'(t)e(s)-s e(t)e'(s)>0 for0<s<t. This proves dot alpha>0.
+2. Freeze t again in (E(t)+t e(t))*Q(s)-2E(t)*s*E(s).
+   Its derivative is2[t e(t)E(s)-s E(t)e(s)]>0 by alpha order,
+   giving dot gamma>0. No corpus closure was returned by search42698
+   (partial1216220, action-velocity identifications only).
+3. Integrating e'<2e gives alpha<1+2t. Since e''>2e',
+   delta>2t beta, hence dot beta>beta>0.
+4. Crucially retain the affine defect relation exposed by N14's proof:
+   c''''<4c''+162(c''-4c)=166c''-648c. Integrating across
+   reflected displacement yields e'''<166e'-648E, or
+   epsilon<166t^2 beta-648t^4. This stronger coupled relation
+   is not yet a public Lean theorem. Replacing it by846t^4 discards
+   the defect cancellation and obstructs a large-displacement argument.
+
+Conjecture: these coupled dynamics can prove the full N16 polynomial
+sign; monotonicity of Rbar is a subsidiary candidate, not an assumed
+hypothesis. Keep the full source relation rather than optimizing numeric
+constants or abandoning the finite-displacement problem.
+
+N19 formalization now targets actual coupled source dynamics. Refine the
+existing source fourth-jet theorem to expose its stronger affine defect
+inequality C<166B-648c before using B<9c. Public scalar ceiling follows
+as a corollary; its logical content is unchanged. Exact paper mechanism
+for beta growth is particularly useful:
+
+    t*beta'-beta = t^2/E^2 *
+      [t*(r-2p)*E+p*((1+2t)*E-t e)] >0.
+
+Here r>2p follows from r>4e and p<2e. The other factor
+G=(1+2t)E-t e satisfies G'=2E+t(2e-p)>0 and G(0)=0.
+This avoids discarding the finite source relation or introducing an
+unproved elasticity premise. Alpha/gamma order and the affine reflected
+third-jet inequality are also being formalized from the paper arguments
+above. Full N16 still requires the mixed polynomial sign.

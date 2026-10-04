@@ -152,12 +152,46 @@ strong monotonicity conjecture requires at least
 
 The compensation sign is now strictly positive in Lean: see
 `../3-formalized/theta/rn-joint-center-coordinate-compensation.md`.
-The joint Taylor remainder and its exact identification with E remain
-unformalized. The expansion is still a paper diagnostic, not a formal
-kernel-derivative theorem or a counterexample. The source identities used are H_xy=beta,
-H_xx=-2I, H_xyyy=qP-2S, and H_xxyy=2S at the center; the last equality
-and the multivariate expansion need their own exact proof before use.
+The joint kernel derivatives, smooth axis-divided Schur extension, and exact
+normalized Hessian identification are now formalized in ThetaTailJointCorrelation,
+ThetaTailJointCenterJets, ThetaTailSchurAxisExtension and
+ThetaTailNormalizedSchurHessian. Targeted builds and their final direct-file
+audits passed. The full Taylor-remainder assertion is unnecessary: continuous
+Hessian signs and integration along the diagonal and then vertically give the
+uniform triangle. The actual source identities H_xy=beta, H_xx=-2I,
+H_xyyy=qP-2S and H_xxyy=2S are all proved directly from Schwartz correlations.
 No numerical test was used, and no failure of the stronger conjecture is claimed.
+
+## Finite-pair successor after the uniform center triangle
+
+The local gap is closed by
+ThetaTailSmallNodePorts.exists_actual_ports_pos_triangle. All seven final
+direct-file audits and all109 public standard-axiom queries passed. Certificate:
+../3-formalized/theta/rn-uniform-small-node-coordinate-chamber.md. Do not spend the next research step on compact
+uniformity receivers or improving an epsilon. The hard target remains the
+full source-specific finite-pair compensation.
+
+The coarea conjecture can be written without deleting the covariance. Keep
+Q(u)=V(0,0,u), probability density exp(-Q)/C,
+F_xy=exp(Q-V(x,y,u)), A_x=exp(Q-V(0,x,u)), and put
+
+    L_xy(u)=[1+y*partial_y V(x,y,u)] F_xy(u).
+
+Then the exact prospective derivative identity is
+
+    -x*y^2*E_y(x,y)/C
+      = expectation(L_xy)-expectation(A_x)*expectation(L_0y).
+
+Conjecture: this complete signed quantity is positive for every 0<x<y.
+This is the same genuine upper-comparison obligation in a form suited to
+source transport. Establish actual integrability/differentiation when proving
+it; the identity is paper-only at this checkpoint. Potential submodularity
+alone gives F_xy>A_x*A_y while making partial_y V(x,y,u) smaller than
+partial_y V(0,y,u), so it does not compare the weighted currents L.
+Retain both effects. The existing secant-feedback theorem has the adverse
+orientation secant(0,z,0)<feedback(0,z); it cannot supply a missing feedback
+upper bound. Corpus searches checked these statements and found no global
+upper producer. No new global sign is claimed.
 
 
 ## Arbitrary-anchor lower sign closed (2026-10-02)
@@ -169,3 +203,68 @@ anchor. `ThetaTailGaussianSubmodular` and `ThetaTailCenterSchurCross` passed
 both targeted builds, final direct-file checks, and all29 public standard-axiom
 queries. Certificate: `../3-formalized/theta/rn-gaussian-coarea-arbitrary-anchor.md`.
 This is a lower sign; no full coordinate-port upper bound is supplied.
+
+## RN-P-7w: complete current transport diagnostic (2026-10-03)
+
+Status: research in progress; no new global inequality or Lean theorem claimed.
+The completed local theorem does not supply global three-node positivity, so
+Cauchy–Schwarz for the center Schur kernel would assume a still-open input.
+
+Retain W(x,y)=R(x,y)-y*R_y(x,y). The target is exactly
+
+    C*W(x,y)-h(x)*W(0,y)>0, 0<x<y.
+
+The coarea weighted interaction and covariance must be controlled together.
+For a paper diagnostic at mass u=0, put
+
+    m(x,y)=(p(x)+p(y))/(x+y), q=c(0).
+
+For positive endpoints, V_u(x,y,0)=m(x,y). Hence the coefficient of u in
+L_xy-A_x*L_0y is
+
+    kappa(x,y)=-q+m(0,x)+m(0,y)-m(x,y)
+                 +y*(m_y(x,y)-m_y(0,y)).
+
+Extend m(0,x)=p(x)/x smoothly to q at x=0 using the actual even source.
+Then direct differentiation gives
+
+    kappa_x(0,y)=(3*p(y)-y*c(y)-2*q*y)/y^2.
+
+This isolates a source-dependent sign; submodularity alone does not pay it.
+Writing K(y)=3*p(y)-y*c(y)-2*q*y and using the actual corpus definition of
+ThetaRadial.radialDefect gives the exact paper relation
+
+    K(y)-y*K'(y)=ThetaRadial.radialDefect y,
+    (K(y)/y)'=-ThetaRadial.radialDefect y/y^2.
+
+The corpus proves that radialDefect is negative near zero and positive
+eventually. This does not by itself determine K everywhere or the integrated
+current sign. No unproved far-tail expansion or pointwise-current no-go has
+been promoted to a theorem. Next attack: a source-potential transport of the
+complete signed current, retaining its covariance and endpoint contribution,
+rather than assigning separate favorable signs to those terms.
+
+Searches: the broad deep query was non-partial but returned mostly unrelated
+weighted-covariance statements. The Theta-filtered query was partial, with
+complete source inventory and predominantly pending/stale compiler metadata;
+it recovered the actual massRate derivative and anchored Schur lower theorem,
+not the missing upper sign. Proposed ingredient sets were not accepted as
+proofs. Sources inspected include ThetaTailGaussianSubmodular,
+ThetaTailCenterSchurCross, ThetaCoordinateCrossCurrent,
+ThetaCuspCurvatureLogConvex and ThetaRadialSourceCurvature.
+
+## RN-P-7x: global finite-pair positive primitive — 2026-10-03
+
+The literal primitive O_x(t)=H(0,x)H(t,t)-J H(t,t+x) is positive and exceeds
+x*t*J*k(t)*k(t+x) for all positive x,t. Both statements, the exact coupled
+(a,B) ODEs, and their analytic tail limits are directly Lean-audited; all25
+public theorem axiom closures use only the standard three axioms. See P3
+`theta/rn-finite-pair-positive-transport-primitive.md` and successor P1
+`rn-finite-pair-positive-transport-primitive.md`.
+
+This supplies a global finite-pair object with a definite sign. It does not
+yet settle coordinate compensation. The successor retains a and B together,
+proves their exact improper-integral transport, then targets the full current.
+The conjecture N=a+s_x B>0 has genuinely signed forcing; positivity of N
+alone would also leave a second unproved current coefficient. Do not promote
+that conjecture to a closure criterion or drop the signed packet a.

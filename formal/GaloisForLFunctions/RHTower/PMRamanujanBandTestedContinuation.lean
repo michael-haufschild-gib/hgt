@@ -178,9 +178,9 @@ theorem differentiableAt_pmRamanujanBandClearedKernel_test {ε : ℝ} (hε : 0 �
   exact GaloisForLFunctions.HTGeometry.differentiableAt_integral_of_cauchy_dominated hR
     hmeas hdiff hbound hg
 
-theorem pmRamanujanBandTestedScale_cleared_continuation
-    {ε : ℝ} (hε : 0 < ε) {F : Lp ℂ 2 (volume : Measure ℝ)}
-    (hc : Tendsto (pmRamanujanNormalizedBandMellinVector ε) atTop (𝓝 F))
+theorem pmRamanujanBandTestedScale_cleared_continuation_of_bound
+    {ε : ℝ} (hε : 0 < ε) {C : ℝ}
+    (hbound : ∀ X ∈ Ici (1 : ℝ), ‖pmRamanujanMovingBandMellinVector ε X‖ ≤ C)
     (h : Lp ℂ 2 (volume : Measure ℝ)) {a b : ℝ} (ha : 0 < a)
     (hsupp : ∀ᵐ τ : ℝ, τ ∉ Icc a b → h τ = 0)
     {z : ℂ} (hz : 1/2 < z.re) (hzi : 0 < z.im) (hza : z.im < a) :
@@ -204,12 +204,11 @@ theorem pmRamanujanBandTestedScale_cleared_continuation
     intro w hw
     have hw1 : w ≠ 1 := by intro he; have hh := hw.2.1; simp [he] at hh
     exact ((differentiableAt_riemannZeta hw1).mul
-      (differentiableAt_pmRamanujanBandTestedScale_integral_of_tendsto hε.le hc h hw.1)).differentiableWithinAt
+      (differentiableAt_pmRamanujanBandTestedScale_integral_of_bound ε hbound h hw.1)).differentiableWithinAt
   have hr : AnalyticOnNhd ℂ R U := by
     apply DifferentiableOn.analyticOnNhd _ hU
     intro w hw
     exact (differentiableAt_pmRamanujanBandClearedKernel_test hε.le h (hUtube hw)).differentiableWithinAt
-  obtain ⟨C,_hC,hbound⟩ := exists_bound_pmRamanujanMovingBandMellinVector_of_tendsto hε.le hc
   have hinitial (w : ℂ) (hw : w ∈ U) (hwr : 1 < w.re) : L w = R w := by
     have hnonzero : ∀ᵐ τ : ℝ, h τ ≠ 0 → (ε : ℂ)+((1/2 : ℂ)+(τ : ℂ)*I)-w ≠ 0 := by
       filter_upwards [hsupp] with τ hτ
@@ -239,5 +238,18 @@ theorem pmRamanujanBandTestedScale_cleared_continuation
     ((convex_halfSpace_re_gt (1/2)).inter
       ((convex_halfSpace_im_gt 0).inter (convex_halfSpace_im_lt a))).isPreconnected
     hw₀ hev ⟨hz,hzi,hza⟩
+
+theorem pmRamanujanBandTestedScale_cleared_continuation
+    {ε : ℝ} (hε : 0 < ε) {F : Lp ℂ 2 (volume : Measure ℝ)}
+    (hc : Tendsto (pmRamanujanNormalizedBandMellinVector ε) atTop (𝓝 F))
+    (h : Lp ℂ 2 (volume : Measure ℝ)) {a b : ℝ} (ha : 0 < a)
+    (hsupp : ∀ᵐ τ : ℝ, τ ∉ Icc a b → h τ = 0)
+    {z : ℂ} (hz : 1/2 < z.re) (hzi : 0 < z.im) (hza : z.im < a) :
+    riemannZeta z *
+      (∫ X in Ici (1 : ℝ), (X : ℂ)^(-z-(1/2 : ℂ)) * pmRamanujanBandTestedScale ε h X) =
+      ∫ τ : ℝ, (starRingEnd ℂ) (h τ) *
+        (Icc a b).indicator (pmRamanujanBandClearedKernel ε z) τ := by
+  obtain ⟨C,_hC,hbound⟩ := exists_bound_pmRamanujanMovingBandMellinVector_of_tendsto hε.le hc
+  exact pmRamanujanBandTestedScale_cleared_continuation_of_bound hε hbound h ha hsupp hz hzi hza
 
 end RHTower

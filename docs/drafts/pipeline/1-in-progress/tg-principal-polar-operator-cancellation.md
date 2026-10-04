@@ -1230,3 +1230,36 @@ covariance is still required. This attempt remains active, not retired for
 lack of a library lemma or effort. No energy bound, Gamma completion, Hardy
 compatibility, sub-unit law or RH result has been inferred from the finite
 identities.
+
+C9.12 final production `SoninPrimePolarJetLcmCovariance.lean` passes with
+empty diagnostics. All twelve public foundation queries use only propext,
+Classical.choice and Quot.sound. Umbrella wired; index/lint running. P2
+card moved to P3; the false prime-only support conjecture is closed in P5
+together with the exact signed physical-kernel survivor. C9.13 remains
+open: neither finite identities nor the available PNT majorant imply the
+required summability.
+
+The new C9.14 card `tg-gamma-clock-endpoint-domain.md` separately attacks
+the required lower-end Gamma normalization. The corpus's first-order Gamma
+pole, after the same proposed nonzero-clock division, suggests a 1/u^2
+operator density. An exact small-annulus argument predicts divergence on
+the literal ground cutoff despite subtraction of 2I. The explicit kernel
+claim has a paper argument; its Lean audit and its identification with the
+full completed source remain pending. This is not an RH falsification or
+a reason to abandon arithmetic energy finiteness.
+
+C9.12 closure checks: index exits 0 and all twelve public declarations are
+present. Global lint exits 1 on twelve unrelated unwired modules (listed
+in `/tmp/tg-c912-lint.log`); no finding in the new leaf. No unrelated module
+was modified. All C9.12 builds are terminal.
+
+C9.14 production leaf `SoninGammaClockEndpoint.lean` now passes its targeted
+`lake --old env lean ... -o ...` audit with no diagnostics. It proves actual
+Gamma shell pairings, norm divergence of the literal clock-divided symmetric
+cutoff family, and absolute Bochner admission plus arbitrary cofinal
+convergence of the exact density after retaining 1/(2u^2). Umbrella wired;
+foundation/index/lint checks in progress. This advances the Gamma endpoint
+gap by replacing the bounded-ground candidate with its forced singular
+reference and an admitted relative remainder. Full-source identification,
+full response transport for this remainder, arithmetic energy finiteness,
+Hardy compatibility and the strict sub-unit law are not proved.

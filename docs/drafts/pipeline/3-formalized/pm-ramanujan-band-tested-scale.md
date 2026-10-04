@@ -1,4 +1,4 @@
-# Route PM: actual tested scale transform and its continuation under convergence
+# Route PM: actual tested scale transform from a complete-source bound
 
 - **ID:** pm-ramanujan-band-tested-scale
 - **Stage:** 3-formalized
@@ -24,5 +24,7 @@ For epsilon>0 and Re(z)>1, Fubini and the audited literal moving-band identity g
 This closes the actual-source side of the proposed analytic continuation argument. Arithmetic-side compact-kernel holomorphy, analytic uniqueness at the boundary, the variable-profile Abel remainder and the spectral-escape conclusion remain. The RH-producing complete signed-energy ceiling as epsilon decreases to zero is unchanged. No RH proof or falsification is claimed.
 
 ## Verification
+
+2026-10-03 extension: holomorphy now has a separate `differentiableAt_pmRamanujanBandTestedScale_integral_of_bound` export. The old convergence theorem derives that bound and invokes it. This exposes the exact existing proof requirement for the compact-profile contradiction; it does not supply the unknown arithmetic bound. Fourteen exports total. Targeted old-mode leaf build passed (211 seconds); final actual-file Lean passed with no diagnostics. Both new theorem and changed wrapper passed separate axiom queries with only propext, Classical.choice and Quot.sound.
 
 All thirteen public declarations and private dependencies passed foreground scratch Lean with exit0 and no diagnostics. No new axioms, assumptions of RH, heartbeat changes or computations. The leaf is promoted and wired once. Targeted `lake --old build GaloisForLFunctions.RHTower.PMRamanujanBandTestedScale` passed (only the new leaf built, 17 seconds). Mandatory `lake env lean GaloisForLFunctions/RHTower/PMRamanujanBandTestedScale.lean` passed with no diagnostics. All thirteen exports passed separate /tmp axiom queries with only propext, Classical.choice and Quot.sound. Lint has ten unrelated unreachable modules, none own. No umbrella build or heartbeat increase.

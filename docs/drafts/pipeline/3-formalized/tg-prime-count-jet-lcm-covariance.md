@@ -1,8 +1,8 @@
 # TG: signed prime-count jet fibres in the native covariance
 
 - **ID:** tg-prime-count-jet-lcm-covariance
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); native Lean audit in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Route:** TG, C9.12a–b
 - **Statement:** The literal Möbius prime-count jet has negative complete LCM self-convolution, an exact two-coordinate Möbius/gcd incidence law, and a full signed decomposition of the original prime–polar reciprocal-maximum covariance.
 
@@ -115,10 +115,22 @@ Search evidence:
 All three are nonpartial snapshots with background refresh incomplete;
 returned candidate/source statements and proposed ingredients were inspected.
 
-Scratch `/tmp/tg-c912-jet-fibres.lean`: complete arithmetic and kernel part
-passed Lean with empty diagnostics. Native specialization audit is running.
-No added axioms, numerical experiments or heartbeat changes.
+Production: `formal/GaloisForLFunctions/RHTower/SoninPrimePolarJetLcmCovariance.lean`.
+The final foreground leaf audit exits 0 with empty diagnostics:
+
+`lake --old env lean GaloisForLFunctions/RHTower/SoninPrimePolarJetLcmCovariance.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/SoninPrimePolarJetLcmCovariance.olean`
+
+All twelve public declarations pass the separate `/tmp` foundation audit,
+using only `propext`, `Classical.choice` and `Quot.sound`. The module is wired into `RHTower.lean`; no umbrella
+build, added axiom, numerical experiment or heartbeat increase was used.
+Logs: `/tmp/tg-c912-final.log`, `/tmp/tg-c912-axioms.log`.
 
 ## Log
 
 - 2026-10-03 — Negative jet convolution and shifted complete-fibre laws checked in Lean; full native centering drafted and under audit.
+
+- 2026-10-03 — Full native covariance, exact cumulative-plus-terminal identity and final production leaf pass Lean with empty diagnostics. Foundation audit running.
+
+- 2026-10-03 — All twelve public foundation queries pass; only the three standard Lean foundations occur. Index exits 0; all twelve public declarations appear in LEAN_API.md. Global lint exits 1 on twelve unrelated unwired leaves, with no error in the new leaf.
+
+Index/lint logs: `/tmp/tg-c912-index.log`, `/tmp/tg-c912-lint.log`.

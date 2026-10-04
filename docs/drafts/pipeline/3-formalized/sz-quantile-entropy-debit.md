@@ -1,6 +1,6 @@
 # SZ: finite total entropy debit of the actual quantile cells
 
-Status: paper mechanism complete; Lean audit pending. RH remains open.
+Status: formalized and audited, 2026-10-03. RH remains open.
 
 The hard target remains the signed Gamma--prime--polar gap on canonical
 heads. This ingredient concerns its literal outgoing quantile cells, not
@@ -11,7 +11,7 @@ b_n = 2 log(1+M_n/2), and define
 
     D_n = integral_[b_n,b_(n+1)] exp(h/2) (h-b_n) dh.
 
-Conjecture: D_n is nonnegative and summable over all actual arithmetic
+Proved: D_n is nonnegative and summable over all actual arithmetic
 cells. Its sum is the finite positive price of replacing each integrated
 cell centroid by its left boundary. The signed node displacement must
 retain that price.
@@ -44,3 +44,23 @@ checkpoint1215392 reported complete retrieval but not compiler freshness.
 No absence or novelty claim follows from these searches. Source reads
 verified the exact cell mass, cumulative lower bound, weight ceiling and
 summable square-weight theorem used above.
+
+## Lean closure
+
+`CCMOutgoingQuantileEntropyDebit.lean` proves the exact Bregman increment,
+summability, positivity exactly on positive atoms, strict positivity of
+the total debit, and the exact finite-block and limiting corrections.
+All statements use the literal arithmetic cells. No source-sign premise
+or RH premise is introduced.
+
+Final audit: `lake --old env lean
+GaloisForLFunctions/RHTower/CCMOutgoingQuantileEntropyDebit.lean -o
+.lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMOutgoingQuantileEntropyDebit.olean`,
+session19866, exit0 without diagnostics. All12 public declarations were
+queried in `/tmp/sz_quantile_entropy_axioms.lean`, session43695, exit0;
+only `propext`, `Classical.choice`, `Quot.sound`. Umbrella import added;
+no umbrella build run. Formal lint session22137 exited1 on12 unrelated
+umbrella-reachability errors, with no error for this leaf.
+
+This closes a finite-error ingredient only. It neither proves the signed
+node-current floor nor estimates the complete canonical-head phase gap.

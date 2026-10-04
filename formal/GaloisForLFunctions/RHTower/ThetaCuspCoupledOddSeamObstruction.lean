@@ -96,11 +96,6 @@ private theorem cleared_actual :
       (ThetaCuspCoupledSeamDirection.seamMatrix 10000000000000 (168*Real.pi-56)).det=
         M^12*canonicalCleared X Real.pi := by
   rw [ThetaCuspCoupledSeamDirection.determinant_direction_square]
-  change -2*thetaCuspNativeOddHeadDet 0*
-      (ThetaCuspCoupledSeamDirection.nativeFourth+
-        10000000000000*thetaCuspCenterCompensationSource 0*thetaCuspNativeOddHankelThreeDet 0)-
-      3*(thetaCuspNativeOddHankelThreeDet 0*(168*Real.pi-56)+
-        ThetaCuspCoupledSeamDirection.borderCofactor)^2=M^12*canonicalCleared X Real.pi
   rw [native_head_eq,native_three_eq,source_correction_zero,nativeFourth_eq,border_eq]
   unfold canonicalCleared normalizedFourth normalizedBorder G sourceSquare
     detThree headTwo hankelFourDet
@@ -131,8 +126,6 @@ theorem actual_optimal_seam_determinant_pos :
     0 < (ThetaCuspCoupledSeamDirection.seamMatrix 10000000000000
       ThetaCuspCoupledSeamDirection.optimalDirection).det := by
   apply (ThetaCuspCoupledSeamDirection.optimal_determinant_pos_iff 10000000000000).mpr
-  change ThetaCuspCoupledSeamDirection.nativeFourth+
-    10000000000000*thetaCuspCenterCompensationSource 0*thetaCuspNativeOddHankelThreeDet 0 < 0
   have hmod := optimal_pos_of_box thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
     thetaCuspSelfDualModularScale_sq_lt_ninetySix_fifths.le
   have hp := mul_pos (pow_pos mass_pos 12) hmod

@@ -2890,3 +2890,143 @@ Applying this to g keeps every complete divisor channel. The fixed-degree princi
 ## C12.90 — complete Liouville binomial sign test (2026-10-03, 1005d)
 
 **Active checkpoint.** Route MC; previous turn did not obtain a critical signed bound. Rechecked the actual low-breadth matching theorem and C12.10/C12.39/C12.64: target reuse does not prove fresh physical capacity or change residual sign imbalance. No capacity argument is claimed. Current source-specific conjecture tests `b_k=sum_(n>=1)lambda(n)/n^2*(1-1/n)^k<=0` for every k>=1. This is a conjecture, not a fact. For `y=x/(1+x)`, the exact geometric expansion would give `H_lambda(x)=(1-y)*sum_k b_k*y^k`; the zero harmonic Liouville sum controls the endpoint and must be justified before using the sign. Corpus search and analytic sign audit in progress. No computation or Lean/RH claim at this checkpoint.
+
+**Outcome: no critical bound.** The all-k sign remains neither proved nor refuted. Two proposed sign-preserving inductions fail by exact positive summands, not by numerical experimentation. The identities and diagnostics below are PAPER/Lean OPEN; this is not a completed no-go or route retirement. No auxiliary receiver was formalized as a substitute for the missing estimate.
+
+**Actual source and endpoint.** The corpus's Liouville Dirichlet identity gives the finite expansion
+
+```
+b_k = sum_(j=0..k) (-1)^j choose(k,j) zeta(2*j+4)/zeta(j+2).
+B(y)=sum_(k>=0)b_k*y^k=(1+x)H_lambda(x), y=x/(1+x), 0<=y<1.
+```
+
+The geometric interchange inside the disc is absolute, bounded by `zeta(2)/(1-y)`. C12.79's zero harmonic Liouville sum gives `B(y)->0` as y increases to1; an absolute interchange at y=1 is not justified by the original double series. More explicitly, C12.85's fixed-order bound for the Liouville summatory function L, applied by Abel summation to `w_k(t)=t^-2*(1-1/t)^k`, gives
+
+```
+b_k=int_1^infty L(t)*t^-4*(1-1/t)^(k-1)*(2*t-k-2)dt,
+b_k=O_A(1/(k*log(k)^A)).
+```
+
+For this estimate split t at sqrt(k). The lower part is exponentially small; on the upper part `log(t)>=log(k)/2`. Substitution u=1/t bounds the remaining absolute integral by `2/k+(k+2)/(k*(k+1))`. Thus the b-series is absolutely summable for A>1 and its sum is zero. This only gives fixed logarithmic savings. The factor `2*t-k-2` changes sign, so even an unproved one-sided sign for L could not be inserted without further work.
+
+If the conjectured `b_k<=0` for k>=1 held, B would be decreasing and concave with B(0)=b0>0 and B(1)=0. Hence `B(y)>=b0*(1-y)` and `H_lambda(x)>=b0/(1+x)^2`. Neither that sign nor the resulting RH transfer is asserted here. A weaker sufficient target is the **upper** bound `b_k<=C_epsilon*k^(-3/2+epsilon)`, for every 0<epsilon<1/2. Indeed sum b=0 gives `B(y)=sum_(k>=1)b_k*(y^k-1)`; splitting at `k~1/(1-y)` then gives the required lower bound `H_lambda(x)>=-C'_epsilon*(1+x)^(-3/2+epsilon)`. This target remains open.
+
+**Full triangular equation.** Transforming the actual square-forcing equation `A H_lambda=f`, with `A=sum_m D_m` and `D_m h(x)=m^-2*h(x/m)`, gives
+
+```
+c_k=sum_(r>=1) r^-4*(1-1/r^2)^k,
+A_kj=choose(k,j)*sum_(m>=1)m^(-j-2)*(1-1/m)^(k-j),
+c_k=sum_(j=0..k)A_kj*b_j,   A_kk=zeta(k+2).
+```
+
+All sums in each fixed row are absolute. Equivalently each m-term averages b over a binomial variable with k trials and success probability 1/m, with weight m^-2. Previous negative b_j give the wrong direction for a direct upper bound on b_k.
+
+Taking the row difference `(k+1)c_k-k*c_(k-1)` does not fix that direction. Its off-diagonal coefficient is
+
+```
+D_kj=choose(k,j)*sum_(m>=1)m^(-j-2)*(1-1/m)^(k-j-1)
+                                      *(j+1-(k+1)/m), j<k.
+```
+
+For every k>=3, `D_(k,k-2)>0`: the m=1 term vanishes, the m=2 bracket is `(k-3)/2>=0`, and every m>=3 term is positive. Thus the hoped-for nonpositive off-diagonal sign is false on an entire band. Passing to cumulative coefficients `P_k=sum_(j=0..k)b_j` also leaves a positive off-diagonal band, since
+
+```
+A_(k,k-2)-A_(k,k-1)
+ = (k/2)*sum_(m>=1)m^(-k-2)*(m-1)*((k-1)*(m-1)-2)>0, k>=3.
+```
+
+These facts reject the two elementary maximum-principle arguments; they do not reject the actual b sign conjecture.
+
+**Continuous averaging retained with its exact defect.** The continuous m-integral of each A row entry is `1/(k+1)` by u=1/m and the beta integral. Define the full signed sampling error
+
+```
+R_k=sum_(j=0..k)(A_kj-delta_kj-1/(k+1))*b_j.
+c_k=b_k+P_k/(k+1)+R_k.
+(k+2)*P_k=sum_(j=0..k)(j+1)*(c_j-R_j).
+```
+
+The last identity follows by telescoping, with P_(-1)=0. It retains the complete integer sampling error. A critical bound on R would propagate to b through this formula, but no such bound was proved. Replacing the integer rows by their continuous integrals silently discards this very term. Expanding the m-thinning expectation back through b returns the full divisor identity `lambda*1=squareIndicator`; smoothing alone does not eliminate the arithmetic source. The next attack must estimate the actual coupled R or b at all k, not derive another criterion or promote the continuous model to an estimate.
+
+**Corpus and execution audit.** Five owned deep searches (pairing, breadth, binomial, recurrence, thinning) reached terminal exit zero; all partial. Pairing/binomial reported coverage pending at generations1215432/1215470. Breadth/recurrence/thinning snapshots reported65007/65011/65014 files, compiler-pending49048/49051/49052, compiled43 and stale2660 each, no method invalidation pending, older-generation and semantic-coverage warnings, background refresh. Candidate lemmas, source arguments, proof ideas and ingredient sets were inspected. Recurrence's generated chain mixes `TranscendentalRateObject.liouvilleRate_recurrence` (powers of Liouville's transcendental constant) with additive Liouville correlation and Gamma-Jacobi identities; source inspection excludes this chain. The actual `LiouvilleEvenIndexPositiveRecurrence` proves cofinal positivity of additive correlations, not these binomial coefficients. Thinning's proposed energy-to-continuation chain retains its unproved finite-energy hypothesis. The square-dilation unit theorem preserves the RH wall and supplies no cancellation. A guessed `LiouvilleBinaryEulerRecurrence.lean` path did not exist; file inventory corrected it before reading `LiouvilleEvenIndexPositiveRecurrence.lean`. No Lean edit/build, numerical mathematical computation, subagent, commit or umbrella build. Owned temporary search outputs are removed after recording. RH goal remains active and unmet.
+
+
+## C12.91 — complete density and quadratic-source sign test (2026-10-03, 1005e)
+
+**Active checkpoint.** Route MC. C12.90 supplied paper evidence against two inductions, but no critical estimate. Current attack retains its full sampling error and tests whether a positive quadratic expression or the actual Laplace density J(t)=sum lambda(n)*exp(-n*t)/n can control H_lambda. H_lambda(x)=integral_0^infty exp(-x*t)*J(t)dt for x>=0 by absolute interchange. No positivity of J, finite-prime closure, quadratic domination, or RH result is assumed. Corpus search and source audit in progress.
+
+**Outcome.** No bound on the complete sampling error, no one-sided critical density bound, and no RH proof or falsification. The new diagnostics below are PAPER/Lean OPEN, not completed no-go cards or retired routes. They change which positivity arguments can be attempted; they do not supply the missing cancellation estimate.
+
+**The exact sampling symbol retains the unknown source.** The continuous dilation operator is `C h(x)=int_1^infty m^-2*h(x/m)dm`. The generating function of C12.90's R is `(T-C)H_lambda/(1-y)`, with x=y/(1-y), where T excludes m=1. In the common absolute Mellin chamber its multiplier is
+
+```
+zeta(2-s)-1-1/(1-s).
+```
+
+`CriticalCenteredPrimeTailSamplingAnomalyWeld` identifies exactly this zeta sampling anomaly after u=2-s and bounds its norm by `norm(u)/Re(u)`. Its separate mass-pairing theorem uses the actual Xi outgoing derivative, not H_lambda. The anomaly's analyticity does not bound its product with the unknown Mellin source. `CCMPrimeEntryWorkSampling.ccmPrimeDeficitMidpointWork_lower` is a lower bound derived from nonnegative storage plus energy; the source explicitly leaves the needed upper work estimate open. Neither was transferred as an R bound.
+
+**Tested positive quadratic representation, retaining every term.** Let a=1*squareIndicator, so a(r) is the number of square divisors of r. The corpus divisor identity and mu*1=delta give `lambda=mu*mu*a`. Consequently, for t>0,
+
+```
+J(t)=sum_(m,n>=1) mu(m)*mu(n)/(m*n) * K(t*m*n),
+K(z)=sum_(r>=1) a(r)/r * exp(-r*z).
+```
+
+All regrouping is absolute: a(r)<=r and the divisor multiplicities have polynomial bounds, while exp(-r*m*n*t) decays exponentially. This is the complete kernel, not one selected r-channel. It does not define a positive quadratic form. The elementary tail estimate
+
+```
+0<=K(z)-exp(-z)<=exp(-2*z)/(1-exp(-z))
+```
+
+gives K(z)/exp(-z)->1. For distinct fixed positive integers u,v,
+
+```
+K(t*u^2)*K(t*v^2)/K(t*u*v)^2 -> 0  as t->infinity,
+```
+
+because its leading exponential is `exp(-t*(u-v)^2)`. The two-point Gram determinant is therefore negative eventually; the factors 1/(m*n) do not change its sign. This rejects arbitrary-vector PSD payment of this full kernel. It says nothing negative about the actual value J(t), whose mu vector is fixed. The corpus's Hilbert product-fibre identity has a different kernel and retains its own signed off-diagonal work. No inequality comparing the actual two quadratic forms was proved.
+
+**Actual prime-density induction and its failure.** For a finite set P of primes define J_P using only P-smooth n with their literal lambda coefficients. For p outside P,
+
+```
+J_(P union {p})(t)=sum_(e>=0)(-1)^e*p^-e*J_P(p^e*t).
+```
+
+The natural conjectured induction was preservation of positivity and antitonicity. For one prime, both hold: J_p is an alternating sum of decreasing positive terms, and `-J_p'(t)=sum_e(-1)^e exp(-p^e*t)>0` by pairing successive terms. Thus J_{p,q}>0 for two distinct primes, since the q-insertion again alternates decreasing positive terms. This is the positive survivor of the elementary induction test; its Lean formalization remains open here.
+
+However, antitonicity already fails for actual two-prime sources. Take distinct primes P<=p,q<=2P and t=P^(-3/2). Grouping the derivative source by total exponent gives
+
+```
+-J_{p,q}'(t)
+ = exp(-t)-exp(-p*t)-exp(-q*t)
+   + sum_(a+b>=2)(-1)^(a+b)*exp(-p^a*q^b*t)
+ = -1+O(P^(-1/2))+O(exp(-sqrt(P))).
+```
+
+The absolute last tail is at most `sum_(d>=2)(d+1)*exp(-P^(d-3/2))`, bounded by a constant times exp(-sqrt(P)); no term is omitted. Hence J_{p,q}' is positive there for all sufficiently large P. The inspected `Sieve/PrimeCountingBigO.primeCounting_sub_logIntegral_isBigO` supplies two such primes for all sufficiently large P. This is an analytic family, not a numerical experiment. The complete J also cannot be antitone: its harmonic Abel limit is zero at t=0, while its n=1 term makes it positive for large t. These facts do not refute J>=0 or positivity of every finite J_P. They show why the positive decreasing cone cannot carry the induction through all primes.
+
+The suggested `PositivePrimeDensityMobiusInversion` theorem assumes an increasing nonnegative input under a different logarithmic dilation transform. It does not apply to J_P or supply the lost monotonicity. The retrieved Bernstein theorems require complete monotonicity as input. The multiplicative/Euler-product search supplies the actual coefficient algebra and absolute-convergence products, not a physical sign law.
+
+**Critical target retained instead of the stronger sign.** A direct lower estimate `J(t)>=-C_epsilon*t^(1/2-epsilon)` near zero would imply the desired H_lambda lower bound by its Laplace representation and the exponentially decaying large-t tail. No such estimate was obtained. The exact positive square forcing is still
+
+```
+sum_(m>=1) J(m*t)/m = sum_(r>=1) exp(-r^2*t)/r^2.
+```
+
+Its absolute interchange is valid for each t>0. Positivity of the right side does not control the inverse or J's negative part. The next signed-density attack must keep every dilation term rather than impose the failed antitone cone.
+
+**Mollifier transfer audit.** Read the actual statements of `MoebiusMollifiedCriticalMoment` and `MoebiusMollifiedErrorThreeLines`. The critical fourth-moment bound contains the complete `X^2` mean-value term; its Cauchy--Schwarz consequence permits order X (up to logarithms and the height factors) for the mollified second moment. With a fixed Gaussian window, choose the height cutoff of order sqrt(log X) to pay the displayed Gaussian tail. The existing three-lines right budget is of order X^-2, so the resulting upper budget still grows like `X^(1-3*theta)` up to logarithms, with `theta=(sigma-1/2)/(5/2)<=1/5` for sigma<=1. It supplies no convergence at the needed line. A source-specific bound on the full cofinal moment, including the signed near-equal-product terms, is still required. No sharper right-edge constant, Gaussian truncation, or formal receiver was substituted for it. The generated search chain ending at the trivial `norm_edPoly_mobCoeff_le ... <= X` also does not produce this missing control.
+
+**Execution audit.** Five searches (sampling, quadratic, density, multiplicative, mollifier) reached terminal exit zero. Sampling/quadratic reported partial coverage pending at generations1215601/1215614. Density and mollifier were partial snapshots with65017/65024 files, compiler-pending49054/49058, compiled43 and stale2660, no method invalidation pending, older-generation/semantic-coverage warnings. Multiplicative reported partial=false,65017 files, compiler-pending49054, compiled43/stale2660, current snapshot but semantic coverage unavailable. All reported background refresh. Candidate lemmas, source arguments, proof ideas and generated ingredient sets were inspected; premises and source mismatches were retained. No Lean edit/build, numerical mathematical computation, subagent, commit or umbrella build. Exact owned search outputs are removed after recording. Goal remains active and unmet.
+
+
+## C12.92 — actual exponential weight and convolution-square test (2026-10-03, 1005f)
+
+**Active checkpoint.** Route MC, same hard one-sided bound on the full Liouville density. C12.91 changed admissible positivity arguments but did not obtain a critical estimate. Testing whether w_t(n)=exp(-n*t)/n has a real absolutely summable Dirichlet-convolution square root for each t>0. Complete multiplicativity would then make J(t) a real square. This is a conjecture, not a result; a formal coefficient root or an unproved summability premise is insufficient. The corpus's binomial half of mu is a different arithmetic function and is not substituted for this moving weight.
+
+**New paper candidate, formalization in progress:** `mc-exponential-weight-phase-zero.md` retains the full proof under audit. Twist only the prime2 value from -1 to i, then vary phases in a moving interval [aN,bN]. The base smoothed series is o(1/logN); its cofactor response has nonconstant complex argument. The strict integral triangle gap yields a linear phase capacity larger than the actual center by delta/logN, while all terms containing two band primes form an exponentially small full tail. A simple zero inside the phase disc would prohibit an absolutely summable convolution square root of the actual exponential weight. This is a no-go candidate for the square-root conjecture, with a non-trivial positive simple-zero survivor; no no-go is closed or route retired. It does not settle the literal Liouville sign or critical negative-part estimate.
+
+**Formal positive progress:** `LiouvilleTwistedDensityPhase.lean` proves the actual full fixed-twist density has strictly different phases at u and2u for every u>log16. It then proves the strict weighted integral triangle gap on [u,2u], including a premise-free existence theorem. The infinite tail is bounded rather than discarded; the strict integral proof derives its endpoint separation from the actual coefficients. Targeted leaf build, direct `lake --old env lean` audit, and a `/tmp` audit of all13 public theorems passed. Axioms are only `propext`, `Classical.choice`, `Quot.sound`. The leaf is wired into `RHTower.lean`. Global formal lint exited1 on13 other unreachable modules; no error for the new leaf. No umbrella build, heartbeat increase, numerical mathematical computation, subagent or commit.
+
+**Hard gap and next exact obligation:** the full simple-zero survivor is not yet formalized. Its fixed-log center estimate follows on paper from the exact square and prime-two harmonic convolutions, with split-tail or logarithmic-moment domination proofs recorded in the dedicated card. Next formal work must discharge that actual center and the moving-prime weighted limit before applying the sphere-zero lemma. The unchanged RH-producing problem is still the one-sided half-power bound for the literal J_lambda; no critical estimate was proved in this cycle.
+
+**Search audit:** seven searches reached terminal exit0: dilation, root, phase, prime-integral, Liouville rate, strict integral triangle, logarithmic convolution. Four were partial; root, Liouville rate and logarithmic convolution reported partial=false. Snapshots ranged65028–65041 inventoried files, compiler-pending49058–49065, compiled43/stale2660, with no method invalidation pending. All reported background refresh; all except root had older-generation warnings, and all except phase also reported semantic coverage unavailable. Candidate lemmas, source arguments, proof ideas and ingredient sets were inspected. Generated chains through zero transverse force, unrelated L-character zeros, fourth moments, or zero-configuration log moments retained their missing premises or source mismatch and were not used as theorems. Relevant actual source statements were read, and used analytic names/proofs were checked in `/tmp`. Owned search and Lean scratch files are removed after recording; no owned process remains.

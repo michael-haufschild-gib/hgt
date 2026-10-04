@@ -1,9 +1,9 @@
 # Route PM: uniform separation on the actual logarithmic source carrier
 
 - **ID:** pm-ramanujan-band-physical-separation
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean not checked)
-- **Dependency:** `PMRamanujanBandSpectralEscape`, under final audit.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean, fully audited)
+- **Dependency:** `PMRamanujanBandSpectralEscape`, fully audited.
 
 ## Exact target and paper proof
 
@@ -17,6 +17,4 @@ The same identity holds after normalization by X^epsilon and below the cutoff wh
 
 The already audited squared norm of g_X is exactly the original complete discrete reciprocal-weight energy. This transfer identifies the same physical source, with every denominator and mixed term retained. Integer/dyadic cutoff strengthening is separate. This does not bound the moving remainder from above or prove/falsify RH.
 
-Search155 checks existing Fourier/dilation transport. Current source inspection supplies `fourierUnitary`, `dilationUnitary`, `dilation_ae`, `realMul_quasiMeasurePreserving` and the existing actual band Fourier identity. The vector identity and transport still require Lean checks. The main PM producer remains the full small-positive-damping signed-energy ceiling.
-
-The complete seven-export scratch passed foreground Lean. One redundant congruence/ring sequence produced a style warning and was replaced by the exact division/multiplication simplification. `PMRamanujanBandPhysicalSeparation` is promoted/wired once; targeted old-mode build and final audits remain.
+Search155 was partial with complete inventory and mixed compiler freshness; all candidate/source statements and both ingredient groups inspected. The seven exports passed the targeted old-mode leaf build (105 seconds), mandatory final actual-file `lake env lean` with no diagnostics, and seven individual axiom queries, all showing only propext, Classical.choice and Quot.sound. Umbrella wired once. Lint has eleven unrelated unreachable modules, no own finding. Completed audit artifacts cleaned after verification.

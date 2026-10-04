@@ -2014,3 +2014,216 @@ to that finite inverse source, retaining original coefficients, the
 shift, both debts and terminal boundary. No Xi-norm bounded transfer
 is assumed. Negative work at each positive damping, signed high-LCM
 control and RH remain open. Goal active; no external blocker.
+
+### RP-58: inverse-source transfer retains the arithmetic moment defect
+
+RP-57 made no frontier progress. A fixed translated compact profile
+encodes the exact matched and quantile variance via three exponential
+moments. Its source budget grows with physical mass or first moment,
+depending on the encoding. In p=c_a*u+B_a*u+r, reconstruction of the
+variance retains c_a^2*P(u), both mixed terms and the residual quadratic.
+Inverse-vector smallness therefore does not pay the original history.
+
+The exact prime action on the two exponential readouts already exposes
+Chebyshev error. The constant readout exposes weighted prime-mass error.
+The joint equations, derived on paper, retain both. Testing against
+physical prime packets leads to the corpus's full Mangoldt hyperbola
+identity: its floor remainder is paid, but its future-error pairing is
+not. Selberg recursion at the square cutoff retains the complementary
+prime range. No critical estimate or new frontier theorem was obtained.
+
+Detailed paper formulas and four completed search audits are in
+rp-ordered-history-inverse-transfer-2026-10-03.md. No Lean edit/build;
+temporary results removed. Next attack: the complete signed combination
+of future-error pairing, harmonic error and second-grade discrepancy
+with the original variance coefficients. Do not repeat source-norm
+smallness or estimate one moment while dropping the other two.
+Positive-damping negative work, signed high-LCM, both history debts and
+RH remain open. Goal active; no external blocker.
+
+### RP-59: centered future pairing and its finite reciprocal-cutoff term
+
+RP-58 made no frontier progress. Substituting the complete hyperbola law
+into the actual arithmetic null form cancels the linear endpoint error,
+but retains the full future pairing, harmonic correction and second-grade
+discrepancy. The exact weighted Tatuzawa-Iseki identity was derived before
+absolute values; its signed Mobius source still lacks a critical estimate.
+Corpus power-model counterexamples already rule out closing this by the
+coarse Selberg recursion, even with a sublinear response.
+
+New paper calculation, not a verified frontier theorem: E=psi-id and
+the exact harmonic tail give E(y)^2+D(y^2)=2*integral_(0,y] E(y^2/t)dE(t).
+For 0<alpha<1, define A_alpha(v)=integral_0^v E(t)t^(-alpha-1)dt and
+F_alpha(v)=sum_(d<=v)Lambda(d)d^(-alpha)-v^(1-alpha)/(1-alpha).
+Finite Mellin integration to N cancels the entire E^2 energy and leaves
+
+    integral_0^N D(y^2)y^(-2alpha-1)dy
+      =alpha*A_alpha(N)^2/2
+        +integral_N^infinity E(u)u^(-alpha-1)F_alpha(N^2/u)du.
+
+At alpha=1/2, F_alpha is the native critical mass discrepancy. Tail
+admission uses only the already formalized inverse-square error integral;
+critical square admission was not assumed. Normalizing by N^(2-2alpha)
+and subtracting at N and 2N cancels the common far tail, leaving a finite
+signed prime/error kernel. Its payment law is the next hard conjecture.
+The positive square alone does not bound either native history debt.
+
+Full derivation and three completed search audits are in
+rp-joint-hyperbola-variance-payment-2026-10-03.md. No new critical bound,
+Lean source edit or build. Scratch results removed. All four hard gaps
+remain open; goal active, no external blocker.
+
+### RP-60: finite reciprocal kernel, endpoint deficit and rectangle square
+
+RP-59 made no frontier progress. Expanded f(N)=T(N)/N into a finite
+prime/error pairing minus the exact harmonic tail. The difference
+f(2N)-f(N) retains an explicit continuous term on [N,2N]; its common
+far tail cancels. An unbounded double signed-measure Fubini shortcut is
+not admitted: it would remove the error cancellation and leave a
+harmonic absolute-variation tail.
+
+Paper kernel K_N is the symmetrization of
+(2/N)*max(1/sqrt(b*max(N,a))-1/N,0). Its cutoff difference has mixed-sign
+diagonals. The exact nonnegative endpoint deficit K_N(ab,1)-K_N(a,b)
+was derived with both product regions retained. Summing it gives the
+rectangle square Z(N)^2/N^2, Z=sqrt(N)*M(N)-psi(N), plus a low-product
+correction which cancels against the endpoint sum. The full formula is
+
+    f(N)=B(N^2)/N-C(N^2)/N^2-2log(N)+2gamma+3-(Z(N)/N-1)^2,
+
+with C=sum(Lambda*Lambda), B=sum(Lambda*Lambda)/sqrt. This restores
+RP-59's existing square and leaves the second-grade signed Riesz error;
+it does not pay either native history debt.
+
+Read the exact arithmetic identity Lambda*Lambda+Lambda.log=mu*(log^2).
+The remaining source is a coupled Mobius-log-squared Riesz sum minus
+its Mangoldt-log companion. The smooth inner integral was derived;
+its discrete remainder and companion remain uncontrolled. Next trial
+must estimate that complete signed combination, not its components.
+
+Detailed paper work and three completed search audits are in
+rp-reciprocal-cutoff-kernel-payment-2026-10-03.md. No new critical bound
+or frontier theorem; no Lean edit/build. Search scratch removed. All
+hard gaps remain open; goal active, no external blocker.
+
+### RP-61: coupled logarithmic source and reciprocal Bernoulli boundary
+
+RP-60 made no frontier progress. Worked on the complete Mobius-log-squared
+source minus its Mangoldt-log companion. On paper their inner log(k)^2
+terms cancel exactly, giving b=Lambda*Lambda=-(mu.log)*log. With
+q(d)=mu(d)log(d), J(Y)=sum_(k<=Y)(sqrt(Y/k)-1), and
+P(Y)=sum_(k<=Y)log(k)(sqrt(Y/k)-1), the original expression becomes
+
+    f(N)=-N^-2 sum_(d<=N^2)q(d)P(N^2/d)-2logN+2gamma+3
+         -(1+N^-1 sum_(d<=N)q(d)J(N/d))^2.
+
+Derived paper Euler expansions using the corpus's bounded Bernoulli
+half Q(t)=({t}^2-{t})/2. P(Y)=Y(logY-3)+A sqrtY+B+r(Y), where
+
+    r(Y)=-Q(Y)logY/(2Y)
+         +integral_Y^infinity Q(t)
+            [sqrtY*(3logt/4-2)*t^-5/2+t^-2]dt.
+
+All constant/tail integrals use the absolutely integrable B2 form,
+not an unjustified absolute integral of the B1/t kernel. J has the
+matching expansion Y+A0 sqrtY+1/2+j(Y), retaining -Q(Y)/(2Y).
+Pointwise remainders decay, but their absolute Mobius convolution
+only gives a coarse logarithmic scale. No critical joint payment.
+
+The coupled long source R(X)=-sum q(d)P(X/d) has admitted far-right
+Mellin symbol (zeta'/zeta)^2/[2s(s-1/2)]. The corpus's zero-residue
+law gives a nonzero double-pole coefficient m^2/[2rho(rho-1/2)]
+at every positive-height zero. This is a continuation diagnostic,
+not critical integral admission or a claim about the terminal-square
+transform. A rectangle expansion cancels the existing square and
+returns the same asymmetric prime-pair work from RP-59/RP-60.
+
+No frontier theorem, Lean edit/build or new audit. Detailed paper
+derivations and three completed search audits are in
+rp-coupled-discrete-selberg-remainder-2026-10-03.md. Next attack:
+signed reciprocal Bernoulli boundary cancellation, retaining both
+q-cutoffs and the terminal square. Goal active; all hard gaps open.
+
+### RP-62: exact boundary positivity and its full compensator
+
+RP-61 made no frontier progress. Revalidated the current RP map and
+attacked its Bernoulli boundary with the original Mobius/log coefficients.
+For Q(t)=({t}^2-{t})/2, the finite floor expansion gives on paper
+
+    sum_(d<=X) mu(d)d^(1+z)Q(X/d)
+      =X^2/2 sum mu(d)d^(z-1)-X/2 sum mu(d)d^z
+         -sum_(n<=X)(X-n)sum_(d|n)mu(d)d^z.
+
+Applying log(X)*partial_z-partial_z^2 at z=0 produces a positive
+Riesz source S=sum(X-n)[(Lambda*Lambda)(n)+Lambda(n)log(X/n)],
+alongside the exact Mobius moment counterterms. No sign was assigned
+to the uncompensated original boundary.
+
+Completing the infinite Euler-tail head is invalid: the actual inner
+cutoff stays X while the integration variable u exceeds X. The added
+integrated terms would include q(d)[kappa1/sqrt(Xd)+kappa0/X], with
+q=mu.log and kappa0=int Q(t)/t^2<0; these terms do not tend to zero
+along primes. Kept Euler summation finite instead, so d<=u<=X and
+all divisor regroupings were admitted.
+
+That repair gives, with A1=sum(X-n)Lambda(n),
+
+    R(X)/X=S(X)/(2X^2)+3/(4sqrtX) int_1^X S(u)u^-5/2 du
+       +int_1^X A1(u)[-2u^-5/2/sqrtX+u^-2/X]du.
+
+The last kernel is negative. Its contribution cancels the extra
+first-grade part of S exactly. What survives is the existing positive
+Abel representation of Lambda*Lambda; it supplies no new payment
+for the terminal square or either native history debt.
+
+Next candidate retains quadratic prime-label information instead of
+collapsing it by scalar floor inversion. Corpus already disproves a
+fixed diagonal budget for uniform half-selection. Paper selection
+weights theta_p=1-1/p instead preserve the native 1/zeta factor:
+their Euler correction has local factor
+1+p^-s/[p(1-p^-s)], absolutely convergent and nonvanishing for Re(s)>0.
+No energy estimate follows from this identity. Next attack must keep
+the physical cutoff, complete covariance, and its unpaid mean-head
+square; it cannot assume averaged energy bounded.
+
+Full paper derivations and two completed search audits are in
+rp-bernoulli-boundary-joint-payment-2026-10-03.md. No frontier bound,
+Lean edit/build, or RH proof/falsification. Scratch searches cleaned;
+all hard gaps remain open, goal active, no external blocker.
+
+### RP-63: native prime-biased projection sharpness
+
+The complete prime-biased covariance has positive divisor-square
+coordinates beta(r)*F_r^2, beta(r)=product(theta_p^(-2)-1),
+theta_p=1-1/p. Its mean-head square survives with coefficient one.
+Converting to coprime-deleted heads produces gamma(r)=product(1-theta_p^2).
+Independent weighted Cauchy recovery costs exactly 1/gamma(r)
+when the full divisor grid is active. The hoped-for suppression cancels.
+
+Proved the obstruction on the actual native unit and prime channels:
+with a=A(M,1), b=A(M,p), theta=1-1/p,
+
+    E_p=(1-theta)*(a^2+b^2)+theta*(a-b)^2
+       =(b-theta*a)^2+(1-theta^2)*a^2.
+
+The public fixed-channel limits and positive unit mean imply
+E_p/M -> 2*c_0^2/p. For every k<1 and prime threshold B there is
+a prime p>=B for which eventually k*E_p < (1-theta^2)*a^2.
+Thus no constant factor below one improves this projection law on
+all native compressions, even after deleting finite prefixes.
+This is a two-channel result, not a no-go for joint cofactor cancellation.
+
+Leaf RoutePBiasedPrimeProjection.lean passes the final foreground
+lake --old env lean audit with explicit olean output, exit 0 and no
+diagnostics. Five public theorems pass the /tmp axiom audit with only
+propext, Classical.choice, Quot.sound. Umbrella import added; no full
+or umbrella build. Global lint exits 1 on 12 unrelated unreachable
+modules (previous ten plus MertensProductDiamondPintz and
+HTGeometry.CompactMonoidMeasureAlgebra); no new-leaf error.
+
+RP-63 card contains paper derivation and search freshness/coverage.
+This adds an audited sharp obstruction and exact positive survivor,
+but pays no critical debt. Positive-damping negative work, signed
+high-LCM control, and both history debts remain open. Next attack
+must use joint prime-fibre structure with the native moving cutoff.
+Goal active; no RH proof or falsification, no external blocker.

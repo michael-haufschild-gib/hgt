@@ -1688,3 +1688,151 @@ RN-P-7u cleanup complete: all12 owned /tmp search, algebra, build and audit
 files removed. All owned process handles are terminal. Formal sources, existing
 umbrella wiring, P3 certificate, frontier update, working log and checkpoint
 memory retained.
+
+
+## RN-P-7v completed — 2026-10-03
+
+PROGRESS. Conjecture: one epsilon works for both actual center Schur ports
+for every 0<z<y<epsilon, with arbitrary relative approach. Proved unconditionally
+as ThetaJoint.exists_actual_ports_pos_triangle. This closes the joint-center
+identification/propagation gap exposed by RN-P-7u, not the global RH problem.
+
+The exact actual Schwartz correlation calculus proves the full raw mixed
+origin jets. A double unit-square average gives x*y*Q=T, including both
+axes, and continuous needed derivatives. Normalize by k(x)k(y); actual Hessian
+entries are -2*coordinateEnergy/(3P) and -jointCoordinateCompensation/P for
+the pure-right and diagonal-direction sums. Both are strictly negative by the
+previous source certificates. Diagonal then vertical integration gives the
+uniform coordinate comparison. The source side retains qJ<=P<2I from the
+actual diagonal tail limit and centerEntry>0. Thus the actual source deficit
+g has g(0)=g'(0)=0 and g''(0)=(2I-qJ)/J>0; its convex chord inequality pays
+the same literal projection coefficient and proves the source port.
+
+Seven new leaves, all namespace RHTower.ThetaJoint: ThetaTailJointCorrelation,
+ThetaTailJointCenterJets, ThetaTailSchurAxisExtension,
+ThetaTailNormalizedSchurHessian, ThetaTailCenterSourceConvexity,
+ThetaTailSmallNodeCoordinate, ThetaTailSmallNodePorts.
+All targeted --old builds passed; all seven final lake env lean actual-file
+checks passed with empty diagnostics. All109 public theorem axiom queries
+returned only propext, Classical.choice, Quot.sound. Printed capstone type
+has no extra premises. All seven umbrella imports verified; no full or umbrella
+build. Lint12 unrelated unreachable modules are recorded in the P3 certificate;
+no owned-leaf violation. No new axiom, admitted proof, heartbeat increase,
+numerical experiment, subagent, commit or push.
+
+P1 card promoted to P3: theta/rn-uniform-small-node-coordinate-chamber.md.
+RN frontier and main finite-pair flow card updated. The next hard target remains
+global finite-pair upper compensation. The main card records the full weighted
+coarea current inequality retaining covariance. Searches for a global upper
+producer, translated Wronskian bridge and feedback closure did not supply it.
+The actual secant<feedback sign has the adverse orientation for a proposed
+feedback upper shortcut. Do not reuse it in the wrong direction. Search
+metadata mostly partial/source-only; exact used declarations were read and
+audited. The search engine's suggested ingredient sets were unverified and
+not accepted as proofs.
+
+Implementation lessons: explicit pair-valued composition functions are needed
+before fun_prop; unresolved composition metavariables do not infer coordinates.
+The continuous-partial diagonal chain rule needs an explicit base point and
+an explicit diagonal inner function. integral_pow is a root declaration.
+Pi.pow_apply/Pi.sub_apply must be reduced before field_simp. Avoid recursive
+simp with moving-tail identities: rewrite a single function equality instead.
+An explicit Tendsto pair replaces an expensive inferred neighborhood expression
+without raising heartbeats. field_simp often closes exact quotient identities
+itself; remove redundant ring tactics.
+
+Full RH goal remains ACTIVE and unachieved. Global finite-pair compensation,
+general anchors, arbitrary rank and arithmetic transfer remain hard open.
+
+### RN-P-7v checkpoint and RN-P-7w successor — 2026-10-03
+
+Saved memory rh/rn-uniform-small-node-schur-ports-2026-10-03. Removed all32
+owned scratch sources, search responses and audit logs from the completed
+local proof after all owned jobs terminated. Formal leaves and certificates
+remain. No code changed after the successful final audits.
+
+The next global-current investigation produced no new global sign. It rejected
+a circular Cauchy–Schwarz shortcut: the needed center Schur PSD includes the
+still-open three-node positivity. It derived the paper boundary diagnostic
+kappa_x(0,y)=(3p(y)-y c(y)-2c(0)y)/y² for the coarea interaction current.
+For K(y)=3p(y)-y c(y)-2c(0)y, K-yK'=ThetaRadial.radialDefect and
+(K/y)'=-radialDefect/y². These identities explain why an isolated factor sign
+cannot be read off from potential submodularity. Their derivation and exact
+unproved status are saved in rn-center-schur-coordinate-row-flow.md.
+
+Assessment: RN-P-7v solved the uniform joint-center gap. RN-P-7w has not yet
+solved global finite-pair compensation. Continue with the full signed current
+C*(R-yR_y)-h(x)*(h(y)-y h'(y)), retaining covariance and endpoint terms.
+Do not substitute generic PSD assumptions or discard the adverse term.
+
+### RN-P-7x: positive finite-pair primitive and strict correction — 2026-10-03
+
+Closed a new global source problem. For all x,t>0, with J=H(0,0),
+O_x(t)=H(0,x)H(t,t)-J H(t,t+x) strictly exceeds
+x*t*J*k(t)*k(t+x). Thus B=O/(xJktkx+t)>t. The proof uses two decreasing
+actual density ratios, exact zero total signed mass, and Schwartz tail limits.
+The corrected ratio's sign follows from c''<2c², giving M=2pc-c'>0 and
+F=x*(p(t+x)²-p(t)²-c(t+x)-c(t))+2*(p(t+x)-p(t))>0.
+
+Leaves ThetaTailPositiveBalancePrimitive and ThetaTailTransportPrimitiveFloor
+built with targeted --old commands and passed final direct lake env lean
+source audits with empty logs. All25 public theorem #print axioms results are
+exactly [propext, Classical.choice, Quot.sound]. Both leaves wired into RHTower.
+Repository lint reported12 unrelated unreachable modules, none in these leaves;
+no forbidden declaration was reported. P3 certificate and RN frontier updated.
+
+Searches: canonical transport, positive zero-total primitive, native finite
+secant energy, and signed-Sturm crossing. All used local corpus. The crossing
+query was partial with complete inventory65043; compiler metadata mostly
+pending/source-only. No ready single-crossing producer was found. Proposed
+ingredient set "curvature decreases" was not applicable and not accepted.
+Actual curvature strictly increases, while its projective ratios have separate
+laws. Exact statements were read before use.
+
+Successor: the full finite-pair moment is a+s_y B. N=a+s_x B has forcing
+s_x'-2j s_x, of indefinite sign; even positivity of N would leave an unproved
+second current coefficient. Keep actual source packet a. The actual normalized
+row theorem gives the paper relation a+B*kt²/Htt>0, but this alone is not a
+uniform current sign. No circular rank-three Cauchy–Schwarz assumption used.
+
+The improper transport identity has a dependency-closed paper proof: ratio r_y
+is bounded; U=r_y O vanishes; U'=r_y f-G with G>=0. A finite primitive of G
+has finite limit, proving its integrability. A non-partial corpus search
+(inventory65045, mostly source-only compiler metadata) recovered the actual
+Mathlib improper monotone-derivative API; all required APIs passed a /tmp
+Lean check. ThetaTailFinitePairTransport implementation and audit in progress.
+
+Contribution assessment: primitive positivity and its strict correction are
+new global finite-pair knowledge. The full current remains the hard open sign;
+no RH proof/falsification or arbitrary-rank producer has been obtained.
+
+### RN-P-7x improper-transfer audit completed — 2026-10-04
+
+ThetaTailFinitePairTransport built and passed final actual-file lake env lean
+with empty diagnostics. All14 public theorem axiom closures are exactly
+[propext, Classical.choice, Quot.sound]. Total for this advance: three leaves,
+39 public theorems, all directly audited, all wired. No full/umbrella build.
+A fresh lint after wiring still reports the same12 unrelated unreachable
+modules; no new leaf error. Certificate and frontier updated.
+
+Implementation lessons: Pi subtraction under Integrable needs an explicit
+function equality via convert!, sometimes even after simp only Pi.sub_apply.
+For integral_sub rewrites, give the nested difference a typed lambda integrability
+lemma. An unconstrained FTC have needs (a := 0). This toolchain's scalar rule
+is MeasureTheory.integral_div, not integral_div_const; actual API audited in
+/tmp before use. No heartbeat changes or numerical experiments.
+
+Next hard conjecture remains the full finite-pair current sign. A second exact
+paper identity eliminates a using D=B-t>0:
+  w*(a+s_y B)=(wD/(2t))'+w*(t*s_y-Sigma_x/2+Q*D),
+  Q=s_y+(p(t+y)-p(t))/(2t)+1/(2t²)>0.
+P1 records its unformalized improper-transfer obligations, the proposed Q
+current sign, and its exact numerator and endpoint diagnostic. Neither that
+sign nor payment of the explicit C0=t*s_y-Sigma_x/2 has been proved. This
+keeps the hard nonlocal compensation visible instead of silently replacing
+it by positivity of one component. RH remains unproved; goal stays ACTIVE.
+
+Checkpoint cleanup: all owned jobs terminated. Removed19 owned /tmp search,
+API and audit files after recording results. Formal leaves and certificates
+preserved. Final scoped git diff --check passed. No code changed after its
+successful direct-file audit. Memory rh/rn-finite-pair-positive-transport-primitive-2026-10-03 updated.
