@@ -54,3 +54,15 @@ of the divisor; the explicit formula reaches only analytic reflection-odd test f
 divisor sums cancel in reflected pairs), so E has no prime-side evaluation. Upper bounds for E go
 through local mollified mean squares at scale `β − ½` and stop at the zero-density barrier
 `β − ½ ≪ 1/log γ`.
+
+**Correction and converse (2026-10-05, CANNOT-491, MUST-780).**
+- The Gram form (MUST-762) is vacuous: `Σ a_m a_n A(m,n) ≥ (49/48)(Σ a_n/n)²` for every real Dirichlet polynomial
+  (`RHTower.fractGram_form_ge`, `not_forall_fractGram_form_le`). Its "converse" RH ⇒ inf = 1 is false.
+- For the class of MUST-760 (entire, bounded on Re s ≥ ½) the converse holds:
+  `RHTower.riemannHypothesis_iff_forall_mollified_meanSquare_le`, with witnesses `M = −sP(s)/(s−1)` from the
+  Báez-Duarte approximants (`bdMollifier`). The equality direction of BSY itself remains open.
+
+**Criterion closed (2026-10-05, MUST-781).** `RH ⟺ ∫ log|ζ(½+it)| dt/(¼+t²) = 0`
+(`RHTower.riemannHypothesis_iff_integral_log_norm_zeta_criticalLine_eq_zero`), from
+`I ≤ log((1+d)/(1−d))` for every real NB residual d < 1 and RH ⇒ d → 0. Also `tanh(I/2) ≤ d` unconditionally.
+Still open: the unconditional equality `I = Σ_{Re ρ>½} log|ρ/(1−ρ)|`.

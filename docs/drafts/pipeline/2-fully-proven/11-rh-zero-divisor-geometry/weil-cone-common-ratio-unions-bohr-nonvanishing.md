@@ -4,7 +4,13 @@
 - **Stage:** 2-fully-proven (paper). Theorem A extends Li–Radziwiłł (arXiv 1208.2684, IMRN 2015), Proposition 3 and Theorem 3; Theorem B extends L166.
 - **Type:** THEOREM [P] (two theorems)
 - **Source:** `1-in-progress/hf-positive-hodge-attack/krein-producer-loops.md`, entry L167
-- **Lean:** the three-block window case is formal (L166, `RHTower.eq_vonMangoldt_of_weilPositiveFull_of_two_geometric`). The general case needs Theorem A, i.e. mollified discrete moments of ζ, which the corpus does not have.
+- **Lean:** Theorem B is formal for every `b ≥ 2` and every finite coset set:
+  `RHTower.WeilCommonRatio.eq_vonMangoldt_of_weilPositiveFull_of_commonRatio` and the gap-`10⁻³` instance
+  `…_of_thousand` (module `RHTower/WeilFullConeCommonRatioRigidity`, axioms standard, 2026-10-05). The formal
+  proof does not go through Theorem A: `Σ_{n∈S} n^{−1/4}` is a finite sum of geometric series, and the
+  corpus abscissa rigidity `WeilAbscissa.eq_vonMangoldt_of_weilPositiveFull_of_sparse_rpow` (MUST-576)
+  applies. Theorem A (Bohr-restricted Li–Radziwiłł) remains to be formalized; it needs the discrete
+  mollified second moment of ζ along vertical progressions.
 
 ## Theorem A (Bohr-restricted non-vanishing on vertical progressions)
 
@@ -74,7 +80,8 @@ For `K = 0` (or `U = T^K`) this is the Li–Radziwiłł bound `1/3`.
 ## Gates
 - [x] 0 → 1: mechanism (Floquet fibers plus Bohr non-vanishing)
 - [x] 1 → 2: paper proofs above (Theorem A follows Li–Radziwiłł §4 line by line with the twist `Q_m^{it}`)
-- [ ] 2 → 3: Lean needs mollified discrete moments of ζ (not in corpus). The Floquet half for general `K` can be formalized from a fiber-cone Prop interface.
+- [ ] 2 → 3: Theorem B formal (see Lean field). Theorem A open in Lean: needs the discrete twisted mollified second moment (Li–Radziwiłł Thm 3 with BCHB constant `1 + 1/ϑ`) and the Bohr-twisted first moment.
 
 ## Log
 - 2026-09-30: L167.
+- 2026-10-05: Theorem B formal via sparse abscissa rigidity (no Theorem A needed for B).

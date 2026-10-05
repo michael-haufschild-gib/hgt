@@ -93,7 +93,7 @@ Away from WS2's own zeros, the standard Hilbert–Carleman product law makes the
 
 The second determinant is a source-defined *relative* determinant on the resolvent set of $I+zS$. Its behavior there, together with the exponential anomaly, encodes the missing phase; separate factors need not extend meromorphically across a zero of $I+zS$. Equation (8) provides no zero-free or real-spectrum law.
 
-The [theta resistance-network theorem](../2-fully-proven/theta-quantile-resistance-network.md#kron-reduction-exposes-the-universal-clock-port) gives a sharper normal form for the **same** corrected WS2 carrier. In Fourier coordinates let $a_n=-\widehat h(n)>0$, $h_0=\int h$, $J_{mn}=\delta_{mn}/(2\pi n)$, and let $G$ be the positive Schur complement of multiplication by $h$ over the constant mode. With $c_n=1/(2\pi n)$, its exact pencil is
+The [theta resistance-network theorem](../3-formalized/theta/theta-quantile-resistance-network.md#kron-reduction-exposes-the-universal-clock-port) gives a sharper normal form for the **same** corrected WS2 carrier. In Fourier coordinates let $a_n=-\widehat h(n)>0$, $h_0=\int h$, $J_{mn}=\delta_{mn}/(2\pi n)$, and let $G$ be the positive Schur complement of multiplication by $h$ over the constant mode. With $c_n=1/(2\pi n)$, its exact pencil is
 
 \[
 G\,U^{-1}(S+K)U=J-\frac{a\otimes c}{h_0}. \tag{9}

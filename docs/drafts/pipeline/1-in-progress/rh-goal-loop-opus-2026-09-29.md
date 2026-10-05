@@ -590,3 +590,8 @@ for the integrated Chebyshev deficit (WL/MC/RW/SZ are exact restatements), equiv
 - 2026-10-05 — Cycles 273–274 (MUST-775): Hardy–Littlewood criterion + exponent law Θ = 1 + 2·inf{b : H = O(x^b)}; HardyLittlewoodMellinCriterion, HardyLittlewoodExponentLaw.
 - 2026-10-05 — Cycle 275 (MUST-776): Turán's problem: one-sided ±T(x) ≤ c/√x ⇒ RH; T(x) = Ω₊(x^{−1/2}) with bias −1/ζ(½); TuranSumOneSidedBoundary.
 - 2026-10-05 — Cycle 276 (MUST-777): L(x) − √x/ζ(½) = Ω±(√x) (oscillation around the Liouville bias); one-sided theorems generalized to signed constants.
+- 2026-10-05 — Cycles 277–280 (MUST-778): Báez-Duarte criterion hard direction RH ⇒ d_N → 0 formalized (Plancherel distance, shift-ratio limit, Riesz–Perron for 1/ζ, assembly); corpus now has RH ⟺ d_N → 0. An equivalence, not progress on RH itself.
+- 2026-10-05 — Cycle 281 (MUST-779): unconditional d_N² ≥ c/log N (BaezDuarteDualSequence, BaezDuarteDistanceLogLowerBound). Positive survivor of the NB route: the rate at which d_N can decay is capped by the critical zeros; the factorial floor in the corpus is replaced by 1/log N.
+- 2026-10-05 — Cycle 282 (CANNOT-491, MUST-780): my MUST-762 Gram-form criterion is vacuous (ratio ≥ 49/48 for every Dirichlet polynomial); corrected mollifier class M = −sP(s)/(s−1) gives RH ⟺ inf ratio = 1 (BalazardSaiasYorMollifierClass).
+- 2026-10-05 — Cycle 283 (MUST-781): BSY criterion RH ⟺ I = 0 via NB residuals; unconditional tanh(I/2) ≤ d for every real NB residual (BalazardSaiasYorCriterionEquivalence).
+- 2026-10-05 — Cycle 284 (MUST-782): Burnol's lower bound liminf d_N² log N ≥ Σ_{ρ∈Z} 2/|ρ|² for every finite set of critical zeros (BaezDuarteSmoothZeroDual, BaezDuarteDistanceBurnolLowerBound). Next: the RH-side upper bound (rate of d_N → 0 under RH).

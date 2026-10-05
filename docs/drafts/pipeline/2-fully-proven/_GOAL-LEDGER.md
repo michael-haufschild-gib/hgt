@@ -58,7 +58,7 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 | 46 | theta/theta-deletion-cutoff-commutator-collapse | DONE (promoted to 3-formalized/theta) |
 | 47 | theta/theta-prime-deletion-moving-cusp-dual-source | DONE (promoted to 3-formalized/theta) |
 | 48 | theta/theta-quantile-critical-one-port-rigging | DONE 2026-10-05 → 3-formalized/theta |
-| 49 | theta/theta-quantile-resistance-network | TODO |
+| 49 | theta/theta-quantile-resistance-network | DONE 2026-10-05 → 3-formalized/theta |
 | 50 | universal-law-field/constitutive-dilation-mechanics/laplace-formation-defect-history-recovery-and-passive-reconstruction-law | DONE 2026-10-03 — HTGeometry.LaplaceFormationSplitCycle, LaplaceFormationDefectHistory, LaplaceFormationRecoveryKernel, LaplaceFormationCompletionTopology |
 | 51 | universal-law-field/constitutive-reflection-space-mechanics/selfadjoint-dyson-word-reversal-twisted-reflection-realization-and-joint-selection-no-go | DONE 2026-10-03 — HTGeometry.WordConvolutionBanachAlgebra, SelfAdjointDysonWordReversal, PositiveInvolutionIsIdentity |
 | 52 | universal-law-field/constitutive-reflection-space-mechanics/twisted-antipode-response-reflection-fusion-grade-reconstruction-and-joint-properness-law | DONE 2026-10-03 — HTGeometry.TwistedReversalReflectionSpace, CompleteGradedAlgebraExpLog, CompleteGradedHopfSignature, WordSeriesCompleteGradedAlgebra, FreeWordSeriesHopfModel, TensorAlgebraTwistedAntipode, CommonRecoveryFixedPackets |
@@ -113,14 +113,14 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 | 101 | universal-law-field/source-generated-orbit-gramian-mechanics/prime-hodge-cubic-orbit-birth-faithfulness-and-self-financing-law | DONE 2026-10-03 (HTGeometry.PrimeHodgeCubicSylvesterLaw, PrimeHodgeReachabilityProperness, PrimeHodgeJordanLift, PrimeFormationSmallApertureLaw, PrimeHodgeSquareCommutatorGrowth) |
 | 102 | universal-law-field/source-generated-orbit-gramian-mechanics/prime-hodge-full-idempotence-defect-and-bounded-multiplicative-horizon-no-go | DONE 2026-10-03 (HTGeometry.CompactOperatorIdealSimplicity, PrimeHodgeIdempotenceDefectHorizon + corpus TopologicallySimpleFormationIdempotenceDefect) |
 | 103 | universal-law-field/source-generated-orbit-gramian-mechanics/spectral-hardy-trace-formation-admission-and-radial-capital-wall-law | DONE 2026-10-03 — HTGeometry.SpectralHardyTraceFormation, EulerShellHardyTraceFormation |
-| 104 | universal-law-field/source-response-signature-mechanics/all-grade-flag-determinant-subset-phase-conservation-and-arity-properness-fracture-law | TODO |
+| 104 | universal-law-field/source-response-signature-mechanics/all-grade-flag-determinant-subset-phase-conservation-and-arity-properness-fracture-law | DONE 2026-10-05 |
 | 105 | universal-law-field/source-response-signature-mechanics/arithmetic-prime-shift-duhamel-commutator-normalization-and-ordered-scale-memory-law | DONE 2026-10-05 |
-| 106 | universal-law-field/source-response-signature-mechanics/base-norm-formation-measure-isometry-and-hilbert-observer-fracture-law | TODO |
-| 107 | universal-law-field/source-response-signature-mechanics/character-coinvariant-defect-green-properness-and-reflection-formation-selection-law | TODO |
-| 108 | universal-law-field/source-response-signature-mechanics/character-twisted-coinvariant-laplace-fisher-reconstruction-and-origin-atom-properness-law | TODO |
+| 106 | universal-law-field/source-response-signature-mechanics/base-norm-formation-measure-isometry-and-hilbert-observer-fracture-law | DONE 2026-10-05 |
+| 107 | universal-law-field/source-response-signature-mechanics/character-coinvariant-defect-green-properness-and-reflection-formation-selection-law | DONE 2026-10-05 |
+| 108 | universal-law-field/source-response-signature-mechanics/character-twisted-coinvariant-laplace-fisher-reconstruction-and-origin-atom-properness-law | DONE 2026-10-05 |
 | 109 | universal-law-field/source-response-signature-mechanics/dyson-volterra-source-response-reconstruction-lyapunov-and-global-properness-law | DONE 2026-10-05 |
 | 110 | universal-law-field/source-response-signature-mechanics/formation-grade-properness-inversion-prime-log-crowding-and-finite-prolongation-no-go | DONE 2026-10-05 |
-| 111 | universal-law-field/source-response-signature-mechanics/permutohedral-grade-four-hurwitz-exactification-and-fifteen-phase-properness-law | TODO |
+| 111 | universal-law-field/source-response-signature-mechanics/permutohedral-grade-four-hurwitz-exactification-and-fifteen-phase-properness-law | DONE 2026-10-05 |
 | 112 | universal-law-field/source-response-signature-mechanics/permutohedral-grade-three-alternant-subset-green-and-seven-phase-properness-law | DONE 2026-10-05 |
 | 113 | universal-law-field/source-response-signature-mechanics/relative-grade-green-exactification-hypoexponential-formation-and-global-pair-properness-law | DONE 2026-10-05 |
 | 114 | weil-cone-order-comparable-rigidity | TODO |

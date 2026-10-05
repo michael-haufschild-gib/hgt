@@ -7209,3 +7209,219 @@ physical estimate; do not substitute a product test or fixed-period average.
 Growing moments, moving cofactors, common-height self-return and RH open.
 All owned jobs terminal. Completed scratch sources removed; audit logs and
 search JSON retained. Goal ACTIVE.
+
+
+## continuation01ai — full profile and complete integer defect action
+
+New proved full-profile law: base/base mass on F_p pushes to full axis terms
+at defect0 and p^-2 sum_(u!=0) H(u,d/u) at every d!=0. The inverse-curve sum equals
+p^-2 sum_(m,n) Hhat(m,n) S(m,n*d;p), so the weighted nonzero fibre has
+normalization p^-4 in this formula. All zero modes are retained.
+Literal prime-square attachment is proved for the entire base/base source.
+
+New integer invariant: A=Q*k1-s1, B=Q*k2-s2,
+D=Q^2*k3-Q*s3+A*B. The complete lattice is bijective with the three explicit
+congruence conditions; defect is D/Q^2. Both contraction translations use
+common denominator Q*D0. Exact literal atom numerators attach every weight,
+lift and projector to the source. An unconditional actual Schwartz family
+retains the original negligible edge error. No discarded/nonprimitive nodes.
+
+Three leaves35public, production82029/8278/91163 pass empty;
+axiom57927 all35 standard only. Index38355 completes/imports each once;
+lint22402 has24 unrelated unreachable modules, inspected, not globally clean.
+P2/P3 bag-full-profile-integer-defect and frontier ag.15 record exact results.
+This closes exact arithmetic/profile attachment gaps, NOT a growing signed
+saving. Next attack is third-coordinate partial Poisson with the actual
+physical slice. Remaining: full prime-factor coupling, nonzero negative pole
+versus near-cone/tails at complex norm o(N/log^2 N), growing moments, moving
+cofactors, common-height self-return, RH. Goal ACTIVE.
+
+
+## continuation01ai — full third-lift Poisson now proved
+
+The full physical slice g_(xi,upsilon)(r) is the inverse Schwartz transform
+of the affine-line restriction Fourier(F)(xi,upsilon,t). Proof uses exact
+Euclidean Fubini, compact-domain parametric continuity twice, and ordinary
+Fourier inversion. Shifted Poisson therefore sums EVERY third lift exactly
+as the finite physical-height band. Both tangential lift sums remain complete,
+and the finite height sum remains inside them. The unconditional actual
+Schwartz family preserves the original negligible sharp/smooth error.
+
+ChiPrimeGaussianCubicPartialPoisson:263 lines/9 public, production72166 empty.
+Public Transverse.integral_three audited10442; combined axioms36461 all10
+standard only. Index21677/API9+helper/import1 checked; lint85350 has28
+unreachable modules outside changed leaves, all inspected, not globally clean.
+P2/P3 bag-full-third-lift-poisson and frontier ag.16 current. Missing import
+objects repaired serially without source edits; all owned jobs terminal.
+Completed scratch sources removed, logs/search JSON retained.
+
+Assessment: this closes the unjustified third-lift exchange gap by exact
+Poisson, NOT by summing row norms before integration. The signed growing
+estimate remains open. Next: move the finite third-atom sum inside each
+absolutely summable full lift block, evaluate its exact distinguished-prime
+multiplier, retain both projector phases and shifted tangential profiles.
+Then couple the resulting prime-height inverse fibres to every remaining
+prime factor and the nonzero negative cone pole/near-cone/tails at complex
+norm o(N/log^2 N). Growing moments, moving cofactors, deterministic common-
+height self-return and RH remain open. Goal ACTIVE.
+
+
+## continuation01aj — complete physical prime-height source
+
+BAG route unchanged: full signed physical cubic, full tangential inverse
+profiles, nonzero negative cone pole and all near-cone/tail sectors. Previous
+01ai Poisson closed the third-lift identity; current work closes the finite
+third-source contraction and the stronger individual-height series exchange.
+
+The critical source is a linear map commuting with both original projectors.
+After partial Poisson its all-integer Fourier multiplier is exact; on the
+actual positive band this is log(r) for primes, zero otherwise. Finite torsion
+coefficient extraction at denominator floor(2N)+1 isolates each physical
+height. Full Z^3 absolute summability, reassociated as Z^2 times Z, and a
+finite linear combination now give joint absolute summability of EACH slice.
+Consequently the finite prime-height sum is outside both full tangential
+series. The unconditional actual family retains its original sharp/smooth
+complex-norm error. No physical weight or projector phase is discarded.
+
+ChiPrimeGaussianCubicPrimeHeight:490 lines/28 public. Production71595 empty;
+axioms99790 all28 standard3 only. Index62284/API28/import1 verified. Lint78872:
+26 unreachable modules outside this leaf,174 large-file warnings; no new-leaf
+or proof-debt finding. Global lint not clean. Required import objects only
+rebuilt serially; no source edits there. No full/umbrella builds, numerical
+computations, limit hacks, added axioms or subagents. All owned jobs terminal;
+completed scratch sources cleaned, audit logs/search JSON retained.
+
+Corpus searches01aj:33183 partial;72898 nonpartial;10675 nonpartial;
+22992 nonpartial;24293 nonpartial;87002 partial (malformed local-model JSON).
+Coverage/freshness and all candidates/source arguments/proposals inspected
+and recorded in P1 bag-transverse-defect-grid-law. Existing near and fixed-
+rational row cancellation does not cover the complementary full signed sum.
+Quadratic mixing does not imply adjacent cubic control; the corpus supplies
+actual coherent-packet separation. No unsupported transfer used.
+
+Assessment: new exact analytic/source gap closed, but no signed asymptotic
+saving yet. Next attach each resolved whole-height profile to ALL local
+prime-square factors, transfer both physical label exclusions and use the
+complete inverse-fibre/Kloosterman identity including zero-fibre axes. Then
+solve the coupled nonzero pole/near-cone/tail action at o(N/log^2 N). Growing
+moments, moving cofactors, deterministic common-height self-return and RH
+remain open. P2/P3 bag-third-prime-height-action, frontier ag.17. Goal ACTIVE.
+
+## continuation01ak — full labelled local prime-height inverse profile
+
+BAG route: complete signed physical cubic through exact full inverse
+profiles. Previous prime-height exchange succeeded; current work closes its
+remaining full local-prime coupling with both actual label exclusions.
+Each label has an exact all-integer local-grid multiplier. Both projectors
+become p!=r and q!=r on the actual full cube. The third labelled source
+selects r itself (zero outside the physical band), retaining both complete
+tangential sums. Each surviving first/second label leaves a base factor at
+r. All complementary prime coordinates remain in the cofactor fibre profile.
+The full axes/intersection and nonzero inverse curves are attached exactly.
+The hypothesis-free actual family keeps its original normalized edge error.
+
+ChiRamanujanCriticalGridSource adds2 public declarations/revises1 old proof;
+ChiRamanujanLabelledGridAction354 lines/19public;
+ChiPrimeGaussianCubicLocalPrimeHeight196 lines/6public.
+Production19667/89834/53950 empty PASS; corrected axioms31638 all28 standard3
+only. Index39694/API28/imports once verified. Lint74630 has22 unreachable
+modules outside changed leaves and174 warnings, no new-leaf/proof-debt
+finding; global lint not clean. No full/umbrella build, subagents, numeric
+computation, added axiom or limit hack. P2/P3 bag-labelled-local-prime-height;
+frontier C28.56ag.18.
+
+Search63897 nonpartial covered65830 files; lexical79470 located exact source
+laws. Follow-up89674 nonpartial covered65839 files, all20 candidates/20source
+arguments and the sole proposed ingredient set inspected. Its kernel-error
+scaling proposal is insufficient: main signed cubic remains unestimated.
+Compiler metadata mostly pending/source_only; applied results verified by
+actual Lean production. Full metadata and source applicability in the P1
+bag-transverse-defect-grid-law working card.
+
+Assessment: exact full-source/profile gap closed, no growing signed saving.
+Next attack the whole actual profile's norm o(N/log^2 N), coupling its axes,
+nonzero inverse fibres, negative cone residue and every near-cone/tail term.
+Actual transverse source contains exp(-2*pi*i*r*(zeta+xi*upsilon)); dephasing
+alone supplies neither small derivatives nor small Fourier mass. Retain all
+cofactor shifts and the full r-dependent transition/Mellin line. Growing
+moments, moving cofactors, deterministic common-height self-return and RH
+remain open. Goal ACTIVE.
+
+## continuation01al — actual local axes rigidity; full nonzero channel removed
+
+BAG route remains the complete signed physical prime cubic. Previous ag.18
+closed exact local coupling without any signed saving. Current conjecture
+used actual covered physical frequencies and the complementary prime tags:
+pinning either r-base at zero preserves the full excluded source when
+N<r<=2N. If r divides a positive physical frequency n<2r then n=r, killed
+by every other distinguished tag; otherwise its base multiplier already1.
+The proved mixed/pinned identities suffice; the stronger initial all-row
+average conjecture is not claimed as a separate theorem.
+
+Exact complete axes contribution=(1-r^-2)*full inverse action. Complete
+nonzero inverse-fibre contribution=r^-2*full inverse action. Recovering the
+original physical masked row and retaining all labels shows the whole
+nonzero channel uniformly bounded, hence negligible at log^2N/N scale.
+The hypothesis-free actual Schwartz family identifies the sharp signed
+cubic with its complete axes action up to a vanishing normalized norm error.
+This is removal of an ENTIRE local channel, not a full cubic saving. Do not
+identify these nonzero product-defect fibres with every physical near-cone
+or tail sector. All complementary factors and both exclusions remain.
+
+New LocalAxisRigidity612lines/14public; LocalAxesReduction312lines/7public.
+Existing SharpEdges entry-size/cardinality lemmas exposed (two public names,
+no new estimate). Production93024/10399/77981 PASS empty; all23 standard-only
+axiom audit89779 PASS. Index85200 PASS/API23/imports once. Lint77191:28
+unrelated unreachable modules and174 warnings; no owned-leaf/proof-debt
+finding. Global lint NOT clean. All owned jobs terminal and scratch sources
+cleaned; logs/search JSON retained. No full build, subagents, computations,
+added axioms or limit hacks. P2/P3 bag-actual-local-axis-rigidity, ag.19.
+
+Search94405/26913 grounded the actual pinning proof. Deep94763 nonpartial
+65848files,gen1243250,coverage1243267/current1243268,refresh incomplete,
+noerrors,semantics unmeasured. All20 candidate/20 source arguments inspected;
+known bilinear/height identities do not estimate the growing signed axes.
+Actual PrimeOnlyVaughan joint row and IntegerAliases source inspected: preserve
+all shared q,r weights and signs, and all non-identical sampled aliases.
+
+Assessment: YES, an entire actual channel is now negligible and the hard
+source is precisely isolated. NO, the full axes saving is not proved.
+Next solve the norm o(N/log^2N) of the COMPLETE signed axes sum across all
+physical prime heights. This requires source-specific cancellation beyond
+fixed-profile boundary laws or generic row norms. Growing moments, moving
+cofactors and common-height self-return remain hard open problems. RH not
+proved/refuted; goal ACTIVE.
+
+## continuation01am — full signed cofactor correction; axes estimate remains open
+
+BAG proof route: signed saving of COMPLETE axes action from ag.19, then
+moments/cofactors/common-height self-return. Previous turn PROGRESS removed
+a whole local channel. Current turn did not prove the required axes saving.
+It disproved an attempted extension of the negative prime-cofactor alias
+sign to the full short source. V<n<=2V gives exactly mu(n); U>=1,n<=2UV
+classifies every Type-II term with coprimality retained. At every odd prime
+V, the coefficient at 2V is +1; Euclid gives a cofinal positive family.
+Four source theorems added to PrimeOnlyVaughan; positive survivor is the
+complete signed Möbius classification, not just a negative conclusion.
+P2/P3 bag-complete-vaughan-cofactor-signs; P5 bag-whole-vaughan-negative-sign.
+Existing C28.56c source entry updated; hard frontier remains ag.19.
+
+Production70593 PASS empty; axiom2264 all4 standard3; index87246/API4/import
+once. Lint60847:25 unrelated unreachable modules/174warnings; global NOT
+clean, no owned-leaf or proof-debt finding. No full build, subagents,
+numerical experiments, added axioms or limit hacks. All owned jobs terminal;
+scratch sources removed, logs/search JSON retained.
+
+Current hard-attempt record: P1 bag-complete-axes-signed-saving. Five deep
+searches completed; all candidate/source statements and generated proposals
+inspected with freshness limitations recorded there. No query supplies the
+missing joint signed physical estimate. Generic alias diagonalization is
+invalid; ordinary mean-square/density bounds do not supply the centered
+ternary smoothing residual. A finite-unit ternary phase has a paper
+common-character diagonalization, but physical real phase e(pq/r) is NOT
+modular e(pq*r^-1/Q). Do not implement a mere finite-group wrapper. Next
+attack the full stationary/arithmetic transfer and surviving actual signed
+cofactor coefficients. Keep all integer lifts, rational resonances, moving
+Gaussian/window weights and shared third prime before taking norms.
+Goal ACTIVE; no RH proof/refutation, axes saving, growing moment theorem or
+common-height producer claimed.

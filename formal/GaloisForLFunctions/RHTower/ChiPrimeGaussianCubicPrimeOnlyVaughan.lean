@@ -174,6 +174,96 @@ theorem sum_primes_eq_vaughanPrimeCoefficient (I : Finset ℕ) (U V : ℕ) (w : 
     simp only [if_pos hp, div_self hl, one_mul]
   · simp only [if_neg hp, Complex.ofReal_zero, zero_div, zero_mul]
 
+/-- On the whole first short-factor band, the actual signed coefficient is Möbius. -/
+theorem vaughanPrimeShort_eq_moebius_seam {V n : ℕ}
+    (hVn : V < n) (hnV : n ≤ 2*V) :
+    vaughanPrimeShort V n = (moebius n : ℝ) := by
+  classical
+  have hn0 : n ≠ 0 := by omega
+  have hn1 : n ≠ 1 := by omega
+  have hdV {d : ℕ} (hd : d ∈ n.divisors) (hdn : d ≠ n) : d ≤ V := by
+    obtain ⟨k,hk⟩ := (Nat.mem_divisors.mp hd).1
+    have hd0 : d ≠ 0 := by intro h; simp only [h,zero_mul] at hk; omega
+    have hk1 : 2 ≤ k := by
+      by_contra h
+      have : k=0 ∨ k=1 := by omega
+      rcases this with h | h <;> simp_all
+    have hmul : 2*d≤n := by nlinarith
+    omega
+  have he (d : ℕ) (hd : d ∈ n.divisors) :
+      truncAF (moebius : ArithmeticFunction ℝ) V d =
+      (moebius d : ℝ) - if d=n then (moebius n : ℝ) else 0 := by
+    by_cases hdn : d=n
+    · simp [hdn,truncAF_apply,not_le.mpr hVn]
+    · simp [truncAF_apply,hdV hd hdn,hdn]
+  have hs : ((zeta : ArithmeticFunction ℝ)*truncAF (moebius : ArithmeticFunction ℝ) V) n =
+      -(moebius n : ℝ) := by
+    rw [coe_zeta_mul_apply]
+    simp_rw [Finset.sum_congr rfl (fun d hd => he d hd)]
+    rw [Finset.sum_sub_distrib]
+    have hz : (∑ d ∈ n.divisors, (moebius d : ℝ))=0 := by
+      have h := congrArg (fun f : ArithmeticFunction ℝ => f n)
+        (coe_zeta_mul_coe_moebius (R := ℝ))
+      simpa only [coe_zeta_mul_apply,intCoe_apply,one_apply,if_neg hn1] using h
+    simp [hz,Nat.mem_divisors,hn0]
+  have ht : typeIIShort V n=(moebius n : ℝ) := by
+    change (1 : ArithmeticFunction ℝ) n-_= _
+    rw [one_apply,if_neg hn1,hs,zero_sub,neg_neg]
+  unfold vaughanPrimeShort vaughanSquarefreePart
+  rw [ht]
+  by_cases hn : Squarefree n
+  · simp [hn]
+  · simp [hn,moebius_eq_zero_of_not_squarefree hn]
+
+/-- Every term of the complete Type-II source has its signed Möbius coefficient at the seam. -/
+theorem vaughanPrimeTypeII_eq_moebius_seam {U V n : ℕ}
+    (hU : 1 ≤ U) (hn : n ≤ 2*U*V) :
+    vaughanPrimeTypeII U V n = ∑ dm ∈ n.divisorsAntidiagonal,
+      if dm.1.Prime ∧ U < dm.1 ∧ dm.1.Coprime dm.2 ∧ V < dm.2 then
+        Real.log dm.1*(moebius dm.2 : ℝ) else 0 := by
+  classical
+  unfold vaughanPrimeTypeII
+  apply Finset.sum_congr rfl
+  intro dm hdm
+  have hmul := (Nat.mem_divisorsAntidiagonal.mp hdm).1
+  have hn0 := (Nat.mem_divisorsAntidiagonal.mp hdm).2
+  have hm0 : 1 ≤ dm.2 := by
+    by_contra h
+    have : dm.2=0 := by omega
+    simp_all
+  by_cases hd : dm.1.Prime ∧ U < dm.1 ∧ dm.1.Coprime dm.2
+  · rw [if_pos hd]
+    have hmV : dm.2≤2*V := by
+      have hlu : U*dm.2≤dm.1*dm.2 := Nat.mul_le_mul_right _ hd.2.1.le
+      have hprod : U*dm.2≤U*(2*V) := by nlinarith only [hlu,hmul,hn]
+      exact Nat.le_of_mul_le_mul_left hprod (by omega)
+    by_cases hVm : V < dm.2
+    · rw [if_pos ⟨hd.1,hd.2.1,hd.2.2,hVm⟩,
+        vaughanPrimeShort_eq_moebius_seam hVm hmV]
+    · have hs : vaughanPrimeShort V dm.2=0 := by
+        unfold vaughanPrimeShort vaughanSquarefreePart
+        have ht : typeIIShort V dm.2=0 :=
+          one_sub_zeta_mul_truncAF_moebius_apply_eq_zero hm0 (by omega)
+        simp only [ht,ite_self]
+      rw [if_neg (fun h => hVm h.2.2.2),hs,mul_zero]
+  · rw [if_neg hd,if_neg (fun h => hd ⟨h.1,h.2.1,h.2.2.1⟩)]
+
+/-- The full short source has positive terms at arbitrarily large prime cutoffs. -/
+theorem vaughanPrimeShort_twice_prime {p : ℕ} (hp : p.Prime) (hp2 : 2 < p) :
+    vaughanPrimeShort p (2*p)=1 := by
+  rw [vaughanPrimeShort_eq_moebius_seam (by omega) le_rfl]
+  have hc : Nat.Coprime 2 p := (Nat.coprime_primes Nat.prime_two hp).mpr (by omega)
+  rw [isMultiplicative_moebius.map_mul_of_coprime hc,
+    moebius_apply_prime Nat.prime_two,moebius_apply_prime hp]
+  simp
+
+/-- The entire signed short source cannot be nonpositive above any cutoff. -/
+theorem exists_vaughanPrimeShort_positive_after (K : ℕ) :
+    ∃ V n : ℕ, K<V ∧ V<n ∧ n≤2*V ∧ V.Prime ∧ vaughanPrimeShort V n=1 := by
+  obtain ⟨p,hpK,hp⟩ := Nat.exists_infinite_primes (max (K+1) 3)
+  have hp2 : 2<p := by omega
+  exact ⟨p,2*p,by omega,by omega,le_rfl,hp,vaughanPrimeShort_twice_prime hp hp2⟩
+
 end RHTower.Sieve
 
 namespace RHTower

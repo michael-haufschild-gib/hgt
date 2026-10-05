@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ChiRamanujanCriticalDistinguishedPrime
+import GaloisForLFunctions.RHTower.ChiRamanujanDistinguishedPrimeLabels
 import GaloisForLFunctions.RHTower.ChiRamanujanCompleteCubicTrace
 import Mathlib.Logic.Equiv.Fin.Basic
 
@@ -106,6 +107,13 @@ abbrev RamanujanLocalGrid (P : Finset ℕ) := (p : RamanujanGridPrime P) → Fin
 def ramanujanLocalGridNode {P : Finset ℕ} (x : RamanujanLocalGrid P) : ℝ :=
   ∑ p, ((x p).val : ℝ)/(p.val^2 : ℕ)
 
+/-- One distinguished label, with every other local prime factor retained. -/
+def ramanujanLabelledLocalGridWeight {P : Finset ℕ} (p : RamanujanGridPrime P)
+    (x : RamanujanLocalGrid P) : ℝ :=
+  Real.log p.val *
+    ∏ q : RamanujanGridPrime P,
+      if q.val=p.val then ramanujanGridTag q.val (x q) else ramanujanGridBase q.val (x q)
+
 def ramanujanLocalGridWeight (P : Finset ℕ) (x : RamanujanLocalGrid P) : ℝ :=
   ∑ p : RamanujanGridPrime P, Real.log p.val *
     ∏ q : RamanujanGridPrime P,
@@ -140,23 +148,22 @@ private lemma grid_selected_product (P : Finset ℕ) (p : RamanujanGridPrime P) 
   intro q hq
   rw [if_neg (Finset.mem_erase.mp hq).1]
 
-theorem ramanujanLocalGridWeight_fourier (P : Finset ℕ) (n : ℤ) :
-    (∑ x : RamanujanLocalGrid P, (ramanujanLocalGridWeight P x : ℂ)*
+/-- The full local product for one label has its exact all-integer multiplier. -/
+theorem ramanujanLabelledLocalGridWeight_fourier (P : Finset ℕ)
+    (p : RamanujanGridPrime P) (n : ℤ) :
+    (∑ x : RamanujanLocalGrid P, (ramanujanLabelledLocalGridWeight p x : ℂ)*
       ramanujanFourierPhase n (ramanujanLocalGridNode x)) =
-      (ramanujanDistinguishedPrimeMultiplier P n.natAbs : ℂ) := by
+      (ramanujanDistinguishedPrimeEntry P p.val n.natAbs : ℂ) := by
   classical
-  simp only [ramanujanLocalGridWeight, Complex.ofReal_sum, Complex.ofReal_mul,
-    Complex.ofReal_prod, Finset.sum_mul, ramanujanLocalGridNode, grid_phase_sum]
-  rw [Finset.sum_comm]
+  simp only [ramanujanLabelledLocalGridWeight, Complex.ofReal_mul,
+    Complex.ofReal_prod, ramanujanLocalGridNode, grid_phase_sum]
   simp only [mul_assoc, ← Finset.prod_mul_distrib, ← Finset.mul_sum]
-  trans ∑ p : RamanujanGridPrime P, (Real.log p.val : ℂ) *
+  trans (Real.log p.val : ℂ) *
     ∏ q : RamanujanGridPrime P,
       ((if q.val=p.val then ramanujanTorsionIndicator q.val n.natAbs-
         ramanujanTorsionIndicator (q.val^2) n.natAbs
         else 1-ramanujanTorsionIndicator q.val n.natAbs : ℝ) : ℂ)
-  · apply Finset.sum_congr rfl
-    intro p hp
-    congr 1
+  · congr 1
     calc
       _ = ∏ q : RamanujanGridPrime P, ∑ k : Fin (q.val^2),
           ((if q.val=p.val then ramanujanGridTag q.val k else ramanujanGridBase q.val k : ℝ) : ℂ)*
@@ -168,16 +175,27 @@ theorem ramanujanLocalGridWeight_fourier (P : Finset ℕ) (n : ℤ) :
         apply Finset.prod_congr rfl
         intro q hq
         exact grid_selected_fourier (Finset.mem_filter.mp q.property).2.ne_zero n
-  simp only [← Complex.ofReal_prod, grid_selected_product, ← Complex.ofReal_mul,
-    ← Complex.ofReal_sum]
+  simp only [← Complex.ofReal_prod, grid_selected_product,
+    ramanujanDistinguishedPrimeEntry, Complex.ofReal_mul, mul_assoc]
+
+theorem ramanujanLocalGridWeight_fourier (P : Finset ℕ) (n : ℤ) :
+    (∑ x : RamanujanLocalGrid P, (ramanujanLocalGridWeight P x : ℂ)*
+      ramanujanFourierPhase n (ramanujanLocalGridNode x)) =
+      (ramanujanDistinguishedPrimeMultiplier P n.natAbs : ℂ) := by
+  classical
+  change (∑ x : RamanujanLocalGrid P,
+    ((∑ p : RamanujanGridPrime P, ramanujanLabelledLocalGridWeight p x : ℝ) : ℂ)*
+      ramanujanFourierPhase n (ramanujanLocalGridNode x)) = _
+  simp only [Complex.ofReal_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  simp only [ramanujanLabelledLocalGridWeight_fourier, ← Complex.ofReal_sum]
   congr 1
   have hu : (Finset.univ : Finset (RamanujanGridPrime P))=(P.filter Nat.Prime).attach := by
     ext
     simp
-  rw [hu, Finset.sum_attach (P.filter Nat.Prime) (fun p : ℕ => Real.log p *
-    ((ramanujanTorsionIndicator p n.natAbs-ramanujanTorsionIndicator (p^2) n.natAbs)*
-      ∏ q ∈ (P.filter Nat.Prime).erase p, (1-ramanujanTorsionIndicator q n.natAbs)))]
-  simp only [ramanujanDistinguishedPrimeMultiplier, mul_assoc]
+  rw [hu, Finset.sum_attach (P.filter Nat.Prime)
+    (fun p : ℕ => ramanujanDistinguishedPrimeEntry P p n.natAbs)]
+  rfl
 
 def ramanujanGridModulus (P : Finset ℕ) : ℕ := ramanujanPrimeRadical P ^ 2
 

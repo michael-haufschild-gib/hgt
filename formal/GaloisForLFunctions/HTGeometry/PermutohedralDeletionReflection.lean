@@ -184,7 +184,8 @@ theorem disjoint_incSets_map {n : ℕ} (i : Fin (n + 1)) (A : Finset (Finset (Fi
 
 /-- **The deletion law** `N_{r+1} = Σ_i (-1)^i N_r(λ̂_i) E_{r+1,i}`. -/
 theorem numer_succ (n : ℕ) :
-    numer (n + 1) = ∑ i : Fin (n + 1), ((-1) ^ (i : ℕ) : ℤ) • (liftDel i (numer n) * incidence i) := by
+    numer (n + 1) =
+      ∑ i : Fin (n + 1), ((-1) ^ (i : ℕ) : ℤ) • (liftDel i (numer n) * incidence i) := by
   rw [numer, ← (Equiv.ofBijective _ firstLetter_bijective).sum_comp, Fintype.sum_prod_type]
   refine sum_congr rfl fun i _ => ?_
   rw [numer, map_sum, sum_mul, smul_sum]
@@ -568,8 +569,13 @@ theorem aeval_reflect {r : ℕ} (z : K) (lam : Fin r → K) (p : Poly r) :
     (aeval (point z lam)))
   simp only [AlgHom.comp_apply] at h
   have hpt : (fun i : Option (Fin r) => aeval (point z lam)
-      (i.elim (-X none - ∑ i, X (some i)) fun i => X (some i))) = point (-z - ∑ i, lam i) lam :=
-    funext fun o => by cases o <;> simp [point, map_sum]
+      (i.elim (-X none - ∑ i, X (some i) : Poly r) fun i => X (some i))) =
+        point (-z - ∑ i, lam i) lam :=
+    funext fun o => by
+      cases o
+      · rw [Option.elim_none, map_sub, map_neg, map_sum]
+        simp [point]
+      · simp [point]
   rw [reflect, h, hpt]
 
 /-- **`(GFH.R1)` evaluated; centered parity.**  With `x = z + A/2`, `P_r(-A/2 - x) =

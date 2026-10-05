@@ -1,7 +1,7 @@
 # BAG full tangential profile and complete integer defect action
 
-Route: signed physical BAG cubic. Full-profile fibre production passes;
-integer source attachment is undergoing Lean audit. No signed saving or RH.
+Route: signed physical BAG cubic. All three leaves pass production and standard-axiom audits.
+No signed saving or RH.
 
 ## Full tangential fibre [PAPER PROVED; LEAN PRODUCTION PASSES]
 
@@ -36,7 +36,7 @@ corpus's actual complete Kloosterman sum. No spectral or cancellation
 hypothesis appears. Existing fixed-modulus norm p alone does not provide
 the required growing signed estimate.
 
-## All integer defect coordinates [PAPER PROVED; LEAN AUDIT]
+## All integer defect coordinates [PAPER PROVED; LEAN PRODUCTION PASSES]
 
 For positive integer Q and any integer shift numerator s, the map
 
@@ -56,7 +56,7 @@ is exp(-2*pi*i*r*D/Q^2), with the full two-coordinate transition and entire
 physical-window Mellin line unchanged. The lattice sum remains outside
 the r integral; no unproved sum/integral interchange is taken.
 
-## Both contraction projectors and actual source [PAPER PROVED; LEAN AUDIT]
+## Both contraction projectors and actual source [PAPER PROVED; LEAN PRODUCTION PASSES]
 
 At a common grid denominator Q, a translation by u/D0 in direction(1,0,-1)
 and v/D0 in direction(0,1,-1) has denominator L=Q*D0 and numerator
@@ -85,3 +85,28 @@ projected source with all remaining prime factors. No uniform CRT/cofactor
 estimate or absolute interchange with the r integral has been proved.
 Full pole/near-cone/tail coupling at complex norm o(N/log^2 N), growing
 moments, moving cofactors, common-height self-return and RH remain open.
+
+## Lean audit — continuation01ai
+
+ChiRamanujanTransverseProfileFibres:181 lines/10 public declarations,
+production82029 empty. ChiPrimeGaussianCubicIntegerDefect:166 lines/15 public,
+production8278 empty. ChiPrimeGaussianCubicDefectAction:10 public,
+production91163 empty. Combined axiom57927 checks all35: no proof debt or
+added axioms; only propext, Classical.choice and Quot.sound. Every import
+occurs once in RHTower. Index38355 completes; API refreshed. Lint22402 has24
+unrelated unreachable modules, inspected; no finding in these leaves.
+Global lint is not clean. Audit logs remain under /tmp/*01ai.log.
+
+Searches68221/4633/60369: nonpartial65796/65796/65798, noerrors;
+background refresh incomplete and compiler metadata mostly pending/source_only.
+All20 candidates and20 source arguments per search, ingredients/ideas read.
+The principal-unit quotient lift and Fourier-Borel annulus ingredients are
+unrelated to the physical defect problem and were rejected. Useful mechanisms
+were finite Fourier inversion, actual Kloosterman units, full Schwartz lattice
+summability and shifted Poisson. Candidate applicability verified in Lean.
+
+Assessment: exact full-profile arithmetic and full projected integer action
+are closed. Uniform signed cancellation is not. Next attack is partial
+Poisson in the third lift followed by its actual prime-r source, keeping both
+tangential frequencies. Existing post-integral absolute Fourier summability
+cannot justify a pre-integral lattice exchange. Goal remains ACTIVE.

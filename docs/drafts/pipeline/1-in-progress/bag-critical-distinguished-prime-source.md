@@ -628,3 +628,58 @@ physical estimate; do not substitute a product test or fixed-period average.
 Growing moments, moving cofactors, common-height self-return and RH open.
 All owned jobs terminal. Completed scratch sources removed; audit logs and
 search JSON retained. Goal ACTIVE.
+
+
+## continuation01ai — full profile and complete integer defect action
+
+New proved full-profile law: base/base mass on F_p pushes to full axis terms
+at defect0 and p^-2 sum_(u!=0) H(u,d/u) at every d!=0. The inverse-curve sum equals
+p^-2 sum_(m,n) Hhat(m,n) S(m,n*d;p), so the weighted nonzero fibre has
+normalization p^-4 in this formula. All zero modes are retained.
+Literal prime-square attachment is proved for the entire base/base source.
+
+New integer invariant: A=Q*k1-s1, B=Q*k2-s2,
+D=Q^2*k3-Q*s3+A*B. The complete lattice is bijective with the three explicit
+congruence conditions; defect is D/Q^2. Both contraction translations use
+common denominator Q*D0. Exact literal atom numerators attach every weight,
+lift and projector to the source. An unconditional actual Schwartz family
+retains the original negligible edge error. No discarded/nonprimitive nodes.
+
+Three leaves35public, production82029/8278/91163 pass empty;
+axiom57927 all35 standard only. Index38355 completes/imports each once;
+lint22402 has24 unrelated unreachable modules, inspected, not globally clean.
+P2/P3 bag-full-profile-integer-defect and frontier ag.15 record exact results.
+This closes exact arithmetic/profile attachment gaps, NOT a growing signed
+saving. Next attack is third-coordinate partial Poisson with the actual
+physical slice. Remaining: full prime-factor coupling, nonzero negative pole
+versus near-cone/tails at complex norm o(N/log^2 N), growing moments, moving
+cofactors, common-height self-return, RH. Goal ACTIVE.
+
+
+## continuation01ai — full third-lift Poisson now proved
+
+The full physical slice g_(xi,upsilon)(r) is the inverse Schwartz transform
+of the affine-line restriction Fourier(F)(xi,upsilon,t). Proof uses exact
+Euclidean Fubini, compact-domain parametric continuity twice, and ordinary
+Fourier inversion. Shifted Poisson therefore sums EVERY third lift exactly
+as the finite physical-height band. Both tangential lift sums remain complete,
+and the finite height sum remains inside them. The unconditional actual
+Schwartz family preserves the original negligible sharp/smooth error.
+
+ChiPrimeGaussianCubicPartialPoisson:263 lines/9 public, production72166 empty.
+Public Transverse.integral_three audited10442; combined axioms36461 all10
+standard only. Index21677/API9+helper/import1 checked; lint85350 has28
+unreachable modules outside changed leaves, all inspected, not globally clean.
+P2/P3 bag-full-third-lift-poisson and frontier ag.16 current. Missing import
+objects repaired serially without source edits; all owned jobs terminal.
+Completed scratch sources removed, logs/search JSON retained.
+
+Assessment: this closes the unjustified third-lift exchange gap by exact
+Poisson, NOT by summing row norms before integration. The signed growing
+estimate remains open. Next: move the finite third-atom sum inside each
+absolutely summable full lift block, evaluate its exact distinguished-prime
+multiplier, retain both projector phases and shifted tangential profiles.
+Then couple the resulting prime-height inverse fibres to every remaining
+prime factor and the nonzero negative cone pole/near-cone/tails at complex
+norm o(N/log^2 N). Growing moments, moving cofactors, deterministic common-
+height self-return and RH remain open. Goal ACTIVE.

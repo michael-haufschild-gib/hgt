@@ -677,7 +677,8 @@ private theorem edge_prime_slice_bound :
     _ ≤ 64*(D*N*(1+Real.log ((N+1:ℕ):ℝ))) := hm
     _ = _ := by ring
 
-private theorem edge_main_entry_norm {N:ℕ} (hN:1≤N) {p q r:ℕ}
+/-- Uniform size bound for each actual cubic entry in the physical prime band. -/
+theorem primeGaussianCubicMainEntry_norm_le {N:ℕ} (hN:1≤N) {p q r:ℕ}
     (hp:p∈primeProfileBand (N:ℝ)) (hq:q∈primeProfileBand (N:ℝ)) (hr:r∈primeProfileBand (N:ℝ)) :
     ‖primeGaussianCubicMainEntry N p q r‖≤8/(N:ℝ) := by
   have hN0 : (0:ℝ)<N := by exact_mod_cast (by omega : 0<N)
@@ -702,7 +703,8 @@ private theorem edge_main_entry_norm {N:ℕ} (hN:1≤N) {p q r:ℕ}
       apply (div_le_div_iff₀ hr0 hN0).mpr
       nlinarith only [Real.pi_lt_four,hrN,hN0]
 
-private theorem edge_band_card (N:ℕ) : ((primeProfileBand (N:ℝ)).card:ℝ)≤2*N := by
+/-- The physical prime band is contained in the full integer interval. -/
+theorem primeProfileBand_card_le_twice (N:ℕ) : ((primeProfileBand (N:ℝ)).card:ℝ)≤2*N := by
   have hc : (primeProfileBand (N:ℝ)).card≤⌊2*(N:ℝ)⌋₊ :=
     (Finset.card_filter_le _ _).trans (by rw [Nat.card_Ioc]; exact Nat.sub_le _ _)
   exact (Nat.cast_le.mpr hc).trans (Nat.floor_le (by positivity))
@@ -777,10 +779,10 @@ private theorem edge_off_slice_bound :
           intro q hq
           rw [norm_mul,norm_mul]
           have hc := mul_le_mul (hu q hq) (hv' q hq) (norm_nonneg _) zero_le_one
-          exact (mul_le_mul hc (edge_main_entry_norm hN hp hq hq) (norm_nonneg _) (by norm_num)).trans_eq (by ring)
+          exact (mul_le_mul hc (primeGaussianCubicMainEntry_norm_le hN hp hq hq) (norm_nonneg _) (by norm_num)).trans_eq (by ring)
         _ ≤ 16 := by
           simp only [Finset.sum_const,nsmul_eq_mul]
-          have hc := mul_le_mul_of_nonneg_right (edge_band_card N) (by positivity : 0≤8/(N:ℝ))
+          have hc := mul_le_mul_of_nonneg_right (primeProfileBand_card_le_twice N) (by positivity : 0≤8/(N:ℝ))
           have he : (2*(N:ℝ))*(8/(N:ℝ))=16 := by field_simp; ring
           exact hc.trans_eq he
     rw [he]
