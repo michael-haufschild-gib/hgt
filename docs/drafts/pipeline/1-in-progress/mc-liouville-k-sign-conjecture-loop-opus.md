@@ -42,3 +42,9 @@ Attack through complete multiplicativity only (K1–K6 use none of it beyond Dir
 mechanisms: (i) Euler-product log-positivity in the dilation variable; (ii) parity rigidity `λ(p) = −1` for
 all `p` as an extremal problem over `f(p) ∈ [−1,0]`; (iii) theta modularity of `Σλ(n)/(e^{nt}−1)` combined
 with the dilation Möbius structure.
+| K7 | Euler-product PD: `τ ↦ Π_p(1+p^{−1−σ−iτ})^{−1}` times the PD factor `Γ(σ+iτ)(1+σ+iτ)` is PD | FALSE | each Euler factor has alternating Fourier coefficients `(−p^{−1−σ})^k`; Schur products need both factors PD; complete multiplicativity enters only through these alternating local factors |
+| K8 | extremal parity: `K_λ(t) = min` over completely multiplicative `f(p) ∈ [−1,0]` and the minimum is ≥ 0 | CIRCULAR | the minimum at fixed `t` is attained at sign patterns `f(p) = −1` for `p ≲ 1/t`, i.e. at `λ` restricted to small primes; its sign is the finite-prime cone, already equivalent to `K ≥ 0` (MC-C12.93) |
+| K9 | positive real-`s` mixture `K(t) = ∫_{s>1} k_t(s) ζ(2s)/ζ(s) ds`, `k_t ≥ 0` | FALSE | same log-concavity obstruction as K2; on `(½,1)` the real values `ζ(2s)/ζ(s)` are negative, so the strip cannot be used either |
+
+Formal side result this session: MC-C12.99-S2 (`LiouvilleTriangularHeadOscillation`), every uncancelled
+short head `P + cA` oscillates at `x^{3/4−ε}`; see `../3-formalized/mc-triangular-head-supercritical-oscillation.md`.

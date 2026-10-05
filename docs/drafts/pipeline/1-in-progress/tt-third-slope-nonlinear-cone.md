@@ -2959,3 +2959,78 @@ secondLean, raisedlimits, fullbuild orumbrella build.
 C77rows0..87 AND96closed: all37strictsigns+universalFin37standard3.
 This turn83..87 allfive stagesexit0,finalsignlogsread. Soleforegoundcell227
 continues88Columns, lastOS lake97901/Lean97945 at00:49. GoalACTIVE.
+
+
+## 2026-10-05 — Flat-mass reduction and exact signed seventh-mode transfer
+
+Route TT; hard target remains full interior third-slope positivity through
+complete surplus Q6/residual, followed by the actual source quadratic,
+transported fourth gap/join and all-rank closure. RH remains OPEN.
+
+New PAPER results, not kernel audits:
+1. Actual source increment plus native q7>0, q8<0, Emax>0 gives
+   Q6(a+d)<Q6(a) for every d>0 at a=aActual. In particular
+   Q6(aFlat)<Q6(aActual). Flat-mass nonnegativity alone suffices;
+   the separate zero-mass endpoint is unnecessary. Flat sign remains OPEN.
+2. The full seventh homogeneous Y4 term must retain its cutoff n>=6 in
+   the reversed head. Its five even reflected rows are
+   32768*T^3*Y^4/12^6 times (0,0,8(2Y-3),192(Y-2),1056Y-6144).
+   The actual finite source pair cross(F,I_mode) is
+   (512/2187)*U*T^3*Y^5*(86Y^2-963Y+3564).
+   M11_mode=(2048/729)*12^18*U*T^3*Y^6*H(Y), with
+   344H=(172Y-963)^2+298647>0. All other determinant terms remain.
+3. Full native slope differentiation changes its orientation:
+   S12_mode=(8192/243)*12^18*U*T^3*Y^6*R(Y),
+   R=344Y^3-3990Y^2+20223Y-64152.
+   Exact full Q6 contribution is (1/9)^6*(8192/243)*12^18*
+   V^6*(9-V)^3*Y^6*R(Y), independent of a and z.
+   R(b)-R(a)=(b-a)*(69(a+b-7)^2+189(a+b-8)^2+
+     86(b-a)^2+4746), strictly increasing on ALL real Y.
+   R(7)=-109, R(8)=18400: mode negative for physical k<=2,
+   positive for k>=7/3. A positive native geometric amplitude does
+   not supply a positive Q6 reserve. This does not refute full Q6/RH.
+
+Exact positive survivor: full native minor/slope/Q6 decomposition with
+positive minor shape and globally increasing slope sign polynomial.
+No route retired: Lean survivor audit pending. No positivity is claimed
+for the retained full complement, including lower seventh seed modes.
+
+Prepared source95 /tmp/TTC78SurplusSixFlatReduction.lean (actual source
+mass increment and flat<actual, no extra source sign premise).
+Source96 /tmp/TTC78KineticSeventhModeReflection.lean (explicit Gwithout,
+cutoff mode, all five reflected rows, complete M11 split).
+Source97 /tmp/TTC78SurplusSixFourMode.lean (complete S12 split and exact
+Q6 identity retaining p12..p17, minor/slope shapes and sign change).
+ALL97 C78 kinetic/surplus sources UNCOMPILED, ZERO axiom audits. New3
+sourcefiles exist, no oleans; static forbidden/raised-limit scans empty,
+37 new public names checked without duplicates. No production Lean edit,
+promotion or umbrella change. Paper mathematics derived by hand; Python
+used only files/JSON/log parsing, no arithmetic or numerical experiments.
+
+Next conjecture: velocity derivative of complete flat-mass Q6 has a
+controlled sign on the physical cone. It involves only p13..p17 and
+excludes this geometric term, so attack it from the complete sixth-head
+source, retaining all physical constraints. The remaining flat-mass
+value must pay the adverse middle-clock mode. Do not assume either sign.
+Q6/V^6 cubic in V, affine in z; physical zlower=max(0,
+(6k+4-r)/(2V(k+2/3))), r=k^2(9-V), zupper=1/3.
+
+Corpus q6_full_endpoint: terminal0 partial1248305, coverage1248306/current
+1248307, complete65998 files; shifted_kinetic: terminal0 partial1248363,
+complete66000 files. Semantic retrieval Qdrant deadlines, background
+refresh incomplete, compiler mostly pending/stale/sourceonly. All result
+categories inspected. Lexical q6_face query empty. Existing shifted W
+source re-read and recognized as prior work, not claimed new. No exhaustive
+novelty claim; no search remains live. Main card and TT frontier paragraph
+updated to distinguish full p12/p13 closure on paper from open Q6 sign.
+
+C77 rows0..91 AND96 CLOSED, each all37 strict signs plus universal Fin37
+capstone, standard3. This turn88..91 allfive stagesexit0; full final sign
+logs parsed: exactly38 expected declarations each, standard3, no errors.
+Sole functions.exec cell227 LIVE92Columns, last OS lake17406/Lean17441 at
+00:44/00:43. POLL227 before any new Lean; remaining92..95 thenGlobalSign.
+SourceSign not included in final pipeline. GoalACTIVE. No second owned
+Lean, full/umbrella build, raised limits, subagent, commit or push.
+
+Concrete next conjecture: partial_z Q6(aFlat)>0 on StrictCoarseCone.
+This has not been proved or assumed. Full source p13..p17 are the inputs.

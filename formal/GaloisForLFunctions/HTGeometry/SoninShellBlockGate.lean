@@ -88,7 +88,8 @@ theorem exists_soninShellProjection (n : ℤ) :
     ∃ Ψ : evenSubspace →L[ℂ] evenSubspace, IsStarProjection Ψ ∧
       IsCompactOperator (Ψ - (physicalShell a p n + fourierShell a p n)) :=
   exists_isStarProjection_compact_sub_add (isStarProjection_physicalShell ha hp n)
-    (isStarProjection_fourierShell ha hp n) (isCompactOperator_physicalShell_comp_fourierShell ha hp n)
+    (isStarProjection_fourierShell ha hp n)
+    (isCompactOperator_physicalShell_comp_fourierShell ha hp n)
 
 /-- A chosen principal shell projection `Π_n`. -/
 def soninShellProjection (n : ℤ) : evenSubspace →L[ℂ] evenSubspace :=
@@ -96,7 +97,8 @@ def soninShellProjection (n : ℤ) : evenSubspace →L[ℂ] evenSubspace :=
 
 theorem soninShellProjection_spec (n : ℤ) :
     IsStarProjection (soninShellProjection ha hp n) ∧
-      IsCompactOperator (soninShellProjection ha hp n - (physicalShell a p n + fourierShell a p n)) :=
+      IsCompactOperator (soninShellProjection ha hp n -
+    (physicalShell a p n + fourierShell a p n)) :=
   Classical.choose_spec (exists_soninShellProjection ha hp n)
 
 /-- The principal shell space `ran Π_n`. -/
@@ -146,7 +148,8 @@ theorem norm_soninCorner_le (n : ℤ) : ‖soninCorner a p hp n‖ ≤ 2 := by
   set P := centralSoninProjection (shellRadius a p n)
   have hP : IsStarProjection P := isStarProjection_starProjection _
   change ‖(1 - P) (dilationSum p hp (P (f : SoninL2)))‖ ≤ 2 * ‖f‖
-  have h1 : ‖(1 - P) (dilationSum p hp (P (f : SoninL2)))‖ ≤ ‖dilationSum p hp (P (f : SoninL2))‖ := by
+  have h1 : ‖(1 - P) (dilationSum p hp (P (f : SoninL2)))‖ ≤
+      ‖dilationSum p hp (P (f : SoninL2))‖ := by
     have := norm_sq_eq_of_isStarProjection hP (dilationSum p hp (P (f : SoninL2)))
     rw [sub_apply, one_apply_eq_self]
     exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1

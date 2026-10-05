@@ -63,3 +63,24 @@ R10 done: `WeilRationalMassAtomicProduct.bigG_pow_eq_of_fractional_counting` (an
 `WeilAtomicBoundaryMeasure`, A6 `CompletionLogDerivZeroPairs` (no even/odd split: subtract the Hadamard
 expansions at s and 1−s), A7 `CompletionOrderOneEnvelope`, assembly `WeilZetaPowerConverse`, `WeilZetaPowerForward`.
 Lean correction: FE sign is (−1)^{kμ{0}}, not +1 in general.
+
+## Common-ratio Theorem A: brick plan (2026-10-05)
+Source checked: Li–Radziwiłł arXiv 1208.2684. Thm 3: discrete mollified 2nd moment = continuous + O(T/(log T)^{1−ε}),
+for EVERY α > 0 (no Diophantine condition; Thm 2 without mollifier does depend on e^{2πℓ/α} ∈ ℚ). Continuous
+side: BCHB `∫|ζM_θ|²φ(t/T) = φ̂(0)T(1+1/θ+o(1))`, θ < ½. Proof = |ζ|² AFE (Lemma 3) + Poisson in ℓ + Farey
+uniqueness (Lemma 4) + large-b tail (Lemma 5) + mollifier-kills-resonance (Lemma 1, Euler products + zero-free
+region) + first moment (Prop 3).
+Corpus assets: exact product AFE `riemannZeta_mul_eq_productAFE`, critical pair `ZetaNotch.zetaSq_eq_afe`,
+dual-weight bounds `ZetaNotchDualWeightBounds`, windowed twisted moment + diagonal law (`ZetaNotchTwistedDiagonal`,
+off-diagonal only crude: θ < 1/4), BCHB per-(h,k) main term pieces (`Sieve/TwistedDiagonalAdapted`,
+`BchbDensityIntegral`, `TwistedMainTermMerge`), Graham upper half, `pow_mul_norm_fourier_le_of_iteratedDeriv`,
+`exists_pow_mul_norm_fourierIntegral_le`, orbit-closure Haar (`HTGeometry.CompletedObserverTimeTorus`,
+`PhaseOrbitClosureSubtorus`), zero-free regions (VK lane).
+Bricks:
+- B1 smooth weights V (= corpus `smoothAFECutoff`) decay/derivatives; B2 |ζ|² AFE with Stirling error O(t^{-1/2+ε})
+  (dual weight `W_t(Y) ≈ V(Y(2π/t)²)`);
+- B3 uniform Fourier decay of `φ(x/T)V(c/(αx+β))` in c (Faà di Bruno); B4 Poisson in ℓ;
+- B5 continuous BCHB: diagonal + (no off-diagonal for θ<½ by rapid decay) + Conrey main-term evaluation
+  `Σ b_hb_k (h,k)/(hk)(log(T(h,k)²/hk)+2γ) → 1+1/θ`;
+- B6 discrete−continuous: Lemmas 4,5,1; B7 twisted first moment (Prop 3 with Q^{it});
+- B8 torus: Haar of orbit closure, Fourier of smooth W on T^K, inner approximation of 1_U; B9 assembly.
