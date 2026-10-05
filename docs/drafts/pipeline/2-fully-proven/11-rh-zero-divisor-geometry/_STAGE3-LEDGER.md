@@ -6,7 +6,7 @@ Goal (2026-10-05): every card here formalized unconditionally in Lean, then move
 |-|-|-|
 | weil-cone-explicit-real-producer | DONE, moved to stage 3 (`RHTower/LebesgueAtomWeilPositivity`) | — |
 | weil-cone-common-ratio-unions-bohr-nonvanishing | Thm B DONE (`RHTower/WeilFullConeCommonRatioRigidity`); Thm A open | discrete mollified 2nd moment on vertical APs (BCHB constant) |
-| weil-cone-rational-mass-atomic-producers | (b) DONE, all atoms, both signs (`RHTower/WeilHalfIntegerMassRigidity`, `WeilRationalMassAtomicProduct`) | (a): A1–A8 below |
+| weil-cone-rational-mass-atomic-producers | DONE, moved to stage 3: (a) iff `WeilZetaPower.weilPositiveFull_counting_iff_zetaPowerDatum`; (b) `HalfIntegerMassRigidity.vonMangoldt_and_riemannHypothesis_of_half_integer_counting` | — |
 | weil-cone-finite-type-uniqueness | algebraic core only (`FiniteTypeDiscreteMomentAlgebra`) | boundary residue law; Gonek lemma; Jutila + Ingham density |
 | verified-height-one-zero-turing-extension | consumer theorems only | BLOCKED by rules: headline is a certified numerical fact at height 3·10¹²; needs kernel Riemann–Siegel/Turing evaluation of ≈1.2·10¹³ zeros ("no computations", no `ofReduceBool`). User decision required |
 
@@ -58,3 +58,8 @@ R10 done: `WeilRationalMassAtomicProduct.bigG_pow_eq_of_fractional_counting` (an
 - A4 atomic explicit formula: Φ_lam atomic with c_j ≥ 0 ⇒ `W_lam(f⋆f̃) = Σ c_j(|f̂(t_j)|²+|f̂(−t_j)|²) ≥ 0`.
 - A6 Hadamard: corpus `OrderOneHadamard.eq_const_mul_hadamardProduct_of_even` on `Ĝ(½+z)/z^{m₀}` ⇒ Φ_lam atomic.
 - A7 finite order ⇒ order-one envelope (Phragmén–Lindelöf in the strip + Stirling on the edges).
+
+(a) DONE 2026-10-05: A1–A3 `WeilFunctionalLineIntegral`, A4 `WeilAtomicExplicitFormula`, measure identity
+`WeilAtomicBoundaryMeasure`, A6 `CompletionLogDerivZeroPairs` (no even/odd split: subtract the Hadamard
+expansions at s and 1−s), A7 `CompletionOrderOneEnvelope`, assembly `WeilZetaPowerConverse`, `WeilZetaPowerForward`.
+Lean correction: FE sign is (−1)^{kμ{0}}, not +1 in general.

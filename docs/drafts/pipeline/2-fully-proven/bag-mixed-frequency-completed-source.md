@@ -1,6 +1,6 @@
 # BAG complete pointwise mixed-frequency source
 
-01ar. Dependency-closed paper proof of M1; Lean assembly pending.
+01as. Dependency-closed paper proof of M1; exact Lean assembly audited.
 No uniform parameter limit or physical cancellation is asserted.
 
 ## Claim and source
@@ -100,8 +100,9 @@ MovingCofactorLimit normalization, OscillatoryLogWindow, plus the newly
 audited BoundaryEulerProduct. Search4018 retrieved the actual masked
 response expansion; coverage/freshness recorded on the label-row P2 card.
 No new external estimate, dropped factor, convergence premise, numerical
-experiment or RH hypothesis enters this paper proof. Formalize the exact
-unlabelled mixed factorization and completed labelled assembly next.
+experiment or RH hypothesis enters this paper proof. Exact unlabelled mixed
+factorization and completed labelled assembly are now formalized; see P3
+`bag-mixed-frequency-completed-source`.
 
 After pointwise M1, the hard frontier is uniformity and source-faithful
 integration with the actual moving physical profile across the joint

@@ -103,6 +103,7 @@ theorem ccmApertureForwardTranslation_pow_eq_zero (a : SuzukiPositiveAperture)
       (suzukiApertureHilbert_ae_zero_outside a f)
   filter_upwards [ccmApertureForwardTranslation_pow_coeFn a h n f, hz,
     Lp.coeFn_zero (E := ℂ) (p := 2) (μ := volume)] with x ht hz h0
+  change a.1 < |x + (n : ℝ) * h.1| → f.1 (x + (n : ℝ) * h.1) = 0 at hz
   rw [ht, h0]
   by_cases hx : x ∈ centralInterval a.1
   · rw [indicator_of_mem hx]

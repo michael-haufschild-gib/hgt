@@ -53,7 +53,8 @@ theorem ccmExponentialRampPrimeMomentCumulative_eq_boundary (N : ℕ) :
       ∑ n ∈ Finset.range N, ArithmeticFunction.vonMangoldt n := by
   unfold ccmExponentialRampPrimeMomentCumulative
   simp_rw [ccmExponentialRampCellDisplacementMoment_mul_exp]
-  rw [Finset.sum_sub_distrib, Finset.sum_range_sub]
+  rw [Finset.sum_sub_distrib,
+    Finset.sum_range_sub (fun n => Real.exp (ccmOutgoingPrimeQuantileBoundary n)) N]
   simp only [ccmOutgoingPrimeQuantileBoundary_zero, Real.exp_zero]
 
 /-- An exact nonlinear discrepancy involving only the two literal prime cumulatives. -/

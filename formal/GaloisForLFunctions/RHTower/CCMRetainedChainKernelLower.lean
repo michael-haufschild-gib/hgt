@@ -22,6 +22,7 @@ theorem integrableOn_ccmChainProfile_mul_norm (a : SuzukiPositiveAperture)
   · exact Filter.Eventually.of_forall fun h =>
       mul_nonneg (ccmApertureChainProfile_bounds a h).1 (norm_nonneg _)
   · exact Filter.Eventually.of_forall fun h => by
+      change ccmApertureChainProfile a h * ‖k h‖ ≤ ‖k h‖
       simpa only [one_mul] using mul_le_mul_of_nonneg_right
         (ccmApertureChainProfile_bounds a h).2 (norm_nonneg (k h))
 
@@ -54,11 +55,12 @@ theorem norm_integral_weight_mul_ccmApertureFourierDensity_le_chain
       apply integral_mono (hk.mul hc).norm.integrableOn_Icc
         ((integrableOn_ccmChainProfile_mul_norm a hk _ _).mul_const _)
       intro h
-      change ‖𝓕⁻ w h * ccmApertureCorrelation a f h‖ ≤ _
+      change ‖𝓕⁻ w h * ccmApertureCorrelation a f h‖ ≤
+        (ccmApertureChainProfile a h * ‖𝓕⁻ w h‖) * ‖f‖ ^ 2
       rw [norm_mul]
       have hb := mul_le_mul_of_nonneg_left (norm_ccmApertureCorrelation_le_profile a f h)
         (norm_nonneg (𝓕⁻ w h))
-      convert hb using 1 <;> ring
+      simpa only [mul_left_comm, mul_assoc] using hb
     _ = _ := by rw [integral_mul_const]; rfl
 
 def ccmRetainedChainKernelCeiling (a : SuzukiPositiveAperture) (α R θ : ℝ) : ℝ :=
@@ -96,7 +98,8 @@ theorem ccmRetainedChainKernelCeiling_add_saving (a : SuzukiPositiveAperture) (�
     intro h hh
     change ccmApertureChainProfile a h * ‖k h‖ = _
     rw [ccmApertureChainProfile_outer a
-      (lt_of_not_ge fun hn => hh.2 (abs_le.mp hn)) (abs_le.mpr hh.1)]
+      (lt_of_not_ge fun hn => hh.2 (abs_le.mp hn))
+      (abs_le.mpr ⟨by linarith only [hh.1.1], hh.1.2⟩)]
   have hsplit := setIntegral_sdiff measurableSet_Icc hb hsub
   have hsaving : ccmRetainedChainInnerSaving a α R θ =
       (∫ h in Icc (-a.1) a.1, ‖k h‖) - ∫ h in Icc (-a.1) a.1, r h * ‖k h‖ := by

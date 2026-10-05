@@ -269,6 +269,117 @@ theorem hankelLocCoord_eq_sum {N r n : ℕ} (hN : 2 * r ≤ N) (hn : 2 * r ≤ n
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun x _ => Finset.sum_mul _ _ _
 
+/-! ## Surjectivity and integral closure -/
+
+variable (K)
+
+/-- The leading block over the polynomial chart. -/
+def hankelChartBlock (r : ℕ) :
+    Matrix (Fin r) (Fin r) (Localization.Away (hankelLeadMinor K (2 * r) r)) :=
+  Matrix.of fun i j => algebraMap _ _ (hankelCoord K (2 * r) ((i : ℕ) + j))
+
+theorem mapMatrix_hankelChartBlock {N r : ℕ} :
+    (hankelChartLoc K N r).mapMatrix (hankelChartBlock K r) = hankelLocBlock (K := K) N r := by
+  ext i j
+  simp only [RingHom.mapMatrix_apply, Matrix.map_apply, hankelChartBlock, hankelLocBlock,
+    Matrix.of_apply, hankelChartLoc_algebraMap, hankelLocCoord]
+  rw [hankelChartHom_coord K (by have := i.isLt; have := j.isLt; omega)]
+
+theorem hankelLocCoord_mem_range_of_lt {N r n : ℕ} (hn : n < 2 * r) :
+    hankelLocCoord (K := K) N r n ∈ (hankelChartLoc K N r).range :=
+  ⟨algebraMap _ _ (hankelCoord K (2 * r) n), by
+    rw [hankelChartLoc_algebraMap, hankelChartHom_coord K hn]; rfl⟩
+
+theorem inv_hankelLocBlock_mem_range {N r : ℕ} (i j : Fin r) :
+    (hankelLocBlock (K := K) N r)⁻¹ i j ∈ (hankelChartLoc K N r).range := by
+  classical
+  set f := hankelChartLoc K N r
+  set H₀ := hankelChartBlock K r
+  have hdet₀ : H₀.det = algebraMap _ _ (hankelLeadMinor K (2 * r) r) :=
+    (RingHom.map_det (algebraMap (MvPolynomial (Fin (2 * r)) K)
+      (Localization.Away (hankelLeadMinor K (2 * r) r)))
+      (Matrix.of fun i j : Fin r => hankelCoord K (2 * r) ((i : ℕ) + j))).symm
+  set u := IsLocalization.Away.invSelf (S := Localization.Away (hankelLeadMinor K (2 * r) r))
+    (hankelLeadMinor K (2 * r) r)
+  have hu : H₀.det * u = 1 := by
+    rw [hdet₀]; exact IsLocalization.Away.mul_invSelf _
+  have hH : f.mapMatrix H₀ = hankelLocBlock (K := K) N r := mapMatrix_hankelChartBlock K
+  have hdet : (hankelLocBlock (K := K) N r).det = f H₀.det := by
+    rw [← hH, RingHom.map_det]
+  have hinv : Ring.inverse (hankelLocBlock (K := K) N r).det = f u := by
+    have hunit := isUnit_det_hankelLocBlock (K := K) N r
+    have h1 : (hankelLocBlock (K := K) N r).det * f u = 1 := by
+      rw [hdet, ← map_mul, hu, map_one]
+    rw [← mul_one (Ring.inverse (hankelLocBlock (K := K) N r).det),
+      Ring.inverse_mul_eq_iff_eq_mul _ _ _ hunit, h1]
+  rw [Matrix.inv_def, Matrix.smul_apply, hinv, ← hH, ← RingHom.map_adjugate, smul_eq_mul]
+  exact ⟨u * H₀.adjugate i j, by rw [map_mul]; rfl⟩
+
+theorem hankelLocCoord_mem_range [CharZero K] {N r : ℕ} (hN : 2 * r ≤ N) :
+    ∀ n, n < N → hankelLocCoord (K := K) N r n ∈ (hankelChartLoc K N r).range := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    intro hnN
+    by_cases hn : n < 2 * r
+    · exact hankelLocCoord_mem_range_of_lt K hn
+    rw [hankelLocCoord_eq_sum hN (by omega) hnN]
+    refine Subring.sum_mem _ fun j _ => Subring.sum_mem _ fun i _ => ?_
+    refine Subring.mul_mem _ (Subring.mul_mem _ ?_ (inv_hankelLocBlock_mem_range K j i)) ?_
+    · exact hankelLocCoord_mem_range_of_lt K (by have := j.isLt; omega)
+    · exact ih _ (by have := i.isLt; omega) (by have := i.isLt; omega)
+
+theorem algebraMap_mem_range [CharZero K] {N r : ℕ} (hN : 2 * r ≤ N) (a : HankelSecantRing K N r) :
+    algebraMap _ (Localization.Away (hankelChartElem K N r)) a ∈ (hankelChartLoc K N r).range := by
+  obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective a
+  induction p using MvPolynomial.induction_on with
+  | C c =>
+      refine ⟨algebraMap _ _ (MvPolynomial.C c : MvPolynomial (Fin (2 * r)) K), ?_⟩
+      rw [hankelChartLoc_algebraMap, hankelChartHom, aeval_C]
+      rfl
+  | add p q hp hq =>
+      rw [map_add, map_add]
+      exact Subring.add_mem _ hp hq
+  | mul_X p n hp =>
+      rw [map_mul, map_mul]
+      refine Subring.mul_mem _ hp ?_
+      have h := hankelLocCoord_mem_range K hN n n.isLt
+      rwa [hankelLocCoord, hankelCoord, dif_pos n.isLt] at h
+
+/-- **The localized chart map is onto.** -/
+theorem hankelChartLoc_surjective [CharZero K] {N r : ℕ} (hN : 2 * r ≤ N) :
+    Function.Surjective (hankelChartLoc K N r) := by
+  intro z
+  obtain ⟨⟨a, ⟨_, k, rfl⟩⟩, rfl⟩ :=
+    IsLocalization.mk'_surjective (Submonoid.powers (hankelChartElem K N r)) z
+  set u := IsLocalization.Away.invSelf (S := Localization.Away (hankelLeadMinor K (2 * r) r))
+    (hankelLeadMinor K (2 * r) r)
+  have hu : algebraMap _ (Localization.Away (hankelChartElem K N r)) (hankelChartElem K N r) *
+      hankelChartLoc K N r u = 1 := by
+    have h1 := congrArg (hankelChartLoc K N r) (IsLocalization.Away.mul_invSelf
+      (S := Localization.Away (hankelLeadMinor K (2 * r) r)) (hankelLeadMinor K (2 * r) r))
+    rw [map_mul, hankelChartLoc_algebraMap, map_one] at h1
+    exact h1
+  obtain ⟨b, hb⟩ := algebraMap_mem_range K hN a
+  refine ⟨b * u ^ k, ?_⟩
+  simp only
+  rw [IsLocalization.eq_mk'_iff_mul_eq, map_mul, map_pow, hb, map_pow, mul_assoc, ← mul_pow,
+    mul_comm (hankelChartLoc K N r u), hu, one_pow, mul_one]
+
+/-- **The leading-block chart.**  `A_δ ≅ K[y_0, …, y_{2r−1}]_δ`. -/
+def hankelChartEquiv [CharZero K] {N r : ℕ} (hN : 2 * r ≤ N) :
+    Localization.Away (hankelLeadMinor K (2 * r) r) ≃+* Localization.Away (hankelChartElem K N r) :=
+  RingEquiv.ofBijective (hankelChartLoc K N r)
+    ⟨hankelChartLoc_injective K hN, hankelChartLoc_surjective K hN⟩
+
+/-- **The leading-block chart is integrally closed.** -/
+theorem isIntegrallyClosed_hankelChart [CharZero K] {N r : ℕ} (hN : 2 * r ≤ N) :
+    IsIntegrallyClosed (Localization.Away (hankelChartElem K N r)) := by
+  haveI : IsIntegrallyClosed (Localization.Away (hankelLeadMinor K (2 * r) r)) :=
+    isIntegrallyClosed_of_isLocalization _ (Submonoid.powers (hankelLeadMinor K (2 * r) r))
+      (powers_le_nonZeroDivisors_of_noZeroDivisors (hankelLeadMinor_ne_zero K))
+  exact IsIntegrallyClosed.of_equiv (hankelChartEquiv K hN)
+
 end
 
 end GaloisForLFunctions.HTGeometry

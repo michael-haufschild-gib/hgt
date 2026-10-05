@@ -171,25 +171,27 @@ theorem norm_weilFunction_le {lam : ℕ → ℝ}
 /-! ## The explicit formula -/
 
 /-- **The explicit formula for an atomic Weil function.**  If on `Re s > 1`
-`Φ_lam(s) = Σ_i c_i g_{½ + iτ_i}(s)` with `c_i ≥ 0`, then
-`W_lam(f ⋆ f̃) = Σ_i c_i (|f̂(τ_i)|² + |f̂(−τ_i)|²)`. -/
-theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}
+`Φ_lam(s) = Σ_i c_i g_{½ + iτ_i}(s)` with `c_i ≥ 0`, then every `C²` compactly supported test `k`
+whose transform decays like `(1 + t²)^{−2}` on `−1 ≤ Re s ≤ 2` has
+`W_lam(k) = Σ_i c_i (k̂(τ_i) + k̂(−τ_i))`. -/
+theorem hasSum_weilFullFunctional_atomic {lam : ℕ → ℝ}
     (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
     {ι : Type*} [Countable ι] {c τ : ι → ℝ} (hc : ∀ i, 0 ≤ c i)
     (hΦ : ∀ s : ℂ, 1 < s.re →
       HasSum (fun i => (c i : ℂ) * gPair (1 / 2 + τ i * I) s) (WeilHerglotz.weilFunction lam s))
-    {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
-    HasSum (fun i => ((c i * (‖paperFT f (τ i)‖ ^ 2 + ‖paperFT f (-τ i)‖ ^ 2) : ℝ) : ℂ))
-      (weilFullFunctional lam (EF.weilTest f f)) := by
-  set k := EF.weilTest f f with hk
-  have hkd : ContDiff ℝ 2 k := EF.weilTest_contDiff hf hf.continuous hfc
-  have hkc : HasCompactSupport k := EF.weilTest_hasCompactSupport hfc hfc
+    {k : ℝ → ℂ} (hkd : ContDiff ℝ 2 k) (hkc : HasCompactSupport k) {D : ℝ}
+    (hD : ∀ σ t : ℝ, -1 ≤ σ → σ ≤ 2 → ‖Hfn k (σ + t * I)‖ ≤ D / (1 + t ^ 2) ^ 2) :
+    HasSum (fun i => (c i : ℂ) * (paperFT k (τ i) + paperFT k (-τ i)))
+      (weilFullFunctional lam k) := by
   set c₀ : ℝ := 5 / 4 with hc₀
   have hc1 : 1 < c₀ := by norm_num
   have hc2 : c₀ ≤ 3 / 2 := by norm_num
   have hline := weilFullFunctional_eq_line_integral hsl hkd hkc hc1 hc2
   obtain ⟨Ck, hCk0, hCk⟩ := norm_Hfn_le hkd hkc
-  obtain ⟨D, hD0, hD⟩ := norm_Hfn_weilTest_le hf hfc
+  have hD0 : 0 ≤ D := by
+    have := hD 0 0 (by norm_num) (by norm_num)
+    simp at this
+    exact (norm_nonneg _).trans this
   obtain ⟨A, hA0, hA⟩ := norm_weilFunction_le hsl hc1 hc2
   set F : ℝ → ℂ := fun t => Hfn k (c₀ + t * I) + Hfn k (1 - c₀ - t * I) with hF
   have hFb : ∀ t : ℝ, ‖F t‖ ≤ 2 * D / (1 + t ^ 2) ^ 2 := by
@@ -293,14 +295,13 @@ theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}
   have hHS := hasSum_integral_of_summable_integral_norm hGi hsum
   -- each atom
   have hatom : ∀ i, (1 / (2 * Real.pi) : ℂ) * ∫ t : ℝ, G i t =
-      ((c i * (‖paperFT f (τ i)‖ ^ 2 + ‖paperFT f (-τ i)‖ ^ 2) : ℝ) : ℂ) := by
+      (c i : ℂ) * (paperFT k (τ i) + paperFT k (-τ i)) := by
     intro i
     have h2 := two_line_pair (differentiable_Hfn hkd hkc) (c := c₀) (C := Ck)
       (fun σ t h1 h2 => hCk σ t (by norm_num [hc₀] at h1 ⊢; linarith)
         (by norm_num [hc₀] at h2 ⊢; linarith)) (z₀ := z i)
       (by simp [hz]; norm_num [hc₀]) (by simp [hz]; norm_num [hc₀])
-    have hHz : Hfn k (z i) = ((‖paperFT f (τ i)‖ ^ 2 : ℝ) : ℂ) := by
-      rw [hk, ← paperFT_weilTest_self_ofReal hf.continuous hfc]
+    have hHz : Hfn k (z i) = paperFT k (τ i) := by
       unfold Hfn
       congr 1
       simp only [hz]
@@ -308,10 +309,7 @@ theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}
       ring_nf
       rw [I_sq]
       ring
-    have hHz' : Hfn k (1 - z i) = ((‖paperFT f (-τ i)‖ ^ 2 : ℝ) : ℂ) := by
-      have hneg := paperFT_weilTest_self_ofReal hf.continuous hfc (-τ i)
-      rw [Complex.ofReal_neg] at hneg
-      rw [hk, ← hneg]
+    have hHz' : Hfn k (1 - z i) = paperFT k (-τ i) := by
       unfold Hfn
       congr 1
       simp only [hz]
@@ -325,8 +323,6 @@ theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}
       simp only [hG]
       ring
     rw [e, mul_left_comm, h2, hHz, hHz']
-    push_cast
-    ring
   have hsum2 : (∫ t : ℝ, ∑' i, G i t) = ∫ t : ℝ, F t * WeilHerglotz.weilFunction lam (c₀ + t * I) := by
     refine integral_congr_ae (Eventually.of_forall fun t => ?_)
     simp only [hG]
@@ -335,6 +331,25 @@ theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}
   have := hHS.mul_left (1 / (2 * Real.pi) : ℂ)
   rw [hsum2] at this
   exact this.congr_fun fun i => (hatom i).symm
+
+/-- **The explicit formula on autocorrelations:** `W_lam(f ⋆ f̃) = Σ_i c_i (|f̂(τ_i)|² + |f̂(−τ_i)|²)`. -/
+theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}
+    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
+    {ι : Type*} [Countable ι] {c τ : ι → ℝ} (hc : ∀ i, 0 ≤ c i)
+    (hΦ : ∀ s : ℂ, 1 < s.re →
+      HasSum (fun i => (c i : ℂ) * gPair (1 / 2 + τ i * I) s) (WeilHerglotz.weilFunction lam s))
+    {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
+    HasSum (fun i => ((c i * (‖paperFT f (τ i)‖ ^ 2 + ‖paperFT f (-τ i)‖ ^ 2) : ℝ) : ℂ))
+      (weilFullFunctional lam (EF.weilTest f f)) := by
+  obtain ⟨D, -, hD⟩ := norm_Hfn_weilTest_le hf hfc
+  have h := hasSum_weilFullFunctional_atomic hsl hc hΦ
+    (EF.weilTest_contDiff hf hf.continuous hfc) (EF.weilTest_hasCompactSupport hfc hfc) hD
+  refine h.congr_fun fun i => ?_
+  have hneg := paperFT_weilTest_self_ofReal hf.continuous hfc (-τ i)
+  rw [Complex.ofReal_neg] at hneg
+  rw [paperFT_weilTest_self_ofReal hf.continuous hfc, hneg]
+  push_cast
+  ring
 
 /-- **Atomic Weil functions with nonnegative masses on the critical line are full-cone
 Weil-positive.** -/

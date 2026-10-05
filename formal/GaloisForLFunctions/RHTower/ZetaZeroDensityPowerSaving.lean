@@ -108,6 +108,7 @@ theorem powerSaving_length_facts {L : ℝ} (hL : 8 ≤ L) {X N : ℕ}
           rw [← Real.exp_nat_mul]; exact Real.exp_le_exp.mpr (by push_cast; linarith)
   · nlinarith
 
+set_option maxHeartbeats 800000 in
 /-- **The left-edge mass at scale `e^L`.** -/
 theorem powerSaving_SL_le {C D L : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hL : 8 ≤ L) {X N : ℕ}
     (hXle : (X : ℝ) ≤ Real.exp (L / 4)) (hXgt : Real.exp (L / 4) - 1 < X)
@@ -127,12 +128,15 @@ theorem powerSaving_SL_le {C D L : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hL : 8 ≤ 
     have := Real.exp_one_lt_d9
     nlinarith [Real.exp_pos 1]
   have hXX : ((X * X : ℕ) : ℝ) = (X : ℝ) ^ 2 := by push_cast; ring
+  have hXone : (1 : ℝ) ≤ X := by exact_mod_cast hX1
+  have hNfour : (4 : ℝ) ≤ N := by exact_mod_cast hN4
   have hXpos : (0 : ℝ) < X := by exact_mod_cast hX1
   have hlogX : Real.log ((X * X : ℕ) : ℝ) ≤ L / 2 := by
     rw [hXX]
     have := Real.log_le_log (by positivity) hX2
     rwa [Real.log_exp] at this
-  have hlogX0 : 0 ≤ Real.log ((X * X : ℕ) : ℝ) := Real.log_nonneg (by rw [hXX]; nlinarith)
+  have hlogX0 : 0 ≤ Real.log ((X * X : ℕ) : ℝ) :=
+    Real.log_nonneg (by rw [hXX]; nlinarith only [hXone])
   have hNpos : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
   have hlogN : 1 + Real.log (N : ℝ) ≤ 2 * (L + 2) := by
     have h1 := Real.log_le_log hNpos hNle
@@ -140,21 +144,24 @@ theorem powerSaving_SL_le {C D L : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hL : 8 ≤ 
     have h2 : Real.log (L + 2) ≤ L + 2 - 1 := Real.log_le_sub_one_of_pos hL2
     linarith
   have hlogN0 : 0 ≤ 1 + Real.log (N : ℝ) := by
-    have := Real.log_nonneg (show (1 : ℝ) ≤ N by linarith); linarith
+    have := Real.log_nonneg (show (1 : ℝ) ≤ N by linarith only [hNfour])
+    linarith only [this]
   have hX2E : (X : ℝ) ^ 2 ≤ E := hX2.trans (Real.exp_le_exp.mpr (by linarith))
   -- the Cauchy–Schwarz term
   have hA : 2 * N + 8 * ((X * X : ℕ) : ℝ) * (1 + Real.log ((X * X : ℕ) : ℝ)) ≤ 10 * E * (L + 2) := by
     rw [hXX]
     have : (X : ℝ) ^ 2 * (1 + Real.log ((X * X : ℕ) : ℝ)) ≤ E * (L + 2) :=
-      mul_le_mul hX2E (by linarith) (by linarith) hE0.le
-    nlinarith
+      mul_le_mul hX2E (by linarith only [hlogX, hL])
+        (by linarith only [hlogX0]) hE0.le
+    rw [hXX] at this
+    nlinarith only [this, hNle]
   have hB : (1 + Real.log ((X * X : ℕ) : ℝ)) ^ 4 ≤ (L + 2) ^ 4 :=
     pow_le_pow_left₀ (by linarith) (by linarith) 4
   have hCc : D * N * (1 + Real.log N) ^ 4 ≤ 16 * D * E * (L + 2) ^ 5 := by
     have h4 : (1 + Real.log (N : ℝ)) ^ 4 ≤ (2 * (L + 2)) ^ 4 := pow_le_pow_left₀ hlogN0 hlogN 4
     have h5 : D * N * (1 + Real.log N) ^ 4 ≤ D * (E * (L + 2)) * (2 * (L + 2)) ^ 4 := by
       gcongr
-    nlinarith [h5]
+    nlinarith only [h5]
   have hprod : (2 * N + 8 * ((X * X : ℕ) : ℝ) * (1 + Real.log ((X * X : ℕ) : ℝ))) *
       (1 + Real.log ((X * X : ℕ) : ℝ)) ^ 4 * (D * N * (1 + Real.log N) ^ 4) ≤
       (160 * D + 1) * (E * (L + 2) ^ 5) ^ 2 := by
@@ -167,7 +174,7 @@ theorem powerSaving_SL_le {C D L : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hL : 8 ≤ 
       _ = 160 * D * (E * (L + 2) ^ 5) ^ 2 := by ring
       _ ≤ (160 * D + 1) * (E * (L + 2) ^ 5) ^ 2 := by
           have : 0 ≤ (E * (L + 2) ^ 5) ^ 2 := sq_nonneg _
-          nlinarith
+          nlinarith only [this]
   have hCS : Real.sqrt ((2 * N + 8 * ((X * X : ℕ) : ℝ) * (1 + Real.log ((X * X : ℕ) : ℝ))) *
       (1 + Real.log ((X * X : ℕ) : ℝ)) ^ 4 * (D * N * (1 + Real.log N) ^ 4)) ≤
       Real.sqrt (160 * D + 1) * (E * (L + 2) ^ 5) := by
@@ -185,8 +192,8 @@ theorem powerSaving_SL_le {C D L : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hL : 8 ≤ 
         (2 * Real.sqrt (160 * D + 1) + 4) * E * (L + 2) ^ 5 := by
       have h4N : 4 * (N : ℝ) ≤ 4 * E * (L + 2) ^ 5 := by
         have : (N : ℝ) ≤ E * (L + 2) ^ 5 := hNle.trans (mul_le_mul_of_nonneg_left hL5 hE0.le)
-        linarith
-      nlinarith [hCS, Real.sqrt_nonneg (160 * D + 1)]
+        linarith only [this]
+      nlinarith only [hCS, h4N]
     have h0 : 0 ≤ 2 * Real.sqrt ((2 * N + 8 * ((X * X : ℕ) : ℝ) *
         (1 + Real.log ((X * X : ℕ) : ℝ))) * (1 + Real.log ((X * X : ℕ) : ℝ)) ^ 4 *
           (D * N * (1 + Real.log N) ^ 4)) + 4 * N := by positivity
@@ -196,22 +203,22 @@ theorem powerSaving_SL_le {C D L : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hL : 8 ≤ 
   -- the Gaussian tail
   have hτ : 2 * (1 + |3 * E / 8|) ^ 2 + 2 * E ^ 2 ≤ 4 * E ^ 2 := by
     rw [abs_of_pos (by positivity)]
-    nlinarith
+    nlinarith only [hE9]
   have hexpL : Real.exp (-((E * L) ^ 2 / (2 * E ^ 2))) = Real.exp (-(L ^ 2 / 2)) := by
     congr 1; field_simp
   have hsq : Real.sqrt (Real.pi / (1 / (2 * E ^ 2))) ≤ 3 * E := by
     rw [Real.sqrt_le_left (by positivity)]
-    have := Real.pi_lt_d2
+    have hpi := Real.pi_lt_d2
     have : Real.pi / (1 / (2 * E ^ 2)) = 2 * Real.pi * E ^ 2 := by field_simp
     rw [this]
-    nlinarith [sq_nonneg E]
+    nlinarith only [hpi, sq_nonneg E]
   have hdecay : Real.exp (L / 2) * E ^ 2 * Real.exp (-(L ^ 2 / 2)) * E ≤ E := by
     have : Real.exp (L / 2) * E ^ 2 * Real.exp (-(L ^ 2 / 2)) ≤ 1 := by
       rw [hEdef, ← Real.exp_nat_mul, ← Real.exp_add, ← Real.exp_add]
       apply Real.exp_le_one_iff.mpr
       push_cast
-      nlinarith
-    nlinarith
+      nlinarith only [hL]
+    simpa only [one_mul] using mul_le_mul_of_nonneg_right this hE0.le
   have htail : Real.exp 1 ^ 2 * C ^ 2 * (X : ℝ) ^ 2 * (2 * (1 + |3 * E / 8|) ^ 2 + 2 * E ^ 2) *
       Real.exp (-((E * L) ^ 2 / (2 * E ^ 2))) * Real.sqrt (Real.pi / (1 / (2 * E ^ 2))) ≤
       96 * C ^ 2 * E * (L + 2) ^ 5 := by
@@ -226,7 +233,7 @@ theorem powerSaving_SL_le {C D L : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hL : 8 ≤ 
       _ ≤ 96 * C ^ 2 * E * (L + 2) ^ 5 := by
           have : (1 : ℝ) ≤ (L + 2) ^ 5 := one_le_pow₀ (by linarith)
           have h0 : 0 ≤ 96 * C ^ 2 * E := by positivity
-          nlinarith
+          nlinarith only [this, h0]
   calc _ ≤ (16 * Real.sqrt (160 * D + 1) + 32) * E * (L + 2) ^ 5 + 96 * C ^ 2 * E * (L + 2) ^ 5 :=
         add_le_add hfirst htail
     _ = (16 * Real.sqrt (160 * D + 1) + 32 + 96 * C ^ 2) * E * (L + 2) ^ 5 := by ring
@@ -312,6 +319,7 @@ end RHTower
 
 namespace RHTower
 
+set_option maxHeartbeats 800000 in
 /-- **The error mean square at scale `e^L`** on `Re s = 1/2 + δ/2`. -/
 theorem powerSaving_error_le {C D L δ : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hL : 100 ≤ L)
     (hδ : 0 < δ) (hδ1 : δ ≤ 1)
@@ -367,9 +375,9 @@ theorem powerSaving_error_le {C D L δ : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hL : 
       A * Real.exp (L / 2) := by
     refine hSR.trans ?_
     have : 256 ≤ A := by
-      simp only [hA]; nlinarith
+      simp only [hA]; nlinarith only [hB256, hL5]
     exact mul_le_mul_of_nonneg_right this (Real.exp_pos _).le
-  have hinterp := powerSaving_interp_le (by positivity) (by positivity) hA0
+  have hinterp := powerSaving_interp_le (lam := δ / 5) (by positivity) (by positivity) hA0
     (by positivity) (by linarith) hSLA hSRA
   refine hmain.trans ?_
   have hexp : Real.exp (L * (1 - δ / 5 / 2)) = Real.exp (L * (1 - δ / 10)) := by
@@ -382,6 +390,7 @@ end RHTower
 
 namespace RHTower
 
+set_option maxHeartbeats 800000 in
 /-- **Zero density with a power saving for every `σ = 1/2 + δ`, `0 < δ ≤ 1`.** For all large `U`
 there are heights `T₁ ∈ (U/4, U/4 + 1)`, `T₂ ∈ (U/2 − 1, U/2)` such that the zeros of `ζ` with
 `Re ρ ≥ 1/2 + δ`, `T₁ ≤ Im ρ ≤ T₂`, counted with multiplicity, number at most `U^{1 − δ/40}`. -/
@@ -515,7 +524,7 @@ theorem exists_zetaZeroDensity_powerSaving {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ 
         congr 1; push_cast; ring
       rw [hexp]
       have h0 : 0 ≤ 32 * B * Real.exp (((2 : ℕ) : ℝ) * -(δ / 20 * L)) := by positivity
-      nlinarith
+      nlinarith only [mul_le_mul_of_nonneg_left hL6 h0]
     calc Real.sqrt η ≤ Real.sqrt ((Real.sqrt (32 * B) * (L + 2) ^ 3 *
           Real.exp (-(δ / 20 * L))) ^ 2) := Real.sqrt_le_sqrt h6
       _ = _ := Real.sqrt_sq (by positivity)
@@ -546,16 +555,18 @@ theorem exists_zetaZeroDensity_powerSaving {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ 
       have := mul_le_mul_of_nonneg_left (hr5.trans (mul_le_mul_of_nonneg_left hsqrtη
         (by norm_num))) (by positivity : (0 : ℝ) ≤ E / 8)
       simp only [hκ]
-      nlinarith
+      nlinarith only [this]
     have h3' : K₀ * (Real.log T₂ + Real.log ((X : ℝ) ^ (5 : ℕ))) ≤ 3 * K₀ * L := by
       have := mul_le_mul_of_nonneg_left (add_le_add hlogT₂ hlogX5) hK₀.le
-      nlinarith
-    linarith
+      nlinarith only [this, hK₀, hL0]
+    linarith only [h1, h2, h3']
   have hπδ : 0 < Real.pi * δ := by positivity
   have hcount : Real.pi * δ * S ≤
       κ * (L + 2) ^ 3 * E * Real.exp (-(δ / 20 * L)) + (C₀ + 3 * K₀ * L) := by
     have : 2 * Real.pi * (δ / 2 * S) = Real.pi * δ * S := by ring
-    linarith
+    rw [this] at hmain
+    simp only [hr, add_assoc] at hRHS hmain
+    exact hmain.trans hRHS
   -- the final comparison
   have hgoal : Real.exp L ^ (1 - δ / 40) = Real.exp (L * (1 - δ / 40)) := by
     rw [← Real.exp_mul]
@@ -582,9 +593,10 @@ theorem exists_zetaZeroDensity_powerSaving {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ 
       have := mul_le_mul_of_nonneg_left hlin' hc3.le
       rwa [show (C₀ + 3 * K₀ + 1) * (Real.pi * δ / (2 * (C₀ + 3 * K₀ + 1))) = Real.pi * δ / 2 by
         field_simp] at this
-    have h2 : C₀ + 3 * K₀ * L ≤ (C₀ + 3 * K₀ + 1) * (L + 2) := by nlinarith
+    have h2 : C₀ + 3 * K₀ * L ≤ (C₀ + 3 * K₀ + 1) * (L + 2) := by
+      nlinarith only [hC₀, hK₀, hL0]
     have h3e : Real.exp (L / 2) ≤ Real.exp (L * (1 - δ / 40)) :=
-      Real.exp_le_exp.mpr (by nlinarith)
+      Real.exp_le_exp.mpr (by nlinarith only [hδ1, hL0])
     have h4 : (C₀ + 3 * K₀ + 1) * (L + 2) =
         (C₀ + 3 * K₀ + 1) * ((L + 2) * Real.exp (-(1 / 2 * L))) * Real.exp (L / 2) := by
       rw [mul_assoc (C₀ + 3 * K₀ + 1), mul_assoc (L + 2), ← Real.exp_add]
@@ -593,7 +605,8 @@ theorem exists_zetaZeroDensity_powerSaving {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ 
       _ = (C₀ + 3 * K₀ + 1) * ((L + 2) * Real.exp (-(1 / 2 * L))) * Real.exp (L / 2) := h4
       _ ≤ Real.pi * δ / 2 * Real.exp (L * (1 - δ / 40)) :=
           mul_le_mul h1 h3e (Real.exp_pos _).le (by positivity)
-  have htot : Real.pi * δ * S ≤ Real.pi * δ * Real.exp (L * (1 - δ / 40)) := by linarith
+  have htot : Real.pi * δ * S ≤ Real.pi * δ * Real.exp (L * (1 - δ / 40)) := by
+    linarith only [hcount, hT1, hT2]
   exact le_of_mul_le_mul_left htot hπδ
 
 end RHTower

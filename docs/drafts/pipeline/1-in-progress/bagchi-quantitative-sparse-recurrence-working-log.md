@@ -7806,3 +7806,67 @@ Next physical corpus search79146 running. Read actual moving-line profile,
 full Fourier amplitude, Mellin slice and transverse profile definitions;
 all three original scale-N cutoffs/AFE/log factors and complete height-window
 Mellin line remain. No fixed-Schwartz norm is being assumed uniform in N.
+
+01as M1 CLOSED IN LEAN. Final MixedCompletedSource1948 emptyPASS;
+MixedBaseLimit63164 and existingMaskedMellinSource26617 emptyPASS.
+Axiom39846 all6public contracts standard3 only. Index41037 PASS; API4+1+1,
+new imports once. Lint01as17 unrelated unreachable errors/174warnings,
+noneowned. P2/P3/frontier updated. Actual full source/L² tends to
+exp(-2gamma)*G(u), retaining both cofactors, both exclusions, all collisions.
+No uniformity or physical saving inferred. Prior work moves the frontier
+by closing actual pointwise assembly. Next hard step: uniform finite Euler
+comparison, then signed source integration with actual moving profiles.
+
+Search25064 nonpartial65969files gen1247356; coverage1247364/current1247365,
+noerrors, backgroundrefreshincomplete, semanticcoverageunmeasured.
+All20candidate+20source entries inspected. Fixed-parameter limits do not
+supply uniform estimates. Read actual Sieve PrimeCosineSum/PrimeTailBound/
+PrimeSigmaShift/CharacterDistanceGrowth; finite head shift and absolute
+prime tail at sigma=1+1/logN are uniform in frequency. New Sieve search39682
+running. Physical search79146 nonpartial65967files gen1247238,
+coverage1247246/current1247248,noerrors; all20+20 inspected. Actual profile
+has shrinking relative cutoff edges; no uniform Schwartz bound assumed.
+
+01at U1 CLOSED: ChiRamanujanUniformEulerComparison302lines/API1,
+criticalFiniteEulerProduct_zeta_comparison. All frequencies and bounded
+signed logarithmic displacement, original prime cutoff. Scratch34083 and
+production98291 emptyPASS, axiom61123standard3, index76878PASS/API/importonce.
+Lint15525terminal1:one unrelated CompletionLogDerivZeroPairs unreachable,
+174warnings,noneowned. P2/P3/frontier current. No integral saving inferred.
+U2 actual global pole-scale comparison now scratchauditing: existing residue
+factor bounds yield |s-1| <=C(1+|t|)^9|Q_N| and reverse inequality uniformly.
+Full labelled bound will retain finite products with <=3 primes removed;
+local unlabelled zeros rule out blindly bounding rational responses.
+
+01at U2 CLOSED: ChiRamanujanUniformPoleControl/API1,
+criticalFiniteEulerProduct_pole_comparison. Original finite Q_N has two-sided
+pole-distance control with global frequency weight. Scratch84975 and
+production74521 emptyPASS; axiom58622standard3; index13262PASS/API/importonce.
+Lint14201terminal1:3 unrelated unreachable modules,174warnings,noneowned.
+P2/P3/frontier current. U3 full actual labelled envelope dependency-closed
+paper now P2 bag-uniform-complete-source-envelope. Lean compact numerator,
+finite regular product and nonvanishing Euler-ratio controls are auditing
+in /tmp/bag-uniform-local-01au.lean. No unlabelled local-factor inverse is
+introduced. Actual physical-profile/tail transfer remains hard open.
+
+01au U3a CLOSED: original full masked/cofactor source bounded uniformly by
+both zeta and exact four finite Euler factors. All realfrequency pairs,
+positivefixedrho_i,eventualoriginalN; no local unlabelled inverse/premise.
+Scratch63282PASS; production58554emptyPASS,590lines/API1 afterunusedprivate
+helpers/importsremoved. Axiomprintedstandard3 incleancombinedscratch57460
+PASS (oneprivateunusedbinderwarning nowfixed). Index10670PASS/API/importonce.
+Lint99416globalFAIL:7 unrelated unreachable plus HTGeometry/HankelSingularHeight
+line75 active sorry,174warnings; noneowned. P3/frontiercurrent.
+Full integrable axes envelope scratch42221 running, combining U3a with U2
+and unconditional moving-residue bounds. No numerical experiment/RH claim.
+
+01av U3b CLOSED: ChiRamanujanUniformSourceEnvelope323lines/API1,
+criticalCompletedConeEuler_uniform_axes_bound. Entire original source,
+all frequencies, fixed positive rho_i, original growing cutoff. Polynomial
+weight T^54 times the two L²/(1+L*abs(t_i))² profiles. Scratch22515PASS;
+production14320emptyPASS; axiom44362standard3; index37670PASS/importonce;
+lint2483terminal1:nineunrelatedHTGeometryunreachable,174warnings,noownederror.
+P2/P3/frontier current. Raw envelope still needs test decay.
+New U4 nearest-axis partition removes separate joint-box/compact-uniform
+steps for fixed tests; P1 bag-signed-source-sector-transfer contains full
+paper mechanism. Actual moving physical profile/tails still hard open.

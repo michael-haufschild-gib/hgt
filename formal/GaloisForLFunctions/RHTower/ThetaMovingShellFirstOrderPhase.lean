@@ -22,12 +22,12 @@ private theorem tendsto_scaled_comp {a z : ℕ → ℂ} {w d c : ℂ} {f : ℂ �
     Tendsto (fun n => a n*(f (z n)-f w)) atTop (𝓝 (d*c)) := by
   have hq := hf.continuousAt_div.tendsto.comp hz
   convert hq.mul ha using 1
-  funext n
-  by_cases he : z n = w
-  · simp [he]
-  · simp [Function.comp_def, he]
-    field_simp [sub_ne_zero.mpr he]
-    ring
+  · funext n
+    by_cases he : z n = w
+    · simp [he]
+    · simp [he]
+      field_simp [sub_ne_zero.mpr he]
+  · simp
 
 theorem norm_thetaMovingUnitPhase_sub_le (x y : ℝ) :
     ‖Complex.exp (Complex.I*(y : ℂ))-Complex.exp (Complex.I*(x : ℂ))‖ ≤ |y-x| := by
@@ -38,7 +38,7 @@ theorem norm_thetaMovingUnitPhase_sub_le (x y : ℝ) :
       simpa using (hasDerivAt_id (t : ℂ)).const_mul Complex.I
     have hc := (Complex.hasDerivAt_exp (Complex.I*(t : ℂ))).comp (t : ℂ) hi
     simpa [f, f', Function.comp_def] using! hc.comp_ofReal
-  have hb (t : ℝ) : ‖f' t‖ ≤ 1 := by simp [f', norm_mul, Complex.norm_exp]
+  have hb (t : ℝ) : ‖f' t‖ ≤ 1 := by simp [f', Complex.norm_exp]
   have h := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le
     (s := (univ : Set ℝ)) (x := x) (y := y)
     (fun t _ => (hf t).hasDerivWithinAt) (fun t _ => hb t) convex_univ
@@ -74,7 +74,6 @@ theorem tendsto_thetaMovingShellCriticalExp_firstOrder (s : ℝ) {u : ℝ} (hu :
       simp only [thetaMovingShellCriticalPhase, Function.comp_def]
       push_cast
       ring
-    · rfl
   have hzero : Tendsto (fun n => Complex.I*(thetaMovingShellCriticalPhase n s u : ℂ))
       atTop (𝓝 0) := by simpa [Function.comp_def] using hz.const_mul Complex.I
   simpa using tendsto_scaled_comp (Complex.hasDerivAt_exp 0) hzero hscaled

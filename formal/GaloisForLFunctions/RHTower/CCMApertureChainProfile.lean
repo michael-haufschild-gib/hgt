@@ -20,6 +20,7 @@ def ccmApertureChainProfile (a : SuzukiPositiveAperture) (h : ℝ) : ℝ :=
 theorem measurable_ccmApertureChainProfile (a : SuzukiPositiveAperture) :
     Measurable (ccmApertureChainProfile a) := by
   unfold ccmApertureChainProfile
+  apply Measurable.ite (measurableSet_singleton 0) measurable_const
   fun_prop
 
 theorem ccmApertureChainProfile_bounds (a : SuzukiPositiveAperture) (h : ℝ) :
@@ -65,6 +66,7 @@ theorem ccmApertureChainProfile_outer (a : SuzukiPositiveAperture)
     {h : ℝ} (hlo : a.1 < |h|) (hhi : |h| ≤ 2*a.1) :
     ccmApertureChainProfile a h = 1 / 2 := by
   have hp : 0 < |h| := a.property.trans hlo
+  have ha : 0 < a.1 := a.property
   have hf : ⌊2*a.1/|h|⌋₊ = 1 := (Nat.floor_eq_iff (by positivity)).mpr ⟨by
       simpa only [Nat.cast_one] using (one_le_div hp).mpr hhi, by
       rw [div_lt_iff₀ hp]
@@ -77,6 +79,7 @@ theorem ccmApertureChainProfile_outer (a : SuzukiPositiveAperture)
 theorem ccmApertureChainProfile_middle (a : SuzukiPositiveAperture)
     {h : ℝ} (hlo : 2*a.1/3 < |h|) (hhi : |h| ≤ a.1) :
     ccmApertureChainProfile a h = Real.sqrt 2 / 2 := by
+  have ha : 0 < a.1 := a.property
   have hp : 0 < |h| := lt_trans (by positivity : 0 < 2*a.1/3) hlo
   have hf : ⌊2*a.1/|h|⌋₊ = 2 := (Nat.floor_eq_iff (by positivity)).mpr ⟨by
       rw [le_div_iff₀ hp]

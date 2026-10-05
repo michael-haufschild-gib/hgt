@@ -40,7 +40,9 @@ theorem integrable_ccmExponentialRampBulkDissipationDensity (T : ℝ) (N : ℕ) 
       unfold ccmExponentialRampSecondOrderWeight ccmExponentialRampDisplacementWeight
         ccmExponentialRampDerivativeWeight
       fun_prop⟩
-  simpa only [ContinuousMap.coe_mk, ccmExponentialRampBulkDissipationDensity, mul_comm] using h
+  change Integrable (fun r => -ccmExponentialRampSecondOrderWeight r *
+    ccmExponentialRampBulkMassField T N r)
+  simpa only [ContinuousMap.coe_mk, mul_comm] using h
 
 def ccmExponentialRampBulkDissipation (T : ℝ) (N : ℕ) : ℝ :=
   ∫ r : ℝ, ccmExponentialRampBulkDissipationDensity T N r

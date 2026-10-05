@@ -50,11 +50,12 @@ theorem le_of_mem_associatedPrimes_quot {J Q : Ideal A} (hQ : Q ∈ associatedPr
 
 variable [IsDomain A] [IsNoetherianRing A]
 
-/-- **The Serre-type normality criterion.** -/
-theorem isIntegrallyClosed_of_height_one
+/-- **The Serre-type normality criterion**, with the height-one condition checked on any
+localization avoiding the prime. -/
+theorem isIntegrallyClosed_of_height_one_submonoid
     (hS2 : ∀ a : A, a ≠ 0 → ∀ Q ∈ associatedPrimes A (A ⧸ Ideal.span {a}), Q.height = 1)
     (hR1 : ∀ (P : Ideal A) [P.IsPrime], P.height = 1 →
-      IsIntegrallyClosed (Localization.AtPrime P)) :
+      ∃ M : Submonoid A, M ≤ P.primeCompl ∧ IsIntegrallyClosed (Localization M)) :
     IsIntegrallyClosed A := by
   classical
   set K := FractionRing A
@@ -77,23 +78,25 @@ theorem isIntegrallyClosed_of_height_one
   have hJQ : J ≤ Q := le_of_mem_associatedPrimes_quot hQ
   have hQa := associatedPrimes_quot_ker_subset a b hQ
   have hht : Q.height = 1 := hS2 a ha0 Q hQa
-  haveI := hR1 Q hht
-  haveI : IsFractionRing (Localization.AtPrime Q) K :=
-    IsFractionRing.isFractionRing_of_isDomain_of_isLocalization Q.primeCompl
-      (Localization.AtPrime Q) K
-  have hxloc : IsIntegral (Localization.AtPrime Q) (algebraMap A K b / algebraMap A K a) :=
+  obtain ⟨M, hMQ, hM⟩ := hR1 Q hht
+  have hM0 : M ≤ nonZeroDivisors A := fun m hm =>
+    mem_nonZeroDivisors_of_ne_zero fun h => hMQ hm (h ▸ Q.zero_mem)
+  let g : Localization M →+* K := IsLocalization.map _ (T := nonZeroDivisors A) (RingHom.id A) hM0
+  letI := g.toAlgebra
+  haveI : IsScalarTower A (Localization M) K := IsScalarTower.of_algebraMap_eq' (by
+    rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, RingHomCompTriple.comp_eq])
+  haveI : IsFractionRing (Localization M) K :=
+    IsFractionRing.isFractionRing_of_isDomain_of_isLocalization M (Localization M) K
+  have hxloc : IsIntegral (Localization M) (algebraMap A K b / algebraMap A K a) :=
     hx.tower_top
-  obtain ⟨y, hy⟩ := (isIntegrallyClosed_iff K).mp ‹IsIntegrallyClosed (Localization.AtPrime Q)› hxloc
-  obtain ⟨⟨c, s⟩, rfl⟩ := IsLocalization.mk'_surjective Q.primeCompl y
-  have hspec := IsLocalization.mk'_spec (Localization.AtPrime Q) c s
-  have hspecK := congrArg (algebraMap (Localization.AtPrime Q) K) hspec
+  obtain ⟨y, hy⟩ := (isIntegrallyClosed_iff K).mp hM hxloc
+  obtain ⟨⟨c, s⟩, rfl⟩ := IsLocalization.mk'_surjective M y
+  have hspec := IsLocalization.mk'_spec (Localization M) c s
+  have hspecK := congrArg (algebraMap (Localization M) K) hspec
   simp only [map_mul, ← IsScalarTower.algebraMap_apply] at hspecK
   simp only at hy
   rw [hy] at hspecK
-  have hs : (s : A) ∉ Q := s.2
-  have hsK : algebraMap A K s ≠ 0 :=
-    IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors
-      (mem_nonZeroDivisors_of_ne_zero fun h => hs (h ▸ Q.zero_mem))
+  have hs : (s : A) ∉ Q := hMQ s.2
   have hak : algebraMap A K a ≠ 0 := IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors ha
   -- `s b = c a`
   have hsb : (s : A) * b = c * a := by
@@ -104,5 +107,27 @@ theorem isIntegrallyClosed_of_height_one
     rw [mem_ker_mulIntoQuot, hsb, Ideal.mem_span_singleton]
     exact dvd_mul_left a c
   exact hs (hJQ hsJ)
+
+/-- **The Serre-type normality criterion.** -/
+theorem isIntegrallyClosed_of_height_one
+    (hS2 : ∀ a : A, a ≠ 0 → ∀ Q ∈ associatedPrimes A (A ⧸ Ideal.span {a}), Q.height = 1)
+    (hR1 : ∀ (P : Ideal A) [P.IsPrime], P.height = 1 →
+      IsIntegrallyClosed (Localization.AtPrime P)) :
+    IsIntegrallyClosed A :=
+  isIntegrallyClosed_of_height_one_submonoid hS2 fun P _ hP =>
+    ⟨P.primeCompl, le_rfl, hR1 P hP⟩
+
+/-- **The Serre-type normality criterion, by charts**: each height-one prime avoids some `f` with
+`A_f` integrally closed. -/
+theorem isIntegrallyClosed_of_height_one_away
+    (hS2 : ∀ a : A, a ≠ 0 → ∀ Q ∈ associatedPrimes A (A ⧸ Ideal.span {a}), Q.height = 1)
+    (hR1 : ∀ (P : Ideal A) [P.IsPrime], P.height = 1 →
+      ∃ f ∉ P, IsIntegrallyClosed (Localization.Away f)) :
+    IsIntegrallyClosed A :=
+  isIntegrallyClosed_of_height_one_submonoid hS2 fun P hP hP1 => by
+    obtain ⟨f, hf, hfc⟩ := hR1 P hP1
+    refine ⟨Submonoid.powers f, ?_, hfc⟩
+    rintro _ ⟨k, rfl⟩
+    exact fun h => hf (hP.mem_of_pow_mem k h)
 
 end GaloisForLFunctions.HTGeometry

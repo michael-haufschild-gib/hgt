@@ -228,3 +228,23 @@ original cofactors and simultaneous full-cutoff local nonvanishing.
 Updated existing MaskedMellinSource with one actual mixed-response theorem,
 reusing its exact private finite algebra; production audit running.
 M1 final profile assembly scratch prepared, dependent audit not started.
+
+01as M1 CLOSED IN LEAN. Final MixedCompletedSource1948 emptyPASS;
+MixedBaseLimit63164 and existingMaskedMellinSource26617 emptyPASS.
+Axiom39846 all6public contracts standard3 only. Index41037 PASS; API4+1+1,
+new imports once. Lint01as17 unrelated unreachable errors/174warnings,
+noneowned. P2/P3/frontier updated. Actual full source/L² tends to
+exp(-2gamma)*G(u), retaining both cofactors, both exclusions, all collisions.
+No uniformity or physical saving inferred. Prior work moves the frontier
+by closing actual pointwise assembly. Next hard step: uniform finite Euler
+comparison, then signed source integration with actual moving profiles.
+
+Search25064 nonpartial65969files gen1247356; coverage1247364/current1247365,
+noerrors, backgroundrefreshincomplete, semanticcoverageunmeasured.
+All20candidate+20source entries inspected. Fixed-parameter limits do not
+supply uniform estimates. Read actual Sieve PrimeCosineSum/PrimeTailBound/
+PrimeSigmaShift/CharacterDistanceGrowth; finite head shift and absolute
+prime tail at sigma=1+1/logN are uniform in frequency. New Sieve search39682
+running. Physical search79146 nonpartial65967files gen1247238,
+coverage1247246/current1247248,noerrors; all20+20 inspected. Actual profile
+has shrinking relative cutoff edges; no uniform Schwartz bound assumed.

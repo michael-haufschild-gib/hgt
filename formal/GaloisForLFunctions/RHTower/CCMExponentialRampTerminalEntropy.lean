@@ -77,7 +77,9 @@ theorem integrable_ccmExponentialRampTerminalEntropyDensity (T : ℝ) (N : ℕ) 
     Integrable (ccmExponentialRampTerminalEntropyDensity T N) := by
   have h := integrable_ccmActualHeadQuantileTerminalDensity_continuousTest T N
     ⟨ccmExponentialRampDerivativeWeight, by unfold ccmExponentialRampDerivativeWeight; fun_prop⟩
-  simpa only [ccmExponentialRampTerminalEntropyDensity, ContinuousMap.coe_mk, mul_comm] using h
+  change Integrable (fun r => ccmExponentialRampDerivativeWeight r *
+    ccmActualHeadQuantileTerminalDisplacementDensity T N r)
+  simpa only [ContinuousMap.coe_mk, mul_comm] using h
 
 def ccmExponentialRampTerminalEntropy (T : ℝ) (N : ℕ) : ℝ :=
   ∫ r : ℝ, ccmExponentialRampTerminalEntropyDensity T N r

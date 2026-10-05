@@ -12,7 +12,9 @@ import GaloisForLFunctions.HTGeometry.InitialIdealDegeneration
 exists_generic_degeneration_bound  ** one point of the base line bounds every partial fibre **
 isRegularOn_of_isRegular           reading a regular sequence back as regularity of each stage
 finrank_quotDegreePart_top         a unit ideal has empty quotient in every degree
-exists_isRegular_of_degeneration   ** the transported regular sequence **
+exists_isRegular_of_degeneration_homogeneous
+                                   ** the transported regular sequence, again of linear forms **
+exists_isRegular_of_degeneration   the same, forgetting homogeneity
 ```
 
 The induction carries two things at once: the invariant that the two partial quotients have the same
@@ -103,7 +105,7 @@ theorem finrank_quotDegreePart_zero_ne_zero {a : Ideal (MvPolynomial (Fin N) K)}
 /-- **The degeneration transports a whole regular sequence.**  A regular sequence of linear forms on
 the monomial degeneration deforms, by a single rescaling of the variables, to a regular sequence of
 linear forms on the ideal itself. -/
-theorem exists_isRegular_of_degeneration [Infinite K] (w : Fin N → ℤ)
+theorem exists_isRegular_of_degeneration_homogeneous [Infinite K] (w : Fin N → ℤ)
     {I J : Ideal (MvPolynomial (Fin N) K)} (hI : IsHomogIdeal I) (hJ : IsHomogIdeal J)
     {S : Submodule K (MvPolynomial (Fin N) K)} (hS : IsGradedSubmodule S)
     (hIS : IsCompl (I.restrictScalars K) S) (hJS : IsCompl (J.restrictScalars K) S)
@@ -111,6 +113,7 @@ theorem exists_isRegular_of_degeneration [Infinite K] (w : Fin N → ℤ)
     (ls : List (MvPolynomial (Fin N) K)) (hls : ∀ l ∈ ls, l.IsHomogeneous 1)
     (hreg : RingTheory.Sequence.IsRegular (MvPolynomial (Fin N) K ⧸ J) ls) :
     ∃ ls' : List (MvPolynomial (Fin N) K), ls'.length = ls.length ∧
+      (∀ l ∈ ls', l.IsHomogeneous 1) ∧
       RingTheory.Sequence.IsRegular (MvPolynomial (Fin N) K ⧸ I) ls' := by
   classical
   obtain ⟨lam, hlam, hbound⟩ :=
@@ -215,7 +218,7 @@ theorem exists_isRegular_of_degeneration [Infinite K] (w : Fin N → ℤ)
         rw [hstepI i hi', hstepJ i hi'] at hn
         rw [show e + 1 = 1 + e from by omega]
         exact hn
-  refine ⟨ls.map f, List.length_map _, ?_⟩
+  refine ⟨ls.map f, List.length_map _, hhom', ?_⟩
   refine Extra.isRegular_quotient_of_isRegularOn I (ls.map f) ?_ ?_
   · intro i hi
     have hi' : i < ls.length := by rwa [List.length_map] at hi
@@ -232,5 +235,19 @@ theorem exists_isRegular_of_degeneration [Infinite K] (w : Fin N → ℤ)
     have hlm : (ls.map f).take ls.length = ls.map f := by simp
     rw [hlm, List.take_length, htop, finrank_quotDegreePart_top] at h0
     exact finrank_quotDegreePart_zero_ne_zero hJne h0.symm
+
+/-- **The degeneration transports a whole regular sequence**, without recording homogeneity. -/
+theorem exists_isRegular_of_degeneration [Infinite K] (w : Fin N → ℤ)
+    {I J : Ideal (MvPolynomial (Fin N) K)} (hI : IsHomogIdeal I) (hJ : IsHomogIdeal J)
+    {S : Submodule K (MvPolynomial (Fin N) K)} (hS : IsGradedSubmodule S)
+    (hIS : IsCompl (I.restrictScalars K) S) (hJS : IsCompl (J.restrictScalars K) S)
+    (hJinit : J ≤ initialIdeal w I)
+    (ls : List (MvPolynomial (Fin N) K)) (hls : ∀ l ∈ ls, l.IsHomogeneous 1)
+    (hreg : RingTheory.Sequence.IsRegular (MvPolynomial (Fin N) K ⧸ J) ls) :
+    ∃ ls' : List (MvPolynomial (Fin N) K), ls'.length = ls.length ∧
+      RingTheory.Sequence.IsRegular (MvPolynomial (Fin N) K ⧸ I) ls' := by
+  obtain ⟨ls', h1, -, h3⟩ :=
+    exists_isRegular_of_degeneration_homogeneous w hI hJ hS hIS hJS hJinit ls hls hreg
+  exact ⟨ls', h1, h3⟩
 
 end GaloisForLFunctions.HTGeometry

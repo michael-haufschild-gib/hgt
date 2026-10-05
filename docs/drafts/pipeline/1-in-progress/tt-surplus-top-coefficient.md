@@ -9,7 +9,216 @@
 
 ## Why this test is needed
 
-Latest paper frontier: complete sixth native head, complete seventh U=0 component, and the highest coefficients of its remaining even components are derived. Full seventh U²/U⁴/U⁶ components, complete Q6 endpoint signs, and the full residual sign remain open. All eighty scratch sources require Lean audit.
+Latest paper frontier: complete sixth/seventh native heads and full M11/M12/S12/S13 make p12/p13 explicit. The exact source increment now shows Q6(aFlat)<Q6(aActual), so the flat-mass sign alone suffices; that sign remains open. The positive seventh Y⁴ geometric term contributes NEGATIVELY to Q6 throughout 5/4<k≤2, with the exact signed contribution below. Every other source term is retained. All ninety-seven scratch sources require Lean audit. Full residual, source quadratic, fourth gap and all-rank closure remain open.
+
+### 2026-10-05 — One mass endpoint and the signed seventh-mode contribution
+
+**PAPER derivation; sources95..97 prepared, uncompiled.** The exact source increment from source63, combined with the complete native q7 positivity from source61, gives
+
+    Q6(a+d)-Q6(a)=-63*d*q7(a)+(63*d*Emax(a)+2268*d²)*q8 < 0
+
+at the actual a, for every d>0. Here q8<0, q7(a)>0 and Emax(a)>0 are supplied by the actual source/cone results; no extra sign premise is added. Since aFlat>a, Q6(aFlat)<Q6(a). The earlier two-endpoint criterion was unnecessarily strong: a nonnegative flat endpoint would suffice. Neither the flat sign nor the full Q6 sign has been established.
+
+The forced seventh-head term cannot be discarded on the grounds that its amplitude is positive. Write T=9-U², Y=3K+1, κ=12^18. Its exact reversed-head contribution, including the necessary cutoff, is
+
+    Gmode(n)=0 (n<6),
+    Gmode(n)=32768*T³*Y⁴*4^(n-5) (n≥6).
+
+Keep all remaining seventh-head terms, including lower geometric seed terms and the exceptional sixth jet, in Gwithout. The full source identity is G=Gwithout+Gmode. Only the A*G and G*A reflected pairs change. Their five actual even moments (orders2,4,6,8,10) are
+
+    I_mode=(32768*T³*Y⁴/12^6)*
+      (0,0,8*(2Y-3),192*(Y-2),1056Y-6144).
+
+The finite cutoff is essential; replacing this sequence by an untruncated exponential would give the wrong moment law. Substituting these five exact rows into the complete residual pairing gives
+
+    cross(F,I_mode)=(512/2187)*U*T³*Y⁵*H(Y),
+    H(Y)=86Y²-963Y+3564,
+    M11_mode=(2048/729)*κ*U*T³*Y⁶*H(Y).
+
+All other quadratic pairs and every cubic term are unchanged. The minor contribution has positive scalar shape, unconditionally:
+
+    344*H(Y)=(172Y-963)²+298647 > 0.
+
+The full native slope response acts differently. M12/M13 are unchanged, so
+
+    S12_mode=(2Y-3)*12Y*∂Y M11_mode-144Y*M11_mode
+      =(8192/243)*κ*U*T³*Y⁶*R(Y),
+    R(Y)=344Y³-3990Y²+20223Y-64152.
+
+Square transfer therefore gives the exact contribution to COMPLETE Q6, independent of both auxiliary mass and z:
+
+    Q6_mode=(1/9)^6*(8192/243)*κ*V⁶*(9-V)³*Y⁶*R(Y).
+
+Source97 gives Q6(u²,k,z,a)=Q6_without(u,k,z,a)+Q6_mode(u²,k), retaining all six native coefficient inputs. This is a decomposition, not a positivity assertion for Q6_without.
+
+The orientation change is structural. Exact divided differences satisfy
+
+    R(b)-R(a)=(b-a)*[69*(a+b-7)²+189*(a+b-8)²
+      +86*(b-a)²+4746].
+
+Thus R is strictly increasing on the entire real line. R(7)=-109 and R(8)=18400. In particular Q6_mode<0 on 0<V<9, 5/4<k≤2, and Q6_mode>0 for 0<V<9, k≥7/3. This rules out termwise positivity of the positive seventh-head reserve after the source derivative. It does NOT refute Q6 positivity, the surplus route, or RH. The exact minor/slope decomposition and global monotonicity are the positive survivor; their Lean scripts are prepared but unaudited, so no route is retired.
+
+Next hard target: prove the flat-mass Q6 sign while retaining this adverse middle-clock contribution. The velocity derivative of full Q6 uses p13..p17 and excludes this mode; deriving its sign from the complete sixth-head source can determine which physical velocity face is decisive. This is a conjecture to test, not an admitted monotonicity premise. Full Q6 divided by V⁶ remains cubic in V at fixed mass endpoint, affine in z. Keep the lower physical face max(0,(6k+4-r)/(2V(k+2/3))), r=k²(9-V), and upper face1/3; do not replace the domain by a larger box without proof.
+
+### 2026-10-05 — Complete seventh head and full p12 in finite form
+
+**PAPER derivation; sources88..94 prepared, uncompiled.** The lower seventh recurrences are diagonal in Y. Extracting them from the entire native forcing gives three explicit functions F1(n,U), F2(n,U), F3(n,U), recorded without coefficient omission in `/tmp/TTC78KineticSeventhLowerForcing.lean`. Each is even in U of degree at most6. Their degrees in n are at most11,11,10 respectively. Let ΔF(n)=F(n+1)-F(n).
+
+For b*(j-1)=1 define the finite inverse
+
+    I_d(b,F)(n)=-sum_(r=0)^d b^(r+1)*Delta^r F(n).
+
+An induction retaining the last difference proves the exact defect identity
+
+    I_d(n+1)-j*I_d(n)=F(n)-b^(d+1)*Delta^(d+1)F(n).
+
+Polynomial forcing therefore gives an exact recurrence when its final difference vanishes. The whole Y² and Y³ channels are
+
+    H2(m)=I_11(1,F2)(m+5)-2^m*I_11(1,F2)(5),
+    H3(m)=I_10(1/2,F3)(m+5)-3^m*I_10(1/2,F3)(5).
+
+Both start at zero. No assumption that either geometric amplitude vanishes is used. Source88 prepares the defect and zero-seeded inverse identities. Source90 prepares the unconditional twelfth/eleventh-difference identities for the actual F2/F3 and discharges the inverse's generic algebraic conditions. These are symbolic identities for every complex order n, not tests at selected values.
+
+For the resonant Y¹ channel let
+
+    L(U)=-64647720+104217840U²-27471150U⁴+1891890U⁶,
+    H1(m)=L(U)+sum_(i=0)^(m-1) F1(i+5,U).
+
+Let Upper(n,U,Y) be the previously solved sum of the Y⁵/Y⁶/Y⁷ channels, and let H4(m,U) be the complete fourth-Y solution with its `32768*(9-U²)³*4^m` correction. Define
+
+    G(m)=Upper(m+5)+Y⁴H4(m)+Y³H3(m)+Y²H2(m)+YH1(m),
+    H(m)=G(m)-delta_(m,0)*Y*L(U)+delta_(m,1)*C7(U),
+    C7(U)=64647720-107809380U²+29002050U⁴-2027025U⁶.
+
+Every term is an explicit finite expression in the already solved fifth/sixth heads. There is no unresolved native coefficient in this definition. The entire regular forcing is
+
+    F(n)=AU*partial_U SixthCore(n)+U*((4n-24)Y+4n-15)*SixthCore(n)
+      +12(n-4)*B0*FifthCore(n),
+    F(n)=YF1(n)+Y²F2(n)+Y³F3(n)+Y⁴FourForce(n)
+      +Upper(n+1)-(1/3)*Y*partial_K Upper(n).
+
+Combining the scalar recurrences gives `G(next)=(1/3)Y*partial_K G+F`. The two exact seed corrections give H(0)=0 and the full native recurrence using SixthClosedHead and FifthHead. In particular the sixth scalar exception contributes exactly `Y*L(U)+C7(U)` at the first step. Induction on the literal integerStep source then gives
+
+    [J^m]integerJet(m+6)=12^m*H(m+1).
+
+Source91 prepares this complete native identity with no missing-coefficient, parity or sign premise. Sources88's generic inverse conditions are discharged before reaching this capstone. The source proof and default-limit performance still require Lean audit.
+
+#### Complete seventh reflection, M11 and S12
+
+The reversed seventh head is zero below order6 and H(n-5) thereafter. Its full reflected coefficient is the signed seven-pair Cauchy sum
+
+    A*G+B*F+C*E+D*D+E*C+F*B+G*A,
+
+with normalization12⁶=2985984. Write I for the resulting fifth coefficient of the reflection remainder, whose earlier coefficients are F,T,D,E,H. The full determinant coefficient is
+
+    Q5=cross(F,I)+cross(T,H)+cross(D,E),
+    Cubic4=Hdir(F,H)+Hmix(F,T,E)+Hdir(D,F)+Hdir(T,D),
+    M11=12^18*(12Y*Q5-Cubic4).
+
+The four cubic terms account for all partitions 004,013,022,112. The literal full response is
+
+    S12=(2Y-3)*(4Y*partial_K M11+AU*partial_U M12+12B1*M12+13B0*M13)-144Y*M11,
+    square(p12)=U^11*S12.
+
+Sources92/93/94 prepare the actual seventh reflection, complete M11 and complete S12/square transfer. Together with sources81..83, both previously missing p12/p13 inputs to full Q6 are now explicit on paper. Their expansion, full mass-endpoint signs and every lower residual sign still need proofs. In particular positive Y⁴ source reserve does not by itself imply positivity after signed reflection and determinant formation.
+
+Corpus inverse search exited0 partial, generation1247868, coverage pending, background refresh incomplete, Qdrant deadline and reranker disconnect. All result categories inspected. It supplied differential resolvent analogues, not the exact source recurrence used here. Mathlib forward-difference and Gregory–Newton identities were read from this toolchain; direct API/kernel checks wait for the sole foreground C77 process to finish. No exhaustive novelty claim, new axiom, numerical sampling, CAS or external coefficient arithmetic.
+
+### 2026-10-05 — Seventh upper channels complete; independent first seed check
+
+The missing U⁴Y⁵ coefficient is
+
+    B4(n)=64*(n-2)(n-3)(n-4)(n-5)*(20n³-75n²+37n-432).
+
+Its full forcing, extracted from the known fifth/sixth heads, is
+
+    B4(n+1)-5*B4(n)=32*(n-2)(n-3)(n-4)*
+      (-160n⁴+1680n³-4196n²+5376n-20700).
+
+The factor (n-5) matches the zero initial seed, so no additional 5^n term is needed. Together with the previous U²Y⁵, U⁴Y⁶ and U⁶Y⁷/Y⁶/Y⁵ formulas, this closes every channel above Y⁴ on paper. Source87, `/tmp/TTC78KineticSeventhUpperComplete.lean`, prepares all missing upper recurrence identities, highest cancellations and seeds. Literal whole-seventh source identification still needs the lower channels; this is not a kernel claim.
+
+Independent paper check of the first geometric-correction step: the fourth/fifth source recurrence gives `f1_Y4(5)=-614304`, `f1_Y3(5)=-118584`, `g0_Y3(5)=153576`, `g0_Y2(5)=627912`. Hence the literal seventh U⁰Y⁴ forcing at n=5 is
+
+    18*(-118584+614304)+72*(627912-4*153576)=9902736.
+
+The corrected seventh formula gives the same result. This is an exact symbolic seed check, not numerical sampling or a replacement for Lean verification.
+
+The remaining scalar equations have polynomial forcing and diagonal multipliers j=1,2,3. Corpus search found `Polynomial.fwdDiff_iter_eq_zero_of_degree_lt`, `Polynomial.fwdDiff_iter_degree_add_one_eq_zero` and the local `HTGeometry.natDegree_fwdDiff` / `fwdDiff_iterate_natDegree`. For j!=1, the paper identity
+
+    P(n)=-sum_(r=0)^d Delta^r F(n)/(j-1)^(r+1),
+    P(n+1)-j*P(n)=F(n)-Delta^(d+1)F(n)/(j-1)^(d+1)
+
+gives an exact finite polynomial inverse once deg F<=d. The seed then determines the geometric correction. This is the next candidate for solving the remaining channels together; no assumption that their geometric seeds vanish is made. The j=1 channel requires a discrete antiderivative with the actual exceptional seed. No new generic inverse Lean source has been created yet.
+
+Corpus native_seed_audit lexical search returned the actual `integerJet` source and comparison theorem; full source recurrence was read. Forward-difference deep search exited0 partial, interrupted text/source stages, generation1247742 with coverage pending and refresh incomplete. Candidate source files were read, but new API applicability has not been kernel checked while cell227 remains live. No exhaustive novelty claim.
+
+### 2026-10-05 — Full sixth reflection and the seventh geometric correction
+
+**Status: PAPER derivation, prepared Lean sources81..86; no kernel audit or production promotion.**
+
+The complete sixth head supplies the reversed coefficient5. Its reflection is the full six-pair Cauchy sum `A*F+B*E+C*D+D*C+E*B+F*A`, with signed binomial weights and scale12⁵=248832. With `H` this normalized sixth reflection moment, the complete determinant coefficients are
+
+    Q4=cross(F,H)+cross(T,E)+Residual(D),
+    Cubic3=Hdir(F,E)+Hmix(F,T,D)+H(T),
+    M12=12^18*(12Y*Q4-Cubic3).
+
+No transverse projection is taken here. Source81 prepares the actual sixth reflected coefficient; source82 the complete native M12; source83 the full S13 response and the source square identity
+
+    S13=(2Y-3)*(4Y*partial_K M12+AU*partial_U M13+13B1*M13+14B0*M14)-144Y*M12,
+    square(p13)=U^12*S13.
+
+These formulas retain every native term. They do not prove a sign for p13 or Q6.
+
+#### Failed polynomial ansatz; exact positive survivor
+
+The seventh U⁶ component satisfies
+
+    h6(n+1)=Y*partial_Y h6(n)+[(4n-34)Y+4n-5]*f5(n)
+      -8(n-4)*(Y-1)²*g4(n).
+
+Its first three Y coefficients, starting at Y⁷, are
+
+    A6=(512/45)*n(n-1)(n-2)(n-3)(n-4)(n-5),
+    B6=-(128/15)*(n-1)(n-2)(n-3)(n-4)(n-5)*(4n²-4n+27),
+    C6=(16/3)*(n-2)(n-3)(n-4)(n-5)*(8n⁴-24n³+78n²+10n+558).
+
+All three satisfy the literal scalar recurrence and seed0 at n=5 on paper. The next coefficient, Y⁴, cannot retain a polynomial-only ansatz with that seed. Its forcing is
+
+    (4/3)*(n-3)(n-4)*(64n⁷-896n⁶+3904n⁵-7376n⁴+6740n³
+      -37316n²+25574n-238644).
+
+Matching the degree-seven forcing under the initially factorized ansatz leaves the exact residual `27648*(n-3)(n-4)`. Correcting the polynomial by `1024*(9n²-57n+92)` repairs the recurrence but gives seed32768. The unique zero-seeded solution therefore includes `-32768*4^(n-5)`.
+
+Testing the corresponding U² and U⁴ Y⁴ recurrences resolves their seeds too. Write the full Y⁴ coefficient as `H4(n,U)`, n>=5. Let
+
+    P0=1944*(-8n⁶+108n⁵-662n⁴+2289n³-5342n²+8835n-7788),
+    P2=108*(n-3)(n-4)(n-5)*(-32n⁴+304n³-1096n²+272n-1806)
+      +248832*(9n²-57n+92),
+    P4=8*(n-3)(n-4)(n-5)*(-80n⁵+632n⁴-780n³+4390n²+1472n+20493)
+      -27648*(9n²-57n+92),
+    P6=(4/9)*(n-3)(n-4)(n-5)*(-64n⁶+384n⁵-1024n⁴+80n³
+      -6244n²-3068n-37422)+1024*(9n²-57n+92),
+    P(n,U)=P0+U²*P2+U⁴*P4+U⁶*P6.
+
+Then the complete scalar recurrence and seed give
+
+    H4(n,U)=P(n,U)+32768*(9-U²)³*4^(n-5),
+    P(5,U)=-32768*(9-U²)³.
+
+The four geometric multipliers are `23887872,-7962624,884736,-32768`. Their cubic factorization is exact, not extrapolated from the first and last components. The new U² and U⁴ forcing polynomials are respectively
+
+    108*(n-3)(n-4)*(96n⁵-1616n⁴+9736n³-23392n²+12578n-93612),
+    8*(n-3)(n-4)*(240n⁶-3736n⁵+16244n⁴-30014n³+81868n²-46485n+450918).
+
+**Paper proof:** extract Y⁴ from the complete native seventh recurrence using the full fifth/sixth heads. Each displayed Pj satisfies `Pj(n+1)-4Pj(n)=forcing_j(n)` by symbolic multiplication. Its initial value fixes the unique geometric correction. The exceptional scalar sixth correction has degree at most1 in Y after the source operator, so it contributes nothing to this projection. Induction therefore identifies the literal native jet coefficient:
+
+    [Y⁴][J^m]Jet_(m+6)=12^m*H4(m+6,U).
+
+The difference from its polynomial part is strictly positive on the physical interior U²<9, since every factor of `12^m*32768*(9-U²)³*4^(m+1)` is positive. This is the exact positive survivor of the polynomial-only failure. It is a correction to the complete head, not a proof that the whole head, p12, or Q6 is positive.
+
+Polynomial uniqueness follows on paper because the leading coefficient of `P(n+1)-4P(n)` is minus three times that of P. Thus a polynomial homogeneous solution is zero. The nonzero initial discrepancy excludes a polynomial-only formula in the interior. This uniqueness/no-go argument is not yet prepared as a separate Lean theorem. Source84 prepares the full Y⁴ forcing, polynomial recurrence, seed factorization and corrected recurrence. Source85 retains the first three U⁶ coefficients. Source86 prepares the affine source change K=(Y-1)/3, literal native Y⁴ extraction, exact reserve and its interior positivity. All remain uncompiled.
+
+Corpus audit: `full_sixth_reflection_search` exited0, partial, reranking deadline; generation1247356, coverage1247356/current1247360, complete65969-file inventory, predominantly pending/stale/source-only compiler status. Every result category was inspected. Hits supply general reflection/source identities but not this complete target. The broadened lexical `integerJet integerStep integerThirdMinor --any --module ThetaCuspRatio` returned the actual native source declarations (eight total, per-module cap applied), without compiler freshness metadata. No exhaustive novelty claim. No sampling, CAS, external coefficient arithmetic, second Lean process, raised limits, or umbrella build.
 
 ### 2026-10-05 — Sixth coefficient: exact mass concavity and a factorable endpoint
 
@@ -541,8 +750,25 @@ The sole live Lean pipeline remains C77 cell227. Sixty-four scratch sources are 
 62. `/tmp/TTC78KineticSixthThreeSource.lean`
 63. `/tmp/TTC78KineticSixthFiveHead.lean`
 64. `/tmp/TTC78KineticSixthClosedHead.lean`
+65. `/tmp/TTC78KineticSixthReflectionHead.lean`
+66. `/tmp/TTC78KineticMinorTwelve.lean`
+67. `/tmp/TTC78KineticSlopeThirteen.lean`
+68. `/tmp/TTC78KineticSeventhFourMode.lean`
+69. `/tmp/TTC78KineticSeventhSixUpper.lean`
+70. `/tmp/TTC78KineticSeventhFourSource.lean`
+71. `/tmp/TTC78KineticSeventhUpperComplete.lean`
+72. `/tmp/TTC78KineticFiniteDifferenceInverse.lean`
+73. `/tmp/TTC78KineticSeventhLowerForcing.lean`
+74. `/tmp/TTC78KineticSeventhLowerClosed.lean`
+75. `/tmp/TTC78KineticSeventhClosedHead.lean`
+76. `/tmp/TTC78KineticSeventhReflectionHead.lean`
+77. `/tmp/TTC78KineticMinorEleven.lean`
+78. `/tmp/TTC78KineticSlopeTwelve.lean`
+79. `/tmp/TTC78SurplusSixFlatReduction.lean`
+80. `/tmp/TTC78KineticSeventhModeReflection.lean`
+81. `/tmp/TTC78SurplusSixFourMode.lean`
 
-All eighty kinetic/surplus sources remain UNCOMPILED, with no axiom audits. The chain now targets the complete minor coefficients fourteen/thirteen, native slope coefficients fifteen/fourteen and square transfer, the general coefficient response of the source operator, the all-order fifth jet/reflection construction, the residual's actual next canonical coefficient, and its complete kinetic monotonicity and quadratic-mass reserve. Sources58..60 supply the complete fifth even split, full odd M13 and native S14, then actual p14. Source61 prepares the resulting strict positivity of the complete absorbed q7 on StrictCoarseCone. Sources62/63 prepare the full Q6 coefficient and exact auxiliary-mass concavity; its endpoint signs remain open. Sources64/65 retain complete M12/S13 zero components;66..70 prepare the complete sixth first-U and seventh zero native recurrences and source identification, including their seed corrections and the required geometric term. Sources71..75 supply projected reflections, full M11_one/M12_two and the first-U response of actual S12. Source76 supplies the complete sixth transverse forcing, its two highest polynomial solutions and full sixth/seventh scalar corrections. Sources77/78 supply the entire sixth U³ closed recurrence, its exceptional seed and literal third-transverse source identity. Sources79/80 supply the complete sixth U⁵ component and full all-order native sixth head. These hand derivations still require Lean audit. Positivity of all lower residual terms and of the full interior source remains OPEN. No source-coordinate division is used. The generic even-reflection third/fourth-head closed formulas still need proofs beyond the five actual moments. No certificate is retired or promoted until direct serial `lake --old env lean` audits and survivor integration succeed.
+All ninety-seven kinetic/surplus sources remain UNCOMPILED, with no axiom audits. The chain now targets the complete minor coefficients fourteen/thirteen/twelve/eleven, native slope coefficients fifteen/fourteen/thirteen/twelve and square transfer, the general coefficient response of the source operator, the all-order fifth/sixth/seventh jet/reflection construction, the residual's actual next canonical coefficient, and its complete kinetic monotonicity and quadratic-mass reserve. Sources58..60 supply the complete fifth even split, full odd M13 and native S14, then actual p14. Source61 prepares the resulting strict positivity of the complete absorbed q7 on StrictCoarseCone. Sources62/63 prepare the full Q6 coefficient and exact auxiliary-mass concavity; its endpoint signs remain open. Sources64/65 retain complete M12/S13 zero components;66..70 prepare the complete sixth first-U and seventh zero native recurrences and source identification, including their seed corrections and the required geometric term. Sources71..75 supply projected reflections, full M11_one/M12_two and the first-U response of actual S12. Source76 supplies the complete sixth transverse forcing, its two highest polynomial solutions and full sixth/seventh scalar corrections. Sources77/78 supply the entire sixth U³ closed recurrence, its exceptional seed and literal third-transverse source identity. Sources79/80 supply the complete sixth U⁵ component and full all-order native sixth head. Sources81..83 supply the full sixth reflection, native M12/S13 and square transfer. Sources84..86 supply the entire seventh Y⁴ forcing and forced positive cubic geometric reserve, its literal source identification, and three upper U⁶ coefficients. Source87 completes the scalar recurrences for every seventh component above Y⁴. Sources88..94 close the remaining seventh recurrences in finite form, retain all seed corrections, and prepare the full native seventh head/reflection/M11/S12/square-p12 identities. Sources95..97 give the actual-source flat-mass comparison and the exact signed geometric-mode contribution to full Q6, including its globally increasing cubic sign factor. These hand derivations still require Lean audit. Positivity of all lower residual terms and of the full interior source remains OPEN. No source-coordinate division is used. The generic even-reflection third/fourth-head closed formulas still need proofs beyond the five actual moments. No certificate is retired or promoted until direct serial `lake --old env lean` audits and survivor integration succeed.
 
 ### Exact quadratic power mechanism
 

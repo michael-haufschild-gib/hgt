@@ -64,15 +64,14 @@ theorem integral_mobWindowField_three_le {X : ℕ} (hX : 1 ≤ X) {H : ℝ} (hH 
     have him : z.im = y + t := by simp [hz]
     have hG := norm_nearLineGauss_le (τ := τ) hH (z := z) (by rw [hre]; norm_num)
     have hf : ‖mobField X z‖ ≤ 2 / X := by
-      have := norm_mobField_three_le hX (y + t)
-      rwa [show ((3 : ℝ) : ℂ) = (3 : ℂ) by norm_num] at hz ⊢
+      simpa [hz] using norm_mobField_three_le hX (y + t)
     unfold mobWindowField
     rw [norm_mul, mul_pow]
     have hG2 : ‖nearLineGauss H τ z‖ ^ 2 ≤
         Real.exp 1 ^ 2 * Real.exp (-(2 / H ^ 2) * (t - (τ - y)) ^ 2) := by
       have h := pow_le_pow_left₀ (norm_nonneg _) hG 2
       refine h.trans (le_of_eq ?_)
-      rw [mul_pow, ← Real.exp_nat_mul, him]
+      rw [mul_pow, ← Real.exp_nat_mul (-((z.im - τ) ^ 2 / H ^ 2)) 2, him]
       congr 2
       push_cast
       ring
@@ -102,7 +101,7 @@ theorem one_add_abs_sq_mul_exp_le {H : ℝ} (hH : 0 < H) (t τ : ℝ) :
       (2 * (1 + |τ|) ^ 2 + 2 * H ^ 2) * Real.exp (-((t - τ) ^ 2 / H ^ 2)) := by
   set x : ℝ := t - τ with hx
   have ht : |t| ≤ |τ| + |x| := by
-    have := abs_add (τ) x
+    have := abs_add_le τ x
     rwa [show τ + x = t by rw [hx]; ring] at this
   have h1 : (1 + |t|) ^ 2 ≤ 2 * (1 + |τ|) ^ 2 + 2 * x ^ 2 := by
     have h0 : 0 ≤ 1 + |t| := by positivity
@@ -157,7 +156,7 @@ theorem integral_mobWindowField_half_whole_le {C D : ℝ} (hC : 0 < C)
     have h2 := pow_le_pow_left₀ (norm_nonneg _) h 2
     refine h2.trans (le_of_eq ?_)
     have him : (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I).im = t := by simp
-    rw [him, mul_pow, ← Real.exp_nat_mul]
+    rw [him, mul_pow, ← Real.exp_nat_mul (-((t - τ) ^ 2 / H ^ 2)) 2]
     congr 2
     push_cast
     ring
@@ -236,8 +235,9 @@ theorem integral_mobWindowField_half_whole_le {C D : ℝ} (hC : 0 < C)
           linarith)
         have := mul_le_mul_of_nonneg_left this (by positivity : (0 : ℝ) ≤ Real.exp 1 ^ 2)
         linarith
-      simp only [hg, mobWindowField, norm_mul, mul_pow]
-      rw [← hz]
+      change ‖nearLineGauss H τ z * mobField X z‖ ^ 2 ≤
+        Real.exp 1 ^ 2 * (2 * ‖riemannZeta z * edPoly mobCoeff (Finset.Icc 1 X) z‖ ^ 2 + 2)
+      rw [norm_mul, mul_pow]
       exact mul_le_mul hGe hF2 (by positivity) (by positivity)
     calc ∫ t in (-(N : ℝ))..(N : ℝ), g t
         ≤ ∫ t in (-(N : ℝ))..(N : ℝ), Real.exp 1 ^ 2 *
@@ -246,14 +246,18 @@ theorem integral_mobWindowField_half_whole_le {C D : ℝ} (hC : 0 < C)
           intervalIntegral.integral_mono_on (by linarith) (hgc.intervalIntegrable _ _)
             ((continuous_const.mul ((continuous_const.mul hZMc).add continuous_const)).intervalIntegrable
               _ _) fun t _ => hpt t
-      _ = Real.exp 1 ^ 2 * (2 * ∫ t in (-(N : ℝ))..(N : ℝ),
+      _ = Real.exp 1 ^ 2 * (2 * (∫ t in (-(N : ℝ))..(N : ℝ),
             ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
-              edPoly mobCoeff (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 + 4 * N) := by
+              edPoly mobCoeff (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) + 4 * N) := by
           rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_add
+            (f := fun t : ℝ => 2 * ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+              edPoly mobCoeff (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2)
             ((continuous_const.mul hZMc).intervalIntegrable _ _) intervalIntegrable_const,
             intervalIntegral.integral_const_mul, intervalIntegral.integral_const, smul_eq_mul]
           ring
-      _ ≤ Real.exp 1 ^ 2 * (2 * CS + 4 * N) := by gcongr
+      _ ≤ Real.exp 1 ^ 2 * (2 * CS + 4 * N) := by
+          apply mul_le_mul_of_nonneg_left _ (sq_nonneg (Real.exp 1))
+          linarith only [hCS]
   have hout : ∫ t in (Icc (-(N : ℝ)) N)ᶜ, g t ≤
       K * Real.exp (-(R₀ ^ 2 / (2 * H ^ 2))) * Real.sqrt (Real.pi / (1 / (2 * H ^ 2))) := by
     set P : ℝ → ℝ := fun t => K * Real.exp (-(R₀ ^ 2 / (2 * H ^ 2))) *
@@ -275,7 +279,7 @@ theorem integral_mobWindowField_half_whole_le {C D : ℝ} (hC : 0 < C)
         rw [← sq_abs (t - τ)]; exact pow_le_pow_left₀ hR₀ hx 2
       refine (henv t).trans ?_
       simp only [hP]
-      rw [mul_assoc, ← Real.exp_add]
+      rw [mul_assoc K, ← Real.exp_add]
       refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hK0
       have key : -((t - τ) ^ 2 / H ^ 2) = -(R₀ ^ 2 / (2 * H ^ 2)) +
           -(1 / (2 * H ^ 2)) * (t - τ) ^ 2 - ((t - τ) ^ 2 - R₀ ^ 2) / (2 * H ^ 2) := by
@@ -309,7 +313,7 @@ theorem norm_mobWindowField_le_strip {C : ℝ} (hC : 0 < C)
   set x : ℝ := z.im - τ with hx
   have hkey : (1 + |z.im|) * Real.exp (-(x ^ 2 / H ^ 2)) ≤ 1 + |τ| + H := by
     have h1 : |z.im| ≤ |τ| + |x| := by
-      have := abs_add τ x
+      have := abs_add_le τ x
       rwa [show τ + x = z.im by rw [hx]; ring] at this
     have h2 := mul_exp_neg_sq_div_le (x := |x|) (abs_nonneg x) hH0
     rw [sq_abs] at h2
@@ -384,7 +388,7 @@ theorem exists_integral_normSq_mobMollifiedError_le_threeLines :
   set F := mobWindowField X H τ with hFdef
   set CS : ℝ := Real.sqrt ((2 * N + 8 * ((X * X : ℕ) : ℝ) * (1 + Real.log ((X * X : ℕ) : ℝ))) *
     (1 + Real.log ((X * X : ℕ) : ℝ)) ^ 4 * (D * N * (1 + Real.log N) ^ 4)) with hCS
-  obtain ⟨hgint, hwhole⟩ := integral_mobWindowField_half_whole_le hC hgrowth hX hH hR₀ hNR
+  obtain ⟨hgint, hwhole⟩ := integral_mobWindowField_half_whole_le (D := D) hC hgrowth hX hH hR₀ hNR
     (hmom hX hN)
   rw [← hCS] at hwhole
   set SL : ℝ := Real.exp 1 ^ 2 * (2 * CS + 4 * N) +
@@ -419,7 +423,6 @@ theorem exists_integral_normSq_mobMollifiedError_le_threeLines :
     intro y
     have hshift := intervalIntegral.integral_comp_add_left
       (fun t : ℝ => ‖F (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) y (a := T₁) (b := T₂)
-    simp only at hshift
     rw [hshift, intervalIntegral.integral_of_le (by linarith)]
     refine (setIntegral_le_integral hgint (Filter.Eventually.of_forall fun t => by positivity)).trans
       hwhole

@@ -9,6 +9,8 @@ import GaloisForLFunctions.HTGeometry.LinearRegularSequence
 
 ```text
 isHomogeneous_linearForm                a linear form is homogeneous of degree one
+exists_homogeneous_isRegular_finiteHankelSecantIdeal
+    ** … by linear forms **
 exists_isRegular_finiteHankelSecantIdeal
     ** the secant ideal carries a regular sequence of length `2r` **
 isCohenMacaulayRing_finiteHankelSecantQuotient
@@ -36,10 +38,10 @@ theorem isHomogeneous_linearForm {N : ℕ} {K : Type u} [Field K] (c : Fin N →
   refine MvPolynomial.IsHomogeneous.sum _ _ _ fun i _ => ?_
   simpa using (MvPolynomial.isHomogeneous_C _ (c i)).mul (MvPolynomial.isHomogeneous_X K i)
 
-/-- **The secant ideal carries a regular sequence of length `2r`.** -/
-theorem exists_isRegular_finiteHankelSecantIdeal (K : Type u) [Field K] [Infinite K] (N r : ℕ)
-    (hN : 2 * r ≤ N) :
-    ∃ rs : List (MvPolynomial (Fin N) K), rs.length = 2 * r ∧
+/-- **The secant ideal carries a regular sequence of `2r` linear forms.** -/
+theorem exists_homogeneous_isRegular_finiteHankelSecantIdeal (K : Type u) [Field K] [Infinite K]
+    (N r : ℕ) (hN : 2 * r ≤ N) :
+    ∃ rs : List (MvPolynomial (Fin N) K), rs.length = 2 * r ∧ (∀ l ∈ rs, l.IsHomogeneous 1) ∧
       RingTheory.Sequence.IsRegular
         (MvPolynomial (Fin N) K ⧸ finiteHankelSecantIdeal K N r) rs := by
   classical
@@ -57,7 +59,8 @@ theorem exists_isRegular_finiteHankelSecantIdeal (K : Type u) [Field K] [Infinit
       (MvPolynomial (Fin N) K ⧸ finiteHankelChainIdeal K N r)) inferInstance hlt
     ⟨rs0, hlen0, hmem0, hreg0⟩
   -- deform it along the degeneration
-  obtain ⟨ls', hls'len, hls'reg⟩ := exists_isRegular_of_degeneration (hankelWeight N)
+  obtain ⟨ls', hls'len, hls'hom, hls'reg⟩ :=
+    exists_isRegular_of_degeneration_homogeneous (hankelWeight N)
     (isHomogIdeal_finiteHankelSecantIdeal K N r) (isHomogIdeal_finiteHankelChainIdeal K N r)
     (isGradedSubmodule_hankelStandardSpan K N r)
     (isCompl_finiteHankelSecantIdeal_standardSpan K N r)
@@ -68,8 +71,17 @@ theorem exists_isRegular_finiteHankelSecantIdeal (K : Type u) [Field K] [Infinit
       obtain ⟨c, -, rfl⟩ := List.mem_map.mp hl
       exact isHomogeneous_linearForm c)
     hcsreg
-  refine ⟨ls', ?_, hls'reg⟩
+  refine ⟨ls', ?_, hls'hom, hls'reg⟩
   rw [hls'len, List.length_map, hcslen, min_eq_right hN]
+
+/-- **The secant ideal carries a regular sequence of length `2r`.** -/
+theorem exists_isRegular_finiteHankelSecantIdeal (K : Type u) [Field K] [Infinite K] (N r : ℕ)
+    (hN : 2 * r ≤ N) :
+    ∃ rs : List (MvPolynomial (Fin N) K), rs.length = 2 * r ∧
+      RingTheory.Sequence.IsRegular
+        (MvPolynomial (Fin N) K ⧸ finiteHankelSecantIdeal K N r) rs := by
+  obtain ⟨rs, h1, -, h3⟩ := exists_homogeneous_isRegular_finiteHankelSecantIdeal K N r hN
+  exact ⟨rs, h1, h3⟩
 
 /-- **The Hankel secant ring is Cohen–Macaulay.** -/
 theorem isCohenMacaulayRing_finiteHankelSecantQuotient (K : Type) [Field K] [CharZero K]
