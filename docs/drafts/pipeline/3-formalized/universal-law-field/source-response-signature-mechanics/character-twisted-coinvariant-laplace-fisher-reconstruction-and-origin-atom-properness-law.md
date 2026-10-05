@@ -623,8 +623,6 @@ Fully formalized, unconditionally: see the Lean certificate below.
 
 - [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.CharacterTwistedCoinvariant`, `GaloisForLFunctions.HTGeometry.HalfLineLaplaceTomography`, `GaloisForLFunctions.HTGeometry.LaplaceFisherReconstruction`, `GaloisForLFunctions.HTGeometry.OriginAtomFormationProperness`, `GaloisForLFunctions.HTGeometry.HypoexponentialRateReconstruction`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 
-## Lean certificate
-
 Modules `GaloisForLFunctions.HTGeometry.CharacterTwistedCoinvariant` (§2),
 `GaloisForLFunctions.HTGeometry.HalfLineLaplaceTomography` (§3),
 `GaloisForLFunctions.HTGeometry.LaplaceFisherReconstruction` (§4, §7, §8; the Moore–Penrose inverse of a symmetric

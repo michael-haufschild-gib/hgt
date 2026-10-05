@@ -17,7 +17,18 @@ Close part of the atomic branch of the uniqueness problem beyond L153 (integer m
   - Maass's converse theorem for even forms at level 1 (one functional equation, via Cauchy data on the imaginary axis);
   - `λ₁(SL₂(ℤ)) > ¼` (Roelcke; the numerical value is `91.14`);
   - the Eisenstein constant-term analysis at `s = ½` (`E(z,½) ≡ 0`; `∂_sE` has coefficients `∝ d(n)`).
-- [ ] 2 → 3: Lean needs the Maass converse theorem and a spectral-gap input, neither of which is in the corpus.
+- [ ] 2 → 3: (b) formalized under the corpus gap hypothesis; gap removal and (a) open (see Lean section).
+
+## Lean
+- (b), k = 2: `RHTower.HalfIntegerMassRigidity.vonMangoldt_and_riemannHypothesis_of_half_integer_counting`
+  (Weil-positive, `2μ((a,b]) ∈ ℕ` a.e., `μ(−1,1) = 0` ⇒ `lam = Λ`, RH); atomic form `half_integer_mass_rigidity`.
+  Inputs built for it: level-one Maass converse at λ = ¼ (`MaassConverseLevelOne.maassFun_invS`), constant-term
+  Wronskian (`MaassConstantTermWronskian`), no even level-one cusp form at λ = ¼ (`MaassLevelOneCuspVanishing`),
+  converse theorem for ζ² (`MaassZetaSquaredConverse.coeff_eq_divisorCount_of_functional_equation`).
+  Standard axioms only.
+- Open: (i) drop `μ(−1,1) = 0` (small atoms; odd atom at `t = 0` gives sign −1, killed by `(ST)³ = 1`);
+  (ii) (a) forward: finite order and exact pole order of the completion; (iii) (a) converse: degree-k explicit
+  formula for `G` (corpus has it only for ζ).
 
 ## Proof sketch
 1. **Setup.** The Herglotz function is `Φ = Σ m_j 2(s−½)/((s−½)²+t_j²)`, so `E = exp∫Φ = Π(1+(s−½)²/t_j²)^{m_j} = C·s(s−1)Γ_ℝ(s)F(s)`, with `F = exp(Σ lam(n)n^{−s}/log n)`.
@@ -45,3 +56,4 @@ Part (b) is a corollary of the Kaczorowski–Perelli classification of degree-2,
 
 ## Log
 - 2026-09-30 — created at stage 2
+- 2026-10-05 — (b) formalized under the corpus gap hypothesis (Maass converse + Wronskian + Roelcke at λ = ¼).

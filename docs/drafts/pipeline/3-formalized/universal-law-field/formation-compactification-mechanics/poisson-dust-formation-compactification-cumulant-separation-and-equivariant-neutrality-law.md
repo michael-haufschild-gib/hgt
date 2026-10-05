@@ -1,11 +1,11 @@
 # Poisson-dust formation compactification, cumulant separation, and equivariant neutrality law
 
 - **ID:** ULF-FCM-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** cofinal attack on ULF-OFCM-2 finite formation polynomial; global formation/properness gate
 - **Statement:** Uniformly mass-bounded finite formation packets compactify by adjoining a convolution-exponential dust generator; dust is exactly the linear-only formation cumulant, and every source automorphism transports the compactification information-neutrally.
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [GLOBAL FORMATION COMPACTIFICATION] [EXACT PROPERNESS REPAIR] [FUNCTIONAL-EQUATION NEUTRAL] [BRIDGE] [NOVELTY UNVERIFIED] [LEAN OPEN]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [GLOBAL FORMATION COMPACTIFICATION] [EXACT PROPERNESS REPAIR] [FUNCTIONAL-EQUATION NEUTRAL] [BRIDGE] [NOVELTY UNVERIFIED] [LEAN-PROVED]
 
 ## 1. Why the finite theorem is not globally closed
 
@@ -601,10 +601,91 @@ existing RH route.
 
 - [x] 0 -> 1: explicit cofinal counterexample and survivor mechanism
 - [x] 1 -> 2: compactification, converse, cumulant, reconstruction, equivariance, positive two-sided selection, and scope proofs closed
-- [ ] 2 -> 3: formalize exact finite/Banach-algebra core; not part of current Lean-read-only pass
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.CompactMonoidMeasureAlgebra`, `GaloisForLFunctions.HTGeometry.BanachTriangularExponential`, `GaloisForLFunctions.HTGeometry.WeakStarFormationContinuity`, `GaloisForLFunctions.HTGeometry.PoissonDustCompactification`, `GaloisForLFunctions.HTGeometry.FormationCompactOpenTopology`, `GaloisForLFunctions.HTGeometry.BanachLogSeries`, `GaloisForLFunctions.HTGeometry.FormationCumulants`, `GaloisForLFunctions.HTGeometry.MellinAnchorReconstruction`, `GaloisForLFunctions.HTGeometry.FormationEquivariance`, `GaloisForLFunctions.HTGeometry.PositiveTwoSidedDustSelection`, `GaloisForLFunctions.HTGeometry.FormationScopeCountermodels`, `GaloisForLFunctions.HTGeometry.HalfLineLaplaceTomography`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 - [ ] 3 -> 4: literal arithmetic realization and independent priority audit
+
+
+## Lean certificate
+
+Modules `GaloisForLFunctions.HTGeometry.CompactMonoidMeasureAlgebra` (the measure algebra),
+`GaloisForLFunctions.HTGeometry.BanachTriangularExponential` (Lemma 3.1),
+`GaloisForLFunctions.HTGeometry.WeakStarFormationContinuity` (positive balls, diagonal extraction,
+weak-* continuity of products and exponentials), `GaloisForLFunctions.HTGeometry.PoissonDustCompactification`
+(Theorems 4.1, 5.1, sequential Corollary 5.2), `GaloisForLFunctions.HTGeometry.FormationCompactOpenTopology`
+(the compact-open weak topology, Corollary 5.2), `GaloisForLFunctions.HTGeometry.BanachLogSeries` and
+`GaloisForLFunctions.HTGeometry.FormationCumulants` (§6), `GaloisForLFunctions.HTGeometry.MellinAnchorReconstruction`
+(§7), `GaloisForLFunctions.HTGeometry.FormationEquivariance` (§8),
+`GaloisForLFunctions.HTGeometry.PositiveTwoSidedDustSelection` (§9) and
+`GaloisForLFunctions.HTGeometry.FormationScopeCountermodels` (§10).  Corpus input:
+`GaloisForLFunctions.HTGeometry.HalfLineLaplaceTomography` (Laplace determinacy).  All names below are in
+`GaloisForLFunctions.HTGeometry`.  `K` is a compact Hausdorff second-countable (= compact metrizable)
+commutative monoid with continuous multiplication and its Borel σ-algebra; `M(K) = MeasureAlgebra K`
+(complex Radon measures as `C(K, ℂ)*`, total variation = dual norm, convolution
+`(Φ ⋆ Ψ)(f) = Φ(x ↦ Ψ(y ↦ f(xy)))`, `δ_1 = 1`); `M_+(K)` is `MeasureAlgebra.IsPositive`, identified with
+finite positive Borel measures by `MeasureAlgebra.IsPositive.exists_ofMeasure_eq` (Riesz–Markov–Kakutani);
+`Exp_⋆ = NormedSpace.exp`; the packet `A` is `A : Fin m → MeasureAlgebra K`, the countable packet
+`α : ℕ → MeasureAlgebra K`.  Banach algebras are unital with `‖1‖ = 1`.  For `K = [0, 1]` (§7) the
+monoid is `unitInterval` with multiplication.
+
+| Claim | Lean declaration |
+|-|-|
+| §2 `M(K)` is a commutative unital Banach algebra under convolution | `MeasureAlgebra`, `MeasureAlgebra.mul_apply`, `MeasureAlgebra.one_apply`, `MeasureAlgebra.norm_mul_le'`, `MeasureAlgebra.mul_comm'`, `MeasureAlgebra.ofMeasure_measureConv`, `MeasureAlgebra.norm_ofMeasure` |
+| (PDF.1) `(1 + z a/N)^N → e^{za}` uniformly on compact sets | `FormationDust.tendstoUniformlyOn_one_add_div_pow` |
+| (PDF.2)–(PDF.3) formation `Λ_A(z) = ⋆_j (δ_1 + z α_j)`, mass `|A|_1 = Σ_j ‖α_j‖ = Σ_j α_j(K)` | `FormationDust.formation`, `FormationDust.packetMass`, `FormationDust.IsPositive.norm_eq` |
+| (PDF.4) `Exp_⋆(zγ) = Σ_r z^r γ^{⋆r}/r!` converges in total variation for every `z` | `NormedSpace.exp_series_hasSum_exp'`, `FormationDust.norm_exp_le` |
+| (PDF.5) the compact-open weak topology | `FormationDust.FormSpace`, `FormationDust.testMap`, `FormationDust.FormConv`, `FormationDust.WeakUnifOn`, `FormationDust.tendsto_formSpace_iff_formConv` |
+| Lemma 3.1, (PDF.6)–(PDF.7) triangular-array exponential limit, uniformly on `|z| ≤ R` | `FormationDust.tendstoUniformlyOn_prod_one_add`, `FormationDust.norm_prod_one_add_sub_exp_le`, `FormationDust.norm_exp_sub_exp_le` |
+| Theorem 4.1, (PDF.10)–(PDF.12) Poisson-dust subsequential compactification with `‖γ‖ + Σ_j ‖α_j‖ ≤ C` | `FormationDust.poissonDust_compactification`, `FormationDust.decorated` |
+| the infinite product in (PDF.12) converges in total variation uniformly on compact `z`-sets | `FormationDust.multipliable_formation`, `FormationDust.norm_tprod_sub_prod_range_le` |
+| (PDF.13) weak compactness of the positive ball and the diagonal subsequence | `FormationDust.isSeqCompact_positiveBall`, `FormationDust.exists_diagonal_positive`, `FormationDust.exists_diagonal_subseq` |
+| masses converge, positivity passes to limits, (PDF.14) `γ = Γ - Σ_j α_j ≥ 0` | `FormationDust.tendsto_norm_of_isPositive`, `FormationDust.isPositive_of_tendsto`, `FormationDust.IsPositive.norm_add`, `FormationDust.norm_sum_of_isPositive` |
+| (PDF.15) ordered packets: `‖α_{N,j}‖ ≤ C/(j+1)` | `FormationDust.padded`, `FormationDust.norm_padded_le`, `FormationDust.padded_antitone`, `FormationDust.prod_range_padded` |
+| (PDF.16) the tail estimate `e^{3RC} R² C²/(J+1)` uniformly in `N` | `FormationDust.norm_prod_range_sub_le`, `FormationDust.norm_formation_sub_le`, `FormationDust.norm_decorated_sub_le` |
+| (PDF.17) finite convolution and the exponential preserve weak convergence under the mass bound | `FormationDust.WeakUnifOn.mul`, `FormationDust.weakUnifOn_prod_range`, `FormationDust.weakUnifOn_exp`, `FormationDust.WeakUnifOn.uniform_compact`, `FormationDust.IsPositive.mul` |
+| Theorem 5.1, (PDF.18) every decorated formation is a norm limit, uniformly on compact sets, of positive packets `(α_1, …, α_J, γ/M, …, γ/M)` of mass `≤ C` | `FormationDust.decorated_isLimit`, `FormationDust.realizingPacket`, `FormationDust.norm_formation_realizingPacket_sub_le`, `FormationDust.tendstoUniformlyOn_formation_realizingPacket`, `FormationDust.formConv_of_tendstoUniformlyOn` |
+| Corollary 5.2, the closure of the finite formations of mass `≤ C` is exactly the class of decorated formations obeying (PDF.11) | `FormationDust.closure_packetFormationSet`, `FormationDust.mem_decoratedSet_iff`, `FormationDust.mem_decoratedSet_of_formConv`, `FormationDust.packetFormationSet_subset_decoratedSet`, `FormationDust.formation_eq_decorated` |
+| Corollary 5.2, this closure is compact; `sup_{|z|≤R} ‖Λ(z)‖ ≤ e^{RC}`; the topology is metrized on it by countably many test functions and radii | `FormationDust.isCompact_decoratedSet`, `FormationDust.decoratedSet_seqCompact`, `FormationDust.norm_decorated_le`, `FormationDust.uniformity_decoratedSpace_eq` |
+| Corollary 5.2, the uncompleted finite-packet moduli is not closed | `FormationDust.not_isClosed_packetFormationSet`, `FormationDust.formation_ne_exp` |
+| (PDF.19) the convolution logarithm `log_⋆ F(z) = zγ + Σ_j log_⋆(δ_1 + zα_j)`, norm-convergent near `0`, with `Exp_⋆(log_⋆ F(z)) = F(z)` | `FormationDust.formationLog`, `FormationDust.exp_formationLog`, `FormationDust.logSeries`, `FormationDust.exp_logSeries`, `FormationDust.summable_logSeries_smul` |
+| (PDF.20) `log_⋆ F(z) = z(γ + Σ_j α_j) + Σ_{r≥2} (-1)^{r+1} z^r/r Σ_j α_j^{⋆r}`, all coefficient sums converging in total variation | `FormationDust.hasSum_cumulant`, `FormationDust.summable_norm_pow`, `FormationDust.norm_formationLog_le` |
+| (PDF.21)–(PDF.22) `C_1 = γ + Σ_j α_j`, `C_r = (-1)^{r+1}/r Σ_j α_j^{⋆r}` for `r ≥ 2`; dust contributes nothing for `r ≥ 2` | `FormationDust.cumulant`, `FormationDust.cumulant_one`, `FormationDust.cumulant_of_two_le`, `FormationDust.cumulant_dust_invariant`, `FormationDust.logCoeff` |
+| the cumulants are determined by the formation (the conservation law) | `FormationDust.cumulant_eq_of_decorated_eq`, `FormationDust.total_and_powerSums_eq_of_decorated_eq`, `FormationDust.eq_zero_of_exp_eq_one`, `FormationDust.eq_of_hasSum_pow_smul` |
+| (PDF.23) Mellin characters `χ_t(α) = ∫ x^t dα`, continuous convolution characters of `M([0, 1])` | `FormationDust.powFun`, `FormationDust.mellinChar`, `FormationDust.mellin`, `FormationDust.continuous_mellinChar`, `FormationDust.rightTransform_powFun`, `FormationDust.mellin_ofMeasure_real` |
+| Theorem 7.1, anchor-separated decorated reconstruction: equal formations with zero-free atoms and `χ_{t₀}`-distinct nonzero atoms have the same atoms (bijectively) and the same dust | `FormationDust.anchor_reconstruction` |
+| (PDF.24) `χ_t(F(z)) = exp(z χ_t(γ)) Π_j (1 + z χ_t(α_j))`; its zeros are `-χ_t(α_j)^{-1}` | `FormationDust.mellinChar_decorated`, `FormationDust.mellinChar_decorated_eq_zero_iff`, `FormationDust.tprod_one_add_eq_zero_iff`, `FormationDust.exists_mellinChar_eq` |
+| positive anchors of zero-free atoms; local matching of a zero near `t₀` with a unique atom | `FormationDust.mellin_pos`, `FormationDust.mellin_ofMeasure_pos`, `FormationDust.exists_eventually_mellin_eq`, `FormationDust.continuousAt_mellin_real`, `FormationDust.injOn_of_anchor` |
+| holomorphy on `Re t > 0`, identity theorem, Laplace uniqueness after `x = e^{-u}` | `FormationDust.differentiableOn_mellin_ofMeasure`, `FormationDust.mellin_eqOn_of_eventually_eq`, `FormationDust.frequently_eq_of_eventually_real`, `FormationDust.measure_eq_of_moments_succ`, `FormationDust.eq_of_mellin_eventually_eq`, `FormationDust.range_compactify`, `LaplaceTomography.measure_eq_of_laplace_eq_succ` |
+| the first cumulant then gives `γ` | `FormationDust.anchor_reconstruction`, `FormationDust.total_and_powerSums_eq_of_decorated_eq` |
+| (PDF.25) pushforward along a continuous monoid automorphism is an isometric convolution-algebra automorphism | `FormationDust.push`, `FormationDust.pushAlgHom`, `FormationDust.norm_push_aut`, `FormationDust.push_symm_push`, `FormationDust.push_push_symm`, `FormationDust.continuous_pushAlgHom` |
+| Theorem 8.1, (PDF.26)–(PDF.27) the coefficientwise lift `A_* F(z) = Exp_⋆(z A_*γ) ⋆ Π_j (δ_1 + z A_*α_j)` | `FormationDust.pushAlgHom_decorated`, `FormationDust.pushAlgHom_formation`, `FormationDust.pushAlgHom_exp` |
+| Theorem 8.1, the lift is the unique continuous extension of the packet action | `FormationDust.eqOn_pushForm_of_continuous`, `FormationDust.pushForm`, `FormationDust.uniformContinuous_pushForm`, `FormationDust.testMap_pushForm` |
+| Theorem 8.1, it preserves the mass filtration, positivity, the atomic/dust layers, every cumulant degree and total variation | `FormationDust.push_mem_decoratedSet`, `FormationDust.mass_push_aut`, `FormationDust.isPositive_push`, `FormationDust.pushAlgHom_cumulant`, `FormationDust.norm_push_aut` |
+| Theorem 8.1, all `f`-divergences between (normalized) positive formations are preserved | `FormationDust.fDivergence`, `FormationDust.fDivergence_map`, `FormationDust.fDivergence_push`, `FormationDust.toFiniteMeasure_push`, `FormationDust.push_ofMeasure`, `FormationDust.push_normalize`, `FormationDust.isPositive_decorated` |
+| Theorem 8.1, `A² = id` lifts to an involution | `FormationDust.push_involutive` |
+| Theorem 9.1, (PDF.28)–(PDF.29) positive two-sided additive dust families vanish on a pointed cone | `FormationDust.eq_zero_of_pointedCone`, `FormationDust.PointedCone.eq_zero_of_mem_neg_mem` |
+| Theorem 9.1 for the cone of positive measures | `FormationDust.eq_zero_of_isPositive_of_isPositive_neg`, `FormationDust.dust_eq_zero` |
+| (PDF.30) an order-preserving involution exchanging the legs: both vanish | `FormationDust.dust_legs_eq_zero` |
+| (PDF.31) a faithful calibration admits only `u = 0` | `FormationDust.eq_zero_of_calibration`, `FormationDust.dust_calibration` |
+| §9 independence: one-sided semigroups and signed groups carry dust | `FormationDust.oneSided_dust_ne_zero`, `FormationDust.signed_dust_not_positive`, `FormationDust.linearDust` |
+| §10 (1) finite packets are not closed | `FormationDust.not_isClosed_packetFormationSet`, `FormationDust.tendstoUniformlyOn_one_add_div_pow` |
+| §10 (2) zeros do not see dust | `FormationDust.character_decorated_eq_zero_iff`, `FormationDust.character_exp`, `FormationDust.massHom` |
+| §10 (3) higher collisions do not see dust | `FormationDust.cumulant_dust_invariant` |
+| §10 (4) the first response does not separate dust from atoms | `FormationDust.firstCumulant_does_not_separate` |
+| §10 (5) positivity is load-bearing (signed packets, bounded first response, no convergent subsequence) | `FormationDust.signedPacket_counterexample`, `FormationDust.not_formConv_of_unbounded` |
+| §10 (6) uniform mass is load-bearing | `FormationDust.massPacket_counterexample` |
+| §10 (8) zero-free atomic support is load-bearing for Theorem 7.1 | `FormationDust.zeroAtom_counterexample`, `FormationDust.mellinChar_dirac_zero` |
+| §10 (9) a noninvertible observer erases data | `FormationDust.constant_observer_erases`, `FormationDust.push_one` |
+| §10 (10) a non-additive positive family need not vanish | `FormationDust.constant_dust_ne_zero` |
+
+Lemma 3.1 is proved by the product–exponential comparison
+`‖Π(1 + x_i) - exp Σ x_i‖ ≤ e^{2Σ‖x_i‖} Σ ‖x_i‖²` in place of logarithms.  Theorem 7.1 is proved without
+positivity of the dust and allows zero atoms in the packets (only the nonzero atoms need distinct anchors and no
+mass at `0`).  §10 (7) (separation enters only Theorem 7.1) is witnessed by the hypotheses of
+`FormationDust.poissonDust_compactification`, `FormationDust.decorated_isLimit` and `FormationDust.hasSum_cumulant`;
+§10 (11), §§11–13 and the scope remarks state what is not claimed.
 
 ## Log
 
 - 2026-08-14 -- discovered by attacking cofinal extension of ULF-OFCM-2 rather than postulating a global determinant.
 - 2026-08-14 -- compactification, converse realization, cumulant separation, anchor reconstruction, and functional-equation neutrality proved on paper.
+- 2026-10-05 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

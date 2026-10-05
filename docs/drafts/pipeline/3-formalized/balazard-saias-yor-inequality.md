@@ -66,3 +66,10 @@ through local mollified mean squares at scale `β − ½` and stop at the zero-d
 (`RHTower.riemannHypothesis_iff_integral_log_norm_zeta_criticalLine_eq_zero`), from
 `I ≤ log((1+d)/(1−d))` for every real NB residual d < 1 and RH ⇒ d → 0. Also `tanh(I/2) ≤ d` unconditionally.
 Still open: the unconditional equality `I = Σ_{Re ρ>½} log|ρ/(1−ρ)|`.
+
+**Equality closed (2026-10-05, MUST-783).** `RHTower.tendsto_jensenSum_zetaDisc`: the Jensen zero sums converge to the BSY
+integral, so `I = Σ_{Re ρ>½} m_ρ log|ρ/(ρ−1)|` unconditionally (card 3-formalized/bsy-jensen-equality-critical-line.md).
+
+**Poisson–Jensen equality (2026-10-05, MUST-785).** `RHTower.tendsto_jensenSum_shiftedZetaDisc`: MUST-764 is an equality at
+every centre s₀ (ζ(s₀) ≠ 0): log|ζ| = Poisson extension of critical-line log|ζ| + log|s/(s−1)| − Green potential of off-line
+zeros. The "(under the equality form)" caveat of the MUST-766 terminus note is removed.

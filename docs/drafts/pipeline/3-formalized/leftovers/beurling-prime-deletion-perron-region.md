@@ -1,8 +1,8 @@
 # Prime-deletion Beurling systems: the Perron region for [α,β] with β < ½
 
 - **ID:** MC-BEURLING-DELETION-PERRON
-- **Stage:** 2-fully-proven (conditional on RH; a paper theorem, so not formalizable under the unconditional Lean rule)
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** MC conjecture loop, cycles 129 and 136 (`1-in-progress/mc-conjecture-loop-2026-09-28.md`)
 - **Statement:** Assume RH. For every `½ < α < 4/5` and every `β₀(α) < β < ½`, where `β₀(α) = 3α/(α+4)` for `α ≤ 2/3` and `β₀(α) = 1/(3−α)` for `α ≥ 2/3`, there is an [α,β]-system, i.e. a discrete Beurling system with `ψ(x) = x + O_ε(x^{α+ε})`, `N(x) = ax + O_ε(x^{β+ε})`, neither exponent improvable.
 
@@ -77,6 +77,63 @@ Let `S' = supp P_S` (distinct primes), so that `1/ζ_{S'} = ζ_D/ζ_S`, `ζ_{S'}
 ## Meaning for route MC
 The deletion system is Möbius-inverted: `1_{N'} = 1 ⋆ μ_S`. Its integer error is a Möbius–sawtooth sum over the deleted system, and the only analytic input is `1/ζ_S ≪ |t|^ε` left of the critical line of `ζ_S`. This is the Beurling mirror of cycle 131's uniform Abel bound. The result is ζ-blind for RH: it is conditional on RH and describes systems built from ℕ.
 
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.MellinPlancherelBound`, `GaloisForLFunctions.HTGeometry.SmoothedPerronFormula`, `GaloisForLFunctions.HTGeometry.SmoothedPerronContourShift`, `GaloisForLFunctions.HTGeometry.PowerHyperbolaConvolution`, `GaloisForLFunctions.HTGeometry.AbelConstantContinuation`, `GaloisForLFunctions.HTGeometry.GroupedSelectionConcentration`, `GaloisForLFunctions.HTGeometry.GroupedSelectionCount`, `GaloisForLFunctions.HTGeometry.TestFunctionPerronShift`, `GaloisForLFunctions.HTGeometry.MellinTwistedTestBound`, `GaloisForLFunctions.HTGeometry.SmoothedSawtoothFourier`, `GaloisForLFunctions.RHTower.BeurlingRandomPrimeDeletion`, `GaloisForLFunctions.RHTower.BeurlingDeletionZeta`, `GaloisForLFunctions.RHTower.BeurlingDeletionEulerProduct`, `GaloisForLFunctions.RHTower.RiemannHypothesisZetaGrowth`, `GaloisForLFunctions.RHTower.BeurlingDeletionPerron`, `GaloisForLFunctions.RHTower.BeurlingDeletionSystemCount`, `GaloisForLFunctions.RHTower.BeurlingDeletionSystemPrimes`, `GaloisForLFunctions.RHTower.BeurlingDeletionPrimeAsymptotics`, `GaloisForLFunctions.RHTower.BeurlingPerronRegion`, `GaloisForLFunctions.RHTower.BeurlingDeletionMobius`, `GaloisForLFunctions.RHTower.BeurlingDeletionSawtoothBlock`, `GaloisForLFunctions.RHTower.BeurlingDeletionSawtooth`, `GaloisForLFunctions.RHTower.BeurlingDeletionRegion`, `GaloisForLFunctions.RHTower.BeurlingCountedPrimeDeletion`, `GaloisForLFunctions.RHTower.BeurlingDeletionExponentWindow`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+The paper theorem is an implication from RH; it is formalized as exactly that implication, with
+mathlib's `RiemannHypothesis` as the only premise and no other hypothesis or axiom.
+
+**Modules** (all wired into their umbrellas; each `lake env lean` + module build passes; axiom audit:
+every public constant uses only `propext`, `Classical.choice`, `Quot.sound`):
+`GaloisForLFunctions.HTGeometry.MellinPlancherelBound`, `GaloisForLFunctions.HTGeometry.SmoothedPerronFormula`,
+`GaloisForLFunctions.HTGeometry.SmoothedPerronContourShift`, `GaloisForLFunctions.HTGeometry.PowerHyperbolaConvolution`,
+`GaloisForLFunctions.HTGeometry.AbelConstantContinuation`, `GaloisForLFunctions.HTGeometry.GroupedSelectionConcentration`,
+`GaloisForLFunctions.HTGeometry.GroupedSelectionCount`, `GaloisForLFunctions.HTGeometry.TestFunctionPerronShift`,
+`GaloisForLFunctions.HTGeometry.MellinTwistedTestBound`, `GaloisForLFunctions.HTGeometry.SmoothedSawtoothFourier`,
+`GaloisForLFunctions.RHTower.BeurlingRandomPrimeDeletion`, `GaloisForLFunctions.RHTower.BeurlingDeletionZeta`,
+`GaloisForLFunctions.RHTower.BeurlingDeletionEulerProduct`, `GaloisForLFunctions.RHTower.RiemannHypothesisZetaGrowth`,
+`GaloisForLFunctions.RHTower.BeurlingDeletionPerron`, `GaloisForLFunctions.RHTower.BeurlingDeletionSystemCount`,
+`GaloisForLFunctions.RHTower.BeurlingDeletionSystemPrimes`, `GaloisForLFunctions.RHTower.BeurlingDeletionPrimeAsymptotics`,
+`GaloisForLFunctions.RHTower.BeurlingPerronRegion`, `GaloisForLFunctions.RHTower.BeurlingDeletionMobius`,
+`GaloisForLFunctions.RHTower.BeurlingDeletionSawtoothBlock`, `GaloisForLFunctions.RHTower.BeurlingDeletionSawtooth`,
+`GaloisForLFunctions.RHTower.BeurlingDeletionRegion`, `GaloisForLFunctions.RHTower.BeurlingCountedPrimeDeletion`,
+`GaloisForLFunctions.RHTower.BeurlingDeletionExponentWindow`.
+
+**Claim → declaration map**
+
+| Card claim | Lean |
+|-|-|
+| Statement: RH ⇒ for `½ < α < 4/5`, `β₀(α) < β < ½` an [α,β]-system exists | `RHTower.BeurlingDeletion.exists_isAlphaBetaSystem_of_betaZero_lt` |
+| `β₀(α)` = `3α/(α+4)` (α ≤ 2/3), `1/(3−α)` (α ≥ 2/3) = the minimum of the two | `betaZero`, `betaZero_eq_min` |
+| [α,β]-system: discrete, `ψ = x + O(x^{α+ε})`, `N = ax + O(x^{β+ε})`, neither improvable | `BeurlingSystem.IsAlphaBetaSystem` (`BeurlingPerronRegion`), assembled by `isAlphaBetaSystem_of_count` |
+| Literature comparison `1/(3−α) < 2α/(α+2)` on `(½,1)` | `perron_lt_hyperbola` |
+| Deleted primes with square-root discrepancy at every frequency (BDR input) | `exists_deletedPrimes`, `DeletionData`, `exists_deletionData` |
+| Input 1: `log ζ_S(s) = log ζ(s+1−α) + O(√log(|t|+2))` on `Re s ≥ α/2+ε` | `DeletionData.norm_corr_le`, `corr_eq_LSeries`, `LSeries_sFree_eq` |
+| Input 1: RH growth `ζ(σ+it) ≪ |t|^{max(½−σ,0)+ε}` | `exists_norm_riemannZeta_two_sided`, `exists_norm_riemannZeta_left_le` |
+| `1_{N'} = 1 ⋆ μ_S`, Euler product of `λ_S`, `M_S(x) ≪ x^{α/2+ε}` under RH | `convolution_lamS_mobS`, `LSeries_lamS_eq`, `LSeries_mobS_eq`, `exists_norm_sum_mobS_le` |
+| Perron count `N'(x) = x/ζ_{S'}(1) + O(x^{1/(3−α)+ε})` | `DeletionData.exists_norm_count_sub_le` (smoothed Perron + contour shift: `SmoothedPerronFormula`, `SmoothedPerronContourShift`, `TestFunctionPerronShift`) |
+| Step 4 (primes): `ψ_{α,β}(x) − x = −x^α/α + O(x^{½+ε})`, α-well-behaved and not better | `chebyshevPsi_deletionSystem`, `isBigO_chebyshevPsi_sub`, `not_isBigO_chebyshevPsi_sub` |
+| Integer count of the deletion system via the hyperbola count | `countBall_eq_hyperbolaCount`, `isDiscrete_deletionSystem` |
+| Refinement: `N'(x) = x/ζ_{S'}(1) − R(x) + O(x^{α/2+ε})`, `R = Σ μ_{S'}(m) ψ(x/m)` | `count_decomposition`, `norm_count_sub_mobSum_le` (`BeurlingDeletionSawtooth`) |
+| (i) small `M`, (ii) large `M` (Abel against `M_{S'}`) | `norm_small_le`, `norm_sum_mobS_cut_le`, `norm_hyperbola_le` |
+| (iii) middle `M`: trigonometric approximation of `ψ` with nonnegative majorant | `HTGeometry.SmoothedSawtooth.exists_saw_decomposition` |
+| (iii) twisted Mellin sums `Σ b(m) W(m/M) e(hx/m)` via Mellin inversion on `Re s = α/2+ε` | `exists_norm_tsum_mobS_le`, `exists_norm_tsum_lamS_sub_le`, `exists_norm_block_le` (oscillatory integral bounded by Mellin–Plancherel: `exists_norm_mellin_twist_le`, `exists_integral_twist_le`) |
+| Balance at `M* = x^{4/(α+4)}`: `N'(x) = x/ζ_{S'}(1) + O(x^{3α/(α+4)+ε})` | `DeletionData.exists_norm_count_sub_le_saw`, `block_exponent_le`, `exists_isAlphaBetaSystem_of_sawtooth` |
+| Comparison: `3α/(α+4) < 1/(3−α) ⇔ α < 2/3`; `3α/(α+4) < ½ ⇔ α < 4/5`; `α/(1+α) < 3α/(α+4)` | `sawtooth_lt_perron_iff`, `sawtooth_lt_half_iff`, `small_lt_sawtooth`, `perron_lt_half` |
+| Lower bound / Status: the deletion exponent lies in `[α/2, β₀(α)]` | `exists_deletion_exponent_window`: one deletion set `S` whose system is an [α,β]-system for every `β₀ < β < ½`, with `N_S(x) = ax + O(x^β)` (`a > 0`) for every `β > β₀`, and `N_S(x) − a'x ≠ O(x^θ)` for all `a'`, `θ < α/2` |
+| — count-controlled deletion set (needed for the floor) | `Counted.exists_deletedPrimes_counted` (`Σ_{p≤x}(1_S(p) − p^{α−1}) = O(x^{α−½} log²x)`; Chernoff for window hits: `HTGeometry.GroupedSelection.exists_selection_count`) |
+| — `ψ_S(x) = (x^α + x^{α/2})/α + O(x^η)`, `η < α/2`, then the DMU floor | `Counted.isBigO_deletedChebyshev`, `Counted.not_isBigO_qFreeCount` (via `PrimeDeletion.not_isBigO_qFreeCount_of_multiplicity`) |
+
+**Deviation from the paper construction.** The paper takes BDR's multiset `P_S` (primes at most twice,
+`π_S = F + O(1)`). The Lean proof deletes a *set* of primes chosen one per window of mass `≤ 1`
+(probabilistic selection, Hoeffding over a frequency net), which gives the same inputs: square-root
+discrepancy at every frequency (`DeletionData.disc`), hence every bound used above. For the lower
+end of the window it additionally uses cumulative-mass windows, so the deleted count itself is
+controlled; this is what makes `ψ_S` regular below `x^{α/2}`.
+
 ## Log
 - 2026-09-29: cycle 137 adds the sawtooth refinement `3α/(α+4)` for `α < 2/3`.
 - 2026-09-29: proved on paper (loop cycle 136) after the BDR audit of cycle 129. No follow-up to BDR Theorem 1.3 found (web search 2026-09-29).
+- 2026-10-05 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

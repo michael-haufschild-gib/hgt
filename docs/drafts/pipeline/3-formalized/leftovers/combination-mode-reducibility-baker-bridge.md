@@ -1,8 +1,8 @@
 # Combination-mode cocycle reducibility — Baker is load-bearing (Lemma R); the infinite base is the obstruction; reducibility is RH-blind
 
 - **ID:** combination-mode-reducibility-baker-bridge
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), Door grade **BRIDGE**. The proven residue of the (refuted) C5★-as-reducibility lead.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
 - **Owner:** Wheeler
 - **Source / split:** extracted from `../5-failed/combination-mode-baker-reducibility.md` (the C5★-as-reducibility
@@ -72,6 +72,45 @@ the Weil explicit formula, to a prime-side `Σm_p\log p≈0` that Baker forbids 
 - `../1-in-progress/finite-free-convolution-flow.md` — the `σ>¾` threshold to conclusion; the **relocated**
   single-orbit positivity (`\det H_d ≥ 0`) RH target.
 - `../2-fully-proven/erosion-cocycle-reducibility.md` — the axis-mode siblings (§59/§60/19a, no Baker).
+
+
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.DiagonalModeDivision`, `GaloisForLFunctions.HTGeometry.CombinationModeDiophantineDivisor`, `GaloisForLFunctions.HTGeometry.LiouvilleFrequencyNonReducible`, `GaloisForLFunctions.HTGeometry.DirichletBoxLinearForm`, `GaloisForLFunctions.HTGeometry.PrimeLogNotDiophantine`, `GaloisForLFunctions.HTGeometry.HankelDetTotalDegree`, `GaloisForLFunctions.HTGeometry.CombinationModeSupport`, `GaloisForLFunctions.RHTower.HankelPowerSumHermiteCriterion`, `GaloisForLFunctions.HTGeometry.IntegerLogGap`, `GaloisForLFunctions.HTGeometry.EdgeCoboundaryThreshold`, `GaloisForLFunctions.RHTower.Matveev.FeldmanExtrapolation`, `GaloisForLFunctions.RHTower.Matveev.FeldmanCoefficientVanishing`, `GaloisForLFunctions.RHTower.Matveev.FeldmanParameters`, `GaloisForLFunctions.RHTower.Matveev.FeldmanStageGain`, `GaloisForLFunctions.RHTower.Matveev.EffectiveBaker`, `GaloisForLFunctions.RHTower.Matveev.PrimeFrequencyReducibility`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Every proven statement of the card is a Lean theorem with no hypotheses beyond its own statement;
+the former classical import, Lemma R(ii) (effective Baker for prime logarithms), is now proved
+(Fel'dman's method, `RHTower.Matveev.effectiveBakerBound_holds`).
+
+**Modules** (wired; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice,
+Quot.sound]` for every public constant):
+`GaloisForLFunctions.HTGeometry.DiagonalModeDivision`, `GaloisForLFunctions.HTGeometry.CombinationModeDiophantineDivisor`,
+`GaloisForLFunctions.HTGeometry.LiouvilleFrequencyNonReducible`, `GaloisForLFunctions.HTGeometry.DirichletBoxLinearForm`,
+`GaloisForLFunctions.HTGeometry.PrimeLogNotDiophantine`, `GaloisForLFunctions.HTGeometry.HankelDetTotalDegree`,
+`GaloisForLFunctions.HTGeometry.CombinationModeSupport`, `GaloisForLFunctions.RHTower.HankelPowerSumHermiteCriterion`,
+`GaloisForLFunctions.HTGeometry.IntegerLogGap`, `GaloisForLFunctions.HTGeometry.EdgeCoboundaryThreshold`,
+`GaloisForLFunctions.RHTower.Matveev.FeldmanExtrapolation`, `GaloisForLFunctions.RHTower.Matveev.FeldmanCoefficientVanishing`,
+`GaloisForLFunctions.RHTower.Matveev.FeldmanParameters`, `GaloisForLFunctions.RHTower.Matveev.FeldmanStageGain`,
+`GaloisForLFunctions.RHTower.Matveev.EffectiveBaker`, `GaloisForLFunctions.RHTower.Matveev.PrimeFrequencyReducibility`
+(on top of the Fel'dman/Matveev layers `RHTower/Matveev/*` already in the corpus).
+
+| Card claim | Lean |
+|-|-|
+| §1 Lemma R(i): `m·ℓ ≠ 0` for `m ≠ 0`; mode division | `SecularWeld.modeFrequency_ne_zero`, `diagonal_mode_division` (`DiagonalModeDivision`); `Matveev.primeLogForm_eq_zero_iff` |
+| §1 Lemma R(ii): `|m·ℓ| ≥ γ H(m)^{−κ}` for the prime frequency | `Matveev.exists_primeFrequency_diophantine` (from `Matveev.effectiveBakerBound_holds`: `|Σ νᵢ log pᵢ| ≥ c (2+|ν|₁)^{−C}`) |
+| §1 the analytic `g` gives `h ∈ L²`: reducible | `summable_modeDivisor_of_diophantine`; prime instance `Matveev.summable_primeModeDivisor` |
+| §1 converse: Liouville frequency, same modes, `h ∉ L²` | `exists_liouville_frequency`, `not_summable_liouvilleDivisor` |
+| §2 Part 1: `(log p)_∞` not polynomially Diophantine over unbounded support (Dirichlet pigeonhole) | `exists_small_linear_form`, `not_polynomially_diophantine`; for the primes themselves `primeLog_not_polynomially_diophantine` (Bertrand `p_{n+1} ≤ 2p_n` gives `Σ_{i<s} log pᵢ = o(3^s)`) |
+| §3 `det H_j` is a degree-`j` polynomial in the `P_k` | `totalDegree_hankelDet_le` |
+| §3 axis-mode `P_k` ⟹ `det H_d` carries combination modes of support `≤ d` | `modeSupportLE_aeval`, `modeSupportLE_det_hankel` |
+| §3 real-rootedness ⟺ `H_d = (P_{i+j})` PSD | `RHTower.rootPowerSumHankel_posSemidef_iff` (Hermite's criterion) |
+| §4 controlling bound `|log(a/b)| ≥ |a−b|/max(a,b)` | `gap_div_le_abs_log_div` |
+| §4 `N_∞(σ) = Σ_m |ĝ(m)|²/(m·ℓ)²` (model (H′)) converges iff `σ > ¾` | `EdgeCoboundary.summable_edgeTerm_iff`; for every coefficient model `≍ (H′)`: `summable_div_modeFreq_sq_iff` |
+| §4 the obstruction in `(½,¾]` is the consecutive pairs `(M, M−1)` | `le_edgeTerm_consecutiveMode`, `not_summable_edgeTerm_three_quarters` |
+| §4 `σ = ½` lies in the non-reducible zone (reducibility ⟺ RH refuted) | `not_summable_edgeTerm_half` (unconditional, independent of the zeros) |
+
+The verdict sentences ("variance, not single-orbit sign"; door grades) are interpretation, not
+theorems; their mathematical content is the unconditional threshold above.
 
 ## Log
 - 2026-06-19 (Wheeler) — **created by splitting `combination-mode-baker-reducibility`** (C5★-as-reducibility
@@ -185,3 +224,4 @@ prime logarithms — which is exactly the hypothesis of `summable_modeDivisor_of
 formalization is the separate project
 `docs/drafts/pipeline/1-in-progress/effective-baker-matveev-linear-forms.md`; when that lands, the
 prime-frequency instance of Lemma R closes by direct application and this card moves to stage 3.
+- 2026-10-05 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

@@ -253,10 +253,10 @@ theorem integral_exp_neg_mul_cosh (r : ℝ) :
       simp at this
     rw [integral_undef hnot, kMoment, integral_undef hnotO, mul_zero]
 
-/-- **The Mellin transform of `K₀`**: `∫₀^∞ r^{s−1} K₀(r) dr = 2^{s−2} Γ(s/2)²` for `Re s > 0`. -/
-theorem mellin_kZero {s : ℂ} (hs : 0 < s.re) :
-    ∫ r in Ioi (0 : ℝ), (r : ℂ) ^ (s - 1) * (kMoment 0 r : ℂ) =
-      (2 : ℂ) ^ (s - 2) * Complex.Gamma (s / 2) ^ 2 := by
+/-- **The Mellin transform of `K₀`**: `∫₀^∞ r^{s−1} K₀(r) dr = 2^{s−2} Γ(s/2)²` for `Re s > 0`,
+the integral converging absolutely. -/
+theorem hasMellin_kZero {s : ℂ} (hs : 0 < s.re) :
+    HasMellin (fun r : ℝ => (kMoment 0 r : ℂ)) s ((2 : ℂ) ^ (s - 2) * Complex.Gamma (s / 2) ^ 2) := by
   set F : ℝ × ℝ → ℂ := fun p => (p.1 : ℂ) ^ (s - 1) * ((Real.exp (-(p.1 * Real.cosh p.2)) : ℝ) : ℂ)
     with hF
   -- the inner `r`-integral
@@ -337,6 +337,16 @@ theorem mellin_kZero {s : ℂ} (hs : 0 < s.re) :
     intro r
     rw [integral_complex_ofReal, integral_exp_neg_mul_cosh]
     push_cast; ring
+  have hconv : MellinConvergent (fun r : ℝ => (kMoment 0 r : ℂ)) s := by
+    have h := hFint.integral_prod_left
+    unfold MellinConvergent
+    refine (h.const_mul (1 / 2 : ℂ)).congr (Eventually.of_forall fun r => ?_)
+    simp only [hF, smul_eq_mul]
+    rw [integral_const_mul, hK r]
+    ring
+  refine ⟨hconv, ?_⟩
+  show ∫ r in Ioi (0 : ℝ), (r : ℂ) ^ (s - 1) • (kMoment 0 r : ℂ) = _
+  simp only [smul_eq_mul]
   calc ∫ r in Ioi (0 : ℝ), (r : ℂ) ^ (s - 1) * (kMoment 0 r : ℂ)
       = (1 / 2 : ℂ) * ∫ r in Ioi (0 : ℝ), ∫ t : ℝ, F (r, t) := by
         rw [← integral_const_mul]
@@ -361,5 +371,14 @@ theorem mellin_kZero {s : ℂ} (hs : 0 < s.re) :
           ring
         rw [h2]
         field_simp
+
+theorem mellin_kZero {s : ℂ} (hs : 0 < s.re) :
+    ∫ r in Ioi (0 : ℝ), (r : ℂ) ^ (s - 1) * (kMoment 0 r : ℂ) =
+      (2 : ℂ) ^ (s - 2) * Complex.Gamma (s / 2) ^ 2 :=
+  (hasMellin_kZero hs).2
+
+theorem mellinConvergent_kZero {s : ℂ} (hs : 0 < s.re) :
+    MellinConvergent (fun r : ℝ => (kMoment 0 r : ℂ)) s :=
+  (hasMellin_kZero hs).1
 
 end RHTower.BesselKZero

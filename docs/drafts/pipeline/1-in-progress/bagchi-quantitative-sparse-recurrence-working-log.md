@@ -7425,3 +7425,384 @@ cofactor coefficients. Keep all integer lifts, rational resonances, moving
 Gaussian/window weights and shared third prime before taking norms.
 Goal ACTIVE; no RH proof/refutation, axes saving, growing moment theorem or
 common-height producer claimed.
+
+## continuation01an — complete Mellin deformation; joint growing source open
+
+BAG route: complete signed axes saving from ag.19, via the actual moving
+Mellin/cofactor source. Previous turn corrected full Vaughan cofactor signs
+without proving saving. This turn advances the exact full moving source
+on one balanced boundary and proves a sharp uniform vertical norm bound;
+it does NOT solve physical axes cancellation.
+
+Corpus-grounded conjecture loop: a naive prime-uniform estimate on the
+original Mellin line(2,2) fails at its untagged local factor, which tends3.
+This alone does not prove divergence of the full tagged source. Exact
+normalized local algebra instead exposes a joint near-pole scale
+s=1+lambda/logN, t=1+mu/logN. A full nonconstant candidate profile and its
+paper convergence argument are recorded in P1 bag-growing-near-pole-source.
+All four local rational identities used there are now Lean verified.
+The general joint limit is NOT yet formalized.
+
+New exact full-source discovery: with t=1, local offsets collapse to
+E0=(1-z)^-2, E-1=xE0, E-2=x^2E0, E1=-z/[x(1-z)]E0. Every allowed labelled
+term is its balanced value times q^(1-s)/r^(1-s). Thus the entire original
+masked source equals -A*sum_r(b_r/a_r)*R_r*sum_(q!=r)w_q*a_q, including
+p=q and all complementary prime factors. On s=1+i*tau all a_p have norm1;
+its complete norm is at most A*sum_r b_r R_r^2, attained at tau0. This
+uniform full-frequency boundary law is hypothesis-free for every P,tau.
+It is not a growing-prime saving. Actual prime powers/log-scale exponentials
+are identified; no artificial independent cofactor inserted.
+
+New leaf ChiRamanujanCriticalMellinDeformation306lines,12theorems/2defs.
+Scratch14567 exact full row PASS;76107 sharp bound PASS;58299 all four local
+identities PASS. Final production28970 lake --old env lean leaf with -o,
+empty PASS. Axiom31311 all14 standard3 only. Index99071 PASS/API14/import
+once. Lint19933:31 unrelated unreachable modules and174warnings, no owned
+leaf/proof-debt finding; global NOT clean. Required missing objects for
+BaezDuarteGramReduction44611 and PairingSeries50517 repaired as separate
+foreground leaves; no source edits there. No full/umbrella build, subagent,
+numerical experiment, added axiom or heartbeat/recursion hack. All owned
+jobs terminal; owned scratch Lean sources removed, logs/search JSON kept.
+P2/P3 bag-critical-mellin-deformation. Existing ag.11 source entry updated;
+main physical hard frontier remains ag.19. No claim of RH proof/refutation.
+
+Search details and full joint-profile paper argument reside in the P1
+card. Crucial existing inputs: prime-window weak convergence, Mertens
+third theorem, growing-window Tannery, and normal convergence of the cubic
+regular correction near(1,0,0). Correct removable profile at0 equals
+lambda+mu, not the zero extension used for squared Hellinger profiles.
+Next attack the actual joint growing-prime limit with all three labels,
+then the full physical contour/profile/tails. Do not spend the next turn
+on extra exact wrappers or constant optimization. Full signed axes saving,
+growing moments/cofactors and common-height self-return remain hard open.
+Goal ACTIVE.
+
+## continuation01ao — actual growing coprime cofactor law
+
+BAG route: joint growing source -> full physical axes cancellation.
+Previous activity closed exact one-balanced deformation, not full saving.
+This turn closes the actual cofactor asymptotic at logarithmic displacement:
+C_N(1-u/log N) -> -exp(-gamma-P(u))/u, for every nonzero complex u.
+P has the correct continuous integrand value u at zero. The proof uses
+corpus prime-window weak convergence, summable complex logarithmic
+remainders, zeta residue, and Mertens normalization. It retains the actual
+cutoff rather than postulating a limiting source.
+
+Scratch47362 empty PASS completes original normalized54238 and Euler-ratio6943
+proofs. Production46118 empty PASS, 441-line leaf, six public theorems/two
+definitions. Axiom53987 all8 standard three only. Umbrella wired once.
+P2/P3 bag-moving-coprime-cofactor-limit created. Index/lint pending.
+Next hard target: complete two-variable labelled source; full physical
+pole/tail transfer, growing moments and common-height return remain open.
+
+Index18802 PASS, all8 API entries verified. Lint50302 exit1: 38 unrelated
+unreachable modules, 174 warnings; no finding in the new leaf. Global
+lint NOT clean. Deep search59822 returned nonpartial, no errors,
+65882 indexed files (generation1244419), background refresh incomplete.
+All20 candidates and20 source arguments inspected. Its divProfile proposal
+uses the wrong removable value for this exponential quotient; our dslope
+extension addresses that. Prime-chain cutoff proposals do not prove the
+actual Euler law. The moving-cofactor result is now in frontier ag.11.
+
+Second-stage production87210 empty PASS: ChiRamanujanJointBaseLimit,
+251 lines, two theorems/one definition. The entire unlabelled growing
+cofactor trace has an actual moving double-pole limit; the exact product
+retains both difference frequencies. Regular correction ->1 follows from
+cofinal cutoffs and local uniform convergence. Scratch ratio77764 repaired
+a subtype-product elaboration mismatch via prod_congr/rfl. All other
+assembled proof steps were retained, with no premise workaround.
+
+Search41235 for moving prime-weighted windows: nonpartial, no errors,
+65887 indexed files, generation1244537, background refresh incomplete.
+All20 candidates/20 source arguments inspected. No applicable full
+moving-profile window theorem found; generated Fin.tail-continuity
+proposal is about vector coordinates and does not solve the prime tail.
+The positive next proof uses compact continuity of the actual rational
+responses, vanishing fixed-prime head, and the exact collision formula
+recorded in P1. Missing theory will be proved, not treated as a reason
+to switch routes. BAG physical ag.19 remains open.
+
+Final01ao audits: cofactor production46118 and axioms53987 PASS; joint-base
+production87210 and axioms44838 PASS. All11 public declarations across both
+leaves use only propext/Classical.choice/Quot.sound. Index29284 PASS, new
+joint API3/3; first index18802 had verified cofactor API8/8. Both umbrella
+imports occur once. Lint40654 exit1:43 unrelated unreachable modules,
+174 warnings, no finding in either new leaf. Global lint NOT clean.
+All owned process handles terminal. Removed five owned scratch Lean
+sources and two assembly text snippets; retained logs and search JSON.
+
+Assessment: two previously missing growing-source laws now formalized:
+actual coprime cofactor asymptotic and complete unlabelled two-cofactor
+moving-pole limit. This advances the cofactor/near-pole route, not the
+full signed physical saving. Next attack the exact masked label assembly
+and its actual rational-response row limits using compact continuity;
+then physical pole/near-cone/tail cancellation, growing moments/cofactors
+and deterministic common-height return. RH remains unproved/unrefuted;
+goal ACTIVE.
+
+## continuation01ap — complete masked source and corrected collision law
+
+BAG route unchanged. Previous turn was PROGRESS: growing cofactors and
+unlabelled joint source limits audited. This turn proves the complete
+actual label assembly needed for the remaining joint limit. All allowed
+local patterns are factored, both contractions excluded, p=q retained.
+Scratch59751 checked local factorization. Scratch45020 empty PASS checks
+the full masked assembly, eventual local nonvanishing from the actual
+joint-base limit, original cofactor-completed family and full-row expansion.
+
+Failed conjecture: triple collision term c*(3*a*b-d). Lean96436 rejects it;
+correct positive survivor is c*(2*a*b-d). See P2/P1 for exact expression.
+No numerical experiment; this is symbolic proof feedback. Production leaf
+ChiRamanujanMaskedMellinSource294lines is under audit22902; four public
+theorems/six definitions, one umbrella import. No global build or hack.
+
+Corpus searches10786 and90916 completed nonpartial/no errors. First65892
+files, generation1244665/current1244666; second65894files,
+1244745/current1244747. Both background refresh incomplete. All20+20
+candidate/source lists inspected in each. First generated collision-kernel
+proposal unrelated to literal label product. Second supplies actual
+Mertens weight error bounds; no full moving rational-response row theorem.
+Actual source formulas and existing complex prime-window proof determine
+next work: prove the row convergence and collision decay, not presume them.
+Physical full axes cancellation, growing moments/cofactors and common-height
+return remain hard open obligations. RH goal remains ACTIVE.
+
+Production22902 empty PASS; axiom85967 all10 standard3; index99430 PASS,
+API10/10, umbrella import once. Lint70300 exit1: 30 unrelated unreachable
+modules, 174 warnings; no finding in new leaf. Global NOT clean.
+Now building the missing moving-response window error theorem in
+/tmp/bag-moving-response-window-01ap.lean; this remains scratch work.
+
+Analytic continuation01ap: scratch63818 empty PASS proves moving-response
+window ERROR->0 from continuity at the zero-z slice and fixed-prime heads.
+Production35054 empty PASS exposes the existing complex prime-window theorem
+as criticalComplexPrimeWindow_tendsto in MovingCofactorLimit (proof reused,
+private declarations unchanged). The full moving-window limit composition
+is under scratch73434 audit. Rational profiles for all four actual local
+responses are being built in /tmp/bag-rational-response-profile-01ap.lean;
+no production claim yet. No new actual labelled limit has been claimed.
+
+Scratch73434 empty PASS for FULL moving-window limit (not merely error).
+Profile scratch52029 checked all rational continuity except a real/complex
+cast in the fixed-prime denominator; fixed via exact_mod_cast. Combined
+/tmp/bag-moving-label-rows-01ap.lean now under audit7625. Generic helper
+and actual four profiles share one scratch namespace. Real.continuous_mul_log
+is present in THIS toolchain (NegMulLog.lean45), giving the new collision
+mechanism W(z)=-z logz, W(0)=0. Search23325 terminal0; results retained.
+Stronger collision proof replaces separate norm bounds: apply moving-window
+to W times pair response products and W² times c*(2ab-d), whose limiting
+zero-slices vanish. Actual-prime profile identities and full row limits
+remain to be attached. No actual labelled limit claimed yet.
+
+Scratch64116 PASS actual four response-row limits; scratch59931 PASS exact
+four collision limits /logN->0. The cast mismatch responsible for a default
+heartbeat failure was corrected by explicit Real-inverse-to-Complex casts;
+no limit was raised. CollisionWeight is continuous -z logz, zero at z=0,
+so moving-window applies directly to the weighted response polynomials.
+Full completed labelled source limit appended to combined scratch and awaits
+export95159 of Mertens normalization. Plan production split: moving-window
+foundation, actual label/collision rows, and final growing labelled source.
+All actual asymptotic statements retain original prime cutoff and cofactors.
+
+Full combined scratch17949 closes both final source-limit goals by field_simp;
+its only errors were redundant following ring commands (removed). Production
+split now exists and is wired once: MovingResponseWindow164lines,
+MovingLabelRows381lines, GrowingLabeledSource81lines. Foundation audit57016
+running; rows/final leaf audits pending sequentially. Updated cofactor export
+production95159 empty PASS adds public complex window and Mertens normalization
+limits while preserving original source theorems. Final axiom/index/lint audits
+must include the changed cofactor leaf and all three new leaves.
+
+Next frontier source search16784 is running with module filter
+ChiPrimeGaussianCubic, for the actual physical Mellin/profile transfer.
+Do not infer that pointwise near-pole convergence controls the physical
+frequency tail or full signed axes action. Those remain separate hard goals.
+
+Final source01ap: production57016/3369/88601 empty PASS; updated95159 and
+masked22902 PASS. Axiom71945 all30 standard3; index69878/API30/imports once;
+lint66470 exit1:23 unrelated unreachable modules,174warnings; global NOT clean.
+Full actual pointwise labelled near-pole law closes this hard source gap.
+Physical transfer remains open. Search16784 and64336 nonpartial65913files,
+generations1245439/current1245440 and1245500/current1245501, no errors,
+background refresh incomplete; all20candidate+20source entries inspected.
+New conjecture P1 bag-moving-physical-mellin-lines generalizes the proven
+all-Schwartz logarithmic pullback from line2 to every positive line, to pair
+the actual physical profile at 1+(lambda,mu)/logN without assuming a contour
+shift. Uniform source/profile/tail control and full signed saving remain open.
+
+Positive-line conjecture proved: scratch71545 and production86634 emptyPASS.
+HTGeometry.PositiveQuadrantMellinLines uses positive real parameters, exact
+Schwartz-valued derivative induction and all-quadrant exponential absorption.
+Wired once. New scratch bag-moving-physical-pairing-01ap retains the full
+rational source and actual cutoff family at1+lambda/logN, N>=2 (typed domain).
+Scratch audit running; axioms/index/lint for new transfer leaves pending.
+
+Final moving-transfer01ap: arbitrary-positive-line production86634 and actual
+moving physical pairing production4433 empty PASS. Axiom62726 all17 standard3;
+index87535/API17/imports once; lint67343 exit1:27 unrelated unreachable modules,
+174warnings, none in owned leaves. New P2/P3 cards positive-mellin-lines and
+moving-physical-mellin-pairing; frontier ag.13 updated. All owned Lean/search/
+index/lint processes terminal. New P1 bag-mixed-frequency-mellin-cancellation
+contains M1 full original mixed-frequency source conjecture and M2 signed
+vertical-profile zero, with strengthened paper contour argument and precise
+remaining formal obligations. Search96015 nonpartial65925files gen1245723,
+all20candidate+20source entries inspected; actual VerticalStripContourShift
+receiver read. Goal ACTIVE, RH not proved. Next attack M1/M2 and actual coupled
+physical remainder, not a substitute fixed or factorized profile.
+
+Continuation01aq, BAG. Previous01ap PROGRESS: full labelled source limit and
+actual moving-line pairing audited. Target M2 exact signed mixed-profile
+cancellation, then actual M1 transfer/physical remainders. P1 mixed-frequency
+card updated with ODE mechanism (u expP)'=exp(u+P(u)), replacing trig
+decay estimates by the corpus exponential-half-plane primitive receiver.
+Initial searches50373/45059 running, no active Lean process yet.
+
+01aq M2 solved: foreground scratch58685 and production13632 empty PASS.
+New ChiRamanujanMixedProfileCancellation436lines has entire candidate G,
+actual integral derivative P'=E, ODE(uF)'=exp(u)F, bounded left-half-plane
+uF, inverse-square G decay, full positive-line integrability and signed zero
+integral. No analytic/RH premise. Wired once; index21794 PASS/API11.
+Axioms52462 and lint pending. No M1 or physical signed saving claimed.
+Next actual-source attack: convergent off-pole prime sums from corpus
+PrimeZetaOneLineConvergence, followed by exact finite summation by parts and
+DCT for H(logp/logN). H=exp(wt) preserves the boundary sum;
+H=t exp(wt) should annihilate the normalized oscillating prime row.
+Search56539 partial due interrupted text/source stages;2747 nonpartial,
+all20+20 inspected in both. Next weighted-convergence search7947 running.
+
+M2final: axioms52462 PASSstandard3/API11. Lint15411:34unrelatedunreachable
+errors174warnings; none in owned leaf. P3/frontierag.13/Serenamemory recorded.
+New actual offpole prime-window proof assembled in209-line scratch
+bag-oscillatory-window-01aq.lean. Exact finite Abel identity, original prime
+floor cutoff, bounded real partialsum extension, DCT, exponential tilt and
+first logarithmic response all elaborate except sum-function measurability
+coercion;11875 active checking its final fix. No missing analytic premise.
+NextM3 actual offpole Euler tilt ratio->1 derived from this actual window
+law and summable logarithmic remainder. P1recordsfullproofplan.
+
+Actual prime inputs01aq: production93239 (OscillatoryLogWindow243lines/API6)
+and57574 (MixedEulerTilt256lines/API2) empty PASS. All8 public declarations
+have axiom audit running; index running. Oscillatory window handles fixed
+complex tilt and vanishing log-normalized row. Actual original Euler tilt
+ratio tends to1, complete log remainder included. No prime/rational-profile
+or RH premises. Next M4 actual boundary Euler inverse-zeta identity has a
+corpus-grounded Abel-probability-average paper mechanism; P1 records it.
+No failed mathematical conjecture this turn; all encountered failures were
+local elaboration/coercion issues and have been fixed. Physical ag.19 open.
+
+Final01aq PROGRESS. Three genuinely closed obligations:
+(1) entire candidate mixed profile/full signed integral zero;
+(2) actual offpole prime exponential/log response window limits;
+(3) actual complete growing Euler tilt ratio->1.
+Production13632/93239/57574 emptyPASS; axioms52462/API11 and25259/API8
+standard3 only. Index21794/95668 PASS, imports once/API11+6+2.
+Final lint24717 has17unrelatedunreachableerrors174warnings,noneowned.
+All owned processes terminal; completed sources/templates cleaned,
+searchJSON/logs retained. P2/P3/frontierag.13 current. Goal ACTIVE.
+M4 boundaryEulerinversezeta paper proof complete in P2
+bag-boundary-euler-identification; Lean not started. Next turn must build
+complex Abel probability-average passage and actual boundary identification,
+then actual rational response/collision transfer; no generic-only wrap-up.
+Hard physical axes ag.19 and deterministic common-height return still open.
+
+Continuation01ar: prior01aq PROGRESS; BAG M4 boundary Euler identification.
+Session memories read; architecture/testing docs absent. P2 paperproof checked;
+frontierag.13/ag.19 still exact physical gaps. Current search92754 running.
+Build complex Abel probability-average limit, express bounded-partial-sum
+continuation as that average, then apply to actual prime log decomposition.
+
+01ar M4 scratch61580 terminal0: boundary and moving Euler products both
+proved at their original prime cutoffs, with no analytic/RH premises.
+New ChiRamanujanBoundaryEulerProduct leaf wired once; production35732
+running. Earlier local parse/inference failures fixed; no mathematical
+conjecture failure. Complex Abel reconstruction and complete log-remainder
+DCT identify boundary product with inverse zeta. Axiom/index/lint pending.
+Search92754 nonpartial65950files gen1246475; all20+20 inspected.
+Search4018 nonpartial65953files gen1246673 (coverage1246682), noerrors,
+backgroundrefreshincomplete; all20+20 inspected. Actual masked expansion
+and prime ratio useful; unrelated periodic-weight proposals rejected.
+New dependency-closed paper proof of actual mixed rational rows/collisions:
+P2 bag-mixed-frequency-label-rows. Compact unit-circle parameter controls
+large-prime tails uniformly; fixed-prime H=(1-z*theta)/(1-z) is nonzero.
+The four row limits are1-E(u),1,1-E(u),1-E(u); every exact collision /L->0.
+Lean formalization next. Still no M1 identification or physical axes saving.
+
+M4 final01ar audit complete:313lines/API2; production35732, axioms20469,
+index35848 PASS; importonce. Lint35721 terminal1:11unrelatedunreachable,
+174warnings, noneowned. Completed M4 scratch sources/templates removed;
+logs/JSON retained. Memory rh/bag-boundary-euler-identification-2026-10-05-01ar.
+M5 foundation scratch77776 emptyPASS: compact-phase prime-window error,
+actual rational-response conversion, fixed-prime denominator nonvanishing,
+and exact mixed zero-slice formulas. Current scratch71767 audits actual
+row window assembly. Collision template written; not yet appended.
+
+M5 scratch14241 emptyPASS: all4 actual row limits and all4 exact collision
+limits. Stronger collision theorem needs no tau!=0 domain; any real tau
+works. New production ChiRamanujanMixedLabelRows662lines wires once and
+adds the exact complete masked-response cubic limit; production70007 running.
+Axiom probe prepared, not started. No simultaneous owned Lean build.
+P2 bag-mixed-frequency-completed-source now records complete pointwise M1
+paper closure, exact original Q_N factors/cofactors/labels/normalization.
+Lean full mixed unlabelled/cofactor assembly remains next; actual physical
+profile/tail uniformity is still unproved. No numerical computations.
+
+Final01ar PROGRESS. Closed two actual BAG frontier ingredients:
+M4 full original boundary and log-displaced Euler products identified with
+inverse zeta; M5 actual rational rows, all exact collisions, and complete
+masked response. Leaves313+664lines/API2+5, each wired once. Production35732
+PASS (nonfatal ring information),7092 emptyPASS; axioms20469/35601 all7
+public declarations standard3 only. Index35848/41583 PASS. Final lint66985
+terminal1:11 unrelated unreachable modules174warnings, noneowned.
+All owned Lean/search/index/lint processes terminal; completed source/probe/
+template scratch files removed, auditlogs/searchJSON retained. No full or
+umbrella build, numerical computations, heartbeat changes, subagents,
+commits or pushes. Goal ACTIVE, RH unproved.
+No mathematical conjecture failed this turn. Elaboration failures corrected;
+learned to use targeted Fin-case rewrites rather than broad norm_num on
+whole Tendsto statements (the latter rewrites real log casts unnecessarily).
+Next exact task: P2 bag-mixed-frequency-completed-source, original mixed
+unlabelled H_N/L -> exp(gamma+P(u))/zeta(1+i*tau), both original cofactor
+attachment and full completed labelled M1 /L^2 -> exp(-2gamma)*G(u).
+The dependency-closed paper proof includes original finite Euler ratios,
+local uniform regular product at(1,0,i*tau), all nonvanishing, full masked
+assembly and Mertens normalization. Formalize this, then attack actual
+uniform moving physical-profile/tail control. G's zero signed integral
+alone does not prove axes o(N/log²N), growing moments or common-height return.
+
+Continuation01as, BAG. Prior01ar PROGRESS: actual boundary/moving Euler
+identification and full mixed rows/collisions/masked response audited.
+Init memory read; architecture/testing docs absent; frontierag.13/ag.19
+and STATUS MUST-561 checked. No active owned build at start. No subagents.
+Plan: formalize exact mixed unlabelled finite Euler factorization and limit,
+attach both original cofactors, prove full original completed M1 limit;
+foreground leaf and axiom audits, wire/index/lint, then attack actual
+uniform physical-profile/tail transfer. P2 bag-mixed-frequency-completed-source
+read; no analytic or RH premise may be assumed. Corpus search running.
+
+01as corpus search76508 partial65964files gen1247080; local judge malformed
+JSON, backgroundrefreshincomplete, all20candidate+20source entries inspected.
+Generic log-derivative suggestions not applicable. Refined module search30517
+nonpartial65964files gen1247125 (coverage1247130/current1247131), noerrors;
+all20+20 inspected. It retrieves exact moving_local_factor, completed_trace_eq,
+cone_response_eq and actual cofactor laws. New mixed-base scratch contains
+full finite factorization, regular product limit at(1,0,i*tau), boundary
+products, near-pole Mertens normalization, original cofactor trace and full
+local-factor nonvanishing. Current failures are algebra elaboration of
+negative-unit casts and pointwise function division, not a mathematical gap.
+
+01as mixed-base scratch39831 PASS (unused simp removed); final production63164
+emptyPASS, ChiRamanujanMixedBaseLimit341lines/API4, wired once. Actual full
+H_N/logN limit and complete unlabelled trace/logN² limit proved, with both
+original cofactors and simultaneous full-cutoff local nonvanishing.
+Updated existing MaskedMellinSource with one actual mixed-response theorem,
+reusing its exact private finite algebra; production audit running.
+M1 final profile assembly scratch prepared, dependent audit not started.
+
+01as existing MaskedMellinSource production26617 emptyPASS: one actual
+criticalCompletedConeEuler_mixed_response theorem appended, importing new
+MixedBaseLimit. Reuses exact finite cone algebra with proved simultaneous
+local nonvanishing, no analytic premise added. M1 final scratch now auditing.
+Next physical corpus search79146 running. Read actual moving-line profile,
+full Fourier amplitude, Mellin slice and transverse profile definitions;
+all three original scale-N cutoffs/AFE/log factors and complete height-window
+Mellin line remain. No fixed-Schwartz norm is being assumed uniform in N.

@@ -2823,3 +2823,29 @@ the *transport*, which is the Hilbert-function bookkeeping above.
 - *Rational singularities.*  Conca–Mostafazadehfard–Singh–Varbaro.  Needs resolutions and higher
   direct images; nothing of that exists in mathlib.  Used by this card only for the qualitative
   sentence of the theorem statement.
+
+## Normality for every `r` — the route (2026-10-05)
+
+`A = K[x_0..x_{N−1}]/I_r` (`I_r` = maximal minors of the `(r+1) × (N−r)` Hankel matrix, `2r < N`).
+Serre-type criterion for a Noetherian domain: if every associated prime of `A/aA` (`a ≠ 0`) has height
+one and `A_P` is integrally closed at every height-one `P`, then `A` is integrally closed (for `x = b/a`
+integral, the conductor `((a) : b)` has an associated prime inside `Ass(A/aA)`, of height one, where
+`x ∈ A_P` forces an element of the conductor outside `P`).
+
+1. **Unmixedness (S2).**  The corpus regular sequence `ℓ₁..ℓ_{2r}` of linear forms makes `A` a finite
+   free module over `B = K[ℓ]` (graded Nakayama + regularity, Hironaka).  Over the UFD `B`, if `cv, c′v ∈ aA`
+   with `c, c′` coprime then `v ∈ aA`; so every `q ∈ Ass_B(A/aA)` is principal of height one, and
+   incomparability lifts this to every `Q ∈ Ass_A(A/aA)`.
+2. **Leading-block chart.**  With `δ = det(x_{i+j})_{i,j<r}`, the minors with rows `0..r` and columns
+   `0..r−1, n−r` give `δ·(x_n − Σ_l c_l x_{n−r+l})`, `c = H_r^{-1}(x_r..x_{2r−1})`; hence
+   `A_δ ≅ K[x_0..x_{2r−1}]_δ`, a localized polynomial ring, integrally closed.
+3. **Moving the chart.**  `g ∈ GL₂(K)` acts on moment coordinates by `x′_n = Σ_k coeff_k((cT+d)^{N−1−n}(aT+b)^n) x_k`;
+   the Hankel matrix transforms as `H(x′) = A_g H(x) B_gᵀ` (a product of polynomials), so by Cauchy–Binet
+   `I_r` is stable and `δ_g := g·δ` is again a chart.
+4. **Charts cover the rank-`r` locus at every prime.**  Over `L = Frac(A/P)` with some `r`-minor nonzero,
+   a left-kernel vector `λ` of the `(r+1)`-row Hankel matrix gives a nonzero binary form `G`; choosing
+   `t ∈ K` with `G(1,t) ≠ 0` makes the transformed recurrence have full order `r`, which forces the
+   transformed leading minor to be nonzero.  So `P ⊉ J_r A` ⟹ some `δ_t ∉ P`.
+5. **The singular locus has height two.**  `J_rA` (the `r`-minors) is prime (`A/J_rA = K[x]/I_{r−1}`),
+   and `0 ⊊ Q ⊊ J_rA` for `Q` the ideal of "`r − 1` atoms plus an atom at infinity" (contains the leading
+   `r`-minor, misses the minor with corner `x_{N−1}`).  Hence no height-one prime contains `J_rA`.

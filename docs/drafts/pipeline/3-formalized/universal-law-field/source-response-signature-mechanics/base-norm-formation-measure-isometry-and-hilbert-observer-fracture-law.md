@@ -335,8 +335,6 @@ Fully formalized, unconditionally: see the Lean certificate below.
 
 - [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.BaseNormFormationMeasure`, `GaloisForLFunctions.HTGeometry.PrimeFormationMeasureObserver`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 
-## Lean certificate
-
 Modules `GaloisForLFunctions.HTGeometry.BaseNormFormationMeasure` (the formation measure of any family of
 probability laws: countable additivity in `ℓ¹`, variation `Σ_i |d_i| μ_i`, isometry and closed range, the
 contractive mass recovery and the projection `𝔐𝖱`, relabeling, Markov post-processing, refinement) and

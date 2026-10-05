@@ -9,15 +9,15 @@ import Mathlib.Topology.UniformSpace.UniformConvergence
 
 In a commutative unital complex Banach algebra with `‖1‖ = 1`:
 
-* `‖exp x‖ ≤ e^{‖x‖}`, `‖exp x - 1‖ ≤ e^{‖x‖} - 1` and `‖exp x - 1 - x‖ ≤ ‖x‖² e^{‖x‖}`, by comparing
-  the exponential series termwise with the real one;
+* `‖exp x‖ ≤ e^{‖x‖}`, `‖exp x - 1‖ ≤ e^{‖x‖} - 1` and `‖exp x - 1 - x‖ ≤ ‖x‖² e^{‖x‖}`, by
+  comparing the exponential series termwise with the real one;
 * telescoping, `‖Π u_i - Π v_i‖ ≤ (Π M_i) Σ ‖u_i - v_i‖` whenever `‖u_i‖, ‖v_i‖ ≤ M_i` and
   `M_i ≥ 1`;
 * hence `‖Π (1 + x_i) - exp(Σ x_i)‖ ≤ e^{2 Σ ‖x_i‖} Σ ‖x_i‖²` (as `exp(Σ x_i) = Π exp x_i`).
 
 Consequently, if `Σ_j ‖a_{N,j}‖ ≤ C`, `max_j ‖a_{N,j}‖ → 0` and `Σ_j a_{N,j} → a`, then
-`Π_j (1 + z a_{N,j}) → exp(z a)` uniformly for `|z| ≤ R` `(PDF.7)`; in particular
-`(1 + z a/N)^N → exp(z a)` `(PDF.1)`.
+`Π_j (1 + z a_{N,j}) → exp(z a)` uniformly for `|z| ≤ R`; in particular
+`(1 + z a/N)^N → exp(z a)`.
 -/
 
 open Filter Topology NormedSpace
@@ -131,7 +131,7 @@ theorem norm_exp_sub_exp_le (u w : 𝔸) :
 
 /-! ### Lemma 3.1: the triangular-array exponential limit -/
 
-/-- **Lemma 3.1, `(PDF.6)`–`(PDF.7)`**: if `Σ_j ‖a_{N,j}‖ ≤ C`, `max_j ‖a_{N,j}‖ → 0` and
+/-- **Lemma 3.1**: if `Σ_j ‖a_{N,j}‖ ≤ C`, `max_j ‖a_{N,j}‖ → 0` and
 `Σ_j a_{N,j} → a`, then `Π_j (1 + z a_{N,j}) → exp(z a)` uniformly on `|z| ≤ R`. -/
 theorem tendstoUniformlyOn_prod_one_add {m : ℕ → ℕ} (a : (N : ℕ) → Fin (m N) → 𝔸) (a₀ : 𝔸)
     {C : ℝ} (hC : ∀ N, ∑ j, ‖a N j‖ ≤ C)
@@ -199,7 +199,7 @@ theorem tendstoUniformlyOn_prod_one_add {m : ℕ → ℕ} (a : (N : ℕ) → Fin
       exact mul_le_mul_of_nonneg_right hz' (norm_nonneg _)
   linarith
 
-/-- **`(PDF.1)`**: `(1 + z a/N)^N → exp(z a)` uniformly on `|z| ≤ R`. -/
+/-- `(1 + z a/N)^N → exp(z a)` uniformly on `|z| ≤ R`. -/
 theorem tendstoUniformlyOn_one_add_div_pow (a : 𝔸) (R : ℝ) :
     TendstoUniformlyOn (fun (N : ℕ) (z : ℂ) => (1 + z • ((N : ℂ)⁻¹ • a)) ^ N)
       (fun z => exp (z • a)) atTop (Metric.closedBall 0 R) := by

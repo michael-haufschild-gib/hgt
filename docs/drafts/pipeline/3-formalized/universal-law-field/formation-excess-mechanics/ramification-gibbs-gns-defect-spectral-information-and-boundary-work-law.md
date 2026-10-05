@@ -1,10 +1,10 @@
 # Ramification Gibbs--GNS defect, spectral--information fusion, and boundary-work law
 
 - **ID:** ULF-FEM-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Programme:** Formation-Excess Mechanics
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [SOURCE-NATIVE FORMATION] [FIVE-ORGAN FUSION] [JOINT RECONSTRUCTION] [CROSSED WORK COCYCLE] [RELATIVE PROPERNESS] [NO LEAN IN THIS PASS] [NOT RH]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [SOURCE-NATIVE FORMATION] [FIVE-ORGAN FUSION] [JOINT RECONSTRUCTION] [CROSSED WORK COCYCLE] [RELATIVE PROPERNESS] [LEAN-PROVED] [NOT RH]
 
 ## 1. Source formation
 
@@ -717,7 +717,81 @@ second heterogeneous source realization and an RH-bearing selection landing are 
 - New paper proofs here: normalized formation mixture, GNS cyclic fusion, joint reconstruction, KL
   chain, exact work/affinity/TV, crossed work cocycle, relative properness, and Kummer participation
   identity.
-- Lean status: **not formalized in this research pass**.  Current goal explicitly audits Lean
-  read-only and does not write or build Lean.
+- Lean status: fully formalized, unconditionally: see the Lean certificate below.
 - RH status: no critical-line selection consequence.
 
+## Lean certificate
+
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.RamificationShellFormation`, `GaloisForLFunctions.HTGeometry.RamificationGNSFusion`, `GaloisForLFunctions.HTGeometry.RamificationSpectralFusion`, `GaloisForLFunctions.HTGeometry.RamificationInformationChain`, `GaloisForLFunctions.HTGeometry.RamificationBoundaryWork`, `GaloisForLFunctions.HTGeometry.RamificationKummerParticipation`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+
+Modules `GaloisForLFunctions.HTGeometry.RamificationShellFormation` (§§1–2),
+`GaloisForLFunctions.HTGeometry.RamificationGNSFusion` and `GaloisForLFunctions.HTGeometry.RamificationSpectralFusion`
+(§§3–4), `GaloisForLFunctions.HTGeometry.RamificationInformationChain` (§§5–6),
+`GaloisForLFunctions.HTGeometry.RamificationBoundaryWork` (§7, §9) and
+`GaloisForLFunctions.HTGeometry.RamificationKummerParticipation` (§8).  Corpus inputs: the shell indicator and its
+residue at `σ = 1` (`RHTower.shellIndicator`, `RHTower.shellMellin`, `RHTower.tendsto_shellMellin_residue`,
+`RHTower.shellResidue_pos`), the Euler-shell source (`EulerShell`, `eulerShellSum`, `eulerShellSeries`,
+`eulerShellSource`, `shellPhase`), the support split and composition
+(`HTGeometry.ConstraintFrameRelativity.powerImageSupport_eq_image`,
+`HTGeometry.ConstraintFrameRelativity.excessSupport_mul_eq_union`,
+`HTGeometry.ConstraintFrameRelativity.excessSupport_disjoint_image`,
+`HTGeometry.ConstraintFrameRelativity.excessLSeries_cocycle`), the trace-class Gram calculus
+(`rightGram_traceClass`) and Laplace determinacy (`LaplaceTomography.measure_eq_of_laplace_eq_succ`).  Names
+below are in `GaloisForLFunctions.HTGeometry` unless fully qualified; `FormationExcess` is the new namespace.
+`A_m = EulerShell m`, `X_{m,r} = FormationExcess.ExcessShell m r`, `S_m(σ) = eulerShellSum m σ`,
+`C_{m,r}(σ) = FormationExcess.excessSum m r σ`, `α = FormationExcess.survival`, `β = FormationExcess.excessFraction`,
+`ℓ²(A) = LpDiagonal.LpTwo A`, `Ω_{m,σ} = FormationExcess.shellVector`, `W = FormationExcess.formationWork`.
+Results hold for every `m ≥ 1` except the normalization wall (§7, §9 loop 4), which uses the card's `m ≥ 12`.
+
+| Claim | Lean declaration |
+|-|-|
+| (FE.1)–(FE.2) the shells `A_m` and their Dirichlet series | `EulerShell`, `eulerShellSum`, `eulerShellSeries`, `RHTower.shellIndicator` |
+| (FE.3) the power map `P_r : A_m → A_{rm}` is injective | `FormationExcess.shellPow`, `FormationExcess.shellPow_val`, `FormationExcess.shellPow_injective` |
+| (FE.4)–(FE.6) `A_{rm} = P_r(A_m) ⊔ X_{m,r}`, the `r`-th powers of `A_{rm}` are exactly `P_r(A_m)` | `FormationExcess.ExcessShell`, `FormationExcess.shellSplit`, `FormationExcess.exists_shellPow_eq`, `FormationExcess.powImageEquiv`, `HTGeometry.ConstraintFrameRelativity.powerImageSupport_eq_image` |
+| (FE.5), (FE.7) `S_{rm}(z) = S_m(rz) + C_{m,r}(z)` (real and complex) | `FormationExcess.excessSum`, `FormationExcess.excessSeries`, `FormationExcess.eulerShellSum_split`, `FormationExcess.eulerShellSeries_split` |
+| the excess is nonempty: `2^{rm}·3` | `FormationExcess.excessWitness`, `FormationExcess.excessSum_pos` |
+| (FE.8)–(FE.10) the atomic measures `μ_{m,σ}`, `η_{m,r,σ}` (finite) and the dilation `d_r` | `FormationExcess.atomic`, `FormationExcess.shellMeasure`, `FormationExcess.excessMeasure`, `FormationExcess.dilate`, `FormationExcess.shellMeasure_univ`, `FormationExcess.excessMeasure_univ` |
+| Theorem 2.1, (FE.11) `μ_{rm,σ} = (d_r)_* μ_{m,rσ} + η_{m,r,σ}` with disjoint supports | `FormationExcess.shellMeasure_formation`, `FormationExcess.formation_mutuallySingular`, `FormationExcess.inheritedSupport` |
+| (FE.12) masses `S_m(rσ)`, `C_{m,r}(σ)`, total `S_{rm}(σ)` | `FormationExcess.shellMeasure_univ`, `FormationExcess.excessMeasure_univ`, `FormationExcess.eulerShellSum_split` |
+| (FE.13)–(FE.14) normalized laws; `0 < α, β < 1`, `α + β = 1` | `FormationExcess.shellLaw`, `FormationExcess.inheritedLaw`, `FormationExcess.excessLaw`, `FormationExcess.isProbabilityMeasure_shellLaw`, `FormationExcess.isProbabilityMeasure_inheritedLaw`, `FormationExcess.isProbabilityMeasure_excessLaw`, `FormationExcess.survival_pos`, `FormationExcess.excessFraction_pos`, `FormationExcess.survival_lt_one`, `FormationExcess.excessFraction_lt_one`, `FormationExcess.survival_add_excessFraction` |
+| Corollary 2.2, (FE.15) `P_{rm,σ} = α I + β Q` | `FormationExcess.shellLaw_mixture` |
+| (FE.16)–(FE.18) `T_r e_k = e_{k^r}` isometric; `R = T T*`, `Q = 1 - R` | `FormationExcess.powIsometry`, `FormationExcess.powIsometry_single`, `FormationExcess.splitInl`, `FormationExcess.splitInr`, `FormationExcess.adjoint_splitInl`, `FormationExcess.adjoint_splitInr`, `FormationExcess.rangeProj`, `FormationExcess.defectProj`, `FormationExcess.defectProj_apply` |
+| (FE.19) cyclic probability vectors | `FormationExcess.shellVector`, `eulerShellSource_v`, `norm_eulerShellSource_v`, `FormationExcess.excessVector`, `FormationExcess.norm_excessVector` |
+| (FE.20) the logarithmic clock on its maximal domain | `FormationExcess.clockDomain`, `FormationExcess.clockMap`, `FormationExcess.shellLog`, `FormationExcess.excessLog` |
+| Theorem 3.1, (FE.21) `ℓ²(A_{rm}) = T_r ℓ²(A_m) ⊕ ℓ²(X_{m,r})` orthogonally | `FormationExcess.inner_splitInl_splitInr`, `FormationExcess.splitInl_add_splitInr`, `FormationExcess.inner_extendSum`, `FormationExcess.norm_sq_extendSum` |
+| (FE.22) `Ω_{rm,σ} = √α T_r Ω_{m,rσ} + √β Ω^{ex}` | `FormationExcess.shellVector_fusion` |
+| (FE.23) `D_{rm} T_r = r T_r D_m`, `D_{rm} ≅ r D_m ⊕ D^{ex}` on maximal domains | `FormationExcess.shellClock_intertwining`, `FormationExcess.shellClock_split`, `FormationExcess.mem_clockDomain_iff`, `FormationExcess.clockMap_split`, `FormationExcess.clockMap_splitInl` |
+| (FE.24) `⟨Ω_{rm,σ}, Q_r Ω_{rm,σ}⟩ = β` | `FormationExcess.inner_defectProj_shellVector`, `FormationExcess.inner_rangeProj_shellVector` |
+| Corollary 3.2, (FE.25) characteristic fusion; GNS form | `FormationExcess.characteristic_fusion`, `FormationExcess.gns_characteristic` |
+| Corollary 3.3, (FE.26) heat operators positive, trace class, `Tr e^{-tD_{rm}} = Tr e^{-rtD_m} + Tr e^{-tD^{ex}}` | `FormationExcess.heatOp`, `FormationExcess.rpow_neg_eq_exp_neg_log`, `FormationExcess.diag_traceClass`, `FormationExcess.heatOp_traceClass`, `FormationExcess.heatTrace_fusion` |
+| Theorem 4.1 (1) the scalar spectral measure of `D_{rm}` in `Ω_{rm,σ}` is `P_{rm,σ}`, atom by atom (simple eigenvalues) | `FormationExcess.spectralMeasure`, `FormationExcess.spectralMeasure_shellVector`, `FormationExcess.atomic_singleton`, `FormationExcess.shellLog_injective` |
+| Theorem 4.1 (2)–(4) the marked projection gives the partition, `α`, `β` and both conditional laws | `FormationExcess.defectProj_apply`, `FormationExcess.spectralMeasure_splitInl`, `FormationExcess.spectralMeasure_splitInr`, `FormationExcess.spectralMeasure_rangeProj`, `FormationExcess.spectralMeasure_defectProj`, `FormationExcess.inner_rangeProj_shellVector`, `FormationExcess.inner_defectProj_shellVector` |
+| Theorem 4.1 (5) with the marked mass, the unnormalized measure | `FormationExcess.shellMeasure_eq_mass_smul_spectral` |
+| Corollary 4.2 exact loss of unmarked normalization | `FormationExcess.normalizeMeasure`, `FormationExcess.normalizeMeasure_smul`, `FormationExcess.smul_ne_self` |
+| (FE.28)–(FE.29) discrete divergence, Bernoulli divergence, affinity, total variation | `FormationExcess.klTerm`, `FormationExcess.klDiv`, `FormationExcess.klDiv_of_summable`, `FormationExcess.klDiv_eq_top`, `FormationExcess.berDiv`, `FormationExcess.affinity`, `FormationExcess.totalVariation` |
+| the laws as atom masses on `A_{rm}`: `α P_{m,rσ}` on inherited, `β Q` on excess atoms | `FormationExcess.shellProb`, `FormationExcess.excessProb`, `FormationExcess.inheritedProb`, `FormationExcess.shellProb_inl`, `FormationExcess.shellProb_inr`, `FormationExcess.inheritedProb_inl`, `FormationExcess.inheritedProb_inr` |
+| Theorem 5.1, (FE.30) the exact information chain; all divergences finite | `FormationExcess.information_chain`, `FormationExcess.information_chain_finite`, `FormationExcess.klDiv_dirichlet`, `FormationExcess.summable_dirichlet_kl`, `FormationExcess.log_dirichletProb_div` |
+| (FE.31)–(FE.32) `W = D(I‖P_{rm,σ}) = -log α = log S_{rm}(σ) - log S_m(rσ) > 0` | `FormationExcess.formationWork`, `FormationExcess.work_eq` |
+| (FE.33) `D(P_{rm,σ}‖I) = +∞` | `FormationExcess.reverse_work_eq_top` |
+| (FE.34) `Aff(P_{rm,σ}, I) = √α` | `FormationExcess.affinity_eq` |
+| (FE.35) `TV(P_{rm,σ}, I) = β` | `FormationExcess.totalVariation_eq` |
+| (FE.36) the three-layer refinement `A_{srm} = P_{sr}(A_m) ⊔ P_s(X_{m,r}) ⊔ X_{rm,s}`; `P_s P_r = P_{sr}` | `HTGeometry.ConstraintFrameRelativity.excessSupport_mul_eq_union`, `HTGeometry.ConstraintFrameRelativity.excessSupport_disjoint_image`, `FormationExcess.shellPow_shellPow_val` |
+| (FE.37) layer masses sum to `S_{srm}(σ)` | `FormationExcess.threeLayer_masses` |
+| Theorem 6.1, (FE.38)–(FE.39) multiplicative survival, additive work with transport | `FormationExcess.survival_comp`, `FormationExcess.work_comp` |
+| Corollary 6.2 the refinements agree in every shadow (coefficients, traces, inherited divergence summand) | `HTGeometry.ConstraintFrameRelativity.excessLSeries_cocycle`, `FormationExcess.threeLayer_masses`, `FormationExcess.inherited_summand_comp` |
+| §6 unshifted additivity is false in general | `FormationExcess.not_unshifted_additivity` |
+| (FE.40) `S_j(σ) → +∞` as `σ ↓ 1`; `S_m(rσ) → S_m(r)` | `FormationExcess.tendsto_eulerShellSum_atTop`, `FormationExcess.eulerShellSum_eq_shellMellin`, `FormationExcess.continuousAt_eulerShellSum` |
+| Theorem 7.1, (FE.41)–(FE.42) the wall limits | `FormationExcess.wall_limits`, `FormationExcess.wall_affinity_tv`, `FormationExcess.tendsto_survival_wall` |
+| Theorem 7.1, (FE.43) the low-temperature limits (unique smallest atom `2^m`, dominated convergence) | `FormationExcess.lowTemperature_limits`, `FormationExcess.tendsto_scaled_shellSum`, `FormationExcess.two_pow_le_of_shell` |
+| Corollary 7.2, (FE.44) `W` continuous and proper on `(1, Σ]` | `FormationExcess.continuousOn_formationWork`, `FormationExcess.work_bounded_away`, `FormationExcess.work_isCompact_preimage` |
+| (FE.45)–(FE.46) valuation residues, sector masses, Kummer–Parseval invariant; inherited = residue `0` | `FormationExcess.kummerVec`, `FormationExcess.kummerVec_eq_zero_iff`, `FormationExcess.kummerVec_ne_zero_iff`, `FormationExcess.sectorMass`, `FormationExcess.kummerParseval`, `FormationExcess.sectorProj`, `FormationExcess.tsum_sectorMass_ne_zero` |
+| Theorem 8.1, (FE.47) `Σ_{γ≠0} ‖Π_γ Ω‖⁴ = V/S_{rm}²` via `‖Π_γ Ω‖² = A_γ/S_{rm}` | `FormationExcess.norm_sq_sectorProj`, `FormationExcess.kummer_collision` |
+| Theorem 8.1, (FE.48) | `FormationExcess.kummer_collision_excess` |
+| §9 loop 2: the inherited fibre at the same temperature is not the source fibre | `FormationExcess.shellProb_ne_of_two_le` |
+| §9 loops 3, 4, 5, 7, 8 | `FormationExcess.normalizeMeasure_smul`, `FormationExcess.not_unshifted_additivity`, `FormationExcess.work_bounded_away`, `FormationExcess.kummer_collision`, `FormationExcess.heatTrace_fusion` |
+
+§9 loops 1 and 6, §10 and §11 are commentary and state what is not claimed.
+
+## Log
+
+- 2026-10-05 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.

@@ -532,8 +532,6 @@ Fully formalized, unconditionally: see the Lean certificate below.
 
 - [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.ExponentialKernelTotalPositivity`, `GaloisForLFunctions.HTGeometry.FlagDeterminantLaplace`, `GaloisForLFunctions.HTGeometry.ArityCofinalFormationFracture`, `GaloisForLFunctions.HTGeometry.GradeThreeCausalGreenFormation`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 
-## Lean certificate
-
 Modules `GaloisForLFunctions.HTGeometry.ExponentialKernelTotalPositivity` (strict total positivity
 of `(e^{x_i t_j})` and its Vandermonde-divided sign), `GaloisForLFunctions.HTGeometry.FlagDeterminantLaplace`
 (the increment change of variables onto the flag chamber, the ordered flag-determinant integral, complete

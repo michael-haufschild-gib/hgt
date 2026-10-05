@@ -387,8 +387,6 @@ Fully formalized, unconditionally: see the Lean certificate below.
 
 - [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.CoinvariantDefectGreenProperness`, `GaloisForLFunctions.HTGeometry.OriginAtomFormationProperness`, `GaloisForLFunctions.HTGeometry.HalfLineLaplaceTomography`, `GaloisForLFunctions.HTGeometry.HypoexponentialRateReconstruction`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 
-## Lean certificate
-
 Module `GaloisForLFunctions.HTGeometry.CoinvariantDefectGreenProperness`, on top of ULF-SRSM-10
 (`GaloisForLFunctions.HTGeometry.OriginAtomFormationProperness`, `GaloisForLFunctions.HTGeometry.HalfLineLaplaceTomography`,
 `GaloisForLFunctions.HTGeometry.HypoexponentialRateReconstruction`).  Probability laws on `[0, ∞) = ℝ≥0`;

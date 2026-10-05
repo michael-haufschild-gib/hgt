@@ -1,8 +1,8 @@
 # Effective Baker–Matveev: a polynomial lower bound for linear forms in prime logarithms
 
 - **ID:** `effective-baker-matveev-linear-forms`
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (Lean) — formalization of a classical deep theorem
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) — formalization of a classical deep theorem (Fel'dman 1968)
 - **Statement:** For distinct primes `p₁,…,p_d` there are `c, C > 0` with
   `|Σᵢ νᵢ log pᵢ| ≥ c (2+|ν|₁)^{-C}` for every nonzero `ν ∈ ℤ^d`.
 
@@ -105,13 +105,13 @@ Layers, each a self-contained unconditional module:
       — `RHTower/Matveev/{PerturbedFrequency,PerturbedPower,PerturbedKernel,PerturbedComponents,AuxiliaryMatrix}.lean`
 - [x] D.1 extrapolation with error, analytic core
       — `HTGeometry/ApproximateMultipointSchwarz.lean`
-- [ ] D.2 Fel'dman-polynomial auxiliary construction (replaces the plain-multiplicity matrix)
+- [x] D.2 Fel'dman-polynomial auxiliary construction (replaces the plain-multiplicity matrix)
       basis and height gain closed — `RHTower/Matveev/FeldmanBinomial.lean`;
       the matrix and shift law over the new basis remain
-- [ ] E. terminal contradiction, the effective theorem
-- [ ] F. card interface `τ₀(ν) ≤ C log(2+|ν|₁)`
-- [ ] 1 → 2  complete paper proof recorded
-- [ ] 2 → 3  Lean theorem, axiom surface `propext, Classical.choice, Quot.sound`
+- [x] E. terminal contradiction, the effective theorem — `Matveev/{FeldmanExtrapolation,FeldmanCoefficientVanishing,FeldmanParameters,FeldmanStageGain,EffectiveBaker}.lean`
+- [x] F. card interface `τ₀(ν) ≤ C log(2+|ν|₁)` — `Matveev.exists_neg_log_primeLogForm_le` (`Matveev/PrimeFrequencyReducibility.lean`)
+- [x] 1 → 2  complete proof recorded (the Lean proof; scheme in the 09-29 and 10-05 log entries)
+- [x] 2 → 3  Lean theorem `Matveev.effectiveBakerBound_holds`, axiom surface `propext, Classical.choice, Quot.sound`
 
 ## Log
 - 2026-08-15 — created; corpus inventory shows qualitative Baker is already unconditional, the
@@ -664,3 +664,22 @@ Layers, each a self-contained unconditional module:
     - (L8) Parameter verification, the permutation/sign reduction to the pivot form, and
       `EffectiveBakerBound` via `effectiveBakerBound_of_large`.
     - Card-1 interface.
+- 2026-10-05 — **Closed in Lean.** L6–L8 and the card interface are done; the statement of this card
+  is `RHTower.Matveev.effectiveBakerBound_holds` (every injective prime family satisfies
+  `EffectiveBakerBound`), axioms `[propext, Classical.choice, Quot.sound]`.
+  - `Matveev/FeldmanExtrapolation`: `feldman_step` (one step: node jets ≤ `(T+W)^M β`, lossless
+    Hermite–Schwarz on `|w| = 8X`, gain `(2/7)^{MX}`, arithmetic threshold `B^T|Φ| < D ⟹ Φ = 0`) and
+    `feldman_extrapolation` (`X_r = 2^r X₀`, `T_r = T₀ − rM`).
+  - `Matveev/FeldmanCoefficientVanishing`: `eq_zero_of_feldmanTrueAux_eq_zero` (bases `∏ p_j^{l_j}`
+    distinct by unique factorization; generalized Vandermonde + Lagrange basis).
+  - `Matveev/FeldmanParameters`: `pow_le_feldmanDivisor_mul_exp`
+    (`(ρ+N+1)^N ≤ D(N+1,S) e^{ρ+(N+1)(1+κ_S)}`), the constants `FeldmanParams` and their existence
+    (`E = 1000(R+1)W̄`, `q = E^{m+1}(R+1)`, `M = 1000W̄q`, `S = RM+1`, `c = 16(m+1)(R+1)q`,
+    `a = 2cE^{m+1}`, `R` with `4E^{m+1}q^{m+1} ≤ 2^R`).
+  - `Matveev/FeldmanStageGain`: `feldman_stage_threshold` (every stage clears its threshold once
+    `|Λ| < e^{−C₀ n}`).
+  - `Matveev/EffectiveBaker`: `exists_feldman_pivot_bound`, `effectiveBakerBound_holds`.
+  - `Matveev/PrimeFrequencyReducibility`: `exists_primeFrequency_diophantine`
+    (`|m·ℓ| ≥ γ H(m)^{−κ}`) and `summable_primeModeDivisor` (combination-mode reducibility).
+  Simplification against the 09-29 scheme: radius `8X`, constant jet order, gain base `2/7 ≤ e^{−1}`.
+- 2026-10-05 — card interface `exists_neg_log_primeLogForm_le` added; card moved to `3-formalized/`.

@@ -12,8 +12,8 @@ Let `K` be a compact metrizable commutative monoid and `M(K) = C(K, ℂ)*` its m
   products; the positive elements of norm `≤ C` are weak-* sequentially compact (Banach–Alaoglu,
   `C(K)` separable).
 * **Uniform weak-* convergence.**  If `F_n(z) → F(z)` against every test function uniformly for
-  `z ∈ D`, with `‖F_n(z)‖, ‖F(z)‖ ≤ B`, then the convergence is uniform over `D × S` for every compact
-  set `S` of test functions (finite nets).  Writing
+  `z ∈ D`, with `‖F_n(z)‖, ‖F(z)‖ ≤ B`, then the convergence is uniform over `D × S` for every
+  compact set `S` of test functions (finite nets).  Writing
   `(Φ Ψ)(f) = Φ(x ↦ Ψ(y ↦ f(xy)))`, whose inner test functions form the compact set of translates
   of `f`, this makes products of such families converge uniformly on `D`; finite products and the
   convolution exponential `exp(z X_n) → exp(z X)` follow.
@@ -171,6 +171,7 @@ theorem isPositive_one : IsPositive (1 : MeasureAlgebra K) := by
   rw [← ofMeasure_diracMeasure_one]
   exact isPositive_ofMeasure _
 
+omit [SecondCountableTopology K] [MeasurableSpace K] [BorelSpace K] in
 theorem IsPositive.smul {Φ : MeasureAlgebra K} (hΦ : IsPositive Φ) {c : ℝ} (hc : 0 ≤ c) :
     IsPositive ((c : ℂ) • Φ) := fun f hf => by
   refine ⟨?_, ?_⟩
