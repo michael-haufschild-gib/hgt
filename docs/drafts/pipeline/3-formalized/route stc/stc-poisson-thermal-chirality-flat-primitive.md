@@ -5,7 +5,7 @@
 - **Type:** THEOREM and sharp transport boundary
 - **Routes:** STC, RHist, U, CSB, K-RVM, MPLF
 - **Status:** `[PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
-- **Dependencies:** [Poisson/Mertens clock commutator](stc-poisson-mertens-clock-commutator.md), [trace-class prime defect](stc-mertens-trace-class-xi-divisor-barrier.md), [flat theta one-port](theta-quantile-critical-one-port-rigging.md), `HTGeometry/CoshFourierTransform.lean`, and the exact Mertens error in `Sieve/MertensSecondSharp.lean`.
+- **Dependencies:** [Poisson/Mertens clock commutator](stc-poisson-mertens-clock-commutator.md), [trace-class prime defect](stc-mertens-trace-class-xi-divisor-barrier.md), [flat theta one-port](../theta/theta-quantile-critical-one-port-rigging.md), `HTGeometry/CoshFourierTransform.lean`, and the exact Mertens error in `Sieve/MertensSecondSharp.lean`.
 
 ## Reinterpretation and exact statement
 

@@ -227,7 +227,7 @@ Modules `GaloisForLFunctions.HTGeometry.FormationDepthBaireCategoryEscape` (118 
 | §2 setup: `D`, `M`, `W`, `G`, `j`, `K_C` | `formationDepthSubmodule`, `FormationDepthSpace` (norm = `formationGauge`, `FormationDepthSpace.norm_def`), `formationMassCLM`, `formationDepthInclusion`, corpus `formationLpGaugeSublevel` |
 | Theorem 3.1: `G` is a norm on `D` | `FormationDepthSpace.gaugeAddGroupNorm`, instances `NormedAddCommGroup`/`NormedSpace ℂ FormationDepthSpace`, `FormationDepthSpace.formationGauge_isNorm` |
 | Theorem 3.1: `(D,G)` is a separable Banach space (Polish) | instances `CompleteSpace`, `TopologicalSpace.SeparableSpace`, `PolishSpace FormationDepthSpace`; bundled in `formationDepth_fineSourceTopology` |
-| Theorem 3.1 proof: `W₀ ≤ (3/2)G`, `G ≤ 3W₀`, `W₀ = |x₀| + ∑_{n≥1} n|x_n|` | `formationWeightedNorm_le_formationGauge`, `formationGauge_le_formationWeightedNorm`, `FormationDepthSpace.formationWeightedNorm_equivalent`, `formationDepthWork_eq_tsum_succ` |
+| Theorem 3.1 proof: `W₀ ≤ (3/2)G`, `G ≤ 3W₀`, `W₀ = ∣x₀∣ + ∑_{n≥1} n∣x_n∣` | `formationWeightedNorm_le_formationGauge`, `formationGauge_le_formationWeightedNorm`, `FormationDepthSpace.formationWeightedNorm_equivalent`, `formationDepthWork_eq_tsum_succ` |
 | Theorem 3.1 proof: `‖j x‖₂ ≤ ‖x‖₁ ≤ G(x)` | `norm_formationDepthInclusion_le` (`norm_formationL1ToL2_le`, `FormationDepthSpace.norm_toL1_le`) |
 | Theorem 3.1: `j` continuous, injective | `formationDepthInclusion` (a `→L[ℂ]`), `formationDepthInclusion_injective` |
 | Theorem 3.1: `j` compact | `isCompactOperator_formationDepthInclusion` |
@@ -239,11 +239,11 @@ Modules `GaloisForLFunctions.HTGeometry.FormationDepthBaireCategoryEscape` (118 
 | Theorem 3.2: `D` dense, proper, σ-compact, `F_σ`, meagre in `H` | `formationDepth_denseMeagreCore`; components `isSigmaCompact_range_formationDepthInclusion`, `range_formationDepthInclusion_isFσ`, `isGδ_compl_range_formationDepthInclusion`, `isMeagre_range_formationDepthInclusion` |
 | §5: `(D,G)` Polish and `j` has Borel image | `PolishSpace FormationDepthSpace` instance, `measurableSet_range_formationDepthInclusion` |
 | Theorem 3.3: `j xₖ → 0`, `M xₖ → c ≠ 0` ⇒ `G(xₖ) → ∞` | `tendsto_norm_atTop_of_inclusion_tendsto_zero_of_mass_tendsto` |
-| Theorem 3.3: `M` continuous on `(D,G)`, `|M x| ≤ G(x)` | `formationMassCLM`, `norm_formationMass_le_norm` |
+| Theorem 3.3: `M` continuous on `(D,G)`, `∣M x∣ ≤ G(x)` | `formationMassCLM`, `norm_formationMass_le_norm` |
 | Theorem 3.3: witness `u_N`: `‖u_N‖₂ = N^{-1/2} → 0`, `M(u_N) = 1`, `G(u_N) = N+2` | `formationUniformShell`, `norm_formationDepthInclusion_formationUniformShell` (and `norm_sq_…`), `tendsto_formationDepthInclusion_formationUniformShell`, `formationMass_formationUniformShell`, `norm_formationUniformShell` |
 | Theorem 3.3: `M` not sequentially closable relative to `j` | `not_isSequentiallyClosableBetween_formationMass` (corpus predicate `RHTower.IsSequentiallyClosableBetween`) |
 | Theorem 3.3 (bundled) | `formationDepth_responseForcesCategoryEscape` |
-| §5 positive survivor: quantitative escape `|M x| ≤ √N ‖j x‖₂ + G(x)/(2N)` (N ≥ 1) | `norm_formationMass_le_sqrt_mul_add_div`, `sum_range_norm_le_sqrt_mul_norm_inclusion` |
+| §5 positive survivor: quantitative escape `∣M x∣ ≤ √N ‖j x‖₂ + G(x)/(2N)` (N ≥ 1) | `norm_formationMass_le_sqrt_mul_add_div`, `sum_range_norm_le_sqrt_mul_norm_inclusion` |
 | Theorem 3.4: compact ranges lie in countably many compact (nowhere-dense) sets | `range_subset_iUnion_isCompact_of_isCompactOperator`, `isMeagre_range_of_isCompactOperator`, `isMeagre_iUnion_range_of_isCompactOperator` |
 | Theorem 3.4: `H \ ⋃_m T_m(E_m)` residual and dense; atlas never covers | `compactRouteAtlas_residual_dense_escape_clm` (Banach/normed `E_m`, `T_m →L`), `compactRouteAtlas_residual_dense_escape` (any countable index, arbitrary TVS `E_m`, linear `T_m`), `compl_iUnion_range_mem_residual_of_isCompactOperator`, `dense_compl_iUnion_range_of_isCompactOperator`, `iUnion_range_ne_univ_of_isCompactOperator` |
 | §6 cited fact: nonmeagre linear subgroup with Baire property is open, hence all of `H` | `addSubgroup_mem_nhds_zero_of_baireMeasurableSet_of_not_isMeagre`, `addSubgroup_isOpen_of_baireMeasurableSet_of_not_isMeagre`, `addSubgroup_eq_top_of_baireMeasurableSet_of_not_isMeagre` (connected group), `submodule_eq_top_of_baireMeasurableSet_of_not_isMeagre`, `isMeagre_of_baireMeasurableSet_of_ne_top` |

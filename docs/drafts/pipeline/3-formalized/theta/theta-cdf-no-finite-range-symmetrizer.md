@@ -6,7 +6,7 @@
 - **Routes:** STC, CSB, U, K-RVM, MPLF, theta source transport
 - **Status:** `[PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
 - **Lean:** `GaloisForLFunctions.RHTower.ThetaCdfFixedShiftAction`, `ThetaCdfFiniteRangeSymmetrizerNoGo`; certificate [theta-cdf-no-finite-range-symmetrizer-formalized.md](theta-cdf-no-finite-range-symmetrizer-formalized.md).
-- **Dependencies:** [exact CDF-action quotient](../../1-in-progress/theta-quantile-fourier-action-quotient.md), [theta action growth](../../2-fully-proven/theta/theta-cdf-crossfrequency-rvm-capacity.md), strict log-concavity and double-exponential tails of the literal theta density.
+- **Dependencies:** [exact CDF-action quotient](../../1-in-progress/theta-quantile-fourier-action-quotient.md), [theta action growth](theta-cdf-crossfrequency-rvm-capacity.md), strict log-concavity and double-exponential tails of the literal theta density.
 
 ## Theorem
 

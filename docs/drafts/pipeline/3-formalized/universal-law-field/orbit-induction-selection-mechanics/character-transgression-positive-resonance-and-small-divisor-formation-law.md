@@ -603,11 +603,11 @@ positivity, trace, rank, energy split, cofinal prediction).  Corpus inputs: `wei
 | §2 `ℓ²(ℕ;H)`, right shift `S`, `S* =` left shift | `lpRightShift`, `lpLeftShift`, `adjoint_lpRightShift` |
 | `A_a = diag(aₙD)`, `δ(B) = B - S_K B S_H*`, compressions `B_nn` | `diagFormed`, `shiftTransgression`, `shiftTransgression_apply`, `diagCompression`, `norm_diagCompression_le`, `diagCompression_diagFormed` |
 | Theorem 2.1: `B_00 = a₀D`, `B_nn - B_{n-1,n-1} = aₙD`, `B_nn = sₙD` | `diagCompression_shiftTransgression_zero`, `diagCompression_shiftTransgression_succ`, `diagCompression_of_shiftPrimitive`, `ampPartialSum` |
-| `‖B‖ ≥ ‖D‖ sup|sₙ|`; `B_s = diag(sₙD)` solves; (CTR.1) least norm; existence iff bounded partial sums | `ampSup_mul_le_of_shiftPrimitive`, `shiftTransgression_diagFormed_ampPartialSum`, `isLeast_norm_shiftPrimitive`, `exists_shiftPrimitive_iff` |
+| `‖B‖ ≥ ‖D‖ sup∣sₙ∣`; `B_s = diag(sₙD)` solves; (CTR.1) least norm; existence iff bounded partial sums | `ampSup_mul_le_of_shiftPrimitive`, `shiftTransgression_diagFormed_ampPartialSum`, `isLeast_norm_shiftPrimitive`, `exists_shiftPrimitive_iff` |
 | Corollary 2.2: nonnegative amplitudes ⇔ summable; homogeneous `B_nn = (n+1)D`, no bounded primitive; horizon-`N` cost `(N+1)‖D‖` | `exists_shiftPrimitive_iff_summable`, `diagCompression_of_homogeneous_shiftPrimitive`, `not_exists_homogeneous_shiftPrimitive`, `isLeast_norm_horizon_shiftPrimitive` |
 | (CTR.2) `sₙ(z)` | `charAmp`, `ampPartialSum_charAmp`, `ampPartialSum_charAmp_one`, `norm_partialSum_charAmp_le` |
 | Theorem 3.1 (1) (CTR.3), (2), (3) | `character_shiftPrimitive`, `not_exists_neutral_shiftPrimitive`, `ampSup_partialSum_charAmp_conj`, `ampPartialSum_charAmp_conj` |
-| Theorem 3.2 uniform primitives ⇔ `inf |1-z_j| > 0` | `uniform_character_shiftPrimitive_iff` |
+| Theorem 3.2 uniform primitives ⇔ `inf ∣1-z_j∣ > 0` | `uniform_character_shiftPrimitive_iff` |
 | §4 (CTR.4) `α(E_jk) = z̄ⱼz_kE_jk`, `δ_U = 1 - α` (on HS operators via the matrix bridge) | `phaseRatio`, `phaseConj`, `phaseTransgression`, `phaseTransgression_eq`, `phaseUnitary`, `adjoint_phaseUnitary`, `matrixOf_adjoint_comp_comp` |
 | (CTR.5) `Π_U`, `= ∑ P_λ X P_λ` | `resonanceInd`, `resonanceProj`, `resonancePinch`, `resonancePinch_eq_sum`, `phaseSpectralProj` |
 | Theorem 4.1 (CTR.6): `ker δ_U = ran Π_U`, `ran δ_U = ker Π_U = (ran Π_U)ᗮ`, orthogonality | `ker_phaseTransgression_eq_range`, `range_phaseTransgression_eq_ker`, `ker_resonanceProj_eq_orthogonal`, `range_phaseTransgression_eq_orthogonal`, `inner_resonanceProj_phaseTransgression` (finite packets: `exists_phaseSeparated_of_finite`) |

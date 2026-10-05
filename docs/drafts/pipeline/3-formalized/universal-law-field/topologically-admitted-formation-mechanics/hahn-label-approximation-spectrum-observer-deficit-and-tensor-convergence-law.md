@@ -556,11 +556,11 @@ Module `GaloisForLFunctions.HTGeometry.TopologicallyAdmittedHahnLabelSpectrum` (
 | Claim | Lean declaration |
 |-|-|
 | (HLA.2)–(HLA.3) `λ`, `ν`, `h = dν/dλ`, the measurable Hahn sign `σ` | `currentControl`, `measurableSignedCurrent`, `measurableHahnDensity`, `measurableHahnLabel`, `currentControl_withDensity_measurableHahnDensity` |
-| `|h| ≤ 1` a.e.; `h = dμ₁/dλ - dμ₀/dλ`; `∫ g h dλ = ∫ g dμ₁ - ∫ g dμ₀` | `ae_abs_measurableHahnDensity_le_one`, `measurableHahnDensity_ae_eq`, `integral_mul_measurableHahnDensity` |
-| (HLA.4) `ω = |h|λ = |ν|` | `variation_measurableSignedCurrent_eq` |
-| (HLA.5) `TV = sup_A (μ₁A - μ₀A) = ½|ν|(X)`, attained at `{h ≥ 0}` | `isGreatest_measurableHahnTV`, `hahnEffectCurrent_hahnPositiveSet`, `measurableHahnTV_eq_half_variation` |
-| Thm 3.1 (HLA.6) `TV - ∫ e dν = ½ ∫ |2e - 1 - σ| dω` | `measurableHahnTV_sub_effectCurrent`, `measurableHahnTV_sub_half_current`, `measurableHahnTV_sub_decisionCurrent_eq_labelError`, `hahnLabelDistance` |
-| Cor 3.2 (HLA.7) singular form: `|h| = 1`, `ω = λ`, `TV = 1` | `ae_abs_measurableHahnDensity_eq_one`, `hahnLabelDistance_eq_of_singular`, `measurableHahnTV_eq_one_of_singular`, `one_sub_hahnEffectCurrent_of_singular` |
+| `∣h∣ ≤ 1` a.e.; `h = dμ₁/dλ - dμ₀/dλ`; `∫ g h dλ = ∫ g dμ₁ - ∫ g dμ₀` | `ae_abs_measurableHahnDensity_le_one`, `measurableHahnDensity_ae_eq`, `integral_mul_measurableHahnDensity` |
+| (HLA.4) `ω = ∣h∣λ = ∣ν∣` | `variation_measurableSignedCurrent_eq` |
+| (HLA.5) `TV = sup_A (μ₁A - μ₀A) = ½∣ν∣(X)`, attained at `{h ≥ 0}` | `isGreatest_measurableHahnTV`, `hahnEffectCurrent_hahnPositiveSet`, `measurableHahnTV_eq_half_variation` |
+| Thm 3.1 (HLA.6) `TV - ∫ e dν = ½ ∫ ∣2e - 1 - σ∣ dω` | `measurableHahnTV_sub_effectCurrent`, `measurableHahnTV_sub_half_current`, `measurableHahnTV_sub_decisionCurrent_eq_labelError`, `hahnLabelDistance` |
+| Cor 3.2 (HLA.7) singular form: `∣h∣ = 1`, `ω = λ`, `TV = 1` | `ae_abs_measurableHahnDensity_eq_one`, `hahnLabelDistance_eq_of_singular`, `measurableHahnTV_eq_one_of_singular`, `one_sub_hahnEffectCurrent_of_singular` |
 | Thm 4.1 (HLA.8)–(HLA.9) dictionary capacity `sup ∫ e dν = TV - ½ width` | `iSup_hahnEffectCurrent_eq` |
 | Cor 4.2 (HLA.10) compact continuous dictionaries have positive width (full-support singular laws) | `hahnLabelWidth_pos`, `abs_hahnLabelDistance_sub_le`, `ae_measurableHahnLabel_eq_one`, `ae_measurableHahnLabel_eq_neg_one` |
 | Thm 5.1 (HLA.11)–(HLA.13) `ℛ^q(r) = ½ 𝒬^q(2(TV - r))` | `resolutionPriceSet`, `approximationSpectrumSet`, `resolutionPrice`, `approximationSpectrum`, `resolutionPriceSet_eq`, `resolutionPrice_eq` |

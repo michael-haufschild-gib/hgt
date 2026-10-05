@@ -370,8 +370,8 @@ Modules `GaloisForLFunctions.HTGeometry.CayleyContrastLaw` (30 constants), `Galo
 | (CCRHD.5)–(CCRHD.6) `S = δ`, `E₀ = g`, `S*S + E₀*E₀ = I`, `Sᴺ → 0` strongly | `collisionSurvival`, `collisionExit`, `collision_colligation`, `collision_stable`, `tendsto_contractionMul_pow_apply` |
 | Theorem B, (CCRHD.7)–(CCRHD.8): `(Of)_n = E₀Sⁿf` isometric, `O*O = 1`, operator telescope | `observability`, `collisionObservability_isometry`, `colligation_telescope`, `sum_norm_exit_sq_add`, `hodgeCollision_observability` |
 | (CCRHD.9)–(CCRHD.11) `‖Sⁿ Ω_H‖² = m_n`, `‖e_n‖² = w_n`, `m_n = ∑_{k≥n} w_k`, `∑ w_n = 1` | `norm_survival_pow_hodgeCollisionState_sq`, `norm_hodgeExitVector_sq`, `hasSum_norm_exit_sq_tail`, `hasSum_norm_collisionExitVector_sq`, `PrimeHodgeHistory.tail_hasSum_w` |
-| (CCRHD.12)–(CCRHD.13) `𝖳 = ⊕ₙ|e_n⟩⟨e_n|`, kernel `1_{n=k} e_n(z) conj(e_n(z'))` | `recordOp`, `recordOp_apply`, `collisionRecord`, `hodgeCollisionRecord_apply_coeFn`, `inner_single_recordOp_single` |
-| (CCRHD.14) `𝖳 = D_hist(|OΩ_H⟩⟨OΩ_H|)` as the trace-norm limit of `∑_{n<N} P_n|OΩ⟩⟨OΩ|P_n` | `collisionRecord_eq_historyDephased`, `sum_historyGrade_rankOne`, `tendsto_traceNorm_collisionRecord_sub` |
+| (CCRHD.12)–(CCRHD.13) `𝖳 = ⊕ₙ∣e_n⟩⟨e_n∣`, kernel `1_{n=k} e_n(z) conj(e_n(z'))` | `recordOp`, `recordOp_apply`, `collisionRecord`, `hodgeCollisionRecord_apply_coeFn`, `inner_single_recordOp_single` |
+| (CCRHD.14) `𝖳 = D_hist(∣OΩ_H⟩⟨OΩ_H∣)` as the trace-norm limit of `∑_{n<N} P_n∣OΩ⟩⟨OΩ∣P_n` | `collisionRecord_eq_historyDephased`, `sum_historyGrade_rankOne`, `tendsto_traceNorm_collisionRecord_sub` |
 | Theorem C, (CCRHD.15): `𝖳 ≥ 0`, `𝖳* = 𝖳`, `𝖳 ∈ S₁`, `Tr 𝖳 = ‖𝖳‖₁ = 1`, `‖𝖳‖ = w₀ = 2/3` | `hodgeCollisionRecord_nuclear`, `recordOp_traceClass`, `norm_recordOp` |
 | (CCRHD.15a) signed section `sign(t)𝖳`, `Tr = sign t`, odd | `hodgeCollisionRecord_signed` |
 | (CCRHD.16) `Tr((∑_{k≥n}P_k)𝖳) = m_n` | `hodgeCollisionRecord_nuclear`, `opTrace_historyTail_collisionRecord` |

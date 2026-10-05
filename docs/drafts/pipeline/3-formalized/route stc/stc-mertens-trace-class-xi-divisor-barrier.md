@@ -238,7 +238,7 @@ Laplace Gram representation and integer moments instead of Plancherel. No new ax
 does not establish RH, falsify RH, or identify a source-derived map to
 the theta ports.
 
-The later [theta CDF action and cross-frequency capacity theorem](theta-cdf-crossfrequency-rvm-capacity.md)
+The later [theta CDF action and cross-frequency capacity theorem](../theta/theta-cdf-crossfrequency-rvm-capacity.md)
 matches this prime clock to a literal theta-source action up to a
 fixed `−log π` offset and a trace-class kernel difference. It also
 shows that the determinant-bearing theta quotient obtains its

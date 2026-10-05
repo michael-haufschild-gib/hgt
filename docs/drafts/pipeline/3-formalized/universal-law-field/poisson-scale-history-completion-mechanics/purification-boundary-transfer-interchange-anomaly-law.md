@@ -352,7 +352,7 @@ axiom audit `[propext, Classical.choice, Quot.sound]` only.  `T = normalizedPhys
 | Claim | Lean declaration |
 |-|-|
 | (PBTIA.1) `Tr T = 1`, `0 ≤ T ≤ I` | `opTrace_normalizedPhysicalPluckerOperator`, `isPositive_one_sub_of_norm_le_one`, `physicalPlucker_canonicalSquare` |
-| (PBTIA.2) `P = |Ψ⟩⟨Ψ|` rank-one projection, `Cl(P) = T` | `rankOne_comp_rankOne_self_of_norm_eq_one`, `norm_pluckerPurification`, `pluckerPurification_isPartialTrace`, `physicalPlucker_canonicalSquare` |
+| (PBTIA.2) `P = ∣Ψ⟩⟨Ψ∣` rank-one projection, `Cl(P) = T` | `rankOne_comp_rankOne_self_of_norm_eq_one`, `norm_pluckerPurification`, `pluckerPurification_isPartialTrace`, `physicalPlucker_canonicalSquare` |
 | (PBTIA.3)–(PBTIA.3a) `F_ε(cX) = F_{ε/c}(X)` | `positiveBoundaryTransfer`, `positiveBoundaryTransfer_smul` |
 | (PBTIA.4)–(PBTIA.5) `Cl(cP) = cT`; `F_ε(cP) = c/(ε+c) P`, `Cl(F_ε(cP)) = c/(ε+c) T` | `IsPartialTrace.real_smul`, `positiveBoundaryTransfer_smul_of_idempotent`, `positiveBoundaryTransfer_smul_rankOne_self`, `isPartialTrace_completion_square`, `physicalInterchangeAnomaly_square` |
 | (PBTIA.6) anomaly = defect of the square | `interchangeAnomaly`, `interchangeAnomaly_eq_square` |
@@ -360,7 +360,7 @@ axiom audit `[propext, Classical.choice, Quot.sound]` only.  `T = normalizedPhys
 | (PBTIA.8) residual identity | `positiveBoundaryTransfer_sub_interchangeAnomaly` |
 | (PBTIA.9), (PBTIA.11) `‖c/(ε+c) T - T‖₁ = ε/(ε+c)‖T‖₁ → 0` | `traceNorm_residual_sub`, `tendsto_traceNorm_residual_sub`, `tendsto_traceNorm_physicalResidual_sub` |
 | Theorem PBTIA-B, (PBTIA.12) `𝒜_{ε,c} → I - T` strongly | `tendsto_interchangeAnomaly_apply`, `tendsto_physicalInterchangeAnomaly_apply` |
-| (PBTIA.13), (PBTIA.15) corona distance `|√c-√d|/(√c+√d)`; the residual difference lies in `C_0` | `residualHistory`, `anomalyHistory`, `anomalyHistory_apply`, `residualHistory_sub_mem`, `anomalyGerm_sub_eq_scaleGerm_sub`, `norm_anomalyGerm_sub`, `physicalAnomalyGerm`, `norm_physicalAnomalyGerm_sub` |
+| (PBTIA.13), (PBTIA.15) corona distance `∣√c-√d∣/(√c+√d)`; the residual difference lies in `C_0` | `residualHistory`, `anomalyHistory`, `anomalyHistory_apply`, `residualHistory_sub_mem`, `anomalyGerm_sub_eq_scaleGerm_sub`, `norm_anomalyGerm_sub`, `physicalAnomalyGerm`, `norm_physicalAnomalyGerm_sub` |
 | (PBTIA.14) `[𝒜_{•,c}] = [𝒜_{•,d}] ⟺ c = d` | `anomalyGerm_eq_iff`, `physicalAnomalyGerm_eq_iff` |
 | (PBTIA.16) Poisson complement | `norm_sq_physicalAnomalyGerm_add_poisson` |
 | (PBTIA.17) `κ(pᵃ,p⁻ᵃ) = (pᵃ-1)/(pᵃ+1) = tanh(a log p/2)` | `germContrast_rpow_reflection`, `physicalAnomalyGerm_prime_reflection` |

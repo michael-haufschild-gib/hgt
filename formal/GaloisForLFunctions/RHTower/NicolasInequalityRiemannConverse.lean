@@ -637,18 +637,20 @@ theorem log_add_one_le_two_sqrt {x : ℝ} (hx : 0 ≤ x) : Real.log (x + 1) ≤ 
       _ = Real.sqrt x + 1 := Real.sqrt_sq (by positivity)
   linarith
 
-/-- **The Nicolas defect bounds the scaled remainder at a near-zero of `ψ(x) - x`.**  If
-`Nic(x) ≥ 0` at `x = e^T` and `|ψ(x) - x| ≤ 2T|G(T)|x + log(x + 1)`, with `T|G(T)| ≤ 1/280` and
-`x` large, then `s(T) ≥ -(2(8 log 4 + C) + 2)`. -/
-theorem scaledMertensRemainder_ge_of_nicolas {T C : ℝ} (hT : 8 ≤ T)
+/-- **The Nicolas defect at a near-zero of `ψ(x) - x`.**  If
+`|ψ(x) - x| ≤ 2T|G(T)|x + log(x + 1)` at `x = e^T`, `G(T) < 0`, `T|G(T)| ≤ 1/280` and `x` is large,
+then `Nic(x) ≤ G(T)/2 + (8 log 4 + C + 1)/(√x T)`. -/
+theorem nicolasDefect_le_half_remainder {T C : ℝ} (hT : 8 ≤ T)
     (hθ25 : 2 / 5 * Real.exp T ≤ Chebyshev.theta (Real.exp T))
     (hC : Chebyshev.psi (Real.exp T) - Chebyshev.theta (Real.exp T) ≤ C * Real.sqrt (Real.exp T))
-    (hNic : 0 ≤ nicolasDefect (Real.exp T)) (hG : mertensErrorRemainder T < 0)
+    (hG : mertensErrorRemainder T < 0)
     (hTG : |mertensErrorRemainder T| * T ≤ 1 / 280)
     (hψ : |Chebyshev.psi (Real.exp T) - Real.exp T|
       ≤ 2 * T * |mertensErrorRemainder T| * Real.exp T + Real.log (Real.exp T + 1))
     (hbig : (140 + 18 * C ^ 2) ^ 2 ≤ Real.exp T) :
-    -(2 * (8 * Real.log 4 + C) + 2) ≤ scaledMertensRemainder T := by
+    nicolasDefect (Real.exp T)
+      ≤ mertensErrorRemainder T / 2
+        + (8 * Real.log 4 + C + 1) / (Real.sqrt (Real.exp T) * T) := by
   set x := Real.exp T with hxdef
   set a := |mertensErrorRemainder T| with ha
   have hx9 : 9 ≤ x := by have := Real.add_one_le_exp T; linarith
@@ -723,16 +725,31 @@ theorem scaledMertensRemainder_ge_of_nicolas {T C : ℝ} (hT : 8 ≤ T)
   -- conclusion
   have hGa : mertensErrorRemainder T = -a := by rw [ha, abs_of_neg hG]; ring
   have hD : 0 < Real.sqrt x * T := by positivity
-  have hfin : a / 2 ≤ (8 * Real.log 4 + C + 1) / (Real.sqrt x * T) := by
-    have e : (8 * Real.log 4 + C + 1) / (Real.sqrt x * T)
-        = (8 * Real.log 4 + C) / (Real.sqrt x * T) + 1 / (Real.sqrt x * T) := by ring
-    rw [e]
-    linarith only [hnd, hNic, hQ, ha2, hsmall, hGa]
-  have hfin2 : a * (Real.sqrt x * T) ≤ 2 * (8 * Real.log 4 + C) + 2 := by
-    have := (le_div_iff₀ hD).mp hfin
-    linarith
+  have e : (8 * Real.log 4 + C + 1) / (Real.sqrt x * T)
+      = (8 * Real.log 4 + C) / (Real.sqrt x * T) + 1 / (Real.sqrt x * T) := by ring
+  rw [e, hGa]
+  linarith only [hnd, hQ, ha2, hsmall, hGa]
+
+/-- **The Nicolas defect bounds the scaled remainder at a near-zero of `ψ(x) - x`.**  If
+`Nic(x) ≥ 0` at `x = e^T` and `|ψ(x) - x| ≤ 2T|G(T)|x + log(x + 1)`, with `T|G(T)| ≤ 1/280` and
+`x` large, then `s(T) ≥ -(2(8 log 4 + C) + 2)`. -/
+theorem scaledMertensRemainder_ge_of_nicolas {T C : ℝ} (hT : 8 ≤ T)
+    (hθ25 : 2 / 5 * Real.exp T ≤ Chebyshev.theta (Real.exp T))
+    (hC : Chebyshev.psi (Real.exp T) - Chebyshev.theta (Real.exp T) ≤ C * Real.sqrt (Real.exp T))
+    (hNic : 0 ≤ nicolasDefect (Real.exp T)) (hG : mertensErrorRemainder T < 0)
+    (hTG : |mertensErrorRemainder T| * T ≤ 1 / 280)
+    (hψ : |Chebyshev.psi (Real.exp T) - Real.exp T|
+      ≤ 2 * T * |mertensErrorRemainder T| * Real.exp T + Real.log (Real.exp T + 1))
+    (hbig : (140 + 18 * C ^ 2) ^ 2 ≤ Real.exp T) :
+    -(2 * (8 * Real.log 4 + C) + 2) ≤ scaledMertensRemainder T := by
+  have h := nicolasDefect_le_half_remainder hT hθ25 hC hG hTG hψ hbig
+  have hT0 : 0 < T := by linarith
+  have hD : 0 < Real.sqrt (Real.exp T) * T := by positivity
+  have h1 : -(mertensErrorRemainder T / 2)
+      ≤ (8 * Real.log 4 + C + 1) / (Real.sqrt (Real.exp T) * T) := by linarith
+  have h2 := (le_div_iff₀ hD).mp h1
   unfold scaledMertensRemainder
-  rw [hGa, Real.exp_half, ← hxdef]
+  rw [Real.exp_half]
   linarith
 
 /-- **The Nicolas inequality for all large real `x` keeps the scaled remainder bounded below.** -/

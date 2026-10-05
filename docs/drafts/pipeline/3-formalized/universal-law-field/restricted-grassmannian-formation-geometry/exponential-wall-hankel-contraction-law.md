@@ -144,14 +144,14 @@ module.
 
 - [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.SquareIntegrableKernelOperator`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 
-Modules `GaloisForLFunctions.HTGeometry.SquareIntegrableKernelOperator` (67 constants: two-space L²-kernel operators, adjoint kernel, composed kernel, Hilbert–Schmidt with `‖K‖²_HS = ∬|k|²`), `SquareIntegrableKernelTransport` (10: transport along measure-preserving maps), `FredholmDeterminantTracePowers` (24: `det(1 - zT)` via `RHTower.fredholmDetOp`, trace-power comparison, `det(1 - zV*V) = det(1 - zVV*)`, eigenspace isomorphism, second coefficient, zero-free disc), `ExponentialWallBurnolPartner` (40), `ExponentialWallStrictContraction` (30), `ExponentialWallQuantileTransport` (13). All are axiom-audit clean. They reuse the corpus Hilbert–Schmidt / trace / regularized-determinant stack (`opTrace_comp_comm`, `entireDet2`, `detCoeff_two_eq_neg_half_traceSquare`, `fredholmDetOp_eq_zero_iff`, `memSchattenClass_one_comp`, `opTrace_sq_eq_ofReal_hsNormSq`), the corpus wall kernel `routePPrimitiveGammaJuliaStokesWallCubicKernel`, and the corpus value `∬ 64a³b³/(a+b)⁶ = 16/35`. `μ = expMeasure 1`; `dr` is the corpus `halfLineMeasure = volume.restrict (Ici 0)`.
+Modules `GaloisForLFunctions.HTGeometry.SquareIntegrableKernelOperator` (67 constants: two-space L²-kernel operators, adjoint kernel, composed kernel, Hilbert–Schmidt with `‖K‖²_HS = ∬|k|²`), `GaloisForLFunctions.HTGeometry.SquareIntegrableKernelTransport` (10: transport along measure-preserving maps), `GaloisForLFunctions.HTGeometry.FredholmDeterminantTracePowers` (24: `det(1 - zT)` via `RHTower.fredholmDetOp`, trace-power comparison, `det(1 - zV*V) = det(1 - zVV*)`, eigenspace isomorphism, second coefficient, zero-free disc), `GaloisForLFunctions.HTGeometry.ExponentialWallBurnolPartner` (40), `GaloisForLFunctions.HTGeometry.ExponentialWallStrictContraction` (30), `GaloisForLFunctions.HTGeometry.ExponentialWallQuantileTransport` (13). All are axiom-audit clean. They reuse the corpus Hilbert–Schmidt / trace / regularized-determinant stack (`opTrace_comp_comm`, `entireDet2`, `detCoeff_two_eq_neg_half_traceSquare`, `fredholmDetOp_eq_zero_iff`, `memSchattenClass_one_comp`, `opTrace_sq_eq_ofReal_hsNormSq`), the corpus wall kernel `routePPrimitiveGammaJuliaStokesWallCubicKernel`, and the corpus value `∬ 64a³b³/(a+b)⁶ = 16/35`. `μ = expMeasure 1`; `dr` is the corpus `halfLineMeasure = volume.restrict (Ici 0)`.
 
 | Claim | Lean declaration |
 |-|-|
 | (EWHC.1) `μ`, `κ`, `A` | `wallCubicKernel`, `wallKernel`, `wallOperator` |
 | (EWHC.2) `A = A*`, `A ≥ 0`, Schatten-one, `Tr A = 1` | `isSelfAdjoint_wallOperator`, `isPositive_wallOperator`, `memSchattenClass_one_wallOperator`, `opTrace_wallOperator` |
-| (EWHC.3) features `v_x(r)`, synthesis `V` | `burnolFeature`, `burnolKernel`, `burnolSynthesis` |
-| Thm A: `V` Hilbert–Schmidt, `‖V‖₂² = 1` (Gamma integration) | `isHilbertSchmidt_burnolSynthesis`, `hsNormSq_burnolSynthesis`, `burnolKernel_energy`, `integral_burnolFeature_sq`, `integral_pow_mul_exp_neg_mul_Ioi` |
+| (EWHC.3) features `v_x(r)`, synthesis `V` | `burnolFeature`, `HTGeometry.burnolKernel`, `burnolSynthesis` |
+| Thm A: `V` Hilbert–Schmidt, `‖V‖₂² = 1` (Gamma integration) | `isHilbertSchmidt_burnolSynthesis`, `hsNormSq_burnolSynthesis`, `burnolKernel_energy`, `integral_burnolFeature_sq`, `HTGeometry.integral_pow_mul_exp_neg_mul_Ioi` |
 | (EWHC.4) `⟨v_x, v_y⟩ = κ(x,y)`, `A = V*V` | `integral_burnolFeature_mul`, `wallOperator_eq_adjoint_comp` |
 | (EWHC.5) `B = VV*` with kernel `24rs/(1+r+s)⁴` | `partnerOperator`, `partnerKernel_toFun`, `partnerOperator_apply`, `partnerOperator_eq`, `integral_burnolFeature_mul_expMeasure` |
 | Thm A: `B` positive, Schatten-one, `Tr B = 1` | `isPositive_partnerOperator`, `memSchattenClass_one_partnerOperator`, `opTrace_partnerOperator` |
@@ -160,7 +160,7 @@ Modules `GaloisForLFunctions.HTGeometry.SquareIntegrableKernelOperator` (67 cons
 | (EWHC.6) `Tr(A²) = ‖A‖₂² = ∬κ² = 16/35` | `opTrace_wallOperator_sq`, `hsNormSq_wallOperator`, `wallKernel_energy`, `SqIntKernel.hsNormSq_op` |
 | (EWHC.7) `‖A‖ = ‖B‖ ≤ 4/√35 < 1` | `norm_wallOperator_le`, `norm_partnerOperator`, `norm_wallOperator_lt_one`, `norm_partnerOperator_lt_one` |
 | Thm B: `I - A`, `I - B` invertible, Neumann series | `wallOperator_neumann`, `partnerOperator_neumann` |
-| (EWHC.8) `det(I - zA) = det(I - zB) ≠ 0` for `|z| < √35/4` | `detOneSub_wallOperator_ne_zero`, `detOneSub_ne_zero` |
+| (EWHC.8) `det(I - zA) = det(I - zB) ≠ 0` for `∣z∣ < √35/4` | `detOneSub_wallOperator_ne_zero`, `detOneSub_ne_zero` |
 | (EWHC.9) `e₂(A) = (Tr(A)² - Tr(A²))/2 = 19/70` (second Taylor coefficient of `det(1 - zA)`) | `taylorCoeff_detOneSub_wallOperator_two`, `taylorCoeff_detOneSub_two` |
 | §2 exponential quantile transport identifies `A` with the comoving landing `A₀` | `quantileWallKernel`, `quantileWallKernel_toFun_eq` (kernel = corpus `routePPrimitiveGammaJuliaStokesWallQuantileKernel`), `compL2_quantile_cdf_inverse` (unitarity), `quantileWallOperator_eq` (`A₀ = U A U⁻¹`) |
 

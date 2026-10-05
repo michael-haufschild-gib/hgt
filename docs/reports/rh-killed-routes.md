@@ -123,7 +123,7 @@ E: R:TiltedClusterNyquistExclusion; R:TiltedWeilSpectralSeparation; R:TiltedWeil
 Route: carry the whole Xi divisor by a fixed trace-class operator, a fixed almost-periodic strip observation, or bounded transport of a weak-Schatten-one source.
 Kill: every dyadic band `(T,2T]` holds `≥cT log T` zeros while trace class makes reciprocal moduli summable (CANNOT-396); fixed almost-periodic strip observations have only `O(T)` real zeros; weak-Schatten-one bounded transport misses target ideal (CANNOT-09). Literal Mertens-clock prime defect is `S₁` with trace zero, but exact Xi inverse is `S₂\S₁`: no bounded two-sided identification modulo `S₁`. Finite nilpotent blocks are determinant-invisible (no-go-310).
 Survivor [L]: prime defect relative determinant on `ℂ\[0,4]` reads discrete prime-operator eigenvalues outside bulk, not Xi; Xi carrier needs log-squared Ky Fan capacity (MUST-397) and exact `det₂(I+zB)=XiC(z)/XiC(0)` (F179). Open: singular/scale-dependent divisor-faithful bridge.
-E: R:MertensClockDefectTraceClass; R:SourceInverseTraceIdealNoGo; P3:route stc/stc-mertens-trace-class-xi-divisor-barrier; P2:theta/theta-cdf-crossfrequency-rvm-capacity.
+E: R:MertensClockDefectTraceClass; R:SourceInverseTraceIdealNoGo; P3:route stc/stc-mertens-trace-class-xi-divisor-barrier; P3:theta/theta-cdf-crossfrequency-rvm-capacity.
 
 ### KR-APW — Approximate prime weights in Weil positivity
 Route: replace exact prime data by sieve bounds, smoothed measures, capacities or finite prime prefixes.

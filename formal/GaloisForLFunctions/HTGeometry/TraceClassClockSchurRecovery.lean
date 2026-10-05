@@ -165,7 +165,7 @@ section Recovery
 
 variable {K : Type*}
 
-theorem traceNorm_sandwich_le (Y : SchattenOneOperator ℓ²[K]) (A B : ℓ²[K] →L[ℂ] ℓ²[K]) :
+theorem traceNorm_schatten_sandwich_le (Y : SchattenOneOperator ℓ²[K]) (A B : ℓ²[K] →L[ℂ] ℓ²[K]) :
     traceNorm ℓ²[K] (A ∘L (Y : ℓ²[K] →L[ℂ] ℓ²[K]) ∘L B) ≤ ‖Y‖ * ‖A‖ * ‖B‖ := by
   have hYB := summable_approxNumber_comp_right (SchattenOneOperator.summable Y) B
   calc traceNorm ℓ²[K] (A ∘L (Y : ℓ²[K] →L[ℂ] ℓ²[K]) ∘L B)
@@ -187,11 +187,11 @@ def schattenSandwich (Y : SchattenOneOperator ℓ²[K]) :
       (fun a A B => SchattenOneOperator.ext (by simp [ContinuousLinearMap.smul_comp]))
       (fun A B B' => SchattenOneOperator.ext (by simp [ContinuousLinearMap.comp_add]))
       (fun a A B => SchattenOneOperator.ext (by simp)))
-    ‖Y‖ fun A B => traceNorm_sandwich_le Y A B
+    ‖Y‖ fun A B => traceNorm_schatten_sandwich_le Y A B
 
 theorem norm_schattenSandwich_le (Y : SchattenOneOperator ℓ²[K]) (A B : ℓ²[K] →L[ℂ] ℓ²[K]) :
     ‖schattenSandwich Y A B‖ ≤ ‖Y‖ * ‖A‖ * ‖B‖ :=
-  traceNorm_sandwich_le Y A B
+  traceNorm_schatten_sandwich_le Y A B
 
 theorem coe_schattenSandwich (Y : SchattenOneOperator ℓ²[K]) (A B : ℓ²[K] →L[ℂ] ℓ²[K]) :
     ((schattenSandwich Y A B : SchattenOneOperator ℓ²[K]) : ℓ²[K] →L[ℂ] ℓ²[K]) =

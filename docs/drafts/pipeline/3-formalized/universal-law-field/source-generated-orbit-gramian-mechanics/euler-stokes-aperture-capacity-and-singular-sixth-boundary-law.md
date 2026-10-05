@@ -363,11 +363,11 @@ axiom audit `[propext, Classical.choice, Quot.sound]` only.  Labels `I = Nat.Pri
 | (ESAC.10) `C(i,j) = (230/27)√(log p log q)(λλ')^{3/2}/(√(nn')(λ+λ')⁶)` | `capacityEntry`, `schattenOneEntry`, `schattenOneEntry_apply`, `sqrt_eulerStokesCurrent_mul`, `schattenOneEntry_apertureCapacity` |
 | (ESAC.11) `C(i,j) = √(s_i s_j) k₆(λ_i,λ_j)`; `C` = Gram of unit `h_λ` | `capacityFrame`, `norm_sq_capacityFrame`, `capacitySynthesis`, `capacityGram`, `sqrt_xiGammaEulerPrimitiveCubicLogMomentWeight`, `coherence_pow_eq`, `inner_single_capacityGram`, `apertureCapacity_eq_capacityGram` |
 | (ESAC.12) `C ≥ 0`, `Tr C = ‖C‖₁ = ` budget `< 115/108` | `apertureCapacity_traceClass` |
-| (ESAC.13)–(ESAC.14) `c_i = √(log p)λ_i^{3/2}/√n_i`; `S_L⁶(C) = (230/27)|c⟩⟨c|` on the basis; unique bounded solution | `sixthBoundaryVector`, `sixthBoundary_law`, `sixthBoundary_law_entry`, `eq_apertureCapacity_of_sixthBoundary_law` |
+| (ESAC.13)–(ESAC.14) `c_i = √(log p)λ_i^{3/2}/√n_i`; `S_L⁶(C) = (230/27)∣c⟩⟨c∣` on the basis; unique bounded solution | `sixthBoundaryVector`, `sixthBoundary_law`, `sixthBoundary_law_entry`, `eq_apertureCapacity_of_sixthBoundary_law` |
 | (ESAC.15) `Σ_p c_{(p,0)}² = Σ (log p)⁴/p = ∞`; form unbounded on the unit sphere of the core | `sq_sqrt_mul_sqrt_pow_three_div`, `sixthBoundaryVector_sq_depth_zero`, `not_summable_sixthBoundaryVector_sq_depth_zero`, `not_summable_sixthBoundaryVector_sq`, `exists_unit_core_vector_boundaryForm_ge` |
-| Bounded-boundary no-go: no `ℓ²` source `b`, scalar `κ` with `S_L⁶(C) = κ|b⟩⟨b|` | `not_exists_ell2_sixthBoundary_source` |
+| Bounded-boundary no-go: no `ℓ²` source `b`, scalar `κ` with `S_L⁶(C) = κ∣b⟩⟨b∣` | `not_exists_ell2_sixthBoundary_source` |
 | (ESAC.16) `T_cap = Φ ⊗ C` | `thetaCapacityFrame`, `norm_sq_thetaCapacityFrame`, `summable_thetaCapacityWeight`, `tsum_thetaCapacityWeight`, `thetaCapacitySynthesis`, `thetaCapacity`, `inner_single_thetaCapacity` |
-| (ESAC.17) `T_cap ≥ 0`, `𝒮₁`, `Tr = ‖·‖₁ = ` budget `< 115/108`; `S_{I⊗L}⁶(T_cap) = (230/27)Φ⊗|c⟩⟨c|` | `thetaCapacity_traceClass`, `thetaCapacity_sixthBoundary_law` |
+| (ESAC.17) `T_cap ≥ 0`, `𝒮₁`, `Tr = ‖·‖₁ = ` budget `< 115/108`; `S_{I⊗L}⁶(T_cap) = (230/27)Φ⊗∣c⟩⟨c∣` | `thetaCapacity_traceClass`, `thetaCapacity_sixthBoundary_law` |
 | (ESAC.18) `Tr((P_{[m,∞)}⊗I)T_cap) = m_m · ` budget | `eulerHistoryTailProjection`, `adjoint_eulerHistoryTailProjection`, `historyTail_trace_thetaCapacity` |
 
 §8's form-transport theorem is stated on the card as open and is not claimed.

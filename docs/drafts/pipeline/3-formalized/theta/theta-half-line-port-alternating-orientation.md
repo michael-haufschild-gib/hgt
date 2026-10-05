@@ -31,7 +31,7 @@ Re(w H(-w))
 
 For `Re w>0`, the integrand is strictly positive wherever `ν` has positive mass. On the imaginary boundary `w=iγ`, `γ≠0`, it equals `(1-cos γu)ν(u)` and is strictly positive on a subinterval. At `w=0`, `H(0)>0` directly. Consequently `H(-w)` is zero-free on the **closed** right half-plane. If `H(w)+H(-w)=0` anywhere in the plane, then both `H(w)` and `H(-w)` are nonzero: use the preceding result for `Re w≥0`, and apply it to `-w` when `Re w<0`. In particular, the half-theta port does not vanish at any centered Xi zero, including critical-line zeros.
 
-This sharpens the off-line noncancellation used by the [causal Möbius–theta criterion](../../2-fully-proven/theta/causal-mobius-theta-boundary-criterion.md): the boundary case `Re w=0` has the same strict source nonvanishing, not merely the open right half-plane. The broader no-spatial-node fact for actual zero modes is already proved in [`SelbergThetaSourcePhase.mode_ne_zero`](../../../../formal/GaloisForLFunctions/RHTower/SelbergThetaSourcePhase.lean); the new content below is the normal-derivative sign split and its finite-type-gauge consequence.
+This sharpens the off-line noncancellation used by the [causal Möbius–theta criterion](causal-mobius-theta-boundary-criterion.md): the boundary case `Re w=0` has the same strict source nonvanishing, not merely the open right half-plane. The broader no-spatial-node fact for actual zero modes is already proved in [`SelbergThetaSourcePhase.mode_ne_zero`](../../../../formal/GaloisForLFunctions/RHTower/SelbergThetaSourcePhase.lean); the new content below is the normal-derivative sign split and its finite-type-gauge consequence.
 
 ## Exact normal derivative and alternating sign
 

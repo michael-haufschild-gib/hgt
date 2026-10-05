@@ -303,11 +303,11 @@ Modules `GaloisForLFunctions.HTGeometry.CompactObserverTraceBlindness` (13 const
 | Claim | Lean declaration |
 |-|-|
 | (SCIN.1)–(SCIN.2) literal cofinal child kernel `√(π_p π_q) κ(log p, log q)` | `normalizedStokesPrimeKernel_eq`, `normalizedStokesUnit_basis_coord` |
-| (SCIN.3)–(SCIN.4) `T(t) = sign(t) K_{|t|}/J(|t|)` and its prime matrix | `normalizedStokesUnit`, `stokesCubicUnit`, `stokesCubicUnit_basis_coord` |
+| (SCIN.3)–(SCIN.4) `T(t) = sign(t) K_{∣t∣}/J(∣t∣)` and its prime matrix | `normalizedStokesUnit`, `stokesCubicUnit`, `stokesCubicUnit_basis_coord` |
 | Thm SCIN-A (SCIN.5): self-adjoint, `sign(t) T(t) ≥ 0`, Schatten-one, `Tr = sign t`, `‖T(t)‖₁ = 1`, `T(-t) = -T(t)` | `isSelfAdjoint_stokesCubicUnit`, `sign_smul_stokesCubicUnit`, `memSchattenClass_one_stokesCubicUnit`, `opTrace_stokesCubicUnit`, `traceNorm_stokesCubicUnit`, `stokesCubicUnit_neg` |
-| (SCIN.6) diagonal `sign(t) π_{|t|}(p)`; every entry nonzero | `stokesCubicUnit_diag`, `stokesCubicUnit_basis_coord_ne_zero`, `wallCubicKernel_log_pos` |
+| (SCIN.6) diagonal `sign(t) π_{∣t∣}(p)`; every entry nonzero | `stokesCubicUnit_diag`, `stokesCubicUnit_basis_coord_ne_zero`, `wallCubicKernel_log_pos` |
 | (SCIN.7) `K_d/J(d) = V_d* V_d`, `‖V_d‖_HS = 1` | `normalizedStokesUnit_eq_adjoint_comp`, `hsNorm_burnolPrimeSynthesis` |
-| (SCIN.8) `‖V_d - V_e‖²_HS = ∑(√π_d - √π_e)² ≤ ∑|π_d - π_e|` | `hsNormSq_burnolPrimeSynthesis_sub`, `norm_stokesRay_sub_sq`, `hsNormSq_burnolPrimeSynthesis_sub_le` |
+| (SCIN.8) `‖V_d - V_e‖²_HS = ∑(√π_d - √π_e)² ≤ ∑∣π_d - π_e∣` | `hsNormSq_burnolPrimeSynthesis_sub`, `norm_stokesRay_sub_sq`, `hsNormSq_burnolPrimeSynthesis_sub_le` |
 | (SCIN.9) `‖V_d*V_d - V_e*V_e‖₁ ≤ (‖V_d‖₂ + ‖V_e‖₂)‖V_d - V_e‖₂` | `traceNorm_adjoint_comp_self_sub_le`, `traceNorm_normalizedStokesUnit_sub_le` |
 | Thm SCIN-B: trace-norm continuity on each chamber | `tendsto_traceNorm_stokesCubicUnit_sub` |
 | Thm SCIN-C (SCIN.10): `T(t) → 0` strongly as `t → 0` | `tendsto_stokesCubicUnit_apply`, `norm_normalizedStokesUnit_basis_le`, `norm_normalizedStokesUnit_le_one` |

@@ -10,7 +10,9 @@
   `bag-complete-rational-cubic-orthogonality.md`. C28.56y/aa close the weighted
   arithmetic trace and its compact-test critical boundary. C28.56ac proves
   frequency-weighted rational/tested identification and termwise integration.
-  Global Schwartz/growing-profile control and physical transfer remain open. Earlier
+  C28.56ad/ae close actual global derivatives and the full fixed-Schwartz
+  critical boundary. Growing physical profiles, joint damping-height transfer
+  and complete signed near-resonances remain open (C28.56af). Earlier
   conjecture calculations below are retained as the research history.
 
 ## Corpus basis

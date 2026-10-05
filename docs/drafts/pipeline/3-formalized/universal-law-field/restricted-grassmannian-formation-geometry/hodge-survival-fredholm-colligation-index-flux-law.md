@@ -225,7 +225,7 @@ Modules `GaloisForLFunctions.RHTower.PrimeHodgeHistorySurvivalFredholmColligatio
 
 | Claim | Lean declaration |
 |-|-|
-| (PHSF.1) `r_n = m_{n+1}/m_n = (2n+3)/(2n+9)`, `h_n = 6/(2n+9)`, `0 < r_n, h_n < 1` | `PrimeHodgeHistory.survivalRatio_formula`, `PrimeHodgeHistory.exitHazard_formula`, `survivalRatio_pos`, `survivalRatio_lt_one`, `exitHazard_pos`, `exitHazard_le_one` |
+| (PHSF.1) `r_n = m_{n+1}/m_n = (2n+3)/(2n+9)`, `h_n = 6/(2n+9)`, `0 < r_n, h_n < 1` | `PrimeHodgeHistory.survivalRatio_formula`, `PrimeHodgeHistory.exitHazard_formula`, `PrimeHodgeHistory.survivalRatio_pos`, `PrimeHodgeHistory.survivalRatio_lt_one`, `PrimeHodgeHistory.exitHazard_pos`, `PrimeHodgeHistory.exitHazard_le_one` |
 | (PHSF.2) `w_n = m_n h_n` | `PrimeHodgeHistory.w_eq_m_mul_exitHazard` |
 | (PHSF.3) `C e_n = √r_n e_{n+1}`; positive gauge forced by the tails `m_n` | `primeHodgeHistorySurvivalShift`, `primeHodgeHistorySurvivalShift_basis`, `survivalWeight_forced` |
 | (PHSF.4) `Cᴺ e_k = √(m_{k+N}/m_k) e_{k+N}`, `‖Cᴺ e_k‖² = m_{k+N}/m_k`, `Cᴺ → 0` strongly | `survivalShift_pow_basis`, `norm_survivalShift_pow_basis_sq`, `tendsto_survivalShift_pow_apply` |

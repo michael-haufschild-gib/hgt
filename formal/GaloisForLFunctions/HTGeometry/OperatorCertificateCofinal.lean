@@ -406,7 +406,7 @@ theorem tendsto_compactOperator_of_weaklyNull_hilbert {H Y : Type*} [NormedAddCo
   exact hy0 (norm_eq_zero.mp this)
 
 /-- Joint lower bound of the observer `x ↦ (K x, G x)`. -/
-def IsJointlyBoundedBelow {H Y : Type*} [NormedAddCommGroup H] [NormedSpace ℂ H]
+def IsSumJointlyBoundedBelow {H Y : Type*} [NormedAddCommGroup H] [NormedSpace ℂ H]
     [NormedAddCommGroup Y] [NormedSpace ℂ Y] (K : H →L[ℂ] Y) (G : H →L[ℂ] H) : Prop :=
   ∃ c > 0, ∀ x, c * ‖x‖ ≤ ‖K x‖ + ‖G x‖
 
@@ -495,7 +495,7 @@ theorem not_isJointlyBoundedBelow_of_dirMirage {v : Fib d} (hv : v ≠ 0)
     (hL : Tendsto (a.dirEnergy v) atTop atTop)
     (hratio : Tendsto (fun N => ‖matOp (a.A N)⁻¹ v‖ / a.dirEnergy v N) atTop (𝓝 0))
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ Y] (K : FibSeq d →L[ℂ] Y)
-    (hK : IsCompactOperator K) : ¬ IsJointlyBoundedBelow K a.genealogy := by
+    (hK : IsCompactOperator K) : ¬ IsSumJointlyBoundedBelow K a.genealogy := by
   rintro ⟨c, hc, hb⟩
   have hK0 := tendsto_compactOperator_of_weaklyNull_hilbert K hK (a.dirHistory v)
     (fun N => (a.norm_dirHistory hv N).le) (a.dirHistory_weaklyNull hv hL)
@@ -531,7 +531,7 @@ theorem surjective_of_isClosed_range (hcl : IsClosed (Set.range a.genealogy)) :
 `ker G`. -/
 theorem isJointlyBoundedBelow_iff_of_isClosed (hcl : IsClosed (Set.range a.genealogy))
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ Y] (K : FibSeq d →L[ℂ] Y) :
-    IsJointlyBoundedBelow K a.genealogy ↔
+    IsSumJointlyBoundedBelow K a.genealogy ↔
       ∀ x ∈ LinearMap.ker (a.genealogy : FibSeq d →ₗ[ℂ] FibSeq d), K x = 0 → x = 0 := by
   set N := LinearMap.ker (a.genealogy : FibSeq d →ₗ[ℂ] FibSeq d)
   constructor
@@ -619,7 +619,7 @@ theorem isJointlyBoundedBelow_iff_of_isClosed (hcl : IsClosed (Set.range a.genea
 theorem finrank_hiddenLineage_le_rank (hcl : IsClosed (Set.range a.genealogy))
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ Y] (K : FibSeq d →L[ℂ] Y)
     [FiniteDimensional ℂ (LinearMap.range (K : FibSeq d →ₗ[ℂ] Y))]
-    (hK : IsJointlyBoundedBelow K a.genealogy) :
+    (hK : IsSumJointlyBoundedBelow K a.genealogy) :
     Module.finrank ℂ a.hiddenLineage ≤
       Module.finrank ℂ (LinearMap.range (K : FibSeq d →ₗ[ℂ] Y)) := by
   have hinj := (a.isJointlyBoundedBelow_iff_of_isClosed hcl K).mp hK
@@ -641,7 +641,7 @@ theorem finrank_hiddenLineage_le_rank (hcl : IsClosed (Set.range a.genealogy))
 projection onto the hidden-lineage kernel. -/
 theorem exists_minimal_compact_repair (hcl : IsClosed (Set.range a.genealogy)) :
     ∃ K : FibSeq d →L[ℂ] LinearMap.ker (a.genealogy : FibSeq d →ₗ[ℂ] FibSeq d),
-      IsCompactOperator K ∧ IsJointlyBoundedBelow K a.genealogy ∧
+      IsCompactOperator K ∧ IsSumJointlyBoundedBelow K a.genealogy ∧
         Module.finrank ℂ (LinearMap.range
           (K : FibSeq d →ₗ[ℂ] LinearMap.ker (a.genealogy : FibSeq d →ₗ[ℂ] FibSeq d))) =
           Module.finrank ℂ a.hiddenLineage := by

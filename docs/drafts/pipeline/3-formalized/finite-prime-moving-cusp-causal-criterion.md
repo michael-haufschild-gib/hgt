@@ -34,7 +34,7 @@ B_Y_N(N) = B(N) + O_A(N^(-A)),
 B(t) = sum_(n>t) mu(n)/sqrt(n) * k(log(n/t)).                (2)
 ```
 
-Consequently the [causal Möbius--theta criterion](causal-mobius-theta-boundary-criterion.md)
+Consequently the [causal Möbius--theta criterion](theta/causal-mobius-theta-boundary-criterion.md)
 has the entirely finite moving-cusp form
 
 ```text

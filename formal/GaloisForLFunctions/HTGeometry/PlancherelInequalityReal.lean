@@ -23,7 +23,7 @@ noncomputable section
 def angularFourier (g : ℝ → ℂ) (t : ℝ) : ℂ := ∫ s : ℝ, Complex.exp (I * t * s) * g s
 
 /-- The Gaussian kernel `K_ε(u) = √(π/ε) e^{-u²/(4ε)}`. -/
-def gaussKernel (ε u : ℝ) : ℝ := Real.sqrt (π / ε) * Real.exp (-(1 / (4 * ε)) * u ^ 2)
+private def gaussKernel (ε u : ℝ) : ℝ := Real.sqrt (π / ε) * Real.exp (-(1 / (4 * ε)) * u ^ 2)
 
 theorem gaussKernel_nonneg (ε u : ℝ) : 0 ≤ gaussKernel ε u := by unfold gaussKernel; positivity
 

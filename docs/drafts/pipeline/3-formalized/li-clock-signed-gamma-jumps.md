@@ -3,7 +3,7 @@
 - **ID:** LI-CLOCK-SIGNED-GAMMA-JUMPS
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [signed Gamma coupling paper](../2-fully-proven/li-clock-signed-gamma-jump-coupling.md)
+- **Source:** [signed Gamma coupling paper](route%20li/li-clock-signed-gamma-jump-coupling.md)
 - **Statement:** For every p>1, the complete actual signed Gamma jump measure has density exp(-pt)P(t)/t on t>0, genuine full polynomial L1, exact total variation, geometric tail bounds, actual log-Laplace and all-order derivative–moment identities.
 
 ## Goal
@@ -41,6 +41,6 @@ The original signed density comparison, undamped cutoff and RH remain OPEN.
 [Leaf C](li-clock-signed-gamma-coupling.md) now formalizes actual probability
 equalities, integer-time product/order coupling, and exact ordinary-Poisson
 no-go. The failed producer is closed with its N10–N15 positive survivor;
-N16 positive Gamma CP iff RH remains a paper receiver here.
+N16 positive Gamma CP iff RH is formalized in `LiClockThetaSignedGammaPositiveJumpCriterion`.
 
 - 2026-10-01 — All19 signed-Gamma exports locally finalized and integrated.

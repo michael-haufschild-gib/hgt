@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.LiEvenCrossActualClockPrimitive
 import GaloisForLFunctions.RHTower.LiEvenCrossActualClockTopFrequency
 import GaloisForLFunctions.RHTower.XiReciprocalSquareSecondMomentRadius
+import GaloisForLFunctions.RHTower.XiDivisorDiagonalTraceClass
 
 /-!
 # The maximal imaginary reciprocal frequency of the actual Xi clock
@@ -151,12 +152,6 @@ theorem liEvenCrossActualClockMaxGrowthRate_lt_of_lt {p : ℝ} (hp : 1 / 300 < p
   liEvenCrossActualClockMaxGrowthRate_lt.trans hp
 
 /-! ## The sharpened quadratic envelope -/
-
-theorem summable_norm_inv_xiSpectralPoint_sq :
-    Summable fun q : XiZeroCopy => ‖(xiSpectralPoint q)⁻¹‖ ^ 2 := by
-  have h := summable_xiShiftAbsoluteMass 0
-  refine h.congr fun q => ?_
-  simp [xiZeroCopyReciprocalSquare, norm_pow]
 
 theorem tsum_norm_inv_xiSpectralPoint_sq :
     ∑' q : XiZeroCopy, ‖(xiSpectralPoint q)⁻¹‖ ^ 2 = xiShiftAbsoluteMass 0 := by

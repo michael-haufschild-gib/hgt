@@ -749,7 +749,7 @@ elements `K + c1`, whose scalar part is unique (`unitization_scalar_unique`). A 
 
 | Claim | Lean declaration |
 |-|-|
-| (SC.1)–(SC.3) carrier, `L e_j = 2^{-j} e_j`, `Ω`, `‖Ω‖ = 1`, `P = |Ω⟩⟨Ω|` a rank-one projection with full support | `sourceLabelWeight`, `sourceLabelWeight_injective`, `sourceLabel`, `fusionCoeff`, `hasSum_norm_fusionCoeff_sq`, `fusionVector`, `norm_fusionVector`, `fusionCoeff_ne_zero`, `fusionProjection`, `fusionProjection_isProjection` |
+| (SC.1)–(SC.3) carrier, `L e_j = 2^{-j} e_j`, `Ω`, `‖Ω‖ = 1`, `P = ∣Ω⟩⟨Ω∣` a rank-one projection with full support | `sourceLabelWeight`, `sourceLabelWeight_injective`, `sourceLabel`, `fusionCoeff`, `hasSum_norm_fusionCoeff_sq`, `fusionVector`, `norm_fusionVector`, `fusionCoeff_ne_zero`, `fusionProjection`, `fusionProjection_isProjection` |
 | (SC.3a)–(SC.3b) source-complete packets | `IsSourceComplete` |
 | Theorem 3.1 (SC.4)–(SC.6) scalar common commutant; trace-class exclusion | `isSourceComplete_diag_rankOne`, `isSourceComplete_sourceLabel_fusion`, `eq_zero_of_memSchattenClass_commute`, `eq_zero_of_isHilbertSchmidt_smul_id` |
 | Theorem 3.2 (SC.7)–(SC.10) asymptotic source completeness forces compact-observer extinction | `tendsto_opTrace_comp_sourceLabel_fusion`, `IsAsymptoticallySourceInvariant`, `IsAsymptoticallySourceInvariant.tendsto_opTrace_comp` |
@@ -765,7 +765,7 @@ elements `K + c1`, whose scalar part is unique (`unitization_scalar_unique`). A 
 | Theorem 7.1 (SC.34)–(SC.38) isometric common recovery is information-neutral | `recovery_invariants`, `cornerConj_comp`, `cornerConj_commutator`, `cornerConj_isPositive`, `IsAsymptoticallySourceInvariant.recovery`, `IsAsymptoticallySourceInvariant.recovery_extinction`, `properCostEnergy_recovery` |
 | Corollary 7.2 (SC.39) unitary (functional-equation) conjugation is neutral | `recovery_invariants`, `properCostEnergy_conj`, `exists_hilbertBasis_map`, `coronaCharacter_invariant` |
 | Theorem 8.1 (SC.40)–(SC.42) compact Gram matrices are PSD and collapse: entries, every matrix norm, principal minors, eigenvalues | `reporterGramMatrix`, `dotProduct_reporterGramMatrix`, `reporterGramMatrix_posSemidef`, `IsAsymptoticallySourceInvariant.tendsto_reporterGramMatrix`, `IsAsymptoticallySourceInvariant.tendsto_norm_reporterGramMatrix`, `IsAsymptoticallySourceInvariant.tendsto_det_reporterGramMatrix`, `IsAsymptoticallySourceInvariant.tendsto_eigenvalues_reporterGramMatrix` |
-| §9.1 (SC.43)–(SC.44) `T_n = |e_n⟩⟨e_n|`: all hypotheses, `tr = ‖·‖₁ = 1`, energy `n + 1 → ∞` | `coordinate_countermodel`, `fusionHeatSource`, `tendsto_fusionCoeff`, `lpCoordProjection_comm_lpDiag`, `opTrace_lpCoordProjection` |
+| §9.1 (SC.43)–(SC.44) `T_n = ∣e_n⟩⟨e_n∣`: all hypotheses, `tr = ‖·‖₁ = 1`, energy `n + 1 → ∞` | `coordinate_countermodel`, `fusionHeatSource`, `tendsto_fusionCoeff`, `lpCoordProjection_comm_lpDiag`, `opTrace_lpCoordProjection` |
 | §9.2 finite dimension is load-bearing | `finiteDimension_countermodel`, `memSchattenClass_one_of_finiteDimensional` |
 | §9.3 full support is load-bearing | `fullSupport_countermodel` |
 | §9.4 label simplicity is load-bearing | `simplicity_countermodel`, `rankOne_comp_rankOne_of_inner_eq_zero` |

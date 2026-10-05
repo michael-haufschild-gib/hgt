@@ -868,12 +868,12 @@ assumed only where it is load-bearing. The increasing order of `λ_j` and of `γ
 |-|-|
 | (OG.1)–(OG.2) the chain `(L,v) ↦ S_t ↦ G ↦ C` and the conservation law | `heatSemigroup`, `orbitGramianOf`, `orbitGramian`, `orbitCost`, `lyapunov_orbitGramian` |
 | (OG.3)–(OG.6) source pair, `S_t`, `P`, compact reporter `D = (1+L)^{-1}` with simple eigenvalues; `D x = ∫_0^∞ e^{-t} S_t x dt` | `HeatSource`, `HeatSource.Simple`, `HeatSource.Proper`, `HeatSource.FullSupport`, `CyclicHeatSource`, `heatFactor`, `heatSemigroup_apply`, `continuous_heatSemigroup_apply`, `heatProjection`, `heatReporter`, `heatReporter_apply`, `isCompactOperator_heatReporter`, `reporterEigenvalue_injective`, `heatReporter_eq_integral` |
-| (OG.7) `G = ∫_0^∞ |S_tv⟩⟨S_tv| dt` as a Schatten-one Bochner integral | `orbitIntegrand`, `continuous_orbitIntegrand`, `integrableOn_orbitIntegrand`, `orbitGramianS1`, `orbitGramianS1_eq_integral`, `schattenOnePairing`, `schattenOnePairing_orbitGramianS1`, `orbitGramianS1_eq` |
-| (OG.8) `G ≥ 0`, `𝒮₁`, `tr G = ∫‖S_tv‖² = Σ|v_j|²/(2λ_j) ≤ ‖v‖²/(2λ₀)` | `orbitGramian_traceClass`, `integral_norm_heatOrbit_sq`, `tsum_le_gap`, `norm_heatOrbit_sq`, `integral_exp_neg_mul` |
+| (OG.7) `G = ∫_0^∞ ∣S_tv⟩⟨S_tv∣ dt` as a Schatten-one Bochner integral | `orbitIntegrand`, `continuous_orbitIntegrand`, `integrableOn_orbitIntegrand`, `orbitGramianS1`, `orbitGramianS1_eq_integral`, `schattenOnePairing`, `schattenOnePairing_orbitGramianS1`, `orbitGramianS1_eq` |
+| (OG.8) `G ≥ 0`, `𝒮₁`, `tr G = ∫‖S_tv‖² = Σ∣v_j∣²/(2λ_j) ≤ ‖v‖²/(2λ₀)` | `orbitGramian_traceClass`, `integral_norm_heatOrbit_sq`, `tsum_le_gap`, `norm_heatOrbit_sq`, `integral_exp_neg_mul` |
 | (OG.9)–(OG.10) kernel `v_i v̄_j/(λ_i+λ_j)`, weak Lyapunov law, uniqueness | `heatFrame`, `inner_heatFrame`, `heatAnalysis`, `heatReachability`, `inner_single_orbitGramian`, `lyapunov_orbitGramian`, `eq_orbitGramian_of_lyapunov` |
 | (OG.11) complete heat observation, `G` injective | `eq_zero_of_integral_heatObservation_eq_zero`, `HeatSource.orbitGramian_injective`, `eq_zero_of_tsum_exp_eq_zero`, `inner_heatOrbit_eq_tsum` |
 | (OG.12) eigenbasis `(γ_k, f_k)`, `0 < γ_k ≤ ‖G‖`, `γ_k → 0` | `orbitEigenbasis`, `orbitEigenvalue`, `orbitGramian_orbitEigenbasis`, `orbitEigenvalue_pos`, `orbitEigenvalue_le`, `finite_orbitEigenvalue_ge`, `tendsto_orbitEigenvalue`, `orbitGramian_eq_basisDiag` |
-| (OG.13) `C = G^{-1}` self-adjoint, positive, compact resolvent; `q_G = Σ|⟨f_k,x⟩|²/γ_k = ‖G^{-1/2}x‖²` (`∞` off `Ran G^{1/2}`), `= ⟨Cx,x⟩` on `Dom C`, closed (lsc); `q_G` = conjugate form | `gramInverse`, `isSelfAdjoint_gramInverse`, `re_inner_gramInverse_nonneg`, `dense_range_of_isSelfAdjoint`, `orbitCost`, `isSelfAdjoint_orbitCost`, `re_inner_orbitCost_nonneg`, `orbitCost_compactResolvent`, `orbitRoot`, `orbitRoot_comp_self`, `isSelfAdjoint_orbitRoot`, `orbitCostForm`, `orbitCostForm_orbitRoot`, `orbitCostForm_lt_top_iff`, `orbitCostForm_eq_inner_orbitCost`, `lowerSemicontinuous_orbitCostForm`, `legendreForm`, `orbitCostForm_eq_legendreForm` |
+| (OG.13) `C = G^{-1}` self-adjoint, positive, compact resolvent; `q_G = Σ∣⟨f_k,x⟩∣²/γ_k = ‖G^{-1/2}x‖²` (`∞` off `Ran G^{1/2}`), `= ⟨Cx,x⟩` on `Dom C`, closed (lsc); `q_G` = conjugate form | `gramInverse`, `isSelfAdjoint_gramInverse`, `re_inner_gramInverse_nonneg`, `dense_range_of_isSelfAdjoint`, `orbitCost`, `isSelfAdjoint_orbitCost`, `re_inner_orbitCost_nonneg`, `orbitCost_compactResolvent`, `orbitRoot`, `orbitRoot_comp_self`, `isSelfAdjoint_orbitRoot`, `orbitCostForm`, `orbitCostForm_orbitRoot`, `orbitCostForm_lt_top_iff`, `orbitCostForm_eq_inner_orbitCost`, `lowerSemicontinuous_orbitCostForm`, `legendreForm`, `orbitCostForm_eq_legendreForm` |
 | (OG.14) compact sublevels | `isCompact_orbitCostForm_sublevel`, `isCompact_image_closedBall_of_isCompactOperator` |
 | (OG.15) `W`, `WW^* = G`, `Ran W = Ran G^{1/2}` | `heatReachability`, `heatReachability_comp_heatAnalysis`, `range_heatReachability` |
 | (OG.16) `q_G(x) = min{‖u‖² : Wu = x}` | `orbitCostForm_eq_iInf`, `exists_minimalControl`, `orbitCostForm_heatReachability_le` |
@@ -887,7 +887,7 @@ assumed only where it is load-bearing. The increasing order of `λ_j` and of `γ
 | (OG.22f)–(OG.22g) window packet: `x_T → v`, `q_G(x_T) ≤ 1/T`, `q_G(v) = ∞`, `q_G(x_T) → ∞` | `windowPacket`, `windowPacket_apply`, `windowFactor`, `tendsto_windowFactor`, `tendsto_windowPacket`, `orbitCostForm_windowPacket_le`, `orbitCostForm_v`, `tendsto_orbitCostForm_windowPacket` |
 | (OG.22h)–(OG.22i) positive aggregation, `E_G(Σw_rA_r) = Σw_rE_G(A_r)`; one infinite component forces `∞` | `orbitDefectCost_tsum`, `orbitDefectCost_tsum_eq_top` |
 | (OG.23)–(OG.24) rank-one trace norm, sharp rank-one estimate | `norm_positiveRankOneSchattenOne`, `norm_positiveRankOneSchattenOne_sub_le`, `norm_heatOrbit_sq_le` |
-| (OG.25)–(OG.26) `⟨x,Gx⟩ = ∫|⟨x,S_tv⟩|²`; exponential-sum form | `inner_orbitGramian_self`, `inner_heatOrbit_eq_tsum` |
+| (OG.25)–(OG.26) `⟨x,Gx⟩ = ∫∣⟨x,S_tv⟩∣²`; exponential-sum form | `inner_orbitGramian_self`, `inner_heatOrbit_eq_tsum` |
 | (OG.27)–(OG.28) resolvent eigenvalues `γ_k/(1+γ_k)`; spectral tail `≤ εM` | `orbitCostResolvent`, `orbitCostResolvent_orbitEigenbasis`, `tail_le_of_orbitCostForm_le` |
 | (OG.29) `(W^*x)(t) = ⟨S_tv, x⟩` a.e. | `heatAnalysis_ae`, `heatFrame_ae`, `heatReachability_apply` |
 | (OG.30) commutant matrix entries | `eq_smul_one_of_commute` |
@@ -899,7 +899,7 @@ assumed only where it is load-bearing. The increasing order of `λ_j` and of `γ
 | (OG.35g) `x_T = W(T^{-1}1_{(0,T]})`, `‖T^{-1}1_{(0,T]}‖² = 1/T` | `windowControl`, `norm_windowControl_sq`, `windowPacket_eq` |
 | (OG.35h)–(OG.35i) `v ∉ Ran W` | `v_notMem_range_heatReachability` |
 | (OG.35j) finite partial sums of the aggregate | `orbitDefectCost_tsum` |
-| (OG.36)–(OG.37) coordinate projections: `tr R_n = 1`, `[R_n,D] = 0`, `‖[R_n,P]‖₁ ≤ 2|v_n|‖v‖`, `E_G(R_n) → ∞` | `lpCoordProjection`, `traceNorm_lpCoordProjection`, `lpCoordProjection_commutator_heatReporter`, `lpCoordProjection_commutator_heatProjection`, `traceNorm_lpCoordProjection_commutator_le`, `tendsto_orbitDefectCost_lpCoordProjection` |
+| (OG.36)–(OG.37) coordinate projections: `tr R_n = 1`, `[R_n,D] = 0`, `‖[R_n,P]‖₁ ≤ 2∣v_n∣‖v‖`, `E_G(R_n) → ∞` | `lpCoordProjection`, `traceNorm_lpCoordProjection`, `lpCoordProjection_commutator_heatReporter`, `lpCoordProjection_commutator_heatProjection`, `traceNorm_lpCoordProjection_commutator_le`, `tendsto_orbitDefectCost_lpCoordProjection` |
 | §5.2 full support load-bearing | `orbitGramian_single_of_v_eq_zero`, `fullSupport_load_bearing` |
 | §5.3 simple spectrum load-bearing | `degenerateDirection`, `simple_load_bearing` |
 | §5.4 spectral gap load-bearing | `gap_load_bearing` |

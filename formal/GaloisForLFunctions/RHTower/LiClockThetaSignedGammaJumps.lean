@@ -53,6 +53,30 @@ def liClockThetaSignedGammaTail (p : ℝ) (J : ℕ) (t : ℝ) : ℝ :=
   ∑' r : ℕ, liClockThetaLogJumpCoefficient p (J+r) *
     liClockThetaGammaRowDensity p (J+r) t
 
+/-- The wide damping threshold `1/√150`: every admission below holds for `p > 1/√150`. -/
+def liClockThetaWideThreshold : ℝ := Real.sqrt (1 / 150)
+
+theorem liClockThetaWideThreshold_pos : 0 < liClockThetaWideThreshold :=
+  Real.sqrt_pos.2 (by norm_num)
+
+theorem liClockThetaWideThreshold_sq : liClockThetaWideThreshold ^ 2 = 1 / 150 :=
+  Real.sq_sqrt (by norm_num)
+
+theorem one_lt_mul_sq_of_wideThreshold_lt {p : ℝ} (hp : liClockThetaWideThreshold < p) :
+    1 < 150 * p ^ 2 := by
+  have h := pow_lt_pow_left₀ hp liClockThetaWideThreshold_pos.le two_ne_zero
+  rw [liClockThetaWideThreshold_sq] at h
+  linarith
+
+theorem wideThreshold_lt_iff {p : ℝ} (hp : 0 < p) :
+    liClockThetaWideThreshold < p ↔ 1 < 150 * p ^ 2 := by
+  refine ⟨one_lt_mul_sq_of_wideThreshold_lt, fun h => ?_⟩
+  have h2 : liClockThetaWideThreshold ^ 2 < p ^ 2 := by rw [liClockThetaWideThreshold_sq]; linarith
+  exact (pow_lt_pow_iff_left₀ liClockThetaWideThreshold_pos.le hp.le two_ne_zero).1 h2
+
+theorem liClockThetaWideThreshold_lt_one : liClockThetaWideThreshold < 1 :=
+  (wideThreshold_lt_iff one_pos).2 (by norm_num)
+
 end
 end RHTower
 
@@ -84,7 +108,8 @@ private theorem sgj_abs_succ {p : ℝ} (hp : 0 < p) (n : ℕ) :
   simp [liClockThetaLogJumpCoefficient, abs_div, abs_mul, abs_pow, abs_of_pos hp,
     abs_of_nonneg (show (0 : ℝ) ≤ (n : ℝ)+1 by positivity)]
 
-private theorem sgj_geometric_envelope {p : ℝ} (hp : 0 < p) (n : ℕ) :
+/-- `|ℓ_{n+1}(p)| ≤ A/(2(n+1)p²) (1/(150p²))^n`. -/
+theorem abs_liClockThetaLogJumpCoefficient_succ_le {p : ℝ} (hp : 0 < p) (n : ℕ) :
     |liClockThetaLogJumpCoefficient p (n+1)| ≤
       xiShiftAbsoluteMass 0 / (2*((n+1 : ℕ) : ℝ)*p^2) * (1/(150*p^2))^n := by
   have hM : |normalizedPrimeArchMoment n| ≤ (1/150 : ℝ)^n * xiShiftAbsoluteMass 0 := by
@@ -102,22 +127,22 @@ private theorem sgj_geometric_envelope {p : ℝ} (hp : 0 < p) (n : ℕ) :
       simp only [div_pow, mul_pow, one_pow]
       field_simp
 
-private theorem sgj_geometric_ratio {p : ℝ} (hp : 1 < p) :
+private theorem sgj_geometric_ratio {p : ℝ} (hp : liClockThetaWideThreshold < p) :
     0 ≤ 1/(150*p^2) ∧ 1/(150*p^2) < 1 := by
-  have hp0 : 0 < p := by linarith
+  have hp0 : 0 < p := liClockThetaWideThreshold_pos.trans hp
   constructor
   · positivity
   · apply (div_lt_one (by positivity : 0 < 150*p^2)).mpr
-    nlinarith [sq_nonneg (p-1)]
+    exact one_lt_mul_sq_of_wideThreshold_lt hp
 
-private theorem sgj_tail_majorant {p : ℝ} (hp : 1 < p) {J : ℕ} (hJ : 1 ≤ J)
+private theorem sgj_tail_majorant {p : ℝ} (hp : liClockThetaWideThreshold < p) {J : ℕ} (hJ : 1 ≤ J)
     (r : ℕ) :
     |liClockThetaLogJumpCoefficient p (J+r)| ≤
       (xiShiftAbsoluteMass 0 / (2*(J : ℝ)*p^2) *
         (1/(150*p^2))^(J-1)) * (1/(150*p^2))^r := by
-  have hp0 : 0 < p := by linarith
+  have hp0 : 0 < p := liClockThetaWideThreshold_pos.trans hp
   have hJ0 : (0 : ℝ) < J := by exact_mod_cast (by omega : 0 < J)
-  have he := sgj_geometric_envelope hp0 (J+r-1)
+  have he := abs_liClockThetaLogJumpCoefficient_succ_le hp0 (J+r-1)
   rw [show J+r-1+1 = J+r by omega] at he
   have hden : xiShiftAbsoluteMass 0 / (2*((J+r : ℕ) : ℝ)*p^2) ≤
       xiShiftAbsoluteMass 0 / (2*(J : ℝ)*p^2) := by
@@ -136,7 +161,7 @@ private theorem sgj_tail_majorant {p : ℝ} (hp : 1 < p) {J : ℕ} (hJ : 1 ≤ J
       rw [show J+r-1 = J-1+r by omega, pow_add]
       ring
 
-private theorem sgj_tail_summable {p : ℝ} (hp : 1 < p) {J : ℕ} (hJ : 1 ≤ J) :
+private theorem sgj_tail_summable {p : ℝ} (hp : liClockThetaWideThreshold < p) {J : ℕ} (hJ : 1 ≤ J) :
     Summable (fun r : ℕ => |liClockThetaLogJumpCoefficient p (J+r)|) := by
   have hq := sgj_geometric_ratio hp
   exact Summable.of_nonneg_of_le (fun r => abs_nonneg _)
@@ -144,12 +169,12 @@ private theorem sgj_tail_summable {p : ℝ} (hp : 1 < p) {J : ℕ} (hJ : 1 ≤ J
     ((summable_geometric_of_lt_one hq.1 hq.2).mul_left
       (xiShiftAbsoluteMass 0 / (2*(J : ℝ)*p^2) * (1/(150*p^2))^(J-1)))
 
-private theorem sgj_abs_summable {p : ℝ} (hp : 1 < p) :
+private theorem sgj_abs_summable {p : ℝ} (hp : liClockThetaWideThreshold < p) :
     Summable (fun j : ℕ => |liClockThetaLogJumpCoefficient p j|) := by
   apply (summable_nat_add_iff 1).mp
   simpa only [Nat.add_comm] using sgj_tail_summable hp (J := 1) (by omega)
 
-private theorem sgj_tail_bound {p : ℝ} (hp : 1 < p) {J : ℕ} (hJ : 1 ≤ J) :
+private theorem sgj_tail_bound {p : ℝ} (hp : liClockThetaWideThreshold < p) {J : ℕ} (hJ : 1 ≤ J) :
     (∑' r : ℕ, |liClockThetaLogJumpCoefficient p (J+r)|) ≤
       xiShiftAbsoluteMass 0 / (2*(J : ℝ)*p^2) *
         (1/(150*p^2))^(J-1) / (1-1/(150*p^2)) := by
@@ -169,41 +194,44 @@ private theorem sgj_tail_bound {p : ℝ} (hp : 1 < p) {J : ℕ} (hJ : 1 ≤ J) :
 
 
 
-private theorem sgj_part_nonneg (p : ℝ) (positive : Bool) (j : ℕ) :
+/-- The jump parts are nonnegative. -/
+theorem liClockThetaJumpPart_nonneg (p : ℝ) (positive : Bool) (j : ℕ) :
     0 ≤ liClockThetaJumpPart p positive j := by
   cases positive <;> simp [liClockThetaJumpPart]
 
-private theorem sgj_part_le_abs (p : ℝ) (positive : Bool) (j : ℕ) :
+/-- Each jump part is at most the absolute jump coefficient. -/
+theorem liClockThetaJumpPart_le_abs (p : ℝ) (positive : Bool) (j : ℕ) :
     liClockThetaJumpPart p positive j ≤ |liClockThetaLogJumpCoefficient p j| := by
   cases positive
   · exact max_le (neg_le_abs _) (abs_nonneg _)
   · exact max_le (le_abs_self _) (abs_nonneg _)
 
-private theorem sgj_parts_sub (p : ℝ) (j : ℕ) :
+/-- The jump parts split the signed coefficient: `ℓ⁺ - ℓ⁻ = ℓ`. -/
+theorem liClockThetaJumpPart_sub (p : ℝ) (j : ℕ) :
     liClockThetaJumpPart p true j - liClockThetaJumpPart p false j = liClockThetaLogJumpCoefficient p j := by
   by_cases h : 0 ≤ liClockThetaLogJumpCoefficient p j
   · simp [liClockThetaJumpPart, max_eq_left h, max_eq_right (neg_nonpos.mpr h)]
   · have hle : liClockThetaLogJumpCoefficient p j ≤ 0 := (lt_of_not_ge h).le
     simp [liClockThetaJumpPart, max_eq_right hle, max_eq_left (neg_nonneg.mpr hle)]
 
-private theorem sgj_part_summable {p : ℝ} (hp : 1 < p) (positive : Bool) :
+private theorem sgj_part_summable {p : ℝ} (hp : liClockThetaWideThreshold < p) (positive : Bool) :
     Summable (liClockThetaJumpPart p positive) :=
-  Summable.of_nonneg_of_le (sgj_part_nonneg p positive) (sgj_part_le_abs p positive)
+  Summable.of_nonneg_of_le (liClockThetaJumpPart_nonneg p positive) (liClockThetaJumpPart_le_abs p positive)
     (sgj_abs_summable hp)
 
-private theorem sgj_mass_pos {p : ℝ} (hp : 1 < p) (positive : Bool) :
+private theorem sgj_mass_pos {p : ℝ} (hp : liClockThetaWideThreshold < p) (positive : Bool) :
     0 < liClockThetaJumpMass p positive := by
-  have hc := sgj_first_two (show 0 < p by linarith)
+  have hc := sgj_first_two (liClockThetaWideThreshold_pos.trans hp)
   cases positive
-  · apply (sgj_part_summable hp false).tsum_pos (sgj_part_nonneg p false) 2
+  · apply (sgj_part_summable hp false).tsum_pos (liClockThetaJumpPart_nonneg p false) 2
     exact lt_of_lt_of_le (neg_pos.mpr hc.2.2.2) (le_max_left _ _)
-  · apply (sgj_part_summable hp true).tsum_pos (sgj_part_nonneg p true) 1
+  · apply (sgj_part_summable hp true).tsum_pos (liClockThetaJumpPart_nonneg p true) 1
     exact lt_of_lt_of_le hc.2.2.1 (le_max_left _ _)
 
-private theorem sgj_mass_sub {p : ℝ} (hp : 1 < p) :
+private theorem sgj_mass_sub {p : ℝ} (hp : liClockThetaWideThreshold < p) :
     liClockThetaJumpMass p true - liClockThetaJumpMass p false = ∑' j : ℕ, liClockThetaLogJumpCoefficient p j := by
   rw [liClockThetaJumpMass, liClockThetaJumpMass, ← (sgj_part_summable hp true).tsum_sub (sgj_part_summable hp false)]
-  exact tsum_congr (sgj_parts_sub p)
+  exact tsum_congr (liClockThetaJumpPart_sub p)
 
 end
 end RHTower
@@ -211,11 +239,11 @@ end RHTower
 namespace RHTower
 noncomputable section
 
-private theorem sgj_weighted_pow_summable {p : ℝ} (hp : 1 < p) (n : ℕ) :
+private theorem sgj_weighted_pow_summable {p : ℝ} (hp : liClockThetaWideThreshold < p) (n : ℕ) :
     Summable (fun j : ℕ => |liClockThetaLogJumpCoefficient p j| * (j : ℝ)^n) := by
   let q : ℝ := 1/(150*p^2)
   let C : ℝ := xiShiftAbsoluteMass 0 / (2*p^2)
-  have hp0 : 0 < p := by linarith
+  have hp0 : 0 < p := liClockThetaWideThreshold_pos.trans hp
   have hq : 0 < q := by dsimp [q]; positivity
   have hqn : ‖q‖ < 1 := by
     rw [Real.norm_eq_abs, abs_of_pos hq]
@@ -238,7 +266,7 @@ private theorem sgj_weighted_pow_summable {p : ℝ} (hp : 1 < p) (n : ℕ) :
       mul_le_mul_of_nonneg_right (he j) (by positivity)
     _ = C * ((((j+1 : ℕ) : ℝ)^n)*q^j) := by ring
 
-private theorem sgj_weighted_succ_pow_summable {p : ℝ} (hp : 1 < p) (n : ℕ) :
+private theorem sgj_weighted_succ_pow_summable {p : ℝ} (hp : liClockThetaWideThreshold < p) (n : ℕ) :
     Summable (fun j : ℕ => |liClockThetaLogJumpCoefficient p j| * (((j+1 : ℕ) : ℝ)^n)) := by
   refine Summable.of_nonneg_of_le (fun j => by positivity) (fun j => ?_)
     ((sgj_weighted_pow_summable hp n).mul_left ((2 : ℝ)^n))
@@ -256,7 +284,7 @@ private theorem sgj_weighted_succ_pow_summable {p : ℝ} (hp : 1 < p) (n : ℕ) 
       mul_le_mul_of_nonneg_left hpow (abs_nonneg _)
     _ = (2 : ℝ)^n * (|liClockThetaLogJumpCoefficient p j| * (j : ℝ)^n) := by ring
 
-private theorem sgj_weighted_choose_summable {p : ℝ} (hp : 1 < p) (n : ℕ) :
+private theorem sgj_weighted_choose_summable {p : ℝ} (hp : liClockThetaWideThreshold < p) (n : ℕ) :
     Summable (fun j : ℕ => |liClockThetaLogJumpCoefficient p j| * (Nat.choose (2*j+n-1) n : ℝ)) := by
   refine Summable.of_nonneg_of_le (fun j => by positivity) (fun j => ?_)
     ((sgj_weighted_succ_pow_summable hp n).mul_left (((n+2 : ℕ) : ℝ)^n))
@@ -433,11 +461,11 @@ private theorem sge_sum (p : ℝ) :
   rw [sgLog_sum_eq_tsum, Complex.ofReal_tsum]
   exact tsum_congr (sge_coefficient p)
 
-private theorem sge_exp_source {p : ℝ} (hp : 1 < p) :
+private theorem sge_exp_source {p : ℝ} (hp : liClockThetaWideThreshold < p) :
     Real.exp (∑' j : ℕ, liClockThetaLogJumpCoefficient p j) =
       (XiC (-Complex.I*(p : ℂ)⁻¹) / XiC 0).re := by
-  have hp0 : 0 < p := by linarith
-  have hp2 : 1 < p^2 := by nlinarith
+  have hp0 : 0 < p := liClockThetaWideThreshold_pos.trans hp
+  have hp2 : 1 < 150 * p ^ 2 := one_lt_mul_sq_of_wideThreshold_lt hp
   have hz : ‖((p : ℂ)⁻¹)^2‖ < 150 := by
     rw [norm_pow, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hp0,
       inv_pow]
@@ -456,17 +484,17 @@ end RHTower
 namespace RHTower
 noncomputable section
 
-private theorem sge_sum_eq_reciprocalLog {p : ℝ} (hp : 1 < p) :
+private theorem sge_sum_eq_reciprocalLog {p : ℝ} (hp : liClockThetaWideThreshold < p) :
     (∑' j : ℕ, liClockThetaLogJumpCoefficient p j) = liClockThetaReciprocalLog p := by
   have he : Real.exp (∑' j : ℕ, liClockThetaLogJumpCoefficient p j) =
       liClockThetaGammaNormalizer p := sge_exp_source hp
   rw [liClockThetaReciprocalLog, ← he, Real.log_exp]
 
-private theorem sge_hasSum_reciprocalLog {p : ℝ} (hp : 1 < p) :
+private theorem sge_hasSum_reciprocalLog {p : ℝ} (hp : liClockThetaWideThreshold < p) :
     HasSum (liClockThetaLogJumpCoefficient p) (liClockThetaReciprocalLog p) := by
   have hs : Summable (liClockThetaLogJumpCoefficient p) := by
     have h := (sgj_part_summable hp true).sub (sgj_part_summable hp false)
-    exact h.congr (sgj_parts_sub p)
+    exact h.congr (liClockThetaJumpPart_sub p)
   simpa only [sge_sum_eq_reciprocalLog hp] using hs.hasSum
 
 end
@@ -588,7 +616,7 @@ theorem liClockThetaLogJumpCoefficient_first_two {p : ℝ} (hp : 0 < p) :
   0 < liClockThetaLogJumpCoefficient p 1 ∧ liClockThetaLogJumpCoefficient p 2 < 0 :=
   sgj_first_two hp
 
-theorem liClockThetaLogJumpCoefficient_admission {p : ℝ} (hp : 1 < p) :
+theorem liClockThetaLogJumpCoefficient_admission_wide {p : ℝ} (hp : liClockThetaWideThreshold < p) :
   Summable (fun j : ℕ => |liClockThetaLogJumpCoefficient p j|) ∧
   HasSum (liClockThetaLogJumpCoefficient p) (liClockThetaReciprocalLog p) ∧
   (∀ J : ℕ, 1 ≤ J →
@@ -622,7 +650,7 @@ private theorem sgb_weighted_row_succ {p t : ℝ} (hp : 0 < p) (ht : 0 < t) (n :
   push_cast
   field_simp [hp.ne', ht.ne']
 
-private theorem sgb_signed_density_hasSum {p : ℝ} (hp : 1 < p) (t : ℝ) :
+private theorem sgb_signed_density_hasSum {p : ℝ} (hp : liClockThetaWideThreshold < p) (t : ℝ) :
     HasSum (fun j : ℕ => liClockThetaLogJumpCoefficient p j *
       liClockThetaGammaRowDensity p j t)
       ((Ioi (0 : ℝ)).indicator (fun t =>
@@ -633,7 +661,7 @@ private theorem sgb_signed_density_hasSum {p : ℝ} (hp : 1 < p) (t : ℝ) :
     have hh : HasSum (fun n : ℕ => liClockThetaLogJumpCoefficient p (n+1) *
         liClockThetaGammaRowDensity p (n+1) t)
         (Real.exp (-(p*t)) * liEvenCrossActualClockPrimitive t / t) := by
-      simpa only [sgb_weighted_row_succ (by linarith : 0 < p) ht,
+      simpa only [sgb_weighted_row_succ (liClockThetaWideThreshold_pos.trans hp) ht,
         show Real.exp (-(p*t)) * liEvenCrossActualClockPrimitive t / t =
           Real.exp (-(p*t)) / t * liEvenCrossActualClockPrimitive t by ring] using h
     simpa [liClockThetaLogJumpCoefficient] using
@@ -641,7 +669,7 @@ private theorem sgb_signed_density_hasSum {p : ℝ} (hp : 1 < p) (t : ℝ) :
         liClockThetaGammaRowDensity p j t) 1).mp hh
   · simp [liClockThetaGammaRowDensity, ht]
 
-theorem liClockThetaSignedGammaDensity_eq_primitive {p : ℝ} (hp : 1 < p) (t : ℝ) :
+theorem liClockThetaSignedGammaDensity_eq_primitive_wide {p : ℝ} (hp : liClockThetaWideThreshold < p) (t : ℝ) :
   liClockThetaSignedGammaDensity p t =
     (Ioi (0 : ℝ)).indicator (fun t =>
       Real.exp (-(p*t)) * liEvenCrossActualClockPrimitive t / t) t :=
@@ -846,7 +874,7 @@ private theorem sgb_part_zero (p : ℝ) (positive : Bool) :
     liClockThetaJumpPart p positive 0 = 0 := by
   cases positive <;> simp [liClockThetaJumpPart, liClockThetaLogJumpCoefficient]
 
-theorem liClockThetaJumpMeasure_admission {p : ℝ} (hp : 1 < p) :
+theorem liClockThetaJumpMeasure_admission_wide {p : ℝ} (hp : liClockThetaWideThreshold < p) :
   liClockThetaJumpMass p true - liClockThetaJumpMass p false =
     liClockThetaReciprocalLog p ∧
   (∀ positive : Bool,
@@ -862,10 +890,10 @@ theorem liClockThetaJumpMeasure_admission {p : ℝ} (hp : 1 < p) :
   have hm := sgj_mass_sub hp
   rw [sge_sum_eq_reciprocalLog hp] at hm
   refine ⟨hm, fun positive => ?_⟩
-  have hg := sgWeighted_gamma_admission (by linarith : 0 < p)
-    (sgj_part_nonneg p positive) (sgj_part_summable hp positive) (sgb_part_zero p positive)
+  have hg := sgWeighted_gamma_admission (liClockThetaWideThreshold_pos.trans hp)
+    (liClockThetaJumpPart_nonneg p positive) (sgj_part_summable hp positive) (sgb_part_zero p positive)
   have hd := sgWeighted_degree_admission
-    (sgj_part_nonneg p positive) (sgj_part_summable hp positive) (sgb_part_zero p positive)
+    (liClockThetaJumpPart_nonneg p positive) (sgj_part_summable hp positive) (sgb_part_zero p positive)
   exact ⟨sgj_mass_pos hp positive, hd.1, hg.1, hd.2.1, hg.2.1,
     hd.2.2.1, hg.2.2.1⟩
 
@@ -875,18 +903,18 @@ end RHTower
 namespace RHTower
 noncomputable section
 
-private theorem sgb_gamma_density_data {p : ℝ} (hp : 1 < p) (positive : Bool) :
+private theorem sgb_gamma_density_data {p : ℝ} (hp : liClockThetaWideThreshold < p) (positive : Bool) :
     Measurable (liClockThetaGammaJumpDensity p positive) ∧
     (∀ t, 0 ≤ liClockThetaGammaJumpDensity p positive t) ∧
     Integrable (liClockThetaGammaJumpDensity p positive) ∧
     (∫ t, liClockThetaGammaJumpDensity p positive t) = liClockThetaJumpMass p positive ∧
     liClockThetaGammaJumpMeasure p positive = volume.withDensity
       (fun t => ENNReal.ofReal (liClockThetaGammaJumpDensity p positive t)) :=
-  (sgWeighted_gamma_admission (by linarith : 0 < p)
-    (sgj_part_nonneg p positive) (sgj_part_summable hp positive)
+  (sgWeighted_gamma_admission (liClockThetaWideThreshold_pos.trans hp)
+    (liClockThetaJumpPart_nonneg p positive) (sgj_part_summable hp positive)
     (sgb_part_zero p positive)).2.2.2.2
 
-private theorem sgb_signed_density_eq_sub {p : ℝ} (hp : 1 < p) (t : ℝ) :
+private theorem sgb_signed_density_eq_sub {p : ℝ} (hp : liClockThetaWideThreshold < p) (t : ℝ) :
     liClockThetaSignedGammaDensity p t =
       liClockThetaGammaJumpDensity p true t - liClockThetaGammaJumpDensity p false t := by
   symm
@@ -894,13 +922,13 @@ private theorem sgb_signed_density_eq_sub {p : ℝ} (hp : 1 < p) (t : ℝ) :
     (∑' j, liClockThetaJumpPart p false j * liClockThetaGammaRowDensity p j t) =
     ∑' j, liClockThetaLogJumpCoefficient p j * liClockThetaGammaRowDensity p j t
   rw [← Summable.tsum_sub
-    (sgWeighted_density_summable (by linarith : 0 < p)
-      (sgj_part_nonneg p true) (sgj_part_summable hp true) t)
-    (sgWeighted_density_summable (by linarith : 0 < p)
-      (sgj_part_nonneg p false) (sgj_part_summable hp false) t)]
+    (sgWeighted_density_summable (liClockThetaWideThreshold_pos.trans hp)
+      (liClockThetaJumpPart_nonneg p true) (sgj_part_summable hp true) t)
+    (sgWeighted_density_summable (liClockThetaWideThreshold_pos.trans hp)
+      (liClockThetaJumpPart_nonneg p false) (sgj_part_summable hp false) t)]
   apply tsum_congr
   intro j
-  rw [← sub_mul, sgj_parts_sub]
+  rw [← sub_mul, liClockThetaJumpPart_sub]
 
 end
 end RHTower
@@ -974,7 +1002,7 @@ end RHTower
 namespace RHTower
 noncomputable section
 
-theorem liClockThetaSignedGammaMeasure_admission {p : ℝ} (hp : 1 < p) :
+theorem liClockThetaSignedGammaMeasure_admission_wide {p : ℝ} (hp : liClockThetaWideThreshold < p) :
   (∀ s : Set ℝ, MeasurableSet s →
     liClockThetaSignedGammaMeasure p s =
       (liClockThetaGammaJumpMeasure p true s).toReal -
@@ -1199,7 +1227,7 @@ end
 namespace RHTower
 noncomputable section
 
-theorem liClockThetaGammaJumpDensity_admission {p : ℝ} (hp : 1 < p) :
+theorem liClockThetaGammaJumpDensity_admission_wide {p : ℝ} (hp : liClockThetaWideThreshold < p) :
   (∀ positive : Bool,
     Integrable (liClockThetaGammaJumpDensity p positive) volume ∧
     (∀ t : ℝ, 0 ≤ liClockThetaGammaJumpDensity p positive t) ∧
@@ -1214,7 +1242,7 @@ theorem liClockThetaGammaJumpDensity_admission {p : ℝ} (hp : 1 < p) :
     Summable (fun j : ℕ => ∫ t, |t^n * liClockThetaLogJumpCoefficient p j *
       liClockThetaGammaRowDensity p j t|) ∧
     Integrable (fun t => t^n * liClockThetaSignedGammaDensity p t) volume) := by
-  have hp0 : 0 < p := by linarith
+  have hp0 : 0 < p := liClockThetaWideThreshold_pos.trans hp
   have h0 : liClockThetaLogJumpCoefficient p 0 = 0 := by
     simp [liClockThetaLogJumpCoefficient]
   constructor
@@ -1234,7 +1262,7 @@ end RHTower
 namespace RHTower
 noncomputable section
 
-private theorem sgb_signed_density_data {p : ℝ} (hp : 1 < p) :
+private theorem sgb_signed_density_data {p : ℝ} (hp : liClockThetaWideThreshold < p) :
     Measurable (liClockThetaSignedGammaDensity p) ∧
     Integrable (liClockThetaSignedGammaDensity p) ∧
     (∫ t, liClockThetaSignedGammaDensity p t) = liClockThetaReciprocalLog p := by
@@ -1251,9 +1279,9 @@ private theorem sgb_signed_density_data {p : ℝ} (hp : 1 < p) :
     exact hf.2.2.1.sub hg.2.2.1
   refine ⟨hm, hi, ?_⟩
   rw [he, integral_sub hf.2.2.1 hg.2.2.1, hf.2.2.2.1, hg.2.2.2.1]
-  exact (liClockThetaJumpMeasure_admission hp).1
+  exact (liClockThetaJumpMeasure_admission_wide hp).1
 
-theorem liClockThetaSignedGammaMeasure_totalVariation {p : ℝ} (hp : 1 < p) :
+theorem liClockThetaSignedGammaMeasure_totalVariation_wide {p : ℝ} (hp : liClockThetaWideThreshold < p) :
   (liClockThetaSignedGammaMeasure p).totalVariation =
     volume.withDensity (fun t => ENNReal.ofReal |liClockThetaSignedGammaDensity p t|) ∧
   (∫ t, |liClockThetaSignedGammaDensity p t|) ≤
@@ -1276,13 +1304,13 @@ theorem liClockThetaSignedGammaMeasure_totalVariation {p : ℝ} (hp : 1 < p) :
   rw [integral_add hf.2.2.1 hg.2.2.1, hf.2.2.2.1, hg.2.2.2.1] at h
   exact h
 
-private theorem sgb_signed_density_laplace_shift {p s : ℝ} (hp : 1 < p) (hs : 0 ≤ s) :
+private theorem sgb_signed_density_laplace_shift {p s : ℝ} (hp : liClockThetaWideThreshold < p) (hs : 0 ≤ s) :
     (fun t => Real.exp (-(s*t)) * liClockThetaSignedGammaDensity p t) =
       liClockThetaSignedGammaDensity (p+s) := by
-  have hps : 1 < p+s := by linarith
+  have hps : liClockThetaWideThreshold < p+s := by linarith
   funext t
-  rw [liClockThetaSignedGammaDensity_eq_primitive hp,
-    liClockThetaSignedGammaDensity_eq_primitive hps]
+  rw [liClockThetaSignedGammaDensity_eq_primitive_wide hp,
+    liClockThetaSignedGammaDensity_eq_primitive_wide hps]
   by_cases ht : 0 < t
   · simp only [indicator_of_mem (show t ∈ Ioi (0 : ℝ) from ht)]
     have he : Real.exp (-(s*t)) * Real.exp (-(p*t)) = Real.exp (-((p+s)*t)) := by
@@ -1293,7 +1321,7 @@ private theorem sgb_signed_density_laplace_shift {p s : ℝ} (hp : 1 < p) (hs : 
     ring
   · simp [ht]
 
-theorem liClockThetaSignedGammaDensity_laplace {p : ℝ} (hp : 1 < p)
+theorem liClockThetaSignedGammaDensity_laplace_wide {p : ℝ} (hp : liClockThetaWideThreshold < p)
     {s : ℝ} (hs : 0 ≤ s) :
   Integrable (fun t => Real.exp (-(s*t))*liClockThetaSignedGammaDensity p t) volume ∧
   (∫ t, Real.exp (-(s*t))*liClockThetaSignedGammaDensity p t) =
@@ -1302,7 +1330,7 @@ theorem liClockThetaSignedGammaDensity_laplace {p : ℝ} (hp : 1 < p)
     liClockThetaReciprocalLog (p+s) - liClockThetaReciprocalLog p ∧
   Real.log (Lap (liClockThetaGammaMixture p) s).toReal =
     ∫ t, (Real.exp (-(s*t))-1)*liClockThetaSignedGammaDensity p t := by
-  have hps : 1 < p+s := by linarith
+  have hps : liClockThetaWideThreshold < p+s := by linarith
   have hd := sgb_signed_density_data hp
   have hds := sgb_signed_density_data hps
   have he := sgb_signed_density_laplace_shift hp hs
@@ -1314,12 +1342,12 @@ theorem liClockThetaSignedGammaDensity_laplace {p : ℝ} (hp : 1 < p)
     rw [he]
     exact hds.2.2
   have hpz : 0 < liClockThetaGammaNormalizer p :=
-    lt_trans zero_lt_one (liClockThetaGammaNormalizer_source (by linarith : 0 < p)).2.2
+    lt_trans zero_lt_one (liClockThetaGammaNormalizer_source (liClockThetaWideThreshold_pos.trans hp)).2.2
   have hpsz : 0 < liClockThetaGammaNormalizer (p+s) :=
-    lt_trans zero_lt_one (liClockThetaGammaNormalizer_source (by linarith : 0 < p+s)).2.2
+    lt_trans zero_lt_one (liClockThetaGammaNormalizer_source (by linarith [liClockThetaWideThreshold_pos] : 0 < p+s)).2.2
   have hlog : Real.log (Lap (liClockThetaGammaMixture p) s).toReal =
       liClockThetaReciprocalLog (p+s) - liClockThetaReciprocalLog p := by
-    rw [liClockThetaGammaMixture_laplace (by linarith : 0 < p) hs,
+    rw [liClockThetaGammaMixture_laplace (liClockThetaWideThreshold_pos.trans hp) hs,
       ENNReal.toReal_ofReal (div_nonneg hpsz.le hpz.le), Real.log_div hpsz.ne' hpz.ne']
     rfl
   refine ⟨hi, hint, hlog, ?_⟩
@@ -1334,7 +1362,7 @@ end RHTower
 namespace RHTower
 noncomputable section
 
-theorem liClockThetaSignedGammaTail_bound {p : ℝ} (hp : 1 < p)
+theorem liClockThetaSignedGammaTail_bound_wide {p : ℝ} (hp : liClockThetaWideThreshold < p)
     {J : ℕ} (hJ : 1 ≤ J) :
   let E : ℝ := xiShiftAbsoluteMass 0 / (2*(J : ℝ)*p^2) *
     (1/(150*p^2))^(J-1) / (1-1/(150*p^2))
@@ -1343,7 +1371,7 @@ theorem liClockThetaSignedGammaTail_bound {p : ℝ} (hp : 1 < p)
   SignedMeasure.totalVariation (volume.withDensityᵥ (liClockThetaSignedGammaTail p J)) Set.univ ≤
     ENNReal.ofReal E := by
   dsimp only
-  have hp0 : 0 < p := by linarith
+  have hp0 : 0 < p := liClockThetaWideThreshold_pos.trans hp
   have h0 : liClockThetaLogJumpCoefficient p 0 = 0 := by
     simp [liClockThetaLogJumpCoefficient]
   let F : ℕ → ℝ → ℝ := fun r t => liClockThetaLogJumpCoefficient p (J+r) *
@@ -1396,11 +1424,11 @@ end RHTower
 namespace RHTower
 noncomputable section
 
-private theorem sgb_signed_row_integral {p : ℝ} (hp : 1 < p) (j n : ℕ) :
+private theorem sgb_signed_row_integral {p : ℝ} (hp : liClockThetaWideThreshold < p) (j n : ℕ) :
     (∫ t : ℝ, t^n * liClockThetaLogJumpCoefficient p j * liClockThetaGammaRowDensity p j t) =
       ((n.factorial : ℝ)/p^n) *
         (liClockThetaLogJumpCoefficient p j * ((2*j+n-1).choose n : ℝ)) := by
-  have hr := sgPolynomialRow_polynomial_moment_factorial (by linarith : 0 < p) j n
+  have hr := sgPolynomialRow_polynomial_moment_factorial (liClockThetaWideThreshold_pos.trans hp) j n
   by_cases hj : j = 0
   · simp [hj, liClockThetaLogJumpCoefficient, liClockThetaGammaRowDensity]
   · have hn : (n.factorial : ℝ) ≠ 0 := by positivity
@@ -1416,16 +1444,16 @@ private theorem sgb_signed_row_integral {p : ℝ} (hp : 1 < p) (j n : ℕ) :
     simp only [div_pow, one_pow]
     ring
 
-private theorem sgb_signed_moment_binomial {p : ℝ} (hp : 1 < p) (n : ℕ) :
+private theorem sgb_signed_moment_binomial {p : ℝ} (hp : liClockThetaWideThreshold < p) (n : ℕ) :
     (∫ t, t^n*liClockThetaSignedGammaDensity p t) / (n.factorial : ℝ) =
       (1/p)^n * ∑' j : ℕ, liClockThetaLogJumpCoefficient p j *
         ((2*j+n-1).choose n : ℝ) := by
-  have hp0 : 0 < p := by linarith
+  have hp0 : 0 < p := liClockThetaWideThreshold_pos.trans hp
   have h0 : liClockThetaLogJumpCoefficient p 0 = 0 := by
     simp [liClockThetaLogJumpCoefficient]
   have hf (j : ℕ) : Integrable (fun t : ℝ => t^n * liClockThetaLogJumpCoefficient p j *
       liClockThetaGammaRowDensity p j t) := (sgPolynomial_row_norm_integral hp0 h0 j n).1
-  have hs := ((liClockThetaGammaJumpDensity_admission hp).2.2 n).1
+  have hs := ((liClockThetaGammaJumpDensity_admission_wide hp).2.2 n).1
   have hsum := hasSum_integral_of_summable_integral_norm hf
     (by simpa only [Real.norm_eq_abs] using hs)
   have he : (fun t : ℝ => ∑' j, t^n * liClockThetaLogJumpCoefficient p j *
@@ -1462,14 +1490,14 @@ namespace RHTower
 private theorem sgLaplace_moment_hasDerivAt
     {f : ℝ → ℝ} (hf : Measurable f)
     (hzero : ∀ t : ℝ, t ≤ 0 → f t = 0)
-    (hL1 : ∀ q : ℝ, 1 < q → ∀ n : ℕ,
+    (hL1 : ∀ q : ℝ, liClockThetaWideThreshold < q → ∀ n : ℕ,
       Integrable (fun t : ℝ => t ^ n * Real.exp (-(q * t)) * f t))
-    {p : ℝ} (hp : 1 < p) (n : ℕ) :
+    {p : ℝ} (hp : liClockThetaWideThreshold < p) (n : ℕ) :
     HasDerivAt
       (fun q : ℝ => ∫ t : ℝ, t ^ n * Real.exp (-(q * t)) * f t)
       (-(∫ t : ℝ, t ^ (n + 1) * Real.exp (-(p * t)) * f t)) p := by
-  let q0 : ℝ := (p + 1) / 2
-  have hq0 : 1 < q0 := by dsimp [q0]; linarith
+  let q0 : ℝ := (p + liClockThetaWideThreshold) / 2
+  have hq0 : liClockThetaWideThreshold < q0 := by dsimp [q0]; linarith
   have hq0p : q0 < p := by dsimp [q0]; linarith
   have hmeas : ∀ q : ℝ, ∀ k : ℕ,
       Measurable (fun t : ℝ => t ^ k * Real.exp (-(q * t)) * f t) := by
@@ -1521,9 +1549,9 @@ private theorem sgLaplace_moment_hasDerivAt
 private theorem sgLaplace_iteratedDeriv
     {f : ℝ → ℝ} (hf : Measurable f)
     (hzero : ∀ t : ℝ, t ≤ 0 → f t = 0)
-    (hL1 : ∀ q : ℝ, 1 < q → ∀ n : ℕ,
+    (hL1 : ∀ q : ℝ, liClockThetaWideThreshold < q → ∀ n : ℕ,
       Integrable (fun t : ℝ => t ^ n * Real.exp (-(q * t)) * f t))
-    {p : ℝ} (hp : 1 < p) (n : ℕ) :
+    {p : ℝ} (hp : liClockThetaWideThreshold < p) (n : ℕ) :
     iteratedDeriv n (fun q : ℝ => ∫ t : ℝ, Real.exp (-(q * t)) * f t) p =
       (-1 : ℝ) ^ n * (∫ t : ℝ, t ^ n * Real.exp (-(p * t)) * f t) := by
   induction n generalizing p with
@@ -1532,7 +1560,7 @@ private theorem sgLaplace_iteratedDeriv
     have hfun : Set.EqOn
         (iteratedDeriv n (fun q : ℝ => ∫ t : ℝ, Real.exp (-(q * t)) * f t))
         (fun q : ℝ => (-1 : ℝ) ^ n *
-          (∫ t : ℝ, t ^ n * Real.exp (-(q * t)) * f t)) (Ioi 1) := by
+          (∫ t : ℝ, t ^ n * Real.exp (-(q * t)) * f t)) (Ioi liClockThetaWideThreshold) := by
       intro q hq
       exact ih hq
     have hd := (sgLaplace_moment_hasDerivAt hf hzero hL1 hp n).const_mul
@@ -1545,10 +1573,10 @@ private theorem sgLaplace_iteratedDeriv
 private theorem sgLaplace_iteratedDeriv_of_eqOn
     {f H : ℝ → ℝ} (hf : Measurable f)
     (hzero : ∀ t : ℝ, t ≤ 0 → f t = 0)
-    (hL1 : ∀ q : ℝ, 1 < q → ∀ n : ℕ,
+    (hL1 : ∀ q : ℝ, liClockThetaWideThreshold < q → ∀ n : ℕ,
       Integrable (fun t : ℝ => t ^ n * Real.exp (-(q * t)) * f t))
-    (hH : ∀ q : ℝ, 1 < q → H q = ∫ t : ℝ, Real.exp (-(q * t)) * f t)
-    {p : ℝ} (hp : 1 < p) (n : ℕ) :
+    (hH : ∀ q : ℝ, liClockThetaWideThreshold < q → H q = ∫ t : ℝ, Real.exp (-(q * t)) * f t)
+    {p : ℝ} (hp : liClockThetaWideThreshold < p) (n : ℕ) :
     iteratedDeriv n H p =
       (-1 : ℝ) ^ n * (∫ t : ℝ, t ^ n * Real.exp (-(p * t)) * f t) := by
   have heq : H =ᶠ[𝓝 p] (fun q : ℝ => ∫ t : ℝ, Real.exp (-(q * t)) * f t) := by
@@ -1571,32 +1599,32 @@ private theorem sgb_profile_measurable : Measurable sgbPrimitiveProfile := by
     (contDiff_liEvenCrossActualClockPrimitive.continuous.measurable.div measurable_id)
     measurableSet_Ioi
 
-private theorem sgb_exp_profile {p : ℝ} (hp : 1 < p) :
+private theorem sgb_exp_profile {p : ℝ} (hp : liClockThetaWideThreshold < p) :
     (fun t => Real.exp (-(p*t)) * sgbPrimitiveProfile t) = liClockThetaSignedGammaDensity p := by
   funext t
-  rw [liClockThetaSignedGammaDensity_eq_primitive hp]
+  rw [liClockThetaSignedGammaDensity_eq_primitive_wide hp]
   by_cases ht : 0 < t
   · simp only [sgbPrimitiveProfile, indicator_of_mem (show t ∈ Ioi (0 : ℝ) from ht)]
     ring
   · simp [sgbPrimitiveProfile, ht]
 
-private theorem sgb_signed_moment_derivative {p : ℝ} (hp : 1 < p) (n : ℕ) :
+private theorem sgb_signed_moment_derivative {p : ℝ} (hp : liClockThetaWideThreshold < p) (n : ℕ) :
     (∫ t, t^n * liClockThetaSignedGammaDensity p t) =
       (-1 : ℝ)^n * iteratedDeriv n liClockThetaReciprocalLog p := by
   have hzero : ∀ t : ℝ, t ≤ 0 → sgbPrimitiveProfile t = 0 := by
     intro t ht
     simp [sgbPrimitiveProfile, not_lt.mpr ht]
-  have he (q : ℝ) (hq : 1 < q) (k : ℕ) :
+  have he (q : ℝ) (hq : liClockThetaWideThreshold < q) (k : ℕ) :
       (fun t => t^k * Real.exp (-(q*t)) * sgbPrimitiveProfile t) =
         fun t => t^k * liClockThetaSignedGammaDensity q t := by
     funext t
     rw [mul_assoc]
     exact congrArg (fun x : ℝ => t^k * x) (congrFun (sgb_exp_profile hq) t)
-  have hL1 (q : ℝ) (hq : 1 < q) (k : ℕ) :
+  have hL1 (q : ℝ) (hq : liClockThetaWideThreshold < q) (k : ℕ) :
       Integrable (fun t => t^k * Real.exp (-(q*t)) * sgbPrimitiveProfile t) := by
     rw [he q hq k]
-    exact ((liClockThetaGammaJumpDensity_admission hq).2.2 k).2
-  have hH (q : ℝ) (hq : 1 < q) : liClockThetaReciprocalLog q =
+    exact ((liClockThetaGammaJumpDensity_admission_wide hq).2.2 k).2
+  have hH (q : ℝ) (hq : liClockThetaWideThreshold < q) : liClockThetaReciprocalLog q =
       ∫ t, Real.exp (-(q*t)) * sgbPrimitiveProfile t := by
     rw [sgb_exp_profile hq]
     exact (sgb_signed_density_data hq).2.2.symm
@@ -1605,7 +1633,7 @@ private theorem sgb_signed_moment_derivative {p : ℝ} (hp : 1 < p) (n : ℕ) :
   rw [hjet, ← mul_assoc, ← mul_pow]
   norm_num
 
-theorem liClockThetaSignedGammaDensity_moment {p : ℝ} (hp : 1 < p)
+theorem liClockThetaSignedGammaDensity_moment_wide {p : ℝ} (hp : liClockThetaWideThreshold < p)
     {n : ℕ} (hn : 1 ≤ n) :
   Integrable (fun t => t^n*liClockThetaSignedGammaDensity p t) volume ∧
   (∫ t, t^n*liClockThetaSignedGammaDensity p t) / (n.factorial : ℝ) =
@@ -1616,9 +1644,114 @@ theorem liClockThetaSignedGammaDensity_moment {p : ℝ} (hp : 1 < p)
   cases n with
   | zero => omega
   | succ n =>
-    refine ⟨((liClockThetaGammaJumpDensity_admission hp).2.2 (n+1)).2, ?_,
+    refine ⟨((liClockThetaGammaJumpDensity_admission_wide hp).2.2 (n+1)).2, ?_,
       sgb_signed_moment_binomial hp (n+1)⟩
     rw [sgb_signed_moment_derivative hp (n+1)]
 
 end
+end RHTower
+
+namespace RHTower
+
+/-! ## The original `p > 1` admissions -/
+
+theorem liClockThetaLogJumpCoefficient_admission {p : ℝ} (hp : 1 < p) :
+  Summable (fun j : ℕ => |liClockThetaLogJumpCoefficient p j|) ∧
+  HasSum (liClockThetaLogJumpCoefficient p) (liClockThetaReciprocalLog p) ∧
+  (∀ J : ℕ, 1 ≤ J →
+    (∑' r : ℕ, |liClockThetaLogJumpCoefficient p (J+r)|) ≤
+      xiShiftAbsoluteMass 0 / (2*(J : ℝ)*p^2) *
+        (1/(150*p^2))^(J-1) / (1-1/(150*p^2))) :=
+  liClockThetaLogJumpCoefficient_admission_wide (liClockThetaWideThreshold_lt_one.trans hp)
+
+theorem liClockThetaSignedGammaDensity_eq_primitive {p : ℝ} (hp : 1 < p) (t : ℝ) :
+  liClockThetaSignedGammaDensity p t =
+    (Ioi (0 : ℝ)).indicator (fun t =>
+      Real.exp (-(p*t)) * liEvenCrossActualClockPrimitive t / t) t :=
+  liClockThetaSignedGammaDensity_eq_primitive_wide (liClockThetaWideThreshold_lt_one.trans hp) t
+
+theorem liClockThetaJumpMeasure_admission {p : ℝ} (hp : 1 < p) :
+  liClockThetaJumpMass p true - liClockThetaJumpMass p false =
+    liClockThetaReciprocalLog p ∧
+  (∀ positive : Bool,
+    0 < liClockThetaJumpMass p positive ∧
+    IsFiniteMeasure (liClockThetaDegreeJumpMeasure p positive) ∧
+    IsFiniteMeasure (liClockThetaGammaJumpMeasure p positive) ∧
+    liClockThetaDegreeJumpMeasure p positive Set.univ =
+      ENNReal.ofReal (liClockThetaJumpMass p positive) ∧
+    liClockThetaGammaJumpMeasure p positive Set.univ =
+      ENNReal.ofReal (liClockThetaJumpMass p positive) ∧
+    (∀ᵐ t ∂liClockThetaDegreeJumpMeasure p positive, 0 < t) ∧
+    (∀ᵐ t ∂liClockThetaGammaJumpMeasure p positive, 0 < t)) :=
+  liClockThetaJumpMeasure_admission_wide (liClockThetaWideThreshold_lt_one.trans hp)
+
+theorem liClockThetaSignedGammaMeasure_admission {p : ℝ} (hp : 1 < p) :
+  (∀ s : Set ℝ, MeasurableSet s →
+    liClockThetaSignedGammaMeasure p s =
+      (liClockThetaGammaJumpMeasure p true s).toReal -
+        (liClockThetaGammaJumpMeasure p false s).toReal) ∧
+  (∀ h : ℝ → ℝ, Measurable h → (∃ C : ℝ, ∀ t, |h t| ≤ C) →
+    Integrable (fun t => h t * liClockThetaSignedGammaDensity p t) volume ∧
+    Integrable h (liClockThetaGammaJumpMeasure p true) ∧
+    Integrable h (liClockThetaGammaJumpMeasure p false) ∧
+    (∫ t, h t * liClockThetaSignedGammaDensity p t) =
+      (∫ t, h t ∂liClockThetaGammaJumpMeasure p true) -
+        (∫ t, h t ∂liClockThetaGammaJumpMeasure p false)) :=
+  liClockThetaSignedGammaMeasure_admission_wide (liClockThetaWideThreshold_lt_one.trans hp)
+
+theorem liClockThetaGammaJumpDensity_admission {p : ℝ} (hp : 1 < p) :
+  (∀ positive : Bool,
+    Integrable (liClockThetaGammaJumpDensity p positive) volume ∧
+    (∀ t : ℝ, 0 ≤ liClockThetaGammaJumpDensity p positive t) ∧
+    (∫ t, liClockThetaGammaJumpDensity p positive t) =
+      liClockThetaJumpMass p positive ∧
+    liClockThetaGammaJumpMeasure p positive =
+      volume.withDensity (fun t => ENNReal.ofReal (liClockThetaGammaJumpDensity p positive t))) ∧
+  (∑' j : ℕ, ∫ t, |liClockThetaLogJumpCoefficient p j *
+    liClockThetaGammaRowDensity p j t|) =
+      ∑' j : ℕ, |liClockThetaLogJumpCoefficient p j| ∧
+  (∀ n : ℕ,
+    Summable (fun j : ℕ => ∫ t, |t^n * liClockThetaLogJumpCoefficient p j *
+      liClockThetaGammaRowDensity p j t|) ∧
+    Integrable (fun t => t^n * liClockThetaSignedGammaDensity p t) volume) :=
+  liClockThetaGammaJumpDensity_admission_wide (liClockThetaWideThreshold_lt_one.trans hp)
+
+theorem liClockThetaSignedGammaMeasure_totalVariation {p : ℝ} (hp : 1 < p) :
+  (liClockThetaSignedGammaMeasure p).totalVariation =
+    volume.withDensity (fun t => ENNReal.ofReal |liClockThetaSignedGammaDensity p t|) ∧
+  (∫ t, |liClockThetaSignedGammaDensity p t|) ≤
+    liClockThetaJumpMass p true + liClockThetaJumpMass p false :=
+  liClockThetaSignedGammaMeasure_totalVariation_wide (liClockThetaWideThreshold_lt_one.trans hp)
+
+theorem liClockThetaSignedGammaDensity_laplace {p : ℝ} (hp : 1 < p)
+    {s : ℝ} (hs : 0 ≤ s) :
+  Integrable (fun t => Real.exp (-(s*t))*liClockThetaSignedGammaDensity p t) volume ∧
+  (∫ t, Real.exp (-(s*t))*liClockThetaSignedGammaDensity p t) =
+    liClockThetaReciprocalLog (p+s) ∧
+  Real.log (Lap (liClockThetaGammaMixture p) s).toReal =
+    liClockThetaReciprocalLog (p+s) - liClockThetaReciprocalLog p ∧
+  Real.log (Lap (liClockThetaGammaMixture p) s).toReal =
+    ∫ t, (Real.exp (-(s*t))-1)*liClockThetaSignedGammaDensity p t :=
+  liClockThetaSignedGammaDensity_laplace_wide (liClockThetaWideThreshold_lt_one.trans hp) hs
+
+theorem liClockThetaSignedGammaTail_bound {p : ℝ} (hp : 1 < p)
+    {J : ℕ} (hJ : 1 ≤ J) :
+  let E : ℝ := xiShiftAbsoluteMass 0 / (2*(J : ℝ)*p^2) *
+    (1/(150*p^2))^(J-1) / (1-1/(150*p^2))
+  Integrable (liClockThetaSignedGammaTail p J) volume ∧
+  (∫ t, |liClockThetaSignedGammaTail p J t|) ≤ E ∧
+  SignedMeasure.totalVariation (volume.withDensityᵥ (liClockThetaSignedGammaTail p J)) Set.univ ≤
+    ENNReal.ofReal E :=
+  liClockThetaSignedGammaTail_bound_wide (liClockThetaWideThreshold_lt_one.trans hp) hJ
+
+theorem liClockThetaSignedGammaDensity_moment {p : ℝ} (hp : 1 < p)
+    {n : ℕ} (hn : 1 ≤ n) :
+  Integrable (fun t => t^n*liClockThetaSignedGammaDensity p t) volume ∧
+  (∫ t, t^n*liClockThetaSignedGammaDensity p t) / (n.factorial : ℝ) =
+    (-1 : ℝ)^n * iteratedDeriv n liClockThetaReciprocalLog p / (n.factorial : ℝ) ∧
+  (∫ t, t^n*liClockThetaSignedGammaDensity p t) / (n.factorial : ℝ) =
+    (1/p)^n * ∑' j : ℕ, liClockThetaLogJumpCoefficient p j *
+      (Nat.choose (2*j+n-1) n : ℝ) :=
+  liClockThetaSignedGammaDensity_moment_wide (liClockThetaWideThreshold_lt_one.trans hp) hn
+
 end RHTower

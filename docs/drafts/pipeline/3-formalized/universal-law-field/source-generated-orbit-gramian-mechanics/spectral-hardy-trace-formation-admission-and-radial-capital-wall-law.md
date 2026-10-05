@@ -436,8 +436,8 @@ convergence implies. The radial wall (HTF.24) needs an infinite spectrum, as in 
 |-|-|
 | (HTF.4) spectral packet `x_m = m(L)v` under (HTF.3) | `HeatSource.spectralPacket`, `HeatSource.spectralPacket_apply`, `HeatSource.memℓp_spectralPacket` |
 | (HTF.5)–(HTF.7) Laplace transform, Hardy norm, Paley–Wiener isometry onto `H²` | `laplaceRay`, `hardyNormSq`, `hardyNormSq_laplaceRay`, `hardyNormSq_eq_datum`, `paleyWiener_halfPlane` |
-| (HTF.8)–(HTF.9) Theorem 3.1: `x_m ∈ Ran W ⟺ m|_Λ` is an `H²` trace | `HeatSource.heatReachability_eq_spectralPacket_iff`, `HeatSource.spectralPacket_mem_range_iff` |
-| (HTF.10) `q_G(x_m) = min{‖H‖²_{H²} : H|_Λ = m|_Λ}`, `+∞` if empty; the minimum is attained | `CyclicHeatSource.orbitCostForm_spectralPacket`, `CyclicHeatSource.exists_hardy_interpolant_eq_orbitCostForm` |
+| (HTF.8)–(HTF.9) Theorem 3.1: `x_m ∈ Ran W ⟺ m∣_Λ` is an `H²` trace | `HeatSource.heatReachability_eq_spectralPacket_iff`, `HeatSource.spectralPacket_mem_range_iff` |
+| (HTF.10) `q_G(x_m) = min{‖H‖²_{H²} : H∣_Λ = m∣_Λ}`, `+∞` if empty; the minimum is attained | `CyclicHeatSource.orbitCostForm_spectralPacket`, `CyclicHeatSource.exists_hardy_interpolant_eq_orbitCostForm` |
 | (HTF.11) `⟨e_j, Wh⟩ = v_j (ℒh)(λ_j)` | `HeatSource.heatReachability_apply_eq_laplace` |
 | (HTF.12) uniqueness set; unique source history | `CyclicHeatSource.IsHardyUniquenessSet`, `CyclicHeatSource.heatReachability_injective_of_uniqueness` |
 | (HTF.13) `q_G(x_m) = ‖m‖²_{H²}` for `m ∈ H²` | `CyclicHeatSource.orbitCostForm_spectralPacket_of_hardy` |
@@ -446,9 +446,9 @@ convergence implies. The radial wall (HTF.24) needs an infinite spectrum, as in 
 | (HTF.18)–(HTF.19) `e^{-aL}v = m_a(L)v`, `m_a ∈ H^∞ \ H²`, `q_G(e^{-aL}v) = ∞` | `HeatSource.heatOrbit_eq_spectralPacket`, `HeatSource.summable_expPacket`, `isHalfPlaneNevanlinna_exp`, `not_isHalfPlaneHardy_exp`, `orbitCostForm_heatOrbit_eq_top` |
 | (HTF.20)–(HTF.21) `x_{a,T}`, multiplier `m_{a,T} = ℒ(T^{-1}1_{[a,a+T]})`, `x_{a,T} = W(T^{-1}1_{[a,a+T]})` | `HeatSource.offsetWindowPacket`, `offsetWindowMultiplier`, `HeatSource.offsetWindowPacket_apply`, `offsetWindowControl`, `laplaceRay_offsetWindowControl`, `integral_Ioc_expRay`, `HeatSource.offsetWindowPacket_eq` |
 | (HTF.22) `q_G(x_{a,T}) = ‖T^{-1}1_{[a,a+T]}‖² = 1/T` | `norm_offsetWindowControl_sq`, `orbitCostForm_offsetWindowPacket_eq` |
-| (HTF.23)–(HTF.25) radial multiplier `d_a`; `q_G(x_{d_a}) < ∞ ⟺ a = 0`, `q_G(x_{d_0}) = 0`; point bound `|H(x)| ≤ ‖H‖_{H²}/√(2x)` | `radialMultiplier`, `radialMultiplier_ofReal`, `CyclicHeatSource.orbitCostForm_radialPacket_lt_top_iff`, `CyclicHeatSource.orbitCostForm_radialPacket_eq_zero`, `HeatSource.spectralPacket_radialMultiplier_eq_zero`, `norm_le_hardyNormSq`, `CyclicHeatSource.tendsto_hardy_lam` |
+| (HTF.23)–(HTF.25) radial multiplier `d_a`; `q_G(x_{d_a}) < ∞ ⟺ a = 0`, `q_G(x_{d_0}) = 0`; point bound `∣H(x)∣ ≤ ‖H‖_{H²}/√(2x)` | `radialMultiplier`, `radialMultiplier_ofReal`, `CyclicHeatSource.orbitCostForm_radialPacket_lt_top_iff`, `CyclicHeatSource.orbitCostForm_radialPacket_eq_zero`, `HeatSource.spectralPacket_radialMultiplier_eq_zero`, `norm_le_hardyNormSq`, `CyclicHeatSource.tendsto_hardy_lam` |
 | (HTF.26)–(HTF.28) Corollary 6.1: for `σ > 3`, `x_ρ ∈ ℓ²(A_m)` on the whole strip, explicit coordinates, `q_G(x_ρ) < ∞ ⟺ Re ρ = 1/2` | `summable_criticalPacket`, `criticalPacket`, `criticalPacket_apply`, `orbitCostForm_criticalPacket_lt_top_iff`, `orbitCostForm_criticalPacket_eq_top_iff`, `criticalPacket_eq_zero_iff` |
-| (HTF.29)–(HTF.30) Corollary 6.2: `E_G(Σ w_r |x_{ρ_r}⟩⟨x_{ρ_r}|) < ∞ ⟺ Re ρ_r = 1/2 ∀r`; `E_G(|x⟩⟨x|) = q_G(x)` | `orbitDefectCost_criticalAggregate_lt_top_iff`, `CyclicHeatSource.orbitDefectCost_rankOne` |
+| (HTF.29)–(HTF.30) Corollary 6.2: `E_G(Σ w_r ∣x_{ρ_r}⟩⟨x_{ρ_r}∣) < ∞ ⟺ Re ρ_r = 1/2 ∀r`; `E_G(∣x⟩⟨x∣) = q_G(x)` | `orbitDefectCost_criticalAggregate_lt_top_iff`, `CyclicHeatSource.orbitDefectCost_rankOne` |
 | (HTF.31) `𝔠_{RW}(R x_ρ) = 𝔠_W(x_ρ) = q_G(x_ρ)` for injective `R` (functional-equation transport + common recovery) | `formationCapital_toSpanSingleton`, `formationCapital_comp_criticalPacket`, `formationCapital_comp_of_injective` |
 | (HTF.32) global admission of every `ξ`-zero packet `⟺` RH; equivalently every such packet vanishes | `xi_zero_re_mem_Ioo`, `forall_xi_zero_criticalPacket_admitted_iff_riemannHypothesis`, `riemannHypothesis_iff_xi_zero_re_eq_half` |
 

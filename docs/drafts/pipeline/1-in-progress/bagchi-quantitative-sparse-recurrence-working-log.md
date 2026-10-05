@@ -6300,3 +6300,912 @@ SchwartzIntersectionMass, SchwartzQuotientBounds. All three production checks
 passed, each wired once. No current-batch axiom/index/lint audit yet. Full
 Schwartz critical-boundary theorem remains unverified until assembly check and
 its production audit. Goal remains active; RH unproved.
+
+
+### C28.56ae final closure and C28.56af continuation, 2026-10-04
+
+Supersedes the preceding live-process checkpoint. All FOUR leaves passed:
+SourceDecay23588, IntersectionMass70465, QuotientBounds68160,
+CriticalBoundary30640. Axiom25246 exited0, all33 public declarations use
+only propext/Classical.choice/Quot.sound. Index82447 passed. Lint10429
+exited1 with40 unrelated errors (38 unreachable modules, two sorry in
+LiEvenCrossActualClockDampedCutoffEscape). No own Schwartz errors.
+Current source checks confirm all33 indexed and allfour imported once.
+P3 bag-schwartz-cubic-critical-boundary records the exact complete theorem.
+RH remains unproved; goal active. Previous goal turn was substantive progress.
+
+Next hard conjecture C28.56af: joint damping-height normalization of the
+actual divisor source, including both moving poles, toward literal physical
+contraction matching and full signed near-resonance control. P1
+bag-physical-contraction-moving-poles records formula, source dependencies,
+and the difference between fixed-damping and joint limits.
+
+At continuation, old research handle27119 was missing; process inventory
+confirmed no surviving research command, destination01a0.json empty.
+Replacement focused corpus search93135 is live, destination
+/tmp/bag-moving-pole-crossover-search-01a1.json. No owned Lean process live.
+All prior production/axiom/index/lint logs preserved; no repeated checks.
+
+
+### C28.56af.1 source closure; af.2 full uniform local law on paper
+
+Corpus-derived structural identification: the square-series Euler correction
+is EXACTLY the existing arithmetic axis K(s+epsilon,-epsilon). Proved the
+complete actual integer Dirichlet series identity, both moving poles, normalized
+axis value1/first derivative0, and uniform damping-squared cancellation on the
+actual zero-free disks. Second-order Schwarz gives the double cancellation
+without losing epsilon before contour shifting. This advances the BAG physical
+transfer frontier; it is not a scalar bound optimization or assumed receiver.
+
+Combined scratch79687 exited0 (one unused tactic removed for production).
+Production80197 exited0 clean, ChiRamanujanDampedSquareAxis.lean. Axiom26840
+exited0 for all12 public declarations, only propext/Classical.choice/Quot.sound.
+Index41850 exited0; all12 API names verified, umbrella import exactlyonce.
+Lint38417 exited1 with40 unrelated unreachable modules, no proof-debt/ownleaf
+errors. All owned jobs terminal. No repeated ae audits or full/umbrella builds.
+No added axioms, heartbeat changes, numerical experiments or subagents.
+
+P3 bag-damped-square-axis-coalescence.md and frontier rowaf.1 updated.
+P2 bag-uniform-damping-height-square-law.md contains the complete uniform
+smooth local-law paper argument: subtract n1 and divide epsilon^2 BEFORE
+estimating; actual coefficient bound D_e(n)<=e log n controls the right tails;
+T=(log X)^kappa,kappa<1/9,delta~T^-9 retains both poles inside the actual
+zero-free rectangle. Left/horizontal/tail errors vanish uniformly, both
+residues give Psi(e log X), and source quadratic cancellation handles e logX->0.
+Full Lean contour assembly remains open, as do full signed cubic near-resonances,
+growing profiles/moments, moving cofactors, common-height self-return and RH.
+
+Search90093 nonpartial65596/65596,12567 nonpartial65596/65596,15925 nonpartial
+65597/65597; all candidate/source/idea/ingredient sections inspected. Noerrors,
+refresh incomplete, compiler metadata mostly source-only/pending. Rejected the
+irrelevant homological double-zero ingredient. Actual mathlib Schwarz, corpus
+Mellin Euler-derivative identities, actual physical bump, Mellin inversion and
+local-domain two-pole rectangle source read. General entire-remainder rectangle
+receiver is too restrictive; use the neighborhood version after constructing
+actual pole-subtracted remainder. All evidence JSON/logs retained under /tmp.
+
+Cleanup follows this checkpoint: remove only the seven completed af scratch
+sources/fragments/paper query files; preserve production leaf and logs/searchJSON.
+Goal active. This turn made verified frontier progress; no external blocker.
+
+### C28.56af.2a actual contour and complete right-line control, continuation01a2
+
+BAG route unchanged. Previous turn af.1 removed the actual-source epsilon^2
+cancellation obstacle. This turn has already verified three new leaves:
+ChiRamanujanDampedSquareMellin (6 public declarations),
+ChiRamanujanDampedSquareContour (3), and ChiRamanujanDampedSquareRightLine (5).
+Production60152,82488,59240 all exited0 clean. Axiom38674 exited0 for all14,
+only propext/Classical.choice/Quot.sound; typed /tmp mathlib probes passed.
+Six completed scratch sources/fragments/audit files removed; logs/searchJSON
+preserved. No full/umbrella build or extra axioms.
+
+Exact frontier gain: literal window entire Mellin transform, all-order strip
+decay and inversion; actual two-pole rectangle with zero-free domain and
+holomorphic remainder constructed, not assumed; complete original-line
+|S_e(1+b+it)-1|<=24 e^2/b^3 and its e^2-normalized version, at every height.
+Index78814 passed and all14 API entries/three RHTower imports verified.
+Lint23705 exited1 with39 unreachable-module errors only, no proof debt.
+It included the required MellinTestFunctionPerron dependency; that checked
+leaf is now wired into HTGeometry itself, without an umbrella build. A
+final lint will follow the next completed leaf.
+
+P3 bag-damped-square-moving-contour and frontier rowaf.2a record these exact
+results; P2 full uniform law remains OPEN in Lean. Active new summed-inversion
+scratch /tmp/bag-square-perron-01a2.lean passed its base formula in36901, then
+was extended to full-line continuity/integrability, exact removal of n=1 for
+X>=1, normalized source integrability and its exact complete-sum equality.
+42076 exposed only Pi.mul_apply/Pi.sub_apply elaboration mismatches; corrected
+scratch58812 is running. Do not start another Lean before it is terminal.
+Its two /tmp fragments are still active, not production. No Perron leaf yet.
+
+Hard remaining af.2 work after that source passage: integrated estimates for
+both infinite right tails and all other rectangle edges, uniform coalescence
+of both actual residues, and final joint-limit assembly. Beyond it, full
+signed physical cubic near-resonances, growing profiles/moments, moving
+cofactors and positive common-height self-return remain open. RH unproved;
+goal active. This turn is substantive verified progress, not a blocker.
+
+01a2 final checkpoint: Perron scratch58812, production49430 and axiom13357
+all passed. Four completed leaves now have19 public declarations, all with
+standard axioms only. Full weighted sum, source continuity, actual absolute
+integrability, exact n=1 removal and normalized contour equality are closed.
+Final index21998 passed, all19 API entries and each of4 RHTower imports checked
+once. Checked Mellin dependency wired once into HTGeometry. Final lint77120
+failed on34 unrelated unreachable modules only, no proof-debt/own errors.
+All owned jobs terminal. P3/frontier/P2 updated accurately; full law stillopen.
+
+Next C28.56af.2b uniform residue coalescence is written explicitly on active
+P1. Source Q quadratic cancellation + entire M derivative bound + r=X^-2e<=1
+make the error numerator O(e), hence residual<=C/log X uniformly even e logX->0.
+Search30728 and ComplexBallMeanValue source supply the exact mean-value API.
+After this, integrate every retained edge and both tails and finish af.2.
+No new residue scratch yet. Cleanup removes completed Perron scratch,
+fragments and axiom probe; preserve logs and all corpus search JSON.
+Goal active, RH unproved. Verified frontier progress; no external blocker.
+
+### C28.56af.2b complete actual uniform joint square law, continuation01a3
+
+2026-10-05: SUCCESS. The ACTUAL physical window's complete weighted divisor
+square sum satisfies the full uniform joint law, for every C>0 and all
+0<e<=C/log X, including e log X->0. This turn closes the hard moving-parameter
+transfer left open by01a2; it is not a receiver with unproved source estimates.
+
+Five new leaves,15 public declarations: Residues5, Tails2, Edges1, Transfer3,
+JointLimit4. Production20834/94324/42770/50009/72335 all exit0 without diagnostics.
+Joint scratch20250 passed the complete law and M(1)=integral W. Axiom17545
+passes all15, only propext/Classical.choice/Quot.sound. Index28644 passes;
+all15 API entries and allfive once-only umbrella imports verified. Lint22251
+exits1 on40 unrelated unreachable modules only, no proof debt or own findings.
+No global lint pass claimed. No full/umbrella build, heartbeat/recursion raise,
+numerical experiment, new axiom or subagent. All owned jobs terminal.
+
+Actual source ingredients: Q quadratic cancellation before dividing by e;
+compact bound for entire dslope(M,1); uniform complete original-line damping
+cancellation; both infinite tails; actual zero-free rectangle geometry and
+both pole distances; all integrated edges; exact complete energy four-error
+identity. Set T=u, X=exp(u^18), b=u^-18, delta=d/(1+u)^9. All geometry is
+derived uniformly in c in(0,C]; all three actual normalized errors tend to0.
+Inverse reparameterization covers ALL large real X. A scalar normalization
+identity replaces a failing high-power expansion without raising compiler limits.
+
+P3 bag-uniform-damping-height-square-law and frontier row C28.56af.2b record
+the result. P1/P2/earlier P3 updated. P2's broader every-window paper theorem
+is not claimed formalized; final Lean theorem uses the literal source window.
+
+Next hard frontier remains C28.44 COMPLETE signed physical cubic. Search57233
+was nonpartial65626/65626, errors[], refresh incomplete; all candidate/source/
+idea/ingredient sections inspected. Proposed generic damping/Cartan pairing
+does not apply. Exact lexical search finds the literal off-diagonal and its
+prime-only Vaughan identity. Read ChiPrimeGaussianCubicMain definitions,
+contraction identity, overlap and hyperbolic recentering, and the actual
+ChiPrimeGaussianCubicPrimeOnlyVaughan source. Proper powers are already
+removed POINTWISE there; all joint q,r weights and Type-I squarefree masks
+remain. Read prior signed-medium card's weighted comparison cost and incomplete
+determinant obstruction. Do not repeat an isolated row/axis estimate or assume
+quadratic-to-cubic promotion. Hard target: actual shared-modulus signed
+Type-I/II aggregate, retaining near-resonant determinant terms and all masks.
+Growing profiles, moments, moving cofactors, positive common-height self-return
+and RH remain open. STATUS MUST561 already closes the receiver once that
+unconditional positive-upper-density producer exists; it is not supplied here.
+
+Turn evaluation: verified frontier PROGRESS, full uniform quadratic transfer
+closed. Next turn must attack the full signed cubic, not repeat this law.
+Goal remains active; no external blocker. Completed owned scratch sources and
+axiom probe are removed after copying/auditing production; logs/search JSON kept.
+
+## 2026-10-05 — continuation01a4, full signed cubic attack remains open
+
+BAG only. Prior01a3 completed the actual uniform damping-height square law;
+this continuation did not close another hard analytic gap. Revalidated the
+literal ChiPrimeGaussianCubicMain source and contractions, the full prime-only
+Vaughan substitution, the signed-medium determinant/comparison costs, and
+the prior semiprime/zero-form attempts. No source estimate was replaced by a
+hypothesis and no generic quadratic-to-cubic promotion was used.
+
+Tested joint Vaughan recombination, semiprime reciprocal-frequency dispersion,
+and simultaneous rational-mode stationary organization. The first is already
+an exact prime-coefficient identity; the second repeats its known conductor
+loss; the third leaves the actual c-a*b near-resonant neighborhood. Read
+the medium Mobius source's actual logarithmic-phase and frequency premises;
+its name alone does not establish an additive-phase transfer. The existing
+almost-all short-interval prime theorem concerns exceptional Lebesgue measure,
+not the required prime-weighted oscillatory three-variable estimate. No
+unsupported transfer from it was made. No new production identity wrapper.
+
+The full-cubic-semiprime-dispersion card now records an exact PAPER calibration
+consequence of the two audited quadratic sources: uniformly 0<e<=C/log X,
+`(A(e,X)-H(e)*M)/e + exp(-2e log X)*M/2 ->0`, where A is the literal physical
+square average, H the full fixed-damping second density, and M the literal
+window mass. Proof retains `(e log X)*R(e,X)` plus the density error, with R
+the already proved uniform square-law error. Thus a vanishing finite-height
+correction relative to the Haar mean would be the wrong target in the prime
+extraction regime. This has not been promoted to a theorem about a selected
+near-resonant frequency packet, nor counted as a new Lean/frontier result.
+The full signed cubic and its complete near-resonant transfer remain open.
+
+Search evidence, all owned commands terminal:
+- /tmp/bag-cubic-signed-cancellation-search-01a4.json, deep64242:
+  nonpartial65629/65629, errors[], refresh incomplete; mostly irrelevant
+  prime-ideal/reciprocal identities, plus the already known cubic edge bound.
+- /tmp/bag-cubic-determinant-search-01a4.json, lexical19297:
+  inspected all12 hits; actual cubic/rational-row/edge sources, no new joint
+  incomplete determinant estimate. Lexical output has no coverage metadata.
+- /tmp/bag-cubic-trilinear-source-search-01a4.json, deep89522:
+  nonpartial65634/65634, errors[], refresh incomplete. All20 candidate and20
+  source statements, empty proof-idea section and proposed ingredient set
+  inspected. PrimeSourceCancellationBudget counts cancelled primes for a
+  finite exponential-polynomial relation; it does not bound this prime cubic.
+  The proposed prime-shift pairing is inapplicable.
+- /tmp/bag-cubic-finite-height-search-01a4.json, deep58179:
+  partial65634/65634, malformed local-model JSON at filter_and_judge,
+  refresh incomplete. All20 candidate and20 source statements inspected;
+  no proof ideas/ingredient sets. Grouped expansion, exact Ramanujan weights,
+  and finite-prefix limits apply only with their recorded fixed parameters;
+  they do not by themselves control the coupled growing physical limit.
+
+Compiler metadata predominantly source-only/pending. Search coverage is not a
+claim that no solution can be constructed. No Lean edits, Lean builds, axioms,
+heartbeat changes, numerical experiments, subagents, commits or pushes in this
+continuation. No reason to rerun the previous turn's completed audits. No owned
+live job or new Lean scratch remains. Frontier map unchanged because no hard
+theorem was added. Next attack remains the complete signed finite-height
+three-frequency correction, keeping actual contractions and all source
+weights; growing moments, moving cofactors, self-return and RH remain open.
+Goal stays ACTIVE; mathematical difficulty is not an external blocker.
+
+## 2026-10-05 — continuation01a5, full cubic source construction in progress
+
+BAG full signed physical cubic remains the route. The direct contour shift
+retains the stationary conductor; the prime reciprocal/Vaughan searches did
+not supply the missing joint signed estimate. These failures motivated a
+literal finite-prime source construction, not a generic quadratic-to-cubic
+promotion or a conditional cancellation receiver.
+
+C28.56ag card created before formalization. New construction compensates at
+the SAME finite prime set: (nu_(e,P)-nu_(0,P))/e. For n>0 its actual Fourier
+coefficient is in [0,log n], including integers whose prime factors are not
+yet covered. For n=0, retaining primes 2,3 gives at most e log2 log3. The
+joint P/e limit is vonMangoldt n. Scratch and production leaf
+ChiRamanujanFinitePrimeCompensation passed. The independent three-integer
+Schwartz lattice envelope passed in ChiRamanujanThreeFrequencyLattice.
+Both leaves wired once; full axiom/index/lint checks still pending at this
+checkpoint. Source capstone and finite rational atom identity under active
+scratch development; no completed capstone or physical estimate claimed.
+
+Literal finite atoms use divisors of rad(P), coefficient mu(d)d^(-e)/d,
+and EVERY a/d with a mod d. Their Fourier transform is
+D_e(gcd(rad(P),|n|)), including zero. This is an ADDITIVE rational-atom
+representation of the actual divisor coefficients. The existing six-zeta
+trace instead uses positive-rational MULTIPLICATIVE dilation modes. Do not
+identify those parameter spaces or claim the six-zeta finite-height bridge
+has been proved by the additive construction. The complete physical cubic
+still needs its growing oscillatory test controlled, with squarefree prime
+restriction and literal contractions preserved.
+
+Searches, all terminal and all candidate/source/idea/ingredient sections
+inspected (compiler metadata mainly source-only/pending, refresh incomplete):
+- bag-cubic-direct-contour-search-01a5.json: nonpartial65636/65636, errors[];
+  strip growth/shift sources do not provide the physical cubic saving.
+- bag-cubic-prime-reciprocal-search-01a5.json: nonpartial65636/65636, errors[];
+  Ramare/log-phase/Kloosterman sources retain their actual costs/premises.
+- bag-three-frequency-source-search-01a5.json: nonpartial65636/65636,
+  errors[]; Wold normal-cone derivative is applicable and reused; the
+  existing completion treats n=0 differently and does not give this joint
+  compensated limit. Proposed Weil/dilation pairing inapplicable.
+- bag-three-frequency-schwartz-search-01a5.json: nonpartial65640/65640,
+  errors[], refresh background_indexer_running. All20 candidate and20 source
+  statements/methods inspected. Existing lattice proofs are one-dimensional;
+  proposed Nyquist pairing requires band limitation not present here. Reuse
+  actual Schwartz seminorm bounds and prove the full triple envelope.
+
+Owned foreground builds serialized. No computations, axioms, heartbeat
+increases, subagents, commits or pushes. Goal active. This is an IN-PROGRESS
+checkpoint; later log entries must record final audit and remaining scope.
+
+### continuation01a5 completed source audit and evaluation
+
+C28.56ag.1: the actual full ADDITIVE finite rational atom tensor has a proved
+joint all-prime/zero-damping limit against every fixed Schwartz Fourier
+profile. Exact atom/Fourier interchange, genuine zero frequency, uncovered
+integers, and every independent lattice coordinate are retained. The finite
+physical-band source is exactly D_e(n)/e once range(M+1) covers 1<n<=M.
+No unconditional estimate for the growing physical cubic was obtained.
+This closes source well-posedness/interchange, not the central signed saving.
+
+Production leaves (all lake --old env lean <leaf> -o <olean>, exit0):
+ChiRamanujanFinitePrimeCompensation6042 (9 declarations),
+ChiRamanujanThreeFrequencyLattice71927 (5),
+ChiRamanujanThreeFrequencySource66780 (7),
+ChiRamanujanFiniteRationalAtoms18211 (11),
+ChiRamanujanThreeFrequencyAtomAction21689 (9).
+All41 declaration axiom checks9488 exit0, only propext/Classical.choice/
+Quot.sound. Actual mathlib signatures included in that /tmp probe. Index50560
+exit0;40 non-instance API entries present, Fintype instance audited directly;
+allfive imports wired exactly once. Lint80376 exit1 only27 unrelated
+unreachable modules, no proof-debt/new-leaf finding. Global gate not clean.
+All owned build/search/audit jobs terminal. Completed scratch sources removed;
+logs and JSON retained. No full/umbrella build or unproved premise introduced.
+P2/P3 bag-additive-rational-three-frequency-source and frontier row ag.1 added.
+
+Next conjecture stays on the full signed physical BAG route. Keep prime-power
+removal inside the SOURCE: convolve each retained local factor with
+(delta_0-h_(p^2)); paper algebra gives
+(delta_0-p^-e h_p-(1-p^-e)h_(p^2)). At zero damping this is the original local
+factor, and at p^2-divisible Fourier indices it vanishes for EVERY damping.
+Thus a prime-only finite source can retain a smooth growing physical test.
+Formal local atom identity/joint prime-only limit remain to do. The actual
+pq/r stationary equations give z=x*y in additive Fourier coordinates, with
+integer lifts leading toward the multiplicative c=a*b modes. This is only a
+paper mechanism, not a uniform Poisson/stationary bridge or signed estimate.
+Do not identify additive/multiplicative parameter spaces without that proof.
+
+Additional searches: squarefree-atom-source83059 partial65649/65649, reranking
+local runtime deadline, refresh incomplete; all20+20 and ingredient pair
+inspected, proposed prime-square fixed-vector/shear pair inapplicable.
+Lexical squarefree-mangoldt search exit0, both2 hits inspected (no lexical
+coverage metadata). Vaughan squarefree-Mangoldt theorem applies; the other
+hit's alternating prime-power Laplace channel is different. Files retained
+under /tmp/bag-squarefree-*-search-01a5.json. Next work must address this
+prime-only source and then the FULL signed growing physical test, not repeat
+fixed-test convergence or optimize its incidental seminorm constants. Growing
+moments, moving cofactors, common-height self-return and RH remain open.
+Goal ACTIVE; no external blocker and no completion claim.
+
+## 2026-10-05 — continuation01a6, prime-only source and full dual cone
+
+Route BAG, complete signed physical cubic. Prior01a5 was source/interchange
+PROGRESS, not a signed cubic estimate. Current corpus search found the exact
+Möbius square-divisor identity, enabling a finite source-level squarefree
+projector without roughening the physical test. Constructed its literal
+torsion atoms and convolution with the compensated ag.1 source.
+
+The multiplier is exactly mu(gcd(rad(P)^2,|n|))^2. It belongs to {0,1};
+after P contains 2 and all prime factors of |n| it is exactly the squarefree
+indicator, including at n=0. Hence the projected coefficient tends JOINTLY
+to log|n| on prime |n| and zero elsewhere. All finite rational atoms remain.
+The old full tensor Schwartz envelope dominates unchanged. Production sieve
+audit3905 and atom audit55141 exit0; original-source public torsion helper
+audit81094 and exposed periodic summability helper69251 exit0. Full triple
+capstone still under development at this checkpoint. No cancellation claimed.
+
+This continues the exact construction required to remove prime powers from
+the physical source, not a new generic mixing or selected-mode argument.
+The new positive-damping source still contains squarefree composites; its
+covered-band value is 1_(Squarefree n)*D_e(n)/e. The coupled physical limit
+must retain/control these terms, rather than treating the source as already
+prime-only at finite damping.
+
+Hard next conjecture is the full signed transverse action, recorded in the
+parent card. Exact paper phase completion
+pq/r+xp+yq+zr=(p+yr)(q+xr)/r+(z-xy)r exposes the radial Fourier variable
+z-xy while retaining the entire two-dimensional oscillatory amplitude.
+Physical contractions correspond to y=-1 and x=-1 among integer lifts.
+Do not discard the finite-height neighborhood, other lifts, or derivative
+costs of actual smooth band cutoffs. No uniform Poisson/stationary bridge,
+transverse signed estimate, cubic saving, growing moments or common-height
+self-return obtained yet. RH remains open; goal ACTIVE.
+
+New source-derived bridge conjecture: differentiate the finite divisor atoms
+at zero BEFORE N grows. The explicit critical weight -mu(d)*log(d)/d,
+convolved with the audited square-divisor sieve, should have coefficient
+mu(gcd(Q(P)^2,|n|))^2*Lambda(gcd(Q(P),|n|)). Once P covers a finite band,
+this is the exact prime logarithm throughout the band, with no finite-damping
+composites or damping approximation. Search76197 nonpartial65661/65661 found
+the exact `ArithmeticFunction.sum_moebius_mul_log_eq` identity in this
+toolchain; all20+20 statements/methods and ingredient list inspected. Paper
+mechanism and remaining finite atom/covered-band Lean obligations recorded
+in the parent card. This is a concrete refinement of the full physical
+attack, not a claim of cubic cancellation.
+
+### continuation01a6 completed source audit
+
+ag.2 PROGRESS: source-level prime-power removal and the full fixed-Schwartz
+prime-only atom tensor are now Lean-proved. Final leaves (all foreground
+lake --old env lean <leaf> -o <olean>): Sieve3905, Atoms55141,
+ThreeFrequency68933, all exit0 and no diagnostics. Exposed old-source helpers
+audited81094/69251 exit0. All34 new/exposed declarations axiom44712 exit0,
+only propext/Classical.choice/Quot.sound; actual mathlib Möbius-log name also
+verified. Index46234 exit0; all34 names present in LEAN_API; three umbrella
+imports exactly once. Lint52691 exit1 only29 unrelated unreachable modules,
+no proof debt or finding in any changed/new source leaf. Global gate not clean.
+P2/P3 prime-only source cards and frontier row C28.56ag.2 added. All owned
+jobs terminal; all owned01a6 scratch Lean sources removed; logs/JSON retained.
+
+Next physical matching mechanism: finite rational translation averages E13
+and E23 select n1=n3 and n2=n3 exactly when their torsion denominator exceeds
+the finite band's frequency differences. Thus (1-E13)(1-E23) should impose
+the literal physical contractions while preserving a smooth periodic test.
+In the completed-phase coordinates their simultaneous shift changes
+delta=z-xy by -(1+y)a/D-(1+x)b/D-ab/D^2. The mixed term and shifted amplitudes
+are retained. Projector search68330 nonpartial65664/65664, refresh incomplete;
+all20+20 candidates/source statements and ingredient pairing inspected.
+The new finite torsion helper supplies the appropriate orthogonality; no
+unverified circle or projection API is assumed. This bridge and the critical
+finite atom derivative remain to formalize before the full signed action
+can be attacked in these coordinates.
+
+Evaluation: no unconditional signed growing-test saving obtained this turn.
+Next work must solve the complete transverse action; repeating fixed-test
+convergence or its incidental constants would not address the hard gap.
+The cubic o(N/log^2 N), growing moments, moving cofactors, common-height
+self-return and RH remain open. Goal ACTIVE, no external blocker.
+
+## 2026-10-05 — continuation01a7, exact critical physical atom bridge
+
+Route BAG, complete signed cubic. Prior01a6 PROGRESS closes prime-power
+source removal; it does not give the cubic saving. Current new result:
+differentiate each finite divisor atom at zero to obtain -mu(d)*log(d)/d,
+retain the square-divisor convolution, then finite-sum limits and the actual
+Wold derivative prove EXACT prime logarithms on every covered integer band
+1<n<=M. No growing-test limit or finite-damping composite correction remains
+in this finite-band identity. ChiRamanujanCriticalFiniteAtoms production23109
+exit0, no diagnostics, wired once; all-six-declaration axiom audit pending.
+
+Finite contraction projector scratch48786 exit0 with three unused-tactic
+warnings, now removed for production audit. Finite rational translation
+averages select D|(p-r) and D|(q-r); D=M+1 and p,q,r<=M make these exactly
+the physical equality contractions. Their complementary composition restores
+the intersection. Phase completion and the mixed double-shift term are
+also proved in scratch. Full original Gaussian cubic identity is prepared
+in /tmp/bag-physical-critical-cubic-01a7.lean and still unaudited. Do not
+claim the complete bridge, signed saving or RH yet.
+
+Initial deep search64072 nonpartial65666/65666 (all20+20, spectral-finiteness
+idea and torsion-descent ingredients inspected/inapplicable); lexical95006
+recovers actual finite source/Wold APIs. Natural-amplitude search77047
+nonpartial65669/65669, all20+20 and proposed coefficient/sphere-density
+pairing inspected; pairing inapplicable, packet and complete-row results
+do not supply a full trilinear bound. No no-go/estimate inferred from absence
+of search hits. Both deep refreshes incomplete, source-only/pending compiler
+metadata. Read actual current source definitions before all new proofs.
+
+### continuation01a7 final checkpoint — C28.56ag.3
+
+The formerly pending complete bridge is PROVED: original physical cubic =
+critical finite rational atom tensor applied to the complete Fourier test,
+with both literal contraction projectors, at every real N>=1. Three new
+leaves,24 public declarations; final production23109/69239/21647 and
+axiom90494 passed without diagnostics (standard axioms only). Index19426
+passed; names/imports verified. Lint43522 has33 unrelated unreachable
+modules only, no new-leaf or proof-debt finding. All owned jobs terminal;
+finished /tmp scratch sources removed, logs/search JSON retained. P2/P3
+bag-critical-physical-cubic-atom-identity and frontier ag.3 are current.
+
+Contribution: exact full physical representation and contractions closed.
+No signed asymptotic saving proved. Next target is the complete growing
+signed atom action at o(N/log(N)^2), retaining every lift and near-cone term,
+then growing moments, moving cofactors and common-height self-return. No
+numerical work, subagents, new axioms, resource hacks or umbrella build.
+RH goal ACTIVE.
+
+## 2026-10-05 — continuation01a8, complete transition attack
+
+BAG route, full signed physical cubic. Evaluation: ag.3 is verified progress
+on the physical bridge; this follow-on attempt has NOT proved any signed
+asymptotic saving. The simple stationary-value substitution fails its own
+edge budget: sharp comparison is small when H*log(N)^(5/2)/sqrt(N)->0,
+whereas its proposed Taylor small parameter N/H^2 requires the opposite
+width regime. This is not a general no-go theorem and no route is retired.
+
+Candidate replacement keeps the exact hyperbolic multiplier
+exp(-2*pi*i*r*xi*eta), with full amplitude and all lifts. The new P1 card
+bag-complete-hyperbolic-transition-action.md records its exact paper formula,
+partial-Fourier proof mechanism and the still-hard full signed aggregate.
+Do not turn the formula or unitarity into an asserted cancellation estimate.
+
+Searches42809/25786/25834 were nonpartial65678/65678;48887 nonpartial65680/65680.
+All20+20 candidate/source statements/methods, empty proof-idea arrays and
+proposed ingredient sets were inspected. All refreshes incomplete with
+source-only/pending compiler metadata. Actual applicable source files read.
+No missing hit treated as a theorem. All searches terminal; no new build,
+Lean edit, numerical experiment or owned scratch source in this follow-on.
+Prior ag.3 production/axiom/index checks remain valid; no repeated checks
+needed after documentation-only edits. Full cubic, downstream growing
+moments/moving cofactors/common-height self-return, and RH remain open.
+Goal ACTIVE; no external blocker.
+
+## 2026-10-05 — continuation01a9, C28.56ag.4
+
+BAG route. Proved exact full physical-window hyperbolic continuum
+transition, without replacing its Fourier multiplier by a stationary value.
+Actual V is now proved C-infinity on the positive axis; actual smooth
+Gaussian/log slices are Schwartz. Full Mellin separation of W and a product
+L1 majorant justify all continuum Fubini steps. The unconditional family
+capstone retains the previous negligible sharp/smooth cubic error.
+
+Two leaves,19 public declarations. Production59166/41307 and axiom56220
+passed without diagnostics; only standard Lean axioms. Index35593 passed;
+18 names in generated API, attributed apply lemma verified in explicit
+19-name audit. Both imports once. Lint11175:26 unrelated unreachable
+modules, no new-leaf/proof-debt error; global lint not clean. See P2/P3
+bag-full-window-hyperbolic-transition. Search67634 nonpartial65681/65681,
+all20+20 candidates/source arguments and ingredients inspected; incomplete
+refresh, source-only/pending metadata. Lexical actual-V smoothness search
+led to the literal derivative proof. No computational experiment, axiom,
+resource hack, umbrella build or subagent.
+
+Evaluation: exact continuum transition is a new proved construction;
+no signed cubic saving. Next attack must transfer the complete integer
+lattice, remaining r-variable and literal contractions, then control the
+actual signed near-cone/tail action. Growing moments, moving cofactors,
+common-height self-return and RH remain open. Goal ACTIVE.
+
+## 2026-10-05 — continuation01aa, C28.56ag.5
+
+BAG route. The literal three-coordinate physical cubic amplitude, including
+r, W, V, conjugation, reciprocal logs and oscillation, is now proved
+Schwartz. Integer coefficients match the original cubic main entry exactly.
+Every shifted full Fourier lattice is absolutely summable. An unconditional
+family preserves the earlier negligible sharp/smooth comparison. This is
+new fixed-scale regularity/convergence, not a signed asymptotic saving.
+
+Production19066 and all12-name axiom14865 passed without diagnostics;
+standard axioms only. Index92591 passed; all12 API names and single import
+verified. Lint13216 reports28 unrelated unreachable modules, no new-leaf
+or proof-debt error. P2/P3 bag-full-physical-fourier-lattice-summability and
+P1 bag-complete-lattice-fourier-transfer are current. Deep search83657 had
+partial reranking/deadline only, complete65691/65691 inventory, all20+20
+source/candidate statements and proposed ingredients inspected; refresh
+incomplete, compiler mostly source-only/pending. Lexical W query87974 had
+zero hits; actual ContDiffBump source supplied smoothness. No mathematical
+absence was inferred. API6933 and development17343 passed after correcting
+universe probes, norm sign facts, function composition and map_div₀.
+
+All owned jobs terminal; completed scratch sources removed, logs/search
+JSON retained. No numerical experiments, subagents, resource hacks, added
+axioms, full/umbrella builds or commits. Next: complete Poisson matching
+and actual finite projected atom action, then the hard signed near-cone/tail
+estimate. Growing moments, moving cofactors, common-height self-return and
+RH remain open. Goal ACTIVE.
+
+## 2026-10-05 — continuation01ab, C28.56ag.6
+
+BAG route. Proved complete compact three-dimensional Poisson, including
+all shifts, then the exact complete lifted critical physical action. Every
+integer lift is retained, both literal contraction projectors act on the
+same actual Fourier function, and the intersection is restored. The final
+unconditional family has the existing negligible normalized error from the
+ORIGINAL sharp cubic. These close the exact full representation/matching
+gaps, not signed cancellation or a uniform growing-N estimate.
+
+Three leaves,12 public declarations: ChiCompactLatticePoisson,
+ChiPrimeGaussianCubicPoisson, ChiPrimeGaussianCubicLiftedAction.
+Production51112/11522/58567 and all12-name axiom11043 exit0; production logs
+empty, only standard Lean axioms. Index18738 exit0, all12 API entries (short
+names within module rows) and single imports verified. Lint56265 exit1:
+31 unrelated unreachable modules; no new-leaf/proof-debt error. Global lint
+not clean. P2/P3 bag-complete-physical-poisson and frontier C28.56ag.6 current.
+
+Deep searches66852/17413 partial for local deadlines, full65700/65707 source
+inventories, background refresh incomplete and mostly source-only/pending
+compiler metadata. All20+20 statements and proposals inspected in each.
+The suggested unit-cube disjoint-support shortcut does not apply to growing
+BAG support. Locally finite overlapping translates solve this exactly.
+Second broad search unhelpful; lexical fallback returned both actual
+finite-test/smoothed-cubic definitions, verified in source. No mathematical
+absence inferred. Development corrections were cast/norm orientation,
+explicit quotient action reduction, Euclidean inner names, function
+composition and explicit equivalence reindexing; no resource hacks.
+
+Next conjecture is recorded in the hyperbolic-transition card: expose the
+literal full Fourier coefficient's r-phase zeta+xi*upsilon while retaining
+all r/Mellin dependence and the complete transition. Then attack the SIGNED
+near-cone/tail action. Do not swap the full lattice with Mellin integration
+without proof or revive the failed stationary-value edge expansion.
+Growing moments, moving cofactors, common-height self-return and RH remain
+open. Goal ACTIVE. All owned jobs terminal; completed scratch sources removed,
+logs/search JSON retained. No computations, subagents, full builds or commits.
+
+## 2026-10-05 — continuation01ac, active checkpoint
+
+BAG route. The full actual Fourier coefficient now has the exact transverse
+phase zeta+xi*upsilon, with all nested r/Mellin dependence, shifted integer
+lifts and both literal contraction projectors retained. The unconditional
+family still compares to the ORIGINAL sharp cubic with negligible normalized
+error. ChiPrimeGaussianCubicTransverse production91858 and all8-name
+axiom90906 pass; standard axioms only. Index64921 and eight API entries
+pass; lint19602 has33 unrelated unreachable modules. Frontier C28.56ag.7
+and P2/P3:bag-complete-transverse-critical-action record this completed step.
+
+Next conjectures pursued, not a search-only pivot: (1) the actual critical
+square-sieved source differentiates to distinguished prime U_p-U_(p^2)
+factors; (2) their shifted valuation cubic has an exact full signed trace.
+ChiRamanujanCriticalDistinguishedPrime proves the all-integer Fourier
+identity, including zero/uncovered modes. ChiRamanujanShiftedCubicTrace proves
+absolute full-pair summability and value z^(-c)*c_z(a+b-c)/(1-z)^2 for EVERY
+integer shift, its exact zero set, tagged-slot values, every actual critical
+prime and all finite prime sets. Production23006/15708 pass with empty logs;
+13-name axiom87231 and registry/lint audit pending at this checkpoint.
+P2:bag-critical-source-shifted-trace contains the proofs and limitations.
+
+The unchanged unshifted orthogonality transfer fails: first-slot tagged trace
+is z/(1-z)^2, third-slot is -z/(1-z)^3. Positive survivor is the exact all-shift
+classification. The actual reduced rational node-weight match remains open;
+all-frequency multiplier equality is not asserted to be that theorem.
+
+Deep search54761 partial reranking deadline, full65721 inventory, refresh
+incomplete and mostly source-only/pending compiler metadata; all20+20 and
+proposed ingredients inspected. It drifted to unrelated Galois decomposition.
+Lexical10575 recovered actual localDilation and its all-shift theorem, source
+verified. Lexical weightedLocal search inspected all15 entries and the full
+weighted local source. No absence inference. Earlier01ac full-transverse
+search metadata remains in P1:bag-complete-hyperbolic-transition-action.
+
+Next active scratch /tmp/bag-weighted-third-01ac.lean derives the three-pair
+correction to the FULL weighted Euler factor and specializes to actual
+prime complex Mellin weights. Not audited yet. The exact coefficient first
+difference uses 1+h, h=z/(1-z); writing (1-z)^(-1) instead requires z!=1.
+See P1:bag-critical-distinguished-prime-source. Hard signed growing-profile
+o(N/log(N)^2) cancellation, growing moments, moving cofactors, common-height
+self-return and RH remain open. Goal ACTIVE, not achieved or blocked.
+
+Final01ac checkpoint: weighted third-slot conjecture also proved, including
+the FULL complex Mellin weights and an unconditional every-prime theorem.
+ChiRamanujanWeightedThirdShift production37262 and all4-name axiom88278 pass;
+standard axioms only. Thus all FOUR leaves and25 public declarations pass
+production/axiom audits. Other three production IDs91858/23006/15708,
+axiom IDs90906/87231. Final index48316 passes, all25 API entries and single
+imports checked. Final lint98092 exits1 with35 unrelated unreachable modules,
+no new-leaf/proof-debt error. Global lint is not clean. C28.56ag.7/8 and
+P2/P3 complete-transverse-critical-action / critical-source-shifted-trace current.
+
+Next: prove the remaining weighted shifts W_(-1),W_(-2) by their exact finite
+diagonal corrections; translate all distinguished-prime placements into the
+four weighted k patterns. Prove individual distinguished labels select the
+same physical primes before matching contractions. Group the literal atoms
+in ZMod(rad(P)^2) and use finite Fourier injectivity / local torsion products
+to prove the reduced-rational node coefficients. P1:bag-critical-distinguished-
+prime-source records formulas and exact limitations. The all-frequency
+identity and unweighted trace do NOT themselves justify the physical
+near-cone/Mellin transfer. Signed cubic saving and RH remain open.
+
+All owned Lean/search/index/lint processes terminal, completed01ac scratch
+sources removed and logs/search JSON retained. No computations, subagents,
+added axioms, resource hacks, full/umbrella builds or commits. Goal ACTIVE.
+
+## 2026-10-05 — continuation01ad, C28.56ag.9
+
+BAG route. Previous turn progress revalidated against current source/frontier.
+Now proved EVERY complex Mellin-weighted distinguished placement: full finite
+valuation diagonal HasSum, exact missing W_-1/W_-2 corrections, translation
+of all three slots, unconditional every-prime and full finite-prime lattice
+families including coincident labels. Also proved each individual actual
+distinguished entry selects precisely its own physical prime on the covered
+band; the EXISTING complete two-contraction projector equals distinguished-
+label exclusion, retaining the intersection. No valuation-axis identification
+or physical signed saving is claimed.
+
+Two production leaves: ChiRamanujanWeightedDistinguishedCubic223lines/15 public
+declarations (audit77712), ChiRamanujanDistinguishedPrimeLabels117lines/6 public
+declarations (audit87443). Both exit0, empty logs, lake --old env lean with
+leaf output. All21-name axiom25745 exits0, standard axioms only. Index30505
+passes; all21 API entries and one import each verified. Lint75464 exits1:
+33 unrelated unreachable modules, no new-leaf/proof-debt error. Global lint
+not clean. P2/P3 bag-weighted-distinguished-cubic and frontierag.9 current.
+
+Deep search86824 partial malformed filter/judge JSON, full65733 inventory;
+search97782 partial interrupted text retrieval, full65736 inventory. Both
+refresh incomplete, compiler mostly source-only/pending. All20 candidates,
+20 source arguments and proposed ingredients inspected for each. Exact
+weightedThirdShift lexical query verified actual source. No absence inference.
+The node search found sum_filter_reducedModulus_eq in EstermannRamanujanMainTerm;
+the positive-damping infinite-weight Euler formula cannot be applied at the
+critical finite source. Exhaustive source search additionally found finite
+ZMod.prodEquivPi/prodEquivPi_apply in Mathlib/Data/ZMod/QuotientRing and the
+actual character normalization theorem
+GaloisForLFunctions.RHTower.HyperKloosterman.stdAddChar_crt in
+HyperKloostermanRootNumber. Sources read, Lean probes still needed before use.
+
+Next actual grid conjecture is fully recorded in P1:bag-critical-distinguished-
+prime-source. For Q=rad(P)^2, d_p(k)=I_(p²|k)-I_(p|k)/p,
+t_p(k)=I_(p|k)/p-1/p², target literal grouped atom mass
+sum_p log(p)*t_p(k)*prod_(q!=p)d_q(k). Prove via local full Fourier sums,
+finite CRT and Fourier injectivity, retaining zero and every node. Predicted
+survivor: at squarefree reduced denominator d, weight is
+A_P*m_P(d)*(sum_p log(p)/p-log(d)); two distinct squared denominator primes
+force zero. These are NOT audited node identities. Actual grouping precedes
+any substitution into the physical r/Mellin action.
+
+All owned processes terminal; completed01ad scratch sources removed and logs/
+search JSON retained. No computations, subagents, added axioms, resource hacks,
+full/umbrella builds or commits. Signed growing cubic cancellation, growing
+moments, moving cofactors, common-height self-return and RH remain open.
+Goal ACTIVE, not complete or blocked.
+
+
+## 2026-10-05 — continuation01ae, C28.56ag.10
+
+BAG route: actual critical source to signed full physical cubic. Previous
+weighted-placement/label work was progress without a saving. This turn
+proved the exact critical prime-square grid conjecture and its shifted
+coefficient normalization. ChiRamanujanCriticalGridSource (489 lines,25
+public declarations) retains every actual atom, zero and nonprimitive
+nodes. Complete local Fourier sums plus finite DFT injectivity identify
+actual grouped mass. Cofactor units give a bijection with all local
+prime-square coordinates and preserve both divisibility indicators, yielding
+an explicit product formula directly at every global grid node. Normalized
+base/tag weights are (1-z)c(i) and (1-z)z*c(i+1); two distinct primitive
+prime-square coordinates force zero mass. No mathematical conjecture failed.
+
+Production97363 passed empty log with lake --old env lean leaf -o. Axiom73382
+passed all25 names with standard axioms only. Index61870 passed; all25 exact
+module/name API entries and one umbrella import verified. Lint37187 exits1
+with36 unrelated unreachable modules and no new-leaf/proof-debt finding;
+global lint not clean. P2/P3 bag-critical-prime-square-grid, P1 actualsource
+card and frontierag.10 current. No full/umbrella builds, numerical experiments,
+subagents, added axioms, resource-limit changes or commits.
+
+Search20154 nonpartial65744 inventory; search91212 nonpartial65751 inventory.
+Both refresh incomplete, compiler mostly pending/source-only. All20+20
+candidates/source arguments and proposed ingredients inspected. Relevant
+current source read. The older finite valuation-support cuts restrict
+numerators as well as denominators; the actual grid with integer lifts
+allows arbitrary numerator cofactors. These cannot be discarded in transfer.
+
+Next conjecture recorded with derivation in P1: with A=product(1-1/p),
+L=sum log(p)/p, the normalized balanced finite-prime cone trace under BOTH
+literal distinguished-label exclusions equals
+-A*sum_r log(r)/(r-1)*(L-log(r)/r)^2. It should be strictly negative for
+at least two primes. This is NOT yet Lean-audited and not a physical estimate.
+The full denominator-restricted rational trace has outside-prime numerator
+Euler factors; in Re(s),Re(t)>1 these predict zeta(s)zeta(t) times the
+finite-prime geometric correction. Predicted balanced double-pole coefficient
+is A^2 times that negative trace. Actual physical pole pairing and the entire
+near-cone region must be analyzed. No critical unordered HasSum is presumed;
+the integer-pair absolute subseries has harmonic mass. This remains within BAG.
+
+All owned jobs terminal. Completed scratch Lean/inc sources removed; logs and
+search JSON retained. Signed cubic saving, growing moments, moving cofactors,
+common-height self-return and RH remain open. Goal ACTIVE.
+
+## 2026-10-05 — continuation01af, C28.56ag.11
+
+BAG route: signed full physical cubic through actual critical source.
+Previous grid-source work was progress without a saving. Two corpus-based
+conjectures now proved: the complete balanced finite-prime cone under BOTH
+literal label exclusions equals -A*sum_r b_r*(L-a_r)^2, strictly negative iff
+two distinct retained primes exist; and the two-variable mixed-source
+cofactor completion has joint residue -A^3*sum_r b_r*(L-a_r)^2. Here
+A=product(1-1/p),a_p=log(p)/p,b_p=log(p)/(p-1),L=sum a_p. No numerical input.
+
+ChiRamanujanBalancedLabelTrace has13 public declarations/190 lines;
+ChiRamanujanCofactorPole has18/308. The second leaf retains both independent
+complex variables, proves the actual coprime numerator L-series HasSum,
+finite Euler factor and residue, then the full weighted labeled HasSum,
+balanced specialization, continuity, complete mixed HasSum and joint pole.
+These are fixed-prime-set source identities, not a rational reindexing or a
+uniform growing physical estimate. The nonzero negative residue specifies
+what the actual profile and near-cone contribution must jointly handle.
+
+Production3062 and30300 pass empty logs under lake --old env lean leaf -o.
+Combined axiom6422 passes all31 with standard axioms only. Index92350 passes;
+all31 exact module/name API rows and one import per leaf checked. Lint73204
+has25 unrelated unreachable modules and no new-leaf/proof-debt finding;
+global lint not clean. No full/umbrella builds, subagents, new axioms,
+heartbeat changes or commits. Development inference/heartbeat failures were
+resolved by explicit subtype functions/HasSum arguments and factored local
+continuity proofs; no mathematical premise was added.
+
+Search37838 and95868 nonpartial65755/65757 inventories. Reindex search5904
+PARTIAL due source_retrieval interruption, inventory65761 complete. Refresh
+incomplete, compiler mostly pending/source-only. All candidates/source
+arguments/ingredients inspected. The Deninger-ray suggestion is unrelated
+and rejected. Current source provides positiveRationalEquiv,
+rationalOfValuations_natural/injective, Finsupp filters and natural
+factorization. No absence inference.
+
+Next: construct the explicit retained-valuation plus positive coprime integer
+bijection with denominator-supported positive rationals. Outside valuations
+are nonnegative, so their product is a genuine integer; rational-product
+injectivity identifies its natural valuations and proves coprimality. Then
+transfer both coordinates and the literal grid weights, retaining all lifts.
+Full physical pole/near-cone/tail signed o(N/log^2 N), growing moments,
+moving cofactors, common-height self-return and RH remain open. Goal ACTIVE.
+P1, P2/P3 bag-balanced-labeled-cofactor-pole and frontierag.11 current.
+All owned jobs terminal; completed scratch sources removed, logs/JSON kept.
+
+
+## 2026-10-05 continuation01ag — complete rational source and actual grid
+
+Route BAG only. Previous01af PROGRESS: exact negative balanced trace and
+mixed-source cofactor pole, with rational/physical transfer still open.
+This turn PROGRESS: closed the positive rational source transfer in two
+production leaves. RH and the physical signed saving remain open.
+
+ChiRamanujanRationalCofactors (317 lines,24 public) proves the explicit
+bijection between denominator-supported positive rationals and retained
+integer valuations plus positive coprime integer numerators. Outside-prime
+valuation filters are nonnegative and form integers; rational product
+injectivity recovers their natural factorization and coprimality. Both
+complex powers and the paired equivalence are exact. The rational source
+is defined directly from shifted distinguished coefficients, not by pulling
+back a definition. Its full HasSum in Re(s),Re(t)>1 equals the completed
+Euler expression, retaining arbitrary numerator primes and both label masks.
+
+ChiRamanujanRationalGridAttachment (328 lines,16 public) proves that EVERY
+positive a/R^2 has retained valuation v_p(a)-2. The local factors become
+I_(p^2|a)-I_(p|a)/p and I_(p|a)/p-1/p^2. The full label sum equals the actual
+grouped grid mass at a mod R^2, including the zero residue and nonprimitive
+nodes. If den(q) does not divide R^2, a denominator exponent greater than two
+forces every distinguished coefficient to vanish. Every surviving q has
+a positive lift a/R^2; no numerator support restriction was inserted.
+
+Final leaf audits: production62049 and15658 pass empty logs with
+lake --old env lean leaf -o. Axiom13267 passes all40 with only propext,
+Classical.choice and Quot.sound. Index56173 passes; all40 exact module/name
+API rows and both single umbrella imports checked. Lint78719 has24 unrelated
+unreachable modules, all inspected, no new-leaf/proof-debt finding; global
+lint not clean. No numerical experiments, axioms, subagents, full/umbrella
+builds, heartbeat changes or commits. Explicit functions and cast
+congruences resolve development errors, without changing statements.
+
+Searches44715/61153/31155/5344/29038 all complete nonpartial, inventories
+65764/65766/65773/65775/65775 complete; refresh incomplete, compiler metadata
+mostly pending/source-only. All candidate lemmas, source arguments and
+proposed ingredient sets inspected. Unrelated ABHN/coords_symm cancellation
+rejected. Positive-axis Mellin integrability does not imply vertical
+integrability. Cap/Sonin premises are not known for the physical profile.
+Current mathlib SchwartzMap.compCLM and mellinInv_mellin_eq are actual APIs;
+new uses still need scratch Lean verification.
+
+Next conjecture and proof mechanism recorded in P1: construct the full cone
+restriction of the physical three-coordinate Fourier Schwartz function
+along (x,y,-x*y). Polynomial growth and lower norm control allow compCLM.
+Prove the exponentially weighted two-coordinate log pullback Schwartz,
+including mixed quadrants; Fourier inversion then gives full two-variable
+Mellin inversion and vertical L1. The complete rational HasSum at real
+exponents supplies an absolute majorant for the actual signed pairing.
+Do not replace the full profile by a product or assert the nonzero negative
+residue vanishes. The target is the COMPLEX cubic norm o(N/log^2 N), not its
+real part alone. Pole/near-cone/tail coupling, other frequency sectors,
+growing moments, moving cofactors, common-height self-return and RH remain
+open. P2/P3 bag-rational-numerator-cofactors and frontier C28.56ag.12 current.
+Goal ACTIVE. All owned jobs terminal; completed scratch sources cleaned,
+logs and search JSON retained.
+
+
+Both proposed analytic steps now PASS: PositiveQuadrantLogSchwartz proves
+all mixed logarithmic derivative decay, two-variable inversion and vertical
+integrability on real parts (2,2). ChiPrimeGaussianCubicConeMellin proves the
+full cone restriction Schwartz and its exact rational HasSum/integral pairing
+by a summable integrable norm majorant. The unconditional actual cutoff
+family preserves original sharp/smooth error and all integer-lift summability.
+No tensor product or stationary replacement enters. This is PROGRESS on the
+hard physical source transfer, not a cancellation estimate.
+
+Production71522/10862 pass empty; axiom93534 passes all25 with only propext,
+Classical.choice and Quot.sound. Index69307 passes, all25 API rows and one
+import per leaf verified. Lint59769 has28 unrelated unreachable modules;
+all inspected, no new-leaf or proof-debt finding, global lint not clean.
+P2/P3 bag-full-physical-cone-mellin-pairing records dependency-closed proofs.
+Search11570/90276/31282 completed nonpartial/no errors; all candidates,
+arguments, ingredients and generated ideas inspected. Background refresh
+incomplete; source/compiler freshness mostly pending/source-only. The
+valuation-shift ingredient does not represent additive transverse defect.
+No general Mellin line, canonical positive-axis identity, continuation or
+contour displacement claimed.
+
+Next conjecture: complete bilinear Fourier correlations of the literal
+prime-square base/tag grid retain a nontrivial transverse-defect law. Derive
+that law symbolically under BOTH label exclusions before attempting to
+couple the proved nonzero negative cone residue to the near-cone contribution.
+The finite-grid source and public local Fourier transforms, not an unproved
+stationary ansatz, determine the coefficients. Full signed complex norm
+saving, growing moments, moving cofactors, common-height self-return and
+RH remain open. Goal ACTIVE.
+
+
+## continuation01ah — exact local transverse survivor
+
+ChiRamanujanTransverseDefectGrid now proves all-test product pushforward
+for both base and restricted-tag factors on F_p, and its exact literal
+prime-square attachment. The base map exhausts every p-divisible node;
+all other base coefficients vanish. The ENTIRE prime-square base/base sum
+at physical prime frequency equals -(1-1/p), not zero. Local orthogonality
+cannot be used to discard the transverse source. Strong positive survivor:
+the negative centered zero atom plus every nonzero defect mass as one exact
+operator. All four product-test placements are retained. Full tag support
+outside the subgroup is not covered by these restricted-tag identities.
+
+Production86909 passes empty; axiom89006 passes all17 with standard3 only;
+index49770/API17/import1 checked. Lint58246 has33 unrelated unreachable
+modules, all inspected; no new-leaf/proof-debt finding, not globally clean.
+P2/P3 bag-transverse-defect-grid-law and frontier ag.14 current.
+Search84667 nonpartial65786 and88818 nonpartial65794/noerrors, search76592
+PARTIAL65789 with retrieval interruption/runtime reranking deadline. All
+available20+20, ingredient sets and ideas inspected; no absence claim.
+Szego residualProfile and Ramare energy decomposition do not solve the
+physical defect. Existing KloostermanBilinear norm q is fixed-modulus only.
+
+Assessment: cone Mellin pairing closes a real analytic gap; the new local
+law eliminates a false cancellation mechanism and identifies its surviving
+signed operator, but yields NO growing signed estimate. Next attack must
+retain the actual profile H(a,b) separately in both tangential coordinates.
+At nonzero defect delta its exact local source is p^-2 sum_(a!=0)H(a,delta/a);
+zero defect retains the two full axes and intersection. Finite Fourier
+expansion produces Kloosterman inverse fibres. Prove this complete-profile
+law and its lifted R^4/label-excluded source attachment, then the signed
+physical estimate; do not substitute a product test or fixed-period average.
+Growing moments, moving cofactors, common-height self-return and RH open.
+All owned jobs terminal. Completed scratch sources removed; audit logs and
+search JSON retained. Goal ACTIVE.

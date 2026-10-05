@@ -282,12 +282,12 @@ Module `GaloisForLFunctions.HTGeometry.CayleyThetaRecordFlatness` (98 constants,
 | (CTRFM.1) `m_n = ‖S_Hⁿ Ω_H‖² = 105/((2n+3)(2n+5)(2n+7))` | `norm_hodgeSpectralSurvival_pow_sq` |
 | (CTRFM.2) `O_H f = (E_H S_Hⁿ f)_n` | `observability`, `hodgeSpectral_colligation`, `hodgeSpectral_stable` |
 | (CTRFM.3) theta envelope, `0 < Z_a < ∞` | corpus `thetaCuspFullSource_derivative_exp_bound`; `integrable_exp_abs_cosh_theta`, `thetaBalanceMass_pos`, `thetaBalanceMass_eq` |
-| (CTRFM.4) `ν_a`, `S_a = tanh(ax)`, `E_a = sech(ax)`, `Ω_a = 1`; balanced law of the literal tilts for `|a| ≤ 1` | `thetaBalanceLaw`, `thetaSurvival`, `thetaExit`, `thetaState`, `thetaBalanceLaw_eq_balancedLaw` |
+| (CTRFM.4) `ν_a`, `S_a = tanh(ax)`, `E_a = sech(ax)`, `Ω_a = 1`; balanced law of the literal tilts for `∣a∣ ≤ 1` | `thetaBalanceLaw`, `thetaSurvival`, `thetaExit`, `thetaState`, `thetaBalanceLaw_eq_balancedLaw` |
 | Theorem A, (CTRFM.5): `S*S + E*E = I`, telescope, `Sᴺ → 0`, `O` isometric, in both gauges | `multiplier_colligation`, `theta_colligation`, `theta_stable`, `colligation_telescope`, `sum_norm_exit_sq_add`, `norm_observability_apply` |
 | Theorem A, parity: `S_a` odd, `E_a` even, `JΩ_a = Ω_a`, `Je_n = (-1)ⁿ e_n` (prime side `(-1)ⁿ⁺¹`: CCRHD `pairSwap_collisionExitVector`) | `thetaReflection_conj_survival`, `thetaReflection_conj_exit`, `thetaReflection_state_and_exit`, `measurePreserving_neg_thetaBalanceLaw` |
 | (CTRFM.6) `σ_a = tanh(a·)_* ν_a` | `thetaContrastLaw` |
-| Theorem B, (CTRFM.7): `σ_H(|v| > 1-ε)/ε³ → 35/2` (exact polynomial form) | `hodgeSpectralLaw_endpoint`, `tendsto_hodgeSpectralLaw_endpoint` |
-| Theorem B, (CTRFM.8)–(CTRFM.9): `σ_a(|v| > 1-ε) = O(εᴺ)`; zero at `a = 0` | `thetaContrastLaw_endpoint_le`, `thetaBalanceLaw_real_endpoint_le`, `exp_neg_two_abs_lt_of_tanh`, `thetaContrastLaw_zero_endpoint` |
+| Theorem B, (CTRFM.7): `σ_H(∣v∣ > 1-ε)/ε³ → 35/2` (exact polynomial form) | `hodgeSpectralLaw_endpoint`, `tendsto_hodgeSpectralLaw_endpoint` |
+| Theorem B, (CTRFM.8)–(CTRFM.9): `σ_a(∣v∣ > 1-ε) = O(εᴺ)`; zero at `a = 0` | `thetaContrastLaw_endpoint_le`, `thetaBalanceLaw_real_endpoint_le`, `exp_neg_two_abs_lt_of_tanh`, `thetaContrastLaw_zero_endpoint` |
 | (CTRFM.10) `q_n(a) = ‖S_aⁿ Ω_a‖²` | `thetaSurvivalMoment`, `norm_thetaSurvival_pow_sq` |
 | Theorem C, (CTRFM.11)–(CTRFM.13): `nᴷ q_n(a) → 0`; `n³ m_n → 105/8` | `tendsto_pow_mul_thetaSurvivalMoment`, `thetaSurvivalMoment_le`, `tendsto_pow_three_mul_m` |
 | Corollary D, (CTRFM.14): no isometric `U`, `UΩ_H = Ω_a`, `US_H = S_aU`; same on cyclic orbits; spectral laws unequal | `no_theta_completion_intertwiner`, `not_forall_norm_survival_eq`, `exists_survivalMoment_ne`, `hodgeSpectralLaw_ne_thetaContrastLaw` |

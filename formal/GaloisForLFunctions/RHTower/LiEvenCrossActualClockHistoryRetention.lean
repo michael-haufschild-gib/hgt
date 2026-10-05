@@ -1653,7 +1653,8 @@ theorem liEvenCrossActualClockHistoryAge_admission {t : ℝ} (ht : 0 < t) :
   rw [hgt_history_assembly_age] at hp ha
   exact ⟨hp.1, ha.2.1, fun n => (ha.2.2 _ (by fun_prop)).1⟩
 
-private theorem hgt_history_assembly_age_test {t : ℝ} (ht : 0 < t)
+/-- `∫ f dQ_t = (∫_0^t K(t-s) f(s) ds)/A(t)` for every continuous test `f`. -/
+theorem liEvenCrossActualClockHistoryAge_integral {t : ℝ} (ht : 0 < t)
     (f : ℝ → ℝ) (hf : Continuous f) :
     Integrable f (Q t) ∧ (∫ s, f s ∂Q t) = (∫ s in 0..t, K (t-s)*f s) / A t := by
   have h := hgt_history_hinge_age_admissions hgt_history_assembly_smooth
@@ -1665,9 +1666,10 @@ theorem liEvenCrossActualClockHistoryAge_moment {t : ℝ} (ht : 0 < t) (n : ℕ)
     (∫ s, s^n ∂Q t) = (n.factorial : ℝ) / A t *
       (∑' j : ℕ, nu (j+1) * t^(2*(j+1)+n) /
         (((2*(j+1)).factorial : ℝ) * ((2*(j+1)+n).factorial : ℝ))) := by
-  rw [(hgt_history_assembly_age_test ht _ (by fun_prop)).2, hgt_history_age_integral_eq n ht.le]
+  rw [(liEvenCrossActualClockHistoryAge_integral ht _ (by fun_prop)).2, hgt_history_age_integral_eq n ht.le]
   ring
-private theorem hgt_history_assembly_cutoff {t h : ℝ} (ht : 0 < t) (hh : 0 ≤ h) :
+/-- `Q_t[0,h] = (A(t) - A(t - min h t))/A(t)` for `h ≥ 0`. -/
+theorem liEvenCrossActualClockHistoryAge_Icc_zero {t h : ℝ} (ht : 0 < t) (hh : 0 ≤ h) :
     (Q t).real (Icc 0 h) = (A t - A (t-min h t)) / A t := by
   have hcut := hgt_history_hinge_age_cutoff hgt_history_assembly_smooth
     liEvenCrossActualClockHistory_origin.1 hgt_history_assembly_bpos
@@ -1683,7 +1685,7 @@ theorem liEvenCrossActualClockHistoryAge_recent_eq {t : ℝ} (ht : 0 < t) :
     (Q t).real (Icc 0 (e t)) = (A t - A (t-e t)) / A t := by
   have hg := liEvenCrossActualClockHistory_geometry ht
   have he : e t ≤ t := by linarith [hg.2.2.2]
-  simpa only [min_eq_left he] using hgt_history_assembly_cutoff ht hg.2.2.1.le
+  simpa only [min_eq_left he] using liEvenCrossActualClockHistoryAge_Icc_zero ht hg.2.2.1.le
 
 private theorem hgt_history_assembly_cap {t h : ℝ} (ht : 0 < t) (hh : 0 ≤ h) :
     Integrable (fun r => fH h (t-r)) (kap t) ∧
@@ -1851,7 +1853,7 @@ private theorem hgt_history_assembly_origin_fraction {alpha : ℝ} (ha : 0 ≤ a
   apply hv.congr'
   filter_upwards [self_mem_nhdsWithin] with t ht
   change 0 < t at ht
-  exact (hgt_history_assembly_cutoff ht (mul_nonneg ha (hgt_history_assembly_m_geometry ht).1.le)).symm
+  exact (liEvenCrossActualClockHistoryAge_Icc_zero ht (mul_nonneg ha (hgt_history_assembly_m_geometry ht).1.le)).symm
 
 theorem liEvenCrossActualClockHistoryResidual_nonneg {h w : ℝ}
     (hh : 0 < h) (hw : 0 ≤ w) : 0 ≤ RH h w ∧ (RH h w = 0 ↔ w = 4*h) :=
@@ -1962,7 +1964,7 @@ theorem liEvenCrossActualClockHistory_slope_atom_reserve {alpha t : ℝ}
     hgt_history_assembly_slope_reserve ht ha ha1
 private theorem hgt_history_assembly_whole_cap {t h : ℝ} (ht : 0 < t) (hh : 0 ≤ h) (hht : t ≤ h) :
     (Q t).real (Icc 0 h)=1 := by
-  rw [hgt_history_assembly_cutoff ht hh, min_eq_right hht]
+  rw [liEvenCrossActualClockHistoryAge_Icc_zero ht hh, min_eq_right hht]
   have hz : A 0 = 0 := hgt_history_source_excess_zero
   rw [sub_self, hz, sub_zero,
     div_self (liEvenCrossActualClockHistory_geometry ht).1.ne']
@@ -1970,7 +1972,7 @@ theorem liEvenCrossActualClockHistory_slope_endpoints {t : ℝ} (ht : 0 < t) :
     U 0 t=0 ∧ (∀ alpha : ℝ, 0 ≤ alpha → t ≤ alpha*liEvenCrossActualClockHistorySlopeLength t → U alpha t=1) := by
   constructor
   · change (Q t).real (Icc 0 (0*m t))=0
-    rw [zero_mul, hgt_history_assembly_cutoff ht le_rfl]
+    rw [zero_mul, liEvenCrossActualClockHistoryAge_Icc_zero ht le_rfl]
     simp only [min_eq_left ht.le, sub_zero, sub_self, zero_div]
   · intro alpha ha hc
     exact hgt_history_assembly_whole_cap ht

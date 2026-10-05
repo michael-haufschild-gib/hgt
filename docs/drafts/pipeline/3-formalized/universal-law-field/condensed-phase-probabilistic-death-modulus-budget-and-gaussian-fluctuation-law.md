@@ -320,10 +320,10 @@ New modules `GaloisForLFunctions.HTGeometry.CharFunCubicMoments` (5 constants), 
 |-|-|
 | §0 `ξ_p` has the q-Gamma law with characteristic function `Γ_{q_p}(1+it)` | `qLaw`, `charFun_qLaw`, `tendsto_charFun_socle`, `charFun_soclePrimePartialMeasure` |
 | Thm 1.1 no centering gives a weak or a.s. limit, `1/2 < σ ≤ 1` | `not_tendsto_soclePrimePartialLaw`, `not_ae_convergent_soclePrimeProductPartialSum`, `not_exists_centering_limit`, `not_summable_symmetrization` |
-| Thm 2.1 (GAS3.1) `-log|φ_p(t)| = ∑_{j,r} q^{jr}(1 - cos rθ)/r ≥ 0` | `neg_log_norm_qGammaOn`, `hasSum_defectLadder`, `modeDefect_nonneg` |
+| Thm 2.1 (GAS3.1) `-log∣φ_p(t)∣ = ∑_{j,r} q^{jr}(1 - cos rθ)/r ≥ 0` | `neg_log_norm_qGammaOn`, `hasSum_defectLadder`, `modeDefect_nonneg` |
 | Thm 2.2 (GAS3.2) `Δ_P(t) → ∞`, leading term plus bounded remainder | `tendsto_defectSum_atTop`, `not_summable_primeDefect`, `abs_defect_sub_leading_le`, `summable_defect_sub_leading` |
 | Thm 2.2 item 1: no unimodular gauge gives a nonzero limit | `tendsto_norm_prod_gauge_zero`, `norm_prod_gauge` |
-| Thm 2.2 item 2 (GAS3.3): every renormalizer with a nonzero limit has `∏|r_p| = exp(Δ_P + O(1))` | `norm_prod_renormalized`, `tendsto_log_renormalizer_sub_defect`, `exists_bound_log_renormalizer_sub_defect` |
+| Thm 2.2 item 2 (GAS3.3): every renormalizer with a nonzero limit has `∏∣r_p∣ = exp(Δ_P + O(1))` | `norm_prod_renormalized`, `tendsto_log_renormalizer_sub_defect`, `exists_bound_log_renormalizer_sub_defect` |
 | Thm 2.2 item 3: the genus-one counterterm pays the budget | `norm_exp_neg_eqgActivation`, `norm_prod_renorm`, `summable_renorm_exponent` |
 | Cumulant expansion `φ_q(t) = exp Φ_q(t)`, cubic bound, mean `κ₁`, variance `κ₂` of the q-Gamma law | `RealEulerNome.cumulant`, `RealEulerNome.qChar_eq_cexp_cumulant`, `RealEulerNome.norm_cumulant_sub_le`, `RealEulerNome.moments_qLaw`, `RealEulerNome.variance_qLaw`, `moments_of_charFun_cubic` |
 | `Var(N_p) = q_p + O(q_p²)` (variance series between `q` and `q + 3q²/(1-q)³`) | `RealEulerNome.le_varSeries`, `RealEulerNome.varSeries_sub_le`, `RealEulerNome.cubeSeries_le` |
@@ -402,7 +402,7 @@ inequality, which mathlib does not carry.
 
 | Clause | Lean |
 |---|---|
-| **the Weierstrass product inequality `1 − ∑ a ≤ ∏(1 − a)`** | **`one_sub_sum_le_prod_one_sub`** |
+| **the Weierstrass product inequality `1 − ∑ a ≤ ∏(1 − a)`** | **`HTGeometry.one_sub_sum_le_prod_one_sub`** |
 | **`w_{q,0} ≥ 1 − q/(1−q)`** | **`realQFactorialInf_ge`** |
 | `w_{q,0} ≤ 1 − q` | `realQFactorialInf_le_one_sub` |
 | **`q < 1/3 ⟹ w_{q,0} > 1/2`** | **`half_lt_realQFactorialInf`** |
@@ -451,7 +451,7 @@ divergence question is now about `A_P − Re B_P` alone.
 
 | Clause | Lean |
 |---|---|
-| the realization defect of one prime, and `\|φ_p\| > 0` | `primeDefect`, **`norm_qGammaOn_pos`** |
+| the realization defect of one prime, and `\∣φ_p\∣ > 0` | `primeDefect`, **`norm_qGammaOn_pos`** |
 | **item 1: a unimodular gauge leaves the modulus at `exp(−Δ)`** | **`norm_prod_gauge`** |
 | **item 3: the genus-one counterterm has modulus `exp(q(1 − cos θ))`** | **`norm_exp_neg_eqgActivation`** |
 | **items 2–3: the renormalized modulus is `exp(∑ (leading − defect))`** | **`norm_prod_renorm`** |
@@ -498,7 +498,7 @@ certified too:
 | Clause | Lean |
 |---|---|
 | `cos ≤ 0` on the far half of each period | **`cos_nonpos_of_mem_window`** |
-| the `m`-th window, its ratio `K = e^{π/τ} > 1`, and its endpoints | `windowLo`, `windowRatio`, `one_lt_windowRatio`, `windowRatio_mul_windowLo` |
+| the `m`-th window, its ratio `K = e^{π/τ} > 1`, and its endpoints | `windowLo`, `HTGeometry.windowRatio`, `one_lt_windowRatio`, `windowRatio_mul_windowLo` |
 | **every prime of the `m`-th window has `cos(τ log p) ≤ 0`** | **`cos_nonpos_of_mem_windowRange`** |
 | the window's prime set, and `π(b) − π(a) = #{p ∈ (a,b] prime}` | `primesInIoc`, `primeCounting_eq_card`, **`card_primesInIoc`**, `mem_primesInIoc` |
 
@@ -600,10 +600,10 @@ characteristic function `Γ_{q_p}(1+it)`.  That is now proved from the corpus's 
 
 | Clause | Lean |
 |---|---|
-| **one geometric mode has characteristic function `(1−q)/(1−q e^{ia})`** | **`integral_modeLaw_expo`** |
-| the gas coordinates are independent | `iIndepFun_eval` |
-| the law of one coordinate is its mode law | `integral_gasMeasure_eval` |
-| **a finite-mode linear observable has the product characteristic function** | **`integral_gasMeasure_expo_finset`** |
+| **one geometric mode has characteristic function `(1−q)/(1−q e^{ia})`** | **`AbelianZetaParameters.integral_modeLaw_expo`** |
+| the gas coordinates are independent | `AbelianZetaParameters.iIndepFun_eval` |
+| the law of one coordinate is its mode law | `AbelianZetaParameters.integral_gasMeasure_eval` |
+| **a finite-mode linear observable has the product characteristic function** | **`AbelianZetaParameters.integral_gasMeasure_expo_finset`** |
 | **the depth modes of a nome multiply to `(q;q)_∞/(q e^{−iθ};q)_∞`** | **`hasProd_modeCharFun`** |
 | **`Γ_q(1+it)` is that product times the centering `e^{−it log(1−q)}`** | **`qGammaOn_eq_centered_tprod`** |
 | the mode ratios of a prime are the powers of its nome | `ratio_temperatureParameters`, `socleCoeff`, `exp_socleCoeff` |

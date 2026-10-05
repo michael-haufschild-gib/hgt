@@ -228,16 +228,16 @@ Module `GaloisForLFunctions.HTGeometry.SourceStokesIntegralNuclearUnit` (57 cons
 
 | Claim | Lean declaration |
 |-|-|
-| (SSIN.1)–(SSIN.2) `π_d > 0`, `∑ π_d = 1`, `π_{|t|} = j_p/J` | `stokesWeight`, `stokesWeight_pos`, `tsum_stokesWeight`, `stokesWeight_eq` |
+| (SSIN.1)–(SSIN.2) `π_d > 0`, `∑ π_d = 1`, `π_{∣t∣} = j_p/J` | `stokesWeight`, `stokesWeight_pos`, `tsum_stokesWeight`, `stokesWeight_eq` |
 | (SSIN.3) unit ray `ψ_d = √π_d` | `stokesRay`, `stokesRay_apply`, `norm_stokesRay` |
-| (SSIN.4) `T(t) = sign(t)|ψ_{|t|}⟩⟨ψ_{|t|}|` | `sourceStokesUnit`, `stokesProjection` |
+| (SSIN.4) `T(t) = sign(t)∣ψ_{∣t∣}⟩⟨ψ_{∣t∣}∣` | `sourceStokesUnit`, `stokesProjection` |
 | (SSIN.5) matrix `sign(t)√(π(p)π(q))`, every entry nonzero | `inner_single_sourceStokesUnit_single`, `inner_single_sourceStokesUnit_single_ne_zero` |
-| diagonal = unsquared oriented current `j_p(t)/|J(t)|` | `inner_single_sourceStokesUnit_single_self`, `gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent_eq_sign_mul` |
+| diagonal = unsquared oriented current `j_p(t)/∣J(t)∣` | `inner_single_sourceStokesUnit_single_self`, `gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent_eq_sign_mul` |
 | (SSIN.6) self-adjoint, rank one, trace class | `isSelfAdjoint_sourceStokesUnit`, `hasRankLE_sourceStokesUnit`, `memSchattenClass_one_sourceStokesUnit` |
-| (SSIN.6) `T³ = T`, `|T| = |ψ⟩⟨ψ|`, `Tr T = sign t`, `‖T‖ = ‖T‖₁ = 1` | `sourceStokesUnit_cube`, `absOp_sourceStokesUnit`, `opTrace_sourceStokesUnit`, `norm_sourceStokesUnit`, `traceNorm_sourceStokesUnit` |
+| (SSIN.6) `T³ = T`, `∣T∣ = ∣ψ⟩⟨ψ∣`, `Tr T = sign t`, `‖T‖ = ‖T‖₁ = 1` | `sourceStokesUnit_cube`, `absOp_sourceStokesUnit`, `opTrace_sourceStokesUnit`, `norm_sourceStokesUnit`, `traceNorm_sourceStokesUnit` |
 | (SSIN.7) `T(-t) = -T(t)` | `sourceStokesUnit_neg` |
 | Thm B trace-norm continuity on each chamber (dominated `ℓ²` continuity of `ψ_d`, rank-two trace-norm bound) | `tendsto_traceNorm_sourceStokesUnit_sub`, `tendsto_stokesRay`, `traceNorm_rankOne_sub_le`, `eventually_stokesWeight_le` |
-| (SSIN.9) `ψ_{|t|} → 0` weakly, `T(t) → 0` strongly, norms do not close | `tendsto_inner_stokesRay`, `tendsto_sourceStokesUnit_apply`, `not_tendsto_norm_sourceStokesUnit`, `tendsto_stokesWeight_zero` |
+| (SSIN.9) `ψ_{∣t∣} → 0` weakly, `T(t) → 0` strongly, norms do not close | `tendsto_inner_stokesRay`, `tendsto_sourceStokesUnit_apply`, `not_tendsto_norm_sourceStokesUnit`, `tendsto_stokesWeight_zero` |
 | (SSIN.10) one-sided traces `±1` | `tendsto_opTrace_sourceStokesUnit` |
 | (SSIN.11) `Tr(T(t)K) → 0` for compact `K` | `tendsto_opTrace_sourceStokesUnit_comp` |
 | (SSIN.12) operator trace jump = normalized prime Stokes jump `1`, polar jump `-1`, sum `0` | `sourceStokes_charge_conservation` |

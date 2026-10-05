@@ -187,7 +187,7 @@ theorem pathPrimitive_boundary_sub {a b : ℝ} (hab : a < b) {f : ℂ → ℂ}
       Complex.ofReal_im, mul_zero, mul_one, sub_zero, add_zero, min_eq_left hab.le] at this
     exact this.1
 
-theorem intervalIntegral_conj (g : ℝ → ℂ) (x₀ x₁ : ℝ) :
+private theorem intervalIntegral_conj (g : ℝ → ℂ) (x₀ x₁ : ℝ) :
     ∫ x in x₀..x₁, starRingEnd ℂ (g x) = starRingEnd ℂ (∫ x in x₀..x₁, g x) := by
   simp only [intervalIntegral, integral_conj, map_sub]
 

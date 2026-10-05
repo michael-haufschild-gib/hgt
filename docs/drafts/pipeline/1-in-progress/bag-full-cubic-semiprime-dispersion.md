@@ -120,3 +120,65 @@ fully justified reciprocal B-process, rather than assuming positivity,
 summing row norms, or adding another regrouping wrapper. The full cubic,
 growing moments, moving cofactors, positive self-target recurrence and RH
 remain open. BAG is not retired.
+
+## 2026-10-05 continuation01a4 — finite-height correction must remain signed
+
+The target remains the literal C28.44 full prime cubic, with its original
+V/W amplitudes, both contraction families and their overlap. No hard cubic
+estimate was closed in this continuation. The following checks do not count
+as a new frontier theorem.
+
+The proposed joint Vaughan attack must combine its actual signed terms before
+estimating them. Its prime-only identity is already exact; recombining the
+coefficient alone merely recovers the original prime indicator. Likewise,
+using the semiprime organization with an ordinary reciprocal-frequency large
+sieve repeats the already recorded conductor loss. The available medium
+Mobius factor theorem concerns logarithmic phases and includes its actual
+contour/frequency restrictions. It does not remove the Mellin-transform cost
+or bound the coupled q,r carrier by substitution. These are applicability
+failures of these proposed estimates, not obstructions to all Vaughan proofs.
+
+The simultaneous additive-mode identity recorded above leaves the phase
+`(p-b*r)*(q-a*r)/r+(c-a*b)*r`. The already audited complete rational trace
+evaluates c=a*b. A finite physical height also resolves c-a*b at scale 1/N.
+The grouped Ramanujan expansion is absolutely convergent at each fixed
+positive damping and fixed integer; its separate reduced-residue expansion
+has not thereby acquired an absolutely summable three-frequency majorant.
+The original incomplete determinant aggregate remains to be estimated.
+
+A new calibration check follows directly from the completed uniform square
+law and the existing small-damping second-density theorem. Write
+
+    M = integral bagPhysicalHeightWindow,
+    A(e,X) = (1/X) sum_n D_e(n)^2 W(n/X),
+    H(e) = pmPowerDampedSecondDensity e,
+    L = log X.
+
+For each C>0, uniformly over 0<e<=C/L, these two audited source theorems imply
+the following PAPER consequence:
+
+    (A(e,X)-H(e)*M)/e + exp(-2*e*L)*M/2 -> 0.
+
+Proof: write the square-law error as
+`R(e,X)=A(e,X)/(e^2*L)-Psi(e*L)*M`. The displayed expression is exactly
+
+    (e*L)*R(e,X) + (1/2-H(e)/e)*M.
+
+The first term tends uniformly to zero because 0<e*L<=C; the second does
+because H(e)/e tends to 1/2 and the entire damping interval shrinks to zero.
+No lower bound on e*L is used. In particular the normalized defect tends to
+-M/2 when e*L->0, rather than zero. This is a constraint on an attempted
+finite-height replacement by its fixed-damping Haar mean. It is NOT yet an
+identification or estimate of a selected near-resonant frequency subfamily,
+and is NOT a full cubic theorem. No new Lean declaration is claimed for this
+paper consequence.
+
+Consequently the next cubic conjecture must retain the complete finite-height
+correction together with the actual contractions. An argument that evaluates
+the exact rational trace and discards the remaining signed correction
+uniformly in this damping range is not justified by the known square law.
+The concrete hard obligation remains cancellation of the complete physical
+noncontracting cubic after all source terms are restored, or a proved
+three-frequency finite-height transfer yielding that same estimate. A scalar
+residue identity or a new conditional receiver would leave that obligation
+unchanged.

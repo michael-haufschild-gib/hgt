@@ -1,10 +1,19 @@
 # BAG full Schwartz critical boundary after actual source growth
 
-- **ID:** BAG-C28.56ae, active hard conjecture; not formalized.
+- **ID:** BAG-C28.56ae, closed in Lean; retained proof-development history.
 - **Route:** BAG actual rational cubic to physical test profiles.
 - **Predecessors:** C28.56aa compact arithmetic boundary; C28.56ab full
   rational source; C28.56ac weighted rational/tested identification;
   C28.56ad actual all-order global source control.
+
+## Current status
+
+The complete fixed-Schwartz theorem, actual-source finite-seminorm bounds,
+full-plane domination, signed intersection, reflection identities and rational
+assembly are formalized. See [audited result](../3-formalized/bag-schwartz-cubic-critical-boundary.md).
+Four production leaves and all 33 public axiom audits passed. The active hard
+continuation is [physical contraction matching](bag-physical-contraction-moving-poles.md),
+C28.56af. The conjecture language below records the proof's development.
 
 ## Closed obstacle
 
@@ -128,5 +137,5 @@ gives the candidate complete action
 The rational-series identity is the existing unconditional termwise-integral
 producer rationalCubicTest_hasSum applied to Schwartz integrability. No claim
 about interchanging the finite-prime integral net is part of this argument.
-Quotient, DCT, reflection and final-assembly scratch files are being checked;
-the full statement remains unverified until the final leaf audit succeeds.
+Quotient, DCT, reflection and final-assembly proofs subsequently passed all
+production and axiom audits; see the current-status paragraph above.

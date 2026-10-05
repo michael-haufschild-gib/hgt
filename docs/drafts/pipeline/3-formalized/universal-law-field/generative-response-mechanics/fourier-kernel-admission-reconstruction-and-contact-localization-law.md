@@ -422,7 +422,7 @@ Modules `GaloisForLFunctions.HTGeometry.PhasePacketOrderReflection` (45 constant
 | Claim | Lean declaration |
 |-|-|
 | (FKA.1)–(FKA.2) Fourier transform, phase packets, quadratic form | `fourierTransform`, `phasePacket`, `packetForm`, `packetEnergy`, `signedFourier`, `signedPacketForm`, `signedPacketEnergy` |
-| Thm 3.1 (FKA.5) `Q_ν(t,z) = ∫ |p_{t,z}|² dν` | `packetForm_eq_packetEnergy`, `signedPacketForm_eq` |
+| Thm 3.1 (FKA.5) `Q_ν(t,z) = ∫ ∣p_{t,z}∣² dν` | `packetForm_eq_packetEnergy`, `signedPacketForm_eq` |
 | Thm 3.1 (FKA.6) `ν ≥ 0` iff all packet forms `≥ 0` (Stone–Weierstrass on `AddCircle`, outer/inner regularity) | `nonneg_iff_forall_signedPacketEnergy_nonneg`, `le_iff_forall_packetEnergy_le`, `exists_rationalPacket_approx`, `le_of_forall_rationalPacketEnergy_le` |
 | Thm 3.1 (FKA.7) kernel matrices reconstruct `ν`; two-time packets read `ν̂` | `kernelMatrix`, `eq_of_kernelMatrix_eq`, `fourierTransform_eq_charFun` |
 | (FKA.3)–(FKA.4) gauge and packet thresholds | `admissionGauge`, `packetThreshold`, `packetThreshold_le_iff` |
@@ -430,7 +430,7 @@ Modules `GaloisForLFunctions.HTGeometry.PhasePacketOrderReflection` (45 constant
 | Thm 4.1 (FKA.9) least `c` with every Hermitian pencil PSD | `kernelPencil`, `kernelPencil_isHermitian`, `kernelPencil_posSemidef_iff`, `admissionGauge_le_iff_kernelPencil`, `admissionGauge_eq_iInf_kernelPencil` |
 | Thm 4.1 (FKA.10) Radon–Nikodym gauge, finiteness criterion | `nonneg_add_smul_iff_negPart_le`, `le_smul_iff_rnDeriv_le`, `admissionGauge_eq_essSup`, `admissionGauge_lt_top_iff` |
 | Thm 5.1 (FKA.12)–(FKA.13) rational enumeration, nested pencils, `κ_N ↑ κ` | `ratPhase`, `truncatedGauge`, `truncatedGauge_le_iff`, `truncatedGauge_mono`, `iSup_truncatedGauge`, `tendsto_truncatedGauge`, `le_iff_forall_rationalPacketEnergy_le` |
-| §6 rational phase polynomials dense in `L²((1+|h|)μ)` | `exists_ratPacket_eLpNorm_lt`, `exists_ratPacket_indicator_approx` |
+| §6 rational phase polynomials dense in `L²((1+∣h∣)μ)` | `exists_ratPacket_eLpNorm_lt`, `exists_ratPacket_indicator_approx` |
 | Thm 6.1 (FKA.15) ground energy `= ess inf h` | `rationalRayleighSet`, `isGLB_rationalRayleighSet`, `essInf_mul_packetEnergy_le`, `exists_ratPacket_rayleigh_lt` |
 | Thm 6.1 `α < 0 ⇒ κ = -α` | `admissionGauge_withDensityᵥ`, `toReal_admissionGauge_withDensityᵥ_of_neg` |
 | Thm 6.1 (FKA.16)–(FKA.17) contact localization | `tendsto_contactMass_zero` |

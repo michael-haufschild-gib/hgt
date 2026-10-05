@@ -3,7 +3,7 @@
 - **ID:** LI-CLOCK-SIGNED-GAMMA-COUPLING
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / exact positive survivor of failed degree CP producer
-- **Source:** [complete signed Gamma paper](../2-fully-proven/li-clock-signed-gamma-jump-coupling.md)
+- **Source:** [complete signed Gamma paper](route%20li/li-clock-signed-gamma-jump-coupling.md)
 - **Failed route:** [ordinary degree compound Poisson](../5-failed/li-clock-degree-compound-poisson.md)
 - **Statement:** For p>1, actual degree and Gamma laws have exact positive CP convolution couplings at every integer time, with genuine product/order coupling. For every p>0 the degree law excludes ordinary natural-jump CP while satisfying the broader arbitrary-weight mixture predicate.
 
@@ -34,14 +34,14 @@ is not green. Full evidence:
 
 ## Positive closure and remaining boundary
 
-Together with [A14 foundation](../2-fully-proven/li-clock-signed-gamma-jump-coupling.md) and
+Together with [A14 foundation](route%20li/li-clock-signed-gamma-jump-coupling.md) and
 [B19 signed jumps](li-clock-signed-gamma-jumps.md), this formalizes exact
 N10–N15 positive salvage and closes the failed ordinary degree-CP subroute.
 The ordinary CP obstruction includes zero intensity and ineffective zero
 jumps; it does not negate the broader repository mixture predicate.
 
-Positive CP representation of one whole Gamma law iff RH (N16) remains a
-paper receiver here. Original signed density comparison N17, fractional-time
+Positive CP representation of one whole Gamma law iff RH (N16) is formalized
+in `LiClockThetaSignedGammaPositiveJumpCriterion`. Original signed density comparison N17, fractional-time
 positivity, undamped source sign and RH remain OPEN.
 
 - 2026-10-01 — All10 exports locally finalized; positive no-go closure recorded.

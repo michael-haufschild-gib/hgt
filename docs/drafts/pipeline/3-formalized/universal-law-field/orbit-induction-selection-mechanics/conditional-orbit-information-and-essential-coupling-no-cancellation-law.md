@@ -295,8 +295,8 @@ theory for `1 + C`, Atkinson stability and index invariance under compact pertur
 
 | Claim | Lean declaration |
 |-|-|
-| path space `X₁ × ⋯ × X_n` of standard Borel coordinates; consistent laws; regular conditional laws `P_i(·|x_<i)` | `PathSpace`, `PathSpace.instStandardBorelSpace`, `IsConsistentPathLaw`, `pathConditional`, `path_disintegrate` |
-| directed innovations `k_i^P = ∫ KL(P_i(·|h) ‖ Q_i(·|h)) dP_<i(h)`, extended value `∞` allowed | `pathInnovation`; extended chain term without absolute continuity `klDiv_compProd_eq_lintegral`, `pathInnovation_eq_klDiv` |
+| path space `X₁ × ⋯ × X_n` of standard Borel coordinates; consistent laws; regular conditional laws `P_i(·∣x_<i)` | `PathSpace`, `PathSpace.instStandardBorelSpace`, `IsConsistentPathLaw`, `pathConditional`, `path_disintegrate` |
+| directed innovations `k_i^P = ∫ KL(P_i(·∣h) ‖ Q_i(·∣h)) dP_<i(h)`, extended value `∞` allowed | `pathInnovation`; extended chain term without absolute continuity `klDiv_compProd_eq_lintegral`, `pathInnovation_eq_klDiv` |
 | Theorem 1.1, (COI.1) `KL(P_n‖Q_n) = Σ k_i^P` (and the reverse with `P,Q` exchanged) | `klDiv_path_eq_sum` (applied to `(P,Q)` and `(Q,P)`) |
 | (COI.2) `J(P_n,Q_n) = Σ (k_i^P + k_i^Q)` | `pathJeffreys`, `pathJeffreys_eq_sum` |
 | Corollary 1.2, (COI.3) `J ≥ Σ c_i` | `sum_le_pathJeffreys` |
@@ -308,14 +308,14 @@ theory for `1 + C`, Atkinson stability and index invariance under compact pertur
 | Theorem 3.1, (COI.5) `q(A+R) = q(A)`, `‖A+R‖_ess = ‖A‖_ess` | `calkinClass_add_compact`, `rectEssentialNorm_add_compact` |
 | Theorem 3.1 (1)–(3): compactness, Fredholmness (both directions) and index preserved | `isCompactOperator_add_compact_iff`, `isFredholmOp_add_compact_iff`, `fredholmIndex_add_compact`, packaged `compactRepair_invariants`; Atkinson layer `IsFredholmOp.add_compact`, `isFredholmOp_one_add_compact`, `IsCompactOperator.exists_finiteRank_approx`, `IsFredholmOp.exists_stable`, `isFredholmOp_of_grushin`, `IsFredholmOp.exists_bordering` |
 | Hilbert cokernel `(range)ᗮ` vs quotient cokernel (ULF-OISM-2's Fredholm notion) | `isBoundedFredholm_iff_isFredholmOp` |
-| Corollary 3.2, (COI.6) `‖Ind_a(D) + R‖_ess = limsup|aᵢ|‖D‖ > 0`, never compact | `weightedInduction_add_compact_essential` |
+| Corollary 3.2, (COI.6) `‖Ind_a(D) + R‖_ess = limsup∣aᵢ∣‖D‖ > 0`, never compact | `weightedInduction_add_compact_essential` |
 | Corollary 3.2: trace-class, Schatten, finite-rank, norm-limit-of-finite-rank couplings | `compactRepair_invariants_of_memRectSchattenClass`, `isCompactOperator_of_finiteDimensional_range`, `isCompactOperator_of_tendsto_finiteRank` |
 | Corollary 3.2: no compact coupling repairs a non-Fredholm induced formation | `not_isBoundedFredholm_weightedInduction_add_compact` |
 | (COI.7) `A+R` compact ⇒ `q(R) = -q(A)`, `‖R‖_ess ≥ ‖A‖_ess` (proved with equality) | `calkinClass_repair`, `rectEssentialNorm_le_of_repair`; induced case `weightedInduction_repair` |
 | (COI.8) `(A+R)*(A+R) - A*A = A*R + R*A + R*R` | `gram_add_sub_gram` |
 | (COI.9) `q((A+R)*(A+R)) = q(A*A)` | `calkinClass_gram_add_compact` |
 | (COI.10) homogeneous induced compact block over an infinite orbit: `‖q(A*A)‖ = ‖D‖²` (general constant modulus `c`: `c²‖D‖²`) | `tailSup_eq_of_norm_eq`, `norm_calkinClass_gram_weightedInduction`, `norm_calkinClass_gram_weightedInduction_homogeneous` |
-| Theorem 5.1, (COI.11) `J(P̃_n, Q̃_n) → ∞` and `‖A+R‖_ess = limsup|aᵢ|‖D‖ > 0` | `conditionalOrbit_essentialCoupling_noCancellation` |
+| Theorem 5.1, (COI.11) `J(P̃_n, Q̃_n) → ∞` and `‖A+R‖_ess = limsup∣aᵢ∣‖D‖ > 0` | `conditionalOrbit_essentialCoupling_noCancellation` |
 
 `limsup_i |a_i|` is the corpus `tailSup a` (infimum over finite sets of the supremum outside them).  §6
 (field-design consequence) and §7 (hostile scope) carry no Lean obligation and are not claimed.

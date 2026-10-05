@@ -97,7 +97,7 @@ theorem integrableOn_liEvenCrossActualClockCoshCosAtom_profile (q : XiZeroCopy) 
   Measure.integrableOn_of_bounded (M := Real.exp (|a| * T) * (T / 2 * Real.exp (β * T)) *
     ‖(xiSpectralPoint q)⁻¹‖ ^ 2) measure_Ioc_lt_top.ne
     (measurable_atom_profile q a).aestronglyMeasurable
-    (ae_restrict_of_forall_mem measurableSet_Ioc fun t ht => atom_profile_bound q a ht)
+    (ae_restrict_of_forall_mem measurableSet_Ioc fun _ ht => atom_profile_bound q a ht)
 
 private theorem measurable_profile (a : ℝ) :
     Measurable fun t => Real.exp (-a * t) * P t / t :=
@@ -156,13 +156,16 @@ theorem liEvenCrossActualClockDampedCutoff_eq_tsum (a : ℝ) {T : ℝ} (hT : 0 �
     Summable.of_nonneg_of_le (fun q => integral_nonneg fun t => norm_nonneg _) hnorm
       ((summable_norm_inv_xiSpectralPoint_sq.mul_left C).mul_left T)
   have hswap := integral_tsum_of_summable_integral_norm hint hsum
-  unfold liEvenCrossActualClockDampedCutoff liClockCoshCosCutoff
+  have e : ∀ q, liClockCoshCosCutoff (u q) (v q) a T =
+      ∫ t in Ioc 0 T, Real.exp (-a * t) * liEvenCrossActualClockCoshCosAtom q t / t := by
+    intro q
+    unfold liClockCoshCosCutoff liEvenCrossActualClockCoshCosAtom
+    rw [intervalIntegral.integral_of_le hT]
+  rw [tsum_congr e, hswap]
+  unfold liEvenCrossActualClockDampedCutoff
   rw [intervalIntegral.integral_of_le hT]
-  simp_rw [intervalIntegral.integral_of_le hT]
-  rw [← hswap]
   refine setIntegral_congr_fun measurableSet_Ioc fun t _ => ?_
   rw [tsum_div_const, tsum_mul_left, tsum_liEvenCrossActualClockCoshCosAtom]
-  · rfl
 
 /-! ## Positivity for `a ≥ β` and under RH -/
 
@@ -171,10 +174,9 @@ private theorem norm_liClockCoshCosCutoff_le (q : XiZeroCopy) (a : ℝ) {T : ℝ
       T * (Real.exp (|a| * T) * (T / 2 * Real.exp (β * T)) * ‖(xiSpectralPoint q)⁻¹‖ ^ 2) := by
   unfold liClockCoshCosCutoff
   rw [intervalIntegral.integral_of_le hT]
-  refine (norm_integral_le_of_norm_le_const (C := Real.exp (|a| * T) * (T / 2 * Real.exp (β * T)) *
-    ‖(xiSpectralPoint q)⁻¹‖ ^ 2) measure_Ioc_lt_top fun t ht => ?_).trans ?_
-  · exact atom_profile_bound q a ht
-  · rw [Real.volume_real_Ioc, max_eq_left (by linarith), sub_zero]
+  refine (norm_setIntegral_le_of_norm_le_const (C := Real.exp (|a| * T) * (T / 2 * Real.exp (β * T)) *
+    ‖(xiSpectralPoint q)⁻¹‖ ^ 2) measure_Ioc_lt_top fun t ht => atom_profile_bound q a ht).trans ?_
+  rw [Real.volume_real_Ioc, max_eq_left (by linarith), sub_zero, mul_comm]
 
 theorem summable_liClockCoshCosCutoff (a : ℝ) {T : ℝ} (hT : 0 ≤ T) :
     Summable fun q => liClockCoshCosCutoff (u q) (v q) a T :=

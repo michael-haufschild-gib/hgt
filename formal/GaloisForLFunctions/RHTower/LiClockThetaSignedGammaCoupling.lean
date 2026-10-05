@@ -110,7 +110,8 @@ private theorem sgl_boundary_mgf_tendsto (μ : Measure ℝ) [IsFiniteMeasure μ]
       (Complex.continuous_exp.tendsto (((ξ : ℂ)*Complex.I) * (x : ℂ))).comp
         (hparameter.mul_const (x : ℂ))
 
-private theorem finite_halfLine_laplace_ext (μ ν : Measure ℝ)
+/-- Finite measures carried by `[0, ∞)` with equal Laplace transforms on `s ≥ 0` coincide. -/
+theorem finite_halfLine_laplace_ext (μ ν : Measure ℝ)
     [IsFiniteMeasure μ] [IsFiniteMeasure ν]
     (hμ : ∀ᵐ t ∂μ, 0 ≤ t) (hν : ∀ᵐ t ∂ν, 0 ≤ t)
     (hLap : ∀ s : ℝ, 0 ≤ s → Lap μ s = Lap ν s) : μ = ν := by
@@ -143,7 +144,8 @@ open scoped ENNReal
 namespace RHTower
 noncomputable section
 
-private theorem sgc_normalized_probability (μ : Measure ℝ) {mass : ℝ}
+/-- Normalizing a measure of positive finite mass gives a probability measure. -/
+theorem isProbabilityMeasure_inv_ofReal_smul (μ : Measure ℝ) {mass : ℝ}
     (hmass : 0 < mass) (hμ : μ univ = ENNReal.ofReal mass) :
     IsProbabilityMeasure ((ENNReal.ofReal mass)⁻¹ • μ) := by
   constructor
@@ -171,7 +173,8 @@ private theorem sgc_convPow_nonnegative (μ : Measure ℝ) [SFinite μ]
     rw [GaloisForLFunctions.HTGeometry.convPow]
     exact sgc_conv_nonnegative μ _ hμ ih
 
-private theorem sgc_compoundPoisson_nonnegative (μ : Measure ℝ) [SFinite μ]
+/-- A compound Poisson law with jumps carried by `[0, ∞)` is carried by `[0, ∞)`. -/
+theorem compoundPoisson_ae_nonneg (μ : Measure ℝ) [SFinite μ]
     (hμ : ∀ᵐ x ∂μ, 0 ≤ x) (lam : ℝ) :
     ∀ᵐ x ∂GaloisForLFunctions.HTGeometry.compoundPoisson lam μ, 0 ≤ x := by
   rw [GaloisForLFunctions.HTGeometry.compoundPoisson,
@@ -185,7 +188,8 @@ end RHTower
 namespace RHTower
 noncomputable section
 
-private theorem sgc_normalized_cp_laplace (μ : Measure ℝ) {mass time s : ℝ}
+/-- `L CP(t·m, G/m)(s) = exp(t (L G(s) - m))` for a jump measure `G` of mass `m`. -/
+theorem laplace_normalized_compoundPoisson (μ : Measure ℝ) {mass time s : ℝ}
     (hmass : 0 < mass) (hμ : μ univ = ENNReal.ofReal mass)
     (hcarrier : ∀ᵐ x ∂μ, 0 ≤ x) (htime : 0 ≤ time) (hs : 0 ≤ s) :
     GaloisForLFunctions.HTGeometry.laplace
@@ -193,7 +197,7 @@ private theorem sgc_normalized_cp_laplace (μ : Measure ℝ) {mass time s : ℝ}
         ((ENNReal.ofReal mass)⁻¹ • μ)) s =
       ENNReal.ofReal (Real.exp
         (time*((GaloisForLFunctions.HTGeometry.laplace μ s).toReal-mass))) := by
-  haveI := sgc_normalized_probability μ hmass hμ
+  haveI := isProbabilityMeasure_inv_ofReal_smul μ hmass hμ
   have hQ : ∀ᵐ x ∂(ENNReal.ofReal mass)⁻¹ • μ, 0 ≤ x :=
     Measure.ae_smul_measure hcarrier _
   have hfin : GaloisForLFunctions.HTGeometry.laplace
@@ -235,15 +239,15 @@ private theorem sgc_normalized_cp_coupling (μ τplus τminus : Measure ℝ)
         ((Lap τplus s).toReal - (Lap τminus s).toReal) - (mplus-mminus)) :
     μ ∗ CP mminus ((ENNReal.ofReal mminus)⁻¹ • τminus) =
       CP mplus ((ENNReal.ofReal mplus)⁻¹ • τplus) := by
-  haveI := sgc_normalized_probability τplus hplus hmplus
-  haveI := sgc_normalized_probability τminus hminus hmminus
+  haveI := isProbabilityMeasure_inv_ofReal_smul τplus hplus hmplus
+  haveI := isProbabilityMeasure_inv_ofReal_smul τminus hminus hmminus
   haveI := GaloisForLFunctions.HTGeometry.isProbabilityMeasure_compoundPoisson
     mplus hplus.le ((ENNReal.ofReal mplus)⁻¹ • τplus)
   haveI := GaloisForLFunctions.HTGeometry.isProbabilityMeasure_compoundPoisson
     mminus hminus.le ((ENNReal.ofReal mminus)⁻¹ • τminus)
-  have hP := sgc_compoundPoisson_nonnegative _
+  have hP := compoundPoisson_ae_nonneg _
     (Measure.ae_smul_measure hcplus (ENNReal.ofReal mplus)⁻¹) mplus
-  have hM := sgc_compoundPoisson_nonnegative _
+  have hM := compoundPoisson_ae_nonneg _
     (Measure.ae_smul_measure hcminus (ENNReal.ofReal mminus)⁻¹) mminus
   apply finite_halfLine_laplace_ext _ _ (sgc_conv_nonnegative _ _ hμ hM) hP
   intro s hs
@@ -254,9 +258,9 @@ private theorem sgc_normalized_cp_coupling (μ τplus τminus : Measure ℝ)
   have hμexp : Lap μ s = ENNReal.ofReal
       (Real.exp (((Lap τplus s).toReal - (Lap τminus s).toReal) - (mplus-mminus))) := by
     rw [←hlog s hs, Real.exp_log hpos, ENNReal.ofReal_toReal hfin]
-  have hPlap := sgc_normalized_cp_laplace τplus hplus hmplus hcplus
+  have hPlap := laplace_normalized_compoundPoisson τplus hplus hmplus hcplus
     (time := 1) zero_le_one hs
-  have hMlap := sgc_normalized_cp_laplace τminus hminus hmminus hcminus
+  have hMlap := laplace_normalized_compoundPoisson τminus hminus hmminus hcminus
     (time := 1) zero_le_one hs
   simp only [one_mul] at hPlap hMlap
   rw [GaloisForLFunctions.HTGeometry.laplace_conv, hμexp, hMlap, hPlap,
@@ -683,8 +687,8 @@ theorem liClockThetaJumpPoisson_admission {p : ℝ} (hp : 1 < p)
     (liClockThetaJumpMeasure_admission hp).2 positive
   haveI := hd
   haveI := hg
-  haveI := sgc_normalized_probability _ hm hdm
-  haveI := sgc_normalized_probability _ hm hgm
+  haveI := isProbabilityMeasure_inv_ofReal_smul _ hm hdm
+  haveI := isProbabilityMeasure_inv_ofReal_smul _ hm hgm
   have hD : ∀ᵐ t ∂(ENNReal.ofReal (liClockThetaJumpMass p positive))⁻¹ •
       liClockThetaDegreeJumpMeasure p positive, 0 ≤ t :=
     Measure.ae_smul_measure (hdc.mono fun _ ht => ht.le) _
@@ -696,8 +700,8 @@ theorem liClockThetaJumpPoisson_admission {p : ℝ} (hp : 1 < p)
       (mul_nonneg htime hm.le) _,
     GaloisForLFunctions.HTGeometry.isProbabilityMeasure_compoundPoisson _
       (mul_nonneg htime hm.le) _,
-    sgc_compoundPoisson_nonnegative _ hD _,
-    sgc_compoundPoisson_nonnegative _ hG _⟩
+    compoundPoisson_ae_nonneg _ hD _,
+    compoundPoisson_ae_nonneg _ hG _⟩
 
 end
 end RHTower
@@ -763,10 +767,10 @@ theorem liClockThetaJumpPoisson_integer_coupling {p : ℝ} (hp : 1 < p)
   have h := liClockThetaJumpMeasure_admission hp
   have hP := h.2 true
   have hM := h.2 false
-  haveI := sgc_normalized_probability _ hP.1 hP.2.2.2.1
-  haveI := sgc_normalized_probability _ hM.1 hM.2.2.2.1
-  haveI := sgc_normalized_probability _ hP.1 hP.2.2.2.2.1
-  haveI := sgc_normalized_probability _ hM.1 hM.2.2.2.2.1
+  haveI := isProbabilityMeasure_inv_ofReal_smul _ hP.1 hP.2.2.2.1
+  haveI := isProbabilityMeasure_inv_ofReal_smul _ hM.1 hM.2.2.2.1
+  haveI := isProbabilityMeasure_inv_ofReal_smul _ hP.1 hP.2.2.2.2.1
+  haveI := isProbabilityMeasure_inv_ofReal_smul _ hM.1 hM.2.2.2.2.1
   constructor
   · have hu := liClockThetaGammaMixture_poisson_coupling hp
     simp only [liClockThetaGammaJumpPoisson, one_mul] at hu ⊢

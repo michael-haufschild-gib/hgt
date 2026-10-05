@@ -428,12 +428,12 @@ Modules `GaloisForLFunctions.HTGeometry.BilateralExponentialConvolutionAlgebra` 
 | (BER.1)–(BER.4) weight, fibre, Cauchy formation, reporter, reflection, phase, intervention | `expWeight`, `Admissible`, `wnorm`, `Fibre`, `conv`, `reporter`, `reporterCoeff`, `reflectSeq`, `phaseSeq`, `tiltSeq` |
 | Thm 2.1 submultiplicative weight, (BER.5) | `expWeight_add_le`, `Admissible.conv`, `wnorm_conv_le` |
 | Thm 2.1 commutative unital Banach algebra (Cauchy product commutative/associative, unit `δ₀`, completeness via `ℓ¹` isometry) | `conv_comm`, `conv_assoc`, `conv_unitSeq`, `Fibre.instCommRing`, `Fibre.instNormedCommRing`, `Fibre.instNormedAlgebraComplex`, `Fibre.norm_one_eq`, `Fibre.isometryEquivLp`, `Fibre.instCompleteSpace` |
-| Thm 2.2 `χ_z` continuous character exactly on `|Re z| ≤ a`, norm one | `reporter_conv`, `Fibre.reporterHom`, `Fibre.reporterCLM`, `Fibre.norm_reporterCLM`, `Fibre.exists_reporter_clm_iff` |
-| (BER.7) atom ratio `e^{bk-a|k|}` | `Fibre.reporter_atom_ratio` |
-| (BER.8) character space = annulus `e^{-a} ≤ |w| ≤ e^a` (every character is a strip reporter) | `Fibre.abs_re_le_iff_annulus`, `Fibre.exists_reporter_of_algHom`, `Fibre.hasSum_atoms` |
+| Thm 2.2 `χ_z` continuous character exactly on `∣Re z∣ ≤ a`, norm one | `reporter_conv`, `Fibre.reporterHom`, `Fibre.reporterCLM`, `Fibre.norm_reporterCLM`, `Fibre.exists_reporter_clm_iff` |
+| (BER.7) atom ratio `e^{bk-a∣k∣}` | `Fibre.reporter_atom_ratio` |
+| (BER.8) character space = annulus `e^{-a} ≤ ∣w∣ ≤ e^a` (every character is a strip reporter) | `Fibre.abs_re_le_iff_annulus`, `Fibre.exists_reporter_of_algHom`, `Fibre.hasSum_atoms` |
 | Thm 3.1 (BER.9)–(BER.10) reflection and phase isometries; reporter action | `Fibre.reflect`, `Fibre.phase`, `wnorm_reflectSeq`, `wnorm_phaseSeq`, `reporter_reflectSeq`, `reporter_phaseSeq` |
-| Thm 3.2 (BER.11)–(BER.12) `T_c : 𝒜_{a+|c|} → 𝒜_a` norm one, `χ_z(T_c x) = χ_{z+c}(x)` | `Fibre.tilt`, `Fibre.norm_tilt`, `wnorm_tiltSeq_le`, `reporter_tiltSeq`, `Fibre.reporter_tilt` |
-| Thm 3.2 unbounded on every fixed fibre; loss `|c|` sharp | `tiltSeq_unbounded`, `tiltSeq_loss_sharp` |
+| Thm 3.2 (BER.11)–(BER.12) `T_c : 𝒜_{a+∣c∣} → 𝒜_a` norm one, `χ_z(T_c x) = χ_{z+c}(x)` | `Fibre.tilt`, `Fibre.norm_tilt`, `wnorm_tiltSeq_le`, `reporter_tiltSeq`, `Fibre.reporter_tilt` |
+| Thm 3.2 unbounded on every fixed fibre; loss `∣c∣` sharp | `tiltSeq_unbounded`, `tiltSeq_loss_sharp` |
 | Thm 4.1 (BER.13)–(BER.15) failure-generated strict repair chain | `repairChain`, `repairChain_strict`, `separatingSeq`, `admissible_separatingSeq`, `not_admissible_separatingSeq`, `Fibre.inclusion`, `Fibre.inclusion_injective` |
 | Thm 4.2 (BER.15a)–(BER.15b) self-catalytic dyadic repair | `selfCatalytic`, `dyadicRepair` |
 | Thm 5.1 (BER.16) `𝒜_∞ = ⋂ 𝒜_a` complete, locally convex, continuous formation; `R`, `U_t`, `T_c` continuous; every `χ_z` continuous | `receiverSubalgebra`, `Receiver`, `Receiver.range_seq`, `Receiver.isClosed_receiver`, `Receiver.instCompleteSpace`, `Receiver.locallyConvexSpace`, `Receiver.continuous_mul`, `Receiver.reflect`, `Receiver.phase`, `Receiver.tilt`, `Receiver.reporterHom`, `Receiver.continuous_reporterHom` |

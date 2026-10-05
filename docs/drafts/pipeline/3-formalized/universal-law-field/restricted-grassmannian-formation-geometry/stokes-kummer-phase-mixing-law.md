@@ -254,9 +254,9 @@ Modules `GaloisForLFunctions.HTGeometry.PhaseSurvivalProfile` (50 constants), `G
 | Thm A (SKPM.3): `C(τ) = ∬ κ² e^{-(x+y)} cos(τ(x-y)) = 6∫₀¹ v²(1-v²)²/(1+τ²v²)dv` | `phaseSurvivalOverlap_eq`, `integral_coherence_mul_cos`, `kummer_phase_mixing` |
 | proof chain: ratio substitution, complex Gamma, `64∫u³(1-u)³/(1-iτ(2u-1))²`, Cayley `v`, reflection, integration by parts | `integral_phaseCoherence`, `integral_coherence_mul_cos_eq_ratio`, `re_one_div_sq`, `integral_Ioi_eq_cayley`, `cayley_ratio_integrand_eq`, `integral_Ioo_cayleyPhaseIntegrand`, `integral_two_mul_cayleyPhaseIntegrand` |
 | (SKPM.4) `C > 0`, `C(-τ) = C(τ)`, `C(0) = 16/35` | `phaseSurvivalProfile_pos`, `phaseSurvivalProfile_neg`, `phaseSurvivalProfile_zero`, `kummer_phase_mixing` |
-| Thm B: strict decrease in `|τ|` | `phaseSurvivalProfile_strictAntiOn` |
-| (SKPM.5) `C(τ) → 0`, `τ²C(τ) → 16/5` as `|τ| → ∞` | `tendsto_phaseSurvivalProfile_atTop`, `tendsto_phaseSurvivalProfile_atBot`, `tendsto_sq_mul_phaseSurvivalProfile_atTop`, `tendsto_sq_mul_phaseSurvivalProfile_atBot` |
-| (SKPM.6) `‖A - A_τ‖²₂ = 32/35 - 2C(τ)`, strictly increasing in `|τ|` from `0` to `32/35` | `hsNormSq_wallOperator_sub_phaseWallOperator`, `hsNormSq_wallOperator_sub_phaseWallOperator_mixing`, `norm_one_sub_exp_mul_I_sq` |
+| Thm B: strict decrease in `∣τ∣` | `phaseSurvivalProfile_strictAntiOn` |
+| (SKPM.5) `C(τ) → 0`, `τ²C(τ) → 16/5` as `∣τ∣ → ∞` | `tendsto_phaseSurvivalProfile_atTop`, `tendsto_phaseSurvivalProfile_atBot`, `tendsto_sq_mul_phaseSurvivalProfile_atTop`, `tendsto_sq_mul_phaseSurvivalProfile_atBot` |
+| (SKPM.6) `‖A - A_τ‖²₂ = 32/35 - 2C(τ)`, strictly increasing in `∣τ∣` from `0` to `32/35` | `hsNormSq_wallOperator_sub_phaseWallOperator`, `hsNormSq_wallOperator_sub_phaseWallOperator_mixing`, `norm_one_sub_exp_mul_I_sq` |
 | Thm C: `F(q) = C(√q) = 3∫₀¹ λ^{1/2}(1-λ)²/(1+qλ)dλ` | `phaseResponse`, `phaseResponse_eq_beta`, `integral_betaIntegrand_eq`, `phaseSurvivalOverlap_beta_completelyMonotone` |
 | (SKPM.7) `C(√q)/(16/35) = E[1/(1+qΛ)]`, `Λ ~ Beta(3/2,3)` with density `(105/16)λ^{1/2}(1-λ)²`; mass `3B(3/2,3) = 16/35` | `phaseBetaDensity`, `phaseBetaLaw`, `isProbabilityMeasure_phaseBetaLaw`, `integral_sqrt_mul_one_sub_sq`, `phaseSurvivalProfile_sqrt_div` |
 | (SKPM.8) `(-1)ⁿF⁽ⁿ⁾(q) = 6n!∫₀¹ v^{2n+2}(1-v²)²/(1+qv²)^{n+1}dv > 0` | `iteratedDeriv_phaseResponse`, `phaseResponse_completelyMonotone`, `hasDerivAt_phaseResponseMoment`, `phaseResponseMoment_pos` |

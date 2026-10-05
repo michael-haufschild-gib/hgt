@@ -416,7 +416,7 @@ Modules `GaloisForLFunctions.HTGeometry.WeightedOrbitInduction` (61), `GaloisFor
 | (WOI.5) closed range iff `ran D` closed and `α_* > 0` | `isClosed_range_weightedInduction_iff_ampGap` (also `isClosed_range_weightedInduction_iff`) |
 | Corollary 2.2 semi-Fredholm / Fredholm thresholds; infinite repetition of local defects | `isUpperSemiFredholm_weightedInduction_iff`, `isLowerSemiFredholm_weightedInduction_iff`, `isBoundedFredholm_weightedInduction_iff`, `not_finiteDimensional_ker_weightedInduction`, `finiteDimensional_range_orthogonal_weightedInduction_iff` |
 | Theorem 3.1 (WOI.6) compact iff `a ∈ c₀` | `isCompactOperator_weightedInduction_iff`, `isCompactOperator_weightedInduction_iff_tendsto`, `tailSup_eq_zero_iff`, `tailSup_eq_zero_iff_tendsto` |
-| (WOI.7) essential norm `= limsup |aᵢ| · ‖D‖` | `rectEssentialNorm_weightedInduction` |
+| (WOI.7) essential norm `= limsup ∣aᵢ∣ · ‖D‖` | `rectEssentialNorm_weightedInduction` |
 | Theorem 4.1 (WOI.8) `S_p` iff `a ∈ ℓ^p` (every `p > 0`) | `memRectSchattenClass_weightedInduction_iff`, `memRectSchattenClass_weightedInduction_iff_memℓp`, `memRectSchattenClass_one_weightedInduction_iff` |
 | (WOI.9) Schatten energy identity; trace norm for `p = 1` | `tsum_rpow_rectApproxNumber_weightedInduction`, `rectTraceNorm_weightedInduction` |
 | §5 (WOI.10) weighted positive Gram; phases disappear | `adjoint_weightedInduction`, `gram_weightedInduction`, `gram_weightedInduction_eq_of_norm_eq` |
@@ -429,7 +429,7 @@ Modules `GaloisForLFunctions.HTGeometry.WeightedOrbitInduction` (61), `GaloisFor
 | §9 no-gos 1–6 | `noGo_infiniteOrbit_compact`, `exists_compact_weightedInduction_nonzero_block`, `noGo_compact_forces_decay`, `noGo_traceClass_homogeneous`, `noGo_decay_not_closed`, `exists_finite_information_unequal_packets`, `isCompactOperator_gram_weightedInduction_iff` |
 | §10 (WOI.14) source gate | `weightedOrbit_sourceGate` |
 | Theorem 11.1 (WOI.15)–(WOI.16) and consequences 1–3 | `norm_le_norm_leftInverse_mul`, `div_norm_leftInverse_le`, `tendsto_norm_formation_of_bounded_recovery`, `tendsto_norm_recovery_of_bounded_formation`, `not_bounded_recovery_and_regularization` |
-| Corollary 11.2 (WOI.17) diagonal left inverse iff `inf |aᵢ| > 0` | `diagonalFormation`, `exists_leftInverse_diagonalFormation_iff`, `not_exists_leftInverse_diagonalFormation_of_tendsto` |
+| Corollary 11.2 (WOI.17) diagonal left inverse iff `inf ∣aᵢ∣ > 0` | `diagonalFormation`, `exists_leftInverse_diagonalFormation_iff`, `not_exists_leftInverse_diagonalFormation_of_tendsto` |
 | (WOI.18) compact/Schatten regularization ⇒ no bounded decoder | `not_exists_leftInverse_of_isCompactOperator`, `not_exists_decoder_weightedInduction` |
 
 ## Log

@@ -75,16 +75,16 @@ theorem sum_filter_le_log_eq_theta {x y : ℝ} (hy : 0 ≤ y) (hyx : y ≤ x) :
     have h1 : (p : ℝ) ≤ y := (Nat.le_floor_iff hy).mp hpy
     exact ⟨⟨Nat.le_floor (h1.trans hyx), hp⟩, h1⟩
 
-/-- **The size of `N_x` from below.**  If `a_p ≥ 2` for all primes `p ≤ (5/4)√x ≤ x`, then
-`log N_x ≥ θ(x) + θ((5/4)√x)`. -/
-theorem log_robinExtremalAt_ge {x : ℝ} (hx : 1 < x) (hyx : 5 / 4 * Real.sqrt x ≤ x)
-    (h2 : ∀ p : ℕ, p.Prime → (p : ℝ) ≤ 5 / 4 * Real.sqrt x →
+/-- **The size of `N_x` from below.**  If `a_p ≥ 2` for all primes `p ≤ c√x ≤ x`, then
+`log N_x ≥ θ(x) + θ(c√x)`. -/
+theorem log_robinExtremalAt_ge {x c : ℝ} (hx : 1 < x) (hc : 0 ≤ c) (hyx : c * Real.sqrt x ≤ x)
+    (h2 : ∀ p : ℕ, p.Prime → (p : ℝ) ≤ c * Real.sqrt x →
       2 ≤ robinExponent (robinParameter x) p) :
-    Chebyshev.theta x + Chebyshev.theta (5 / 4 * Real.sqrt x)
+    Chebyshev.theta x + Chebyshev.theta (c * Real.sqrt x)
       ≤ Real.log (robinExtremalAt x : ℝ) := by
   have hθx : Chebyshev.theta x
       = ∑ p ∈ (Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime, Real.log p := Chebyshev.theta_eq_sum_Icc x
-  have hθy := (sum_filter_le_log_eq_theta (by positivity : (0 : ℝ) ≤ 5 / 4 * Real.sqrt x) hyx).symm
+  have hθy := (sum_filter_le_log_eq_theta (by positivity : (0 : ℝ) ≤ c * Real.sqrt x) hyx).symm
   rw [Finset.sum_filter] at hθy
   rw [robinExtremalAt, log_robinExtremal, hθx, hθy, ← Finset.sum_add_distrib]
   refine Finset.sum_le_sum fun p hp => ?_
@@ -221,13 +221,12 @@ theorem log_robinExtremalAt_sub_theta_le {x : ℝ} (hx : 100 ≤ x) :
     _ = 4 * Real.sqrt x * Real.log x := by ring
 
 
-/-- `θ((5/4)√x)/√x → 5/4`. -/
-theorem tendsto_theta_five_fourths_sqrt_div :
-    Tendsto (fun x : ℝ => Chebyshev.theta (5 / 4 * Real.sqrt x) / Real.sqrt x) atTop
-      (𝓝 (5 / 4)) := by
-  have hy : Tendsto (fun x : ℝ => 5 / 4 * Real.sqrt x) atTop atTop :=
-    Real.tendsto_sqrt_atTop.const_mul_atTop (by norm_num)
-  have h := (tendsto_theta_div_self.comp hy).const_mul (5 / 4)
+/-- `θ(c√x)/√x → c` for `c > 0`. -/
+theorem tendsto_theta_mul_sqrt_div {c : ℝ} (hc : 0 < c) :
+    Tendsto (fun x : ℝ => Chebyshev.theta (c * Real.sqrt x) / Real.sqrt x) atTop (𝓝 c) := by
+  have hy : Tendsto (fun x : ℝ => c * Real.sqrt x) atTop atTop :=
+    Real.tendsto_sqrt_atTop.const_mul_atTop hc
+  have h := (tendsto_theta_div_self.comp hy).const_mul c
   rw [mul_one] at h
   refine h.congr' ?_
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
@@ -235,13 +234,13 @@ theorem tendsto_theta_five_fourths_sqrt_div :
   simp only [Function.comp]
   field_simp
 
-/-- The exponent deficit of `N_x` dominates the prime squares beyond `(3/2)√x`. -/
-theorem sum_prime_inv_sq_le_robinDeficit {x : ℝ} (hx : 12 < x) :
-    ∑ p ∈ ((Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime).filter (fun p : ℕ => 3 / 2 * Real.sqrt x < p),
+/-- The exponent deficit of `N_x` dominates the prime squares beyond `c√x` when `2x + 3 < c²x`. -/
+theorem sum_prime_inv_sq_le_robinDeficit {x c : ℝ} (hc : 1 ≤ c) (hx1 : 1 < x)
+    (hcx : 2 * x + 3 < c ^ 2 * x) :
+    ∑ p ∈ ((Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime).filter (fun p : ℕ => c * Real.sqrt x < p),
         1 / (p : ℝ) ^ 2
       ≤ ∑ p ∈ (Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime,
           -Real.log (1 - (1 / (p : ℝ)) ^ (robinExponent (robinParameter x) p + 1)) := by
-  have hx1 : 1 < x := by linarith
   have hnn : ∀ p ∈ (Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime,
       0 ≤ -Real.log (1 - (1 / (p : ℝ)) ^ (robinExponent (robinParameter x) p + 1)) := by
     intro p hp
@@ -255,15 +254,15 @@ theorem sum_prime_inv_sq_le_robinDeficit {x : ℝ} (hx : 12 < x) :
       1 - (1 / (p : ℝ)) ^ (robinExponent (robinParameter x) p + 1) ≤ 1)
     linarith
   rw [← Finset.sum_filter_add_sum_filter_not ((Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime)
-    (fun p : ℕ => 3 / 2 * Real.sqrt x < p)]
+    (fun p : ℕ => c * Real.sqrt x < p)]
   have h2 : 0 ≤ ∑ p ∈ ((Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime).filter
-      (fun p : ℕ => ¬ 3 / 2 * Real.sqrt x < p),
+      (fun p : ℕ => ¬ c * Real.sqrt x < p),
         -Real.log (1 - (1 / (p : ℝ)) ^ (robinExponent (robinParameter x) p + 1)) :=
     Finset.sum_nonneg fun p hp => hnn p (Finset.mem_filter.mp hp).1
   have h1 : ∑ p ∈ ((Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime).filter
-        (fun p : ℕ => 3 / 2 * Real.sqrt x < p), 1 / (p : ℝ) ^ 2
+        (fun p : ℕ => c * Real.sqrt x < p), 1 / (p : ℝ) ^ 2
       ≤ ∑ p ∈ ((Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime).filter
-        (fun p : ℕ => 3 / 2 * Real.sqrt x < p),
+        (fun p : ℕ => c * Real.sqrt x < p),
         -Real.log (1 - (1 / (p : ℝ)) ^ (robinExponent (robinParameter x) p + 1)) := by
     refine Finset.sum_le_sum fun p hp => ?_
     obtain ⟨hpF, hps⟩ := Finset.mem_filter.mp hp
@@ -272,7 +271,7 @@ theorem sum_prime_inv_sq_le_robinDeficit {x : ℝ} (hx : 12 < x) :
       have := (Finset.mem_Icc.mp (Finset.mem_filter.mp hpF).1).2
       exact (Nat.le_floor_iff (by linarith)).mp this
     have hone : robinExponent (robinParameter x) p = 1 := by
-      have h3 := robinExponent_le_one_of_gt hx hpp hps
+      have h3 := robinExponent_le_one_of_gt_mul hc hx1 hcx hpp hps
       have h4 := (one_le_robinExponent_iff_le hx1 hpp).mpr hpx
       omega
     rw [hone, show (1 : ℕ) + 1 = 2 from rfl]
@@ -307,12 +306,13 @@ theorem log_sigma_div_robinExtremalAt_eq {x : ℝ} (hx : 1 < x) :
   rw [h0, h1]
   linarith
 
-/-- **The scaled Robin defect at `N_x`, deterministic bound.**  For `x ≥ 10000` with `a_p ≥ 2` on
-`p ≤ (5/4)√x`, `θ(x) ≥ 2x/5` and `|θ(x) - x| ≤ K√x log²x`:
-`(log(σ(N)/N) - γ - log log log N) √x log x ≤ Δ√xL + G√xL - S√xL + (ψ - θ)/√x - θ((5/4)√x)/√x
+/-- **The scaled Robin defect at `N_x`, deterministic bound.**  For `x ≥ 10000`, `0 ≤ c₁ ≤ √x` with
+`a_p ≥ 2` on `p ≤ c₁√x`, `1 ≤ c₂` with `2x + 3 < c₂²x`, `θ(x) ≥ 2x/5` and `|θ(x) - x| ≤ K√x log²x`:
+`(log(σ(N)/N) - γ - log log log N) √x log x ≤ Δ√xL + G√xL - S_{c₂}√xL + (ψ - θ)/√x - θ(c₁√x)/√x
 + (35/4)(K + 4)² log⁴x/√x`. -/
-theorem robinDefect_robinExtremalAt_scaled_le {x K : ℝ} (hx : 10000 ≤ x)
-    (h2 : ∀ p : ℕ, p.Prime → (p : ℝ) ≤ 5 / 4 * Real.sqrt x →
+theorem robinDefect_robinExtremalAt_scaled_le {x K c₁ c₂ : ℝ} (hx : 10000 ≤ x) (hc₁ : 0 ≤ c₁)
+    (hc₁x : c₁ ≤ Real.sqrt x) (hc₂ : 1 ≤ c₂) (hc₂x : 2 * x + 3 < c₂ ^ 2 * x)
+    (h2 : ∀ p : ℕ, p.Prime → (p : ℝ) ≤ c₁ * Real.sqrt x →
       2 ≤ robinExponent (robinParameter x) p)
     (h25 : 2 / 5 * x ≤ Chebyshev.theta x)
     (hθ : |Chebyshev.theta x - x| ≤ K * Real.sqrt x * Real.log x ^ 2) :
@@ -322,9 +322,9 @@ theorem robinDefect_robinExtremalAt_scaled_le {x K : ℝ} (hx : 10000 ≤ x)
       ≤ (mertensProductError x - mertensError x) * (Real.sqrt x * Real.log x)
         + mertensErrorRemainder (Real.log x) * (Real.sqrt x * Real.log x)
         - (∑ p ∈ ((Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime).filter
-            (fun p : ℕ => 3 / 2 * Real.sqrt x < p), 1 / (p : ℝ) ^ 2) * (Real.sqrt x * Real.log x)
+            (fun p : ℕ => c₂ * Real.sqrt x < p), 1 / (p : ℝ) ^ 2) * (Real.sqrt x * Real.log x)
         + (Chebyshev.psi x - Chebyshev.theta x) / Real.sqrt x
-        - Chebyshev.theta (5 / 4 * Real.sqrt x) / Real.sqrt x
+        - Chebyshev.theta (c₁ * Real.sqrt x) / Real.sqrt x
         + 35 / 4 * (K + 4) ^ 2 * (Real.log x ^ 4 / x ^ (1 / 2 : ℝ)) := by
   have hx1 : 1 < x := by linarith
   have hx0 : 0 < x := by linarith
@@ -337,23 +337,23 @@ theorem robinDefect_robinExtremalAt_scaled_le {x K : ℝ} (hx : 10000 ≤ x)
   have hlx : 1 ≤ Real.log x := by
     rw [Real.le_log_iff_exp_le hx0]; have := Real.exp_one_lt_d9; linarith
   have hL0 : 0 < Real.log x := by linarith
-  have hy₁x : 5 / 4 * Real.sqrt x ≤ x :=
-    calc 5 / 4 * Real.sqrt x ≤ Real.sqrt x * Real.sqrt x :=
-          mul_le_mul_of_nonneg_right (by linarith) hsx0.le
+  have hy₁x : c₁ * Real.sqrt x ≤ x :=
+    calc c₁ * Real.sqrt x ≤ Real.sqrt x * Real.sqrt x :=
+          mul_le_mul_of_nonneg_right hc₁x hsx0.le
       _ = x := hxx
   have hdec := log_sigma_div_robinExtremalAt_eq hx1
-  have hu1 := log_robinExtremalAt_ge hx1 hy₁x h2
+  have hu1 := log_robinExtremalAt_ge hx1 hc₁ hy₁x h2
   have hu2 := log_robinExtremalAt_sub_theta_le (by linarith : (100 : ℝ) ≤ x)
-  have hES := sum_prime_inv_sq_le_robinDeficit (by linarith : (12 : ℝ) < x)
+  have hES := sum_prime_inv_sq_le_robinDeficit hc₂ hx1 hc₂x
   set N := robinExtremalAt x with hNdef
   set u := Real.log (N : ℝ) with hu
   set E := ∑ p ∈ (Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime,
     -Real.log (1 - (1 / (p : ℝ)) ^ (robinExponent (robinParameter x) p + 1)) with hE
   set S := ∑ p ∈ ((Finset.Icc 0 ⌊x⌋₊).filter Nat.Prime).filter
-    (fun p : ℕ => 3 / 2 * Real.sqrt x < p), 1 / (p : ℝ) ^ 2 with hS
+    (fun p : ℕ => c₂ * Real.sqrt x < p), 1 / (p : ℝ) ^ 2 with hS
   set D := Real.sqrt x * Real.log x with hD
   have hD0 : 0 < D := mul_pos hsx0 hL0
-  have hθy0 : 0 ≤ Chebyshev.theta (5 / 4 * Real.sqrt x) := Chebyshev.theta_nonneg _
+  have hθy0 : 0 ≤ Chebyshev.theta (c₁ * Real.sqrt x) := Chebyshev.theta_nonneg _
   have hu25 : 2 / 5 * x ≤ u := by linarith
   have hu_gt : 1 < u := by linarith
   have hlu : 1 ≤ Real.log u := by
@@ -395,7 +395,7 @@ theorem robinDefect_robinExtremalAt_scaled_le {x K : ℝ} (hx : 10000 ≤ x)
       _ = (K + 4) ^ 2 * (Real.log x ^ 4 / Real.sqrt x) := by field_simp
   have hψu : (Chebyshev.psi x - x) / Real.sqrt x - (u - x) / Real.sqrt x
       ≤ (Chebyshev.psi x - Chebyshev.theta x) / Real.sqrt x
-        - Chebyshev.theta (5 / 4 * Real.sqrt x) / Real.sqrt x := by
+        - Chebyshev.theta (c₁ * Real.sqrt x) / Real.sqrt x := by
     rw [← sub_div, ← sub_div]
     exact div_le_div_of_nonneg_right (by linarith) hsx0.le
   have hllb : (u - x) / (x * Real.log x) - 35 / 4 * ((u - x) ^ 2 / (x ^ 2 * Real.log x))
@@ -436,8 +436,8 @@ theorem eventually_robin_robinExtremalAt (hRH : RiemannHypothesis) :
   have E4 := (tendsto_order.1 (tendsto_mertensErrorRemainder_scaled_sub_lag hRH)).2 (1 / 24)
     (by norm_num)
   have E5 := (tendsto_order.1 (tendsto_psi_sub_theta_div_sqrt hRH)).2 (1 + 1 / 24) (by norm_num)
-  have E6 := (tendsto_order.1 tendsto_theta_five_fourths_sqrt_div).1 (5 / 4 - 1 / 24)
-    (by norm_num)
+  have E6 := (tendsto_order.1 (tendsto_theta_mul_sqrt_div (c := 5 / 4) (by norm_num))).1
+    (5 / 4 - 1 / 24) (by norm_num)
   have E7 := eventually_sum_prime_inv_sq_scaled_ge (c := 3 / 2) (δ := 1 / 24) (by norm_num)
     (by norm_num)
   have E8 := (tendsto_order.1 ((tendsto_log_pow_div_rpow_atTop 4 (r := 1 / 2)
@@ -447,7 +447,12 @@ theorem eventually_robin_robinExtremalAt (hRH : RiemannHypothesis) :
   have hx0 : 0 < x := by linarith
   have hD0 : 0 < Real.sqrt x * Real.log x :=
     mul_pos (Real.sqrt_pos.mpr hx0) (Real.log_pos (by linarith))
-  have hb := robinDefect_robinExtremalAt_scaled_le hx h2 e9 (hθK x (by linarith))
+  have hsx : 5 / 4 ≤ Real.sqrt x := by
+    rw [show (5 / 4 : ℝ) = Real.sqrt (25 / 16) by
+      rw [show (25 / 16 : ℝ) = (5 / 4) ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+    exact Real.sqrt_le_sqrt (by linarith)
+  have hb := robinDefect_robinExtremalAt_scaled_le (c₁ := 5 / 4) (c₂ := 3 / 2) hx (by norm_num)
+    hsx (by norm_num) (by nlinarith) h2 e9 (hθK x (by linarith))
   have hΦx := hΦ (Real.log x)
   have hc : (2 : ℝ) / (3 / 2) - 1 / 24 = 31 / 24 := by norm_num
   rw [hc] at e7

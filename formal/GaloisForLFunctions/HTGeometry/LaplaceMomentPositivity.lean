@@ -1,5 +1,6 @@
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Analysis.SpecialFunctions.Exp
+import Mathlib.Analysis.Calculus.ParametricIntegral
 
 /-!
 # Positivity from nonnegative Laplace moments
@@ -262,5 +263,60 @@ theorem nonneg_of_laplaceMoments_nonneg {f : ℝ → ℝ} {γ t₀ : ℝ} (ht₀
   have := mul_lt_mul_of_pos_right hn1 (pow_pos hρ'0 n)
   rw [hx] at this
   nlinarith [pow_pos hρ'0 n]
+
+/-! ## Differentiation of weighted Laplace moments -/
+
+/-- The weighted Laplace moment `L_n f(s) = ∫_0^∞ t^n e^{-st} f(t) dt`. -/
+def laplaceWeightedMoment (f : ℝ → ℝ) (n : ℕ) (s : ℝ) : ℝ :=
+  ∫ t in Ioi (0 : ℝ), t ^ n * Real.exp (-(s * t)) * f t
+
+/-- If every weighted moment converges absolutely for `s > c`, then `L_n' = -L_{n+1}` there. -/
+theorem hasDerivAt_laplaceWeightedMoment {f : ℝ → ℝ} {c : ℝ} (hf : Measurable f)
+    (hint : ∀ n : ℕ, ∀ s, c < s → IntegrableOn (fun t => t ^ n * Real.exp (-(s * t)) * f t) (Ioi 0))
+    (n : ℕ) {s : ℝ} (hs : c < s) :
+    HasDerivAt (laplaceWeightedMoment f n) (-laplaceWeightedMoment f (n + 1) s) s := by
+  set q₀ := (s + c) / 2
+  have hq₀ : c < q₀ := by simp only [q₀]; linarith
+  have hq₀s : q₀ < s := by simp only [q₀]; linarith
+  have hmeas : ∀ (m : ℕ) (x : ℝ), Measurable fun t => t ^ m * Real.exp (-(x * t)) * f t :=
+    fun m x => ((by fun_prop : Continuous fun t : ℝ => t ^ m * Real.exp (-(x * t)))).measurable.mul hf
+  have h := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume.restrict (Ioi (0 : ℝ)))
+    (F := fun (x t : ℝ) => t ^ n * Real.exp (-(x * t)) * f t)
+    (F' := fun (x t : ℝ) => -(t ^ (n + 1) * Real.exp (-(x * t)) * f t))
+    (x₀ := s) (s := Ioi q₀) (bound := fun t => |t ^ (n + 1) * Real.exp (-(q₀ * t)) * f t|)
+    (Ioi_mem_nhds hq₀s)
+    (Eventually.of_forall fun x => (hmeas n x).aestronglyMeasurable)
+    (hint n s hs)
+    ((hmeas (n + 1) s).neg.aestronglyMeasurable)
+    (ae_restrict_of_forall_mem measurableSet_Ioi fun t ht x hx => by
+      have ht0 : 0 < t := ht
+      simp only [norm_neg, Real.norm_eq_abs, abs_mul, Real.abs_exp]
+      refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ?_ (abs_nonneg _))
+        (abs_nonneg _)
+      exact Real.exp_le_exp.2 (by nlinarith [show q₀ < x from hx]))
+    (hint (n + 1) q₀ hq₀).abs
+    (ae_restrict_of_forall_mem measurableSet_Ioi fun t _ x _ => by
+      have hd := ((hasDerivAt_id' x).mul_const t).fun_neg.exp
+      exact ((hd.const_mul (t ^ n)).mul_const (f t)).congr_deriv (by ring))
+  have he : (∫ t in Ioi (0 : ℝ), -(t ^ (n + 1) * Real.exp (-(s * t)) * f t)) =
+      -laplaceWeightedMoment f (n + 1) s := by
+    rw [integral_neg]; rfl
+  rw [← he]
+  exact h.2
+
+/-- `(d/ds)^n L_0 f(s) = (-1)^n L_n f(s)` for `s > c`. -/
+theorem iteratedDeriv_laplaceWeightedMoment_zero {f : ℝ → ℝ} {c : ℝ} (hf : Measurable f)
+    (hint : ∀ n : ℕ, ∀ s, c < s → IntegrableOn (fun t => t ^ n * Real.exp (-(s * t)) * f t) (Ioi 0))
+    (n : ℕ) {s : ℝ} (hs : c < s) :
+    iteratedDeriv n (laplaceWeightedMoment f 0) s = (-1) ^ n * laplaceWeightedMoment f n s := by
+  induction n generalizing s with
+  | zero => simp
+  | succ n ih =>
+    have hev : iteratedDeriv n (laplaceWeightedMoment f 0) =ᶠ[𝓝 s] fun x => (-1) ^ n * laplaceWeightedMoment f n x := by
+      filter_upwards [Ioi_mem_nhds hs] with x hx
+      exact ih hx
+    rw [iteratedDeriv_succ, hev.deriv_eq,
+      ((hasDerivAt_laplaceWeightedMoment hf hint n hs).const_mul ((-1) ^ n)).deriv, pow_succ]
+    ring
 
 end GaloisForLFunctions.HTGeometry

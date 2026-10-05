@@ -49,9 +49,9 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | global-riccati-order-one-offline-countermodel | Riccati Gaussian family `ThetaRiccatiGaussianCountermodel` | done → 3-formalized |
 | riccati-three-charge-offline-countermodel | L6 | done → 3-formalized (`ThetaRiccatiThreeChargeCountermodel`) |
 | euler-logcell-residue-highpass | ℓ² operators, Hardy separation | DONE → 3-formalized (HTGeometry `PositiveIntegerBlockOperators`; `ThetaEulerLogCellResidueChannels`, `QuasiPolynomialBlaschkeIsometry`, `ThetaEulerLogCellSeedVacuum`) |
-| cdf-crossfrequency-rvm-capacity | L5, compact operators | todo |
+| cdf-crossfrequency-rvm-capacity | L5, compact operators | DONE 2026-10-05 → 3-formalized |
 | cdf-no-finite-range-symmetrizer | L5 | DONE → 3-formalized (`ThetaCdfFixedShiftAction`, `ThetaCdfFiniteRangeSymmetrizerNoGo`) |
-| quantile-critical-one-port-rigging | L5 | todo |
+| quantile-critical-one-port-rigging | L5 | DONE 2026-10-05 → 3-formalized (`ThetaQuantileOnePortPencil`, `ThetaQuantileFlatNormalForm`, `ThetaQuantileHalfPowerThreshold`, `ThetaQuantileChargedPort`, `ThetaQuantileTwoEndedSelector`) |
 | quantile-resistance-network | L5, Fourier series | todo |
 | compact-inverse-zero-jordan-history | L5 | DONE → 3-formalized (46 modules; last: `TwoGaussianDerivativeCenteredHistory`) |
 | deletion-cutoff-commutator-collapse | L1, PNT | DONE → 3-formalized (`ThetaCutoffCommutatorShell`, `ThetaCutoffCommutatorCofinalLimit`, `ThetaCutoffCommutatorMellin`, `ThetaCofinalCurrentSignChanges`, `ThetaPrimeScheduleSpectralObservation`, `ThetaNaturalScheduleEulerOscillation`) |
@@ -67,5 +67,31 @@ card to `3-formalized/theta/` when all its displayed results have closed Lean th
 | half-port-stieltjes-spectral-bridge | L4, one-port Stieltjes layer | done → 3-formalized (`ThetaHalfPortStieltjesSpectral`; HTGeometry `OnePortStieltjesTransform`, `OnePortSpectralModel`, `MaximalMultiplicationSelfAdjoint`, `StieltjesPrincipalValueBoundary`, `LorentzianCosineIntegral`) |
 | levy-spherical-dispersion-duality | L4, radial integration | done → 3-formalized (`ThetaReflectedJumpExponents`, `ThetaJumpRenewalMeeting`, `ThetaJumpCompoundPoisson`, `ThetaSphericalRadialLift`) |
 | causal-germ-translation-ideal-phase-selection | zero-radius theorem | done → 3-formalized (`HalfLineTransformCalculus`, `ThetaCausalGermPort`, `ThetaPrimeMomentPorts`, `ThetaTranslationIdealSources`, `XiWallLogDerivativeCones`, `ThetaPrimePacketPorts`, `ThetaPacketHarmonicObstructions`, `FiniteRankPhaseMoments`) |
-| causal-mobius-theta-boundary-criterion | Möbius–theta tail ⇔ RH criterion | todo |
-| causal-mobius-theta-primorial-transition | primorial innovation bounds | todo |
+| causal-mobius-theta-boundary-criterion | Möbius–theta tail ⇔ RH criterion | DONE → 3-formalized (`CausalMobiusThetaStability`, `CausalMobiusThetaRamareForm`, `CausalMobiusThetaPhysicalSource`, `CausalMobiusThetaPhysicalWavelet`, `CausalMobiusThetaHistoryLocalization`, `PoissonArithmeticProgressionBound`, `EulerDeletionPeriodicProjection`, `CausalMobiusThetaSmoothGaugeProfile`, `CausalMobiusThetaSmoothGauge`, `CausalMobiusThetaTransitionClock`, `CausalMobiusThetaAbelBoundary`) |
+| causal-mobius-theta-primorial-transition | primorial innovation bounds | DONE → 3-formalized (`CausalMobiusThetaPrimorialInnovation`, `CausalMobiusThetaUniformCycle`, `CausalMobiusThetaLargestPrime`) |
+
+## Remaining three cards: build order
+
+| Step | Content | Planned module | Status |
+|-|-|-|-|
+| Q1 | Fourier Hilbert basis `e_n(t)=e^{2πint}` of `L²(unitIntervalMeasure)` | `ThetaQuantileFourierModes` | done |
+| Q2 | `Be=0`, `B e_n = q(e_n−1)/(2πn)`, matrix `⟨e_m,Be_n⟩=(Φ_m−Φ_{n−m})/(2πn)`, `D=PBP`, `H_n` blocks, `D₀`, `R`; nonzero spectra and algebraic multiplicities of `B`, `D` agree | `ThetaQuantileFourierQuotient`, `ThetaQuotientOppositeFrequencyBlocks` | done |
+| Q3 | `h=1/q` concave, `Φ_{2n}<2Φ_n`; `q` convex, `Φ_{2n}−Φ_n=∫q''W_n>0`; `r_n∈(0,1)` | `ThetaQuantileProfileCalculus`, `ThetaCdfActionDyadic` | done |
+| Q4 | sharp clock `Φ_n = log log n − log π + O(log log n/log n)`; `r_n→0`; `cI ≤ G₀ ≤ 2I` | `ThetaCdfActionClock`, `ThetaQuotientPairedBlockMetric` | done |
+| Q5 | Ky Fan principle via greedy SVD, `K_N` subadditive, Weyl `Σ m_i|μ_i| ≤ K_N` (Schur flag on generalized eigenspaces) | HTGeometry `KyFanWeylSingularValues` | done |
+| Q6 | `Σ_{|γ|≤T} 1/|z| = (1/2π+o(1))(log T)²` (Abel summation on `N(T)`), eigenvalue partial sums of `D` | `XiReciprocalOrdinateLogSquare`, `ThetaQuotientEigenvalueSums` | done |
+| Q7 | items 1–3 and 5 of the RvM card | `ThetaQuotientOppositeFrequencyBlocks`, `ThetaQuotientCrossFrequencyCapacity`, `ThetaCdfFrequencyAdmission` | done |
+| Q8 | item 4: `K_Φ` clock comparison (`MertensClockDefectTraceClass` generalized to every `HalfLineClock`, `e^{−y/2}` displacement) | `ThetaActionPrimeGramOperator` | done |
+| Q9 | one-port rigging card; Q10 resistance-network card | later | todo |
+
+## One-port rigging card: build order (2026-10-05)
+
+`H₀ = meanZeroSpace`, `P = meanZeroProj`, `h = 1/q` (`metricSymbol thetaSource`), `M_h = thetaMetricOperator`, `B = thetaKernelOperator`, `V = pinnedVolterraCLM` (`V + V* = |1⟩⟨1| − |1⟩⟨t| − |t⟩⟨1|`, so `PVP` is skew on `H₀`), `β(f) = ⟨1, Bf⟩`, `b = P h`; corpus eigenvector `thetaDivisorEigenvector z` (`B v = −z⁻¹ v`, `v = U(sourceModeF)`, `∫ sourceModeF = M`), `xiC_thetaSource` (`xiC = XiC` on `|Im z| < 1`), `sourceModeI/U/F`, `quantileUnitary`, `integral_comp_quantile`.
+
+| Step | Content | Planned module | Status |
+|-|-|-|-|
+| R1 | `M_h B = iV` on `H₀`; pencil `TD = A − bβ`; `A` self-adjoint, `T` positive injective on `H₀`; `ker β` eigenvalues real | `ThetaQuantileOnePortPencil` | done |
+| R2 | flat normal form (2a), port moment (2b), weak form (2c); image dense in `L²(ℝ)`; `ρ ∈ L²`, `x ∉ L²`; exact output norm `‖ρ‖₂`; `f_L` sequence, `β` unbounded in `T`-energy | `ThetaQuantileFlatNormalForm` | done |
+| R3 | Douglas range criterion; `T^α` (CFC rpow on `H₀`) acts as `h^α` on the odd sector; `Q ∈ range T^α ⟺ α < 1/2`; `b ∈ range T^{1/2}`, `b ∉ range T` | `ThetaQuantileHalfPowerThreshold` | done |
+| R4 | `f_z = v_z/√M − 1 ∈ H₀`, `Df_z = −z⁻¹f_z`, `β(f_z) = −z⁻¹` for every Xi zero; charge sum (6) | `ThetaQuantileChargedPort` | done |
+| R5 | `G_z`, `u_z` for `0 < Im z < 1`: `u_z ∈ L²`, `∫u_z = 0`, `−i∫xu_z = −1/z`, (7), (9), (8) `∫|u_z|²/ρ < ∞ ⟺ XiC z = 0`; `u_z∘Q/h = f_z` at zeros | `ThetaQuantileTwoEndedSelector` | done |

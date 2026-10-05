@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.EulerDeletionNestedProjectionCovariance
 # The theta wavelet in the physical Hilbert space
 
 The physical inner product `⟨u,v⟩_H = Σ_{r≥1} u(r)v(r)/(r(r+1))` is the `L²` inner product of
-the corpus cell law `cellMeasure` (cell `j` is `r = j + 1`).  This module realizes the smooth
+the physical cell law `cellMeasure` (cell `j` is `r = j + 1`).  This module realizes the smooth
 complete-cell wavelet `q_N` as a vector of that space and proves:
 
 * `sup_N ‖q_N‖_H < ∞`, `q_N(r) = O_r(N^{−5/2})`, and `q_N ⇀ 0` weakly;

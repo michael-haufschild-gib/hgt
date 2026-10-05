@@ -90,11 +90,8 @@ paper level.
 - [x] 2 → 3: Lean ; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 
 Modules (all clean under `lake env lean`, built as modules, axiom audit `[propext, Classical.choice, Quot.sound]` only):
-new `GaloisForLFunctions.RHTower.{EigenPairFrequencyInversion, EigenPairGuinandWeilIdentity}` on top of the corpus
-stage modules `RHTower.{VonMangoldtLineSeriesSwap, XiCDerivStripDecay, EigenPairVerticalBound, EigenPairRectangleIdentity,
-EigenPairLineConvolution, EigenPairLineIntegrable, HedenmalmLineTransformBridge, HedenmalmThetaEigenTransform,
-HedenmalmTwoEndedVolterraDefect, XiThetaEigenGramLaw, XiWeilArithmeticGram, ThetaCuspSeedZeroMean,
-HedenmalmPairWeilPolarizationCapstone}` (audited).  Conventions are the corpus ones: `XiC z = ξ(1/2 + iz)` (even),
+new `GaloisForLFunctions.RHTower.EigenPairFrequencyInversion`, `GaloisForLFunctions.RHTower.EigenPairGuinandWeilIdentity` on top of the corpus
+stage modules `GaloisForLFunctions.RHTower.VonMangoldtLineSeriesSwap`, `GaloisForLFunctions.RHTower.XiCDerivStripDecay`, `GaloisForLFunctions.RHTower.EigenPairVerticalBound`, `GaloisForLFunctions.RHTower.EigenPairRectangleIdentity`, `GaloisForLFunctions.RHTower.EigenPairLineConvolution`, `GaloisForLFunctions.RHTower.EigenPairLineIntegrable`, `GaloisForLFunctions.RHTower.HedenmalmLineTransformBridge`, `GaloisForLFunctions.RHTower.HedenmalmThetaEigenTransform`, `GaloisForLFunctions.RHTower.HedenmalmTwoEndedVolterraDefect`, `GaloisForLFunctions.RHTower.XiThetaEigenGramLaw`, `GaloisForLFunctions.RHTower.XiWeilArithmeticGram`, `GaloisForLFunctions.RHTower.ThetaCuspSeedZeroMean`, `GaloisForLFunctions.RHTower.HedenmalmPairWeilPolarizationCapstone` (audited).  Conventions are the corpus ones: `XiC z = ξ(1/2 + iz)` (even),
 `U_α = xiThetaEigenFourier α = i·dslope XiC α` (the card's `F_α` up to the reflection `α ↦ −α`),
 `U^♯(z) = conj U(conj z)`, time-side eigenfunctions `u_α = hedenmalmCausalVolterra α` with transform
 `∫ u_α(x) e^{−izx} dx`.  The time-side pair `u_α ū_β` paired against `μ_P` is the correlation

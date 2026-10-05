@@ -508,7 +508,7 @@ Modules `GaloisForLFunctions.HTGeometry.AbelianZetaGas.SocleMomentGenerating` (4
 
 | Claim | Lean declaration |
 |-|-|
-| (AZC.1)–(AZC.2) socle observable `Q = log|soc A|`, chamber `Θ` (all real `τ`) | `socleLog`, `socleLog_nonneg`, `GasChamber`, `GasChamber.base`, `GasChamber.shift` |
+| (AZC.1)–(AZC.2) socle observable `Q = log∣soc A∣`, chamber `Θ` (all real `τ`) | `socleLog`, `socleLog_nonneg`, `GasChamber`, `GasChamber.base`, `GasChamber.shift` |
 | (AZC.3) law `P_{σ,τ}(A) = e^{-σE-τQ}/Z`, `Z = ∏_j ζ(jσ+τ)`; built as an exponential tilt of the corpus law at `max τ 0` with normalizer computed by the socle MGF | `GasChamber.law`, `isProbabilityMeasure_law`, `normalizer_eq`, `weight`, `partition`, `ofReal_partition`, `toReal_law_singleton`, `ofReal_toReal_law_mul_socleLadder`, `law_eq_classLaw` |
 | (AZC.3) every group has positive mass; `Q` not a.s. constant | `law_singleton_pos`, `not_ae_const_socleLog` |
 | Euler regrouping of the ladder into prime-power modes; socle MGF by independence | `modeEulerFactor`, `hasProd_modeEulerFactor`, `truncSocle`, `hasProd_socleModeFactor`, `lintegral_gas_exp_socle`, `integral_gas_cexp_socle`, `integral_classLaw_cexp_socle` |

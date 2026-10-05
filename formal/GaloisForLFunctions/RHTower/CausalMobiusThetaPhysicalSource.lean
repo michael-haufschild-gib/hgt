@@ -168,14 +168,14 @@ theorem causalAmplitude_eq_tsum_seed {N n : ℕ} (hN : 0 < N) (hn : 0 < n) :
 /-! ## The truncated divisor field
 
 `D_N = truncMoebiusDivisorSum N`, `C_N = cell μ N` and the identity
-`C_N(r) = r H_N − Σ_{j≤r} D_N(j)` are corpus objects
+`C_N(r) = r H_N − Σ_{j≤r} D_N(j)` are those of the Euler-deletion physical cells
 (`physical_moebius_cell_eq_truncated_divisor_tail`). -/
 
 /-- `H_N = Σ_{d≤N} μ(d)/d`. -/
 def moebiusHarmonic (N : ℕ) : ℝ :=
   ∑ d ∈ Finset.Icc 1 N, ((ArithmeticFunction.moebius d : ℤ) : ℝ) / d
 
-/-- The physical cell source `C_N(r) = Σ_{d≤N} μ(d){r/d}` of the corpus. -/
+/-- The physical cell source `C_N(r) = Σ_{d≤N} μ(d){r/d}`. -/
 abbrev moebiusCell (N r : ℕ) : ℝ :=
   DeletionCoefficientTransfer.cell (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) N r
 

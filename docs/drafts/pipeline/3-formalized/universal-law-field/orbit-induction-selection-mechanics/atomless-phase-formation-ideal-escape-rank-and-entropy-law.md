@@ -423,7 +423,7 @@ mathlib von Neumann mean ergodic theorem, `fourierLp`, `orthonormal_fourier`, `A
 
 | Claim | Lean declaration |
 |-|-|
-| §2 atomless phase `ζ`, `U f = ζ f` unitary on `L²(X, μ)` | `IsAtomlessPhase`, `unimodularMulUnitary`, `phaseMulUnitary`, `unimodularMulUnitary_coeFn`, `unimodularMulUnitary_symm_coeFn` |
+| §2 atomless phase `ζ`, `U f = ζ f` unitary on `L²(X, μ)` | `IsAtomlessPhase`, `HTGeometry.unimodularMulUnitary`, `phaseMulUnitary`, `unimodularMulUnitary_coeFn`, `unimodularMulUnitary_symm_coeFn` |
 | (AIE.1) conjugation is multiplication by `ζ̄(x)ζ(y)` on kernels; on kernel operators `U* T_k U = T_{ζ̄ k ζ}` | `kernelPhaseConj`, `kernelPhaseTransgression`, `kernelPhaseTransgression_coeFn`, `SqIntKernel.phaseConj`, `hsConj_sqIntKernel_op` |
 | Lemma 2.1, (AIE.2) `(μ×μ)(R) = 0` | `IsAtomlessPhase.measure_resonance`, `IsAtomlessPhase.measure_preimage_singleton`, `IsAtomlessPhase.ae_nonresonant` |
 | Theorem 2.2, (AIE.3) `ker δ = 0` (kernel model; operator model: no nonzero Hilbert–Schmidt commutant) | `kernelPhaseTransgression_eq_zero`, `kernelPhaseConj_fixed`; `hasNoEigenvectors_phaseMulUnitary`, `eq_zero_of_isCompactOperator_of_comm`, `eq_zero_of_hsConj_eq`, `atomlessPhase_hilbertSchmidt_formation` |
@@ -433,7 +433,7 @@ mathlib von Neumann mean ergodic theorem, `fourierLp`, `orthonormal_fourier`, `A
 | (AIE.4)–(AIE.5) Theorem 4.1 `‖M_N(T)‖₂ → 0` | `hsCesaro`, `tendsto_birkhoffAverage_zero_of_fixed`, `tendsto_hsNorm_hsCesaro`, `tendsto_kernelPhaseCesaro` (column model `hsColumns`, `columnOperator`, `columnConj`, `hsColumns_hsCesaro`) |
 | Theorem 4.2, (AIE.6) positivity, trace and trace norm conserved, `‖M_N(T)‖₁ = ‖T‖₁ > 0`, no trace-norm limit | `isPositive_hsConj`, `memSchattenClass_one_hsConj`, `opTrace_hsConj`, `hsConjSum_properties`, `hsNorm_le_traceNorm`, `positive_traceClass_idealEscape`, `atomlessPhase_traceClass_idealEscape` |
 | §5 Haar model `X = S¹`, `ζ(z) = z`, atomless | `circlePhase`, `norm_circlePhase`, `haarAddCircle_singleton`, `isAtomlessPhase_circle` |
-| `eₙ = z⁻ⁿ` orthonormal, `αⁿ(ρ) = |eₙ⟩⟨eₙ|` | `haarOrbitVector`, `orthonormal_haarOrbitVector`, `phaseMulUnitary_symm_haarOrbitVector`, `phaseMulUnitary_symm_iterate`, `hsConj_iterate_rankOne` |
+| `eₙ = z⁻ⁿ` orthonormal, `αⁿ(ρ) = ∣eₙ⟩⟨eₙ∣` | `haarOrbitVector`, `orthonormal_haarOrbitVector`, `phaseMulUnitary_symm_haarOrbitVector`, `phaseMulUnitary_symm_iterate`, `hsConj_iterate_rankOne` |
 | Theorem 5.1, (AIE.7)–(AIE.9) `M_N(ρ) = P_N/N`, rank `N`, `‖·‖ = N⁻¹`, `‖·‖₂ = N^{-1/2}`, `‖·‖₁ = 1`, `S = log N` | `orthoAverage`, `hsCesaro_rankOne_eq_orthoAverage`, `haar_rank_entropy_formation`, `finrank_range_orthoAverage`, `norm_orthoAverage`, `hsNorm_orthoAverage`, `hsNormSq_orthoAverage`, `traceNorm_orthoAverage`, `approxNumber_orthoAverage`, `vonNeumannEntropy`, `vonNeumannEntropy_orthoAverage`, `isPositive_orthoAverage` |
 | Corollary 5.2 the five readings (exact values for every `N`) | `haar_rank_entropy_formation` |
 | §6 `J f(z) = f(z̄)`, `J U J⁻¹ = U*`, `J eₙ = zⁿ`, reflected state has the same quantities | `circleReflection`, `circleReflection_symm_apply`, `circleReflection_conj_phase`, `circleReflection_haarOrbitVector`, `hsConj_orthoAverage`, `circleReflection_formation` |

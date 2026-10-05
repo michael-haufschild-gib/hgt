@@ -126,7 +126,7 @@ Modules `GaloisForLFunctions.HTGeometry.TwoSiteModularHolonomyEscape` (16) and
 
 | Claim | Lean declaration |
 |-|-|
-| (PDAMB.1) `0 < |m log 2 - n log 3| < ε`, `m, n > 0` | `exists_two_three_positive_depth_collision` (via `log_two_le_abs_kummerFreq_of_mul_nonneg`) |
+| (PDAMB.1) `0 < ∣m log 2 - n log 3∣ < ε`, `m, n > 0` | `exists_two_three_positive_depth_collision` (via `log_two_le_abs_kummerFreq_of_mul_nonneg`) |
 | (PDAMB.2) retained block `= (deI - g²QΠ)/Δ = I + (g²/Δ)(I - QΠ)` | `twoSite_modularHolonomy_retained_block`, `twoSite_modularHolonomy_retained_block_eq_one_add` |
 | (PDAMB.3) cubic-Cauchy capacity | `cubicCauchyGramCapacity_eq` |
 | (PDAMB.4) factorization | `cubicCauchyDenominator_factor`, `cubicCauchyDenominator_pos` |

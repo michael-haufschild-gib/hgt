@@ -25,7 +25,7 @@ noncomputable section
 namespace RHTower
 
 /-- The Gaussian `2e^{-πx²}`, whose Mellin transform is `Γℝ`. -/
-def gaussKernel (x : ℝ) : ℂ := 2 * Complex.exp (-(Real.pi : ℂ) * (x : ℂ) ^ 2)
+private def gaussKernel (x : ℝ) : ℂ := 2 * Complex.exp (-(Real.pi : ℂ) * (x : ℂ) ^ 2)
 
 /-- The Gaussian kernel is continuous. -/
 theorem continuous_gaussKernel : Continuous gaussKernel := by

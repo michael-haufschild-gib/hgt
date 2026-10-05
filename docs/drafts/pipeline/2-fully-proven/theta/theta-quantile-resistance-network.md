@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven (paper)
 - **Type:** THEOREM (paper); spectral orientation remains open
 - **Routes:** TQFQ, WS2, SQB, and theta source transport
-- **Source:** The literal completed-theta density, its quantile profile, and the [CDF-action quotient](../1-in-progress/theta-quantile-fourier-action-quotient.md). The [critical one-port theorem](theta-quantile-critical-one-port-rigging.md) supplies the exact quantile boundary functional.
+- **Source:** The literal completed-theta density, its quantile profile, and the [CDF-action quotient](../1-in-progress/theta-quantile-fourier-action-quotient.md). The [critical one-port theorem](../../3-formalized/theta/theta-quantile-critical-one-port-rigging.md) supplies the exact quantile boundary functional.
 - **Statement:** The Fourier coefficients of reciprocal quantile speed are positive jump conductances; the CDF action is their potential kernel, and each column of the Xi-bearing compact inverse is the voltage of a dipole in this network.
 
 ## Why this changes the proof problem
@@ -116,7 +116,7 @@ Equation (7) is an oblique **Stein-score projection**. The quantile `Q` is the i
   K(m,n)=Φ_m+Φ_n−Φ_{m−n},
 ```
 
-whereas (6) uses `K(m,n)−Φ_n`. Positivity of `K` follows directly by writing its quadratic form as the integral of `|∑_m c_m(1−exp(2πimt))|²/h(t)` for finitely supported charges `c`. The missing constant is the gauge shift between grounded and decaying voltage. It is not an `ℓ²` vector, so positivity of `K` cannot be transported to `D` by dropping it. Indeed, every normalized Xi eigenmode has nonzero pinned-mean charge by the [critical one-port theorem](theta-quantile-critical-one-port-rigging.md); the uncharged positive response does not contain those modes. In physical coordinates that theorem also proves the quantile input is unbounded in the flat metric completion, and the original two-ended theta domain selects the actual Xi divisor.
+whereas (6) uses `K(m,n)−Φ_n`. Positivity of `K` follows directly by writing its quadratic form as the integral of `|∑_m c_m(1−exp(2πimt))|²/h(t)` for finitely supported charges `c`. The missing constant is the gauge shift between grounded and decaying voltage. It is not an `ℓ²` vector, so positivity of `K` cannot be transported to `D` by dropping it. Indeed, every normalized Xi eigenmode has nonzero pinned-mean charge by the [critical one-port theorem](../../3-formalized/theta/theta-quantile-critical-one-port-rigging.md); the uncharged positive response does not contain those modes. In physical coordinates that theorem also proves the quantile input is unbounded in the flat metric completion, and the original two-ended theta domain selects the actual Xi divisor.
 
 ### Kron reduction exposes the universal clock port
 

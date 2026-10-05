@@ -476,7 +476,7 @@ Modules `GaloisForLFunctions.HTGeometry.OperatorCertificateGenealogy` (58 consta
 | (OP.25) directional energy and history | `OpCertStream.dirEnergy`, `OpCertStream.dirHistory`, `OpCertStream.dirHistory_apply` |
 | Thm 6.1(1) `‖u_N(v)‖ = 1`, weakly null | `OpCertStream.norm_dirHistory`, `OpCertStream.dirHistory_weaklyNull`, `tendsto_inner_vecSeq_of_coord` |
 | Thm 6.1(2) `G u_N(v) = L_N⁻¹ A_N⁻¹ v e_N`, norm → 0 | `OpCertStream.genealogy_dirHistory`, `OpCertStream.norm_genealogy_dirHistory` |
-| Thm 6.1(3) no compact `K` makes `(K, G)` bounded below | `tendsto_compactOperator_of_weaklyNull_hilbert`, `IsJointlyBoundedBelow`, `OpCertStream.not_isJointlyBoundedBelow_of_dirMirage` |
+| Thm 6.1(3) no compact `K` makes `(K, G)` bounded below | `tendsto_compactOperator_of_weaklyNull_hilbert`, `IsSumJointlyBoundedBelow`, `OpCertStream.not_isJointlyBoundedBelow_of_dirMirage` |
 | §7 closed dense range is everything; finite-dimensional kernel `≅ V₋` | `OpCertStream.surjective_of_isClosed_range`, `OpCertStream.finrank_ker_genealogy` |
 | Thm 7.1 (OP.27) `(K, G)` bounded below iff `K` injective on `ker G` (every bounded `K`) | `OpCertStream.isJointlyBoundedBelow_iff_of_isClosed` |
 | Thm 7.1(2) every finite-rank repair has rank ≥ `dim V₋` | `OpCertStream.finrank_hiddenLineage_le_rank` |

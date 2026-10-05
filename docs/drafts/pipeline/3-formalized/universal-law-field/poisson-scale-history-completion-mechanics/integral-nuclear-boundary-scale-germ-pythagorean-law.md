@@ -350,12 +350,12 @@ axiom audit `[propext, Classical.choice, Quot.sound]` only.  `T = normalizedPhys
 |-|-|
 | (INBSG.1) `E_ε(T) = T(εI+T)⁻¹` | corpus `positiveBoundaryTransfer` |
 | (INBSG.2) `E_ε(cT) = E_{ε/c}(T)` | `positiveBoundaryTransfer_smul` |
-| (INBSG.4) `T = τ⁻¹∑|a⟩⟨a|` (frame/Gram form) | `normalizedPhysicalPluckerOperator`, `normalizedPhysicalPluckerOperator_eq_frameOperator`, `normalizedPhysicalPluckerOperator_eq_leftGram` |
+| (INBSG.4) `T = τ⁻¹∑∣a⟩⟨a∣` (frame/Gram form) | `normalizedPhysicalPluckerOperator`, `normalizedPhysicalPluckerOperator_eq_frameOperator`, `normalizedPhysicalPluckerOperator_eq_leftGram` |
 | (INBSG.5) `T ≥ 0`, `ker T = 0`, `T ∈ S₁`, `Tr T = ‖T‖₁ = 1`, `-ind C = Tr T = 1`; nonzero cross-prime blocks | `normalizedPhysicalPluckerOperator_isPositive`, `normalizedPhysicalPluckerOperator_injective`, `normalizedPhysicalPluckerOperator_memSchattenClass_one`, `opTrace_normalizedPhysicalPluckerOperator`, `traceNorm_normalizedPhysicalPluckerOperator`, `thetaLift_conservation`, `exists_crossPrime_spectralBlock_ne_zero`, `exists_crossPrime_ray` |
 | (INBSG.6) `𝒬 = C_b((0,1],𝒦(H))/C_0` | `CompactOps`, `ApertureHistory`, `vanishingHistories`, `BoundaryCorona` |
 | (INBSG.7) `‖[F]‖ = limsup ‖F(ε)‖` | `norm_boundaryCorona_mk` |
 | (INBSG.8) scale germ; values compact | `transferHistory`, `scaleGerm`, `isCompactOperator_positiveBoundaryTransfer` |
-| Theorem INBSG-A, (INBSG.9) `‖𝔢_T(c)-𝔢_T(d)‖ = |√c-√d|/(√c+√d)` (any positive compact injective `T`, `dim H = ∞`) | `norm_scaleGerm_sub`, `limsup_norm_scaledTransfer_sub`; for the physical `T`: `norm_pluckerScaleGerm_sub` |
+| Theorem INBSG-A, (INBSG.9) `‖𝔢_T(c)-𝔢_T(d)‖ = ∣√c-√d∣/(√c+√d)` (any positive compact injective `T`, `dim H = ∞`) | `norm_scaleGerm_sub`, `limsup_norm_scaledTransfer_sub`; for the physical `T`: `norm_pluckerScaleGerm_sub` |
 | (INBSG.10)–(INBSG.12) symbol, supremum bound, resonance at `x = √(cd)` | `germContrast`, `scaledTransferSymbol`, `scaledTransferSymbol_eq`, `abs_scaledTransferSymbol_le`, `scaledTransferSymbol_resonance`, `norm_scaledTransfer_sub_le`, `le_norm_scaledTransfer_sub_of_mem_spectrum` |
 | (INBSG.13) reflection, Einstein addition, rapidity `artanh κ = (log c - log d)/4` | `germContrast_inv`, `germContrast_mul_einstein`, `artanh_germContrast` |
 | (INBSG.14)–(INBSG.15) `‖𝔢_T(t²)-𝔢_T(u²)‖² + P(t,u) = 1` | corpus `poissonScaleHistoryGram_eq`; `norm_sq_pluckerScaleGerm_add_poisson` |

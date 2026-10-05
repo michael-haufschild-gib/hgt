@@ -58,7 +58,7 @@ theorem mul_arg_ge {c t : ℝ} (hc : 0 < c) (ht : t ≠ 0) :
   nlinarith
 
 /-- `|sinh x| ≤ e^{|x|}/2`. -/
-theorem abs_sinh_le_exp_abs (x : ℝ) : |Real.sinh x| ≤ Real.exp |x| / 2 := by
+private theorem abs_sinh_le_exp_abs (x : ℝ) : |Real.sinh x| ≤ Real.exp |x| / 2 := by
   rw [Real.sinh_eq]
   have h1 := Real.exp_pos x
   have h2 := Real.exp_pos (-x)

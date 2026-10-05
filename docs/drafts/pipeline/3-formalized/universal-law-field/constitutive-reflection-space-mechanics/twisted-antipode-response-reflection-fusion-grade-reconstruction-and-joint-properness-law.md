@@ -803,12 +803,10 @@ This is the first exact noncommutative successor to the killed affine reflection
 
 ## Lean certificate
 
-- [x] 2 → 3: Lean ; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
+- [x] 2 → 3: Lean `GaloisForLFunctions.HTGeometry.TwistedReversalReflectionSpace`, `GaloisForLFunctions.HTGeometry.CompleteGradedAlgebraExpLog`, `GaloisForLFunctions.HTGeometry.CompleteGradedHopfSignature`, `GaloisForLFunctions.HTGeometry.WordSeriesCompleteGradedAlgebra`, `GaloisForLFunctions.HTGeometry.FreeWordSeriesHopfModel`, `GaloisForLFunctions.HTGeometry.TensorAlgebraTwistedAntipode`, `GaloisForLFunctions.HTGeometry.CommonRecoveryFixedPackets`; `lake env lean` + module build pass; axiom audit `[propext, Classical.choice, Quot.sound]` only
 
 Modules (all clean under `lake env lean`, built as modules, axiom audit `[propext, Classical.choice, Quot.sound]` only):
-new `GaloisForLFunctions.HTGeometry.{TwistedReversalReflectionSpace, CompleteGradedAlgebraExpLog,
-CompleteGradedHopfSignature, WordSeriesCompleteGradedAlgebra, FreeWordSeriesHopfModel, TensorAlgebraTwistedAntipode,
-CommonRecoveryFixedPackets}`; corpus `ConstitutiveFunctionalEquationPacketLift`.  A complete graded algebra
+new `GaloisForLFunctions.HTGeometry.TwistedReversalReflectionSpace`, `GaloisForLFunctions.HTGeometry.CompleteGradedAlgebraExpLog`, `GaloisForLFunctions.HTGeometry.CompleteGradedHopfSignature`, `GaloisForLFunctions.HTGeometry.WordSeriesCompleteGradedAlgebra`, `GaloisForLFunctions.HTGeometry.FreeWordSeriesHopfModel`, `GaloisForLFunctions.HTGeometry.TensorAlgebraTwistedAntipode`, `GaloisForLFunctions.HTGeometry.CommonRecoveryFixedPackets`; corpus `GaloisForLFunctions.HTGeometry.ConstitutiveFunctionalEquationPacketLift`.  A complete graded algebra
 `H = ∏ H_n` is presented by its homogeneous projections (`CompleteGradedAlgebra`); a complete connected graded Hopf
 structure (`CompleteHopfStructure`) consists of the completed tensor square `T`, the graded maps `x ↦ x ⊗ 1`,
 `x ↦ 1 ⊗ x` with commuting images, a graded coproduct, the counit with `H_0 = k`, an antipode and the contraction

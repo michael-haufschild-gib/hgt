@@ -111,7 +111,7 @@ two-port current, rather than rely on compact-local mode convergence.
 
 This is a paper proof of a mode-level singular boundary law, not a
 source sign law. It does not prove the cross-prime cancellation required
-by the [causal Möbius--theta criterion](causal-mobius-theta-boundary-criterion.md),
+by the [causal Möbius--theta criterion](../theta/causal-mobius-theta-boundary-criterion.md),
 nor the SQB leakage-plus-drift orientation. The next decisive theorem
 would have to bound or orient the *reflected difference* of the two
 boundary growth channels after retaining the nonzero trace (3).

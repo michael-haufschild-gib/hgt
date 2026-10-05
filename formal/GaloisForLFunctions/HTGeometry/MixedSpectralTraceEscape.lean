@@ -12,6 +12,8 @@ import GaloisForLFunctions.RHTower.RoutePPrimitiveGammaJuliaStokesCofinalChildTr
 For a positive trace-class `T` define the atomic and continuous masses
 `m_at(T) = tr(T P_at)` and `m_c(T) = tr(T P_c)`; they are nonnegative and add to `tr T`.
 
+* **`(MSF.1)` in trace norm.**  The block sums `∑_{λ ∈ s} P_λ T P_λ` converge to `Π_at(T)` in
+  trace norm; the remainder is the positive tail `(1 - Q_s) Π_at(T) (1 - Q_s)`.
 * **Theorem 4.1.**  `Π_at(T)` is positive trace class with `tr Π_at(T) = m_at(T)`, while
   `tr M_N(T) = tr T`; hence `tr(M_N(T) - Π_at(T)) = m_c(T)`.
 * **Corollary 4.2.**  `‖M_N(T) - Π_at(T)‖₁ ≥ m_c(T)` for every `N ≥ 1`.
@@ -168,7 +170,8 @@ theorem isPositive_of_tendsto_hsNorm {ι : Type*} {l : Filter ι} [l.NeBot] {A :
   · have h1 : Tendsto (fun i => (S i).reApplyInnerSelf x) l (𝓝 (A.reApplyInnerSelf x)) := by
       simp only [reApplyInnerSelf_apply]
       exact (Complex.continuous_re.tendsto _).comp
-        (((ContinuousLinearMap.apply ℂ H x).continuous.tendsto A |>.comp hS).inner tendsto_const_nhds)
+        (((ContinuousLinearMap.apply ℂ H x).continuous.tendsto A |>.comp hS).inner
+          tendsto_const_nhds)
     exact ge_of_tendsto' h1 fun i => (isPositive_def.mp (hpos i)).2 x
 
 /-! ### Masses -/
@@ -448,7 +451,8 @@ theorem hsConj_block (c d : ℂ) (X : H →L[ℂ] H) :
   set y := eigenproj U c (X (eigenproj U d x))
   by_cases hy : y = 0
   · simp [hy]
-  have hc : ‖c‖ = 1 := norm_eq_one_of_mem_unitaryEigenspace (Submodule.starProjection_apply_mem _ _) hy
+  have hc : ‖c‖ = 1 :=
+    norm_eq_one_of_mem_unitaryEigenspace (Submodule.starProjection_apply_mem _ _) hy
   rw [map_smul, unitary_symm_apply_of_mem (Submodule.starProjection_apply_mem _ _) hc, smul_smul,
     mul_comm]
 
@@ -510,7 +514,7 @@ theorem sqrtOp_comp_self (hpos : T.IsPositive) :
   rw [RHTower.traceClassRoot_comp_self,
     ContinuousLinearMap.absOp_of_nonneg ((nonneg_iff_isPositive T).mpr hpos)]
 
-theorem isSymmetric_sqrtOp (T : H →L[ℂ] H) :
+theorem isSymmetric_traceClassRoot (T : H →L[ℂ] H) :
     (RHTower.traceClassRoot T : H →ₗ[ℂ] H).IsSymmetric :=
   isSelfAdjoint_iff_isSymmetric.mp (RHTower.isSelfAdjoint_traceClassRoot T)
 
@@ -520,7 +524,7 @@ theorem inner_eq_norm_sqrtOp_sq (hpos : T.IsPositive) (x : H) :
   conv_lhs => rw [← sqrtOp_comp_self hpos]
   calc ⟪x, (RHTower.traceClassRoot T ∘L RHTower.traceClassRoot T) x⟫_ℂ
       = ⟪RHTower.traceClassRoot T x, RHTower.traceClassRoot T x⟫_ℂ :=
-        (isSymmetric_sqrtOp T x (RHTower.traceClassRoot T x)).symm
+        (isSymmetric_traceClassRoot T x (RHTower.traceClassRoot T x)).symm
     _ = _ := by rw [inner_self_eq_norm_sq_to_K]; push_cast; rfl
 
 theorem summable_continuousDiag (hT : RHTower.MemSchattenClass 1 T) :
@@ -768,6 +772,60 @@ theorem tendsto_traceNorm_aperture (hT : RHTower.MemSchattenClass 1 T) (s : Fins
     simpa using this
   exact squeeze_zero (fun N => RHTower.traceNorm_nonneg _) hbound hsum
 
+/-- `Π_at(X) - Π_at(Q_s X Q_s) = (1 - Q_s) Π_at(X) (1 - Q_s)`. -/
+theorem atomicPinch_sub_aperture_eq {X : H →L[ℂ] H} (hX : IsHilbertSchmidt X) (s : Finset ℂ) :
+    atomicPinch U hX - atomicPinch U (isHilbertSchmidt_aperture_conj (U := U) hX s) =
+      (1 - apertureProj U s) ∘L atomicPinch U hX ∘L (1 - apertureProj U s) := by
+  rw [atomicPinch_aperture hX s]
+  refine ext_adapted (U := U) fun i => ?_
+  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+    one_sub_apertureProj_adaptedVec, sub_apply, sum_apply]
+  rcases i with ⟨d, k⟩ | k
+  · simp only [adaptedLabel, Sum.isLeft_inl, and_true, ContinuousLinearMap.comp_apply,
+      eigenproj_adaptedVec_inl]
+    have hsum : ∑ c ∈ s, eigenproj U c (X (if d = c then adaptedVec U (Sum.inl ⟨d, k⟩) else 0)) =
+        if d ∈ s then eigenproj U d (X (adaptedVec U (Sum.inl ⟨d, k⟩))) else 0 := by
+      rw [Finset.sum_congr rfl fun c _ => by rw [apply_ite X, map_zero,
+        apply_ite (eigenproj U c), map_zero], Finset.sum_ite_eq]
+    rw [hsum, atomicPinch_apply]
+    by_cases hds : d ∈ s
+    · simp only [hds, if_true, map_zero, atomicPinchCol, sub_self]
+    · simp only [hds, if_false, sub_zero, atomicPinchCol]
+      rw [atomicPinch_apply, sub_apply, one_apply_eq_self]
+      simp only [atomicPinchCol]
+      rw [apertureProj_eigenproj, if_neg hds, sub_zero]
+  · simp [adaptedLabel, atomicPinch_apply, atomicPinchCol, eigenproj_adaptedVec_inr]
+
+/-- The aperture tail `(1 - Q_s) Π_at(T) (1 - Q_s)` of a positive trace-class `T` is positive and
+trace class. -/
+theorem aperture_tail_traceClass (hT : RHTower.MemSchattenClass 1 T) (hpos : T.IsPositive)
+    (s : Finset ℂ) :
+    ((1 - apertureProj U s) ∘L atomicPinch U hT.one_isHilbertSchmidt ∘L
+        (1 - apertureProj U s)).IsPositive ∧
+      RHTower.MemSchattenClass 1 ((1 - apertureProj U s) ∘L
+        atomicPinch U hT.one_isHilbertSchmidt ∘L (1 - apertureProj U s)) := by
+  have hsa := isSelfAdjoint_one_sub_apertureProj (U := U) s
+  obtain ⟨hPpos, hPmem, -⟩ := atomicPinch_traceClass (U := U) hT hpos
+  refine ⟨?_, RHTower.memSchattenClass_one_comp_left
+    (RHTower.memSchattenClass_one_comp_right hPmem _) _⟩
+  have h := hPpos.conj_adjoint (1 - apertureProj U s)
+  rwa [hsa.adjoint_eq] at h
+
+/-- The diagonal of the aperture tail on the adapted basis. -/
+theorem inner_aperture_tail_adaptedVec {X : H →L[ℂ] H} (hX : IsHilbertSchmidt X) (s : Finset ℂ)
+    (i : AdaptedIndex U) :
+    ⟪adaptedVec U i, ((1 - apertureProj U s) ∘L atomicPinch U hX ∘L (1 - apertureProj U s))
+        (adaptedVec U i)⟫_ℂ =
+      if adaptedLabel i ∈ s ∧ i.isLeft then 0 else atomicDiag U X i := by
+  have hsym : ∀ x y : H, ⟪x, (1 - apertureProj U s) y⟫_ℂ = ⟪(1 - apertureProj U s) x, y⟫_ℂ :=
+    fun x y => ((isSelfAdjoint_iff_isSymmetric.mp
+      (isSelfAdjoint_one_sub_apertureProj (U := U) s)) x y).symm
+  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hsym,
+    one_sub_apertureProj_adaptedVec]
+  split_ifs with h
+  · simp
+  · rw [inner_atomicPinch_adaptedVec]
+
 /-- **The escaped tail.**  With zero continuous mass, `Π_at(T) - Π_at(Q_s T Q_s)` is positive and
 its trace norm is exactly the truncation tail `‖T^{1/2}(1 - Q_s)‖₂²`. -/
 theorem traceNorm_atomicPinch_sub_aperture (hT : RHTower.MemSchattenClass 1 T) (hpos : T.IsPositive)
@@ -775,40 +833,8 @@ theorem traceNorm_atomicPinch_sub_aperture (hT : RHTower.MemSchattenClass 1 T) (
     RHTower.traceNorm H (atomicPinch U hT.one_isHilbertSchmidt -
         atomicPinch U (isHilbertSchmidt_aperture_conj (U := U) hT.one_isHilbertSchmidt s)) =
       hsNormSq (RHTower.traceClassRoot T ∘L (1 - apertureProj U s)) := by
-  have hD : atomicPinch U hT.one_isHilbertSchmidt -
-      atomicPinch U (isHilbertSchmidt_aperture_conj (U := U) hT.one_isHilbertSchmidt s) =
-      (1 - apertureProj U s) ∘L atomicPinch U hT.one_isHilbertSchmidt ∘L
-        (1 - apertureProj U s) := by
-    rw [atomicPinch_aperture hT.one_isHilbertSchmidt s]
-    refine ext_adapted (U := U) fun i => ?_
-    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-      one_sub_apertureProj_adaptedVec, sub_apply, sum_apply]
-    rcases i with ⟨d, k⟩ | k
-    · simp only [adaptedLabel, Sum.isLeft_inl, and_true, ContinuousLinearMap.comp_apply,
-        eigenproj_adaptedVec_inl]
-      have hsum : ∑ c ∈ s, eigenproj U c (T (if d = c then adaptedVec U (Sum.inl ⟨d, k⟩) else 0)) =
-          if d ∈ s then eigenproj U d (T (adaptedVec U (Sum.inl ⟨d, k⟩))) else 0 := by
-        rw [Finset.sum_congr rfl fun c _ => by rw [apply_ite T, map_zero,
-          apply_ite (eigenproj U c), map_zero], Finset.sum_ite_eq]
-      rw [hsum, atomicPinch_apply]
-      by_cases hds : d ∈ s
-      · simp only [hds, if_true, map_zero, atomicPinchCol, sub_self]
-      · simp only [hds, if_false, sub_zero, atomicPinchCol]
-        rw [atomicPinch_apply, sub_apply, one_apply_eq_self]
-        simp only [atomicPinchCol]
-        rw [apertureProj_eigenproj, if_neg hds, sub_zero]
-    · simp [adaptedLabel, atomicPinch_apply, atomicPinchCol, eigenproj_adaptedVec_inr]
-  have hsa := isSelfAdjoint_one_sub_apertureProj (U := U) s
-  have hPpos := (atomicPinch_traceClass (U := U) hT hpos).1
-  have hPmem := (atomicPinch_traceClass (U := U) hT hpos).2.1
-  have hDpos : ((1 - apertureProj U s) ∘L atomicPinch U hT.one_isHilbertSchmidt ∘L
-      (1 - apertureProj U s)).IsPositive := by
-    have h := hPpos.conj_adjoint (1 - apertureProj U s)
-    rwa [hsa.adjoint_eq] at h
-  have hDmem : RHTower.MemSchattenClass 1 ((1 - apertureProj U s) ∘L
-      atomicPinch U hT.one_isHilbertSchmidt ∘L (1 - apertureProj U s)) :=
-    RHTower.memSchattenClass_one_comp_left (RHTower.memSchattenClass_one_comp_right hPmem _) _
-  rw [hD, RHTower.traceNorm_eq_re_opTrace_of_isPositive hDmem hDpos,
+  obtain ⟨hDpos, hDmem⟩ := aperture_tail_traceClass (U := U) hT hpos s
+  rw [atomicPinch_sub_aperture_eq, RHTower.traceNorm_eq_re_opTrace_of_isPositive hDmem hDpos,
     opTrace_eq_tsum_adapted hDmem,
     hsNormSq_eq ((RHTower.traceClassRoot_isHilbertSchmidt hT).comp_right _) (adaptedBasis U)]
   have hterm : ∀ i, ⟪adaptedVec U i, ((1 - apertureProj U s) ∘L
@@ -816,18 +842,69 @@ theorem traceNorm_atomicPinch_sub_aperture (hT : RHTower.MemSchattenClass 1 T) (
       ((‖(RHTower.traceClassRoot T ∘L (1 - apertureProj U s)) (adaptedBasis U i)‖ ^ 2 : ℝ) :
         ℂ) := by
     intro i
-    have hsym : ∀ x y : H, ⟪x, (1 - apertureProj U s) y⟫_ℂ = ⟪(1 - apertureProj U s) x, y⟫_ℂ :=
-      fun x y => ((isSelfAdjoint_iff_isSymmetric.mp hsa) x y).symm
-    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hsym, adaptedBasis_apply,
-      ContinuousLinearMap.comp_apply, one_sub_apertureProj_adaptedVec]
+    rw [inner_aperture_tail_adaptedVec, adaptedBasis_apply, ContinuousLinearMap.comp_apply,
+      one_sub_apertureProj_adaptedVec]
     split_ifs with h
     · simp
-    · rw [inner_atomicPinch_adaptedVec]
-      rcases i with ⟨d, k⟩ | k
+    · rcases i with ⟨d, k⟩ | k
       · simp only [atomicDiag, Sum.isLeft_inl, if_true]
         exact inner_eq_norm_sqrtOp_sq hpos _
       · simp [atomicDiag, sqrtOp_adaptedVec_inr hT hpos hmc k]
   rw [tsum_congr hterm, ← Complex.ofReal_tsum, Complex.ofReal_re]
+
+/-- **`(MSF.1)` in trace norm.**  For positive trace-class `T`, the finite block sums
+`∑_{λ ∈ s} P_λ T P_λ` converge to the atomic pinching in trace norm. -/
+theorem tendsto_traceNorm_atomicPinch_sub_sum (hT : RHTower.MemSchattenClass 1 T)
+    (hpos : T.IsPositive) :
+    Tendsto (fun s : Finset ℂ => RHTower.traceNorm H (atomicPinch U hT.one_isHilbertSchmidt -
+      ∑ c ∈ s, eigenproj U c ∘L T ∘L eigenproj U c)) atTop (𝓝 0) := by
+  classical
+  set g : AdaptedIndex U → ℝ := fun i => (atomicDiag U T i).re
+  have hg : Summable g := Complex.reCLM.summable (summable_atomicDiag (U := U) hT)
+  have hg0 : ∀ i, 0 ≤ g i := fun i => (Complex.nonneg_iff.mp (atomicDiag_nonneg hpos i)).1
+  have hval : ∀ s : Finset ℂ, RHTower.traceNorm H (atomicPinch U hT.one_isHilbertSchmidt -
+      ∑ c ∈ s, eigenproj U c ∘L T ∘L eigenproj U c) =
+      ∑' i, (if adaptedLabel i ∈ s ∧ i.isLeft then 0 else g i) := by
+    intro s
+    obtain ⟨hDpos, hDmem⟩ := aperture_tail_traceClass (U := U) hT hpos s
+    have hsumD : Summable fun i => ⟪adaptedVec U i, ((1 - apertureProj U s) ∘L
+        atomicPinch U hT.one_isHilbertSchmidt ∘L (1 - apertureProj U s)) (adaptedVec U i)⟫_ℂ := by
+      simpa only [adaptedBasis_apply] using hDmem.one_summable_inner_diag_basis (adaptedBasis U)
+    rw [← atomicPinch_aperture hT.one_isHilbertSchmidt s, atomicPinch_sub_aperture_eq,
+      RHTower.traceNorm_eq_re_opTrace_of_isPositive hDmem hDpos, opTrace_eq_tsum_adapted hDmem,
+      Complex.re_tsum hsumD]
+    refine tsum_congr fun i => ?_
+    rw [inner_aperture_tail_adaptedVec]
+    split_ifs <;> simp [g]
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  obtain ⟨J, hJ⟩ := (Metric.tendsto_atTop.mp (tendsto_tsum_compl_atTop_zero g)) ε hε
+  refine ⟨J.image adaptedLabel, fun s hs => ?_⟩
+  have htail := hJ J le_rfl
+  rw [Real.dist_eq, sub_zero] at htail
+  have hnn : 0 ≤ ∑' i : {x // x ∉ J}, g i := tsum_nonneg fun i => hg0 i
+  rw [abs_of_nonneg hnn] at htail
+  have hle : ∑' i, (if adaptedLabel i ∈ s ∧ i.isLeft then 0 else g i) ≤
+      ∑' i : {x // x ∉ J}, g i := by
+    have hsub : (∑' i : {x // x ∉ J}, g i) = ∑' i, Set.indicator {x | x ∉ J} g i :=
+      tsum_subtype ({x | x ∉ J} : Set (AdaptedIndex U)) g
+    rw [hsub]
+    have hs1 : Summable fun i => if adaptedLabel i ∈ s ∧ i.isLeft then 0 else g i :=
+      hg.of_nonneg_of_le (fun i => by split_ifs; exacts [le_rfl, hg0 i])
+        (fun i => by split_ifs; exacts [hg0 i, le_rfl])
+    refine Summable.tsum_le_tsum (fun i => ?_) hs1 (hg.indicator _)
+    by_cases hi : i ∈ J
+    · rcases i with ⟨d, k⟩ | k
+      · have hd : adaptedLabel (Sum.inl ⟨d, k⟩ : AdaptedIndex U) ∈ s :=
+          hs (Finset.mem_image_of_mem _ hi)
+        simp [hd, hi]
+      · simp [Set.indicator, hi, g, atomicDiag]
+    · simp only [Set.indicator, Set.mem_setOf_eq, hi, not_false_eq_true, if_true]
+      split_ifs
+      · exact hg0 i
+      · exact le_rfl
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg (RHTower.traceNorm_nonneg _), hval]
+  exact lt_of_le_of_lt hle htail
 
 /-- **Theorem 5.1, sufficiency.**  Zero continuous mass gives trace-norm convergence of the
 formation to the atomic pinching. -/

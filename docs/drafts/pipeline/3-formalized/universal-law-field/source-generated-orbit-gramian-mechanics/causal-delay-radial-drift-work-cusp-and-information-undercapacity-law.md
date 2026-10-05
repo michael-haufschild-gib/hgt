@@ -422,18 +422,18 @@ formation `W ⊕ W`. Kullback–Leibler divergence is the discrete `Σ P log(P/Q
 | Theorem 3.1, `δ = 0`: `x = 0`, capital `0` for every `b` | `delayDriftMultiplier_zero`, `HeatSource.spectralPacket_delayDrift_zero`, `CyclicHeatSource.orbitCostForm_delayDrift_zero` |
 | Theorem 3.1 (1)⟺(2)⟺(3)⟺(4), (CDW.5)–(CDW.6) | `CyclicHeatSource.orbitCostForm_delayDrift_lt_top_iff`, `eulerShell_orbitCostForm_delayDrift_lt_top_iff`, `isHalfPlaneHardy_delayDriftMultiplier_iff`, `causal_chamber_iff` |
 | (CDW.7), (CDW.9) history `h_{δ,b,T}`, `ℒh = Φ`, `Wh = x`, uniqueness | `delayDriftControl`, `laplaceRay_sub`, `laplaceRay_delayDriftControl`, `isHalfPlaneHardy_delayDriftMultiplier`, `HeatSource.heatReachability_delayDriftControl`, `delayDriftPacket_unique_history` |
-| (CDW.8), (CDW.10) `q_G(x_{δ,b,T}) = ‖h‖² = 2 min(|δ|,T)/T²` | `measureReal_Ioc_inter_Ioc`, `inner_offsetWindowControl`, `norm_delayDriftControl_sq`, `CyclicHeatSource.orbitCostForm_delayDrift_eq`, `orbitCostForm_delayDriftPacket` |
-| (CDW.11)–(CDW.12) off the chamber `|Φ(x)| → ∞`, while `H(x) → 0` for `H ∈ H²` | `tendsto_exp_sub_exp_div_atTop`, `tendsto_norm_delayDriftMultiplier_atTop`, `tendsto_isHalfPlaneHardy_atTop`, `not_isHalfPlaneHardy_delayDriftMultiplier`, `norm_le_hardyNormSq` |
-| (CDW.13)–(CDW.14) common delay `b ≥ |δ|` | `common_delay_iff`, `eulerShell_common_delay_iff` |
-| (CDW.15) equal work of both orientations; paired capital `4 min(|δ|,T)/T²` | `pairWork`, `pairCapital_eq` |
+| (CDW.8), (CDW.10) `q_G(x_{δ,b,T}) = ‖h‖² = 2 min(∣δ∣,T)/T²` | `measureReal_Ioc_inter_Ioc`, `inner_offsetWindowControl`, `norm_delayDriftControl_sq`, `CyclicHeatSource.orbitCostForm_delayDrift_eq`, `orbitCostForm_delayDriftPacket` |
+| (CDW.11)–(CDW.12) off the chamber `∣Φ(x)∣ → ∞`, while `H(x) → 0` for `H ∈ H²` | `tendsto_exp_sub_exp_div_atTop`, `tendsto_norm_delayDriftMultiplier_atTop`, `tendsto_isHalfPlaneHardy_atTop`, `not_isHalfPlaneHardy_delayDriftMultiplier`, `norm_le_hardyNormSq` |
+| (CDW.13)–(CDW.14) common delay `b ≥ ∣δ∣` | `common_delay_iff`, `eulerShell_common_delay_iff` |
+| (CDW.15) equal work of both orientations; paired capital `4 min(∣δ∣,T)/T²` | `pairWork`, `pairCapital_eq` |
 | (CDW.15a)–(CDW.15b) right-shift gauge `h_{δ,b+c,T} = S_c h_{δ,b,T}`, `Φ_{δ,b+c,T} = e^{-cz}Φ_{δ,b,T}`, norm invariance | `delayDriftMultiplier_add_delay`, `offsetWindowControl_add_delay`, `delayDriftControl_add_delay`, `norm_delayDriftControl_add_delay`, `burnolRightShift`, `norm_burnolRightShift_apply` |
 | (CDW.16)–(CDW.17) Gibbs tilt `P_u` (a probability on `A_m`), `F(u) = log S_m(σ-u)` | `shellTilt`, `shellTilt_pos`, `hasSum_shellTilt`, `shellLogPartition`, `eulerShellMoment`, `summable_eulerShellMoment`, `hasDerivAt_eulerShellMoment_sub` |
 | (CDW.18) `F' = E_{P_u} log n`, `F'' = Var_{P_u} log n > 0` | `shellTiltMean`, `shellTiltVar`, `shellTiltMean_eq`, `shellTiltVar_eq`, `hasDerivAt_shellLogPartition`, `hasDerivAt_shellTiltMean`, `deriv_shellLogPartition`, `deriv_deriv_shellLogPartition`, `shellTiltVar_pos` |
 | (CDW.19) `log(dP_u/dP_{-u}) = 2u log n + F(-u) - F(u)` | `log_shellTilt_div` |
 | (CDW.20) `J_m(u) = D(P_u‖P_{-u}) + D(P_{-u}‖P_u) = 2u(F'(u) - F'(-u))` | `shellKL`, `shellJeffreys`, `shellKL_tilt`, `shellJeffreys_eq`, `shellJeffreys_neg` |
-| (CDW.21)–(CDW.22) `M_{u₀} = sup_{|s|≤u₀} F'' < ∞`; `0 < J_m(u) ≤ 4M_{u₀}u²` | `shellVarSup`, `continuousOn_shellTiltVar`, `shellTiltVar_le_shellVarSup`, `shellVarSup_pos`, `shellJeffreys_pos_le_of_pos`, `shellJeffreys_pos_le` |
-| (CDW.23)–(CDW.24) `𝔠_pair = 4|u|/T²`; `𝔠_pair/J_m ≥ 1/(M_{u₀}T²|u|) → ∞` | `pairWork_of_le`, `pairWork_div_shellJeffreys_ge`, `tendsto_pairWork_div_shellJeffreys` |
-| (CDW.25) `J_m = O(u²)`, `𝔠_pair = Θ(|u|)` | `shellJeffreys_isBigO`, `pairWork_isTheta` |
+| (CDW.21)–(CDW.22) `M_{u₀} = sup_{∣s∣≤u₀} F'' < ∞`; `0 < J_m(u) ≤ 4M_{u₀}u²` | `shellVarSup`, `continuousOn_shellTiltVar`, `shellTiltVar_le_shellVarSup`, `shellVarSup_pos`, `shellJeffreys_pos_le_of_pos`, `shellJeffreys_pos_le` |
+| (CDW.23)–(CDW.24) `𝔠_pair = 4∣u∣/T²`; `𝔠_pair/J_m ≥ 1/(M_{u₀}T²∣u∣) → ∞` | `pairWork_of_le`, `pairWork_div_shellJeffreys_ge`, `tendsto_pairWork_div_shellJeffreys` |
+| (CDW.25) `J_m = O(u²)`, `𝔠_pair = Θ(∣u∣)` | `shellJeffreys_isBigO`, `pairWork_isTheta` |
 | (CDW.26)–(CDW.29) zero source delay + finite capital + reflection ⟹ `δ = 0` | `source_anchor_selection` |
 | (CDW.30) §7.1 delay destroys selection | `delay_destroys_selection` |
 | §7.2 width is load-bearing: exact-time radial packet has infinite capital; `q_G(x_{δ,b,T}) → ∞` as `T ↓ 0` | `HeatSource.heatOrbit_sub_eq_spectralPacket`, `HeatSource.summable_expDiffPacket`, `orbitCostForm_exactTime_radial_eq_top`, `tendsto_orbitCostForm_delayDriftPacket` |

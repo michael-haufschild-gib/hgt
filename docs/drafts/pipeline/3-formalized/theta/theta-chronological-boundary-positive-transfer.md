@@ -81,7 +81,7 @@ H(z):=A(z)(z+1)(z+2)=ξ(z+2)/G(z)                       (8)
 
 is holomorphic and zero-free throughout `Re z>-1`: `ζ(z+2)` is zero-free by its Euler product there, gamma has no zero, and `z+1`, `z+2` do not vanish in that open half-plane. Thus meromorphic continuation of (7) carries each hypothetical off-line pole of `1/ζ(1+z)` between the two currents with unchanged location and order. The positive kernel in (3) offers a source-level comparison, but `D` has no positivity-preserving sign, and the already proved cusp sign changes of both currents rule out a one-sign consequence. Equation (4) therefore identifies **one boundary resonance in two source frames**, rather than a new orientation law.
 
-There is also a precise comparison with the corpus's [one-sided causal Möbius–theta tail](../../2-fully-proven/theta/causal-mobius-theta-boundary-criterion.md). Write `B(t)` for that tail, `ℒ_tB(w)=∫_1^∞B(t)t^(-w-1)dt`, `K(w)=∫_0^∞e^(wu)k(u)du`, and `E(w)` for its analytic correction. Its already proved half-line identity is
+There is also a precise comparison with the corpus's [one-sided causal Möbius–theta tail](causal-mobius-theta-boundary-criterion.md). Write `B(t)` for that tail, `ℒ_tB(w)=∫_1^∞B(t)t^(-w-1)dt`, `K(w)=∫_0^∞e^(wu)k(u)du`, and `E(w)` for its analytic correction. Its already proved half-line identity is
 
 ```text
 ℒ_t B(w) = K(w)(1/ζ(w+1/2)-1)-E(w),     1/2<Re w<1.
