@@ -4225,3 +4225,23 @@ the reality gap needed to form the full border-square determinant rather
 than infer it from real-part identities. Upper complex identity audit is
 being repaired for literal-real-to-complex numeral elaboration. No change
 to its mathematical statement; no analytic sign premise introduced.
+
+C118 completed C116 and C117 production integration: 7 leaves, 44 public
+declarations, all direct lake --old env lean audits fresh/clean and all
+axiom sets standard three. Both P2 cards moved to P3, frontier map updated,
+umbrella wired. Final lint failed only on 26 unrelated missing umbrella
+imports; no new TT error or proof-debt finding. Exact U^26 removal and
+positive nonzero reduced source boundary coefficient are new proved
+structure. They do not solve the hard compact sign. Continue the complete
+source polynomial/transport sign attack; no monotonicity or endpoint-order
+premise may be inserted. The next source chain resumes only unverified
+eleventh-jet regrouping and remaining controls, never the accepted prefix.
+
+C118 resume/cleanup: both closed seam proof families' scratch sources and
+caches removed after reverse-import and production-closure checks; obsolete
+staging drivers retired. The imported eleventh-jet export is complete,
+without truncation or repeated normalization. Exact syntax regrouping
+created 44 unverified leaves (28 pieces, grid, 13 columns, full model and
+export); their sequential audit is active. This supplies the full source
+model for the compact sign attempt, not a sign result. Current owned handle
+20320 starts at TTC115Jet11KPiece0; no previous accepted prefix is replayed.

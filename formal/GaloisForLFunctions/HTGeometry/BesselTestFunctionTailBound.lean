@@ -220,12 +220,13 @@ theorem oddSeries_eq_integral {x : ℝ} (hx0 : 0 ≤ x) (hx : x < 1) :
     (Eventually.of_forall fun _ _ => by
       have hg := (summable_geometric_of_lt_one (by positivity : 0 ≤ x ^ 2) (by nlinarith)).mul_left x
       refine (hg.mul_right M).congr fun k => ?_
-      rw [pow_succ, pow_mul]; ring)
+      ring)
     intervalIntegrable_const
     (Eventually.of_forall fun θ _ => by
       have h := (hasSum_odd_sin_series hx0 hx θ)
       have h' := (Complex.hasSum_ofReal.2 h).mul_right (T.sineTransform (Real.sin θ))
-      convert h' using 1; ring)
+      rw [mul_comm (T.sineTransform (Real.sin θ))]
+      exact h')
   have hval : ∀ k : ℕ, ∫ θ in (0 : ℝ)..Real.pi / 2,
       (((-1) ^ k * x ^ (2 * k + 1) * Real.sin ((2 * k + 1 : ℕ) * θ) : ℝ) : ℂ) * T.sineTransform (Real.sin θ) =
       (Real.pi / 2 : ℂ) * ((-1) ^ k * T.besselCoeff (2 * k + 1) * ((x ^ (2 * k + 1) : ℝ) : ℂ)) := fun k => by
@@ -279,12 +280,12 @@ theorem norm_oddSeries_exp_neg_le {w : ℝ} (hw : 0 < w) :
   have hx1 : Real.exp (-w) < 1 := Real.exp_lt_one_iff.2 (by linarith)
   refine (T.norm_oddSeries_le (Real.exp_pos _).le hx1).trans (le_of_eq ?_)
   have hs : 0 < Real.sinh w := Real.sinh_pos_iff.2 hw
-  rw [mul_div_assoc']
-  congr 1
-  rw [Real.sinh_eq, div_eq_div_iff (by nlinarith [Real.exp_pos (-w)]) (by linarith)]
-  have h2 : Real.exp (-w) ^ 2 = Real.exp (-w) * Real.exp (-w) := sq _
   have h3 : Real.exp w * Real.exp (-w) = 1 := by rw [← Real.exp_add]; simp
-  nlinarith [h3]
+  have hq : 0 < 1 - Real.exp (-w) ^ 2 := by nlinarith [Real.exp_pos (-w)]
+  have hx : Real.exp (-w) / (1 - Real.exp (-w) ^ 2) = 1 / (2 * Real.sinh w) := by
+    rw [div_eq_div_iff hq.ne' (by positivity), Real.sinh_eq]
+    linear_combination h3
+  rw [hx]; ring
 
 end BesselTestFunction
 

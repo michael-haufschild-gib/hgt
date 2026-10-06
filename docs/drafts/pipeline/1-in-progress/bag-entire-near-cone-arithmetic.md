@@ -90,3 +90,118 @@ on the overlapping scale domain. All owned processes are terminal.
 P3:bag-complete-arithmetic-exterior records the complete theorem, paper
 proof and audits. RH goal remains active; entire near-cone arithmetic
 continues in P1:bag-entire-near-cone-arithmetic.
+
+## Continuation31az — testing the full normal-source transfer
+
+Previous30az is verified progress: COMPLETE arithmetic exterior and original
+sharp reduction. Current target remains the entire signed near-cone action;
+no new cancellation theorem is claimed in this continuation yet.
+
+Corpus24070 nonpartial67982,index1266455,coverage1266446/current1266456;
+pending51624/stale2660/error2,noinventoryerrors. Corpus69949 nonpartial67982,
+index1266482,coverage1266472/current1266483,samecompiler counts. All20
+candidates and20source arguments and ingredients inspected. The exact46
+source references to primeGaussianCubicOffDiagonal/bagCubicNearConeAction
+were enumerated; none is a full cancellation theorem. No theorem absence
+was inferred from semantic search alone.
+
+Attempt1: annihilate nonzero normal fibres by local prime weights. Current
+ChiPrimeGaussianCubicLocalAxisRigidity rules out using this as the complete
+saving: the actual local axes retain (1-r^-2) times the WHOLE source,
+while the signed inverse fibres retain r^-2 times it. This is an existing
+verified obstruction, not new progress. It concerns local prime-height
+fibres, not the global normal coordinate. Do not repeat its proof.
+
+Attempt2 under examination: fixed-profile normal-source convergence plus
+an ordinary Fourier Sobolev operator bound. Exact third-height sampling
+in bagLabelledThirdGrid_block makes the required topology delicate.
+For a one-dimensional normal profile psi, compact support of Fourier psi
+in a fixed positive HEIGHT band does not bound its Fourier value at an
+individual height by any ordinary H^k norm of psi. A narrow height bump
+b_delta centered at that height has b_delta(r)=1 and weighted L2 mass
+O(delta); psi=FourierInv(b_delta) has every fixed ordinary H^k energy
+O(delta). This is a paper test of the proposed trace norm, not a claimed
+formal no-go for the entire projected source. In particular, normal
+coordinate WEIGHTS and normal DERIVATIVES must not be conflated.
+
+Positive replacement to prove and then apply, rather than abandoning the
+signed source: a scale-dependent COMPLETE height sampling inequality,
+
+  (1/N) sum_n ||h(n/N)||^2 <= C (integral ||h||^2
+                              +N^-2 integral ||h'||^2).
+
+It should hold also for Hilbert-valued h, with one constant. All prime
+heights form a subset; logarithmic labels can be normalized by logN.
+The derivative penalty is essential: it pays actual narrow edge changes
+at scale delta=N^-3/4, for which N^-2*delta^-1 tends to zero. This would
+supply a valid normal-height trace component for the SAME full-source
+estimate; it alone does not prove signed tangential arithmetic cancellation.
+A valid proof must then incorporate all complementary prime factors and
+both projectors, not call this one-dimensional trace the full operator.
+
+Paper proof of the sampling component: on each disjoint unit cell around
+an integer, FTC and Cauchy-Schwarz bound the squared sample by twice the
+cell integral of ||h||²+||h'||². Sum EVERY cell before scaling. Fourier
+Plancherel translates the derivative penalty into a normal-coordinate
+second moment, retaining its N^-2 factor. This is the replacement norm
+obligation now being checked against corpus APIs before formalization.
+
+Height-trace search69190 partial(decomposition),67986 indexed,
+index1266610,coverage1266598/current1266613,pending51628/stale2660/error2,
+noinventoryerrors. All20candidate/source statements and ingredientsets
+inspected; proposed determinant-line squareIntegral ingredients are
+inapplicable. Relevant actual sources: Schwartz Fourier Plancherel,
+ChiCubicMellinTrace's admitted weighted Cauchy-Schwarz, and the exact
+prime-height selection above. No Lean source or build has started31az.
+All three owned searches are terminal; logs/JSON retained.
+
+31az continuation correction: Gallagher already supplies the general sampling
+ingredient. No standalone derivative-budget wrapper was added; it would not
+close the signed source. The ordinary-Sobolev bump test above concerns arbitrary
+profiles, and must NOT be applied to the actual truncated normal slice without
+checking its support.
+
+New constructive conjecture: the literal retained tube supplies an exact
+normal sampling isometry. For fixed tangential x,y put
+psi(D)=Fourier(near_epsilon f)(x,y,D-x*y). The already audited cutoff identity
+forces psi(D)=0 for |D|>=2epsilon. If epsilon<=1/4, the full integer-height
+Fourier samples satisfy sum_r |Fourier psi(tau+r)|²=integral |psi|², for EVERY
+real shift tau. This is the corpus WindowTransformSamplingParseval identity
+on an interval of length one, with its conventions explicitly converted.
+It has no growing derivative penalty and applies to the actual shrinking
+tube eventually on the full original natural scale. The normalized critical
+height weights M_P(|r|)/log(1+|r|) lie in[0,1], so every finite labelled height
+trace is controlled by that SAME energy, uniformly in P. This is an actual
+normal-source component, not a bound for the complete tangential action.
+Translations from the two projectors still require an exact attachment;
+their terms must not be erased by this scalar statement.
+
+Paper proof is dependency-closed on nearConePhysical_fourier, the exact bump
+support, hasSum_norm_sq_paperFT_grid, and the critical multiplier bound.
+Formalization is starting in an owned /tmp file; no new result audited yet.
+Joint search79412 nonpartial67993,index1266754,coverage1266758/current1266759;
+normal-band search14549 nonpartial67993,index1266764,coverage1266758/current1266764.
+Both pending51635/stale2660/error2, no inventory errors. All20 candidate and
+20 source statements and ingredient suggestions inspected. The joint query's
+periodic-prefix/prime-reciprocal-square ingredient set does not provide the
+trilinear saving. The normal-band query gives the actual sampling Parseval
+source, subsequently read directly. Both search processes terminal0.
+
+31az positive result: ChiCubicNearConeHeightTrace passes complete
+scratch44274 and final direct89755, without diagnostics or heartbeat
+changes. Exact full-height Parseval, every real grid shift, BOTH
+contraction translations including mixed u*v, and the COMPLETE weighted
+critical height square trace are formalized. Original natural-scale
+epsilon=N^-1/8 is attached eventually for EVERY physical Schwartz input.
+P3:bag-near-cone-normal-height-isometry records exact scope and proof.
+Index35025 passes; lint21018 has no finding in the new leaf, but27 unrelated
+unreachable modules and367 size warnings. Final axiom44654 passes all10
+public theorem endpoints with only propext,Classical.choice,Quot.sound.
+
+Evaluation: this corrects and closes the normal trace obstruction for the
+actual truncated tube. It does NOT close the hard signed tangential
+arithmetic estimate. No full cubic, higher-moment or RH closure follows
+from a quadratic norm bound alone. Do not repeat31az's generic height-budget
+search as the next turn's main task. Continue the complete signed
+two-tangential source across all growing rational modes, retaining
+cross-height interactions and both projectors before taking norms.

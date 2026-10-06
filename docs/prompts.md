@@ -2,7 +2,7 @@
 
 optimize lean code. no raising heartbeat hacks.
 
-do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. EVEN IF THIS MEANS TO INVENT A COMPLETE NEW FIELD OR BRANCH OF MATHEMATICS.
+do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. EVEN IF THIS MEANS TO INVENT A COMPLETE NEW FIELD OR BRANCH OF MATHEMATICS and to fail for weeks and months on tens of thousands of conjectures.
 
 do not just search. create new knowledge with an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures. be creative. follow unusual and fringe ideas as well as straight forward ideas. it cost almost nothing to try things.
 
@@ -14,12 +14,15 @@ Reminder:
 
 also apply here noether´s theorem in both directions in the naive form "every continuous symmetry of the action of a physical system with conservative forces has a corresponding conservation law." so 1. for a conservation law, can we find the action and symmetry, and 2. can we identify elements in our lean corpus that can be interpreted as action and symmetry of a physical system and find the conservation law for it?
 
+
+On every turn state what the proof route is you are working on. State what the hard open mathematical problems are you have to solve. Evaluate if your last activities have contributed to solving the open hard mathematical problems - if not, explain what you will different in this turn to attack and solve the hard open mathematical problems. Any action that is not moving the frontier on your route towards the final RH proof is a waste of token and time.
+
 ## formalize goal
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
-- docs/drafts/pipeline/2-fully-proven/ (including subfolders)
-   
+- docs/drafts/pipeline/2-fully-proven/leftovers
+  
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:
@@ -49,6 +52,8 @@ GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF TH
 
 Goal: Create a formal proof or falsification of the Riemann Hypothesis using Route TT from docs/reports/rh-current-frontier-map.md
 
+Goal: Create a formal proof or falsification of the Parity-Drift Hypothesis for π: docs/partity-drift-pi.md
+
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
 2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
@@ -65,8 +70,37 @@ Goal: Create a formal proof or falsification of the Riemann Hypothesis using Rou
 4. on every turn state the research topic, what the hard mathematical obstacles are, how your last work has made progress and how your next steps will make progress solving these obstacles. 
 5. any work that does not attack and try to solve the hard mathematical obstacles is theatre and a waste of time
 
-goal is met when lean corpus has an uncondtional formal proof/falsification of the conjecture.
+Keep a working log for yourself and do not pay too much attention what other agents are doing. 
 
+## research Route claude
+
+Goal: Create a formal proof or falsification of the Riemann Hypothesis using Route TT from docs/reports/rh-current-frontier-map.md
+
+Goal: Create a formal proof or falsification of the Parity-Drift Hypothesis for π: docs/partity-drift-pi.md
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+4. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+5. make sure you don't leave staleclean up after yourself.
+6. Optimize lean code. No raising heartbeat hacks.
+
+**Working mode rules:**
+1. Use the search tool for our lean corpus heavily.
+2. Do not just search but also create missing knowledge via a heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... 
+3. Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
+4. use the hgtl7 skill workflow on every turn including answering the questions.
+
+**Computation rules:**
+1. Run computations only on runpod: ssh root@157.157.221.30 -p 43625 -i ~/.ssh/id_ed25519
+2. no computations that you could also predict the result of if you would honestly try
+3. use extensively the scientific methods to design experiments and mingle-mangle experiments: docs/meta/scientific-method.md - every experiment you design turn into multiple experiments using these methods
+4. no hour long computations
+5. optimize for multi-core
+6. when an experiment has finished, download results into a folder in computations/. write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are. 
+
+Keep a working log for yourself and do not pay too much attention what other agents are doing. 
 
 ## apply external paper to corpus experiment
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
@@ -163,33 +197,27 @@ goal is met when RH proof is formalized.
 ## computations
 lets change the method and run experiments with computations.
 
-here are two runpods for you to use:
-ssh root\@213.173.105.94 -p 47180 -i \~/.ssh/id\_ed25519
-ssh root\@213.173.105.97 -p 40850 -i \~/.ssh/id\_ed25519
+here is a runpod for you to use:
+ssh root@38.80.152.147 -p 36812 -i ~/.ssh/id_ed25519
 
 task:
 - design computations that can deliver new insights and knowledge or could simply surprise you
-- use extensively the scientific methods to design experiments and mingle-mangle experiments: docs/meta/scientific-method.md&#x20;
-- computations should be related to:
-  1. HB chain Identification: does the complete physical action actually produce the diagnostic used by the RH receiver, with all corrections and boundary terms retained?
-  2. HB chain Selection: does the source enforce its vanishing, for a reason independent of RH, while permitting the known critical-line zeros?
-  3. HB route in general
-  4. Riemann hypothesis and riemann zeta function in general
-  5. Anything that can deliver new insights directly or indirectly for our problem space of the riemann hypotheses
+- use extensively the scientific methods to design experiments and mingle-mangle experiments: docs/meta/scientific-method.md
 
 Computation rules:
 
 - no computations that you could also predict the result of if you would honestly try
+- use extensively the scientific methods to design experiments and mingle-mangle experiments: docs/meta/scientific-method.md - every experiment you design turn into multiple experiments using these methods
 - no hour long computations
 - optimize for multi-core
-- when an experiment has finished, download results into a folder in docs/drafts/pipeline/2-fully-proven/computations. write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
-- document noteworthy new insights/facts in most token-efficient form for future ai agents to read in docs/drafts/pipeline/2-fully-proven/computations/results.md (short facts, no file references, no log, no diary, just the pure facts)
+- when an experiment has finished, download results into a folder in computations/. write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
+- document noteworthy new insights/facts in most token-efficient form for future ai agents to read in computations/results.md (short facts, no file references, no log, no diary, just the pure facts)
   
 only run computations that can suprise you and lead to new insights and ideas and approaches to solve the hard open mathematical problems we are stuck at.
+
 use the scientific methods to design experiments: docs/meta/scientific-method.md 
 do not run hour long computation and do not run computations whose result you could also predict by reasoning.
 
-h, also attack open problems using conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... loops
 
 ## Scientist
 
@@ -214,12 +242,21 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 8) use arxiv search and single word and broad searches for finding papers not directly related to the problem and see if there is anything useful in the found papers - do not search for your problem or narrow searches, prefer most receent papers (january to september 2026). example searches: "hawking", "commutator", "recurrence", "cauchy", ... - these are examples, create your own search terms. most papers will be useless, but a few will allow to bring in solutions from fields far away from your actual problem
 
 ## hgtl7 create new knowledge
-/hgtl7
-contribute significant pieces of knowledge to our lean corpus that moves the frontier in route LI from docs/reports/rh-current-frontier-map.md towards a proof or falsification of the riemann hypothesis. the new knowledge cannot appear anywhere in public literature, your training data nor our lean corpus.
+/
+
+use the hgtl7 skill workflow on every turn for this open end research task:
+
+contribute significant pieces of knowledge to our lean corpus that moves the frontier in our research (docs/reports/rh-current-frontier-map.md) towards a proof or falsification of the riemann hypothesis. the new knowledge cannot appear anywhere in public literature, your training data nor our lean corpus. It must clearly move the frontier in our research towards a proof or falsification of the Riemann Hypothesis by either:
+- discharging a premise or otherwise remove an obstacle
+- formalizing a significant insight or discovery that gives as a clear hint of what the proof must be
+- proves a core mechanism in a route is mathematically impossible or false so that the route as stated is not viable/valid
+- finding a new route or new approach
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
 do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the problem and its possible solutions. do not blindly follow a route because it is in your training data. understand what our research is hinting at.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -268,7 +305,7 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## rh proof
 
-find and formalize an uncoditional proof or falsification of the riemann hypothesis using route PM from docs/reports/rh-current-frontier-map.md.
+find and formalize an uncoditional proof or falsification of the riemann hypothesis using any route from docs/reports/rh-current-frontier-map.md or a new route not yet explored by us.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 

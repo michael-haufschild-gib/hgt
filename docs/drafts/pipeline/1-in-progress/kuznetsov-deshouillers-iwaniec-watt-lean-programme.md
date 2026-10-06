@@ -558,3 +558,14 @@ MT Lemma 3.5, MT Thm 1.2, cards.
   `|S(u)| ≤ min(u‖φ‖₁, ‖(φ/y)'‖₁/u)`, `|P(e^{−w})| ≤ e^{−3w}Σ_{l≥3}|φ̃(l)|`, and (large scale)
   `P(e^{−w}) = (2/π)∫_0^{π/2}S(sin θ)·Im[1/(2cosh(w−iθ))]dθ ⇒ |P(e^{−w})| ≤ ‖(φ/y)'‖₁ min(π/4, 1/(2 sinh w))`;
   then DI Lemma 7.1 analogues: exceptional `≪ X^{−2ν}log`, tempered `≪ (1+|log X|)` resp. `1/X`.
+
+## Log 2026-10-06 (P4c DONE: weight bounds in terms of φ)
+- `HTGeometry/BesselTestFunctionTailBound`: `|S(u)| ≤ |u|‖φ‖₁`, `|S(u)| ≤ ‖(φ/y)'‖₁/|u|`;
+  `φ̃(2k+1) = (2/π)∫_0^{π/2} sin((2k+1)θ)S(sin θ)`; Poisson-type sum `Σ(−1)^k x^{2k+1}sin((2k+1)θ) =
+  x(1−x²)sin θ/(1+2x²cos 2θ+x⁴)`; hence `|P(x)| ≤ ‖(φ/y)'‖₁ x/(1−x²)`, `|P(e^{−w})| ≤ ‖(φ/y)'‖₁/(2 sinh w)`.
+- `RHTower/KuznetsovBesselWeightBounds`: `Q_φ = G_φ/cosh = S(cosh w)/4 − P(e^{−w})/2` (`besselProfile_div_cosh`);
+  `|P(x)| ≤ x³Σ_{l≥3}|φ̃(l)|` on [0,1]; small/mid/large-scale bounds `norm_profileQ_le_small/mid/large`;
+  **`norm_specWeight_besselWeight_real_le`** (`0 ≤ ν < ½`): `|∫h|W|²| ≤ 2π∫_0^∞|Q|·w cosh(2νw)`;
+  **`norm_specWeight_besselWeight_imag_le`**: `≤ 4∫_0^∞|Q|·w`.  Built, audited (0 non-standard axioms), wired.
+- Remaining for P4: integrate the majorants against the scale `X` of `φ` (split at `w₀ = log(1/X)`) and κ-decay
+  via `norm_specWeight_imag_le_of_iteratedDeriv` (derivatives of `Q`); deferred until P7 fixes the exact form needed.

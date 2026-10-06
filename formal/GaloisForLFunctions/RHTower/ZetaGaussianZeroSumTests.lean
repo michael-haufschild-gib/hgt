@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ZetaGaussianZeroSums
+import GaloisForLFunctions.RHTower.ZetaGateRectangleLeftLine
 
 /-!
 # The three Gaussian zero sums
@@ -101,7 +102,7 @@ theorem zetaChi_analyticAt_rightPt (y : ℝ) :
   obtain ⟨n, hn⟩ := Complex.Gammaℝ_eq_zero_iff.mp h
   have h1 := congrArg Complex.re hn
   simp only [sub_re, one_re, add_re, ofReal_re, mul_re, ofReal_im, I_re, I_im, neg_re,
-    natCast_re, natCast_im, mul_zero, mul_one, sub_zero, zero_mul, re_ofNat, im_ofNat] at h1
+    natCast_re, natCast_im, mul_zero, mul_one, sub_zero, re_ofNat, im_ofNat] at h1
   rcases Nat.eq_zero_or_pos n with h0 | h0
   · subst h0; norm_num at h1
   · have : (1 : ℝ) ≤ n := by exact_mod_cast h0
@@ -111,7 +112,7 @@ theorem zetaChi_analyticAt_rightPt (y : ℝ) :
 theorem exists_norm_zetaChi_top_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ Y : ℝ, 2 ≤ Y → ∀ x ∈ Icc (-1 / 2 : ℝ) (11 / 10),
       ‖zetaChi ((x : ℂ) + Y * I)‖ ≤ C * (1 + Y) ^ 1 := by
-  obtain ⟨CA, hCA, hA⟩ := exists_norm_zetaChi_le_of_two_le_abs
+  obtain ⟨CA, hCA, hA⟩ := ZetaGateProductAFE.exists_norm_zetaChi_le_of_two_le_abs
   refine ⟨Real.exp 2 + CA, by positivity, fun Y hY x hx => ?_⟩
   have hYa : |Y| = Y := abs_of_pos (by linarith)
   have hY1 : (1 : ℝ) ≤ 1 + Y := by linarith
@@ -129,7 +130,7 @@ theorem exists_norm_zetaChi_top_le :
 /-- `|χ(11/10 + iy)| ≤ C`. -/
 theorem exists_norm_zetaChi_rightPt_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, ‖zetaChi (((11 / 10 : ℝ) : ℂ) + (y : ℂ) * I)‖ ≤ C := by
-  obtain ⟨C, hC, hR⟩ := exists_norm_zetaChi_le_rightOfOne
+  obtain ⟨C, hC, hR⟩ := ZetaGateProductAFE.exists_norm_zetaChi_le_rightOfOne
   refine ⟨C, hC, fun y => (hR (11 / 10) y le_rfl (by norm_num)).trans ?_⟩
   exact mul_le_of_le_one_right hC
     (Real.rpow_le_one_of_one_le_of_nonpos (by linarith [abs_nonneg y]) (by norm_num))

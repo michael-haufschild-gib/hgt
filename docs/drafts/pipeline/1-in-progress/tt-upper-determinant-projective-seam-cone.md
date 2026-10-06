@@ -108,3 +108,10 @@ existing terminal input. No global monotonicity producer was found.
   scratch controls to 15/19. Production tenth-jet audits are running serially;
   eleventh-jet column reconstruction follows. Compact determinant positivity
   remains open; none of these identities supplies its missing sign.
+
+- 2026-10-06 — C117 complete in production: full complex incidence and
+  exact reduced determinant identity, positive nonzero source seam limit,
+  and near-seam determinant positivity. Four leaves / 25 public axiom
+  audits passed, standard three axioms only. The source limit of N is
+  lambda^2*delta/k(0)^34; its order relative to L/9^26 is still unproved.
+  These two positive limits do not imply a sign across the compact region.

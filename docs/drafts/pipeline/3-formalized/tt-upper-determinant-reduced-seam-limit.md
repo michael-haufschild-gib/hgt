@@ -1,11 +1,19 @@
 # Positive source limit of the reduced upper determinant
 
 - **ID:** TT-C117-REDUCED-SEAM
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Depends on:** C116 exact seam-power factor; C113 scaled seam signs and
   complete upper quadratic identity; actual source ODE.
-- **Lean status:** pending. C116 is fully production-audited; the four
-  C117 proof leaves are now being audited.
+- **Lean status:** complete. Four production leaves and all 25 public
+  declarations passed direct `lake --old env lean` audits with only
+  propext, Classical.choice and Quot.sound. RHTower umbrella wired.
+
+Production: `ThetaCuspRatioComplexSourceSlopes`,
+`ThetaCuspRatioUpperCenterComplexIdentity`, `ThetaCuspRatioReducedSeamIdentity`,
+and `ThetaCuspRatioReducedSeamLimit`. Capstones:
+`actual_reduced_determinant_seam_complex`,
+`actual_reduced_upper_determinant_tendsto_seam`, and
+`actual_upper_determinant_pos_near_seam`.
 
 ## Exact statement
 
