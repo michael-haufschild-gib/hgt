@@ -97,3 +97,7 @@ The new leaf proves the complete analytic three-term model has an actual point o
 
 - 2026-10-04 — Created during1005s after the joint positivity and rough-prime attempts left their signed remainders uncontrolled. Paper derivation written for audit; formal work pending.
 - 2026-10-04 — Analytic separation step formalized and audited. Targeted build, required direct leaf audit and two standard-only axiom checks passed. The actual-source Mellin/remainder/Landau connection remains the next obligation; the full MC lower bound is unchanged.
+- 2026-10-05 — Source connection, Mellin formulas, remainder holomorphy and the Landau sign argument formalized and
+  audited (Opus): `LiouvilleTriangularHeadOscillation.frequently_gt_and_frequently_lt`, card
+  `../3-formalized/mc-triangular-head-supercritical-oscillation.md`. The separate-payment construction is excluded
+  at every exponent below 3/4; the critical lower bound for P = 2A − B remains open.

@@ -2849,3 +2849,82 @@ integral, the conductor `((a) : b)` has an associated prime inside `Ass(A/aA)`, 
 5. **The singular locus has height two.**  `J_rA` (the `r`-minors) is prime (`A/J_rA = K[x]/I_{r−1}`),
    and `0 ⊊ Q ⊊ J_rA` for `Q` the ideal of "`r − 1` atoms plus an atom at infinity" (contains the leading
    `r`-minor, misses the minor with corner `x_{N−1}`).  Hence no height-one prime contains `J_rA`.
+
+### Normality for every `r` is proved (Lean, 2026-10-05)
+
+`isIntegrallyClosed_hankelSecantRing (K) [CharZero K] (N r) : IsIntegrallyClosed (K[x_0..x_{N−1}] ⧸ I_r)`
+— every `N`, every `r`, axiom-clean.  Modules (all in `HTGeometry/`, wired):
+
+```text
+SerreIntersectionNormality   isIntegrallyClosed_of_height_one_submonoid / _away  (S2 + R1 by charts)
+HankelLeadingChart           hankelChartEquiv: A_δ ≅ K[y_0..y_{2r−1}]_δ;  isIntegrallyClosed_hankelChart
+HankelMomentTransform        momentShiftEquiv (x_n ↦ moment of (T+t)^n), momentRev; both preserve I_r;
+                             moved charts δ_t, isIntegrallyClosed_hankelChartAt
+HankelApolarity              moment functional; Krylov step annihilatesWindow_extend;
+                             exists_chartPoint_det_ne_zero (point-level covering)
+HankelChartCover             exists_hankelChartElemAt_notMem: P ⊉ (r-minors) ⇒ some δ_t ∉ P, t ≤ r
+HankelSingularHeight         two_le_height_of_singular: P ⊇ (r-minors) ⇒ ht P ≥ 2
+                             (0 ⊊ Q ⊊ P, Q = ideal of "r−1 atoms + an atom at the origin")
+RegularSequenceFreeness      independence (no grading) + graded generation ⇒ coprime regularity
+IntegralUnmixed              ht Q ≤ ht(Q ∩ B) for integral B ⊆ A; associated primes of aA have height 1
+HankelSecantUnmixed          S2 for the secant ring (A finite free over K[l_1..l_{2r}])
+HankelSecantNormal           the assembly
+```
+
+`DegenerationRegularSequence` / `HankelSecantCohenMacaulay` now also export the homogeneity of the
+transported regular sequence (`…_homogeneous`).
+
+**Audit of `(7)` (found while building this):** the earlier "(7) CLOSED" entry proves (i) every
+partial derivative of an `(r+1)`-minor vanishes on `C_{k+1}`, and (ii) some partial derivative is
+nonzero off `C_{k+1}` plus the immersion of the parameterization at *distinct nodes*.  Smoothness at
+every rank-exactly-`r` point (confluent nodes, atoms at infinity) needs the Jacobian rank to equal
+the codimension there — (ii) only gives rank ≥ 1.  The charts above are exactly the tool: in the chart
+`A_δ ≅ K[y]_δ` the bordered minors have triangular gradients.  To be closed as the Jacobian-criterion
+statement `rank J(p) = N − 2r` for `p ∈ C_k \ C_{k+1}`.
+
+**Audit of `(5)`:** `finiteHankelSecantIdeal_eq_parameterization_ker` is about the maximal minors of the
+`(r+1)`-row Hankel matrix; the card's `C_k` is cut out by the `(r+1)`-minors of the *square* matrix.
+The zero sets agree (Gruson–Peskine); the needed pointwise lemma — `rank H_m(h) ≤ r ⟹` some nonzero
+`g`, `deg g ≤ r`, annihilates the long window — has an elementary proof (gcd `G` of the square left
+kernel has degree `≤ r`; a coprime pair in the quotient space and Sylvester division extend the
+annihilation).  To be formalized.
+
+### `(7)` closed in the Jacobian-criterion form (Lean, 2026-10-05)
+
+```text
+ZariskiTangentDual    zariskiTangent I p = {v : ∂_v g(p) = 0 ∀ g ∈ I}; evaluation over the dual
+                      numbers (aeval_dualNumberPoint); chain rule; invariance under automorphisms
+                      preserving I; I ≤ m_p² ⇒ T_p = K^N
+HankelTangentSpace    bordered minors: ∂g_n/∂x_n = δ, ∂g_n/∂x_m = 0 (m > n);
+                      finrank_zariskiTangent_lead (chart point: dim T = 2r, by the dual-number
+                      evaluation of A_δ ≅ K[y]_δ at y + εe_k);
+                      finrank_zariskiTangent_hankel (every point off V_s, via a moved chart);
+                      zariskiTangent_hankel_eq_top (points of V_s: Jacobi's formula + every
+                      (s+1)-minor of the Hankel matrix lies in I_s)
+HankelSingularLocus   ringKrullDim_hankelSecantRing = 2r;
+                      hankel_smooth_iff: for p ∈ V_{s+1} (2(s+1) < N):
+                        dim T_p = 2(s+1) = dim V_{s+1}  ⟺  p ∉ V_s,   and  p ∈ V_s ⇒ T_p = K^N
+```
+
+This is `Sing(C_k) = C_{k+1}` at every point (confluent nodes and atoms at infinity included), not
+only at generic points.
+
+### `(5)` closed in the card's own (square-matrix) presentation (Lean, 2026-10-05)
+
+`HTGeometry/HankelSquareCatalecticant.lean` (axiom-clean, wired):
+
+```text
+exists_annihilator_of_le_finrank  the rank comparison between Hankel shapes: a left kernel of
+                                  dimension ≥ a − r for the a-row matrix (2a ≤ N+1) yields a
+                                  nonzero g, deg g ≤ r, annihilating the long window
+                                  (gcd of the kernel; coprime pair by avoidance over an infinite
+                                  field; Sylvester division)
+le_finrank_hankelLeftKernel       vanishing (r+1)-minors ⇒ dim of the left kernel ≥ a − r
+squareCatalecticant_iff           N = 2m−1, r < m:  rank H_m(h) ≤ r ⟺ all (r+1)-minors of H_m(h)
+                                  vanish ⟺ h ∈ V(I_r)
+mem_secantVariety_iff             V(I_r) = Zariski closure of the r-atom moment vectors
+                                  (closure of the spans of r points of the rational normal curve)
+```
+
+So `C_k = {corank H ≥ k}` is the Hankel determinantal variety of the square `(m−k+1)`-minors and
+equals the closure of the `(m−k)`-secant — pointwise, over any field of characteristic zero.

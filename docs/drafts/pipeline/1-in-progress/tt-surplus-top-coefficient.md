@@ -9,7 +9,28 @@
 
 ## Why this test is needed
 
-Latest paper frontier: complete sixth/seventh native heads and full M11/M12/S12/S13 make p12/p13 explicit. The exact source increment now shows Q6(aFlat)<Q6(aActual), so the flat-mass sign alone suffices; that sign remains open. The positive seventh Y⁴ geometric term contributes NEGATIVELY to Q6 throughout 5/4<k≤2, with the exact signed contribution below. Every other source term is retained. All ninety-seven scratch sources require Lean audit. Full residual, source quadratic, fourth gap and all-rank closure remain open.
+Latest frontier: eventual NEGATIVE full Q6 on the ACTUAL source is now proved in production Lean. It survives eighth-to-seventh absorption for every mass, retiring the ordinary nonnegative-coefficient proposal. The SAME absorbed principal polynomial remains strictly positive on0<e≤1/36 by an exact mixed surplus/deficit identity. Complete source incidence, full graded coefficient transport and actual flatness are audited; see P5:tt-ordinary-absorbed-surplus-coefficients and P3:tt-terminal-source-bell-jets. The earlier ninety-seven kinetic/surplus scratch sources remain unaudited. Full residual VALUE, source quadratic, fourth gap and all-rank/RH remain open.
+
+### 2026-10-05 — Exact terminal recurrence audited; ordinary coefficient target challenged
+
+At U=3, Y=3K+1, T=J-Y-1, the complete native field pulls back to
+`L=12*(Y*(Y+T+1)*∂Y+T*∂T)`. Every normalized native jet satisfies the cleared
+Bell identity in `ThetaCuspRatioTerminalKineticJets.lean`; no source term or
+constant seed is dropped. Its scratch capstones use only the standard three
+foundational axioms, and its production leaf audit passes without warnings.
+
+The separately defined principal model `e*P(1-e)` is positive on 0<e≤1 while
+its sixth ordinary coefficient is negative. Its production algebra leaf also
+passes. This is a positive survivor, not an identification with the native slope.
+Both leaves are wired into RHTower. The complete reflected moments, native
+graded determinant and actual-tail transfer are the next proof obligations.
+
+C77 boundary sign is now kernel checked in scratch through
+`nonlinearBoundary_physical_source_slope_pos`, standard three axioms only.
+All97 coefficient rows and the complete global core passed. Its 627-module
+dependency closure is staged under `ThetaCuspRatioBoundaryCertificate`;
+new production module identities still require serial leaf audits and wiring.
+No full or umbrella build is authorized or required.
 
 ### 2026-10-05 — One mass endpoint and the signed seventh-mode contribution
 

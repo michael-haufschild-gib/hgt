@@ -186,3 +186,68 @@ With `c = 1` and `f = 0`, `lam = Λ + v`.
   - `deriv_mul_reflectionCombination_eq`: `ζ'(ρ)G_E(ρ) = ζ'(ρ)E(1−ρ) − ζ'(1−ρ)E(ρ)` (the L103 identity).
   - `eq_zero_of_sum_multiples_div_eq_zero` and `eq_zero_of_sum_multiples_div_eq_const`: nondegeneracy of `B(E,·)`, i.e. Step 2's coefficient recovery, by the maximal-support argument, which replaces Möbius inversion.
 - Remaining for gate 2 → 3: the analytic inputs (Rules A/B via Gonek's lemma, Jutila + Ingham, the Bochner–Schwartz dictionary). These are the size of the corpus's Zeta23 work.
+
+## Lean plan (2026-10-06): bricks for gate 2 → 3
+Route = the card's proof; every cited input is built. Smooth weights in `γ` (Gaussian window at height `T`)
+replace sharp cutoffs, so contour arguments need no horizontal edges and stationary phase has no endpoints.
+- FT1 Finite-type datum: `a, f` finitely supported (`f(1) = 0`), `v` regular (`v(0)=v(1)=0`, `Σ|v(n)|n^{−σ}<∞`
+  for `σ>1`, `D_v` holomorphic on `Re s > ½−η₀` with polynomial growth on vertical strips).
+  Identify the corpus continuation `weilContinuation` with `G_∞ + 1/s + 1/(s−1) + Aζ'/ζ − F/ζ − D_v` on
+  `Re s > ½` off the zeros (identity theorem from `Re s > 1`).
+- FT2 Boundary-pole lemma: holomorphic with `Re ≥ 0` on a half-disc at `z₀`, meromorphic at `z₀` ⇒ order ≤ 1,
+  residue real `≥ 0`.
+- FT3 Consequences: `J(ρ) = 0` at critical zeros; `F(ρ) = 0` at multiple critical zeros; `Aζ' − F` vanishes
+  to order `m_ρ` at off-line zeros `β > ½`; `A(1) = 1`.
+- FT4 Zero sums: `Σ_ρ m_ρ h(ρ)G_T(ρ) = (1/2πi)[∫_{(c)} − ∫_{(1−c)}](ζ'/ζ)hG_T`.
+- FT5 Gonek's lemma (smooth stationary phase for `∫χ(s)y^s G_T(s)ds`, with the `χ'/χ` weight).
+- FT6 Rules A/B; Landau–Gonek `Σ_ρ X(ρ)G_T = x₁·(main) + O(T)`; `Σ_ρ χ(ρ)X(ρ)G_T = O(T)`.
+- FT7 Density `Σ_{β>½} T^{β−½}G_T(γ) = o(T log²T)`:
+  - (a) near line `a ≤ M log L`: `N(½+a/L) ≪ T L e^{−Aa}`, `A > 1 − 1/M` (Jutila): mollified mean square
+    off the line with a two-length mollifier of length `T^θ`, `θ → ½` (BCHB-type, uniform in `a`);
+  - (b) middle range `u ∈ [M log L/L, u₃]`: Ingham `N(½+u) ≪ T^{1−4u/3}L⁵` uniformly (corpus detector +
+    fourth moment, constants made explicit in the gap);
+  - (c) `u ≥ u₃`: corpus `exists_zeroHeightBox_ncard_le_ingham_huxley` on finitely many slabs.
+- FT8 Step 1 (`A ≡ 1`) and Step 2 (`f = 0`) via the algebraic core.
+- FT9 Step 3 (`v = 0`, polynomial growth): RH from holomorphy, then Phragmén–Lindelöf + Bohr mean.
+- Checked and rejected: shifting the test frequency to `q ~ √T` (the main term drops by `√q`);
+  `χ^κ` twists (`κ ≠ 0` kills the main term); test factors `K = Aζ' − F`, `K̃` vanishing at off-line
+  zeros (degree 3 in `ζ'`, needs sixth-moment input). The weight `(γ/2π)^{|β−½|}` at left partners is
+  intrinsic, so FT7 is required.
+- FT1–FT3 done (2026-10-06): `WeilFiniteTypeContinuation` (master identity on `Re s > ½`, `A(1) = 1`),
+  `WeilFiniteTypeResidues` (boundary-pole lemma; off-line `Aζ' = F`; multiple critical `F = 0`; simple
+  critical residue real `≥ 0`; `critical_realness`: `Rζ'(A − Ã) = RF + F̃` at every critical zero).
+- FT7(a) refined: near-line rate `A → 1` without off-line BCHB. Ingredients:
+  - (i) the continuous smooth-window mean square `∫|ζ·Ψ_Z(½+it)|² w(t/T) ≪ T` for `Z = T^θ`, `θ < ½`
+    (TA1 |ζ|² AFE + TA9 ratio form `F(1,1,t)`; with a smooth window only the fibre `mh = nk` survives);
+  - (ii) three-lines L² convexity between `Re s = ½` and `Re s = σ_R` (`σ_R` large), applied to the tails
+    `f_Z = ζΨ_Z − 1 − P_Z` of the two-length Barban–Vehov mollifier, rate `2θ(1−δ')(σ_R−1)/(σ_R−½)`;
+  - (iii) MVT for the von Mangoldt head and Littlewood (corpus template `SelbergExponentialNearLineDensity`).
+  With rate `A` the uniform Ingham input (b) may lose any fixed power `L^k` provided
+  `A > 1 − 1/M`, `M > 3(k − 2)`.
+- Lean route refined (2026-10-06, after corpus audit):
+  - Weight `g(s) = exp((s−½)²/T²)`: entire, `g(1−s) = g(s)`, `g(s̄) = conj g(s)`, `|g(σ+it)| = e^{((σ−½)²−t²)/T²}`.
+    Zero sums over the rectangle `[−3/2, 5/2] × [1, Y]`, `Y ≈ T log T` (corpus
+    `rectIntegral_mul_logDeriv_zetaResidueUnit_eq_closedRectangleZeroSum`); conjugate zeros by symmetry.
+  - Left edge `Re s = −3/2`: `(ζ'/ζ)ζ'(s) = χ(s) Σ n^{s−1}[(χ'/χ(s) + log n)² − ℓ(n)]`, `ℓ = (Λ·log) ⋆ 1`;
+    `χ(−3/2+it) = χ(½+it)·(−(−3/2+it)(−½+it))/(4π²)` exactly, so each term is a critical-line χ integral
+    with amplitude, evaluated by corpus `norm_integral_zetaChi_complexAmplitude_stationary_le` (window) plus a
+    first-derivative bound outside the window. Main terms only from frequencies `1/q`; `Σ_{n≤x} ℓ(n) = ½x log²x + O(x log x)`.
+  - Rule B from Rule A through the zero symmetry `ρ ↦ 1 − ρ̄`. Landau–Gonek sums `Σ X(ρ)g(ρ) = O(T log T)` by
+    trivial edge bounds; `Σ χ(ρ)X(ρ)g(ρ) = O(T log T)` by the stationary-phase upper bound.
+  - Density `Σ_{β>½} T^{β−½} e^{−γ²/T²} = o(T log²T)`, three pieces:
+    near line (`u ≤ M log L/L`): two-length Barban–Vehov mollifier of lengths `T^{θ_Y} < T^{θ_X}`, `θ_X < ½`,
+    three-lines between `Re ½` (short-window mean square, done) and a far right line `σ_R`, first moment of `ζM`
+    to keep the full rate: `N(½+u) ≪ TL e^{−r uL}/(uL)`, `r = 2θ_Y(σ_R−2)/(σ_R−½)` (≈ 0.9);
+    middle and far (`u ≥ M log L/L`): the corpus uniform Ingham–Gabriel detector chain run at
+    `σ' = (501 + 900u)/1001`, whose centre is `½ + 0.9u`, giving `N(½+u) ≪ T^{1−1.15u}L²/u`;
+    `M = 8` satisfies `(1−r)M < 1` and `0.15M > 1`.
+- FT7(a) done (2026-10-06): `SelbergNearLineFarRightConvexity` (three-lines with right line `σ_R ≥ 3`,
+  tail `≤ 2N^{2−σ}` on `Re s ≥ σ`), `SelbergNearLineCriticalGateDensity`
+  (`exists_selberg_criticalGate_nearLine_zeroDensity`: admissible `T₁ ∈ (2S/3, 2S/3+1)`, `T₂ ∈ (4S/3−1, 4S/3)`,
+  `2π(a/L)·#{β ≥ ½ + (51/50)a/L} ≤ (T₂−T₁)Ae^{−22a/25} + KL` for `1 ≤ a ≤ L/100`; two-length mollifier
+  `S^{47/100}, S^{23/50}`, critical-line gate, right line `Re s = 40`, cross term by the twisted first moment).
+  Axioms standard. Rate in `u = β − ½` is `0.8627`, so `M = 6.5` closes provided the middle range has `c' > 0.154`.
+- FT7(b) plan: the corpus Gabriel chain at `σ'` has height exponent `E(x) = x(3.183 + 0.18018x)/(1 + 1.271x)`,
+  `x = 1 − σ'`, concave, `E ≤ 1 − 1.278v` for centre `½ + v`; centre `½ + 0.95u` gives `c' = 0.21`.
+  Needed: the chain for `σ' ∈ (501/1001, 7/10]` (its `7/10` is used only for centre `≥ ½` and numeric budget facts).
+  FT7(c): `u ≥ u₃` by `exists_zeroHeightBox_ncard_le_ingham_huxley` on finitely many slabs.

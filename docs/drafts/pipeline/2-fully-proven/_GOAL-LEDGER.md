@@ -67,19 +67,19 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 | 55 | universal-law-field/eigen-pair-prime-identification-derivation | DONE 2026-10-03 — RHTower.EigenPairFrequencyInversion, EigenPairGuinandWeilIdentity (+ corpus eigen-pair stage modules) |
 | 56 | universal-law-field/formation-compactification-mechanics/poisson-dust-formation-compactification-cumulant-separation-and-equivariant-neutrality-law | DONE 2026-10-05 |
 | 57 | universal-law-field/formation-excess-mechanics/ramification-gibbs-gns-defect-spectral-information-and-boundary-work-law | DONE 2026-10-05 |
-| 58 | universal-law-field/formation-laplacian-properness-mechanics/formation-quotient-interchange-tight-recovery-and-residual-coverage-law | TODO |
-| 59 | universal-law-field/formation-laplacian-properness-mechanics/source-response-laplacian-properness-pluecker-and-adaptive-escape-law | TODO |
+| 58 | universal-law-field/formation-laplacian-properness-mechanics/formation-quotient-interchange-tight-recovery-and-residual-coverage-law | DONE 2026-10-05 |
+| 59 | universal-law-field/formation-laplacian-properness-mechanics/source-response-laplacian-properness-pluecker-and-adaptive-escape-law | DONE 2026-10-05 |
 | 60 | universal-law-field/formation-tangent-geometry/prime-harmonic-logarithmic-end-haar-frame-trichotomy | DONE 2026-10-04 — HTGeometry.TranslationFrameHaarDiscrepancy, TranslationFrameOperators, PrimeHarmonicEndHaarFrame, PrimeHarmonicEulerFormationTangent |
-| 61 | universal-law-field/law-generated-polarization-dynamics/legendre-residual-transduction-fusion-work-and-cubic-response-law | TODO |
+| 61 | universal-law-field/law-generated-polarization-dynamics/legendre-residual-transduction-fusion-work-and-cubic-response-law | DONE 2026-10-05 |
 | 62 | universal-law-field/local-exponential-test-closure-mechanics/local-exponential-complete-order-fusion-and-euler-shell-witness-escape-law | DONE 2026-10-03 — HTGeometry.LocalExponential{TestClosure,MatrixSignCone,SignConeConverse,PhaseFusion,EulerShell} |
-| 63 | universal-law-field/nomological-homotopy-geometry/length-three-partial-flattening-holonomy-spectrum-recurrence-and-properness-law | TODO |
+| 63 | universal-law-field/nomological-homotopy-geometry/length-three-partial-flattening-holonomy-spectrum-recurrence-and-properness-law | DONE — `PartialFlatteningPeriodSpectrum`, `CotangentDoubleCyclicCompletion` + manifold integration/Stokes/Fubini |
 | 64 | universal-law-field/nonvacuous-independence-and-polarization-import-law | TODO — needs: L² spectral theory of the Laplacian on cofinite Γ\ℍ (λ₁ via min-max), a pinched cusped surface with λ₁ < 1/4 (Buser/Randol), Selberg zeta function and its spectral-zero dictionary (trace formula) |
 | 65 | universal-law-field/odd-coordinate-mechanism-universal-law-set | DONE 2026-10-03 — RHTower.CriticalLocusQuadrupleEvenness, CriticalLocusHessianClassification, CrystallineShadowTransversality, FiniteProbeRHNonselection, OddCoordinateSelfClosure (Laws 4–5 synthesis) |
 | 66 | universal-law-field/orbit-induction-selection-mechanics/atomless-phase-formation-ideal-escape-rank-and-entropy-law | DONE 2026-10-04 |
 | 67 | universal-law-field/orbit-induction-selection-mechanics/character-transgression-positive-resonance-and-small-divisor-formation-law | DONE 2026-10-04 |
 | 68 | universal-law-field/orbit-induction-selection-mechanics/conditional-orbit-information-and-essential-coupling-no-cancellation-law | DONE 2026-10-04 |
 | 69 | universal-law-field/orbit-induction-selection-mechanics/mixed-spectral-formation-atomic-retention-continuous-escape-and-closed-range-law | DONE 2026-10-04 |
-| 70 | universal-law-field/ordered-fusion-chronology-mechanics/permutation-averaged-first-failure-symmetric-convolution-tomography-and-compact-properness-law | TODO |
+| 70 | universal-law-field/ordered-fusion-chronology-mechanics/permutation-averaged-first-failure-symmetric-convolution-tomography-and-compact-properness-law | DONE 2026-10-06 |
 | 71 | universal-law-field/poisson-scale-history-completion-mechanics/burnol-frame-completion-classification | DONE 2026-10-03 (BurnolHalfLineWeightedShift, BurnolWeightedShiftSingularSequence, ContractionCayleyTransform, BurnolValuationCayleyFrame, BurnolDoubledValuationFrame, RHTower.PrimeBurnolMatrixFrameSaturation) |
 | 72 | universal-law-field/poisson-scale-history-completion-mechanics/integral-nuclear-boundary-scale-germ-pythagorean-law | DONE 2026-10-03 (SingularBoundaryTransferScaleGerm, BoundaryHistoryCorona, PhysicalPluckerIntegralNuclearDensity, PhysicalPluckerThetaLift, IntegralNuclearScaleGermOrgans) |
 | 73 | universal-law-field/poisson-scale-history-completion-mechanics/prime-log-congruence-ideal-exit-law | DONE 2026-10-03 (HTGeometry.HilbertSchmidtHeatFlowDerivative, PrimeLogCongruenceIdealExitOperator + corpus RHTower.PrimeLogCongruenceIdealExit) |
@@ -88,7 +88,7 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 | 76 | universal-law-field/polarized-contact-formation-geometry/primitive-work-character-transmutation-and-wold-signature-wall-law | DONE 2026-10-05 |
 | 77 | universal-law-field/polarized-contact-formation-geometry/reflection-contact-parity-minimal-oriented-rank-and-recovery-neutrality-law | DONE 2026-10-05 |
 | 78 | universal-law-field/projective-gamma-completion-mechanics/theta-prime-beta-gamma-projective-recovery | DONE 2026-10-04 — HTGeometry.BetaGammaFactorization, IndependentCoordinateLift, ThetaPrimeBetaGammaRecovery |
-| 79 | universal-law-field/reciprocal-fusion-topology-mechanics/reciprocal-fusion-work-classification-weighted-compactness-and-factorization-law | TODO |
+| 79 | universal-law-field/reciprocal-fusion-topology-mechanics/reciprocal-fusion-work-classification-weighted-compactness-and-factorization-law | DONE 2026-10-05 |
 | 80 | universal-law-field/recurrent-boundary-density-geometry/common-radial-subunit-harmonic-completion | DONE 2026-10-03 — RHTower.CommonRadialSubunitHarmonicCompletion (audited), RHTower.CommonRadialReachabilityKernel |
 | 81 | universal-law-field/recurrent-boundary-density-geometry/phase-quotient-stationary-completion-homotopy | DONE 2026-10-03 — RHTower.PhaseQuotientStationaryCompletionHomotopy (audited), RHTower.PhaseQuotientWeakHaarAverage |
 | 82 | universal-law-field/recurrent-boundary-density-geometry/recurrent-prime-boundary-density-transgression | DONE 2026-10-03 — RHTower.RecurrentPrimeBoundaryDensityTransgression (audited) |
@@ -97,13 +97,13 @@ Lanes owned by the concurrent Codex session (li-clock, pm-ramanujan) are done la
 | 85 | universal-law-field/restricted-grassmannian-formation-geometry/determinant-line-lifted-action-deck-law | TODO |
 | 86 | universal-law-field/restricted-grassmannian-formation-geometry/minimal-hadamard-provenance-double | DONE 2026-10-03 — HTGeometry.HadamardProvenanceDouble (+ lattice Laplace uniqueness in LaplaceAtomicRigidity) |
 | 87 | universal-law-field/restricted-grassmannian-formation-geometry/physical-overlap-plucker-integral-nuclear-homotopy-defect | WIP — §1–6 done (PhysicalPluckerIntegralNuclearDensity, PhysicalPluckerThetaLift, PhysicalPluckerEulerNonInsertion, FredholmEulerGermRigidity, TraceOneDensityPurity, FramePurificationPartialTrace); §7 awaits #75 |
-| 88 | universal-law-field/restricted-grassmannian-formation-geometry/plucker-covariance-purification-observer-subunit-defect | TODO |
+| 88 | universal-law-field/restricted-grassmannian-formation-geometry/plucker-covariance-purification-observer-subunit-defect | DONE 2026-10-05 |
 | 89 | universal-law-field/restricted-grassmannian-formation-geometry/prime-poisson-third-sector-integral-nuclear-homotopy-defect | DONE 2026-10-02 (13 modules; +PolarUnitary, ComplexL2Mul, RelativeModularTransport, HistoryModularLift, ProjectiveConnection, ResidueRegrading, AdjacentSectorCreation) |
 | 90 | universal-law-field/restricted-grassmannian-formation-geometry/theta-mellin-six-holonomy-integral-nuclear-formation | DONE 2026-10-03 (RHTower.ThetaMellinSixHodgeFormation) |
 | 91 | universal-law-field/restricted-grassmannian-formation-geometry/zero-distance-infinite-action-formation-defect | DONE 2026-10-03 — HTGeometry.LaplaceAtomicRigidity, HTGeometry.ContinuumFormationDefect |
-| 92 | universal-law-field/reversible-formation-dilation-mechanics/endpoint-neutral-path-singular-functional-equation-reset-dilation-law | TODO |
-| 93 | universal-law-field/reversible-formation-dilation-mechanics/functional-equation-history-extension-obstruction-and-four-entropy-conservation-law | TODO |
-| 94 | universal-law-field/route-q-ratio-gate-decision | TODO — mechanism certified (DivisorHeightRatioGate); needs the two verified-zero inputs (no ξ-zero within distance 9 of 1/2; signed first moment vs absolute) — numerical zero verification, excluded by the no-computation rule unless a computer-free proof is found |
+| 92 | universal-law-field/reversible-formation-dilation-mechanics/endpoint-neutral-path-singular-functional-equation-reset-dilation-law | DONE 2026-10-06 |
+| 93 | universal-law-field/reversible-formation-dilation-mechanics/functional-equation-history-extension-obstruction-and-four-entropy-conservation-law | DONE 2026-10-06 |
+| 94 | universal-law-field/route-q-ratio-gate-decision | DONE 2026-10-06 — RHTower.XiStripEdgeHeightFloorRatioGate (strip-edge sum rules; no zero data) |
 | 95 | universal-law-field/scale-mautner-formation-mechanics/scale-mautner-pure-point-blindness-compact-resolvent-fracture-and-cross-fibre-spectral-law | DONE 2026-10-03 — HTGeometry.ScaleMautner{Formation,Generator,CrossFibre} |
 | 96 | universal-law-field/source-complete-defect-corona-mechanics/source-complete-trace-defect-corona-transience-and-properness-selection-law | DONE 2026-10-03 — HTGeometry.IsometricConjugationSchatten, SourceCompleteTransience, SourceCompleteCoronaProperness, SourceCompleteFusionRecovery, SourceCompleteCountermodels |
 | 97 | universal-law-field/source-generated-orbit-gramian-mechanics/causal-delay-radial-drift-work-cusp-and-information-undercapacity-law | DONE 2026-10-03 — HTGeometry.CausalDelayDriftWork, EulerShellTiltInformation |

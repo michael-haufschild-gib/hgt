@@ -46,3 +46,7 @@ leaves a nonzero multiple of `A` carries forced oscillation of size `x^{3/4−ε
 ## Log
 
 - 2026-10-05 — formalized (Opus). Module wired after `LiouvilleTriangularPoleSeparation` in RHTower.lean.
+- 2026-10-05 — audit: `lake --old build` of the leaf exit 0 (153 s); `lake --old env lean` on the leaf exit 0, no
+  diagnostics; `#print axioms` for `frequently_gt_and_frequently_lt`, `integral_triangleCombination_exp_mul_cexp`,
+  `isAbscissa_eq_of_analyticAt_real`: propext, Classical.choice, Quot.sound only. Lint: no error in this leaf
+  (repository lint still reports unrelated unreachable HTGeometry modules). Index regenerated.

@@ -147,8 +147,71 @@ theorem height_eq_one_of_mem_associatedPrimes_hankel {N r : ℕ} (hN : 2 * r ≤
     refine ⟨κ, ?_⟩
     rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, map_sum, ← hκ, sub_eq_zero]
     refine Finset.sum_congr rfl fun y _ => ?_
-    rw [map_smul_of_tower (Ideal.Quotient.mkₐ K J) |>.symm.trans rfl, hm y] <;> rfl
-  sorry
+    rw [show Ideal.Quotient.mk J (κ y • e y) = κ y • Ideal.Quotient.mk J (e y) from
+      map_smul (Ideal.Quotient.mkₐ K J) (κ y) (e y), hm y]
+  -- the polynomial subring `B = K[y]`
+  set φ : MvPolynomial (Fin d) K →+* A := (Ideal.Quotient.mk I).comp (aeval l).toRingHom with hφ
+  letI : Algebra (MvPolynomial (Fin d) K) A := φ.toAlgebra
+  letI : Module (MvPolynomial (Fin d) K) A := Algebra.toModule
+  have halg : ∀ c, algebraMap (MvPolynomial (Fin d) K) A c = Ideal.Quotient.mk I (aeval l c) :=
+    fun c => rfl
+  have hhomI : IsHomogIdeal I := isHomogIdeal_finiteHankelSecantIdeal K N r
+  -- generation over `B`
+  have hgen : ∀ x : A, ∃ b : S → MvPolynomial (Fin d) K,
+      x = ∑ y, b y • (Ideal.Quotient.mk I (e y) : A) := by
+    intro x
+    obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective x
+    obtain ⟨b, hb⟩ := spannedMod_all hhomI hl _ he hspan p
+    refine ⟨b, ?_⟩
+    have h0 := Ideal.Quotient.eq_zero_iff_mem.mpr hb
+    rw [map_sub, map_sum, sub_eq_zero] at h0
+    rw [h0]
+    refine Finset.sum_congr rfl fun y _ => ?_
+    rw [Algebra.smul_def, halg, map_mul]
+  haveI : Module.Finite (MvPolynomial (Fin d) K) A := by
+    refine ⟨⟨Finset.univ.image fun y => (Ideal.Quotient.mk I (e y) : A), ?_⟩⟩
+    rw [eq_top_iff]
+    intro x _
+    obtain ⟨b, rfl⟩ := hgen x
+    refine Submodule.sum_mem _ fun y _ => Submodule.smul_mem _ _ (Submodule.subset_span ?_)
+    simp
+  haveI : Algebra.IsIntegral (MvPolynomial (Fin d) K) A := Algebra.IsIntegral.of_finite _ _
+  -- the subring is a polynomial ring
+  have hS0 : Nonempty S := by
+    by_contra hS
+    rw [not_nonempty_iff, Set.isEmpty_coe_sort] at hS
+    rw [hS, Submodule.span_empty, hTspan] at hSspan
+    apply hJtop
+    have hsub : Subsingleton (MvPolynomial (Fin N) K ⧸ J) :=
+      (Submodule.subsingleton_iff K).mp (subsingleton_of_bot_eq_top hSspan)
+    exact Ideal.Quotient.subsingleton_iff.mp hsub
+  obtain ⟨y₀⟩ := hS0
+  have hinj : Function.Injective (algebraMap (MvPolynomial (Fin d) K) A) := by
+    rw [injective_iff_map_eq_zero]
+    intro c hc
+    rw [halg, Ideal.Quotient.eq_zero_iff_mem] at hc
+    have hb := eq_zero_of_sum_aeval_mul_mem I l hregmod e hind
+      (fun y => if y = y₀ then c else 0) (by
+        rw [Finset.sum_eq_single y₀ (fun y _ hy => by simp [hy]) (by simp), if_pos rfl]
+        exact I.mul_mem_right _ hc)
+    have := congrFun hb y₀
+    simpa using this
+  -- relatively prime elements stay regular
+  have hcop : ∀ c c' : MvPolynomial (Fin d) K, IsRelPrime c c' → ∀ x : A,
+      algebraMap _ A c' * x ∈ Ideal.span {algebraMap _ A c} →
+        x ∈ Ideal.span {algebraMap _ A c} := by
+    intro c c' hcc x hx
+    obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective x
+    have key : ∀ z, (Ideal.Quotient.mk I z : A) ∈ Ideal.span {(Ideal.Quotient.mk I (aeval l c) : A)} ↔
+        z ∈ I ⊔ Ideal.span {aeval l c} := by
+      intro z
+      rw [show Ideal.span {(Ideal.Quotient.mk I (aeval l c) : A)} =
+          (Ideal.span {aeval l c}).map (Ideal.Quotient.mk I) by
+        rw [Ideal.map_span, Set.image_singleton], Ideal.mem_quotient_iff_mem_sup, sup_comm]
+    rw [halg, halg, ← map_mul, key] at hx
+    rw [halg, key]
+    exact mem_sup_span_of_isRelPrime hhomI hl hregmod _ he hind hspan hcc hx
+  exact height_eq_one_of_mem_associatedPrimes hinj hcop ha hQ
 
 end
 

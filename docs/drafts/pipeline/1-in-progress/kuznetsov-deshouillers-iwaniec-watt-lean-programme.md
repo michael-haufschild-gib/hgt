@@ -318,3 +318,187 @@ Master theorem to formalize: Parseval (3.14) on `L²(Γ(N)\ℍ)`, `N ≥ 3` (Γ�
   Kontorovich–Lebedev of `g(x) = φ(x)x^{2−2σ}·const` ⇒ (1.20) for compactly supported `φ`.
 - Next: K3c per-row integral `∫_ℝ coeffTerm r` for `h = conj(y^{s₂}e(νz))` (substitution `x ↦ x − d/c`,
   deck Kloosterman weight `e((νa+μd)/c)⟨v,ρ(M_r)⁻¹conj w⟩`, `B(c,y)`), then the `y`-integral (Lemma 4.3).
+
+## Log 2026-10-05 (K3c)
+- K3c DONE (all axiom-clean, wired in `RHTower`):
+  `RHTower/BesselInverseGaussianComplexRate` (`∫y^{α-1}e^{-Ay-P/(Ay)} = 2P^{α/2}A^{-α}K_α(2√P)`, Re A>0,
+  identity theorem from real rates); `RHTower/CauchyBetaIntegral` (`∫(1+iη)^{-a}(1-iη)^{-b} =
+  π2^{2-a-b}Γ(a+b-1)/(Γ(a)Γ(b))`, Re a>0, Re b>1, via Fourier multiplication formula + inversion for
+  Gamma densities); `RHTower/KuznetsovKernelIntegral` (`kuzKernel`, `kuzValue`, absolute convergence
+  with `∫∫|K| ≤ C q^δ`, `integral_integral_kuzKernel` = DI Lemma 4.3 core);
+  `RHTower/KuznetsovPoincareRows` (`conjProfile`, regularity of `P(·|h̄_{s,ν},w)`, Möbius row
+  coordinates, `rowWeight = ⟨v,ρ(M)⁻¹w⟩e((μd−νa)/c)`, row term = weight·(c²)^{-s̄₂}·kernel, vanishing
+  diagonal); `RHTower/KuznetsovPoincarePairing`: `integral_inner_poincSeries_conjProfile`
+  `∫_𝒟⟨U(s₁,μ,v), P(h̄_{s₂,ν},w)⟩ = 2Σ_{reduced r} rowWeight·(c²)^{-s̄₂}·kuzValue(s̄₁,s̄₂;μ,ν,c²)`
+  for Re s₁, Re s₂ > 1, μ,ν>0, v ∈ e(μ)-eigen, w ∈ e(−ν)-eigen.
+- Next: K3d spectral side (K2 Parseval for `U` against `P`, `⟨U,u_j⟩` from Whittaker modes).
+
+## Log 2026-10-05 (K3d, part 1)
+- `RHTower/KuznetsovCuspFormPairing`: `deckCuspCoeff_eq_sum_deckMode` (coefficient at a cusp vector
+  = `Σ_q conj(v_q)` × level-period Fourier mode, `μ(N+1) ∈ ℤ` forced by `ρ(T)^{N+1}=1`),
+  `deckCuspCoeff_eigen_eq_whittaker` (`c·√y K_ν(2π|μ|y)`), `integral_whittaker_mellin`,
+  closed forms `integral_inner_poincSeries_eigen` / `..._conjProfile_eigen`
+  (`2c(2πμ)^{½−s̄}2^{s̄−3/2}Γ(s̄−½)Γ(s̄−½±ν)/Γ(2s̄−1)`, needs `|Re ν| < Re s − ½`), conjugate-series
+  unfolding `integral_inner_poincSeries_conjProfile_eq_deckCuspCoeff`.
+- `RHTower/KuznetsovSpectralIdentity`: `kuznetsov_rough` — geometric side (K3c) =
+  `Σ_j⟨U,u_j⟩⟨u_j,P⟩ + π⁻¹⟨T̄U,T̄P⟩` (central-fixed, `P ⊥ 𝟙`).  All built, wired, axiom-clean.
+- Remaining for K3d: (S-pos) `lam ≥ 0` for cuspidal eigenfunctions (so `|Re ν_j| ≤ ½`; route:
+  Green/Dirichlet form, or Schur + sub-mean-value of `y^s`, `s>1`); (S6) identification of `T̄U`, `T̄P`:
+  (a) density of `{t ↦ ψ̂(½+it)w}` in `L²(ℝ;V_∞)` (Mellin = Fourier after `y=e^u`; mathlib
+  `Lp.fourierTransformₗᵢ` + `C_c^∞` density), (b) range of `T̄` = symmetric subspace via the projection
+  `Σ F(t) = ½(F(t)+Φ̃(½−it)F(−t))` (`Φ̃` unitary + adjoint on the line, corpus), (c) `⟨T̄U,T_ψw⟩ =
+  π⟨U,E_ψw⟩` (inner_eisSpace, `⟨U,𝟙⟩=0`) = Mellin inversion + contour shift with the Fourier coefficients
+  `D_n(s)` of `eisExt` (corpus `EstarExt`, `Estarσ_eq_EstarExt`); growth on `½ ≤ Re s ≤ σ` from
+  `norm_Dn_le` + corpus `norm_LFunction_lower_log_strip` (`1/L(1+it,χ) ≪ log⁷|t|`).
+- (S-pos) DONE `RHTower/DeckCuspEigenvalueNonneg`: `cuspEigenBasis_lam_nonneg` (Schur `‖L_k‖ ≤ 1` vs
+  `h_k(s) = ∫k(u(i,w))(Im w)^s > 1` for real `s > 1`: strict Bernoulli + mean value of the harmonic `Im`).
+- (S6) route fixed (no functional equation, no range characterization): for every generator,
+  `⟨T̄U, T_ψw⟩ = π⟨U, E_ψw⟩` (inner_eisSpace, `⟨U,𝟙⟩ = 0`); `⟨U,E_ψw⟩ = π⁻¹∫ψ̂(σ+it)⟨U,Ẽ(σ+it;w)⟩dt`
+  (1<σ<Re s₁, Fubini); `⟨U, eisExt(s;w)⟩ = 2c_μ(s)·Mellin–Whittaker(s̄₁, s−½)` by a generalized unfolding
+  (integrable majorant instead of `L²`), `c_μ(s)` read off the corpus Fourier expansion of `eisExt`
+  (`termX`, `D_n(s)`); contour shift to `Re s = ½` (holomorphic, no pole for `μ ≠ 0`; growth
+  `|D_n| ≪ log⁹|t|`); then `∫ψ̂(½+it)⟨2T̄U(t) − H(t), w⟩dt = 0` for all `ψ, w` and density of
+  `{ψ̂(½+i·)}` in `L²(ℝ)` give `2T̄U = Π_{V∞}H`.  Steps S6.1 generalized unfolding, S6.2 `c_μ(s)`,
+  S6.3 Fubini, S6.4 growth + shift, S6.5 density, S6.6 the conjugate series.
+
+## Log 2026-10-06 (S6 closed, explicit s-parameter identity)
+- S6 DONE: `RHTower/KuznetsovEisensteinTransform` — generic `eisTransformL2_inner_of_line` (⟂𝟙 + line
+  pairing on one line ½<σ<Re s₁ ⇒ `2⟨T̄F(t),w⟩ = Φ(½+it)` a.e.), via `inner_eisTransformL2_incEisL2`
+  (Parseval on the Eisenstein space), `inner_symSpace_eisTransform` (symmetry), contour shift, test
+  density; corollaries `eisTransformL2_poinc_inner` (U) and `eisTransformL2_conj_inner` (P: pairing at
+  `(s̄₂, ν)`, frequency `−ν(N+1)`).  `DeckPoincareMajorantUnfolding` generalized
+  (`inner_toDeckL2_incEisL2_eq_integral_line` for any field under the Poincaré majorant; conjugate
+  unfolding of moderate-growth fields); `KuznetsovEisensteinCoefficient`:
+  `integral_inner_poincSeries_conjProfile_eisVec`, `inner_conjL2_incEisL2_eq_integral_pairing`.
+- `RHTower/KuznetsovExplicitIdentity`: `cuspVecSub`, ONB `cuspBasisVec` of `V_∞`,
+  `inner_eisTransformL2_poinc_conj` (`⟨T̄U,T̄P⟩ = ¼∫Σ_iΦ^U_iΦ̄^P_i`), `whittMellin`, `specParam`
+  (`ν_j² = ¼−λ_j`, `|Re ν_j| ≤ ½`), `cuspRep`, `cuspCoeff` (Whittaker coefficient ρ_j(v)),
+  **`kuznetsov_explicit`**: geometric(a₁,a₂) = 4(2πμ)^{½−a₁}(2πν)^{½−a₂}[Σ_jρ_j(v)ρ̄_j(w)W(a₁,ν_j)W(a₂,ν_j)
+  + (4π)⁻¹∫Σ_iη_i(v)η̄_i(w)W(a₁,it)W(a₂,it)dt].  All built, wired, axiom-clean.
+- K3e plan (KL route, worked out on paper): at a₁=σ+it, a₂=σ−it the factors (ν/μ)^{it} cancel; the
+  Mellin product (corpus `integral_cpow_mul_modifiedBesselKOrder_mul_modifiedBesselKOrder`) + duplication
+  give `W(σ+it,ν)W(σ−it,ν) = π2^{5−4σ}Γ(2σ−1)/(Γ(σ+it)Γ(σ−it))·∫K_{2it}K_{2ν}x^{2σ−2}`, so
+  `Σ_r w_r c^{−2σ}K_{2it}(X/c) = 4X^{1−2σ}[Σ_jρρ̄∫K_{2it}K_{2ν_j}x^{2σ−2} + cont]`, X = 4π√(μν).
+  Integrate against `H(t) = (8/π²)t sinh(2πt)G(2t)`, G = KL transform of `X^{2σ−1}x^{−2σ}φ`:
+  `Σ_r w_r c⁻¹φ(X/c) = 4Σ_jρ_j(v)ρ̄_j(w)φ̌(ν_j) + π⁻¹∫Σ_iη_iη̄_iφ̌(ir)dr`, `φ̌(ν) = ∫K_{2ν}φ dx/x`.
+  Interchanges: geometric side by `|K_{iτ}(x)| ≪ (|log x|+log(2+τ))e^{−πτ/2}`; spectral side by
+  Parseval at s = σ∓it (‖U(σ+it)‖ ≤ C(σ) uniformly in t) + Tonelli — no a-priori Weyl law needed.
+  KL inversion proof (no Taubes-type input): `2cosh(αy)g(y) = 𝓕A_α`, `y sinh(αy)K_x(iy) = (i/2)𝓕D_α`
+  (contour shift of the Schläfli integral, `Real.fourier_deriv`), multiplication formula + Fourier
+  inversion give `∫y sinh(2αy)K_x(iy)g(y)dy = iπ∫A_αD_α`; α→π/2 by DCT (`|F(v±iα)| ≪ cosh⁻²v` from
+  two integrations by parts) gives `π²x f(x)` via `ξ = sinh v` and cosine inversion.  KL decay
+  `y⁴g(y) = KL[M²f]` from the corpus Bessel ODE.
+- Note: same-sign Kuznetsov (large sieve, DI Thm 2) needs the U–U pairing (J-Bessel, DI Lemma 4.1) —
+  separate milestone after K3e/K3f.
+
+## Log 2026-10-06 (K3e/K3f DONE: Kuznetsov (1.20) in Lean)
+- `RHTower/KontorovichLebedevTransform`: uniform `‖K_x(iτ)‖ ≤ e²(|log x|+log(2+|τ|)+3)e^{−π|τ|/2}`;
+  `IsKLTest` (C^∞, compact support in (0,∞)); `klTransform`; `KL[Mf] = −y²KL[f]` from the Bessel ODE;
+  decay `‖KL f(y)‖ ≤ C(log(2+|y|)+1)e^{−π|y|/2}/(1+y^{2m})`.
+- `RHTower/KontorovichLebedevInversion`: **`kontorovichLebedev_inversion`**
+  `∫_ℝ y sinh(πy)K_{iy}(x)g(y)dy = π²x f(x)` (Fourier route: shifted Schläfli lines, multiplication
+  formula + Fourier inversion, α→π/2 by DCT on both sides, ξ = sinh v, cosine inversion).
+- `RHTower/KuznetsovBesselIdentity`: `whittMellin_eq` (duplication), `whittMellin_mul_line`
+  (`W(σ+it,ν)W(σ−it,ν) = π2^{5−4σ}Γ(2σ−1)M(t,ν)/(Γ(σ+it)Γ(σ−it))`), `kuzValue_line`,
+  **`kuznetsov_bessel`** (pointwise identity in K_{2it}).
+- `RHTower/KuznetsovUniformBounds`: `‖U_s‖,‖P_s‖ ≤ ‖v‖‖A_{Re s}‖₂`, Bessel/Parseval
+  (`‖T̄f‖² ≤ π‖f‖²`), uniform line bounds for Σ_j|ρρ||W|² and ∫Σ_i|ηη||W|².
+- `RHTower/KuznetsovKLWeight`: weight `H(t) = (4/π²)t sinh(2πt)g(2t)`, `∫H K_{2it}(x) = x f(x)`,
+  `Γ(2+it)Γ(2−it) = (1+t²)πt/sinh(πt)`, `|HΓΓ| ≪ (1+t²)⁻¹`, `|H K_{2it}(x)| ≪ (|log x|+1)(1+t²)⁻¹`,
+  joint continuity of `K_ν(x)`, Fubini `∫H M(t,ν)dt = ∫x²K_{2ν}x f`.
+- `RHTower/KuznetsovOppositeSign`: countability of the cuspidal eigenbasis (separable L²),
+  three interchanges (row sum, discrete spectrum, Eisenstein integral) and
+  **`kuznetsov_opposite_sign`**: `Σ_r w(c,d)|c|⁻¹φ(4π√(μν)/|c|) = 4Σ_jρ_j(v)ρ̄_j(w)φ̌(ν_j)
+  + π⁻¹∫Σ_iη_i(v,r)η̄_i(w,r)φ̌(ir)dr`, `φ̌(ν) = ∫K_{2ν}(x)φ(x)dx/x`, all smooth compactly supported
+  φ on (0,∞).  All built, wired, axiom-clean.
+- Next: K3g same-sign pairing ⟨U(s₁,μ,v),U(s₂,ν,w)⟩ (J-Bessel, DI Lemma 4.1) for the large sieve;
+  Γ₀(q)/Kloosterman specialization of `rowWeight`; then K5 (DI §7 Bessel-transform bounds, Thm 2).
+
+## Log 2026-10-06 (K3g DONE: same-sign Kuznetsov, DI (4.8)/(5.5) at σ = 1 in Lean)
+- `RHTower/KuznetsovSameSignRows`: rows of `P(·|h_{s₂,ν}, w)`: `M(x+iy) = a/c − 1/(c²y(ξ+i))`, same-sign
+  kernel `K⁺ = (1+ξ²)^{−a₂} y^{a₁−a₂−1} e^{−2πμ(1+iξ)y − 2πν/(c²(1−iξ)y)}`, `|K⁺| = |K|`,
+  row weight `⟨v,ρ(M)⁻¹w⟩ e((μd+νa)/c)`, diagonal `[μ=ν] y^s e^{−2πνy}⟨v, w+ρ(−1)⁻¹w⟩`.
+- `KuznetsovSameSignPairing`: `∫⟨U(s₁,μ,v),U(s₂,ν,w)⟩ = 2[μ=ν](4πμ)^{1−s̄₁−s₂}Γ(s̄₁+s₂−1)⟨…⟩ + 2Σ_r …V⁺`.
+- `KuznetsovSameSignIdentity`: Parseval with explicit spectral side (`kuznetsov_same_sign_explicit`).
+- `KuznetsovSameSignLine`: `y = λeʷ` gives `V⁺(σ+it,σ−it) = (ν/(μq))^{it} Ξ_σ(t,X)`,
+  `Ξ_σ = ∫(1+ξ²)^{−σ}∫e^{2itw}e^{−Xζ(ξ)cosh w}dw dξ`, `ζ = e^{i arctan ξ}` — no Bessel function needed.
+- `KuznetsovGaussianWeight`: `∫t²e^{−(t/K)²}e^{2itw}dt = (√πK³/2)(1−2K²w²)e^{−K²w²} = 𝒢_K'(w)`.
+- `KuznetsovSameSignGaussKernel`: `∫g_KΞ_σ = Ψ_σ` (Fubini + one IBP), `|Ψ_σ(X)| ≤ πX∫|𝒢 sinh|`,
+  `Ψ_σ → Ψ_1` as σ↓1, **`Ψ_1(X) = 2∫𝒢_K(w) tanh w sin(X cosh w)dw` (DI (5.6))** via
+  `∫(1+ξ²)⁻¹ζe^{−bζ}dξ = 2 sin b/b`.
+- `KuznetsovSameSignGaussIdentity` + `KuznetsovSameSignBessel`: `F_t = Σ_k b_k(2πμ_k)^{−it}U(σ−it,μ_k,v_k)`,
+  phases cancel: `‖F_t‖² = Σ b̄_k b_l(2diag + 2R_{kl}(t))`; Bessel; t-integration; σ↓1 by Fatou (spectral)
+  + Tannery (geometric): **`lintegral_bessel_le_one`**:
+  `Σ_j ∫ g_K(t)·4|W(1+it,ν_j)|²|A_j|² dt ≤ Re Σ_{k,l} b̄_k b_l [2 diag ∫g_K + 2Σ_{(c,d)} w⁺ c^{−2} Ψ_1(4π√(μν)/|c|)]`,
+  `A_j = Σ_k b̄_k ρ_j(v_k)(2πμ_k)^{−½}`.  No analytic continuation of Poincaré series needed.
+- Next (K5): lower bound `∫g_K|W(1+it,iκ)|² ≫ (|κ|+1)e^{−π|κ|}` (|κ| ≤ K) and exceptional ν; Eisenstein
+  part of Bessel (continuous large sieve); Γ₀(q) Kloosterman specialization of `Σ_d w⁺`; Prop 3; Thm 2.
+- K5 (spectral half of DI Thm 2) DONE: `RHTower/KuznetsovSpectralWeightLower` (`|W(1+it,ν)|²` via four Γ-moduli;
+  reflection bound `|Γ(½+ν+it)Γ(½−ν+it)| ≥ π/cosh πt` for real ν; `∫g_K·4|W(1+it,iκ)|² ≥ c₀(κ+1)e^{−πκ}`,
+  `c₀ = (π²/4)e^{−9−2π}`, all `λ ≤ ¼+K²` incl. exceptional) and `RHTower/KuznetsovSameSignParseval`
+  (Parseval for `F_t`, Eisenstein coefficients `2W(σ+it,ir)B_i(σ,r)`, Fatou on ℝ² as σ↓1):
+  **`large_sieve_full`**: `Σ_j c₀(κ_j+1)e^{−πκ_j}[λ_j≤¼+K²]|A_j|² + (4π)⁻¹∫_{−K}^{K}c₀(|r|+1)e^{−π|r|}Σ_i|B_i(r)|²dr
+  ≤ |Σ_{k,l} b̄_k b_l geomRow_{kl}(1,K)|` for every finite family of cusp vectors/frequencies.
+- Next: arithmetic side — Γ₀(Q) vector `1_H` (H = Γ₀(Q)/Γ(N+1)), `Σ_d rowWeightPlus = |H|·S(m,n;|c|)[Q|c]`,
+  DI Prop 3 (1.25)–(1.27), §5.3 case split ⇒ Thm 2 `≪ (K² + μ N^{1+ε})‖a‖²`.
+- Γ₀(Q) cusp ∞ specialization DONE: `RHTower/KuznetsovGammaZeroCusp` (`1_H`, `H = Γ₀(Q)/Γ(N+1)`, `Q ∣ N+1`;
+  `⟨1_H, ρ(M)⁻¹1_H⟩ = |H|[Q∣c]`), `RHTower/KuznetsovRowKloosterman` (rows of modulus c ≃ (ℤ/|c|)ˣ;
+  `Σ_d e((md+na)/c) = S(m,n;|c|)`; `tsum_rowExp_mul`), `RHTower/KuznetsovGammaZeroGeom`
+  (**`geomRow_gamma0`**: `geomRow(1,K;m,n;1_H,1_H) = 4|H|[m=n](4πm)⁻¹∫g_K + 2|H|Σ_{c≠0}S(m,n;|c|)[Q∣c]c⁻²Ψ_1(4π√(mn)/|c|)`).
+- Remaining for Thm 2 (plan): with α_m = a_m√m, `Φ(c) = 4π∫𝒢 tanh·Im B(cosh w, c)`, `B(θ,c) = Σ ᾱ_mα_n S e(2θ√mn/c)`;
+  c > N²: trivial `|S| ≤ c` + `|Ψ_1(X)| ≪ X`; N < c ≤ N²: (1.26') `|B| ≪ (c + N + |θ|N)‖α‖²` from the corpus hybrid
+  Farey sieve (`sum_integral_normSq_additiveHybridLogPoly_le_length`) + Fourier separation of `e(2θ√mn/c)` in
+  `log m + log n` (|ĝ| ≤ ‖g‖₁, ≤ ‖g''‖₁/(2πt)², dyadic shells); c ≤ N: (5.7) form + (1.27) (Poisson, Ramanujan sums,
+  first-derivative test) for ξ ≤ 1, (1.26') with e^{−K²} for ξ ≥ 1.
+
+## Log 2026-10-06 (DI Theorem 2 DONE in Lean, Γ₀(Q) at ∞, deck normalization)
+- `RHTower/KuznetsovKernelOscillatory` (DI (5.7) + weight bounds), `KuznetsovSqrtSeparation` (Fourier
+  separation of `e(A√(mn))` with `∫|ĝ| ≤ C(1 + |A|e^{a/2})`), `KuznetsovKloostermanSieve` (single-modulus
+  additive large sieve; **(1.26)**: `|B(θ,c)| ≤ C(1 + |θ|N/c)(N + c)Σ|α|²`).
+- `KuznetsovQuadraticPhase` (iterated IBP for `e(Ξ(s² − τs))`, closed form `G_k = Σ b_{k,i}a^{(i)}x^{−(2k−i)}`,
+  `|∫ a e(Ξ(s²−τs))| ≤ C_p|Ξ|^{−p}` uniformly in `|τ| ≤ κ < 2α`), `KuznetsovSqrtPhasePoisson` (Poisson for
+  `Σ η(√(n/N))e(zn + B√n)` with the substitution `t = Nσ²`; error `C_p N(c/N)^p`; resonant term
+  `≤ min(3N, D√N/|B|)`), `KuznetsovKloostermanSmallModulus` (**(1.27)**: CS + opening the square + Poisson +
+  Ramanujan sums via corpus `cglRamanujanAdditiveSum_eq_gcd_mobiusDivisorSum_sieve` + divisor kernel row sums:
+  `|B|² ≤ C(Σ|α|²)²(cNτ(c)(1+log N) + c²N²(c/N)^p)`), `KuznetsovKloostermanPhaseEnvelope` (`|B| ≤ C_δ√cN^{1/2+δ}Σ|α|²`
+  for `c ≤ N`, `1 ≤ |θ| ≤ 2`; envelope along `θ = ±cosh w`), `KuznetsovGaussianTails`
+  (`∫|𝒢_K|T_K ≤ 4√πeKe^{−K²/2}`, `∫|R_K|T_K ≤ (10π+4√π)eK²e^{−K²/2}`, `∫|𝒢_K sinh| ≤ 2πe`),
+  `KuznetsovGeomModulusBound` (DI (5.6), (5.7) as integral identities for `Φ(c)`; three bounds per modulus),
+  `KuznetsovGammaZeroModulusSum` (per-modulus `c^{−2}|Φ(c)| ≤ (PKN^{1+2δ}c^{−1−δ/2} + P₃K²e^{−K²/2}(N²c^{−2}+N³c^{−3}))Σ|a|²`
+  via min(5.6, 5.7) for `c ≤ N`, min(1.26, trivial) for `c > N`), `KuznetsovGammaZeroGeomBound`
+  (`Σ_{Q∣c}|c|^{−s} = Q^{−s}Z_s`), `KuznetsovLargeSieveGammaZero` (geomForm bound; `specCoeff = Σ a_n ρ_j(n)`;
+  **`large_sieve_gamma0_level`**), `KuznetsovLargeSieveTheorem` (K₁ = K + √(6 log(1+N/Q)) trick:
+  `𝓛_K ≤ C|H|(K³ + KN^{1+3δ}/Q)Σ|a|²`; dyadic summation `sieveDILHS_le`; **`large_sieve_gamma0`**:
+  `Σ_{λ_j≤¼+K²}e^{−πκ_j}|Σa_nρ_j(n)|² + (4π)⁻¹∫_{−K}^{K}e^{−π|r|}Σ_i|Σa_nη_i(r,n)|² ≤ C_ε|H|(K² + N^{1+ε}/Q)Σ|a_n|²`).
+  All built, audited (0 non-standard axioms), wired into `RHTower.lean`.
+- Next: DI Theorems 5–9 (exceptional eigenvalues weighted large sieve; bilinear Kloosterman forms with smooth
+  weights via Kuznetsov (1.20) + Thm 2), then Watt / twisted fourth moment inputs for the route-e cards.
+
+## Roadmap 2026-10-06 (after DI Theorem 2): DI §7–9, Watt, twisted fourth moments
+Sources now in hand: DI Invent. §7–9 (scans p288–p311), DI Acta Arith 43 (1984) 305–312 (free scan
+`matwbn.icm.edu.pl/ksiazki/aa/aa43/aa4339.pdf`: template for mean values `∫|L M N|²` via off-diagonal
+`lb = l₁b₁ + h` → Poisson mod c → `e(−hk ā/c)` → DI Thm 12), BCR arXiv:1411.7764 Prop. 3 (Watt's bound
+derived from Watt Prop. 4.1: sums `Σ α(h)β(c)ω(ℓ)a_r b_s S(hcr, ∓ℓ; sp) f_s(p)`).  Watt (JNT 53) and DI
+Mathematika 29 are not accessible (paywall/bot wall): Watt Prop 4.1 is a refinement of DI Thm 16 for
+`a_{r,s} = a_r b_s`, to be reconstructed.
+Dependency chain: E1 ⇐ DI-[2]-type mean value (two smooth variables, Poisson in both) ⇐ DI Thm 16 ⇐ Thm 12
+⇐ Thm 11 ⇐ Thms 2, 5, 6/7 at cusps ∞ and 1/s of Γ₀(rs) ⇐ Kuznetsov (1.19)/(1.20) at (∞, 1/s) + Thm 8.
+E2 ⇐ Watt Prop 4.1 (same tools).
+Key structural facts fixed on paper:
+- Same-sign Maass kernels are `x·Ψ^G(x)`, `Ψ^G(x) = 2∫G(w) tanh w sin(x cosh w) dw`, G odd; spectral weight
+  `H_G(ν) = ∫h_G(t)W(1+it,ν)W(1−it,ν)dt`, `h_G(t) = π⁻¹∫G'(w)e^{−2itw}dw`; exact at σ = 1 by DCT with the
+  proven large sieve as dominating bound (no Bessel J needed).
+- `x sin(bx)` (b>1) is ⊥ every `J_l` (l odd) in `L²(dx/x)`; DI's decomposition `φ = Σ_{l odd}2lφ̃(l)J_l + φ_H`
+  has `φ_H = x·Ψ^{G_φ}`, `G_φ(w) = (cosh w/4)[∫φ(y)sin(y cosh w)dy/y − 2Σ_lφ̃(l)sin(lπ/2)e^{−lw}]` (w>0, odd
+  extension smooth by Jacobi–Anger at θ = π/2+iw).  Inputs: sine transform of `J_l(y)/y` (=`sin(l arcsin u)/l`,
+  u<1; `sin(lπ/2)(u−√(u²−1))^l/l`, u>1).  `G_φ(±∞) = ∓φ̃(1)/4 ≠ 0`: the geometric sums converge absolutely
+  only via Weil (corpus `kmaxU_summable`); same for the weight-2 (J₁) holomorphic part.
+- Holomorphic part needed only through Gram positivity of weight-k deck Poincaré series with Hecke
+  parameter s>0 (k even ≥ 2): `|Σā b G_𝔞𝔟| ≤ √(G_𝔞𝔞(a))√(G_𝔟𝔟(b))`, geometric sides with `J_{k−1}` kernels
+  in the limit s→0 — no spectral theory of S_k.  Cross-cusp (∞,1/s) cannot be done geometrically (loses √r).
+- Exceptional amplification `X^{−2ν}` appears from the slow decay `e^{−(1−2ν)w}` of the Fourier transform of
+  `sinh(πt)/(t(cosh²πt − sin²πν))` against `G_φ`.
+Build order: (P1) general-weight same-sign identity at σ=1; (P2) `J_l` (integer order), Jacobi–Anger,
+DI decomposition; (P3) weight-k deck Poincaré Gram; (P4) spectral-weight bounds (Lemma 7.1, `φ̌` and `H_G`);
+(P5) Thm 8 at (∞,∞) then (∞,1/s); (P6) Thms 5–7; (P7) Thms 9–13, 16; (P8) mean values E1; (P9) Watt; (P10) AFE,
+MT Lemma 3.5, MT Thm 1.2, cards.

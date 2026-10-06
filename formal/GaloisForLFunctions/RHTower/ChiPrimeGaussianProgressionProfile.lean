@@ -164,6 +164,20 @@ private theorem scaled_log_profile_bounds :
   dsimp only [scaledLogProfileD]
   exact (norm_sub_le _ _).trans (by linarith only [hm1,hterm])
 
+/-- Uniform norm and Lipschitz bounds for the actual Gaussian profile with its
+logarithmic correction, over the complete physical ratio range. -/
+theorem exists_primeGaussianScaledLogProfile_lipschitz :
+    ∃ B : NNReal, 0 < B ∧ ∀ ξ ∈ Icc (1 / 2 : ℝ) 2, ∀ l ∈ Icc (0 : ℝ) 1,
+      (∀ x ∈ Icc (1 : ℝ) 2, ‖primeGaussianScaledLogProfile ξ l x‖ ≤ B) ∧
+      LipschitzOnWith (2 * B) (primeGaussianScaledLogProfile ξ l) (Icc (1 : ℝ) 2) := by
+  obtain ⟨B, hB, hbound⟩ := scaled_log_profile_bounds
+  refine ⟨⟨B, hB.le⟩, hB, fun ξ hξ l hl => ⟨fun x hx => (hbound ξ hξ l hl x hx).1, ?_⟩⟩
+  apply Convex.lipschitzOnWith_of_nnnorm_deriv_le
+    (fun x hx => (scaled_log_profile_deriv ξ hl.1 hx).differentiableAt) _ (convex_Icc 1 2)
+  intro x hx
+  rw [(scaled_log_profile_deriv ξ hl.1 hx).deriv]
+  exact_mod_cast (hbound ξ hξ l hl x hx).2
+
 /-- Actual logarithmic prime coefficient in a residue class. -/
 def primeProgressionLogCoefficient (Q : ℕ) (a : ZMod Q) (n : ℕ) : ℂ :=
   if n.Prime ∧ (n : ZMod Q)=a then (Real.log n : ℂ) else 0

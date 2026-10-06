@@ -1,0 +1,20 @@
+# Route TT checkpoint — updated 2026-10-06
+Goal ACTIVE: unconditional Lean RH proof/falsification, neither achieved. No subagents, no commits/pushes, no full/umbrella builds, no raised limits or external mathematical computations. ONE owned foreground Lean process at a time; gate launches on predecessor terminal. No owned Lean/search currently live.
+
+## Frontier advance
+31 production ThetaCuspRatioTerminal*.lean leaves in formal/GaloisForLFunctions/RHTower audited directly with lake --old env lean -o ... <module>, warning-free, all wired. New final three: TerminalActualCoefficient, TerminalAbsorbedPrincipal, TerminalAbsorbedTransport. Earlier universal source/graded transport files closed too.
+Complete ACTUAL Q6 normalized by (3k+1)^(-10) tends to -(8192/3)*189994*12^18. It is eventually strictly negative. Every eighth-to-seventh absorption Absorb(Q,M)=Q-Q8 E8+Q8 M E7 leaves Q6 unchanged, for EVERY complex M. Hence eventual no all-nonnegative real ordinary-coefficient representation on actual orbit.
+Positive survivor: same absorbed principal source strictly positive on 0<e<=1/36 by explicit mixed surplus/deficit decomposition, including double root. Its sixth coefficient stays negative. Complete graded mass=(1-h)^2/36; full finite-clock absorbed transport G_abs(h,e)=h22 Absorb(Q_k,z,M_k)(e/h²), k=(1/h-1)/3, M_k=9(a+b²/4). No source/sign premise.
+P5 docs/drafts/pipeline/5-failed/tt-ordinary-absorbed-surplus-coefficients.md closes this certificate with exact positive survivor. NOT full source-value or RH refutation.
+
+## Audits/cleanup
+Latest52 imported capstones /tmp/tt_terminal_graded_production_axioms.log and4 /tmp/tt_terminal_absorbed_transport_production_axioms.log all subsets standard3; actual theorem signatures checked. Earlier70 imported capstones already passed. Superseded116..128 scratch sources/caches cleaned ONLY after production/import audit; logs retained. Previous98..115 cleanup done. Earlier97 kinetic/surplus sources still UNAUDITED, do not cite as Lean.
+Last lint /tmp/tt_terminal_absorbed_transport_lint.log exit1 only four unrelated umbrella misses: KuznetsovEisensteinGrowth, Sieve.TwistedSelbergCoefficient, Sieve.TwistedSelbergFactorization, HTGeometry.ResetPathSingularity. Scoped whitespace/forbidden/raised-limit scans clean.
+
+## Hard next work
+Full finite-clock interior VALUE on strict nonlinear cone, then source quadratic, fourth Schur gap, join/all-rank, RH. Existing uniform nonlinear-cone tail, full seam and axis signs already closed: do not reprove as new frontier.
+Main log docs/drafts/pipeline/1-in-progress/tt-third-slope-nonlinear-cone.md last entries specify new exact hard conjecture: p(z)=Re reducedSlope(v,k,z); on StrictCoarseCone with E=k-1-m+(6-3k)z-9z²>0 and p(z)=0, prove Re(pderiv J reducedSlope)<0. This is kinetic partial at FIXED v,k, not source Lie derivative. If proved, last-zero argument plus known boundary sign rules out nonpositive interior. Boundary root coverage: E(1/3)=-m<0; for y=(1-u)z+u z0, E(y)=(1-u)E(z)+9u(1-u)(z0-z)²>0; speed affine increasing in z. Reduction PAPER only; derivative sign OPEN. Do NOT formalize merely a conditional receiver or claim source-sign closure. Alternative direct hard candidate is combined bracket -B-(z+z0-b)Q(z) in exact full polynomial division, recorded in same log. Keep all source terms and speed.
+Recent corpus searches all terminal: complete_absorbed_value partial1253589/66754 inventory; surplus_deficit_source nonpartial1253598; full_value_transverse_derivative partial1253829 coveragepending. Relevant source identities only; unrelated slope-name collisions do not supply sign.
+
+C77 boundary scratch proof fully audited; production closure staged/wired627,32 passed indices0..31. No live process. Resume index32 via /tmp/tt_c77_production_manifest.json and status journal; original scratch dependency caches must remain until production closes. Do not copy/rename caches.
+P3 docs/drafts/pipeline/3-formalized/tt-terminal-source-bell-jets.md and frontier map updated. Goal remains active.

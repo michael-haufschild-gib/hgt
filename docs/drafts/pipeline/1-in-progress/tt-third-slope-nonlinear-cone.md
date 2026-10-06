@@ -3034,3 +3034,467 @@ Lean, full/umbrella build, raised limits, subagent, commit or push.
 
 Concrete next conjecture: partial_z Q6(aFlat)>0 on StrictCoarseCone.
 This has not been proved or assumed. Full source p13..p17 are the inputs.
+
+
+2026-10-05 continuation — Route TT. PROGRESS: C77 scratch closure complete.
+Cell227 completed rows92..95 and GlobalSign; all rows0..96 carry all37 strict
+signs and universal Fin37 capstones, standard3. SourceSign pass3 terminal0;
+all5 capstones standard3, including nonlinearBoundary_physical_source_slope_pos.
+Earlier pass1/2 cast errors were repaired. Boundary sign is closed on the exact
+admissible boundary; strict interior, source quadratic, fourthgap/allrank/RH
+remain open.
+
+Production promotion: recursively closed C75/C76/C77 graph627 modules,
+115MB source before removal of debug printing. Staged under
+RHTower/ThetaCuspRatioBoundaryCertificate, preserving theorem statements and
+proofs, mapping every internal import. No caches copied or renamed. All627
+leaves wired into RHTower; serial direct reaudits running in functions cell1036.
+Manifest /tmp/tt_c77_production_manifest.json; journal
+/tmp/tt_c77_production_audits/status.jsonl. Poll1036 before any new Lean.
+The current module/session is also in functions store ttBoundaryProductionCurrent.
+Do not conflate the scratch sign closure with completed production reaudits.
+
+New mathematical frontier: exact U=3 terminal change Y=3K+1,T=J-Y-1 gives
+L/12=Y(Y+T+1)partialY+T partialT. Complete all-order Bell jet identity now
+kernel checked, including full constant seed. General native reflection scaling
+and cleared Cauchy identity also kernel checked. Three production leaves:
+ThetaCuspRatioTerminalKineticJets, ThetaCuspRatioTerminalReflections,
+ThetaCuspRatioTerminalPrincipalAlgebra. All direct leaf audits pass with no
+warnings. All11 imported capstones in /tmp/tt_terminal_production_axioms.lean
+pass standard3. Leaves wired, no umbrella build. Original sources98/99/100
+were repaired during audits; the older97 kinetic/surplus drafts remain unaudited.
+
+Paper full terminal reflected law predicts principal minor
+-4608*12^18*Y^4*(T+Y)^2*T^14 and principal slope
+221184*12^18*Y^5*J^2*(J-Y)^15 in originalJ. Hence full Q6's Y10 coefficient
+is -(8192/3)*189994*12^18, while velocity derivative's Y9 coefficient is
+8192*75670*12^18>0. Actual-tail negativity remains UNPROVED until exact
+native homogeneous identification and coordinate/normalization transfer are
+formalized. This challenges the former flat-Q6 nonnegativity conjecture; it
+does not refute full surplus VALUE positivity or RH.
+
+Audited positive model: e*P(1-e)>0 for0<e<=1, yet sixth ordinary coefficient
+-54718272. Rank-two determinant pairing and principal derivative algebra also
+pass. THESE MODEL POLYNOMIALS ARE NOT YET IDENTIFIED WITH NATIVE COMPONENTS.
+No no-go retirement. Candidate replacement Q(E)=Q(0)+E*R(Emax-E) must retain
+Q(0), all lower source terms and physical incidence; no coefficient signs
+may be assumed. Full details in tt-surplus-even-coefficient-orientation.md.
+
+Corpus terminal_frontier partial1248762, coverage1248770 complete66014;
+compiler mostly pending/stale, refresh incomplete, reranking unfinished. All
+candidate/source/idea/ingredient categories inspected; no supplied reflection
+closure. Homogeneous lexical query unhelpful; local primary APIs inspected.
+Latest formal lint terminal1: only3 unreachable modules, all outside this work;
+large-file warnings include boundary certificate modules. No forbidden source
+declaration finding. Do not claim global lint green. No sampling, external
+coefficient arithmetic, raised limits, subagents, commits, or push.
+
+
+Same continuation, mathematical follow-through: derived a SECOND full native
+principal-head proof from the literal terminal recurrence. P_n=Y*A_n-3*(5/4)^n,
+A0=2, A_(n+1)=T*A_n'+(T+9/4)*A_n+3*(5/4)^n. DegreeA_n=n; top3 are
+2, c_n=n^2+(7/2)n+3, d_n=6choose(n,4)+(31/2)choose(n,3)+
+(105/8)choose(n,2)+(15/4)n, valid at the stated nonnegative exponents.
+The continuations c0=3,d1=15/4 are NOT actual coefficients and must be
+removed from reflected endpoints. Alternating polynomial sums then give
+H_n leading=-12+8*delta_n2 and next=-6(n(n+1)+3)+24delta_n2+48delta_n4.
+This independently recovers BOTH exceptional moments and the native principal
+rows. Full derivation on orientation card; still paper, not kernel closed.
+Corpus supplied exact alternating-power zero/factorial laws in
+HTGeometry/MicroSpectrumMomentCollapse; actual source bodies inspected.
+Draft101 TTC78TerminalAffineJets.lean is UNCOMPILED, imports production only.
+
+Also derived exact ORIGINAL-source polynomial flat transfer: regularization
+provides h^m P(sourcePoint)=Q(compactPoint). At h=1/k subtract actual/axis
+identities to get k^n*(P(actual)-P(9,k,1/3)) =
+k^(n+m)*(Q(actualBase)-Q(axisBase)), which tends0 for every n by audited
+actual_axis_polynomial_flat. No unjustified boundedness of k. Draft102
+TTC78TerminalFlatTransfer.lean UNCOMPILED, imports ActualSlopeTail and
+ScaledDriftFactor. Actual Q6 polynomial identification and terminal leading
+coefficient still required. Normalize by (3k+1)^10; using k^10 introduces3^10.
+
+All11 imported terminal capstones standard3. Three production leaves audited
+and wired; P3 tt-terminal-source-bell-jets.md added. Superseded original
+TTC78TerminalKineticJets/PrincipalAlgebra/Reflections scratch sources and2
+caches removed; production and audit logs retained. Draft101/102 static scans
+clear, no caches. Index command passed, refreshed LEAN_API/GAPS/OVERVIEW.
+Scoped diff --check and new-card whitespace checks pass. Latest lint has3
+unrelated unreachable modules and size warnings, including certificate files.
+No new forbidden declaration finding; not a globally green gate.
+
+Searches formal_exponential partial1249495, incomplete coverage1249451/
+current1249525; alternating_heads partial1249714, complete66659 inventory,
+coverage1249722; actual_flatness partial1249810 coveragepending. Every result
+category inspected, background refresh/semantic deadlines apply. All searches
+terminal, none live. No exhaustive novelty claim. Sole owned Lean remains
+serial boundary production cell1036,22/627 leaves passed through Cofactor4
+at this checkpoint; journal is authoritative. functions store inside the
+running cell may not be visible until yield/completion; use wait1036 and
+status.jsonl, do NOT infer no running job from an undefined store read.
+Goal ACTIVE, no full/umbrella builds, no subagents, no added axioms/premises.
+
+### 2026-10-05 — Native terminal reflected coefficients, complete at every order
+
+Route TT remains the full third-slope interior sign under the nonlinear
+source barrier. New paper result: the deficit-basis mass transport is an
+exact positive-coefficient-preserving secant operation, reducing all R_M
+coefficient signs to zero mass. The first two COMPLETE replacement
+coefficients have paper sign proofs, retaining p14..p17 and lower terms.
+However separate positivity of Q(0) fails on an exact inward family:
+r=1-h²*b(h), t=b(h)+d, 0<d<1/12 gives
+h^20*Q(0)/m=h^4*G(h,1)-(d/3)*B75(h,r), with strictly negative limit.
+Full source remains positive by the existing uniform nonlinear-cone tail.
+Thus the next value certificate MUST retain cancellation with E*R; positive
+R coefficients alone cannot supply the full source sign. Both source
+obstruction/compensation remain paper, not a retired route or RH falsification.
+Complete derivations and exact constants are on the orientation card.
+
+Frontier formalization advanced: seven NEW production leaves passed direct
+`lake --old env lean -o ... <module>` audits without warnings:
+ThetaCuspRatioTerminalAffineJets, TerminalAmplitudePolynomial,
+TerminalAmplitudeReverse, TerminalReflectedLeading, TerminalReflectedSecond,
+TerminalReflectedAffine, TerminalCrossHeads (all ThetaCuspRatio-prefixed).
+All are wired into RHTower; no umbrella build. Scratch audits establish the
+native all-order affine jet identity, exact top three amplitude coefficients,
+all product top coefficients with seed corrections, both complete reflected
+self-convolution heads including orders2/4, the full native identity
+R_n=Y²H_n-6YK_n, and both cross heads plus degree bounds. All25 printed
+scratch capstones use standard3. Production imported axiom recheck queued.
+The five-leaf production loop1131 is terminal0; its journal is
+`/tmp/tt_terminal_extended_production_status.jsonl`.
+
+Boundary production loop1036 was deliberately interrupted at ProductValues8,
+exit130, after32/627 passes. Its scratch mathematical closure remains valid;
+resume renamed leaf audits at index32. This freed the sole build slot to
+solve native source obligations instead of reauditing already proved files.
+It is not a goal pause or a mathematical failure.
+
+`TTC78TerminalHomogeneousReflections.lean` passed scratch audit2; all3
+capstones use standard3. It constructs an exact inverse-clock polynomial
+for the COMPLETE native reflection and proves its constant/linear
+coefficients are the two displayed principal rows. The renamed production
+leaf is staged, audit/wiring pending. Current sole Lean:
+`/tmp/TTC78TerminalHomogeneousMinor.lean` pass1, session56621. It applies
+the audited rank-two pairing to the complete inverse-clock moment matrix.
+No principal determinant or slope identification is claimed before its
+graded determinant/source derivative audits.
+Draft102 actual-original-coordinate flat transfer remains queued, uncompiled.
+Hard remaining problems: native degree20/22 determinant/slope incidence,
+actual Q6 obstruction, full compensated interior value, then full source
+quadratic, fourth Schur gap, join/all-rank closure and RH. Goal ACTIVE.
+
+## 2026-10-05 — Exact native terminal determinant and slope identified
+
+Route TT remains active. New source-gap closure: scratch109/110/111/112/113
+passed (final passes2/3/2/3/2) and all printed capstones use only standard3.
+The complete native terminal minor admits N(h)=h^21 M(Y/h,T/h),
+N_0=0, N_1=-4608*12^18 Y^4(T+Y)^2 T^14. Exact complete coordinate
+derivatives have the expected scaling; mixed-variation symmetry avoids a
+large expansion and stays within default limits. The complete native slope
+admits a POLYNOMIAL regularization R(h)=h^22 S(Y/h,T/h), with
+
+    R(0)=221184*12^18 Y^5(T+Y)^2 T^15.
+
+No native-jet truncation or homogeneous-source premise remains in this
+identification. This closes the degree20/22 native determinant/slope gap.
+It does not prove the full source value or actual Q6 obstruction.
+
+Production109/110/111 passed directly, no warnings. Production112 is
+currently auditing (session99869);113 is staged/wired. Seven earlier new
+production leaves also passed, so10 new production passes so far. All12
+new leaves are wired. Imported50-capstone production axiom audit is queued
+in /tmp/tt_terminal_extended_axioms.lean. No full/umbrella builds.
+
+New paper quadratic identity: constant remainder of W²(W-1)^15 under
+W²=-W/3-e equals e/6^15*deficitShape(1-36e), including the double root.
+Conjugate selection and the audited odd-part identity prove it without
+dividing by the discriminant. The native reduced principal source is
+73728*12^18 times that remainder. It is positive for0<e≤1/36 yet has
+sixth coefficient -(8192/3)*189994*12^18. Exact derivation is on the
+orientation card. Draft114 /tmp/TTC78TerminalQuadraticPrincipal.lean is
+written, NOT audited yet. Draft102 original-coordinate flat transfer also
+remains uncompiled. Search1251536 was partial with pending coverage;
+mathlib quadratic-star source was inspected directly.
+
+Lint /tmp/tt_terminal_native_slope_lint.log is terminal1: only three
+unrelated umbrella misses (KuznetsovCuspFormPairing,
+VerticalProgressionCutoffSums, VerticalProgressionLatticeSums). All own
+terminal source scans are clean. Boundary production checkpoint remains
+32/627; no owned boundary process is live.
+
+Hard gaps now: graded surplus-coefficient transport, actual-tail transfer,
+full compensated interior VALUE, full source quadratic, fourth Schur gap,
+join/all-rank closure, RH. No full-value or RH claim.
+
+Native-source production completion:112 and113 direct production audits
+passed without warnings; all12 new leaves (15 total terminal leaves) are
+now production-audited. Imported50-capstone axiom audit is terminal0; every
+set is exactly standard3. All24 superseded owned scratch sources/caches
+from101,103..113 were removed; logs retained. Source114 quadratic-remainder
+identity is now under scratch audit, session40134 pending (consult live
+tool handle if changed). No second owned Lean.
+
+Further frontier closure:114 exact principal quadratic remainder passed
+scratch4 without warnings, all five capstones subsets of standard3.102
+original-coordinate polynomial flat transfer passed scratch2 without
+warnings, capstone standard3. Thus EVERY square-source polynomial differs
+from its evaluation at(9,k,1/3) by an all-order-flat function in k; k itself
+need not be bounded. Production QuadraticPrincipal and FlatTransfer are
+staged/wired, direct audits pending. Their scratch sources/caches stay
+until production audit. Draft115 TerminalSquareIncidence now audits the
+exact native-to-reduced /3 normalization and full source regularization.
+ActualQ6 sign still needs graded quadratic coefficient transport, not a
+new asymptotic source-flatness premise. Full compensated interior sign,
+source quadratic, fourth gap/allrank/RH remain OPEN.
+
+Audit scheduling correction: SquareIncidence production was launched
+before the FlatTransfer tool handle returned terminal confirmation. An
+immediate owned-process inspection found only SquareIncidence still
+running; FlatTransfer then returned terminal0. No second process remains.
+Subsequent launches must be programmatically gated on terminal exit0,
+not placed after an unchecked poll in the same tool script.
+
+## Terminal source checkpoint: all18 production leaves closed
+
+All18 terminal leaves and original11 plus new59 imported capstones passed.
+Last9 audit `/tmp/tt_terminal_quadratic_flat_axioms.log` terminal0, every
+axiom set subset of propext/Classical.choice/Quot.sound. Superseded102,114,115
+scratch sources and exact root caches removed; logs retained. No live owned
+Lean. Native source degree, quadratic principal remainder, original flat
+transfer and square normalization are closed. Actual Q6 sign remains open.
+
+Next conjecture: the complete scalar slope regularization lifts to a finite
+polynomial family in T and h. Evaluation in T commutes with coefficient
+reflection and divX. Thus the entire source, before any coefficient is
+discarded, specializes at h=0 to221184*12^18*(T+1)^2*T^15 (Y=1).
+Transport this polynomial family through T=W-1-h and the quadratic relation
+W²=(h-4h²)/3+(7h-1)W/3-e. Coefficient base change at h=0 gives the audited
+principal remainder, then e6 extraction gives the actual graded coefficient
+identity. This directly attacks the missing exact source/coefficient link;
+full compensated interior value remains the next sign gap.
+
+## Complete graded family: first two production leaves
+
+TerminalGradedFamily (116) and TerminalQuadraticChange (117) passed direct
+production audits, warning-free; wired RHTower.20 terminal leaves now.
+116 capstones standard3;117 map laws propext/Quot.sound. New118 generalized
+nested evaluation and full graded quadratic image both checked standard3
+on pass2; scalar projection normalization still needed repair. No mathematical
+truncation or discriminant division.119 exact unscaled polynomial-source
+bridge and120 generic quadratic generator rescaling are drafted, uncompiled.
+Deep searches1252416/1252564 were partial, complete file inventories but
+mostly pending compiler records; candidate/source/ingredient sections inspected.
+No applicable complete graded source transport theorem retrieved. Current
+build handle must be polled to terminal before next owned Lean launch.
+
+118 TerminalGradedRemainder passed scratch3 and production warning-free:
+complete reduced graded normal form specializes at h0 to the exact positive
+principal polynomial, so its sixth coefficient is negative. All four scratch
+capstones standard3.119 complete unscaled polynomial-source identity passed
+scratch2; production warning-free after splitting one tactic sequence and
+qualifying ThetaRatioSquare.reducedSlope explicitly. autoImplicit is disabled
+in119 to guard the concrete source statement.22 terminal production leaves.
+A first119 draft accidentally generalized an unresolved bare reducedSlope
+identifier; its attempted proof failed against the actual source. Namespace
+qualification fixed it; no such generalized statement was accepted as closure.
+Current120 generic quadratic generator rescaling audit is pending;121–123
+lossless specialization/scaling/all-coefficient transport drafts uncompiled.
+Combined imported audit /tmp/tt_terminal_graded_production_axioms.lean staged
+for the first four new leaves; add subsequent completed leaves before audit.
+
+## Complete coefficient transport CLOSED (flat terminal source)
+
+Production120/121/122/123 all passed warning-free, in order after terminal
+confirmation.26 terminal leaves production-audited/wired. No raised limits.
+123 proves the ENTIRE graded identity G_z(h,e)=h22*Q_k,z(e/h²) for
+k=(1/h-1)/3 and h!=0, then every coefficient identity, in particular
+[e6]G=h10*Q6. All three123 capstones standard3. This closes the unscaled
+graded coefficient incidence gap, without the older degree17 draft chain.
+
+Search1252911 partial (66738 files inventoried, mostly pending compiler
+metadata) found actual mathlib Polynomial.Bivariate.swap and
+Bivariate.aveal_eq_map_swap. Source read; reuse it to make coefficient6
+a polynomial in h. Draft124 slices this polynomial and proves eventual
+negative flat Q6 by continuity. It is now auditing; consult live handle.
+Draft125 universal reduction over Poly[E] makes EVERY surplus coefficient
+a fixed source polynomial and proves specialization to the complete
+reduced source (allv,k,z), with flatv9 identity. It is uncompiled.
+After124/125, apply actual_terminal_polynomial_flat to that exact source
+coefficient to finish the actual Q6 obstruction. Actual sign still not
+claimed; full compensated interior value/RH remain OPEN.
+Combined imported audit staged for26 production leaves (33 new capstones
+in /tmp/tt_terminal_graded_production_axioms.lean); run before cleanup.
+
+
+### 2026-10-06 — Actual absorbed sixth-coefficient obstruction audited
+
+Route TT: full compensated interior source value remains the hard target,
+then full source quadratic, fourth Schur gap, join/all-rank and RH.
+New source126 passed scratch2 and renamed production audit, warning-free:
+ThetaCuspRatioTerminalActualCoefficient. Universal coefficient specialization
+from production125 identifies ordinary Q6 as one fixed original-source
+polynomial. Complete graded transport and all-order original-coordinate
+flatness prove
+  (3*k(x)+1)^(-10)*Q6(actual(x)) -> -(8192/3)*189994*12^18.
+Hence actual Q6 has negative real part eventually. The same holds after
+Absorb(P,M)=P-P8*E8+P8*M*E7 for EVERY complex M. No polynomial over the
+reals with every coefficient nonnegative represents that absorbed source
+for all sufficiently large x. Six scratch capstones use only standard3.
+Twenty-nine terminal production leaves now audited/wired. Combined imported
+batch audit and owned scratch cleanup remain pending.
+
+The stronger positive survivor127 is being audited: the SAME absorbed
+principal polynomial is positive on0<e<=1/36 by an exact mixed surplus/
+deficit decomposition. Pass1 verified the algebraic split, graded identity,
+sixth coefficient and mass incidence, but generic positivity automation
+hit default heartbeats. Explicit ordered-ring inequalities replace that
+search; no limit was raised. Do not count dependent pass1 declarations as
+verified: the failed positivity dependency appeared as an extra axiom.
+Pass2 is the only live Lean process (session13542 at this checkpoint).
+No-go retirement awaits the successful positive survivor and imported audit.
+
+Current corpus searches: complete_absorbed_value partial gen1253589,
+66754-file inventory but mostly pending compiler metadata; unrelated cone
+receivers do not prove this source sign. Rephrased surplus_deficit_source
+completed nonpartial gen1253598, same complete inventory, background refresh
+incomplete. All candidate/source/idea/ingredient sections inspected. It
+recovers our exact source transport and existing polynomial field, not a
+full-value sign. No generic criterion counted as frontier progress.
+
+### 2026-10-06 — No-go closed with positive survivor; full-value attack
+
+Thirty terminal production leaves and the combined52 imported capstones
+passed, all axiom sets subsets of standard3, no warnings. Owned116..127
+scratch sources/caches cleaned; all logs retained. The ordinary absorbed
+coefficient proposal is retired in P5:tt-ordinary-absorbed-surplus-coefficients.
+The positive survivor is the SAME absorbed principal source on its entire
+admissible interval, linked to the complete graded fiber and exact mass.
+An additional full finite-clock absorption transport identity is auditing
+in128; no full interior sign is inferred from that identity.
+
+The new obstruction changes the proof task: demanding Q6>=0 is mathematically
+wrong, so complete physical value must be kept intact. The already-recorded
+combined bracket is still the direct candidate, with P(z) the entire source:
+  P(z)-P(z0)=(z0-z)*[-B-(z+z0-b)*Q(z)],
+  P(z)=A+B*z+(z²-a-b*z)*Q(z), z0²=a+b*z0.
+No sign is assumed separately for A+B*z or for ordinary surplus coefficients.
+
+Next hard test, weaker than global kinetic antitonicity: at any interior
+zero of the COMPLETE reduced source, its kinetic derivative is strictly
+negative. At fixed v,k, E>0 places z below the selected positive boundary
+root z0; F increases with z, so the segment [z,z0] keeps positive speed.
+If a nonpositive source value existed below the positive boundary value,
+its last zero before z0 would have nonnegative right derivative, contradicting
+this proposed negative-derivative law. The actual algebraic open problem is
+therefore the sign of pderiv J reducedSlope ON its zero locus in the full
+nonlinear cone. This is a conjecture, not a theorem or accepted premise;
+do not formalize only its generic first/last-zero receiver as progress.
+Attack using the literal full determinant/source field and retained source
+constraints; if it fails, extract the actual crossing/critical-point structure.
+C70 forward-flow trapping differs: this derivative is in the kinetic
+coordinate at fixed v,k, not the dynamical source Lie derivative.
+
+Fresh full_value_transverse_derivative search gen1253829 is partial with
+coverage pending and incomplete background refresh. Relevant returned
+source identities are reducedSlope_seam_value, reducedSlope_seam_eq and
+integerSlope_partial_eq, all already in the corpus; no global kinetic
+or zero-locus sign was returned. Other slope-name collisions are unrelated.
+All sections inspected. The search/reduction alone is not frontier progress;
+this turn's progress is the audited actual coefficient obstruction and
+nontrivial positive absorbed survivor. Full VALUE and RH remain OPEN.
+
+Zero-locus target stated precisely: for real v,k,z, put
+  p(z)=Re(reducedSlope(v,k,z)),
+  m=k*(6k-7)*(9-v)/72,
+  E(z)=k-1-m+(6-3k)*z-9z².
+Conjecture: StrictCoarseCone(v,k,z), E(z)>0 and p(z)=0 force
+  Re((pderiv J reducedSlope)(v,k,z))<0.
+No complex-zero assumption should replace p(z)=0 without a reality proof.
+
+Coverage for this proposed test requires no new chosen-root premise:
+E(1/3)=-m<0, so IVT supplies z<z0<1/3 with E(z0)=0.
+For y=(1-u)*z+u*z0, 0<=u<1,
+  E(y)=(1-u)*E(z)+9*u*(1-u)*(z0-z)²>0.
+The speed F is affine increasing in z because v>0,k>5/4, so F(y)>0.
+All other cone inequalities are unchanged. Thus every last zero before
+z0 stays in the exact physical nonlinear domain. Complete boundary sign
+then supplies p(z0)>0; the last-zero right derivative is nonnegative.
+This proves the PAPER reduction only, not the displayed hard derivative
+sign. The 627-leaf C77 scratch proof supplies boundary sign, while its
+renamed production audit still has32/627 completed. Do not hide that audit
+obligation or adopt the new zero-locus sign as a source hypothesis.
+
+
+Final audited checkpoint2026-10-06: TerminalAbsorbedTransport passed its
+warning-free production audit and all4 imported type/axiom capstones,
+standard3. It proves the full finite-clock absorbed source identity with
+exact mass, not merely its principal coefficient. All31 terminal leaves
+are production-audited/wired; latest52+4 imported capstones passed.
+Owned128 scratch source/cache cleaned; no owned Lean/search process live.
+No full/umbrella build, subagent, added premise/axiom or raised limit.
+Latest lint tt_terminal_absorbed_transport_lint.log exits1 only four unrelated
+umbrella omissions: KuznetsovEisensteinGrowth, Sieve.TwistedSelbergCoefficient,
+Sieve.TwistedSelbergFactorization, HTGeometry.ResetPathSingularity, plus size
+warnings. Scoped forbidden/raised-limit and whitespace scans clean.
+
+Goal ACTIVE; RH neither proved nor refuted. Next mathematical work is the
+complete finite-clock value sign (combined bracket or exact zero-locus
+kinetic derivative above), not more coefficient/head limits. Boundary
+production reaudits remain32/627, checkpoint unchanged; no live process.
+
+### 2026-10-06 — C79 complete kinetic-contraction attack
+
+Previous turn classified PROGRESS: actual absorbed-coefficient obstruction,
+positive SAME-absorption survivor, and full source transport audited.
+Current hard target remains full finite-clock VALUE. Direct zero-locus
+search kinetic_zero_locus gen1254019 partial/coveragepending supplies no
+source sign; source arguments/candidates inspected. Current corpus integer
+and square fields/moments, boundary parametrization and terminal Cauchy
+source inspected directly. No recalled literature or numerical experiment.
+
+New source-based paper finding: at terminal U3 and bounded native J, the
+complete determinant Y18 coefficient is -4608*12^18*(J-1)*(J+3), retaining
+the exceptional central sixth-moment contribution. The native slope Y20
+coefficient is221184*12^18*(1-J²). Kinetic contraction J=e therefore has
+positive shape1-e². In the full defect chart v=9-r*h², the leading field
+D0=-108r*d_r+36*(3z-1)*d_z kills r*(3z-1). This retains, rather than drops,
+the possible defect contribution to the leading determinant. Exact paper
+mechanism and new FULL contraction certificate are on
+P1:tt-kinetic-contraction-source.md. Its global sign is OPEN.
+
+Construct the entire h20 source as h4 times the known boundary core plus
+(1-e) times a complete polynomial C(h,s,e), then attack C's sign on the
+covered finite-clock domain. Strong box positivity is explicitly a new
+sufficient conjecture, not assumed physical coverage. Negative ordinary
+coefficients are permitted; mixed/Bernstein basis retains cancellations.
+No generic first/last-zero receiver will be counted as frontier closure.
+
+First source audit /tmp/TTC79KineticClockMoment2.lean retains both literal
+moment2 parts and original Lie derivatives in inverse-clock coordinates.
+Clock-field incidence and complete moment2 values passed scratch3; the full
+flow proof hit default simp recursion in ring normalization. Scratch4 failed: unreduced Coord constructor equalities remained inside derivatives.
+Scratch5 passed after explicit constructor disequalities, with ordinary ring and
+default limits. All four audited capstones use standard axioms only. Production
+Moment2 audit is next. No new C79 source sign claimed yet. The source normalization is necessary
+construction toward the global certificate, not itself the missing sign.
+
+### 2026-10-06 — C79 exact whole-source contraction closed
+
+All15 new production leaves audited warning-free and wired. Imported174
+production theorems use only standard axioms. The complete original-source
+identity h20*R(V,1/h,eZ0)=h4*D+(1-e)*C is now proved, including the drift
+seam. Exact h³ determinant/h⁴ slope factors come from the literal rank-one
+moment coefficients and full defect-field conjugacy, not a truncation.
+P3:tt-complete-kinetic-contraction.md records the dependency-closed proof.
+
+Progress: the proposed full certificate now exists with audited original
+source incidence. NO global inequality closed this turn. The remaining
+hard question is C's full finite-clock VALUE sign. Next attack retains all
+kinetic components in a mixed Bernstein basis; no further tail-only
+certificate will substitute for that sign. The full source quadratic,
+fourth gap, join/all rank and RH remain open. Corpus searches Bernstein
+gen1255234 and source coefficients gen1255285 nonpartial, all relevant
+sections inspected; they provide algebraic tools but no missing sign.
+
+Latest lint /tmp/tt_c79_lint.log exits1 from11 unrelated umbrella omissions;
+C79 scope is clean. No owned build/search process remains at this checkpoint.

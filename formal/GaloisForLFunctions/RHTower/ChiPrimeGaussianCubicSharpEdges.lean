@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.ChiCubicControlledCutoff
 import GaloisForLFunctions.RHTower.Sieve.KuzminLandauInterval
 import GaloisForLFunctions.RHTower.Sieve.AlmostOrthogonality
 import GaloisForLFunctions.RHTower.Sieve.SeparatedRowSum
@@ -939,36 +940,15 @@ def primeGaussianCubicSmoothedOffDiagonal (N:ℝ) (η:ℝ→ℝ) : ℂ :=
     (η p:ℂ)*(η q:ℂ)*(η r:ℂ)*
       (if p=r ∨ q=r then 0 else primeGaussianCubicMainEntry N p q r)
 
-/-- Smoothly removing growing boundary strips has a bilinear, rather than
-termwise, cost in the actual complete noncontracting Gaussian cubic. -/
-theorem exists_primeGaussianCubic_smooth_band_comparison :
-    ∃ C:ℝ, 0<C ∧ ∀ N:ℕ, 1≤N → ∀ H:ℝ, 0<H → H<(N:ℝ)/2 →
-      ∃ η:ℝ→ℝ, ContDiff ℝ ∞ η ∧ HasCompactSupport η ∧
-        (∀ x:ℝ,η x∈Icc (0:ℝ) 1) ∧
-        (∀ x:ℝ,x∉Ioo (N:ℝ) (2*N) → η x=0) ∧
-        (∀ x∈Icc ((N:ℝ)+H) (2*N-H),η x=1) ∧
-        ‖primeGaussianCubicOffDiagonal (N:ℝ)-primeGaussianCubicSmoothedOffDiagonal N η‖^2 ≤
-          C*(H+1)^2*N*(1+Real.log ((N+1:ℕ):ℝ)) := by
+private theorem edge_band_cutoff_comparison :
+    ∃ C:ℝ, 0<C ∧ ∀ N:ℕ, 1≤N → ∀ H:ℝ, 0<H → ∀ η:ℝ→ℝ,
+      (∀ x:ℝ,η x∈Icc (0:ℝ) 1) →
+      (∀ x∈Icc ((N:ℝ)+H) (2*N-H),η x=1) →
+      ‖primeGaussianCubicOffDiagonal (N:ℝ)-primeGaussianCubicSmoothedOffDiagonal N η‖^2 ≤
+        C*(H+1)^2*N*(1+Real.log ((N+1:ℕ):ℝ)) := by
   obtain ⟨C,hC,hcompare⟩ := edge_cutoff_comparison
   refine ⟨4*C,by positivity,?_⟩
-  intro N hN H hH hHN
-  let η : ContDiffBump (3*(N:ℝ)/2) :=
-    ⟨(N:ℝ)/2-H,(N:ℝ)/2,by linarith only [hHN],by linarith only [hH]⟩
-  have hη : ∀ x:ℝ,η x∈Icc (0:ℝ) 1 := fun _ => ⟨η.nonneg,η.le_one⟩
-  have hzero (x:ℝ) (hx:x∉Ioo (N:ℝ) (2*N)) : η x=0 := by
-    apply η.zero_of_le_dist
-    rw [Real.dist_eq,abs_sub_comm]
-    change (N:ℝ)/2 ≤ |3*(N:ℝ)/2-x|
-    simp only [Set.mem_Ioo,not_and_or,not_lt] at hx
-    rcases hx with hlo | hhi
-    · exact (by linarith only [hlo] : (N:ℝ)/2≤3*(N:ℝ)/2-x).trans (le_abs_self _)
-    · exact (by linarith only [hhi] : (N:ℝ)/2≤-(3*(N:ℝ)/2-x)).trans (neg_le_abs _)
-  have hone (x:ℝ) (hx:x∈Icc ((N:ℝ)+H) (2*N-H)) : η x=1 := by
-    apply η.one_of_mem_closedBall
-    rw [Metric.mem_closedBall,Real.dist_eq]
-    change |x-3*(N:ℝ)/2|≤(N:ℝ)/2-H
-    exact abs_le.mpr ⟨by linarith only [hx.1],by linarith only [hx.2]⟩
-  refine ⟨η,η.contDiff,η.hasCompactSupport,hη,hzero,hone,?_⟩
+  intro N hN H hH η hη hone
   let M := ⌈H⌉₊
   let E := Finset.Ioc N (N+M) ∪ Finset.Ioc (2*N-M) (2*N)
   have hM : H≤(M:ℝ) := Nat.le_ceil H
@@ -996,6 +976,38 @@ theorem exists_primeGaussianCubic_smooth_band_comparison :
   calc
     _ ≤ C*(2*(H+1))^2*N*(1+Real.log ((N+1:ℕ):ℝ)) := by gcongr
     _ = _ := by ring
+
+/-- Smoothly removing growing boundary strips has a bilinear, rather than
+termwise, cost in the actual complete noncontracting Gaussian cubic. -/
+theorem exists_primeGaussianCubic_smooth_band_comparison :
+    ∃ C:ℝ, 0<C ∧ ∀ N:ℕ, 1≤N → ∀ H:ℝ, 0<H → H<(N:ℝ)/2 →
+      ∃ η:ℝ→ℝ, ContDiff ℝ ∞ η ∧ HasCompactSupport η ∧
+        (∀ x:ℝ,η x∈Icc (0:ℝ) 1) ∧
+        (∀ x:ℝ,x∉Ioo (N:ℝ) (2*N) → η x=0) ∧
+        (∀ x∈Icc ((N:ℝ)+H) (2*N-H),η x=1) ∧
+        ‖primeGaussianCubicOffDiagonal (N:ℝ)-primeGaussianCubicSmoothedOffDiagonal N η‖^2 ≤
+          C*(H+1)^2*N*(1+Real.log ((N+1:ℕ):ℝ)) := by
+  obtain ⟨C,hC,hcompare⟩ := edge_band_cutoff_comparison
+  refine ⟨C,hC,?_⟩
+  intro N hN H hH hHN
+  let η : ContDiffBump (3*(N:ℝ)/2) :=
+    ⟨(N:ℝ)/2-H,(N:ℝ)/2,by linarith only [hHN],by linarith only [hH]⟩
+  have hη : ∀ x:ℝ,η x∈Icc (0:ℝ) 1 := fun _ => ⟨η.nonneg,η.le_one⟩
+  have hzero (x:ℝ) (hx:x∉Ioo (N:ℝ) (2*N)) : η x=0 := by
+    apply η.zero_of_le_dist
+    rw [Real.dist_eq,abs_sub_comm]
+    change (N:ℝ)/2 ≤ |3*(N:ℝ)/2-x|
+    simp only [Set.mem_Ioo,not_and_or,not_lt] at hx
+    rcases hx with hlo | hhi
+    · exact (by linarith only [hlo] : (N:ℝ)/2≤3*(N:ℝ)/2-x).trans (le_abs_self _)
+    · exact (by linarith only [hhi] : (N:ℝ)/2≤-(3*(N:ℝ)/2-x)).trans (neg_le_abs _)
+  have hone (x:ℝ) (hx:x∈Icc ((N:ℝ)+H) (2*N-H)) : η x=1 := by
+    apply η.one_of_mem_closedBall
+    rw [Metric.mem_closedBall,Real.dist_eq]
+    change |x-3*(N:ℝ)/2|≤(N:ℝ)/2-H
+    exact abs_le.mpr ⟨by linarith only [hx.1],by linarith only [hx.2]⟩
+  refine ⟨η,η.contDiff,η.hasCompactSupport,hη,hzero,hone,?_⟩
+  exact hcompare N hN H hH η hη hone
 
 private theorem edge_quarter_small :
     ∀ᶠ N:ℕ in atTop, 1≤N ∧ (N:ℝ)^((1:ℝ)/4)<(N:ℝ)/2 := by
@@ -1093,6 +1105,58 @@ theorem exists_primeGaussianCubic_smooth_band_negligible_error :
     have hn : ∀ᶠ N:ℕ in atTop,(2:ℝ)≤N := tendsto_natCast_atTop_atTop.eventually_ge_atTop 2
     filter_upwards [edge_quarter_small,hl,hn] with N hN hlog hlarge
     have hb := (hη N hN).2.2.2.2.2
+    have hm := mul_le_mul_of_nonneg_left hb (sq_nonneg ((Real.log (N:ℝ))^2/(N:ℝ)))
+    dsimp only [e]
+    rw [mul_pow]
+    exact hm.trans (edge_quarter_majorant hC hlarge hlog)
+  have hsq : Tendsto (fun N => (e N)^2) atTop (𝓝 0) :=
+    squeeze_zero' (Filter.Eventually.of_forall (fun N => sq_nonneg (e N))) hdom
+      (by simpa only [mul_zero] using edge_log_power_limit.const_mul (12*C))
+  have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsq
+  simp only [Real.sqrt_zero] at hsqrt
+  have heq : (fun N => Real.sqrt ((e N)^2))=e := by
+    funext N
+    exact Real.sqrt_sq (he0 N)
+  change Tendsto (fun N => Real.sqrt ((e N)^2)) atTop (𝓝 0) at hsqrt
+  rw [heq] at hsqrt
+  exact hsqrt
+
+private theorem controlled_cutoff_comparison :
+    ∃ C:ℝ, 0<C ∧ ∀ N:ℕ, 1≤N → ∀ H:ℝ, 0<H → H<(N:ℝ)/2 →
+      ‖primeGaussianCubicOffDiagonal (N:ℝ)-primeGaussianCubicSmoothedOffDiagonal N
+        (BAGTrace.bagCubicControlledBandCutoff (N:ℝ) H)‖^2 ≤
+          C*(H+1)^2*N*(1+Real.log ((N+1:ℕ):ℝ)) := by
+  obtain ⟨C,hC,hcompare⟩ := edge_band_cutoff_comparison
+  refine ⟨C,hC,?_⟩
+  intro N hN H hH hHN
+  have hN0 : (0:ℝ)<N := by exact_mod_cast (by omega : 0<N)
+  let η := BAGTrace.bagCubicControlledBandCutoff (N:ℝ) H
+  obtain ⟨_,_,hη,_,hone⟩ := BAGTrace.bagCubicControlledBandCutoff_properties
+    ⟨N,hN0⟩ ⟨H,hH,hHN⟩
+  exact hcompare N hN H hH η hη hone
+
+/-- The explicitly controlled shrinking cutoff retains the original sharp/smooth
+error at the physical scale. Its normalized relative edges have uniform first
+variation and every higher derivative budget from ChiCubicControlledCutoff. -/
+theorem primeGaussianCubic_controlled_cutoff_negligible_error :
+    Tendsto (fun N:ℕ => (Real.log (N:ℝ))^2/(N:ℝ)*
+      ‖primeGaussianCubicOffDiagonal (N:ℝ)-primeGaussianCubicSmoothedOffDiagonal N
+        (BAGTrace.bagCubicControlledBandCutoff (N:ℝ) ((N:ℝ)^((1:ℝ)/4)))‖)
+      atTop (𝓝 0) := by
+  obtain ⟨C,hC,hcompare⟩ := controlled_cutoff_comparison
+  let η := fun N:ℕ => BAGTrace.bagCubicControlledBandCutoff (N:ℝ) ((N:ℝ)^((1:ℝ)/4))
+  let e : ℕ→ℝ := fun N => (Real.log (N:ℝ))^2/(N:ℝ)*
+    ‖primeGaussianCubicOffDiagonal (N:ℝ)-primeGaussianCubicSmoothedOffDiagonal N (η N)‖
+  have he0 (N:ℕ) : 0≤e N := by dsimp [e]; positivity
+  have hdom : ∀ᶠ N:ℕ in atTop,
+      (e N)^2 ≤ 12*C*((Real.log (N:ℝ))^5/(N:ℝ)^((1:ℝ)/2)) := by
+    have hl : ∀ᶠ N:ℕ in atTop,1≤Real.log (N:ℝ) :=
+      (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop 1
+    have hn : ∀ᶠ N:ℕ in atTop,(2:ℝ)≤N := tendsto_natCast_atTop_atTop.eventually_ge_atTop 2
+    filter_upwards [edge_quarter_small,hl,hn] with N hN hlog hlarge
+    have hN0 : (0:ℝ)<N := by exact_mod_cast (by have := hN.1; omega : 0<N)
+    have hb := hcompare N hN.1 ((N:ℝ)^((1:ℝ)/4))
+      (Real.rpow_pos_of_pos hN0 _) hN.2
     have hm := mul_le_mul_of_nonneg_left hb (sq_nonneg ((Real.log (N:ℝ))^2/(N:ℝ)))
     dsimp only [e]
     rw [mul_pow]

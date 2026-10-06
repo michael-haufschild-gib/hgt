@@ -7870,3 +7870,281 @@ P2/P3/frontier current. Raw envelope still needs test decay.
 New U4 nearest-axis partition removes separate joint-box/compact-uniform
 steps for fixed tests; P1 bag-signed-source-sector-transfer contains full
 paper mechanism. Actual moving physical profile/tails still hard open.
+
+01ax U4 CLOSED: original complete source signed full-plane integral
+divided by logN tends to zero for EVERY fixed Schwartz test and positive
+rho_i. Exact source symmetry, nearest-axis partition, order58 majorant,
+rescaling/Fubini, mixed-source limit, DCT and vertical-profile cancellation
+all formalized. ChiRamanujanSignedSourceTransfer520lines/API1, public
+criticalCompletedConeEuler_schwartz_integral_tendsto. Scratch30915PASS;
+production50199emptyPASS; finalaxiom85157standard3; index8884PASS;
+umbrellaonce, no umbrella build. Lint39568terminal1: three unrelated
+HTGeometry unreachable modules, no owned error. P2/P3/frontier updated.
+Actual moving physical profile still open; next central mechanism is
+uniform curved-frequency energy on an entire strip, followed by exact
+physical multiplier and selected cutoff derivative budgets. RH open.
+
+01ax U5 curved-stripenergy CLOSED: ChiCubicCurvedFrequencyEnergy/API1;
+production4476emptyPASS,axiom91780standard3,index18632PASS,umbrellaonce.
+Lint1720sixunrelatedunreachable174warnings,noownederror. Entirestrip/allcurvature,
+0<=s<3/2. Nextselectedphysicalcutoff transition-support L1 bounds, P1/P2/P3.
+
+01ax CLOSED: selected relative cutoff plus ALL positive derivative L1 budgets
+and physical band properties; its ORIGINAL sharp/smooth error*log²N/N->0
+now attached to that same explicit family. ChiCubicControlledCutoff151lines/API5;
+ChiPrimeGaussianCubicSharpEdges adds selected error theorem and shared
+private band comparison, preserving and reauditing prior public results.
+Production40228/38864emptyPASS; finalcombinedaxiom7869 all6standard3;
+index61984PASS/APIrows/importonce; lint62496terminal1 threeunrelated
+unreachable(ZetaSquareStirlingAFE,ZetaSquareStirlingCarrier,UnframedPromoterNoGo),
+362warnings,noownederror. P2/P3/frontier updated. No resource-limit override.
+Active next scratch /tmp/bag-reciprocal-fourier-01ax.lean: generic exact
+reciprocal Fourier step. Actual height interchange/amplitude regularity,
+full moving-profile energy and subsequent arithmetic/RH still open.
+
+01ax reciprocal Fourier CLOSED: ChiCubicReciprocalFourier563lines/API2.
+Actual selected cone profile, complete Gaussian/log slices, height window,
+conjugate, reciprocalr^-2 and coupled phase retained. Fixed-height inversion
+plus full3D Schwartz marginal pays every height/Fourier interchange.
+Scratch56722PASS; production13249emptyPASS; axiom77734bothstandard3;
+index67027PASS/API2/importonce; lint81297sevenunrelatedunreachable362warnings.
+P2/P3/frontier updated. Next actual amplitude all-order derivative budgets;
+compact parameter h=1/logN, core V(P)/(1+hlogP), selected edges unchanged.
+Current scratch39470 running. Uniform moving-profile H^s and RH remain open.
+
+01ax actual Gaussian/log derivative budgets CLOSED.
+ChiCubicPhysicalAmplitudeBudgets284lines/API5. Every derivative integrable,
+L1<=C_n/delta^(n-1), uniform compact logarithmic parameterh; mass and first
+variation uniform. Exact equality attaches ORIGINAL physical slice and
+all admissibleN>=exp1,H. No amplitude budget assumed. Scratch7804PASS;
+production70720emptyPASS; axiom83857all5standard3; index8173PASS/API5/importonce.
+Lint19711terminal1: KuznetsovKernelIntegral andThetaCuspRatioTerminalAmplitudeReverse
+unreachable,362warnings,noownederror. P2/P3/frontier updated.
+Current normalized Fourier scratch49555: exactN³Jacobian/log³N normalization.
+New paper regularizedIBP denominators avoid singular axes; fixed10Q/2P
+derivatives pay high frequencies. P1 bag-actual-reciprocal-kernel-energy.
+No full energy/physical saving/RH claim.
+
+Exact normalization CLOSED01ax: ChiCubicNormalizedFourier78lines/API1,
+bagCubicControlledCone_normalized_fourier. For everyN>1 and admissibleH,
+(logN)^3/N times the ACTUAL cone Fourier transform is exactly
+ 2pi integral_RQP F(P)F(Q)conj(F(R))*W(PQ/R)/R²
+                *exp(-2pi*i*(Pb+Qa+ab/N)/R),
+F=bagCubicNormalizedSlice(H/N,1/logN). Three explicit positive-dilation
+changes of variable supplyN³; exact slice identities and total-field
+algebra, includingR=0, pay all normalization/Jacobian factors.
+Scratch49555PASS (two redundanttactics removed); production15138emptyPASS;
+axiom95238standard3; index35848PASS/API1/importonce. Lint28068terminal1:
+two unrelated unreachable(KuznetsovKernelIntegral,KuznetsovPoincareRows),
+362warnings,noownederror. Diff checkPASS. No full/umbrella build.
+The actual coupled energy estimate remains open; normalized identity
+supplies its literal target. Scratch /tmp/bag-reciprocal-ibp-01ax.lean
+now tests exact height resolvent and norm control; no further claim yet.
+
+01ax actual reciprocal height decay CLOSED: production9533emptyPASS,
+axiom44627all3standard3,index96838PASS/API3/importonce. Lint89133fiveunrelated
+unreachable362warnings,noownederror. P2/P3 bag-actual-reciprocal-height-decay
+record exact uniform all-jet actual theorem and proof. Tangential attachment,
+full kernelenergy and RH remain open. Current single Lean scratch68100:
+/tmp/bag-tangential-resolvent-01ax.lean, native single-fibre linear resolvent.
+
+01ax actual coupled kernel decay CLOSED: ChiCubicCoupledKernelDecay723lines/API3.
+One uniformC bounds the full actual reciprocalkernel by the integral of
+w(P)w(Q)/((1+|a|)(1+|b|)(1+|Pb+Qa+c|)), allδ,hstructural and ALLreala,b,c.
+Exact1+partialP/Q resolvents generate three heightjets; compact fullcube
+admission pays allFubini swaps, includingR=0 bysupport. Actual heightdecay
+plus coefficient bounds pays the coupledmajorant. Exact originalFourier
+attachment retains2pi and nativecurvature1/(2piN), not1/N in nativevariables.
+Production44357emptyPASS; axiom97812all3standard3; index18086PASS/API3/importonce.
+Lint78177sixunrelatedunreachable362warnings,noownederror; scoped diffcheckPASS.
+P2/P3 bag-actual-coupled-kernel-decay. Uniformactual stripenergy now in
+scratch13277 /tmp/bag-coupled-strip-energy-01ax.lean, using existingreal
+weightedCS and U5. Fullglobalenergy/Mellintails/movingtransfer and RH remainopen.
+
+01ax ACTUAL uniform coupled stripenergy CLOSED:
+ChiCubicCoupledStripEnergy284lines/API1,
+bagCubicReciprocalKernel_uniform_strip_energy. All0<=s<3/2, ALLrealλ,
+allstructuralδ,h; fullactual reciprocal Fourierkernel weightedL2strip
+integral admitted anduniformlybounded. Kernelmeasurability fromliteral
+integrand, actualcompactdensitymass, existingrealweightedCS andjoint
+admission/Fubini via U5 close this. No assumedenergy/variation bound.
+Production64537emptyPASS; axiom74320standard3; index55017PASS/API1/importonce;
+lint69952eightunrelatedunreachable362warnings,noownederror; diffcheckPASS.
+P2/P3 bag-actual-coupled-strip-energy. CurrentoneownedLean92740 tests
+/tmp/bag-high-frequency-decay-01ax.lean: actualwindow-attachedallorder
+L1budgets andnativephase decay. Highfrequency/globalenergy, log/Mellintails,
+movingarithmetictransfer, fullsharpaction/growingmoments/commonheight
+remainhardopen. RH remainsopen.
+
+01ax actual ALLORDER kernel frequencydecay CLOSED:
+ChiCubicKernelFrequencyDecay315lines/API1,
+bagCubicReciprocalKernel_frequency_decay. Everypositivenaturaln has oneCn
+uniformallδ,hstructural andALLrealabc:
+max(|a|,|b|)^n*normK<=Cn/δ^(n-1). ActualF*W(kx) allorderL1budget,
+nativecorpusrepeatedIBP, remainingQ/Ractualmass andexactP/Qsymmetry closeit.
+Production55738PASS (oneinformationalring suggestion, noerrors/warnings),
+axiom14295standard3,index91438PASS/API1/importonce;lint6955twelveunrelated
+unreachable362warnings,noownederror;scoped diffcheckPASS.
+P2/P3 bag-actual-kernel-all-order-decay. CurrentoneownedLean93859:
+/tmp/bag-kernel-tail-energy-01ax.lean, completecandidate actualtailenergy
+integral<=Cs/δ^22*R^(2s-20) onmaxfreq>=R>=1. GlobalactualN-energy,
+compactconvergence/log/Mellintails/movingsignedtransfer remainhardopen.
+
+01ax selected GLOBAL actual energy: complete scratch73079emptyPASS;
+production13417emptyPASS, ChiCubicSelectedKernelEnergy248lines/API2.
+Every0<=s<3/2 andfixedtau>0: literal K_(N^-3/4,1/logN)(a,b,tau*ab/N)
+has eventually admitted uniformlybounded full-planeweightedenergy.
+Actualtail bound Cs/delta^22*R^(2s-20), exact selectedscale identity and
+closed-strip/complement decomposition pay allfrequencies. Index36595PASS,
+umbrellaonce; scoped diffcheckPASS. Lint64836terminal1:14 unrelated
+unreachable modules, no ownedleaf finding. Axiomprint currently42001.
+Active next /tmp/bag-selected-kernel-limit-01ax.lean (same42001): actual
+slice norm<=1 and pointwise limit; literal fixedcube dominant and Fubini;
+full selectedkernel -> explicit sharp-band zero-curvature kernel.
+P1 bag-selected-kernel-convergence records corpus search and paper proof.
+Strong lower-order energy convergence, physical log/Mellintails, arithmetic
+lowergrowth envelope/movingtransfer, fullsharpaction bridge and commonheight
+recurrence remain hard open. RH remains open.
+
+01ax GLOBAL actual energy closure: both axiomprints in42001 standard3;
+42001 exited1 only for subsequent convergence candidate elaboration errors.
+P2/P3 bag-selected-global-kernel-energy and BAG frontier row now record
+production/index/wiring/lint evidence. Global lint has14 unrelated reachability
+errors/362warnings, no ownedleaf finding. Finished energy scratch/templates
+removed; logs retained. Convergence retry63299 handles exact positivity,
+reciprocal limit API, explicit denominator coercions and cube admission.
+
+01ax STRONG actual selected-kernel convergence CLOSED:
+ChiCubicSelectedKernelConvergence479lines/API5. Literal family -> explicit
+sharp-band reciprocal kernel globally in weightedL2, every0<=s<3/2.
+Actual slice/cube domination/Fubini/DCT, intermediate-order Fatou admission,
+and R^(2s-2t) tails pay full convergence without assumed regularity.
+Scratch23076PASS; production6711emptyPASS; five axiomprints93079standard3
+(combined next physical scratch has separate errors). Index88424PASS/API5,
+umbrellaonce,diffcheckPASS. Lint94988terminal1: UnitClassInverseLBounds
+unreachable outside this work,362warnings,no owned finding. P2/P3 and BAG
+frontier updated. Finished convergence scratch/templates removed; logs retained.
+Next single owned Lean89579: /tmp/bag-normalized-physical-kernel-01ax.lean,
+exact normalized physical phase with prefactorN and reciprocal1/R. First
+candidate93079 exposed vector-coordinate reduction, a star/conjugation simp
+loop, and real-to-complex product coercion. Corrected without resource hacks.
+P1 bag-physical-nonstationary-log-tails records all hard next obligations.
+Uncompiled template /tmp/bag-physical-tail-budgets-01ax.txt gives the actual
+polynomial-window attached derivative-budget candidate. RH remains open.
+
+01ax exact NORMALIZED PHYSICAL phase CLOSED: ChiCubicNormalizedPhysical
+152lines/API2. Actual physical prefactor2pi*N, reciprocal1/R and phase
+2pi*N*(P-Ry)*(Q-Rx)/R, every original factor retained. Scratch74577PASS;
+production36893emptyPASS; both axiomprints28398standard3; index42693PASS,
+umbrellaonce; scoped diffcheckPASS. Lint74659terminal1: unrelated
+KuznetsovEisensteinGrowth and HTGeometry.ResetPathSingularity unreachable,
+362warnings,no ownedleaf finding. P2/P3 and BAG frontier updated.
+Current one owned Lean43397 /tmp/bag-physical-nonstationary-tails-01ax.lean:
+polynomial-window all-order budgets checked in11988; derivative-jet admission
+retry fixes absolute-value lexer collision, convert! for calculus instances,
+and eta-expanded integral rewriting. Full physical nonstationary bound is
+still open. Consumed exact-identity scratch removed; its logs retained.
+
+2026-10-06 01ax physical exterior jets CLOSED. ChiCubicPhysicalExteriorDecay
+830lines/API2: arbitrary fixed pure derivative/position weight/N-saving
+on positive exterior of[1/4,4]^2 for literal selectedfamily. Scratch90088
+log09PASS, production52566emptyPASS, bothaxiomprints58537standard3.
+Index93916PASS/importonce/diffcheckPASS. Lint41440terminal1: six unrelated
+unreachablemodules362warnings, noownedleaf finding (P2/P3 list exactnames).
+No assumed budgets or resource hacks. P2/P3 bag-physical-exterior-jets and
+BAG frontier updated. Finished tail templates/scratch removed; logs retained.
+Next hardtarget: actual localized fractional log-coordinate transfer,
+P1 bag-local-log-fractional-transfer. Current scratch
+/tmp/bag-directional-gagliardo-01ax.lean extends corpus scalar Gagliardo
+identity via translated Schwartz Plancherel and nonnegative Tonelli. First
+candidate58537 exposed scalar-zero character simp, abs rewrite loop,
+inner-space argument and Fourier-map elaboration gaps. Corrected; log02
+audit active, including full spectral admission. Not yet a closedtheorem.
+RH remains open; arithmetic moving source/fullsharpaction/selfreturn unpaid.
+
+2026-10-06 01ax directional fractional-energy bridge CLOSED.
+HTGeometry.DirectionalGagliardoFourier243lines/API1: exact full directional
+Gagliardo/Fourier identity, positive constant and admitted spectral integral
+for every Euclidean Schwartzfunction. Scratch24986/log03PASS, production
+42806emptyPASS, public axiomprint89019standard3. Index21971PASS/importonce;
+lint55347terminal1:8 unrelated unreachable362warnings, noownedleaf finding
+(exactnames P2/P3 bag-directional-fractional-energy). Frontier updated.
+Completed Gagliardo scratch/templates removed;logs retained.
+Current oneowned Lean /tmp/bag-log-fractional-composition-01ax.lean log02:
+nonnegative logarithmic substitutions and exact two-point kernel candidate.
+First89019 errors were beta-reduction, derivative conversion, set/univ
+constantnames and explicit membership positivity. Corrected, no resourcehacks.
+Local compact log-composition bound remains open and is the next hardtarget.
+Search86614 /tmp/bag-log-composition-admission-search-01ax.json nonpartial,
+66771allindexed/noerrors,index1254416=coverage=current,semanticunmeasured;
+20candidate20source+ingredientsetread. Useful PhysicalLogChart and existing
+MellinLinePlancherel log substitution; proposed slowLog recipe insufficient.
+Actual proof uses installed one-dimensional nonnegative Jacobian theorem.
+RH remains open; no assumed composition bound or moving cancellation.
+
+2026-10-06 01ax compact fractional log-chart transfer CLOSED.
+HTGeometry.LocalLogFractionalEnergy518lines/API3: scalar continuous-energy
+bound, finite Schwartz spectral corollary, and full two-coordinate axial
+log-chart bound with transverse Jacobian paid. Constants independent of the
+supported function; no assumed norm/admission budget. Scratch73895/log08 and
+81332/planarlog01PASS; final production60539/log02emptyPASS; all3 production
+axioms35000standard3; index94569PASS/API3/importonce; scoped diffcheckPASS.
+Final lint22415/log02:12 unrelated unreachable,362warnings,noownedfinding;
+exact names P2/P3 bag-local-log-fractional-energy. Global lint not clean.
+This advances the actual BAG moving-kernel transfer. Weighted compact
+multiplication and first Euler derivatives for1<s<3/2 remain open, followed
+by exterior attachment/Mellin tails, lower-growth full arithmetic envelope,
+moving cancellation/full sharp-action bridge/common-height return. RH open.
+Next active paper/proof card: bag-fractional-compact-multiplier. Native compact
+C1 bounds and exact product difference yield an admitted near/far increment
+remainder; no uniform Schwartz premise is added. Scratch1448/log01 checked
+pointwise product/increment estimates; scalar indicator admission needs an
+explicit IntegrableOn helper invocation. Corrected before next audit.
+
+2026-10-06 01ax compact parameter fractional multipliers CLOSED.
+HTGeometry.FractionalCompactMultiplier269lines/API3: complete C1 multiplier
+energy bound, uniform joint-parameter version, finite Schwartz spectral
+corollary. Compactness and differentiability derive coefficient budgets.
+Scratch64419/log05PASS; production26654emptyPASS; imported axioms29266standard3;
+index17064PASS/API3/importonce; scoped diffcheckPASS. Lint49753terminal1:
+15 unrelated unreachable,362warnings,noownedfinding; exactnames P2/P3
+bag-compact-parameter-fractional-multipliers. Generic multiplier mechanism
+closed; actual Mellin coefficient/Euler family remains the next obligation.
+P1 bag-compact-mellin-coefficients and scratch /tmp/bag-compact-mellin-coefficients-01ax.lean
+now construct literal compact parameter/physical cutoffs and the coefficient
+eta(sigma)*chi(x)*exp(sum sigma_i log x_i). Smoothness uses positivity on
+physical support and local zero extension off it; no assumed uniform norm.
+Initial coefficient audit22339/log01 running. RH/open BAG endgame unchanged.
+
+2026-10-06 01ax actual compact Mellin localization CLOSED.
+CompactMellinLocalization343/API21: production56153 emptyPASS, all21 imported
+axioms10859 standard3, index75708PASS/importonce/scoped diffcheckPASS.
+Lint30292:362warnings,18 unrelated unreachable, no ownedfinding; exactnames
+P2/P3 bag-actual-compact-mellin-localization. Actual A,B_i,C_i, uniform mass
+and fractional bounds, exact first Euler law and exact Schwartz realization
+are closed. Full log H^(1+theta) assembly is active in
+P1 bag-local-mellin-sobolev-transfer; no RH/endgame closure claimed.
+
+2026-10-06 01ax full local Mellin H^(1+theta) transfer CLOSED.
+LocalMellinSobolevTransfer630/API1: scratch81394/log08PASS, production14804
+emptyPASS, imported axioms61350standard3, index6054PASS/API1/importonce16686,
+scoped diffcheckPASS. Lint49164terminal1:362warnings,10 unrelated unreachable;
+exactnames P2/P3 bag-local-mellin-sobolev-transfer, noownedfinding/globalnotclean.
+The actual compact log operator is bounded uniformly over EVERYsigma in[1,2]^2
+for every0<theta<1 and Schwartz input, in the FULL planar Fourier weight.
+It derives admission and pays both Euler terms/Jacobians without a uniform
+high-Schwartz premise. Next P1 bag-selected-local-mellin-energy attaches
+literal normalized physical cone profiles with curvaturetau=1/(2*pi), then
+exterior log energy/Mellin tails remain. RH and BAG endgame remain unproved.
+
+2026-10-06 01ax actual selected local Mellin energy CLOSED.
+ChiCubicSelectedLocalMellinEnergy227/API7: scratch99827/log03PASS/all7standard3;
+production78981emptyPASS; imported all7axioms79187standard3; index14164PASS,
+RHTower importonce23584/scoped diffcheckPASS. Lint44890terminal1:362warnings,
+10 unrelated unreachable, exactnames P2/P3 bag-selected-local-mellin-energy;
+noownedfinding/globalnotclean. Literal N^(1/4) family has uniform global
+physical H^s energy0<=s<3/2 and actual compact Mellin H^(1+theta) energy
+0<theta<1/2, uniformly allsigma in[1,2]^2. Exact2*pi scaling/curvaturetau=1/(2*pi)
+and double Jacobian cancellation are proved. Actual physical identity retained.
+Next P1 bag-exterior-logarithmic-energy: pure physical jet -> weighted log
+mass/second derivatives -> full exterior H^2 energy. RH/endgame remain open.

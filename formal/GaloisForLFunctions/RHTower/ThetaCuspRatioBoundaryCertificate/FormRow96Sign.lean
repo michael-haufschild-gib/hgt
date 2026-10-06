@@ -1,0 +1,81 @@
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_0
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_1
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_2
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_3
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_4
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_5
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_6
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_7
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_8
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_9
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_10
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_11
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_12
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_13
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_14
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_15
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_16
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_17
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_18
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_19
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_20
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_21
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_22
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_23
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_24
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_25
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_26
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_27
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_28
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_29
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_30
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_31
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_32
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_33
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_34
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_35
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.Scalar96_36
+import Mathlib.Tactic.FinCases
+namespace HTGeometry.ThetaRatioInfinity
+noncomputable section
+theorem boundaryFullCoefficient77_row96_pos (B : Fin 37) : 0<boundaryFullCoefficient77 96 B := by
+  fin_cases B
+  · exact boundaryFullCoefficient77_96_0_pos
+  · exact boundaryFullCoefficient77_96_1_pos
+  · exact boundaryFullCoefficient77_96_2_pos
+  · exact boundaryFullCoefficient77_96_3_pos
+  · exact boundaryFullCoefficient77_96_4_pos
+  · exact boundaryFullCoefficient77_96_5_pos
+  · exact boundaryFullCoefficient77_96_6_pos
+  · exact boundaryFullCoefficient77_96_7_pos
+  · exact boundaryFullCoefficient77_96_8_pos
+  · exact boundaryFullCoefficient77_96_9_pos
+  · exact boundaryFullCoefficient77_96_10_pos
+  · exact boundaryFullCoefficient77_96_11_pos
+  · exact boundaryFullCoefficient77_96_12_pos
+  · exact boundaryFullCoefficient77_96_13_pos
+  · exact boundaryFullCoefficient77_96_14_pos
+  · exact boundaryFullCoefficient77_96_15_pos
+  · exact boundaryFullCoefficient77_96_16_pos
+  · exact boundaryFullCoefficient77_96_17_pos
+  · exact boundaryFullCoefficient77_96_18_pos
+  · exact boundaryFullCoefficient77_96_19_pos
+  · exact boundaryFullCoefficient77_96_20_pos
+  · exact boundaryFullCoefficient77_96_21_pos
+  · exact boundaryFullCoefficient77_96_22_pos
+  · exact boundaryFullCoefficient77_96_23_pos
+  · exact boundaryFullCoefficient77_96_24_pos
+  · exact boundaryFullCoefficient77_96_25_pos
+  · exact boundaryFullCoefficient77_96_26_pos
+  · exact boundaryFullCoefficient77_96_27_pos
+  · exact boundaryFullCoefficient77_96_28_pos
+  · exact boundaryFullCoefficient77_96_29_pos
+  · exact boundaryFullCoefficient77_96_30_pos
+  · exact boundaryFullCoefficient77_96_31_pos
+  · exact boundaryFullCoefficient77_96_32_pos
+  · exact boundaryFullCoefficient77_96_33_pos
+  · exact boundaryFullCoefficient77_96_34_pos
+  · exact boundaryFullCoefficient77_96_35_pos
+  · exact boundaryFullCoefficient77_96_36_pos
+end
+end HTGeometry.ThetaRatioInfinity

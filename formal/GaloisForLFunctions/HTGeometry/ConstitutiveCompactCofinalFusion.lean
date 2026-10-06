@@ -31,6 +31,7 @@ def IsJointlyBoundedBelow (A : H →L[ℂ] Y) (R : H →L[ℂ] Z) : Prop :=
 def IsCofinalTransducer (R : H →L[ℂ] Z) : Prop :=
   IsClosed (Set.range R) ∧ FiniteDimensional ℂ (LinearMap.ker (R : H →ₗ[ℂ] Z))
 
+omit [CompleteSpace Y] [CompleteSpace Z] in
 /-- A jointly bounded compact/cofinal packet has finite residual kernel. -/
 theorem finiteDimensional_ker_of_compact_jointlyBoundedBelow
     (A : H →L[ℂ] Y) (R : H →L[ℂ] Z)
@@ -44,6 +45,7 @@ theorem finiteDimensional_ker_of_compact_jointlyBoundedBelow
   have h := hbound x
   simpa [ContinuousLinearMap.prod_apply, Prod.norm_def, hxR] using h
 
+omit [CompleteSpace Y] in
 /-- A jointly bounded compact/cofinal packet forces the cofinal reporter to have closed range. -/
 theorem isClosed_range_of_compact_jointlyBoundedBelow
     (A : H →L[ℂ] Y) (R : H →L[ℂ] Z)
@@ -63,7 +65,7 @@ theorem isClosed_range_of_compact_jointlyBoundedBelow
   have hmem : ∀ n, At (u n) ∈ closure (At '' Metric.closedBall 0 1) := by
     intro n
     refine subset_closure ⟨u n, ?_, rfl⟩
-    simpa [Metric.mem_closedBall, dist_eq_norm, huNorm n]
+    simp [Metric.mem_closedBall, dist_eq_norm, huNorm n]
   obtain ⟨a, _ha, phi, hphi, hAtConv⟩ :=
     (hAtCompact.isCompact_closure_image_closedBall 1).tendsto_subseq hmem
   have hRConv : Tendsto (fun n => Rt (u (phi n))) atTop (nhds 0) :=
@@ -104,6 +106,7 @@ theorem isClosed_range_of_compact_jointlyBoundedBelow
   rw [this, norm_zero] at hvNorm
   norm_num at hvNorm
 
+omit [CompleteSpace Y] in
 /-- Necessity half of compact--cofinal fusion. -/
 theorem cofinalTransducer_of_compact_jointlyBoundedBelow
     (A : H →L[ℂ] Y) (R : H →L[ℂ] Z)
@@ -225,6 +228,7 @@ theorem exists_commonRecovery_of_cofinalTransducer
     _ = (u : H) + (Kᗮ).starProjection x := by rw [hJ]
     _ = x := hxsplit
 
+omit [CompleteSpace H] [CompleteSpace Y] [CompleteSpace Z] in
 /-- Exact recovery gives a quantitative joint lower bound. -/
 theorem jointlyBoundedBelow_of_commonRecovery
     (A : H →L[ℂ] Y) (R : H →L[ℂ] Z) (L : (Y × Z) →L[ℂ] H)
@@ -252,6 +256,7 @@ theorem jointlyBoundedBelow_of_cofinalTransducer
   obtain ⟨L, hL⟩ := exists_commonRecovery_of_cofinalTransducer A R hR hAker
   exact jointlyBoundedBelow_of_commonRecovery A R L hL
 
+omit [CompleteSpace H] [CompleteSpace Y] [CompleteSpace Z] in
 /-- Joint observability separates the residual kernel of either reporter. -/
 theorem separates_ker_of_jointlyBoundedBelow
     (A : H →L[ℂ] Y) (R : H →L[ℂ] Z)
@@ -297,6 +302,7 @@ def transportCommonRecovery (L : (Y × Z) →L[ℂ] H)
     (Y × Z) →L[ℂ] H :=
   U.toContinuousLinearMap ∘L L ∘L (V.symm.prodCongr W.symm).toContinuousLinearMap
 
+omit [CompleteSpace H] [CompleteSpace Y] [CompleteSpace Z] in
 /-- **Functional-equation information neutrality.** Any invertible coordinate action on source and
 reporter spaces lifts through the common recovery kernel, so exact reconstructible information is
 neither created nor destroyed. -/
@@ -325,6 +331,7 @@ def carrierDefectPacket (A : H →L[ℂ] Y) (R : H →L[ℂ] Z) (delta : ℂ) :
 def carrierDefectRecovery (L : (Y × Z) →L[ℂ] H) : ((Y × Z) × Z) →L[ℂ] H :=
   L ∘L ContinuousLinearMap.fst ℂ (Y × Z) Z
 
+omit [CompleteSpace H] [CompleteSpace Y] [CompleteSpace Z] in
 /-- **Carrier--defect bifurcation.** The relative defect may change or vanish while the common
 recovery law remains exact because structural carrier and defect are distinct coordinates. -/
 theorem carrierDefectRecovery_recovers

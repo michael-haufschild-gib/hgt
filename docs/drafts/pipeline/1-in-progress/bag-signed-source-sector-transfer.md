@@ -51,3 +51,36 @@ compiler writing the same olean. No external process touched. Only other
 missing dependency XiMassHyperbolicCurvedContourDecay is now being restored
 with a single owned foreground leaf audit. U4 scratch includes complete
 full-plane assembly,still unverified; no source theorem marked complete.
+
+01aw audit checkpoint: needed XiMassHyperbolicCurvedContourDecay40326
+and DeningerMertensInvSquare40655 restored by targeted foreground Lean,
+emptyPASS. Other required artifacts restored externally. Dependency cone
+now present; full scratch47167 running. Independent mathlib-only audit
+17884/37963 exposed syntax/measure-rewrite and finite-seminorm reduction
+issues. Fixed by spacing strict inequality, explicit product integration,
+and proving the Schwartz weight bound at symbolic degree k before using54.
+No recursion/heartbeat limit raised. Last two auxiliary issues were explicit
+square monotonicity and specialization of the scalar integral substitution;
+fixed in full scratch before47167. Full signed theorem still NOT audited.
+
+Full audit90032 exposed only proof-engineering errors; all previous default
+recursion/heartbeat failures removed by explicit monotonicity and typed
+source identities, without raising limits. Audit20626 then reached the
+public full-plane theorem with exactly one remaining local error: unfolding
+Function.comp_apply in the pointwise test limit. Corrected; next full
+scratch audit running. No result accepted with sorryAx from error recovery.
+Exact source symmetry/measurability, decay, sector envelope, product
+integrability, rescaling, DCT and full partition now otherwise elaborate.
+
+01ax U4 CLOSED: original complete source signed full-plane integral
+divided by logN tends to zero for EVERY fixed Schwartz test and positive
+rho_i. Exact source symmetry, nearest-axis partition, order58 majorant,
+rescaling/Fubini, mixed-source limit, DCT and vertical-profile cancellation
+all formalized. ChiRamanujanSignedSourceTransfer520lines/API1, public
+criticalCompletedConeEuler_schwartz_integral_tendsto. Scratch30915PASS;
+production50199emptyPASS; finalaxiom85157standard3; index8884PASS;
+umbrellaonce, no umbrella build. Lint39568terminal1: three unrelated
+HTGeometry unreachable modules, no owned error. P2/P3/frontier updated.
+Actual moving physical profile still open; next central mechanism is
+uniform curved-frequency energy on an entire strip, followed by exact
+physical multiplier and selected cutoff derivative budgets. RH open.
