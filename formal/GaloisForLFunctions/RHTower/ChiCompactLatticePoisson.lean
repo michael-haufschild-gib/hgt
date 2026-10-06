@@ -1,15 +1,19 @@
 import Mathlib.Analysis.Normed.Group.Constructions
 import Mathlib.Analysis.Fourier.AddCircleMulti
 import Mathlib.MeasureTheory.Group.FundamentalDomain
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import Mathlib.Analysis.Normed.Group.FunctionSeries
 
 /-!
-# Complete compact lattice Poisson identity
+# Complete lattice Poisson identities
 
 Compact support makes the integer translates locally finite, allowing every
 translate and overlap. Fundamental-domain unfolding identifies every torus
 coefficient with its full real-space integral. Absolute summability of those
 coefficients then yields the complete three-dimensional Poisson identity.
-The BAG physical amplitude discharges that condition in the consuming leaf.
+The normal-periodization theorem also retains every translate for integrable
+inputs with a summable majorant on each bounded translation region. The
+consuming physical Schwartz theorem constructs these majorants.
 -/
 
 noncomputable section
@@ -216,6 +220,110 @@ theorem poisson {f : X → ℂ} (hc : Continuous f) (hf : HasCompactSupport f)
   have hz (k : Z) : UnitAddTorus.mFourier k (q 0)=1 := by
     simp [UnitAddTorus.mFourier,q]
   simpa only [coefficient hc hf,hz,smul_eq_mul,mul_one,torusPer_q,per,zero_add]
+    using h.tsum_eq
+
+
+private def Normal (f : X → ℂ) : Prop :=
+  ∀ R : ℝ, 0 ≤ R → ∃ u : Z → ℝ, Summable u ∧
+    ∀ x : X, ‖x‖ ≤ R → ∀ n : Z, ‖f (x+ip n)‖ ≤ u n
+
+private lemma per_continuous_normal {f : X → ℂ} (hc : Continuous f) (hn : Normal f) :
+    Continuous (per f) := by
+  rw [continuous_iff_continuousAt]
+  intro x
+  obtain ⟨u,hu,hb⟩ := hn (‖x‖+1) (by positivity)
+  have hs : ContinuousOn (per f) (Metric.ball (0 : X) (‖x‖+1)) :=
+    continuousOn_tsum (fun n => (hc.comp (continuous_id.add continuous_const)).continuousOn)
+      hu (fun n y hy => hb y
+        (le_of_lt (by simpa only [Metric.mem_ball,dist_zero_right] using hy)) n)
+  apply hs.continuousAt
+  exact Metric.isOpen_ball.mem_nhds (by simp)
+
+private lemma cube_finite : (volume : Measure X) cube < ⊤ := by
+  apply (measure_mono (show cube ⊆ Metric.closedBall (0 : X) 1 from
+    fun x hx => by simpa only [Metric.mem_closedBall,dist_zero_right] using cube_norm hx)).trans_lt
+  exact (isCompact_closedBall (0 : X) 1).measure_lt_top
+
+private lemma integral_per_normal {f : X → ℂ} (hc : Continuous f)
+    (hf : Integrable f) (hn : Normal f) :
+    (∫ x in cube, per f x) = ∫ x, f x := by
+  letI : IsFiniteMeasure ((volume : Measure X).restrict cube) :=
+    ⟨by simpa only [Measure.restrict_apply_univ] using cube_finite⟩
+  have hi (n : Z) : IntegrableOn (fun x => f (x+ip n)) cube := by
+    apply ((hc.comp (continuous_id.add continuous_const)).integrableOn_Icc
+      (a := (0 : X)) (b := (1 : X))).mono_set
+    intro x hx
+    exact ⟨fun i => (hx i).1.le,fun i => (hx i).2⟩
+  obtain ⟨u,hu,hb⟩ := hn 1 zero_le_one
+  have hs : Summable (fun n : Z => ∫ x in cube, ‖f (x+ip n)‖) := by
+    apply Summable.of_nonneg_of_le
+      (g := fun n : Z => ∫ x in cube, ‖f (x+ip n)‖)
+      (f := fun n => u n*((volume : Measure X).restrict cube).real univ)
+      (fun n => integral_nonneg (fun x => norm_nonneg _)) _
+      (hu.mul_right _)
+    intro n
+    have h := integral_mono_ae (hi n).norm (integrable_const (u n))
+      (by filter_upwards [ae_restrict_mem cube_measurable] with x hx; exact hb x (cube_norm hx) n)
+    simpa only [integral_const,smul_eq_mul,mul_comm] using h
+  change (∫ x in cube, ∑' n : Z, f (x+ip n)) = _
+  rw [← integral_tsum_of_summable_integral_norm hi hs,
+    cube_fundamental.integral_eq_tsum'' f hf]
+  apply tsum_congr
+  intro n
+  apply integral_congr_ae
+  filter_upwards [] with x
+  change f (x+ip n)=f (ip n+x)
+  rw [add_comm]
+
+private lemma char_norm (k : Z) (x : X) : ‖UnitAddTorus.mFourier (-k) (q x)‖ ≤ 1 := by
+  simpa only [UnitAddTorus.mFourier_norm] using (UnitAddTorus.mFourier (-k)).norm_coe_le_norm (q x)
+
+private lemma coefficient_normal {f : X → ℂ} (hc : Continuous f)
+    (hf : Integrable f) (hn : Normal f) (k : Z) :
+    UnitAddTorus.mFourierCoeff (torusPer f) k =
+      ∫ x, UnitAddTorus.mFourier (-k) (q x)*f x := by
+  let g := fun x => UnitAddTorus.mFourier (-k) (q x)*f x
+  have hg : Continuous g := ((UnitAddTorus.mFourier (-k)).continuous.comp q_open.continuous).mul hc
+  have hb (x : X) : ‖g x‖ ≤ ‖f x‖ := by
+    dsimp only [g]
+    rw [norm_mul]
+    simpa only [one_mul] using mul_le_mul_of_nonneg_right (char_norm k x) (norm_nonneg (f x))
+  have hi : Integrable g := hf.mono hg.aestronglyMeasurable (Filter.Eventually.of_forall hb)
+  have hn' : Normal g := by
+    intro R hR
+    obtain ⟨u,hu,hb'⟩ := hn R hR
+    exact ⟨u,hu,fun x hx n => (hb _).trans (hb' x hx n)⟩
+  rw [UnitAddTorus.mFourierCoeff_eq_integral (torusPer f) k 0,
+    ← integral_per_normal hg hi hn']
+  simp only [Pi.zero_apply,zero_add]
+  apply setIntegral_congr_fun cube_measurable
+  intro x hx
+  change UnitAddTorus.mFourier (-k) (q x)*torusPer f (q x) = per g x
+  rw [torusPer_q,per_character]
+
+/-- Full three-dimensional Poisson matching under absolute normal
+periodization. The consuming Schwartz theorem proves all conditions;
+no compact physical support is required here. -/
+theorem poisson_of_summable_translates {f : X → ℂ} (hc : Continuous f) (hf : Integrable f)
+    (hn : ∀ R : ℝ, 0 ≤ R → ∃ u : Z → ℝ, Summable u ∧
+      ∀ x : X, ‖x‖ ≤ R → ∀ n : Z, ‖f (x+ip n)‖ ≤ u n)
+    (hs : Summable (fun k : Z => ∫ x, UnitAddTorus.mFourier (-k) (q x)*f x)) :
+    (∑' k : Z, ∫ x, UnitAddTorus.mFourier (-k) (q x)*f x) = ∑' n : Z, f (ip n) := by
+  have ht : Continuous (torusPer f) := by
+    apply q_open.continuous_comp_iff.mp
+    simpa only [Function.comp_def,torusPer_q] using per_continuous_normal hc hn
+  let F : C(T,ℂ) := ⟨torusPer f,ht⟩
+  have hcoef : UnitAddTorus.mFourierCoeff F =
+      (fun k : Z => ∫ x, UnitAddTorus.mFourier (-k) (q x)*f x) := by
+    funext k
+    exact coefficient_normal hc hf hn k
+  have h := UnitAddTorus.hasSum_mFourier_series_apply_of_summable
+    (f := F) (hcoef ▸ hs) (q 0)
+  change HasSum (fun k => UnitAddTorus.mFourierCoeff (torusPer f) k •
+    UnitAddTorus.mFourier k (q 0)) (torusPer f (q 0)) at h
+  have hz (k : Z) : UnitAddTorus.mFourier k (q 0)=1 := by
+    simp [UnitAddTorus.mFourier,q]
+  simpa only [coefficient_normal hc hf hn,hz,smul_eq_mul,mul_one,torusPer_q,per,zero_add]
     using h.tsum_eq
 
 end FullPoisson

@@ -106,7 +106,8 @@ section Rect
 
 variable {Q Pp : H →L[ℂ] H} {C : ℝ × ℝ → SLSpace H}
 
-/-- **Holonomy around a lifted rectangle**: bottom · right = `exp ∫∫ Tr(P[∂ₛP, ∂ₜP])` · top · left. -/
+/-- **Holonomy around a lifted rectangle**:
+bottom · right = `exp ∫∫ Tr(P[∂ₛP, ∂ₜP])` · top · left. -/
 theorem rect_holonomy (hQ : IsStarProjection Q) (hC : ContDiff ℝ ⊤ C) {x₀ x₁ y₀ y₁ : ℝ}
     (hx : x₀ ≤ x₁) (hy : y₀ ≤ y₁) (L : SquareLift Q Pp C (Set.Icc x₀ x₁ ×ˢ Set.Icc y₀ y₁)) :
     segHol Q Pp (hLine C y₀) x₀ x₁ * segHol Q Pp (vLine C x₁) y₀ y₁ =
@@ -243,7 +244,8 @@ theorem integral_unitSquare_eq_sum {f : ℝ × ℝ → ℂ} (hf : Continuous f) 
       (f := fun x y => f (x, y)) (by rw [huncurry]; exact hf) c d
   simp_rw [hinner]
   have h := intervalIntegral.sum_integral_adjacent_intervals (a := a) (n := m)
-    (μ := MeasureTheory.volume) (f := fun x => ∑ j ∈ Finset.range m, ∫ y in (j / m : ℝ)..((j + 1) / m), f (x, y))
+    (μ := MeasureTheory.volume)
+    (f := fun x => ∑ j ∈ Finset.range m, ∫ y in (j / m : ℝ)..((j + 1) / m), f (x, y))
     (fun k _ => (continuous_finsetSum _ fun j _ => hcont _ _).intervalIntegrable _ _)
   rw [ha0, ham] at h
   rw [← h]
@@ -261,7 +263,7 @@ section Square
 variable {Q Pp : H →L[ℂ] H} {C : ℝ × ℝ → SLSpace H}
 
 /-- The grid rectangle `[i/m, (i+1)/m] × [j/m, (j+1)/m]`. -/
-def gridRect (m i j : ℕ) : Set (ℝ × ℝ) :=
+def squareGridRect (m i j : ℕ) : Set (ℝ × ℝ) :=
   Set.Icc ((i : ℝ) / m) ((i + 1) / m) ×ˢ Set.Icc ((j : ℝ) / m) ((j + 1) / m)
 
 /-- **Squares in the admissible sector have lifted grids.** -/
@@ -269,7 +271,7 @@ theorem exists_grid_lifts (hQ : IsStarProjection Q) (hC : ContDiff ℝ ⊤ C)
     (hproj : ∀ q, IsStarProjection (Pp + (C q).op))
     (hsec : ∀ q ∈ Set.Icc (0 : ℝ) 1 ×ˢ Set.Icc (0 : ℝ) 1,
       ∃ u, IsAdmissibleFrame Q u (Pp + (C q).op)) :
-    ∃ m, 0 < m ∧ ∀ i < m, ∀ j < m, Nonempty (SquareLift Q Pp C (gridRect m i j)) := by
+    ∃ m, 0 < m ∧ ∀ i < m, ∀ j < m, Nonempty (SquareLift Q Pp C (squareGridRect m i j)) := by
   classical
   set K := Set.Icc (0 : ℝ) 1 ×ˢ Set.Icc (0 : ℝ) 1
   have hloc : ∀ q : K, ∃ (U : Set (ℝ × ℝ)) (Y : ℝ × ℝ → HSpace ℂ H) (V : Submodule ℂ H),
@@ -289,7 +291,7 @@ theorem exists_grid_lifts (hQ : IsStarProjection Q) (hC : ContDiff ℝ ⊤ C)
   have hc : ∀ k < m, (0 : ℝ) ≤ k / m ∧ (k : ℝ) / m ≤ 1 := fun k hk =>
     ⟨by positivity, by rw [div_le_one hmR]; exact_mod_cast hk.le⟩
   obtain ⟨p, hball⟩ := hcov ((i : ℝ) / m, (j : ℝ) / m) ⟨hc i hi, hc j hj⟩
-  have hsub : gridRect m i j ⊆ U p := by
+  have hsub : squareGridRect m i j ⊆ U p := by
     intro q hq
     apply hball
     rw [Metric.mem_ball, Prod.dist_eq, max_lt_iff, Real.dist_eq, Real.dist_eq, abs_lt, abs_lt]

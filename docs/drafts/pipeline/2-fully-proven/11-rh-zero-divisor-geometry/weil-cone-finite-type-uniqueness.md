@@ -251,3 +251,60 @@ replace sharp cutoffs, so contour arguments need no horizontal edges and station
   `x = 1 − σ'`, concave, `E ≤ 1 − 1.278v` for centre `½ + v`; centre `½ + 0.95u` gives `c' = 0.21`.
   Needed: the chain for `σ' ∈ (501/1001, 7/10]` (its `7/10` is used only for centre `≥ ½` and numeric budget facts).
   FT7(c): `u ≥ u₃` by `exists_zeroHeightBox_ncard_le_ingham_huxley` on finitely many slabs.
+- FT7 done (2026-10-06), axioms standard: `ZetaOffLineWeightedDensity.eventually_offLineWeight_le` —
+  `∀ ε > 0, ∀ᶠ T, ∀ Y ≥ 1, Σ_{β>½, 1≤γ≤Y} m_ρ γ^{β−½} e^{−γ²/T²} ≤ ε T log²T`.
+  Middle range: `Sieve.InghamNearHalf` (corpus uniform Gabriel chain copied on `501/1001 ≤ σ`, horizontal tube
+  re-centred at `19/5 + iτ` to reach `[½, 4]`), `exists_eventually_zeroCountAbove_le_nearHalf`:
+  `#{β ≥ ½ + u, |γ| ≤ X−2} ≤ (K/u) X^{1−6u/5} (1 + log X)²` for every `0 < u ≤ ½` (concavity of the
+  height exponent). Blocks `[S, 2S]`: `O(S (log 2S)^{19/10})` with layer cut `j ≤ (11/2) log log 2S`.
+- Lean route for FT4–FT6, FT8, FT9 (2026-10-06, after corpus audit):
+  - Rectangle `[−½, 2] × [t_b, Y]`, with `t_b ∈ [1,2]` fixed and free of zeros on the bottom edge, and `Y ≈ T²`
+    taken from `exists_zetaResidueUnit_negativeHalf_horizontal_logDeriv_control`. Only real parts of the zero
+    sums are needed, because all main coefficients are real. The left integrand is conjugation-symmetric, so
+    `Re (1/2πi)∫_{left, up} = ½ (1/2πi)∫_{left, full line} + O(1)`.
+  - Exact left kernel. On `Re s = −½`, `(1/2πi)∫ χ(s) y^s g(s) ds = y J(y)`, where
+    `J(y) = ∫_ℝ 2cos(2πy eᵘ) e^{u/2} k_T(u) du` and `k_T` is the centred Gaussian of variance `2/T²`.
+    - Proof: `χ(s) = Γ(w)[(−2πi)^{−w} + (2πi)^{−w}]` with `w = 1−s` (mathlib `Gammaℝ_div_Gammaℝ_one_sub`).
+    - `Γ(w)a^{−w} = ∫₀^∞ e^{−ax}x^{w−1}dx` for `Re a > 0`, then Fubini; the inverse Mellin transform of `g`
+      is log-normal. Continuity in `a` up to `Re a = 0` uses `|Γ(3/2+iv)| = |½+iv|√(π/cosh πv)`.
+    - Bounds: `|J| ≤ 3`; `J(y) = 2cos(2πy)e^{−4π²y²/T²} + O(y/T² + 1/T)`; `|J(y)| ≤ CT²/y²` (two
+      integrations by parts in `u`).
+  - Left edge for Rule A, with `X = r^s`:
+    `(ζ'²/ζ)(s) = χ(s)Σ n^{s−1}[(χ'/χ + log n)² − ℓ(n)]`. Integrate by parts twice per `n` (full line, no
+    boundary terms) with `Φ_y = χ y^s`, `Φ_y' = Φ_y(χ'/χ + log y)`.
+    - Remainder `∫ ζ(s) r^s [g'' + 2 log r · g' − (χ'/χ)' g] = O(T)` by trivial bounds on `Re s = −½`
+      (`|χ(−½+it)| = |½−it|/2π`; corpus `norm_iteratedDeriv_logDeriv_zetaChi_le`).
+    - Main term `−r Σ_n (ℓ(n) − log²r) J(nr)`.
+    - Result: `Re Σ ζ'(ρ) r^ρ g(ρ) = [r ∈ ℤ] · r · M(T/r) + O(T log T)`, where `M(X) = Σ ℓ(n) e^{−4π²n²/X²}`.
+      Non-integer `r = p/q`: the off-diagonal `d` is handled by Abel summation (`|sin(πdp/q)| ≥ 2/q`), and the
+      diagonal (`q | d`, prime powers only) is `O(T)`.
+  - Landau–Gonek `Re Σ r^ρ g(ρ) = O(T log T)` by trivial edge bounds. The χ-twisted sum
+    `Re Σ χ(ρ) r^ρ g(ρ) = O(T log T)`: the `χ'` part by integrating by parts against `I(r)`, the prime part as
+    `r Σ Λ(m) J(mr)`.
+  - Step 1 test: `V = A Ã κ^s` with `κ = n_min/n*²`. The only integral frequency of `(A−Ã)V` is `1`, with
+    coefficient `−a(n*)²a(n_min)/n*²`, so only `M(T) ≥ cT log²T` is needed (no regular variation of `M`).
+  - Step 2 test: `W = κ^s`, `κ = a/n_max` with `a` a prime `> n_max`. The only integral frequency is `a`, with
+    coefficient `f(n_max)/n_max`.
+  - Off-line terms: `|χ(σ+it)| ≤ C|t|^{½−σ}` uniformly for `σ ∈ [0,1]` (corpus
+    `exists_twoSided_gamma_vertical_ratio`). Reflection `ρ ↦ 1−ρ̄` preserves multiplicity. Then FT7.
+  - Step 3 needs no RH: `Re E ≤ 0` on `Re s = ½`, because `Re ξ'/ξ(½+it) = 0` off ordinates and `E` is
+    continuous. Phragmén–Lindelöf for `exp E` on `½ ≤ σ ≤ σ₁`, then `Re E ≤ 0` on `σ > 1`. Means against
+    `1 ± cos(t log n)` give `v(n) = 0`.
+- FT4–FT6 progress (2026-10-06). New modules under `RHTower/`, namespace `RHTower.GaussZeroSum`:
+  - `ZetaChiGaussianKernel`: `integral_zetaChi_mul_cpow_mul_gaussWeight` gives
+    `∫ χ(−½+it) y^{−½+it} g_T = 2πy J_T(y)` (exact); `J` bounds `≤ 2√2e⁵`, Gaussian approximation
+    `O(y/T² + 1/T)`, decay `O(T²/y²)`. Built; axioms standard.
+  - `ZetaGaussianZeroSumContour`: rectangle `[−½, 11/10] × [t₀, Y]`. The right edge moved from 2 to 11/10,
+    because the corpus bounds `χ` only on `11/10 ≤ σ ≤ 6/5`. Contains `zeroSum_eq_rectIntegral`,
+    `exists_bottom_height`, `exists_top_height` (`|ζ'/ζ| ≤ C Y²`) and `re_integral_eq_of_conj`. Built.
+  - `LogVonMangoldtGaussianSums`: `ℓ = (Λ·log) ⋆ 1`; the layer bound; rational phases
+    (`exists_abs_sum_logVM_cos_le`, `O(T log T)`, `q ≥ 2` coprime); the main term
+    (`sum_logVM_gaussW_ge`, `≥ e^{−4π²}/32 · (T/r) log²(T/r)`). Built.
+  - `ZetaLeftLineIdentities`: `ζ'²/ζ = ζ'' − ζ D' − χ L_ℓ(1−s)` and `χζ'/ζ = χ' + χ L_Λ(1−s)` on
+    `−1 < Re s < 0`. Built.
+  - `ZetaLeftLineBounds`, `ZetaLeftLineGaussianIntegrals`: growth on `Re s = −½`, termwise integration
+    against the kernel, `∫ ζ'' G = ∫ ζ G''`. Built.
+  - `ZetaLeftLineGaussianTerms`: left-line Rule A (`−2πr Σ ℓ J + O(T)`), Landau–Gonek `O(T log T)`,
+    χ-twisted `O(T)`. Compiling.
+  - Next: the zero-sum assembly (edge bounds, then `Re Σ ζ'(ρ) r^ρ g = r Σ ℓ cos W + O(T log T)`), then
+    FT8 (steps 1–2), FT9 (step 3), and the final theorem.

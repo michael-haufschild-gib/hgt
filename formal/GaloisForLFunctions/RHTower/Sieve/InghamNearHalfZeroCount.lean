@@ -2,13 +2,13 @@ import GaloisForLFunctions.RHTower.Sieve.InghamNearHalfGabrielDensity
 import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorZeroDensityPolylog
 
 /-!
-# Zero density right of the critical line at rate `6/5`
+# Zero density right of the critical line at rate `6/5` on the whole strip
 
 Run the uniform Gabriel detector at `σ' = (501 + 950u)/1001`, whose moving centre is exactly
 `c = 1/2 + (19/20)u`. Its height exponent `E(σ') = x(3183/1000 + 9009x/50000)/(1 + 1271x/1000)`,
-`x = 1 − σ'`, equals `1` at `u = 0` and is concave, so `E(σ') ≤ 1 − (6/5)u` for `0 ≤ u ≤ 1/5`
+`x = 1 − σ'`, equals `1` at `u = 0` and is concave, so `E(σ') ≤ 1 − (6/5)u` for `0 ≤ u ≤ 1/2`
 (`inghamUniformGabrielConservativeExponent_nearHalf_le`). Littlewood's charge of the zeros right of
-`1/2 + u` is at least the gap `u/20`, so for all large `X`, uniformly in `0 < u ≤ 1/5`,
+`1/2 + u` is at least the gap `u/20`, so for all large `X`, uniformly in `0 < u ≤ 1/2`,
 
 `#{ρ : Re ρ ≥ 1/2 + u, |Im ρ| ≤ X − 2} ≤ (K/u) X^{1 − 6u/5} (1 + log X)²`
 (`exists_eventually_zeroCountAbove_le_nearHalf`), zeros counted with multiplicity.
@@ -28,9 +28,9 @@ theorem inghamUniformGabrielCenter_nearHalfSigma (u : ℝ) :
   unfold inghamUniformGabrielCenter nearHalfSigma
   ring
 
-/-- `E(σ') ≤ 1 − (6/5)u` on `0 ≤ u ≤ 1/5`. -/
+/-- `E(σ') ≤ 1 − (6/5)u` on `0 ≤ u ≤ 1/2`. -/
 theorem inghamUniformGabrielConservativeExponent_nearHalf_le {u : ℝ} (hu0 : 0 ≤ u)
-    (hu1 : u ≤ 1 / 5) :
+    (hu1 : u ≤ 1 / 2) :
     inghamUniformGabrielConservativeExponent (nearHalfSigma u) ≤ 1 - 6 / 5 * u := by
   have hσ : nearHalfSigma u ≤ 1 := by unfold nearHalfSigma; rw [div_le_one (by norm_num)]; linarith
   rw [inghamUniformGabrielConservativeExponent_eq hσ]
@@ -38,35 +38,35 @@ theorem inghamUniformGabrielConservativeExponent_nearHalf_le {u : ℝ} (hu0 : 0 
   rw [hx]
   have hden : 0 < 1 + (1271 / 1000 : ℝ) * ((500 - 950 * u) / 1001) := by nlinarith
   rw [div_le_iff₀ hden]
-  nlinarith [mul_nonneg hu0 hu0, mul_nonneg hu0 (by linarith : (0 : ℝ) ≤ 1 / 5 - u)]
+  nlinarith [mul_nonneg hu0 hu0, mul_nonneg hu0 (by linarith : (0 : ℝ) ≤ 1 / 2 - u)]
 
-/-- The detector constant is uniformly bounded on `0 ≤ u ≤ 1/5`. -/
-theorem nearHalf_detectorConstant_le {u : ℝ} (hu1 : u ≤ 1 / 5) :
+/-- The detector constant is uniformly bounded on `0 ≤ u ≤ 1/2`. -/
+theorem nearHalf_detectorConstant_le {u : ℝ} (hu1 : u ≤ 1 / 2) :
     ((1 + 1 / (1 - inghamUniformGabrielCenter (nearHalfSigma u))) * Real.exp 1) ^ (2 : ℕ) *
         (1 + inghamMovingRightTranslatedExplicitConstant
           ((9 / 100 : ℝ) * (1 - nearHalfSigma u))) ≤
-      ((1 + 10 / 3) * Real.exp 1) ^ (2 : ℕ) *
-        (1 + Real.exp 8 * ((1 + 1000 / 27) ^ 4 *
+      ((1 + 40) * Real.exp 1) ^ (2 : ℕ) *
+        (1 + Real.exp 8 * ((1 + 445) ^ 4 *
           (5 * Real.pi * Real.exp 1 + (5 * Real.pi / 2) * (4 * Real.exp (1 / 2 : ℝ))))) := by
   rw [inghamUniformGabrielCenter_nearHalfSigma]
-  have hc : 1 - (1 / 2 + 19 / 20 * u) ≥ 3 / 10 := by linarith
-  have h1 : 1 / (1 - (1 / 2 + 19 / 20 * u)) ≤ 10 / 3 := by
+  have hc : 1 - (1 / 2 + 19 / 20 * u) ≥ 1 / 40 := by linarith
+  have h1 : 1 / (1 - (1 / 2 + 19 / 20 * u)) ≤ 40 := by
     rw [div_le_iff₀ (by linarith)]; linarith
-  have hδ : (27 / 1000 : ℝ) ≤ (9 / 100 : ℝ) * (1 - nearHalfSigma u) := by
+  have hδ : (1 / 445 : ℝ) ≤ (9 / 100 : ℝ) * (1 - nearHalfSigma u) := by
     unfold nearHalfSigma
     rw [show (9 / 100 : ℝ) * (1 - (501 + 950 * u) / 1001) = (9 / 100) * ((500 - 950 * u) / 1001) by
       ring]
     linarith
-  have hinv : 1 / ((9 / 100 : ℝ) * (1 - nearHalfSigma u)) ≤ 1000 / 27 := by
+  have hinv : 1 / ((9 / 100 : ℝ) * (1 - nearHalfSigma u)) ≤ 445 := by
     rw [div_le_iff₀ (by linarith)]
     nlinarith
-  have hpow : (1 + 1 / ((9 / 100 : ℝ) * (1 - nearHalfSigma u))) ^ 4 ≤ (1 + 1000 / 27) ^ 4 := by
+  have hpow : (1 + 1 / ((9 / 100 : ℝ) * (1 - nearHalfSigma u))) ^ 4 ≤ (1 + 445) ^ 4 := by
     have h0 : 0 ≤ 1 + 1 / ((9 / 100 : ℝ) * (1 - nearHalfSigma u)) := by
       have : 0 < (9 / 100 : ℝ) * (1 - nearHalfSigma u) := by linarith
       positivity
     exact pow_le_pow_left₀ h0 (by linarith) 4
   have hconst : inghamMovingRightTranslatedExplicitConstant ((9 / 100 : ℝ) * (1 - nearHalfSigma u)) ≤
-      Real.exp 8 * ((1 + 1000 / 27) ^ 4 *
+      Real.exp 8 * ((1 + 445) ^ 4 *
         (5 * Real.pi * Real.exp 1 + (5 * Real.pi / 2) * (4 * Real.exp (1 / 2 : ℝ)))) := by
     unfold inghamMovingRightTranslatedExplicitConstant
     have hA : 0 ≤ 5 * Real.pi * Real.exp 1 + (5 * Real.pi / 2) * (4 * Real.exp (1 / 2 : ℝ)) := by
@@ -79,7 +79,7 @@ theorem nearHalf_detectorConstant_le {u : ℝ} (hu1 : u ≤ 1 / 5) :
           (5 * Real.pi * Real.exp 1 + (5 * Real.pi / 2) * (4 * Real.exp (1 / 2 : ℝ))) := by ring
     rw [this]
     gcongr
-  have hfac : (1 + 1 / (1 - (1 / 2 + 19 / 20 * u))) * Real.exp 1 ≤ (1 + 10 / 3) * Real.exp 1 :=
+  have hfac : (1 + 1 / (1 - (1 / 2 + 19 / 20 * u))) * Real.exp 1 ≤ (1 + 40) * Real.exp 1 :=
     mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos 1).le
   have hfac0 : 0 ≤ (1 + 1 / (1 - (1 / 2 + 19 / 20 * u))) * Real.exp 1 := by
     have : 0 < 1 - (1 / 2 + 19 / 20 * u) := by linarith
@@ -110,12 +110,12 @@ theorem count_le_of_charge {K₀ Q₀ u N M B L2 P : ℝ} (hK₀ : 0 ≤ K₀) (
 
 /-- **Zero density right of the critical line at rate `6/5`.** -/
 theorem exists_eventually_zeroCountAbove_le_nearHalf :
-    ∃ K : ℝ, 0 ≤ K ∧ ∀ᶠ X : ℕ in atTop, ∀ u : ℝ, 0 < u → u ≤ 1 / 5 →
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ᶠ X : ℕ in atTop, ∀ u : ℝ, 0 < u → u ≤ 1 / 2 →
       zetaLittlewoodZeroCountAbove (1 / 2 + 19 / 20 * u) 4 ((X : ℝ) - 2) (1 / 2 + u) ≤
         K / u * (X : ℝ) ^ (1 - 6 / 5 * u) * (1 + Real.log X) ^ 2 := by
   obtain ⟨K₀, hK₀, hmass⟩ := exists_eventually_zetaZeroMass_le_uniformGabrielExplicit
-  set Q₀ : ℝ := ((1 + 10 / 3) * Real.exp 1) ^ (2 : ℕ) *
-    (1 + Real.exp 8 * ((1 + 1000 / 27) ^ 4 *
+  set Q₀ : ℝ := ((1 + 40) * Real.exp 1) ^ (2 : ℕ) *
+    (1 + Real.exp 8 * ((1 + 445) ^ 4 *
       (5 * Real.pi * Real.exp 1 + (5 * Real.pi / 2) * (4 * Real.exp (1 / 2 : ℝ))))) with hQ₀
   have hQ₀0 : 0 ≤ Q₀ := by rw [hQ₀]; positivity
   refine ⟨20 * K₀ * (2 + Q₀) / (2 * Real.pi), by positivity, ?_⟩

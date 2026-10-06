@@ -139,7 +139,8 @@ theorem frame_curvature_trace {ws wt : H →L[ℂ] H} (hs : IsHilbertSchmidt ws)
         (((1 - frameProj w A) * ws * A * adjoint w + w * A * adjoint ws * (1 - frameProj w A)) *
           ((1 - frameProj w A) * wt * A * adjoint w + w * A * adjoint wt * (1 - frameProj w A)) -
          ((1 - frameProj w A) * wt * A * adjoint w + w * A * adjoint wt * (1 - frameProj w A)) *
-          ((1 - frameProj w A) * ws * A * adjoint w + w * A * adjoint ws * (1 - frameProj w A)))) := by
+          ((1 - frameProj w A) * ws * A * adjoint w +
+            w * A * adjoint ws * (1 - frameProj w A)))) := by
   set P := frameProj w A with hPdef
   have hPw : (1 - P) * w = 0 := compl_frameProj_mul_frame hQi hwQ hA
   have hwP : adjoint w * (1 - P) = 0 := adjoint_frame_mul_compl hQ hQi hwQ hA hA'
@@ -392,7 +393,8 @@ theorem hasDerivAt_detConnection (hQ : IsSelfAdjoint Q) {u v : ℝ → HSpace �
   have hEq : (fun r => detConnection Q (u r) (v r)) =ᶠ[nhds r] F := by
     filter_upwards [hvQ] with r' hr'
     exact opTrace_frame_eq hQ (A r') (u r') (v r') hr'
-  have hPV : HasDerivAt (fun r => HSpace.lmulL (A r) (projHS V)) (HSpace.lmulL A' (projHS V)) r := by
+  have hPV :
+      HasDerivAt (fun r => HSpace.lmulL (A r) (projHS V)) (HSpace.lmulL A' (projHS V)) r := by
     have := ((HSpace.lmulL (H := H)).flip (projHS V)).hasFDerivAt.comp_hasDerivAt r hA
     simpa [Function.comp_def] using this
   have hQv : HasDerivAt (fun r => HSpace.lmulL Q (v r)) (HSpace.lmulL Q v') r :=
@@ -513,8 +515,9 @@ theorem detConnection_curvature (hQ : IsSelfAdjoint Q) (hQi : IsIdempotentElem Q
         (Ring.inverse (frameGram Q (frameOf Q (Y (s, p.2)))))) Ps p.1 ∧
       HasDerivAt (fun t => frameProj (frameOf Q (Y (p.1, t)))
         (Ring.inverse (frameGram Q (frameOf Q (Y (p.1, t)))))) Pt p.2 ∧
-      Ds - Dt = opTrace (frameProj (frameOf Q (Y p)) (Ring.inverse (frameGram Q (frameOf Q (Y p)))) *
-        (Ps * Pt - Pt * Ps)) := by
+      Ds - Dt = opTrace
+        (frameProj (frameOf Q (Y p)) (Ring.inverse (frameGram Q (frameOf Q (Y p)))) *
+          (Ps * Pt - Pt * Ps)) := by
   obtain ⟨s₀, t₀⟩ := p
   have hS := isClosed_admissibleSubspace (Q := Q) (V := V)
   have hd : DifferentiableAt ℝ Y (s₀, t₀) := hY.differentiableAt (by norm_num)

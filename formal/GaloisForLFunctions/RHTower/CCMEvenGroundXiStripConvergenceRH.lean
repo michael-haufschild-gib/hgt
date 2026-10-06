@@ -16,9 +16,10 @@ the strip `|Im z| < ½`.  For a form-domain vector `u` at aperture `a`, put
 apertures `a_n` whose transforms have all zeros other than `w_{±1/2}` on `ℝ ∪ iℝ`.  If `c_n F_{u_n}`
 converges to `XiC` locally uniformly on the open strip `|Im z| < ½`, then RH holds.
 
-By MUST-794 (`exists_crossRooted_evenGround`) such vectors exist at every aperture: even-sector
-ground states.  So the CCM approximation programme reduces exactly to the convergence of these
-literal even-sector ground transforms; no simplicity or parity hypothesis remains.
+By `exists_crossRooted_evenGround` such vectors exist at every aperture: even-sector polar ground
+states.  Their transforms vanish at `±i/2`, so for them the receiver must be applied to the
+quotient by `z² + 1/4` (see `CrossRootedPolarZeroXiStripObstruction`); the theorem below applies
+directly to vectors whose transforms do not vanish at the polar points.
 
 **Proof.**
 * Transforms of compactly supported integrable functions are entire
@@ -291,9 +292,9 @@ theorem riemannHypothesis_of_crossRooted_strip_convergence
   have hre : ρ.re = 1 / 2 := by linarith [hzreal, hzIm]
   exact (ne_of_gt hρh) hre
 
-/-- **The CCM approximation programme reduced to one convergence statement.**  Even-sector ground
-states with cross-rooted transforms exist at every aperture (MUST-794); if, for some apertures
-`a_n` and normalizations, these literal transforms converge to `Ξ` on the strip, RH holds. -/
+/-- Even-sector polar ground states with cross-rooted transforms whose normalized transforms
+converge to `Ξ` on the strip give RH.  The hypotheses cannot hold together, since these transforms
+vanish at `±i/2` (`RHTower.CCMPolarObstruction.not_evenGround_strip_convergence`). -/
 theorem riemannHypothesis_of_evenGround_strip_convergence
     (a : ℕ → SuzukiPositiveAperture) (u : ∀ n, CCMArchimedeanFormDomain (a n)) (c : ℕ → ℂ)
     (hground : ∀ n, RHTower.CCMEvenSector.IsEvenGround (a n) (u n) ∧

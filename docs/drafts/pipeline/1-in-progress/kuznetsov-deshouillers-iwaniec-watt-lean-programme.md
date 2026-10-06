@@ -502,3 +502,59 @@ Build order: (P1) general-weight same-sign identity at σ=1; (P2) `J_l` (integer
 DI decomposition; (P3) weight-k deck Poincaré Gram; (P4) spectral-weight bounds (Lemma 7.1, `φ̌` and `H_G`);
 (P5) Thm 8 at (∞,∞) then (∞,1/s); (P6) Thms 5–7; (P7) Thms 9–13, 16; (P8) mean values E1; (P9) Watt; (P10) AFE,
 MT Lemma 3.5, MT Thm 1.2, cards.
+
+## Log 2026-10-06 (P1 DONE: exact same-sign Kuznetsov at σ = 1 for rapid weights)
+- `RHTower/KuznetsovSameSignWeightKernel`: `SameSignWeight` (h, G, G' with `∫h(t)e^{2itw}dt = G'(w)`, `|G|e^{|w|}`
+  integrable); `∫h Ξ_σ(t,X)dt = Ψ_σ^G(X)`, `|Ψ_σ^G(X)| ≤ πX∫|G sinh|`, `Ψ_σ^G → Ψ_1^G`,
+  **`weightKernel_one`**: `Ψ_1^G(X) = 2∫G(w) tanh w sin(X cosh w) dw`.
+- `KuznetsovSameSignWeightSigma`: bilinear families `F_t, G_t`; `⟨F_t,G_t⟩` geometric (`inner_famL2_famL2`) and
+  spectral (`inner_famL2_eq_spectral`, Eisenstein part `inner_eisTransformL2_famL2`); interchange lemmas
+  `integral_mul_tsum_of_bound`, `integral_mul_integral_of_bound`; **`kuznetsov_same_sign_weight_sigma`** (σ > 1).
+- `KuznetsovWhittakerStripBounds`: `Γ`, `1/Γ` strip bounds for all heights; `|W(σ+it, ir)|² ≤ D(1+|t|)^L(1+|r|)^L
+  e^{−π(2max(|t|,|r|)−|t|)}` and the exceptional bound with `t⁻²`, uniformly in `1 ≤ σ ≤ 2`.
+- `KuznetsovSameSignSpecWeightBounds`: rapid weights (`|h(t)|(1+|t|)^A ≤ C_A t²`); `|∫h|W(σ+it,ν)|²|(1+κ)^B ≤ C_B e^{−πκ}`.
+- `KuznetsovLargeSieveSummability`: from `large_sieve_full`, `Σ_j|ρ_j(v)|²e^{−πκ_j}(1+κ_j)^{−4} < ∞` and the Eisenstein analog.
+- `KuznetsovSameSignWeightLimit`: Tannery + DCT ⇒ **`kuznetsov_same_sign_weight`**:
+  `Σ b̄_k b'_l [2diag∫h + 2Σ_{(c,d)} w⁺c^{−2}Ψ_1^G(X_c)] = 4Σ_j A_jĀ'_j ∫h|W(1+it,ν_j)|² + π⁻¹∫Σ_iB_iB̄'_i∫h|W(1+it,ir)|²`.
+  All built, audited (0 non-standard axioms), wired.  No Bessel J, no spectral gap, no Weil bound used.
+- Remaining for DI (1.19) with compactly supported φ: (P1') the non-rapid component (`G(±∞) = ∓φ̃(1)/4`, `h(0) ≠ 0`):
+  needs Selberg 3/16 on the deck eigenbasis (exceptional weights `~ 1/(½−ν)`) and the Weil bound (`kmaxU_summable`)
+  for `Σ_c |S|c^{−2}`; (P2) `J_l`, Jacobi–Anger, sine transform of `J_l(y)/y`, decomposition `φ = φ_B + xΨ^{G_φ}`;
+  (P3) weight-k Gram positivity for the `J_l` part; (P4) bounds for `∫h_φ|W|²` in terms of `φ` (Lemma 7.1).
+
+## Log 2026-10-06 (P2 DONE: J_l, Jacobi–Anger, DI decomposition for φ̃(1) = 0)
+- `HTGeometry/BesselJGeneratingFunction`: `|J_l(x)| ≤ |x/2|^l/l!·e^{(x/2)²}`, integer-order `J_l` and the generating
+  function `Σ_l J_l t^l = exp((x/2)(t − t⁻¹))`; **Jacobi–Anger** `sin(x sin θ) = 2Σ_k J_{2k+1}(x) sin((2k+1)θ)` (θ ∈ ℂ);
+  `J_{2k+1}(x) = (2/π)∫_0^{π/2} sin((2k+1)θ) sin(x sin θ) dθ`.
+- `HTGeometry/BesselJContourIdentity`: contour shift `∫_0^{π/2} cos(lθ + x sin θ) = sin(lπ/2)∫_0^∞ e^{−lw}cos(x cosh w)`;
+  **sine profile** (odd l ≥ 3): `∫_0^{π/2} sin(lθ) sin(x sin θ) cos θ + sin(lπ/2)∫_0^∞ e^{−lw} sinh w sin(x cosh w) = (πl/2) J_l(x)/x`.
+- `HTGeometry/CoshSchwartzSpan`: span `𝒜_c` of `cosh^a sinh^b χ(c cosh)` (χ Schwartz), closed under d/dw, smooth,
+  super-exponential decay of all derivatives.  `HTGeometry/ExponentialSeriesSmooth`: termwise-smooth `Σ d_k e^{−m_k w}`.
+- `HTGeometry/BesselTestFunctionSineTransform`: `BesselTestFunction` (smooth, support in [a,b], a > 0); `φ̃(l)` bounds;
+  `S(sin θ) = 2Σφ̃(2k+1) sin((2k+1)θ)`, `S(cosh w) = P(e^w) + P(e^{−w})`; odd extension Schwartz with
+  `𝓕χ(ξ) = −2iS(2πξ)`; **sine inversion** `∫_0^∞ S(u) sin(Xu) du = (π/2)φ(X)/X` (mathlib Fourier inversion).
+- `RHTower/KuznetsovSameSignWeightOfOdd`: `OddDecayProfile` (odd smooth `G`, `|G^{(n)}| ≤ C_n e^{−2|w|}`) ↦ `SameSignWeight`
+  with `h(t) = π⁻¹𝓕(G')(t/π)` (Fourier inversion gives `fourier_h`) and **IsRapid** (`∫G' = ∫wG' = 0` ⇒ `h = O(t²)`).
+- `RHTower/KuznetsovBesselTestFunctionWeight`: for `φ̃(1) = 0`, `G_φ = (cosh/4)S(cosh) − (cosh/2)P(e^{−w})`
+  `= (cosh/4)(P(e^w) − P(e^{−w}))` is an `OddDecayProfile`; **`besselWeight`**, `besselWeight_isRapid`.
+- `RHTower/KuznetsovBesselTestFunctionKernel`: **`weightKernel_besselWeight`**: for X > 0,
+  `Ψ^{G_φ}(X) = (π/2)φ(X)/X − Σ_{k≥0} 2φ̃(2k+3)(π(2k+3)/2)J_{2k+3}(X)/X`, i.e. `φ = (2X/π)Ψ^{G_φ} + Σ_{l≥3} 2lφ̃(l)J_l`.
+  All 8 modules built, audited (0 non-standard axioms), wired.
+- The `φ̃(1)` (weight-2) component is removed without spectral theory of weight 2: for the Kloosterman side
+  `Σ_{c ≥ c₀} S(m,n;c)c⁻¹φ(4π√mn/c)` a fixed `Φ₁` supported in `(4π√mn/c₀, ∞)` contributes nothing, and
+  `φ − (φ̃(1)/Φ̃₁(1))Φ₁` has vanishing first coefficient; its spectral weights are bounded in P4.
+
+## Log 2026-10-06 (P4 core DONE: exact sech-kernel form of the same-sign weights)
+- `HTGeometry/SechComplexFourierTransform`: logistic substitution at complex frequency,
+  `∫(cosh t)^{−s}e^{−izt}dt = 2^{s−1}Γ((s−iz)/2)Γ((s+iz)/2)/Γ(s)` (`|Im z| < s`); `∫e^{−izt}/cosh t = π/cosh(πz/2)`.
+- `RHTower/KuznetsovSpecWeightSech`: exact `t W(1+it,ν)W(1−it,ν) = π² sinh πt/(cos 2πν + cosh 2πt)` (reflection);
+  kernel `k_ν(w) = (π/sin πν) sinh(2νw)/cosh w` (`k_0 = 2w/cosh w`) with `∫k_ν e^{2itw} = 2i·(that)`;
+  **`specWeight_eq_integral_sechKernel`**: `∫h(t)|W(1+it,ν)|²dt = ∫G(w)k_ν(w)dw` (Fubini + Fourier inversion, no
+  Stirling).  Bounds: `norm_specWeight_real_le` (`≤ π∫|G||w|cosh(2νw)/cosh w`, exceptional amplification explicit),
+  `norm_specWeight_imag_le` (`≤ 2∫|G||w|/cosh w`), `norm_specWeight_imag_le_of_iteratedDeriv`
+  (`≤ (π/|sinh πκ|)‖(G/cosh)^{(K)}‖₁/|2κ|^K`).  Built, audited, wired.  (A first version via contour shift + crude
+  Stirling was discarded: it loses powers of `X`.)
+- Next (P4c): bounds for `Q_φ = G_φ/cosh = S(cosh w)/4 − P(e^{−w})/2` in terms of the scale of `φ`:
+  `|S(u)| ≤ min(u‖φ‖₁, ‖(φ/y)'‖₁/u)`, `|P(e^{−w})| ≤ e^{−3w}Σ_{l≥3}|φ̃(l)|`, and (large scale)
+  `P(e^{−w}) = (2/π)∫_0^{π/2}S(sin θ)·Im[1/(2cosh(w−iθ))]dθ ⇒ |P(e^{−w})| ≤ ‖(φ/y)'‖₁ min(π/4, 1/(2 sinh w))`;
+  then DI Lemma 7.1 analogues: exceptional `≪ X^{−2ν}log`, tempered `≪ (1+|log X|)` resp. `1/X`.

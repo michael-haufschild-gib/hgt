@@ -4197,3 +4197,31 @@ Global actual slope/fullquadratic/fourthgap/join/allrank/RH remain OPEN.
 C72 global nonlinear barrier COMPLETE: for every actual x>0, q−Tq²>b(1/k). Fourteen new production leaves passed final lake --old env lean; twenty imported capstones standard3; umbrella wired; index exit0; lint exit1 only seventeen unrelated umbrella omissions. Scratch sources/caches cleaned. Proof and audit: P3 tt-global-nonlinear-source-barrier. Next hard target C73 global third-slope sign under t−h²t²>rb(h), P1 tt-third-slope-nonlinear-cone. No RH/global-third-slope/fourth-gap closure claimed.
 
 C73 frontier advanced: exact cubic boundary contact Q(h,r,B)=h³L with L(0)=1944A−63Cr²; uniform strict nonlinear-cone third-slope positivity near infinity, with no actual-flatness or fixed-r premise; exact seam factors S=V*R and Q=(9−rh²)*Rbar. Seventeen new production leaves passed final lake --old env lean; thirty-four imported capstones standard3; wired/indexed. Final lint exit1: eighteen unrelated umbrella omissions, no C73 findings. P3 tt-third-slope-nonlinear-boundary and tt-nonlinear-cone-uniform-tail; P1 tt-third-slope-nonlinear-cone records next exact-boundary and transverse-monotonicity conjectures for the remaining interior. Global slope, full source quadratic, fourthgap/join/allrank/RH remain OPEN.
+
+2026-10-06 C118 checkpoint: route TT still has no global compact upper
+source sign, propagated fourth gap, controlled join or all-rank closure.
+C115 tenth weighted source jet is now production-audited: all 45 leaves
+fresh/clean and all 1459 public declarations checked by the imported
+`lake --old env lean` axiom audit, standard three axioms only. This is
+exact retained-source infrastructure, not a new sign theorem. Eleventh
+jet pieces passed earlier, but regrouping correctly rejected truncated
+pretty-printer output; an imported deep-expression export is prepared,
+without repeating normalization. C116 exact U^26 factor and C117 positive
+reduced seam limit have dependency-closed paper proofs in their P2 cards;
+Lean audits are now the immediate work. Neither is claimed formalized.
+C118 endpoint compatibility test for normalized monotonicity remains
+unproved: both positive endpoint limits must be ordered, with the seam
+limit additionally divided by k(0)^34. Positivity alone gives no order.
+Current corpus search `/tmp/tt_c118_reduced_core_search.json` reports
+partial=false and complete source inventory, but most compiler records
+are pending/source-only; no global-sign producer found. Next attack:
+complete the seam-factor/limit proofs, then test the full reduced Lie
+transport sign with every source and cofactor retained.
+
+C118 audit progress: C116 closed in production, 3 leaves / 19 public
+axiom checks, standard three only. P2 card moved to P3 and frontier map
+updated. C117 full complex source slopes also passed scratch; this closes
+the reality gap needed to form the full border-square determinant rather
+than infer it from real-part identities. Upper complex identity audit is
+being repaired for literal-real-to-complex numeral elaboration. No change
+to its mathematical statement; no analytic sign premise introduced.

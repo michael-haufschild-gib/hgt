@@ -89,4 +89,25 @@ theorem summable_ramanujanTripleSchwartz_weighted (Φ : 𝓢(ℝ × ℝ × ℝ, 
     (fun n => mul_nonneg (norm_nonneg _) (tripleWeight_pos _).le) (fun n => ?_) hmajor
   simpa only [mul_one_div] using ramanujanTripleSchwartz_weighted_le Φ (ramanujanTripleLattice n)
 
+
+/-- The complete weighted lattice sum is controlled by one fixed finite
+Schwartz seminorm, with a constant independent of the input test. -/
+theorem ramanujanTripleSchwartz_weighted_sum_le :
+    ∃ C : ℝ, 0 < C ∧ ∀ Φ : 𝓢(ℝ × ℝ × ℝ, ℂ),
+      (∑' n : ℤ × ℤ × ℤ, ‖Φ (ramanujanTripleLattice n)‖ *
+        ramanujanTripleWeight (ramanujanTripleLattice n)) ≤ C*ramanujanTripleSeminorm Φ := by
+  let W : ℝ := ∑' n : ℤ × ℤ × ℤ, 1/(ramanujanTripleWeight (ramanujanTripleLattice n))^2
+  have hW : 0 ≤ W := tsum_nonneg (fun n => by positivity)
+  refine ⟨2^9*W+1,by positivity,fun Φ => ?_⟩
+  have hmajor := summable_triple_reciprocal.mul_left (2^9*ramanujanTripleSeminorm Φ)
+  calc
+    _ ≤ ∑' n : ℤ × ℤ × ℤ, (2^9*ramanujanTripleSeminorm Φ)*
+        (1/(ramanujanTripleWeight (ramanujanTripleLattice n))^2) :=
+      (summable_ramanujanTripleSchwartz_weighted Φ).tsum_le_tsum
+        (fun n => by
+          simpa only [mul_one_div] using
+            (ramanujanTripleSchwartz_weighted_le Φ (ramanujanTripleLattice n))) hmajor
+    _ = (2^9*W)*ramanujanTripleSeminorm Φ := by rw [tsum_mul_left]; ring
+    _ ≤ _ := mul_le_mul_of_nonneg_right (by linarith) (apply_nonneg _ _)
+
 end RHTower.BAGTrace

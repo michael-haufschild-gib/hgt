@@ -80,3 +80,36 @@ included) via the bound `|ĝ| ≤ |f̂| + C·1_{[x₀−1,x₀+1]}` in the form 
 - Module `RHTower/CCMEvenGroundXiStripConvergenceRH.lean` (namespace `RHTower.CCMXiStrip`; standard axioms; `lake --old build` green; wired after `CCMRestrictedWeilEvenSectorCrossZeros`).
 - `riemannHypothesis_of_evenGround_strip_convergence`: even ground states with cross-rooted transforms whose normalized transforms converge to `XiC` on `\|Im z\| < ½` give RH.
 - Reusable: `zero_mem_closed_of_tendstoLocallyUniformlyOn` (Hurwitz closed-locus transfer on open sets) and `differentiable_unitaryLaplace`.
+
+## MUST-796 (2026-10-06): the polar obstruction and the corrected receiver
+- Module `RHTower/CrossRootedPolarZeroXiStripObstruction.lean`. Namespace `RHTower.CCMPolarObstruction`; standard axioms; `lake --old build` green; wired after `CCMEvenGroundXiStripConvergenceRH`.
+- `not_tendstoLocallyUniformlyOn_XiC`: even, order-one, cross-rooted `F_n` with `F_n(i/2) = 0` admit no `c_nF_n → XiC` on the strip.
+  - Mechanism: `Λ_F(y) = iF'(iy)/(2yF(iy)) = Σ_q 1/(2(a_q²+y²))`, from Hadamard plus the reflection of zero copies.
+  - Every term is real and decreasing; the polar pair forces a drop that is unbounded as `y → ½`.
+  - Equivalently, `Σ_q a_q⁻⁴ ≥ 16` against Ξ's `σ₄ ≈ 3.7·10⁻⁵`.
+- `not_evenGround_strip_convergence`: MUST-795's `riemannHypothesis_of_evenGround_strip_convergence` has jointly unsatisfiable hypotheses (vacuous).
+- Corrected receivers:
+  - `riemannHypothesis_of_crossRooted_polarQuotient_strip_convergence` and `..._evenGround_polarQuotient_...`: convergence of `c_nG_n(z)/(z²+¼)` to `XiC` on the strip.
+  - `riemannHypothesis_of_strip_convergence_of_cross_zeros`: the general form for functions holomorphic on the strip.
+- Numerics (`computations/2026-10-06-polar-ground-xi-shape`, a = 0.5–0.8):
+  - polar ground states are `(1+4z²)·(Ξ-shaped)`, with `c₄ = −8 + c₄(Ξ)`;
+  - the quotient approaches `Ξ/Ξ(0)` with a z²-coefficient deficit `≈ e^{−2a}/(4π²)`.
+- Qualification of the MUST-794 literature comparison above:
+  - Connes's `k_λ` and the CvS theorem concern the **unconstrained** Weil form `QW_λ`; MUST-794 is about the **polar-constrained** form.
+  - MUST-794 therefore removes even-simplicity for the polar analogue, not for Connes's eigenvectors.
+  - The CCM route for corpus objects is now: polar even generators (cross-rooted, MUST-794) with `G/(z²+¼) → cΞ` on the strip ⇒ RH [L].
+  - For Connes's own objects, an unconstrained analogue of MUST-794 would be needed.
+
+## MUST-797 (2026-10-06): the unconstrained form (Connes's `QW_λ`)
+- Module `RHTower/CCMRestrictedWeilFullFormRealRootedGround.lean`. Namespace `RHTower.CCMFullRealRootedGround`; standard axioms; `lake --old build` green; wired after `CrossRootedPolarZeroXiStripObstruction`.
+- `exists_realRooted_fullGround`: at every aperture, some nonzero ground state of the unconstrained form (bottom `ccmRestrictedWeilGroundEnergy`) has only real transform zeros.
+- `realRooted_of_finrank_eq_one`: a simple ground level is real-rooted, of either parity.
+- `riemannHypothesis_of_fullGround_strip_convergence`: the receiver for Connes's objects.
+- New ingredients:
+  - `source_eq_integral_add_pole` (frequency form with pole term `2Re(conj f̂(w₋)f̂(w₊))`);
+  - `pair_identity` (the flip splits `conj F(w̄)F(w)` at every `w`);
+  - `conj_polarPoint`.
+- Literature:
+  - this removes the simple + isolated + even hypotheses of Connes–van Suijlekom Thm 6.1 for the Weil form;
+  - it settles the first "remaining step" of Connes 2602.04022 §6.6 for the Hurwitz argument;
+  - it is the continuous analogue of Delsarte–Genin–Kamp.

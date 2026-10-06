@@ -1,0 +1,1682 @@
+[
+ {
+  "kind": "zeta_gap",
+  "seed": 0,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 1,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 2,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 3,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 4,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 5,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 6,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 7,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 8,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 9,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 10,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 11,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 12,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 13,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 14,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 15,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 16,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 17,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 18,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 19,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 20,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 21,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 22,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 23,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 24,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 25,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 26,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 27,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 28,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_gap",
+  "seed": 29,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 0,
+  "pairs": 78,
+  "viol": 4,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 1,
+  "pairs": 78,
+  "viol": 6,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 2,
+  "pairs": 78,
+  "viol": 8,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 3,
+  "pairs": 78,
+  "viol": 11,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 4,
+  "pairs": 78,
+  "viol": 3,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 5,
+  "pairs": 78,
+  "viol": 3,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 6,
+  "pairs": 78,
+  "viol": 10,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 7,
+  "pairs": 78,
+  "viol": 8,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 8,
+  "pairs": 78,
+  "viol": 7,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 9,
+  "pairs": 78,
+  "viol": 7,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 10,
+  "pairs": 78,
+  "viol": 7,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 11,
+  "pairs": 78,
+  "viol": 6,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 12,
+  "pairs": 78,
+  "viol": 5,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 13,
+  "pairs": 78,
+  "viol": 11,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 14,
+  "pairs": 78,
+  "viol": 8,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 15,
+  "pairs": 78,
+  "viol": 3,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 16,
+  "pairs": 78,
+  "viol": 4,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 17,
+  "pairs": 78,
+  "viol": 10,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 18,
+  "pairs": 78,
+  "viol": 3,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 19,
+  "pairs": 78,
+  "viol": 4,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 20,
+  "pairs": 78,
+  "viol": 4,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 21,
+  "pairs": 78,
+  "viol": 6,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 22,
+  "pairs": 78,
+  "viol": 7,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 23,
+  "pairs": 78,
+  "viol": 11,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 24,
+  "pairs": 78,
+  "viol": 10,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 25,
+  "pairs": 78,
+  "viol": 8,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 26,
+  "pairs": 78,
+  "viol": 3,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 27,
+  "pairs": 78,
+  "viol": 6,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 28,
+  "pairs": 78,
+  "viol": 3,
+  "degenerate": 0
+ },
+ {
+  "kind": "zeta_nogap",
+  "seed": 29,
+  "pairs": 78,
+  "viol": 3,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 0,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 1,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 2,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 3,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 4,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 5,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 6,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 7,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 8,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 9,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 10,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 11,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 12,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 13,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 14,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 15,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 16,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 17,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 18,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 19,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 20,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 21,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 22,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 23,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 24,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 25,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 26,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 27,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 28,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "decreasing",
+  "seed": 29,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 0,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 1,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 2,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 3,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 4,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 5,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 6,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 7,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 8,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 9,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 10,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 11,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 12,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 13,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 14,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 15,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 16,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 17,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 18,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 19,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 20,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 21,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 22,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 23,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 24,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 25,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 26,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 27,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 28,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "uniform",
+  "seed": 29,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 0,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 1,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 2,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 3,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 4,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 5,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 6,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 7,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 8,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 9,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 10,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 11,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 12,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 13,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 14,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 15,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 16,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 17,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 18,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 19,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 20,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 21,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 22,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 23,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 24,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 25,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 26,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 27,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 28,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "randweights",
+  "seed": 29,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 0,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 1,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 2,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 3,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 4,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 5,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 6,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 7,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 8,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 9,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 10,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 11,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 12,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 13,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 14,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 15,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 16,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 17,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 18,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 19,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 20,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 21,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 22,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 23,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 24,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 25,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 26,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 27,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 28,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "asym",
+  "seed": 29,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 0,
+  "pairs": 78,
+  "viol": 12,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 1,
+  "pairs": 78,
+  "viol": 2,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 2,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 3,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 4,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 5,
+  "pairs": 78,
+  "viol": 10,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 6,
+  "pairs": 78,
+  "viol": 10,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 7,
+  "pairs": 78,
+  "viol": 5,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 8,
+  "pairs": 78,
+  "viol": 8,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 9,
+  "pairs": 78,
+  "viol": 2,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 10,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 11,
+  "pairs": 78,
+  "viol": 3,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 12,
+  "pairs": 78,
+  "viol": 7,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 13,
+  "pairs": 78,
+  "viol": 4,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 14,
+  "pairs": 78,
+  "viol": 2,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 15,
+  "pairs": 78,
+  "viol": 18,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 16,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 17,
+  "pairs": 78,
+  "viol": 10,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 18,
+  "pairs": 78,
+  "viol": 10,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 19,
+  "pairs": 78,
+  "viol": 7,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 20,
+  "pairs": 78,
+  "viol": 8,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 21,
+  "pairs": 78,
+  "viol": 24,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 22,
+  "pairs": 78,
+  "viol": 5,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 23,
+  "pairs": 78,
+  "viol": 8,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 24,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 25,
+  "pairs": 78,
+  "viol": 2,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 26,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 27,
+  "pairs": 78,
+  "viol": 2,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 28,
+  "pairs": 78,
+  "viol": 2,
+  "degenerate": 0
+ },
+ {
+  "kind": "sym_random",
+  "seed": 29,
+  "pairs": 78,
+  "viol": 4,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 0,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 1,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 2,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 3,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 4,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 5,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 6,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 7,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 8,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 9,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 10,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 11,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 12,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 13,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 14,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 15,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 16,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 17,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 18,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 19,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 20,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 21,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 22,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 23,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 24,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 25,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 26,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 27,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 28,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ },
+ {
+  "kind": "mono_smooth",
+  "seed": 29,
+  "pairs": 78,
+  "viol": 0,
+  "degenerate": 0
+ }
+]

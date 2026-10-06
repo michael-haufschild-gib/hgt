@@ -93,3 +93,13 @@
   - The prime-blind LP has no universal extremal (cross-gaps 2.5e-6 to 1e-2), so there is no closed-form route to PBAP.
   - Atomic-on-Z producers are already closed in the corpus (`WeilConeCriticalZeroCarriedRigidity`).
 - 2026-10-06 (row 488, MUST-794): external audit against the 2026 CCM literature (Connes arXiv 2602.04022; Connes–van Suijlekom CMP 2026; Silva Zenodo 2026). Their structural hypothesis, even-simplicity, is now discharged in Lean: even-sector generators are cross-rooted, and Ξ ≠ 0 on iℝ. The approximation template's single open step is the convergence (localization) of explicit even generators to Ξ.
+- 2026-10-06 (row 496, MUST-796): the CCM receiver of MUST-795 was vacuous for polar ground states.
+  - Cross-rooted zeros add positively to `Σz⁻⁴`, and the forced polar zeros `±i/2` exceed Ξ's budget by a factor of about 4·10⁵.
+  - The corrected open input is `G_a/(z²+¼) → cΞ` on the strip (Lean receiver). Numerics at a ≤ 0.8 show it holds, with z²-deficit ≈ e^{−2a}/(4π²): the zero-density gap above `T* = 2πe^{2a}`, i.e. the same Nyquist law as μ_a.
+  - Picture unchanged: approximation side closed except one convergence statement, which is RH-strength.
+  - Methodological lesson: positivity of power sums on the cross detects vacuous receivers.
+- 2026-10-06 (row 497, MUST-797): Connes's QW_λ has a real-rooted ground state at every λ, and a simple one is real-rooted, of either parity, with no hypothesis. The approximation template is now closed in Lean for both the polar and the unconstrained form, except the single convergence statement.
+- 2026-10-06 (rows 496–508): the CCM approximation template has ONE analytic open core, the boundary (edge) mass of the restricted-Weil ground state at `x = ±a`.
+  - Arithmetic-blind (proved): real roots [L], quadrature, multiplicity, monotone zero flow.
+  - Equivalent faces of the edge decay: convergence, localization, zero domination, gap non-penetration, parity-simplicity (Connes's step 1 is RH-sensitive: planted off-line zeros force even/odd crossings with half-period π/(2t₀)).
+  - Exact parity transfer: `Q(sign·f) = Q(f) ∓ 4H(f₊)`, H the Hankel form of the Weil kernel. The archimedean Hankel part is a negative Laplace kernel (favors even), the pole part is rank-2 positive and measures edge mass (favors odd).

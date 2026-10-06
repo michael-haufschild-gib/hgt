@@ -595,3 +595,26 @@ completes the full fixed-radius packet for every naturalM.
 This finite completion does NOT pay the full complement |ab|>Mr.
 Full signed cubic/tail, growing moments/cofactors and deterministic
 common-height return remain the hard open BAG problems after it.
+
+### 23az final audited completion
+
+Both new leaves passed: Ties37784 exit0, empty02az; FullPacket6429
+exit0, empty02az. The COMPLETE original fixed-radius packet now cancels
+for every natural M, real N→∞. Exact full=2*ordered+ties and original
+off-diagonal cubic=full+entire complementary tail are both Lean theorems.
+No tie, collision, sign, original source factor or contraction exclusion
+is dropped. Imported axiom audit42526 exit0: all eight public declarations
+use only propext, Classical.choice and Quot.sound. Both leaves wired once.
+Index88869 passed and all eight API rows checked. Final lint38578 exit1:
+367 large-file warnings,22 unrelated unreachable modules, no owned BAG
+finding. Global lint is not clean. Full evidence and exact source lines:
+../3-formalized/bag-hyperbolic-prime-full-cancellation.md.
+
+This closes the full fixed-radius paper theorem. Next hard source target
+is recorded in bag-full-band-continuous-cubic-cancellation.md: twice
+integrate the literal moving profile while retaining both boundaries,
+then sum every original p,r row. Its new candidate boundary mechanism
+is |p/r-1|/|frequency|=1/(2πN), with a reciprocal-square remainder.
+It is not yet a Lean theorem and does not supply full prime sampling.
+The full original complementary tail, growing moments/cofactors,
+common-height return and RH remain open. Goal active, not achieved.

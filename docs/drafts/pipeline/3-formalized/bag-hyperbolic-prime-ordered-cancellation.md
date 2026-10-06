@@ -71,3 +71,7 @@ subagents, commits, pushes, full builds or umbrella builds.
 This closes the ordered fixed-radius packet. It does not prove the full
 cubic/complement, growing moments/cofactors, common-height self-return or RH.
 The active RH goal remains open.
+
+23az completion: the transpose and EVERY equal-gap tie are now proved
+in Lean. See bag-hyperbolic-prime-full-cancellation.md for the exact full
+fixed-radius theorem and audits. The full complementary tail remains open.

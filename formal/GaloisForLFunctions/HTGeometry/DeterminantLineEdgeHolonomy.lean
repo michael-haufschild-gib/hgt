@@ -364,16 +364,19 @@ theorem segHol_eq_prod (hQ : IsStarProjection Q) {a b : ℝ} (hab : a ≤ b)
       rw [show a + l * (b - a) / k = a + (l / k) * (b - a) by ring]
       have : (l : ℝ) / k ≤ 1 := (div_le_one hkpos).mpr hlk
       nlinarith [sub_nonneg.mpr hab]
-  have key : ∀ n ≤ k, segHol Q Pp e a (t n) = ∏ l ∈ Finset.range n, segHol Q Pp e (t l) (t (l + 1)) := by
+  have key : ∀ n ≤ k,
+      segHol Q Pp e a (t n) = ∏ l ∈ Finset.range n, segHol Q Pp e (t l) (t (l + 1)) := by
     intro n hn
     induction n with
     | zero =>
       rw [ht0, Finset.prod_range_zero]
-      have L0 : PathLift Q Pp e a a := L.restrict a a fun _ hr => L.Icc_subset ⟨hr.1, hr.2.trans hab⟩
+      have L0 : PathLift Q Pp e a a :=
+        L.restrict a a fun _ hr => L.Icc_subset ⟨hr.1, hr.2.trans hab⟩
       rw [segHol_eq hQ le_rfl L0]
       unfold edgeFactor
       simp only [intervalIntegral.integral_same, Complex.exp_zero, one_mul]
-      exact div_self (detCoord_ne_zero hQ ((L0.isAdmissibleFrame hQ) (L0.Icc_subset ⟨le_rfl, le_rfl⟩)))
+      exact div_self
+        (detCoord_ne_zero hQ ((L0.isAdmissibleFrame hQ) (L0.Icc_subset ⟨le_rfl, le_rfl⟩)))
     | succ n ih =>
       have hn' : n ≤ k := Nat.le_of_succ_le hn
       rw [Finset.prod_range_succ, ← ih hn']
@@ -403,7 +406,8 @@ variable (Q Pp e) in
 def levelHol (m : ℕ) : ℂ := ∏ i ∈ Finset.range m, segHol Q Pp e (i / m) ((i + 1) / m)
 
 theorem prod_range_mul_eq {M : Type*} [CommMonoid M] (f : ℕ → M) (m k : ℕ) :
-    ∏ j ∈ Finset.range (m * k), f j = ∏ i ∈ Finset.range m, ∏ l ∈ Finset.range k, f (i * k + l) := by
+    ∏ j ∈ Finset.range (m * k), f j =
+      ∏ i ∈ Finset.range m, ∏ l ∈ Finset.range k, f (i * k + l) := by
   induction m with
   | zero => simp
   | succ m ih => rw [Nat.succ_mul, Finset.prod_range_add, ih, Finset.prod_range_succ]

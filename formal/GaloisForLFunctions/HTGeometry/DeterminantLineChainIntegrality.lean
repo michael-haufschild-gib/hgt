@@ -5,8 +5,8 @@ import GaloisForLFunctions.HTGeometry.DeterminantLineSquareHolonomy
 
 Squares in the restricted Grassmannian are smooth maps `q ↦ P₊ + C(q)` of orthogonal projections;
 cubical `2`-chains are finite families of squares with integer multiplicities, and their boundary
-multiplicity counts the edges `bottom + right − top − left`.  A cycle has vanishing boundary on every
-non-degenerate path.
+multiplicity counts the edges `bottom + right − top − left`.  A cycle has vanishing boundary on
+every non-degenerate path.
 
 * `GrSquare.inSector_of_mem`: a square with one point in an admissible sector lies in it.
 * `exp_kahlerOn_eq_one`: within one sector, `exp(2πi ∫_c ω_det)` is the product of the edge

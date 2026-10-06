@@ -2664,3 +2664,577 @@ logs/JSON retained. No numerical experiment, subagent, commit/push,
 heartbeat raise, added axiom/admission, full/umbrella build. Active RH
 goal is NOT complete. Full fixed-radius transpose/ties, full cubic/tail,
 growing moments/cofactors and common-height return remain open.
+
+## 23az — FULL fixed-radius hyperbolic prime packet proved
+
+BAG route. Previous22az closed the original ordered sector. This turn
+closed its mathematical finite completion: EVERY equal-gap tie and
+the transposed sector, retaining the allowed p=q collision. New result:
+for every natural M, the complete original sharp packet on
+p≠r,q≠r,|p-r||q-r|≤Mr has norm o(N/log²N), at real N→∞.
+This advances the actual signed prime-packet frontier; it is not a
+generic receiver or conditional cancellation wrapper.
+
+Actual tie count: |p-r|=|q-r| forces q=p or p+q=2r, at most two q
+for each active pair. A real-scale source entry bound gives2π/N,
+so each entire tie row costs4π/N. Active d²≤Mr implies
+d≤D=floor(sqrt(2MN)); actual two-sign gap reindexing and prime-pair
+prefix give at most2A DN/log²N pairs. The normalized full tie norm
+is at most8πA sqrt(2M)/sqrtN. Exact entry symmetry and finite sum
+commutations give full=2*ordered+ties. The literal complementary
+tail is defined, and original off-diagonal cubic=full+tail is proved
+for every N,M. No tail estimate or interchange of limits is asserted.
+
+Final foreground leaf audits:
+- Ties37784 exit0, empty /tmp/bag-hyperbolic-prime-ties-02az.log;
+  178 lines, public declarations18,25,100.
+- FullPacket6429 exit0, empty /tmp/bag-hyperbolic-prime-full-packet-02az.log;
+  149 lines, public declarations19,41,101,122,129.
+Both use lake --old env lean <leaf> -o <olean>; one owned build at a
+time. Each build was confirmed terminal before editing or replacement.
+First failures were elaboration/coercion and finite-partition simp
+issues, not failures of the paper estimate; fixed without heartbeat
+changes. Imported axiom42526 exit0: all eight public declarations
+depend only on propext,Classical.choice,Quot.sound. Both leaves wired
+exactly once. Index88869 exit0; all eight API rows checked. Lint38578
+exit1:367 large-file warnings,22 unrelated unreachable modules, no
+owned BAG finding. Global lint is not clean. P3 full-cancellation
+card, frontier map and earlier P2/P1 statuses updated.
+
+Search provenance: tie/full query31380 exit0, partial,67630 indexed,
+index1263543 versus coverage1263554/current1263555, compiler
+pending51287/stale2660/error2; no inventory errors, background refresh
+incomplete, older/semantic warnings. All20 candidates and20 source
+arguments plus ingredients inspected, exact entry source re-read.
+Tail query72587 exit0, nonpartial,67634 indexed, index1263644 versus
+coverage1263652/current1263653; compiler pending51291/stale2660/error2,
+no inventory errors. All20 candidates and20 source arguments plus
+ingredients inspected. The indexed FullPacket draft was source-only
+during search; its theorem was NOT accepted until the later final audit.
+Second-derivative query98215 was partial (reranking deadline),67635
+indexed; all returned candidates/source arguments read. Exact lexical
+profile query88507 exit0; source rg found the existing frozen-profile
+two-IBP proof. Corpus-grounded next card:
+bag-full-band-continuous-cubic-cancellation.md.
+
+Next mathematical attack: full-band continuous middle-coordinate
+producer, retaining every p,r and both moving profile boundaries.
+At moving ratio ξ=p/r, the endpoint factor |ξ-1| pays the first
+boundary after division by actual phase frequency; second integration
+leaves a summable1/d² remainder. Paper candidate derived from literal
+profile/window, exact IBP and current gap sieve. Uniform second-jet
+source construction and exact Lean assembly remain to do. Even this
+would leave the full arithmetic prime-sampling error open; current
+fixed-M transfer cannot be substituted at growing M. This boundary
+is explicitly recorded instead of claiming full cubic cancellation.
+
+All owned23az processes terminal. Two owned scratch Lean sources are
+removed after their successful audits; logs/JSON retained. No numerical
+experiment, subagent, commit/push, heartbeat raise, added axiom/admission
+or full/umbrella build. Goal active and unmet: full cubic/tail, growing
+moments/cofactors, deterministic common-height return and RH remain open.
+
+## 24az — complete continuous middle-coordinate producer proved
+
+BAG route. Previous23az was verified progress: full fixed-radius
+hyperbolic PRIME packet cancellation. This turn solved the next analytic
+producer across the ENTIRE middle-coordinate band and EVERY original
+noncontracting prime pair. New unconditional Lean theorem:
+
+    sum_(p,r primes in(N,2N],p!=r) |integral_N^(2N) actualAmplitude(N,p,r,q) dq|
+      = O(N/log³N).
+
+actualAmplitude retains the literal V/W factors, reciprocal1/r,
+recentered phase and prime density1/log q. Exact finite integral
+interchange gives normalized complexnorm of the COMPLETE continuous
+middle-coordinate cubic tending to zero, real N→∞. There is no
+hyperbolic radius, ordering hole or small-gap deletion in this result.
+
+New source mechanism: actual F(ξ,l,x)=W(ξx)V(x)/(1+l logx) is jointly
+smooth at every point of the full compact parameter box. The existing
+all-order AFE regularity and parameter-derivative mechanism construct
+uniform bounds for EVERY fixed spatial jet. Two integrations retain
+both boundaries. Actual W vanishes at1,2, so moving endpointsum is
+bounded by C|ξ-1|; the derivative remainder is inverse-square frequency.
+At ξ=p/r,τ=2piN(p-r)/r, the first ratio is exactly1/(2piN), not1/d.
+The literal row therefore satisfies K[1/(d²logN)+1/(NlogN)] for ALL
+prime pairs. D=floor2N contains every gap; the actual two-sign reindexing,
+prefix sieve and reciprocal-square moment give K(2A+4E)N/log³N.
+
+Final foreground leaf audits, all lake --old env lean <leaf> -o <olean>:
+- MovingProfileJets7646 exit0, empty02az,95 lines; public69,79.
+- MovingProfileFourier10608 exit0, empty03az,172 lines; public129.
+- PrimeFullPairIntegral3239 exit0, empty02az,164 lines; public21,100.
+- PrimeFullContinuousCancellation11416 exit0, empty03az,133 lines;
+  public21,26,33,95,116. Its02 audit passed with one tactic-style warning,
+  removed in03 without changing the proof statement or raising heartbeats.
+All four leaves wired exactly once. Imported axiom46903 exit0: all TEN
+public declarations use only propext,Classical.choice,Quot.sound.
+Index30963 passed; all ten API rows checked. Final authoritative lint85403
+exit1:367 large-file warnings,29 unrelated unreachable modules, no
+owned BAG finding. Global lint is not clean. P3:
+bag-full-band-continuous-cubic-cancellation.md. Current frontier updated.
+
+Search58768 nonpartial67640 indexed, index1263776 versus
+coverage1263780/current1263781, pending51295/stale2660/error2, no inventory
+errors, older/semantic warnings. All20 candidate lemmas,20 source
+arguments and ingredients inspected. Actual compact derivative and
+parameter-jet proofs were used; unrelated exterior-decay suggestions
+were not treated as a producer. Source-read PhysicalAmplitudeBudgets
+and exact current full-packet, profile/phase, pair-prefix/moment proofs.
+API15135 passed. Extra52017 exposed wrong project namespace/import in
+the probe; corrected API93771 passed, including every additional
+integration/cast helper used. No recalled unverified API was relied on.
+
+Sampling search60090 partial67646 indexed, index1263938 versus
+coverage1263946, pending51301/stale2660/error2, no inventory errors;
+judge malformed JSON and interrupted retrieval, no ingredient set.
+All20 candidates and20 source arguments inspected. Exact current
+PrimeOnlyVaughan:274–end retains both masks in the entire shared signed
+row; it is an identity, not the missing saving. Do not repeat old
+prime-only Vaughan/primitive reciprocal-mode no-go reasoning as a proof.
+
+Next hard mathematical problem: control the ENTIRE compensated prime
+sampling discrepancy between the full original noncontracting cubic
+and this now-negligible continuous model. The discrete q=r contraction
+must be subtracted; that point has zero measure in the continuous
+integral. No row-wise absolute error, all-frequency prime-distribution
+estimate, growing-modulus rational main or M/N limit interchange is
+assumed. Full discrete cubic/tail, growing moments/cofactors and
+deterministic common-height return remain open; RH remains unproved.
+
+All owned24az processes terminal. Four owned scratch Lean sources
+removed after the final audit; logs and research JSON retained. No
+numerical experiment, subagent, new axiom/admission, heartbeat override,
+full/umbrella build, commit or push. RH goal active and unmet.
+
+## 25az — compensated sampling and denominator-dual signed trace
+
+BAG route. Previous24az closed a real analytic producer: complete
+continuous middle-coordinate cancellation. This continuation has NOT
+closed a new hard analytic estimate. The open target remains the
+ENTIRE compensated arithmetic discrepancy D(N)-C(N), where C(N) is
+the exact removed q=r contraction, with its all-equal overlap.
+Growing moments/cofactors and deterministic common-height return
+also remain open. No RH completion or route retirement is claimed.
+
+The literal current full-continuous theorem and current frontier were
+rechecked. Fixed-denominator rational rows retain the contraction but
+do not have growing-denominator constants. The actual source was read
+in RationalRows:167/219, PrimeOnlyVaughan:30–158/274–end,
+CubicFourierLattice:104 and existing signed-zero-form C28.56q/r.
+Generic Lp restriction, a Halasz prime-supported mean-square cap and
+Stadlmann's COMPLETE unit-residue sum do not estimate this signed
+incomplete prime-modulus trace. They were not inserted as producers.
+
+Paper attempt and its exact scope are recorded in
+bag-compensated-reciprocal-stationary-trace.md. This revisits06az's
+denominator lattice phase pq/(d*m)+h*m; its saddle, h comparable to d,
+and width sqrt(N)/d were ALREADY known. They are not counted again.
+The second-stage phase 2sqrt(b*pq), b=h/d, has identically singular
+Hessian. Adding both numerator rational modes exposes b=a*c as
+the stationary-cone condition. Thus independent repeated stationary
+savings are unavailable in that proposed proof. At b=1 the exact
+quadratic gap (sqrt(p)-sqrt(q))² equals the hyperbolic phase magnitude
+at r=sqrt(pq), linking that diagonal saddle to the physical region
+already paid by the fixed-radius result. No restricted-packet
+stationary identity is asserted without its transition/remainder.
+
+Equal-mode assembly BEFORE stationary approximation exposes a further
+constraint on this attempt. For the complete finite balanced Type-I
+source, changing r=d*m in its exact Fourier mode integral contributes
+1/d. All h/d=h0/q therefore combine to the SAME coefficients
+alpha_q=sum_(q|d,d<=2N)A_d/d and beta_q=sum_(q|d,d<=2N)B_d/d from09az.
+This representation has a new reciprocal test, not new coefficient
+cancellation. The primitive semiprime coefficient already found in09az
+survives. This calculation applies to the unmasked smooth part; the
+two discrete contractions and their overlap must be removed explicitly.
+Deleting single points in a continuous integral cannot implement them.
+
+What changes next: estimate the joint action across DIFFERENT rational
+modes with the full kernels and signed coefficients, then identify
+the already closed positive-cone contribution exactly. Do not repeat
+a coefficientwise vanishing claim, fixed-mode result, generic L2 norm
+argument or stationary identity as an analytic saving. Exact finite
+transport alone is not enough. The complete growing off-cone trace
+and its uniform endpoint/transition errors remain the hard problem.
+
+All owned research commands terminal0; all returned20 candidate and20
+source-argument statements and ingredient proposals were inspected
+(truncated output was followed up). Search evidence:
+
+- full-prime-compensated87570: partial, decomposition worker
+  disconnected;67650 indexed,index1264164,coverage1264167/current1264168,
+  compiler pending51304/stale2660/error2.
+- rational-prime-discrepancy77448: nonpartial,67651 indexed,
+  index1264177,coverage/current1264184,pending51305/stale2660/error2.
+- reciprocal-trilinear9188: partial, decomposition disconnected;
+  67651 indexed,index1264190,coverage1264184/current1264191,
+  pending51305/stale2660/error2; mostly inapplicable hits.
+- prime-lp-restriction33265: nonpartial,67652 indexed,
+  index1264199,coverage/current1264204,pending51306/stale2660/error2.
+- reciprocal-stationary33680: nonpartial,67652 indexed,
+  index1264240,coverage/current1264244,pending51306/stale2660/error2.
+- reciprocal lexical search: terminal0,624 hits in278 modules;
+  returned20 declarations inspected. This mode supplied no coverage
+  metadata and no new signed estimate was inferred from it.
+
+Deep searches report no inventory errors, incomplete background refresh
+and unavailable semantic coverage. All JSON remains in/tmp with25az
+suffix. Search/source inspection is not a fresh Lean audit.
+
+Only the parent log and the active conjecture card change. No Lean
+source changed or compiled; no new theorem or frontier-map closure.
+No scratch Lean source or owned running process remains. No numerical
+experiment, subagent, commit/push, heartbeat override or full/umbrella
+build. This attempt has sharpened its unpaid analytic obligation but
+has not moved the verified hard frontier beyond24az. RH goal active.
+
+
+## 26az — complete source control and shrinking-cone normal transport
+
+BAG only. Previous25az sharpened the signed rational-mode obligation but
+closed no hard analytic estimate. This continuation constructs an actual
+uniform bound for the COMPLETE source, retaining both projectors, and a
+paper derivation for its full shrinking-cone exterior. The exterior
+capstone is NOT yet formalized. Full original cubic/near-cone cancellation,
+growing moments/cofactors and deterministic common-height return remain
+open; no RH proof or route retirement is claimed.
+
+New active card: bag-global-conormal-localization.md. It records the exact
+actual amplitude, cone D=xi2+xi0*xi1, selected physical edge N^(1/4),
+shrinking tube N^(-1/8), all projectors and Fourier lifts. A mere bounded
+source norm would lose powers near the moving cone. The proposed normal
+operator L=partial_r-i/(2*pi)*partial_p partial_q annihilates
+K=e(pq/r)/r. Its conjugated transport retains every actual W/V/log/edge
+factor. Repeated transport is intended to gain N^(-1/4) per iteration;
+a fixed sufficiently high order pays all weighted Fourier derivatives
+and the shrinking-tube multiplier. The detailed paper derivation retains
+frequency infinity and the entire source. The required extension from
+compact physical Poisson to all Schwartz inputs is explicitly unpaid
+in Lean. Near-cone source restriction is NOT assumed.
+
+Checked NEW component: ChiRamanujanCriticalSourceControl.lean (198 lines).
+Its public ramanujanDistinguishedPrimeMultiplier_uniform_bound proves
+0<=the literal coefficient<=log(n+1) for ALL P,n, including zero and
+uncovered integers. At most one distinguished-prime entry survives;
+all others contain a vanishing complementary factor. Its public
+ramanujanCriticalTripleAtomAction_projected_periodic_bound controls the
+COMPLETE critical rational tensor after BOTH original projectors by
+sum_n |Phi(n)|(1+|n1|)(1+|n2|)(1+|n3|), independently of every modulus
+and source cutoff. All integer modes, including projector congruence
+aliases, are retained. Pointwise summability in the product function
+space and a continuous finite source functional justify the entire
+series exchange. No atom total-variation bound or analytic hypothesis.
+This is a new source bound, not a claim that its right side is already
+small for the actual moving exterior test.
+
+Scratch API audit25419 exposed one unused wrong name
+Complex.HasDerivAt.exp; the actual API source is HasDerivAt.cexp and
+neither was used in this source-control leaf. Scratch proof52863 found
+cast and tensor sum-order issues;58425 found the current Pi.summable
+and explicit tsum_apply summability arguments. Corrected proof84268
+passed with empty output. One accidental audit from repository root
+reported missing module prefix and exited before any project build;
+all actual project audits used formal/ and lake --old env lean.
+Final direct production leaf10616 passed with empty log, emitting its
+own olean only. Separate /tmp axiom audit26777 passed; both public
+results use only propext, Classical.choice and Quot.sound. Wired once
+into RHTower.lean; no full or umbrella build. Index1678 passed and
+refreshed its generated inventories/database. Authoritative lint82822
+exited1:367 large-file warnings and12 unreachable modules outside this
+work; no finding names the new source-control leaf. Do not report a
+globally clean lint gate.
+
+All five26az searches terminal0. All candidate/source statements and
+ingredient/proof proposals were inspected; truncated output was followed
+up. Coverage is a retrieval snapshot, not a fresh compiler audit:
+
+- signed-off-cone3867: partial=True; indexed67655; index1264308,coverage1264300/current1264309; compiler pending51308/stale2660/error2; inventory errors=[].
+
+- global-frequency-cutoff99239: partial=False; indexed67662; index1264337,coverage1264338/current1264345; compiler pending51315/stale2660/error2; inventory errors=[].
+
+- transverse-shell82680: partial=True; indexed67663; index1264345,coverage1264360/current1264361; compiler pending51316/stale2660/error2; inventory errors=[].
+
+- normal-schrodinger97270: partial=False; indexed67663; index1264360,coverage1264366/current1264367; compiler pending51316/stale2660/error2; inventory errors=[].
+
+- conormal-nonstationary13083: partial=False; indexed67667; index1264426,coverage1264428/current1264428; compiler pending51318/stale2660/error2; inventory errors=[].
+
+Background refresh remained incomplete; the partial searches reported
+retrieval-worker/filter failures. Source definitions were checked directly.
+None of the unrelated nonstationary or fixed-cone hits was treated as a
+producer for the complete moving source.
+
+Next work stays on the same conjecture: prove the actual normal-transport
+jet estimates and the weighted exterior capstone in Lean, retaining all
+cutoffs and both projectors. Do not pivot to another kernel identity or
+count this source bound alone as hard-sector closure. Then attack the
+retained complete shrinking near-cone arithmetic source. Goal active.
+
+All owned26az processes terminal. Three owned scratch Lean sources removed
+after their audits; logs and search JSON retained. Scoped diff-check passed.
+No numerical experiment, subagent, new axiom/admission, heartbeat override,
+full/umbrella build, commit or push. The new full-source bound is verified;
+the complete moving exterior estimate and RH remain unfinished.
+
+## 27az — actual all-order normal transport and exact phase attachment
+
+BAG only. Previous26az paid the complete source functional, but did not
+pay its moving exterior input. This continuation proves the literal
+weight's all-order moving normal-transport bounds, then removes the
+reciprocal oscillation exactly at every iterate. This advances a missing
+analytic producer; it does NOT close the complete exterior, original
+cubic, growing moments/cofactors, common-height return or RH.
+
+Four finished leaves, wired once each into RHTower.lean:
+
+- ChiCubicPhysicalSliceJets: every actual normalized slice jet is
+  <=C_n/delta^n, from the already-proved derivative mass at order n+1
+  and FTC from outside support. Exact dilation gives every literal
+  physical slice jet <=C_n/(log N*H^n), uniformly in admissible N,H.
+- ChiCubicNormalSymbol: every Schwartz normal iterate has Fourier
+  symbol (2*pi*i*(xi2+xi0*xi1))^k. The reciprocal K=e(pq/r)/r is
+  annihilated, and the ENTIRE physical amplitude equals its literal
+  nonoscillatory weight times K.
+- ChiCubicNormalTransportJets: for EVERY k,n, the ACTUAL normalized
+  three-slice coupled weight has ||D^n T_t^k w||<=C_(k,n)/delta^(n+k)
+  on the whole cube, uniformly in delta,h and |t|<=delta. A finite-order
+  product induction pays the mixed derivative's second edge power by
+  its actual reciprocal-scale coefficient. Smoothness of every iterate
+  on positive height is produced. No uniform-jet premise is assumed.
+- ChiCubicNormalConjugation: the normalized normal operator at scale N
+  satisfies R_N^k(K_N*w)=K_N*T_(1/N)^k w for the ACTUAL weight, all k,
+  on positive height. Exact actual amplitude dilation retains
+  2*pi/(N*log^3 N), every Gaussian/logarithm/cutoff and coupled height
+  factor. This does not by itself supply weighted Fourier decay.
+
+All final direct leaf audits passed, with empty logs and own oleans only:
+61142 (slice),50835 (normal symbol),97542 (transport final revision),
+39411 (conjugation). Each used lake --old env lean <leaf> -o <own olean>.
+Separate /tmp axiom audit47708 passed for ALL10 new public theorems:
+only propext, Classical.choice and Quot.sound. Index44681 passed and
+refreshed generated inventories/database. No full/umbrella build.
+Authoritative lint13206 exited1 with unreachable modules outside these
+four leaves; all four have no lint finding. The global gate is not clean.
+
+Both corpus searches terminal0; all candidate/source statements and
+ingredient proposals were inspected, including truncated-output followup.
+Normal-transport search: nonpartial67714, index1264670,
+coverage/current1264676, compiler pending51364/stale2660/error2.
+Physical-conjugation search: partial semantic_retrieval, indexed67812,
+index1265036,coverage1265039/current1265046, compiler pending51461,
+stale2660/error2. Both have no inventory errors. Exact source checking
+and direct Lean audits establish applicability; unrelated phase transports
+and fixed compactness bounds were not substituted for moving producers.
+
+Proof attempts exposed syntax/type-inference and toolchain API issues,
+not a failure of the all-order conjecture: no general real-domain/complex-
+target Fréchet quotient API, solved by inverse chain rule and product;
+explicit coordinate maps; subtype positivity; degree addition; complex
+I^3 cancellation. No heartbeat setting was raised. Scratch85727 proved
+the jet induction; scratch57376 proved exact iterated attachment.
+
+Same hard next target: physical normal-iterate ALL-jet bounds and weighted
+Fourier control for the full shrinking exterior, followed by full Schwartz
+Poisson and complete source attachment. Active card
+bag-global-conormal-localization.md records the detailed scale induction
+and the ENTIRE retained near-cone obligation. Keep both projectors after
+the split and every signed frequency. Do not count identities alone as
+sector closure, truncate the source, assume a restriction norm, revisit
+fixed-radius cancellation or switch routes. Goal remains active.
+
+Final lint count:367 large-file warnings,17 unreachable-module errors,
+zero findings in the four new leaves. All four umbrella imports unique.
+All owned27az processes terminal; six owned scratch Lean sources and one
+assembly text fragment removed. Logs/JSON retained. No numerical experiment,
+subagent, new axiom/admission, heartbeat override, full/umbrella build,
+commit or push. No RH or full cubic closure is claimed.
+
+## 28az — COMPLETE physical jets and weighted Fourier normal gain
+
+BAG only. Previous27az made verified progress on actual normalized
+transport. This continuation closes its physical all-jet and weighted
+Fourier producer, rather than introducing a new conditional receiver.
+The COMPLETE exterior and ENTIRE shrinking near-cone arithmetic action,
+growing moments/cofactors and deterministic common-height return remain
+open. No full original cubic or RH closure.
+
+Three finished leaves, each wired once:
+
+- ChiCubicReciprocalPhaseJets: every ordinary Frechet derivative of the
+  literal normalized reciprocal phase K_N is <=C_n N^n on [1,2]^3,
+  uniformly N>=1, with 1/v2 retained. The actual real oscillation has
+  unit-norm derivatives of every order; compact geometric jets and the
+  corpus's finite-order composition bound pay the entire N dependence.
+- ChiCubicPhysicalNormalJets: exact physical normal-operator/dilation
+  intertwining gives every actual iterate L^k A_(N,H). Combining both
+  phase and transport jets yields ||D^n L^k A(x)||<=C_(k,n)/
+  (N log^3 N H^k), for EVERY spatial x and EVERY k,n, N>=exp1,
+  1<=H<N/2. All jets outside the literal closed cube are zero; support
+  and regularity are proved, not supplied. Every original Gaussian,
+  logarithmic, cutoff and coupled height factor remains.
+- ChiCubicNormalFourierBudgets: EVERY physical Schwartz seminorm is
+  <=C_(k,p,n) N^p/(N log^3 N H^k). For EVERY weighted Fourier seminorm
+  (p,n), one M is selected BEFORE k and the bound C_(p,n,k) N^M/
+  (N log^3 N H^k) holds. Quantifiers forall(p,n),existsM,forallk,existsC
+  are essential: further normal differentiation does not increase the
+  polynomial cost. Full Fourier continuity chooses finitely many actual
+  physical seminorms, with no assumed source norm or Fourier budget.
+
+Scratch phase39468, physical37111 and Fourier29814 passed with empty
+output. Final direct leaf audits58341,76023,78072 all passed with empty
+logs and emitted own oleans only; lake --old env lean <leaf> -o <own olean>.
+No full or umbrella build. Index20420 passed. Authoritative lint17292
+exited1:367 large-file warnings and16 unreachable modules outside this
+work; zero findings in the three new leaves. All three imports unique;
+source whitespace checks passed. Separate axiom audit32030 passed:
+all seven public theorems use only propext, Classical.choice, Quot.sound.
+
+Source searches (all terminal0, candidate/source statements and ingredient
+proposals inspected; no inventory errors):
+
+- Phase deep: partial decomposition;67864 indexed,index1265351,
+  coverage/current1265353;compiler pending51512/stale2660/error2.
+  Polynomial/all-order hits did not give actual phase control.
+- Exact lexical composition symbol: zero hits, no freshness metadata.
+- Rephrased hybrid composition: nonpartial67865,index1265396,
+  coverage/current1265397;compiler pending51513/stale2660/error2.
+  Returned norm_iteratedFDerivWithin_comp_le; checked and used directly.
+- Weighted Fourier deep: nonpartial67868,index1265505,
+  coverage1265515/current1265516;compiler pending51515/stale2660/error2.
+  Finite-seminorm Fourier continuity applies; one-dimensional Deninger
+  cap hypotheses are not transferred to the actual three-dimensional
+  amplitude.
+
+The exact translated compact-parameter phase formula was a valid paper
+alternative, not a failed conjecture. Corpus composition control supplied
+a shorter verified proof of the SAME all-order phase bound. Remaining
+scratch failures were binder/cast/set-representation or simplifier issues,
+not weakened mathematical targets. No heartbeat override or numerical
+experiment. The full physical-space target, all orders and all factors
+were preserved through the proof attempts.
+
+Next same hard exterior conjecture: construct one actual smooth chi and
+prove EVERY jet of g_k(t)=(1-chi(t))/t^k bounded, including the zero
+neighborhood and infinity. Compose with FULL signed D/epsilon and retain
+all frequencies. Product/Schwartz estimates must keep polynomial degrees
+independent of k. Active card bag-global-conormal-localization.md records
+the exact bound after inverse Fourier, C_k N^(M-1) H^-k epsilon^(-(k+R)),
+which gives arbitrary polynomial saving after choosing fixed k late.
+Then close full Schwartz Poisson/source attachment and admissible-cutoff
+edge transfer. ENTIRE retained near-cone arithmetic remains unpaid;
+both projectors act after the split. Do not revisit fixed-radius packets
+or mark the exterior closed from these weighted Fourier budgets alone.
+Goal remains active.
+
+## 29az — COMPLETE moving-exterior Schwartz decay
+
+Route BAG. Previous physical normal jets and weighted Fourier gain were
+used directly to solve the entire moving-test estimate. Hard mathematical
+remainder: full projected-source attachment, ENTIRE shrinking near-cone
+arithmetic cancellation, growing moments/cofactors and deterministic
+common-height return. No cubic or RH closure is claimed.
+
+Three new checked producers:
+
+- ChiCubicExteriorMultiplier: actual chi=ContDiffBump(0),rIn1,rOut2;
+  g_k=(1-chi)/t^k is globally smooth and has bounded jets of EVERY order,
+  including at0 and both infinite ends. For full signed D=xi2+xi0xi1,
+  all derivatives through order n of g_k(D/epsilon) are bounded by
+  C_(n,k) epsilon^-n (1+normxi)^L_n. L_n and the resulting finite input
+  Schwartz rectangle are chosen BEFORE k. No frequency truncation,
+  missing sheet, excluded transition interval or inverse-defect premise.
+- ChiCubicExteriorEstimate: exact full normal-symbol factorization at
+  every xi, including D=0. After the whole multiplier and inverse Fourier,
+  every actual exterior physical seminorm has bound
+  C_k N^M/(N log^3 N H^k epsilon^(k+R)), M,R fixed BEFORE k.
+- ChiCubicExteriorRapidDecay: for literal H=N^(1/4),epsilon=N^(-1/8),
+  EVERY recipient(p,n) and EVERY natural decay order a have a constant
+  C>0 with seminorm(B_N)<=C/N^a. Choosing k=8*(M+a)+R makes the combined
+  denominator power H^k epsilon^(k+R)=N^(M+a); N log^3N>=1 pays the rest.
+  Admissible scales include EVERY sufficiently large original natural N;
+  no subsequence or empty-domain argument.
+
+Final direct leaves55171,28138,40677 all passed with empty output and own
+oleans only, lake --old env lean <leaf> -o <own olean>. All three unique
+umbrella imports. No full or umbrella build. The actual conjectured
+estimate survived unchanged; failed checks were notation, positivity or
+natural/real cast details, fixed without resource-limit changes. No
+numerical experiments or stronger assumptions. Separate12-theorem axiom,
+index and authoritative lint results are recorded in the final audit below.
+
+Corpus discovery: multiplier deep98820 nonpartial67872,index1265670,
+coverage1265672/current1265679,compiler pending51519/stale2660/error2.
+All20candidate/source statements and ingredients inspected; L2/scattering
+bounds did not pay this Schwartz target. Source inspection and Lean
+confirmed ContDiffBump, iter_deriv_zpow, actual polynomial temperate growth,
+finite-order composition, full Leibniz and finite Schwartz control.
+Poisson27880 partial decomposition(worker disconnected),67965,
+index1265922,coverage1265916/current1265923;pending51611/stale2660/error2.
+Focused Poisson24186 nonpartial67967,index/coverage1265955,current1265956,
+pending51613/stale2660/error2. Density74472 partial semantic(Qdrantdeadline),
+67969,index1265972,coverage/current1265977,pending51615/stale2660/error2.
+All candidate/source statements and proposed ingredients inspected; no
+inventory errors. Actual available Poisson is1D Schwartz or3D compact;
+actual compact-support Schwartz approximation is1D. No type or support
+premise was silently transferred to the3D canonical exterior.
+
+Source recheck corrected one stale obligation: the existing
+primeGaussianCubic_controlled_cutoff_negligible_error already proves
+original sharp/smooth transfer for THIS exact quarter-power cutoff.
+Remaining source attachment is substantive: full Schwartz twisted Poisson,
+coordinate identification and the fixed weighted lattice seminorm bound
+must connect the new complete exterior to the original critical atom
+source after BOTH projectors. The active card records a dependency-level
+proof path through actual compact cutoff approximation and continuous
+weighted lattice sampling. ENTIRE near-cone arithmetic stays unpaid.
+
+29az final audit: axiom70209 passed, all12 public theorems depend only on
+propext,Classical.choice,Quot.sound. Index36171 passed(6changed,0removed).
+Authoritative lint86066 exited1 with20 unrelated unreachable modules;
+zero findings in the three new leaves. Imports unique and all new source
+whitespace checks clean; scoped diff check passed. All owned processes
+are terminal. Eight owned scratch/assembly sources removed; diagnostic
+logs and corpus JSON retained. No full/umbrella build, new axiom,
+admission, heartbeat override, numerical experiment, commit or push.
+BAG goal stays active; full projected-source attachment is next.
+
+## 30az — COMPLETE projected arithmetic exterior closed
+
+Route BAG. Previous29az supplied actual rapid Schwartz decay; this turn
+closes its previously missing COMPLETE arithmetic attachment. Full3D
+Schwartz Poisson is proved for every physical Schwartz test and every real
+shift, with normal periodization and every integration exchange admitted.
+The shifted Fourier lattice equals the complete periodic physical test.
+The entire critical source under BOTH projectors is therefore bounded by
+ONE fixed physical Schwartz seminorm family, uniformly in ALL P and D.
+Thus bagCubicShrinkingExterior_source_rapid_decay gives C_a/N^a for EVERY
+natural a, with all atoms, integer lifts and congruence aliases retained.
+This is closure of the original complete exterior sector, not only an
+analytic test estimate. No source norm, summability or cancellation premise.
+
+Final leaf audits: CompactPoisson66849, SchwartzPoisson51816,
+weighted lattice3866, ExteriorSource10040 PASS. Integration found and
+fixed the N>1/exp1-domain constructor name collision; five-leaf sequential
+reaudit12356 PASS. New exp1 constructor is bagCubicExpControlledPhysicalSchwartz;
+existing bagCubicControlledPhysicalSchwartz and its earlier cone branch
+are untouched. Scratch85390 imports both branches and proves exact original
+sharp reduction to the entire near-cone action. Final leaf5368 is running;
+axioms/index/lint follow. See active conormal card for full search coverage.
+
+Hard remainder: signed cancellation of the ENTIRE shrinking tube,
+growing moments/cofactors and deterministic common-height return. Exact
+positive covered-cone cancellation cannot replace this tube. The current
+integer defect law retains phase exp(-2*pi*i*r*d/Q²) for ALL three
+congruences; local prime-height zero axes and inverse-curve/Kloosterman
+laws are available but do not identify this global source. Next attack
+must estimate the complete signed normal pairing with the actual moving
+coupled profile; no finite defect truncation or zero-defect assumption.
+
+30az final certificate: axiom85038 PASS, all25 public theorem endpoints
+use only propext,Classical.choice,Quot.sound. The same scratch imports
+both BAG branches and proves equality of old/new actual constructors
+on the overlapping scale domain. All owned processes are terminal.
+P3:bag-complete-arithmetic-exterior records the complete theorem, paper
+proof and audits. RH goal remains active; entire near-cone arithmetic
+continues in P1:bag-entire-near-cone-arithmetic.

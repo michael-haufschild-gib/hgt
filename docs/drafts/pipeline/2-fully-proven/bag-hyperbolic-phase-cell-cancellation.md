@@ -2,7 +2,7 @@
 
 - **ID:** bag-hyperbolic-phase-cells-17az
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); full packet formalization pending
+- **Type:** THEOREM (paper and Lean); full packet formalization completed in 23az
 - **Source:** ../1-in-progress/bag-covered-global-defect-cancellation.md, turns 16–17az
 - **Statement:** For every fixed positive integer M, the actual sharp-band cubic sum restricted by |(p-r)(q-r)| ≤ M r is o(N/log² N), retaining p ≠ r, q ≠ r and allowing p = q.
 
@@ -14,7 +14,7 @@ Cancel the positive hyperbolic core together with its complementary signed phase
 
 - [x] 0 → 1: concrete actual-prime target and corpus-based proof mechanism.
 - [x] 1 → 2: detailed paper proof below; prime-window input independently proved in Lean.
-- [ ] 2 → 3: exact unconditional Lean theorem, foreground leaf audit, standard axioms only.
+- [x] 2 → 3: exact unconditional full-packet theorem, foreground leaf audits37784/6429, imported axiom audit42526; standard axioms only. See ../3-formalized/bag-hyperbolic-prime-full-cancellation.md.
 
 ## Corpus inputs checked
 
@@ -189,6 +189,13 @@ limit is `ChiCubicHyperbolicPrimeCancellation.lean:165`. See
 `../3-formalized/bag-hyperbolic-prime-ordered-cancellation.md`.
 
 ### Full-cubic boundary remains
+
+23az completed both strict gap orders and EVERY equal-gap tie in Lean,
+including p=q. The theorem is
+`RHTower.chiCubicHyperbolicPrimeFullPacket_tendsto` in
+`ChiCubicHyperbolicPrimeFullPacket.lean`, valid for every natural M and real N→∞.
+Exact original off-diagonal cubic=full packet+entire tail is also proved.
+All previous statements of pending full-packet formalization are superseded.
 
 No assertion is made about the complement |(p-r)(q-r)|>Mr. In particular, convergence for every fixed M cannot be exchanged with M→∞ inside the full cubic without a separate uniform tail argument. The hard full BAG cubic remains open.
 

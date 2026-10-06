@@ -2442,3 +2442,601 @@ Thus terminal leading sign can decide actual tail sign, whereas a finite-K
 terminal obstruction only refutes a whole-cone certificate. No such sign or
 obstruction is claimed yet. Controls1..9, global actual last entry, compact
 upper determinant, gap, controlled join and all-rank/RH remain OPEN.
+
+C109 paper refinement of the C108 contact mechanism (NOT a sign theorem).
+The existing corpus has native third determinant strictly NEGATIVE at the
+seam (ThetaCuspCoupledOddSeamDirection uses
+thetaCuspNativeOddHankelThreeDet_zero_neg). Therefore a blanket d>0 premise
+would exclude the required seam region. The contact identity only needs
+d!=0, since its left multiplier is d^2. More usefully retain the transport
+gain in the complete derivative quadratic:
+ q0=a'+2*f*b^2, q1=b'+2*f*b*d, q2=d'+2*f*d^2.
+Then g'=q0+2*q1*t+q2*t^2 along actual transport. Algebraically define
+ R=(a*q2-d*q0)^2-4*(a*q1-b*q0)*(b*q2-d*q1).
+With Delta=a*d-b^2 and the previous A,B, exact paper cancellation gives
+ A^2+4*B^2*Delta=d^2*R.
+Unlike division by d, R remains defined when d=0. There it factors as
+ q2*(a^2*q2-4*a*b*q1+4*b^2*q0). If b!=0, the second factor is
+ 4*b^2 times the complete derivative at the unique contact t=-a/(2*b).
+Thus a prospective contact proof can retain the actual sign-changing
+native third minor rather than assume it positive. The still-open global
+d'>0 target would imply q2>0 for x>0. No positivity of R or contact
+orientation has been proved; no conditional receiver added. This is a
+source-derived replacement mechanism to test if the stronger all-direction
+source-quadratic sign fails, not a reason to abandon the current audit.
+
+C109 audit checkpoint: all15 terminal jets0..14 now PASSED, as did complete
+moments1..4. Every new capstone log inspected: standard3, no warnings/errors.
+Sole18475 currently checks Moment5; later moments/cofactors/entries/determinant
+remain pending. Manifest prefix updated. Added UNTESTED scratch
+/tmp/TTC109TerminalBoundarySign.lean: conjectured strict negative FULL upper
+determinant at natural cone endpoint K=5/4 and fixedload10^13. This is a
+proof attempt, NOT evidence of negativity. Audit only after currentdriver
+terminal; reject any failed output. If false, use the exact failed goal to
+revise the sign conjecture. If true, extract actual terminal-tail sign and
+load/clock boundary information before retiring the whole-cone proposal.
+The source-faithful export will include accepted moments1,7 for checking
+the affine-Gaussian leading structure; no truncated model used.
+Search93801 TERMINAL0 partialtrue, pendingcoverage1263675/rerankingdeadline;
+read candidates and sourcearguments, only existing gap derivative relevant,
+proofideas/ingredients empty. Search51162 cachedlexical no hits, followed by
+reading exact existing OddFourGaussianFlow source. Search56538 TERMINAL0
+partialfalse, completeinventory67635 but most compilermetadata pending;
+returned existing linear retained-ratio center bounds, not a sharper
+logarithmic center bound. No new center inequality inferred from those hits.
+All searches terminal, no second owned Lean started. C88resume9 remains
+prepared, NOT running; complete derivative controls1..9 still OPEN.
+
+C109 latest authoritative checkpoint supersedes the earlier Moment5 entry:
+all seven terminal moments1..7 PASSED; logs6/7 inspected, standard3 only,
+no warnings/errors. Sole18475 now checks TTC107TerminalCofactorHead. Full
+determinant and boundary-sign draft remain UNTESTED. This turn closed the
+explicit full-moment representation, not an open global sign. Next work is
+the whole determinant sign test and its source-specific positive survivor,
+then C88controls9..1. No new production leaves or umbrella builds this turn.
+
+C110 continuation, RouteTT. PreviousC109 made formal progress (full terminal
+moments); no global sign closed. Revalidated18475 LIVE, then TERMINAL1:
+Head PASSED (standard3, clean log), cofactorA ring normalization hit default
+200000-heartbeat limit. Failedfile/reported unknown terminalANorm rejected;
+no A/B/D object exists. No mathematical sign conjecture refuted, no limits
+raised. Exact determinant factorization reduces the next proof:
+ H=m1*m3-m2^2; E=m1*m4-m2*m3; F=m2*m4-m3^2;
+ G=m1*m5-m2*m4; I=m2*m5-m3*m4;
+ A=H*m7-G*m5+I*m4;
+ B=-(H*m6-E*m5+F*m4); D=H*m5-E*m4+F*m3.
+Guarded /tmp/tt_c110_split_terminal_cofactors.py completed0:16 replacement
+stages (four two-by-two minors, nine products, three complete cofactors),
+all proof syntax only. OriginalA/B/D sources and failed log backed up in
+/tmp, no stale compiled objects. Manifest order updated; old full-start
+generator/old resume suffixes must NOT be rerun after this replacement.
+New SOLE62731 LIVE: zsh /tmp/tt_c107_resume_TTC110TerminalACross0.zsh,
+checking first cross minor. PassedAPI/flow/projection/jets/moments/Head are
+not repeated. All later entries/determinant/export and C109 boundary-sign
+attempt remain UNTESTED. Search40116 TERMINAL0 cachedlexical exact hit
+upperCenterDeterminant, no coverage metadata; read existing source again
+only where needed for factorization. Search63651 TERMINAL0 pending review.
+
+C110 root cause resolved before further splitting:62731 TERMINAL1 after
+ACross0 PASS; ACross1 hit DEFAULT recursion depth at its definition, no
+object produced. Diagnostic56311 TERMINAL0 printed only accepted moments,
+Head and ACross0 (/tmp/tt_c110_terminal_moment_inspect.log). Starting at
+moment2, binomial coefficients such as choose(4,2) remained symbolic ring
+atoms. Products amplified these artificial variables; earlier identities
+were exact but NOT literal one-variable normal forms. Added explicit
+Nat.choose normalization, read its installed definition and prepared a
+concrete scratch API probe. No limits raised or external arithmetic.
+Guarded /tmp/tt_c110_repair_terminal_choose.py TERMINAL0 repairs moments2..7,
+retains jets0..14 and moment1, removes only owned stale suffix objects and
+the13 unnecessary split helper modules, and restores original complete
+A/B/D proofs. Diagnostic source/object importing removed helpers deleted;
+accepted diagnostic log and old exact-but-noncanonical logs retained.
+Generator updated for future preparation, still MUST NOT rerun it globally.
+New SOLE98433 LIVE: zsh /tmp/tt_c110_choose_repair_audits.zsh in formal/,
+API then fresh suffixMoment2..fullDeterminantExport. Moment2 will print its
+repaired value to check that choose-atoms collapse. Manifest now marks
+moments2..7 superseded and Head rebuild pending. Boundary sign remains
+UNTESTED; no actual-source sign or RH conclusion from either resource failure.
+Search63651 reviewed: partialfalse, inventory67643 complete, most compiler
+metadata pending; only existing k-ratio/J/u monotonicity ingredients and
+J_boundaryRatio identity. Their stated monotonicities do NOT prove J/u
+monotone; no such conclusion adopted, and no replacement route launched.
+
+C110 binomial repair succeeded.98433 TERMINAL0: API, repairedmoments2..7,
+Head/A/B/D, all three entries, FULL determinant and diagnostic export PASSED.
+Every mathematical capstone log inspected: standard3, no warnings/errors.
+Moment2 printed value is literal degree4; moment7's accepted printed value
+is literal degree9. No choose-atoms or unevaluated derivatives remain in
+the exported entries. The known scalar C(1/4) remains explicit. Determinant
+pretty-print is TRUNCATED at deep terms: never transcribe unseen coefficients
+from it or claim its leading coefficient from that print. Its complete Lean
+identity is accepted and can be audited internally without transcription.
+Retired split generator and its obsolete resume driver renamed .retired;
+no stale helper objects found. Passed prefixes are not rerun.
+Corpus search38331 TERMINAL0 located existing
+PolyAsymptotics.tendsto_eval_div_pow_natDegree; read its complete proof and
+the actual_terminal_polynomial_flat transfer. Prepared UNTESTED
+TTC110TerminalTailAPI, TTC110TerminalLeading (degree34 and positive leading
+real coefficient conjectures), TTC110TerminalActualTail (actual-source
+normalized limit and eventual upper-determinant positivity).
+New SOLE75793 LIVE: /tmp/tt_c110_terminal_sign_audits.zsh, API then C109
+boundary-negativity attempt then leading/tail. No sign has passed yet.
+If boundary-negativity fails mathematically, revise it from the exact Lean
+goal; if it fails elaboration, repair without claiming a sign obstruction.
+C88controls9..1 remain next main source-sign job, not started concurrently.
+
+C110 boundary conjecture revision:75793 TERMINAL1 after TailAPI PASSED
+(empty clean log). The proposed strict negative endpoint reduced by Lean's
+exact normalization to goal False. Failed theorem/sorryAx REJECTED; log
+saved /tmp/tt_c110_boundary_negative_failed.log. This is not yet a proof of
+the opposite sign. Revised the same scratch leaf to strict POSITIVE endpoint,
+with new theorem name terminalUpperDeterminant_boundary_pos. New SOLE19027
+LIVE: /tmp/tt_c110_terminal_sign_resume.zsh audits positiveBoundary then
+Leading then ActualTail; passedAPI not repeated. Also prepared UNTESTED
+/tmp/TTC110TerminalRayPositive.lean: complete terminal determinant positivity
+for K=5/4+y, y>=0, by exact translation and a positivity attempt. If shifted
+coefficients obstruct that tactic, it does NOT refute the ray sign. Do not
+start this next leaf until19027 terminal. No boundary or tail sign claimed yet.
+
+C110 positive boundary SIGN PASSED: terminalUpperDeterminant_boundary_pos,
+strict positivity at K=5/4 and c=10^13, standard3, no warnings/errors. This
+now falsifies the negative endpoint conjecture; no whole-ray sign yet.
+19027 TERMINAL1 in Leading: degree<=34 passed, but top-coefficient sign left
+only Polynomial.X.coeff34 as an unsimplified term. Dependent sorryAx output
+REJECTED. Added explicit Polynomial.coeff_X (read Basic.lean:615), plus a
+concrete API probe. New SOLE73400 LIVE: /tmp/tt_c110_terminal_leading_resume.zsh
+audits changedAPI, repairedLeading, ActualTail. PositiveBoundary is not
+repeated. Exact degree34/positive leading/actual tail are pending. Next
+whole-ray positivity leaf remains prepared, not running concurrently.
+
+C111 continuation:73400 and80939 TERMINAL1; TailAPI, positiveBoundary,
+exact degree34/positive leading, and actual-source normalized limit/eventual
+upper determinant strict positivity ALL PASSED scratch, standard3 clean.
+Ray diagnostic71391 TERMINAL1: ring_nf left complex .re sums and nonzero LHS;
+positivity rejected goal shape. No mathematical sign counterexample.
+NO owned Lean process live at continuation. Next repair real-cast normalization,
+then promote verified terminal/tail results with prepared
+/tmp/tt_c110_promote_terminal.py (NOT executed). C88controls9..1 pending.
+Hard problems remain global last-entry positivity, compact upper determinant,
+gap propagation, controlled joining and all-rank closure. Actual-tail sign is
+new mathematical progress; do not claim compact/global sign or RH closure.
+
+C111 whole-terminal-ray SIGN PASSED2329 TERMINAL0. Exact proof preserves
+real casts under polynomial evaluation, normalizes only RHS in conv, then
+ring_nf+positivity certifies translated determinant. For all y>=0,
+terminalUpperDeterminant(10^13)(5/4+y).re>0. No raised heartbeats or external
+coefficient arithmetic; axiom audit standard3, no warnings/errors. Previous
+failures were goal-normalization errors. This is a whole terminal-line sign,
+not a global actual-orbit determinant sign. Actual-orbit tail separately
+proved from all-order-flat transfer and positive degree34 leading coefficient.
+Corpus search66013 TERMINAL0 confirms current C88 closure ingredients; cached
+lexical status, verified source still governs applicability. Search16830 done.
+Promoter executed --include-ray: SEVEN production modules,75 declarations,
+wired into RHTower.lean. API probe removed from promoted Ray source. No
+umbrella build. Production direct/imported audits NEXT, not yet claimed.
+Production audits SOLE20982 LIVE (serial7leaves+imported75declarations).
+Scoped git diff --check PASSED. Lint30722 TERMINAL1: unrelated umbrella
+reachability errors and proof debt in ZetaOffLineWeightedDensity.lean:1256
+(eventually_offLineWeight_le). Full repository gate NOT GREEN; do not claim
+lint success. New terminal modules have no reported lint error. Do not edit
+unrelated concurrent research. Imported capstone axiom audit still required.
+20982 progress: direct WeightedFlow and WeightedDeterminant PASSED, cleanlogs.
+WeightedJets running; remaining Moments,CofactorModels,EntryModels,Signs and
+imported75declarationaudit pending. Draft result card /tmp/tt_c111_terminal_card.md
+explicitly marked DRAFT; its target production audit record must not be
+promoted before full success. Lint exact status:27 unrelated umbrella omissions
+plus1 unrelated proof-debt error. No need rerun unchanged lint.
+20982 progress: SIX direct production leaves PASSED (Flow,Determinant,Jets,
+Moments,CofactorModels,EntryModels). Signs now running; imported75axioms next.
+New corpus-derived paper candidate recorded in
+P1:tt-upper-endpoint-seam-propagation. Exact shear gap e=w-2u/3-4x has
+zero value/first derivative at seam, so upper-center correction e*L'/4
+vanishes after division by x. The existing positive curvature matrix should
+therefore give uniform-direction upper-endpoint positivity near seam.
+No Lean proof for this candidate yet; no global compact sign claimed.
+Control9 source PREPARED ONLY (TTC88SlopeControl9,Terms); no audit running.
+Next control driver NOW /tmp/tt_c111_control9_audit_resume.zsh, which skips
+already-performed source9 generation then continues9..1 serially. Old
+/tmp/tt_c88_remaining_control_resume9.zsh renamed .retired to prevent stale
+assert-failure/repeated preparation. Do not run next driver until20982terminal.
+
+C111 TERMINAL RESULT PRODUCTION COMPLETE:20982 TERMINAL0. All SEVEN direct
+leaf audits and all75 public imported declaration axiom audits PASSED.
+Guarded finalization verified every object fresh, every log clean, every
+axiom set subset {propext,Classical.choice,Quot.sound}. Final audit command
+lake --old env lean /tmp/TTC110TerminalProductionAudit.lean. Modules wired,
+no umbrella build. P3:tt-terminal-upper-determinant-positive promoted; frontier
+map updated with complete terminal-ray/actual-tail signs and their limits.
+Scoped diff check PASSED. Failed Ray goal-shape source copy removed; failed
+logs retained as learning evidence. Manifest status
+PRODUCTION_DIRECT_AND_IMPORTED_AXIOMS_PASSED.
+New SOLE15390 LIVE: zsh /tmp/tt_c111_control9_audit_resume.zsh fromformal.
+Currently TTC88SlopeControl9 normalization audit; Terms then tensor/reconstruction
+sign audits and promotion follow, then controls8..1 serially. Do not start
+any other owned Lean until15390 terminal. Do not repeat source9 preparation.
+Global last-entry sign NOT proved yet. New P1:tt-upper-endpoint-seam-propagation
+is paper candidate only; no Lean module or positive neighborhood claimed.
+Goal remains ACTIVE: no RH proof/falsification, compact determinant/gap/join
+and all-rank closure remain hard open problems.
+
+C112 continuation classified C111 as mathematical progress: complete terminal
+ray+actualtail production proof now authoritative.15390 revalidated LIVE.
+Control9 normalizer, complete219term export, exact h^4factor, tensor form,
+terminal row38 and rows0..22 PASSED. Remaining row signs/reconstruction/
+capstone pending; do not claim control9 closed. No raised limits, external
+coefficient arithmetic, or concurrent Lean. Current sole15390 at row23.
+C112 independent seam frontier: four UNTESTED scratch drafts prepared,
+TTC112SeamAPI, TTC112UpperEndpointRealIdentity, TTC112SeamRegularity,
+TTC112UpperSeamPositive. /tmp/tt_c112_upper_seam_audits.zsh NOT running.
+Paper mechanism uses removable divided slopes and the EXACT curvature
+matrix, keeping all real directions on one source neighborhood. No new
+source hypothesis or numerical bound; actual identity included. Current
+card P1:tt-upper-endpoint-seam-propagation updated. Deepsearch26352 terminal0:
+partialfalse,67667inventorycomplete, compiler mostlypending/sourceonly,
+oldercoveragesnapshot. Proposed wrong nonzero-sheargap-at-seam ingredient
+rejected; actual curvature determinant, not corrected gap determinant, used.
+After15390terminal, inspect actual stop point; source9 preparation must not
+repeat. Seam drafts can be audited only when the owned Lean slot is free.
+C112 queue refinement: all390 control9 coefficients and full reconstruction
+PASSED;15390 currently finalPositive. Before source8 audit, queue the four
+seam drafts as a SERIAL foreground step. Hook added ONLY to source8
+preparation: it prepends zsh /tmp/tt_c112_upper_seam_audits.zsh to the generated
+source8 audit script. Guarded Python still runs no Lean. Source8 script did
+not yet exist when hook installed. Thus15390 remains the ONLY owned Lean
+process and will stop on any seam failure, allowing targeted repair without
+repeating control9. Controls8..1 continue after seam audits if they all pass.
+This follows a completed control with the next corpus-derived conjecture;
+globalLast is retained as active, not retired for effort.
+C112 verified update: control9 capstone PASSED standard3; 44 production leaves,
+606 declarations staged/wired, production audits PENDING. Control9 source
+closed in scratch;11/19controls now closed (0,9..18),1..8 open.
+15390 advanced into control8 and passed normalizer/export/factor/form/rows38,
+0,1 before next observation. Inspection proves the generated source8 audit
+DID NOT contain the seam hook: no seam log/object exists. Do not infer hook
+execution from intent. Source8 apparently passed its preparation before the
+hook was available to that invocation. Keep its accepted progress; no rerun.
+Retargeted the still-unexecuted hook to SOURCE7; read back current helper,
+confirmed source7 audit absent. Seam audits remain UNTESTED and now scheduled
+aftercontrol8capstone/promotion, before control7 source audit, within15390.
+This correction supersedes the prior intended source8 schedule.
+C112 closing audit: all44 control9 mathematical scratch module logs/objects
+fresh and clean; printed capstones standard3. Terms diagnostic has the expected
+logging-only run_tac "does nothing" warning; it is not promoted and carries
+no mathematical sign proof. Do not describe that diagnostic log as warning-free.
+Control9 production audits pending, all44leaves wired; main capstone includes
+all390 coefficient signs and complete reconstruction. Lint44914 TERMINAL1:
+12 unrelated umbrella omissions, NO current proof-debt error, no newTTerror.
+This supersedes C111's unrelated proof-debt count; full lint still NOTgreen.
+15390 control8 now passed source/export/factor/form/rows38,0..10; row11running
+at last observation. Source7 seam hook installed/readback; no seam audit yet.
+Latest15390 revalidation LIVE: control8 rows0..17 plus38 PASSED; row18running.
+No seam audit has run. C112 scratch drafts remain unverified. Next continuation
+must poll15390, inspect exact new outputs; do not start a second Lean process.
+
+C113 continuation: prior turn classified PROGRESS (control9 closed, fullseam
+proof drafts prepared). Sole15390 revalidated LIVE. Control8 rows0..31+38
+passed at latest observation; remaining rows and capstone pending. Source7
+hook read back, four seam audits scheduled within same foreground process.
+Search93767 terminal0 returned no conjunction hit; broadened search63157
+terminal0 recovered exact upperCenterQuadratic and actual_curvature_positive
+sources. Cached lexical coverage only; no inference of complete-corpus
+absence. Current toolchain ContinuousAt.div_const and SeamJet inverse proofs
+read; API checks still queued before full seam proof.
+Prepared /tmp/tt_c113_promote_upper_seam.py ONLY, not executed. It requires
+fresh clean audited seam objects before staging3productionleaves and their
+importedpublicaxiomaudit. No new production seam files yet. This is the
+necessary formal closure of the seam end of compactsource positivity;
+globalLast/compactMiddle/gap/join/allrank remain open.
+C11315390 TERMINAL1: control8 ALL390coeffs/fullreconstruction/finalsign PASSED
+standard3;44prodleaves606declarations staged/wired, productionauditspending.
+12/19 derivative controls now closed in scratch:0,8..18;1..7 open. Source7
+prepared; its main normalizer audit NOT started. Scheduled seamAPI PASSED,
+RealIdentity failed only rational denominator normalization in centerSlope:
+field_simp left an inverse of6k-1; ring cannot cancel it without the matching
+nonzero proof. Failed/sorryAx output REJECTED, saved in
+/tmp/tt_c113_center_identity_denominator_failure.log. No failed .olean exists.
+Replaced field_simp by exact div_mul_cancel0 using already-proved(k-1/6)!=0.
+New SOLE85684 LIVE /tmp/tt_c113_upper_seam_resume.zsh: repairedRealIdentity,
+Regularity, Positive. PassedAPI not repeated. Do NOT start another Lean.
+Removed executed source7 hook from helper/generated7audit; source7 now clean
+standard sourceaudit only. Oldcontrol9resume renamed.retired. Next AFTERseam
+productionaudit: /tmp/tt_c113_control7_resume.zsh preparedNOTRUN, skipsalready
+performedsource7generation thencontinues7..1. Do not reruncontrol8 orsource7prep.
+C11385684 TERMINAL1: exact RealIdentity PASSED allthreecapstonesstandard3,
+cleanlog. All44control8mathlogs/objectsverifiedfreshclean. Regularity failed
+only pointwise reciprocal function notation in inverse_six_jet; failedsorryAx
+REJECTED/logsaved /tmp/tt_c113_regularity_inverse_function_failure.log.
+centerDrive_smooth itself passedstandard3 in rejectedmodule, but no module
+success claimed. Followed existing SeamJet.inv proof: change HasDerivAt
+function to explicit lambda BEFORE extracting .deriv; removed unusedsimpArg.
+New SOLE5529 LIVE /tmp/tt_c113_seam_regularity_resume.zsh: repairedRegularity
+thenPositive. PassedAPI andRealIdentity not repeated. Source7resumepending.
+C113 immediate status correction:5529 TERMINAL1 (not live). Regularity PASSED
+allfourcapstonesstandard3 clean. Positive failed ONLY redundant ring after
+field_simp had already solved the curvature determinant quotient identity.
+FailedsorryAx REJECTED/logsaved /tmp/tt_c113_seam_redundant_tactic_failure.log.
+Removed that one ring line. New SOLE31946 LIVE direct finalPositive audit,
+/tmp/tt_c112_TTC112UpperSeamPositive.log. PassedAPI/RealIdentity/Regularity
+not repeated. This supersedes the preceding now-stale5529live entry.
+C113 NEW SOURCE SIGN:31946 TERMINAL0. Actual upper-center quadratic is
+strictly positive for ALL real directions on ONE positive neighborhood of
+seam, load10^13. Full source retained, no missing-sign premise. Final scratch
+capstone actual_upper_quadratic_positive_near_seam passedstandard3, cleanlog.
+This closes actual seam end; compact intervening sign remains open.
+Promoter executed:3productionleaves24publicdeclarations staged/wired. New
+SOLE35954 LIVE /tmp/tt_c113_seam_production_audits.zsh, serial3directleaves
+thenimported24axioms. Source/API passedprefix not repeated beyond required
+productionaudits. Retired completed scratchdriver files; failedlogsretained.
+Source7nextdriver remains /tmp/tt_c113_control7_resume.zsh NOTRUN.
+
+C113 SEAM RESULT PRODUCTION COMPLETE:35954 TERMINAL0. Three directleaf audits
+and all24 public imported declaration axiom checks PASSED, objectsfresh and
+logs clean; onlysubsets {propext,Classical.choice,Quot.sound}. Final audit
+lake --old env lean /tmp/TTC113UpperSeamProductionAudit.lean. Three modules
+wired, no umbrella build. Card moved P1→P3:tt-upper-endpoint-seam-propagation;
+frontiermap updated with exact all-direction positive source neighborhood.
+Guardedfinalizer verifiedall24 declarations, scopecheckedallthreeobjects.
+Scoped diff--check PASSED. Lint54037 TERMINAL1:11unrelatedumbrellaomissions,
+no newseammodule error; fullrepogateNOTgreen. This supersedes earlierlintcount.
+New SOLE14140 LIVE /tmp/tt_c113_control7_resume.zsh cwdformal. Current source7
+normalizer audit; thereafterexport/tensor/all390signs/reconstruction/promotion,
+then6..1serial. Source7 preparation NOT repeated; executedseamhookremoved.
+GlobalLast remains12/19controlsignsclosed(0,8..18),1..7open; productioncontrol
+chains pending. New source seam neighborhood is fullyproved, not conditional.
+Globalcompactmiddle/source sign, compactgap/join/flux/integratedallrank andRH
+closure remain open. Goal ACTIVE. Nextturnpoll14140 beforeanyotherLean.
+Latest14140 LIVE revalidation: control7 source/export/factor/form and rows38,
+0..5 PASSED; row6running. No control7signcapstone yet. No otherownedLean.
+
+C114:14140 remains SOLE LIVE owned Lean chain. Control7 ALL390coefficients,
+reconstruction and finalPositive PASSED;44productionleaves606declarations
+staged/wired, productionauditspending. 13/19 controls closed in scratch:
+0,7..18;1..6open. Source6/export/factor/form/rows38,0..10 PASSED; row11running
+at lastpoll. Do not start a second Lean process or rerun accepted prefixes.
+
+C114 hard compact determinant attack: broad deepsearch99743 and narrower
+41307 both TERMINAL0, partial=false; compiler metadata mostlysourceonly or
+pending, no applicable compactsign producer. Existing actual ODE and
+J≤u/3 imply new vanishing-width seam tube on paper:
+0<(9-U)*(9K²-6K-4-9KZ)<6KU, U=u²,K=k,Z=J/u.
+R=w-2u/3-4u/(9k) has0<R'<2ku², R0=0; E=(2/3)u³-tR hasE0=0,E'>0.
+This proves complete-source seam compatibility, not compact determinant sign.
+Dependencyclosed paper card: P2/tt-projective-seam-source-tube.md.
+/tmp/TTC114SeamConeAPI.lean and TTC114SeamCone.lean preparedUNTESTED;
+/tmp/tt_c114_seam_cone_audits.zsh scheduled at finish6 via preparehelper.
+The hook executes only AFTER allcontrol6tensorrows, BEFORE6reconstruction.
+No concurrent Lean. On hook failure inspect terminal error, rejectfailed
+objects, repair and resumeexactly. After hook executes remove it from helper
+and generatedfinish6 script. New conjecture: fullupper determinant positive
+on nonlinear kinetic cone intersected with vanishing-width seam tube.
+Sufficiency NOT established; no optimization of rational constants intended.
+GlobalLast/middle determinant/gap/join/flux/allrank and RH remain open.
+
+C11414140 TERMINAL1. Control6 all390coefficient rows PASSED, final
+reconstruction/sign not started. Executed new seam API hook failed ONLY
+universe inference in polymorphic `have := @Name` checks; corrected explicit
+universe parameters. No mathematical theorem tested in that failed run.
+Failure preserved /tmp/tt_c114_api_universe_failure.log. Hook removed from
+helper and generatedfinish6 audit. New SOLE34489 LIVE seam API+source tube
+audits, /tmp/tt_c114_seam_cone_audits.zsh. After tube production closure,
+/tmp/tt_c114_control6_resume.zsh is ready NOTRUN: reconstruction6/sign6/
+promotion6, then5..1. Do not rerun source6/tensor6 or any control7 proof.
+Control7 all44mathematical logs checked clean; capstone axioms standard3.
+Third corpussearch77595 TERMINAL0 butpartial=true, sourceonly candidates
+irrelevant to literal J/u velocity. No projectivevelocity theorem claimed.
+
+C11434489 TERMINAL1: repairedAPI PASSED; velocity sign pair PASSEDstandard3,
+but derivative source/reserve declarations failed due function subtraction
+notation in convert. Dependent sorryAx output REJECTED, log preserved
+/tmp/tt_c114_derivative_notation_failure.log. Replaced convert source with
+explicit change HasDerivAt namedFunction at hd before converting coefficient.
+Removed two unnecessary sequence-focus warnings. SOLE87670 LIVE direct
+repairedTTC114SeamCone audit; passedAPI not repeated. Promoter prepared
+/tmp/tt_c114_promote_seam_tube.py NOTRUN; validates scratch beforestaging.
+Control6resumedriver now schedules previously-prepared C106 clean general
+jet10 columns0..10/recombination/export AFTERsign6 and BEFOREsource5. This
+is necessary full-source algebra for next compact determinant certificate;
+column11 already passedstandard3/fresh and will not repeat. No discarded
+moment or terminal-only substitution. All control7objects44 verifiedfresh.
+
+C11487670 TERMINAL0: complete actual_projective_seam_tube scratch theorem
+PASSED with standard3, cleanlog. Source-derived order-U seam compatibility
+proved, no missing-sign premise. Promoter executed;1productionleaf12public
+declarations staged/wired. New SOLE13839 LIVE productionleaf + all12imported
+axioms /tmp/tt_c114_seam_tube_production_audits.zsh. Do not startanotherLean.
+Finalizer /tmp/tt_c114_finish_seam_tube.py preparedNOTRUN; verifiesall12,
+movespaperP2→P3 and updatesfrontiermap onlyafterproductionaudit success.
+Control6final/C106clean10/control5..1 resumepending, no acceptedprefixrepeat.
+
+C114 PRODUCTION COMPLETE:13839 TERMINAL0. New module
+ThetaCuspRatioProjectiveSeamTube directleaf + all12imported declarationaxioms
+PASSED, cleanlogs/freshobject, onlystandard3. Finalcommand lake --old env lean
+/tmp/TTC114SeamTubeProductionAudit.lean. Card movedP2→P3 and frontiermap
+updated. Scopedgitdiff--check PASSED. Lint86186 TERMINAL1,16unrelatedumbrella
+omissions; no newTTmodule error/proofdebt, repository gateNOTgreen.
+
+New SOLE95989 LIVE /tmp/tt_c114_control6_resume.zsh cwdformal. Control6 final
+reconstruction/sign PASSED;44productionleaves606declarations staged/wired,
+productionauditspending. 14/19 controls closedinscratch:0,6..18;1..5open.
+CurrentTTC106Jet10KColumn0 cleanfullsource generaljet10 normalization.
+Nextcolumns1..10/recombination/export, then5..1 sourcecontrolchains serial.
+Column11 alreadycleanstandard3/fresh,notrepeated. All42control6prefixlogs/
+objects wereverifiedclean/fresh before suffix; finalcapstonespassed.
+Retiredprevious14140driver andexecutedC114scratchauditdriver byrename.retired.
+No hooks remain in genericprepare or generatedfinish6 driver. No otherowned
+Lean process; lintterminal. Onfailureinspectterminalleaf/resumeexactsuffix.
+
+Researchassessment: C114 closed a new complete-source vanishing-width seam
+constraint and one more globalLast control. It didNOT prove compactupper
+determinant sign. Nextattack is exact fullcofactor polynomial sign on actual
+kinetic cone intersected with provedseamtube; clean generaljet10 is needed
+toextend full source models through14 without dropping terms. No inference
+fromterminal-only sign tofinitecenters. RH unproved/unfalsified; globalLast,
+compactmiddle/gap/join/flux/integratedallrank remainopen. GoalACTIVE.
+Latest95989checkpoint: TTC106Jet10KColumn0 PASSED; column1running. All earlier
+current-column0 references are historical. No otherownedLean process.
+
+C115 continuation RouteTT: previousC114PROGRESS, production12declseamtube
+and scratchcontrols6/7closed.95989revalidatedLIVE; C106 ALL12clean generaljet10
+columns/reconstruction/export nowPASSED. FullweightedJet10KCleanModel_eq
+accepted; column11 passedearliernotrepeated. Newsearch70176 TERMINAL0 with
+partial=true, compilerlargelysourceonly/pending; weightedJet recurrence/full
+incidencehitsapplicable, terminalnormsuggestionsnotfullcompactsignproducers.
+
+C115 newP1card tt-upper-determinant-projective-seam-cone: exact fullupper
+determinant sign on actualkineticcone plusJvelocity andnewvanishing-widthtube.
+No signprovedorassumed. Guardedsyntaxgenerator /tmp/tt_c115_prepare_jet11.py
+executed:264printedexpressionterms(includingliteralzeros),28parts,30scratch
+leaves preparedUNTESTED. Everycoefficient copiedverbatim from acceptedLean
+normalforms; externalarithmeticNONE. /tmp/tt_c115_jet11_audits.zsh scheduled
+in preparehelper phasefinish5, AFTERall390control5tensor signs, BEFORE5final
+reconstruction. It provesexactpartition andnextfulljetrecurrence; nextorders
+12..14andfullupperdeterminant remainrequired. No source5hookrace dependency.
+95989SOLELIVE currentcontrol5factorPASSED/formrunning. NeverstartsecondLean.
+Whenhookexecutesremovehelper/generatedfinish5hook; onfailureterminalinspect
+andresumeexactpending suffix. No productiongeneraljet11claim untilauditspass.
+
+C115 all11 newlyaudited C106clean column logs0..10 verified clean and full
+weightedJet10KCleanModel_eq standard3. Generaljet11sources30 readyUNTESTED.
+Prepared syntax-only regrouping /tmp/tt_c115_regroup_jet_columns.py (notrun),
+generalized nextjet generator for10→11→12→13→14 (futurecallsnotrun). Python
+syntaxchecksPASSED; mathematicalidentities stillrequireLean. Allnormalforms
+must passclean/fresh/standardaxiom guards beforetranscription. No coefficient
+arithmeticoutsideLean. Sourceproofs useexactlinear recurrence and finite
+sumregrouping; no truncation or signpremise.
+
+C115 scheduler update BEFOREfinish5generated: helpernow inserts
+/tmp/tt_c115_full_jet_stage.zsh11,12,13,14 atfinish5,4,3,2respectively.
+Eachstage exactnextjet pieces thencompleteKcolumn regrouping/normalization;
+thencontrolfinalreconstruction/sign resumes. Allserialinside95989, no other
+ownedLean. This advances bothrequired globalLast and fullcompactdeterminant
+algebra withoutdropping eitherobjective. Onfailure resumeexactsuffix; never
+restartwhole stageafterpartialsuccess. Currentcontrol5rows38,0..33 PASSED,
+row34running. Search38542TERMINAL0 awaitingbriefresultinspection.
+
+C115 authoritative scheduler correction: generatedfinish5 retained ORIGINAL
+zsh /tmp/tt_c115_jet11_audits.zsh hook (generation raced helperupdate). It
+is executing now; DO NOTedit currentactivefinish5 script. Therefore source4
+futurehook now runs /tmp/tt_c115_jet11_columns_stage.zsh (regroup11 andcolumn
+auditsONLY), afterall11pieces andcontrol5final, beforecontrol4sourceaudit.
+Helperfinish hooks remainONLY4,3,2→fullstages12,13,14 respectively. No11piece
+reaudit. Generic fullstage11 NOTscheduled.95989SOLELIVE TTC115Jet10Partition
+audit, control5all390tensorcoeffs PASSED butfinalsignawaits11pieceshook.
+38542 search partial=true; exactnativevariation/fullincidencehits available,
+no applicable fullupperdeterminant signlaw; no Toda shortcut assumed.
+
+C11595989 TERMINAL1 atTTC115Jet10Partition: lastcolumn dsimpclosedgoal made
+followingring redundant; finalassociativityac_rfl hitdefault200k isDefEq.
+FailedsorryAxREJECTED/log /tmp/tt_c115_partition_defeq_failure.log. Fixed
+associativity using28abstractPoly variables theninstantiation, no limitraise,
+no term/coefficientchange. NewSOLE50070 LIVE /tmp/tt_c115_resume_jet11.zsh:
+partition(repaired)→28jet11steps→complete11pieces→control5final/promote→4..1.
+PartitionPASSEDstandard3 withtwo linterwarnings (unexecutedring inalready
+closedlastcolumn; unusedadd_zero). Sourcewarningsnowremoved; CLEANREAUDIT
+scheduledatfutureSOURCE4 columnsstage beforeproduction/column11proofs.
+Currentoldpartitionobjectvalidstandard3 butpredateswarning-onlysourceedit;
+do not claimthatleafclean/freshuntilscheduledauditpasses. Steps0..18PASSED;
+step19runningatlastpoll. Steps0..6logscheckedcleanstandard3. No otherLean.
+
+C115 fullgeneral10PRODUCTIONSTAGED: dependencyclosure45leavesallfreshscratch,
+1459publicdeclarations; productionnamecollision searchprocessedALLnamesand
+foundnone. No addedaxiom/heartbeat/recursionoption. Guardedpromoter executed,
+all45moduleswired. /tmp/tt_c115_weighted_ten_production_manifest.json status
+PRODUCTION_AUDITS_PENDING. SOURCE4stage now does:cleanpartitionreaudit;
+45serialproductionleafaudits+imported1459axioms; thenregroup11+column11audits;
+thencontrol4source. No umbrella build. Finalauditwillbe
+lake --old env lean /tmp/TTC115WeightedTenProductionAudit.lean.
+Lintauditcurrentlyrunning; scopedgitdiff--checkPASSED. Oldcontrol6resumedriver
+renamed.retired onlyafterterminal. Executedfinish5hookremovedafterterminal,
+newresumedriver invokes11piecesexplicitly; no repeats ofC106/control5tensors.
+
+C115 futuregenerationfixes: abstractassociativity templatesavoid sameisDefEq
+failure whenregrouping printedstepnormalforms. Nextjetgeneratoromitsredundant
+ring on1/2literaltermcolumns andusesabstractpartitionlemma; sourcecoefficient
+expressionsunchanged. BothPythonfilesparse successfully. Fullsource12..14
+andcompletecompactdeterminantsignremainUNPROVED. GoalACTIVE.
+
+C116 continuation RouteTT:50070 is SOLE LIVE owned Lean driver
+/tmp/tt_c115_resume_jet11.zsh. C115 ALL28jet11blocks and complete
+weightedJet11ExactPieces_eq PASSED; capstone standard3, all block logs
+clean. Clean partition re-audit PASSED; warning-only source now fresh.
+Control5 final reconstruction/sign PASSED,44productionleaves606decls
+staged/wired, productionauditsPENDING. Now15/19controls0,5..18closed
+scratch;1..4open. SOURCE4 hook currently audits45productionweighted10
+leaves +1459importedaxioms, then exact11columnregrouping/audits.
+Future finish4/3/2 hooks still stage12/13/14 serially. No other Lean.
+46575 live corpus deepsearch of complete determinant differential sign;
+no conclusion until source hits inspected. C115 normalized transport H
+sign remains CONJECTUREONLY; evaluating terminal next coefficient to test
+its plausibility using existing exact terminal model, no numerical samples.
+GlobalLast/compactdet/gap/join/allrank/RH remain OPEN. Goal ACTIVE.
+
+C116 NEW PAPER FRONTIER: exact universal U26factor of completeupperdet.
+Existing square-quadratic identity hasu25, and odd-powerdescent under
+square(U)=U² forcesU13in eachcompletequadraticcoefficient. Centerslope has
+u26, hencealsoU13. Polarization0,1,-1 recoversA/B/D andQ=U26*core.
+No moment/loadtermremoved, allcomplexloads, no signpremise. FullproofP2
+ tt-upper-determinant-seam-power-factor.md. This also cancels apparent
+Udenominator inC115normalizedN; newresidualK*Fcore−34FK*core remainsOPEN.
+ScratchPREPAREDUNTESTED: TTC116SeamPowerAPI, TTC116SquarePowerDescent,
+TTC116UpperSeamPower, TTC116ReducedDeterminantTransport. Coredefinedvia
+exactdivMonomialwithremainderzero proved, not coefficienttruncation.
+Auditdriver /tmp/tt_c116_seam_power_audits.zsh QUEUED in generator
+/tmp/tt_c115_regroup_jet_columns.py ONLYn11: prependsC116audits toFUTURE
+jet11columnauditfile. This runsafter45productionweighted10audits+axioms
+inside50070 BEFORE11columnproofs. No currentlyrunningauditfilemodified,
+no secondLeanstarted. OnC116failure resumeexactpendingC116suffix then
+11columnaudits WITHOUT rerunningcompletedweighted10productionprefix.
+Search46575TERMINAL0partialfalseinventorycompletebutcompilerlargelypending;
+noapplicableglobalHsignproducer.12132TERMINAL0partialtrue found exact
+weightedJet_eq/weightedSixthSlope_eq/loadedlinearsourceidentities usedabove;
+no preexistingoddpowerdescentfound. Other searchesallterminal.
+
+C116 finalcheckpoint:50070SOLELIVE productionThetaCuspRatioWeightedJet10PlainPieces.
+Weighted10productionprefix0..9models,9Balanced,10StepPieces,10PlainPiece0
+PASSEDdirectaudits; remainingprefixNOTrepeated. Complete45/1459axiomaudit
+stillpending. C116factor3scratchdrafts +API noaudityet; promoterprepared
+NOTRUN. FutureC116driver now also promotes/wires3leaves onlyafterfreshclean
+standard3scratchlogs, then finaldirectproduction/importedaxiomaudits. API,
+3scratchmodules,andproductiondriver allserialviaregroup11futurehook.
+Zshsyntax/PythonAST/proofdebtscan/scopeddiffcheckpassed; theseareNOTLean
+proofverification. Only newpaperidentityU26asserted; globalcoretransport
+signandRHremainOPEN. Researchthisturncontributed exactfullsource structural
+factor, not a conditional RH receiver. Nextaudit mustverifyit, thenusecore
+before expandingthefullcompactdeterminant. Allsearches nowterminal.
+
+C117 continuation RouteTT: priorC116PROGRESS(completecontrol5passed andnew
+paperU26factor).50070revalidatedLIVE; nowweighted10productionKPiece16,
+allprefix0..15piecespassed,noerror/warning/sorryAxfoundinproductionlogs.
+Full45/1459closurestillPENDING. No secondLean. Newsearch19290TERMINAL0
+partialfalse/source-onlycompilercoverage; unrelatedquadraticidentitiesand
+existingterminal/headsigns, no compactcore/Hsignproducer.80862lexical
+TERMINAL0 found exactcomplex normalizedB/Base/centerDrive_value inputs;
+metadata freshnessnotprovided. Allsearchesterminal.
+
+C117 NEW PAPER RESULT: reducedupperdet alongactualpositivecenters hasstrictly
+positivefinite seamlimit λ²δ, λ=6^30(k0−1/6)^7/(9k0), δ=C113scaledseamdet>0.
+Differentiate existingCOMPLEX cofactorvalueidentities usingderivativeuniqueness
+againstcastrealderivatives; recovercomplexupperquadraticidentitywithfullcenter
+correction; polarize0,1,-1; useC116factor ->exact Recore=λ(x)²δ(x), with
+λ(x)=6^30(k(x)−1/6)^7*x/u(x). dslope anddu0=9k0 proveλlimit. No dropping
+imaginarycomponentsbeforetakingdeterminant,no sourceU=0evalsubstitution.
+P2tt-upper-determinant-reduced-seam-limit.md fullpaperproof; LeanUNTESTED.
+Drafts /tmp/TTC117ComplexSourceSlopes.lean, TTC117UpperComplexIdentity.lean,
+TTC117ReducedSeamIdentity.lean,TTC117ReducedSeamLimit.lean plusAPI.
+New /tmp/tt_c117_seam_limit_audits.zsh QUEUED byfuture n11regroupgenerator
+AFTERC116scratch+productionaudits,BEFORE11columnproofs. Noactiveauditfile
+modified. ConditionalRHorcompactsignpremiseNONE. C116stillunverifiedtoo;
+C117statementnotclaimedLeanuntilbothdependenciesandauditsclosed.
+
+C117checkpoint50070SOLELIVE productionweighted10KColumn3. Directaudit
+freshness/cleanlogsverified35/45leaves; remaining10+1459importedaxioms
+PENDING. C116andC117auditshaveNOTSTARTED. C117guardedpromoterprepared
+/tmp/tt_c117_promote_seam_limit.py; plannedproductionComplexSourceSlopes,
+UpperCenterComplexIdentity,ReducedSeamIdentity,ReducedSeamLimit under
+ThetaCuspRatio prefix, thenfinalTTC117SeamLimitProductionAudit. C116prod
+externaldependenciesexplicitlyfreshcheckedbeforeC117staging. No umbrella
+build. PythonAST/zshsyntax/debtscanpassnotLeanverification. Nextowned
+workmustfinishscheduledC116/C117audits, thenreturncomplete14jet/core sign.
+HardcompacttransportH≤0 remainsCONJECTURE; positivityofseamandtailvalues
+doesnotproveorderingorinteriorpositivity. No RHproof/falsificationclaimed.
