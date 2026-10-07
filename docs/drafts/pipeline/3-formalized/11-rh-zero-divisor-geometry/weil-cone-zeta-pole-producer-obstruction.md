@@ -68,3 +68,4 @@
   - main: `eq_vonMangoldt_of_weilPositiveFull_pencil`.
   - Standard axioms, wired.
 - **Reading.** Along the line from `Λ` to the ζ-pole carrier `1`, and past `Λ` toward `2Λ − 1`, nothing besides `Λ` is Weil-positive, even with a regular part. `γ > 0` fails by large values of `Re ζ`; `γ < 0` fails by zeros of `ζ` on the line.
+- 2026-10-07: novelty audit. Part (ii) of MUST-815, and the `γ > 0` half of MUST-816, follow in a few lines from the corpus `weil_multiplicativeToeplitz_bound` with the divisor resonator `1_{m ∣ y#}`. The new parts are the formal unconditional Ω₊ for `Re ζ(½+it)` (classical in substance) and the `γ < 0` half (Hardy zeros).

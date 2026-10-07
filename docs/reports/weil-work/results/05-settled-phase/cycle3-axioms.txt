@@ -1,0 +1,53 @@
+RHTower.WeilWorkSettledPhase.exists_norm_phiG_le_littlewood {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)
+  {G : ℂ → ℂ} (hGc : ∀ (s : ℂ), 1 / 2 ≤ s.re → ContinuousAt G s)
+  (hGd : ∀ (s : ℂ), 1 / 2 < s.re → HasDerivAt G (RHTower.WeilSpectral.weilContinuation hW s * G s) s)
+  (hG2 : G 2 = RHTower.IntegerMassRigidity.bigG lam 2) :
+  ∃ K T₀,
+    0 < K ∧
+      ∀ (T : ℝ),
+        T₀ ≤ T →
+          ∀ τ ∈ Set.Ioc T (2 * T),
+            ‖RHTower.PhaseLockRigidity.phiG G τ‖ ≤ Real.exp 4 * Real.exp (K * Real.log T / Real.log (Real.log T))
+RHTower.WeilWorkSettledPhase.rigidity_or_lock_disorder {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) {G : ℂ → ℂ}
+  (hGc : ∀ (s : ℂ), 1 / 2 ≤ s.re → ContinuousAt G s)
+  (hGd : ∀ (s : ℂ), 1 / 2 < s.re → HasDerivAt G (RHTower.WeilSpectral.weilContinuation hW s * G s) s)
+  (hG2 : G 2 = RHTower.IntegerMassRigidity.bigG lam 2) {w : ℝ → ℂ} (hwm : Measurable w) {Cw : ℝ}
+  (hwb : ∀ (τ : ℝ), ‖w τ‖ ≤ Cw) {c₀ : ℂ} (hc₀ : c₀ ≠ 0) {Y : ℝ} (hY : 0 ≤ Y)
+  (hlock :
+    ∀ τ < -Y, G (1 - RHTower.FractionalMassRigidity.lineS τ) = w τ * G (RHTower.FractionalMassRigidity.lineS τ)) :
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ∃ a K,
+      0 < a ∧
+        0 < K ∧
+          ∀ (R : ℝ),
+            ∃ T,
+              R ≤ T ∧
+                a * T * Real.exp (-(K * Real.log T / Real.log (Real.log T))) ≤
+                  ∫ (τ : ℝ) in Set.Ioc T (2 * T), ‖w (-τ) - c₀⁻¹‖
+RHTower.WeilWorkSettledPhase.rigidity_or_atomic_phase_disorder {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)
+  {c t : ℕ → ℝ} (hc : ∀ (j : ℕ), 0 ≤ c j) (hone : ∀ (j : ℕ), 1 ≤ t j) (htt : Filter.Tendsto t Filter.atTop Filter.atTop)
+  (hsum : Summable fun j => c j / t j ^ 2)
+  (hrep :
+    ∀ (w : ℂ),
+      0 < w.re →
+        ∫⁻ (r : ℝ), RHTower.WeilSpectral.poissonDensity w r ∂ RHTower.WeilSpectral.boundaryMeasure hW =
+          ∑' (j : ℕ),
+            ENNReal.ofReal (c j) *
+              (RHTower.WeilSpectral.poissonDensity w (t j) + RHTower.WeilSpectral.poissonDensity w (-t j)))
+  (θ : ℝ) :
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ∃ a K,
+      0 < a ∧
+        0 < K ∧
+          ∀ (R : ℝ),
+            ∃ Y,
+              R ≤ Y ∧
+                a * Y * Real.exp (-(K * Real.log Y / Real.log (Real.log Y))) ≤
+                  ∫ (y : ℝ) in Set.Ioc Y (2 * Y),
+                    ‖Complex.exp (↑(2 * Real.pi * RHTower.FractionalMassTailRigidity.phaseSum c t y) * Complex.I) -
+                        Complex.exp (↑(2 * Real.pi * θ) * Complex.I)‖
+'RHTower.WeilWorkSettledPhase.exists_norm_phiG_le_littlewood' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilWorkSettledPhase.rigidity_or_lock_disorder' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilWorkSettledPhase.rigidity_or_atomic_phase_disorder' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

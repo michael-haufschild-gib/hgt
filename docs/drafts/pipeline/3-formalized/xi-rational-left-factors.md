@@ -1,7 +1,7 @@
 # Rational left factors of the actual tilted Xi source
 
 - **ID:** RH-XIRLF-20261007
-- **Stage:** 1-in-progress; paper reduction closed, corpus/API audit pending
+- **Stage:** 3-formalized; exact endpoint, five actual-source audits, twelve public axiom closures passed
 - **Parent:** `../2-fully-proven/xi-finite-cover-monodromy.md`
 - **Predecessor:** `../3-formalized/xi-meromorphic-polynomial-lifts.md`
 - **Verdict:** BRIDGE; rational-factor rigidity, no novelty claim
@@ -138,3 +138,38 @@ for any nonzero entire F, F=(1/X) composed with (1/F), so a claim that the
 outer map must literally be a polynomial needs a coordinate normalization.
 Our degree-one endpoint includes this inversion and makes no such claim.
 Source: https://revistas.uns.edu.ar/revuma/article/download/1729/1563/8952.
+
+## Final formal closure
+
+The actual unconditional endpoint is
+`RHTower.xi_rational_plane_factor_max_natDegree_eq_one`: for every real a,
+coprime p,q and x in MeromorphicPlane satisfying aeval(x,p)=d_a*aeval(x,q),
+max(p.natDegree,q.natDegree)=1. Coprimality and this identity themselves
+exclude zero denominator evaluation; there is no omitted extra assumption.
+
+Five leaves are promoted and uniquely wired:
+`HTGeometry/MeromorphicRationalPoleLift` (4 public),
+`HTGeometry/SchottkyRationalGrowth` (2),
+`HTGeometry/PolynomialPoleTransform` (3 theorems and 1 definition),
+`RHTower/XiEntireRational` (1), `RHTower/XiMeromorphicRational` (1).
+Every target build and every final `lake env lean actual/source.lean` passes.
+All twelve public declarations have only propext, Classical.choice, Quot.sound.
+Five obsolete proof scratches were removed after exact source comparison.
+Verification: `/tmp/rh-xi-rational-verification.json`,
+`/tmp/rh-xi-rational-axioms.log`, `/tmp/rh-xi-rational-build.log`, and the
+five `/tmp/rh-final-MODULE.log` files. No full or umbrella build was run.
+
+Formal lint remains globally unclean on six unrelated unwired modules:
+RHTower/WeilConeResonanceMoments; HTGeometry/ApertureConeCalculus,
+ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal,
+BoundaryCoronaCStarAlgebra. No owned failure; no globally clean-lint claim.
+
+Scientific assessment: BRIDGE, not certified new scientific knowledge.
+The formal frontier now excludes every nontrivial genus-zero compactified
+cover lift, including meromorphic inner poles. It does not exclude
+higher-genus covers or prove general irreducibility, C1, or RH. Classical
+ancestry was audited and exact source-specific claims checked internally.
+No hard step was skipped for effort. The next candidate attacks finite
+joint monodromy directly using logarithmic inverse islands, rather than
+assuming the missing compact-curve classification:
+`../1-in-progress/xi-logarithmic-islands-monodromy.md`.

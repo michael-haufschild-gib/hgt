@@ -1,0 +1,19 @@
+# WP03 quotient cancellation; main detector OPEN
+
+User's endless hgtl7 goal remains active: prove arbitrary WeilPositiveFull lam supplies bounded literal zeta quotient on every Re s>x>1/2. Do not mark complete or confuse existence of a full-positive system with the detector.
+
+New audited owned leaves: WeilWorkSingularArithmeticWeightedZeta, WeilWorkSingularArithmeticMellinMass, WeilWorkSingularArithmeticQuotient in formal/GaloisForLFunctions/RHTower/. Targeted lake build --old +Module passed. Final lake env lean each of the three leaves passed exit0, no diagnostics. Nine public declarations axiom audited via /tmp import, all only propext, Classical.choice, Quot.sound. No raised heartbeat/new axioms/numerical computations. Quotient import added to RHTower umbrella; reaches helpers. No umbrella/full build. Latest lint exit1 only nine unrelated unreachable modules listed EVIDENCE.md. Preserve other agents' files.
+
+Public capstones RHTower.WeilSingularArithmetic.exists_sharp_quotient_sum_le: from hW alone (and epsilon>0), actual q= LSeries.convolution 1 (producerMobius normalizedLam) has sharp sums bounded C(N+1)^(1/2+epsilon). quotient_dirichletConvergesAt: ordinary shifted Dirichlet series converges at every Re s>1/2. These complement earlier audited all-height reciprocal bound in SharpReciprocal. They do NOT supply vertical uniformity or absolute q convergence.
+
+Proof: unconditional dyadic zeta second moment implies actual norm-zeta integrability against (2+abs t)^(-1-eta), every eta>0, sigma in[1/2,3] excluding1. Product with reciprocal subpower strip growth supplies q weighted mass. Fractional half-width Mellin kernel costs (N+1)^(c+q); separate polynomial strip bound permits contour shift; exact half-integer cutoff gives sharp sum. Q=k*zetaEntire*exp(P) removes pole without premise. No coefficient bound added. Classification BRIDGE/classical; scientific novelty not established.
+
+Docs/card: docs/reports/weil-work/results/03-singular-arithmetic/{RESULT,PROOF,EVIDENCE}.md and docs/drafts/pipeline/1-in-progress/weil-work-03-singular-arithmetic.md. Read current durable logs before next research.
+
+Next conjecture OPEN: for arbitrary hW, every epsilon>0 gives sum_{1<=n<=N}|q(n)|^2 <= Cepsilon(N+1)^epsilon. Dyadic Cauchy-Schwarz would give absolute convergence Re>1/2 and target uniform bound. Do not add square bound as a premise. Alternating eta q(n)=(-1)^(n+1) shows signed cancellation alone insufficient; its G=1-2^(1-s) has extra Re1 zeros and violates full positivity, so not a full-cone counterexample.
+
+First attempted source mechanism fails in sign: log(n)q(n)=sum_{d|n}(Lambda(d)-lam'(d))q(n/d). For c_n=q(n)/sqrt(n), define S=sum |q|^2/n, E=sum log(n)|q|^2/n, I_a=Re sum_{dm<=N,d>=2}a(d)q(m)conj(q(dm))/(dm). Existing multiplicative Toeplitz bound 2I_lam <= (log N+C)S gives 2E >=2I_Lambda-(log N+C)S, only LOWER energy bound. Do not reverse this. Need coupled/full-form argument or different mechanism; main conjecture not falsified.
+
+Important corpus correction: WeilMeanSquare.exists_sum_sq_Ioc_le_of_weilPositiveFull already gives sum_(N,2N]lam(n)^2<=2N(log(2N)+C)^2. Hence f(n)=lam(n)/sqrt(n) has cubic-log square prefixes. This does not give conjectured q mass after nonlinear exponential. Booker arXiv1308.3067v2 assumes other coefficient conditions and discrete eventually-integral spectral mass; low-degree converse not available for arbitrary boundary measure. Brevig-Kouroupis-Perfekt arXiv2405.03522v2 gives boundary/height mean noncommutation; averaging cannot supply actual-height uniformity.
+
+Lean/API cautions discovered: ContinuousAt.comp may eagerly choose wrong partial addition; supply explicit f for vertical lines. integral_mono pointwise goal needs dsimp only before rw norm_mul. LSeries.convolution_map_zero correct name. Real.rpow_two verified in scratch. All own sessions finished by audit end; clean cycle3/4 /tmp files after recording results.

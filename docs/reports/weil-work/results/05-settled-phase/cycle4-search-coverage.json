@@ -1,0 +1,259 @@
+[
+  {
+    "query": "canonical producer boundary trace phase primitive",
+    "mode": "hybrid",
+    "partial": false,
+    "coverage": {
+      "files": 68336,
+      "inventoried": 68336,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68336
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11059,
+        "pending": 51879,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57277,
+        "prose": 11059
+      },
+      "declarations": 1028093,
+      "documents": 2848070,
+      "vectors": 2659813,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276967,
+      "methods": {
+        "failed": 53,
+        "ready": 412612,
+        "stale": 181702
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791375752.859144,
+      "current_generation": 1276968
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [],
+    "unfinished_stages": [],
+    "query_trace": [
+      {
+        "round": 1,
+        "query": "canonical producer boundary trace phase primitive",
+        "origin": "user",
+        "lexical_operator": "AND"
+      }
+    ]
+  },
+  {
+    "query": "critical line inverse Mellin measurable boundary trace local L1 convergence",
+    "mode": "hybrid",
+    "partial": false,
+    "coverage": {
+      "files": 68348,
+      "inventoried": 68348,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68348
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11060,
+        "pending": 51890,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57288,
+        "prose": 11060
+      },
+      "declarations": 1028227,
+      "documents": 2848425,
+      "vectors": 2660023,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1277162,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791377361.16595,
+      "current_generation": 1277162
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [],
+    "unfinished_stages": [],
+    "query_trace": [
+      {
+        "round": 1,
+        "query": "critical line inverse Mellin measurable boundary trace local L1 convergence",
+        "origin": "user",
+        "lexical_operator": "AND"
+      }
+    ]
+  },
+  {
+    "query": "shift a holomorphic contour to an almost everywhere boundary trace by dominated convergence without boundary continuity",
+    "mode": "deep",
+    "partial": false,
+    "coverage": {
+      "files": 68350,
+      "inventoried": 68350,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68350
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11060,
+        "pending": 51892,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57290,
+        "prose": 11060
+      },
+      "declarations": 1028251,
+      "documents": 2848489,
+      "vectors": 2660156,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1277232,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791378089.412427,
+      "current_generation": 1277233
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [],
+    "unfinished_stages": [],
+    "query_trace": [
+      {
+        "round": 1,
+        "query": "shift a holomorphic contour to an almost everywhere boundary trace by dominated convergence without boundary continuity",
+        "origin": "user",
+        "lexical_operator": "AND"
+      },
+      {
+        "round": 1,
+        "query": "shift holomorphic",
+        "origin": "keyword_relaxation",
+        "lexical_operator": "AND"
+      },
+      {
+        "round": 1,
+        "query": "everywhere boundary",
+        "origin": "keyword_relaxation",
+        "lexical_operator": "AND"
+      },
+      {
+        "round": 1,
+        "query": "without continuity",
+        "origin": "keyword_relaxation",
+        "lexical_operator": "AND"
+      },
+      {
+        "round": 1,
+        "query": "holomorphic contour shift",
+        "origin": "local_model",
+        "lexical_operator": "AND"
+      },
+      {
+        "round": 1,
+        "query": "dominated convergence boundary",
+        "origin": "local_model",
+        "lexical_operator": "AND"
+      },
+      {
+        "round": 1,
+        "query": "trace almost everywhere",
+        "origin": "local_model",
+        "lexical_operator": "AND"
+      },
+      {
+        "round": 1,
+        "query": "contour deformation analytic",
+        "origin": "local_model",
+        "lexical_operator": "AND"
+      }
+    ]
+  },
+  {
+    "query": "canonical boundary measure vonMangoldt zeta zero counting atomic representation uniqueness",
+    "mode": "hybrid",
+    "partial": false,
+    "coverage": {
+      "files": 68351,
+      "inventoried": 68351,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68351
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11060,
+        "pending": 51893,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57291,
+        "prose": 11060
+      },
+      "declarations": 1028256,
+      "documents": 2848518,
+      "vectors": 2660231,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1277280,
+      "methods": {
+        "failed": 53,
+        "ready": 412686,
+        "stale": 181628
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791378529.113249,
+      "current_generation": 1277281
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [],
+    "unfinished_stages": [],
+    "query_trace": [
+      {
+        "round": 1,
+        "query": "canonical boundary measure vonMangoldt zeta zero counting atomic representation uniqueness",
+        "origin": "user",
+        "lexical_operator": "AND"
+      }
+    ]
+  }
+]

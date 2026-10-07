@@ -95,3 +95,28 @@ coefficient `c_D ≠ 0`. Corpus inputs: `exists_entire_argument_variation_rectan
 - 2026-10-07 — formalized (MUST-806). The vertical edges are handled by `η → 0`, which avoids
   the multivariable homotopy. Arguments are lifted along radial segments (`radialLog`), and the
   monodromy is controlled by the one-variable segment bound.
+
+## Positive survivor: the resolution law (MUST-819, Lean)
+
+The no-go names a sharp boundary, and the boundary is order-optimal.
+`RHTower/LeeYangResolutionLaw.lean`, standard axioms, wired:
+
+- `exists_resolution_law`.
+  - Hypothesis: `E` is entire and zero-free, `R ≥ R₀`, and a normalized Lee–Yang restriction is `ε(R)`-close to `E·XiC` on the disc of radius `R+2`.
+  - Conclusion: its datum has total degree `S ≥ R/64`. At least `S/2` of that degree sits on variables of frequency `≤ 2(64 log(R+1) + 2π)/R`.
+- `exists_slow_variable`: some variable has frequency `≤ 2(64 log(R+1) + 2π)/R`.
+- `exists_den_ge_of_rational_freq` (length law): if the variables are rational fields `q^{−iz}` with `q > 1`, then some `q` has `den q + 1 ≥ R/(2(64 log(R+1) + 2π))`.
+- Inputs:
+  - `xiSymmetricMass_pred_le_zeroSumBall` and `re_zeroSumBall_le_xiSymmetricMass`: the sandwich `M(T−1) ≤ c(T) ≤ M(T)`.
+  - `exists_symmetricMass_window`: Riemann–von Mangoldt with `O(log T)` remainder (corpus `exists_xiZeroCount_routeKSmoothRVMCount_log_remainder`) on the two scales `R` and `R/2`, giving `T₁M(T₀−1) − T₀M(T₁) ≥ R²/16`.
+  - `abs_zeroSumBall_sub_le` for the linear count.
+
+**Optimality.** The independent log-ratio spin system `∏_{m<N} cos((t/2) log(1+1/m))` has `S = N`, minimal frequency `≍ 1/N` and density `log N/2π`. With `N ≍ R` it meets both bounds up to constants. So the law cannot be improved in order.
+
+**Reading.**
+- A stability producer of `Ξ` at height `R` must be built on arithmetic near-coincidences `q ≈ 1` with denominators `≳ R/log R`. That is far beyond the Riemann–Siegel length `√(R/2π)`, so it can never be a local Riemann–Siegel object.
+- The forced frequencies `≈ 1/m`, `m ≲ R`, are exactly the convergence factors `(1+1/m)^{s/2}` of the Euler product of `Γ(s/2)`. Any Lee–Yang route must therefore treat the archimedean place as a genuine interacting part, not as a zero-free normalizer.
+
+Relation to the corpus: `PrimeIsingArbitraryGraphGKSNoGo` (GKS curvature) reaches the same qualitative survivor for Ising systems (site masses must collapse). MUST-806 covers general Lee–Yang polynomials, is blind to normalizers and is proved by counting. MUST-819 gives the rate.
+
+- 2026-10-07 — positive survivor formalized (MUST-819).

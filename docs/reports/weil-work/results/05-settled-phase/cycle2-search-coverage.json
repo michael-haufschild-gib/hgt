@@ -1,0 +1,340 @@
+[
+  {
+    "file": "wp05-cycle2-density.json",
+    "query": "fractional mass sublinear density meromorphic rigidity",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68309,
+      "inventoried": 68309,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68309
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11052,
+        "pending": 51859,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57257,
+        "prose": 11052
+      },
+      "declarations": 1027919,
+      "documents": 2847508,
+      "vectors": 2659280,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276410,
+      "methods": {
+        "failed": 53,
+        "ready": 412490,
+        "stale": 181773
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791371479.442123,
+      "current_generation": 1276414
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "unfinished_stages": [],
+    "elapsed_seconds": 74.249352541,
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ]
+  },
+  {
+    "file": "wp05-cycle2-littlewood.json",
+    "query": "Littlewood coefficient free absolute summability producer log log",
+    "mode": null,
+    "partial": null,
+    "errors": null,
+    "coverage": null,
+    "semantic_coverage": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "index_warnings": null
+  },
+  {
+    "file": "wp05-cycle2-mean.json",
+    "query": "producer mean square coefficient norm Herglotz",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68309,
+      "inventoried": 68309,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68309
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11052,
+        "pending": 51859,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57257,
+        "prose": 11052
+      },
+      "declarations": 1027919,
+      "documents": 2847508,
+      "vectors": 2659295,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276421,
+      "methods": {
+        "failed": 53,
+        "ready": 412490,
+        "stale": 181773
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791371664.7129269,
+      "current_generation": 1276442
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "unfinished_stages": [],
+    "elapsed_seconds": 19.432701708,
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ]
+  },
+  {
+    "file": "wp05-cycle2-sound.json",
+    "query": "Soundararajan producer pointwise logarithm coefficient upper bound",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68310,
+      "inventoried": 68310,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68310
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11053,
+        "pending": 51859,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57257,
+        "prose": 11053
+      },
+      "declarations": 1027919,
+      "documents": 2847528,
+      "vectors": 2659303,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276461,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791371924.2377112,
+      "current_generation": 1276462
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "unfinished_stages": [],
+    "elapsed_seconds": 89.808626291,
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ]
+  },
+  {
+    "file": "wp05-cycle2-source.json",
+    "query": "fractional atom zero horizontal contour sublinear mass",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68307,
+      "inventoried": 68307,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68307
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11051,
+        "pending": 51858,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57256,
+        "prose": 11051
+      },
+      "declarations": 1027914,
+      "documents": 2847479,
+      "vectors": 2659269,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276370,
+      "methods": {
+        "failed": 53,
+        "ready": 412478,
+        "stale": 181783
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791371186.0134962,
+      "current_generation": 1276377
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "unfinished_stages": [],
+    "elapsed_seconds": 11.2968355,
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ]
+  },
+  {
+    "file": "wp05-cycle2-transfer.json",
+    "query": "Littlewood horizontal edge logarithmic fractional mass rigidity",
+    "mode": "deep",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68315,
+      "inventoried": 68315,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68315
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11055,
+        "pending": 51862,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57260,
+        "prose": 11055
+      },
+      "declarations": 1027949,
+      "documents": 2847616,
+      "vectors": 2659397,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276513,
+      "methods": {
+        "failed": 53,
+        "ready": 412517,
+        "stale": 181773
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791372248.113281,
+      "current_generation": 1276514
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "unfinished_stages": [],
+    "elapsed_seconds": 94.819497792,
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ]
+  },
+  {
+    "file": "wp05-cycle2-uniform.json",
+    "query": "uniform logarithmic Lindelof fractional mass near linear rigidity",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68309,
+      "inventoried": 68309,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68309
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11052,
+        "pending": 51859,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57257,
+        "prose": 11052
+      },
+      "declarations": 1027919,
+      "documents": 2847524,
+      "vectors": 2659312,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276452,
+      "methods": {
+        "failed": 53,
+        "ready": 412503,
+        "stale": 181773
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791371898.1091049,
+      "current_generation": 1276461
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "unfinished_stages": [],
+    "elapsed_seconds": 86.464384125,
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ]
+  }
+]

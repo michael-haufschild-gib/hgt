@@ -179,7 +179,11 @@ algebraic over C(d_a), hence lie back in C(d_a). Lean must still construct
 the analytic algebraic cover and justify this bridge; do not assume it.
 
 Polynomial pole removal is formalized: `../3-formalized/xi-meromorphic-polynomial-lifts.md`.
-Next increment: `../1-in-progress/xi-rational-left-factors.md`.
+The full rational-map reduction is also formalized:
+`../3-formalized/xi-rational-left-factors.md`. Five actual-source audits and
+twelve public axiom closures pass. General compact-curve classification is
+still outstanding. A direct analytic candidate may additionally reach joint
+finite monodromy: `../1-in-progress/xi-logarithmic-islands-monodromy.md`.
 Remove the entire-right-factor restriction by proving pole removal for every
 nonconstant polynomial, then applying the already audited degree-one theorem.
 This is necessary groundwork for rational/compact-curve lift reduction;

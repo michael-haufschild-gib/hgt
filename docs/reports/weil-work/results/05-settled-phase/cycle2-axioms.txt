@@ -1,0 +1,16 @@
+'RHTower.WeilWorkSettledPhase.re_producerPoly_div_le_mass' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilWorkSettledPhase.exists_re_producerLogZeta_le_littlewood_full' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilWorkSettledPhase.exists_re_producerLogZeta_le_littlewood_full {lam : ℕ → ℝ}
+  (hW : RHTower.WeilPositiveFull lam) :
+  ∃ C T₀,
+    0 < C ∧
+      ∀ (σ t : ℝ),
+        T₀ ≤ |t| →
+          1 / 2 < σ →
+            σ ≤ 2 → (RHTower.WeilSpectral.producerLogZeta hW σ t).re ≤ C * Real.log |t| / Real.log (Real.log |t|)
+@Summable.sum_le_tsum : ∀ {ι : Type u_1} {α : Type u_2} {L : SummationFilter ι} [inst : AddCommMonoid α]
+  [inst_1 : Preorder α] [IsOrderedAddMonoid α] [inst_3 : TopologicalSpace α] [OrderClosedTopology α] [L.NeBot]
+  [L.LeAtTop] {f : ι → α} (s : Finset ι), (∀ i ∉ s, 0 ≤ f i) → Summable f L → ∑ i ∈ s, f i ≤ ∑'[L] (i : ι), f i
+'RHTower.WeilSpectral.re_producerLogZeta_le' depends on axioms: [propext, Classical.choice, Quot.sound]

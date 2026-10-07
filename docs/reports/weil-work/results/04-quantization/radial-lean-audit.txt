@@ -1,0 +1,16 @@
+'RHTower.WeilSpectral.tendsto_re_weilContinuation_interval_endpoints' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.hasDerivAt_quantizationLogPrimitive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_tendsto_im_quantizationLogPrimitive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.monotoneOn_exp_re_quantizationLogPrimitive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.exists_tendsto_exp_quantizationLogPrimitive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.measurable_quantizationBoundaryTrace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationLogPrimitive_conj' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationBoundaryTrace_neg' depends on axioms: [propext, Classical.choice, Quot.sound]

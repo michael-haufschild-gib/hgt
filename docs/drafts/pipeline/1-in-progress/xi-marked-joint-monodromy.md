@@ -26,9 +26,27 @@ The single-coordinate finite-cover claim is now paper-proved on
 formalized on `../3-formalized/xi-laurent-left-factors.md`; both new leaves
 and public axiom closures passed. General cover completion/uniformization
 remains to formalize. Polynomial pole removal is closed in
-`../3-formalized/xi-meromorphic-polynomial-lifts.md`; active rational reduction:
-`xi-rational-left-factors.md`.
-No profinite or full fundamental-group conclusion is yet formalized.
+`../3-formalized/xi-meromorphic-polynomial-lifts.md`; full rational reduction:
+`../3-formalized/xi-rational-left-factors.md`, five actual-source checks and
+twelve public axiom closures passed. Active candidate for finite-quotient C1:
+`xi-logarithmic-islands-monodromy.md`, using inverse disks of actual tilted
+Xi logarithms. The inverse-disk endpoint is now fully audited on
+`../3-formalized/xi-logarithmic-inverse-disks.md`: four source checks and seven
+public standard-axiom closures pass. The joint finite-quotient argument is
+fully formalized for arbitrary finite real slope sets, including the empty
+set; novelty is uncertified.
+The actual finite loop-packet endpoint is now closed on
+`../3-formalized/xi-marked-loop-packets.md`: five source checks and25 public
+standard-axiom closures pass. Every finite zero-winding target packet is
+realized in one chosen real-slope coordinate, with all other coordinates
+nullhomotopic, at a common actual source point. This strengthens the working
+finite-image target to every finite real slope set. The completed finite-image
+and discrete normal-closure classifications are on
+`../3-formalized/xi-marked-finite-monodromy.md`: every finite-group map sees
+exactly the diagonal-winding subgroup, and that subgroup is the actual
+image's normal closure. Five final source checks and all15 public axiom
+closures pass. Full discrete image equality C1 remains open; the abstract
+cubic C2 below is a different statement and is not closed by this result.
 
 ## Exact candidate
 

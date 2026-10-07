@@ -954,4 +954,19 @@ closures standard-only. The entire representative preserves the original
 meromorphic field element. Actual tilted Xi admits no nonlinear polynomial
 left factor in that field. Lint lists ten unrelated unwired leaves, recorded
 on the card. BRIDGE, no novelty or RH claim. Next card:
-`xi-rational-left-factors.md`, beginning with finite-denominator-pole removal.
+`../3-formalized/xi-rational-left-factors.md`, now CLOSED: five target builds,
+five actual-source audits, twelve standard-only public axiom closures,
+five unique imports, and five obsolete proof scratches removed. Exact endpoint
+forces every coprime rational left factor of actual tilted Xi, all real tilts
+and meromorphic inner functions, to have degree one. Verification artifact:
+`/tmp/rh-xi-rational-verification.json`. Lint has six unrelated unwired leaves
+recorded on card. BRIDGE, no novelty/RH/C1 conclusion.
+
+Next hard candidate: `xi-logarithmic-islands-monodromy.md`. Arbitrarily large
+inverse disks of log(d_a) far right would isolate each mark's zero-winding
+kernel. In every finite quotient, finite generating packets plus normality
+then recover the entire kernel; one actual simple Xi zero supplies diagonal
+zero winding. This targets finite-quotient C1 for every finite mark packet.
+Paper mechanism recorded, corpus and hostile external audit active, no new
+Lean yet. Corpus already has exact digamma vertical minimum, a uniform
+Stirling defect bound, opened arithmetic log derivative, and strip decay.

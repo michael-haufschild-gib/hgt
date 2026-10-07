@@ -91,6 +91,8 @@ import GaloisForLFunctions.HilbertMetric.GaussianCoherentFisherClock
 import GaloisForLFunctions.HilbertMetric.ResponseCompression
 import GaloisForLFunctions.HilbertMetric.GaussianHarnack
 import GaloisForLFunctions.HilbertMetric.ProjectiveGramRegularization
+import GaloisForLFunctions.HilbertMetric.CrouzeixEvaluationEnergy
+import GaloisForLFunctions.HilbertMetric.SteinitzEvaluationInverse
 
 /-!
 # Hilbert-metric theorem area

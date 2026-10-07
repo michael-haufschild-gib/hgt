@@ -1,0 +1,551 @@
+[
+  {
+    "query": "atom horizontal contraction Herglotz singleton",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68297,
+      "inventoried": 68297,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68297
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11045,
+        "pending": 51854,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57252,
+        "prose": 11045
+      },
+      "declarations": 1027858,
+      "documents": 2847339,
+      "vectors": 2659138,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276299,
+      "methods": {
+        "failed": 53,
+        "ready": 412467,
+        "stale": 181794
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791370752.2925582,
+      "current_generation": 1276300
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "unfinished_stages": []
+  },
+  {
+    "query": "fractional mass power growth",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68275,
+      "inventoried": 68275,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68275
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11027,
+        "pending": 51850,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57248,
+        "prose": 11027
+      },
+      "declarations": 1027805,
+      "documents": 2847187,
+      "vectors": 2658994,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276223,
+      "methods": {
+        "failed": 53,
+        "ready": 412447,
+        "stale": 181814
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791370060.641952,
+      "current_generation": 1276223
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "unfinished_stages": []
+  },
+  {
+    "query": "cumulative phase counting bounded perturbation quantization",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68280,
+      "inventoried": 68280,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68280
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11032,
+        "pending": 51850,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57248,
+        "prose": 11032
+      },
+      "declarations": 1027805,
+      "documents": 2847192,
+      "vectors": 2658999,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276231,
+      "methods": {
+        "failed": 53,
+        "ready": 412447,
+        "stale": 181814
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791370262.485879,
+      "current_generation": 1276232
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "unfinished_stages": []
+  },
+  {
+    "query": "AbelianTwist radialError strip bound",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68290,
+      "inventoried": 68290,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68290
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11041,
+        "pending": 51851,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57249,
+        "prose": 11041
+      },
+      "declarations": 1027820,
+      "documents": 2847245,
+      "vectors": 2658999,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276257,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791370436.0960882,
+      "current_generation": 1276257
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "unfinished_stages": []
+  },
+  {
+    "query": "arithmetic phase settlement linear mass rational resonance",
+    "mode": "deep",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68286,
+      "inventoried": 68286,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68286
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11038,
+        "pending": 51850,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57248,
+        "prose": 11038
+      },
+      "declarations": 1027805,
+      "documents": 2847198,
+      "vectors": 2658999,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276239,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791370324.0883992,
+      "current_generation": 1276239
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "unfinished_stages": []
+  },
+  {
+    "query": "sublinear variation linear Abelian twist logarithmic growth",
+    "mode": "hybrid",
+    "partial": true,
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      }
+    ],
+    "coverage": {
+      "files": 68286,
+      "inventoried": 68286,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68286
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11038,
+        "pending": 51850,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57248,
+        "prose": 11038
+      },
+      "declarations": 1027805,
+      "documents": 2847198,
+      "vectors": 2658999,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276239,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791370324.0883992,
+      "current_generation": 1276239
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "unfinished_stages": [
+      "semantic_retrieval"
+    ]
+  },
+  {
+    "query": "fractional atoms horizontal edge Herglotz weighted mass",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68295,
+      "inventoried": 68295,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68295
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11044,
+        "pending": 51853,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57251,
+        "prose": 11044
+      },
+      "declarations": 1027835,
+      "documents": 2847290,
+      "vectors": 2659060,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276286,
+      "methods": {
+        "failed": 53,
+        "ready": 412467,
+        "stale": 181794
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791370672.186642,
+      "current_generation": 1276286
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "unfinished_stages": []
+  },
+  {
+    "query": "settled atomic phase",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68275,
+      "inventoried": 68275,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68275
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11027,
+        "pending": 51850,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57248,
+        "prose": 11027
+      },
+      "declarations": 1027805,
+      "documents": 2847187,
+      "vectors": 2658994,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276223,
+      "methods": {
+        "failed": 53,
+        "ready": 412447,
+        "stale": 181814
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791370086.5770829,
+      "current_generation": 1276223
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "unfinished_stages": []
+  },
+  {
+    "query": "Poisson lattice coth exponential sum",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68286,
+      "inventoried": 68286,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68286
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11038,
+        "pending": 51850,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57248,
+        "prose": 11038
+      },
+      "declarations": 1027805,
+      "documents": 2847198,
+      "vectors": 2658999,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276239,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791370324.0883992,
+      "current_generation": 1276239
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "unfinished_stages": []
+  },
+  {
+    "query": "phase transport chord cumulative atoms integral",
+    "mode": "hybrid",
+    "partial": false,
+    "errors": [],
+    "coverage": {
+      "files": 68286,
+      "inventoried": 68286,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68286
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11038,
+        "pending": 51850,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57248,
+        "prose": 11038
+      },
+      "declarations": 1027805,
+      "documents": 2847198,
+      "vectors": 2658999,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1276239,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791370324.0883992,
+      "current_generation": 1276239
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "unfinished_stages": []
+  }
+]
