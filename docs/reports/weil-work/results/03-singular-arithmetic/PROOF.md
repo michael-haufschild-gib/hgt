@@ -385,9 +385,9 @@ convergence threshold is also exactly1.
 The parent recurrence fact is stated explicitly in Brevig–Kouroupis–Perfekt,
 arXiv:2405.03522v2, Section3. Their boundary warning uses 1/ζ itself as an
 example. Verdict: REDISCOVERED parent mechanism, BRIDGE source application;
-not a new scientific claim. The positive source classification above is paper
-only until the exact full-positive theorem is checked in Lean. It does not
-retire the bounded-quotient route, because ζ cancels G's zero at1.
+not a new scientific claim. The exact full-positive unboundedness capstone is
+now audited in Lean; the abscissa classification corollaries above remain paper
+only. This does not retire the bounded-quotient route, because ζ cancels G's zero at1.
 
 ## Cycle 7: actual growth comparison (paper proof)
 
@@ -413,3 +413,576 @@ or its actual quotient yields a subpower upper bound for the other on the
 same inner strip. This proves the claimed growth equivalence on paper.
 The comparison is a BRIDGE from a stronger existing source theorem, not a
 new cancellation mechanism or a proof of either Lindelöf or bounded quotient.
+
+## Cycle 10: actual reciprocal mean square (paper and Lean verified)
+
+For every hW, choose the literal G already identified with its ordinary
+Dirichlet series in cycle1. Write mu(n) for those coefficients. For every
+real sigma>1/2 the following limit exists and is finite:
+
+    lim_(T→infinity) (1/T) integral_0^T |G(sigma+it)|² dt
+      = sum_(n≥1) |mu(n)|² n^(-2sigma).
+
+Here T is real and positive. This is the actual function, with no random
+twist or almost-everywhere selection. The result does not assert a uniform
+bound in t or uniformity as sigma decreases to1/2.
+
+Put delta=sigma−1/2>0. Choose 0<epsilon<delta/3. Cycle1 gives, for every
+real t and u≥1,
+
+    |A_t(u)| ≤ C (floor(u)+1)^(1/2+epsilon) (2+|t|)^epsilon,
+    A_t(u)=sum_(1≤n≤u) mu(n)n^(-it).
+
+Set a=1/2+epsilon<sigma. For u≥1 this is at most
+C*2^a*u^a*(2+|t|)^epsilon. Finite summation by parts followed by the ordinary
+series limit gives, for each integer N≥1,
+
+    G(sigma+it) − sum_(n≤N) mu(n)n^(-sigma-it)
+      = −A_t(N)N^(-sigma)
+        + sigma*integral_N^infinity A_t(u)u^(-sigma-1)du.
+
+The integral is absolutely convergent: its norm is bounded by a constant
+times u^(a−sigma−1), whose exponent is less than−1. The endpoint at infinity
+vanishes by the same bound. Thus the displayed identity entails
+
+    |G(sigma+it)−P_N(t)|
+      ≤ C*2^a*(1+sigma/(sigma−a))*(2+|t|)^epsilon*N^(a−sigma).
+
+No factor |sigma+it| is introduced: the oscillation was included in A_t
+before summation by parts, and the differentiated weight is the real power
+u^(-sigma). This order of operations matters.
+
+The coefficient energy S_sigma=sum_(n≥1)|mu(n)|²n^(-2sigma) is finite.
+Indeed, cycle5 with 0<eta<2delta bounds the j-th dyadic block by a constant
+times 2^(j*(1+eta−2sigma)); the geometric ratio is strictly less than1.
+
+For T≥4 take N=floor(sqrt(T)). Then sqrt(T)/2≤N≤sqrt(T). The preceding
+tail bound, uniformly for0≤t≤T, is O(T^((3epsilon−delta)/2)), hence tends to0.
+Write e_T for this uniform error. The existing finite sharp mean-value theorem
+applied to b_n=mu(n)n^(-sigma), 1≤n≤N, gives
+
+    |(1/T)integral_0^T |P_N(t)|²dt − sum_(n≤N)|b_n|²|
+      ≤ (104/T)sum_(n≤N)n|b_n|²
+      ≤ 104*(N/T)*S_sigma.
+
+Its right side tends to0, while the finite energy tends to S_sigma since
+N tends to infinity. In particular these polynomial mean squares remain
+bounded. Integral Cauchy–Schwarz and
+||z+w|²−|z|²|≤2|z||w|+|w|² now bound the difference between the actual
+and polynomial mean squares by
+
+    2*e_T*sqrt((1/T)integral_0^T |P_N(t)|²dt) + e_T²,
+
+which tends to0. This proves the exact limit without a Carlson theorem,
+an infinite-polynomial mean-value interchange, or an unproved source bound.
+
+The generic assertion using only ordinary convergence and H² is false by
+Brevig–Kouroupis2026, Theorem6. Their Corollary2 supplies the order-zero
+replacement. The proof above derives that replacement directly for this
+source from already verified ingredients. Verdict: BRIDGE, not new scientific
+novelty. The source mean identity is now formalized and directly audited in
+`WeilWorkSingularArithmeticReciprocalMeanSquare.lean`. The bounded-product detector is
+still open: a mean law does not control the exceptional orbit, and G itself
+is provably unbounded on every half-plane crossing1.
+
+### Uniform tail lemma used in the formalization
+
+Fix alpha>1/2 and epsilon>0. Choose
+eta=min((alpha-1/2)/2,epsilon)>0 and theta=1/2+eta<alpha.
+For a_t(n)=mu(n)n^(-it), cycle1 and n+1<=2n give
+|sum_(m<=n)a_t(m)|<=C*2^theta*(2+|t|)^eta*n^theta, n>=1.
+Finite summation by parts with the real weight n^(-alpha) therefore bounds
+every partial sum of the original series at alpha+it by
+
+    K*(2+|t|)^eta,
+    K=C*2^theta*(1+alpha*sum_(n>=1)n^(theta-alpha-1)).
+
+The last sum is finite because theta<alpha. Inflate eta to epsilon using
+2+|t|>=1. Apply the existing shifted uniform Abel tail estimate from
+s0=alpha+it to s=sigma+it, sigma>alpha. The shift is positive real, so
+1+|s-s0|/Re(s-s0)=2. This yields, simultaneously for all sigma>alpha,N,t,
+
+    |G(sigma+it)-P_N(sigma+it)|
+      <=4K*(2+|t|)^epsilon*(N+1)^(alpha-sigma).
+
+The same literal G is used everywhere, identified by ordinary convergence.
+This slightly weaker exponent than the single-Abel formula still proves
+the mean law: take alpha=(sigma+1/2)/2 and epsilon<(sigma-alpha)/2.
+
+An alternative final comparison avoids integral Cauchy–Schwarz. The N=0
+tail bound gives |G|<=K(2+|t|)^epsilon. Since (N+1)^(alpha-sigma)<=1,
+the same bound gives |P_N|<=2K(2+|t|)^epsilon. Consequently
+
+    ||G|²-|P_N|²| <= 3K²(2+|t|)^(2epsilon)(N+1)^(alpha-sigma).
+
+For N=floor(sqrt(T)) and epsilon<(sigma-alpha)/4, its supremum over
+0<=t<=T tends to zero. Dividing the integral by T preserves that bound.
+This also proves the same mean identity; it uses order zero twice rather
+than a Cauchy–Schwarz estimate on the polynomial mean.
+
+The formal proof uses alpha=(sigma+1/2)/2 and epsilon=(sigma-alpha)/8.
+The strict inequality sqrt(T)<floor(sqrt(T))+1 gives the required negative
+power comparison, including all real T sufficiently large. The four leaves
+ReciprocalTail, SquareSummability, MeanComparison, and ReciprocalMeanSquare
+passed targeted builds and final direct Lean audits. All six public capstones
+use only propext, Classical.choice, and Quot.sound.
+
+## Cycle 17: regular perturbations do not test the singular detector
+
+This is a conditional diagnostic, not an example of a full-positive source
+and not a new source capstone. Write Q_lambda(f) for the real full Weil
+functional on the autocorrelation of a compact C2 test f. Suppose, only for
+this diagnostic, Q_lambda(f)>=eta*integral |f|^2 for every such test, eta>0.
+For w supported on n>=2 put B=2 sum |w(n)|/sqrt(n). Cauchy--Schwarz and
+translation invariance give |autocorr_f(u)|<=integral |f|^2. The exact
+arithmetic part of weilFullFunctional therefore gives
+
+    |Q_(lambda+w)(f)-Q_lambda(f)| <= B*integral |f|^2.
+
+Only finitely many arithmetic terms meet each compact autocorrelation.
+Consequently B<eta/2 preserves a margin eta/2, hence full positivity.
+
+Fix 0<a<1/2. Infinitely many primes and
+p^(a-1/2)*log p -> 0 permit an increasing prime sequence p_j with
+2*p_j^(a-1/2)*log p_j < eta*2^(-j-3), j>=0. Set
+w(p_j)=sign(lambda(p_j))*p_j^a*log p_j, taking sign(0)=1, and w=0 elsewhere.
+Then B<eta/2 and |lambda(p_j)+w(p_j)|>=p_j^a log p_j. The exact prime
+Dirichlet-exponential identity gives |mu_(lambda+w)(p_j)|>=p_j^a.
+Thus the universal reciprocal Ramanujan conjecture, if proved, would also
+exclude every source with this uniform margin. Existence of such a margin
+is unproved; this does not refute that conjecture.
+
+In contrast, the exact WP03 target is invariant under this perturbation.
+H(s)=-sum_(n>=2) w(n)/(log n)*n^(-s) converges normally on Re s>1/2 and
+|H(s)|<=B/(2 log 2) there. On Re s>1 the literal reciprocals satisfy
+G_(lambda+w)=G_lambda*exp(H); the identity theorem extends this identity
+when both sources are full-positive. Both exp(H) and exp(-H) have norm at
+most exp(B/(2 log 2)). Hence every inner-half-plane bound for zeta*G of
+either source gives the corresponding bound for the other. This stability
+argument is elementary Banach-algebra analysis (BRIDGE), not a solution.
+
+## Cycle 20: forward coefficient critical square energy
+
+Let lambda be any full-positive source, lambda0 its truncation below2, and
+a_lambda=dirichletExp(logZetaCoeff(lambda0)). The claim is
+
+    exists K>=0, forall N>=1,
+      sum_(1<=n<=N) |a_lambda(n)|^2/n <= K*(1+log N).
+
+No sign, multiplicativity, margin, or coefficient-size premise is added.
+This claim concerns the forward series exp(L), not its reciprocal exp(-L).
+
+First the exact logarithmic convolution identity is
+
+    (log n)*a_lambda(n) = sum_(d*m=n) lambda0(d)*a_lambda(m), n>=1.
+
+One justification uses only existing analytic parents: full positivity gives
+absolute convergence of lambda0 and its log series on Re s>1; the Dirichlet
+exponential theorem gives absolute convergence of a_lambda and L(a)=exp(L).
+Differentiate on this open half-plane and use absolute Dirichlet convolution.
+Both resulting series converge to the same function. Dirichlet uniqueness
+identifies their coefficients for every n>=1. The n=1 terms are zero.
+
+Take C>=0 from the existing multiplicative Toeplitz bound. At level N insert
+c(m)=a_lambda(m)/sqrt(m) for 1<=m<=N, and c(m)=0 otherwise. Group the finite
+double sum by k=n*m. Since lambda0 is real, its inner sum is the conjugate
+of the logarithmic convolution identity. Thus exactly
+
+    2*sum_(k<=N) (log k)*|a_lambda(k)|^2/k
+       <= (log N+C)*sum_(k<=N) |a_lambda(k)|^2/k.                 (20.1)
+
+There is no absolute-value replacement of the signed arithmetic convolution.
+All excluded indices have zero cutoff or lambda0 value. This is the useful
+orientation of the Toeplitz ceiling: using reciprocal coefficients instead
+would put a minus sign on the nonnegative logarithmic energy.
+
+For L>=0 define E(L)=sum_(1<=n<=exp L) |a_lambda(n)|^2/n and
+F(L)=integral_0^L E(u) du. Finite summation on each compact interval gives
+F(L)=sum_(n<=exp L) |a_lambda(n)|^2/n*(L-log n), including the term n=1.
+Apply (20.1) at floor(exp L) and use log(floor(exp L))<=L to obtain
+
+    (L-C)*E(L) <= 2*F(L).                                      (20.2)
+
+F is locally absolutely continuous and F'=E almost everywhere. On L>C,
+(F(L)/(L-C)^2)'<=0 almost everywhere, by (20.2). The fundamental theorem
+for absolutely continuous functions makes this ratio nonincreasing. Fix
+L0>C+1. Then F(L)<=F(L0)*(L-C)^2/(L0-C)^2 for L>=L0, and (20.2) gives
+E(L)<=2*F(L0)*(L-C)/(L0-C)^2. The bounded initial interval is absorbed in K.
+Taking L=log N proves the claim. The finite proof below is now formalized in
+WeilWorkSingularArithmeticForwardCoefficients and passed its final direct audit.
+
+For formalization the same step has a finite proof. Put
+E_N=sum_(n<=N)w_n and H_N=sum_(n<=N)(log N-log n)*w_n, w_n=|a(n)|^2/n.
+For N>=1, H_(N+1)=H_N+(log(N+1)-log N)*E_N. Choose N0 with log N0>C
+and K0>=H_N0/(log N0-C)^2. If H_N<=K0*(log N-C)^2, then (20.1) gives
+E_N<=2*K0*(log N-C). With d=log(N+1)-log N>=0, the exact recurrence gives
+H_(N+1)<=K0*((log N-C)^2+2*d*(log N-C))<=K0*(log(N+1)-C)^2.
+Induction proves both bounds for N>=N0; E_N<=E_N0 handles the finite head.
+This version needs no integral or almost-everywhere differentiation.
+
+The parent mechanisms are logarithmic differentiation, finite Toeplitz
+testing, and Gronwall's inequality. Classification: BRIDGE until a stronger
+scientific consequence survives the novelty audit. It neither bounds the
+actual quotient nor removes exceptional heights. It does suggest an exact
+stronger question: if r_lambda is the positive residue of exp(L) at1, does
+sum_(n<=N)|a_lambda(n)-r_lambda|^2/n=o(log N)? That variance statement is
+OPEN; (20.1) supplies an upper growth order, not its leading constant.
+
+## Cycle24: exact two-prime composite compensation
+
+This finite diagnostic concerns the real divisor-square matrix indexed by
+(1,p,q,pq), not a full-positive source. Write a=lambda(p)/sqrt(p),
+b=lambda(q)/sqrt(q), c=lambda(pq)/sqrt(pq). Its quadratic form is
+
+    T_c(x)=2a(x0*xp+xq*xpq)+2b(x0*xq+xp*xpq)+2c*x0*xpq.
+
+Let u=sqrt(a^2+b^2). The least possible upper quadratic-form budget over
+all choices of c is exactly u. If u>0, its unique attaining choice is
+c=-2ab/u. For this choice direct expansion gives
+
+    u*(u*sum x_i^2-T_c(x))
+      =(u*xp-a*x0-b*xpq)^2+(u*xq-b*x0-a*xpq)^2.
+
+Hence the ceiling holds. The nonzero vector (u,a,b,0) has equality, so no
+smaller budget works. Conversely, if budget u holds for every vector, insert
+(u,a,b,t). The defect is u*t^2-2*(2ab+cu)*t. At
+t=(2ab+cu)/u this is -(2ab+cu)^2/u, so positivity forces c=-2ab/u.
+If u=0 then a=b=0, and vectors (1,0,0,1),(1,0,0,-1) force c=0.
+The zero matrix then has budget0. These statements include every real a,b.
+
+This is a classical Schur-complement completion calculation, classified
+BRIDGE, with the exact signed composite coefficient as positive survivor.
+It defeats the proposed local two-prime improvement of the star ceiling.
+It does not supply consistent arithmetic coefficients on all integers,
+all cutoffs, or the full Weil test space. Cycle23 is still open.
+The exact square identity, ceiling classification and star equality are now
+formalized in WeilWorkSingularArithmeticDivisorCompletion. Targeted build,
+final direct check, and all three standard-axiom checks passed.
+
+## Cycle25: retaining the product cutoff in prime-layer tests
+
+The next candidate is genuinely coupled. Restrict the real multiplicative
+matrix to prime singletons and squarefree products of two distinct primes.
+All entries within each layer vanish; the cross-layer entry for singleton
+p and pair pq is a_q=lambda(q)/sqrt(q). Thus the matrix is the symmetric
+off-diagonal block with incidence map
+
+    (R v)_(p,q)=a_q*v_p+a_p*v_q.
+
+Arbitrary composite lambda values disappear because the root index1 is no
+longer present. If every pair of k selected primes is retained, then
+
+    R^T R=S*I+a*a^T-2*diag(a_p^2),   S=sum a_p^2.
+
+For three nonzero entries, v_p=1/a_p gives
+v^T(R^T R-SI)v=3>0. Hence this block has upper norm strictly exceeding
+sqrt(S): the two-prime sharp repairs cannot persist at three primes.
+For equal entries its squared norm is exactly (2k-2)*a^2. These are finite
+paper calculations, not yet formalized source theorems or novelty claims.
+
+The cutoff prevents an immediate source improvement. Retaining all pairs
+of primes up to X requires level X^2 and Weil budget2log X+O(1). A gain
+of at most sqrt(2) does not pay that cost. With the actual cutoff pq<=N,
+the correct incidence map omits the other pairs. Testing v_p=a_p gives
+the prospective exact source inequality
+
+    4*sum_(p<q, pq<=N) (lambda(p)^2/p)*(lambda(q)^2/q)
+      <= (log N+C)^2 * sum_(p<=N) lambda(p)^2/p.
+
+The inequality follows from the norm of this restricted bipartite block;
+its arithmetic reindexing and all finite support conditions still require
+formal proof. It is not, by itself, the sharp prime-variance conjecture.
+The research question is whether optimized nonuniform layer tests and the
+full source compatibility improve that bound without losing the cutoff.
+
+## Cycle27: all-cutoff Toeplitz sharpness
+
+This proves a limitation of the complete family of logarithmic Toeplitz
+ceilings, not a counterexample to full Weil positivity. Choose primes
+p_0=2 and p_(j+1)>p_j^[2*(j+1)*(j+3)]. Euclid's theorem supplies each
+choice. They increase strictly. Write L_j=log p_j and
+b_j=((j+1)/(j+2))*L_j. Monotonicity gives sum_(i<j)L_i<=j*L_(j-1),
+so 2*(j+2)*sum_(i<j)L_i<=L_j for j>=1; the j=0 case is empty.
+In particular b_j>=0 and b_j+2*sum_(i<j)b_i<=L_j.
+Define lambda(p_j)=sqrt(p_j)*b_j and lambda(n)=0 off this sequence.
+
+Fix N>=1 and complex c supported in[1,N], with M=sum |c(m)|^2.
+For every p>=2, the shift form
+U_p=2 Re sum_m c(pm) conjugate(c(m)) is at most2M by AM-GM
+and injectivity of m->pm. If N<p^2, retain only m with pm<=N.
+Such m satisfy m<p, whereas pm>=p; the two index sets are disjoint.
+AM-GM now gives U_p<=M. No sign of c or of a correlation is discarded.
+
+Only finitely many selected primes occur below N. If none occur the form
+is zero. Otherwise let p_j be the largest. When N<p_j^2, the entire form
+is at most (b_j+2*sum_(i<j)b_i)*M<=L_j*M<=log(N)*M.
+When N>=p_j^2, it is at most2*sum_(i<=j)b_i*M<=2*L_j*M<=log(N)*M.
+Thus the exact multiplicative Toeplitz ceiling holds at every N with C=0.
+
+At cutoff p_j, prime-square mass is at least lambda(p_j)^2/p_j=b_j^2.
+Since p_j tends to infinity and (j+1)/(j+2) tends to1, every constant
+theta<1 is exceeded by normalized prime-square mass at arbitrarily large
+cutoffs. The star argument supplies the matching upper constant1 for this
+relaxation. This rules out deriving cycle23 solely by more elaborate tests
+inside the already extracted Toeplitz family, including cycle25 layers.
+It leaves the full-positive conjecture open. The positive survivor is the
+unconditional all-scale sparse construction and its exact sharp constant.
+
+The matching upper square-mass bound also has a direct construction proof.
+For the last selected prime p_j<=N, sum_(i<=j)b_i<=L_j<=log N and b_i>=0.
+Consequently sum_(i<=j)b_i^2<=(sum_(i<=j)b_i)^2<=(log N)^2.
+The empty-cutoff case is zero. Both bounds and the ceiling are now Lean
+theorems in WeilWorkSingularArithmeticToeplitzSharpness. Its unconditional
+capstone is exists_sharp_prime_supported_toeplitz_weight. This strengthens
+the earlier finite calibration to one infinite witness and every cutoff.
+
+## Cycle29 paper proof: sharp source summatory law
+
+Status: dependency-closed paper argument, formalized and audited. This is a
+classical Perron BRIDGE, not the uniform quotient detector.
+
+Write lambda0(n)=lambda(n) for n>=2 and zero otherwise. The full-source
+Herglotz theorem supplies Phi; R=A-Phi is holomorphic on Re s>1/2, and
+L(lambda0,s)=1/(s-1)+R(s) on Re s>1. The already formalized regular-part
+bound gives R(s)=O_delta(log(3+|Im s|)) uniformly for Re s>=1/2+delta.
+Thus for every a>0, R(s)=O_delta,a((2+|Im s|)^a) there.
+
+Fix epsilon>0, q=min(epsilon/4,1/4), a=q/2, c=1/2+q. For integer N>=1,
+let w=smoothWeight N (1/2), with Mellin transform W. Its values on positive
+integers are exactly 1 for n<=N and 0 otherwise. Absolute Dirichlet
+convergence on Re s=2 gives
+
+    2*pi * sum_(n<=N) lambda0(n)
+      = integral_R [1/(1+it)+R(2+it)] W(2+it) dt.
+
+For the pole contribution, 1/(s-1)=integral_1^infinity x^(-s) dx on Re s=2.
+The double integral is absolutely integrable: its norm is
+x^(-2)|W(2+it)|, the product of two integrable functions. Fubini followed
+by Mellin inversion therefore identifies it with
+2*pi*integral_1^infinity w(x) dx. This continuous main term lies between
+N-1 and N-1/2, hence differs from N by a bounded constant.
+
+Shift only R(s)W(s) to Re s=c. Holomorphy holds on the full closed strip;
+rapid Mellin decay makes both vertical edges integrable and the horizontal
+edges tend to zero. The fractional Mellin estimate with a<q bounds the
+new vertical integral by O((N+1)^(c+q)). Since c+q<=1/2+epsilon, this proves
+
+    |sum_(2<=n<=N) lambda(n)-N| <= C_epsilon (N+1)^(1/2+epsilon).
+
+Every constant may depend on the source and epsilon, but not on N. No
+nonnegativity, pointwise coefficient bound, local-mass bound, or slow-decrease
+premise is used. In particular there is no smoothing error at the integers.
+
+The centered coefficients lambda0(n)-1 consequently have an ordinary
+Dirichlet series on Re s>1/2, by the existing polynomial Abel theorem.
+At s=1, adding the harmonic-number asymptotic gives convergence of
+sum lambda0(n)/n-log N. Subtracting the unconditional von Mangoldt
+Mertens limit gives ordinary convergence of sum coneDeviation(lambda,n)/n.
+This upgrades an existing local-mass-conditional conclusion; it does not
+control total variation of the deviation or exceptional vertical heights.
+
+The exact statements are `exists_sharp_source_sum_le`,
+`centered_source_dirichletConvergesAt`, and
+`exists_tendsto_coneDeviation_harmonic` in
+`WeilWorkSingularArithmeticSummatory.lean`, supported by
+`WeilWorkSingularArithmeticPolePerron.lean`. Both final direct Lean checks
+passed; all five public declarations have only the standard three axioms.
+
+## Cycle30 paper candidate: the harmonic limit is nonpositive
+
+Status: second paper audit passed; formalization in progress, NOT formalized.
+Do not cite C30 as a Lean theorem. Its target is the C29 harmonic limit's
+sign, not the full WP03 detector. The following argument replaces the
+three open obligations in the initial contour sketch; exact Lean dependency
+assembly remains the next work. The second audit checked contour orientation,
+pole cancellation, regularized Fubini and aggregate Gaussian error exponents.
+
+Let Phi be the full-source Herglotz continuation, A the zeta archimedean
+datum, R=A-Phi, and D=1/(s-1)+R. Let p(s)=(s-1)zeta(s), extended at1.
+The corpus proves p entire, p(1)=1, p'(1)=gamma. Write
+
+    ell = R(1)+gamma,
+    a = lambda0*d_2 - (Lambda*d_2),
+    V(s) = D(s)zeta(s)^2 + zeta'(s)zeta(s),
+    F(s) = [D(s)zeta(s)+zeta'(s)]zeta(1-s).
+
+Here ell is real. Ordinary Abel convergence at1, together with C29 and
+the von Mangoldt Mertens constant, identifies ell with the ordinary limit
+of sum coneDeviation(lambda,n)/n. On Re s>1, V=LSeries a. The coefficient
+sequence is absolutely Dirichlet summable at every sigma>1, in particular
+at9/8. This follows from the source's absolute convergence and the two
+zeta factors; no pointwise Ramanujan bound is needed.
+
+The exact algebra, away from1, is
+
+    V(s) = p(s)[R(s)p(s)+p'(s)]/(s-1)^2,
+    F(s) = [R(s)p(s)+p'(s)]zeta(1-s)/(s-1).
+
+Thus V has at most a double pole with leading coefficient ell, and F has
+at most a simple pole with residue -ell/2. Multiplication has removed
+every possible zeta-zero pole. No zero-free assumption or RH enters.
+
+### Positive boundary measure via a symmetric strip
+
+Fix T>=1, g_T(s)=exp((s-1/2)^2/T^2),
+b_T(s)=zeta(s)zeta(1-s)g_T(s), and c=3/4. On the closed strip
+1/4<=Re s<=3/4, b_T is holomorphic, Gaussian-decaying in height, and
+b_T(1-conj(s))=conj(b_T(s)). Also integral_R b_T(c+it)dt is real,
+by Schwarz conjugation and t->-t.
+
+For each real r, apply the residue theorem to
+b_T(s)/(s-1/2-ir) across this symmetric strip. The left vertical integral
+is minus the conjugate of the right one; the right-minus-left orientation
+has residue +2*pi*b_T(1/2+ir). Therefore
+
+    Re integral_R b_T(c+it)/(c-1/2+i(t-r)) dt
+      = pi*b_T(1/2+ir).
+
+The regularization -ir/(1+r^2) contributes a purely imaginary integral.
+Insert the corpus's representation
+
+    Phi(s) = integral [1/(s-1/2-ir)-ir/(1+r^2)] dmu(r) + iC.
+
+Fubini is justified before separating the regularized terms: the existing
+herglotzKernel bound is a polynomial in |t| times (1+r^2)^(-1), and
+integral (1+r^2)^(-1)dmu is finite. Gaussian decay integrates the polynomial.
+The imaginary constant contributes zero real part. Consequently
+
+    Re integral_R Phi(c+it)b_T(c+it)dt
+      = pi*integral |zeta(1/2+ir)|^2 exp(-r^2/T^2)dmu(r) >= 0.
+
+This is a strip identity, not an assumption about pointwise boundary values.
+
+Put B=A+1/(s-1). The function
+[B(s)zeta(s)+zeta'(s)]zeta(1-s)g_T(s) is holomorphic on this strip.
+Its real part on the critical line is zero: off zeta zeros it is
+Re(xi'/xi)*|zeta|^2*g_T=0 by the functional equation; at zeros the
+displayed product itself vanishes. Shift its integral from c to1/2.
+It follows that Re integral_R F(c+it)g_T(c+it)dt <=0.
+Shifting now from c to3/2 crosses only the simple pole at1, giving
+
+    Re integral_R F(3/2+it)g_T(3/2+it)dt
+      <= -pi*ell*exp(1/(4*T^2)).                         (30.1)
+
+All horizontal edges vanish by the source regular-part logarithmic bound,
+the corpus's polynomial zeta strip bounds, and Gaussian decay. Derivative
+bounds follow from Cauchy's formula on slightly enlarged pole-free strips.
+
+### Exact Gaussian extraction, with the source's actual premises
+
+By the functional equation, F(s)=chi(1-s)V(s). Reflection t->-t and
+g_T(1-s)=g_T(s) put the right-hand integral exactly into
+ZetaLeftLineGaussianIntegrals.integral_zetaChi_mul_LSeries (r=1):
+
+    integral_R F(3/2+it)g_T(3/2+it)dt = 2*pi*sum_n a(n)J_T(n).
+
+ZetaChiGaussianKernel supplies BOTH
+
+    |J_T(n)-2*exp(-4*pi^2*n^2/T^2)| <= C*(n/T^2+1/T),
+    |J_T(n)| <= C*T^2/n^2.
+
+The integer identity cos(2*pi*n)=1 is essential. Put sigma=9/8,
+S=sum |a(n)|n^(-sigma)<infinity, and Y=T^(4/3). Below Y the summed
+approximation error is bounded by
+
+    C*S*[T^(-2)*Y^(sigma+1)+T^(-1)*Y^sigma]
+      = O(S*T^(5/6)).
+
+Above Y, use the quadratic bound for both the exact and Gaussian kernels:
+the summed tail is O(S*T^2*Y^(sigma-2))=O(S*T^(5/6)). Hence
+
+    sum a(n)J_T(n)
+      = 2*sum a(n)exp(-4*pi^2*n^2/T^2) + O(T^(5/6)).   (30.2)
+
+This needs neither local absolute mass nor individual coefficient bounds.
+The published sharp-endpoint Gonek lemma is unnecessary.
+
+### The remaining main term is exactly ell
+
+Let X=T/(2*pi), M(s)=Gamma(s/2)/2, the Mellin transform of exp(-x^2).
+Absolute Mellin inversion on Re s=3/2 gives
+
+    sum a(n)exp(-(n/X)^2)
+      = (1/(2*pi*i))*integral_(3/2) V(s)M(s)X^s ds.
+
+Shift to3/4. The double-pole formula above gives
+
+    sum a(n)exp(-(n/X)^2)
+      = ell*M(1)*X*log X + C_lambda*X + O(X^(3/4)).     (30.3)
+
+Here M(1)=sqrt(pi)/2>0. The shifted integral is absolutely integrable:
+V has polynomial vertical growth on this line, while Gamma(s/2) has
+exponential decay. The same bounds make the horizontal edges vanish.
+Equations (30.2)-(30.3) imply that the left side of (30.1), divided by
+T*log T, tends to sqrt(pi)*ell. Its right side tends to zero. Thus ell<=0.
+
+Kill audit: all coefficients stay signed in V and its main term; absolute
+values occur only in an error controlled by summability already derived
+from hW. No off-line zero is crossed by a logarithmic derivative quotient.
+No critical-line continuity of Phi is assumed. Reflection gives the
+positive sign in the Cauchy identity; the pole of F has residue -ell/2.
+For the canonical arithmetic sequence a=0 and ell=0, every displayed
+identity reduces to zero. None of these steps yet constitutes a Lean audit.
+
+### Cycle30 implementation refinement: regularized Fubini
+
+For z=1/4+it, choose R=1+|t| in the existing Herglotz kernel bound.
+Its coefficient is 6+6R+8R^2, bounded by 40(1+t^2). Hence
+
+    |K(1/4+it,r) v(t)|
+      <= 40*C / ((1+t^2)(1+r^2))
+
+whenever |v(t)|(1+t^2)^2<=C. The right side is integrable for Lebesgue
+measure in t and the source boundary measure in r. This proves joint
+integrability before interchanging integrals. For each fixed r, the
+Cauchy quotient is integrable since its denominator norm is >=1/4;
+only then is its regularizing term separated in the t-integral.
+Conjugation under t -> -t makes the test integral real, cancelling both
+the kernel correction and the purely imaginary continuation constant.
+
+For the actual zeta-Gaussian test, polynomial bounds on the high part of
+the quarter strip are completed by compactness on the low part. The
+existing Gaussian moment bound absorbs four extra powers, yielding
+uniform fourth-order decay. The exact source integral is absolutely
+integrable; its nonnegativity is not an artifact of the default value
+assigned to a nonintegrable Bochner integral.
+
+Formal implementation: CauchyReflection, HerglotzPairing and GaussianPairing
+leaves under the `WeilWorkSingularArithmetic` prefix. All three targeted
+builds and final direct checks passed; five axiom audits are standard-only.
+This completes the pairing sub-obligation, not the full C30 sign argument.
+
+### Cycle30b implementation refinement: canonical subtraction and pole transport
+
+The canonical datum obeys A(s)+1/(s-1)=O(1+|Im s|) on the quarter strip.
+Together with the corpus polynomial bounds for zeta and its derivative,
+this bounds J before Gaussian weighting. Compactness fills the bounded
+height region; Gaussian moments give integrable inverse-square decay.
+The corpus critical-line identity includes zeta zeros, so J has purely
+imaginary value there without any division by zeta. Contour transport
+from1/2 to3/4 proves its real integral is zero. Subtracting the C30a
+identity yields the exact equality
+
+    Re integral_(3/4) F(s)g_T(s) dt
+      = -pi * integral |zeta(1/2+ir)|^2 exp(-r^2/T^2) dmu(r).
+
+Define P(s)=R(s)p(s)+p'(s). It is holomorphic on Re s>1/2, including
+at1 and at zeta zeros. The algebraic identities F=P*zeta(1-s)/(s-1)
+and V=p*P/(s-1)^2 give P(1)=ell, residue(F,1)=-ell/2 and the leading
+double-pole coefficient of V equal to ell.
+
+For the actual continuation Phi, the corpus Harnack estimate directly
+bounds R=A-Phi on Re s>=3/4 by C log(|Im s|+3)+C. On the strip from3/4
+to3/2, the high-height pole term is bounded. Polynomial zeta and zeta'
+bounds therefore give polynomial growth for F; Gaussian moments again
+give inverse-square decay. The simple-pole vertical shift applies and
+preserves the exact equality
+
+    Re integral_(3/2) F(s)g_T(s) dt
+      = -pi * Re(P(1)) * exp(1/(4*T^2))
+        -pi * integral |zeta(1/2+ir)|^2 exp(-r^2/T^2) dmu(r).
+
+No reality claim about P(1) is needed for this real-part identity. The
+later identification with the ordinary real harmonic limit supplies it.
+The implementation is under audit; the arithmetic extraction and Mellin
+asymptotic are still outstanding.

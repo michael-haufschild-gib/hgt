@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.WeilWorkSettledPhaseTrace
+import GaloisForLFunctions.HTGeometry.DecayingStripVerticalShift
 
 /-!
 # The pole-subtracted actual producer has an integrable boundary trace
@@ -21,7 +22,7 @@ def sourceRemainder {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) : ℂ → �
 
 theorem differentiableOn_sourceRemainder {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
     DifferentiableOn ℂ (sourceRemainder hW) {s : ℂ | 1 / 2 < s.re} :=
-  differentiableOn_bigEG (fun s hs => hasDerivAt_sourceCompletion hW hs)
+  differentiableOn_bigEG (fun _ hs => hasDerivAt_sourceCompletion hW hs)
 
 theorem continuous_sourceRemainder_slice {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
     {x : ℝ} (hx : 0 < x) : Continuous (fun y : ℝ => sourceRemainder hW (tracePoint x y)) := by
@@ -134,7 +135,7 @@ theorem exists_decay_sourceRemainder {lam : ℕ → ℝ} (hW : WeilPositiveFull 
         C₁ * ((|s.im| + 4) ^ N * Real.exp (-(Real.pi * |s.im| / 4))) := by
       have h := norm_sourceCompletion_le_right hW (by linarith : 0 < s.re - 1 / 2)
         (by linarith : s.re - 1 / 2 ≤ 3 / 2) s.im
-      rw [hp, hr, sourceCompletion_eq_bigG hW (by simp)] at h
+      rw [hp, hr, sourceCompletion_eq_bigG hW (s := 2 + (s.im : ℂ) * I) (by simp)] at h
       exact h.trans (hB s.im)
     have hd := pow_mul_exp_neg_le_div hK (abs_nonneg s.im)
     rw [sq_abs] at hd
@@ -203,5 +204,155 @@ theorem tendsto_remainderTrace_ae {lam : ℕ → ℝ} (hW : WeilPositiveFull lam
     simp only [tracePoint_re, Complex.one_re] at he
     linarith
   exact (bigEG_eq h0x h1x).symm
+
+theorem aestronglyMeasurable_remainderTrace {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
+    AEStronglyMeasurable (remainderTrace hW) := by
+  let F : ℝ → ℝ → ℂ := fun x y => if 0 < x then sourceRemainder hW (tracePoint x y) else 0
+  have hF : ∀ x : ℝ, AEStronglyMeasurable (F x) := by
+    intro x
+    by_cases hx : 0 < x
+    · simpa only [F, if_pos hx] using (continuous_sourceRemainder_slice hW hx).aestronglyMeasurable
+    · simp only [F, if_neg hx]
+      exact aestronglyMeasurable_const
+  apply aestronglyMeasurable_of_tendsto_ae (𝓝[>] (0 : ℝ)) hF
+  filter_upwards [tendsto_remainderTrace_ae hW] with y hy
+  refine hy.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with x (hx : 0 < x)
+  simp only [F, if_pos hx]
+
+/-- The same source-derived decay constant controls the limiting trace. -/
+theorem exists_decay_sourceRemainder_and_trace {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      (∀ s : ℂ, 1 / 2 < s.re → s.re ≤ 3 / 2 →
+        ‖sourceRemainder hW s‖ ≤ C / (1 + s.im ^ 2)) ∧
+      ∀ᵐ y : ℝ, ‖remainderTrace hW y‖ ≤ C / (1 + y ^ 2) := by
+  obtain ⟨C, hC, hB⟩ := exists_decay_sourceRemainder hW
+  refine ⟨C, hC, hB, ?_⟩
+  filter_upwards [tendsto_remainderTrace_ae hW] with y hy
+  apply le_of_tendsto hy.norm
+  filter_upwards [self_mem_nhdsWithin,
+    (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1)).filter_mono nhdsWithin_le_nhds]
+      with x (hx : 0 < x) hx1
+  have h := hB (tracePoint x y) (by simp; linarith) (by simp; linarith)
+  simpa [tracePoint] using h
+
+theorem integrable_remainderTrace {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
+    Integrable (remainderTrace hW) := by
+  obtain ⟨C, _, _, hB⟩ := exists_decay_sourceRemainder_and_trace hW
+  refine (integrable_inv_one_add_sq.const_mul C).mono'
+    (aestronglyMeasurable_remainderTrace hW) ?_
+  simpa only [div_eq_mul_inv] using hB
+
+/-- Global L1 passage for the pole-subtracted actual producer. -/
+theorem tendsto_integral_norm_remainderTrace_sub {lam : ℕ → ℝ}
+    (hW : WeilPositiveFull lam) :
+    Tendsto (fun x : ℝ => ∫ y : ℝ,
+      ‖sourceRemainder hW (tracePoint x y) - remainderTrace hW y‖)
+      (𝓝[>] 0) (𝓝 0) := by
+  obtain ⟨C, _, hE, he⟩ := exists_decay_sourceRemainder_and_trace hW
+  have hm : ∀ᶠ x in 𝓝[>] (0 : ℝ), AEStronglyMeasurable
+      (fun y : ℝ => ‖sourceRemainder hW (tracePoint x y) - remainderTrace hW y‖) := by
+    filter_upwards [self_mem_nhdsWithin] with x (hx : 0 < x)
+    exact ((continuous_sourceRemainder_slice hW hx).aestronglyMeasurable.sub
+      (aestronglyMeasurable_remainderTrace hW)).norm
+  have hb : ∀ᶠ x in 𝓝[>] (0 : ℝ), ∀ᵐ y : ℝ,
+      ‖‖sourceRemainder hW (tracePoint x y) - remainderTrace hW y‖‖ ≤
+        2 * (C / (1 + y ^ 2)) := by
+    filter_upwards [self_mem_nhdsWithin,
+      (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1)).filter_mono nhdsWithin_le_nhds]
+        with x (hx : 0 < x) hx1
+    filter_upwards [he] with y hy
+    have h := hE (tracePoint x y) (by simp; linarith) (by simp; linarith)
+    have h' : ‖sourceRemainder hW (tracePoint x y)‖ ≤ C / (1 + y ^ 2) :=
+      by simpa [tracePoint] using h
+    rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
+    exact (norm_sub_le _ _).trans (by linarith)
+  have hi : Integrable (fun y : ℝ => 2 * (C / (1 + y ^ 2))) := by
+    simpa only [div_eq_mul_inv] using (integrable_inv_one_add_sq.const_mul C).const_mul 2
+  have hl : ∀ᵐ y : ℝ, Tendsto
+      (fun x : ℝ => ‖sourceRemainder hW (tracePoint x y) - remainderTrace hW y‖)
+      (𝓝[>] 0) (𝓝 (0 : ℝ)) := by
+    filter_upwards [tendsto_remainderTrace_ae hW] with y hy
+    have hc : Tendsto (fun _ : ℝ => remainderTrace hW y) (𝓝[>] (0 : ℝ))
+        (𝓝 (remainderTrace hW y)) := tendsto_const_nhds
+    simpa using (hy.sub hc).norm
+  simpa using tendsto_integral_filter_of_dominated_convergence
+    (fun y => 2 * (C / (1 + y ^ 2))) hm hb hi hl
+
+/-- The actual source admits the weighted contour shift onto its measurable
+critical trace, without any boundary-continuity or atomicity hypothesis. -/
+theorem integral_sourceRemainder_eq_boundary {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+    {r : ℝ} (hr : 0 < r) :
+    (∫ y : ℝ, (r : ℂ) ^ (-tracePoint 1 y / 2) * sourceRemainder hW (tracePoint 1 y)) =
+      ∫ y : ℝ, (r : ℂ) ^ (-tracePoint 0 y / 2) * remainderTrace hW y := by
+  have hr0 : (r : ℂ) ≠ 0 := by exact_mod_cast hr.ne'
+  have hw : Continuous (fun s : ℂ => (r : ℂ) ^ (-s / 2)) :=
+    Continuous.const_cpow (by fun_prop) (Or.inl hr0)
+  obtain ⟨B, hB⟩ := isCompact_Icc.exists_bound_of_continuousOn
+    (s := Icc (1 / 2 : ℝ) (3 / 2)) (hw.comp Complex.continuous_ofReal).continuousOn
+  let M := max B 0
+  have hM : 0 ≤ M := le_max_right _ _
+  have hweight : ∀ s : ℂ, 1 / 2 ≤ s.re → s.re ≤ 3 / 2 → ‖(r : ℂ) ^ (-s / 2)‖ ≤ M := by
+    intro s hs hs2
+    have hn : ‖(r : ℂ) ^ (-s / 2)‖ = ‖(r : ℂ) ^ (-(s.re : ℂ) / 2)‖ := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hr, Complex.norm_cpow_eq_rpow_re_of_pos hr]
+      simp
+    rw [hn]
+    exact (hB s.re ⟨hs, hs2⟩).trans (le_max_left _ _)
+  obtain ⟨C, _, hE⟩ := exists_decay_sourceRemainder hW
+  let H : ℂ → ℂ := fun s => (r : ℂ) ^ (-s / 2) * sourceRemainder hW s
+  have hHd : ∀ s : ℂ, 1 / 2 < s.re → DifferentiableAt ℂ H s := by
+    intro s hs
+    exact ((differentiableAt_id.neg.div_const (2 : ℂ)).const_cpow (Or.inl hr0)).mul
+      ((differentiableOn_sourceRemainder hW).differentiableAt
+        ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs))
+  have hHb : ∀ s : ℂ, 1 / 2 < s.re → s.re ≤ 3 / 2 →
+      ‖H s‖ ≤ (M * C) / (1 + s.im ^ 2) := by
+    intro s hs hs2
+    calc ‖H s‖ = ‖(r : ℂ) ^ (-s / 2)‖ * ‖sourceRemainder hW s‖ := norm_mul _ _
+      _ ≤ M * (C / (1 + s.im ^ 2)) :=
+        mul_le_mul (hweight s hs.le hs2) (hE s hs hs2) (norm_nonneg _) hM
+      _ = _ := by ring
+  have hshift : ∀ x : ℝ, 0 < x → x ≤ 1 →
+      (∫ y : ℝ, H (tracePoint x y)) = ∫ y : ℝ, H (tracePoint 1 y) := by
+    intro x hx hx1
+    have hmem : ∀ s : ℂ, s.re ∈ uIcc (1 / 2 + x) (1 / 2 + 1 : ℝ) →
+        1 / 2 < s.re ∧ s.re ≤ 3 / 2 := by
+      intro s hs
+      rcases Set.mem_uIcc.mp hs with hs | hs <;> constructor <;> linarith [hs.1, hs.2]
+    exact GaloisForLFunctions.HTGeometry.integral_vertical_line_shift_of_decay
+      (fun s hs => hHd s (hmem s hs).1)
+      (fun s hs => hHb s (hmem s hs).1 (hmem s hs).2)
+  have hm : ∀ᶠ x in 𝓝[>] (0 : ℝ), AEStronglyMeasurable (fun y : ℝ => H (tracePoint x y)) := by
+    filter_upwards [self_mem_nhdsWithin] with x (hx : 0 < x)
+    exact ((hw.comp (by unfold tracePoint; fun_prop)).mul
+      (continuous_sourceRemainder_slice hW hx)).aestronglyMeasurable
+  have hb : ∀ᶠ x in 𝓝[>] (0 : ℝ), ∀ᵐ y : ℝ,
+      ‖H (tracePoint x y)‖ ≤ (M * C) / (1 + y ^ 2) := by
+    filter_upwards [self_mem_nhdsWithin,
+      (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1)).filter_mono nhdsWithin_le_nhds]
+        with x (hx : 0 < x) hx1
+    exact Eventually.of_forall fun y => by
+      have h := hHb (tracePoint x y) (by simp; linarith) (by simp; linarith)
+      simpa [tracePoint] using h
+  have hi : Integrable (fun y : ℝ => (M * C) / (1 + y ^ 2)) := by
+    simpa only [div_eq_mul_inv] using integrable_inv_one_add_sq.const_mul (M * C)
+  have hl : ∀ᵐ y : ℝ, Tendsto (fun x : ℝ => H (tracePoint x y)) (𝓝[>] 0)
+      (𝓝 ((r : ℂ) ^ (-tracePoint 0 y / 2) * remainderTrace hW y)) := by
+    filter_upwards [tendsto_remainderTrace_ae hW] with y hy
+    have hp : Tendsto (fun x : ℝ => tracePoint x y) (𝓝[>] 0) (𝓝 (tracePoint 0 y)) := by
+      have hc : Continuous (fun x : ℝ => tracePoint x y) := by unfold tracePoint; fun_prop
+      exact hc.continuousAt.continuousWithinAt.tendsto
+    exact ((hw.tendsto _).comp hp).mul hy
+  have ht := tendsto_integral_filter_of_dominated_convergence
+    (fun y => (M * C) / (1 + y ^ 2)) hm hb hi hl
+  have hc : Tendsto (fun x : ℝ => ∫ y : ℝ, H (tracePoint x y)) (𝓝[>] 0)
+      (𝓝 (∫ y : ℝ, H (tracePoint 1 y))) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [self_mem_nhdsWithin,
+      (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1)).filter_mono nhdsWithin_le_nhds]
+        with x (hx : 0 < x) hx1
+    exact (hshift x hx hx1.le).symm
+  exact tendsto_nhds_unique hc ht
 
 end RHTower.WeilWorkSettledPhase

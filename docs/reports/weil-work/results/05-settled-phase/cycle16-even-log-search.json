@@ -1,0 +1,439 @@
+{
+  "query": "even multiples logarithmic coefficients harmonic pinning signed source",
+  "partial": false,
+  "unfinished_stages": [],
+  "errors": [],
+  "coverage": {
+    "files": 68496,
+    "inventoried": 68496,
+    "pending_files": 0,
+    "outcomes": {
+      "indexed": 68496
+    },
+    "compiler": {
+      "compiled_snapshot": 43,
+      "error": 2,
+      "not_applicable": 11087,
+      "pending": 52011,
+      "stale": 2660,
+      "stale_snapshot": 38,
+      "umbrella_source_only": 1,
+      "unavailable": 2654
+    },
+    "collections": {
+      "lean": 57409,
+      "prose": 11087
+    },
+    "declarations": 1029582,
+    "documents": 2852662,
+    "vectors": 2664062,
+    "method_invalidation_pending": false,
+    "inventory_errors": [],
+    "inventory_complete": true,
+    "generation": 1280498,
+    "methods": {
+      "failed": 54,
+      "ready": 413639,
+      "stale": 180936
+    },
+    "status": "snapshot",
+    "snapshot_written_at": 1791400857.298729,
+    "current_generation": 1280499
+  },
+  "semantic_coverage": {
+    "complete": null,
+    "status": "not_measured",
+    "reason": "reporting_budget"
+  },
+  "refresh": {
+    "complete": false,
+    "reason": "background_indexer_running"
+  },
+  "proof_ideas": [],
+  "ingredient_sets": [
+    {
+      "description": "Harmonic pinning via zero distribution",
+      "steps": [
+        {
+          "goal": "Pinning via zero log derivative",
+          "candidate_ids": [
+            "a358793531aab5c2d77deb411cda2478cfb588cc0d18574d11e596283c65cf08",
+            "a9772a822c5da2106773634a411d346c72e7d214ec5e7190e482b493322b8deb"
+          ],
+          "candidates": [
+            {
+              "id": "a358793531aab5c2d77deb411cda2478cfb588cc0d18574d11e596283c65cf08",
+              "name": "RHTower.WeilAbscissa.eq_vonMangoldt_of_nonneg_of_harmonicPinning",
+              "module": "GaloisForLFunctions.RHTower.WeilConeHarmonicPinning",
+              "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeHarmonicPinning.lean",
+              "line": 526
+            },
+            {
+              "id": "a9772a822c5da2106773634a411d346c72e7d214ec5e7190e482b493322b8deb",
+              "name": "RHTower.WeilAbscissa.eq_vonMangoldt_of_harmonicPinning",
+              "module": "GaloisForLFunctions.RHTower.WeilConeHarmonicPinning",
+              "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeHarmonicPinning.lean",
+              "line": 259
+            }
+          ],
+          "obligations": [
+            "Zero log derivative bound"
+          ],
+          "status": "proposed"
+        },
+        {
+          "goal": "Nonnegative mass implies von Mangoldt",
+          "candidate_ids": [
+            "dcd443ba18b972dca02db09bb11ba70379b402ace34c74a46c197aefe45ca9e4",
+            "14b650609cfb1bff9d20783d0f037ff2994476b1229989ecf347cbefd9d35ea1"
+          ],
+          "candidates": [
+            {
+              "id": "dcd443ba18b972dca02db09bb11ba70379b402ace34c74a46c197aefe45ca9e4",
+              "name": "RHTower.WeilSpectral.re_logDeriv_xi_le_log",
+              "module": "GaloisForLFunctions.RHTower.WeilConeSingularDeficitCounting",
+              "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeSingularDeficitCounting.lean",
+              "line": 192
+            },
+            {
+              "id": "14b650609cfb1bff9d20783d0f037ff2994476b1229989ecf347cbefd9d35ea1",
+              "name": "RHTower.xiWeilGramEntry_eq_logDeriv",
+              "module": "GaloisForLFunctions.RHTower.XiWeilResolventGram",
+              "relpath": "formal/GaloisForLFunctions/RHTower/XiWeilResolventGram.lean",
+              "line": 120
+            }
+          ],
+          "obligations": [
+            "Log derivative bounded"
+          ],
+          "status": "proposed"
+        }
+      ],
+      "status": "not_verified"
+    }
+  ],
+  "candidate_lemmas": [
+    {
+      "name": "Zeta23.WeilEF.logDeriv_split",
+      "relpath": "formal/.lake/packages/Zeta23/Zeta23/WeilEF/Landau.lean",
+      "line": 113,
+      "statement": "lemma logDeriv_split {f : ℂ → ℂ} (hfa : AnalyticOnNhd ℂ f (Metric.closedBall (0 : ℂ) 1))\n    (hf0 : f 0 ≠ 0) {r : ℝ} (hr1 : r < 1) (hfin : (SetOfZeros 1 f).Finite)\n    {z : ℂ} (hz : ‖z‖ < r) (hfz : f z ≠ 0) :\n    logDeriv f z = (∑ ρ ∈ (finiteSetOfZeros_mono hr1 hfin).toFinset,\n        (analyticOrderNatAt f ρ : ℂ) / (z - ρ)) + logDeriv (Cf r f) z",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilAbscissa.eq_vonMangoldt_of_nonneg_of_harmonicPinning",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeHarmonicPinning.lean",
+      "line": 526,
+      "statement": "theorem eq_vonMangoldt_of_nonneg_of_harmonicPinning {lam : ℕ → ℝ}\n    (hW : RHTower.WeilPositiveFull lam) (hnn : ∀ n, 2 ≤ n → 0 ≤ lam n)\n    (hd : NotchSmall (WeilOneSided.coneDeviation lam))\n    (hT : Tendsto (fun k : ℕ => ∑ n ∈ Finset.range k, WeilOneSided.coneDeviation lam n / n)\n      atTop (𝓝 0)) :\n    ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilSpectral.re_logDeriv_xi_le_log",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeSingularDeficitCounting.lean",
+      "line": 192,
+      "statement": "theorem re_logDeriv_xi_le_log {σ₀ σ t T : ℝ} (hσ₀ : 1 < σ₀) (hσ : σ₀ ≤ σ) (hσT : σ ≤ T)\n    (ht : 8 ≤ t) (htT : t ≤ T) :\n    (logDeriv xi ((σ : ℂ) + t * I)).re ≤ Real.log T / 2 + envelopeConst σ₀",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.xiWeilGramEntry_eq_logDeriv",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiWeilResolventGram.lean",
+      "line": 120,
+      "statement": "theorem xiWeilGramEntry_eq_logDeriv {z z' : ℂ} (hz : XiC z ≠ 0)\n    (hz' : XiC z' ≠ 0) (hz0 : z ≠ 0) (hz'0 : z' ≠ 0) (hzz' : z ≠ z') :\n    xiWeilGramEntry z z' =\n      xiSecondInverseMoment -\n        (z' / (z * (z - z'))) * logDeriv XiC z +\n        (z / (z' * (z - z'))) * logDeriv XiC z'",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilAbscissa.eq_vonMangoldt_of_harmonicPinning",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeHarmonicPinning.lean",
+      "line": 259,
+      "statement": "theorem eq_vonMangoldt_of_harmonicPinning {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)\n    (hd : NotchSmall (WeilOneSided.coneDeviation lam))\n    (hmult : ∀ e, 2 ≤ e → Summable fun n : ℕ =>\n      if e ∣ n then |WeilOneSided.coneDeviation lam n| / n else 0)\n    (hT : Tendsto (fun k : ℕ => ∑ n ∈ Finset.range k, WeilOneSided.coneDeviation lam n / n)\n      atTop (𝓝 0)) :\n    ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.hasDerivAt_log_norm_xiCanonicalProductAway_vertical",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiWeilHardyFiberAwayVerticalGrowth.lean",
+      "line": 143,
+      "statement": "theorem hasDerivAt_log_norm_xiCanonicalProductAway_vertical\n    (ρ : XiDivisorSupport) {x y : ℝ}\n    (hXi : XiC ((x : ℂ) + y * Complex.I) ≠ 0) :\n    HasDerivAt\n      (fun u : ℝ => Real.log ‖xiCanonicalProductAway ρ\n        ((x : ℂ) + u * Complex.I)‖)\n      (-(logDeriv (xiCanonicalProductAway ρ)\n        ((x : ℂ) + y * Complex.I)).im) y",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilWorkPBAP.tsum_harmonicPair_transform",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPCriticalDensityLaplace.lean",
+      "line": 111,
+      "statement": "theorem tsum_harmonicPair_transform {a b C : ℝ} (ha : 0 ≤ a) {lam : ℕ → ℝ}\n    (h : ∀ f : SmoothTest, testAtoms lam f.1 ≤ criticalDatum a b C f.1.1)\n    {s : ℝ} (hs : 0 < s) :\n    (∑' q : ℕ × ℕ, harmonicPairWeight lam q * exp (-s*harmonicPairLevel q)) =\n      criticalDirichletReal lam (1+s) * ∑' m : ℕ, (m:ℝ)^(-(1+s))",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilBoundaryDilation.hasDerivAt_LSeries_linePt",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryDilationInequality.lean",
+      "line": 327,
+      "statement": "theorem hasDerivAt_LSeries_linePt {f : ℕ → ℂ} (hf : LSeriesSummable f (1 / 2))\n    (hlog : LSeriesSummable (LSeries.logMul f) (1 / 2)) (t : ℝ) :\n    HasDerivAt (fun t : ℝ => LSeries f (linePt t))\n      (-I * LSeries (LSeries.logMul f) (linePt t)) t",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilOneSided.sum_harmonicProfile_mertensBump_mem",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeRegularizedMertensConstant.lean",
+      "line": 198,
+      "statement": "theorem sum_harmonicProfile_mertensBump_mem (y : ℝ) (K : ℕ) :\n    0 ≤ ∑ k ∈ Finset.range (K + 1), harmonicProfile mertensBump (y - k * mertensStep) ∧\n      ∑ k ∈ Finset.range (K + 1), harmonicProfile mertensBump (y - k * mertensStep) ≤\n        mertensMass",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilOneSided.sum_harmonicProfile_mertensBump_eq",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeRegularizedMertensConstant.lean",
+      "line": 176,
+      "statement": "theorem sum_harmonicProfile_mertensBump_eq {y : ℝ} {K : ℕ} (hy1 : mertensStep ≤ y)\n    (hy2 : y ≤ (K - 1) * mertensStep) :\n    ∑ k ∈ Finset.range (K + 1), harmonicProfile mertensBump (y - k * mertensStep) = mertensMass",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilOneSided.sum_harmonicProfile_eq_windowSum",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilOneSidedConvergenceRigidity.lean",
+      "line": 247,
+      "statement": "theorem sum_harmonicProfile_eq_windowSum {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)\n    (hgc : HasCompactSupport g) (hsupp : ∀ u, 1 / 4 < |u| → g u = 0) (lam : ℕ → ℝ) {L : ℝ}\n    (hL : 1 ≤ L) {N : ℕ} (hN : Real.exp (L + 1) ≤ N) :\n    ∑ n ∈ Finset.range N, (if 2 ≤ n then lam n else 0) * harmonicProfile g (Real.log n - L) / n =\n      Real.exp (-(L / 2)) * windowSum hg hgc hsupp lam L",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.hasDerivWithinAt_dyadicCorrectedBottomXiValue_diagonal_logSample",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiGuinandWeilRectangularBottomSlope.lean",
+      "line": 55,
+      "statement": "theorem hasDerivWithinAt_dyadicCorrectedBottomXiValue_diagonal_logSample\n    {n : ℕ} (hn : 4 ≤ n) :\n    HasDerivWithinAt\n      (fun t : ℝ =>\n        rectangularCorrectedBottomXiValue (Real.log 2 / 2 + t)\n          ((Real.log n + t) / 2))\n      (dyadicPrimePolarSourceDiagonalRightSlope n) (Ici 0) 0",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilOneSided.sum_harmonicProfile_mertensBump_of_ge",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeRegularizedMertensConsistency.lean",
+      "line": 31,
+      "statement": "theorem sum_harmonicProfile_mertensBump_of_ge {y : ℝ} (hy : mertensStep ≤ y) (K : ℕ) :\n    ∑ k ∈ Finset.range (K + 1), harmonicProfile mertensBump (y - k * mertensStep) =\n      ∫ v, mertensWeight v * (1 - Real.smoothTransition ((v + y) / mertensStep - K))",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.hasDerivAt_mul_expDiff_deriv",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPolarConeKernelTransformForm.lean",
+      "line": 281,
+      "statement": "theorem hasDerivAt_mul_expDiff_deriv (y : ℝ) :\n    HasDerivAt (fun y : ℝ => (Real.exp (y / 2) - Real.exp (-(y / 2))) +\n        y * (Real.exp (y / 2) + Real.exp (-(y / 2))) / 2)\n      ((Real.exp (y / 2) + Real.exp (-(y / 2))) +\n        y * (Real.exp (y / 2) - Real.exp (-(y / 2))) / 4) y",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilWorkPBAP.harmonicPair_transform",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPCriticalDensityLaplace.lean",
+      "line": 69,
+      "statement": "theorem harmonicPair_transform (lam : ℕ → ℝ) {s : ℝ} (hs : 0 < s) (q : ℕ × ℕ) :\n    harmonicPairWeight lam q * exp (-s*harmonicPairLevel q) =\n      ((if 2 ≤ q.1 then lam q.1 else 0) * (q.1 : ℝ)^(-(1+s))) *\n        (q.2 : ℝ)^(-(1+s))",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.hasDerivAt_mul_expDiff",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPolarConeKernelTransformForm.lean",
+      "line": 273,
+      "statement": "theorem hasDerivAt_mul_expDiff (y : ℝ) :\n    HasDerivAt (fun y : ℝ => y * (Real.exp (y / 2) - Real.exp (-(y / 2))))\n      ((Real.exp (y / 2) - Real.exp (-(y / 2))) +\n        y * (Real.exp (y / 2) + Real.exp (-(y / 2))) / 2) y",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilBoundaryDilation.hasDerivAt_softLog",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryDilationLogAveraging.lean",
+      "line": 90,
+      "statement": "theorem hasDerivAt_softLog {η : ℝ} (hη : 0 < η) (t : ℝ) :\n    HasDerivAt (softLog η) (hardyZ t * deriv hardyZ t / (hardyZ t ^ 2 + η ^ 2)) t",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilAbscissa.summable_multiples_of_nonneg",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeMultiplesOfPrimeLaw.lean",
+      "line": 675,
+      "statement": "theorem summable_multiples_of_nonneg {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)\n    {C : ℝ} (hC : 0 ≤ C)\n    (hd : ∀ n, |WeilOneSided.coneDeviation lam n| ≤ C * (1 + ArithmeticFunction.vonMangoldt n))\n    {p : ℕ} (hp : p.Prime) (hnn : ∀ n, p ∣ n → p < n → 0 ≤ lam n) :\n    Summable fun n : ℕ => if p ∣ n ∧ n ≠ p then lam n / n else 0",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilWorkPBAP.harmonicDensity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPCriticalCoefficients.lean",
+      "line": 282,
+      "statement": "def harmonicDensity (lam : ℕ → ℝ) (N : ℕ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilSpectral.hasDerivAt_quantizationLogPrimitive",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialBoundary.lean",
+      "line": 33,
+      "statement": "theorem hasDerivAt_quantizationLogPrimitive {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {s : ℂ} (hs : 1 / 2 < s.re) :\n    HasDerivAt (quantizationLogPrimitive hW) (weilContinuation hW s) s",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    }
+  ],
+  "source_arguments": [
+    {
+      "name": "RHTower.WeilAbscissa.summable_multiples_of_localMass",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeMultiplesOfPrimeLaw.lean",
+      "line": 562,
+      "statement": "theorem summable_multiples_of_localMass {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)\n    {M : ℝ} (hM0 : 0 ≤ M) (hloc : LocalMassBounded (WeilOneSided.coneDeviation lam) M)\n    {p : ℕ} (hp : p.Prime) (hnn : ∀ n, p ∣ n → p < n → 0 ≤ lam n) :\n    Summable fun n : ℕ => if p ∣ n ∧ n ≠ p then lam n / n else 0",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilAbscissa.false_of_tendsto_mul_multiplesSum",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeMultiplesOfPrimeLaw.lean",
+      "line": 387,
+      "statement": "theorem false_of_tendsto_mul_multiplesSum {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)\n    {M : ℝ} (hM0 : 0 ≤ M) (hloc : LocalMassBounded (WeilOneSided.coneDeviation lam) M)\n    {p : ℕ} (hp : p.Prime) {ε : ℝ} (hε : ε = 1 ∨ ε = -1)\n    (hG : Tendsto (fun k => ε * multiplesSum p (WeilOneSided.coneDeviation lam) k) atTop atTop) :\n    False",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilAbscissa.tendsto_nonprimeMass_div_log",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeAsymptoticPrimeSupport.lean",
+      "line": 102,
+      "statement": "theorem tendsto_nonprimeMass_div_log {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)\n    (hnn : ∀ n, 2 ≤ n → 0 ≤ lam n) {K : ℝ} (hK0 : 0 ≤ K)\n    (hK : ∀ n, 2 ≤ n → ¬ n.Prime → lam n ≤ K * (1 + ArithmeticFunction.vonMangoldt n)) :\n    Tendsto (fun N : ℕ => (∑ n ∈ Finset.range (N + 1),\n      (if 2 ≤ n ∧ ¬ n.Prime then lam n / n else 0)) / Real.log N) atTop (𝓝 0)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilAbscissa.eq_vonMangoldt_of_harmonicPinning",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeHarmonicPinning.lean",
+      "line": 259,
+      "statement": "theorem eq_vonMangoldt_of_harmonicPinning {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)\n    (hd : NotchSmall (WeilOneSided.coneDeviation lam))\n    (hmult : ∀ e, 2 ≤ e → Summable fun n : ℕ =>\n      if e ∣ n then |WeilOneSided.coneDeviation lam n| / n else 0)\n    (hT : Tendsto (fun k : ℕ => ∑ n ∈ Finset.range k, WeilOneSided.coneDeviation lam n / n)\n      atTop (𝓝 0)) :\n    ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilAbscissa.sum_twistFibre_eq",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeNotchBochnerLaw.lean",
+      "line": 106,
+      "statement": "theorem sum_twistFibre_eq (hP : ∀ p ∈ P, p.Prime) (A : Finset (P → ℤ)) (c : (P → ℤ) → ℝ)\n    {d : ℕ → ℝ} (hd0 : d 0 = 0) (k : ℕ) :\n    ∑ n ∈ Finset.range (k + 1), d n * (Real.sqrt n)⁻¹ * twistMainWeight P A c n =\n      ∑ a ∈ A, ∑ a' ∈ A, c a * c a' * twistGramWeight (a - a') *\n        gcdHarmonicSum P d (a - a') k",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.ccmGuinandWeilSourceCoordinates_finrank",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilFullSourceObserver.lean",
+      "line": 66,
+      "statement": "theorem ccmGuinandWeilSourceCoordinates_finrank (N : ℕ) :\n    Module.finrank ℝ (CCMGuinandWeilSourceCoordinates N) = 2 * N + 1",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.CCMGuinandWeilHorizon",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilContinuousSourceQuotient.lean",
+      "line": 29,
+      "statement": "abbrev CCMGuinandWeilHorizon",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.CCMGuinandWeilSourceCoordinates",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilFullSourceObserver.lean",
+      "line": 29,
+      "statement": "abbrev CCMGuinandWeilSourceCoordinates (N : ℕ)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilSingularArithmetic.integrable_sourceZetaPairing_gaussian",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticCanonicalGaussian.lean",
+      "line": 245,
+      "statement": "theorem integrable_sourceZetaPairing_gaussian {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {T : ℝ} (hT : 1 ≤ T) :\n    Integrable (fun t : ℝ => sourceZetaPairing hW ((3 / 4 : ℂ) + t * I) *\n      gaussWeight T ((3 / 4 : ℂ) + t * I))",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.ccmGuinandWeilEventMatrix_reflection_even_part",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilSourceReflection.lean",
+      "line": 86,
+      "statement": "theorem ccmGuinandWeilEventMatrix_reflection_even_part\n    {ι : Type*} [Fintype ι] [DecidableEq ι]\n    (mode : ι → ℤ) (omega : ℝ) :\n    (1 / 2 : ℝ) •\n        (ccmGuinandWeilEventMatrix mode omega +\n          ccmGuinandWeilEventMatrix mode (1 - omega)) =\n      Matrix.diagonal (fun i =>\n        Real.cos (2 * Real.pi * omega * (mode i : ℝ)))",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.ccmRestrictedWeilCanonicalGroundFormLift_mixed",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilActualBirmanSchwinger.lean",
+      "line": 104,
+      "statement": "theorem ccmRestrictedWeilCanonicalGroundFormLift_mixed\n    (a : SuzukiPositiveAperture) (v : CCMArchimedeanFormDomain a) :\n    ccmRestrictedWeilForm a (ccmRestrictedWeilCanonicalGroundFormLift a) v =\n      inner ℂ\n        ((ccmRestrictedWeilGroundEnergy a : ℂ) •\n          (ccmRestrictedWeilCanonicalGroundEigenstate a : suzukiApertureHilbert a))\n        (ccmArchimedeanFormToAperture a v)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.ccmRestrictedWeilFormRemainder_re_inner_eq_physical",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundRemainderNumericalRange.lean",
+      "line": 37,
+      "statement": "theorem ccmRestrictedWeilFormRemainder_re_inner_eq_physical\n    (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) :\n    (inner ℂ (ccmRestrictedWeilFormRemainder a u) u).re =\n      (inner ℂ\n        (ccmRestrictedWeilBoundedRemainder a\n          (ccmArchimedeanFormToAperture a u))\n        (ccmArchimedeanFormToAperture a u)).re",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeCesaroAnchoredMoment.lean",
+      "line": 487,
+      "statement": "def CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound (b : ℝ) : Prop",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.weilLagChebyshevTail_eq_integerNumerator_div",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiWeilLagTailBridge.lean",
+      "line": 217,
+      "statement": "theorem weilLagChebyshevTail_eq_integerNumerator_div\n    (n : ℕ) (hn : 2 ≤ n) :\n    weilLagChebyshevTail n = weilLagTailIntegerNumerator n / n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.ccmRestrictedWeilSourceQuadratic_nonneg_iff_completedErrorDefectControl",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalHeadCompletedErrorControl.lean",
+      "line": 338,
+      "statement": "theorem ccmRestrictedWeilSourceQuadratic_nonneg_iff_completedErrorDefectControl\n    (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) :\n    0 ≤ ccmRestrictedWeilSourceQuadratic a u ↔\n      CCMRestrictedWeilCompletedErrorDefectControl a u",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilSingularArithmetic.centered_source_dirichletConvergesAt",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticSummatory.lean",
+      "line": 189,
+      "statement": "theorem centered_source_dirichletConvergesAt {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {s : ℂ} (hs : 1 / 2 < s.re) :\n    DirichletConvergesAt (fun n => ((if 2 ≤ n + 1 then lam (n + 1) else 0 : ℝ) : ℂ) - 1) s",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.RHTower.intervalIntegrable_completedError_div_fourth",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeCesaroAnchoredMoment.lean",
+      "line": 90,
+      "statement": "private theorem intervalIntegrable_completedError_div_fourth\n    {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :\n    IntervalIntegrable\n      (fun h : ℝ => 96 * criticalMellinCompletedError h / h ^ (4 : ℕ))\n      volume b H",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.ccmRestrictedWeilSourceQuadratic_eq_completedError_defects",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalHeadCompletedErrorControl.lean",
+      "line": 269,
+      "statement": "theorem ccmRestrictedWeilSourceQuadratic_eq_completedError_defects\n    (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) :\n    ccmRestrictedWeilSourceQuadratic a u =\n      ‖u‖ ^ 2 +\n        (2 * gammaHardyPhaseRate 0 - 1 +\n            2 * criticalMellinCompletedError (2 * a.1)) *\n          ‖ccmArchimedeanFormToAperture a u‖ ^ 2 +\n        ccmPrimeTranslationDefectEnergy a\n          (ccmArchimedeanFormToAperture a u) -\n        ccmPolarAutocorrelationDefect a\n          (ccmArchimedeanFormToAperture a u)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilSpectral.tendsto_quantization_signed_fixed_truncation_two_mul",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialLayerCake.lean",
+      "line": 23,
+      "statement": "theorem tendsto_quantization_signed_fixed_truncation_two_mul {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {m : ℕ} (hm : 1 ≤ m) (a b : ℝ) :\n    Tendsto (fun ε : ℝ => (ε : ℂ) * ∫ t in a..b, quantizationTraceF hW (2 * t) *\n      pairKernel (2 * t) ((ε : ℂ) + (m : ℂ) * I)) (𝓝[>] 0) (𝓝 0)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilSingularArithmetic.re_integral_canonicalZetaPairing_gaussian_eq_zero",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticCanonicalGaussian.lean",
+      "line": 211,
+      "statement": "theorem re_integral_canonicalZetaPairing_gaussian_eq_zero {T : ℝ} (hT : 1 ≤ T) :\n    (∫ t : ℝ, canonicalZetaPairing ((3 / 4 : ℂ) + t * I) *\n      gaussWeight T ((3 / 4 : ℂ) + t * I)).re = 0",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    }
+  ]
+}

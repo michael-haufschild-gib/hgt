@@ -20,7 +20,8 @@ namespace RHTower.WeilWorkPBAP
 
 open WeilOneSided WeilSpectral
 
-private def packetColumn {N : ℕ} {ι : Type*}
+/-- Extend one packet coefficient column by zero outside its integer labels. -/
+def packetColumn {N : ℕ} {ι : Type*}
     (A : Matrix (PacketIndex N) ι ℂ) (i : ι) (m : ℕ) : ℂ :=
   if hm : m ∈ Finset.Icc 1 N then A ⟨m, hm⟩ i else 0
 

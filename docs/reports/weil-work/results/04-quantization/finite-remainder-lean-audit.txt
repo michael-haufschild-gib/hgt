@@ -1,0 +1,66 @@
+'RHTower.WeilSpectral.quantizationReflectionError' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.measurable_quantizationReflectionError' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_bound_quantizationReflectionError' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_reflection_error_radial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_of_finite_residual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_or_infinite_residual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationCompletedTrace_phase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResidualTail' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResidualPhase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResidualPhase_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.norm_quantizationResidualPhase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResidualTail_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResidualTail_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResidualTail_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantizationResidualTail' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationReflectedTraceF_residual_phase' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.ae_quantization_boundary_nonatom' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.ae_quantizationReflectedTraceF_residual_phase' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_residual_twist' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_reflection_error_lower' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationIntegerWeight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationIntegerMeasure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResidualMeasure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationIntegerWeight_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationIntegerMeasure_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationIntegerMeasure_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationIntegerMeasure_singleton' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationIntegerMeasure_nat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResidualMeasure_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResidualMeasure_add_integer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_real_mass_decomposition' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_boundaryMeasure_Icc_ne_top' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationIntegerMeasure_Ioc_nat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResidualMeasure_atom_lt_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+tsum_eq_sum.{u_1, u_2} {α : Type u_1} {β : Type u_2} [AddCommMonoid α] [TopologicalSpace α] {f : β → α}
+  {L : SummationFilter β} [L.LeAtTop] {s : Finset β} (hf : ∀ b ∉ s, f b = 0) : ∑'[L] (b : β), f b = ∑ b ∈ s, f b
+MeasureTheory.isFiniteMeasure_restrict.{u_1} {α : Type u_1} {m0 : MeasurableSpace α} {μ : Measure α} {s : Set α} :
+  IsFiniteMeasure (μ.restrict s) ↔ μ s ≠ ∞
+MeasureTheory.Measure.restrict_mono.{u_2} {α : Type u_2} {_m0 : MeasurableSpace α} ⦃s s' : Set α⦄ (hs : s ⊆ s')
+  ⦃μ ν : Measure α⦄ (hμν : μ ≤ ν) : μ.restrict s ≤ ν.restrict s'
+MeasureTheory.Measure.restrict_apply.{u_2} {α : Type u_2} {m0 : MeasurableSpace α} {μ : Measure α} {s t : Set α}
+  (ht : MeasurableSet t) : (μ.restrict s) t = μ (t ∩ s)
+MeasureTheory.measureReal_mono.{u_1} {α : Type u_1} {x✝ : MeasurableSpace α} {μ : Measure α} {s₁ s₂ : Set α}
+  (h : s₁ ⊆ s₂) (h₂ : μ s₂ ≠ ∞ := by finiteness) : μ.real s₁ ≤ μ.real s₂
+MeasureTheory.Measure.real.{u_6} {α : Type u_6} {m : MeasurableSpace α} (μ : Measure α) (s : Set α) : ℝ
+Nat.lt_floor_add_one.{u_1} {R : Type u_1} [Semiring R] [LinearOrder R] [FloorSemiring R] (a : R) : a < ↑⌊a⌋₊ + 1

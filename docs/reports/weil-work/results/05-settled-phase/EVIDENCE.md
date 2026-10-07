@@ -190,3 +190,469 @@ No novelty claim rests on a failed web search. No experimental or numerical comp
   No empirical computation, full/umbrella build, commit or push was run. All
   owned processes completed. Fourteen owned scratch/search/audit files were
   removed after retaining the evidence.
+
+### Cycle 5 evidence under audit
+
+- The cycle-4 source hash was revalidated unchanged. Assigned WP05 target and
+  shared contract were reread; representation and phase-rate obligations remain
+  unpaid. Relevant STATUS entries retain the boundary-continuity premise in
+  the earlier phase-lock receiver and exclude count-only substitutes.
+- Fresh query `pole subtracted Weil producer measurable boundary trace decay
+  inverse Mellin` returned `partial=false` and no errors, with semantic coverage
+  unavailable. Candidate and source-argument sections were inspected. Its new
+  `WeilWorkQuantizationRadialBoundary` hit was read in full: it proves an
+  everywhere measurable trace for exp(P), not the pole-subtracted contour theorem.
+- Inspected `CrystallineProducerRigidity:206` and :438 for shifted Gamma
+  differentiability and decay, and the compact/large-height split in
+  `WeilHerglotzPhaseLockRigidity`. Installed API audits passed. The initial
+  scratch audit's universe-generalization errors were corrected without changes
+  to library or theorem statements.
+- Primary-source novelty check: [Helfgott, The ternary Goldbach problem](https://arxiv.org/pdf/1501.05438),
+  Section 9.1, discusses Mellin inversion followed by vertical contour shifts
+  with explicit integrability checks. This supports the classification of the
+  method as classical; it does not establish this Weil source's boundary trace
+  or solve WP05. The new claim's proof uses inspected corpus source identities.
+- The first new core source audit found only a right-edge rewrite ambiguity and
+  an unused binder. Both were repaired explicitly. The full module now includes
+  source decay, remainder trace and global L1 passage, and the weighted contour
+  shift. Targeted leaf build and final source/axiom audits remain pending.
+
+### Cycle 5 verification
+
+- `lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseMellinTrace:olean`
+  exited 0; the new leaf took 142 seconds. Only the requested leaf and required
+  dependencies were targeted, not the full project or umbrella.
+- Final `lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseMellinTrace.lean`
+  exited 0 with no diagnostics. No source change followed that audit.
+- Source SHA-256 remained
+  `fce6eb84a2e7fdde84776a7908d02fdfe4cb122853f82b3dd8f9d080cdaf6d4c`.
+- One exact umbrella import was verified. Targeted `git diff --check` passed;
+  source has no trailing whitespace, heartbeat override or forbidden declaration.
+- Global lint exited 1 with six unrelated unreachable modules and no WP05 error.
+  Exact errors are retained in `cycle5-lint-errors.txt`.
+- `lake env lean /tmp/wp05-cycle5-axioms.lean` exited 0. All seven declarations
+  use exactly `[propext, Classical.choice, Quot.sound]`. Types and axiom output
+  are retained in `cycle5-axioms.txt`; source hash remained unchanged.
+- All owned processes completed. Eleven owned scratch/search/audit files were
+  removed after retaining evidence. No empirical computation, full/umbrella
+  build, commit or push was run.
+
+### Cycle 6 evidence under audit
+
+- Current source hash of MellinTrace was revalidated before the next proof.
+  Hybrid searches for actual-source inverse Mellin and reflected measurable
+  theta traces returned partial=false with no errors, but warned of an older
+  coverage snapshot and unavailable semantic coverage. Candidate lemmas and
+  source arguments were inspected. The second query's semantic hits were
+  irrelevant; lexical `defectKernel` scoped to Hamburger returned the three
+  existing kernel, Laplace, and continuous-boundary inversion declarations.
+- Existing coefficient normalization, inverse_mellin_shift at sigma=3/4,
+  Measure.integral_comp_mul_left, and polar Mellin transform APIs were checked
+  against the installed toolchain. The actual-source theta/e identity has the
+  factor 1/(4*pi). Polar restoration and reflection are proved on paper before
+  Lean implementation. No constant phase or atomic representation is assumed.
+- [Burnol, Deux extensions de Theoremes de Hamburger](https://arxiv.org/html/1106.4749v2),
+  Theorem 1 and Corollary 2, were searched and opened as primary-source audit.
+  They concern global meromorphic continuation and control of the reflected
+  function. Those conditions are not available here. The paper confirms that
+  the converse-theorem mechanism is classical; it cannot replace the unpaid
+  source phase estimate. No scientific novelty is claimed for this bridge.
+- Initial source checks detected a polar-combination sign error and local
+  elaboration/algebra issues. These were corrected without statement weakening,
+  added hypotheses, axioms, or heartbeat overrides. Final verification pending.
+
+### Cycle 6 verification
+
+- Final `lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseThetaTrace:olean`
+  exited 0; the leaf took 88 seconds, with no leaf diagnostics. Only the target
+  and required dependencies were built. No full or umbrella build was run.
+- Final `lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseThetaTrace.lean`
+  exited 0 with empty diagnostics. Source remained unchanged afterward.
+- Twelve axiom inspections exited 0 and use exactly `[propext, Classical.choice,
+  Quot.sound]`. Three capstone types were printed. Full output is retained in
+  `cycle6-axioms.txt`.
+- Source has 323 lines and SHA-256
+  `11e5497999cd9f21b3da909a2ab411d4357ebd84b07bfc97dab470b64115f248`.
+  One exact umbrella import, clean source whitespace, no forbidden declarations,
+  and no heartbeat override were verified.
+- Global lint exited 1 with eight unrelated unreachable modules; no WP05 error.
+  The exact failures are retained in `cycle6-lint-errors.txt`. Search coverage,
+  build summary, final-source result and verification metadata are also retained.
+- All owned process handles are terminal. Twenty owned scratch files were
+  removed after preserving evidence. No empirical computation, commit, push,
+  dev server, full build or umbrella build was used.
+
+### Cycle 7 evidence under audit
+
+- Revalidated cycle6 hash and the original WP05 contract. Refreshed hybrid search
+  returned partial=false/no errors, with older coverage and unavailable semantic
+  coverage warnings. All candidate/source-argument names were inspected.
+- A source-text follow-up found RadialMellin and RadialTheta, not yet prominent in
+  the first search results. Their actual declarations already cover completion
+  identification, trace regularity, reflected theta, and both Laplace identities.
+  Reused them; abandoned plans to duplicate those bridges. The primitive and
+  completion same-choice identities passed a scratch Lean check by rfl.
+- The new paper proof uses the existing one-sided kernel damping, bounded-window
+  Abel lemma, radial residue comparison, and periodicity receiver. It exports
+  only the original hW and a real candidate phase, with a rigidity/disorder
+  disjunction; Abel decay is not assumed as a source premise.
+- A primary-source search on approximate Hamburger/Abel converses again located
+  [Burnol](https://arxiv.org/html/1106.4749v2), whose introduction distinguishes
+  functional equations and their Laplace/distribution formulations. This is
+  classical mechanism evidence, not a proof of the missing arithmetic phase
+  estimate or a novelty certificate. No claim of scientific novelty is made.
+- The first expanded API audit caught an unused quasi-measure-preserving name
+  with incorrect namespace. That abandoned trace-transfer API was removed; the
+  active coefficient proof does not use it. The corrected API audit exited 0.
+  The first source audit caught explicit-indicator-set inference and a binder
+  parsed as the lambda keyword; both were repaired without changing statements.
+
+### Cycle 7 verification
+
+- Targeted `lake --old build
+  +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseAbelRigidity:olean` exited 0.
+  Necessary radial dependencies rebuilt; the new leaf took 44 seconds with no
+  leaf diagnostics. No full or umbrella build was run.
+- Final `lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseAbelRigidity.lean`
+  exited 0 with empty diagnostics. Five axiom inspections exited 0; all use
+  exactly propext, Classical.choice and Quot.sound. Both capstone types were
+  inspected and are retained in cycle7-axioms.txt.
+- The 247-line source hash is
+  `2b148a4fba4a2fb7e53d3c7378d284e4c5fdd3e9cf88bed96722b76ee5adeefd`.
+  One umbrella import, clean source whitespace, no forbidden declaration and no
+  heartbeat override were verified. Scoped git diff --check passed.
+- Global lint exited 1 with nine unreachable modules outside WP05. No owned
+  settled-phase module is named. Exact failures, final-source result, build
+  summary and verification metadata are retained as cycle7-* artifacts.
+- Four corpus searches returned partial=false/no errors, with older-snapshot
+  and semantic-coverage warnings. Candidate and source-argument statements were
+  inspected. The broad Fourier query was mostly irrelevant; the refined signed
+  truncation query located the actual radial contour and layer-cake statements.
+  Coverage and exact candidate statements are retained in cycle7-search-coverage.json.
+- The layer-cake theorem still requires a bounded monotone profile tending to
+  zero at minus infinity. Its own header states that the finite residual measure
+  must discharge those inputs. Neither integer-floor decomposition nor atoms
+  below unit mass proves total residual finiteness. No such inference is made.
+
+Cycle-7 hgtl7 audit: BRIDGE, not significant scientific novelty or WP05 closure.
+The source coefficient argument is now paid without atomicity or critical-edge
+continuity. The remaining hard problem is a source phase upper bound; normalized
+trace growth and signed truncation bounds do not themselves supply it. Next
+extract the exact full-measure phase obstruction, then attack an arithmetic
+restriction on its high-phase oscillation. Do not duplicate the finite-profile
+receiver or substitute modulo-one boundedness for monotonicity.
+
+All owned cycle-7 process handles are terminal. Fifteen owned /tmp scratch files
+were removed after evidence retention. No empirical computation, full/umbrella
+build, commit, push or dev server was used.
+
+### Cycle 8 evidence under audit
+
+- Cycle-7 hash revalidated unchanged. Refreshed full-phase search returned
+  partial=false, with older-snapshot/semantic-coverage warnings. All candidate
+  and source-argument statements were inspected. The new finite-residual source
+  receiver explicitly assumes finite total residual measure; it does not close
+  the current phase upper-bound problem.
+- Installed API scratch audit passed after correcting namespace qualification
+  and using Complex.measurable_ofReal. A.e. pullback, monotone measurability,
+  real measure conversion, integral domination and real scaling were checked.
+- Reopened [Burnol's primary paper](https://arxiv.org/html/1106.4749v2), Theorem 1:
+  global meromorphic extension and reflected-function control remain premises.
+  Reopened [Booker's primary paper](https://arxiv.org/pdf/1308.3067), Definition
+  1.3(A3): discrete support and eventually integral multiplicities are inputs.
+  Neither is a producer of the missing properties for an arbitrary hW.
+- New CanonicalDisorder source follows the dependency-closed paper proof,
+  including the inverse-phase sign and exact y=2t change of variables. Its first
+  complete source audit is running; no verification claim yet.
+
+Cycle-8 continuation: the full source and targeted build detected conjugation
+normalization and an Ioc endpoint expression mismatch, corrected explicitly.
+The successful targeted --old build reported 101 seconds for the leaf and no
+leaf diagnostics. Final standalone lake env lean exited 0 with empty output.
+The source has 296 lines; hash
+`1b1daedde5aade3edc0666acff5bdee5d6bec936ad197ee21560b1abf7975404`.
+Eight axiom inspections exited 0, with exactly propext, Classical.choice and
+Quot.sound. Three capstone signatures were inspected. All cycle-8
+Lean/search/lint sessions are terminal. Lint exited 1 with six unrelated
+unreachable modules and no WP05 error. No full or umbrella build was used.
+
+The next circular-variance source query returned mostly adjacent moment and
+variance lemmas, with semantic-coverage warnings. All candidates and source
+arguments were inspected; no absence claim follows. The related overlap/mean
+oscillation transfer is an elementary analytic mechanism, not a novelty claim.
+[Brasco--Gomez-Castro--Vazquez](https://link.springer.com/article/10.1007/s00526-021-01934-6)
+provides adjacent primary context on Campanato seminorms and constants, not a
+proof of the proposed arithmetic phase estimate. The new source conjecture
+retains an explicit OPEN CORE; no unproved Lean declaration was written.
+
+Cycle-8 final audit: source hash remained unchanged after standalone Lean and
+axiom checks. The source has one exact umbrella import, clean whitespace, no
+forbidden declaration and no heartbeat override. Scoped git diff --check passed.
+Successful build/source receipts, all eight axiom lists, five search snapshots,
+global lint errors and verification metadata are retained as cycle8-* artifacts.
+The index had already ingested this cycle's new source during later queries;
+those self-hits were not treated as independent prior research or proof evidence.
+
+Fifteen owned cycle-8 scratch files were removed after evidence retention. All
+owned process handles are terminal. No empirical computation, full/umbrella
+build, commit, push, or dev server was used.
+
+## Cycle 9 arithmetic and boundary audit
+
+Three deep searches inspected all candidate statements, source arguments,
+proof ideas and proposed ingredient sets. Queries concern canonical phase
+variance from arithmetic mean square, periodicity/period defects, and
+quantitative Poisson smoothing. All finished without partial results or errors;
+semantic coverage is unmeasured, and the smoothing query also reports an older
+coverage snapshot. Receipts are in cycle9-search-coverage.json. Generated
+ingredient recipes were not accepted as proofs: coefficient mean square and
+fixed-width transport do not themselves estimate circular phase variance.
+
+The actual reciprocal mean-square source was read in full. It quantifies over
+fixed sigma>1/2 and does not give a uniform moving-line or boundary assertion.
+The existing period-defect source was checked against
+[Lewis--Zagier, Annals 153 (2001), Theorem 1 and Section I.2](https://people.mpim-bonn.mpg.de/zagier/files/doi/10.2307/2661374/fulltext.pdf).
+Translation gives the algebraic three-term relation; continuation and growth
+remain separate analytic requirements. The 2025 adjacent twisted-period paper
+[Darses--Ringeling--Royer](https://arxiv.org/abs/2506.22014) concerns primitive
+Dirichlet characters and supplies no arbitrary-full-cone phase estimate.
+
+The new explicit moving-line regularization has a closed paper proof in
+PROOF.md. Classical Poisson smoothing is its parent mechanism; adjacent modern
+primary context is
+[Colbrook--Horning--Townsend, SIAM Review 63 (2021)](https://arxiv.org/html/2006.01766v2).
+That paper's density estimates involve local regularity. Our elementary
+integrated cumulative-window bound is proved directly and makes no density
+assumption. No novelty or phase-concentration claim is attached to this bridge.
+
+The fourth, exact interior-phase query also completed without errors or partial
+results and with unmeasured semantic coverage. All candidate/source statements
+and both suggested ingredient groups were inspected. The Soundararajan moment
+hits retain rest-weight summability and coefficient-size inputs; the actual
+reciprocal tail retains constants depending on the fixed interior line. The
+zeta-square real-part identity is an identity for riemannZeta, not for an
+arbitrary producer. Replacing the latter by zeta would assume the desired
+rigidity. None of those hits supplies the moving-line phase variance bound.
+
+Targeted --old Regularization build completed with exit 0; leaf time 249 seconds.
+No leaf diagnostic was reported. Its import is wired once into RHTower. The
+required final standalone source audit is running as session 42926, output
+/tmp/wp05-cycle9-final.log. Axiom and lint audits remain pending.
+
+Final source session 42926 completed 0 with empty output. Axiom session 62683
+completed 0: all three public declarations use exactly propext, Classical.choice
+and Quot.sound; both source capstone types were inspected. Lint session 41237
+completed 1 with sixteen unrelated unreachable modules and no WP05 diagnostic.
+The complete error list is retained in cycle9-lint-errors.txt. Source hash is
+`5ff8563dfad1adc7b8ce1de78f1a2c9ea894822e094ff659f7afa57978956e9d`;
+375 lines, one umbrella import, no forbidden declaration or heartbeat override.
+Every cycle-9 build, Lean, search and lint process is terminal.
+
+Twenty owned scratch files removed after evidence retention. Source hash remained
+unchanged after all audits. Scoped whitespace checks passed; no full/umbrella
+build, numerical experiment, commit, push or dev server was used.
+
+## Cycle 10 source and novelty audit
+
+Five corpus searches completed, partial=false and errors=[] throughout. All
+candidate/source statements and ingredient descriptions were reviewed; semantic
+coverage is unmeasured, coverage snapshots are older, and compiler freshness
+varies. Exact metadata/statements are retained in cycle10-search-coverage.json.
+Relevant source bodies inspected: ZetaChiDualRatioAtom, ZetaChiDualRationalBlock,
+ZetaChiIntegerGradeOscillation; the full source phase retains coefficient
+weights and all stationary remainders. No near-maximal average follows.
+
+Primary external audit: Smith, Continuation of Dirichlet series I, arXiv
+2510.06523v3 (https://arxiv.org/html/2510.06523v3), Definition 1 and equations
+1.6-1.14: continuation beyond the boundary and mean-square premises are inputs,
+not consequences supplied to the present source. The author-university record
+for Kaczorowski-Molteni-Perelli (2010),
+https://expertise.unimi.it/resource/item/120909?language=en_US, explicitly
+states the entire finite-order and functional-equation hypotheses.
+Alfes-Kiefer-Mazac (2025), CMP406:137,
+https://link.springer.com/article/10.1007/s00220-025-05313-6, Definitions1.1-1.2
+and Theorem1.4: locally finite support on both transform sides is part of the
+measure space, so this does not prove atomicity of an arbitrary Weil measure.
+
+The C10 cancellation survivor uses classical Caratheodory/Harnack and oscillatory
+integration by parts, already present as exact general corpus theorems. Novelty
+verdict BRIDGE. Its actual-source content is a uniform width-dependent
+cancellation estimate, not a new parent theory or a proof of phase settlement.
+Formalization and final validation remain pending at this entry.
+
+Classical analytic parent checked against Mateljevic's author-hosted notes
+(2018), https://poincare.matf.bg.ac.rs/~miodrag/hypSchw_rev1.pdf, page3,
+Example1(i): the positive-real-part derivative bound follows from Schwarz.
+The present proof uses the already formalized difference estimate and its
+local derivative limit; it does not rely on an unverified theorem from the
+notes. The Cambridge Harnack paper page was accessible only as a front-end
+page in the inspected output, so it is not used as proof evidence.
+
+First source development audit exited1 with a missing neighborhood API name,
+real/complex numeral normalization, namespace resolution, and two algebraic
+normalizations. Repaired in place without changing C10. Initial API probe
+was corrected and passed; a follow-up probe verifies the neighborhood API.
+
+Cycle-10 ratios audit: Conrey--Keating, *Averages of ratios of the Riemann
+zeta-function and correlations of divisor sums*, Nonlinearity 30 (2017),
+R67--R80, primary author copy https://aimath.org/~kaur/publications/93.pdf
+and arXiv https://arxiv.org/abs/1611.09198 opened. Publication date is 2017,
+not the recent crawl date. Theorem 1 explicitly assumes GRH; Theorem 2
+assumes either a uniform ratios conjecture or a uniform coefficient correlation
+conjecture. Neither is a source-only theorem for arbitrary hW. Fazzari (2025),
+Acta Arithmetica 217, https://www.impan.pl/en/publishing-house/journals-and-series/acta-arithmetica/all/217/4/115836/on-the-joint-second-moment-of-zeta-and-its-logarithmic-derivative
+studies a zeta-weighted logarithmic-derivative moment, not our generic-source
+normalized phase. No ratios recipe or unproved arithmetic correlation is imported.
+
+Cycle-11 external check: Goncalves, *A classification of Fourier summation
+formulas and crystalline measures*, https://arxiv.org/html/2312.11185v3,
+metadata revised26 Jan2026 (rendered document dates itself24 Aug2026), opened.
+Definition1 requires an exact atomic Fourier side. Theorem3's converse already
+assumes locally finite physical support. Section8.5 retains a continuous
+archimedean/polar correction and its zeta example assumes RH. These results do
+not produce atomicity or additive rigidity for our original measure. Theorem1
+is a representation theorem, not source selection. Booker's discreteness and
+integrality obstruction was already recorded in earlier cycles; no new proof
+is inferred from reopening its abstract.
+
+Cycle11 corpus searches: forward-summatory deep query completed without
+errors/partial output; additive deep query completed partial after malformed
+local-model JSON and a Qdrant deadline. All returned candidate lemmas, source
+arguments, proof ideas and ingredient descriptions were inspected. The latter
+suggestion of RH still contains sign/comparison hypotheses and is not usable
+from hW alone. Lexical OR fallback returned485 matches, first20 inspected;
+no exhaustive absence claim. Coverage/freshness metadata and returned statements
+are retained in cycle11-search-coverage.json. Direct source checked
+WeilFullConeCommonRatioRigidity.eq_vonMangoldt_of_weilPositiveFull_of_commonRatio,
+which excludes geometric-support deviations with no size restriction on them.
+No extra source hypothesis was introduced to make C11 appear proved.
+
+Cycle10 verified: targeted --old leaf build92420 exit0 (leaf223s), mandatory
+standalone source27542 exit0 with empty diagnostics; axiom probe61234 exit0,
+three public declarations use exactly propext, Classical.choice, Quot.sound.
+Capstone type checked. Lint66742 exit1: fifteen unrelated unreachable modules,
+no WP05 or forbidden-declaration failure. One own umbrella import,244 lines,
+SHA256 c8be2f3ecd9b6411f771e51565ea89bec7386eb61d63c057241d3f5ec5bae290.
+Audit logs and metadata retained as cycle10-*; six cycle10 and three cycle11
+search receipts retained separately. All own processes are terminal.
+
+Cycle11 continuation: two deep searches (source twists; conductor projection)
+completed exit0, partial=false, errors=[]. Returned candidate lemmas, source
+arguments, proof ideas and ingredient sets inspected; coverage and compiler
+freshness remain qualified by snapshot/background refresh. Exact metadata and
+statements retained in cycle11-search-coverage.json. Read the actual one- and
+two-character conductor laws: they require prescribed logarithmic mixtures,
+not merely an additive mean of the forward coefficients. No such projection
+has been constructed. C11 remains OPEN.
+
+Primary classification checked: Saias--Weingartner, *Zeros of Dirichlet series
+with periodic coefficients*, https://arxiv.org/abs/0807.0783 and its PDF.
+Their periodic coefficient hypothesis is essential to the inspected statements;
+nonprincipal rational bias does not imply periodicity. The corpus already
+excludes the explicit geometric-support periodic toy via CommonRatioRigidity.
+No new wrapper was justified.
+
+Cycle12 search (reciprocal boundary atom, truncation, radial exponent) completed
+exit0, partial=false, errors=[]. All returned discovery fields inspected.
+Existing atom-order law and ordinary reciprocal convergence apply directly.
+Finite Abel summation is classical: Knill's author notes,
+https://abel.math.harvard.edu/~knill/kam/papers/dirichlet/index.html, Lemma1 and
+Cahen argument, were opened. Defant--Schoolmann,
+https://arxiv.org/abs/2107.10145 (revised2022), concern boundary Riesz summation
+with their stated hypotheses; they do not supply WP05's ordinary moving-line
+phase estimate. Cambridge Hardy--Riesz excerpt timed out and Gardiner's DOI
+returned403; neither is used as proof evidence.
+
+C12 paper proof is closed in PROOF.md. The positive survivor is the exact
+original atom exponent in every polynomial-prefix remainder, uniformly in
+prefix length at each fixed height. Novelty verdict BRIDGE; this is not a
+claim of significant new scientific knowledge or moving-height uniformity.
+Formalization and audits pending at this entry.
+
+C12 formal development: required dependency --old build95887 passed; the
+large API probe checked required names but also reported four unused guessed
+names, which were discarded. Small follow-up API probe61170 passed. First
+source audit42685 exposed a layout error and algebra/type normalizations;
+second38977 reduced these to two missing real type annotations. Repaired in
+place, without changing the paper statement or raising resource limits.
+Targeted leaf build64828 is active at this entry. No final audit claimed yet.
+
+Cycle12 final verification: targeted --old leaf64828 exit0 (124s), mandatory
+standalone source85809 exit0 with empty diagnostics, axiom probe21160 exit0.
+Definition and both public theorems use exactly propext, Classical.choice,
+Quot.sound. Capstone type checked: only original hW is a source premise;
+a,A,epsilon and polynomial prefix restriction are conclusion quantifiers.
+Module228 lines, SHA256
+58480b7fe6ba3ea30788853e3e81b94251b0e69d8ddc26528851322e3638198b.
+One own umbrella import, no forbidden declarations or resource-limit overrides,
+scoped diff whitespace check passed. Lint38568 exit1: seven unrelated
+unreachable modules, fully listed in cycle12-verification.json; no WP05 error.
+Audit logs retained as cycle12-{dependencies,build,final,axioms,lint}.log.
+No full or umbrella build was run. No process remains active at this entry.
+
+Cycle13 audits: atom/monodromy search completed, but only continuation and
+identity-theorem ingredients applied; neither gives integer atom mass. Its
+source-only hit for our pending private C12 lemma was excluded from evidence.
+Parity deep search completed partial after local-runtime/Qdrant deadlines.
+All returned discovery fields were inspected. The proposed parity-energy
+comparison is RH-equivalent and concerns reflection channels, not the desired
+arithmetic parity of forward coefficients. Other rigidity hits retain sign,
+comparison, support or summability premises. Coverage, compiler freshness and
+all returned discovery statements are in cycle13-search-coverage.json.
+C13 is explicit and OPEN CORE in PROOF.md. No Lean theorem asserts it.
+
+## Cycles13--15: source audit and ordinary forward mean
+
+- Re-read hgtl7, target contract and current frontier; previous C12 source hash
+  remains unchanged. Serena relevant memory loaded. No new goal or subagent.
+- Searches2590,42335,50242,39811,58983,80941 all exit0. Full discovery-field
+  applicability was inspected. Saved cycle13-15-search-receipts.json contains
+  exact statements, compiler status and coverage. Period-defect search50242
+  is partial after local-source retrieval failure; lexical39811 does not
+  report deep coverage. Other deep searches report partial=false but semantic
+  coverage unmeasured and background refresh incomplete. No search absence
+  is treated as a theorem or novelty evidence.
+- Saturation ingredient suggestions link unrelated residueSymbol bounds to
+  forward energy; no such implication was accepted. The retrieved WP03 card
+  already records logarithmic pole-mode variance as open. C14's ordinary
+  version is explicitly an overlapping strengthening.
+- Current primary external sources checked: Perelli, A survey of the Selberg
+  class II, https://www.rivmat.unipr.it/fulltext/2004-3s/pdf/04.pdf ;
+  Kaczorowski--Perelli, Multiple standard twists of L-functions, March2026,
+  https://arxiv.org/html/2603.13885v1 ; Lewis--Zagier, Period functions for
+  Maass wave forms I (2001),
+  https://people.mpim-bonn.mpg.de/zagier/files/doi/10.2307/2661374/fulltext.pdf .
+  Their continuation, functional-relation and growth inputs were retained.
+  No claim transfers their classifications to our weaker established source
+  data. Later journal-page retrieval errors are not evidence.
+- Ramaré, Modified truncated Perron formulae (2016), introduction/Theorem1.1,
+  https://www.numdam.org/article/AMBP_2016__23_1_109_0.pdf , supplies the
+  classical parent mechanism for C15, not an original-source rigidity claim.
+  The corpus's exact half-width cutoff is the checked boundary control used.
+- Corrected PROOF's unverified claim that the ordinary untwisted forward mean
+  was already known. Pole residue, smoothed mean and ordinary mean were kept
+  distinct. C15 closed paper proof now records the missing step.
+- Targeted dependencies51769 passed using --old; no umbrella build. API probe
+  first found two namespace errors, then corrected probe2388 passed. First
+  direct regular-part development49215 found four local elaboration/tactic
+  errors; repaired without statement changes. Targeted regular-part build5477
+  is pending; no final verification claim yet. No resource-limit overrides.
+- Anti-theatre/laziness assessment posted in chat: no significant scientific
+  novelty yet; parent classification and variance rediscovery do not settle
+  phase. C15 is a concrete missing classical bridge. Next return to actual
+  nonprincipal arithmetic modes with full positivity and all boundary mass.
+
+- C15 regular targeted build5477 exit0 (56s); summatory development47890
+  found only an unexpanded local integral abbreviation. Corrected it and
+  reduced imports to the two used Perron parents. Summatory targeted
+  build55741 exit0 (160s). Both new modules wired once in the RHTower umbrella.
+- Mandatory direct regular source68191 is pending. Lint40585 exit1 with nine
+  unrelated unreachable modules, listed in cycle15-lint.log; no owned WP05
+  error and no forbidden-declaration failure. Scoped diff check passed and
+  forbidden-token/resource-override search returned no matches.
+- C16 residue/even-log searches87179 and80428 exit0; every discovery section
+  inspected, exact receipts saved. Generated ingredients do not prove the
+  missing source transfer. Booker's primary arXiv PDF
+  https://arxiv.org/pdf/1308.3067 (v2,2015), Definition1.3(A3), was checked:
+  discrete support and near-everywhere integral mass are real assumptions.
+  Neither is smuggled into our original-source conjecture.

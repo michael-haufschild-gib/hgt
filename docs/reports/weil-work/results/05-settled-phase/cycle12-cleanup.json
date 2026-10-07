@@ -1,0 +1,26 @@
+{
+  "all_own_processes_terminal": true,
+  "removed": [
+    "/tmp/wp05-cycle11-source-twists.json",
+    "/tmp/wp05-cycle11-conductor-projection.json",
+    "/tmp/wp05-cycle12-atom-truncation.json",
+    "/tmp/wp05-cycle12-api.lean",
+    "/tmp/wp05-cycle12-api.log",
+    "/tmp/wp05-cycle12-api-small.lean",
+    "/tmp/wp05-cycle12-api-small.log",
+    "/tmp/wp05-cycle12-dependencies.log",
+    "/tmp/wp05-cycle12-prefix-draft.txt",
+    "/tmp/wp05-cycle12-log-draft.txt",
+    "/tmp/wp05-cycle12-uniform-draft.txt",
+    "/tmp/wp05-cycle12-dev1.log",
+    "/tmp/wp05-cycle12-dev2.log",
+    "/tmp/wp05-cycle12-build.log",
+    "/tmp/wp05-cycle12-final.log",
+    "/tmp/wp05-cycle12-axioms.lean",
+    "/tmp/wp05-cycle12-axioms.log",
+    "/tmp/wp05-cycle12-lint.log",
+    "/tmp/wp05-cycle13-atom-monodromy.json",
+    "/tmp/wp05-cycle13-parity.json"
+  ],
+  "source_hash_revalidated": true
+}

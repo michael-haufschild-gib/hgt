@@ -294,3 +294,690 @@ critical-edge continuity premise from the actual source's contour shift, not
 yet a coefficient rigidity theorem or a phase settlement bound. The newly found
 `WeilWorkQuantizationRadialBoundary` strengthens radial recovery to all heights;
 we do not reprove that endpoint result in this cycle.
+
+### Next source identity; avoid rebuilding inversion
+
+The inspected `HTGeometry.HamburgerThetaDefect.inverse_mellin_shift` allows
+sigma=3/4. Its strip then collapses to Re(s)=3/2, entirely inside the source's
+holomorphic domain. Apply it to a=dirichletExp(lamLog lam), theta=coeffTheta(a),
+E=sourceRemainder(hW), beta=betaG(sourceCompletion hW). The existing Dirichlet
+exponential theorem and hW's absolute summability give the right-line identity.
+Changing the height variable u=2t contributes a factor 1/2; composition with the
+new weighted contour theorem should give
+
+    theta(r) - beta*r^(-1/2)*exp(-pi*r)
+      = (1/(4*pi)) integral_R r^(-(1/2+iu)/2) remainderTrace(u) du.
+
+This has a dependency-closed paper proof from the inspected inversion theorem,
+real scaling formula `Measure.integral_comp_mul_left`, and the new contour shift.
+The remaining formal work is coefficient normalization, the right-line algebra,
+and exact scaling; no new analytic theorem is needed for this identity. Then add
+the known polar Gamma inversion to obtain the actual boundary defect-kernel
+identity and its reflected theta relation. The coefficient rigidity transfer is
+still not composed.
+
+Crucial limit on the payoff: E's quadratic decay is for the Gamma-weighted
+completion. The normalized phase defect divides by Gamma_R on the critical line;
+its decay cancels that archimedean damping. Therefore neither this decay nor the
+new global L1 theorem supplies Abel-sublinear normalized defect or unweighted
+phase settlement. Claiming that substitution would be circular proof debt.
+
+## Cycle 6 extension: polar subtraction and the normalized trace
+
+Write s(t)=1/2+2it, B(t)=b(2t)/(s(t)(s(t)-1)), and
+Phi(t)=B(t)/Gamma_R(s(t)). The denominator is nonzero: s has real part 1/2,
+neither s nor s-1 vanishes, and Gamma_R has no zero there. Hence
+Gamma_R(s(t))*Phi(t)=e(2t)+beta*Gamma_R(s(t)-1) exactly, including exceptional
+heights where b was defined explicitly. The weighted e(2t) integral is integrable:
+e is integrable, real scaling preserves integrability, and the weight has constant
+modulus r^(-1/4) for each r>0.
+
+Apply existing Mellin inversion to f0(r)=r^(-1/2)*(exp(-pi*r)-1) on Re(w)=1/4.
+Its inspected HasMellin formula is Gamma_R(2w-1). The installed Gamma-line
+integrability bound supplies the vertical integral. Thus its inverse integral
+equals f0(r). Add beta times this identity to the already closed theta/e identity,
+with the u=2t scaling checked in both directions. The exponential polar terms
+cancel exactly, leaving theta(r)=beta*r^(-1/2)+defectKernel(Phi)(r).
+This proof uses only hW and r>0. It pays the actual-source input of the existing
+theta-defect calculus but makes no polynomial or phase-rate inference about Phi.
+
+### Reflected theta relation on the same full trace
+
+Define g(t)=(b(2t)-b(-2t))/(s(t)*(s(t)-1)*Gamma_R(s(t))). The quadratic
+factor is invariant under t -> -t because s(-t)=1-s(t). Consequently
+Gamma_R(s(t))*g(t)=Gamma_R(s(t))*Phi(t)-Gamma_R(s(-t))*Phi(-t).
+Each weighted summand is integrable by the polar/remainder decomposition above.
+For r>0, the identity
+r^(-1/2)*(r^(-1))^(-(1/4-it))=r^(-(1/4+it))
+follows from the inspected positive-real complex-power multiplication laws.
+Change t to -t in the second integral. It gives
+K_g(r)=K_Phi(r)-r^(-1/2)*K_Phi(1/r).
+Substitute the theta/Phi identity at r and 1/r; the polar product is one. Thus
+
+ theta(r)=r^(-1/2)*theta(1/r)-beta+beta*r^(-1/2)+K_g(r).
+
+This reflected theta identity is dependency-closed on paper, without boundary
+continuity or atomicity. It preserves the original b everywhere and uses only hW
+and r>0. The current corpus search is checked before implementation; its coverage
+warnings prohibit claiming absence of other proofs. Measurability/polynomial
+bounds and the Abel defect-to-coefficient step remain separate obligations.
+
+### Next normalization check, supported by source inspection
+
+The two primitives are chosen from the same existential proposition: a primitive
+of weilContinuation on Re(s)>1/2, zero at 2, obtained from
+isExactOn_rightHalfPlane(...).with_val_at 2 0. Our version packages that proposition
+behind exists_sourcePrimitive; quantizationLogPrimitive chooses it directly.
+Lean proof irrelevance may make sourcePrimitive=quantizationLogPrimitive and the
+two completions definitionally equal. Verify this in a scratch file before
+using it; do not build a duplicate uniqueness proof unless necessary.
+
+The existing radial-growth module supplies measurable_quantizationTraceF,
+tendsto_quantizationTraceF, exists_bound_quantizationTraceF on compact intervals,
+and exists_norm_quantizationProdF_le in the open strip. Passing the last bound
+to the radial limit gives the same O((1+|y|)^(1/2)) bound for |y|>=2. Combining with
+the compact [-2,2] bound gives a global polynomial bound. A.e. uniqueness of the
+completed trace identifies our sourcePhi(t) with quantizationTraceF(2t), so the
+new theta identities transfer to that everywhere measurable representative.
+This supplies the next coefficient-transfer regularity without re-proving it
+for the piecewise full-measure phase representative. This next transfer is not
+claimed formally verified yet.
+
+## Cycle 7: source Abel-lock dichotomy after refreshed corpus audit
+
+The refreshed source now contains RadialTheta, including both arithmetic
+Hamburger/Laplace identities and a common linear bound on the actual quotient
+Phi(t)=quantizationTraceF(2t) and reflected quotient Psi(t). Reuse these results.
+The same-choice primitive/completion identities passed an installed Lean scratch
+check. Thus no new measurable-representative or theta construction is needed.
+
+For a real theta put kappa=exp(2*pi*i*theta), a unit. Define
+r(t)=1_{t<0}*(kappa^(-1)*Phi(t)-Psi(t)), and g=Phi-Psi. All three functions are
+measurable and bounded by a common multiple of 1+|t|. The exact low-half-line
+identity g=(1-kappa^(-1))*Phi+r holds for t<0 by algebra.
+
+If delta*abelMass(r,delta) tends to zero, split both source Laplace identities
+into t>0, t<0 and {0}. Eliminate the lower Phi term using the exact identity.
+This gives L(tau)=kappa*S(tau)-(kappa*beta/pi)/tau+beta+K0(tau), where K0 contains
+upper pieces, singleton pieces and the lower remainder. Existing checked kernel
+lemmas make epsilon*K0(epsilon+im) tend to zero at each nonnegative integer m:
+upper pieces by one-sided damping, singleton pieces by bounded-interval Abel
+vanishing, and the lower piece by the supposed Abel limit. The exponential
+series S is i-periodic. Existing radial-to-full residue comparison and Hamburger
+coefficient receiver yield a(n+1)=2*kappa*beta for every n. Since a(1)=1, all
+positive coefficients equal one. Dirichlet-series equality and logarithmic
+derivatives then identify lam(n)=vonMangoldt(n) for n>=2; the existing full-cone
+comparison theorem supplies RH from this coefficient equality.
+
+Therefore the source alone gives a disjunction: coefficient/RH rigidity, or the
+explicit lower reflected remainder fails Abel sublinearity. This is the exact
+contrapositive of the proved mechanism, not an assumed phase bound. It removes
+atomicity and continuous critical-edge extension from that obstruction. The
+remaining work is to transfer the obstruction to the full canonical cumulative
+phase with quantitative unweighted block lower bounds, and ultimately derive
+an upper bound from the arithmetic source. No settlement conclusion is inferred.
+
+### Positive quantitative form exposed by the Abel alternative
+
+The explicit remainder is measurable, zero for t>=0, and has norm at most
+|Phi(t)|+|Psi(t)|, hence a source-derived linear envelope. The inspected
+`WeilSpectral.tendsto_mul_abelMass_of_blocks` therefore applies if its dyadic
+reflected norms are o(T). Contraposition sharpens the source alternative to:
+rigidity, or some eta>0 such that for every R there is T>=R with
+
+ eta*T < integral_(T,2T] |lowerSourceRemainder(-t)| dt.
+
+The threshold can be taken nonnegative by feeding max(R,0) into the negated
+block condition. This is a weighted reflected-defect lower bound for the actual
+full measure, not an unweighted cumulative-phase estimate. It follows from the
+closed coefficient argument and the already checked generic Abel transfer;
+no new asymptotic hypothesis is added to its source statement.
+
+### Next full-phase extraction and its normalization
+
+For y>0 let p(y)=exp(i*pi*mu.real(Ioc(-y,y))). The already proved
+sourceTrace_reflection says b(y)=p(y)*b(-y), with the whole canonical measure.
+A.e. equality of the canonical completed trace with b can be pulled back through
+y=2t and y=-2t; nonzero real scaling preserves null sets. Consequently, for t>0,
+
+ |lowerSourceRemainder(theta,-t)|
+   = |kappa^(-1)-p(2t)|*|quantizationTraceF(-2t)|.
+
+The quotient at -y is conjugate to the quotient at y: completed-trace conjugation
+is in RadialTheta, and lineFactor_conj is in WeilConeSettledLockRigidity. Hence
+replace the last factor by |quantizationTraceF(2t)|. These are a.e. identities,
+which suffice for the block integrals; no atoms or diffuse mass are discarded.
+The function y -> mu(Ioc(-y,y)) is monotone as an ENNReal-valued function by interval
+inclusion. Compose its measurable map with ENNReal.toReal and the exponential to
+get measurability of p without needing a separate local-finiteness argument.
+
+For the unweighted bound, adapt the inspected proof of
+norm_phiG_le_exp_producerLogZeta: replace its critical-edge continuity monotonicity
+step by norm_quantizationCompletedTrace_le, which is already source-derived.
+G_eq_lineFactor_mul_cexp uses only the interior differential equation and value
+at two, so applies to quantizationCompletion. The same lineFactor estimate at
+sigma=1/2+1/log(2T) yields the exp(4) transfer. Compose the already proved hW-only
+Littlewood log estimate to obtain the same exp(4)*exp(K*log(T)/loglog(T)) envelope
+on the actual measurable quotient. Divide the new weighted block lower bound by
+this envelope, then substitute y=2t exactly. The expected survivor is the earlier
+quantitative disorder alternative for the full canonical cumulative phase,
+without atomicity or support-gap premises. Exact Lean API/application checks for
+this next extraction remain outstanding; do not claim it formalized yet.
+
+## Cycle 8 exact source statement and integral domination
+
+The target capstone, for every original hW and every real theta, is the
+disjunction of coefficient/RH rigidity with existence of a,K>0 such that for
+every R there is Y>=R satisfying
+
+ a*Y*exp(-K*log(Y)/loglog(Y))
+   <= integral_(Y,2Y] |p(y)-exp(2*pi*i*theta)| dy.
+
+Use the cycle-7 remainder with parameter -theta, so its inverse lock is exactly
+the desired phase. After the a.e. factorization and Littlewood envelope, the
+remainder norm is dominated on each sufficiently high block by the envelope
+times the phase norm. The latter is measurable, bounded by two, and integrable
+on the finite interval. Integral domination first proves integrability of the
+remainder norm and then gives the inequality; no continuous-edge integrability
+lemma is needed. Multiply eta*T<integral|r| by exp(-4-q), q=K*logT/loglogT,
+to get a=eta*exp(-4). Substitute Y=2T. For T>=exp(2),
+logT/loglogT <= 2*log(2T)/loglog(2T), so replacing K by 2K pays the exact rescaling.
+
+Refreshed corpus still distinguishes this full-measure obstruction from the
+earlier atomic theorem. It also now contains finite-residual rigidity with an
+explicit finiteness premise; that does not discharge the present upper-bound
+problem. External Hamburger/L-data sources remain parent mechanisms, not
+producers of missing phase regularity. Classification: BRIDGE. The proof above
+is closed on paper; no claim of new scientific novelty or phase settlement.
+
+Endpoint convention: p uses the exact symmetric Ioc(-y,y) mass because that is
+what the canonical reflection identity supplies. For a symmetric atomic
+representation, at a nonatom y>0 this is twice the strict positive-ordinate
+cumulative mass. At an atom the included positive endpoint contributes half of
+the symmetric pair. The exceptional ordinates are countable, so the integral
+version agrees with the strict-cutoff phase after a.e. transfer. Do not assert
+pointwise equality at those atoms or alter the assigned phaseSum convention.
+
+## Next hard conjecture: source circular variance decay
+
+For the actual full-measure phase p, define
+
+ V(Y)=integral_(Y,2Y] integral_(Y,2Y] |p(u)-p(v)|^2 du dv,  Y>0.
+
+Conjecture: every original hW supplies epsilon>0,C,Y0 with
+V(Y)<=C*Y^(2-epsilon) for all Y>=Y0. This concerns phase increments and is
+unchanged by all mass below the block, which contributes a common phase. It
+does not assume atomicity, finite residual mass or a chosen limiting phase.
+Its first unproved step is exactly this source upper estimate: [OPEN CORE].
+
+Preliminary attack: positivity and cumulative monotonicity alone do not imply
+the estimate; a continuous positive density can give a steadily rotating phase
+with variance of order Y^2. The finite-packet obstruction likewise prevents
+deducing it from bounded counting discrepancy. These are model obstructions,
+not counterexamples to an arithmetic hW. Current searches locate fixed-phase,
+summable-tail, sublinear-variation and finite-residual receivers, whose added
+inputs cannot be assumed here. No closing source estimate was located, subject
+to the recorded coverage warnings. Provisional verdict for the source claim:
+SURVIVES PRELIMINARY ATTACK, with open proof core; no Lean assertion yet.
+
+The transfer from this variance estimate to a fixed phase is classical, hence
+BRIDGE/REDISCOVERED rather than the new research claim. For a unit-valued phase,
+put m_Y=Y^(-1)*integral_(Y,2Y] p. Fubini gives
+V(Y)=2*Y^2*(1-|m_Y|^2). At large Y, normalize m_Y to a unit kappa_Y. Then
+integral|p-kappa_Y|^2=2Y*(1-|m_Y|)<=V(Y)/Y, and Cauchy--Schwarz gives local L1
+error at most sqrt(C)*Y^(1-epsilon/2). Blocks at Y and 3Y/2 overlap in length
+Y/2, so their centers differ by O(Y^(-epsilon/2)). The geometric chain of such
+overlaps converges to one unit kappa; comparison with intermediate overlapping
+blocks gives the same tail rate for every Y. Triangle inequality supplies the
+assigned fixed-phase power saving, without preselecting theta. The source
+variance estimate, not this alignment calculation, must be proved next.
+
+If the conjecture is false for an actual hW, the counterexample would refute
+WP05's universal lambda-rigidity target, not by itself the weaker existence-to-RH
+problem. The cycle-8 theorem constrains such a source to recurrent quantitative
+phase disorder. Keep these scopes distinct.
+
+## Cycle 9: quantitative passage to an explicit interior line
+
+The fixed-line reciprocal mean-square theorem does not prove circular variance
+decay. Its quantifiers are `forall sigma>1/2, limit as T tends to infinity`;
+neither the limit nor its coefficient energy is uniform at sigma=1/2+eta(T).
+The period-defect alternative also adds no estimate: the three-term identity
+already holds for every translation-invariant input. Lewis--Zagier's period
+correspondence requires analytic continuation and growth across the cut. These
+are rejected proof steps, not counterexamples to full positivity.
+
+There is, however, a closed quantitative boundary-passage lemma. Write
+`W=integral (1+r^2)^(-1) dmu(r)`, finite and nonnegative for the original
+canonical measure. Set
+
+    p_eta(y)=exp(2i Im sourcePrimitive(1/2+eta+iy)),
+    p(y)=exp(i*pi*mu((-y,y])).
+
+For Y>=1, eta>0 and h>0, the following estimate holds:
+
+    integral_(Y,2Y] |p_eta(y)-p(y)| dy
+      <= W*((4*pi*h+2*eta*Y/h)*(1+16*Y^2)+32*eta*Y^2).       (R)
+
+Proof with all mass retained. The already proved vertical primitive identity
+and Poisson representation identify the interior angle with
+`integral K_eta(-y,y;r) dmu(r)`, where K is the arctangent window. The boundary
+angle is the integral of `pi*1_{(-y,y]}(r)`. The complex exponential restricted
+to imaginary real arguments is 1-Lipschitz. Thus its error is bounded by the
+integral of the absolute scalar window error, and Tonelli allows integration
+in y first. This avoids division by a boundary trace and does not require its
+nonvanishing. All scalar errors are nonnegative and measurable.
+
+For fixed |r|<=4Y, window error is at most pi everywhere. Outside the two sets
+`|y-r|<=h` and `|y+r|<=h`, the arctangent tail estimate
+`pi/2-arctan(x/eta)<=eta/x` for x>0 bounds it by 2eta/h. Each exceptional set
+has y-length at most 2h. Its y-integral is therefore at most
+`4*pi*h+2*eta*Y/h`. The mass of [-4Y,4Y] is at most `(1+16Y^2)*W`.
+
+For |r|>4Y and y in (Y,2Y], the sharp indicator is zero. For every
+t in [-y,y], |r-t|>=|r|/2 and r^2>=1. Consequently
+`eta/(eta^2+(r-t)^2)<=8eta/(1+r^2)`. Integrating over t gives
+`K_eta(-y,y;r)<=16eta*y/(1+r^2)<=32eta*Y/(1+r^2)`.
+Its y-integral is at most `32eta*Y^2/(1+r^2)`. Integrating over r proves (R).
+These same majorants prove the required integrability; no divergent signed
+integral or exchange of conditionally convergent integrals occurs.
+
+Taking eta=Y^(-8), h=Y^(-3), and using Y>=1 gives the explicit corollary
+
+    integral_(Y,2Y] |p_(Y^-8)(y)-p(y)| dy <= (68*pi+66)*W/Y.  (R8)
+
+Indeed 1+16Y^2<=17Y^2, the first product is at most
+`68*pi/Y+34/Y^2`, and the last term is 32/Y^6. Endpoints are retained
+pointwise in the indicator estimate; they need not be excluded beforehand.
+
+Verdict: BRIDGE. This is a classical Poisson/BV estimate specialized to the
+actual source, not new scientific knowledge or phase concentration. It pays
+an explicit moving-boundary error with no atomicity or regularity assumption.
+It does not infer a uniform critical-line reciprocal moment from a fixed-line
+one. The hard next conjecture is the same power-saving circular variance for
+`p_(Y^-8)`; (R8) changes its double-integral variance by at most a source
+constant, since both phases have norm one. That arithmetic estimate remains
+the OPEN CORE. Formalizing a mean-oscillation receiver alone would not pay it.
+
+### Next arithmetic attack, after paying boundary passage
+
+Write `m_eta(Y)=integral_(Y,2Y] p_eta(y) dy`, with eta=Y^-8. The exact source
+claim is equivalently
+
+    |m_eta(Y)|^2 >= Y^2-C*Y^(2-epsilon), epsilon>0.             [OPEN CORE]
+
+The identity behind this reformulation is
+`V_eta(Y)=2Y^2-2|m_eta(Y)|^2`, since |p_eta|=1. The perturbation estimate is
+explicit: for unit p,q, the difference of their squared two-point distances
+is at most `4*(|p(u)-q(u)|+|p(v)-q(v)|)`; integrating gives
+`|V_p(Y)-V_q(Y)|<=8Y*integral_(Y,2Y]|p-q|`. Thus (R8) pays at most 8C.
+
+The existing `G_eq_lineFactor_mul_cexp` identifies the actual completion with
+`s(s-1)Gamma_R(s)*exp(producerLogZeta(s))` away from real height zero.
+Consequently this problem concerns the normalized reflection ratio of that
+actual product. The inspected logarithmic and moment estimates control the
+real part of producerLogZeta, whereas the normalized reflection ratio retains
+its imaginary part together with the archimedean phase. Substituting a modulus
+bound for this correlation would be invalid. The next proof attempt must use
+integer Dirichlet frequencies and that archimedean phase together; proving
+another abstract phase-transfer implication is not the missing arithmetic work.
+
+## Cycle 10: cancellation away from the critical boundary
+
+Let H(s)=weilContinuation hW s and P=sourcePrimitive hW. For the original
+source hW alone, there is Y0>=4 such that, for every Y>=Y0 and 0<eta<=1,
+
+    |integral_Y^(2Y) exp(2 i Im P(1/2+eta+i t)) dt|
+       <= 18 Y/(eta^2 log Y).                                      (C10)
+
+This is an actual-source upper bound, but in the cancellation direction. It
+excludes using fixed-width phase averages as near-maximal approximations to a
+settled boundary phase. Verdict BRIDGE: Harnack/Caratheodory and integration by
+parts are classical parent theories; no significant novelty claim. The
+moving-line near-maximal mean at eta=Y^-8 remains OPEN CORE.
+
+Dependency-closed paper proof:
+1. Put M=sum_n |lam(n)|/n^2, finite by full positivity. The exact right-line
+identity and the verified digamma bound give, for t>=4,
+
+    Re H(2+i t) >= (log t)/2 - C0,
+    C0=(log 2+log pi)/2+1+M.
+
+Indeed |Re psi(1+i t/2)-log(t/2)|<=8/(t/2)^2<=2; both polar
+real parts are nonnegative and |producerA(2+i t)|<=M. Choose
+Y0=max(4,exp(4C0)). Then Re H(2+i t)>=(log t)/4 for t>=Y0.
+2. The exact positive Poisson representation, including all mass components,
+gives for 0<eta<=1
+
+    Re H(1/2+eta+i t) >= (2eta/3) Re H(2+i t),
+
+by the pointwise kernel inequality
+eta/(eta^2+(r-t)^2)>=(2eta/3)*(3/2)/(9/4+(r-t)^2).
+All integrals are finite by the existing source Poisson theorem. Therefore on
+[Y,2Y], u(t)=Re H(1/2+eta+i t)>=(eta/6)log Y.
+3. On the disc of radius eta about s=1/2+eta+i t, H is holomorphic with
+nonnegative real part. The corpus Caratheodory difference estimate implies
+|H(w)-H(s)|<=4 u(t)|w-s|/eta for |w-s|<eta/2. Passing to the
+derivative gives |H'(s)|<=4u(t)/eta. Consequently u is continuously
+differentiable and |u'(t)|<=4u(t)/eta. This local estimate remains valid
+when u(t)=0 and uses no extra source hypothesis.
+4. Set phi(t)=2 Im P(s), v(t)=phi'(t)=2u(t), L=eta log Y/3>0.
+Then v>=L, |v'|<=4v/eta. The function B(t)=1/(i v(t)) satisfies
+B*i*phi'=1, |B|<=1/L, |B'|=|v'|/v^2<=4/(eta L).
+All functions are continuously differentiable on the integration interval.
+The existing nonmonotone oscillatory integration-by-parts theorem gives
+
+    |integral exp(i phi)| <= 2/L + Y*4/(eta L)
+                           =6/(eta log Y)+12Y/(eta^2 log Y)
+                           <=18Y/(eta^2 log Y),
+
+because eta<=1<=Y. This proves C10 with no added arithmetic, support,
+atomicity, boundary-continuity or concentration assumption.
+
+Positive survivor: uniformly for widths with eta(Y)^2 log Y tending to
+infinity, the normalized phase mean tends to zero. A hypothetical settled
+boundary phase cannot be transferred through that region with o(Y) L1 error:
+triangle inequality would instead force its normalized mean to have modulus
+tending to one. This does not refute settlement at eta=Y^-8; it identifies a
+necessary singular dependence on width. We retain and formalize C10 itself,
+not a false uniform-limit interchange.
+
+## Cycle 11: arithmetic rational modes, exact conjecture and first attack
+
+Given the audited internal/external frontier, the new structural conjecture is
+that full source positivity forces additive equidistribution of the actual
+forward coefficients, before any Euler product or functional equation is
+available. Put a(n)=sourceCoeff(lam)(n), B=sourceCompletion(hW)(1), and
+S(r,q,N)=sum_(1<=n<=N) a(n)*exp(2*pi*i*r*n/q). Conjecture C11:
+
+    for every epsilon>0 there are A>=0 and C>=0 such that, for all
+    integers q>=1, 0<=r<q, N>=1,
+    |S(r,q,N)-[r=0]*B*N| <= C*q^A*N^(1/2+epsilon).
+
+Here B=2*betaG(sourceCompletion hW); the corpus defines betaG(G)=G(1)/2,
+so the theta subtraction coefficient must not be used as the Perron residue.
+Quantifiers are source-only: hW is the original assigned input. No twist
+continuation, periodicity, multiplicativity, or coefficient estimate is an
+added premise. This is a falsifiable arithmetic law, not a restatement of a
+phase upper bound. Its truth would control each rational saddle's forward
+coefficient sum. Even C11 would not by itself pay the moving-line reciprocal
+denominator tail; that remains an independent obligation.
+
+Competing conjecture: some actual full-positive source retains a nonprincipal
+rational mean. Such a source would obstruct this mechanism and WP05's proposed
+rigidity. A generic sequence is not a counterexample to the source conjecture.
+
+First attacks:
+1. Critical forward energy O(log N) does not imply C11. The elementary sequence
+   a(n)=1+c*(-1)^n for n>=2, a(1)=1, with fixed nonzero real c, has that energy order and a
+   nonzero linear parity mean. It has not been shown to satisfy full positivity.
+2. Even a square-root bound for the untwisted partial sum would not suffice.
+   Abel summation against exp(2*pi*i*r*x/q) loses an integral of its derivative
+   times the partial-sum error, of size O((r/q)*N^(3/2+epsilon)). Do not claim
+   nonprincipal cancellation from the untwisted Perron contour.
+3. The actual all-cutoff Toeplitz relaxation has a sharp sparse construction
+   (WeilWorkSingularArithmeticToeplitzSharpness, capstone checked directly).
+   Strengthening that extracted relaxation alone is not the missing mechanism.
+4. Existing rational saddle blocks cancel constant weights; replacing those
+   weights by the actual a(n) requires C11 or a different genuine source input.
+5. The audited ratios formulas assume arithmetic correlations/GRH. Booker's
+   degree-one classification assumes discrete, almost everywhere integral
+   multiplicities. Neither proves C11 from the present source.
+
+Verdict so far: SURVIVES PRELIMINARY ATTACK, not proved. [OPEN CORE]: obtain
+nonprincipal rational cancellation from the original full-positive quadratic
+form, retaining its archimedean and polar terms. The q=1 Perron consequence
+also needs a complete contour/truncation proof before use. No cycle-11 Lean
+code is authorized by a closed paper proof yet. The original eta=Y^-8
+near-maximal phase mean remains the main open target.
+
+A stronger attack removes a tempting fake source counterexample. Normalize
+periodic coefficients by a_c(n)=(1+c*(-1)^n)/(1-c), c!=0, |c|<1, so a_c(1)=1.
+Their right-line Dirichlet series is (1+d*2^(-s))*zeta(s), d=2c/(1-c).
+Where the logarithm is absolutely convergent, its logarithmic derivative
+changes Lambda only at powers of2. The existing full-source common-ratio
+rigidity theorem then forces every such change to vanish, hence d=0, a
+contradiction. For parameters violating right-line convergence/zero-freeness
+there is already no admissible source. Thus this normalized periodic family
+cannot refute C11. This uses the actual corpus obstruction, not an assumption
+of RH or a numerical check. It does not exclude arbitrary nonperiodic sources
+with a rational bias, so C11 remains OPEN CORE. No new Lean wrapper of the
+existing common-ratio theorem is warranted.
+
+## Cycle12: exact atom exponent retained by every polynomial reciprocal tail
+
+Let b_n be the literal producerMobius coefficients (with lambda filtered below2),
+G the reciprocal continuation supplied by the existing atom-order theorem, and
+s_h=1/2+h+i*a. Write P_N(h)=sum_(1<=n<=N) b_n*n^(-s_h), E_N(h)=G(s_h)-P_N(h).
+For every fixed real a, A>=0 and epsilon>0, there is h0>0 such that
+
+    0<h<h0, N<=h^(-A) implies
+    |log(1+|E_N(h)|)/log(1/h)-mu.real({a})|<epsilon.          (C12)
+
+Only original hW is a source input. Every ordinate, including zero-mass ones,
+is retained. Neither atom existence, positive atom mass, atomicity nor a growth
+hypothesis on reciprocal coefficients is added. This is uniform over all
+prefix lengths in the indicated range, but a and A are fixed before h0.
+
+Paper proof, dependency closed:
+1. For every delta>0 the literal reciprocal series converges at
+   s_delta=1/2+delta+i*a (reciprocal_dirichletConvergesAt). Consequently its
+   coefficient partial sums A_k at that point satisfy |A_k|<=K_delta uniformly.
+   For 0<h<=delta the ratio of the summands at s_h and s_delta is the
+   nonnegative increasing real weight n^(delta-h). Finite Abel summation gives
+   |P_N(h)|<=(2*N^(delta-h)-1)*K_delta for N>=1; P_0=0.
+   Thus |P_N(h)|<=2*K_delta*(N+1)^delta, uniformly in 0<h<=delta and all N.
+   This argument is conditional convergence, not a termwise absolute estimate.
+2. If h<1 and N<=h^(-A), then N+1<=2*h^(-A). Hence
+   1+|P_N(h)|<=(1+2^(delta+1)*K_delta)*h^(-A*delta).
+   Therefore 0<=log(1+|P_N(h)|)/log(1/h)
+   <= log(1+2^(delta+1)*K_delta)/log(1/h)+A*delta.
+   Given any tolerance choose delta smaller than tolerance/(2*(A+1)), then
+   h small enough. The normalized log of every prefix tends uniformly to0.
+3. Existing tendsto_log_norm_reciprocalZeta_div_log gives
+   log|G(s_h)|/log(1/h)->m=mu.real({a})>=0. For every x>=0,
+   max(0,log x)<=log(1+x)<=log2+max(0,log x), with x=0 checked separately.
+   Thus log(1+|G(s_h)|)/log(1/h)->m. All logarithms are divided only for h<1.
+4. Triangle inequalities in both directions imply
+   1+|G|<=(1+|E_N|)*(1+|P_N|) and
+   1+|E_N|<=(1+|G|)*(1+|P_N|). Taking logarithms gives
+
+   |log(1+|E_N|)-log(1+|G|)|<=log(1+|P_N|).
+
+   Steps2--3 prove C12 uniformly in N. This also handles m=0; no branch,
+   integer multiplicity, pole order or division by G is needed.
+
+Verdict: BRIDGE. Abel/Cahen partial summation and the already proved source
+atom-order law supply the result. No significant scientific novelty claim.
+The positive survivor is the exact exponent of the complete remaining tail,
+not just failure of an approximation bound. In particular, at every positive
+atom polynomial prefixes leave an error with the full positive blow-up exponent.
+This does not rule out a phase argument which retains that tail. It also does
+not prove a uniform obstruction on a growing height window a in[Y,2Y]; exchanging
+these quantifiers would be unjustified. The C11 arithmetic correlation and the
+eta=Y^-8 phase-concentration OPEN CORE remain unchanged.
+
+Novelty attack: the corpus search returns the atom-order theorem and fixed-line
+tail/mean-square bounds, but no inspected statement already asserts C12.
+Coverage is not a novelty certificate. Classical Abel summation (Hardy--Riesz;
+Knill's author notes, Lemma1 and Cahen proof) is an immediate parent mechanism.
+Defant--Schoolmann's boundary Riesz results concern different summation means
+and retain boundary hypotheses; they do not provide our moving-height source
+phase conclusion. The result is being formalized only as the exact positive
+survivor of the short-reciprocal-prefix shortcut, not as the main solution.
+
+## Cycle13: first arithmetic parity test (OPEN CORE)
+
+C12 does not settle phase or exclude phase-only approximations: it retains an
+exact invariant of the complete reciprocal remainder. Returning to the
+arithmetic source, isolate the weakest nonprincipal rational mode from C11.
+Write a(n)=sourceCoeff lam n for the original forward coefficients. Conjecture:
+
+    (1/N) * sum_(1<=n<=N) (-1)^n a(n) -> 0, as N->infinity,
+
+from the original hW alone. No rate, periodicity, Euler product, multiplicative
+coefficients, or comparison with von Mangoldt is a premise. This is a necessary
+first test of C11, not a replacement for its quantitative target or WP05's
+moving-line phase estimate. Together with the principal-mode mean asserted by
+C11, it would equidistribute the forward mass between even and odd indices.
+That ordinary untwisted mean has not been verified as a corpus theorem here;
+the pole residue and a smoothed mean must not be confused with that conclusion.
+
+Falsifier: an actual full-positive source for which these normalized alternating
+sums fail to tend to zero. A generic biased sequence or an inadmissible periodic
+toy is not a falsifier. Previously audited exact period-two deformations reduce
+to geometric-support logarithmic deviations and are already excluded by
+CommonRatioRigidity. That does not exclude a nonperiodic source with parity bias.
+
+Attack and applicability audit: the new deep search is partial (runtime and
+Qdrant deadlines). Available parity-energy hits concern reflection channels
+and an RH-equivalent energy comparison, not arithmetic parity of a(n).
+Minorant, majorant, regular-deviation, finite-support and summability rigidity
+hits all retain additional premises. The prime-multiples laws concern lam,
+with sign/size restrictions; no source-preserving projection from a(n)'s parity
+mean has been obtained. The proposed ingredient set does not close this gap.
+Saias--Weingartner's checked periodic classification retains exact periodicity.
+No external classification is applied to mere mean bias.
+
+Verdict: OPEN CORE, no novelty or proof claim; no Lean wrapper. Next attack the
+exact passage from a nonzero parity mean to a full-cone conductor/polar defect,
+or construct an actual admissible counterexample. Keep the full reciprocal
+tail and all canonical measure components. This is a focused continuation of
+C11, not a new solved route.
+
+## Cycles13--14 audit: parity and variance remain open
+
+The odd-index indicator is completely multiplicative. Hence filtering the
+Dirichlet exponential to odd indices is exactly exponentiating the odd part
+of its logarithmic coefficients. On Re(s)>1, write F=exp(L),
+F_odd=exp(L_odd); then F_alt=F-2F_odd and F_alt/F=1-2exp(-L_even).
+This identity supplies no full positivity for the filtered source. The checked
+prime-multiples results require sign or local-mass inputs. In particular no
+argument here forces the even logarithmic part to log2 at the pole.
+C13 survives this attack; neither an admissible counterexample nor a proof
+has been obtained.
+
+A stronger possible C14 is the exact ordinary variance law
+N^(-1) sum_(1<=n<=N)|a(n)-B|^2 -> 0, B=sourceCompletion hW 1.
+Cauchy--Schwarz would imply C13, since the alternating sum of the constant B
+is bounded. This is stronger than merely specifying a second-moment limit
+without a verified first moment. Corpus search exposed WP03 cycle20's already
+open logarithmic pole-mode variance conjecture. C14 is an ordinary-mean
+strengthening of that existing question, not a new saturation mechanism.
+The Toeplitz/Gronwall bound has an unspecified constant and does not prove it.
+Verdict: SURVIVES PRELIMINARY ATTACK, [OPEN CORE] sharp saturation from hW.
+
+Parent-theory audit: Perelli's extended Selberg class and Kaczorowski--Perelli's
+2026 standard-twist framework retain global continuation and functional
+equations. Lewis--Zagier period correspondence retains the relevant analytic
+three-term relation and growth conditions. The canonical L1 trace alone does
+not supply these inputs. No parent classification has been applied here.
+
+## Cycle15: exact ordinary forward mean (BRIDGE, paper proof)
+
+This repairs the unverified principal-mode assertion in C11. Put a=sourceCoeff
+lam, G=sourceCompletion hW and B=G(1). The exact statement is: for each eps>0
+there is C>=0 such that, for every natural N,
+
+    |sum_(n=0..N) a(n) - B*N| <= C*(N+1)^(1/2+eps).
+
+Only the original full-positive source is an input. In particular this neither
+assumes nor proves B=1. a(0)=0. The centered coefficients a(n)-B consequently
+have ordinarily convergent Dirichlet series on Re(s)>1/2, by finite Abel
+summation and the strict exponent gap. No sign hypothesis is used.
+
+Dependency-closed proof:
+1. Define A(s)=G(s)/(s*Gamma_R(s)) on the open half-plane Re(s)>1/2.
+   The denominator is nonzero there, G is holomorphic, and A(1)=B since
+   Gamma_R(1)=1. The divided difference R(s)=dslope A 1 s is holomorphic
+   on the same half-plane, including its removable value at1. Away from1,
+   R(s)=F(s)-B/(s-1), where F(s)=G(s)/(s*(s-1)*Gamma_R(s)).
+   Existing sourceCompletion_eq_bigG and sourceCoeff_LSeries identify F
+   with the absolutely convergent forward series on Re(s)>1.
+2. For every q>0 and exponent a>0, R has a bound
+   |R(s)|<=K*(2+|Im(s)|)^a on 1/2+q<=Re(s)<=2. For |Im(s)|>=2 and
+   Re(s)<=3/2, use exists_quantizationProdF_subpolynomial: the canonical
+   completion there is definitionally G. For Re(s)>=3/2, absolute
+   convergence at3/2 bounds F by the finite constant
+   L=sum_n |LSeries.term a (3/2) n|, since each term norm decreases with
+   real part. In both regions |B/(s-1)|<=|B|. On the remaining compact
+   rectangle |Im(s)|<=2, continuity of R supplies a finite bound. Increasing
+   K covers both ranges since (2+|Im(s)|)^a>=1. This uses the entire original
+   source; no boundary extension, arithmetic projection or atom removal.
+3. Choose q=min(eps/4,1/4), exponent a=q/2 and c=1/2+q. For N>=1 take
+   the existing smoothWeight N (1/2), whose values on natural indices equal
+   the sharp cutoff. Absolute convergence at2 gives the exact Mellin-Perron
+   identity. Split F=B/(s-1)+R. The existing pole integral equals
+   2*pi*J_N, J_N=integral_(1,infinity) smoothWeight N (1/2), with
+   |J_N-N|<=2. Multiply this identity by B. Shift the R integral from2
+   to c using its holomorphy and the step2 power bound.
+4. The checked fractional Mellin estimate, with 0<a<q<=1, bounds the
+   remaining integral by a fixed constant times
+   (N+1/2)^c + (2N+1)^q*(N+1/2)^c. Since c+q<=1/2+eps and N+1>=1,
+   this is O((N+1)^(1/2+eps)). The pole error is at most2|B|. N=0 is
+   immediate. This proves the displayed statement with a nonnegative C.
+5. For Re(s)>1/2 choose eps=(Re(s)-1/2)/2. The centered partial sums
+   are bounded with exponent1/2+eps<Re(s); the existing finite-Abel
+   convergence theorem applies. The same estimate with eps<1/2 gives
+   the ordinary mean B. This last limit is a consequence, not a premise.
+
+Attack verdict: BRIDGE, not significant scientific novelty. This is the
+classical pole-plus-Perron mechanism already used by WP03 for the original
+logarithmic source and its reciprocal. Ramaré, Modified truncated Perron
+formulae (2016), introduction and Theorem1.1, confirms the parent inversion
+framework and the need to control the cutoff boundary. Here the existing
+half-width smooth cutoff handles that boundary exactly. New Lean content
+will close a concrete missing link; C13/C14 and WP05 settlement remain open.
+
+## Cycle16: prime-deletion residue law (OPEN CORE)
+
+C15 identifies the principal forward density B. It leaves every nonprincipal
+arithmetic projection unpaid. Given this exact frontier, the next conjecture
+is a prime-deletion law at the pole, without assuming an Euler product:
+
+    For every prime p and every original full-positive lam,
+    lim_(sigma down to1) sum_(n>=2, p divides n)
+      lam(n)/(log(n)*n^sigma) = -log(1-1/p).
+
+Each series is absolutely convergent for sigma>1 by the actual source
+summability. At p=2 the target is log2. The claim concerns the original signed
+lam, with no local-mass, nonnegativity, prime-power-support or rigidity input.
+A falsifier must be an actual hW source with a different or nonexistent limit.
+Competing possibility: an admissible source preserves the principal pole but
+has a different prime-deletion ratio. No such source has been constructed.
+
+Why this is structurally meaningful: the indicator of p not dividing n is
+completely multiplicative, so it commutes with Dirichlet convolution and its
+exponential. If L_p is the series above, then exactly on Re(s)>1,
+
+    F_coprime-p(s)/F(s) = exp(-L_p(s)).
+
+Thus C16 would fix this ratio at1-1/p at the pole for every prime, even before
+any coefficient multiplicativity or actual Euler factor is available. At p=2,
+C13 plus C15 would imply C16 by ordinary Abelian summation: the odd forward
+mean would be B/2, hence F_odd/F->1/2; real logarithms then give L_2->log2.
+The converse is not asserted. A pole ratio alone does not give an ordinary
+alternating mean without a further Tauberian argument.
+
+Attack: residue search87179 and even-log search80428 completed, partial=false,
+with unmeasured semantic coverage/background refresh still reported. Neither
+checked result removes the local-mass/sign premises in the multiples law.
+Harmonic-pinning uniqueness additionally requires notch-smallness and a pinned
+constant (or further multiples summability). Suggested xi log-derivative and
+residue-symbol chains do not discharge these. The index also returned our
+then-pending C15 theorem as source_only; that self-hit was excluded as proof
+of any new residue normalization.
+
+Primary-parent audit: Booker's L-functions as distributions (arXiv:1308.3067v2,
+2015), Definition1.3(A3), requires discrete spectral support and integrality
+apart from finitely many masses. Those are not consequences established for
+our full canonical measure, so its low-degree classification cannot simply
+be imported. The Selberg and period-function parents audited above likewise
+retain unpaid hypotheses. C16 asks for one consequence without paying for
+that whole classification. Verdict: SURVIVES PRELIMINARY ATTACK; no novelty
+claim or closed proof. [OPEN CORE]: obtain the exact prime-deletion constant
+from the full signed source form, rather than a conditional boundedness law.
+Next inspect the fibre test behind multiples-of-prime estimates and determine
+whether logarithmic averaging pays its local-mass cost. If that shortcut fails,
+retain its exact positive boundary; do not substitute generic biased sequences
+for an admissible counterexample or add C16 as a Lean premise.

@@ -1,4 +1,6 @@
-import GaloisForLFunctions.RHTower.WeilProducerZetaQuotientBohrRecurrence
+import GaloisForLFunctions.RHTower.WeilProducerReciprocalZeta
+import GaloisForLFunctions.RHTower.DeBruijnNewmanNonnegative
+import GaloisForLFunctions.HTGeometry.BoundedStripAlmostPeriodicThreeLines
 
 /-!
 # An unavoidable reciprocal obstruction below the pole

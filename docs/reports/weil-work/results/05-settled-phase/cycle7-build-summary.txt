@@ -1,0 +1,10 @@
+Command: lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseAbelRigidity:olean
+Exit code: 0
+✔ [15661/15667] Built GaloisForLFunctions.RHTower.WeilWorkQuantizationEndpointPhase (176s)
+✔ [15662/15667] Built GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialBoundary (129s)
+✔ [15663/15667] Built GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialGrowth (26s)
+✔ [15664/15667] Built GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialContour (210s)
+✔ [15665/15667] Built GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialMellin (237s)
+✔ [15666/15667] Built GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialTheta (242s)
+✔ [15667/15667] Built GaloisForLFunctions.RHTower.WeilWorkSettledPhaseAbelRigidity (44s)
+Build completed successfully (15667 jobs).

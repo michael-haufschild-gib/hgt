@@ -1,0 +1,4 @@
+lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseRegularization:olean
+exit 0
+✔ [15671/15671] Built GaloisForLFunctions.RHTower.WeilWorkSettledPhaseRegularization (249s)
+Build completed successfully (15671 jobs).

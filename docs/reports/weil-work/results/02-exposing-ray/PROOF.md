@@ -49,3 +49,33 @@ as n tends to infinity, uniformly over these two signs. The existing corpus give
 ## Cycle 5: sharp literal tail
 
 TAIL-SIGN-PROOF.md contains the complete theta-envelope and outermost-shift argument. The new source module proves eventual positive coefficients, exact logarithmic rate `-2*pi*exp(-2)`, subcritical exponential bounds for the existing box tail, and strict tail positivity at every finite cutoff. Full scratch and final installed leaf checks passed without warnings. All eight audited capstones use only propext, Classical.choice and Quot.sound. These estimates improve the previously formalized repair budget without supplying the universal energy lower bound.
+
+## Cycle 6: uniform truncation and exact source realization
+
+`UNIFORM-TRUNCATION-PROOF.md` contains the dependency-closed proof of uniform double-exponential polar autocorrelation and actual archimedean energy errors. `REALIZATION-PROOF.md` gives the full paper construction of finite exact matched families at natural aperture with energy <=E+(1+epsilon)*tau_N. The former passed final leaf and standard-axiom audits; the latter is not yet formalized. Neither is a lower-bound producer.
+
+## Cycle 7: full finite assembly
+
+REALIZATION-PROOF.md is now implemented in the complete finite-realization scratch, including exact repair at every residual integer, nonnegative coefficients, aperture overhead, finite shift truncation, and the eventual comparison against the literal positive tail. All three public capstones pass the standard-three-axiom audit. Final installed leaf check passed without warnings. The resulting bound is existential and upper; universal WP02 positivity remains open.
+
+## Far-polar repair budget
+
+See POLAR-LEAKAGE-PROOF.md for the dependency-closed proof of the sharp scale X exp(X), uniform smallness of the actual traces, persistent negative energy, and the uniform exposing-target residual lower bound. Formal source: `WeilWorkExposingRayPolarLeakage.lean`.
+
+The opposite-ray uniqueness reduction was audited against prior work and classified REDISCOVERED. It supplies no missing lower estimate. The far-polar estimate instead diagnoses an actual source failure and isolates the cost incurred by the omitted second correlation window. Arbitrary coherent corrections remain outside this obstruction.
+
+## Cycle 10 source theorem
+
+POLAR-UNIFORM-TAIL-PROOF.md supplies the dependency-closed proof of a common positive tail for every actual polar shift 0<c<=1, strengthened to a D*c^4*exp(-C*exp(y)) lower bound. The proof keeps the full theta derivative series, estimates all negative parts of the signed autocorrelation, and uses the exact finite-interval Green identity. The normalized Green weights cancel before the envelope comparison. This source theorem does not discharge the universal matched-cone energy lower inequality stated above.
+
+## Cycle 11: exact geometric completion floor
+
+COHERENT-GAP-PROOF.md supplies the dependency-closed proof and its stronger refinement-invariant version. Literal compact C2 sources enter the exact weighted CCM form domain, preserving both polar moments and the 2*pi Fourier normalization. The existing one-tenth ground gap yields the actual-source bound. A fixed plateau gives E(f_s)>=(3*pi/25)*(1-c_s)^2, and the finite geometric multiplier at zero gives M*(1-c_s)=1-c_(Ns). Together these give total completion energy >=(3*pi/25)*(1-c_(Ns))^2, uniformly under arbitrary short-step refinement. The C2/short-source leaf and complete geometric capstones pass full scratch, standard-axiom and final installed-leaf audits. The universal lower inequality remains OPEN.
+
+## Cycle 12: local-seed capacity, literal Riemann source
+
+LOCAL-SEED-CAPACITY-PROOF.md closes the full unequal-seed finite variance identity, the exact C2 short-window Fourier evaluation cost, and a cutoff-independent positive zero-frequency mass for the actual unit-shift Riemann source. These now compile in WeilWorkExposingRayLocalCapacity.lean. The whole finite exposing mixture pays at least riemannCapacity/(2*pi), allowing independently varying finite seed types, coefficients, profiles and positions at every k. This is an exact positive survivor for that representation class, not an energy premise or an estimate for arbitrary repairs. Universal WP02 remains OPEN.
+
+## Cycle 13: exact sampled mass and stability
+
+LATTICE-REPAIR-PROOF.md is formalized in WeilWorkExposingRayLatticeMass.lean. Every rounded sample isolates one actual Fejer covariance coefficient. The retained pole product gives exact mass recovery; only one actual half-pole is needed. Its stability bound controls coefficient mass by the complete cosh-weighted absolute sampled trace, and sampled nonnegativity classifies precisely zero active rows. All seven public capstones pass scratch/axiom and final installed source audits. This positive conservation/stability survivor does not supply the universal signed energy lower bound.

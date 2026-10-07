@@ -1,6 +1,6 @@
 # Uniform double-exponential source truncation
 
-Status: dependency-closed paper proof of the uniform source estimate; Lean audit pending. This is a quantitative bridge, not a positivity producer.
+Status: dependency-closed paper proof of the uniform source estimate; complete scratch and final installed Lean leaf audits passed without warnings. All four public capstones use only propext, Classical.choice, and Quot.sound. This is a quantitative bridge, not a positivity producer.
 
 Write Phi=riemannKernelReal, U_L=Phi*bulkCutoff L, K=Phi autocorrelation, K_L=U_L autocorrelation, and P_c h(y)=h(y)-p_c h(y-c)-p_c h(y+c), p_c=1/(2 cosh(c/2)). Let q(L)=exp(-exp(2(L-1))). All constants below are fixed real constants independent of L, y, and c in [0,1].
 

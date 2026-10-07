@@ -3,10 +3,10 @@ import GaloisForLFunctions.RHTower.WeilWorkDeficitPoissonLeakage
 import GaloisForLFunctions.RHTower.WeilFullConeAtomExtraction
 
 /-!
-# Integrating finite-height Poisson leakage
+# Integrating finite-height Poisson leakage against both actual measures
 
 Endpoint neighborhoods, the remaining bounded interval, and the integrable Cauchy tail
-give a finite-height bound for the entire canonical Weil measure.
+give finite-height bounds for the canonical Weil measure and the full actual zero divisor.
 -/
 
 open Set Filter MeasureTheory
@@ -19,18 +19,17 @@ namespace RHTower.WeilSpectral
 private theorem measurableSet_deficitFar (T : ℝ) : MeasurableSet {r : ℝ | 2 * T < |r|} :=
   isOpen_lt continuous_const continuous_abs |>.measurableSet
 
-/-- The canonical inverse-square mass outside the distant height window. -/
-def deficitCauchyTail {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) (T : ℝ) : ℝ :=
-  ∫ r in {r : ℝ | 2 * T < |r|}, 1 / (1 + r ^ 2) ∂boundaryMeasure hW
+/-- The inverse-square mass outside the distant height window. -/
+private def measureCauchyTail (μ : Measure ℝ) (T : ℝ) : ℝ :=
+  ∫ r in {r : ℝ | 2 * T < |r|}, 1 / (1 + r ^ 2) ∂μ
 
-theorem tendsto_deficitCauchyTail {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
-    Tendsto (deficitCauchyTail hW) atTop (𝓝 0) := by
-  have hi : Integrable (fun r : ℝ => 1 / (1 + r ^ 2)) (boundaryMeasure hW) := by
-    simpa using integrable_inv_one_add_sq_sub hW 0
+private theorem tendsto_measureCauchyTail (μ : Measure ℝ)
+    (hi : Integrable (fun r : ℝ => 1 / (1 + r ^ 2)) μ) :
+    Tendsto (measureCauchyTail μ) atTop (𝓝 0) := by
   have hlim : Tendsto
       (fun T : ℝ => ∫ r, {r : ℝ | 2 * T < |r|}.indicator
-        (fun r => 1 / (1 + r ^ 2)) r ∂boundaryMeasure hW) atTop
-      (𝓝 (∫ _r : ℝ, (0 : ℝ) ∂boundaryMeasure hW)) := by
+        (fun r => 1 / (1 + r ^ 2)) r ∂μ) atTop
+      (𝓝 (∫ _r : ℝ, (0 : ℝ) ∂μ)) := by
     apply tendsto_integral_filter_of_dominated_convergence (fun r : ℝ => 1 / (1 + r ^ 2))
     · exact Eventually.of_forall fun T =>
         (hi.indicator (measurableSet_deficitFar T)).aestronglyMeasurable
@@ -48,7 +47,7 @@ theorem tendsto_deficitCauchyTail {lam : ℕ → ℝ} (hW : WeilPositiveFull lam
       change ¬ 2 * T < |r|
       linarith [abs_nonneg r]
   change Tendsto (fun T : ℝ =>
-    ∫ r in {r : ℝ | 2 * T < |r|}, 1 / (1 + r ^ 2) ∂boundaryMeasure hW) atTop (𝓝 0)
+    ∫ r in {r : ℝ | 2 * T < |r|}, 1 / (1 + r ^ 2) ∂μ) atTop (𝓝 0)
   simpa only [integral_indicator (measurableSet_deficitFar _), integral_zero] using hlim
 
 private def leakageMajorant (T H r : ℝ) : ℝ :=
@@ -93,45 +92,51 @@ private theorem deficitPoissonLeakage_le_majorant {T H : ℝ} (hT : 1 ≤ T) (hH
     rw [indicator_of_mem (show r ∈ {r : ℝ | 2 * T < |r|} from hfar)]
     linarith [deficitPoissonLeakage_le_far hT hfar]
 
-private theorem integrable_leakageMajorant {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (T H : ℝ) : Integrable (leakageMajorant T H) (boundaryMeasure hW) := by
-  have hc (a b c : ℝ) : Integrable ((Icc a b).indicator (fun _ => c)) (boundaryMeasure hW) :=
-    (integrableOn_const (boundaryMeasure_Icc_ne_top hW a b)).integrable_indicator measurableSet_Icc
-  have hi : Integrable (fun r : ℝ => 12 * T / (1 + r ^ 2)) (boundaryMeasure hW) := by
-    simpa [div_eq_mul_inv] using (integrable_inv_one_add_sq_sub hW 0).const_mul (12 * T)
+private theorem integrable_leakageMajorant (μ : Measure ℝ)
+    (hfin : ∀ a b : ℝ, μ (Icc a b) ≠ ⊤)
+    (hiC : Integrable (fun r : ℝ => 1 / (1 + r ^ 2)) μ)
+    (T H : ℝ) : Integrable (leakageMajorant T H) μ := by
+  have hc (a b c : ℝ) : Integrable ((Icc a b).indicator (fun _ => c)) μ :=
+    (integrableOn_const (hfin a b)).integrable_indicator measurableSet_Icc
+  have hi : Integrable (fun r : ℝ => 12 * T / (1 + r ^ 2)) μ := by
+    simpa [div_eq_mul_inv] using hiC.const_mul (12 * T)
   exact (((hc (-H) H Real.pi).add (hc (T - H) (T + H) Real.pi)).add
     (hc (-2 * T) (2 * T) (3 / H))).add (hi.indicator (measurableSet_deficitFar T))
 
-theorem integrable_deficitPoissonLeakage {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    {T : ℝ} (hT : 1 ≤ T) : Integrable (deficitPoissonLeakage T) (boundaryMeasure hW) := by
-  refine (integrable_leakageMajorant hW T 1).mono'
+private theorem integrable_measureLeakage (μ : Measure ℝ)
+    (hfin : ∀ a b : ℝ, μ (Icc a b) ≠ ⊤)
+    (hiC : Integrable (fun r : ℝ => 1 / (1 + r ^ 2)) μ)
+    {T : ℝ} (hT : 1 ≤ T) : Integrable (deficitPoissonLeakage T) μ := by
+  refine (integrable_leakageMajorant μ hfin hiC T 1).mono'
     (measurable_deficitPoissonLeakage T).aestronglyMeasurable
     (Eventually.of_forall fun r => ?_)
   rw [Real.norm_eq_abs, abs_of_nonneg (deficitPoissonLeakage_nonneg T r)]
   exact deficitPoissonLeakage_le_majorant hT zero_lt_one r
 
 /-- A finite-height bound retaining every endpoint atom and all diffuse mass. -/
-theorem integral_deficitPoissonLeakage_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+private theorem integral_measureLeakage_le (μ : Measure ℝ)
+    (hfin : ∀ a b : ℝ, μ (Icc a b) ≠ ⊤)
+    (hiC : Integrable (fun r : ℝ => 1 / (1 + r ^ 2)) μ)
     {T H : ℝ} (hT : 1 ≤ T) (hH : 0 < H) :
-    ∫ r, deficitPoissonLeakage T r ∂boundaryMeasure hW ≤
-      Real.pi * (boundaryMeasure hW).real (Icc (-H) H) +
-      Real.pi * (boundaryMeasure hW).real (Icc (T - H) (T + H)) +
-      (3 / H) * (boundaryMeasure hW).real (Icc (-2 * T) (2 * T)) +
-      12 * T * deficitCauchyTail hW T := by
-  have hc (a b c : ℝ) : Integrable ((Icc a b).indicator (fun _ => c)) (boundaryMeasure hW) :=
-    (integrableOn_const (boundaryMeasure_Icc_ne_top hW a b)).integrable_indicator measurableSet_Icc
-  have hi : Integrable (fun r : ℝ => 12 * T / (1 + r ^ 2)) (boundaryMeasure hW) := by
-    simpa [div_eq_mul_inv] using (integrable_inv_one_add_sq_sub hW 0).const_mul (12 * T)
-  have h := integral_mono (integrable_deficitPoissonLeakage hW hT)
-    (integrable_leakageMajorant hW T H) (deficitPoissonLeakage_le_majorant hT hH)
+    ∫ r, deficitPoissonLeakage T r ∂μ ≤
+      Real.pi * μ.real (Icc (-H) H) +
+      Real.pi * μ.real (Icc (T - H) (T + H)) +
+      (3 / H) * μ.real (Icc (-2 * T) (2 * T)) +
+      12 * T * measureCauchyTail μ T := by
+  have hc (a b c : ℝ) : Integrable ((Icc a b).indicator (fun _ => c)) μ :=
+    (integrableOn_const (hfin a b)).integrable_indicator measurableSet_Icc
+  have hi : Integrable (fun r : ℝ => 12 * T / (1 + r ^ 2)) μ := by
+    simpa [div_eq_mul_inv] using hiC.const_mul (12 * T)
+  have h := integral_mono (integrable_measureLeakage μ hfin hiC hT)
+    (integrable_leakageMajorant μ hfin hiC T H) (deficitPoissonLeakage_le_majorant hT hH)
   have h12 : Integrable (fun r =>
       (Icc (-H) H).indicator (fun _ => Real.pi) r +
-      (Icc (T - H) (T + H)).indicator (fun _ => Real.pi) r) (boundaryMeasure hW) :=
+      (Icc (T - H) (T + H)).indicator (fun _ => Real.pi) r) μ :=
     (hc (-H) H Real.pi).add (hc (T - H) (T + H) Real.pi)
   have h123 : Integrable (fun r =>
       (Icc (-H) H).indicator (fun _ => Real.pi) r +
       (Icc (T - H) (T + H)).indicator (fun _ => Real.pi) r +
-      (Icc (-2 * T) (2 * T)).indicator (fun _ => 3 / H) r) (boundaryMeasure hW) :=
+      (Icc (-2 * T) (2 * T)).indicator (fun _ => 3 / H) r) μ :=
     h12.add (hc (-2 * T) (2 * T) (3 / H))
   unfold leakageMajorant at h
   rw [integral_add h123 (hi.indicator (measurableSet_deficitFar T)),
@@ -143,19 +148,21 @@ theorem integral_deficitPoissonLeakage_le {lam : ℕ → ℝ} (hW : WeilPositive
     integral_indicator (measurableSet_deficitFar T)] at h
   simp only [smul_eq_mul] at h
   have heq : (∫ r in {r : ℝ | 2 * T < |r|}, 12 * T / (1 + r ^ 2)
-      ∂boundaryMeasure hW) = 12 * T * deficitCauchyTail hW T := by
-    simp only [deficitCauchyTail, div_eq_mul_inv, one_mul, integral_const_mul]
+      ∂μ) = 12 * T * measureCauchyTail μ T := by
+    simp only [measureCauchyTail, div_eq_mul_inv, one_mul, integral_const_mul]
   rw [heq] at h
   simpa only [mul_comm] using h
 
-private theorem normalized_leakage_bound {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+private theorem normalized_leakage_bound (μ : Measure ℝ)
+    (hfin : ∀ a b : ℝ, μ (Icc a b) ≠ ⊤)
+    (hiC : Integrable (fun r : ℝ => 1 / (1 + r ^ 2)) μ)
     {C : ℝ} (hC : 0 ≤ C)
-    (hmass : ∀ a b : ℝ, a ≤ b → boundaryMeasure hW (Icc a b) ≤
+    (hmass : ∀ a b : ℝ, a ≤ b → μ (Icc a b) ≤
       ENNReal.ofReal (C * (b - a + 1) * Real.log (max |a| |b| + 3)))
     {T : ℝ} (hT : 1 ≤ T) :
-    (∫ r, deficitPoissonLeakage T r ∂boundaryMeasure hW) / T ≤
+    (∫ r, deficitPoissonLeakage T r ∂μ) / T ≤
       (6 * Real.pi + 15) * C * ((Real.log T + Real.log 5) / Real.sqrt T) +
-      12 * deficitCauchyTail hW T := by
+      12 * measureCauchyTail μ T := by
   have hT0 : 0 < T := by linarith
   set H := Real.sqrt T
   have hH : 0 < H := Real.sqrt_pos.mpr hT0
@@ -166,7 +173,7 @@ private theorem normalized_leakage_bound {lam : ℕ → ℝ} (hW : WeilPositiveF
   have hL : 0 ≤ L := add_nonneg (Real.log_nonneg hT) (Real.log_nonneg (by norm_num))
   have hinterval (a b K : ℝ) (hab : a ≤ b) (hlen : b - a + 1 ≤ K)
       (hloc : max |a| |b| ≤ 2 * T) :
-      (boundaryMeasure hW).real (Icc a b) ≤ C * K * L := by
+      μ.real (Icc a b) ≤ C * K * L := by
     have hw : 0 ≤ b - a + 1 := by linarith
     have hK : 0 ≤ K := hw.trans hlen
     have hlog : 0 ≤ Real.log (max |a| |b| + 3) :=
@@ -180,37 +187,41 @@ private theorem normalized_leakage_bound {lam : ℕ → ℝ} (hW : WeilPositiveF
           Real.log_le_log (by positivity) (by linarith)
         _ = L := by rw [Real.log_mul (by norm_num) hT0.ne']; dsimp [L]; ring
     exact mul_le_mul (mul_le_mul_of_nonneg_left hlen hC) hlog' hlog (mul_nonneg hC hK)
-  have hm0 : (boundaryMeasure hW).real (Icc (-H) H) ≤ C * (3 * H) * L := by
+  have hm0 : μ.real (Icc (-H) H) ≤ C * (3 * H) * L := by
     apply hinterval _ _ _ (by linarith) (by linarith)
     simpa [abs_of_pos hH] using (show H ≤ 2 * T by linarith)
-  have hmT : (boundaryMeasure hW).real (Icc (T - H) (T + H)) ≤ C * (3 * H) * L := by
+  have hmT : μ.real (Icc (T - H) (T + H)) ≤ C * (3 * H) * L := by
     apply hinterval _ _ _ (by linarith) (by linarith)
     rw [abs_of_nonneg (sub_nonneg.mpr hHT), abs_of_nonneg (by linarith : 0 ≤ T + H)]
     exact max_le (by linarith) (by linarith)
-  have hmB : (boundaryMeasure hW).real (Icc (-2 * T) (2 * T)) ≤ C * (5 * T) * L := by
+  have hmB : μ.real (Icc (-2 * T) (2 * T)) ≤ C * (5 * T) * L := by
     apply hinterval _ _ _ (by linarith) (by linarith)
     rw [abs_of_nonpos (by linarith : -2 * T ≤ 0), abs_of_pos (by positivity : 0 < 2 * T)]
     simp
-  have hbase := integral_deficitPoissonLeakage_le hW hT hH
-  have hbound : (∫ r, deficitPoissonLeakage T r ∂boundaryMeasure hW) ≤
+  have hbase := integral_measureLeakage_le μ hfin hiC hT hH
+  have hbound : (∫ r, deficitPoissonLeakage T r ∂μ) ≤
       Real.pi * (C * (3 * H) * L) + Real.pi * (C * (3 * H) * L) +
-      (3 / H) * (C * (5 * T) * L) + 12 * T * deficitCauchyTail hW T :=
+      (3 / H) * (C * (5 * T) * L) + 12 * T * measureCauchyTail μ T :=
     hbase.trans (add_le_add (add_le_add
       (add_le_add (mul_le_mul_of_nonneg_left hm0 Real.pi_pos.le)
         (mul_le_mul_of_nonneg_left hmT Real.pi_pos.le))
       (mul_le_mul_of_nonneg_left hmB (show 0 ≤ 3 / H by positivity))) le_rfl)
   apply (div_le_div_of_nonneg_right hbound hT0.le).trans
   apply le_of_eq
-  change (_ / T) = (6 * Real.pi + 15) * C * (L / H) + 12 * deficitCauchyTail hW T
+  change (_ / T) = (6 * Real.pi + 15) * C * (L / H) + 12 * measureCauchyTail μ T
   rw [← hsq]
   field_simp [hH.ne']
   ring
 
 /-- The full Poisson endpoint leakage is negligible on the required linear height scale. -/
-theorem tendsto_integral_deficitPoissonLeakage_div {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
-    Tendsto (fun T : ℝ => (∫ r, deficitPoissonLeakage T r ∂boundaryMeasure hW) / T)
+private theorem tendsto_integral_measureLeakage_div (μ : Measure ℝ)
+    (hfin : ∀ a b : ℝ, μ (Icc a b) ≠ ⊤)
+    (hiC : Integrable (fun r : ℝ => 1 / (1 + r ^ 2)) μ)
+    (hmassExists : ∃ C : ℝ, 0 ≤ C ∧ ∀ a b : ℝ, a ≤ b →
+      μ (Icc a b) ≤ ENNReal.ofReal (C * (b - a + 1) * Real.log (max |a| |b| + 3))) :
+    Tendsto (fun T : ℝ => (∫ r, deficitPoissonLeakage T r ∂μ) / T)
       atTop (𝓝 0) := by
-  obtain ⟨C, hC, hmass⟩ := exists_boundaryMeasure_Icc_le_length_log hW
+  obtain ⟨C, hC, hmass⟩ := hmassExists
   have hlog : Tendsto (fun T : ℝ => Real.log T / Real.sqrt T) atTop (𝓝 0) := by
     have h := ((Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero).comp
       Real.tendsto_sqrt_atTop).const_mul 2
@@ -227,13 +238,57 @@ theorem tendsto_integral_deficitPoissonLeakage_div {lam : ℕ → ℝ} (hW : Wei
       (hlog.add hc).const_mul ((6 * Real.pi + 15) * C)
   have hu : Tendsto (fun T : ℝ =>
       (6 * Real.pi + 15) * C * ((Real.log T + Real.log 5) / Real.sqrt T) +
-      12 * deficitCauchyTail hW T) atTop (𝓝 0) := by
-    simpa only [mul_zero, add_zero] using hnear.add ((tendsto_deficitCauchyTail hW).const_mul 12)
+      12 * measureCauchyTail μ T) atTop (𝓝 0) := by
+    simpa only [mul_zero, add_zero] using hnear.add ((tendsto_measureCauchyTail μ hiC).const_mul 12)
   apply squeeze_zero' _ _ hu
   · filter_upwards [eventually_ge_atTop 1] with T hT
     exact div_nonneg (integral_nonneg (deficitPoissonLeakage_nonneg T)) (by linarith)
   · filter_upwards [eventually_ge_atTop 1] with T hT
-    exact normalized_leakage_bound hW hC hmass hT
+    exact normalized_leakage_bound μ hfin hiC hC hmass hT
+
+/-- The canonical inverse-square mass outside the distant height window. -/
+def deficitCauchyTail {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) (T : ℝ) : ℝ :=
+  measureCauchyTail (boundaryMeasure hW) T
+
+theorem tendsto_deficitCauchyTail {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
+    Tendsto (deficitCauchyTail hW) atTop (𝓝 0) :=
+  tendsto_measureCauchyTail (boundaryMeasure hW) (by simpa using integrable_inv_one_add_sq_sub hW 0)
+
+theorem integrable_deficitPoissonLeakage {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+    {T : ℝ} (hT : 1 ≤ T) : Integrable (deficitPoissonLeakage T) (boundaryMeasure hW) :=
+  integrable_measureLeakage (boundaryMeasure hW) (boundaryMeasure_Icc_ne_top hW)
+    (by simpa using integrable_inv_one_add_sq_sub hW 0) hT
+
+/-- A finite-height bound retaining every endpoint atom and all diffuse mass. -/
+theorem integral_deficitPoissonLeakage_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+    {T H : ℝ} (hT : 1 ≤ T) (hH : 0 < H) :
+    ∫ r, deficitPoissonLeakage T r ∂boundaryMeasure hW ≤
+      Real.pi * (boundaryMeasure hW).real (Icc (-H) H) +
+      Real.pi * (boundaryMeasure hW).real (Icc (T - H) (T + H)) +
+      (3 / H) * (boundaryMeasure hW).real (Icc (-2 * T) (2 * T)) +
+      12 * T * deficitCauchyTail hW T :=
+  integral_measureLeakage_le (boundaryMeasure hW) (boundaryMeasure_Icc_ne_top hW)
+    (by simpa using integrable_inv_one_add_sq_sub hW 0) hT hH
+
+/-- The canonical Poisson endpoint leakage is negligible on the linear height scale. -/
+theorem tendsto_integral_deficitPoissonLeakage_div {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
+    Tendsto (fun T : ℝ => (∫ r, deficitPoissonLeakage T r ∂boundaryMeasure hW) / T)
+      atTop (𝓝 0) :=
+  tendsto_integral_measureLeakage_div (boundaryMeasure hW) (boundaryMeasure_Icc_ne_top hW)
+    (by simpa using integrable_inv_one_add_sq_sub hW 0) (exists_boundaryMeasure_Icc_le_length_log hW)
+
+/-- The same leakage kernel is integrable against all actual zero ordinates. -/
+theorem integrable_deficitOrdinatePoissonLeakage {T : ℝ} (hT : 1 ≤ T) :
+    Integrable (deficitPoissonLeakage T) deficitOrdinateMeasure :=
+  integrable_measureLeakage deficitOrdinateMeasure deficitOrdinateMeasure_Icc_ne_top
+    integrable_deficitOrdinateCauchyWeight hT
+
+/-- Actual zero-copy endpoint leakage is negligible, without any support assumption. -/
+theorem tendsto_integral_deficitOrdinatePoissonLeakage_div :
+    Tendsto (fun T : ℝ => (∫ r, deficitPoissonLeakage T r ∂deficitOrdinateMeasure) / T)
+      atTop (𝓝 0) :=
+  tendsto_integral_measureLeakage_div deficitOrdinateMeasure deficitOrdinateMeasure_Icc_ne_top
+    integrable_deficitOrdinateCauchyWeight exists_deficitOrdinateMeasure_Icc_le_length_log
 
 end RHTower.WeilSpectral
 

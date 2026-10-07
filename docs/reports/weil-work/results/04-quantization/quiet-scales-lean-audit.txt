@@ -1,0 +1,39 @@
+'RHTower.WeilSpectral.norm_setIntegral_twist_le_bounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integral_norm_tail_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.norm_twist_sub_cap_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.norm_twist_le_localized' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_quantization_twist_local_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_mainTwist_of_remainder_along' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_mainTwist_of_remainder' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_of_remainder_along' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_of_radial_remainder' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_of_power_residual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_or_residual_power_obstruction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_power_exponential_radius' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_radial_power_div' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_radial_power_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_radial_power_tail' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_remainder_quiet_radii' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_of_frequently_cumulative_power' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_or_cumulative_eventual_power' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_or_residual_eventual_power' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

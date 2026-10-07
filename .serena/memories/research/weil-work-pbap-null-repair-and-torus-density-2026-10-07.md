@@ -1,41 +1,92 @@
-# WP01 continuation, 2026-10-07
+# WP01 active goal and verified continuation — 2026-10-07
 
-Goal ACTIVE: full unconditional RHTower.WeilOneSided.PrimeBlindPositive and compiled application to exists_weilPositiveFull_iff_primeBlindPositive. Not solved. Apply hgtl7 each turn, corpus research before new conjecture/code, external audit, closed paper proof before Lean, post all five anti-theatre/four anti-laziness answers. No numerical computations, added axioms, sorry/admit/opaque/unsafe, heartbeat hacks, full/umbrella builds, commits/push. One foreground Lean per agent. Final direct lake env lean path required; target builds lake build --old +Module. Shared tree has unrelated agents' edits. No subagents. Serena rejects Lean symbol operations (ignored Python project); use verified bounded source reads and rg. update_plan absent; working card tracks plan.
+Goal ACTIVE: solve unconditional full RHTower.WeilOneSided.PrimeBlindPositive in docs/reports/weil-work/01-pbap-existence.md and compile its application to exists_weilPositiveFull_iff_primeBlindPositive. No producer, general sign theorem, or RH proof obtained. Do not mark complete for bridges.
 
-Owned card docs/drafts/pipeline/1-in-progress/weil-work-01-pbap.md; results docs/reports/weil-work/results/01-pbap/{RESULT,PROOF,EVIDENCE,TORUS-DENSITY}.md. New leaf scope RHTower/WeilWorkPBAP*.lean.
+User requires hgtl7 EVERY turn; skill read this turn. No numerical computations, full/umbrella builds, heartbeat hacks, new axioms/placeholders, commit/push. One foreground Lean/build per agent; targeted lake build --old +Module, final lake env lean source. Wire leaves. Check corpus directly using documented research command before new topic/code; inspect candidate_lemmas AND source_arguments and coverage. Keep own card. No agents spawned. Other agents edit shared tree; preserve their changes. Serena ignores Lean files; symbol tools unavailable for this scope, use source-checked rg/bounded reads. architecture/testing docs absent. update_plan/multi_tool_use unavailable, use card plan and Promise.allSettled reads.
 
-Completed BRIDGES, no scientific novelty or PBAP sign advance:
-1. WeilWorkPBAPNullRepair.lean exact positive finite-defect repair, all integer nulls, full energy-change bound, smooth corrections. Hash 00d96a1f5d99637bd6731d1c3b18ef249255a3b9. Target/direct/8-capstone axiom audits pass, only standard axioms.
-2. WeilWorkPBAPGramPackets.lean hash 0647ce6d3dfb8abb197616fe3f575c5999128ca5. Actual smooth compact tests realize every finite PSD matrix on PacketIndex N=Icc1N. Narrow rational sampling picks a*k=b*m; NullPacketGram has PSD and zero divisibility diagonals for 2..N, sufficient for all integer nulls. exists_nullPacket_mixture constructs nonnegative Finsupp weights, every WP01 logValue null, mass packetMass*trace and all positive rational samples with denominator<=L+1. PacketMass positive. Target/direct/10-capstone axiom audits pass.
-3. NEW WeilWorkPBAPMomentPackets.lean hash 7f77ab2fbe9632cca6aae99daf0eec2ee4699172. Target build --old exit0 (only leaf built), final direct lake env lean source exit0 no diagnostics, /tmp/wp01-moment-audit.lean exit0 ten capstones only propext/Classical.choice/Quot.sound. All three leaves wired into RHTower.lean around6919. No umbrella build. Index0 no generated Markdown diff. Latest lint1 eight UNRELATED unreachable modules: RHTower.WeilWorkDeficitFourierTransport, WeilWorkHigherDenominatorPeriodDefect, WeilWorkSettledPhaseTrace; HTGeometry.ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. No owned PBAP flag. All owned processes exited; removed abandoned /tmp/wp01-moment-names.lean. Passing /tmp/wp01-torus-names.lean remains.
+## Four finished owned leaves (all RHTower.WeilWorkPBAP)
+1. WeilWorkPBAPNullRepair.lean, blob 00d96a1f5d99637bd6731d1c3b18ef249255a3b9: finite defect repair with nonnegative smooth corrections; exact all-integer nulls; full energy-change bound. Target build/direct/eight axioms pass.
+2. WeilWorkPBAPGramPackets.lean, blob 0647ce6d3dfb8abb197616fe3f575c5999128ca5: finite PSD matrix -> actual smooth compact tests, rational-log samples select a*k=b*m, finite divisibility traces imply all integer nulls; actual nonnegative Finsupp mixture and exact mass. Target build/direct/ten axioms pass.
+3. WeilWorkPBAPMomentPackets.lean, blob 7f77ab2fbe9632cca6aae99daf0eec2ee4699172: actual representing probability μ -> integral monomial Gram PSD, divisible entries vanish, trace, normalized actual null mixture with sample phaseMoment μ a b * packetCoeffCorrelation d a b. Target build/direct/ten axioms pass.
+4. WeilWorkPBAPSpectralMeasure.lean, blob 64190369ffaf22352f991b3dccb17fa381a2d176: actual Fourier-square probability for normalized nonnegative mixtures, pushforward to prime torus, exact rational character/sample identity. Target build/direct/nine axioms pass THIS TURN. All printed axioms only propext, Classical.choice, Quot.sound. Umbrella imports lines6919-6922. No umbrella build.
 
-NEW module namespace RHTower.WeilWorkPBAP reuses GaloisForLFunctions and GaloisForLFunctions.HTGeometry:
-PrimePhaseSpace := UnitAddTorus Nat.Primes.
-arithmeticExponent n := (primeExponentVector n).mapRange (fun k:Nat => (k:Int)) (by simp). Typed k essential. arithmeticPhase n:C(PrimePhaseSpace,C)=torusCharacter(arithmeticExponent n). Multiplicativity for nonzero naturals, unit modulus, rational fibre identity all proved.
-RepresentingPhaseMeasure := {mu:ProbabilityMeasure PrimePhaseSpace // forall n>=2, integral arithmeticPhase n dmu=0}.
-phaseMoment mu a b=integral chi_a conj chi_b.
-phaseMomentMatrix mu d=actual complexFeatureGram of d_m chi_m. PSD derived from existing complexFeatureGram_posSemidef plus compact continuity, not assumed. Entry=d_m conj d_k*phaseMoment; trace=cast sum norm(d_m)^2; each divisible off-diagonal vanishes for representing mu. representingPacketGram supplies NullPacketGram.
-packetCoeffCorrelation d a b=sum_m,k if a*k=b*m then d_m conj d_k else0.
-mixtureSample c y=Finsupp.linearCombination R (f -> EF.weilTest f f y) c, with smul and packetMixture formulas.
-UnitPacketCoeffs N={d:PacketIndexN->C //sum norm d ^2=1}.
-CAPSTONE exists_normalized_representing_mixture N L mu d (line211): exists smooth family f and c=(packetMass N(L+1))^-1 •packetMixture f, c>=0 pointwise, all integer logValue sums0, mixtureSample c0=1, and for a>=1,1<=b<=L+1 sample(loga-logb)=phaseMoment mu a b*packetCoeffCorrelation d a b. No energy sign input or conclusion. Input representation and unit coefficients specify objects, not an assumed producer. N0 unit class empty, harmless.
+New leaf APIs:
+testSpectralDensity f ξ = norm(paperFT f (-(2*pi*ξ)))^2; nonnegative, continuous, integrable. Actual Fourier inversion.
+mixtureSpectralDensity c, mixtureSample_eq_integral_density, mixtureSample_zero_eq_integral_density.
+abbrev NormalizedMixture := {c : WeilTestFn→₀ℝ // nonnegative coefficients AND mixtureSample c 0=1}.
+spectralProbability c : ProbabilityMeasure ℝ from volume.withDensity(ofReal density).
+primeSpectralPoint ξ := clockPhasePoint (log p) (2*pi*ξ).
+spectralTorusProbability c, phaseMoment_spectralTorusProbability c ha hb: rational moment exactly mixtureSample c (log a-log b).
+abbrev ComplexNullMixture := {c:NormalizedMixture //∀n≥2, mixtureSample c.1(logn)=0}.
+spectralRepresentingMeasure c : RepresentingPhaseMeasure. This complex-null subclass is STRONGER than WP01 real nulls; broader equivalence needs symmetrization, unformalized.
+exists_spectral_representing_mixture N L μ d: actual smooth normalized complex-null mixture from packet family, spectral representing measure moments equal target moment*coefficient correlation for positive a,b with b≤L+1.
+No full Weil positivity input anywhere.
 
-Current positive survivor target: all prime-torus origin-representing probability measures are weak limits of normalized smooth compact exact integer-null finite mixtures. Includes conjugation-invariant version with even spectra. Full density and Jensen no-go NOT formalized. Do not retire route yet.
-TORUS-DENSITY has complete paper proof, explicit bidisc non-Jensen representing measure, finite Gram proof, normalized moment proof, and NEW exact spectral probability/box-convergence section.
-Next formal obligations: choose d normalized indicator of exponent box [0,K]^S inside labels1..N; cardinal (K+1)^|S|; rational fibre product max(K+1-|v_p|,0); normalized correlation product(1-|v_p|/(K+1)) once K bounds differences; error<=sum|v_p|/(K+1). Exhaust S,K,L. Every integer character is chi_a conj chi_b via positivePart/negativePart and primeProduct. Existing character-span density extends convergence to continuous tests.
-ACTUAL spectral probability must be constructed, not hypothetical producer measure. D_c(xi)=sum_f c_f |paperFT f(-2*pi*xi)|^2; nonnegative integrable; Fourier inversion at0 gives integral1. Push volume.withDensity(D_c) by clockPhasePoint (p->log p) (2*pi*xi). Character moment exactly mixtureSample at loga-logb. This sign/2pi matches source.
+Latest finished validation:
+- /tmp/wp01-spectral-names.lean exit0.
+- targeted build log /tmp/wp01-spectral-build.log exit0.
+- /tmp/wp01-spectral-audit.lean and log exit0,9standardaxioms.
+- final lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPSpectralMeasure.lean exit0, empty /tmp/wp01-spectral-final.log.
+- index exit0,0Markdownchanges; generated files no tracked diff.
+- owned diff check exit0.
+- /tmp/wp01-spectral-lint.log exit1: nine unrelated reachability failures: WeilWorkDeficitSquareWindow, WeilWorkQuantizationRadialContour, WeilWorkQuantizationRadialGrowth, WeilWorkSettledPhaseMellinTrace, ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. No owned PBAP leaf flagged. Do not fix unrelated concurrent files.
 
-Source-checked reusable APIs (fresh /tmp checks required when newly used):
-- HTGeometry.InfiniteTorusCharacter: torusCharacter, zero/add_index/neg_index; clockPhasePoint evaluation; torusHaar probability; integral_torusCharacter; span_torusCharacter_closure_eq_top. Our torus character interfaces already scratch verified.
-- HTGeometry.SmoothNumbers (namespace GaloisForLFunctions): primeExponentVector_apply, primeProduct_primeExponentVector, log_nat_eq_sum_factorization, boundedExponentVectorEquivSmooth.
-- RHTower.BoundedSmoothWitnesses (same namespace): boundedVectorEquivFun S K: supportedBounded exponent vectors equiv (S -> Fin(K+1)); card_isBoundedSmooth=(K+1)^S.card. Full source read.
-- HTGeometry.BohrMultiFejerMultiplier: card_fejerFibre N m (abs m<=N), fejerMultiplier, bohrMean_expChar_mul_multiFejerKernel. Counting source checked, not new scratch checked.
-- Core: primeProduct, primeProduct_factorization/injective/pos, positivePart, negativePart, positivePartZ_sub_negativePartZ. Source checked.
-- RHTower.WeilRegularDeviationRigidity, namespace RHTower.WeilRegular: pairTransform_ofReal, weilTest_eq_integral (C2, compact, support bound), exists_norm_pairTransform_le. These give literal C2 spectral density/inversion, no Schwartz conversion needed. Source lines100-151 inspected. Do NOT use weilFullFunctional_weilTest_eq_lintegral, which assumes WeilPositiveFull and would be circular.
-- Alternative ConstrainedWeilFourierMultiplier (RHTower): autocorrelationSchwartz_eq_integral_fourier, integrable_spectralDensity, continuous_spectralDensity (first93lines read); HasCompactSupport.toSchwartzMap exists if necessary. SchwartzPolynomialDifferentialFrame autocorrelationSchwartz definition/apply checked. Not needed if C2 route used.
+## Changed next formal objective: actual narrow-packet full-energy lower bound
+Own paper docs/reports/weil-work/results/01-pbap/PACKET-ENERGY.md contains complete proof, NOT formalized.
+For N>=1,L>=105, beta=narrowBumpC(N*L), m=packetMass N L, f=gramPacket N L c, S=sum_{n=1}^N norm(c n)^2, prove
+weilArchRe(f*tilde f) >= m*S*((1/2)*log(1+N*L/4)-10-(2/L)*sqrt(1+log N)).
+Arbitrary complex c; NO null assumption, both poles kept. Finite nonnegative mixtures inherit it. Normalized energy diverges as N→∞ uniformly L>=105; also as L→∞ with N fixed.
+Verdict BRIDGE to classical MVT; scientific novelty unestablished. More informative than another measure interface: exact torus realization pays divergent frequency energy. Does NOT solve general PBAP or establish energy-faithful density.
 
-Research audits: actual moment-Gram deep search complete partial=false 68336files. Box-overlap and Schur-energy deep searches partial=true68348files reranking deadline/background-indexer, candidates and source_arguments inspected. Mostly irrelevant hits; no missing sign supplied. Lexical spectral probability search1620hits no coverage/partial fields, empty candidate/source arrays, located inversion above. Search files /tmp/wp01-{moment-gram-search,box-overlap-search,schur-energy-search,spectral-probability-search}.json.
-External Cole-Gamelin1986 DOI10.1112/plms/s3-53.1.112 abstract only, no precise imported theorem. Luger/Nedic positivekernel paper parent only. Gaal-Revesz2022 DOI10.1007/s00209-022-03055-y requires doubly positive functions; arbitrary signed autocorrelation lacks pointwise positivity, not a closing input. No novelty claim.
+Paper mechanism:
+r=1/[4(NL+1)], w=2r. A=∫|beta|; A²≤w*m by CS. Translated bumps disjoint => mass=m*S. fhat=betahat*DirichletPolynomial up to unimodular centering, |betahat|≤A.
+Native dirichlet_meanValue_sharp constant104 at ±T => ∫_{-T}^T|P|²≤(2T+208N)S. T=NL gives2N(L+104)S.
+Normalized low mass≤m*S*N(L+104)/[2π(NL+1)]≤m*S/2, because π>=2,L>=105.
+gammaBracket>=log(1+|t|/4)-10 => gamma energy≥m*S*(.5log(1+NL/4)-10).
+Pole exact2*a_plus*a_minus*Re[(Σc_n√n)conj(Σc_n/√n)], centering cancels. a_plus*a_minus≤exp(r)w*m. CS; Σn≤N²,Σ1/n≤1+logN,2wN≤1/L,exp(r)<2 => pole>=-(2/L)m*S√(1+logN).
+No assumptions of missing energy estimates in new Lean statements.
 
-Killed/known directions: scalarization REDISCOVERED L248 + Boas-Kac-Krein. Small two-window sector REDISCOVERED Zhu arXiv2608.24827v2 full support LENGTH1.6 (halfwidth.8). L390 total-mass Poisson loses. L178/L259 already identify signed rank-two pole-vs-gamma comparison. L260 primeblind ideal/shifted-pole family known. L353 primitive-set narrow-packet positivity by mean-value spreading is already recorded: do not repackage it as new. New moment matrices have mixed fibres but no energy bound proved. Gram PSD alone does not compare signed pole energy with gamma.
-Big picture: compact-torus weak convergence forgets frequency height. Positive log-frequency-moment bounds obstruct Haar approximation by tightness, but full-energy bounds do not imply those bounds because poles can be negative. Finish exact density/Jensen positive survivor, then return to full signed pole-vs-gamma estimate; do not count more interface wrappers as scientific progress. No-go affects finite mixtures; scalar variant needs separately formalized scalarization (paper knows it). All hgtl7 anti-theatre/laziness answers posted this turn. Goal active; next turn classify prior turn PROGRESS, not completion.
+Currently /tmp/wp01-energy-names.lean is the scratch:
+- imports GramPackets, Sieve.DirichletMeanValueSharp, ZetaSymbolArchimedeanHorizon.
+- noncomputable section.
+- verifies principal names and proves gammaBracket lower bound simply unfold EF.gammaBracket; linarith (its definition exactly matches digamma lemma).
+- two-sided MVT example all real T: int_-T^T ||dirPoly||² <=(2*T+208*N)*sum||c||².
+- previous scratch failed only missing Herglotz import and noncomputable section; fixed by unfolding EF.gammaBracket directly, avoiding extra import.
+- next failure at intervalIntegral.integral_add_adjacent_intervals needed explicit (μ:=volume); fixed.
+- final scratch run session22911 EXIT0, empty /tmp/wp01-energy-names.log. A final linarith failure was fixed by simp only [Pi.pow_apply] at the adjacent-integral identity; this normalizes the same integrand, not a mathematical change. Both gamma lower and two-sided MVT sublemmas now pass.
+- No new energy leaf yet. All owned Lean/build/search/index/lint commands EXITED. No stale owned process. Do not repeat spectral audits without source changes. Continue actual packet Fourier factorization, low spectral mass, and full signed pole bound before claiming the energy theorem formalized.
+
+Source-checked next APIs (verify each needed name in /tmp first):
+RHTower.Sieve.dirichlet_meanValue_sharp in Sieve/DirichletMeanValueSharp.lean88; error104Σ(j+1)||c||², all real T. continuous_dirPoly in Sieve/DirichletPoly.lean50.
+RHTower.log_sub_seven_le_re_digamma_quarter in ZetaSymbolArchimedeanHorizon.lean132. Same module integral_norm_sq_paperFT_eq261 requires ContDiff2 and tsupport subsetIcc.
+EF.gammaBracket in .lake/packages/Zeta23/Zeta23/ExplicitFormula.lean67 =Re digamma(1/4+I*r/2)-logπ.
+RHTower.paperFT_translate' in WeilPositivityMultiplicativeToeplitzBound.lean447.
+RHTower.paperFT_finset_sum in ZetaWeilFiniteLevelInertia.lean484, continuous compact summands.
+gramPacket_rational_sample GramPackets82 at a=b=1 gives exact mass without new disjoint-support argument.
+Sieve/HarmonicLogBound.lean41 sum_Icc_one_div_le_one_add_log.
+LebesgueAtomWeilPositivity.lean390 integrable_paperFT_weilTest_mul_gammaBracket; 458 compact-support Plancherel alternate (namespace check needed).
+Mathlib Bochner/Basic1191 integral_mul_le_Lp_mul_Lq_of_nonneg for CS; no special L2 theorem found yet.
+Fresh mean-square proof in scratch derives weighted sum≤N*S, uses adjacent intervals with volume, then linarith.
+
+## Still open density/Jensen survivor, DO NOT retire
+TORUS-DENSITY.md complete paper construction:
+representing μ on prime torus, finite exponent-box normalized coefficients d. Correlation=product_p max(0,1-|v_p(a)-v_p(b)|/(K+1)). Error≤sum abs exponents/(K+1). Exhaust finite primes,K,L. Every integer character positive/negative prime products; span character dense gives weak convergence.
+Actual spectral measure step now done. Box multiplier,counting,weak convergence, even symmetrization, explicit non-Jensen transfer NOT formalized.
+Candidate box APIs source checked earlier: BoundedSmoothWitnesses.boundedVectorEquivFun S K and card_isBoundedSmooth=(K+1)^cardS; primeProduct_pos/injective/factorization; BohrMultiFejerMultiplier.card_fejerFibre, fejerMultiplier; InfiniteTorusCharacter.span_torusCharacter_closure_eq_top.
+No box scratch/leaf written.
+Explicit bidisc μ=diagonal Haar+epsilon(graph B Poisson_a−diagonal Poisson_a), b=2a/(1+a²),B(z)=(b-z)/(1-bz),P(z,w)=(1-bz)w−(b-z). Positive representing measure with graph mass, P0=-b≠0; integral log(|P|+eta)→−∞. Weak density would transfer strict Jensen failure to actual null finite mixture. No full energy sign follows: compact torus forgets frequency height.
+Do not claim scalarization Lean complete. Do not import spectral-producer theorem requiring WeilPositiveFull.
+
+## Search and research audit
+Current completed search logs:
+- /tmp/wp01-spectral-measure-deep.json partial=false,68352files.
+- /tmp/wp01-divisor-overlap-search.json partial=false,68364files; no usable boxcount (unrelated multiplicative/divisor hits).
+- /tmp/wp01-full-sign-core.json partial=true,68366files; no full closure.
+- /tmp/wp01-packet-gap-core.json and /tmp/wp01-packet-mvt.json partial=true,68367files. Inspected candidates AND source_arguments. MVT parent found, source checked.
+All searches exited. Mostlypending compiler metadata, noabsenceclaim.
+External primary Montgomery survey https://www.nato-us.org/analysis2000/papers/montgomery.pdf sections5-6 verifies parent Hilbert/MVT; exactcodeusesweaker104. ColeGamelin abstractavailable DOI403; noimportednewtheorem.
+Prior killed novelty candidates: scalarization L248+classicalBoasKacKrein; smalltwo-window positivity coveredZhu2608.24827v2 fullsupportlength1.6.
+L259/L260 signedranktwo and shiftedpoles alreadyopen. L353 primitive-support MVT positivity known; frequency split loses√R robustness vslogRgain, needsphase coherence. Read these exact sections this turn. No pointwiseabsolute-bound shortcut.
+hgtl7 anti-theatre/anti-laziness answered in chat: no significant novelty orPBAPsignadvance; excessive interface work; noeffort-basedskipping; corpussearched; next actualfullenergy inequality.
+
+Files: card docs/drafts/pipeline/1-in-progress/weil-work-01-pbap.md, own results RESULT.md,PROOF.md,EVIDENCE.md,TORUS-DENSITY.md,PACKET-ENERGY.md. RESULT/EVIDENCE/TORUS updated for fourthleaf; card records newpaperenergy successor. Mostownedfilesuntracked. No commits.

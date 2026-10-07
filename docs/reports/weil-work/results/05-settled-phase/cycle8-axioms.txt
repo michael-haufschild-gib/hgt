@@ -1,0 +1,44 @@
+RHTower.WeilWorkSettledPhase.norm_lowerSourceRemainder_phase_ae {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)
+  (θ : ℝ) :
+  ∀ᵐ (t : ℝ),
+    0 < t →
+      ‖RHTower.WeilWorkSettledPhase.lowerSourceRemainder hW θ (-t)‖ =
+        ‖RHTower.WeilWorkSettledPhase.canonicalPhase hW (2 * t) - (RHTower.WeilWorkSettledPhase.lockConstant θ)⁻¹‖ *
+          ‖RHTower.WeilSpectral.quantizationTraceF hW (2 * t)‖
+RHTower.WeilWorkSettledPhase.exists_norm_quantizationTraceF_le_littlewood {lam : ℕ → ℝ}
+  (hW : RHTower.WeilPositiveFull lam) :
+  ∃ K T₀,
+    0 < K ∧
+      ∀ (T : ℝ),
+        T₀ ≤ T →
+          ∀ τ ∈ Set.Ioc T (2 * T),
+            ‖RHTower.WeilSpectral.quantizationTraceF hW (2 * τ)‖ ≤
+              Real.exp 4 * Real.exp (K * Real.log T / Real.log (Real.log T))
+RHTower.WeilWorkSettledPhase.source_rigidity_or_canonical_phase_disorder {lam : ℕ → ℝ}
+  (hW : RHTower.WeilPositiveFull lam) (θ : ℝ) :
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ∃ a K,
+      0 < a ∧
+        0 < K ∧
+          ∀ (R : ℝ),
+            ∃ Y,
+              R ≤ Y ∧
+                a * Y * Real.exp (-(K * Real.log Y / Real.log (Real.log Y))) ≤
+                  ∫ (y : ℝ) in Set.Ioc Y (2 * Y),
+                    ‖RHTower.WeilWorkSettledPhase.canonicalPhase hW y - RHTower.WeilWorkSettledPhase.lockConstant θ‖
+'RHTower.WeilWorkSettledPhase.measurable_canonicalPhase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilWorkSettledPhase.norm_canonicalPhase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilWorkSettledPhase.inv_lockConstant_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilWorkSettledPhase.norm_quantizationTraceF_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilWorkSettledPhase.norm_lowerSourceRemainder_phase_ae' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilWorkSettledPhase.norm_quantizationTraceF_le_exp_producerLogZeta' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilWorkSettledPhase.exists_norm_quantizationTraceF_le_littlewood' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilWorkSettledPhase.source_rigidity_or_canonical_phase_disorder' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

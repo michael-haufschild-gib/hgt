@@ -122,3 +122,88 @@ Final post-build `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPMomentPa
 The latest lint errors are `RHTower.WeilWorkDeficitLeakageIntegral`, `RHTower.WeilWorkDeficitMassBounds`, `RHTower.WeilWorkDeficitPoissonLeakage`, `HTGeometry.ApertureConeCalculus`, `HTGeometry.ApertureConeWinding`, `HTGeometry.ApertureLogTranslation`, `HTGeometry.ApertureOpenHistoryIdeal`, `HTGeometry.BoundaryCoronaCStarAlgebra`, and `HTGeometry.HilbertSphereExtension`. Neither owned PBAP leaf is flagged. These results supersede the earlier eight-item baseline for the current snapshot; unrelated files were not changed.
 
 All owned Lean/build/search/index/lint commands exited. No stale owned process remains. Generated API/index Markdown has no tracked diff. No commit or push was requested or performed.
+
+## Actual spectral probability continuation
+
+New leaf: `formal/GaloisForLFunctions/RHTower/WeilWorkPBAPSpectralMeasure.lean`.
+Git blob hash: `64190369ffaf22352f991b3dccb17fa381a2d176`.
+
+- `/tmp/wp01-spectral-names.lean`: exit 0; signed Fourier rescaling, phase detuning, continuity and measure APIs verified against this toolchain.
+- `lake build --old +GaloisForLFunctions.RHTower.WeilWorkPBAPSpectralMeasure`: exit 0. Requested leaf built, cached dependency diagnostics replayed. No full or umbrella build.
+- `/tmp/wp01-spectral-audit.lean`: exit 0. Nine printed declarations, including `spectralRepresentingMeasure` and `exists_spectral_representing_mixture`, depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+- Final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPSpectralMeasure.lean`: exit 0, no diagnostics. Umbrella import added.
+- `scripts/formal_tools.py index`: exit 0, zero generated Markdown changes reported.
+- `scripts/formal_tools.py lint`: exit 1, nine unrelated reachability errors: `WeilWorkDeficitSquareWindow`, `WeilWorkQuantizationRadialContour`, `WeilWorkQuantizationRadialGrowth`, `WeilWorkSettledPhaseMellinTrace`, `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. No owned PBAP leaf is flagged. This is the latest lint snapshot; do not treat earlier lists as current.
+
+The literal density, its normalization, and its pushforward are now conclusions. `phaseMoment_spectralTorusProbability` identifies rational moments with actual autocorrelation samples. The capstone composes this with smooth packet realization without assuming full Weil positivity. The input `ComplexNullMixture` has complex integer cancellation, stronger than WP01's real symmetric condition; the broader equivalence still requires symmetrization.
+
+The spectral-measure and divisor-overlap deep searches completed with `partial=false`, respectively 68,352 and 68,364 files. Candidates and source arguments were inspected. The divisor hits do not supply the required multiplicative box count. The refreshed full-sign search returned `partial=true` at 68,366 files, and the narrow-packet and Montgomery–Vaughan searches were partial at 68,367 files. Compiler metadata was mostly pending/source-only. Source inspection, not retrieval rank, established applicability of `dirichlet_meanValue_sharp` and `log_sub_seven_le_re_digamma_quarter`.
+
+`PACKET-ENERGY.md` now records a dependency-closed paper bound for arbitrary complex coefficients in the literal narrow integer packet family: for `N >= 1`, `L >= 105`, normalized full energy is at least `(1/2) log(1+N*L/4)-10-(2/L) sqrt(1+log N)`. The exact constant uses the corpus's mean-value error `104`, not the sharper literature constant. Its Lean proof remains outstanding. This is a bridge to the classical mean-value mechanism, not a claimed novel solution. The primary external audit used [Montgomery's survey, sections 5–6](https://www.nato-us.org/analysis2000/papers/montgomery.pdf); this also prevents presenting the spreading mechanism itself as new.
+
+No computation, new axiom, heartbeat increase, full build, commit, or push was performed. Full PBAP, box-multiplier convergence, and the Jensen transfer remain open. The positive survivor is not retired as a completed no-go.
+
+Final `/tmp/wp01-energy-names.lean`: exit 0, no diagnostics. It verifies the next target's corpus interfaces and proves two scratch sublemmas: `gammaBracket(t) >= log(1+|t|/4)-10`, and the two-sided mean-square upper bound `(2*T+208*N)*sum |c|^2`. Fixed the unnecessary Herglotz-import dependency by unfolding the literal gamma definition, and fixed measure inference/function-power normalization in the adjacent-integral identity. The full packet lower bound is still not formalized. All owned Lean, search, index, and lint processes have exited; spectral-leaf hash remains unchanged. No generated-index diff remains.
+
+## Full narrow-packet energy continuation
+
+New leaves and verified Git blob hashes:
+
+- `WeilWorkPBAPPacketFourier.lean`: `f9729fc75387de461016b8844e655beea0de413e`, 228 lines.
+- `WeilWorkPBAPPacketEnergy.lean`: `344ffe13b9c97068b3a3aa96adf0608c5f3ca03e`, 386 lines.
+
+Each targeted `lake build --old +GaloisForLFunctions.RHTower.<leaf>` exited 0. Both final commands `lake env lean GaloisForLFunctions/RHTower/<leaf>.lean` exited 0 with empty logs (`/tmp/wp01-packet-fourier-final.log`, `/tmp/wp01-packet-energy-final.log`). The twenty-declaration `/tmp/wp01-packet-audit.lean` exited 0; every printed axiom list is exactly `[propext, Classical.choice, Quot.sound]`. Both leaves are imported by `RHTower.lean`. No umbrella or full build ran.
+
+The Fourier leaf proves literal mass, complex Fourier factorization, the bump envelope, symmetric mean-square bound, and actual low-frequency mass. The energy leaf proves gamma coercivity, exact cancellation of centering in the two pole weights, their harmonic-product bound, and the full signed lower bound. Its uniform escape capstone quantifies over every coefficient function and every `L>=104`, without assuming null constraints or an energy sign. The simpler logarithmic bound applies for `N>=1`. No general PBAP theorem or fixed-`N`/growing-`L` Lean limit theorem is claimed.
+
+`scripts/formal_tools.py index`: exit 0, seven changed source-index entries, zero removed. Generated API/index Markdown has no tracked diff. `scripts/formal_tools.py lint`: exit 1 on ten unrelated reachability errors; no owned PBAP leaf is flagged:
+
+- `RHTower.WeilWorkDeficitZeroTransport`
+- `RHTower.WeilWorkHigherDenominatorAxisPolynomial`
+- `RHTower.WeilWorkHigherDenominatorLogMoments`
+- `RHTower.WeilWorkSettledPhaseAbelRigidity`
+- `RHTower.WeilWorkSingularArithmeticReciprocalMeanSquare`
+- `HTGeometry.ApertureConeCalculus`
+- `HTGeometry.ApertureConeWinding`
+- `HTGeometry.ApertureLogTranslation`
+- `HTGeometry.ApertureOpenHistoryIdeal`
+- `HTGeometry.BoundaryCoronaCStarAlgebra`
+
+This supersedes earlier lint snapshots. Unrelated files were not edited.
+
+The packet-energy deep search completed with `partial=false`, 68,370 files; candidate and source-argument fields inspected. The subsequent overlapping-support search was partial at 68,389 files and did not supply the signed extension. Source inspection and fresh scratch checks established the applicable Cauchy–Schwarz, Fourier, mean-value and gamma interfaces. [Montgomery–Vaughan's original Hilbert-inequality paper, Corollaries 2–3](https://personal.science.psu.edu/rcv4/personal/Publications/s2-8-1-73.pdf), independently confirms the classical parent mechanism. Scientific novelty remains unestablished; the WP01 subclass advance is not a full solution.
+
+All five anti-theatre and four anti-laziness questions were answered in chat. No computation, added axiom, heartbeat increase, commit, or push. Intermediate failed scratch scripts were removed after the completed source and final audit were preserved. All owned processes exited. Next work returns to the signed comparison for overlapping tests; torus density/Jensen is not retired.
+
+## Critical coefficient boundary — final verification, 2026-10-07
+
+All ten `WeilWorkPBAPCritical*` leaves passed targeted `lake build --old +<module>` builds. The final leaf's mass-zero proof initially timed out; explicit intermediate types fixed it without changing heartbeat limits. All ten final direct-source audits and the 22-declaration axiom audit completed sequentially with exit 0. Ten umbrella imports added; no umbrella or full build.
+
+`scripts/formal_tools.py index` exited 0 and regenerated the API/gaps/overview indexes; new critical declarations are present in `formal/LEAN_API.md`. Generated index files produce no tracked Git diff. `scripts/formal_tools.py lint` exited 1: nine unrelated umbrella-reachability errors, for `WeilPaperCauchyDeficitProfile`, `WeilWorkHigherDenominatorWeightedIntegral`, `WeilWorkSingularArithmeticPolePerron`, `WeilWorkSingularArithmeticSummatory`, `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, and `BoundaryCoronaCStarAlgebra`. No critical-leaf reachability or proof-debt error. File-size warnings also remain. This is a timestamped shared-tree snapshot, not a clean global lint claim.
+
+Recent searches: finite-part deep search `partial=true`, 68,456 inventoried files; signed sampling deep search `partial=true`, 68,460 files and interrupted retrieval/malformed reranker output; module-filtered full-null deep search `partial=true`, 68,462 files. All three report background refresh incomplete; compiler metadata is mostly pending/stale/source-only. Candidate lemmas, source arguments and ingredient proposals inspected. The final search's proposal to derive positivity from positive mass and an existence equivalence is not a proof: its nonnegativity obligation is precisely unpaid PBAP. No search hit is treated as a kernel audit.
+
+### Final source and axiom checks
+
+For each of Resonator, Datum, Coefficients, Kernel, Window, Laplace, Residue, Abel, DensityLaplace and Boundary, ran `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPCritical<suffix>.lean` from `formal/`, one foreground Lean process at a time. All ten exited 0 with empty diagnostic logs. `lake env lean /tmp/wp01-critical-axioms.lean` exited 0; every one of its 22 declarations reports exactly `propext`, `Classical.choice`, and `Quot.sound`. This includes the negative-mixture, fixed half-gamma, and normalized-unboundedness capstones. No `sorryAx` or new axiom occurs.
+
+Verified hashes remained unchanged through the final audit:
+
+| Leaf | SHA-256 |
+|---|---|
+| `WeilWorkPBAPCriticalResonator.lean` | `20cbe33addb7cf30adda2b2fb82df97c74784099cb65776993e29d86fa9ee62a` |
+| `WeilWorkPBAPCriticalDatum.lean` | `55f29fc853e3f57e00468f49ccaa75348193044d26b2d329813c1562cfcc6f41` |
+| `WeilWorkPBAPCriticalCoefficients.lean` | `99317dca2ca8e6b06797af631ca184596b516aaf18b0ca2ac734c5c07ecc9e42` |
+| `WeilWorkPBAPCriticalKernel.lean` | `dbedcec20d21a0e3ef00ee19650dde154778c1914f6131fc044e71253f4c634e` |
+| `WeilWorkPBAPCriticalWindow.lean` | `738b4b4c04d0ba7b623ebd4c290a01b211793477b42e0e1f316c8cf9e89056fa` |
+| `WeilWorkPBAPCriticalLaplace.lean` | `8779c517f35ca668b3ac6482b733418e56e5c88f6b0a11cbecd0594c973af62b` |
+| `WeilWorkPBAPCriticalResidue.lean` | `4675dfc880c9b6fe0f9e54a976b46159a75f1c41477ef0fb3f430b6386464449` |
+| `WeilWorkPBAPCriticalAbel.lean` | `88b32eefe60b60aa735be5088f352b6a9e3a34fe8331b8841cc99153485bfcdd` |
+| `WeilWorkPBAPCriticalDensityLaplace.lean` | `817ad8c1f8cb10fb3e624c3be8b26835dae5d215f04ac19708bebfb98527716a` |
+| `WeilWorkPBAPCriticalBoundary.lean` | `6c36ee5e544c6332e522988c6e57b7629a1fa55f3646b83ce53540b8ebbe5832` |
+
+The axiom audit covers exact resonator mass/gamma/sample identities; generic completion; modified Toeplitz and primitive-square bounds; absolute summability; harmonic ceiling; translated positive-definite kernel and remainder; window identity; signed Laplace identity and residue; signed cumulative Fubini and ceiling; arithmetic cumulative/product transform; coefficient boundary; both negative-witness forms and mass-normalized unboundedness. The scratch audit changes no production source.
+
+A later two-cluster search completed `partial=false`, 68,464 inventoried files; refresh remained incomplete and compiler coverage mostly source-only/pending. The retrieved ground-shift Cauchy-Schwarz retains the unknown aperture ground correction. It cannot discharge the proposed unshifted signed cross bound.
+
+External next-route correction: [Beckner, Section 2/Theorem 4](https://arxiv.org/html/math/0701939v6) states nonattainment for logarithmic uncertainty and supplies an exact deficit identity. L371's Gaussian-extremal heuristic is therefore not used. This does not affect the critical-coefficient proof.

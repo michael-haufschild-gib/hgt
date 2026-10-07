@@ -1,4 +1,7 @@
 import GaloisForLFunctions.RHTower.WeilFullConeLocalMassBound
+import GaloisForLFunctions.RHTower.WeilWorkDeficitSharedMass
+import GaloisForLFunctions.RHTower.XiWindowZeroCount
+import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 
 /-!
 # Interval mass bounds for the canonical Weil measure
@@ -84,6 +87,79 @@ theorem boundaryMeasure_Icc_ne_top {lam : ℕ → ℝ} (hW : WeilPositiveFull la
   · obtain ⟨C, _, hC⟩ := exists_boundaryMeasure_Icc_le_length_log hW
     exact (lt_of_le_of_lt (hC a b hab) ENNReal.ofReal_lt_top).ne
   · simp [Icc_eq_empty_of_lt (lt_of_not_ge hab)]
+
+private theorem deficitOrdinateMeasure_unit (t : ℝ) :
+    deficitOrdinateMeasure (Icc (t - 1) (t + 1)) =
+      ((finite_xiOrdinateWindow 1 t).toFinset.card : ℝ≥0∞) := by
+  classical
+  have hm (q : XiZeroCopy) : (q.1 : ℂ).im ∈ Icc (t - 1) (t + 1) ↔
+      q ∈ (finite_xiOrdinateWindow 1 t).toFinset := by
+    rw [Set.Finite.mem_toFinset]
+    change _ ↔ |(q.1 : ℂ).im - t| ≤ 1
+    rw [abs_le]
+    constructor <;> rintro ⟨h1, h2⟩ <;> constructor <;> linarith
+  rw [deficitOrdinateMeasure, Measure.sum_apply _ measurableSet_Icc]
+  calc
+    (∑' q : XiZeroCopy, Measure.dirac (q.1 : ℂ).im (Icc (t - 1) (t + 1))) =
+        ∑ q ∈ (finite_xiOrdinateWindow 1 t).toFinset,
+          Measure.dirac (q.1 : ℂ).im (Icc (t - 1) (t + 1)) := by
+      apply tsum_eq_sum
+      intro q hq
+      rw [Measure.dirac_apply' _ measurableSet_Icc,
+        Set.indicator_of_notMem ((hm q).not.mpr hq)]
+    _ = ∑ _q ∈ (finite_xiOrdinateWindow 1 t).toFinset, (1 : ℝ≥0∞) := by
+      apply Finset.sum_congr rfl
+      intro q hq
+      exact Measure.dirac_apply_of_mem ((hm q).mpr hq)
+    _ = _ := by simp
+
+/-- The projected actual divisor has a logarithmic bound on every bounded interval. -/
+theorem exists_deficitOrdinateMeasure_Icc_le_length_log :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ a b : ℝ, a ≤ b →
+      deficitOrdinateMeasure (Icc a b) ≤
+        ENNReal.ofReal (C * (b - a + 1) * Real.log (max |a| |b| + 3)) := by
+  let A : ℝ := (|xiLineTwoLogDerivConstant| + Real.log 2) / Real.log 3
+  have hlog3 : 0 < Real.log 3 := Real.log_pos (by norm_num)
+  have hA : 0 ≤ A := div_nonneg (add_nonneg (abs_nonneg _) (Real.log_nonneg (by norm_num))) hlog3.le
+  have hunit (t : ℝ) : deficitOrdinateMeasure (Icc (t - 1) (t + 1)) ≤
+      ENNReal.ofReal (16 * (A + 1) * Real.log (|t| + 3)) := by
+    rw [deficitOrdinateMeasure_unit, ← ENNReal.ofReal_natCast]
+    apply ENNReal.ofReal_le_ofReal
+    have hn := ncard_xiOrdinateWindow_one_le_log t
+    rw [Set.ncard_eq_toFinset_card _ (finite_xiOrdinateWindow 1 t)] at hn
+    have hL : Real.log 3 ≤ Real.log (|t| + 3) :=
+      Real.log_le_log (by norm_num) (by linarith [abs_nonneg t])
+    have hlog : Real.log (|t| + 4) ≤ Real.log 2 + Real.log (|t| + 3) := by
+      rw [← Real.log_mul (by norm_num) (by positivity)]
+      apply Real.log_le_log (by positivity)
+      linarith [abs_nonneg t]
+    have hprod : |xiLineTwoLogDerivConstant| + Real.log 2 = A * Real.log 3 := by
+      dsimp [A]
+      field_simp [hlog3.ne']
+    have hscale := mul_le_mul_of_nonneg_left hL hA
+    rw [← hprod] at hscale
+    nlinarith [le_abs_self xiLineTwoLogDerivConstant]
+  exact ⟨16 * (A + 1), by positivity, fun _ _ hab =>
+    interval_mass_le_of_unit_bound (by positivity) hunit hab⟩
+
+theorem deficitOrdinateMeasure_Icc_ne_top (a b : ℝ) :
+    deficitOrdinateMeasure (Icc a b) ≠ ∞ := by
+  by_cases hab : a ≤ b
+  · obtain ⟨C, _, hC⟩ := exists_deficitOrdinateMeasure_Icc_le_length_log
+    exact (lt_of_le_of_lt (hC a b hab) ENNReal.ofReal_lt_top).ne
+  · simp [Icc_eq_empty_of_lt (lt_of_not_ge hab)]
+
+/-- The Cauchy weight is integrable for all actual copies, on both ordinate half-lines. -/
+theorem integrable_deficitOrdinateCauchyWeight :
+    Integrable (fun r : ℝ => 1 / (1 + r ^ 2)) deficitOrdinateMeasure := by
+  unfold deficitOrdinateMeasure
+  apply integrable_sum_measure
+  · intro q
+    exact integrable_dirac (by simp)
+  · have hn (q : XiZeroCopy) : ‖(1 : ℝ) / (1 + (q.1 : ℂ).im ^ 2)‖ =
+        1 / (1 + (q.1 : ℂ).im ^ 2) := by
+      rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    simpa only [integral_dirac, hn] using summable_inv_one_add_sq_im
 
 end RHTower.WeilSpectral
 

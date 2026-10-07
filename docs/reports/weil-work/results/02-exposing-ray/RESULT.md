@@ -1,6 +1,59 @@
-# WP02 result — tail repair and compact-primitive source bounds
+# WP02 result — exact source constructions and bounds
 
-## Latest result: literal exposing tail (cycle 5)
+## Current frontier: exact sampled polar mass (cycle 13)
+
+The eleventh owned leaf, `WeilWorkExposingRayLatticeMass.lean`, recovers complete coefficient mass from explicit rounded integer samples of the actual Fejer-profile lattice, for every real spacing X>=4. It retains all complex cross terms, every site count and the full polar defect. One actual vanishing half-pole suffices; full polar tests are included.
+
+Writing n_d=ceil(exp(dX)), eta_d=log(n_d)-dX and R for the actual profile autocorrelation, every finite mixture of such half-polar packets satisfies
+
+    sum_i alpha_i sum_j |c_ij|^2
+      = -sum_(d=1)^M cosh(dX/2)*trace(n_d)/R(eta_d).
+
+The source proof gives R(eta_d)>=1/4 and hence mass <=4*sum cosh(dX/2)*|trace(n_d)|. Every nonzero nonnegative mixture has a strictly negative sampled atom. The exact classification `sampled_nonnegative_iff_zero_active` says that nonnegative sampled traces occur exactly when every positive-weight coefficient row is zero.
+
+All seven public theorems in `RHTower.ExposingRayLattice` pass full scratch/axiom audits with only propext/Classical.choice/Quot.sound. Final installed `lake --old env lean -o <target-cache> <leaf>` passes without warnings; cache current, umbrella wired. Formal lint has ten unrelated reachability findings and no WP02 finding; exact details in EVIDENCE.md. No computation, new axiom, heartbeat increase or full/umbrella build.
+
+Assessment: exact source-class conservation and stability, extending beyond a bare no-go. The covariance/polar mechanism is classical; external scientific novelty unestablished. **Universal WP02 remains OPEN.** Neither arbitrary repairs nor the all-aperture signed Gamma/trace bound are covered. Next candidate, GEOMETRIC-POLAR-MASS-CONJECTURE.md, tests physical-mass recovery for overlapping Riemann profiles on integer-base grids; it must pass the explicit utility gate against existing geometric rigidity and its extra repeated-pole constraints before any further Lean work.
+
+## Literal Riemann-source capacity (cycle 12)
+
+The tenth owned leaf, `WeilWorkExposingRayLocalCapacity.lean`, proves a fixed positive total-energy floor for EVERY local-seed variance completion of the actual truncated unit-shift Riemann source, uniformly for L>=2. Seeds may differ; their number, weights, translations and profiles may all vary. No energy-positivity or RH premise enters the proof.
+
+For short polar seeds g_j, nonnegative alpha_j, M=sum alpha_j>0, F=sum alpha_j*g_j(.-x_j), and R_j=M*g_j(.-x_j)-F, the exact signed identity is
+
+    E(F)+sum (alpha_j/M)*E(R_j) = M*sum alpha_j*E(g_j).
+
+It implies, at EVERY real frequency t,
+
+    (pi/(5*log(2)))*|paperFT(F)(t)|^2 <= total completion energy.
+
+The literal Riemann source retains positive zero-frequency mass independently of cutoff. This defines an explicit `riemannCapacity>0`. The full finite exposing mixture retains at least `riemannCapacity/(2*pi)`, with its actual k=0 normalization. Capstones: `variance_energy_capacity`, `riemann_local_completion_floor`, `exposing_mixture_local_completion_floor`, namespace `RHTower.ExposingRayLocalCapacity`.
+
+Complete scratch and final installed leaf/cache audits pass without warnings. All ten owned leaves are umbrella-wired. Detailed axiom/lint/index evidence is in EVIDENCE.md; the global lint currently reports seven unrelated reachability errors and no WP02 error. No numerical computation, new axiom, heartbeat override, or full/umbrella build.
+
+Assessment: an exact source-class obstruction with a positive quantitative survivor; generic variance/Cauchy–Schwarz ingredients are classical, external scientific novelty unestablished. **The original universal WP02 lower inequality remains OPEN.** Arbitrary discrete atom repairs need not admit this representation, and every residual in the exact truncated-ray realization remains load-bearing. Next candidate: the exact sampled polar mass law in LATTICE-REPAIR-CONJECTURE.md, with the existing geometric radical obstruction explicitly treated as prior work.
+
+## Geometric completion gap (cycle 11)
+
+The exact finite geometric completion has total energy at least `(3*pi/25)*(1-farPolarCoeff(N*s))^2` for every N>=1 and 0<=s<=1/200. Its zero-frequency invariant is `mass(N,s)*(1-farPolarCoeff(s))=1-farPolarCoeff(N*s)`. Hence every fixed positive separation gives a strictly positive uniform cost, even as the step tends to zero. This rules out the zero-cost endpoint of this entire geometric family; it does not bound arbitrary repairs.
+
+The proof admits literal compact C2 tests into the exact CCM form domain, transfers the existing one-tenth ground gap with the correct 2*pi normalization, and uses the actual short-source plateau. The ninth leaf is WeilWorkExposingRayCoherentGap; the completion capstones extend WeilWorkExposingRayCoherentCompletion. Full scratch and final installed leaf audits pass without warnings, including the generalized positive-threshold corollary and original fixed-step conjecture. Both changed leaf caches are refreshed; all nine owned leaves are wired into RHTower. The imported-cache axiom audit passes for all eight new public theorems, with standard three axioms only. Global lint has 18 unrelated reachability findings and no WP02 finding; details in EVIDENCE.md.
+
+Assessment: exact source obstruction and positive quantitative survivor, with classical ground-gap/finite-variance parents; external scientific novelty unestablished. **The original universal WP02 lower inequality remains OPEN.** No scope reduction or assumed cone nonemptiness. Next actual-source candidate is LOCAL-SEED-CAPACITY-CONJECTURE.md, with paper proof in LOCAL-SEED-CAPACITY-PROOF.md and Lean still outstanding.
+
+## Uniform polar tail (cycle 10)
+
+The eighth owned contribution proves fixed constants D,C>0 and Y such that, for every 0<c<=1 and y>=Y,
+
+    D*c^4*exp(-C*exp(y)) <= polarExposingKernel(c,y).
+
+Thus the entire small-shift family has one common strictly positive tail, including shifts tending to zero. The proof uses the complete theta differential source, explicitly pays every negative autocorrelation contribution, and transfers through a normalized positive Green average. It assumes neither RH nor a positivity certificate. Complete scratch and seven-capstone axiom audits passed; final installed-source verification is recorded in EVIDENCE.md.
+
+Source: `WeilWorkExposingRayUniformPolarTail.lean`, namespace `RHTower.ExposingRaySmallShift`; capstones `polarExposingKernel_uniform_quartic_lower` and `polarExposingKernel_uniform_positive_tail`. Paper proof: POLAR-UNIFORM-TAIL-PROOF.md. All eight owned leaves are wired into RHTower.
+
+**Main WP02 lower inequality remains OPEN.** Tail signs do not supply universal matched-family energy positivity. Verdict: unconditional source advance / BRIDGE; external scientific novelty unestablished. The next concrete source conjecture, COHERENT-GAP-CONJECTURE.md, asks whether the exact bounded geometric completion has a strictly positive total-energy floor. It does not assume a lower bound for arbitrary repairs.
+
+## Literal exposing tail (cycle 5)
 
 Verified source: `formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayTailAsymptotic.lean`. Final `lake --old env lean` exits 0 without warnings; all eight audited capstones use only propext, Classical.choice and Quot.sound. RHTower umbrella import wired.
 
@@ -93,3 +146,46 @@ Latest formal lint exited 1 on twelve unrelated umbrella-reachability errors; ne
 - **Frontier moved?** Cutoff transport is explicit in Lean; the collective packet family has a uniform source lower bound, and the whole smooth compact primitive interface has an explicit mass-penalty inequality. The hard positivity frontier for arbitrary matched mixtures remains unchanged.
 - **Avoiding the hard problem?** The source sign was investigated but not proved. No effort estimate was used to exclude it. Further work must target the collective constrained source inequality.
 - **Next cycle:** return to the exact gamma/arithmetic residual on the matched cone. Test whether the compact-primitive Green representation and all integer traces provide a sharp signed estimate; reject bounds that merely add a fixed loss. Existing ground-state variance countermodels must be included in that attack.
+
+## Cycle 6: uniform actual-source truncation
+
+The new source result has error `C exp(-exp(2(L-1)))`, uniformly for all polar shifts c in [0,1], both for the full weighted autocorrelation and for the actual normalized archimedean energy. Source module: `WeilWorkExposingRayUniformTruncation.lean`; complete scratch passed without warnings. Final installed leaf passed without warnings; all four capstones use only propext, Classical.choice, and Quot.sound.
+
+`UNIFORM-TRUNCATION-PROOF.md` closes this estimate on paper. `REALIZATION-PROOF.md` supplies the next construction: for every epsilon>0, all sufficiently large N admit an exact finite matched family with aperture at most (log N)/2+C and energy at most E+(1+epsilon)*tau_N. That realization is PAPER ONLY until its finite-family assembly is formalized.
+
+Assessment: a literal-source quantitative BRIDGE. Uniformity and the double-exponential error scale improve the construction budget. No new scientific novelty beyond the audited corpus is established. The universal source lower estimate, including multiplier zero, remains unpaid; the hard positivity frontier has not moved. Next work should finish the exact construction without promoting its upper bound into a positivity claim, then attack the universal signed residual itself.
+
+## Cycle 7: exact finite realizations at natural aperture
+
+`WeilWorkExposingRayFiniteRealization.lean` proves an unconditional existential source theorem: one fixed C works for every epsilon>0 and all sufficiently large N, with exact complete atom trace w_N, nonnegative mixture weights, actual polar C2 tests at aperture <=log(N)/2+C, and energy <=E+(1+epsilon)*tau_N. The public prescribed-cutoff theorem retains the explicit error C exp(-exp(2(L-1))); the repair theorem retains the complete box-weighted residual cost.
+
+Complete scratch and three-capstone axiom audits passed without warnings, using only propext/Classical.choice/Quot.sound. Final installed leaf audit passed without warnings. The module is wired into RHTower. No computation, heartbeat override, or full build was used.
+
+This completes the constructive upper side at a quantitative scale. It does not make the full lower inequality true: a different matched family may have lower energy, and the multiplier-zero cone remains included in the unpaid target. No literature-level novelty claim. The next audit asks whether an opposite-trace near-radical source exists, and whether cone rigidity or a source obstruction rules it out; no new receiver is being added.
+
+## Far-polar leakage: sixth formal contribution
+
+`WeilWorkExposingRayPolarLeakage` proves a sharp obstruction to independent-atom repair of the corpus's actual far-polar Fejer sources. For X>=4, the complete weighted absolute atom budget B_X satisfies
+
+X exp(X)/32 <= B_X <= 6 exp(1)(3+boxConst) X exp(X).
+
+At the same time, every source is an actual C2 polar test, its energy is eventually bounded above by a fixed negative constant, and its integer atom coefficients tend uniformly to zero. Thus even uniform smallness of the entire trace is too weak for cheap box-norm repair.
+
+The exposing-target corollary is uniform in the chosen cutoff N: with K=sum exposingMajorant, the complete error budget for matching `exposingWeightTrunc N` is at least pi X exp(X)/16-K. The second correlation window, near exp(2X), controls the scale; ignoring it incorrectly suggests a smaller cost.
+
+This bounds the specific weighted absolute-error certificate. It does NOT bound the minimum energy of arbitrary coherent repairs, prove a negative PBAP witness, or disprove opposite-ray production. Existing far-polar construction and negative-energy theorem are reused. The new formal contribution is the full quantitative repair-budget obstruction; scientific novelty beyond this corpus is not established.
+
+Paper proof: POLAR-LEAKAGE-PROOF.md. Scratch, axiom and final installed-module audits passed; details in EVIDENCE.md. Next primary source mechanism: COHERENT-COMPLETION-CONJECTURE.md; common-profile lattice rigidity is a secondary diagnostic. Main universal lower inequality remains OPEN.
+
+
+## Cycle 9: bounded coherent completion — seventh formal contribution
+
+`RHTower.ExposingRayCompletion.bounded_coherent_completion` proves that every far-polar Fejer source at X>=4 has a finite nonnegative repair mixture of actual C2 polar tests at exactly the same aperture X+17/50. The combined trace is zero at EVERY integer n>=2, and repair energy has one upper bound independent of X. A positive finite geometric filter and weighted variance give the construction, including an exact total spectral-density and energy identity.
+
+This resolves the finite-mixture version of COHERENT-COMPLETION-CONJECTURE.md. The earlier single-test statement remains unproved and is unnecessary for this dual-cone application. In conjunction with the completed X exp(X) box-budget theorem, the result proves that divergent independent-atom correction estimates can coexist with bounded coherent correction costs for the same actual sources and aperture.
+
+The selected total energy is M^2 E(f_s), with 1/201<=s<=1/200; it is not shown to approach zero. No prime-blind positivity, nonempty global cone, or WP02 universal lower bound follows. Classical finite geometric factorization and variance identities are used; external scientific novelty is unestablished. The source-specific frontier moved from an obstruction to an explicit exact completion.
+
+Final installed leaf audit passed without warnings using `lake --old env lean`; the capstone uses only propext, Classical.choice and Quot.sound. The 478-line leaf is wired into RHTower. Current global lint reports six unrelated reachability failures, no WP02 finding; details in EVIDENCE.md.
+
+Anti-theatre: a bounded upper completion is not a lower positivity theorem. Anti-laziness: do not pursue single-factor infrastructure merely to compress an already valid finite family; return to the literal opposite exposing source and its vanishing tail budget. Before any proposed zero-cost far-Fejer completion, audit critical-zero spectral compatibility: the original Fejer spectrum differs essentially from the near-radical Xi spectrum. Existing small-aperture ground positivity does not supply that missing endpoint estimate.

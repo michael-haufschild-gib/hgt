@@ -1,0 +1,1199 @@
+[
+  {
+    "query": "actual Weil producer theta boundary trace inverse Mellin Dirichlet exponential",
+    "mode": "hybrid",
+    "partial": false,
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [],
+    "coverage": {
+      "files": 68370,
+      "inventoried": 68370,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68370
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11063,
+        "pending": 51909,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57307,
+        "prose": 11063
+      },
+      "declarations": 1028442,
+      "documents": 2849113,
+      "vectors": 2660782,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1277728,
+      "methods": {
+        "failed": 53,
+        "ready": 412832,
+        "stale": 181534
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791381317.4380422,
+      "current_generation": 1277729
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_generation": 1277728,
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "total": 0,
+    "inspected_hits": {
+      "declarations": [],
+      "candidate_lemmas": [
+        {
+          "name": "GaloisForLFunctions.RHTower.EpsteinCharacter.mellin_thetaW",
+          "module": "GaloisForLFunctions.RHTower.EpsteinCharacterFunctionalEquation",
+          "relpath": "formal/GaloisForLFunctions/RHTower/EpsteinCharacterFunctionalEquation.lean",
+          "line": 290,
+          "compiler_status": "source_only",
+          "source_hash": "d1789ea5118ddfbe3f8c1531b8e672373e221733b8065f7b20493912566f633d"
+        },
+        {
+          "name": "RHTower.WeilSpectral.quantizationBoundaryTrace",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialBoundary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialBoundary.lean",
+          "line": 157,
+          "compiler_status": "source_only",
+          "source_hash": "ee586615e8e71c1ac20fd2400faec18e38d1b236a72d5d4aea63ffcadc96d53e"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaEssentialLogCoefficient_eq_weil",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmEssentialInverseFlowTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmEssentialInverseFlowTrace.lean",
+          "line": 509,
+          "compiler_status": "source_only",
+          "source_hash": "9ce89e5d178d853864a960d4adaf26f48894c3ca6a1c845aaff612058a68c367"
+        },
+        {
+          "name": "RHTower.primeLogThetaPrecompletionWeightedBoundaryFourLevel",
+          "module": "GaloisForLFunctions.RHTower.PrimeLogThetaPrecompletionWeightedBoundary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeLogThetaPrecompletionWeightedBoundary.lean",
+          "line": 168,
+          "compiler_status": "source_only",
+          "source_hash": "45775e2f864786df812aa5d6b879a0e071bb3ee72423dc94b00852291119651e"
+        },
+        {
+          "name": "RHTower.WeilWorkSettledPhase.remainderTrace",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseMellinTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseMellinTrace.lean",
+          "line": 169,
+          "compiler_status": "source_only",
+          "source_hash": "0a204dc98d071ce2ae404507ef1ce27273627ce0a3082185ba4630dc1450e67d"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.SelbergMaassTrace.boundaryTrace_apply",
+          "module": "GaloisForLFunctions.RHTower.SelbergMaassBoundaryTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SelbergMaassBoundaryTrace.lean",
+          "line": 154,
+          "compiler_status": "source_only",
+          "source_hash": "96628186fecc9ab9c0911dd735383ca34068e43542b8eb3a67a935c1ccc499a6"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaEssentialTrace_full_tomography",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmEssentialInverseFlowTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmEssentialInverseFlowTrace.lean",
+          "line": 546,
+          "compiler_status": "source_only",
+          "source_hash": "453633c2758e99338031f7037f246f59df63ce85b540636182357dcab7321008"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.summable_weightedBoundaryInversePacketTrace",
+          "module": "GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesPhysicalPluckerBoundaryTraceCapacity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerBoundaryTraceCapacity.lean",
+          "line": 268,
+          "compiler_status": "source_only",
+          "source_hash": "a06f61c1d79709c1caf3247eb38741effa15ddc3e0455d048a230944a23770bb"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.SelbergMaassTrace.boundaryTrace",
+          "module": "GaloisForLFunctions.RHTower.SelbergMaassBoundaryTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SelbergMaassBoundaryTrace.lean",
+          "line": 139,
+          "compiler_status": "source_only",
+          "source_hash": "5924c9daf76c2fe4401668c64c18323daa1ca083b4d38640e152ab8c6edd86f4"
+        },
+        {
+          "name": "HTGeometry.eval_modularThetaSourcePositiveNormalizedLie_vacuumBoundary_one",
+          "module": "GaloisForLFunctions.HTGeometry.PolynomialODEJetRankThreeSourcePositiveD1CyclicContravariantNoGo",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/PolynomialODEJetRankThreeSourcePositiveD1CyclicContravariantNoGo.lean",
+          "line": 203,
+          "compiler_status": "source_only",
+          "source_hash": "8a6b12a14487d4bbd08ba05a0857e0326b2a4ccc761a21c732ee25e825cd8e2d"
+        },
+        {
+          "name": "RHTower.thetaBilateralLaplaceBezoutian",
+          "module": "GaloisForLFunctions.RHTower.ThetaTailFirstMomentKreinTransform",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaTailFirstMomentKreinTransform.lean",
+          "line": 166,
+          "compiler_status": "source_only",
+          "source_hash": "688e8770c1f2c567daeca0041ecfd34590c61b5ada1aae595e23323a55d22f20"
+        },
+        {
+          "name": "RHTower.D4BMScalarBoundaryGauge.lieWeyl",
+          "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarBoundaryGaugeCharge",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarBoundaryGaugeCharge.lean",
+          "line": 108,
+          "compiler_status": "source_only",
+          "source_hash": "099fb7d02dade87a60640b32857729d2e5e30a4b7379fe53e3791a8ecfc2addc"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.SelbergMaassTraceBoundary.current",
+          "module": "GaloisForLFunctions.RHTower.SelbergMaassTraceBoundary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SelbergMaassTraceBoundary.lean",
+          "line": 22,
+          "compiler_status": "source_only",
+          "source_hash": "ab3df83bfdf6c49d1c65b1251b37b3444525951513ba2ef7d3fcb99eaf8fd53e"
+        },
+        {
+          "name": "GaloisForLFunctions.HTGeometry.traceBoundNumerator",
+          "module": "tmp.t58",
+          "relpath": "formal/tmp/t58.lean",
+          "line": 5,
+          "compiler_status": "source_only",
+          "source_hash": "0c4cc73d26244699ce62bf8eea8f3c33c536754cdd0b284dc40af96020ca356a"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaBoundaryCayleyDenominator_mul_inverse",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaBoundaryCayleyFlow",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaBoundaryCayleyFlow.lean",
+          "line": 109,
+          "compiler_status": "source_only",
+          "source_hash": "fc0c0c7dbdd85112ef383a2f892251210718ea3b18c31f327f36c80e988792b0"
+        },
+        {
+          "name": "RHTower.MaassThetaMellin.kThetaTerm",
+          "module": "GaloisForLFunctions.RHTower.MaassThetaMellin",
+          "relpath": "formal/GaloisForLFunctions/RHTower/MaassThetaMellin.lean",
+          "line": 208,
+          "compiler_status": "source_only",
+          "source_hash": "617454d183bae434780ae76c227587f78b45f7b43f7d4f5b8188ad3a7c11fada"
+        },
+        {
+          "name": "GaloisForLFunctions.HTGeometry.directionalWilsonPlaquetteTrace",
+          "module": "GaloisForLFunctions.HTGeometry.DirectionalWilsonReciprocity",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/DirectionalWilsonReciprocity.lean",
+          "line": 30,
+          "compiler_status": "source_only",
+          "source_hash": "84487e06ab358c491adf60c4c50fcad55f0f2f0ccd5ab5fcc35bcd3606fd7986"
+        },
+        {
+          "name": "GaloisForLFunctions.GerbeCharacteristic.thetaProd",
+          "module": "GaloisForLFunctions.HTGeometry.GammaGerbeThetaCocycle",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/GammaGerbeThetaCocycle.lean",
+          "line": 101,
+          "compiler_status": "source_only",
+          "source_hash": "017dc66f7cfb3d097fe068b5a7be2582860e0f6d2bae8eda70bddc2afea2af8a"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaBoundaryDirectCayleyDenominator_mul_inverse",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaBoundaryDirectCayleyFlow",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaBoundaryDirectCayleyFlow.lean",
+          "line": 159,
+          "compiler_status": "source_only",
+          "source_hash": "5c2b8c38cba1ff36288216f0e9d817572a456c3256b18dbb551fa67bdaf6e405"
+        },
+        {
+          "name": "RHTower.thetaMellinTerm",
+          "module": "GaloisForLFunctions.RHTower.SelbergThetaMellinBarnes",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SelbergThetaMellinBarnes.lean",
+          "line": 55,
+          "compiler_status": "source_only",
+          "source_hash": "861c38cfd5396d0529264be4b9321d3b061837ecc3b91ce5b18953bab597fad2"
+        }
+      ],
+      "source_arguments": [
+        {
+          "name": "RHTower.completedRiemannZeta\u2080_critical_eq_rapidExponentialMomentFockThetaTrace_one",
+          "module": "GaloisForLFunctions.RHTower.RapidExponentialMomentFockThetaTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/RapidExponentialMomentFockThetaTrace.lean",
+          "line": 408,
+          "compiler_status": "source_only",
+          "source_hash": "9b7a2faacbb73b6c5f08a3dd4988c0fbd26c4788cdf6ac84070600490d3e9bc1"
+        },
+        {
+          "name": "RHTower.bdGen",
+          "module": "GaloisForLFunctions.RHTower.BaezDuarteL2Carrier",
+          "relpath": "formal/GaloisForLFunctions/RHTower/BaezDuarteL2Carrier.lean",
+          "line": 242,
+          "compiler_status": "source_only",
+          "source_hash": "45e3aa87f99f99c5d53dfa9bb8f7b434d57847f25409d144fd287b87874ec288"
+        },
+        {
+          "name": "RHTower.moebiusPowerWeight",
+          "module": "GaloisForLFunctions.RHTower.FloorTransformPowerThreshold",
+          "relpath": "formal/GaloisForLFunctions/RHTower/FloorTransformPowerThreshold.lean",
+          "line": 29,
+          "compiler_status": "source_only",
+          "source_hash": "86edeb2fa0a1159f21b68ad5a4a5fae0628e4d5c69a78715eb8fb3ef0e88f084"
+        },
+        {
+          "name": "RHTower.thetaBoundaryOperator",
+          "module": "GaloisForLFunctions.RHTower.ThetaRenewalNuclearBoundary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaRenewalNuclearBoundary.lean",
+          "line": 175,
+          "compiler_status": "source_only",
+          "source_hash": "6ffcd13664b80e4be579e0a579ec48082632fdc04d58ef2352dc580ca9ec0e6e"
+        },
+        {
+          "name": "RHTower.ccmRestrictedWeilOperator_polarPlus_coeFn",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarSourceCancellation",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPolarSourceCancellation.lean",
+          "line": 65,
+          "compiler_status": "source_only",
+          "source_hash": "c9a75741ab6e032ff52e403db55df806f68f673c0fd7446a4310ef176451438d"
+        },
+        {
+          "name": "RHTower.cglPrimitiveClassI_mellin_initialLine_tail_identity",
+          "module": "GaloisForLFunctions.RHTower.ChenGuptaLiClassIMellinTail",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ChenGuptaLiClassIMellinTail.lean",
+          "line": 113,
+          "compiler_status": "source_only",
+          "source_hash": "d1ccf7da29493a279ce9c1c5e31989977f461b1f9b7b4f4548432c70bb517e99"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.ccmRationalBoundedWeightedLogTrace",
+          "module": "GaloisForLFunctions.RHTower.CCMRationalPeriodicWeightedStrongLogDecay",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRationalPeriodicWeightedStrongLogDecay.lean",
+          "line": 135,
+          "compiler_status": "source_only",
+          "source_hash": "5c5415763a9c6fcbc76db7389a1138405d07415fa00e0bce9eb4ecf116f60564"
+        },
+        {
+          "name": "RHTower.xiRectangularWeilRemainderCoefficient",
+          "module": "GaloisForLFunctions.RHTower.CCMRectangularObservablePoleTomography",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRectangularObservablePoleTomography.lean",
+          "line": 45,
+          "compiler_status": "source_only",
+          "source_hash": "fdf08e9eba5962e545da7b4db12bbdf305a21e0976ecfbfe8bd5b02e0c033ba6"
+        },
+        {
+          "name": "RHTower.blindWitnessMellinReal",
+          "module": "GaloisForLFunctions.RHTower.CCMCriticalClockDivisorBlindness",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMCriticalClockDivisorBlindness.lean",
+          "line": 52,
+          "compiler_status": "source_only",
+          "source_hash": "b5d7e98b3d58cb720d6f36d54600bbf0ca68af4051c0a1877a9d8d5bd66ebc75"
+        },
+        {
+          "name": "RHTower.thetaHalfLaplaceTail_eq_mellin",
+          "module": "GaloisForLFunctions.RHTower.CausalThetaHalfLaplace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CausalThetaHalfLaplace.lean",
+          "line": 89,
+          "compiler_status": "source_only",
+          "source_hash": "3a38f83c9e8efee2d87b21d85f846e68e877fe3549791f2b5790f7998f8cf8ab"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaEssentialTrace",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmEssentialInverseFlowTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmEssentialInverseFlowTrace.lean",
+          "line": 318,
+          "compiler_status": "source_only",
+          "source_hash": "d4b183ed2f5aae524abe9d65de4731d460f7bbd14c678955cda43aeb51f20b14"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.EpsteinCharacter.qfA_nonneg",
+          "module": "GaloisForLFunctions.RHTower.EpsteinCharacterFunctionalEquation",
+          "relpath": "formal/GaloisForLFunctions/RHTower/EpsteinCharacterFunctionalEquation.lean",
+          "line": 82,
+          "compiler_status": "source_only",
+          "source_hash": "c34f25f4b47e5fc13819e449c0c94fbc3b8ea46ad97cf94dae3f9d308bd4b695"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.exists_routeRPoissonThetaShearAdelic_noGo",
+          "module": "GaloisForLFunctions.RHTower.RouteRPoissonThetaShearNoGo",
+          "relpath": "formal/GaloisForLFunctions/RHTower/RouteRPoissonThetaShearNoGo.lean",
+          "line": 221,
+          "compiler_status": "source_only",
+          "source_hash": "7dff26286290463283ca265b94a4fa896bf4c19e92c6fb604a16619736fa0b14"
+        },
+        {
+          "name": "RHTower.primeLogThetaFourierLaplace_eq_XiC_mul_stripSymbol",
+          "module": "GaloisForLFunctions.RHTower.PrimeLogThetaStripWronskianCubicJet",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeLogThetaStripWronskianCubicJet.lean",
+          "line": 196,
+          "compiler_status": "source_only",
+          "source_hash": "f34365a324a21eee382180b32caef55d6f68a7049cbff34a69f5279fbd16344c"
+        },
+        {
+          "name": "RHTower.integral_exp_mul_thetaCuspLogSeed",
+          "module": "GaloisForLFunctions.RHTower.ThetaEulerAtomMellin",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaEulerAtomMellin.lean",
+          "line": 86,
+          "compiler_status": "source_only",
+          "source_hash": "65170924b6f0c1ad946a5cdf98475547d22de13e84c180132e79b2d99762b6d1"
+        },
+        {
+          "name": "RHTower.xiShiftedHankelBoundaryHeatPolynomial",
+          "module": "GaloisForLFunctions.RHTower.XiShiftedHankelHeatResolventBridge",
+          "relpath": "formal/GaloisForLFunctions/RHTower/XiShiftedHankelHeatResolventBridge.lean",
+          "line": 361,
+          "compiler_status": "source_only",
+          "source_hash": "361a6d18126481e34fb614027f33a38ccfc1f95f78845f84614a011a9ddbc29b"
+        },
+        {
+          "name": "RHTower.ccm_criticalClock_divisor_blindness",
+          "module": "GaloisForLFunctions.RHTower.CCMCriticalClockDivisorBlindness",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMCriticalClockDivisorBlindness.lean",
+          "line": 278,
+          "compiler_status": "source_only",
+          "source_hash": "880636d2631297438c88e58a8629864443d60590f39d6bb0ae6ca336ac020d10"
+        },
+        {
+          "name": "RHTower.riemannZeta_mul_causalFrameContinuation_add_correction",
+          "module": "GaloisForLFunctions.RHTower.CausalMobiusThetaAbelBoundary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CausalMobiusThetaAbelBoundary.lean",
+          "line": 437,
+          "compiler_status": "source_only",
+          "source_hash": "a2de272decb71a9b98d1e3d186ab2ef66c3e2e4ad26b0cad2d366c919e553ac8"
+        },
+        {
+          "name": "RHTower.primeLogThetaStripWronskianIterate_precompletionWeightedBoundaryFourLevel",
+          "module": "GaloisForLFunctions.RHTower.PrimeLogThetaPrecompletionWeightedBoundary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeLogThetaPrecompletionWeightedBoundary.lean",
+          "line": 205,
+          "compiler_status": "source_only",
+          "source_hash": "a3d9dbf1e8a42de155e5a6204d47600fff6c07c597e6df2faa11d6db952df673"
+        },
+        {
+          "name": "RHTower.cglLemma62PrincipalContourIntegrand",
+          "module": "GaloisForLFunctions.RHTower.ChenGuptaLiLemma62PrincipalResidue",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ChenGuptaLiLemma62PrincipalResidue.lean",
+          "line": 24,
+          "compiler_status": "source_only",
+          "source_hash": "89011e7cd212fdcf303d98c138386b79cae9cfc7ff1862a341df2de34309f09b"
+        }
+      ]
+    }
+  },
+  {
+    "query": "defectKernel reflected measurable trace theta relation",
+    "mode": "hybrid",
+    "partial": false,
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [],
+    "coverage": {
+      "files": 68371,
+      "inventoried": 68371,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68371
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11063,
+        "pending": 51910,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57308,
+        "prose": 11063
+      },
+      "declarations": 1028452,
+      "documents": 2849156,
+      "vectors": 2660824,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1277807,
+      "methods": {
+        "failed": 53,
+        "ready": 412845,
+        "stale": 181521
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791381987.9736671,
+      "current_generation": 1277808
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_generation": 1277808,
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "total": 0,
+    "inspected_hits": {
+      "declarations": [],
+      "candidate_lemmas": [
+        {
+          "name": "RHTower.HedenmalmThetaSource.re_opTrace_adjoint_comp_thetaKernelOperator",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaTrace.lean",
+          "line": 81,
+          "compiler_status": "source_only",
+          "source_hash": "5e8ef4c549e64db387993d12980dd60d5dd96d9abafad4ee7b6d2abd6ba6127b"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.factTwoNeTopThetaTraceKernel",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaTraceKernel",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaTraceKernel.lean",
+          "line": 31,
+          "compiler_status": "source_only",
+          "source_hash": "8a2eceb26d664104b2e9b77c62492017a9b40459afdbebfc687d318a198cc23b"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.opTrace_thetaFirstExitDefect",
+          "module": "GaloisForLFunctions.RHTower.PhysicalPluckerThetaLift",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PhysicalPluckerThetaLift.lean",
+          "line": 116,
+          "compiler_status": "source_only",
+          "source_hash": "bc9977bcc6fe5885874a98be9f8c82d69944f3b63d107f11bcaeb727423e22ae"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaEssentialTrace",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmEssentialInverseFlowTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmEssentialInverseFlowTrace.lean",
+          "line": 318,
+          "compiler_status": "source_only",
+          "source_hash": "d4b183ed2f5aae524abe9d65de4731d460f7bbd14c678955cda43aeb51f20b14"
+        },
+        {
+          "name": "RHTower.ArchimedeanSampling.thetaMeasure",
+          "module": "GaloisForLFunctions.RHTower.ArchimedeanSamplingDefect",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ArchimedeanSamplingDefect.lean",
+          "line": 59,
+          "compiler_status": "source_only",
+          "source_hash": "80d792e24a448bb0ac012ae05d1b5109625c4c4131ae4a80e5110e933e4eadd1"
+        },
+        {
+          "name": "RHTower.measurable_thetaJointMap",
+          "module": "GaloisForLFunctions.RHTower.ThetaSufficientMacroSpeciesExit",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaSufficientMacroSpeciesExit.lean",
+          "line": 168,
+          "compiler_status": "source_only",
+          "source_hash": "d5ccd03d85e5c09088adafbb04760a39d88c841a9aebe742bd5901df3b5a54af"
+        },
+        {
+          "name": "RHTower.measurable_thetaScoreFun",
+          "module": "GaloisForLFunctions.RHTower.ThetaQuantileScoreProjection",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaQuantileScoreProjection.lean",
+          "line": 123,
+          "compiler_status": "source_only",
+          "source_hash": "60e0ffad26685da0bfde1e0187344497ba4e107244642fc845272ea9090e1db5"
+        },
+        {
+          "name": "RHTower.Sieve.measurable_thetaErrorDensity",
+          "module": "GaloisForLFunctions.RHTower.Sieve.MertensThetaErrorIntegral",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/MertensThetaErrorIntegral.lean",
+          "line": 19,
+          "compiler_status": "source_only",
+          "source_hash": "a37cf6aa3c2c0000bccf3f5bf3fe4b2647477cbcd3bcd94bf6eb1872a3e600ca"
+        },
+        {
+          "name": "RHTower.thetaSourceMeasure",
+          "module": "GaloisForLFunctions.RHTower.ThetaEndpointDivisorClassification",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaEndpointDivisorClassification.lean",
+          "line": 373,
+          "compiler_status": "source_only",
+          "source_hash": "c55ac770c9298f6feedcce7f04684da97cc4d392b31fec4378d810270c1eb00c"
+        },
+        {
+          "name": "RHTower.measurable_thetaError",
+          "module": "GaloisForLFunctions.RHTower.PrimeRpowLogSumAsymptotic",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeRpowLogSumAsymptotic.lean",
+          "line": 85,
+          "compiler_status": "source_only",
+          "source_hash": "41e74a95ddceef44f87bc84bbd6cd587ab8e3fd3f13ebcc3adfe7994068a9d9a"
+        },
+        {
+          "name": "RHTower.measurable_thetaLogSourceBeyond",
+          "module": "GaloisForLFunctions.RHTower.CausalThetaHalfLaplace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CausalThetaHalfLaplace.lean",
+          "line": 106,
+          "compiler_status": "source_only",
+          "source_hash": "ff4536c0808e2b3f80cbf0daf0181e0364548b62a1ff1c226e9a25f858ecd17f"
+        },
+        {
+          "name": "RHTower.<anonymous@375>",
+          "module": "GaloisForLFunctions.RHTower.ThetaEndpointDivisorClassification",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaEndpointDivisorClassification.lean",
+          "line": 375,
+          "compiler_status": "source_only",
+          "source_hash": "8a5a3688bbcb0f75c4919f4c55379dffcb6492374b5da45c557ff47f87448e86"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaEssentialTraceTerm",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmEssentialInverseFlowTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmEssentialInverseFlowTrace.lean",
+          "line": 297,
+          "compiler_status": "source_only",
+          "source_hash": "8975aa32fe5efbae6ab02080c3ac0c24f471b61181c81131622e146ee734ef75"
+        },
+        {
+          "name": "RHTower.measurable_traceDensity",
+          "module": "GaloisForLFunctions.RHTower.WaveTraceLandauRecurrence",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WaveTraceLandauRecurrence.lean",
+          "line": 32,
+          "compiler_status": "source_only",
+          "source_hash": "e48bf62b5d6c2f4d770c59f7433d0ac8c1033d0281348eafa8fb022732517eb9"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.norm_thetaTraceSq_le",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaTrace.lean",
+          "line": 62,
+          "compiler_status": "source_only",
+          "source_hash": "acfcc04c153c5fcda64364d9fa6d81eeb3a3fae103eab3d40ce1897851ee6194"
+        },
+        {
+          "name": "RHTower.measurable_thetaSeedLog",
+          "module": "GaloisForLFunctions.RHTower.ThetaRateMobiusSourceTransfer",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaRateMobiusSourceTransfer.lean",
+          "line": 146,
+          "compiler_status": "source_only",
+          "source_hash": "00dc2c161600cc5aae69b020a64e70e44852845821264087207be00a574d0d70"
+        },
+        {
+          "name": "RHTower.ThetaGaussianCoarea.defect_measurable",
+          "module": "GaloisForLFunctions.RHTower.ThetaGaussianCovarianceLimit",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaGaussianCovarianceLimit.lean",
+          "line": 73,
+          "compiler_status": "source_only",
+          "source_hash": "a189a06bf7964a2d7c8b5f84a3a7adf12b3b694477ad6e2df337376034cba341"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaFirstExitDefect_isPartialTrace",
+          "module": "GaloisForLFunctions.RHTower.PhysicalPluckerThetaLift",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PhysicalPluckerThetaLift.lean",
+          "line": 126,
+          "compiler_status": "source_only",
+          "source_hash": "80aa583ced1be7d7d1ebae81e8eabdb86f3d82c6cecf61baf2960bd6a5b99d51"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.instMeasurableSpaceTrace",
+          "module": "GaloisForLFunctions.RHTower.CircuitTraceLaw",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CircuitTraceLaw.lean",
+          "line": 25,
+          "compiler_status": "source_only",
+          "source_hash": "1c3358713d5da027f02190f144e172cbf63ede233f4112133a34dea393f68dba"
+        },
+        {
+          "name": "RHTower.measurable_thetaSumStat",
+          "module": "GaloisForLFunctions.RHTower.ThetaSufficientMacroSpeciesExit",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaSufficientMacroSpeciesExit.lean",
+          "line": 97,
+          "compiler_status": "source_only",
+          "source_hash": "817e110c58a34a609cc8c688746cb928eadeebcfc4fbb7ba3d35c895e46cf62d"
+        }
+      ],
+      "source_arguments": [
+        {
+          "name": "RHTower.differentiable_smoothConvexRapidExponentialMomentFockThetaTrace",
+          "module": "GaloisForLFunctions.RHTower.SmoothConvexRapidExponentialMomentFock",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SmoothConvexRapidExponentialMomentFock.lean",
+          "line": 836,
+          "compiler_status": "source_only",
+          "source_hash": "c1add3bb84fce6278a410800742b944e54b0a993e96b8d898f109fdcf994f97e"
+        },
+        {
+          "name": "RHTower.no_thetaMetricAdjointCorrection_convergent_polarization",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaSignedPolarizationEscape",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaSignedPolarizationEscape.lean",
+          "line": 95,
+          "compiler_status": "source_only",
+          "source_hash": "c7bd1df675eb9b20bf541171e9b251ddf0063b955cdc6986e4d23797013436d2"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaTraceSq",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaTrace.lean",
+          "line": 38,
+          "compiler_status": "source_only",
+          "source_hash": "bcc4470974357857ea0306994e158b00f7fe0cc3fa575256590722b2c5b74e7b"
+        },
+        {
+          "name": "RHTower.BohrOrbit.<anonymous@56>",
+          "module": "GaloisForLFunctions.RHTower.BohrOrbitClosureHaar",
+          "relpath": "formal/GaloisForLFunctions/RHTower/BohrOrbitClosureHaar.lean",
+          "line": 56,
+          "compiler_status": "source_only",
+          "source_hash": "bff4d49aa1eb351266064d25a39760b2ec700b25608c3fb8439027779cf6ca77"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.instMeasurableSingletonClassTrace",
+          "module": "GaloisForLFunctions.RHTower.CircuitTraceLaw",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CircuitTraceLaw.lean",
+          "line": 28,
+          "compiler_status": "source_only",
+          "source_hash": "f225f65ce22d0f2b6ef1ccb4f4bfe45289f7344faad7f495eeaa4c1c3eec0bcc"
+        },
+        {
+          "name": "RHTower.ArchimedeanSampling.normalized_thetaCompleted_defect",
+          "module": "GaloisForLFunctions.RHTower.ArchimedeanSamplingDefect",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ArchimedeanSamplingDefect.lean",
+          "line": 262,
+          "compiler_status": "source_only",
+          "source_hash": "423247981a83e7a0fb1e347b8edc5d581fcfa976a288b0bb5e00c559ca414ab0"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.measure_heapAccessible_le_capacity_optimal",
+          "module": "GaloisForLFunctions.RHTower.CircuitCausalAccessibility",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CircuitCausalAccessibility.lean",
+          "line": 340,
+          "compiler_status": "source_only",
+          "source_hash": "3a5b18b8dc28f439f6bed75209209a1011d6e0b031141276244a7c34be8e7a0e"
+        },
+        {
+          "name": "RHTower.thetaEvenMeanZeroL1",
+          "module": "GaloisForLFunctions.RHTower.ThetaEndpointHarmonicCompleteness",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaEndpointHarmonicCompleteness.lean",
+          "line": 301,
+          "compiler_status": "source_only",
+          "source_hash": "9142afe44d9d802d0c29156e9644675b569f21ad900a6eae07db706d1d80a48e"
+        },
+        {
+          "name": "RHTower.not_isTraceClass_thetaKernelOperator",
+          "module": "GaloisForLFunctions.RHTower.SourceInverseTraceIdealNoGo",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SourceInverseTraceIdealNoGo.lean",
+          "line": 522,
+          "compiler_status": "source_only",
+          "source_hash": "7a53ebc1379de12c8b2e1c85a3b13a72ed9cea7420996da31eb1a096e1eb7db8"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.instMeasurableSpaceTrace",
+          "module": "GaloisForLFunctions.RHTower.CircuitTraceLaw",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CircuitTraceLaw.lean",
+          "line": 25,
+          "compiler_status": "source_only",
+          "source_hash": "1c3358713d5da027f02190f144e172cbf63ede233f4112133a34dea393f68dba"
+        },
+        {
+          "name": "RHTower.momentFockFunction_smoothConvexRapid_one",
+          "module": "GaloisForLFunctions.RHTower.SmoothConvexRapidExponentialMomentFock",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SmoothConvexRapidExponentialMomentFock.lean",
+          "line": 825,
+          "compiler_status": "source_only",
+          "source_hash": "157f3fe2c1c648d2aff947a21c155f701ff73a46deb0d5e5a570ac52bac3b335"
+        },
+        {
+          "name": "RHTower.ArchimedeanSampling.thetaMeasureReflected",
+          "module": "GaloisForLFunctions.RHTower.ArchimedeanSamplingDefect",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ArchimedeanSamplingDefect.lean",
+          "line": 195,
+          "compiler_status": "source_only",
+          "source_hash": "0e8013cf95a051dbf245f918c02776a1174985f45f28eb117691f8a0f68a84bf"
+        },
+        {
+          "name": "RHTower.thetaBoundaryOperator",
+          "module": "GaloisForLFunctions.RHTower.ThetaRenewalNuclearBoundary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaRenewalNuclearBoundary.lean",
+          "line": 175,
+          "compiler_status": "source_only",
+          "source_hash": "6ffcd13664b80e4be579e0a579ec48082632fdc04d58ef2352dc580ca9ec0e6e"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaSourceSignedStageCorrection",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaActualStageGreenBalance",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualStageGreenBalance.lean",
+          "line": 22,
+          "compiler_status": "source_only",
+          "source_hash": "2c137a19aef76da96cddf301af1aa8051d06527663490e783db6164ac1584e21"
+        },
+        {
+          "name": "RHTower.thetaCuspContinuousSourceMeasure_nullSingleton",
+          "module": "GaloisForLFunctions.RHTower.PrimeArchObservableCarrierQuantization",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeArchObservableCarrierQuantization.lean",
+          "line": 228,
+          "compiler_status": "source_only",
+          "source_hash": "f45842ba996671f93b2b08103d3153515b90f04beb2c6e0bd3aa01a3d3548f44"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaRealRegularizedTrace",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaRealResolventTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaRealResolventTrace.lean",
+          "line": 937,
+          "compiler_status": "source_only",
+          "source_hash": "17ae754fed15692baca77f8590632b89366b25951c30218e3de4d3623fceaa8b"
+        },
+        {
+          "name": "GaloisForLFunctions.RHTower.measurable_causalAccessibility_comp",
+          "module": "GaloisForLFunctions.RHTower.QuenchedCausalReplicaIncidence",
+          "relpath": "formal/GaloisForLFunctions/RHTower/QuenchedCausalReplicaIncidence.lean",
+          "line": 110,
+          "compiler_status": "source_only",
+          "source_hash": "73f323cf1d8b7ea492743f514769d020590374b035f5c6289675e8ce6d5d2c27"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaFirstExit_double_closure",
+          "module": "GaloisForLFunctions.RHTower.PhysicalPluckerThetaLift",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PhysicalPluckerThetaLift.lean",
+          "line": 133,
+          "compiler_status": "source_only",
+          "source_hash": "d8f40553c735dc2aae87897754ae45e0b17e983ed8eca1b0aaecd4bbd89727c5"
+        },
+        {
+          "name": "RHTower.HedenmalmThetaSource.thetaEssentialTrace",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmEssentialInverseFlowTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmEssentialInverseFlowTrace.lean",
+          "line": 318,
+          "compiler_status": "source_only",
+          "source_hash": "d4b183ed2f5aae524abe9d65de4731d460f7bbd14c678955cda43aeb51f20b14"
+        },
+        {
+          "name": "RHTower.thetaJoint_fst",
+          "module": "GaloisForLFunctions.RHTower.ThetaSufficientMacroSpeciesExit",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaSufficientMacroSpeciesExit.lean",
+          "line": 179,
+          "compiler_status": "source_only",
+          "source_hash": "875ff3e73ae08fbf96af67528a8a3759e5fe5d35f3e94db63567c7244a260099"
+        }
+      ]
+    }
+  },
+  {
+    "query": "defectKernel",
+    "mode": null,
+    "partial": null,
+    "index_warnings": null,
+    "errors": null,
+    "coverage": null,
+    "semantic_coverage": null,
+    "index_generation": null,
+    "refresh": null,
+    "total": 3,
+    "inspected_hits": {
+      "declarations": [
+        {
+          "name": "defectKernel",
+          "module": "GaloisForLFunctions.RHTower.HamburgerStabilityCriticalLine",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HamburgerStabilityCriticalLine.lean",
+          "line": 641,
+          "compiler_status": null,
+          "source_hash": null
+        },
+        {
+          "name": "defectKernel_laplace",
+          "module": "GaloisForLFunctions.RHTower.HamburgerStabilityCriticalLine",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HamburgerStabilityCriticalLine.lean",
+          "line": 647,
+          "compiler_status": null,
+          "source_hash": null
+        },
+        {
+          "name": "coeffTheta_eq_defectKernel",
+          "module": "GaloisForLFunctions.RHTower.HamburgerTwistedCriticalLine",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HamburgerTwistedCriticalLine.lean",
+          "line": 308,
+          "compiler_status": null,
+          "source_hash": null
+        }
+      ],
+      "candidate_lemmas": [],
+      "source_arguments": []
+    }
+  },
+  {
+    "query": "normalized boundary trace polynomial bound WeilPositiveFull",
+    "mode": "hybrid",
+    "partial": false,
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [],
+    "coverage": {
+      "files": 68375,
+      "inventoried": 68375,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68375
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11063,
+        "pending": 51914,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57312,
+        "prose": 11063
+      },
+      "declarations": 1028519,
+      "documents": 2849316,
+      "vectors": 2660968,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1277864,
+      "methods": {
+        "failed": 53,
+        "ready": 412854,
+        "stale": 181512
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791382467.47648,
+      "current_generation": 1277865
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "index_generation": 1277864,
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "total": 0,
+    "inspected_hits": {
+      "declarations": [],
+      "candidate_lemmas": [
+        {
+          "name": "RHTower.WeilSpectral.quantizationBoundaryTrace",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialBoundary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialBoundary.lean",
+          "line": 157,
+          "compiler_status": "source_only",
+          "source_hash": "ee586615e8e71c1ac20fd2400faec18e38d1b236a72d5d4aea63ffcadc96d53e"
+        },
+        {
+          "name": "RHTower.WeilBoundaryDilation.eq_delta_of_weilPositiveFull_boundary",
+          "module": "GaloisForLFunctions.RHTower.WeilConeBoundaryDilationRigidity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryDilationRigidity.lean",
+          "line": 878,
+          "compiler_status": "source_only",
+          "source_hash": "c7e9e586b721b68b92b92f97b35cc8d0d9f261d89b04dafd309b1c963d18f979"
+        },
+        {
+          "name": "RHTower.WeilSpectral.exists_bound_quantizationTraceF",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialGrowth",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialGrowth.lean",
+          "line": 203,
+          "compiler_status": "source_only",
+          "source_hash": "c5f52d32941733b66b49db52a072a47875fcb6b4d001a1bcc3884e59857b9e8f"
+        },
+        {
+          "name": "RHTower.WeilSpectral.tendsto_quantizationBoundaryTrace",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialBoundary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialBoundary.lean",
+          "line": 160,
+          "compiler_status": "source_only",
+          "source_hash": "5dd573ca041da9b8d0325490eba9c96006d615ec2008cbeb4fbdaf66852eaeba"
+        },
+        {
+          "name": "RHTower.WeilBoundaryMobius.coeffB_nonneg_boundary",
+          "module": "GaloisForLFunctions.RHTower.WeilConeBoundaryMobiusRigidity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryMobiusRigidity.lean",
+          "line": 160,
+          "compiler_status": "source_only",
+          "source_hash": "32d46cbccb7ce178d070ef06bcaae9260e49b0f1bc5644c922f327fbe31024f6"
+        },
+        {
+          "name": "RHTower.WeilSpectral.exists_bound_quantizationTraceF_below",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialContour",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialContour.lean",
+          "line": 161,
+          "compiler_status": "source_only",
+          "source_hash": "a661a19087a4711894a0795a63c591ee02c75082abb0384053da3281f37b30d7"
+        },
+        {
+          "name": "RHTower.WeilWorkSettledPhase.sourceTrace",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseTrace.lean",
+          "line": 205,
+          "compiler_status": "source_only",
+          "source_hash": "b9b98128ce9e12250992e656cb8f05852f3e5daa4aabd9d5a3d38f4f4adc2446"
+        },
+        {
+          "name": "RHTower.WeilWorkSettledPhase.remainderTrace",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseMellinTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseMellinTrace.lean",
+          "line": 169,
+          "compiler_status": "source_only",
+          "source_hash": "0a204dc98d071ce2ae404507ef1ce27273627ce0a3082185ba4630dc1450e67d"
+        },
+        {
+          "name": "RHTower.WeilSpectral.normalized_leakage_bound",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkDeficitLeakageIntegral",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitLeakageIntegral.lean",
+          "line": 151,
+          "compiler_status": "source_only",
+          "source_hash": "2f20265e5e0bc9e38735c6f063b066e30e100384fae47ba5439168cfad309e21"
+        },
+        {
+          "name": "RHTower.WeilOneSided.exists_abs_le_of_weilPositiveFull",
+          "module": "GaloisForLFunctions.RHTower.WeilFullConeCompactness",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeCompactness.lean",
+          "line": 101,
+          "compiler_status": "source_only",
+          "source_hash": "34b9ed399296e870fd3255b9224db954856fdf76ceade0082ac43286aabacc96"
+        },
+        {
+          "name": "RHTower.ccmWeilPoleUniformDiagonalBound",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleDiagonalBounds",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleDiagonalBounds.lean",
+          "line": 18,
+          "compiler_status": "source_only",
+          "source_hash": "4131befafaa3b1c96817297e1fc3afcb76b6835fd26f8f603d0e0bdcd31101db"
+        },
+        {
+          "name": "RHTower.WeilBoundaryDilation.eq_vonMangoldt_of_weilPositiveFull_boundary",
+          "module": "GaloisForLFunctions.RHTower.WeilConeBoundaryDilationRigidity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryDilationRigidity.lean",
+          "line": 914,
+          "compiler_status": "source_only",
+          "source_hash": "984d223c57f08fd5497afbcee8b360a6b3ba1d0a5a10afd8e587bb7e8b936a48"
+        },
+        {
+          "name": "RHTower.WeilSpectral.norm_quantizationTraceF_le",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialGrowth",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialGrowth.lean",
+          "line": 194,
+          "compiler_status": "source_only",
+          "source_hash": "b71b83d752307f2c480a094d95db91b868f1915713e01f9423484d7f32ba125b"
+        },
+        {
+          "name": "RHTower.WeilSpectral.exists_bound_quantization_signed_truncation_two_mul",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialContour",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialContour.lean",
+          "line": 263,
+          "compiler_status": "source_only",
+          "source_hash": "ff3c0846e67726169c71fe1a3cf036dde00ce23e481e0d42374cff68efd20061"
+        },
+        {
+          "name": "RHTower.WeilWorkSettledPhase.positiveTrace",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseTrace.lean",
+          "line": 200,
+          "compiler_status": "source_only",
+          "source_hash": "1fc5cd18c6c8e166f706806aaf1e0a8e1dc81b85b7cef9c5b79ad85e4df7906f"
+        },
+        {
+          "name": "RHTower.WeilExcess.sum_mul_truncatedDeviationPotential_le",
+          "module": "GaloisForLFunctions.RHTower.WeilFullConeNearNullPositiveDefinite",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeNearNullPositiveDefinite.lean",
+          "line": 452,
+          "compiler_status": "source_only",
+          "source_hash": "cb9a7ae671c5026b20fc7a272a800de00b22e44963f40b98751d68701acca2b5"
+        },
+        {
+          "name": "RHTower.WeilBoundaryMobius.eq_delta_of_weilPositiveFull_boundary",
+          "module": "GaloisForLFunctions.RHTower.WeilConeBoundaryMobiusRigidity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryMobiusRigidity.lean",
+          "line": 339,
+          "compiler_status": "source_only",
+          "source_hash": "7df9b120a68de9514f4bbf01feb10cbc7b2865929ddca35cf7a537eec900c9d0"
+        },
+        {
+          "name": "RHTower.WeilBoundaryDilation.re_boundaryFun_nonneg",
+          "module": "GaloisForLFunctions.RHTower.WeilConeBoundaryDilationInequality",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryDilationInequality.lean",
+          "line": 193,
+          "compiler_status": "source_only",
+          "source_hash": "7c459119876d91fefbd53bab149f50dda88365fdfb345bfc8540aa720cd043b9"
+        },
+        {
+          "name": "RHTower.WeilSpectral.sFinite_boundaryMeasure",
+          "module": "GaloisForLFunctions.RHTower.WeilFullConeHorizontalPotential",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeHorizontalPotential.lean",
+          "line": 100,
+          "compiler_status": "source_only",
+          "source_hash": "9e06e32f0eca0675440b1409643e0a710b5e2cc05e1b707d8b6f81e529619b73"
+        },
+        {
+          "name": "RHTower.ccmWeilPoleUniformDiagonalBound_pos",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleDiagonalBounds",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleDiagonalBounds.lean",
+          "line": 22,
+          "compiler_status": "source_only",
+          "source_hash": "45df7f1e60db285e38b315f2c56bcdb2d9406ffdcecba568c81bb9879292015c"
+        }
+      ],
+      "source_arguments": [
+        {
+          "name": "RHTower.ccmWeilPoleUniformDiagonalBound_pos",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleDiagonalBounds",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleDiagonalBounds.lean",
+          "line": 22,
+          "compiler_status": "source_only",
+          "source_hash": "45df7f1e60db285e38b315f2c56bcdb2d9406ffdcecba568c81bb9879292015c"
+        },
+        {
+          "name": "RHTower.WeilWorkSettledPhase.exists_decay_sourceRemainder",
+          "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseMellinTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseMellinTrace.lean",
+          "line": 109,
+          "compiler_status": "source_only",
+          "source_hash": "f7b7d94aac18e7fe2c32d5d41f479641092a0d8d519a2aed048d3beee91200b8"
+        },
+        {
+          "name": "RHTower.ccmWeilPoleUniformSlopeBound_pos",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleStationaryError",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleStationaryError.lean",
+          "line": 91,
+          "compiler_status": "source_only",
+          "source_hash": "dfd004246c905c8df7604bf685d678feab575f5e28e40f3e6a732282c3a8ba25"
+        },
+        {
+          "name": "RHTower.WeilExcess.truncatedDeviationPotential",
+          "module": "GaloisForLFunctions.RHTower.WeilFullConeNearNullPositiveDefinite",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeNearNullPositiveDefinite.lean",
+          "line": 48,
+          "compiler_status": "source_only",
+          "source_hash": "e972f79e9b40cc99a03ba0673751baf5a8cb7ab904ec382346a976bdb17699f8"
+        },
+        {
+          "name": "RHTower.ccmWeilPoleUniformDeficitBound_pos",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleDiagonalBounds",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleDiagonalBounds.lean",
+          "line": 89,
+          "compiler_status": "source_only",
+          "source_hash": "7c2d08afad962c9dc57b75d5a9293b01be000f9f25ed513f9e669f607bb7013f"
+        },
+        {
+          "name": "RHTower.WeilOneSided.abs_le_weilConeBound",
+          "module": "GaloisForLFunctions.RHTower.WeilFullConeCompactness",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeCompactness.lean",
+          "line": 146,
+          "compiler_status": "source_only",
+          "source_hash": "2786e3d1cfe0335bd1e91b8a59a930ceef1da9a00af350bddc7020220c6b1ec8"
+        },
+        {
+          "name": "RHTower.WeilZetaPower.weilPositiveFull_counting_iff_zetaPowerDatum",
+          "module": "GaloisForLFunctions.RHTower.WeilZetaPowerForward",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilZetaPowerForward.lean",
+          "line": 155,
+          "compiler_status": "source_only",
+          "source_hash": "ff2f807038487d08b742574a3c2c24b31f0c8675e0bc3a40bc9f9628753e3fd3"
+        },
+        {
+          "name": "RHTower.norm_sq_ccmRestrictedWeilNormalizedGroundFormVector_le_envelopeBudget",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilGroundFrequencyLocalization",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilGroundFrequencyLocalization.lean",
+          "line": 513,
+          "compiler_status": "source_only",
+          "source_hash": "82111fb72a859b3220ec65906d170636bdd638d54f262bd0d0b46060e241b728"
+        },
+        {
+          "name": "RHTower.contDiff_ofReal_truncatedRiemannKernelReal",
+          "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+          "line": 244,
+          "compiler_status": "source_only",
+          "source_hash": "9818436c2b18a57d68be6fc073b02c9e791075afb5dbec1ec61440b2fa1028f7"
+        },
+        {
+          "name": "RHTower.WeilBoundaryDilation.riemannHypothesis_of_weilPositiveFull_boundaryDilation",
+          "module": "GaloisForLFunctions.RHTower.WeilConeBoundaryDilationRigidity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryDilationRigidity.lean",
+          "line": 960,
+          "compiler_status": "source_only",
+          "source_hash": "5a9d6ec56196182ba21208899c712ac647d07839d07a81b2de03ba44ed2f7125"
+        },
+        {
+          "name": "RHTower.ccmPoleIntegratedChebyshevDeficit_bound_of_compression_nonneg",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleIntegratedPrimeError",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleIntegratedPrimeError.lean",
+          "line": 170,
+          "compiler_status": "source_only",
+          "source_hash": "30d64fedb0f27192e0026ea559f3dc9d14269124ad2c7c05de5503e102db64ff"
+        },
+        {
+          "name": "RHTower.WeilBoundaryDilation.eq_vonMangoldt_of_weilPositiveFull_boundary",
+          "module": "GaloisForLFunctions.RHTower.WeilConeBoundaryDilationRigidity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryDilationRigidity.lean",
+          "line": 914,
+          "compiler_status": "source_only",
+          "source_hash": "984d223c57f08fd5497afbcee8b360a6b3ba1d0a5a10afd8e587bb7e8b936a48"
+        },
+        {
+          "name": "RHTower.XiRestrictedWeilNegativeFloorEnvelope",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFloorAbscissaTransfer",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilFloorAbscissaTransfer.lean",
+          "line": 30,
+          "compiler_status": "source_only",
+          "source_hash": "821b7f1d1942c2a6ba4853bcce0485fa8dc534681cd91c8bf38ff0eb8d8a2a17"
+        },
+        {
+          "name": "RHTower.summable_norm_mul",
+          "module": "GaloisForLFunctions.RHTower.XiWeilDivisorHilbert",
+          "relpath": "formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean",
+          "line": 158,
+          "compiler_status": "source_only",
+          "source_hash": "43639bed7705a5a7e09c0c00c6b895ef051087573dbf2cf4d9b37d7dfc3f53a9"
+        },
+        {
+          "name": "RHTower.WeilOneSided.PositiveOnNonposCone",
+          "module": "GaloisForLFunctions.RHTower.WeilFullConeOneSidedCriterion",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeOneSidedCriterion.lean",
+          "line": 272,
+          "compiler_status": "source_only",
+          "source_hash": "e709c4dd986b56cfb41b7fbd5025d3d1836bdcd614579132e9cc12f01d2e891c"
+        },
+        {
+          "name": "RHTower.ccmRestrictedWeilOperator_polarPlus_coeFn",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarSourceCancellation",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPolarSourceCancellation.lean",
+          "line": 65,
+          "compiler_status": "source_only",
+          "source_hash": "c9a75741ab6e032ff52e403db55df806f68f673c0fd7446a4310ef176451438d"
+        },
+        {
+          "name": "RHTower.WeilBoundaryMobius.exists_mobiusBoundary_weilPositive_iff",
+          "module": "GaloisForLFunctions.RHTower.WeilConeBoundaryMobiusRigidity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryMobiusRigidity.lean",
+          "line": 484,
+          "compiler_status": "source_only",
+          "source_hash": "1253bdf130821c66125192f8e384ae43c488bdeb2a67fdf85bc21c705a14073c"
+        },
+        {
+          "name": "RHTower.ccmWeilEvenStationaryPrimeErrorBound_pos",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleStationaryError",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleStationaryError.lean",
+          "line": 150,
+          "compiler_status": "source_only",
+          "source_hash": "ad998629e6fa1db7b56517281300b3304e24bdee415e0c9c74cf8a8b5e98e59c"
+        },
+        {
+          "name": "RHTower.WeilPencil.eq_vonMangoldt_of_weilPositiveFull_pencil",
+          "module": "GaloisForLFunctions.RHTower.WeilConeVonMangoldtZetaPencil",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeVonMangoldtZetaPencil.lean",
+          "line": 363,
+          "compiler_status": "source_only",
+          "source_hash": "ffe293d6df455b010a4399b300574c4df3f326977b5865656ca673b8d4c5f87c"
+        },
+        {
+          "name": "RHTower.ccmRestrictedWeilGroundEnergy_mem_lowerBounds",
+          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarGroundEnergy",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPolarGroundEnergy.lean",
+          "line": 37,
+          "compiler_status": "source_only",
+          "source_hash": "46a3d53b062cab616cfb943e48ad9ba6c55f9e0ad002688a37358e9cb72cb3d5"
+        }
+      ]
+    }
+  }
+]

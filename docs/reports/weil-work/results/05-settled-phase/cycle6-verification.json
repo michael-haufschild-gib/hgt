@@ -1,0 +1,31 @@
+{
+  "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseThetaTrace.lean",
+  "sha256": "11e5497999cd9f21b3da909a2ab411d4357ebd84b07bfc97dab470b64115f248",
+  "lines": 323,
+  "leaf_build_exit": 0,
+  "final_source_exit": 0,
+  "axiom_audit_exit": 0,
+  "axiom_declarations": 12,
+  "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "umbrella_imports": 1,
+  "lint_exit": 1,
+  "unrelated_lint_errors": [
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkPBAPPacketFourier",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticReciprocalTail",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticSquareSummability",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra"
+  ],
+  "owned_lint_errors": [],
+  "no_heartbeat_override": true,
+  "goal_status": "active",
+  "scratch_files_removed": 20,
+  "all_owned_processes_terminal": true
+}

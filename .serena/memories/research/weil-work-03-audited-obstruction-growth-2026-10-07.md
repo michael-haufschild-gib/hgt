@@ -1,0 +1,23 @@
+# WP03 continuation checkpoint — 2026-10-07
+
+Goal remains ACTIVE and OPEN: arbitrary hW : WeilPositiveFull lam must supply the literal reciprocal G and uniformly bounded zeta*G on every Re>x>1/2. No existence/RH claim. Use hgtl7 each turn; no numeric computation, no heartbeat changes, no full/umbrella builds; one foreground Lean per agent. No subagents authorized.
+
+Owned card: docs/drafts/pipeline/1-in-progress/weil-work-03-singular-arithmetic.md. Results/proofs/evidence in docs/reports/weil-work/results/03-singular-arithmetic/. Source scope WeilWorkSingularArithmetic*.lean; existing leaves read-only except required RHTower imports.
+
+Fully audited leaves now: SharpReciprocal (all-twist prefix O(N^(1/2+eps)*(2+|t|)^eps), ordinary convergence/identity and G(1)=0); WeightedZeta; MellinMass; Quotient (ordinary q=1*mu cancellation/convergence); SquareMass (both mu and q square mass O(N^(1+eps))); ReciprocalObstruction; GrowthComparison.
+
+ReciprocalObstruction public exists_reciprocal_unbounded_below_one: hW alone gives literal holomorphic G, unbounded on every Re>x with1/2<x<1. Unique zero1 plus bounded-Dirichlet AP would force second zero. Final imports narrowed to WeilProducerReciprocalZeta, DeBruijnNewmanNonnegative, BoundedStripAlmostPeriodicThreeLines. Broad build canceled owned PID and exit143 verified before narrower target. Narrow lake build --old +module PASS; final lake env lean module PASS; public #print axioms standard three only. Wired.
+
+GrowthComparison public exists_actual_quotient_growth_comparison: hW alone gives literal G and for0<delta<1/2,eps>0,eventually |t|,uniform1/2+delta<=sigma<=5/2, (|t|+3)^(-eps)|zeta| <= |zeta G| <= (|t|+3)^eps|zeta|, zeros included. Existing producer Lindelof bounds BOTH F and1/F. Initial direct check had two rewrite/simp errors, fixed; target --old build PASS, final direct PASS,no diagnostics; public axiom audit standard three only. Wired. This kills proposed source subpower-Q route as equivalent zeta Lindelof question underhW. BRIDGE, not scientific novelty.
+
+Latest index PASS; latest lint failed only7 unrelated unreachable leaves: WeilWorkDeficitSquareMoment,WeilWorkHigherDenominatorPoissonMode,ApertureConeCalculus,ConeWinding,LogTranslation,OpenHistoryIdeal,BoundaryCoronaCStarAlgebra. Owned whitespace check PASS. NoWP03lint errors.
+
+Cycle8 prime-power support payoff REDISCOVERED: Bohr-route row80 already killed Euler-product detection at abscissa1. Exact support is neither proved nor refuted by that kill. Row37prime/composite claims are not a located fullpositive counterexample.
+
+Cycle9 signed operator audit got no improvement. Never replace one-sided lambda Toeplitz upper bound by an order relation with Lambda. Primitive-set mean-square already formalized. No new operator theorem.
+
+Cycle10 exact generic proposal ordinary convergence +H2 ->actual mean formula FALSE: PRIMARY Brevig-Kouroupis28Sep2026 arxiv2609.35496 Theorem6 theta0 mean abscissa1/4; Cor2 order-zero positive replacement. Primary HTML/proof read. Do not confuse wrong aggregator-associated arxiv2608.04853 (unrelated). The source reciprocal G DOES have expected actual mean square on every sigma>1/2 on PAPER: complete direct proof added at end PROOF.md. It uses all-twist prefix, Abel tail |G-P_N|<=C(2+|t|)^eps*N^(1/2+eps-sigma), N=floor sqrtT,eps<(sigma-1/2)/3; cycle5 yields Ssigma finite; finite MVT error<=104N/T*Ssigma; L2difference->0. Formalization outstanding. Could implement via DirichletUniformAbel.norm_dirichletSum_sub_partialSum_le and HTGeometry.DirichletSeriesBoundedPartialSums.norm_sum_mul_powNeg_le_of_growth, treating oscillation BEFORE real Abel weighting to avoid |t| factor. Main detector still open; mean recurrence cannot remove exceptional orbit (Bohr rows4,7).
+
+Cycle11 exact source conjecture under audit: everyhW has |mu_lambda(n)|<=Ceps*n^eps (n>=1). Aggregate square bound allows rare n^(1/2) spikes; conjecture asks whether positivity excludes them. No Euler/Ramanujan premise to be added. Competing possibility: spikes with dense multiplicative compensation. Not proved, no code. Initial focused corpus search underway in /tmp/wp03-cycle11-reciprocal-ramanujan-search.json (inspect result before cleanup). Genericreciprocal/Ramanujan literature assumes conditions notyetpaid.
+
+External evidence: Bommier-Hato2020 Volterra paper primary full text distinguishes operator boundedness,H^p membership,Hinfinity multiplier; twootherPDFs accessdenied. Broucke-Hilberdink generalmean theorem assumespositivecoeff+counting remainder, unavailableforq. Current candidate no proof from literature. All hgtl7 anti-theatre/laziness statements posted honestly: recentbridges notscientificnovelty; hard sourceboundedQ remains unsolved.

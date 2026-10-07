@@ -1,0 +1,399 @@
+[
+  {
+    "query": "derive decay of mean square canonical boundary phase increments from arithmetic Dirichlet series and full Weil positivity",
+    "mode": "deep",
+    "partial": false,
+    "coverage": {
+      "files": 68411,
+      "inventoried": 68411,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68411
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11072,
+        "pending": 51941,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57339,
+        "prose": 11072
+      },
+      "declarations": 1028827,
+      "documents": 2850277,
+      "vectors": 2661787,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1278649,
+      "methods": {
+        "failed": 53,
+        "ready": 413068,
+        "stale": 181312
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791388425.7961018,
+      "current_generation": 1278649
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "errors": [],
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "candidate_names": [
+      "RHTower.WeilSingularArithmetic.exists_reciprocal_mean_square",
+      "RHTower.WeilMeanSquare.exists_sum_sq_Ioc_le_of_weilPositiveFull",
+      "RHTower.abs_le_of_weilPositive",
+      "RHTower.weilPositive_smoothedMean_lower",
+      "RHTower.WeilWorkPBAP.arithmeticPhase",
+      "RHTower.WeilPositive",
+      "RHTower.CramerModel.ae_not_weilPositiveFull_of_random",
+      "RHTower.weilLagFunction_eq_prime_side",
+      "RHTower.WeilWorkPBAP.arithmeticPhase_one",
+      "RHTower.WeilOneSided.exists_weilPositiveFull_ge_of_positiveOnNonnegCone",
+      "RHTower.weilPositive_of_weilPositiveFull",
+      "RHTower.LebesgueAtomWeil.WeilMeasurePositive",
+      "RHTower.phase_pair",
+      "RHTower.WeilBoundaryMobius.LSeries_finiteTypeSeq_boundary",
+      "RHTower.ccmArchimedeanPhaseMul_coeFn",
+      "RHTower.weilLagFunction",
+      "RHTower.ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull",
+      "RHTower.WeilBoundaryMobius.weilContinuation_mul_zeta_boundary",
+      "RHTower.WeilBoundaryMobius.re_dilSeries_line_boundary",
+      "RHTower.WeilBoundaryDilation.re_dilSeries_le_one"
+    ],
+    "source_argument_names": [
+      "RHTower.eventually_ccmMatchedOddPoleSource_finite_orbit_bound",
+      "RHTower.integral_normalizedTwistedForm_le",
+      "RHTower.exists_plateau_coeff_bound\u2082",
+      "RHTower.intervalIntegrable_ccmGammaPoleBoundaryLog_two_mul",
+      "RHTower.integral_re_eval_weighted_le",
+      "RHTower.eventually_ccmFiniteExponentialSource_neumann_decay",
+      "RHTower.integral_re_eval_le",
+      "RHTower.polarGroundEnergy_le_neg_exp_of_attainedTop",
+      "RHTower.re_suzukiScrewSmoothForm_twistedOddTest_le_of_topExcess",
+      "RHTower.tendsto_criticalMellinCompletedError_div_cube_of_rpow_bound",
+      "RHTower.WeilHigherDenominator.weightOne_period_origin_bound",
+      "RHTower.ccmRestrictedWeilCovariance_isPositive",
+      "RHTower.WeilSpectral.herglotzWeilPositive_of_weilPositiveFull",
+      "RHTower.eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero",
+      "RHTower.ccmWeilOddPole_pos_between_same_cutoff",
+      "CliffordWeil.gram_eq",
+      "RHTower.RemovedPrimes.vonMangoldtWithout_le",
+      "RHTower.WeilSpectral.differentiableOn_weilContinuation",
+      "RHTower.atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull",
+      "RHTower.WeilExcess.truncatedDeviationPotential"
+    ]
+  },
+  {
+    "query": "canonical boundary phase arithmetic periodicity positive Herglotz modular period defect forces vanishing",
+    "mode": "deep",
+    "partial": false,
+    "coverage": {
+      "files": 68414,
+      "inventoried": 68414,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68414
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11073,
+        "pending": 51943,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57341,
+        "prose": 11073
+      },
+      "declarations": 1028852,
+      "documents": 2850349,
+      "vectors": 2661877,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1278692,
+      "methods": {
+        "failed": 53,
+        "ready": 413083,
+        "stale": 181297
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791388693.414069,
+      "current_generation": 1278692
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "errors": [],
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "candidate_names": [
+      "RHTower.HerglotzWeilPositive",
+      "RHTower.WeilSpectral.re_herglotzFunction",
+      "RHTower.AbelianTwist.boundary_phase_antitone",
+      "RHTower.WeilSpectral.herglotzFunction",
+      "RHTower.WeilSpectral.differentiableOn_herglotzFunction_gap",
+      "RHTower.lagArithmeticRamp",
+      "RHTower.WeilHigherDenominator.inversionDefect_three_term",
+      "RHTower.WeilBoundaryDilation.boundaryFun",
+      "RHTower.lagArithmeticRamp_nat",
+      "RHTower.WeilWorkPBAP.arithmeticPhase",
+      "RHTower.WeilSpectral.exists_fullMeasure_interval_phase",
+      "RHTower.latticeMass_add_period",
+      "GaloisForLFunctions.HTGeometry.finitePath_abelBoundary",
+      "RHTower.WeilZetaCarrier.defect_sum_le",
+      "GaloisForLFunctions.HTGeometry.parallelSignlessBoundary",
+      "RHTower.ClusterSetup.tiltDefect_le",
+      "RHTower.cosetMoment_add_period",
+      "RHTower.WeilSpectral.four_mul_deficitInverseEnergy_le",
+      "RHTower.AbelianTwist.lock_phase_variation_rigidity",
+      "Zeta23.WeilEF.horizontal_vanish"
+    ],
+    "source_argument_names": [
+      "RHTower.xiReciprocalSquareTransverseDirection",
+      "RHTower.WeilSpectral.quantizationIntegerWeight",
+      "RHTower.WeilHigherDenominator.boundaryMeasure_vonMangoldt_singleton_nat",
+      "RHTower.WeilSpectral.integral_deficitPoissonLeakage_le",
+      "RHTower.WeilSpectral.integrable_transportProduct_prod",
+      "RHTower.WeilSpectral.deficitFourierError",
+      "RHTower.WeilHigherDenominator.boundaryMeasure_vonMangoldt_integer_counting",
+      "RHTower.WeilSpectral.tsum_shared_le_lintegral",
+      "RHTower.riemannZeta_ne_zero_of_bounded_of_zeroSet",
+      "RHTower.crystallineCoeff_eq_of_weil_defect",
+      "RHTower.suzukiRestrictedWeilForm_eq_constrainedKernelForm",
+      "RHTower.ccmGammaPolarJump_actualPhase",
+      "RHTower.ccmGammaRightBoundaryTransfer_coeFn",
+      "RHTower.WeilHigherDenominator.polarAxisFactor_reflect",
+      "RHTower.WeilBoundaryDilation.dilSeries_one_eq_one_half",
+      "RHTower.AbelianTwist.vpt_neg_eq_conj",
+      "RHTower.AbelianTwist.local_lock_growth",
+      "RHTower.ccmArchimedeanPhaseMul",
+      "RHTower.ccmGammaRightBoundaryTransfer",
+      "RHTower.WeilSpectral.quantizationReflectedTraceF_residual_phase"
+    ]
+  },
+  {
+    "query": "quantitative L1 boundary phase Poisson smoothing cumulative measure error small horizontal distance mass growth",
+    "mode": "deep",
+    "partial": false,
+    "coverage": {
+      "files": 68416,
+      "inventoried": 68416,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68416
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11073,
+        "pending": 51945,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57343,
+        "prose": 11073
+      },
+      "declarations": 1028866,
+      "documents": 2850388,
+      "vectors": 2661945,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1278730,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791389158.342995,
+      "current_generation": 1278731
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "errors": [],
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "candidate_names": [
+      "RHTower.WeilSpectral.integral_transportPoisson_boundary",
+      "RHTower.laplaceMass_growth_eq",
+      "RHTower.WeilAbscissa.smallErr_le",
+      "RHTower.growthMeasure",
+      "RHTower.ExposingRayRealization.geometric_finite_error",
+      "RHTower.ExposingRayCompletion.mass_eq",
+      "RHTower.laplaceMass_growthLower_eq",
+      "RHTower.le_of_assembly_bounds_general",
+      "RHTower.le_of_assembly_bounds",
+      "RHTower.WeilAbscissa.abs_small_errors_le",
+      "RHTower.WeilAbscissa.errConst_le",
+      "RHTower.growthMeasureLower",
+      "RHTower.summable_growthWeight",
+      "RHTower.WeilSpectral.tendsto_integral_deficitPoissonLeakage_div",
+      "RHTower.WeilSpectral.deficitPoissonLeakage_le_endpoint",
+      "RHTower.WeilSpectral.lintegral_poissonDensity_three_halves_lt_top",
+      "RHTower.WeilExcess.kernelSmooth",
+      "RHTower.smoothProfileTwoEdgeRemainderBound",
+      "RHTower.WeilSpectral.integrable_deficitPoissonLeakage",
+      "RHTower.WeilSpectral.norm_deficitZeroRawFourierError_le"
+    ],
+    "source_argument_names": [
+      "RHTower.reciprocal_error_integrable",
+      "RHTower.integrableOn_exp_mul_ccmGuinandWeilPrimeThirdGradeRateWindow",
+      "RHTower.WeilWorkSettledPhase.rigidity_or_lock_disorder",
+      "RHTower.AbelianTwist.exists_phaseSum_one_eq_nat",
+      "RHTower.laplaceMass_growth_density_ne_top",
+      "RHTower.paperFT_zeroMeanProbe_ne_zero",
+      "RHTower.ccmWeilPoleCrossSmooth",
+      "RHTower.SuzukiSmoothCompactTest.continuous",
+      "RHTower.WeilRegular.expAbsMoment_nonneg",
+      "RHTower.WeilSpectral.integrable_transportProduct_prod",
+      "RHTower.WeilSpectral.integral_deficitPoissonLeakage_le",
+      "RHTower.WeilExcess.kernelPotential",
+      "RHTower.ccmPolarBoundaryArithmeticError",
+      "RHTower.WeilDeletion.paperFT_phi",
+      "RHTower.WeilSpectral.poissonDensity_ne_top",
+      "RHTower.hasDerivAt_ccmGammaPoleWallInvariant",
+      "RHTower.WeilRegular.expMoment_nonneg",
+      "RHTower.smoothProfileTwoEdgeRemainderBound",
+      "RHTower.suzukiWeilRemainderKernel_eq_source_of_ne",
+      "RHTower.ccmPolarParityBoundaryLogCounterterm"
+    ]
+  },
+  {
+    "query": "full Weil positivity arithmetic estimate dyadic average normalized completed producer phase ratio conjugate at shrinking critical line distance",
+    "mode": "deep",
+    "partial": false,
+    "coverage": {
+      "files": 68429,
+      "inventoried": 68429,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68429
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11073,
+        "pending": 51958,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57356,
+        "prose": 11073
+      },
+      "declarations": 1028985,
+      "documents": 2850764,
+      "vectors": 2662171,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1278971,
+      "methods": {
+        "failed": 53,
+        "ready": 413181,
+        "stale": 181237
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791390496.757787,
+      "current_generation": 1278971
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "errors": [],
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "candidate_names": [
+      "RHTower.WeilZetaSquare.re_datum_normSq_add_deriv_mul_conj",
+      "RHTower.WeilFiniteType.deriv_riemannZeta_conj'",
+      "RHTower.AbelianTwist.weilDatum_conj",
+      "RHTower.WeilSingularArithmetic.exists_sharp_quotient_sum_le",
+      "RHTower.WeilSpectral.exists_setIntegral_exp_mul_le",
+      "RHTower.WeilSpectral.exists_setIntegral_exp_two_mul_le",
+      "RHTower.WeilSingularArithmetic.exists_partial_sum_height_bound",
+      "RHTower.WeilPartialSum.exists_abs_excessSum_le",
+      "GaloisForLFunctions.RHTower.WeilKloosterman.kloosterman_weil_bound",
+      "GaloisForLFunctions.RHTower.WeilKloosterman.norm_le_of_sum_pow_bound",
+      "RHTower.WeilFiniteType.re_regularPart_criticalLine_le",
+      "RHTower.logZetaCoeff",
+      "Zeta23.WeilEF.digamma_conj",
+      "RHTower.summable_weilL2Summand",
+      "RHTower.WeilExcess.exists_abs_weilDeviation_le",
+      "RHTower.IntegerMassRigidity.zetaOf",
+      "RHTower.weilLagFunction",
+      "RHTower.norm_suzukiFrakPZeta_le",
+      "RHTower.normalizedBarycentricLagMean",
+      "RHTower.WeilOneSided.abs_le_weilConeBound"
+    ],
+    "source_argument_names": [
+      "RHTower.WeilRegular.eq_zero_of_weilPositiveFull_add",
+      "RHTower.exists_admissible_rectIntegral_rectangularSource_eq_xiZeroCopy_sum_containing",
+      "RHTower.riemannHypothesis_of_weilPositiveFull_of_le",
+      "RHTower.RemovedPrimes.vonMangoldtWithout_le",
+      "RHTower.atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull",
+      "RHTower.WeilExcess.not_summable_excess_of_ne",
+      "RHTower.WeilOneSided.sum_weilArchRe_eq",
+      "RHTower.ccmWeilPoleDiagonal",
+      "RHTower.weilFullCone_exposed_at_vonMangoldt",
+      "RHTower.PrimorialResonance.not_forall_squarefree_signChar_le_of_weilPositiveFull",
+      "RHTower.WeilAbscissa.not_weilPositiveFull_of_semiprime_floor",
+      "RHTower.WeilAbscissa.profilePrimitive_mono",
+      "RHTower.WeilAtomic.weilFullFunctional_weilTest_eq_atomic",
+      "RHTower.WeilDilationRealness.dirPoly_ofReal",
+      "RHTower.WeilPrimeDeficit.eq_vonMangoldt_of_weilPositiveFull_of_signMult_aligned",
+      "RHTower.ccmWeilPoleDiagonal_eq_error",
+      "RHTower.WeilExcess.not_excessMeanVanishes_of_ne",
+      "RHTower.inner_ccmPolarArchimedeanRepresentative",
+      "RHTower.WeilSpectral.exists_abs_integral_re_digamma_sub_le",
+      "RHTower.WeilCommonRatio.eq_vonMangoldt_of_weilPositiveFull_of_commonRatio"
+    ]
+  }
+]

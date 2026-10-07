@@ -1,0 +1,25 @@
+{
+  "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseAbelRigidity.lean",
+  "sha256": "2b148a4fba4a2fb7e53d3c7378d284e4c5fdd3e9cf88bed96722b76ee5adeefd",
+  "line_count": 247,
+  "leaf_build_exit": 0,
+  "final_source_exit": 0,
+  "final_source_diagnostics": [],
+  "axiom_audit_exit": 0,
+  "axiom_audit_count": 5,
+  "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "umbrella_import_count": 1,
+  "lint_exit": 1,
+  "unrelated_lint_errors": 9,
+  "own_lint_errors": 0,
+  "whitespace_clean": true,
+  "empirical_computations": false,
+  "heartbeat_override": false,
+  "full_build": false,
+  "umbrella_build": false,
+  "status": "BRIDGE; WP05 OPEN"
+}

@@ -1,0 +1,1090 @@
+[
+  {
+    "query": "WeilPositiveFull radial trace theta coefficient rigidity phase disorder",
+    "mode": "hybrid",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "Weil",
+      "exclude_modules": []
+    },
+    "partial": false,
+    "unfinished_stages": [],
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "coverage": {
+      "files": 68384,
+      "inventoried": 68384,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68384
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11064,
+        "pending": 51922,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57320,
+        "prose": 11064
+      },
+      "declarations": 1028587,
+      "documents": 2849525,
+      "vectors": 2661158,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1278051,
+      "methods": {
+        "failed": 53,
+        "ready": 412902,
+        "stale": 181464
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791383599.293677,
+      "current_generation": 1278054
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "errors": [],
+    "declarations": [],
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.WeilWorkSettledPhase.rigidity_or_atomic_phase_disorder",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseDisorder",
+        "statement": "theorem rigidity_or_atomic_phase_disorder {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {c t : \u2115 \u2192 \u211d} (hc : \u2200 j, 0 \u2264 c j) (hone : \u2200 j, 1 \u2264 t j)\n    (htt : Tendsto t atTop atTop) (hsum : Summable fun j => c j / t j ^ 2)\n    (hrep : \u2200 w : \u2102, 0 < w.re \u2192 \u222b\u207b r, poissonDensity w r \u2202boundaryMeasure hW =\n      \u2211' j, ENNReal.ofReal (c j) * (poissonDensity w (t j) + poissonDensity w (-(t j))))\n    (\u03b8 : \u211d) :\n    ((\u2200 n : \u2115, 2 \u2264 n \u2192 lam n = ArithmeticFunction.vonMangoldt n) \u2227 RiemannHypothesis) \u2228\n      \u2203 a K : \u211d, 0 < a \u2227 0 < K \u2227 \u2200 R : \u211d, \u2203 Y : \u211d, R \u2264 Y \u2227\n        a * Y * Real.exp (-(K * Real.log Y / Real.log (Real.log Y))) \u2264\n          \u222b y in Ioc Y (2 * Y),\n            \u2016cexp (((2 * Real.pi * phaseSum c t y : \u211d) : \u2102) * I) -\n              cexp (((2 * Real.pi * \u03b8 : \u211d) : \u2102) * I)\u2016"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.positiveTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseTrace",
+        "statement": "def positiveTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) : \u2102"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.coeffTheta_eq_remainderTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseThetaTrace",
+        "statement": "theorem coeffTheta_eq_remainderTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {r : \u211d} (hr : 0 < r) :\n    coeffTheta (sourceCoeff lam) r -\n        betaG (sourceCompletion hW) * ((r : \u2102) ^ (-(1 / 2 : \u2102)) * expNegPi r) =\n      (1 / (4 * Real.pi)) \u2022\n        \u222b y : \u211d, (r : \u2102) ^ (-tracePoint 0 y / 2) * remainderTrace hW y"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.rigidity_or_lock_disorder",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseDisorder",
+        "statement": "theorem rigidity_or_lock_disorder {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {G : \u2102 \u2192 \u2102} (hGc : \u2200 s : \u2102, 1 / 2 \u2264 s.re \u2192 ContinuousAt G s)\n    (hGd : \u2200 s : \u2102, 1 / 2 < s.re \u2192 HasDerivAt G (weilContinuation hW s * G s) s)\n    (hG2 : G 2 = bigG lam 2) {w : \u211d \u2192 \u2102} (hwm : Measurable w) {Cw : \u211d}\n    (hwb : \u2200 \u03c4, \u2016w \u03c4\u2016 \u2264 Cw) {c\u2080 : \u2102} (hc\u2080 : c\u2080 \u2260 0) {Y : \u211d} (hY : 0 \u2264 Y)\n    (hlock : \u2200 \u03c4 : \u211d, \u03c4 < -Y \u2192 G (1 - lineS \u03c4) = w \u03c4 * G (lineS \u03c4)) :\n    ((\u2200 n : \u2115, 2 \u2264 n \u2192 lam n = ArithmeticFunction.vonMangoldt n) \u2227 RiemannHypothesis) \u2228\n      \u2203 a K : \u211d, 0 < a \u2227 0 < K \u2227 \u2200 R : \u211d, \u2203 T : \u211d, R \u2264 T \u2227\n        a * T * Real.exp (-(K * Real.log T / Real.log (Real.log T))) \u2264\n          \u222b \u03c4 in Ioc T (2 * T), \u2016w (-\u03c4) - c\u2080\u207b\u00b9\u2016"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.coeffTheta_eq_half_remainderTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseThetaTrace",
+        "statement": "private theorem coeffTheta_eq_half_remainderTrace {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) {r : \u211d} (hr : 0 < r) :\n    coeffTheta (sourceCoeff lam) r -\n        betaG (sourceCompletion hW) * ((r : \u2102) ^ (-(1 / 2 : \u2102)) * expNegPi r) =\n      (1 / (2 * Real.pi)) \u2022 \u222b t : \u211d,\n        (r : \u2102) ^ (-(((1 / 4 : \u211d) : \u2102) + t * I)) * remainderTrace hW (2 * t)"
+      },
+      {
+        "name": "RHTower.WeilInfiniteDilation.eq_delta_of_weilPositiveFull",
+        "module": "GaloisForLFunctions.RHTower.WeilConeInfiniteDilationRigidity",
+        "statement": "theorem eq_delta_of_weilPositiveFull (h\u03b4 : 0 < \u03b4)\n    (ha : LSeriesSummable (fun n => (a n : \u2102)) ((1 / 2 - \u03b4 : \u211d) : \u2102)) (hv : RegularPart v E)\n    (hW : WeilPositiveFull (finiteTypeSeq a 0 v)) :\n    a 1 = 1 \u2227 \u2200 n, 2 \u2264 n \u2192 a n = 0"
+      },
+      {
+        "name": "RHTower.WeilDilationRealness.eq_delta_of_weilPositiveFull",
+        "module": "GaloisForLFunctions.RHTower.WeilConeDilationRealnessRigidity",
+        "statement": "theorem eq_delta_of_weilPositiveFull {N : \u2115} {a v : \u2115 \u2192 \u211d} {E : \u2102 \u2192 \u2102}\n    (ha : SupportedIn N a) (hv : RegularPart v E)\n    (hW : WeilPositiveFull (finiteTypeSeq a 0 v)) :\n    a 1 = 1 \u2227 \u2200 n, 2 \u2264 n \u2192 a n = 0"
+      },
+      {
+        "name": "RHTower.ccmGuinandWeilRectangularSineMoment_rigidity_of_le",
+        "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilCodiagonalObserverDimension",
+        "statement": "theorem ccmGuinandWeilRectangularSineMoment_rigidity_of_le\n    {N R : \u2115} (hRN : R \u2264 N) (angle : Fin R \u2192 \u211d)\n    (hcos : Function.Injective (fun i => Real.cos (angle i)))\n    (hsin : \u2200 i, Real.sin (angle i) \u2260 0)\n    (imbalance : Fin R \u2192 \u211d)\n    (hmoment : \u2200 k : Fin N,\n      \u2211 i, imbalance i * Real.sin (((k : \u2115) + 1 : \u211d) * angle i) = 0) :\n    imbalance = 0"
+      },
+      {
+        "name": "RHTower.eq_vonMangoldt_of_weilPositiveFull_of_lacunary",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeLacunaryRigidity",
+        "statement": "theorem eq_vonMangoldt_of_weilPositiveFull_of_lacunary {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {n : \u2115 \u2192 \u2115} (h0 : 3 \u2264 n 0) (hs : \u2200 i, 3 * n i \u2264 n (i + 1))\n    (hsupp : \u2200 m, 2 \u2264 m \u2192 m \u2209 Set.range n \u2192 lam m = ArithmeticFunction.vonMangoldt m) :\n    \u2200 m, 2 \u2264 m \u2192 lam m = ArithmeticFunction.vonMangoldt m"
+      },
+      {
+        "name": "RHTower.weil_defect_rigidity",
+        "module": "GaloisForLFunctions.RHTower.OddWeilFunctionRigidity",
+        "statement": "theorem weil_defect_rigidity {lam : \u2115 \u2192 \u211d} {\u03a6 : \u2102 \u2192 \u2102} (h\u03a6 : OddWeilFunction \u03a6)\n    (hsl : \u2200 \u03c3 : \u211d, 1 < \u03c3 \u2192 Summable fun n : \u2115 => |lam n| / (n : \u211d) ^ \u03c3)\n    (hid : \u2200 s : \u2102, 1 < s.re \u2192 zetaArchimedeanDatum s + 1 / (s - 1) -\n      LSeries (fun n => (lam n : \u2102)) s = \u03a6 s) {J : \u2102 \u2192 \u2102}\n    (hJd : DifferentiableOn \u2102 J {\u03c4 : \u2102 | 0 < \u03c4.re})\n    (hJ : \u2200 \u03c4 : \u211d, 0 < \u03c4 \u2192 IntegrableOn (fun x : \u211d => weilDefect \u03a6 x *\n      ((Real.exp (-(Real.pi * \u03c4 ^ 2) * x) : \u211d) : \u2102)) (Ioi 0) \u2227\n      J \u03c4 = \u03c4 * \u222b x in Ioi (0 : \u211d), weilDefect \u03a6 x * ((Real.exp (-(Real.pi * \u03c4 ^ 2) * x) : \u211d) : \u2102))\n    (hrad : \u2200 m : \u2115, Tendsto (fun \u03b5 : \u211d => (\u03b5 : \u2102) * J ((\u03b5 : \u2102) + (m : \u2102) * I)) (\ud835\udcdd[>] 0) (\ud835\udcdd 0)) :\n    (\u2200 n : \u2115, 2 \u2264 n \u2192 lam n = ArithmeticFunction.vonMangoldt n) \u2227 RiemannHypothesis"
+      },
+      {
+        "name": "RHTower.AbelianTwist.lock_phase_rigidity",
+        "module": "GaloisForLFunctions.RHTower.WeilLockPhasePositivity",
+        "statement": "theorem lock_phase_rigidity {lam : \u2115 \u2192 \u211d} {\u03a6 G : \u2102 \u2192 \u2102}\n    (hsl : \u2200 \u03c3 : \u211d, 1 < \u03c3 \u2192 Summable fun n : \u2115 => |lam n| / (n : \u211d) ^ \u03c3)\n    (h\u03a6d : DifferentiableOn \u2102 \u03a6 {s : \u2102 | 1 / 2 < s.re})\n    (h\u03a6re : \u2200 s : \u2102, 1 / 2 < s.re \u2192 0 \u2264 (\u03a6 s).re)\n    (hid : \u2200 s : \u2102, 1 < s.re \u2192 \u03a6 s = zetaArchimedeanDatum s + 1 / (s - 1) -\n      LSeries (fun n => if 2 \u2264 n then (lam n : \u2102) else 0) s)\n    (hGc : \u2200 s : \u2102, 1 / 2 \u2264 s.re \u2192 ContinuousAt G s)\n    (hGd : \u2200 s : \u2102, 1 / 2 < s.re \u2192 HasDerivAt G (\u03a6 s * G s) s) (hG2 : G 2 = bigG lam 2)\n    {\u03b8 : \u211d \u2192 \u211d} (h\u03b8d : Differentiable \u211d \u03b8) (h\u03b8c : Continuous (deriv \u03b8))\n    (hgrowth : \u2203 \u03b1 K : \u211d, \u03b1 < 1 \u2227 \u2200 x : \u211d, 1 \u2264 x \u2192 \u03b8 x \u2264 K * x ^ \u03b1) {\u03ba\u2080 : \u2102}\n    (hlock : \u2200 \u03c4 : \u211d, \u03c4 < 0 \u2192 G (1 - lineS \u03c4) = \u03ba\u2080 * cexp ((\u03b8 (-\u03c4) : \u2102) * I) * G (lineS \u03c4)) :\n    MonotoneOn \u03b8 (Ici 0) \u2227 (\u2200 n : \u2115, 2 \u2264 n \u2192 lam n = ArithmeticFunction.vonMangoldt n) \u2227\n      RiemannHypothesis"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.remainderTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseMellinTrace",
+        "statement": "def remainderTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) : \u2102"
+      },
+      {
+        "name": "RHTower.AbelianTwist.theta",
+        "module": "GaloisForLFunctions.RHTower.WeilFractionalTwoSidedRigidity",
+        "statement": "def theta (e u : \u2115 \u2192 \u211d) (v : \u211d) : \u211d"
+      },
+      {
+        "name": "RHTower.WeilZetaSquare.eq_delta_of_weilPositiveFull",
+        "module": "GaloisForLFunctions.RHTower.WeilZetaSquareDilationRigidity",
+        "statement": "theorem eq_delta_of_weilPositiveFull (h\u03b4 : 0 < \u03b4)\n    (ha : LSeriesSummable (fun n => (a n : \u2102)) ((1 / 2 - \u03b4 : \u211d) : \u2102))\n    (hf : LSeriesSummable (fun n => (f n : \u2102)) ((1 / 2 - \u03b4 : \u211d) : \u2102)) (hf1 : f 1 = 0)\n    (hv : RegularPart v E) (hW : WeilPositiveFull (finiteTypeSeq a f v))\n    {SE : \u211d} (hEb : \u2200 t, \u2016E (linePt t)\u2016 \u2264 SE) :\n    a 1 = 1 \u2227 \u2200 n, 2 \u2264 n \u2192 a n = 0"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.exists_decay_sourceRemainder_and_trace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseMellinTrace",
+        "statement": "theorem exists_decay_sourceRemainder_and_trace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    \u2203 C : \u211d, 0 \u2264 C \u2227\n      (\u2200 s : \u2102, 1 / 2 < s.re \u2192 s.re \u2264 3 / 2 \u2192\n        \u2016sourceRemainder hW s\u2016 \u2264 C / (1 + s.im ^ 2)) \u2227\n      \u2200\u1d50 y : \u211d, \u2016remainderTrace hW y\u2016 \u2264 C / (1 + y ^ 2)"
+      },
+      {
+        "name": "RHTower.eq_vonMangoldt_of_weilPositiveFull_of_threeHalves_lacunary",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeThreeHalvesLacunaryRigidity",
+        "statement": "theorem eq_vonMangoldt_of_weilPositiveFull_of_threeHalves_lacunary {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) {n : \u2115 \u2192 \u2115} (h0 : 2 \u2264 n 0) (hs : \u2200 i, 3 * n i \u2264 2 * n (i + 1))\n    (hsupp : \u2200 m, 2 \u2264 m \u2192 (\u2200 i, m \u2260 n i) \u2192 lam m = ArithmeticFunction.vonMangoldt m) :\n    \u2200 m, 2 \u2264 m \u2192 lam m = ArithmeticFunction.vonMangoldt m"
+      },
+      {
+        "name": "RHTower.WeilSpectral.lock_rigidity_of_block_means",
+        "module": "GaloisForLFunctions.RHTower.WeilConeSettledLockRigidity",
+        "statement": "theorem lock_rigidity_of_block_means {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) {G : \u2102 \u2192 \u2102}\n    (hGc : \u2200 s : \u2102, 1 / 2 \u2264 s.re \u2192 ContinuousAt G s)\n    (hGd : \u2200 s : \u2102, 1 / 2 < s.re \u2192 HasDerivAt G (weilContinuation hW s * G s) s)\n    (hG2 : G 2 = bigG lam 2) {w : \u211d \u2192 \u2102} (hwm : Measurable w) {Cw : \u211d}\n    (hwb : \u2200 \u03c4, \u2016w \u03c4\u2016 \u2264 Cw) {c\u2080 : \u2102} (hc\u2080 : c\u2080 \u2260 0) {Y : \u211d} (hY : 0 \u2264 Y)\n    (hlock : \u2200 \u03c4 : \u211d, \u03c4 < -Y \u2192 G (1 - lineS \u03c4) = w \u03c4 * G (lineS \u03c4))\n    (hblock : \u2200 \u03b7 : \u211d, 0 < \u03b7 \u2192 \u2203 T\u2080 : \u211d, \u2200 T, T\u2080 \u2264 T \u2192\n      \u222b \u03c4 in Ioc T (2 * T), \u2016w (-\u03c4) - c\u2080\u207b\u00b9\u2016 * \u2016PhaseLockRigidity.phiG G \u03c4\u2016 \u2264 \u03b7 * T) :\n    (\u2200 n : \u2115, 2 \u2264 n \u2192 lam n = ArithmeticFunction.vonMangoldt n) \u2227 RiemannHypothesis"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationRemainderTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialMellin",
+        "statement": "def quantizationRemainderTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) : \u2102"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.tendsto_traceModulus",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseTrace",
+        "statement": "theorem tendsto_traceModulus {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) :\n    Tendsto (fun x : \u211d => Real.exp (sourcePrimitive hW (tracePoint x y)).re)\n      (\ud835\udcdd[>] 0) (\ud835\udcdd (traceModulus hW y))"
+      },
+      {
+        "name": "RHTower.ccmWeilTriangleLagrangian",
+        "module": "GaloisForLFunctions.RHTower.CCMWeilTriangleNoether",
+        "statement": "def ccmWeilTriangleLagrangian (a : SuzukiPositiveAperture)\n    (u v w : CCMArchimedeanFormDomain a) (alpha beta gamma va vb vc : \u211d) : \u211d"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.lacunary_atom_le",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeLacunaryRigidity",
+        "statement": "theorem lacunary_atom_le {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) {n : \u2115 \u2192 \u2115} (h0 : 3 \u2264 n 0)\n    (hs : \u2200 i, 3 * n i \u2264 n (i + 1))\n    (hsupp : \u2200 m, 2 \u2264 m \u2192 m \u2209 Set.range n \u2192 lam m = ArithmeticFunction.vonMangoldt m)\n    {M : \u211d} (hM0 : 0 \u2264 M)\n    (hM : \u2200 i, |normDeficit lam (n i)| \u2264 M * (1 + Real.log (n i))) (j : \u2115) :\n    2 * |normDeficit lam (n j)| * riemannAutocorr 0 \u2264\n      M * (1 + Real.log (n j)) * (1.746 * riemannAutocorr 0)"
+      },
+      {
+        "name": "RHTower.log_square_sizes_le",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeLogSquareMassRigidity",
+        "statement": "theorem log_square_sizes_le {A1 Kp Ha KJ T\u03b7 Av Wm Cd Sw : \u211d} (hA10 : 0 \u2264 A1) (hA1 : A1 \u2264 Kp * Ha)\n    (hKpT : Kp \u2264 KJ * T\u03b7) (hKp2 : Kp ^ 2 = KJ ^ 2 * T\u03b7) (hHa0 : 0 \u2264 Ha) (hAv : 0 \u2264 Av)\n    (hWm : 0 \u2264 Wm) (hSw : Sw \u2264 5 * Kp ^ 2 * Cd) :\n    A1 \u2264 KJ * Ha * T\u03b7 \u2227 3 * A1 ^ 2 + Sw \u2264 KJ ^ 2 * (3 * Ha ^ 2 + 5 * Cd) * T\u03b7 \u2227\n      3 * A1 + Kp * Av * Wm \u2264 KJ * (3 * Ha + Av * Wm) * T\u03b7"
+      },
+      {
+        "name": "RHTower.le_of_assembly_bounds_general",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeSquareRootScaleRigidity",
+        "statement": "theorem le_of_assembly_bounds_general {x T \u03b7 \u03b5 l Ka Kq Kr QQ Rm A1 S2 Zc B2V CX a0 P L2 : \u211d}\n    (hT : 1 \u2264 T) (hl : 0 < l) (h\u03b7 : 0 < \u03b7) (hL2 : 0 < L2)\n    (hass : T / 2 * x \u2264 A1 / L2 +\n      2 * (1 / (2 * l) * (T / 2 * S2 + QQ) + l / 2 * (2 * \u03b7 * Zc)) + Rm)\n    (hA1 : A1 \u2264 Ka * (T * \u03b7)) (hQQ : QQ \u2264 Kq * (T * \u03b7)) (hRm : Rm \u2264 Kr * (T * \u03b7))\n    (hS2 : S2 \u2264 B2V) (hB2V : B2V / l \u2264 \u03b5 / 4)\n    (hZc : Zc \u2264 4 * T * (CX * (a0 * 1 - P * Real.log \u03b7)))\n    (h\u03b73 : 16 * l * (CX * (a0 * \u03b7 - P * (\u03b7 * Real.log \u03b7))) \u2264 \u03b5 / 4)\n    (h\u03b74 : \u03b7 * (2 * Ka / L2 + 2 * Kq / l + 2 * Kr) \u2264 \u03b5 / 2) :\n    x \u2264 \u03b5"
+      },
+      {
+        "name": "RHTower.exists_exp_mul_nearRadicalEnergy_le",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeMinorantRigidity",
+        "statement": "theorem exists_exp_mul_nearRadicalEnergy_le {\u03b5 : \u211d} (h\u03b5 : 0 < \u03b5) :\n    \u2203 L\u2080 : \u211d, \u2200 L : \u211d, L\u2080 \u2264 L \u2192\n      Real.exp (2 * L) * ((5 / 4) * zetaInvSqSum * truncatedRiemannTailEnergy L ^ 2) \u2264 \u03b5"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.exists_norm_phiG_le_littlewood",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseDisorder",
+        "statement": "theorem exists_norm_phiG_le_littlewood {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {G : \u2102 \u2192 \u2102} (hGc : \u2200 s : \u2102, 1 / 2 \u2264 s.re \u2192 ContinuousAt G s)\n    (hGd : \u2200 s : \u2102, 1 / 2 < s.re \u2192 HasDerivAt G (weilContinuation hW s * G s) s)\n    (hG2 : G 2 = bigG lam 2) :\n    \u2203 K T\u2080 : \u211d, 0 < K \u2227 \u2200 T, T\u2080 \u2264 T \u2192 \u2200 \u03c4 \u2208 Ioc T (2 * T),\n      \u2016phiG G \u03c4\u2016 \u2264 Real.exp 4 * Real.exp (K * Real.log T / Real.log (Real.log T))"
+      },
+      {
+        "name": "RHTower.opTrace_ccmSchwartzMellinMultiplier_mul_scatteringLogDifferential_eq_weilDistribution",
+        "module": "GaloisForLFunctions.RHTower.CCMArchimedeanPhaseWeilBridge",
+        "statement": "theorem opTrace_ccmSchwartzMellinMultiplier_mul_scatteringLogDifferential_eq_weilDistribution\n    (H : CCMCompactSchwartzLogTest) :\n    ContinuousLinearMap.opTrace\n        (ccmSchwartzMultiplier (ccmSchwartzMellinSymbol H.toSchwartzMap) *\n          ccmArchimedeanScatteringLogDifferential) =\n      ccmArchimedeanWeilDistribution H"
+      },
+      {
+        "name": "RHTower.paperFT_zeroMeanProbe_ne_zero",
+        "module": "GaloisForLFunctions.RHTower.WeilPositivityHalfPoleRigidity",
+        "statement": "theorem paperFT_zeroMeanProbe_ne_zero {\u03b5 : \u211d} (h\u03b5 : 0 < \u03b5) {t : \u211d} (ht : t \u2260 0) :\n    paperFT (zeroMeanProbe \u03b5 t) t \u2260 0"
+      },
+      {
+        "name": "RHTower.le_of_assembly_bounds",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeZeroFreeWindowRigidity",
+        "statement": "theorem le_of_assembly_bounds {x T \u03b7 \u03b5 l CR wm K Q A1 S2 Zc B2V CX a0 P L2 : \u211d}\n    (hT : 1 \u2264 T) (hl : 0 < l) (h\u03b7 : 0 < \u03b7) (hCR : 0 < CR) (hwm : 0 \u2264 wm)\n    (hL2 : 0 < L2)\n    (hass : T / 2 * x \u2264 A1 / L2 +\n      2 * (1 / (2 * l) * (T / 2 * S2 + CR * Q ^ 2) + l / 2 * (2 * \u03b7 * Zc)) + CR * wm * Q)\n    (hA1 : A1 \u2264 Q) (hQ1 : Q \u2264 K * (T * \u03b7)) (hQ2 : Q ^ 2 \u2264 K ^ 2 * (T * \u03b7))\n    (hS2 : S2 \u2264 B2V) (hB2V : B2V / l \u2264 \u03b5 / 4)\n    (hZc : Zc \u2264 4 * T * (CX * (a0 * 1 - P * Real.log \u03b7)))\n    (h\u03b73 : 16 * l * (CX * (a0 * \u03b7 - P * (\u03b7 * Real.log \u03b7))) \u2264 \u03b5 / 4)\n    (h\u03b74 : \u03b7 * (2 * K / L2 + 2 * CR * K ^ 2 / l + 2 * CR * wm * K) \u2264 \u03b5 / 2) :\n    x \u2264 \u03b5"
+      },
+      {
+        "name": "RHTower.vonMangoldt_add_eq_zero_of_symbol_two_atoms",
+        "module": "GaloisForLFunctions.RHTower.WeilPositivityResidueRigidity",
+        "statement": "theorem vonMangoldt_add_eq_zero_of_symbol_two_atoms {w : \u2115 \u2192 \u211d} {P : \u211d \u2192 \u211d}\n    (hPc : Continuous P) {Mp : \u211d} (hPb : \u2200 \u03c4, |P \u03c4| \u2264 Mp * (1 + |\u03c4|)) {m\u2080 m\u2081 : \u211d}\n    (hpair : \u2200 a : \u211d, 0 \u2264 a \u2192 \u2200 f : \u211d \u2192 \u2102, ContDiff \u211d 2 f \u2192 tsupport f \u2286 Icc (-a) a \u2192\n      2 * \u03c0 * \u2211 n \u2208 Finset.Icc 2 \u230aReal.exp (2 * a)\u230b\u208a, w n / Real.sqrt n *\n        (EF.weilTest f f (Real.log n) + EF.weilTest f f (-Real.log n)).re =\n      (\u222b \u03c4 : \u211d, \u2016paperFT f \u03c4\u2016 ^ 2 * P \u03c4) + m\u2080 * \u2016paperFT f 0\u2016 ^ 2 + m\u2081 * polarPairing f)\n    (hpos : \u2200 a : \u211d, 0 \u2264 a \u2192 \u2200 f : \u211d \u2192 \u2102, ContDiff \u211d 2 f \u2192 tsupport f \u2286 Icc (-a) a \u2192\n      paperFT f (I / 2) = 0 \u2192 paperFT f (-(I / 2)) = 0 \u2192\n      0 \u2264 \u222b \u03c4 : \u211d, \u2016paperFT f \u03c4\u2016 ^ 2 *\n        weilAtomSymbol (fun n => (\u039b n : \u211d) + w n) \u230aReal.exp (2 * a)\u230b\u208a (\u03c4 / (2 * \u03c0)))\n    {n\u2080 : \u2115} (hn\u2080 : 2 \u2264 n\u2080) : w n\u2080 = 0"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.eq_zero_of_positiveDefinite_neg_nullPotential_of_isLittleO",
+        "module": "GaloisForLFunctions.RHTower.WeilLittleOVonMangoldtRigidity",
+        "statement": "theorem eq_zero_of_positiveDefinite_neg_nullPotential_of_isLittleO {v : \u2115 \u2192 \u211d}\n    (hv0 : v 0 = 0) (hv1 : v 1 = 0) {A : \u211d} (hA : 0 \u2264 A) (ha : \u2200 n, |v n| \u2264 2 * Real.log n + A)\n    (hPD : PositiveDefiniteOnReal fun y => ((-RHTower.WeilRegular.nullPotential v y : \u211d) : \u2102))\n    (hd : IsLittleOVonMangoldt (sqrtScaled v)) {Y : \u211d}\n    (hconv : Tendsto (fun N : \u2115 => \u2211 n \u2208 Finset.range N, v n * (Real.sqrt n)\u207b\u00b9) atTop (\ud835\udcdd Y)) :\n    v = 0"
+      },
+      {
+        "name": "RHTower.hedenmalmPairWeilPolarizationLaw",
+        "module": "GaloisForLFunctions.RHTower.HedenmalmPairWeilPolarizationCapstone",
+        "statement": "theorem hedenmalmPairWeilPolarizationLaw :\n    (\u2200 F G : \u2102 \u2192 \u2102,\n      xiWeilPolarization G F = (starRingEnd \u2102) (xiWeilPolarization F G)) \u2227\n    (\u2200 F G : \u2102 \u2192 \u2102,\n      xiWeilPolarization (fun z \u21a6 -z * F z) G =\n        xiWeilPolarization F (fun z \u21a6 -z * G z)) \u2227\n    (\u2200 F : \u2102 \u2192 \u2102,\n      xiWeilPolarization XiC F = 0 \u2227 xiWeilPolarization F XiC = 0) \u2227\n    (RiemannHypothesis \u2194\n      \u2200 F : \u2102 \u2192 \u2102, XiWeilSquareSummable F \u2192\n        0 \u2264 (xiWeilPolarization F F).re) \u2227\n    (HedenmalmThetaEigenSpanPositiveDefinite \u2194\n      RiemannHypothesis \u2227 \u2200 alpha : \u2102, XiC alpha = 0 \u2192 deriv XiC alpha \u2260 0)"
+      },
+      {
+        "name": "RHTower.WeilDilationRealness.dirPoly_ofReal",
+        "module": "GaloisForLFunctions.RHTower.WeilConeDilationRealnessRigidity",
+        "statement": "theorem dirPoly_ofReal (N : \u2115) (a : \u2115 \u2192 \u211d) (x : \u211d) :\n    dirPoly N a (x : \u2102) = ((\u2211 n \u2208 Finset.Icc 1 N, a n * (n : \u211d) ^ (-x) : \u211d) : \u2102)"
+      },
+      {
+        "name": "RHTower.ccmGuinandWeilRectangularSineMomentMatrix",
+        "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilCodiagonalObserverDimension",
+        "statement": "def ccmGuinandWeilRectangularSineMomentMatrix {N R : \u2115}\n    (angle : Fin R \u2192 \u211d) : Matrix (Fin N) (Fin R) \u211d"
+      },
+      {
+        "name": "RHTower.exists_twoGeometricData",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeTwoGeometricRigidity",
+        "statement": "theorem exists_twoGeometricData {b c m : \u2115} (hb : 4 \u2264 b) (hc : 2 \u2264 c)\n    (hlo : ((m : \u211d) + 1 / 6) * Real.log b < Real.log c)\n    (hhi : Real.log c < ((m : \u211d) + 1 / 4) * Real.log b) :\n    \u2203 cm : \u211d, TwoGeometricData b c (Real.log b)\u207b\u00b9 (Real.log b) (Real.log c)\n      ((Real.log b)\u207b\u00b9 / 8) cm"
+      },
+      {
+        "name": "RHTower.floor_exp_half_log_two",
+        "module": "GaloisForLFunctions.RHTower.WeilPositivityRegularPerturbationRigidity",
+        "statement": "theorem floor_exp_half_log_two : \u230aReal.exp (2 * (Real.log 2 / 4))\u230b\u208a = 1"
+      },
+      {
+        "name": "RHTower.crystallineCoeff_eq_of_weil_defect",
+        "module": "GaloisForLFunctions.RHTower.OddWeilFunctionRigidity",
+        "statement": "theorem crystallineCoeff_eq_of_weil_defect {lam : \u2115 \u2192 \u211d} {\u03a6 : \u2102 \u2192 \u2102} (h\u03a6 : OddWeilFunction \u03a6)\n    (hsl : \u2200 \u03c3 : \u211d, 1 < \u03c3 \u2192 Summable fun n : \u2115 => |lam n| / (n : \u211d) ^ \u03c3)\n    (hid : \u2200 s : \u2102, 1 < s.re \u2192 zetaArchimedeanDatum s + 1 / (s - 1) -\n      LSeries (fun n => (lam n : \u2102)) s = \u03a6 s) {J : \u2102 \u2192 \u2102}\n    (hJd : DifferentiableOn \u2102 J {\u03c4 : \u2102 | 0 < \u03c4.re})\n    (hJ : \u2200 \u03c4 : \u211d, 0 < \u03c4 \u2192 IntegrableOn (fun x : \u211d => weilDefect \u03a6 x *\n      ((Real.exp (-(Real.pi * \u03c4 ^ 2) * x) : \u211d) : \u2102)) (Ioi 0) \u2227\n      J \u03c4 = \u03c4 * \u222b x in Ioi (0 : \u211d), weilDefect \u03a6 x * ((Real.exp (-(Real.pi * \u03c4 ^ 2) * x) : \u211d) : \u2102))\n    (hrad : \u2200 m : \u2115, Tendsto (fun \u03b5 : \u211d => (\u03b5 : \u2102) * J ((\u03b5 : \u2102) + (m : \u2102) * I)) (\ud835\udcdd[>] 0) (\ud835\udcdd 0))\n    (n : \u2115) :\n    crystallineCoeff lam (n + 1) = -(2 * weilResidue \u03a6)"
+      },
+      {
+        "name": "RHTower.ccmGuinandWeilRectangularSineMoment_rigidity_of_le",
+        "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilCodiagonalObserverDimension",
+        "statement": "theorem ccmGuinandWeilRectangularSineMoment_rigidity_of_le\n    {N R : \u2115} (hRN : R \u2264 N) (angle : Fin R \u2192 \u211d)\n    (hcos : Function.Injective (fun i => Real.cos (angle i)))\n    (hsin : \u2200 i, Real.sin (angle i) \u2260 0)\n    (imbalance : Fin R \u2192 \u211d)\n    (hmoment : \u2200 k : Fin N,\n      \u2211 i, imbalance i * Real.sin (((k : \u2115) + 1 : \u211d) * angle i) = 0) :\n    imbalance = 0"
+      },
+      {
+        "name": "RHTower.dyadic_atom_le",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeDyadicRigidity",
+        "statement": "theorem dyadic_atom_le {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    (hsupp : \u2200 m, 2 \u2264 m \u2192 (\u2200 k, 1 \u2264 k \u2192 m \u2260 2 ^ k) \u2192 lam m = ArithmeticFunction.vonMangoldt m)\n    {M : \u211d} (hM0 : 0 \u2264 M)\n    (hM : \u2200 i, |normDeficit lam (2 ^ (i + 1))| \u2264 M * (3 + Real.log ((2 ^ (i + 1) : \u2115) : \u211d))) (j : \u2115) :\n    2 * |normDeficit lam (2 ^ (j + 1))| * riemannAutocorr 0 \u2264\n      M * (3 + Real.log ((2 ^ (j + 1) : \u2115) : \u211d)) * (1.521 * riemannAutocorr 0)"
+      },
+      {
+        "name": "RHTower.atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+        "statement": "theorem atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr \u2264 0"
+      },
+      {
+        "name": "RHTower.WeilCommonRatio.summable_commonRatioSet_rpow",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeCommonRatioRigidity",
+        "statement": "theorem summable_commonRatioSet_rpow {b : \u2115} (hb : 2 \u2264 b) (C : Finset \u2115) :\n    Summable fun n : \u2115 => if commonRatioSet b C n then (n : \u211d) ^ (-(1 / 4 : \u211d)) else 0"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": []
+  },
+  {
+    "query": "full canonical cumulative interval phase quantitative disorder radial trace",
+    "mode": "hybrid",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "Weil",
+      "exclude_modules": []
+    },
+    "partial": false,
+    "unfinished_stages": [],
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "coverage": {
+      "files": 68392,
+      "inventoried": 68392,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68392
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11066,
+        "pending": 51928,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57326,
+        "prose": 11066
+      },
+      "declarations": 1028652,
+      "documents": 2849730,
+      "vectors": 2661348,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1278196,
+      "methods": {
+        "failed": 53,
+        "ready": 412954,
+        "stale": 181412
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791384491.487186,
+      "current_generation": 1278197
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "errors": [],
+    "declarations": [],
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.WeilSpectral.exists_fullMeasure_interval_phase",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationBoundaryPhase",
+        "statement": "theorem exists_fullMeasure_interval_phase {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    \u2203 Y : Set \u211d, volume Y\u1d9c = 0 \u2227 \u2200 a \u2208 Y, \u2200 b \u2208 Y, a < b \u2192\n      Tendsto (fun \u03b7 : \u211d => \u222b t in Ioc a b,\n        (weilContinuation hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)).re)\n        (\ud835\udcdd[>] 0) (\ud835\udcdd (Real.pi * (boundaryMeasure hW).real (Ioc a b)))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.intervalPhaseKernel",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationKernel",
+        "statement": "def intervalPhaseKernel (\u03b7 a b r : \u211d) : \u211d"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.phaseMomentMatrix_trace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkPBAPMomentPackets",
+        "statement": "theorem phaseMomentMatrix_trace {N : \u2115} (\u03bc : ProbabilityMeasure PrimePhaseSpace)\n    (d : PacketIndex N \u2192 \u2102) :\n    (phaseMomentMatrix \u03bc d).trace = ((\u2211 m, \u2016d m\u2016 ^ 2 : \u211d) : \u2102)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_intervalPhaseKernel",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationKernel",
+        "statement": "theorem tendsto_intervalPhaseKernel {a b r : \u211d} (hab : a < b) (hra : r \u2260 a) (hrb : r \u2260 b) :\n    Tendsto (fun \u03b7 => intervalPhaseKernel \u03b7 a b r) (\ud835\udcdd[>] 0)\n      (\ud835\udcdd ((Ioc a b).indicator (fun _ => Real.pi) r))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.intervalIntegrable_quantizationTraceF",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialGrowth",
+        "statement": "theorem intervalIntegrable_quantizationTraceF {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    (a b : \u211d) : IntervalIntegrable (quantizationTraceF hW) volume a b"
+      },
+      {
+        "name": "RHTower.ExposingRayRealization.trace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkExposingRayFiniteRealization",
+        "statement": "private def trace (L : \u211d) (J n : \u2115) : \u211d"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationTraceF",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialGrowth",
+        "statement": "def quantizationTraceF {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) : \u2102"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.remainderTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseMellinTrace",
+        "statement": "def remainderTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) : \u2102"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_exp_four_mul_interval_phase",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationBoundaryPhase",
+        "statement": "theorem tendsto_exp_four_mul_interval_phase {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {a b : \u211d} (hab : a < b) (ha : boundaryMeasure hW {a} = 0)\n    (hb : boundaryMeasure hW {b} = 0) :\n    Tendsto (fun \u03b7 : \u211d => Complex.exp (4 * I * Complex.ofReal (\u222b t in Ioc a b,\n      (weilContinuation hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)).re)))\n      (\ud835\udcdd[>] 0)\n      (\ud835\udcdd (Complex.exp (4 * I * Complex.ofReal (Real.pi * (boundaryMeasure hW).real (Ioc a b)))))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.measurable_quantizationBoundaryTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialBoundary",
+        "statement": "theorem measurable_quantizationBoundaryTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    Measurable (quantizationBoundaryTrace hW)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationRemainderTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialMellin",
+        "statement": "def quantizationRemainderTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) : \u2102"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.integrable_remainderTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseMellinTrace",
+        "statement": "theorem integrable_remainderTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    Integrable (remainderTrace hW)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_re_weilContinuation_interval_endpoints",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationEndpointPhase",
+        "statement": "theorem tendsto_re_weilContinuation_interval_endpoints {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) {a b : \u211d} (hab : a < b) :\n    Tendsto (fun \u03b7 : \u211d => \u222b t in Ioc a b,\n      (weilContinuation hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)).re)\n      (\ud835\udcdd[>] 0)\n      (\ud835\udcdd (Real.pi * (boundaryMeasure hW).real (Ioo a b) +\n        Real.pi / 2 * (boundaryMeasure hW).real {a} +\n        Real.pi / 2 * (boundaryMeasure hW).real {b}))"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.integrable_weighted_remainderTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseThetaTrace",
+        "statement": "theorem integrable_weighted_remainderTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {r : \u211d} (hr : 0 < r) :\n    Integrable (fun y : \u211d => (r : \u2102) ^ (-tracePoint 0 y / 2) * remainderTrace hW y)"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.ccmPositiveLagRectangularTriangle_eq_intervalAutocorrelation",
+        "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeFixedRectangularMixture",
+        "statement": "theorem ccmPositiveLagRectangularTriangle_eq_intervalAutocorrelation\n    {T h : \u211d} (hh : 0 \u2264 h) :\n    ccmPositiveLagRectangularTriangle T h =\n      \u222b x : \u211d, (Set.Icc (0 : \u211d) T).indicator (fun _ => (1 : \u211d)) (x + h) *\n        (Set.Icc (0 : \u211d) T).indicator (fun _ => (1 : \u211d)) x"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.tendsto_integral_norm_sourceTrace_sub_global",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseTrace",
+        "statement": "theorem tendsto_integral_norm_sourceTrace_sub_global {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) :\n    Tendsto (fun x : \u211d => \u222b y : \u211d,\n      \u2016sourceCompletion hW (tracePoint x y) - sourceTrace hW y\u2016)\n      (\ud835\udcdd[>] 0) (\ud835\udcdd 0)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_intervalPhaseKernel_endpoints",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationEndpointPhase",
+        "statement": "theorem tendsto_intervalPhaseKernel_endpoints {a b : \u211d} (hab : a < b) (r : \u211d) :\n    Tendsto (fun \u03b7 => intervalPhaseKernel \u03b7 a b r) (\ud835\udcdd[>] 0)\n      (\ud835\udcdd (endpointPhaseWindow a b r))"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.RepresentingPhaseMeasure",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkPBAPMomentPackets",
+        "statement": "def RepresentingPhaseMeasure"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationRemainderTrace_add",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialMellin",
+        "statement": "theorem quantizationRemainderTrace_add {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (t : \u211d) :\n    quantizationRemainderTrace hW (2 * t) + betaG (quantizationCompletion hW) *\n      Gamma\u211d (2 * (((1 / 4 : \u211d) : \u2102) + t * I) - 1) =\n        Gamma\u211d (2 * (((1 / 4 : \u211d) : \u2102) + t * I)) * quantizationTraceF hW (2 * t)"
+      },
+      {
+        "name": "RHTower.intervalIntegrable_thirdGradeCumulative_all",
+        "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeCesaroCompleteness",
+        "statement": "theorem intervalIntegrable_thirdGradeCumulative_all\n    {b : \u211d} (hb : 0 < b) (a H : \u211d) :\n    IntervalIntegrable\n      (ccmGuinandWeilThirdGradeCumulativeMeasurable b) volume a H"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.WeilSpectral.tendsto_integral_intervalPhaseKernel_endpoints",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationEndpointPhase",
+        "statement": "theorem tendsto_integral_intervalPhaseKernel_endpoints {\u03bc : Measure \u211d}\n    (h\u03bc : Integrable (fun r : \u211d => (1 + r ^ 2)\u207b\u00b9) \u03bc) {a b : \u211d} (hab : a < b)\n    (hfin : \u03bc (Icc a b) \u2260 \u221e) :\n    Tendsto (fun \u03b7 => \u222b r, intervalPhaseKernel \u03b7 a b r \u2202\u03bc) (\ud835\udcdd[>] 0)\n      (\ud835\udcdd (Real.pi * \u03bc.real (Ioo a b) + Real.pi / 2 * \u03bc.real {a} +\n        Real.pi / 2 * \u03bc.real {b}))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.continuous_intervalPhaseKernel",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationKernel",
+        "statement": "theorem continuous_intervalPhaseKernel (\u03b7 a b : \u211d) :\n    Continuous (intervalPhaseKernel \u03b7 a b)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_quantization_signed_fixed_truncation_two_mul",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialLayerCake",
+        "statement": "theorem tendsto_quantization_signed_fixed_truncation_two_mul {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) {m : \u2115} (hm : 1 \u2264 m) (a b : \u211d) :\n    Tendsto (fun \u03b5 : \u211d => (\u03b5 : \u2102) * \u222b t in a..b, quantizationTraceF hW (2 * t) *\n      pairKernel (2 * t) ((\u03b5 : \u2102) + (m : \u2102) * I)) (\ud835\udcdd[>] 0) (\ud835\udcdd 0)"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.packetCost",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhasePackets",
+        "statement": "def packetCost (a d q : \u211d) : \u211d \u2192 \u211d"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationCompletedTrace_ae_eq_sourceTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialMellin",
+        "statement": "theorem quantizationCompletedTrace_ae_eq_sourceTrace {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) : quantizationCompletedTrace hW =\u1d50[volume] sourceTrace hW"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.connes_trace4_weil",
+        "module": "GaloisForLFunctions.RHTower.ConnesTraceFormulaWeil",
+        "statement": "theorem connes_trace4_weil (s : Finset \u03b9) (g : \u03b9 \u2192 \ud835\udce2(\u211d, \u2102)) (qq : \u03b9 \u2192 \u211d) (f : \u211d \u2192 \u2102)\n    (h1 : \u2102) (W : \u03b9 \u2192 \u2102)\n    (hchart : \u2200 i \u2208 s, \u2200 u : \u211d, (g i) u = connesTwistedChart f (qq i) u)\n    (hlift : (\u2211 i \u2208 s, f (qq i)) = h1)\n    (hW : \u2200 i \u2208 s, Tendsto (fun \u03b5 : \u211d =>\n        (\u222b u in {u : \u211d | \u03b5 \u2264 |u - 1|}, connesTwistedWeilIntegrand f (qq i) u)\n          + f (qq i)\n            * ((Real.log \u03b5 + Real.eulerMascheroniConstant + Real.log (2 * \u03c0) : \u211d) : \u2102))\n      (\ud835\udcdd[>] 0) (\ud835\udcdd (W i))) (N : \u2115) :\n    Tendsto (fun \u039b : \u211d => \u039b ^ N *\n        \u2016(\u2211 i \u2208 s, \u222b u in {u : \u211d | |u| \u2264 \u039b ^ (2 : \u2115)},\n              (SchwartzMap.fourierTransformCLM \u2102 (g i) : \u211d \u2192 \u2102) u\n                * (((2 * Real.log \u039b - Real.log |u| : \u211d)) : \u2102))\n            - (((2 * Real.log \u039b : \u211d) : \u2102) * h1 + \u2211 i \u2208 s, W i)\u2016)\n      atTop (\ud835\udcdd 0)"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.ccmThirdGradeCesaroQuantileTransport_fixedWall_succ_sub",
+        "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeCompletedQuantileTransportIncrement",
+        "statement": "theorem ccmThirdGradeCesaroQuantileTransport_fixedWall_succ_sub\n    {b H : \u211d} (hb : 0 < b) (hbH : b \u2264 H) (N : \u2115) :\n    ccmPrimePolarReporterCompletedQuantileTransport\n        (ccmThirdGradeCesaroClippedTriangularWeight b H) (N + 1) H -\n      ccmPrimePolarReporterCompletedQuantileTransport\n        (ccmThirdGradeCesaroClippedTriangularWeight b H) N H =\n      criticalMellinAtomWeight N *\n        ccmThirdGradeCesaroClippedTriangularWeight b H (Real.log N)"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.ccmThirdGradeCesaroQuantileTransport_fixedWall_succ_sub_nonneg",
+        "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeCompletedQuantileTransportIncrement",
+        "statement": "theorem ccmThirdGradeCesaroQuantileTransport_fixedWall_succ_sub_nonneg\n    {b H : \u211d} (hb : 0 < b) (hbH : b \u2264 H) (N : \u2115) :\n    0 \u2264 ccmPrimePolarReporterCompletedQuantileTransport\n        (ccmThirdGradeCesaroClippedTriangularWeight b H) (N + 1) H -\n      ccmPrimePolarReporterCompletedQuantileTransport\n        (ccmThirdGradeCesaroClippedTriangularWeight b H) N H"
+      },
+      {
+        "name": "RHTower.WeilSpectral.continuous_exp_quantizationLogPrimitive_vertical",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialBoundary",
+        "statement": "theorem continuous_exp_quantizationLogPrimitive_vertical {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) {\u03c3 : \u211d} (h\u03c3 : 1 / 2 < \u03c3) :\n    Continuous fun t : \u211d => Complex.exp (quantizationLogPrimitive hW ((\u03c3 : \u2102) + t * I))"
+      },
+      {
+        "name": "RHTower.riemannPhiCore",
+        "module": "GaloisForLFunctions.RHTower.WeilMarginSuperexponentialLaw",
+        "statement": "def riemannPhiCore (L : \u211d) : \u211d \u2192 \u2102"
+      },
+      {
+        "name": "RHTower.plateauProfile_apply",
+        "module": "GaloisForLFunctions.RHTower.ConstrainedWeilPlateauProfile",
+        "statement": "theorem plateauProfile_apply (a : \u211d) (ha : 0 \u2264 a) (u : \u211d) :\n    (plateauProfile a ha) u = plateauProfileFun a u"
+      },
+      {
+        "name": "RiemannGaussian.intervalIntegrable_logDeriv_canonicalFactor_quantitative",
+        "module": "GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiWeilVertical",
+        "statement": "theorem intervalIntegrable_logDeriv_canonicalFactor_quantitative\n    (n : \u2115) {i : \u2102}\n    (hi : divisor riemannXi (ball 0 (xiCanonicalRadius n)) i \u2260 0) :\n    IntervalIntegrable\n      (fun y : \u211d \u21a6\n        logDeriv (Complex.canonicalFactor (xiCanonicalRadius n) i)\n          (completedSpectralCoordinate\n            ((quantitativeSpectralBoundaryTruncation n : \u2102) +\n              (y : \u2102) * Complex.I)))\n      volume (-1) 1"
+      },
+      {
+        "name": "RHTower.ccmMatchedPrimePolarQuadratureDefect_eq_integral",
+        "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeMatchedQuadrature",
+        "statement": "theorem ccmMatchedPrimePolarQuadratureDefect_eq_integral\n    {phi : \u211d \u2192 \u211d} (hphi : Continuous phi) (n : \u2115) :\n    ccmMatchedPrimePolarQuadratureDefect phi n =\n      \u222b h in\n        (Real.log n - ccmActualHeadMatchedPrimePolarRadius n)..\n        (Real.log n + ccmActualHeadMatchedPrimePolarRadius n),\n        Real.exp (h / 2) * (phi (Real.log n) - phi h)"
+      },
+      {
+        "name": "RHTower.truncatedRiemannAutocorr",
+        "module": "GaloisForLFunctions.RHTower.WeilPositivityMajorantRigidity",
+        "statement": "def truncatedRiemannAutocorr (L y : \u211d) : \u211d"
+      },
+      {
+        "name": "RHTower.CCMRealRootedGround.integrable_timeRep",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilRealRootedGroundState",
+        "statement": "theorem integrable_timeRep (u : CCMArchimedeanFormDomain a) : Integrable (timeRep a u)"
+      },
+      {
+        "name": "RHTower.ccmGammaPolarJump_actualPhase",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilGammaPolarBoundary",
+        "statement": "theorem ccmGammaPolarJump_actualPhase {R L : \u211d} (hR : 0 < R) (hL : 0 < L) :\n    2*gammaHardyPhaseRate 0 + (\u222b h in Ioi (0:\u211d), ccmGammaPolarJumpKernel R L h) =\n      -R - Real.eulerMascheroniConstant - Real.log (2*Real.pi) + ccmGammaPolarBoundary R L"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.half_packet_count_discrepancy",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhasePackets",
+        "statement": "theorem half_packet_count_discrepancy (a d y : \u211d) :\n    |packetCount a d (Real.pi / 2) y - (if right a d < y then 1 else 0)| \u2264 1 / 2"
+      },
+      {
+        "name": "RHTower.CCMRealRootedGround.unitaryLaplace_timeRep_add_smul",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilRealRootedGroundState",
+        "statement": "theorem unitaryLaplace_timeRep_add_smul (u v : CCMArchimedeanFormDomain a) (c w : \u2102) :\n    unitaryLaplace (timeRep a (u + c \u2022 v)) w =\n      unitaryLaplace (timeRep a u) w + c * unitaryLaplace (timeRep a v) w"
+      },
+      {
+        "name": "RHTower.XiCriticalLineResolventCopy",
+        "module": "GaloisForLFunctions.RHTower.XiWeilHardyCriticalLocusPoissonReserve",
+        "statement": "abbrev XiCriticalLineResolventCopy"
+      },
+      {
+        "name": "RHTower.WeilSpectral.intervalIntegrable_quantizationTraceF",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialGrowth",
+        "statement": "theorem intervalIntegrable_quantizationTraceF {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    (a b : \u211d) : IntervalIntegrable (quantizationTraceF hW) volume a b"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": []
+  },
+  {
+    "query": "positive canonical measure Fourier support arithmetic local phase quantization",
+    "mode": "hybrid",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "Weil",
+      "exclude_modules": []
+    },
+    "partial": false,
+    "unfinished_stages": [],
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "coverage": {
+      "files": 68396,
+      "inventoried": 68396,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68396
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11067,
+        "pending": 51931,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57329,
+        "prose": 11067
+      },
+      "declarations": 1028688,
+      "documents": 2849834,
+      "vectors": 2661424,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1278287,
+      "methods": {
+        "failed": 53,
+        "ready": 412964,
+        "stale": 181402
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791385539.813162,
+      "current_generation": 1278288
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "errors": [],
+    "declarations": [],
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.WeilSpectral.quantizationIntegerMeasure",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationIntegerFloor",
+        "statement": "def quantizationIntegerMeasure {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) : Measure \u211d"
+      },
+      {
+        "name": "RHTower.ccmArchimedeanPhaseMul_coeFn",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFormTranslation",
+        "statement": "theorem ccmArchimedeanPhaseMul_coeFn (h : \u211d) (u : CCMArchimedeanFourierL2) :\n    (ccmArchimedeanPhaseMul h u : \u211d \u2192 \u2102) =\u1d50[ccmArchimedeanFormMeasure]\n      fun x => MellinL2.fourierPhase h x * u x"
+      },
+      {
+        "name": "RHTower.form_fourier_density",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilModulationPhaseRecovery",
+        "statement": "private theorem form_fourier_density (a : SuzukiPositiveAperture)\n    (u : CCMArchimedeanFormDomain a) :\n    Integrable (fun \u03be => ccmArchimedeanFormWeight \u03be *\n      \u2016(fourierUnitary (ccmArchimedeanFormToAperture a u).1) \u03be\u2016^2)"
+      },
+      {
+        "name": "RHTower.fourier_translation_ae",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilRemainderMultiplier",
+        "statement": "private theorem fourier_translation_ae (h : \u211d) (f : SoninL2) :\n    (fourierUnitary (logTranslationCLM h f) : \u211d \u2192 \u2102) =\u1d50[volume]\n      fun \u03be => MellinL2.fourierPhase h \u03be * fourierUnitary f \u03be"
+      },
+      {
+        "name": "RHTower.memLp_ccmPolarFourierIntegral_formMeasure",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarOperatorDomain",
+        "statement": "theorem memLp_ccmPolarFourierIntegral_formMeasure (a : SuzukiPositiveAperture) (s : \u211d) :\n    MemLp (ccmPolarFourierIntegral a s) 2 ccmArchimedeanFormMeasure"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.shiftedFourierSamplesLp",
+        "module": "GaloisForLFunctions.HTGeometry.SchwartzArithmeticProgressionWeilForm",
+        "statement": "def shiftedFourierSamplesLp (alpha : \u211d) (halpha : 0 < alpha)\n    (q : SchwartzMap \u211d \u2102) : lp (fun _ : \u2115 => \u2102) 2"
+      },
+      {
+        "name": "RHTower.ccmPolarWeightedFourierVector",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarOperatorDomain",
+        "statement": "def ccmPolarWeightedFourierVector (a : SuzukiPositiveAperture) (s : \u211d) :\n    CCMArchimedeanFourierL2"
+      },
+      {
+        "name": "RHTower.fourier_ccmFullLineBoundedRemainder_ae",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilRemainderMultiplier",
+        "statement": "theorem fourier_ccmFullLineBoundedRemainder_ae (a : SuzukiPositiveAperture) (f : SoninL2) :\n    (fourierUnitary (ccmFullLineBoundedRemainder a f) : \u211d \u2192 \u2102) =\u1d50[volume]\n      fun \u03be => (ccmArchimedeanRemainderScalar +\n        (polarPrimeStieltjesSymbol a.1 (-2 * Real.pi * \u03be) : \u2102)) * fourierUnitary f \u03be"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.shiftedFourierSamplesLp_apply",
+        "module": "GaloisForLFunctions.HTGeometry.SchwartzArithmeticProgressionWeilForm",
+        "statement": "@[simp] theorem shiftedFourierSamplesLp_apply\n    (alpha : \u211d) (halpha : 0 < alpha) (q : SchwartzMap \u211d \u2102) (n : \u2115) :\n    shiftedFourierSamplesLp alpha halpha q n = shiftedFourierSample alpha q n"
+      },
+      {
+        "name": "RHTower.ccmFormDomain_ae_eq_fourier",
+        "module": "GaloisForLFunctions.RHTower.PoleVanishingWeilTraceCertificate",
+        "statement": "theorem ccmFormDomain_ae_eq_fourier (a : SuzukiPositiveAperture)\n    (u : CCMArchimedeanFormDomain a) :\n    (u.1 : \u211d \u2192 \u2102) =\u1d50[volume]\n      \ud835\udcd5 (((ccmArchimedeanFormToAperture a u : suzukiApertureHilbert a) : SoninL2) : \u211d \u2192 \u2102)"
+      },
+      {
+        "name": "RHTower.exposingCompact_fourier_multiplier",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkExposingRayPacketCoercivity",
+        "statement": "theorem exposingCompact_fourier_multiplier (a : SuzukiPositiveAperture)\n    (g : CCMComplexSmoothInteriorSource a) (z : \u2102) :\n    paperFT (g.polarMultiplier : \u211d \u2192 \u2102) z =\n      -(z ^ 2 + 1 / 4) * paperFT (g : \u211d \u2192 \u2102) z"
+      },
+      {
+        "name": "RHTower.ccmArchimedeanPhaseMul",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFormTranslation",
+        "statement": "def ccmArchimedeanPhaseMul (h : \u211d) :\n    CCMArchimedeanFourierL2 \u2192L[\u2102] CCMArchimedeanFourierL2"
+      },
+      {
+        "name": "RHTower.CCMGroundQuadrature.evalAt",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilGroundZeroQuadrature",
+        "statement": "def evalAt (w : \u2102) : CCMArchimedeanFormDomain a \u2192\u2097[\u2102] \u2102 where\n  toFun u"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationIntegerMeasure_apply",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationIntegerFloor",
+        "statement": "theorem quantizationIntegerMeasure_apply {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {s : Set \u211d} (hs : MeasurableSet s) :\n    quantizationIntegerMeasure hW s =\n      \u2211' r : \u211d, ((s.indicator (quantizationIntegerWeight hW) r : \u2115) : \u211d\u22650\u221e)"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.RepresentingPhaseMeasure",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkPBAPMomentPackets",
+        "statement": "def RepresentingPhaseMeasure"
+      },
+      {
+        "name": "RHTower.exposingPacket_fourier_mass",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkExposingRayPacketCoercivity",
+        "statement": "theorem exposingPacket_fourier_mass (N : \u2115) (c : \u2115 \u2192 \u2102) :\n    (\u222b \u03c4 : \u211d, \u2016paperFT (resonator N c (exposingPacketWidth N)) \u03c4\u2016 ^ 2) =\n      2 * \u03c0 * (\u222b u, gR (exposingPacketWidth N) u ^ 2) *\n        \u2211 m \u2208 Finset.Icc 1 N, \u2016c m\u2016 ^ 2"
+      },
+      {
+        "name": "RHTower.suzukiEntireFourier_eq_compactFourier",
+        "module": "GaloisForLFunctions.RHTower.SuzukiWeilTestSpace",
+        "statement": "theorem suzukiEntireFourier_eq_compactFourier {a : \u211d} (ha : 0 \u2264 a) {\u03c8 : \u211d \u2192 \u2102}\n    (_hcont : Continuous \u03c8) (hsupp : Function.support \u03c8 \u2286 Icc (-a) a) (z : \u2102) :\n    suzukiEntireFourier \u03c8 z = compactFourier \u03c8 (-a) a z"
+      },
+      {
+        "name": "RHTower.fourier_modulation",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilModulationPhaseRecovery",
+        "statement": "private theorem fourier_modulation (t : \u211d) (f : SoninL2) :\n    fourierUnitary (modulationMul t f) = translateL2 (-t) (fourierUnitary f)"
+      },
+      {
+        "name": "RHTower.memLp_ccmFormWeight_mul_fourier_polarVector",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarFourierRegularity",
+        "statement": "theorem memLp_ccmFormWeight_mul_fourier_polarVector (a : SuzukiPositiveAperture) (s : \u211d) :\n    MemLp (fun \u03be : \u211d => (ccmArchimedeanFormWeight \u03be : \u2102) *\n      (fourierUnitary (ccmPolarL2Vector a s) : SoninL2) \u03be) 2 volume"
+      },
+      {
+        "name": "RHTower.WeilDeletion.fourier_eq_paperFT",
+        "module": "GaloisForLFunctions.RHTower.WeilPrimeFreeTest",
+        "statement": "theorem fourier_eq_paperFT (f : \u211d \u2192 \u2102) (\u03be : \u211d) :\n    \ud835\udcd5 f \u03be = Zeta23.paperFT f (-(2 * Real.pi * \u03be))"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.phaseMul_mem_formDomain",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFormTranslation",
+        "statement": "private theorem phaseMul_mem_formDomain {a b : SuzukiPositiveAperture} {h : \u211d}\n    (hab : a.1 + |h| \u2264 b.1) (u : CCMArchimedeanFormDomain a) :\n    ccmArchimedeanPhaseMul h u.1 \u2208 (ccmArchimedeanSupportDefect b).ker"
+      },
+      {
+        "name": "RHTower.ccmArchimedeanPhaseMul",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFormTranslation",
+        "statement": "def ccmArchimedeanPhaseMul (h : \u211d) :\n    CCMArchimedeanFourierL2 \u2192L[\u2102] CCMArchimedeanFourierL2"
+      },
+      {
+        "name": "RHTower.ccmArchimedeanFourierReflection",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilGroundParity",
+        "statement": "def ccmArchimedeanFourierReflection :\n    CCMArchimedeanFourierL2 \u2192\u2097\u1d62[\u2102] CCMArchimedeanFourierL2"
+      },
+      {
+        "name": "RHTower.phase_pair",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilRemainderMultiplier",
+        "statement": "private theorem phase_pair (h \u03be : \u211d) :\n    MellinL2.fourierPhase h \u03be + MellinL2.fourierPhase (-h) \u03be =\n      ((2 * Real.cos ((-2 * Real.pi * \u03be) * h) : \u211d) : \u2102)"
+      },
+      {
+        "name": "RHTower.fourier_translation_ae",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilRemainderMultiplier",
+        "statement": "private theorem fourier_translation_ae (h : \u211d) (f : SoninL2) :\n    (fourierUnitary (logTranslationCLM h f) : \u211d \u2192 \u2102) =\u1d50[volume]\n      fun \u03be => MellinL2.fourierPhase h \u03be * fourierUnitary f \u03be"
+      },
+      {
+        "name": "RHTower.ccmArchimedeanFourierReflection_involutive",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilGroundParity",
+        "statement": "@[simp] theorem ccmArchimedeanFourierReflection_involutive\n    (f : CCMArchimedeanFourierL2) :\n    ccmArchimedeanFourierReflection (ccmArchimedeanFourierReflection f) = f"
+      },
+      {
+        "name": "RHTower.WeilDeletion.testProfile_le",
+        "module": "GaloisForLFunctions.RHTower.WeilPrimeFreeCrossing",
+        "statement": "theorem testProfile_le {L \u03be : \u211d} (hL : 0 < L) (h\u03be : \u03be \u2260 0) :\n    testProfile L \u03be \u2264 mM ^ (2 : \u2115) * kappaTwo ^ (2 : \u2115) / L ^ (4 : \u2115) / |\u03be| ^ (6 : \u2115)"
+      },
+      {
+        "name": "RHTower.fourier_modulation",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilModulationPhaseRecovery",
+        "statement": "private theorem fourier_modulation (t : \u211d) (f : SoninL2) :\n    fourierUnitary (modulationMul t f) = translateL2 (-t) (fourierUnitary f)"
+      },
+      {
+        "name": "RHTower.ccmPolarWeightedFourierVector",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarOperatorDomain",
+        "statement": "def ccmPolarWeightedFourierVector (a : SuzukiPositiveAperture) (s : \u211d) :\n    CCMArchimedeanFourierL2"
+      },
+      {
+        "name": "RiemannGaussian.suzukiWeilTest_zero",
+        "module": "GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiWeilTest",
+        "statement": "@[simp] theorem suzukiWeilTest_zero\n    {t : \u211d} (ht : 0 \u2264 t) (z : \u2102) :\n    suzukiWeilTest t z 0 = 0"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.phaseMomentMatrix_apply",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkPBAPMomentPackets",
+        "statement": "theorem phaseMomentMatrix_apply {N : \u2115} (\u03bc : ProbabilityMeasure PrimePhaseSpace)\n    (d : PacketIndex N \u2192 \u2102) (m k : PacketIndex N) :\n    phaseMomentMatrix \u03bc d m k = d m * conj (d k) * phaseMoment \u03bc m k"
+      },
+      {
+        "name": "RHTower.ccmPublishedCenteredClock_inclusion",
+        "module": "GaloisForLFunctions.RHTower.CCMPublishedRestrictedWeilPrincipalTower",
+        "statement": "@[simp] theorem ccmPublishedCenteredClock_inclusion\n    (M N : \u2115) (hMN : M \u2264 N) (i : Fin (2 * M + 1)) :\n    ccmPublishedCenteredClock N (ccmPublishedCenteredInclusion M N hMN i) =\n      ccmPublishedCenteredClock M i"
+      },
+      {
+        "name": "RHTower.fourierUnitary_ae_eq_fourier_of_integrable",
+        "module": "GaloisForLFunctions.RHTower.PoleVanishingWeilTraceCertificate",
+        "statement": "theorem fourierUnitary_ae_eq_fourier_of_integrable (u : SoninL2)\n    (hu : Integrable (u : \u211d \u2192 \u2102) volume) :\n    (fourierUnitary u : \u211d \u2192 \u2102) =\u1d50[volume] \ud835\udcd5 (u : \u211d \u2192 \u2102)"
+      },
+      {
+        "name": "RHTower.WeilDeletion.norm_sq_fourier_primeFreeTest",
+        "module": "GaloisForLFunctions.RHTower.WeilPrimeFreeCrossing",
+        "statement": "theorem norm_sq_fourier_primeFreeTest (L : \u211d) (hL : 1 \u2264 L) (\u03be : \u211d) :\n    \u2016\ud835\udcd5 ((primeFreeTest L hL).toSchwartz : \u211d \u2192 \u2102) \u03be\u2016 ^ (2 : \u2115) =\n      mSym \u03be ^ (2 : \u2115) * (L ^ (2 : \u2115) * \u2016\ud835\udcd5 phiTwoC (L * \u03be)\u2016 ^ (2 : \u2115))"
+      },
+      {
+        "name": "RHTower.WeilExcess.fourier_modulatedFejer_log_self",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeSummableExcessRigidity",
+        "statement": "theorem fourier_modulatedFejer_log_self (m : \u2115) :\n    \ud835\udcd5 (modulatedFejer ((m : \u211d) + 1) (Real.log m)) (Real.log m) =\n      (((m : \u211d) + 1 : \u211d) : \u2102) * \ud835\udcd5 fejerTestC 0"
+      },
+      {
+        "name": "RHTower.WeilDeletion.primeFreeTest_isPolarConstrained",
+        "module": "GaloisForLFunctions.RHTower.WeilPrimeFreeTest",
+        "statement": "theorem primeFreeTest_isPolarConstrained (L : \u211d) (hL : 1 \u2264 L) :\n    IsPolarConstrained _ (primeFreeTest L hL).toCCMFormVector"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.summable_norm_sq_shiftedFourierSample",
+        "module": "GaloisForLFunctions.HTGeometry.SchwartzArithmeticProgressionWeilForm",
+        "statement": "theorem summable_norm_sq_shiftedFourierSample\n    {alpha : \u211d} (halpha : 0 < alpha) (q : SchwartzMap \u211d \u2102) :\n    Summable (fun n : \u2115 => \u2016shiftedFourierSample alpha q n\u2016 ^ 2)"
+      },
+      {
+        "name": "RHTower.integrable_ccmFormWeight_sq_ccmPolarFourier",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarFourierRegularity",
+        "statement": "theorem integrable_ccmFormWeight_sq_ccmPolarFourier (a : SuzukiPositiveAperture) (s : \u211d) :\n    Integrable (fun \u03be : \u211d => ccmArchimedeanFormWeight \u03be ^ 2 *\n      \u2016ccmPolarFourierIntegral a s \u03be\u2016 ^ 2)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.deficitZeroFourierError_eq",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkDeficitZeroTransport",
+        "statement": "private theorem deficitZeroFourierError_eq (k T : \u211d) :\n    deficitZeroFourierError k T = deficitZeroRawFourierError k T +\n      (Real.pi : \u2102) * deficitZeroProjectionError k T"
+      },
+      {
+        "name": "RHTower.exists_ccmArchimedeanFormDomain_modulation",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilModulationPhaseRecovery",
+        "statement": "theorem exists_ccmArchimedeanFormDomain_modulation\n    (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) (t : \u211d) :\n    \u2203 v : CCMArchimedeanFormDomain a,\n      ccmArchimedeanFormToAperture a v =\n        ccmApertureModulation a t (ccmArchimedeanFormToAperture a u)"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": []
+  },
+  {
+    "query": "signed truncation phase monotone residual mass",
+    "mode": "hybrid",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "WeilWorkQuantization",
+      "exclude_modules": []
+    },
+    "partial": false,
+    "unfinished_stages": [],
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "coverage": {
+      "files": 68399,
+      "inventoried": 68399,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68399
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11068,
+        "pending": 51933,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57331,
+        "prose": 11068
+      },
+      "declarations": 1028709,
+      "documents": 2849890,
+      "vectors": 2661438,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1278310,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791385681.799545,
+      "current_generation": 1278311
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "errors": [],
+    "declarations": [],
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.WeilSpectral.exists_bound_quantization_signed_truncation_two_mul",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialContour",
+        "statement": "theorem exists_bound_quantization_signed_truncation_two_mul {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) {m : \u2115} (hm : 1 \u2264 m) :\n    \u2203 B : \u211d, 0 \u2264 B \u2227 \u2200 \u03b5 : \u211d, 0 < \u03b5 \u2192 \u03b5 \u2264 1 \u2192 \u2200 a : \u211d, a \u2264 0 \u2192\n      \u2016(\u03b5 : \u2102) * \u222b t in a..0, quantizationTraceF hW (2 * t) *\n        pairKernel (2 * t) ((\u03b5 : \u2102) + (m : \u2102) * I)\u2016 \u2264 B"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_bound_quantization_signed_truncation",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialContour",
+        "statement": "theorem exists_bound_quantization_signed_truncation {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {m : \u2115} (hm : 1 \u2264 m) :\n    \u2203 B : \u211d, 0 \u2264 B \u2227 \u2200 \u03b5 : \u211d, 0 < \u03b5 \u2192 \u03b5 \u2264 1 \u2192 \u2200 A : \u211d, A \u2264 0 \u2192\n      \u2016(\u03b5 : \u2102) * \u222b y in A..0, quantizationTraceF hW y *\n        pairKernel y ((\u03b5 : \u2102) + (m : \u2102) * I)\u2016 \u2264 B"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_quantization_signed_fixed_truncation_two_mul",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialLayerCake",
+        "statement": "theorem tendsto_quantization_signed_fixed_truncation_two_mul {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) {m : \u2115} (hm : 1 \u2264 m) (a b : \u211d) :\n    Tendsto (fun \u03b5 : \u211d => (\u03b5 : \u2102) * \u222b t in a..b, quantizationTraceF hW (2 * t) *\n      pairKernel (2 * t) ((\u03b5 : \u2102) + (m : \u2102) * I)) (\ud835\udcdd[>] 0) (\ud835\udcdd 0)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationResidualMeasure",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationIntegerFloor",
+        "statement": "def quantizationResidualMeasure {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) : Measure \u211d"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationResidualMeasure_atom_lt_one",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationIntegerFloor",
+        "statement": "theorem quantizationResidualMeasure_atom_lt_one {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    (r : \u211d) : (quantizationResidualMeasure hW).real {r} < 1"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationRemainderTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialMellin",
+        "statement": "def quantizationRemainderTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) : \u2102"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_quantization_radial_monotone_twist",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialLayerCake",
+        "statement": "theorem tendsto_quantization_radial_monotone_twist {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {h : \u211d \u2192 \u211d} (hmono : Monotone h) (hh0 : \u2200 t, 0 \u2264 h t) {H : \u211d} (hhH : \u2200 t, h t \u2264 H)\n    (hlim : Tendsto h atBot (\ud835\udcdd 0)) {m : \u2115} (hm : 1 \u2264 m) :\n    Tendsto (fun \u03b5 : \u211d => (\u03b5 : \u2102) * \u222b t in Iio (0 : \u211d),\n        (Complex.exp (-(2 * Real.pi * I) * h t) - 1) *\n          (quantizationTraceF hW (2 * t) * pairKernel (2 * t) ((\u03b5 : \u2102) + (m : \u2102) * I))) (\ud835\udcdd[>] 0) (\ud835\udcdd 0)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.measurable_quantizationCompletedTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialGrowth",
+        "statement": "theorem measurable_quantizationCompletedTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    Measurable (quantizationCompletedTrace hW)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.norm_quantizationTraceF_le",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialGrowth",
+        "statement": "theorem norm_quantizationTraceF_le {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) :\n    \u2016quantizationTraceF hW y\u2016 \u2264\n      \u2016quantizationRightMajorant hW (((1 / 2 : \u211d) : \u2102) + y * I)\u2016"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_norm_quantizationTraceF_linear_le",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialTheta",
+        "statement": "theorem exists_norm_quantizationTraceF_linear_le {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    \u2203 C : \u211d, 0 \u2264 C \u2227 \u2200 y : \u211d, \u2016quantizationTraceF hW y\u2016 \u2264 C * (1 + |y|)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationRemainderTrace_add",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialMellin",
+        "statement": "theorem quantizationRemainderTrace_add {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (t : \u211d) :\n    quantizationRemainderTrace hW (2 * t) + betaG (quantizationCompletion hW) *\n      Gamma\u211d (2 * (((1 / 4 : \u211d) : \u2102) + t * I) - 1) =\n        Gamma\u211d (2 * (((1 / 4 : \u211d) : \u2102) + t * I)) * quantizationTraceF hW (2 * t)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.measurable_quantizationBoundaryTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialBoundary",
+        "statement": "theorem measurable_quantizationBoundaryTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    Measurable (quantizationBoundaryTrace hW)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.measurable_quantizationReflectedTraceF",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialTheta",
+        "statement": "theorem measurable_quantizationReflectedTraceF {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    Measurable (quantizationReflectedTraceF hW)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_quantizationBoundaryTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialBoundary",
+        "statement": "theorem tendsto_quantizationBoundaryTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (t : \u211d) :\n    Tendsto (fun \u03b7 : \u211d =>\n      Complex.exp (quantizationLogPrimitive hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)))\n      (\ud835\udcdd[>] 0) (\ud835\udcdd (quantizationBoundaryTrace hW t))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_exp_four_mul_interval_phase",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationBoundaryPhase",
+        "statement": "theorem tendsto_exp_four_mul_interval_phase {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {a b : \u211d} (hab : a < b) (ha : boundaryMeasure hW {a} = 0)\n    (hb : boundaryMeasure hW {b} = 0) :\n    Tendsto (fun \u03b7 : \u211d => Complex.exp (4 * I * Complex.ofReal (\u222b t in Ioc a b,\n      (weilContinuation hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)).re)))\n      (\ud835\udcdd[>] 0)\n      (\ud835\udcdd (Complex.exp (4 * I * Complex.ofReal (Real.pi * (boundaryMeasure hW).real (Ioc a b)))))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_fullMeasure_interval_phase",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationBoundaryPhase",
+        "statement": "theorem exists_fullMeasure_interval_phase {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    \u2203 Y : Set \u211d, volume Y\u1d9c = 0 \u2227 \u2200 a \u2208 Y, \u2200 b \u2208 Y, a < b \u2192\n      Tendsto (fun \u03b7 : \u211d => \u222b t in Ioc a b,\n        (weilContinuation hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)).re)\n        (\ud835\udcdd[>] 0) (\ud835\udcdd (Real.pi * (boundaryMeasure hW).real (Ioc a b)))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_re_weilContinuation_interval_endpoints",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationEndpointPhase",
+        "statement": "theorem tendsto_re_weilContinuation_interval_endpoints {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) {a b : \u211d} (hab : a < b) :\n    Tendsto (fun \u03b7 : \u211d => \u222b t in Ioc a b,\n      (weilContinuation hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)).re)\n      (\ud835\udcdd[>] 0)\n      (\ud835\udcdd (Real.pi * (boundaryMeasure hW).real (Ioo a b) +\n        Real.pi / 2 * (boundaryMeasure hW).real {a} +\n        Real.pi / 2 * (boundaryMeasure hW).real {b}))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.intervalPhaseKernel",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationKernel",
+        "statement": "def intervalPhaseKernel (\u03b7 a b r : \u211d) : \u211d"
+      },
+      {
+        "name": "RHTower.WeilSpectral.endpointPhaseWindow",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationEndpointPhase",
+        "statement": "def endpointPhaseWindow (a b r : \u211d) : \u211d"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_intervalPhaseKernel",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationKernel",
+        "statement": "theorem tendsto_intervalPhaseKernel {a b r : \u211d} (hab : a < b) (hra : r \u2260 a) (hrb : r \u2260 b) :\n    Tendsto (fun \u03b7 => intervalPhaseKernel \u03b7 a b r) (\ud835\udcdd[>] 0)\n      (\ud835\udcdd ((Ioc a b).indicator (fun _ => Real.pi) r))"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.WeilSpectral.tendsto_quantization_signed_fixed_truncation_two_mul",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialLayerCake",
+        "statement": "theorem tendsto_quantization_signed_fixed_truncation_two_mul {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) {m : \u2115} (hm : 1 \u2264 m) (a b : \u211d) :\n    Tendsto (fun \u03b5 : \u211d => (\u03b5 : \u2102) * \u222b t in a..b, quantizationTraceF hW (2 * t) *\n      pairKernel (2 * t) ((\u03b5 : \u2102) + (m : \u2102) * I)) (\ud835\udcdd[>] 0) (\ud835\udcdd 0)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationIntegerMeasure",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationIntegerFloor",
+        "statement": "def quantizationIntegerMeasure {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) : Measure \u211d"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_real_mass_decomposition",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationIntegerFloor",
+        "statement": "theorem quantization_real_mass_decomposition {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {s : Set \u211d} (hs : MeasurableSet s) (hfin : boundaryMeasure hW s \u2260 \u221e) :\n    (boundaryMeasure hW).real s = (quantizationResidualMeasure hW).real s +\n      (quantizationIntegerMeasure hW).real s"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_pairKernel_eq_offKernel",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialContour",
+        "statement": "theorem quantization_pairKernel_eq_offKernel (y : \u211d) (\u03c4 : \u2102) :\n    pairKernel y \u03c4 = offKernel \u03c4 (((1 / 2 : \u211d) : \u2102) + y * I)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_quantization_radial_monotone_twist",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialLayerCake",
+        "statement": "theorem tendsto_quantization_radial_monotone_twist {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {h : \u211d \u2192 \u211d} (hmono : Monotone h) (hh0 : \u2200 t, 0 \u2264 h t) {H : \u211d} (hhH : \u2200 t, h t \u2264 H)\n    (hlim : Tendsto h atBot (\ud835\udcdd 0)) {m : \u2115} (hm : 1 \u2264 m) :\n    Tendsto (fun \u03b5 : \u211d => (\u03b5 : \u2102) * \u222b t in Iio (0 : \u211d),\n        (Complex.exp (-(2 * Real.pi * I) * h t) - 1) *\n          (quantizationTraceF hW (2 * t) * pairKernel (2 * t) ((\u03b5 : \u2102) + (m : \u2102) * I))) (\ud835\udcdd[>] 0) (\ud835\udcdd 0)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_bound_open_rectangle",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialContour",
+        "statement": "theorem exists_bound_open_rectangle {F : \u2102 \u2192 \u2102} {CF CS : \u211d} (hCF : 0 \u2264 CF) (hCS : 0 \u2264 CS)\n    (hFd : \u2200 s : \u2102, 1 / 2 < s.re \u2192 s.re \u2264 3 / 2 \u2192 s.im \u2264 -2 \u2192 DifferentiableAt \u2102 F s)\n    (hF : \u2200 x y : \u211d, 1 / 2 < x \u2192 x \u2264 3 / 2 \u2192 y \u2264 -2 \u2192\n      \u2016F ((x : \u2102) + y * I)\u2016 \u2264 CF * (1 + |y|) ^ (1 / 2 : \u211d))\n    (hR : \u2200 y : \u211d, y \u2264 -2 \u2192 \u2016F (((3 / 2 : \u211d) : \u2102) + y * I)\u2016 \u2264 CS)\n    {m : \u2115} (hm : 1 \u2264 m) :\n    \u2203 B : \u211d, 0 \u2264 B \u2227 \u2200 \u03b5 : \u211d, 0 < \u03b5 \u2192 \u03b5 \u2264 1 \u2192\n      \u2200 \u03c3 : \u211d, 1 / 2 < \u03c3 \u2192 \u03c3 \u2264 3 / 2 \u2192 \u2200 A : \u211d, A \u2264 -2 \u2192\n      \u2016(\u03b5 : \u2102) * \u222b y in A..(-2), F ((\u03c3 : \u2102) + y * I) *\n        offKernel ((\u03b5 : \u2102) + (m : \u2102) * I) ((\u03c3 : \u2102) + y * I)\u2016 \u2264 B"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationCompletedTrace_ae_eq_sourceTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialMellin",
+        "statement": "theorem quantizationCompletedTrace_ae_eq_sourceTrace {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) : quantizationCompletedTrace hW =\u1d50[volume] sourceTrace hW"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_radial_inverse_mellin",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialMellin",
+        "statement": "theorem quantization_radial_inverse_mellin {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {x : \u211d} (hx : 0 < x) :\n    coeffTheta (dirichletExp (lamLog lam)) x - betaG (quantizationCompletion hW) *\n        ((x : \u2102) ^ (-(1 / 2 : \u2102)) * expNegPi x) =\n      (1 / (2 * Real.pi)) \u2022 \u222b t : \u211d,\n        (x : \u2102) ^ (-(((1 / 4 : \u211d) : \u2102) + t * I)) * quantizationRemainderTrace hW (2 * t)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_norm_quantizationProdF_le",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialGrowth",
+        "statement": "theorem exists_norm_quantizationProdF_le {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    \u2203 C : \u211d, 0 \u2264 C \u2227 \u2200 x y : \u211d, 1 / 2 < x \u2192 x \u2264 3 / 2 \u2192 2 \u2264 |y| \u2192\n      \u2016prodF (quantizationCompletion hW) ((x : \u2102) + y * I)\u2016 \u2264\n        C * (1 + |y|) ^ (1 / 2 : \u211d)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationCompletedTrace",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialGrowth",
+        "statement": "def quantizationCompletedTrace {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) : \u2102"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_integral_intervalPhaseKernel_endpoints",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationEndpointPhase",
+        "statement": "theorem tendsto_integral_intervalPhaseKernel_endpoints {\u03bc : Measure \u211d}\n    (h\u03bc : Integrable (fun r : \u211d => (1 + r ^ 2)\u207b\u00b9) \u03bc) {a b : \u211d} (hab : a < b)\n    (hfin : \u03bc (Icc a b) \u2260 \u221e) :\n    Tendsto (fun \u03b7 => \u222b r, intervalPhaseKernel \u03b7 a b r \u2202\u03bc) (\ud835\udcdd[>] 0)\n      (\ud835\udcdd (Real.pi * \u03bc.real (Ioo a b) + Real.pi / 2 * \u03bc.real {a} +\n        Real.pi / 2 * \u03bc.real {b}))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationCompletedTrace_neg",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialTheta",
+        "statement": "theorem quantizationCompletedTrace_neg {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) (y : \u211d) :\n    quantizationCompletedTrace hW (-y) = conj (quantizationCompletedTrace hW y)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_hamburgerSeries_reflection",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialTheta",
+        "statement": "theorem quantization_hamburgerSeries_reflection {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {\u03c4 : \u2102} (h\u03c4 : 0 < \u03c4.re) :\n    hamburgerSeries (dirichletExp (lamLog lam)) \u03c4 =\n      (\u2211' n : \u2115, dirichletExp (lamLog lam) (n + 1) *\n        cexp (-(2 * Real.pi * ((n : \u2102) + 1) * \u03c4))) -\n      betaG (quantizationCompletion hW) / (Real.pi * \u03c4) + betaG (quantizationCompletion hW) +\n      defectLaplace (fun t => quantizationTraceF hW (2 * t) - quantizationReflectedTraceF hW (2 * t)) \u03c4"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_tendsto_im_quantizationLogPrimitive",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialBoundary",
+        "statement": "theorem exists_tendsto_im_quantizationLogPrimitive {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) (t : \u211d) :\n    \u2203 \u03b8 : \u211d, Tendsto (fun \u03b7 : \u211d =>\n      (quantizationLogPrimitive hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)).im)\n      (\ud835\udcdd[>] 0) (\ud835\udcdd \u03b8)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_fullMeasure_interval_phase",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationBoundaryPhase",
+        "statement": "theorem exists_fullMeasure_interval_phase {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam) :\n    \u2203 Y : Set \u211d, volume Y\u1d9c = 0 \u2227 \u2200 a \u2208 Y, \u2200 b \u2208 Y, a < b \u2192\n      Tendsto (fun \u03b7 : \u211d => \u222b t in Ioc a b,\n        (weilContinuation hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)).re)\n        (\ud835\udcdd[>] 0) (\ud835\udcdd (Real.pi * (boundaryMeasure hW).real (Ioc a b)))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationLogPrimitive_conj",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialBoundary",
+        "statement": "theorem quantizationLogPrimitive_conj {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {s : \u2102} (hs : 1 / 2 < s.re) :\n    quantizationLogPrimitive hW (conj s) = conj (quantizationLogPrimitive hW s)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_re_weilContinuation_interval",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationBoundaryPhase",
+        "statement": "theorem tendsto_re_weilContinuation_interval {lam : \u2115 \u2192 \u211d} (hW : WeilPositiveFull lam)\n    {a b : \u211d} (hab : a < b) (ha : boundaryMeasure hW {a} = 0)\n    (hb : boundaryMeasure hW {b} = 0) :\n    Tendsto (fun \u03b7 : \u211d => \u222b t in Ioc a b,\n      (weilContinuation hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)).re)\n      (\ud835\udcdd[>] 0) (\ud835\udcdd (Real.pi * (boundaryMeasure hW).real (Ioc a b)))"
+      },
+      {
+        "name": "RHTower.WeilSpectral.continuous_intervalPhaseKernel",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationKernel",
+        "statement": "theorem continuous_intervalPhaseKernel (\u03b7 a b : \u211d) :\n    Continuous (intervalPhaseKernel \u03b7 a b)"
+      },
+      {
+        "name": "RHTower.WeilSpectral.intervalPhaseKernel_nonneg",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationKernel",
+        "statement": "theorem intervalPhaseKernel_nonneg {\u03b7 a b : \u211d} (h\u03b7 : 0 < \u03b7) (hab : a \u2264 b) (r : \u211d) :\n    0 \u2264 intervalPhaseKernel \u03b7 a b r"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_re_weilContinuation_interval_endpoints",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationEndpointPhase",
+        "statement": "theorem tendsto_re_weilContinuation_interval_endpoints {lam : \u2115 \u2192 \u211d}\n    (hW : WeilPositiveFull lam) {a b : \u211d} (hab : a < b) :\n    Tendsto (fun \u03b7 : \u211d => \u222b t in Ioc a b,\n      (weilContinuation hW (((1 / 2 + \u03b7 : \u211d) : \u2102) + t * I)).re)\n      (\ud835\udcdd[>] 0)\n      (\ud835\udcdd (Real.pi * (boundaryMeasure hW).real (Ioo a b) +\n        Real.pi / 2 * (boundaryMeasure hW).real {a} +\n        Real.pi / 2 * (boundaryMeasure hW).real {b}))"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": []
+  }
+]

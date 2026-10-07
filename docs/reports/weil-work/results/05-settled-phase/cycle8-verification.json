@@ -1,0 +1,27 @@
+{
+  "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCanonicalDisorder.lean",
+  "sha256": "1b1daedde5aade3edc0666acff5bdee5d6bec936ad197ee21560b1abf7975404",
+  "line_count": 296,
+  "leaf_build_exit": 0,
+  "leaf_build_reported_seconds": 101,
+  "final_source_exit": 0,
+  "final_source_diagnostics": [],
+  "axiom_audit_exit": 0,
+  "axiom_audit_count": 8,
+  "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "umbrella_import_count": 1,
+  "lint_exit": 1,
+  "unrelated_lint_errors": 6,
+  "own_lint_errors": 0,
+  "whitespace_clean": true,
+  "empirical_computations": false,
+  "heartbeat_override": false,
+  "full_build": false,
+  "umbrella_build": false,
+  "all_owned_processes_terminal": true,
+  "status": "BRIDGE; WP05 OPEN"
+}

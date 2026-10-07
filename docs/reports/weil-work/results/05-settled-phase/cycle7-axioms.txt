@@ -1,0 +1,26 @@
+RHTower.WeilWorkSettledPhase.source_rigidity_or_abel_disorder {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)
+  (θ : ℝ) :
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ¬Filter.Tendsto
+        (fun δ => δ * RHTower.HamburgerStability.abelMass (RHTower.WeilWorkSettledPhase.lowerSourceRemainder hW θ) δ)
+        (nhdsWithin 0 (Set.Ioi 0)) (nhds 0)
+RHTower.WeilWorkSettledPhase.source_rigidity_or_block_disorder {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)
+  (θ : ℝ) :
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ∃ η,
+      0 < η ∧
+        ∀ (R : ℝ),
+          ∃ T,
+            R ≤ T ∧
+              η * T < ∫ (t : ℝ) in Set.Ioc T (2 * T), ‖RHTower.WeilWorkSettledPhase.lowerSourceRemainder hW θ (-t)‖
+'RHTower.WeilWorkSettledPhase.norm_lockConstant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilWorkSettledPhase.measurable_lowerSourceRemainder' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilWorkSettledPhase.norm_lowerSourceRemainder_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilWorkSettledPhase.source_rigidity_or_abel_disorder' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilWorkSettledPhase.source_rigidity_or_block_disorder' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

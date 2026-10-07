@@ -2,6 +2,204 @@
 
 **Verdict: OPEN.** Assigned canonical-measure settlement problem remains unsolved.
 
+## Exact reciprocal remainder order added in cycle 12
+
+`WeilWorkSettledPhaseReciprocalTailOrder.lean` proves, from the original full
+positivity alone, that every polynomial-length reciprocal prefix leaves the
+full original boundary atom exponent in its remainder. For every fixed real
+ordinate a and A>=0, writing s_h=1/2+h+i*a and P_N for the first N reciprocal
+Dirichlet terms,
+
+    log(1+|G(s_h)-P_N(s_h)|) / log(1/h) -> boundaryMeasure(hW).real{a}
+
+uniformly over N<=h^(-A) as h->0+. Zero atoms are included. The proof first
+establishes uniformly subpower prefix growth using ordinary reciprocal
+convergence and finite Abel summation, then transfers the existing atom-order
+law through two triangle inequalities. No coefficient, atomicity, meromorphic
+extension, or phase-settlement premise is added.
+
+Targeted `--old` leaf build, mandatory direct `lake env lean` source audit,
+and axiom audit passed. All three exports use only propext, Classical.choice,
+and Quot.sound. The module is wired into the umbrella. Global lint reports
+seven unrelated unreachable modules; no owned WP05 failure.
+
+Verdict **BRIDGE**: classical parents, no significant scientific novelty claim.
+This is a fixed-ordinate theorem; it does not give moving-height uniformity or
+settle the phase-only approximation problem. WP05 remains OPEN. The next
+focused arithmetic conjecture is vanishing normalized alternating means of
+the original forward coefficients, the first nonprincipal mode of C11.
+
+## Interior phase cancellation added in cycle 10
+
+For the original hW there exists Y0>=4 such that, for every Y>=Y0 and
+0<eta<=1, the actual regularized phase satisfies
+
+    |integral_Y^(2Y) p_eta(t) dt| <= 18*Y/(eta^2*log Y).
+
+The height threshold is independent of eta. This proves cancellation at every
+fixed interior width, and also wherever eta(Y)^2*log Y tends to infinity.
+It uses the full positive Poisson measure, the right-line arithmetic lower
+bound, local Caratheodory control, and integration by parts. No atomicity,
+coefficient majorant, edge continuity, phase lock, or RH premise was added.
+Source: `WeilWorkSettledPhaseInteriorCancellation.lean`, capstone
+`exists_integral_regularizedPhase_le`; the derivative and Poisson comparison
+bounds are also exported.
+
+Targeted --old leaf build and final standalone lake env lean audit passed.
+One umbrella import is wired. All three public declarations passed axiom
+inspection with exactly propext, Classical.choice and Quot.sound. Global lint reports
+fifteen unrelated unreachable modules and no WP05 error.
+
+Verdict: BRIDGE. Classical analysis now paid for the actual source, not
+significant scientific novelty. It rules out transferring a near-unit boundary
+mean uniformly across fixed widths. It does not refute or prove the required
+near-maximal mean on eta=Y^-8, where this cancellation bound is ineffective.
+
+Cycle11 conjecture C11 asks for square-root cancellation of actual forward
+coefficients in nonprincipal rational additive modes, with polynomial modulus
+cost. Exact statement, competing failure, and attacks are in PROOF.md.
+It remains OPEN CORE; even its proof would leave the moving-line reciprocal
+denominator tail unpaid. The existing common-ratio rigidity already excludes
+the simplest normalized periodic perturbation as a genuine source.
+
+## Explicit moving-line phase estimate added in cycle 9
+
+For original hW, put W=integral (1+r^2)^(-1) d(boundaryMeasure hW), and
+
+    p_eta(y)=exp(2i Im sourcePrimitive(1/2+eta+iy)).
+
+Lean now proves, for every Y>=1,
+
+    integral_(Y,2Y] |p_(Y^-8)(y)-p(y)| dy <= (68*pi+66)*W/Y,
+
+where p is the full canonical phase below. The public capstone exports a
+nonnegative source constant C; its proof uses the displayed constant. It needs
+no atomicity, support gap, edge continuity, or extra coefficient condition.
+The general two-parameter bound is also exported. Source:
+`WeilWorkSettledPhaseRegularization.lean`.
+
+Targeted --old build and required standalone `lake env lean` audit passed;
+the latter had empty diagnostics. One umbrella import is wired. All three
+public declarations passed axiom inspection with exactly propext,
+Classical.choice and Quot.sound. Global lint reports sixteen unrelated
+unreachable modules and no WP05 error.
+
+Verdict: BRIDGE. This is a classical Poisson smoothing estimate for the actual
+source, not significant scientific novelty or settlement. The phase variance
+on this moving line differs from boundary variance by O(1), by an elementary
+unit-circle estimate on paper. Its source-derived power saving remains unproved.
+The first substantive phase-concentration milestone remains OPEN.
+
+## Full canonical phase obstruction added in cycle 8
+
+Put p(y)=exp(i*pi*boundaryMeasure.real(Ioc(-y,y))). For every original hW
+and every real theta, either lambda(n)=vonMangoldt(n) for n>=2 and RH holds,
+or there are a,K>0 and arbitrarily large Y with
+
+    a*Y*exp(-K*log(Y)/loglog(Y))
+      <= integral_(Y,2Y] |p(y)-exp(2*pi*i*theta)| dy.
+
+This is an unweighted phase bound for the full canonical measure: diffuse,
+central and low-ordinate mass are retained. No atomicity, support-gap,
+boundary-continuity or phase hypothesis is added. The proof identifies the
+cycle-7 remainder a.e. with phase defect times the actual radial quotient,
+derives its Littlewood envelope from interior norm monotonicity, then integrates
+and pays the exact y=2t rescaling. Source:
+`WeilWorkSettledPhaseCanonicalDisorder.lean`.
+
+The targeted --old build and final standalone Lean audit passed without module
+diagnostics. The module is wired once into the umbrella. All eight axiom checks
+passed with exactly propext, Classical.choice and Quot.sound.
+Global lint reports six unrelated unreachable modules and no WP05 error.
+
+Verdict: BRIDGE, not significant scientific novelty or WP05 closure. This removes
+atomicity and continuous-edge premises from the earlier quantitative phase
+obstruction; it does not produce settlement. The next source conjecture is a
+power-saving upper bound for mean-square phase differences within each dyadic
+block. Its exact statement, elementary alignment transfer and unproved source
+core are recorded in PROOF.md. No assertion of that conjecture was added to Lean.
+
+## Source rigidity-or-disorder alternatives added in cycle 7
+
+For each real theta, write kappa=exp(2*pi*i*theta). Use the actual radial
+quotient Phi(t)=quantizationTraceF(2t), its reflected quotient Psi, and
+
+    r(t)=1_{t<0}*(kappa^(-1)*Phi(t)-Psi(t)).
+
+The original hW alone now yields either lambda(n)=vonMangoldt(n) for n>=2 and
+RH, or delta*abelMass(r,delta) fails to tend to zero as delta decreases to zero.
+The quantitative alternative gives eta>0 and arbitrarily large T with
+
+    eta*T < integral_(T,2T] |r(-t)| dt.
+
+This retains the actual canonical measure, without an atomic representation,
+support gap, continuous critical-edge extension, extra coefficient bound or
+phase-decay premise. Abel decay is an internal case split, not a source input.
+The proof uses the refreshed corpus's actual radial Laplace identities, radial
+residue comparison and coefficient uniqueness. Source:
+`WeilWorkSettledPhaseAbelRigidity.lean`. Its targeted --old leaf build and final
+standalone Lean audit passed, and it is wired once into the umbrella. All five
+axiom inspections use exactly propext, Classical.choice and Quot.sound. Global
+lint reports nine unrelated unreachable modules,
+with no WP05 module named.
+
+Verdict: BRIDGE. This removes source premises from the earlier coefficient
+receiver and proves an actual-source weighted obstruction. It does not supply
+WP05's unweighted phase upper bound or its exact atomic representation. The
+next phase extraction is paper-closed; its Lean proof remains outstanding.
+
+## Actual-source theta identities added in cycle 6
+
+For the actual coefficients a=dirichletExp(lamLog lam), the original hW now
+supplies the exact critical-trace inversion
+
+    theta(r)-beta*r^(-1/2)*exp(-pi*r)
+      = (1/(4*pi))*integral_R r^(-(1/2+iy)/2)*e(y) dy.
+
+Restoring the polar part gives theta(r)=beta*r^(-1/2)+K_Phi(r). If
+s(t)=1/2+2it and
+
+    Phi(t)=b(2t)/(s(t)*(s(t)-1)*Gamma_R(s(t))),
+    g(t)=(b(2t)-b(-2t))/(s(t)*(s(t)-1)*Gamma_R(s(t))),
+
+the same source also gives
+
+    theta(r)=r^(-1/2)*theta(1/r)-beta+beta*r^(-1/2)+K_g(r).
+
+Here b retains the full canonical measure, including diffuse, central and low
+mass. No atomicity, support gap, boundary continuity, extra coefficient bound,
+or phase hypothesis is supplied. Source: `WeilWorkSettledPhaseThetaTrace.lean`.
+The targeted leaf build and final standalone Lean audit passed without leaf
+diagnostics. The module is wired once into the RHTower umbrella.
+Twelve axiom inspections passed with exactly `propext`, `Classical.choice` and
+`Quot.sound`. Global lint reports eight unrelated unreachable modules and no
+WP05 error; evidence is retained in the cycle-6 audit files.
+
+Verdict: BRIDGE. This supplies the actual-source theta identities required by
+the existing coefficient argument. It does not yet compose that argument or
+give a phase upper bound. Next use the already available measurable radial
+representative and growth estimate, rather than duplicate its regularity proof.
+
+## Actual-source contour shift added in cycle 5
+
+The original full-positive source now supplies uniform quadratic decay for its
+pole-subtracted completion E on `1/2<Re(s)<=3/2`, an integrable boundary trace e,
+global L1 convergence to e, and for every r>0 the exact identity
+
+    integral_R r^(-(3/2+it)/2) E(3/2+it) dt
+      = integral_R r^(-(1/2+it)/2) e(t) dt.
+
+No boundary continuity, atomic representation, support gap or phase-decay
+hypothesis is added. Source: `WeilWorkSettledPhaseMellinTrace.lean`. Its targeted
+leaf build, final standalone Lean audit and seven axiom inspections passed.
+Audited declarations use only `propext`, `Classical.choice` and `Quot.sound`.
+Global lint reports six unrelated unreachable modules and no WP05 error.
+
+Verdict: BRIDGE. This removes the continuity premise from the actual source's
+weighted contour shift. It does not yet prove coefficient rigidity for this
+trace or produce the required phase upper bound. Gamma-weighted decay cannot be
+substituted for a bound on the normalized phase defect.
+
 ## Canonical boundary trace added in cycle 4
 
 From the original `hW : WeilPositiveFull lam` alone, the normalized completed
@@ -84,12 +282,18 @@ New module: `formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePackets.lean
 
 ## Active research conjecture
 
-The existing monotone fractional-mass rigidity theorem may extend from a fixed sublinear power to C(T)=o(T). Its current proof does not: every fixed strip exponent nu>0 loses T^nu. The next source-sensitive attack must retain that fractional atoms occur at zeros of the producer when estimating contour top edges. Merely varying nu without uniform constants is invalid.
+For the actual full canonical phase p, prove from hW that some epsilon>0 gives
 
-Cycle 2 now provides a quantitative logarithmic envelope from the original source.
-It still does not suffice for C(T)=T/log T. The next exact transfer candidate is
-fractional mass bounded by `T exp(-log T/sqrt(log log T))`; this candidate is not
-yet proved or produced by full positivity. A collective cancellation estimate is
-still needed to reach arbitrary sublinear fractional mass.
+    integral_(Y,2Y]^2 |p(u)-p(v)|^2 du dv = O(Y^(2-epsilon)).
 
-This is a prospective route toward the same constant-phase target, not a second AP project. It is not asserted true or formalized. Exact evidence and verification are recorded in `EVIDENCE.md`; paper arguments and the remaining gap are in `PROOF.md`.
+The exact moving-line version uses
+`p_eta(y)=exp(2i Im sourcePrimitive(1/2+eta+iy))` with eta=Y^-8.
+Cycle 9's verified regularization changes this variance by O(1) on paper.
+The arithmetic variance bound itself remains OPEN CORE.
+Fixed-line reciprocal mean squares and the algebraic period-defect identity
+do not supply it. The earlier arbitrary-o(T) fractional-mass question remains
+open; its historical arguments are retained in PROOF.md.
+
+This is the same constant-phase target, not a second AP project. No unproved
+variance assertion has been added to Lean. Exact evidence and verification are
+recorded in EVIDENCE.md; paper arguments and the remaining gap are in PROOF.md.

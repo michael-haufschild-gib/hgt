@@ -1,0 +1,3 @@
+Command: lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseThetaTrace.lean
+Exit: 0
+Diagnostics: none

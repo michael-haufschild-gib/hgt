@@ -1,6 +1,6 @@
 # Natural-aperture exact realization: paper proof
 
-Status: dependency-closed paper argument relative to the uniform-truncation proof. Lean realization theorem NOT yet claimed. The selected exact statement strengthens the earlier proposed constant-K bound.
+Status: dependency-closed paper proof; complete Lean scratch and three-capstone axiom audits passed. Final installed leaf audit passed without warnings. The exact statement strengthens the earlier constant-K bound.
 
 There is a fixed real C such that for every epsilon>0 and every sufficiently large integer N, there is a finite nonnegative mixture of actual complex C2 polar tests, each at aperture at most (log N)/2+C, whose complete integer atom trace is exactly exposingWeightTrunc N with multiplier t=1 and whose total archimedean energy is at most E+(1+epsilon)*tau_N. Constants C and the source construction do not depend on epsilon; the sufficient lower bound on N may depend on epsilon.
 

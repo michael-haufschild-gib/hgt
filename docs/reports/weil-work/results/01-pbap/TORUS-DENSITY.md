@@ -1,6 +1,6 @@
 # Candidate positive survivor: torus density of exact integer-null mixtures
 
-Status: finite Gram-packet realization and normalized realization from actual representing measures have passed direct Lean compilation and targeted leaf builds. The larger measure-level density construction and Jensen transfer remain unformalized. Scientific novelty is unestablished. This is not a PBAP proof; do not promote the full construction to formalized status.
+Status: finite Gram-packet realization, normalized realization from actual representing measures, and the actual spectral probability pushforward are formalized. The larger measure-level density construction and Jensen transfer remain unformalized. Scientific novelty is unestablished. This is not a PBAP proof; do not promote the full construction to formalized status. Exact audit outcomes are in `EVIDENCE.md`.
 
 ## Precise proposed theorem
 
@@ -93,7 +93,7 @@ The positive survivor is the exact finite Fourier-moment realization and then it
 - `RHTower.weilTest_sum_translates` gives the finite translate autocorrelation expansion in `WeilPositivityMultiplicativeToeplitzBound.lean:459`; source checked.
 - The same module already proves `RHTower.weilTest_translates_log` (line 668) and `RHTower.weilTest_translates_neg_log` (line 710): a common packet whose autocorrelation vanishes for `|Y| >= 1/(N+1)` selects precisely the divisibility diagonal. These are direct, checked starting points for the finite-mixture realization. Do not reprove their scalar expansion.
 - `GaloisForLFunctions.primeTorus_kronecker_dense` exists and its source was checked, but the Fejer construction above avoids needing quantitative Kronecker approximation.
-- Finite Gram factorization, torus characters, integral Gram positivity, and packet-mixture normalization interfaces are now verified. Fejer box counting, spectral probability normalization/pushforward, and weak-convergence interfaces still need their own `/tmp` Lean checks and connections.
+- Finite Gram factorization, torus characters, integral Gram positivity, packet-mixture normalization, and actual spectral probability normalization/pushforward are now verified. Fejer box counting and weak-convergence interfaces still need their own `/tmp` Lean checks and connections.
 - For a finite set of rational observations, integer log separation in the existing `log_gap` lemma should also isolate all rational-ratio frequencies after clearing denominators. A sufficiently narrow existing `narrowBump` can therefore avoid introducing a new analytic bump construction. The explicit Gram/counting formula above may avoid a general torus convolution API.
 - Deep search for this mechanism completed with partial coverage (`semantic_retrieval` and `filter_and_judge` unfinished), output `/tmp/wp01-torus-density-search.json`. Candidates and source arguments were inspected; no closing realization theorem was found among them. Search results do not substitute for a novelty verdict. Classical ingredients alone are not new scientific knowledge.
 
@@ -153,7 +153,7 @@ This conclusion concerns a positive logarithmic frequency moment. It does **not*
 
 ### Exact spectral probability and remaining box argument
 
-The next measure construction can use the corpus's literal C² Weil-test Fourier inversion, without a new Schwartz conversion. `RHTower.WeilRegular.pairTransform_ofReal` identifies the transform with `|paperFT f(-2*pi*xi)|^2`; `RHTower.WeilRegular.weilTest_eq_integral` reconstructs the autocorrelation by integrating this density against `exp(2*pi*i*xi*y)`. Its required support bound follows from compact support. The source proof also supplies an integrable decay majorant via `exists_norm_pairTransform_le`. These interfaces are source-checked, not yet verified in a new scratch import.
+The measure construction now uses the corpus's literal C² Weil-test Fourier inversion, without a new Schwartz conversion. `RHTower.WeilRegular.pairTransform_ofReal` identifies the transform with `|paperFT f(-2*pi*xi)|^2`; `RHTower.WeilRegular.weilTest_eq_integral` reconstructs the autocorrelation by integrating this density against `exp(2*pi*i*xi*y)`. Its required support bound follows from compact support. Square-density integrability follows from `integrable_normSq_paperFT` and the nonzero real change of scale. The interfaces passed `/tmp/wp01-spectral-names.lean`; the construction is in `WeilWorkPBAPSpectralMeasure.lean`.
 
 For a normalized nonnegative finite mixture c, set
 

@@ -1,0 +1,34 @@
+{
+  "module": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRegularization.lean",
+  "sha256": "5ff8563dfad1adc7b8ce1de78f1a2c9ea894822e094ff659f7afa57978956e9d",
+  "lines": 375,
+  "build": {
+    "command": "lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseRegularization:olean",
+    "exit": 0,
+    "leaf_seconds": 249
+  },
+  "final_source": {
+    "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRegularization.lean",
+    "exit": 0,
+    "diagnostics_bytes": 0
+  },
+  "axioms": {
+    "exit": 0,
+    "public_declarations": 3,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "capstone_types_inspected": 2
+  },
+  "umbrella_imports": 1,
+  "lint": {
+    "exit": 1,
+    "unrelated_unreachable_modules": 16,
+    "wp05_errors": 0
+  },
+  "classification": "BRIDGE; no scientific novelty or phase-concentration claim",
+  "goal": "ACTIVE; WP05 OPEN",
+  "owned_live_processes": 0
+}
