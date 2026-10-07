@@ -1,7 +1,7 @@
 # Finite-type uniqueness of Weil-positive completions of ζ's archimedean datum
 
 - **ID:** weil-finite-type-uniqueness
-- **Stage:** 2-fully-proven (paper, dependency-closed 2026-09-29)
+- **Stage:** 3-formalized (paper 2026-09-29; Lean, unconditional, 2026-10-06)
 - **Type:** THEOREM (paper), dependency-closed; cited inputs: Gonek 1984 Lemmas 1–3, Jutila 1983, Ingham 1940, Bochner–Schwartz, Paley–Wiener–Schwartz
 - **Source:** `hf-positive-hodge-attack/krein-producer-loops.md`, entries L101–L111 (L103, L104, L106, L107)
 - **Statement:** If `lam = Λ⋆a + f⋆μ + v` is Weil-positive for ζ's archimedean datum (pole weight `β = 1`), with `a`, `f` finitely supported real (`f(1) = 0`) and `v` regular (`v(1) = 0`, `D_v` holomorphic on `Re s > ½ − η₀` including `s = 1`, of polynomial growth on vertical strips), then `a = δ₁`, `f = 0`, `v = 0`. In particular, within this class, `W ≠ ∅ ⟺ Λ ∈ W ⟺ RH`.
@@ -14,7 +14,7 @@
 ## Gates
 - [x] 0 → 1 in-progress: well-posed, attack found (discrete ζ′-moments), worked example checked (single dilation, `B = −(b/2)(1 + b/2 + b²/2)`)
 - [x] 1 → 2 fully-proven: inputs (A), (B), (C′) written out (see "Gate 1 → 2 closure")
-- [ ] 2 → 3 formalized: see Lean plan
+- [x] 2 → 3 formalized: `RHTower.WeilFiniteType.finiteType_uniqueness` (see "Lean: complete")
 - [ ] 3 → 4 publication-ready
 
 ## Proof architecture
@@ -308,3 +308,43 @@ replace sharp cutoffs, so contour arguments need no horizontal edges and station
     χ-twisted `O(T)`. Compiling.
   - Next: the zero-sum assembly (edge bounds, then `Re Σ ζ'(ρ) r^ρ g = r Σ ℓ cos W + O(T log T)`), then
     FT8 (steps 1–2), FT9 (step 3), and the final theorem.
+
+## Lean: complete (2026-10-06)
+- **Main theorem.** `RHTower.WeilFiniteType.finiteType_uniqueness` (`WeilFiniteTypeUniqueness`): for
+  `SupportedIn N a`, `SupportedIn N f`, `f 1 = 0`, `RegularPart v E` and
+  `WeilPositiveFull (finiteTypeSeq a f v)`, we get `a = δ₁`, `f = 0` and `v = 0`.
+  - Corollary `exists_finiteType_weilPositive_iff`: a Weil-positive finite-type completion exists iff RH,
+    via the corpus result `riemannHypothesis_iff_weilPositiveFull_vonMangoldt`.
+  - Axioms are `[propext, Classical.choice, Quot.sound]`. The Lean statement carries no analytic
+    hypotheses; Gonek, Jutila and Ingham are all proved inside the corpus.
+- **Step modules.** All are under `RHTower/`, wired into `RHTower.lean`, and build without warnings.
+  - FT4: `ZetaGaussianZeroSumContour`, `ZetaGaussianZeroSums` (edge decomposition `abs_re_zeroSum_add_le_edges`).
+  - FT5: `ZetaChiGaussianKernel` (exact kernel `∫ χ y^s g_T = 2πy J_T(y)`), `ZetaLeftLine{Identities,Bounds,GaussianIntegrals,GaussianTerms}`.
+  - FT6:
+    - `ZetaGaussianZeroSumTests` covers Landau–Gonek `O(T log T)`, χ-twisted `O(T)`, and Rule A in kernel form.
+    - `ZetaDerivZeroSumMainTerm` converts kernel to cosine. Integer frequencies `p` give
+      `≥ (e^{−4π²}/32) T log²(T/p) − O(TU)`; `p/q` with `q ∤ p` gives `O(TU)`.
+    - `LogVonMangoldtGaussianSums` holds the arithmetic.
+  - FT7: `ZetaOffLineWeightedDensity.eventually_offLineWeight_le`.
+  - FT8:
+    - `ZetaZeroReflectionSums` contains:
+      - the `ρ ↦ 1−ρ̄` permutation of the rectangle zeros with multiplicity;
+      - Rule B by reflection;
+      - `χR = 1`;
+      - `ζ'(ρ) = −χ(ρ)ζ'(1−ρ)`;
+      - `|χ(σ+it)| ≤ C|t|^{½−σ}` on `0 ≤ σ ≤ 1`;
+      - the zero-side bound `eventually_norm_zeroSum_le`.
+    - `ZetaFrequencyFamilyZeroSums` holds the family versions and the contradiction lemma `false_of_zeroSum_main`.
+    - `WeilFiniteTypeDirichletRigidity` gives `dirichletPart_eq_delta` (step 1, test `testOne`) and
+      `moebiusPart_eq_zero` (step 2, test `testTwo`).
+  - FT9: `WeilFiniteTypeUniqueness.regularPart_eq_zero`.
+    - `Re E ≤ 0` on the critical line, from `Re Φ ≥ 0`, `Φ = ξ'/ξ − E` and the corpus result
+      `re_logDeriv_xi_criticalLine`. Isolated zeros of `ξ` and continuity extend it to the whole line.
+    - Phragmén–Lindelöf on `½ ≤ σ ≤ m + 2` gives `Re E ≤ 2^{−m}Σ|v(n)|n^{−2}`.
+    - Leading-coefficient contradiction at `Im s ∈ {0, π/log n₀}`. This replaces the Bohr means of the
+      plan.
+- **Deviations from the paper route.**
+  - The right edge of the contour is `Re s = 11/10`.
+  - Step 1 uses `V = AÃκ^s` with `κ = n₀/M²`, whose only integral frequency is `1`.
+  - Step 2 uses `(ζ'F̃ − ζ'(1−s)F)(P/M)^s` with `P > M` prime.
+  - Off-line weights use the uniform χ strip bound instead of `(γ/2π)^{(1+η)|β−½|}`.

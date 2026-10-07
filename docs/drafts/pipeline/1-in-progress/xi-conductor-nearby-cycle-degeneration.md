@@ -289,3 +289,36 @@ and compatibility under prime enlargement, is the remaining RH-bearing core.
   class, and instantiated image-equals-invariants theorem.
 - All new declarations elaborate without `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
 - Remaining regulator-interchange statement stays a conjecture; no Lean declaration assumes it.
+
+## 2026-10-06 ramification normalization correction
+
+### Regulator scope correction
+
+The newer corpus already constructs the coefficient-level oriented map
+`canonicalXiOrientedConductorRoosRegulator` in
+`XiReducedConductorRoosRegulatorClassification.lean`, retaining actual cut holonomy.
+`XiNodalConductorHolonomyNaturalityClassification.lean` isolates its compatibility with
+geometric Picard--Lefschetz transport as an RH-equivalent law. Thus the remaining burden is
+the source-defined geometric comparison and its compatibility proof, not construction of
+another coefficient-level oriented regulator. The equivalence does not refute that law.
+The explicit source-cut suspension and its limitations are recorded in
+`rh-nonmetric-infinite-geometry-loop.md` under “Continuation: the existing oriented regulator”.
+
+### Ramified invariant channel
+
+The displayed universal-node map `T(a,b)=(a+b,b)` is a coefficient model, not yet the
+geometric monodromy of the actual Legendre pullback. Legendre monodromy at parameter zero is
+`T^2`, and a source zero of multiplicity `m` gives `T^(2m)` (up to the basis/orientation
+convention). The factor two is explicit in Carlson--Müller-Stach--Peters, *Period Mappings
+and Period Domains*, §1.1, pp. 20–21,
+[publisher preview](https://api.pageplace.de/preview/DT0400.9781108118989_A30888647/preview-9781108118989_A30888647.pdf).
+
+Consequently, over a commutative coefficient ring `A`, the ramified coefficient invariant
+module is `A × {b : (2m)*b=0}`. Its conductor line is the first factor. For `A=Z` or `C`
+and positive `m`, this is still exactly the conductor line; in torsion coefficients it can
+be strictly larger. In particular, modulo two the Legendre coefficient monodromy is identity.
+The earlier all-ring equality applies only to the unramified universal-node shear.
+
+See `../3-formalized/conductor-ramified-invariant-channel.md` for the complete paper replacement and current
+Lean audit. This corrects the interpretation without changing any existing theorem statement.
+The source-natural horizontal comparison remains unconstructed.

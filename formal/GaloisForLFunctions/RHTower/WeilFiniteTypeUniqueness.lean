@@ -273,15 +273,20 @@ theorem norm_term_le_pow {v : ℕ → ℝ} (hv1 : v 1 = 0) (m : ℕ) (n : ℕ) :
   have hn0 : (0 : ℝ) < n := by positivity
   have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
   simp only [Complex.ofReal_re]
-  rw [Real.rpow_add hn0, Real.rpow_natCast, mul_comm ((n : ℝ) ^ m), ← div_div]
-  have hpow : (2 : ℝ) ^ m ≤ (n : ℝ) ^ m := pow_le_pow_left₀ (by norm_num) hn2 m
-  have hA : 0 ≤ ‖(v n : ℂ)‖ / (n : ℝ) ^ (2 : ℝ) := by positivity
-  rw [div_le_iff₀ (by positivity), one_div, inv_pow, mul_comm ((2 : ℝ)⁻¹ ^ m), mul_assoc,
-    inv_mul_eq_div]
-  have : 1 ≤ (n : ℝ) ^ m / 2 ^ m := by rw [le_div_iff₀ (by positivity), one_mul]; exact hpow
-  calc ‖(v n : ℂ)‖ / (n : ℝ) ^ (2 : ℝ) = ‖(v n : ℂ)‖ / (n : ℝ) ^ (2 : ℝ) * 1 := (mul_one _).symm
-    _ ≤ ‖(v n : ℂ)‖ / (n : ℝ) ^ (2 : ℝ) * ((n : ℝ) ^ m / 2 ^ m) :=
-        mul_le_mul_of_nonneg_left this hA
+  have hsplit : (n : ℝ) ^ ((m : ℝ) + 2) = (n : ℝ) ^ m * (n : ℝ) ^ (2 : ℝ) := by
+    rw [Real.rpow_add hn0, Real.rpow_natCast]
+  rw [hsplit]
+  set A := ‖(v n : ℂ)‖
+  have hA : 0 ≤ A := norm_nonneg _
+  have hq : 0 < (n : ℝ) ^ (2 : ℝ) := by positivity
+  have hp : 0 < (n : ℝ) ^ m := by positivity
+  have hkey : 1 ≤ (1 / 2 : ℝ) ^ m * (n : ℝ) ^ m := by
+    rw [← mul_pow]; exact one_le_pow₀ (by linarith)
+  rw [div_le_iff₀ (mul_pos hp hq)]
+  calc A = A / (n : ℝ) ^ (2 : ℝ) * (n : ℝ) ^ (2 : ℝ) := by field_simp
+    _ ≤ A / (n : ℝ) ^ (2 : ℝ) * (n : ℝ) ^ (2 : ℝ) * ((1 / 2 : ℝ) ^ m * (n : ℝ) ^ m) :=
+        le_mul_of_one_le_right (by positivity) hkey
+    _ = (1 / 2 : ℝ) ^ m * (A / (n : ℝ) ^ (2 : ℝ)) * ((n : ℝ) ^ m * (n : ℝ) ^ (2 : ℝ)) := by ring
 
 /-- **`Re E ≤ 0` on `Re s ≥ ½`.** -/
 theorem re_regularPart_nonpos {N : ℕ} {a f v : ℕ → ℝ} {E : ℂ → ℂ}
@@ -295,7 +300,7 @@ theorem re_regularPart_nonpos {N : ℕ} {a f v : ℕ → ℝ} {E : ℂ → ℂ}
   obtain ⟨m₁, hm₁⟩ := exists_pow_lt_of_lt_one (div_pos hpos (by linarith : (0 : ℝ) < δ₂ + 1))
     (by norm_num : (1 / 2 : ℝ) < 1)
   set m := max m₁ ⌈z.re⌉₊ with hm
-  have hσ₁ : 1 < (m : ℝ) + 2 := by positivity
+  have hσ₁ : 1 < (m : ℝ) + 2 := by have := (Nat.cast_nonneg m : (0 : ℝ) ≤ m); linarith
   have hzm : z.re ≤ (m : ℝ) + 2 := by
     have h1 : z.re ≤ (⌈z.re⌉₊ : ℝ) := Nat.le_ceil _
     have h2 : (⌈z.re⌉₊ : ℝ) ≤ m := by exact_mod_cast le_max_right _ _
@@ -329,10 +334,10 @@ theorem natCast_cpow_phase {n₀ : ℕ} (hn₀ : 2 ≤ n₀) (σ : ℝ) (pos : B
   rw [Complex.ofReal_natCast, Complex.cpow_def_of_ne_zero hn0, ← Complex.natCast_log]
   cases pos
   · simp only [Bool.false_eq_true, ↓reduceIte]
-    have hlog' : ((Real.log n₀ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hlog.ne'
     have e : ((Real.log n₀ : ℝ) : ℂ) * ((((Real.pi / Real.log n₀ : ℝ)) : ℂ) * I) = Real.pi * I := by
-      push_cast
-      field_simp
+      have hl := hlog.ne'
+      rw [← mul_assoc, ← Complex.ofReal_mul,
+        show Real.log n₀ * (Real.pi / Real.log n₀) = Real.pi by field_simp]
     rw [e]
     exact Complex.exp_pi_mul_I
   · simp
@@ -359,7 +364,7 @@ theorem regularPart_eq_zero {N : ℕ} {a f v : ℕ → ℝ} {E : ℂ → ℂ}
   obtain ⟨m, hm⟩ := pow_unbounded_of_one_lt (δ₂ * (n₀ : ℝ) ^ 2 / |v n₀|)
     (show (1 : ℝ) < ((n₀ : ℝ) + 1) / n₀ by rw [lt_div_iff₀ hn₀pos]; linarith)
   set σ : ℝ := (m : ℝ) + 2 with hσ
-  have hσ1 : 1 < σ := by positivity
+  have hσ1 : 1 < σ := by rw [hσ]; have := (Nat.cast_nonneg m : (0 : ℝ) ≤ m); linarith
   set pos : Bool := decide (0 < v n₀) with hposdef
   set τ : ℝ := if pos then 0 else Real.pi / Real.log n₀ with hτ
   set s : ℂ := (σ : ℂ) + (τ : ℂ) * I with hs
@@ -458,7 +463,10 @@ theorem finiteTypeSeq_delta_zero_zero :
 theorem regularPart_zero : RegularPart (fun _ => 0) (fun _ => 0) where
   zero := rfl
   one := rfl
-  summable s _ := by simpa using (LSeriesSummable_zero (s := s))
+  summable s _ := by
+    have : (fun n : ℕ => (((fun _ : ℕ => (0 : ℝ)) n : ℝ) : ℂ)) = 0 := by funext n; simp
+    rw [this]
+    exact LSeriesSummable_zero
   series s _ := by
     have : (fun n : ℕ => (((fun _ : ℕ => (0 : ℝ)) n : ℝ) : ℂ)) = 0 := by funext n; simp
     rw [this, LSeries_zero]

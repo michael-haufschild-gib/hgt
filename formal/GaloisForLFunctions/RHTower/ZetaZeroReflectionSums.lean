@@ -315,9 +315,9 @@ theorem eventually_norm_zeroSum_le {H : ℂ → ℂ} {K : ℝ} (hK : 0 ≤ K)
   have hY1 : 1 ≤ Y := hb.trans hY
   set Z := rectZeros bottomHeight Y with hZ
   set B := (RHTower.blockZeros 1 Y).filter (fun w => 1 / 2 < w.re) with hB
-  set φ : ℂ → ℝ := fun w => RHTower.zeroMult w * (Real.exp ((w.re - 1 / 2) * Real.log w.im) *
+  set φ : ℂ → ℝ := fun w => RHTower.residueUnitMult w * (Real.exp ((w.re - 1 / 2) * Real.log w.im) *
     Real.exp (-(w.im ^ 2 / T ^ 2))) with hφ
-  have hφ0 : ∀ w, 0 ≤ φ w := fun w => mul_nonneg (RHTower.zeroMult_nonneg w) (by positivity)
+  have hφ0 : ∀ w, 0 ≤ φ w := fun w => mul_nonneg (RHTower.residueUnitMult_nonneg w) (by positivity)
   have hBsum : ∑ w ∈ B, φ w ≤ ε * T * Real.log T ^ 2 := hT Y hY1
   set f : ℂ → ℝ := fun w => (mult w : ℝ) * (‖H w‖ * ‖gaussWeight T w‖) with hf
   have hnorm : ‖∑ w ∈ Z, (mult w : ℂ) * (H w * gaussWeight T w)‖ ≤ ∑ w ∈ Z, f w := by
@@ -337,7 +337,7 @@ theorem eventually_norm_zeroSum_le {H : ℂ → ℂ} {K : ℝ} (hK : 0 ≤ K)
     have hH := hoff w hz h0 h1 (ne_of_gt hw.2) (hb.trans him1)
     rw [abs_of_pos (by linarith [hw.2])] at hH
     have hg := norm_gaussWeight_le_of_strip hT1 h0 h1
-    simp only [hf, hφ, RHTower.zeroMult]
+    simp only [hf, hφ, RHTower.residueUnitMult]
     calc (mult w : ℝ) * (‖H w‖ * ‖gaussWeight T w‖)
         ≤ (mult w : ℝ) * ((K * Real.exp ((w.re - 1 / 2) * Real.log w.im)) *
           (Real.exp 1 * Real.exp (-(w.im ^ 2 / T ^ 2)))) := by gcongr
@@ -349,9 +349,9 @@ theorem eventually_norm_zeroSum_le {H : ℂ → ℂ} {K : ℝ} (hK : 0 ≤ K)
     have hH := hoff w hz h0 h1 (ne_of_lt hw.2) (hb.trans him1)
     rw [abs_of_neg (by linarith [hw.2])] at hH
     have hg := norm_gaussWeight_le_of_strip hT1 h0 h1
-    have hm : RHTower.zeroMult (reflectZero w) = (mult w : ℝ) := by
+    have hm : RHTower.residueUnitMult (reflectZero w) = (mult w : ℝ) := by
       have := mult_reflectZero h0 h1
-      simp only [RHTower.zeroMult]
+      simp only [RHTower.residueUnitMult]
       exact_mod_cast this
     simp only [hf, hφ, hm, reflectZero_re, reflectZero_im]
     calc (mult w : ℝ) * (‖H w‖ * ‖gaussWeight T w‖)

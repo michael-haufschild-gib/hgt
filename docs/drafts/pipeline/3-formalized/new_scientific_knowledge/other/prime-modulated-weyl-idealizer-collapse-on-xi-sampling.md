@@ -740,3 +740,6 @@ approximate-identity estimate) is the two-sided companion of the same programme 
 Every mathematical statement of sections 1--7 is therefore Lean-proved unconditionally, and the
 card moves to stage 3.  The only open gate is the external one (independent expert proof and
 novelty review), which no formalisation can discharge.
+
+## Lean note, 2026-10-06: `(22)` unconditional
+`RHTower.superlinearSamples_xiRealDivisor` (`RHTower/XiRealDivisorSuperlinear.lean`, standard axioms) proves `(22)` from the Zeta23 simple-critical density. Route 1 is thereby closed as well, independently of route 2.

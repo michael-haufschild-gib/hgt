@@ -1,0 +1,13 @@
+# Actual global Xi Kummer transport
+
+Card: docs/drafts/pipeline/2-fully-proven/xi-global-kummer-parity-transport.md. Parent xi-legendre-formal-source-section.md. For K=global MeromorphicPlane (NOT a local germ field), Xi and every F_n=1-n^(-s)Xi, integer n>=2, have independent square classes. Proof: qualitative existing Xi growth supplies a real exponential crossing between least label and next integer; exactly one F factor negative, all positive at s=1; any Xi^e factor preserves sign. Global Schwarz-real square cannot change sign. Xi alone nonsquare via existing odd critical zero.
+
+Six verified/wired modules: HTGeometry/MeromorphicPlaneSquareRoot, HTGeometry/LegendreDoublingSquare; RHTower/XiGlobalKummerSquareClasses, XiGlobalKummerMarkedTower, XiGlobalKummerLegendre, XiGlobalKummerTranslatedSection. All targeted builds and final lake env lean ACTUAL SOURCE checks passed; 112 public declarations audited, only propext/Classical.choice/Quot.sound. Index regenerated. Global lint failed on 16 unrelated unwired leaves (exact snapshot card); no new-leaf error.
+
+Marked tower adjoins u_n^2=Xi F_(n+2) inside AlgebraicClosure K. Xi remains nonsquare in every stage and algebraic directed union, F_n has same nonzero class there. No claim after completion. Equivalent q_n=beta_n u_n/F_n, beta_n=n^(-s/2); u_n=q_n F_n/beta_n.
+
+Actual Legendre curve lambda=1+d, d=beta^2 Xi; P=(d,beta*u); P is not double of any actual affine-group point. Q=P+(0,0), x(Q)=(1+d)/d and x(Q)-1=1/d; Q likewise not double. Generic doubling square identities formalized. Unit a=1-2d+2i beta u, inverse sign-minus, Xi=a*(u-i beta Xi)^2, a nonsquare formalized.
+
+Paper only followups: exact [L_S:K]=2^|S|, complete halves field of P is L_S(sqrtXi), finite-plane normalized cover unramified/free, holomorphic unit model. Card stays stage2 until these exact formal statements done. Q full halves field has ADDITIONAL lambda class; do NOT identify Q full field with P/commonXi field. Geometric local unramified assertion not inferred merely from field extension being etale.
+
+Verdict: actual source-divisibility premise discharged; classical mechanism, novelty not certified; no RH zero-location premise discharged. Next conjecture under audit: Xi(s)+c exp(hs), real h!=0, complex c!=0, has no global square root. Reflection at 1/2 factors g(center+z)+/-g(center-z) into a constant times sinh(hz). Even/odd factors finite order, zeros purely imaginary; Hadamard parity forces real-axis exponential bounds, contradicting existing Xi real-axis superexponential growth. Need source theorem+full proof before Lean; no claim yet. This would settle extra Q lambda class. Positive Schwarz-real source classes have no new square relations in marked tower by same sign-twist argument.

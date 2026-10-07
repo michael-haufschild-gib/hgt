@@ -479,3 +479,13 @@ Consequences for this card:
 Kill condition to test next: whether the *second* central jet admits a matching floor.  If
 `|Z''(0)/Z(0)|` also carries a tree-uniform lower bound not attainable by `exp(cz)·XiC`, the
 factored route closes too and the whole Lee--Yang tree lane retires.
+
+## KILLED by MUST-806 (2026-10-07)
+
+`RHTower.LeeYangCount.not_tendsto_lyApprox_mul_XiC`: normalized Lee–Yang restrictions in variables
+with frequencies `≥ λ₀ > 0` never converge locally uniformly to `E·XiC`. Here the prime fields have
+frequencies `log p ≥ log 2`. Each restriction has zero count `2T·D + O(S)` with `S ≤ (2π/λ₀) D`, so
+locally uniform limits have at most linear zero counts, while `Ξ`'s count is `(T/π) log T`. Hence
+the limit statement is false as stated. Card: `3-formalized/11-rh-zero-divisor-geometry/lee-yang-prime-restriction-linear-count-nogo.md`.
+**Positive survivor:** a stability route must use variables whose frequencies accumulate at 0,
+e.g. log-ratios `log((m+1)/m)` of consecutive integers. The additive structure has to enter.

@@ -13,6 +13,7 @@ Goal (2026-10-05): every card here formalized unconditionally in Lean, then move
 ## Reusable corpus facts found this goal
 - Theorem B needs no Theorem A: `WeilAbscissa.eq_vonMangoldt_of_weilPositiveFull_of_sparse_rpow`.
 - Step 3 of finite type ≈ `WeilRegular.eq_zero_of_weilPositive_add` (linear growth only; card allows polynomial).
+- Step 1 with `f = 0` needs no Gonek lemma: `WeilDilationRealness.eq_delta_of_weilPositiveFull` (MUST-800) gets `a = δ₁` for every regular `v` from boundary-residue realness at simple critical zeros plus the Zeta23 superlinear count.
 - Explicit formula for ζ is proved: `WeilEF.EF_lit_zetaZeroConfig`.
 - Corpus Ingham–Huxley has a `T^ε` loss (`exists_zeroHeightBox_ncard_le_ingham_huxley`); corpus Selberg
   near-line density decays only like `1/a` (`exists_selberg_nearLine_zeroDensity`). Neither suffices for Lemma C′.
@@ -174,3 +175,26 @@ FT7 density (Jutila near line, uniform Ingham, corpus Ingham–Huxley far), FT8 
   `∫_{y₀}^{y₀+T^{1−η}} |ζM_N(½+it)|² ≤ C T^{1−η}` for `N = ⌊T^θ⌋`, `θ+η < ½`, all `y₀ ∈ [T/2, 2T]`
   (diagonal fibre = TA9 `F(1,1,t)`; off-diagonal by `K`-fold IBP after Mellin, `|λ| ≥ 1/(N√(2mn))`;
   tail `mn > T^{1+ε}` by cutoff decay). Standard axioms.
+- FT4–FT9 ✓ (2026-10-06). The final theorem is `RHTower.WeilFiniteType.finiteType_uniqueness`
+  (`a = δ₁`, `f = 0`, `v = 0`), with corollary `exists_finiteType_weilPositive_iff` (finite-type
+  completion exists ⟺ RH).
+  - Axioms are `[propext, Classical.choice, Quot.sound]`.
+  - Modules:
+    - `ZetaGaussianZeroSums`, `ZetaGaussianZeroSumTests`, `ZetaDerivZeroSumMainTerm`
+    - `ZetaZeroReflectionSums`, `ZetaFrequencyFamilyZeroSums`
+    - `WeilFiniteTypeDirichletRigidity`, `WeilFiniteTypeUniqueness`
+    - plus the FT1–FT7 modules.
+  - All 24 modules are wired into `RHTower.lean`. Lint is clean for them. The `.ilean` collision sweep found
+    `zeroMult`/`sum_union_le_of_nonneg` in `ZetaOffLineWeightedDensity`; these were renamed to
+    `residueUnitMult`/`sum_union_le_add_of_nonneg`.
+  - The card moved to `3-formalized`.
+- `verified-height-one-zero-turing-extension` stays at stage 2: BLOCKED. Its statement rests on two external
+  certified computations:
+  - the Platt–Trudgian verified prefix to `3·10¹²`;
+  - the Arb Turing-method count `N(T₁) = N₀ + 1`.
+
+  An unconditional Lean proof would have to formalize those computations, which the no-computation
+  constraint excludes. The bridge `RHTower.rhVerifiedThrough_amplify_of_increment_ncard_le_one` is
+  already in Lean.
+- MUST-804 `weil-cone-boundary-dilation-maximum-principle` → 3-formalized: boundary class `Σ|a(n)|n^{−½}(1+log n) < ∞` (`WeilBoundaryDilation.eq_delta_of_weilPositiveFull_boundary`).
+- MUST-810 `weil-cone-boundary-mobius-part-twisted-moments` → 3-formalized: boundary class with a Möbius part `Λ⋆a + μ⋆f + v` (`WeilBoundaryMobius.eq_vonMangoldt_of_weilPositiveFull_mobius_boundary`).

@@ -163,8 +163,17 @@ cannot be made a mandatory intermediate object.
 - `[OPEN CORE B]` Construct compatible weighted HPP basis polynomials reproducing the completed
   packet amplitudes; when possible, strengthen them to totally unimodular, sixth-root-of-unity, or
   Kirchhoff determinant realizations.
-- `[OPEN CORE C]` Formalize the homogeneous half-plane-polynomial evaluation and denominator-clearing
-  theorem on top of the now-formal prime Cayley selector.
+- `[CORE C — CLOSED IN LEAN 2026-10-07]` `RHTower/PrimeHalfPlaneMatroidSections.lean`:
+  - `eval_primeCayley_ne_zero`: a homogeneous HPP `B` at the prime Cayley fields has no zero off the
+    centered axis;
+  - `clearedSection` with `differentiable_clearedSection` and `clearedSection_im_eq_zero_of_eq_zero`:
+    the denominator-cleared section is entire with only real zeros;
+  - receiver `riemannHypothesis_of_tendsto_clearedSection`: normalized sections converging locally
+    uniformly to `E·XiC`, with `E` entire and zero-free, give RH.
+
+  Standard axioms. The receiver allows zero-free normalizers because raw sections carry the oscillating
+  factor `∏ uᵢ^{r/2}`, whose frequency `(r/2)Σ log ℓ(i)` grows along every cofinal family. OPEN CORE D
+  must therefore be stated for normalized sections.
 - `[OPEN CORE D]` Prove a cofinal relative Kirchhoff determinant identity converging locally
   uniformly to a zero-free factor times `XiC`.
 
@@ -198,3 +207,27 @@ subroute.
 - [ ] homogeneous half-plane-polynomial evaluation theorem formalized
 - [ ] cofinal Kirchhoff/Xi comparison proved
 - [ ] RH capstone formalized
+
+## Structural notes (2026-10-07)
+
+- A cleared section is a Dirichlet polynomial `Σ_n a_n n^{−iz}` in `s = ½ + iz` whose zeros all lie on
+  the critical line. In the variables `u_p` it is a self-inversive polynomial `Q` with no zeros on the
+  open polydisk: homogeneity of `B` is exactly self-inversiveness of `Q`. So the route lives inside
+  Lee–Yang polynomials in the prime variables, a strictly smaller class than real-rooted Dirichlet
+  polynomials. Example: `2^{−iz} − e^{iθ}3^{−iz}` is real-rooted, but `u₂ − e^{iθ}u₃` vanishes inside
+  the bidisk.
+- Density law [P, Kurasov–Sarnak]: the real zeros of a Lee–Yang restriction have exact mean density
+  `(1/2π)Σᵢ degᵢ(Q) log ℓ(i)` with bounded discrepancy. The density of `Ξ` grows like `(1/2π)log T`.
+  Cofinal approximants on `[−T₀, T₀]` therefore need multidegree growing at least linearly in `T₀`,
+  so that the discrepancy can absorb the curvature of `(T/π)log T`. This is a design rule for OPEN
+  CORE D, not an obstruction.
+
+## KILLED by MUST-806 (2026-10-07)
+
+`RHTower.LeeYangCount.not_tendsto_lyApprox_mul_XiC`: normalized Lee–Yang restrictions in variables
+with frequencies `≥ λ₀ > 0` never converge locally uniformly to `E·XiC`. Here the prime fields have
+frequencies `log p ≥ log 2`. Each restriction has zero count `2T·D + O(S)` with `S ≤ (2π/λ₀) D`, so
+locally uniform limits have at most linear zero counts, while `Ξ`'s count is `(T/π) log T`. Hence
+OPEN CORE D is false as stated. Card: `3-formalized/11-rh-zero-divisor-geometry/lee-yang-prime-restriction-linear-count-nogo.md`.
+**Positive survivor:** a stability route must use variables whose frequencies accumulate at 0,
+e.g. log-ratios `log((m+1)/m)` of consecutive integers. The additive structure has to enter.

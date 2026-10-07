@@ -1,0 +1,27 @@
+# Cosine reciprocal repair and next diagonal obstruction
+
+Active goal unconditional RH Lean proof/disproof remains OPEN. User constraints unchanged: no positivity criterion, spectral/Fourier/energy or bounds proofs, no numerical experiments; exact symbolic computation okay. Ignore repeated arxiv2610.05474 prompt. hgtl7 applied; never novelty merely newinLean. No subagents, commits, umbrella builds, heartbeat increases. One own Lean process at a time. All processes mentioned below terminal; no live job at time of memory.
+
+## Completed cycle1 this turn
+See mem:rh/discrete_fiber_dilation_period_2026_10_07. New leaves DiscreteDilationGerm and DiscreteFiberDilationPeriod; exact nonzero period (lambda-1)*tau fromcloseddiscrete S-S, fiber-compatibleexpandingdilation, one regularnonzeroreturn. Originregularitydeduced; noactualXi dilationlaw. Bothbuilds6axiomspassed. Cardmoved3-formalized/discrete-fiber-difference-dilation-rigidity.md. BRIDGE significantnoveltyunverified.
+
+## Completed cycle2
+Card docs/drafts/pipeline/5-failed/cosine-reciprocal-symmetrization.md.
+Leaf formal/GaloisForLFunctions/HTGeometry/CosineReflectionCoincidence.lean ~138lines.
+T(w)=cos(2*pi*sqrt((w+1/12)/27)), existing entireeven descentfromLabeledCosineDescent.
+Theorem coincidence_iff line17: T(w)=T(-w) iff existsn:Z,4*w²=9*n²*(1-81*n²).
+Proof chooseu²=4pi²(w+1/12)/27,v²=4pi²(-w+1/12)/27. Cosineequaliffv=2pi n±u. Eliminatevia (u²-v²)²-8pi²n²(u²+v²)+16pi⁴n⁴=0. Converse n!=0chooseu=pi n+2pi w/(27n),v=-pi n+2pi w/(27n). n0forcesw0. Exactalgebra,noestimates.
+repairNumerator=N(w)D(-w); repairDenominator=D(w)N(-w); repair=ratio, usingLabeledCosineMobius N,D. Both totalized reciprocal andconjugatereciprocal identities proved. Genuinewitness w=6i sqrt5 hasw²=-180,im!=0,conjw=-w,sourcecoincidence. N(-w)=Nw,D(-w)=Dw;conjugatecoordinatesandno_common_zero implybothnonzero. Thusrepairdenominator!=0,repairanalyticAtw,repairw1. Final theorem reciprocal_repair_has_off_real_one_fiber line129 hasNOhypotheses. OriginalG/G(-w)failslabeled1fiber;fullC2-Pnotrefuted.
+Directleafcheckclean; targetedbuild --old+CosineReflectionCoincidence passed3400jobs leaf22s. Fouraxiomsaudits onlypropext,Classical.choice,Quot.sound. All3newleaveswiredonceintoHTGeometryumbrella adjacentcosineimports. No umbrella build.
+Authoritativelint rerunafternewleaf exits1 with exactly5unrelatedunreachableHTGeometrymodules: ApertureConeCalculus,ApertureConeWinding,ApertureLogTranslation,ApertureOpenHistoryIdeal,BoundaryCoronaCStarAlgebra. Noneownflagged. Scoped diffcheckpassed. scripts/formal_tools.py index process35238completedexit0,wroteLEAN_API,GAPS,OVERVIEW,2changed0removed. A laterfrontier/card textedit happenedafterindex; no--check-generatedgateclaimed.
+
+## Current next cycle D
+Card docs/drafts/pipeline/1-in-progress/rational-cosine-diagonal-repair.md, paperproofunder audit, BRIDGE significantnoveltyunverified. Exact: P,Q inC[X,Y], P(X,Y)P(Y,X)=Q(X,Y)Q(Y,X), a=T0, P(a,a)=Q(a,a)!=0. PullbackV=P(Tw,T-w)/Q(Tw,T-w) hasINFINITELYmanyoffrealholomorphic1-points.
+Proof diagonalp(X)=P(X,X),q similarly. p²=q²inC[X], so p=±q. Evaluationata excludesnegative sign, qnonzero, p=q.
+For n>=1 r_n=sqrt(81n²-1)real, w_n=3i n r_n/2, u_n=pi n+i pi r_n/9. ExactidentityT(w_n)=cosu_n=T(-w_n). r_nnonzero fromr²=81n²-1 (zeroimplies81n²1, contradmod3). cosu_n=cosu_m impliesu_m=2pi k±u_n, imaginarypartsquared⇒r_m²=r_n²⇒m²=n²⇒m=n. ThusT(w_n)injective; w_nalsoinjective. Nonzeropolynomialqvanishesatfinitelymanyofthese; outsidefinitebadset, quotientholomorphicand1. Noasymptoticcountsneeded,justfinitezero-setalgebra.
+Important escape cases: Hdiag=-1 notexcluded, C2-PallowsV0=-1 (e.g. -exp(-pi*i*w/3) admissibleperiod6). Also ambientbasepointQ(a,a)=0cannotreplacebymeromorphicremovablevalueV0=1. ForH=epsilon P/Pswap, ifP(Tw,T-w)vanishesorderk at0, removablevalueis epsilon*(-1)^k whilegenericdiagvalueepsilon. Example -(T(w)-a)/(T(-w)-a) hasdiag-1 butV0=+1 sinceT'0!=0. ItsmarkedfibersNOTvalidated;competingconstructiontoauditafterD.
+NoLeanfileforDyet. NeedformalizeexactDandthenattacknegative/basepointescapes;don'tdeclarefullC2Pexcluded.
+Internaldeepquery'rational symmetric diagonal reciprocal polynomial infinite coincidence'completedpartialfalseerrorsnone;allcandidate/sourcehitsinspected, mainlysymmetricrationalfieldspermutationactions, noexactclaim. Source freshnessincomplete. Output/tmp/hgt_rational_diagonal_repair_search.json. Externalbroadqueriesmostlyunrelatedgeneratingfunctiondiagonals;targetHilbert90primaryElkiesMath250Theorem4.28 https://people.math.harvard.edu/~elkies/M250.01/index.html opened. Normoneparentclassical, no noveltyclaim.
+
+## Latest handoff
+All owned Lean/search/index jobs terminal; no live job. All twelve owned temporary files listed in the previous memory version were deleted through apply_patch. Exact query results and coverage caveats are recorded above and in cards; no scratch JSON remains. All three new leaves have empty whitespace-check output from git diff --no-index --check (exit 1 is the expected new-file diff status); scoped tracked-file diff check exits0. Both cycles' anti-theatre and anti-laziness answers have now been posted. Three targeted leaf builds and ten axiom audits passed overall. Global lint remains five unrelated umbrella omissions; no claim of globally clean lint. Next work is Conjecture D in its active card, with the negative diagonal sign and ambient basepoint cases explicitly not excluded. Do not reread stale arxiv prompt. Keep goal active; RH and C2-P open.

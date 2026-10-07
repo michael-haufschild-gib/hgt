@@ -117,3 +117,21 @@ the card as conjectures and are not claimed.
 ## Log
 
 - 2026-10-04 — Lean certificate audited; every numbered claim mapped to a declaration; moved to 3-formalized.
+
+## Sharp boundary layer (2026-10-07, loop row 545) — formerly the open conjecture
+Both sharp statements left open above are now theorems in Lean: module `RHTower/FreeLagSymbolBoundaryLayer` (namespace `RHTower.FreeLagTrace`), wired after `FreeLagTraceCertificateObstruction`. Axioms `[propext, Classical.choice, Quot.sound]`; zero messages.
+
+| Claim | Declaration |
+|-|-|
+| `Σ_{n ≤ x} Λ(n)/√n ~ 2√x` (Abel summation + PNT) | `tendsto_sum_vonMangoldt_div_sqrt` |
+| `M₀(b) ~ 2e^b` | `tendsto_primeMass_div_exp` |
+| layer cake `M₁(a) = ∫₀^{2a} M₀(s/2) ds` | `primeHinge_eq_layerCake` |
+| `M₁(a) ~ 4e^a` | `tendsto_primeHinge_div_exp` |
+| `\|cos(t−h) − cos t − h sin t\| ≤ (3/2)h²` | `abs_cos_sub_sub_cos_sub_mul_sin_le` |
+| `S_a(t/4πa) = W − (t/a) sin t·M₁ + E`, `\|E\| ≤ (3t²/4a²)M₂` | `abs_freeLagSymbol_scaled_sub_le` |
+| **`a e^{−a} S_a(t/(4πa)) → −4t sin t`, uniformly on `[−T, T]`** | `tendstoUniformlyOn_scaled_freeLagSymbol` |
+| **`R_a(ω)/(2a) → 1`, uniformly in `ω`** | `tendstoUniformly_optimalResidual_div` |
+
+Proof. The constant `4` is `∫₀¹ s^{−½}(½ log(1/s) + 1) ds`, obtained through the layer cake. The PNT enters only through `ψ(x)/x → 1`, used as `|ψ(t) − t| ≤ εt + B_ε`. The residual limit follows from `2a − 64 ≤ R_a ≤ 2a`.
+
+Reading. At aperture `a`, the restricted Weil symbol on the scale `1/a` has the exact profile `−(e^a/a)·4t sin t`, and pole-vanishing plane waves keep their full mass `2a` there. The coarse obstruction is therefore sharp: the four negative bands carry exactly `(4/3)` of residual mass at depth `≍ e^a/a`. Mathematically this is PNT plus Taylor. It is a closure of a stated open item, not new arithmetic.

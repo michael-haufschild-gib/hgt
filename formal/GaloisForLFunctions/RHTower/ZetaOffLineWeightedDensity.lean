@@ -191,9 +191,9 @@ abbrev blockZeros (A B : ℝ) : Finset ℂ :=
   Sieve.zetaResidueUnitClosedRectangleZeros (((1 / 2 : ℝ) : ℂ) + (A : ℂ) * I) ((4 : ℂ) + (B : ℂ) * I)
 
 /-- The multiplicity `(analyticOrderAt ((s−1)ζ(s)) w).toNat` as a real number. -/
-abbrev zeroMult (w : ℂ) : ℝ := ((analyticOrderAt zetaResidueUnit w).toNat : ℝ)
+abbrev residueUnitMult (w : ℂ) : ℝ := ((analyticOrderAt zetaResidueUnit w).toNat : ℝ)
 
-theorem zeroMult_nonneg (w : ℂ) : 0 ≤ zeroMult w := Nat.cast_nonneg _
+theorem residueUnitMult_nonneg (w : ℂ) : 0 ≤ residueUnitMult w := Nat.cast_nonneg _
 
 theorem mem_blockZeros_iff {A B : ℝ} (hAB : A ≤ B) {w : ℂ} :
     w ∈ blockZeros A B ↔ (1 / 2 ≤ w.re ∧ w.re ≤ 4) ∧ (A ≤ w.im ∧ w.im ≤ B) ∧
@@ -209,11 +209,11 @@ theorem mem_blockZeros_iff {A B : ℝ} (hAB : A ≤ B) {w : ℂ} :
 /-- All zeros of a block: `O(S log S)`. -/
 theorem exists_sum_blockZeros_le :
     ∃ C : ℝ, 0 < C ∧ ∀ {S : ℝ}, 1 ≤ S →
-      (∑ w ∈ blockZeros S (2 * S), zeroMult w) ≤ C * (2 * S + 4) * Real.log (2 * S + 5) := by
+      (∑ w ∈ blockZeros S (2 * S), residueUnitMult w) ≤ C * (2 * S + 4) * Real.log (2 * S + 5) := by
   obtain ⟨C, hC, hglob⟩ := Sieve.exists_zetaResidueUnitClosedRectangleMultiplicity_le_global
   refine ⟨C, hC, fun {S} hS => ?_⟩
   refine le_trans ?_ (hglob (c := 1 / 2) (T := 2 * S) (by norm_num) (by norm_num) (by linarith))
-  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun w _ _ => zeroMult_nonneg w)
+  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun w _ _ => residueUnitMult_nonneg w)
   intro w hw
   rw [mem_blockZeros_iff (by linarith)] at hw
   rw [Sieve.mem_zetaResidueUnitClosedRectangleZeros, Complex.mem_reProdIm]
@@ -227,7 +227,7 @@ theorem exists_sum_blockZeros_le :
   · rw [him1, him2, uIcc_of_le (by linarith)]
     exact ⟨by linarith [hw.2.1.1], hw.2.1.2⟩
 
-theorem sum_union_le_of_nonneg {s t : Finset ℂ} {f : ℂ → ℝ} (hf : ∀ w, 0 ≤ f w) :
+theorem sum_union_le_add_of_nonneg {s t : Finset ℂ} {f : ℂ → ℝ} (hf : ∀ w, 0 ≤ f w) :
     ∑ w ∈ s ∪ t, f w ≤ (∑ w ∈ s, f w) + ∑ w ∈ t, f w := by
   classical
   have h := Finset.sum_union_inter (s₁ := s) (s₂ := t) (f := f)
@@ -237,10 +237,10 @@ theorem sum_union_le_of_nonneg {s t : Finset ℂ} {f : ℂ → ℝ} (hf : ∀ w,
 /-- The block sum splits along `A ≤ T₁ ≤ T₂ ≤ B`. -/
 theorem sum_blockZeros_filter_le_split {A B T₁ T₂ σ : ℝ} (hAT : A ≤ T₁) (hT : T₁ ≤ T₂)
     (hTB : T₂ ≤ B) :
-    (∑ w ∈ (blockZeros A B).filter (fun w => σ < w.re), zeroMult w) ≤
-      (∑ w ∈ blockZeros A T₁, zeroMult w) +
-        (∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), zeroMult w) +
-        ∑ w ∈ blockZeros T₂ B, zeroMult w := by
+    (∑ w ∈ (blockZeros A B).filter (fun w => σ < w.re), residueUnitMult w) ≤
+      (∑ w ∈ blockZeros A T₁, residueUnitMult w) +
+        (∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), residueUnitMult w) +
+        ∑ w ∈ blockZeros T₂ B, residueUnitMult w := by
   classical
   have hsub : (blockZeros A B).filter (fun w => σ < w.re) ⊆
       blockZeros A T₁ ∪ ((blockZeros T₁ T₂).filter (fun w => σ < w.re) ∪ blockZeros T₂ B) := by
@@ -254,18 +254,18 @@ theorem sum_blockZeros_filter_le_split {A B T₁ T₂ σ : ℝ} (hAT : A ≤ T�
         exact ⟨⟨hw.1.1, ⟨h1.le, h2⟩, hw.1.2.2⟩, hw.2⟩
       · refine Finset.mem_union_right _ (Finset.mem_union_right _ ?_)
         exact (mem_blockZeros_iff hTB).mpr ⟨hw.1.1, ⟨h2.le, hw.1.2.1.2⟩, hw.1.2.2⟩
-  calc (∑ w ∈ (blockZeros A B).filter (fun w => σ < w.re), zeroMult w)
+  calc (∑ w ∈ (blockZeros A B).filter (fun w => σ < w.re), residueUnitMult w)
       ≤ ∑ w ∈ blockZeros A T₁ ∪ ((blockZeros T₁ T₂).filter (fun w => σ < w.re) ∪
-          blockZeros T₂ B), zeroMult w :=
-        Finset.sum_le_sum_of_subset_of_nonneg hsub (fun w _ _ => zeroMult_nonneg w)
-    _ ≤ (∑ w ∈ blockZeros A T₁, zeroMult w) +
-          ∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re) ∪ blockZeros T₂ B, zeroMult w :=
-        sum_union_le_of_nonneg (fun w => zeroMult_nonneg w)
-    _ ≤ (∑ w ∈ blockZeros A T₁, zeroMult w) +
-          ((∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), zeroMult w) +
-            ∑ w ∈ blockZeros T₂ B, zeroMult w) := by
+          blockZeros T₂ B), residueUnitMult w :=
+        Finset.sum_le_sum_of_subset_of_nonneg hsub (fun w _ _ => residueUnitMult_nonneg w)
+    _ ≤ (∑ w ∈ blockZeros A T₁, residueUnitMult w) +
+          ∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re) ∪ blockZeros T₂ B, residueUnitMult w :=
+        sum_union_le_add_of_nonneg (fun w => residueUnitMult_nonneg w)
+    _ ≤ (∑ w ∈ blockZeros A T₁, residueUnitMult w) +
+          ((∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), residueUnitMult w) +
+            ∑ w ∈ blockZeros T₂ B, residueUnitMult w) := by
         gcongr
-        exact sum_union_le_of_nonneg (fun w => zeroMult_nonneg w)
+        exact sum_union_le_add_of_nonneg (fun w => residueUnitMult_nonneg w)
     _ = _ := by ring
 
 /-- **Near-line block count** from the critical-gate density on `[T₁, T₂]`. -/
@@ -277,7 +277,7 @@ theorem sum_blockZeros_filter_le_nearLine {T₁ T₂ L a A K σ : ℝ} (hT₁ : 
         ∑ w ∈ Z.filter (fun w => 1 / 2 + 51 / 50 * (a / L) ≤ w.re),
           ((analyticOrderAt riemannZeta w).toNat : ℝ)) ≤
         (T₂ - T₁) * (A * Real.exp (-(22 / 25 * a))) + K * L) :
-    (∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), zeroMult w) ≤
+    (∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), residueUnitMult w) ≤
       L / (2 * Real.pi * a) * ((T₂ - T₁) * (A * Real.exp (-(22 / 25 * a))) + K * L) := by
   classical
   set Z := Sieve.zetaResidueUnitClosedRectangleZeros (((1 / 2 : ℝ) : ℂ) + (T₁ : ℂ) * I)
@@ -324,15 +324,15 @@ theorem sum_blockZeros_filter_le_nearLine {T₁ T₂ L a A K σ : ℝ} (hT₁ : 
     · rw [uIcc_of_le hT]; exact hw.1.2.1
     · by_contra hne
       exact ((Sieve.zetaResidueUnit_ne_zero_iff (hne1 w hw.1.2.1.1)).2 hne) hw.1.2.2
-  have hle : (∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), zeroMult w) ≤
+  have hle : (∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), residueUnitMult w) ≤
       ∑ w ∈ Z.filter (fun w => 1 / 2 + 51 / 50 * (a / L) ≤ w.re),
         ((analyticOrderAt riemannZeta w).toNat : ℝ) := by
-    calc (∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), zeroMult w)
+    calc (∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), residueUnitMult w)
         = ∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re),
             ((analyticOrderAt riemannZeta w).toNat : ℝ) := by
           refine Finset.sum_congr rfl fun w hw => ?_
           rw [Finset.mem_filter, mem_blockZeros_iff hT] at hw
-          rw [zeroMult, analyticOrderAt_zetaResidueUnit_eq_zeta (hne1 w hw.1.2.1.1)]
+          rw [residueUnitMult, analyticOrderAt_zetaResidueUnit_eq_zeta (hne1 w hw.1.2.1.1)]
       _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg hsub (fun w _ _ => Nat.cast_nonneg _)
   have hpos : 0 < 2 * Real.pi * a / L := by positivity
   rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
@@ -341,9 +341,9 @@ theorem sum_blockZeros_filter_le_nearLine {T₁ T₂ L a A K σ : ℝ} (hT₁ : 
       ((analyticOrderAt riemannZeta w).toNat : ℝ)) ≤
       (T₂ - T₁) * (A * Real.exp (-(22 / 25 * a))) + K * L := by
     rw [mul_assoc]; exact hcount
-  have h4 : (∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), zeroMult w) *
+  have h4 : (∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), residueUnitMult w) *
       (2 * Real.pi * a) = L * (2 * Real.pi * (a / L) *
-        ∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), zeroMult w) := by
+        ∑ w ∈ (blockZeros T₁ T₂).filter (fun w => σ < w.re), residueUnitMult w) := by
     field_simp
   rw [h4]
   have := h2.trans h3
@@ -352,7 +352,7 @@ theorem sum_blockZeros_filter_le_nearLine {T₁ T₂ L a A K σ : ℝ} (hT₁ : 
 /-- **Gabriel block count** from the full-strip density. -/
 theorem sum_blockZeros_filter_le_gabriel {S X u : ℝ} (hS : 1 ≤ S) (hX : 2 * S ≤ X - 2)
     (hu : 0 < u) :
-    (∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 + u < w.re), zeroMult w) ≤
+    (∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 + u < w.re), residueUnitMult w) ≤
       Sieve.zetaLittlewoodZeroCountAbove (1 / 2 + 19 / 20 * u) 4 (X - 2) (1 / 2 + u) := by
   classical
   unfold Sieve.zetaLittlewoodZeroCountAbove
@@ -511,7 +511,7 @@ theorem nearLine_layer_facts {lam L' j : ℝ} (hlam : 0 < lam) (hratio : 98 / 10
 
 /-- The layer count `N_j` of the block `[S, 2S]`. -/
 abbrev blockLayerCount (S lam : ℝ) (j : ℕ) : ℝ :=
-  ∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 + j / lam < w.re), zeroMult w
+  ∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 + j / lam < w.re), residueUnitMult w
 
 /-- **Near-line layers** `2 ≤ j ≤ λ/100`. -/
 theorem blockLayerCount_le_nearLine {S T₁ T₂ L' A K : ℝ} {j : ℕ}
@@ -544,10 +544,10 @@ theorem blockLayerCount_le_nearLine {S T₁ T₂ L' A K : ℝ} {j : ℕ}
   have hmid := sum_blockZeros_filter_le_nearLine (T₁ := T₁) (T₂ := T₂) (L := L') (a := a)
     (A := A) (K := K) (σ := 1 / 2 + j / lam) (by linarith) (by linarith) hL' (by linarith) hσ
     (hD3 a ha1 haL)
-  have hside₁ : (∑ w ∈ blockZeros S T₁, zeroMult w) ≤ 20 * Real.log (180 * (S + 1)) :=
+  have hside₁ : (∑ w ∈ blockZeros S T₁, residueUnitMult w) ≤ 20 * Real.log (180 * (S + 1)) :=
     sum_rectangleZeros_window_le (t := S + 1) (by linarith) le_rfl (by norm_num) hT₁.le
       (by linarith) (by linarith)
-  have hside₂ : (∑ w ∈ blockZeros T₂ (2 * S), zeroMult w) ≤ 20 * Real.log (180 * (2 * S)) :=
+  have hside₂ : (∑ w ∈ blockZeros T₂ (2 * S), residueUnitMult w) ≤ 20 * Real.log (180 * (2 * S)) :=
     sum_rectangleZeros_window_le (t := 2 * S) (by linarith) le_rfl (by norm_num) hT₂'.le
       (by linarith) (by linarith)
   have hE : Real.exp (-(22 / 25 * a)) ≤ Real.exp (-(169 / 200 * (j : ℝ))) :=
@@ -566,7 +566,7 @@ theorem blockLayerCount_le_nearLine {S T₁ T₂ L' A K : ℝ} {j : ℕ}
   have hin0 : 0 ≤ (T₂ - T₁) * (A * Real.exp (-(22 / 25 * a))) + K * L' := by positivity
   have hmid' := hmid.trans (mul_le_mul hcoef hin hin0 (by positivity))
   unfold blockLayerCount
-  calc (∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 + j / lam < w.re), zeroMult w)
+  calc (∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 + j / lam < w.re), residueUnitMult w)
       ≤ _ := hsplit
     _ ≤ 20 * Real.log (180 * (S + 1)) +
           nearLineLayerConst * lam * (S * A * Real.exp (-(169 / 200 * (j : ℝ))) + K * L') +
@@ -633,7 +633,7 @@ theorem blockLayerCount_le_gabriel {S X K₄ : ℝ} {j : ℕ} (hS : 1 ≤ S) (hj
           gcongr
       _ = 12 * K₄ * S * lam ^ 3 * Real.exp (-(6 / 5 * (j : ℝ))) := by ring
   · have hempty : (∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 + j / lam < w.re),
-        zeroMult w) = 0 := by
+        residueUnitMult w) = 0 := by
       refine Finset.sum_eq_zero fun w hw => ?_
       rw [Finset.mem_filter] at hw
       exfalso
@@ -645,7 +645,7 @@ theorem blockLayerCount_le_gabriel {S X K₄ : ℝ} {j : ℕ} (hS : 1 ≤ S) (hj
 /-- The weighted block sum is at most `e Σ_j e^j N_j`. -/
 theorem blockWeight_le_layers {S : ℝ} (hS : 1 ≤ S) (hlam1 : 1 ≤ Real.log (2 * S)) :
     ∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 < w.re),
-        zeroMult w * Real.exp (Real.log (2 * S) * (w.re - 1 / 2)) ≤
+        residueUnitMult w * Real.exp (Real.log (2 * S) * (w.re - 1 / 2)) ≤
       Real.exp 1 * ∑ j ∈ Finset.range (⌈Real.log (2 * S)⌉₊ + 1),
         Real.exp j * blockLayerCount S (Real.log (2 * S)) j := by
   classical
@@ -653,7 +653,7 @@ theorem blockWeight_le_layers {S : ℝ} (hS : 1 ≤ S) (hlam1 : 1 ≤ Real.log (
   rw [← hlam] at hlam1 ⊢
   have hlam0 : 0 < lam := by linarith
   have hlayers := sum_weight_le_layers (F := (blockZeros S (2 * S)).filter (fun w => 1 / 2 < w.re))
-    (m := zeroMult) (lam := lam) (J := ⌈lam⌉₊) hlam0 (fun w _ => zeroMult_nonneg w) (by
+    (m := residueUnitMult) (lam := lam) (J := ⌈lam⌉₊) hlam0 (fun w _ => residueUnitMult_nonneg w) (by
       intro w hw
       rw [Finset.mem_filter] at hw
       have hre1 := re_lt_one_of_mem_blockZeros (by linarith) (by linarith) hw.1
@@ -664,7 +664,7 @@ theorem blockWeight_le_layers {S : ℝ} (hS : 1 ≤ S) (hlam1 : 1 ≤ Real.log (
     (Real.exp_pos 1).le)
   refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
   unfold blockLayerCount
-  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun w _ _ => zeroMult_nonneg w)
+  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun w _ _ => residueUnitMult_nonneg w)
   intro w hw
   rw [Finset.mem_filter, Finset.mem_filter] at hw
   exact Finset.mem_filter.mpr ⟨hw.1.1, hw.2⟩
@@ -676,7 +676,7 @@ theorem offLineBlock_le_explicit {S T₁ T₂ L' X A K C₀ K₄ : ℝ} {J₁ : 
     (hJ₁ : 2 ≤ J₁) (hJ₁L : (J₁ : ℝ) ≤ Real.log (2 * S) / 100)
     (hA : 0 ≤ A) (hK : 0 ≤ K) (hC₀ : 0 ≤ C₀) (hK₄ : 0 ≤ K₄)
     (hX : 2 * S ≤ X - 2) (hX3 : X ≤ 3 * S) (hlogX : 1 + Real.log X ≤ 2 * Real.log (2 * S))
-    (htot : (∑ w ∈ blockZeros S (2 * S), zeroMult w) ≤ C₀ * (2 * S + 4) * Real.log (2 * S + 5))
+    (htot : (∑ w ∈ blockZeros S (2 * S), residueUnitMult w) ≤ C₀ * (2 * S + 4) * Real.log (2 * S + 5))
     (hD3 : ∀ a : ℝ, 1 ≤ a → a ≤ L' / 100 → ∀ Z : Finset ℂ,
       (∀ z : ℂ, z ∈ Z ↔ z ∈ (uIcc (1 / 2 : ℝ) (15 / 2) ×ℂ uIcc T₁ T₂) ∧ riemannZeta z = 0) →
       2 * Real.pi * ((a / L') *
@@ -687,7 +687,7 @@ theorem offLineBlock_le_explicit {S T₁ T₂ L' X A K C₀ K₄ : ℝ} {J₁ : 
       Sieve.zetaLittlewoodZeroCountAbove (1 / 2 + 19 / 20 * u) 4 (X - 2) (1 / 2 + u) ≤
         K₄ / u * X ^ (1 - 6 / 5 * u) * (1 + Real.log X) ^ 2) :
     ∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 < w.re),
-        zeroMult w * Real.exp (Real.log (2 * S) * (w.re - 1 / 2)) ≤
+        residueUnitMult w * Real.exp (Real.log (2 * S) * (w.re - 1 / 2)) ≤
       Real.exp 1 * ((1 + Real.exp 1) * (C₀ * (2 * S + 4) * Real.log (2 * S + 5)) +
         (J₁ + 1) * (Real.exp J₁ * (20 * Real.log (180 * (S + 1)) + 20 * Real.log (180 * (2 * S)) +
             nearLineLayerConst * Real.log (2 * S) * (K * L')) +
@@ -711,7 +711,7 @@ theorem offLineBlock_le_explicit {S T₁ T₂ L' X A K C₀ K₄ : ℝ} {J₁ : 
     (fun j hj _ => ?_)
   · refine le_trans ?_ htot
     exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
-      (fun w _ _ => zeroMult_nonneg w)
+      (fun w _ _ => residueUnitMult_nonneg w)
   · have hjL : (j : ℝ) ≤ Real.log (2 * S) / 100 := by
       have : (j : ℝ) ≤ J₁ := by exact_mod_cast hjJ
       linarith
@@ -950,7 +950,7 @@ theorem offLineBlock_explicit_le {S L' A K C₀ K₄ : ℝ} {J₁ : ℕ} (hS : 2
 theorem exists_eventually_offLineBlock_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ S : ℝ in atTop,
       ∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 < w.re),
-        zeroMult w * Real.exp (Real.log (2 * S) * (w.re - 1 / 2)) ≤
+        residueUnitMult w * Real.exp (Real.log (2 * S) * (w.re - 1 / 2)) ≤
           C * S * Real.log (2 * S) ^ (19 / 10 : ℝ) := by
   obtain ⟨A, K, hA, hK, hD3ev⟩ := exists_selberg_criticalGate_nearLine_zeroDensity
   obtain ⟨K₄, hK₄, hD4ev⟩ := Sieve.InghamNearHalf.exists_eventually_zeroCountAbove_le_nearHalf
@@ -1186,12 +1186,12 @@ theorem two_pow_le_and_lt {y : ℝ} (hy : 1 ≤ y) :
 /-- The weighted block sum. -/
 abbrev blockWeight (S : ℝ) : ℝ :=
   ∑ w ∈ (blockZeros S (2 * S)).filter (fun w => 1 / 2 < w.re),
-    zeroMult w * Real.exp (Real.log (2 * S) * (w.re - 1 / 2))
+    residueUnitMult w * Real.exp (Real.log (2 * S) * (w.re - 1 / 2))
 
 /-- **Fibering the zero sum into dyadic blocks.** -/
 theorem offLineWeight_le_blocks {T Y : ℝ} (hY : 1 ≤ Y) :
     ∑ w ∈ (blockZeros 1 Y).filter (fun w => 1 / 2 < w.re),
-      zeroMult w * (Real.exp ((w.re - 1 / 2) * Real.log w.im) * Real.exp (-(w.im ^ 2 / T ^ 2))) ≤
+      residueUnitMult w * (Real.exp ((w.re - 1 / 2) * Real.log w.im) * Real.exp (-(w.im ^ 2 / T ^ 2))) ≤
       ∑ k ∈ Finset.range (Nat.log 2 ⌊Y⌋₊ + 1),
         Real.exp (-((4 : ℝ) ^ k / T ^ 2)) * blockWeight ((2 : ℝ) ^ k) := by
   classical
@@ -1213,9 +1213,9 @@ theorem offLineWeight_le_blocks {T Y : ℝ} (hY : 1 ≤ Y) :
     rw [Finset.mem_filter, mem_blockZeros_iff (by linarith [pow_pos (two_pos : (0 : ℝ) < 2) k])]
     exact ⟨⟨hre, ⟨h1, h2.le⟩, hz⟩, hre2⟩
   have hpt : ∀ w ∈ F.filter (fun w => Nat.log 2 ⌊w.im⌋₊ = k),
-      zeroMult w * (Real.exp ((w.re - 1 / 2) * Real.log w.im) * Real.exp (-(w.im ^ 2 / T ^ 2))) ≤
+      residueUnitMult w * (Real.exp ((w.re - 1 / 2) * Real.log w.im) * Real.exp (-(w.im ^ 2 / T ^ 2))) ≤
       Real.exp (-((4 : ℝ) ^ k / T ^ 2)) *
-        (zeroMult w * Real.exp (Real.log (2 * (2 : ℝ) ^ k) * (w.re - 1 / 2))) := by
+        (residueUnitMult w * Real.exp (Real.log (2 * (2 : ℝ) ^ k) * (w.re - 1 / 2))) := by
     intro w hw
     rw [Finset.mem_filter, hF, Finset.mem_filter, mem_blockZeros_iff hY] at hw
     obtain ⟨⟨⟨hre, him, hz⟩, hre2⟩, hk⟩ := hw
@@ -1240,22 +1240,22 @@ theorem offLineWeight_le_blocks {T Y : ℝ} (hY : 1 ≤ Y) :
       · have := div_le_div_of_nonneg_right h4 hT2.le
         linarith
       · rw [← hT2]; simp
-    have hm := zeroMult_nonneg w
-    calc zeroMult w * (Real.exp ((w.re - 1 / 2) * Real.log w.im) * Real.exp (-(w.im ^ 2 / T ^ 2)))
-        ≤ zeroMult w * (Real.exp (Real.log (2 * (2 : ℝ) ^ k) * (w.re - 1 / 2)) *
+    have hm := residueUnitMult_nonneg w
+    calc residueUnitMult w * (Real.exp ((w.re - 1 / 2) * Real.log w.im) * Real.exp (-(w.im ^ 2 / T ^ 2)))
+        ≤ residueUnitMult w * (Real.exp (Real.log (2 * (2 : ℝ) ^ k) * (w.re - 1 / 2)) *
             Real.exp (-((4 : ℝ) ^ k / T ^ 2))) := by gcongr
       _ = _ := by ring
   refine (Finset.sum_le_sum hpt).trans ?_
   rw [← Finset.mul_sum]
   refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
   exact Finset.sum_le_sum_of_subset_of_nonneg hsub (fun w _ _ => by
-    have := zeroMult_nonneg w; positivity)
+    have := residueUnitMult_nonneg w; positivity)
 
 /-- Low blocks are bounded by the block sum up to `2^{kk}`. -/
 theorem blockWeight_le_low {k kk : ℕ} (hk : k < kk) :
     blockWeight ((2 : ℝ) ^ k) ≤
       ∑ w ∈ (blockZeros 1 ((2 : ℝ) ^ kk)).filter (fun w => 1 / 2 < w.re),
-        zeroMult w * Real.exp (Real.log ((2 : ℝ) ^ kk) * (1 / 2)) := by
+        residueUnitMult w * Real.exp (Real.log ((2 : ℝ) ^ kk) * (1 / 2)) := by
   classical
   unfold blockWeight
   have hpk : (1 : ℝ) ≤ (2 : ℝ) ^ k := one_le_pow₀ (by norm_num)
@@ -1270,10 +1270,10 @@ theorem blockWeight_le_low {k kk : ℕ} (hk : k < kk) :
     exact ⟨⟨hw.1.1, ⟨by linarith [hw.1.2.1.1], by linarith [hw.1.2.1.2]⟩, hw.1.2.2⟩, hw.2⟩
   refine le_trans (Finset.sum_le_sum fun w hw => ?_)
     (Finset.sum_le_sum_of_subset_of_nonneg hsub (fun w _ _ => by
-      have := zeroMult_nonneg w; positivity))
+      have := residueUnitMult_nonneg w; positivity))
   rw [Finset.mem_filter] at hw
   have hre1 := re_lt_one_of_mem_blockZeros (by linarith) (by linarith) hw.1
-  refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (zeroMult_nonneg w)
+  refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (residueUnitMult_nonneg w)
   have hl1 : Real.log (2 * (2 : ℝ) ^ k) ≤ Real.log ((2 : ℝ) ^ kk) :=
     Real.log_le_log (by positivity) h2k
   have hl0 : 0 ≤ Real.log (2 * (2 : ℝ) ^ k) := Real.log_nonneg (by linarith)
@@ -1290,7 +1290,7 @@ theorem blockWeight_le_low {k kk : ℕ} (hk : k < kk) :
 theorem eventually_offLineWeight_le {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ T : ℝ in atTop, ∀ Y : ℝ, 1 ≤ Y →
       ∑ w ∈ (blockZeros 1 Y).filter (fun w => 1 / 2 < w.re),
-        zeroMult w * (Real.exp ((w.re - 1 / 2) * Real.log w.im) *
+        residueUnitMult w * (Real.exp ((w.re - 1 / 2) * Real.log w.im) *
           Real.exp (-(w.im ^ 2 / T ^ 2))) ≤ ε * T * Real.log T ^ 2 := by
   classical
   obtain ⟨C, hC, hBL⟩ := exists_eventually_offLineBlock_le
@@ -1302,9 +1302,9 @@ theorem eventually_offLineWeight_le {ε : ℝ} (hε : 0 < ε) :
     have h' : (⌈max S₀ 1⌉₊ : ℝ) < (2 : ℝ) ^ kk := by rw [hkk]; exact_mod_cast h
     linarith [Nat.le_ceil (max S₀ 1)]
   set B₀ : ℝ := ∑ w ∈ (blockZeros 1 ((2 : ℝ) ^ kk)).filter (fun w => 1 / 2 < w.re),
-    zeroMult w * Real.exp (Real.log ((2 : ℝ) ^ kk) * (1 / 2)) with hB₀
+    residueUnitMult w * Real.exp (Real.log ((2 : ℝ) ^ kk) * (1 / 2)) with hB₀
   have hB₀0 : 0 ≤ B₀ := Finset.sum_nonneg fun w _ => by
-    have := zeroMult_nonneg w; positivity
+    have := residueUnitMult_nonneg w; positivity
   -- the eventual size facts
   have hlogt := Real.tendsto_log_atTop
   have hlarge : ∀ᶠ T : ℝ in atTop, kk * B₀ + 180 * C * T * Real.log T ^ (19 / 10 : ℝ) ≤
@@ -1365,7 +1365,7 @@ theorem eventually_offLineWeight_le {ε : ℝ} (hε : 0 < ε) :
       have : 0 ≤ (4 : ℝ) ^ k / T ^ 2 := by positivity
       exact Real.exp_le_one_iff.mpr (by linarith)
     have hBW0 : 0 ≤ blockWeight ((2 : ℝ) ^ k) := Finset.sum_nonneg fun w _ => by
-      have := zeroMult_nonneg w; positivity
+      have := residueUnitMult_nonneg w; positivity
     have hsec : 0 ≤ C * ((2 : ℝ) ^ k * ((k : ℝ) + 1) ^ (19 / 10 : ℝ) *
         Real.exp (-((4 : ℝ) ^ k / T ^ 2))) := by positivity
     by_cases hk : k < kk

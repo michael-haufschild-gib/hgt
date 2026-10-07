@@ -103,3 +103,53 @@
   - Arithmetic-blind (proved): real roots [L], quadrature, multiplicity, monotone zero flow.
   - Equivalent faces of the edge decay: convergence, localization, zero domination, gap non-penetration, parity-simplicity (Connes's step 1 is RH-sensitive: planted off-line zeros force even/odd crossings with half-period π/(2t₀)).
   - Exact parity transfer: `Q(sign·f) = Q(f) ∓ 4H(f₊)`, H the Hankel form of the Weil kernel. The archimedean Hankel part is a negative Laplace kernel (favors even), the pole part is rank-2 positive and measures edge mass (favors odd).
+- 2026-10-06 (rows 524–534): template (d), uniqueness U, after this segment.
+  - Rigid in Lean (every Weil-positive system of the class is Λ):
+    - finite type `Λ⋆a + μ⋆f + v` (WeilFiniteTypeUniqueness);
+    - dilation series absolutely convergent left of the line (MUST-801);
+    - deviations of absolute abscissa `< 1` (WeilAbscissaRigidity);
+    - lacunary, dyadic and common-ratio supports;
+    - integer-atomic spectra;
+    - nonnegative notch-small systems with `T = 0`.
+  - Remaining room for a second producer:
+    - deviations at full PNT scale on both signs that are not multiplicative;
+    - dilation series singular at `Re s = ½`, where counting would need Kac–Rice in place of Jensen;
+    - infinite Möbius parts, where the realness defect sits at Riemann's `b = 2` capacity and needs ζ′ moments with uniform `n`-dependence.
+  - The reverse harmonic sign `T ≥ 0`, i.e. `Φ_lam(1) ≤ ξ'/ξ(1)`, is the one-number form of U for nonnegative producers.
+  - Existence (PBAP) is RH-strength, and every rigid class is excluded under ¬RH. So template (d) reduces RH to existence in a class not yet known to be rigid.
+- 2026-10-06 (geometric/topological loop G1–G42, card `rh-geometric-topological-loop-2026-10-06.md`; MUST-802 [L]).
+  - Four laws govern every geometric or topological mechanism:
+    - balance: topological counts pair off-line zeros against saddles, folds, U-turns;
+    - signature: every reality mechanism is a definiteness, a uniqueness, IVT plus a margin, or self-adjointness;
+    - deformation dichotomy: isotopies carry no arithmetic; configuration-changing families put `ξ` on the RH boundary;
+    - Euler rigidity: coupled multivariable Euler products have natural boundaries.
+  - Uniqueness via hyperbolic contraction is now formal (Newton–Schwarz–Pick, MUST-802). It also needs a margin, which vanishes at near-collisions.
+  - Consequence: the only mechanism class compatible with no slack and no analytic positivity is an EXACT geometric signature (template (a)), on an object whose incidence is multiplicative.
+  - Exclusion list for that object (loop G42–G55): Arakelov `ℙ¹_ℤ`/`𝔾_m` (additive incidence); Hecke/Shimura surfaces (`ζ` only in Eisenstein/boundary cohomology, while Hodge index controls cuspidal parts; MUST-803 formalizes the CM-corner Hessian); hyperbolic geodesic kernels (no radial PD extension); convex-body mixed areas (Sylvester circularity); restricted Grassmannian/KdV (spectral); adelic solenoid (rank-one cohomology, Lefschetz `1−q`); scaling-site square (open in the F₁ lane). What remains: `Λ(n)` as a fixed-point count on a class-space quotient, with a non-spectral Hodge index.
+- 2026-10-07 (row 536, MUST-804 [L]): the "dilation series singular at `Re s = ½`" room is closed for `A` absolutely convergent on `Re s ≥ ½` with a log moment. The mechanism uses no zero counting: the archimedean phase velocity `θ' ~ ½ log t` dominates, in mean, the `O(T log log T)` fluctuation of `log|ζ|`, so `Re A ≤ 1` on the line, and Phragmén–Lindelöf plus `A(1) = 1` give `A ≡ 1`. Remaining U-room: Möbius parts at `δ = 0` (they need discrete negative moments `Σ 1/|ζ'(ρ)|`), and non-multiplicative full-scale deviations. Existence stays RH-strength.
+- 2026-10-07 (rows 530 and 537, MUST-801/806): U (uniqueness of producers) now holds for `Λ⋆a + μ⋆f + v` with `a` absolutely convergent past ½, `f` finitely supported, and `v` regular with bounded line values. A parallel session added the boundary class for pure dilations. Two mechanisms:
+  - realness plus strip almost-periodic zero density;
+  - the `|ζ|²`-weighted boundary inequality. The weight annihilates every zero; the leading functional is the Kakutani product of Poisson kernels on the Bohr torus, and the Weil normalization `A(1)=1` is its barycenter.
+  - Reading: the `|ζ|²` notch annihilates `μ_Λ` identically, so it can certify uniqueness but never existence. Every U-proof is RH-blind by construction. Existence (PBAP), the RH core, needs weights that do not vanish at the zeros.
+- 2026-10-07 (row 537, conjecture C538 "frozen real part"). For every integer-supported full-cone Weil-positive `λ`, the Weil boundary measure `μ_λ` has no absolutely continuous part; equivalently `Re D_λ(½+it) = θ'(t)` a.e.
+  - It holds for Λ (under RH) and in every AP-structured class (MUST-800/801/804). Real supports violate it (the MUST-523 system has a.c. density `≥ 1/100`), so integrality must enter.
+  - If true, `D_w = D_λ − D_Λ` has `Re D_w = 0` a.e. on the line. Reflection, plus pure-point control of the singular part, gives `D_w(s) = −D_w(1−s)`, and the MUST-524 Hamburger mechanism gives `w = 0`, i.e. U.
+  - Heuristic (variance law): an integer `λ` with mean 1 has `Σ_{n≤t} λ(n)²/n ≥ log t` (Cauchy–Schwarz). Random-phase fluctuations of `Re D_λ` then exceed `½ log t` on a set of measure `≍ T^{1−1/(8κ²)}` with `κ ≥ 1`, which matches MUST-523's `κ = 1 > 1/8`. Only FE-frozen systems survive.
+  - Consequence for strategy: template (d) can only reformulate RH. U is C538 plus Hamburger, and existence is Λ's own positivity (PBAP).
+- 2026-10-07 (row 539, MUST-807 [L]): infinite Möbius parts are excluded from the Weil cone. If `Λ⋆a + μ⋆f` is Weil-positive with `a` and `f` absolutely convergent past ½, then `a = δ₁` and `f = 0`, under a log moment on `f`.
+  - The mechanism is first-moment sign rigidity of `F` against `ζ` with `K!`-Möbius weights, which remove the diagonal `F(1)`.
+  - Reading: the natural ¬RH repairs of `Λ`, Möbius parts whose `F/ζ` cancels off-line poles, can never be Weil-positive.
+  - U-room left: regular `v` combined with infinite `f`, and non-multiplicative full-scale deviations. Existence (PBAP) remains the RH core.
+- 2026-10-07 (row 540, MUST-808 [L]): U holds for the whole absolutely convergent finite-type class `Λ⋆a + μ⋆f + v`.
+  - Structural law (Lean): Möbius mollification by `Π_{p≤K}(1−p^{−s})` de-tilts the `|ζ|²` Kakutani–Poisson functional to `(1−1/p)·Haar` at the primes `≤ K`. This is the exact mechanism by which mollifiers isolate Dirichlet coefficients at the `T log T` level.
+  - With MUST-801/804/806/807, the `|ζ|²` method has exhausted its natural classes. What remains of U is crystalline (atomic producers / twins, L405) or non-absolutely-convergent. These are no longer gaps that boundary-average methods can reach.
+- 2026-10-07 (row 545, MUST-810 [L]): U holds in the boundary class with a Möbius part. If `Λ⋆a + μ⋆f + v` is Weil-positive, with log moments on `a, f` at `½` and `Σ|v|n^{−½} < ∞`, then it equals `Λ`; `A, F, V` may have a natural boundary on the line. Past-½ analyticity entered the `|ζ|²` chain only through Cauchy estimates. U is now closed in every absolutely convergent class with log moments; what remains is non-absolutely-convergent or crystalline.
+- 2026-10-07 (row 546, external audit). Template (d) is being developed externally: Johns (Oct 2026, preprint) studies positive solutions of the explicit formula with ζ's archimedean data and arbitrary positive prime measures. Its results:
+  - LP duality: existence ⟺ a zero-free, prime-free positivity;
+  - Conjecture U;
+  - "criticality ⟺ purely atomic zero measures", which is C538 in their setting;
+  - uniqueness near ζ's support via the Bondarenko–Radchenko–Seip (BRS) Fourier interpolation basis;
+  - computer-certified near-criticality `κ* ≤ 1.15·10⁻⁹⁰⁶` through zero-killing certificates `Ξ²·(polynomial)`, i.e. numerical C-PIN.
+
+  Reading: the shared open core is non-atomic zero mass (C538), and nobody has a proof of existence. The corpus already goes beyond them in the integer-node case (atomic producers via Hamburger, MUST-524). BRS gives the corpus an exact coordinate system: a producer is determined by its off-Z zero mass `μ^{off}`. The coordinates are `w(n) = π√n ∫U_{n²}dμ^{off}`, evaporation `½∫V_γ dμ^{off}`, and the constraints `∫U_m dμ^{off} = 0` for non-square `m`.
+- 2026-10-07 (row 547, MUST-812 [L]). Prime-blindness has a sharp analytic threshold, the Carlson / Blaschke boundary of the node set `log ℕ`: no measure with `∫|w|e^{(π/2)|t|} < ∞` is prime-blind (even at the primes alone). `Ξ²` decays exactly at `e^{−π|t|/2}`, the archimedean factor matched to the pole of ζ at 1, so every C-PIN or magic-function certificate lives exactly on the threshold. Only the polynomial prefactor `|t|^{7/2}|ζ(½+it)|²` keeps it alive. This is the structural reason for "no slack anywhere" (§3.2) on the certificate side. It also separates degree one, which is exactly critical, from higher degree, where tempered prime-blind multipliers do not exist.

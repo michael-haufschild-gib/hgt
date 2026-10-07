@@ -6,6 +6,13 @@
 - **Source:** `rh-current-frontier-map.md` · route NDS (read-only ledger)
 - **Statement:** A regulator depending only on the reduced universal-node fibre and exact multiplicity conductor recovers every Xi transverse Roos class if and only if RH already holds; adjoining the actual theta terminal-jet holonomy gives an unconditional exact regulator but preserves, rather than kills, the Roos obstruction, and compatibility of its arithmetic monodromy with Picard--Lefschetz monodromy is itself exactly RH.
 
+**Scope clarification (2026-10-06).** The retired proposal is the inference that reduced nodal
+data alone automatically supplies the needed source law. The cited equivalences do not prove
+nonexistence of a regulator for actual Xi, nor falsify actual arithmetic/geometric compatibility:
+those assertions remain open and RH-equivalent. Assuming compatibility to prove RH would be
+circular; proving it independently from the arithmetic source is still a legitimate target.
+The stage and historical `FALSIFIED` label must be read only in this restricted sense.
+
 ## Goal
 
 Resolve the missing NDS conductor-to-nearby-cycle regulator at its strongest nonnumerical source interface.  Determine whether reduced nodal geometry plus protected multiplicity can force derived exactness, or whether an oriented scheme-theoretic coordinate is logically necessary.  No zero-location hypothesis, analytic-family premise, numerical estimate, or assumed RH-strength regulator is allowed.
