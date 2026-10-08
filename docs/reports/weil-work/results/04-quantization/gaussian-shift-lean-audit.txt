@@ -1,0 +1,70 @@
+Cycle26 exact Gaussian shift audit — 2026-10-08
+
+Source: formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianShift.lean
+SHA256: 9ba4c7c0d72a4a8a29633bb5220aa086e9ce7a13ce9d2659bfea0ebf7ddc1fd5
+
+Final direct audit (cwd formal):
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianShift.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianShift.lean
+Exit 0; empty output, no errors or warnings.
+
+Scratch API checks and complete source proof preceded the final audit.
+Axiom and normalization audit:
+lake --old env lean /tmp/wp04-shift-axioms-26.lean
+Exit 0. All nine public declarations and dependency closures use only standard axioms.
+
+'RHTower.WeilSpectral.differentiableAt_quantizationGaussianInteriorIntegrand' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_mul_quantizationGaussianInteriorIntegrand' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.exists_quantizationGaussianInterior_decay' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussian_open_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_quantizationGaussian_radial_majorant' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_integral_quantizationGaussian' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussian_boundary_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussian_energy_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussian_energy_extraction' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantizationGaussian_energy_extraction {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) :
+  ∃ C,
+    0 ≤ C ∧
+      ∀ (T : ℝ),
+        1 ≤ T →
+          ‖↑(2 * RHTower.WeilSpectral.quantizationGaussianEnergy hW T -
+                      RHTower.WeilSpectral.quantizationGaussianDefect hW T) -
+                  ↑Real.pi * RHTower.WeilSpectral.quantizationCompletion hW 1 ^ 2 *
+                    RHTower.GaussZeroSum.gaussWeight T 1 -
+                4 * ↑Real.pi * RHTower.WeilSpectral.quantizationGaussianCoefficientSum lam T‖ ≤
+            C * T ^ (5 / 6)
+RHTower.WeilSpectral.quantizationGaussian_energy_kernel {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) {T : ℝ}
+  (hT : 1 ≤ T) :
+  ↑(2 * RHTower.WeilSpectral.quantizationGaussianEnergy hW T - RHTower.WeilSpectral.quantizationGaussianDefect hW T) =
+    2 * ↑Real.pi *
+        ∑' (n : ℕ), RHTower.WeilSpectral.quantizationSquareCoeff lam n * ↑(RHTower.GaussZeroSum.leftKernel T ↑n) +
+      ↑Real.pi * RHTower.WeilSpectral.quantizationCompletion hW 1 ^ 2 * RHTower.GaussZeroSum.gaussWeight T 1
+
+The same scratch audit checked the exact polar normalization for every real T:
+  gaussWeight T 1 = (Real.exp (1 / (4 * T ^ 2)) : Complex).
+Proof: unfold gaussWeight; rw [Complex.ofReal_exp]; congr 1; push_cast; ring.
+
+Umbrella audit: all 63 WeilWorkQuantization*.lean leaves imported exactly once.
+Both new leaves and all 21 public declarations passed direct/axiom audits.
+No full or umbrella build. No heartbeat override. No numerical experiment.
+
+scripts/formal_tools.py lint: exit 1.
+367 existing large-file warnings; five unrelated unreachable-module errors:
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+No quantization-module lint error. The global lint gate is not claimed green.
+T25 and T24(K,C) are compiled; T24(H,G), C24/C25 and full WP04 remain OPEN.
+Novelty verdict: BRIDGE. No independent scientific novelty is asserted.
+
+Cleanup: all owned sessions terminal; eighteen owned scratch/search/log files removed after durable evidence was saved.

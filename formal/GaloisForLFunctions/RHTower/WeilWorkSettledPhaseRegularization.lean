@@ -18,7 +18,7 @@ namespace RHTower.WeilWorkSettledPhase
 
 open WeilSpectral
 
-private def windowError (η y r : ℝ) : ℝ :=
+def windowError (η y r : ℝ) : ℝ :=
   |intervalPhaseKernel η (-y) y r - (Ioc (-y) y).indicator (fun _ => Real.pi) r|
 
 private theorem measurable_windowError (η : ℝ) :
@@ -34,7 +34,7 @@ private theorem measurable_windowError (η : ℝ) :
   exact ((by unfold intervalPhaseKernel; fun_prop :
     Measurable (fun p : ℝ × ℝ => intervalPhaseKernel η (-p.1) p.1 p.2)).sub hi).abs
 
-private theorem windowError_le_pi {η y : ℝ} (hη : 0 < η) (hy : 0 ≤ y) (r : ℝ) :
+theorem windowError_le_pi {η y : ℝ} (hη : 0 < η) (hy : 0 ≤ y) (r : ℝ) :
     windowError η y r ≤ Real.pi := by
   have h0 := intervalPhaseKernel_nonneg hη (show -y ≤ y by linarith) r
   have h1 := intervalPhaseKernel_le_pi η (-y) y r
@@ -52,7 +52,7 @@ private theorem arctan_distance_lower {η h x : ℝ} (hη : 0 < η) (hh : 0 < h)
   rw [one_div_div] at h
   exact h.trans (Real.arctan_strictMono.monotone (div_le_div_of_nonneg_right hx hη.le))
 
-private theorem windowError_le_endpoint {η h y r : ℝ} (hη : 0 < η) (hh : 0 < h)
+theorem windowError_le_endpoint {η h y r : ℝ} (hη : 0 < η) (hh : 0 < h)
     (hy : 0 ≤ y) (hr : h ≤ |y + r|) (hyr : h ≤ |y - r|) :
     windowError η y r ≤ 2 * η / h := by
   rw [show 2 * η / h = 2 * (η / h) by ring]
@@ -86,7 +86,7 @@ private theorem windowError_le_endpoint {η h y r : ℝ} (hη : 0 < η) (hh : 0 
       unfold intervalPhaseKernel
       linarith [Real.neg_pi_div_two_lt_arctan ((-y - r) / η), div_pos hη hh]
 
-private theorem windowError_le_far {η Y y r : ℝ} (hη : 0 < η) (hY : 1 ≤ Y)
+theorem windowError_le_far {η Y y r : ℝ} (hη : 0 < η) (hY : 1 ≤ Y)
     (hy : y ∈ Ioc Y (2 * Y)) (hr : 4 * Y < |r|) :
     windowError η y r ≤ 32 * η * Y * (1 + r ^ 2)⁻¹ := by
   have hy0 : 0 ≤ y := by linarith [hy.1]
@@ -125,7 +125,7 @@ private theorem windowError_le_far {η Y y r : ℝ} (hη : 0 < η) (hY : 1 ≤ Y
   nlinarith [mul_le_mul_of_nonneg_right hy.2
     (show 0 ≤ 16 * η * (1 + r ^ 2)⁻¹ by positivity)]
 
-private theorem integrableOn_windowError {η Y : ℝ} (hη : 0 < η) (hY : 1 ≤ Y)
+theorem integrableOn_windowError {η Y : ℝ} (hη : 0 < η) (hY : 1 ≤ Y)
     (r : ℝ) : IntegrableOn (fun y => windowError η y r) (Ioc Y (2 * Y)) := by
   refine (integrableOn_const (measure_Ioc_lt_top.ne) :
     IntegrableOn (fun _ : ℝ => Real.pi) (Ioc Y (2 * Y))).mono'
@@ -310,6 +310,29 @@ private theorem norm_regularizedPhase_sub_le {lam : ℕ → ℝ} (hW : WeilPosit
   rw [hsharp, ← integral_sub hker hind]
   simpa only [Real.norm_eq_abs, windowError] using norm_integral_le_integral_norm
     (fun r => intervalPhaseKernel η (-y) y r - (Ioc (-y) y).indicator (fun _ => Real.pi) r)
+
+/-- Transfer any integrable majorant of the kernel's height integral to the actual phase. -/
+theorem integral_regularizedPhase_sub_le_of_kernel_bound {lam : ℕ → ℝ}
+    (hW : WeilPositiveFull lam) {η Y : ℝ} (hη : 0 < η) (hη1 : η ≤ 1)
+    (hY : 1 ≤ Y) {g : ℝ → ℝ} (hg : Integrable g (boundaryMeasure hW))
+    (hbound : ∀ r, (∫ y in Ioc Y (2 * Y), windowError η y r) ≤ g r) :
+    ∫ y in Ioc Y (2 * Y), ‖regularizedPhase hW η y - canonicalPhase hW y‖ ≤
+      ∫ r, g r ∂boundaryMeasure hW := by
+  haveI := sFinite_boundaryMeasure hW
+  have hi := integrable_windowError_prod hW hη (h := 1) (by norm_num) hY
+  have hj : IntegrableOn (fun y => ∫ r, windowError η y r ∂boundaryMeasure hW)
+      (Ioc Y (2 * Y)) := hi.swap.integral_prod_left
+  have hm : Measurable (fun y => ‖regularizedPhase hW η y - canonicalPhase hW y‖) :=
+    ((continuous_regularizedPhase hW hη).measurable.sub (measurable_canonicalPhase hW)).norm
+  have hb : ∀ᵐ y ∂volume.restrict (Ioc Y (2 * Y)),
+      ‖regularizedPhase hW η y - canonicalPhase hW y‖ ≤
+        ∫ r, windowError η y r ∂boundaryMeasure hW := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioc] with y hy
+    exact norm_regularizedPhase_sub_le hW hη hη1 (by linarith [hy.1])
+  have hf := hj.mono' hm.aestronglyMeasurable (by simpa only [norm_norm] using hb)
+  refine (integral_mono_ae hf hj hb).trans ?_
+  rw [← integral_integral_swap hi]
+  exact integral_mono hi.integral_prod_left hg hbound
 
 /-- Full-source dyadic phase regularization; neither atomicity nor edge continuity is assumed. -/
 theorem integral_regularizedPhase_sub_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)

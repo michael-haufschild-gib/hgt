@@ -1,0 +1,130 @@
+{
+  "cycle": 46,
+  "claim": "Source-only logarithmic dyadic canonical-phase regularization, uniform for 0<eta<=1 and Y>=4",
+  "wp05_status": "OPEN",
+  "novelty": "BRIDGE; classical Poisson kernel mechanism; independent scientific novelty unestablished",
+  "status": "SEALED: direct source and axiom audits passed; global lint has seven unrelated reachability errors; WP05 OPEN",
+  "commands": [
+    {
+      "command": [
+        "lake",
+        "--old",
+        "build",
+        "+GaloisForLFunctions.RHTower.WeilWorkSettledPhaseLogRegularization:olean"
+      ],
+      "exit_code": 0,
+      "seconds": 11.93,
+      "log": "cycle46-build.log"
+    },
+    {
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRegularization.lean"
+      ],
+      "exit_code": 0,
+      "seconds": 138.49,
+      "log": "cycle46-Regularization-direct.log"
+    },
+    {
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLogKernel.lean"
+      ],
+      "exit_code": 0,
+      "seconds": 60.07,
+      "log": "cycle46-LogKernel-direct.log"
+    },
+    {
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLogRegularization.lean"
+      ],
+      "exit_code": 0,
+      "seconds": 7.72,
+      "log": "cycle46-LogRegularization-direct.log"
+    },
+    {
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/wp05-c46-axioms.lean"
+      ],
+      "exit_code": 0,
+      "seconds": 7.32,
+      "log": "cycle46-axioms.log"
+    }
+  ],
+  "modules": [
+    {
+      "path": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRegularization.lean",
+      "sha256": "0db20b1b4e350f2e8a6f6fb4391dbd78b7e152c50cf4412aa6c4f7daf3b39f0f",
+      "umbrella_import_count": 1
+    },
+    {
+      "path": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLogKernel.lean",
+      "sha256": "bb865334cdbbc93e42aa2c64cf3bdf1a5be6230704db8e16b1a22060a64669e6",
+      "umbrella_import_count": 1
+    },
+    {
+      "path": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLogRegularization.lean",
+      "sha256": "a7d6aaeef8b1a9fa1bec04070539cd25c2767a9c6961d5046a87aca9f1f5340b",
+      "umbrella_import_count": 1
+    }
+  ],
+  "axiom_queries": [
+    "windowError_le_pi",
+    "windowError_le_endpoint",
+    "windowError_le_far",
+    "integrableOn_windowError",
+    "integral_regularizedPhase_sub_le_of_kernel_bound",
+    "integral_regularizedPhase_sub_le",
+    "exists_integral_regularizedPhase_sub_le_inv",
+    "windowError_le_endpoint_envelope",
+    "integral_windowError_le_log",
+    "integral_windowError_le_scaled_weight",
+    "integral_scaled_weight",
+    "integral_regularizedPhase_sub_le_log_moment",
+    "exists_re_weilContinuation_real_le_log",
+    "exists_integral_regularizedPhase_sub_le_log"
+  ],
+  "allowed_axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "global_lint": {
+    "exit_code": 1,
+    "errors": [
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilPaperCompactSpectralRecovery",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkQuantizationGaussianShift",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra"
+    ],
+    "owned_cycle_findings": []
+  },
+  "index": {
+    "exit_code": 0,
+    "log": "cycle46-index.log"
+  },
+  "cleaned_scratch": [
+    "/tmp/wp05-c46-build.log",
+    "/tmp/wp05-c46-build2.log",
+    "/tmp/wp05-c46-build3.log",
+    "/tmp/wp05-c46-build4.log",
+    "/tmp/wp05-c46-axioms.lean",
+    "/tmp/wp05-c46-build5.log",
+    "/tmp/wp05-c46-final-audit.py",
+    "/tmp/wp05-c46-api.log",
+    "/tmp/wp05-c46-api.lean"
+  ]
+}

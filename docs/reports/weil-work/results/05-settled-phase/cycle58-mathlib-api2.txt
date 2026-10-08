@@ -1,0 +1,24 @@
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Algebra.BigOperators.Intervals
+import Mathlib.Data.Nat.Sqrt
+import Mathlib.Data.Nat.Cast.Order.Field
+example : True := by
+  have := @Nat.cast_div_le ℝ
+  have := @Nat.sqrt_le
+  have := @Nat.lt_succ_sqrt
+  have := @Nat.sqrt_le_self
+  have := @Real.rpow_mul
+  have := @Real.rpow_add
+  have := @Real.rpow_sub
+  have := @Real.div_rpow
+  have := @Real.rpow_le_rpow
+  have := @Real.rpow_le_rpow_of_exponent_le
+  have := @Real.sqrt_eq_rpow
+  have := @Real.rpow_natCast
+  have := @Finset.sum_eq_sum_Ico_succ_bot ℂ
+  have := @Finset.sum_Ico_eq_sum_range ℂ
+  exact True.intro
+example := @Nat.card_Icc
+example := @Nat.cast_le
+example := @Nat.Ico_zero_eq_range
+example := @Finset.Ico_add_one_right_eq_Icc

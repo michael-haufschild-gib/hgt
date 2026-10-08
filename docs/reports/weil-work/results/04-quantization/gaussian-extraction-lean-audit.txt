@@ -1,0 +1,46 @@
+Cycle26 Gaussian extraction audit — 2026-10-08
+
+Source: formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianExtraction.lean
+SHA256: 50413590c6fbb8baeac8667a25cb4264bb6def68d388c7bcb7dab923f155b02b
+
+Final direct audit (cwd formal):
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianExtraction.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianExtraction.lean
+Exit 0; empty output, no errors or warnings.
+
+Axiom audit: lake --old env lean /tmp/wp04-extraction-axioms-26.lean
+Exit 0. All twelve public declarations and dependency closures use only standard axioms.
+
+'RHTower.WeilSpectral.quantizationSquareCoeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationSquareCoeff_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationSquareCoeff_summable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationSquareCoeff_LSeries' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianInteriorIntegrand' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianRightMoment' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianCoefficientSum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integrable_quantizationGaussianRightMoment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianRightMoment_eq_kernelSum' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.summable_quantizationGaussianCoefficientSum' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussian_kernel_error' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianRightMoment_extraction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantizationGaussianRightMoment_extraction {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) :
+  ∃ C,
+    0 ≤ C ∧
+      ∀ (T : ℝ),
+        1 ≤ T →
+          ‖RHTower.WeilSpectral.quantizationGaussianRightMoment hW T -
+                4 * ↑Real.pi * RHTower.WeilSpectral.quantizationGaussianCoefficientSum lam T‖ ≤
+            C * T ^ (5 / 6)
+
+GaussianPhase comment-only maintenance: removed research/session labels from module documentation. Final direct --old leaf audit with -o exited 0 with empty output. Current SHA256: 07c57369c7c4898613effb856b7185756eb75bd9d32a30770989d486dcc4f901. Proof bodies unchanged; cycle25 axiom audit retained.
+
+Final umbrella audit: all 63 quantization leaves imported once. Final lint: exit 1,
+367 existing large-file warnings and five unrelated unreachable HTGeometry modules.
+Full diagnostics are retained in gaussian-shift-lean-audit.txt. No owned lint error.

@@ -1,0 +1,38 @@
+Cycle 19 — 2026-10-08
+Final leaf: lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationArithmeticSpectrum.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationArithmeticSpectrum.lean
+Exit 0; no diagnostics. Umbrella import wired once; no umbrella build.
+Scratch mathlib-name and dependency-axiom audit: lake --old env lean /tmp/wp04-spectrum-audit-19.lean
+Exit 0.
+
+'RHTower.WeilSpectral.quantization_rigidity_of_no_arithmetic_frequency' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_or_arithmetic_frequency' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rational_power_of_arithmetic_harmonic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_or_rational_period_power' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@quantization_rigidity_or_arithmetic_frequency : ∀ {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam),
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ∀ (ι : Type) [Countable ι] (p : ι → ℂ) (ω : ι → ℝ),
+      (Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2)) →
+        (∀ (x : ℝ),
+            0 < x →
+              Complex.exp (↑(2 * Real.pi * quantizationResidualCumulative hW x) * Complex.I) =
+                ∑' (j : ι), p j * Complex.exp (↑(ω j * x) * Complex.I)) →
+          ∃ j m n, p j ≠ 0 ∧ 1 ≤ m ∧ 1 ≤ n ∧ m ≠ n ∧ ω j = 2 * Real.log (↑m / ↑n)
+@quantization_rigidity_or_rational_period_power : ∀ {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam),
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ∀ (r : ℝ),
+      1 < r →
+        ∀ (p : ℤ → ℂ),
+          (Summable fun k => ‖p k‖ * Real.exp (|2 * ↑k * Real.log r| / 2)) →
+            (∀ (x : ℝ),
+                0 < x →
+                  Complex.exp (↑(2 * Real.pi * quantizationResidualCumulative hW x) * Complex.I) =
+                    ∑' (k : ℤ), p k * Complex.exp (↑(2 * ↑k * Real.log r * x) * Complex.I)) →
+              ∃ j m n, 1 ≤ j ∧ 1 ≤ m ∧ 1 ≤ n ∧ r ^ j = ↑m / ↑n

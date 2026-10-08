@@ -2,6 +2,33 @@
 
 **Verdict: OPEN.** Assigned canonical-measure settlement problem remains unsolved.
 
+## Centered phase cost added in cycle 58
+
+For original full positivity alone, with actual residue B and centered trace
+H(t)=F(t)-B*zeta(1/2+it), Lean proves
+
+    |Q(T)-2*E_centered(T)| <= C*T^(5/6), T>=1.
+
+Here Q is the actual canonical Gaussian phase cost and E_centered is the
+positive-height Gaussian integral of |H|^2. A corollary gives arithmetic
+rigidity/RH or an eventual lower bound Q(T)>=kappa*T with kappa>0.
+No coefficient sign, multiplicativity, source functional equation, atomicity,
+or energy-decay premise is added. Neither result eliminates the second branch.
+
+Six leaves provide exact hyperbola cancellation, centered Mellin Gaussian
+estimates O_c(T^c) for 1/2<c<1, zero-safe phase algebra, residue-free contour
+extraction, the error bound and its dichotomy. Targeted --old build and all six
+mandatory direct lake env lean audits passed. All36 public declarations use
+only propext, Classical.choice and Quot.sound. Imports wired once each;
+source hashes rechecked; index passed. Global lint has seven unrelated
+unreachable leaves and no C58 errors. One direct log contains a nonfatal
+unnecessarySeqFocus style warning. Receipt: cycle58-verification.json.
+
+Verdict BRIDGE; independent scientific novelty not established. C59 asks for
+a source-derived contractive bound on the pole-normalized completed quotient;
+its arithmetic comparison remains OPEN CORE. Generic maximum-principle and
+low-degree classification receivers do not supply that bound.
+
 ## Complex-power energy added in cycle18
 
 For original full positivity, let a_z be the Dirichlet exponential of
@@ -414,3 +441,277 @@ novelty is not claimed for the transfer. Neither r=1/2 nor ell_2=log2 is
 proved. There is no deleted meromorphic continuation or ordinary parity
 mean yet. The canonical atomic representation, support restriction and
 constant-phase settlement remain OPEN. C28 now targets r=1/2 exactly.
+
+## C30, part 1 — every fixed rational cosine twist is controlled
+
+**FORMALIZED BRIDGE; WP05 OPEN.** Let d=lamC(lam)-Lambda and b=d*1*1.
+From the original `WeilPositiveFull lam` alone, for every p>=0 and q>0 there
+is C>=0 such that, eventually as sigma tends to 1 from above,
+
+```text
+|(sigma-1)^2 Re[Gamma_R(sigma) sum_n b(n) cos(2*pi*n*p/q)/n^sigma]| <= C.
+```
+
+The capstone is `exists_abs_sourceCosineSeries_rat_normalized_le` in
+`WeilWorkSettledPhaseRationalBound.lean`; its Mellin form is
+`exists_abs_sourceNormalizedCosineMellin_rat_le`. The proof uses the actual
+finite arithmetic Gaussian quadratic, applies opposite two-label coefficients,
+then combines reciprocal frequencies with periodicity and strong induction on
+the denominator. Absolute Mellin convergence is proved independently from the
+signed small-parameter bound. No filtered-source positivity, coefficient sign,
+Euler product of the unknown source, or rational-twist regularity is assumed.
+
+This extends the parity control to every fixed rational frequency. It does not
+claim constants uniform in q, a limit of the rational twists, or their analytic
+continuation. The finite Fourier/coprime-mask transfer to every finite deletion
+endpoint is now proved in C30 part 2 below. Canonical endpoint normalization remains
+open. Scientific novelty beyond the literature is not
+established; the classification is BRIDGE.
+
+Four targeted modules compile; all four final `lake env lean` audits are clean.
+Ten axiom checks use only propext, Classical.choice, Quot.sound. All imports are
+wired once; index passed. Repository lint fails on 15 unrelated unreachable
+modules and reports no error in these four modules. Exact hashes and receipts:
+`cycle30-verification.json`.
+
+Corpus refresh also found an actual logarithmic forward energy/variance limit
+with K=|B|^2+V and V>=0. The new source does not prove V=0. This is a stronger
+starting point for the variance route, not closure of the settled-phase target.
+
+## C30, part 2 — every finite prime deletion has a positive endpoint ratio
+
+**FORMALIZED BRIDGE; WP05 OPEN.** For every nonzero natural Q and the original
+hW alone, the literal excluded logarithm
+
+```text
+L_Q(sigma) = sum_(n>=2, not Coprime(n,Q)) lam(n)/(log(n)*n^sigma)
+```
+
+has a finite right limit ell_Q and satisfies
+`|L_Q(sigma)-ell_Q| <= K_Q*(sigma-1)` on a right neighborhood of one.
+`exists_sourceDeletedLogarithm_lipschitz_limit` in `CoprimeLogarithm.lean`
+is the exact endpoint theorem; `sourceDeletedLogarithm_eq_tsum` identifies the
+literal convergent series. The modulus is arbitrary, not restricted to a prime.
+
+For a(n)=sourceCoeff(lam,n), the actual coprime/full forward ratio is exactly
+`exp(-L_Q(sigma))` on sigma>1. It tends to the positive real number
+`r_Q=exp(-ell_Q)` with an O_Q(sigma-1) error. Capstones:
+`coprime_source_ratio_eq` and `exists_coprime_source_ratio_limit` in
+`WeilWorkSettledPhaseCoprimeRatio.lean`.
+
+Proof: exact finite real cosine expansion of the coprime mask; C30 rational
+bounds; mask compatibility with convolution; positive principal-character
+residue of the canonical constant-sequence factor; subtraction from the full
+source deviation; restoration of excluded Mangoldt terms; bounded-derivative
+extension and the actual Dirichlet exponential. No additional source premise,
+coefficient sign, filtered-source positivity, or unknown-source Euler product.
+
+This does not identify r_Q with the canonical coprime density, provide uniform
+constants in Q, establish deleted analytic continuation/ordinary means, or force
+zero forward variance. Scientific novelty beyond literature remains unestablished.
+
+All eight part2 modules compile and pass final direct `lake env lean` audits with
+empty diagnostics. Fourteen capstone axiom queries use only propext,
+Classical.choice, Quot.sound. Imports are wired exactly once; index passes.
+Latest repository lint has eight unrelated unreachable-module errors and no C30
+error. Receipt: `cycle30-coprime-verification.json`. Together with part1 this seals
+12 modules and24 capstone axiom checks. C31 attacks residual variance V=0.
+
+
+## Cycle 33: exact positive valuation logarithms
+
+**BRIDGE; scientific novelty unestablished; WP05 OPEN.** All eight new modules
+compile and pass their final direct source audits. All16 capstone axiom queries
+passed with only propext, Classical.choice, and Quot.sound. Every module is wired
+once. The verification receipt is `cycle33-verification.json`. Global lint has9
+unrelated unreachable-module errors and no C33 error. No full build was run.
+
+For every prime p and every k>=1, original `WeilPositiveFull lam` implies that
+
+L_(p,k)(sigma) = sum_(n>=2, p^k|n, p^(k+1) does not divide n)
+                   lam(n)/(log(n)*n^sigma)
+
+has a finite right limit ell_(p,k) at1, with an O_(p,k)(sigma-1) remainder.
+The series identity is on sigma>1; convergence of the literal series at1 is
+not claimed. Endpoint values and constants are not made uniform in p or k.
+
+The new mechanism is an exact finite local difference. If b=(lamC-Lambda)*1*1,
+u=1_(p does not divide n), and delta_p is the Dirichlet point mass, then
+(1-delta_p)^2*b=(lamC-Lambda)*u*u. Exact valuation projection commutes with the
+coprime factors and shifts by one under delta_p convolution. The previously
+proved rational cosine estimates bound each projected b. The coprime square's
+positive normalized residue then bounds the projected logarithmic derivative.
+Restoring the absolutely summable canonical contribution and integrating gives
+the endpoint with linear error. No Euler product, sign, positivity, or analytic
+continuation is assumed for the restricted unknown source.
+
+The result distinguishes valuation depths that every coprime deletion combines.
+It does not determine their constants or imply zero forward variance. C31 remains
+open. C32's polynomial diagnostic is now sealed below and is not represented
+as a full-positive source example.
+
+## Cycle 32: coprime endpoints miss local polynomial variance
+
+**REDISCOVERED classical model classification; positive survivor formalized;
+WP05 OPEN.** Four modules pass final direct Lean audits, eight axiom queries
+use only standard axioms, and every module is wired once. Index passes; lint
+reports five unrelated unreachable HTGeometry modules. Hashed receipt:
+`cycle32-verification.json`. No full or umbrella build.
+
+For any integer p>1, let P be a real polynomial with P(0)=P(1/p)=1, and set
+a(n)=sum_j P.coeff(j)*1_(p^j|n) for positive n. Its actual Dirichlet series is
+zeta(s)*sum_j P.coeff(j)*(p^j)^(-s). Every coprime/full ratio tends to phi(Q)/Q.
+The period average of |a(n)-1|^2 is nevertheless strictly positive whenever
+P is nonconstant. The same coefficient sequence is used in both assertions.
+An explicit family exists: P=1+X*(X-C(1/p)). The capstone is
+`exists_localModel_coprime_invisible_variance` in
+`WeilWorkSettledPhaseLocalPolynomialInvisibility.lean`.
+
+The exact positive classification is also audited: the invisible polynomials
+are precisely 1+X*(X-C(1/p))*R; the finite period variance has explicit positive
+geometric valuation weights and vanishes exactly for P=1. This establishes why
+coprime endpoint normalization alone loses information needed for variance
+rigidity. It is not an example satisfying WeilPositiveFull, and no infinite
+ordinary/logarithmic variance limit is asserted by this diagnostic.
+
+## Cycle 34: uniform sparse source bound with sharp energy constant
+
+**BRIDGE; scientific novelty unestablished; WP05 OPEN.** Both modules pass
+final direct Lean audits, six axiom queries use only standard axioms, and
+imports occur once. Index passes; lint has five unrelated HTGeometry errors.
+Receipt: `cycle34-verification.json`. All owned scratch files cleaned.
+
+For the actual source a=sourceCoeff(lam), its proved critical log-energy
+constant K satisfies: for every e>0, eventually as sigma decreases to1,
+SIMULTANEOUSLY for every integer q>=1,
+
+  |(sigma-1)*LSeries(1_(q|n)*a(n),sigma)|^2 <= (K+e)/q.
+
+The neighborhood is independent of q, and no masked radial residue is assumed
+to exist. In particular one common C and eta control all q on 1<sigma<1+eta.
+Capstones: `exists_forward_uniform_divisibility_energy` and
+`exists_forward_divisibility_near_one` in
+`WeilWorkSettledPhaseUniformDivisibility.lean`.
+
+The proof retains the exact mask square mass q^(-sigma)*zeta(sigma), including
+the zero-index convention, combines weighted Cauchy--Schwarz with the source
+Abel majorant, then chooses one neighborhood using the canonical zeta residue.
+Prime powers give uniform deep-valuation tail control. This does not supply
+canonical local endpoint values, source coefficient signs, finite-divisibility
+approximation in square mean, or zero variance.
+
+## Cycle 35: coprime covariance and prime-deletion square summability
+
+**SEALED BRIDGE; scientific novelty unestablished; WP05 OPEN.** All five
+new modules pass final direct `lake env lean` audits. All 22 public theorem
+axiom queries use only propext, Classical.choice, Quot.sound. Imports occur
+exactly once. Receipt: `cycle35-verification.json`. Global lint reports eight
+unrelated unreachable modules; no C35 module is named. No umbrella/full build.
+
+For the actual full-positive source a, B=sourceCompletion(1), and its existing
+centered logarithmic variance V, one simultaneous family of positive coprime
+residues r_Q satisfies the full finite covariance inequality with kernel
+phi(QR)/(QR)-phi(Q)/Q*phi(R)/R. At primes this gives
+
+  |B|^2 * sum_p [p^2/(p-1)] * (r_p-(1-1/p))^2 <= V,
+
+where the nonnegative series is proved summable, not merely formally bounded.
+The capstone is `exists_forward_prime_deletion_summable` in
+`WeilWorkSettledPhasePrimeDeletionSummability.lean`. This is a standard
+covariance/Bessel argument applied to the actual source, without extra source
+assumptions. It does not force canonical residues, zero variance, or settled
+phase. Finite-divisibility square-mean approximation remains an open conjecture.
+
+Cycle 36 corrects two route assessments: finite-prime-support rigidity is
+already proved in `WeilFiniteSupportRigidity`; V=0 alone has no audited
+receiver proving phase settlement. Neither statement may be silently assumed
+when attempting to close WP05. The actual phase/residual-measure producer
+remains the main unpaid obligation.
+
+## Cycle 40: every prime-valuation forward ratio has a real endpoint
+
+**SEALED BRIDGE; scientific novelty unestablished; WP05 OPEN.** All five new
+modules pass final direct `lake env lean` source audits with empty logs.
+All18 public theorem axiom reports contain only propext, Classical.choice and
+Quot.sound. Imports occur once; index passes. Global lint reports7 unrelated
+unreachable modules, with no C40 finding. Receipt: `cycle40-verification.json`.
+Fourteen owned scratch files were cleaned; development diagnostics archived.
+
+For the original full-positive source a=sourceCoeff(lam), each prime p has a
+positive coprime ratio endpoint r_p and a real sequence ell with ell_0=0 such
+that, simultaneously for every k>=0,
+
+  LSeries(1_(v_p(n)=k)*a(n),sigma)/LSeries(a,sigma)
+    -> r_p * [z^k] exp(sum_(j>=1) ell_j*z^j),  as sigma decreases to1.
+
+Here ell_j for j>=1 is the already proved actual valuation-logarithm endpoint,
+and coefficient extraction is a finite polynomial. The capstone is
+`exists_forward_valuation_endpoints` in
+`WeilWorkSettledPhaseValuationEndpoints.lean`. Its only source premise is the
+original `WeilPositiveFull lam`; primeness specifies the arithmetic parameter.
+
+The proof splits the source convolution exponential into its coprime part and
+the exponential supported on p-multiples. Depth k truncates the latter to powers
+0 through k; finite valuation convolution and C33 then supply its endpoint.
+C30 supplies the coprime factor. No infinite depth limit exchange, source
+multiplicativity, coefficient sign, or new analytic assumption is used.
+
+This produces valuation information missing from coprime deletion alone. It
+does not identify canonical endpoint values, prove positivity at positive
+depths, remove diffuse/fractional spectral mass, or settle phase. The polynomial
+algebra is classical; no independent scientific novelty is claimed.
+
+## Cycle 46: logarithmic regularization of the full source phase
+
+**SEALED BRIDGE; scientific novelty unestablished; WP05 OPEN.** Three final
+direct source audits have empty logs. All14 public theorem axiom queries use
+only propext, Classical.choice, Quot.sound. Both new modules are wired once;
+source hashes match the audited receipt. Index passes. Global lint reports
+seven unrelated unreachable modules, no C46 finding. No full/umbrella build.
+Receipt: `cycle46-verification.json`; owned scratch cleaned.
+
+For original hW alone, there exists C>=0 such that for every Y>=4 and
+0<eta<=1,
+
+  integral_[Y,2Y] |regularizedPhase_eta-canonicalPhase|
+    <= C eta Y log(Y+3) log(1+6Y/eta).
+
+Capstone: `exists_integral_regularizedPhase_sub_le_log` in
+`WeilWorkSettledPhaseLogRegularization.lean`. The proof retains all atomic and
+diffuse mass, integrates an endpoint envelope against the scale-Y Poisson
+weight, and invokes the existing source real-axis logarithmic bound.
+No new coefficient, representation, regularity, or sign assumption is used.
+
+For every fixed epsilon>0, eta=Y^(-epsilon) gives a relative power saving
+(paper consequence; no separate Lean power-width corollary). This improves
+boundary approximation, not phase concentration. The existing interior
+cancellation estimate remains ineffective in this small-width range.
+The Poisson smoothing mechanism is classical.
+
+## Cycle55 — actual local valuation functions are zero-free (8 October2026)
+
+**SEALED SOURCE BRIDGE; WP05 remains OPEN.** For every original
+`hW : WeilPositiveFull lam` and every prime p, the actual normalized valuation
+endpoints u_k form a real signed series U_p(z)=sum_k u_k z^k. It is holomorphic
+and nonzero on |z|<sqrt(p), U_p(0)>0, and U_p(1)=1. The actual ratio series
+converge uniformly on every smaller closed disk; the endpoints are absolutely
+summable. No source multiplicativity, coefficient positivity, atomicity,
+phase settlement, or extra source energy premise is assumed.
+
+Capstone: `RHTower.WeilSingularArithmetic.exists_forward_valuation_zero_free`,
+`formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseValuationZeroFree.lean`.
+The proof combines C34 uniform divisibility control, C40 endpoint production,
+exact twisting of the convolution exponential, logarithmic square summability,
+absolute regrouping, and local Hurwitz. It does not use entire continuation.
+
+Ten leaf modules built with `lake --old build +<module>:olean`; all ten passed
+final `lake env lean <source>` checks with empty logs. All34 public declarations
+use only propext/Classical.choice/Quot.sound. Every leaf is wired once; no full
+or umbrella build. Index passed. Global lint reports six unrelated unreachable
+modules, listed in `cycle55-verification.json`; none is a C55 source.
+
+Scientific verdict remains **BRIDGE**: actual source constraints strengthened,
+independent novelty beyond literature unestablished. Signed coefficients may
+still be negative. One-prime nonvanishing gives neither independence across
+primes nor the required global settled phase. C56 prime endpoint independence
+and C57 sharp critical mean square remain open; neither has a paper proof.

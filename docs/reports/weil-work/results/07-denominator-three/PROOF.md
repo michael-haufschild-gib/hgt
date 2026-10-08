@@ -1000,3 +1000,1329 @@ A tempting sparse-clearing argument would form a canonical product over the defi
 
 
 The current corpus also exposes two distinct sublinear receivers. `RHTower.zeta_mass_sublinear_rigidity_of_truncated` (ZetaMassSublinearRigidity.lean, source lines 795 onward) assumes an exact one-Gamma atomic identity and sublinear weighted mass `sum |c_j|*|zeta(1/2+i*t_j)|`, with t_j>=1 and quadratic weighted summability. `RHTower.HamburgerStability.coeff_eq_of_critical_line_even_sublinear_defect` assumes a one-Gamma critical-line defect with polynomial pointwise bound, strip continuity/holomorphy/decay, and sublinear Abel L1 mass. Their source types were inspected. D1 counts missing multiplicities at xi zeros; neither the zeta-weighted mass of E's extra zeros nor the needed one-Gamma defect estimate follows from that count in the present argument. The quotient retains two Gamma factors, and critical-line placement of E zeros does not place every xi pole on that line. These receivers are therefore possible targets with explicit unpaid premises, not current applications or new theorems. The full-data C2/continuous-representative conjecture survives this attack.
+
+
+### Actual inverted spatial pairing and constant term
+
+Fix 0<a<=b, y>0 and a continuous test phi on [a,b]. Put z_y(x)=-1/(x+iy), d=x^2+y^2. Then Re(z_y)=-x/d and Im(z_y)=y/d. For a<=x<=b, d lies between a^2 and b^2+y^2, so the inverted height lies in the fixed positive strip [y/(b^2+y^2),y/a^2]. The existing polynomial-coefficient Bessel-series estimate supplies a summable sequence u_n bounding every actual mode on this strip. Consequently the integrals of |phi times mode_n| are bounded by u_n times the finite integral of |phi|, and sum/integral interchange is justified on the whole interval.
+
+For each mode, (y/d)^(1/2)=y^(1/2)*d^(-1/2), and cosine is even. Dividing its tested integral by y^(1/2)*log(y) therefore gives exactly q(n+1) times inversionCosinePairing(phi,a,b,n+1,y). The full normalized inverted cosine-series integral is the sum already handled by InversionFourier. This proves actual spatial identification without an extra series-convergence premise.
+
+The normalized constant term is exactly
+
+    phi(x)*w_y(x)*(A + (B - A*log(d))/log(y)),  w_y=d^(-1/2).
+
+On [a,b]x[0,1], w_y and log(d) are continuous and bounded, because d>=a^2>0. Both tested integrals H(y)=integral phi*w_y and J(y)=integral phi*w_y*log(d) therefore converge at y=0 by compact dominated convergence. In particular H(0)=integral phi/x; J has a finite limit. Since 1/log(y)->0 from positive y, A*H(y)+(B*H(y)-A*J(y))/log(y) tends to A*H(0). This retains the B term and the inversion logarithm before taking the limit. Adding four times the actual cosine-series limit proves the normalized inverted Maass spatial limit against phi. No deficit-density, boundary-continuity, or residue-series premise enters.
+
+Finally the positive reciprocal substitution t=1/x gives integral phi(x)/x times cos(2*pi*k/x) over [a,b] equal to integral phi(1/t)/t times cos(2*pi*k*t) over [1/b,1/a]. Its Jacobian is t^-2, and the weight 1/x becomes t. A smooth phi supported strictly inside the positive interval gives a smooth compact transformed test Sphi(t)=phi(1/t)/t: it vanishes near zero and outside the reciprocal interval, while inversion is smooth away from zero. Thus the inverted boundary pairing is the existing B[Sphi]. This substitution and support assertion remain explicit Lean obligations until their checks finish.
+
+
+### Sparse-boundary audit after spatial identification
+
+The complete second search returned periodic spectrum rigidity with an entire function and a one-sided exponential expansion, and Bohr-spectrum periodicity with a global almost-periodicity premise. Neither hypothesis is supplied for the meromorphic E/xi quotient by D1(T)=o(T). The inspected WeilWorkDeficitProjection/ZeroTransport source controls the projection of all xi-zero copies and proves a fixed-frequency error divided by T tends to zero. That is a different deficit variable from missing multiplicity below one xi divisor. Even an analogous normalized estimate for D1 would erase a sublinear defect; it would not identify the unnormalized boundary distribution or produce local regularity. No application is claimed.
+
+Miller–Schmid, Distributions and Analytic Continuation of Dirichlet Series, Proposition 5.37 and Theorem 4.8 (https://arxiv.org/pdf/math/0403030), require entire continuation with moderate growth on vertical strips for their infinite-order vanishing and Mellin inversion conclusion. The present quotient may have infinitely many poles. The original cubic data must still pay the cutoff-Mellin identification and a regularity/vanishing estimate; replacing that obligation by the cited entire-function theorem would be circular. C2 versus a complete sublinear-deficit counterdatum therefore remains SURVIVES PRELIMINARY ATTACK.
+
+
+### C3: harmonic-deficit divergence (new open intermediate target)
+
+Under exactly the complete cubic correspondence, conjecture that either lambda=Lambda (and RH), or the nonnegative family
+
+    xiDeficit(E,rho) / (1 + |Im(rho)|),  rho in xiDeficitSupport(E),
+
+is not summable. Competing conjecture: a nontrivial complete datum with summable reciprocal-height deficit mass exists. This strengthens the checked infinite-support alternative and is weaker than C2 positive upper linear density. The stronger sparsity assumption in its contrapositive is chosen to expose a possible absolutely convergent pole-clearing product; such a product by itself does not preserve an ordinary Dirichlet series, polynomial vertical growth, or the period identities. Those remain proof obligations. No paper proof or new Lean theorem of C3 exists at this checkpoint. Verdict: SURVIVES PRELIMINARY ATTACK; novelty UNESTABLISHED.
+
+The deep reciprocal-height search was partial (reranking unfinished), and every returned candidate/source statement was screened. The inspected halfPoleWeight is the arithmetic comparison 1/(n-1)^2, not a xi-pole-height family. The inspected inverse deficit energy is a rational function of clipped shared spectral mass, not reciprocal height. The sharp reciprocal-sum theorem bounds producer Mobius coefficients, not E/xi principal parts. No retrieved result establishes C3 or refutes its complete-data competitor. Generated ingredient sets combining these unrelated reciprocals are inapplicable. Exact-string web searches did not locate a usable primary theorem; that is not an absence or novelty claim.
+
+Next research cycle: construct the cutoff-Mellin identity for the actual endpoint-corrected distribution B - S*B without presuming an infinite residue expansion; then test C3 via the nonlinear period relation, retaining every pole order and all original data. Do not infer continuous boundary regularity from sparse pole locations alone. Keep C2 and the full assigned implication as the ultimate targets.
+
+## Cutoff-Mellin receiver through a continuous primitive (2026-10-08)
+
+This is a classical BRIDGE, not a proof of C2, C3, or scientific novelty. The comparison with Miller--Schmid's distributional Mellin theory is explicit; the advantage here is an absolutely convergent overlap derived from the original coefficients, without an infinite residue expansion. All statements in this section are paper proofs until their exact Lean audits are recorded.
+
+Fix the original cubic datum and put q(n)=degreeTwoQuotientCoeff(g,n), n>=1. The already checked weighted coefficient theorem gives sum |q(n)| n^(-sigma)<infinity for every real sigma>1. Define
+
+    F(x) = pi^(-2) sum_{n>=1} q(n)n^(-2) cos(2*pi*n*x),
+    f(x) = F(x)-F(0).
+
+Absolute uniform convergence proves continuity, boundedness, evenness and period one of F. For every smooth compact test phi, integration by parts twice in each cosine term gives
+
+    integral F phi'' = -4 sum q(n) integral phi(x) cos(2*pi*n*x) dx.
+
+The interchange is dominated by sum |q(n)|/n^2 times the integral of |phi''|. Consequently B[phi]=A integral phi+integral F phi'' is exactly the checked fourierBoundaryPairing, with no new distribution hypothesis. The constant F(0) may be subtracted in that formula because integral phi''=0.
+
+### Absolute weighted integrability and exact Mellin overlap
+
+For 0<alpha<2, let C(alpha)=integral_0^infinity (1-cos u)u^(-1-alpha)du. It is finite and positive: near zero use 0<=1-cos u<=u^2/2; at infinity use 1-cos u<=2. Positive dilation gives integral (1-cos(bx))x^(-1-alpha)dx=C(alpha)b^alpha for b>0. These facts are already in ConnesLevyKernelScaling and ConnesFractionalSymbolGrowth.
+
+For 1<sigma<2, Tonelli and alpha=2-sigma give
+
+    integral_0^infinity |f(x)| x^(sigma-3) dx
+      <= pi^(-2) C(2-sigma)(2*pi)^(2-sigma)
+         sum_{n>=1} |q(n)| n^(-sigma) < infinity.                 (P1)
+
+In fact the same computation proves summability of the integrals of the absolute values of every weighted summand; it therefore pays complex sum/integral interchange. This is stronger than merely taking a pointwise limit at zero. For complex s with 1<Re(s)<2, put
+
+    M(s)=(s-1)(s-2) integral_0^infinity f(x)x^(s-3)dx.
+
+The scalar integral used here is
+
+    integral_0^infinity (cos x-1)x^(s-3)dx
+      = -pi/[2 Gamma(3-s) sin(pi*s/2)].                           (P2)
+
+For completeness, set alpha=2-s, so 0<Re(alpha)<1. Insert the Euler--Laplace integral
+x^(-1-alpha)=Gamma(1+alpha)^(-1) integral_0^infinity t^alpha exp(-tx)dt. Absolute Fubini is justified by integrating the absolute value: with r=Re(alpha), the nonnegative double integral is Gamma(1+r)C(r)<infinity, using the just proved convergence of C(r). The elementary Laplace cosine integral gives integral (1-cos x)exp(-tx)dx=1/[t(1+t^2)]. Substitute v=t^2; the remaining integral is one half of Euler's beta integral B(alpha/2,1-alpha/2), equal to pi/[2 sin(pi*alpha/2)]. Gamma(1+alpha) is nonzero in this half-plane. Since sin(pi*alpha/2)=sin(pi*s/2), this proves (P2) without a conditionally convergent cosine transform.
+
+Dilation and (P1) now yield
+
+    M(s) = -4(2*pi)^(-s) Gamma(s) cos(pi*s/2) Q(s)
+         = -2 Gamma_R(s)/Gamma_R(1-s) Q(s)
+         = -E(s)/[xi(s)s^2(s-1)^2 Gamma_R(s)Gamma_R(1-s)],         (P3)
+
+where Q(s)=L(g,s)/zeta(s). The first equality uses Gamma recurrence and reflection in (P2); the second uses duplication and reflection; the third uses the exact original quotient-completion identity. At shared zeros the last expression denotes its meromorphic germ. On 0<Re(s)<1, the multiplier of E/xi in (P3) is analytic and nowhere zero. Thus its poles there are exactly deficits below one copy of xi, with their full orders retained.
+
+### Smooth cutoffs and endpoint terms
+
+Choose a smooth real cutoff chi on [0,infinity), equal to one on a neighborhood of zero and zero beyond a finite positive number. A sharp cut at an integer is inadmissible because B can be singular there. For 1<Re(s)<2 define
+
+    N_chi(s)=A integral chi(x)x^(s-1)dx
+             +integral f(x)[chi(x)x^(s-1)]''dx.
+
+Its second integral is absolutely convergent by (P1). It is the limit of B tested against chi(x)x^(s-1) with a smooth lower cutoff at epsilon. To check the cutoff-derivative errors choose 1<sigma'<Re(s); on [epsilon,2epsilon] each derivative error is bounded by a fixed constant times epsilon^(Re(s)-sigma') times the (P1) integrable density |f(x)|x^(sigma'-3). All these errors tend to zero. The constant term tends by ordinary dominated convergence.
+
+For any smooth tail cutoff psi, zero near zero and one beyond a finite number, define on Re(s)<2, s!=0,
+
+    T_psi(s)=-(A/s) integral psi'(x)x^s dx
+             +integral F(x)[psi(x)x^(s-1)]''dx.
+
+The derivative of psi has compact support away from zero. The second integral converges because F is bounded and its tail weight is O(x^(Re(s)-3)); logarithmic derivatives in s are dominated on every compact subset of Re(s)<2. Thus T_psi is holomorphic there except a possible simple pole at s=0. For Re(s)<0 this equals the limit of the actual tested distribution with a smooth upper cutoff at R: the constant term is the ordinary integral, and all derivative-cutoff errors are O(R^(Re(s)-2)). It is therefore a genuine continuation of the tail distribution, not an assigned meromorphic answer.
+
+For psi=1-chi, the A terms of N_chi+T_psi cancel by one integration by parts. Replacing F by f in the tail integral makes no change, since the integral of [psi x^(s-1)]'' is zero for Re(s)<2. The differentiated cutoff terms cancel exactly, proving
+
+    N_chi(s)+T_(1-chi)(s)=M(s),  1<Re(s)<2.                       (P4)
+
+Write Sphi(t)=phi(1/t)/t, the already checked reciprocal smooth test, and beta[phi]=B[phi]-B[Sphi] on (0,infinity). Under reciprocal substitution the lower-cutoff test for the second term is the upper-cutoff tail test chi(1/t)t^(-s). Since Re(1-s)<0 in the overlap, the genuine-tail result proves
+
+    beta_chi(s)=M(s)-T_(1-chi)(s)-T_(chi composed with inv)(1-s).   (P5)
+
+No higher periodic primitives or entire continuation of the tails are needed: both tail transforms in (P5) are holomorphic throughout 0<Re(s)<2 except possible endpoint poles at s=1 (and the boundary s=0).
+
+### Local receiver, retaining the endpoint survivor
+
+Suppose beta has a representative h on (0,a) and there exists c in C such that r(x)=h(x)-c/x satisfies
+
+    integral_0^a |r(x)| x^(sigma-1)dx < infinity for every sigma>0. (P6)
+
+Choose chi supported in this interval. The cutoff Mellin transform of r is holomorphic on Re(s)>0: on a compact substrip, powers of |log x| are absorbed by choosing a smaller positive sigma in (P6). The c/x term has a continuation with its only possible pole at s=1, obtained by integration by parts against chi'. Therefore beta_chi is holomorphic on 0<Re(s)<2 away from s=1. Equation (P5), initially on 1<Re(s)<2, analytically continues the meromorphic expression (P3) with no interior-strip pole. Every xi deficit vanishes. The already checked full-datum divisor-containment theorem then gives lambda=Lambda and RH.
+
+In particular local boundedness of beta suffices (c=0), and the receiver also allows the exact endpoint survivor c(1-1/x). Only local regularity at zero is required; no global C1 representative, decay at infinity, finite pole set, residue-amplitude bound, or expansion over infinitely many residues is assumed in the receiver proof. Its original-data contrapositive is: a nontrivial datum forces failure of (P6) for every local representative and every endpoint coefficient c. This is an exact research target, not a derivation of (P6) from D1 sparsity. The first OPEN CORE for C2/C3 remains that derivation or an alternative argument exploiting the complete cubic parent.
+
+### Current implementation boundary
+
+First formalize F, the exact distributional second-primitive identity, and (P1) from original data. Next formalize (P2)--(P5) and the local receiver. The preceding paper proof is dependency-closed using Euler--Laplace, beta, Gamma reflection/duplication, complex dominated differentiation, and the already checked exact quotient/divisor theorems. Formal library availability is separate from paper validity. None of (P1)--(P6) is a new premise to be added to the original cubic-data definition. C2/C3 remain SURVIVES PRELIMINARY ATTACK; this receiver is BRIDGE / REDISCOVERED.
+
+### Harmonic multiplier attack and next exact conjecture
+
+The harmonic-deficit condition suggests clearing the sparse pole divisor with an entire multiplier and controlling its growth by a compactly supported smoothing factor. Bhowmik--Sen, arXiv:1606.02125, Theorem 1.1(a), states a classical existence criterion for compact smooth functions with a prescribed nondecreasing Fourier-decay weight whose logarithmic integral is finite. It supplies no ordinary-Dirichlet-series or modular-period preservation statement. No multiplier theorem is applied here, and no pole-product estimate is claimed as proved.
+
+The unpaid step has a concrete geometric form: multiplication in the Mellin variable corresponds to averaging spatial dilations. Each frequency n then becomes nt as the dilation parameter t ranges through the smoothing support. The original exact integer-frequency periodicity and its three-term relation do not follow for that averaged object. Taking supports ever closer to one does not produce an approximate identity for free: a multiplier vanishing at a fixed deficit pole cannot converge there to the constant multiplier one. Thus the proposed reduction to the finite-pole theorem has no justified limit argument. This does not refute C3 or retire all multiplier approaches.
+
+The next exact competing statements are now C4 and its negation. Here B uses q=degreeTwoQuotientCoeff g and the actual endpoint A=degreeTwoEndpointNumerator E 1. C4: under the complete original cubic correspondence and summable reciprocal-height one-xi deficits, there exist a>0, c in C and a measurable r on (0,a), with integral |r(x)|x^(sigma-1) finite for every sigma>0, such that for every smooth test supported compactly in (0,a),
+
+    B[phi]-B[Sphi] = integral_0^a (c/x+r(x))*phi(x)dx.
+
+The competitor is a complete nontrivial harmonic-thin datum whose actual defect has no such representation. C4 is an analytic mechanism for C3, not a new assumption to add to the cubic datum or a proved novelty claim. Its first OPEN CORE is this exact testwise identity with the weighted L1 estimates; sparse pole locations alone do not pay it. The cutoff receiver above explains why proving it would eliminate the harmonic-thin branch. Verdict: SURVIVES PRELIMINARY ATTACK; novelty UNESTABLISHED. The corpus's retrieved reciprocal-square zero sums, smooth-test Fourier decay, and arithmetic Ingham-density results do not establish this representation.
+
+Formal checkpoint: BoundaryPrimitive and PrimitiveMellin now prove the continuous bounded second primitive, its exact distributional pairing, the absolute weighted overlap (P1), and its exact factorization as Q(s)*cosineDifferenceMellin(s)/pi^2. Both direct module checks and all eleven exported axiom audits pass. Gamma evaluation (P2), cutoff identity (P5), and the local receiver remain paper-only. C2, C3, C4 and full WP07 remain OPEN.
+
+### Scalar evaluation on its natural complex strip
+
+The (P2) proof in fact works for every complex alpha with 0<Re(alpha)<2. This is the natural absolute-convergence strip, already consistent with the cosine kernel bounds and the classical fractional-Laplacian normalization (Pagnini--Runfola, arXiv:2305.04251, equation (1.5)); it is not a stronger new classification conjecture. Set
+
+    J(alpha)=integral_0^infinity (1-cos x)x^(-1-alpha)dx,
+    H_alpha(t,x)=t^alpha exp(-t*x)(1-cos x).
+
+Every slice in t is absolutely integrable by the scaled Euler integral at 1+alpha. Its integrated norm is Gamma(1+Re(alpha)) times (1-cos x)x^(-1-Re(alpha)), an integrable Connes kernel. Joint measurability follows from continuity on the positive quadrant. Hence H_alpha is product-integrable and Fubini applies with no formal iterated-integral shortcut. Integrating t first gives Gamma(1+alpha)J(alpha). Integrating x first gives integral t^(alpha-1)/(1+t^2), because the exact exponential-minus-cosine Laplace transform is 1/[t(1+t^2)]. All reordering and power identities use t,x>0.
+
+The square substitution, equivalently Mellin scaling by t^2, gives this last integral as one half of integral v^(alpha/2-1)/(1+v). The checked half-line beta kernel and Gamma reflection give pi/[2 sin(pi*alpha/2)]. Since Gamma(1+alpha) is nonzero on this strip, division yields J(alpha)=pi/[2 Gamma(1+alpha)sin(pi*alpha/2)]. This proves the desired complex formula with all convergence obligations, not merely its real specialization. Put alpha=2-s and dilate by 2*pi to evaluate the exact cosineDifferenceMellin used by the current original-data capstone. The actual quotient formula is still restricted to 1<Re(s)<2 by its given Dirichlet convergence.
+
+This proof is dependency-closed on paper. C4's sparse-deficit-to-regularity step remains the OPEN CORE; no scalar integral identity implies it. Formalization must prove product integrability and retain the actual kernel normalization.
+
+The scalar factor for the actual normalized primitive is
+
+\[
+ A(s)=-\frac{(2\pi)^{2-s}}{2\pi\,\Gamma(3-s)\sin(\pi(2-s)/2)}.
+\]
+
+It is nonzero throughout `0 < Re(s) < 2`: the positive-real base power never
+vanishes, `Re(3-s)>1` makes Gamma finite and nonzero, and with
+`w=(2-s)/2` both `Re(w)` and `Re(1-w)` are positive. Euler reflection then
+forces `sin(pi*w) != 0`. Thus this scalar evaluation introduces no hidden
+zeros capable of cancelling the actual quotient's poles in the interior
+critical strip. This is a classical normalization fact, not the missing
+C4 local-regularity assertion. The actual absolute Mellin identity remains
+restricted to `1 < Re(s) < 2`, where its coefficient summability is proved.
+
+The same factor is holomorphic on that strip: the constant positive-base power
+is entire; Gamma is holomorphic at `3-s` with positive real part; the sine is
+entire; and the denominator is nowhere zero by the preceding argument.
+
+### A weaker local receiver: a power exponent above one half
+
+This is a paper receiver, not a derivation from sparse deficits and not a claim
+of scientific novelty. It refines the checked C1 telescoping argument in
+`WeilWorkHigherDenominatorPeriodDefect.lean`.
+
+Let a locally integrable representative `q` of the actual defect after
+subtracting `c(1-1/x)` satisfy the weight-one three-term and odd-inversion
+identities pointwise, tend to zero at infinity, and obey
+
+`|q(t)| <= C (1-t)^delta` for `1/2 <= t <= 1`,
+
+where `C >= 0` and `0 < delta <= 1`. For `x >= 1`, the three-term identity gives
+
+`|q(x)-q(x+1)| <= C (x+1)^(-1-delta)`.
+
+Telescoping to `x+N`, letting `N` tend to infinity, and comparing the decreasing
+power series with its integral gives
+
+`|q(x)| <= (C/delta) x^(-delta)`.
+
+Odd inversion therefore gives
+
+`|q(x)| <= (C/delta) x^(delta-1)` for `0 < x <= 1`.
+
+Every origin Mellin integral is consequently absolutely convergent and
+holomorphic on `Re(s) > 1-delta`. Holomorphy follows on compact substrips by
+choosing a strictly smaller real exponent and absorbing every logarithmic
+factor into the resulting power margin. The previously recorded cutoff-tail
+identity, applied to this actual representative, continues the normalized
+primitive transform there, up to the retained endpoint term. Its factor
+relative to `E/xi` is holomorphic and nonzero in `0 < Re(s) < 1`: the factor
+proved above is nonzero, the polynomial factors have only endpoint zeros,
+and Gamma_R(s) is finite and nonzero for positive real part.
+
+If `delta > 1/2`, this removes every deficit pole with `Re(s) >= 1/2`.
+Reflection of both E and xi removes the remaining poles. Thus the existing
+original-data multiplicity receiver yields lambda=vonMangoldt and RH. At
+`delta=1/2` this argument only removes poles strictly right of the line;
+reflection and the original critical-line condition on E would force RH,
+but this argument does not remove central multiplicity deficits. This is
+an integrability threshold for this proof, not a sharpness theorem about
+realizable complete data. The receiver is not yet formalized.
+
+### Smooth upper Mellin tails: dependency-closed implementation proof
+
+Let F be the bounded continuous primitive already proved from the original
+cubic datum. Choose a smooth complex-valued cutoff psi, zero on x<a for some
+a>0 and one on x>b. Continuity bounds psi on [a,b]; its plateaus bound it
+globally. Every positive derivative vanishes off [a,b], hence is bounded
+and has compact support away from zero. In particular, F psi is continuous,
+bounded and zero near zero; F psi' and F psi'' are continuous and zero near
+both endpoints of (0,infinity).
+
+For any continuous bounded h vanishing near zero, Mellin(h,z) converges and
+is holomorphic for Re(z)<0: its tail is bounded by a constant times
+x^(Re(z)-1), and its origin part vanishes. If h also vanishes near infinity,
+its Mellin transform is entire. On compact parameter sets one chooses strict
+power margins at both ends; logarithmic derivatives are absorbed by these
+margins. These are exactly the hypotheses of Mathlib's Mellin big-O theorem.
+
+Define the upper tail by its actual convergent second-primitive integral
+
+T_psi(s) = -(A/s) integral_0^infinity psi'(x) x^s dx
+           + integral_0^infinity F(x) (psi(x) x^(s-1))'' dx.
+
+For x>0 the ordinary real second derivative equals
+
+psi''(x) x^(s-1) + 2(s-1) psi'(x) x^(s-2)
+                  + (s-1)(s-2) psi(x) x^(s-3).
+
+Each summand is absolutely integrable for Re(s)<2, by the preceding bounds.
+Thus the integral is exactly
+
+-(A/s) Mellin(psi',s+1)
+ + Mellin(F psi'',s)
+ + 2(s-1) Mellin(F psi',s-1)
+ + (s-1)(s-2) Mellin(F psi,s-2).
+
+The first three Mellin factors are entire; the fourth is holomorphic on
+Re(s)<2. Consequently T_psi is holomorphic there away from s=0.
+No divisor count, pole-amplitude bound or boundary regularity is used.
+The explicit psi(x)=smoothTransition(x-1) pays all cutoff hypotheses and
+the original datum pays every hypothesis on F. The formal capstone must
+identify this expansion with the displayed derivative integral, rather than
+merely assign an analytic function the name 'tail'. The cutoff/inversion
+identity P5 and the actual distributional upper-cutoff limit remain separate
+obligations until checked. This is a classical analytic bridge, not C5.
+
+Receiver dependency refinement: the scalar A(s) of PrimitiveGamma is already
+analytic and nonzero on 0<Re(s)<2. Once P5 identifies the actual cutoff
+defect with the regularized primitive transform, local regularity can be
+transported to the quotient using (s-1)(s-2)A(s), which is nonzero throughout
+the interior critical strip. Completion then transfers removability to the
+E-versus-xi multiplicity comparison. A second closed-form Gamma_R evaluation
+of the boundary transform is not needed for this receiver. The exact
+completion identity and analytic continuation still require formal checking;
+no new scalar normalization or multiplicity theorem is claimed here.
+
+### Cutoff overlap and actual truncations: implementation proof
+
+The C5 almost-positive subtraction attack does not close. The corpus's
+half-integer receiver requires a positive atomic representation on the
+critical line; a summable negative divisor does not supply it, and off-line
+xi zeros cannot be converted into real measure atoms by assuming RH.
+Booker's multiplicity-one condition bounds the total absolute spectral
+mass by o(T), not only its negative part. The degree-two remainder still
+has an uncontrolled positive part. C5 remains SURVIVES PRELIMINARY ATTACK.
+No regularity hypothesis is added to an original-data theorem.
+
+Fix any already defined smooth upper cutoff psi. For Re(s)>0,
+chi=1-psi is bounded, vanishes at infinity, and
+
+  integral chi(x)x^(s-1) dx = (1/s) integral psi'(x)x^s dx.
+
+Indeed, (chi x^s)'=-psi' x^s+s chi x^(s-1); both summands are
+integrable. The antiderivative vanishes at infinity by the cutoff and
+at zero because Re(s)>0. The fundamental theorem on (0,infinity) gives
+the equality, including its sign.
+
+For Re(s)<2, the integral of (psi x^(s-1))'' is zero. Its first
+derivative vanishes near zero. At infinity it is (s-1)x^(s-2),
+which tends to zero. Absolute convergence follows from the checked
+second-derivative tail theorem with F=1. Thus adding a constant to F
+does not change the second-derivative tail integral.
+
+For the actual f=F-F(0), differentiating
+chi x^(s-1)+psi x^(s-1)=x^(s-1) twice on x>0 gives
+
+  f (chi x^(s-1))'' = (s-1)(s-2)f x^(s-3) - f (psi x^(s-1))''.
+
+Both right-hand terms are absolutely integrable on 1<Re(s)<2,
+by P1 and the checked bounded-tail theorem. This pays the lower
+integral and, together with the preceding scalar endpoint identities,
+proves P4 with the actual primitive and its full quotient multiplier.
+
+For P5 use smooth lower truncations eta_R(x)=psi(R*x), R>0, R->infinity.
+For each fixed positive x the positive derivatives eventually vanish
+and eta_R(x) eventually equals one. For j=0,1,2,
+
+  |x^j eta_R^(j)(x)| <= C_j
+
+uniformly in R,x>0. For j>0 this is the compact-support bound for
+|(R*x)^j psi^(j)(R*x)|; j=0 uses boundedness of psi. Each shrinking
+transition error in the second derivative is therefore bounded by a
+fixed multiple of |f(x)|x^(Re(s)-3). P1 at the same Re(s), without
+a stronger exponent, gives dominated convergence. The constant term
+uses integrability of chi x^(s-1). These truncations are actual smooth
+compact tests, supported away from zero.
+
+Their reciprocal tests are exactly chi(1/t) psi(R/t) t^(-s). Extend
+chi(1/t) by zero on t<=0 when using a globally smooth cutoff. On
+positive t it vanishes near zero and equals one near infinity. Its
+upper truncation psi(R/t) has uniformly bounded logarithmic jets and
+converges pointwise with its first two derivatives to one. For Re(s)>1,
+the constant part is integrable at infinity; boundedness of F controls
+the second-derivative part by a multiple of t^(-Re(s)-2), with a fixed
+origin buffer. Dominated convergence identifies the actual reciprocal
+pairing limit with the checked tail at 1-s. Subtracting these two
+actual pairing limits and P4 proves P5. No infinite residue expansion
+or local representative is used. Every claimed equality here is on
+its stated convergence strip; continuation beyond it is a later step.
+
+
+### All-order cutoff survivor and remaining assembly
+
+The same envelope argument holds for every derivative order n, not only 0,1,2. For n>0, psi^(n) vanishes outside a compact transition interval, so x^n psi^(n)(x) is bounded; for n=0 use boundedness of psi. The chain rule gives x^n D^n[psi(Rx)] = (Rx)^n psi^(n)(Rx). For each x>0, psi(Ry) is identically one on a neighborhood of x once R is sufficiently large. Thus its zeroth jet is eventually one and every positive jet eventually zero. Multiplication by any absolutely integrable G gives the common majorant C_n |G| and dominated convergence. This is dependency-closed ordinary cutoff analysis and REDISCOVERED / BRIDGE, not scientific novelty. The exact all-order statement is now checked in CutoffJets.
+
+P4 is checked for the original datum in CutoffOverlap. The actual lower product-rule assembly is now checked in CutoffHead, and the reciprocal upper-test limit in CutoffReciprocity. CutoffDefect combines them into the full P5 compact-test identity on 1<Re(s)<2. These are limits of actual compact-test pairings, not an assignment of head and tail transforms. Analytic continuation beyond that strip, a local representative, and C5 remain separate obligations.
+
+
+### Actual lower compact-test limit: dependency-closed assembly
+
+Write chi=1−psi, eta_R(x)=psi(Rx), f=F−F(0), w(x)=chi(x)x^(s−1), and a=(s−1). Assume only the proved bounds on the actual continuous bounded primitive, its Mellin integrability on 1<Re(s)<2, and ordinary smooth cutoff geometry. Set
+
+G0=f*w'',
+G1=2[-f*psi'*x^(s−2)+(s−1)chi*f*x^(s−3)],
+G2=chi*f*x^(s−3).
+
+G0 is integrable by checked P4. G2 is the full primitive Mellin integrand minus its upper cutoff part; both are integrable by P1 and the bounded-tail theorem. The first summand of G1 has compactly supported psi' away from zero, and the second is a scalar multiple of G2. Thus all three weights are absolutely integrable on the positive half-line. The ordinary product rule and x*x^(s−3)=x^(s−2), x²*x^(s−3)=x^(s−1) give exactly
+
+f*(w eta_R)'' = G0*eta_R + G1*(x eta_R') + G2*(x² eta_R'').
+
+The checked all-order jet integral theorem gives limits integral G0, 0, 0, respectively. The constant term follows from the same theorem with n=0 and G=w, which is integrable for Re(s)>0. For R>0, w eta_R is smooth on the entire line, supported in a compact positive interval: eta_R gives an origin buffer, and chi an upper buffer. Its second derivative has integral zero, by the fundamental theorem of calculus applied to its compactly supported first derivative (equivalently the already checked zero-frequency cosine derivative identity). Hence F can be replaced by f in the exact Fourier-boundary pairing. All full-line integrals equal their positive-half-line versions because the tests and their derivatives vanish near the nonpositive half-line. Therefore the actual FourierBoundaryPairing on these compact tests tends to primitiveMellinHead(F,A,psi,s). This proves the lower-test part of P5 without assigning it by definition; the reciprocal-test part remains separate.
+
+
+### C6: a thin-pole converse without zero confinement (OPEN)
+
+Given the exact internal and external frontier, test a genuinely stronger source-class conjecture. For every g:N->C and E:C->C satisfying ZetaPowerDatum 3 g E, g(1)=1 and E(1)!=0, suppose the family xiDeficit(E,rho)/(1+|Im rho|), indexed by xiDeficitSupport(E), is summable. Then conjecture LSeries g s = riemannZeta(s)^3 for every Re(s)>1. Do not assume critical-line confinement of E's zeros, real lambda, a logarithmic-derivative identity, Euler product, multiplicativity, or coefficient signs. The exact competing statement is a normalized datum of this larger class with the indicated summable deficit and a different Dirichlet series.
+
+This strengthens C3's analytic content and is not being substituted for the assigned target. Truth would show the analytic Dirichlet/functional-equation structure already excludes thin defects; falsity would identify a reason to use the complete correspondence's currently unused zero-confinement or real-logarithmic-derivative hypotheses. The original-data implication then remains to be checked through the existing correspondence, rather than assumed. First OPEN CORE: proving the actual modular defect has enough local regularity, or constructing a nontrivial thin-pole datum in this larger class. The cutoff identity does not prove this regularity. C6 is a conjecture only, with no paper proof or Lean claim; its novelty is UNESTABLISHED. Search and applicability audit follows in EVIDENCE.md.
+
+### Reciprocal-cutoff assembly — paper obligations before repository Lean
+
+Let ψ be a smooth tail cutoff and put ψ∨(x)=1−ψ(1/x) for x>0,
+and ψ∨(x)=0 otherwise. If ψ=1 above b, choose B>max(b,0).
+Then ψ∨ vanishes for x<1/B. If ψ=0 below a>0, ψ∨=1 above 1/a.
+These buffers and ordinary inversion on x>0 prove ψ∨ is again a smooth tail cutoff.
+
+For n≥0 put K_n(R,x)=(R/x)^n ψ^(n)(R/x). Every K_n is uniformly
+bounded, because the logarithmic jets u^n ψ^(n)(u) are bounded. For fixed
+x>0, K_0 tends to 1 and K_n tends to 0 for n>0; in fact the values are
+eventually constant. Dominated convergence applies against every integrable
+G on (0,∞), independently of any pole hypothesis.
+
+For η_R(x)=ψ(R/x), xη'_R=−K_1 and x²η''_R=K_2+2K_1.
+Write a=1−s, χ=ψ∨ and w=χ x^(a−1). For positive x the actual reciprocal
+head test is wη_R. Its primitive integrand is exactly
+
+    F(wη_R)'' = (Fw'')K_0 + 2(Fw/x²−Fw'/x)K_1 + (Fw/x²)K_2.
+
+For bounded continuous F and Re(a)<0 all three weights are integrable:
+cutoff derivatives have compact support away from zero, while each remaining
+term is a bounded function times χ x^(a−3). The scalar weight w is also
+integrable. The limit is therefore A∫w+∫Fw''. Integration by parts in
+χ x^a (zero at both endpoints) gives ∫w=−a⁻¹∫χ' x^a, so this is exactly
+primitiveMellinTail(F,A,χ,a). Smoothness, compact support and the origin
+buffer of each reciprocal test follow from the previously proved reciprocal
+transport. The actual primitive pairing may use F rather than F−F(0), since
+the compact test's second derivative has integral zero.
+
+These identities prove the reciprocal half of P5 on paper. Each advertised
+formal conclusion remains limited to the exact modules that pass Lean.
+No regularity conclusion for the infinite-pole defect follows yet.
+
+### C6 preliminary applicability verdict
+
+Deep search `degree two meromorphic converse harmonically summable poles finite
+order Dirichlet gamma functional equation` returned existing finite-pole
+clearing/contour machinery and unrelated meromorphic-order results. The
+proposed gap-of-divisor-coefficients transfer presupposes the ζ² coefficient
+system; it cannot identify our unknown quotient. The proposed pole-order
+ingredient chain supplies local orders but not global thin-pole rigidity.
+Neururer–Oliver Theorem 1.1 (arXiv:1809.06586, version 4) requires twisted
+functional equations, a polynomial clearing the untwisted poles, stronger
+coefficient growth, and ν≠0. The present quotient has ν=0 and none of the
+first two inputs. Burnol's Hamburger extension also uses finitely many poles
+and a one-gamma functional equation. No source checked here resolves C6.
+Verdict: SURVIVES PRELIMINARY ATTACK; novelty UNESTABLISHED. This is not an
+absence theorem or a proof. No WP07 route is retired.
+
+Reciprocal implementation simplification: for R>0, x>0 and χ=ψ∨,
+ψ(R/x)=1−χ(x/R). Thus the actual reciprocal test equals
+χ(x)(1−χ(x/R))x^(−s). Use ordinary dilation by R⁻¹, followed by the
+origin buffer, instead of differentiating inversion twice. Its logarithmic
+jets are uniformly bounded by the already checked dilation bound; every jet
+of χ(x/R), including order zero, eventually vanishes at each positive x.
+This proves the same dominated limits with fewer chain-rule obligations.
+
+### Pressure test for a direct distributional replacement of C5
+
+The corpus already proves both weight-one identities for the coboundary of
+any even one-periodic function. Taking f(x)=cos(2πx) gives
+q(x)=cos(2πx)−x⁻¹cos(2π/x). It is smooth at every positive x and vanishes
+linearly at x=1, yet is not zero: along positive integers n it tends to 1,
+while along n+1/2 it tends to −1. Thus the two identities and local regularity
+at 1 alone cannot replace the global decay/analytic restrictions. This is
+an elementary instance of the existing coboundary construction, not new
+scientific knowledge or a counterdatum to C5/C6. No full cubic datum has
+been supplied by this example. Any direct sparse-spectrum proof must retain
+and use the global degree-two analytic structure, rather than infer rigidity
+from the modular algebra alone.
+
+### Post-P5 audit and C7: pointwise coefficient decay
+
+This scientific cycle is STALLED. C6 has neither a proof nor a full counterdatum.
+The attempted primitive-packet mean-square argument is REDISCOVERED: the exact
+stronger result is already `WeilMeanSquare.exists_sum_sq_div_le_of_primitive`
+in `WeilPrimitiveSetMeanSquare.lean`. For every primitive S contained in [2,N],
+it gives sum_S lambda(n)^2/n <= (log N+C0)^2. Dyadic summation gives
+sum_(2<=n<=X) lambda(n)^2/n = O((1+log X)^3). This already supplies Booker's
+square-prefix condition for f(n)=3 lambda(n)/sqrt(n), for the original positive
+source. EVIDENCE.md and WP03 had already recorded this deduction. It is not
+new knowledge and must not be proposed again as a research theorem.
+
+The pointwise part of Booker's A1 remains distinct. New conjecture C7:
+for every complete datum of the assigned correspondence (ZetaPowerDatum 3 g E,
+g(1)=1, E(1)!=0, all E zeros on Re=1/2, real lambda absolutely summable with
+weight n^(-sigma) for every sigma>1, and
+LSeries g' = -3 LSeries(lamC lambda) LSeries g on Re>1), one has
+
+    for every integer K>=1 there exists C_K>=0 such that, for every n>=2,
+    |3 lambda(n)/sqrt(n)| * (log n)^K <= C_K.
+
+Here `LSeries g'` means the derivative in the complex argument of LSeries g,
+not the Dirichlet series of a differentiated coefficient function. No Euler
+product, coefficient signs, harmonic-thin divisor, or additional regularity
+is assumed. The exact competitor is a complete datum in this same class and
+an integer K>=1 for which the displayed sequence is unbounded. C7 is weaker
+than the assigned rigidity conclusion, and is a separate test of how the
+zero confinement and real logarithmic derivative can help; C6 omits them.
+Verdict: SURVIVES PRELIMINARY ATTACK; novelty UNESTABLISHED. No paper proof or
+Lean theorem is claimed.
+
+The first attack must go beyond extracted logarithmic Toeplitz ceilings.
+WP03 already has an unconditional sparse prime-supported witness satisfying
+every such ceiling and a log-squared square-prefix bound. Its construction
+has lambda(p_j)/sqrt(p_j)=((j+1)/(j+2))*log p_j, with p_j strictly increasing.
+Thus even these all-cutoff bounds allow pointwise spikes growing like log p_j.
+The exact source and capstone `exists_sharp_prime_supported_toeplitz_weight`
+in `WeilWorkSingularArithmeticToeplitzSharpness.lean` were inspected. This is
+a countermodel only to the relaxation, not to full Weil positivity or C7.
+Do not rebuild this example or infer a full datum from it.
+
+C7 would pay only the missing pointwise coefficient condition. It would not
+turn infinitely many harmonic-thin negative spectral weights into Booker's
+finite-negative condition, nor remove the two archimedean copies in E/xi.
+C2--C6 and WP07 remain OPEN. The next cycle should attack C7 directly through
+the full cubic completion, while retaining C6 as the analytic alternative;
+another general finite-pole or mean-square survey is not progress.
+
+### C7 growth and quantization attack — 2026-10-08
+
+Verdict: **STALLED**. C7 still SURVIVES PRELIMINARY ATTACK; no new proof,
+counterdatum, or scientific-novelty claim. The paper-proof gate has not passed,
+so no Lean implementation follows from this cycle.
+
+The actual `exists_producerZeta_subpolynomial_of_weilPositiveFull` statement
+was inspected. It already supplies upper and lower subpolynomial vertical
+growth on every fixed half-plane Re(s)>=1/2+delta, for every full-positive
+producer. The proof passes through a logarithmic continuation bounded by
+C(log(|t|+3))^theta with theta<1. No coefficient extraction argument giving
+C7's rapid logarithmic decay has been established. In contrast,
+`exists_re_producerLogZeta_le_littlewood` explicitly assumes
+|lambda(n)|<=kappa log n; importing that theorem does not derive its premise.
+Neither observation proves that C7 is false or independent of the full datum.
+
+Later source correction: `WeilWorkSettledPhaseLittlewood` now supplies
+`exists_re_producerLogZeta_le_littlewood_full` from full positivity alone.
+The coefficient hypothesis belongs to the older theorem, not every
+Littlewood bound in the current corpus. Its source was directly Lean-checked
+in the intermediate-multiplicity cycle below. C7's coefficient-extraction
+step remains unproved even with this stronger growth theorem.
+
+The proposed integer-spectrum shortcut also fails as a theorem import.
+Favorov's entire-function result requires entire almost periodic functions
+of exponential growth and a linear bound for the total variation of the
+logarithmic Fourier coefficients. The quoted Meyer theorem requires finitely
+many possible atom weights and linear Fourier total variation. Integer
+multiplicities alone supply neither condition. The original completion's
+archimedean contribution cannot be discarded to manufacture a pure-point
+Fourier quasicrystal. The recent unbounded-density unit-mass example has an
+additional delta-double-prime Fourier term, unrelated spectrum and different
+counting growth; it is not a cubic counterdatum. Exact sources are in EVIDENCE.
+
+Central nonvanishing and positive functional-equation sign are REDISCOVERED:
+they are already our checked CentralExclusion result above. The sparse-Mellin,
+Fabry-gap and nonlinear-change-of-variable direction also repeats recorded
+queries; no admissible spectral synthesis or regularity implication was found.
+These observations close neither C7 nor C3 and do not retire either route.
+
+Next concrete target returns to C3 with its exact competitor: a nontrivial
+complete cubic datum whose one-xi deficits have finite harmonic sum. Use the
+already checked `xiRelativeLogDeriv_residue` and
+`xiLogResidue_negativePart`: negative logarithmic residues are precisely the
+integer deficit weights. This avoids confusing those weights with the
+uncontrolled Laurent amplitudes of E/xi. **[OPEN CORE]** turn harmonic control
+of this negative logarithmic divisor, together with the exact right-half-plane
+identity retaining TWO archimedean copies, into elimination of the divisor.
+No such implication is currently proved. A coefficient-size theorem, a local
+regularity assumption, or another generic converse survey is not a substitute.
+
+### C3 negative-divisor audit and its actual first primitive — 2026-10-08
+
+Verdict for C3: **SURVIVES PRELIMINARY ATTACK**; this cycle is **STALLED**
+scientifically. The logarithmic residue formula retains two archimedean
+copies. The singular-deficit envelope compares mu_lambda with mu_xi, whereas
+this problem compares 3 mu_lambda with ONE mu_xi. Arithmetic summable-deficit
+rigidity concerns coefficients indexed by integers, not these zero heights.
+Neither theorem supplies the missing estimate.
+
+The following elementary paper calculation isolates exactly what harmonic
+summability does provide. It is **BRIDGE / REDISCOVERED**, not C3 or a new
+scientific theorem. Sum over distinct xi zeros rho, put
+d_rho=max(ord_rho(xi)-ord_rho(E),0), t_rho=Im(rho), and
+gamma_rho=(rho-1/2)/i. In the hypothetical harmonic-thin branch,
+S=sum d_rho/(1+|t_rho|)<infinity. Define
+
+    J(x) = sum_rho d_rho * (exp(i gamma_rho x)-1)/(i gamma_rho),
+
+with the summand's continuous value x when gamma_rho=0. The zero set is
+locally finite and |Im(gamma_rho)|<1/2. For |x|<=L and |t_rho|>=1,
+the absolute value of the summand is at most
+2*(exp(L/2)+1)*d_rho/(1+|t_rho|). The remaining finitely many terms are
+continuous. The Weierstrass test therefore gives a continuous J on the real
+line with J(0)=0 and locally uniform convergence of its defining series.
+More precisely, for T>=1 its omitted |t_rho|>T tail is uniformly bounded on
+[-L,L] by 2*(exp(L/2)+1) times the corresponding tail of S.
+
+For a smooth compactly supported test phi, termwise integration against phi'
+is legitimate by that same majorant. Integration by parts in each term gives
+
+    -integral J(x) phi'(x) dx
+      = sum_rho d_rho * integral exp(i gamma_rho x) phi(x) dx.
+
+The series on the right converges absolutely: its term equals minus the
+integral of the primitive summand against phi', whose absolute integrals
+have a summable bound. Thus J is a distributional first primitive of the
+negative logarithmic divisor's exponential sum. Pointwise differentiation
+of the series is neither asserted nor used.
+
+This calculation provides continuity, with no proved Lipschitz or positive
+Holder exponent. J is not the second arithmetic Fourier primitive of Q,
+nor the actual period defect of E/xi. Passing from the logarithmic divisor
+to that linear quotient remains nonlinear and unpaid. In particular the
+calculation cannot be inserted into the existing cutoff-Mellin receiver.
+
+Vedana's September 2026 strip classification represents signed measures
+using a difference of generalized Nevanlinna functions. Membership in that
+difference does not assert finite negative index of the resulting function.
+Burnol's extended Hamburger theorem still assumes finitely many poles.
+Neither theorem turns the above weighted tail bound into finite support.
+No route is retired, no full counterdatum is supplied, and no new Lean
+module is justified by a completed proof of C3. **[OPEN CORE]** exploit the
+full cubic arithmetic identity to eliminate a nonempty harmonic-thin
+negative divisor; the continuous primitive alone does not do this.
+
+### Arithmetic splitting and deformation re-audit — 2026-10-08
+
+Scientific verdict: **STALLED / NO PROGRESS**. C3 and its complete-data
+counterexample alternative remain open. No proof of C3 passes the paper gate.
+
+The explicit formula controls the signed divisor of E/xi. It does not give
+the same Fourier identity separately for its positive and negative parts.
+Subtracting one xi leaves two archimedean copies; subtracting three would
+change the deficit being counted. The positive-measure gap theorems inspected
+in this cycle therefore have no admissible input yet. No claim that such an
+input cannot be constructed is made.
+
+An attempted polynomial/analytic deformation conjecture repeats
+L273/L301/L387/L394 in
+`docs/drafts/pipeline/1-in-progress/hf-positive-hodge-attack/krein-producer-loops.md`.
+The previous warning at this file's local-deformation audit remains valid:
+analytic-path exclusion does not establish isolation in the whole
+infinite-dimensional space. A finite-dimensional compactness repair would
+still exclude only a proper subclass. Do not present that repair as a new
+global classification or spend the next cycle formalizing it as frontier
+progress.
+
+For precision, the proposed repair's local calculation was as follows. If
+f_n=f_0+epsilon_n h_n, h_n tends locally uniformly to h, and the M zeros
+alpha_(j,n) near an M-fold zero of f_0 are real, the argument-principle
+moments p_(l,n)=sum_j alpha_(j,n)^l satisfy p_(2,n)=O(epsilon_n).
+Consequently |p_(l,n)|<=p_(2,n)^(l/2)=o(epsilon_n) for l>=3. The linearized
+contour integral then forces h/f_0 to have pole order at most two there.
+At a zero of xi of multiplicity m, f_0=(2xi)^3 has M=3m, giving
+ord(h)>=3m-2>=m. This is the existing divisibility mechanism. Turning
+arbitrary approaching data into a nonzero limiting h needs compactness of
+their normalized directions; it is available in a fixed finite-dimensional
+space, not established for the full class. No new theorem is claimed here.
+
+The degree-two receiver does not introduce a critical-zero premise:
+`MaassZetaSquaredConverse.coeff_eq_divisorCount_of_functional_equation`
+uses entireness, its functional equation, Dirichlet summability, normalization,
+and a strip bound. The checked quotient-growth and polynomial-strip results
+are relevant to a divisible tangent. They do not make a nondivisible actual
+E/xi entire, nor supply the missing normalized-direction compactness.
+
+The asymmetric-zero literature inspected here does not remove these gaps.
+Its equal-degree or arithmetic-independence hypotheses cannot be applied
+to xi versus the unrestricted cubic completion. Comparing xi^3 instead
+again changes the threshold from one copy to three. Infinite-order
+pole-clearing remains unpaid as well: an Euler-differential multiplier
+does not automatically preserve the period-one translation law.
+
+Next entry point: retain C3 versus a nontrivial complete datum with finite
+one-xi harmonic deficit. Work on a concrete estimate for the full signed
+arithmetic identity before requesting another generic gap, deformation,
+or finite-pole survey. No added coefficient, regularity, residue-amplitude,
+Euler-product, RH, or compactness premise may enter the capstone.
+
+### Positive tail annihilators and their arithmetic obstruction — 2026-10-08
+
+C3 remains **OPEN**. The following is a classical analytic bridge, not a
+new scientific rigidity theorem. It repairs one specific limitation of the
+earlier multiplier attempt: a filter that kills only an escaping tail can
+converge to one on compact sets. The claim that its output is still an
+ordinary-Dirichlet datum is **FALSE**. General multiplier/stability approaches
+are not retired, and no new original-data capstone is claimed.
+
+Work in C3's hypothetical branch. For each distinct xi zero rho write
+delta_rho=Re(rho)-1/2, t_rho=Im(rho), and d_rho=xiDeficit(E,rho).
+Fix T>=1 and keep only |t_rho|>T with d_rho>0. Put
+
+    a_rho = pi/|t_rho|,
+    c_rho = cosh(a_rho*delta_rho),
+    nu_rho = c_rho/(1+c_rho) delta_0
+             + 1/(2*(1+c_rho)) (delta_(a_rho)+delta_(-a_rho)).
+
+Here delta_x on the right denotes a Dirac measure. Every nu_rho is a
+symmetric probability measure. Its bilateral Laplace transform is
+
+    k_rho(z) = (c_rho+cosh(a_rho*z))/(1+c_rho).
+
+Since a_rho*t_rho is pi or -pi, k_rho(delta_rho+i*t_rho)=0.
+Evenness and real coefficients also give the reflected zeros. Repeat the
+factor d_rho times; no simplicity assumption is needed. A critical-line
+zero actually gives a double zero of the factor, which is harmless.
+
+Define
+
+    R_T = pi * sum_(|t_rho|>T) d_rho/|t_rho|.
+
+The harmonic assumption makes R_T finite and tending to zero: for |t|>=1,
+1/|t|<=2/(1+|t|). The distinct zero set is countable and locally finite.
+On the countable product of the three-point probability spaces, the sum of
+the coordinate values converges uniformly, because their absolute values
+sum to at most R_T. Its law nu_T is thus a symmetric probability measure
+supported on [-R_T,R_T]. This constructs the infinite convolution directly;
+no infinite residue expansion or quotient-residue bound enters.
+
+Let K_T(z)=integral exp(z*u) dnu_T(u). Compact support proves entireness by
+dominated differentiation on each compact z-set. Uniform convergence of
+the coordinate sums and boundedness of the integrands on compact z-sets
+give the product formula K_T=product k_rho^d_rho. Separating any one factor
+as a convolution proves the required zero order without division by an
+infinite product. Also K_T(0)=1, so K_T is not identically zero.
+
+The first moment is zero. Independence and uniform bounded convergence give
+
+    v_T = integral u^2 dnu_T(u)
+        = sum_(|t_rho|>T) d_rho*a_rho^2/(1+c_rho)
+        <= (pi^2/2) sum_(|t_rho|>T) d_rho/t_rho^2
+        <= pi*R_T/(2*T).
+
+The integral Taylor remainder for exp(z*u), with its linear term integrating
+to zero, therefore yields
+
+    |K_T(z)| <= exp(R_T*|Re(z)|),
+    |K_T(z)-1| <= (|z|^2/2)*exp(R_T*|Re(z)|)*v_T.
+
+In particular K_T tends locally uniformly to one, and is uniformly bounded
+on each fixed vertical strip. Multiplying E(s)/xi(s) by K_T(s-1/2) cancels
+every tail deficit pole with its multiplicity. Only the finitely many head
+poles remain. The multiplier is even about 1/2, so it preserves the plus
+functional equation. It has finite exponential type. These statements do
+not identify the product as an ordinary Dirichlet series or make its
+associated spatial function periodic.
+
+That missing arithmetic assertion fails directly. Suppose the tail is
+nonempty. Then v_T>0, so nu_T is not delta_0. Symmetry gives some b>0 and
+p>0 with nu_T([b,R_T])=p. For real r>=0, positivity gives
+
+    K_T(r) >= p*exp(b*r).
+
+For the normalized original datum, Q(s)=L_g(s)/zeta(s) tends to one as real
+s tends to infinity. Thus |K_T(s-1/2)*Q(s)| tends to infinity. In contrast,
+every ordinary Dirichlet series absolutely convergent in a right half-plane
+tends to its finite first coefficient along this ray, by dominated
+convergence. Consequently the filtered quotient has no such representation.
+The same proof classifies all symmetric compactly supported probability
+filters that can preserve this representation for a function tending to
+one: only delta_0 can do so. This is a classical source-preservation
+obstruction, not a counterdatum to C3.
+
+Spatially, A_T u(z)=integral u(exp(t)*z) dnu_T(t) tends to u on compact
+subsets of the upper half-plane for continuous u. Symmetry makes A_T commute
+with S:z->-1/z. Dilation averaging also commutes with the hyperbolic
+Laplacian when the smooth integral is justified. It does not commute with
+translation by one. For a fixed compact set and a C2 function u, Taylor's
+formula in t and the zero first moment bound A_T u-u by a constant times
+v_T; the constant uses second dilation derivatives on the enlarged compact
+set. This controls interior compact sets, not the y->0 boundary limit or
+the real-s->infinity Dirichlet normalization. Neither limit can be exchanged
+with T->infinity on the strength of this estimate.
+
+The exact next **[OPEN CORE]** is a stability estimate for the actual
+filtered inversion defects, in a topology strong enough for the boundary
+receiver, derived from the complete original datum and harmonic sparsity.
+Compact convergence of the multipliers and a distributional translation
+error alone do not provide it. Keep the competitor explicit: a nontrivial
+complete cubic datum with finite one-xi harmonic deficit, not an arbitrary
+nonperiodic filtered function. No classification of cubic data follows
+from the bridge above; scientific novelty is not claimed.
+
+The source-preservation obstruction has a shorter dependency-closed proof
+suited to formalization. For any symmetric compactly supported probability
+measure nu put m=integral |t| dnu(t). Positivity and the zero-integral
+criterion give m=0 iff nu=delta_0. The elementary inequality
+
+    |y| <= exp(y)+exp(-y)
+
+and symmetry give x*m <= 2*K(x) for x>=0. Thus every nonidentity filter
+has K(x)->+infinity. If L_f(x)=K(x-a)*L_g(x) eventually and g(1) is nonzero,
+the quotient L_f(x)/L_g(x) instead tends to f(1)/g(1), a contradiction.
+Conversely delta_0 preserves every such source. This proves the exact iff,
+including arbitrary real shifts and eventual equality rather than a
+full-half-plane identity. For the actual cubic quotient, the existing
+Möbius-convolution theorem supplies absolute convergence and first
+coefficient one from the original datum. No new arithmetic hypothesis is
+introduced. The formal module is
+`WeilWorkHigherDenominatorPositiveFilter.lean`; direct foreground Lean audit
+passed, with all eight public theorems depending only on propext,
+Classical.choice and Quot.sound. The tail infinite convolution and variance
+bound remain paper-only. The exact source-preservation shortcut is closed;
+the broader filtered-boundary stability route is not retired.
+
+### Euler support and the exact one-divisor threshold — 2026-10-08
+
+Scientific verdict: **NO PROGRESS**. No new rigidity proof or complete
+counterdatum was obtained. The signed logarithmic identity still has two
+archimedean copies; no Jordan part separately inherits that identity.
+
+C8 is the following falsifiable intermediate assertion, always for the
+complete original cubic correspondence: lambda(n)=0 for every n>=2 which
+is not a prime power. Its competitor is a complete datum with a nonzero
+such coefficient. This would derive prime-power support, rather than add
+an Euler-product premise, but would not alone prove WP07. The conceptual
+route is **REDISCOVERED**: Kaczorowski--Kulas explicitly ask whether RH or
+a suitable zero-density estimate forces an Euler product, and solve the
+degree-one case. Their abstract does not establish the cubic specialization.
+The other inspected results retain periodic coefficients, Euler products,
+orthogonality or twisted functional equations not supplied here. Thus C8
+remains open; no scientific novelty is claimed.
+
+For distinct primes p,q, ordinary Dirichlet coefficient comparison in
+the already given identity L_g'=-3 L_lambda L_g gives
+
+    3 lambda(pq) / log(pq) = g(pq) - g(p)g(q).
+
+Indeed the p and q equations give 3 lambda(p)=g(p)log p and
+3 lambda(q)=g(q)log q; substituting them in the pq equation proves
+the formula. The coefficient at one is zero by that same identity and
+g(1)=1. Absolute convergence in a sufficiently far right half-plane
+justifies the products and coefficient uniqueness. Thus the first mixed
+test is g(6)=g(2)g(3). This is elementary bookkeeping, not a new theorem
+about a complete datum; none of the inspected identities forces that
+equality. No Lean module is justified for this observation alone.
+
+The more direct target concerns the **threshold**, not just integrality.
+Write m_rho=ord_rho(xi), k_rho=ord_rho(E) and
+
+    D1(T) = sum_(xi(rho)=0, 0<Im rho<=T) (m_rho-k_rho)_+.
+
+All sums here are over distinct divisor points; multiplicities are in m,k.
+The exact atom theorem `three_mul_boundaryMeasure_singleton` says that
+the full-Weil boundary atom at a critical point has mass k_rho/3. Hence
+the previously proved `deficitCount`, denoted Dnorm here, is
+
+    Dnorm(T) = sum_(xi(rho)=0, 0<Im rho<=T) (3m_rho-k_rho)_+ / 3.
+
+At off-critical xi zeros k_rho=0 by the original zero-confinement condition,
+so this formula also agrees with the off-critical copy weight. It does
+not assume RH for xi or simplicity of its zeros. The definitions checked
+are `atomShare`, `deficitWeight`, `ordinateWindowWeight`, `deficitCount`
+in DeficitEnvelope/DeficitCounting, not a newly invented deficit receiver.
+
+For all nonnegative integers m,k, case splitting at k=m and k=3m gives
+
+    (3m-k)_+ = 3(m-k)_+ + min(2k,(3m-k)_+).
+
+Consequently, on each finite ordinate window,
+
+    Dnorm(T) = D1(T) + J(T)/3,
+    J(T) = sum_(xi(rho)=0, 0<Im rho<=T) min(2k_rho,(3m_rho-k_rho)_+).
+
+In particular k=m or k=2m contributes zero to D1 but positive mass to J.
+Off-critical points contribute zero to J. This identity is a classical
+algebraic diagnosis, with no scientific novelty or new Lean claim.
+
+The existing exact coefficient receiver proves, eventually for every
+epsilon>0 and each n>=2,
+
+    |lambda(n)-Lambda(n)|/(4*pi*sqrt(n))
+      <= Dnorm(T)/T + epsilon
+       = D1(T)/T + J(T)/(3T) + epsilon.
+
+Thus its transfer to D1 has not been proved. Harmonic summability of the
+one-xi deficits implies D1(T)/T->0 by splitting a finite head and reciprocal-
+height tail. It gives no estimate on J by this argument. In particular the
+existing receiver does not close C3 merely because the E multiplicities
+are integers. Dropping J would discard exactly the shared intermediate
+multiplicities which need to be controlled.
+
+C9 is a concrete stronger candidate motivated by this receiver: for every
+complete original cubic datum and each n>=2,
+
+    |lambda(n)-Lambda(n)|/(4*pi*sqrt(n))
+      <= limsup_(T->infinity) D1(T)/T,
+
+where the right side may be positive infinity. Its exact competitor is a
+complete datum and index n violating this bound. C9 would imply C2 and C3;
+it would still leave the positive-density branch of full WP07 open. This
+is **SURVIVES PRELIMINARY ATTACK / novelty UNESTABLISHED**, not a theorem.
+No new assumption is added to the cubic datum. The stronger uniform bound
+has not been inferred from the weaker qualitative C2 assertion.
+
+Next **[OPEN CORE]**: derive an estimate for the actual intermediate
+multiplicity mass J under the harmonic-thin branch, or find a direct signed
+character estimate avoiding J. For example J(T)=o(T) in that branch,
+together with the checked receiver, would prove C3. That estimate is itself
+unproved, not a hypothesis to insert into a formal capstone. A bound on
+arbitrary integer arrays, a generic common-zero survey, or another finite-
+pole converse theorem does not discharge it. The full arithmetic source,
+functional equation and zero confinement must enter the next argument.
+
+### Nonlinear multiplicity audit and C10 — 2026-10-08
+
+Scientific verdict: **NO PROGRESS**. C9 remains open. Integer multiplicities
+were used in an attempted quadratic detector, rather than merely restated
+as a proposed source of rigidity. Put
+
+    F = E'/E, X = xi'/xi, A = zetaArchimedeanDatum + 1/(s-1),
+    Q = F(3X-F).
+
+On Re(s)>1 the exact original identities give
+
+    Q = 9(A-L_lambda)(L_lambda-L_Lambda).
+
+At a shared zero rho, with z=s-rho, write the actual meromorphic germs as
+
+    F = k/z + a + O(z), X = m/z + b + O(z).
+
+Direct multiplication gives
+
+    Q = k(3m-k)/z^2 + (3kb+3ma-2ka)/z + O(1).
+
+The double-pole coefficient is positive for 0<k<3m, so it detects the
+intermediate multiplicities missing from D1. But it is negative at k>3m
+and at zeros of E not shared with xi (where m=0). Moreover, integrating
+Q against an analytic test retains the simple-pole term with the regular
+parts a,b. Neither those regular parts nor the positive part of the double-
+pole coefficients is bounded by the signed arithmetic identity. Thus this
+calculation proves no estimate for J. This is elementary germ algebra,
+not a new scientific theorem or a no-go for every nonlinear method.
+
+The existing Wiener identity in `WeilFullConePNTErrorWiener` already
+identifies the squared atomic energy of a smoothed full-positive measure.
+`WeilPaperDeficitInverseEnergy` compares another exact energy with Dnorm,
+but supplies no decay bound and does not change its threshold. Neither is
+a J estimate. The attempted replacement by known pair-correlation
+theorems also fails at the premise level: the inspected Rudnick--Sarnak
+Theorems 1.1--1.2 require cuspidal automorphic input and restricted Fourier
+support; the original cubic datum supplies neither automorphy nor an Euler
+product. Their second-moment arithmetic input is not implicit here.
+
+An adjacent phase argument was also checked. The current corpus proves
+the stronger Littlewood bound
+
+    Re producerLogZeta(sigma+it) <= C log|t|/log log|t|,
+    1/2<sigma<=2, |t| sufficiently large,
+
+from full positivity alone. `WeilWorkSettledPhaseLittlewood.lean` passed
+the final direct `lake --old env lean` check; its named theorem's scratch
+axiom audit reports exactly propext, Classical.choice, Quot.sound. No new
+coefficient bound was assumed. The corresponding canonical trace envelope
+was read in `WeilWorkSettledPhaseCanonicalDisorder`; it was not rebuilt.
+This corrects the earlier applicability restriction, but does not imply C7.
+
+The actual radial remainder currently has, for every fixed nu in (0,1],
+an upper bound of the form K_nu epsilon^(1-nu) exp(-c epsilon |b|).
+The layer-cake proof combines this with C(t)=O(t^alpha), alpha<1, and
+chooses nu<(1-alpha). Replacing that power condition by a bare reciprocal-
+height summability assertion would not pay this estimate: even if an
+associated Laplace mass is o(1/epsilon), the remaining epsilon^(-nu)
+factor need not vanish. Constants K_nu are not uniform as nu->0 in the
+stated theorem. More importantly, this residual phase mass is a different
+measure from the one-xi deficits. No transfer between them was proved.
+
+#### C10: no intermediate shared multiplicity (OPEN)
+
+Given the exact internal and external frontier, the next structural
+conjecture is: for every datum satisfying **all** the original complete
+cubic correspondence conditions, and every xi zero rho,
+
+    ord_rho(E)=0 OR 3*ord_rho(xi)<=ord_rho(E).
+
+Equivalently, no shared zero has 0<k<3m. Its exact competitor is a complete
+cubic datum and a shared zero with multiplicity in that interval. No RH
+for xi, simple-zero hypothesis, Euler product, coefficient signs or extra
+growth condition is inserted. C10 would force J(T)=0 on every window and
+therefore Dnorm(T)=D1(T), proving C9 through the existing coefficient
+receiver. It would not rule out infinitely many entirely omitted xi zeros,
+so full WP07 would still require another step.
+
+Verdict: **SURVIVES PRELIMINARY ATTACK**, scientific novelty **UNESTABLISHED**.
+The finite-deficit theorem does not decide it: that theorem requires global
+divisor coverage up to finitely many points. Local analytic germs allow
+every intermediate k and cannot prove C10. Products of shifted zeta factors
+change the Gamma factors; local polynomials and meromorphic inner examples
+lack the full ordinary Dirichlet/completion conditions. None is a complete
+counterdatum. The inspected Artin quotient theorem proves infinitely many
+unshared zeros under different global inputs, not this pointwise law.
+
+The source-pairing approach has an exact local limitation. At a critical
+xi zero rho, put z=s-rho and write zeta(s)=c z^m+O(z^(m+1)) and
+zeta(1-s)=d z^m+O(z^(m+1)), c*d nonzero. Since the actual continuation is
+Phi=F/3, the source pairing from `WeilWorkSingularArithmeticCanonicalGaussian`
+has expansion
+
+    sourceZetaPairing(s) = c*d*(m-k/3)*z^(2m-1) + O(z^(2m)).
+
+This follows by substituting Phi=k/(3z)+O(1) in its definition
+((A-Phi)zeta+zeta')zeta(1-s). The factor A is regular at rho. Thus this
+pairing is analytic at a shared zero even when 0<k<3m; pole cancellation
+alone cannot exclude such multiplicities. Its Gaussian spectral integral
+weights atoms by |zeta(1/2+it)|^2 and hence assigns zero to every shared
+atom. Dividing out the chosen zero could reveal its mass, but no arithmetic
+sign or bound for such a modified test was proved. This is an applicability
+diagnosis, not a refutation of C10.
+
+Next **[OPEN CORE]**: prove or refute the pointwise law using a test or
+global arithmetic identity that actually detects a shared atom. Retain the
+regular-part terms of any nonlinear logarithmic expression. No paper proof
+of C9/C10 has closed; no conjectural Lean module is created. Do not relabel
+the displayed elementary expansions as a scientific advance.
+
+### Shared-atom test audit — 2026-10-08
+
+Scientific verdict: **NO PROGRESS**. C10 is still **OPEN**, with novelty
+unestablished. The proposed divided probe repairs atom detection but does
+not supply an order comparison between the two quadratic forms.
+
+Fix a shared critical zero rho=1/2+i gamma, with orders m>0 for xi and
+k>0 for E. In the spectral coordinate z, put A(z)=xi(1/2+iz) and
+B(z)=E(1/2+iz). The quotient
+
+    F(z) = A(z) B(z) / (z-gamma)^(m+k)
+
+has an entire removable extension. Its value at gamma is nonzero, and it
+vanishes at every other zero of either A or B. Normalize by F(gamma).
+This elementary construction retains all multiplicities. The canonical
+divisor sum of the normalized test against its reflected conjugate is m:
+all terms except rho vanish, even if other xi zeros are off the line.
+The corresponding E spectral sum, scaled by 1/3, is k/3. Both sums have
+finite support on their respective divisors, so these evaluations require
+no exchange of infinite sums and no RH assumption for xi.
+
+These are statements about spectral evaluations, not yet about the test
+class of the complete arithmetic explicit formula. Multiplication by a
+Gaussian centered at gamma retains the two evaluations and is a possible
+analytic regularization. The needed contour and arithmetic convergence
+must still be proved before applying that formula to this noncompact
+test. More fundamentally, even granting that extension, separate
+nonnegativity of the two diagonal forms gives m>=0 and k/3>=0. It gives
+no sign for their difference k/3-m. At the level of one-dimensional
+Hermitian forms, c*|v|^2 is positive for every c>0, including c=1/3 and
+c=2/3. This is a diagnostic of the positivity inference, not a complete
+cubic counterdatum and not a refutation of C10.
+
+The existing corpus already contains multiplicity-exact entire divided
+tests in GaussHodgeWeilEntireDetection and XiHedenmalmMultiplicityChain.
+XiWeilPolarization computes their spectral weights; its RH-dependent
+norm theorem cannot add RH to the present assumptions. Suzuki's
+Hilbert-space description likewise has simple operator eigenvalues even
+at multiple xi zeros. Operator rank therefore supplies no missing lower
+bound for the weight. No rank-based proof of C10 is retained.
+
+The local-operator pole-clearing fallback also remains unpaid. The
+previous notes already distinguish preservation of local support from
+preservation of the period-one arithmetic law. Allowing an infinite-order
+operator or a hyperfunction target does not establish that law. The
+harmonic negative-divisor primitive was already constructed above; it is
+not the actual boundary of E/xi and cannot be reused as if it were. None
+of these observations retires the broad harmonic-deficit route.
+
+Next **[OPEN CORE]** remains a direct arithmetic bound for the actual
+shared-multiplicity mass J(T) in Dnorm=D1+J/3, or a complete-data
+counterexample. C9 is the less restrictive target: it does not require
+C10's pointwise saturation. Any new argument must retain the arithmetic
+term that compares the two forms. Adding positivity of their difference
+would insert the missing conclusion as a premise. No dependency-closed
+paper proof has emerged, so no Lean theorem is added in this cycle.
+
+### Arithmetic comparison, packets, and the half-degree test — 2026-10-08
+
+**NO NEW SCIENTIFIC THEOREM.** The coefficient-density proof in
+WeilWorkDeficitCoefficient loses the sign when passing to the common
+spectral measure. Its threshold is necessarily 3 ord(xi), not ord(xi).
+Replacing the source by three times its measure destroys the zero-frequency
+mass cancellation. This audit supplies no estimate for J(T) and leaves C9
+and C10 open.
+
+The cubic phase takes three values off its jumps. This does not make it
+constant, continuous, or settled. Grouping fractional atoms into packets
+of total mass one also repeats existing work: WeilWorkSettledPhasePackets
+already computes the exact two-atom packet cost as chord(q)*|b-a| and bounds
+finite families. WeilWorkSettledPhaseCanonicalDisorder already gives a
+near-linear lower bound for actual integrated phase disorder in every
+nonrigid full source. An infinite packet decomposition and a source-derived
+width bound remain unpaid. No new packet receiver is needed.
+
+Two competing candidates were then examined: C9's direct shared-mass
+estimate and parity of the cubic divisor. For the latter, let O_E(T) count
+distinct zeros rho of E with 0<Im(rho)<=T and odd analytic order. Local
+finiteness makes this a finite integer. All data and assumptions are exactly
+those in the assigned cubic correspondence.
+
+**C11 [OPEN, parent mechanism REDISCOVERED]:** O_E(T) is unbounded.
+Booker's Corollary 1.8 proves the GL(3) analogue by halving an L-datum.
+His A1 pointwise requirement is still C7 here, so the corollary cannot be
+invoked directly. However, failure of A1 has not been shown to block the
+analytic proof itself. The following dependency audit is worth retaining.
+
+Put b(n)=3 lambda(n)/(2 log n) for n>=2, b(0)=b(1)=0, and
+F(s)=exp(sum b(n)n^(-s)). The corpus Dirichlet exponential construction
+gives F=sum a(n)n^(-s), absolutely convergent for Re(s)>1, with a(1)=1.
+The original logarithmic-derivative identity and normalization give
+F(s)^2=LSeries(g)(s) there: the derivative of their ratio is zero and its
+limit on the positive real axis is one. Hence
+
+    |F(sigma)| = |E(sigma)|^(1/2) /
+      |sigma*(sigma-1)*Gamma_R(sigma)|^(3/2),   sigma>1.
+
+Since E(1)!=0 and Gamma_R(1)=1, this tends to infinity as sigma decreases
+to one. Thus the absolute-convergence abscissa sigma1* of a is exactly one.
+Indeed, convergence at any real r<1 would dominate and bound F(sigma) for
+1<sigma<=2, a contradiction. Also |a(n)|<=C_epsilon*n^(1+epsilon) follows
+from the absolute sum at 1+epsilon. Neither statement uses C7 or an Euler
+product. These are paper-level elementary consequences, not new formal
+theorems or a proof of C11.
+
+There is a useful correction to the proposed coefficient obstacle in the
+half-degree argument. At d=3/2, its kappa=1/(d-1) is two. The local error
+from replacing the nearest-integer phase has size
+|a(n)|/sqrt(n) * O(x^(-2+epsilon)), with n comparable to x. The elementary
+bound above makes this O(x^(-3/2+2 epsilon)), exactly the required error
+when sigma1*=1. A separate square-root coefficient bound is therefore
+unnecessary at this particular step. This does not establish the preceding
+contour transformation or its stationary-phase expansion.
+
+If those transformations are proved for the actual square-root branch,
+the intended closure is concrete: the localized identity first gives
+a(n)=O_epsilon(n^epsilon); Cauchy--Schwarz then makes the square-coefficient
+abscissa sigma2* equal to one. Its dyadic square mass forces an oscillatory
+second moment at least X^(-1-epsilon) along arbitrarily large X, whereas
+the transformed expression gives O(X^(-3/2+epsilon)). These incompatible
+exponents describe the receiver, not a theorem whose analytic premises
+have been discharged. In particular, branches at s=0 and s=1 have order
+-3/2 and must be retained. One cannot call the square root globally
+meromorphic. Under finite odd-zero support its high upper half-plane is
+holomorphic, but the cut domain, reflection phase, strip bounds, and both
+transform estimates still need a complete proof. C11 is not marked proved.
+
+**C12 [OPEN, novelty UNESTABLISHED]:** every complete cubic datum satisfies
+
+    exists c>0, for every R>0 there exists T>=R with O_E(T)>=c*T.
+
+The exact competitor is a complete datum with O_E(T)/T tending to zero.
+C12 would turn an eventual-integrality obstruction into a quantitative
+obstruction to sparse nonintegral branch orders. It is stronger than C11;
+neither claim is the assigned rigidity theorem, nor does parity alone
+control D1 or J. The finite-cut parent argument does not settle C12.
+
+First **[OPEN CORE]**: derive the contour defect for infinitely many actual
+square-root branch points, then estimate its contribution to the localized
+second moment using O_E(T)=o(T) and the original cubic data. Counting branch
+points alone is not an estimate for the cut integrals: their lengths and
+the actual boundary amplitude must be controlled. The full-source
+Littlewood bound is available, but no such control has been deduced from it.
+This is the next concrete test; failure must return to C9's shared-mass
+comparison, not be hidden by adding a boundary regularity premise.
+
+The first localization attack on C12 does not close. At degree 3/2 the
+dual phase uses n^2, so adjacent arithmetic indices at height T are
+separated on the scale sqrt(T). Sublinear branch count alone only forces
+unbounded branch-free gaps, not gaps on that larger scale. A counting
+model with gaps comparable to log(T) diagnoses this failed inference;
+it is not a complete cubic counterdatum. Any successful local-window
+argument must account for this arithmetic resolution, or replace the
+single-gap step with an aggregate estimate. No quantitative zero theorem
+is inferred from the finite-cut argument.
+
+### Actual half-degree cut and a different spectral test — 2026-10-08
+
+**Scientific status: no new rigidity theorem.** The following cut calculation
+is a classical contour bridge. It identifies the missing estimate in C12;
+it neither disproves C12 nor supplies a new premise for the original datum.
+
+Use the original complete cubic data throughout. The checked central
+exclusion and real-type/functional-equation results give E(1/2)>0 and even
+reflection. Positivity on the real axis follows by continuation from s>1:
+there the normalized logarithmic-derivative identity makes L_g positive,
+and E has no real zero. Let H_R be the analytic square root of E on
+Re(s)>1/2, positive on the real axis. For t>0 off the zeros put
+
+    N(t) = sum_{0<gamma<t} ord_{1/2+i gamma}(E).
+
+Following the argument from the right at each critical zero gives
+
+    H_R(1/2+it) = i^N(t) * |E(1/2+it)|^(1/2).
+
+Indeed a zero of order k contributes an argument increase k*pi as a
+right-hand path crosses its ordinate. Between zeros the real boundary
+value of E has constant sign; the chosen continuous argument fixes the
+multiple of 2*pi, not just that sign. For epsilon in {1,-1}, reflect by
+H_L(s)=epsilon*conj(H_R(1-conj(s))). The exact jump is
+
+    H_R(t)-H_L(t) = (1-epsilon*(-1)^N(t))*H_R(t).
+
+Thus the jump occupies whole parity-mismatch intervals. Its modulus there
+is 2*sqrt(|E|); it is not an atomic measure at the odd zeros. Both boundary
+branches vanish at a zero of order k at rate O(|s-rho|^(k/2)).
+
+For the actual half Dirichlet series F above, set Lambda_R=Gamma_R^(3/2)*F.
+On the upper critical line the right-hand argument of s(s-1) is pi, so
+
+    Lambda_R(1/2+it) = i*H_R(1/2+it)/(t^2+1/4)^(3/2).
+
+Consequently, for Lambda_L(s)=omega*conj(Lambda_R(1-conj(s))), omega=+/-1,
+the matching condition is (-1)^(N(t)+1)=omega. The extra minus sign from
+the endpoint factor cannot be dropped. The endpoint branches at 0 and 1
+are avoided by working at positive heights a<b.
+
+Take vertical sides sigma>1 and 1-sigma, and a holomorphic multiplier K
+on the finite rectangle between heights a,b, neither an ordinate of a
+zero. Apply Cauchy's theorem separately on the two half-rectangles and
+let their inner boundaries approach the critical line. With both vertical
+integrals directed upward, and the horizontal outer paths directed
+counterclockwise, their sum gives
+
+    I_right-I_left + I_bottom+I_top
+      = integral_(1/2+ia)^(1/2+ib) (Lambda_R-Lambda_L)*K ds.
+
+Indentations at zeros contribute zero in the limit by the local vanishing
+estimate. After division by 2*pi*i, the right side is
+(1/(2*pi))*integral_a^b (Lambda_R(t)-Lambda_L(t))*K(1/2+it) dt.
+This is a finite-height identity; no infinite contour or discarded
+horizontal limit is being asserted.
+
+For Booker's complementary Gamma factor at degree 3/2,
+
+    G(s)=(pi/2)^((1/2-s)/4)*Gamma(s/4+3/4),
+
+take K(s)=G(s+4k)*(-iz)^(-s), k>=0, z=-x+iy with x in a fixed compact
+subset of (0,infinity) and y>0. Stirling gives the powers t^(-3/8) and
+t^(k+3/8) from Gamma_R(s)^(3/2) and G(s+4k), respectively. The available
+full-source Littlewood bound for F supplies at most t^eta. Their
+exponential factors combine to exp(-(pi-arg z)*t). Therefore the absolute
+cut estimate obtainable this way is only
+
+    |cut_k(z)| <= C_eta,k * integral_a^infinity
+        1_mismatch(t)*t^(k+eta)*exp(-delta_z*t) dt
+      <= C'_eta,k*delta_z^(-k-1-eta),
+    delta_z=pi-arg z comparable to y.
+
+The last estimate has no saving over the trivial Fourier-series growth.
+O_E(T)=o(T) counts switches of the indicator, not its occupied length or
+the weighted source amplitude. Even-order zeros can also change the sign
+of the root without switching this indicator, so integrating only the
+known Gamma phase by parts does not remove the source derivative cost.
+Under finitely many odd zeros one can choose omega so the mismatch set
+is bounded. That familiar finite-cut fact does not extend to the needed
+infinite-cut estimate. **C12 remains OPEN.**
+
+### C13: sparse extra support, with exact unproved injectivity — 2026-10-08
+
+Given the exact internal and external frontier, what would a Fields
+Medal-winning mathematician conjecture? The corpus already forces
+rigidity when the entire source measure is carried by critical xi zeros,
+regardless of their masses. Test a density version of that support law,
+instead of assuming an order relation between the two spectral forms.
+
+Let S_E be the set of positive ordinates gamma such that E(1/2+i gamma)=0
+but xi(1/2+i gamma)!=0, and let X_E(T)=#(S_E intersect (0,T]). Count
+distinct extra ordinates, without analytic multiplicities.
+
+**C13 [OPEN; SURVIVES PRELIMINARY ATTACK; novelty UNESTABLISHED]:** for
+every original complete cubic datum, either lambda=Lambda or
+
+    exists c>0, for every R>0 there exists T>=R with X_E(T)>=c*T.
+
+The incompatible competitor retains every original hypothesis and has
+lambda!=Lambda but X_E(T)/T -> 0. An arbitrary signed weight sequence is
+not such a competitor. C13 would require a nonrigid source to introduce
+linearly many distinct new spectral locations; existing Dnorm bounds
+also count changes of mass at shared locations. No implication from C13
+to the full assigned rigidity is claimed. No relation to C9's shared-mass
+term J has been proved.
+
+Here is the precise paper reduction under the competitor's sublinear
+count. It does not multiply the source Dirichlet series. Local finiteness
+and X_E(T)=o(T) give the even canonical product
+
+    P(z)=product_(gamma in S_E) (1-z^2/gamma^2),   P(0)=1.
+
+It converges locally uniformly since sum gamma^(-2)<infinity. Writing
+N_S(t)=X_E(t), for r=|z| integration by parts gives
+
+    log|P(z)| <= integral_0^infinity
+        2*r^2*N_S(t)/(t*(t^2+r^2)) dt.
+
+For every eta>0, choose A with N_S(t)<=eta*t for t>=A. The finite initial
+part is O_A(log(1+r)); the tail is at most pi*eta*r. Hence, for every
+eta>0, |P(z)|<=C_eta*exp(eta*|z|). No harmonic summability or positive
+minimal separation is needed here. P is even and real on the real axis.
+
+Use the corpus Fourier convention and normalize Xi so that Phi-hat=Xi.
+Define K_P as the inverse Fourier transform of Xi(t)*P(t). On each fixed
+horizontal strip, Xi has a polynomial factor times exp(-pi*|Re z|/4).
+The bound just proved makes Xi*P and all polynomial multiples integrable
+on each horizontal line. Contour shifting therefore gives, for every
+A>0 and integer j>=0,
+
+    |K_P^(j)(u)| <= C_A,j*exp(-A*|u|).
+
+In particular K_P is real, even, smooth, and admissible by truncation.
+Its transform vanishes on every source atom (use Xi at shared zeros and
+P at extra zeros), and on every xi zero, including any off the critical
+line. Smooth cutoffs converge with their derivatives in every required
+exponentially weighted norm. Two integrations by parts give uniform
+weighted transform error on the closed zero strip. The source's finite
+reciprocal-square moment and the corresponding xi zero sum then let the
+two spectral pairings pass to the limit. The arithmetic side converges
+by sum |lambda(n)-Lambda(n)|/n^2<infinity and the displayed decay.
+
+Thus the explicit formula and polarization give, for every real smooth
+compact H, T_(lambda-Lambda)(K_P,H)=0. Test-function duality gives exactly
+
+    sum_(n>=2) (lambda(n)-Lambda(n))/sqrt(n) *
+       [K_P(u-log n)+K_P(u+log n)] = 0,   every real u.
+
+These analytic facts are a classical BRIDGE, not a proof of C13 or a
+novelty claim. The first **[OPEN CORE]** is injectivity of this modified
+kernel transform for the actual weights and this minimal-type product.
+The existing RiemannKernelTransformInjectivity proof uses the specific
+identity Phi=Psi''-Psi/4, an odd theta relation, Hamburger, and divisor
+inversion. It proves the case P=1; it cannot be called on K_P. Applying
+an infinite-order differential operator to a periodic distribution also
+requires a defined operator and an injectivity theorem; locality or a
+formal symbol does not supply either one.
+
+The already checked zeta-mass receiver is different: it needs sublinear
+sum ord(E)*|zeta(1/2+i gamma)| on the extra support. Distinct unweighted
+X_E=o(T) supplies neither the amplitudes nor the multiplicities. Li's
+global zero/pole bound counts multiplicity differences, including shared
+zeros, so it likewise does not settle C13. Fourier interpolation formulas
+with sqrt(n) frequencies do not become an ordinary n-frequency Hamburger
+receiver without a separate proof.
+
+The next attack is the precise injectivity statement above. A failed
+unrestricted multiplier extension must not be mistaken for a complete
+cubic counterexample or for failure of the minimal-type case.
+
+Here is an exact pressure test of that distinction. Put l=log(3) and
+C_a(u)=sum_(j in Z) Phi(u+j*a). All these sums converge locally uniformly.
+Define w(3^k)=sqrt(3^k)*(1-3*1_(2 divides k)+2*1_(4 divides k)) for k>=1,
+and w(n)=0 otherwise. Then w(3)!=0, w(1)=0, and sum |w(n)|/n^sigma is
+finite for every sigma>1/2. Direct grouping gives
+
+    G_w = C_l-3*C_(2l)+2*C_(4l).
+
+This function is 4l-periodic with mean zero: its mean is proportional to
+1/l-3/(2l)+2/(4l)=0. Let q be the normalized indicator of [-2l,2l]. Its
+Fourier transform is P_+(t)=sin(2l*t)/(2l*t), with value one at zero.
+The kernel K_+=q*Phi therefore has transform Xi*P_+, and absolute
+convergence permits convolution through the defining weight sum. Hence
+
+    G_(w,K_+) = q*G_w = 0,   but w!=0.
+
+Thus injectivity for arbitrary even real finite-exponential-type
+multipliers, even normalized at zero, is **FALSE**. This is elementary
+periodization, classified BRIDGE / REDISCOVERED rather than new science.
+The example has positive type 2l and a linear zero lattice; it does not
+attack C13's minimal-type product. Nor is lambda=Lambda+w a full positive
+source: the existing prime-power lacunary rigidity theorem excludes it.
+The surviving question is exactly the minimal-type case with the original
+source structure. Its positive classification has no paper proof yet;
+no WP07 route is retired and no new Lean theorem is claimed.

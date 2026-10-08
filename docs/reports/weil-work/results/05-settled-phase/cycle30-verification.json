@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-08",
+  "cycle": 30,
+  "status": "RATIONAL-TWIST BRIDGE FORMALIZED; finite-deletion transfer and WP05 OPEN",
+  "source_hypothesis": "Only original hW : WeilPositiveFull lam; no added source premises.",
+  "modules": [
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCosineMellin.lean",
+      "sha256": "0e7358521b8dfb048866ebf5b170ed725a9c01e22983dce42b7886db6f71a7d5",
+      "lines": 139,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCosineMellin.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseFiniteMellin.lean",
+      "sha256": "e0f65e7bc456b1b6629a79ec7932fe754804ebaff875bff8d554ef10ed51086f",
+      "lines": 144,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseFiniteMellin.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRationalProfiles.lean",
+      "sha256": "ab3292b2982a7de202779aef99cd2b7fef8abe3c24e3d4b84c372c6069025c6f",
+      "lines": 108,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRationalProfiles.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRationalBound.lean",
+      "sha256": "ce22863f936d306aae855e655ca31cfbaa00caeac7048a45ec31f59b702e4c00",
+      "lines": 167,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRationalBound.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    }
+  ],
+  "build": {
+    "session": 15985,
+    "exit_code": 0,
+    "command": "lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseRationalBound:olean",
+    "log": "cycle30-rational-build.log"
+  },
+  "direct_audits": {
+    "session": 87611,
+    "exit_code": 0,
+    "mode": "Sequential source audits followed by /tmp axiom script; guarded 900 seconds."
+  },
+  "axioms": {
+    "command": "lake env lean /tmp/wp05-c30-axioms.lean",
+    "exit_code": 0,
+    "log": "cycle30-axioms.log",
+    "exports": [
+      "RHTower.WeilSingularArithmetic.mellinConvergent_sourceCosineProfile",
+      "RHTower.WeilSingularArithmetic.mellin_sourceCosineProfile",
+      "RHTower.WeilSingularArithmetic.sourceScaledCosineProfile_eq_twisted",
+      "RHTower.WeilSingularArithmetic.exists_norm_sourceScaledCosineProfile_le",
+      "RHTower.WeilSingularArithmetic.re_mellin_sourceFiniteCosineProfile",
+      "RHTower.WeilSingularArithmetic.exists_re_mellin_sourceFiniteCosineProfile_le",
+      "RHTower.WeilSingularArithmetic.sourceCosineProfile_add_nat",
+      "RHTower.WeilSingularArithmetic.re_mellin_sourceTwoLabelProfile",
+      "RHTower.WeilSingularArithmetic.exists_abs_sourceNormalizedCosineMellin_rat_le",
+      "RHTower.WeilSingularArithmetic.exists_abs_sourceCosineSeries_rat_normalized_le"
+    ],
+    "dependencies": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "index": {
+    "command": "scripts/formal_tools.py index",
+    "exit_code": 0,
+    "log": "cycle30-index.log"
+  },
+  "lint": {
+    "command": "scripts/formal_tools.py lint",
+    "exit_code": 1,
+    "log": "cycle30-lint.log",
+    "errors": [
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilPaperRealificationEnergy",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionConstant",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionSpatial",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionTrace",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorReciprocalTest",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardEnergyLimit",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardMean",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardVariance",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticLogMoment",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticLogMomentLimit",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra"
+    ],
+    "owned_module_errors": []
+  },
+  "limitations": [
+    "Constants may depend on rational frequency; no denominator-uniform bound.",
+    "No rational-twist endpoint limit or continuation is asserted.",
+    "All finite coprime-deletion endpoints still require Fourier and mask transfer.",
+    "No canonical deletion normalization or zero forward variance.",
+    "No complete WP05 atomic representation, support restriction or settled phase."
+  ]
+}

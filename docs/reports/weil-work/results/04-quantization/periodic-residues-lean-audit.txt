@@ -1,0 +1,51 @@
+'RHTower.WeilSpectral.quantization_offKernel_real_scale' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_pairKernel_real_scale' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.summable_quantization_shifted_frequencies' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_tendsto_div_nhdsGT' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_linTwist_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationRealFrequencySum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_frequency_integral_real_scale' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_frequency_sum_real' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_laplace_sub_far_unit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_setIntegral_real_scale' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_defectLaplace_real_scale' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_laplace_sub_far_real' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_reflected_radial_translation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_reflected_far_phase_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_quantization_mainRadial_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_phase_laplace_real' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_phase_resonance_periodic' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_rough_resonance_index' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_rational_power_add_one_nonresonant' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rational_zpower_add_one_nonresonant' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rational_real_sum_power' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_rational_real_sum_power_add_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_bilateral_rational_harmonic_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_of_bilateral_rational_phase' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_or_no_bilateral_rational_phase' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

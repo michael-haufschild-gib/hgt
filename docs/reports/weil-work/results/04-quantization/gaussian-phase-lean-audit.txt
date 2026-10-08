@@ -1,0 +1,57 @@
+Cycle25 Gaussian phase audit — 2026-10-08
+
+Source: formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianPhase.lean
+SHA256: e0b4b02c4457e260e4ccad1814a211b890be35f1979693454d4a835a52fbe1ed
+
+Final direct audit (cwd formal):
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianPhase.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianPhase.lean
+Exit 0. Empty output: no errors or warnings.
+
+Scratch proof and have := @Name API probes: exit 0, empty output.
+
+Axiom audit:
+lake --old env lean /tmp/wp04-gaussian-axioms-25.lean
+Exit 0. All 14 public declarations and dependency closures use only standard axioms.
+
+'RHTower.WeilSpectral.quantizationTraceF_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationTraceF_phase_ae' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationTraceF_square_phase_ae' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianWeight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integrable_quantizationTraceF_gaussian_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_phase_gap_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integrable_quantizationTraceF_gaussian_defect' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianEnergy' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianDefect' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianSignedIntegrand' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integrable_quantizationGaussianSignedIntegrand' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianSignedIntegrand_neg' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussian_signed_energy' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussian_signed_energy_complex' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantizationGaussian_signed_energy_complex {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)
+  {T : ℝ} (hT : 0 < T) :
+  ∫ (y : ℝ), RHTower.WeilSpectral.quantizationGaussianSignedIntegrand hW T y =
+    ↑(2 * RHTower.WeilSpectral.quantizationGaussianEnergy hW T - RHTower.WeilSpectral.quantizationGaussianDefect hW T)
+
+Umbrella audit: all 61 WeilWorkQuantization*.lean leaves imported exactly once.
+No full or umbrella build. No heartbeat override. No numerical experiment.
+
+scripts/formal_tools.py lint: exit 1.
+367 large-file warnings; six unrelated unreachable-module errors:
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkPBAPJointGammaFloor
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+No quantization-module lint error. The global lint gate is not claimed green.

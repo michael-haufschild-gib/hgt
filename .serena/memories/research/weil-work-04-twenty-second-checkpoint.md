@@ -1,0 +1,29 @@
+# WP04 cycle 22 — L4 closed; full goal OPEN
+
+Date 2026-10-08. User requires hgtl7 workflow every turn, source-only final statements, no numerical computations, one foreground Lean process at a time, final direct `lake --old env lean <leaf>` audits, no full/umbrella builds, wiring/cleanup/log. Active unbudgeted goal is full arbitrary-hW half-integer counting; DO NOT mark complete for L4.
+
+## Result
+L4 arbitrary real-periodic phase rigidity is fully Lean-proved. New leaves in formal/GaloisForLFunctions/RHTower/:
+- WeilWorkQuantizationRationalPeriodReindex.lean (80 lines,3 declarations): rational-exponent AddSubgroup Z, positive cyclic generator, support-complete weighted reindexing.
+- WeilWorkQuantizationRealPeriodicRigidity.lean (88 lines,3 declarations): reduced rational receiver, all real bases r>1, final source-only `quantization_rigidity_or_no_real_periodic_phase`.
+Both final direct leaf commands with -o their .olean exited0 without diagnostics. All6 #check/#printaxioms passed; sets only propext, Classical.choice, Quot.sound. Audit results/04-quantization/real-periodic-lean-audit.txt. Both imports wired exactly once; all58 quantization leaves checked for exactly-one import. No heartbeat hacks, computations, full builds, commits/push. No source edits after audits.
+
+Proof combines L3p rational positive power with T21 rational support. Build subgroup {k | exp(klogr) rational}. Use AddSubgroup.isAddCyclic_iff_exists_zmultiples_eq_top, then Int.zmultiples_natAbs; positive member ensures generator nonzero. Function.Injective.tsum_eq handles full support; Summable.comp_injective and Function.comp_def transfer moment. q>1 rational reduced into num.natAbs/den; den1 uses L1 qfrequency_weight, den>=2 uses signed L2. Guessed ordered-generator namespaces were wrong; not used. Final rational cast uses congrArg Int→Real, not overaggressive exact_mod_cast.
+
+## Current source frontier / next attack
+Full WP04 remains OPEN: no periodic/AP representation or other counting producer from hW. L4 is class closure, scientific novelty unestablished.
+New exact P22 in docs/reports/weil-work/results/04-quantization/SOURCE-MEAN-COMPACTNESS.md: for every actual W=quantizationCirclePhase hW, every eps>0 has finite exponential polynomial P and T0>=1 with (1/T) integral_0^T |W-P|²<eps for all T>=T0. Positive-time B2 approximation only. No proof or Lean declaration. Competing continuous translation spectrum kept live.
+Generic positivity/local BV/O(TlogT) shortcut fails: C=tlog(1+t)/(2pi), W=exp(itlog(1+t)), even density C'(|y|/2)/2. Every fixed-frequency Cesaro coefficient0 by first-derivative integration by parts, normW1, so finite exponential approximations have mean-square error>=1. This is NOT hW, lacks exact integer arithmetic source identity. Actual P22 survives preliminary attack; novelty unestablished.
+Hard receiver gap explicitly attacked: Subpolynomial gives trace O_p(t^p), pairKernel O(exp(-c_m eps t)); Cauchy-Schwarz with B2 error delta gives O(C_p delta eps^(-p)). This absolute estimate is not uniform; no claim signed operator actually unbounded. Need source-specific signed cancellation or stronger weighted approximation, not generic AP factorization.
+Fresh exact deep search found source-only reciprocal mean-square theorem in WeilWorkSingularArithmeticReciprocalMeanSquare (170lines; read1–160) for each fixed sigma>1/2, no uniform boundary control. Read actual signatures blockMeans_of_meanSquare (extra restWeight summability, lambda logbound, quantitative log decay) and blockMeans_of_weightedMeanSquare (assumed trace-weighted decay) in WeilConeSettledLockRigidity at794,1093. Neither supplies P22. Xi divisor proof idea not applicable to arbitrary hW.
+
+## External audit
+2020 Ernvall-Hytonen/Odzak/Smajlovic periodic Dirichlet class paper primary PDF https://www.mathos.unios.hr/mc/index.php/mc/article/view/3418/634 read0–493: scalar FE, global meromorphic continuation, periodic arithmetic coefficients are unpaid; not residual-phase sourceproducer.
+Brevig/Kouroupis/Perfekt https://arxiv.org/html/2405.03522v2 read intro and section2 through234: bounded analytic Dirichlet series can fail boundary Cesaro means/limit interchange (Thms1.3,1.6,1.7); generalized Haar boundary differs physical orbit. No claim their examples are hW.
+Asatryan/Kamalyan/Karakhanyan2019 author-upload paper https://www.researchgate.net/publication/337211564_On_a_Class_of_Integro-Difference_Equations read APW factorization around280–354 + references713–739: AP membership and infnorm>0 are assumed; meanmotion/log is classical, not producer. Primary Armenian PDF failed fetch.
+Three compact search results incl all candidates/source_arguments/proofideas/coverage in cycle22-search-evidence.json; allpartialfalse, refresh background indexer, compiler metadata largely pending/source-only. Not absenceproof.
+
+## Hygiene/status
+RESULT.md current L4 closed/58leaves; RADICAL-PERIODS final section appended; NEXT-CONJECTURE latestcycle22handoff; EVIDENCE cycle22 audits+all9answers; pipelinecard cycle22complete. All9hgtl7answers posted chat.
+Lint exited1 only seven unrelated unreachable: RHTower.WeilWorkHigherDenominatorCutoffPairing, RHTower.WeilWorkSettledPhaseCoprimeCombinations, HTGeometry.ApertureConeCalculus/ApertureConeWinding/ApertureLogTranslation/ApertureOpenHistoryIdeal/BoundaryCoronaCStarAlgebra. No quantizationissue. Do notfixunrelated.
+All owned Lean/search/lint processes terminal. Eight owned /tmp scratch/search files deleted after preserving search and axiom evidence. No live owned job. Next turn hgtl7/init/revalidation then attack exact source error/P22, preserving original WP04 objective. No subagents authorized. update_plan/multi_tool_use.parallel unavailable; card tracksplan and Promise.allSettled handles independentreads.

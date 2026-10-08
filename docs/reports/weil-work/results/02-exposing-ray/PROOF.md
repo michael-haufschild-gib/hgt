@@ -2,6 +2,38 @@
 
 Main WP02 inequality remains OPEN.
 
+Cycle32: `ONE-POLE-SUBLOG-PROOF.md` proves exact whole-fibre one-pole
+recovery for0<=beta<1, now completely formalized. Six new leaves derive
+local coefficient growth, exclude super-cosh growth by doubling, construct
+the compact first-order primitive, prove weighted L1 and arithmetic
+convergence of actual differences, and apply exact-fibre separation.
+The capstone is `WeilWorkExposingRayOnePoleFibreDensity`; every raw atom
+and both recovery-row pole zeros are exact. All six saved-leaf and all33
+public axiom audits pass. Full-source recovery for1/2<=beta<1, critical
+gamma energy, and universal WP02 remain OPEN.
+
+## Current completed proof: exact-fibre recovery (cycles27–29)
+
+`POLAR-FIBRE-DENSITY-PROOF.md` gives the dependency-closed proof of equality
+of spectral L1 closures of every full and polar exact finite integer-atom
+fibre. It is formalized by `WeilWorkExposingRayFibreTransfer`,
+`WeilWorkExposingRaySeparatorExtension`, and
+`WeilWorkExposingRayFibreDensity`. The last leaf proves actual finite positive
+recovery, explicitly preserves all raw atoms, and instantiates the literal
+Fejer null fibre. The source-level final audit passes. The energy inequality
+is not assumed or inferred.
+
+Cycles30–31: `SUBHALF-LOG-FIBRE-PROOF.md` gives the dependency-closed
+weighted recovery proof, now implemented for0<=beta<1/2. The six leaves
+`WeilWorkExposingRaySublogArithmetic`, `SublogSources`, `SublogEnvelope`,
+`SublogScales`, `SublogTransfer`, and `SublogFibreDensity` (each with the
+same `WeilWorkExposingRay` prefix) derive the coefficient envelope, pay
+both remote windows at the same cutoff, extend actual separators, and
+recover every exact finite positive fibre. All saved-leaf audits pass.
+The final capstones retain every raw integer atom, both rowwise poles,
+and the literal Fejer null source. No growth or energy premise is added.
+The original0<beta<1 candidate and gamma-energy diagnostics remain open.
+
 ## Audited conjectures
 
 1. **Ground-state identity alone supplies a positive residual.** Verdict: REDISCOVERED for the identity; no sign proof. `RiemannKernelGroundStateZeroIdentity` already provides the zero-side transform. Its complex exponential kernel has no established sign. This route has not been disproved; it has not supplied the required inequality.
@@ -113,3 +145,88 @@ PRIMITIVE-SHARPNESS-PROOF.md closes the full argument. The old scalar logarithmi
 Cosine inversion at zero gives M=2*pi*physicalMass. Apply cycle17's actual exact-ray counterexamples with physical-mass debit pi/2 and sum the restored inequality against arbitrary nonnegative coefficients. The SAME family makes every row-dependent old surrogate smaller than T-c*tau_N, for every fixed real c. No sign of E-T is inferred. Both final installed source audits pass; axiom audit is tracked in EVIDENCE.md.
 
 [OPEN CORE] VANISHING-MASS-DEFECT-CONJECTURE.md asks for a universal lower bound with negative mass error K/(1+log N) on the cofinal diagonal. Canonical repair mass is uniformly bounded on paper, permitting that error to vanish for each fixed original family. The producer estimate remains completely unpaid; a conditional reduction alone is not another research contribution.
+
+## Cycle23 — the omitted positive gamma contribution
+
+GAMMA-TRUNCATION-PROOF.md contains the dependency-closed paper argument,
+now formalized in WeilWorkExposingRayGammaTruncation.lean. The exact digamma
+series has nonnegative quarter-line modes. Retaining the K modes from K
+through 2K-1 gives the pointwise lower remainder
+`t^2/((1+t^2)*32*K^2)`. Bounded multipliers justify all source integrals
+without exchanging an infinite series with a signed integral.
+
+The exact cosine identity and its quadratic difference bound compare two
+fixed integer samples with the bounded spectral moment R. Eventual positive
+exposing weights and their decay supply fixed samples with positive difference,
+so matching forces a representation-independent R floor. The formal floor
+also holds for negative ray scales, where its left side is nonpositive.
+
+For actual near-threshold families the complete energy is <=T+2*tau_N.
+Every adaptive K_i<=exp(r*N) omits >=d*exp(-2*r*N), whereas tau_N decays
+at every rate below kappa. Choosing 2r<s<kappa gives strict failure of the
+bare truncated bound on the same family. One aperture constant works for
+all r; only the eventual cutoff depends on r. Scope strengthenings were
+returned to the paper audit and require no extra analytic hypothesis.
+
+The scalar expansion is classical. The actual-ray floor and adaptive
+boundary are an internal bridge, not a proof of the signed finite core.
+No full-energy positivity or universal lower receiver follows.
+
+## Cycle24: the integer-grid defect and its stronger survivor
+
+GRID-DEFECT-PROOF.md gives the complete paper decomposition of the literal
+pole-cell quadrature. WeilWorkExposingRayGridDefect.lean formalizes its
+positive summable coefficient correction, exact critical-line zeta limit,
+and `(6+2*|t|)/sqrt(K+1)` error for every K and real t. The total correction
+mass is exactly `-Re(zeta(1/2))`. Fifteen public theorem audits pass.
+
+Uniform scalar gamma domination of these defects is false on paper;
+positive-real large values, not absolute-value bounds, supply the
+obstruction. That external large-value theorem is not Lean-formalized.
+The kernel survivor is an Euler-summation bridge, not an RH sign proof.
+
+The stronger survivor is the actual compact polar-source moment identity
+(4) in GRID-DEFECT-PROOF. Its paper proof uses the quantitative error,
+finite first spectral moment, exact continuous pole cancellation, and
+every integer sample. Its Lean integral interchange and finite-family
+capstone are now formalized in WeilWorkExposingRayZetaMoment.lean. The
+proof subtracts the finite correction first and pairs the principal
+Dirichlet head minus the complete pole integral; it needs only finite
+cosine sums and compact-lag Fubini. Its weighted integral error tends to
+zero, and exact support makes the atom sum stationary. No gamma-energy lower bound follows just from
+this one moment; retain the complete matching constraints in the next
+producer audit.
+
+## Cycle33: critical endpoint paper proof, formalization ongoing
+
+CRITICAL-ONE-POLE-PROOF.md contains the source-level argument at beta=1.
+Polar positivity makes (D^2-1/4)^2 of every smooth real-even source kernel
+positive definite. Ordinary Bochner and the explicit homogeneous ODE
+leave a bounded positive kernel, cosh(x/2), and x*sinh(x/2). An actual
+source Laplace identity couples the last term to one common double pole
+of the coefficient Dirichlet series. Actual finite harmonic twists plus
+signed Abel integration exclude both signs of that pole. This gives the
+critical cosh bound, the existing one-pole primitive limit, and exact
+whole-fibre recovery on paper. The Lean endpoint is NOT completed yet.
+
+The same source identity exposes a stronger canonical full-positive pole
+completion conjecture, with unique coefficient equal to the remaining
+simple residue. It has been sent back through corpus and external
+novelty audits; do not treat a newly exposed consequence as a completed
+stronger theorem. The universal WP02 inequality remains OPEN.
+
+
+Cycle33 arithmetic producer completed in four saved/wired leaves36–39.
+All final foreground saved-leaf checks pass. The exact mathematical
+output is a uniform first-order upper bound for the ACTUAL signed
+cosine Dirichlet series of every critical logarithmic polar separator.
+It is derived from positive-integer finite resonators, actual local
+absolute mass, signed Abel/Fubini, and the established zeta residue.
+The neighborhood and constant are independent of real twist. No
+meromorphic continuation or full-positive completion is assumed.
+Combined11-theorem axiom audit passes with only propext, Classical.choice
+and Quot.sound. Global lint reports seven unrelated reachability errors
+and no owned WP02 finding.
+The dependency-closed endpoint paper remains in
+CRITICAL-ONE-POLE-PROOF.md, with its kernel/ODE/Laplace formalization
+obligations explicit. Universal WP02 remains OPEN.

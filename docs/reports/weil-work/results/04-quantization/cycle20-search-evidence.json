@@ -1,0 +1,2395 @@
+[
+  {
+    "query": "Weil positive forward coefficient one outside multiples finite divisors coprime rigidity",
+    "mode": "deep",
+    "partial": false,
+    "coverage": {
+      "files": 68670,
+      "inventoried": 68670,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68670
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11114,
+        "pending": 52158,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57556,
+        "prose": 11114
+      },
+      "declarations": 1030889,
+      "documents": 2861159,
+      "vectors": 2672263,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1288931,
+      "methods": {
+        "failed": 55,
+        "ready": 419012,
+        "stale": 178531
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791447024.803484,
+      "current_generation": 1288932
+    },
+    "errors": [],
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "elapsed_seconds": 126.1073985,
+    "unfinished_stages": [],
+    "declarations": [],
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.zeta_W_eq_weilFullFunctional",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeRiemannKernelRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeRiemannKernelRigidity.lean",
+        "line": 332,
+        "statement": "theorem zeta_W_eq_weilFullFunctional {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :\n    zetaZeroConfig.W f f =\n      weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) (EF.weilTest f f)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilZetaPower.hasSum_weilFunction_zeros",
+        "module": "GaloisForLFunctions.RHTower.WeilZetaPowerConverse",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilZetaPowerConverse.lean",
+        "line": 114,
+        "statement": "theorem hasSum_weilFunction_zeros (hk : 0 < k) (hD : ZetaPowerDatum k g E)\n    (hRH : ∀ s, E s = 0 → s.re = 1 / 2) {lam : ℕ → ℝ}\n    (hΛ : ∀ s : ℂ, 1 < s.re →\n      deriv (LSeries g) s = -(k : ℂ) * LSeries (WeilHerglotz.lamC lam) s * LSeries g s)\n    {s : ℂ} (hs : 1 < s.re) :\n    HasSum (fun q : ZeroCopy (fun z => E (z + 2)) =>\n        ((1 / (2 * k) : ℝ) : ℂ) *\n          gPair (1 / 2 + ((zeroCopyPoint (fun z => E (z + 2)) q + 2).im : ℂ) * I) s)\n      (WeilHerglotz.weilFunction lam s)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilZetaCarrier.coprime_Apow_Bprod",
+        "module": "GaloisForLFunctions.RHTower.WeilConeZetaCarrierResonance",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeZetaCarrierResonance.lean",
+        "line": 431,
+        "statement": "theorem coprime_Apow_Bprod (L J y : ℕ) : (Apow L J).Coprime (Bprod L y)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilZetaPower.logDeriv_eq_mul_weilFunction",
+        "module": "GaloisForLFunctions.RHTower.WeilZetaPowerConverse",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilZetaPowerConverse.lean",
+        "line": 68,
+        "statement": "theorem logDeriv_eq_mul_weilFunction (hD : ZetaPowerDatum k g E) {lam : ℕ → ℝ}\n    (hΛ : ∀ s : ℂ, 1 < s.re →\n      deriv (LSeries g) s = -(k : ℂ) * LSeries (WeilHerglotz.lamC lam) s * LSeries g s)\n    {s : ℂ} (hs : 1 < s.re) (hEs : E s ≠ 0) :\n    logDeriv E s = k * WeilHerglotz.weilFunction lam s",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.logZetaCoeff",
+        "module": "GaloisForLFunctions.RHTower.WeilPositiveProducerLindelof",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositiveProducerLindelof.lean",
+        "line": 41,
+        "statement": "def logZetaCoeff (lam : ℕ → ℝ) (n : ℕ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_zetaQuotient_primitive",
+        "module": "GaloisForLFunctions.RHTower.WeilProducerZetaQuotientBohrRecurrence",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilProducerZetaQuotientBohrRecurrence.lean",
+        "line": 358,
+        "statement": "theorem exists_zetaQuotient_primitive {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    ∃ (c : ℂ) (P : ℂ → ℂ), c ≠ 0 ∧\n      (∀ s : ℂ, 1 / 2 < s.re → HasDerivAt P\n        (zetaArchimedeanDatum s - weilContinuation hW s) s) ∧\n      ∀ s : ℂ, 1 < s.re → c * ((s - 1) * cexp (P s)) =\n        cexp (-LSeries (logZetaCoeff (fun n => if 2 ≤ n then lam n else 0)) s)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.re_logZeta_sub_eq",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeHorizontalPotential",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeHorizontalPotential.lean",
+        "line": 174,
+        "statement": "theorem re_logZeta_sub_eq {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {g : ℂ → ℂ} {σ σ' t : ℝ}\n    (hσ : 1 / 2 < σ) (hσσ' : σ ≤ σ')\n    (hg : ∀ u ∈ Icc σ σ', HasDerivAt g\n      (-(zetaArchimedeanDatum ((u : ℂ) + t * I) - weilContinuation hW ((u : ℂ) + t * I) +\n        1 / ((u : ℂ) + t * I - 1))) ((u : ℂ) + t * I))\n    (hcont : ContinuousOn (fun u : ℝ => (zetaArchimedeanDatum ((u : ℂ) + t * I) +\n      1 / ((u : ℂ) + t * I - 1)).re) (Icc σ σ')) :\n    (g ((σ' : ℂ) + t * I)).re - (g ((σ : ℂ) + t * I)).re =\n      -(∫ u in σ..σ', (zetaArchimedeanDatum ((u : ℂ) + t * I) + 1 / ((u : ℂ) + t * I - 1)).re) +\n        ∫ r, Real.log (((σ' - 1 / 2) ^ 2 + (r - t) ^ 2) / ((σ - 1 / 2) ^ 2 + (r - t) ^ 2)) / 2\n          ∂boundaryMeasure hW",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.integrable_weilContinuation_mul_zetaGaussian",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticGaussianPairing",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticGaussianPairing.lean",
+        "line": 130,
+        "statement": "theorem integrable_weilContinuation_mul_zetaGaussian {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {T : ℝ} (hT : 1 ≤ T) :\n    Integrable (fun t : ℝ => WeilSpectral.weilContinuation hW ((3 / 4 : ℂ) + t * I) *\n      zetaGaussianPairingTest T ((3 / 4 : ℂ) + t * I))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimePart_dirichletConvPow",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeMasks",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeMasks.lean",
+        "line": 57,
+        "statement": "theorem coprimePart_dirichletConvPow (Q : ℕ) (f : ℕ → ℂ) (k : ℕ) :\n    coprimePart Q (dirichletConvPow f k) = dirichletConvPow (coprimePart Q f) k",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.reflectedAtomicLocations_locallyFinite",
+        "module": "GaloisForLFunctions.HTGeometry.CriticalEulerMassWeilStokesShadowLaw",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/CriticalEulerMassWeilStokesShadowLaw.lean",
+        "line": 530,
+        "statement": "theorem reflectedAtomicLocations_locallyFinite (a b : ℝ) :\n    Set.Finite {n : ℕ | Real.log (n : ℝ) ∈ Set.Icc a b} ∧\n      Set.Finite {n : ℕ | -Real.log (n : ℝ) ∈ Set.Icc a b}",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilLogSummable.coprime_roughPart_vecDen",
+        "module": "GaloisForLFunctions.RHTower.WeilLogSummableRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLogSummableRigidity.lean",
+        "line": 218,
+        "statement": "theorem coprime_roughPart_vecDen (hP : ∀ p ∈ P, p.Prime) {n : ℕ} (hn : n ≠ 0) (b : P → ℤ) :\n    Nat.Coprime (roughPart P n) (vecDen b)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_padic_mul_coprime",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRationalRows",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRationalRows.lean",
+        "line": 18,
+        "statement": "theorem quantization_padic_mul_coprime {u v m : ℕ} (hu : 2 ≤ u)\n    (hv : 1 ≤ v) (hm : 1 ≤ m) (huv : u.Coprime v) :\n    padicValNat u (m * v) = padicValNat u m",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimePart_dirichletExp",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeMasks",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeMasks.lean",
+        "line": 69,
+        "statement": "theorem coprimePart_dirichletExp (Q : ℕ) (f : ℕ → ℂ) :\n    coprimePart Q (dirichletExp f) = dirichletExp (coprimePart Q f)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.PaperPacketCoprimePair",
+        "module": "GaloisForLFunctions.RHTower.WeilPaperPacketPrimitiveSampling",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPaperPacketPrimitiveSampling.lean",
+        "line": 82,
+        "statement": "abbrev PaperPacketCoprimePair (N : ℕ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.CramerModel.card_divisors_div_le",
+        "module": "GaloisForLFunctions.RHTower.WeilPositivityCramerRandomPrimes",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityCramerRandomPrimes.lean",
+        "line": 73,
+        "statement": "theorem card_divisors_div_le {N n : ℕ} (hN : N ≠ 0) (hn : n ∣ N) :\n    ((N / n).divisors.card : ℝ) ≤ N.divisors.card",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.positiveAtomicLocations_interval_finite",
+        "module": "GaloisForLFunctions.HTGeometry.CriticalEulerMassWeilStokesShadowLaw",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/CriticalEulerMassWeilStokesShadowLaw.lean",
+        "line": 495,
+        "statement": "theorem positiveAtomicLocations_interval_finite (a b : ℝ) :\n    Set.Finite {n : ℕ | Real.log (n : ℝ) ∈ Set.Icc a b}",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.divisibilityTrace_paperPacketCoprimeCovariance",
+        "module": "GaloisForLFunctions.RHTower.WeilPaperPacketPrimeMasks",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPaperPacketPrimeMasks.lean",
+        "line": 122,
+        "statement": "theorem divisibilityTrace_paperPacketCoprimeCovariance {N : ℕ}\n    (c : PacketIndex N → ℂ) (n : ℕ) :\n    divisibilityTrace (paperPacketCoprimeCovariance c) n = 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.tendsto_mul_weilLaplace_bohr",
+        "module": "GaloisForLFunctions.RHTower.WeilDefectBohrZetaLaw",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilDefectBohrZetaLaw.lean",
+        "line": 148,
+        "statement": "theorem tendsto_mul_weilLaplace_bohr {lam : ℕ → ℝ} {Φ : ℂ → ℂ} (hΦ : OddWeilFunction Φ)\n    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)\n    (hid : ∀ s : ℂ, 1 < s.re → zetaArchimedeanDatum s + 1 / (s - 1) -\n      LSeries (fun n => (lam n : ℂ)) s = Φ s) {J : ℂ → ℂ}\n    (hJd : DifferentiableOn ℂ J {τ : ℂ | 0 < τ.re})\n    (hJ : ∀ τ : ℝ, 0 < τ → IntegrableOn (fun x : ℝ => weilDefect Φ x *\n      ((Real.exp (-(Real.pi * τ ^ 2) * x) : ℝ) : ℂ)) (Ioi 0) ∧\n      J τ = τ * ∫ x in Ioi (0 : ℝ), weilDefect Φ x * ((Real.exp (-(Real.pi * τ ^ 2) * x) : ℝ) : ℂ))\n    (hJ0 : Tendsto (fun ε : ℝ => (ε : ℂ) * J (ε : ℂ)) (𝓝[>] 0) (𝓝 0)) (n : ℕ) :\n    Tendsto (fun ε : ℝ => (ε : ℂ) * J ((ε : ℂ) + ((n + 1 : ℕ) : ℂ) * I)) (𝓝[>] 0)\n      (𝓝 ((crystallineCoeff lam (n + 1) + 2 * weilResidue Φ) / (2 * Real.pi)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_logWeight_zeta",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationLogarithmicSupport",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationLogarithmicSupport.lean",
+        "line": 22,
+        "statement": "theorem quantization_logWeight_zeta :\n    logWeight (ArithmeticFunction.zeta : ArithmeticFunction ℂ) =\n      quantizationVonMangoldtC * ArithmeticFunction.zeta",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimeResidue_pos",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeDeviation",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeDeviation.lean",
+        "line": 37,
+        "statement": "private theorem coprimeResidue_pos (Q : ℕ) : 0 < coprimeResidue Q",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.integral_weilAtomSymbol_eq_affine",
+        "module": "GaloisForLFunctions.RHTower.WeilPositivityFiniteLevelExistence",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityFiniteLevelExistence.lean",
+        "line": 106,
+        "statement": "theorem integral_weilAtomSymbol_eq_affine {a : ℝ} {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)\n    (hfs : tsupport f ⊆ Icc (-a) a) (lam : ℕ → ℝ) :\n    ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * weilAtomSymbol lam ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π)) =\n      (∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * archimedeanWeilSymbol (τ / (2 * π))) -\n        2 * π * ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, lam n / Real.sqrt n *\n          (EF.weilTest f f (Real.log n) + EF.weilTest f f (-Real.log n)).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+        "line": 514,
+        "statement": "theorem atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilDilationRealness.regularPart_zero",
+        "module": "GaloisForLFunctions.RHTower.WeilConeDilationRealnessRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeDilationRealnessRigidity.lean",
+        "line": 346,
+        "statement": "theorem regularPart_zero : RegularPart (0 : ℕ → ℝ) (0 : ℂ → ℂ) where\n  zero",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.profilePrimitive_mono",
+        "module": "GaloisForLFunctions.RHTower.WeilDeviationLocalMass",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilDeviationLocalMass.lean",
+        "line": 574,
+        "statement": "theorem profilePrimitive_mono {φ : ℝ → ℝ} (hφc : Continuous φ) (hφ0 : ∀ x, 0 ≤ φ x) {y y' : ℝ}\n    (h : y' ≤ y) : WeilOneSided.profilePrimitive φ y' ≤ WeilOneSided.profilePrimitive φ y",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.xiResolventPoint_re_pos",
+        "module": "GaloisForLFunctions.RHTower.XiWeilResolventChartDictionary",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiWeilResolventChartDictionary.lean",
+        "line": 61,
+        "statement": "theorem xiResolventPoint_re_pos {X : ℝ} (hX : 0 ≤ X) (q : XiZeroCopy) :\n    0 < (xiResolventPoint X q).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.herglotzWeilPositive_of_weilPositiveFull",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeHerglotzCriticalHalfPlane",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeHerglotzCriticalHalfPlane.lean",
+        "line": 408,
+        "statement": "theorem herglotzWeilPositive_of_weilPositiveFull {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    HerglotzWeilPositive (fun n => if 2 ≤ n then lam n else 0) zetaArchimedeanDatum where\n  summable σ hσ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.logDeriv_xi_div_re_pos",
+        "module": "GaloisForLFunctions.RHTower.XiWeilResolventChartDictionary",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiWeilResolventChartDictionary.lean",
+        "line": 103,
+        "statement": "theorem logDeriv_xi_div_re_pos {t : ℝ} (ht : 0 < t) :\n    0 < (logDeriv xi ((1 / 2 : ℂ) + (t : ℂ)) / (t : ℂ)).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilRegular.eq_zero_of_weilPositiveFull_add",
+        "module": "GaloisForLFunctions.RHTower.WeilRegularDeviationRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilRegularDeviationRigidity.lean",
+        "line": 283,
+        "statement": "theorem eq_zero_of_weilPositiveFull_add (hR : RegularDeviation w E)\n    (hW : WeilPositiveFull (addVonMangoldt w)) (n : ℕ) : w n = 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.abs_partialFrom2_chiFour_le",
+        "module": "GaloisForLFunctions.RHTower.WeilPositivityRegularPerturbationRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityRegularPerturbationRigidity.lean",
+        "line": 772,
+        "statement": "theorem abs_partialFrom2_chiFour_le (n : ℕ) : |partialFrom2 chiFour n| ≤ 1",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeCCMBridge",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeCCMBridge.lean",
+        "line": 145,
+        "statement": "theorem ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) :\n    0 ≤ ccmRestrictedWeilSourceQuadraticWith a lam ⌊Real.exp (2 * a.1)⌋₊ u",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.not_tendsto_multiplesSum_of_nonneg",
+        "module": "GaloisForLFunctions.RHTower.WeilConeMultiplesOfPrimeLaw",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeMultiplesOfPrimeLaw.lean",
+        "line": 698,
+        "statement": "theorem not_tendsto_multiplesSum_of_nonneg {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)\n    (hnn : ∀ n, 2 ≤ n → 0 ≤ lam n) {p : ℕ} (hp : p.Prime) :\n    ¬ Tendsto (multiplesSum p (WeilOneSided.coneDeviation lam)) atTop atTop ∧\n      ¬ Tendsto (multiplesSum p (WeilOneSided.coneDeviation lam)) atTop atBot",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.summable_multiples_of_weilPositiveFull_of_nonneg",
+        "module": "GaloisForLFunctions.RHTower.WeilConeMultiplesOfPrimeLaw",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeMultiplesOfPrimeLaw.lean",
+        "line": 708,
+        "statement": "theorem summable_multiples_of_weilPositiveFull_of_nonneg {lam : ℕ → ℝ}\n    (hW : RHTower.WeilPositiveFull lam) (hnn : ∀ n, 2 ≤ n → 0 ≤ lam n) {p : ℕ} (hp : p.Prime) :\n    Summable fun n : ℕ => if p ∣ n ∧ n ≠ p then lam n / n else 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.eq_vonMangoldt_of_weilPositiveFull_of_eventually_ge",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeSummableDeficitRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeSummableDeficitRigidity.lean",
+        "line": 531,
+        "statement": "theorem eq_vonMangoldt_of_weilPositiveFull_of_eventually_ge {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {N₀ : ℕ} (hge : ∀ n, N₀ ≤ n → (ArithmeticFunction.vonMangoldt n : ℝ) ≤ lam n) :\n    ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilOneSided.riemannHypothesis_iff_exists_weilPositiveFull_summable_excess_div",
+        "module": "GaloisForLFunctions.RHTower.WeilOneSidedConvergenceRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilOneSidedConvergenceRigidity.lean",
+        "line": 439,
+        "statement": "theorem riemannHypothesis_iff_exists_weilPositiveFull_summable_excess_div :\n    RiemannHypothesis ↔ ∃ lam : ℕ → ℝ, WeilPositiveFull lam ∧\n      Summable fun n : ℕ => max (lam n - ArithmeticFunction.vonMangoldt n) 0 / n",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.riemannHypothesis_of_weilPositiveFull_of_le",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeCCMBridge",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeCCMBridge.lean",
+        "line": 156,
+        "statement": "theorem riemannHypothesis_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    (h0 : ∀ n, 2 ≤ n → 0 ≤ lam n)\n    (hle : ∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) :\n    RiemannHypothesis",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.RemovedPrimes.vonMangoldtWithout_le",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeRemovedPrimes",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeRemovedPrimes.lean",
+        "line": 23,
+        "statement": "theorem vonMangoldtWithout_le (R : Set ℕ) (n : ℕ) :\n    vonMangoldtWithout R n ≤ (vonMangoldt n : ℝ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilOneSided.eq_vonMangoldt_of_weilPositiveFull_of_summable_deficit_div",
+        "module": "GaloisForLFunctions.RHTower.WeilOneSidedConvergenceRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilOneSidedConvergenceRigidity.lean",
+        "line": 425,
+        "statement": "theorem eq_vonMangoldt_of_weilPositiveFull_of_summable_deficit_div {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam)\n    (hs : Summable fun n : ℕ => max (ArithmeticFunction.vonMangoldt n - lam n) 0 / n) :\n    ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.vonMangoldt_update_not_weilPositive",
+        "module": "GaloisForLFunctions.RHTower.WeilPositivitySummablePerturbationRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivitySummablePerturbationRigidity.lean",
+        "line": 530,
+        "statement": "theorem vonMangoldt_update_not_weilPositive {n₀ : ℕ} (hn₀ : 2 ≤ n₀) {c : ℝ} (hc : c ≠ 0) :\n    ¬ (∀ a : ℝ, 0 ≤ a → ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →\n      paperFT f (I / 2) = 0 → paperFT f (-(I / 2)) = 0 →\n      0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 *\n        weilAtomSymbol (fun n => (Λ n : ℝ) + if n = n₀ then c else 0)\n          ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilExcess.not_summable_excess_of_ne",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConeSummableExcessRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeSummableExcessRigidity.lean",
+        "line": 273,
+        "statement": "theorem not_summable_excess_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) :\n    ¬ Summable fun n => max (lam n - (ArithmeticFunction.vonMangoldt n : ℝ)) 0 / Real.sqrt n",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilOrderComparable.eq_vonMangoldt_and_riemannHypothesis_of_ge",
+        "module": "GaloisForLFunctions.RHTower.WeilConeOrderComparableRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeOrderComparableRigidity.lean",
+        "line": 44,
+        "statement": "theorem eq_vonMangoldt_and_riemannHypothesis_of_ge {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    (hge : ∀ n, 2 ≤ n → (Λ n : ℝ) ≤ lam n) :\n    (∀ n, 2 ≤ n → lam n = Λ n) ∧ RiemannHypothesis",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": [
+      {
+        "description": "Weil positivity and divisor coprimality",
+        "steps": [
+          {
+            "goal": "Link coprime condition to Weil positivity",
+            "candidate_ids": [
+              "036f28e383e4dceda1c3da589be6e8f26bf3e9f0f1154b79180f0dc232a336e2"
+            ],
+            "candidates": [
+              {
+                "id": "036f28e383e4dceda1c3da589be6e8f26bf3e9f0f1154b79180f0dc232a336e2",
+                "name": "RHTower.WeilZetaCarrier.coprime_Apow_Bprod",
+                "module": "GaloisForLFunctions.RHTower.WeilConeZetaCarrierResonance",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeZetaCarrierResonance.lean",
+                "line": 431
+              }
+            ],
+            "obligations": [
+              "Coprime implies Weil bound"
+            ],
+            "status": "proposed"
+          },
+          {
+            "goal": "Establish finite divisor rigidity",
+            "candidate_ids": [
+              "043858a6267b3bb675285aad707f2e956d9088f7d981ef824b5069199bdca84a",
+              "5d78e17389d3ed402241216bbcd7969e7dd88305f23652f21d7c97900d7cb99c"
+            ],
+            "candidates": [
+              {
+                "id": "043858a6267b3bb675285aad707f2e956d9088f7d981ef824b5069199bdca84a",
+                "name": "RHTower.WeilSpectral.exists_zetaQuotient_primitive",
+                "module": "GaloisForLFunctions.RHTower.WeilProducerZetaQuotientBohrRecurrence",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilProducerZetaQuotientBohrRecurrence.lean",
+                "line": 358
+              },
+              {
+                "id": "5d78e17389d3ed402241216bbcd7969e7dd88305f23652f21d7c97900d7cb99c",
+                "name": "RHTower.WeilSpectral.re_logZeta_sub_eq",
+                "module": "GaloisForLFunctions.RHTower.WeilFullConeHorizontalPotential",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeHorizontalPotential.lean",
+                "line": 174
+              }
+            ],
+            "obligations": [
+              "Zeta quotient has derivative"
+            ],
+            "status": "proposed"
+          }
+        ],
+        "status": "not_verified"
+      }
+    ]
+  },
+  {
+    "query": "notch finite prime coprime gap error source mask positivity",
+    "mode": "deep",
+    "partial": false,
+    "coverage": {
+      "files": 68681,
+      "inventoried": 68681,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68681
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11114,
+        "pending": 52169,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57567,
+        "prose": 11114
+      },
+      "declarations": 1031012,
+      "documents": 2861463,
+      "vectors": 2672526,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1289075,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791448067.51232,
+      "current_generation": 1289076
+    },
+    "errors": [],
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "elapsed_seconds": 146.303437667,
+    "unfinished_stages": [],
+    "declarations": [],
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimeResidue",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeDeviation",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeDeviation.lean",
+        "line": 34,
+        "statement": "private def coprimeResidue (Q : ℕ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimeResidue_pos",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeDeviation",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeDeviation.lean",
+        "line": 37,
+        "statement": "private theorem coprimeResidue_pos (Q : ℕ) : 0 < coprimeResidue Q",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.exists_prime_short_gap",
+        "module": "GaloisForLFunctions.RHTower.WeilLagFunctionPrimeGap",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLagFunctionPrimeGap.lean",
+        "line": 346,
+        "statement": "theorem exists_prime_short_gap :\n    ∃ X₀ : ℝ, 4 ≤ X₀ ∧ ∀ X : ℝ, X₀ ≤ X →\n      ∃ p : ℕ, p.Prime ∧ (p : ℝ) ≤ X ∧ (⌊X⌋₊ : ℝ) < p + (p : ℝ) ^ (71 / 100 : ℝ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.PolePointBudget.sum_primeGapWeight_div_ge",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConePolePointBudget",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConePolePointBudget.lean",
+        "line": 398,
+        "statement": "theorem sum_primeGapWeight_div_ge (N : ℕ) (hN : 7 ≤ N) :\n    Real.log (primeAfter N) - Real.log 2 + (23 / 84 + 1 / 10) ≤\n      ∑ n ∈ Finset.Icc 2 N, primeGapWeight n / n",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.PolePointBudget.gap_mass_first_primes",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConePolePointBudget",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConePolePointBudget.lean",
+        "line": 366,
+        "statement": "theorem gap_mass_first_primes :\n    23 / 84 + 1 / 10 ≤ (primeGapWeight 2 / 2 - primeGapLog 2) + (primeGapWeight 3 / 3 - primeGapLog 3) +\n      (primeGapWeight 5 / 5 - primeGapLog 5) + (primeGapWeight 7 / 7 - primeGapLog 7)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_rational_residue",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRationalResonance",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRationalResonance.lean",
+        "line": 52,
+        "statement": "theorem quantization_rational_residue {lam : ℕ → ℝ} {u v m : ℕ}\n    (hu : 2 ≤ u) (hv : 1 ≤ v) (huv : u.Coprime v) (hm : 1 ≤ m) (k : ℕ) :\n    quantizationFrequencyResidue lam (2 * (k : ℝ) * Real.log ((u : ℝ) / v)) m =\n      if k ≤ padicValNat u m then\n        (Real.exp ((2 * (k : ℝ) * Real.log ((u : ℝ) / v)) / 4) : ℂ) *\n          dirichletExp (lamLog lam) (m / u ^ k * v ^ k)\n      else 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_bilateral_rational_rough_residue",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationBilateralRough",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationBilateralRough.lean",
+        "line": 17,
+        "statement": "theorem quantization_bilateral_rational_rough_residue {lam : ℕ → ℝ} {u v m : ℕ}\n    (hu : 2 ≤ u) (hv : 2 ≤ v) (huv : u.Coprime v) (hm : 1 ≤ m)\n    (hum : ¬u ∣ m) (hvm : ¬v ∣ m) (k : ℤ) :\n    quantizationFrequencyResidue lam (2 * (k : ℝ) * Real.log ((u : ℝ) / v)) m =\n      if k = 0 then dirichletExp (lamLog lam) m else 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimePart_sub",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeSourceBound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeSourceBound.lean",
+        "line": 20,
+        "statement": "private theorem coprimePart_sub (Q : ℕ) (f g : ℕ → ℂ) :\n    coprimePart Q (f - g) = coprimePart Q f - coprimePart Q g",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimePart",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeMasks",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeMasks.lean",
+        "line": 19,
+        "statement": "def coprimePart (Q : ℕ) (f : ℕ → ℂ) (n : ℕ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilZetaCarrier.coprime_Apow_Bprod",
+        "module": "GaloisForLFunctions.RHTower.WeilConeZetaCarrierResonance",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeZetaCarrierResonance.lean",
+        "line": 431,
+        "statement": "theorem coprime_Apow_Bprod (L J y : ℕ) : (Apow L J).Coprime (Bprod L y)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_rational_residue_sum",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRationalResonance",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRationalResonance.lean",
+        "line": 82,
+        "statement": "theorem quantization_rational_residue_sum {lam : ℕ → ℝ} {u v m : ℕ}\n    (hu : 2 ≤ u) (hv : 1 ≤ v) (huv : u.Coprime v) (hm : 1 ≤ m) (p : ℕ → ℂ) :\n    (∑' k : ℕ, p k * quantizationFrequencyResidue lam\n      (2 * (k : ℝ) * Real.log ((u : ℝ) / v)) m) =\n      ∑ k ∈ Finset.range (padicValNat u m + 1),\n        (p k * (Real.exp ((2 * (k : ℝ) * Real.log ((u : ℝ) / v)) / 4) : ℂ)) *\n          dirichletExp (lamLog lam) (m / u ^ k * v ^ k)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilLogSummable.coprime_roughPart_vecDen",
+        "module": "GaloisForLFunctions.RHTower.WeilLogSummableRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLogSummableRigidity.lean",
+        "line": 218,
+        "statement": "theorem coprime_roughPart_vecDen (hP : ∀ p ∈ P, p.Prime) {n : ℕ} (hn : n ≠ 0) (b : P → ℤ) :\n    Nat.Coprime (roughPart P n) (vecDen b)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimePart_dirichletConvPow",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeMasks",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeMasks.lean",
+        "line": 57,
+        "statement": "theorem coprimePart_dirichletConvPow (Q : ℕ) (f : ℕ → ℂ) (k : ℕ) :\n    coprimePart Q (dirichletConvPow f k) = dirichletConvPow (coprimePart Q f) k",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimePart_one",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeSourceBound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeSourceBound.lean",
+        "line": 15,
+        "statement": "private theorem coprimePart_one (f : ℕ → ℂ) : coprimePart 1 f = f",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.spikePrime",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticToeplitzSharpness",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticToeplitzSharpness.lean",
+        "line": 85,
+        "statement": "private def spikePrime : ℕ → ℕ\n  | 0 => 2\n  | j + 1 => (Nat.exists_infinite_primes\n      (spikePrime j ^ (2 * (j + 1) * (j + 3)) + 1)).choose",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.packetMaskProjection_entry_sq_le",
+        "module": "GaloisForLFunctions.RHTower.WeilPaperPacketHermitianRepair",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPaperPacketHermitianRepair.lean",
+        "line": 62,
+        "statement": "private theorem packetMaskProjection_entry_sq_le {N : ℕ} (s : Finset LogIndex)\n    (C : Matrix (PacketIndex N) (PacketIndex N) ℂ) (m k : PacketIndex N) :\n    ‖packetMaskProjection s C m k‖ ^ 2 ≤ ‖C m k‖ ^ 2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.lagPositivePart",
+        "module": "GaloisForLFunctions.RHTower.WeilLagFunctionPositivePart",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLagFunctionPositivePart.lean",
+        "line": 37,
+        "statement": "def lagPositivePart (u : ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.frequently_prime_integerLag_gt",
+        "module": "GaloisForLFunctions.RHTower.WeilLagLocalWorkHuxley",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLagLocalWorkHuxley.lean",
+        "line": 517,
+        "statement": "theorem frequently_prime_integerLag_gt {ε : ℝ} (hε : 0 < ε) :\n    ∃ᶠ p : ℕ in atTop, p.Prime ∧ poleSharpConstant - ε < integerLag p",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayLattice.mass_nonneg",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkExposingRayLatticeMass",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayLatticeMass.lean",
+        "line": 383,
+        "statement": "private theorem mass_nonneg {M : ℕ} (c : Fin (M+1) → ℂ) : 0 ≤ mass c",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.gap_factor_le",
+        "module": "GaloisForLFunctions.RHTower.WeilLagFunctionPrimeGap",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLagFunctionPrimeGap.lean",
+        "line": 398,
+        "statement": "theorem gap_factor_le {p : ℝ} (hp : 2 ≤ p) :\n    11 * (p ^ (71 / 100 : ℝ) + 1) * (Real.log (2 * p) + 2) ^ 2 / Real.sqrt p\n      ≤ 457776 * p ^ (23 / 100 : ℝ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.WeilAbscissa.Ioc_disjoint_Ioi'",
+        "module": "GaloisForLFunctions.RHTower.WeilAbscissaRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilAbscissaRigidity.lean",
+        "line": 230,
+        "statement": "theorem Ioc_disjoint_Ioi' : Disjoint (Ioc (0 : ℝ) 16) (Ioi 16)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.PrimeSmallDeviation.NotchBounded.mono_level",
+        "module": "GaloisForLFunctions.RHTower.WeilDeviationLocalMass",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilDeviationLocalMass.lean",
+        "line": 352,
+        "statement": "theorem _root_.RHTower.PrimeSmallDeviation.NotchBounded.mono_level {d : ℕ → ℝ} {η η' : ℝ} (h : NotchBounded d η) (hη : η ≤ η') :\n    NotchBounded d η'",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.exists_notchWeight_bound",
+        "module": "GaloisForLFunctions.RHTower.WeilAbscissaRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilAbscissaRigidity.lean",
+        "line": 220,
+        "statement": "theorem exists_notchWeight_bound (P : Finset ℕ) (ε : ℝ) (n₀ : ℕ) :\n    ∃ CQ, 0 ≤ CQ ∧ (∀ z : ℂ, |z.im| ≤ 1 → ‖notchWeightC P ε n₀ z‖ ≤ CQ) ∧\n      ∀ t, |notchWeight P ε n₀ t| ≤ CQ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.sum_twistFibre_eq",
+        "module": "GaloisForLFunctions.RHTower.WeilConeNotchBochnerLaw",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeNotchBochnerLaw.lean",
+        "line": 106,
+        "statement": "theorem sum_twistFibre_eq (hP : ∀ p ∈ P, p.Prime) (A : Finset (P → ℤ)) (c : (P → ℤ) → ℝ)\n    {d : ℕ → ℝ} (hd0 : d 0 = 0) (k : ℕ) :\n    ∑ n ∈ Finset.range (k + 1), d n * (Real.sqrt n)⁻¹ * twistMainWeight P A c n =\n      ∑ a ∈ A, ∑ a' ∈ A, c a * c a' * twistGramWeight (a - a') *\n        gcdHarmonicSum P d (a - a') k",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.integrableOn_scaleMoment",
+        "module": "GaloisForLFunctions.RHTower.WeilAbscissaScaleBounds",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilAbscissaScaleBounds.lean",
+        "line": 31,
+        "statement": "theorem integrableOn_scaleMoment (L : ℝ) {q : ℝ → ℝ} (hqc : Continuous q) {CQ : ℝ}\n    (hqb : ∀ t, |q t| ≤ CQ) (y : ℝ) :\n    IntegrableOn (fun u => ((scaleWeight L u / u : ℝ) : ℂ) * ZetaNotch.weightedMoment u q y)\n      (Ioi 0)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.exists_scale_bound_abs",
+        "module": "GaloisForLFunctions.RHTower.WeilAbsoluteConvergenceRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilAbsoluteConvergenceRigidity.lean",
+        "line": 268,
+        "statement": "theorem exists_scale_bound_abs (hP : ∀ p ∈ P, p.Prime) {n₀ : ℕ} (hn₀ : IsSmoothOver P n₀)\n    {ε : ℝ} (hε : |ε| ≤ 1) {v : ℕ → ℝ} (hv0 : v 0 = 0) {A : ℝ} (hA : 0 ≤ A)\n    (ha : ∀ n, |v n| ≤ 2 * Real.log n + A)\n    (hs0 : Summable fun n : ℕ => |v n| * (Real.sqrt n)⁻¹)\n    (hPD : PositiveDefiniteOnReal fun y => ((-RHTower.WeilRegular.nullPotential v y : ℝ) : ℂ)) :\n    ∃ A₀ B : ℝ, 0 ≤ A₀ ∧ 0 ≤ B ∧ ∀ L : ℝ, 32 ≤ L → ∃ YF : ℝ,\n      ∑' n, v n * mainWeight P ε n₀ n ≤ YF + 3 * Real.sqrt n₀ * sqrtTail v ⌈(1 + L) ^ 2⌉₊ ∧\n      (0 ≤ YF → ∀ K : ℕ, K ≤ ⌈(1 + L) ^ 2⌉₊ →\n        YF * (∏ p : P, (1 - primeHalf p ^ 2)) * (2 * Real.exp (-1) * Real.log (L - 1)) ≤\n          A₀ + B * ((1 + Real.log K) * ∑' n : ℕ, |v n| * (Real.sqrt n)⁻¹ +\n            (1 + Real.log ⌈(1 + L) ^ 2⌉₊) * sqrtTail v K +\n            Real.sqrt K * ∑' n : ℕ, |v n| * (Real.sqrt n)⁻¹ + sqrtTail v K +\n            sqrtTail v ⌈(1 + L) ^ 2⌉₊))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.exists_scale_bound_crit",
+        "module": "GaloisForLFunctions.RHTower.WeilCriticalEndpointRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilCriticalEndpointRigidity.lean",
+        "line": 381,
+        "statement": "theorem exists_scale_bound_crit (hP : ∀ p ∈ P, p.Prime) {n₀ : ℕ} (hn₀ : IsSmoothOver P n₀)\n    {ε : ℝ} (hε : |ε| ≤ 1) {v : ℕ → ℝ} (hv0 : v 0 = 0) {A : ℝ} (hA : 0 ≤ A)\n    (ha : ∀ n, |v n| ≤ 2 * Real.log n + A)\n    (hs : Summable fun n : ℕ => |v n| * ((1 + Real.log n) * (Real.sqrt n)⁻¹))\n    (hPD : PositiveDefiniteOnReal fun y => ((-RHTower.WeilRegular.nullPotential v y : ℝ) : ℂ)) :\n    ∃ E : ℝ, ∀ L : ℝ, 32 ≤ L → ∃ YF : ℝ,\n      ∑' n, v n * mainWeight P ε n₀ n ≤ YF + 3 * Real.sqrt n₀ * sqrtTail v ⌈(1 + L) ^ 4⌉₊ ∧\n      (0 ≤ YF → YF * (∏ p : P, (1 - primeHalf p ^ 2)) * (2 * Real.exp (-1) * Real.log (L - 1)) ≤\n        E)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilFiniteSupport.exists_key_bound",
+        "module": "GaloisForLFunctions.RHTower.WeilFiniteSupportRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFiniteSupportRigidity.lean",
+        "line": 601,
+        "statement": "theorem exists_key_bound (hP : ∀ p ∈ P, p.Prime) {v : ℕ → ℝ}\n    (hsupp : ∀ n, v n ≠ 0 → IsSmoothOver P n) {A : ℝ} (hA : 0 ≤ A)\n    (ha : ∀ n, |v n| ≤ 2 * Real.log n + A)\n    (hPD : PositiveDefiniteOnReal fun y => ((-RHTower.WeilRegular.nullPotential v y : ℝ) : ℂ))\n    {n₀ : ℕ} (hn₀ : IsSmoothOver P n₀) :\n    ∃ C : ℝ, ∀ M : ℝ, 2 ≤ M → Real.log n₀ ≤ M →\n      |v n₀| * (∏ p : P, (1 - primeHalf p ^ 2)) *\n          (M ^ (8 * (2 * P.card + 2)) * Real.log (M ^ (8 * (2 * P.card + 2)))) ≤\n        C * M ^ (8 * (2 * P.card + 2))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.PolePointBudget.sum_primeGapWeight_div_ge",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConePolePointBudget",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConePolePointBudget.lean",
+        "line": 398,
+        "statement": "theorem sum_primeGapWeight_div_ge (N : ℕ) (hN : 7 ≤ N) :\n    Real.log (primeAfter N) - Real.log 2 + (23 / 84 + 1 / 10) ≤\n      ∑ n ∈ Finset.Icc 2 N, primeGapWeight n / n",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.PolePointBudget.log_le_of_le_quadratic",
+        "module": "GaloisForLFunctions.RHTower.WeilFullConePolePointBudget",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConePolePointBudget.lean",
+        "line": 361,
+        "statement": "theorem log_le_of_le_quadratic {q y : ℝ} (hq : 0 < q) (hy : 0 ≤ y) (h : q ≤ 1 + y + y ^ 2 / 2) :\n    Real.log q ≤ y",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.CramerModel.resonanceProduct",
+        "module": "GaloisForLFunctions.RHTower.WeilPositivityCramerRandomPrimes",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityCramerRandomPrimes.lean",
+        "line": 117,
+        "statement": "noncomputable def resonanceProduct (y : ℕ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.exists_prime_short_gap",
+        "module": "GaloisForLFunctions.RHTower.WeilLagFunctionPrimeGap",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLagFunctionPrimeGap.lean",
+        "line": 346,
+        "statement": "theorem exists_prime_short_gap :\n    ∃ X₀ : ℝ, 4 ≤ X₀ ∧ ∀ X : ℝ, X₀ ≤ X →\n      ∃ p : ℕ, p.Prime ∧ (p : ℝ) ≤ X ∧ (⌊X⌋₊ : ℝ) < p + (p : ℝ) ^ (71 / 100 : ℝ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.abs_weilLagFunctionReal_sub_integerLag_le_of_gap",
+        "module": "GaloisForLFunctions.RHTower.WeilLagFunctionPrimeGap",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLagFunctionPrimeGap.lean",
+        "line": 301,
+        "statement": "theorem abs_weilLagFunctionReal_sub_integerLag_le_of_gap {n : ℕ} (hn2 : 2 ≤ n) {L : ℝ}\n    (hL : Real.log n ≤ L) (hm2n : ⌊Real.exp L⌋₊ ≤ 2 * n) :\n    |weilLagFunctionReal L - integerLag n|\n      ≤ 11 * ((⌊Real.exp L⌋₊ - n : ℕ) + 1) * (Real.log (2 * n) + 2) ^ 2 / Real.sqrt n",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.shiftForm_le",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticToeplitzSharpness",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticToeplitzSharpness.lean",
+        "line": 40,
+        "statement": "private theorem shiftForm_le (N p : ℕ) (hp : 2 ≤ p) (c : ℕ → ℂ)\n    (hc : ∀ m, N < m → c m = 0) :\n    shiftForm N p c ≤ 2 * vectorMass N c ∧\n      (N < p ^ 2 → shiftForm N p c ≤ vectorMass N c)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimeResidue",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeDeviation",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeDeviation.lean",
+        "line": 34,
+        "statement": "private def coprimeResidue (Q : ℕ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.quadraticLagMesh_actual_primes",
+        "module": "GaloisForLFunctions.RHTower.WeilLagPrimeQuadraticMesh",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLagPrimeQuadraticMesh.lean",
+        "line": 59,
+        "statement": "theorem quadraticLagMesh_actual_primes : QuadraticLagMesh {p : ℕ | p.Prime}",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.suzukiWeilArchimedeanConstant",
+        "module": "GaloisForLFunctions.RHTower.SuzukiRestrictedWeilSourceForm",
+        "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiRestrictedWeilSourceForm.lean",
+        "line": 60,
+        "statement": "def suzukiWeilArchimedeanConstant : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmWeilPrimeAgeBudget_pos",
+        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleEntryAgeSource",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleEntryAgeSource.lean",
+        "line": 105,
+        "statement": "theorem ccmWeilPrimeAgeBudget_pos (a : SuzukiPositiveAperture) (ha : Real.log 2/2 < a.1) :\n    0 < ccmWeilPrimeAgeBudget a",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.sqCoeff",
+        "module": "GaloisForLFunctions.RHTower.WeilConeSoundararajanSplit",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeSoundararajanSplit.lean",
+        "line": 87,
+        "statement": "def sqCoeff (lam : ℕ → ℝ) (L : ℝ) : ArithmeticFunction ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.prime_short_gap_square",
+        "module": "GaloisForLFunctions.RHTower.WeilLagPrimeQuadraticMesh",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLagPrimeQuadraticMesh.lean",
+        "line": 19,
+        "statement": "private theorem prime_short_gap_square {p k q : ℕ} (hp : p.Prime)\n    (hpk : p ≤ k) (hkq : k ≤ q)\n    (hl : (k : ℝ) < p + (p : ℝ) ^ (71 / 100 : ℝ))\n    (hu : (q : ℝ) ≤ k + (k : ℝ) ^ (71 / 100 : ℝ)) :\n    ((q : ℝ) - p) ^ 2 ≤ 9 * ((p : ℝ) * Real.sqrt p)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": [
+      {
+        "description": "Prime gap lower bound via finite sum",
+        "steps": [
+          {
+            "goal": "Bound prime gap sum",
+            "candidate_ids": [
+              "3547c672245666b4e0807bcfd4fc0b8c9fd7d09076b9f6316e13cf9e4943ee3e"
+            ],
+            "candidates": [
+              {
+                "id": "3547c672245666b4e0807bcfd4fc0b8c9fd7d09076b9f6316e13cf9e4943ee3e",
+                "name": "RHTower.exists_prime_short_gap",
+                "module": "GaloisForLFunctions.RHTower.WeilLagFunctionPrimeGap",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilLagFunctionPrimeGap.lean",
+                "line": 346
+              }
+            ],
+            "obligations": [
+              "X ≥ 4"
+            ],
+            "status": "proposed"
+          },
+          {
+            "goal": "Gap mass inequality",
+            "candidate_ids": [
+              "ccff849465b73aa3df8c9c8c648d22153050acde416cc7578c25e694a3552c91"
+            ],
+            "candidates": [
+              {
+                "id": "ccff849465b73aa3df8c9c8c648d22153050acde416cc7578c25e694a3552c91",
+                "name": "RHTower.PolePointBudget.gap_mass_first_primes",
+                "module": "GaloisForLFunctions.RHTower.WeilFullConePolePointBudget",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConePolePointBudget.lean",
+                "line": 366
+              }
+            ],
+            "obligations": [
+              "Weighted gap sum ≥ 23/84 + 1/10"
+            ],
+            "status": "proposed"
+          }
+        ],
+        "status": "not_verified"
+      }
+    ]
+  },
+  {
+    "query": "reflected exponential series imaginary periodic noninteger radial resonance translation rational phase",
+    "mode": "deep",
+    "partial": false,
+    "coverage": {
+      "files": 68683,
+      "inventoried": 68683,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68683
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11114,
+        "pending": 52171,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57569,
+        "prose": 11114
+      },
+      "declarations": 1031029,
+      "documents": 2861507,
+      "vectors": 2672539,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1289094,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791448365.808875,
+      "current_generation": 1289095
+    },
+    "errors": [],
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "elapsed_seconds": 78.932366958,
+    "unfinished_stages": [],
+    "declarations": [],
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.expFlank_reflection_rigidity",
+        "module": "GaloisForLFunctions.RHTower.FiniteTransverseExpEigenslice",
+        "relpath": "formal/GaloisForLFunctions/RHTower/FiniteTransverseExpEigenslice.lean",
+        "line": 119,
+        "statement": "theorem expFlank_reflection_rigidity (α β : ℝ) (hα : 0 < α) (hirr : Irrational (β / α))\n    {w : ℝ} (a : ℤ → ℤ → ℂ) (M : Finset ℤ) (S : Finset ℕ)\n    (hEven : ∀ z, (∑ n ∈ S, expFlankSlice α β a M (n : ℤ) (-z))\n                  = ∑ n ∈ S, expFlankSlice α β a M (n : ℤ) z)\n    {B : ℝ} (hbound : ∀ z, z.im ≤ -w →\n        ‖∑ n ∈ S, expFlankSlice α β a M (n : ℤ) z‖ ≤ B) :\n    ∀ s t : ℂ, (∑ n ∈ S, expFlankSlice α β a M (n : ℤ) s)\n             = ∑ n ∈ S, expFlankSlice α β a M (n : ℤ) t",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.thetaResonancePhase_at_zero",
+        "module": "GaloisForLFunctions.RHTower.ThetaRenewalResonancePhase",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaRenewalResonancePhase.lean",
+        "line": 518,
+        "statement": "theorem thetaResonancePhase_at_zero {y : ℝ} (hy0 : 0 < y) (hy : Xi (2 * y) = 0) :\n    thetaResonancePhase y = Real.pi / 2 ∧\n      thetaLoopBoundaryValue y = 2 * thetaResonancePhaseDeriv y",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.PhaseCotangent.resonantPhasePrefix",
+        "module": "GaloisForLFunctions.RHTower.ArithmeticCotangentPhaseTransport",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ArithmeticCotangentPhaseTransport.lean",
+        "line": 125,
+        "statement": "def resonantPhasePrefix (φ w : ℕ → ℝ) (M : ℕ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.finiteTransverse_infiniteSeries_reflection_rigidity",
+        "module": "GaloisForLFunctions.RHTower.FiniteTransverseInfiniteFlank",
+        "relpath": "formal/GaloisForLFunctions/RHTower/FiniteTransverseInfiniteFlank.lean",
+        "line": 70,
+        "statement": "theorem finiteTransverse_infiniteSeries_reflection_rigidity\n    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β)\n    (hirr : Irrational (β / α))\n    {G : ℂ → ℂ} (hG : Differentiable ℂ G) (hEven : ∀ z, G (-z) = G z)\n    (b : ℕ → ℕ → ℂ) (S : Finset ℕ)\n    (hb : ∀ n ∈ S, Summable (fun m : ℕ =>\n      ‖b m n‖ * Real.exp (-(((m : ℝ) * α + (n : ℝ) * β) * w))))\n    (htrace : ∀ z : ℂ, z.im ≤ -w →\n      G z = ∑ n ∈ S, finiteTransverseInfiniteSlice α β b n z) :\n    ∀ s t : ℂ, G s = G t",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.CommonRadialPhase",
+        "module": "GaloisForLFunctions.RHTower.PhaseQuotientStationaryCompletionHomotopy",
+        "relpath": "formal/GaloisForLFunctions/RHTower/PhaseQuotientStationaryCompletionHomotopy.lean",
+        "line": 61,
+        "statement": "abbrev CommonRadialPhase",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.reflectedExponential_product",
+        "module": "GaloisForLFunctions.HTGeometry.CriticalEulerMassWeilStokesShadowLaw",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/CriticalEulerMassWeilStokesShadowLaw.lean",
+        "line": 662,
+        "statement": "theorem reflectedExponential_product (omega : ℝ) :\n    -(Real.exp omega - 1) * (Real.exp (-omega) - 1) =\n      4 * Real.sinh (omega / 2) ^ 2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.inversePeriod_im",
+        "module": "GaloisForLFunctions.HTGeometry.EllipticGammaReciprocalNome",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/EllipticGammaReciprocalNome.lean",
+        "line": 44,
+        "statement": "theorem inversePeriod_im {omega : ℂ} (n : Fin N → ℤ) (m : ℕ) (j : Fin N) :\n    (inversePeriod omega n m j).im\n      = (m : ℝ) * omega.im / Complex.normSq (omega + ((n j : ℤ) : ℂ))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.suzukiWeilIntervalReflection_exponential",
+        "module": "GaloisForLFunctions.RHTower.SuzukiTaCovarianceReflection",
+        "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiTaCovarianceReflection.lean",
+        "line": 278,
+        "statement": "@[simp] theorem suzukiWeilIntervalReflection_exponential\n    (a : SuzukiPositiveAperture) (eps : ℝ) :\n    suzukiWeilIntervalReflection a (suzukiTaExponentialL2 a eps) =\n      suzukiTaExponentialL2 a (-eps)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.HasNonrealPeriodRatio",
+        "module": "GaloisForLFunctions.HTGeometry.ClockPeriodCommensurabilityBoundary",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ClockPeriodCommensurabilityBoundary.lean",
+        "line": 37,
+        "statement": "def HasNonrealPeriodRatio {ι : Type*} (ω : ι → ℂ) : Prop",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilInfiniteDilation.hasCompactImStripTranslates_seriesReflectionDefect",
+        "module": "GaloisForLFunctions.RHTower.WeilConeInfiniteDilationRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeInfiniteDilationRigidity.lean",
+        "line": 366,
+        "statement": "theorem hasCompactImStripTranslates_seriesReflectionDefect\n    (ha : LSeriesSummable (fun n => (a n : ℂ)) ((1 / 2 - δ : ℝ) : ℂ)) {r : ℝ} (hrδ : r ≤ δ) :\n    HasCompactImStripTranslates (seriesReflectionDefect a) r",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.spectralTranslationPhase_natStep",
+        "module": "GaloisForLFunctions.RHTower.XiCTaylorThetaTailPhaseAdaptedProuhetPacket",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetPacket.lean",
+        "line": 234,
+        "statement": "private theorem spectralTranslationPhase_natStep\n    (a L : ℝ) (j : ℕ) (z : ℂ) :\n    spectralTranslationPhase (a + (j : ℝ) * L) z =\n      spectralTranslationPhase a z * spectralTranslationPhase L z ^ j",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_quantization_phase_resonance",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationPhaseCoupling",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationPhaseCoupling.lean",
+        "line": 84,
+        "statement": "theorem tendsto_quantization_phase_resonance {ι : Type} [Countable ι]\n    {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {p : ι → ℂ} {ω : ι → ℝ}\n    (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2))\n    (hphase : ∀ x : ℝ, 0 < x →\n      cexp (((2 * Real.pi * quantizationResidualCumulative hW x : ℝ) : ℂ) * I) =\n        ∑' j, p j * cexp (((ω j * x : ℝ) : ℂ) * I))\n    {m : ℕ} (hm : 1 ≤ m) :\n    Tendsto (fun ε : ℝ => quantizationOriginPhase hW *\n      (∑' j, p j * quantizationFrequencyResidue lam (ω j) m) *\n        quantizationMainRadial m ε) (𝓝[>] 0)\n      (𝓝 (4 * betaG (quantizationCompletion hW)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.symmetricHermitianSpectralTranslationPairCurrent_arithmeticPolar_eq",
+        "module": "GaloisForLFunctions.RHTower.XiCTaylorThetaTailPrimitiveRayAnisotropicPhase",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPrimitiveRayAnisotropicPhase.lean",
+        "line": 113,
+        "statement": "theorem symmetricHermitianSpectralTranslationPairCurrent_arithmeticPolar_eq\n    (z : ℂ) (a b : ℕ) (r : ℝ) {u : ℝ}\n    (hu0 : 0 < u) (hu1 : u < 1) :\n    symmetricHermitianPairCurrentKernel\n        (fun t : ℝ => spectralTranslationPhase t z)\n        (fun t : ℝ => (t : ℂ) * I * spectralTranslationPhase t z)\n        (thetaCuspPrimitiveRayArithmeticPolarX a r u,\n          thetaCuspPrimitiveRayArithmeticPolarY b r u) =\n      (r + Real.log (thetaCuspPrimitiveRayMoment u) / 4 -\n          (Real.log (a : ℝ) + Real.log (b : ℝ)) / 2) *\n        Real.exp (-2 * z.im * r -\n          (z.im / 2) * Real.log (thetaCuspPrimitiveRayMoment u) +\n          z.im * (Real.log (a : ℝ) + Real.log (b : ℝ))) *\n        Real.cos (z.re *\n          ((Real.log u - Real.log (1 - u)) / 2 -\n            (Real.log (a : ℝ) - Real.log (b : ℝ))))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_phase_resonance_constant",
+        "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationPhaseCoupling",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationPhaseCoupling.lean",
+        "line": 138,
+        "statement": "theorem quantization_phase_resonance_constant {ι : Type} [Countable ι]\n    {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {p : ι → ℂ} {ω : ι → ℝ}\n    (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2))\n    (hphase : ∀ x : ℝ, 0 < x →\n      cexp (((2 * Real.pi * quantizationResidualCumulative hW x : ℝ) : ℂ) * I) =\n        ∑' j, p j * cexp (((ω j * x : ℝ) : ℂ) * I)) :\n    (∑' j, p j * quantizationFrequencyResidue lam (ω j) 1) ≠ 0 ∧\n      ∀ m : ℕ, 1 ≤ m →\n        (∑' j, p j * quantizationFrequencyResidue lam (ω j) m) =\n          ∑' j, p j * quantizationFrequencyResidue lam (ω j) 1",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.thetaResonancePhase_zero",
+        "module": "GaloisForLFunctions.RHTower.ThetaRenewalResonancePhase",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaRenewalResonancePhase.lean",
+        "line": 336,
+        "statement": "theorem thetaResonancePhase_zero : thetaResonancePhase 0 = 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.integral_ccmRealReflectedExponentialTilt",
+        "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniW02Correction",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniW02Correction.lean",
+        "line": 73,
+        "statement": "theorem integral_ccmRealReflectedExponentialTilt\n    (a : ℝ) (f : ℝ → ℝ) :\n    (∫ x : ℝ, ccmRealReflectedExponentialTilt a f x) =\n      ccmRealExponentialMoment (-a) f",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.spectralTranslationPhase",
+        "module": "GaloisForLFunctions.RHTower.XiCTaylorThetaTailSquareIndexPolarization",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean",
+        "line": 139,
+        "statement": "def spectralTranslationPhase (a : ℝ) (z : ℂ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.PhaseKernel.ratPhase",
+        "module": "GaloisForLFunctions.HTGeometry.PhaseKernelAdmissionGauge",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/PhaseKernelAdmissionGauge.lean",
+        "line": 309,
+        "statement": "def ratPhase (n : ℕ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.primeRationalPhase",
+        "module": "GaloisForLFunctions.RHTower.ChiPrimeGaussianRationalSaddle",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ChiPrimeGaussianRationalSaddle.lean",
+        "line": 397,
+        "statement": "def primeRationalPhase (a q p : ℕ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.hasNonrealPeriodRatio_one_I",
+        "module": "GaloisForLFunctions.HTGeometry.PeriodRatioWitnesses",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/PeriodRatioWitnesses.lean",
+        "line": 19,
+        "statement": "theorem hasNonrealPeriodRatio_one_I :\n    HasNonrealPeriodRatio (![1, Complex.I] : Fin 2 → ℂ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.ccmRealReflectedExponentialTilt",
+        "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniW02Correction",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniW02Correction.lean",
+        "line": 40,
+        "statement": "def ccmRealReflectedExponentialTilt (a : ℝ) (f : ℝ → ℝ) (x : ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.DeningerMeyerGaussianGreen.reflectedGaussianCauchyProfile",
+        "module": "GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianPrimeGammaCauchyLanding",
+        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianPrimeGammaCauchyLanding.lean",
+        "line": 27,
+        "statement": "def reflectedGaussianCauchyProfile (z : ℂ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.term_sub_reflected",
+        "module": "GaloisForLFunctions.RHTower.OverlapRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/OverlapRigidity.lean",
+        "line": 283,
+        "statement": "private theorem term_sub_reflected (a : ℕ → ℂ) (y : ℝ) (n : ℕ) :\n    LSeries.term a ((1/2 : ℂ) + ↑y * Complex.I) n\n      - LSeries.term a ((1/2 : ℂ) - ↑y * Complex.I) n\n      = (-2 * Complex.I) * ((a n * (n : ℂ) ^ (-(1/2 : ℂ))) * (Real.sin (y * Real.log n) : ℂ))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.thetaSquareIndexDyadicHaarLayer_reflected_polarization_simplified",
+        "module": "GaloisForLFunctions.RHTower.XiCTaylorThetaTailSquareIndexPolarization",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean",
+        "line": 959,
+        "statement": "theorem thetaSquareIndexDyadicHaarLayer_reflected_polarization_simplified\n    (k : ℕ) (x y : ℝ) :\n    (2 : ℝ) ^ (k + 1) *\n          thetaSquareIndexDyadicOddLayer k\n            (x - thetaSquareIndexDyadicReflectionShift k) *\n          thetaSquareIndexDyadicOddLayer k\n            (y - thetaSquareIndexDyadicReflectionShift k) -\n        (2 : ℝ) ^ k *\n          thetaSquareIndexDyadicParityLayer k (-x) *\n            thetaSquareIndexDyadicParityLayer k (-y) =\n      (2 : ℝ) ^ k *\n        ((2 : ℝ) ^ (-(1 / 2 : ℝ)) *\n            thetaSquareIndexDyadicOddLayer k\n              (x - thetaSquareIndexDyadicReflectionShift k) *\n            Real.exp (-y / 2) +\n          (2 : ℝ) ^ (-(1 / 2 : ℝ)) * Real.exp (-x / 2) *\n            thetaSquareIndexDyadicOddLayer k\n              (y - thetaSquareIndexDyadicReflectionShift k) -\n          (1 / 4 : ℝ) * Real.exp (-x / 2) * Real.exp (-y / 2))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.<anonymous@293>",
+        "module": "GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianCountertransport",
+        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianCountertransport.lean",
+        "line": 293,
+        "statement": "theorem\n    deningerMeyerReflectedGaussianCountertransportEvaluationBoundedAt_iff\n    (rho : XiDivisorSupport) :\n    DeningerMeyerReflectedGaussianCountertransportEvaluationBoundedAt rho ↔\n      (rho : ℂ).re = 1 / 2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.deningerMeyerLogSum_reflectedEuler",
+        "module": "GaloisForLFunctions.RHTower.DeningerMeyerLogSchwartzLanding",
+        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerMeyerLogSchwartzLanding.lean",
+        "line": 404,
+        "statement": "private theorem deningerMeyerLogSum_reflectedEuler\n    (g : SchwartzMap ℝ ℂ) (t : ℝ) :\n    deningerMeyerLogSum (deningerMeyerReflectedEulerCLM g) t =\n      -(deningerMeyerLogSum g t +\n        deningerMeyerLogSum (deningerMeyerEulerCLM g) t)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccm_integral_fourier_mul_negativeVerticalResolvent",
+        "module": "GaloisForLFunctions.RHTower.CCMArchimedeanPhaseWeilBridge",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanPhaseWeilBridge.lean",
+        "line": 156,
+        "statement": "theorem ccm_integral_fourier_mul_negativeVerticalResolvent\n    (H : 𝓢(ℝ, ℂ)) {c : ℝ} (hc : 0 < c) :\n    (∫ ξ : ℝ,\n        (𝓕 (H : ℝ → ℂ)) ξ *\n          (((c : ℝ) : ℂ) + ((Real.pi * ξ : ℝ) : ℂ) * I)⁻¹) =\n      ∫ t : ℝ in Ioi 0,\n        Complex.exp (-(c : ℂ) * (t : ℂ)) * H (-(t / 2))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.integral_ccmRealReflectedExponentialTilt",
+        "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniW02Correction",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniW02Correction.lean",
+        "line": 73,
+        "statement": "theorem integral_ccmRealReflectedExponentialTilt\n    (a : ℝ) (f : ℝ → ℝ) :\n    (∫ x : ℝ, ccmRealReflectedExponentialTilt a f x) =\n      ccmRealExponentialMoment (-a) f",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmPrimeDeficitBoundaryReflectedEnergyDensity_eq",
+        "module": "GaloisForLFunctions.RHTower.CCMPrimeDeficitBoundaryOscillator",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitBoundaryOscillator.lean",
+        "line": 62,
+        "statement": "theorem ccmPrimeDeficitBoundaryReflectedEnergyDensity_eq (m k : ℕ) (T s : ℝ) :\n    ccmPrimeDeficitBoundaryReflectedEnergyDensity m k T s =\n      Real.exp (-(T / 2)) *\n        (ccmPrimeDeficitBoundaryExpProfile m k s * ccmPrimeDeficitBoundaryCountProfile m k (T - s) +\n          ccmPrimeDeficitBoundaryExpProfile m k (T - s) * ccmPrimeDeficitBoundaryCountProfile m k s) / 2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.deningerAdiabaticGaussianSource",
+        "module": "GaloisForLFunctions.RHTower.DeningerAdiabaticGaussianBoundaryParity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerAdiabaticGaussianBoundaryParity.lean",
+        "line": 42,
+        "statement": "def deningerAdiabaticGaussianSource : DeningerMeyerSource",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.balancedReflectionBoostEnergyAcceleration_zero",
+        "module": "GaloisForLFunctions.HTGeometry.ReflectionBoostPolarizationLaw",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ReflectionBoostPolarizationLaw.lean",
+        "line": 261,
+        "statement": "theorem balancedReflectionBoostEnergyAcceleration_zero\n    (α c d : ℝ) :\n    balancedReflectionBoostEnergyAcceleration α c d 0 =\n      8 * α * (c * d) ^ (2 : ℕ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.reflectedBernoulliPlusProbability",
+        "module": "GaloisForLFunctions.HTGeometry.ReflectionBoostPolarizationLaw",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ReflectionBoostPolarizationLaw.lean",
+        "line": 269,
+        "statement": "def reflectedBernoulliPlusProbability (d t : ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "HTGeometry.reciprocalLabelQuadratic",
+        "module": "GaloisForLFunctions.HTGeometry.CommonCharacterFusionConservation",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/CommonCharacterFusionConservation.lean",
+        "line": 70,
+        "statement": "def reciprocalLabelQuadratic {n : ℕ}\n    (v : (Fin n → ℝ) × (Fin n → ℝ)) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.PrimitivePromotedPureHodgeModularTransgression.pureHodgeCellPoincareTrace_oddTransgression_eq_reflectionOddExterior",
+        "module": "GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedPureHodgeModularTransgression",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockPrimitivePromotedPureHodgeModularTransgression.lean",
+        "line": 201,
+        "statement": "theorem pureHodgeCellPoincareTrace_oddTransgression_eq_reflectionOddExterior\n    (a : ℝ) (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :\n    pureHodgeCellPoincareTrace ij\n        (pureHodgeCellOddTransgression a ij) =\n      (xiGammaEulerPrimitiveReflectionOddExterior\n        a ij.1.1 ij.1.2 : ℂ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.xiGammaEulerPrimitiveModularExterior_reflection_eq_sewingCost_mul",
+        "module": "GaloisForLFunctions.RHTower.DeningerCalderonWittSingularGammaTransgression",
+        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerCalderonWittSingularGammaTransgression.lean",
+        "line": 351,
+        "statement": "theorem xiGammaEulerPrimitiveModularExterior_reflection_eq_sewingCost_mul\n    (a : ℝ) (p q : Nat.Primes) (n : ℕ) :\n    xiGammaEulerPrimitiveModularExterior (-a) (p, n) (q, n) =\n      deningerCalderonWittGammaReflectionSewingCost a p q n *\n        xiGammaEulerPrimitiveModularExterior a (p, n) (q, n)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.deningerPoissonSchwartz_fourier",
+        "module": "GaloisForLFunctions.RHTower.DeningerFourierWeight",
+        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerFourierWeight.lean",
+        "line": 100,
+        "statement": "theorem deningerPoissonSchwartz_fourier (s : ℤ) (f : 𝓢(ℝ, ℂ)) (hf : f ∈ DeningerMeyerCap) :\n    deningerPoissonSchwartz s (fourierSCLM f) (deningerMeyerCap_fourierSCLM hf)\n      = deningerReflect (deningerPoissonSchwartz (1 - s) f hf)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.fzzCigarParityMellinCharacterNormalizedCrossing_sub_reflection",
+        "module": "GaloisForLFunctions.RHTower.FZZCigarParityMellinCharacterCrossingReflection",
+        "relpath": "formal/GaloisForLFunctions/RHTower/FZZCigarParityMellinCharacterCrossingReflection.lean",
+        "line": 128,
+        "statement": "theorem fzzCigarParityMellinCharacterNormalizedCrossing_sub_reflection\n    (beta : ℝ) (rho : ℂ) :\n    fzzCigarParityMellinCharacterNormalizedCrossing beta rho -\n        fzzCigarParityMellinCharacterNormalizedCrossing beta\n          (criticalLineReflectionPoint rho) =\n      (fzzKreinRAt beta : ℂ) *\n        ((‖fzzCigarParityDyadicMellinCharacter rho‖ : ℂ) -\n          (‖fzzCigarParityDyadicMellinCharacter\n            (criticalLineReflectionPoint rho)‖ : ℂ))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.suzukiThreePointExponentialSource",
+        "module": "GaloisForLFunctions.RHTower.SuzukiPositiveSpectralResponseNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiPositiveSpectralResponseNoGo.lean",
+        "line": 70,
+        "statement": "def suzukiThreePointExponentialSource : SuzukiThreePointVector",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.PositiveEvenLaplaceEscape.sourceLaw_singleton",
+        "module": "GaloisForLFunctions.HTGeometry.PositiveEvenSourceFormationPackage",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/PositiveEvenSourceFormationPackage.lean",
+        "line": 117,
+        "statement": "theorem sourceLaw_singleton (F : 𝓢(ℝ, ℝ)) (c : ℝ) : sourceLaw F {c} = 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.<anonymous@375>",
+        "module": "GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianCountertransport",
+        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianCountertransport.lean",
+        "line": 375,
+        "statement": "theorem\n    deningerMeyerReflectedGaussianCountertransportEvaluationsBounded_iff_rh :\n    DeningerMeyerReflectedGaussianCountertransportEvaluationsBounded ↔\n      RiemannHypothesis",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": [
+      {
+        "description": "Imaginary periodic resonance via reflection",
+        "steps": [
+          {
+            "goal": "Establish imaginary periodicity",
+            "candidate_ids": [
+              "dc7ad5bc25585c6e162ce5e56b64a8098db519332832d5fdf3acce5d1e36b3c2",
+              "13a7d0c2c28d5a8849c2ee4c9f3c088c96c6ef5c5bde75ba47c7c6150ebc9274"
+            ],
+            "candidates": [
+              {
+                "id": "dc7ad5bc25585c6e162ce5e56b64a8098db519332832d5fdf3acce5d1e36b3c2",
+                "name": "GaloisForLFunctions.HTGeometry.reflectedExponential_product",
+                "module": "GaloisForLFunctions.HTGeometry.CriticalEulerMassWeilStokesShadowLaw",
+                "relpath": "formal/GaloisForLFunctions/HTGeometry/CriticalEulerMassWeilStokesShadowLaw.lean",
+                "line": 662
+              },
+              {
+                "id": "13a7d0c2c28d5a8849c2ee4c9f3c088c96c6ef5c5bde75ba47c7c6150ebc9274",
+                "name": "RHTower.suzukiWeilIntervalReflection_exponential",
+                "module": "GaloisForLFunctions.RHTower.SuzukiTaCovarianceReflection",
+                "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiTaCovarianceReflection.lean",
+                "line": 278
+              }
+            ],
+            "obligations": [
+              "Link exponential reflection to periodicity"
+            ],
+            "status": "proposed"
+          },
+          {
+            "goal": "Map radial resonance to phase",
+            "candidate_ids": [
+              "a0375eedbf21c76c317039980c1111c20fb70cabaff33d68743dcac1de8f2b0f",
+              "a0f61268116bb423ff6fe1bf3990c800c16d21b79c69df56a11cf28a4e1ac957"
+            ],
+            "candidates": [
+              {
+                "id": "a0375eedbf21c76c317039980c1111c20fb70cabaff33d68743dcac1de8f2b0f",
+                "name": "RHTower.thetaResonancePhase_at_zero",
+                "module": "GaloisForLFunctions.RHTower.ThetaRenewalResonancePhase",
+                "relpath": "formal/GaloisForLFunctions/RHTower/ThetaRenewalResonancePhase.lean",
+                "line": 518
+              },
+              {
+                "id": "a0f61268116bb423ff6fe1bf3990c800c16d21b79c69df56a11cf28a4e1ac957",
+                "name": "RHTower.finiteTransverse_infiniteSeries_reflection_rigidity",
+                "module": "GaloisForLFunctions.RHTower.FiniteTransverseInfiniteFlank",
+                "relpath": "formal/GaloisForLFunctions/RHTower/FiniteTransverseInfiniteFlank.lean",
+                "line": 70
+              }
+            ],
+            "obligations": [
+              "Connect phase to radial symmetry"
+            ],
+            "status": "proposed"
+          }
+        ],
+        "status": "not_verified"
+      }
+    ]
+  },
+  {
+    "query": "positive real rational power binomial irreducible powers linear independence radical extension",
+    "mode": "deep",
+    "partial": false,
+    "coverage": {
+      "files": 68697,
+      "inventoried": 68697,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68697
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11116,
+        "pending": 52183,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57581,
+        "prose": 11116
+      },
+      "declarations": 1031136,
+      "documents": 2861853,
+      "vectors": 2672836,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1289368,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791450113.8583648,
+      "current_generation": 1289369
+    },
+    "errors": [],
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "elapsed_seconds": 90.101384541,
+    "unfinished_stages": [],
+    "declarations": [],
+    "candidate_lemmas": [
+      {
+        "name": "LubinTate.EqualCharacteristic.laurentSeriesCoefficientBasis_linearIndependent",
+        "module": "Lean4.ClassFieldTheory.LubinTate.EqualCharacteristic.Frobenius.LaurentSeriesFrobenius",
+        "relpath": "formal/.lake/packages/ClassFieldTheory/Lean4/ClassFieldTheory/LubinTate/EqualCharacteristic/Frobenius/LaurentSeriesFrobenius.lean",
+        "line": 132,
+        "statement": "private theorem laurentSeriesCoefficientBasis_linearIndependent\n    (b : Module.Basis ι k l) :\n    LinearIndependent k⸨X⸩\n      (fun i : ι ↦ (HahnSeries.C (Γ := ℤ) (b i) : l⸨X⸩))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "linearIndependent_pow",
+        "module": "Mathlib.RingTheory.PowerBasis",
+        "relpath": "formal/.lake/packages/mathlib/Mathlib/RingTheory/PowerBasis.lean",
+        "line": 411,
+        "statement": "theorem linearIndependent_pow [Algebra K S] (x : S) :\n    LinearIndependent K fun i : Fin (minpoly K x).natDegree => x ^ (i : ℕ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "AlgebraicNumberTheory.Valuations.completionExtensionFactor_factor_irreducible_monic_dvd_minpoly",
+        "module": "Lean4.ClassFieldTheory.ValuationTheory.Completion.ExtensionFactorClassification",
+        "relpath": "formal/.lake/packages/ClassFieldTheory/Lean4/ClassFieldTheory/ValuationTheory/Completion/ExtensionFactorClassification.lean",
+        "line": 698,
+        "statement": "theorem completionExtensionFactor_factor_irreducible_monic_dvd_minpoly\n    {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]\n    (vK : AbsoluteValue K ℝ) {α : L} {f : K[X]}\n    (hf : Irreducible f) (hroot : Polynomial.aeval α f = 0)\n    (g : CompletionExtensionFactorCompletionFactors vK f) :\n    Irreducible g.1 ∧ g.1.Monic ∧\n      g.1 ∣ (minpoly K α).map (algebraMap K vK.Completion)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.sum_binomialTerm_mul_exp",
+        "module": "GaloisForLFunctions.HTGeometry.BinomialTailBetaThreshold",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/BinomialTailBetaThreshold.lean",
+        "line": 155,
+        "statement": "theorem sum_binomialTerm_mul_exp (r : ℕ) (x c : ℝ) :\n    ∑ j ∈ range (r + 1), binomialTerm r j x * Real.exp (c * j)\n      = (x * Real.exp c + (1 - x)) ^ r",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "HTGeometry.ConstraintRelativity.linearIndependent_coordinatePowers",
+        "module": "GaloisForLFunctions.HTGeometry.ConstraintRelativity.ResiduePromotionAnomaly",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/ResiduePromotionAnomaly.lean",
+        "line": 269,
+        "statement": "theorem linearIndependent_coordinatePowers (z : U → ℂ) (f : U → ℂ)\n    (hinf : {w : ℂ | ∃ u : U, z u = w ∧ f u ≠ 0}.Infinite) :\n    LinearIndependent ℂ (fun j : ℕ => (fun u => (z u) ^ j * f u : U → ℂ))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.binomialSymbol_eq_rpow",
+        "module": "GaloisForLFunctions.RHTower.SuzukiPrimeNormalBinomialSeries",
+        "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiPrimeNormalBinomialSeries.lean",
+        "line": 30,
+        "statement": "theorem binomialSymbol_eq_rpow {L t : ℝ} (h : 0 < 1 - t / (2 * L)) :\n    binomialSymbol L t = (1 - t / (2 * L)) ^ (-(1 : ℝ) / 2)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.sum_binomialTerm_mul_exp_le",
+        "module": "GaloisForLFunctions.HTGeometry.BinomialTailBetaThreshold",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/BinomialTailBetaThreshold.lean",
+        "line": 165,
+        "statement": "theorem sum_binomialTerm_mul_exp_le {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1) (r : ℕ) (c : ℝ) :\n    ∑ j ∈ range (r + 1), binomialTerm r j x * Real.exp (c * j)\n      ≤ Real.exp ((r : ℝ) * (c * x + c ^ 2 / 8))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.IrregularStokes.FormalUniformizer.binomialSeries_pow",
+        "module": "GaloisForLFunctions.HTGeometry.StokesFormalUniformizer",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/StokesFormalUniformizer.lean",
+        "line": 24,
+        "statement": "theorem binomialSeries_pow (r : ℚ) : ∀ n : ℕ,\n    (PowerSeries.binomialSeries ℂ r) ^ n =\n      PowerSeries.binomialSeries ℂ ((n : ℚ) * r)\n  | 0 => by simp\n  | n + 1 => by\n      rw [pow_succ, binomialSeries_pow]\n      rw [← PowerSeries.binomialSeries_add]\n      congr 2\n      push_cast\n      ring",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.RationalShadow.natDegree_radical_eq_card_roots",
+        "module": "GaloisForLFunctions.HTGeometry.RationalLogarithmicDerivativeRadical",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/RationalLogarithmicDerivativeRadical.lean",
+        "line": 103,
+        "statement": "theorem natDegree_radical_eq_card_roots {p : k[X]} (hp : p ≠ 0) :\n    (radical p).natDegree = p.roots.toFinset.card",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "HahnSeries.binomial_power",
+        "module": "Mathlib.RingTheory.HahnSeries.Binomial",
+        "relpath": "formal/.lake/packages/mathlib/Mathlib/RingTheory/HahnSeries/Binomial.lean",
+        "line": 103,
+        "statement": "theorem binomial_power {x : orderTopSubOnePos Γ R} {r : R} :\n    x ^ r = toOrderTopSubOnePos (orderTop_hsum_binomialFamily_pos x.2 r)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.jets_linearIndependent",
+        "module": "GaloisForLFunctions.HTGeometry.MagnitudeFirstOrderJet",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/MagnitudeFirstOrderJet.lean",
+        "line": 51,
+        "statement": "theorem jets_linearIndependent {F : ℂ⟦X⟧} {b : ℕ → ℝ} (hb : ∀ n, ‖(coeff n) F‖ = Real.exp (- b n))\n    (hpos : ∀ᶠ n in atTop, 0 < b n)\n    (hratio : Tendsto (fun n => b (n + 1) / b n) atTop atTop) (m : ℕ) :\n    LinearIndependent ℂ (fun j : Fin (m + 1) => (⇑(d⁄dX ℂ))^[(j : ℕ)] F)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "MvPolynomial.linearIndependent_X",
+        "module": "Mathlib.RingTheory.MvPolynomial.Basic",
+        "relpath": "formal/.lake/packages/mathlib/Mathlib/RingTheory/MvPolynomial/Basic.lean",
+        "line": 215,
+        "statement": "theorem linearIndependent_X : LinearIndependent R (X : σ → MvPolynomial σ R)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.irreducible_of_map_eq_of_natDegree_minpoly",
+        "module": "GaloisForLFunctions.HTGeometry.RegularExtensionMinpoly",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/RegularExtensionMinpoly.lean",
+        "line": 206,
+        "statement": "theorem irreducible_of_map_eq_of_natDegree_minpoly {F₀ Ω L : Type*} [Field F₀] [Field Ω]\n    [Field L] [Algebra F₀ Ω] (T : IntermediateField F₀ Ω) (J : L →+* Ω) (hJ : ∀ x, J x ∈ T)\n    {pB : Polynomial F₀} (hirr : Irreducible pB) {w : Ω} (hroot : aeval w pB = 0)\n    (hdeg : (minpoly F₀ w).natDegree ≤ (minpoly T w).natDegree) {Q : Polynomial L}\n    (hQ : Q.map J = pB.map (algebraMap F₀ Ω)) : Irreducible Q",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "HurwitzExp.expLin_linearIndependent",
+        "module": "GaloisForLFunctions.Hurwitz.ExpIndependence",
+        "relpath": "formal/GaloisForLFunctions/Hurwitz/ExpIndependence.lean",
+        "line": 62,
+        "statement": "theorem expLin_linearIndependent {n : ℕ} {β : Fin n → ℂ} (hβ : Function.Injective β) :\n    LinearIndependent ℂ (fun k : Fin n => (fun z : ℂ => Complex.exp (β k * z)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.irreducible_map_of_regular_embedding",
+        "module": "GaloisForLFunctions.HTGeometry.RegularExtensionMinpoly",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/RegularExtensionMinpoly.lean",
+        "line": 259,
+        "statement": "theorem irreducible_map_of_regular_embedding {k M F₀ Ω K : Type*} [Field k] [CharZero k]\n    [Field M] [Field F₀] [Field Ω] [IsAlgClosed Ω] [Field K]\n    [Algebra k M] [Algebra M Ω] [Algebra k Ω] [IsScalarTower k M Ω]\n    [Algebra k K] [FiniteDimensional k K]\n    (hreg : ∀ y : M, IsIntegral k y → y ∈ Set.range (algebraMap k M))\n    (ev : F₀ →+* Ω) (g₁ : k →+* F₀) (hg₁ : ev.comp g₁ = algebraMap k Ω)\n    (hF₀M : ∀ x : F₀, ev x ∈ (algebraMap M Ω).fieldRange)\n    {v w : Ω} (hv : Transcendental k v) (hvF₀ : v ∈ Set.range ev)\n    (hwM : w ∈ (algebraMap M Ω).fieldRange)\n    {pB : Polynomial F₀} (hirr : Irreducible pB) (hroot : pB.eval₂ ev w = 0)\n    (R : Polynomial (Polynomial K))\n    (hR : ∀ j : K →ₐ[k] Ω, R.map (eval₂RingHom (j : K →+* Ω) v) = pB.map ev) :\n    Irreducible (R.map (algebraMap (Polynomial K) (RatFunc K)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "degree_radical_le",
+        "module": "Mathlib.RingTheory.Polynomial.Radical",
+        "relpath": "formal/.lake/packages/mathlib/Mathlib/RingTheory/Polynomial/Radical.lean",
+        "line": 26,
+        "statement": "theorem degree_radical_le {a : k[X]} (h : a ≠ 0) : (radical a).degree ≤ a.degree",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "ClassFormation.DegreeData.finiteUnramifiedExtension_degree",
+        "module": "Lean4.ClassFieldTheory.AbstractClassFieldTheory.Reciprocity.ValuationContinuity",
+        "relpath": "formal/.lake/packages/ClassFieldTheory/Lean4/ClassFieldTheory/AbstractClassFieldTheory/Reciprocity/ValuationContinuity.lean",
+        "line": 253,
+        "statement": "theorem finiteUnramifiedExtension_degree (D : DegreeData G)\n    [IsTopologicalGroup G] (K : FiniteResidueAbstractField D)\n    (f : ℕ) (hf : 0 < f) :\n    (((finiteUnramifiedExtension D K f hf).toFiniteAbstractExtension.degree : ℕ)) = f",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "ValuationTheory.DiscreteValuationField.ValuedExtension.degree",
+        "module": "Lean4.ClassFieldTheory.ValuationTheory.DiscreteValuationField.Extensions",
+        "relpath": "formal/.lake/packages/ClassFieldTheory/Lean4/ClassFieldTheory/ValuationTheory/DiscreteValuationField/Extensions.lean",
+        "line": 33,
+        "statement": "def degree (_base : DVF.{u, v} K) (_target : DVF.{w, x} L) : ℕ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.hasPolyExpansion_shellBinom",
+        "module": "GaloisForLFunctions.HTGeometry.ShellBinomialExpansion",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ShellBinomialExpansion.lean",
+        "line": 44,
+        "statement": "theorem hasPolyExpansion_shellBinom {α : ℝ} (hα : α ≤ 0) (m : ℕ) (x : ℝ) {r : ℝ}\n    (hxr : x ^ (2 : ℕ) * r ^ (2 : ℕ) ≤ 1 / 2) :\n    HasPolyExpansion r (2 * m) (cbinomAbsCoeff α m * |x| ^ (2 * m))\n      (fun w => (1 + ((x : ℂ)) ^ (2 : ℕ) * w ^ (2 : ℕ)) ^ (α : ℂ)) (shellBinomPoly α m x)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.lowCoordinateSingles_linearIndependent",
+        "module": "GaloisForLFunctions.RHTower.DiagonalEllTwoOperator",
+        "relpath": "formal/GaloisForLFunctions/RHTower/DiagonalEllTwoOperator.lean",
+        "line": 251,
+        "statement": "theorem lowCoordinateSingles_linearIndependent (n : ℕ) :\n    LinearIndependent ℂ\n      (fun k : Fin n => (lp.single 2 (k : ℕ) (1 : ℂ) : EllTwo))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "negDE₂_imag_axis_re_pos",
+        "module": "SpherePacking.ModularForms.FG",
+        "relpath": "formal/.lake/packages/SpherePacking/SpherePacking/ModularForms/FG.lean",
+        "line": 533,
+        "statement": "lemma negDE₂_imag_axis_re_pos (t : ℝ) (ht : 0 < t) :\n    0 < (negDE₂.resToImagAxis t).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "Θ₂_term_imag_axis_re_pos",
+        "module": "SpherePacking.ModularForms.JacobiTheta.Basic",
+        "relpath": "formal/.lake/packages/SpherePacking/SpherePacking/ModularForms/JacobiTheta/Basic.lean",
+        "line": 714,
+        "statement": "lemma Θ₂_term_imag_axis_re_pos (n : ℤ) (t : ℝ) (ht : 0 < t) :\n    0 < (Θ₂_term n ⟨I * t, by simp [ht]⟩).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.sgd_degree_jump_laplace",
+        "module": "GaloisForLFunctions.RHTower.LiClockThetaSignedGammaCoupling",
+        "relpath": "formal/GaloisForLFunctions/RHTower/LiClockThetaSignedGammaCoupling.lean",
+        "line": 417,
+        "statement": "private theorem sgd_degree_jump_laplace {p : ℝ} (hp : 1 < p)\n    {s : ℝ} (hs : 0 ≤ s) :\n    (∀ positive : Bool, Lap (liClockThetaDegreeJumpMeasure p positive) s ≠ ∞) ∧\n      (Lap (liClockThetaDegreeJumpMeasure p true) s).toReal -\n        (Lap (liClockThetaDegreeJumpMeasure p false) s).toReal =\n          liClockThetaReciprocalLog (p * Real.exp (s/2))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.SelbergMaassCuspTransport.positive_laplacian_pullback",
+        "module": "GaloisForLFunctions.RHTower.SelbergMaassCuspTransport",
+        "relpath": "formal/GaloisForLFunctions/RHTower/SelbergMaassCuspTransport.lean",
+        "line": 95,
+        "statement": "theorem positive_laplacian_pullback (A : SL2Z) (f : ℍ → ℂ)\n    (hf : IsRealSmoothUpperHalfPlane f) (z : ℍ) :\n    positiveHyperbolicLaplacian (fun w => f (A • w)) z =\n      positiveHyperbolicLaplacian f (A • z)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "ResToImagAxis.EventuallyPos",
+        "module": "SpherePacking.ModularForms.ResToImagAxis",
+        "relpath": "formal/.lake/packages/SpherePacking/SpherePacking/ModularForms/ResToImagAxis.lean",
+        "line": 57,
+        "statement": "noncomputable def ResToImagAxis.EventuallyPos (F : ℍ → ℂ) : Prop",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmActualHeadMatchedOrientedPhaseSymbol_re_pos_at_positiveReporterFrequency",
+        "module": "GaloisForLFunctions.RHTower.CCMActualHeadMatchedInfiniteFockReporterSignNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedInfiniteFockReporterSignNoGo.lean",
+        "line": 64,
+        "statement": "theorem ccmActualHeadMatchedOrientedPhaseSymbol_re_pos_at_positiveReporterFrequency\n    {n : ℕ} (hn : 1 < n) (hw : 0 < criticalMellinAtomWeight n) :\n    0 < (ccmActualHeadMatchedOrientedPhaseSymbol n\n      (ccmActualHeadMatchedPhasePositiveReporterFrequency n)).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.CCMZetaCircleLength",
+        "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniZetaCycles",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniZetaCycles.lean",
+        "line": 164,
+        "statement": "abbrev CCMZetaCircleLength",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.CCMCircleLength",
+        "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniCircleDirac",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniCircleDirac.lean",
+        "line": 28,
+        "statement": "abbrev CCMCircleLength",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.leading_term_pos",
+        "module": "GaloisForLFunctions.RHTower.LevelOneIsAMellinZeroFreeDisc",
+        "relpath": "formal/GaloisForLFunctions/RHTower/LevelOneIsAMellinZeroFreeDisc.lean",
+        "line": 47,
+        "statement": "theorem leading_term_pos {t : ℝ} (ht : 0 ≤ t) : (3:ℝ) < 2 * π * Real.exp (2 * t)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.not_re_pos_of_eventuallyEq_div_deriv",
+        "module": "GaloisForLFunctions.HTGeometry.ReciprocalLogDerivZero",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ReciprocalLogDerivZero.lean",
+        "line": 133,
+        "statement": "theorem not_re_pos_of_eventuallyEq_div_deriv {f T : ℂ → ℂ} {z₀ c : ℂ}\n    (hf : AnalyticAt ℂ f z₀) (hnz : ¬ ∀ᶠ z in 𝓝 z₀, f z = 0) (h0 : f z₀ = 0)\n    (hT : ContinuousAt T z₀)\n    (hEq : ∀ᶠ z in 𝓝[≠] z₀, T z = c * (f z / deriv f z)) :\n    ¬ (0 < (T z₀).re)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmActualHeadMatchedPhaseAllFrequencyProjectiveFockRatio",
+        "module": "GaloisForLFunctions.RHTower.CCMActualHeadMatchedAllFrequencyFockGramPositivityNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedAllFrequencyFockGramPositivityNoGo.lean",
+        "line": 124,
+        "statement": "def ccmActualHeadMatchedPhaseAllFrequencyProjectiveFockRatio\n    (xi : ℝ) (n : ℕ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.thetaCuspSeed",
+        "module": "GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeSource.lean",
+        "line": 26,
+        "statement": "def thetaCuspSeed (t : ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "D_pos_from_deriv_neg",
+        "module": "SpherePacking.ModularForms.Derivative",
+        "relpath": "formal/.lake/packages/SpherePacking/SpherePacking/ModularForms/Derivative.lean",
+        "line": 807,
+        "statement": "theorem D_pos_from_deriv_neg {F : ℍ → ℂ}\n    (hreal : ResToImagAxis.Real F)\n    (hdiff : MDiff F)\n    (hderiv_neg : ∀ t, 0 < t → deriv (fun s => (F.resToImagAxis s).re) t < 0) :\n    ResToImagAxis.Pos (D F)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "QuantumAlg.Complement.Interval.IsFirstQuadrantComplexRootRepresentative",
+        "module": "GaloisForLFunctions.QuantumAlg.Util.Polynomial.Complement.Interval.Witness",
+        "relpath": "formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean",
+        "line": 1723,
+        "statement": "def IsFirstQuadrantComplexRootRepresentative (z : ℂ) : Prop",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.deningerQ8FortyOneQuadraticGaussSum_re_pos",
+        "module": "GaloisForLFunctions.RHTower.DeningerQ8FroehlichLocalGaussianFactors",
+        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerQ8FroehlichLocalGaussianFactors.lean",
+        "line": 542,
+        "statement": "theorem deningerQ8FortyOneQuadraticGaussSum_re_pos :\n    0 < (gaussSum deningerQ8FortyOneQuadraticChar ZMod.stdAddChar).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.symmetricSourceTiltMean",
+        "module": "GaloisForLFunctions.HTGeometry.ConstitutiveThetaHasseKMSExecutionBalance",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ConstitutiveThetaHasseKMSExecutionBalance.lean",
+        "line": 210,
+        "statement": "def symmetricSourceTiltMean (g : ℝ → ℝ) (a x : ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.fzzRadialCouplingCharacteristic_ne_zero",
+        "module": "GaloisForLFunctions.RHTower.FZZCigarCouplingInsertionGamma",
+        "relpath": "formal/GaloisForLFunctions/RHTower/FZZCigarCouplingInsertionGamma.lean",
+        "line": 83,
+        "statement": "theorem fzzRadialCouplingCharacteristic_ne_zero (u v p : ℝ) :\n    fzzRadialCouplingCharacteristic u v p ≠ 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "Hyperreal.coe_zero",
+        "module": "Mathlib.Analysis.Real.Hyperreal",
+        "relpath": "formal/.lake/packages/mathlib/Mathlib/Analysis/Real/Hyperreal.lean",
+        "line": 89,
+        "statement": "theorem coe_zero : ↑(0 : ℝ) = (0 : ℝ*)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.abs_xiRelativeCompletionSlope_eq_half_norm_exceptionalPoleDisplacement",
+        "module": "GaloisForLFunctions.RHTower.XiExceptionalRelativeCompletionStability",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiExceptionalRelativeCompletionStability.lean",
+        "line": 40,
+        "statement": "theorem abs_xiRelativeCompletionSlope_eq_half_norm_exceptionalPoleDisplacement\n    (q : XiZeroCopy) :\n    |xiRelativeCompletionSlope q| =\n      (1 / 2 : ℝ) * ‖deningerExponentExceptionalReflectedPole q -\n        deningerExponentExceptionalSourcePole q‖",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.cglClassITailSmoothingScale",
+        "module": "GaloisForLFunctions.RHTower.ChenGuptaLiClassITailGeometricBound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ChenGuptaLiClassITailGeometricBound.lean",
+        "line": 68,
+        "statement": "def cglClassITailSmoothingScale (Y : ℕ) : CGLPositiveSmoothingScale",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": [
+      {
+        "description": "Power series binomial exponentiation",
+        "steps": [
+          {
+            "goal": "binomial series power rule",
+            "candidate_ids": [
+              "5c3b983c77ba2dfa778acdb1a9b7e8de003303861b6e625e2e4fb05d70d1c7cf"
+            ],
+            "candidates": [
+              {
+                "id": "5c3b983c77ba2dfa778acdb1a9b7e8de003303861b6e625e2e4fb05d70d1c7cf",
+                "name": "GaloisForLFunctions.IrregularStokes.FormalUniformizer.binomialSeries_pow",
+                "module": "GaloisForLFunctions.HTGeometry.StokesFormalUniformizer",
+                "relpath": "formal/GaloisForLFunctions/HTGeometry/StokesFormalUniformizer.lean",
+                "line": 24
+              }
+            ],
+            "obligations": [
+              "exponent scalar multiplication"
+            ],
+            "status": "proposed"
+          },
+          {
+            "goal": "irreducible powers linearly independent",
+            "candidate_ids": [
+              "1a39f1eef30f3e0fbbd70b8c3f320f085b01c67f3adaeb5c70d488fbbe2da3d2"
+            ],
+            "candidates": [
+              {
+                "id": "1a39f1eef30f3e0fbbd70b8c3f320f085b01c67f3adaeb5c70d488fbbe2da3d2",
+                "name": "AlgebraicNumberTheory.Valuations.completionExtensionFactor_factor_irreducible_monic_dvd_minpoly",
+                "module": "Lean4.ClassFieldTheory.ValuationTheory.Completion.ExtensionFactorClassification",
+                "relpath": "formal/.lake/packages/ClassFieldTheory/Lean4/ClassFieldTheory/ValuationTheory/Completion/ExtensionFactorClassification.lean",
+                "line": 698
+              }
+            ],
+            "obligations": [
+              "monic factor divides minpoly"
+            ],
+            "status": "proposed"
+          }
+        ],
+        "status": "not_verified"
+      }
+    ]
+  },
+  {
+    "query": "positive real x with rational x^N and rational (x+1)^N must be rational via equal modulus algebraic conjugates",
+    "mode": "deep",
+    "partial": true,
+    "coverage": {
+      "files": 68703,
+      "inventoried": 68703,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68703
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11117,
+        "pending": 52188,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57586,
+        "prose": 11117
+      },
+      "declarations": 1031206,
+      "documents": 2862019,
+      "vectors": 2673002,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1289433,
+      "methods": {
+        "failed": 55,
+        "ready": 419140,
+        "stale": 178403
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791450635.765822,
+      "current_generation": 1289434
+    },
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      }
+    ],
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "elapsed_seconds": 84.98848199999999,
+    "unfinished_stages": [
+      "query:modulus equality real root",
+      "query:rational symmetric power",
+      "query:conjugate roots minimal polynomial",
+      "semantic_retrieval"
+    ],
+    "declarations": [],
+    "candidate_lemmas": [
+      {
+        "name": "HTGeometry.unrestricted_estimate_must_be_lindelof",
+        "module": "GaloisForLFunctions.HTGeometry.SupportFunctionMaximalAtCritical",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/SupportFunctionMaximalAtCritical.lean",
+        "line": 243,
+        "statement": "theorem unrestricted_estimate_must_be_lindelof {α β : ℚ}\n    (h0 : coveringDemand α β 0 ≤ 0) (hhalf : coveringDemand α β (1 / 2) ≤ 0) (hβ : 0 ≤ β) :\n    β = 0 ∧ α ≤ 1 / 2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.not_differentiallyAlgebraicOn_of_unbounded_conjugates",
+        "module": "GaloisForLFunctions.HTGeometry.PoincareHypertranscendence",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/PoincareHypertranscendence.lean",
+        "line": 216,
+        "statement": "theorem not_differentiallyAlgebraicOn_of_unbounded_conjugates {φ : ℂ → ℂ}\n    (hφ : Differentiable ℂ φ) (hnc : ∀ a : ℂ, ∃ z, φ z ≠ a)\n    (hφ' : analyticMeroElement (deriv φ)\n      (Complex.analyticOnNhd_univ_iff_differentiable.mpr hφ).deriv ≠ 0)\n    (hfam : ∀ M : ℕ, ∃ (c : ℂ) (g : ℂ → ℂ), c ≠ 0 ∧ Differentiable ℂ g ∧\n      (∀ z, g (φ z) = φ (c * z)) ∧ ¬ DifferentiallyAlgebraicOfOrder g M) :\n    ¬ DifferentiallyAlgebraicOn φ (Set.univ : Set ℂ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.real_sinc_positive_scale_injective",
+        "module": "GaloisForLFunctions.HTGeometry.ObserverTimeFourierValuationAtlasLaw",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ObserverTimeFourierValuationAtlasLaw.lean",
+        "line": 256,
+        "statement": "theorem real_sinc_positive_scale_injective\n    {a b : ℝ} (ha : 0 < a) (hb : 0 < b)\n    (hprofile : ∀ τ : ℝ, 0 < τ →\n      Real.sinc (τ * a) = Real.sinc (τ * b)) :\n    a = b",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.exists_pow_eq_one_of_isIntegral_of_conjugates_norm_one",
+        "module": "GaloisForLFunctions.RHTower.FrobeniusTorsionLaw",
+        "relpath": "formal/GaloisForLFunctions/RHTower/FrobeniusTorsionLaw.lean",
+        "line": 37,
+        "statement": "theorem exists_pow_eq_one_of_isIntegral_of_conjugates_norm_one {w : ℂ}\n    (hw : IsIntegral ℤ w) (hconj : ∀ z ∈ (minpoly ℚ w).rootSet ℂ, ‖z‖ = 1) :\n    ∃ n : ℕ, 0 < n ∧ w ^ n = 1",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "HTGeometry.GrowthExponent.chord_versus_transfer_at_three_quarters",
+        "module": "GaloisForLFunctions.HTGeometry.ScaleAbscissaDuality",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ScaleAbscissaDuality.lean",
+        "line": 146,
+        "statement": "theorem chord_versus_transfer_at_three_quarters :\n    2 * bourgainTheta * (1 - 3 / 4) = 13 / 168 ∧\n      bourgainTheta - (3 / 4 - 1 / 2) / 2 = 5 / 168 ∧\n      (13 : ℚ) / 168 = (13 / 5) * (5 / 168)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.infinite_positive_real_XiC_zeros",
+        "module": "GaloisForLFunctions.RHTower.XiCriticalGaussianNodes",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiCriticalGaussianNodes.lean",
+        "line": 18,
+        "statement": "theorem infinite_positive_real_XiC_zeros :\n    {x : ℝ | 0 < x ∧ XiC (x : ℂ) = 0}.Infinite",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.norm_eq_one_of_integral_conjugates_contractive",
+        "module": "GaloisForLFunctions.RHTower.XiArakelovKroneckerChamber",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiArakelovKroneckerChamber.lean",
+        "line": 67,
+        "statement": "theorem norm_eq_one_of_integral_conjugates_contractive\n    {w : ℂ} (hint : IsIntegral ℤ w) (hw0 : w ≠ 0)\n    (hcontract : ∀ z ∈ ((minpoly ℤ w).map (Int.castRingHom ℂ)).roots, ‖z‖ ≤ 1) :\n    ‖w‖ = 1",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.DeletionMixedRefinement.rotated_positive_quadrant_pos",
+        "module": "GaloisForLFunctions.RHTower.ArithmeticStationaryQuadrantComparison",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ArithmeticStationaryQuadrantComparison.lean",
+        "line": 463,
+        "statement": "theorem rotated_positive_quadrant_pos {θ C S : ℝ} (hC : 0 < C) (hS : 0 < S)\n    (hlo : Real.pi/2 ≤ θ) (hhi : θ ≤ Real.pi) :\n    0 < Real.sin θ*C-Real.cos θ*S",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "Monoid.PushoutI.NormalWord.Pair",
+        "module": "Mathlib.GroupTheory.PushoutI",
+        "relpath": "formal/.lake/packages/mathlib/Mathlib/GroupTheory/PushoutI.lean",
+        "line": 261,
+        "statement": "structure Pair (d : Transversal φ) (i : ι) extends CoprodI.Word.Pair G i where\n  /-- All letters in the word are in the transversal. -/\n  normalized : ∀ i g, ⟨i, g⟩ ∈ tail.toList → g ∈ d.set i\n\nvariable {d : Transversal φ}\n\n/-- The empty normalized word, representing the identity element of the group. -/\n@[simps!]",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "continuous_positiveRealNNRealUnit",
+        "module": "Lean4.ClassFieldTheory.AlgebraicNumberTheory.Idele.IdentityComponent",
+        "relpath": "formal/.lake/packages/ClassFieldTheory/Lean4/ClassFieldTheory/AlgebraicNumberTheory/Idele/IdentityComponent.lean",
+        "line": 84,
+        "statement": "private theorem continuous_positiveRealNNRealUnit :\n    Continuous positiveRealNNRealUnit",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "NumberField.house_eq_sup'",
+        "module": "Mathlib.NumberTheory.NumberField.House",
+        "relpath": "formal/.lake/packages/mathlib/Mathlib/NumberTheory/NumberField/House.lean",
+        "line": 42,
+        "statement": "theorem house_eq_sup' (α : K) :\n    house α = univ.sup' univ_nonempty (fun φ : K →+* ℂ ↦ ‖φ α‖₊)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "Cslib.FLP.Algorithm.SafeConsensus",
+        "module": "Cslib.Computability.Distributed.FLP.Algorithm",
+        "relpath": "formal/.lake/packages/cslib/Cslib/Computability/Distributed/FLP/Algorithm.lean",
+        "line": 140,
+        "statement": "def Algorithm.SafeConsensus [Fintype P] (a : Algorithm P M S) : Prop",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "Theorems100.Friendship.false_of_three_le_degree",
+        "module": "Archive.Wiedijk100Theorems.FriendshipGraphs",
+        "relpath": "formal/.lake/packages/mathlib/Archive/Wiedijk100Theorems/FriendshipGraphs.lean",
+        "line": 246,
+        "statement": "theorem false_of_three_le_degree (hd : G.IsRegularOfDegree d) (h : 3 ≤ d) : False",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.analyticAt_ccmFirstClockLaplaceContinuation_positive_real",
+        "module": "GaloisForLFunctions.RHTower.CCMFirstClockLandauAnalytic",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauAnalytic.lean",
+        "line": 303,
+        "statement": "theorem analyticAt_ccmFirstClockLaplaceContinuation_positive_real\n    {r : ℝ} (hr : 0 < r) :\n    AnalyticAt ℂ ccmFirstClockLaplaceContinuation (r : ℂ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.GelfondSchneiderProof.Setup.c₂",
+        "module": "GaloisForLFunctions.RHTower.GelfondSchneiderProof.MainAlg",
+        "relpath": "formal/GaloisForLFunctions/RHTower/GelfondSchneiderProof/MainAlg.lean",
+        "line": 409,
+        "statement": "def c₂ : ℤ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "HTGeometry.bandRatio_at_half",
+        "module": "GaloisForLFunctions.HTGeometry.RefutationDeficitAndBandRatio",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/RefutationDeficitAndBandRatio.lean",
+        "line": 77,
+        "statement": "theorem bandRatio_at_half {θ : ℚ} (hθ : θ ≠ 0) : bandRatio θ (1 / 2) = 1",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "exists_norm_denominator",
+        "module": "GaloisForLFunctions.HTGeometry.AlgebraicDenominator",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/AlgebraicDenominator.lean",
+        "line": 139,
+        "statement": "theorem exists_norm_denominator (β : K) (hβ : β ≠ 0) (hint : IsIntegral ℤ β) (φ : K →+* ℂ) :\n    ∃ A : ℕ, 0 < A ∧ (A : ℝ) = ∏ σ : K →+* ℂ, ‖σ β‖ ∧ IsIntegral ℤ ((A : ℂ) / φ β)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "positiveRealNNRealUnit",
+        "module": "Lean4.ClassFieldTheory.AlgebraicNumberTheory.Idele.IdentityComponent",
+        "relpath": "formal/.lake/packages/ClassFieldTheory/Lean4/ClassFieldTheory/AlgebraicNumberTheory/Idele/IdentityComponent.lean",
+        "line": 77,
+        "statement": "private def positiveRealNNRealUnit\n    (x : Set.Ioi (0 : ℝ)) : ℝ≥0ˣ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.BakerProof.algebraicInteger_eq_zero_of_distinguished_mul_house_pow_lt_one",
+        "module": "GaloisForLFunctions.RHTower.BakerProof.AuxiliaryArithmetic",
+        "relpath": "formal/GaloisForLFunctions/RHTower/BakerProof/AuxiliaryArithmetic.lean",
+        "line": 209,
+        "statement": "theorem algebraicInteger_eq_zero_of_distinguished_mul_house_pow_lt_one\n    {K : Type*} [Field K] [NumberField K] (σ : K →+* ℂ) (x : 𝓞 K)\n    (hsmall : ‖σ (algebraMap (𝓞 K) K x)‖ *\n      house (algebraMap (𝓞 K) K x) ^ (Module.finrank ℚ K - 1) < 1) :\n    x = 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "Zagier.eq_of_mem_fixedPoints",
+        "module": "Archive.ZagierTwoSquares",
+        "relpath": "formal/.lake/packages/mathlib/Archive/ZagierTwoSquares.lean",
+        "line": 143,
+        "statement": "theorem eq_of_mem_fixedPoints {t : zagierSet k} (mem : t ∈ fixedPoints (complexInvo k)) :\n    t.val = (1, 1, k)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "negDE₂_imag_axis_re_pos",
+        "module": "SpherePacking.ModularForms.FG",
+        "relpath": "formal/.lake/packages/SpherePacking/SpherePacking/ModularForms/FG.lean",
+        "line": 533,
+        "statement": "lemma negDE₂_imag_axis_re_pos (t : ℝ) (ht : 0 < t) :\n    0 < (negDE₂.resToImagAxis t).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "Θ₂_term_imag_axis_re_pos",
+        "module": "SpherePacking.ModularForms.JacobiTheta.Basic",
+        "relpath": "formal/.lake/packages/SpherePacking/SpherePacking/ModularForms/JacobiTheta/Basic.lean",
+        "line": 714,
+        "statement": "lemma Θ₂_term_imag_axis_re_pos (n : ℤ) (t : ℝ) (ht : 0 < t) :\n    0 < (Θ₂_term n ⟨I * t, by simp [ht]⟩).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.sgd_degree_jump_laplace",
+        "module": "GaloisForLFunctions.RHTower.LiClockThetaSignedGammaCoupling",
+        "relpath": "formal/GaloisForLFunctions/RHTower/LiClockThetaSignedGammaCoupling.lean",
+        "line": 417,
+        "statement": "private theorem sgd_degree_jump_laplace {p : ℝ} (hp : 1 < p)\n    {s : ℝ} (hs : 0 ≤ s) :\n    (∀ positive : Bool, Lap (liClockThetaDegreeJumpMeasure p positive) s ≠ ∞) ∧\n      (Lap (liClockThetaDegreeJumpMeasure p true) s).toReal -\n        (Lap (liClockThetaDegreeJumpMeasure p false) s).toReal =\n          liClockThetaReciprocalLog (p * Real.exp (s/2))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.SelbergMaassCuspTransport.positive_laplacian_pullback",
+        "module": "GaloisForLFunctions.RHTower.SelbergMaassCuspTransport",
+        "relpath": "formal/GaloisForLFunctions/RHTower/SelbergMaassCuspTransport.lean",
+        "line": 95,
+        "statement": "theorem positive_laplacian_pullback (A : SL2Z) (f : ℍ → ℂ)\n    (hf : IsRealSmoothUpperHalfPlane f) (z : ℍ) :\n    positiveHyperbolicLaplacian (fun w => f (A • w)) z =\n      positiveHyperbolicLaplacian f (A • z)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "ResToImagAxis.EventuallyPos",
+        "module": "SpherePacking.ModularForms.ResToImagAxis",
+        "relpath": "formal/.lake/packages/SpherePacking/SpherePacking/ModularForms/ResToImagAxis.lean",
+        "line": 57,
+        "statement": "noncomputable def ResToImagAxis.EventuallyPos (F : ℍ → ℂ) : Prop",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmActualHeadMatchedOrientedPhaseSymbol_re_pos_at_positiveReporterFrequency",
+        "module": "GaloisForLFunctions.RHTower.CCMActualHeadMatchedInfiniteFockReporterSignNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedInfiniteFockReporterSignNoGo.lean",
+        "line": 64,
+        "statement": "theorem ccmActualHeadMatchedOrientedPhaseSymbol_re_pos_at_positiveReporterFrequency\n    {n : ℕ} (hn : 1 < n) (hw : 0 < criticalMellinAtomWeight n) :\n    0 < (ccmActualHeadMatchedOrientedPhaseSymbol n\n      (ccmActualHeadMatchedPhasePositiveReporterFrequency n)).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.CCMZetaCircleLength",
+        "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniZetaCycles",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniZetaCycles.lean",
+        "line": 164,
+        "statement": "abbrev CCMZetaCircleLength",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.CCMCircleLength",
+        "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniCircleDirac",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniCircleDirac.lean",
+        "line": 28,
+        "statement": "abbrev CCMCircleLength",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.leading_term_pos",
+        "module": "GaloisForLFunctions.RHTower.LevelOneIsAMellinZeroFreeDisc",
+        "relpath": "formal/GaloisForLFunctions/RHTower/LevelOneIsAMellinZeroFreeDisc.lean",
+        "line": 47,
+        "statement": "theorem leading_term_pos {t : ℝ} (ht : 0 ≤ t) : (3:ℝ) < 2 * π * Real.exp (2 * t)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.not_re_pos_of_eventuallyEq_div_deriv",
+        "module": "GaloisForLFunctions.HTGeometry.ReciprocalLogDerivZero",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ReciprocalLogDerivZero.lean",
+        "line": 133,
+        "statement": "theorem not_re_pos_of_eventuallyEq_div_deriv {f T : ℂ → ℂ} {z₀ c : ℂ}\n    (hf : AnalyticAt ℂ f z₀) (hnz : ¬ ∀ᶠ z in 𝓝 z₀, f z = 0) (h0 : f z₀ = 0)\n    (hT : ContinuousAt T z₀)\n    (hEq : ∀ᶠ z in 𝓝[≠] z₀, T z = c * (f z / deriv f z)) :\n    ¬ (0 < (T z₀).re)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmActualHeadMatchedPhaseAllFrequencyProjectiveFockRatio",
+        "module": "GaloisForLFunctions.RHTower.CCMActualHeadMatchedAllFrequencyFockGramPositivityNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedAllFrequencyFockGramPositivityNoGo.lean",
+        "line": 124,
+        "statement": "def ccmActualHeadMatchedPhaseAllFrequencyProjectiveFockRatio\n    (xi : ℝ) (n : ℕ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.thetaCuspSeed",
+        "module": "GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeSource.lean",
+        "line": 26,
+        "statement": "def thetaCuspSeed (t : ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "D_pos_from_deriv_neg",
+        "module": "SpherePacking.ModularForms.Derivative",
+        "relpath": "formal/.lake/packages/SpherePacking/SpherePacking/ModularForms/Derivative.lean",
+        "line": 807,
+        "statement": "theorem D_pos_from_deriv_neg {F : ℍ → ℂ}\n    (hreal : ResToImagAxis.Real F)\n    (hdiff : MDiff F)\n    (hderiv_neg : ∀ t, 0 < t → deriv (fun s => (F.resToImagAxis s).re) t < 0) :\n    ResToImagAxis.Pos (D F)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "QuantumAlg.Complement.Interval.IsFirstQuadrantComplexRootRepresentative",
+        "module": "GaloisForLFunctions.QuantumAlg.Util.Polynomial.Complement.Interval.Witness",
+        "relpath": "formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean",
+        "line": 1723,
+        "statement": "def IsFirstQuadrantComplexRootRepresentative (z : ℂ) : Prop",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.deningerQ8FortyOneQuadraticGaussSum_re_pos",
+        "module": "GaloisForLFunctions.RHTower.DeningerQ8FroehlichLocalGaussianFactors",
+        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerQ8FroehlichLocalGaussianFactors.lean",
+        "line": 542,
+        "statement": "theorem deningerQ8FortyOneQuadraticGaussSum_re_pos :\n    0 < (gaussSum deningerQ8FortyOneQuadraticChar ZMod.stdAddChar).re",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.symmetricSourceTiltMean",
+        "module": "GaloisForLFunctions.HTGeometry.ConstitutiveThetaHasseKMSExecutionBalance",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/ConstitutiveThetaHasseKMSExecutionBalance.lean",
+        "line": 210,
+        "statement": "def symmetricSourceTiltMean (g : ℝ → ℝ) (a x : ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.RHTower.fzzRadialCouplingCharacteristic_ne_zero",
+        "module": "GaloisForLFunctions.RHTower.FZZCigarCouplingInsertionGamma",
+        "relpath": "formal/GaloisForLFunctions/RHTower/FZZCigarCouplingInsertionGamma.lean",
+        "line": 83,
+        "statement": "theorem fzzRadialCouplingCharacteristic_ne_zero (u v p : ℝ) :\n    fzzRadialCouplingCharacteristic u v p ≠ 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "Hyperreal.coe_zero",
+        "module": "Mathlib.Analysis.Real.Hyperreal",
+        "relpath": "formal/.lake/packages/mathlib/Mathlib/Analysis/Real/Hyperreal.lean",
+        "line": 89,
+        "statement": "theorem coe_zero : ↑(0 : ℝ) = (0 : ℝ*)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.abs_xiRelativeCompletionSlope_eq_half_norm_exceptionalPoleDisplacement",
+        "module": "GaloisForLFunctions.RHTower.XiExceptionalRelativeCompletionStability",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiExceptionalRelativeCompletionStability.lean",
+        "line": 40,
+        "statement": "theorem abs_xiRelativeCompletionSlope_eq_half_norm_exceptionalPoleDisplacement\n    (q : XiZeroCopy) :\n    |xiRelativeCompletionSlope q| =\n      (1 / 2 : ℝ) * ‖deningerExponentExceptionalReflectedPole q -\n        deningerExponentExceptionalSourcePole q‖",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.cglClassITailSmoothingScale",
+        "module": "GaloisForLFunctions.RHTower.ChenGuptaLiClassITailGeometricBound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ChenGuptaLiClassITailGeometricBound.lean",
+        "line": 68,
+        "statement": "def cglClassITailSmoothingScale (Y : ℕ) : CGLPositiveSmoothingScale",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": [
+      {
+        "description": "Equal modulus conjugates imply rational power",
+        "steps": [
+          {
+            "goal": "Equal conjugates norm one",
+            "candidate_ids": [
+              "7af157b25a9bb38ca9e657d871747639c5d8b45f38207aeeb8b1cfe0f18661d3",
+              "0ec90bcbd746205129943ac2d2406dd4abc837700cf6867ef0ff3e800262d989"
+            ],
+            "candidates": [
+              {
+                "id": "7af157b25a9bb38ca9e657d871747639c5d8b45f38207aeeb8b1cfe0f18661d3",
+                "name": "RHTower.exists_pow_eq_one_of_isIntegral_of_conjugates_norm_one",
+                "module": "GaloisForLFunctions.RHTower.FrobeniusTorsionLaw",
+                "relpath": "formal/GaloisForLFunctions/RHTower/FrobeniusTorsionLaw.lean",
+                "line": 37
+              },
+              {
+                "id": "0ec90bcbd746205129943ac2d2406dd4abc837700cf6867ef0ff3e800262d989",
+                "name": "RHTower.norm_eq_one_of_integral_conjugates_contractive",
+                "module": "GaloisForLFunctions.RHTower.XiArakelovKroneckerChamber",
+                "relpath": "formal/GaloisForLFunctions/RHTower/XiArakelovKroneckerChamber.lean",
+                "line": 67
+              }
+            ],
+            "obligations": [
+              "Norm one from integral conjugates"
+            ],
+            "status": "proposed"
+          },
+          {
+            "goal": "Rational powers imply rational x",
+            "candidate_ids": [
+              "273c3878ba8436fbb136c46a3ff0203d0d3ddecf10939bd7c6e4a5e15747375e",
+              "6ab454808946480867f2400a19402f50334634a9651ba2294911b44c0a091404"
+            ],
+            "candidates": [
+              {
+                "id": "273c3878ba8436fbb136c46a3ff0203d0d3ddecf10939bd7c6e4a5e15747375e",
+                "name": "HTGeometry.unrestricted_estimate_must_be_lindelof",
+                "module": "GaloisForLFunctions.HTGeometry.SupportFunctionMaximalAtCritical",
+                "relpath": "formal/GaloisForLFunctions/HTGeometry/SupportFunctionMaximalAtCritical.lean",
+                "line": 243
+              },
+              {
+                "id": "6ab454808946480867f2400a19402f50334634a9651ba2294911b44c0a091404",
+                "name": "GaloisForLFunctions.HTGeometry.not_differentiallyAlgebraicOn_of_unbounded_conjugates",
+                "module": "GaloisForLFunctions.HTGeometry.PoincareHypertranscendence",
+                "relpath": "formal/GaloisForLFunctions/HTGeometry/PoincareHypertranscendence.lean",
+                "line": 216
+              }
+            ],
+            "obligations": [
+              "Conjugate symmetry ensures rationality"
+            ],
+            "status": "proposed"
+          }
+        ],
+        "status": "not_verified"
+      }
+    ]
+  }
+]

@@ -27,7 +27,7 @@ Supply the missing hypothesis of `WeilSpectral.eq_vonMangoldt_of_deficitCount`, 
 - [ ] 2 → 3: new exact theorem compiled, axioms audited, umbrella wired.
 - [ ] Research target closed.
 
-Completed subresults: fixed-window atom recovery, actual shared mass, leakage and Fourier transport for both measures, arithmetic means, horizontal square moment, zero projection, the sharper `4π√n` coefficient bound, two restricted radical-mixture obstructions, restricted-interval complex xi density, polynomial actual repair cost, full weighted radical-budget convergence/tails, the quantitative approximation-cost obstruction, all-order factorial derivative/weighted-tail bounds, and exact full divisor–Bessel correlations for every actual derivative order. Twenty-two modules, 93 public theorem audits; dependency-closed paper proofs, direct final audits, standard-only axiom audits, and umbrella imports. These do not close the main card's gates.
+Completed subresults: fixed-window atom recovery, actual shared mass, leakage and Fourier transport for both measures, arithmetic means, horizontal square moment, zero projection, the sharper `4π√n` coefficient bound, two restricted radical-mixture obstructions, restricted-interval complex xi density, polynomial actual repair cost, full weighted radical-budget convergence/tails, the quantitative approximation-cost obstruction, all-order factorial derivative/weighted-tail bounds, exact full divisor–Bessel correlations and prime budget, exact Mellin transform, common Mellin bulk amplitude/first-derivative bounds, and opposite signs of the entire order-zero/one integer correlation columns with their strict energy gaps. Twenty-nine modules, 113 public theorem audits; dependency-closed paper proofs, direct final audits, standard-only axiom audits, and umbrella imports. These do not close the main card's gates.
 
 ## Frontier observations
 
@@ -150,3 +150,300 @@ Completed C1g checkpoint: strengthened direct audit, target-only build (82s), an
 
 - FINAL G1 checkpoint,2026-10-08: `WeilWorkDeficitTwistedGapBudget.lean` complete. Target-only build exit0 (target16s); unchanged final direct audit exit0/empty; both public axiom audits exit0/standard-only, exact types inspected. Import wired. Twenty-two completed modules/93 public theorem audits. Formal lint has7 unrelated reachability errors, no WP06 or forbidden-declaration finding. All owned processes terminal; no unfinished owned Lean source. C12g/C12 have complete paper arguments but remain unformalized beyond G1 and existing ingredients. C13 states the exact truncated-prime lower-bound conjecture for k≥k0,100k≤M, with low-order exceptions retained. Main goal ACTIVE/UNSOLVED.
 - 2026-10-08 C13 paper closure: exact noncompact prime identity retains signed half-pole correction (-1)^k/4^(k+1); weighted cutoff convergence, full zero multiplicities, gamma integral and prime dominated convergence paid. C12 concentration plus C10u yields uniform truncated-prime lower bound for k>=k0,100k<=M. Classical-parent BRIDGE, analytical formalization still open. C14 now tests every fixed positive proportional cutoff; entire coupled off-diagonal is OPEN. Next formal obligation remains C12g's actual smooth-cutoff derivative/IBP assembly, not another reformulation of the deficit receiver.
+- 2026-10-08 G2 completed: actual smooth cutoff first/second derivative identities and common product-uniform two-jet bound, three public standard-only audits. Target build13s, unchanged direct audit exit0/empty, umbrella wired. Twenty-three modules/96 public audits. Lint7 unrelated reachability errors. C13 strengthened on paper to every beta>(2/pi)log(19pi/4), including M>=2k; C11q cost implies probability tightness with finite log moment and all integer correlations zero. C15 now attacks that exact restricted mixture; C14 remains open. Alouges–Darses–Hillion Section4.3.1 already has literal Xi-square derivative Gram ancestry. Next formal step: localized actual cutoff times window, two IBPs, G1 full-sum assembly; do not restart moment representations. All9 hgtl7 review questions posted; main target ACTIVE/UNSOLVED.
+
+- 2026-10-08 G3 completed: literal compact oscillatory cutoff window and complete off-diagonal sum, two unconditional public theorems. Target build5.9s/9558 jobs; unchanged direct audit exit0/empty; both axiom audits standard-only; umbrella wired once. Twenty-four completed modules/98 public audits. Latest lint14 unrelated reachability errors, none WP06; no forbidden declarations. C15 gamma-boundary family remains exploratory. C16a asserts full absolute prime pairing O(log(k+2)E_k); C16b is its exact negation. C10u/G3 do not close either. Next attack coupled growing-prime/reflected terms while completing actual Gaussian-window/diagonal/AFE/Xi formal assembly. Main goal ACTIVE/UNSOLVED.
+- 2026-10-08 C16 attack: reflected chi-times-zeta-square expansion may allow absolute prime cost to collapse via the exact arithmetic identity Lambda*d=(d log)/2. Product variable m=n*r*s localizes near T/(2pi) at square-root width. Need verify actual same-sign AFE, uniform oscillatory majorant, both branches and full tails; no accepted reduction yet. Search `c16-reflected-convolution` launched. This is the next hard-core mechanism, not another fixed-n estimate.
+- C16 route correction: compact spectral truncation loses the prime-summable decay; do not sum G3 over all primes. C11b already has exact product nN in its Bessel argument. Candidate F_k=(-1)^k(D+1/2)^(2k)F_0 reduces prime cost to d(m)log(m)|F_k(m)|/2. C17 specifies an integer-lattice Gaussian profile with retained quadratic phase and a separate global weighted-tail obligation. Saddle calculation is conjectural; no Lean theorem or positivity claim yet. This is the active hard core.
+- FINAL G4 checkpoint,2026-10-08: `WeilWorkDeficitPrimeKernelBudget.lean` proves full logarithmic divisor-kernel summability, exact actual correlation at all shifts, and the complete absolute prime-budget reduction. Three standard-only public audits; target build22s/9885 jobs; unchanged final direct audit exit0/empty; umbrella wired once. Twenty-five completed modules/101 public audits. Lint16 unrelated reachability errors, none WP06 or forbidden declarations. One premature axiom audit overlapped final source check; stopped its owned PID, confirmed exit143, and restarted after final-check exit0. All owned Lean commands now terminal.
+- C17 paper progress: exact Mellin recurrence identifies actual K_k; local signed Gaussian profile proved with uniform tails; inversion at sigma4 plus twelve uniform scaled derivatives gives a global fourth-power envelope, with compact heights fully paid. This proves C16a and C14 on paper, not in Lean. It also supplies a direct divisor/Bessel paper proof of C12. Classical-parent bridge; no external novelty claim. Next formal obligations are the actual Mellin identity and uniform derivative estimate, not another AFE receiver.
+- New C18a/C18b compete on the sublinear prime-cutoff limit beta-beta^2/2. The separate divisor remainder is too large for growing twists; no uniform C12 is assumed. C15's actual positive derivative mixture remains the central construction/no-go question. Main target ACTIVE/UNSOLVED. Next-cycle plan: formalize the paper-proved product-kernel analytic mechanism, attack C18's local arithmetic cancellation, and use the newly paid C16 Fubini in the exact C15 signed-mixture problem.
+- 2026-10-08 next goal turn: previous turn PROGRESS, revalidated G4's three declarations, empty final direct audit and umbrella wiring. hgtl7/current memory/assigned target read; architecture/testing docs absent. Plan: adversarially recheck C17's exact Mellin and global-envelope proof, reuse current corpus machinery for its formalization, and attack C15/C18 rather than claim the bridge solves WP06. New deep Mellin/Bessel query launched. Main goal ACTIVE/UNSOLVED; no new Lean source yet.
+- G5 scratch proof passed (exit0): actual product-kernel Mellin transform and absolute integrability on Re(s)>0, using absolute Fubini and exact polynomial recurrence. New `WeilWorkDeficitProductKernelMellin.lean` contains two public theorems and is wired once. Target-only build active; final unchanged direct and exact-type/axiom audits pending. No count increment yet. C19 finite-Euler-deletion spike equivalence has a dependency-closed paper proof conditional only on the C15 candidate class and paper C17 estimates; neither C15 construction nor no-go is proved. Both G5 and C19 classified BRIDGE.
+- FINAL G5 checkpoint,2026-10-08: actual product-kernel absolute Mellin integrability and exact transform complete in `WeilWorkDeficitProductKernelMellin.lean`. Target-only build exit0 (71s/9886 jobs); final unchanged direct audit exit0/empty; both exact-type/axiom audits exit0/standard-only; umbrella wired once. Twenty-six completed modules/103 public audits. Lint7 unrelated reachability errors, none WP06/forbidden. All owned searches and Lean commands terminal; no unfinished owned Lean source. C19 finite Euler deletion reduces C15 to a literal integer spike on paper, using C17's summability; no construction/no-go. Next work: actual C17 scaled derivative/envelope assembly using existing sharp all-order polygamma decay and full Stirling ladder; attack C15's spike and C18's sublinear arithmetic transition. All9 reviews posted. Main goal ACTIVE/UNSOLVED.
+- 2026-10-08 next goal turn: previous turn PROGRESS. Revalidated G5 public declarations, exact-type/standard-only axiom output, empty final direct log and umbrella wiring. hgtl7/target/memory read; architecture/testing absent. Plan: attack actual C15 positive-mixture cancellation using C19's spike representation; search exact existing machinery and external parents; advance C17 uniform derivative/global-envelope proof only with dependency-closed statements. Main deficit target remains ACTIVE/UNSOLVED. No new Lean source/build started.
+- G6 selected for formalization: exact sigma4 Mellin norm plus common all-order Gaussian bulk envelope, paper proof appended before scratch. First scratch check active; no new repository source. C20a/C20b now compete on sharp absolute prime cost (3+R_a)/8 times log k, separating prime scales below/above sqrt(k); the needed joint local arithmetic law remains OPEN. This is a conjecture, not a consequence of C12 or a new assumption.
+- G6 target-only build exit0 (112s/10436 jobs); final unchanged direct source audit exit0/empty. Exact public-type/axiom audit now running, count not incremented yet. The bulk Gaussian constant is uniform in derivative order k; global tails and differentiated amplitudes are not claimed. No scientific novelty claim for G6.
+- C20c paper assembly completed: dyadic mean of B_k/log(k+2) tends to (3+R_a)/8. Low rows use the verified maximal divisor mean-square bound (Ivić–Zhai1209.0872v1 Lemma2.1); high rows separate, and ordinary divisor summation/Mertens price their positive average. Transition, profile tails and discrete-order transfer explicitly paid. Depends on unformalized C17. No pointwise prime short-interval premise or numerical experiment. Pointwise C20a/C20b and C15 remain open; novelty of sharp coefficient uncertified.
+- FINAL G6 checkpoint,2026-10-08: both exact public theorem types/axiom audits exit0, standard foundations only. New module `WeilWorkDeficitMellinAmplitude.lean` complete; target112s/10436 jobs, final unchanged direct audit empty/exit0, umbrella once. Twenty-seven modules/105 public audits. Latest lint6 unrelated reachability errors, none WP06/forbidden. All owned searches and Lean commands terminal; temporary proof scratch removed, audit source/logs retained. All9 reviews posted. Next: finish C17 global tails/scaled derivatives, audit C20c ancestry, and attack C15 actual kernel-spike mixture. Main goal ACTIVE/UNSOLVED; no scientific novelty certification or deficit closure claim.
+- 2026-10-08 next goal turn: previous turn PROGRESS. Revalidated G6 two public declarations, standard-only exact-type/axiom output, empty final audit and single umbrella import. hgtl7/current memory/task contract read; architecture/testing absent. Plan: (1) attack C15 actual positive kernel-spike mixture against current corpus and external parents, (2) audit C20c strongest parent theory, (3) advance actual C17 uniform differentiated/tail estimate with existing machinery and full final audits. Main target ACTIVE/UNSOLVED. Corpus spike query running; no owned Lean process.
+- 2026-10-08 current checkpoint: G7 scratch passed; actual Mellin derivative and common scaled Gaussian first-derivative bound copied to `WeilWorkDeficitMellinSlope.lean`, target-only build running. Not yet counted or wired. C21a is FALSE on paper: exact low-order polynomial expansion and Schlaefli recurrence prove K_0(x)>0>K_1(x) for every real x>=2. G4 then gives opposite strict signs for their entire integer correlation columns and E_1<K_1(1). This positive survivor has a dependency-closed proof in PROOF and must be formalized; C15/main target remain OPEN. C22 proposes exact signs for reciprocal-Gamma infinite weights, with rational zeta-square representation; no construction or sign assumed. Searches all terminal/partial, exact Bessel parents inspected. No numerical experiment.
+- G7 completed checkpoint: target222s/10438 jobs exit0; final unchanged direct source audit exit0 (one non-failing ring_nf suggestion); two exact-type/axiom audits exit0, standard foundations only. Umbrella wired once. Twenty-eight modules/107 public audits. Lint13 unrelated reachability errors, no WP06/forbidden finding. All9 reviews posted. G7 scratch cleaned. C21's paper sign survivor is now being checked in `/tmp/wp06-c21-sign.lean`; no repository C21 module yet. Main target ACTIVE/UNSOLVED.
+- C21 completed checkpoint: `WeilWorkDeficitLowOrderSigns.lean` has six public theorems proving both real-tail kernel signs, both integer-column signs, and opposite strict energy gaps. Target23s/9886 jobs exit0; final unchanged direct audit empty/exit0; six literal-type/axiom audits exit0, standard foundations only. Umbrella once. Twenty-nine modules/113 audits. Narrow C21a comparison retired with full positive salvage; C15/main goal remain OPEN. Latest lint7 unrelated reachability errors, none WP06/forbidden. C22's fresh integrability search is complete; exact unconditional zeta linear bound is being type-audited before recording the N>=4 admissibility proof.
+- FINAL current-turn checkpoint: C22 literal zeta-bound type/axiom audit exit0 (standard foundations). N>=4 Gamma-weight probability and finite-log-moment membership now has a dependency-closed PAPER proof, including the exact normalized row identity; no sign or cancellation result. N=3 remains unpaid by the coarse linear bound. All owned commands terminal; completed G7/C21 proof scratch removed, audit sources/logs retained. Final all9 reviews posted. Next cycle: attack actual C15 simultaneous cancellation using the now-proved sign freedom and explicit infinite-weight family; keep C17 higher derivatives/global tails and C20c formalization obligations explicit. Main goal ACTIVE/UNSOLVED.
+- 2026-10-08 next goal turn: previous turn PROGRESS. Revalidated G7/C21 declarations, eight standard-only public audits, final direct logs and one umbrella import each. hgtl7/current memory/task contract refreshed; architecture/testing absent; frontier/STATUS retain the linear-deficit open core. Plan: (1) attack literal C22 infinite-weight correlations, (2) test a stronger divisor-cosine asymptotic C23 using its exact rational Mellin factor, (3) complete paper and parent audits before formalizing actual family statements. No current owned Lean process. Rational-sign corpus search running. Main goal ACTIVE/UNSOLVED.
+- C23 checkpoint: exact conjecture and parent attack recorded, then dependency-closed PAPER proof completed for the actual N>=4 Gamma family. R_N(x) has a divisor-cosine leading term; integer resonance forces a positive limiting constant and eventual positivity, also for every finite nonzero positive mixture. No claim at all small integers or for unrestricted C15 mixtures. Parent verdict BRIDGE, novelty uncertified. Strip debt paid by the corpus fractional-part zeta identity; cosine Mellin Fubini uses a uniform conditional-tail bound. Full Lean obstruction remains pending. Initial literal Gamma-density scratch audit running; no new corpus source yet. All9 hgtl7 reviews posted. Main goal ACTIVE/UNSOLVED.
+- C23 formal assembly checkpoint: scratch now exits0/empty. `WeilWorkDeficitGammaDensity.lean` contains six public actual-object theorems: entire continuation, critical identity, exact rational density, common Poisson bound, integrability, logarithmic integrability. Minimal imports; no heartbeat override or scientific premise. Target-only build running, module still uncounted/unwired until complete. C24 continuous-order compact-uniform resonance conjecture and competing failure are recorded with the exact unproved inverse-Mellin remainder. It would exclude compact positive measures of Gamma orders, not unrestricted C15 sequences. Main target ACTIVE/UNSOLVED.
+- FINAL Gamma-density checkpoint: target99s/8783 jobs exit0; unchanged direct source audit exit0/empty; all six literal-type/axiom checks exit0, standard foundations only. Umbrella once. Thirty modules/119 public audits. Lint11 unrelated reachability errors, none WP06/forbidden. All owned processes terminal; completed scratch cleaned. C23 full resonance asymptotic is PAPER ONLY, C24 OPEN, C22 coefficient-mixture assembly pending. Next: formalize the exact C23 positive survivor with actual Mellin inversion, while attacking unrestricted C15 cancellation; do not turn restricted Gamma-family exclusions into a universal no-go. All9 final updated reviews posted. Main goal ACTIVE/UNSOLVED.
+- 2026-10-08 next goal turn: previous turn PROGRESS, revalidated GammaDensity's six actual-object declarations, six standard-only axiom audits, empty final direct log and one umbrella import. hgtl7, latest memory, target and frontier/STATUS refreshed; architecture/testing docs absent. Plan: (1) search exact C23 inverse-Mellin and partial-fraction machinery, (2) attack the unrestricted C15 cancellation mechanism against current corpus/primary parents, (3) formalize a dependency-closed part of C23's actual resonance survivor and complete leaf/direct/axiom/wiring audits. Main target ACTIVE/UNSOLVED. No owned Lean process; deep inversion search running.
+- C25 checkpoint: exact competing unrestricted exponential-tail necessity/existence conjectures recorded. Narrow C25c now paper-proves that a cancelling C15 probability cannot have sum w_k(2pi)^(2k)<infinity. Proof uses actual C17 energy root, explicit Borel-circle representation, actual K0 complex dilation, sectorial Bessel bounds and verified exponential-type Carlson uniqueness. This is a BRIDGE, not full C25a or C15, unformalized; no route retired. C23 global clearing recurrence and exact line-two symbol scratch is nearly checked (remaining expression normalization); no new repository source/build yet. All four new corpus searches terminal; all9 reviews posted. Main target ACTIVE/UNSOLVED.
+- FINAL C23 symbol checkpoint: `WeilWorkDeficitGammaSymbol.lean` complete, three premise-free actual-object results. Target126s/8784 jobs exit0; final unchanged direct audit exit0/empty; three exact-type/axiom audits exit0 standard-only; umbrella once. Thirty-one modules/122 audits. Lint9 unrelated reachability errors, none WP06/forbidden. C25d strengthens the paper fast-tail obstruction to limsup w_k^(1/(2k))>=2b_*/pi, b_*=dist(0,{zeta:|Im exp(i*zeta)|>=1/2}), with 1/3<b_*<=pi/6; full C25a/C15 OPEN. No scientific novelty claim, route retirement, or deficit solution. All owned commands terminal, completed scratch cleaned. Next: C23 actual kernel/inversion and C25 actual Borel/dilation formalization, while attacking the unrestricted cancellation core. All9 reviews posted; main goal ACTIVE/UNSOLVED.
+- 2026-10-08 continued goal turn: previous turn PROGRESS; GammaSymbol's three exact types, standard-only axioms, leaf build, final direct audit and single umbrella import revalidated. Mission remains actual linear spectral-deficit rigidity. Current plan: (1) attack unrestricted positive-coefficient cancellation against corpus and primary parents, (2) seek a direct actual rational-kernel representation for C23 rather than another formal receiver, (3) complete and formalize a dependency-closed survivor, audit and wire its leaf. Current corpus positive-indicator search running; no owned Lean process. Main goal ACTIVE/UNSOLVED.
+- Current-cycle paper advance: C27 now has a dependency-closed moving-order phase proof. Genocchi–Hermite gives the exact residue kernel as a simplex exponential average; its variance is O(N). A contour rotation and Gamma concentration at N^2/n->c give the normalized literal correlation limit cos(c/pi), with uniform all-divisor control. Thus C26 uniform eventual signs are FALSE on paper. Positive survivor is the complete phase law; no route retired before Lean. C28 then paper-proves eventual positivity for EVERY fixed positive probability mixture of Gamma orders, including unbounded support: normalized Gamma recurrence pays a uniform shifted-line envelope, so the least occupied order dominates the complete higher-order tail. These are actual-family results, not C15/WP06 solutions; novelty uncertified. Residue and actual endpoint-jet scratch is being audited, including the exact next jump -p^2/2. No repository Lean source yet.
+- FINAL GammaKernelJets checkpoint:32 modules/131 public audits. New334-line module proves9 actual residue/endpoint-derivative statements, including first jump1 and next jump-p^2/2. Leaf135s/8785 jobs exit0; final unchanged direct audit empty/exit0;9 exact-type/axiom checks standard-only; umbrella once. Lint9 unrelated reachability findings, no WP06/forbidden error; scoped whitespace clean. C27 moving-order phase, C28 every fixed positive Gamma mixture, and C29 power-law coefficient resonance (1<alpha<4) now dependency-closed PAPER, not Lean. C26 false on paper but not retired until full C27 survivor is formalized. C29 uses complete C17 paper profile, not only G5-G7. Scientific novelty unestablished; unrestricted C15 and WP06 ACTIVE/UNSOLVED. All owned processes terminal; completed scratch removed. All9 final reviews posted. Next: actual C23 inversion and positive survivors, keeping unrestricted cancellation central.
+- 2026-10-08 new goal turn: previous turn PROGRESS. hgtl7/memory/actual target and current frontier read; architecture/testing absent. GammaKernelJets current source revalidated. Plan: (1) attack C15 at the square-root coefficient oscillation scale against corpus and primary parents, (2) correct C29's integer-only local-limit quantifier, (3) formalize the actual piecewise kernel's absolute Mellin integral and rational transform, then leaf/direct/axiom/wiring audits. Full WP06 target unchanged/ACTIVE/UNSOLVED. No scope reduction or producer claim. API audit running; corpus queries tracked in /tmp/wp06-c30-spike.json and /tmp/wp06-c23-kernel-mellin.json.
+
+- FINAL G8 checkpoint,2026-10-08: actual rational-kernel absolute Mellin
+  transform and inversion formalized in WeilWorkDeficitGammaKernelMellin.
+  Six public exact-type/axiom audits standard-only; leaf45s/8786 jobs and
+  unchanged final direct audit exit0/empty. Umbrella once.33 modules/137
+  public audits. Lint5 unrelated reachability errors, no WP06/forbidden
+  finding. All owned commands terminal; completed proof scratch removed.
+- Current-cycle research: C29 integer-only signed-limit quantifier fixed.
+  C30 periodic square-root modulation has positive Cesàro mean; C31 weak
+  transfer imposes vanishing weighted block mass on polynomially bounded
+  cancellers; C32 stretched-exponential tail has exact phase
+  exp(tau^2/16)*cos(pi*tau^2/32), including eventual negative correlations
+  at tau=4*sqrt(2). All dependency-closed PAPER, not Lean or novelty-certified.
+  Full C17 analytic formalization remains owed; C23 cosine transform and
+  Xi-density contour shift remain owed. No broad route retirement.
+- Next exact competing C33 conjectures: existence/nonexistence of actual
+  C15 cancelling probability w_k~C*k^-alpha*exp(-4*sqrt(k)), alpha>1.
+  Leading C32 term vanishes. Need subleading arithmetic response and
+  simultaneous finite-row positivity, retaining possible short-window E_k
+  fluctuations. Ivić math/0404289 section2 is a primary lead, not a supplied
+  subleading theorem (its O(log T) remainder is too coarse). Corpus search
+  partial/errors recorded; no absence claim. Main goal ACTIVE/UNSOLVED.
+
+- 2026-10-08 continued goal turn: previous turn PROGRESS. G8 exact declarations, audit output and umbrella import revalidated; mission, target, shared contract and memory refreshed. Plan: attack C33 critical coefficient tail against current corpus/primary sources, identify a complete analytic advance before Lean, and finish an actual C23 inversion/decay dependency with leaf/direct/axiom audits. No new premise, computation, full build or subagent. Deep search wp06-c33-critical-tail running; main goal ACTIVE/UNSOLVED.
+
+- C34 now PAPER: every alpha>1 admits a strictly positive critical-tail
+  probability cancelling infinitely many adaptively selected rows beyond
+  arbitrary thresholds. Full past/future interactions paid by actual
+  local-band response, finite-head exponential decay and mass bounds.
+  C36 strengthens this to any prescribed sequence of finite offset patterns
+  at square-root row scale, each pattern fixed before its height. Finite
+  translate independence/Gram inversion and block contraction are paid.
+  Neither gives consecutive sqrt(N) blocks or all-row cancellation; C35
+  and C33 remain OPEN. These are classical-parent BRIDGES, novelty
+  unestablished, full C17/C32 formalization still owed.
+- G9 implementation: GammaKernelJets generalized partial fractions to the
+  full pole-free strip; GammaKernelMellin added absolute strip admission,
+  exact transform and actual zero mass. Both scratch and targeted leaf
+  builds passed. New actual cosine-transform scratch uses existing
+  SuzukiMellinConvolution and WeilWorkHigherDenominatorCosineMellin.
+  Third source check running, final direct/API/axiom audits pending.
+  Counts remain33/137 until validation. All9 reviews posted once so far.
+
+- FINAL G9 checkpoint:34 finished modules/143 public theorem audits.
+  Actual rational partial fractions and Mellin admission extended to the
+  full strip -2<Re(s)<3; actual kernel total mass proved zero. New
+  GammaCosineMellin proves absolute negative-strip Mellin transform and
+  exact inverse-square moment with physical2pi normalization. Three leaf
+  builds and final unchanged direct source audits exit0/empty. All21
+  affected public literal-type/axiom audits passed, standard foundations
+  only. Specialized API check passed; umbrella imports once. Lint5
+  unrelated reachability errors, no WP06/forbidden finding. Scoped checks
+  clean. All owned processes terminal; completed proof scratch removed.
+- Paper frontier: C34 sparse exact positive cancellation and C36 prescribed
+  finite-pattern cancellation complete, relying on full C17/C32 paper
+  analysis still owed in Lean. C35 actual dense blocks remain OPEN.
+  Its local multiplier has a simple zero at0 and Gaussian high-frequency
+  decay; inverse cost must be bounded on the actual arithmetic error.
+  Scientific novelty unestablished. C33/C15 and WP06 ACTIVE/UNSOLVED.
+- Next cycle: return to actual positive cancellation, attack competing
+  C35 alternatives using corpus evidence and primary parents, and quantify
+  the finite-pattern inverse rather than treating nonvanishing as a bound.
+  Continue exact C23 positive-strip/decay/Xi-density obligations and full
+  C17/C32 formalization without attaching any new scientific premise.
+
+- 2026-10-08 continued goal turn: previous turn PROGRESS. G9 declarations,
+  final source diagnostics and axiom evidence revalidated. hgtl7, actual
+  target/shared contract and memory refreshed; architecture/testing absent.
+  Plan: (1) audit the C35 consecutive-block gap against current corpus and
+  primary literature, (2) attack exact competing construction/obstruction
+  conjectures while retaining actual arithmetic error, (3) finish a
+  dependency-closed advance and formalize its exact actual-object statement
+  with targeted leaf/direct/axiom checks. Main goal ACTIVE/UNSOLVED.
+  Search wp06-c35-block-frontier running. No full build or computation.
+
+- C37 now PAPER: arbitrary preassigned finite consecutive block lengths
+  can be realized at adaptively chosen heights by one strictly positive
+  critical-tail probability. Scaled differences replace coalescing row
+  values by independent Gaussian-profile jets. Actual fixed-order relative
+  tails and all cross-block norms are paid; lengths versus height remain
+  uncontrolled. C35/C33/C15/WP06 still OPEN. Classical-parent BRIDGE,
+  novelty unestablished; full C17/C32/C37 formalization still owed.
+- G10 signed-profile bilateral transform scratch passes. Exact complex
+  formula retains both conjugate branches; zero mass at the critical tilt
+  and the stretched-exponential phase factor proved. Extra simple-zero
+  classification audit running before promotion. No new production module
+  or completed-count increase yet.
+
+- FINAL G10 checkpoint:35 modules/150 public theorem audits. New
+  WeilWorkDeficitChirpLaplace proves absolute complex Laplace transform,
+  critical tilt zero mass, stretched-exponential phase, unique real zero
+  of the critical multiplier, and its exact derivative. All7 public
+  statements premise-free, exact-type/axiom audits standard-only. Leaf
+  build15s/2779 jobs and unchanged direct source audit exit0/empty.
+  API check passed; all35 modules imported once. Formal lint7 unrelated
+  reachability errors, no WP06/forbidden finding; scoped checks clean.
+  All owned commands terminal; completed proof scratch removed.
+- C37 paper construction reaches arbitrary preassigned finite consecutive
+  lengths at adaptive heights, preserving strictly positive critical-tail
+  coefficients. C17/C32/C37 full Lean formalization still owed. Classical
+  confluent/Gaussian parents acknowledged; scientific novelty unestablished.
+  G10 does not bound the inverse or prove actual-kernel asymptotics.
+- Next cycle: quantify C35's actual error after critical convolution
+  inversion, or exhibit an actual obstruction with a sharp positive
+  survivor. Test energy-adapted coefficients against current corpus before
+  assuming a subleading E_k expansion is necessary. Keep C33's simultaneous
+  all-row positivity and initial rows in view. Continue actual C17/C32 and
+  C23 continuation/decay/Xi-density formal debts. Main goal ACTIVE/UNSOLVED.
+
+- C38 PAPER advances beyond the preceding checkpoint: first critical-tail
+  weak transport law proved for every w_k~C*k^-alpha*exp(-4sqrt(k)),alpha>1,
+  without smoothness or asymptotic error rate. Weighted actual row average
+  tends -C*e*kappa^(1-alpha)*(alpha-1/4)/sqrt2 times integral(test).
+  C33 existence in that class is therefore FALSE on paper. Positive
+  survivor: exact transport identity and a negative row in each large
+  proportional interval; all-zero block length/start must tend to zero.
+  C37 arbitrary-length blocks and C35 sqrt-height question remain compatible.
+- Proof pays actual first saddle correction and every tail/interchange;
+  averages before using w/E asymptotics, removing the alleged need for a
+  subleading energy expansion. Fresnel moment evaluation uses an explicit
+  absolute Gaussian regulator, not invalid direct Fubini. C17/C32/C38
+  full Lean formalization owed; no route retired or novelty claim made.
+- NEXT C39: construct or obstruct an all-row positive probability with
+  w_k~C*k^-1/4*log(k+2)*exp(-4sqrt(k)). Sharp exponent1/4 is exposed by
+  transport, but extension/log refinement still conjectural. Prioritize
+  exact actual-kernel analytic formalization of C38's positive survivor;
+  do not replace it with a generic conditional theorem. G10 remains the
+  last completed formal audit,35/150. All owned handles terminal.
+
+- Continued goal turn2026-10-08: prior turn PROGRESS. hgtl7, target/shared
+  contract and memory refreshed; architecture/testing absent. G10 source
+  declarations and final source/axiom output revalidated. Plan: (1) audit
+  C38 against actual current corpus, (2) attack C39's quarter-exponent
+  boundary and strongest competing obstruction, (3) close an actual
+  analytic dependency in Lean with leaf/direct/axiom checks. Full target
+  unchanged, ACTIVE/UNSOLVED. New C39 frontier search running. No subagents,
+  numerical research, full builds or assumed scientific premises.
+
+- C40/C41 now PAPER: all-row cancellation in any tail
+  C*k^-alpha*(log k)^delta*exp(-4sqrt(k)) forces alpha=1/4,delta=1.
+  Exact energy-renormalized averaged coefficient flux converges with
+  O(X^-1/8) error. Every tail and differentiated finite-sum step paid;
+  no coefficient/energy derivative or asymptotic error rate assumed.
+  Positive survivor is quantitative averaged rigidity. C39 existence at
+  that remaining shape stays OPEN; full actual analytic Lean proof owed.
+- G11 actual global Mellin-amplitude scratch in progress. Paper proof
+  complete; target includes all real heights, absolute vertical integration,
+  and norm at most20*exp(7pi/2)*saddleMass*sqrt(saddleHeight). One owned Lean
+  process at a time; no heartbeat override. Production count stays35/150
+  until promotion and required audits. Details and current logs /tmp/wp06-g11-*.
+
+- FINAL G11 checkpoint:36 modules/153 public theorem audits. New global
+  actual Mellin module proves all-height amplitude, full vertical
+  integrability and O(B*sqrt(T)) norm bound. All3 public statements
+  premise-free; literal-type/axiom audits standard-only. Leaf build
+  exit0,target7.8s; unchanged final direct source audit exit0/empty.
+  All36 modules umbrella-imported once, scoped checks clean. Formal
+  lint5 unrelated HTGeometry reachability errors, none in WP06.
+  All owned processes terminal; completed scratch proof/parts removed.
+- C40/C41 PAPER boundary forces alpha=1/4,delta=1, exposing a quantitative
+  averaged-flux survivor; full actual proof still owed in Lean. C39
+  existence remains OPEN. New C42 exact candidate has v_k=1/Z identically;
+  decide its actual integer-row responses, then extract the first residual
+  and required correction if it fails. Necessity is not sufficiency.
+- Next-cycle plan: (1) audit exact C42 against current corpus and primary
+  parents, (2) attack actual all-row cancellation versus nonzero residual,
+  (3) finish actual Mellin inversion/critical-saddle analytic dependencies
+  with leaf/direct/axiom checks. No route retirement or novelty claim.
+  Main spectral-deficit goal ACTIVE/UNSOLVED.
+
+- Continued goal turn2026-10-08: prior turn PROGRESS. hgtl7 workflow,
+  actual target/shared contract, current frontier/STATUS and latest memory
+  refreshed. Architecture/testing absent. G11 declarations and empty final
+  audit log revalidated. Plan: (1) audit exact C42 constant-flux candidate
+  against current corpus/primary parents, (2) prove cancellation or its
+  actual residual, (3) close an actual analytic dependency in Lean with
+  leaf/direct/axiom audits. C42-frontier deep search running. No additional
+  scientific premises, computation, subagents or full builds. Main goal
+  ACTIVE/UNSOLVED. update_plan tool unavailable; this card retains plan.
+
+- C43 PAPER: second actual weak transport limit is
+  -v0*pi*e/2*[D+sqrt(pi)*d/2]*integral(y^-1/2 psi), D=(67-4pi^2)/96>0,
+  for exact renormalized flux v_k=v0*(1+d/sqrt(T_k)+o(T_k^-1/2)).
+  Gamma correction and all errors/interchanges paid. C42 is FALSE on
+  paper: its d=0 yields actual negative rows in every large proportional
+  interval. Positive survivor forces d*=(4pi^2-67)/(48sqrt(pi)) for
+  cancelling coefficients in that refined class. Full C17/C32/C43 Lean
+  proof owed; no route retirement. C44 tests q**=q*(1+d*/sqrt(T)), a
+  strictly positive normalized correction. Its integer rows stay OPEN.
+- G12 actual inversion scratch running after paper proof/API checks.
+  Count36/153 until all required audits pass. C42-frontier and G12 search
+  nonpartial; C43 search partial text-retrieval interruption, useful hits
+  retained. Every candidate/source chain inspected. Current coverage and
+  primary ancestry recorded in EVIDENCE.md. No scientific novelty claim.
+
+- FINAL G12 checkpoint:37 modules/156 public theorem audits. Actual inverse
+  Mellin recovery and x^-4 spatial bound now Lean-verified. Leaf4.9s/10440
+  dependency jobs; unchanged final direct source exit0/empty. All3 public
+  types premise-free, all axiom lists standard-only.37 imports once,
+  scoped checks clean; lint7 unrelated reachability errors, none in WP06.
+  All owned processes terminal; completed G12 scratch removed.
+- C43 two polynomial moment identities pass auxiliary Lean algebra audit;
+  actual second weak transport and C17/C32 dependencies remain PAPER.
+  C42 negative rows and forced correction recorded, no route retired.
+  C44 corrected positive candidate remains OPEN, as do C39/C15/WP06.
+- G13 complete paper proof now uses beta-Gamma norm comparison to dominate
+  actual critical Mellin transform by sigma-four transform, uniformly in
+  k and all real t. G11 then pays critical vertical integrability and all
+  height moments, and G5/continuity pay critical inversion. Formalization
+  NOT STARTED. Search/source evidence current; no new Stirling estimate
+  needed for this admission step. Next formal priority G13, then actual
+  uniform saddle/differentiated-tail debts. Goal ACTIVE/UNSOLVED.
+
+- Continued goal turn2026-10-08: previous turn PROGRESS. hgtl7 workflow,
+  actual target/shared contract, latest memory and current frontier/STATUS
+  refreshed. G12 source declarations and final audit evidence revalidated;
+  architecture/testing absent. Plan: (1) audit coherent all-order critical
+  corrections against corpus/primary parents, (2) attack exact actual
+  asymptotic-flatness versus obstruction, (3) formalize G13's actual
+  critical-line recovery and height-moment admission with all final gates.
+  C45-frontier deep search running. No new mathematical premises, numerical
+  experiments, subagents or full builds. Main goal ACTIVE/UNSOLVED.
+- C45 now states ONE positive probability, before all truncation/decay
+  orders, with an all-orders critical flux expansion and actual integer
+  rows O(n^-M exp(-4 sqrt(kappa*n))) for every M. Preliminary attack
+  survives; pointwise actual-row expansion remains OPEN. No inferred
+  zero rows, novelty certification, or deficit bound. Classical Borel
+  realization is only a parent; it does not discharge the open core.
+- G13 scratch beta comparison/general Mellin norm verified. Critical
+  norm transfer, all height moments and exact inversion being checked.
+  First inversion attempt exposed coercion/instance unification cost;
+  normalize the actual half-line casts explicitly, no heartbeat override.
+  Production remains37/156 until leaf/direct/axiom audits all pass.
+- FINAL G13:38 modules/163 public theorem audits, seven new unconditional
+  actual critical-line statements. Leaf, unchanged direct source and all
+  axiom/type audits passed; standard foundations only. All imports once.
+  Current global lint11 unrelated reachability errors; none in WP06.
+- C45 PAPER PROVED by constructed positive angular moments. The jth
+  boundary coefficient first affects the real response at order j+1
+  with nonzero coefficient -j*r^(j+1)/2. One positive Borel realization
+  kills all orders; G12 pays actual energy normalization and every
+  divisor interchange without energy asymptotics. Auxiliary first-term
+  rational algebra checked; full actual C45 Lean remains owed.
+- Next core is beyond-all-orders exact cancellation in this positive
+  angular subclass, alongside formalization of its exact transport.
+  C46 corpus search complete/nonpartial/errors[],68897 files; available
+  compact-sector uniqueness results being checked for applicability.
+  No exact row zeros, upper deficit producer, or RH closure claimed.
+- C46 exact statement recorded: nonnegative smooth angular density with
+  C45 boundary jet, arbitrary nonnegative interior and flat boundary
+  corrections, satisfying F_mu(n)=0 for every integer n>=2. OPEN.
+  Strict compact-sector and continuous-ray uniqueness hypotheses checked
+  and unavailable; no borrowed no-go. False C46 only kills this subclass.
+- All owned jobs terminal. Auxiliary C45 algebra and production G13
+  evidence retained; completed production scratch cleaned. Next cycle
+  must formalize actual angular transport/C45 and attack exact C46,
+  not calculate further finite corrections as if they settled existence.
+- New continuation: previous turn PROGRESS; target contract/frontier,
+  latest memory, G13 declarations and final empty audit revalidated.
+  Mission unchanged: actual all-copy deficit on linear scale. Plan:
+  (1) audit C46 positive angular equations against current corpus/SOTA,
+  (2) prove actual full-strip exponential Mellin admission and positive
+  moment-series transport, (3) formalize/audit/wire exact bridge while
+  retaining the full C45 and deficit obligations. No update_plan tool
+  available; plan recorded here. All earlier owned jobs terminal.

@@ -1,0 +1,48 @@
+Cycle28 Gaussian Mellin audit — 2026-10-08
+
+Source: formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianMellin.lean
+SHA256: 6ce60286a470e7b4642cc067e62563c394e7060792eba5cef37b4d36bdc7f5e1
+
+Final direct audit (cwd formal):
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianMellin.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianMellin.lean
+Exit 0; empty output, no errors or warnings.
+
+Complete public dependency-axiom audit and current-toolchain API probes:
+lake --old env lean /tmp/wp04-mellin28-axioms.lean
+Exit 0; all nine public closures use standard axioms only.
+
+'RHTower.WeilSpectral.quantizationGaussianMellinKernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianMellinKernel_eq_mellin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.verticalIntegrable_quantizationGaussianMellinKernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.mellinInv_quantizationGaussianMellinKernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussian_mellinInv_LSeries' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianMellinIntegrand' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integrable_quantizationGaussianMellinIntegrand' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianCoefficientSum_eq_mellinInv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianCoefficientSum_eq_integral' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+Formal lint: scripts/formal_tools.py lint
+Exit 1; 367 large-file warnings; nine unreachable modules outside this package:
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseLogSquareEnergy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseValuationAnalytic
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseValuationResidueSum
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseValuationTwist
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+Umbrella wiring: 66 quantization leaves; all exactly once: True. No umbrella build.

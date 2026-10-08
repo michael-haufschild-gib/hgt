@@ -50,8 +50,11 @@ theorem quantization_rigidity_of_oneSided_rational_phase {lam : ℕ → ℝ}
     apply eq_vonMangoldt_of_weilPositiveFull_of_threeHalves_lacunary hW
       (n := fun j => u ^ (j+1)) (by simpa using hu)
     · intro j
-      rw [show j+1+1 = (j+1)+1 by rfl, pow_succ]
-      nlinarith [Nat.zero_le (u^(j+1))]
+      rw [pow_succ u (j+1)]
+      calc
+        3 * u^(j+1) ≤ (2*u) * u^(j+1) :=
+          Nat.mul_le_mul_right _ (by omega : 3 ≤ 2*u)
+        _ = 2 * (u^(j+1) * u) := by ring
     · intro n hn hnp
       apply hsupp n hn
       rintro ⟨j, hj⟩

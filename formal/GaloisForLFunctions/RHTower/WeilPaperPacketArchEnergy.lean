@@ -42,7 +42,8 @@ def packetArchEnergy {N : ℕ} {ι : Type*} [Fintype ι] (L : ℕ)
   ∑ i, weilArchRe (EF.weilTest (gramPacket N L (packetColumn A i))
     (gramPacket N L (packetColumn A i)))
 
-private theorem weilArchRe_eq (k : ℝ → ℂ) :
+/-- The archimedean energy is the real part of the zero-arithmetic-weight functional. -/
+theorem weilArchRe_eq (k : ℝ → ℂ) :
     weilArchRe k = (weilFullFunctional 0 k).re := by
   simp [weilArchRe, weilFullFunctional]
 

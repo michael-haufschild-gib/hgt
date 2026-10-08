@@ -679,3 +679,504 @@ RationalRows classification passed its direct leaf audit; adding the full soluti
 requires a fresh audit. Power-divisor quotient and source logarithmic support scratch work pending.
 `OperatorTailDirichletMatroid.logWeight_leibniz` was located by exhaustive rg and read; reuse it
 rather than reproving the classical finite-convolution derivation. No full or umbrella build.
+
+
+Cycle 17 final leaf audits: RationalResonance, RationalRows (including the complete iff),
+PowerDivisors, LogarithmicSupport and RationalRigidity all exited 0 with no diagnostics.
+Each was checked with `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<leaf>.olean GaloisForLFunctions/RHTower/<leaf>.lean`.
+All five are wired exactly once; no full or umbrella build. The final source-only theorem is
+`quantization_rigidity_or_no_oneSided_rational_phase`. Twenty-public-declaration standard-axiom
+and mathlib-name audit is running in /tmp. Source-only scope remains explicit.
+
+Fresh authoritative lint exited 1. Its eight errors are unrelated unreachable modules:
+- GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionSpatial
+- GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCosineMellin
+- GaloisForLFunctions.RHTower.WeilWorkSettledPhaseFiniteMellin
+- GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+- GaloisForLFunctions.HTGeometry.ApertureConeWinding
+- GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+- GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+- GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+No quantization-module error. Existing repository size warnings remain. Unrelated files were not modified.
+
+Cycle 17 closure: all twenty public declarations and their dependencies passed the /tmp axiom
+and mathlib-name audit with only propext, Classical.choice, Quot.sound; complete output and
+exact solution-space/source-only types saved in rational-rigidity-lean-audit.txt. Scoped whitespace
+check passed. Five new leaves, forty-three total, wired exactly once. All nine hgtl7 answers posted.
+Scientific novelty beyond inspected corpus/literature remains provisional. Next cycle targets
+actual two-sided rational finite blocks; do not assume their invertibility or a phase producer.
+No numerical experiment, full build, umbrella build, commit, new axiom or heartbeat override.
+
+After every owned process returned a terminal exit, removed 13 named cycle-17 scratch/search files; audit and search evidence preserved. Finished .olean files retained for downstream leaf checks.
+
+## Cycle 18: bilateral rational phases and negative harmonic mass
+
+Fresh deep queries: `two sided rational phase finite Toeplitz kernel coefficient support Bohr fibre positivity` (module Weil, 300 seconds) and `Weil positive deviation supported multiples fixed divisor rough coprime rigidity` (300 seconds). Full selected results and coverage saved in `cycle18-search-evidence.json`. First query partial at semantic retrieval, 68,643 inventoried/indexed files, older coverage snapshot and unavailable semantic coverage; second query complete with the same freshness warnings. All returned candidate and source statements were inspected. Proposed ingredient sets are unverified suggestions, not proof. Lexical follow-up `Toeplitz singular kernel geometric --any --module WeilWorkQuantization` found no new block-invertibility result.
+
+Exact source audit: `WeilFibreBochnerLaw.twistFibreSum_nonpos_of_weilPositiveFull` still requires NotchSmall. `WeilWorkSingularArithmeticHarmonicSign.exists_nonpos_tendsto_coneDeviation_harmonic` pays ordinary signed convergence only. Neither gives absolute negative harmonic mass. `WeilOneSidedConvergenceRigidity` already proves endpoint one-sided harmonic-deficit rigidity. `WeilPrimeDeficitSetRigidity.summable_nonprime_vonMangoldt_div` pays proper-prime-power harmonic summability. The multiples-of-prime law suggested a first route but is unnecessary in the final paper proof.
+
+Primary external audit, 2026-10-08:
+- Câmara–Partington, *Toeplitz kernels and model spaces*: https://eprints.whiterose.ac.uk/125692/1/proc-iwota17-nov27_revised.pdf . Coburn and finite-dimensional kernel classifications concern infinite Hardy-space operators; they do not establish invertibility of every finite arithmetic compression.
+- *On kernels of Toeplitz operators*: https://link.springer.com/article/10.1007/s13324-020-00436-6 . This remains parent operator theory, not an actual-source rational-phase producer.
+- Connes–Consani, *Quasi-inner functions and local factors*: https://arxiv.org/pdf/2008.10974 . The introduction and main theorem concern compact off-diagonal Hardy-space multiplication blocks for products of specified local factors. They do not assert positivity of arbitrary coefficients or finite-section invertibility.
+Fresh targeted searches found no direct source-rigidity theorem with L2h's exact premises; this is not an absence or independent-novelty proof. Unverified search hits and numerical material were not used.
+
+Paper survivor L2h: actual bilateral rational phases force rigidity or divergent negative harmonic source mass. Proof in BILATERAL-RATIONAL.md. General signed L2 and full WP04 remain open. No finite-block invertibility or noninteger additive-twist cancellation is assumed.
+
+Cycle 18 follow-up search: `Weil positivity eventually equal von Mangoldt at primes signed composite deviation rigidity --module Weil --mode deep --budget-seconds 300` completed in 123.7 seconds, with older coverage snapshot/unmeasured semantic coverage warnings. All candidate/source statements inspected; saved with the other searches. The exact prime-support and signMult-alignment premises are not automatic. This motivates P18 in NEXT-CONJECTURE.md; P18 remains open.
+
+Cycle 18 nine-part hgtl7 audit (also posted in chat):
+1. L2h is a new source-phase reduction relative to the inspected corpus; independent scientific novelty remains provisional.
+2. Classical Toeplitz theory was parent material; endpoint harmonic rigidity was found and reused, not re-proved.
+3. The actual rough-resonance/prime-agreement connection was not supplied by literature lookup alone.
+4. The represented nonnegative/finite-negative-mass class closes; general signed quantization does not.
+5. The next target is signed composite mass, not finite-block invertibility or more generic phase regularity.
+6. This cycle produced a complete proof and new formal declarations, not just searches.
+7. No step was deferred by effort or context estimates.
+8. Full WP04 remains the hard target; P18 directly attacks the source obstruction isolated here.
+9. Fresh deep/lexical searches and exact source reads preserved all unpaid notch, sign and convergence premises.
+
+Final cycle-18 verification: both leaves passed clean direct `lake --old env lean -o ... <leaf>` checks, each wired once. All seven public declarations and dependencies passed the scratch axiom audit with only propext, Classical.choice, Quot.sound; full output and source-only theorem type in bilateral-rational-lean-audit.txt. Scoped whitespace checks passed. Global lint exit 1: fifteen unrelated unreachable modules, no quantization error. RHTower: WeilWorkHigherDenominatorInversionConstant, WeilWorkHigherDenominatorInversionSpatial, WeilWorkHigherDenominatorInversionTrace, WeilWorkSettledPhaseCosineMellin, WeilWorkSettledPhaseFiniteMellin, WeilWorkSettledPhaseRationalBound, WeilWorkSettledPhaseRationalProfiles, WeilWorkSingularArithmeticForwardEnergyLimit, WeilWorkSingularArithmeticLogMoment, WeilWorkSingularArithmeticLogMomentLimit. HTGeometry: ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. Existing large-file warnings remain. No full builds, numerical computations, commits or pushes.
+
+
+## Cycle 19: prime-agreement audit and arithmetic frequency selection
+
+All four searches are preserved in cycle19-search-evidence.json. Deep queries
+covered eventual prime agreement/signed composites, bilateral rational finite
+blocks, and finite-prime depletion. All three completed without errors or
+unfinished stages; older coverage snapshots and unmeasured semantic coverage
+remain explicit. All returned candidate/source statements were inspected.
+The bilateral query took 84.5 seconds; the depletion query took 50.3 seconds.
+The lexical quantization query and exhaustive rg found the existing row and
+class-restricted receivers, not a general arithmetic-frequency selection result.
+Generated ingredient sets remained unverified; primeCoeffLE_supp describes a
+prime projection and does not prove prime support for λ.
+
+P18 remains OPEN. Exact source reads retained the signMult alignment/absolute
+bad-part premise in WeilPrimeDeficitSetRigidity, NotchSmall and gcd-harmonic
+limits in WeilConeNotchBochnerLaw, and coefficient nonnegativity in the
+multiples-of-prime theorem. The new shared ForwardEnergyLimit source gives a
+finite logarithmic critical energy limit, not its value one and not absolute
+negative harmonic mass. No new Lean audit of that shared leaf is claimed.
+Finite Toeplitz compression invertibility remains unproved. No proposed local
+symbol perturbation was promoted to a counterexample.
+
+Primary external audit (2026-10-08): Farmer 2021,
+https://arxiv.org/pdf/2101.02771, Definition 1.1 and Theorem 1.1; Soundararajan
+2002, https://arxiv.org/abs/math/0210299; Farmer–Pitale–Ryan–Schmidt,
+https://aimath.org/jmm2014/a1farmer/section1.html, Theorem 1.1. The inspected
+multiplicity-one results retain Euler products and global analytic hypotheses
+not obtained from hW. Booker, https://arxiv.org/pdf/1308.3067, Definition 1.3,
+retains a discrete spectral divisor and cannot pay quantization in advance.
+Schoolmann 2020, https://doi.org/10.1002/mana.201800542, supplies parent
+Dirichlet-frequency theory, not the actual source's normalized resonance law.
+These targeted checks establish premise differences, not independent novelty
+or an exhaustive absence claim.
+
+L3 and L3p are dependency-closed on paper in ARITHMETIC-SPECTRUM.md. The exact
+source-only alternatives retain every represented frequency and require an
+active nonzero rational-log frequency, hence a rational positive power of
+every periodic base, unless rigidity and RH hold. Countable repeated zero
+frequencies are summed together; irrational roots of rationals remain open.
+Lean implementation and final audit pending at this entry.
+
+
+Cycle 19 final verification: ArithmeticSpectrum passed clean final direct
+`lake --old env lean -o ... <leaf>` audit. All four public declarations and
+dependencies passed scratch mathlib-name/axiom audit, using only propext,
+Classical.choice and Quot.sound. Full output and both source-only theorem
+types: arithmetic-spectrum-lean-audit.txt. Wired once; forty-six finished leaves.
+No full or umbrella build. Scoped whitespace checks passed before closure.
+
+Authoritative lint exited 1 with eight unrelated unreachable modules:
+- RHTower.WeilPaperMixtureKernelEnergy
+- RHTower.WeilWorkSettledPhaseCoprimeCosineBound
+- RHTower.WeilWorkSettledPhaseCoprimeDeviation
+- HTGeometry.ApertureConeCalculus
+- HTGeometry.ApertureConeWinding
+- HTGeometry.ApertureLogTranslation
+- HTGeometry.ApertureOpenHistoryIdeal
+- HTGeometry.BoundaryCoronaCStarAlgebra
+No quantization-module error; existing large-file warnings remain. Unrelated
+files were not modified. A targeted read of the new coprime-deviation statement
+found a bounded real Abel value near one for every fixed coprime mask; it does
+not state zero, absolute harmonic convergence, or D19. No independent build of
+those shared leaves is claimed.
+
+Cycle 19 nine-part hgtl7 audit (also posted in chat):
+1. L3/L3p add source restrictions to the inspected corpus; independent scientific significance is unestablished.
+2. Multiplicity-one literature supplied no missing premise; retain and reuse the premise audit.
+3. Frequency selection is elementary after PhaseCoupling; four declarations are not a quantization solution.
+4. Bases with no rational positive power are excluded; P18 remains open.
+5. Exact arithmetic resonance matters; signed composite deviations remain uncontrolled.
+6. Much of the cycle tested unsuccessful P18 routes; their precise gaps are recorded.
+7. No hard step was omitted because of effort estimates; no closure proof was found.
+8. Next attack the actual divisibility gap through full positivity, beyond further class restrictions.
+9. Inspected Gibbs, notch, energy and new coprime-mask statements; retained every unpaid premise.
+
+After all owned processes returned terminal exits, removed eight named cycle-19 scratch/search files. Durable search and audit evidence retained; finished leaf .olean retained for downstream checks.
+
+## Cycle 20 closure, reconciled during cycle 21
+
+T20 and signed bilateral rational L2 are fully formalized. The actual reflected
+Laplace identity gives B(x+1)=B(x) for every positive real height. Rational
+translation eliminates every nonzero signed harmonic, with no sign or negative
+harmonic-mass premise. Four new direct leaves and twenty-five declaration/axiom
+checks passed; all dependencies use only propext, Classical.choice and Quot.sound.
+Complete paper and audit: PERIODIC-RESIDUES.md and periodic-residues-lean-audit.txt.
+The earlier L2h obstruction remains valid but no longer describes the frontier.
+RESULT.md's stale introductory open-L2 statement was corrected this cycle.
+
+
+## Cycle 21: exact residue inversion and rational harmonic support
+
+Verdict: PROGRESS. T21 is fully formalized; L4 has a closed paper proof and
+an unformalized final rational-base reindexing. Full WP04 remains OPEN.
+
+The complete real-height residue is the forward Dirichlet dilation of bounded
+normalized frequency mass. The actual reciprocal coefficient series inverts
+that dilation at exponent 3/2. Absolute double summability is proved before
+regrouping, so no resonance chain is dropped. Unit translation removes every
+irrational positive radical resonance; inversion therefore removes aggregate
+irrational mass from every radical-supported countable phase. Nonradical
+scales have zero mass by the represented support, eliminating a redundant
+target-radical premise. Periodic frequency injectivity and L3p then force
+every active periodic harmonic of a nonrigid source to have rational scale.
+The final alternative has only the original hW as source input.
+
+Paper: RADICAL-PERIODS.md. The radical arithmetic is classical; primary audit
+read Perucca's Linear relations among radicals, arXiv:2511.02498. Kneser's
+real-field criterion is parent theory, not a new claim. Independent scientific
+novelty of the actual-source application remains unestablished. Five compact
+corpus searches, including source arguments and proposed ingredient sets, are
+preserved in cycle21-search-evidence.json. Compiler/index coverage is recorded;
+search hits are not themselves treated as verified theorems.
+
+Final direct commands, each run in formal with --old and no umbrella build:
+`lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantization<Leaf>.olean GaloisForLFunctions/RHTower/WeilWorkQuantization<Leaf>.lean`
+Leaves: DirichletInverse, DilationInverse, RadicalTranslation, RadicalResidues,
+FrequencyMass, RadicalMass. All six final commands exited 0 without diagnostics.
+The initial FrequencyMass elaboration hit the default heartbeat limit; explicit
+sum-interchange equalities and scalar normalization removed it. No limit was raised.
+All six imports occur once in RHTower.lean; fifty-six quantization leaves total.
+
+Final /tmp scratch audit checked every one of twenty-nine declarations and its
+transitive axiom set after strengthening the countable endpoint. It exited 0;
+all sets are contained in {propext, Classical.choice, Quot.sound}. Complete
+output: radical-mass-lean-audit.txt. Targeted forbidden-declaration/limit scan
+and diff whitespace check found no issue.
+
+Authoritative `scripts/formal_tools.py lint` exited 1 with seven unrelated
+unreachable modules, no quantization-module error:
+- RHTower.WeilWorkSettledPhaseLocalPolynomialModels
+- RHTower.WeilWorkSettledPhaseLocalPolynomialPeriods
+- HTGeometry.ApertureConeCalculus
+- HTGeometry.ApertureConeWinding
+- HTGeometry.ApertureLogTranslation
+- HTGeometry.ApertureOpenHistoryIdeal
+- HTGeometry.BoundaryCoronaCStarAlgebra
+Existing large-file warnings remain. No unrelated source was changed.
+
+Nine-part hgtl7 self-audit, also posted in chat:
+1. T21 strengthens the inspected corpus's support restriction; independent scientific novelty is unestablished.
+2. Radical algebra and Dirichlet inversion are classical bridges, not standalone discoveries.
+3. Actual phase/residue coupling and full infinite-sum cancellation supply the new corpus result.
+4. Every active periodic harmonic has rational scale; previously only one arithmetic harmonic was forced.
+5. Finish rational-base reindexing, then return to the unrestricted phase producer.
+6. Exact residue inversion and aggregate irrational mass elimination were gained.
+7. No hard step was omitted on effort grounds; infinite resonance chains were retained.
+8. A represented-phase obstruction was resolved; arbitrary-source quantization remains unsolved.
+9. Corpus forward/reciprocal series, resonance limits, radical algebra and subgroup machinery were inspected with all premises retained.
+
+Next: formalize the rational-exponent subgroup generator and reindex into the
+already proved L1/L2 receivers. NEXT-CONJECTURE.md records the inspected, still
+scratch-unverified generator/reindex APIs. No extra representation premise has
+been promoted to a source theorem.
+
+## Cycle 22: arbitrary real-periodic class closed
+
+Verdict: PROGRESS. L4 is proved in Lean, with no restriction on real base r>1.
+The source-only endpoint is quantization_rigidity_or_no_real_periodic_phase.
+No representation is supplied from arbitrary hW; unrestricted WP04 stays OPEN.
+
+RationalPeriodReindex (80 lines, three declarations) forms the rational-exponent
+subgroup, takes a positive cyclic generator and reindexes the full weighted
+series. RealPeriodicRigidity (88 lines, three declarations) handles reduced
+rational bases and assembles L3p/T21/L1/L2. The subgroup and rational reduction
+are classical BRIDGE work; the complete actual-source class closure advances
+the inspected corpus. Independent scientific novelty remains unestablished.
+
+Both final commands, run serially in formal, exited 0 without diagnostics:
+- lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationRationalPeriodReindex.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationRationalPeriodReindex.lean
+- lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationRealPeriodicRigidity.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationRealPeriodicRigidity.lean
+
+The complete /tmp name/type/axiom audit exited 0. All six transitive axiom sets
+contain only propext, Classical.choice and Quot.sound. Full output is
+real-periodic-lean-audit.txt. Every one of fifty-eight quantization leaves is
+wired exactly once. No full/umbrella build, numerical experiment, heartbeat
+increase, commit or push was used. Targeted declaration/limit and whitespace
+scans found no owned issue.
+
+Authoritative lint exited 1 on seven unrelated unreachable modules:
+- RHTower.WeilWorkHigherDenominatorCutoffPairing
+- RHTower.WeilWorkSettledPhaseCoprimeCombinations
+- HTGeometry.ApertureConeCalculus
+- HTGeometry.ApertureConeWinding
+- HTGeometry.ApertureLogTranslation
+- HTGeometry.ApertureOpenHistoryIdeal
+- HTGeometry.BoundaryCoronaCStarAlgebra
+No quantization error was reported; unrelated source was left untouched.
+
+External parent audit: Ernvall-Hytonen–Odžak–Smajlović, *On a class of periodic
+Dirichlet series with functional equation* (2020), primary PDF
+https://www.mathos.unios.hr/mc/index.php/mc/article/view/3418/634 . Its degree-one
+finite Fourier characterization assumes global continuation, a completed scalar
+functional equation and periodic arithmetic coefficients. Those are not the
+canonical residual-phase premise and have not been produced from hW.
+SOURCE-MEAN-COMPACTNESS.md records the separately inspected AP factorization
+and physical-boundary counterexample papers with their precise premise gaps.
+
+Three compact searches are saved in cycle22-search-evidence.json. All returned
+partial=false; compiler metadata mostly remains pending/source-only and refresh
+reports the running indexer. Candidate, source-argument and proof-idea sections
+were inspected; fixed-line reciprocal mean square and weighted settled-phase
+receiver signatures were verified in their source. No search hit was treated
+as an unconditional boundary producer.
+
+P22 is a new exact source conjecture, not a theorem: positive-time mean-square
+finite-frequency approximation of the actual circle phase. A diffuse chirp
+defeats generic positivity/local regularity/counting-growth arguments. The
+existing absolute trace/kernel estimate loses ε^(-p), so the separate transfer
+from B² approximation to radial cancellation also remains unpaid. No P22 Lean
+was written before a paper proof. Its verdict is SURVIVES PRELIMINARY ATTACK;
+scientific novelty is unestablished.
+
+Nine-part hgtl7 self-audit, also posted in chat:
+1. L4 closes the inspected corpus's arbitrary real-periodic class; independent scientific novelty is unestablished.
+2. Subgroup classification and AP factorization are classical. They were treated as bridges, not discoveries.
+3. The actual-source assembly needed T20/T21 and both rational receivers; merely finding a classical periodic-series theorem does not provide its premises.
+4. The real-base restriction is gone. The arbitrary-source quantization frontier remains open.
+5. Pivot from more represented classes to the physical boundary orbit and actual signed approximation error.
+6. L4 was completed; the source audit also isolated a concrete boundary-limit obstruction and quantitative radial loss.
+7. No step was omitted on effort grounds. Every new declaration and dependency was audited.
+8. The represented-class gap was closed; the hardest source producer was attacked but remains unproved.
+9. Three fresh corpus searches and direct premise audits distinguish fixed-line mean-square results from a boundary phase producer.
+
+## Cycle27 evidence — 2026-10-08
+
+Four full-corpus deep queries completed without partial results; all
+candidate and source-argument statements were inspected. Inventories range
+from68824 to68834 files. Compiler freshness is mixed; semantic coverage is
+unmeasured and refresh reports a running background indexer. Complete
+query records, proof ideas and ingredient sets are preserved in
+cycle27-search-evidence.json. No global absence claim is inferred.
+
+Direct source reuse: centered_forward_dirichletConvergesAt,
+norm_dirichletSum_sub_partialSum_le, exists_forward_regularPart,
+differentiableOn_dirichletSum and the toolchain's zeta regularization.
+Serena symbol lookup rejected both owned Lean paths as ignored; edits used
+the read source and patches. API probes preceded implementation. Two final
+direct leaf checks were clean. All ten public declarations and dependency
+closures use only propext, Classical.choice and Quot.sound. Exact commands,
+source hashes and full axiom output are saved in both finite-part audit files.
+
+External applicability: [Brevig--Kouroupis, September2026](https://arxiv.org/html/2609.35496v1)
+requires square-summable coefficients and gives iterated fixed-line means.
+It does not establish the actual joint boundary/height limit. The attempted
+arXiv2510.05793v2 HTML retrieval failed; no result was inferred from it.
+[Flajolet--Gourdon--Dumas, Theorem4 and Section3](https://specfun.inria.fr/dumas/Publications/FlGoDu95.pdf)
+provides the classical Mellin singularity parent, with Gaussian divisor
+sums already among its examples. This defeats a claim of new methodology.
+[Kaneko](https://arxiv.org/abs/2109.12495) treats zeta/primitive-character
+mixed moments, and [Balkanova--Frolenkov](https://ddd.uab.cat/pub/pubmat/pubmat_a2023v67n2/pubmat_a2023v67n2p611.pdf)
+treat Maass symmetric-square families; neither inspected scope supplies
+the missing realization for arbitrary hW.
+
+T26 and T27 have complete paper proofs, pending their exact Lean
+formalizations. C28 remains an open physical centered-energy conjecture.
+All nine hgtl7 self-audit answers are in the cycle27 card and were posted
+in chat. Verdict BRIDGE; independent scientific novelty unestablished.
+
+## Cycle28 evidence — 2026-10-08
+
+Four fresh deep queries are retained in cycle28-search-evidence.json.
+The Mellin query completed; double-pole, actual critical coefficient and
+centered full-cone queries returned partial results. Inventories range
+68842--68850 files. Compiler records remain mixed (many pending, stale or
+unavailable), semantic coverage is unmeasured, and background refresh is
+incomplete. Relevant retrieved source signatures/proofs were inspected;
+no global absence or exhaustive semantic coverage is claimed.
+
+Reused exact Mellin/Gamma, absolute source convolution and Bochner norm
+interchange machinery. GaussianMellin has 240 lines, nine public
+declarations, and only the original hW as a source premise in its source
+capstones. Final direct --old leaf audit is clean. Current-toolchain API
+probes and every public dependency closure pass; standard axioms only.
+The first combined scratch audit had unresolved universe parameters in
+generic API probes; explicit universe levels repaired the scratch file.
+No source proof changed, and the final scratch audit exited0. Complete
+output and source hash are in gaussian-mellin-lean-audit.txt.
+
+All 66 owned quantization leaves are wired once. No umbrella/full build.
+Formal lint exited1 with 367 size warnings and nine unreachable modules
+outside this package; no quantization error. Serena symbol retrieval
+rejected the owned Lean path as ignored, so edits used patches to the
+read source. No heartbeat increases, added axioms or numerical experiments.
+
+Primary audits: [Flajolet--Gourdon--Dumas](https://specfun.inria.fr/dumas/Publications/FlGoDu95.pdf)
+is the Mellin parent. [Broucke--Hilberdink, Appendix B](https://arxiv.org/html/2409.06301v1#Sx1)
+explicitly contains the coefficient/Bessel lower-bound mechanism; its
+main mean theorem has sign and counting hypotheses absent here. This
+defeats any new-method claim for T28/T29. The inspected
+[Fejer--Riesz paper](https://arxiv.org/abs/2609.03855) and
+[Dirichlet-group Riesz means](https://arxiv.org/abs/1908.06458) require
+Hardy-space inputs and do not establish such membership for our source.
+
+T28/T29 are dependency-closed paper proofs, pending Lean: actual Gaussian
+coefficient recovery, rigidity-or-linear-energy, and the quantitative
+logarithmic lower comparison. Their exact error retains integer frequency
+separation. T26's double-pole main and T27 remain pending. The new priority
+is the pole-free physical comparison and missing C25 upper half. The hard
+C28 source energy estimate and unrestricted WP04 remain OPEN.
+All nine hgtl7 answers were posted in chat and recorded in the card.
+
+## Cycle29: actual centered Gaussian boundary
+
+Three finished leaves: CenteredSource (198 lines, 15 public declarations),
+CenteredGaussian (177 lines, 9), GaussianFourier (67 lines, 3). Each final
+`lake --old env lean -o ... <leaf>` exited zero with no diagnostics.
+All 27 public declarations and dependency closures printed only propext,
+Classical.choice and Quot.sound. The combined scratch API/axiom audit
+also exited zero. Complete commands, hashes and output are preserved in
+centered-source-gaussian-lean-audit.txt. All 69 quantization leaves are
+wired exactly once; no umbrella or full build.
+
+Three corpus searches preserved in cycle29-search-evidence.json. Gaussian
+coefficient and centered-forcing searches completed; the latter mostly
+returned inapplicable matches. Rephrased with WeilWork module filter and
+powerCoeff mechanism: this partial search returned exact PowerEnergy,
+ForwardVariance and coprime-variance inputs. Source inspection retained
+the open-power-disk restriction and parameter-dependent constants. No
+variance-zero inference is justified. Compiler inventory reports many
+pending/stale/source-only entries; semantic completeness is unmeasured.
+
+Primary external checks: [Ramachandra 1974](https://www.numdam.org/article/ASNSP_1974_4_1_1-2_81_0.pdf),
+[Suzuki 2023](https://londmathsoc.onlinelibrary.wiley.com/doi/10.1112/jlms.12785),
+and [Gaussian/Bessel comparison](https://arxiv.org/html/2409.06301v1).
+No inspected result supplies the arbitrary-source C28 bound. Gaussian
+extraction is classical; verdict BRIDGE, novelty gate unmet.
+
+Final lint exited one: five unreachable HTGeometry leaves
+(ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation,
+ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra), plus 367 existing
+size warnings. No owned quantization error; unrelated files unchanged.
+No added source premises, axioms, heartbeat overrides or numerical jobs.
+
+## Cycle30: actual coefficient recovery and linear energy alternative
+
+GaussianRecovery (132 lines, four public declarations),
+GaussianCoefficientLimit (109 lines, two), and GaussianEnergy (223 lines,
+eleven) passed clean final direct leaf audits with --old. No umbrella or
+full build. The actual boundary moment equals its absolutely convergent
+logarithmic Gaussian coefficient sum; one summable scale-uniform majorant
+pays the limit at each positive integer. Literal trace measurability,
+conjugation, Gaussian square integrability and exact half-line normalization
+then give |B(T,ell)|^2<=2E(T)/(T sqrt(pi)). A nonzero centered coefficient
+therefore forces positive linear energy at every sufficiently large scale;
+otherwise the existing exact coefficient-rigidity assembly gives lambda=Lambda
+and RH. The final alternative has only hW as substantive source input.
+T28 assertions1/3 are now compiled; assertion2 and quantitative T29 remain
+pending, as do T27, C25-upper, C28 and common-endpoint quantization.
+
+Recovery's six declarations passed the final standard-axiom audit; full
+commands, hashes, scratch API source and output are retained in
+gaussian-recovery-lean-audit.txt. Energy's eleven declarations and API probes
+also passed; full output and hash are in gaussian-energy-lean-audit.txt. Prototype repairs concerned conjugation notation, function
+rewrites, real/complex casts and a recursive simplification; no mathematical
+premise or heartbeat limit changed. Final leaf checks emit no warnings.
+All 72 quantization leaves are wired exactly once. Scoped whitespace check
+passed. Latest lint exits1: 367 existing size warnings and seven unrelated
+unreachable leaves (WeilPaperArithmeticProductPenalties,
+WeilWorkSettledPhaseCenteredConvolution and five HTGeometry leaves).
+No quantization error; unrelated sources unchanged.
+
+Four deep searches are preserved in cycle30-search-evidence.json, including
+all candidate/source-argument rows. All requests completed with partial=false;
+compiler inventory remains mostly pending/stale and semantic coverage
+unmeasured. The Bessel search mostly returned special-function Bessel
+identities; its suggested ingredient set is inapplicable. The actual
+weighted-Bessel theorem it found requires compact support and continuity.
+The zero-variance follow-up confused zero-index coefficients and unrelated
+matrix centering with vanishing of the entire source; no such inference
+was adopted. Direct source inspections remain authoritative.
+
+C30's exact statement and attacks are in ZERO-VARIANCE-RIGIDITY.md.
+Generic zeta plus a Dirichlet monomial disproves the analytic-data shortcut,
+not the full-positive conjecture. Current ValuationZeroFree supplies
+one-prime local nonvanishing; this stronger source statement was inspected,
+not independently rebuilt. Joint coefficient faithfulness/prime exhaustion
+is still unpaid. Exposed-point rigidity requires equality of its fixed
+functional, and regular-deviation rigidity requires closed-strip continuation
+of the logarithmic deviation; neither is inferred from zero variance.
+
+External primary audit: [Broucke--Hilberdink Appendix B](https://arxiv.org/html/2409.06301v1#Sx1)
+contains the classical coefficient/Bessel lower mechanism. The September2026
+[local Hardy embedding preprint](https://arxiv.org/html/2609.11560v2)
+claims an embedding for Hardy norms with unweighted coefficients. Our
+available energy is weighted by 1/n; normalizing coefficients moves its
+trace to Re(s)=1. No critical-line upper estimate follows, and no unverified
+preprint theorem was imported. Exact C30 searches supplied no verified
+matching classification; this is not an originality/absence claim.
+Verdict BRIDGE for the formal work, SURVIVES PRELIMINARY ATTACK for C30.
+All nine hgtl7 answers were posted in chat and copied to the card.
+
+## Cycle31: finite Gaussian comparison and exposing-variance attack
+
+Three new leaves passed clean direct `lake --old env lean -o ... <leaf>`
+audits: GaussianGram (195 lines, thirteen public declarations),
+GaussianBessel (134 lines, two), GaussianFiniteEstimates (89 lines, two).
+All seventeen declarations passed the /tmp API/axiom audit with only
+propext, Classical.choice and Quot.sound. Exact commands, final hashes,
+audit source and complete output: finite-gaussian-bessel-lean-audit.txt.
+All 75 quantization leaves wired exactly once; no umbrella/full build.
+Missing GaussianShift object restored by a direct leaf audit, source unchanged.
+
+The source result completes T28: every finite positive-index coefficient
+set supplies its full asymptotic Gaussian energy lower bound. The proof
+uses actual recovered moments and the exact finite Gram matrix. The
+quantitative finite estimate separates moment-recovery and off-diagonal
+errors. T29's uniform arithmetic estimates and growing cutoff remain
+unpaid, as do T27 and every proposed source upper bound.
+
+Five deep searches retained in cycle31-search-evidence.json, including
+all candidate/source rows, ingredient proposals and freshness metadata.
+The first two were partial; the last three had complete source inventory,
+with mostly pending/stale compiler data and unmeasured semantic coverage.
+Proposals that assumed RH, both signs of Weil positivity, spectral support
+on zeta zeros, or an unproved kernel bound were rejected as source proofs.
+
+Finite-prime confinement was REDISCOVERED in WeilFiniteSupport; that exact
+existing Lean rigidity theorem is the positive survivor. WeilLogSummable
+already covers log-summable and sparse deviations. Direct source reads
+of valuation factorization/endpoints show their cofactor aggregation;
+zero variance does not automatically isolate individual coefficients.
+New quantitative C31 is stated and attacked in
+EXPOSING-VARIANCE-COERCIVITY.md, without a proof claim or formal receiver.
+
+Primary external checks are linked in the two result notes: classical
+Broucke--Hilberdink Bessel comparison; Saksman--Seip boundary counterexamples;
+Brevig--Kouroupis--Perfekt boundary-limit cautions; multiplicative/uniqueness
+parents; current Suzuki and Connes--Consani--Moscovici operator frameworks.
+Their missing source or normalization premises were kept explicit. No
+numerical experiment or unverified theorem was imported.
+
+Latest lint exits1: six unrelated reachability errors, 367 existing size
+warnings, no quantization error. Exact errors retained in the audit.
+All nine hgtl7 answers posted in chat and copied to the card. Novelty beyond
+corpus/literature remains unestablished; checked bridge progress is not a
+solution of WP04.
+
+After all owned Lean, search and lint handles reached terminal exits,
+removed all 24 named Cycle31 temporary files. Durable audit/search evidence
+and finished leaf objects retained. Scoped trailing-whitespace check passed.
+No live owned build remains; goal remains active.

@@ -399,3 +399,1029 @@ Cycle20 cleanup complete: seven owned search JSON files removed after receipts, 
 ## Cycle21 started — actual pole-completion audit
 
 Previous turn changed research evidence (density correction) but established no new signed estimate; classify as audit progress, NO FRONTIER ADVANCE. Current C-lift and source state revalidated. Plan: search actual polar/full completion machinery, audit the exponential remainder against the literal integer source and external parent theory, reject any generic extension or reversed implication, then attack a concrete source estimate. Complete paper and utility gates before any Lean. Universal WP02 receiver unchanged; no new build or source edit yet.
+
+Cycle21 CLOSED — NO FRONTIER ADVANCE. CYCLE21-AUDIT.md records exact C-lift still OPEN but DEFERRED: classical positive-extension/ODE machinery does not fix the actual arithmetic remainder or create attainment. Modified residue/boundary results require full smooth-test positivity; fractional-mass rigidity requires the unavailable integer spectral masses. Existing actual gamma jump identity and bounded coherent null completion were checked without promoting them to an arbitrary-family lower bound. No Lean edits, builds, or umbrella changes.
+
+Next action: attack VANISHING-MASS-DEFECT-CONJECTURE.md directly through an integrated, trace-dependent gamma inequality retaining both poles and every integer sample. The real-frequency constant term is still unpaid. Keep frequency cost of all correction mass; do not substitute spectral weak convergence, an abstract positive extension, or a positive Sonin trace. Paper before Lean. No new conditional receiver is progress. Goal remains ACTIVE.
+
+Cycle21 cleanup complete: four owned search JSON files removed; all own processes terminal; scoped whitespace checks clean. Durable memory rh/weil_work_02_cycle21_pole_jump_audit_2026_10_08 records the direct-producer continuation. No new compilation claim.
+
+
+## Cycle22 started — the signed all-sample estimate
+
+Previous turn NO FRONTIER ADVANCE. Current target, audit decision, and continuation memory revalidated. Plan: corpus search for actual joint trace/gamma control; select an exact falsifiable source conjecture retaining the universal receiver quantifiers; attack it against existing source examples and primary parents; complete paper proof before any Lean, then targeted foreground leaf and axiom audits if justified. Avoid another conditional equivalence, generic positivity representation, or upper-family construction presented as a lower bound. Main goal unchanged and ACTIVE.
+
+
+Cycle22 CLOSED — NO FRONTIER ADVANCE. CYCLE22-AUDIT.md records the already-proved outgoing-quantile cost divergence/negative central reserve. FINITE-HEAD-CARRIER-DIAGNOSTIC.md gives a paper-only gamma-weighted density and finite positive-cone argument: each fixed integer head admits normalized noncompact polar xi packets of uniformly negative gamma energy. Classified BRIDGE, not new science or a compact WP02 counterexample; no Lean formalization claimed. Exact competing linear-degree / unbounded-degree-ratio conjectures recorded, but deferred unless they control full tail and compact admission. Seven searches terminal and fully inspected, one partial semantic retrieval. No Lean edit/build or umbrella change.
+
+Next cycle: retain VANISHING-MASS-DEFECT-CONJECTURE as the selected producer. Attack one explicit signed quadrature/interpolation inequality coupling continuous polar cosh cancellation with every integer sample and the full gamma jump. Test it against actual far-polar leakage and coherent completion immediately; do not formalize generic weighted density, another conditional receiver, or an unrelated orthogonal-polynomial model. Both poles, complex mixtures and t=0 remain essential. Goal ACTIVE.
+
+Cycle22 cleanup complete: seven owned search files removed after evidence capture; all own processes terminal; whitespace checks clean. Durable memory rh/weil_work_02_cycle22_signed_density_audit_2026_10_08. No new compilation claim.
+
+
+## Cycle23 started — signed polar sampling
+
+Previous turn: audit progress but NO FRONTIER ADVANCE. Revalidated literal universal WP02 target and current card; no analytic sign result was added. Plan: choose one precise signed interpolation inequality using the actual continuous cosh cancellation and every integer atom; attack against corpus parents and actual leakage/completion examples; finish paper proof before Lean. Keep all-family, complex-source and t=0 quantifiers. Auxiliary degree question remains deferred unless it pays compact admission and the full tail. No new Lean edits/builds.
+
+Cycle23 paper checkpoint: GAMMA-TRUNCATION-PROOF.md gives the exact positive two-trace frequency-moment floor and d*t/K^2 omitted-gamma lower bound. It excludes every row-dependent bare Binet truncation K_i<=exp(r*N),r<kappa/2, on the SAME existing exact matched families. Complete paper proof recorded, classification BRIDGE / quantitative method boundary, not RH sign or established significant novelty. Next formalize positive survivor and adaptive capstone together if implementation utility gate remains justified. No new Lean source yet. One-sided nonnegative-trace gamma conjecture remains unproved and was not promoted to a producer.
+
+Cycle23 FORMALIZED — WeilWorkExposingRayGammaTruncation.lean is the18th owned leaf.
+Positive moment and omitted-mode floors plus adaptive capstone compile, final
+installed leaf/cache audit exits0 without warnings, and all ten public theorem
+axioms are the standard three. One aperture constant works for all subcritical
+rates; all-integer matching and the same-family/adaptive-count quantifiers remain.
+Paper, RESULT, PROOF and EVIDENCE updated. Global lint retains unrelated
+reachability failures, with no WP02 finding shown. No universal energy sign proved.
+
+Anti-theatre verdict: quantitative method boundary, not established significant
+scientific novelty. The scalar series/remainder is classical; another cutoff
+rate or surrogate tweak is not the next research target. Positive survivor is
+formalized, so the bare-mode obstruction is closed without an unsalvaged no-go.
+Next attack the signed producer using the actual all-integer sampling and both
+polar moments, with analytic remainder retained. In particular audit whether
+dense logarithmic tail samples control the otherwise unpaid low-frequency mass;
+do not assume a sampling/interpolation inequality or frequency-cost bound.
+Main goal ACTIVE; VANISHING-MASS-DEFECT remains OPEN.
+
+Cycle23 cleanup DONE: six own temporary files removed after all processes
+were terminal and evidence saved. Installed leaf/cache current; whitespace
+checks clean. Continuation memory rh/weil_work_02_cycle23_gamma_boundary_2026_10_08.
+
+## Cycle24 started — sampling cost of the signed core
+
+Apply hgtl7 again. Prior result is an audited method boundary, not an RH
+lower-sign advance. Plan: search exact corpus frontier for dense logarithmic
+sampling with both polar moments and gamma-frequency cost; audit primary
+parents; select and attack an exact signed producer conjecture; finish its
+paper proof before Lean. Do not weaken the all-family or zero-tail conditions.
+No new cycle24 Lean source yet.
+
+Cycle24 checkpoint: three deep searches terminal/non-partial and fully
+inspected; receipts in EVIDENCE. Actual Lipschitz quadrature requires an
+unpaid source regularity budget. Log-weight frequency localization does
+not preserve the exponential pole moments under aperture escape. Ground
+quadrature retains unknown lowest energy; ground-state jump positivity
+does not control the subtracted mass/prime fluctuation. Signed zero-mass
+interpolation is not a positive-mixture producer. No new signed inequality
+or paper proof, and no cycle24 Lean source.
+
+Continue exact VANISHING-MASS-DEFECT. Before another broad search, derive
+the proposed weighted integer interpolation error as an actual spectral
+kernel, including the fixed low-lag cells and the full support endpoint.
+Test it against short nonpolar Fejer and actual far-polar leakage to expose
+any lost pole or unsupported uniform derivative bound. Only a signed bound
+with all-family quantifiers and vanishing normalized loss can discharge the
+producer. Do not replace it with another conditional receiver or scalar tweak.
+
+Cycle24 scalar sampling conjecture now FALSE on paper; exact statement and
+dependency-closed positive survivor in GRID-DEFECT-PROOF.md. The literal
+pole-cell defect tends to Re(zeta(1/2+i*t)) plus an absolutely summable
+cosine series with positive coefficients. KKS Corollary3's unconditional
+positive-real large values defeat uniform gamma domination. External
+large-value input is not Lean-audited; do not claim formal no-go. Nearest
+corpus parent is NaturalLogMeshContinuation; mechanism classical, significant
+novelty unestablished. Plan: formalize the exact positive-coefficient cell
+decomposition and literal pointwise kernel limit; audit stronger actual-source
+pairing without assuming dominated convergence. No new conditional receiver.
+
+Cycle24 kernel milestone FORMALIZED: WeilWorkExposingRayGridDefect.lean
+proves positive summable pole-cell correction, literal defect limit
+Re(zeta)+C, |C|<=-Re(zeta(1/2)), and uniform weighted error
+(6+2*|t|)/sqrt(K+1). Installed final leaf exits0/no warnings, all15 theorem
+axiom audits use standard axioms only. New umbrella import wired; no full
+build. Global lint repeats eight unrelated reachability errors, no WP02
+finding. Classification BRIDGE/classical Euler-summation parent; no signed
+energy advance. Owned leaves19, universal goal ACTIVE.
+
+The stronger survivor (4) in GRID-DEFECT-PROOF is now paper-proved using
+the quantitative bound and actual polar cosh cancellation. Next formalize
+its integral interchange, literal atom pairing, and finite-family matched
+moment, then return to a signed trace-dependent producer. Relevant checked
+source APIs: WeilPositivityRegularPerturbationRigidity.integrable_normSq_paperFT_mul_of_linear;
+WeilSymbolMertensExpansion.integral_normSq_paperFT_mul_cos_eq;
+WeilPositivityConstantShiftRigidity.integral_weilTestEvenPart_mul_cosh_eq_zero.
+Far-polar leakage does not refute the moment law: individually tiny far
+atoms can retain a nonvanishing n^-1/2-weighted sum. Do not drop that tail
+or use pointwise convergence alone to interchange integrals. No second
+holomorphic moment or higher pole-jet sign claimed.
+
+## Cycle25 — actual polar-source zeta moment
+
+Previous turn PROGRESS: installed and audited literal grid kernel and
+weighted convergence. Apply hgtl7 again; universal WP02 still OPEN. Plan:
+refresh corpus pairing audit; formalize the paper-proved exact moment on
+actual compact polar sources, all integer samples and arbitrary matched
+finite families; targeted foreground leaf/axiom/lint checks; then return
+to the signed lower producer. No hypothetical integrability assumptions,
+conditional RH receiver, or numerical computation.
+
+Proof simplification: subtract the FINITE correction sum first. The resulting
+principal defect is sum_(n<=K) cos(t*log n)/sqrt(n) minus the full pole
+integral. Its error from Re(zeta) is <=(8+2|t|)/sqrt(K+1), by the two audited
+kernel error bounds. Thus only finite cosine integrals and compact-lag Fubini
+are needed; no infinite correction-series interchange is required. This is
+the same exact source theorem and leaves no tail or pole remainder unpaid.
+
+Cycle25 stronger survivor installed: WeilWorkExposingRayZetaMoment.lean,
+344 lines, namespace RHTower.ExposingRayZetaMoment. Exact moment_eq and
+matched_moment now prove (4) for actual compact complex polar sources
+and every finite matched family. The latter allows all real coefficients
+and scales; proof is linear, no hidden positivity assumption. Integrated
+error and compact-lag Fubini are proved, not premises. Final foreground
+leaf/cache audit exit0/no warnings; one umbrella import, no full build.
+Axiom audit exit0: all12 public theorems use only propext, Classical.choice
+and Quot.sound. Latest lint13 unrelated unreachable modules, no WP02
+finding. This is a BRIDGE/classical co-Poisson interface, not a signed
+energy result or established significant novelty.
+
+Next retain VANISHING-MASS-DEFECT as the exact producer conjecture and
+all integer constraints. Scalar gamma compensation by the zeta moment
+inherits the already recorded large-value obstruction; do not recast it
+as a new easy conjecture or add norm-square corollaries as frontier progress.
+The new moment removes a false freedom in spectral trial measures but does
+not itself bound their gamma energy. Follow-up corpus search found only
+Schwartz multiplier and joint signed Mobius-block identities; neither pays
+the signed cofinal aggregation. Continue from an actual source estimate,
+with full tail, complex families and t=0 retained. Universal goal ACTIVE.
+
+Cycle25 closure audit: no hidden source or positivity premise, no numerical
+job, no heartbeat changes, no full build. Axiom and installed-leaf processes
+terminal; owned temporary files cleaned after receipts. This completes the
+paper-to-Lean positive-survivor obligation of the grid route, while its
+external large-value negative theorem remains paper-only. Main lower
+producer and universal WP02 receiver remain unproved. Continuation memory:
+rh/weil_work_02_cycle25_zeta_moment_2026_10_08.
+
+## Cycle26 — signed compensation after moment conservation
+
+Previous turn PROGRESS: actual all-family zeta moment is installed; signed
+lower producer remains OPEN. Plan: inspect refreshed source search and actual
+lattice law; select a source-level signed conjecture retaining both poles,
+every integer sample and t=0; hostile and novelty audit before any Lean work.
+Do not count another moment identity or conditional receiver as a lower bound.
+
+Deep query `polar integer null logarithmic gamma energy source covariance
+conditional lattice pole defect` completed in about100s, partial because the
+local judge returned malformed JSON. Indexed68,726 files, coverage generation
+1289755/current1289763, many compiler statuses pending/stale. All20 candidates,
+all20 source arguments, no proof ideas, and the one ingredient set inspected.
+The ingredient set confuses geometric lattice classes with the analytic
+polar lattice defect; it supplies no energy estimate. Actual own LatticeMass
+source confirms its mass identity only for the fixed Fejer profile on one
+common lattice with spacing>=4. Extending that coefficient identity to
+arbitrary source profiles would discard the unresolved within-cell terms.
+Search freshness and partial output support no absence theorem.
+
+[OPEN CORE] Obtain vanishing normalized negative energy loss on the cofinal
+matched diagonal. A candidate must control actual within-cell source
+variation as well as polar cancellation; coarse covariance alone is not it.
+
+Cycle26 mechanism audit: generic co-Poisson pairing and conductor identities
+do not close the signed source. GammaCoPoissonCriticalCompletionTrilemma
+excludes its specific scalar critical completion, and SoninBurnolConductorNoFloor
+concerns a different completed packet channel; neither is a universal WP02
+no-go. Narrow integer-packet energy escape is already proved in WP01 by
+Montgomery--Vaughan, so do not repackage it as a new conjecture. The own
+common-lattice mass identity also cannot handle arbitrary varying profiles.
+
+Next exact competing conjectures: can actual finite polar integer-null
+mixtures approach the fixed negative-energy Fejer spectral density in L1
+while keeping archimedean energy bounded above, or does every such recovery
+sequence have energy tending to positive infinity? This retains actual
+sources and every integer sample, allows varying profiles, apertures and row
+counts, and is a stronger diagnostic than the fixed-profile escape theorem.
+It does not imply the nonzero exposing-ray bound by itself. Corpus and
+external novelty/hostile audits pending before choosing a verdict.
+
+Cycle26 checkpoint: exact E-escape/E-recovery dichotomy now in
+POLAR-NULL-CLOSURE-CONJECTURE.md. E-escape SURVIVES PRELIMINARY ATTACK;
+scientific novelty and both directions remain unproved. No new lower bound
+or Lean leaf this cycle. Four searches fully inspected and recorded in
+EVIDENCE.md; source-specific and external parent scopes audited. Neither
+finite-aperture compactness nor a bounded logarithmic moment justifies
+passing the polar/zeta constraints to the proposed limit.
+
+Anti-theatre: no new scientific knowledge established this cycle; packet
+coercivity was already available, and extra reformulations do not move WP02.
+Anti-laziness: the attempted source step retained arbitrary profiles,
+all integer constraints and the escaping-frequency cost; it remains unpaid.
+Next work should attack ONE concrete variable-profile recovery construction
+or a uniform separation inequality before launching more broad searches.
+Do not formalize the logical dichotomy or routine compactness as progress.
+Main VANISHING-MASS-DEFECT and nonzero ray remain the actual goal.
+
+## Cycle27 — test an actual recovery mechanism
+
+Previous goal turn NO PROGRESS in mathematics: an open diagnostic and scope
+audits, no proof or counterexample. Apply hgtl7 again. Current card/conjecture
+and cycle26 memory revalidated. Plan: attack E-escape with positive finite
+translation/modulation completions of the fixed Fejer source, keep literal
+polar zeros and every integer equation, identify the exact mass/energy cost;
+only formalize a dependency-closed nontrivial survivor. No new conditional
+receiver or generic compactness wrapper. Universal nonzero-ray goal intact.
+
+Cycle27 paper survivor: `POLAR-FIBRE-DENSITY-PROOF.md` gives a dependency-closed
+argument for equality of spectral L1 closures of full and polar positive
+mixtures in EVERY exact finitely supported integer-atom fibre. This includes
+actual Fejer null recovery, so E-escape cannot be vacuous if the proof passes
+Lean. It does not bound energy, aperture or row count and settles neither
+E-escape/E-recovery nor the main signed lower inequality. Verdict BRIDGE;
+scientific novelty unestablished. This differs from cycle18's prescribed
+upper-family density limit and cycle21's gamma-weighted polar/full lift.
+
+Mechanism: bounded L1 separator -> algebraic supporting atom coefficients ->
+constant multiplicative Toeplitz bound via actual polar resonators -> all-test
+mass bound via finite divisor/prime-exponent averages -> positive translation-
+invariant quadratic form -> far-polarization continuity -> contradiction in
+the SAME exact fibre. No trace limit is exchanged without the positive-form
+bound. Classical transference independently checked against Lenz--Strungaru,
+arXiv:1412.7377, Proposition2.4. Formalization started in owned scratch
+`/tmp/wp02_cycle27_transfer.lean`; no new installed leaf yet.
+
+Implementation simplification: use divisors of D^(L+1), D=M!, instead of
+equal prime-exponent boxes. For every n<=M, the overlap contains all divisors
+of D^L and is contained in divisors of D^(L+1). The consecutive divisor-count
+ratio tends to1 by the finite product formula, giving the same transfer.
+
+Formal checkpoint: `/tmp/wp02_cycle27_transfer.lean` passed foreground
+`lake --old env lean` with exit0 and no diagnostics for the actual divisor
+overlap, finite translated-source integral identity and
+`constantToeplitz_transfer`. No transference assumption remains in that
+proof. Next scratch extension derives its constant Toeplitz premise from
+actual polar resonators, targeting the unconditional equivalence
+`PolarMassBound b C <-> FullMassBound b C`. This is a component of the
+all-fibre theorem; no L1 recovery theorem is formalized yet.
+
+Installed 21st leaf `WeilWorkExposingRayFibreTransfer.lean` (393lines).
+Both public capstones are `constantToeplitz_transfer` and
+`polarMassBound_iff_fullMassBound`, namespace ExposingRayTransfer. Final
+foreground target-only `lake --old env lean -o ...olean <leaf>` exits0,
+no diagnostics. All21 own leaves wired. Global lint exits1 on10 unrelated
+unreachable modules, no WP02 finding. Imported axiom audit exits0 for BOTH
+public theorems, each exactly propext/Classical.choice/Quot.sound.
+
+Next exact work: finish paper sections4--5, not another reformulation.
+Reusable actual source machinery: `WeilSpectral.weilTest_sum_transl`,
+`weilFullFunctional_add/smul/sum/tilde`, `admissible_weilTest`, and
+HTGeometry `PositiveDefiniteOnReal.norm_le` (source checked). Define the
+atomic functional by C*k(0)+W_(b*sqrt)(k)-W_0(k): the poles and Gamma
+cancel exactly, leaving C*k(0)-rawAtoms_b(k). FullMassBound makes its
+autocorrelation kernel positive definite. The existing norm_le then bounds
+all translated cross terms, giving far-polar convergence without assuming
+L2 boundedness of the atomic form. No new numerical step is needed.
+
+For same-fibre separation, an alternative to constructing a sublinear
+infimum is to add one artificial source (-v,-s) to the actual polar source
+list, where ell(rho)<s<=every polar-fibre cost. The generic existing
+`exists_of_nonneg_on_null_cone` then produces b(v)>=s and the row inequalities.
+Its null-cone premise still needs proof: a negative null mixture could be
+added with unbounded coefficient to any fixed actual mixture in fibre v;
+for positive artificial weight normalize the remaining mixture to v.
+This is an implementation route for the paper proof, not an imported premise.
+
+## Cycle28 — finish the actual separator extension
+
+Previous turn PROGRESS: the constant polar/full mass-bound equivalence is
+installed, source-audited and checked in Lean with standard axioms only.
+Revalidated its current definitions/proof and cycle27 memory. Apply hgtl7.
+Plan: (1) actual atomic functional and positive translation kernel,
+(2) far-polarization convergence for the atomic form and spectral L1,
+(3) bounded-separator extension and exact-fibre separation. Preserve every
+complex C2 source and all integer equations; no energy bound is assumed or
+claimed. The universal signed exposing-ray goal remains unchanged.
+
+Cycle28 working checkpoint: the direct raw-atom functional avoids subtracting
+two full Weil functionals. Its finite-sum identity, Hermitian symmetry and
+positive translation-kernel construction are in owned scratch, together with
+the exact three-source expansion. The paper quantitative error is
+|(Q(S_X f)-Q(f))| <= (2*c_X+c_X^2)*Q(f), and the same coefficient bounds the
+spectral L1 error by the original Fourier mass. The actual real L1 bounded
+separator equivalence is being checked; no installed new leaf yet. Exact
+fibre separation remains pending. Broad deep search returned no direct
+declarations,20 candidate lemmas,20 source arguments and one unverified
+ingredient set; every returned candidate was reviewed, mostly unrelated.
+The targeted lexical search recovered the existing far-polar and spectral
+kernel machinery. Deep retrieval completed without stage errors, but compiler
+freshness was incomplete and semantic coverage unmeasured; no absence claim.
+
+Cycle28 result PROGRESS: installed 22nd owned leaf,
+`WeilWorkExposingRaySeparatorExtension` (490 lines), wired into RHTower.
+The saved leaf passes foreground `lake --old env lean -o <own-cache> <leaf>`
+with exit0 and no diagnostics. Capstone
+`polarSpectralBound_iff_fullSpectralBound` is an unconditional equivalence
+for every bounded real linear functional on spectral L1 and every real
+arithmetic sequence. Both sides use all actual compact complex C2 sources;
+the polar side has both exact pole zeros. Positive-kernel characterization,
+actual generic far-polar source and the quantitative arithmetic/L1 limits
+are proved. No full/umbrella build or heartbeat override. Axiom and global
+lint receipts pending. Section5 exact-fibre separation remains OPEN.
+
+Next implementation target: define actual nonnegative Finsupp source
+mixtures using `WeilOneSided.WeilTestFn`, `logVector` and the new `densityL1`.
+Fix the entire finitely supported trace, including its zero tail. Prove
+closed-fibre separation cannot occur by adding the artificial row (-v,-s)
+to the actual polar sources, verifying the null-cone premise, then applying
+the existing algebraic feasibility theorem and this new actual separator
+extension. No conditional recovery interface is needed. Normalized logVector
+and raw atomCoeff are equivalent coordinatewise since sqrt(n)>0 for n>=2.
+Finish the actual all-fibre theorem and literal Fejer null-recovery corollary
+before returning to the unbounded gamma-energy cost. E-escape, E-recovery,
+the vanishing-mass-defect producer and universal WP02 lower bound stay OPEN.
+
+Cycle28 final receipts: all11 public theorem axiom audits imported the
+installed leaf and exit0, each with exactly propext/Classical.choice/Quot.sound.
+Scope whitespace and prohibited-declaration scans clean; all22 owned leaves
+wired. Guarded formal lint exits1 on8 unrelated unreachable modules:
+RHTower WeilWorkHigherDenominatorCutoffReciprocity,
+WeilWorkSingularArithmeticNotchGoodScales,
+WeilWorkSingularArithmeticNotchLocalization; HTGeometry ApertureConeCalculus,
+ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal,
+BoundaryCoronaCStarAlgebra. No WP02 finding; leave other scopes alone.
+
+Energy attack from the new result: any fixed bounded measurable g<=gamma
+admits no uniform polar arithmetic lower certificate over all apertures.
+The proved extension would give that certificate on literal Fejer, whose
+whole integer trace is zero but integral(rho_psi*g)<=E(psi)<0. In particular
+g=min(gamma,R) cannot replace the unbounded weight in a uniform certificate.
+This paper consequence is not a theorem about aperture-dependent cutoffs,
+and it settles neither E-escape nor E-recovery. No standalone Lean claim.
+Verdict BRIDGE; formal frontier advanced, scientific novelty unestablished;
+the positive-definite ingredients are classical (Lenz--Strungaru rechecked).
+All cycle28 owned process handles exited. Removed8 owned scratch, search
+and lint files after preserving receipts here and in cycle28 Serena memory.
+No commits or pushes. Goal remains ACTIVE, not complete or blocked.
+
+## Cycle29 — actual exact-fibre recovery
+
+Previous turn PROGRESS: the actual bounded L1 separator extension is
+installed and verified. Apply hgtl7 again; current definitions and cycle28
+memory revalidated. Plan: actual finite positive full/polar mixtures,
+coordinate reachability, convex exact fibres, augmented-row null-cone
+separation, then unconditional equality of L1 fibre closures and literal
+Fejer null recovery. Keep every integer equation including the zero tail.
+The paper theorem remains the selected BRIDGE conjecture; gamma-energy
+control and the original universal exposing-ray goal are not weakened.
+
+Cycle29 working checkpoint: actual signed coordinate sources and augmented
+null-cone support lemma passed their Lean checks. The full exact-fibre
+separation proof, closure equality and finite recovery construction are
+written in owned scratch; one normalized-to-raw coordinate sum rewrite is
+being corrected. The literal Fejer null-recovery corollary is included.
+No new installed leaf yet. Initial deep search returned20 candidates and20
+source arguments, all reviewed; useful hits were Hahn--Banach separation and
+actual mixture machinery. No proof ideas, one unverified ingredient set.
+Retrieval completed, but coverage snapshot is older, compiler freshness
+incomplete and semantic coverage unmeasured. No absence or novelty claim.
+
+Cycle29 result PROGRESS: installed 23rd owned leaf
+`WeilWorkExposingRayFibreDensity` (330 lines), wired into RHTower. It proves
+unconditional equality of full/polar spectral L1 closures in every exact
+finite integer fibre, actual finite positive recovery preserving every raw
+atom, and literal Fejer exact-null recovery. All profiles, apertures and
+finite row counts are allowed. The final saved leaf `lake --old env lean
+-o <own-cache> <leaf>` and all5 imported public theorem axiom audits exit0
+without diagnostics; exactly propext/Classical.choice/Quot.sound. All23
+owned leaves wired, scope whitespace and prohibited declarations clean.
+Guarded formal lint exits1 on7 unrelated unreachable modules: RHTower
+WeilPaperNativeRealificationRetract, WeilWorkSingularArithmeticNotchBudget;
+HTGeometry ApertureConeCalculus,ApertureConeWinding,ApertureLogTranslation,
+ApertureOpenHistoryIdeal,BoundaryCoronaCStarAlgebra. No WP02 issue.
+
+The positive recovery theorem settles existence, so E-escape is now
+nonvacuous. It supplies no gamma-energy control. Primary next problem is
+E-escape versus E-recovery, retaining the universal nonzero-ray goal.
+`SUBLOG-FIBRE-CONJECTURE.md` records the new competing weighted-recovery
+candidate for omega_beta=1+log(2+|tau|)^beta,0<beta<1. Do not infer it from
+L1 convergence or the constant Toeplitz transfer. The deep search was partial;
+all20 candidates and20 source arguments reviewed. Targeted lexical search
+found the actual sublog harmonic-envelope good-scales lemma, whose extra
+absolute coefficient bound is NOT available here. No weighted proof or
+scientific-novelty claim. Require a substantive source estimate before Lean.
+Updated RESULT/PROOF/EVIDENCE and the null-recovery diagnostic to the actual
+new frontier. No full build, resource override, numerical job or commit.
+All cycle29 owned handles exited. Removed8 owned scratch/search/lint files;
+retained source, current cache and receipts. Cycle29 Serena memory written.
+Anti-theatre/laziness answers posted. Goal ACTIVE; not complete or blocked.
+
+## Cycle30 — actual recovery energy
+
+Previous turn PROGRESS: unconditional exact-fibre L1 recovery is fully
+formalized and audited. Apply hgtl7; current theorem and cycle29 memory
+revalidated. Plan: audit weighted recovery and its competing obstruction,
+identify an actual source estimate controlling gamma-energy escape, and
+only formalize a dependency-closed result. No automatic weighted upgrade,
+absolute coefficient bound, or replacement of the universal WP02 goal.
+
+Cycle30 paper advance: `SUBHALF-LOG-FIBRE-PROOF.md` gives a closed argument
+for actual exact-fibre recovery in weight1+log(2+|tau|)^beta,0<beta<1/2.
+The substantive step derives the previously missing absolute harmonic
+envelope: partition integer coefficients by Omega(n), each layer primitive;
+combine its square bound with an elementary z^Omega harmonic estimate,
+1<z<2(1-beta), to obtain exponent theta=beta+z/2<1. Average BOTH remote
+arithmetic errors at X and2X over [R,2R]. This extends actual weighted
+separators, hence exact fibres by the cycle29 separation proof. No RH,
+full positivity, coefficient sign, or extra envelope premise. Original
+beta<1 conjecture and energy diagnostics remain open; not silently narrowed.
+Formalization started with the arithmetic harmonic estimate, using the
+existing elementary Mertens upper bound and finite Euler-product library.
+No weighted capstone has been Lean-verified yet. Parent coefficient and
+Euler-product methods are classical; external scientific novelty unestablished.
+
+Cycle30 arithmetic checkpoint: saved24th leaf
+`WeilWorkExposingRaySublogArithmetic`251lines passes final foreground
+`lake --old env lean -o <own-cache> <leaf>` without diagnostics. All3
+imported public axioms audits exit0 with exactly the standard three logical
+axioms. Umbrella wired. Formal lint has12 unrelated unreachable-module
+findings and no WP02 finding; exact list in EVIDENCE. Continuing with the
+actual weighted source estimate; no weighted capstone claimed yet.
+
+Cycle30 analytic work: actual polar resonator log-power budget and weighted
+far-polar L1 convergence are written in owned scratch. The proof integrates
+the scalar concavity tangent, including zero source mass, after the exact
+digamma comparison and the existing resonator gamma bound. Remaining
+steps: derive primitive square bounds and a sublog absolute envelope from
+each actual weighted separator; then formalize simultaneous remote-error
+averaging and repeat the exact finite-fibre separation argument. No
+absolute growth hypothesis may be promoted to the final recovery theorem.
+
+Cycle30 source checkpoint: `WeilWorkExposingRaySublogSources`292lines is
+installed as the25th owned leaf and wired. Final foreground saved-leaf
+audit exits0 without diagnostics. It proves actual polar resonator weighted
+mass budgets for0<=beta<=1 and quantitative weighted far-polar convergence.
+Imported axioms audit running. Derived actual-separator absolute envelope
+is written in owned scratch; not yet checked. Exact weighted recovery and
+the main WP02 energy inequality remain outstanding.
+
+Cycle30 result PROGRESS: three new owned leaves24–26, SublogArithmetic251
+lines, SublogSources292lines, SublogEnvelope264lines. All final foreground
+saved-leaf audits exit0 without diagnostics; all11 imported public axiom
+audits have exactly propext/Classical.choice/Quot.sound. All26 imports
+present. Final guarded lint exits1 on6 unrelated reachability findings
+(full list EVIDENCE), none WP02. No full/umbrella build, heartbeat override,
+numeric computation, commit or push. Scientific novelty unestablished;
+verdict BRIDGE. Paper weighted exact recovery for0<beta<1/2 is not yet a
+Lean capstone. Original beta<1 conjecture, both energy alternatives and
+the universal nonzero-ray lower inequality remain OPEN.
+
+Next exact step: formalize simultaneous remote control using the new
+paper section4a. For a_m=|b_m| on m>=2, zero otherwise, put
+w_j=a_(j+1)+sum_{j^2<m<=(j+1)^2}a_m/sqrt(j+1). Its cumulative mass bounds
+B(N)+B(N^2)/sqrt(N), while its shifted harmonic mass is at most
+H(N)+H(N^2)=o(log N). The source-read corpus theorem
+WeilSingularArithmetic.exists_small_sqrt_mass_of_sublog_envelope gives
+arbitrarily late N with B(N)/sqrt(N)+B(N^2)/N small. Use X=log N-2a to
+control BOTH actual correlation windows. Then weighted separator
+extension and exact finite positive fibre separation, retaining every
+integer and both poles. This is a proof alternative, not a narrowed goal.
+The fifth deep search returned partial=false,68814indexed files; all20
+candidates and20 arguments reviewed. Compiler freshness incomplete;
+no absence/novelty claim. Anti-theatre and anti-laziness answers posted.
+
+Cycle30 cleanup: every owned process handle exited. Removed22 owned
+scratch, search and lint files after preserving audit receipts and the
+next proof in paper/card. Source/cache artifacts retained; all26 imports
+verified and own whitespace clean. Goal remains ACTIVE, not complete or
+blocked. Next turn continues weighted exact recovery, not another
+assumed-envelope reduction.
+
+## Cycle31 — simultaneous exact arithmetic control
+
+Previous turn PROGRESS: three saved leaves and11 public axiom audits
+completed. Current source reinspection confirms the actual-separator
+sublog envelope and the corpus good-scale theorem. hgtl7 reapplied;
+main mission remains universal WP02, not weighted recovery alone.
+Plan: formalize square-block simultaneous N/N^2 control from the derived
+envelope; estimate actual far-source arithmetic errors at both windows;
+prove weighted separator extension and exact finite positive fibre
+recovery. Preserve every integer including zero tail and both poles.
+The dependency-closed paper proof remains SUBHALF-LOG-FIBRE-PROOF,
+sections4/4a/5. Verdict BRIDGE, scientific novelty still unestablished.
+No new assumed arithmetic bound or uniform-integrability premise.
+
+Cycle31 scales checkpoint: installed27th owned leaf
+`WeilWorkExposingRaySublogScales.lean`225lines, final foreground
+`lake --old env lean -o <own-cache> <leaf>` exits0, no diagnostics.
+Its actual-separator corollary derives simultaneous N/N^2 smallness from
+the cycle30 envelope. No new arithmetic premise is imposed. Public axiom
+audit prepared, not yet run. Transfer scratch349lines and weighted exact
+fibre scratch321lines are written; transfer check in progress. No weighted
+capstone is claimed before the installed-module and axiom audits finish.
+Lean namespace traps found: local sum_range_succ and add_le_add_left/right
+shadow expected mathlib statements; use qualified finite sums and the
+unambiguous binary add_le_add. No heartbeat override or numerical job.
+
+Cycle31 result PROGRESS: three new owned leaves27–29, SublogScales225lines,
+SublogTransfer361lines, SublogFibreDensity321lines. All three final
+foreground saved-leaf audits exit0 without diagnostics. All10 imported
+public theorem axiom audits exit0 with exactly
+propext/Classical.choice/Quot.sound. Printed capstone types confirm only
+source/exponent/domain conditions, no assumed arithmetic envelope,
+RH, positivity or recovery premise. All29 owned imports occur once.
+
+New completed capstone: every finite positive actual full mixture has
+arbitrarily accurate polar recovery in weight1+log(2+|tau|)^beta,
+0<=beta<1/2, with every raw integer atom EXACT, including the entire zero
+tail, and both poles on every row. Literal negative Fejer density has
+exact-null weighted recovery. Namespace:
+RHTower.ExposingRayTransfer.SublogFibre. Public endpoints:
+closure_polarFibre_eq_fullFibre, exists_exact_fibre_recovery,
+exists_raw_fibre_recovery, exists_fejer_null_recovery.
+
+Final guarded lint exits1 with6 unrelated unreachable modules:
+RHTower.WeilWorkPBAPJointSourceBudget; HTGeometry.ApertureConeCalculus,
+ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal,
+BoundaryCoronaCStarAlgebra. No owned WP02 finding. Scoped tracked and
+new-file whitespace audits clean. No full/umbrella build, heartbeat
+hack, numerical experiment, commit or push. Verdict BRIDGE; scientific
+novelty unestablished. Goal remains ACTIVE, not complete or blocked.
+
+Big picture: the obstruction to WP02 cannot be explained by absence of
+exact spectral recovery even in all these unbounded weighted norms.
+What remains unpaid is gamma energy / critical logarithmic tail control.
+The beta=1/2 boundary belongs to this proof's primitive-layer absolute
+estimate; it is not proved sharp. Next cycle must revisit the hardest
+energy producer and the unresolved beta<1 candidate using fresh corpus
+search, especially signed cancellation versus absolute coefficient loss.
+Do not add an assumed envelope or a conditional receiver. Do not simply
+repeat the now completed weighted separation formalization.
+
+Cycle31 closure: all own process handles terminal; removed all11 owned
+scratch/search/audit/lint files after preserving receipts. Sources and
+caches retained. Final scoped whitespace check exits0. Five anti-theatre
+and four anti-laziness answers posted in chat. Next-cycle plan: fresh
+corpus audit of signed cancellation/critical energy; no claim that the
+half exponent is sharp. Main goal remains ACTIVE.
+
+## Cycle32 — signed cancellation and the critical energy gap
+
+Previous turn PROGRESS: all weighted exact fibres closed in Lean for
+0<=beta<1/2. Reapplied hgtl7; main universal WP02 still unchanged/open.
+Plan: audit current corpus and primary literature, attack the unresolved
+beta<1 candidate and the gamma-energy producer, select an exact falsifiable
+source conjecture, finish its paper proof before new Lean. First mechanism
+under inspection: can conditional positivity plus sublogarithmic spectral
+cost eliminate the polar exponential defect without the absolute primitive
+layer estimate? Do not assume this or use a full-positive hypothesis as a
+producer. Existing constant divisor transfer does not pay a growing cost.
+
+Cycle32 paper advance: ONE-POLE-SUBLOG-PROOF.md gives a complete argument
+for exact positive whole-fibre recovery of EVERY one-pole source mixture
+in weight1+log(2+|tau|)^beta,0<=beta<1. Different rows may kill different
+poles; recovery rows kill BOTH. Stronger all-full-source beta<1 candidate
+and WP02 remain open. Literal Fejer has neither pole zero and is NOT
+upgraded by this statement. Verdict BRIDGE; external novelty unestablished.
+
+Core mechanism: actual separator primitive-square bounds give
+B(N)<=C sqrt(N)(1+logN)^beta with no extra log loss. For fixed full f,
+Q=ell(rho)-A_b and k(x)=[Q(f+tau_x f)-2Q(f)]/2 have
+|k(x)|<=C_f exp(|x|/2)(1+|x|)^beta. Actual three-translate polar positivity
+implies d(2x)>=4cosh(x/2)d(x), d=k-k(0)cosh(x/2). If d(x)>0,
+G(x)=exp(-x/2)d(x) doubles at least linearly under x->2x, contradicting
+beta<1. Therefore k(x)<=Q(f)cosh(x/2), yielding nonnegative Q on BOTH
+one-pole differences tau_x f-exp(+-x/2)f. Compact exponential primitives
+and common-support C2 convergence extend to every one-pole source; the
+existing exact-fibre separation proof finishes the paper theorem.
+
+Hostile boundary: abstract k(x)=x*sinh(x/2) satisfies recurrence equality
+but violates the conclusion, at exact linear-exponential growth. This is
+NOT an actual arithmetic counterexample. A pure cosh defect survives,
+so the argument does not yield positivity on unrestricted full sources.
+Do not silently claim either beta=1 or Fejer/full recovery from it.
+
+Lean beginning: complete owned /tmp/wp02-cycle32-localmass.lean scratch
+written, not yet compiled. It copies the source-verified private resonator
+and primitive-square proofs from own SublogEnvelope (existing file remains
+read-only), proves a generic strong-induction bound4sqrt(N)B(N), and derives
+actual square-root absolute mass with the ORIGINAL exponent forbeta<=1.
+Name probe first used invalid top-level have; corrected by putting have
+lines in an example. The corrected probe needed three explicit universe
+specializations, then passed exit0. First localmass compilation validated
+the complete strong-induction/primitive-square argument; four remaining
+errors were local constant nonnegativity/type inference/let unfolding.
+Those are fixed; second scratch compilation is running, sole owned Lean.
+
+Prepared a separate scratch proof of sublinear doubling rigidity and its
+exact cosh recurrence variant. It is an internal lemma, not an assumed
+growth receiver offered as a completed source theorem. Next derive its
+growth and recurrence from actual weighted separators and polar sources.
+
+Localmass scratch passed exit0 after the four elaboration repairs. Saved
+WeilWorkExposingRayLogLocalMass.lean (30th owned leaf), wired exactly once;
+final foreground saved-leaf/cache audit now running. The new two-lemma
+doubling scratch also passes exit0: positive doubling versus a sublinear
+power ceiling, and its exact4cosh variant after exponential normalization.
+Neither lemma alone is the actual source theorem. Need actual kernel
+growth, actual far-polar recurrence, and one-pole primitive convergence.
+
+Further search5 (deep120s, moduleWeil, one-sided Toeplitz/log-cost/cosh
+pole) exit0 partial=false68841 indexed. All20 candidate statements,
+20 source arguments and one proposed ingredient set inspected. It found
+existing cosh pairing and log-Toeplitz machinery, not the signed simple-pole
+elimination. Semantic coverage unmeasured; refresh incomplete. A possible
+future attack uses Mellin-shaped multiplicative packets to force linear
+log cost from a simple-pole residue; its sign problem is unresolved, so no
+full-source advance is claimed from that idea.
+
+Saved-leaf LogLocalMass audit exit0. Both public declarations have only
+propext/Classical.choice/Quot.sound; no added axiom. The toolchain probe
+also confirms cosine/sinh identities and the exact L1 transport APIs.
+The abstract rigidity and explicit linear boundary witness pass scratch
+Lean; saved/wired31st leaf WeilWorkExposingRayCoshDoubling, final leaf
+audit running. The boundary witness is explicitly NOT an arithmetic
+counterexample. Prepared complete actual-kernel scratch with weighted
+cosine L1 density, exact far-polar identity, cosh recurrence, local-mass
+growth producer, and sublinear cosh majorant. Not yet compiled.
+
+First kernel compilation validated the full actual arithmetic growth
+producer, spectral identity, and the kernel growth bound. Remaining
+failures: beta-reduction in one L1 norm goal, zero-translate unfolding,
+complex numeral simplification, cosh double-angle normalization, one
+2*x/x*2 argument normalization, and a forbidden no-space abs/multiply
+token. Repaired without changing theorem statements or proof mechanism;
+second kernel compilation running. Saved CoshDoubling final audit exit0.
+
+Search6 on exponential primitives/C2 convergence exit0, partial=true68847
+indexed; all20+20 and proposed ingredients inspected. Generic prime-
+difference ingredients do not apply. Direct source inspection finds
+CCMRestrictedWeilPolarInverse already proves the exact exponential
+primitive derivative and compact support from one exponential moment.
+Its ContDiff theorem is C-infinity; the derivative/support results apply
+to continuous f. Reuse those instead of rebuilding the primitive.
+
+Convention audit caught and corrected one swapped pole label in paper
+section4: with paperFT=integral f(u)exp(I*z*u), the moment exp(-u/2)
+vanishes at PLUS i/2. The primitive and difference-quotient algebra was
+already consistent; the theorem covers either pole and is unchanged.
+No uncorrected sign convention is carried into Lean.
+
+Actual-source kernel-plus scratch now passes exit0 with no diagnostics:
+the cosh majorant for EVERY actual weighted polar separator and EVERY
+compact C2 source,0<=beta<1; exact two-translate form; literal pole zero;
+nonnegative separating form on BOTH exponential difference families.
+Saved/wired32nd leaf WeilWorkExposingRayLogKernel. Final saved-leaf/cache
+audit running. This still does not assert positivity on every one-pole
+source until the compact-primitive limit is formalized.
+
+Prepared owned primitive scratch: compact C3 first-order preimage for
+every compact C2 source with an imaginary Fourier zero, using existing
+CCM exponential primitive support/derivative and superexponential-decay
+integration by parts. Its exact Fourier multiplier will dominate the
+difference quotient densities by8 times the original density. This avoids
+proving an unnecessary general C2-topology continuity theorem. Both
+existing dependency caches are present; no full builds needed.
+
+Final saved LogKernel audit exit0 with no diagnostics. All three new
+finished leaves are wired. Combined18-public-theorem imported axiom audit
+now running, sole owned Lean process. Latest formal lint exits1 on nine
+unrelated reachability errors: four SettledPhase leaves (DiskHurwitz,
+LogSquareEnergy,ValuationAnalytic,ValuationTwist) and the same five
+HTGeometry Aperture/BoundaryCorona leaves. No owned WP02 finding.
+No full/umbrella build, heartbeat override, numerical experiment, commit
+or push. Five anti-theatre and four anti-laziness answers posted in chat.
+
+Combined18-public-theorem axiom audit exit0, all exactly the standard
+three logical axioms. RESULT/PROOF/EVIDENCE updated with the precise
+completed source-difference result and remaining one-pole closure work.
+Primitive scratch compilation now running, sole own Lean process.
+
+Primitive first compile: three routine elaboration errors (Complex.ofReal
+ContDiff needed explicit CLM composition; compact-support interval endpoints
+needed an explicit subset). Repaired; second scratch compile running.
+
+Next implementation plan, derived rather than assumed: for a primitive
+g with f=(D-s)g and s=+-1/2, define the actual scaled difference as
+translatedDifference h (exp(-s*h)) applied to h^{-1}g. Its Fourier
+multiplier tends to I*t+s as h->0+. For0<h<1 use existing
+norm_cexp_mul_I_sub_le and abs_exp_sub_one_le to bound it by2|t|+1;
+its squared density is at most8 times f's density, because
+|Fhat(f)|^2=(t^2+s^2)|Fhat(g)|^2. Weighted density error is then dominated
+by9w|Fhat(f)|^2, so direct dominated convergence gives L1 convergence.
+The already proved difference-family sign applies to h^{-1}g directly,
+avoiding a separate quadratic scaling lemma. A common compact support
+fixes the finite atom cutoff. Fourier cosine atom inversion gives
+|atomCoeff(f,n)-atomCoeff(g,n)|<=norm(weighted density difference)/pi,
+uniformly in n, since w>=1. This pays atomValue continuity. Existing
+exact-fibre separation then finishes the selected one-pole paper theorem.
+Do not replace this with an assumed continuity, growth or recovery premise.
+
+Primitive scratch and final saved-leaf audit both exit0 without diagnostics.
+Saved/wired33rd leaf WeilWorkExposingRayOnePolePrimitive. New limit scratch
+now compiling: actual normalized difference, Fourier multiplier limit,
+uniform multiplier bound, eight-times-density domination and pointwise
+density convergence. It imports the existing proved phase difference
+bound from WeilFractionalMassTailRigidity (cache present). No new premise
+on the primitive or spectral decay is invented; all data comes from the
+finished primitive theorem. Remaining: weighted L1 convergence, atomValue
+continuity, separator extension, exact-fibre closure. Main WP02 unchanged.
+
+Cycle32 continuation: the combined one-pole transfer scratch now contains
+actual multiplier convergence, weighted L1 dominated convergence, uniform
+raw-atom continuity, common-support atomValue continuity, and the final
+actual separator extension. Last compilation had only one elementary
+interval-complement elaboration error; repaired and rerunning. The whole-
+fibre capstone scratch is assembled and awaits its parent cache. Source
+rows may choose either pole independently. No full-source or gamma-energy
+claim is inferred. No owned process besides this foreground leaf check.
+
+Combined one-pole transfer scratch passes exit0 without diagnostics.
+Saved and wired34th leaf WeilWorkExposingRayOnePoleTransfer; final
+saved-leaf/cache audit is running. It proves the entire primitive-limit
+separator extension for0<=beta<1. The exact-fibre scratch is ready next.
+Fresh corpus search7 audits the utility of one-pole recovery against
+integer-null critical gamma energy; no new Lean conjecture selected yet.
+
+34th leaf final saved-source/cache audit exits0 with no diagnostics.
+Whole exact-fibre capstone scratch now compiling, sole owned Lean
+process. Its four public theorems are polar-fibre nonemptiness, equality
+of closures, exact log-trace recovery, and exact raw-atom recovery.
+All33 public theorem axiom checks for the six cycle32 leaves are prepared
+and will run only after the final capstone cache is built.
+
+Cycle32 COMPLETE for the selected one-pole theorem:35th saved leaf
+WeilWorkExposingRayOnePoleFibreDensity final audit exit0, no diagnostics.
+All six cycle32 saved leaves pass; all33 public theorem axiom checks pass
+with exactly propext,Classical.choice,Quot.sound. All35 owned leaves wired
+once; scoped whitespace checks clean. Latest global lint exits1 with only
+five unrelated HTGeometry reachability findings (listed in EVIDENCE).
+RESULT/PROOF/ONE-POLE-SUBLOG-PROOF/EVIDENCE updated to completed status.
+Main WP02 remains OPEN; goal ACTIVE, not complete/blocked.
+
+Search7 and8 both completed, partial results fully inspected (20+20 each;
+search8 ingredient set also inspected). Existing critical-window/Bochner
+recipes need full positivity, and one pole-weight comparison assumes RH.
+Reject those as unconditional producers. pairing_one gives an actual
+constant-weight pole decomposition with a linear-frequency residue symbol;
+no sublog control is available from that theorem. Existing multiplicative
+Toeplitz resonators are genuine polar sources, so audit their signed
+coherent packets next instead of re-proving the generic matrix construction.
+Keep full-source beta<1 and the actual gamma-energy floor as unresolved
+conjectures; neither is retired or replaced by the completed one-pole case.
+
+Cycle32 cleanup complete: all30 exact owned /tmp scratch/search/audit
+files removed after receipts were recorded; all processes terminal and
+validated leaf caches retained. Serena memory saved as
+rh/weil_work_02_cycle32_one_pole_sublog_recovery_2026_10_08. Final scoped
+whitespace check clean. Next conjecture remains actual signed-residue
+elimination below logarithmic cost; audit its connection to the critical
+gamma-energy producer before any new formalization. The one-pole result
+is a proved bridge, not a solution or a narrowing of universal WP02.
+
+## Cycle33 — signed pole contribution and the critical energy gap
+
+Previous goal turn: PROGRESS. Current source inspection confirms cycle32
+capstones preserve the entire integer trace and require only one pole on
+each original row. The universal WP02 receiver is unchanged and OPEN.
+Reapplied hgtl7. Architecture/testing docs absent. Serena list_memories
+with topic rh/weil_work_02 returned an empty listing, but direct read of
+cycle32 memory succeeded; actual sources inspected independently.
+
+Plan (update_plan unavailable): fresh corpus + primary-source audit;
+select and attack an exact signed-residue/critical-energy conjecture;
+finish a dependency-closed paper proof before new Lean; audit every new
+leaf with lake --old env lean and public axioms; wire and clean own files.
+First search: signed sublogarithmic multiplicative Toeplitz pole residue
+full source recovery, deep120s/moduleWeil. Do not assume coefficientwise
+sign, a full-positive datum, or a sublog residue-symbol bound. Existing
+logarithmic Toeplitz construction itself is already known in this corpus.
+
+Cycle33 exact competing conjectures: A, every actual polar separator in
+weight1+log(2+|t|)^beta extends to all full C2 sources for0<=beta<1;
+B, there exists beta in[1/2,1), an actual continuous weighted L1 functional,
+real integer weights and a negative full source although all polar sources
+are nonnegative. These are genuinely incompatible; neither an arbitrary
+cosh kernel nor a finite Toeplitz relaxation is a witness for B.
+[OPEN CORE] for A: exclude an actual surviving signed simple-pole term
+with the growing spectral cost retained. The one-pole theorem cannot do it.
+
+Hostile audit of a proposed shortcut: multiplicative Toeplitz ceiling ->
+absolute coefficient bound using the positive-symbol operator norm.
+Verdict FALSE as a method: Thorn2018 theorem2.2 explicitly requires a
+positive coefficient function; signed norm formula differs (remark2.3).
+Nikolski–Pushnitski2020 uses bounded symbols and multiplicative Folner
+sets;[1,N] is not such a set. Guo–Li–Zhou2023 addresses[1,N] limits but
+still assumes a bounded real symbol for theorem1.11. These theorems cannot
+remove signs or the growing log^beta budget. This does not refute A.
+No new Lean is justified by that shortcut.
+
+Sharper competing critical candidate C: equality of one-pole and two-pole
+whole-fibre closures at beta=1. Existing abstract x*sinh(x/2) defeats the
+doubling-only proof but is NOT an actual arithmetic separator. A genuine
+critical proof must pay signed multiplicative correlations to exclude a
+repeated-pole contribution. [OPEN CORE]: obtain that source estimate
+without inserting full positivity or a pole asymptotic. Candidate remains
+unproved; no conditional wrapper will be added as a theorem of WP02.
+
+Cycle33 critical candidate C mechanism checkpoint (NOT a proof yet):
+for smooth compact g, put P=D^2-1/4. Translates of Pg are polar, so
+P_x^2 k_g=k_{Pg} should be positive definite. Bochner and the even
+constant-coefficient ODE would give
+k_g(x)=h_g(x)+c_g*cosh(x/2)+d_g*x*sinh(x/2),
+with h_g bounded positive definite. The source Laplace identity should
+relate d_g to the double coefficient of
+B(z)=sum_{n>=2} b_n*n^(-1/2-z), Re z>0.
+Actual logarithmic Toeplitz bounds, tested on
+c_m=m^(-1/2-sigma-i*t), m<=exp(K/sigma), may exclude BOTH signs
+of a double pole: t=0 detects positive D, t=2*sigma detects negative D.
+A double pole gives positive order sigma^-2; matrix ceiling is only
+O(K/sigma). Need prove weighted truncation error is
+O(sigma^-2*poly(K)*exp(-K)) from actual local absolute mass.
+Choose K after D, before sigma. No numerical experiments are involved.
+
+Unpaid obligations, all required before Lean: positive definiteness with
+complex source/even kernel conventions; Bochner/ODE decomposition from
+polar positivity only; exact Laplace-window identity and nonzero fixed
+profile; uniform harmonic-sum truncation estimate; source-independent
+elimination of d_g; extension from smooth sources to actual compact C2
+sources with poles preserved. This only addresses one-pole recovery at
+critical beta=1. It does not eliminate a negative simple pole and does
+not establish the universal WP02 energy inequality or RH receiver.
+
+Cycle33 paper is saved as CRITICAL-ONE-POLE-PROOF.md. Hostile check finds
+an improved proof of the signed pole exclusion using existing
+WeilWorkPBAPCriticalAbel.signedCumulative_laplace_ceiling: test the finite
+undamped vector m^(-1/2-it), then Laplace-integrate its O(log^2 N)
+harmonic ceiling. The transform is Re B(sigma+it)*zeta(1+sigma), giving
+Re B<=O(1/sigma) uniformly in t. No assumed twisted positive datum is
+needed; signed summability follows from actual local absolute mass.
+The more elaborate damped finite-section proof in the paper remains an
+independent valid argument, but is not the preferred Lean dependency.
+
+An applicability defect in the EXISTING read-only parent was found:
+critical_twisted_density_bound requires chi multiplicative at ALL natural
+indices and norm chi(m)=1 also at0. Then chi(0)=chi(0)*chi(n), with
+chi(0) nonzero, forces chi(n)=1. Thus the displayed theorem covers only
+the trivial character; it is not false, but cannot instantiate n^(-it).
+Do not modify another owner's existing module. Owned replacement must
+require multiplicativity and unit norms only for positive integers, or
+use the literal exp(-it log n) vector directly. Record exact limitation;
+never silently use the parent for a nontrivial twist.
+
+Further statement exposed by the paper (NEW CONJECTURE; needs its own
+novelty/hostile audit before a stronger Lean capstone): after D=0, the
+common simple residue F in B(z)=F/z+regular gives c_g=-2F*J_g(1/2)
+for every smooth g, by multiplying the source Laplace identity by z.
+Therefore Q(g)+2F*J_g(1/2)>=0 on ALL full sources, where
+J_g(1/2)=Re(Fhat_g(i/2)*conj(Fhat_g(-i/2))). The same compact
+mollification passes this to C2. This is a canonical full-positive pole
+completion of every ACTUAL critical polar separator, not merely one-pole
+recovery. Uniqueness should follow because another pole coefficient
+would leave a nonzero cosh term in a positive-definite, hence bounded,
+full translation kernel for a positive bump. This may connect the
+critical topology to the existing modified-completion slope ledger.
+Do not claim this stronger statement as proved/formalized/novel until
+its exact source conventions and existing completion theories are audited.
+
+36th owned leaf WeilWorkExposingRayCriticalTwists is saved/wired and its
+final lake --old env lean -o leaf audit exits0 without diagnostics.
+It proves actual positive-integer twisted harmonic bounds and a ceiling
+uniform in every real frequency. It uses only the existing local-mass
+leaf, avoiding a broad parent import just for a finite-sum definition.
+37th absolute-series-convergence scratch is compiling next, sole owned
+Lean process. Critical endpoint and canonical completion still unverified.
+
+Conjecture question for the next strengthened audit: Given the exact
+internal and external frontier, what would a Fields Medal-winning
+mathematician conjecture? Answer: every critical logarithmic POLAR
+separator admits a UNIQUE scalar pole correction making its actual form
+nonnegative on every full compact C2 source, and that scalar is the
+actual Dirichlet residue. This would identify the remaining freedom,
+instead of adding another equivalent positivity receiver. It can fail
+through an actual repeated-pole source or incompatibility across source
+profiles; neither is assumed away in the current paper mechanism.
+Search6 for this exact completion was partial (semantic deadline),68891
+indexed files, background refresh incomplete; all20+20 hits and ingredient
+steps inspected. Existing residue/full-positive results require the full
+positivity they analyze. They do not create this polar-to-full correction.
+External searches returned classical CPD ancestry and unrelated kernels;
+no absence/novelty claim. Status SURVIVES PRELIMINARY ATTACK, not verified.
+
+37th leaf WeilWorkExposingRayCriticalSeries final saved-source/cache
+check exits0 with no diagnostics; wired once. It derives absolute
+coefficient-series convergence for every real exponent>1/2 from actual
+critical polar separators. No summability premise is inserted.
+38th signed Abel scratch now compiles against36/37 and the existing
+small generic signed-integral module. The complete bound retains all
+real twists and coefficient signs. No other owned Lean process running.
+
+Kernel formalization dependency audit: HTGeometry.ODEJetSeparation
+(eq_of_jetVec_eq_at, lines88ff) already proves uniqueness from a finite
+jet for a Lipschitz companion field; use it for the explicit fourth-order
+ODE instead of building a general exponential-polynomial theory.
+The smoothed source may be C4 rather than C-infinity: Pg is C2 and its
+EXACT Fourier multiplier controls all weighted moments through order4.
+That avoids a new arbitrary-order Fourier decay development. A compact
+mollifier still transfers the final cosh estimate to every C2 source.
+For the first source-kernel leaf, prove the real finite-packet identity
+for logSeparatorKernel, preserve polar zeros on every translate, and
+extend a real symmetric positive form to complex coefficients by real/
+imaginary parts. The Bochner API requires only continuity and this PD
+statement, not WeilPositiveFull. No new kernel Lean has been written yet.
+
+38th Abel scratch passes, exit0/no diagnostics. Saved/wired owned
+WeilWorkExposingRayCriticalAbel; final saved-source audit next. It pays
+all signed-series convergence from the actual separator and proves
+a uniform real-frequency product ceiling without a Laurent premise.
+Critical endpoint kernel decomposition remains unpaid in Lean.
+
+38th final saved-source audit exits0 without diagnostics. Boundary scratch
+is compiling the uniform first-order Dirichlet upper bound and its
+uniform quadratically rescaled vanishing upper tail. The harmonic factor
+residue is already available in mathlib, so no new integral comparison
+is needed. This finishes the arithmetic producer side of the paper's
+double-pole exclusion; it does not manufacture the Laurent expansion.
+
+Boundary scratch's entire mathematical proof elaborates; only an unused
+polymorphic API-check `have` leaves universe levels unresolved. The
+scratch API check now specializes both universes to real types. Saved
+39th leaf WeilWorkExposingRayCriticalBoundary without that scratch
+example; wired once. Final saved-leaf/cache audit next, sole owned Lean.
+
+Cycle33 ARITHMETIC CHECKPOINT COMPLETE. All four new leaves36–39 pass
+final saved-source foreground lake --old env lean checks. Combined11
+public theorem axiom audit passes, standard three axioms only. All39
+owned leaves imported exactly once; scoped diff whitespace clean.
+Fresh global lint has seven unrelated unreachable modules (exact names
+in EVIDENCE.md), none owned WP02. No owned Lean or lint process remains.
+Exact cycle33 scratch/search/audit artifacts cleaned; source and proof
+receipts retained. Goal ACTIVE: universal WP02 and RH receiver OPEN.
+
+Next cycle must apply hgtl7 anew and continue the already recorded
+critical endpoint conjecture. Do NOT redo paid arithmetic. First source
+kernel target is real finite-packet identity and positive definiteness
+of logSeparatorKernel for polar profiles, with weighted continuity.
+Existing atomicForm_packet is private in the owned LogKernel leaf;
+promote/reuse it only if needed, then re-audit that saved leaf. The
+actual Fourier finite-sum theorem is RHTower.paperFT_finset_sum in
+ZetaWeilFiniteLevelInertia.lean, lines484ff. The actual Bochner source
+path is WeilFullConeBochnerMeasure.lean (no Work in its filename);
+its full-positivity producer cannot be used for this arbitrary separator.
+Ordinary HTGeometry Bochner plus ODEJetSeparation are the intended tools.
+C4 profiles suffice for the exact P multiplier and the fourth-order
+kernel equation; mollification then covers every actual C2 source.
+Do not claim the Laurent expansion, double-pole exclusion, endpoint
+recovery or canonical completion until their producers compile.
+
+
+## Cycle34 — actual positive kernel producer
+
+Previous goal turn: PROGRESS, four saved arithmetic leaves with11 public
+axiom audits. Goal unchanged/ACTIVE. Session skill hgtl7 reapplied;
+Serena init/read memory done, architecture/testing absent. No update_plan
+tool exposed; this card tracks the plan. Current corpus search1 launched
+directly for critical logarithmic polar separator PD/differential kernel.
+External primary Chung–Kim2005 definition3.1 again checked: homogeneous
+constraints; ordinary Bochner ancestry, not an imported endpoint proof.
+
+Explicit conjecture question: Given the exact internal and external
+frontier, what would a Fields Medal-winning mathematician conjecture?
+Retain the falsifiable critical one-pole exact-fibre recovery statement,
+with the stronger unique scalar full-positive completion separately
+logged. x*sinh(x/2) is the differential obstruction, not an actual
+integer-arithmetic counterexample. Verdict SURVIVES PRELIMINARY ATTACK;
+scientific novelty unestablished. Paper argument already dependency-
+closed in CRITICAL-ONE-POLE-PROOF.md; current work pays its source kernel.
+
+Plan: (1) refresh exact evidence/hostile audit; (2) prove actual finite
+real-packet identity, polar stability, complex positive definiteness;
+(3) weighted continuity and ordinary Bochner; (4) C4 differential
+identity/ODE decomposition and actual Laplace pole producer; (5) compose
+paid arithmetic exclusion, finish endpoint, audit exact leaves/axioms.
+Do not import WeilPositiveFull or hypothesize the meromorphic expansion.
+Serena find_symbol for owned atomicForm_packet rejects ignored Lean
+path; targeted file editing fallback remains necessary.
+
+Search1 exited0, partial=false,68906 indexed/inventoried files; compiler
+coverage still mostly pending/stale, refresh background/incomplete. All20
+candidate statements and20 source argument statements/methods read.
+The sole proposed ingredient set jumps from the existing growth bound
+to kernel positivity without a proof; rejected as incomplete. No absence
+or novelty inference. Own indexed results are not independent evidence.
+Exposed owned LogKernel.atomicForm_packet publicly with unchanged proof;
+final saved-leaf audit exits0/no diagnostics. Finite real-packet scratch
+now checks the exact spectral L1 and arithmetic Gram identities. First
+pass failed on function-sum coercions and exact current API spellings;
+all repairs use read library signatures. No heartbeat override.
+
+40th owned leaf WeilWorkExposingRayPolarKernel saved/wired. Scratch
+finite-packet identities, polar stability, complex PD and weighted L1
+continuity compile. Final scratch's only remaining error is Pi.neg_apply
+in arithmetic-kernel continuity; corrected in saved source. Final leaf
+check next. Capstone produces a finite positive Bochner measure for each
+ACTUAL polar profile of any separator,0<=beta<=1. No WeilPositiveFull
+assumption. Kernel decomposition for an unrestricted profile still
+requires the fourth-order source identity and ODE solution.
+
+40th leaf final saved-source/cache check exits0, no diagnostics. Exact
+PD and positive measure producer are paid from actual polar separators.
+C4 profile scratch pays both pole zeros and all four weighted spectral
+moments via literal P multiplier; C4 paper refinement now persisted in
+CRITICAL-ONE-POLE-PROOF.md. The earlier paper-append command failed due
+to formal cwd; corrected immediately with repo-root cwd. Its mathematical
+argument was already complete before writing the scratch.
+Search2 complete68907 files with backgroundrefresh/compiler caveats;
+all20+20 statements/methods and ingredients reviewed. Existing smooth
+polar Fourier multiplier is reusable proof ancestry; narrow source
+types do not automatically cover arbitrary C4 profiles. Search3 lexical
+for paperFT_deriv_deriv returned indirect use sites; direct dependency
+source found at .lake/packages/Zeta23/Zeta23/Poisson/PaperFT.lean120.
+No result was inferred from the incomplete lexical name match.

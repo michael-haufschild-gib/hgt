@@ -1,0 +1,13 @@
+import Mathlib.NumberTheory.LSeries.Convolution
+import Mathlib.Analysis.SpecialFunctions.Gamma.Deriv
+import Mathlib.Analysis.MellinInversion
+example := @Complex.differentiableAt_Gamma
+example := @LSeriesSummable.convolution
+example := @LSeries_convolution'
+example := @Real.rpow_le_rpow_of_exponent_ge
+example := @MeasureTheory.norm_integral_le_integral_norm
+example := @MeasureTheory.integral_const_mul
+example := @Real.div_rpow
+example := @Real.rpow_neg
+example := @div_inv_eq_mul
+example := @DifferentiableAt.const_cpow

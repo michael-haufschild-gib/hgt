@@ -1,0 +1,82 @@
+T23 final audit, 2026-10-08
+Paper: RESONANCE-NORM.md
+Source-only endpoints use hW : WeilPositiveFull lam; no extra phase premise.
+No full or umbrella builds; one foreground Lean process at a time.
+
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonanceEnergy.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationResonanceEnergy.lean
+exit 0; diagnostics empty
+sha256 25cb52e1b937042ab730ca2fa750f48d07f0dc5b9c4d82b163ccf9383d245dc9
+
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonanceMean.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationResonanceMean.lean
+exit 0; diagnostics empty
+sha256 e5d7008fb82f106dbfc40a62491a7f9ba39c4839ecb9c1bf567da65bd88ebf72
+
+lake --old env lean /tmp/wp04-resonance-names-23.lean
+exit 0; exact mathlib/API probes verified
+Finset.sum_mul_sq_le_sq_mul_sq.{u_1, u_2} {ι : Type u_1} {R : Type u_2} [CommSemiring R] [LinearOrder R]
+  [IsStrictOrderedRing R] [ExistsAddOfLE R] (s : Finset ι) (f g : ι → R) :
+  (∑ i ∈ s, f i * g i) ^ 2 ≤ (∑ i ∈ s, f i ^ 2) * ∑ i ∈ s, g i ^ 2
+norm_sum_le.{u_3, u_9} {ι : Type u_3} {E : Type u_9} [SeminormedAddCommGroup E] (s : Finset ι) (f : ι → E) :
+  ‖∑ i ∈ s, f i‖ ≤ ∑ i ∈ s, ‖f i‖
+sq_le_sq₀.{u_2} {M₀ : Type u_2} [MonoidWithZero M₀] [LinearOrder M₀] [PosMulStrictMono M₀] {a b : M₀} [MulPosMono M₀]
+  (ha : 0 ≤ a) (hb : 0 ≤ b) : a ^ 2 ≤ b ^ 2 ↔ a ≤ b
+Complex.norm_conj (z : ℂ) : ‖(starRingEnd ℂ) z‖ = ‖z‖
+Complex.normSq_eq_conj_mul_self {z : ℂ} : ↑(Complex.normSq z) = (starRingEnd ℂ) z * z
+Real.exp_add (x y : ℝ) : Real.exp (x + y) = Real.exp x * Real.exp y
+Real.exp_log {x : ℝ} (hx : 0 < x) : Real.exp (Real.log x) = x
+Real.exp_neg (x : ℝ) : Real.exp (-x) = (Real.exp x)⁻¹
+Real.tendsto_log_atTop : Filter.Tendsto Real.log Filter.atTop Filter.atTop
+tendsto_natCast_atTop_atTop.{u_2} {R : Type u_2} [Semiring R] [PartialOrder R] [IsOrderedRing R] [Archimedean R] :
+  Filter.Tendsto Nat.cast Filter.atTop Filter.atTop
+Filter.Tendsto.pos_mul_atTop.{u_1, u_2} {𝕜 : Type u_1} {α : Type u_2} [Semifield 𝕜] [LinearOrder 𝕜]
+  [IsStrictOrderedRing 𝕜] [TopologicalSpace 𝕜] [OrderTopology 𝕜] {l : Filter α} {f g : α → 𝕜} {C : 𝕜} (hC : 0 < C)
+  (hf : Filter.Tendsto f l (nhds C)) (hg : Filter.Tendsto g l Filter.atTop) :
+  Filter.Tendsto (fun x => f x * g x) l Filter.atTop
+Filter.Tendsto.eventually_gt_atTop.{u_3, u_4} {α : Type u_3} {β : Type u_4} [Preorder β] [NoTopOrder β] {f : α → β}
+  {l : Filter α} (hf : Filter.Tendsto f l Filter.atTop) (c : β) : ∀ᶠ (x : α) in l, c < f x
+Filter.Tendsto.congr'.{u_1, u_2} {α : Type u_1} {β : Type u_2} {f₁ f₂ : α → β} {l₁ : Filter α} {l₂ : Filter β}
+  (hl : f₁ =ᶠ[l₁] f₂) (h : Filter.Tendsto f₁ l₁ l₂) : Filter.Tendsto f₂ l₁ l₂
+Filter.Eventually.exists.{u} {α : Type u} {p : α → Prop} {f : Filter α} [f.NeBot] (hp : ∀ᶠ (x : α) in f, p x) : ∃ x, p x
+GaloisForLFunctions.bohrMean_bohrExp_mul_conj (lam mu : ℝ) :
+  (GaloisForLFunctions.bohrMean fun t =>
+      GaloisForLFunctions.bohrExp lam t * (starRingEnd ℂ) (GaloisForLFunctions.bohrExp mu t)) =
+    if lam = mu then 1 else 0
+
+lake --old env lean /tmp/wp04-resonance-axioms-23.lean
+exit 0
+'RHTower.WeilSpectral.quantizationCenteredResonance' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResonanceEnergy' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredResonance_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredResonance_norm_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResonanceEnergy_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_resonance_norm_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_resonance_norm_attained' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_quantization_resonance_energy_variance' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_resonance_energy' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_resonance_unbounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationResonancePolynomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.continuous_quantizationResonancePolynomial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.isBohrAlmostPeriodic_quantizationResonancePolynomial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationResonancePolynomial_mean' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_quantization_resonance_discontinuity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+Umbrella audit: 60 WeilWorkQuantization leaves, every import occurs exactly once.
+git diff --check over owned scope: exit 0.
+scripts/formal_tools.py lint: exit 1; nine unrelated unreachable modules, no quantization error.
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkDeficitGammaSymbol
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorCutoffTail
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhasePrimeDeletionSummability
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticNotchLocalization
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra

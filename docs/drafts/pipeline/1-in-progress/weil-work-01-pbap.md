@@ -21,6 +21,180 @@ Read: assigned package, shared contract, 7 October audit, relevant HF frontier a
 4. Formalize only proved statements; validate names and axioms in `/tmp`; foreground target compilation, targeted `--old` dependency builds only, no full builds or heartbeat changes.
 5. Wire finished modules into umbrella as explicitly requested by user. Record exact evidence, limits and next conjecture; repeat.
 
+### Active checkpoint — many-node certificate, 8 October 2026
+
+`WeilWorkPBAPJointFixedCutoff.lean` implements the literal even plateau
+and normalized cosh weight from MC6. Targeted build PASS226.30s,
+final direct-source PASS116.70s with empty diagnostics, all 28 public
+standard-only axiom audits PASS80.67s. Wired and indexed. Seven supporting
+leaves now have 67 public audits; MC6/MC8 and full PBAP remain OPEN. The bounds use one
+constant C for `|v|<=C`, `|v'|<=C/W`, `|v''|<=C/W^2`, uniformly in every
+real center L and `0<W<=1`. Preserve the exact leading mass
+`W*integral(psi)` with error at most `4e W^2`, and uniform inverse-square
+complex Fourier decay. No new positivity capstone is claimed. The growing-order hybrid query
+returned partial=false (68,839 indexed files), compiler freshness pending;
+all 20 candidate lemmas and 20 source arguments were inspected. A narrower
+lexical Sieve query found `log_factorial_le` and the existing blockLambda
+schedule interfaces. Their fixed dyadic saving window does not discharge
+the short-window MC6 budgets; reuse the factorial estimate, retain the
+actual short length, and prove the growing-order budgets explicitly.
+The paper now gives a shorter MC6 schedule proof using the corpus
+window-landing theorem with `mu_k=4^k*lambda_k`; three eventual inequalities
+replace individual frequency bands. The explicit floor/ceiling geometry
+uses `Cgeo=4e+3`, paying BOTH roundings and the padded endpoint. Next scratch
+`WeilWorkPBAPJointGridGeometry.lean` now proves the actual growing width,
+integer endpoints, dyadic containment, short length and logarithmic coverage.
+Targeted build PASS8.18s; final direct-source PASS4.39s, empty log; six public
+standard-only axiom checks PASS2.04s. Wired and indexed. Eight supporting
+leaves now have 73 public audits. Latest index PASS15.94s; lint EXIT1 12.21s
+on eleven unrelated reachability errors, no WP01 finding. The next scratch
+is `/tmp/wp01-growing-order.lean`: actual ceiling order, power and factorial
+budgets. Only one owned foreground Lean process runs.
+
+Paper proof: `results/01-pbap/JOINT-MANY-NODE-CERTIFICATE.md` (relative to
+the Weil work report directory). MC2 uses ALL actual active integer nodes
+at W=kappa L exp(-L/2), for arbitrary fixed kappa>0. It gives an explicit
+cosine certificate and L/4 physical-mass margin, with NO correction-mass
+cap. Paper proof is closed; Lean implementation remains OPEN. Full PBAP
+and broad-profile MH2 remain OPEN. No novelty claim from formalization.
+
+Key discovery: `Sieve.phase_prefix_bound` retains H=M-N. Its normalized
+error is `(4^k lambda)^(1/(2^k-2))+(H^2 lambda)^(-2/2^k)`. For H~L sqrt N,
+bands `[N^(k-1)/sqrt L,N^k/sqrt L]` have both errors tending to zero and
+meet without gaps. This supports a many-node certificate beyond the
+nearest-node boundary. A continuous certificate first cancels the exact
+leading pole through the existing positive modulation kernel; integer
+quadrature transfers it at low heights. Intermediate heights use the
+short-prefix estimate; high heights use exact-mass Gamma coercivity.
+
+Implementation plan: continuous modulation certificate; normalized short
+prefix bounds; actual smooth integer quadrature and Abel bound; finite-band
+gluing; all-frequency and actual-prime/null capstones. No conditional
+positivity premise. Finish targeted source/axiom audits, wire leaves, then
+attack growing kappa (candidate log log L) with a fresh uniform-order audit.
+
+Further paper audit closed MC3 and MC4 in the same certificate document:
+W=(m0/J)b L log log L exp(-L/2), 0<b<1/log2, for ANY fixed nonzero smooth
+complex profile supported in [0,1], J=integral |Re autocorr|. Signed node
+coefficients are allowed, so no nonnegative-autocorrelation assumption is
+needed in MC4. Its separate proof uses the exact density mass and L1 density
+bound to prove a uniform Gamma floor, and an absolute cosh pole remainder.
+No division by the possibly zero source integral occurs. These stronger
+statements are PAPER PROVED, LEAN OPEN, not full PBAP.
+
+`WeilWorkPBAPJointContinuousCertificate.lean` is wired and fully audited.
+Its nine public theorems include nonnegativity/dilation of
+the actual cosine integral, the nonnegative-correlation continuous energy
+certificate, and the literal unit-bump quantitative bound. Targeted
+`--old` build (79.05s), final direct-source (93.31s) and all nine standard-
+axiom checks (227.82s) pass; chain exited 0. This leaf proves the MC2/3
+continuous component; it does not yet formalize discrete MC2, MC3 or MC4.
+
+`WeilWorkPBAPJointShortPrefix.lean` is audited and wired: targeted125.40s,
+final direct100.73s, two standard-only axiom checks11.04s, chain exit0.
+It retains the explicit derivative-order budget and signed finite
+Abel variation. Its numerical hypotheses still need discharge on the actual
+logarithmic intervals; this technical bridge is not a positivity capstone.
+
+`WeilWorkPBAPJointGammaFloor.lean` is audited and wired: targeted67.36s,
+final direct25.16s empty, six standard-only axiom checks96.68s. The Gamma
+proof retains coefficient two using exact density mass and the fixed
+integrable log deficit.
+
+`WeilWorkPBAPJointSignedCertificate.lean` is audited and wired:
+targeted77.82s, final direct63.46s empty, seven standard-only axiom
+checks65.09s. Positive absolute correlation mass, exact pole identity,
+quartic dilation remainder and arbitrary-complex continuous certificate
+are complete. All four new leaves (24 public checks) have unchanged audited
+SHA256 hashes and pass whitespace checks. No discrete MC4 capstone is claimed.
+
+MC5 in the certificate paper proposes one common derivative schedule for
+ALL widths between kappa0 L exp(-L/2) and (m0/J)b L log log L exp(-L/2).
+The uniform-quantifier paper argument is closed; internal overlap search
+completed (partial=false,68,806 files, stale coverage snapshot and pending
+compiler metadata). All candidate/argument/idea sets inspected; no closing
+prior capstone found, no novelty inferred. Lean is OPEN. Prefer this signed, unnormalized discrete
+certificate when formalizing, avoiding division by the source integral.
+
+Concrete discrete implementation: take n=floor(exp(L-W)),
+m=ceil(exp(L+W))+1 and weights rho((log j-L)/W)/j. On [n,m], use fixed
+global bounds for rho and rho' to bound the derivative by
+4/N^2*(A1/W+A0*(1+abs T)). Length is O(NW) uniformly once NW>=2.
+Existing right-endpoint BV quadrature applies after translating [n,m] to
+[0,m-n]; left-versus-right endpoints add only O(1/N), so no endpoint-zero
+lemma is needed. The same derivative bound with T=0 pays signed Abel
+variation. Real-valued cosine quadrature plus real-part extraction from
+`Sieve.natCast_cpow_neg_I_mul` suffices; no new complex substitution theorem.
+Pay the log change of variable with `intervalIntegral.integral_comp_mul_deriv`.
+All sums and integrals must stay on positive x; Real.log on negative x must
+not create a spurious second support interval.
+
+MC6 supersedes the fixed-profile implementation target: see
+`JOINT-UNIFORM-PROFILE-CERTIFICATE.md`. With one fixed smooth plateau cutoff
+of integral A, b>0 and A*b*log2<1, every sufficiently large L and ALL smooth
+complex f,g supported in [0,b L log log L exp(-L/2)] satisfy
+Q_lambdaStar(f+translate_L g)>=(L/4)*(mass f+mass g), lambdaStar(n)=1+1/n.
+The threshold is independent of source derivatives, phases and mass ratio.
+Its dependency-closed paper proof moves quadrature derivatives onto the
+fixed cutoff. Unlike the earlier cosine family, this needs COMPLEX
+quadrature and the cross Fourier density. Lean remains OPEN.
+
+The tempting global lambdaStar completion is FALSE: corpus theorem
+`not_weilPositiveFull_of_nonneg_semiprime_floor` applies with p=2,c=1.
+Exact scratch application and standard-only axiom audit PASS60.53s, exit0.
+This is REDISCOVERED, not a new obstruction. The positive MC6 survivor must
+be formalized before closing `weil-work-01-pbap-global-pole-grid.md`.
+Latest successful obstruction search: partial=false,68,814 indexed files;
+background refresh and compiler metadata pending, all candidate/argument/
+ingredient outputs inspected and the decisive theorem source checked.
+
+Next implementation: source-uniform Fourier/Gamma budget, complex BV/FTC
+quadrature and Abel transfer, growing-order band gluing, exact two-profile
+pole/atom identity and literal null transfer. Existing quadrature theorem:
+`HTGeometry.norm_rightEndpoint_riemannSum_sub_integral_le_eVariationOn`
+in `HTGeometry/BoundedVariationRiemannSum.lean`; source inspected.
+Latest index EXIT0 (15.91s); lint EXIT1 (17.70s) lists five unrelated
+HTGeometry reachability errors and no owned WP01 finding. Full PBAP OPEN.
+
+MC7 now extends the paper survivor to r arbitrary source windows in [0,D],
+successive starts at least 6 log D apart, each width
+b D log log D exp(-D/2). It gives Q_lambdaStar>=D/5 times actual mass,
+uniformly in r (up to order D/log D). Keep the unique extreme pair for
+MC6; all other cross terms together cost O((log log D)/D) times mass.
+Every pair is accounted for. Verdict BRIDGE from MC6, novelty unestablished;
+not arbitrary many-window positivity. Complete MC6 Lean first.
+
+MC8 improves MC7 by using geometric row sums: spacing 4 log log log D
+already suffices, since the total shorter-interaction cost becomes
+O(D/log log D) times mass, independently of window count. The paper proof
+keeps the D/5 margin and allows order D/log log log D windows. Classified
+BRIDGE from MC6 plus the classical Schur bound. This is the strongest
+paper survivor recorded on the no-go card; MC6 then MC8 need Lean closure.
+
+`WeilWorkPBAPJointSourceBudget.lean` now proves the exact interval-width
+Cauchy--Schwarz bound, pointwise Fourier-square budget, integrable log-deficit
+cost and one/two-source Gamma floors. Targeted88.71s, final direct54.16s
+empty and eight standard-only axiom checks12.91s all pass; import wired.
+SHA256719e958d2a8b0c61801b2e43d60239374dce7b0f2f27875a658730cc9f2db96a.
+Compact-support inference caused the earlier timeout; an explicit support
+proof removed it without any heartbeat increase.
+`WeilWorkPBAPJointLogQuadrature.lean` is complete: targeted87.11s, final
+direct80.17s empty, seven standard-only axiom checks6.64s. Import wired.
+SHA256f20797bd05d04901187efdb75fe151459c84c135e10cbc0a4bd6cb36928f70f0.
+It proves the complex finite-node quadrature, exact positive-logarithm
+substitution and actual cutoff Abel-variation bound. Six new supporting
+leaves now have 39 public theorem audits. No MC6/MC8 capstone is claimed.
+Latest index PASS16.29s; lint EXIT1 21.60s, eight unrelated reachability
+errors (three other RHTower leaves plus the five HTGeometry baseline
+leaves), no WP01 finding. All owned audit handles have exited.
+
+Next exact cutoff: psi(y)=RHTower.plateauBump 4 (y+2), using the constructor
+already checked in ConstrainedWeilPlateauProfile.lean:30--95. Do not use
+its odd plateauProfile. Prove fixed derivative bounds for psi and the
+normalized cosh family, then discharge actual integer endpoints and the
+uniform growing-order phase bands. The paper supplies the literal choice
+b=1/(8 log2), since 2<=integral psi<=4. No cutoff-existence premise remains.
+
 `update_plan` and `multi_tool_use.parallel` are not exposed in this session; this file tracks plan, and independent reads use `Promise.allSettled`.
 
 ## Cycle 1 — contextualization / audit
@@ -399,3 +573,442 @@ Previous turn: progress, final MollifierCausality audits completed; source hash 
 - **Completed production checkpoint:** both targeted builds pass (57s/65s), both final direct-source audits pass with empty logs (36s/6s), and all 11 axiom checks are standard-only. Guarded chain exits 0. Source hashes and declarations recorded in EVIDENCE; RESULT and JOINT-PHASE-COST updated. Index exits 0; global lint has seven unrelated reachability errors, listed in EVIDENCE, no new-leaf error. Both new source files are below 500 lines and use default heartbeats.
 - Next corpus search `/tmp/wp01-seed-crossing-certificate-20261008.json` completes with `partial=false`, 68,630 files, refresh incomplete/source-only metadata. Every candidate/source statement and ingredient set inspected. Zero-deficit conditional on a positive completion, zero perturbation weights and graph-cluster identities do not construct the desired cosine certificate. New concrete conjecture at the end of JOINT-PHASE-COST: for each sufficiently large prime, an actual scaled nonnegative bump has negative seed energy yet a one-active-node negative cosine minorant at every height. Construct the width crossing, prove active-node existence, strengthen the kernel minimum, and retain uniform coercivity under width perturbation. Do not formalize those missing source facts as hypotheses. No claim that this sector solves full PBAP.
 - Turn classification: **progress (verified bridge)**, scientific novelty unestablished. Full PBAP remains OPEN and goal ACTIVE. All owned build/audit/index/lint/search commands have exited; no unfinished new production leaf remains. Continue hgtl7 with the actual seed-crossing conjecture and hostile novelty/parameter audits, or reject it with its positive survivor if the construction fails.
+
+### 8 October 2026 — actual width sector selected
+
+Continued hgtl7 cycle. The tentative zero-crossing route is superseded by an
+explicit family beta_W=phi(u/W), W=(int phi^2)/(int phi)^2 * L*exp(-L/2).
+`JOINT-WIDTH-SECTOR.md` gives the dependency-closed paper argument for negative
+seed E0/m=-L-2log L+O(1), actual active node n=floor(exp L), and all-height
+certificate e(T)+(3/2)mL*cos((log n-L)T)>=mL/8. This would imply every actual
+real-null correction has full energy >=(L/16)*physical mass, at unbounded
+aperture. Proof uses refined full-mass high-frequency Gamma concentration and
+decay of BOTH pole transforms; the old logarithmic-moment lower bound is too
+lossy under this shrinking width. No computation or positivity assumption.
+Scientific novelty unestablished; candidate survives preliminary attack.
+Lean implementation is pending; full PBAP remains OPEN.
+
+Plan: (1) finish exact-statement corpus/primary-source attack; (2) formalize
+actual high-frequency Gamma and pole estimates; (3) formalize width scaling,
+seed asymptotic and integer-node selection; (4) assemble literal certificate
+and real-null energy theorem; targeted --old and direct leaf audits throughout.
+The sharper alpha/lambda one-node boundary is a subsequent conjecture, not a
+proved no-go. No conditional wrapper will substitute for the actual family.
+
+Exact-statement search completed: `/tmp/wp01-negative-seed-sector-20261008.json`,
+partial=false, 68,630 inventoried/indexed files, refresh incomplete with mostly
+source-only/pending compiler metadata. Inspected all 20 candidate and 20 source
+statements plus ingredient set. Proposed kernel/old-energy chain still requires
+the width-dependent cost bound; it does not close the sector. Coherent polar
+completion and RH-equivalent two-edge statements were inspected directly and
+have different quantifiers. First broad dilation search was mostly irrelevant;
+module-filtered Gamma search supplied actual Fourier/energy ingredients.
+
+Implementation starts in `/tmp/wp01-high-frequency.lean`; no unfinished
+production leaf yet. API scratch required explicit universe levels for three
+`have := @...` checks; corrected and passed. Existing complex Fourier second-
+derivative decay directly supplies the pole estimate, strengthening the paper
+proof without introducing a new analytic assumption.
+
+High-frequency bridge completed: `WeilWorkPBAPJointHighFrequency`, 292 lines,
+wired; targeted --old 148.0s and final direct source audit 31.6s passed. Seven
+standard-axiom-only declarations audited. The proof retains exact paired mass,
+charges actual central Fourier leakage, and proves quartic decay for BOTH
+signed poles. Scratch parser ambiguity `|*` and `norm_ofNat` corrected; final
+production diagnostics empty. No heartbeat changes. Next scratch
+`/tmp/wp01-width-scale.lean` formalizes actual dilation, support, mass,
+autocorrelation and second-derivative cost; no unfinished production leaf.
+Nine hgtl7 self-audit answers posted. Scientific novelty still unestablished;
+full PBAP and the complete width-sector formal theorem remain open.
+
+`WeilWorkPBAPJointScale` completed: all exact dilation identities plus real
+nonnegative-profile autocorrelation. Wired; targeted --old 112.3s, final direct
+34.8s (empty diagnostics), eleven standard-axiom-only checks 178.9s. Source hash
+304cab39320ec541af0bfb592b729de4bb91966e3cc98b7e758167ce56fdfc6c.
+The high-frequency source hash is
+36ae3f774880b38b7f43ef782e1b7e60405277b8d4131e68f9b583b042f9a037.
+
+Current scratch `/tmp/wp01-seed-log.lean`: fixed integrable Fourier majorant for
+Gamma(v/W)+log W, including the logarithmic singularity at v=0. The equivalent
+Fourier proof of the seed estimate is appended to JOINT-WIDTH-SECTOR.md. It
+retains exact cluster mass and bounds only the remaining Fourier multiplier.
+Latest search `/tmp/wp01-width-gamma-asymptotic-20261008.json` complete with
+68,652 files, refresh/compiler coverage caveats; all20candidate/all20source and
+ingredient statements checked. Proposed partition inputs assume a producer;
+they do not supply the required width estimate.
+
+Process slip recorded in EVIDENCE: new scratch command launched <=3.464s before
+prior axiom-audit wrapper exited; only one remains active now. Require explicit
+exit confirmation before the next Lean launch. No extra production file is
+unfinished. Full PBAP and assembled width-sector theorem remain OPEN in Lean.
+
+Seed Gamma bridge closed: `WeilWorkPBAPJointSeedGamma`, wired and audited.
+Targeted --old build 25.9s, final direct 5.0s empty, nine standard-axiom-only
+checks 4.5s. Uniform in arbitrary cluster separation:
+|Gamma(g_W,L)+mass(g_W,L)*log W|<=W*C(phi). Exact source integrability at zero
+is proved, not supplied. Hash9001bbe731da8f84d8d409693b170c5bc1204f5bed95e201c076fb1f43b02b50.
+Current scratch `/tmp/wp01-seed-pole.lean` derives the exact cluster pole factor,
+width-squared scaling and continuous source profile at width zero. Next use
+W=kappa*L*exp(-L/2) to prove the actual normalized seed limit; only its limit
+is required for the sector, so no stronger remainder estimate is needed in Lean.
+
+Seed pole bridge completed and wired: targeted 40.2s, final direct 5.6s empty,
+seven standard-axiom-only checks 5.0s. Hash and exact commands in EVIDENCE.
+Current scratch `/tmp/wp01-seed-limit.lean` proves width limits and normalized
+pole limit before combining the already audited uniform Gamma remainder.
+No owned audit overlap; previous chain explicitly exited before new Lean run.
+
+Nearest-integer source search completed (`partial=false`, 68,669 files;
+refresh incomplete/source compiler metadata mostly pending). All20candidate,
+all20source statements and ingredient set inspected. Phase identities and
+Riemann-kernel decay do not supply positivity at the shrinking active lag;
+Herglotz-positive inputs are conditional and rejected as a shortcut. Direct
+existing actual-active-null API is available. Simpler uniform high-frequency
+exponential error bound appended to JOINT-WIDTH-SECTOR; no logarithmic
+monotonicity lemma is needed for the selected sector.
+
+Complete actual seed-limit scratch passes (only two tactic-style warnings,
+removed on promotion). `WeilWorkPBAPJointSeedLimit` now wired and in sequential
+targeted/direct/axiom audit. Eleven public results include the literal full
+energy limit and balanced eventual bound -9mL/8<=E0<0; no energy-sign premise.
+Next scratch `/tmp/wp01-width-high.lean` assembles uniform high-frequency
+control from actual dilation and the already audited two-pole decay.
+
+SeedLimit audit complete: targeted107.1s, final direct64.5s empty, eleven
+standard-axiom-only checks6.1s. Source hash recorded in EVIDENCE. Current
+high-width scratch includes both elementary remainder bounds and their exact
+exponential normalization; no unfinished production leaf or audit overlap.
+
+Uniform high-frequency width leaf completed, wired, targeted63.0s,
+final direct133.4s empty, eight standard-axiom-only checks84.7s. EVIDENCE has
+hash and commands. Current `/tmp/wp01-width-phase.lean` audits actual floor-
+exponential node, exponentially small lag, real activity from positive mass,
+and uniform low-band cosine bound. `/tmp/wp01-width-sector.lean` is prepared
+but not run: explicit translated bump and all-height certificate assembly.
+No unfinished production leaf. Full PBAP remains open.
+
+Phase scratch now passes with empty diagnostics; `WeilWorkPBAPJointWidthPhase`
+wired and sequential audit running (five public declarations). Fixed source
+capstone scratch prepared in `/tmp/wp01-width-sector.lean`; actual all-real-null
+energy margin body appended. Further prepared body
+`/tmp/wp01-width-sector-nonempty-body.txt` specializes to prime half-logarithms
+and constructs corrections at every prescribed mass M>1, using the existing
+finite simultaneous correction theorem. These capstone parts are not yet Lean
+verified. No unconditional PBAP or novelty claim. Next conjecture remains the
+alpha/lambda sharp one-node boundary; do not advance it before finishing this
+actual-source sector and its nonemptiness audit.
+
+Phase production audit complete: targeted152.7s, final direct31.4s empty,
+five standard-axiom-only checks89.5s. Hash in EVIDENCE. Capstone scratch
+`/tmp/wp01-width-sector.lean` now running, including explicit unit bump,
+all-height certificate, universal real-null energy margin and nonempty prime
+sector at every correction mass M>1. Previous audit explicitly exited before
+this Lean process. No unfinished production module.
+
+### Completed checkpoint — actual negative-seed sector
+
+`WeilWorkPBAPJointWidthSector` passes targeted --old43.9s, final direct70.2s
+(empty), eight standard-axiom-only checks33.5s. Hash
+4e7abc165ffb97fb3b4f80b7f5b182e80187beb35f9829f8392d833d2fa55a0f.
+All eight new leaves, eight final source audits and 66 named axiom checks
+complete; all imports wired. Explicit unit bump has no supplied source-sign,
+energy-sign, crossing, active-node or certificate premise. Every real-null
+correction has full energy >=L/16 times physical mass; actual positive-mass
+corrections exist at each M>1 for every sufficiently large prime half-log.
+Full PBAP remains OPEN; goal ACTIVE. Scientific novelty unestablished.
+
+RESULT, JOINT-WIDTH-SECTOR and EVIDENCE updated; earlier crossing proposal
+marked historical/superseded. Corrected general support-diameter wording:
+between L and L+W, with equality at upper endpoint requiring full source
+support. Index exits0, scoped diff-check exits0. Global lint exits1 on five
+unrelated HTGeometry reachability errors listed in EVIDENCE; no new-leaf error.
+Every owned Lean/build/research/index/lint job has exited. Intermediate scratch
+body fragments are being removed; production leaves and audit/search logs are
+the authoritative retained record. No commit, push, full build or heartbeat
+increase.
+
+Next hgtl7 cycle: audit the sharp one-node width boundary and its positive
+survivor, then return to the many-node/full-cone gap. Latest exact mechanism
+search `/tmp/wp01-one-node-boundary-20261008.json`: partialfalse68,685files,
+refresh incomplete/source-only caveats. All20candidate/all20source, two ideas
+and ingredient set inspected; truncated source-head statement read directly.
+Conditional RH witnesses/decompositions do not give the actual high-frequency
+upper estimate. Candidate exact diagnostic: a one-node certificate forces
+E0+e(pi/abs(a))>=0. For width factor alpha and nearest-node rate lambda,
+alpha=lambda+1/2 is an UNPROVED critical-boundary failure candidate because
+of the -2*m*log L seed correction; prove the actual upper estimate before
+asserting failure. No route retired. Do not mistake the completed restricted
+sector for a spanning or arbitrary-width theorem.
+
+### Current cycle — exact one-node boundary and its positive survivor
+
+Full-target and deep actual-upper-energy corpus audits completed; all result
+sections inspected with source/compiler freshness caveats. Owned research
+PID44348 confirmed exited. New first-moment search is session4378, output
+`/tmp/wp01-first-moment-20261008.json`; no owned Lean build is running.
+The corpus already supplies linear-weight Fourier integrability, avoiding
+new derivative/Plancherel infrastructure.
+
+Plan: (1) close and hostile-audit the exact paper statement; (2) formalize
+the actual full-mass upper estimate and critical width boundary; (3) formalize
+the stronger lambda-dependent positive survivor, audit targeted leaves,
+then revisit the many-node/full-cone gap. The complete paper argument is
+`JOINT-ONE-NODE-BOUNDARY.md`: alpha*=lambda+1/2 fails by the negative
+-2*m*log L correction; every fixed alpha=alpha*-d, 0<d<1, has a positive
+all-frequency margin. Both new capstones remain unformalized. Scientific
+novelty unestablished; full PBAP OPEN. Do not retire the route based only
+on the negative boundary statement.
+
+Three-band paper audit sharpens the survivor: with
+alpha=lambda+1/2-d*log(L)/L, d<1 fails the two-point test, whereas d>1
+has a positive all-frequency certificate and mass-normalized logarithmic
+margin. Use seed minimum only below exp(7L/8), the nonnegative cosine plus
+positive energy in the middle band, and the sharp high-frequency bound
+above pi/(2*delta). This avoids losing a spurious extra log(L) term.
+Full proof added as conjecture C in JOINT-ONE-NODE-BOUNDARY; neither
+boundary capstone is yet Lean verified. Current Lean session3209 audits
+the actual first-moment Gamma upper bridge in `/tmp/wp01-joint-upper.lean`.
+
+Upper-energy scratch now passes with empty diagnostics. Production
+`WeilWorkPBAPJointUpper` copied and wired; targeted/direct/axiom audit not
+yet launched, pending exit of its API probe session90232. Six public
+theorems preserve exact 2m Gamma coefficient, first-moment dilation
+invariance and both signed pole terms. Next prepared scratch is
+`/tmp/wp01-pole-bounds.lean`, using the actual autocorrelation integral to
+bound the seed pole between its zero-width value and a cosh(width/2)
+multiple. No numerical computation or heartbeat increase.
+
+First-moment search completed partial=false68,700files, all20candidate,
+all20source and ingredient inspected; suggested derivative identities
+unneeded because the existing linear-weight integrability theorem applies.
+Three-band search completed partial=true68,705files, all20candidate,
+all20source and ingredient inspected. Generic log-width, phase correction
+and conditional source identities do not supply the sharp transition.
+Refresh incomplete and compiler metadata mostly pending; no absence or
+novelty claim follows. Anti-theatre and anti-laziness answers posted in chat:
+the upper bridge uses standard analysis; the significant candidate is the
+unformalized logarithmic transition, and the full-cone gap remains unpaid.
+
+Upper bridge production audit complete: --old25.4s, final direct6.3s empty,
+six standard-axiom-only checks10.6s, API probe189.8s; guarded chain exit0.
+Hash b7895a07238b4397cd8ca34181305c40f44271e0cf4e3ef7724d0e56d0cfccc1.
+Current sole Lean process is pole scratch session14380. Further prepared
+scratch `/tmp/wp01-prime-lag.lean` has not run; it proves prime non-square
+separation and 1/(2p)<=abs(actual nearest lag). No unfinished production leaf.
+
+PoleBounds production audit complete and wired: --old240.2s,
+final direct64.4s empty, six standard-axiom checks4.9s; guarded chain exit0.
+Hash3c093d8a7d5e01b6fd4e4f61e3b196005c7e6344e67c398d6cefbd9df1036119.
+Actual profile error is at most B^2*W^2/2, including concrete unit-bump
+specialization. Current sole Lean job is seed-expansion scratch session58108,
+`/tmp/wp01-seed-expansion.lean`. It combines the new pole error and old
+Gamma error before any limit. Prime-lag scratch remains unrun. Two new
+production leaves and twelve checks complete; full transition and PBAP OPEN.
+
+Seed expansion first scratch run found a representation-only rewrite mismatch;
+explicitly unfolded the constructed test in the already proved energy identity.
+Current retry is session41914; do not launch another Lean until it exits.
+Prime-lag scratch now also derives L-log2<=log(1/abs(lag))<=2L+log2.
+It has not run yet. The explicit quadratic pole remainder is already audited.
+
+Independent preparation for the next full-problem step:
+`/tmp/wp01-many-node-cost-20261008.json` completed partial=true, coverage
+pending, refresh incomplete. All20candidate/all20source inspected, no proof
+ideas/ingredient sets. Quantitative simultaneous recurrence gives upper
+hitting-time estimates, not the needed lower logarithmic cost; conditional
+Weil-positive moment leaves cannot be used. Next research question is whether
+many actual nearby integer-log constraints impose a uniform logarithmic
+frequency cost at fixed correction mass, beyond the existing two-node
+M-down-to-one escape. No new theorem or selected conjecture is claimed from
+this weak search; rephrase/filter before selecting that next route.
+
+Seed expansion scratch now passes empty and production
+`WeilWorkPBAPJointSeedExpansion` is copied/wired; sole owned Lean audit is
+guarded session3735 (targeted, direct final, three axioms sequentially).
+Prime-lag scratch remains next. Filtered many-node-cost research is
+session12214, `/tmp/wp01-many-node-filtered-20261008.json`.
+
+Implementation simplification for the pending C capstones: use s=log(1/delta)
+and K=L/2+s-d*log L directly, with W=kappa*K*exp(-L/2). This is exactly the
+paper width but avoids carrying lambda=s/L through every product. Arithmetic
+gives L-log2<=s<=2L+log2; hence eventually1<=K/L<=3 for fixed d. The exact
+seed expansion should yield a uniform bounded error for
+e0/m+2s-2(d-1)*log L. Explicitly its main remainder is
+-2*log(kappa*K/L)+2K*(2exp(-L/2)-exp(-L)), with quadratic pole error
+vanishing by W bounds. Certificate coefficient is m*(2s-(d-1)*log L).
+Retain the three-band proof already on paper; no abstract seed/Gamma/phase
+sign premises in the final explicit-source prime capstones.
+
+Filtered many-node search completed partial=false68,725files, refresh
+incomplete/compiler metadata pending. All20candidate/all20source and the
+ingredient inspected; the parser-truncated resonator sample was read directly
+at CriticalResonator195--200. Results recover the known two-node compactness
+minorant, M-down-to-one escape, exact correction existence and fixed-profile
+energy lower bound. They provide no uniform p-dependent cost at fixed M.
+Keep this distinction explicit when selecting the next conjecture; recurrence
+upper bounds and the exact resonator sample identity do not pay the lower cost.
+
+Next analytic assembly caution: `joint_seed_pair_high_normalized_lower`
+already specialized the main term to7/4, so it only suffices for C's middle
+band. For the final high band start from `joint_dilated_pair_high_simple`
+and RETAIN 2*log(T/2); do not infer the 2s coefficient from the7/4 theorem.
+The existing explicit inverse-square/quartic errors normalize using
+W>=kappa*L*exp(-L/2) and vanish uniformly above exp(7L/8). At
+T>=pi/(2delta), log(T/2)>=s-log2. At T*=pi/delta, upper estimate needs only
+log(1+T*)<=s+log(1+pi) once delta<=1, and bounded/vanishing error;
+no exact high-frequency constant limit is needed for d!=1.
+
+SeedExpansion production audit complete: --old167.8s, final direct174.8s
+empty, three standard-axiom checks21.0s, guarded chain exit0; wired.
+Hash5c389245b817c5fa085bea989404b239c6cb4f0e2b2c4fe819ea0fedd9f291d3.
+Current sole Lean scratch is prime lag session60529. The three new production
+leaves and fifteen public checks are complete. Both C capstones remain OPEN.
+
+Prime-lag scratch retries fixed this toolchain's `Nat.le_floor` implication
+(not an iff), the explicit cast of1, and distribution before cancellation.
+No arithmetic or analytic premise was added. Current sole Lean session5490
+runs `/tmp/wp01-prime-lag.lean`; the source stays in scratch until it succeeds.
+
+### Completed checkpoint — upper energy, quantitative seed and arithmetic lag
+
+Prime-lag scratch passed empty and production `WeilWorkPBAPJointPrimeLag`
+is wired/audited: --old53.2s, final direct6.8s empty, five standard-axiom
+checks6.4s. Hash599f0faa32878bce7826331701650bcb53ed10cdf5034cee81e60676acc4af0b.
+All four new leaves and twenty named axiom checks complete. No owned Lean,
+build, search, index or lint command remains running. No unfinished production
+leaf, numerical computation, full/umbrella build, heartbeat increase or commit.
+
+Index exits0. Global lint exits1 on eight unrelated reachability errors,
+listed exactly in EVIDENCE; none of these four leaves is flagged. Scoped
+diff-check exits0. Old failed API-probe log is removed; final passing API,
+scratch and production audit logs remain for reproducibility. Production
+files and EVIDENCE are authoritative. Full PBAP OPEN, goal ACTIVE; scientific
+novelty unestablished. The paper conjecture C is still NOT a Lean theorem.
+
+Next exact work: formalize the variable-width uniform estimates with
+s=log(1/delta), K=L/2+s-d*log L, W=kappa*K*exp(-L/2), then the three-band
+certificate for d>1 and two-point failure for d<1. Pay every bound from the
+literal unit bump and the just-compiled prime arithmetic. Uniform analytic
+lemmas can quantify over real L and L-log2<=s<=2L+log2, then specialize to
+actual prime half-logarithms; no supplied energy or phase-cost premise.
+After that, return to the fixed-M many-node cost/full-cone gap recorded above.
+
+### 2026-10-08 — uniform boundary estimates underway
+
+- Full PBAP OPEN. Continue conjecture C from `JOINT-ONE-NODE-BOUNDARY.md`.
+- Plan: (1) retain the exact `2 log |T|` coefficient uniformly for all
+  `κ L exp(-L/2) ≤ W ≤ 1`; (2) close the uniform seed expansion at
+  `W=κ(L/2+s-d log L)exp(-L/2)`; (3) assemble negative two-point obstruction
+  and positive three-band survivor; (4) source audits, umbrellas, index/lint.
+- Refresh `/tmp/wp01-boundary-frontier-refresh-20261008.json` completed:
+  partial=false, 68,730 indexed files, refresh incomplete, compiler coverage
+  mostly pending. All 20 candidates, 20 source arguments and ingredient set
+  inspected. The suggested spectral-density-to-prime-sector chain does not
+  prove full PBAP; it only recovers known sector positivity.
+- External primary check: arXiv 2006.13771 (archimedean Sonin comparison),
+  2607.02828v3 (finite dictionary/tail certification). Neither inspected abstract
+  supplies the missing full-cone producer. No novelty claim from search absence.
+- Verdict remains SURVIVES PRELIMINARY ATTACK for C; uniform estimates are BRIDGE.
+  Work in `/tmp/wp01-uniform-high.lean`; no new production leaf yet.
+
+- Uniform high-frequency bridge COMPLETE: production
+  `WeilWorkPBAPJointUniformHigh`, targeted build 37.0s, final direct audit 7.4s
+  (empty), seven standard-only axiom checks 5.1s; all exited0. Import wired.
+  SHA256 cf2375c6afe9f44e8f3716b48cc44d93e16bc26daecde93e6927b2ee345573b0.
+- Uniform seed draft `/tmp/wp01-boundary-seed.lean` now carries the literal
+  source balance, scale interval, explicit vanishing pole error, and bounded
+  remainder after centering by `-2s+2(d-1)log L`. It is under Lean audit;
+  not yet a production theorem. Full C capstones remain open.
+
+- Uniform seed bridge COMPLETE: `WeilWorkPBAPJointBoundarySeed`, targeted
+  build63.2s, final18.3s empty, eight standard-only checks56.6s, chain exit0.
+  SHA256 6bf9a1d7dd8b3eb3f2e3deab7d0a9618c41ccc6686b1fccd7dfb0183234d844f.
+  Actual-prime capstone derives lag range and width geometry.
+- Negative C capstone compiles in scratch: for every d<1 and all sufficiently
+  large L, uniformly over the permitted s range, `e(0)+e(pi*exp(s))<0`.
+  Hence no real c gives `-c*cos(exp(-s)*T) <= e(T)` globally. Production
+  `WeilWorkPBAPJointBoundaryObstruction` is wired and under final sequential
+  build/source/axiom audit. This is not a null-mixture counterexample.
+- Positive survivor draft `/tmp/wp01-boundary-certificate.lean` is ready for
+  its first Lean run after that audit exits. It proves the literal unit-bump
+  normalized certificate with margin `(d-1)*log L/2` for d>1, via three bands.
+  No retirement until this positive survivor and actual-prime/null transfer
+  are formalized. No numerical experiment, full build or new axiom.
+
+- Opposite-phase obstruction COMPLETE: `WeilWorkPBAPJointBoundaryObstruction`,
+  targeted160.7s/final25.6s/two axiom checks5.9s, all exit0, final empty.
+  SHA256 4c7bea07919b193a412b3023beba162f4bf48a53430d395d2db17e5c47bc0fdf.
+- Positive three-band scratch proof has passed once; a diagnostic cleanup
+  is being rechecked before production. Margin `(d-1)log L/2` in source-mass
+  units, positive coefficient `2s-(d-1)log L`, all real frequencies.
+- `/tmp/wp01-boundary-prime.lean` drafts actual-prime phase identity,
+  uniform node activity, negative seed, and both actual-prime capstones.
+  Not yet compiled. Null-mixture margin and nonemptiness still need transfer.
+- Fresh many-node search `/tmp/wp01-many-node-uniform-cost-next-20261008.json`:
+  partial=true;68,745 indexed files; reranking deadline; two unfinished
+  reformulations; refresh incomplete. All20 candidates/all20 source arguments
+  and sole ingredient set inspected. It recovers the existing mass-down-to-one
+  two-node escape, not a fixed-M bound growing with p. Proposed ingredient chain
+  incorrectly pairs a bounded logarithm estimate with mass-to-one escape;
+  it does not pay the missing many-node cost. No new conjecture selected yet.
+
+- Positive C survivor COMPLETE: `WeilWorkPBAPJointBoundaryCertificate`,
+  targeted94.1s/final10.2s/one standard-only axiom check4.8s; all exit0,
+  final empty. SHA25657846612416c0f8e91464f8758d2444046c4ba92673de1a5d53fd4ad34f14cf8.
+- `/tmp/wp01-boundary-prime.lean` passed its first Lean run. Production
+  `WeilWorkPBAPJointBoundaryPrime` now wired; targeted build passed29.8s,
+  final/axiom audit still running at this checkpoint. It proves actual-prime
+  phase identity, uniform node activity, negative seed, and both actual-prime
+  boundary capstones. SHA256bba6ce1fb0712a32640444f24fd2b9d6a9d81eabdb54fbf206c6f9752bb825e6.
+- `/tmp/wp01-boundary-null.lean` now drafts both final physical-mass margin
+  and nonemptiness for every M>1. First Lean run must wait for the owned prime
+  audit chain to exit. No other owned process remains running. No route retired.
+
+### Final C checkpoint — 8 October 2026
+
+- `JointBoundaryPrime` final68.2s and six axiom checks146.1s passed; empty final.
+- `JointBoundaryNull` targeted156.0s/final158.3s/two axiom checks17.1s passed;
+  final empty, standard-only. SHA256
+  73afc90b86fcaadf68573dac348304a2f619e2c9dc5e57798b861209a6da8235.
+- C COMPLETE for d<1 and d>1. Six production leaves wired, 26 public theorem
+  axiom checks, all targeted/final audits pass. Actual prime phase, active
+  nearest node, negative seed, full physical-mass margin and nonemptiness at
+  every M>1 all paid. No owned Lean/build process remains. d=1 and full PBAP OPEN.
+- Next core: many-node phase cost at fixed correction mass as p grows. Existing
+  two-node escape is only M down to one at fixed p; do not conflate the limits.
+  Candidate under audit: a positive autocorrelation-weighted sum over actual
+  logarithmic nodes is asymptotically nonnegative uniformly on each polynomial
+  height horizon |T|<=exp(A L). This would force correction log-cost/L to diverge
+  at fixed mass cap. It would still not pay the broad-profile exponential pole
+  cost. No new Lean code or scientific novelty claim for this candidate yet.
+- Fresh searches recovered a general derivative schedule in
+  `Sieve/RouteTHybridZetaBlock.lean` and `Sieve/DirichletBlockSigma.lean`.
+  Reuse this corpus before rebuilding classical derivative estimates.
+
+### Many-node continuation — 8 October 2026
+
+- New research file `results/01-pbap/JOINT-MANY-NODE-COST.md` records fixed
+  actual beta at W=log2/2, exact real-active constraints and correction cost.
+- MH1: fixed-mass cost/log(p) diverges. Closed paper proof uses positive
+  autocorrelation quadrature through |T|<=N^(1/2), then existing all-order
+  Dirichlet block schedule and bounded-variation Abel summation through N^a.
+  BRIDGE, not scientific novelty; no new Lean declaration yet.
+- MH2: fixed-mass cost/p^(1/4) diverges. Exact, falsifiable, OPEN. Its contrary
+  is an exact admissible bounded-cost family at arbitrarily large primes,
+  which need not refute PBAP. Proving MH2 would force full normalized energy
+  to diverge on the same scale in this fixed-source sector. The paper proves
+  that implication with both poles retained, not MH2 itself.
+- Quantitative recurrence attack read Maksimova2405.07051v1, Theorems C/1,
+  and actual corpus Kronecker/phase construction sources. Available bounds
+  are upper recurrence horizons, not the required lower cost. Approximate
+  visits do not pay exact-null repair. MH2 survives this preliminary attack.
+- All returned 20 candidates/20 source-argument statements and ingredient
+  sets inspected for weighted-horizon, height-cost and spectral-atom searches.
+  Partial search coverage/deadlines are recorded in the paper. The suggested
+  `WeilPositiveFull` spectral-kernel chain would be circular and is rejected.
+- Index exits0, six hashes unchanged, scoped/no-index whitespace clean.
+  Current global lint exits1 on twelve unrelated umbrella reachability errors;
+  no WP01 leaf flagged. Full list in EVIDENCE. Nine hgtl7 answers posted again.
+- Plan: attack the full vector MH2 by a cost-sensitive separating polynomial
+  or an exact cheap convex construction; close a paper theorem before Lean.
+  No numerical experiment, heartbeat raise, full build, commit or push.

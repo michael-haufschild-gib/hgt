@@ -81,3 +81,119 @@ The full dependency-closed argument is in [JOINT-PHASE-COST.md](JOINT-PHASE-COST
 The resulting explicit constant C is nonnegative and independent of modulation T. Summing with actual nonnegative Finsupp weights, including collisions, gives E(c)>=E0+2m sum w log(2+|t|)-C sum w. Two real-active nodes force beta nonzero and supply the already audited actual-real-null logarithmic escape. Shrinking delta below 1 bounds correction mass by 2, giving energy escape. Actual physical mass equals 2m(1+sum w), lies between 2m and 6m, and therefore preserves escape under normalization. The capstones are `joint_actual_null_energy_escape` and `joint_actual_null_normalized_energy_escape` in `WeilWorkPBAPJointEnergyEscape.lean`.
 
 All three analytic leaves pass targeted builds, final direct-source audits and 24 standard-axiom checks. This is a fixed-profile boundary theorem, not full PBAP positivity. The next core remains simultaneous-constraint full-energy control away from mass one and a justified passage to the full null cone.
+
+## Proved negative-seed positive sector
+
+[JOINT-WIDTH-SECTOR.md](JOINT-WIDTH-SECTOR.md) supplies the closed proof for
+the actual explicit unit bump at W=kappa*L*exp(-L/2). Its seed energy is
+negative, but a nearest-integer all-frequency cosine certificate forces
+positive full energy for every actual real-null correction, with margin
+L/16 times physical mass. The sector is nonempty at every correction mass
+M>1 for each sufficiently large prime half-logarithm. Eight targeted leaf
+builds, eight final direct-source audits and 66 standard-axiom checks pass;
+see EVIDENCE. This restricted sector does not span the full null cone.
+
+The next completed paper argument is
+[JOINT-ONE-NODE-BOUNDARY.md](JOINT-ONE-NODE-BOUNDARY.md). It identifies the
+nearest-node critical width and a stronger positive sector below it.
+Its four supporting leaves now formally establish the exact-mass upper
+bound, quantitative pole remainder, uniform full seed expansion and actual
+prime half-log phase scale. All four targeted/final audits and twenty axiom
+checks pass. The three-band classification is now formalized in six further
+leaves, with 26 public standard-only axiom checks.
+
+The two uniform bridges in `WeilWorkPBAPJointUniformHigh` and
+`WeilWorkPBAPJointBoundarySeed` are now formalized and directly audited.
+They retain coefficient2 in high-frequency logarithmic energy and bounded
+seed error after centering by `-2s+2(d-1)log L`, uniformly in the complete
+lag range. The actual-prime seed capstone pays the arithmetic lag bounds.
+All fifteen public axiom checks use standard Lean axioms only. The opposite-
+phase obstruction and positive three-band capstones are complete. For d<1,
+the actual opposite-phase energy sum is negative, ruling out every single
+nearest-node cosine coefficient. For d>1, the explicit coefficient gives
+margin `(d-1)log L/2` in source-mass units at every real frequency. Actual
+nearest-node activity cancels this coefficient in every real integer-null
+correction. The resulting full-energy margin is `(d-1)log L/4` times physical
+mass; exact corrections make the sector nonempty at every M>1. The seed
+itself remains negative. All source signs, width geometry and phase bounds
+are derived for the literal unit-bump/prime family. The exact d=1 point,
+many-node certificates outside this family, and full PBAP remain open in Lean.
+
+## Many-node extension: paper proof and first formal component
+
+[JOINT-MANY-NODE-CERTIFICATE.md](JOINT-MANY-NODE-CERTIFICATE.md) gives the
+dependency-closed MC2/MC3/MC4 arguments. Actual short-prefix length, signed
+Abel variation and integer quadrature are essential; the derivative test is
+classical and already present in the corpus. Scientific novelty is unestablished.
+The continuous component for nonnegative real autocorrelation is now proved
+in `WeilWorkPBAPJointContinuousCertificate`. Its positive modulation kernel
+dominates the exact leading pole coefficient, while the cosine transform is
+the sum of two actual squared source integrals. This proves the continuous
+certificate without a positivity input. `JointGammaFloor` and
+`JointSignedCertificate` now remove the source-correlation sign condition
+from the continuous estimate: exact mass pays the Gamma logarithm and
+absolute correlation mass pays the uniform quartic pole error. All four
+new leaves, including the explicit short-prefix/Abel bridge, are audited.
+The discrete capstones remain unformalized; full PBAP remains OPEN.
+
+The stronger MC6 paper proof is in
+[JOINT-UNIFORM-PROFILE-CERTIFICATE.md](JOINT-UNIFORM-PROFILE-CERTIFICATE.md).
+Its fixed cutoff moves every derivative onto an auxiliary smooth family,
+leaving source-uniform Fourier density and mass bounds. Both source
+profiles may vary independently. The same global coefficient system is
+indefinite by the corpus semiprime-floor theorem, so only the exact local
+restriction and its aggregate-null consequence are positive survivors.
+MC6 formalization is the next obligation; its no-go card stays in progress.
+
+`JointSourceBudget` now pays the source-uniform part in Lean: for support
+[0,W], `(integral |f|)^2<=W*mass(f)` and `|F_f(t)|^2<=W*mass(f)`.
+The integrated fixed log deficit costs at most `mass(f)*integral H`,
+giving the explicit Gamma floor with leading term `-mass(f)*log W`.
+Eight public theorems are fully audited. Complex quadrature, uniform
+growing-order bands and the literal two-source/null capstones remain.
+The same paper records MC7, which keeps the extreme pair intact and pays
+every shorter pair to allow order D/log D separate narrow windows. Its
+derivation is a bridge from MC6; no unrestricted many-window sign follows.
+
+`JointLogQuadrature` now proves the complex quadrature and actual cutoff
+Abel variation in Lean, including the logarithmic change of variables.
+Seven public theorem audits pass. Remaining steps are actual endpoint/phase
+budgets, growing-order band gluing
+and literal cross-energy/null identities. MC8 improves the paper's
+many-window extension by summing geometric rows instead of multiplying
+by window count; its sharper spacing still does not cover general support.
+
+`JointFixedCutoff` now pays the fixed-cutoff obligation, including an actual
+even plateau, uniform C1/C2 bounds, its exact leading integral with error
+at most `4e W^2`, and inverse-square decay of the complex Fourier integral.
+All 28 public theorems pass source/axiom audits. The paper replaces separate
+middle-frequency bands by ratio-bounded window landing for `4^k lambda_k`.
+The three uniform schedule inequalities and actual cross-energy/null
+capstones remain to be formalized. The explicit endpoint budget pays three
+rounding/padding units, giving length at most `(4e+3)NW`.
+
+`JointGridGeometry` formalizes those endpoint bounds for the actual width
+`b L log log L exp(-L/2)`, for every b>0 and all sufficiently large L.
+It also proves that the logarithmic endpoints enclose [-2W,2W]. Its six
+public theorem audits pass.
+
+`JointGrowingOrder` now pays all three order-selection inequalities,
+including the growing factorial cost, throughout the literal middle band.
+Every short prefix has the explicit saving
+`exp(-(log L)^(1-c log2)/16)`. Its nine public theorem audits pass. The
+all-frequency gluing and cross-energy/null capstones remain open; the phase
+theorem itself assumes no numerical budget.
+
+`JointMiddleCutoff` pays the actual cutoff weights and both frequency
+signs, bounds the full complex grid-minus-integral error, and supplies an
+eventually nonnegative o(L) loss after multiplication by the exact
+`2 cosh(L/2)` pole factor. All eleven public source/axiom audits pass.
+`JointGridFrequency` also passes all twelve public audits. It pays the full
+complex quadrature and low-frequency o(L) loss, preserves the exact Apsi
+in the high envelope, and leaves 3L/4 against log|t| above the actual growing
+ceiling. Its global finite error bound supports subsequent integration.
+`JointSymbolFloor` pays Gamma-deficit gluing and source integration, including
+error continuity and integrability. Its nine public audits pass. The exact
+corrected symbol leaves L/3 times total physical mass for two independent
+sources, with a threshold independent of their shapes. The numerical condition
+is discharged for b=1/(8 log2). Source-energy and null identities remain open.

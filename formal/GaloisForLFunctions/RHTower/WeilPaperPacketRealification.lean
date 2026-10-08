@@ -20,7 +20,8 @@ namespace RHTower.WeilWorkPBAP
 
 open WeilOneSided WeilSpectral
 
-private theorem packet_gammaBracket_neg (r : ℝ) : EF.gammaBracket (-r) = EF.gammaBracket r := by
+/-- The gamma multiplier is even on the real Fourier axis. -/
+theorem packet_gammaBracket_neg (r : ℝ) : EF.gammaBracket (-r) = EF.gammaBracket r := by
   have harg : (1 / 4 + I * ((-r : ℝ) : ℂ) / 2 : ℂ) = conj (1 / 4 + I * (r : ℂ) / 2) := by
     apply Complex.ext <;> simp [map_ofNat]
   rw [EF.gammaBracket, harg, Zeta23.digamma_conj, Complex.conj_re]

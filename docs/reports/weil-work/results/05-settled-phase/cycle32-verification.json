@@ -1,0 +1,68 @@
+{
+  "cycle": 32,
+  "date": "2026-10-08",
+  "status": "SEALED model diagnostic; WP05 OPEN",
+  "scientific_verdict": "REDISCOVERED classical model classification; no scientific novelty claim",
+  "scope": "Same literal model coefficients: canonical coprime endpoint ratios for every nonzero modulus, positive finite-period variance for normalized nonconstant polynomial, exact invisible ideal X*(X-C(1/p)). No full-positive source example.",
+  "modules": [
+    {
+      "path": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialModels.lean",
+      "sha256": "e4aaf3da3d8f5ef32b11fedf85ef4b3a575bc64688bf3b7c4d0a20cb2b64134f",
+      "final_direct_command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialModels.lean",
+      "exit_code": 0,
+      "diagnostics": "empty",
+      "umbrella_import_count": 1
+    },
+    {
+      "path": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialPeriods.lean",
+      "sha256": "228e12a912816af23d188c8e7fc95267cd1b4c442f023e80affa341fa9995f7c",
+      "final_direct_command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialPeriods.lean",
+      "exit_code": 0,
+      "diagnostics": "empty",
+      "umbrella_import_count": 1
+    },
+    {
+      "path": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialSeries.lean",
+      "sha256": "78b31c6f88bc4ed4ba0d18e4dbe59821d9d2f5fd73ff2175bb7be4efe839cc59",
+      "final_direct_command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialSeries.lean",
+      "exit_code": 0,
+      "diagnostics": "empty",
+      "umbrella_import_count": 1
+    },
+    {
+      "path": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialInvisibility.lean",
+      "sha256": "9b9147677b899b4af17309a3f667209d4750869ec38511d0531836ee03d9ea7b",
+      "final_direct_command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialInvisibility.lean",
+      "exit_code": 0,
+      "diagnostics": "empty",
+      "umbrella_import_count": 1
+    }
+  ],
+  "build": {
+    "command": "lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseLocalPolynomialInvisibility:olean",
+    "exit_code": 0
+  },
+  "axioms": {
+    "command": "lake env lean /tmp/wp05-c32-axioms.lean",
+    "exit_code": 0,
+    "queries": 8,
+    "allowed": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "audit_execution": "Sequential set-e script80402 reached subsequent C34 API command only after C32 build, all4 direct audits and axioms returned0. No source changed after final audits.",
+  "index_exit_code": 0,
+  "lint_exit_code": 1,
+  "lint_unrelated_errors": [
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal",
+    "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra"
+  ],
+  "full_or_umbrella_build": false,
+  "added_source_premises": false,
+  "numerical_experiments": false
+}

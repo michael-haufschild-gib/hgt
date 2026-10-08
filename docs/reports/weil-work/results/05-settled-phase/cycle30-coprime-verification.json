@@ -1,0 +1,145 @@
+{
+  "date": "2026-10-08",
+  "cycle": 30,
+  "part": 2,
+  "status": "FINITE COPRIME DELETION ENDPOINT BRIDGE FORMALIZED; WP05 OPEN",
+  "source_hypothesis": "Only original hW : WeilPositiveFull lam; modulus Q is any nonzero natural.",
+  "modules": [
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeFourier.lean",
+      "sha256": "fa24514df506b4a9213ca97df5a55e2402653ceb6be67d8c44270aff0e88453d",
+      "lines": 85,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeFourier.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeMasks.lean",
+      "sha256": "13e5405e4d5022ffe4719614da2c859d351e48dfe82eb1dff0b3131fa57c71b0",
+      "lines": 121,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeMasks.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeCosineBound.lean",
+      "sha256": "d8cd7f4ddabec1be5cdf29eb109a70ee1c4fa83fe608c0c6cea4473e8c67f0f7",
+      "lines": 80,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeCosineBound.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeDeviation.lean",
+      "sha256": "2cb318800a19a56598b32727ec223c0d3e19f31f783375cb7d2a90032b93e405",
+      "lines": 112,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeDeviation.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeCanonical.lean",
+      "sha256": "25c7189bf5a703880f55dded859553c338fa2895a75e72ccd9f461ca39f52d62",
+      "lines": 82,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeCanonical.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeSourceBound.lean",
+      "sha256": "f7ea2fd78e1f89a98cfa3d5ac3d39cb93f91de4d0284720e201cfbc0f7ded861",
+      "lines": 56,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeSourceBound.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeLogarithm.lean",
+      "sha256": "f5e58f875fbc484d2c8ae1b15e3863b64bc00d5a20443a114f40b106f247a548",
+      "lines": 128,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeLogarithm.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeRatio.lean",
+      "sha256": "b03417f593ff01cd31d800c6fa2a51b6a1317d071b3c68e85fd69ebaa10a10d7",
+      "lines": 91,
+      "umbrella_import_count": 1,
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeRatio.lean",
+      "direct_audit_exit_code": 0,
+      "diagnostics_bytes": 0
+    }
+  ],
+  "build": {
+    "session": 79686,
+    "exit_code": 0,
+    "command": "lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeRatio:olean",
+    "log": "cycle30-coprime-build.log"
+  },
+  "direct_audits": {
+    "session": 71007,
+    "exit_code": 0,
+    "mode": "Sequential API, eight direct source audits and fourteen axiom queries; guarded900seconds."
+  },
+  "axioms": {
+    "command": "lake env lean /tmp/wp05-c30-coprime-axioms.lean",
+    "exit_code": 0,
+    "log": "cycle30-coprime-axioms.log",
+    "exports": [
+      "RHTower.WeilSingularArithmetic.exists_coprimeMask_cosine_expansion",
+      "RHTower.WeilSingularArithmetic.coprimePart_convolution",
+      "RHTower.WeilSingularArithmetic.coprimePart_dirichletExp",
+      "RHTower.WeilSingularArithmetic.LSeries_coprimePart_sourceSquareCoeff",
+      "RHTower.WeilSingularArithmetic.exists_abs_coprime_sourceSquare_normalized_le",
+      "RHTower.WeilSingularArithmetic.exists_abs_re_sourceCoprimeDeviation_le",
+      "RHTower.WeilSingularArithmetic.LSeriesSummable_nonCoprime_vonMangoldt_one",
+      "RHTower.WeilSingularArithmetic.exists_norm_nonCoprime_vonMangoldt_le",
+      "RHTower.WeilSingularArithmetic.exists_abs_re_nonCoprime_source_le",
+      "RHTower.WeilSingularArithmetic.sourceDeletedLogarithm_eq_tsum",
+      "RHTower.WeilSingularArithmetic.ofReal_sourceDeletedLogarithm",
+      "RHTower.WeilSingularArithmetic.exists_sourceDeletedLogarithm_lipschitz_limit",
+      "RHTower.WeilSingularArithmetic.coprime_source_ratio_eq",
+      "RHTower.WeilSingularArithmetic.exists_coprime_source_ratio_limit"
+    ],
+    "dependencies": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "index": {
+    "command": "scripts/formal_tools.py index",
+    "exit_code": 0,
+    "log": "cycle30-coprime-index.log"
+  },
+  "lint": {
+    "command": "scripts/formal_tools.py lint",
+    "exit_code": 1,
+    "log": "cycle30-coprime-lint.log",
+    "errors": [
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticAbelEnergy",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticParityVariance",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticResidueEnergy",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra"
+    ],
+    "owned_module_errors": []
+  },
+  "limitations": [
+    "No canonical value for any deletion endpoint.",
+    "No uniformity in the modulus, filtered-source positivity or unknown-source Euler product.",
+    "No continuation or ordinary mean of deleted forward series.",
+    "No zero-variance theorem or settled phase; WP05 remains OPEN."
+  ]
+}

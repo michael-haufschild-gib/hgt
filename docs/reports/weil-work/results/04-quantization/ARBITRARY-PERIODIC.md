@@ -51,7 +51,7 @@ b=√r/α and c=α√r. Define a(n) by the ordinary Dirichlet series
 
     Σ a(n)n^(−s)=ζ(s) (1−c u^(−s))/(1−b u^(−s)).
 
-Equivalently, a(n)=Σ_{u^j|n} d_j, where d_0=1 and
+Equivalently, set a(0)=0 and a(n)=Σ_{u^j|n} d_j for n≥1, where d_0=1 and
  d_j=(b−c)b^(j−1) for j≥1. Then a(1)=1. Along u-divisibility chains the
 formal generating identity P(√r t) A(t)=p_0/(1−t) gives every integer
 resonance row is p_0, despite P having positive winding. The inequalities
@@ -69,5 +69,22 @@ projection. Do not retire L2 or claim failure of spectral quantization from it.
 
 The strongest positive survivor is L2+: one-sided rational phase rigidity, via
 exact valuation classification and numerator-power logarithmic support. Its
-paper proof is closed in ONE-SIDED-RATIONAL.md; Lean audit is in progress.
+paper proof and five final Lean leaf audits are complete in ONE-SIDED-RATIONAL.md;
+all twenty declarations passed the standard-axiom audit.
 This does not settle two-sided L2 or produce a periodic representation from hW.
+
+Cycle 18 closes two-sided rational phases for sources with finite negative
+harmonic mass, including all nonnegative sources: L2h in BILATERAL-RATIONAL.md.
+Two new leaves passed clean final direct audits and are wired. The actual source
+has a(n)=1 wherever u∤n and v∤n, hence λ(q)=Λ(q) at every prime q>u. The endpoint
+deficit receiver then gives rigidity unless Σ max(−λ(n),0)/n diverges. This
+avoids finite-block invertibility. General signed L2 remains open.
+
+
+Cycle 19 proves L3p: a nonrigid source's periodic base must have a rational
+positive power. Thus bases r>1 whose every positive power is irrational are
+excluded. This does not replace r by a rational number inside the phase:
+projecting onto the arithmetic harmonics need not preserve unit modulus.
+General rational-power bases, signed bilateral L2 and P18 remain open.
+ARITHMETIC-SPECTRUM.md contains the dependency-closed paper proof; the new
+ArithmeticSpectrum leaf passed a clean direct audit.

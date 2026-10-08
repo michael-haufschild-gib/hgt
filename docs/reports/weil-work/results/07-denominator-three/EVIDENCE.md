@@ -326,10 +326,753 @@ Checked source SHA-256: BesselBoundary `abb1033de85755d76682f4df3a2d796f4d398c86
 A final receiver audit checked `weightOne_period_step_bound`, `weightOne_period_tail_bound`, and the origin-bound receiver in the existing PeriodDefect module. The local linear-vanishing hypothesis already suffices; do not spend a new cycle proving that weaker receiver as if it were missing or novel. The broad lexical Maass search returned 20 of 510 matches, mostly cusp-decay results; it gives no exhaustion claim. The exact owned source establishes the applicable receiver. All five anti-theatre and four anti-laziness answers were posted: formal progress, no scientific novelty or density proof, next exact transport and cancellation obligations retained.
 
 
-## Moving Fourier continuation (2026-10-08; audit in progress)
+## Moving Fourier continuation (2026-10-08)
 
 - Deep nonstationary-phase query returned partial=false, no unfinished stages, generation 1286174, older-coverage and semantic-unavailable warnings, and incomplete background refresh. All 20 candidate and 20 source hits were screened; the compact-derivative support machinery applied, while the generated phase-shift proposal did not discharge the actual nonlinear amplitude chain.
 - The exact lexical kMoment query restricted to BesselBoundary returned all seven declarations in that module (FTS5, exact=true, per_module=0, total=eligible=7). Their source signatures were checked. The broader any-term query was noisy and is not treated as exhaustive evidence.
 - New deep query `signed degree two explicit formula sublinear negative spectral mass rigidity`: partial=false, unfinished=[], generation 1286536; coverage snapshot 68609/68609, compiler counts 43 compiled_snapshot, 2 error, 11103 not_applicable, 52108 pending, 2660 stale, 38 stale_snapshot, 1 umbrella_source_only, 2654 unavailable. Warnings: coverage_snapshot_older_generation, semantic_coverage_unavailable. Refresh incomplete because background_indexer_running. No errors; 76.27 seconds reported. All 20 candidate and 20 source statements were screened, along with all prose/source hit topics. The proposed negative-sector spectral-gap ingredient set does not construct the actual signed arithmetic object and was rejected as inapplicable. Relevant source passages led to direct inspection of the exact sublinear zeta-mass and critical-line Hamburger-stability capstones; PROOF.md records their unpaid premises for WP07.
 - Primary literature rechecked: [Lewis–Zagier](https://people.mpim-bonn.mpg.de/zagier/files/doi/10.2307/2661374/fulltext.pdf), [Neururer–Oliver](https://arxiv.org/abs/1809.06586), and [Artin-ratio converse result](https://arxiv.org/abs/1910.02821). Finite-pole/twisted converse hypotheses are not silently transferred to the exact sparse-deficit problem. No scientific novelty or absence theorem is claimed from these searches.
 - New owned modules are Nonstationary, ScaledBessel, InversionGeometry, MovingKernel, InversionAmplitude, InversionDecay and InversionFourier, all under the WeilWorkHigherDenominator prefix. Dependency-closed paper proofs preceded their implementations. No computation experiment, full build, subagent, proof-resource override, commit or push was used. An interrupted compiler handle disappeared; process inspection confirmed it had exited before replacement. Compiler checks are strictly sequential.
+
+- Final direct module audits all exited 0 without diagnostics: `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<module>.olean GaloisForLFunctions/RHTower/<module>.lean`, separately for all seven modules. API scratch checks preceded their applications. First checks exposed explicit-cast, lambda-reduction, implicit-function inference and redundant-tactic issues; all were repaired without raising limits. InversionFourier's final direct check and subsequent axiom audit completed in session 53089, exit 0.
+- `/tmp/wp07-inversion-audit.lean` imported the final leaf and printed axioms for every one of the 42 public theorems. All 42 have exactly `[propext, Classical.choice, Quot.sound]`. The printed original-data capstone type has only `ZetaPowerDatum 3 g E` and ordinary compact smooth test/positive interval inputs. No coefficient, amplitude, phase, boundary-regularity, xi-RH or infinite-residue premise was added.
+- All seven imports are wired into RHTower.lean. No umbrella build was run. The scoped source scan found no active forbidden declaration, proof placeholder, computation command or resource override (the English word "admit" occurs only in a docstring). Scoped whitespace checks pass. Anti-theatre five and anti-laziness four answers were posted. Full WP07 and C2 remain OPEN; goal ACTIVE. Classical BRIDGE / REDISCOVERED, no scientific-novelty claim.
+
+- `scripts/formal_tools.py lint` exited 1. Its terminal error block reported seven unrelated unreachable modules, with no WP07 error:
+
+```text
+GaloisForLFunctions.RHTower.WeilPaperNullObservationDirections
+GaloisForLFunctions.RHTower.WeilWorkQuantizationRationalRigidity
+GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+GaloisForLFunctions.HTGeometry.ApertureConeWinding
+GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+```
+
+  Global lint is not green. Lint wrote diagnostics to stderr; the stdout capture was empty. No unrelated file was changed to hide these failures. Final seven-module import/whitespace checks passed, and no owned Lean process remained after the terminal audit.
+
+- Cleanup complete: 13 owned API/search/audit scratch files removed after evidence was recorded. The seven finished Lean sources and their current checked build artifacts remain. Final scoped whitespace check passed.
+
+
+## Actual inverted spatial trace (2026-10-08)
+
+- Deep query `inverted Maass compact test spatial integral reciprocal substitution`, 120-second budget: exit 0, partial=false, no unfinished stages; semantic coverage unavailable, background refresh incomplete. Coverage snapshot 68,634/68,634 files; compiler metadata predominantly pending/stale/source-only. Every returned candidate/source statement inspected. Generated PBAP/L2 ingredient set did not supply the required actual spatial interchange.
+- Deep query `sparse Mellin spectrum period distribution rigidity one xi deficits`, 120-second budget: exit 0, partial=false, no unfinished stages; semantic coverage unavailable, background refresh incomplete. Coverage snapshot 68,651/68,651 files, generation 1288490; compiled snapshots 43, errors 2, not-applicable 11110, pending 52143, stale 2660, stale snapshots 38, umbrella-source-only 1, unavailable 2654. All 20 candidate and 20 source statements screened. Bohr/global-entire hypotheses remain unpaid; generated periodic-shift ingredient set does not connect to D1. Actual Projection/ZeroTransport source read: it uses all xi-zero copies, not missing multiplicity below one xi divisor.
+- Reciprocal-source inspection found the existing `RHTower.coPoissonReciprocalSeed`; reuse avoids a duplicate transformation. Its existing window involution/integrability results do not directly state the smooth positive-test transport now needed.
+- Primary-source checks: Neururer–Oliver https://arxiv.org/abs/1809.06586 retains twisted functional equations; Lewis–Zagier https://people.mpim-bonn.mpg.de/zagier/files/doi/10.2307/2661374/fulltext.pdf supplies classical boundary context. Miller–Schmid https://arxiv.org/pdf/math/0403030, Theorem 4.8 and Proposition 5.37, require entire continuation and moderate vertical-strip growth. No cited result was promoted to a sparse-pole theorem.
+- InversionSpatial passed direct `lake --old env lean -o ...` without diagnostics. InversionConstant passed its final direct check without diagnostics after removing one redundant tactic sequence. Trace assembly and reciprocal transport remain under verification at this entry.
+- Corrected API scratches checked the actual mathlib derivative, rpow, compact domination, integration, support, and smoothness signatures. An initial API/module overlap was stopped by owned PIDs; module exit 143 confirmed, then compilation resumed sequentially. No resource limits were raised.
+
+- C3 discovery query `xi deficit reciprocal height summable pole converse`: exit 0, partial=true, reranking unfinished; semantic coverage unavailable, refresh incomplete. Coverage 68,657/68,657 files, generation 1288589. All 20 candidate and 20 source statements screened. Relevant comparison-weight, inverse-energy and producer-reciprocal definitions inspected directly; none is reciprocal-height xi-deficit summability. Generated telescoping/half-pole ingredient set rejected. C3 is an OPEN intermediate conjecture, not a theorem or novelty claim.
+- Final InversionTrace and ReciprocalTest direct checks exited 0 without diagnostics; ReciprocalTest's unused final ring tactic was removed before the final check. All four modules are wired. Global lint exited 1 with eleven unrelated unreachable modules and no WP07 error; exact list recorded at the final audit entry below.
+
+- Final axiom scratch `lake --old env lean /tmp/wp07-inversion-trace-audit.lean`: exit 0. Every one of the 26 public theorems has exactly `[propext, Classical.choice, Quot.sound]`. Final capstone type inspected: only original `ZetaPowerDatum 3`, arbitrary constant-term coefficients, smooth test, positive interval and compact support conditions. No independent coefficient/growth/sparsity/regularity hypothesis is exposed.
+- All four modules received final direct checks of the form `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorNAME.olean GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorNAME.lean`, with NAME InversionSpatial, InversionConstant, InversionTrace, ReciprocalTest. Every final check exited 0 without diagnostics. No full/umbrella build, computation, heartbeat change, commit or push.
+- Latest lint exited 1 with the following eleven unrelated reachability errors; global lint is not green:
+
+```text
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilPaperRealificationEnergy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardEnergyLimit
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardMean
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardVariance
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticLogMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticLogMomentLimit
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+```
+
+- Scoped forbidden-declaration and whitespace scans passed. Anti-theatre and anti-laziness answers posted; no scientific novelty or full-solution claim.
+
+- Cleanup: ten owned API/search/audit scratch files removed after recording results. No owned Lean process remains. Four completed source modules and current checked build artifacts retained; final import/whitespace checks passed.
+
+## Continuous primitive and absolute Mellin overlap checkpoint (2026-10-08)
+
+- Final direct commands, sequential foreground processes, exit 0 with no diagnostics:
+  - `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorBoundaryPrimitive.olean GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorBoundaryPrimitive.lean`
+  - `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorPrimitiveMellin.olean GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorPrimitiveMellin.lean`
+- Scratch `lake --old env lean /tmp/wp07-primitive-axioms.lean`: exit 0. All seven BoundaryPrimitive and four PrimitiveMellin exported theorems have exactly `[propext, Classical.choice, Quot.sound]`. Both original-datum capstone types were printed and inspected; no hidden analytic premise. Both umbrella imports wired without an umbrella build.
+- Reused actual source: ConnesLevyKernelScaling/ConnesFractionalSymbolGrowth supply cosine-difference integrability and dilation; CompactTestTransform supplies exact double integration by parts. Original quotient summability pays all series and weighted integral interchanges. The kernel's Gamma evaluation is not yet a formal claim.
+- Deep cutoff-Mellin, cosine-Mellin, periodic-Mellin and harmonic-multiplier searches all completed with `partial=false`, no unfinished stages. Every returned candidate/source statement was screened. Semantic coverage was unavailable, refresh incomplete while the background indexer ran; the first two also warned older coverage generation. The cosine search inventoried 68,666/68,666 files, periodic search 68,669/68,669, multiplier search 68,682/68,682. Compiler metadata remained predominantly pending/source-only. Generated ingredient sets did not supply the missing scalar evaluation or sparse-deficit regularity. Lexical Ingham query returned 992 total hits, with the displayed names primarily in arithmetic zero-density/mollifier machinery; this is not an absence claim.
+- Primary [Miller--Schmid](https://arxiv.org/pdf/math/0403030), Theorem 4.8 and surrounding distributional Mellin results, are the classical parent. [Hochfilzer--Oliver](https://arxiv.org/pdf/1910.02821), Theorem 1.1 and introduction, concern Artin/twisted-converse hypotheses not supplied here. [Bhowmik--Sen](https://arxiv.org/pdf/1606.02125), Theorem 1.1(a), gives the classical compact-support/Fourier-decay existence criterion for an integrable logarithmic weight; it gives no Dirichlet or modular-period preservation. No such external theorem was silently imported into Lean.
+- First lint run exited 1, but stderr had not been redirected and its tool output was truncated. Repeated solely to capture complete diagnostics, using `scripts/formal_tools.py lint > /tmp/wp07-primitive-lint.txt 2>&1`. Latest exit 1 has these eight unrelated reachability errors and no WP07 failure:
+  - RHTower: WeilWorkSingularArithmeticAbelEnergy, WeilWorkSingularArithmeticParityVariance, WeilWorkSingularArithmeticResidueEnergy.
+  - HTGeometry: ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra.
+- Scoped source scans found no forbidden declaration or resource override; whitespace checks passed. Anti-theatre and anti-laziness answers posted. Formal bridge progress only; C2, C3, C4 and full WP07 remain open.
+
+- Cleanup: 11 owned search/API/prototype/audit scratch files removed after recording results. Every owned process completed. Checked source and module build artifacts retained. Final scoped whitespace/import checks passed.
+
+## Scalar Gamma and original primitive checkpoint (2026-10-08)
+
+- Dependency-closed Euler--Laplace/Fubini/beta proof recorded before formalization. The product norm integrates to `Real.Gamma(re(alpha)+1) * connesLevyKernel (re(alpha)) x`; the existing Levy-kernel theorem pays absolute Fubini for the entire strip `0<re(alpha)<2`. Square substitution and the existing half-line beta identity then give the scalar Gamma value.
+- Both final direct sequential foreground checks exit 0 without diagnostics:
+  - `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorCosineMellin.olean GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorCosineMellin.lean`
+  - `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorPrimitiveGamma.olean GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorPrimitiveGamma.lean`
+- Scalar deep search completed `partial=false`, inventory 68,685/68,685, generation 1289144/current 1289145. Period/sparse search completed `partial=false`, inventory 68,697/68,697, generation 1289369. Every returned candidate/source statement and proposed ingredient set was screened. The scalar ingredient set did not supply the interchange theorem; actual source inspection located the scaled Gamma, Laplace, Connes and beta ingredients used above. The period query mostly matched unrelated algebraic periods and finite-pole residue machinery; the checked finite residue theorem does not control an infinite sparse family.
+- Holder/period query completed `partial=true`: inventory 68,698/68,698, generation 1289378/current 1289379; unfinished stages `query:regularity transfer proof method` and `semantic_retrieval`. All 20 candidates and 20 source statements were screened. Its `BoundaryRegular` theorem requires regularity as input; its generic strong-functional-equation Mellin and residual-seed periodicity hits do not discharge C5. No absence claim. Index warnings included older generation and unavailable semantic coverage; background refresh remained incomplete. Compiler metadata was predominantly pending/source-only.
+- Primary [Pagnini--Runfola](https://arxiv.org/pdf/2305.04251), equations (1.3) and (1.5), place the scalar cosine/Gamma normalization in classical fractional-Laplacian theory. The present scalar result is REDISCOVERED / BRIDGE, not scientific novelty.
+- Primary [Lewis--Zagier](https://people.mpim-bonn.mpg.de/zagier/files/doi/10.2307/2661374/fulltext.pdf), Chapter III, separates the algebraic period equation from regularity and growth. [Baumgartner (2025)](https://arxiv.org/pdf/2511.06513), Theorem 1.1 and Corollary 4.1, studies Holder bootstrapping above one half, but already assumes Holder input. Its transfer-operator definitions exclude the resonant beta=1/2 pole, so direct use at our exact weight requires a separate normalization audit. Neither source supplies harmonic-deficit summability -> regularity. The recorded one-point power receiver uses elementary telescoping instead; C5's original-data implication is still OPEN.
+- The new C5 receiver is proved only on paper. It requires exponent strictly above one half to remove central deficits; equality leaves the critical-line multiplicity question open. No C5 premise was inserted into any Lean capstone. Anti-theatre five and anti-laziness four answers posted; full WP07 and C2/C3/C4/C5 OPEN.
+
+- Scratch axiom audit `lake --old env lean /tmp/wp07-scalar-gamma-axioms.lean` exits 0. All four CosineMellin and five PrimitiveGamma public theorem audits have exactly `[propext, Classical.choice, Quot.sound]`. The printed original-data capstone retains only `ZetaPowerDatum 3` and the Mellin strip bounds. Both umbrella imports are present, with no umbrella build.
+- Captured `scripts/formal_tools.py lint` exits 1. All eight errors are unrelated reachability failures: RHTower `WeilWorkSettledPhaseDivisibilityFourier`, `WeilWorkSettledPhasePrimeDifference`, `WeilWorkSettledPhaseValuationMasks`; HTGeometry `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. No WP07 error. Scoped forbidden-declaration/resource-override and whitespace scans pass.
+
+- Cleanup: 10 owned search/API/prototype/audit scratch files removed after recording results. All owned process handles completed. Checked source and current module artifacts retained. Final scoped whitespace and exact umbrella-import checks passed.
+
+### 2026-10-08: C5 continuation, exact external premise audit
+
+- Booker, *L-functions as distributions*, https://arxiv.org/pdf/1308.3067,
+  Definition 1.3 and Theorem 1.7: positivity means finitely many negative
+  spectral masses; the stated classification has degree below 5/3. The
+  current quotient has degree two and possibly infinitely many negative
+  masses, even if their reciprocal-height sum converges. These premises
+  do not close C5. Axiom A1 also needs its own original-data audit.
+- Pasles, *A nonanalytic Hecke correspondence*,
+  https://www.pasles.com/hecke.pdf, Theorems 3.1 and 3.2: the displayed
+  log-polynomial correspondence assumes finitely many poles. 'Lacunary
+  vertical strips' here exclude a finite height interval; this phrase is
+  not a sparse-infinite-pole theorem.
+- Search strings: `"period functions" "lacunary" Maass`,
+  `"converse theorem" "sparse poles" Dirichlet series`,
+  `Andrew Booker "L-functions as distributions" positive degree zeros poles`,
+  `"converse theorem" "poles" "density" Maass infinite`,
+  `"period functions" "singular support" distributions Maass`.
+  No absence claim follows from these searches. Non-primary search hits
+  were not used as theorem evidence.
+
+The tentative small-growth pole-clearing argument fails at a specific
+inference: the Gamma exponential of the completed quotient is canceled
+by the reciprocal Gamma factors in the boundary Mellin normalization.
+Neither boundary regularity nor convergence of an infinite residue packet
+follows from that growth argument. This is not a counterexample to C5
+and not a no-go theorem for all pole-clearing methods.
+
+### 2026-10-08: smooth-tail corpus audit
+
+The two deep queries were:
+
+```text
+scripts/formal_tools.py research "degree three zeta power rational mass rigidity twin monodromy" --mode deep --budget-seconds 180 --json
+scripts/formal_tools.py research "Mellin tail cutoff bounded holomorphic half plane derivative" --mode deep --budget-seconds 180 --json
+```
+
+Both completed with partial=false and no unfinished stages. All twenty
+returned candidate statements and all twenty source arguments in each were
+inspected. The specialized `differentiableAt_causalTailMellin` source confirms
+the reusable Mathlib big-O mechanism; its Mobius-specific datum is not
+imported. Generated ingredient sets did not pay C5.
+
+- `wp07-c5-frontier-search`: 68704/68704 source files, snapshot generation 1289466, current generation 1289467; search index generation 1289460. Compiler coverage largely pending/stale, semantic retrieval unavailable, refresh incomplete with background indexer running.
+- `wp07-c5-tail-search`: 68707/68707 source files, snapshot generation 1289504, current generation 1289504; search index generation 1289503. Compiler coverage largely pending/stale, semantic retrieval unavailable, refresh incomplete with background indexer running.
+
+The lexical `"harmonic" "deficit"` query was rerun with `--per-module 0`
+and its `--offset 20` page; all 26 returned declaration names/docs were
+screened. The relevant-looking WeilPrimeDeficitSetRigidity statements
+concern arithmetic sign alignment and prime harmonic sums, not reciprocal
+heights of the one-xi spectral deficit. No direct application to C3/C5 was
+certified. This is a relevance audit, not an assertion that the corpus has
+no other route. Exact reused Mathlib names were checked in a scratch Lean
+file against this toolchain.
+
+### 2026-10-08: smooth-tail final verification
+
+Sequential foreground commands, each exit 0 without diagnostics:
+
+```text
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorMellinTailSupport.olean GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorMellinTailSupport.lean
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorMellinTail.olean GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorMellinTail.lean
+```
+
+Final scratch import audit also exits 0: every one of the fifteen exported
+theorems has exactly `[propext, Classical.choice, Quot.sound]`. The printed
+original capstone type retains only ZetaPowerDatum 3, arbitrary constant A,
+Re(s)<2 and s!=0. Its conclusions include both convergence statements, the
+actual second-derivative integral identity and holomorphy; no unknown
+regularity, residue expansion, or sparse-pole premise occurs.
+
+Both umbrella imports occur exactly once. No full or umbrella build was run.
+No proof-resource option was raised. Owned source/whitespace checks pass, and
+both final olean files are newer than their corresponding sources.
+
+Source SHA-256 at final audit:
+
+- `WeilWorkHigherDenominatorMellinTailSupport.lean`: `7f79985076200e4f046ebd09c78bacb6c0c0c5507482345b3eece5ac0963debc`.
+- `WeilWorkHigherDenominatorMellinTail.lean`: `77094e9cf142bece3774bbf13e3bd231ec3e0289e8b4f2156c84d35e8e491d91`.
+
+The fully captured `scripts/formal_tools.py lint` exits 1 with eleven
+unrelated reachability errors and no WP07 error:
+
+```text
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkQuantizationDilationInverse
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkQuantizationDirichletInverse
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkQuantizationFrequencyMass
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkQuantizationRadicalMass
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkQuantizationRadicalResidues
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkQuantizationRadicalTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+```
+
+Anti-theatre five and anti-laziness four answers were posted in chat. Formal
+cycle PROGRESS, scientific novelty not claimed. The selected C5 mechanism
+still survives preliminary attack with its original-data implication unpaid.
+All owned scratch/API/search/audit outputs were removed after this record.
+
+
+## Cutoff-overlap and dilation checkpoint — 2026-10-08
+
+- Reapplied hgtl7 and audited the original task, current tail capstone and C5. Four direct deep corpus searches completed with `partial=false` and no unfinished stages: `harmonically thin spectral divisor Mellin period distribution regularity`; `half integer spectral mass rigidity summable negative atoms stability converse`; `Mellin cutoff distribution primitive integral convergence`; `modular period distribution lacunary Mellin spectrum regularity sparse support`. Every returned candidate/source statement and generated proof-idea/ingredient set was screened. The first three searched generations 1289780, 1289791 and 1289811 with older coverage/stale compiler/semantic warnings; the fourth generation 1290146 had coverage 68,737/68,737 at snapshot 1290149, semantic coverage unavailable and background refresh incomplete. No absence claim is made.
+- Exact source audit: `WeilHalfIntegerMassRigidity.half_integer_mass_rigidity` requires nonnegative integer atomic weights at real heights. Harmonic summability of the negative divisor supplies neither positivity of the remainder nor critical-line support of all xi zeros. The arithmetic prime-deficit harmonic theorem is not a theorem about this spectral deficit. The proposed compact-support Mellin ingredient set assumes the very support/regularity missing for the actual defect.
+- Primary-source audit: [Booker, Theorem 1.6](https://arxiv.org/pdf/1308.3067) uses total absolute spectral mass, not only the negative part. [Lewis–Zagier](https://people.mpim-bonn.mpg.de/zagier/files/doi/10.2307/2661374/fulltext.pdf) does not supply the requested regularity of our actual weak defect from harmonic thinning. Neither source closes C5. Verdict remains SURVIVES PRELIMINARY ATTACK, novelty UNESTABLISHED.
+- Dependency-closed scalar endpoint/P4 and actual cutoff-limit paper arguments were appended to PROOF.md before Lean. Scope implemented here: scalar endpoint identities; actual lower-integral convergence and exact overlap; every-order logarithmic dilation-jet bounds and dominated integral limits. Full P5 compact-test/reciprocal-test assembly remains OPEN. The all-order jet statement is a classical analytic strengthening exposed during implementation, not a scientific-novelty claim.
+- Each of `WeilWorkHigherDenominatorCutoffIntegration.lean` (155 lines), `WeilWorkHigherDenominatorCutoffOverlap.lean` (116 lines), and `WeilWorkHigherDenominatorCutoffJets.lean` (120 lines) passed its final direct foreground `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<module>.olean GaloisForLFunctions/RHTower/<module>.lean` from `formal/`, exit 0, no diagnostics. Builds were sequential; no full or umbrella build and no resource override. Exploratory composition/elaboration failures were corrected before these checks.
+- Scratch axiom/type audit exited 0. All fourteen public theorems depend on exactly `[propext, Classical.choice, Quot.sound]`. The original-data capstone `degreeTwoQuotient_cutoff_overlap` retains only `ZetaPowerDatum 3`, arbitrary constant A and ordinary strip conditions `1<Re(s)<2`; convergence is a conclusion, not an extra premise.
+- Three umbrella imports wired exactly once. Scoped forbidden-declaration/resource-option scans and whitespace checks pass. Fully captured `scripts/formal_tools.py lint` exited 1 with exactly seven unrelated unreachable modules: RHTower `WeilWorkSettledPhaseLocalPolynomialInvisibility`, `WeilWorkSettledPhaseLocalPolynomialSeries`; HTGeometry `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. No WP07 error. Unrelated files were not modified.
+- Anti-theatre five and anti-laziness four answers posted. Cycle PROGRESS on classical BRIDGE / REDISCOVERED; no scientific-novelty or C5 proof claim. C2/C3/C4/C5 and WP07 remain OPEN. Owned scratch files are removed after evidence is recorded.
+
+## Actual-cutoff continuation — corpus and external audit, 2026-10-08
+
+- hgtl7 reapplied; previous cycle PROGRESS. Exact datum and existing cutoff/primitive capstones checked. Three deep searches (`harmonically thin Mellin pole divisor modular period distribution regularity`; `logarithmic derivative signed spectral measure harmonic negative part finite order rigidity`; `fractional Hamburger cubic root monodromy zeta power critical line branch continuation Dirichlet`) completed with partial=false and no unfinished stages, generations 1290225/1290225/1290228. Coverage snapshot 68,738 files; older-generation and semantic-unavailable warnings, background refresh incomplete. All 20 candidate and 20 source statements per query and their generated ideas/ingredients were screened.
+- Lexical OR query `fractional mass monodromy --any --module RHTower` returned 15,573 matches; the returned first page was inspected, with no exhaustiveness claim. Exact source inspection covered the sqrt-growth receiver, fractional-deficit power receiver, and RadicalResidues expansion premise. Their fractional mass or phase expansion controls are absent from the one-xi deficit hypothesis. Root meromorphic continuation would assume the missing cancellation. Route verdict REDISCOVERED, not a no-go theorem.
+- New stronger C6 and its complete-data competitor are recorded in PROOF.md and the card. Deep query `degree two meromorphic converse harmonically summable poles finite order Dirichlet gamma functional equation` completed partial=false, no unfinished stages, index generation 1290478. Coverage snapshot 68,754 files at generation 1290483/current 1290484; older-generation/semantic-unavailable warnings, refresh incomplete. All 20 candidate and 20 source statements plus the generated idea and ingredient set were inspected. Local pole-order results do not supply global rigidity; the divisor-coefficient gap theorem presupposes the known coefficient system.
+- Primary sources read: Booker arXiv:1308.3067 Definition 1.3 (finitely many nonintegral spectral weights), Kaczorowski–Molteni–Perelli's 2010 Dirichlet converse paper (classical pole-cleared finite-order Hamburger assumptions), Burnol arXiv:1106.4749 Theorem 1/Corollary 2 (finitely many poles and one-gamma continuation), and Neururer–Oliver arXiv:1809.06586v4 Theorem 1.1 (polynomial pole clearing, primitive twists, coefficient growth and ν≠0). These do not pay the present harmonic-thin degree-two converse. C5 and C6 SURVIVE PRELIMINARY ATTACK; novelty UNESTABLISHED. Failed web opens were not used as evidence. No absence claim or route retirement.
+- Actual lower compact-test proof and reciprocal proof were recorded before repository formalization. Reciprocal implementation uses ψ(R/x)=1−ψ∨(x/R), avoiding duplicate inversion chain-rule machinery. The unused positive-point restriction on slow jets was removed: the origin-buffer proof works at every real point. This is a classical analytic strengthening, not a scientific novelty claim.
+- Direct sparse-period alternative screened: deep query `lacunary Mellin spectrum distribution three term modular period sparse pole divisor local rigidity` completed partial=false with no unfinished stages, index 1290647, snapshot 68,769 files at 1290655/current 1290656; older-generation/semantic-unavailable warnings and background refresh incomplete. All 20 candidate and 20 source statements plus the proposed ingredient set were inspected. The pole-spacing result requires a separate PoleCarrier, finite exponential peak rigidity requires positivity and exact saturation, and the finite residual receiver assumes finite unweighted residual mass. No implication from the present harmonic deficit was established. Oliver arXiv:1307.6706 Definition 2.3/Theorem 2.6 relates analytic continuation and functional equations to a mean-periodic boundary after auxiliary completed-zeta factors; it does not prove cancellation of the unmodified cubic defect. Attempts to open Meyer's paper were blocked and are not evidence. The direct distributional route remains an investigated mechanism for C6, not a new proved conjecture or a new regularity premise.
+
+
+## Full P5 formal checkpoint — 2026-10-08
+
+- Final direct checks from `formal/`, each `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<module>.olean GaloisForLFunctions/RHTower/<module>.lean`: CutoffPairing (118 lines), CutoffHead (181), ReciprocalCutoff (103), CutoffTail (209), CutoffReciprocity (130), CutoffDefect (46), all with prefix `WeilWorkHigherDenominator`. Every final invocation exited 0 with no diagnostics. Sequential foreground checks; no full/umbrella builds or heartbeat/resource overrides. First-pass elaboration and notation failures were corrected, including Pi function arithmetic, a specified constant limit, and complex normed-instance inference.
+- Final scratch audit via `lake --old env lean /tmp/wp07_cutoff_final_audit.lean` exited 0. All 22 public theorems and three definitions have exactly `[propext, Classical.choice, Quot.sound]`. All three original-data lower/reciprocal/defect capstone types were inspected. The final defect capstone requires only `ZetaPowerDatum 3`, arbitrary A, and `1<Re(s)<2`. No unknown analytic assumption appears.
+- P5 is now the actual compact-test limit. Its limiting value is `(s−1)(s−2)(L(g,s)/ζ(s)) primitiveMellinGammaFactor(s)` minus the two precise tail expressions at s and 1−s. The reciprocal cutoff is zero on the nonpositive axis and `1−ψ(1/x)` on the positive axis. Its buffers pay smoothness; slow ordinary dilation pays the derivative limits. Both scalar endpoint terms and all test-support conditions are retained.
+- Six umbrella imports checked exactly once. Scoped forbidden-declaration/resource-option and whitespace scans pass. No WP07 line appears in the fully captured global lint output (both stdout and stderr). Lint exits 1 with seven unrelated reachability errors:
+
+```text
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticNotchGoodScales
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticNotchLocalization
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+```
+
+- Anti-theatre five and anti-laziness four answers were posted in chat. Formal cycle PROGRESS; classification classical BRIDGE / REDISCOVERED. No scientific-novelty, C5/C6 or full-rigidity claim. The cosine coboundary pressure test is an elementary instance of existing period algebra, not a cubic counterdatum. No route is retired. C2/C3/C4/C5/C6 and WP07 remain OPEN. Next cycle must attack the exact harmonic-thin analytic mechanism before further bridges. Owned scratch files are cleaned after this evidence record.
+
+## Post-P5 scientific audit — 2026-10-08
+
+Verdict STALLED: no new theorem, no full counterdatum, no Lean edits or builds.
+Seven corpus searches completed. All returned candidate/source statements,
+proof-idea fields and ingredient sets were screened. Inventory coverage was
+complete in each snapshot; every search warned of older-generation coverage
+and unavailable semantic coverage, with background refresh incomplete. Compiler
+coverage remained mostly pending/source-only, so retrieved applicability was
+not treated as checked proof. No absence inference follows.
+
+| Query focus | Mode | Partial / unfinished stages | Files / snapshot generation |
+|---|---|---|---|
+| harmonic-summable negative spectral multiplicities, degree-two L-data | deep, 180s | false / none | 68780 / 1290858 |
+| Mellin spectral synthesis, sparse support, nonlinear variable change | deep, 180s | true / decomposition | 68780 / 1290867 |
+| sparse Mellin spectrum, modular three-term period, quasi-analytic gap | hybrid, --any | true / text and source retrieval | 68783 / 1290898 |
+| Weil-positive logarithmic coefficient and Ramanujan bounds | deep, 180s | true / two subqueries, semantic retrieval, reranking, filter/judge | 68783 / 1290904 |
+| almost-periodic logarithmic period and nonlinear spectrum | deep, 180s | false / none | 68788 / 1290947 |
+| short multiplicative interval packets and coefficient mean square | deep, 180s | true / semantic retrieval | 68791 / 1290983 |
+| quantization and pointwise logarithmic coefficient decay | deep, 180s | true / Booker subquery, semantic retrieval, reranking | 68792 / 1290996 |
+
+Generated ingredient suggestions were rejected when their actual statements
+did not match: graph spectral gaps, Cauchy transforms with assumed vanishing,
+generic Mellin/Laplace coordinate changes, Szego-weight periodicity, and a
+completed-Lambda value at a xi zero do not prove the requested rigidity or
+coefficient estimate. The proposed use of sieve `lambdaSquared` bounds
+confused a different arithmetic function with our lambda. No such suggested
+step was imported.
+
+Primary source audit:
+
+- [Daughton, doctoral dissertation, Chapter 4](https://cst.temple.edu/sites/cst/files/theses2/daughton.pdf), Proposition 4.1, Corollary 4.2 and Theorem 4.4: the infinite log-polynomial expansion requires exponentially weighted coefficient summability; the stronger version also controls every logarithmic order with factorial and arbitrary exponential weights. Pole exponents escape to infinity, and the converse assumes uniformly separated horizontal contours, vertical-strip bounds after subtracting the principal-part series, and specified holomorphic weights. Its displayed completion uses Gamma(s) and its construction here has period 2. Harmonic summability of pole multiplicities does not supply the residue estimates. The group restriction alone is not a proof of rigidity for our different Gamma_R(s)^2 setting.
+- [Booker, Definition 1.3 and Theorems 1.6--1.7](https://arxiv.org/pdf/1308.3067): the pointwise and mean-square parts of A1 are separate. The original positive correspondence already supplies the mean-square part through the corpus theorem below; C6 omits that correspondence. Harmonic-thin infinite negative weights do not satisfy the finite-negative definition. The total absolute spectral-mass criterion is not a negative-part criterion.
+- [Li, Theorem 1.1, Remark (iv), Corollaries 2.3--2.4](https://arxiv.org/pdf/1602.08458) counts zeros plus poles or the full divisor difference. This repeats the earlier recorded obstruction; it does not isolate the one-xi deficit.
+- [Raghunathan, Theorem 1.1 and Section 9](https://arxiv.org/pdf/2403.13895) concerns automorphic numerator/denominator data and establishes infinitely many poles. Its hypotheses and conclusion do not yield C6's harmonic bound for unrestricted cubic data.
+- [Kaczorowski--Perelli, Theorems 1--2](https://arxiv.org/pdf/2503.02492) classify degree-two conductor-one data in a class requiring a power of s-1 to clear poles. The two-series extension keeps that requirement. It cannot remove our infinite deficit divisor by invocation.
+- [Venkatesh, thesis Section 3.2.3, Theorem 5](https://www.math.ias.edu/~akshay/research/thesis.pdf) allows poles under an averaged residue bound across additive twists, with coefficient bounds and holomorphic weight at least six. The finiteness assumption is described as relaxable with further decay conditions; those conditions are not supplied for our quotient. No additive-twist equations or residue estimates were inferred from C6.
+
+Exact corpus correction and new conjecture:
+
+- `WeilPrimitiveSetMeanSquare.lean:43` was inspected through its full resonator proof. The stronger primitive-set bound already proves the proposed packet estimate. Dyadic square-prefix summation was already recorded here (earlier coefficient audit) and in WP03 PROOF.md. Rediscovering it is not progress.
+- WP03 PROOF.md Cycle27 and `WeilWorkSingularArithmeticToeplitzSharpness.lean:375` were inspected. The all-cutoff construction has a logarithmic Toeplitz ceiling, log-squared square-prefix bound and sparse normalized prime spikes asymptotic to log p_j. It disproves deriving pointwise decay from that relaxation; it does not supply a full-positive or cubic counterdatum. Its positive survivor is already formalized by WP03, so no duplicate no-go work is needed.
+- C7 and its full-datum competitor are stated exactly in PROOF.md. Neither the primitive bound nor the Herglotz transport pays the new pointwise estimate. C7 SURVIVES PRELIMINARY ATTACK; novelty UNESTABLISHED. C2--C6 remain OPEN. The first new attack should use the actual completion and spectral quantization rather than another optimization of the extracted Toeplitz ceiling.
+- Anti-theatre five and anti-laziness four posted. Only owned documentation changed. No numerical computation, full/umbrella build, resource override, commit or push. Search handles all exited; owned scratch JSON files removed after recording this audit. Goal remains ACTIVE.
+
+## C7 growth and integer-spectrum audit — 2026-10-08
+
+Scientific verdict **STALLED**. No new theorem or complete counterdatum; no
+Lean edits or builds. hgtl7 reapplied. Architecture/testing files remain absent.
+All candidate/source statements and all generated ingredient steps from these
+five searches were screened; all proof-idea lists were empty. Search completion
+is not compiler freshness, and no absence claim follows from these results.
+
+| Query | Mode/budget | Partial / unfinished | Coverage snapshot |
+|---|---|---|---|
+| cubic completion critical zeros pointwise logarithmic coefficients nonvanishing half plane Lindelof bound | deep/180s | false / none | 68796 files, generation 1291052; older-generation and semantic warnings |
+| coefficient decay log derivative | deep/180s, module Weil | false / none | 68797 files, generation 1291068; semantic warning |
+| integer zero divisor Fourier quasicrystal coefficient decay arithmetic progression | deep/180s, module Weil | true / two subqueries, deadline, filter/judge | generation 1291103; no full coverage snapshot returned |
+| ZetaPowerDatum functional equation odd sign central zero | deep/150s, module Weil | true / two subqueries, deadline, filter/judge | generation 1291106; no full coverage snapshot returned |
+| sparse Mellin spectrum period function Fabry gap quasianalytic modular | deep/180s, module Weil | false / none | 68803 files, generation 1291160; older-generation and semantic warnings |
+
+Refresh was incomplete in all five results because the background indexer was
+running. The three full snapshots each reported 43 compiled snapshots, 2660
+stale entries and over 52000 pending entries. Suggested ingredient sets mixed
+our problem with cubic clock extensions, a different exposing coefficient
+sequence, or a different Gamma-kernel Mellin recurrence. Their actual
+statements do not establish C7 or the sparse-pole implication.
+
+Source applicability checks:
+
+- `WeilPositiveProducerLindelof.lean:295,502`: fixed-delta logarithmic continuation and upper/lower subpolynomial producer growth are already proved from full positivity. No C7 coefficient extraction was derived from them. `WeilProducerLittlewoodBound.lean:232` instead assumes the stronger bound |lambda(n)|<=kappa log n.
+- [Palojarvi--Simonic, Conditional estimates for L-functions in the Selberg class II, Section 1.1](https://arxiv.org/html/2410.22711v1): the Selberg axioms include Ramanujan bounds and an Euler logarithm supported on prime powers, with b(p^k)=O(p^(k theta)), theta<1/2. The latter already gives the relevant rapid logarithmic decay after division by sqrt(n). These assumptions were not derived for our cubic datum; the conditional growth results cannot supply them.
+- [Favorov, 2025, main theorem and quoted Meyer theorem](https://arxiv.org/html/2504.03365v1): the entire-function theorem starts with entire almost periodic functions of exponential growth and linear total variation of the logarithmic Fourier coefficients. The quoted Meyer theorem requires finitely many possible atom weights and Fourier total variation O(r). Integral multiplicities alone do not discharge these conditions. Removing the actual archimedean Fourier contribution is also an unpaid operation.
+- [Favorov, 2023, abstract and Theorem 1](https://arxiv.org/html/2311.02728v1): bounded-spectrum Dirichlet series and almost periodic zero sets with density are the relevant setting; no transfer from the cubic completion or its deficit divisor was established.
+- [Tselishchev, August 2026, Theorem 1.1](https://arxiv.org/html/2608.09354v1): its unit-mass example has unbounded density, O(R^3) counting, and an additional delta-double-prime term at frequency zero, with the remaining Fourier support on three arithmetic progressions. It does not satisfy the assigned archimedean/arithmetic identity and is not a WP07 counterexample. No numerical part of any source was used.
+- `WeilWorkHigherDenominatorCentralExclusion.lean:41,73` already proves the proposed central/parity exclusion. It was rejected as REDISCOVERED before any edit or build.
+- `WeilWorkHigherDenominatorLogResidue.lean:49,59,92` was read directly. Negative logarithmic residues equal the exact one-xi deficit, and the right-half-plane identity retains two archimedean copies. These are existing proved inputs, not a new result of this cycle.
+
+The sparse-Mellin/Fabry/nonlinear-change direction repeats the queries recorded
+in the preceding audit. Neither a justified infinite polar expansion nor local
+regularity follows merely from naming a gap theorem. C3 and C7 both remain
+SURVIVES PRELIMINARY ATTACK, with no new novelty claim. The next attempt must
+produce an actual inequality using the negative logarithmic divisor; it must
+not replace its integer weights with uncontrolled quotient Laurent amplitudes.
+
+Anti-theatre five and anti-laziness four were posted. Three attempted file
+reads used nonexistent guessed paths; subsequent reads used the discovered
+paths. Resolve paths with `rg --files` before the next read. Only the four
+owned documentation files changed. Search handles all exited normally.
+
+## Negative logarithmic divisor audit — 2026-10-08
+
+Three direct corpus searches completed and their returned candidate/source
+statements were screened, including ingredient sets. No retrieved theorem
+was promoted from source-only metadata to a compiler-checked application.
+
+- `negative residues harmonic summable rigidity`, deep, module Weil, 180 seconds: partial=true, semantic retrieval unfinished; inventory 68,806/68,806, compiler states include 52,278 pending and 2,660 stale. Coverage snapshot older than current generation, semantic coverage unavailable, background refresh incomplete. The generated harmonic-rigidity chain confuses arithmetic and spectral harmonic sums.
+- `cubic Dirichlet functional equation critical zeros gamma real pole order three interlacing`, deep, module Weil, 180 seconds: partial=true, reranking unfinished; inventory 68,809/68,809, compiler states include 52,281 pending and 2,660 stale. Same snapshot/semantic/background limitations. Returned finite-pole, local order, zero-coordinate and Gram-bound statements do not classify the infinite divisor. Its proposed interlacing step has no supporting interlacing theorem; the cited product-interleave identity is algebraic.
+- `harmonic summability continuous primitive negative spectral divisor`, deep, module Weil, 60 seconds: partial=true; deadline and filter/judge unfinished, with unfinished expansion queries about negative curvature and primitive roots. Detailed file/compiler coverage was not returned; generation 1291340, background refresh incomplete. Arithmetic harmonic bounds and the existing Q boundary primitive are different objects. No proof ideas or ingredient sets were returned.
+
+Direct source checks: LogResidue's residue/negative-part/arithmetic identities;
+SingularDeficitEnvelope's copy-deficit and Poisson comparison; and
+FullConeSummableDeficitRigidity's arithmetic sqrt-weight assumption. The
+one-xi threshold and the distinction between integer residues and quotient
+Laurent amplitudes were retained throughout.
+
+Primary-source applicability:
+
+- [Vedana, Classification of Fourier summation formulas on a horizontal strip, v2, September 10, 2026](https://arxiv.org/html/2608.10121v2), Definitions and Theorems 1--2: the representation uses a difference of generalized Nevanlinna functions plus a polar term. It permits signed weights and establishes a correspondence, not the required finite-negative-index conclusion. Real-axis atoms belong to the boundary measure; they are not absent. Its Selberg application retains a continuous archimedean term. No Selberg-class membership was inferred for the cubic datum.
+- [Burnol, Deux extensions de Theoremes de Hamburger, Theorem 1](https://arxiv.org/pdf/1106.4749): finite poles remain an explicit assumption; the functional equation is the one-gamma zeta equation. This confirms the earlier inapplicability audit, not a new obstruction theorem.
+- A fetch of the Chalmers-hosted degree-three landscape PDF failed. No mathematical claim relies on that uninspected source or on the other search snippets.
+
+PROOF records the direct uniformly convergent first-primitive calculation
+under the hypothetical harmonic-thin branch. It is elementary Fourier
+analysis, labelled BRIDGE / REDISCOVERED and paper-only. No stronger
+regularity, degree-two period relation, absence theorem, or novelty claim is
+made. C3's paper proof remains incomplete; formalizing a conjectural
+capstone would introduce the missing premise, so no Lean edit/build occurred.
+
+Anti-theatre five and anti-laziness four answers were posted. Scientific
+progress classification: NO PROGRESS. Only the four owned documentation
+files were edited. All three search handles exited normally; their scratch
+JSON files were removed. Scoped whitespace validation passed. The next
+cycle is reserved for an estimate using the full cubic arithmetic identity,
+not another finite-pole or general FS-pair survey.
+
+## Arithmetic-gap and deformation re-audit — 2026-10-08
+
+hgtl7 reapplied. Scientific outcome NO PROGRESS. Four deep searches completed;
+every returned candidate/source statement and proposed ingredient/idea was
+screened. Each had 20 candidate and 20 source rows. Search snapshots are not
+compiler verification and do not establish exhaustive absence.
+
+- `negative divisor harmonic Fourier primitive explicit formula arithmetic gap regularity --module Weil --budget-seconds 180`: partial=false, no unfinished stages; index generation 1291414, coverage 68815/68815 at generation 1291417/current 1291418. One ingredient set, no proof ideas. The proposed negative-Gram input is not derived from harmonic sparsity.
+- `degree two zeta power datum gamma square functional equation classification without critical zeros --budget-seconds 180`: partial=true; critical-zero-avoidance query, reranking and filtering unfinished. Generation 1291574; coverage 68822/68822 at 1291587/current 1291588. No ingredient sets or proof ideas. Direct source inspection, not ranking, located the actual Maass converse.
+- `real zeros entire analytic perturbation multiple root first variation polynomial family rigidity --budget-seconds 180`: partial=false, no unfinished stages. Generation 1291588; coverage 68822/68822 at 1291593/current 1291594. One ingredient set, no proof ideas. Its perturbation-symbol and compact-support statements do not prove the proposed holomorphic tangent assertion.
+- `asymmetric difference zeros Bombieri Perelli distinct L functions divisibility density --budget-seconds 180`: partial=false, no unfinished stages. Coverage 68824/68824 at 1291688/current 1291689. One proposed idea and one ingredient set, concerning Hahn/Jordan decomposition and set differences, not L-function pole density. No applicability was inferred.
+
+All snapshots warn of older-generation coverage and unavailable semantic
+coverage; background refresh incomplete. Compiler counts across these
+snapshots: compiled_snapshot=43, error=2, stale=2660, stale_snapshot=38,
+umbrella_source_only=1, unavailable=2654; pending respectively
+52286, 52292, 52292, 52294. All four search processes exited normally.
+
+Exact source checks included HigherDenominatorSpectralSubtraction,
+HigherDenominatorLogResidue, WeilDeviationSpectralPairing,
+WeilWorkDeficitTwistedGapBudget, WeilWorkDeficitXiApproximationCost,
+MaassDilationRigidity, MaassZetaSquaredConverse,
+HigherDenominatorQuotientGrowth and HigherDenominatorStripBounds.
+The Maass coefficient receiver has no critical-zero assumption, but requires
+an entire completion and a strip bound. That fact does not classify E/xi
+when it has infinitely many poles. The full signed arithmetic identity
+cannot be assigned independently to its positive and negative parts.
+
+Directly read L226, L273, L301, L387 and L394 in
+`docs/drafts/pipeline/1-in-progress/hf-positive-hodge-attack/krein-producer-loops.md`.
+The deformation mechanism was already recorded, as was this result directory's
+warning about the jump from path exclusion to topological isolation. The
+newly considered finite-dimensional compactness repair was rejected as a
+frontier candidate. No infinite-dimensional compactness theorem is claimed.
+
+Primary-source applicability checks:
+
+- [Mitkovski–Poltoratski, Determinacy for measures](https://people.math.wisc.edu/~poltoratski/Determinacy.pdf), Corollary 1.3 and Theorem 1.4: positive-measure/gap hypotheses must be supplied. No gap measure with negative part equal to precisely this one-xi deficit was constructed. The remaining archimedean term and potentially nonreal spectral parameters cannot be omitted.
+- [Rainer, Quasianalytic multiparameter perturbation of polynomials and normal matrices](https://www.tuwien.at/mg/arainer/wp-content/uploads/2025/03/root-qa-ext.pdf), Sections 2.3 and 6: classical real-root perturbation theory, not new arithmetic rigidity. The local root-moment calculation in PROOF is a return to the already recorded divisibility mechanism.
+- [Kaczorowski–Perelli, Sarnak's rigidity conjecture, author repository abstract](https://unige.iris.cineca.it/handle/11567/191842): its stated results assume essential countability and Selberg orthonormality. Full text was not retrieved; no theorem beyond the abstract is imported.
+- [Perelli, A survey of the Selberg class of L-functions, part II](https://www.rivmat.unipr.it/fulltext/2004-3s/pdf/04.pdf), Section 7, Theorems 7.5–7.7: symmetric differences count zeros plus poles. The stated asymmetric results retain equal degree and Selberg-class assumptions, with the strongest result also requiring Hypotheses S and D. These hypotheses are not paid for xi versus the unrestricted cubic datum. The original Bombieri–Perelli 1998 download returned 403; its theorem was not independently read.
+- [Gazda, A theorem for distinct zeros of L-functions, v2](https://arxiv.org/html/1504.06556v2), Theorem 1: same gamma factor and finitely many quotient poles remain explicit hypotheses. It does not address the infinite one-xi deficit. The arXiv submission/version date is April 2015; the HTML's displayed 2026 date is not treated as a new version.
+
+The Li 2025 quotient-paper fetch and the Bombieri–Perelli 2001 PDF fetch
+failed; no new mathematical conclusion relies on either. No extra
+coefficient bound, Euler product, RH, regularity or Laurent-amplitude bound
+was inferred. PROOF/RESULT/card record the failed applicability and novelty
+tests. No route is declared mathematically impossible or retired. C3's paper
+proof remains incomplete, so no Lean implementation or build was performed.
+Anti-theatre five and anti-laziness four answers were posted.
+
+## Positive tail filters and exact source obstruction — 2026-10-08
+
+hgtl7 reapplied. Classification: BRIDGE / classical; no new scientific
+rigidity theorem. PROOF contains the three-point positive tail convolution,
+its support and variance bounds, the failed ordinary-Dirichlet-source
+shortcut, and the strongest audited positive survivor: only the identity
+symmetric compact probability filter preserves the actual source.
+
+Corpus searches, all handles exited normally:
+
+- `positive symmetric convolution probability compact support Laplace zeros reciprocal summable frequencies annihilator`, deep, 180 seconds: partial=false, no unfinished stages; all 20 candidate and 20 source statements and one ingredient set screened. Inventory 68828/68828, generation/current 1291778. Compiler counts: 43 compiled, 2 error, 11132 not applicable, 52298 pending, 2660 stale, 38 stale snapshots, 1 umbrella source only, 2654 unavailable. Semantic coverage unavailable, background refresh incomplete. The compact-support Laplace theorem is a classical ingredient, not an arithmetic preservation theorem.
+- `symmetric positive Mellin multiplier ordinary Dirichlet series right limit compact support probability growth`, deep, 120 seconds: partial=true; Mellin-bound and compact-support estimates, deadline, and filter/judge unfinished. All 20 candidate and 20 source statements screened; no proof ideas/ingredient sets. Coverage pending at generation 1291824; background refresh incomplete. No absence claim.
+- `negative integer logarithmic residue harmonic summable canonical factor low frequency gap source rigidity`, deep, 180 seconds: partial=false, no unfinished stages. All 20 candidate and 20 source statements screened; no proof ideas. The one Fresnel low-frequency ingredient set is unrelated to the required arithmetic gap. Inventory 68839/68839; search generation 1291992, coverage generation 1292003/current 1292004. Compiler counts as above except 11134 not applicable and 52307 pending. Older-generation coverage and unavailable semantic coverage warnings, background refresh incomplete.
+- `xiRelativeLogDeriv harmonic deficit --any --mode lexical --module Weil`: 20 declaration/doc entries and five exploration entries screened; no compiler/coverage metadata in this lexical response. Read the actual arithmetic harmonic-deficit, summable-excess and thin-prime-deficit statements. They concern sums over arithmetic coefficients, not the one-xi spectral deficit. The distinction was already recorded here; this search supplies no new transfer theorem.
+
+Primary-source audit: [Ott–Yorke, Prevalence](https://www.math.uh.edu/~ott/Publications/docs/survey.pdf), page 7, gives the classical compact infinite-convolution parent via uniformly convergent sums on product probability spaces. The specific three-point factors and their variance estimate were checked directly on paper. The [Bhowmik–Sen abstract](https://arxiv.org/abs/1606.02125) was read; no unproved ordinary-Dirichlet preservation is inferred from an Ingham multiplier. The attempted Li–Wang PDF returned 404 and supports no claim.
+
+Implementation and checks:
+
+- New module `formal/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorPositiveFilter.lean`, eight public theorems. The capstone `positiveFilter_preserves_actualQuotient_iff` derives its convergence and first coefficient from the original cubic datum through the existing Möbius convolution. No additional decay, Euler product, RH, zero simplicity or amplitude hypothesis.
+- Direct foreground `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorPositiveFilter.olean GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorPositiveFilter.lean` passed. One owned Lean process at a time; no full or umbrella build, heartbeat override or numerical experiment.
+- Scratch API checks with explicit universe instantiations and all eight `#print axioms` checks passed using `lake --old env lean /tmp/wp07-filter-final-api.lean`. Each theorem uses only `propext`, `Classical.choice`, `Quot.sound`. Initial scratch checks exposed only an incorrect guessed Tendsto namespace and unconstrained universes; final scratch audit was clean.
+- Added the new import to `formal/GaloisForLFunctions/RHTower.lean`.
+- `scripts/formal_tools.py lint` exited 1 for seven unrelated unreachable modules: `WeilWorkSettledPhaseValuationResidueSum`, `WeilWorkSettledPhaseValuationTightness`, `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. No issue was reported in the new module. These files are outside this task's write scope and were not modified.
+
+Anti-theatre five: no new scientific result; classical bridge; concrete
+formal obstruction rather than literature collection; C3 frontier unchanged;
+return to the full signed arithmetic identity. Anti-laziness four: recent
+cycles produced no scientific advance; no known argument skipped for effort;
+this formal work closes the required positive survivor, not the hard core;
+corpus and exact applicable statements searched. WP07 and C3 remain OPEN.
+The next attack remains the exact integer logarithmic residues; do not
+relabel the already known arithmetic/spectral harmonic-sum distinction as a
+new conjecture or transfer theorem.
+
+Checked module SHA-256:
+`ab98d6fa476ad6988a3220a31e34bd7685ef22c8b10282c98bccf28c42d6cb7b`.
+Scoped whitespace check passed. Search/API scratch files removed after all
+owned handles exited. No commit or push; no owned build left running.
+
+## Euler support and one-divisor threshold audit — 2026-10-08
+
+hgtl7 reapplied; scientific verdict NO PROGRESS. No new paper proof of
+rigidity or complete counterdatum. No Lean source changed, build ran,
+numerical experiment ran, or theorem was newly claimed as checked. Session
+memory, exact assignment and shared contract read; architecture/testing
+documents absent. The current frontier entry still predates owned P5
+completion. The task-tracking tool was unavailable; plan remains in the card.
+
+Five deep corpus searches completed normally with 180-second budgets.
+Every returned candidate/source statement, proof-idea section and proposed
+ingredient set was screened. Each returned 20 candidates, 20 source
+arguments, no proof ideas and one proposed ingredient set. None supplies
+the missing one-xi estimate. Complete retrieval does not mean complete
+compiler verification, and no absence claim follows from these searches.
+
+| Query | Retrieval | Coverage and freshness |
+| --- | --- | --- |
+| `degree two logarithmic divisor negative multiplicities sparse explicit formula arithmetic gap` (`--module Weil`) | partial=false, no unfinished stages | search generation 1292074; 68843/68843 inventoried, coverage generation 1292085/current 1292086; pending compiler entries 52311 |
+| `critical zero confinement Dirichlet coefficients multiplicative Euler product degree three` (`--module Weil`) | partial=true, text retrieval unfinished | search generation 1292104; 68847/68847, coverage generation 1292121/current 1292122; pending 52315 |
+| `WeilPositiveFull prime power support multiplicative coefficients` | partial=false, no unfinished stages | search generation 1292186; 68848/68848, coverage generation 1292197/current 1292199; pending 52316 |
+| `one xi deficit density coefficient deviation cubic datum quantitative lower bound` (`--module Weil`) | partial=true; lower-bound/datum and quantitative/deviation/coefficient query work, text and semantic retrieval unfinished | search generation 1292242; 68852/68852, coverage generation 1292257/current 1292258; pending 52320 |
+| `cubic shared zero multiplicity one third common divisor quantitative rigidity` (`--module Weil`) | partial=false, no unfinished stages | search generation 1292325; 68853/68853, coverage generation/current 1292329; pending 52321 |
+
+Every snapshot also has 43 compiled snapshots, 2 errors, 11134 not
+applicable, 2660 stale, 38 stale snapshots, 1 umbrella-source-only and
+2654 unavailable. All report unavailable semantic coverage and incomplete
+background refresh. The first four additionally warn about older coverage
+generations. Source freshness is not inferred from inventory completeness.
+
+Exact Lean source checks:
+
+- `WeilWorkHigherDenominatorLogResidue`: retains two archimedean copies in
+  `xiRelativeLogDeriv_eq_arithmetic`, exact negative part and the previously
+  proved infinite-or-rigid alternative. No new sparsity estimate follows.
+- `WeilWorkQuantizationResonanceEnergy`: the exact resonance energy identity
+  leaves variance V>=0, without proving V=0. It cannot be used as a hidden
+  Euler-product producer.
+- `WeilPrimeDeficit.eq_vonMangoldt_of_weilPositiveFull_of_prime_support`
+  retains prime-support and thin-prime-deficit premises.
+  `WeilWorkSettledPhaseValuationFactorization.valuation_source_ratio_eq`
+  retains the mixed source; it does not assert multiplicativity.
+- `WeilWorkHigherDenominatorMultiplicity.three_mul_boundaryMeasure_singleton`,
+  `WeilConeSingularDeficitEnvelope`'s atom/copy definitions,
+  `WeilConeSingularDeficitCounting.deficitCount`, and
+  `WeilWorkDeficitCoefficient`'s character and mass limits were read
+  directly. They establish the normalized threshold used in PROOF.md.
+  No transfer from Dnorm to D1 was found in these statements or proved here.
+- L389--L392 in `krein-producer-loops.md` already cover nontrivial meromorphic
+  inner quotients, finite-prime/Bohr restrictions, Hermite--Biehler circularity,
+  and critical-zero non-Euler Dirichlet polynomials with changed conductor.
+  These are prior research, not new cubic counterdata. The final search's
+  proposed ingredient set combines unrelated gcd/cubic-weight identities
+  and does not prove its claimed rigidity step.
+
+Primary-source applicability audit (only the specified portions read):
+
+- [Kaczorowski--Kulas, On the Non-Trivial Zeros off the Critical Line for
+  L-functions from the Extended Selberg Class](https://link.springer.com/article/10.1007/s00605-006-0412-x),
+  publisher abstract: explicitly poses RH/zero-density-to-Euler-product
+  and establishes the degree-one case. Full text was not accessed. This
+  defeats novelty of C8's general concept, not its cubic specialization.
+- [Kaczorowski--Perelli, Twists, Euler products and a converse theorem for
+  L-functions of degree 2](https://journals.sns.it/index.php/annaliscienze/article/download/382/372/601),
+  introduction and Theorems 1.1--1.3: the local Euler-factor conclusion
+  starts in the Selberg class and retains additive-twist information.
+  The extended-class conductor-one statement concerns degree two, not the
+  unrestricted cubic datum. No automatic cubic Euler product was imported.
+- [Saias--Weingartner, Zeros of Dirichlet series with periodic coefficients](https://www.impan.pl/shop/publication/transaction/download/product/82562),
+  theorem/corollary and proof mechanism on pages 1--3: periodicity is a
+  premise. No such periodicity for g is given here.
+- [Righetti, Zeros of combinations of Euler products for sigma>1](https://arxiv.org/abs/1412.6331),
+  abstract only: Euler products, coefficient bounds and orthogonality are
+  inputs. No representation of arbitrary g as such a combination is proved.
+- [Nakamura, L-functions with the Lindelof and Riemann hypotheses and
+  trivial zeros at even negative integers](https://link.springer.com/article/10.1007/s10231-026-01726-9),
+  inspected introduction/functional equations: the explicitly discussed
+  R1, R2 and quadrilateral Q examples are not ordinary Dirichlet series.
+  They are not complete WP07 counterdata.
+- [Lewis--Zagier, Period Functions for Maass Wave Forms I](https://people.mpim-bonn.mpg.de/zagier/files/doi/10.2307/2661374/fulltext.pdf),
+  Chapter III, pages 37--43 and preceding distribution proposition:
+  periodlike solutions retain essential growth restrictions. This repeats
+  the known regularity obstruction; it supplies no harmonic-thin bound.
+- [Neururer--Oliver](https://arxiv.org/abs/1809.06586), abstract rechecked;
+  no new applicability beyond the previously recorded twist requirements.
+  [Hochfilzer--Oliver](https://arxiv.org/html/1910.02821v5), introduction and
+  Theorem 1.1 rechecked: degree-difference-two quotient results establish
+  infinitely many poles in the stated Artin setting, not the required
+  positive-density law for this class. The version is v5, August 2021;
+  the HTML's displayed 2026 date is not treated as a new version.
+- [Farmer, Strong multiplicity one for the Selberg class](https://arxiv.org/abs/2101.02771),
+  abstract and publisher introduction: Selberg-class/Euler-product and
+  coefficient hypotheses remain. No theorem from its proof was imported.
+
+The new C9 formulation and elementary Dnorm=D1+J/3 identity are recorded as
+conjecture/diagnosis, not scientific progress or newly checked Lean.
+Anti-theatre five and anti-laziness four answered in chat. Next cycle must
+derive an actual estimate for J or a direct signed-character replacement
+from the original data. Repeating generic sparse-pole or Euler-product
+surveys is not an advance. All five owned search handles exited normally;
+temporary search outputs are removed after this record is saved.
+
+## Intermediate multiplicities, quadratic source, and C10 — 2026-10-08
+
+Reapplied hgtl7; previous scientific turn and this cycle both NO PROGRESS.
+No new scientific theorem or complete counterdatum. Exact assignment,
+shared contract, owned checkpoint, frontier entry and task memory checked.
+Architecture/testing files remain absent. No plan tool is available; the
+owned card records the plan and exact competing conjectures.
+
+Four deep searches ran with 180-second budgets. Every returned candidate
+statement and source statement was screened: 20 of each per query, no proof
+ideas, one proposed ingredient set each. All four exited normally with
+partial=false and no unfinished stages. The proposed sets do not pay the
+missing estimates: zero/polarization identities, the existing functional
+equation, unproduced radial remainder hypotheses, and unrelated algebraic
+multiplicity results, respectively.
+
+| Query | Inventory | Search / coverage / current generation | Compiler pending |
+| --- | --- | --- | --- |
+| `quantized integer spectral atom multiplicity diagonal correlation shared zeros rigidity` (`--module Weil`) | 68861/68861 | 1292491 / 1292496 / 1292497 | 52329 |
+| `degree three completion functional equation zeta cube differential identity squared logarithmic derivative` (`--module Weil`) | 68862/68862 | 1292521 / 1292531 / 1292532 | 52330 |
+| `quantization residual harmonic summable reciprocal ordinate sublinear rigidity radial remainder` (`--module Weil`) | 68864/68864 | 1292571 / 1292579 / 1292580 | 52332 |
+| `ZetaPowerDatum shared critical zero multiplicity either zero triple xi order` | 68870/68870 | 1292669 / 1292686 / 1292687 | 52338 |
+
+Each compiler snapshot additionally has 43 compiled snapshots, 2 errors,
+11134 not applicable, 2660 stale, 38 stale snapshots, 1 umbrella source
+only and 2654 unavailable. All warn about older coverage generations and
+unavailable semantic coverage; background refresh is incomplete. No global
+absence or compiler-completeness conclusion is drawn. The fourth search
+returned mostly inapplicable algebra, so an exact lexical follow-up for
+`eq_vonMangoldt_of_xi_multiplicity_le` was run: one hit in the owned
+Multiplicity module, no freshness metadata. Its global divisor-coverage
+premise differs from C10's local shared-zero assertion. Exhaustive `rg`
+over the owned HigherDenominator modules was also used.
+
+Exact source reads and their limits:
+
+- `WeilPaperDeficitInverseEnergy` gives square/comparison identities for
+  Dnorm, without a decay theorem. It neither changes the threshold nor
+  controls J. `WeilFullConePNTErrorWiener` already gives the translated
+  functional's atomic mean-square identity; this is prior corpus work.
+- `WeilConeNearIntegerAtomicRigidity` retains sublinear-power growth of
+  total fractional deviations. `WeilWorkQuantizationRadialPower`,
+  `WeilWorkQuantizationRadialLayerCake`, and the exact refined-error
+  statement in `WeilWorkQuantizationRadialRemainder` were inspected. The
+  epsilon^(1-nu) loss is retained, with no uniform nu->0 constant claimed.
+  Reciprocal-height summability does not automatically pay that bound.
+  No identification of residual phase mass with D1 was proved.
+- `WeilWorkSettledPhaseLittlewood` proves the Littlewood bound directly
+  from hW, using source summability rather than a pointwise coefficient
+  hypothesis. `WeilWorkSettledPhaseCanonicalDisorder` supplies the stated
+  canonical trace envelope. This corrects the earlier source inventory;
+  it does not prove C7 coefficient extraction.
+- `WeilWorkSingularArithmeticCanonicalGaussian` and
+  `WeilWorkSingularArithmeticPoleCancellation` were read at the actual
+  source pairing, integral identity and pole-cancellation statements.
+  The Gaussian spectral weight is |zeta|^2, so shared atoms have zero
+  weight. The local expansion in PROOF.md explains why analyticity at
+  shared zeros does not enforce the proposed multiplicity gap.
+- Existing L273/L301/L387/L394 deformation arguments were located again
+  by `rg`; no perturbative-twin idea is claimed as new or revived here.
+
+Primary-source checks:
+
+- [Rudnick--Sarnak, Zeros of principal L-functions and random matrix
+  theory](https://empslocal.ex.ac.uk/people/staff/mrwatkin/zeta/rudnick-sarnak.pdf),
+  Theorems 1.1--1.2, introduction's primitivity/second-moment discussion,
+  and Hypothesis H/Proposition 2.4: automorphy, arithmetic second moments
+  and Fourier-support restrictions are explicit. These do not become
+  available merely from degree three and critical zeros. No numerical
+  claim or experiment from the paper was used.
+- [Hochfilzer--Oliver, Ratios of Artin L-functions](https://arxiv.org/html/1910.02821v5),
+  introduction/Theorem 1.1 rechecked for the pointwise C10 proposal. Its
+  infinitely-many-poles result in the Artin setting is not a pointwise
+  multiplicity classification for arbitrary complete cubic data. This
+  is an applicability check, not a novelty proof for C10.
+
+Other web hits, including unreviewed RH claims and numerical pages, were
+not used as mathematical evidence. No result in the inspected sources
+proves or refutes C10; the search does not establish novelty.
+
+Verification performed this cycle, one foreground Lean process at a time:
+
+1. `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLittlewood.lean`
+   from `formal/`: exit 0, no diagnostics. Existing source was not edited.
+2. `lake --old env lean /tmp/wp07-littlewood-source-audit.lean`: exit 0.
+   `#check` confirms that the full Littlewood theorem requires only hW;
+   `#print axioms` reports exactly propext, Classical.choice, Quot.sound.
+
+No production Lean edit or new import, no full/umbrella build, no heartbeat
+override or numerical computation. No formal lint rerun is needed for
+unchanged Lean source; the previous unrelated lint failures are not claimed
+resolved. PROOF/RESULT/card retain OPEN and the unproved C10 competitor.
+The quadratic germ calculations are routine diagnostics, not a completed
+scientific result; phase 5 remains unpaid, so no conjectural formalization
+was attempted. Anti-theatre five and anti-laziness four posted in chat.
+All four searches and both Lean checks are terminal. Owned JSON and audit
+scratch files are removed after this checkpoint is saved.
+
+## Shared-atom continuation
+
+- Deep corpus query `divided xi zero spectral test isolates atom Weil
+  positivity multiplicity reproducing kernel --module Weil`: exit 0,
+  partial=true, pending coverage; local judge malformed JSON and semantic
+  retrieval deadline reported. Candidate lemmas, source arguments, proof
+  ideas and ingredient sets inspected. Direct source reading identified
+  the already proved terminal divided-chain isolation in
+  GaussHodgeWeilEntireDetection and the RH premises in XiWeilPolarization.
+- Deep `shared multiplicity comparison saturation divided quotient
+  positivity --module Weil`: exit 0, partial=false. Coverage snapshot
+  1292820/current 1292822, background refresh incomplete, older-snapshot
+  and semantic-coverage warnings. All candidate/source statements and the
+  multiplicity-to-order ingredient inspected. No new comparison proved.
+- Deep `infinite order differential operator canonical product zero
+  exponential type support arithmetic Mellin`: exit 0, partial=false,
+  snapshot 1292823/current 1292825, same coverage/refresh limitations.
+  Returned operator/group-order matches did not pay arithmetic periodicity.
+  Direct search of owned notes found this precise unpaid step already
+  recorded. No absence claim or new no-go theorem is inferred.
+- Deep `harmonic deficit signed logarithmic derivative repair continuous
+  primitive degree two rigidity --module Weil`: exit 0, partial=false,
+  snapshot 1292858/current 1292859, same warnings. Candidate/source/idea/
+  ingredient sections inspected. Prime-index summability, fractional
+  residual power growth, and the radial remainder are different inputs
+  from one-xi harmonic deficits. The earlier negative-divisor primitive
+  was rechecked; it supplies no new boundary regularity.
+- [Suzuki, On the Hilbert space derived from the Weil distribution](https://arxiv.org/html/2301.00421),
+  Theorem 1.1 and section 6: the Hilbert-space identification assumes RH;
+  the associated operator eigenvalues are simple regardless of analytic
+  zero multiplicity. This is a primary-source applicability check, not
+  new knowledge. The publisher page timed out. The HTML header and its
+  displayed manuscript date differ; no publication chronology is inferred.
+  A separate infinite-order-operator primary PDF fetch failed and no
+  theorem from it was applied.
+- Read the exact source of WeilConeOrderComparableRigidity: it needs a
+  coefficient sign or a summable coefficient error. This does not provide
+  a sign for the difference of the two isolated spectral forms. Read the
+  affine balance in WeilWorkHigherDenominatorSpectralSubtraction; global
+  measure domination remains its essential input.
+- No Lean source edit, build, numerical experiment, added import or axiom.
+  No redundant formal lint run; older unrelated lint failures remain
+  unclaimed. Four searches exited normally. Owned search scratch files
+  are removed after recording this checkpoint. Phase 5 remains unpaid;
+  no new formal or scientific theorem is claimed.
+
+### Arithmetic-comparison and parity audit — 2026-10-08
+
+- Six deep corpus queries completed: coefficient-density transport,
+  cubic phase, packet widths, fractional degree, square-root coefficient
+  growth, and odd multiplicities. Snapshot/current generations were,
+  respectively, 1292911/1292917, 1292927/1292935, 1292983/1292983,
+  1293000/1293001, 1293038/1293038, and 1293079/1293080. Inventories ranged
+  from 68880 to 68891 files. Background refresh remained incomplete;
+  semantic coverage was unavailable. Cubic-phase and odd-multiplicity
+  queries were partial due to local-runtime and Qdrant deadlines; the
+  other four reported partial=false and no errors. Candidate and source
+  statements, proposed proof ideas and ingredient sets were inspected;
+  proposed unrelated ingredient combinations were not treated as proofs.
+- Two lexical OR follow-ups, scoped to Maass and Weil, returned 4104 and
+  3629 total matches; first pages and exploration hits were screened.
+  This is retrieval, not exhaustive absence evidence. These outputs did
+  not include freshness/coverage metadata. Exact rg searches supplied
+  the directly inspected relevant files.
+- Direct source checks: WeilWorkDeficitCoefficient and its arithmetic
+  mean transport; WeilWorkQuantizationResidualPhase/BoundaryPhase;
+  WeilWorkQuantizationFiniteRemainderRigidity/VariationRigidity;
+  WeilWorkSettledPhasePackets and CanonicalDisorder; the full-source
+  Littlewood capstone; ZetaPowerDatum and Dirichlet exponential transport;
+  MaassZetaSquaredConverse's actual even receiver. Gamma-cube abundance
+  supplies convergence only to the right of three in the inspected
+  capstone, not the original right-of-one datum. No counterdatum was
+  obtained from it. GammaRPowOddTwins concerns odd functional equations,
+  not an odd-multiplicity theorem for our E.
+- [Booker, L-functions as distributions](https://arxiv.org/html/1308.3067),
+  Proposition 2.1, Corollary 1.8, and section 3 were inspected for actual
+  dependencies. C7 prevents direct invocation of the L-datum theorem.
+  PROOF.md records a possible analytic adaptation, its exact elementary
+  coefficient replacement, and unpaid transform obligations. It is not
+  claimed as a proof or a novel method.
+- [Oliver, Notes on Low Degree L-Data](https://arxiv.org/html/1601.05009),
+  definition and introductory classification discussion, retain the
+  same coefficient conditions. The rendered date differs from the
+  arXiv version date; no new 2026 theorem is inferred. The Kyoto PDF
+  fetch failed; the arXiv HTML supplied the inspected text. Searches
+  for quantitative odd-order results do not establish novelty of C12.
+- New C11/C12 and the exact competitors are recorded in PROOF.md. The
+  single branch-free-gap attempt fails to supply the sqrt(T) arithmetic
+  resolution scale from only o(T) branch count. This is a failed inference,
+  not a full-data counterexample. C9/C10 remain open.
+- No numerical research, Lean source edit, added import, or build in this
+  cycle. Phase 5 is incomplete; no Lean or scientific theorem claimed.
+  All eight owned search jobs exited normally; scratch outputs are
+  removed after recording this checkpoint. Anti-theatre five and
+  anti-laziness four were posted; goal remains ACTIVE.

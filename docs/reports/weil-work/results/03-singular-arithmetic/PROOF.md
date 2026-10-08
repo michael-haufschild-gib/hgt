@@ -1490,3 +1490,768 @@ proves exactly this. Stronger WeilOneSided endpoint theorems require only
 one sign part summable at1; exists_profile_summable_windows gives signed
 window cancellation for every source. These are established parent
 results, not new hypotheses to add to WP03. No redundant Lean written.
+
+
+### C35a: actual forward energy and residual-variance constants (paper closed)
+
+Parent C35 conjecture: for every full-positive source, with forward
+coefficients a and actual residue B, sum |a(n)-B|^2/n=o(log N).
+Rival: a positive limiting residual variance. [OPEN CORE]: upper energy
+constant exactly |B|^2. The following BRIDGE proves the constant exists;
+it does not prove it vanishes. It is a classical monotone-density argument
+applied to the source's exact logarithmic-moment inequality, not a claimed
+new Tauberian parent or a completed WP03 detector.
+
+Generic dependency-closed lemma. Let w_n>=0 for n>=1, C>=0, and for every
+N>=1 suppose 2*S_N<=(log N+C)*E_N, where E_N=sum_(n<=N)w_n and
+S_N=sum_(n<=N)log(n)w_n. Put H_N=log(N)E_N-S_N. Then H_N>=0 and
+
+    (log N-C)*E_N <= 2*H_N,
+    H_(N+1)=H_N+d_N*E_N, d_N=log(N+1)-log N>=0.
+
+Choose N0 with log N0>C+1. For N>=N0 write u=log N-C>0.
+Multiplying the first inequality by d_N*u gives
+
+    u^2*(H_N+d_N*E_N)
+      <= H_N*(u^2+2*u*d_N)
+      <= H_N*(u+d_N)^2.
+
+Thus H_N/(log N-C)^2 is nonnegative and nonincreasing, so has a finite
+limit k>=0. Since (log N-C)/log N->1, H_N/(log N)^2->k.
+The first inequality gives an upper comparison tending to2k for E_N/log N.
+For fixed0<q<1 let M_N=floor(N^q). Then M_N->infinity, M_N<=N eventually,
+and log(M_N)/log N->q. The last limit follows by squeezing M_N between
+N^q/2 and N^q once N^q>=2; divide their logarithms by log N.
+Every nonnegative summand gives
+
+    H_N-H_M <= (log N-log M)*E_N, 1<=M<=N.
+
+Divide by (log N)^2 and by 1-log M/log N>0. The resulting lower bound
+for E_N/log N tends to k*(1+q). Let q increase to1. If k=0, nonnegativity
+and the upper comparison suffice. Otherwise, for each a<2k selectq<1
+with a<k*(1+q). This proves E_N/log N->2k in all cases. All sums are
+finite; no absolute arithmetic-tail premise or limit interchange is used.
+
+Apply w_n=|forwardCoeff(lambda,n)|^2/n and the proved source log-moment
+inequality. This gives an actual finite K_lambda>=0 with E_N/log N->K_lambda.
+Identify forwardCoeff with sourceCoeff using their literal truncated
+logarithmic coefficient definitions. The existing centered ordinary
+Dirichlet convergence at1 supplies convergence of sum_(n<=N)(a(n)-B)/n.
+Since sum_(n<=N)1/n /log N->1, sum a(n)/n /log N->B. Expand the finite
+square exactly:
+
+    sum |a(n)-B|^2/n = E_N
+      -2*Re(conj(B)*sum a(n)/n)+|B|^2*sum 1/n.
+
+Consequently its logarithmic normalization tends to
+V_lambda=K_lambda-|B|^2>=0. The final inequality follows from nonnegativity
+of every finite square sum. B!=0, already proved for the source, makes
+K_lambda>0. These are hW-only source conclusions. C35 remains the separate
+assertion V_lambda=0; none of its content is assumed in this bridge.
+
+Kill audit: the generic limit theorem is BRIDGE under classical monotone
+density/regular variation (Bingham--Goldie--Teugels ancestry; primary
+Rehak2026, DOI10.1007/s13540-026-00501-0; Meerschaert--Scheffler matrix
+Tauberian paper, PMC3955396). Ordinary first-moment precision and logarithmic
+energy alone do not yield V=0: a_n=1+c*1_(2 divides n),n>=1, has B=1+c/2,
+K=1+c+c^2/2, V=c^2/4. This is an exact periodic example, not a full-positive
+source. The surviving C35 core must use more of positivity than those two
+bounds. C35a Lean audit is complete: five direct source checks pass and all17
+public declarations have only standard Lean axioms. No C35 proof is claimed.
+
+
+## C37 paper proof: parity residue is bounded by actual variance
+
+Let hW be arbitrary, a its forward coefficients, B its actual residue, and
+V>=0 the C35a limit of E(N)/log N, E(N)=sum_(1<=n<=N)|a(n)-B|^2/n.
+The existing odd radial pole theorem supplies r>0 with
+O(1+d)=rB/d+O(1), d down to0. The full regular part gives
+F(1+d)=B/d+O(1). All series used below are absolutely convergent for d>0.
+
+First prove the needed general Abelian upper bound. For any nonnegative
+w with w(0)=0 and sum_(n<=N)w(n)/log N -> V, and any e>0, choose M>=2
+so E(N)<=(V+e)log N for N>=M. Set w_tail(n)=w(n) for n>=M and0 otherwise.
+For N<M its partial sum is0; for N>=M it is at most E(N), hence always
+at most(V+e)(1+log N). The corpus Abelian bound
+summable_and_mul_tsum_weightedDirichlet_le gives summability and
+
+ d*sum w_tail(n)n^(-d) <= (V+e)(1+d), d>0.
+
+The finite head contributes at most d*sum_(n<M)w(n), since n^(-d)<=1
+for n>=1. Thus limsup_(d down to0) d*sum w(n)n^(-d)<=V+e; e down to0
+proves the upper bound V. This uses no Tauberian converse or sign of a.
+
+Set chi(n)=+1 for odd n and -1 for even n, c(n)=chi(n)*(a(n)-B).
+Then |c(n)|=|a(n)-B|. Weighted Cauchy--Schwarz, first on finite sums
+and then by absolute convergence, gives for d>0
+
+ |d*sum c(n)n^(-1-d)|^2
+ <= [d*sum |a(n)-B|^2 n^(-1-d)] [d*sum n^(-1-d)].
+
+The second factor tends to1 by the zeta pole; the first has upper limit
+at most V by the preceding paragraph. Absolute convergence of the square
+series is included in that paragraph; that of c follows from that of a
+and the constant series. The signed constant series is
+(1-2^(-d))*zeta(1+d), so its product with d tends to0. Since
+sum chi(n)a(n)n^(-1-d)=2O(1+d)-F(1+d), the left-side unsquared
+quantity tends to(2r-1)B. Passing to the bound yields
+
+ |B|^2*(2r-1)^2 <= V.
+
+All parameters are those produced from hW, with no new source premise.
+Sharpness of the general comparison: the scalar sequence a(n)=B+D*chi(n)
+has variance |D|^2 and parity residue D; finite changes enforce a(1)=1
+without changing either invariant. For real B>0 and |D|<B, its odd/full
+ratio is r=(B+D)/(2B), yielding equality. This is NOT a full-positive
+example. Therefore no smaller universal constant follows from the two
+source limits alone. The exact inequality is a BRIDGE from classical
+Abelian summation and Cauchy--Schwarz; no scientific novelty claim.
+Its source consequence V=0=>r=1/2 does not prove V=0 or the WP03 receiver.
+
+## C39 paper candidate: energy bounds the actual sieve residue
+
+Fix arbitrary hW. Let a=forwardCoeff lambda, B its nonzero actual residue,
+and K the existing finite log-energy limit. For each positive integer Q,
+let m_Q(n)=1 if gcd(n,Q)=1 and0 otherwise. The existing coprime ratio
+theorem gives a positive real r_Q and (sigma-1)F_Q(sigma)->B*r_Q.
+Put delta_Q=phi(Q)/Q. The canonical principal-character residue gives
+(sigma-1) sum m_Q(n)n^(-sigma)->delta_Q.
+
+For real sigma>1, weighted Cauchy--Schwarz gives
+
+ |F_Q(sigma)|^2 <= [sum |a(n)|^2 n^(-sigma)]
+                         *[sum m_Q(n)n^(-sigma)].
+
+Indeed apply it to a(n)n^(-sigma/2) and m_Q(n)n^(-sigma/2), using
+m_Q^2=m_Q. The energy series converges by the existing Abel-energy
+majorant with d=sigma-1; all forward and principal-character series
+converge absolutely here. Multiplication by d^2 and the same Abel-energy
+upper-limit argument as C37 yield |B|^2*r_Q^2<=K*delta_Q.
+All constants K,B are shared across Q; no deletion-dependent upper
+bound survives. Euler's divergent harmonic product gives
+delta_(primorial y)->0, hence r_(primorial y)->0 by nonnegativity.
+
+Quantifier warning: this is first the sigma->1 limit for EACH Q, then
+the cutoff limit. It does not interchange those limits or make the
+Lipschitz remainder uniform in Q. Exact principal-character residue and
+primorial density APIs still require source/toolchain verification.
+
+The stronger C39 linear-in-delta bound is OPEN. An arbitrary L2 density
+on a probability space has only square-root control on shrinking sets;
+the energy argument alone does not justify its exponent1. Full-positive
+source arithmetic, not Holder algebra, would have to supply that step.
+
+C39 dependency audit closed for the square-root bridge: the actual
+principal-character residue is mathlib's LFunctionTrivChar_residue_one;
+the equality with the literal masked series is the existing
+LSeries_coprimePart_one. Euler's formula totient_eq_mul_prod_factors
+identifies its finite product with phi(Q)/Q. For Q=primorial(y), the
+existing harmonic_sum_le_prod_primesBelow gives
+
+    harmonic(y) <= delta_Q^(-1).
+
+Every Euler factor is positive. Thus delta_Q<=1/harmonic(y) for y>=1,
+and harmonic divergence proves delta_Q->0. Combining the residue bound
+with B!=0 and r_Q>0 proves the claimed iterated cutoff limit.
+These are literal finite-product inequalities; no asymptotic Mertens
+formula, computations, or source coefficient signs enter the proof.
+
+Internal comparison: deep68703/gen1289431, partial=false/errors=[], all20
+candidate and20 source statements read. Existing coprime modules supply
+one positive finite ratio at each modulus, but not this shared energy
+constant or cutoff limit. External parents checked: Vaughan's Dirichlet
+series notes and Kedlaya's Selberg sieve notes (Cauchy--Schwarz and finite
+prime-product bounds). Those general mechanisms are classical. The
+actual source bridge is not claimed as a significant scientific discovery.
+
+## C42: harmonic-small rough-sign law — paper proof
+
+Status: dependency-closed paper argument below; formalization pending.
+This is a bridge toward C41, not a proof of C41 or the WP03 detector.
+
+Let lam be full-positive. Set d(n)=lam(n)-Lambda(n) for n>=2, and
+d(0)=d(1)=0. Put v(n)=d(n)/sqrt(n), with v(0)=0. For real X>=1 put
+
+    A(X)=sum_(2<=n<=X) |d(n)|/n,
+    T(X)=sum_(2<=n<=X) |d(n)|/sqrt(n).
+
+Assume A(X)=o(log X). For P=primesUpTo(y), with integer y>=2, the assertion is:
+the rough harmonic partial sums S_P(k) cannot be >=Y>0 for every
+sufficiently large k. In the final source theorem this will be an
+unconditional alternative: failure of harmonic smallness, or this law.
+
+### 1. Three consequences of harmonic smallness
+
+First, T(X)<=sqrt(X)*A(X), term by term. Hence, with N=floor(L^2),
+
+    T(N)/(L*log L) -> 0,    A(N)/log L -> 0.
+
+Second, put H(N)=sum_(n>N) |d(n)|/n^(3/2). Finite partial summation,
+then monotone convergence, gives
+
+    H(N) <= (1/2)*integral_N^infinity A(t)*t^(-3/2) dt.
+
+Indeed the exact finite identity for masses a_n=|d(n)|/n is
+sum_(N<n<=M) a_n/sqrt(n)
+= A(M)/sqrt(M)-A(N)/sqrt(N)
+  +(1/2)*integral_N^M A(t)*t^(-3/2) dt.
+The first term tends to zero because A(M)=o(log M). For every eta>0,
+A(t)<=eta*log t for all sufficiently large t, so
+
+    H(N)<=eta*(log N+2)/sqrt(N)
+
+for all sufficiently large integers N. Consequently L*H(floor(L^2))
+is o(log L). This also proves the summability required by the pairing.
+
+Third, for every fixed c>0,
+
+    liminf_(L->infinity) T(cL)/sqrt(L)=0.
+
+Otherwise T(X)>=epsilon*sqrt(X) for all sufficiently large real X,
+for some epsilon>0. Finite Tonelli gives the exact identity
+
+    integral_1^X T(t)*t^(-3/2) dt
+      = 2*A(X)-2*T(X)/sqrt(X) <= 2*A(X).
+
+The hypothesized lower bound makes its left side at least
+epsilon*log X-O(1), contradicting A(X)=o(log X). This is one scalar
+good-scale argument, with every other error tending to zero along ALL
+scales; no simultaneous subsequence intersection is being assumed.
+
+### 2. Localized Gaussian error estimate
+
+Fix the finite notch data P,n0,epsilon=0 from
+WeilRoughFibreSignLaw and its constants c=2*twistBound(P,n0)^3 and K=7.
+Write rho_L(u)=exp(-(u-L)^2), N=floor(L^2), F={0,...,N}.
+ZetaNotchRefinedEnvelope.refWeight gives exactly
+
+  refErrSum(v,F,c,7,u)
+    = u*A(N) + sqrt(u)*log(u)*T(min(N,c*u)) + R(u)*T(N),
+
+where R(u)=u^(5/2)*dualTailFactor(u,7)+u^2*exp(-u^2/32).
+The existing dual-tail envelope supplies R(u)<=C*u^(-4) for u>=16.
+The mixture integrates rho_L(u)/u times this expression over u>16.
+
+The first term integrates to at most C*A(N). For the second, split
+the u-line into (16,L/2), [L/2,2L], and (2L,infinity), taking L>=32.
+On the middle interval,
+
+  log(u)/sqrt(u) <= sqrt(2)*(log L+log 2)/sqrt(L)
+                  <= 2*sqrt(2)*log L/sqrt(L),
+  T(min(N,c*u)) <= T(2*c*L).
+
+The Gaussian integral is bounded independently of L. On either outside
+interval, log(u)/sqrt(u)<=2 and
+
+  rho_L(u) <= exp(-L^2/8)*exp(-(u-L)^2/2).
+
+Thus their total contribution is <=C*exp(-L^2/8)*T(N).
+For the last term the existing polynomial-Gaussian inequality used in
+ZetaNotchRampMainTerm.scaleWeight_div_mul_refErrSum_le bounds its
+integral by C*T(N)/(1+L). All constants depend on the fixed notch,
+never on L or N. We have therefore proved
+
+  integral_(u>16) rho_L(u)/u*refErrSum(v,F,c,7,u) du
+    <= C*[A(N)+(log L)/sqrt(L)*T(2*c*L)
+           +exp(-L^2/8)*T(N)+T(N)/(1+L)].
+
+Each integral is well-defined: F is finite, the integrands are
+measurable, and the displayed Gaussian majorants are integrable.
+Along the good scales from section1 with constant 2*c, this entire
+bound is o(log L). This localized estimate replaces the OLD global
+A0+B0*sqrt(x) hypothesis; the old estimate cannot be used at one
+good scale without this replacement.
+
+### 3. The signed contradiction
+
+Suppose S_P(k)>=Y>0 for every k>=T0. Enlarge T0 to at least1.
+The finitely many earlier partial sums have a common lower bound -B.
+The exact zero-notch weight identity gives v(n)*mainWeight(n)=d(n)/n
+on the rough fibre and zero elsewhere. Choose n0=2. The checked source
+WeilLogSummableRigidity.isSmoothOver_primesUpTo gives this smooth anchor
+from 2<=y. No empty-prime-set or arbitrary-P extension is needed here.
+
+The positive product e_P=product_(p in P)(1-1/p), the ramp summation
+identity (ZetaNotchRampMainTerm.exists_rampSum_ge), and the refined
+moment bound give a lower bound for the finite mixture pairing:
+
+  sum_(n<=N) v(n)*Re mixMoment_L(log n)
+    >= kappa*Y*log(L-1)-C
+       -D*integral_(u>16) rho_L(u)/u*refErrSum(v,F,c,7,u) du
+       -T(N)*(C1*exp(-(L-16)^2)+C2*exp(-L^2)),
+
+with kappa>0. This is precisely the already proved
+exists_sum_re_mixMoment_ge_of_ramp, with its hypotheses supplied by
+the same fixed notch and the all-k lower bound on S_P.
+
+Full positivity gives positive definiteness of the negative null
+potential and |v(n)|<=2*log n+C0, as in WeilRoughFibreSignLaw.
+It also supplies absolute Dirichlet summability to the right of1,
+which pays sum |v(n)|*n^(-3/4)<infinity; section1 pays the n^(-1)
+pairing tail. The exact shifted-pole estimate
+WeilLittleOVonMangoldtRigidity.exists_sum_re_mixMoment_le_of_pairing
+then gives the upper bound
+
+  sum_(n<=N) v(n)*Re mixMoment_L(log n)
+    <= Cdf*T(N)/(2+L)+Csh*(1+L)*H(N).
+
+Along the good scales, both the upper bound and every lower-bound
+error are o(log L), whereas kappa*Y*log(L-1) is asymptotic to the
+positive multiple kappa*Y*log L. Contradiction.
+
+The source target uses exactly primesUpTo(y), y>=2. The earlier
+arbitrary-finite-P proposal, including P empty, is not claimed proved
+by this argument. IsSmoothOver requires n0>=2; the empty-P case needs
+the separate constant-twist receiver rather than the impossible
+IsSmoothOver(empty,1) premise.
+
+### 4. Relation to C41 and novelty
+
+Finite sum |d(n)|/[n*(1+log n)] implies A(X)=o(log X) by splitting
+the sum into a fixed head and a tail of arbitrarily small mass. No
+absolute convergence of sum d(n)/n follows. The theorem therefore
+does not let a growing prime cutoff pass through that signed series,
+does not isolate d(n0), and does not prove C41 or WP03.
+
+The proof extends an existing notch receiver using classical partial
+summation and Gaussian localization. Provisional scientific verdict:
+BRIDGE. A new source theorem is useful here only as an explicit step
+toward the unresolved arithmetic isolation problem; no significant
+scientific novelty is claimed for the calculus lemmas.
+
+### 5. Finite proof forms used in Lean
+
+The good-scale argument admits a discrete proof. For nonnegative w,
+write B(k)=sum_(n<=k) w(n), f(k)=1/sqrt(k+1). For x>=1,
+
+  (log(x+1)-log x)/4 <= sqrt(x)*(1/sqrt(x)-1/sqrt(x+1)).
+
+Indeed log(1+1/x)<=1/x<=2/(x+1), while the right side is
+(sqrt(x+1)-sqrt(x))/sqrt(x+1)>=1/[2*(x+1)]. If
+B(k)>=epsilon*sqrt(k+1)-D for every k, finite summation by parts
+and telescoping give
+
+  (epsilon/4)*log(N+1) <= sum_(n<=N) w(n)/sqrt(n+1)+D.
+
+An eventual positive square-root floor gives this global inequality
+with D=epsilon*sqrt(K+1), using nonnegativity below K. It contradicts
+any sublogarithmic envelope by taking its coefficient epsilon/8 and
+letting N exceed an appropriate exponential. For
+w(n)=|d(n)|/sqrt(n), the shifted weighted sum is bounded by A(N).
+This is the same good-scale conclusion, without an improper integral.
+
+The tail estimate also has a finite proof. Let a(n)>=0,
+p(k)=sum_(n<=k) a(n), q(k)=1/sqrt(k), G(k)=A+eta*log k,
+and assume p(k)<=G(k) for k>=1, with A,eta>=0. For 1<=N<=M,
+induction on M proves
+
+  sum_(N<n<=M) a(n)q(n)+(G(M)-p(M))*q(M)
+    <= (G(N)-p(N))*q(N)
+       +eta*sum_(N<n<=M) (log n-log(n-1))*q(n).
+
+The induction step cancels a(M+1) against the change in p, and uses
+q(M+1)<=q(M) and G(M)-p(M)>=0. For n>=2,
+log n-log(n-1)<=1/(n-1)<=2/n. The already formalized finite bound
+sum_(N<n<=M) n^(-3/2)<=2/sqrt(N) bounds the last sum by4/sqrt(N).
+Dropping the two nonnegative terms involving the terminal gap and
+p(N) gives the exact useful estimate
+
+  sum_(N<n<=M) a(n)/sqrt(n)
+    <= (A+eta*(log N+4))/sqrt(N).
+
+For M<N the sum is zero and the same bound holds. Taking
+a(n)=|d(n)|/n and absorbing the fixed harmonic-envelope constant
+into A proves the tail estimate used above. Passage to the infinite
+tail is monotone convergence; summability is also independently
+provided by the full-positive source's absolute Dirichlet convergence.
+
+For the final assembly one can use N=ceil((1+L)^2), as in the existing
+scale receiver. For L>=32, the checked corpus bounds give
+
+  1+L <= sqrt(N) <= 2*(1+L),
+  1+log N <= 4*log(L-1).
+
+Thus, with H(N)<=A+eta*log N, all full-mass and tail contributions
+are bounded by a constant head plus O(eta*log(L-1)). The new local
+scale lemma chooses L arbitrarily late such that T(cL)<=eta*sqrt(L).
+Hence its central Gaussian contribution is at most eta*log L, and
+log L<=2*log(L-1). No limiting theorem is necessary for this assembly.
+The existing inv_one_add_bounds controls both small-u Gaussian errors;
+it also bounds exp(-L^2/8) by133/(1+L). Consequently the outside
+window contribution is at most266*T(N)/(1+L).
+
+More explicitly, after collecting fixed nonnegative constants the
+positive logarithmic main term has to satisfy
+
+  kappa*log(L-1) <= C + K*[H(N)
+      +(log L)/sqrt(L)*T(cL)+T(N)/(1+L)+(1+L)*Htail(N)].
+
+Here kappa>0 includes the assumed positive rough-sum floor, c>0 and
+C,K are fixed before eta and L are chosen. The bracket is bounded by
+4*A+4*eta+18*eta*log(L-1). Choose eta>0 with18*K*eta<kappa/2,
+then choose one of the good scales sufficiently late that its logarithm
+dominates the fixed head. This proves the contradiction directly.
+
+## C43a: harmonic-small rigidity with a summable composite tail
+
+Paper proof, 2026-10-08. Verdict BRIDGE: this extracts the exact
+arithmetic condition used by the old o(Lambda) isolation argument.
+It is not a proof of unrestricted C43, C41, or WP03.
+
+For any full-positive lam write d(n)=lam(n)-Lambda(n) for n>=2,
+and d(0)=d(1)=0. Define
+
+    Hsmall(d) := for every eta>0 there is B>=0 such that
+                 sum_(n<=N)|d(n)|/n <= B+eta*log N for every N>=1,
+    c(n) := 0 if n is prime, and |d(n)|/n otherwise.
+
+The unconditional source alternative is
+
+    lam=Lambda on n>=2, or not Hsmall(d), or sum c(n)=infinity.
+
+Here divergence is non-summability of the nonnegative real sequence.
+The values at0 and1 contribute zero. No sign, multiplicativity,
+spectral integrality, or pointwise relative-size premise is imposed.
+
+It suffices to prove the receiver Hsmall(d) and summable c imply
+equality. Put v(n)=d(n)/sqrt(n), with v(0)=v(1)=0. Full positivity
+provides the pointwise logarithmic box, positive definiteness of
+-nullPotential(v), and summability of |v(n)|*n^(-3/4) and |v(n)|/n.
+The latter follow from absolute source Dirichlet convergence at5/4
+and3/2. It also provides convergence of the ordinary partial sums
+S(M)=sum_(n<=M)d(n)/n by
+WeilWorkSingularArithmeticSummatory.exists_tendsto_coneDeviation_harmonic.
+
+First specialize C42's general ramp receiver to the existing notch
+with any real epsilon, prime set P, and P-smooth anchor n0>=2.
+The exact moment estimate exists_sum_re_weightedMoment_ge_ramp and
+exists_notchWeight_bound supply all its inputs. Thus an eventual
+lower bound Y for
+
+    R(M)=sum_(n<=M)v(n)*mainWeight(P,epsilon,n0,n)
+
+implies Y<=0. The required global finite lower bound follows from
+the finitely many M before the eventual bound: if the eventual
+index is T, take B=sum_(k<max(T,1))|R(k)|+|Y|. Then R(k)>=-B
+for every k. This specialization uses no extra mass assumption.
+
+Fix n0>=2 and delta>0. Convergence of S gives y0 such that every
+finite tail from y+1 to M, M>=y>=y0, has absolute value <=delta.
+For example take each S(k) within delta/2 of its limit. Summability
+of c gives y1 such that sum_(n>y)c(n)<=delta for every y>=y1.
+Choose y>=max(n0,y0,y1), P=primesUpTo(y), and epsilon=+1 or-1.
+
+The exact arithmetic low/high identities, already proved in
+WeilLittleOVonMangoldtRigidity:543 and566, give
+
+    R(y)=epsilon*v(n0),
+    |v(n)*mainWeight(P,epsilon,n0,n)-2*d(n)/n|
+       <= (2+sqrt(n0))*c(n)                 for n>y.
+
+The second identity is exactly zero on every prime n>y; composite
+integers are the only remaining error. Summing it over y<n<=M and
+using both tails gives
+
+    |R(M)-epsilon*v(n0)| <= (4+sqrt(n0))*delta,
+    R(M) >= epsilon*v(n0)-(4+sqrt(n0))*delta.
+
+The ramp receiver therefore proves
+
+    epsilon*v(n0) <= (4+sqrt(n0))*delta.
+
+Apply both signs and let delta decrease to zero. Explicitly, if
+|v(n0)|>0 choose delta=|v(n0)|/[2*(4+sqrt(n0))] to contradict
+|v(n0)|<=(4+sqrt(n0))*delta. Thus v(n0)=0 for every n0>=2,
+and lam(n0)=Lambda(n0). This completes the receiver and hence the
+unconditional alternative. All limits occur in the stated order;
+the composite tail is exactly what pays the prime-cutoff passage.
+
+Hostile audit: this is not a uniform prime-cutoff theorem under
+Hsmall alone. Infinite composite harmonic mass remains possible
+under that envelope, so C43 is still open. The known thin-deficit
+theorem requires summability of log(p)/p over negative prime signs;
+neither that condition nor pointwise o(Lambda) follows from this
+receiver's hypotheses. Booker and Selberg-class converse theorems
+have unproved spectral or functional-equation premises here.
+
+## C49 — multiplicative deviations with a strict local bound
+
+Paper proof, 2026-10-08. Formalization pending. This is a proper-class
+statement; no assertion that every full-positive source belongs to it.
+Verdict: SURVIVES PRELIMINARY ATTACK. The finite-Euler-product bound
+derived below is the proposed new source restriction. The final
+absolute-convergence mechanism has classical Bohr/Caratheodory ancestry,
+including Brevig--Heap, https://arxiv.org/pdf/1506.04546, theorem2.
+No significant-novelty claim is made before the remaining audit and Lean.
+
+### Exact statement
+
+Let f be a real multiplicative arithmetic function, with f(0)=0 and
+f(1)=1. Suppose 0<=theta<1 and |f(p^k)|<=theta for every prime p and
+integer k>=1. Put lambda(n)=Lambda(n)+f(n) for n>=2; its values below2
+are irrelevant to the Weil functional. If lambda is full-positive,
+then f(n)=0 for every n>=2. Equivalently f is the convolution unit.
+The proof derives all its analytic inputs from this stated profile
+and full positivity; it introduces no conjectural analytic premise.
+
+Write d(0)=d(1)=0 and d(n)=f(n) for n>=2. Multiplicativity gives
+|f(n)|<=theta^omega(n)<=1 for n>=1. For a prime p define
+
+  L_p(z)=1+sum_(k>=1) f(p^k) z^k,  |z|<1,
+  a_p=L_p(1/p),  r_p=p^(-1/2),
+  F(s)=sum_(n>=1) f(n)n^(-s),  Re(s)>1.
+
+All these series converge absolutely on their stated domains.
+In particular a_p>=1-theta/(p-1)>0. Finite Euler products and their
+absolutely convergent limit represent F for real s>1.
+
+### 1. The profile is notch-small
+
+If theta=0, multiplicativity already gives the conclusion; assume
+0<theta<1. For any finite prime set P and every n>=1,
+
+  |f(n)| <= product_(p in P) [1-(1-theta) 1_(p divides n)].
+
+The right side is periodic modulo the product of P. Expanding the
+finite product and counting multiples shows that its mean is
+product_(p in P)(1-(1-theta)/p). Thus the upper limiting mean of |f|
+is at most this product. The products tend to0 as P exhausts primes:
+log(1-u)<=-u and divergence of sum_p 1/p suffice. The latter also
+follows from Euler's elementary argument: a finite prime reciprocal
+sum would bound all finite products (1-1/p)^(-1), hence all partial
+harmonic sums, a contradiction. Consequently
+
+  B(x)=sum_(n<=x)|d(n)|=o(x).
+
+Here and below x may be replaced by its floor. Given epsilon>0,
+choose K with B(x)<=epsilon*x for x>=K. Finite summation by parts
+then gives sum_(n<=N)|d(n)|/n <= C_epsilon+epsilon*(1+log N), and
+sum_(n<=N)|d(n)|/sqrt(n) <= C_epsilon+2epsilon*sqrt(N).
+For N>=K, dyadic blocks give
+
+  sum_(n>N)|d(n)|n^(-3/2)
+    <= [2epsilon/(1-2^(-1/2))] N^(-1/2).
+
+Indeed block (2^j N,2^(j+1)N] contributes at most
+2epsilon*2^(-j/2)*N^(-1/2). Absolute convergence for every exponent
+greater than1 follows from |d|<=1. Rescaling epsilon pays each fixed
+positive constant in PrimeSmallDeviationArithmetic.NotchSmall.
+No Selberg--Delange estimate or quantitative prime number theorem is
+needed for this step.
+
+### 2. Source analyticity makes the harmonic value strictly positive
+
+Full positivity gives ordinary convergence of sum d(n)/n and, near1,
+the analytic continuation
+
+  F(s)=1+logDeriv(xi)(s)-weilContinuation(lambda)(s).
+
+This identity initially holds on Re(s)>1. It is analytic in a
+neighbourhood of1 because xi(1) is nonzero and the source continuation
+is holomorphic on Re(s)>1/2. This does NOT assert that the deviation
+series itself converges throughout that half-plane. Its value at1 is
+H=1+sum d(n)/n by Abel continuity of an ordinarily convergent series.
+
+For q=p^(-sigma), sigma>=1, each local factor satisfies
+L_p(q)>=1-theta*q/(1-q)>0. Uniformly for 0<=q<=1/2 there is a finite
+C_theta with
+
+  log L_p(q) >= theta*log(1-q)-C_theta*q^2.
+
+To check this, set u=theta*q/(1-q)<=theta and use
+log(1-u)>=-u-u^2/[2(1-u)], u-theta*q<=2theta*q^2 and
+u^2<=4theta^2*q^2. Enlarging C_theta proves the displayed inequality.
+Summing over primes and using sum_p p^(-2sigma)<=sum_(n>=2)n^(-2)
+therefore gives F(sigma)>=c_theta*zeta(sigma)^(-theta)>0.
+The integral comparison zeta(1+t)<=1+1/t implies
+F(1+t)>=c'_theta*t^theta for 0<t<=1.
+
+Continuity gives H>=0. If H=0, differentiability at1 would imply
+|F(1+t)|<=C*t for small positive t. This contradicts the lower bound
+because theta<1. Hence H>0. Also H<=1 follows from the zero-frequency
+notch law (or the existing harmonic sign theorem). This is precisely
+where the branch-point counterprofile C47 fails the actual source
+requirements.
+
+### 3. Finite-prime removal is valid at the ordinary harmonic endpoint
+
+Fix a finite prime set P. The local nonconstant coefficient series
+has weighted l1 norm at1 at most theta/(p-1)<1. Its convolution
+inverse is therefore the convergent geometric series in that weighted
+l1 algebra. Multiplying these inverses over P gives a sequence h_P
+supported on P-smooth integers with sum |h_P(n)|/n finite, and
+
+  f*h_P = f_P^rough,
+  f_P^rough(n)=f(n) if no prime in P divides n, and0 otherwise,
+  sum h_P(n)/n = 1/A_P,  A_P=product_(p in P) a_p.
+
+This coefficient identity follows at each prime power and then from
+multiplicativity. It is not a conditional rearrangement. If S(x) is
+the ordinary harmonic partial sum of f, then S is bounded and
+
+  sum_(n<=x)(f*h_P)(n)/n = sum_(m<=x) h_P(m) S(x/m)/m.
+
+Dominated convergence proves convergence to H/A_P. The same argument
+allows convolution with any fixed P-smooth sequence having finite
+absolute harmonic mass.
+
+For integers j>=0 set b_p(j)=sum_(k>=0) f(p^k)p^(min(k,j)-k).
+These sums converge absolutely, bounded by p^j sum_k |f(p^k)|p^(-k).
+Convolving the rough sequence with these modified local coefficients
+therefore proves, for every g in Z^P, ordinary convergence of the
+exact gcd-harmonic sums, with limit
+
+  Gamma(g) = (H/A_P) product_(p in P) b_p(max(g_p,0)) - 1.
+
+The minus1 removes f(1). All prime sets and all g are fixed before
+taking this limit; no uniformity in the prime cutoff is asserted.
+
+### 4. The actual quadratic law bounds finite Euler products
+
+Use normalized Haar measure on the finite torus. Let
+P_r(z)=(1-r^2)/|1-rz|^2, |z|=1, the positive Poisson density.
+Its Fourier coefficient at j is r^|j|. Absolute convergence of all
+local series justifies multiplying them. The coefficient at j of
+P_(r_p)(z)L_p(r_p z) is
+
+  sum_(k>=0) f(p^k) r_p^k r_p^|j-k|
+    = r_p^|j| b_p(max(j,0)).
+
+For j>=0, split at k=j; for j<0 every |j-k|=k-j. Thus the continuous
+complex density
+
+  U_P(z)=product_p P_(r_p)(z_p)
+          *[(H/A_P) product_p L_p(r_p z_p)-1]
+
+has Fourier coefficients K(g)=twistGramWeight(g)*Gamma(g), exactly
+as in WeilConeNotchBochnerLaw. The quadratic form with real
+coefficients sees V_P=Re(U_P): its coefficients are
+(K(g)+K(-g))/2, real and even. The actual notch theorem, paid by step1
+and step3, says integral V_P |Q|^2<=0 for all finite trigonometric
+polynomials Q with real coefficients. It also holds for complex
+coefficients: the real symmetric matrix gives the sum of the two
+quadratic forms of their real and imaginary parts.
+
+It follows that V_P<=0 pointwise. For completeness, translated
+products of Fejer kernels are squared moduli of finite trigonometric
+polynomials, up to positive normalization. Their integrals against
+the continuous V_P converge to V_P at the translation point.
+If V_P were positive there, the quadratic inequality would fail.
+Dividing by the strictly positive product of Poisson densities yields
+
+  H*Re product_(p in P) L_p(r_p z_p) <= A_P,  |z_p|=1.       (49.1)
+
+Repeated one-variable harmonic maximum principles extend this
+inequality to the closed polydisc. Its Haar average also shows
+C_P=A_P/H>=1. This step retains the symmetric-part distinction;
+it never treats the original asymmetric kernel as Hermitian.
+
+### 5. Contractivity removes the prime cutoff
+
+Let M_p=max_(|z|<=1)|L_p(r_p z/2)|, which exists by compactness.
+Choose maximizers z_p. Apply the following elementary estimate to
+g(w)=product_p L_p(r_p w z_p): if g(0)=1 and Re(g)<=C on the unit
+disc, C>=1, then |g(1/2)|<=2C. For C>1 the function
+(g-1)/(2C-g-1) maps the disc to its closed unit disc and vanishes at0.
+Schwarz's lemma gives |g(1/2)-1|<=2(C-1), proving the bound. The
+case C=1 follows from the harmonic maximum principle. Therefore
+
+  product_(p in P) M_p <= 2 A_P/H.                         (49.2)
+
+There is no phase-selection or infinite-dimensional boundary limit
+in this argument; it uses one analytic disc for each fixed P.
+
+Writing u=|f(p)|<=1, the elementary first-coefficient Caratheodory
+bound gives M_p>=1+u/(4sqrt(p)). Indeed the nonnegative boundary
+function M_p-Re L_p(r_p z/2) has mean M_p-1 and first Fourier
+coefficient of absolute value u/(4sqrt(p)); a Fourier coefficient
+cannot exceed the mass. Also a_p<=1+u/p+2/p^2. For p>=256,
+log(1+x)>=x-x^2/2 and log(1+x)<=x give
+
+  log(M_p/a_p)
+    >= u/(4sqrt(p))-u^2/(32p)-u/p-2/p^2
+    >= u/(8sqrt(p))-2/p^2.
+
+The last step uses u^2<=u and sqrt(p)>=16. For every finite set of
+primes p>=256, (49.2) now implies
+
+  sum_p |f(p)|/sqrt(p)
+    <= 8 log(2/H)+16 sum_(n>=2) 1/n^2.
+
+The bound is independent of P. Nonnegativity proves summability
+over all large primes; the omitted primes are finite. This supplies
+the missing arithmetic lower bound from the finite-product law.
+
+### 6. Existing rigidity closes the class
+
+For every sigma>1/2, the sum over primes of the nonconstant absolute
+local factors is finite:
+
+  sum_p sum_(k>=1)|f(p^k)| p^(-k sigma)
+    <= sum_p |f(p)|p^(-sigma)
+       +theta sum_p p^(-2sigma)/(1-p^(-sigma)) < infinity.
+
+The first sum is controlled by step5 and the second by an ordinary
+p-series after omitting finitely many primes. Nonnegative finite
+Euler products increase to the full absolute Dirichlet sum, so
+sum_n |f(n)|n^(-sigma)<infinity. In particular sum |d(n)|/n is finite.
+The exact existing endpoint receiver
+WeilAbscissa.eq_vonMangoldt_of_weilPositiveFull_of_summable_div
+forces lambda=Lambda on n>=2, hence f(n)=0 there. This completes
+the paper argument for C49.
+
+### Scope and hostile checks
+
+The strict bound theta<1 is used to prevent a zero of the local
+factor at1 and to forbid a global analytic zero of F at1. Taking
+theta=1 without a replacement argument is invalid. Multiplicativity
+is used both for finite-prime endpoint removal and for the local
+product maximum. Arbitrary source deviations have neither property.
+Thus this proof does not close C43 or the WP03 quotient receiver.
+No assertion of a full-positive countermodel follows from C47.
+The ordinary-limit and Fourier steps above have been expanded to
+avoid assuming uniform prime-cutoff convergence, spectral quantization,
+or boundedness of the actual quotient. Lean must audit these exact
+steps before this class is marked formalized.
+
+Formal implementation of step4 may replace the Fejer argument by the
+equivalent compact-torus density theorem already in mathlib:
+the complex linear span of the characters is uniformly dense in C(T).
+For continuous real V, Q -> integral V|Q|^2 is continuous in the
+uniform norm (dominate near Q0 by ||V|| (||Q0||+1)^2). Consequently its
+nonpositive sublevel set is closed and contains every continuous Q
+once it contains the character span. Take Q=max(V,0), viewed as a
+complex continuous function. V|max(V,0)|^2 is nonnegative, so its
+nonpositive integral is zero. Haar measure has full support; continuity
+then makes this integrand identically zero, forcing V<=0 everywhere.
+This proves the same pointwise conclusion and introduces no new premise.
+
+For step3's formal endpoint lemma, ordinary convergence alone bounds
+S(N)=sum_(1<=n<=N) b(n)/n uniformly. If sum |a(n)|/n is finite, then
+
+  sum_(1<=n<=N) (a*b)(n)/n
+    = sum_(1<=m<=N) [a(m)/m] S(floor(N/m))
+    = sum_(m>=1) [a(m)/m] S(floor(N/m)).
+
+The second equality uses S(0)=0. Each fixed m has floor(N/m)->infinity;
+the summand is dominated by C|a(m)|/m. Dominated convergence for series
+therefore gives (sum a(m)/m)*lim S. This uses ordinary partial sums for
+b throughout and never silently strengthens them to unordered HasSum.
+
+The local inverse can be formalized without constructing a Banach algebra.
+For an arithmetic function a with a(1)=1, let g be its formal Dirichlet
+inverse (finite proper-divisor recursion), v=a-delta_1, and suppose
+q=sum |v(n)|/n<1. Put T_N=sum_(1<=n<=N)|g(n)|/n. The exact identity
+g=delta_1-v*g and the finite hyperbola reindexing imply
+
+  T_N <= 1 + sum_(1<=m<=N) |v(m)|/m * T_floor(N/m)
+      <= 1 + q*T_N.
+
+All terms are nonnegative, and floor(N/m)<=N for m>=1. Hence
+T_N<=1/(1-q) for every N, proving absolute harmonic summability of g.
+The already-proved ordinary-times-absolute convolution limit identifies
+its harmonic value as 1/(sum a(n)/n); the denominator is nonzero since
+its distance from1 is at most q<1. For the p-local factor,
+q<=theta/(p-1)<1. Its inverse has p-power support: induction in the
+proper-divisor recursion preserves that support. This pays exactly the
+same local inverse used in step3 and introduces no analytic assumption.

@@ -1,0 +1,107 @@
+Cycle31 finite Gaussian Gram/Bessel final audit
+2026-10-08
+
+SHA256 86d20d61a7b54f24eb5f00dbd0806784dab0b74fbd2b0695b7bad0d754862280 formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianGram.lean
+cwd formal: lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianGram.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianGram.lean
+Exit 0. No diagnostics.
+
+SHA256 773fcbe0128c767d559e4f798680826f2b5a5ea8a0543514bbc4aee60d03b2ea formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianBessel.lean
+cwd formal: lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianBessel.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianBessel.lean
+Exit 0. No diagnostics.
+
+SHA256 407033fd20eba19265c36f0fde48cb91a34b63cb47c3608ef14469904e2ab161 formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianFiniteEstimates.lean
+cwd formal: lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianFiniteEstimates.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianFiniteEstimates.lean
+Exit 0. No diagnostics.
+
+Final API/axiom scratch: lake --old env lean /tmp/wp04-finite31-audit.lean
+Exit 0. All 17 public declarations depend only on standard axioms.
+Source:
+import GaloisForLFunctions.RHTower.WeilWorkQuantizationGaussianFiniteEstimates
+open Complex Set Filter MeasureTheory Topology
+#print axioms RHTower.WeilSpectral.quantizationGaussianCharacter
+#print axioms RHTower.WeilSpectral.norm_quantizationGaussianCharacter
+#print axioms RHTower.WeilSpectral.quantizationGaussianCharacter_conj
+#print axioms RHTower.WeilSpectral.quantizationGaussianCharacter_mul
+#print axioms RHTower.WeilSpectral.integrable_quantizationGaussianCharacter
+#print axioms RHTower.WeilSpectral.integral_quantizationGaussianCharacter
+#print axioms RHTower.WeilSpectral.quantizationGaussianPolynomial
+#print axioms RHTower.WeilSpectral.quantizationGaussianGram
+#print axioms RHTower.WeilSpectral.norm_quantizationGaussianPolynomial_le
+#print axioms RHTower.WeilSpectral.integrable_quantizationGaussianPolynomial_square
+#print axioms RHTower.WeilSpectral.integral_quantizationGaussianPolynomial_square
+#print axioms RHTower.WeilSpectral.tendsto_quantizationGaussianKernel
+#print axioms RHTower.WeilSpectral.tendsto_quantizationGaussianGram
+#print axioms RHTower.WeilSpectral.quantizationCenteredGaussianEnergy_variational
+#print axioms RHTower.WeilSpectral.eventually_quantizationCenteredGaussianEnergy_finset_lower
+#print axioms RHTower.WeilSpectral.norm_quantizationGaussianGram_sub_diagonal_le
+#print axioms RHTower.WeilSpectral.quantizationCenteredGaussianEnergy_finset_error_lower
+example : True := by
+  have := @integral_cexp_quadratic
+  have := @integrable_cexp_quadratic
+  have := @integral_finsetSum.{0,0,0}
+  have := @integrable_finsetSum.{0,0,0}
+  have := @integral_complex_ofReal.{0}
+  have := @Complex.ofReal_cpow
+  have := @Complex.exp_conj
+  have := @Complex.exp_add
+  have := @Complex.mul_conj
+  have := @Complex.normSq_eq_norm_sq
+  have := @pow_le_pow_left₀.{0}
+  have := @norm_sum_le.{0,0}
+  have := @tendsto_const_mul_pow_atTop.{0}
+  have := @Real.tendsto_exp_neg_atTop_nhds_zero
+  have := @tendsto_finsetSum.{0,0,0}
+  have := @Real.log_injOn_pos
+  have := @Finset.sum_ite_eq'.{0,0}
+  have := @Complex.re_sum.{0}
+  have := @Complex.re_le_norm
+  have := @integral_re.{0,0}
+  have := @integral_mono.{0,0}
+  have := @Real.sq_sqrt
+  trivial
+
+Output:
+'RHTower.WeilSpectral.quantizationGaussianCharacter' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.norm_quantizationGaussianCharacter' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianCharacter_conj' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianCharacter_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integrable_quantizationGaussianCharacter' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.integral_quantizationGaussianCharacter' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianPolynomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianGram' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.norm_quantizationGaussianPolynomial_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integrable_quantizationGaussianPolynomial_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.integral_quantizationGaussianPolynomial_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantizationGaussianKernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantizationGaussianGram' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredGaussianEnergy_variational' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.eventually_quantizationCenteredGaussianEnergy_finset_lower' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.norm_quantizationGaussianGram_sub_diagonal_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredGaussianEnergy_finset_error_lower' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+All 75 quantization leaves wired exactly once; no umbrella/full build.
+scripts/formal_tools.py lint: exit 1, 367 existing size warnings. No quantization error. Errors:
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilPaperCovarianceEnergyCertificates
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+Missing GaussianShift object restored with direct leaf build, exit 0, source unchanged.
+Prototype checks: repaired GaussianBessel and GaussianFiniteEstimates scratches exit 0.
+No new source premise, axiom, heartbeat increase, numerical experiment, commit or push.

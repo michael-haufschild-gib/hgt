@@ -1,0 +1,177 @@
+RHTower.WeilSpectral.quantizationInverseCoeff (lam : ℕ → ℝ) : ℕ → ℂ
+'RHTower.WeilSpectral.quantizationInverseCoeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_inverse_lseries {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) {s : ℂ}
+  (hs : 1 < s.re) :
+  LSeriesSummable (RHTower.WeilSpectral.quantizationInverseCoeff lam) s ∧
+    LSeries (RHTower.WeilSpectral.quantizationInverseCoeff lam) s =
+      Complex.exp (-LSeries (RHTower.IntegerMassRigidity.lamLog lam) s)
+'RHTower.WeilSpectral.quantization_inverse_lseries' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.summable_quantization_inverse_terms {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) :
+  Summable fun n => ‖LSeries.term (RHTower.WeilSpectral.quantizationInverseCoeff lam) (↑(3 / 2)) n‖
+'RHTower.WeilSpectral.summable_quantization_inverse_terms' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_inverse_convolution {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) (n : ℕ) :
+  LSeries.convolution (RHTower.WeilSpectral.quantizationInverseCoeff lam)
+      (GaloisForLFunctions.HTGeometry.dirichletExp (RHTower.IntegerMassRigidity.lamLog lam)) n =
+    if n = 1 then 1 else 0
+'RHTower.WeilSpectral.quantization_inverse_convolution' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_dilation_inverse {a b : ℕ → ℂ} (ha : Summable fun n => ‖a n‖)
+  (hb : Summable fun n => ‖b n‖) (ha0 : a 0 = 0) (hb0 : b 0 = 0)
+  (hinv : ∀ (n : ℕ), LSeries.convolution b a n = if n = 1 then 1 else 0) {f : ℝ → ℂ} {K : ℝ}
+  (hbound : ∀ (x : ℝ), ‖f x‖ ≤ K) (x : ℝ) : ∑' (n : ℕ), b n * ∑' (m : ℕ), a m * f (x / ↑n / ↑m) = f x
+'RHTower.WeilSpectral.quantization_dilation_inverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_actual_dilation_inverse {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) {f : ℝ → ℂ}
+  {K : ℝ} (hbound : ∀ (x : ℝ), ‖f x‖ ≤ K) (x : ℝ) :
+  ∑' (n : ℕ),
+      LSeries.term (RHTower.WeilSpectral.quantizationInverseCoeff lam) (↑(3 / 2)) n *
+        ∑' (m : ℕ),
+          LSeries.term (GaloisForLFunctions.HTGeometry.dirichletExp (RHTower.IntegerMassRigidity.lamLog lam)) (↑(3 / 2))
+              m *
+            f (x / ↑n / ↑m) =
+    f x
+'RHTower.WeilSpectral.quantization_actual_dilation_inverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_radical_translate_rational {x : ℝ} (hx : 0 < x) {N M : ℕ} (hN : 0 < N) (hM : 0 < M)
+  {q s : ℚ} (hq : x ^ N = ↑q) (hs : (x + 1) ^ M = ↑s) : ∃ a, ↑a = x
+'RHTower.WeilSpectral.quantization_radical_translate_rational' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantization_radical_real_sum_add_one {ι : Type} {lam : ℕ → ℝ} (p : ι → ℂ) (ω : ι → ℝ)
+  (hrad : ∀ (j : ι), ∃ N, 0 < N ∧ ∃ q, Real.exp (ω j / 2) ^ N = ↑q) {x : ℝ} (hx : 0 < x)
+  (hxr : ∃ N, 0 < N ∧ ∃ q, x ^ N = ↑q) (hxi : ¬∃ q, ↑q = x) :
+  RHTower.WeilSpectral.quantizationRealFrequencySum lam p ω (x + 1) = 0
+'RHTower.WeilSpectral.quantization_radical_real_sum_add_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_phase_radical_residue_zero {ι : Type} [Countable ι] {lam : ℕ → ℝ}
+  (hW : RHTower.WeilPositiveFull lam) {p : ι → ℂ} {ω : ι → ℝ} (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2))
+  (hphase :
+    ∀ (t : ℝ),
+      0 < t →
+        Complex.exp (↑(2 * Real.pi * RHTower.WeilSpectral.quantizationResidualCumulative hW t) * Complex.I) =
+          ∑' (j : ι), p j * Complex.exp (↑(ω j * t) * Complex.I))
+  (hrad : ∀ (j : ι), ∃ N, 0 < N ∧ ∃ q, Real.exp (ω j / 2) ^ N = ↑q) {x : ℝ} (hx : 0 < x)
+  (hxr : ∃ N, 0 < N ∧ ∃ q, x ^ N = ↑q) (hxi : ¬∃ q, ↑q = x) :
+  RHTower.WeilSpectral.quantizationRealFrequencySum lam p ω x = 0
+'RHTower.WeilSpectral.quantization_phase_radical_residue_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantization_exp_int_mul (a : ℝ) (k : ℤ) : Real.exp (↑k * a) = Real.exp a ^ k
+'RHTower.WeilSpectral.quantization_exp_int_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_periodic_frequency_radical {r : ℝ} (hr : 0 < r) {N : ℕ} (hN : 0 < N) {q : ℚ}
+  (hq : r ^ N = ↑q) (k : ℤ) : ∃ M, 0 < M ∧ ∃ a, Real.exp (2 * ↑k * Real.log r / 2) ^ M = ↑a
+'RHTower.WeilSpectral.quantization_periodic_frequency_radical' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantization_rigidity_or_radical_residue_zero {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) :
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ∀ (r : ℝ),
+      1 < r →
+        ∀ (p : ℤ → ℂ),
+          (Summable fun k => ‖p k‖ * Real.exp (|2 * ↑k * Real.log r| / 2)) →
+            (∀ (t : ℝ),
+                0 < t →
+                  Complex.exp (↑(2 * Real.pi * RHTower.WeilSpectral.quantizationResidualCumulative hW t) * Complex.I) =
+                    ∑' (k : ℤ), p k * Complex.exp (↑(2 * ↑k * Real.log r * t) * Complex.I)) →
+              ∀ (x : ℝ),
+                0 < x →
+                  (∃ N, 0 < N ∧ ∃ q, x ^ N = ↑q) →
+                    (¬∃ q, ↑q = x) →
+                      RHTower.WeilSpectral.quantizationRealFrequencySum lam p (fun k => 2 * ↑k * Real.log r) x = 0
+'RHTower.WeilSpectral.quantization_rigidity_or_radical_residue_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantizationFrequencyMassTerm {ι : Type} (p : ι → ℂ) (ω : ι → ℝ) (x : ℝ) (j : ι) : ℂ
+'RHTower.WeilSpectral.quantizationFrequencyMassTerm' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantizationFrequencyMass {ι : Type} (p : ι → ℂ) (ω : ι → ℝ) (x : ℝ) : ℂ
+'RHTower.WeilSpectral.quantizationFrequencyMass' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.norm_quantizationFrequencyMassTerm_le {ι : Type} (p : ι → ℂ) (ω : ι → ℝ) (x : ℝ) (j : ι) :
+  ‖RHTower.WeilSpectral.quantizationFrequencyMassTerm p ω x j‖ ≤ ‖p j‖ * Real.exp (|ω j| / 2)
+'RHTower.WeilSpectral.norm_quantizationFrequencyMassTerm_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.summable_quantizationFrequencyMassTerm {ι : Type} {p : ι → ℂ} {ω : ι → ℝ}
+  (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2)) (x : ℝ) :
+  Summable (RHTower.WeilSpectral.quantizationFrequencyMassTerm p ω x)
+'RHTower.WeilSpectral.summable_quantizationFrequencyMassTerm' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.norm_quantizationFrequencyMass_le {ι : Type} {p : ι → ℂ} {ω : ι → ℝ}
+  (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2)) (x : ℝ) :
+  ‖RHTower.WeilSpectral.quantizationFrequencyMass p ω x‖ ≤ ∑' (j : ι), ‖p j‖ * Real.exp (|ω j| / 2)
+'RHTower.WeilSpectral.norm_quantizationFrequencyMass_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_real_frequency_resonance_iff {ω x : ℝ} (hx : 0 < x) (n : ℕ) :
+  RHTower.WeilSpectral.quantizationFrequencyResonates (ω - 2 * Real.log x) 1 n ↔ Real.exp (ω / 2) = x / ↑n
+'RHTower.WeilSpectral.quantization_real_frequency_resonance_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantization_linTwist_three_halves (ω : ℝ) :
+  RHTower.AbelianTwist.linTwist ω ↑(3 / 2) = ↑(Real.exp (-(ω / 2)))
+'RHTower.WeilSpectral.quantization_linTwist_three_halves' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_normalized_residue_term {lam : ℕ → ℝ} {ω x : ℝ} {n : ℕ}
+  (hn : RHTower.WeilSpectral.quantizationFrequencyResonates (ω - 2 * Real.log x) 1 n) :
+  LSeries.term (GaloisForLFunctions.HTGeometry.dirichletExp (RHTower.IntegerMassRigidity.lamLog lam)) (↑(3 / 2)) n *
+      ↑(Real.exp (-(ω / 2))) =
+    ↑(Real.exp (-Real.log x)) * RHTower.WeilSpectral.quantizationFrequencyResidue lam (ω - 2 * Real.log x) 1
+'RHTower.WeilSpectral.quantization_normalized_residue_term' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_tsum_frequencyMassTerm_residue {ι : Type} {lam : ℕ → ℝ} (p : ι → ℂ) (ω : ι → ℝ)
+  {x : ℝ} (hx : 0 < x) (j : ι) :
+  ∑' (n : ℕ),
+      LSeries.term (GaloisForLFunctions.HTGeometry.dirichletExp (RHTower.IntegerMassRigidity.lamLog lam)) (↑(3 / 2)) n *
+        RHTower.WeilSpectral.quantizationFrequencyMassTerm p ω (x / ↑n) j =
+    ↑(Real.exp (-Real.log x)) * (p j * RHTower.WeilSpectral.quantizationFrequencyResidue lam (ω j - 2 * Real.log x) 1)
+'RHTower.WeilSpectral.quantization_tsum_frequencyMassTerm_residue' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantization_frequencyMass_dilation {ι : Type} {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)
+  {p : ι → ℂ} {ω : ι → ℝ} (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2)) {x : ℝ} (hx : 0 < x) :
+  ∑' (n : ℕ),
+      LSeries.term (GaloisForLFunctions.HTGeometry.dirichletExp (RHTower.IntegerMassRigidity.lamLog lam)) (↑(3 / 2)) n *
+        RHTower.WeilSpectral.quantizationFrequencyMass p ω (x / ↑n) =
+    ↑(Real.exp (-(3 * Real.log x / 2))) * RHTower.WeilSpectral.quantizationRealFrequencySum lam p ω x
+'RHTower.WeilSpectral.quantization_frequencyMass_dilation' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_frequencyMass_inverse {ι : Type} {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)
+  {p : ι → ℂ} {ω : ι → ℝ} (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2)) {x : ℝ} (hx : 0 < x) :
+  RHTower.WeilSpectral.quantizationFrequencyMass p ω x =
+    ∑' (n : ℕ),
+      LSeries.term (RHTower.WeilSpectral.quantizationInverseCoeff lam) (↑(3 / 2)) n *
+        (↑(Real.exp (-(3 * Real.log (x / ↑n) / 2))) *
+          RHTower.WeilSpectral.quantizationRealFrequencySum lam p ω (x / ↑n))
+'RHTower.WeilSpectral.quantization_frequencyMass_inverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_radical_div_nat {x : ℝ} {n : ℕ} (hxr : ∃ N, 0 < N ∧ ∃ q, x ^ N = ↑q) :
+  ∃ N, 0 < N ∧ ∃ q, (x / ↑n) ^ N = ↑q
+'RHTower.WeilSpectral.quantization_radical_div_nat' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_irrational_div_nat {x : ℝ} {n : ℕ} (hn : n ≠ 0) (hxi : ¬∃ q, ↑q = x) :
+  ¬∃ q, ↑q = x / ↑n
+'RHTower.WeilSpectral.quantization_irrational_div_nat' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_phase_radical_mass_zero {ι : Type} [Countable ι] {lam : ℕ → ℝ}
+  (hW : RHTower.WeilPositiveFull lam) {p : ι → ℂ} {ω : ι → ℝ} (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2))
+  (hphase :
+    ∀ (t : ℝ),
+      0 < t →
+        Complex.exp (↑(2 * Real.pi * RHTower.WeilSpectral.quantizationResidualCumulative hW t) * Complex.I) =
+          ∑' (j : ι), p j * Complex.exp (↑(ω j * t) * Complex.I))
+  (hrad : ∀ (j : ι), ∃ N, 0 < N ∧ ∃ q, Real.exp (ω j / 2) ^ N = ↑q) {x : ℝ} (hx : 0 < x) (hxi : ¬∃ q, ↑q = x) :
+  RHTower.WeilSpectral.quantizationFrequencyMass p ω x = 0
+'RHTower.WeilSpectral.quantization_phase_radical_mass_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_periodic_frequencyMass {r : ℝ} (hr : 1 < r) (p : ℤ → ℂ) (k : ℤ) :
+  RHTower.WeilSpectral.quantizationFrequencyMass p (fun j => 2 * ↑j * Real.log r) (Real.exp (↑k * Real.log r)) =
+    p k * ↑(Real.exp (-(↑k * Real.log r)))
+'RHTower.WeilSpectral.quantization_periodic_frequencyMass' depends on axioms: [propext, Classical.choice, Quot.sound]
+RHTower.WeilSpectral.quantization_periodic_irrational_harmonic_zero {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam)
+  {r : ℝ} (hr : 1 < r) {p : ℤ → ℂ} (hp : Summable fun k => ‖p k‖ * Real.exp (|2 * ↑k * Real.log r| / 2))
+  (hphase :
+    ∀ (t : ℝ),
+      0 < t →
+        Complex.exp (↑(2 * Real.pi * RHTower.WeilSpectral.quantizationResidualCumulative hW t) * Complex.I) =
+          ∑' (k : ℤ), p k * Complex.exp (↑(2 * ↑k * Real.log r * t) * Complex.I))
+  {N : ℕ} (hN : 0 < N) {q : ℚ} (hq : r ^ N = ↑q) {k : ℤ} (hki : ¬∃ q, ↑q = Real.exp (↑k * Real.log r)) : p k = 0
+'RHTower.WeilSpectral.quantization_periodic_irrational_harmonic_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantization_rigidity_or_rational_harmonics {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) :
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ∀ (r : ℝ),
+      1 < r →
+        ∀ (p : ℤ → ℂ),
+          (Summable fun k => ‖p k‖ * Real.exp (|2 * ↑k * Real.log r| / 2)) →
+            (∀ (t : ℝ),
+                0 < t →
+                  Complex.exp (↑(2 * Real.pi * RHTower.WeilSpectral.quantizationResidualCumulative hW t) * Complex.I) =
+                    ∑' (k : ℤ), p k * Complex.exp (↑(2 * ↑k * Real.log r * t) * Complex.I)) →
+              ∀ (k : ℤ), p k ≠ 0 → ∃ q, ↑q = Real.exp (↑k * Real.log r)
+'RHTower.WeilSpectral.quantization_rigidity_or_rational_harmonics' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

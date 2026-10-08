@@ -367,3 +367,851 @@ its external inputs are not dependencies of the selected proof. G1 and the
 C12 paper argument are classified classical-parent BRIDGES, not new science.
 C12 analytical assembly and Xi transfer remain unformalized; C13 and the
 assigned upper-deficit goal remain open.
+
+### G2 cutoff jets and coupled cost audit, 2026-10-08
+
+- Source: `formal/GaloisForLFunctions/RHTower/WeilWorkDeficitSmoothCutoffJets.lean`.
+  Three public theorems, exact positive-product/height domain only.
+- Target `lake --old build +GaloisForLFunctions.RHTower.WeilWorkDeficitSmoothCutoffJets`:
+  exit0, target13s/8902 jobs, cached dependency diagnostic replay only.
+- Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitSmoothCutoffJets.lean`:
+  exit0, empty `/tmp/wp06-c12g-jets-final.log`.
+- `/tmp/wp06-c12g-jets-axioms.lean`: exit0, all three public theorem types
+  inspected; only propext/Classical.choice/Quot.sound. Raw output retained
+  in `lean-audit.log`. Umbrella import wired exactly once.
+- Latest lint exit1: seven unrelated unreachable modules:
+  `WeilWorkQuantizationRationalRigidity`, `WeilWorkSettledPhaseCosineMellin`,
+  `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`,
+  `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`.
+  No WP06 or forbidden-declaration finding. No full/umbrella build.
+
+Searches `c13-identity-frontier` and `c14-coupled-frontier` completed
+partial=false/errors=[]; inventory68,630, only43 current compiler snapshots,
+52,125 pending and2,660 stale. `c15-mixture-frontier` partial=true due reranking
+runtime deadline, inventory68,635/52,129 pending. All candidate and source
+statement lists inspected. C15 hits include compact normalized null mixtures,
+which lack the actual derivative-family restriction; no closing theorem
+was obtained. Lexical `c12g-jet-apis` returned350 matches; used its ranked
+hits and inspected exact cutoff sources. None of these are absence certificates.
+
+Primary external audit:
+[Darses–Hillion, Polynomial Moments](https://arxiv.org/html/2209.10990v2),
+Theorem1.1 and Section2.3, concerns the Gamma(s)-weighted zeta-square measure;
+it supplies classical moment/autocorrelation ancestry, not the exact Xi
+weight or C15's positive-mixture conclusion.
+[Alouges–Darses–Hillion, Polynomial approximations](https://arxiv.org/html/2006.02953v2),
+Section4.3.1, explicitly gives the diagonal Gram integral t^(2k)Xi(t)^2.
+Its coefficient-control issue confirms that polynomial density alone is
+insufficient; no novel claim is made for the derivative Gram representation.
+[Hughes–Lugmayer–Pearce-Crump](https://eprints.whiterose.ac.uk/id/eprint/229882/1/ZetaLocalExtrema_Accepted_JLMS.pdf)
+states RH throughout its local-extrema problem; not an unconditional input.
+[Pratt et al.](https://link.springer.com/article/10.1007/s40687-019-0199-8)
+discusses longer mollifiers and arithmetic cancellation; not C14's endpoint
+coupled prime truncation. Kobayashi's arXiv1603.02954 abstract concerns Xi
+as an autocorrelation, not these derivative energy mixtures.
+
+Paper-only progress: full C13 cutoff passage, signed pole normalization,
+sharpened proportional threshold, and cost-to-tightness consequence are
+written in PROOF. C12/C13 analytical Lean assembly remains open. C14 and
+C15 survive only preliminary attack, not proof. No RH/upper-deficit claim.
+
+
+## G3 completed: actual window and complete off-diagonal, 2026-10-08
+
+- Source: `formal/GaloisForLFunctions/RHTower/WeilWorkDeficitOscillatoryWindow.lean`.
+  Two public theorems. Constants precede all products, windows, frequencies
+  and integer twists; only exact domain restrictions appear.
+- Target-only `lake --old build +GaloisForLFunctions.RHTower.WeilWorkDeficitOscillatoryWindow`
+  from formal/: exit0, leaf5.9s/9558 jobs, cached dependency warnings only.
+- Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitOscillatoryWindow.lean`:
+  exit0, empty `/tmp/wp06-c12g-window-final.log`.
+- `/tmp/wp06-c12g-window-axioms.lean`: exit0. Both exact public types read;
+  only propext, Classical.choice, Quot.sound. Raw output in lean-audit.log.
+- Umbrella import wired exactly once; no full or umbrella build.
+- Lint exit1: fourteen unrelated reachability failures, none in WP06 and
+  no forbidden declaration. Current exact names are retained below.
+- An intermediate scratch retry briefly overlapped its preceding check;
+  both exited, and subsequent scratch/build/final/axiom checks ran serially.
+  No owned process remains running. No mathematical computations,
+  heartbeat increases, commits or new axioms were used.
+
+Current lint errors:
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionConstant
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionSpatial
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionTrace
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCosineMellin
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseFiniteMellin
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseRationalBound
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseRationalProfiles
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticLogMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticLogMomentLimit
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+Current corpus audits: lexical window search returned98 matches/7 modules;
+its existing oscillatory cutoff theorem has a weaker product dependence.
+The exact source APIs and actual cutoff jets were checked in scratch Lean.
+C15 Gamma-boundary deep search was partial; no closing theorem obtained.
+Lexical critical-line growth search yielded9,433 matches/854 modules,
+including the unconditional linear bound and exact rationally weighted
+second moment. Ranked results were inspected, not all matches.
+C16 deep search `/tmp/wp06-c16-absolute-prime.json`: partial=false/errors=[];
+68,649 indexed files,43 current compiler snapshots,52,141 pending,2,660 stale.
+All20 candidate statements,20 source statements, and the ingredient set
+were inspected. The only exact owned hits were the existing factorial
+budget and full Bessel matrix; no logarithmic normalized absolute-prime
+bound was found in these returned hits. This is not an absence certificate.
+
+External primary audit:
+[DLMF 5.8.3](https://dlmf.nist.gov/5.8#E3) confirms the reciprocal-Gamma
+product used to formulate the exploratory boundary family; it does not
+prove its derivative-mixture moment or cancellation claims.
+[Tang, short twisted reciprocity](https://arxiv.org/html/2608.14852v1),
+Theorem1 and Remark3.1, is an August2026 preprint for distinct odd-prime
+rational twists and H=T^delta with delta>1/2. It retains a dual character
+moment and describes H versus T/H reciprocity. Its statement does not
+supply the exact endpoint Xi-weighted C16 bound. This post-July source is
+recorded as a current additional audit, not evidence of novelty for G3.
+Khan's arXiv2401.01057 abstract was located; attempted v2 HTML was
+unavailable, so no additional theorem claim is based on that failed read.
+
+Verdict: G3 BRIDGE. C16a/C16b survive preliminary attack only; C15 remains
+open. All nine hgtl7 reviews posted. Next work: coupled prime/reflected
+cost and actual Gaussian-window, diagonal, AFE, Xi formal assembly.
+
+## G4 full prime budget and C17 paper checkpoint, 2026-10-08
+
+- Source: `formal/GaloisForLFunctions/RHTower/WeilWorkDeficitPrimeKernelBudget.lean`.
+  Three public universal theorems; every prime power and divisor pair retained.
+- Target-only build: exit0, target22s/9885 jobs; dependency messages replayed.
+  `/tmp/wp06-c16-product-build.log` records completion.
+- Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitPrimeKernelBudget.lean`:
+  exit0, empty `/tmp/wp06-c16-product-final.log`.
+- `/tmp/wp06-c16-product-axioms.lean`: exit0. All three exact types inspected;
+  only propext, Classical.choice, Quot.sound. Output appended to lean-audit.log.
+- Umbrella import wired once; no umbrella or full build.
+- Process correction: axiom audit was mistakenly launched before the final
+  direct check exited. Its owned Lean PID25843 was terminated (exit143),
+  then restarted only after final-check exit0. The successful axiom audit
+  and all remaining Lean work ran serially. No owned Lean process remains.
+- Formal lint exit1: sixteen unrelated reachability errors; none WP06 and
+  no forbidden declarations. Exact errors from this run follow below.
+- No mathematical computations, heartbeat changes, commits or new axioms.
+
+Corpus searches `c16-logcost-frontier`, `c16-reflected-convolution` and
+`c17-bessel-saddle` all completed partial=false/errors=[]:68,649 indexed
+files,43 current compiler snapshots,52,141 pending,2,660 stale. Returned
+candidate and source lists were inspected completely; proof ideas and
+ingredient sets, when returned, were also read. These coverage limits do
+not permit an absence or novelty certificate. The exact arithmetic
+convolution was already used in CCMPrimeDeficitEulerForceEnergy. The
+existing generalized divisor short-interval bounds are reused.
+
+The compact-cutoff route does not supply enough prime-summable decay in
+its available bound; no divergence theorem for the actual correlation
+is claimed. The actual Bessel product nN gives G4 instead. Primary checks:
+DLMF10.43.19 (Mellin K), DLMF2.5.2 (inversion), DLMF5.11 (complex Stirling
+and remainders). The classical formulas' domain restrictions are checked
+in PROOF. Darses–Hillion arXiv2209.10990v2 was re-opened; its retrieved
+asymptotic passage did not establish the exact C17 statement. No novelty
+claim follows from that limited comparison.
+
+C17's complete paper proof now includes the exact finite-polynomial
+Mellin recurrence, local integer-phase limit, uniform twelve-derivative
+L1 estimate on sigma4, and separately paid compact-height remainder.
+It gives a fourth-power global profile, C16a, and C14 on paper only.
+C15 and the assigned deficit target remain open. G4 is BRIDGE.
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionConstant
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionSpatial
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionTrace
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkQuantizationNegativeMass
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCosineMellin
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseFiniteMellin
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseRationalBound
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseRationalProfiles
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardEnergyLimit
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticLogMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticLogMomentLimit
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+Latest C18 query `/tmp/wp06-c18-cutoff-frontier.json` completed with
+partial=true (reranking deadline),68,656 indexed files,43 current compiler
+snapshots,52,148 pending,2,660 stale. All20 candidate statements and20
+source statements, the proof idea and ingredient set were inspected.
+Mostly unrelated matches; CCMTruncatedDivisorReindex supplies a parent
+reindexing, not the proposed local cutoff limit. No closing theorem or
+absence certificate. All nine hgtl7 reviews posted in chat; next-cycle
+plan recorded in the card and memory. Scoped diff whitespace check passed.
+
+### G5 verification and next frontier (2026-10-08)
+
+- New source: `formal/GaloisForLFunctions/RHTower/WeilWorkDeficitProductKernelMellin.lean`.
+- Target-only `lake --old build +GaloisForLFunctions.RHTower.WeilWorkDeficitProductKernelMellin`: exit0, target71s,9886 jobs; `/tmp/wp06-c17-mellin-build.log`. An earlier successful target check's algebra diagnostic was removed before this final build.
+- Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitProductKernelMellin.lean`: exit0, empty `/tmp/wp06-c17-mellin-final.log`.
+- Exact public types and both `#print axioms`: exit0, `/tmp/wp06-c17-mellin-axioms.log`. Only propext, Classical.choice, Quot.sound. All owned Lean commands ran serially and are terminal.
+- Umbrella import occurs once; no umbrella/full build. No numerical research computation, added scientific premise, heartbeat increase, commit or push.
+- Latest lint: exit1,7 unrelated reachability errors below, no WP06 or forbidden-declaration finding. The shared tree was otherwise left untouched.
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorBoundaryPrimitive
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCoprimeRatio
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+Research this cycle:
+- `/tmp/wp06-c17-mellin-frontier.json`: deep120s,partial=false/errors=[],68,659 indexed files,43 current compiler snapshots,52,149 pending,2,660 stale. All20 candidates/20 source arguments and ingredient set inspected. Existing hyperbolic-beta/two-Bessel machinery supplied the bridge; no absence claim.
+- `/tmp/wp06-c19-euler-inverse.json`: deep90s,partial=true; malformed local JSON/Qdrant timeout. All20 candidate and20 source statements inspected. Lexical follow-up found `PMPowerDampedMobiusRoughInverse.lean`; its entire118-line finite rough inversion was read. C19 uses the same classical finite Euler mechanism and claims no novelty.
+- `/tmp/wp06-c17-uniform-gamma.json`: deep120s,partial=false/errors=[],68,674 indexed files,43 current compiler snapshots,52,162 pending,2,660 stale; background refresh incomplete. All20 candidate and20 source statements plus ingredient set inspected. The suggested `Zeta23.GammaFacts` is a hypothesis bundle, not an allowed producer. Targeted follow-up found `GaloisForLFunctions.norm_iteratedDeriv_succ_digamma_vertical_pow` in `PolygammaVerticalSharpDecay.lean:122`: unconditional sharp all-order vertical decay. Read its statement and preceding proof mechanism. `GammaStirlingLadder.lean` has arbitrary finite expansion order; reuse these rather than reproduce fixed-radius Cauchy bounds or weak exponential strip growth.
+- External current search/open included Darses–Hillion arXiv2209.10990v2 (related Gamma-zeta moments), DLMF27.5 (finite arithmetic inversion ancestry). A Borwein2004 ScienceDirect abstract was retrieved but full page returned403; no result is attributed beyond the retrieved material. Earlier DLMF10.43.19,2.5.2,5.11 citations support G5/C17's classical ancestry. No external novelty claim.
+- All nine hgtl7 review answers posted. G5 is formal progress, C19 is a paper reduction, and the scientific construction/no-go problem remains open.
+
+### G6 audits and C20 arithmetic refinement (2026-10-08)
+
+- Source `WeilWorkDeficitMellinAmplitude.lean`: exact actual Mellin norm and common Gaussian bulk envelope, two public theorems. Target-only build exit0,112s/10436 jobs (`/tmp/wp06-c17-amplitude-build.log`).
+- Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitMellinAmplitude.lean`: exit0, empty `/tmp/wp06-c17-amplitude-final.log`.
+- Both literal public types and `#print axioms`: exit0, `/tmp/wp06-c17-amplitude-axioms.log`; propext, Classical.choice, Quot.sound only. Umbrella wired once. All owned Lean commands serial and terminal; no heartbeat hack, numerical research job or full build.
+- Formal lint exit1: six unrelated reachability errors below. No WP06/forbidden-declaration finding. Other owners' sources were not modified.
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorCosineMellin
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+Research: all returned candidate/source statement lists were inspected, along with proof ideas and ingredient sets. No suggested chain was accepted without checking applicability.
+- `c20-positive-mixture`: partial=true, local semantic deadline;68,681 indexed files,43 current compiler snapshots,52,169 pending,2,660 stale.
+- `c17-symbol-frontier`: partial=true, text/semantic deadlines;68,682 indexed,43 current,52,170 pending,2,660 stale. Existing sharp polygamma/Stirling machinery retained.
+- `c20-sharp-prime`: partial=false/errors=[],68,684 indexed,43 current,52,172 pending,2,660 stale; no applicable closing theorem among inspected results.
+- `c20-divisor-variance`: partial=true, reranking deadline; coverage status pending/generation1289134. No proof ideas/ingredient sets. The returned van-der-Corput, general divisor bounds and unrelated variance results do not supply the required maximal divisor estimate.
+- `c21-separation`: partial=false/errors=[],68,688 indexed,43 current,52,174 pending,2,660 stale. Own `primePair_nonneg` already has an absolute value; it cannot certify signed prime positivity. Prolate and Suzuki separation chains address different objects.
+- `c20-average`: partial=true, reranking deadline;68,693 indexed,43 current,52,179 pending,2,660 stale. Its proposed Mobius/Gaussian chain concerns different masses and supplies no actual average. These are not absence or novelty certificates.
+
+Primary external audit included Darses–Hillion arXiv2609.36200v2 (revised2026-10-06), sections3.2–4.2, and2209.10990v2; the related Gamma-zeta moment formulas do not establish C15. DLMF5.11 supports classical amplitude ancestry. Matomäki–Radziwiłł–Shao–Tao–Teräväinen's2026 Inventiones paper was checked for almost-all interval quantifiers, not treated as an all-interval result.
+
+Ivić arXiv0707.1756v5 supplies fixed-window divisor variance; Ivić–Zhai arXiv1209.0872v1 Lemma2.1 gives the needed maximal increment bound, with2<=U<=sqrt(X). The proof in PROOF explicitly verifies this domain for low rows, uses ordinary Mertens/divisor summation for high rows, and pays all transition and discrete-grid errors. C20c is a PAPER result depending on unformalized C17, not a Lean theorem. Pointwise C20a/C20b and C15 remain open. No external novelty certification. All nine hgtl7 reviews posted; next cycle returns to C15 and the unfinished C17 analytic assembly.
+
+### G7 and the C21 sign attack (2026-10-08)
+
+Current-turn searches: all candidate/source statements, proof ideas and ingredient sets inspected. Partial coverage is not an absence certificate.
+- `/tmp/wp06-c21-spike-frontier.json`: partial=true/reranking deadline;68,698 indexed,43 current compiler snapshots,52,184 pending,2,660 stale. No returned spike object supplied C15.
+- `/tmp/wp06-c17-logsymbol.json`: partial=true;68,703 indexed,43 current,52,188 pending,2,660 stale. Generic saddle/Noether/uniform-derivative hits did not prove the literal Mellin derivative. Reused the inspected `DigammaVerticalUniformLog.lean` theorem.
+- `/tmp/wp06-c21-first-kernel.json`: partial=true/reranking deadline;68,705 indexed,43 current,52,190 pending,2,660 stale. Own amplitude theorem and other kernel bounds do not establish C21a.
+- `/tmp/wp06-c22-gammaweights.json`: partial=true/Qdrant search timeout;68,717 indexed,43 current,52,201 pending,2,660 stale. Proposed reciprocal-Gamma coefficient chain concerns different functions and was rejected.
+- `/tmp/wp06-c21-bessel-sign.json`: partial=true/reranking deadline and malformed local model JSON;68,719 indexed,43 current,52,203 pending,2,660 stale. Existing order recurrence was checked directly. No returned actual first-column sign theorem. No proof ideas or ingredient sets.
+
+Primary external checks: [DLMF5.8.3](https://dlmf.nist.gov/5.8.E3) for the exact reciprocal-Gamma positive product; [DLMF10.29](https://dlmf.nist.gov/10.29) and [10.32](https://dlmf.nist.gov/10.32) for the Bessel recurrence/integral ancestry; [Darses--Hillion2609.36200v2](https://arxiv.org/html/2609.36200v2), revised2026-10-06, for rational/exponential weighted autocorrelations. The reviewed sq/ch formulas do not prove C22's different signed rational-weight combination. An abstract of the2023 JMAA paper on sharp modified-Bessel ratio bounds confirms a much stronger classical parent; no inaccessible full-paper theorem is attributed.
+
+G7 target-only build passed,222s/10438 jobs. Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitMellinSlope.lean` passed,exit0. It emits one non-failing `ring_nf` suggestion at line155; no errors, admitted proof, or heartbeat override. Umbrella import verified once at current line7142. Axiom/exact-type scratch is `/tmp/wp06-c17-slope-axioms.lean` (audit pending at this checkpoint).
+
+Formal lint exit1,13 unrelated reachability errors; no WP06 or forbidden-declaration finding. Exact output retained in `/tmp/wp06-c17-slope-lint.log`. Other owners' files were not changed. All nine review answers were posted. C21's exact sign survivor has a dependency-closed paper proof and scratch source, but is not yet a checked Lean result.
+
+G7 final audit completion: `/tmp/wp06-c17-slope-axioms.log` exit0 confirms both literal public types and only propext/Classical.choice/Quot.sound. All G7 commands terminal. Temporary G7 proof scratch removed; exact-type/axiom scratch and logs retained. Twenty-eight completed modules /107 public theorem audits. C21 sign scratch is the sole owned Lean check now running.
+
+C21 exact lexical follow-up for `"riemannKernelDeriv 1"`: zero indexed hits (no coverage metadata returned). Exhaustive source-text follow-up found only `RiemannKernelSpectralLocalization.lean` derivative identity and Fourier norm estimates; no direct first-column sign statement. The preceding broader Bessel search remains partial. This is not a scientific novelty certificate.
+
+### C21 final audits
+
+- `WeilWorkDeficitLowOrderSigns.lean`: six public theorems, namespace `RHTower.WeilWorkDeficitSign`. Current lines128/143: product-kernel signs;253/260: actual integer correlation signs;268/275: strict energy gaps.
+- Target-only `lake --old build +GaloisForLFunctions.RHTower.WeilWorkDeficitLowOrderSigns`: exit0,23s/9886 jobs, `/tmp/wp06-c21-sign-build.log`.
+- Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitLowOrderSigns.lean`: exit0, empty `/tmp/wp06-c21-sign-final.log`.
+- `/tmp/wp06-c21-sign-axioms.lean`: all six literal public types and axiom audits exit0; `/tmp/wp06-c21-sign-axioms.log` lists only propext/Classical.choice/Quot.sound. No missing analytic premise. Umbrella import verified once. No full or umbrella build, numerical experiment, heartbeat or recursion-limit override.
+- Lint exit1, seven unrelated reachability errors (two WP05 modules and five HTGeometry modules), no WP06/forbidden finding. Exact output `/tmp/wp06-c21-sign-lint.log`. Other owners' files untouched.
+- Narrow no-go card `5-failed/weil-work-06-first-kernel-comparison.md` records the exact obstruction, entire-column positive survivor, paper/Lean status and classical-parent verdict. Main card stays active. Twenty-nine completed modules /113 public theorem audits.
+
+Next-cycle C22 integrability search: `/tmp/wp06-c22-integrability.json`, partial=false/errors=[],68,730 indexed files,43 current compiler snapshots,52,214 pending,2,660 stale. All returned candidate/source statements and proposed chain inspected. The cyclic-loop/imaginary-part chain is inapplicable. Exact source `RiemannXiSuzukiSpectralStaticContourCriticalZetaUpper.lean:506` supplies an unconditional linear critical-line zeta bound; its fixed eta mass and critical endpoint definition were read. This is sufficient for the N>=4 subfamily's logarithmic integrability, but does not itself pay the N=3 endpoint. Explicit-type audit is being run separately.
+
+C22 source audit completed: `/tmp/wp06-c22-linear-api.lean` explicitly checks the literal point1/2+iT and the fixed eta-mass constant; exit0, `/tmp/wp06-c22-linear-api.log`, standard foundations only. The N>=4 probability/finite-log-moment assembly now has a dependency-closed PAPER proof in PROOF, including the positive coefficient product, its logarithmic derivative bound, Tonelli normalization, and exact row transfer. It is not formalized and makes no sign or C15 existence claim. N=3 remains separately unpaid by this coarse source estimate. All owned searches and Lean processes are terminal. Completed proof scratch files cleaned; audit sources/logs retained. Final all-nine reviews posted after C21 formal completion.
+
+### C23 / C24 parent and corpus audit, 2026-10-08
+
+- `/tmp/wp06-c22-rational-sign.json`: partial=true,68,732 indexed files; general Mellin convolution and unrelated rational-zeta results, no literal family sign theorem.
+- `/tmp/wp06-c23-mellin-cosine.json`: partial=false,68,742 indexed files; compiler43 current snapshots,52,224 pending,2,660 stale. All candidate/source statements and proposed ingredient sets inspected. The derivative-jump chain mixes unrelated derivative identities and does not prove C23.
+- `/tmp/wp06-c23-strip.json`: partial=true; no directly applicable strip bound returned. Exhaustive source follow-up found `ZetaFractionalPartTrigEquations.lean:35` and `ZetaVerticalSqrtBound.lean:181`. The former pays the paper contour's uniform linear growth; the latter gives a stronger literal-density envelope. `/tmp/wp06-c23-gamma-api.lean` confirmed the latter's standard-only axioms, but exited1 because a definition-valued API example needed `noncomputable`; `/tmp/wp06-c23-decay-api.lean` corrected this and checked all required decay APIs, exit0/empty. No mathematical success is inferred from the first script's failed exit.
+- `/tmp/wp06-c23-xi-gamma.json`: partial=false,68,744 indexed files; all candidate/source statements inspected. Actual Xi normalization is consumed from `ZetaCarrier.lean:247`, `XiEntireReal.lean:22/50`, and Gamma recurrence; no surrogate spectrum.
+- `/tmp/wp06-c24-fractional.json`: partial=false; Gamma recurrences and reciprocal-Gamma analyticity, no fractional-order resonance statement. All candidates/source arguments and proposed chain inspected. Exact lexical own-scope follow-up `/tmp/wp06-c23-entire.json` returned existing unrelated Gamma/square/energy declarations, no coverage metadata.
+- [Bettin--Conrey1111.0931v2](https://arxiv.org/pdf/1111.0931), pp8--9, equations9--10: parent weighted divisor/Mellin machinery; its exponential-sector hypothesis does not directly pay C23's boundary cosine transform. [Second weighted moment](https://www.numdam.org/item/10.5802/pmb.a-150.pdf), Theorem1: exponential/cosh weights. [Darses--Ringeling--Royer2506.22014](https://arxiv.org/pdf/2506.22014), Theorems1.1--1.2: cosh-weighted character moments/period functions. These are ancestry, not the proposed Gamma-density sign theorem.
+- [Hansen--Tong2602.17007v2](https://arxiv.org/html/2602.17007v2), Sections1--3: explicitly classical Hankel/PMT representations. No C24 uniform weighted Xi-square asymptotic in the inspected statements. Koide's dual-Hahn preprint surfaced through secondary discovery with DOI10.5281/zenodo.21962970; primary record could not be opened, so it remains an unverified lead, not supporting evidence.
+
+C23 exact statement and dependency-closed paper proof are in PROOF. The positive integer-resonance asymptotic, including finite positive mixtures, is PAPER ONLY. C24 compact-uniform continuous-order extension is OPEN. Verdict BRIDGE for the established mechanism; no scientific novelty certificate and no spectral-deficit closure.
+
+C24 follow-up: [DLMF16.17](https://dlmf.nist.gov/16.17) identifies the candidate G_{1,3}^{2,0} parameter pattern but its quoted sufficient vertical-contour inequality is strict; this pattern lies on equality. The two bottom numerator poles also coincide. [DLMF16.22](https://dlmf.nist.gov/16.22) points to Luke1969a sections5.7/5.10 and Luke1975 section5.9. No uniform boundary-ray remainder has been imported from those unverified references. The candidate differential kernel identity and this gap are recorded in PROOF.
+
+### C22/C23 Gamma-density final audits
+
+- `WeilWorkDeficitGammaDensity.lean`, namespace `RHTower.WeilWorkDeficitGamma`: public theorems at30/44/118/213/218/226; literal density and entire continuation definitions at22/26.
+- Target-only `lake --old build +GaloisForLFunctions.RHTower.WeilWorkDeficitGammaDensity`: exit0,99s/8783 jobs; `/tmp/wp06-c23-gamma-build.log`.
+- Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitGammaDensity.lean`: exit0/empty; `/tmp/wp06-c23-gamma-final.log`.
+- `/tmp/wp06-c23-gamma-axioms.lean`: six exact public types and six axiom checks exit0; `/tmp/wp06-c23-gamma-axioms.log` contains only propext/Classical.choice/Quot.sound. No scientific premise, heartbeat or recursion-limit override, numerical experiment, full build or umbrella build.
+- Umbrella import verified once. Lint exit1, `/tmp/wp06-c23-gamma-lint.log`: eleven unrelated unreachable modules (two WP07 cutoff, four WP05 settled-phase, five HTGeometry), no WP06/forbidden finding. Scoped whitespace check passed.
+- Thirty completed modules /119 public audits. All owned commands terminal. Completed scratch and fragment cleaned; final audit source/logs retained. C23's full integer-resonance theorem and C22's coefficient-mixture assembly remain pending; no false promotion to a Lean no-go or the main target.
+
+### C23 symbol and C25 coefficient-tail cycle (2026-10-08)
+
+- Deep `/tmp/wp06-c23-inversion.json`: partial=false,68763 indexed files; compiler43 current/52242 pending/2660 stale, background refresh incomplete. All candidate statements/source arguments/proposed chains inspected. Actual mathlib Mellin inversion applies only after specific convergence and continuity obligations; generated smooth-weight chain is inapplicable.
+- `/tmp/wp06-c25-spike.json`: partial=false,68766 files, no exact cancellation theorem; generated derivative case-split proposal is irrelevant. Rephrased `/tmp/wp06-c25-cosh.json`: partial=true, actual owned kernel and Xi identities returned, no mixture constructor. `/tmp/wp06-c25-carlson.json`: partial=false,68768 files, generic Mellin candidates; no exact physical Carlson transfer. Exhaustive rg found `PrimeBlindCarlsonThreshold` and `CompactCarrierFourierBorel`; read actual statements. The first excludes only critical spectral sqrt-room integrability, not every exponential derivative moment. Coverage is not an absence certificate.
+- `/tmp/wp06-c23-symbol-api.lean/.log`: Gamma recurrence/reflection/duplication, complex powers/trigonometry and actual xi-factor APIs checked, exit0/empty. C23 scratch symbol proof is still under audit; no new completed corpus module claimed yet.
+- [DLMF5.5](https://dlmf.nist.gov/5.5) fixes Gamma algebra; [DLMF10.40](https://dlmf.nist.gov/10.40) and [10.31](https://dlmf.nist.gov/10.31) fix large/small complex Bessel bounds. [Hansen--Tong2602.17007v2](https://arxiv.org/html/2602.17007v2) and [Darses--Ringeling--Royer2506.22014](https://arxiv.org/pdf/2506.22014) remain classical transform/weighted-moment parents, not C15 solutions.
+- [Hadassi--Sodin2504.13104](https://arxiv.org/pdf/2504.13104), Theorems1--3: unimodular or uniformly nonvanishing coefficient assumptions do not hold for unrestricted w. [He2609.38234](https://arxiv.org/pdf/2609.38234), Definition2.1/Theorem2.2: different dyadic exponential carriers, complete envelope hypotheses and almost-every external-parameter qualification; does not address the fixed actual mixture. New multidimensional Carlson DOI10.1080/10652469.2026.2700598 full text inaccessible; no inference from abstract beyond adjacent subject matter.
+- C25a/b exact competing exponential-moment statements recorded. C25c narrower fast-tail obstruction has a dependency-closed paper argument, using C17/C19, Borel inversion and the classical half-plane Carlson theorem. All complex-dilation, sector, coefficient/interchange and normalization steps are explicit. C25a remains OPEN; C25c is a BRIDGE, unformalized, not a main-goal solution. Exact classical Carlson source verification remains being completed; no novelty claim.
+- Carlson source audit completed through [Vagharshakyan2108.12846v1](https://arxiv.org/pdf/2108.12846), Theorem1.1.2 and §§3--4, with ancestry Hardy1920/Carlson1914. Its introductory Theorem1.1.1 omits an explicit exponential-type qualification; this work retains and proves that qualification in (25.3), rather than relying on the overbroad introductory phrasing. Borel-circle representation (25.1) is proved directly by coefficient integration. Earlier MDPI/book/Levin fetches failed; no inaccessible text is treated as inspected.
+- Follow-up `/tmp/wp06-c25-dilation.json`: partial=false,68772 indexed files, compiler43 current/52250 pending/2660 stale. All candidate/source statements and ingredient sets inspected. Generic Hermitian dilation and cubic Gamma scaling are inapplicable; no Borel-to-actual-product-kernel transport returned. Exact post-conjecture web searches found classical Carlson/Bessel contexts, not a verified collision or absence certificate. C25d records the stronger geometric root threshold from the same proof, still PAPER ONLY.
+- C23 symbol scratch exit0/empty. `WeilWorkDeficitGammaSymbol.lean` now has three public premise-free results at23/39/146. Target-only build exit0,126s/8784 jobs, `/tmp/wp06-c23-symbol-build.log`. Module wired once; final unchanged direct audit running and exact-type/axiom audit pending. Count not yet incremented.
+- Final unchanged direct source audit exit0/EMPTY: `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitGammaSymbol.lean`, `/tmp/wp06-c23-symbol-final.log`. Exact public-type/axiom check now running. Final lint exit1, `/tmp/wp06-c23-symbol-lint.log`: nine unrelated reachability errors (WP07 HigherDenominatorCutoffTail; WP05 SettledPhasePrimeDeletionSummability; WP03 SingularArithmeticNotchGoodScales/Localization; HTGeometry ApertureConeCalculus/ConeWinding/LogTranslation/OpenHistoryIdeal/BoundaryCoronaCStarAlgebra). No WP06 or forbidden finding. Scoped whitespace check emitted no errors; umbrella import verified once.
+- FINAL C23 symbol audit: `/tmp/wp06-c23-symbol-axioms.lean/.log` exit0; all three literal types inspected, only propext/Classical.choice/Quot.sound. Thirty-one completed modules /122 public audits. No heartbeat/recursion-limit changes, numerical research, full build or umbrella build. All owned processes terminal. Completed `/tmp/wp06-c23-symbol.lean` and its temporary base fragment removed; API/final/type/axiom logs retained.
+
+### C26 / C23 residue cycle, 2026-10-08
+
+- Corpus `positive Taylor coefficient entire multiplier integer cancellation Carlson Borel indicator`, deep300: `/tmp/wp06-c26-positive-indicator.json`, partial=false, 68,779 files, no errors. Read every candidate/source statement and generated proposal. Hits give Taylor expansions and unrelated positive-coefficient constructions, not actual physical indicator control. Generated claim that positivity alone implies entireness is inapplicable/false without convergence control. Compiler coverage:43 current,52,255 pending,2,660 stale; not an absence certificate.
+- Corpus `rational Mellin symbol partial fractions residues derivative jump cosine asymptotic`, deep300: `/tmp/wp06-c23-residues.json`, partial=false,68,780 files,no errors. Read every candidate/source statement and both proposed ingredient steps. `LinearPartialFractions.div_linear_prod_eq_add_sum_const` supplies existential rational decomposition; exact explicit coefficients and endpoint jets are better served directly by the installed `Lagrange.coeff_eq_sum` and barycentric evaluation, whose source was read. Generic Mellin-residue polynomials and other native transforms do not discharge this actual kernel's inversion. Compiler43 current,52,256 pending,2,660 stale.
+- Primary parents opened: DLMF2.3(i), especially2.3.4–6 (endpoint Fourier expansions and derivative-integral remainder), DLMF2.5 (Mellin transport); Darses–Najnudel arXiv2311.02783v1, Theorems1.1–1.3 (cosh-weighted zeta moments and classical Titchmarsh ancestry), different weight family and no uniform C26 sign theorem imported. Carlson parent arXiv2108.12846v1 refreshed; its explicit exponential-type hypothesis retained. Rubel PMC page returned recaptcha, no new source claim. Exact searches for reciprocal-Gamma integer-correlation positivity returned adjacent material, not a novelty certificate. Koide's indexed abstract remains unverified primary text.
+- New exact C26 alternatives and the non-real-Borel-carrier counterexample are in PROOF. C26 remains OPEN. C23 residue/jet proof is a classical BRIDGE, dependency-closed on paper; formal audit underway.
+- C26 gamma-order corpus query `/tmp/wp06-c26-gamma-order.json`: partial=true,68,785 files; semantic budget timeout and local deadline. Inspected all available candidate/source statements and proposed chain. Gamma conjugation/even zero order do not imply uniform integer Fourier positivity. No repeat refresh/search requested to manufacture completeness; new C27 query targets the actual moving phase instead.
+- C27 moving-phase query `/tmp/wp06-c27-moving-phase.json`: partial=true,68,785 files, local semantic deadline. Every returned candidate/source and generated chain inspected. Existing fixed-order BesselJ0 phase and Gamma asymptotics do not control this actual moving-order inverse transform; owned G5 Bessel Mellin identity has a different weight. DLMF10.17 and5.11 primary pages opened; their fixed-parameter asymptotics are not promoted to a uniform theorem.
+- New C27 proof instead uses de Boor, *Divided Differences* (2005), arXiv:math/0502036v1, equation52 and barycentric interpretation, pp.63–65 (PDF17–19), primary fulltext inspected. Exact simplex exponential representation, elementary simplex second moments, actual rational-kernel contour rotation and explicit tilted-Gamma moment bounds close the moving-order remainder. Exact C27/C28 searches yielded unrelated or adjacent material, not evidence of novelty. C27 and C28 are PAPER results only; no C26 retirement before formalizing its full positive survivor.
+- C27 simplex deep search failed before semantic retrieval with a Python startup/path interruption (`/tmp/wp06-c27-simplex.json`). Broadened to direct lexical OR query `Genocchi dividedDifference`:43 hits,20 ranked entries inspected. Returned polynomial two-point differences, Cauchy kernels and semigroup differences, not the full simplex exponential formula; no absence claim. Deep failure is recorded rather than hidden. Read installed Lagrange source for the finite residue identities.
+- C29 power-law query `/tmp/wp06-c29-powerlaw.json`: partial=true,68,794 files; local filter/judge malformed JSON. All available candidate/source statements and generated chain inspected. ExposingRayWidth finite-mixture bound concerns finite fixed derivative packets; Bessel-energy/phase derivatives are unrelated to the growing-order sum. The paper proof instead uses actual owned C17 and its already-audited parent mechanisms. Exact external searches supplied no applicable stronger source; no novelty inference from sparse hits.
+- GammaKernelJets leaf build exit0,135s,8785 jobs (`/tmp/wp06-c23-jets-build.log`). Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitGammaKernelJets.lean` exit0/empty (`-final.log`). Single umbrella import. Scoped whitespace gate exit0. Lint (`-lint.log`) exits1 with nine unrelated reachability findings: RHTower WeilWorkPBAPJointContinuousCertificate, WeilWorkSettledPhaseValuationConvolution, WeilWorkSettledPhaseValuationExponential, WeilWorkSingularArithmeticNotchSourceBound; HTGeometry ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. No WP06 or forbidden-declaration error.
+- Final nine literal-type/axiom audits exit0 (`/tmp/wp06-c23-jets-axioms.lean` and `.log`), all standard foundations only. Appended to lean-audit.log. All owned commands terminal; finished proof/fragment scratch removed, audit sources and logs retained. Nine final hgtl7 reviews posted. Main goal remains active and unsolved.
+
+## Continued cycle: C30/C31 and actual rational-kernel inversion
+
+- Read hgtl7, current task memory, exact WP06 contract, current frontier/STATUS,
+  and current GammaKernelJets source. Previous turn classified PROGRESS;
+  architecture/testing docs absent. No task-tracking tool available; card used.
+- `/tmp/wp06-c30-spike.json`: deep search, partial=true,68800 inventoried,
+  reranking runtime deadline. All20 candidate/source statements and proposed
+  ingredients inspected. Actual G6 Gaussian and G5 Mellin hits are narrower;
+  generic positive Gaussians do not sign the actual oscillatory profile.
+- `/tmp/wp06-c23-kernel-mellin.json`: partial=true,68800,reranking deadline
+  (literal reported stage `reranking`). All candidate/source statements and
+  ingredient chains inspected. Probability.Kernel piecewise tools concern
+  measures, not this scalar kernel. ArchimedeanBalancedPerron source52/228
+  supplies useful integration/inversion idioms; its different kernel is not
+  an existing theorem for the actual Gamma family.
+- `/tmp/wp06-c30-periodic.json`: partial=true,68803; semantic Qdrant budget
+  timeout. All candidate/source statements/ingredients inspected; periodic
+  derivative averages and square-root algebra are not C30's moving sampling.
+- `/tmp/wp06-c31-weak-mass.json`: partial=false,68804; no engine errors.
+  All candidate/source statements/ingredients inspected. Generic Cesaro,
+  finite positive combinations, and smooth-current factors do not prove the
+  actual weak arithmetic transfer. No absence or novelty certificate.
+- Compiler freshness in the first two snapshots:43 current compiled
+  snapshots,52273 pending,2660 stale; background enrichment pending.
+- Primary parents reopened: DLMF2.5 (Mellin convention/inversion/convolution),
+  https://dlmf.nist.gov/2.5 ; Alouges–Darses–Hillion JTNB34(2022),767–785,
+  https://www.numdam.org/item/10.5802/jtnb.1227.pdf , especially4.2/4.3.1:
+  actual Xi-square derivative Gram ancestry, not these coefficient no-gos.
+  Kobayashi arXiv1603.02954v1 section3.2 concerns Xi as autocorrelation of
+  its positive kernel, a different object from Xi-square derivative mixtures;
+  it supplies no needed cancellation claim. Exact C30/C31 external searches
+  found mostly irrelevant results; scientific novelty remains unestablished.
+- C29 quantifier repaired: signed local limit29.3 is through integer x.
+  Real x retains exp(-2*pi*i*x); absolute envelopes remain real-argument.
+  The actual divisor arguments are integers, preserving29.4.
+- C30 and C31 have complete PAPER proofs recorded after competing conjectures
+  and parent attacks. Both still depend on the unformalized full C17 profile.
+  C31 retains w_k=O(k^-alpha),1<alpha<4; no unrestricted no-go claimed.
+- G8 first scratch (three actual integral statements) passed exit0/empty,
+  `/tmp/wp06-c23-kernel-mellin-check2.log`. Inversion extension is now in
+  scratch; no new repository Lean source or public-count increase yet.
+- `/tmp/wp06-c32-root-tail.json`: partial=true,68806,decomposition deadline.
+  All candidate/source statements and proposed ingredients inspected.
+  Existing stretched tails/summability and phase cosine sums do not prove
+  the actual kernel asymptotic; the proposed chain has an unpaid link.
+- `/tmp/wp06-c32-moving-strip.json`: partial=true,68807,semantic deadline.
+  All candidate/source statements and ingredients inspected; real factorial
+  Stirling is insufficient for a moving complex line. Exact source search
+  located corpus digamma remainder machinery in GammaStirlingDifference,
+  GammaRayShiftAsymptotic and GammaVerticalPhaseSecondOrder for later Lean.
+- DLMF5.11.1--3 and5.11(ii) opened directly to verify sectorial Gamma and
+  digamma bounds; these permit Re(z)>=1/4 uniformly, not merely fixed-shift
+  asymptotic ratios. DLMF7.7.3 verifies the complex Gaussian parent;
+  DLMF10.40 verifies uniform fixed-order Bessel decay in a closed sector.
+  All were opened/read as primary sources. C32's new paper proof records
+  every low-height, low-order, high-order and divisor-tail estimate.
+- C32 is now PAPER: actual stretched-exponential mixtures have the exact
+  phase factor exp(tau^2/16)*cos(pi*tau^2/32). A cancelling probability
+  with that asymptotic must have tau=4*sqrt(2*j+1). No sign is inferred at
+  those rates. New C33 existence/no-go at tau=4 remains OPEN.
+- Gaussian mean-square/Atkinson searches found the primary paper
+  `Atkinson's formula for the mean square of zeta(s) with an explicit error
+  term` (JNT,2023); observed publisher URL:
+  https://www.sciencedirect.com/science/article/pii/S0022314X22002141 .
+  No theorem from it is used in C32 or claimed for C33; it is a next-step
+  lead only. C17's energy equivalent is not promoted to an all-order expansion.
+- Full G8 scratch passed exit0 in `/tmp/wp06-c23-kernel-inversion-check4.log`
+  (one non-failing ring normalization suggestion). Optimized final expression
+  normalization before promotion to `WeilWorkDeficitGammaKernelMellin.lean`.
+  Six public actual-object statements; target-only build currently running,
+  final source and exact-type/axiom audits still pending.
+
+- FINAL G8 audit,2026-10-08: prior pending status superseded. Target-only
+  build `/tmp/wp06-c23-kernel-build.log` exit0, target45s/8786 jobs.
+  Unchanged final `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitGammaKernelMellin.lean`
+  exit0, `/tmp/wp06-c23-kernel-final.log` empty. All six literal-type and
+  axiom audits in `/tmp/wp06-c23-kernel-axioms.log` exit0, only propext,
+  Classical.choice, Quot.sound. Full output appended to lean-audit.log.
+  Umbrella import exactly once;33 finished modules/137 public audits.
+- Formal lint `/tmp/wp06-c23-kernel-lint.log` exit1: exactly five unrelated
+  HTGeometry reachability errors: ApertureConeCalculus, ApertureConeWinding,
+  ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra.
+  No WP06 or forbidden-declaration finding. No full/umbrella build.
+- `/tmp/wp06-c33-energy-oscillation.json`: partial=true,68810 indexed files;
+  reranking deadline and filter-judge BrokenPipe reported. Candidate lemmas,
+  source arguments and proposed ingredient chains inspected; none supplies
+  the required subleading actual energy estimate. No absence certificate.
+- Primary next-step source read: Ivić, arXiv:math/0404289,
+  https://arxiv.org/pdf/math/0404289 , abstract and section2, Lemma1
+  equations2.2–2.6 and Lemma2 equation2.9. Its Gaussian mean-square
+  oscillatory formula has an O(log T) remainder; that statement is too
+  coarse for the needed subleading E_k analysis. No oscillation asymptotic
+  for E_k is inferred from it. The publisher lead above was inaccessible;
+  no theorem from it is used.
+- All owned build/search/audit commands terminal. Completed proof scratch
+  wp06-c23-kernel-mellin.lean and wp06-c23-inversion-part.lean removed;
+  specialized API and final axiom audit sources/logs retained.
+
+
+### C33/C34 and G9 continuation — 2026-10-08
+
+- Prior turn PROGRESS. Actual task/shared contract and current memory
+  checked; G8 six declarations, standard-only audits and umbrella wiring
+  revalidated. architecture/testing docs absent. Current goal still OPEN.
+- All three new deep searches terminal, partial=false, errors=[]:
+  `/tmp/wp06-c33-critical-tail.json`68815 files;
+  `/tmp/wp06-c23-cosine-frontier.json`68815/68816 snapshot (see JSON);
+  `/tmp/wp06-c34-sparse-interpolation.json`68816 files.
+  Every candidate/source statement and proposed ingredient chain inspected.
+  Most hits irrelevant; no absence claim. Compiler snapshots remain mostly
+  pending/stale, despite complete source coverage for these requests.
+- Exact source rg found existing SuzukiMellinConvolution (read all192 lines),
+  which pays absolute product admission. Reuse it instead of rebuilding
+  Fubini. WeilWorkHigherDenominatorCosineMellin (214 lines read) supplies
+  actual Euler cosine-difference formula. Its integrand is 1-cos, not cos.
+- Candidate exists_normalized_representing_mixture in
+  WeilWorkPBAPMomentPackets lines211–244 read: full integer cancellation
+  for arbitrary test packets. It does not place them in the positive
+  Xi-derivative cone and does not close C33/C34.
+- Primary sources opened: ADH2022 JTNB1227, Ivić math/0404289 section2,
+  DLMF2.5, and Barta ODE2 lecture notes for the contraction parent. The
+  purported 1973 infinite-matrix primary DOI and the 2023 Atkinson publisher
+  page were inaccessible; no theorem from either is used. C34 proves its
+  contraction by geometric convergence directly. Exact external searches
+  largely irrelevant; scientific novelty remains unestablished.
+- C34 sparse exact positive interpolation has complete PAPER proof in PROOF.
+  It uses actual C17/C32 profile and exponential tail estimates, not new
+  assumptions or a Gaussian replacement. Full C17/C32 formalization still
+  owed. C33 all-row critical-tail cancellation remains OPEN. Next competing
+  C35 block interpolation (length floor(sqrt N)) is OPEN.
+- G9 general rational-strip scratch passed; unnecessary tactic sequencing
+  optimized before promotion. GammaKernelJets target build29s/8785jobs
+  exit0. G9 absolute-strip integral and actual zero-mass scratch passed
+  exit0/empty; GammaKernelMellin target97s/8786jobs exit0. Final direct and
+  public axiom audits still pending; completed count not yet increased.
+  Initial scratch-generation cwd mismatch caused one missing-file Lean
+  attempt (exit1), corrected after confirming terminal exit; no overlap.
+- G9 cosine-transform scratch uses actual mass cancellation and existing
+  Mellin convolution. Specialized API check running; no new cosine module
+  promoted yet. No full build, numerical computation or heartbeat override.
+
+- C36 finite-pattern extension now PAPER. Primary Rosenblatt1995, JAMS59,
+  131–133, https://doi.org/10.1017/S1446788700038519 , primary PDF opened
+  and read; Fourier translate-independence is classical ancestry. The proof
+  supplies its own L1/Vandermonde argument for the actual Gaussian-chirp
+  profile, then a finite Gram inverse and full cross-packet contraction.
+  Finite patterns are fixed before their heights; no consecutive block,
+  uniform inverse-cost bound, all-row cancellation or novelty is claimed.
+- `/tmp/wp06-c36-translates.json` terminal/partial=true,68821 indexed files,
+  semantic retrieval deadline. All candidate lemmas, source arguments,
+  generated transfer idea and ingredient obligations inspected. Generic
+  Vandermonde entries apply only to the parent algebra; the suggested
+  periodization chain does not prove actual translate independence.
+- G9 cosine scratch first checks exposed only elaboration/coercion issues,
+  corrected without mathematical changes or heartbeat increases. One unused
+  recalled API name Integrable.mono_fun was absent and removed from the API
+  probe; it is not used by any proof. A final API audit remains owed.
+
+- Exact follow-up rg found and read HTGeometry/L2TranslationPolynomialIndependence
+  (112 lines): finite equally spaced translates of every nonzero complex L2
+  vector are already independent. This is a stronger regularity parent for
+  arithmetic offset patterns, not the actual weighted response construction.
+  SuzukiArchimedeanParityHankelInfiniteRank lines314–336 proves independence
+  for a different actual archimedean profile; it is not imported as a theorem
+  about J_a. No duplicate general independence module is being written.
+- G9 complete cosine HasMellin scratch now passed exit0/empty in
+  `/tmp/wp06-g9-cosine-check3.log`. The extra exact inverse-square moment
+  is being added to retain the physical 2pi normalization explicitly.
+  Final specialized API audit running. Full final source/axiom audits pending.
+
+- FINAL G9: GammaKernelJets leaf29s/8785jobs, GammaKernelMellin
+  leaf97s/8786jobs and GammaCosineMellin leaf40s/8801jobs all exit0.
+  Cosine promotion first exposed an over-aggressive simplification of
+  Gamma(2)=1; fixed using the existing norm_num theorem support, then
+  rebuilt only that leaf. No mathematical assumption or heartbeat change.
+- Final serial source audit `/tmp/wp06-g9-final-audit.sh` exit0.
+  `/tmp/wp06-g9-final-WeilWorkDeficitGammaKernelJets.log`,
+  `/tmp/wp06-g9-final-WeilWorkDeficitGammaKernelMellin.log` and
+  `/tmp/wp06-g9-final-WeilWorkDeficitGammaCosineMellin.log` all empty.
+  Each command was exactly `lake --old env lean` on the unchanged source.
+- `/tmp/wp06-g9-axioms.lean` final direct check exit0; all21 actual public
+  declarations checked, only propext, Classical.choice and Quot.sound.
+  Literal output appended to lean-audit.log. Specialized API audit
+  `/tmp/wp06-g9-api-final.log` exit0/empty. New public declarations6;
+  actual source inventory34 modules/143 public theorems. Umbrella imports
+  for all three affected modules occur exactly once.
+- `/tmp/wp06-g9-lint.log` exit1: exactly five unrelated HTGeometry umbrella
+  reachability errors (ApertureConeCalculus, ApertureConeWinding,
+  ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra).
+  No WP06 or forbidden-declaration finding. Scoped whitespace check clean;
+  new/modified Lean sources have no trailing whitespace or heartbeat override.
+- C35 local multiplier identity recorded on paper: the critical weighted
+  profile has only one real-frequency zero, a simple zero at0, while its
+  multiplier decays with a Gaussian envelope. This is not a bounded inverse
+  or a dense-block interpolation theorem. C35/C33/C15/WP06 remain OPEN.
+- All owned commands terminal. Completed proof scratch
+  wp06-g9-jets.lean, wp06-g9-mellin.lean and wp06-g9-cosine.lean removed;
+  API/axiom sources and final diagnostic logs retained. No full/umbrella
+  build, numerical experiment, new axiom, commit or push.
+
+### C37 confluent blocks / G10 signed-profile transform — 2026-10-08
+
+- Prior turn PROGRESS. Actual task/shared contract, memory and current
+  frontier/STATUS read; architecture/testing absent. G9 source declarations,
+  empty final source log and standard-only axiom output revalidated.
+- New deep searches all terminal. wp06-c35-block-frontier partial=true,
+  68829 files, reranking disconnect and semantic deadline; energy-adapted
+  partial=false/errors[],68829; confluent partial=true,68830-era snapshot,
+  semantic deadline; kernel-regularity partial=false/errors[],68830;
+  chirp-transform partial=true,68831,text retrieval interrupted. Complete
+  source inventory is not complete compiler coverage (43 current snapshots,
+  most Lean files pending/stale). All candidate/source statements and
+  suggested ingredient chains inspected. No absence certificate.
+- Exact source follow-up read GaussianJetPositivity lines125–225: coherent
+  first-jet Gram algebra already exists. It does not supply actual Xi
+  product-kernel finite-difference asymptotics. FourierIteratedDerivDecay
+  read completely; a useful derivative-decay parent, not actual rational
+  kernel gluing. Search chain suggesting probability-kernel piecewise or
+  cosine-square integrals for our transform is inapplicable.
+- Primary Schaback author manuscript opened, introduction and final
+  preconditioning section read:
+  https://num.math.uni-goettingen.de/schaback/research/papers/MIbPaRBF.pdf .
+  Its classical Gaussian flat-limit/discrete-moment mechanism is ancestry,
+  not a block-cost estimate for Xi. Related primary author research page
+  at Uppsala opened. Exact external Xi/positive-mixture/consecutive-block
+  searches found no directly applicable theorem; novelty unestablished.
+- The previously inaccessible Atkinson paper is available as
+  https://arxiv.org/abs/2105.06821 and https://arxiv.org/html/2105.06821v3 .
+  Abstract confirms an explicit O(log²T) Atkinson remainder, not the
+  needed subleading derivative-energy expansion. No new energy asymptotic
+  is inferred or imported from it.
+- C37's complete PAPER argument now recorded: scaled fixed-order integer
+  differences, actual local saddle limit, separately paid moving-line
+  low-order tail/fixed-line upper tail/far head/divisor remainder, then
+  full block contraction. Gives arbitrarily long exact consecutive zero
+  blocks with lengths fixed before heights, preserving the critical
+  positive coefficient tail. No sqrt(height) block-length bound. Full
+  C17/C32/C37 formalization remains owed; no scientific novelty claim.
+- G10 normalized signed-profile complex Laplace transform scratch passed
+  after coercion/reducible-function fixes. Both conjugate Gaussian terms
+  are integrated before taking real parts; complex tilts are absolute.
+  Critical-frequency zero classification and exact derivative are being
+  checked before promotion. Initial API probes located absent optional
+  names (cpow_ne_zero, integral_star, Integrable.conj,
+  cos_ne_zero_of_im_ne_zero, hasDerivAt_ofReal); removed and replaced with
+  actual read/source-verified APIs. None used in the proof. Final audits
+  and public theorem count update still pending.
+
+- FINAL G10: specialized API check exit0; all seven public statements
+  checked literally, without mathematical hypotheses. All axiom outputs
+  contain only propext, Classical.choice and Quot.sound; actual output
+  appended to lean-audit.log. Targeted leaf build exit0,2779 jobs/15s.
+  Final unchanged `lake --old env lean` exit0 and empty source log.
+- Exact source inventory:35 WeilWorkDeficit modules/150 public theorems.
+  All35 imports occur exactly once in RHTower. New source has no forbidden
+  declaration, heartbeat/depth override or trailing whitespace; scoped
+  git diff --check clean. Optimized the scratch's unused simp arguments
+  before the successful production leaf and final source checks.
+- `/tmp/wp06-g10-lint.log` exit1: seven unrelated reachability errors:
+  RHTower.WeilWorkSettledPhaseValuationResidueSum and
+  RHTower.WeilWorkSettledPhaseValuationTightness, plus HTGeometry's
+  ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation,
+  ApertureOpenHistoryIdeal and BoundaryCoronaCStarAlgebra.
+  No WP06 or forbidden-declaration finding. Other work left untouched.
+- C37 remains PAPER only; G10 is the exact classical signed-profile
+  transform, not the full actual-kernel asymptotic or a positive all-row
+  canceller. The remaining C35 inverse must be priced on actual arithmetic
+  error; absence of other real multiplier zeros supplies no such bound.
+  C33/C15 and the spectral-deficit target remain OPEN; goal ACTIVE.
+- All owned commands terminal. Completed G10 proof scratch removed after
+  final audits; API/axiom scratch and diagnostic logs retained. No numerical
+  research, full/umbrella build, added axiom, heartbeat hack, commit or push.
+
+### C38 weak critical transport / C39 successor — 2026-10-08
+
+- Two further corpus deep searches terminal: energy-generating,75.4s,
+  partial=false/errors[],68842 files; adjoint-transport,partial=false/
+  errors[],68844 files. Semantic coverage unmeasured/reporting budget;
+  refresh incomplete/background indexer; only43 current compiler snapshots.
+  All20 candidate statements,20 source arguments and every proposed chain
+  inspected in each. Proposed generic autocorrelation-energy chain and
+  unrelated correlation-exponent floor identity do not prove our claim.
+  No corpus absence certificate or completed formal parent is inferred.
+- Direct own-source follow-up: C17 exact Mellin identity/local profile,
+  C22 energy normalization, C31 weak-transfer proof, C32 right-shift and
+  complete coefficient/divisor bounds inspected. Existing source motivates
+  averaging before coefficient asymptotics. Generic packet derivatives
+  and unrelated Xi arithmetic modules are not substituted for actual K_k.
+- Primary DLMF5.11 and7.7 reopened. Exact Xi/autocorrelation/stretched-tail
+  and adjoint/Tauberian web searches returned mostly unrelated statistical
+  physics material; none is used as a mathematical premise. Classical
+  Gaussian saddle and quadrature ancestry acknowledged. Scientific novelty
+  remains unestablished, not inferred from those limited search results.
+- First-order actual saddle expansion derived symbolically from the exact
+  C17 Mellin integrand. Three tilted Gaussian moments and the correction
+  mass yield cancellation of cubic terms and the transport coefficient
+  alpha-1/4. A direct unregularized Fresnel Fubini would be invalid; the
+  proof explicitly inserts positive Gaussian damping, evaluates absolute
+  integrals, and passes to the limit using the integrated Gaussian envelope.
+- C38 complete PAPER proof recorded: logarithmically growing saddle band,
+  first-order remainder control, positive-u moving-line Gaussian tail,
+  negative-u exponential tilt tail, second-order shifted-grid quadrature,
+  low/high k bounds and every divisor index. Exact weak-average constant
+  -C*exp(1)*kappa^(1-alpha)*(alpha-1/4)/sqrt2. No differentiation of w or E_k;
+  no rate for either leading asymptotic. The proof does not claim pointwise
+  first-order row asymptotics for arbitrary rough coefficients.
+- C33 existence in the previously stated alpha>1 class is false on PAPER.
+  Strong positive survivor is C38's weak transport law and negative-row
+  occurrence in every sufficiently large proportional interval. C37 zero
+  blocks can still be unbounded; their relative lengths must tend to zero.
+  C35 remains open. No failed-route retirement until the exact survivor
+  and its C17/C32 parents are formalized.
+- C39 exact next competing conjectures recorded: existence/nonexistence of
+  all-row cancellation with tail C*k^-1/4*log(k+2)*exp(-4sqrt(k)). Neither
+  extension to alpha=1/4 nor necessity of the log correction is asserted.
+  Normalization audit shows energy-adapted weights remove E_k exactly while
+  preserving their asymptotic class. This elementary coordinate change is
+  not presented as scientific novelty or as an all-row construction.
+- No further Lean change after G10's successful final audits. Count35/150.
+  All owned research/build handles terminal. Main goal ACTIVE/UNSOLVED.
+
+### C39 boundary / C40-C41 flux / G11 global amplitude — 2026-10-08
+
+- Previous turn PROGRESS. hgtl7, actual target/shared contract and latest
+  memory refreshed; architecture/testing absent. G10 public declarations,
+  empty final source diagnostics and standard-only axiom output inspected.
+  Current global frontier/STATUS still leave actual deficit production open.
+- C39-frontier deep search terminal,68850-file inventory,partial=true:
+  malformed/incomplete local-model JSON at filter_and_judge. G11-global-
+  amplitude terminal,68851 files,partial=false/errors[]. C41-flux terminal,
+  68853 files,partial=false/errors[]. Candidate lemmas, source arguments
+  and every suggested ingredient set inspected; generic Gibbs logs,
+  geometric flux and log-tail bounds do not prove actual critical transport.
+  Mathlib Gaussian integrals and existing exponential absolute integrability
+  are applicable analytic parents. Current compiler/semantic coverage is
+  incomplete; no absence certificate inferred.
+- C38 paper argument revalidated from source: first correction, Gaussian
+  regulator, weighted growing band, row-first asymptotics, quadrature and
+  discarded coefficient/divisor ranges. C40 extends the weak law to every
+  real power/log exponent using the exponential divisor saving. C41 keeps
+  E_k exact and obtains an integrable derivative of the continuous averaged
+  coefficient flux, with O(X^-1/8) convergence. This forces alpha=1/4 and
+  delta=1 for all-row cancellation in the stated power-log critical class.
+  Full paper proof appended; C39 existence remains OPEN. No full actual
+  asymptotic theorem is claimed in Lean; no route retired.
+- Primary DLMF2.3(iii) Laplace ancestry and10.32.10 Bessel integral opened
+  and conditions inspected. Exact Xi-autocorrelation/positive-cosh endpoint
+  searches found unrelated or different mechanisms; none substituted for
+  our actual proof. Scientific novelty remains unestablished. A positive
+  cosh-mixture is only a restricted coefficient cone, as the earlier C26
+  counterexample already records; it is not silently imposed on C39.
+- G11 dependency-closed paper proof written before Lean: exact G6 norm,
+  radius sqrt(t^2+49/4), global square-root Laplace envelope and full vertical
+  O(saddleMass*sqrt(saddleHeight)) norm bound. Uses the sigma-four saddle,
+  explicitly distinguished from C17's critical-line saddle. Private scratch
+  first scalar bounds and conjugation/endpoint checks iterated; full
+  pointwise plus integral audit running. No production module or count
+  increase until the final leaf/direct/axiom audits pass.
+
+- FINAL G11: production module promoted and all required audits passed.
+  Targeted leaf build exit0,10438 dependency jobs,target7.8s; no target
+  diagnostics. Unchanged final direct source audit exit0,empty log.
+  API checks passed after correcting namespaces and tactic unification;
+  exploratory failures were not mathematical counterexamples. All three
+  public literal theorem types inspected: arbitrary k and real t, no
+  mathematical hypotheses. Every axiom list contains only propext,
+  Classical.choice,Quot.sound. Literal evidence appended to lean-audit.log.
+- G11 supplies the actual full-height envelope, absolute vertical
+  integrability, and norm bound20*exp(7pi/2)*B*sqrt(T), with sigma-four
+  T=(2k+7)/(pi/2). This differs from the critical-line T of C17/C42.
+  CLASSICAL ANALYTIC BRIDGE; no scientific novelty or deficit bound.
+  Final source /tmp/wp06-g11-final.log; axiom output
+  /tmp/wp06-g11-axioms.log; build /tmp/wp06-g11-build.log.
+- Current formal lint exit1,exactly five unrelated reachability errors:
+  HTGeometry.ApertureConeCalculus, ApertureConeWinding,
+  ApertureLogTranslation, ApertureOpenHistoryIdeal,
+  BoundaryCoronaCStarAlgebra. No WP06 error or forbidden declaration.
+  Full diagnostic /tmp/wp06-g11-lint.log. Prior seven-error result is
+  historical; the two settled-phase errors are absent in this run.
+- All36 owned modules imported exactly once by RHTower.lean. Source
+  inventory153 public theorems; no sorry/admit/axiom/opaque/unsafe,
+  heartbeat or recursion-depth overrides, or trailing whitespace in
+  owned modules. Scoped git diff --check passed. No full/umbrella build,
+  numerical experiment, commit or push. All owned execution handles
+  terminal; completed proof scratch and two assembly parts removed.
+- C40/C41 remain PAPER only: all-row cancellation in the fixed power-log
+  critical class forces alpha=1/4,delta=1; positive survivor is exact
+  energy-renormalized averaged flux with O(X^-1/8) convergence. C39
+  existence remains OPEN. C42 defines the literal positive constant-flux
+  probability q_k/Z; actual integer responses are OPEN, not consequences
+  of averaged rigidity. Its exact audit is next, alongside actual
+  Mellin inversion and C17/C32/C38/C40/C41 formal closure.
+- External sources inspected this cycle: https://dlmf.nist.gov/2.3
+  (Laplace-method ancestry) and https://dlmf.nist.gov/10.32#E10 (Bessel
+  integral and its domain). Neither establishes novelty of actual
+  critical transport. Search coverage remains incomplete as above.
+- Anti-theatre/anti-laziness checkpoint: internal paper boundary and
+  actual formal dependency advanced; external novelty unestablished.
+  Classical analytic parents reused, not advertised as new mathematics.
+  No effort-based omission; actual all-row core attacked. Next cycle
+  tests C42's literal residual or required correction and continues
+  actual analytic formal debts. Main goal ACTIVE/UNSOLVED.
+
+### C42/C43 second transport and G12 inversion — 2026-10-08
+
+- Previous turn PROGRESS. Target/shared contract, latest memory and current
+  WP06/global rigidity frontier checked; architecture/testing absent.
+  G11 declarations and empty final source output revalidated. Main goal
+  unchanged, ACTIVE/UNSOLVED. Plan retained in owned card.
+- C42-frontier deep search terminal,68870-file inventory,partialfalse,
+  errors[]. All20 candidate and20 source-argument statements and proposed
+  ingredient chain inspected. Suggested Radon-Nikodym product kernels
+  and residual energies are unrelated to the actual C42 operator.
+  G12-inversion search terminal,partialfalse/errors[],146 lexical hits:
+  all returned20 candidate/source entries inspected. Existing G5/G11 and
+  actual Gamma-kernel inversion provide applicable parents; no actual
+  product-kernel inversion located. C43-correction search terminal with
+  partialtrue/text_retrieval interrupted; available20+20 entries inspected.
+  It returns existing product kernels, G6 bounds and unrelated Gamma kernels,
+  not a second weak transport law. Compiler snapshots43 current, most
+  pending/stale; semantic coverage unmeasured. No absence certificate.
+- Exact C43 was stated before its paper proof: second weak actual-row law
+  with D=(67-4pi^2)/96. Proof includes Gamma correction i/(24t), every
+  second-order phase/amplitude/row term, regulated Gaussian moments,
+  shifted-lattice quadrature, weighted growing-band errors and all remote
+  coefficient/divisor tails. It leaves w/E undifferentiated and E exact.
+  C42 gives d=0, hence a negative row in every large proportional interval.
+  Positive survivor: exact law plus forced d=(4pi^2-67)/(48sqrt(pi)) for
+  all-row cancellation in the stated refined coefficient class. PAPER
+  only, full actual Lean survivor still owed; no route card retired.
+- New C44 positive candidate includes that first correction and is OPEN.
+  Positivity and normalization proved on paper; cancellation is not inferred
+  from passing necessary asymptotic conditions. C39/C15/WP06 remain OPEN.
+- External exact-mechanism queries yielded unrelated asymptotic work.
+  DLMF5.11.8 and5.11(ii) opened for shifted Gamma and uniform remainders;
+  DLMF2.3(iii) opened for classical Laplace ancestry. Recent primary
+  arXiv2610.04972 is about Xi Taylor-coefficient log-concavity, not the
+  derivative-mixture integer responses here; no result from it is used.
+  Scientific novelty unestablished, verdict BRIDGE.
+- G12 paper proof precedes Lean: finite actual Bessel kernel continuity,
+  G5 Mellin convergence and G11 vertical integrability yield actual inverse
+  Mellin recovery at every positive x and bound C*B*sqrt(T)/x^4. Sigma-four
+  T is explicitly distinguished from C43's critical-line T. API audit
+  /tmp/wp06-g12-api-final.log passed after correcting exploratory names.
+  Actual inversion scratch audit now running; production count36/153.
+
+- FINAL G12: actual product-kernel inversion leaf build exit0,target4.9s,
+  10440 dependency jobs; target diagnostics empty. Unchanged final
+  lake --old env lean on production source exit0,empty log. All3 exact
+  public types and axiom lists inspected: only propext,Classical.choice,
+  Quot.sound; no added scientific hypothesis. Logs /tmp/wp06-g12-build.log,
+  /tmp/wp06-g12-final.log,/tmp/wp06-g12-axioms.log. Literal audit appended.
+- C43 algebra independently checked with two actual polynomial identities
+  in /tmp/wp06-c43-algebra.lean, final exit0/empty algebra2.log. An initial
+  namespace probe was corrected; no mathematical residual changed.
+  This is not a Lean proof of C43's full actual asymptotic theorem.
+- Formal lint exit1 with7 unrelated reachability findings:
+  RHTower.WeilPaperArithmeticNormedQuotient,
+  RHTower.WeilWorkQuantizationGaussianCoefficientLimit,
+  HTGeometry.ApertureConeCalculus,ApertureConeWinding,
+  ApertureLogTranslation,ApertureOpenHistoryIdeal,BoundaryCoronaCStarAlgebra.
+  No WP06 or forbidden-declaration finding. Full output wp06-g12-lint.log.
+- All37 owned modules imported exactly once; public theorem inventory156.
+  Scoped forbidden-declaration, heartbeat/depth override, whitespace and
+  git diff --check gates passed. No full/umbrella build, numerical research,
+  commit/push or subagents. All owned execution handles terminal. Completed
+  G12 proof scratch removed after exact comparison; API/axiom/algebra
+  sources and logs retained as evidence.
+- G13-beta-comparison deep search nonpartial/errors[],68878-file inventory;
+  all20 candidate and20 source-argument statements plus proposed chain
+  inspected. Unrelated symmetry chain rejected. Existing Gamma ratio
+  asymptotics and bounded-width large-height inequalities found by rg;
+  actual sources read. Mathlib's beta-Gamma identity gives a direct
+  all-height comparison instead, without new Stirling estimates. Complete
+  G13 paper proof appended; no G13 Lean source or completed-count claim.
+- Next: formalize actual critical-line inversion/moment admission via G13;
+  attack C44's corrected actual row responses and retain C39's general
+  all-row question. Full C17/C32/C43 survivor remains owed, no no-go route
+  retired. External novelty unestablished. Main goal ACTIVE/UNSOLVED.
+
+- Current cycle C45: two completed nonpartial corpus searches, errors[],
+  inventories68880/68882; all20 candidate and20 source-argument entries
+  inspected in each. Deep proposed series-uniqueness chain rejected;
+  hybrid weight-derivative hits do not supply actual pointwise rows.
+- Primary external follow-up: DLMF2.11, Zagier Mellin notes Proposition3,
+  Melrose Introduction to Microlocal Analysis Proposition2.3 and Costin
+  asymptotics/Borel notes opened. Abstract asymptotic realization is
+  classical and nonunique modulo flat errors. A2026 Planat preprint was
+  inspected as adjacent theta-sector cancellation, not used as a parent
+  theorem for positive derivative weights. No applicable exact C45
+  theorem found; this is not a novelty/absence certificate.
+- C45 quantifiers fixed in PROOF: one strictly positive probability and
+  one complete flux jet, all M and actual integer n thereafter. Verdict
+  SURVIVES PRELIMINARY ATTACK, unproved. Actual uniform pointwise row
+  expansion and nonvanishing triangular recursion remain OPEN CORE.
+- G13 API audit /tmp/wp06-g13-api.log exit0. Beta norm comparison and
+  general actual Mellin norm formula checked in scratch. All analytic
+  premises are being discharged for actual kernels; no conditional public
+  theorem substituted. Scratch inversion coercion issue being normalized
+  explicitly, no heartbeat override. No production completion claim yet.
+
+- FINAL G13: targeted leaf build exit0 (target186s,10441 jobs); unchanged
+  direct production audit exit0 with empty log; all7 literal public
+  types and axiom lists inspected, standard foundations only. API,
+  build, final and axiom logs /tmp/wp06-g13-{api,build,final,axioms}.log.
+  All38 modules imported exactly once; public theorem count163. Completed
+  proof scratch removed after exact body comparison; audit inputs kept.
+- Global formal lint exit1:11 unrelated umbrella reachability findings
+  (WeilPaperPhaseCovarianceRecovery; five WeilWorkSettledPhaseCentered
+  modules; ApertureConeCalculus,ConeWinding,LogTranslation,OpenHistoryIdeal,
+  BoundaryCoronaCStarAlgebra). No WP06/forbidden-declaration finding.
+  Exact output /tmp/wp06-g13-lint.log. Scoped whitespace/forbidden-option
+  gates passed. No full/umbrella build or numerical research computation.
+- C45 generating search ended partial: malformed local-model JSON and
+  reranker deadline, inventory68893. All available20+20 statements read.
+  Exhaustive owned text search recovered C25's exact angular transport
+  and C26's counterexample to universal positive moment representation.
+  Reused the former for a CONSTRUCTED positive moment subclass; did not
+  repeat the latter false shortcut.
+- C45 now has full PAPER construction: density u^6 exp(-pi/u)V(u), exact
+  Bessel angular integral, pointwise all-orders Laplace expansion, exact
+  nonzero triangular coefficient -j*r^(j+1)/2, one positive smooth Borel
+  realization, actual energy normalization, and absolute all-divisor
+  Fubini paid by G12. It does NOT use C12 energy asymptotics. Every row
+  passes every algebraic-order test at the critical exponential scale.
+  Exact zeros and the deficit estimate remain open. Scientific novelty
+  unestablished; full Lean construction owed.
+- Two first-transport rational identities verified by auxiliary Lean:
+  lake --old env lean /tmp/wp06-c45-algebra.lean, exit0/empty log. This
+  checks finite algebra only, not the all-orders analytic theorem.
+- Further exact-mechanism external search plus DLMF10.40 complex remainder
+  bounds and2.3 Laplace method opened; positive cosh transforms are a
+  classical parent, not a claimed novelty. New corpus claim is the
+  actual all-orders positive probability and triangular boundary law.

@@ -1,0 +1,1897 @@
+[
+  {
+    "query": "actual canonical residual phase weighted mean square radial error source compactness boundary",
+    "mode": "deep",
+    "partial": false,
+    "unfinished_stages": [],
+    "errors": [],
+    "coverage": {
+      "files": 68754,
+      "inventoried": 68754,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68754
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11122,
+        "pending": 52234,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57632,
+        "prose": 11122
+      },
+      "declarations": 1031547,
+      "documents": 2863204,
+      "vectors": 2673954,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1290484,
+      "methods": {
+        "failed": 55,
+        "ready": 419496,
+        "stale": 178086
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791457615.6653152,
+      "current_generation": 1290495
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "elapsed_seconds": 102.143354708,
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.WeilWorkSettledPhase.norm_lowerSourceRemainder_phase_ae",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCanonicalDisorder.lean",
+        "line": 56,
+        "end_line": 85,
+        "statement": "theorem norm_lowerSourceRemainder_phase_ae {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    (θ : ℝ) : ∀ᵐ t : ℝ, 0 < t →\n      ‖lowerSourceRemainder hW θ (-t)‖ =\n        ‖canonicalPhase hW (2 * t) - (lockConstant θ)⁻¹‖ *\n          ‖quantizationTraceF hW (2 * t)‖",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_norm_quantization_radialError_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialRemainder.lean",
+        "line": 236,
+        "end_line": 337,
+        "statement": "theorem exists_norm_quantization_radialError_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {ν : ℝ} (hν : 0 < ν) (hν1 : ν ≤ 1) {m : ℕ} (hm : 1 ≤ m) :\n    ∃ K : ℝ, ∀ ε : ℝ, 0 < ε → ε ≤ 1 → ∀ b : ℝ, b ≤ -1 →\n      ‖(ε : ℂ) * ((∫ t in Iic b, quantizationTraceF hW (2 * t) *\n          pairKernel (2 * t) ((ε : ℂ) + (m : ℂ) * I)) -\n        dirichletExp (lamLog lam) m * ∫ t in Iic b, rhoMain m ((ε : ℂ) + (m : ℂ) * I) t)‖ ≤\n      K * ε ^ (1 - ν) * Real.exp (b * (ε / ‖(ε : ℂ) + (m : ℂ) * I‖))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.norm_quantization_radialError_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialRemainder.lean",
+        "line": 208,
+        "end_line": 236,
+        "statement": "theorem norm_quantization_radialError_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {C p : ℝ} (hC : 0 ≤ C)\n    (hF : ∀ x y : ℝ, 1 / 2 < x → x ≤ 3 / 2 → 2 ≤ |y| →\n      ‖prodF (quantizationCompletion hW) ((x : ℂ) + y * I)‖ ≤ C * (1 + |y|) ^ p)\n    {m : ℕ} (hm : 1 ≤ m) {τ : ℂ} (hτre : 0 < τ.re) (hτ1 : 1 ≤ ‖τ‖) {b : ℝ} (hb : b ≤ -1) :\n    ‖(∫ t in Iic b, quantizationTraceF hW (2 * t) * pairKernel (2 * t) τ) -\n      dirichletExp (lamLog lam) m * ∫ t in Iic b, rhoMain m τ t‖ ≤ (1 / 2 : ℝ) *\n      (‖∑' n, if n = m then 0 else edgeTerm (dirichletExp (lamLog lam)) τ (2 * b) n‖ +\n        quantizationContourBound C p τ (2 * b))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.lowPhaseErr",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ZetaWeilFormHeightReduction.lean",
+        "line": 463,
+        "end_line": 466,
+        "statement": "def lowPhaseErr (Z : ZeroConfig) (H : ℝ) (f : ℝ → ℂ) (zf : Z.carrier → ℂ) (ρ : Z.carrier) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.inertia_phase_error_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ZetaWeilNegativeIndexHorizon.lean",
+        "line": 486,
+        "end_line": 537,
+        "statement": "theorem inertia_phase_error_le {A₀ a ε F : ℝ} (hA₀ : 1 ≤ A₀) (ha : 0 ≤ a) (hε : 0 < ε)\n    (hε1 : ε ≤ 1) (hF : 0 ≤ F) :\n    2 * inertiaKernelWidth A₀ a ε ^ 2 * (plateauGramConst ⌈a⌉₊ (1 / 2) / 4 *\n        (10 * (A₀ * Real.log (inertiaHorizonHeight A₀ a ε + 4))) / unitWeightFloor * F) ≤\n      ε / 3 * F",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_bound_quantizationMainRadial",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonance.lean",
+        "line": 233,
+        "end_line": 245,
+        "statement": "theorem exists_bound_quantizationMainRadial {m : ℕ} (hm : 1 ≤ m) :\n    ∃ K : ℝ, 0 ≤ K ∧ ∀ ε : ℝ, 0 < ε → ε ≤ 1 →\n      ‖quantizationMainRadial m ε‖ ≤ K",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.phase_sum_cost",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePackets.lean",
+        "line": 108,
+        "end_line": 118,
+        "statement": "theorem phase_sum_cost {ι : Type*} (s : Finset ι) (x : ι → ℝ) :\n    ‖phase (∑ i ∈ s, x i) - 1‖ ≤ ∑ i ∈ s, ‖phase (x i) - 1‖",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_bound_quantizationRadialProduct",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialGrowth.lean",
+        "line": 246,
+        "end_line": 274,
+        "statement": "theorem exists_bound_quantizationRadialProduct {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {τ : ℂ} (hτ : τ ≠ 0) (a b : ℝ) :\n    ∃ B : ℝ, ∀ η ∈ Ioo (0 : ℝ) (1 / 4), ∀ y ∈ uIcc a b,\n      ‖prodF (quantizationCompletion hW) (((1 / 2 + η : ℝ) : ℂ) + y * I) *\n        offKernel τ (((1 / 2 + η : ℝ) : ℂ) + y * I)‖ ≤ B",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.abs_ccmPolarBoundaryArithmeticError_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPolarParitySourceProfile.lean",
+        "line": 23,
+        "end_line": 41,
+        "statement": "theorem abs_ccmPolarBoundaryArithmeticError_le (a : SuzukiPositiveAperture) {x : ℝ}\n    (hx : x ∈ Ioo (-a.1) a.1) :\n    |ccmPolarBoundaryArithmeticError a x| ≤\n      Chebyshev.psi (Real.exp (2*a.1))+Real.exp (2*a.1)+(Real.log 4+5)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.coefficientSource_eq_errors",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitCoefficient.lean",
+        "line": 67,
+        "end_line": 84,
+        "statement": "private theorem coefficientSource_eq_errors {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    (k T : ℝ) :\n    coefficientSource hW k T =\n      ((Real.pi * Real.exp (-((3 / 2) * |k|)) : ℝ) : ℂ) * deficitCharacterGap hW k T +\n        deficitFourierError hW k T - deficitZeroFourierError k T",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.source_phase_deriv",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseInteriorCancellation.lean",
+        "line": 125,
+        "end_line": 135,
+        "statement": "private theorem source_phase_deriv {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {η : ℝ} (hη : 0 < η) (t : ℝ) :\n    HasDerivAt (fun y => 2 * (sourcePrimitive hW (tracePoint η y)).im)\n      (2 * (weilContinuation hW (tracePoint η t)).re) t",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.errConst_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilAbscissaRigidity.lean",
+        "line": 567,
+        "end_line": 599,
+        "statement": "theorem errConst_le {L : ℝ} (hL : 32 ≤ L) {M : ℕ} {B : ℝ}\n    (hB : ∀ L : ℝ, 0 ≤ L → (1 + L) ^ M * Real.exp (-(L ^ 2 / 256)) ≤ B) {SF TF S : ℝ}\n    (hSF : SF ≤ S) (hTF0 : 0 ≤ TF) (hTF : TF ≤ 2 * (1 + L) ^ M * S) (hS : 0 ≤ S) :\n    errConst SF TF L M ≤ 2 * S + 2 * 3 ^ M * S + 18 * S * B",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkDeficitApproximation.exponential_budget_error_bound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitXiApproximationCost.lean",
+        "line": 242,
+        "end_line": 292,
+        "statement": "theorem exponential_budget_error_bound : ∃ K : ℝ, 1 < K ∧\n    ∀ (a : ℝ≥0) (P : Packet a) (γ : {r : ℝ // XiC (r : ℂ) = 0})\n      (N : ℝ), 0 ≤ N → P.variation ≤ Real.exp N →\n      ‖XiC 0‖ ^ 2 ≤ 8 * ((a : ℝ) + Real.log (N + K)) * P.errorNorm γ ^ 2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.integral_windowError_le_weight",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRegularization.lean",
+        "line": 196,
+        "end_line": 223,
+        "statement": "private theorem integral_windowError_le_weight {η h Y : ℝ} (hη : 0 < η) (hh : 0 < h)\n    (hY : 1 ≤ Y) (r : ℝ) :\n    ∫ y in Ioc Y (2 * Y), windowError η y r ≤\n      ((4 * Real.pi * h + 2 * η * Y / h) * (1 + 16 * Y ^ 2) + 32 * η * Y ^ 2) *\n        (1 + r ^ 2)⁻¹",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.smallErr_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilAbscissaRigidity.lean",
+        "line": 599,
+        "end_line": 619,
+        "statement": "theorem smallErr_le {L : ℝ} (hL : 32 ≤ L) {M : ℕ} {B : ℝ}\n    (hB : ∀ L : ℝ, 0 ≤ L → (1 + L) ^ M * Real.exp (-(L ^ 2 / 256)) ≤ B) {TF S C₁ C₂ : ℝ}\n    (hTF0 : 0 ≤ TF) (hTF : TF ≤ 2 * (1 + L) ^ M * S) (hS : 0 ≤ S) (hC₁ : 0 ≤ C₁) (hC₂ : 0 ≤ C₂) :\n    TF * (C₁ * Real.exp (-(L - 16) ^ 2) + C₂ * Real.exp (-L ^ 2)) ≤ 2 * S * B * (C₁ + C₂)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.exists_joint_phase_correction",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointPhase.lean",
+        "line": 190,
+        "end_line": 199,
+        "statement": "theorem exists_joint_phase_correction (p : Nat.Primes) (R M : ℝ) (hM : 1 < M) :\n    ∃ (ι : Type) (_ : Fintype ι) (w t : ι → ℝ),\n      (∀ i, 0 ≤ w i) ∧ (∀ i, R < t i) ∧ (∑ i, w i) = M ∧\n      ∀ n : ℕ, 2 ≤ n → n < (p : ℕ) →\n        1 + (∑ i, w i * Real.cos ((Real.log n - Real.log (p : ℕ)/2)*t i)) = 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.le_of_assembly_bounds",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeZeroFreeWindowRigidity.lean",
+        "line": 817,
+        "end_line": 868,
+        "statement": "theorem le_of_assembly_bounds {x T η ε l CR wm K Q A1 S2 Zc B2V CX a0 P L2 : ℝ}\n    (hT : 1 ≤ T) (hl : 0 < l) (hη : 0 < η) (hCR : 0 < CR) (hwm : 0 ≤ wm)\n    (hL2 : 0 < L2)\n    (hass : T / 2 * x ≤ A1 / L2 +\n      2 * (1 / (2 * l) * (T / 2 * S2 + CR * Q ^ 2) + l / 2 * (2 * η * Zc)) + CR * wm * Q)\n    (hA1 : A1 ≤ Q) (hQ1 : Q ≤ K * (T * η)) (hQ2 : Q ^ 2 ≤ K ^ 2 * (T * η))\n    (hS2 : S2 ≤ B2V) (hB2V : B2V / l ≤ ε / 4)\n    (hZc : Zc ≤ 4 * T * (CX * (a0 * 1 - P * Real.log η)))\n    (hη3 : 16 * l * (CX * (a0 * η - P * (η * Real.log η))) ≤ ε / 4)\n    (hη4 : η * (2 * K / L2 + 2 * CR * K ^ 2 / l + 2 * CR * wm * K) ≤ ε / 2) :\n    x ≤ ε",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.optimalResidualExpr",
+        "relpath": "formal/GaloisForLFunctions/RHTower/PoleVanishingWeilPositivityPrimeTwo.lean",
+        "line": 129,
+        "end_line": 142,
+        "statement": "def optimalResidualExpr (S x s c θ : ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.abs_small_errors_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilAbsoluteConvergenceRigidity.lean",
+        "line": 239,
+        "end_line": 268,
+        "statement": "theorem abs_small_errors_le {L TF CU C₁ C₂ Cdf : ℝ} (hL : 32 ≤ L) (hTF0 : 0 ≤ TF) (hCU0 : 0 ≤ CU)\n    (hC₁0 : 0 ≤ C₁) (hC₂0 : 0 ≤ C₂) (hCdf0 : 0 ≤ Cdf) :\n    CU * TF * (((L / 2) ^ (4 + 1))⁻¹ + Real.exp (-(L ^ 2 / 8)) + 8 * Real.exp (-(L ^ 2 / 256))) ≤\n        133 * CU * (TF / (1 + L)) ∧\n      TF * (C₁ * Real.exp (-(L - 16) ^ 2) + C₂ * Real.exp (-L ^ 2)) ≤\n        2 * (C₁ + C₂) * (TF / (1 + L)) ∧\n      Cdf / (2 + L) * TF ≤ Cdf * (TF / (1 + L))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.norm_sq_poleResidualL2_eq_closedForm",
+        "relpath": "formal/GaloisForLFunctions/RHTower/PoleVanishingWeilTraceCertificate.lean",
+        "line": 316,
+        "end_line": 322,
+        "statement": "theorem norm_sq_poleResidualL2_eq_closedForm (a : SuzukiPositiveAperture) (ξ p q : ℝ) :\n    ‖poleResidualL2 a ξ p q‖ ^ 2 = poleResidualClosedForm a.1 (2 * Real.pi * ξ) p q",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.tendsto_ccmRestrictedWeilCanonicalGroundHead_sourceQuadratic",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundHeadEnergy.lean",
+        "line": 247,
+        "end_line": 260,
+        "statement": "theorem tendsto_ccmRestrictedWeilCanonicalGroundHead_sourceQuadratic (a : SuzukiPositiveAperture) :\n    Tendsto\n      (fun n => ccmRestrictedWeilSourceQuadratic a\n        (ccmRestrictedWeilCanonicalGroundHead a n)) atTop\n      (nhds (ccmRestrictedWeilGroundEnergy a *\n        ‖(ccmRestrictedWeilCanonicalGroundEigenstate a :\n          suzukiApertureHilbert a)‖ ^ 2))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.xiSchwarzPairAnalyticMultiplicity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairLorentzWeld.lean",
+        "line": 47,
+        "end_line": 51,
+        "statement": "def xiSchwarzPairAnalyticMultiplicity (q : XiZeroCopy) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.criticalMellinAtomWeight_primePower_eq_wallFieldEnergy",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleWallFieldWeld.lean",
+        "line": 99,
+        "end_line": 107,
+        "statement": "theorem criticalMellinAtomWeight_primePower_eq_wallFieldEnergy\n    (p : Nat.Primes) (e : ℕ) :\n    criticalMellinAtomWeight (xiGammaEulerValuationNat (p, e)) =\n      Complex.normSq (suzukiCriticalWallField 0 p e)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.deficitCharacterGap_zero_re",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitCoefficient.lean",
+        "line": 144,
+        "end_line": 151,
+        "statement": "private theorem deficitCharacterGap_zero_re {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) (T : ℝ) :\n    (deficitCharacterGap hW 0 T).re =\n      (boundaryMeasure hW).real (Ioc 0 T) - ((finite_deficitWindow T).toFinset.card : ℝ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.sourceCoprimeDeviation",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeMasks.lean",
+        "line": 99,
+        "end_line": 104,
+        "statement": "def sourceCoprimeDeviation (lam : ℕ → ℝ) (Q : ℕ) (s : ℂ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmWeilOddPrimeAtom_primePower_eq_suzukiWallFieldEnergy",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleWallFieldWeld.lean",
+        "line": 107,
+        "end_line": 119,
+        "statement": "theorem ccmWeilOddPrimeAtom_primePower_eq_suzukiWallFieldEnergy\n    (p : Nat.Primes) (e : ℕ) (s : ℝ) :\n    2 * (-ccmWeilPolePrimeDiagonalAtom (xiGammaEulerValuationNat (p, e)) s +\n        ccmWeilPolePrimeCrossAtom (xiGammaEulerValuationNat (p, e)) s) =\n      Complex.normSq (suzukiCriticalWallField 0 p e) *\n        ccmWeilOddWallEnergyResponse (xiGammaEulerValuationNat (p, e)) s",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.integrable_sourceCompletion_slice",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseTrace.lean",
+        "line": 372,
+        "end_line": 381,
+        "statement": "theorem integrable_sourceCompletion_slice {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {x : ℝ} (hx : 0 < x) (hx2 : x ≤ 3 / 2) :\n    Integrable (fun y : ℝ => sourceCompletion hW (tracePoint x y))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmRestrictedWeilCanonicalGroundHead_primePolarGammaProducer_eq_ground_add_tail",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilActualHeadPrimePolarGammaProducer.lean",
+        "line": 46,
+        "end_line": 57,
+        "statement": "theorem ccmRestrictedWeilCanonicalGroundHead_primePolarGammaProducer_eq_ground_add_tail\n    (a : SuzukiPositiveAperture) (n : ℕ) :\n    ccmRestrictedWeilActualHeadPrimePolarGammaProducer a\n        (ccmRestrictedWeilCanonicalGroundHead a n) =\n      ccmRestrictedWeilGroundEnergy a *\n          ‖ccmArchimedeanFormToAperture a\n            (ccmRestrictedWeilCanonicalGroundHead a n)‖ ^ 2 +\n        ccmRestrictedWeilCanonicalGroundHeadDefect a n",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.localModel_canonical_density",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialInvisibility.lean",
+        "line": 36,
+        "end_line": 44,
+        "statement": "private theorem localModel_canonical_density (Q : ℕ) [NeZero Q] :\n    (∏ q ∈ Q.primeFactors, (1 - (q : ℂ)⁻¹)) = (Q.totient : ℂ) / Q",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.CCMRestrictedWeilCanonicalGroundHeadRemainderNumericalLowerBound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundRemainderNumericalRange.lean",
+        "line": 159,
+        "end_line": 171,
+        "statement": "def CCMRestrictedWeilCanonicalGroundHeadRemainderNumericalLowerBound : Prop",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.XiC_ne_zero_on_avoiding_vertical",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiGuinandWeilRectangularVerticalResolvent.lean",
+        "line": 783,
+        "end_line": 796,
+        "statement": "theorem XiC_ne_zero_on_avoiding_vertical\n    (R y : ℝ) (havoid : ∀ q : XiZeroCopy, R ≠ (xiSpectralPoint q).re) :\n    XiC ((R : ℂ) + y * I) ≠ 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.suzukiCutoff_weilCriticalLogProfileL2_ae",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilCriticalMellinLogBridge.lean",
+        "line": 99,
+        "end_line": 117,
+        "statement": "theorem suzukiCutoff_weilCriticalLogProfileL2_ae\n    {a : ℝ} (g : ℝ → ℂ) (hg : Continuous g)\n    (hsupp : Function.support g ⊆ Icc (Real.exp (-a)) (Real.exp a)) :\n    (suzukiCutoff a (weilCriticalLogProfileL2 a g hg hsupp) : ℝ → ℂ) =ᵐ[volume]\n      weilCriticalLogProfile g",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.mellin_sourceCoeff",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseThetaTrace.lean",
+        "line": 34,
+        "end_line": 50,
+        "statement": "theorem mellin_sourceCoeff {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {s : ℂ} (hs : 1 < s.re) :\n    mellin (coeffTheta (sourceCoeff lam)) (s / 2) =\n      sourceRemainder hW s + betaG (sourceCompletion hW) * Gammaℝ (s - 1)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_mellin_right",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialMellin.lean",
+        "line": 67,
+        "end_line": 84,
+        "statement": "theorem quantization_mellin_right {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {s : ℂ} (hs : s.re = 3 / 2) :\n    mellin (coeffTheta (dirichletExp (lamLog lam))) (s / 2) =\n      sourceRemainder hW s + betaG (quantizationCompletion hW) * Gammaℝ (s - 1)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.integrable_transportProduct_prod",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitFourierTransport.lean",
+        "line": 178,
+        "end_line": 195,
+        "statement": "private theorem integrable_transportProduct_prod {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {T : ℝ} (hT : 1 ≤ T) (k : ℝ) :\n    Integrable (fun p : ℝ × ℝ => transportCharacter k p.2 * (transportPoisson p.1 p.2 : ℂ))\n      ((boundaryMeasure hW).prod (volume.restrict (Ioc 0 T)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.summable_quantization_qchain",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationQChain.lean",
+        "line": 161,
+        "end_line": 179,
+        "statement": "theorem summable_quantization_qchain {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {q : ℕ} (hq : 2 ≤ q) {p : ℤ → ℂ}\n    (hp : Summable fun k => ‖p k‖ * (q : ℝ) ^ k.natAbs) (l : ℕ) :\n    Summable fun j : ℕ => p ((l : ℤ) - j) * quantizationQCoeff lam q j",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.eventually_ccmRestrictedWeilCanonicalGroundHead_formRemainder_strict_norm_expansion_of_groundEnergy_neg",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundRemainderExpansion.lean",
+        "line": 80,
+        "end_line": 105,
+        "statement": "theorem eventually_ccmRestrictedWeilCanonicalGroundHead_formRemainder_strict_norm_expansion_of_groundEnergy_neg\n    (a : SuzukiPositiveAperture)\n    (hE : ccmRestrictedWeilGroundEnergy a < 0) :\n    ∀ᶠ n in atTop,\n      ‖ccmRestrictedWeilCanonicalGroundHead a n‖ <\n        ‖ccmRestrictedWeilFormRemainder a\n          (ccmRestrictedWeilCanonicalGroundHead a n)‖",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmRestrictedWeilCanonicalGroundHead_reversePrimeBound_iff_source_nonneg",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundHeadEnergy.lean",
+        "line": 423,
+        "end_line": 446,
+        "statement": "theorem ccmRestrictedWeilCanonicalGroundHead_reversePrimeBound_iff_source_nonneg\n    (a : SuzukiPositiveAperture) (n : ℕ) :\n    CCMRestrictedWeilCanonicalGroundHeadReversePrimeBound a n ↔\n      0 ≤ ccmRestrictedWeilSourceQuadratic a\n        (ccmRestrictedWeilCanonicalGroundHead a n)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.memLp_ccmPolarFourierIntegral_formMeasure",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPolarOperatorDomain.lean",
+        "line": 24,
+        "end_line": 48,
+        "statement": "theorem memLp_ccmPolarFourierIntegral_formMeasure (a : SuzukiPositiveAperture) (s : ℝ) :\n    MemLp (ccmPolarFourierIntegral a s) 2 ccmArchimedeanFormMeasure",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmWeilParityCutoff_commonClock_collar_nonpos",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleParityCommonClockEnvelope.lean",
+        "line": 422,
+        "end_line": 441,
+        "statement": "theorem ccmWeilParityCutoff_commonClock_collar_nonpos\n    (r s : SuzukiPositiveAperture) (hrs : r.1 ≤ s.1) :\n    let Sr : Finset ℕ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": [
+      {
+        "description": "Phase error bound via canonical trace",
+        "steps": [
+          {
+            "goal": "Bound phase residual error",
+            "candidate_ids": [
+              "9bf9f6de532917c03a2864829596ffe0c58c9cd9cea60c8b06a930fa67502d1f",
+              "7dffa67de42e2c022e8cd61fb80ebdb0a759529fc0733293eff84643df61b82c"
+            ],
+            "candidates": [
+              {
+                "id": "9bf9f6de532917c03a2864829596ffe0c58c9cd9cea60c8b06a930fa67502d1f",
+                "name": "RHTower.WeilSpectral.exists_norm_quantization_radialError_le",
+                "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialRemainder",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialRemainder.lean",
+                "line": 236
+              },
+              {
+                "id": "7dffa67de42e2c022e8cd61fb80ebdb0a759529fc0733293eff84643df61b82c",
+                "name": "RHTower.WeilSpectral.norm_quantization_radialError_le",
+                "module": "GaloisForLFunctions.RHTower.WeilWorkQuantizationRadialRemainder",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialRemainder.lean",
+                "line": 208
+              }
+            ],
+            "obligations": [
+              "Control radial error decay"
+            ],
+            "status": "proposed"
+          },
+          {
+            "goal": "Link to boundary compactness",
+            "candidate_ids": [
+              "c5e4f7499c2a31f45f52d2533fc05969c3af10c8a1d1f52ef7015b5292091507",
+              "48e2dcfa0b3a490920381f38e54e00a6ffadb22dae729e6b3f07733b2200c3ef"
+            ],
+            "candidates": [
+              {
+                "id": "c5e4f7499c2a31f45f52d2533fc05969c3af10c8a1d1f52ef7015b5292091507",
+                "name": "RHTower.lowPhaseErr",
+                "module": "GaloisForLFunctions.RHTower.ZetaWeilFormHeightReduction",
+                "relpath": "formal/GaloisForLFunctions/RHTower/ZetaWeilFormHeightReduction.lean",
+                "line": 463
+              },
+              {
+                "id": "48e2dcfa0b3a490920381f38e54e00a6ffadb22dae729e6b3f07733b2200c3ef",
+                "name": "RHTower.inertia_phase_error_le",
+                "module": "GaloisForLFunctions.RHTower.ZetaWeilNegativeIndexHorizon",
+                "relpath": "formal/GaloisForLFunctions/RHTower/ZetaWeilNegativeIndexHorizon.lean",
+                "line": 486
+              }
+            ],
+            "obligations": [
+              "Ensure phase stability"
+            ],
+            "status": "proposed"
+          }
+        ],
+        "status": "not_verified"
+      }
+    ]
+  },
+  {
+    "query": "actual forward coefficients critical harmonic energy diverges unbounded resonance row mean square",
+    "mode": "deep",
+    "partial": true,
+    "unfinished_stages": [
+      "semantic_retrieval"
+    ],
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      }
+    ],
+    "coverage": {
+      "files": 68760,
+      "inventoried": 68760,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68760
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11122,
+        "pending": 52240,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57638,
+        "prose": 11122
+      },
+      "declarations": 1031606,
+      "documents": 2863343,
+      "vectors": 2674009,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1290532,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791457948.299284,
+      "current_generation": 1290533
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "elapsed_seconds": 211.345596542,
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.WeilWorkPBAP.critical_harmonic_eps_ceiling",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPCriticalCoefficients.lean",
+        "line": 303,
+        "end_line": 324,
+        "statement": "theorem critical_harmonic_eps_ceiling {a b C : ℝ} (ha : 0 ≤ a) {lam : ℕ → ℝ}\n    (h : ∀ f : SmoothTest, testAtoms lam f.1 ≤ criticalDatum a b C f.1.1)\n    (N : ℕ) (hN : 1 ≤ N) {ε : ℝ} (hε : 0 < ε) :\n    harmonicDensity lam N ≤ (a / 2 + ε) * (Real.log N) ^ 2 +\n      (a * resonatorGammaConstant + C) / 2 +\n        (a + (a * resonatorGammaConstant + C)) ^ 2 / (16 * ε)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.forwardCoeff",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticForwardCoefficients.lean",
+        "line": 27,
+        "end_line": 30,
+        "statement": "def forwardCoeff (lam : ℕ → ℝ) : ℕ → ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.forwardCoeff_eq_sourceCoeff",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticForwardMean.lean",
+        "line": 28,
+        "end_line": 37,
+        "statement": "theorem forwardCoeff_eq_sourceCoeff (lam : ℕ → ℝ) :\n    forwardCoeff lam = WeilWorkSettledPhase.sourceCoeff lam",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.localModelForwardCoeff",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialSeries.lean",
+        "line": 20,
+        "end_line": 23,
+        "statement": "def localModelForwardCoeff (p : ℕ) (P : Polynomial ℝ) : ℕ → ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.forwardCoeff_one",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticForwardCoefficients.lean",
+        "line": 33,
+        "end_line": 38,
+        "statement": "@[simp] theorem forwardCoeff_one (lam : ℕ → ℝ) : forwardCoeff lam 1 = 1",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.critical_harmonic_ceiling",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPCriticalCoefficients.lean",
+        "line": 287,
+        "end_line": 303,
+        "statement": "theorem critical_harmonic_ceiling {a b C : ℝ} (ha : 0 ≤ a) {lam : ℕ → ℝ}\n    (h : ∀ f : SmoothTest, testAtoms lam f.1 ≤ criticalDatum a b C f.1.1)\n    (N : ℕ) (hN : 1 ≤ N) :\n    2 * harmonicDensity lam N ≤\n      a * (Real.log N) ^ 2 + (a + (a * resonatorGammaConstant + C)) * Real.log N +\n        (a * resonatorGammaConstant + C)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.xiPhysicalThetaAbelEnergyLandauResponse_cofinally_unbounded_below",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyWeilSource.lean",
+        "line": 171,
+        "end_line": 180,
+        "statement": "theorem xiPhysicalThetaAbelEnergyLandauResponse_cofinally_unbounded_below\n    {L A c : ℝ} (hL : 0 < L) (hA : 0 < A) (hc : 0 < c)\n    (hne : Nonempty XiRightZeroCopy) :\n    ∀ B : ℝ, ∀ N : ℕ, ∃ n : ℕ, N ≤ n ∧\n      xiPhysicalThetaAbelEnergyLandauResponse L A c n < B",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.exists_packet_coeffs",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPGramPackets.lean",
+        "line": 129,
+        "end_line": 140,
+        "statement": "private theorem exists_packet_coeffs {N : ℕ}\n    (A : Matrix (PacketIndex N) (PacketIndex N) ℂ) (hA : A.PosSemidef) :\n    ∃ c : PacketIndex N → PacketIndex N → ℂ,\n      ∀ m k, (∑ i, c i m * conj (c i k)) = A m k",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationFrequencyResonates",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonance.lean",
+        "line": 21,
+        "end_line": 25,
+        "statement": "def quantizationFrequencyResonates (ω : ℝ) (m n : ℕ) : Prop",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.test_zero_bound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExtremePoint.lean",
+        "line": 189,
+        "end_line": 211,
+        "statement": "theorem test_zero_bound {H : ℝ → ℝ} (hH : ContDiff ℝ 2 H) (hHc : HasCompactSupport H)\n    (ρ : zetaZeroConfig.carrier) :\n    (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (H u : ℂ)) (gammaOf ρ)‖ ≤ testEnergy H ∧\n      (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (H u : ℂ)) ((starRingEnd ℂ) (gammaOf ρ))‖ ≤\n        testEnergy H",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_rough_resonance_index",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRationalTranslation.lean",
+        "line": 19,
+        "end_line": 49,
+        "statement": "theorem quantization_rough_resonance_index {u v m n : ℕ}\n    (hu : 2 ≤ u) (hv : 2 ≤ v) (huv : u.Coprime v) (hm : 1 ≤ m)\n    (hum : ¬u ∣ m) (hvm : ¬v ∣ m) {j : ℤ}\n    (hres : quantizationFrequencyResonates (2 * (j : ℝ) * Real.log ((u : ℝ) / v)) m n) :\n    j = 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationFrequencyResonates_unique",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonance.lean",
+        "line": 25,
+        "end_line": 37,
+        "statement": "theorem quantizationFrequencyResonates_unique {ω : ℝ} {m n k : ℕ}\n    (hn : quantizationFrequencyResonates ω m n) (hk : quantizationFrequencyResonates ω m k) :\n    n = k",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.testEnergy",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExtremePoint.lean",
+        "line": 182,
+        "end_line": 186,
+        "statement": "def testEnergy (H : ℝ → ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.linearFunctional_coordinates",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointConvex.lean",
+        "line": 145,
+        "end_line": 155,
+        "statement": "private theorem linearFunctional_coordinates {k : ℕ}\n    (f : (Fin k → ℝ) →L[ℝ] ℝ) (x : Fin k → ℝ) :\n    f x = ∑ j, x j * f (Pi.single j 1)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "GaloisForLFunctions.HTGeometry.BorelWeil.rowWeight",
+        "relpath": "formal/GaloisForLFunctions/HTGeometry/BorelWeil/RowFiltration.lean",
+        "line": 35,
+        "end_line": 37,
+        "statement": "noncomputable def rowWeight (d : (Fin N × Fin N) →₀ ℕ) : ℕ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.summable_harmonicPair_transform",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPCriticalDensityLaplace.lean",
+        "line": 96,
+        "end_line": 111,
+        "statement": "theorem summable_harmonicPair_transform {a b C : ℝ} (ha : 0 ≤ a) {lam : ℕ → ℝ}\n    (h : ∀ f : SmoothTest, testAtoms lam f.1 ≤ criticalDatum a b C f.1.1)\n    {s : ℝ} (hs : 0 < s) :\n    Summable fun q : ℕ × ℕ => |harmonicPairWeight lam q| * exp (-s*harmonicPairLevel q)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayLattice.lagCoeff",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayLatticeMass.lean",
+        "line": 32,
+        "end_line": 36,
+        "statement": "def lagCoeff {M : ℕ} (c : Fin (M+1) → ℂ) (d : ℕ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.exists_nonpos_tendsto_coneDeviation_harmonic",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticHarmonicSign.lean",
+        "line": 129,
+        "end_line": 136,
+        "statement": "theorem exists_nonpos_tendsto_coneDeviation_harmonic {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) :\n    ∃ L : ℝ, L ≤ 0 ∧ Tendsto (fun N : ℕ => ∑ n ∈ Finset.range (N + 1),\n      WeilOneSided.coneDeviation lam n / n) atTop (𝓝 L)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_phase_resonance_periodic",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationPeriodicResidues.lean",
+        "line": 252,
+        "end_line": 274,
+        "statement": "theorem quantization_phase_resonance_periodic {ι : Type} [Countable ι]\n    {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {p : ι → ℂ} {ω : ι → ℝ}\n    (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2))\n    (hphase : ∀ x : ℝ, 0 < x →\n      cexp (((2 * Real.pi * quantizationResidualCumulative hW x : ℝ) : ℂ) * I) =\n        ∑' j, p j * cexp (((ω j * x : ℝ) : ℂ) * I)) {x : ℝ} (hx : 0 < x) :\n    quantizationRealFrequencySum lam p ω (x + 1) = quantizationRealFrequencySum lam p ω x",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilAbscissa.exists_harmonicConstant_of_nonneg_of_localMassTendsZero",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeHarmonicPinning.lean",
+        "line": 564,
+        "end_line": 585,
+        "statement": "theorem exists_harmonicConstant_of_nonneg_of_localMassTendsZero {lam : ℕ → ℝ}\n    (hW : RHTower.WeilPositiveFull lam) (hnn : ∀ n, 2 ≤ n → 0 ≤ lam n)\n    (hloc : LocalMassTendsZero (WeilOneSided.coneDeviation lam)) :\n    ∃ T : ℝ, Tendsto (fun k : ℕ => ∑ n ∈ Finset.range k, WeilOneSided.coneDeviation lam n / n)\n      atTop (𝓝 T) ∧ T ≤ 0 ∧ (T = 0 → ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.WeilSpectral.quantizationFrequencyResonates_unique",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonance.lean",
+        "line": 25,
+        "end_line": 37,
+        "statement": "theorem quantizationFrequencyResonates_unique {ω : ℝ} {m n k : ℕ}\n    (hn : quantizationFrequencyResonates ω m n) (hk : quantizationFrequencyResonates ω m k) :\n    n = k",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.integrable_transportProduct_prod",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitFourierTransport.lean",
+        "line": 178,
+        "end_line": 195,
+        "statement": "private theorem integrable_transportProduct_prod {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {T : ℝ} (hT : 1 ≤ T) (k : ℝ) :\n    Integrable (fun p : ℝ × ℝ => transportCharacter k p.2 * (transportPoisson p.1 p.2 : ℂ))\n      ((boundaryMeasure hW).prod (volume.restrict (Ioc 0 T)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.odd_source_ratio_eq",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseDeletionRatio.lean",
+        "line": 26,
+        "end_line": 46,
+        "statement": "theorem odd_source_ratio_eq {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {σ : ℝ} (hσ : 1<σ) :\n    LSeries (oddPart (sourceCoeff lam)) (σ : ℂ) / LSeries (sourceCoeff lam) (σ : ℂ) =\n      (Real.exp (-sourceEvenLogarithm lam σ) : ℂ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprime_source_ratio_eq",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeRatio.lean",
+        "line": 31,
+        "end_line": 51,
+        "statement": "theorem coprime_source_ratio_eq {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) (Q : ℕ) [NeZero Q]\n    {σ : ℝ} (hσ : 1<σ) :\n    LSeries (coprimePart Q (sourceCoeff lam)) (σ : ℂ) / LSeries (sourceCoeff lam) (σ : ℂ) =\n      (Real.exp (-sourceDeletedLogarithm lam Q σ) : ℂ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.integral_deficitOrdinateWindow_character",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitZeroTransport.lean",
+        "line": 115,
+        "end_line": 139,
+        "statement": "theorem integral_deficitOrdinateWindow_character (k T : ℝ) :\n    (∫ r in Ioc 0 T, Complex.exp (((k * r : ℝ) : ℂ) * I) ∂deficitOrdinateMeasure) =\n      ∑ q ∈ (finite_deficitWindow T).toFinset,\n        Complex.exp (((k * (q.1 : ℂ).im : ℝ) : ℂ) * I)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.centered_coprime_source_residue",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeVariance.lean",
+        "line": 41,
+        "end_line": 75,
+        "statement": "private theorem centered_coprime_source_residue {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) (Q : ℕ) [NeZero Q] {r : ℝ}\n    (hr : Tendsto (fun s : ℝ => LSeries (coprimePart Q (sourceCoeff lam)) (s : ℂ) /\n      LSeries (sourceCoeff lam) (s : ℂ)) (𝓝[>] 1) (𝓝 (r : ℂ))) :\n    Tendsto (fun s : ℝ => ((s : ℂ) - 1) *\n      LSeries (coprimePart Q (fun n => sourceCoeff lam n - sourceCompletion hW 1)) (s : ℂ))\n      (𝓝[>] 1) (𝓝 (sourceCompletion hW 1 * ((r - coprimeDensity Q : ℝ) : ℂ)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_frequencyMass_dilation",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationFrequencyMass.lean",
+        "line": 120,
+        "end_line": 159,
+        "statement": "theorem quantization_frequencyMass_dilation {ι : Type} {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {p : ι → ℂ} {ω : ι → ℝ}\n    (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2)) {x : ℝ} (hx : 0 < x) :\n    (∑' n : ℕ, LSeries.term (dirichletExp (lamLog lam)) (((3 / 2 : ℝ) : ℂ)) n *\n      quantizationFrequencyMass p ω (x / n)) =\n      (Real.exp (-(3 * Real.log x / 2)) : ℂ) * quantizationRealFrequencySum lam p ω x",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_quantization_right_resonance",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonance.lean",
+        "line": 145,
+        "end_line": 195,
+        "statement": "theorem tendsto_quantization_right_resonance {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) (ω : ℝ) {m : ℕ} (hm : 1 ≤ m) :\n    Tendsto (fun ε : ℝ =>\n      (ε : ℂ) * (∫ y in Iic (-2 : ℝ), linTwist ω (edgePt y) *\n        edgeIntegrand (quantizationCompletion hW) ((ε : ℂ) + (m : ℂ) * I) (edgePt y)) -\n      quantizationFrequencyResidue lam ω m * ((ε : ℂ) *\n        ∫ y in Iic (-2 : ℝ), (m : ℂ) ^ (-edgePt y) *\n          offKernel ((ε : ℂ) + (m : ℂ) * I) (edgePt y)))\n      (𝓝[>] 0) (𝓝 0)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.power_settled_lock_rigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeSettledLockRigidity.lean",
+        "line": 1074,
+        "end_line": 1093,
+        "statement": "theorem power_settled_lock_rigidity {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {G : ℂ → ℂ}\n    (hGc : ∀ s : ℂ, 1 / 2 ≤ s.re → ContinuousAt G s)\n    (hGd : ∀ s : ℂ, 1 / 2 < s.re → HasDerivAt G (weilContinuation hW s * G s) s)\n    (hG2 : G 2 = bigG lam 2) {w : ℝ → ℂ} (hwm : Measurable w) {Cw : ℝ}\n    (hwb : ∀ τ, ‖w τ‖ ≤ Cw) {c₀ : ℂ} (hc₀ : c₀ ≠ 0) {Y : ℝ} (hY : 0 ≤ Y)\n    (hlock : ∀ τ : ℝ, τ < -Y → G (1 - lineS τ) = w τ * G (lineS τ))\n    {δ Cm T₁ : ℝ} (hδ : 0 < δ)\n    (hpow : ∀ T : ℝ, T₁ ≤ T → ∫ τ in Ioc T (2 * T), ‖w (-τ) - c₀⁻¹‖ ≤ Cm * T ^ (1 - δ)) :\n    (∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilMeanSquare.IsPrimitiveSet",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPrimitiveSetMeanSquare.lean",
+        "line": 40,
+        "end_line": 43,
+        "statement": "def IsPrimitiveSet (S : Finset ℕ) : Prop",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.summable_reciprocal_square_weight",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticSquareSummability.lean",
+        "line": 49,
+        "end_line": 61,
+        "statement": "theorem summable_reciprocal_square_weight {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {σ : ℝ} (hσ : 1 / 2 < σ) :\n    Summable (fun n : ℕ =>\n      ‖producerMobius (fun n => if 2 ≤ n then lam n else 0) n‖ ^ 2 *\n        (n : ℝ) ^ (-2 * σ))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilBoundaryDilation.normSq_zeta_eq_hardyZ_sq",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryDilationLogAveraging.lean",
+        "line": 275,
+        "end_line": 280,
+        "statement": "theorem normSq_zeta_eq_hardyZ_sq (t : ℝ) :\n    ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 = hardyZ t ^ 2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.deficitSquareCount",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitSquareMoment.lean",
+        "line": 217,
+        "end_line": 221,
+        "statement": "def deficitSquareCount (T : ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilMeanSquare.summable_abs_div_rpow_of_weilPositiveFull",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilPrimitiveSetMeanSquare.lean",
+        "line": 279,
+        "end_line": 284,
+        "statement": "theorem summable_abs_div_rpow_of_weilPositiveFull {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {σ : ℝ} (hσ : 1 < σ) : Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.ap_uniformly_settled_lock_rigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeAlmostPeriodicSettledLock.lean",
+        "line": 423,
+        "end_line": 443,
+        "statement": "theorem ap_uniformly_settled_lock_rigidity {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    (hA : Summable (restWeight lam)) {κ : ℝ} (hκ : 0 ≤ κ)\n    (hlam : ∀ n : ℕ, 2 ≤ n → |lam n| ≤ κ * Real.log n) {G : ℂ → ℂ}\n    (hGc : ∀ s : ℂ, 1 / 2 ≤ s.re → ContinuousAt G s)\n    (hGd : ∀ s : ℂ, 1 / 2 < s.re → HasDerivAt G (weilContinuation hW s * G s) s)\n    (hG2 : G 2 = bigG lam 2) {p : ℕ → ℂ} {ω : ℕ → ℝ}\n    (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2))\n    (hres : ∀ j, ω j ≠ 0 → ∀ m n : ℕ, 1 ≤ m → (n : ℝ) ≠ m * Real.exp (-(ω j / 2)))\n    {r : ℝ → ℂ} (hrm : Measurable r) {Cr : ℝ} (hrb : ∀ x, ‖r x‖ ≤ Cr) {κ₀ : ℂ}\n    (hlock : ∀ τ : ℝ, τ < -1 →\n      G (1 - lineS τ) = κ₀ * (apFactor p ω (-τ) + r (-τ)) * G (lineS τ))\n    {η Cm T₁ : ℝ} (hη : 0 < η)\n    (hunif : ∀ T : ℝ, T₁ ≤ T → ∀ x ∈ Ioc T (2 * T),\n      ‖r x‖ ≤ Cm * Real.log T ^ (-(κ ^ 2 / 4 + η))) :\n    κ₀ * apMean p ω ≠ 0 ∧ (∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧\n      RiemannHypothesis",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.riemannHypothesis_iff_lagPositivePart_integral_subexponential",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilLagFunctionPositivePart.lean",
+        "line": 457,
+        "end_line": 482,
+        "statement": "theorem riemannHypothesis_iff_lagPositivePart_integral_subexponential :\n    RiemannHypothesis ↔ ∀ η : ℝ, 0 < η → ∃ C : ℝ, ∀ T : ℝ, 0 ≤ T →\n      ∫ u in Icc (0:ℝ) T, lagPositivePart u ≤ C * Real.exp (η * T)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.weilFullFunctional_transl_sub_eq",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeWindowRigidity.lean",
+        "line": 140,
+        "end_line": 152,
+        "statement": "theorem weilFullFunctional_transl_sub_eq (lam lam' : ℕ → ℝ) {K : ℝ → ℂ} {R y : ℝ}\n    (hR : ∀ u, K u ≠ 0 → |u| ≤ R) (hy : R < y) :\n    weilFullFunctional lam (transl y K) - weilFullFunctional lam' (transl y K) =\n      (∑' n : ℕ, ((if 2 ≤ n then lam' n / Real.sqrt n else 0 : ℝ) : ℂ) * K (Real.log n - y)) -\n        ∑' n : ℕ, ((if 2 ≤ n then lam n / Real.sqrt n else 0 : ℝ) : ℂ) * K (Real.log n - y)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilBoundaryDilation.log_le_log_add_two",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeBoundaryDilationRigidity.lean",
+        "line": 498,
+        "end_line": 508,
+        "statement": "theorem log_le_log_add_two {T T₂ : ℝ} (hT : 0 < T) (h1 : T ≤ T₂) (h2 : T₂ ≤ 3 * T) :\n    Real.log T ≤ Real.log T₂ ∧ Real.log T₂ ≤ Real.log T + 2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_deficitWindow_mass_sub_div",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitCoefficient.lean",
+        "line": 151,
+        "end_line": 161,
+        "statement": "theorem tendsto_deficitWindow_mass_sub_div {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    Tendsto (fun T : ℝ => ((boundaryMeasure hW).real (Ioc 0 T) -\n      ((finite_deficitWindow T).toFinset.card : ℝ)) / T) atTop (𝓝 0)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.dirPoly_symmetric_mean_square",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPPacketFourier.lean",
+        "line": 150,
+        "end_line": 170,
+        "statement": "theorem dirPoly_symmetric_mean_square (N : ℕ) (c : Fin N → ℂ) (T : ℝ) :\n    (∫ t in (-T)..T, ‖Sieve.dirPoly N c t‖^2) ≤\n      (2*T + 208*N) * ∑ j, ‖c j‖^2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": [
+      {
+        "description": "Forward coefficient identity via source",
+        "steps": [
+          {
+            "goal": "link forward to source",
+            "candidate_ids": [
+              "c3b7d6b821745744ca2c9f5f5c9eb5ede335e17a713aeb256ae1dddc3b614742",
+              "90c1f040281f02123ee0f8ad050891054f07273cb8aa7cd9908989143d905108"
+            ],
+            "candidates": [
+              {
+                "id": "c3b7d6b821745744ca2c9f5f5c9eb5ede335e17a713aeb256ae1dddc3b614742",
+                "name": "RHTower.WeilSingularArithmetic.forwardCoeff",
+                "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardCoefficients",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticForwardCoefficients.lean",
+                "line": 27
+              },
+              {
+                "id": "90c1f040281f02123ee0f8ad050891054f07273cb8aa7cd9908989143d905108",
+                "name": "RHTower.WeilSingularArithmetic.forwardCoeff_eq_sourceCoeff",
+                "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardMean",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticForwardMean.lean",
+                "line": 28
+              }
+            ],
+            "obligations": [
+              "forward equals source"
+            ],
+            "status": "proposed"
+          },
+          {
+            "goal": "verify at index 1",
+            "candidate_ids": [
+              "57f29e3078aaebdd4fb0e74f22a7884551521be6d344efae61ea9a2ed88dd425"
+            ],
+            "candidates": [
+              {
+                "id": "57f29e3078aaebdd4fb0e74f22a7884551521be6d344efae61ea9a2ed88dd425",
+                "name": "RHTower.WeilSingularArithmetic.forwardCoeff_one",
+                "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardCoefficients",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticForwardCoefficients.lean",
+                "line": 33
+              }
+            ],
+            "obligations": [
+              "value at 1 is 1"
+            ],
+            "status": "proposed"
+          }
+        ],
+        "status": "not_verified"
+      }
+    ]
+  },
+  {
+    "query": "actual canonical circle phase mean square approximation Sobolev Fourier frequency moment trace weighted error",
+    "mode": "deep",
+    "partial": false,
+    "unfinished_stages": [],
+    "errors": [],
+    "coverage": {
+      "files": 68767,
+      "inventoried": 68767,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68767
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11123,
+        "pending": 52246,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57644,
+        "prose": 11123
+      },
+      "declarations": 1031642,
+      "documents": 2863435,
+      "vectors": 2674230,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1290629,
+      "methods": {
+        "failed": 55,
+        "ready": 419505,
+        "stale": 178077
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1791458695.422431,
+      "current_generation": 1290633
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "elapsed_seconds": 92.731377417,
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.WeilSingularArithmetic.moment_sq_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticFiniteEnergy.lean",
+        "line": 23,
+        "end_line": 41,
+        "statement": "private theorem moment_sq_le (N : ℕ) (c : ℕ → ℝ) (α : ℝ) :\n    (∑ m ∈ Finset.Icc 1 N, |c m| * (m : ℝ) ^ α) ^ 2 ≤\n      sourceFiniteEnergy N c * ∑ m ∈ Finset.Icc 1 N, (m : ℝ) ^ (2 * α + 1)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.inertia_phase_error_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ZetaWeilNegativeIndexHorizon.lean",
+        "line": 486,
+        "end_line": 537,
+        "statement": "theorem inertia_phase_error_le {A₀ a ε F : ℝ} (hA₀ : 1 ≤ A₀) (ha : 0 ≤ a) (hε : 0 < ε)\n    (hε1 : ε ≤ 1) (hF : 0 ≤ F) :\n    2 * inertiaKernelWidth A₀ a ε ^ 2 * (plateauGramConst ⌈a⌉₊ (1 / 2) / 4 *\n        (10 * (A₀ * Real.log (inertiaHorizonHeight A₀ a ε + 4))) / unitWeightFloor * F) ≤\n      ε / 3 * F",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.norm_regularizedPhase_sub_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRegularization.lean",
+        "line": 287,
+        "end_line": 315,
+        "statement": "private theorem norm_regularizedPhase_sub_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {η y : ℝ} (hη : 0 < η) (hη1 : η ≤ 1) (hy : 0 ≤ y) :\n    ‖regularizedPhase hW η y - canonicalPhase hW y‖ ≤\n      ∫ r, windowError η y r ∂boundaryMeasure hW",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayZetaMoment.matched_moment",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayZetaMoment.lean",
+        "line": 308,
+        "end_line": 344,
+        "statement": "theorem matched_moment {ι : Type*} [Fintype ι]\n    (a : ι → ℝ) (f : ι → ℝ → ℂ) (α : ι → ℝ)\n    (hf : ∀ i, IsPolarTest (a i) (f i)) (N : ℕ) (t : ℝ)\n    (hmatch : ∀ n : ℕ, 2 ≤ n →\n      2*π*(∑ i, α i*atomCoeff (f i) n) = t*exposingWeightTrunc N n) :\n    (∑ i, α i*moment (f i)) =\n      (∑ i, α i*(∫ τ : ℝ, ‖paperFT (f i) τ‖^2)) +\n        (t/2)*(∑ n ∈ Finset.Icc 2 N, exposingWeight n/Real.sqrt n)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayLocalCapacity.short_fourier_bound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayLocalCapacity.lean",
+        "line": 60,
+        "end_line": 105,
+        "statement": "theorem short_fourier_bound {g : ℝ → ℂ} (hg : IsPolarTest (Real.log 2/2) g) (t : ℝ) :\n    ‖paperFT g t‖^2 ≤ Real.log 2 * ∫ u : ℝ, ‖g u‖^2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.LogMoment.moment",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticLogMoment.lean",
+        "line": 21,
+        "end_line": 24,
+        "statement": "def moment (w : ℕ → ℝ) (N : ℕ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayCriticalOdd.synthesis_fourier",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayCriticalOddSource.lean",
+        "line": 180,
+        "end_line": 198,
+        "statement": "private theorem synthesis_fourier (U : ℝ → ℝ)\n    (hi : ∀ (a : ℝ) (z : ℂ), Integrable (fun t => (U (t-a) : ℂ)*Complex.exp (Complex.I*z*t)))\n    (c : Fin 5 → ℝ) (z : ℂ) :\n    paperFT (fun t => (synthesis U c t : ℂ)) z =\n      (∑ j,(c j : ℂ)*Complex.exp (Complex.I*z*(positions j)))*paperFT (fun t => (U t : ℂ)) z",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayLocalCapacity.weighted_square_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayLocalCapacity.lean",
+        "line": 50,
+        "end_line": 60,
+        "statement": "private theorem weighted_square_le {ι : Type*} [Fintype ι] (w : ι → ℝ)\n    (v : ι → ℂ) (hw : ∀ i, 0 ≤ w i) (hM : 0 < ∑ i, w i) :\n    ‖∑ i, (w i : ℂ)*v i‖^2 ≤ (∑ i, w i)*∑ i, w i*‖v i‖^2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.exists_integral_regularizedPhase_sub_le_inv",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRegularization.lean",
+        "line": 339,
+        "end_line": 375,
+        "statement": "theorem exists_integral_regularizedPhase_sub_le_inv {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    ∃ C : ℝ, 0 ≤ C ∧ ∀ Y : ℝ, 1 ≤ Y →\n      ∫ y in Ioc Y (2 * Y),\n        ‖regularizedPhase hW (Y ^ 8)⁻¹ y - canonicalPhase hW y‖ ≤ C / Y",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.kernel_fourier_mass",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointJump.lean",
+        "line": 30,
+        "end_line": 40,
+        "statement": "private theorem kernel_fourier_mass (f : WeilTestFn) :\n    (∫ t : ℝ, ‖paperFT f.1 t‖^2) = 2*Real.pi*testMass f.1",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayZetaMoment.moment",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayZetaMoment.lean",
+        "line": 37,
+        "end_line": 39,
+        "statement": "def moment (f : ℝ → ℂ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayGamma.moment",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayGammaTruncation.lean",
+        "line": 36,
+        "end_line": 39,
+        "statement": "def moment (f : ℝ → ℂ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationTraceF",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialGrowth.lean",
+        "line": 143,
+        "end_line": 148,
+        "statement": "def quantizationTraceF {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) (y : ℝ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayCoherentGap.weighted_fourier",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayCoherentGap.lean",
+        "line": 41,
+        "end_line": 62,
+        "statement": "private theorem weighted_fourier {a : ℝ} {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)\n    (hfs : tsupport f ⊆ Icc (-a) a) : MemLp (𝓕 f) 2 ccmArchimedeanFormMeasure",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilZetaSquare.momentRe",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilZetaSquareMoments.lean",
+        "line": 54,
+        "end_line": 56,
+        "statement": "def momentRe (L ξ : ℝ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayCoherentGap.fourier_arch_point",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayCoherentGap.lean",
+        "line": 32,
+        "end_line": 41,
+        "statement": "private theorem fourier_arch_point (f : ℝ → ℂ) (x : ℝ) :\n    ‖paperFT f (((-(2*π))*x : ℝ) : ℂ)‖^2 * archimedeanWeilSymbol ((-(2*π))*x/(2*π)) =\n      archimedeanWeilSymbol x * ‖𝓕 f x‖^2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkDeficitApproximation.error_tail",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitXiApproximationCost.lean",
+        "line": 128,
+        "end_line": 162,
+        "statement": "private theorem error_tail {B : ℝ} (hB : 0 < B)\n    (hb : ∀ u : ℝ, ‖riemannPhiKernel u‖ ≤\n      B * Real.exp (-Real.exp (2 * |u|)) * Real.exp (-|u|))\n    {a : ℝ≥0} (P : Packet a) (γ L : ℝ) :\n    (∫ u in (Icc (-L) L)ᶜ, ‖P.error γ u‖) ≤\n      2 * B * (P.variation + 1) * Real.exp (-Real.exp (2 * (L-a)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.exposingPacket_fourier_mass",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayPacketCoercivity.lean",
+        "line": 145,
+        "end_line": 152,
+        "statement": "theorem exposingPacket_fourier_mass (N : ℕ) (c : ℕ → ℂ) :\n    (∫ τ : ℝ, ‖paperFT (resonator N c (exposingPacketWidth N)) τ‖ ^ 2) =\n      2 * π * (∫ u, gR (exposingPacketWidth N) u ^ 2) *\n        ∑ m ∈ Finset.Icc 1 N, ‖c m‖ ^ 2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayCriticalOdd.compact_fourier",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayCriticalOddSource.lean",
+        "line": 280,
+        "end_line": 287,
+        "statement": "theorem compact_fourier (L : ℝ) (z : ℂ) :\n    paperFT (compactSource L) z = multiplier z*paperFT (truncatedRiemannKernel L) z",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkDeficitBudget.tendsto_weighted_defect_difference",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitRadicalBudget.lean",
+        "line": 237,
+        "end_line": 257,
+        "statement": "theorem tendsto_weighted_defect_difference (P : ShortPacket) :\n    Tendsto (fun L : ℝ => ∑' n : ℕ,\n      weight n * |logValue (P.test L).1 (n + 2) - P.coefficient n|) atTop (𝓝 0)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.tendsto_ccmRestrictedWeilCanonicalGroundHead_sourceQuadratic",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundHeadEnergy.lean",
+        "line": 247,
+        "end_line": 260,
+        "statement": "theorem tendsto_ccmRestrictedWeilCanonicalGroundHead_sourceQuadratic (a : SuzukiPositiveAperture) :\n    Tendsto\n      (fun n => ccmRestrictedWeilSourceQuadratic a\n        (ccmRestrictedWeilCanonicalGroundHead a n)) atTop\n      (nhds (ccmRestrictedWeilGroundEnergy a *\n        ‖(ccmRestrictedWeilCanonicalGroundEigenstate a :\n          suzukiApertureHilbert a)‖ ^ 2))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.xiSchwarzPairAnalyticMultiplicity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairLorentzWeld.lean",
+        "line": 47,
+        "end_line": 51,
+        "statement": "def xiSchwarzPairAnalyticMultiplicity (q : XiZeroCopy) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.criticalMellinAtomWeight_primePower_eq_wallFieldEnergy",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleWallFieldWeld.lean",
+        "line": 99,
+        "end_line": 107,
+        "statement": "theorem criticalMellinAtomWeight_primePower_eq_wallFieldEnergy\n    (p : Nat.Primes) (e : ℕ) :\n    criticalMellinAtomWeight (xiGammaEulerValuationNat (p, e)) =\n      Complex.normSq (suzukiCriticalWallField 0 p e)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.deficitCharacterGap_zero_re",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitCoefficient.lean",
+        "line": 144,
+        "end_line": 151,
+        "statement": "private theorem deficitCharacterGap_zero_re {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) (T : ℝ) :\n    (deficitCharacterGap hW 0 T).re =\n      (boundaryMeasure hW).real (Ioc 0 T) - ((finite_deficitWindow T).toFinset.card : ℝ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.sourceCoprimeDeviation",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeMasks.lean",
+        "line": 99,
+        "end_line": 104,
+        "statement": "def sourceCoprimeDeviation (lam : ℕ → ℝ) (Q : ℕ) (s : ℂ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmWeilOddPrimeAtom_primePower_eq_suzukiWallFieldEnergy",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleWallFieldWeld.lean",
+        "line": 107,
+        "end_line": 119,
+        "statement": "theorem ccmWeilOddPrimeAtom_primePower_eq_suzukiWallFieldEnergy\n    (p : Nat.Primes) (e : ℕ) (s : ℝ) :\n    2 * (-ccmWeilPolePrimeDiagonalAtom (xiGammaEulerValuationNat (p, e)) s +\n        ccmWeilPolePrimeCrossAtom (xiGammaEulerValuationNat (p, e)) s) =\n      Complex.normSq (suzukiCriticalWallField 0 p e) *\n        ccmWeilOddWallEnergyResponse (xiGammaEulerValuationNat (p, e)) s",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.integrable_sourceCompletion_slice",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseTrace.lean",
+        "line": 372,
+        "end_line": 381,
+        "statement": "theorem integrable_sourceCompletion_slice {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {x : ℝ} (hx : 0 < x) (hx2 : x ≤ 3 / 2) :\n    Integrable (fun y : ℝ => sourceCompletion hW (tracePoint x y))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmRestrictedWeilCanonicalGroundHead_primePolarGammaProducer_eq_ground_add_tail",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilActualHeadPrimePolarGammaProducer.lean",
+        "line": 46,
+        "end_line": 57,
+        "statement": "theorem ccmRestrictedWeilCanonicalGroundHead_primePolarGammaProducer_eq_ground_add_tail\n    (a : SuzukiPositiveAperture) (n : ℕ) :\n    ccmRestrictedWeilActualHeadPrimePolarGammaProducer a\n        (ccmRestrictedWeilCanonicalGroundHead a n) =\n      ccmRestrictedWeilGroundEnergy a *\n          ‖ccmArchimedeanFormToAperture a\n            (ccmRestrictedWeilCanonicalGroundHead a n)‖ ^ 2 +\n        ccmRestrictedWeilCanonicalGroundHeadDefect a n",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.localModel_canonical_density",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseLocalPolynomialInvisibility.lean",
+        "line": 36,
+        "end_line": 44,
+        "statement": "private theorem localModel_canonical_density (Q : ℕ) [NeZero Q] :\n    (∏ q ∈ Q.primeFactors, (1 - (q : ℂ)⁻¹)) = (Q.totient : ℂ) / Q",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.CCMRestrictedWeilCanonicalGroundHeadRemainderNumericalLowerBound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundRemainderNumericalRange.lean",
+        "line": 159,
+        "end_line": 171,
+        "statement": "def CCMRestrictedWeilCanonicalGroundHeadRemainderNumericalLowerBound : Prop",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.XiC_ne_zero_on_avoiding_vertical",
+        "relpath": "formal/GaloisForLFunctions/RHTower/XiGuinandWeilRectangularVerticalResolvent.lean",
+        "line": 783,
+        "end_line": 796,
+        "statement": "theorem XiC_ne_zero_on_avoiding_vertical\n    (R y : ℝ) (havoid : ∀ q : XiZeroCopy, R ≠ (xiSpectralPoint q).re) :\n    XiC ((R : ℂ) + y * I) ≠ 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.suzukiCutoff_weilCriticalLogProfileL2_ae",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilCriticalMellinLogBridge.lean",
+        "line": 99,
+        "end_line": 117,
+        "statement": "theorem suzukiCutoff_weilCriticalLogProfileL2_ae\n    {a : ℝ} (g : ℝ → ℂ) (hg : Continuous g)\n    (hsupp : Function.support g ⊆ Icc (Real.exp (-a)) (Real.exp a)) :\n    (suzukiCutoff a (weilCriticalLogProfileL2 a g hg hsupp) : ℝ → ℂ) =ᵐ[volume]\n      weilCriticalLogProfile g",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.mellin_sourceCoeff",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseThetaTrace.lean",
+        "line": 34,
+        "end_line": 50,
+        "statement": "theorem mellin_sourceCoeff {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {s : ℂ} (hs : 1 < s.re) :\n    mellin (coeffTheta (sourceCoeff lam)) (s / 2) =\n      sourceRemainder hW s + betaG (sourceCompletion hW) * Gammaℝ (s - 1)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_mellin_right",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialMellin.lean",
+        "line": 67,
+        "end_line": 84,
+        "statement": "theorem quantization_mellin_right {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {s : ℂ} (hs : s.re = 3 / 2) :\n    mellin (coeffTheta (dirichletExp (lamLog lam))) (s / 2) =\n      sourceRemainder hW s + betaG (quantizationCompletion hW) * Gammaℝ (s - 1)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.integrable_transportProduct_prod",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitFourierTransport.lean",
+        "line": 178,
+        "end_line": 195,
+        "statement": "private theorem integrable_transportProduct_prod {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {T : ℝ} (hT : 1 ≤ T) (k : ℝ) :\n    Integrable (fun p : ℝ × ℝ => transportCharacter k p.2 * (transportPoisson p.1 p.2 : ℂ))\n      ((boundaryMeasure hW).prod (volume.restrict (Ioc 0 T)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.summable_quantization_qchain",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationQChain.lean",
+        "line": 161,
+        "end_line": 179,
+        "statement": "theorem summable_quantization_qchain {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {q : ℕ} (hq : 2 ≤ q) {p : ℤ → ℂ}\n    (hp : Summable fun k => ‖p k‖ * (q : ℝ) ^ k.natAbs) (l : ℕ) :\n    Summable fun j : ℕ => p ((l : ℤ) - j) * quantizationQCoeff lam q j",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.eventually_ccmRestrictedWeilCanonicalGroundHead_formRemainder_strict_norm_expansion_of_groundEnergy_neg",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundRemainderExpansion.lean",
+        "line": 80,
+        "end_line": 105,
+        "statement": "theorem eventually_ccmRestrictedWeilCanonicalGroundHead_formRemainder_strict_norm_expansion_of_groundEnergy_neg\n    (a : SuzukiPositiveAperture)\n    (hE : ccmRestrictedWeilGroundEnergy a < 0) :\n    ∀ᶠ n in atTop,\n      ‖ccmRestrictedWeilCanonicalGroundHead a n‖ <\n        ‖ccmRestrictedWeilFormRemainder a\n          (ccmRestrictedWeilCanonicalGroundHead a n)‖",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmRestrictedWeilCanonicalGroundHead_reversePrimeBound_iff_source_nonneg",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundHeadEnergy.lean",
+        "line": 423,
+        "end_line": 446,
+        "statement": "theorem ccmRestrictedWeilCanonicalGroundHead_reversePrimeBound_iff_source_nonneg\n    (a : SuzukiPositiveAperture) (n : ℕ) :\n    CCMRestrictedWeilCanonicalGroundHeadReversePrimeBound a n ↔\n      0 ≤ ccmRestrictedWeilSourceQuadratic a\n        (ccmRestrictedWeilCanonicalGroundHead a n)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.memLp_ccmPolarFourierIntegral_formMeasure",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPolarOperatorDomain.lean",
+        "line": 24,
+        "end_line": 48,
+        "statement": "theorem memLp_ccmPolarFourierIntegral_formMeasure (a : SuzukiPositiveAperture) (s : ℝ) :\n    MemLp (ccmPolarFourierIntegral a s) 2 ccmArchimedeanFormMeasure",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ccmWeilParityCutoff_commonClock_collar_nonpos",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleParityCommonClockEnvelope.lean",
+        "line": 422,
+        "end_line": 441,
+        "statement": "theorem ccmWeilParityCutoff_commonClock_collar_nonpos\n    (r s : SuzukiPositiveAperture) (hrs : r.1 ≤ s.1) :\n    let Sr : Finset ℕ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": [
+      {
+        "description": "Phase error bound via inertia kernel",
+        "steps": [
+          {
+            "goal": "Bound phase error",
+            "candidate_ids": [
+              "48e2dcfa0b3a490920381f38e54e00a6ffadb22dae729e6b3f07733b2200c3ef"
+            ],
+            "candidates": [
+              {
+                "id": "48e2dcfa0b3a490920381f38e54e00a6ffadb22dae729e6b3f07733b2200c3ef",
+                "name": "RHTower.inertia_phase_error_le",
+                "module": "GaloisForLFunctions.RHTower.ZetaWeilNegativeIndexHorizon",
+                "relpath": "formal/GaloisForLFunctions/RHTower/ZetaWeilNegativeIndexHorizon.lean",
+                "line": 486
+              }
+            ],
+            "obligations": [
+              "Control ε and F"
+            ],
+            "status": "proposed"
+          },
+          {
+            "goal": "Link to frequency moment",
+            "candidate_ids": [
+              "68de3be9c5f05dbc0c98fad666c220ccfe3c1490dcaad91ab1ae5a9f92476a2e"
+            ],
+            "candidates": [
+              {
+                "id": "68de3be9c5f05dbc0c98fad666c220ccfe3c1490dcaad91ab1ae5a9f92476a2e",
+                "name": "RHTower.ExposingRayZetaMoment.matched_moment",
+                "module": "GaloisForLFunctions.RHTower.WeilWorkExposingRayZetaMoment",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayZetaMoment.lean",
+                "line": 308
+              }
+            ],
+            "obligations": [
+              "Match Fourier moments"
+            ],
+            "status": "proposed"
+          }
+        ],
+        "status": "not_verified"
+      }
+    ]
+  },
+  {
+    "query": "canonical phase translation increments averaged square cosine interval mass source regularity",
+    "mode": "deep",
+    "partial": false,
+    "unfinished_stages": [],
+    "errors": [],
+    "coverage": {
+      "files": 68772,
+      "inventoried": 68772,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 68772
+      },
+      "compiler": {
+        "compiled_snapshot": 43,
+        "error": 2,
+        "not_applicable": 11124,
+        "pending": 52250,
+        "stale": 2660,
+        "stale_snapshot": 38,
+        "umbrella_source_only": 1,
+        "unavailable": 2654
+      },
+      "collections": {
+        "lean": 57648,
+        "prose": 11124
+      },
+      "declarations": 1031663,
+      "documents": 2863494,
+      "vectors": 2674372,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 1290697,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1791459332.2468321,
+      "current_generation": 1290698
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "elapsed_seconds": 90.83027691699999,
+    "retrieval_assessment": "model_suggests_sufficient_sources",
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "candidate_lemmas": [
+      {
+        "name": "RHTower.ExposingRayCompletion.phase_shift",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayCoherentCompletion.lean",
+        "line": 182,
+        "end_line": 192,
+        "statement": "private theorem phase_shift {N : ℕ} (s τ : ℝ) (i : Fin N × Fin N) :\n    phase (shift s i) τ = phase s τ ^ i.1.val * phase (-s) τ ^ i.2.val",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.cosine_mean",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointConvex.lean",
+        "line": 20,
+        "end_line": 37,
+        "statement": "private theorem cosine_mean (a A : ℝ) :\n    Tendsto (fun T : ℝ => (∫ t in A..T, Real.cos (a * t)) / T) atTop\n      (𝓝 (if a = 0 then 1 else 0))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.cosine_product_mean",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointConvex.lean",
+        "line": 59,
+        "end_line": 75,
+        "statement": "private theorem cosine_product_mean (a b A : ℝ) :\n    Tendsto (fun T : ℝ => (∫ t in A..T, Real.cos (a*t) * Real.cos (b*t)) / T)\n      atTop (𝓝 (((if a+b=0 then 1 else 0) + (if a-b=0 then 1 else 0)) / 2))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayLattice.mixture_mass_identity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayLatticeMass.lean",
+        "line": 346,
+        "end_line": 362,
+        "statement": "theorem mixture_mass_identity {ι : Type*} [Fintype ι] {M : ℕ} {X : ℝ} (hX : 4 ≤ X)\n    (w : ι → ℝ) (c : ι → Fin (M+1) → ℂ)\n    (hp : ∀ i,paperFT (packet X (c i)) (I/2)=0) :\n    (∑ i,w i*mass (c i)) = -(∑ d ∈ Finset.Icc 1 M,\n      Real.cosh (d*X/2)*(∑ i,w i*atomCoeff (packet X (c i)) (sample X d))/R (sampleError X d))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayLattice.mixture_mass_stability",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayLatticeMass.lean",
+        "line": 362,
+        "end_line": 383,
+        "statement": "theorem mixture_mass_stability {ι : Type*} [Fintype ι] {M : ℕ} {X : ℝ} (hX : 4 ≤ X)\n    (w : ι → ℝ) (c : ι → Fin (M+1) → ℂ)\n    (hp : ∀ i,paperFT (packet X (c i)) (I/2)=0) :\n    (∑ i,w i*mass (c i)) ≤ 4*∑ d ∈ Finset.Icc 1 M,\n      Real.cosh (d*X/2)*|∑ i,w i*atomCoeff (packet X (c i)) (sample X d)|",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.sourceCosineCoeff",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCosineMellin.lean",
+        "line": 17,
+        "end_line": 20,
+        "statement": "def sourceCosineCoeff (lam : ℕ → ℝ) (r : ℝ) (n : ℕ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.paperFT_cosineProfile",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointFourier.lean",
+        "line": 25,
+        "end_line": 40,
+        "statement": "theorem paperFT_cosineProfile {β : ℝ → ℂ} (hc : Continuous β)\n    (hs : HasCompactSupport β) (T : ℝ) (z : ℂ) :\n    paperFT (cosineProfile β T) z = (paperFT β (z+T)+paperFT β (z-T))/2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.cosineProfile",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointProfiles.lean",
+        "line": 21,
+        "end_line": 22,
+        "statement": "def cosineProfile (β : ℝ → ℂ) (T : ℝ) (u : ℝ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.sourceCosineSeries",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCosineMellin.lean",
+        "line": 20,
+        "end_line": 23,
+        "statement": "def sourceCosineSeries (lam : ℕ → ℝ) (r : ℝ) (s : ℂ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilHigherDenominator.cosineTestCoefficient",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorFourierBoundary.lean",
+        "line": 25,
+        "end_line": 28,
+        "statement": "def cosineTestCoefficient (φ : ℝ → ℂ) (x : ℝ) : ℂ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.LogMoment.exists_mass_limit",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticLogMomentLimit.lean",
+        "line": 53,
+        "end_line": 156,
+        "statement": "theorem exists_mass_limit {w : ℕ → ℝ} {C : ℝ}\n    (hw : ∀ n, 0 ≤ w n)\n    (hbound : ∀ N : ℕ, 1 ≤ N → 2 * moment w N ≤ (Real.log N + C) * mass w N) :\n    ∃ K : ℝ, 0 ≤ K ∧ Tendsto (fun N : ℕ => mass w N / Real.log N) atTop (𝓝 K)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.weilTest_cosine_sine_add",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointProfiles.lean",
+        "line": 57,
+        "end_line": 80,
+        "statement": "theorem weilTest_cosine_sine_add {β : ℝ → ℂ} (hc : Continuous β)\n    (hs : HasCompactSupport β) (T y : ℝ) :\n    EF.weilTest (cosineProfile β T) (cosineProfile β T) y +\n      EF.weilTest (sineProfile β T) (sineProfile β T) y =\n        (Real.cos (T*y) : ℂ) * EF.weilTest β β y",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.phase_add",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePackets.lean",
+        "line": 29,
+        "end_line": 35,
+        "statement": "theorem phase_add (x y : ℝ) : phase (x + y) = phase x * phase y",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkDeficitApproximation.integrable_source",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitXiApproximationCost.lean",
+        "line": 50,
+        "end_line": 54,
+        "statement": "private theorem integrable_source {a : ℝ≥0} (P : Packet a) : Integrable P.source",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilHigherDenominator.doublePole_shift",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorEndpointResidues.lean",
+        "line": 19,
+        "end_line": 27,
+        "statement": "private lemma doublePole_shift (B : ℂ → ℂ) (p : ℂ) :\n    laurentShift (fun s => B s / (s - p) ^ 2) p 3 = fun t => t ^ 1 * B (p + t)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.shiftForm_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticToeplitzSharpness.lean",
+        "line": 40,
+        "end_line": 85,
+        "statement": "private theorem shiftForm_le (N p : ℕ) (hp : 2 ≤ p) (c : ℕ → ℂ)\n    (hc : ∀ m, N < m → c m = 0) :\n    shiftForm N p c ≤ 2 * vectorMass N c ∧\n      (N < p ^ 2 → shiftForm N p c ≤ vectorMass N c)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.interval_mass_le_of_unit_bound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkDeficitMassBounds.lean",
+        "line": 20,
+        "end_line": 77,
+        "statement": "private theorem interval_mass_le_of_unit_bound {μ : Measure ℝ} {C : ℝ} (hC : 0 ≤ C)\n    (hunit : ∀ t : ℝ, μ (Icc (t - 1) (t + 1)) ≤\n      ENNReal.ofReal (C * Real.log (|t| + 3))) {a b : ℝ} (hab : a ≤ b) :\n    μ (Icc a b) ≤ ENNReal.ofReal (C * (b - a + 1) * Real.log (max |a| |b| + 3))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.mass_le_one",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePackets.lean",
+        "line": 44,
+        "end_line": 48,
+        "statement": "theorem mass_le_one (q : ℝ) : mass q ≤ 1",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayLocalCapacity.kernel_local_mass_pos",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayLocalCapacity.lean",
+        "line": 296,
+        "end_line": 308,
+        "statement": "private theorem kernel_local_mass_pos :\n    0 < ∫ u in Icc (-(1/2 : ℝ)) (1/2 : ℝ),riemannKernelReal u",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayCompletion.phase_cos",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayCoherentCompletion.lean",
+        "line": 104,
+        "end_line": 113,
+        "statement": "private theorem phase_cos (x τ : ℝ) :\n    phase x τ + phase (-x) τ = 2 * Complex.cos ((x : ℂ) * τ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "source_arguments": [
+      {
+        "name": "RHTower.WeilWorkSettledPhase.integral_regularizedPhase_sub_le",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseRegularization.lean",
+        "line": 315,
+        "end_line": 339,
+        "statement": "theorem integral_regularizedPhase_sub_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {η h Y : ℝ} (hη : 0 < η) (hη1 : η ≤ 1) (hh : 0 < h) (hY : 1 ≤ Y) :\n    ∫ y in Ioc Y (2 * Y), ‖regularizedPhase hW η y - canonicalPhase hW y‖ ≤\n      ((4 * Real.pi * h + 2 * η * Y / h) * (1 + 16 * Y ^ 2) + 32 * η * Y ^ 2) *\n        ∫ r, (1 + r ^ 2)⁻¹ ∂boundaryMeasure hW",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.summable_quantization_qchain",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationQChain.lean",
+        "line": 161,
+        "end_line": 179,
+        "statement": "theorem summable_quantization_qchain {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {q : ℕ} (hq : 2 ≤ q) {p : ℤ → ℂ}\n    (hp : Summable fun k => ‖p k‖ * (q : ℝ) ^ k.natAbs) (l : ℕ) :\n    Summable fun j : ℕ => p ((l : ℤ) - j) * quantizationQCoeff lam q j",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantization_rigidity_of_no_arithmetic_frequency",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationArithmeticSpectrum.lean",
+        "line": 19,
+        "end_line": 66,
+        "statement": "theorem quantization_rigidity_of_no_arithmetic_frequency {ι : Type} [Countable ι]\n    {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {p : ι → ℂ} {ω : ι → ℝ}\n    (hp : Summable fun j => ‖p j‖ * Real.exp (|ω j| / 2))\n    (hphase : ∀ x : ℝ, 0 < x →\n      cexp (((2 * Real.pi * quantizationResidualCumulative hW x : ℝ) : ℂ) * I) =\n        ∑' j, p j * cexp (((ω j * x : ℝ) : ℂ) * I))\n    (hno : ¬∃ j : ι, ∃ m n : ℕ, p j ≠ 0 ∧ 1 ≤ m ∧ 1 ≤ n ∧ m ≠ n ∧\n      ω j = 2 * Real.log ((m : ℝ) / n)) :\n    (∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.source_rigidity_or_phase_disorder_two_mul",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCanonicalDisorder.lean",
+        "line": 182,
+        "end_line": 239,
+        "statement": "private theorem source_rigidity_or_phase_disorder_two_mul {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) (θ : ℝ) :\n    ((∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis) ∨\n      ∃ a K : ℝ, 0 < a ∧ 0 < K ∧ ∀ R : ℝ, ∃ T : ℝ, R ≤ T ∧\n        a * T * Real.exp (-(K * Real.log T / Real.log (Real.log T))) ≤\n          ∫ t in Ioc T (2 * T), ‖canonicalPhase hW (2 * t) - lockConstant θ‖",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.tendsto_integral_intervalPhaseKernel_endpoints",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationEndpointPhase.lean",
+        "line": 43,
+        "end_line": 82,
+        "statement": "theorem tendsto_integral_intervalPhaseKernel_endpoints {μ : Measure ℝ}\n    (hμ : Integrable (fun r : ℝ => (1 + r ^ 2)⁻¹) μ) {a b : ℝ} (hab : a < b)\n    (hfin : μ (Icc a b) ≠ ∞) :\n    Tendsto (fun η => ∫ r, intervalPhaseKernel η a b r ∂μ) (𝓝[>] 0)\n      (𝓝 (Real.pi * μ.real (Ioo a b) + Real.pi / 2 * μ.real {a} +\n        Real.pi / 2 * μ.real {b}))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.exists_bound_open_rectangle",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationRadialContour.lean",
+        "line": 19,
+        "end_line": 161,
+        "statement": "theorem exists_bound_open_rectangle {F : ℂ → ℂ} {CF CS : ℝ} (hCF : 0 ≤ CF) (hCS : 0 ≤ CS)\n    (hFd : ∀ s : ℂ, 1 / 2 < s.re → s.re ≤ 3 / 2 → s.im ≤ -2 → DifferentiableAt ℂ F s)\n    (hF : ∀ x y : ℝ, 1 / 2 < x → x ≤ 3 / 2 → y ≤ -2 →\n      ‖F ((x : ℂ) + y * I)‖ ≤ CF * (1 + |y|) ^ (1 / 2 : ℝ))\n    (hR : ∀ y : ℝ, y ≤ -2 → ‖F (((3 / 2 : ℝ) : ℂ) + y * I)‖ ≤ CS)\n    {m : ℕ} (hm : 1 ≤ m) :\n    ∃ B : ℝ, 0 ≤ B ∧ ∀ ε : ℝ, 0 < ε → ε ≤ 1 →\n      ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 3 / 2 → ∀ A : ℝ, A ≤ -2 →\n      ‖(ε : ℂ) * ∫ y in A..(-2), F ((σ : ℂ) + y * I) *\n        offKernel ((ε : ℂ) + (m : ℂ) * I) ((σ : ℂ) + y * I)‖ ≤ B",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.source_rigidity_or_canonical_phase_disorder",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCanonicalDisorder.lean",
+        "line": 239,
+        "end_line": 296,
+        "statement": "theorem source_rigidity_or_canonical_phase_disorder {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) (θ : ℝ) :\n    ((∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis) ∨\n      ∃ a K : ℝ, 0 < a ∧ 0 < K ∧ ∀ R : ℝ, ∃ Y : ℝ, R ≤ Y ∧\n        a * Y * Real.exp (-(K * Real.log Y / Real.log (Real.log Y))) ≤\n          ∫ y in Ioc Y (2 * Y), ‖canonicalPhase hW y - lockConstant θ‖",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.centered_source_dirichletConvergesAt",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticSummatory.lean",
+        "line": 189,
+        "end_line": 203,
+        "statement": "theorem centered_source_dirichletConvergesAt {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    {s : ℂ} (hs : 1 / 2 < s.re) :\n    DirichletConvergesAt (fun n => ((if 2 ≤ n + 1 then lam (n + 1) else 0 : ℝ) : ℂ) - 1) s",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkPBAP.eventually_joint_uniform_high_bounds",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointUniformHigh.lean",
+        "line": 222,
+        "end_line": 248,
+        "statement": "theorem eventually_joint_uniform_high_bounds (f : JointSmoothTest)\n    (hf : tsupport f.1.1 ⊆ Icc 0 1) (hm : 0 < testMass f.1.1)\n    {κ : ℝ} (hκ : 0 < κ) :\n    ∀ᶠ L : ℝ in atTop, ∀ (W : ℝ) (hW : 0 < W),\n      jointSeedWidth κ L ≤ W → W ≤ 1 → ∀ T : ℝ, Real.exp (7*L/8) ≤ |T| →\n      2*Real.log |T|-(2*(Real.log 2+10+Real.log 4)+1) ≤\n        jointPairFullEnergy (jointDilatedTest f W hW) L T/(W*testMass f.1.1) ∧\n      jointPairFullEnergy (jointDilatedTest f W hW) L T/(W*testMass f.1.1) ≤\n        2*Real.log (1+|T|)+9",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilWorkSettledPhase.polar_boundary_inverse",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseThetaTrace.lean",
+        "line": 166,
+        "end_line": 204,
+        "statement": "private theorem polar_boundary_inverse {r : ℝ} (hr : 0 < r) :\n    ((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ t : ℝ,\n      (r : ℂ) ^ (-(((1 / 4 : ℝ) : ℂ) + t * I)) * Gammaℝ (lineS t - 1) =\n        (r : ℂ) ^ (-(1 / 2 : ℂ)) * (expNegPi r - 1)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationCenteredResonance_eq",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonanceEnergy.lean",
+        "line": 28,
+        "end_line": 42,
+        "statement": "theorem quantizationCenteredResonance_eq (lam : ℕ → ℝ) (c : ℂ)\n    {n : ℕ} (hn : 1 ≤ n) :\n    quantizationCenteredResonance lam c n =\n      (Real.exp (-Real.log n / 2) : ℂ) * (forwardCoeff lam n - c)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimeAffineMask_residue",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeCovariance.lean",
+        "line": 109,
+        "end_line": 132,
+        "statement": "theorem coprimeAffineMask_residue {ι : Type*} (S : Finset ι) (Q : ι → ℕ)\n    (c : ι → ℝ) (b : ℝ) {f : ℕ → ℂ} {B : ℂ} {R : ι → ℂ}\n    (hf : ∀ s : ℝ, 1 < s → LSeriesSummable f (s : ℂ))\n    (hB : Tendsto (fun s : ℝ => ((s : ℂ) - 1) * LSeries f (s : ℂ))\n      (𝓝[>] 1) (𝓝 B))\n    (hR : ∀ i ∈ S, Tendsto (fun s : ℝ => ((s : ℂ) - 1) *\n      LSeries (coprimePart (Q i) f) (s : ℂ)) (𝓝[>] 1) (𝓝 (R i))) :\n    Tendsto (fun s : ℝ => ((s : ℂ) - 1) *\n      LSeries (fun n => f n * (coprimeAffineMask S Q c b n : ℂ)) (s : ℂ))\n      (𝓝[>] 1) (𝓝 ((b : ℂ) * B + ∑ i ∈ S, (c i : ℂ) * R i))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayTransfer.integral_translated_corr",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayFibreTransfer.lean",
+        "line": 107,
+        "end_line": 128,
+        "statement": "private theorem integral_translated_corr {f : ℝ → ℂ} (hf : Continuous f)\n    (hfc : HasCompactSupport f) {n m : ℕ} (hn : 0 < n) (hm : 0 < m) :\n    ∫ x : ℝ, (f (x-Real.log (n*m)) * conj (f (x-Real.log m))).re =\n      atomCoeff f n / 2",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.ExposingRayTransfer.polarMassBound_iff_fullMassBound",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayFibreTransfer.lean",
+        "line": 385,
+        "end_line": 393,
+        "statement": "theorem polarMassBound_iff_fullMassBound (b : ℕ → ℝ) (C : ℝ) :\n    PolarMassBound b C ↔ FullMassBound b C",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.centered_coprime_source_residue",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeVariance.lean",
+        "line": 43,
+        "end_line": 78,
+        "statement": "private theorem centered_coprime_source_residue {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) (Q : ℕ) [NeZero Q] {r : ℝ}\n    (hr : Tendsto (fun s : ℝ => LSeries (coprimePart Q (sourceCoeff lam)) (s : ℂ) /\n      LSeries (sourceCoeff lam) (s : ℂ)) (𝓝[>] 1) (𝓝 (r : ℂ))) :\n    Tendsto (fun s : ℝ => ((s : ℂ) - 1) *\n      LSeries (coprimePart Q (fun n => sourceCoeff lam n - sourceCompletion hW 1)) (s : ℂ))\n      (𝓝[>] 1) (𝓝 (sourceCompletion hW 1 * ((r - coprimeDensity Q : ℝ) : ℂ)))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSpectral.quantizationResonanceEnergy",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonanceEnergy.lean",
+        "line": 25,
+        "end_line": 28,
+        "statement": "def quantizationResonanceEnergy (lam : ℕ → ℝ) (c : ℂ) (N : ℕ) : ℝ",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.centered_source_residue",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeVariance.lean",
+        "line": 26,
+        "end_line": 43,
+        "statement": "private theorem centered_source_residue {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    Tendsto (fun s : ℝ => ((s : ℂ) - 1) *\n      LSeries (fun n => sourceCoeff lam n - sourceCompletion hW 1) (s : ℂ))\n      (𝓝[>] 1) (𝓝 (0 : ℂ))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilSingularArithmetic.coprimeAffineMask_square_residue",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCoprimeCovariance.lean",
+        "line": 91,
+        "end_line": 109,
+        "statement": "theorem coprimeAffineMask_square_residue {ι : Type*} (S : Finset ι) (Q : ι → ℕ)\n    (hQ : ∀ i ∈ S, Q i ≠ 0) (c : ι → ℝ) (b : ℝ) :\n    Tendsto (fun s : ℝ => (s - 1) *\n      ∑' n : ℕ, ‖(coprimeAffineMask S Q c b n : ℂ)‖ ^ 2 / (n : ℝ) ^ s)\n      (𝓝[>] 1) (𝓝 (coprimeAffineSquareDensity S Q c b))",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilHigherDenominator.IsMellinTailCutoff.reciprocal",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorReciprocalCutoff.lean",
+        "line": 33,
+        "end_line": 56,
+        "statement": "theorem IsMellinTailCutoff.reciprocal {ψ : ℝ → ℂ} (hψ : IsMellinTailCutoff ψ) :\n    IsMellinTailCutoff (mellinReciprocalCutoff ψ)",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      },
+      {
+        "name": "RHTower.WeilHigherDenominator.IsMellinTailCutoff.eventually_slow_jet_zero",
+        "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorReciprocalCutoff.lean",
+        "line": 56,
+        "end_line": 72,
+        "statement": "theorem IsMellinTailCutoff.eventually_slow_jet_zero {ψ : ℝ → ℂ}\n    (hψ : IsMellinTailCutoff ψ) (x : ℝ) (n : ℕ) :\n    ∀ᶠ R : ℝ in atTop, iteratedDeriv n (fun y : ℝ => ψ (R⁻¹ * y)) x = 0",
+        "compiler_status": "source_only",
+        "applicability": "not_checked"
+      }
+    ],
+    "proof_ideas": [],
+    "ingredient_sets": [
+      {
+        "description": "Phase shift under lattice indices",
+        "steps": [
+          {
+            "goal": "shift phase by index",
+            "candidate_ids": [
+              "991aa14491276677ebbe0611615ee470db986f4d9559069240ac91c897e55c8a"
+            ],
+            "candidates": [
+              {
+                "id": "991aa14491276677ebbe0611615ee470db986f4d9559069240ac91c897e55c8a",
+                "name": "RHTower.ExposingRayCompletion.phase_shift",
+                "module": "GaloisForLFunctions.RHTower.WeilWorkExposingRayCoherentCompletion",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayCoherentCompletion.lean",
+                "line": 182
+              }
+            ],
+            "obligations": [
+              "phase equality under shift"
+            ],
+            "status": "proposed"
+          },
+          {
+            "goal": "average cosine over interval",
+            "candidate_ids": [
+              "8f40522db78605785ccacaa2677f3ea870336b8ee10a43869d4791d6fb104ed1",
+              "6aa6d626e37e4effab96fa637579fb4b7658e4046d2ae63bbf977de3a9845956"
+            ],
+            "candidates": [
+              {
+                "id": "8f40522db78605785ccacaa2677f3ea870336b8ee10a43869d4791d6fb104ed1",
+                "name": "RHTower.WeilWorkPBAP.cosine_mean",
+                "module": "GaloisForLFunctions.RHTower.WeilWorkPBAPJointConvex",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointConvex.lean",
+                "line": 20
+              },
+              {
+                "id": "6aa6d626e37e4effab96fa637579fb4b7658e4046d2ae63bbf977de3a9845956",
+                "name": "RHTower.WeilWorkPBAP.cosine_product_mean",
+                "module": "GaloisForLFunctions.RHTower.WeilWorkPBAPJointConvex",
+                "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPJointConvex.lean",
+                "line": 59
+              }
+            ],
+            "obligations": [
+              "mean value convergence"
+            ],
+            "status": "proposed"
+          }
+        ],
+        "status": "not_verified"
+      }
+    ]
+  }
+]

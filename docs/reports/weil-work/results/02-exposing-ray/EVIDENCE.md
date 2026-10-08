@@ -1,5 +1,220 @@
 # WP02 evidence
 
+## Cycle31 simultaneous-scale and separator receipts (2026-10-08)
+
+- Direct deep corpus search: `scripts/formal_tools.py research "square block
+  partition simultaneous good scales sublogarithmic harmonic envelope"
+  --mode deep --budget-seconds 120 --json`. Exit0, partial=false,
+  68820 indexed files. All20 candidate lemmas,20 source arguments and the
+  returned ingredient set inspected. Compiler freshness remained mostly
+  pending/stale; semantic coverage unavailable and refresh incomplete.
+  No absence or novelty claim follows from that search.
+- Exact source-checked parent:
+  `WeilSingularArithmetic.exists_small_sqrt_mass_of_sublog_envelope`.
+  Square-block aggregation pays N and N^2 simultaneously, without
+  intersecting independently selected good subsequences.
+- External parent audit: [Bondarenko–Heap–Seip](https://arxiv.org/abs/1405.6516),
+  original2014/revised2015, concerns Hardy-space coefficient bounds for
+  Dirichlet polynomials. This supplies ancestry, not this exact weighted
+  source-fibre theorem or a novelty certificate. The Cambridge
+  positive-real-part page failed to load; no theorem was inferred from it.
+- New27th owned leaf `WeilWorkExposingRaySublogScales.lean`,225lines:
+  final foreground
+  `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogScales.olean GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogScales.lean`
+  exits0, no diagnostics. Actual weighted polar separators derive the
+  simultaneous coefficient estimate; no coefficient growth is assumed.
+- New28th owned leaf `WeilWorkExposingRaySublogTransfer.lean`,361lines:
+  final foreground
+  `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogTransfer.olean GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogTransfer.lean`
+  exits0, no diagnostics. It proves actual far-source arithmetic
+  approximation and weighted polar/full separator equivalence for
+  0<=beta<1/2. Both leaves are wired; no umbrella build was run.
+- New29th owned leaf `WeilWorkExposingRaySublogFibreDensity.lean`,321lines:
+  final foreground
+  `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogFibreDensity.olean GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogFibreDensity.lean`
+  exits0 without diagnostics. It proves weighted closure equality,
+  arbitrary exact-fibre recovery, raw all-integer recovery and literal
+  Fejer null recovery. Both rowwise poles remain in the actual source type.
+- Combined imported `#print axioms` audit, run via
+  `lake --old env lean /tmp/wp02-cycle31-all-audit.lean`, exits0.
+  All10 public theorems have exactly propext/Classical.choice/Quot.sound:
+  three scales, two transfer, and five fibre theorems including nonemptiness.
+  Printed final types contain only source/exponent/domain conditions;
+  no research premise, extra growth, positivity, RH or recovery assumption.
+- All29 owned imports occur exactly once. Tracked scoped whitespace check
+  exits0. All three new-file no-index checks emit no diagnostics (exit1
+  denotes a new file). No active forbidden declaration or heartbeat
+  override was introduced. Source/cache artifacts retained.
+- Final guarded `scripts/formal_tools.py lint` exits1 with six unrelated
+  reachability errors: RHTower.WeilWorkPBAPJointSourceBudget;
+  HTGeometry.ApertureConeCalculus, ApertureConeWinding,
+  ApertureLogTranslation, ApertureOpenHistoryIdeal,
+  BoundaryCoronaCStarAlgebra. No finding in the29 owned WP02 leaves.
+  Those other modules were not modified. No full/umbrella build,
+  numerical experiment, commit or push was run.
+- Verdict BRIDGE; scientific novelty unestablished. Beta<1/2 recovery is
+  now Lean-proved, not merely a coefficient estimate or assumed-growth
+  reduction. Beta<1, both gamma-energy diagnostics and universal WP02
+  remain OPEN. The proof does not establish half-exponent sharpness.
+
+## Cycle30 research and paper advance (2026-10-08)
+
+- Four direct deep corpus searches: weighted exact-fibre recovery;
+  polar distribution/residue growth; multiplicative Toeplitz absolute
+  coefficient bounds; homogeneous prime-factor layers. Every search's
+  20 candidates and20 source arguments, plus all proposed ingredient sets,
+  were inspected. The residue search was partial with pending coverage;
+  the other three reported partial=false with indexed inventories of
+  68789,68795,68800 files. Compiler metadata mostly pending/source-only,
+  background refresh incomplete. No absence or freshness guarantee follows.
+- Exact source reads: unrestricted cycle29 fibre recovery, constant
+  transfer, WP01 fixed-profile energy escape, primitive-set square law,
+  actual polar resonator gamma bound, good-scale harmonic-envelope theorem,
+  modified full-completion pole boundary, sparse Toeplitz sharpness.
+  None was treated as an unconditional gamma lower bound.
+- The sublog coefficient gap is resolved on paper for beta<1/2 by
+  primitive Omega layers, their harmonic exponential moment, and averaging
+  both remote shifts together. Complete argument and quantifiers are in
+  `SUBHALF-LOG-FIBRE-PROOF.md`. The original beta<1 conjecture is still open.
+- [Booker, L-functions as distributions](https://arxiv.org/pdf/1308.3067),
+  Definition1.3 and Theorem1.7, was read directly. Its discrete spectral
+  multiplicities and other conditions are absent from these separators;
+  its classification is not an imported proof.
+- [Bondarenko–Heap–Seip](https://arxiv.org/abs/1405.6516), primary abstract,
+  gives Hardy-space coefficient estimates and classical ancestry. It does
+  not by itself state the present exact source-fibre recovery theorem.
+  The primary Cambridge page for “Dirichlet series with positive real part”
+  timed out; no theorem is inferred from that inaccessible text. Exact
+  external mechanism searches were noisy; scientific novelty remains
+  unestablished.
+- Arithmetic formalization uses the installed finite Euler-product API,
+  `ArithmeticFunction.cardFactors`, and the corpus's elementary
+  `Sieve.mertensSecond_upper`. Candidate APIs were checked in scratch;
+  nonexistent convenience names were discarded. The complete arithmetic
+  scratch passed without diagnostics before installation. Saved-leaf and
+  imported axiom audits are recorded separately when finished.
+
+
+## Cycle30 arithmetic receipts (2026-10-08)
+
+- Saved251-line leaf `WeilWorkExposingRaySublogArithmetic.lean`, namespace
+  `RHTower.ExposingRayTransfer`, umbrella-wired as the24th owned leaf.
+- Final foreground command:
+  `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogArithmetic.olean GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogArithmetic.lean`:
+  exit0, no diagnostics. Complete scratch had also passed.
+- Imported axiom audit exits0. `exists_omega_harmonic_bound`,
+  `omega_layer_primitive`, `exists_primitive_harmonic_square_bound` each
+  depends on exactly `[propext, Classical.choice, Quot.sound]`.
+- Guarded formal lint exits1 on12 unrelated unreachable modules:
+  RHTower `WeilPaperEnergyFiberClosure`, `WeilWorkPBAPJointGammaFloor`,
+  `WeilWorkSettledPhaseValuationConvolution`,
+  `WeilWorkSettledPhaseValuationEndpoints`,
+  `WeilWorkSettledPhaseValuationExponential`,
+  `WeilWorkSettledPhaseValuationFactorization`,
+  `WeilWorkSettledPhaseValuationPolynomials`; HTGeometry
+  `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`,
+  `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`.
+  No WP02 finding. Own whitespace/prohibited-declaration scans clean.
+- No numerical computation, heartbeat override, full build or umbrella
+  build. These arithmetic theorems are components, not an assertion that
+  the actual weighted recovery theorem has already passed Lean.
+
+## Cycle30 source receipts (2026-10-08)
+
+- Saved292-line leaf `WeilWorkExposingRaySublogSources.lean`, namespace
+  `RHTower.ExposingRayTransfer`, umbrella-wired as the25th owned leaf.
+- Final foreground command:
+  `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogSources.olean GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogSources.lean`:
+  exit0, no diagnostics. The scratch's one sequencing-style warning was
+  corrected before the final source audit.
+- Imported axiom audit exits0. All6 public theorems,
+  `integrable_logWeighted_density`, `one_le_sublogResonatorConstant`,
+  `resonator_logWeighted_mass_bound`, `norm_logDensityL1`,
+  `norm_logDensityL1_farTest_sub_le`, `tendsto_logDensityL1_farTest`,
+  depend on exactly `[propext, Classical.choice, Quot.sound]`.
+- The resonator bound and far-polar convergence hold for0<=beta<=1.
+  The half-log restriction enters through the arithmetic envelope,
+  not these analytic source estimates. Exact integer trace recovery
+  and the WP02 lower inequality are not asserted by this leaf.
+- Own whitespace and prohibited-declaration checks pass; no computation,
+  heartbeat override, full build or umbrella build.
+
+- A fifth direct deep search examined simultaneous square-root mass scales
+  N and N^2. All20 candidate lemmas,20 source arguments and its one proposed
+  ingredient set were inspected. It returned partial=false with68814
+  indexed files; most compiler metadata remains pending or stale,
+  semantic coverage unavailable and background refresh incomplete.
+  The useful hit was the already source-read
+  `WeilSingularArithmetic.exists_small_sqrt_mass_of_sublog_envelope`.
+  Its exact all-cutoff hypothesis is derived in the discrete alternative
+  paper proof, not assumed for the actual separator. Other hits and the
+  proposed harmonic-difference ingredient set do not close this step.
+
+## Cycle30 envelope and final receipts (2026-10-08)
+
+- Saved264-line leaf `WeilWorkExposingRaySublogEnvelope.lean`, namespace
+  `RHTower.ExposingRayTransfer`, umbrella-wired as the26th owned leaf.
+- Final foreground command:
+  `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogEnvelope.olean GaloisForLFunctions/RHTower/WeilWorkExposingRaySublogEnvelope.lean`:
+  exit0, no diagnostics. Complete scratch and checked mathlib APIs pass.
+- Both imported public capstones,
+  `exists_harmonic_envelope_of_polar_log_bound` and
+  `exists_sublog_envelope_of_polar_log_bound`, pass axioms audit with
+  exactly `[propext, Classical.choice, Quot.sound]`.
+- Final guarded formal lint exits1 on6 unrelated unreachable modules:
+  RHTower `WeilWorkQuantizationGaussianExtraction`; HTGeometry
+  `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`,
+  `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`.
+  No WP02 finding. All26 owned leaf imports present; own whitespace and
+  prohibited-declaration scans clean. No full/umbrella build or numerical job.
+- All three cycle30 saved leaves and all11 public axiom audits completed.
+  The exact weighted recovery theorem remains PAPER-PROVEN ONLY. Its
+  simultaneous remote arithmetic and separator/fibre Lean steps are the
+  next task; no unconditional WP02 energy lower bound has been supplied.
+
+## Current cycle29 receipts (2026-10-08)
+
+
+- New leaf `WeilWorkExposingRayFibreDensity.lean`,330 lines, namespace
+  `RHTower.ExposingRayTransfer`; all23 owned leaves umbrella-wired.
+- Actual public capstones: `closure_polarFibre_eq_fullFibre`,
+  `exists_exact_fibre_recovery`, `exists_raw_fibre_recovery`,
+  `exists_fejer_null_recovery`; also `polarFibre_nonempty`.
+- Reused exact declarations: `isPolarTest_twoPointResonator`,
+  `atomCoeff_twoPointResonator`, `resonatorMass_pos`, `logVector_apply`,
+  `re_weilFullFunctional_eq`, `exists_of_nonneg_on_null_cone`,
+  `polarSpectralBound_iff_fullSpectralBound`, and
+  `geometric_hahn_banach_point_closed`. Mathlib APIs checked in owned scratch.
+- Final saved source command:
+  `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayFibreDensity.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayFibreDensity.lean`:
+  exit0, no diagnostics. No full/umbrella build, resource override or computation.
+- Global guarded `scripts/formal_tools.py lint`: exit1 on7 unrelated
+  unreachable modules: RHTower `WeilPaperNativeRealificationRetract`,
+  `WeilWorkSingularArithmeticNotchBudget`; HTGeometry `ApertureConeCalculus`,
+  `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`,
+  `BoundaryCoronaCStarAlgebra`. No WP02 finding. Scope whitespace and
+  prohibited-declaration scans clean.
+- Imported `/tmp` axiom audit: exit0; all5 public theorems above depend on
+  exactly `[propext, Classical.choice, Quot.sound]`. No added axiom or
+  unproved analytic premise occurs. Final source/cache audit and imported
+  theorem audit both completed before owned scratch cleanup.
+- Deep exact-fibre search completed,20 candidates and20 source arguments
+  reviewed; no proof ideas, one unverified ingredient set. Coverage snapshot
+  older, compiler freshness incomplete, semantic coverage unmeasured. Actual
+  separation/mixture APIs were read and tested, not inferred from hit ranks.
+- Deep sublogarithmic spectral-weight search was partial at deadline;
+  all20 candidates and20 source arguments reviewed. Targeted lexical
+  `sublog --module Weil` returned the harmonic-envelope good-scales theorem;
+  its actual statement was read and its extra assumption kept explicit.
+  `weighted recovery --module Weil` returned no hit. No absence claim.
+- External exact-mechanism search was noisy. Primary
+  [Connes–Consani, July4 2021](https://alainconnes.org/wp-content/uploads/Selecta.pdf)
+  states the pole-constrained Weil setting and a restricted-support
+  archimedean result; this is not an imported all-aperture producer.
+  [Baake et al.,2020](https://londmathsoc.onlinelibrary.wiley.com/doi/full/10.1112/tlm3.12020)
+  was checked as descendant context for classical positive-definite measure
+  theory. Neither search establishes novelty of the exact-fibre statement.
+
 ## Corpus searches (2026-10-07)
 
 - `research "exposing ray" --json`: complete response; older coverage snapshot and semantic coverage unavailable; ranked near matches included irrelevant rays. Source verified manually.
@@ -409,3 +624,578 @@ The pole-lift generated recipe was explicitly invalid: it cited weilPositive_of_
 Opened primary sources: Burnol math/9811040 PDF; Desogus2609.20367 current abstract (v3, October6) and earlier v1 HTML; Jorgensen--Tian1712.07264 PDF; Chung--Kim2005 publisher abstract. Cardiff conditional-distribution PDF URL was inaccessible. No numerical/computational claim was adopted. No new Lean edit, foreground Lean job, umbrella change or build occurred this cycle. New conjecture remains unproved and subject to endpoint utility audit.
 
 Cycle20 verification/cleanup: scoped git diff --check exits0; both new-file no-index checks emit no whitespace diagnostics (exit1 means file differs from /dev/null). All seven search processes were terminal before their seven owned JSON files were removed. No own process remains live. Durable memory rh/weil_work_02_cycle20_density_correction_2026_10_08 saved. Goal ACTIVE.
+
+
+## Cycle21 completed research audit
+- wp02-cycle21-completion-search.json: exit0; query='polar Weil positive full completion tempered distribution half pole exponential remainder'; mode=deep; partial=False; indexed/inventoried=68618/68618; candidates=20, arguments=20, ideas=0, ingredient sets=1, declarations=0.
+- wp02-cycle21-jump-search.json: exit0; query='polar integer autocorrelation samples gamma Levy kernel nonlocal Dirichlet energy orthogonal dilations lower bound'; mode=deep; partial=False; indexed/inventoried=68620/68620; candidates=20, arguments=20, ideas=0, ingredient sets=1, declarations=0.
+- wp02-cycle21-gamma-search.json: exit0; query='"gamma" "autocorrelation" "energy"'; mode=lexical; partial=not reported; indexed/inventoried=not reported/not reported; candidates=0, arguments=0, ideas=0, ingredient sets=0, declarations=4.
+- wp02-cycle21-sonin-search.json: exit0; query='integer dilation orthogonality Mellin conductor Sonin null autocorrelation'; mode=deep; partial=False; indexed/inventoried=68622/68622; candidates=20, arguments=20, ideas=0, ingredient sets=1, declarations=0.
+
+All three deep searches finished non-partial, and all their candidate/source statements and complete ingredient steps were inspected. The lexical gamma query returned four declarations and no deep-search coverage fields. Compiler metadata for the deep queries remained mostly pending/stale; these are retrieval receipts, not compilation or absence proofs.
+
+Generated completion recipe mixed higher-denominator endpoint residues with this task's theta tail bounds; it did not control the homogeneous distribution remainder. Jump recipe confused a Dirichlet-polynomial upper bound and support-lower-endpoint dilation with the requested gamma lower bound. Sonin recipe left actual projection orthogonality and source identification as obligations. None was adopted as a proof.
+
+Direct reads: PBAP CriticalDatum/CriticalBoundary/CriticalResidue; FullConeBochnerMeasure; RegularDeviationRigidity; LebesgueAtomWeilPositivity; FractionalMassAtomicRigidity; CCMActualHeadGammaAutocorrelationEnergy and GammaJumpBinetFormula. Targeted source checks also recovered the negative nonpolar Fejer witness and this task's bounded coherent completion/positive family-specific floor. No unavailable spectral-mass assumption or full-cone admission was inserted.
+
+Primary sources opened: Chen--Weth1710.03416 and Connes--Consani2006.13771. The quasi-inner publisher open returned403. CYCLE21-AUDIT.md records their limited use and the incomplete paper-proof phase. No mathematical computation, Lean edit/build, umbrella change, subagent, commit or push occurred. All four own search processes terminal before cleanup. Goal ACTIVE; no new theorem or frontier advance claimed.
+
+Cycle21 cleanup: four owned search JSON files removed after terminal exit and evidence capture. Scoped git diff --check exits0; new-file no-index check has no whitespace diagnostics (exit1 denotes the new file). No own Lean or search job remains live. Durable continuation memory: rh/weil_work_02_cycle21_pole_jump_audit_2026_10_08.
+
+
+## Cycle22 completed research audit
+- wp02-cycle22-signed-search.json: exit0; query='matched exposing ray signed gamma lower trace compensation logarithmic'; partial=False; indexed/inventoried=68645/68645; candidates=20, arguments=20, ideas=0, ingredient sets=1.
+- wp02-cycle22-quantile-search.json: exit0; query='signed gamma outgoing quantile lower bound actual head producer'; partial=False; indexed/inventoried=68645/68645; candidates=20, arguments=20, ideas=0, ingredient sets=1.
+- wp02-cycle22-fractional-search.json: exit0; query='fractional gamma ratio Mellin uncertainty integer null autocorrelation energy'; partial=False; indexed/inventoried=68646/68646; candidates=20, arguments=20, ideas=1, ingredient sets=1.
+- wp02-cycle22-density-search.json: exit0; query='polynomial derivatives Riemann kernel dense Fourier weighted L2 finite integer null zero carrier'; partial=True; indexed/inventoried=68650/68650; candidates=20, arguments=20, ideas=0, ingredient sets=1.
+  Retrieval errors: [{"stage": "semantic_retrieval", "error": "Qdrant deadline exceeded"}]
+- wp02-cycle22-finite-head-search.json: exit0; query='finite integer null polar negative gamma energy finite head logarithmic frequency cost'; partial=False; indexed/inventoried=68654/68654; candidates=20, arguments=20, ideas=2, ingredient sets=1.
+- wp02-cycle22-polar-quadrature-search.json: exit0; query='polar cosh moment logarithmic integer sampling quadrature archimedean energy signed interpolation'; partial=False; indexed/inventoried=68655/68655; candidates=20, arguments=20, ideas=0, ingredient sets=1.
+- wp02-cycle22-degree-search.json: exit0; query='Xi polynomial degree finite cosine moments negative gamma energy polar carrier Christoffel'; partial=False; indexed/inventoried=68656/68656; candidates=20, arguments=20, ideas=0, ingredient sets=1.
+
+All returned candidate/source statements, proof ideas and complete ingredient steps inspected. The density query was partial because semantic retrieval exceeded its Qdrant deadline. Every refresh reported the background indexer running. Inventories ranged from68,645 to68,656 files; compiler snapshots were predominantly pending/stale, with43 compiled snapshots and2 errors. Retrieval is neither compilation nor an absence proof.
+
+Direct source checks: actual matched-family Weil identity; CCMActualHeadQuantileGammaChiSquareProducer and CoherentQuantileGammaNoGo; XiPolynomialDensity and WeilWorkDeficitRestrictedXiDensity; actual Fejer negative energy, polar derivative transform and zero evaluations. WP06 C2f, C4b, C8, C10 and C15 were consulted only for prior results and limitations. WP01 TORUS-DENSITY was checked for its frequency-cost/tightness caveat. The source result named paperGammaEnergy_nonneg was not substituted for the signed archEnergy; similar names do not justify that transfer.
+
+CYCLE22-AUDIT.md and FINITE-HEAD-CARRIER-DIAGNOSTIC.md record the verdicts. The new weighted-density/finite-cone paper argument is classified BRIDGE and remains unformalized. Its sources are noncompact; it is not a counterexample to WP02. The linear-degree conjecture and its exact negation remain open, with an explicit endpoint-utility gate.
+
+Primary sources opened: Beckner math/0701939, de Jeu math/0111019, Romik author-hosted orthogonal-polynomial paper, Zhu2608.24827v2. No mathematical computation, new Lean edit/build, umbrella change, subagent, commit or push. Existing compiled theorem counts are unchanged.
+
+Cycle22 cleanup: all seven owned JSON files removed after terminal exit and receipt capture. Scoped tracked-file whitespace check passed; both new-file no-index checks emitted no whitespace diagnostics (exit1 denotes a new file). No own process remains live. No unchanged Lean audits were repeated. Durable continuation memory: rh/weil_work_02_cycle22_signed_density_audit_2026_10_08.
+
+## Cycle23 research and gamma-mode boundary
+
+- wp02-cycle23-polar-search.json: exit0; query='polar cosh cancellation integer logarithm quadrature error signed gamma jump energy'; deep; partial=False; indexed/inventoried=68659/68659; candidates20, arguments20, ideas0, ingredient sets1.
+- wp02-cycle23-one-sided-search.json: exit0; query='polar archimedean energy nonnegative all integer autocorrelation coefficients nonnegative cone weights'; deep; partial=False; indexed/inventoried=68660/68660; candidates20, arguments20, ideas0, ingredient sets1.
+- wp02-cycle23-gamma-tail-search.json: exit0; query='gamma Binet finite mode truncation inverse square tail exposing ray exponential cutoff loss'; deep; partial=True; indexed/inventoried=68663/68663; candidates20, arguments20, ideas0, ingredient sets1. Semantic retrieval error: 'local runtime deadline expired'.
+
+All returned candidate/source statements and complete ingredient steps inspected.
+Background indexer remained active; compiler snapshots were mostly pending/stale,
+with43 compiled snapshots and2 errors. Search completion is not compiler verification
+or a novelty/absence proof. No generated recipe was promoted to an analytic proof.
+
+Direct source checks: actual quarter-line DigammaDifferenceSeries and
+DigammaVerticalMinimum; CCMActualHeadGammaAutocorrelationEnergy's real-part conversion;
+WeilSymbolMertensExpansion's exact cosine integral; actual IsPolarTest, atomCoeff,
+archEnergy; fixed-weight decay and exact near-threshold families. GammaJumpBinetFormula
+uses a different mode normalization and was not silently substituted. The one-sided
+full-cone theorem does not prove the auxiliary polar nonnegative-trace conjecture.
+
+Primary sources opened: https://dlmf.nist.gov/5.7 and
+https://arxiv.org/html/2607.02828v3 (Groskin, finite Guinand--Weil dictionary).
+The latter's real-frequency cutoff differs from the gamma-mode index used here.
+No numerical result or experiment was adopted. GAMMA-TRUNCATION-PROOF.md records
+the complete paper argument before Lean, its ancestry and BRIDGE classification.
+No significant external novelty or RH lower sign is claimed.
+
+The complete scratch proof passed without warnings. Final installed audit:
+
+    cd formal
+    lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayGammaTruncation.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayGammaTruncation.lean
+
+Exit0, no warnings. A separate /tmp import audit checked all ten public
+theorems with #print axioms: mode_nonneg, mode_le, hasSum_mode,
+symbol_remainder_lower, moment_nonneg, energy_remainder_lower,
+atom_difference_le, matched_moment_floor, matched_remainder_floor,
+adaptive_truncation_counterexample. All use exactly propext, Classical.choice,
+Quot.sound. No new axiom, assumed positivity, numerical experiment, sorry,
+heartbeat increase or recursion workaround. One foreground Lean job at a time.
+
+The new leaf is wired into RHTower. `scripts/formal_tools.py lint` exits1;
+its output ends with eight unrelated unreachable-module errors:
+WeilWorkSettledPhaseCoprimeCanonical, WeilWorkSettledPhaseCoprimeCosineBound,
+WeilWorkSettledPhaseCoprimeDeviation; HTGeometry.ApertureConeCalculus,
+ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal,
+BoundaryCoronaCStarAlgebra. Large-file warnings were truncated in the tool
+display; no WP02 finding was shown. This is not a passing global lint claim.
+Other agents' modules were not modified. Scoped whitespace checks emitted
+no diagnostics; the new-file no-index check exits1 because the file is new.
+No full build, umbrella build, subagent, commit or push.
+
+Cycle23 cleanup: all own search/Lean/lint processes terminal, six owned /tmp
+files removed after receipt capture. Installed leaf and its current olean
+retained. Final tracked whitespace check exits0; new paper no-index check
+has no diagnostics (exit1 means new file). Continuation memory:
+rh/weil_work_02_cycle23_gamma_boundary_2026_10_08.
+
+## Cycle24 initial signed-sampling audit
+
+Three new deep searches completed exit0, partial=False, no errors; all returned
+candidate/source statements and complete ingredient steps were inspected:
+
+- sampling: query='dense logarithmic integer autocorrelation sampling polar cosh gamma energy lower bound frequency cost'; inventory/indexed68678; candidates20, arguments20, ideas0, ingredient sets1.
+- modulus: query='autocorrelation logarithmic Fourier moment modulus continuity quadrature', moduleWeil; inventory/indexed68679; candidates20, arguments20, ideas0, ingredient sets1.
+- ground: query='ground state transform matched integer autocorrelation signed prime jump Dirichlet comparison zero surplus', moduleWeil; inventory/indexed68681; candidates20, arguments20, ideas1, ingredient sets1.
+
+Compiler metadata remains mostly pending/stale (43 compiled snapshots,2 errors).
+The first recipe assumes Weil positivity. The second supplies a regularized
+identity, not a quantitative modulus. The third drops the negative mass term
+from the prime-jump decomposition. All rejected as lower-producer proofs.
+
+Actual source reads: WeilPaperNullSamplingSpace (signed zero-mass mixtures,
+not a positive-cone theorem); CCMGuinandWeilThirdGradeMatchedQuadrature through
+its full single-cell/summed Lipschitz estimates; CCMRestrictedWeilGroundFrequencyLocalization
+through its actual frequency-tail budget; STATUS MUST-786 and current WP02
+frontier. Ground-zero quadrature explicitly retains unknown ground energy.
+No sampled-ratio value, source Lipschitz constant, exponential pole-moment
+continuity or scalar comparison was inferred from these results.
+
+Primary pages reopened: Connes--Consani2006.13771, Beckner math/0701939,
+Zhu2608.24827v2. The latter's window-specific computational claims were not
+used; no numerical experiment or certificate was run. Zenodo DOI
+10.5281/zenodo.21856509 could not be opened; the secondary summary is not
+used as proof. Generic web results supplied no new signed estimate.
+
+Cycle24 remains in conjecture/paper work on VANISHING-MASS-DEFECT, not a
+completed new theorem. No cycle24 Lean edit/build or new axioms. All three
+search processes terminal; their owned JSON files removed after this capture.
+
+## Cycle24 pole-grid arithmetic audit
+
+Three further deep searches completed exit0. All candidate/source statements,
+proof ideas and complete ingredient steps inspected:
+
+- grid-zeta: `integer logarithm polar quadrature defect real zeta critical line cosh Euler Maclaurin`; partial=True (semantic runtime deadline); inventory/indexed68685; candidates20, arguments20, ideas0, ingredient sets1. Generic quadrature recipe did not prove the identity.
+- copoisson: `integer null coPoisson zeta multiplier archimedean gamma energy Sonin`; partial=True (malformed judge JSON and semantic deadline); generation1289134, inventory coverage unavailable; candidates20, arguments20, ideas0, ingredient sets0. Signed sampling hits did not produce a positive cone estimate.
+- moment: `polar compact autocorrelation Fourier zeta pairing critical line integer traces conserved moment`; partial=False, errors[]; inventory/indexed68687, generation1289193; candidates20, arguments20, ideas0, ingredient sets1. Recipe's conserved-moment and critical-line trace obligations were not proved. Compiled snapshots43/error2/pending52174/stale2660; do not infer source absence from retrieval.
+
+Inspected ZetaPartialSumStrip's complete partial-sum limit proof and
+XiHeatCassiniWoldNaturalLogMeshContinuation's zeta-plus-remainder construction.
+They give the classical parent mechanism, not the claimed signed lower bound.
+The new paper GRID-DEFECT-PROOF records the literal q_n pole cells and their
+positive summable correction to n^-1/2. Its no-go uses positive REAL values,
+not merely large absolute values of zeta.
+
+Primary sources opened: Kalpokas--Korolev--Steuding,
+https://arxiv.org/abs/1109.2224 and https://arxiv.org/html/1109.2224,
+unconditional Corollary3 at phi=0; Burnol,
+https://numdam.org/articles/10.5802/jtnb.434/ (abstract/references only;
+not used as a proof of the proposed moment identity). No numerical job run.
+
+Lean scratch formalization started only after dependency-closed paper proof.
+Installed cycle24 leaf subsequently completed:
+`WeilWorkExposingRayGridDefect.lean`, final foreground command
+`lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayGridDefect.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayGridDefect.lean`,
+exit0/no warnings. All15 public theorem axiom checks exit0 and contain only
+propext, Classical.choice, Quot.sound. Exact scalar kernel limit and weighted
+error proved; no formal large-value obstruction or source-moment identity yet.
+
+Lint exit1: unrelated unreachable modules WeilWorkSettledPhaseDivisibilityFourier,
+WeilWorkSettledPhasePrimeDifference, WeilWorkSettledPhaseValuationMasks;
+HTGeometry.ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation,
+ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. No WP02 finding.
+Large-file warnings are unrelated. One new RHTower import; no umbrella build.
+New leaf/paper and tracked changed-file whitespace checks have no diagnostics.
+
+All own search, Lean and lint processes terminal. Seven owned temporary
+search/proof/name/axiom/lint files removed after receipt capture. Installed
+source and current olean retained. Continuation memory:
+rh/weil_work_02_cycle24_grid_kernel_2026_10_08. Next remains actual-source
+moment formalization, not a completed WP02 goal.
+
+## Cycle25 actual-source pairing audit
+
+Deep query `compact polar Fourier density zeta critical line integral conserved integer autocorrelation moment`
+completed exit0, partial=False, errors[], inventory/indexed68705,
+generation1289480/current1289481. All20 candidate statements,20 source
+arguments and complete steps of the single ingredient set inspected; no
+proof ideas. Proposed recipe left Fourier-conservation and critical-line
+pairing unproved and supplied no applicable producer. Compiler metadata:
+43 compiled snapshots,2 errors,52190 pending,2660 stale. No absence claim.
+
+Current kernel source/umbrella/card revalidated. Actual cosine moment,
+continuous polar cancellation, compact-C2 linear symbol integrability,
+and Mathlib compact-lag Fubini APIs read. Exact paper identity unchanged;
+finite principal subtraction removes the need for infinite-series
+interchange. Scratch proof now covers the actual weighted integral error
+and compact-lag pairing; no final installed moment leaf claimed yet.
+
+Follow-up deep query `zeta multiplication compact polar source norm conductor archimedean energy commutator integer null`
+completed exit0, partial=True (reranking deadline; malformed judge JSON),
+inventory/indexed68718, generation1289641/current1289642; compiled43/error2,
+52202 pending,2660 stale. All20 candidates and20 source arguments inspected;
+no proof ideas or ingredient sets. Actual source reads:
+CCMFUSuzukiMobiusDivisorDilationChannels through the physical quotient-block
+identities, and ConnesZetaLineTemperate declaration inventory. The former
+retains the joint signed Möbius sum; positivity of individual block weights
+does not give positivity after aggregation. The latter supplies a Schwartz
+multiplier, not a signed conductor-energy estimate. No new producer follows.
+
+Cycle25 final verification: installed
+`formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayZetaMoment.lean`,
+344 lines. Foreground
+`lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayZetaMoment.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayZetaMoment.lean`
+exits0/no warnings. All12 public theorem axiom checks via /tmp exit0,
+only propext/Classical.choice/Quot.sound. One RHTower import verified;
+no full or umbrella build, no heartbeat changes. New source/paper and
+tracked changed-file whitespace checks show no diagnostics.
+
+Latest lint exit1 has13 unrelated unreachable modules:
+RHTower.WeilPaperSymmetricObservationCubes, WeilWorkDeficitMellinSlope,
+WeilWorkHigherDenominatorMellinTailSupport, WeilWorkQuantizationDilationInverse,
+WeilWorkQuantizationDirichletInverse, WeilWorkQuantizationFrequencyMass,
+WeilWorkQuantizationRadicalResidues, WeilWorkQuantizationRadicalTranslation;
+HTGeometry.ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation,
+ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. No WP02 finding.
+Do not report a global lint pass or edit these out-of-scope modules.
+
+All own search, Lean and lint handles terminal. Five owned temporary
+search/scratch/axiom/lint files removed after evidence capture; installed
+source and current olean retained. Stronger survivor formalized; universal
+signed lower bound still OPEN. Memory:
+rh/weil_work_02_cycle25_zeta_moment_2026_10_08.
+
+## Cycle26 source and closure audit
+
+Four direct deep searches, budget150s each, all exit0. Every returned
+candidate statement, source argument, proof-idea section and ingredient set
+was inspected. Each search returned20 candidates,20 source arguments,
+no proof ideas and one unverified ingredient set.
+
+- source: `polar integer null logarithmic gamma energy source covariance conditional lattice pole defect`;
+  partial=True, malformed local judge JSON; inventory/indexed68726,
+  search generation1289742, coverage1289755/current1289763.
+- interpolation: `polar autocorrelation logarithmic trace interpolation dense integer samples negative cells energy`;
+  partial=False, errors=[], inventory/indexed68727, search1289812,
+  coverage/current1289819.
+- packet: `finite logarithmic integer packet gamma matrix positive polar coefficient divisibility constraints`;
+  partial=False, errors=[], inventory/indexed68730,
+  search/coverage/current1289902.
+- closure: `compact polar integer null mixtures converge Fejer spectral density bounded archimedean energy closure`;
+  partial=False, errors=[], inventory/indexed68731, search1290016,
+  coverage1290030/current1290034.
+
+Compiler metadata remains mostly pending/stale: final coverage has43
+compiled snapshots,2 errors,52214 pending,2660 stale,38 stale snapshots,
+2654 unavailable, and one source-only umbrella. Retrieval supplies no
+absence theorem. The proposed ingredient sets do not discharge the target:
+geometric lattice-class laws are unrelated to analytic energy; cell upper
+bounds require their own input envelopes; local finiteness is not positivity;
+fixed-aperture compact convergence does not control escaping apertures.
+
+Direct source checks: own LatticeMass sampled/polar/mixture identity and
+sign classification; actual SparseWeightsObstruction far-polar definition,
+Fourier multiplier and cosine moments; CoherentCompletion density identity;
+PBAPCriticalDatum actual signed Gamma/pole/mass definitions. The retrieved
+CCMRestrictedWeilPolarGroundState proof fixes one aperture throughout its
+compact embedding and pole-continuity argument. WP01 RESULT/PACKET-ENERGY
+and TORUS-DENSITY distinguish bounded real-frequency energy from weak
+prime-torus realization. No unchanged leaf was rebuilt.
+
+External primary sources searched/opened: Burnol math/0101068 and
+Connes--Consani2006.13771 abstracts; Groskin2607.02828 full HTML introduction
+and scope; Suzuki DOI10.4153/S0008414X25101739 abstract/introduction.
+Links and exact limitations appear in POLAR-NULL-CLOSURE-CONJECTURE.md.
+No numerical claim or claimed RH proof from search results was adopted.
+Novelty of the new diagnostic remains unestablished.
+
+Cycle26 produced an OPEN conjecture/audit only: no dependency-closed paper
+proof, Lean edit, new imported premise, build, axiom check, or lint rerun.
+The prior20 installed leaves retain their recorded audits; the prior global
+lint result is not presented as a new check. Four owned search handles are
+terminal; their JSON files are removed after these receipts and the final
+documentation checks. Universal WP02 remains ACTIVE/OPEN.
+
+## Cycle27 actual-fibre recovery investigation
+
+Four direct deep searches, all nonpartial and errors=[]:
+
+- `positive polar convolution multiplier exact integer null finite complex translation measures Fejer recovery`:
+  generation/current1290149, 68,737 indexed/inventoried;20 candidates,
+  20 source arguments,0 proof ideas,1 ingredient set.
+- `bounded archimedean symbol polar positive integer coefficients logarithmic density mass allowance`:
+  generation/current1290237,68,738 indexed/inventoried;20/20/0/1.
+- `polar null cone Fourier density L1 closure bounded multiplier positive definite multiplicative Toeplitz transference`:
+  generation1290342/current1290343,68,744 files;20/20/0/1.
+- `positive definite discrete measure coefficient function Folner transference locally finite`:
+  generation1290361/current1290362,68,744 files;20/20/1/1.
+
+Every returned candidate/source statement and proposed proof/ingredient
+entry was inspected. Compiler enrichment remains mostly pending or stale;
+index inventory completeness is not compiled applicability or proof of
+absence. The proposed ingredient sets do not supply the actual recovery
+or transference theorem. Direct source checks verified the generic algebraic
+null-cone separator, exact signed polar coordinate resonators, their mass
+and full integer correlation identities, and current mathlib divisor-count
+and factorization formulas.
+
+Failed direct modulation attempt: positive modulations can cancel a finite
+set of samples but destroy each row's two polar zeros. Re-polarizing restores
+the remote atom defect. No finite direct bounded-energy construction resulted.
+
+Primary external check: Lenz--Strungaru, arXiv:1412.7377, Proposition2.4
+explicitly gives the equivalence between positive definiteness of a discrete
+measure and its coefficient function, in the ordinary and discrete group
+topologies. This is classical transference, not a new theorem. The paper
+survivor POLAR-FIBRE-DENSITY-PROOF.md includes a finite averaging proof
+specialized to the actual integer atoms, then uses exact resonators and
+positive-form far polarization to prove equality of EVERY fixed finite
+atom fibre's L1 closures. Its stronger quantifiers were separately checked
+against the earlier cycle18 and cycle21 conjectures: neither supplies it.
+
+Status: paper proof under formal audit, verdict BRIDGE; scientific novelty
+unestablished. It gives no Gamma bound, no aperture rate and no universal
+exposing-ray lower inequality. Scratch Lean has checked consecutive divisor
+count ratios and actual multiplicative overlap tending to1. These are
+formalization components, not an installed fibre-density theorem.
+
+Follow-up deep query `autocorrelation quadratic form positive translation invariant far polar correction Cauchy Schwarz compact complex tests`:
+partial=true, reranking reported `local runtime deadline expired`;
+generation1290521/current1290522,68,758 files. All20 candidates,20 source
+arguments,1 proof idea and1 ingredient set inspected. Available hits plus
+direct source reads identify `WeilFullConeBochnerMeasure.weilTest_sum_transl`,
+compact-source correlation identities and the corpus positive-definite
+finite-Gram interface. No generic matrix-positivity hit proves the missing
+actual separator extension. Coverage is not an absence claim. This query
+prepares sections4--5; their formal proof remains outstanding.
+
+Cycle27 formal closure: installed393-line leaf
+`WeilWorkExposingRayFibreTransfer.lean`, final target-only foreground
+`lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayFibreTransfer.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayFibreTransfer.lean`
+exits0 without warnings. Imported `/tmp` audit exits0 for ALL TWO public
+theorems, `constantToeplitz_transfer` and `polarMassBound_iff_fullMassBound`;
+each has exactly propext, Classical.choice and Quot.sound. No new axiom,
+prohibited declaration, heartbeat/recursion override or numerical computation.
+Owncache current; all21 own leaves umbrella-wired; scoped whitespace clean.
+
+Guarded formal lint exits1 on10 unrelated unreachable modules:
+RHTower WeilPaperUnboundedSpectralEnergy, WeilWorkSettledPhaseCoprimeCombinations,
+WeilWorkSettledPhaseCoprimeCovariance, WeilWorkSettledPhaseCoprimeVariance,
+WeilWorkSettledPhasePrimeDeletionVariance; HTGeometry ApertureConeCalculus,
+ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal,
+BoundaryCoronaCStarAlgebra. No WP02 finding. No full or umbrella build run.
+All own Lean/search/lint handles are terminal. The full fibre-density theorem
+and E-escape/E-recovery remain unformalized/open respectively. Main goal ACTIVE.
+
+Cycle31 cleanup: all owned processes exited;11 owned /tmp files removed
+only after receipts were preserved. Installed leaves/caches retained.
+Final scoped whitespace audit exits0. hgtl7 five anti-theatre and four
+anti-laziness answers posted. Goal ACTIVE; next target is the unresolved
+signed-cancellation / critical-energy mechanism, not another formal copy
+of the completed subhalf weighted fibre theorem.
+
+## Cycle32 one-pole candidate audit (2026-10-08)
+
+Previous cycle PROGRESS; mission remains universal WP02. hgtl7 reapplied.
+Fresh target/contract/frontier-map reads confirm no full-positive producer
+or critical energy sign. Architecture/testing docs absent. Relevant
+cycle31 memory and actual source declarations rechecked.
+
+Four direct corpus searches (owned JSON retained while work continues):
+1. Deep120s `sublinear logarithmic Toeplitz signed cancellation full source
+   separator divisor powers`: exit0, partial=false,68828 indexed;
+   all20 candidates+20 source arguments+proposed ingredient set reviewed.
+   Actual own log-Toeplitz bound relevant; generic logarithm identities
+   and unrelated sublinear receivers do not close the source problem.
+2. Deep120s, moduleWeil, `sublogarithmic archimedean datum polar full
+   positivity exponential pole obstruction`: exit0, partial=true,
+   68828 indexed; all20+20 reviewed. Existing subhalf/constant transfer
+   and compact polar inverse found; neither supplies the larger range.
+3. Lexical moduleWeil `"conditional" "polar" exponential --any`: exit0,
+   1653 hits; all20 returned declarations and5 exploration hits inspected.
+   The broad OR query has limited relevance; it gives no absence result.
+4. Deep120s, moduleWeil, `one pole conditional positivity cosh doubling
+   recurrence sublinear growth`: exit0, partial=true,68832 indexed;
+   all20+20 reviewed; no proof ideas/ingredient sets. Relevant cosh pairing
+   and actual polar source identities inspected in their existing context.
+Compiler evidence mostly pending/stale, semantic coverage not measured,
+background refresh incomplete. No novelty claim from search absence.
+
+Source-read parents: own WeilWorkExposingRayFibreTransfer and
+SublogEnvelope; WeilBoundedDatumPoleObstruction;
+WeilPrimitiveSetMeanSquare and WeilWorkPBAPCriticalCoefficients. The bounded
+Bohr-recurrence datum theorem cannot simply absorb a growing log cost.
+The public primitive-square machinery applies at each actual resonator
+cutoff. A new strong-induction argument removes a spurious scale-counting
+loss in TOTAL absolute mass; it does not improve the harmonic envelope.
+
+Primary external audit:
+- [Chung–Kim2005](https://www.kurims.kyoto-u.ac.jp/~prims/pdf/41-2/41-2-17.pdf),
+  definitions3.1 and theorem1.1: polynomial homogeneous differential
+  constraints and the corresponding positive-measure representation.
+  This is ancestry, not a theorem for our two imaginary evaluations.
+- [Connes–Consani2020](https://arxiv.org/abs/2006.13771): archimedean
+  Sonin/Weil trace comparison using Toeplitz matrices. The abstract
+  distinguishes the single-place result from the general semi-local
+  setting; no unrestricted arithmetic source sign was imported.
+- [Samaris1992](https://www.cambridge.org/core/journals/bulletin-of-the-australian-mathematical-society/article/dirichlet-series-with-positive-real-part/BF1ED9621CFA4D82B3F1CFD80F84F6AE):
+  primary indexed abstract describes Caratheodory extensions to absolutely
+  convergent Dirichlet series with positive real part. Online date2009 is
+  not publication year. Both direct page/PDF opens failed; no unseen
+  detailed estimate is used.
+- [Booker](https://arxiv.org/abs/1308.3067) and
+  [Oliver2016](https://research-information.bris.ac.uk/en/publications/classification-of-low-degree-l-data/)
+  are adjacent classification parents. Their L-data hypotheses have not
+  been produced for these arbitrary continuous spectral separators.
+
+Selected exact statement/paper: ONE-POLE-SUBLOG-PROOF.md. Verdict BRIDGE;
+external novelty unestablished. The abstract repeated-pole kernel
+x*sinh(x/2) audits the growth threshold but is NOT a source counterexample.
+No source-level beta=1 obstruction, full beta<1 recovery, or WP02 sign
+has been proved. Lean work starts with the actual local mass estimate.
+
+Booker primary PDF definition1.3 was additionally inspected: its datum
+requires strong coefficient decay/mean-square control, a Schwartz
+archimedean kernel after multiplication by x, and a discrete strip divisor
+with only finitely many noninteger multiplicities. An arbitrary weighted
+L1 continuous separator provides none of these conditions automatically.
+The classification is therefore not an available shortcut here.
+
+Further cycle32 corpus receipts: search5 (deep120s, moduleWeil, one-sided
+Toeplitz/log-cost/cosh pole) exit0 partial=false68841 indexed; all20
+candidates+20 source arguments+one ingredient set inspected. It retrieved
+the existing cosh pairing and actual log-Toeplitz extraction, not a signed
+simple-pole elimination. Search6 (deep120s, moduleWeil, compact exponential
+primitive/one-pole/C2 Fourier convergence) exit0 partial=true68847 indexed;
+all20+20+one ingredient set inspected. Proposed prime-difference ingredients
+do not apply. Both have unmeasured semantic coverage and incomplete refresh;
+compiler snapshots remain mostly pending/stale. No absence/novelty claim.
+
+Direct source inspection found CCMRestrictedWeilPolarInverse's existing
+exponential primitive derivative and compact-support theorem; their
+ContDiff statement is smooth, but the derivative/support statements only
+need continuity. ResolventDivisionDecay supplies integration by parts for
+continuous exponentially integrable functions. These are reusable parents,
+not new results claimed by this cycle. The logarithmic Toeplitz sharpness
+example is explicitly a relaxation, not a Weil-positive source.
+
+Final saved-leaf audits for LogLocalMass, CoshDoubling and LogKernel exit0
+without diagnostics. All three wired, bringing the owned leaf count to32.
+Current formal lint exits1 on nine unrelated unreachable modules:
+RHTower.WeilWorkSettledPhaseDiskHurwitz,LogSquareEnergy,ValuationAnalytic,
+ValuationTwist; HTGeometry.ApertureConeCalculus,ApertureConeWinding,
+ApertureLogTranslation,ApertureOpenHistoryIdeal,BoundaryCoronaCStarAlgebra.
+No owned WP02 finding. No full/umbrella build or heartbeat override used.
+
+The combined imported axiom audit for ALL18 public theorems in these
+three leaves exits0. Every theorem depends only on propext,
+Classical.choice and Quot.sound. No extra axiom or hidden growth premise.
+
+Cycle32 utility search7: direct deep120s/moduleWeil query `one pole integer
+null archimedean gamma energy negative source critical logarithmic recovery`
+exits0, partial=true; coverage generation1292612 pending; malformed judge
+JSON and semantic deadline reported. All20 candidate and20 source-argument
+statements and available method records inspected; no proof ideas or
+ingredient sets returned. Refresh remains background/incomplete. Existing
+critical-window and Herglotz statements require modified full positivity
+or WeilPositiveFull; pole-weight zero-sum comparison explicitly assumes
+RH. None supplies the missing unconditional critical-energy producer.
+Direct reads: WeilWorkPBAPCriticalWindow1–82 and
+WeilWorkSingularArithmeticHerglotzPairing1–130 confirm those premises.
+No absence or novelty conclusion follows from this partial search.
+
+Cycle32 FINAL: all six saved leaves30–35 pass the foreground command
+`lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<leaf>.olean GaloisForLFunctions/RHTower/<leaf>.lean`
+without diagnostics. New leaves after the first three are
+WeilWorkExposingRayOnePolePrimitive, WeilWorkExposingRayOnePoleTransfer,
+and WeilWorkExposingRayOnePoleFibreDensity. Scratch35 first failed on
+missing Zeta23 namespace; opening the verified namespace resolved that
+and downstream elaboration errors. Scratch and final saved capstone pass.
+
+The final combined imported audit prints axioms for EVERY public theorem
+in these six leaves:33 total. Exit0; all exactly propext,
+Classical.choice,Quot.sound. No sorryAx or new research axiom. Integration
+check finds35 owned leaves, all imported exactly once, no trailing
+whitespace. Scoped git diff whitespace check exits0.
+
+Latest formal lint exits1 on FIVE unrelated unreachable HTGeometry leaves:
+ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation,
+ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. Earlier snapshots'
+RHTower findings are absent in this latest output. No owned WP02 finding.
+No full or umbrella build, heartbeat override, numerical experiment,
+commit or push. Other agents' work was not modified.
+
+Cycle32 utility search8: direct deep120s/moduleWeil query `polar separator
+one pole positive distribution cosh residue spectral measure sublogarithmic`
+exits0, partial=true from reranking deadline;68870 indexed/inventoried,
+compiler snapshots largely pending/stale; background refresh incomplete.
+All20 candidate and20 source statements and the full proposed ingredient
+set inspected. Its Bochner step requires WeilPositiveFull, so the recipe
+does NOT manufacture a full-positive source from a polar separator.
+Newly indexed own LogKernel/OnePoleTransfer hits are not independent
+novelty evidence. No absence claim.
+
+Additional source audit: WeilPositivityResidueRigidity's pairing_one
+(lines771ff) explicitly isolates a pole from the constant arithmetic
+weight; its residueSymbol has only the proved linear-in-frequency ceiling
+(lines497ff), not the needed sublogarithmic bound. This cannot be inserted
+as a bounded weighted separator. WeilPositivityMultiplicativeToeplitzBound
+already constructs genuine polar resonators and proves the full finite
+multiplicative form bound; no new claim of that construction is made.
+Those facts motivate auditing signed multiplicative packets against a
+surviving pole. No signed-residue elimination or critical-energy conclusion
+has been proved by this cycle.
+
+## Cycle33 paper and implementation in progress
+
+- Five direct corpus searches inspected. Searches1/2/3/4 were deep120s;
+  search1 complete,2/3/4 partial with retrieval/reranking deadlines.
+  Search4 indexed68881 files, refresh background/incomplete, compiler
+  coverage mostly pending. All20 candidates and20 source arguments per
+  deep search, plus proposed ingredient sets, reviewed. Search5 lexical
+  inspected all20 returned declarations. No absence proof is asserted.
+- Actual source reads establish the logarithmic complex matrix budget,
+  local absolute mass, signed Abel integration, exact harmonic-pair
+  transform and beta<=1 limits of the cycle32 primitive proof.
+- Critical endpoint paper argument saved in CRITICAL-ONE-POLE-PROOF.md.
+  It derives the repeated-pole term from ordinary Bochner plus the
+  source ODE, then excludes both signs with complex approaches. Preferred
+  formal route uses signed Abel integration of finite harmonic ceilings.
+  Endpoint theorem is NOT Lean-verified yet; universal WP02 remains OPEN.
+- Existing read-only critical_twisted_density_bound imposes unit norm at0
+  and multiplicativity for all naturals, forcing trivial characters.
+  Owned positive-integer replacement is being checked. Parent untouched.
+- Primary papers inspected: Thorn2018 theorem2.2/remark2.3;
+  Nikolski–Pushnitski2020 multiplicative Folner hypotheses;
+  Guo–Li–Zhou2023 bounded-symbol finite-section theorems;
+  Chung–Kim2005 homogeneous differential constraints;
+  Jablonski–Jung–Stochel2022 semigroup Hankel convention;
+  Suzuki2023 section3.3 primitive at real Fourier origin;
+  Zhu2026 arXiv:2608.24827v2 theorem1.1 fixed-window certificate.
+  None imported as an unpaid arbitrary-separator endpoint theorem.
+- LogLocalMass's previously private full complex matrix theorem was
+  exposed publicly for reuse; saved-source foreground final audit with
+  lake --old env lean exits0. Mathematical proof unchanged.
+- Tooling correction: a first names audit used #print and an unnecessarily
+  broad import. Its exact child PID33544 was terminated; exit143 verified.
+  A mistakenly overlapping scratch invocation from repo root failed
+  immediately on unknown module prefix (exit1). No compilation succeeded
+  from that invocation. Subsequent audits use formal cwd, #check, and
+  strictly wait for terminal exit before starting another Lean process.
+
+Cycle33 arithmetic checkpoints: saved owned leaves36–38
+WeilWorkExposingRayCriticalTwists, WeilWorkExposingRayCriticalSeries,
+and WeilWorkExposingRayCriticalAbel each pass the foreground final
+`lake --old env lean -o <owned-cache> <saved-leaf>` audit, exit0 and no
+diagnostics. All three are wired once. Twists restrict multiplicativity
+to positive indices; Series derives absolute convergence for every
+exponent>1/2; Abel pays signed Fubini and gives the product ceiling for
+ALL real twists. No Laurent expansion is assumed in these results.
+A follow-on boundary scratch uses the existing mathlib zeta residue to
+remove the positive harmonic factor. No critical one-pole endpoint or
+canonical completion is yet Lean-verified.
+
+Cycle33 FINAL arithmetic audit: fourth saved leaf
+WeilWorkExposingRayCriticalBoundary exits0 without diagnostics. All11
+public theorem axiom audits exit0; every result depends only on
+propext, Classical.choice, Quot.sound. This includes the promoted
+log_toeplitz_of_polar_bound, all five Twists theorems, the Series theorem,
+both Abel theorems, and both Boundary theorems. No sorryAx/new axiom.
+Integration check finds39 owned leaves, each imported exactly once and
+without trailing whitespace. Scoped git diff --check exits0.
+
+Fresh global lint exits1 on these seven unrelated reachability findings:
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilPaperCovarianceEnergyCertificates
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkQuantizationGaussianFiniteEstimates
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+No owned WP02 finding. No full or umbrella build, heartbeat override,
+numerical experiment, commit or push. All foreground Lean and lint
+sessions have terminal exits. Temporary search JSON, scratch Lean and
+lint-output files for this cycle are removed after their evidence is
+recorded here. The endpoint kernel/ODE/Laplace work remains IN PROGRESS
+at the research-card level; no unfinished Lean leaf is left in the tree.

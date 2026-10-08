@@ -1,0 +1,137 @@
+Cycle29, 2026-10-08. Direct foreground leaf audits; no full/umbrella build.
+
+COMMAND (cwd formal): lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationCenteredSource.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationCenteredSource.lean
+EXIT 0; no diagnostics.
+SHA256 1c07a3055f0f543180dff39862ac09b464a9aca012a6f8a7848d4fdf1b6b5249
+
+COMMAND (cwd formal): lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationCenteredGaussian.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationCenteredGaussian.lean
+EXIT 0; no diagnostics.
+SHA256 2aa71766530e2a14156d4a12833b6d8e28f888f40a516f0d8cefc1391f5f4610
+
+COMMAND (cwd formal): lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianFourier.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianFourier.lean
+EXIT 0; no diagnostics.
+SHA256 324fa5ef8f4d9bc4d639b8ce32f89d284b7551718953f046ac76fce3273aa09d
+
+
+AXIOM/API COMMAND (cwd formal): lake --old env lean /tmp/wp04-centered29-audit.lean
+EXIT 0; 27 public declarations. Standard dependency closures only.
+
+'RHTower.WeilSpectral.quantizationPoleNumerator' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationPoleNumerator_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.differentiableOn_quantizationPoleNumerator' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredProdF' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.differentiableOn_quantizationCenteredProdF' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredProdF_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredCoeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredCoeff_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredCoeff_summable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredCoeff_LSeries' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredTrace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantizationCenteredTrace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_quantizationCenteredProdF_tail' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_quantizationCenteredProdF_radial_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.exists_quantizationCenteredTrace_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredGaussianIntegrand' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredGaussianTrace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.differentiableAt_quantizationCenteredGaussianIntegrand' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.exists_quantizationCenteredGaussian_decay' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredGaussian_open_shift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.exists_quantizationCenteredGaussian_radial_majorant' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantizationCenteredGaussianTrace' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_integral_quantizationCenteredGaussian' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredGaussian_boundary_shift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationGaussianFourierKernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integrable_quantizationGaussianFourierKernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.integral_quantizationGaussianFourierKernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+
+API probe source:
+
+import GaloisForLFunctions.RHTower.WeilWorkQuantizationCenteredGaussian
+import GaloisForLFunctions.RHTower.WeilWorkQuantizationGaussianFourier
+#print axioms RHTower.WeilSpectral.quantizationPoleNumerator
+#print axioms RHTower.WeilSpectral.quantizationPoleNumerator_one
+#print axioms RHTower.WeilSpectral.differentiableOn_quantizationPoleNumerator
+#print axioms RHTower.WeilSpectral.quantizationCenteredProdF
+#print axioms RHTower.WeilSpectral.differentiableOn_quantizationCenteredProdF
+#print axioms RHTower.WeilSpectral.quantizationCenteredProdF_eq
+#print axioms RHTower.WeilSpectral.quantizationCenteredCoeff
+#print axioms RHTower.WeilSpectral.quantizationCenteredCoeff_zero
+#print axioms RHTower.WeilSpectral.quantizationCenteredCoeff_summable
+#print axioms RHTower.WeilSpectral.quantizationCenteredCoeff_LSeries
+#print axioms RHTower.WeilSpectral.quantizationCenteredTrace
+#print axioms RHTower.WeilSpectral.tendsto_quantizationCenteredTrace
+#print axioms RHTower.WeilSpectral.exists_quantizationCenteredProdF_tail
+#print axioms RHTower.WeilSpectral.exists_quantizationCenteredProdF_radial_bound
+#print axioms RHTower.WeilSpectral.exists_quantizationCenteredTrace_bound
+#print axioms RHTower.WeilSpectral.quantizationCenteredGaussianIntegrand
+#print axioms RHTower.WeilSpectral.quantizationCenteredGaussianTrace
+#print axioms RHTower.WeilSpectral.differentiableAt_quantizationCenteredGaussianIntegrand
+#print axioms RHTower.WeilSpectral.exists_quantizationCenteredGaussian_decay
+#print axioms RHTower.WeilSpectral.quantizationCenteredGaussian_open_shift
+#print axioms RHTower.WeilSpectral.exists_quantizationCenteredGaussian_radial_majorant
+#print axioms RHTower.WeilSpectral.tendsto_quantizationCenteredGaussianTrace
+#print axioms RHTower.WeilSpectral.tendsto_integral_quantizationCenteredGaussian
+#print axioms RHTower.WeilSpectral.quantizationCenteredGaussian_boundary_shift
+
+example : True := by
+  have := @GaloisForLFunctions.differentiableAt_Gammaℝ
+  have := @LSeriesSummable_congr
+  have := @LSeries_congr
+  have := @differentiable_riemannZeta₀
+  have := @riemannZeta_eq_inv_sub_add
+  have := @LSeriesSummable_one_iff
+  have := @LSeries_one_eq_riemannZeta
+  have := @Complex.norm_exp
+  have := @Real.exp_le_exp
+  have := @Real.exp_le_one_iff
+  have := @_root_.integrable_inv_one_add_sq
+  trivial
+
+#print axioms RHTower.WeilSpectral.quantizationGaussianFourierKernel
+#print axioms RHTower.WeilSpectral.integrable_quantizationGaussianFourierKernel
+#print axioms RHTower.WeilSpectral.integral_quantizationGaussianFourierKernel
+
+example : True := by
+  have := @integral_cexp_quadratic
+  have := @integrable_cexp_quadratic
+  have := @Complex.ofReal_cpow
+  have := @Real.sqrt_eq_rpow
+  have := @Real.sqrt_mul
+  have := @Real.sqrt_sq
+  trivial
+
+
+LINT: scripts/formal_tools.py lint, exit 1.
+
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+367 existing size warnings; five unrelated HTGeometry reachability errors; no owned quantization error. All 69 quantization leaves wired exactly once.

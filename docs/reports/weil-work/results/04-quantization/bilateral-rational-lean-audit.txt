@@ -1,0 +1,36 @@
+'RHTower.WeilSpectral.quantization_bilateral_rational_rough_residue' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_bilateral_rational_rough_coeff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_bilateral_rational_prime_agreement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_of_prime_agreement_negative_mass' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_of_bilateral_rational_phase_negative_mass' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_of_nonnegative_bilateral_rational_phase' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_or_bilateral_negative_mass' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantization_rigidity_or_bilateral_negative_mass {lam : ℕ → ℝ}
+  (hW : RHTower.WeilPositiveFull lam) :
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ∀ (u v : ℕ),
+      2 ≤ v →
+        v < u →
+          u.Coprime v →
+            ∀ (p : ℤ → ℂ),
+              (Summable fun k => ‖p k‖ * Real.exp (|2 * ↑k * Real.log (↑u / ↑v)| / 2)) →
+                (∀ (x : ℝ),
+                    0 < x →
+                      Complex.exp
+                          (↑(2 * Real.pi * RHTower.WeilSpectral.quantizationResidualCumulative hW x) * Complex.I) =
+                        ∑' (k : ℤ), p k * Complex.exp (↑(2 * ↑k * Real.log (↑u / ↑v) * x) * Complex.I)) →
+                  ¬Summable fun n => max (-lam n) 0 / ↑n

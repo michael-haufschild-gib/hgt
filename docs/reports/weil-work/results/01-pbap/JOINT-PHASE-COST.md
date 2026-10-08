@@ -1,6 +1,6 @@
 # Exact joint phase cancellation and its unpaid energy cost
 
-Status: finite phase classification and logarithmic-cost escape are Lean-audited; the smooth-mixture and actual real-active-node bridges are also fully Lean-audited. Full-energy coercivity remains paper-proved only. **BRIDGE**, scientific novelty unestablished. Parent mechanisms are Kronecker recurrence, separation and finite positive quadrature. Full PBAP and Candidate D remain OPEN. This statement closes an exactness gap in the L376 two-frequency sketch; it does not prove a cheap cancellation theorem.
+Status: finite phase classification, logarithmic-cost escape, smooth-mixture and actual real-active-node bridges, full-energy coercivity and normalized energy escape are Lean-audited. Later entries below supersede historical implementation checkpoints. **BRIDGE**, scientific novelty unestablished. Parent mechanisms are Kronecker recurrence, separation and finite positive quadrature. Full PBAP and Candidate D remain OPEN. This statement closes an exactness gap in the L376 two-frequency sketch; it does not prove a cheap cancellation theorem.
 
 ## Statement
 
@@ -374,9 +374,15 @@ annihilates the integrand beyond W. The general complex profile is retained
 in the identity, and real-autocorrelation nonnegativity is an explicit domain
 restriction only in the minimum theorem. No PBAP sign is inferred from it.
 
-## Next conjecture: a certificate beyond the seed-energy crossing
+## Historical crossing proposal — superseded by explicit width
 
-Status: **OPEN**, no new Lean premise. Fix one nonzero real nonnegative smooth
+Status: **SUPERSEDED AND SELECTED SECTOR CLOSED**. [JOINT-WIDTH-SECTOR.md](JOINT-WIDTH-SECTOR.md)
+constructs W explicitly and proves the concrete negative-seed certificate,
+universal real-null energy margin and nonempty prime family in Lean. The
+crossing argument below is retained as research history; it is not a missing
+premise of the completed proof.
+
+Original proposal: Fix one nonzero real nonnegative smooth
 bump phi supported in [0,1], positive in its interior, and use the actual
 profiles beta_W(u)=phi(u/W), 0<W<log(2). For every sufficiently large prime p,
 put L=log(p)/2. Conjecture: some width W has negative literal seed energy

@@ -1,6 +1,7 @@
 # One-sided rational resonances — L2+ and exact survivor
 
-Status: dependency-closed paper proof; Lean pending. Full L2 and WP04 remain open.
+Status: dependency-closed paper proof and five clean final Lean leaf audits.
+All twenty new declarations and dependencies passed the standard-axiom audit; see rational-rigidity-lean-audit.txt. Full L2 and WP04 remain open.
 Verdict: SURVIVES PRELIMINARY ATTACK as an actual-source theorem. The finite
 convolution and valuation arguments are classical bridges; scientific novelty
 of the assembled source theorem is provisional, not inferred from formalization.
@@ -103,7 +104,7 @@ Choose coprime u>v>1 with u²<v³ and v^(-1/2)<α<v/u. Set r=u/v,
 P(z)=(z−α)/(1−αz), b0=√r/α, c0=α√r, and
 
     d_0=1, d_j=(b0−c0)b0^(j−1) for j≥1,
-    a(n)=Σ_{u^j|n}d_j.
+    a(0)=0, a(n)=Σ_{u^j|n}d_j for n≥1.
 
 The Taylor coefficients of P are p_0=−α and p_k=(1−α²)α^(k−1) (k≥1).
 The formal identities
@@ -131,19 +132,18 @@ with deviation log(u)(b0^j−c0^j) at u^j. It is nonzero (b0>c0) and has
 excludes full Weil positivity. This is an obstruction to the projected-only
 proof, not a counterexample to L2, quantization, or RH.
 
-Paper proof closed. Lean status of the classification and actual L2+ theorem:
-pending. The warning model is paper-audited only; do not claim a Lean certificate.
+Paper proof closed. Classification and actual L2+ theorem passed final Lean leaf audits. The warning model is paper-audited only; do not claim a Lean certificate.
 
 ## Formal dependency map
 
 - RationalResonance: exact integer resonance iff n*u^k=m*v^k, finite residue
   rows, weighted source specialization, p_0 nonzero. Final leaf audit passed.
 - RationalRows: composite-base valuation invariance and complete row/chain
-  solution-space equivalence. Classification passed; the added iff is under
-  its final repair audit.
+  solution-space equivalence. Full iff passed a clean final direct leaf audit.
 - PowerDivisors: supported arithmetic quotient and telescoping divisor sum.
   Final leaf audit passed.
 - LogarithmicSupport: reuse `HTGeometry.logWeight_leibniz`, cancel arithmetic
-  zeta with Möbius, transfer power support to the source deviation. Audit running.
+  zeta with Möbius, transfer power support to the source deviation. Final direct
+  leaf audit passed.
 - RationalRigidity: actual one-sided rational phase and source-only alternative.
-  Assembly written in scratch; final audit pending. No full L2 claim.
+  Clean final direct leaf audit passed. No full L2 claim.

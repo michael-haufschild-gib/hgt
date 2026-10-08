@@ -1,0 +1,171 @@
+{
+  "cycle": 58,
+  "date_utc": "2026-10-08T16:59:33.385981+00:00",
+  "status": "SEALED_SOURCE_BRIDGE",
+  "wp05_status": "OPEN",
+  "source_hypothesis": "WeilPositiveFull lam only",
+  "checks": [
+    {
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCenteredConvolution",
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCenteredConvolution.lean",
+      "sha256": "d77ae8c0a787d5ce87f7b1e2e54bc806397887b589949439150a2bea119e8d76",
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCenteredConvolution.lean",
+      "exit_code": 0,
+      "log": "cycle58-CenteredConvolution-direct.log",
+      "diagnostic_bytes": 232,
+      "unchanged_during_audit": true,
+      "umbrella_import_count": 1
+    },
+    {
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCenteredMellin",
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCenteredMellin.lean",
+      "sha256": "2f824edfff272e1a373252a9a07fbad4b8acd0ba6119ee133ab27bd5a0f7ea00",
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCenteredMellin.lean",
+      "exit_code": 0,
+      "log": "cycle58-CenteredMellin-direct.log",
+      "diagnostic_bytes": 0,
+      "unchanged_during_audit": true,
+      "umbrella_import_count": 1
+    },
+    {
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCenteredEnergy",
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCenteredEnergy.lean",
+      "sha256": "1cd08cb0739e158715dc0defc4cb75385ce1b79ff3b97792e531d026b92d933b",
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCenteredEnergy.lean",
+      "exit_code": 0,
+      "log": "cycle58-CenteredEnergy-direct.log",
+      "diagnostic_bytes": 0,
+      "unchanged_during_audit": true,
+      "umbrella_import_count": 1
+    },
+    {
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCenteredContour",
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCenteredContour.lean",
+      "sha256": "7072110cfb26c37e82fd3276b254c46b14cb7d53f18aa1a60881ea2913ad2f12",
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCenteredContour.lean",
+      "exit_code": 0,
+      "log": "cycle58-CenteredContour-direct.log",
+      "diagnostic_bytes": 0,
+      "unchanged_during_audit": true,
+      "umbrella_import_count": 1
+    },
+    {
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCenteredPhaseCost",
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCenteredPhaseCost.lean",
+      "sha256": "fc568ee189ee8f23216042491d4ac60c03abdaabd2bfd240ca6009eeb6f8513e",
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhaseCenteredPhaseCost.lean",
+      "exit_code": 0,
+      "log": "cycle58-CenteredPhaseCost-direct.log",
+      "diagnostic_bytes": 0,
+      "unchanged_during_audit": true,
+      "umbrella_import_count": 1
+    },
+    {
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhasePhaseCostDichotomy",
+      "source": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePhaseCostDichotomy.lean",
+      "sha256": "7ebbf6c09c3021376eff3f930aaa65966e5308f4e8e3d497226d507866b0aba9",
+      "command": "lake env lean GaloisForLFunctions/RHTower/WeilWorkSettledPhasePhaseCostDichotomy.lean",
+      "exit_code": 0,
+      "log": "cycle58-PhaseCostDichotomy-direct.log",
+      "diagnostic_bytes": 0,
+      "unchanged_during_audit": true,
+      "umbrella_import_count": 1
+    }
+  ],
+  "axioms": {
+    "exit_code": 0,
+    "log": "cycle58-axioms.log",
+    "expected_declarations": 36,
+    "reported_declarations": 36,
+    "missing": [],
+    "standard_only": true,
+    "declarations": [
+      "RHTower.WeilWorkSettledPhase.sum_self_convolution_hyperbola",
+      "RHTower.WeilWorkSettledPhase.exists_centered_coeff_sum_le",
+      "RHTower.WeilWorkSettledPhase.self_convolution_prefix_le",
+      "RHTower.WeilWorkSettledPhase.exists_centered_square_sum_le",
+      "RHTower.WeilWorkSettledPhase.centeredSquareCoeff",
+      "RHTower.WeilWorkSettledPhase.centeredSquareCoeff_zero",
+      "RHTower.WeilWorkSettledPhase.centeredSquareCoeff_summable",
+      "RHTower.WeilWorkSettledPhase.centeredSquareCoeff_LSeries",
+      "RHTower.WeilWorkSettledPhase.centeredMellinProfile",
+      "RHTower.WeilWorkSettledPhase.differentiableAt_centeredMellinProfile",
+      "RHTower.WeilWorkSettledPhase.exists_centeredMellinProfile_decay",
+      "RHTower.WeilWorkSettledPhase.integrable_centeredMellinProfile",
+      "RHTower.WeilWorkSettledPhase.centeredMellin_shift",
+      "RHTower.WeilWorkSettledPhase.centeredGaussianSum_eq_mellinInv",
+      "RHTower.WeilWorkSettledPhase.exists_centeredGaussianSum_le",
+      "RHTower.WeilWorkSettledPhase.centeredTrace_reflection_defect",
+      "RHTower.WeilWorkSettledPhase.centeredTrace_phase_energy_ae",
+      "RHTower.WeilWorkSettledPhase.centeredGaussianSignedTrace",
+      "RHTower.WeilWorkSettledPhase.integrable_centeredGaussianSignedTrace",
+      "RHTower.WeilWorkSettledPhase.centeredGaussianSignedTrace_neg",
+      "RHTower.WeilWorkSettledPhase.centeredGaussian_signed_energy",
+      "RHTower.WeilWorkSettledPhase.centeredGaussianInterior",
+      "RHTower.WeilWorkSettledPhase.differentiableAt_centeredGaussianInterior",
+      "RHTower.WeilWorkSettledPhase.exists_centeredGaussianInterior_decay",
+      "RHTower.WeilWorkSettledPhase.centeredGaussian_open_shift",
+      "RHTower.WeilWorkSettledPhase.exists_centeredGaussian_radial_majorant",
+      "RHTower.WeilWorkSettledPhase.tendsto_centeredGaussianSignedTrace",
+      "RHTower.WeilWorkSettledPhase.centeredGaussian_boundary_shift",
+      "RHTower.WeilWorkSettledPhase.centeredGaussianSignedTrace_eq_kernelSum",
+      "RHTower.WeilWorkSettledPhase.centeredGaussianSum",
+      "RHTower.WeilWorkSettledPhase.summable_centeredGaussianSum",
+      "RHTower.WeilWorkSettledPhase.centeredGaussian_kernel_error",
+      "RHTower.WeilWorkSettledPhase.centeredGaussian_signed_extraction",
+      "RHTower.WeilWorkSettledPhase.exists_centeredGaussianSignedTrace_integral_le",
+      "RHTower.WeilWorkSettledPhase.exists_gaussianPhaseCost_centeredEnergy_error",
+      "RHTower.WeilWorkSettledPhase.rigidity_or_gaussianPhaseCost_lower"
+    ]
+  },
+  "capstone": "RHTower.WeilWorkSettledPhase.exists_gaussianPhaseCost_centeredEnergy_error",
+  "statement": "Original hW implies Q(T)=2*E_centered(T)+O(T^(5/6)); rigidity/RH or eventual positive linear actual phase cost.",
+  "novelty": "Actual-source analytic bridge; independent scientific novelty not established.",
+  "targeted_builds": {
+    "command": "lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhasePhaseCostDichotomy:olean",
+    "exit_code": 0,
+    "log": "cycle58-targeted-build.log",
+    "full_build": false
+  },
+  "index": {
+    "exit_code": 0,
+    "log": "cycle58-index.log"
+  },
+  "global_lint": {
+    "exit_code": 1,
+    "log": "cycle58-lint.log",
+    "errors": [
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilPaperCovarianceEnergyCertificates",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkQuantizationGaussianFiniteEstimates",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra"
+    ],
+    "owned_errors": []
+  },
+  "source_style_warnings": [
+    "CenteredConvolution:118 unnecessarySeqFocus; direct audit passes."
+  ],
+  "cleanup": {
+    "removed_scratch_files": [
+      "/tmp/wp05-c58-api.lean",
+      "/tmp/wp05-c58-api.log",
+      "/tmp/wp05-c58-api2.lean",
+      "/tmp/wp05-c58-api2.log",
+      "/tmp/wp05-c58-api3.lean",
+      "/tmp/wp05-c58-api3.log",
+      "/tmp/wp05-c58-api4.lean",
+      "/tmp/wp05-c58-api4.log",
+      "/tmp/wp05-c58-axioms.lean",
+      "/tmp/wp05-c58-convolution-build.log",
+      "/tmp/wp05-c58-manifest.json",
+      "/tmp/wp05-c58-mellin-build.log",
+      "/tmp/wp05-c58-phase-cost-build.log",
+      "/tmp/wp05-c58-verify.py"
+    ],
+    "owned_live_processes": 0,
+    "source_hashes_rechecked": true
+  }
+}

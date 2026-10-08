@@ -1,7 +1,9 @@
 # Candidate: does the polar cone already fix the full pole completion?
 
-Status: OPEN diagnostic, SURVIVES PRELIMINARY ATTACK only. No theorem,
-scientific-novelty claim, cone nonemptiness or WP02 lower estimate supplied.
+Status: OPEN diagnostic, DEFERRED after the cycle21 utility audit. The exact
+claim survives preliminary attack, but generic extension machinery supplies
+neither its arithmetic core nor a WP02 producer. No theorem, scientific-novelty
+claim, cone nonemptiness or WP02 lower estimate supplied.
 
 ## Exact incompatible assertions
 
@@ -71,3 +73,27 @@ and Chung--Kim,
 The former's representation theorem and the latter's abstract do not fix
 these arithmetic coefficients. No claim of their theorem's applicability
 to W_lambda without the required distribution construction is made.
+
+## Cycle21 utility decision
+
+The source audit did not eliminate either remainder coefficient. The modified
+completion residue theorem in `WeilWorkPBAPCriticalResidue` assumes positivity
+on all smooth compact sources. Its coefficient boundary `b <= a` in
+`WeilWorkPBAPCriticalBoundary` therefore cannot supply polar-to-full admission.
+Even obtaining that boundary would not identify the actual pole coefficient.
+`WeilFractionalMassAtomicRigidity` requires a spectral representation with
+integer masses outside a finite exceptional set; polar positivity does not
+provide that hypothesis. These are unavailable parents, not failed theorems.
+
+The abstract obstruction is concrete: the even distribution `cosh(u/2)`
+vanishes on autocorrelations of polar sources, while its value on an odd real
+compact source with nonzero half-pole moment is negative. Thus a generic
+positive-extension argument cannot identify the actual completion. This is
+classical codimension/ODE information, not new scientific knowledge.
+
+No literal integer-weight counterexample to C-lift was constructed. Do not
+mark C-lift FALSE, use it as a premise, or claim that it creates a cone point.
+Return to the all-family signed estimate in
+`VANISHING-MASS-DEFECT-CONJECTURE.md`. Reopen this diagnostic only when an
+actual arithmetic estimate addresses the remainder, rather than when more
+distribution infrastructure becomes available.

@@ -296,3 +296,644 @@ source statements and ingredient sets were inspected. Generic positive-jump data
 moment positivity and Riesz duality do not supply the missing actual null-cone sign. No absence
 or scientific-novelty claim follows. The exact signed kernel and restricted minimum are now
 formalized; full PBAP and the all-height arithmetic cosine certificate remain open.
+
+### 8 October 2026 — uniform high-frequency estimates
+
+`WeilWorkPBAPJointHighFrequency` is wired. Targeted `lake build --old
++GaloisForLFunctions.RHTower.WeilWorkPBAPJointHighFrequency` passed (148.0s).
+Final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointHighFrequency.lean`
+passed (31.6s), empty diagnostics. Seven named `#print axioms` checks passed
+(5.7s), each only `[propext, Classical.choice, Quot.sound]`:
+`joint_pair_gamma_eq_integral`, `joint_pair_gamma_central_loss`,
+`joint_pair_gamma_high_lower`, `joint_paperFT_real_decay`,
+`joint_pair_poles_high_abs`, `joint_pair_full_energy_high_lower`,
+`jointPairFullEnergy_neg`. Logs: `/tmp/wp01-high-{build,final,axioms}.log`;
+state: `/tmp/wp01-high-audit-state.json`. No umbrella/full build.
+
+The exact bound retains leading Gamma coefficient 2 times base mass, with
+inverse-cubic central Fourier mass loss, and controls the absolute contribution
+of both signed poles by inverse-quartic modulation decay. It has domain/support
+conditions only, no energy-sign premise. The actual width-sector theorem in
+`JOINT-WIDTH-SECTOR.md` is still paper-only and being formalized.
+
+`JointHighFrequency` source SHA-256:
+`36ae3f774880b38b7f43ef782e1b7e60405277b8d4131e68f9b583b042f9a037`.
+
+`WeilWorkPBAPJointScale` is wired. Targeted --old build passed (112.3s), final
+direct source audit passed (34.8s; empty diagnostics), and eleven named axiom
+checks passed (178.9s; standard axioms only). These cover smoothness, compact
+support, interval support, physical mass, full complex autocorrelation, first
+and second derivatives, the exact derivative norm cost, real autocorrelation,
+its nonnegativity for actual nonnegative profiles, and complex Fourier scaling.
+Source SHA-256:
+`304cab39320ec541af0bfb592b729de4bb91966e3cc98b7e758167ce56fdfc6c`.
+Logs: `/tmp/wp01-scale-{build,final,axioms}.log`;
+state: `/tmp/wp01-scale-audit-state.json`.
+
+Process incident: the next scratch `lake env lean` command was launched before
+the scale audit wrapper returned its confirmed exit. Wrapper overlap was at
+most 3.464s by audit-state modification time versus new log creation time.
+Both have been reconciled; only the new scratch remains running. Subsequent
+Lean commands must wait for an explicit completed tool result, not infer exit
+from empty diagnostics or elapsed time. No mathematical check is claimed from
+an unfinished command.
+
+`WeilWorkPBAPJointSeedGamma` is wired and audited: targeted --old build 25.9s,
+final direct-source audit 5.0s (empty diagnostics), nine named axiom checks 4.5s,
+all standard axioms only. SHA-256:
+`9001bbe731da8f84d8d409693b170c5bc1204f5bed95e201c076fb1f43b02b50`.
+Logs `/tmp/wp01-seed-gamma-{build,final,axioms}.log`; audit state
+`/tmp/wp01-seed-gamma-audit-state.json`.
+
+Its principal theorem is the actual uniform estimate
+`|Gamma(cluster(beta_W,L))+mass(cluster(beta_W,L))*log W| <= W*C(phi)`
+for every separation L and 0<W<=1. The source-defined finite C(phi) is proved
+integrable, including the logarithmic singularity at Fourier frequency zero.
+`joint_cluster_gamma_scale_mass_bound` identifies the exact mass coefficient
+for the disjoint unit-profile family. No sign assumption, producer or RH enters.
+The negative full-energy seed and all-height cosine certificate are still being
+assembled; this estimate alone is not the width-sector theorem.
+
+### 8 October 2026 — exact seed pole scaling
+
+`WeilWorkPBAPJointSeedPole` wired; targeted `lake build --old` passed (40.2s),
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointSeedPole.lean`
+passed (5.6s), empty final diagnostics. Seven named axiom checks passed (5.0s),
+all `[propext, Classical.choice, Quot.sound]`. Guarded sequential audit exit 0.
+SHA256 d70cd9428e6425354886743a5e8c2c901a4a0a9f5ec9fb94aa146551aed9acad.
+Exact cluster pole factor, width-squared scaling and continuous profile value
+at zero retain both signed poles. No seed energy sign assumed. Next scratch
+`/tmp/wp01-seed-limit.lean` assembles the actual normalized seed limit.
+
+### 8 October 2026 — literal balanced seed limit
+
+`WeilWorkPBAPJointSeedLimit` wired; targeted `lake build --old` passed (107.1s),
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointSeedLimit.lean`
+passed (64.5s), empty final diagnostics. Eleven named axiom checks passed
+(6.1s), all standard-only. Guarded sequential audit exit 0.
+SHA256 7d45feeae4df90a894c7ffc20fe7de239ca81e520c970afcdf1e89073a8d7f35.
+For every smooth complex unit-supported nondegenerate source, the actual
+source-defined balanced width gives full energy/(base mass*width*L) -> -1,
+and eventually -9mL/8<=E0<0. No negative energy, producer, or RH premise.
+This closes the seed component; actual all-height correction positivity still
+requires the uniform high estimate and actual active-node phase certificate.
+
+### 8 October 2026 — uniform high-frequency width sector
+
+`WeilWorkPBAPJointWidthHigh` wired; targeted `lake build --old` passed (63.0s),
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointWidthHigh.lean`
+passed (133.4s), empty final diagnostics. Eight named axiom checks passed
+(84.7s), all standard-only; guarded chain exit 0.
+SHA256 e11b4cb088df049ce6f13a4b21f6597d4dfa3a8e60c34ac16538070454106bc3.
+One eventual threshold controls EVERY signed height |T|>=exp(7L/8), with
+actual paired full energy >=13mL/8. Uniform remainder is explicit and uses
+both signed poles, with no source sign, correction or producer premise.
+
+### 8 October 2026 — actual integer phase in the width sector
+
+`WeilWorkPBAPJointWidthPhase` wired; targeted `lake build --old` passed (152.7s),
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointWidthPhase.lean`
+passed (31.4s), empty final diagnostics. Five named axiom checks passed (89.5s),
+all standard-only; guarded chain exit 0.
+SHA256 18a5f33908b9470f03142a3e6b3a8d1222b6b619b86d2dd41b15cdb7785bc2d2.
+The chosen actual integer is at least two, its lag is <=2exp(-L), its real
+correlation is eventually positive, and its cosine is >=11/12 uniformly below
+exp(7L/8). Activity and phase control are conclusions, never supplied premises.
+
+### 8 October 2026 — concrete negative-seed positive sector completed
+
+`WeilWorkPBAPJointWidthSector` wired; targeted `lake build --old` passed (43.9s),
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointWidthSector.lean`
+passed (70.2s), empty final diagnostics. Eight named axiom checks passed
+(33.5s), all standard-only; guarded sequential chain exit 0.
+SHA256 4e7abc165ffb97fb3b4f80b7f5b182e80187beb35f9829f8392d833d2fa55a0f.
+All eight new leaves and all 66 named checks are complete. No full/umbrella
+build, numerical experiment, added axiom or heartbeat increase. All owned
+Lean jobs exited. `scripts/formal_tools.py index` exits 0. Scoped diff-check
+passed before final report updates; final lint/diff results follow below.
+
+The concrete source capstones assume no source sign, energy sign, active
+node, crossing, cosine certificate, RH or positivity producer. Their proofs
+construct/pay each fact. Real nullness and nonnegative finite correction
+weights are the actual target-domain constraints. The sector does not span
+arbitrary profiles or the full null cone.
+
+Latest next-boundary search `/tmp/wp01-one-node-boundary-20261008.json` has
+partial=false, 68,685 indexed files, refresh incomplete/compiler metadata
+mostly pending/source-only. All20candidate/all20source statements, both proof
+ideas and ingredient set inspected; the truncated source-head statement was
+read directly. RH-dependent negative witnesses and a nonpositive-source-head
+decomposition do not supply the actual upper-energy estimate for the next
+one-node boundary. Exact cosine correction still needs its phase-closure
+input. No absence or novelty inference is made from this search.
+
+Final integration checks: index exit0; scoped `git diff --check` exit0.
+Global formal lint exit1 reports unrelated HTGeometry reachability errors:
+`ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`,
+`ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. No new WP01 module
+error. Existing unrelated large-file warnings remain; all eight new leaves
+are below 500 lines. No repair or rewiring of unrelated modules attempted.
+
+### 8 October 2026 — exact-mass modulated upper bound
+
+`WeilWorkPBAPJointUpper` wired; targeted `lake build --old` passed (25.4s),
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointUpper.lean`
+passed (6.3s), empty final diagnostics. Six named axiom checks passed
+(10.6s), all `[propext, Classical.choice, Quot.sound]`; guarded sequential
+chain exit0. The repaired API probe also passed (189.8s). No overlapping
+owned Lean processes, full build, numerical experiment or heartbeat change.
+SHA256 b7895a07238b4397cd8ca34181305c40f44271e0cf4e3ef7724d0e56d0cfccc1.
+
+The exact Gamma main coefficient is 2m. Its remainder is the actual first
+Fourier moment divided by 1+T, and that moment is invariant under physical
+dilation. The full upper bound retains both signed poles. This verifies
+equations (1)--(2) of JOINT-ONE-NODE-BOUNDARY; the boundary and positive
+survivor capstones are still unformalized. Novelty unestablished.
+
+Additional corpus searches: first-moment partial=false68,700files; three-band
+boundary partial=true68,705files; prime-lag lower bound partial=true68,711files.
+All20candidate/all20source results and all ingredient sets inspected in each.
+Refresh incomplete, compiler metadata mostly pending/source-only. Existing
+linear-weight Fourier integrability was reused. Generic prime-log bounds,
+nearest-integer definitions and conditional RH identities do not supply the
+needed quantitative prime half-log lag lower bound.
+
+### 8 October 2026 — quantitative actual seed poles
+
+`WeilWorkPBAPJointPoleBounds` wired; targeted `lake build --old` passed
+(240.2s), final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointPoleBounds.lean`
+passed (64.4s), empty diagnostics. Six named axiom checks passed (4.9s),
+all standard-only; guarded sequential chain exit0.
+SHA256 3c093d8a7d5e01b6fd4e4f61e3b196005c7e6344e67c398d6cefbd9df1036119.
+The actual pole profile has explicit error <=norm(sourceIntegral)^2*W^2/2
+for 0<W<=1. Concrete unit-bump capstones pay correlation nonnegativity;
+no energy-sign or rate premise is supplied. This closes the quantitative
+pole obligation in equation (6), but not the boundary classification itself.
+
+### 8 October 2026 — uniform full seed expansion
+
+`WeilWorkPBAPJointSeedExpansion` wired; targeted `lake build --old` passed
+(167.8s), final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointSeedExpansion.lean`
+passed (174.8s), empty diagnostics. Three named axiom checks passed (21.0s),
+standard-only; guarded sequential chain exit0.
+SHA256 5c389245b817c5fa085bea989404b239c6cb4f0e2b2c4fe819ea0fedd9f291d3.
+The literal full seed has explicit error <=W*C_gamma+(cosh(L/2)-1)*W^4*B^2
+after subtracting its logarithmic Gamma and signed pole leading terms.
+The bound is uniform in width and separation, including the actual unit bump.
+No continuity-rate or energy-sign premise is added. The three new leaves
+and fifteen public axiom checks are complete; boundary classification OPEN.
+
+### 8 October 2026 — actual prime half-log phase scale
+
+`WeilWorkPBAPJointPrimeLag` wired; targeted `lake build --old` passed (53.2s),
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointPrimeLag.lean`
+passed (6.8s), empty diagnostics. Five named axiom checks passed (6.4s),
+standard-only; guarded sequential chain exit0.
+SHA256 599f0faa32878bce7826331701650bcb53ed10cdf5034cee81e60676acc4af0b.
+Prime nonsquareness gives the literal nearest lag lower bound1/(2p), strict
+negative sign and the matching logarithmic scale bounds L-log2 and2L+log2.
+All four new leaves, four final source audits and twenty public axiom checks
+are complete. No numerical experiment, full/umbrella build or added axiom.
+
+Current integration checks: `scripts/formal_tools.py index` exits0;
+scoped `git diff --check` exits0. `scripts/formal_tools.py lint` exits1 on
+eight unrelated umbrella reachability errors: RHTower
+`WeilWorkQuantizationRadicalMass`, `WeilWorkSettledPhaseLocalPolynomialModels`,
+`WeilWorkSettledPhaseLocalPolynomialPeriods`; HTGeometry
+`ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`,
+`ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. No new WP01 leaf
+is flagged. Unrelated large-file warnings remain. Every owned Lean, build,
+search, index and lint command has exited. No commit or push.
+
+### 8 October 2026 — uniform sharp high-frequency bridge
+
+`WeilWorkPBAPJointUniformHigh` wired. Targeted `lake build --old +...` passed
+(37.0s); final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointUniformHigh.lean`
+passed (7.4s), empty diagnostics. All seven public theorem axiom checks passed
+(5.1s), using only `propext`, `Classical.choice`, `Quot.sound`; sequential
+chain exit0. SHA256 cf2375c6afe9f44e8f3716b48cc44d93e16bc26daecde93e6927b2ee345573b0.
+The literal unit-bump capstone pays all source hypotheses. One threshold
+controls every width in `[κL exp(-L/2),1]` and every signed height at least
+`exp(7L/8)`. Exact logarithmic coefficient 2 survives both bounds.
+This is a BRIDGE for conjecture C, not full PBAP or a novelty claim.
+
+### 8 October 2026 — uniform logarithmic seed expansion at actual primes
+
+`WeilWorkPBAPJointBoundarySeed` wired. Targeted `lake build --old +...` passed
+(63.2s), final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointBoundarySeed.lean`
+passed (18.3s), empty diagnostics. All eight public theorem axiom checks
+passed (56.6s), standard-only; sequential chain exit0.
+SHA256 6bf9a1d7dd8b3eb3f2e3deab7d0a9618c41ccc6686b1fccd7dfb0183234d844f.
+The normalized literal seed differs from `-2s+2(d-1)log L` by a single
+source-defined bound, uniform over the complete permitted lag range.
+An actual-prime capstone derives that range and small separated width.
+No phase-scale, source-sign, or energy estimate is supplied as a premise.
+
+### 8 October 2026 — opposite-phase obstruction at d<1
+
+`WeilWorkPBAPJointBoundaryObstruction` wired. Targeted build passed160.7s;
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointBoundaryObstruction.lean`
+passed25.6s, empty diagnostics. Both public theorem axiom checks passed5.9s,
+standard-only; chain exit0.
+SHA256 4c7bea07919b193a412b3023beba162f4bf48a53430d395d2db17e5c47bc0fdf.
+Uniformly throughout the allowed lag range, the two literal energies at
+0 and pi*exp(s) have negative sum for d<1. Hence no real coefficient supplies
+a global cosine certificate with phase exp(-s). This is not a negative
+all-integer-null mixture and does not refute PBAP. Positive d>1 survivor
+and actual-prime/null transfer remain under implementation.
+
+### 8 October 2026 — positive three-band survivor at d>1
+
+`WeilWorkPBAPJointBoundaryCertificate` wired. Targeted build passed94.1s;
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointBoundaryCertificate.lean`
+passed10.2s, empty diagnostics. Its public capstone axiom check passed4.8s,
+standard-only; chain exit0.
+SHA256 57846612416c0f8e91464f8758d2444046c4ba92673de1a5d53fd4ad34f14cf8.
+The explicit positive normalized coefficient `2s-(d-1)log L` gives margin
+`(d-1)log L/2` at every real frequency, uniformly over the permitted lag range.
+Low frequencies use the literal seed minimum and quadratic phase defect;
+middle frequencies use nonnegative cosine; the final band retains `2log|T|`.
+All four new leaves and eighteen public checks are now audited. The analytic
+classification for d≠1 is formalized; actual-prime/null-mixture transfer is
+under implementation. The d=1 case and full PBAP remain OPEN.
+
+### 8 October 2026 — actual-prime boundary capstones
+
+`WeilWorkPBAPJointBoundaryPrime` wired. Targeted build passed29.8s;
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointBoundaryPrime.lean`
+passed68.2s, empty diagnostics. All six public theorem axiom checks passed
+146.1s, standard-only; chain exit0.
+SHA256 bba6ce1fb0712a32640444f24fd2b9d6a9d81eabdb54fbf206c6f9752bb825e6.
+The actual prime lag is exactly exp(-s) up to the harmless cosine sign.
+Nearest-node activity is uniform over all widths above the balanced lower
+width. The actual source seed is negative. At every sufficiently large prime,
+no coefficient works for d<1, while the explicit positive coefficient works
+at every real frequency for d>1. No source-sign, phase-scale or energy premise
+is supplied. Null-mixture transfer is the remaining C implementation step.
+
+### 8 October 2026 — full null-mixture boundary margin and nonemptiness
+
+`WeilWorkPBAPJointBoundaryNull` wired. Targeted build passed156.0s;
+final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointBoundaryNull.lean`
+passed158.3s, empty diagnostics. Both public capstone axiom checks passed17.1s,
+using only `propext`, `Classical.choice`, `Quot.sound`; chain exit0.
+SHA256 73afc90b86fcaadf68573dac348304a2f619e2c9dc5e57798b861209a6da8235.
+`exists_jointPrimeBoundary_null_energy` proves the literal physical-mass
+margin `(d-1)log L/4` for every real integer-null correction. The sector
+capstone constructs such corrections at every prescribed M>1, with positive
+physical mass and negative actual seed. Source data and phase activity are
+proved, not supplied. Conjecture C is complete for d≠1: six new leaves,
+26 public theorem axiom checks, six targeted builds and six final source
+audits. Every owned audit process has exited; no full or umbrella build.
+The exact d=1 point and full PBAP remain OPEN.
+
+Final six-leaf integration: `scripts/formal_tools.py index` exits0. Scoped
+`git diff --check` exits0; all six new Lean leaves and the new boundary paper
+have empty no-index whitespace diagnostics. All six hashes still match their
+final source audits. `scripts/formal_tools.py lint` exits1 on twelve unrelated
+umbrella reachability errors: RHTower `WeilWorkHigherDenominatorReciprocalCutoff`,
+`WeilWorkQuantizationResonanceEnergy`, `WeilWorkQuantizationResonanceMean`,
+`WeilWorkSettledPhaseCoprimeVariance`, `WeilWorkSettledPhasePrimeDeletionSummability`,
+`WeilWorkSettledPhasePrimeDeletionVariance`, `WeilWorkSingularArithmeticNotchLocalization`;
+HTGeometry `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`,
+`ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. No WP01 leaf is flagged.
+Existing large-file warnings remain. These replace the earlier eight-error
+snapshot; unrelated concurrent work is outside this task's write scope.
+
+## Many-node continuous component — 8 October
+
+`WeilWorkPBAPJointContinuousCertificate`: targeted `lake build --old +<leaf>`
+passed79.05s; final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointContinuousCertificate.lean`
+passed93.31s with no source diagnostics; nine public axiom checks passed227.82s,
+using only `propext`, `Classical.choice`, `Quot.sound`. The sequential audit
+chain exited0 and the leaf is wired. SHA256
+`b547a8fe23ac6664b134dc43f61fc4cd21e05485daf4eea9d47fc55545140849`.
+Audited declarations: `jointCosineIntegral_zero`, `jointCosineIntegral_eq_pair`,
+`jointCosineIntegral_nonneg`, `jointCosineIntegral_le_zero`,
+`jointModulationKernel_pole_le`, `jointPairFullEnergy_continuous_certificate`,
+`jointCosineIntegral_dilate`, `joint_dilated_continuous_certificate`,
+`jointUnitBump_continuous_certificate`.
+
+This is the continuous MC2/MC3 component only. MC2/MC3 discrete certificates
+and the arbitrary-complex-profile MC4 capstone are paper proved, Lean OPEN.
+Search coverage, primary-parent audit and the repaired foreground-process
+overlap are recorded in `JOINT-MANY-NODE-CERTIFICATE.md`. No numerical
+experiment, full/umbrella build, new axiom or heartbeat increase was used.
+
+`WeilWorkPBAPJointShortPrefix`: targeted `--old` build passed125.40s;
+final direct `lake env lean <leaf>` source audit passed100.73s with no source
+diagnostics; `joint_short_phase_prefix` and `joint_short_phase_weighted`
+axiom checks passed11.04s, standard axioms only. Sequential chain exited0;
+import wired. SHA256
+`0168884c2438170221f674809c825165593319f9df64aaf06e5f6a2dac0d5f98`.
+The actual short length and derivative order remain explicit; signed Abel
+weights cost finite total variation. This is a classical-mechanism bridge.
+The displayed phase-budget inequalities still need proof on the actual
+logarithmic integer intervals before applying it to MC2/MC3/MC4.
+
+`WeilWorkPBAPJointGammaFloor`: targeted `--old` build passed67.36s;
+final direct `lake env lean <leaf>` audit passed25.16s, no source diagnostics;
+six named axiom checks passed96.68s, standard axioms only. Import wired.
+SHA256 `bcb1998787b36b0de2838a1784e93480967f22a016f83b5248322c756700c8db`.
+Audited: `jointLogDeficit_nonneg`, `jointLogDeficit_integrable`,
+`joint_gamma_width_lower`, `jointPairDensity_le_l1`,
+`joint_pair_gamma_width_floor`, `joint_dilated_gamma_floor`.
+This is the modulation-uniform Gamma component for arbitrary complex
+profiles; the exact paired mass retains coefficient two. The finite fixed
+log-deficit integral is left symbolic, so no integral evaluation or numerical
+experiment is required. Both the actual density and its integrability are
+proved from the existing Fourier-square interface.
+
+`WeilWorkPBAPJointSignedCertificate`: final optimized-source targeted
+`--old` build passed77.82s; final direct `lake env lean <leaf>` audit
+passed63.46s with no source diagnostics; seven public axiom checks
+passed65.09s, standard axioms only. Chain exited0 and import is wired.
+SHA256 `cb5fa935f1f761066aede0ab7ccd7f41e0d362bda7b16a6ce6e38c486f72c5dc`.
+Audited: `jointAbsCorrMass_nonneg`, `jointAbsCorrMass_pos`,
+`jointAbsCorrMass_dilate`, `joint_pair_pole_eq_cosine_integral`,
+`joint_pair_pole_cosine_error`, `joint_dilated_pole_cosine_error`,
+`joint_dilated_signed_certificate`. The earlier passing source emitted
+a redundant ring suggestion; an explicit power identity and associativity
+removed it, followed by all three final audits again.
+
+These four new leaves have 24 standard-only public theorem audits, four
+targeted `--old` builds and four final direct-source checks. No full or
+umbrella build. The actual discrete MC2--MC5 capstones and the stronger
+source-uniform two-window MC6 remain Lean OPEN.
+
+Integration: index exited0 (15.91s); global lint exited1 (17.70s) on five
+unrelated HTGeometry umbrella-reachability errors: `ApertureConeCalculus`,
+`ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`,
+`BoundaryCoronaCStarAlgebra`. No WP01 finding. This replaces the earlier
+twelve-error snapshot; other concurrent research files were not modified.
+
+## Source-uniform two-window components — 8 October
+
+`WeilWorkPBAPJointSourceBudget`: targeted `lake build --old +<leaf>`
+PASS88.71s; final `lake env lean <leaf>` PASS54.16s, empty source log;
+eight public axiom checks PASS12.91s, only propext/Classical.choice/Quot.sound.
+Import wired. SHA256
+`719e958d2a8b0c61801b2e43d60239374dce7b0f2f27875a658730cc9f2db96a`.
+Audited declarations: `joint_l1_sq_le_width_mass`,
+`joint_fourier_sq_le_width_mass`, `joint_source_fourier_integrable`,
+`joint_source_gamma_integrable`, `joint_source_log_deficit_integrable`,
+`joint_source_log_deficit_le`, `joint_source_gamma_width_floor`,
+`joint_two_source_gamma_width_floor`. The fixed log-deficit integral remains
+symbolic. No profile derivative norm or nonzero source integral is assumed.
+
+Development diagnostics isolated a default-heartbeat timeout in compact
+support inference for the squared norm. An explicit support-subset proof
+and typed integrands removed the issue; no heartbeat option was changed.
+The completed scratch passed20.86s before production promotion. Audit chain
+12142 then passed all three production steps and exited1 only on the
+independent complex-quadrature development scratch, whose errors remain
+under repair. That scratch is not a production module or capstone.
+
+Source-uniform Gamma search: partial=false,68,819 indexed files; all twenty
+candidate lemmas and twenty source arguments inspected, no proof ideas or
+ingredient sets returned. Complex quadrature search: partial=false,68,820
+files, all twenty candidates and twenty arguments inspected; background
+refresh active, compiler metadata mostly pending. The existing complex BV
+quadrature and elementary interval FTC machinery were inspected. MC6 and
+its MC7 sparse-many-window extension remain paper proved, Lean OPEN.
+
+`WeilWorkPBAPJointLogQuadrature`: targeted `--old` build PASS87.11s;
+final direct `lake env lean <leaf>` PASS80.17s with empty diagnostics;
+seven public axiom checks PASS6.64s, standard three axioms only. Import
+wired. SHA256
+`f20797bd05d04901187efdb75fe151459c84c135e10cbc0a4bd6cb36928f70f0`.
+Audited: `jointLogGridIntegrand_hasDerivAt`, `jointLogGridIntegrand_deriv_le`,
+`jointLogGridIntegrand_quadrature`, `jointLogGridIntegrand_integral`,
+`joint_log_fourier_quadrature`, `joint_log_cutoff_variation`,
+`joint_log_short_phase_weighted`. Every derivative falls on the auxiliary
+cutoff. The explicit short-phase numerical budgets still require proof
+on the actual growing-order logarithmic intervals.
+
+All six new supporting leaves: 39 standard-only public audits, six targeted
+builds, six final direct-source checks, imports verified, no umbrella build.
+All nine new owned files passed whitespace checks; the two latest hashes
+were rechecked. Scratch failures were confined to typing, conversion,
+set/finset membership and one missing argument; the final source has no
+diagnostics or heartbeat overrides.
+
+Latest index PASS16.29s; lint EXIT1 21.60s. Exact eight unrelated
+reachability errors: `RHTower.WeilPaperCompletedLogMoment`,
+`RHTower.WeilWorkQuantizationHarmonicFinitePart`,
+`RHTower.WeilWorkQuantizationLaurentFinitePart`,
+`HTGeometry.ApertureConeCalculus`, `HTGeometry.ApertureConeWinding`,
+`HTGeometry.ApertureLogTranslation`, `HTGeometry.ApertureOpenHistoryIdeal`,
+`HTGeometry.BoundaryCoronaCStarAlgebra`. No WP01 finding. This supersedes
+the earlier five-error snapshot. Audit chain9967 has exited1 only at lint;
+all three Lean steps and index passed. No owned build process remains.
+MC6 and its sharper MC8 geometric-row extension remain Lean OPEN.
+
+## Literal uniform cutoff — 8 October
+
+`WeilWorkPBAPJointFixedCutoff`: targeted `lake build --old +<leaf>`
+PASS226.30s; final `lake env lean <leaf>` PASS116.70s, empty source log;
+all 28 public theorem axiom checks PASS80.67s. Every printed dependency is
+one of propext/Classical.choice/Quot.sound. Import wired. SHA256
+`3c8ea12453c2b4883d64fc75c2b79a32a7c6b005caff939e54d7a8c6e3902525`.
+All six preceding supporting-leaf hashes are unchanged. The seven leaves
+now have 67 public audits, with no full/umbrella build or heartbeat change.
+
+The leaf constructs psi(y)=plateauBump(4,y+2), proves its evenness,
+plateau, compact support, smoothness and `2<=integral psi<=4`, and bounds
+v(y)=psi(y/W)cosh((L+y)/2)/cosh(L/2) uniformly in every real L, `0<W<=1`.
+One constant controls v, W v', and W^2 v''. The exact integral differs
+from W*integral(psi) by at most `4e W^2`; the complex Fourier integral
+satisfies `|Fourier(v)(t)| t^2<=C/W`. Derivatives belong solely to the
+fixed auxiliary cutoff. These are technical MC6 components, not positivity
+capstones or an independent scientific novelty claim.
+
+Development repairs: use the additive bounded-range API, the correct
+absolute-value triangle name, explicit real-to-complex derivative casts,
+and the verified finite-order-to-infinity comparison for ContDiff.
+The complete scratch passed110.85s before promotion. No proof hole or
+heartbeat override was introduced. New source and owned tracked diff pass
+whitespace checks.
+
+Searches: growing derivative order partial=false,68,839 files; Fourier
+decay partial=false,68,843; interval geometry partial=false,68,847. All
+20 candidate lemmas and 20 source arguments from each were inspected;
+no proof ideas/ingredient sets returned. Background refresh/compiler
+freshness remain pending. The narrower lexical Sieve search found nine
+ranked declarations, including `log_factorial_le` and blockLambda schedule
+interfaces. Source inspection reused the existing exact two-IBP bound and
+ratio-bounded window-landing theorem. The latter gives a shorter paper
+schedule proof with three uniform inequalities; it does not itself pay
+those inequalities on the actual intervals. Geometry scratch is now active.
+
+Index PASS15.40s; global lint EXIT1 19.10s on nine unrelated reachability
+errors: RHTower `WeilWorkSettledPhaseDiskHurwitz`,
+`WeilWorkSettledPhaseLogSquareEnergy`, `WeilWorkSettledPhaseValuationAnalytic`,
+`WeilWorkSettledPhaseValuationTwist`; HTGeometry `ApertureConeCalculus`,
+`ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`,
+`BoundaryCoronaCStarAlgebra`. No WP01 finding. This supersedes the prior
+eight-error snapshot; unrelated files were preserved. Audit chain27582
+has closed with exit1 solely from lint. MC6, MC8 and full PBAP remain OPEN.
+
+## Actual growing-width interval geometry — 8 October
+
+`WeilWorkPBAPJointGridGeometry`: targeted `--old` build PASS8.18s;
+final direct `lake env lean <leaf>` PASS4.39s, empty log; all six public
+axiom checks PASS2.04s, only propext/Classical.choice/Quot.sound. Import wired.
+SHA256 `0605374cc514f3df13873bda2ceef89d6528e2dadde0a3d1bbae377898194cff`.
+The eventual conclusions discharge every generic geometry condition for
+W=b L log log L exp(-L/2), b>0. Actual floor/ceiling endpoints have
+2<=n, N/2<=n<=N, n<m<=2n+1 and 2NW<=H<=(4e+3)NW; their logarithms enclose
+[-2W,2W]. Both rounding errors and the extra endpoint are explicit.
+
+Audited declarations: `joint_grid_geometry`, `jointUniformWidth_grid_scale`,
+`tendsto_jointUniformWidth_zero`, `eventually_jointUniformWidth_grid_bounds`,
+`eventually_jointUniformWidth_grid_geometry`,
+`eventually_jointUniformWidth_log_cover`. The complete scratch passed9.55s.
+Imports were reduced to the four required mathlib modules. Development
+repairs were a root-namespace API, a zero-limit multiplication conversion,
+and explicit multiplication of positive inequalities instead of asking
+nonlinear automation to invent those products. No heartbeat changes.
+Eight supporting leaves now have 73 public audits. MC6/MC8 remain Lean OPEN.
+
+Index PASS15.94s; lint EXIT1 12.21s on eleven unrelated reachability errors:
+RHTower `WeilWorkQuantizationCenteredSource`, `WeilWorkSettledPhaseDiskHurwitz`,
+`WeilWorkSettledPhaseLogSquareEnergy`, `WeilWorkSettledPhaseValuationAbsolute`,
+`WeilWorkSettledPhaseValuationTwistSummability`,
+`WeilWorkSettledPhaseValuationZeroFree`; HTGeometry `ApertureConeCalculus`,
+`ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`,
+`BoundaryCoronaCStarAlgebra`. No WP01 finding. This supersedes the preceding
+nine-error snapshot. Chain60738 closed with exit1 solely from lint. The
+next growing-order scratch is active; no second owned Lean process runs.
+
+## Actual growing-order phase schedule — 8 October
+
+`WeilWorkPBAPJointGrowingOrder`: targeted `--old` build PASS80.70s;
+final `lake env lean <leaf>` PASS10.48s, empty diagnostics; all nine public
+axiom checks PASS30.31s, only propext/Classical.choice/Quot.sound. Import
+wired. SHA256 `8b2dade143b3447a3f1991daf4dd9153cca234d91322be9c46bef5abfa08cb61`.
+The complete scratch passed24.65s before promotion. The literal order cap
+pays both power costs and the factorial endpoint cost. The three actual
+landing-window inequalities are discharged uniformly in the full stated
+middle range; the every-prefix saving has explicit exponent and constant.
+No numerical side-budget or heartbeat override remains. This is a bridge,
+not a positivity capstone or independent scientific novelty claim.
+Nine supporting leaves now have 82 public theorem audits.
+
+Fresh cutoff/Abel search `/tmp/wp01-actual-middle-cutoff-search.json`:
+partial=false,68,870 files, stale coverage snapshot, background refresh
+incomplete and compiler metadata pending. All20 candidates and all20 source
+arguments inspected; no proof ideas/ingredient sets. Existing log-cutoff
+variation and complex quadrature remain the applicable components. No
+absence or novelty inference is drawn from retrieval.
+
+Index PASS17.04s; lint EXIT1 19.67s on seven unrelated umbrella errors:
+RHTower `WeilWorkQuantizationGaussianRecovery`,
+`WeilWorkSingularArithmeticPoissonEuler`; HTGeometry `ApertureConeCalculus`,
+`ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`,
+`BoundaryCoronaCStarAlgebra`. No WP01 finding. This supersedes the eleven-error
+snapshot. Audit chain16016 closed with exit1 solely from lint. Current
+scratch `/tmp/wp01-middle-cutoff.lean` pays actual cutoff Abel weights and
+the logarithmic saving cost; MC6, MC8 and full PBAP remain OPEN.
+
+## Literal complex middle-frequency discrepancy — 8 October
+
+`WeilWorkPBAPJointMiddleCutoff`: targeted `--old` build PASS112.29s;
+final `lake env lean <leaf>` PASS93.66s, zero-byte diagnostics; eleven
+public axiom checks PASS41.38s, only propext/Classical.choice/Quot.sound.
+Import wired. SHA256
+`9b36807287880bec95fdf6b22b9f194073df752d8e7ff82bee1b3cb512c5235e`.
+The complete scratch passed66.03s before promotion. Ten supporting leaves
+now have 93 public theorem audits. No full build or heartbeat change.
+
+The leaf pays actual fixed-cutoff Abel variation, exact phase conjugacy,
+both frequency signs, the continuous Fourier term and the literal complex
+grid-minus-integral error. For eta=c log2<1 its exact `2 cosh(L/2)` factor
+is bounded by an eventually nonnegative o(L) function, independent of source
+profiles. The Fourier tail bound follows from the paid inequality Wt^2>=N.
+This closes the middle-band estimate, not MC6, MC8 or full PBAP. Development
+repairs were explicit positive product inequalities, exposing a composed
+logarithm, and normalizing rational exponents before limit congruence.
+
+Index PASS15.01s; lint EXIT1 23.50s on five unrelated HTGeometry umbrella
+errors: `ApertureConeCalculus`, `ApertureConeWinding`,
+`ApertureLogTranslation`, `ApertureOpenHistoryIdeal`,
+`BoundaryCoronaCStarAlgebra`. No WP01 finding. This supersedes the seven-error
+snapshot. Audit chain56663 CLOSEDexit1 solely from lint. Owned scoped and
+new-file whitespace checks are clean. Active scratch
+`/tmp/wp01-grid-frequency.lean` handles full cutoff quadrature, low-band
+sublinear loss and exact leading high-frequency mass. MC6/MC8 remain OPEN.
+
+## Actual low/high frequency estimates — 8 October
+
+`WeilWorkPBAPJointGridFrequency`: targeted `--old` build PASS196.55s;
+final `lake env lean <leaf>` PASS156.47s, empty diagnostics; twelve public
+axiom checks PASS156.63s, only propext/Classical.choice/Quot.sound.
+Import wired. SHA256
+`8a6514877d9407680ac750df738b47c7fb396a2857ae865e3bb15108209ee69e`.
+The complete scratch passed55.66s. Eleven supporting leaves now have105
+public theorem audits. No full/umbrella build or heartbeat change.
+
+Full complex quadrature pays actual endpoints and cutoff derivatives.
+The low error has a nonnegative o(L) majorant under the exact pole factor.
+The high envelope retains Apsi W and pays both W² and exponential errors;
+above the growing ceiling it leaves3L/4 against log|t|. A finite bound at
+all frequencies supplies the source-density integrability budget. Repair
+history: stop monotonicity automation before it splits a sum incorrectly;
+force the real integral before casting to complex; remove redundant ring
+steps after field_simp. Five new-file whitespace checks are clean.
+
+Index PASS17.10s; lint EXIT1 29.59s on eleven unrelated umbrella errors:
+RHTower `WeilWorkDeficitCriticalMellin`,
+`WeilWorkSettledPhaseCenteredContour`, `WeilWorkSettledPhaseCenteredConvolution`,
+`WeilWorkSettledPhaseCenteredEnergy`, `WeilWorkSettledPhaseCenteredMellin`,
+`WeilWorkSettledPhaseCenteredPhaseCost`; HTGeometry `ApertureConeCalculus`,
+`ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`,
+`BoundaryCoronaCStarAlgebra`. No WP01 finding. This supersedes the five-error
+snapshot. Audit19927 CLOSEDexit1 solely from lint.
+
+Gamma join search partial=false,68,882 files; Fourier-continuity search
+partial=false,68,885. All20 candidates/all20 source arguments from each
+were inspected; no proof ideas/ingredient sets. Background refresh and
+compiler metadata remain pending; the latter search had a stale coverage
+snapshot. Continuity hits included three temporary copies; the inspected
+production `WeilHerglotz.continuous_paperFT_real` is reused. Circular
+positive-Weil statements are inapplicable. No novelty inference.
+Active `/tmp/wp01-symbol-floor.lean` joins all bands and integrates the
+actual corrected symbol against arbitrary narrow-source Fourier densities;
+its L/3 mass target remains under Lean verification. MC6/MC8/full PBAP OPEN.
+
+## Corrected-symbol coercivity — 8 October
+
+`WeilWorkPBAPJointSymbolFloor`: targeted `--old` build PASS48.98s;
+final `lake env lean <leaf>` PASS84.00s, empty diagnostics; nine public
+axiom checks PASS11.03s, only propext/Classical.choice/Quot.sound. Wired.
+SHA256 `0296bfa01280831c3750eb329d2e7a1dbf907b02c1d880a98eec0170305730e0`.
+Complete scratch PASS6.38s after the core PASS100.68s. Twelve supporting
+leaves now have 114 public theorem audits. No full or umbrella build.
+
+All three frequency bands join the same integrable Gamma deficit. The
+actual corrected symbol is integrable against every narrow-source Fourier
+density and leaves L/3 times physical mass. The two-source statement pays
+b=1/(8 log2), using the proved bound Apsi<=4. No arbitrary numerical
+schedule or source-derivative hypothesis is supplied. Repairs: use an
+explicit function equality for Fourier continuity; expose Pi subtraction
+before ring normalization. Actual source-energy identities and MC6/MC8
+remain OPEN. This is a BRIDGE, with no scientific novelty claim.
+
+Index PASS16.15s; lint EXIT1 21.51s on thirteen unrelated umbrella errors:
+RHTower `WeilWorkExposingRayCriticalSeries`, `WeilWorkQuantizationGaussianGram`,
+`WeilWorkSettledPhaseCenteredContour`, `WeilWorkSettledPhaseCenteredConvolution`,
+`WeilWorkSettledPhaseCenteredEnergy`, `WeilWorkSettledPhaseCenteredMellin`,
+`WeilWorkSettledPhaseCenteredPhaseCost`, `WeilWorkSettledPhasePhaseCostDichotomy`;
+HTGeometry `ApertureConeCalculus`, `ApertureConeWinding`,
+`ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`.
+No WP01 finding. Audit87474 CLOSEDexit1 solely from lint. This supersedes
+the eleven-error snapshot; unrelated work is preserved.
+
+Two-source Gamma/pole hybrid searches hit their deadlines with partial
+coverage (68,893 and 68,891 files) and no returned candidates/arguments.
+Lexical fallbacks find the actual `testGamma_eq_jump_scaled` and
+`testPole_eq_integral_cosh` declarations in `JointJump`; both inspected.
+The production polarized-convolution expansion and translation identities
+provide unconditional source algebra. Its positive-Weil spectral theorems
+are inapplicable. Active scratch `/tmp/wp01-two-source.lean` handles exact
+cross-correlation, support, mass and source-uniform bounds.

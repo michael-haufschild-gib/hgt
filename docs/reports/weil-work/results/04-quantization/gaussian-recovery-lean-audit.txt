@@ -1,0 +1,56 @@
+Cycle30 Gaussian recovery final audit
+
+SHA256 d7dc35d2f5ccbeeb4a058b4287b904deb48d72018486f6ce29fe781f0d498345 formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianRecovery.lean
+cwd formal: lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianRecovery.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianRecovery.lean
+Exit 0. Output:
+(empty)
+SHA256 98b21ebd93f6091ad7dbb45ad3ca938a86d597fdce217a81b7d51cc780fc023e formal/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianCoefficientLimit.lean
+cwd formal: lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianCoefficientLimit.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationGaussianCoefficientLimit.lean
+Exit 0. Output:
+(empty)
+
+Final API/axiom scratch command: lake --old env lean /tmp/wp04-recovery30-audit.lean
+Exit 0. Source:
+import GaloisForLFunctions.RHTower.WeilWorkQuantizationGaussianRecovery
+import GaloisForLFunctions.RHTower.WeilWorkQuantizationGaussianCoefficientLimit
+#print axioms RHTower.WeilSpectral.quantizationCenteredGaussianMoment
+#print axioms RHTower.WeilSpectral.quantizationCenteredGaussianCoeff
+#print axioms RHTower.WeilSpectral.hasSum_quantizationCenteredGaussianCoeff
+#print axioms RHTower.WeilSpectral.quantizationCenteredGaussianMoment_eq_tsum
+#print axioms RHTower.WeilSpectral.norm_quantizationCenteredGaussianCoeff_le
+#print axioms RHTower.WeilSpectral.tendsto_quantizationCenteredGaussianMoment
+
+example : True := by
+  have := @MeasureTheory.hasSum_integral_of_summable_integral_norm.{0,0,0}
+  have := @tendsto_tsum_of_dominated_convergence.{0,0,0}
+  have := @Filter.tendsto_const_mul_pow_atTop.{0}
+  have := @tsum_ite_eq.{0,0}
+  have := @Complex.cpow_def_of_ne_zero
+  have := @Complex.ofReal_log
+  have := @LSeries.norm_term_eq
+  have := @LSeries.term_of_ne_zero
+  have := @Real.rpow_def_of_pos
+  have := @Real.log_injOn_pos
+  have := @Real.tendsto_exp_neg_atTop_nhds_zero
+  have := @Complex.ofReal_exp
+  have := @Complex.ofReal_inv
+  have := @Real.sqrt_eq_rpow
+  trivial
+
+Output:
+'RHTower.WeilSpectral.quantizationCenteredGaussianMoment' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredGaussianCoeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.hasSum_quantizationCenteredGaussianCoeff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationCenteredGaussianMoment_eq_tsum' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.norm_quantizationCenteredGaussianCoeff_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantizationCenteredGaussianMoment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+Lint: scripts/formal_tools.py lint exited 1. Six unrelated unreachable modules; 367 size warnings. 71 quantization leaves wired exactly once. No owned error.

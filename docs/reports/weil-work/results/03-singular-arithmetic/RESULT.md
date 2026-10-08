@@ -371,3 +371,219 @@ WeilOneSidedConvergenceRigidity proves either sign part summable against
 at1, despite absolutely summable signed unit-log-window masses. Next
 research must address that mixed cancellation, without adding tail
 summability or a detection premise.
+
+
+## C35a: actual forward energy and residual variance, verified 2026-10-08
+
+For every `hW : WeilPositiveFull lam`, let `a = forwardCoeff lam` and
+`B = WeilWorkSettledPhase.sourceCompletion hW 1`. There exist finite
+real K>0 and V>=0 such that
+
+    sum_(1<=n<=N) |a(n)|^2/n / log N -> K,
+    sum_(1<=n<=N) |a(n)-B|^2/n / log N -> V,
+    K = |B|^2 + V.
+
+No coefficient ordering, multiplicativity, extra convergence or growth
+premise is added. The actual centered harmonic sum converges, and both
+coordinates of sum a(n)/n / log N converge to B. The two coefficient
+definitions are explicitly identified.
+
+The exact log-moment ceiling gives a decreasing normalized primitive;
+finite secants then force the energy limit. This is a BRIDGE application
+of classical monotone density, not a new Tauberian theorem or a claimed
+scientific breakthrough. Parent C35 (V=0) remains OPEN. Even its connection
+to the exact uniform bounded-quotient receiver still needs proof.
+
+Entry point: `WeilWorkSingularArithmeticForwardVariance.lean:35`,
+`exists_forwardCoeff_energy_variance`. Five leaves, 486 lines, 17 public
+declarations. All targeted --old checks and all five final direct
+`lake env lean <module>` checks PASS. Axiom audit: only propext,
+Classical.choice, Quot.sound. Five umbrella imports wired; no umbrella
+build. Global lint fails on six unrelated unreachable modules; no owned
+or prohibited-declaration finding. See EVIDENCE for exact scope.
+
+
+## C37: actual parity residue is bounded by actual variance, verified 2026-10-08
+
+For every `hW : WeilPositiveFull lam`, let B be its actual completion at1.
+There exist V>=0 and r>0, with V the actual centered logarithmic energy
+limit and r the actual odd/full radial ratio, such that
+
+    |B|^2*(2*r-1)^2 <= V.
+
+No first-mean conclusion for odd coefficients or analytic continuation of
+the odd series is assumed. An Abelian upper bound transfers the existing
+variance limit to damped energy; weighted Cauchy--Schwarz bounds the
+actual alternating residue. The constant is sharp for general coefficient
+sequences, not asserted sharp within the full-positive cone.
+
+Entry point: `WeilWorkSingularArithmeticParityVariance.lean:83`,
+`exists_forward_parity_variance`. Three leaves,342 lines,five public
+theorems. Targeted --old builds, final direct Lean checks and all five
+axiom checks PASS; only propext,Classical.choice,Quot.sound. Umbrella
+imports wired. Lint fails on five unrelated unwired HTGeometry leaves.
+Verdict BRIDGE, not significant scientific novelty. V=0, canonical r=1/2,
+and the original uniform bounded quotient remain OPEN.
+
+## C39a: actual sieve residues vanish with the prime cutoff, verified 2026-10-08
+
+For arbitrary `hW : WeilPositiveFull lam`, let B be its nonzero actual
+forward residue and K>0 its actual logarithmic coefficient-energy limit.
+For every Q>=1 the actual coprime/full radial ratio has a positive limit
+r_Q, and the SAME K satisfies
+
+    |B|^2*r_Q^2 <= K*phi(Q)/Q.
+
+Consequently r_(primorial N)->0. The radial limit is taken first for each
+fixed modulus, then the prime cutoff tends to infinity. No uniform radial
+error, coefficient sign, multiplicativity, or additional source premise
+is used. Weighted Cauchy--Schwarz, the existing Abel-energy majorant and
+the finite Euler harmonic bound prove this classical BRIDGE.
+
+Entry points: `WeilWorkSingularArithmeticCoprimeEnergy.lean:93`,
+`exists_forward_coprime_energy`; `WeilWorkSingularArithmeticSieveResidue.lean:47`,
+`exists_forward_sieve_residue_tendsto_zero`. Three leaves,328 lines,
+nine public theorems. Targeted --old checks, final direct Lean checks and
+all nine axiom audits PASS; only standard Lean axioms. Imports wired,
+index refreshed; no umbrella/full build. Lint has11 unrelated unreachable
+leaves and no owned finding. Stronger r_Q<=C*phi(Q)/Q, V=0, periodic
+completeness and WP03 uniform quotient boundedness remain OPEN. No
+significant scientific novelty or completed detector is claimed.
+
+## C42: one harmonic condition pays the rough-sign receiver, verified 2026-10-08
+
+For every full-positive source, put d=coneDeviation(lam). Either its
+absolute harmonic mass fails the envelope
+
+    for every eta>0, some B>=0 bounds
+    sum_(n<=N) |d(n)|/n <= B+eta*log N for every N>=1,
+
+or, for every y>=2, Y>0 and cutoff T, some k>=T satisfies
+
+    sum_(n<=k, all primes p<=y do not divide n) d(n)/n < Y.
+
+This unconditional alternative follows from hW alone. The receiver uses
+one harmonic condition in place of the old four NotchSmall fields.
+Finite partial summation supplies arbitrarily late small local-mass
+scales and the shifted tail bound; Gaussian localization makes all
+four error masses small on the same selected scale. The actual source
+pays the positive-definite and Dirichlet summability inputs.
+
+Entry point: `WeilWorkSingularArithmeticNotchRoughSign.lean:109`,
+`not_harmonic_small_or_rough_sign_of_weilPositiveFull`. Seven leaves,
+1079 lines,15 public theorems and one definition. All targeted --old
+builds, final direct Lean checks and all15 axiom checks PASS; only
+propext, Classical.choice, Quot.sound. Imports wired and index refreshed;
+no umbrella/full build. Global lint has12 unrelated unreachable leaves
+and no owned finding. Scientific verdict BRIDGE: coefficient isolation,
+C41 rigidity and WP03 uniform quotient boundedness remain OPEN.
+
+## C43a: composite harmonic mass is necessary under harmonic smallness, verified 2026-10-08
+
+For every `hW : WeilPositiveFull lam`, with d=coneDeviation(lam), at
+least one of these holds: lam equals Lambda on n>=2; d fails the C42
+harmonic-small envelope; or sum_(nonprime n) |d(n)|/n diverges.
+The alternative has only hW as its source premise. Its receiver proves
+equality from harmonic smallness and a summable composite tail, without
+a pointwise o(Lambda) condition or a restriction on prime-deviation signs.
+No existence of a noncanonical model meeting either condition is claimed.
+
+The proof uses the new harmonic notch receiver, the old exact low/high
+arithmetic weights, and ordinary harmonic convergence already forced by
+full positivity. The summable composite tail permits increasing the prime
+cutoff; the two notch signs then isolate every coefficient. No interchange
+of uncontrolled limits is used.
+
+Entry point: `WeilWorkSingularArithmeticCompositeRigidity.lean:73`,
+`canonical_or_not_harmonic_small_or_nonprime_mass_diverges`. Two leaves,
+233 lines, three public theorems. Targeted --old builds, final direct
+`lake env lean` checks and all three axiom audits PASS; only propext,
+Classical.choice, Quot.sound. Both imports wired; no full/umbrella build.
+Scientific verdict BRIDGE, not significant new science. C43's unrestricted
+harmonic-small rigidity, C41, and the WP03 quotient receiver remain OPEN.
+
+## C49: multiplicative strict-local-bound class, paper proof only
+
+A full-positive source whose deviation on n>=2 is multiplicative with
+|f(p^k)|<=theta<1 is canonical by the paper argument in PROOF.md.
+Its proposed new ingredient is a finite Euler-product real-part bound
+forced by the actual notch law. Source analyticity at1 prevents the
+vanishing harmonic value of the C47 null-expansion profile. Classical
+Caratheodory estimates then force absolute harmonic convergence.
+
+This class theorem is NOT yet Lean-verified. Only the standard analytic
+finite-product disk estimate has passed targeted, direct and axiom
+checks in WeilWorkSingularArithmeticEulerDisk.lean. No significant
+novelty, unrestricted rigidity, or WP03 solution is claimed.
+
+C49 formal progress: WeilWorkSingularArithmeticTorusSign.lean now passes
+its final direct audit and all five public axiom audits, using only
+standard Lean axioms. It proves the source-to-pointwise-sign implication
+when a continuous Fourier density is supplied, with explicit kernel
+symmetrization. Constructing C49's Euler density and proving its exact
+coefficients remain unpaid. This is another standard bridge, not a
+completed class theorem or WP03 detector.
+
+C49 endpoint support: WeilWorkSingularArithmeticHarmonicConvolution.lean
+passes targeted --old, final direct and all six axiom audits. It proves
+that ordinary harmonic convergence survives convolution by an absolute
+harmonic sequence, and that a strict harmonic norm contraction has an
+absolute inverse at the same endpoint. The local Euler instantiation
+and final class theorem remain in progress.
+
+C49 finite-prime step: WeilWorkSingularArithmeticPrimeDeletion.lean now
+proves the exact ordinary harmonic limit after deleting any finite prime
+set, divided by its local Euler product. All 15 public theorem axiom
+audits and the final direct leaf audit pass; only standard Lean axioms.
+The exact arithmetic factorization and same-endpoint local inverses are
+proved, not assumed. Gcd-weighted limits, the actual Euler density and
+the source rigidity capstone remain unfinished.
+
+C49 gcd coefficients: WeilWorkSingularArithmeticGcdEuler.lean derives
+the exact real gcdHarmonicSum limits from multiplicativity, the strict
+local coefficient bound and the ordinary harmonic limit. The unit
+coefficient contributes -1 explicitly. Final direct audit and all ten
+axiom checks pass; only standard axioms. The actual Poisson density,
+strict-profile NotchSmall, positive harmonic value and rigidity capstone
+remain to be formalized; no C49 or WP03 completion claim.
+
+C49 analytic coefficients: WeilWorkSingularArithmeticPoissonEuler.lean
+proves the finite Poisson/Euler density's exact Fourier coefficients for
+arbitrary radii in [0,1), with positivity and continuity of each kernel.
+Final direct audit and all nine axiom checks pass; standard axioms only.
+Its prime-radius/source identification is in progress. The source-forced
+Euler-product bound and complete class rigidity are not yet Lean theorems.
+
+C49 source identification: WeilWorkSingularArithmeticSourceEuler.lean
+now proves the literal prime-radius Fourier identity, the real gcd
+endpoint and the finite Euler real-part inequality. The ordinary
+harmonic value comes from the existing full-source theorem. Final
+direct audit and all thirteen axiom checks pass; standard axioms only.
+Strict-profile NotchSmall remains explicit in this bridge. Its removal,
+positive harmonic value and prime-tail rigidity are unfinished. Seven
+C49 leaves are wired; C49 and WP03 are not fully formalized or solved.
+
+C49 strict-profile smallness: WeilWorkSingularArithmeticMeanSmall.lean
+proves absolute Cesaro mean zero from the uniform strict prime-power
+bound, then uniform decay of logarithmic-window mass and NotchSmall.
+Its source corollary now supplies ordinary H, H<=1 and all finite Euler
+bounds without an added smallness or convergence input. Final direct
+and all ten axiom audits pass; standard axioms only. H>0 and the final
+prime-tail rigidity upgrade remain unfinished. Eight C49 leaves wired;
+no significant novelty or WP03 completion claim.
+
+C49 Euler lower bound: WeilWorkSingularArithmeticPositiveEuler.lean
+proves a positive, uniform fractional-zeta lower bound for the actual
+multiplicative Dirichlet series on sigma>1. Local logarithm estimates,
+absolute Euler-product convergence and the prime-square remainder are
+paid. Final direct audit and all nine axiom checks pass; standard axioms
+only. The ordinary Abel endpoint and source analytic zero exclusion are
+next; H>0 and final class rigidity remain unformalized.
+
+C49 positive normalization: WeilWorkSingularArithmeticHarmonicPositive.lean
+identifies the actual analytic source value with ordinary H and proves
+H>0 from the strict prime-power profile. Its final corollary supplies
+0<H<=1 and all finite Euler real-part bounds with no separate analytic
+premise. Final direct13882 and all14 axiom96206 audits pass; standard
+axioms only. Ten C49 leaves wired. Prime-tail summability and complete
+class rigidity remain unfinished; WP03 remains open.

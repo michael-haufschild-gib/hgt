@@ -1,6 +1,152 @@
 # WP02 result — exact source constructions and bounds
 
-## Current frontier: primitive loss and its optimized survivor (cycle18)
+## Cycle33: uniform critical arithmetic boundary, kernel endpoint pending
+
+**Universal WP02 remains OPEN.** Four new saved/wired leaves36–39 prove
+actual critical-separator arithmetic estimates:
+
+- `WeilWorkExposingRayCriticalTwists`: finite harmonic ceilings for every
+  real character, with multiplicativity required only at positive indices.
+- `WeilWorkExposingRayCriticalSeries`: absolute coefficient convergence
+  at every real exponent>1/2, derived from actual local absolute mass.
+- `WeilWorkExposingRayCriticalAbel`: a signed Abel product ceiling uniform
+  in every real frequency, with absolute Fubini prerequisites proved.
+- `WeilWorkExposingRayCriticalBoundary`: for every actual critical polar
+  separator, one M>=0 bounds sigma*Re B(sigma+i*t) for ALL real t on one
+  positive radial neighborhood. Quadratically scaled upper tails vanish
+  uniformly. No Laurent expansion or coefficient signs are assumed.
+
+All four saved-source foreground audits using `lake --old env lean`
+pass without diagnostics. All11 public theorem axiom checks pass with
+only propext, Classical.choice and Quot.sound. Fresh global formal lint
+reports seven unrelated unreachable modules and no owned WP02 finding.
+Integration check finds39 owned leaves,
+all imported exactly once, with no trailing whitespace; scoped diff
+whitespace check passes.
+
+The critical one-pole recovery argument is recorded in
+`CRITICAL-ONE-POLE-PROOF.md`; its kernel/ODE/Laplace producer is NOT yet
+formalized. The new arithmetic bound can exclude both signs of an actual
+double pole, but it does not supply the needed Laurent expansion. No
+critical exact-fibre recovery, full-positive canonical completion,
+critical gamma-energy floor or RH receiver is claimed.
+
+A precise applicability limitation in the existing read-only parent was
+found: its character assumptions also impose unit norm and
+multiplicativity at0, forcing the trivial character. The new owned
+positive-integer twist proof handles the needed nontrivial characters;
+the parent was left untouched. External scientific novelty remains
+unestablished. Verified contribution: BRIDGE, with the critical endpoint
+conjecture surviving preliminary paper attack.
+
+## Cycle32: completed exact one-pole recovery below logarithmic cost
+
+**Universal WP02 remains OPEN.** For every `0<=beta<1`, every finite
+nonnegative mixture of actual compact complex C2 sources, each killing
+at least one half-pole, now has Lean-proved arbitrarily accurate recovery
+by two-pole mixtures in weighted spectral L1 with weight
+`1+log(2+|tau|)^beta`. Every raw integer atom n>=2 remains EXACT, including
+the entire zero tail. Original rows may choose different poles; every
+recovery row kills BOTH. No growth, energy, positivity, RH or recovery
+premise is added. Source class and exponent range are domain conditions.
+
+Six new leaves30–35 finish the dependency-closed proof:
+`WeilWorkExposingRayLogLocalMass`, `WeilWorkExposingRayCoshDoubling`,
+`WeilWorkExposingRayLogKernel`, `WeilWorkExposingRayOnePolePrimitive`,
+`WeilWorkExposingRayOnePoleTransfer`, and
+`WeilWorkExposingRayOnePoleFibreDensity`. The capstones in
+`RHTower.ExposingRayTransfer.OnePoleFibre` are
+`closure_polarFibre_eq_onePoleFibre`, `exists_exact_fibre_recovery`, and
+`exists_raw_fibre_recovery`.
+
+All six final foreground saved-leaf audits pass without diagnostics.
+All33 public theorem axiom audits pass with only propext,
+Classical.choice and Quot.sound. All35 owned leaves have exactly one
+umbrella import. Latest global formal lint reports five unrelated
+HTGeometry reachability errors; no owned WP02 finding.
+
+The proof derives local square-root coefficient growth and the cosh
+kernel majorant from actual polar sources, then produces a compact
+primitive and pays the weighted spectral and arithmetic limits of its
+one-pole differences. The abstract kernel x*sinh(x/2) shows the doubling
+argument's linear-growth boundary; it is NOT an arithmetic counterexample.
+
+`ONE-POLE-SUBLOG-PROOF.md` records the paper proof and exact remaining
+limits. Full-source recovery for1/2<=beta<1 remains OPEN. The literal
+Fejer source has neither pole zero, so its recovery range stays beta<1/2.
+A simple-pole contribution and the critical gamma-energy estimate remain
+unpaid. Verdict BRIDGE; external scientific novelty unestablished.
+
+## Completed weighted exact-fibre recovery (cycle31)
+
+**Universal WP02 remains OPEN.** For every `0<=beta<1/2`, every finite
+nonnegative mixture of actual compact complex C2 full sources now has
+Lean-proved arbitrarily accurate polar recovery in the weighted spectral
+norm with weight `1+log(2+|tau|)^beta`. Recovery preserves the raw atom at
+EVERY integer n>=2, including the entire zero tail; both pole zeros hold
+on EVERY polar row. The literal negative Fejer density has exact-null
+weighted recovery. No coefficient-growth, RH, energy, positivity or
+recovery premise is added. Domain conditions specify the source cone
+and exponent range, not an assumed research result.
+
+New leaves27–29 complete the six-leaf weighted proof:
+`WeilWorkExposingRaySublogScales`, `WeilWorkExposingRaySublogTransfer`, and
+`WeilWorkExposingRaySublogFibreDensity`. The final capstones are in
+`RHTower.ExposingRayTransfer.SublogFibre`: `closure_polarFibre_eq_fullFibre`,
+`exists_exact_fibre_recovery`, `exists_raw_fibre_recovery`, and
+`exists_fejer_null_recovery`.
+
+The actual separator gives the absolute harmonic envelope. Square blocks
+then give simultaneous N/N^2 coefficient smallness. This pays BOTH remote
+correlation windows at one actual far-polar shift, extending the weighted
+separator to every full source. Strict separation and exact signed
+coordinate resonators finish recovery in each whole integer fibre.
+
+All three final saved-leaf audits pass without diagnostics. All29 owned
+leaves are wired. All ten new public theorem axiom audits pass with only
+`propext`, `Classical.choice`, and `Quot.sound`.
+Final global lint exits1 on six unrelated reachability findings, none in
+these WP02 modules; exact receipts are in EVIDENCE.md.
+
+This strengthens the validated recovery topology beyond ordinary L1.
+It supplies no bounded gamma energy or gamma uniform integrability.
+The earlier `0<beta<1` conjecture, E-escape/E-recovery, the universal
+vanishing-mass-defect producer and WP02 remain OPEN. The half exponent
+is the boundary of this proof, not a proved sharp obstruction. Verdict
+BRIDGE; external scientific novelty unestablished. Paper:
+`SUBHALF-LOG-FIBRE-PROOF.md`.
+
+## Exact-fibre spectral recovery (cycle29)
+
+**Universal WP02 remains OPEN. Verdict: CONDITIONAL ADVANCE for WP02;
+the recovery theorem itself is unconditional.** The23rd owned leaf,
+`WeilWorkExposingRayFibreDensity.lean`, proves that every finite nonnegative
+mixture of actual compact complex C2 full sources has arbitrarily accurate
+spectral L1 recovery by an actual finite nonnegative polar mixture with
+exactly the same raw atom coefficient at EVERY integer n>=2. The entire
+zero tail, both rowwise pole zeros, complex profiles, and empty mixtures
+are retained. Equivalently every exact fibre has the same L1 closure with
+or without the polar conditions.
+
+In particular the literal Fejer density has actual exactly integer-null
+polar recovery. E-escape can no longer hold vacuously through lack of any
+recovery. No energy, aperture, derivative or row-count estimate is supplied;
+E-escape and E-recovery remain competing OPEN possibilities. The universal
+signed exposing-ray lower bound and its vanishing-mass-defect producer
+remain unpaid. This is not the earlier prescribed-upper-family limit.
+
+The proof uses signed polar coordinate resonators, strict L1 separation,
+an augmented-row null-cone argument, and the proved bounded spectral
+separator extension. No transference, recovery, growth or RH premise is
+added. The saved330-line leaf passes foreground `lake --old env lean`
+without diagnostics and is umbrella-wired. Exact audit receipts are in
+EVIDENCE.md and the working card. Classical ingredients are acknowledged;
+scientific novelty remains unestablished. Paper:
+`POLAR-FIBRE-DENSITY-PROOF.md`. Next diagnostic:
+`SUBLOG-FIBRE-CONJECTURE.md`, with a required genuine weighted source estimate
+before further formalization.
+
+## Primitive loss and its optimized survivor (cycle18; historical checkpoint)
 
 **Universal WP02 remains OPEN.** New seventeenth leaf `WeilWorkExposingRayPrimitiveSharpness.lean` proves that the former primitive surrogate B_b(f) leaves at least one quarter of Fourier mass below actual archimedean energy, for every real b and every compact complex C2 source. The scalar proof in PacketCoercivity now retains this quarter while preserving all previous public statements.
 
@@ -257,3 +403,139 @@ Combined with cycle15, this supplies a constructive width-two boundary example f
 Both installed leaves pass final `lake --old env lean -o <owned-cache> <leaf>` audits without warnings and are wired into RHTower.lean, bringing owned leaves to15. Axiom/lint/index details are in EVIDENCE.md. This is not an exact compact opposite-ray realization, vanishing finite-head repair cost, PrimeBlindPositive, universal WeilDualBound, or RH proof. The main goal remains OPEN.
 
 Next paper gate: CRITICAL-HEAD-COST-CONJECTURE.md. It asks whether the prescribed compact odd seed admits a joint finite-head correction at the actual negative exposing budget, and explicitly checks whether that stronger route is necessary. Repeated shortening preserves a zero-frequency residual and cannot be assumed to eliminate it. No further isolated filter or conditional-receiver wrapper is proposed as progress.
+
+## Cycle23: positive gamma remainder and adaptive mode boundary
+
+FORMALIZED in `WeilWorkExposingRayGammaTruncation.lean`, namespace
+`RHTower.ExposingRayGamma`. For the bounded moment
+
+    R(f) = integral |paperFT(f,t)|^2 * t^2/(1+t^2),
+
+two fixed literal exposing samples force `sum alpha_i R(f_i) >= 32*d*t`
+for every exact matched nonnegative family at every sufficiently large N,
+with one d>0 independent of aperture, row count and representation. The
+literal quarter-line digamma series gives omitted-mode energy at least
+`R(f)/(32*K^2)` for every compact complex C2 source and every K>=1.
+Their combination gives a positive `d*t/K^2` remainder floor on the ray.
+
+The adaptive capstone chooses ONE aperture constant C before the rate r.
+For every 0<r<kappa/2, eventually at each N there is an actual polar family
+at aperture <=log(N)/2+C matching the unit ray at EVERY integer, including
+the zero tail, for which EVERY row-dependent choice 1<=K_i<=exp(r*N) has
+total truncated energy strictly below T-tau_N. The family is chosen before
+the mode counts. Both exact signed constant and complete gamma energy are
+retained in the comparison.
+
+This closes the restricted bare-mode route with its positive survivor.
+It does not exclude analytic lower corrections for omitted modes and says
+nothing about Galerkin dimension or a real-frequency cutoff. Classification:
+BRIDGE / quantitative method boundary; significant external scientific
+novelty unestablished. Universal WP02 and its signed lower producer remain OPEN.
+
+The final installed leaf passes `lake --old env lean -o <owned-cache> <leaf>`
+without warnings, is wired into RHTower, and all ten public theorems use only
+propext, Classical.choice and Quot.sound. This brings owned leaves to18.
+Global lint still fails on unrelated reachability findings; EVIDENCE.md
+records the precise audit limits. No full or umbrella build was run.
+
+## Cycle24: the literal sampling defect contains zeta
+
+FORMALIZED in `WeilWorkExposingRayGridDefect.lean`, namespace
+`RHTower.ExposingRayGrid`. The exact pole mass of the integer logarithmic
+cell is `q_n=1/sqrt(n)+delta_n`, with delta_n>0 and summable. Its quadrature
+defect D_K has the exact pointwise limit
+
+    Re(zeta(1/2+i*t)) + sum_(n>=1) delta_n*cos(t*log n),
+
+and error at most `(6+2*|t|)/sqrt(K+1)`. The correction is uniformly bounded
+in absolute value by `-Re(zeta(1/2))`. Both the literal continuous pole
+integral and every low integer cell are retained. The weighted error,
+unlike pointwise convergence alone, supports integration against a finite
+first spectral moment.
+
+This is an Euler-summation BRIDGE, not a gamma-energy sign or established
+significant scientific novelty. The scalar uniform gamma-domination
+candidate is false on paper by unconditional positive-real zeta large
+values; that external no-go is not formalized. Its stronger survivor is
+the exact polar-source zeta-moment identity in GRID-DEFECT-PROOF.md,
+paper-proved but still pending in Lean.
+
+Installed leaf and all15 public axiom checks pass without added axioms or
+heartbeat changes; umbrella import wired. Owned leaves now19. Global lint
+still reports eight unrelated reachability errors. Universal WP02 remains OPEN.
+
+## Cycle25: exact actual-source zeta moment
+
+FORMALIZED in `WeilWorkExposingRayZetaMoment.lean`. For every actual
+compact complex C2 polar test f,
+
+    integral |paperFT f(t)|^2 * Re(zeta(1/2+i*t))
+      = integral |paperFT f(t)|^2
+        + pi*sum_(n>=2) atomCoeff(f,n)/sqrt(n).
+
+The sum is finite by the literal support cutoff. The proof supplies the
+weighted integral error and compact-lag Fubini, keeps both pole conditions,
+and pays the n=1 Fourier-mass term exactly. No integral interchange or
+energy-positivity premise is assumed.
+
+For any finite matched family, including arbitrary real row coefficients
+and ray scale, the zeta moment is exactly total Fourier mass plus
+`(t_ray/2)*sum_(2<=n<=N) exposingWeight(n)/sqrt(n)`. The matching condition
+is imposed at EVERY integer, including the zero tail. Empty families and
+zero ray scale are covered by the same theorem.
+
+This completes the stronger positive survivor of the grid obstruction.
+Classification remains BRIDGE with classical co-Poisson ancestry; no
+significant external novelty or signed gamma lower bound is claimed.
+Owned leaves now20. The next target remains the universal vanishing-mass
+defect producer with all matching constraints, not positivity from this
+single zeta moment. Final installed leaf passes without warnings; latest
+global lint has13 unrelated reachability errors, no WP02 finding.
+All12 public moment-leaf axiom audits pass with standard axioms only.
+
+## Cycle26: closure diagnostic, no new lower theorem
+
+Refreshed corpus and external audits rejected reusing fixed-profile lattice,
+narrow-packet, co-Poisson and fixed-aperture compactness results as an
+unrestricted energy producer. No new signed bound or Lean leaf resulted.
+
+`POLAR-NULL-CLOSURE-CONJECTURE.md` records an exact competing pair: does
+every actual polar integer-null mixture approaching the fixed negative
+Fejer spectral density in L1 pay energy tending to infinity, or is a
+bounded-cost recovery possible with varying profiles and apertures?
+The escape claim SURVIVES PRELIMINARY ATTACK; no proof, counterexample or
+scientific novelty is established. Either answer would inform the missing
+compactness mechanism, but neither alone settles the nonzero exposing ray.
+The primary vanishing-mass-defect producer and universal WP02 remain OPEN.
+
+## Cycle27: constant atomic mass bounds ignore the polar restriction
+
+New 21st leaf: `WeilWorkExposingRayFibreTransfer.lean`, namespace
+`RHTower.ExposingRayTransfer`. For every real sequence b and real constant C,
+`polarMassBound_iff_fullMassBound` proves that
+
+    sum_(n>=2) b_n atomCoeff(f,n) <= C integral |f|^2
+
+holds on every actual compact complex C2 polar source exactly when it holds
+on every compact complex C2 source. The same b and C are retained. No sign,
+growth, spectral representation, RH or additional arithmetic premise is
+introduced. Actual polar resonators give a constant multiplicative Toeplitz
+bound; divisor-power averaging proves the unrestricted-source transfer.
+
+Final installed foreground `lake --old env lean -o ...olean <leaf>` exits0
+without warnings. Both public theorem imported axiom audits exit0 with
+exactly propext/Classical.choice/Quot.sound. All21 own leaves are
+umbrella-wired; no umbrella build run.
+Latest global lint exits1 on10 unrelated unreachable modules, no WP02 finding.
+
+`POLAR-FIBRE-DENSITY-PROOF.md` supplies a dependency-closed paper argument
+that full and polar finite positive mixtures have equal spectral L1 closures
+in EVERY exact finite integer-atom fibre. The installed leaf proves its
+arithmetic transfer component. Positive-form far polarization and the
+same-fibre separation step remain to be formalized. In particular the
+literal Fejer recovery conclusion is still paper-only.
+
+Verdict BRIDGE; scientific novelty beyond the classical parent theories is
+unestablished. The gamma-weighted problem has logarithmic Toeplitz cost,
+outside this constant-bound theorem. Neither E-escape/E-recovery nor the
+universal exposing-ray lower inequality is settled.

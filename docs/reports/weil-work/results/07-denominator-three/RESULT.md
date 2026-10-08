@@ -64,3 +64,166 @@ direct archimedean subtraction; PROOF.md records that distinction.
 
 
 `WeilWorkHigherDenominator{BesselBoundary,FourierBoundary,WeakTrace}.lean` now prove the actual horizontal logarithmic weak trace against every smooth compact test. The K-moment integral supplies uniform kernel and weighted-derivative bounds; original cubic data supply all coefficient estimates; positive-height strip domination justifies the spatial sum/integral interchange. All three final direct `lake --old env lean` checks pass without diagnostics, all 22 public theorems have exactly `[propext, Classical.choice, Quot.sound]`, and all three imports are wired. Global lint reports twelve unrelated unreachable modules, no WP07 error. This is a classical **BRIDGE / REDISCOVERED**, not a scientific density result. Moving inversion and cutoff-Mellin transport remain unformalized; C2 and full WP07 remain **OPEN**. The existing period receiver permits the sharper target of a continuous representative with local linear vanishing near 1 and decay at infinity, rather than global C1 regularity.
+
+
+`WeilWorkHigherDenominator{Nonstationary,ScaledBessel,InversionGeometry,MovingKernel,InversionAmplitude,InversionDecay,InversionFourier}.lean` now prove the complete moving Fourier coefficient-pairing limit. Two integrations by parts use the actual inversion phase and its nonvanishing derivative; compactness and relative Bessel derivatives give a single inverse-square frequency bound for every sufficiently small height. Fixed-mode dominated convergence and Tannery then pass the limit through the full infinite series. `degreeTwoQuotient_tendsto_inversionFourierPairing` derives the coefficient hypothesis from the original cubic datum. All seven final direct `lake --old env lean` checks pass without diagnostics; all 42 public theorem audits have exactly `[propext, Classical.choice, Quot.sound]`; all seven imports are wired.
+
+This is a classical **BRIDGE / REDISCOVERED**. The coefficient-side moving limit is now formalized, but identification with the actual inverted Maass spatial integral, its constant term, reciprocal test substitution and cutoff-Mellin transport remain separate obligations. The proof uses no deficit sparsity and supplies no continuous boundary representative. C2 and full WP07 remain **OPEN**. The current corpus's sublinear zeta-mass and critical-line Hamburger-stability theorems require different weighted/Abel mass bounds and one-Gamma identities; PROOF.md records why D1 does not yet pay those premises. Latest lint status is recorded in EVIDENCE.md.
+
+
+`WeilWorkHigherDenominator{InversionSpatial,InversionConstant,InversionTrace,ReciprocalTest}.lean` now identify and prove the actual inverted Maass logarithmic weak trace. Positive-strip domination justifies the spatial sum/integral interchange; compact domination handles the complete constant term; reciprocal substitution reuses `coPoissonReciprocalSeed` and proves its smooth compact support. The capstone `degreeTwoQuotient_tendsto_inversion_reciprocal` uses the original cubic datum and ordinary test conditions, with no extra growth, residue-convergence or boundary-regularity assumption. All four final direct `lake --old env lean` checks pass without diagnostics; all 26 public theorem audits have exactly `[propext, Classical.choice, Quot.sound]`; all four imports are wired. Global lint reports eleven unrelated unreachable modules, no WP07 error.
+
+This is classical **BRIDGE / REDISCOVERED**, not new scientific classification. Cutoff-Mellin identification and the sparsity-to-rigidity step remain unpaid. C2 and full WP07 remain **OPEN**. New intermediate conjecture C3 asks whether every nontrivial complete cubic datum has divergent reciprocal-height one-xi deficit mass. It is conjectural, with novelty unestablished; neither generic reciprocal-sum estimates nor all-xi projection bounds discharge it.
+
+`WeilWorkHigherDenominatorBoundaryPrimitive.lean` and `WeilWorkHigherDenominatorPrimitiveMellin.lean` now certify the bounded continuous second Fourier primitive, its exact distributional pairing with the actual boundary, and absolute Mellin convergence after subtracting its value at zero. On 1<Re(s)<2, its Mellin transform at s-2 is exactly `(LSeries g s / riemannZeta s) * cosineDifferenceMellin s / pi^2`. All coefficient and interchange bounds follow from the original cubic datum. No boundary-regularity or residue-expansion assumption enters.
+
+Both final direct foreground checks pass without diagnostics; all eleven exported theorem audits have exactly `[propext, Classical.choice, Quot.sound]`; imports are wired. Fully captured lint reports eight unrelated unreachable modules, no WP07 error. This is classical **BRIDGE / REDISCOVERED**, not scientific novelty or full rigidity. The scalar Gamma evaluation and smooth-cutoff local receiver remain paper-only. C2, C3 and the new exact regularity mechanism C4 remain **OPEN**. PROOF.md records the receiver and why compact Mellin pole-clearing has not paid period preservation.
+
+
+`WeilWorkHigherDenominatorCosineMellin.lean` and `WeilWorkHigherDenominatorPrimitiveGamma.lean` now give the explicit primitive Mellin factor
+
+`A(s)=-(2*pi)^(2-s)/(2*pi*Gamma(3-s)*sin(pi*(2-s)/2))`.
+
+For the original cubic datum, the absolutely convergent primitive transform at `s-2` equals `(LSeries g s / riemannZeta s) * A(s)` on `1<Re(s)<2`. Absolute Laplace/Fubini and beta substitution justify the scalar evaluation on its full natural strip. The normalization `A` is holomorphic and nonzero on `0<Re(s)<2`; it cannot cancel an interior pole. Both final direct checks pass without diagnostics, all nine public theorem axiom audits are exactly standard, and both imports are wired. Latest lint reports eight unrelated unreachable modules, no WP07 error.
+
+This is classical **BRIDGE / REDISCOVERED**, not scientific novelty. Smooth-cutoff transport and local regularity remain unformalized. The new paper receiver needs only a local power exponent strictly above one half, exact period/inversion identities and decay after endpoint subtraction. C5 conjectures that harmonic-thin complete data actually supply this representative; it is **OPEN**, alongside C2/C3/C4 and full WP07. Existing Holder bootstrapping already assumes the regularity that is missing here.
+
+
+`WeilWorkHigherDenominatorMellinTailSupport.lean` and `WeilWorkHigherDenominatorMellinTail.lean` now certify the smooth upper-tail transform of the actual Fourier primitive. For a smooth cutoff psi that vanishes near zero and equals one near infinity, its exact second-derivative integral equals three entire Mellin factors plus the bounded-primitive factor on Re(s)<2. The original cubic datum supplies all primitive estimates; an explicit smoothTransition cutoff supplies all cutoff conditions. `degreeTwoQuotient_primitiveMellinTail` proves both integral convergence statements, the exact integral identity and holomorphy on Re(s)<2 away from s=0. The zero exponent at s=1 is included.
+
+Both final direct foreground module checks pass without diagnostics; all fifteen public theorem audits have exactly `[propext, Classical.choice, Quot.sound]`; both imports are wired. Fully captured lint reports eleven unrelated unreachable modules, no WP07 error. Scoped forbidden-source and whitespace checks pass. This is classical **BRIDGE / REDISCOVERED**, not new scientific classification.
+
+At the smooth-tail checkpoint, P5 and the local regularity receiver remained unformalized; P5 is now closed below. C5's harmonic-thin-to-regularity implication remains **OPEN**, along with C2/C3/C4 and full WP07. A small-growth pole-clearing shortcut does not establish boundary regularity because the Gamma normalization cancels the completed quotient's exponential decay. This diagnoses an invalid inference, not a counterexample or general impossibility theorem. Booker’s cited positive-L-data theorem and Pasles’s finite-pole correspondence leave different premises unpaid; exact primary-source audits are in EVIDENCE.md.
+
+
+`WeilWorkHigherDenominatorCutoffIntegration.lean`, `CutoffOverlap.lean`, and `CutoffJets.lean` now prove the exact smooth-cutoff overlap and all-order dilation limits. The lower integral is absolutely convergent on 1<Re(s)<2; its sum with the actual upper tail equals `(s−1)(s−2) (L(g,s)/ζ(s)) primitiveMellinGammaFactor(s)`. Both endpoint contributions are proved and cancel exactly. The original-data capstone adds no unknown regularity assumption. Every logarithmically weighted derivative of a dilated cutoff has a uniform bound; its integral against any absolutely integrable weight tends to the weight integral at order zero and to zero at positive orders. All three final direct foreground checks pass without diagnostics; all fourteen public theorem axiom audits use exactly standard axioms. Imports wired, no umbrella build. Latest fully captured lint has seven unrelated reachability errors, no WP07 error. Classification: classical **BRIDGE / REDISCOVERED**. That checkpoint left the actual moving compact-test and reciprocal-test assembly for P5 unfinished; the following checkpoint closes it. No local-regularity or harmonic-deficit conclusion is claimed.
+
+
+The full compact-test identity **P5 is now checked in Lean**. Six modules —
+`WeilWorkHigherDenominatorCutoffPairing`, `CutoffHead`, `ReciprocalCutoff`,
+`CutoffTail`, `CutoffReciprocity`, and `CutoffDefect` — prove the actual lower
+and reciprocal pairing limits. For every original cubic datum, arbitrary
+constant A and 1<Re(s)<2, the actual boundary pairing minus its reciprocal
+pairing converges to
+
+    (s−1)(s−2) (L(g,s)/ζ(s)) primitiveMellinGammaFactor(s)
+      − primitiveMellinTail(F,A,ψ,s)
+      − primitiveMellinTail(F,A,ψ∨,1−s),
+
+where F is the actual Fourier primitive and ψ∨(x)=1−ψ(1/x) on x>0,
+extended by zero otherwise. Both constant terms, all product-rule errors,
+and every compact-test support condition are paid. No boundary representative,
+infinite residue expansion, pole sparsity, or stronger Mellin exponent is
+assumed by the final capstone `degreeTwoQuotient_tendsto_cutoff_defect`.
+
+All six final direct foreground Lean checks pass without diagnostics. All 22
+public theorems and three public definitions have exactly the standard axioms
+`[propext, Classical.choice, Quot.sound]`. Six imports are wired once; scoped
+source and whitespace checks pass. Fully captured global lint reports seven
+unrelated unreachable modules and no WP07 diagnostic; EVIDENCE.md records them.
+
+Classification: classical **BRIDGE / REDISCOVERED**, no scientific-novelty
+claim. Analytic continuation of the actual limit beyond its convergence strip,
+the local regularity receiver, and the harmonic-thin regularity implication
+remain separate obligations. C2/C3/C4/C5 and full WP07 remain **OPEN**. New C6
+asks whether normalized cubic analytic data with harmonically summable one-ξ
+deficits already force L(g)=ζ³ without zero confinement or a real logarithmic
+derivative; it **SURVIVES PRELIMINARY ATTACK**, with novelty UNESTABLISHED and
+no proof or counterdatum. The elementary cosine coboundary shows why modular
+identities and local smoothness alone cannot replace global decay/analytic
+conditions. It does not refute C5 or C6.
+
+Post-P5 scientific cycle: **STALLED**. No new Lean theorem, paper proof or
+counterdatum. Existing primitive-set mean-square bounds were rediscovered,
+not strengthened. New C7 in PROOF.md asks whether every full cubic datum has
+`|3 lambda(n)/sqrt(n)| (log n)^K` bounded for every K>=1. The corpus's sharp
+Toeplitz witness shows that the extracted coefficient ceilings alone cannot
+give this. C7 remains an open conjecture and would not by itself eliminate
+the harmonic-thin negative divisor. C2--C7 and the assigned problem remain
+**OPEN**; the research goal remains active.
+
+C7 attack checkpoint: **STALLED**. Existing producer Lindelof growth does not
+come with a proved C7 coefficient-extraction step. Current Selberg-class and
+quasicrystal sources require additional bounds absent from the datum; neither
+supplies a proof or counterexample. Central exclusion was already formalized.
+No Lean source changed or build ran. C2--C7 remain open. Next core attack uses
+the exact negative integer residues of the one-xi logarithmic derivative,
+keeping their harmonic sum separate from quotient Laurent amplitudes.
+
+C3 negative-divisor checkpoint: **STALLED**; WP07 remains **OPEN**. Harmonic
+summability gives an elementary continuous first primitive of the exact
+negative logarithmic divisor, proved on paper with a uniform tail estimate.
+This is a classical bridge, not regularity of the E/xi period defect or
+finite negative index. The September 2026 strip classification and Burnol's
+finite-pole extension do not close that gap. No Lean source changed or build
+ran in this cycle. The exact complete-data C3 conjecture remains open.
+
+Arithmetic-gap/deformation checkpoint: **NO PROGRESS**. The signed explicit
+formula does not separately control its positive and negative parts.
+Analytic deformation proposals repeat prior corpus work; finite-dimensional
+isolation would not classify the full family. Inspected asymmetric-zero
+theorems retain hypotheses absent here. No new theorem, counterdatum, Lean
+edit, or build. C3 and WP07 remain **OPEN**, goal active.
+
+Positive-tail-filter checkpoint: **BRIDGE / classical**. On paper, a
+symmetric probability convolution cancels the harmonic-thin tail poles,
+has shrinking support and converges to the identity on compact sets with
+an explicit variance bound. Every nontrivial such filter destroys the
+ordinary Dirichlet-series representation: its transform grows exponentially
+on the positive real axis. Thus this construction cannot directly use the
+finite-pole theorem. The positive survivor, an exact classification of the
+source-preserving filters as delta_0, is now Lean-checked in
+`WeilWorkHigherDenominatorPositiveFilter.lean`, including its application to
+the actual cubic quotient with no extra arithmetic assumptions. Eight public
+theorems use only standard axioms; the module is wired into RHTower. Global
+lint still fails on seven unrelated unreachable modules. The tail-convolution
+construction remains paper-only. Boundary stability remains unproved; no new
+scientific rigidity theorem or counterdatum. WP07 remains **OPEN**.
+
+Post-filter scientific checkpoint: **NO PROGRESS**. Euler-support candidate
+C8 revisits an established research question; its cubic case remains unproved.
+The exact normalized deficit receiver counts `(3m-k)_+/3`, whereas C3 needs
+`(m-k)_+`. Their difference is the nonnegative intermediate multiplicity
+mass J/3 recorded in PROOF.md. Harmonic-thin one-xi deficits do not bound J
+by the current argument. New C9 asks for the coefficient lower bound with
+the one-xi threshold; it is a conjecture, with novelty unestablished. No
+Lean source changed or build ran this cycle. C2--C9 and WP07 remain open;
+goal remains active.
+
+Intermediate-multiplicity checkpoint: **NO SCIENTIFIC PROGRESS**. The
+quadratic logarithmic detector retains signed contributions and uncontrolled
+regular-part residues. Existing zeta-weighted Gaussian pairings annihilate
+shared atoms, so they do not exclude intermediate multiplicities. C10 now
+asks whether every shared xi zero in a complete cubic datum has at least
+triple xi's multiplicity; it is unproved and its novelty is unestablished.
+The current full-positivity Littlewood theorem was directly Lean-checked
+with standard axioms, correcting an older applicability note. No new Lean
+theorem was added. C9/C10 and WP07 remain **OPEN**.
+
+Shared-atom checkpoint: **NO SCIENTIFIC PROGRESS**. A multiplicity-exact
+entire test isolates a shared zero in both spectral sums, giving weights
+m and k/3. Separate positivity supplies no comparison between them.
+The construction is already represented by corpus divided-test machinery;
+it is not a new rigidity theorem. Infinite-order pole clearing still
+lacks preservation of the arithmetic period law. C9/C10 and WP07 remain
+**OPEN**. No Lean source changed and no build ran this cycle.
+
+Arithmetic-comparison/parity checkpoint: **NO NEW SCIENTIFIC THEOREM**.
+Packet width and finite-valued phase proposals repeat corpus results.
+The half-degree audit identifies two elementary replacements for possible
+coefficient premises, but does not prove its contour transformations.
+C11 asks for infinitely many odd-order cubic zeros; its parent mechanism
+is known. Stronger C12 asks for positive linear upper density under the
+complete original assumptions. Both remain **OPEN**, novelty unestablished.
+Neither settles C9/C10 or WP07. No Lean source changed or build ran.
+
+Branch-cut/support checkpoint: **NO NEW SCIENTIFIC THEOREM**. The actual
+half-degree jump occupies parity-mismatch intervals; the available
+absolute contour bound yields no saving from sparse odd-zero count.
+C12 stays open. New C13 asks whether every nonrigid complete cubic source
+has positive linear upper density of distinct zeros outside the xi zero
+set. Sublinear extra count produces an admissible minimal-type modified
+Riemann kernel on paper, but its injectivity is unproved. A periodic
+prime-power example disproves the unrestricted positive-type version;
+it is not a positive source or a counterexample to C13. Novelty remains
+unestablished. No Lean edits/builds; WP07 OPEN, goal ACTIVE.

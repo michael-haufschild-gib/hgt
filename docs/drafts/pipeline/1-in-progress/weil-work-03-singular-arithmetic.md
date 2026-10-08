@@ -1642,3 +1642,853 @@ Next plan: inspect the mixed cancellation frontier; propose an independent
 arithmetic statement outside the full-positive-only target equivalence;
 run corpus/primary-source kill audit before any further Lean implementation.
 Exact WP03/goal remains ACTIVE and OPEN.
+
+### C35: forward variance, exact conjecture and first obstruction
+
+- Given the exact internal and external frontier, what would a Fields
+  Medal-winning mathematician conjecture? For every actual full-positive
+  source, with a=forwardCoeff and B=the actual forward pole residue,
+  conjecture (sum_(n<=N)|a(n)-B|^2/n)/log N -> 0. Rival: a positive
+  limiting variance survives while the first moment remains B. This
+  asks for an independent coefficient-energy law, not an order-T detecting
+  witness already contradicted by C33. No premise is added to Lean.
+- Internal exact source check: WeilWorkSettledPhaseForwardSummatory:22,153
+  already proves sum a=B*N+O_epsilon(N^(1/2+epsilon)) and ordinary
+  centered convergence Re s>1/2. Source forward energy is only O(log N)
+  in WeilWorkSingularArithmeticForwardCoefficients:325. Definitions of
+  sourceCoeff and forwardCoeff must be identified explicitly before use.
+- [OPEN CORE]: an upper leading constant exactly |B|^2 for the forward
+  square energy. Cauchy supplies only the lower direction. No proof of
+  the conjecture or of a detector implication has been claimed.
+- Kill test of weaker inference: a(n)=1+c*1_(2 divides n), n>=1, has
+  mean B=1+c/2 with O(1) summatory error, energy coefficient
+  1+c+c^2/2, and variance c^2/4>0 for c!=0. Its Dirichlet function is
+  zeta(s)*(1+c*2^(-s)). Thus centered summatory precision plus O(log N)
+  energy cannot force zero variance. It is NOT a full-positive source;
+  one cannot import its variance as a counterexample to C35.
+- New paper lead: the existing exact log-moment inequality is stronger
+  than the O(log N) corollary. Writing E_N=sum w_n, S_N=sum log(n)w_n,
+  H_N=log(N)E_N-S_N, it gives (log N-C)E_N<=2H_N. Since
+  H_(N+1)-H_N=log((N+1)/N)*E_N, the ratio
+  H_N/(log N-C)^2 is eventually nonincreasing. A monotone-density
+  argument should therefore produce an ACTUAL limiting energy constant,
+  not just a limsup bound. This would define the residual variance
+  precisely; it does not yet force that constant to equal |B|^2.
+- Searches: mixed68625/generation1286774; energy68629/1286800;
+  spectral68630/1286825; variance68630/1287372; prime68631/1287390.
+  All complete/partial=false/errors[]. All candidate/source statements
+  inspected, including the prime output tail. Source
+  support/phase/converse hypotheses were not imported unproved.
+- Primary sources opened: Hedenmalm--Lindqvist--Seip math/9512211,
+  Saias--Weingartner0807.0783, Sepulcre--Vidal1711.04122,
+  Broucke--Hilberdink2409.06301, Bettin--Chandee--Radziwill1411.7764,
+  Burnol math/9810169, Connes--Consani2006.13771. These provide Hardy,
+  periodic, mean-value and explicit-formula parents, not the source's
+  zero variance. September2026 2608.24827v2 was opened; compact-window
+  computations neither used nor run. No external novelty claim.
+
+C35a implementation checkpoint (2026-10-08): generic monotone primitive
+and finite-secant mass-limit leaves now compile. Their imports were
+reduced to mathlib, cutting the generic check from 127s to 7--12s.
+The actual hW-only forward energy-limit leaf also passed its targeted
+`lake build --old +...` check (114s). ForwardMean and ForwardVariance
+are written and pending checks; no completed variance audit yet.
+Saturation search: files68651/generation1288489, partial=false/errors=[],
+all20 candidate and20 source statements inspected. No returned result
+pays the sharp residue-square energy constant. Compiler coverage mixed;
+source statements and final direct Lean audits remain authoritative.
+
+C35a COMPLETE: all five targeted --old leaf builds and direct audit84733
+pass; five source logs empty; all17 public declarations standard axioms
+only. Five imports wired. Lint13394 has six unrelated unreachable modules
+listed in EVIDENCE; no owned issue. Index63108 passes. Closed survivor
+is BRIDGE; C35 V=0 and original WP03 quotient remain OPEN. Nine audit
+answers posted in chat. Next attack must use full arithmetic positivity,
+not just scalar log-moment and first-mean bounds.
+
+### C36: periodic completeness of the actual coefficient energy (OPEN)
+
+Phase1/2 searches complete: sharp-energy68656/gen1288579 (deep),
+periodic68657/1288589, BAP68659/1288682; partial=false/errors=[].
+All returned20 candidate/20 source statements inspected, plus deep
+proof_ideas(empty) and ingredient_sets (irrelevant generic BAG bounds).
+Own then-unverified C35 declarations returned by search were not treated
+as independent evidence. C35a is now verified separately.
+
+Exact conjecture: for every full-positive source and every epsilon>0,
+there exist q>=1 and v:Fin q->Complex such that eventually in N,
+
+    (1/log N) sum_(1<=n<=N) |a(n)-v(n mod q)|^2/n < epsilon,
+    a = actual forwardCoeff lam.
+
+Rival: a full-positive source has a positive log-square distance from
+all periodic sequences, even though its first mean and energy limit
+exist. [OPEN CORE]: prove periodic completeness from FULL arithmetic
+positivity; bounded scalar energy does not give it. C35(V=0) would imply
+this conjecture with a constant approximant, but no such implication is
+used as proof. This is a proposed mechanism, not a replacement for the
+original uniform bounded-quotient target or a paid detector implication.
+
+Primary external ancestry opened/read:
+- Bergelson--Kulaga-Przymus--Lemanczyk--Richter, IMRN2020 rny040,
+  https://academic.oup.com/imrn/article/2020/5/1300/4959780 , especially
+  Theorem2.10/Corollary2.11. Multiplicativity/pretentiousness and their
+  ordinary mean-square hypotheses are not known for the actual a.
+- Laporta2204.01581, https://arxiv.org/html/2204.01581v1 , Delange's
+  condition sum 2^omega(n)|mu*a(n)|/n<infinity is UNPAID here.
+- Aggarwal--Banerjee--Gupta2608.13172v1 (Aug2026),
+  https://arxiv.org/html/2608.13172v1 , Theorem3.4 concerns normalized
+  summatory error terms under specific functional equations. It does
+  not supply periodic coefficient approximation for this source.
+- A1995 Acta Arithmetica PDF request failed; no result from it used.
+
+Attack of weaker scalar inference: take irrational alpha and0<c<1,
+f(n)=1+c*cos(2*pi*alpha*n), changing f(1) to1 if normalization is wanted.
+Finite geometric sums show bounded centered ordinary partial sums,
+convergence of centered harmonic sums, and log-square energy limit
+1+c^2/2. For every periodic v the mixed logarithmic mean with cos is0;
+cos^2 has mean1/2. Thus distance from every periodic v is at leastc^2/2.
+The exact scalar moment ceiling also holds for someC: E=K log N+A+O(1/N),
+S=K(log N)^2/2+O(1), and E is bounded below by a positive harmonic sum.
+This disproves the weaker inference from the scalar facts alone. It is
+NOT a full-positive source counterexample. No redundant Lean for this
+classical comparison will be written. Full C36 verdict remains
+SURVIVES PRELIMINARY ATTACK; no closed paper proof, no new Lean started.
+
+Next: audit source-specific multiplicative correlations/prime deletions
+as a way to pay periodic completeness, and keep the strongest rival
+(nonperiodic residual energy) alive. Do not assume multiplicativity,
+coefficient signs, character means, local mass, or Fourier completeness.
+
+C36 mechanism audit: source ThetaTrace:206 and312 retain the actual
+`defectKernel (sourceDefect hW)`. Its reflected theta identity is NOT
+an unqualified functional equation; Hamburger/Voronoi cannot remove
+that term. The fresh finite coprime-mask Fourier expansion supplies a
+finite identity only, not coefficient periodic approximation. Correlation
+search68663/gen1288771 is complete,partial=false/errors=[]; all20+20
+statements inspected. Prime-deletion negative-test results warn against
+assuming projected/deleted sources preserve positivity.
+
+Algebraic lead, not a proved source law: for c=mu*a, divisor smoothing
+T_sigma a(n)=sum_(d|n)c(d)d^(-sigma) has Dirichlet function
+zeta(s)*F(s+sigma)/zeta(s+sigma) and logarithmic source
+Lambda(n)+n^(-sigma)*(lambda(n)-Lambda(n)). Do NOT assume full positivity
+is preserved: such a semigroup toward Lambda would itself require a
+new source-specific positivity proof. Also distinguish periodic
+approximants from divisor-indicator approximants; they are different
+closures. No mean-norm convergence of this smoothing is proved.
+
+C36 needs a detector connection before further infrastructure. Zero
+limiting variance alone is not pointwise coefficient rigidity: sparse
+perturbations at n_k=2^(2^k) with a(n_k)-1=sqrt(n_k) have centered
+log-square mass O(log log N)=o(log N) and centered summatory O(sqrt N).
+This is a scalar comparison, not a full-positive source. Retain original
+uniform quotient target and the full positivity hypothesis throughout.
+
+C36 receiver audit: exhaustive text intersection of Weil*.lean files
+containing WeilPositiveFull with periodic/Besicovitch/finite-type returned
+53 lines, all inspected. Actual statements read:
+- WeilConeInfiniteDilationRigidity:513 requires absolute convergence
+  strictly past1/2 and a regular residual source.
+- WeilZetaSquareRegularPartRigidity:735 requires all three finite-type
+  pieces absolutely convergent past1/2.
+- WeilConeAlmostPeriodicSettledLock:465 covers every producer ONLY after
+  boundary continuity, an exact nonresonant lock, exponentially summable
+  phase frequencies, and a power-small L1 settling remainder are paid.
+C36 coefficient approximation has no proved implication to those phase
+or boundary hypotheses. Do not confuse coefficient-index periodicity,
+vertical Dirichlet almost periodicity, and spectral-phase periodicity.
+
+C36 latest corpus audits complete (2026-10-08):
+- BAP-rigidity deep68667/gen1288837: partial=false/errors=[]; all20+20
+  statements plus ingredient sets inspected. Returned receivers still
+  require boundary lock/settlement, finite residual mass, or exposed
+  pairing zero. No coefficient BAP-to-detector implication supplied.
+- Fractional-energy68667/gen1288840: partial=false/errors=[]; all20+20
+  statements inspected. The speculative power-energy bound is
+  REDISCOVERED, already in stronger COMPLEX form at
+  WeilWorkSettledPhasePowerEnergy:19,135; actual source read. For
+  Re(1/z)>1/2, energy grows at most log^(1/(2Re(1/z)-1)). Generic parent
+  WeilWorkSettledPhasePowerLogMoment:133 also read. No duplicate Lean.
+  The power disk does not include nonzero imaginary powers; these bounds
+  do not settle the boundary phase or force C35 variance to vanish.
+- All owned processes terminal. C34/C35 scratch and completed C36 search
+  files cleaned after coverage/results were recorded. Five C35a imports
+  verified at RHTower:7091-7095; new source whitespace check clean.
+
+Current plan: retain C35 V=0 and C36 periodic completeness as OPEN;
+seek a source-specific relation between forward coefficient energy and
+boundary defect that pays an existing receiver. Do not create more
+mean/phase infrastructure without that relation. Original WP03 uniform
+quotient objective remains ACTIVE and OPEN.
+
+
+### C37: actual parity residue spends residual variance
+
+Current turn applies hgtl7. C35 V=0 and C36 periodic completeness stay OPEN.
+The generic Toeplitz-saturation idea was rejected before implementation:
+C27 already formalized the all-cutoff relaxation barrier. Exact positivity,
+not another scalar or matrix relaxation, is still required for detection.
+
+Exact new bridge selected: for every hW, let B be its actual residue, V its
+C35a residual variance, and r>0 the actual odd/full radial ratio. Then
+
+    |B|^2*(2*r-1)^2 <= V.
+
+Rival: the odd radial pole carries nonzero parity bias invisible to the
+logarithmic coefficient energy. Full paper attack below excludes this rival
+by Abelian energy comparison and weighted Cauchy--Schwarz. This statement
+links the two actual source invariants; no parity mean or analytic continuation
+of the odd series is assumed. It does not imply V=0, r=1/2 or WP03 boundedness.
+Verdict BRIDGE: the general Hilbert-space residue inequality is classical;
+no significant scientific novelty claimed. Stronger next conjecture remains
+that full arithmetic positivity makes every such variance component zero.
+
+Plan: complete exact paper proof, formalize source bound, targeted --old/direct
+Lean/axiom/lint audits, then return to the unpaid positivity mechanism.
+Primary parents opened: Vaughan Dirichlet Series II, summability section
+https://personal.science.psu.edu/rcv4/568s20/568chapter5.pdf ; existing C35
+regular-variation sources. General converse audits opened Dixit1905.04193
+and Kaczorowski--Molteni--Perelli Dirichlet converse paper: their global
+continuation/functional-equation/coefficient premises remain unpaid.
+Favorov--Deger2605.10766 and Favorov2311.02728 also opened; actual source
+Fourier distribution has an archimedean singularity, not the pure-point
+Fourier-measure hypothesis in those results. No quasicrystal shortcut.
+
+C37 LEAN CLOSED: actual |B|^2*(2r-1)^2<=V now proved from hW alone.
+Three leaves342 lines/five public theorems, targeted --old checks and
+final direct source+axiom sequence48999 exit0. Only standard axioms.
+Imports wired7101-7103,index95034 pass. Lint23696 has five unrelated
+unwired HTGeometry modules, no owned/prohibited failure. Source theorem
+ParityVariance:83. C35 V=0,C36 completeness and WP03 remain OPEN.
+
+C38 preliminary audit (not a completed conjecture cycle):
+- defect deep68683/gen1289095 returned irrelevant generic energy rows;
+  proposed ingredient chain is unverified and does not concern actual
+  sourceDefect. All20+20 statements inspected; partial=false/errors=[].
+- covariance68684/1289114,kernel68685/1289141,tempered68685/1289165
+  complete; all20+20 statements inspected. Actual NearNullPositiveDefinite
+  supplies negative-definite deviationPotential from hW, already used by
+  closed regular-class rigidity. No new sign on its diagonal.
+- Abandon the informal tempered-deviation shortcut: source lambda has
+  sqrt-scale summatory bounds, but subtracting canonical Lambda does NOT
+  preserve these without a new canonical estimate. Treating delta as
+  subexponential after critical normalization silently imports the
+  missing RH-strength information. No theorem or Lean added for this.
+- Revisit exact quotient recurrence, retaining actual exceptional orbit.
+  C10 already killed square-summable ordinary-convergence=>mean-square
+  via Brevig--Kouroupis2609.35496 Theorem6; actual reciprocal G has the
+  stronger source estimate, but quotient order-zero remains unpaid.
+
+C37 five anti-theatre and four anti-laziness answers posted in chat.
+Exact source bridge closed, no significant scientific novelty claimed.
+Next cycle must justify actual exceptional-height control, not another
+unconnected scalar estimate. All C37 owned Lean/build processes terminal.
+
+### C38: fourth moments do not remove the exceptional orbit
+
+The proposed route was to prove actual reciprocal fourth moments, combine
+them with strict-line zeta fourth moments by Holder, and obtain an actual
+quotient mean-square identity without assuming quotient order zero.
+This is a potentially valid classical bridge, not a detector proof.
+The precise stronger inference tested was that such mean control makes
+the actual quotient recurrent on compact subsets. The existing Bohr card
+rows4 and7 already identify the missing exceptional-orbit step. The actual
+reciprocal itself has a proved mean-square identity and a unique zero at1;
+that zero cannot recur. No actual-quotient mean identity is proved here.
+Verdict REDISCOVERED for the proposed detection mechanism. No duplicate
+fourth-moment formalization. Positive survivor remains the already formal
+actual reciprocal mean identity; retaining its fixed-line quantifiers is
+essential. C38 does not retire the exact bounded-quotient objective.
+
+External checks: Ivic--Motohashi math/0408022 (strict-line fourth moments),
+Seip1206.2815 (Hardy Dirichlet zeros), and2510.05793 (actual means versus
+almost-everywhere vertical limits). Seip's half-plane of absolute
+convergence must not be confused with a shifted coefficient-Hardy space.
+Recurrence deep68698/gen1289378 and local deep68699/gen1289385 finished
+partial=false/errors=[]; all20 candidate and20 source statements read.
+Their proposed ingredient sets are unverified. Source reads, especially
+the actual Bohr card, were more useful than broad semantic matches.
+
+### C39: actual sieve residue, with the cutoff limit retained
+
+Exact conjecture: for every full-positive source there is C<infinity with
+r_Q <= C*phi(Q)/Q for every Q>=1, where r_Q is its ACTUAL coprime/full
+radial ratio. This would give uniform relative control of every finite
+prime-deletion residue. It does not by itself imply WP03 boundedness.
+Rival: r_Q/(phi(Q)/Q) is unbounded along primorials, despite finite
+forward energy. [OPEN CORE]: upgrade the energy exponent1/2 to1 from
+full arithmetic positivity. No multiplicativity or coefficient sign is
+assumed. The conjecture is stronger than the following paper bridge.
+
+Positive bridge selected for audit: if K is the actual forward log-energy
+constant and B the actual nonzero residue, then, simultaneously for Q>=1,
+
+    |B|^2*r_Q^2 <= K*phi(Q)/Q.
+
+Consequently r_(primorial y) tends to0. This is a quantitative constraint
+on actual increasing prime deletion, not just a finite mask identity or
+a replacement of the actual function by random twists. The parent
+inequality is weighted Cauchy--Schwarz, so scientific verdict BRIDGE;
+novelty of a stronger linear bound remains under attack. Complete the
+paper dependency audit and corpus comparison before any new Lean.
+
+C39a paper proof now dependency-closed in PROOF.md. Toolchain probes
+verified the principal-character residue, totient product, finite Euler
+harmonic majorant, primorial prime factors, and harmonic divergence.
+Three owned leaves CLOSED: MaskedEnergy, CoprimeEnergy, SieveResidue;
+328 lines, nine public theorems. Targeted --old checks pass; final direct
+source-and-axiom sequence80754 exits0. All source logs empty; all nine
+axiom reports contain only propext,Classical.choice,Quot.sound. Main
+masked inequalities use direct ordered-ring comparisons. Imports verified
+at RHTower:7107-7109; index19714 passes. Lint66939 has11 unrelated
+unreachable modules, no owned finding; global lint remains red.
+C38's five anti-theatre/four anti-laziness answers were posted. Exact
+WP03 uniform boundedness, C35 variance vanishing, C36 completeness, and
+the stronger C39 linear bound remain OPEN.
+
+C39 stronger-bound search: partial=true, text_retrieval and source_retrieval
+interrupted; coverage68723/gen1289697, index_generation1289686. All20+20
+returned candidate/source statements inspected. Hits recover fixed-Q
+cosine/deviation bounds with Q-dependent constants, not a uniform linear
+bound. Source logarithm is exactly the excluded lambda/(n^sigma log n)
+series, with a finite fixed-Q endpoint. No interchange of radial and
+prime-cutoff limits is licensed.
+
+Next-cycle screening: generic logarithmic Tauberian transfer of masked
+radial residues is a classical bridge and still leaves detection unpaid.
+Do not implement it without a source-specific detector connection.
+Generic Toeplitz saturation remains blocked by C27's all-cutoff witness;
+full arithmetic positivity must supply the missing additional restriction.
+
+C39 five anti-theatre/four anti-laziness answers posted. No significant
+scientific novelty claimed. Source/direct/axiom processes all terminal.
+
+### C40: prime-cutoff endpoint coherence (OPEN, paper investigation)
+
+Given the exact corpus frontier, conjecture: for every full-positive
+source, with actual residue B and actual ratios r_Q,
+
+    B * r_(primorial N) / (phi(primorial N)/primorial N) -> 1.
+
+B is real and positive through the actual far-right exponential and
+its nonzero pole; retain the complex formula until that identification
+is explicitly verified. Equivalently, if ell_Q is the real endpoint of
+sourceDeletedLogarithm, the prime-cutoff endpoint
+ell_(primorial N)+log(phi(primorial N)/primorial N) should converge to
+log B. The sign is fixed by r_Q=exp(-ell_Q).
+
+This asserts agreement between two distinct summation procedures for the
+signed logarithmic deviation: ordinary integer cutoffs, and radial
+limits after finite prime deletion. C39a proves only r_Q->0 along this
+path; it does not fix this relative asymptotic. Rival: a nontrivial
+prime-cutoff endpoint defect survives despite the actual finite energy,
+nonzero residue and full arithmetic positivity. [OPEN CORE]: control the
+complete signed remainder across increasing prime sets, without absolute
+deviation summability or exchanging unproved limits.
+
+Scientific gate: a general Tauberian theorem or another projection bound
+will not close this conjecture. A proof would identify an actual
+arithmetic boundary value not paid by existing fixed-Q limits. No
+implication to the original uniform-height quotient is yet proved;
+retain that distinction and attack the conjecture before writing Lean.
+
+Plan: compare exact internal rough-fibre/deletion/pinning statements;
+audit external summation and Euler-product parent hypotheses; try to
+kill inference from existing source invariants; then investigate a
+full-positivity mechanism with every mixed-prime contribution retained.
+
+C40 attack verdict: BRIDGE, with its exact full-positive assertion still
+OPEN. `WeilWorkSettledPhaseLocalPolynomialInvisibility:95` supplies a
+literal nonconstant local-polynomial model with every canonical coprime
+endpoint and positive period variance. It is not a full-positive source,
+so does not refute C40; it kills the proposed endpoint-only detector.
+Positive survivor is already formalized there: exact endpoint
+invisibility with nonzero variance. No duplicate Lean is warranted.
+`WeilWorkSettledPhaseUniformDivisibility:115` does provide one radial
+neighborhood for every divisibility mask, with squared bound
+(K+epsilon)/q; replacing divisibility by a coprime mask requires retaining
+all mixed-prime inclusion-exclusion terms and does not give C40.
+
+Exact unresolved identity: for sigma>1 let D be the logarithm of F/zeta.
+Its rough part satisfies D_rough,Q = D - (deletedLog_Q + log delta_Q),
+where delta_Q(sigma)=product_(p|Q)(1-p^(-sigma)). At the radial endpoint,
+exp(D_rough,Q(1))=B*r_Q/delta_Q. C40 asks this to tend to1 along
+primorials. Absolute convergence pays the prime-cutoff limit for each
+fixed sigma>1, not interchange with sigma down to1. C39a allows this
+normalized quantity to grow like delta_Q^(-1/2), hence does not close it.
+
+Next screening: unweighted square summability of actual quotient
+coefficients gives absolute convergence on Re>1/2 by Cauchy--Schwarz.
+C4 already classifies any subcritical absolute quotient convergence;
+this does not bypass that regularity wall. Investigate whether weakened
+logarithmic harmonic deviation control is genuinely new or already
+automatic/covered before selecting the next conjecture.
+
+### C41: logarithmic harmonic rigidity (OPEN, paper investigation)
+
+Given the exact internal and external frontier, conjecture: for every
+full-positive lam, either lam(n)=Lambda(n) for all n>=2, or
+
+    sum_(n>=2) |lam(n)-Lambda(n)|/[n*(1+log n)] = infinity.
+
+Equivalently, summability at this exact weight forces canonicality. The
+desired eventual Lean statement is the unconditional dichotomy from hW,
+not a new premise attached to WP03. Existing absolute-harmonic rigidity
+uses1/n; existing log-summable rigidity uses1/sqrt(n) times inverse logs.
+Neither directly includes this class. Rival: full positivity permits a
+nonzero deviation with finite logarithmic harmonic mass but divergent
+ordinary harmonic mass. This is a proper-subclass rigidity proposal,
+not yet the arbitrary-source detector.
+
+First attack: allowing an unspecified log power would disguise the full
+problem. PrimitiveSetMeanSquare:139,166 gives dyadic absolute mass
+O(N log N); hence raw1/[n*(1+log n)^J] is automatically summable for J>2.
+Select J=1 exactly. The existing shifted-pole notch proof has finite-part
+error sum_(n<=N)|d(n)|(1+log n)/n against a main term of size log L,
+with N comparable to L^2. The proposed premise only makes this error
+o((log L)^2), so the old absolute envelope is insufficient.
+[OPEN CORE]: retain signed arithmetic cancellation in that error or find
+a different coercive use of full positivity. Do not erase this missing
+logarithm by changing cutoffs without paying tail and defect terms.
+
+Scientific challenge: find a strict boundary between harmonic rigidity
+and the automatically finite high-log moments. Absolute convergence of
+the logarithm at Re=1 gives boundary quotient control but does not pay a
+strict half-plane bound left of1. Current converse theorems require a
+functional equation/global continuation not available here. Attack this
+exact statement internally and externally before attempting Lean.
+
+C41 verdict: SURVIVES PRELIMINARY ATTACK; proof remains OPEN. The refined
+notch is already stronger than the old absolute-convergence envelope.
+Its Gaussian scale mixture is localized near L, not an integral over all
+logarithmic scales; do not interchange it with a fictitious long average.
+The exact obstruction is the localized term
+(log L)/sqrt(L) * sum_(n<=cL)|d(n)|/sqrt(n), plus rough-fibre isolation.
+Finite log-harmonic mass suggests good scales by averaging this term in
+log L, but no complete simultaneous-scale proof or fibre-tail argument
+has been obtained. Even eliminating the error does not let the cutoff
+in the prime set pass through conditionally convergent harmonic sums.
+
+For this premise the logarithm D(s)=sum d(n)/(log(n)*n^s) converges
+absolutely on Re>=1. Thus the actual F/zeta and its inverse lie in the
+shifted Wiener-Dirichlet algebra there; finite rough logarithmic tails
+vanish uniformly on that CLOSED half-plane. This pays C40 only within
+this proposed subclass. It supplies no bound on a half-plane left of1
+and does not close C41 or WP03. This is a classical positive survivor,
+not a claimed new theorem. No new Lean is justified yet.
+
+Independent next-cycle screening underway: can the actual finite forward
+coefficient energy constrain the integer-floor residual spectral mass?
+Existing quantization already says a noncanonical source exceeds every
+sublinear residual power eventually; proving a quiet power scale would
+therefore close the detector. Need an actual arithmetic energy-to-mass
+law, not an assumed phase lock or a generic Hardy-space inference.
+
+### C42: logarithmic harmonic rough-sign law (paper investigation)
+
+Energy-to-residual-mass screening has no paid source-specific link.
+Saksman--Seip, arXiv:0712.0492, theorem1(ii), gives bounded ordinary
+Dirichlet series with singular inner boundary behavior and arbitrarily
+small coefficient square norm. This does not give a full-positive
+counterexample or identify its singular measure with our integer-floor
+residual measure. It blocks treating a generic Hardy-space boundary
+identity as an established energy-to-mass theorem. Do not expand into
+WP04 spectral quantization without an actual arithmetic connection.
+
+Selected exact conjecture: for arbitrary full-positive lam, put
+d(n)=lam(n)-Lambda(n) for n>=2 and d(0)=d(1)=0. Either
+sum |d(n)|/[n*(1+log n)] diverges, or for every finite prime set P,
+every Y>0 and every integer T, some k>=T satisfies
+
+    sum_(2<=n<=k, p does not divide n for all p in P) d(n)/n < Y.
+
+This is an unconditional alternative from full positivity; no new
+premise is added to the WP03 receiver. It extends the existing rough
+sign receiver from NotchSmall to a logarithmic harmonic class which
+need not satisfy uniform square-root mass decay. Rival: sparse large
+blocks force every useful notch scale to have a large localized error.
+[OPEN CORE]: pay simultaneous scale selection for the actual Gaussian
+mixture, finite cutoff, shifted-pairing tail, and defect. C41's eventual
+coefficient isolation is still separate and open even if C42 closes.
+
+Proposed mechanism: write b_n=|d(n)|/[n*(1+log n)]. Summability gives
+A(X)=sum_(n<=X)|d(n)|/n=o(log X) and
+T(X)=sum_(n<=X)|d(n)|/sqrt(n)=o(sqrt(X)*log X).
+For every fixed c>0, F(L)=T(cL)/sqrt(L) is integrable against
+dL/[L*(1+log L)] on a sufficiently large half-line, by Tonelli and
+the exponential decay after setting L=exp(t). Therefore arbitrarily
+late scales have F(L) arbitrarily small. With N about L^2 the pairing
+tail divided by log L tends to zero by the b_n tail. A new localized
+bound for the Gaussian refined error is required: the existing bound
+uses a global A+B*sqrt(x) envelope and cannot simply be invoked at one
+good scale. Complete this bound on paper before writing Lean.
+
+Plan: finish exact internal/external attack; prove the Gaussian estimate
+and simultaneous error vanishing; assemble the rough-sign contradiction;
+only then formalize the dependency-closed statement in owned leaves.
+
+C42 strengthened during the paper attack: logarithmic harmonic
+summability is more than the proof needs. Replace it by the exact first
+field of NotchSmall, A(X)=sum_(2<=n<=X)|d(n)|/n=o(log X).
+The rough-sign conclusion is unchanged. The intended unconditional
+alternative is now: A(X)/log X fails to tend to zero, or every finite
+rough harmonic sum has liminf<=0. Finite log-harmonic mass is a corollary.
+
+Key correction: no separate averaging theorem is needed to select a
+scale. If T(X)=sum_(n<=X)|d(n)|/sqrt(n) were >=epsilon*sqrt(X)
+eventually, finite Tonelli gives
+
+  integral_1^X T(t)*t^(-3/2) dt = 2*A(X)-2*T(X)/sqrt(X).
+
+Its lower bound epsilon*log X-O(1) contradicts A(X)=o(log X).
+Thus T(cL)/sqrt(L) has liminf0 for every fixed c>0. All other errors
+vanish along every scale: T(L^2)/[L*log L]<=A(L^2)/log L->0,
+and partial summation bounds the shifted tail by o(log L)/L.
+The localized Gaussian split at u=L/2 and u=2L now closes the one
+remaining analytic estimate on paper. Detailed proof is being recorded
+before Lean; no formal theorem or scientific novelty claimed yet.
+
+C42 paper proof recorded in PROOF.md. The dependency-closed target is
+primesUpTo(y), y>=2, anchored at n0=2; arbitrary-P including empty-P
+is not claimed from that proof. The IsSmoothOver definition requires
+2<=n0, checked directly. All Gaussian errors and the shifted tail are
+accounted for. Internal attack finds the old NotchSmall receiver and
+the stronger local-window-smallness sufficient condition, not this
+one-field receiver. Verdict BRIDGE: useful weakening of a source
+receiver by classical analysis, not significant novelty by itself.
+Proceeding to owned Lean leaves, beginning with Gaussian localization.
+
+C42 implementation checkpoint: NotchLocalization targeted --old
+build26597 and NotchGoodScales targeted --old build78539 pass. Final
+direct audits and wiring remain pending. The latter proves the
+good-scale selection by finite summation by parts, not a subsequence
+intersection. Finite tail proof recorded in PROOF.md section5 before
+implementation: retain the nonnegative envelope deficit at the
+terminal cutoff, then telescope the logarithmic increments. Next:
+formalize that estimate, convert to the actual source envelope, and
+assemble the rough-sign contradiction. WP03 and C41 remain open.
+
+C42 checkpoint after the first three direct audits: Localization236,
+GoodScales238, Tail127 lines; nine public helper theorems. Targeted
+--old builds and final direct audit42126 pass; axiom/API audit10404
+passes with only standard Lean axioms. These three leaves are wired.
+Index4291 passes. New NotchBudget152-line leaf is under its first
+targeted check. It combines every error mass at one selected scale;
+does not yet bind the actual Weil source. Next assemble the generic
+ramp-pairing bound from existing moment receivers, then specialize to
+the hW rough sum and publish only the unconditional source alternative.
+No significant novelty or completed C42/WP03 result is claimed yet.
+
+Assembly implementation now has NotchBudget (156 lines, repair build
+48617 pending at this checkpoint) and NotchSourceBound (new draft,
+never checked, unwired). The latter converts the actual lower moment
+and shifted-pole pairing to the four-mass bound. Its budget cutoff is
+2*c, matching Gaussian localization. Remaining sequence: verify both;
+derive nonpositivity of ramp partial sums under harmonic smallness;
+instantiate the zero notch and actual hW. The existing absolute-series
+source input is WeilSpectral.summable_abs_deviationCoeff in
+WeilConeSingularDeficitEnvelope:117, sigma>1, with deviationCoeff
+defined at97 as (Lambda-lam)*n^(-sigma) for n>=2. Do not use the
+unrelated ConditionalDeviationRH.summable_u, which has extra datum.
+
+Latest checkpoint: Budget48617 and SourceBound39176 targeted --old
+checks PASS and both imports are wired; their direct/axiom audits are
+pending. New NotchRampSign (~70 lines) proves the abstract nonpositive
+ramp receiver from harmonic smallness via those two leaves. First
+targeted check is running. No other owned Lean process runs in parallel.
+After it passes, specialize via exists_sum_re_weightedMoment_ge_ramp
+and exists_notchWeight_bound at epsilon=0; then adapt the existing
+roughSum_nonpos_of_weilPositiveFull wrapper, paying summability with
+WeilSpectral.summable_abs_deviationCoeff. Finish the unconditional
+alternative, audit all new leaves directly and axioms, wire finished
+leaves, refresh index, rerun lint. Then return to C41 isolation.
+
+RampSign54426 targeted --old check PASS (first attempt), wired. Actual
+hW adaptation and unconditional alternative are drafted in the new
+NotchRoughSign leaf and its first targeted check is live. This is the
+last source specialization for the paper-proved C42 target. Four final
+direct/axiom audits remain (Budget, SourceBound, RampSign, RoughSign).
+The first three analytic leaves were already directly audited; do not
+repeat those unchanged checks. Refresh index/lint after final wiring.
+
+C42 CLOSED as a BRIDGE, not as WP03: RoughSign33455 passes. Final
+direct/axiom audit14356 passes for the remaining four leaves; together
+with42126/10404 all15 public theorems are directly audited with standard
+Lean axioms only. Seven leaves,1079 lines,one public definition; all
+imports wired. Index97281 passes. Lint19083 has12 unrelated unreachable
+leaves, no owned/prohibited finding. Main source alternative at
+NotchRoughSign:109 has only hW as its source premise.
+
+Anti-theatre: no significant scientific knowledge beyond the parent
+analysis is claimed. The new formal source receiver pays a real error
+gap but still does not isolate coefficients. Some effort was classical
+analysis; stop extending that infrastructure now. The hardest remaining
+step is arithmetic isolation or uniform prime-cutoff control, not scale
+selection. No task was declined for effort; internal searches and exact
+source checks were performed before implementation.
+
+Next cycle screening: does every noncanonical full-positive source
+necessarily fail harmonic smallness? This would strengthen C41's
+log-harmonic mass obstruction. Rival: a sparse mixed deviation remains
+harmonically small while every fixed rough-sign law holds. Neither is
+selected as a surviving conjecture yet. Deep search6779 is recorded in
+EVIDENCE; inspect its ingredient set and strongest exact parent inputs,
+then complete external and falsification audits before new proof work.
+Soundararajan2002 requires Selberg-class data not yet paid here.
+
+C43 exact target selected for preliminary attack: every full-positive
+source is canonical or fails the C42 harmonic envelope. This is stronger
+than C41. Rival: harmonically small, mixed prime/composite deviations
+survive all fixed arithmetic tests. Verdict SURVIVES PRELIMINARY ATTACK,
+not proved. [OPEN CORE]: isolate an individual coefficient while the
+prime cutoff tends to infinity; C42 fixes the cutoff before choosing
+the notch scale. No uniform interchange follows from its quantifiers.
+
+The strongest checked endpoint parent is MUST-586,
+WeilOneSidedConvergenceRigidity:411/425: either sign summable against1/n
+forces equality. CauchyBounded in WeilDeviationTranslationBound:290
+controls d/sqrt(n) on log-line translates, much stronger than the
+harmonic envelope; its vanishing packet mean cannot be assumed here.
+Booker2015, arxiv1308.3067 definition1.3 and theorems1.6/1.7 require
+discrete spectral data, almost-everywhere integer multiplicities and
+extra coefficient decay. Those inputs remain unpaid for our source.
+The WP02 sublog-fibre work concerns different separator coefficients
+and does not prove C43's source hypothesis or conclusion.
+
+C43a positive intermediate target: a noncanonical full-positive source
+must either fail harmonic smallness or have infinite absolute harmonic
+deviation on composite integers. Equivalently, harmonic smallness plus
+summable nonprime |d(n)|/n forces every coefficient to equal Lambda.
+This replaces the pointwise o(Lambda) condition in the old isolation
+proof by average smallness and a composite tail. Prime deviations may
+have arbitrary signs and unbounded relative spikes. The strongest
+checked thin-prime-deficit parent additionally requires a summable
+negative-prime set; that is not supplied here. Verdict BRIDGE pending
+the exact search and completed paper proof, not significant science.
+First derive the exact coefficient-isolation bound from the new ramp
+receiver and the actual unconditional harmonic convergence. Continue
+attacking C43's unrestricted composite core after this closure.
+
+C43a paper proof is dependency-closed in PROOF.md. NotchIsolation144
+lines has passed targeted --old build84810 after one summability-bound
+binder repair; wired. CompositeRigidity89-line actual-source adapter
+and alternative are drafted and under their first targeted check.
+Final direct/axiom audits remain pending. No broader C43 claim.
+Next competing direction C44: could composite harmonic summability
+alone already force equality? The prime-power rigidity source only
+rules out constant rescaling of the canonical proper prime powers;
+it does not constrain arbitrary prime coefficients as needed here.
+Exact deep source search98755 is running before selecting that claim.
+
+C43a CLOSED as a BRIDGE: both targeted builds and both final direct
+leaf checks pass; repaired API and all three axiom audits96782 pass.
+Only propext, Classical.choice, Quot.sound. Two leaves,233 lines,three
+public theorems. Index passes; lint has eight unrelated unreachable
+leaves (exact names in EVIDENCE), no owned finding. RESULT and frontier
+updated. The full C43 conjecture and WP03 remain OPEN.
+
+Anti-theatre: no significant scientific novelty claimed. The contribution
+closes one formal coefficient-isolation gap using classical machinery;
+it does not close unrestricted arithmetic detection. Anti-laziness: no
+step was deferred for effort; exact corpus parents were checked. Next
+cycle targets arithmetic lower bounds rather than more error estimates.
+
+C44 screening98755 and propagation73445 have completed; their proposed
+ingredient sets leave the key source obligations unpaid. Higher-moment
+screening finds an untwisted fourth-moment upper bound in the corpus and
+primary twisted-moment formulas of Bettin et al. (2016/2020), Bui--Hall
+(2023), and Bui--Hall--Subira Jorge (2025). Their short, structured or
+subpower-bounded polynomials do not immediately cover the actual long
+deviation sum. No higher-moment no-go or proof is claimed. Next examine
+whether finite arithmetic-fibre positivity can yield a common bounded
+functional and recover coefficients without absolute composite tails;
+deep search22211 was launched for that exact mechanism.
+
+C46 screening: the exact old NotchBochnerLaw theorem proves a real
+quadratic inequality for convergent gcd-harmonic sums. Its prose claims
+every negative-mass torus measure is allowed, but the module contains
+no converse realization theorem; do not promote that prose into an
+arithmetic counterexample. Since its kernel can be asymmetric, only its
+symmetric part is observed by the displayed real quadratic form.
+
+C47 candidate under attack: let f(n)=mu(n)*2^(-omega(n)), with f(1)=1,
+and d=f-delta_1. Hypothesis to establish: d is nonzero, bounded, has
+finite sum |d|/[n(1+log n)], ordinary harmonic sum -1, and all fixed
+gcd-harmonic sums -1; hence all limiting notch quadratic laws hold.
+This would falsify inference from those limiting laws plus C41's mass
+condition to coefficient equality, not falsify full-positive rigidity.
+The candidate must also be tested against actual source continuation:
+its Euler series has a square-root zero at1, whereas the actual source
+deviation is holomorphic there. Primary Selberg--Delange estimates
+(Granville--Koukoulopoulos2019 theorem1) are being checked; no numerical
+experiment. [OPEN CORE] pending exact convergence and fibre identities,
+not yet a completed paper proof or a formal counterexample.
+
+C48 screening: local analyticity at1 plus null divisibility fibres and
+sublogarithmic absolute harmonic mass is a competing abstract uniqueness
+conjecture, not a theorem. Deep search79615 has no verified receiver;
+its proposed finite Mobius inversion does not pay the infinite tail.
+Do not infer a source theorem from this abstract conjecture.
+
+C49 SELECTED FOR HOSTILE AUDIT, 2026-10-08. Exact proper-class conjecture:
+let f be a real multiplicative arithmetic function, f(1)=1, and suppose
+there is 0<=theta<1 with |f(p^k)|<=theta for every prime p and k>=1.
+Set lambda(n)=Lambda(n)+f(n) for n>=2. If lambda is full-positive, then
+f is the Dirichlet-convolution unit. No source satisfying this profile
+is assumed to exist; this is not the full WP03 detector.
+
+Proposed mechanism: source continuation makes F=L(f) analytic at1.
+Positive real Euler factors give F(1+t)>=c*t^theta, so analyticity
+excludes F(1)=0. Write H=F(1)>0. Fixed-prime convolution inversion at
+the harmonic endpoint supplies all gcd-fibre limits. The actual notch
+quadratic law should then yield, for every finite prime set P,
+  H*Re product_p F_p(p^(-1/2) z_p) <= product_p F_p(p^(-1)), |z_p|=1.
+Local maximum-modulus estimates and conjugate phase choices should
+force sum_p |f(p)|/sqrt(p)<infinity. Higher prime powers then give
+absolute convergence at every sigma>1/2, entering an existing rigidity
+class. [OPEN CORE] audit this full chain, especially NotchSmall,
+finite-prime endpoint convolution, and the real-quadratic-to-pointwise
+step. No C49 Lean code before a dependency-closed proof.
+
+This strengthens the C47 lesson: ordinary limiting tests alone admit
+classical null expansions; the proposed exclusion uses source
+analyticity and multiplicativity together. It must be compared with
+Brevig--Heap's abscissa theorem and existing carrier/sign-alignment
+rigidity, not advertised as new merely because it is new in Lean.
+
+C49 PAPER PROOF CLOSED in PROOF.md, six steps. The final version uses
+one-variable Borel--Caratheodory on a diagonal disc, avoiding phase
+selection. A bound on the real part of each finite Euler product gives
+a product-norm bound on its half polydisc, with a constant independent
+of the number of primes. First-coefficient estimates then force
+sum_p |f(p)|/sqrt(p)<infinity. Multiplicativity upgrades this to
+absolute convergence at every sigma>1/2; existing endpoint rigidity
+closes the class. This proof still needs its exact Lean audit.
+
+First C49 leaf EulerDisk drafted and wired. Targeted build4170 failed
+only on an unnecessary product congruence after convert; API check and
+repair build71008 pass. Final direct audit95464 pending. Its two
+analytic lemmas are standard bridges, not the C49 source theorem.
+Remaining formal steps: local coefficient/log-product bound; actual
+endpoint Euler-factor removal; source nonzero harmonic value;
+NotchSmall from the strict local bound; exact Fourier/notch density
+identification and capstone. No full/umbrella build or computation.
+
+C49 update: EulerDisk final direct audit95464 and standard-axiom audit96096
+PASS. An accidental overlap of those two audit processes is recorded
+in EVIDENCE; both exited. Torus-sign formalization uses density of the
+character span, continuity of the quadratic integral and full support
+of Haar measure. Scratch work only so far. Actual-source Fourier
+identification and all arithmetic C49 obligations remain unpaid in Lean.
+
+C50 SCREENING ONLY while C49 formalization continues: the strict theta<1
+boundary exposes f=mu as an integer-order-zero profile. Here F=1/zeta
+has H=0, so the endpoint notch laws lose its information. At a regular
+critical-line point, Re(xi'/xi)=0. If the actual continuation for
+lambda=Lambda+c*mu is xi'/xi-c/zeta, Herglotz positivity would require
+-c*Re(1/zeta)>=0 there. A proved sign change of Re(zeta) on the critical
+line could exclude every nonzero c without RH or numerical zero data.
+Corpus search launched for this exact mechanism before selecting any
+conjecture. This is not a theorem, not a new premise, and does not
+replace the unpaid C49 formal work. Check normalization and boundary
+regularity against the actual source definitions first.
+
+C50 normalization correction during hostile audit: the deviation is
+c*(mu-delta_1), since lamC discards n=1. The actual continuation would be
+xi'/xi + c - c/zeta, not xi'/xi-c/zeta. Thus the boundary inequality is
+c*(1-Re(1/zeta))>=0; mere sign change of Re(zeta) is insufficient.
+The existing boundary-Mobius receiver has the explicit premise f(1)=0,
+so substituting f=c*delta_1 is invalid. Do not call this rediscovered or
+proved. A nonzero-residue phase argument is a possible next attack,
+subject to corpus search. This correction is why the exact source
+normalization must precede any new formalization.
+
+C49 TorusSign formal checkpoint: 221 lines, five public theorems. Direct
+leaf audit56279 and axiom audit70884 PASS (standard Lean axioms only).
+Imports wired. The exact source adapter retains the Fourier identity
+and gcd-limit obligations explicitly; it does not assert their existence.
+Next formal chunk is the ordinary-times-absolute harmonic convolution
+lemma. Scratch written; no arithmetic lemma has yet passed Lean.
+C50 also fails C49's mean-smallness input at theta=1; |mu| has positive
+mean. Its boundary case is screening only, with normalization corrected.
+
+C49 HarmonicConvolution formal checkpoint: six public theorems, including
+ordinary-times-absolute endpoint evaluation, a same-endpoint absolute
+inverse under strict harmonic norm contraction, and scalar inverse
+product evaluation. Targeted --old36086, final direct31719 and all six
+axiom checks17088 PASS; standard axioms only. Module wired. The next
+step instantiates this with prime-local restrictions and proves their
+exact smooth/rough convolution decomposition. Paper proof already
+supplies the required finite-prime argument; no C49 capstone yet.
+
+C49 PrimeDeletion formal checkpoint: 15 public theorems. Exact smooth/
+rough Dirichlet factorization and finite-prime deletion at the ordinary
+harmonic endpoint, with explicit product of local Euler factors in the
+denominator. Each inverse follows from the sharp theta/(p-1)<1 bound.
+Scratch2674, final direct59652 and axiom91476 PASS, standard axioms only.
+Leaf wired; no dependency or umbrella rebuild. Next: compute gcd-weighted
+limits via finite Euler summation, then construct their Poisson density.
+The strict-profile NotchSmall and nonzero-source-value obligations also
+remain open in Lean. This checkpoint is a BRIDGE, not a C49/WP03 solution.
+
+C49 GcdEuler formal checkpoint: 237 lines, ten public theorems. It pays
+the exact gcdHarmonicSum limits for Re(f)-delta_1, including the -1 at
+the harmonic endpoint. Finite Euler absolute summation, multiplicativity
+of the bounded gcd weight, and its unchanged rough restriction are
+proved. Final direct14744 and axiom64525 PASS (standard axioms only);
+module wired. Index/lint92027 refreshed the corpus; six unrelated
+unreachable modules, no owned/prohibited finding. Next actual identity:
+continuous Poisson/Euler density on the finite additive torus. Existing
+PrimePoissonProductState/CirclePoissonFiniteProduct supply kernel moment
+and product-density parents; their source Fourier identification is
+still to be composed with this new arithmetic theorem.
+
+C49 PoissonEuler formal checkpoint: 265 lines, nine public theorems.
+Positive continuous additive-circle Poisson kernels, exact Fourier
+coefficients of bounded analytic local series, and the finite-product
+Euler density including its subtracted Poisson product are now proved.
+Final direct37080 and all nine axiom3087 checks PASS (standard axioms
+only); leaf wired. Next scratch identifies r=p^(-1/2), local gcd Euler
+values and the literal twistGramWeight, then joins the source notch law.
+Strict-profile NotchSmall, H>0 and the final prime-tail rigidity upgrade
+are still unpaid. C49 remains a paper theorem awaiting full formalization.
+
+C49 SourceEuler formal checkpoint: exact twistGramWeight normalization,
+real gcd-harmonic endpoint, literal source deviation normalization and
+finite Euler inequality. Ordinary H exists by the source theorem; no
+Fourier or convergence hypothesis is laundered. Final direct91948 and
+all13 axiom93332 checks PASS, standard axioms only; leaf wired. Index
+and lint complete (six unrelated unreachable modules). NotchSmall,
+H>0 and the summability/rigidity capstone remain unpaid. Next scratch
+uses the finite-prime majorant product (theta on multiples, one off)
+and exact counting of multiples to prove absolute mean decay. All
+local-mass search hits audited; no existing producer supplies this step.
+
+C49 MeanSmall formal checkpoint: absolute finite-prime attenuation,
+exact mean by counting multiples, prime-reciprocal-driven mean zero,
+generic local logarithmic mass decay and literal NotchSmall. Final
+source corollary removes every smallness/convergence premise from the
+finite Euler bound and supplies H<=1. Direct6389 and all10 axiom6832
+checks PASS; leaf wired, no unchanged/umbrella rebuild. Index/lint
+complete; eleven unrelated unreachable modules. Next: prove H>0 via
+uniform local log lower bound, Euler-product limit, actual analytic
+source germ and ordinary Abel endpoint. Positivity scratch82390 running.
+
+C49 PositiveEuler formal checkpoint: local series lower bound and
+uniform log Taylor remainder, exact weighted multiplicative Euler
+product, and global F(sigma)>=c_theta*norm(zeta(sigma))^(-theta).
+Final direct19265 and all9 axiom77020 checks PASS; leaf wired, index
+complete, lint running. Ordinary Abel scratch77368 runs next. Remaining
+endpoint work identifies H with G(1) for actual G=1+xi'/xi-Phi and
+excludes an analytic zero using the fractional lower bound. Prime-tail
+summability and the rigidity capstone remain after that.
+
+C49 HarmonicPositive formal checkpoint: ordinary Abel limit, actual
+source germ G=1+xi'/xi-Phi, exact G(1)=H and fractional lower bound
+versus analytic zero prove H>0. Final direct13882/all14 axiom96206 PASS;
+standard axioms only. Leaf wired, index2431 PASS. Lint27233 reports
+five unrelated HTGeometry unreachable leaves. Next: finite polydisc
+maximum principle and exact Caratheodory first-coefficient bound using
+existing HTGeometry/CaratheodoryCoefficient.lean. Scratch44944 running.
+No prime-tail/class completion claim; no scientific novelty established.

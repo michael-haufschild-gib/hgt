@@ -1008,3 +1008,635 @@ C13 is explicit and OPEN CORE in PROOF.md. No Lean theorem asserts it.
 - No further production Lean changes or builds followed C27 certification.
   Scope checks passed again; completed owned scratch/search files removed
   after preserving receipts. No owned process remains.
+
+## 2026-10-08 — cycles 29–30, source and novelty audit
+
+C29 forward-coefficient sign search found no producer. Its proposed recipe assumes
+nonnegative forward coefficients, exactly the missing claim. Li coefficients are a
+different sequence. C29 survives preliminary attack but does not currently pay the
+normalization debt; the finite-factor diagnostic and its failed original-source
+applicability are recorded in PROOF.md.
+
+C30 deep search completed without an unfinished stage: 68,630 inventoried/indexed
+files, 1,030,616 declarations. Semantic coverage was not measured; compiler records
+are mostly pending/source-only, with 2,660 stale records and 38 stale snapshots.
+Background refresh was still running. Every candidate statement and source argument
+was inspected. Closest exact parent is the parity PolynomialMellin theorem. Generated
+prime-deletion ingredient set leaves “Remove prime from block” unpaid and its p-adic
+valuation lemma does not establish a Mellin bound. No rational reciprocal-bound or
+all-finite-deletion endpoint was found. Fresh source signatures are being checked in
+Lean rather than trusting index applicability.
+
+Primary external comparison: Dubickas–Garunkštis–Steuding–Steuding, *Zeros of the
+Estermann zeta function*, J. Aust. Math. Soc. 94 (2013), section 2, formula (2.1),
+https://www.cambridge.org/core/services/aop-cambridge-core/content/view/A307A56D4BD70D332D4D201C8ECF076E/S1446788712000419a.pdf/zeros-of-the-estermann-zeta-function.pdf .
+Its rational-twist continuation follows from finite Lerch decomposition for canonical
+divisor coefficients. It does not give the required bound for the actual signed
+source convolution d*1*1. Rational recurrence itself is not claimed scientifically
+novel. Provisional C30 classification: BRIDGE, pending formal verification.
+
+Serena symbol lookup was attempted for the exact Mellin bound; the repository's Lean
+path is ignored by Serena. Source inspection and normal file edits are the fallback.
+
+C30 frontier refresh: the new source `ForwardEnergyLimit`, `ForwardMean`, and
+`ForwardVariance` statements were retrieved and read in full at the relevant
+symbols. They establish an actual logarithmic energy limit and residual variance
+V>=0 with K=|B|^2+V. They explicitly do not prove V=0. These source files are not
+parents of C30, and their current lint reachability is unpaid; no compiled status is
+asserted here. This updates the frontier without confusing logarithmic variance
+existence with ordinary zero variance or a sign theorem.
+
+## C31 entry: residual energy and finite deletion normalization
+
+While C30 part2 final audits run, the next exact corpus search is:
+`scripts/formal_tools.py research 'From full Weil positivity force residual forward coefficient logarithmic variance V to vanish; use finite coprime deletion endpoint constants to normalize the pole mode and eliminate nonprincipal arithmetic modes' --mode deep --budget-seconds 300 --no-refresh --json`.
+Current search session20137, raw receipt /tmp/wp05-c31-variance-search.json.
+No result or novelty conclusion has yet been inferred from that search.
+
+External primary refresh: Booker, L-functions as distributions, arXiv:1308.3067v2,
+https://arxiv.org/html/1308.3067 . Definition1.3(A3) requires discrete support and
+only finitely many nonintegral masses. Theorem1.7 classifies positive degree<5/3
+L-data. Applying it to the present source still requires those missing spectral
+properties; the word positive does not discharge them. This refresh therefore
+supplies a comparator, not a shortcut or a source of WP05 hypotheses.
+Oliver's notes https://arxiv.org/abs/1601.05009 announce degree<2 extensions in
+the same L-data framework; they do not remove this source-construction debt.
+
+C31 search20137 completed partial=false, no reported unfinished stages/errors;
+semantic coverage not measured. Snapshot compiler coverage mostly pending/stale,
+not a proof certificate. Inspected all20 candidate statements and all20 source
+arguments plus the ingredient recipe. The recipe's RegularDeviation premise is
+unproduced; its coprime cancellation lemmas concern canonical/block models, not
+the actual source endpoints. Exact lexical follow-up (session87021, complete)
+found the actual ForwardVariance/ForwardEnergyLimit/ForwardMean declarations.
+Relevant further source read: ForwardCoefficients221-345 (Toeplitz self-test),
+ResidueEnergy1-75 (Cauchy direction only), FiniteBound full (moving-length bound
+cost N^(9/8) T^(5/6), sublinear only theta<4/27). None closes zero variance.
+Next mechanism search18879: positive semidefinite rational cosine reciprocal
+residue kernel forces zero diagonal actual source; /tmp/wp05-c31-reciprocal-kernel-search.json.
+
+C31 GCD mechanism search66068 completed partial=false, semantic coverage
+unmeasured. Inspected all20 candidate and20 source-argument statements.
+Read DivisorStationaryKernelPositivity in full: finite incidence factorization
+and PSD iff every divisor coefficient nonnegative already formalized. Thus the
+abstract w(p/q)=-1/q diagnostic has a known positive classification; no new
+GCD theorem is needed. External comparator: Guillot--Wu,
+https://arxiv.org/abs/1901.01947 , cites positive definiteness of every GCD matrix
+and classifies the stronger total-nonnegativity property. Li1990 search result
+located the earlier factorization, but opening its CORE PDF failed; not relied
+on for an uninspected proof.
+
+Latest parity search31529 found and source inspection confirmed
+exists_forward_parity_variance: |B|^2*(2r-1)^2<=V with actual positive odd/full
+r and actual variance limit. Source-only inspection, not a new verified parent
+for this task. It bounds the defect by V; it does not reverse the inequality
+or set either variable to zero. Do not duplicate this now-existing bridge.
+
+C32 search42366 completed partial=false, semantic coverage unmeasured; inspected
+all20 candidate and20 source statements and the ingredient recipe. No exact
+invisible-valuation classification found. Proposed recipe maps a prime valuation
+parameter to normalized one but does not prove the polynomial endpoint identity;
+rejected. Saias--Weingartner primary paper (arXiv0807.0783, Theorem1 and remarks
+afterTheorem4) supplies the periodic-coefficient Dirichlet-polynomial framework:
+https://arxiv.org/pdf/0807.0783 . It is a parent comparator, not an hW example.
+
+## C32 positive-survivor search, 2026-10-08
+
+Deep exact-periodic-coefficient variance search completed (18159): partial=false,
+no errors, semantic coverage unmeasured. All 20 candidate and 20 source statements
+inspected. Hits on modular-form Fourier coefficients, unrelated geometric means,
+and local von Mangoldt classification do not prove the required finite valuation
+variance formula. The proposed periodicity transfer only checks divisibility and
+is insufficient. Follow-up lexical variance/periodic search (11988) returned gamma
+periodic coefficient-space hits, not the actual model. Receipts archived.
+The C32 positive survivor remains unsealed; no unsupported novelty claim.
+
+
+## C33 verification checkpoint
+
+Targeted leaf `WeilWorkSettledPhaseValuationLogarithm` built successfully (81237),
+with all8 C33 modules present and wired once. Every final `lake env lean` source
+audit passed, with empty diagnostics. The sequential audit26005 reached the
+axiom command before its900s guard expired; axiom inspection is rerunning alone.
+No source changed during or after these checks. Index88533 exit0. Lint67618 exit1
+reports9 unrelated unreachable modules, none C33. The positive-weight proof's
+initial elaboration timeout was resolved by explicit series types; no heartbeat
+option was changed. No full or umbrella build was run.
+
+C33 axiom continuation18887 exit0: all16 declarations use only propext,
+Classical.choice, Quot.sound. Hashed receipt and final logs archived. C33 sealed.
+
+C34 sparse-energy search74080 completed partial=true: Qdrant timed out within
+search budget; semantic coverage unmeasured. Inspected all20 candidate and20
+source statements; noisy hits and recipe do not pay the target. Follow-up
+lexical50026 found actual MaskedEnergy and CoprimeEnergy modules. Both read in
+full: masked radial residue square <= V*D and all-coprime source ratio square
+<=K*density already exist. Do not duplicate these. The stronger candidate is a
+bound uniform simultaneously in q and sigma for the forward source on multiples
+of q; no residue-limit premise. C34 remains under audit, no code or novelty claim.
+
+
+C34 external parent comparison: Hedenmalm--Lindqvist--Seip,
+*A Hilbert space of Dirichlet series and systems of dilated functions in L2(0,1)*,
+Duke Math. J.86 (1997),1--37, https://arxiv.org/abs/math/9512211
+(primary abstract opened2026-10-08). Their Hilbert space uses square-summable
+Dirichlet coefficients and a character-space H2 model. Our critical logarithmic
+energy statement does not establish that hypothesis for the raw source sequence.
+This is a comparison, not a theorem applied to hW or a novelty certificate.
+The proposed sparse bound remains a standard Cauchy--Schwarz transfer into the
+actual source setting; scientific novelty unestablished.
+
+C32 sealed2026-10-08: four final direct source audits have empty diagnostics;
+eight axiom queries use only propext, Classical.choice, Quot.sound. The final
+sequential guard80402 reached the separate C34 API only after all C32 steps
+returned0. All4 imports occur once. Index82726 exit0; lint24045 exit1, exactly
+five unrelated HTGeometry unreachable modules. Final hashes/logs in
+cycle32-verification.json. No source changed after audit. Classical diagnostic,
+not scientific novelty or a full-positive source example.
+
+C34 exact attack77871: partial=false, no errors, semantic coverage unmeasured.
+All20 candidate and20 source statements inspected; proposed notch/triangle
+recipe does not concern the actual source or the divisibility mask. Receipt
+cycle34-uniform-attack-search.json. Primary arXiv2007.14008 abstract opened:
+periodic Dirichlet-series critical-line value distribution, not this arbitrary
+source bound. Textbook URL math.wustl.edu/wp/mccarthy/amaster-ds.pdf returned404,
+so is not evidence. Sharp (K+e)/q uniform bound has closed paper proof in PROOF.md;
+formal API verification is running, no C34 theorem claimed yet.
+
+C34 SEALED: leaf31390 exit0; final guard4703 exit0, both direct source audits
+empty,6 axiom queries standard-only. Both imports occur once; index9843 exit0,
+lint42045 exit1 with5 unrelated HTGeometry unreachable modules. Receipt and
+logs archived as cycle34-verification.json and cycle34-*.log. All owned C34
+scratch files removed. No source changed after final audit; no full build.
+
+C35 search receipts all inspected20+20: reflection contextual, energy/residual,
+reciprocalcritical,primeBessel,valuationexhaustion (all deep partial=false,
+semantic coverage unmeasured). Lexical reflection search found the actual
+retained-defect theta identity and finite-residual rigidity. SieveResidue was
+read in full: fixed-primorial radial ratios already tend to0 with the prime
+cutoff; no need to duplicate. C35 finite-divisibility critical-square-mean
+approximation remains SURVIVES PRELIMINARY ATTACK with an OPEN producer.
+Primary Daboussi1975/1980 and Frantzikinakis--Host2014 comparisons recorded in
+PROOF.md; their multiplicativity hypotheses are not paid for the actual source.
+Finite covariance/Bessel bridge has a closed paper proof; no C35 Lean yet.
+
+C35 periodic-parent audit: `cycle35-periodic-parent-search.json`, deep120s,
+partial=false, errors=[], all20 candidate and20 source statements inspected.
+Inventory complete; compiler states mixed and semantic coverage unmeasured.
+Suggested recipe is invalid for this source: model periodicity does not prove
+source periodicity; cone-existence theorems do not identify the given source.
+Saias--Weingartner's periodic-series classification supplies a useful boundary:
+periodic coefficients plus a zero-free half-plane force a single primitive
+character component times a finite Dirichlet polynomial. A nonzero pole at1
+would select the principal component. This is a paper-level supporting
+inference under the additional periodicity premise, not a proof of C35 and
+not a new unconditional source theorem.
+
+C36 first character-residue retrieval archived. Partial=true: text/source
+retrieval interrupted by120s budget;20+20 available statements inspected.
+Semantic coverageunmeasured. Hits establish untwisted source residue or
+principal deletion, not nonprincipal character vanishing. Several hits are
+this turn's unsealed C35 source declarations; those are not independent
+verified evidence. Suggested subtraction recipe centers the source but
+ignores character twisting, so it does not prove the conjecture. The
+normalized-versus-unnormalized pole-order obstruction is recorded in PROOF.md.
+
+C36 external premise audit (primary abstracts opened): Klurman--Mangerel,
+8April2026, https://arxiv.org/abs/2604.06848, gives logarithmic-mean asymptotics
+for 1-bounded multiplicative functions. Granville--Harper--Soundararajan,
+https://arxiv.org/abs/1706.03749, treats multiplicative mean values and
+arithmetic progressions. Neither applies to our actual source without proving
+multiplicativity and the relevant size hypotheses. No such premises are
+introduced. Lexical character/full-positivity search found zero hits; that is
+not an exhaustive mathematical nonexistence certificate.
+
+C36 local-critical search77187 archived: partialfalse, noerrors, semantic
+coverageunmeasured;20+20 statements inspected. FiniteSupportRigidity800--887
+read directly, including its original-hW corollary and the produced PD input.
+The recipe again cites current unsealed C35 declarations and does not provide
+critical source-tail control. No new proof is inferred from that recipe.
+
+C36 projection retrieval84529: partialtrue (reranker deadline), no measured
+semantic coverage;20+20 available statements inspected and archived. Its recipe
+confuses positivity of an integer smooth part with positive definiteness of a
+function; rejected. Direct inspection of FibreBochnerLaw and RoughFibreSignLaw
+confirms their extra NotchSmall premise. PrimeSmallDeviationArithmetic177--185
+makes the missing control explicit: absolute harmonic, square-root and tail
+bounds, with arbitrarily small constants. Endpoint square summability in r_p
+is not that coefficient estimate.
+
+C36 zero-variance search91521: partialfalse, noerrors, all20+20 statements
+inspected; semantic coverageunmeasured. Archived cycle36-zero-variance-search.
+Read QuantizationResonanceEnergy1--115: exact norm/variance link, no phase
+approximation implication. Recipe 'variance zero implies phase symmetry'
+has the missing conclusion as an obligation and is rejected as a proof.
+
+C35 global lint28222 exited1: eight unrelated unreachable modules (three
+RHTower HigherDenominator/Notch modules and five HTGeometry modules). None is
+one of the five C35 modules; exact output archived in cycle35-lint.log. This
+is not a clean global lint gate. Other work's unfinished files were not changed.
+Final sequential direct/axiom audit1844 remains running under2400s guard.
+
+C35 final guard1844 exited0. Five direct logs empty; 22 axiom outputs checked;
+all source hashes match; five imports occur once. Receipt sealed. Lint global
+exit1: eight unrelated unreachable modules, no C35 names. All seven owned C35
+scratch files archived where relevant and removed after process completion.
+C37 notch-scales search84772 exited0 but partial=true, source_retrieval
+interrupted; semantic coverage unmeasured. All20 candidate +20 source
+statements inspected. New local bounds retain coefficient-tail assumptions;
+proposed recipe conflates unrelated local-mass and phase estimates. Rejected.
+Search archived as cycle37-notch-scales-search.json; scratch removed.
+
+C37 four additional research searches archived; all20+20 returned statements
+in each inspected. Phase-producer partialtrue/decomposition deadline; winding
+partialfalse/noerrors; equality-rigidity partialtrue/semantic retrieval deadline;
+singularity partialtrue/reranking deadline. Semantic coverage unmeasured, all
+selected statements source_only. No new dependency trusted without future Lean
+verification. Read exact theta defect identity, phase coupling, local variation,
+endpoint inversion, crystalline support mechanism and forward energy limit.
+No new Lean sources. All four search scratchfiles removed after byte verification.
+
+C38 andC39 searches:partialfalse/noerrors;C40 firstsearch:partialtrue/decomposition
+deadline. All20+20statements each inspected,semanticcoverageunmeasured.
+Search recipes rejected for absent links. C40 exact corpus definition and
+finite exponential proof read in DirichletConvolutionExponential; C33 exact
+logarithm endpoint and valuation convolution with coprime support read. No
+mathlib name used in code before scratch verification. C40 lexical supplement
+66136 pending. No owned Lean job yet.
+
+C40 lexical supplement completed: all15 declaration hits inspected; no candidate
+or source-argument hits. Both searches archived and original scratch JSON removed
+after byte verification. Convolution and supported-exponential leaf modules
+passed in build44347. Factorization failed only on a sourceCoeff/dirichletExp
+rewrite mismatch; corrected, pending recheck. Five modules now drafted, none
+wired or sealed yet. Polynomial API check caught a misqualified global theorem
+name in scratch, corrected before implementation build. Current job80978 runs
+that scratch check followed by the polynomial leaf; no second owned Lean.
+
+C40 polynomial API check passed. Polynomial leaf compiled after two real-to-
+complex cast repairs; its unnecessary-simpa warning is now simplified. Current
+job67391 runs polynomial/factorization/endpoints leaf checks sequentially.
+
+C41 search completed: partial=false, errors=[], semantic coverage unmeasured,
+refresh incomplete because background indexer is running; selected declarations
+are source_only. All20 candidate and20 source-argument statements inspected;
+no existing normalized full-positive valuation profile theorem found. Exact
+C34 uniform-divisibility theorem and nonzero actual residue proof inspected.
+Search archived as cycle41-profile-search.json, original removed after byte
+verification. Search does not establish absence from the whole corpus.
+
+C40 final leaf refresh passed; all5 source modules are wired once. Guard21583
+is performing5 direct source audits and18 public axiom queries sequentially.
+Global lint42907 exited1 with7 unrelated unreachable modules: WeilPaperEnergyFiberClosure,
+WeilWorkPBAPJointGammaFloor, HTGeometry/ApertureConeCalculus, ApertureConeWinding,
+ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra.
+No C40 module is named. Global lint is not a pass; other work was not modified.
+
+C42 both deep searches: partial=false/errors=[], semantic coverage unmeasured,
+refresh incomplete/background indexer, selected declarations source_only.
+All20+20 statements in each inspected. Rejected both proposed ingredient
+recipes because they assume representation/integrality or conflate unrelated
+phase shifts and local finiteness. Archives cycle42-phase-search.json and
+cycle42-integer-search.json saved; both originals removed after byte check.
+Booker PDF A3 and converse theorem inspected directly; Molteni author-hosted
+2010 paper opened successfully this time. Neither pays the missing hypotheses.
+
+C40 guard21583 EXIT0: final leaf, all5 direct checks,18 axiom reports. Five
+direct logs empty; all axioms standard; source hashes rechecked and imports
+still exactly once. Index2478 EXIT0 and capstone appears in LEAN_API.md.
+Receipt sealed with exact7 unrelated lint errors. Fourteen owned C40 scratch
+files removed only after every owned Lean process exited; extracted development
+diagnostics archived. No full/umbrella build, numerical experiment, heartbeat
+increase, commit or push.
+
+
+C43--C46 searches archived: cycle43-energy-source, cycle44-phase-energy,
+cycle45-rigidity-frontier, cycle46-local-regularization. All20 candidate and20
+source-argument statements per search inspected. partial=false/errors=[];
+semantic coverage unmeasured; refresh incomplete/background indexer; selected
+statements source_only. Recipes do not pay missing actual-source links.
+C45/C46 original JSON removed after byte comparison. C46 tail and real-axis
+searches remain running; no owned Lean process or new code yet.
+
+C46 tail and real-axis searches completed:20+20 statements each inspected,
+partial=false/errors=[], semantic coverage unmeasured/background refresh.
+The tail recipe supplies no actual-source link. The real-axis source-argument
+hit exists_re_herglotzFunction_le_log closes the paper dependency directly.
+Both archives saved and scratch removed. Existing Gamma Stirling theorem was
+read but is unnecessary to reprove; no new heartbeat option is introduced.
+
+C46 power-width search completed:20+20 statements inspected; partial=false,
+errors=[], semantic coverage unmeasured/background refresh. Two candidate
+hits are THIS CYCLE'S uncompiled LogRegularization draft, already indexed by
+the background service. They are NOT independent prior results or verification.
+Remaining actual-phase receivers retain missing variation or lock hypotheses.
+Archive saved; original removed. Source index freshness is not compiler proof.
+
+C47 phase-energy screening:20+20 statements inspected; partial=false/errors=[],
+semantic coverage unmeasured/background refresh. Recipe combining unrelated
+phase shifts and fractional products rejected. Read actual native Gamma-energy
+phase formula and its zero-kernel characterization in WeilPaperGammaEnergy;
+not recompiled or imported. It controls an amplitude-weighted discrepancy,
+not unweighted phase regularity. C44 division-at-zeros obstruction still applies.
+Deift--Its--Krasovsky arXiv:1206.1292 abstract opened: fixed Fisher--Hartwig
+symbol determinant asymptotics, no actual-source regularity producer claimed.
+Hankel localization publisher DOI failed500; no proof imported from it.
+Archive saved and scratch removed. No C47 code or no-go closure claimed.
+
+C46 index43268 EXIT0. Lint80556 EXIT1 with7unrelated unreachable modules:
+WeilPaperCompactSpectralRecovery, WeilWorkQuantizationGaussianShift,
+HTGeometry/ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation,
+ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. No C46 finding.
+C46 final guard29872 running3direct sourcechecks then14axiomqueries.
+
+C48 first deep search partial=true: semantic_retrieval local runtime deadline.
+20+20 statements inspected; semantic coverage unmeasured/background refresh.
+Lexical supplement returned20+5 hits; all exact signatures read at source.
+Both archives saved and originals removed. Positive-definite spectral kernels
+and negative-deviation potential are different functions from a normalized
+source Dirichlet series. Recipe does not prove the missing identification.
+Nakamura arXiv:2209.13257 primary PDF, Theorem1.5 and Main Theorem inspected:
+normalized Dirichlet-series characteristic functions require coefficient signs;
+infinite divisibility further depends on logarithmic-coefficient signs.
+Nakamura--Suzuki arXiv:2306.08317 Theorems1.1--1.2 inspect a different function
+built from the actual zeta zero data. Neither theorem supplies arbitrary-source
+coefficient signs from hW. No literature theorem imported into Lean.
+
+C46 final guard29872 EXIT0: three actual source checks with empty logs;14
+standard-axiom reports; stable source hashes; imports once. Targeted old leaf
+passed. Index passed; global lint7 unrelated reachability failures. Receipt
+sealed, development diagnostics archived, all owned C46 scratch removed.
+
+C48 coefficient-sign search44629 completed and archived. All20 candidate
+lemmas and20 source arguments inspected. Partial=true: text retrieval
+interrupted; reranking deadline; filter/judge transport BrokenPipeError.
+Semantic coverage unmeasured, background refresh incomplete. Returned results
+supply summability and conditional rigidity, not source signs. No absence
+claim about unsearched corpus portions; no new Lean theorem claimed.
+
+hgtl7 C46 audit: scientific novelty unestablished; classical kernel mechanism
+was checked against primary literature; corpus rate frontier advances but
+WP05 closure does not. No difficulty-based skipped step. Next work returns
+to actual source sign/phase producers; avoids more conditional receivers.
+
+C49 sign-deformation and affine-phase searches: partial=false/error[]; all
+20+20 exact statements in each inspected. C50 univalence search likewise
+20+20 inspected, partial=false/error[]. Semantic coverage unmeasured and
+background refresh incomplete. All3 archives saved and /tmp originals
+removed. Generic sign and atomic-identification recipes rejected for unpaid
+premises. Source definitions read: WeilPositiveFull fixes Gamma and pole1;
+sourceCompletion derivative equals weilContinuation*sourceCompletion.
+Primary PDFs opened: arxiv2004.05678 formula27, arxiv2303.03201 Theorem1.1
+and Corollary1.4. Neither gives actual source classification.
+C51 character-residue search18396 running; no owned Lean process.
+
+C51 and C52 searches completed, all20+20 statements inspected for each,
+partial=false/errors[]. Semantic coverage unmeasured/background refresh
+incomplete. Archives saved and scratch originals removed. C51 recipe confuses
+height modulation, character twists and conditional finite residual mass.
+C52 recipe assumes the square-mean approximation it is meant to produce.
+Read exact C34 uniform bound, C35 covariance inequality, C33 valuation
+logarithm and source bounds. No additional source premise was formalized.
+
+C53 exact statements inspected in CCMThetaModulusObstruction (including
+exists_ccmSmooth_modulus_increase_all_local_potentials) and
+SuzukiScrewDisjointCrossCoupling (not_satisfiesBeurlingDeny_screwRegularForm_add_smul).
+Existing files read only, no recompile or import. Suzuki2606.09096v3 primary
+PDF opened; Theorem1.4 and Section5 Markov range checked. Independent
+scientific novelty not claimed. C46 anti-theatre5 and anti-laziness4 answers
+posted in chat; later screenings identified no new theorem.
+
+C53 search45722 finished;20 candidate and20 source statements inspected.
+Partial=true: malformed/incomplete filter-and-judge JSON and semantic runtime
+deadline. Semantic coverage unmeasured/background refresh incomplete. Usable
+results inspected; decisive modulus obstruction was found by direct rg and
+read at its exact source. Archive saved and /tmp original removed. No new
+module, no owned Lean or search process remains.
+
+## 2026-10-08 C54/C55 research and implementation checkpoint
+
+C54 corpus: cycle54-periodic-search.json, all20 candidate and20 source-argument
+statements read. partial=false, no errors; semantic coverage unmeasured and
+refresh incomplete/background indexer. Primary sources audited as recorded
+in PROOF.md. Verdict OPEN/SURVIVES PRELIMINARY ATTACK; no C54 Lean theorem.
+
+C55 corpus: cycle55-local-generating-search.json and cycle55-zero-free-search.json;
+all80 candidate/source statements inspected. Both partial=false/no errors,
+semantic coverage unmeasured and refresh incomplete. Recipes rejected where
+they substitute unrelated exposing weights or only repeat fixed endpoints.
+Paper proof closes actual local analytic nonvanishing on |z|<sqrt(p), with
+normalization and compact-disk convergence, using only original hW. Verdict
+BRIDGE; independent scientific novelty unestablished. Primary Hurwitz notes
+opened; OSU PDF fetch failed. No source claim taken from an unread page.
+
+Four new Lean modules currently in development (not sealed):
+WeilWorkSettledPhaseValuationTightness, ValuationResidueSum, GeometricSeries,
+ValuationAnalytic. API3 scratch passed after explicit type specialization;
+initial API failures were missing recalled names and unconstrained universes.
+Tightness initial source/build failures were neighborhood orientation, implicit
+complex arguments, and exponent/addition inference; repairs underway. Generic
+series initial compile found one missing constant argument, repaired. Final
+source audits, axioms, imports, index/lint and cleanup remain pending.
+
+Anti-theatre answers posted in chat: (1) independent novelty unestablished;
+(2) periodic screening revisited classical theory; (3) source-specific content
+is the uniform endpoint passage, not generic density; (4) formal progress
+not yet verified; (5) local constraints still leave global phase rigidity open.
+Anti-laziness: (1) paper progress but no newly sealed source theorem; (2) no
+step deferred for effort; (3) connect the local invariant to the true phase
+obstruction after finishing its proof; (4) all current search statements read.
+Next action is verification of this exact source bridge, not another receiver.
+
+C55 logarithmic square search: all20 candidate+20 source-argument statements
+read, partial=false/no errors; semantic coverage unmeasured/refresh incomplete.
+It returns the paid dyadic lam-square bound, but not its weighted summability
+corollary. Recipe substitutes an unrelated dyadic decay weight; rejected.
+Search archived as cycle55-log-square-search.json; /tmp original removed.
+Tightness targeted --old leaf build now succeeds (247s). Direct final audit
+still required. ResidueSum direct development check is live.
+
+C55 current verification: GeometricSeries targeted --old build passed (2.1s);
+direct actual-source `lake env lean` audit passed with empty log. Tightness
+--old build passed, final direct audit pending. Both wired exactly once
+(umbrella not built). ResidueSum initial direct check found only the real-to-
+complex product cast mismatch at its capstone; explicit hulim added and
+--old leaf build pending. ValuationAnalytic, ValuationTwist and LogSquareEnergy
+are now written from the closed paper proof, not yet compiled or wired.
+API4 (differentiable constant, factorization addition, sqrt/division) passed.
+
+C55 continuation checkpoint: ResidueSum targeted --old leaf build passed (247s);
+ValuationAnalytic targeted --old leaf build passed (115s), now wired once.
+Both await direct source audits. API5 passed (infinite-sum product/Fubini,
+local analytic identity, compact minimum, sphere existence). DiskHurwitz is
+written from the local paper proof; no entire continuation assumption.
+ValuationTwist targeted build is the only owned live build.
+
+C55 Twist --old leaf build passed (106s), wired. LogSquareEnergy first check
+found two let-definition rewrite errors; repaired with dsimp, subsequent
+--old leaf build passed (87s), wired. Neither has had its direct final audit.
+ValuationAbsolute, ValuationTwistSummability, ValuationZeroFree now written;
+all follow the closed proof, not yet compiler-verified. API6 queued. Only one
+owned compiler at a time; no umbrella/full builds or numerical experiments.
+
+C55 Absolute --old build passed; removed one redundant simp argument, rebuild
+will occur before TwistSummability. DiskHurwitz --old leaf build passed (13s)
+without diagnostics. Absolute/Hurwitz wired once. API6 passed after explicit
+specialization of the analytic theorem and correcting closure_ball namespace;
+this also verified Summable.tsum_le_tsum's actual signature.
+C56 searches archived cycle56-mixed-search.json / cycle56-multiplicative-search.json:
+partial=false/errors=[], inventory68861complete, semantic coverage unmeasured
+(reporting_budget), background refresh incomplete, compiler mostly pending or
+stale. All40 statements persearch inspected; no independence producer found.
+Exact-statement deep search is now live. C56 remains an open conjecture, no
+formalization or new scientific knowledge claimed.
+
+C55 final direct-audit script prepared (nine remaining source files sequentially,
+GeometricSeries already passed unchanged), followed by #print axioms for all34
+public declarations. Not yet run. TwistSummability build currently owns the
+compiler slot. No final verification receipt until every direct audit passes.
+
+C56 exact deep search returned partial=true: filter_and_judge reported
+"local model returned incomplete or malformed JSON". All20 candidate lemmas
+and20 source arguments inspected. No proof ideas/ingredient sets. Inventory
+68863complete; semantic coverage unmeasured; refresh incomplete. Existing
+coprimeDensity_prime_covariance is the canonical mask Gram, not a theorem
+about actual r(pq). Unrelated deletion and spectral-operator hits supply no
+producer. Archived cycle56-endpoint-search.json and used available results;
+no inference from absence. No research jobs remain live.
+C55 TwistSummability check found three elaboration issues (conditional
+simplification, method line break, unfolding the weighted row); repaired.
+Targeted build remains the sole owned compiler.
+
+C55 TwistSummability --old leaf build passed (147s), no own diagnostics;
+wired once. Absolute was rebuilt after its warning cleanup. ZeroFree capstone
+now compiling as the sole owned build. Final direct audits still pending.
+
+C57 context search archived cycle57-phase-energy-search.json: all40 candidate/
+source statements inspected, partial=false/errors=[], inventory68864complete,
+semantic coverage unmeasured and refresh incomplete. Returned weighted Gaussian
+phase-defect integrability, exact lower-remainder phase identity, critical
+coefficient-energy bound. Unrelated CCM form estimates do not bound the actual
+source phase. Need an exact new candidate beyond previously open C38/C43;
+none selected yet. No new Lean planned before C55 seal.
+C55 ZeroFree first build rejected only a no-progress dsimp after tsum_congr
+had already unfolded the series. Removed it; targeted build rerunning.
+
+C55 capstone targeted --old build passed (118s), all10 modules wired once.
+Sequential final direct audits live; Tightness/ResidueSum/Analytic/Twist passed.
+Index command passed. Global formal lint exits1 with six unrelated unreachable
+modules: WeilWorkQuantizationCenteredGaussian; HTGeometry ApertureConeCalculus,
+ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal,
+BoundaryCoronaCStarAlgebra. No C55 lint error. Leave unrelated shared work alone.
+
+C55 direct audit progress: eight new source files passed with zero-byte logs;
+GeometricSeries had already passed unchanged. ZeroFree direct check and the
+34-declaration axiom report are the only remaining checks in the live sequential
+script. No other compiler/research job is owned. C57 exact lexical receipt
+archived; all returned entries inspected. Literature assumption audit recorded
+in PROOF.md including September2026 local-embedding preprint (statement only).
+
+C55 SEALED_SOURCE_BRIDGE: all ten final source audits passed, logs empty;
+all34 public declarations checked in /tmp via #print axioms, only standard
+propext/Classical.choice/Quot.sound. Ten imports exactly once. Receipt
+cycle55-verification.json archives source hashes, final logs, axiom report,
+index pass and six unrelated global lint failures. No active research/build
+process owned after sequential audit completion. Cleanup next.
+
+Final C55 cleanup:39 owned /tmp files removed after receipts archived, zero
+owned scratch files or processes remain. All10 source hashes match audited
+receipt; API index includes capstone at line52; scoped git diff --check passed.
+
+Post-cycle research audit (also posted in chat): (1) New actual-source corpus
+constraint; independent novelty unestablished. (2) Classical convergence and
+Hurwitz used, not advertised as new mathematics. (3) Source estimates were
+paid from original positivity. (4) Local frontier advanced, global settlement
+unpaid. (5) Return to critical trace and nonnegative phase defect.
+Execution audit: (1) Verified theorem, no WP05 solution. (2) No effort-based
+proof deferral. (3) Local formalization finished; next work global obstruction.
+(4) Corpus/primary audits guide C56/C57, both still open, neither ready for Lean.
+Next plan: seek a source-specific finite-height moment/phase mechanism; do
+not repackage Carlson assumptions, local embeddings, or a functional equation
+as a missing source estimate. Goal remains active, not complete.
+
+## Cycle 58 source/primary audit (8 October 2026)
+
+Five archived research searches: frontier (deep), weil (hybrid), cross (deep), centered (deep), exact (hybrid --any). Every 20 candidate and 20 source-argument statement inspected in each: 200 total. All jobs terminal. First four partial=false/errors=[]; exact partial=true, text/source retrieval interrupted. Available exact hits used. Inventory complete68875--68878 files; semantic coverage unmeasured (reporting_budget); background refresh incomplete, compiler statuses predominantly pending/stale. Broad initial search mostly irrelevant; module-filtered follow-ups used. No absence claim from these searches. Proposed ingredient sets did not supply a source moment producer.
+
+Primary audit: Broucke--Hilberdink, A Mean Value Theorem for general Dirichlet Series, arXiv2409.06301, submitted10Sep2024, Quart.J.Math75(2024)1393--1413: positive coefficients and summatory error exponent beta; critical moment threshold(1+beta)/2, not our1/2. Full paper from Ghent repository opened, Theorem1.1 and Proposition2.3 inspected. Coppola--Laporta, arXiv1411.1739v1(21Oct2014), weighted Gallagher/Plancherel transfer inspected; supplies no actual-source short-window cancellation. Ramachandra1974 numdam ASNSP_1974_4_1_1-2_81_0.pdf, Lemma3 and Section4 inspected: relevant moment proof uses functional equation, subsequent general statements retain their own coefficient hypotheses. Cao--Tanigawa--Zhai1501.04269 abstract inspected: functional-equation class, not used. MIT hyperbola lecture-note URL fetched404; not relied on. Scalar hyperbola inclusion-exclusion is proved explicitly in our paper rather than treated as a new result.
+
+Current corpus has pole-centered Gaussian Fourier recovery and coefficient isolation under WeilWorkQuantization prefixes; those are read-only dependencies, not new WP05 claims. New C58 paper target is signed centered-square energy/phase cost with sublinear error. No numerical calculations or experiments.
+
+C59 preparation during C58 Lean checks: deep query `full Weil positivity
+centered Gaussian energy phase defect source cancellation`, module Weil,
+300-second budget. Archived cycle59-producer-search.json. All20 candidate and
+all20 source statements inspected, plus one proposed proof idea/ingredient
+set. Partial: semantic_retrieval local runtime deadline expired; inventory
+68893/68893 complete, semantic coverage unmeasured (reporting_budget), background
+refresh incomplete, most compiler statuses pending/stale/source-only. No upper
+energy producer returned. Proposed Weil-positive-to-RH transfer omits the
+coefficient sign and domination obligations present in its own theorem; rejected
+as unpaid. The index already returns this cycle's unaudited
+`centeredTrace_reflection_defect`; this is not independent evidence of a proof.
+Existing GaussianEnergy coefficient detection/lower-energy dichotomy was read
+in full and will be reused. Coprime/prime deletion variance endpoints supply a
+Bessel budget, not vanishing of that budget or endpoint independence.
+
+C59 exact-object hybrid follow-up: OR query on quantizationGaussianDefect,
+quantizationCenteredGaussianEnergy, sourceDefect, module Weil. Archived
+cycle59-boundary-search.json. All20 candidates,20 source arguments and5 lexical
+names inspected. Partial false/errors empty;68894/68894 inventory complete;
+semantic coverage unmeasured, background refresh incomplete, compiler snapshots
+mostly pending/stale. Current C58 unverified source declarations again appear;
+exclude them as independent prior evidence. No source-only sublinear positive
+energy/phase-cost upper bound found. Full-positive coefficient detection already
+supplies rigidity/RH or eventual linear centered energy.
+
+External primary refresh for the next producer question (8 Oct2026): Booker,
+`L-functions as distributions`, arXiv:1308.3067v2 (13 Feb2015), Definition1.3
+and Theorem1.7 read directly at https://arxiv.org/pdf/1308.3067 . Its A3 requires
+discrete multiplicity support with only finitely many nonintegral masses;
+A1 also has its own pointwise and average coefficient bounds. Arbitrary hW
+has not supplied this package. Positive low-degree L-data classification
+therefore cannot pay our missing phase/representation hypotheses. Oliver's
+primary notes https://arxiv.org/pdf/1601.05009 were opened as a related audit.
+A current compact-window preprint, https://arxiv.org/abs/2608.24827 , was
+identified and opened; a finite-window certificate alone does not give the
+all-test or all-height producer required here. No numerical certificate is
+used. Theorems are applied only after exact corpus hypothesis checks.
+
+C59 quotient-specific deep search finished: cycle59-quotient-search.json,
+query `pole centered zeta source quotient contractive maximum modulus residue`,
+module Weil,300s. All20 candidates and20 source arguments read. Partial false,
+errors empty;68899/68899 inventory complete, semantic coverage unmeasured,
+refresh incomplete. Returned pole numerator identities, generic quotient growth,
+Cauchy resolvent formulas and centered energy integrability; no actual source
+Schur bound. Proposed residue-link ingredient set is unverified and supplies no
+norm comparison. The exact claim remains OPEN CORE, not a discovered theorem.
+
+C58 SEALED_SOURCE_BRIDGE. Final targeted --old leaf build passed; all six
+mandatory direct source audits passed; all36 public declarations depend only
+on propext/Classical.choice/Quot.sound. No new source premise. All six imports
+occur exactly once. Source hashes rechecked after audits. Index exit0; global
+lint exit1 with seven unrelated unreachable modules, no C58 or forbidden
+source declaration errors. One nonfatal unnecessarySeqFocus warning in
+CenteredConvolution. Receipt cycle58-verification.json includes commands,
+hashes, logs, declarations, lint errors and cleanup.14 owned scratch files
+removed; no owned live compiler/research process remains.
+
+hgtl7 post5+4 (posted in chat): scientific novelty unestablished; classical
+hyperbola/Mellin machinery reused; source-specific phase-energy coupling is
+proved, further wrappers would be theatre; formal frontier moved but positive
+energy producer remains open; next attack actual arithmetic comparison.
+Produced verified knowledge rather than only search; no step skipped for
+estimated effort; hardest producer remains unpaid and is the C59 target;
+corpus searched, existing machinery reused, and unpaid hypotheses explicitly
+rejected. No C59 Lean receiver will be added without a source proof.
+
+C59 text search additionally located WeilConeBoundaryDilationRigidity. Its
+maximum-principle conclusion follows after a boundary inequality and absolute
+critical-line summability of a dilation series (plus a regular remainder).
+Those stronger hypotheses are not supplied for the actual pole-normalized
+completion quotient. The maximum principle is therefore an existing method,
+not a new producer. C59 verdict: SURVIVES PRELIMINARY ATTACK / OPEN CORE;
+the comparison itself is not yet proved and no actual-source counterexample
+is known. C50 analytic-geometry no-go still forbids dropping the arithmetic.

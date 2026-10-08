@@ -6,7 +6,7 @@
 
 `|λ(n)−Λ(n)|/(4π√n) ≤ D(T)/T + ε`.
 
-This sharpens the previous `4πn` coefficient scale to `4π√n`, with no assumed upper deficit bound. The exact character discrepancy and sharp-window mass balance are also proved. Twenty-two modules, 93 public theorem axiom audits, only standard Lean foundations. This is a quantitative corpus advance; external scientific novelty is not established.
+This sharpens the previous `4πn` coefficient scale to `4π√n`, with no assumed upper deficit bound. The exact character discrepancy and sharp-window mass balance are also proved. Thirty-seven modules, 156 public theorem axiom audits, only standard Lean foundations. This is a quantitative corpus advance; external scientific novelty is not established.
 
 ## Audited Lean results
 
@@ -31,7 +31,7 @@ Shared-mass comparison, leakage and complex Fourier transport for both actual me
 
 ## Validation limits
 
-Latest completed repository-wide formal lint status is recorded in `EVIDENCE.md`: seven unrelated reachability errors, none in WP06. All twenty-two finished WP06 modules are umbrella-wired. No full or umbrella build was run. No numerical experiments, heartbeat increases, commits, or added mathematical axioms.
+Latest completed repository-wide formal lint status is recorded in `EVIDENCE.md`: seven unrelated reachability errors, none in WP06. All thirty-seven finished WP06 modules are umbrella-wired. No full or umbrella build was run. No numerical experiments, heartbeat increases, commits, or added mathematical axioms.
 
 ## Verified linear-scale Poisson leakage
 
@@ -240,3 +240,566 @@ fixed finite rows is a paper consequence, not a completed Lean no-go.
 C11q's positive construction/cost and the main upper-deficit producer remain
 open. New C13 asks for a truncated-prime lower bound on a coupled derivative
 order band, preserving finitely many low-order exceptions; it is conjectural.
+
+## Verified actual cutoff two-jet bounds; coupled cost research
+
+`WeilWorkDeficitSmoothCutoffJets.lean` proves the literal first and second
+height derivatives of smoothAFECutoff(P/t) and one bound, uniform for all
+positive P,t, for orders j=0,1,2:
+`|V_j(P,t)| <= C/t^j * min(1,(t/P)^2)`.
+Three public theorems, target build, unchanged direct Lean audit and
+standard-only axiom audit passed; umbrella wired. This closes G2, the
+moving-cutoff dependency of C12g. G3 below now supplies twice integration
+by parts and full off-diagonal summation. The endpoint moment and Xi
+transfer still require formalization.
+
+On paper, C13 now holds for all sufficiently large k and every M>=beta k
+whenever beta>(2/pi)log(19pi/4); beta=2 suffices. Its exact full prime
+identity retains the signed pole term (-1)^k/4^(k+1). Combining this with
+C11q's budget proves tightness of normalized derivative-energy weights:
+any C11q family would produce a probability on derivative orders with
+finite logarithmic moment and all integer correlations zero. No retained
+zeroth mass is asserted after normalization. These are paper consequences
+of C12/C13, currently unformalized, and do not settle the target.
+
+C14 (every positive proportional prime cutoff) and C15 (nonexistence of
+the limiting positive derivative mixture) are open competing-conjecture
+attacks. Published polynomial-approximation work already contains the
+Xi-square derivative Gram framework; no novelty claim for that framework
+or the new analytic bridges. General compact atom-cancelling mixtures in
+the corpus do not answer C15, whose support is the actual derivative family.
+
+
+## Verified actual oscillatory windows and full off-diagonal (G3)
+
+`WeilWorkDeficitOscillatoryWindow.lean` proves two unconditional results:
+
+- One constant bounds the literal fixed bump times smoothAFECutoff(P/t)
+  by K H min(1,(T/P)^2), and its oscillatory integral by
+  K/(H lambda^2) min(1,(T/P)^2), for P,H>0, T>=2H and nonzero lambda.
+- Every positive factor pair off the exact integer-twist diagonal is
+  absolutely summable, and the full complex sum is bounded by
+  K(48 n^2 integerGapBudget + 16 pairZeta) T/H, for n>=1,T>=1.
+
+Thus the complete off-diagonal costs O_n(sqrt T) at square-root width.
+Both public theorem types and standard-only axiom audits passed; targeted
+build and unchanged direct source audit passed; umbrella import wired.
+Classification: classical-parent BRIDGE, no external novelty claim.
+The fixed compact window is actual, but Gaussian extension, diagonal
+asymptotics, AFE integral interchange and Xi transfer remain unformalized.
+C15 remains open. New C16 tests the exact full absolute prime pairing
+against log(k+2) E_k; neither that bound nor its negation is established.
+
+## Verified full prime product-kernel budget (G4)
+
+`WeilWorkDeficitPrimeKernelBudget.lean` proves three unconditional results:
+absolute convergence of the full d(m)log(m)-weighted kernel sum, the exact
+actual correlation formula at every real shift, and
+
+`sum_n Lambda(n)|A(n,k)|/sqrt(n) <= sum_m d(m)log(m)|K_k(m)|/2`
+
+for every derivative order k. Every positive factor pair and prime power
+is included. The proof uses the corpus's existing Lambda*d=d log/2;
+that identity is not claimed as new knowledge. Targeted build, unchanged
+final direct audit and all three exact-type/axiom audits passed. Only
+standard foundations; umbrella wired. Classification: classical-parent
+BRIDGE. No uniform-in-order estimate is proved by this Lean module.
+
+The new C17 paper argument identifies this exact kernel by Mellin
+inversion, proves its local signed Gaussian profile and a uniform global
+fourth-power envelope, and prices compact heights separately. It yields
+C16's logarithmic full absolute-prime budget and C14's limit for every
+positive proportional prime cutoff. These analytical results remain
+UNFORMALIZED. Their complete argument and dependencies are in PROOF;
+no scientific novelty or solved-deficit claim is made.
+
+C15's actual positive derivative mixture remains open: paid absolute
+prime interchange alone does not contradict its finitely many signed
+low-order contributions. C18 now tests the sublinear cutoff transition
+beta-beta^2/2 against its competing failure conjecture. Main goal remains
+ACTIVE and UNSOLVED.
+
+### G5 completed: actual product-kernel Mellin transform (2026-10-08)
+
+`WeilWorkDeficitProductKernelMellin.lean` proves absolute Mellin
+integrability for Re(s)>0 and the exact formula
+
+`integral_0^infinity x^(s-1)K_k(x) dx = (-1)^k (s-1/2)^(2k) s^2(s-1)^2 pi^(-s) Gamma(s/2)^2/4`.
+
+The proof uses the actual finite `riemannKernelPoly` coefficients,
+absolute Fubini, and its exact derivative recurrence. Both public
+statements passed exact-type/axiom audits with standard foundations
+only; target-only build and final unchanged direct source audit passed.
+Umbrella wired. Twenty-six completed modules /103 public audits.
+Classification BRIDGE: this is no scientific novelty claim and does
+not prove C17's growing-order estimate or the deficit upper bound.
+
+C19 supplies another paper representation of C15: within the exact
+positive probability/finite-log-moment class, all integer correlation
+cancellations are equivalent to the mixture kernel equaling1 at m=1
+and0 at every integer m>=2. Finite Euler deletion, followed by dominated
+convergence, avoids an unjustified infinite Möbius rearrangement.
+This depends on paper C17 for the absolute budget and is not yet
+formalized. It constructs no mixture and proves no obstruction.
+
+Next analytic assembly must reuse the existing sharp all-order
+polygamma bound in `PolygammaVerticalSharpDecay.lean` and the full
+Stirling ladder. C15, C18, and the assigned deficit target remain OPEN.
+
+### G6 completed: common Mellin bulk envelope (2026-10-08)
+
+`WeilWorkDeficitMellinAmplitude.lean` proves the literal Mellin norm on
+Re(s)=4 and one Gaussian bulk bound uniform in every derivative order k.
+For T=(2k+7)/(pi/2), B=T^(2k+7)exp(-pi*T/2), there is one C>0 with
+
+  |M_k(4+it)| <= C B exp(-pi*(t-T)^2/(18T)), T/2<=t<=2T.
+
+Both exact public types and axiom audits passed with standard foundations
+only. Target-only build112s; final unchanged direct audit exit0/empty;
+umbrella wired once. Twenty-seven completed modules /105 public audits.
+G6 is a classical-parent BRIDGE. It does not prove global tails,
+differentiated amplitude bounds, or the assigned deficit upper bound.
+
+C20c now has a dependency-closed paper proof, using paper C17 and the
+published maximal divisor mean-square bound: the dyadic average of
+B_k/log(k+2) tends to (3+R_a)/8, where R_a=integral|J_a|/integral J_a>1.
+The low prime rows retain signed mass3/8, while separated high rows
+retain absolute profile massR_a/8. All transition rows, tails and the
+discrete averaging step are included. This remains UNFORMALIZED;
+scientific novelty of the sharp coefficient is not certified.
+C20's pointwise law and C15's positive mixture remain OPEN. Goal ACTIVE.
+
+### G7 completed; C21 comparison disproved on paper (2026-10-08)
+
+`WeilWorkDeficitMellinSlope.lean` proves exact differentiation of the
+actual demodulated Mellin integral and a common bulk bound for its
+scaled first derivative. With G6's T,B and
+F_k(t)=M_k(4+it)exp(-it log(T/(2pi))), one C>0 satisfies
+
+  sqrt(T)|F_k'(t)| <= C B (1+|t-T|/sqrt(T)) exp(-pi*(t-T)^2/(18T))
+
+for all k and T/2<=t<=2T. Target build, final unchanged direct source
+audit, and both exact-type/standard-only axiom audits passed. Umbrella
+wired. Twenty-eight completed modules /107 public audits. This remains
+a classical-parent BRIDGE, not the full C17 derivative/tail assembly.
+
+C21a is FALSE on paper. The exact low-order product kernels satisfy
+K_0(x)>0>K_1(x) for every real x>=2. Absolute divisor expansion gives
+opposite strict signs for their entire nontrivial integer correlation
+columns, and K_0(1)<E_0 while E_1<K_1(1). The complete proof appears in
+PROOF; formalization is in progress and is not yet counted. This kills
+the proposed universal first-kernel obstruction, not C15. Its positive
+survivor supplies actual opposite column signs for the mixture problem.
+
+C22 tests an explicit infinite positive-coefficient family obtained
+from reciprocal Gamma products; its literal correlations reduce to
+rationally weighted zeta-square integrals. Their sign and the full
+coefficient-to-mixture audit remain open. No new scientific novelty
+certification or upper-deficit producer is claimed. Goal ACTIVE.
+
+### C21 positive survivor completed in Lean (2026-10-08)
+
+`WeilWorkDeficitLowOrderSigns.lean` now proves all six exact claims:
+the two product-kernel signs on x>=2, the two complete integer
+correlation-column signs, and both opposite first-kernel energy gaps.
+Target build23s/9886 jobs, final unchanged direct audit, and all six
+exact-type/standard-only axiom audits passed; umbrella wired once.
+Twenty-nine completed modules /113 public audits. The narrow failed
+comparison is retired on its own failed-route card with this positive
+survivor. C15 and the main spectral-deficit goal remain OPEN.
+
+C22's N>=4 Gamma-weight subfamily now has a complete PAPER admissibility
+proof: its normalized coefficients form an actual C15 probability
+sequence with finite logarithmic moment, and its rows are exactly
+R_N(n)/R_N(1). The logarithmic moment is paid explicitly from the Gamma
+product and the audited unconditional linear zeta bound. This assembly
+is not formalized; its signs, N=3 endpoint, and simultaneous cancellation
+remain open. No novelty claim for this classical bridge.
+
+### C22 literal Gamma density completed; C23 resonance on paper (2026-10-08)
+
+`WeilWorkDeficitGammaDensity.lean` proves six unconditional claims for the
+actual Xi-square/Gamma density: its entire Mellin continuation, exact
+critical-line identity, rational zeta-square formula, common Poisson
+envelope for every integer order at least four, absolute integrability,
+and logarithmic integrability. Target-only build99s/8783 jobs, final
+unchanged direct source audit, and six literal-type/standard-only axiom
+audits passed. Umbrella wired once. Thirty completed modules /119 public
+audits. This does not yet formalize the C22 coefficient-mixture assembly.
+
+C23 now has a dependency-closed PAPER proof: the exact divisor-cosine
+asymptotic forces eventual positive integer correlations for each C22
+Gamma weight and every finite positive mixture of them. The uniform
+strip estimate, conditional cosine-Mellin interchange, removable poles,
+derivative jump and summable remainder are explicitly paid. The full
+positive asymptotic survivor remains unformalized, so this family
+obstruction is not marked closed. C24 proposes a compact-uniform
+continuous-order extension; its boundary Mellin inversion remains OPEN.
+
+Main spectral-deficit target and unrestricted C15 simultaneous
+cancellation remain OPEN. These are classical-parent bridges; scientific
+novelty is uncertified. Latest lint has eleven unrelated reachability
+errors and no WP06 or forbidden-declaration finding.
+
+### C23 exact symbol completed; C25 tail boundary on paper (2026-10-08)
+
+`WeilWorkDeficitGammaSymbol.lean` adds three unconditional actual-object
+theorems: the global reciprocal-Gamma recurrence, its complete
+polynomial-clearing identity, and the exact Gamma/cosine/zeta-square
+symbol on Re(s)=2. No singular argument is excluded from the global
+clearing identities. The line-two formula retains the true Xi quotient;
+no false equality at the totalized zeta pole is introduced.
+Target-only build126s/8784 jobs, unchanged direct source audit and three
+literal-type/standard-only axiom checks passed. Umbrella wired once.
+Thirty-one completed modules /122 public audits. Full C23 inversion and
+resonance asymptotic remain PAPER ONLY.
+
+C25a conjectures that every cancelling C15 probability lacks every
+positive exponential derivative-order moment; C25b asserts a counterexample.
+Both remain OPEN. C25c/d now paper-prove a narrower necessary tail law:
+with b_*=inf{|zeta|: |Im exp(i*zeta)|>=1/2},
+limsup w_k^(1/(2k))>=2b_*/pi. Here 1/3<b_*<=pi/6. In particular the
+moment sum w_k(2pi)^(2k) cannot be finite. The proof pays the Borel
+representation, complex dilation of the actual product kernel, its
+vertical growth bound and Carlson uniqueness. This extends beyond the
+Gamma family, but remains a classical-parent BRIDGE with scientific
+novelty uncertified, and is not yet formalized. No route is retired.
+
+Main target remains ACTIVE/UNSOLVED. Latest lint reports nine unrelated
+reachability errors; no WP06 or forbidden-declaration finding. All
+owned commands terminal; completed proof scratch removed, audits retained.
+
+### C23 endpoint jets and the moving-order correction — 2026-10-08
+
+`WeilWorkDeficitGammaKernelJets.lean` now proves the literal rational
+partial fractions, every lower endpoint cancellation, the first jump1,
+and the next jump-(2N+4)^2/2. The endpoint statements concern actual
+iterated derivatives of the inner polynomial and outer inverse-power
+kernel pieces. No additional scientific premise or nonstandard axiom
+was added. Targeted leaf build and final unchanged direct audit passed;
+umbrella wired. All nine literal-type and axiom audits passed, using only
+propext, Classical.choice and Quot.sound. Thirty-two completed owned modules,
+131 public theorem audits.
+
+The resulting paper research distinguishes three facts:
+
+- C27: if Gamma order N and integer n tend to infinity with N^2/n->c>0,
+  the correlation divided by16*pi^(9/2-2N)*n^(9/2-2N)*zeta(2N-4)^2
+  tends to cos(c/pi). Thus arbitrarily late negative entries exist when
+  order grows; C26's uniform positivity is false on paper.
+- C28: every FIXED positive probability mixture of Gamma orders still
+  has eventual positive integer correlations. A uniform shifted-line
+  bound makes its least occupied order dominate the entire infinite tail.
+- C29: probabilities w_k~C*k^-alpha,1<alpha<4, have positive normalized
+  correlation limit C*(pi^2/2)^(1-alpha)*zeta(alpha)^2 on the scale
+  n^(alpha-1/2)*log(n). This extends the obstruction beyond the Gamma cone.
+
+All three are dependency-closed PAPER results, not Lean theorems. C27's
+positive survivor must be formalized before retiring C26. C29 depends
+on the complete C17 paper profile, not only its current G5–G7 Lean pieces.
+Scientific novelty remains uncertified. Unrestricted C15 and the actual
+linear spectral-deficit goal remain ACTIVE/UNSOLVED.
+
+
+### Actual rational-kernel inversion and coefficient-tail phase — 2026-10-08
+
+`WeilWorkDeficitGammaKernelMellin.lean` proves six unconditional actual-object
+statements: kernel absolute integrability, line-two Mellin absolute
+integrability and exact rational transform, global continuity, rational
+vertical absolute integrability, and Mellin inversion on positive arguments.
+The inversion uses the literal piecewise kernel from GammaKernelJets.
+Its vertical bound uses the already-proved zero residue sum and an integrable
+C/(1+t^2) envelope. No scientific premise is added.
+
+Leaf build (45s/8786 jobs), final unchanged `lake --old env lean`, and all
+six exact-type/axiom audits passed. Final source diagnostics are empty;
+axioms are only propext, Classical.choice, Quot.sound. Umbrella wired once.
+Thirty-three completed modules /137 public theorem audits. The C23 cosine
+transform and actual Xi-density contour shift still await Lean formalization.
+This is a classical Mellin BRIDGE, not a scientific novelty claim.
+
+Further dependency-closed PAPER results, all still unformalized:
+
+- C30: continuous nonnegative periodic modulation of a power-law tail on
+  the square-root order scale cannot cancel every integer row. The signed
+  local convolution can change sign, but the normalized correlation has
+  positive Cesàro mean and is positive on a set of positive lower density.
+- C31: for arbitrary oscillatory probabilities bounded by C*(k+1)^(-alpha),
+  1<alpha<4, a smooth weak transfer identity forces every cancelling
+  probability to satisfy X^(-1)*sum_(X<=k<=2X) k^alpha*w_k ->0.
+  This does not exclude sparse tails with vanishing weighted block mass.
+- C32: for w_k~C*k^(-alpha)*exp(-tau*sqrt(k)), alpha>1,tau>0, the actual
+  integer correlations S(n) satisfy
+  n^(alpha-1/2)*log(n)*exp(tau*sqrt((pi^2/2)*n))*S(n)
+  -> C*(pi^2/2)^(1-alpha)*exp(tau^2/16)*cos(pi*tau^2/32).
+  The proof includes the moving Mellin-line estimate, far-head complex
+  dilation bound, both order tails and the full divisor sum. Thus tau=4*sqrt(2)
+  gives an explicit positive probability with eventually negative rows.
+  Cancellation in this asymptotic class requires tau=4*sqrt(2j+1), j>=0;
+  no sign or cancellation conclusion is drawn at those exceptional rates.
+
+C29's signed local limit has been corrected to integer arguments; its
+absolute bounds remain valid for real arguments. Actual divisor inputs
+are integers, so its integer-row conclusion survives.
+
+C33 now asks whether an actual C15 cancelling probability can satisfy
+w_k~C*k^(-alpha)*exp(-4*sqrt(k)), or whether all such probabilities are
+excluded. Both alternatives remain OPEN. The vanishing C32 leading term
+requires a subleading analysis; the known energy equivalent is not an
+all-order expansion. Ivić's Gaussian mean-square formula has an O(log T)
+remainder too coarse to settle that issue as stated. Scientific novelty
+of C30–C32 is not certified. No broader route is retired before its exact
+positive survivor is formalized. C15 and the assigned deficit goal remain
+ACTIVE/UNSOLVED.
+
+### Exact positive interpolation at the critical tail — 2026-10-08
+
+C34 now has a dependency-closed PAPER proof: for every alpha>1 and every
+prescribed sequence of lower thresholds, there is a strictly positive
+probability w_k~C*k^(-alpha)*exp(-4*sqrt(k)), C>0, cancelling the ACTUAL
+correlation at infinitely many adaptively chosen integer rows. The proof
+controls all earlier and later coefficient bands, preserves strict positivity,
+and solves the infinite interaction system by an explicit contraction.
+
+C36 strengthens this to any sequence of prescribed finite patterns
+floor(N_j+c*sqrt(N_j)), c in C_j. Each finite set C_j is fixed before its
+height N_j is chosen; its size may grow with j. A finite weighted Gram
+inverse gives actual coefficient controls, and the block contraction pays
+every cross-pattern interaction. Classical translate independence is the
+parent mechanism. Both results remain unformalized because the full C17/C32
+analytic dependencies are still PAPER. Scientific novelty is unestablished.
+
+This does not prove cancellation on consecutive blocks of length sqrt(N),
+where the number of constraints depends on the height. That is C35's open
+quantitative problem. For the limiting critical operator H(u)=exp(sqrt(pi)*u)
+J_a(u), its explicit Fourier multiplier has a simple zero at frequency zero
+and Gaussian decay at large frequencies. Nonvanishing elsewhere gives no
+bounded inverse. The next construction must price inversion for the actual
+arithmetic error, rather than arbitrary data. C33/C15 all-row cancellation
+and the main spectral-deficit target remain ACTIVE/UNSOLVED.
+
+### Actual cosine Mellin transform and exact normalization — 2026-10-08
+
+Six further public statements are now formalized. GammaKernelJets proves
+rational partial fractions throughout -2<Re(s)<3. GammaKernelMellin proves
+absolute weighted admission, the exact rational integral throughout that
+strip, and zero total kernel mass. The new GammaCosineMellin module defines
+the literal transform B_N(x)=integral phi_N(u)*cos(2*pi*x*u)du and proves
+its absolute Mellin transform throughout -2<Re(s)<0. With
+q_N(s)=s(s-1)/P_(N+3)(s), the value is
+
+`-(2*pi)^(-s)*q_N(s)*pi/[2*Gamma(1-s)*sin(-pi*s/2)]`.
+
+The actual zero-mass identity permits cosine subtraction; existing absolute
+Mellin convolution pays Fubini. No undamped conditional interchange is used.
+The exact physical normalization is also proved:
+
+`integral_0^infinity x^(-2)*B_N(x)dx=-2*pi^2/P_(N+3)(-1)`.
+
+All three targeted leaf builds and final unchanged direct
+`lake --old env lean` audits passed; final diagnostics are empty. All21
+public declarations in the affected modules were re-audited by literal
+type and `#print axioms`, with only propext, Classical.choice and Quot.sound.
+The six new declarations bring the total to34 modules/143 public theorems.
+Umbrella imports occur once. Specialized API audit passed. Formal lint
+reports five unrelated reachability errors, none in WP06.
+
+Classification: BRIDGE; scientific novelty unestablished. Positive-strip
+continuation, cosine decay, the actual Xi-density contour shift, and full
+C23 resonance remain unformalized. The exact transform does not produce
+small spectral deficit. Main goal ACTIVE/UNSOLVED.
+
+## G10: exact signed-profile transform and critical simple zero
+
+`WeilWorkDeficitChirpLaplace.lean` proves the absolute complex Laplace
+transform of the normalized signed Gaussian saddle profile `j`:
+
+`∫ exp(z*u) j(u) du = exp(z²/π) cos(z²/2)` for every complex z.
+
+Consequences include total mass one, zero mass under the critical tilt
+`exp(sqrt(π)*u)`, and the exact real phase
+`exp(τ²/16) cos(πτ²/32)` at tilt `τ sqrt(π)/4`. For the critically tilted
+Fourier multiplier, the only real-frequency zero is zero itself, and its
+complex derivative there is `i sqrt(π) exp(1)`.
+
+All seven public statements have no mathematical hypotheses. Targeted leaf
+build, unchanged final direct `lake --old env lean`, and literal-type/axiom
+audits passed. Final source log is empty; only standard Lean foundations
+occur. Umbrella wired exactly once. Total:35 modules/150 public audits.
+Classification: **CLASSICAL ANALYTIC BRIDGE**; no scientific novelty claim.
+This does not formalize the actual Xi-kernel saddle limit or its relative
+tails, and does not provide a bounded inverse of the multiplier.
+
+C37 now has a paper construction of one strictly positive critical-tail
+probability with exact cancellation on arbitrarily long consecutive integer
+blocks: each finite length is prescribed before its height is chosen. The
+proof pays fixed-order finite differences of the actual kernels and every
+past/future block interaction. It does not control length against height.
+Full C17/C32/C37 formalization remains owed; scientific novelty remains
+unestablished. C35's square-root-length blocks, C33's all-row question,
+and the actual spectral-deficit target remain OPEN.
+
+## C38 paper advance: weak transport excludes the alpha>1 critical tail
+
+This supersedes the preceding C33-open entry on PAPER only. For any
+probability `w_k~C k^-alpha exp(-4 sqrt(k))`, C>0,alpha>1, and any smooth
+compactly supported test psi on the positive line, the actual row average
+
+`X^-1 sum psi(n/X) n^alpha log(n) exp(4 sqrt(kappa*n)) S_w(n)`
+
+has limit
+
+`-C exp(1) kappa^(1-alpha) (alpha-1/4)/sqrt(2) * integral psi`,
+where kappa=pi²/2. The proof averages rows before applying the coefficient
+asymptotic. No derivative, monotonicity, or convergence rate for w is
+assumed, and only the leading E_k asymptotic is used. The first correction
+of the actual Mellin saddle, weighted tails, shifted-lattice quadrature,
+and full divisor sum are paid in PROOF.md.
+
+Consequently no such probability cancels all integer rows. Every fixed
+proportional interval contains a negative row once its height is large;
+all-zero block lengths must be o(starting height). C37's arbitrarily long
+blocks remain possible, and C35's square-root-length blocks remain open.
+
+The positive survivor is the exact weak transport law. C17/C32/C38 full
+Lean formalization remains owed; no route card is retired, and scientific
+novelty is unestablished. New C39 tests existence versus nonexistence at
+tail `C k^(-1/4) log(k+2) exp(-4 sqrt(k))`; the exponent-range extension
+and logarithmic refinement remain conjectural. The unrestricted C15 and
+actual spectral-deficit target remain OPEN. Formal counts remain35/150.
+
+## C40/C41 paper boundary: both power and logarithm are forced
+
+The weak critical transport law now extends to every real alpha,delta
+for tails `w_k~C k^-alpha (log k)^delta exp(-4 sqrt(k))`. Its row weight
+uses `(log n)^(1-delta)` and its limit retains the factor `alpha-1/4`.
+Thus all-row cancellation in this entire class forces alpha=1/4.
+
+Keeping every E_k exact gives a further positive survivor: the averaged
+renormalized coefficient flux has a finite limit with O(X^-1/8) error.
+This forces delta=1, since every other logarithmic power either diverges
+or vanishes more slowly than the proved error. Coefficient smoothness,
+monotonicity, energy derivatives and subleading energy asymptotics are
+not assumed. The complete paper proof is in PROOF.md, C40/C41.
+
+C39 remains OPEN at the surviving shape. C42 proposes an exact positive
+candidate whose renormalized coefficient is constant at every order;
+its actual integer-row cancellations remain unverified. Full C17/C32/
+C38/C40/C41 formalization remains owed. No route retirement or scientific
+novelty certification. The spectral-deficit goal remains OPEN.
+
+## G11 verified: global actual Mellin amplitude
+
+`WeilWorkDeficitGlobalMellinAmplitude.lean` proves three premise-free
+statements for every derivative order k. With the sigma-four saddle
+T=(2k+7)/(pi/2), B=T^(2k+7)*exp(-(pi/2)*T), the literal Mellin integral
+of the actual product kernel obeys, for every real height t,
+
+`|M_k(4+it)| <= exp(7*pi/2)*B*exp(-(pi/4)*(sqrt(|t|)-sqrt(T))^2)`.
+
+It is absolutely integrable over all real heights, with total norm at
+most `20*exp(7*pi/2)*B*sqrt(T)`. Zero height and both tails are included.
+The proof uses exact Gamma reflection and a global square-root Laplace
+inequality. No local asymptotic or unstated integrability premise is used.
+
+Targeted leaf build, unchanged final direct `lake --old env lean`, and
+all three literal-type/axiom audits passed. Source diagnostics empty;
+only `propext`, `Classical.choice`, `Quot.sound`. All36 finished modules
+are imported exactly once; total153 public theorem audits. Current
+formal lint has five unrelated HTGeometry reachability errors, none in
+WP06. No full or umbrella build was run.
+
+Classification: **CLASSICAL ANALYTIC BRIDGE**. This closes a vertical
+integrability dependency; the actual critical-line saddle limit, its
+differentiated tails, energy asymptotics and C40/C41 formalization remain
+owed. No upper spectral-deficit bound or external novelty claim.
+
+## C43 paper advance: constant flux has a negative residual
+
+C42's literal constant-flux candidate fails on PAPER. Its actual row
+response is negative somewhere in every sufficiently large fixed
+proportional interval. The second weak transport coefficient is
+`D=(67-4*pi^2)/96>0`; this includes the actual Gamma correction.
+
+More generally, if the exact C41 flux has expansion
+`v_k=v0*(1+d/sqrt(T_k)+o(T_k^-1/2))`, the second weak row limit is
+`-v0*pi*exp(1)/2*(D+sqrt(pi)*d/2)*integral(y^-1/2*psi(y))`.
+Hence all-row cancellation in this refined class forces
+`d=(4*pi^2-67)/(48*sqrt(pi))`. No regularity or derivative of the
+coefficients or energies is assumed beyond that stated expansion.
+This does not assert every C39 candidate has such an expansion.
+
+The exact transport identity is the positive survivor. Full actual
+C17/C32/C43 Lean formalization remains owed; no failed route is retired.
+Scientific novelty remains unestablished. C44 adds the forced first
+correction to C42, giving a strictly positive probability whose actual
+integer responses remain OPEN. C39/C15 and the spectral-deficit target
+remain OPEN.
+
+## G12 verified: actual product-kernel inversion
+
+`WeilWorkDeficitProductKernelInversion.lean` proves absolute inverse
+Mellin integration, exact recovery of the actual product kernel at every
+positive argument, and the explicit spatial bound
+
+`|K_k(x)| <= (10/pi)*exp(7*pi/2)*B_k*sqrt(T_k)/x^4`.
+
+Here T_k=(2k+7)/(pi/2), the sigma-four saddle from G11. All three public
+statements have no extra mathematical hypotheses; positive arguments
+are the natural domain. Continuity and both inversion integrability
+conditions are proved for the literal kernel. Leaf build, unchanged
+final direct source audit, and all three exact-type/axiom audits passed.
+Source log empty, standard foundations only. Umbrella import exactly
+once; total37 modules/156 public theorem audits. Current formal lint
+reports seven unrelated reachability errors, none in WP06.
+
+Classification: CLASSICAL ANALYTIC BRIDGE. C43's two finite polynomial
+moment identities also passed an auxiliary Lean check; its actual weak
+transport theorem remains paper-only. G13 now has a paper proof reducing
+critical-line integrability to G11 by the beta-Gamma inequality; its Lean
+formalization has not started. No spectral-deficit bound or RH closure.
+
+## G13 verified: actual critical-line inversion and all height moments
+
+`WeilWorkDeficitCriticalMellin.lean` closes absolute vertical integration
+on Re(s)=1/2 and exact inverse Mellin recovery of the actual product
+kernel. The beta integral gives an all-height comparison with G11's
+sigma-four transform. Raising derivative order is exactly multiplication
+by an even height power; every natural height moment, including in the
+inverse integral, is integrable. All seven public statements have no
+extra mathematical hypotheses. Positive x is the natural domain.
+
+Leaf build, unchanged final direct source audit, and all seven exact
+public-type/axiom audits passed. Final log empty; only propext,
+Classical.choice and Quot.sound. All38 modules imported exactly once;
+163 public theorem audits. Current global lint has11 unrelated umbrella
+reachability findings and none in WP06. No full/umbrella build.
+Classification: CLASSICAL ANALYTIC BRIDGE.
+
+## C45 paper advance: positive actual rows can pass every algebraic-order test
+
+One strictly positive probability w now has a dependency-closed PAPER
+construction with, for every M, the actual integer rows satisfying
+
+`|S_w(n)| = O_M(n^-M * exp(-4*sqrt(kappa*n)))`.
+
+The SAME probability works for every M. It has one full critical flux
+expansion, including C43's forced first correction. No energy asymptotic
+or coefficient regularity is assumed: weights are constructed from
+positive angular moments, normalized by the exact actual energies.
+G12's spatial bound pays every derivative-order/divisor interchange.
+
+The key law is triangular boundary transport. A density
+`u^6*exp(-pi/u)*V(u)` near angle pi/2 has two automatic real cancellations;
+its jth smooth Taylor coefficient first changes the real row at order
+j+1, with nonzero coefficient `-j*r^(j+1)/2`, r=1/sqrt2. Recursion plus
+one positive smooth Borel realization cancels every remaining algebraic
+coefficient. C25's angular transport is reused explicitly; arbitrary
+positive Taylor series are NOT asserted to be moment mixtures.
+
+This moves the PAPER frontier from one forced correction to one positive
+candidate passing all finite asymptotic orders simultaneously. Exact
+zero rows are still open: beyond-all-orders errors can remain. Full C45
+Lean formalization is owed, as are earlier actual asymptotic survivors.
+Scientific novelty remains unestablished against classical transport and
+Borel theory. The spectral-deficit goal remains ACTIVE/UNSOLVED.
