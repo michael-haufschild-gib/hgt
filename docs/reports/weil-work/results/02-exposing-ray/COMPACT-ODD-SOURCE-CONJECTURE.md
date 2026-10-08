@@ -12,7 +12,7 @@ The first two assertions are a new constructive source goal suggested by all-ord
 
 ## Candidate construction avoiding cutoff derivatives
 
-Use the existing nonnegative even C2 cutoff chi_L, equal1 on [-L+1,L-1] and zero outside[-L,L]. Fix eta(u)=fejerTestReal(u-1)-fejerTestReal(u+1), a real odd compact C2 source, with nonzero half-pole moment by its exact translation multiplier. Define
+Use the existing nonnegative even C2 cutoff chi_L, equal1 on [-L+1,L-1] and zero outside[-L,L]. Fix eta(u)=flatBump(17/50,17/1000,u-1)-flatBump(17/50,17/1000,u+1), a real odd compact C2 source, with nonzero half-pole moment by its exact translation multiplier. Define
 
     f_L = chi_L F - a_L eta,
     a_L = FT(chi_L F)(i/2) / FT(eta)(i/2).
@@ -26,3 +26,19 @@ Choose R containing eta's support and beyond F's fixed right-tail sign threshold
 ## Utility and novelty gate
 
 This would construct a family of actual admissible compact sources with a uniform complete tail sign, rather than another obstruction imposed by a repeated spectral lattice. However, if the corpus already supplies this class, use it directly. A finite sign family alone is not significant progress on the exact endpoint unless its signed head and energy budget can be exploited. Before implementation, search the corpus and audit the natural-aperture/vanishing-tail comparison.
+
+## Current corpus/API audit
+
+The literal cutoff is `RHTower.bulkCutoff` in `TruncatedRiemannKernelWeilEnergy`, with `bulkCutoff_nonneg`, `bulkCutoff_le_one`, `bulkCutoff_eq_one` and `bulkCutoff_eq_zero`. The actual complex Fejer source is `RHTower.fejerTest`, defined from `flatBump (17/50) (17/1000)` in `WeilPositivitySummableWeightsObstruction`; there is no verified `fejerTestReal` interface. `truncatedRiemannKernelReal` is currently defined in `WeilFullConeRiemannKernelRigidity`. These locations were found by exhaustive text search after older module locations returned no definition. The corpus `riemannPhiCore` instead uses a sharp indicator and must not be differentiated as C2.
+
+The follow-up compact negative-source deep search was partial, with a complete68,500-file inventory and incomplete compiler/background refresh. Every candidate/source argument and proposed ingredient set was inspected. The returned linear-polar closure and existing positive-source admission cannot prove a negative tail; no absence claim follows.
+
+The corpus already has `contDiff_riemannKernelDeriv`, `contDiff_infty_nearRadicalTest`, `tsupport_nearRadicalTest`, `paperFT_nearRadicalTest_eq` and `norm_W_nearRadicalTest_le` for arbitrary finite derivative combinations. Use these actual near-radical estimates instead of rebuilding generic cutoff calculus. The intended pre-correction source is the K=3 coefficient vector a_1=-1/4, a_3=1, a_0=a_2=0. Its cutoff Fourier defect at either pole is exactly minus the tail transform, because the untruncated source vanishes there. The added core correction's zero-side contribution and all cross terms still need an explicit bound; the existing uncorrected near-radical norm theorem alone does not prove that bound.
+
+## Rate/application gate before investing in a new leaf
+
+The present differential source has no physical shifts. Its theta autocorrelation scale is governed by exp(y), whereas the actual exposing mixture is dominated by its outer unit-shift lag y-2; the existing sharp rate is 2*pi*exp(-2) per integer n. The coarse sign lower bound from cycle14 does not match that rate or target proportions. A negative tail from F alone must not be described as an opposite exposing-ray producer. Audit whether the useful source should instead be the actual odd derivative of `polarShift c riemannKernelReal`, keeping its outer shifts and all k-mixture weights. Its autocorrelation would be minus the second derivative of `polarExposingKernel c`; that identity and its complete weighted error must be established from the corpus, not assumed. The extra derivative changes target amplitudes, so even this refinement does not automatically match -w_N. Prioritize a rate-and-proportion mechanism over another isolated tail-sign theorem.
+
+## Cycle 15 rate/proportion verdict
+
+The strict-width law is now formalized for all fixed finite complex combinations of actual Phi derivatives and their finite mixtures. In particular an unshifted fixed odd differential source cannot itself supply a nonzero multiple of the literal exposing trace on all sufficiently large integers. A compact cutoff approximating that fixed source does not thereby solve the trace discrepancy; any claim that it does must account for the complete additional corrections. The compact tail-sign subconjecture remains OPEN, but isolated sign formalization is DEFERRED in favor of the critical-width four-shift source in CRITICAL-WIDTH-ODD-CONJECTURE.md. The new width law does not rule out growing derivative bases or arbitrary compact polar constructions.

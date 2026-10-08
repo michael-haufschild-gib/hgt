@@ -635,3 +635,335 @@ of roots. Hence every deficit is zero and ξ's divisor is contained in E's.
 The existing Multiplicity theorem gives λ=Λ for the complete datum.
 This would prove the finite-deficit alternative, not eliminate the remaining
 infinite-deficit branch or solve full WP07.
+
+### Finite-deficit Lean checkpoint
+
+PolynomialBoundary, MovingBoundary, BoundaryTransport, BoundaryPeriod and
+FiniteDeficit pass final direct `lake --old env lean -o ... <module>` checks
+without diagnostics. The complete theorem is
+`degreeThree_eq_vonMangoldt_or_infiniteDeficits`: precisely the original cubic
+correspondence implies `(λ=Λ ∧ RH) ∨ Infinite(xiDeficitSupport E)`.
+Thus the finite-deficit competitor is FALSE; the infinite-deficit conjecture
+is PROVED for every nontrivial complete datum. The strongest positive survivor
+of finite-packet elimination is this all-data dichotomy, now formalized.
+Its axiom and lint audit are recorded in EVIDENCE.md. Full WP07 remains OPEN.
+
+### Density continuation: exact conjecture and threshold audit
+
+C2 retains every hypothesis of `degreeThree_eq_vonMangoldt_or_infiniteDeficits`.
+For a datum with some n≥2 satisfying λ(n)≠Λ(n), define
+
+`D₁(T) = Σ_{ξ(ρ)=0, |Im ρ|≤T} max(ordρ(ξ)−ordρ(E),0)`.
+
+The sum is over distinct points, with the displayed multiplicity weight. Local
+finiteness and the strict zero strip make every finite-height sum finite. C2
+asserts that there is c>0 such that, for every R>0, some T>R has D₁(T)≥cT.
+The incompatible competitor is D₁(T)=o(T). Neither is proved. Verdict:
+SURVIVES PRELIMINARY ATTACK. No literature novelty is established by search
+failure. If C2 is true, finite-deficit rigidity extends to all sublinear
+one-divisor repairs. A complete counterexample to C2 would also refute WP07;
+an arbitrary meromorphic model is not such a counterexample.
+
+The finite-packet proof does not justify an infinite residue sum or its boundary
+limit. A sublinear divisor suggests an even canonical clearing product of zero
+exponential type, but this requires complex zero locations and arbitrary
+multiplicities. `MovingEvenCanonicalProduct` instead starts from positive real
+nodes. Even a successful clearing construction does not by itself give the
+period defect a continuous, C¹, or real-analytic boundary value. The current
+Bohr coefficient receiver assumes absolute summability. Lewis–Zagier's
+bootstrapping theorem assumes real analyticity; the already checked C¹ period
+bound must not be substituted for it. These are separate obligations.
+
+There is a useful exact change of representation, but not yet a density proof.
+Put B(s)=s(s−1)Γ_R(s), C(s)=B′(s)/B(s), and
+F_a(s)=E′(s)/E(s)−a ξ′(s)/ξ(s). For real a and Re(s)>1, the original
+completion and logarithmic-derivative identities give
+
+`F_a(s) = (3−a) C(s) − 3 L_λ(s) + a L_Λ(s)`.
+
+The constant normalization of ξ disappears on logarithmic differentiation.
+At any point ρ the meromorphic residue is
+`ordρ(E)−a ordρ(ξ)`: factor each nonzero analytic germ into a power of
+s−ρ times a nonvanishing analytic germ, and differentiate logarithmically.
+The corpus already proves this local integer-residue mechanism in
+`HTGeometry/LogarithmicResidueQuantization.lean`; it is classical, not a new
+theorem claimed here.
+
+At a=1, the negative residue mass is exactly D₁, with no residue-amplitude or
+pole-order assumption. However, the right-hand expression retains 2C(s).
+At a=3, the archimedean term vanishes, but the negative residue mass is
+max(3 ordρ(ξ)−ordρ(E),0), the wrong threshold. Thus the existing generic
+Weil-deficit counting theorem cannot be imported by a scalar rescaling.
+This obstruction is to that proposed inference, not to C2 itself.
+
+[OPEN CORE] Derive a quantitative constraint on the negative integer residues
+of F₁ from the exact degree-two quotient structure, while retaining its two
+archimedean copies. A contour or period argument must control its infinite
+limit from the original datum. Neither small pole count, a zero-type clearing
+factor, nor the local residue formula supplies that constraint alone. Next
+proof attempt should work directly with finite spectral windows and this
+normalization; no additional positivity or regularity premise is permitted.
+Phase 5 is incomplete, so no Lean formalization of C2 has been started.
+
+
+## Exact logarithmic-residue bridge (2026-10-07)
+
+**Classification: BRIDGE / REDISCOVERED.** This does not prove C2 or WP07.
+Before implementation, the complete local argument is as follows. For any entire
+E with E(1) nonzero, neither E nor xi is identically zero. Hence their analytic
+orders at every rho are finite natural numbers e and m. Local factorization gives
+E(s)=(s-rho)^e U(s) and xi(s)=(s-rho)^m V(s), with U,V analytic and nonzero at rho.
+Consequently
+
+    (s-rho) * (E'/E - xi'/xi)(s) -> e-m
+
+on the punctured neighborhood. This is an actual analytic limit, independent of
+any totalized value assigned at rho. Its negative integer part is exactly
+max(m-e,0)=xiDeficit E rho. It is negative exactly on xiDeficitSupport E.
+Summing this equality over any finite window preserves the exact deficit weight.
+The checked finite-deficit capstone therefore gives, under precisely the complete
+cubic correspondence, lambda=Lambda and RH OR infinitely many negative integer
+residues of this logarithmic difference. No finite-order bound, location condition,
+or simplicity assumption on xi zeros is added to the local argument.
+
+On Re(s)>1, the existing logarithmic-derivative identity yields
+E'/E=3*weilFunction(lambda). The xi identity yields xi'/xi=C-L_Lambda, where
+C=zetaArchimedeanDatum+1/(s-1). Thus the same actual function is
+
+    2*C - 3*L_lambda + L_Lambda.
+
+This makes the degree-two archimedean term and the one-xi threshold explicit in
+one checked representation. It is not a mean-negative-residue density estimate.
+The general finite-rank/index proposal remains a classical consequence requiring
+an additional interpolation argument; it is not being presented as a new theorem.
+
+The affine-pencil and analytic-parameter proposals considered this cycle are
+REDISCOVERED (L273/L301/L387/L394). In addition, exclusion of analytic paths does
+not prove topological isolation in the infinite-dimensional space. L394's isolated-
+component conclusion is not used without a separate compactness or local-structure
+argument. C2 remains the next actual open claim; replacing it with more known
+local perturbation exclusions would not move the research frontier.
+
+
+### Next density attack: preserve the exact residue while tracking symmetry
+
+There is an algebraic distinction worth retaining. Subtracting *three xi logarithmic
+derivatives* removes C but changes the deficit threshold. Subtracting *2C itself*
+from the one-xi logarithmic difference does not change residues in 0<Re(s)<1,
+because C is analytic there. In the latter representation,
+
+    A(s) = 2C(s) - (E'/E - xi'/xi)(s)
+         = 3 L_lambda(s) - L_Lambda(s)  (Re(s)>1),
+
+positive residues at deficit points are exactly xiDeficit. What this operation
+loses is homogeneous reflection: writing F=E'/E-xi'/xi, the positive functional
+equations give F(1-s)=-F(s), whereas
+
+    A(s)+A(1-s)=2(C(s)+C(1-s))
+
+away from singularities. Thus merely passing to a pure Dirichlet series has not
+removed the archimedean obstruction from the global problem. A density proof
+must pay this inhomogeneous reflection term. These are algebraic paper observations,
+not a new checked density theorem. The next cycle must attack that estimate rather
+than repeat local residues, finite poles, analytic pencils, or broad SOTA inventory.
+
+
+**LogResidue Lean checkpoint.** The six public theorems in
+`WeilWorkHigherDenominatorLogResidue.lean` pass direct foreground compilation and
+standard-axiom audits. The printed capstone type has exactly the original complete
+correspondence assumptions. Complex deficit points and all multiplicities remain
+present. The additional arithmetic-subtraction/reflection discussion above is a
+paper observation, not a claimed C2 proof. Scientific frontier unchanged.
+
+
+## Infinite boundary receiver: exact next proof target (2026-10-07)
+
+C2 remains SURVIVES PRELIMINARY ATTACK, not proved. The current cycle did not
+move the scientific classification frontier. The following distinguishes the
+objects needed for a new proof attempt; none is an added premise of WP07.
+
+### Two representations cannot be interchanged
+
+The linear Maass/Poisson period equation applies to the degree-two quotient
+`Q=L_g/zeta`, with completion proportional to `E/xi`. Its principal parts have
+amplitudes as well as orders. In contrast, `F=E'/E-xi'/xi` has the exact integer
+residues already checked in LogResidue. Logarithmic differentiation does not
+commute with the linear Mellin/Poisson transform, nor with addition in the
+three-term equation. No period equation for F follows from the one for Q.
+
+Subtracting `2C` produces a Dirichlet series, but only on its original right
+half-plane of absolute convergence. Its almost periodicity there does not give
+recurrence of a pole in the critical strip. The meromorphic almost-periodic
+theory assumes recurrence on the whole strip under consideration. That is a
+missing hypothesis here. L126's existing envelope pays a different spectral
+threshold, below three xi divisors, and cannot pay the one-xi threshold by
+renaming the signed measure.
+
+Likewise, ordinary pole counting and Beurling–Malliavin density are different
+inputs. Exterior BM density controls completeness of exponentials; interior
+BM density controls a finite measure's spectral-gap problem. Neither theorem
+automatically gives the compact annihilator or the actual spectral-gap measure
+needed here. No density theorem was obtained from this literature check.
+These are rejected inferences, not a retirement of C2 or WP07.
+
+### Define the boundary object from arithmetic coefficients
+
+Use the verified definitions, with positive functional-equation sign already
+derived from the complete correspondence:
+
+    q(n) = degreeTwoQuotientCoeff g n,
+    a = degreeTwoEndpointNumerator E 1,
+    b = deriv (degreeTwoEndpointNumerator E) 1,
+    u = MaassBesselSeries.maassFun q a b,
+    U(z) = u(z)-u(-1/z).
+
+For a smooth compactly supported test function phi on R, define the periodic,
+even distribution B by
+
+    B[phi] = a integral(phi)
+             - 4 sum_{n>=1} q(n) integral(cos(2*pi*n*x) phi(x) dx).
+
+This definition requires no convergence of a residue expansion. The checked
+`degreeTwoQuotientCoeff_weighted_summable` gives
+`M2=sum_{n>=1}|q(n)|/n^2<infinity`. Two integrations by parts give
+
+    |B[phi]| <= |a| ||phi||_L1 + (M2/pi^2) ||phi''||_L1.
+
+Thus the displayed series defines a distribution of order at most two.
+Translation by one and reflection preserve it, directly term by term. This is
+a classical paper construction, not a new Lean or scientific-novelty claim.
+
+For phi supported in (0,infinity), set
+
+    (S_test phi)(t) = t^(-1) phi(1/t),
+    beta[phi] = B[phi]-B[S_test phi].
+
+The test function remains smooth with compact support in (0,infinity), so beta
+is well-defined. The Jacobian is included: this is precisely the distributional
+version of `B(x)-x^(-1)B(1/x)`. Keeping the constant a is essential; dropping it
+would reintroduce the endpoint survivor `c(1-1/x)` eliminated in the finite
+argument. The constant b contributes no leading logarithmic boundary term.
+
+The intended trace identity, not yet proved in this project, is
+
+    U(x+i*y)/(sqrt(y)*log(y)) --> beta in D'((0,infinity)), y --> 0+.
+
+For fixed Fourier mode this follows from the small-argument K0 limit. A proof
+for the actual series must justify passage against each test function and the
+moving inversion argument; pointwise mode limits do not justify that passage.
+The distributional modular relations should then follow by dualizing the
+existing algebraic period identities. Classical boundary-form theory supports
+this construction, but does not supply the sparsity-to-regularity implication.
+
+### Exact regularity target and incompatible competitor
+
+Retain every original correspondence hypothesis. Under the counterhypothesis
+`D1(T)=o(T)`, conjecture that the above beta is represented by a C1 function
+`h:(0,infinity)->C` with `h(x)->0` as `x->infinity`.
+
+The incompatible competitor is a complete cubic datum with sublinear D1 for
+which this beta remains singular, or every C1 representative fails that decay.
+An arbitrary sparse-frequency distribution does not provide such a datum.
+This is a BRIDGE conjecture toward C2, not a separately claimed scientific
+advance. C2 remains the selected classification conjecture.
+
+If the bridge holds, the already proved weight-one period bounds give
+boundedness at zero and `O(1/x)` decay at infinity. The next transport obligation
+is to identify the cutoff/one-sided Mellin transforms of beta with the actual
+quotient's interior principal parts and use this boundary control to exclude
+them. Do not say that an unrestricted bilateral Mellin transform of a polar
+mode has its pole at that exponent: `x^(-rho)` has no bilateral convergence
+strip, and the continuations of its two half-integrals cancel. Cutoffs and their
+domains must be explicit in the infinite argument.
+
+[OPEN CORE] Prove the C1-and-decay conclusion from sublinear D1 for the actual
+boundary distribution, while retaining complex deficit points, arbitrary
+multiplicities and clustered poles. First pay the distributional trace and
+cutoff-Mellin identification, without assuming an absolutely convergent pole
+sum. Phase 5 for this receiver and for C2 is incomplete; no new Lean module or
+resource-limit change is justified yet. Next cycle should work on these exact
+identities, not repeat broad literature inventories.
+
+### Paper proof of the weak logarithmic trace
+
+The trace is a classical BRIDGE. C2 and its regularity conclusion remain open.
+Here is the dependency-closed analytic argument for the trace, before Lean work.
+Write `K_j(r)=integral_0^infinity cosh(t)^j exp(-r cosh(t)) dt` as in the
+existing BesselKZeroMoments module.
+
+For r>0, the primitive `-exp(-r sinh(t))/r` has nonnegative derivative
+`J_r(t)=cosh(t)exp(-r sinh(t))`, tends to zero at infinity, and has value -1/r
+at zero. Hence J_r is integrable and its integral is 1/r. For t>=0,
+`sinh(t)<=cosh(t)<=sinh(t)+1`, so
+
+    exp(-r) J_r(t) <= cosh(t) exp(-r cosh(t)) <= J_r(t).
+
+Integration gives `exp(-r)<=r K_1(r)<=1`. Consequently
+
+    H(r)=K_0(r)+log(r),  H'(r)=(1-r K_1(r))/r,
+    0<=H'(r)<=1,
+
+where the last bound uses `exp(-r)>=1-r`. Thus H is monotone and 1-Lipschitz
+on the positive half-line. In particular H is bounded on (0,1], and
+`K_0(c*y)/log(y)->-1` for every fixed c>0. Monotonicity of K0 gives a bound
+`K_0(c*n*y)/|log(y)|<=C_c` simultaneously for all n>=1 and all sufficiently
+small y. No asymptotic assertion uniform in n is being assumed.
+
+For the moving inversion term two derivatives of its amplitude are needed.
+The existing moment ODE gives `r^2 K_2(r)=r^2 K_0(r)+r K_1(r)`. For r<=1,
+`K_0(r)<=K_1(r)` makes the right side at most two. For r>=1, the existing
+exponential estimate `K_0(r)<=exp(-(r-1)) K_0(1)` makes `r^2 K_0(r)` bounded.
+Therefore both `r K_1(r)` and `r^2 K_2(r)` are bounded on (0,infinity).
+
+Let phi be smooth and supported in a fixed [d,M] with 0<d<M. Set
+`psi_y(x)=x/(x^2+y^2)` and `c_y(x)=2*pi/(x^2+y^2)`. For sufficiently small y,
+psi_y' stays away from zero on this interval; all derivatives needed below,
+including the reciprocals of psi_y', are uniformly bounded. The nth Fourier
+term of the normalized inverted trace paired with phi is
+
+    integral phi(x)/(sqrt(x^2+y^2)*log(y))
+             K_0(n*y*c_y(x)) cos(2*pi*n*psi_y(x)) dx.
+
+Twice integrate by parts using
+`d(exp(2*pi*i*n*psi_y))/dx=2*pi*i*n*psi_y' exp(2*pi*i*n*psi_y)`.
+There are no boundary terms because phi has compact support. The amplitude
+and its first two derivatives are uniformly bounded: its K0 term uses the
+uniform logarithmic bound; its differentiated K0 terms use the bounded
+quantities `r K_1(r)` and `r^2 K_2(r)`, together with bounded `r'/r` and
+`r''/r`. Thus the integral has absolute value at most `C_phi/n^2`, uniformly
+in small y. The same bound for the uninverted term follows by ordinary
+Fourier integration by parts. The original-data sum `sum |q(n)|/n^2` now
+dominates both series of pairings.
+
+For each fixed n, the K0 limit and compact support give the two limits
+`-integral cos(2*pi*n*x)phi(x) dx` and
+`-integral x^(-1)cos(2*pi*n/x)phi(x) dx`. Dominated convergence over n is
+therefore valid. The constant terms tend to a and a/x respectively; the b
+terms and the extra `log(x^2+y^2)/log(y)` term vanish uniformly on the support.
+After the substitution t=1/x, the inverted limit is B[S_test phi]. Including
+the factor four in maassFun proves the exact proposed trace beta, for every
+test phi. The sum/integral interchanges at positive y follow from the existing
+exponential strip bounds, also valid on the compact image under inversion.
+
+This proof provides distributional convergence, not continuity of beta and
+not convergence of any termwise Mellin residue expansion. Its constants may
+depend on the test function's support and derivatives. It gives no new
+assumption on g, E or lambda. Lean work starts with the global K-moment and
+logarithmic bounds; the moving-phase weak trace and cutoff Mellin identities
+remain separately visible formal obligations.
+
+### Sharper remaining regularity receiver
+
+The corpus already proves `weightOne_period_tail_bound` and `weightOne_period_origin_bound` from the three-term identity, inversion identity, decay at infinity, and the local estimate `norm(h(t)) <= C*(1-t)` for `1/2 <= t <= 1`. Their exact source in `WeilWorkHigherDenominatorPeriodDefect.lean:93–158` was checked. Consequently the earlier global C1 target is stronger than the receiver needs.
+
+The narrower conjecture retains every original correspondence hypothesis and D1(T)=o(T): beta has a continuous representative h, tending to zero at infinity, with that local linear-vanishing bound for some C>=0. Its distributional identities then become pointwise identities by continuity. The existing receiver gives boundedness at zero and O(1/x) decay at infinity, sufficient for a bilateral Mellin convergence strip (0,1); identifying this transform with the actual quotient obstruction remains a separate obligation. The incompatible competitor is an actual complete cubic datum with sublinear deficits for which this representation or local bound fails. Neither competitor has been established.
+
+The horizontal trace proved this cycle does not use D1 at all. Attempting to upgrade its dominated-convergence estimate to boundary regularity fails at the test norm: original coefficient summability pays two integrations by parts against smooth tests, not a uniform bound on boundary values or local linear vanishing. This rejects that inference, not C2. The substantive next step must extract cancellation from the actual datum and the sparse deficit hypothesis. No generic sparse-frequency example is being substituted for a complete datum.
+
+Formal status: BesselBoundary, FourierBoundary and WeakTrace now certify the full horizontal testwise limit, including actual sum/integral interchange. The paper's moving-inversion limit is not yet formalized. No continuous-linear distribution object, moving-inversion theorem, cutoff-Mellin identification, sparsity implication or full WP07 solution is claimed by those three modules.
+
+### Variable-phase identity used for moving inversion
+
+Fix real a<=b, L!=0, a C1 real phase psi on [a,b], and a continuous nonvanishing speed v=psi'. Let A0,A1,A2 be complex amplitudes such that the derivatives of A0/v and A1/v are A1 and A2 respectively on the closed interval. Assume these derivatives are integrable and A0,A1 vanish at both endpoints. All quotients use the real speed embedded in C. The primitive P(x)=(iL)^(-1) exp(iL psi(x)) has derivative v(x)exp(iL psi(x)). Integration by parts gives I(A0)=-(iL)^(-1) I(A1) and I(A1)=-(iL)^(-1) I(A2), with every boundary term zero. Thus I(A0)=(iL)^(-2) I(A2), and its norm is at most |L|^(-2) integral_a^b norm(A2). No spectral or residue-series assertion is used.
+
+For a twice differentiable amplitude A and twice differentiable nonzero speed v, the explicit chain is A1=A'/v-A*v'/v^2 and A2=A''/v^2-3*A'*v'/v^3-A*v''/v^3+3*A*(v')^2/v^4. Both identities follow by the quotient/product rule; all real quantities are embedded into C. Uniform bounds for A,A',A'',v',v'' and a positive lower bound for |v| yield a uniform bound on A2. In the actual inversion problem these are to be derived from the already checked Bessel moment bounds and rational phase, not assumed in the cubic-data theorem. This generic identity is a classical BRIDGE.

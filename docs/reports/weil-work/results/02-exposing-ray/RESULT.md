@@ -1,6 +1,43 @@
 # WP02 result — exact source constructions and bounds
 
-## Current frontier: exact sampled polar mass (cycle 13)
+## Current frontier: primitive loss and its optimized survivor (cycle18)
+
+**Universal WP02 remains OPEN.** New seventeenth leaf `WeilWorkExposingRayPrimitiveSharpness.lean` proves that the former primitive surrogate B_b(f) leaves at least one quarter of Fourier mass below actual archimedean energy, for every real b and every compact complex C2 source. The scalar proof in PacketCoercivity now retains this quarter while preserving all previous public statements.
+
+Writing M=integral |paperFT f|^2 and P=integral |paperFT f|^2/(tau^2+1/4)^2, the positive survivor is E>=(log(M/P)/4-C)*M. It includes zero sources, proves P<=16*M, and identifies P with the actual compact primitive's Fourier mass on the existing polar-multiplier interface. No positivity, RH or nonzero-mass premise is added to this capstone.
+
+For every fixed real tail multiplier c, the SAME exact matched families eventually satisfy sum alpha_i B_(b_i)(f_i)<T-c*tau_N for EVERY choice of row-dependent parameters b_i. All integer constraints, actual polar tests, natural aperture and the receiver level condition remain in the theorem. Thus the former surrogate cannot reach the endpoint by parameter tuning. This does not exclude the sharpened estimate or establish the desired lower bound.
+
+Both edited leaves pass final foreground `lake --old env lean -o ... <leaf>` audits without warnings; all17 imports are verified and index/API refreshed. All17 public imported-cache axiom audits pass with only propext/Classical.choice/Quot.sound. Lint has11 unrelated reachability errors and no WP02 error. This is a precise method boundary and corpus BRIDGE; the scalar optimization is classical and scientific novelty remains unestablished. See PRIMITIVE-SHARPNESS-PROOF.md and EVIDENCE.md.
+
+Next OPEN producer target: VANISHING-MASS-DEFECT-CONJECTURE.md allows a negative Fourier-mass error tending to zero on the cofinal diagonal. The canonical repairs have bounded added mass on paper, so such an estimate would suffice for the literal receiver. Proving another reduction is not counted as a producer. The full spectral L1 candidate is deferred; ground-state and prime-torus detours do not supply the missing signed lower estimate.
+
+## Exact matched-ray mass and precision (cycle17)
+
+
+**Universal WP02 remains OPEN.** The sixteenth owned leaf, `WeilWorkExposingRayMassMargin.lean`, proves a fixed positive physical L2-mass floor per unit exposing multiplier for every nonnegative matched family, independent of aperture and representation. Exact natural-aperture families have mass at least m0>0 and energy <=T+2*tau_N. Their mass-normalized energy excess has an upper bound K*exp(-r*N) for every 0<r<2*pi*exp(-2).
+
+For every epsilon>0 and every fixed real c, actual exact-ray families eventually satisfy E-epsilon*M<T-c*tau_N. Thus the desired lower bound cannot carry any fixed positive mass margin. The strict counterexamples include the receiver's cutoff/level condition and every integer trace. This is a quantitative precision boundary/BRIDGE, with standard autocorrelation and variational ingredients; scientific novelty is unestablished. No lower sign or absolute-value convergence of E-T is asserted.
+
+Complete scratch, final installed leaf/cache and all six public axiom audits pass without warnings; every axiom set is exactly propext/Classical.choice/Quot.sound. The module is umbrella-wired; authoritative lint reports seven unrelated reachability errors and no WP02 error. Index/API references are refreshed. Exact evidence is in EVIDENCE.md.
+
+The critical odd source/opposite-ratio and strict-width laws from cycles15–16 remain valid. Its prescribed finite-head cost conjecture is deferred after the utility audit: cheap opposite-ray realizations would force every cone point to Lambda, while WP02 requires one attaining point. Neither provides nonemptiness for free. Next candidate MATCHED-SPECTRAL-LIMIT-CONJECTURE.md has a mandatory utility gate against existing near-null/exposure results before further Lean.
+
+## All-order polar differential tails (cycle14; historical checkpoint)
+
+Twelfth owned leaf `WeilWorkExposingRayDifferentialParity.lean` proves the literal-source law for F_k=D^(k+2)Phi-D^kPhi/4:
+
+    exp(-2*pi*exp(2)*exp(y)) <= (-1)^k integral F_k(t)F_k(t-y)dt
+
+for every k and all sufficiently large y. Even orders have strictly positive tails; odd orders have strictly negative tails. The full theta series and every adverse signed contribution are bounded analytically. Exact Fourier multiplier, both half-poles, all actual Weil zero evaluations, integrability, and global source envelopes are included.
+
+Complete scratch audit passes without warnings; all ten public theorems use only propext/Classical.choice/Quot.sound. Installed leaf is umbrella-wired; final `lake --old env lean -o <target-cache> <leaf>` exits0 without warnings and its cache is current. Global lint has sixteen unrelated reachability findings, none in WP02; index refresh exits0. The reused general correlation/error-absorption helpers in the owned UniformPolarTail leaf also passed their final target-cache audit.
+
+**Universal WP02 remains OPEN.** These untruncated radical sources supply a negative-tail family beyond the previous even-source class, but do not prove compact admissibility, the required opposite-ray proportions, energy cost, or the universal lower inequality. Generic cusp/Laplace mechanisms are classical; external scientific novelty remains unestablished.
+
+The overlapping geometric mass candidate was deferred: its repeated half-pole lattice is an extra source restriction. Next candidate is COMPACT-ODD-SOURCE-CONJECTURE.md, with an explicit rate-and-proportion utility gate. The unshifted derivative's tail differs from the actual exposing mixture's outer-shift scale; do not count negative sign alone as an endpoint construction. First audit whether differentiating the actual shifted source supplies a useful amplitude/rate mechanism before committing another leaf.
+
+## Exact sampled polar mass (cycle 13)
 
 The eleventh owned leaf, `WeilWorkExposingRayLatticeMass.lean`, recovers complete coefficient mass from explicit rounded integer samples of the actual Fejer-profile lattice, for every real spacing X>=4. It retains all complex cross terms, every site count and the full polar defect. One actual vanishing half-pole suffices; full polar tests are included.
 
@@ -189,3 +226,34 @@ The selected total energy is M^2 E(f_s), with 1/201<=s<=1/200; it is not shown t
 Final installed leaf audit passed without warnings using `lake --old env lean`; the capstone uses only propext, Classical.choice and Quot.sound. The 478-line leaf is wired into RHTower. Current global lint reports six unrelated reachability failures, no WP02 finding; details in EVIDENCE.md.
 
 Anti-theatre: a bounded upper completion is not a lower positivity theorem. Anti-laziness: do not pursue single-factor infrastructure merely to compress an already valid finite family; return to the literal opposite exposing source and its vanishing tail budget. Before any proposed zero-cost far-Fejer completion, audit critical-zero spectral compatibility: the original Fejer spectrum differs essentially from the near-radical Xi spectrum. Existing small-aperture ground positivity does not supply that missing endpoint estimate.
+
+## Cycle 15: translation width and coefficient amplification
+
+FORMALIZED: `WeilWorkExposingRayDifferentialWidth.lean` treats arbitrary finite complex combinations of translates of the actual Riemann-kernel derivatives, including order zero. For a fixed derivative basis and positions in a window of radius R, the complete integer trace obeys a bound C*(sum |c_j|)^2*exp(-2*a*exp(-2R)*n) for every 0<a<pi, uniformly in coefficient values and positions. The strengthened full-theta envelopes are in `WeilWorkExposingRayDifferentialParity.lean`.
+
+If total translation width is below two, any finite signed mixture satisfying |T(n)|>=exposingWeight(n) at a sufficiently late integer must have homogeneous coefficient budget S>=exp(delta*n)/C. Here S=sum_i |alpha_i|*(sum_j |c_ij|)^2. Arbitrary row centers are allowed. Every fixed mixture in this class is negligible against the literal exposing ray and cannot equal any nonzero fixed multiple of it on all sufficiently large integers. Both positive and opposite rays are covered.
+
+This is a quantitative source-class constraint, not the universal lower inequality. Packets are not asserted compact or polar, derivative orders remain fixed, and the coefficient budget is not an intrinsic norm or energy. It includes polar derivative and translation filters by specialization. No RH, positivity, or cone-nonemptiness premise is used.
+
+Next constructive candidate: the width-two odd four-shift Phi filter and its exact shorter positive residual in CRITICAL-WIDTH-ODD-CONJECTURE.md. The new uniform bound applies directly to that proposed residual and the remaining infinite exposing rows. Exact source identities, compact realization, finite-head repair, and the signed energy budget remain open. Main goal ACTIVE.
+
+
+## Cycle16: constructive critical-width opposite tail
+
+Two new leaves, `WeilWorkExposingRayCriticalOddSource.lean` (433 lines) and `WeilWorkExposingRayCriticalOddTail.lean` (217 lines), namespace `RHTower.ExposingRayCriticalOdd`, formalize an actual odd four-translate Riemann source. Write q=1/(2*cosh(1/2)), h=cosh(1/4), and T_s Phi(t)=Phi(t-s). The source is
+
+    G = q*(T_1-T_-1-2*h*(T_(1/2)-T_(-1/2)))*Phi.
+
+Its exact half-poles and every actual Weil-zero evaluation vanish. At every real lag, its autocorrelation plus the leading exposing kernel is exactly the autocorrelation of the shorter residual
+
+    H = Phi-2*h*q*T_(-1/2)Phi+2*h*q*T_(1/2)Phi-2*q*T_1 Phi.
+
+This same identity holds for every literal smooth cutoff. The resulting odd cutoffs and residuals are actual compact C² polar tests, and their complete signed archimedean energies satisfy `A(G_L)+A(P_1 Phi_L)=A(H_L)`. No sign for the last term is asserted.
+
+The complete infinite exposing mixture is retained. For every `0<r<2*pi*exp(-3/2)`, a fixed positive C bounds `|atomCoeff G n+exposingWeight n|` by `C*exp(-r*n)` for all n>=1. Consequently the relative error tends to zero exponentially, `atomCoeff G n / exposingWeight n -> -1`, and the integer trace is eventually strictly negative. These are the literal atom coefficients, without a hidden square-root normalization.
+
+Combined with cycle15, this supplies a constructive width-two boundary example for the strict-width obstruction: width below two is exponentially negligible, whereas this fixed width-two filter achieves exact opposite limiting proportion. The generic complementary-filter algebra is elementary; external scientific novelty is unestablished. The source-specific corpus advance is the exact opposite proportion with its complete faster remainder and actual compact signed accounting.
+
+Both installed leaves pass final `lake --old env lean -o <owned-cache> <leaf>` audits without warnings and are wired into RHTower.lean, bringing owned leaves to15. Axiom/lint/index details are in EVIDENCE.md. This is not an exact compact opposite-ray realization, vanishing finite-head repair cost, PrimeBlindPositive, universal WeilDualBound, or RH proof. The main goal remains OPEN.
+
+Next paper gate: CRITICAL-HEAD-COST-CONJECTURE.md. It asks whether the prescribed compact odd seed admits a joint finite-head correction at the actual negative exposing budget, and explicitly checks whether that stronger route is necessary. Repeated shortening preserves a zero-frequency residual and cannot be assumed to eliminate it. No further isolated filter or conditional-receiver wrapper is proposed as progress.

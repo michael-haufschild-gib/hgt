@@ -215,6 +215,118 @@ Global lint reports eight unrelated unreachable modules, no owned failure
 and no forbidden declaration.
 
 Classification: BRIDGE, no publication novelty claim. This closes C30's
-positive-boundary-pairing obligation. The canonical contour subtraction,
-signed Gaussian coefficient extraction, Mellin main term and final harmonic
-sign remain unformalized. The uniform quotient goal WP03 remains OPEN.
+positive-boundary-pairing obligation. The remaining C30 obligations are
+tracked in the continuation below. The uniform quotient goal WP03 remains OPEN.
+
+## Cycle30b: exact source contour and sublinear arithmetic error
+
+Let R=A-Phi, p=(s-1)zeta(s), P=R*p+p', and
+F=[(A+1/(s-1)-Phi)zeta+zeta']zeta(1-s). The new leaves establish:
+
+- Canonical contour subtraction: the real Gaussian integral of F on3/4
+  equals minus pi times the actual positive boundary-measure pairing.
+- Exact pole transport to3/2, retaining both the boundary mass and
+  the source residue term -pi*Re(P(1))*exp(1/(4*T^2)). The common analytic
+  numerator also gives (s-1)^2 V(s)->P(1) for V=(R+1/(s-1))*zeta^2+zeta'*zeta.
+- Literal arithmetic extraction: for a=((lambda0-Lambda)*1)*1, L(a,s)=V(s)
+  on Re s>1 and the right Gaussian contour equals2*pi*sum a(n)J_T(n).
+- Absolute convergence and a norm bound C*T^(5/6) for the error series
+  sum a(n)[J_T(n)-2*exp(-4*pi^2*n^2/T^2)], using only source absolute
+  Dirichlet summability at9/8.
+
+All source statements use hW alone, with T>=1 as the test parameter range.
+Five targeted modules passed; all are wired into RHTower. Final direct
+source checks and the warning cleanup check passed without warnings.
+All37 public-declaration axiom audits use only propext, Classical.choice
+and Quot.sound. Lint reports six unrelated unreachable modules, no WP03
+failure or prohibited declaration. Source index refresh passed; generated
+catalog files have no Git diff. No full or umbrella build was run.
+
+Classification: BRIDGE. The signed Gaussian upper bound is recorded in
+the continuation below. The one-sided Mellin argument and
+identification of P(1) with the ordinary harmonic limit remain paper
+obligations. Neither the full C30 sign nor WP03 is claimed complete.
+
+## Cycle30c: the actual signed Gaussian upper bound
+
+For every full-positive source and a=((lambda0-Lambda)*1)*1, there is C>=0
+such that, for every T>=1,
+
+    Re sum a(n)*exp(-4*pi^2*n^2/T^2) <= C*T^(5/6).
+
+GaussianBound also proves absolute convergence of the Gaussian and kernel
+series before subtracting them. Its norm bound D*T^2 for the Gaussian
+series holds for every T>0 and will control the large-t Mellin tail.
+No coefficient sign, local absolute-mass bound or source pole sign is
+assumed. The bound follows from the exact contour and audited error series.
+
+The targeted --old build and final direct source audit pass without
+warnings. The module is wired; all four axiom reports contain only
+propext, Classical.choice and Quot.sound. The index refresh passed.
+Lint reports six unrelated unreachable modules, no WP03 failure.
+Classification: BRIDGE. The actual Mellin transform with convergence,
+the pole-limit sign, and the ordinary harmonic-limit identification remain
+to be formalized. WP03 remains OPEN.
+
+## Cycle30d: unconditional ordinary harmonic sign
+
+For every full Weil-positive source, the ordinary sums
+
+    sum_(n<=N) (lambda0(n)-Lambda(n))/n
+
+converge to Re(P(1))<=0. No NotchSmall, local absolute-mass bound,
+coefficient sign, pointwise regularity, zero-free statement or RH premise
+is added. This removes the NotchSmall premise from the older scalar sign
+theorem in WeilConeHarmonicPinning.
+
+GaussianProfile normalizes the literal signed convolution to
+Hpi(t)=sum a(n)exp(-pi*n²*t). Mellin separately proves actual absolute
+integrability and the exact identity Mellin(Hpi,s/2)=Gamma_R(s)*V(s)
+for Re s>1. MellinBound gives a uniform upper bound for its real part
+on1<s<3/2, using a fixed integrable upper envelope. PoleSign extracts
+Re(P(1))<=0. HarmonicSign identifies P(1)'s real part with the ordinary
+harmonic deviation limit through centered Dirichlet continuity at1 and
+the zeta Laurent constant.
+
+All five targeted --old builds and final direct lake-env-lean source
+checks pass without warnings. All12 public declarations have only
+propext, Classical.choice and Quot.sound in their axiom lists. All five
+imports are wired. Classification: PROGRESS/BRIDGE. The analytic Mellin
+machinery is classical; no literature-novelty claim is made.
+
+WP03 remains OPEN. A scalar nonpositive limit gives neither equality
+nor uniform quotient boundedness. On 2026-10-08, C31's proposed
+phase-free three-dilate identity FAILED: the kernel carries
+cos(2*pi*y), hence the half-integer scale twists a(n) by (-1)^n.
+There is no scalar Mellin multiplier forcing harmonic equality.
+C31a's positive survivor is now formalized: exact cosine-twisted
+extraction at every positive real scale, with one source constant and
+error at most C*r^(-1/8)*T^(5/6). Both arithmetic series and the actual
+scaled contour are integrable/summable before extraction. The half-scale
+main term explicitly contains (-1)^n.
+
+TwistedGaussianError and TwistedExtraction add nine public theorems.
+Both targeted --old builds and both final direct lake-env-lean checks
+pass without warnings; all nine axiom audits are standard-only. Imports
+are wired. Lint reports nine unrelated unreachable modules, no WP03
+error; global lint is not green. Classification: PROGRESS/BRIDGE.
+
+C31b is now COMPLETE: for every real c and full-positive source,
+
+    Re[(1+c^2/2)H(t) -(c/2)H_alt(t/4) -cH(4t)] <= C_c*t^(-5/12)
+
+on0<t<=1. The half-scale parity term is retained. The proof derives
+weighted spectral nonnegativity and the residue shift from hW alone;
+no NotchSmall, local mass, arithmetic limit, or pole-sign premise is added.
+PolynomialWeight, PolynomialPairing, PolynomialShift, PolynomialGaussian,
+and PolynomialProfile all pass targeted --old and final direct source
+checks without warnings. All30 public declarations have standard-only
+axiom reports. All five imports are wired; no umbrella build was run.
+Classification: PROGRESS/BRIDGE; no literature-novelty claim.
+
+Parent C32 remains the full arithmetic fibre law from positivity alone.
+C32a's dependency-closed paper argument constrains the actual normalized
+parity Mellin expression to an explicit interval determined by ell<=0.
+It does not assume parity convergence. Its Mellin implementation is in
+progress. Ordinary twisted limits, harmonic equality and WP03's uniform
+quotient bound remain OPEN.

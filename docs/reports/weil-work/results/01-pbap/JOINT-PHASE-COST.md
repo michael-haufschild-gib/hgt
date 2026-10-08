@@ -1,10 +1,10 @@
 # Exact joint phase cancellation and its unpaid energy cost
 
-Status: dependency-closed paper proof of the finite cancellation statement below; Lean audit pending. **BRIDGE**, scientific novelty unestablished. Parent mechanisms are Kronecker recurrence, separation and finite positive quadrature. Full PBAP and Candidate D remain OPEN. This statement closes an exactness gap in the L376 two-frequency sketch; it does not prove a cheap cancellation theorem.
+Status: finite phase classification and logarithmic-cost escape are Lean-audited; the smooth-mixture and actual real-active-node bridges are also fully Lean-audited. Full-energy coercivity remains paper-proved only. **BRIDGE**, scientific novelty unestablished. Parent mechanisms are Kronecker recurrence, separation and finite positive quadrature. Full PBAP and Candidate D remain OPEN. This statement closes an exactness gap in the L376 two-frequency sketch; it does not prove a cheap cancellation theorem.
 
 ## Statement
 
-Let p>=17 be prime, L=(log p)/2, and 0<W<log 2. Fix any nonzero real smooth function beta supported in [0,W]. Write psi(x)=integral beta(u+x) beta(u) du. For every M>1 and every real R there are finitely many frequencies t_j>R and positive weights w_j such that
+Let p>=5 be prime, L=(log p)/2, and 0<W<log 2. Fix any nonzero real smooth function beta supported in [0,W]. Write psi(x)=integral beta(u+x) beta(u) du. For every M>1 and every real R there are finitely many frequencies t_j>R and positive weights w_j such that
 
     sum_j w_j = M,
     1 + sum_j w_j cos(t_j (log n-L)) = 0     (2<=n<p).
@@ -23,7 +23,7 @@ It vanishes at every shifted node log n-L, n>=2. The associated two-cluster diff
 
 The finite phase system has the **sharp infimum M=1, never attained**. Every exact positive solution has M>1, but every M>1 is achievable after every frequency threshold R. This sharp statement is about modulation weights, not the spectral mass of an atom in an absolutely continuous Fourier measure.
 
-The finite phase classification itself already holds for every prime p>=5. The stronger bound p>=17 is used only for the broad-profile support conclusion L>2W. The proof and hostile audit below apply unchanged to that arithmetic strengthening: it only requires the three distinct primes 2, 3, p. Lean exposed no new analytic premise here.
+The finite phase classification and broad-profile construction both hold for every prime p>=5. The support argument needs L>W, which follows from log p/2>log 2>W. The earlier sufficient condition L>2W was unnecessary; the separate Candidate D formulation retains its stated scope.
 
 ## Arithmetic and recurrence
 
@@ -65,7 +65,7 @@ Prime-log independence (p>=17 distinguishes all three primes) forces u=v=0, a co
 
 For each j, the cosine and sine autocorrelations sum to w_j cos(t_j x) psi(x), by the addition formula under the integral. There are finitely many terms, all smooth and compactly supported. At x=0, cos^2+sin^2=1 gives the exact mass identity.
 
-Since p>16 and W<log 2, L>2W. For 2<=n<p the phase identity kills Psi(log n-L). For n>=p, log n-L>=L>W and support of psi in [-W,W] kills the sample. Thus the shifted-null property holds for every n>=2, including all nodes above the finite interpolation range.
+Since p>=5 and W<log 2, L>W. For 2<=n<p the phase identity kills Psi(log n-L). For n>=p, log n-L>=L>W and support of psi in [-W,W] kills the sample. Thus the shifted-null property holds for every n>=2, including all nodes above the finite interpolation range.
 
 Translation expansion gives the aggregate autocorrelation of the g_i as
 
@@ -137,3 +137,106 @@ The finite positive-moment mechanism is classical; see Bayer–Teichmann, *The p
 Korolev–Rezvyakova, *On simultaneous approximations to the logarithms of primes* (2022), treats quantitative local Kronecker approximation: https://www.mathnet.ru/php/archive.phtml?jrnid=cheb&option_lang=eng&paperid=1257&wshow=paper . Its abstract gives an interval-length existence bound for prescribed phases, not the sharp logarithmic energy cost needed here. Bailleul's *Explicit Kronecker-Weyl theorems and applications to prime number races*, https://arxiv.org/abs/2007.05763 , is another primary equidistribution parent, not a PBAP result. No external source found in this audit supplies D2.
 
 Additional current primary source: Stefan Kunis, [Positive quadrature and mobile sampling of multivariate trigonometric polynomials](https://arxiv.org/html/2608.11915v1), submitted 2026-08-12. Its exactness assumptions concern full bounded-degree trigonometric polynomial spaces and Haar integration; its covering-radius/curve-length estimates do not immediately supply this sparse shifted-character energy bound. This is an adjacent parent audit, not evidence of novelty.
+
+## Active-node audit and strengthened arithmetic lemma
+
+The construction above intentionally cancels every phase for 2<=n<p. This overdetermines the actual profile constraints: only nodes where psi(log n-L) is nonzero need a phase cancellation. Therefore the mass-one escape result must not be claimed for every actual null modulation family merely from the two equations at n=2,3; those nodes may lie outside the profile's autocorrelation support.
+
+A stronger elementary arithmetic fact removes this particular limitation whenever two distinct nodes are active. For any distinct positive integers n,m<p, the frequencies log n-(log p)/2 and log m-(log p)/2 are rationally independent. Indeed an integer relation u a_n=v a_m gives
+
+    2u log n - 2v log m + (v-u) log p = 0.
+
+The p coordinate of unique factorization forces v=u, since neither n nor m contains p. The relation then becomes u(log n-log m)=0, and n!=m forces u=v=0. Thus their cosines can never both equal -1 at any real time. This proves exactly the strict positivity and compact-band gap of the two-node defect used above, for any such pair.
+
+Consequently the same mass-one cost divergence proof applies to every fixed-profile exact null modulation family having at least two distinct active shifted nodes, without imposing phase equations at inactive nodes. This is a paper-closed strengthening of the obstruction, with formalization pending. It does not cover profiles with fewer than two active nodes and gives no uniform constant as the profile or p varies. The p-coordinate proof also establishes the M>1 classification for cancellation on any subset of {2,...,p-1} containing two distinct nodes; existence follows by restricting the already proved full-system construction. A singleton has attainable mass one, so the two-node condition is a sharp structural distinction.
+
+Hostile verdict remains **BRIDGE**: rational independence, compactness, and coercivity are classical parents. The advance needed for D2 remains a quantitative full-energy lower bound away from this boundary, retaining the actual active nodes. No such bound has been proved here.
+
+Support-bound refinement (paper audit before promotion): the smooth-mixture construction needs only L>W, since that separates the physical clusters and forces all above-cut shifted samples outside [-W,W]. Every prime p>=5 gives log p/2>log 2>W. Thus its full null-mixture conclusion extends from p>=17 to p>=5. The earlier L>2W bound was sufficient but stronger than used. Candidate D's separate L>2W formulation is unchanged. This refinement is elementary and carries no additional novelty claim.
+
+## Exact real-null criterion for complex profiles
+
+The analytic construction also allows complex beta. In that scope the correct active condition is **Re psi(log n-L) != 0**, not merely psi(log n-L) != 0. For support in [0,W], W<log 2, L>=0, the unshifted and positive-shift samples vanish at x=log n, n>=2. Hermitian symmetry and the real weights then give the exact identity
+
+    sum_g c(g) logValue(g,n)
+      = -2 Re psi(log n-L) [1+sum_j w_j cos(t_j(log n-L))] / sqrt(n).
+
+For L=log p/2 and p>=5, all n>=p are outside the correlation radius. Hence the full real integer-null condition is equivalent to the phase equations precisely at the real-active nodes 2<=n<p. Since sqrt(n)>0, the reverse implication loses no information. Two distinct real-active nodes therefore suffice for the previously proved logarithmic-cost escape. This is an exact restriction to the actual PBAP null constraints; it does not infer complex nullness from real nullness. Paper proof is closed; this interface extension remains to be checked in Lean.
+
+Formal checkpoint: `JointConvex` and the strengthened `JointPhase` targeted builds pass. The arbitrary-pair logarithmic escape scratch audit passes. Final direct-source/axiom audits and the smooth-mixture bridge remain pending at this checkpoint. Scientific novelty remains unestablished.
+
+## Quantitative coercivity bridge for the literal energy (paper proof)
+
+For fixed nonzero smooth compact beta and fixed L>W, the same argument can be strengthened to constants C>=0 and m=integral |beta|^2>0 such that the literal unit-weight cosine/sine pair energy satisfies
+
+    e(T) >= m log(2+|T|) - C                 (every real T).
+
+This supplies a direct interface to the formal logarithmic-cost theorem. Here is a dependency-closed proof using only the corpus Fourier identities and derivative bound, with no numerical experiment. Let B=integral |beta''|. The corpus's twice-integrated Fourier bound gives |F(s)| |s|^2 <= B on the real axis. For |T|>0 and |xi|<=|T|/2, both |xi+T| and |xi-T| are at least |T|/2. The paired two-cluster density is at most twice the sum of the two shifted Fourier squares, hence at most 64 B^2/|T|^4 on that band. Its integral there, with measure dxi/(2 pi), is at most 64 B^2/(2 pi |T|^3). Choose R so this is at most m for |T|>=R. Total pair spectral mass is exactly 2m by Plancherel and disjoint physical clusters. At least m mass remains outside the band. The global bound gammaBracket>=-10 and the exterior bound gammaBracket>=log(1+|T|/8)-10 give
+
+    Gamma(pair) >= m log(1+|T|/8)-20m.
+
+Since 1+|T|/8 >= (2+|T|)/16, this is at least m log(2+|T|)-m log16-20m. Both pole contributions have a uniform absolute bound independent of T: |cos|,|sin|<=1 bound the two translated profiles' weighted L1 norms by those of |beta(u)|+|beta(u-L)|, and the autocorrelation pole transform is a product of the corresponding two Laplace transforms. Thus e(T) obeys the claimed logarithmic lower bound outside [-R,R]. Globally Gamma>=-20m and the same pole bound hold; increasing C by m log(2+R) covers the remaining compact interval.
+
+For nonnegative weights with M<2, summing gives total mixture energy >= E0+m sum w_j log(2+|t_j|)-2C, where E0 is the fixed base energy. The actual real-active two-node escape theorem therefore yields full-energy divergence as M decreases to one. This quantitative coercivity estimate is paper-proved, **not yet Lean-formalized**. It does not establish any sign at masses separated from one or uniformity under variation of beta or p.
+
+
+For later variation of p, the pole bound should retain the two opposite translation factors separately. Set A_+=integral |beta(u)|e^(u/2)du and A_-=integral |beta(u)|e^(-u/2)du. Each modulated channel has Fourier values at the two poles bounded by (1+e^(L/2))A_+ and (1+e^(-L/2))A_- respectively. The total paired signed pole is therefore bounded below by
+
+    -4 (1+e^(L/2))(1+e^(-L/2)) A_+ A_-.
+
+This grows on the p^(1/4) scale when L=log p/2, with beta fixed. Replacing both factors by the larger one would introduce an avoidable p^(1/2) loss. No quantitative phase-cost bound uniform in p is supplied by the compactness argument; that remains the substantive height problem.
+
+Final six-leaf checkpoint: all targeted builds and final direct-source audits pass; all 40 named axiom checks report standard axioms only. This completes the finite cancellation, smooth realization, exact real-active criterion and logarithmic-cost escape. Full-energy coercivity and its normalized energy-escape corollary remain paper-only; no route retirement or PBAP completion is claimed.
+
+
+## Full-mass logarithmic refinement (new paper-closed conjecture)
+
+A stronger lower bound retains the full paired mass. Set ell(x)=log(2+|x|), c0=10+log4 and
+
+    J = integral |F(s)|^2 ell(s) ds/(2 pi).
+
+Then, for every real T and every fixed nonzero profile with L>W,
+
+    Gamma(pair,T) >= 2m ell(T) - 2m c0 - 4J,
+    e(T) >= 2m ell(T) - 2m c0 - 4J
+            - 4(1+e^(L/2))(1+e^(-L/2)) A_+ A_-.
+
+Proof: triangle inequality gives 2+|T| <= (2+|xi|)(2+|xi-T|), hence ell(T)<=ell(xi)+ell(xi-T); the same holds with xi+T. The established gamma lower bound implies gammaBracket(xi)>=ell(xi)-c0. Write P(xi)=|1-exp(i xi L)|^2, A(xi)=|F(xi-T)|^2, B(xi)=|F(xi+T)|^2 and D=(P/2)(A+B). Since 0<=P<=4 and ell>=0,
+
+    D gammaBracket
+      >= D(ell(T)-c0)
+         - (P/2)[A ell(xi-T)+B ell(xi+T)]
+      >= D(ell(T)-c0)-2[A ell(xi-T)+B ell(xi+T)].
+
+Integrating uses the exact total mass integral D=2m and translation invariance of each log moment. Each translated moment is J, giving the error 4J. All integrals are justified: the corpus proves absolute integrability of |F|^2 gammaBracket and |F|^2 for smooth compact profiles. The pointwise bound 0<=|F|^2 ell<=|F|^2(gammaBracket+c0) then proves integrability of J by domination. The same shifted integrable majorants control the error with P. Both pole terms are retained through the explicit preceding lower bound.
+
+Hostile audit: this proof keeps P in the exact leading mass term; it bounds only the nonnegative error term by P<=4. It works for complex profiles and every real T, needs no recurrence-height premise, and does not assume gamma positivity. It yields a stronger fixed-profile coercivity estimate, not a uniform positive energy sign as p or beta vary. Its parent is elementary logarithmic submultiplicativity plus exact Fourier mass; scientific novelty remains unestablished. Formalization is pending. The inverse-cubic central-band estimate remains a separate quantitative concentration statement and is not required by this refined energy proof.
+
+
+## Frontier interpretation and remaining test
+
+Two separately audited realization mechanisms now expose the same missing quantity. Narrow integer packets realize prescribed torus moments but have full energy escaping with packet count. Fixed broad modulation profiles admit exact cancellation with base coefficient approaching one half, but their required real frequencies have unbounded logarithmic cost at that boundary. This is evidence about these two constructions, not a universal obstruction theorem for all torus methods.
+
+The resulting research inference is that moment feasibility alone is too weak an invariant for the current route. A viable next theorem must retain the joint moment constraints and the literal frequency cost. In the broad family, the explicit pole scale is p^(1/4), while the full-mass gamma lower bound retains 2m times the logarithmic frequency cost. The open test is a quantitative, simultaneous-constraint lower cost with constants tracked as p and the profile vary, or a fully admissible negative witness. Neither the fixed-profile compactness argument nor a one-average sampling surrogate discharges that test. The full PBAP cone also contains mixtures beyond this modulation family, so solving D2 would still require an extension argument.
+
+JointFourier is also fully Lean-audited: exact Fourier formulas and inverse-quartic central density bound, with targeted build, final source audit and seven standard-axiom checks. Seven Joint leaves and 47 named axiom checks are complete. The full-mass gamma and literal-energy inequalities above remain paper-only.
+
+## Current analytic audit and ancestry
+
+The full-mass estimate is being formalized directly, including the two signed poles. The finite-mixture consequence is
+
+    E(c) >= E0 + 2m sum_j w_j ell(t_j) - C sum_j w_j,
+
+with the explicit nonnegative fixed-profile constant
+
+    C = 2m(10+log4)+4J+4(1+e^(L/2))(1+e^(-L/2))A_+A_-.
+
+For any target A, use the existing actual-real-null logarithmic escape at threshold (A-E0+2C)/(2m), and shrink its delta below 1. Then sum w<2, so E(c)>A. Active real autocorrelation at either selected node forces beta nonzero, hence m>0; no independent nonzero hypothesis is required. Actual mixture mass is exactly 2m(1+sum w), between 2m and 6m in this neighborhood. Applying energy escape to 6m max(A,0) proves E(c)/mass(c)>A. These arguments use the already formal real-null two-active-node theorem, not equations at inactive nodes. This section remains paper status until the final source audits are recorded.
+
+Primary-source audit on 7 October 2026: [Laptev–Weth, Spectral properties of the logarithmic Laplacian](https://www.ma.imperial.ac.uk/~alaptev/Papers/laptev-weth-2020-revised.pdf) provides the classical logarithmically weighted Fourier-form context. [Connes–Consani, Weil positivity and Trace formula, the archimedean place](https://arxiv.org/abs/2006.13771) studies a single-place positivity mechanism; its abstract does not assert the full present null-mixture theorem. [Chen–Chen–Hauer, 2602.06581v5](https://arxiv.org/abs/2602.06581v5), revised 30 September 2026, studies the fractional-logarithmic Fourier symbol. Its abstract supplies adjacent energy-space results, not the actual PBAP gamma-plus-poles inequality. Current work is classified BRIDGE; no scientific novelty or literature-completeness claim follows from this search.
+
+A further extension check follows directly from the exact Fourier factor already proved: every channel in the fixed-L cluster family has transform zero at every real frequency satisfying exp(i xi L)=1, in particular at xi=0. Positive mixing cannot remove these common spectral zeros. General integer-null mixtures need not share them: a nonzero nonnegative smooth test with sufficiently short support is integer-null and has nonzero integral. Therefore an exact representation of the full null cone by one such cluster family cannot be assumed. This is a structural scope check, not a claimed novel theorem; approximation with changing support/family or an additional positive component would need its own energy and null-constraint proof.
+
+## Final formal checkpoint — 8 October 2026
+
+The full-mass gamma bound, explicit two-pole full-energy bound, actual real-null energy escape and mass-normalized escape are now Lean-complete in `JointCoercivity`, `JointEnergy`, and `JointEnergyEscape`. All targeted builds and final direct-source audits pass with empty final diagnostics; 24 new named axiom checks use standard axioms only. This supersedes the earlier paper-only checkpoints in this working proof. Ten Joint leaves and 71 named checks are complete. D2 away from correction mass one and the full PBAP extension remain open; no scientific novelty or full-solution claim is made.

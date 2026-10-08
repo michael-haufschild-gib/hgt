@@ -34,9 +34,10 @@ private lemma tendsto_translated_polynomial_integral {α : Type*} {l : Filter α
     filter_upwards [hypos] with a ha
     have hInt (R : ℂ[X]) : Integrable (fun t : ℝ =>
         R.eval (u a + (Real.log |t| : ℂ)) * polarKernel ρ (1 + (y a : ℂ) * I) t) := by
-      simpa only [eval_comp, eval_add, eval_C, eval_X] using
-        (integrable_polynomial_polarKernel (z := 1 + (y a : ℂ) * I) hρ₀ hρ₁ (by simpa using ha)
-          (R.comp (Polynomial.C (u a) + X)))
+      have h := integrable_polynomial_polarKernel (z := 1 + (y a : ℂ) * I)
+        hρ₀ hρ₁ (by simpa using ha) (R.comp (Polynomial.C (u a) + X))
+      simp only [eval_comp] at h
+      simpa only [eval_add, eval_C, eval_X] using h
     simp only [eval_add, add_mul, integral_add (hInt P) (hInt Q), add_div]
   | monomial n c =>
     let A (a : α) (j : ℕ) : ℂ := c * u a ^ (n - j) * (n.choose j : ℂ)
@@ -122,8 +123,9 @@ theorem polynomial_polarKernel_boundary_moving {α : Type*} {l : Filter α}
   have hquot : Tendsto (fun a => y a / x a) l (𝓝[>] 0) := by
     apply tendsto_nhdsWithin_iff.mpr
     refine ⟨?_, ?_⟩
-    · simpa only [zero_div, Pi.div_apply] using
-        (tendsto_nhds_of_tendsto_nhdsWithin hy).div hx hx₀.ne'
+    · have h := (tendsto_nhds_of_tendsto_nhdsWithin hy).div hx hx₀.ne'
+      rw [zero_div] at h
+      exact h
     · filter_upwards [hypos, hxpos] with a hya hxa
       exact div_pos hya hxa
   have hqone : ∀ᶠ a in l, y a / x a < 1 := hquot.eventually
@@ -153,7 +155,7 @@ theorem polynomial_polarKernel_boundary_moving {α : Type*} {l : Filter α}
     field_simp
   rw [hz, integral_polynomial_polarKernel_dilate ρ _ P hxa]
   simp only [Function.comp_def, ofReal_div]
-  field_simp <;> ring
+  field_simp
 
 /-- No approach-rate assumption is needed for the actual polynomial Poisson mode. -/
 theorem polynomialPolarMode_boundary_moving {α : Type*} {l : Filter α}

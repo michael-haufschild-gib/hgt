@@ -1,0 +1,464 @@
+{
+  "query": "period two forward coefficients full Weil positivity common ratio rigidity finite Euler factor deformation signed mean variance",
+  "partial": false,
+  "errors": [],
+  "coverage": {
+    "files": 68518,
+    "inventoried": 68518,
+    "pending_files": 0,
+    "outcomes": {
+      "indexed": 68518
+    },
+    "compiler": {
+      "compiled_snapshot": 43,
+      "error": 2,
+      "not_applicable": 11092,
+      "pending": 52028,
+      "stale": 2660,
+      "stale_snapshot": 38,
+      "umbrella_source_only": 1,
+      "unavailable": 2654
+    },
+    "collections": {
+      "lean": 57426,
+      "prose": 11092
+    },
+    "declarations": 1029756,
+    "documents": 2853117,
+    "vectors": 2664316,
+    "method_invalidation_pending": false,
+    "inventory_errors": [],
+    "inventory_complete": true,
+    "generation": 1280816,
+    "methods": {
+      "failed": 54,
+      "ready": 413680,
+      "stale": 180931
+    },
+    "status": "snapshot",
+    "snapshot_written_at": 1791403432.610832,
+    "current_generation": 1280816
+  },
+  "index_warnings": [
+    "semantic_coverage_unavailable"
+  ],
+  "refresh": {
+    "complete": false,
+    "reason": "background_indexer_running"
+  },
+  "unfinished_stages": [],
+  "index_generation": 1280805,
+  "elapsed_seconds": 122.156394875,
+  "declarations": [],
+  "candidate_lemmas": [
+    {
+      "name": "RHTower.WeilPositive",
+      "module": "tmp.l68.A",
+      "relpath": "formal/tmp/l68/A.lean",
+      "line": 18,
+      "statement": "def WeilPositive (lam : ℕ → ℝ) : Prop",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilPositive",
+      "module": "GaloisForLFunctions.RHTower.WeilPositivityFiniteLevelExistence",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityFiniteLevelExistence.lean",
+      "line": 42,
+      "statement": "def WeilPositive (lam : ℕ → ℝ) : Prop",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.weilPositive_of_weilPositiveFull",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+      "line": 395,
+      "statement": "theorem weilPositive_of_weilPositiveFull {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    WeilPositive lam",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.weilPositive_congr",
+      "module": "GaloisForLFunctions.RHTower.WeilPositivityMajorantRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityMajorantRigidity.lean",
+      "line": 933,
+      "statement": "theorem weilPositive_congr {lam lam' : ℕ → ℝ} (h : ∀ n, 2 ≤ n → lam n = lam' n)\n    (hW : WeilPositive lam) : WeilPositive lam'",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.AbelianZetaGas.modeEulerFactor",
+      "module": "GaloisForLFunctions.HTGeometry.AbelianZetaGas.SocleMomentGenerating",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/SocleMomentGenerating.lean",
+      "line": 30,
+      "statement": "def modeEulerFactor (σ : ℝ) (v : ℂ) (m : AbelianZetaMode) : ℂ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilPositiveUpTo",
+      "module": "GaloisForLFunctions.RHTower.WeilPositivityFiniteLevelExistence",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityFiniteLevelExistence.lean",
+      "line": 36,
+      "statement": "def WeilPositiveUpTo (lam : ℕ → ℝ) (A : ℝ) : Prop",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilPositiveUpTo",
+      "module": "tmp.l68.A",
+      "relpath": "formal/tmp/l68/A.lean",
+      "line": 12,
+      "statement": "def WeilPositiveUpTo (lam : ℕ → ℝ) (A : ℝ) : Prop",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.eulerFactor",
+      "module": "GaloisForLFunctions.HTGeometry.HelsonEulerModification",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/HelsonEulerModification.lean",
+      "line": 22,
+      "statement": "noncomputable def eulerFactor (a b : ℂ) : ℂ → ℂ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.deningerPeriodCoeff",
+      "module": "GaloisForLFunctions.RHTower.DeningerStageOneFormExact",
+      "relpath": "formal/GaloisForLFunctions/RHTower/DeningerStageOneFormExact.lean",
+      "line": 126,
+      "statement": "noncomputable def deningerPeriodCoeff (F : (Fin r → ℂ) → ℂ) (j : Fin r) : ℂ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.eulerPositiveLogVariance_eq_eulerLogVariance",
+      "module": "GaloisForLFunctions.RHTower.FrankensteinEulerMobiusSoninSafeChamberCriticalOrder",
+      "relpath": "formal/GaloisForLFunctions/RHTower/FrankensteinEulerMobiusSoninSafeChamberCriticalOrder.lean",
+      "line": 236,
+      "statement": "theorem eulerPositiveLogVariance_eq_eulerLogVariance\n    (sigma : ℝ) :\n    eulerPositiveLogMoment 2 sigma - eulerPositiveLogMoment 1 sigma ^ 2 =\n      eulerLogVariance sigma",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilSingularArithmetic.forwardCoeff",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardCoefficients",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticForwardCoefficients.lean",
+      "line": 27,
+      "statement": "def forwardCoeff (lam : ℕ → ℝ) : ℕ → ℂ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.eulerLogVariance",
+      "module": "GaloisForLFunctions.RHTower.EulerSquarefreeDyadicLogMoments",
+      "relpath": "formal/GaloisForLFunctions/RHTower/EulerSquarefreeDyadicLogMoments.lean",
+      "line": 233,
+      "statement": "def eulerLogVariance (σ : ℝ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.rigidity_aux",
+      "module": "GaloisForLFunctions.HTGeometry.ComplexPairPeakRigidity",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/ComplexPairPeakRigidity.lean",
+      "line": 64,
+      "statement": "private theorem rigidity_aux (c a : Fin m → ℝ) (hc : ∀ i, 0 < c i)\n    {β γ p q : ℝ} (hpq : p < q)\n    (hcp : Real.cos (γ * p) = 1) (hcq : Real.cos (γ * q) = 1)\n    (hdom : ∀ t : ℝ, 2 * Real.cos (γ * t) ≤ expSum c (fun i => a i - β) t)\n    (hp : expSum c (fun i => a i - β) p = 2) (hq : expSum c (fun i => a i - β) q = 2) :\n    ∀ i, a i = β",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.eulerSquarefreeAffineCriticalClockVariance",
+      "module": "GaloisForLFunctions.RHTower.EulerSquarefreeAffineFisherCutoffWard",
+      "relpath": "formal/GaloisForLFunctions/RHTower/EulerSquarefreeAffineFisherCutoffWard.lean",
+      "line": 993,
+      "statement": "def eulerSquarefreeAffineCriticalClockVariance (sigma : ℝ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.eulerSquarefreeAffineCriticalClockVariance_eq_add",
+      "module": "GaloisForLFunctions.RHTower.EulerSquarefreeAffineFisherCutoffWard",
+      "relpath": "formal/GaloisForLFunctions/RHTower/EulerSquarefreeAffineFisherCutoffWard.lean",
+      "line": 998,
+      "statement": "theorem eulerSquarefreeAffineCriticalClockVariance_eq_add\n    (sigma : ℝ) :\n    eulerSquarefreeAffineCriticalClockVariance sigma =\n      squarefreeMobiusCriticalClockVariance sigma +\n        (eulerSquareResidualCriticalClockMoment 2 sigma -\n          eulerSquareResidualCriticalClockMoment 1 sigma ^ 2)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "HTGeometry.ThetaRatioSquare.moment4Part2Coeff",
+      "module": "GaloisForLFunctions.RHTower.ThetaCuspRatioSquareCoefficients",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspRatioSquareCoefficients.lean",
+      "line": 53,
+      "statement": "def moment4Part2Coeff (d : ℕ) : Poly",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.mobiusPlueckerEulerFactor",
+      "module": "GaloisForLFunctions.RHTower.MobiusPlueckerNormalConeDiagonalLift",
+      "relpath": "formal/GaloisForLFunctions/RHTower/MobiusPlueckerNormalConeDiagonalLift.lean",
+      "line": 53,
+      "statement": "def mobiusPlueckerEulerFactor (sigma : ℝ) (p : Nat.Primes) (s : ℂ) : ℂ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.dyadicEulerGeometricVariance",
+      "module": "GaloisForLFunctions.RHTower.EulerSquarefreeDyadicFockLocal",
+      "relpath": "formal/GaloisForLFunctions/RHTower/EulerSquarefreeDyadicFockLocal.lean",
+      "line": 233,
+      "statement": "def dyadicEulerGeometricVariance (q : ℝ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "HTGeometry.phaseCoeff",
+      "module": "GaloisForLFunctions.HTGeometry.CorrelationExponentBridge",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/CorrelationExponentBridge.lean",
+      "line": 242,
+      "statement": "def phaseCoeff (l k : ℚ) : ℚ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeCCMBridge",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeCCMBridge.lean",
+      "line": 145,
+      "statement": "theorem ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) :\n    0 ≤ ccmRestrictedWeilSourceQuadraticWith a lam ⌊Real.exp (2 * a.1)⌋₊ u",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    }
+  ],
+  "source_arguments": [
+    {
+      "name": "GaloisForLFunctions.HTGeometry.constitutiveSameDefect_split_nonsplit_carry_holonomy",
+      "module": "GaloisForLFunctions.HTGeometry.ConstitutiveExtensionCarry",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/ConstitutiveExtensionCarry.lean",
+      "line": 288,
+      "statement": "theorem constitutiveSameDefect_split_nonsplit_carry_holonomy :\n    (∃ s : ConstitutiveBit →+ ConstitutiveSplitMiddle,\n        constitutiveSplitQuotient.comp s = AddMonoidHom.id ConstitutiveBit) ∧\n      (¬ ∃ s : ConstitutiveBit →+ ConstitutiveCarryMiddle,\n        constitutiveCarryQuotient.comp s = AddMonoidHom.id ConstitutiveBit) ∧\n      (∀ a b : ConstitutiveBit,\n        constitutiveSplitSection a + constitutiveSplitSection b -\n          constitutiveSplitSection (a + b) = constitutiveSplitInclusion 0) ∧\n      (constitutiveCarrySection 1 + constitutiveCarrySection 1 -\n        constitutiveCarrySection (1 + 1) = constitutiveCarryInclusion 1) ∧\n      (∀ n : ℕ, constitutiveBaseHistory (n + 2) = constitutiveBaseHistory n) ∧\n      (∀ n : ℕ, constitutiveSplitHistory (n + 2) = constitutiveSplitHistory n) ∧\n      (∀ n : ℕ, constitutiveCarryHistory (n + 2) =\n        constitutiveCarryHistory n + constitutiveCarryInclusion 1) ∧\n      constitutiveCarryInclusion 1 ≠ 0 ∧\n      (∀ n : ℕ, constitutiveCarryHistory (n + 4) = constitutiveCarryHistory n)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.nomogenicPeriodicProducer_phaseQuotient_recurrence_openPrefix",
+      "module": "GaloisForLFunctions.HTGeometry.NomogenicFixedPointCalibration",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/NomogenicFixedPointCalibration.lean",
+      "line": 63,
+      "statement": "theorem nomogenicPeriodicProducer_phaseQuotient_recurrence_openPrefix :\n    (∀ n : ℕ,\n      constitutiveCarryQuotient (constitutiveCarryHistory n) = constitutiveBaseHistory n) ∧\n    (∀ n : ℕ, constitutiveBaseHistory (n + 2) = constitutiveBaseHistory n) ∧\n    (∀ n : ℕ, constitutiveCarryHistory (n + 2) =\n      constitutiveCarryHistory n + constitutiveCarryInclusion 1) ∧\n    constitutiveCarryInclusion 1 ≠ 0 ∧\n    (∀ n : ℕ, constitutiveCarryHistory (n + 2) ≠ constitutiveCarryHistory n) ∧\n    (∀ n : ℕ, constitutiveCarryHistory (n + 4) = constitutiveCarryHistory n) ∧\n    (¬ ∃ d : ConstitutiveBit → ConstitutiveCarryMiddle,\n      ∀ n : ℕ, d (constitutiveBaseHistory n) = constitutiveCarryHistory n) ∧\n    (∀ n : ℕ, (nomogenicSourcePrefix n).length = n) ∧\n    (∀ bound : ℕ, ∃ n : ℕ, bound < (nomogenicSourcePrefix n).length) ∧\n    (constitutiveCarrySection 1 + constitutiveCarrySection 1 -\n      constitutiveCarrySection (1 + 1) = constitutiveCarryInclusion 1)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.constitutiveSplitHistory_period_two",
+      "module": "GaloisForLFunctions.HTGeometry.ConstitutiveExtensionCarry",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/ConstitutiveExtensionCarry.lean",
+      "line": 254,
+      "statement": "theorem constitutiveSplitHistory_period_two (n : ℕ) :\n    constitutiveSplitHistory (n + 2) = constitutiveSplitHistory n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.nomogenicHistory_no_decoder",
+      "module": "GaloisForLFunctions.HTGeometry.NomogenicFixedPointCalibration",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/NomogenicFixedPointCalibration.lean",
+      "line": 45,
+      "statement": "theorem nomogenicHistory_no_decoder :\n    ¬ ∃ d : ConstitutiveBit → ConstitutiveCarryMiddle,\n      ∀ n : ℕ, d (constitutiveBaseHistory n) = constitutiveCarryHistory n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "Complex.sin_periodic",
+      "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+      "relpath": "formal/.lake/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+      "line": 1045,
+      "statement": "theorem sin_periodic : Function.Periodic sin (2 * π)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "HTGeometry.not_injective_phaseClockPair_of_rateRatio_eq_int_div",
+      "module": "GaloisForLFunctions.HTGeometry.IncommensuratePhaseClock",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/IncommensuratePhaseClock.lean",
+      "line": 81,
+      "statement": "theorem not_injective_phaseClockPair_of_rateRatio_eq_int_div\n    {rate₁ rate₂ : ℝ} (hrate₁ : rate₁ ≠ 0)\n    (m n : ℤ) (hn : n ≠ 0)\n    (hratio : rate₂ / rate₁ = (m : ℝ) / (n : ℝ)) :\n    ¬ Function.Injective (phaseClockPair rate₁ rate₂)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.mem_periodSubgroup",
+      "module": "GaloisForLFunctions.HTGeometry.PeriodSubgroupCyclic",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/PeriodSubgroupCyclic.lean",
+      "line": 37,
+      "statement": "theorem mem_periodSubgroup {f : ℂ → ℂ} {p : ℂ} :\n    p ∈ periodSubgroup f ↔ Function.Periodic f p",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "Complex.sinh_periodic",
+      "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+      "relpath": "formal/.lake/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+      "line": 1274,
+      "statement": "theorem sinh_periodic : Function.Periodic sinh (2 * π * I)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.exists_small_rankTwo_realDependent_periods",
+      "module": "GaloisForLFunctions.HTGeometry.RankTwoRealDependentPeriods",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/RankTwoRealDependentPeriods.lean",
+      "line": 53,
+      "statement": "theorem exists_small_rankTwo_realDependent_periods (v : Fin 2 → ℂ)\n    (hv : LinearIndependent ℚ v) (hdep : ¬ LinearIndependent ℝ v) :\n    ∃ p : ℕ → ℂ, (∀ n, p n ∈ Submodule.span ℤ (Set.range v)) ∧\n      (∀ n, p n ≠ 0) ∧ Tendsto p atTop (𝓝 0)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.orderTwoColoopPeriods_augmentedPeriodRank",
+      "module": "GaloisForLFunctions.HTGeometry.OrderTwoPeriodDeletionDADepth",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/OrderTwoPeriodDeletionDADepth.lean",
+      "line": 300,
+      "statement": "theorem orderTwoColoopPeriods_augmentedPeriodRank :\n    multipleEllipticGammaAugmentedPeriodRank orderTwoColoopPeriods = 3",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.GreedyBumpInvolutiveClockData.toFiniteClock",
+      "module": "GaloisForLFunctions.HTGeometry.GreedyBumpFiniteClockApplications",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/GreedyBumpFiniteClockApplications.lean",
+      "line": 125,
+      "statement": "def GreedyBumpInvolutiveClockData.toFiniteClock\n    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]\n    [InnerProductSpace ℝ E] [CompleteSpace E]\n    (A : GreedyBumpInvolutiveClockData E) : GreedyBumpFiniteClockData E where\n  evolution",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.RHTower.isCCMRationalAdelicBruhatSchwartz_add",
+      "module": "GaloisForLFunctions.RHTower.CCMRationalAdelicBruhatSchwartzSpace",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRationalAdelicBruhatSchwartzSpace.lean",
+      "line": 104,
+      "statement": "theorem isCCMRationalAdelicBruhatSchwartz_add {φ ψ : CCMRationalAdele → ℂ}\n    (hφ : IsCCMRationalAdelicBruhatSchwartz φ) (hψ : IsCCMRationalAdelicBruhatSchwartz ψ) :\n    IsCCMRationalAdelicBruhatSchwartz (φ + ψ) where\n  period",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.trdeg_eq_of_isAlgebraic",
+      "module": "GaloisForLFunctions.HTGeometry.TranscendenceDegreeOneVariable",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/TranscendenceDegreeOneVariable.lean",
+      "line": 45,
+      "statement": "theorem trdeg_eq_of_isAlgebraic {A K L : Type u} [Field A] [Field K] [Field L]\n    [Algebra A K] [Algebra K L] [Algebra A L] [IsScalarTower A K L]\n    [Algebra.IsAlgebraic K L] :\n    Algebra.trdeg A L = Algebra.trdeg A K",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.quadPowShift",
+      "module": "GaloisForLFunctions.HTGeometry.FloquetOrbifoldPeriodMaps",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/FloquetOrbifoldPeriodMaps.lean",
+      "line": 28,
+      "statement": "def quadPowShift : Polynomial ℂ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.mem_meroPeriodSubgroup",
+      "module": "GaloisForLFunctions.HTGeometry.MeroPeriodQuotient",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/MeroPeriodQuotient.lean",
+      "line": 130,
+      "statement": "theorem mem_meroPeriodSubgroup {x : meroField (Set.univ : Set ℂ)} {h : ℂ} :\n    h ∈ meroPeriodSubgroup x ↔ addTranslationMeroEquiv h x = x",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.periodDoubledSignal_succ",
+      "module": "GaloisForLFunctions.HTGeometry.DiscreteTimeCrystalSpinChain",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/DiscreteTimeCrystalSpinChain.lean",
+      "line": 537,
+      "statement": "theorem periodDoubledSignal_succ (a : ℝ) (n : ℕ) :\n    periodDoubledSignal a (n + 1) = -periodDoubledSignal a n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.RHTower.SelbergMaassUnipotentPaths.horizontalCost_eq_periodCost",
+      "module": "GaloisForLFunctions.RHTower.SelbergMaassUnipotentPaths",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SelbergMaassUnipotentPaths.lean",
+      "line": 345,
+      "statement": "theorem horizontalCost_eq_periodCost (z : ℍ) (j : ℤ) :\n    horizontalCost N f e z j=(j:ℝ)^(2 : ℕ)*periodCost N f e z.im",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.exists_complex_sub_of_structural_increments",
+      "module": "GaloisForLFunctions.HTGeometry.PairedQuasiEllipticCollapse",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/PairedQuasiEllipticCollapse.lean",
+      "line": 70,
+      "statement": "theorem exists_complex_sub_of_structural_increments\n    {σ τ : ℂ} (hv : LinearIndependent ℚ ![(1 : ℂ), σ, τ])\n    {F P : meroField (Set.univ : Set ℂ)} {a b : ℂ}\n    (hFone : addTranslationMeroEquiv 1 F = F) (hPone : addTranslationMeroEquiv 1 P = P)\n    (hσ : addTranslationMeroEquiv σ F - F\n      = (addTranslationMeroEquiv σ P - P) + algebraMap ℂ (meroField (Set.univ : Set ℂ)) a)\n    (hτ : addTranslationMeroEquiv τ F - F\n      = (addTranslationMeroEquiv τ P - P) + algebraMap ℂ (meroField (Set.univ : Set ℂ)) b) :\n    (∃ c : ℂ, F - P = algebraMap ℂ (meroField (Set.univ : Set ℂ)) c) ∧ a = 0 ∧ b = 0",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "Function.Antiperiodic.even_zsmul_periodic",
+      "module": "Mathlib.Algebra.Ring.Periodic",
+      "relpath": "formal/.lake/packages/mathlib/Mathlib/Algebra/Ring/Periodic.lean",
+      "line": 279,
+      "statement": "theorem Antiperiodic.even_zsmul_periodic [AddGroup α] [InvolutiveNeg β] (h : Antiperiodic f c)\n    (n : ℤ) : Periodic f ((2 * n) • c)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.rat_dependent_periods_of_hypertranscendental",
+      "module": "GaloisForLFunctions.HTGeometry.PeriodRankUniversalLaw",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/PeriodRankUniversalLaw.lean",
+      "line": 74,
+      "statement": "theorem rat_dependent_periods_of_hypertranscendental {f : ℂ → ℂ}\n    (hf : MeromorphicNFOn f Set.univ) (hHT : Hypertranscendental f) {p q : ℂ}\n    (hp : Function.Periodic f p) (hq : Function.Periodic f q) :\n    ¬ LinearIndependent ℚ ![p, q]",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    }
+  ],
+  "proof_ideas": [],
+  "ingredient_sets": [
+    {
+      "description": "Weil positivity from full positivity",
+      "steps": [
+        {
+          "goal": "Derive Weil positivity",
+          "candidate_ids": [
+            "f8f62c35f3c581f28c77f227228609c532d438c1b2d652388f803d58abd01225"
+          ],
+          "candidates": [
+            {
+              "id": "f8f62c35f3c581f28c77f227228609c532d438c1b2d652388f803d58abd01225",
+              "name": "RHTower.weilPositive_of_weilPositiveFull",
+              "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+              "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+              "line": 395
+            }
+          ],
+          "obligations": [
+            "Full implies positive"
+          ],
+          "status": "proposed"
+        },
+        {
+          "goal": "Congruent coefficients imply same positivity",
+          "candidate_ids": [
+            "7c7610d669ed5a039c4544cc91afd95505818bb196e761eb58644d9882063cdd"
+          ],
+          "candidates": [
+            {
+              "id": "7c7610d669ed5a039c4544cc91afd95505818bb196e761eb58644d9882063cdd",
+              "name": "RHTower.weilPositive_congr",
+              "module": "GaloisForLFunctions.RHTower.WeilPositivityMajorantRigidity",
+              "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityMajorantRigidity.lean",
+              "line": 933
+            }
+          ],
+          "obligations": [
+            "Period two implies rigidity"
+          ],
+          "status": "proposed"
+        }
+      ],
+      "status": "not_verified"
+    }
+  ]
+}

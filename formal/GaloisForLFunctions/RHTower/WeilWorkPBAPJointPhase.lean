@@ -164,16 +164,17 @@ theorem jointFrequency_opposite_in_closure (p : Nat.Primes) (R : ℝ) :
   exact (jointTorusReadout_flow p t).symm
 
 /-- Exact cancellation at every shifted integer node below the prime cut. -/
-theorem exists_joint_phase_correction (p : Nat.Primes) (R M : ℝ) (hM : 1 < M) :
+theorem exists_positive_joint_phase_correction (p : Nat.Primes) (R M : ℝ) (hM : 1 < M) :
     ∃ (ι : Type) (_ : Fintype ι) (w t : ι → ℝ),
-      (∀ i, 0 ≤ w i) ∧ (∀ i, R < t i) ∧ (∑ i, w i) = M ∧
+      (Fintype.card ι ≤ (p : ℕ)-1) ∧ (∀ i, 0 < w i) ∧ (∀ i, R < t i) ∧ (∑ i, w i) = M ∧
       ∀ n : ℕ, 2 ≤ n → n < (p : ℕ) →
         1 + (∑ i, w i * Real.cos ((Real.log n - Real.log (p : ℕ)/2)*t i)) = 0 := by
-  obtain ⟨ι, hi, w, t, hw, ht, hsum, hcos⟩ := exists_exact_cosine_correction
+  obtain ⟨ι, hi, w, t, hcard, hw, ht, hsum, hcos⟩ := exists_exact_positive_cosine_correction
     (jointFrequency p) (jointFrequency_nonzero p) (jointFrequency_injective p)
     (jointFrequency_not_opposite p) (R/2) M hM (jointFrequency_opposite_in_closure p (R/2))
   letI : Fintype ι := hi
-  refine ⟨ι, hi, w, (fun i => 2*t i), hw, (fun i => by linarith [ht i]), hsum, ?_⟩
+  have hcard' : Fintype.card ι ≤ (p : ℕ)-1 := by have hp := p.2.two_le; omega
+  refine ⟨ι, hi, w, (fun i => 2*t i), hcard', hw, (fun i => by linarith [ht i]), hsum, ?_⟩
   intro n hn hnp
   let j : Fin ((p : ℕ)-2) := ⟨n-2, by omega⟩
   have hj : j.val+2 = n := by dsimp [j]; omega
@@ -185,46 +186,61 @@ theorem exists_joint_phase_correction (p : Nat.Primes) (R M : ℝ) (hM : 1 < M) 
   simp only [harg, he]
   ring
 
-/-- Two of the shifted prime phases can never both equal the negative endpoint. -/
-theorem joint_no_common_antiphase (p : Nat.Primes) (hp : 5 ≤ (p : ℕ)) (t : ℝ) :
-    ¬(Real.cos ((2*Real.log 2 - Real.log (p : ℕ))*t) = -1 ∧
-      Real.cos ((2*Real.log 3 - Real.log (p : ℕ))*t) = -1) := by
+/-- Nonnegative-weight interface for exact joint phase correction. -/
+theorem exists_joint_phase_correction (p : Nat.Primes) (R M : ℝ) (hM : 1 < M) :
+    ∃ (ι : Type) (_ : Fintype ι) (w t : ι → ℝ),
+      (∀ i, 0 ≤ w i) ∧ (∀ i, R < t i) ∧ (∑ i, w i) = M ∧
+      ∀ n : ℕ, 2 ≤ n → n < (p : ℕ) →
+        1 + (∑ i, w i * Real.cos ((Real.log n - Real.log (p : ℕ)/2)*t i)) = 0 := by
+  obtain ⟨ι, hi, w, t, _, hw, ht, hm, hc⟩ := exists_positive_joint_phase_correction p R M hM
+  exact ⟨ι, hi, w, t, (fun i => (hw i).le), ht, hm, hc⟩
+
+/-- Any two distinct shifted nodes below the prime cut forbid a common negative endpoint. -/
+theorem joint_nodes_no_common_antiphase (p : Nat.Primes) {n m : ℕ}
+    (hn : 0 < n) (hm : 0 < m) (hnp : n < (p : ℕ)) (hmp : m < (p : ℕ))
+    (hnm : n ≠ m) (t : ℝ) :
+    ¬(Real.cos ((2*Real.log n - Real.log (p : ℕ))*t) = -1 ∧
+      Real.cos ((2*Real.log m - Real.log (p : ℕ))*t) = -1) := by
   rintro ⟨h2, h3⟩
   have ht : t ≠ 0 := by intro ht; subst t; norm_num at h2
   obtain ⟨k, hk⟩ := Real.cos_eq_neg_one_iff.mp h2
   obtain ⟨l, hl⟩ := Real.cos_eq_neg_one_iff.mp h3
   let u : ℤ := 2*l+1
   let v : ℤ := 2*k+1
-  have hrel : (u : ℝ)*(2*Real.log 2 - Real.log (p : ℕ)) -
-      (v : ℝ)*(2*Real.log 3 - Real.log (p : ℕ)) = 0 := by
-    apply (mul_eq_zero.mp (show ((u : ℝ)*(2*Real.log 2 - Real.log (p : ℕ)) -
-      (v : ℝ)*(2*Real.log 3 - Real.log (p : ℕ)))*t = 0 from ?_)).resolve_right ht
+  have hrel : (u : ℝ)*(2*Real.log n - Real.log (p : ℕ)) -
+      (v : ℝ)*(2*Real.log m - Real.log (p : ℕ)) = 0 := by
+    apply (mul_eq_zero.mp (show ((u : ℝ)*(2*Real.log n - Real.log (p : ℕ)) -
+      (v : ℝ)*(2*Real.log m - Real.log (p : ℕ)))*t = 0 from ?_)).resolve_right ht
     dsimp [u, v]
     push_cast
     linear_combination -(2*(l : ℝ)+1)*hk + (2*(k : ℝ)+1)*hl
-  have hd : characterDetuning (u • jointExponent p 2 - v • jointExponent p 3) primeLogs = 0 := by
+  have hd : characterDetuning (u • jointExponent p n - v • jointExponent p m) primeLogs = 0 := by
     rw [detuning_linear, map_sub, map_zsmul, map_zsmul, ← detuning_linear,
-      ← detuning_linear, jointExponent_detuning p (by norm_num : (2:ℕ) ≠ 0),
-      jointExponent_detuning p (by norm_num : (3:ℕ) ≠ 0)]
-    simpa only [zsmul_eq_mul, Nat.cast_ofNat] using hrel
+      ← detuning_linear, jointExponent_detuning p hn.ne', jointExponent_detuning p hm.ne']
+    simpa only [zsmul_eq_mul] using hrel
   have he := (characterDetuning_eq_zero_iff primeLogs_independent _).mp hd
-  let q : Nat.Primes := ⟨2, Nat.prime_two⟩
-  have hpq : p ≠ q := by
-    intro he
-    have hv := congrArg (fun z : Nat.Primes => (z : ℕ)) he
-    dsimp [q] at hv
+  have hval := congrArg (fun e : Nat.Primes →₀ ℤ => e p) he
+  simp only [Finsupp.sub_apply, Finsupp.smul_apply, jointExponent_at_prime p hn hnp,
+    jointExponent_at_prime p hm hmp, Finsupp.zero_apply, zsmul_eq_mul] at hval
+  have huv : u = v := by
+    change u • (-1 : ℤ) - v • (-1 : ℤ) = 0 at hval
+    simp only [smul_eq_mul, mul_neg_one] at hval
     omega
-  have he2 : jointExponent p 2 q = 2 := by
-    simp [jointExponent, primeExponentVector_apply, Nat.prime_two.factorization,
-      q, Ne.symm hpq]
-  have he3 : jointExponent p 3 q = 0 := by
-    simp [jointExponent, primeExponentVector_apply, Nat.prime_three.factorization,
-      q, Ne.symm hpq]
-  have hval := congrArg (fun e : Nat.Primes →₀ ℤ => e q) he
-  simp only [Finsupp.sub_apply, Finsupp.smul_apply, he2, he3, Finsupp.zero_apply,
-    zsmul_eq_mul, mul_zero, sub_zero] at hval
-  dsimp [u] at hval
-  omega
+  have hu : (u : ℝ) ≠ 0 := by
+    exact_mod_cast (show u ≠ 0 by dsimp [u]; omega)
+  rw [← huv] at hrel
+  have hprod : (u : ℝ)*(Real.log n - Real.log m) = 0 := by nlinarith [hrel]
+  have hlog := sub_eq_zero.mp ((mul_eq_zero.mp hprod).resolve_left hu)
+  have hnm' := Real.log_injOn_pos (by change (0:ℝ)<(n:ℝ); exact_mod_cast hn)
+    (by change (0:ℝ)<(m:ℝ); exact_mod_cast hm) hlog
+  exact hnm (by exact_mod_cast hnm')
+
+/-- The two smallest nodes already forbid a common negative endpoint. -/
+theorem joint_no_common_antiphase (p : Nat.Primes) (hp : 5 ≤ (p : ℕ)) (t : ℝ) :
+    ¬(Real.cos ((2*Real.log 2 - Real.log (p : ℕ))*t) = -1 ∧
+      Real.cos ((2*Real.log 3 - Real.log (p : ℕ))*t) = -1) := by
+  exact joint_nodes_no_common_antiphase p (by norm_num : 0<(2:ℕ))
+    (by norm_num : 0<(3:ℕ)) (by omega) (by omega) (by omega) t
 
 /-- Nonnegative exact correction weights have total mass strictly greater than one. -/
 theorem joint_phase_mass_gt_one (p : Nat.Primes) (hp : 5 ≤ (p : ℕ))

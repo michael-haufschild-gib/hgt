@@ -1,131 +1,74 @@
-# WP06 spectral deficit frontier — 2026-10-07
+# WP06 spectral-deficit frontier — 2026-10-08
 
-Goal ACTIVE, UNSOLVED. User requires hgtl7 every turn, corpus-first conjecture/attack/paper-proof/Lean loop until exact target:
-∀ η>0, ∃ᶠ T→∞, deficitCount hW T/T ≤ η.
-D includes every actual XiZeroCopy: off-line costs 1, critical costs max(1−μ{γ}/multiplicity,0). No producer existence or RH proved.
+## Goal / scope
+ACTIVE, UNSOLVED unbounded user goal. Solve docs/reports/weil-work/06-spectral-deficit.md: for arbitrary hW : WeilPositiveFull lam, every eta>0 has frequently T atTop with actual deficitCount hW T/T <= eta. Deficit counts ALL XiZeroCopy multiplicities, off-line copies at unit cost, missing canonical critical atom shares. No upper-deficit producer proved. Receiver gives lam=vonMangoldt n>=2 and RH for a supplied positive datum; no positive datum produced.
+User requires hgtl7 workflow EVERY goal turn, corpus-first conjecture/attack/paper proof/Lean loop, never retire for difficulty. No mathematical computations/numerical experiments, no added scientific premises/axioms, no heartbeat increases, no full/umbrella builds. One owned foreground Lean/build at a time. Target builds use lake --old build +Module; FINAL unchanged audit lake --old env lean path. Wire umbrella. No commits/pushes/subagents. Preserve concurrent unrelated changes. Docs architecture/testing absent at init. update_plan and multi_tool_use tools unavailable; working card carries plan. Serena ignores Lean files, so standard file edits after reading; use rg for text.
 
-## Current substantive result: Candidate A COMPLETE
-WeilWorkDeficitCoefficient.eventually_sub_vonMangoldt_div_sqrt_le_deficit:
-for arbitrary hW:WeilPositiveFull lam, n≥2, ε>0,
-eventually |lam n−Λ n|/(4π√n) ≤ D(T)/T+ε.
-Improves old 4πn scale, no assumed upper deficit premise. Also:
-- Re actual character gap G_(log n)(T)/T→(Λn−lam n)/(2π√n).
-- Sharp canonical minus actual-zero mass (M(T)−N(T))/T→0.
-Quantitative corpus advance; external scientific novelty NOT established.
-This remains a lower deficit estimate, NOT the missing upper-deficit producer.
+## Completed checkpoint: TWENTY modules /84 PUBLIC theorem axiom audits
+Previous19/79 plus NEW formal/GaloisForLFunctions/RHTower/WeilWorkDeficitUniformDerivativeBudget.lean, namespace RHTower.WeilWorkDeficitDerivativeBudget, ~447 lines, five public theorems:
+1 kernel_derivative_factorial_envelope line194.
+2 packet_factorial_envelope line277.
+3 correlation_factorial_bound line312.
+4 weighted_correlation_factorial_bound line367.
+5 weighted_tail_factorial_bound line418.
+For 0<a<pi, exact C=3+4pi/(pi-a) and one B>0 work for ALL k,u:
+ norm(Phi^(k)(u)) <= B C^k (k+2)! exp(-a exp(2|u|)) exp(-|u|).
+Public packet k c = sum_j c_j Phi^(k_j); budget C k c = sum_j norm(c_j) C^(k_j)(k_j+2)!. Arbitrary finite complex packets/all orders. Literal full correlation integral integrable, bounded by B budget^2 exp(-2a exp|y|).
+For 0<r<2pi, exact C_r=3+16pi/(2pi-r), one B_r bounds full actual weighted term and complete tail from N+2 by B_r budget^2 exp(-r(N+2)); tail summability is included. Weight reuses WeilWorkDeficitBudget.weight n = vonMangoldt(n+2)+WeilWorkPBAP.atomCost(logIndex n), not a surrogate. At r=pi, C_r=19 exactly. Constants precede all orders/counts/coefficients. This is BRIDGE, no scientific novelty, no positive cancellation construction, no sharpness claim.
+Proof: coefficient weight abs(P_k.coeff j)*j!/delta^j, delta=(pi-a)/2, exact cusp coefficient recurrence and degree<=k+2. Uniform weight <=A C^k(k+2)!. Exponential-series sum bounds actual polynomial by A C^k(k+2)! exp(delta t). ENTIRE theta sum bounded geometrically, parity gives global envelope. Product-envelope identity 2exp|y|<=exp(2|u|)+exp(2|u-y|) gives integrability/full correlation; actual atomCost polynomial bound plus quadratic exponential absorption gives full weighted tail. Paper C10u recorded BEFORE Lean in PROOF.
+Validation of FINAL strengthened source:
+- /tmp/wp06-c10-explicit-build.log: target-only build exit0, target114s,13456 jobs mostly replays.
+- /tmp/wp06-c10-explicit-final.log: final unchanged direct audit exit0, zero bytes.
+- /tmp/wp06-c10-axioms.lean and /tmp/wp06-c10-explicit-axioms.log: all5 #print axioms and specialized arbitrary-degree real-packet tail / exact base19 examples exit0. All5 only propext, Classical.choice, Quot.sound. One harmless sequence-style warning in /tmp example; no target-source diagnostics.
+- Umbrella import at formal/GaloisForLFunctions/RHTower.lean ~7088 (line can shift with concurrent work), explicitly wired.
+- /tmp/wp06-c10-final-lint.log exit1: EIGHT unrelated reachability errors, no WP06 or forbidden declaration findings: WeilPaperPacketPrimitiveInterpolation, WeilWorkHigherDenominatorBesselBoundary, WeilWorkHigherDenominatorFourierBoundary, HTGeometry ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. Do not fix outside scope.
+- Scoped tracked whitespace checks exit0; source no-index check no diagnostics (exit1 means new file).
+All owned processes terminal. No unfinished owned Lean source. /tmp analytic/tail draft fragments removed; audit source/logs retained. Latest RESULT/EVIDENCE/PROOF/lean-audit.log and pipeline card updated. Date rolled to Oct8 via environment message while working. hgtl75 anti-theatre and4 anti-laziness answers posted explicitly. No goal completion/blocking.
 
-## Original capstone corpus: 13 modules,57 public theorems (later additions below)
-All namespace RHTower.WeilSpectral; files formal/GaloisForLFunctions/RHTower/WeilWorkDeficit*.lean.
-Recovery(8): bounded-window regularized atom/deficit recovery uniform over every prefix, no growing-height rate.
-SharedMass(12): actual χ≤μ,ν, χ((0,T])=N−D; norm character gap≤M−N+2D.
-MassBounds(5): logarithmic interval mass and finite Icc for canonical μ and actual ordinate ν=Σdirac γ; Cauchy-weight integrability.
-PoissonLeakage(5): scalar L(T,r)=|countKernel T r−π1_(0,T]|; ≤π, ≤3/H away endpoints, ≤12T/(1+r²) far.
-LeakageIntegral(6): integrability and ∫L/T→0 for BOTH actual measures; one private measure-general proof, canonical public APIs preserved.
-FourierTransport(4): canonical σ=2 complex Fourier transport, norm error≤∫L dμ; normalized error→0 even arbitrary k(T). Inverting exponential multiplier is NOT uniform.
-ArithmeticMean(2): exact cosine mean of Re(Φλ−ξ′/ξ) at σ>1 equals (Λn−λn)n^(−σ)/2, zero-frequency mean0.
-SquareWindow(1): actual-copy admissible-window square-displacement bound from smaller uniform first weighted tail. Every finite F, no assumed symmetry; both sides/multiplicities paid.
-SquareMoment(1): Q(T)=Σ_(0<γ≤T)(β−.5)^2, Q(T)/T→0 unconditional.
-Projection(3): exact line-conjugate multiplier correction norm≤e^(−1.5|k|)*(k²/2 cosh(|k|/2))*Q(T); fixed-k normalized limit0.
-ZeroKernel(2): per-copy Fourier integral error≤1.5L; complex dominated integration of actual Poisson copy series.
-ZeroTransport(5): raw sum error≤1.5∫L dν, uniform k(T) normalized0; finite character sum equals sharp ν integral; projected ξ'/ξ Fourier error/T→0 fixed k.
-Coefficient(3): exact real logn gap limit, M−N=oT, eventual √n bound.
+## Previous C8 completed (19/79 checkpoint)
+WeilWorkDeficitXiApproximationCost.lean namespace WeilWorkDeficitApproximation. Four public: paperFT_error_at_zero, zero_approximation_cutoff_bound, exponential_budget_error_bound, double_exponential_variation_bound. For actual real Xi zero gamma, finite complex Phi-translate packet shifts[-a,a], variation V, physical L2 error E vs exp(-i gamma u)Phi(u), h=norm XiC0>0: exact FT error atgamma=-XiC0; h<=sqrt(2L)E+2B(V+1)exp(-exp(2(L-a))); V<=exp N gives h²<=8(a+log(N+K))E² with universalK>1; E>0 and exp(exp(h²/(8E²)-a)-K)<=V+1. No simplicity premise. /tmp/wp06-c8-{build,final,axioms,lint}.log alltargetaudits0 standardonly; lintthen5unrelated. Narrow failedcard docs/drafts/pipeline/5-failed/weil-work-06-cheap-strong-transfer.md retains full positive survivor. Refutes only UNIFORM cheap strong-L2 transfer covering all spectral shifts, not C7/finite forms or particular M-dependent Bernoulli witnesses. Spectral Plancherel bridge paper-only.
 
-## Current validation checkpoint
-No ACTIVE OWNED PROCESS. No unfinished owned Lean source.
-All13 imports wired in RHTower.lean. 57 public axiom audits standard-only [propext,Classical.choice,Quot.sound].
-Newest:
-- ZeroKernel final direct /tmp/wp06-zero-kernel-second.log exit0 empty; target build0(225s).
-- ZeroTransport final direct /tmp/wp06-zero-transport-third.log exit0 empty; target build0(115s).
-- Coefficient final direct /tmp/wp06-coefficient-third.log exit0 empty; target build0(151s).
-- Combined /tmp/wp06-coefficient-axioms.log exit0, ten public theorems standard-only.
-- Final lint /tmp/wp06-coefficient-final-lint.log exit1 ONLY6 unrelated reachability errors:
-  RHTower.WeilWorkSettledPhaseCanonicalDisorder;
-  HTGeometry.ApertureConeCalculus,ApertureConeWinding,ApertureLogTranslation,ApertureOpenHistoryIdeal,BoundaryCoronaCStarAlgebra.
-- Scoped whitespace check0. No numerical experiments, full/umbrella builds, raised heartbeats, new mathematical axioms, commits/push.
-- Obsolete /tmp/wp06-coefficient-draft.lean removed. Audit scratches/logs retained.
+## Earlier core / distinctions
+WeilWorkDeficitCoefficient capstone: eventually abs(lam n-Lambda n)/(4pi sqrt n)<=D(T)/T+eps. Exact shared critical submeasure, sharp mass identity, Poisson leakage/zero Fourier transport, deficitSquareCount/T->0. This is LOWER D bound, never an upper producer.
+WeilWorkDeficitRestrictedXiDensity: complex Xi-weighted density of bounded-interval physical exponentials, qualitative; no quantitative coefficient rate.
+WeilWorkDeficitRepairCost: actual atomCost<=C(n+1)sqrt n, four audited theorems.
+WeilWorkDeficitRadicalBudget:9 audited theorems, short real shifts[-log2,0], cost=(sum abscoeff)^2, full actual weight, term/tail exp(-rM) for0<r<pi; ENTIRE weighted l1 truncation convergence, uniform majorants. No cancellation construction.
+Restricted no-go C0 separate translates and C1g geometric grid outer-covariance law fully closed; survivor exact last sampled indexR+D/nonzero edge product and later vanishing formalized. Card ../5-failed/weil-work-06-restricted-radical-cancellation.md. Neither retires full coherent route.
 
-## Next research cycle
-Candidate A is FINISHED. Do not keep rebuilding it or adding routine coefficient receivers.
-Main upper estimate for growing-height ACTUAL atom overlap is open; off-line copies cost1 regardless of Q=oT.
-Fixed-frequency bridge has its complete application; next conjecture must use exact Weil datum/source arithmetic to control overlap.
-Known prior limits:
-- WeilPaperDeficitInverseEnergy:4I≤D,D²≤16NI,off-linecount≤4I. InverseRecovery recovers I only at fixed bounded height. No I decay producer.
-- WeilWorkQuantizationFiniteRemainderRigidity: GLOBAL finite residual measure forces rigidity. Does not imply residual finite from a linear-scale bound.
-- WeilConeWindowRigidity relative Wiener theorem assumes vonMangoldt producer (RH); cannot use unconditionally.
-- Paper krein-producer-loops L111–L112 already explains low-frequency blindness; smoothing zeros loses atoms while altering exact archimedean datum. Do not rediscover as new no-go.
-- WeilFibreBochnerLaw excludes both signs of nonzero Cramér-restored profile, despite rough-sign-only failure.
-External: Ford–Zaharescu math/0405459v2, descendant0805.2745v3, simultaneous1511.06814v2 give classical fixed-character normalization. Booker1308.3067v2 Theorem1.6 uses sublinear total spectral variation with discrete almost-integral L-data assumptions, not general canonical measures. No external novelty certificate.
+## Live conjectures / exact next target
+General C: positive near-radical families retaining spectral lower mass off actual Xi zeros, full actual weighted repair budget->0, zeta energy->0. Nullrepair then critical support/lamLambda receiver. Full assembly not Lean.
+C7: some fixed aperture a>0, UNBOUNDED horizons M, real Phi-translate families shifts[-a,0], retain Phi, cancel b(n) n2..M, coefficient-square cost<=C exp(theta M), theta<2pi exp(-a). Paper implication toC complete; constructionOPEN.
+C9: everyfixeda>0,epsilon>0 actual finite quadratic dual target-relative negative witness of variation<=1 and size C^-1 exp(-epsilon M) timesbaseline pairing; competing critical exponential witness obstruction. BothOPEN.
+C10: existsc>0 and unboundedM>=2, finite REAL derivative packets orders<=M retainingPhi, total raw correlations b(n)=0 n2..M and sum_(n>M)(Lambda(n)+atomCost(n))abs b(n)<=exp(-cM). Uniform order bound now paid by C10u, but positive cone and affordable cancelling coefficients OPEN.
+NEW C11 qualitative restricted cone: define REAL A(n,k)=integral Re(Phi^(k)(u))*Re(Phi^(k)(u-log n))du. For EVERY M>=2 conjecture nonnegative d0..dM, d0=1, sum_k dk A(n,k)=0 n2..M. Family sqrt(dk)Phi^(k), no cross terms. This is NOT diagonal translate C0. Competing finite dual: someM and alpha2..alphaM with sum alpha_n A(n,0)>0 and all sums for1<=k<=M nonnegative. Finding actual family/actual separating functional is OPEN CORE; generic separation is not new knowledge.
+NEW C11q quantitative competitor: exists fixed0<theta<pi and UNBOUNDED horizonsM withC11 coefficients and sum_k dk*19^(2k)*((k+2)!)²<=exp(theta M). Actual singleton squared budgets sum exactly to this. C10u r=pi,N=M-1 gives tail<=Bpi exp(-pi(M+1)+theta M), hence C10 eventually foranyc<pi-theta. No unknown inverse constants. C11forallM andC11q unboundedM have different quantifiers: failure at oneM does not refuteC11q; cost condition can fail evenifC11true. Neither retires coherentC10/C7/C9. No newLeanpremise. Verdict SURVIVES PRELIMINARY ATTACK, no noveltycertificate.
+Next attack ACTUAL matrix at coupled k~n, not fixed-k asymptotics/dimensioncount. Near-radical dimension and cuspdegree motivate scale but do not prove matrixsigns/positive minors. Do not assume TP/Chebyshev system.
+Older C5p polynomialcost/C6diagnosticsOPEN; C4b quartic lowercostA>=cM4/(logM)^34 paper-only stripBlaschke bridge, notLean, no route retired. C2f fixedfinite positive feasibility paper via density+separation, no cost. Anchored Bernoulli spectral-shift cancellation paper cost2^(M-1), shiftsO(M/logM), baseline-relativedualnegative1/(2^(M-1)-1); fails to preserveXi factor.
 
-## Latest searches
-All candidate/source statements inspected:
-- /tmp/wp06-zero-transport-frontier.json: actual copy Fourier transport; partialfalse/errors[].
-- /tmp/wp06-sharp-frontier.json: sharper coefficient query; no old exact capstone located.
-- /tmp/wp06-next-overlap-frontier.json: inverse energy etc; partialfalse/errors[],68402files,43compiled snapshots,51936pending,2660stale. Includes own then-unchecked source; never count that as independent proof.
-- /tmp/wp06-atom-rigidity-frontier.json and /tmp/wp06-linear-residual-frontier.json: partialfalse/errors[], finite residual/conditional relative Wiener receivers, no upper-deficit producer.
-Run documented research command directly, do not inspect help/source first. Search coverage remains predominantly source-only.
+## New working representation lead (NOT AUDITED; no new Lean draft)
+Theta-pair substitution v=2u-y+log(n/m), t=ell exp y, suggests exact
+ kappa(y)=exp(y/2) sum_(ell>=1)d(ell)[(16pi^4 t^4+36pi²t²)K0(2pi t)-48pi³t³K1(2pi t)],
+where Knu(x)=1/2 integral_R exp(-x coshv)cosh(nu v)dv.
+Derived by Phi evenness and P0(X)P0(Z), XZ=(nm exp y)², X+Z=2nm exp y coshv. Need audit normalization, absolute Fubini/regrouping, all-order differentiation BEFORE use. Could expose actual C11 coupled matrix via divisor-Bessel series. This is likely classical Xi²/Koshliakov ancestry, not a novelty claim. First inspect existing MaassZetaSquaredConverse (symbol overview read, relevant bodies NOT yet), EisensteinCuspTailImaginaryOrderBound. Do not create another routine formal bridge before checking exact relevance toC11sign/cost.
 
-## Source/log locations
-docs/drafts/pipeline/1-in-progress/weil-work-06-deficit.md
-docs/reports/weil-work/results/06-deficit/{RESULT.md,PROOF.md,EVIDENCE.md,lean-audit.log}
-Updated to13modules57theorems and main OPEN. Main card gates remain open.
-Owned code WeilWorkDeficit*.lean plus their umbrella imports. Existing modules read-only, preserve unrelated concurrent edits.
+## Searches / fresh evidence this turn
+All commands terminal, candidates/source_arguments/ingredients inspected. No search absence certificate.
+/tmp/wp06-c10-actual-cone.json: deep300s,partialfalse,68547indexed,refreshincomplete.
+/tmp/wp06-c10-factorial-frontier.json: deep300s,partialfalse,errorsempty,68550indexed,43compiledsnapshots,mostcompilerpending/stale.
+/tmp/wp06-c10-uniform-exact.json: partialtrue Qdrantsemanticbudgettimeout, availablehitsinspected.
+/tmp/wp06-c11-positive-collocation.json: partialfalse,errorsempty,68556indexed,43compiledsnapshots,backgroundrefreshincomplete.
+/tmp/wp06-c11-bessel-frontier.json: partialtrue localdecompositiondeadline,68565indexed,43compiledsnapshots,backgroundrefreshincomplete. Returned relevant MaassZetaSquaredConverse.divisorCount, zetaSqCompleted, coeff_eq_divisorCount_of_functional_equation (HAS functional-equation/growth premises; notproducer), divisorBesselMajorant_le, imaginaryorderBesselbound and oldtailtheorem. Available20+20 inspected.
+Exactrg: fixed-order derivative envelopes foundin WeilWorkExposingRayDifferentialParity/Width. Their ownheaders explicitlyexcludeuniformorderbounds. Cusp recurrence/degree/complete summability/derivativeparity reused. RiemannKernelSpectralLocalization localized_deviation_nonneg explicitly assumes bounded normDeficit and summability; readbody467–506. WeilFullConeRiemannKernelRigidity eq_vonMangoldt_of_weilPositiveFull_of_ge assumes lam>=Lambda, notproducer.
 
-## Tool/Lean gotchas
-One foreground Lean/build process at time; poll terminal owned handle before starting next. Targeted lake --old build +Module; final lake --old env lean path. Never full/umbrella build.
-Serena rejects Lean symbol operations as ignored; read-source/ordinary file fallback documented. update_plan,multi_tool_use.parallel unavailable; card plan and Promise.allSettled independent reads.
-Do NOT coimport WeilFullConePoissonCountingIdentity with WeilConeSpectralCounting: duplicate fully qualified integral_poissonKernel_eq with incompatible signatures. Reused complex dominated-sum proof directly.
-RCLike.re vs Complex.re: explicitly change integral_re or continuous_re composition type before rw/simp.
-lt_mem_nhds gives eventual lower bound; gt_mem_nhds is upper.
-Use explicit denominator positivity when rewriting abs_div; generic abs_of_pos may target numerator.
-Explicitly unfold private wrappers and deficitOrdinateMeasure before rewrites.
-tsum subtraction body needs parentheses.
-HasSum.congr and root tsum_le_tsum absent; use finite support and Summable.tsum_le_tsum.
-Audit recalled mathlib names in /tmp specialized have:=@Name; polymorphic APIs may need explicit types.
+External primary audit opened:
+- Paris https://arxiv.org/abs/1606.03576 (Toucharduniformasymptotic abstract; no numericillustrationimported).
+- Jalowy/Kabluchko/Marynych https://link.springer.com/article/10.1007/s00365-026-09775-2 (11Sep2026), Touchard4.2 anddifferentialoperators5.2–5.3: zero-distributionlimits, notC11signs.
+- Groechenig https://link.springer.com/article/10.1007/s44146-026-00264-3 (17Aug2026), sections1–3: collocationinverse results requireTPandwitness; noTPestablishedhere. Do not import sweeping formulations without auditing.
+- NIST DLMF https://dlmf.nist.gov/1.9 classicalanalyticancestry.
+- Berndt/Dixit/Gupta/Zaharescu survey https://adixit.people.iitgn.ac.in/wp/wp-content/uploads/2023/03/askey_special.pdf (openedintro,21pages2265lines; Koshliakovsectionstilltoread).
+- https://arxiv.org/abs/1505.01552 (openedabstract), KoshliakovXiidentities parentlead.
+- MDPI2026Koshlyakov https://www.mdpi.com/2227-7390/14/15/2715 failedfetch; nopropositionused.
+BroadsearchRHproofclaims notused. Corpus/candidate mathematical statements always need exact source and Lean validation.
 
-
-2026-10-07 radical-repair cycle: main goal remains ACTIVE/UNSOLVED. Fourteen finished owned modules, 58 public theorems. New WeilWorkDeficitRadicalTranslateObstruction proves ∃δ>0 uniformly over every finite positive mixture of separately translated truncated Riemann kernels (each L≥log2+1): δ Σw|FT f(r)|²≤Σw logValue f 2. First direct lake --old env lean audit passed empty; targeted build passed (205s); public axiom/API audit passed standard-only; umbrella wired. Final lint has 15 unrelated reachability errors (exact list in owned EVIDENCE), no WP06 issue. No active owned build or unfinished Lean source.
-Important frontier correction: fresh @-type audit of eq_vonMangoldt_of_boundaryMeasure_criticalZeros confirms carrier support alone suffices, without atom bound or RH. Old paper's arbitrary/unbounded mass uniqueness case is already settled. WeilConditional.Decomposition.riemannHypothesis requires mandatory D section argument; not unconditional hW-only. Reciprocal H² means do not give exceptional-height or forward-energy estimates. Existing RiemannKernelModulatedWindowTests already handles universal logarithmic deviation bound; existing positive-definite deviation potential/translation bound must not be rediscovered.
-Current exact Conjecture C (PROOF): finite positive test mixture S≥1 on compact K outside actual critical zeros, actual zeta energy R→0 and full weighted arithmetic repair B→0. Existing nullRepair then gives zero-defect small-energy majorants and critical carrier support. Construction OPEN. C0 translated-only family FALSE; exact positive survivor above formalized. Elementary corpus consequence, no significant scientific novelty this cycle.
-Next conjecture C1: for each compact K outside critical zeros, ∃A≥0,C>A+3 such that all large N admit coefficients a_ij (i,j≤N), sum|a|²≤N^A, tests f_i=Σ_j a_ij Φ_(L_N)(u−log j), L_N=1+.5 log(C logN), with sum_i logValue f_i n=0 for EVERY n≥2 and sum_i|FT f_i(r)|²≥1 onK. Only n≤e² C NlogN can contribute. Existing actual-copy tail bound would give total zeta energy ≤M N^(A+2−C)→0. OPEN CORE: positive covariance feasibility plus quantitative normalization, not a dimension count. First complete paper attack: extreme ratio support isolation forces Re Q_N1=0 for N≥2,L≥1; for symmetricK can average Q andconjQ and take realQ. This does not killC1. Next investigate support peeling through rational ratios or construct bounded-cost covariance; do not formalize C1 without proof. Exact statements, paper implication and attack in owned PROOF; newest searches in EVIDENCE. No numerical experiments or new premises.
-
-
-## Latest authoritative checkpoint — 2026-10-07, C1g and C2
-Goal ACTIVE / UNSOLVED. Current completed total supersedes older counts: 15 owned modules, 60 public theorem axiom audits.
-
-New module `WeilWorkDeficitGeometricRadicalObstruction.lean` (umbrella-wired) has two public theorems: `RHTower.WeilSpectral.geometric_radical_outer_autocorrelation` (line 159), exact outer-support law for actual coherent truncated-kernel autocorrelations on any real spacing c>0, L>=c+1; and `logValue_geometric_radical_eq_zero_iff` (line 194), cancellation at all positive powers of integer b>=2 iff every coefficient vanishes. Positive invariant: kernel last index R>=1 and covariance last index D>=0 give last correlation index R+D, exact coefficient C(D)κ(R), all larger samples zero. Nonzero covariance trace prevents triviality. REDISCOVERED Laurent-polynomial parent algebra / corpus specialization; no scientific novelty claim, no degree-uniform lower cost, no upper deficit bound. No-go audit explicitly strengthened the public result beyond a restated impossibility. Closed card `docs/drafts/pipeline/5-failed/weil-work-06-restricted-radical-cancellation.md` covers both C0's uniform coercivity and C1g's positive invariant.
-
-Final direct source audit `/tmp/wp06-geometric-strong-first.log` exits 0, empty diagnostics; targeted build `/tmp/wp06-geometric-strong-build.log` exits 0 (82s); both axiom/API audits `/tmp/wp06-geometric-strong-axioms.log` exit 0, only propext/Classical.choice/Quot.sound. No full build/heartbeat increase/added scientific premise/commit. Final lint `/tmp/wp06-geometric-final-lint.log` exits 1 on 17 unrelated reachability errors, none WP06. Scoped diff check exits 0. No owned active process or unfinished Lean source remains; temporary strengthened-source duplicate removed.
-
-Current next conjecture C2 (OPEN, exact statement and full support/energy reduction in PROOF): for compact K disjoint actual critical zeros, seek A>=0,C>A+1 and for all large N real coefficient rows a_ij, i<=N,j in [ceil(N/2),N], total squared coefficients <=N^A. Let L_N=1+.5 log(C log N), x_j=log(j/N), f_i=Σ_j a_ij Φ_LN(u-x_j). Require total logValue zero for integers 2<=n<2 exp(2) C log N and Σ_i|FTf_i|²>=1 on K. Support then cancels all larger integers automatically (shift diameter <=log2). Existing `WeilExcess.norm_W_shiftComb_le` bounds total remainder <=2 M N^(A+1-C)->0; common translation preserves autocorrelation and W. This gives C with B=0 IF constructed. Missing core: positive covariance feasibility plus polynomial normalization, not dimension count. Geometric-grid outer peeling does not cover dense rational ratios. C1 remains OPEN as well; C2 is a sharper candidate, not its disproof.
-
-Fresh covariance, inverse-approximation, short-block and centered-energy searches all partial=false/errors=[]; all candidate/source statements inspected. Latest coverage 68,448 files, 43 compiler snapshots, 51,974 pending, 2,660 stale. General real shift-combination source read and confirmed. LebesgueAtomWeilPositivity source checked: uses noninteger measure weights, not a counterexample in the assigned integer-weight domain. External parent audit: Plonka's autocorrelation-symbol paper and mathlib Laurent-polynomial docs; global Dirichlet Lq bounds and Bessel-series abstracts did not supply the missing producer. Do not restart a broad route survey. Continue hgtl7 every goal turn with C2, keeping main actual-copy deficit target and no-go closure rules intact.
-
-
-LATEST AUTHORITATIVE WP06 CHECKPOINT, 2026-10-07 after restricted-density/C3 cycle: Goal ACTIVE, UNSOLVED. Sixteen finished modules / 62 public theorem axiom audits. New `formal/GaloisForLFunctions/RHTower/WeilWorkDeficitRestrictedXiDensity.lean` proves `WeilSpectral.xi_interval_integrals_eq_zero_iff` (line 78) and `dense_span_deficitXiShiftLp` (line 114): actual XiC(r) exp(-itr) profiles for t in any nonempty real interval have dense complex span in L². Reuses `XiPolynomialDensity`, `ExpDecayFourierAnalytic`, actual xi nonvanishing ae, and Riesz duality. Classical BRIDGE, not scientific novelty or coefficient bound. Final unchanged direct source `/tmp/wp06-restricted-density-second.log` exit0 empty; target --old build `/tmp/wp06-restricted-density-build.log` exit0 96s; axioms `/tmp/wp06-restricted-density-axioms.log` both standard propext/Classical.choice/Quot.sound; specialized API `/tmp/wp06-c2f-api-specialized.log` exit0. Umbrella wired. Latest lint `/tmp/wp06-restricted-density-lint.log` exit1 seven unrelated unreachable modules: RHTower.WeilWorkSingularArithmeticCauchyReflection, WeilWorkSingularArithmeticHerglotzPairing; HTGeometry.ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. Scoped diffcheck0. No owned active process or unfinished Lean source remains.
-C2f complete PAPER proof near top of owned PROOF: every FIXED integer horizon M and compact K excluding actual critical zeros admits positive REAL coherent Phi_L mixtures on centered grids log(j/N), j in [ceil(N/2),N], for all sufficiently large L,N, cost bounded by a finite B(M,K). Real restricted-translate L² density; nonzero finite cosine dual q has zero mean but positive mean square, hence changes sign; finite sphere cover gives positive defect-cone interior; add Phi baseline to preserve spectrum; round shifts and truncate, preserve interior and uniformly bounded weights. Only complex-density component formalized, NOT full real/cone/grid claim. This gives no joint growth bounds on B,L0,N0 and does NOT prove C2.
-New selected C3 OPEN: untruncated actual real Phi; for every sufficiently large M require finite positive coherent family f0=Phi, fi=sum_j aij Phi(u-xij) with real aij, shifts in [-log2,0], all moments b(n)=sum_i 2/sqrt(n) autocorr(fi)(log n)=0 for 2<=n<=M. Require A_M=1+sum_i>=1 (sum_j |aij|)^2 <= C exp(theta M), constants C>0 and 0<=theta<pi/2. C2f gives finite feasibility but NO rate. Fixed baseline covers any off-zero compact after constant scaling; no separate spectral interpolation. This decouples physical truncation L from arithmetic horizon M and is less restrictive than C2.
-Complete PAPER reduction C3r and C3t in owned PROOF, NOT Lean-audited yet: actual `atomCost(n)<=C(n+1)sqrt(n)`. Source `narrowBump` equals fixed smooth eta(u/delta), delta=1/(8(n+1)), by Mathlib ContDiffBump.toFun with radius ratio2; eta=1 on[-1,1], support[-2,2]. FT scale delta H(delta r). Pair factor |1±exp(ir logn)|<=2. Corpus `WeilFullConeBochnerMeasure.abs_gammaBracket_le` gives |gammaBracket r|<=G+|r|, so gamma numerator <=const*(G delta int|H|²+int|r||H|²), uniformly bounded; pole terms bounded by const delta²(1+sqrt(n))². Divide by atomWeight=2delta int eta²/sqrt(n). Smooth compact eta pays both Fourier moments by two integrations by parts.
-C3 tail uses VERIFIED source `riemannAutocorr_two_mul_le` and explicit `riemannShiftRatio(x)=exp(-pi(x-1))*((4pi²x-6pi)/(4pi²-6pi))²`. For shift differences in[-log2,log2] and n>=4, shifted autocorr <=const n² exp(-pi n/2). Thus |b_M(n)|<=const A_M n^(3/2) exp(-pi n/2). Weighted (Lambda+atomCost) tail <=const A_M sum_n>M n³ exp(-pi n/2) ->0 if theta<pi/2. For each fixed family smooth truncation preserves pointwise domination 0<=Phi_L<=Phi; same summable majorant pays ENTIRE weighted budget convergence, including new active integers. Fixed-family actual zeta energy tends0 by existing norm_W_shiftComb_le. Choose L(M) separately to make energy and budget errors <=1/M and baseline spectrum >=1 on K after fixed normalization; actual PBAP nullRepair adds positive spectra and exact integer cancellation with energy <=R+B. Hence C3=>C is now dependency-closed on PAPER, unformalized. C3 rate itself is the main hard conjecture; no target solution claim.
-Current cycle searches in /tmp/wp06-c2-*.json, c3-analytic-density, c4-christoffel, c5-autocorr-halfplane completed partialfalse; formal-density deep query partialtrue semantic/reranking deadlines, available hits inspected; targeted rg found stronger XiPolynomialDensity machinery. Latest c3-repair-cost query partialfalse/errors[] all candidate/source statements inspected, coverage compiler mostly pending/stale. Found separate ExposingRayFiniteRealization repair (requires IsPolarTest), not substituted for actual PBAP cost. External density ancestry Bruna-Olevskii-Ulanovskii arxiv math/0307323v1 and Olevskii-Ulanovskii1612.00811v2; L² versus L¹ distinction essential. Recent Zhu2608.24827, Groskin2607.02828, Desogus2609.20367 claims inspected but no closing theorem adopted. No computations. hgtl7 anti-theatre/anti-laziness reviews posted. Next turn: apply skill again; continue actual target-specific exponential coefficient cost and formalize exact C3r/C3t or remaining C2f obligations, do not resurvey or call bridges a solution. Owned PROOF/RESULT/EVIDENCE/card/audit log updated, global frontier and STATUS untouched.
-
-
-## Authoritative latest checkpoint: C3r COMPLETE, 17 modules / 66 public audits
-2026-10-07. Main goal ACTIVE/UNSOLVED. Latest turn PROGRESS/BRIDGE; anti-theatre and anti-laziness answers posted in chat. No significant external scientific novelty claimed.
-New module formal/GaloisForLFunctions/RHTower/WeilWorkDeficitRepairCost.lean (namespace RHTower.WeilWorkPBAP):
-- narrowBump_eq_scaled_zero line23: h_n(u)=h_0((n+1)u).
-- paperFT_narrowBump_scale line35: exact complex-frequency scaling.
-- integral_narrowBump_sq_scale line58.
-- atomCost_le_polynomial line255: ∃C>0,∀j:LogIndex, atomCost j≤C(j+1)√j.
-All exact actual PBAP definitions; no new scientific premise. Uniform gamma numerator from g(r)=|FT h0(r)|²(G+|r|), majorant (4/(n+1))g(r/(n+1)); strip bound |FT pair(z)|≤e∫h0 for |Imz|≤1 pays BOTH poles.
-Final direct lake --old env lean source /tmp/wp06-cost-final.log exit0/empty; target build /tmp/wp06-cost-build.log exit0/103s; /tmp/wp06-cost-axioms.lean/log exit0, four public declarations only propext/Classical.choice/Quot.sound. Specialized APIs verified in same scratch. Initial integrable_zero scratch call needed explicit ℝ ℝ volume. Umbrella import wired. No source change after successful direct audit.
-Global lint /tmp/wp06-cost-lint.log exit1: 9 unrelated reachability errors: RHTower WeilWorkSettledPhaseForwardRegularPart, WeilWorkSettledPhaseForwardSummatory, WeilWorkSingularArithmeticCanonicalGaussian, WeilWorkSingularArithmeticPoleCancellation; HTGeometry ApertureConeCalculus,ConeWinding,LogTranslation,OpenHistoryIdeal,BoundaryCoronaCStarAlgebra. No WP06 or forbidden issue. Own diff-check0. All owned processes terminal; no unfinished owned Lean module.
-PROOF/RESULT/EVIDENCE/audit.log/card updated. C3r is formally complete; C3t weighted-tail/full-budget truncation reduction still PAPER ONLY.
-
-New cost attack C4b (complete PAPER proof, NOT Lean-audited): any finite REAL translated-Phi family retaining separate Phi baseline, cancelling all total logValue n=2..M, has coefficient cost A_M≥c M^4/(log M)^34 for all largeM. Shifts arbitrary, no restriction needed. Cannot retire bounded-cost route until positive boundary formally audited. Does NOT kill C3 subcritical exponential rate.
-Proof: H=FTPhi=XiC. G(r)=|H(r)|²(1+Σ|P_i(r)|²)≤A_M|H|², even nonnegative. F(z)=(1/(2π))∫G(r)e^{-irz}; F0≥κ0>0, F(±logn)=0. Source ThetaCuspChargeXiStripBound gives xiStripConst(π/4−ε)≤Cε^-8: formula γ^-3*(S4γ+S2γ), Gaussian sums ≤Cγ^-5,γ^-3 and γ≥2ε. Thus |H(r)|≤Cε^-8 exp(-(π/4−ε)|r|). F bounded by CA_M ε^-17 on strip b=π/2−4ε. Finite disk Blaschke division under w=tanh(πz/(4b)) bounds F0 by CA_M ε^-17 ∏_{n=2}^M ((n^p−1)/(n^p+1))², p=π/(2b). Choose ε=(logM)^-2. p−1≤16ε/π, Σn^-p≥logM−O(1), product≤CM^-4. Lower bound follows. Generic analytic parent is classical; verdict BRIDGE, not scientific novelty.
-Directly read: ThetaCuspChargeXiStripBound.lean lines1–21,160–244; norm_XiC_ofReal_le_strip line192, thetaGaussianPowerSum_le223. ThetaCuspComplexStrip explicit source proof458–548 and xi decay856. ThetaCuspChargeDominance.xiStripConst_chBeta_le line13 also gives bound3000000/t^16, but C4 proof uses θ direct. RiemannAutocorrFourier.riemannXi_eq_XiC around74 fixes normalization.
-External primary: Platonov Spectral synthesis..., author upload https://www.researchgate.net/publication/267177344_Spectral_synthesis_in_some_topological_vector_spaces_of_functions §3 explicit strip Blaschke. Calder–Kempf quant-ph/0405065; Kempf–Ferreira quant-ph/0305148; diDio–Schmüdgen1809.00584; Karvonen–Suzuki2209.12473. These do not give exact C3 rate. Ferreira authorPDF403; arXiv available.
-Fresh searches /tmp/wp06-c3-turn-frontier.json partialfalse,68,482indexed, refreshincomplete/backgroundindexer, compiler mostlypendingstale; /tmp/wp06-c3-cost-boundary.json partialtrue. Candidate and source statements inspected, direct sources used. No absence/novelty certificate.
-
-Next hard conjecture C5p OPEN: ∃C,K>0,M0,∀M≥M0 finite real translatedPhi family with shifts[-log2,0], separate baselinePhi, cancellation n2..M, A_M≤CM^K. C4b forces K≥4. StrongerthanC3 and would implyitsrate, but [OPEN CORE] target-specific positive covariance construction. Do not price arbitrary unit defect cone instead of particular −b(Phi). Generic Blaschke zero-enforcement of autocorrelation does NOT establish Fourier factor |XiC|² times positive restricted exponential square sum: preserve this constraint. No upper construction or bounded inverse proved.
-Continue corpus-first hgtl7: attack C5p; formalize exact paper C4b positive boundary and C3t dependencies as needed. Main target not solved; never mark complete.
+## Persistence / next turn
+Owned working log docs/drafts/pipeline/1-in-progress/weil-work-06-deficit.md; result docs/reports/weil-work/results/06-deficit/{RESULT.md,PROOF.md,EVIDENCE.md,lean-audit.log}. Main goal remains ACTIVE/UNSOLVED. Previous turn classification PROGRESS in formal analytic coverage, not newscientificknowledge. Next init read hgtl7, relevant memories/frontier/target; verify completed source/emptyfinal/axioms then attackC11q actualpositiveconstruction or exactdualobstruction. Keep broader C7/C9/C10 and full actual deficit goal. No active owned processes or unfinished source.

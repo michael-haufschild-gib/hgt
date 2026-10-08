@@ -1,0 +1,3868 @@
+{
+  "query": "Weil full positive source logarithmic coefficient square energy composite contribution prime primitive set sharp variance constant one log log",
+  "mode": "deep",
+  "partial": true,
+  "errors": [
+    {
+      "stage": "text_retrieval",
+      "error": "interrupted"
+    }
+  ],
+  "coverage": {
+    "files": 68537,
+    "inventoried": 68537,
+    "pending_files": 0,
+    "outcomes": {
+      "indexed": 68537
+    },
+    "compiler": {
+      "compiled_snapshot": 43,
+      "error": 2,
+      "not_applicable": 11093,
+      "pending": 52046,
+      "stale": 2660,
+      "stale_snapshot": 38,
+      "umbrella_source_only": 1,
+      "unavailable": 2654
+    },
+    "collections": {
+      "lean": 57444,
+      "prose": 11093
+    },
+    "declarations": 1029934,
+    "documents": 2853586,
+    "vectors": 2664907,
+    "method_invalidation_pending": false,
+    "inventory_errors": [],
+    "inventory_complete": true,
+    "generation": 1281194,
+    "methods": {
+      "failed": 54,
+      "ready": 413724,
+      "stale": 180917
+    },
+    "status": "snapshot",
+    "snapshot_written_at": 1791406431.394054,
+    "current_generation": 1281195
+  },
+  "index_generation": 1281186,
+  "semantic_coverage": {
+    "complete": null,
+    "status": "not_measured",
+    "reason": "reporting_budget"
+  },
+  "refresh": {
+    "complete": false,
+    "reason": "background_indexer_running"
+  },
+  "retrieval_assessment": "model_suggests_sufficient_sources",
+  "candidate_lemmas": [
+    {
+      "id": "7559d65c0b28e510e438debc6c6f79e3dabd8b2ba070474a3017454778e35297",
+      "name": "RHTower.routeEPrimeLogEnergy",
+      "module": "GaloisForLFunctions.RHTower.RouteESourceFaithfulEulerTiltUnitShell",
+      "relpath": "formal/GaloisForLFunctions/RHTower/RouteESourceFaithfulEulerTiltUnitShell.lean",
+      "line": 22,
+      "end_line": 26,
+      "kind": "def",
+      "statement": "def routeEPrimeLogEnergy (T : Finset Nat.Primes) : ℝ",
+      "compiled_statement": null,
+      "source_statement": "def routeEPrimeLogEnergy (T : Finset Nat.Primes) : ℝ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Real.log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "T",
+          "kind": "source_reference"
+        },
+        {
+          "target": "p",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℕ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "2c4cb7838adb777f90a438b711245b1adc20983e78e29e16e12245b2c34fc0c5",
+      "applicability": "not_checked",
+      "score": 0.03278688524590164,
+      "matched_view": "statement",
+      "reranker_score": 0.9969280362129211
+    },
+    {
+      "id": "8a1106a44589bcb6d1946cf0267d80ccf558d63eff2825d46de956e3d7a0715b",
+      "name": "RHTower.primeDepthBVWoldXiStokesEnergy_eq_modularLogEnergy",
+      "module": "GaloisForLFunctions.RHTower.XiArithmeticModularHodgeEnergyLaw",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiArithmeticModularHodgeEnergyLaw.lean",
+      "line": 129,
+      "end_line": 144,
+      "kind": "theorem",
+      "statement": "theorem primeDepthBVWoldXiStokesEnergy_eq_modularLogEnergy\n    (rho : XiDivisorSupport) (p : Nat.Primes)\n    (i j : PrimeDepthBVWoldCell) (c : ℂ) :\n    Real.log (p : ℝ) ^ (2 : ℕ) *\n        primeDepthBVWoldSourcePolarizationStokesExcess\n          (primeDepthBVWoldXiCenteredRate rho) i j c =\n      (primeDepthBVWoldConnection i j /\n          (xiGammaEulerPrimitivePrimeDepthLogClock i *\n            xiGammaEulerPrimitivePrimeDepthLogClock j)) ^ (2 : ℕ) *\n        Real.log (deningerMeyerXiPrimeGammaModularWeight rho p) ^ (2 : ℕ) *\n          Complex.normSq c",
+      "compiled_statement": null,
+      "source_statement": "theorem primeDepthBVWoldXiStokesEnergy_eq_modularLogEnergy\n    (rho : XiDivisorSupport) (p : Nat.Primes)\n    (i j : PrimeDepthBVWoldCell) (c : ℂ) :\n    Real.log (p : ℝ) ^ (2 : ℕ) *\n        primeDepthBVWoldSourcePolarizationStokesExcess\n          (primeDepthBVWoldXiCenteredRate rho) i j c =\n      (primeDepthBVWoldConnection i j /\n          (xiGammaEulerPrimitivePrimeDepthLogClock i *\n            xiGammaEulerPrimitivePrimeDepthLogClock j)) ^ (2 : ℕ) *\n        Real.log (deningerMeyerXiPrimeGammaModularWeight rho p) ^ (2 : ℕ) *\n          Complex.normSq c",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "log_deningerMeyerXiPrimeGammaModularWeight",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeDepthBVWoldSourcePolarizationStokesExcess_eq",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "6cd3283e3072bc2aef2bc5ff62cdf5b1e045e0701c7b79bced77f99a74abdcb0",
+      "applicability": "not_checked",
+      "score": 0.015625,
+      "matched_view": "statement",
+      "reranker_score": 0.993151068687439
+    },
+    {
+      "id": "2cc1be2316c35b2ba403ffb4fed4ac93a9eb82ccb23ddf37d0b318949256164c",
+      "name": "RHTower.thetaCuspXiSquareThirdLogCoefficient",
+      "module": "GaloisForLFunctions.RHTower.PrimeArchThetaThirdCumulantProductKernel",
+      "relpath": "formal/GaloisForLFunctions/RHTower/PrimeArchThetaThirdCumulantProductKernel.lean",
+      "line": 410,
+      "end_line": 416,
+      "kind": "def",
+      "statement": "def thetaCuspXiSquareThirdLogCoefficient : ℝ",
+      "compiled_statement": null,
+      "source_statement": "def thetaCuspXiSquareThirdLogCoefficient : ℝ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "3",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries.coeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries.logOf",
+          "kind": "source_reference"
+        },
+        {
+          "target": "thetaCuspXiSquareNormalizedThirdJet",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "8c900b318660f138e8318d55177336b1cf2fc88cecbca7a849939450d1e4de79",
+      "applicability": "not_checked",
+      "score": 0.01639344262295082,
+      "matched_view": "statement",
+      "reranker_score": 0.9927322268486023
+    },
+    {
+      "id": "10029a73b8b9cb53c8cc8233b7fa1d1962016295b5b9a3d017eb2e9f4a23a447",
+      "name": "RHTower.weightedPrimeClockReflectionLogMomentEnergy",
+      "module": "GaloisForLFunctions.RHTower.PrimeSeamDampingAperture",
+      "relpath": "formal/GaloisForLFunctions/RHTower/PrimeSeamDampingAperture.lean",
+      "line": 25,
+      "end_line": 32,
+      "kind": "def",
+      "statement": "def weightedPrimeClockReflectionLogMomentEnergy\n    (m : ℕ) (theta sigma : ℝ) (p : Nat.Primes) : ℝ",
+      "compiled_statement": null,
+      "source_statement": "def weightedPrimeClockReflectionLogMomentEnergy\n    (m : ℕ) (theta sigma : ℝ) (p : Nat.Primes) : ℝ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Real.log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "m",
+          "kind": "source_reference"
+        },
+        {
+          "target": "p",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeClockReflectionEnergy",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sigma",
+          "kind": "source_reference"
+        },
+        {
+          "target": "theta",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "480d5d32b54266c7a839074e0c894302eac9ec1566b27fe0ffd4f9af177f2606",
+      "applicability": "not_checked",
+      "score": 0.02547482665058788,
+      "matched_view": "statement",
+      "reranker_score": 0.9914972186088562
+    },
+    {
+      "id": "3221084caf24ae4df421adc3abbf01fa28dc138cf2757e9647a43a28130e59ce",
+      "name": "RHTower.DeletionMixedRefinement.tendsto_primeClockEnergy_atTop_of_log_motion",
+      "module": "GaloisForLFunctions.RHTower.ArithmeticPrimeEnergyTransport",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ArithmeticPrimeEnergyTransport.lean",
+      "line": 193,
+      "end_line": 209,
+      "kind": "theorem",
+      "statement": "theorem tendsto_primeClockEnergy_atTop_of_log_motion {e : ℝ} (he : e≠0)\n    {K : ℕ→ℕ} (hK : Tendsto K atTop atTop) {h : ℕ→ℝ}\n    (hlog : Tendsto (fun j => h j*Real.log (K j)) atTop (𝓝 0)) :\n    Tendsto (fun j => primeClockCutoffEnergy (K j) (e+h j)) atTop atTop",
+      "compiled_statement": null,
+      "source_statement": "theorem tendsto_primeClockEnergy_atTop_of_log_motion {e : ℝ} (he : e≠0)\n    {K : ℕ→ℕ} (hK : Tendsto K atTop atTop) {h : ℕ→ℝ}\n    (hlog : Tendsto (fun j => h j*Real.log (K j)) atTop (𝓝 0)) :\n    Tendsto (fun j => primeClockCutoffEnergy (K j) (e+h j)) atTop atTop",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Function.comp_apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "N",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.tendsto_log_atTop.comp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Tendsto",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_pos.mpr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "const_mul_atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "div_mul_cancel₀",
+          "kind": "source_reference"
+        },
+        {
+          "target": "dsimp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "e",
+          "kind": "source_reference"
+        },
+        {
+          "target": "eventually_ge_atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "filter_upwards",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hK",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hK.eventually",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hN",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hbase",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hbase.comp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "he",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hlog",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hp.congr'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hr.pos_mul_atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "j",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ne'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_num",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeClockCutoffEnergy",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeClockCutoffEnergy_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "tendsto_natCast_atTop_atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "tendsto_primeClockCutoffEnergy_atTop_of_scaled_tendsto_atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "tendsto_primeClockEnergy_ratio_of_log_motion",
+          "kind": "source_reference"
+        },
+        {
+          "target": "with",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℕ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "d4e4dfc70391da397ec7b870ea4472dee8a64c4b39ee6b523418fb15d157e38b",
+      "applicability": "not_checked",
+      "score": 0.01595677050222505,
+      "matched_view": "statement",
+      "reranker_score": 0.9909616112709045
+    },
+    {
+      "id": "6f5337454ddde580a234995fee0af9dfd9a4a0d3c8392ed0685391e14d4cc4a0",
+      "name": "RHTower.WeilSpectral.sqCoeff",
+      "module": "GaloisForLFunctions.RHTower.WeilConeSoundararajanSplit",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeSoundararajanSplit.lean",
+      "line": 87,
+      "end_line": 92,
+      "kind": "def",
+      "statement": "def sqCoeff (lam : ℕ → ℝ) (L : ℝ) : ArithmeticFunction ℂ",
+      "compiled_statement": null,
+      "source_statement": "def sqCoeff (lam : ℕ → ℝ) (L : ℝ) : ArithmeticFunction ℂ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "L",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "else",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "if",
+          "kind": "source_reference"
+        },
+        {
+          "target": "lam",
+          "kind": "source_reference"
+        },
+        {
+          "target": "max",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n.Prime",
+          "kind": "source_reference"
+        },
+        {
+          "target": "polyLength",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "then",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℂ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℕ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "37a477287735218dcd514efa650b168a9b2ccfeff5efb83d9209bb2a358891a4",
+      "applicability": "not_checked",
+      "score": 0.022677311118824484,
+      "matched_view": "statement",
+      "reranker_score": 0.9902757406234741
+    },
+    {
+      "id": "3e26f515207c424827ed4d68df54e78be0eeb08fc05b037c8660a397df379a9e",
+      "name": "RHTower.primeDepthBVWoldXiNormalExtensionEnergy_eq_modularLogEnergy",
+      "module": "GaloisForLFunctions.RHTower.XiArithmeticModularHodgeEnergyLaw",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiArithmeticModularHodgeEnergyLaw.lean",
+      "line": 88,
+      "end_line": 108,
+      "kind": "theorem",
+      "statement": "theorem primeDepthBVWoldXiNormalExtensionEnergy_eq_modularLogEnergy\n    (rho : XiDivisorSupport) (p : Nat.Primes)\n    (i : PrimeDepthBVWoldCell)\n    (s : ℂ →ₗ[ℂ] (ℂ × ℂ))\n    (hs : primeDepthBVWoldVerticalQuotient.comp s = LinearMap.id)\n    (c : ℂ) :\n    Real.log (p : ℝ) ^ (2 : ℕ) *\n        Complex.normSq\n          (primeDepthBVWoldSourceNormalExtensionCocycle\n            (primeDepthBVWoldXiCenteredRate rho) i s c) =\n      Real.log (deningerMeyerXiPrimeGammaModularWeight rho p) ^ (2 : ℕ) *\n        Complex.normSq c",
+      "compiled_statement": null,
+      "source_statement": "theorem primeDepthBVWoldXiNormalExtensionEnergy_eq_modularLogEnergy\n    (rho : XiDivisorSupport) (p : Nat.Primes)\n    (i : PrimeDepthBVWoldCell)\n    (s : ℂ →ₗ[ℂ] (ℂ × ℂ))\n    (hs : primeDepthBVWoldVerticalQuotient.comp s = LinearMap.id)\n    (c : ℂ) :\n    Real.log (p : ℝ) ^ (2 : ℕ) *\n        Complex.normSq\n          (primeDepthBVWoldSourceNormalExtensionCocycle\n            (primeDepthBVWoldXiCenteredRate rho) i s c) =\n      Real.log (deningerMeyerXiPrimeGammaModularWeight rho p) ^ (2 : ℕ) *\n        Complex.normSq c",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Complex.normSq_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.normSq_ofReal",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "c",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "i",
+          "kind": "source_reference"
+        },
+        {
+          "target": "log_deningerMeyerXiPrimeGammaModularWeight",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeDepthBVWoldSourceNormalExtensionCocycle_eq_of_rightInverse",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeDepthBVWoldXiCenteredRate",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rho",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "s",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "c5c7c1c09681cda5b0e6ab6b175a32e0374cc33dbe5cf3b37ead81b32d10dbb2",
+      "applicability": "not_checked",
+      "score": 0.023514696685428396,
+      "matched_view": "statement",
+      "reranker_score": 0.9900526404380798
+    },
+    {
+      "id": "e14e1a5bf4b4c846e056a2db1dbf35234544a6fd30f5660594e6b1642158eda8",
+      "name": "RHTower.thetaCuspXiSquareThirdLogCoefficient_eq",
+      "module": "GaloisForLFunctions.RHTower.PrimeArchThetaThirdCumulantProductKernel",
+      "relpath": "formal/GaloisForLFunctions/RHTower/PrimeArchThetaThirdCumulantProductKernel.lean",
+      "line": 416,
+      "end_line": 458,
+      "kind": "theorem",
+      "statement": "theorem thetaCuspXiSquareThirdLogCoefficient_eq :\n    thetaCuspXiSquareThirdLogCoefficient =\n      thetaCuspNormalizedEvenMoment 3 / 720 -\n        thetaCuspNormalizedEvenMoment 1 * thetaCuspNormalizedEvenMoment 2 / 48 +\n        thetaCuspNormalizedEvenMoment 1 ^ 3 / 24",
+      "compiled_statement": null,
+      "source_statement": "theorem thetaCuspXiSquareThirdLogCoefficient_eq :\n    thetaCuspXiSquareThirdLogCoefficient =\n      thetaCuspNormalizedEvenMoment 3 / 720 -\n        thetaCuspNormalizedEvenMoment 1 * thetaCuspNormalizedEvenMoment 2 / 48 +\n        thetaCuspNormalizedEvenMoment 1 ^ 3 / 24",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "24",
+          "kind": "source_reference"
+        },
+        {
+          "target": "3",
+          "kind": "source_reference"
+        },
+        {
+          "target": "720",
+          "kind": "source_reference"
+        },
+        {
+          "target": "C",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_range_succ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.reduceAdd",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.coeff_X_pow_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.coeff_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.coeff_zero_eq_eval_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.eval_pow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Q",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Q.coeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "R",
+          "kind": "source_reference"
+        },
+        {
+          "target": "X",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "b",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "c",
+          "kind": "source_reference"
+        },
+        {
+          "target": "change",
+          "kind": "source_reference"
+        },
+        {
+          "target": "coeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "dsimp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hq1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hq2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hq3",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hsub",
+          "kind": "source_reference"
+        },
+        {
+          "target": "let",
+          "kind": "source_reference"
+        },
+        {
+          "target": "logarithmicWeight",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_pow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "pow_one",
+          "kind": "source_reference"
+        },
+        {
+          "target": "pow_two",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simpa",
+          "kind": "source_reference"
+        },
+        {
+          "target": "thetaCuspNormalizedEvenMoment",
+          "kind": "source_reference"
+        },
+        {
+          "target": "thetaCuspXiSquareNormalizedThirdJet",
+          "kind": "source_reference"
+        },
+        {
+          "target": "thetaCuspXiSquareNormalizedThirdJet_coeff_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "thetaCuspXiSquareThirdLogCoefficient",
+          "kind": "source_reference"
+        },
+        {
+          "target": "trans",
+          "kind": "source_reference"
+        },
+        {
+          "target": "truncatedLogCoeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "truncatedLogCoeff_eq_coeff_logOf",
+          "kind": "source_reference"
+        },
+        {
+          "target": "using",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "13bebd17d3ab1a9dd83bc46189d62dce47ff4975fd4363d6f3372632ccf72083",
+      "applicability": "not_checked",
+      "score": 0.015873015873015872,
+      "matched_view": "statement",
+      "reranker_score": 0.9872829914093018
+    },
+    {
+      "id": "1a18f9b18fed8910b251f63f70f3ce667bf7f483458e48600fb908ad300867f6",
+      "name": "RHTower.localContribution_le_four",
+      "module": "GaloisForLFunctions.RHTower.PrimeAmplitudeUniformBound",
+      "relpath": "formal/GaloisForLFunctions/RHTower/PrimeAmplitudeUniformBound.lean",
+      "line": 77,
+      "end_line": 104,
+      "kind": "theorem",
+      "statement": "theorem localContribution_le_four {t c : ℝ} (ht : 2 ≤ t) (hc : |c| ≤ 1) :\n    2 * Real.log t * primeLocalSymbol (1 / Real.sqrt t) c ≤ 4",
+      "compiled_statement": null,
+      "source_statement": "theorem localContribution_le_four {t c : ℝ} (ht : 2 ≤ t) (hc : |c| ≤ 1) :\n    2 * Real.log t * primeLocalSymbol (1 / Real.sqrt t) c ≤ 4",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "4",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.sqrt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.sqrt_pos.mpr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "at",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "c",
+          "kind": "source_reference"
+        },
+        {
+          "target": "div_eq_mul_one_div",
+          "kind": "source_reference"
+        },
+        {
+          "target": "div_lt_one",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "field_simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hL",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hfin",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hlognn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hs1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hstep",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ht",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ht0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hval",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hx",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hx1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "linarith",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_le_mul_of_nonneg_left",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ne_of_gt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "positivity",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeAmplitude_le_four",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeLocalSymbol",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeLocalSymbol_le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sqrt_sub_one_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "t",
+          "kind": "source_reference"
+        },
+        {
+          "target": "this",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "300ea4e616877ea11f0f108577ff0661577f03bca30c3e7b0bab06d473a3ef95",
+      "applicability": "not_checked",
+      "score": 0.01639344262295082,
+      "matched_view": "statement",
+      "reranker_score": 0.9854398369789124
+    },
+    {
+      "id": "9dc35aa5b0365824acc770fa6d9d4b30c8cf0e819fbece00de377a087b582904",
+      "name": "RHTower.DeletionMixedRefinement.tendsto_primeClockEnergy_ratio_of_log_motion",
+      "module": "GaloisForLFunctions.RHTower.ArithmeticPrimeEnergyTransport",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ArithmeticPrimeEnergyTransport.lean",
+      "line": 136,
+      "end_line": 171,
+      "kind": "theorem",
+      "statement": "theorem tendsto_primeClockEnergy_ratio_of_log_motion {e : ℝ} (he : e≠0)\n    {K : ℕ→ℕ} (hK : Tendsto K atTop atTop) {h : ℕ→ℝ}\n    (hlog : Tendsto (fun j => h j*Real.log (K j)) atTop (𝓝 0)) :\n    Tendsto (fun j => primeClockCutoffEnergy (K j) (e+h j)/primeClockCutoffEnergy (K j) e)\n      atTop (𝓝 1)",
+      "compiled_statement": null,
+      "source_statement": "theorem tendsto_primeClockEnergy_ratio_of_log_motion {e : ℝ} (he : e≠0)\n    {K : ℕ→ℕ} (hK : Tendsto K atTop atTop) {h : ℕ→ℝ}\n    (hlog : Tendsto (fun j => h j*Real.log (K j)) atTop (𝓝 0)) :\n    Tendsto (fun j => primeClockCutoffEnergy (K j) (e+h j)/primeClockCutoffEnergy (K j) e)\n      atTop (𝓝 1)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Continuous",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Eventually.of_forall",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Function.comp_def",
+          "kind": "source_reference"
+        },
+        {
+          "target": "K",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.norm_eq_abs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Tendsto",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_div",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_of_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_of_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_pos.mpr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_primeClockCutoffEnergy_sub_le_transport",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "at",
+          "kind": "source_reference"
+        },
+        {
+          "target": "atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "c",
+          "kind": "source_reference"
+        },
+        {
+          "target": "comp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "div_le_iff₀",
+          "kind": "source_reference"
+        },
+        {
+          "target": "e",
+          "kind": "source_reference"
+        },
+        {
+          "target": "eventually_ge_atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact_mod_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "field_simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "filter_upwards",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun_prop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hE",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hK.eventually",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hN",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ha",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ha.congr'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ha.const_add",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ha.mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "haa",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hb",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hbnd",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hcont",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hcont.tendsto",
+          "kind": "source_reference"
+        },
+        {
+          "target": "he",
+          "kind": "source_reference"
+        },
+        {
+          "target": "heq",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hlog.abs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "in",
+          "kind": "source_reference"
+        },
+        {
+          "target": "j",
+          "kind": "source_reference"
+        },
+        {
+          "target": "le_refl",
+          "kind": "source_reference"
+        },
+        {
+          "target": "let",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mpr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_num",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeClockCutoffEnergy",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeClockCutoffEnergy_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeEnergyTransportError",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simpa",
+          "kind": "source_reference"
+        },
+        {
+          "target": "squeeze_zero'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "tendsto_iff_norm_sub_tendsto_zero.mpr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "unfold",
+          "kind": "source_reference"
+        },
+        {
+          "target": "using",
+          "kind": "source_reference"
+        },
+        {
+          "target": "with",
+          "kind": "source_reference"
+        },
+        {
+          "target": "zero_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ᶠj",
+          "kind": "source_reference"
+        },
+        {
+          "target": "𝓝",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "fd694ee434272eeb70d0a31bfa7c0ed12d5419b5cfcc24243220d9c27a67acca",
+      "applicability": "not_checked",
+      "score": 0.01618059633326809,
+      "matched_view": "statement",
+      "reranker_score": 0.9852515459060669
+    },
+    {
+      "id": "fb0336ae77da51380bfc96e085c7b796cd06fe614c6d4616434f56a2fcf59577",
+      "name": "RHTower.Sieve.norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq",
+      "module": "GaloisForLFunctions.RHTower.Sieve.LevinsonLinearMollifiedCriticalDetectorEnergy",
+      "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/LevinsonLinearMollifiedCriticalDetectorEnergy.lean",
+      "line": 18,
+      "end_line": 38,
+      "kind": "theorem",
+      "statement": "theorem norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq\n    {lam : ℝ} {M k : ℕ} (hM : 1 < M) (hk : 0 < k) :\n    ‖levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ) =\n      ((1 - lam * Real.log k) * barbanVehovCoeff M k +\n          lam * barbanVehovLogMomentCoeff M k) ^ (2 : ℕ) /\n        (k : ℝ) / (Real.log M) ^ (2 : ℕ)",
+      "compiled_statement": null,
+      "source_statement": "theorem norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq\n    {lam : ℝ} {M k : ℕ} (hM : 1 < M) (hk : 0 < k) :\n    ‖levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ) =\n      ((1 - lam * Real.log k) * barbanVehovCoeff M k +\n          lam * barbanVehovLogMomentCoeff M k) ^ (2 : ℕ) /\n        (k : ℝ) / (Real.log M) ^ (2 : ℕ)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.norm_real",
+          "kind": "source_reference"
+        },
+        {
+          "target": "M",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.norm_eq_abs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.sq_sqrt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.sqrt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_div",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_of_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_of_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "div_pow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact_mod_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "field_simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hM",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hinvsqrt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hk",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hkR",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hkR.le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hlog",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hsqrt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "k",
+          "kind": "source_reference"
+        },
+        {
+          "target": "levinsonLinearMollifiedCriticalDetectorCoeff_eq",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_pow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "nlinarith",
+          "kind": "source_reference"
+        },
+        {
+          "target": "positivity",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sq_abs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℕ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "a76f754001cc7a07feb9ac65c0020e0326b14180afd73b7afc4f3bc9a31d430b",
+      "applicability": "not_checked",
+      "score": 0.02408450704225352,
+      "matched_view": "statement",
+      "reranker_score": 0.9811619520187378
+    },
+    {
+      "id": "084083b02e4f277922ad07e40d4ddd67e65c3baa956b5b8c3fc6d6f7ec5cacbe",
+      "name": "RHTower.dlvpSharpConstant",
+      "module": "GaloisForLFunctions.RHTower.DlvpSharp",
+      "relpath": "formal/GaloisForLFunctions/RHTower/DlvpSharp.lean",
+      "line": 30,
+      "end_line": 33,
+      "kind": "def",
+      "statement": "def dlvpSharpConstant (A : ℝ) : ℝ",
+      "compiled_statement": null,
+      "source_statement": "def dlvpSharpConstant (A : ℝ) : ℝ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "3",
+          "kind": "source_reference"
+        },
+        {
+          "target": "5",
+          "kind": "source_reference"
+        },
+        {
+          "target": "A",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "landauSharpConstant",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "7257378b5c53fb54b9837ed70b7c9e434d27afd92b5aa27bf303900a5b171b99",
+      "applicability": "not_checked",
+      "score": 0.014705882352941176,
+      "matched_view": "statement",
+      "reranker_score": 0.977786660194397
+    },
+    {
+      "id": "d424d49f4a4c9347ca88dd532e3f82cd2ede5c461c15e8ae94118314946f8511",
+      "name": "RHTower.ExposingRayLocalCapacity.variance",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkExposingRayLocalCapacity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkExposingRayLocalCapacity.lean",
+      "line": 27,
+      "end_line": 50,
+      "kind": "theorem",
+      "statement": "private theorem variance {ι : Type*} [Fintype ι] (w : ι → ℝ) (v : ι → ℂ)\n    (M : ℝ) (z : ℂ) (hM : 0 < M) (hw : ∑ i, w i = M)\n    (hz : ∑ i, (w i : ℂ)*v i = z) :\n    ‖z‖^2 + ∑ i, (w i/M)*‖(M : ℂ)*v i-z‖^2 = M*∑ i, w i*‖v i‖^2",
+      "compiled_statement": null,
+      "source_statement": "private theorem variance {ι : Type*} [Fintype ι] (w : ι → ℝ) (v : ι → ℂ)\n    (M : ℝ) (z : ℂ) (hM : 0 < M) (hw : ∑ i, w i = M)\n    (hz : ∑ i, (w i : ℂ)*v i = z) :\n    ‖z‖^2 + ∑ i, (w i/M)*‖(M : ℂ)*v i-z‖^2 = M*∑ i, w i*‖v i‖^2",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.im",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.mul_im",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.mul_re",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.normSq_apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.ofReal_im",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.ofReal_re",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.re",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.sq_norm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.sub_im",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.sub_re",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.mul_sum",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_add_distrib",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_sub_distrib",
+          "kind": "source_reference"
+        },
+        {
+          "target": "M",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "congrArg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "div_mul_cancel₀",
+          "kind": "source_reference"
+        },
+        {
+          "target": "field_simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hM.ne'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "he",
+          "kind": "source_reference"
+        },
+        {
+          "target": "him",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hre",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hz",
+          "kind": "source_reference"
+        },
+        {
+          "target": "i",
+          "kind": "source_reference"
+        },
+        {
+          "target": "im",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intro",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "re",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp_rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simpa",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sub_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "using",
+          "kind": "source_reference"
+        },
+        {
+          "target": "v",
+          "kind": "source_reference"
+        },
+        {
+          "target": "w",
+          "kind": "source_reference"
+        },
+        {
+          "target": "z",
+          "kind": "source_reference"
+        },
+        {
+          "target": "z.im",
+          "kind": "source_reference"
+        },
+        {
+          "target": "z.re",
+          "kind": "source_reference"
+        },
+        {
+          "target": "zero_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℂ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "b77c9fc0057cd3b6aa69cd06f4ef7463f03d5f974c421b1daf32bea301e4ee5e",
+      "applicability": "not_checked",
+      "score": 0.015625,
+      "matched_view": "statement",
+      "reranker_score": 0.9729079604148865
+    },
+    {
+      "id": "69c4ec386c9368cd2f161fa0be014c30c8aa0102e10c8089b3bdbdec9aa78067",
+      "name": "RHTower.soninLogPrimePowerCoefficient",
+      "module": "GaloisForLFunctions.RHTower.SoninPrimePowerRegularization",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SoninPrimePowerRegularization.lean",
+      "line": 226,
+      "end_line": 230,
+      "kind": "def",
+      "statement": "def soninLogPrimePowerCoefficient (pk : Nat.Primes × ℕ) : ℂ",
+      "compiled_statement": null,
+      "source_statement": "def soninLogPrimePowerCoefficient (pk : Nat.Primes × ℕ) : ℂ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.sqrt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "pk",
+          "kind": "source_reference"
+        },
+        {
+          "target": "pk.2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "soninPrimePowerTailEnergy",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℂ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "fa6725ce30ed133e0f9747267ab040219d4f5b25ee955485f80b65b5168135fb",
+      "applicability": "not_checked",
+      "score": 0.026687875574407917,
+      "matched_view": "statement",
+      "reranker_score": 0.9671859741210938
+    },
+    {
+      "id": "e3fe7058d8b826dacc3ffa95aad56422841ae2637d0b4a530af13516751b5e64",
+      "name": "RHTower.soninLogPrimePowerCoefficient_primeSquare",
+      "module": "GaloisForLFunctions.RHTower.SoninPrimeSquareCoherentMonomials",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SoninPrimeSquareCoherentMonomials.lean",
+      "line": 10,
+      "end_line": 20,
+      "kind": "theorem",
+      "statement": "theorem soninLogPrimePowerCoefficient_primeSquare (p : Nat.Primes) :\n    soninLogPrimePowerCoefficient (p, 0) = ((1 / (2 * (p : ℝ)) : ℝ) : ℂ)",
+      "compiled_statement": null,
+      "source_statement": "theorem soninLogPrimePowerCoefficient_primeSquare (p : Nat.Primes) :\n    soninLogPrimePowerCoefficient (p, 0) = ((1 / (2 * (p : ℝ)) : ℝ) : ℂ)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.cast_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.sqrt_sq_eq_abs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_of_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact_mod_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "field_simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "henergy",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "inv_pos.mpr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "p",
+          "kind": "source_reference"
+        },
+        {
+          "target": "p.prop.pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rfl",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "soninLogPrimePowerCoefficient",
+          "kind": "source_reference"
+        },
+        {
+          "target": "soninPrimePowerTailEnergy",
+          "kind": "source_reference"
+        },
+        {
+          "target": "zero_add",
+          "kind": "source_reference"
+        },
+        {
+          "target": "¹",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "8d1a5eabaed080608b5eccb02a8963ce8ec848680a3984b14aca367fd8e1ce6d",
+      "applicability": "not_checked",
+      "score": 0.026881720430107527,
+      "matched_view": "statement",
+      "reranker_score": 0.9653699398040771
+    },
+    {
+      "id": "0f6097e1c2c11fb50c53b83a6eb5ef8db718466be0dda3143e54fe023563b6d5",
+      "name": "RHTower.primeArchSuzukiParityEnergy_logOdds_gt_log_eightyOne_div_four",
+      "module": "GaloisForLFunctions.RHTower.SuzukiParityResolventTransportBudget",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiParityResolventTransportBudget.lean",
+      "line": 162,
+      "end_line": 184,
+      "kind": "theorem",
+      "statement": "theorem primeArchSuzukiParityEnergy_logOdds_gt_log_eightyOne_div_four\n    {evenEnergy oddEnergy : ℝ}\n    (heven : 0 ≤ evenEnergy) (hodd : 0 < oddEnergy)\n    (hover :\n      primeArchSuzukiFirstDefectCalibration <\n        GaloisForLFunctions.RHTower.suzukiDefectAngle evenEnergy oddEnergy) :\n    Real.log ((81 : ℝ) / 4) <\n      Real.log (evenEnergy / oddEnergy)",
+      "compiled_statement": null,
+      "source_statement": "theorem primeArchSuzukiParityEnergy_logOdds_gt_log_eightyOne_div_four\n    {evenEnergy oddEnergy : ℝ}\n    (heven : 0 ≤ evenEnergy) (hodd : 0 < oddEnergy)\n    (hover :\n      primeArchSuzukiFirstDefectCalibration <\n        GaloisForLFunctions.RHTower.suzukiDefectAngle evenEnergy oddEnergy) :\n    Real.log ((81 : ℝ) / 4) <\n      Real.log (evenEnergy / oddEnergy)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "4",
+          "kind": "source_reference"
+        },
+        {
+          "target": "81",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log_div",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log_lt_log_iff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "at",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "evenEnergy",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "heven",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hevenPos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hevenPos.ne'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hlog",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hmass",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hmass.le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hodd",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hodd.le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hodd.ne'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hover",
+          "kind": "source_reference"
+        },
+        {
+          "target": "linarith",
+          "kind": "source_reference"
+        },
+        {
+          "target": "lt_of_lt_of_le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mpr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_num",
+          "kind": "source_reference"
+        },
+        {
+          "target": "oddEnergy",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeArchSuzukiParityEnergy_even_gt_eightyOne_div_four_mul_odd",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "c9a865fc1f431a31642265735754f0e5e7cd13002e21a12668c78388cc9165d2",
+      "applicability": "not_checked",
+      "score": 0.01871774687308668,
+      "matched_view": "statement",
+      "reranker_score": 0.9629719853401184
+    },
+    {
+      "id": "89039798e7920476a28fe6758ba8860e4a2ea35305bd201333444026ad901335",
+      "name": "RHTower.D4BMQuarticResponseWork.squareWorkCoefficient",
+      "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticResponseWork",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResponseWork.lean",
+      "line": 111,
+      "end_line": 116,
+      "kind": "def",
+      "statement": "def squareWorkCoefficient (q : XiZeroCopy) : ℂ",
+      "compiled_statement": null,
+      "source_statement": "def squareWorkCoefficient (q : XiZeroCopy) : ℂ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "3",
+          "kind": "source_reference"
+        },
+        {
+          "target": "4",
+          "kind": "source_reference"
+        },
+        {
+          "target": "false",
+          "kind": "source_reference"
+        },
+        {
+          "target": "parameter",
+          "kind": "source_reference"
+        },
+        {
+          "target": "physicalRate",
+          "kind": "source_reference"
+        },
+        {
+          "target": "q",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sourceWorkWeights",
+          "kind": "source_reference"
+        },
+        {
+          "target": "true",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "69a0251265fada97e1c6e94c492e7e3d0158d511d62b80c04dadbf204fc20bca",
+      "applicability": "not_checked",
+      "score": 0.016129032258064516,
+      "matched_view": "statement",
+      "reranker_score": 0.9620745778083801
+    },
+    {
+      "id": "fc2667855e48df6b6b30960b397f7a6ddef17cd48b420335acd3fed817ea8df0",
+      "name": "RHTower.landauSharpConstant",
+      "module": "GaloisForLFunctions.RHTower.DlvpSharp",
+      "relpath": "formal/GaloisForLFunctions/RHTower/DlvpSharp.lean",
+      "line": 27,
+      "end_line": 30,
+      "kind": "def",
+      "statement": "def landauSharpConstant : ℝ",
+      "compiled_statement": null,
+      "source_statement": "def landauSharpConstant : ℝ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "5",
+          "kind": "source_reference"
+        },
+        {
+          "target": "digammaVerticalLogConstant",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "4fa3ae90aa2067c70904dd007dcf4d4d1826759146aedc71f59ce7321d5c38a2",
+      "applicability": "not_checked",
+      "score": 0.015873015873015872,
+      "matched_view": "statement",
+      "reranker_score": 0.9585880637168884
+    },
+    {
+      "id": "f4a0e5a7af28f6c5ab42a7a7fc67c5c059598c1daf4d5a13b2ddfb6577bd300b",
+      "name": "RHTower.WeilSingularArithmetic.sourceSquareCoeff",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticSignedConvolution",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticSignedConvolution.lean",
+      "line": 21,
+      "end_line": 25,
+      "kind": "def",
+      "statement": "def sourceSquareCoeff (lam : ℕ → ℝ) : ℕ → ℂ",
+      "compiled_statement": null,
+      "source_statement": "def sourceSquareCoeff (lam : ℕ → ℝ) : ℕ → ℂ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ArithmeticFunction.vonMangoldt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "LSeries.convolution",
+          "kind": "source_reference"
+        },
+        {
+          "target": "WeilHerglotz.lamC",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "lam",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℂ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "99b3fcf16b2f798c5d3301b45885196dfb42bfab095a267923949847ae778237",
+      "applicability": "not_checked",
+      "score": 0.015873015873015872,
+      "matched_view": "statement",
+      "reranker_score": 0.954342246055603
+    },
+    {
+      "id": "6de29ca03d6d393e921e6ce52659df39ba083a59e4af44a59950f05ab0497e31",
+      "name": "RHTower.gaussComponentPrimeMagnitudeEnergy",
+      "module": "GaloisForLFunctions.RHTower.GaussComponentMagnitudeResidue",
+      "relpath": "formal/GaloisForLFunctions/RHTower/GaussComponentMagnitudeResidue.lean",
+      "line": 16,
+      "end_line": 20,
+      "kind": "def",
+      "statement": "def gaussComponentPrimeMagnitudeEnergy {m : ℕ} (k : Fin m) (p : Nat.Primes) (n : ℕ) : ℝ",
+      "compiled_statement": null,
+      "source_statement": "def gaussComponentPrimeMagnitudeEnergy {m : ℕ} (k : Fin m) (p : Nat.Primes) (n : ℕ) : ℝ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.pi",
+          "kind": "source_reference"
+        },
+        {
+          "target": "gaussComponentVerticalMagnitude",
+          "kind": "source_reference"
+        },
+        {
+          "target": "k",
+          "kind": "source_reference"
+        },
+        {
+          "target": "m",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "p",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "aefe5c33af70fad71eb5b1eff255e1bf3b080651b97f14881be452d1db222de3",
+      "applicability": "not_checked",
+      "score": 0.015873015873015872,
+      "matched_view": "statement",
+      "reranker_score": 0.9536279439926147
+    }
+  ],
+  "source_arguments": [
+    {
+      "id": "e4a984a958e1ac72b9fb2680d8f9923b035900b3729c34caaada0be108267fdb",
+      "name": "RHTower.WeilRegular.eq_zero_of_weilPositiveFull_add",
+      "module": "GaloisForLFunctions.RHTower.WeilRegularDeviationRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilRegularDeviationRigidity.lean",
+      "line": 283,
+      "end_line": 288,
+      "kind": "theorem",
+      "statement": "theorem eq_zero_of_weilPositiveFull_add (hR : RegularDeviation w E)\n    (hW : WeilPositiveFull (addVonMangoldt w)) (n : ℕ) : w n = 0",
+      "compiled_statement": null,
+      "source_statement": "theorem eq_zero_of_weilPositiveFull_add (hR : RegularDeviation w E)\n    (hW : WeilPositiveFull (addVonMangoldt w)) (n : ℕ) : w n = 0",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "RHTower.weilPositive_of_weilPositiveFull",
+          "kind": "source_reference"
+        },
+        {
+          "target": "eq_zero_of_weilPositive_add",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hR",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "5dac17e38887d18504795113d43c45e0e2cac457375cb45b58668c7217eb60f4",
+      "applicability": "not_checked",
+      "score": 0.01639344262295082,
+      "matched_view": "proof",
+      "proof_excerpt": "eq_zero_of_weilPositive_add hR (RHTower.weilPositive_of_weilPositiveFull hW) n\n\n/-- **A regular deviation of a full-cone Weil-positive completion forces RH.** -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "875c63b5952122ace1321f60f2ca709663d658faee5876ff73da4302216b0952",
+      "name": "RHTower.exists_admissible_rectIntegral_rectangularSource_eq_xiZeroCopy_sum_containing",
+      "module": "GaloisForLFunctions.RHTower.XiGuinandWeilSpectralRectangle",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiGuinandWeilSpectralRectangle.lean",
+      "line": 135,
+      "end_line": 151,
+      "kind": "theorem",
+      "statement": "theorem exists_admissible_rectIntegral_rectangularSource_eq_xiZeroCopy_sum_containing\n    (t : Finset XiZeroCopy) (L a : ℝ) :\n    ∃ z₁ z₂ : ℂ,\n      z₁.re < z₂.re ∧ z₁.im < z₂.im ∧\n      (∀ q ∈ t, q ∈ xiZeroCopyClosedRectangle z₁ z₂) ∧\n      rectIntegral (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) *\n          continuedPrimeArchSourceRelativeTrace z) z₁ z₂ =\n        2 * Real.pi * I * ∑ q ∈ xiZeroCopyClosedRectangle z₁ z₂,\n          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ)",
+      "compiled_statement": null,
+      "source_statement": "theorem exists_admissible_rectIntegral_rectangularSource_eq_xiZeroCopy_sum_containing\n    (t : Finset XiZeroCopy) (L a : ℝ) :\n    ∃ z₁ z₂ : ℂ,\n      z₁.re < z₂.re ∧ z₁.im < z₂.im ∧\n      (∀ q ∈ t, q ∈ xiZeroCopyClosedRectangle z₁ z₂) ∧\n      rectIntegral (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) *\n          continuedPrimeArchSourceRelativeTrace z) z₁ z₂ =\n        2 * Real.pi * I * ∑ q ∈ xiZeroCopyClosedRectangle z₁ z₂,\n          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "L",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exists_admissible_rectIntegral_source_eq_xiZeroCopy_sum_containing",
+          "kind": "source_reference"
+        },
+        {
+          "target": "t",
+          "kind": "source_reference"
+        },
+        {
+          "target": "xiRectangularTwoEdgeTransform_sq_analyticOnNhd",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "f7bb6735b34c328f289ab9baed3270f77bfdb45f7c0a287db6b697ccf7ed9040",
+      "applicability": "not_checked",
+      "score": 0.016129032258064516,
+      "matched_view": "proof",
+      "proof_excerpt": "exists_admissible_rectIntegral_source_eq_xiZeroCopy_sum_containing t\n    (xiRectangularTwoEdgeTransform_sq_analyticOnNhd L a)\n\n/-- **Full rectangular Weil value as a cofinal source-contour limit.**  For every positive error\ntolerance, an automatically admissible finite rectangle has normalized continued-source contour\nwithin that tolerance of the complete rectangular Xi-Weil polarization.  Thus the passage from\nfinite rectangle residues to the full absolutely summable divisor value needs no extra hypothesis. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "342beadd06616b938773e4eb94897d328d988721a96817a85f072f41b5fdc0db",
+      "name": "RHTower.riemannHypothesis_of_weilPositiveFull_of_le",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeCCMBridge",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeCCMBridge.lean",
+      "line": 156,
+      "end_line": 164,
+      "kind": "theorem",
+      "statement": "theorem riemannHypothesis_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    (h0 : ∀ n, 2 ≤ n → 0 ≤ lam n)\n    (hle : ∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) :\n    RiemannHypothesis",
+      "compiled_statement": null,
+      "source_statement": "theorem riemannHypothesis_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    (h0 : ∀ n, 2 ≤ n → 0 ≤ lam n)\n    (hle : ∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) :\n    RiemannHypothesis",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hle",
+          "kind": "source_reference"
+        },
+        {
+          "target": "riemannHypothesis_of_oddParityPole_subsystem",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "07532e1196f832773ee08e8c50fa5496765e17b939886433297f82e65e6e9b4f",
+      "applicability": "not_checked",
+      "score": 0.015873015873015872,
+      "matched_view": "proof",
+      "proof_excerpt": "riemannHypothesis_of_oddParityPole_subsystem h0 hle fun a =>\n    ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull hW a _\n\n/-- **Weil-positive majorants force RH (full cone).** -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "ca9d61ad0b97f373982e19258791b5cb9d8e7aabe28c709d010353baf64aabcb",
+      "name": "RHTower.ccmContinuousArithmeticQuadratic_eq_weil_add_prime",
+      "module": "GaloisForLFunctions.RHTower.CCMContinuousLocalizationInvariant",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMContinuousLocalizationInvariant.lean",
+      "line": 42,
+      "end_line": 51,
+      "kind": "theorem",
+      "statement": "theorem ccmContinuousArithmeticQuadratic_eq_weil_add_prime {a : SuzukiPositiveAperture}\n    (u : CCMComplexSmoothInteriorSource a) :\n    ccmContinuousArithmeticQuadratic u = ccmRestrictedWeilSourceQuadratic a u.toCCMFormVector +\n      2 * thetaPrimeScalingCross thetaCuspTiltSource thetaCuspTiltSource\n        (ccmThetaGroundProfile u).toBoundedContinuousFunction",
+      "compiled_statement": null,
+      "source_statement": "theorem ccmContinuousArithmeticQuadratic_eq_weil_add_prime {a : SuzukiPositiveAperture}\n    (u : CCMComplexSmoothInteriorSource a) :\n    ccmContinuousArithmeticQuadratic u = ccmRestrictedWeilSourceQuadratic a u.toCCMFormVector +\n      2 * thetaPrimeScalingCross thetaCuspTiltSource thetaCuspTiltSource\n        (ccmThetaGroundProfile u).toBoundedContinuousFunction",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmContinuousArithmeticQuadratic",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmRestrictedWeilSourceQuadratic_eq_thetaFullArithmetic",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "thetaFullArithmeticQuadratic",
+          "kind": "source_reference"
+        },
+        {
+          "target": "unfold",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "94e8d1c800cba7bcce24185ba68a81f46e9441dc0e45f18e9fe5c8eca9d00130",
+      "applicability": "not_checked",
+      "score": 0.015625,
+      "matched_view": "method",
+      "proof_excerpt": "by\n  rw [ccmRestrictedWeilSourceQuadratic_eq_thetaFullArithmetic, thetaFullArithmeticQuadratic]\n  unfold ccmContinuousArithmeticQuadratic\n  ring",
+      "method": {
+        "decl_id": "ca9d61ad0b97f373982e19258791b5cb9d8e7aabe28c709d010353baf64aabcb",
+        "content_hash": "94e8d1c800cba7bcce24185ba68a81f46e9441dc0e45f18e9fe5c8eca9d00130",
+        "model_version": "mlx-community/Qwen3-4B-Instruct-2507-4bit@50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b:62b26e3a25a911da0a8c5fcad88a9300f64c7ea0bb5cd79b08e7c5ab8d8b7f2a",
+        "prompt_version": "method-3-code-lines",
+        "description": "Proof expands the arithmetic quadratic expression using ring identities and Weil source equivalence.",
+        "assumptions": [
+          "u : CCMComplexSmoothInteriorSource a"
+        ],
+        "steps": [
+          "apply ring simplification to expand quadratic form",
+          "use equivalence between restricted Weil and full arithmetic forms"
+        ],
+        "obligations": [
+          "verify equality of quadratic expressions"
+        ],
+        "evidence": [
+          "  rw [ccmRestrictedWeilSourceQuadratic_eq_thetaFullArithmetic, thetaFullArithmeticQuadratic]",
+          "  unfold ccmContinuousArithmeticQuadratic"
+        ],
+        "status": "ready",
+        "error": ""
+      },
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "5e0161adab7fb0dbe3dca1f82ce5b3093de1c66dc9599635d3f5d70154afcf9f",
+      "name": "RHTower.RemovedPrimes.vonMangoldtWithout_le",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeRemovedPrimes",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeRemovedPrimes.lean",
+      "line": 23,
+      "end_line": 29,
+      "kind": "theorem",
+      "statement": "theorem vonMangoldtWithout_le (R : Set ℕ) (n : ℕ) :\n    vonMangoldtWithout R n ≤ (vonMangoldt n : ℝ)",
+      "compiled_statement": null,
+      "source_statement": "theorem vonMangoldtWithout_le (R : Set ℕ) (n : ℕ) :\n    vonMangoldtWithout R n ≤ (vonMangoldt n : ℝ)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Set.indicator_le_self'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "vonMangoldt_nonneg",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "fbf25eaa1deba8c8ac922547c657cde2a64c92a13564ab94259aba846fab787e",
+      "applicability": "not_checked",
+      "score": 0.015384615384615385,
+      "matched_view": "proof",
+      "proof_excerpt": "Set.indicator_le_self' (fun _ _ => vonMangoldt_nonneg) n\n\n/-- **Removing any prime destroys Weil positivity.**  If `R` contains a prime, then the von Mangoldt\nfunction with the powers of the primes of `R` removed is not full-cone Weil-positive. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "d5a10fd2c51e8d0312c69160ec5391b9722a972d4fe8fdf2481d45c890bf31d9",
+      "name": "RHTower.atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+      "line": 514,
+      "end_line": 523,
+      "kind": "theorem",
+      "statement": "theorem atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0",
+      "compiled_statement": null,
+      "source_statement": "theorem atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "atomPairing_riemannKernelAutocorr_nonpos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "summable_sub_vonMangoldt_div_sq",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "4013762d5743aadd3a5d27816d2b7cdb71bb3e15ae57d22712f3203a19cadd33",
+      "applicability": "not_checked",
+      "score": 0.015151515151515152,
+      "matched_view": "proof",
+      "proof_excerpt": "atomPairing_riemannKernelAutocorr_nonpos hW (summable_sub_vonMangoldt_div_sq hW)\n\n/-- **`Λ` is an exposed point of the full Weil cone.** Every Weil-positive `lam` has\n`ℓ(lam − Λ) ≤ 0`, with equality only if `lam = Λ` on `n ≥ 2`. The exposing functional `ℓ` has\nthe strictly positive kernel `Φ ⋆ Φ̃`. No summability hypothesis: Weil positivity bounds\n`|lam(n)| ≤ √n (log n + C₀)`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "61acde70920369399c6421d971e44115e78ead402668314221d6347a4ff89745",
+      "name": "RHTower.WeilExcess.not_summable_excess_of_ne",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeSummableExcessRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeSummableExcessRigidity.lean",
+      "line": 273,
+      "end_line": 279,
+      "kind": "theorem",
+      "statement": "theorem not_summable_excess_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) :\n    ¬ Summable fun n => max (lam n - (ArithmeticFunction.vonMangoldt n : ℝ)) 0 / Real.sqrt n",
+      "compiled_statement": null,
+      "source_statement": "theorem not_summable_excess_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) :\n    ¬ Summable fun n => max (lam n - (ArithmeticFunction.vonMangoldt n : ℝ)) 0 / Real.sqrt n",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "eq_vonMangoldt_of_weilPositiveFull_of_summable_excess",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hexc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hne",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "38d6969c142f0c13af2ecef68014543f10768d39eb46578b2228a3871245ebe7",
+      "applicability": "not_checked",
+      "score": 0.014925373134328358,
+      "matched_view": "proof",
+      "proof_excerpt": "fun hexc => hne (eq_vonMangoldt_of_weilPositiveFull_of_summable_excess hW hexc n hn)\n\n/-- A full-cone Weil-positive `lam ≠ Λ` has infinite deficit below `Λ`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "8cd2449a0459745d61225762dbd72796e1d0bb9ec55d5e49f50205538232863a",
+      "name": "RHTower.WeilOneSided.sum_weilArchRe_eq",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeOneSidedCriterion",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeOneSidedCriterion.lean",
+      "line": 443,
+      "end_line": 451,
+      "kind": "theorem",
+      "statement": "theorem sum_weilArchRe_eq (c : WeilTestFn →₀ ℝ) :\n    (c.sum fun f t => t * weilArchRe (EF.weilTest f.1 f.1)) =\n      linearCombination ℝ (fun f : WeilTestFn => weilArchRe (EF.weilTest f.1 f.1)) c",
+      "compiled_statement": null,
+      "source_statement": "theorem sum_weilArchRe_eq (c : WeilTestFn →₀ ℝ) :\n    (c.sum fun f t => t * weilArchRe (EF.weilTest f.1 f.1)) =\n      linearCombination ℝ (fun f : WeilTestFn => weilArchRe (EF.weilTest f.1 f.1)) c",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "linearCombination_apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "smul_eq_mul",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "5c1db83709afe82253ad6a9b0384a029766de3acd075d7cb72f3073fac6ed5ff",
+      "applicability": "not_checked",
+      "score": 0.014705882352941176,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  rw [linearCombination_apply]; simp only [smul_eq_mul]\n\n/-- **The Weil cone is nonempty iff prime-blind positivity holds.** Some real sequence `lam` is\nfull-cone Weil-positive exactly when the pole and archimedean part is nonnegative on the\ncombinations that vanish at every `±log n`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "53f00eb8ad667127cb68c1c57deb96cdd8eeeb5845131102f822c3dd5f62ad61",
+      "name": "RHTower.ccmWeilPoleDiagonal",
+      "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFullPoleMatrix",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilFullPoleMatrix.lean",
+      "line": 169,
+      "end_line": 173,
+      "kind": "def",
+      "statement": "def ccmWeilPoleDiagonal (a : SuzukiPositiveAperture) : ℝ",
+      "compiled_statement": null,
+      "source_statement": "def ccmWeilPoleDiagonal (a : SuzukiPositiveAperture) : ℝ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmPolarFormVector",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmRestrictedWeilSourceQuadratic",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "1ac9a583c277c1eb0a2285445644553c8a0c83463b18b1dea9b175c6a185f77e",
+      "applicability": "not_checked",
+      "score": 0.014492753623188406,
+      "matched_view": "proof",
+      "proof_excerpt": "ccmRestrictedWeilSourceQuadratic a (ccmPolarFormVector a (1/2))\n\n/-- The actual full Weil opposite-pole entry, before any sign assumption. -/",
+      "method": {
+        "decl_id": "53f00eb8ad667127cb68c1c57deb96cdd8eeeb5845131102f822c3dd5f62ad61",
+        "content_hash": "1ac9a583c277c1eb0a2285445644553c8a0c83463b18b1dea9b175c6a185f77e",
+        "model_version": "mlx-community/Qwen3-4B-Instruct-2507-4bit@50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b:62b26e3a25a911da0a8c5fcad88a9300f64c7ea0bb5cd79b08e7c5ab8d8b7f2a",
+        "prompt_version": "method-3-code-lines",
+        "description": "Applies the restricted Weil source quadratic to a polar form vector.",
+        "assumptions": [
+          "SuzukiPositiveAperture"
+        ],
+        "steps": [
+          "evaluates quadratic form at half the identity"
+        ],
+        "obligations": [
+          "transfer to real field"
+        ],
+        "evidence": [
+          "ccmRestrictedWeilSourceQuadratic a (ccmPolarFormVector a (1/2))"
+        ],
+        "status": "ready",
+        "error": ""
+      },
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "1c3247826d7cf2ffab89a103917e767660d67cceafcaae2f393cd81154258209",
+      "name": "RHTower.weilFullCone_exposed_at_vonMangoldt",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+      "line": 523,
+      "end_line": 532,
+      "kind": "theorem",
+      "statement": "theorem weilFullCone_exposed_at_vonMangoldt {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0 ∧\n      (atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr = 0 →\n        ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n)",
+      "compiled_statement": null,
+      "source_statement": "theorem weilFullCone_exposed_at_vonMangoldt {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0 ∧\n      (atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr = 0 →\n        ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "atomPairing_riemannKernelAutocorr_nonpos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "summable_sub_vonMangoldt_div_sq",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "811c3642410ebe4c1b7c272ec20f6c640ee1880c09736df8c513fc8a3308ea7b",
+      "applicability": "not_checked",
+      "score": 0.014285714285714285,
+      "matched_view": "proof",
+      "proof_excerpt": "⟨atomPairing_riemannKernelAutocorr_nonpos hW (summable_sub_vonMangoldt_div_sq hW),\n    eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero hW (summable_sub_vonMangoldt_div_sq hW)⟩\n\n/-- **`Λ` is an extreme point of the full Weil cone**, with no hypothesis on `w`: if `Λ + w` and\n`Λ − w` are both Weil-positive, then `w(n) = 0` for all `n ≥ 2`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "07f9e78f7c7133f81378923a630c72d876c20bb8a007dc6ee76a02920a5b6571",
+      "name": "RHTower.PrimorialResonance.not_forall_squarefree_signChar_le_of_weilPositiveFull",
+      "module": "GaloisForLFunctions.RHTower.WeilPositivityPrimorialResonance",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityPrimorialResonance.lean",
+      "line": 572,
+      "end_line": 580,
+      "kind": "theorem",
+      "statement": "theorem not_forall_squarefree_signChar_le_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {s : ℕ → ℝ} (hs : ∀ p, s p = 1 ∨ s p = -1) {c δ : ℝ}\n    (hc : 0 < c) (hδ : δ < 1 / 2) :\n    ¬ ∀ n : ℕ, 2 ≤ n → Squarefree n → c * (n : ℝ) ^ (-δ) ≤ signChar s n * lam n",
+      "compiled_statement": null,
+      "source_statement": "theorem not_forall_squarefree_signChar_le_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {s : ℕ → ℝ} (hs : ∀ p, s p = 1 ∨ s p = -1) {c δ : ℝ}\n    (hc : 0 < c) (hδ : δ < 1 / 2) :\n    ¬ ∀ n : ℕ, 2 ≤ n → Squarefree n → c * (n : ℝ) ^ (-δ) ≤ signChar s n * lam n",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hδ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "not_forall_squarefree_signChar_le_of_weilPositive",
+          "kind": "source_reference"
+        },
+        {
+          "target": "weilPositive_of_weilPositiveFull",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "438d8d838195e2cf4fea04b9fe8d5fce64aef009e69304add7cee643ff3335be",
+      "applicability": "not_checked",
+      "score": 0.014084507042253521,
+      "matched_view": "proof",
+      "proof_excerpt": "not_forall_squarefree_signChar_le_of_weilPositive (weilPositive_of_weilPositiveFull hW) hs hc hδ\n\n/-- **No full-cone Weil-positive weight system is bounded below by `c n^{-δ}` on the squarefree\nintegers `n ≥ 2`, for any `c > 0` and `δ < 1/2`.** -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "a48c2a95515c76a3b06ef1819167455de4a4602175e0f16276c819258aace112",
+      "name": "RHTower.WeilAbscissa.not_weilPositiveFull_of_semiprime_floor",
+      "module": "GaloisForLFunctions.RHTower.WeilConeMultiplesOfPrimeLaw",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeMultiplesOfPrimeLaw.lean",
+      "line": 686,
+      "end_line": 698,
+      "kind": "theorem",
+      "statement": "theorem not_weilPositiveFull_of_semiprime_floor {lam : ℕ → ℝ} {C c : ℝ} (hC : 0 ≤ C) (hc : 0 < c)\n    (hd : ∀ n, |WeilOneSided.coneDeviation lam n| ≤ C * (1 + ArithmeticFunction.vonMangoldt n))\n    {p : ℕ} (hp : p.Prime) (hnn : ∀ n, p ∣ n → p < n → 0 ≤ lam n)\n    (hfloor : ∀ q, q.Prime → q ≠ p → c ≤ lam (p * q)) : ¬ RHTower.WeilPositiveFull lam",
+      "compiled_statement": null,
+      "source_statement": "theorem not_weilPositiveFull_of_semiprime_floor {lam : ℕ → ℝ} {C c : ℝ} (hC : 0 ≤ C) (hc : 0 < c)\n    (hd : ∀ n, |WeilOneSided.coneDeviation lam n| ≤ C * (1 + ArithmeticFunction.vonMangoldt n))\n    {p : ℕ} (hp : p.Prime) (hnn : ∀ n, p ∣ n → p < n → 0 ≤ lam n)\n    (hfloor : ∀ q, q.Prime → q ≠ p → c ≤ lam (p * q)) : ¬ RHTower.WeilPositiveFull lam",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hC",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hd",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hfloor",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hnn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "not_summable_multiples_of_semiprime_floor",
+          "kind": "source_reference"
+        },
+        {
+          "target": "summable_multiples_of_nonneg",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "1c466cae8e9bdfa40b2121e47c98a70f4c2526d5f0a691f552ec29e710b0f140",
+      "applicability": "not_checked",
+      "score": 0.0136986301369863,
+      "matched_view": "proof",
+      "proof_excerpt": "fun hW => not_summable_multiples_of_semiprime_floor hc hp hnn hfloor\n    (summable_multiples_of_nonneg hW hC hd hp hnn)\n\n/-! ## The nonnegative Weil cone -/\n\n/-- **The multiples-of-a-prime law of the nonnegative Weil cone.** If `lam ≥ 0` is full-cone\nWeil-positive, then for every prime `p` the sums `Σ_{n≤k, p∣n} (lam(n) − Λ(n))/n` tend neither to\n`+∞` nor to `−∞`. No size condition is placed on `lam`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "ad329fef02f31eb669edd0925e8c7e9a225791844326c31cf63d5bf244bc660e",
+      "name": "RHTower.WeilAbscissa.profilePrimitive_mono",
+      "module": "GaloisForLFunctions.RHTower.WeilDeviationLocalMass",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilDeviationLocalMass.lean",
+      "line": 574,
+      "end_line": 584,
+      "kind": "theorem",
+      "statement": "theorem profilePrimitive_mono {φ : ℝ → ℝ} (hφc : Continuous φ) (hφ0 : ∀ x, 0 ≤ φ x) {y y' : ℝ}\n    (h : y' ≤ y) : WeilOneSided.profilePrimitive φ y' ≤ WeilOneSided.profilePrimitive φ y",
+      "compiled_statement": null,
+      "source_statement": "theorem profilePrimitive_mono {φ : ℝ → ℝ} (hφc : Continuous φ) (hφ0 : ∀ x, 0 ≤ φ x) {y y' : ℝ}\n    (h : y' ≤ y) : WeilOneSided.profilePrimitive φ y' ≤ WeilOneSided.profilePrimitive φ y",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "WeilOneSided.profilePrimitive",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hφ0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hφc.intervalIntegrable",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intervalIntegral.integral_add_adjacent_intervals",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intervalIntegral.integral_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "linarith",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "unfold",
+          "kind": "source_reference"
+        },
+        {
+          "target": "volume",
+          "kind": "source_reference"
+        },
+        {
+          "target": "x",
+          "kind": "source_reference"
+        },
+        {
+          "target": "y",
+          "kind": "source_reference"
+        },
+        {
+          "target": "y'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "μ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "b87b73fa278a658b0d6b2def0266ab236021f9f69d2f4180a05762d8cc58afde",
+      "applicability": "not_checked",
+      "score": 0.013513513513513514,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  unfold WeilOneSided.profilePrimitive\n  rw [← intervalIntegral.integral_add_adjacent_intervals (hφc.intervalIntegrable (μ := volume) (-1) y')\n    (hφc.intervalIntegrable y' y)]\n  have := intervalIntegral.integral_nonneg (μ := volume) h (fun x _ => hφ0 x)\n  linarith\n\n/-- **Nonnegative Weil-positive weights have bounded local mass.** If `lam` is full-cone\nWeil-positive and `lam(n) ≥ 0` for `n ≥ 2`, then `d = lam − Λ` has bounded local mass. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "a02883117b06e2e3e45d1318b9e9dd8244076f941f434a07e99e663b631fa293",
+      "name": "RHTower.WeilAtomic.weilFullFunctional_weilTest_eq_atomic",
+      "module": "GaloisForLFunctions.RHTower.WeilAtomicExplicitFormula",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilAtomicExplicitFormula.lean",
+      "line": 336,
+      "end_line": 356,
+      "kind": "theorem",
+      "statement": "theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}\n    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)\n    {ι : Type*} [Countable ι] {c τ : ι → ℝ} (hc : ∀ i, 0 ≤ c i)\n    (hΦ : ∀ s : ℂ, 1 < s.re →\n      HasSum (fun i => (c i : ℂ) * gPair (1 / 2 + τ i * I) s) (WeilHerglotz.weilFunction lam s))\n    {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :\n    HasSum (fun i => ((c i * (‖paperFT f (τ i)‖ ^ 2 + ‖paperFT f (-τ i)‖ ^ 2) : ℝ) : ℂ))\n      (weilFullFunctional lam (EF.weilTest f f))",
+      "compiled_statement": null,
+      "source_statement": "theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}\n    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)\n    {ι : Type*} [Countable ι] {c τ : ι → ℝ} (hc : ∀ i, 0 ≤ c i)\n    (hΦ : ∀ s : ℂ, 1 < s.re →\n      HasSum (fun i => (c i : ℂ) * gPair (1 / 2 + τ i * I) s) (WeilHerglotz.weilFunction lam s))\n    {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :\n    HasSum (fun i => ((c i * (‖paperFT f (τ i)‖ ^ 2 + ‖paperFT f (-τ i)‖ ^ 2) : ℝ) : ℂ))\n      (weilFullFunctional lam (EF.weilTest f f))",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Complex.ofReal_neg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "D",
+          "kind": "source_reference"
+        },
+        {
+          "target": "EF.weilTest_contDiff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "EF.weilTest_hasCompactSupport",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "at",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h.congr_fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hD",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hasSum_weilFullFunctional_atomic",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hf",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hf.continuous",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hfc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hsl",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hΦ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "i",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_Hfn_weilTest_le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "obtain",
+          "kind": "source_reference"
+        },
+        {
+          "target": "paperFT_weilTest_self_ofReal",
+          "kind": "source_reference"
+        },
+        {
+          "target": "push_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "refine",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "τ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "8d1060e363ba6878abd847e5cf94e5c4ab20975ce8b625f9a4bd28b550d47509",
+      "applicability": "not_checked",
+      "score": 0.013333333333333334,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  obtain ⟨D, -, hD⟩ := norm_Hfn_weilTest_le hf hfc\n  have h := hasSum_weilFullFunctional_atomic hsl hc hΦ\n    (EF.weilTest_contDiff hf hf.continuous hfc) (EF.weilTest_hasCompactSupport hfc hfc) hD\n  refine h.congr_fun fun i => ?_\n  have hneg := paperFT_weilTest_self_ofReal hf.continuous hfc (-τ i)\n  rw [Complex.ofReal_neg] at hneg\n  rw [paperFT_weilTest_self_ofReal hf.continuous hfc, hneg]\n  push_cast\n  ring\n\n/-- **Atomic Weil functions with nonnegative masses on the critical line are full-cone\nWeil-positive.** -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "8bfc4300224c620f0d579f081e4976afafee6aef4d12132fcb6718161a0fd916",
+      "name": "RHTower.WeilDilationRealness.dirPoly_ofReal",
+      "module": "GaloisForLFunctions.RHTower.WeilConeDilationRealnessRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeDilationRealnessRigidity.lean",
+      "line": 267,
+      "end_line": 279,
+      "kind": "theorem",
+      "statement": "theorem dirPoly_ofReal (N : ℕ) (a : ℕ → ℝ) (x : ℝ) :\n    dirPoly N a (x : ℂ) = ((∑ n ∈ Finset.Icc 1 N, a n * (n : ℝ) ^ (-x) : ℝ) : ℂ)",
+      "compiled_statement": null,
+      "source_statement": "theorem dirPoly_ofReal (N : ℕ) (a : ℕ → ℝ) (x : ℝ) :\n    dirPoly N a (x : ℂ) = ((∑ n ∈ Finset.Icc 1 N, a n * (n : ℝ) ^ (-x) : ℝ) : ℂ)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.ofReal_cpow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.cast_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "dirPoly",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hn0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "push_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "refine",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rfl",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "unfold",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "00fc8c67cf9e0c7cde5a67fb55e86f01c7aa39dfb786570f2830929299375305",
+      "applicability": "not_checked",
+      "score": 0.013157894736842105,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  unfold dirPoly\n  push_cast\n  refine Finset.sum_congr rfl fun n hn => ?_\n  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n\n  rw [Complex.ofReal_cpow hn0]\n  push_cast\n  rfl\n\n/-- **Dilation rigidity of the Weil cone.**  If `Λ ⋆ a + v` is full-cone Weil-positive, with `a`\nfinitely supported and `v` regular, then `a = δ₁`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "3f78fc1111167442d347805efc545a1e5bc8e5e223c1ac2a797cdc5f2d8be546",
+      "name": "RHTower.norm_xiWeilPolarization_rectangular_le_of_riemannHypothesis",
+      "module": "GaloisForLFunctions.RHTower.CCMRectangularTransverseGrowth",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRectangularTransverseGrowth.lean",
+      "line": 83,
+      "end_line": 105,
+      "kind": "theorem",
+      "statement": "theorem norm_xiWeilPolarization_rectangular_le_of_riemannHypothesis\n    {L a : ℝ} (hRH : RiemannHypothesis) (hLa : L ≤ a) :\n    ‖xiWeilPolarization (xiRectangularTwoEdgeTransform L a)\n        (xiRectangularTwoEdgeTransform L a)‖ ≤\n      rectangularTwoEdgeRemainderBound L *\n        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2",
+      "compiled_statement": null,
+      "source_statement": "theorem norm_xiWeilPolarization_rectangular_le_of_riemannHypothesis\n    {L a : ℝ} (hRH : RiemannHypothesis) (hLa : L ≤ a) :\n    ‖xiWeilPolarization (xiRectangularTwoEdgeTransform L a)\n        (xiRectangularTwoEdgeTransform L a)‖ ≤\n      rectangularTwoEdgeRemainderBound L *\n        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "L",
+          "kind": "source_reference"
+        },
+        {
+          "target": "XiZeroCopy",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "at",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hLa",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hRH",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hdom",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hrem",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ht",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hzero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intro",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_xiWeilPolarization_rectangular_sub_dominant_le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "obtain",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "q",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rectangularTwoEdgeDominant_of_re_eq_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sub_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "t",
+          "kind": "source_reference"
+        },
+        {
+          "target": "tsum_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "xiRectangularTwoEdgeDominant",
+          "kind": "source_reference"
+        },
+        {
+          "target": "xiSpectralPoint",
+          "kind": "source_reference"
+        },
+        {
+          "target": "xiSpectralPoint_real_of_rh",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "b6c3945b3f6d39c0151ab8792c29fad702c810d608f6113e7690de3d33d0f2c3",
+      "applicability": "not_checked",
+      "score": 0.012987012987012988,
+      "matched_view": "method",
+      "proof_excerpt": "by\n  have hdom : (∑' q : XiZeroCopy,\n      xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)) = 0 := by\n    have hzero : ∀ q : XiZeroCopy,\n        xiRectangularTwoEdgeDominant L a (xiSpectralPoint q) = 0 := by\n      intro q\n      obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q\n      rw [xiRectangularTwoEdgeDominant, ht]\n      apply rectangularTwoEdgeDominant_of_re_eq_zero\n      simp\n    simp only [hzero, tsum_zero]\n  have hrem := norm_xiWeilPolarization_rectangular_sub_dominant_le hLa\n  rw [hdom, sub_zero] at hrem\n  exact hrem\n\n/-- If RH fails, the transverse supremum is an upper power exponent for the\nactual fixed-width logarithmic Weil sequence. -/",
+      "method": {
+        "decl_id": "3f78fc1111167442d347805efc545a1e5bc8e5e223c1ac2a797cdc5f2d8be546",
+        "content_hash": "b6c3945b3f6d39c0151ab8792c29fad702c810d608f6113e7690de3d33d0f2c3",
+        "model_version": "mlx-community/Qwen3-4B-Instruct-2507-4bit@50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b:62b26e3a25a911da0a8c5fcad88a9300f64c7ea0bb5cd79b08e7c5ab8d8b7f2a",
+        "prompt_version": "method-3-code-lines",
+        "description": "The proof bounds the norm of a transformed Weil polarization using the dominant term's zero contribution and the remainder estimate.",
+        "assumptions": [
+          "RiemannHypothesis",
+          "L ≤ a"
+        ],
+        "steps": [
+          "shows dominant term sum is zero",
+          "applies remainder bound to subtrahend",
+          "transfers bound to full norm"
+        ],
+        "obligations": [
+          "transfer norm bound to full expression"
+        ],
+        "evidence": [
+          "  have hdom : (∑' q : XiZeroCopy,",
+          "  have hrem := norm_xiWeilPolarization_rectangular_sub_dominant_le hLa",
+          "  rw [hdom, sub_zero] at hrem"
+        ],
+        "status": "ready",
+        "error": ""
+      },
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "aa6d54d868bfe75ae45798bc32ffb5a24f51671959ec553c6743249d5e17d125",
+      "name": "RHTower.ccmWeilPoleDiagonal_eq_error",
+      "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFullPoleMatrix",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilFullPoleMatrix.lean",
+      "line": 219,
+      "end_line": 229,
+      "kind": "theorem",
+      "statement": "theorem ccmWeilPoleDiagonal_eq_error (a : SuzukiPositiveAperture) :\n    ccmWeilPoleDiagonal a =\n      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*Real.sinh a.1) -\n      Real.exp a.1+(1-2*a.1)*Real.exp (-a.1)+ccmGammaPoleSelfBoundaryMass a -\n      2*Real.exp a.1*ccmReciprocalMangoldtError (2*a.1) +\n      2*Real.exp (-a.1)*Chebyshev.psi (Real.exp (2*a.1))",
+      "compiled_statement": null,
+      "source_statement": "theorem ccmWeilPoleDiagonal_eq_error (a : SuzukiPositiveAperture) :\n    ccmWeilPoleDiagonal a =\n      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*Real.sinh a.1) -\n      Real.exp a.1+(1-2*a.1)*Real.exp (-a.1)+ccmGammaPoleSelfBoundaryMass a -\n      2*Real.exp a.1*ccmReciprocalMangoldtError (2*a.1) +\n      2*Real.exp (-a.1)*Chebyshev.psi (Real.exp (2*a.1))",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Real.sinh_eq",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmReciprocalMangoldtError",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmWeilPoleDiagonal_eq",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "7cc9663bf527d279c7ab64cf47f6f882741abcc2c9b217618e763d6b887a990a",
+      "applicability": "not_checked",
+      "score": 0.01282051282051282,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  rw [ccmWeilPoleDiagonal_eq, ccmReciprocalMangoldtError, Real.sinh_eq]\n  ring\n\n/-- The opposite-pole full Weil entry is real and retains the complete moving prime tent. -/",
+      "method": {
+        "decl_id": "aa6d54d868bfe75ae45798bc32ffb5a24f51671959ec553c6743249d5e17d125",
+        "content_hash": "7cc9663bf527d279c7ab64cf47f6f882741abcc2c9b217618e763d6b887a990a",
+        "model_version": "mlx-community/Qwen3-4B-Instruct-2507-4bit@50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b:62b26e3a25a911da0a8c5fcad88a9300f64c7ea0bb5cd79b08e7c5ab8d8b7f2a",
+        "prompt_version": "method-3-code-lines",
+        "description": "Proof simplifies the expression using ring operations and identity expansions.",
+        "assumptions": [
+          "SuzukiPositiveAperture"
+        ],
+        "steps": [
+          "apply ring simplification to expand exponential and hyperbolic terms"
+        ],
+        "obligations": [
+          "verify equality of derived expression"
+        ],
+        "evidence": [
+          "  rw [ccmWeilPoleDiagonal_eq, ccmReciprocalMangoldtError, Real.sinh_eq]"
+        ],
+        "status": "ready",
+        "error": ""
+      },
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "644f86ff1e78d83b78c2bc8f60647ce801bba961dd256d8b4d91f3d93437269c",
+      "name": "RHTower.WeilPrimeDeficit.eq_vonMangoldt_of_weilPositiveFull_of_signMult_aligned",
+      "module": "GaloisForLFunctions.RHTower.WeilPrimeDeficitSetRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPrimeDeficitSetRigidity.lean",
+      "line": 480,
+      "end_line": 494,
+      "kind": "theorem",
+      "statement": "theorem eq_vonMangoldt_of_weilPositiveFull_of_signMult_aligned {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {s : ℕ → ℝ} (hs : ∀ p, s p = 1 ∨ s p = -1)\n    (hthin : Summable fun p : ℕ => if p.Prime ∧ s p = -1 then Real.log p / p else 0)\n    (hA : Summable fun n : ℕ => if 2 ≤ n ∧ 0 ≤ (lam n - vonMangoldt n) * signMult s n then 0\n      else |lam n - vonMangoldt n| / n) :\n    ∀ n, 2 ≤ n → lam n = vonMangoldt n",
+      "compiled_statement": null,
+      "source_statement": "theorem eq_vonMangoldt_of_weilPositiveFull_of_signMult_aligned {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {s : ℕ → ℝ} (hs : ∀ p, s p = 1 ∨ s p = -1)\n    (hthin : Summable fun p : ℕ => if p.Prime ∧ s p = -1 then Real.log p / p else 0)\n    (hA : Summable fun n : ℕ => if 2 ≤ n ∧ 0 ≤ (lam n - vonMangoldt n) * signMult s n then 0\n      else |lam n - vonMangoldt n| / n) :\n    ∀ n, 2 ≤ n → lam n = vonMangoldt n",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "WeilAbscissa.eq_vonMangoldt_of_weilPositiveFull_of_summable_div",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "div_eq_mul_inv",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hA",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hP",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hP.add",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hthin",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "refine",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "split_ifs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "summable_aligned_abs_div",
+          "kind": "source_reference"
+        },
+        {
+          "target": "weilPositive_of_weilPositiveFull",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "1f8992be2bfbe36e5b070a35535e37c6a0c9437676dd13a290de16fdcde79dfb",
+      "applicability": "not_checked",
+      "score": 0.012658227848101266,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  have hP := summable_aligned_abs_div (weilPositive_of_weilPositiveFull hW) hs hthin hA\n  refine WeilAbscissa.eq_vonMangoldt_of_weilPositiveFull_of_summable_div hW ((hP.add hA).congr\n    fun n => ?_)\n  split_ifs <;> simp [div_eq_mul_inv]\n\n/-- **Weil positivity forces a harmonically dense prime deficit set.** Let `lam` be full-cone\nWeil-positive, with `Σ_{n not prime} |lam(n) − Λ(n)|/n < ∞` and\n`Σ_{p prime, lam(p) < log p} log p / p < ∞`. Then `lam(n) = Λ(n)` for every `n ≥ 2`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "6391abc3e3c25ffea036d677bac17ee50ae596289138617f0a62f321096ae441",
+      "name": "RHTower.WeilExcess.not_excessMeanVanishes_of_ne",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeSummableExcessRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeSummableExcessRigidity.lean",
+      "line": 234,
+      "end_line": 241,
+      "kind": "theorem",
+      "statement": "theorem not_excessMeanVanishes_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Dₑ : ℝ}\n    (hexc : CauchyBounded (deviationExcess lam) Dₑ) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) : ¬ ExcessMeanVanishes lam",
+      "compiled_statement": null,
+      "source_statement": "theorem not_excessMeanVanishes_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Dₑ : ℝ}\n    (hexc : CauchyBounded (deviationExcess lam) Dₑ) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) : ¬ ExcessMeanVanishes lam",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "eq_vonMangoldt_of_weilPositiveFull_of_excessMeanVanishes",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hexc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hmean",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hne",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "5720483df5170ff24760b44f6d35b701a9dd2b3c28c37927db13c27081c16064",
+      "applicability": "not_checked",
+      "score": 0.0125,
+      "matched_view": "proof",
+      "proof_excerpt": "fun hmean => hne (eq_vonMangoldt_of_weilPositiveFull_of_excessMeanVanishes hW hexc hmean n hn)\n\n/-- **Summable excess rigidity.** A full-cone Weil-positive `lam` whose excess over `Λ` is\nsummable against `n^{−1/2}` equals `Λ` at every `n ≥ 2`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "a8a0c2bf6532e1bdf75ee4bd457cd526824124c729ba9e07a4d1f9eb041191e5",
+      "name": "GaloisForLFunctions.RHTower.ccmRationalLocalBrauerAddHom_apply_ne_connesPadicTateLocalZeta_of_invariant",
+      "module": "GaloisForLFunctions.RHTower.CCMRationalAdelicFiniteResidueBrauerObstruction",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRationalAdelicFiniteResidueBrauerObstruction.lean",
+      "line": 78,
+      "end_line": 96,
+      "kind": "theorem",
+      "statement": "theorem ccmRationalLocalBrauerAddHom_apply_ne_connesPadicTateLocalZeta_of_invariant\n    (v : HeightOneSpectrum ℤ)\n    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] ≃+ RatModInt)\n    (g : BrauerGroup (CCMRationalLocalField v) →+ ℂ)\n    (x : BrauerGroup (CCMRationalLocalField v)) {s : ℂ} (hs : 0 < s.re) :\n    g x ≠ ∫ a : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ,\n      Set.indicator {b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ |\n        ‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ ≤ 1}\n        (fun b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ =>\n          ((‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ : ℝ) : ℂ) ^ s) a\n        ∂fieldOnePadicMultiplicativeHaar (Rat.HeightOneSpectrum.primesEquiv v)",
+      "compiled_statement": null,
+      "source_statement": "theorem ccmRationalLocalBrauerAddHom_apply_ne_connesPadicTateLocalZeta_of_invariant\n    (v : HeightOneSpectrum ℤ)\n    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] ≃+ RatModInt)\n    (g : BrauerGroup (CCMRationalLocalField v) →+ ℂ)\n    (x : BrauerGroup (CCMRationalLocalField v)) {s : ℂ} (hs : 0 < s.re) :\n    g x ≠ ∫ a : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ,\n      Set.indicator {b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ |\n        ‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ ≤ 1}\n        (fun b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ =>\n          ((‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ : ℝ) : ℂ) ^ s) a\n        ∂fieldOnePadicMultiplicativeHaar (Rat.HeightOneSpectrum.primesEquiv v)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Rat.HeightOneSpectrum.primesEquiv",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmRationalLocalBrauerAddHom_eq_zero_of_invariant",
+          "kind": "source_reference"
+        },
+        {
+          "target": "connes_padic_tate_local_zeta_ne_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "g",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "invariant",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "symm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "v",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "a696a91406135d0cf464e0f2ff9cc9b1ed85145fccb5a1dce0dbba433761a8d9",
+      "applicability": "not_checked",
+      "score": 0.012345679012345678,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  rw [ccmRationalLocalBrauerAddHom_eq_zero_of_invariant v invariant g]\n  exact (connes_padic_tate_local_zeta_ne_zero\n    (Rat.HeightOneSpectrum.primesEquiv v) hs).symm\n\n/-- The full additive-Brauer obstruction reaches the actual finite local term in Connes's Weil\nexplicit formula.  A future ABHN-to-Connes/Tate comparison must be nonlinear before the local\nWeil term is formed. -/",
+      "method": {
+        "decl_id": "a8a0c2bf6532e1bdf75ee4bd457cd526824124c729ba9e07a4d1f9eb041191e5",
+        "content_hash": "a696a91406135d0cf464e0f2ff9cc9b1ed85145fccb5a1dce0dbba433761a8d9",
+        "model_version": "mlx-community/Qwen3-4B-Instruct-2507-4bit@50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b:62b26e3a25a911da0a8c5fcad88a9300f64c7ea0bb5cd79b08e7c5ab8d8b7f2a",
+        "prompt_version": "method-3-code-lines",
+        "description": "The proof shows the application of a symmetry to conclude the inequality between a Brauer group homomorphism and a local zeta integral.",
+        "assumptions": [
+          "0 < s.re"
+        ],
+        "steps": [
+          "apply rw to equate the homomorphism to zero via invariant",
+          "use symmetry of non-vanishing Connes-locally Tate zeta function"
+        ],
+        "obligations": [
+          "transfer the argument to non-vanishing of the zeta integral"
+        ],
+        "evidence": [
+          "  rw [ccmRationalLocalBrauerAddHom_eq_zero_of_invariant v invariant g]",
+          "  exact (connes_padic_tate_local_zeta_ne_zero"
+        ],
+        "status": "ready",
+        "error": ""
+      },
+      "idea_status": "retrieved_source_argument"
+    }
+  ],
+  "proof_ideas": [],
+  "ingredient_sets": [
+    {
+      "description": "Log energy square coefficient derivation",
+      "steps": [
+        {
+          "goal": "Derive log energy square",
+          "candidate_ids": [
+            "8a1106a44589bcb6d1946cf0267d80ccf558d63eff2825d46de956e3d7a0715b",
+            "3e26f515207c424827ed4d68df54e78be0eeb08fc05b037c8660a397df379a9e"
+          ],
+          "candidates": [
+            {
+              "id": "8a1106a44589bcb6d1946cf0267d80ccf558d63eff2825d46de956e3d7a0715b",
+              "name": "RHTower.primeDepthBVWoldXiStokesEnergy_eq_modularLogEnergy",
+              "module": "GaloisForLFunctions.RHTower.XiArithmeticModularHodgeEnergyLaw",
+              "relpath": "formal/GaloisForLFunctions/RHTower/XiArithmeticModularHodgeEnergyLaw.lean",
+              "line": 129
+            },
+            {
+              "id": "3e26f515207c424827ed4d68df54e78be0eeb08fc05b037c8660a397df379a9e",
+              "name": "RHTower.primeDepthBVWoldXiNormalExtensionEnergy_eq_modularLogEnergy",
+              "module": "GaloisForLFunctions.RHTower.XiArithmeticModularHodgeEnergyLaw",
+              "relpath": "formal/GaloisForLFunctions/RHTower/XiArithmeticModularHodgeEnergyLaw.lean",
+              "line": 88
+            }
+          ],
+          "obligations": [
+            "Match prime depth log terms"
+          ],
+          "status": "proposed"
+        },
+        {
+          "goal": "Link to Weil positivity",
+          "candidate_ids": [
+            "342beadd06616b938773e4eb94897d328d988721a96817a85f072f41b5fdc0db",
+            "d5a10fd2c51e8d0312c69160ec5391b9722a972d4fe8fdf2481d45c890bf31d9"
+          ],
+          "candidates": [
+            {
+              "id": "342beadd06616b938773e4eb94897d328d988721a96817a85f072f41b5fdc0db",
+              "name": "RHTower.riemannHypothesis_of_weilPositiveFull_of_le",
+              "module": "GaloisForLFunctions.RHTower.WeilFullConeCCMBridge",
+              "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeCCMBridge.lean",
+              "line": 156
+            },
+            {
+              "id": "d5a10fd2c51e8d0312c69160ec5391b9722a972d4fe8fdf2481d45c890bf31d9",
+              "name": "RHTower.atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull",
+              "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+              "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+              "line": 514
+            }
+          ],
+          "obligations": [
+            "Force RH via Weil bound"
+          ],
+          "status": "proposed"
+        }
+      ],
+      "status": "not_verified"
+    }
+  ],
+  "elapsed_seconds": 157.265060166
+}

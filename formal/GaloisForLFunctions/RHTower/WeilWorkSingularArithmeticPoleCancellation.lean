@@ -74,7 +74,8 @@ theorem tendsto_mul_sourceZetaPairing {lam : ℕ → ℝ} (hW : WeilPositiveFull
   refine hc.tendsto.mono_left nhdsWithin_le_nhds |>.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with s hs
   rw [sourceZetaPairing_eq_poleNumerator hW hs]
-  field_simp
+  have hs' : s ≠ 1 := hs
+  field_simp [sub_ne_zero.mpr hs']
 
 def sourceZetaSquare {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) (s : ℂ) : ℂ :=
   (zetaArchimedeanDatum s + 1 / (s - 1) - WeilSpectral.weilContinuation hW s) * riemannZeta s ^ 2 +
@@ -92,9 +93,10 @@ theorem sourceZetaSquare_eq_poleNumerator {lam : ℕ → ℝ} (hW : WeilPositive
 theorem differentiableAt_sourceZetaSquare {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
     {s : ℂ} (hs : 1 / 2 < s.re) (hs1 : s ≠ 1) :
     DifferentiableAt ℂ (sourceZetaSquare hW) s := by
+  have hden : DifferentiableAt ℂ (fun z : ℂ => (z - 1) ^ 2) s := by fun_prop
   have hd := ((differentiable_zetaResidueFactor s).mul
-    (differentiableAt_sourcePoleNumerator hW hs)).div
-      ((differentiableAt_id.sub_const 1).pow 2) (pow_ne_zero 2 (sub_ne_zero.mpr hs1))
+    (differentiableAt_sourcePoleNumerator hW hs)).div hden
+      (pow_ne_zero 2 (sub_ne_zero.mpr hs1))
   refine hd.congr_of_eventuallyEq ?_
   filter_upwards [isOpen_compl_singleton.mem_nhds hs1] with z hz
   exact sourceZetaSquare_eq_poleNumerator hW hz
@@ -102,13 +104,17 @@ theorem differentiableAt_sourceZetaSquare {lam : ℕ → ℝ} (hW : WeilPositive
 theorem tendsto_sq_mul_sourceZetaSquare {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
     Tendsto (fun s : ℂ => (s - 1) ^ 2 * sourceZetaSquare hW s) (𝓝[≠] 1)
       (𝓝 (sourcePoleNumerator hW 1)) := by
-  have hc := (differentiable_zetaResidueFactor 1).continuousAt.mul
+  have hc : ContinuousAt (fun s : ℂ => zetaResidueFactor s * sourcePoleNumerator hW s) 1 :=
+    (differentiable_zetaResidueFactor 1).continuousAt.mul
     (differentiableAt_sourcePoleNumerator hW (by norm_num)).continuousAt
-  have ht := hc.tendsto.mono_left nhdsWithin_le_nhds
+  have ht : Tendsto (fun s : ℂ => zetaResidueFactor s * sourcePoleNumerator hW s) (𝓝[≠] 1)
+      (𝓝 (zetaResidueFactor 1 * sourcePoleNumerator hW 1)) :=
+    hc.tendsto.mono_left nhdsWithin_le_nhds
   simp only [zetaResidueFactor_one, one_mul] at ht
   refine ht.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with s hs
   rw [sourceZetaSquare_eq_poleNumerator hW hs]
-  field_simp
+  have hs' : s ≠ 1 := hs
+  field_simp [sub_ne_zero.mpr hs']
 
 end RHTower.WeilSingularArithmetic

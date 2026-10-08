@@ -175,13 +175,13 @@ theorem zero_interior_cosine_tail {k : ℕ} (a : Fin k → ℝ)
       exact Finset.sum_congr rfl fun j _ => mul_comm _ _]
 
 /-- A limiting all-negative phase can be corrected exactly with any mass above one. -/
-theorem exists_exact_cosine_correction {k : ℕ} (a : Fin k → ℝ)
+theorem exists_exact_positive_cosine_correction {k : ℕ} (a : Fin k → ℝ)
     (ha : ∀ i, a i ≠ 0) (hinj : Function.Injective a)
     (hopp : ∀ i j, a i ≠ -a j) (R M : ℝ) (hM : 1 < M)
     (hz : (fun _ : Fin k => (-1 : ℝ)) ∈ closure
       ((fun t i => Real.cos (a i*t)) '' Set.Ioi R)) :
     ∃ (ι : Type) (_ : Fintype ι) (w t : ι → ℝ),
-      (∀ i, 0 ≤ w i) ∧ (∀ i, R < t i) ∧ (∑ i, w i) = M ∧
+      (Fintype.card ι ≤ k+1) ∧ (∀ i, 0 < w i) ∧ (∀ i, R < t i) ∧ (∑ i, w i) = M ∧
       ∀ j, (∑ i, w i * Real.cos (a j*t i)) = -1 := by
   classical
   let C := convexHull ℝ ((fun t i => Real.cos (a i*t)) '' Set.Ioi R)
@@ -200,10 +200,13 @@ theorem exists_exact_cosine_correction {k : ℕ} (a : Fin k → ℝ)
       funext j
       simp only [Pi.smul_apply, smul_eq_mul, mul_neg_one]
     rwa [he] at h
-  obtain ⟨ι, hi, w, z, hw, hsum, hzmem, hzw⟩ := mem_convexHull_iff_exists_fintype.mp ht
+  obtain ⟨ι, hi, z, w, hzmem, hai, hw, hsum, hzw⟩ := eq_pos_convex_span_of_mem_convexHull ht
   letI : Fintype ι := hi
-  choose t ht hzval using hzmem
-  refine ⟨ι, hi, (fun i => M*w i), t, (fun i => mul_nonneg hM0.le (hw i)),
+  have hcard : Fintype.card ι ≤ k+1 := by
+    have h := le_trans hai.card_le_finrank_succ (Nat.add_le_add_right (Submodule.finrank_le _) 1)
+    simpa using h
+  choose t ht hzval using (fun i => hzmem ⟨i, rfl⟩)
+  refine ⟨ι, hi, (fun i => M*w i), t, hcard, (fun i => mul_pos hM0 (hw i)),
     ht, ?_, ?_⟩
   · rw [← Finset.mul_sum, hsum, mul_one]
   · intro j
@@ -214,5 +217,18 @@ theorem exists_exact_cosine_correction {k : ℕ} (a : Fin k → ℝ)
       exact Finset.sum_congr rfl fun i _ => congrArg (fun v => w i*v j) (hzval i)
     simp only [mul_assoc, ← Finset.mul_sum, het]
     rw [mul_neg, mul_inv_cancel₀ hM0.ne']
+
+/-- The nonnegative-weight interface for exact cosine correction. -/
+theorem exists_exact_cosine_correction {k : ℕ} (a : Fin k → ℝ)
+    (ha : ∀ i, a i ≠ 0) (hinj : Function.Injective a)
+    (hopp : ∀ i j, a i ≠ -a j) (R M : ℝ) (hM : 1 < M)
+    (hz : (fun _ : Fin k => (-1 : ℝ)) ∈ closure
+      ((fun t i => Real.cos (a i*t)) '' Set.Ioi R)) :
+    ∃ (ι : Type) (_ : Fintype ι) (w t : ι → ℝ),
+      (∀ i, 0 ≤ w i) ∧ (∀ i, R < t i) ∧ (∑ i, w i) = M ∧
+      ∀ j, (∑ i, w i * Real.cos (a j*t i)) = -1 := by
+  obtain ⟨ι, hi, w, t, _, hw, ht, hsum, hcos⟩ :=
+    exists_exact_positive_cosine_correction a ha hinj hopp R M hM hz
+  exact ⟨ι, hi, w, t, (fun i => (hw i).le), ht, hsum, hcos⟩
 
 end RHTower.WeilWorkPBAP

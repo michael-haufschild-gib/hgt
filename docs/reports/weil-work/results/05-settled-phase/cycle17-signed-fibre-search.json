@@ -1,0 +1,441 @@
+{
+  "query": "full Weil positivity signed deviation partial summation notch fibre error prime deletion logarithmic coefficients",
+  "partial": true,
+  "errors": [
+    {
+      "stage": "filter_and_judge",
+      "error": "local model returned incomplete or malformed JSON"
+    },
+    {
+      "stage": "text_retrieval",
+      "error": "interrupted"
+    },
+    {
+      "stage": "source_retrieval",
+      "error": "interrupted"
+    }
+  ],
+  "coverage": {
+    "generation": 1280779,
+    "status": "pending"
+  },
+  "index_warnings": [],
+  "refresh": {
+    "complete": false,
+    "reason": "background_indexer_running"
+  },
+  "unfinished_stages": [
+    "query:partial summation error estimate",
+    "deadline",
+    "filter_and_judge"
+  ],
+  "index_generation": 1280779,
+  "elapsed_seconds": 300.049854292,
+  "declarations": [],
+  "candidate_lemmas": [
+    {
+      "name": "RHTower.WeilPositive",
+      "module": "tmp.l68.A",
+      "relpath": "formal/tmp/l68/A.lean",
+      "line": 18,
+      "statement": "def WeilPositive (lam : ℕ → ℝ) : Prop",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilPositive",
+      "module": "GaloisForLFunctions.RHTower.WeilPositivityFiniteLevelExistence",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityFiniteLevelExistence.lean",
+      "line": 42,
+      "statement": "def WeilPositive (lam : ℕ → ℝ) : Prop",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.weilPositive_of_weilPositiveFull",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+      "line": 395,
+      "statement": "theorem weilPositive_of_weilPositiveFull {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    WeilPositive lam",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilOneSided.exists_weilPositiveFull_ge_of_positiveOnNonnegCone",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeOneSidedCriterion",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeOneSidedCriterion.lean",
+      "line": 333,
+      "statement": "theorem exists_weilPositiveFull_ge_of_positiveOnNonnegCone {L : ℕ → ℝ}\n    (h : PositiveOnNonnegCone L) :\n    ∃ lam : ℕ → ℝ, WeilPositiveFull lam ∧ (∀ n, 2 ≤ n → L n ≤ lam n) ∧ ∀ n, n < 2 → lam n = 0",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilPositiveUpTo",
+      "module": "GaloisForLFunctions.RHTower.WeilPositivityFiniteLevelExistence",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityFiniteLevelExistence.lean",
+      "line": 36,
+      "statement": "def WeilPositiveUpTo (lam : ℕ → ℝ) (A : ℝ) : Prop",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilPositiveUpTo",
+      "module": "tmp.l68.A",
+      "relpath": "formal/tmp/l68/A.lean",
+      "line": 12,
+      "statement": "def WeilPositiveUpTo (lam : ℕ → ℝ) (A : ℝ) : Prop",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilOneSided.exists_weilPositiveFull_le_of_positiveOnNonposCone",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeOneSidedCriterion",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeOneSidedCriterion.lean",
+      "line": 316,
+      "statement": "theorem exists_weilPositiveFull_le_of_positiveOnNonposCone {U : ℕ → ℝ}\n    (h : PositiveOnNonposCone U) :\n    ∃ lam : ℕ → ℝ, WeilPositiveFull lam ∧ (∀ n, 2 ≤ n → lam n ≤ U n) ∧ ∀ n, n < 2 → lam n = 0",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilMonotoneCone.exists_weilPositiveFull_of_positiveOnMonotoneCone",
+      "module": "GaloisForLFunctions.RHTower.WeilMonotoneConeCriterion",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilMonotoneConeCriterion.lean",
+      "line": 243,
+      "statement": "theorem exists_weilPositiveFull_of_positiveOnMonotoneCone\n    (h : PositiveOnMonotoneCone fun n => (Λ n : ℝ)) :\n    ∃ lam : ℕ → ℝ, WeilPositiveFull lam ∧\n      ∀ N : ℕ, 0 ≤ ∑ n ∈ Finset.Icc 2 N, (1 : ℝ) * (lam n - Λ n)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.WeilPolarMajorant.exists_weilPositive_ge_of_positiveOnPolarNonnegCone",
+      "module": "GaloisForLFunctions.RHTower.WeilPolarMajorantCriterion",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPolarMajorantCriterion.lean",
+      "line": 597,
+      "statement": "theorem exists_weilPositive_ge_of_positiveOnPolarNonnegCone {L : ℕ → ℝ}\n    (h : PositiveOnPolarNonnegCone L) :\n    ∃ lam : ℕ → ℝ, WeilPositive lam ∧ ∀ n, 2 ≤ n → L n ≤ lam n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.Sieve.selbergFibreError_nonneg",
+      "module": "GaloisForLFunctions.RHTower.Sieve.SelbergTail",
+      "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/SelbergTail.lean",
+      "line": 29,
+      "statement": "theorem selbergFibreError_nonneg {z : ℕ} (hz : 2 ≤ z) (Y : ℕ) : 0 ≤ selbergFibreError z Y",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.cyclicLoopPhase_logarithmic_derivative",
+      "module": "GaloisForLFunctions.RHTower.CubicCirculantWindingIntegral",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CubicCirculantWindingIntegral.lean",
+      "line": 100,
+      "statement": "theorem cyclicLoopPhase_logarithmic_derivative {f : ℝ → ℂ}\n    (hf : ContDiff ℝ ∞ f) (hz : ∀ x, f x ≠ 0) (x : ℝ) :\n    deriv (cyclicLoopPhase f) x / cyclicLoopPhase f x =\n      deriv f x/f x - deriv (fun w => (Real.log ‖f w‖:ℂ)) x",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.Sieve.fibreRamareSieveError_nonneg",
+      "module": "GaloisForLFunctions.RHTower.Sieve.FibreRamareSplit",
+      "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/FibreRamareSplit.lean",
+      "line": 36,
+      "statement": "theorem fibreRamareSieveError_nonneg {h : ℝ} {z r : ℕ} (hz : 2 ≤ z) {lam : ℝ} (hlam : 1 ≤ lam) :\n    0 ≤ fibreRamareSieveError h z r lam",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HilbertMetric.logarithmicFirstDerivative",
+      "module": "GaloisForLFunctions.HilbertMetric.CCRPowerConcavity",
+      "relpath": "formal/GaloisForLFunctions/HilbertMetric/CCRPowerConcavity.lean",
+      "line": 281,
+      "statement": "def logarithmicFirstDerivative (F₁ : ℝ → ℝ) (s : ℝ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.coordPartialSum",
+      "module": "GaloisForLFunctions.HTGeometry.SeriesConvergenceZeroOne",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/SeriesConvergenceZeroOne.lean",
+      "line": 27,
+      "statement": "def coordPartialSum (g : ∀ n, X n → E) (N : ℕ) (x : ∀ m, X m) : E",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.LebesgueAtomWeil.WeilMeasurePositive",
+      "module": "GaloisForLFunctions.RHTower.LebesgueAtomWeilPositivity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/LebesgueAtomWeilPositivity.lean",
+      "line": 55,
+      "statement": "def WeilMeasurePositive (νp νm : Measure ℝ) : Prop",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.exists_weilPositive_iff_primeBlindPositive",
+      "module": "GaloisForLFunctions.RHTower.WeilPositivityPrimeBlindDuality",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityPrimeBlindDuality.lean",
+      "line": 558,
+      "statement": "theorem exists_weilPositive_iff_primeBlindPositive :\n    (∃ lam : ℕ → ℝ, WeilPositive lam) ↔ ∀ A : ℝ, PrimeBlindPositive A",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.exists_weilPositive_iff_primeBlindPositive",
+      "module": "tmp.l79.R",
+      "relpath": "formal/tmp/l79/R.lean",
+      "line": 527,
+      "statement": "theorem exists_weilPositive_iff_primeBlindPositive :\n    (∃ lam : ℕ → ℝ, WeilPositive lam) ↔ ∀ A : ℝ, PrimeBlindPositive A",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.BeurlingDeletion.DeletionData.partialSum_ind",
+      "module": "GaloisForLFunctions.RHTower.BeurlingDeletionEulerProduct",
+      "relpath": "formal/GaloisForLFunctions/RHTower/BeurlingDeletionEulerProduct.lean",
+      "line": 83,
+      "statement": "theorem partialSum_ind (n : ℕ) :\n    partialSum D.ind (n + 1) = ∑ p ∈ (Finset.Iic n).filter Nat.Prime, D.ind p",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "HTGeometry.resonancePartialSummation",
+      "module": "GaloisForLFunctions.HTGeometry.CorrelationExponentBridge",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/CorrelationExponentBridge.lean",
+      "line": 508,
+      "statement": "def resonancePartialSummation (kappa : ℚ) : ℚ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.SelbergThetaSourcePhase.modeLogDerivative",
+      "module": "GaloisForLFunctions.RHTower.SelbergThetaSourcePhase",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SelbergThetaSourcePhase.lean",
+      "line": 312,
+      "statement": "def modeLogDerivative (q : XiZeroCopy) (x : ℝ) : ℂ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    }
+  ],
+  "source_arguments": [
+    {
+      "name": "RHTower.WeilRegular.eq_zero_of_weilPositiveFull_add",
+      "module": "GaloisForLFunctions.RHTower.WeilRegularDeviationRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilRegularDeviationRigidity.lean",
+      "line": 283,
+      "statement": "theorem eq_zero_of_weilPositiveFull_add (hR : RegularDeviation w E)\n    (hW : WeilPositiveFull (addVonMangoldt w)) (n : ℕ) : w n = 0",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "eq_zero_of_weilPositive_add hR (RHTower.weilPositive_of_weilPositiveFull hW) n\n\n/-- **A regular deviation of a full-cone Weil-positive completion forces RH.** -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.exists_admissible_rectIntegral_rectangularSource_eq_xiZeroCopy_sum_containing",
+      "module": "GaloisForLFunctions.RHTower.XiGuinandWeilSpectralRectangle",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiGuinandWeilSpectralRectangle.lean",
+      "line": 135,
+      "statement": "theorem exists_admissible_rectIntegral_rectangularSource_eq_xiZeroCopy_sum_containing\n    (t : Finset XiZeroCopy) (L a : ℝ) :\n    ∃ z₁ z₂ : ℂ,\n      z₁.re < z₂.re ∧ z₁.im < z₂.im ∧\n      (∀ q ∈ t, q ∈ xiZeroCopyClosedRectangle z₁ z₂) ∧\n      rectIntegral (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) *\n          continuedPrimeArchSourceRelativeTrace z) z₁ z₂ =\n        2 * Real.pi * I * ∑ q ∈ xiZeroCopyClosedRectangle z₁ z₂,\n          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "exists_admissible_rectIntegral_source_eq_xiZeroCopy_sum_containing t\n    (xiRectangularTwoEdgeTransform_sq_analyticOnNhd L a)\n\n/-- **Full rectangular Weil value as a cofinal source-contour limit.**  For every positive error\ntolerance, an automatically admissible finite rectangle has normalized continued-source contour\nwithin that tolerance of the complete rectangular Xi-Weil polarization.  Thus the passage from\nfinite rectangle residues to the full absolutely summable divisor value needs no extra hypothesis. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.riemannHypothesis_of_weilPositiveFull_of_le",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeCCMBridge",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeCCMBridge.lean",
+      "line": 156,
+      "statement": "theorem riemannHypothesis_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    (h0 : ∀ n, 2 ≤ n → 0 ≤ lam n)\n    (hle : ∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) :\n    RiemannHypothesis",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "riemannHypothesis_of_oddParityPole_subsystem h0 hle fun a =>\n    ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull hW a _\n\n/-- **Weil-positive majorants force RH (full cone).** -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.ccmContinuousArithmeticQuadratic_eq_weil_add_prime",
+      "module": "GaloisForLFunctions.RHTower.CCMContinuousLocalizationInvariant",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMContinuousLocalizationInvariant.lean",
+      "line": 42,
+      "statement": "theorem ccmContinuousArithmeticQuadratic_eq_weil_add_prime {a : SuzukiPositiveAperture}\n    (u : CCMComplexSmoothInteriorSource a) :\n    ccmContinuousArithmeticQuadratic u = ccmRestrictedWeilSourceQuadratic a u.toCCMFormVector +\n      2 * thetaPrimeScalingCross thetaCuspTiltSource thetaCuspTiltSource\n        (ccmThetaGroundProfile u).toBoundedContinuousFunction",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "by\n  rw [ccmRestrictedWeilSourceQuadratic_eq_thetaFullArithmetic, thetaFullArithmeticQuadratic]\n  unfold ccmContinuousArithmeticQuadratic\n  ring",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.RemovedPrimes.vonMangoldtWithout_le",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeRemovedPrimes",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeRemovedPrimes.lean",
+      "line": 23,
+      "statement": "theorem vonMangoldtWithout_le (R : Set ℕ) (n : ℕ) :\n    vonMangoldtWithout R n ≤ (vonMangoldt n : ℝ)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "Set.indicator_le_self' (fun _ _ => vonMangoldt_nonneg) n\n\n/-- **Removing any prime destroys Weil positivity.**  If `R` contains a prime, then the von Mangoldt\nfunction with the powers of the primes of `R` removed is not full-cone Weil-positive. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+      "line": 514,
+      "statement": "theorem atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "atomPairing_riemannKernelAutocorr_nonpos hW (summable_sub_vonMangoldt_div_sq hW)\n\n/-- **`Λ` is an exposed point of the full Weil cone.** Every Weil-positive `lam` has\n`ℓ(lam − Λ) ≤ 0`, with equality only if `lam = Λ` on `n ≥ 2`. The exposing functional `ℓ` has\nthe strictly positive kernel `Φ ⋆ Φ̃`. No summability hypothesis: Weil positivity bounds\n`|lam(n)| ≤ √n (log n + C₀)`. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.WeilExcess.not_summable_excess_of_ne",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeSummableExcessRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeSummableExcessRigidity.lean",
+      "line": 273,
+      "statement": "theorem not_summable_excess_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) :\n    ¬ Summable fun n => max (lam n - (ArithmeticFunction.vonMangoldt n : ℝ)) 0 / Real.sqrt n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "fun hexc => hne (eq_vonMangoldt_of_weilPositiveFull_of_summable_excess hW hexc n hn)\n\n/-- A full-cone Weil-positive `lam ≠ Λ` has infinite deficit below `Λ`. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.WeilOneSided.sum_weilArchRe_eq",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeOneSidedCriterion",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeOneSidedCriterion.lean",
+      "line": 443,
+      "statement": "theorem sum_weilArchRe_eq (c : WeilTestFn →₀ ℝ) :\n    (c.sum fun f t => t * weilArchRe (EF.weilTest f.1 f.1)) =\n      linearCombination ℝ (fun f : WeilTestFn => weilArchRe (EF.weilTest f.1 f.1)) c",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "by\n  rw [linearCombination_apply]; simp only [smul_eq_mul]\n\n/-- **The Weil cone is nonempty iff prime-blind positivity holds.** Some real sequence `lam` is\nfull-cone Weil-positive exactly when the pole and archimedean part is nonnegative on the\ncombinations that vanish at every `±log n`. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.ccmWeilPoleDiagonal",
+      "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFullPoleMatrix",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilFullPoleMatrix.lean",
+      "line": 169,
+      "statement": "def ccmWeilPoleDiagonal (a : SuzukiPositiveAperture) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "ccmRestrictedWeilSourceQuadratic a (ccmPolarFormVector a (1/2))\n\n/-- The actual full Weil opposite-pole entry, before any sign assumption. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.weilFullCone_exposed_at_vonMangoldt",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+      "line": 523,
+      "statement": "theorem weilFullCone_exposed_at_vonMangoldt {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0 ∧\n      (atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr = 0 →\n        ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "⟨atomPairing_riemannKernelAutocorr_nonpos hW (summable_sub_vonMangoldt_div_sq hW),\n    eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero hW (summable_sub_vonMangoldt_div_sq hW)⟩\n\n/-- **`Λ` is an extreme point of the full Weil cone**, with no hypothesis on `w`: if `Λ + w` and\n`Λ − w` are both Weil-positive, then `w(n) = 0` for all `n ≥ 2`. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.PrimorialResonance.not_forall_squarefree_signChar_le_of_weilPositiveFull",
+      "module": "GaloisForLFunctions.RHTower.WeilPositivityPrimorialResonance",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityPrimorialResonance.lean",
+      "line": 572,
+      "statement": "theorem not_forall_squarefree_signChar_le_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {s : ℕ → ℝ} (hs : ∀ p, s p = 1 ∨ s p = -1) {c δ : ℝ}\n    (hc : 0 < c) (hδ : δ < 1 / 2) :\n    ¬ ∀ n : ℕ, 2 ≤ n → Squarefree n → c * (n : ℝ) ^ (-δ) ≤ signChar s n * lam n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "not_forall_squarefree_signChar_le_of_weilPositive (weilPositive_of_weilPositiveFull hW) hs hc hδ\n\n/-- **No full-cone Weil-positive weight system is bounded below by `c n^{-δ}` on the squarefree\nintegers `n ≥ 2`, for any `c > 0` and `δ < 1/2`.** -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.WeilAbscissa.not_weilPositiveFull_of_semiprime_floor",
+      "module": "GaloisForLFunctions.RHTower.WeilConeMultiplesOfPrimeLaw",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeMultiplesOfPrimeLaw.lean",
+      "line": 686,
+      "statement": "theorem not_weilPositiveFull_of_semiprime_floor {lam : ℕ → ℝ} {C c : ℝ} (hC : 0 ≤ C) (hc : 0 < c)\n    (hd : ∀ n, |WeilOneSided.coneDeviation lam n| ≤ C * (1 + ArithmeticFunction.vonMangoldt n))\n    {p : ℕ} (hp : p.Prime) (hnn : ∀ n, p ∣ n → p < n → 0 ≤ lam n)\n    (hfloor : ∀ q, q.Prime → q ≠ p → c ≤ lam (p * q)) : ¬ RHTower.WeilPositiveFull lam",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "fun hW => not_summable_multiples_of_semiprime_floor hc hp hnn hfloor\n    (summable_multiples_of_nonneg hW hC hd hp hnn)\n\n/-! ## The nonnegative Weil cone -/\n\n/-- **The multiples-of-a-prime law of the nonnegative Weil cone.** If `lam ≥ 0` is full-cone\nWeil-positive, then for every prime `p` the sums `Σ_{n≤k, p∣n} (lam(n) − Λ(n))/n` tend neither to\n`+∞` nor to `−∞`. No size condition is placed on `lam`. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.WeilAbscissa.profilePrimitive_mono",
+      "module": "GaloisForLFunctions.RHTower.WeilDeviationLocalMass",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilDeviationLocalMass.lean",
+      "line": 574,
+      "statement": "theorem profilePrimitive_mono {φ : ℝ → ℝ} (hφc : Continuous φ) (hφ0 : ∀ x, 0 ≤ φ x) {y y' : ℝ}\n    (h : y' ≤ y) : WeilOneSided.profilePrimitive φ y' ≤ WeilOneSided.profilePrimitive φ y",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "by\n  unfold WeilOneSided.profilePrimitive\n  rw [← intervalIntegral.integral_add_adjacent_intervals (hφc.intervalIntegrable (μ := volume) (-1) y')\n    (hφc.intervalIntegrable y' y)]\n  have := intervalIntegral.integral_nonneg (μ := volume) h (fun x _ => hφ0 x)\n  linarith\n\n/-- **Nonnegative Weil-positive weights have bounded local mass.** If `lam` is full-cone\nWeil-positive and `lam(n) ≥ 0` for `n ≥ 2`, then `d = lam − Λ` has bounded local mass. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.WeilAtomic.weilFullFunctional_weilTest_eq_atomic",
+      "module": "GaloisForLFunctions.RHTower.WeilAtomicExplicitFormula",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilAtomicExplicitFormula.lean",
+      "line": 336,
+      "statement": "theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}\n    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)\n    {ι : Type*} [Countable ι] {c τ : ι → ℝ} (hc : ∀ i, 0 ≤ c i)\n    (hΦ : ∀ s : ℂ, 1 < s.re →\n      HasSum (fun i => (c i : ℂ) * gPair (1 / 2 + τ i * I) s) (WeilHerglotz.weilFunction lam s))\n    {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :\n    HasSum (fun i => ((c i * (‖paperFT f (τ i)‖ ^ 2 + ‖paperFT f (-τ i)‖ ^ 2) : ℝ) : ℂ))\n      (weilFullFunctional lam (EF.weilTest f f))",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "by\n  obtain ⟨D, -, hD⟩ := norm_Hfn_weilTest_le hf hfc\n  have h := hasSum_weilFullFunctional_atomic hsl hc hΦ\n    (EF.weilTest_contDiff hf hf.continuous hfc) (EF.weilTest_hasCompactSupport hfc hfc) hD\n  refine h.congr_fun fun i => ?_\n  have hneg := paperFT_weilTest_self_ofReal hf.continuous hfc (-τ i)\n  rw [Complex.ofReal_neg] at hneg\n  rw [paperFT_weilTest_self_ofReal hf.continuous hfc, hneg]\n  push_cast\n  ring\n\n/-- **Atomic Weil functions with nonnegative masses on the critical line are full-cone\nWeil-positive.** -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.WeilDilationRealness.dirPoly_ofReal",
+      "module": "GaloisForLFunctions.RHTower.WeilConeDilationRealnessRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeDilationRealnessRigidity.lean",
+      "line": 267,
+      "statement": "theorem dirPoly_ofReal (N : ℕ) (a : ℕ → ℝ) (x : ℝ) :\n    dirPoly N a (x : ℂ) = ((∑ n ∈ Finset.Icc 1 N, a n * (n : ℝ) ^ (-x) : ℝ) : ℂ)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "by\n  unfold dirPoly\n  push_cast\n  refine Finset.sum_congr rfl fun n hn => ?_\n  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n\n  rw [Complex.ofReal_cpow hn0]\n  push_cast\n  rfl\n\n/-- **Dilation rigidity of the Weil cone.**  If `Λ ⋆ a + v` is full-cone Weil-positive, with `a`\nfinitely supported and `v` regular, then `a = δ₁`. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.norm_xiWeilPolarization_rectangular_le_of_riemannHypothesis",
+      "module": "GaloisForLFunctions.RHTower.CCMRectangularTransverseGrowth",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRectangularTransverseGrowth.lean",
+      "line": 83,
+      "statement": "theorem norm_xiWeilPolarization_rectangular_le_of_riemannHypothesis\n    {L a : ℝ} (hRH : RiemannHypothesis) (hLa : L ≤ a) :\n    ‖xiWeilPolarization (xiRectangularTwoEdgeTransform L a)\n        (xiRectangularTwoEdgeTransform L a)‖ ≤\n      rectangularTwoEdgeRemainderBound L *\n        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "by\n  have hdom : (∑' q : XiZeroCopy,\n      xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)) = 0 := by\n    have hzero : ∀ q : XiZeroCopy,\n        xiRectangularTwoEdgeDominant L a (xiSpectralPoint q) = 0 := by\n      intro q\n      obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q\n      rw [xiRectangularTwoEdgeDominant, ht]\n      apply rectangularTwoEdgeDominant_of_re_eq_zero\n      simp\n    simp only [hzero, tsum_zero]\n  have hrem := norm_xiWeilPolarization_rectangular_sub_dominant_le hLa\n  rw [hdom, sub_zero] at hrem\n  exact hrem\n\n/-- If RH fails, the transverse supremum is an upper power exponent for the\nactual fixed-width logarithmic Weil sequence. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.ccmWeilPoleDiagonal_eq_error",
+      "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFullPoleMatrix",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilFullPoleMatrix.lean",
+      "line": 219,
+      "statement": "theorem ccmWeilPoleDiagonal_eq_error (a : SuzukiPositiveAperture) :\n    ccmWeilPoleDiagonal a =\n      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*Real.sinh a.1) -\n      Real.exp a.1+(1-2*a.1)*Real.exp (-a.1)+ccmGammaPoleSelfBoundaryMass a -\n      2*Real.exp a.1*ccmReciprocalMangoldtError (2*a.1) +\n      2*Real.exp (-a.1)*Chebyshev.psi (Real.exp (2*a.1))",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "by\n  rw [ccmWeilPoleDiagonal_eq, ccmReciprocalMangoldtError, Real.sinh_eq]\n  ring\n\n/-- The opposite-pole full Weil entry is real and retains the complete moving prime tent. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.WeilPrimeDeficit.eq_vonMangoldt_of_weilPositiveFull_of_signMult_aligned",
+      "module": "GaloisForLFunctions.RHTower.WeilPrimeDeficitSetRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPrimeDeficitSetRigidity.lean",
+      "line": 480,
+      "statement": "theorem eq_vonMangoldt_of_weilPositiveFull_of_signMult_aligned {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {s : ℕ → ℝ} (hs : ∀ p, s p = 1 ∨ s p = -1)\n    (hthin : Summable fun p : ℕ => if p.Prime ∧ s p = -1 then Real.log p / p else 0)\n    (hA : Summable fun n : ℕ => if 2 ≤ n ∧ 0 ≤ (lam n - vonMangoldt n) * signMult s n then 0\n      else |lam n - vonMangoldt n| / n) :\n    ∀ n, 2 ≤ n → lam n = vonMangoldt n",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "by\n  have hP := summable_aligned_abs_div (weilPositive_of_weilPositiveFull hW) hs hthin hA\n  refine WeilAbscissa.eq_vonMangoldt_of_weilPositiveFull_of_summable_div hW ((hP.add hA).congr\n    fun n => ?_)\n  split_ifs <;> simp [div_eq_mul_inv]\n\n/-- **Weil positivity forces a harmonically dense prime deficit set.** Let `lam` be full-cone\nWeil-positive, with `Σ_{n not prime} |lam(n) − Λ(n)|/n < ∞` and\n`Σ_{p prime, lam(p) < log p} log p / p < ∞`. Then `lam(n) = Λ(n)` for every `n ≥ 2`. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "RHTower.WeilExcess.not_excessMeanVanishes_of_ne",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeSummableExcessRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeSummableExcessRigidity.lean",
+      "line": 234,
+      "statement": "theorem not_excessMeanVanishes_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Dₑ : ℝ}\n    (hexc : CauchyBounded (deviationExcess lam) Dₑ) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) : ¬ ExcessMeanVanishes lam",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "fun hmean => hne (eq_vonMangoldt_of_weilPositiveFull_of_excessMeanVanishes hW hexc hmean n hn)\n\n/-- **Summable excess rigidity.** A full-cone Weil-positive `lam` whose excess over `Λ` is\nsummable against `n^{−1/2}` equals `Λ` at every `n ≥ 2`. -/",
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "name": "GaloisForLFunctions.RHTower.ccmRationalLocalBrauerAddHom_apply_ne_connesPadicTateLocalZeta_of_invariant",
+      "module": "GaloisForLFunctions.RHTower.CCMRationalAdelicFiniteResidueBrauerObstruction",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRationalAdelicFiniteResidueBrauerObstruction.lean",
+      "line": 78,
+      "statement": "theorem ccmRationalLocalBrauerAddHom_apply_ne_connesPadicTateLocalZeta_of_invariant\n    (v : HeightOneSpectrum ℤ)\n    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] ≃+ RatModInt)\n    (g : BrauerGroup (CCMRationalLocalField v) →+ ℂ)\n    (x : BrauerGroup (CCMRationalLocalField v)) {s : ℂ} (hs : 0 < s.re) :\n    g x ≠ ∫ a : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ,\n      Set.indicator {b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ |\n        ‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ ≤ 1}\n        (fun b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ =>\n          ((‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ : ℝ) : ℂ) ^ s) a\n        ∂fieldOnePadicMultiplicativeHaar (Rat.HeightOneSpectrum.primesEquiv v)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked",
+      "proof_excerpt": "by\n  rw [ccmRationalLocalBrauerAddHom_eq_zero_of_invariant v invariant g]\n  exact (connes_padic_tate_local_zeta_ne_zero\n    (Rat.HeightOneSpectrum.primesEquiv v) hs).symm\n\n/-- The full additive-Brauer obstruction reaches the actual finite local term in Connes's Weil\nexplicit formula.  A future ABHN-to-Connes/Tate comparison must be nonlinear before the local\nWeil term is formed. -/",
+      "idea_status": "retrieved_source_argument"
+    }
+  ],
+  "proof_ideas": [],
+  "ingredient_sets": []
+}

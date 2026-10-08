@@ -981,3 +981,454 @@ Next inspect the fibre test behind multiples-of-prime estimates and determine
 whether logarithmic averaging pays its local-mass cost. If that shortcut fails,
 retain its exact positive boundary; do not substitute generic biased sequences
 for an admissible counterexample or add C16 as a Lean premise.
+
+C16 fibre-cost audit: `exists_ramp_scale_bound_bounded_of` in
+`WeilLittleOVonMangoldtRigidity.lean` charges absolute values in its defect
+pairing and in all three notch bounds. In particular its harmonic and square-root
+costs are bounds on sums of absolute deviation, not on signed partial sums.
+The full-source `exists_twistFibre_level_bound` retains that NotchBounded input.
+C15 therefore cannot discharge the input merely by Abel summation of its signed
+forward remainder; the coefficients are also different from the logarithmic
+deviation used in the fibre test. This identifies an unsupported shortcut,
+not a counterexample or a no-go theorem for C16. A next attack must either
+derive the required absolute cost from hW or replace the error estimate itself
+with a justified signed pairing before applying the fibre argument.
+
+Oliver, Notes on Low Degree L-Data (arXiv:1601.05009), Definition2.1 and
+section4, does not remove this gap: discrete multiplicity and the finite
+nonintegral exception remain inputs to its continuation/classification
+framework. No claim of applicability to an arbitrary canonical boundary
+measure is made.
+
+## Cycle17: signed-cost and self-pairing attacks
+
+The exact notch error, before absolute values, involves rational-twist
+off-diagonal terms. The checked envelope in ZetaNotchRefinedEnvelope has a
+near-dual contribution of size sqrt(L)*log(L) on n<=2*K0^3*L. No bound on its
+signed sum follows from the principal forward mean alone. Moreover v in the
+notch is (lam-Lambda)/sqrt(n), not the forward coefficient remainder.
+WP03 supplies ordinary convergence of sum(lam-Lambda)/n, but not absolute
+local mass or convergence of every divisibility subseries. No shortcut across
+either distinction was accepted.
+
+The proposed self-pairing with the forward coefficients is REDISCOVERED:
+WeilSingularArithmetic.forwardCoeff_log_convolution and
+exists_forwardCoeff_log_moment_le already insert the exact logarithmic
+convolution into the Weil--Toeplitz form. Their resulting critical energy
+O(log N) has an unspecified constant. It does not give centered variance zero.
+
+A concrete attack on that latter inference uses a_c(n)=1+c*1_(2|n), n>=1,
+0<c<1. Its mean is B_c=1+c/2 with O(1) summatory error, while its alternating
+mean is c/2 and its centered square is identically c^2/4. Its critical energy
+is (1+c+c^2/2)*log N+O(1), whereas B_c^2=1+c+c^2/4. Thus even bounded
+summatory error plus logarithmic critical energy does not force saturation.
+On Re(s)>1, F_c= zeta(s)*(1+c*2^(-s)); its logarithmic coefficient deviation
+is (-1)^(k-1)*c^k*log2 at n=2^k and zero elsewhere. The prime-deletion
+logarithmic limit is log2+log(1+c/2), not log2. This is NOT an hW
+counterexample: the existing common-ratio rigidity theorem excludes precisely
+this nonzero deviation. The positive survivor is the already-formalized
+common-ratio rigidity, not a new theorem to duplicate. Verdict for the
+mean-plus-energy shortcut: FALSE; C13/C16 themselves remain open.
+
+## Cycle18: complex-power energy boundary
+
+Given the exact internal and external frontier, the stronger conjecture to
+attack is a phase-sensitive critical energy law for complex source powers.
+For z in C define a_z=exp_*(z*logZetaCoeff(lam_0)), with lam_0 truncated below2.
+This uses the literal Dirichlet exponential, so its branch is fixed by the
+original absolutely convergent logarithmic series, not by a pointwise choice
+of complex logarithm. Proposed sharp law:
+
+    For every original hW, every z in C and eps>0,
+    sum_(1<=n<=N)|a_z(n)|^2/n <= C_(hW,z,eps)*(1+log N)^(|z|^2+eps).
+
+In particular imaginary z would control powers sensitive to argument, while
+z=-1 would give critical reciprocal energy currently missing from the checked
+source estimates. Neither implication to phase settlement nor the sharp law
+is claimed proved. A falsifier must use an actual hW source; finite Euler
+deformations excluded by hW are not falsifiers. [OPEN CORE]: obtain the
+imaginary/negative-power estimate from the full source, beyond the one-sided
+Toeplitz test. This does not replace the constant-phase WP05 target.
+
+There is a closed weaker paper range, to be audited before new Lean. Put
+r=2*Re(z)/|z|^2. For |z-1|<1, r>1, and the Toeplitz mechanism gives
+
+    sum_(1<=n<=N)|a_z(n)|^2/n
+      <= C_(hW,z)*(1+log N)^(1/(r-1)).
+
+Dependency-closed argument for this weaker range:
+1. Absolute convergence of lam on Re(s)>1 gives absolute convergence of
+   z*logZetaCoeff(lam_0), hence of a_z and its Dirichlet series
+   exp(z*L(s)). Differentiate there and use Dirichlet-series injectivity:
+   lam_0*a_z=(log(n)/z)*a_z(n). z is nonzero in the stated disk.
+2. Insert c(n)=1_(n<=N)*a_z(n)/sqrt(n) into the checked Weil--Toeplitz
+   ceiling. Swap the finite divisor sums. Its inner expression is the real
+   part of a_z(n)*conj((lam_0*a_z)(n))/n, equal to
+   Re(1/z)*log(n)*|a_z(n)|^2/n, since lam is real. Thus r*S_N<=(log N+C)*E_N,
+   where w_n=|a_z(n)|^2/n, E_N=sum w_n, S_N=sum log(n)*w_n, and C>=0.
+3. Let H_N=log(N)*E_N-S_N>=0, c=C/(r-1), alpha=r/(r-1)>1. Then
+   (log N-c)*E_N<=alpha*H_N and
+   H_(N+1)=H_N+(log(N+1)-log N)*E_N. Choose N0 with log N0>c and
+   K=H_N0/(log N0-c)^alpha. Induction, using convexity of x^alpha on x>0,
+   gives H_N<=K*(log N-c)^alpha for N>=N0: the increment is at most
+   alpha*K*(log N-c)^(alpha-1)*(log(N+1)-log N), which the corresponding
+   power increment dominates. Consequently E_N<=alpha*K*(log N-c)^(alpha-1).
+4. Here alpha-1=1/(r-1)=|z|^2/(2Re(z)-|z|^2). The finitely many smaller
+   N are absorbed by E_N0, and c>=0 allows replacement by 1+log N.
+   No spectral decomposition, coefficient sign or new source premise enters.
+
+Verdict for this weaker range: BRIDGE, a parameter extension of the existing
+Toeplitz/log-moment argument, not demonstrated scientific novelty. For z=it,
+Re(1/z)=0, so the same test gives no energy control at all; merely retaining
+the complex algebra does not solve the phase direction. The sharp all-z law
+is still under corpus/primary-parent attack, with no Lean assertion added.
+
+Further attack: even sharp logarithmic power energies would not alone identify
+the arithmetic source. Finite Euler perturbations can preserve such growth
+while altering the logarithmic prime-fibre constant; full positivity excludes
+the checked common-ratio perturbation by a separate rigidity argument. Thus
+the proposed sharp law is not itself a proved phase detector.
+
+## Cycle19 entry: imaginary powers versus interior growth
+
+Focus the sharp C18 conjecture at z=it, t real: for every eps>0 and original
+hW, the critical coefficient energy should be O((1+log N)^(t^2+eps)). It is
+exact and falsifiable by an actual hW source. Its competing failure is an
+actual source with energy exceeding every such bound for some t and eps.
+Neither candidate has a proof. [OPEN CORE]: a source-derived critical norm
+bound beyond the zero real-part coefficient in the Toeplitz pairing.
+
+Do not weaken this to subpower vertical growth of exp(it L). The existing
+exists_logZeta_lindelof controls the norm of the continued logarithm itself by
+C(log(|height|+3))^theta on each strict inner strip, theta<1. Multiplying by
+any fixed complex z and exponentiating therefore already gives subpower
+vertical growth of that branch. This is REDISCOVERED and does not give a
+logarithmic critical coefficient-energy bound or moving-boundary uniformity.
+The gap is the approach to the critical line, not fixed-parameter interior
+holomorphy. No extra Lean lemma is added for this immediate parent consequence.
+
+Alarcon Athens, arXiv:2101.07402v5, explicitly treats powers of zeta with
+multiplicative coefficients constructed from prime factorizations. This is
+an algebraic parent for the zeta case, not a producer of multiplicativity for
+the arbitrary full-positive source. Roy's 2025 LSD framework likewise requires
+analytic product structure not obtained here. No novelty follows from the
+failure of these parents to discharge the exact missing source input.
+
+## Cycle20 attack: logarithmic coefficient energy
+
+The unrestricted candidate sum_(2<=n<=N) lam(n)^2/(n*log(n)^2)=O(log log N)
+remains OPEN. Two working claims required correction. First, an assumed
+square-sum ceiling would indeed provide this by Abel summation. Second, the
+actual parent ceiling is only on primitive sets, not all integers. Its
+prime-restricted consequence is REDISCOVERED, but the unrestricted one has
+not thereby been proved. For an arbitrary nonnegative square-mass function,
+the conditional Abel implication is exact: if
+A(x)=sum_(2<=n<=x)lam(n)^2/n <= C(1+log x)^2, then
+
+  sum_(2<=n<=N) lam(n)^2/(n*log(n)^2)
+    = A(N)/log(N)^2 + integral_2^N 2*A(x)/(x*log(x)^3) dx,
+
+with the standard step-function endpoint convention. The right side is
+O(1+log log N). The verified original-source parent
+WeilMeanSquare.exists_sum_sq_div_le_of_primitive only licenses this argument
+after restricting A to primes (or a fixed primitive support). Its dyadic
+law for all integers gives an O(log N) bound on the logarithmic energy by
+block summation, not O(log log N). The all-integer square-mass law in
+ToeplitzSharpness belongs to its particular prime-supported construction,
+not to every hW. Both corrections were posted in chat; no new Lean assertion
+depended on either erroneous source inference.
+
+Relentless interrogation now asks for the sharp source constant instead:
+for every original hW and eps>0, there exists N0 such that N>=N0 implies
+
+  sum_(2<=n<=N) lam(n)^2/(n*log(n)^2) <= (1+eps)*log log N.
+
+This is a provisional exact conjecture under corpus/parent attack, not a
+closed theorem. It would constrain arithmetic variance at the zeta constant
+without postulating prime support or multiplicativity. Its falsifier would
+be an actual hW source with larger normalized limsup. No implication from
+this second-order statement to imaginary exponential moments or WP05 phase
+settlement is asserted. [OPEN CORE]: sharpen the source variance constant;
+the verified prime-only ceiling neither fixes that sharp constant nor pays
+the composite contribution. Parent source eligibility must precede any
+further asymptotic inference.
+
+## Cycle21 entry: source-derived exponential moments
+
+Given the exact refreshed frontier, the structural conjecture is a Bohr
+exponential-moment law, not a direct transplant of the circle inequality.
+For N>=2 let P_N be primes<=N, use normalized Haar probability on the finite
+torus T^(P_N), and write chi_n(omega)=product_(p|n)omega_p^(v_p(n)). Define
+
+  L_N(omega)=sum_(2<=n<=N) lam(n)/(sqrt(n)*log(n))*chi_n(omega).
+
+Conjecture: for every original hW, every fixed z in C, and eps>0, there is
+C>=0 such that for all N>=2,
+
+  integral exp(2*Re(z*L_N(omega))) dHaar(omega)
+    <= C*(1+log N)^(|z|^2+eps).
+
+Every composite coefficient is retained. The exact factorization of integer
+frequencies defines the torus; no multiplicativity of lam is postulated.
+If true, Parseval for exp(zL_N) bounds the original a_z coefficients through
+N, since convolution products contributing to those indices use only
+logarithmic coefficients throughN. Thus it would imply C18's sharp energy
+law and C19's imaginary range. It does not yet imply WP05 settlement.
+
+The competing falsifier is an actual full-positive source whose finite-torus
+exponential moments violate this bound for fixed z,eps. Prime-only estimates,
+signed means and fixed-strip logarithmic bounds do not pay this input.
+[OPEN CORE]: derive the complete exponential-moment budget from the full
+Weil test cone, controlling mixed composite correlations. Literature parents
+require Euler structure or an already-controlled logarithmic Sobolev norm.
+No such input is added as a premise. This conjecture is entering the exact
+corpus/primary-parent attack; no proof or novelty verdict is claimed yet.
+
+C21 preliminary verdict: SURVIVES PRELIMINARY ATTACK as an open conjecture,
+not established novelty. The direct corpus producer
+WeilConeSoundararajanMoments.exists_setIntegral_exp_mul_le additionally
+assumes both summability of restWeight and |lam(n)|<=kappa*log(n). It gives
+a height moment, not this complete finite-torus norm. SteinhausLogTailMoment
+is an Euler prime-power model and cannot remove arbitrary mixed composites.
+The deep search's generic exponential-type/log-coefficient recipe gives
+neither the uniform cutoff budget nor its sharp exponent; rejected.
+
+One proposed shortcut also fails to supply a source: arbitrary prime-phase
+twists of lam are not known full-positive with the original fixed pole and
+archimedean datum. Density of finite phase orbits alone gives no uniform
+control of the accompanying height-dependent archimedean cost. Any use of
+randomized tests must retain that cost and the original unmodified hW.
+Phase5 remains incomplete at the source exponential-moment estimate; no
+dependent Lean assertion has been introduced. Next attack the exact mixed
+composite contribution and its required full-source payment.
+
+## Cycle22: isolate the complete composite logarithm
+
+The new exact candidate is uniform exponential integrability of the composite
+part, without deleting any non-prime-power terms. With C21's characters put
+
+  H_N = sum_(2<=n<=N, n not prime) lam(n)/(sqrt(n)*log(n))*chi_n.
+
+C22 asserts: for every original hW and z in C there exists C_z such that
+integral exp(2 Re(z H_N)) <= C_z for every N>=2. The competing possibility is
+an actual full-positive source with an unbounded composite exponential moment
+for some fixed z. Neither direction is proved. This is a structural source
+conjecture, not a claim of novelty for the Euler-model case.
+
+Even C22 would not by itself prove C21. If the additional *source theorem*
+sum_(p<=N) lam(p)^2/(p log(p)^2) <= (1+o(1))*log log N were obtained, the
+independent prime characters give the required prime exponential bound:
+the circle integral of exp(2 Re(w X)) is
+sum_(k>=0) |w|^(2k)/(k!)^2 <= exp(|w|^2). Holder with exponents r>1 and
+r/(r-1) then combines the prime and composite bounds; choose r sufficiently
+close to1 and absorb the small prime-variance slack into epsilon. This
+conditional calculation identifies two missing producers; it adds neither
+as a Lean premise nor presents them as consequences of hW.
+
+Attack verdict: SURVIVES PRELIMINARY ATTACK, with [OPEN CORE] at the complete
+composite exponential moment. SteinhausLogTailMoment bounds only the Euler
+prime-power tail's second moment. Independence of distinct primes does not
+make the general composite characters independent. The original-source
+Soundararajan receiver still requires restWeight and a coefficient bound.
+The full-cone log-square rigidity theorem has no 1/n in its deviation norm,
+so this weaker critical norm cannot be fed to that theorem. The refreshed
+deep search's coefficient-sign proposal was rejected after reading its full
+premises. No dependency-closed source proof or new Lean theorem resulted.
+
+## Cycle23: audit the Gamma energy observable
+
+The exact existing source identity is, for y>0,
+
+  2 O(y) = (U(y)-g(y)) A(-y),
+
+where O=paperGammaOdd(remainderTrace hW), U=canonicalPhase hW,
+g=paperGammaPhase, and A=paperUnsubtractedTrace hW. The multiplier g is the
+quotient GammaR(-1/2+iy)/GammaR(-1/2-iy), chosen to fix the actual pole
+profile. It is not the target constant lockConstant(theta).
+
+Consequently, a proposed inference from recovery or zero Gamma-odd energy
+to settled constant phase is not licensed. The deep search suggested exactly
+this missing 'zero odd component' step; its identity does not prove it.
+The correct constant-phase observable retains the counterterm:
+
+  2 O(y) - (c-g(y)) A(-y) = (U(y)-c) A(-y),  c=lockConstant(theta).
+
+This is a dependency-closed algebraic consequence of the existing
+paperGammaOdd_phase_discrepancy, not a new scientific result. The strongest
+positive survivor is the corrected identity, already contained in the parent
+algebra; verdict REDISCOVERED. No redundant Lean leaf is added. No actual hW
+counterexample to settlement, and no theorem asserting positive Gamma-odd
+energy for every hW, has been established here.
+
+There is a second missing transfer: the native energy is weighted by |A|^2.
+Finite weighted energy and L1/L2 boundary recovery do not supply an unweighted
+dyadic phase estimate without quantitative control of small |A|. The known
+Littlewood bound is an upper amplitude bound, not the required lower bound.
+Thus this detour has not improved the original canonical phase budget.
+
+## Cycle24 entry: the first arithmetic resonance beyond variance
+
+Return to the actual signed source. Put b_n=lam(n)/(sqrt(n)*log(n)) for n>=2.
+The next falsifiable conjecture is the uniform signed cubic budget
+
+  exists C>=0, forall N>=2,
+  |sum_(a,b>=2, ab<=N)
+      lam(a)*lam(b)*lam(ab)/(a*b*log(a)*log(b)*log(a*b))| <= C.
+
+All ordered factorizations and all composite terms remain. No sign or Euler
+support is assumed. Its falsifier is an actual original full-positive source
+whose signed cubic sums are unbounded. For C21's finite logarithm L_N,
+character orthogonality gives the sum exactly as integral L_N^2 conj(L_N).
+For real t, the coefficient of t^3 in
+log integral exp(2t Re L_N) is precisely this real sum: the pure holomorphic
+moments vanish, and expanding (L_N+conj L_N)^3 contributes six times the
+sum before division by3!. This identity is classical bookkeeping, not the
+conjectured new source bound.
+
+This exposes the first correlation omitted by a variance-only argument.
+It is not asserted to imply C21 or WP05 by itself. [OPEN CORE]: use the full
+Weil test cone to control this signed multiplicative correlation, beyond
+primitive-set square mass and the existing two-prime completion. The new
+source statement is entering the exact corpus/primary-parent attack.
+
+C24 first attack: the principal signed mean and even a logarithmic pointwise
+coefficient bound do not imply it. Define chi_3(n) as0,1,-1 according as n
+mod3 is0,1,2, and set lambda_test(n)=1+chi_3(n)*log n for n>=2. The character
+is completely multiplicative and its partial sums are bounded. Abel summation
+therefore gives sum_(2<=n<=N) lambda_test(n)=N+O(log N), and
+|lambda_test(n)|<=1+log n. These are paper identities, not a proposed hW.
+
+Expanding the cubic sum, its term with three logarithmic factors is
+sum_(a,b>=2,ab<=N,3 does not divide ab)1/(ab). Since
+sum_(2<=n<=x,3 does not divide n)1/n=(2/3)log x+O(1), another Abel summation
+gives (2/9)(log N)^2+O(log N) for this term. Each of the other seven terms
+has at least one denominator log a, log b or log(ab); discard its bounded
+character factors, bound any further inverse logarithms by powers of
+1/log2, and use
+sum_(a<=N)1/(a log a) * sum_(b<=N/a)1/b=O(log N log log N).
+Thus the full signed cubic sum is
+(2/9)(log N)^2+O(log N log log N), and is unbounded.
+
+This kills only the mean-plus-size shortcut. No primitive-set law, full
+Toeplitz ceiling, source interior-growth bound, or full positivity has been
+proved for lambda_test. In particular it is not a counterexample to C24.
+The full-source correlation law remains the exact open claim; its proof must
+use source information beyond those two elementary estimates.
+
+C24 preliminary verdict: SURVIVES PRELIMINARY ATTACK, not a novelty claim.
+The complete source search returned no applicable cubic producer; its recipe
+uses an unrelated short-packet kernel bound with an unprovided cost bound.
+Harper's Euler Product Result1 in IMRN2023, section2.3, controls higher-order
+errors by summing local prime expansions and multiplying independent Euler
+factors. Those local factors are not available for arbitrary hW. The corpus's
+divisor-square identity also permits exact signed compensation by the
+composite entry, so a sign deletion in the cubic sum is not justified.
+Next attack the original full-cone pairing with logarithmic convolution
+tests, retaining the cubic term, full archimedean cost and both pole terms.
+Phase5 remains open; no dependent Lean theorem has been added.
+
+## Cycle25: what the direct cubic test actually pays
+
+Retain C24's ordered sharp cutoff ab<=N. For n>=2 put
+b_n=lambda(n)/(sqrt(n)*log n), and set
+
+  V_N = sum_(2<=n<=N) b_n^2,
+  A_N = sum_(2<=n<=N) log(n)*b_n^2,
+  B_N = sum_(a,b>=2,ab<=N)
+          lambda(a)*lambda(b)*lambda(ab)/(ab*log(a)*log(b)).
+
+The full-source Toeplitz parent applies through
+weilPositive_of_weilPositiveFull. Increase its constant C to be nonnegative;
+then K_N=log N+C>0 for N>=2. Test the finite vector c(1)=t, c(n)=b_n for
+2<=n<=N, zero elsewhere. Its squared norm is t^2+V_N. Its arithmetic pairing
+is exactly 2t*A_N+B_N: the m=1 terms give 2t*A_N; in the remaining ordered
+pairs, swapping a,b and using log(ab)=log a+log b gives B_N. Thus, for EVERY
+real t,
+
+  2t*A_N+B_N <= K_N*(t^2+V_N).
+
+Taking t=A_N/K_N gives the exact paper consequence
+
+  B_N <= K_N*V_N - A_N^2/K_N.
+
+This is a Schur-complement consequence of the existing finite ceiling:
+verdict BRIDGE, no scientific novelty claim. The parent legitimately uses
+polar-free tests and charges their archimedean cost; neither pole was
+silently deleted from an unrestricted test. The cubic B_N is log(ab) times
+C24's summand. The inequality is one-sided and does not bound |B_N|.
+Abel summation cannot turn it into C24's uniform absolute bound without a
+new estimate. In particular multiplying the whole test by -1 leaves the
+quadratic form unchanged and supplies no opposite inequality.
+
+There is also an exact Hankel representation, with the cutoff retained:
+
+  C24_sum(N) = sum_(a,b>=2) b_a*b_b*H_N(a,b),
+  H_N(a,b) = 1_(ab<=N)*lambda(ab)/(sqrt(ab)*log(ab)).
+
+The standard multiplicative Hilbert matrix has lambda(ab)=1, not this
+signed source. Even a uniform bound for the actual H_N would initially give
+only |C24_sum(N)|<=C*V_N, and boundedness of the untruncated operator does
+not by itself establish a uniform bound for the sharp product cutoff.
+Perfekt's September2026 Fejer--Riesz theorem (arXiv:2609.03855, Theorem1.1
+and Corollary1.2) supplies a bounded symbol for the standard matrix. It
+neither inserts lambda(ab) nor bounds V_N. Ma--Lu--Zu, arXiv:2608.22882v2,
+section6, uses coefficient domination or a positive moment representation;
+none has been produced for the signed source. No Hankel-transfer theorem
+for hW has been assumed.
+
+The new WP03 harmonic law says the ordinary sum of (lambda-Lambda)/n tends
+to L<=0. It is linear in the deviation and gives neither this three-source
+correlation nor the prime-deletion logarithmic limit. Its Gaussian source
+coefficient is (lambda-Lambda)*1*1, not lambda^2 or lambda^3. The exact
+Gaussian spectral identity retains a nonnegative |zeta|^2-weighted boundary
+integral. Dropping that term proves only an upper bound, not its vanishing.
+
+C24 remains SURVIVES PRELIMINARY ATTACK / OPEN CORE. No proof of C24 implies
+WP05 has been obtained either. Therefore this moment detour is deprioritized,
+not declared false or retired. Its exact source bound and the missing phase
+transfer remain separate recorded obligations. No redundant Lean leaf added.
+
+## Cycle26: return to the actual parity mode
+
+Select the conductor-two case of C11 as the next exact source conjecture,
+stronger than C13's unquantified mean and explicitly using C15's now-proved
+principal mean. For a(n)=sourceCoeff lambda n and original hW alone:
+
+  for every epsilon>0, exists C>=0, for all integers N>=1,
+  |sum_(1<=n<=N) (-1)^n*a(n)| <= C*N^(1/2+epsilon).
+
+This is not a new name for a proved bound. It would pay the first missing
+nonprincipal arithmetic mode and imply C13, hence the p=2 instance of C16
+using C15. It does not by itself settle WP05. A falsifier must be an actual
+full-positive source, not a periodic surrogate. Competing possibility:
+full positivity permits a nonperiodic source with a parity pole or a larger
+alternating remainder.
+
+The exact starting algebra is unchanged: on Re(s)>1,
+F_alt=F-2F_odd=F*(1-2*exp(-L_even)). The odd-index mask commutes with
+Dirichlet convolution; the alternating mask does not. No full positivity,
+Euler factor, or half-plane continuation of the masked source follows from
+that identity. C15 pays F's pole and untwisted remainder; it does not pay
+F_odd's pole residue or its remainder.
+
+[OPEN CORE]: derive the parity cancellation from the original source form,
+retaining the signed arithmetic terms and the physical height dependence.
+An analytic route would have to produce a pole-free continuation of F_alt
+and adequate strict-half-plane growth before copying C15's contour argument.
+Neither condition is added as a premise. Current corpus and primary twist
+parents are being checked against this exact claim. Do not return to broad
+Haar moments without first proving their transfer to the physical phase.
+
+C26 first refreshed attack: the source search returns C15's principal sum,
+forwardCoeff_LSeries, and the finite two-prime fibre identity. The complete
+notchBochner_le statement still requires NotchSmall and convergence of every
+gcd-harmonic fibre. Neither is supplied by the new single harmonic sign law.
+The generated parity/pole recipe conflates additive coefficient parity with
+a character-parity or reflected-kernel calculation; reject it. The exact
+Kaczorowski--Perelli primary parent starts inside the Selberg class and
+requires analytic twist properties, so it does not produce this source mode.
+Verdict SURVIVES PRELIMINARY ATTACK, without a novelty claim. Phase5 remains
+open at the actual source cancellation. Next inspect the signed two-fibre
+pairing and try to replace its absolute notch error while retaining all
+physical-height and polar terms; do not repeat the already-failed signed
+summatory-to-absolute-cost substitution from C16.

@@ -595,3 +595,214 @@ leaf direct development47890 is the sole own Lean process. It includes the
 original forward sum with residue sourceCompletion hW1 and ordinary centered
 Dirichlet convergence. New C16 residue-normalization corpus search87179 is
 independent and pending; no scalar normalization conjecture adopted yet.
+
+Continuation after interruption: previous turn PROGRESS (C15 targeted leaf
+builds passed, exact C16 written). Re-read hgtl7 and WP05; source hashes match.
+Old final-audit handle68191 is missing and no corresponding process remains;
+its empty log alone does not prove success. Restarting that single mandatory
+source audit, then summatory direct audit, axioms, receipts and cleanup.
+Plan continues with C16 full-source fibre-cost attack. Goal stays OPEN.
+C15 restarted mandatory regular-part source audit95111 exit0, empty log,
+source hash unchanged. Summatory mandatory source audit follows sequentially.
+C16 fibre-cost attack found NotchSmall/NotchBounded require absolute weighted
+mass at three scales; neither C15 nor WP03's signed summatory theorem supplies
+that. No invalid signed-to-absolute inference is used. Source-sensitive cost
+search74945 remains live; no new Lean source is being added for this open core.
+
+Latest state: search74945 completed exit0, partial=false, all discovery fields
+inspected and receipt retained. Exact ramp-scale proof uses absolute defect
+and tail costs, so C15's signed forward estimate does not pay that input.
+C16 remains OPEN CORE, not disproved. Regular direct95111 passed; summatory
+direct33051 remains running. Goal control now reports PAUSED. Finish the
+already-running verification, record receipts and cleanup; defer the next
+conjecture cycle until goal control is resumed. No mathematical completion
+or external research blocker is claimed.
+
+C15 FINAL: mandatory summatory source33051 exit0, empty diagnostics; axiom
+probe11793 exit0, all three exports use only propext, Classical.choice,
+Quot.sound. Both leaf builds and both mandatory direct audits passed. Two
+own imports present once each, production hashes unchanged. Fourteen owned
+scratch files removed; all owned processes terminal. Receipt contains the
+nine unrelated global-lint failures; no global clean claim. RESULT updated
+with exact forward summatory statement and scientific BRIDGE verdict.
+Goal remains mathematically OPEN and control PAUSED. Resume at C16's signed
+fibre-cost gap, retaining the whole original source and canonical measure.
+
+New resumed goal turn: previous turn PROGRESS (final C15 source/axiom audits,
+receipts and cleanup); goal control now ACTIVE. hgtl7 and target reread,
+Serena initialization/memory lookup done. Plan: (1) refresh exact signed-cost
+corpus frontier; (2) attack C16 at the actual notch pairing and distinguish
+forward from logarithmic coefficients; (3) select an exact falsifiable source
+law and audit primary parents; (4) only a closed paper survivor enters Lean,
+then targeted/direct/axiom/lint verification. No own Lean process is running.
+
+C17 complete attack: principal forward cancellation does not pay the signed
+notch error. Self-pairing was already in ForwardCoefficients; bounded periodic
+perturbations kill mean-plus-energy saturation but are excluded by full-source
+common-ratio rigidity. No hW counterexample claimed. C18 sharp complex-power
+critical energy is OPEN CORE. The weaker disk range has a dependency-closed
+paper proof: Re(1/z)>1/2 gives exponent1/(2Re(1/z)-1). Verdict BRIDGE. New
+generic PowerLogMoment source under development, no leaf verified/wired yet.
+A source check mistakenly overlapped APIprobe19860; owned sourcePIDs925/892
+stopped, handle92777 exit143 verified. APIprobe19860 exit1 (Bernoulli theorem
+is global, not namespaceReal); corrected minimal probe49367 exit0. Source
+development12747 exit1 at four local proof steps, fixes now under verification.
+
+C18 progress: generic development1635 passed, warning removed, targeted
+PowerLogMoment80548 passed clean. Complex APIprobe63283 passed.
+PowerCoefficients development87190 passed with empty diagnostics; targeted
+leaf49547 passed (21s). PowerEnergy source now in direct development.
+Mandatory final audits/axioms/lint/wiring still outstanding. C19 imaginary
+energy search31682 completed partial=true; all20 candidates/20 source
+arguments/1 idea/1 ingredient inspected. Generated positivity-to-RH proposal
+retains unproved coefficient sign/comparison; rejected. Receipt retained.
+
+C18 energy development23908 had one elementary nonzero-parameter proof error;
+fixed with norm_num. Targeted PowerEnergy11793 exit0 (288s), no owned warning.
+All3 new leaf imports wired once; no umbrella build. Mandatory generic direct
+audit54058 underway, then coefficients, energy and axiom probe sequentially.
+Verification receipt stores unchanged hashes and all targeted build exits.
+C20 initial O(log log N) proposal killed as REDISCOVERED by exact Abel
+summation; working misconception corrected in chat and PROOF. Stronger
+leading constant<=1 candidate is provisional under fresh corpus search81187.
+
+C20 SOURCE CORRECTION supersedes preceding retirement: PrimitiveSetMeanSquare
+43/284 bounds primitive sets/primes only. Abel summation gives prime-restricted
+O(log log N), not the all-integer conjecture. The all-integer log-square law
+in ToeplitzSharpness is for its special construction. Unrestricted C20 and
+sharp constant remain OPEN. Corrected chat/PROOF/RESULT; no Lean code used
+this mistaken inference. Generic final54058 passed with empty diagnostics;
+mandatory coefficients final44923 now sole own Lean process. All searches
+terminal; C20search81187 partial, all20+20+1 fields inspected and saved.
+
+C18 final direct energy53421 passed, empty diagnostics. Axiom probe13073 now
+sole own Lean process; all3 source/build audits passed, imports once each.
+Lint48033 exited1 on6 unrelated unreachable leaves, no WP05/forbidden error.
+C20 exact follow-up96983 partial; allnew20 candidates and repeated20 source
+signatures inspected, proposed unrelated Wold/RH recipe rejected. Prior
+WP03 card already has real-power z/(2-z), confirmed BRIDGE verdict.
+C21 exact next conjecture written in PROOF: full finite-prime-torus
+exponential moment of the complete truncated original logarithm <=
+C(log N)^(|z|^2+eps). Composite interactions remain, no Euler assumption.
+This would imply sharp power-coefficient energy; source moment budget open.
+
+C18 COMPLETE BRIDGE: axiom13073 exit0, all9 declarations standard three
+axioms. All3 targeted builds and direct audits passed, empty source logs;
+hashes and single imports revalidated. Lint6 unrelated errors retained.
+Fifteen terminal scratch files cleaned, no owned Lean/build process live.
+C21search85796 still pending. Next attack exact complete source moment law;
+retain original hW and all composite terms. WP05 and goal remain ACTIVE/OPEN.
+
+C21search85796 terminal exit0, partial=false/errors=[], coverage/freshness
+limitations recorded; all20new+20identicalprior signatures and1recipe
+processed. Receipt retained, terminal scratch cleaned. Exact conditional
+Soundararajan input keeps restWeight and logarithmic coefficient bound;
+Euler Steinhaus tail does not control mixed composites. C21 SURVIVES
+PRELIMINARY ATTACK, Phase5 OPEN CORE at complete original-source moment
+budget. No own process live. Next cycle continues there; no WP05 closure.
+
+C22 continuation: hgtl7, exact target, memory and source contracts refreshed;
+C18 hashes unchanged. Plan: (1) audit original-source mixed-composite
+constraints; (2) attack C21 against both the full cone and its Toeplitz
+relaxation; (3) select a source-sensitive successor if the proposed mechanism
+fails; (4) close paper proof before any new Lean. Deep source-moment search
+15596 is the sole owned live process; no Lean/build process is running.
+Booker's class still assumes discrete almost-integral spectral data, and
+generic character convergence theorems supply no exponential moment budget.
+
+C22 three searches terminal and retained (source moments, phase source,
+composite lexical); all returned candidates and source arguments inspected.
+No applicable producer found, no absence/novelty inference made. Exact C22
+complete composite exponential-integrability conjecture is OPEN CORE.
+Together with a separately unproved sharp prime variance law it would give
+C21 by Holder. Source log-square rigidity has the wrong weight for this use.
+
+C23 Gamma audit complete: its odd energy compares canonical U with gamma
+phase g(y), not a constant. Correct constant-phase observable is
+2O-(c-g)A(-y)=(U-c)A(-y). This is already parent algebra (REDISCOVERED), not
+a new theorem. Reject generated 'zero odd component' settlement recipe.
+Weighted energy recovery also gives no lower amplitude bound or unweighted
+dyadic estimate. C23search19211 terminal, receipt retained, all fields read.
+
+C24 exact next conjecture in PROOF: uniformly bounded signed cubic arithmetic
+resonance sum over all ordered a,b>=2,ab<=N. It is the third coefficient of
+log integral exp(2t Re L_N); the identity is classical, the full-source bound
+is the open claim. Search16797 is sole owned live process. No own Lean/build
+process, no new production file. Anti-theatre/laziness posted: no new
+scientific result this turn, no effort-based skipping, move from broad moment
+repackaging to this explicit first missing composite correlation.
+
+C24search16797 terminal exit0, partial=false/errors=[], all20 candidate and
+20 source signatures plus the unrelated packet recipe inspected. Receipt
+retained. Primary Harper IMRN2023 Euler Product Result1 uses independent
+Euler factors, unavailable for arbitrary hW. C24 SURVIVES PRELIMINARY ATTACK.
+Paper attack kills mean-plus-logarithmic-size shortcut: lambda=1+chi_3 logn
+has sum=N+O(logN), but cubic=(2/9)log^2N+O(logN loglogN). No full positivity,
+primitive ceiling or interior-growth property claimed for this toy.
+Next: source logarithmic-convolution tests, full signed cubic and actual
+archimedean/pole costs. No new production Lean or completed source theorem.
+All owned processes terminal. Goal ACTIVE/OPEN; terminal scratch cleanup
+and scoped diff checks follow.
+
+Cleanup complete: five terminal search outputs saved byte-for-byte as
+receipts, all five owned /tmp outputs removed. Scoped git diff --check passed.
+Cross-session memory rh/weil_work_05_cycles22_24_2026_10_07 records exact next
+source cubic attack. No owned processes or Lean work left pending.
+
+### Cycle25 — full-source cubic pairing, 2026-10-08
+
+Plan: (1) inspect new unconditional harmonic-sign parent and exact Toeplitz
+cost; (2) attack C24's signed cubic using the original source, auditing
+multiplicative Hankel parents; (3) complete paper proof before any Lean,
+or identify exact failed mechanism and select its source-sensitive successor.
+Current frontier update: WP03 now proves the ordinary harmonic deviation
+limit is nonpositive; this is not a logarithmic-residue or fibre sign law.
+Search35741 terminal exit0, partial=false/errors=[]; all20 candidate and20
+source signatures plus generated recipe inspected. The recipe inserts
+nonnegativity and domination, neither supplied by hW. Compiler metadata
+mostly pending/stale/source-only, refresh incomplete, semantic coverage
+unmeasured. No producer inferred from ranking or lack of hits.
+No own Lean/build process; no production file changed this cycle.
+
+C25 complete as an audit, not a solved research theorem. Exact finite-vector
+paper calculation: with K=logN+C, V=sum b_n², A=sum logn*b_n² and
+B=sum_(ab<=N) lambda(a)lambda(b)lambda(ab)/(ab loga logb), full positivity
+implies B<=K*V-A²/K. This is the parent Schur complement (BRIDGE); it
+controls only the log-weighted upper cubic. Sharp H_N cutoff and V_N costs
+remain in the Hankel formulation. September2026 Fejer--Riesz bounded symbol
+is for the standard matrix and does not replace the source weights.
+C24 remains open and is deprioritized because its phase transfer is unpaid.
+
+C26 now active: actual forward alternating sum O_epsilon(N^(1/2+epsilon)),
+original hW only. This is the conductor-two part of C11, stronger than C13;
+with C15 it would pay p=2 C16, but does not by itself close WP05. Exact
+source identity F_alt=F*(1-2 exp(-L_even)) retained. Missing: actual parity
+residue/cancellation and adequate masked-source growth. Never assume full
+positivity for the masked source. First refreshed attack SURVIVES; source
+notchBochner_le still requires NotchSmall and all fibre limits. A signed
+principal sum cannot discharge its absolute notch costs.
+
+All four searches terminal:35741/76825/74455/37451. Hankel76825 partial due
+to retrieval/runtime deadlines; other three partial=false/errors=[]. All
+returned candidate/source and ingredient fields inspected; coverage remains
+unmeasured and refresh incomplete. No own Lean/build process, production
+source edit or numerical experiment this cycle. Anti-theatre/laziness posted:
+no new scientific knowledge; avoid another routine moment repackaging;
+attack the signed physical two-fibre pairing directly. WP05 and goal ACTIVE.
+
+Terminal cleanup verified: four raw search receipts saved byte-for-byte;
+four owned /tmp outputs removed. Scoped git diff --check passed. New memory
+rh/weil_work_05_cycles25_26_2026_10_08 preserves C26 and the exact cubic
+constraint. No owned processes remain; no Lean verification pending.
+
+### Cycle26 continuation — signed parity pairing
+
+Previous turn classified PROGRESS only for evidence that changed next action:
+exact Schur bound and failed Hankel transfer, not a frontier theorem.
+Plan: (1) inspect original signed notch error and new all-scale extraction;
+(2) attack conductor-two cancellation with all arithmetic/cross terms;
+(3) complete source paper proof before Lean, or record exact obstruction
+and select next source conjecture. C26search10973 currently sole owned live
+process. No Lean/build process. Fresh frontier now includes actual
+sourceSquareCoeff cosine extraction with uniform r^(-1/8)T^(5/6) error;
+half scale is parity, not an untwisted scalar dilation.

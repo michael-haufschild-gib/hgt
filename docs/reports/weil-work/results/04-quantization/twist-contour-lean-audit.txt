@@ -1,0 +1,11 @@
+Final leaf audit (exit 0):
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationTwistContour.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationTwistContour.lean
+Informational diagnostic: ring_nf suggestion.
+
+Axiom audit via /tmp scratch import:
+'RHTower.WeilSpectral.tendsto_integral_quantization_twist' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.norm_quantization_twist_rectangle_sub' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integrableOn_quantization_twist_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.integrableOn_quantization_twist_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.norm_quantization_twist_halfline_sub' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_bound_quantization_twist_radial' depends on axioms: [propext, Classical.choice, Quot.sound]

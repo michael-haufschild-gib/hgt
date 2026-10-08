@@ -1,0 +1,16 @@
+Final direct leaf audit exited 0, clean. All eight declarations use standard axioms only.
+
+'RHTower.WeilSpectral.quantizationInvertedLaurentSeries' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationExteriorInverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationExteriorInverse_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationInvertedLaurentSeries_radius' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.analyticOnNhd_quantizationExteriorInverse' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationExteriorInverse_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_laurent_factorization' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationExteriorInverse_coefficients' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

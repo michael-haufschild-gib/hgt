@@ -109,17 +109,17 @@ finite. The exact term identity is
 `n^{-s} Aω(s) = exp(ω/4) exp(-(log n+ω/2)s)`.
 
 If `log n+ω/2=log m`, the term is exactly cω,m times the m-main kernel.
-For every other n the frequencies have a positive separation d from log m:
-only finitely many log n lie in any fixed bounded neighborhood of log m−ω/2,
-and all remaining ones lie outside that neighborhood. Since
-`log|ε+im|→log m`, the separation is at least d/2 for small ε. The existing
-right-edge exponential expansion bounds the integral of every remaining
-term by
+For each other fixed n, let `d_n=|log n+ω/2−log m|>0`. Since
+`log|ε+im|→log m`, its separation is at least d_n/2 for small ε. The existing
+right-edge exponential expansion bounds the integral of this term by
 
-`exp(-ω/2)|a(n)|n^{-3/2} · O_m(1+d^{-1})`.
+`exp(-ω/2)|a(n)|n^{-3/2} · O_m(1+d_n^{-1})`.
 
-The summable coefficient majorant and the extra ε prove the claimed zero
-limit. This is a fixed-frequency argument; d need not be uniform in ω.
+Thus its product with ε tends to zero. To sum over n, use the absolute
+kernel bound in the next paragraph: the ε-scaled term is bounded by
+`Q(m+1)^2 exp(-ω/2)|a(n)|n^{-3/2}`, uniformly in ε. Dominated convergence
+over n proves the claimed zero limit after erasing the unique resonant
+term. No uniform separation in n or ω is required.
 
 For the uniform bound, use the absolute right-edge kernel bound directly:
 `|kτ(3/2+iy)|≤Q |τ| exp(y ε/|τ|)` for y≤-2, Q independent of ω and ε.
@@ -151,8 +151,14 @@ and no unproved inverse Mellin formula, is required.
 
 ## 3. A geometric right side excludes positive winding
 
-Put `P(z)=Σ_{k∈ℤ}p_k z^k`, analytic on `q^{-1}<|z|<q` and unimodular
-on |z|=1. For m=q^l, the resonant integers are exactly n=q^j, j≥0,
+Put `P(z)=Σ_{k∈ℤ}p_k z^k`. On `q^{-1}<|z|<q`, each
+`|z^k|≤q^{|k|}`: use |z|≤q for k≥0 and |z|^{-1}≤q for k<0.
+The supplied weighted moment uniformly dominates the whole Laurent series
+on this open annulus. Its terms are holomorphic there, so P is analytic.
+Every unit-circle z has the form `exp(2i(log q)x)` with x>0: take
+`x=(arg z+2π)/(2 log q)`. The actual phase representation therefore gives
+|P(z)|=1, retaining the original source rather than a substituted symbol.
+For m=q^l, the resonant integers are exactly n=q^j, j≥0,
 with k=l−j. Therefore, putting d=B(1)≠0 and ρ=q^{-1/2}∈(0,1),
 
 `Σ_{j≥0}p_{l-j}b_j=d ρ^l` for every l≥0.                         (T)
@@ -160,8 +166,11 @@ with k=l−j. Therefore, putting d=B(1)≠0 and ρ=q^{-1/2}∈(0,1),
 All series converge absolutely: p has exponential tails and b polynomial
 growth. We prove directly that (T) forbids positive winding of P.
 
-Since P has no zeros on the circle, choose 0<r<1<R inside its original
-annulus such that P is nonzero on r<|z|<R. Let N be its winding number.
+Since P has no zeros on the circle, its open nonzero set inside the original
+annulus contains a uniform neighborhood of the compact unit circle.
+For z≠0 the radial projection z/|z| lies on that circle and has distance
+`||z|-1|` from z. Thus a sufficiently narrow round annulus is contained
+in this nonzero set. Choose 0<r<1<R in it. Let N be its winding number.
 The function `P'/P−N/z` has zero residue and a Laurent primitive L there.
 Choosing the additive constant gives `P=z^N exp L`. Split the Laurent
 series into its strictly negative and nonnegative parts `L_-+L_+`.
@@ -175,10 +184,25 @@ exponentially, and `γ(1/ρ)≠0` because 1/ρ>1>r. If N≥1, the function
 
 `Σ_{l≥0}γ_l p_{l-j}=0` for every j≥0.                            (A)
 
-Multiply (T) by γ_l and sum. Interchanging l and j is justified by absolute
-convergence: if |γ_l|≤C u^l and |p_k|≤D v^{|k|}, with u,v<1, then for
-j≤l the sum of |p_{l-j}|(1+j)^{1/2} is O((1+l)^{1/2}); for j>l it is
-O((1+l)^{1/2}+1). Multiplication by u^l is summable. Equation (A) gives
+Explicitly, the left side of (A) is
+`(2πi)^{-1}∮_{|z|=1} z^{j-1}γ(z)P(z) dz`. Both coefficient families
+are absolutely summable on this circle. Termwise integration selects
+exactly `k=l-j`. With `γP=z^N P_+` and N≥1, the integrand is
+`z^{N+j-1}P_+`, analytic throughout the disc, so its integral is zero.
+The formal circle-coefficient proof includes j=0 and all infinite sums.
+
+Multiply (T) by γ_l and sum. Here is a direct absolute-convergence proof
+using the formally established bound |b_j|≤D(j+1). Both first moments
+`Σ_k |p_k|(|k|+1)` and `Σ_l |γ_l|(l+1)` are finite: q≥2 gives
+`|k|+1≤q^{|k|}`, and the γ coefficients have exponential decay.
+For l,j≥0,
+
+`j+1≤(l+1)(|l-j|+1)`.
+
+Consequently the double absolute sum is bounded by
+`D (Σ_l |γ_l|(l+1)) (Σ_k |p_k|(|k|+1))`, using the injective map
+`(l,j)↦(l,l-j)` into ℕ×ℤ. This pays Fubini without placing b in a Hardy
+space or assuming square summability. Equation (A) gives
 
 `0=Σ_l γ_l Σ_j p_{l-j}b_j=d Σ_l γ_lρ^l=d γ(1/ρ)≠0`,
 
@@ -199,11 +223,14 @@ gives N≥0. Section 3 gives N≤0; hence N=0. A monotone periodic function
 is constant, so C is bounded. The existing actual-phase power rigidity
 theorem, with any exponent in (0,1), now gives R.
 
-All source and analytic obligations have paper proofs above. Lean must
-verify the exact weighted radial passage, resonance coefficient system,
-scalar Laurent factorization, phase lift, and their assembly before L1
-can be called a theorem. The full problem remains the source mechanism
-that controls phases without this representation.
+All source and analytic obligations have paper proofs above. The weighted
+radial passage, complete resonance system, arithmetic q-chain, exterior
+inverse, absolute double-series interchange and coefficient annihilator
+are now Lean verified. The actual phase excludes a strictly positive
+analytic factorization. Lean must still construct the periodic analytic
+symbol and its annular logarithm, identify the actual winding, and assemble
+the implications before L1 can be called a theorem. The full problem
+remains the source mechanism that controls phases without this representation.
 
 ## Formalization plan
 
@@ -216,4 +243,11 @@ that controls phases without this representation.
    the hW-only rigidity-or-no-representation alternative.
 5. Direct final leaf audits, scratch axiom audit, umbrella imports and lint.
 
-No L1 Lean source has been added at this checkpoint.
+Step 1 is compiled and wired in WeilWorkQuantizationTwistContour.lean; all six declarations passed the standard-axiom audit. The five term/series lemmas for step 2 are compiled and wired in WeilWorkQuantizationResonantTerms.lean. WeilWorkQuantizationResonance.lean also passed its clean final audit and is wired: exact source resonance, coefficient bounds and common-kernel scaling. WeilWorkQuantizationFrequencySum passed its clean final audit and is wired. It handles countable frequency families with every resonance retained. WeilWorkQuantizationPhaseCoupling compiled the reflected phase comparison and m=1 normalization: B(1) is nonzero and B(m)=B(1) for every positive integer. Its clean final direct leaf audit and three-declaration standard-axiom audit passed. WeilWorkQuantizationQChain now proves the q-power coefficient bound, exact resonance classification and reindexing, every row's convergence, and the nonzero geometric right side. Its clean direct leaf audit and all fourteen standard-axiom checks passed. WeilWorkQuantizationLaurentInverse also passed clean final and eight-declaration standard-axiom audits. It constructs Γ(w)=exp(-w Σ a_n w^n), analytic for |w|<1/r and nonzero everywhere, proves Γ(1/z)=exp(-Lminus(z)) for |z|>r, proves its multiplicative Laurent factorization, and bounds its Taylor coefficients on every smaller disc. The annular logarithm for P after removing its winding, coefficient annihilator and actual winding assembly remain unformalized. Full L1 is not Lean verified.
+
+
+Formal normalization: `quantizationMainRadial` uses the y-coordinate
+integral, so it is twice the paper's t-coordinate main kernel. The
+corresponding source limit is `4 * betaG G = 2 * G(1)`. This common factor
+cancels when comparing B(m) with B(1); it is not a changed arithmetic
+coefficient.

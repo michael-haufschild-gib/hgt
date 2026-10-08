@@ -2,6 +2,34 @@
 
 **Verdict: OPEN.** Assigned canonical-measure settlement problem remains unsolved.
 
+## Complex-power energy added in cycle18
+
+For original full positivity, let a_z be the Dirichlet exponential of
+z*logZetaCoeff(lam truncated below2). Its branch is fixed on Re(s)>1.
+For every complex z with Re(1/z)>1/2 there exists K>=0 such that, for N>=1,
+
+    sum_(1<=n<=N) |a_z(n)|^2/n
+      <= K*(1+log N)^(1/(2*Re(1/z)-1)).
+
+No coefficient sign, multiplicativity, atomicity, gap or phase premise is
+added. The literal series and exact logarithmic convolution are exported
+in PowerCoefficients; PowerLogMoment supplies the exact real-exponent
+induction; PowerEnergy combines these with the full-source Toeplitz bound.
+All three targeted --old leaf builds and mandatory direct source audits
+passed; final source logs are empty. All nine public declarations use only
+propext, Classical.choice and Quot.sound. Imports are wired once each and
+source hashes revalidated. Lint reports six unrelated unreachable leaves,
+no WP05 or forbidden-declaration error. Receipt: cycle18-verification.json.
+
+Verdict BRIDGE, not demonstrated scientific novelty. Imaginary and negative
+powers are outside this range. The sharp all-power energy conjecture and
+WP05 phase settlement remain unproved. C17's mean-plus-energy saturation
+shortcut is false on weaker data, not a counterexample to original full
+positivity. C20's prime-restricted O(log log N) energy bound follows by Abel
+summation from the primitive-set parent. The unrestricted bound and its
+sharper leading-constant question remain under attack; that parent does not
+control the whole composite contribution.
+
 ## Exact reciprocal remainder order added in cycle 12
 
 `WeilWorkSettledPhaseReciprocalTailOrder.lean` proves, from the original full
@@ -297,3 +325,64 @@ open; its historical arguments are retained in PROOF.md.
 This is the same constant-phase target, not a second AP project. No unproved
 variance assertion has been added to Lean. Exact evidence and verification are
 recorded in EVIDENCE.md; paper arguments and the remaining gap are in PROOF.md.
+
+## Cycle15: ordinary forward sums
+
+For every original full-positive source hW, set a=sourceCoeff lam and
+B=sourceCompletion hW 1. For every epsilon>0 the new theorem proves
+
+    |sum_(n=0..N) a(n) - B*N| <= C_epsilon*(N+1)^(1/2+epsilon).
+
+No coefficient sign, arithmetic projection, spectral atomicity, phase decay
+or residue normalization is added. In particular B=1 is not established.
+This supplies the previously unverified ordinary principal-mode mean. The
+centered coefficients also have ordinarily convergent Dirichlet series on
+Re(s)>1/2. A companion theorem constructs the holomorphic pole-subtracted
+forward function there and bounds it by every positive power of height on
+each closed inner strip up to Re(s)=2.
+
+Modules: `WeilWorkSettledPhaseForwardRegularPart.lean` and
+`WeilWorkSettledPhaseForwardSummatory.lean`, imported once in RHTower.
+Both targeted --old builds and mandatory direct source audits passed.
+All three exports passed the axiom audit with only propext, Classical.choice
+and Quot.sound. Detailed commands and source hashes are recorded in
+`cycle15-verification.json`. Global lint reports nine unrelated unreachable
+modules; no owned WP05 failure was reported.
+
+Verdict: BRIDGE. The proof is a classical Perron argument using checked
+source bounds; significant scientific novelty is not claimed. The central
+phase estimate, atomic representation and support restriction remain open.
+C16 now isolates a prime-deletion logarithmic residue law. Its current
+fibre route still requires absolute deviation bounds not supplied by signed
+summatory cancellation. No C16 assertion has been introduced as a Lean premise.
+
+## Cycles22--24 research checkpoint
+
+No additional Lean theorem or WP05 closure. C21's full logarithm moment and
+C22's complete composite exponential moment remain unproved. The existing
+Gamma-odd energy measures discrepancy from a variable Gamma phase; it cannot
+be substituted for constant-phase defect. The exact corrected observable and
+the remaining amplitude-weight gap are recorded in PROOF.md.
+
+The next source conjecture is a uniformly bounded signed cubic correlation
+sum over a,b>=2,ab<=N, with summand
+lambda(a)lambda(b)lambda(ab)/(ab log(a)log(b)log(ab)). This retains every
+composite term and isolates the first interaction missed by variance. Its
+source bound and any implication to phase settlement remain unproved.
+
+## Cycles25--26: direct cubic cost and parity refocus
+
+WP05 remains OPEN; no new Lean theorem this cycle. The direct full-source
+Toeplitz test gives the exact paper Schur bound B_N<=K_N*V_N-A_N^2/K_N for
+the logarithmically weighted signed cubic. This is a BRIDGE from the parent,
+not a demonstrated scientific advance. It gives no opposite sign bound.
+The2026 multiplicative-Hilbert bounded-symbol result does not insert the
+actual source weights or pay the sharp product cutoff.
+
+C24 remains unproved and has no proved transfer to settlement. Research now
+returns to C26, the conductor-two case of C11: square-root-with-epsilon
+cancellation for the actual forward coefficients' alternating sums. Unlike
+global Haar moment repackaging, this would pay a named arithmetic input:
+C13 and the p=2 logarithmic prime-deletion residue law. Its source producer
+is OPEN CORE; neither positivity of a filtered source nor an Euler factor
+has been assumed. Exact statement and failed transfers are in PROOF.md.

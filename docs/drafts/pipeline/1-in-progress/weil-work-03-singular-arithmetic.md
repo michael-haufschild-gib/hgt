@@ -1121,3 +1121,378 @@ No new route retired. Initial candidate selection remains in progress.
 - Plan: prove canonical Gaussian contour cancellation and actual-source
   subtraction; then pole/convolution and aggregate Gaussian extraction.
   Final targeted builds, direct checks, axioms, imports and lint follow.
+
+### Cycle30b verification continuation
+
+- Previous turn PROGRESS: canonical subtraction, pole cancellation and
+  exact Gaussian pole transport were written; paper/evidence audits updated.
+- Prior build handle77343 is missing, no matching Lean/Lake process exists,
+  and no CanonicalGaussian olean exists. Its log has no terminal success;
+  the build is interrupted/unverified, not counted as passed.
+- Continue the same dependency-closed C30 argument. Next actions: verify
+  CanonicalGaussian, PoleCancellation and GaussianShift, then finish the
+  signed convolution/extraction and Mellin asymptotic. WP03 remains OPEN.
+- Written leaves now cover canonical subtraction, common pole numerator,
+  actual Gaussian contour transport, literal signed convolution and generic
+  chi extraction, and the source error series O(T^(5/6)). All remain under
+  audit until targeted builds and direct final checks pass. No imports are
+  wired prematurely. The Mellin main term and harmonic-limit identification
+  remain outstanding; full C30 and WP03 are not claimed.
+
+### Cycle30c paper refinement: one-sided Mellin sign
+
+- A full Gaussian Mellin asymptotic is unnecessary for ell<=0. The signed
+  Gaussian upper bound O(x^(-5/6)) near0, absolute O(x^(-2)) at infinity,
+  and exact Mellin transform give a uniform upper bound for
+  Gamma(sigma/2)*Re V(sigma)/2 on1<sigma<3/2. Multiplying by(sigma-1)^2
+  forces Re P(1)<=0. Exact proof and kill audit in PROOF.md.
+- Corpus audit: the absolute-growth no-go MellinPoleRadialGrowth is not
+  applicable to this one-sided claim. Mathlib hasSum_mellin_pi_mul_sq
+  supplies the generic signed-coefficient transform with weighted absolute
+  summability. Using the profile exp(-pi*n^2*t) changes the Mellin parameter
+  to sigma/2 and the source bound to t^(-5/12); this avoids an extra
+  Mellin square-root substitution. No full contour asymptotic required.
+- Verdict BRIDGE, no publication novelty claim. Implementation of this
+  refinement waits for the five current C30b leaves to pass their audits.
+- CanonicalGaussian targeted --old build exits0, no owned warnings. The
+  remaining linear dependency chain is being checked through the leaf
+  GaussianError target; no umbrella or full build is run. Final direct
+  source audit and axiom/import/lint checks remain outstanding.
+- PoleCancellation targeted dependency build now passes. Both punctured
+  limits use the exact analytic numerator; no removable-singularity or
+  source sign assertion is assumed. GaussianShift, SignedConvolution and
+  GaussianError remain under audit in the same foreground build.
+- GaussianShift now passes its targeted dependency build, including the
+  source growth estimate, absolute right-line integrability, exact residue
+  transport and signed upper bound. Initial namespace/layout failures were
+  repaired; the final direct audit remains outstanding. The same build
+  continues to SignedConvolution and GaussianError.
+- Next Mellin integrability proof can use the exact termwise Gamma norm
+  integrals from mathlib MellinEqDirichlet, Measurable.tsum, the bound
+  enorm_tsum_le_tsum_enorm and lintegral_tsum. Summable integral norms make
+  the resulting lintegral finite. DominatedConvergence's transform identity
+  alone does not return integrability; do not use it as that missing proof.
+  API names added to the pending scratch audit; no new Lean claim yet.
+- SignedConvolution and GaussianError targeted builds pass. The latter's
+  only warning was an unreachable tactic after gcongr; that tactic is now
+  removed and the final source audit will check the cleanup. All five
+  C30b leaves are wired into RHTower. No full/umbrella build run. Pending:
+  scratch API check, final direct checks, refreshed leaf artifact, axioms,
+  authoritative lint and source index, then C30c implementation.
+- All C30b API probes pass after specifying universes in generic probes.
+  The cleaned GaussianError target passes. CanonicalGaussian and
+  PoleCancellation direct audits pass; the remaining direct checks and
+  axiom audit continue sequentially in handle55570. Lint has six unrelated
+  unreachable modules (current list in EVIDENCE); source index exits0.
+- Scheduling refinement: with all five targets and their APIs checked,
+  prepare GaussianBound in a separate file while the final direct audits
+  run. Its four source theorems pay both series' convergence, exact error
+  subtraction, and the signed O(T^(5/6)) Gaussian upper bound. This file is
+  WRITTEN/UNVERIFIED, not wired. New API scratch is /tmp/wp03-c30c-api.lean;
+  run it only after handle55570 has exited, then targeted GaussianBound.
+- All five final lake-env-lean source audits pass without warnings. The
+  cleaned error target also passes without warnings. The same sequential
+  handle55570 is now running the 37-declaration axiom audit; do not start
+  another Lean process until it exits.
+- Handle55570 exits0: all37 public C30b declarations have standard-only
+  axiom lists. C30b final audit is complete, recorded in RESULT/EVIDENCE.
+  All other old search/lint/index jobs also exited. Current foreground
+  handle28447 checks /tmp/wp03-c30c-api.lean then the targeted --old
+  GaussianBound leaf. Do not overlap another Lean job with it.
+- C30b final evidence saved in the result files and memory
+  research/weil-work-03-c30b-source-gaussian-extraction-2026-10-07. All18
+  completed C30b/frontier-search scratch and log files removed after their
+  jobs exited. Only current C30c scratch/build files remain in use.
+- Mellin implementation refinement: use fixed upper envelope C*t^(-11/12)
+  on(0,1] and S*t^(-5/4) on(1,infinity), rather than evaluating integrals
+  depending on sigma. Mathlib intervalIntegral.integrableOn_Ioo_rpow_iff
+  and integrableOn_Ioi_rpow_of_lt give its integrability; near interval
+  can be restricted from(0,2) to avoid endpoint conversion. This does not
+  replace the independent absolute-integrability proof for Hpi's Mellin
+  integrand. Exact argument added to PROOF.
+- C30c API correction: actual complex numeral projection names are
+  Complex.re_ofNat/im_ofNat. First GaussianBound check then found only
+  an rpow-two conversion and positive-factor cancellation lemma mismatch.
+  Repaired with Real.rpow_two and mul_le_mul_iff_right₀; updated minimal
+  mathlib-only API scratch passes. Current handle11990 is the targeted
+  GaussianBound build. Earlier handles28447/14656 exited with failures.
+- Prepared /tmp/wp03-c30c-mellin-api.lean (NOT RUN): minimal API probes
+  plus an actual proof that integrable summands with summable norm integrals
+  have an integrable complex sum. It uses AEMeasurable.tsum,
+  ofReal_integral_norm_eq_lintegral_enorm and Summable.tsum_ofReal_lt_top
+  with the lintegral triangle bound. Test after the current Lean job exits;
+  this keeps the later Mellin comparison independent of default integrals.
+- Handle11990 exited1: its sole remaining failure was the unsimplified
+  imaginary part of(2*pi) in the real contour inequality. Replaced that
+  simplification by norm_num[Complex.mul_re,Complex.mul_im]. Current
+  handle43190 runs the minimal API check, targeted GaussianBound build,
+  its final direct source check, four axiom reports, then the Mellin API
+  and integrability scratch. One sequential foreground Lean process only.
+- Handle43190 exited1: broad norm_num normalized only one exponential's
+  argument, so the real arithmetic tactic could not identify the two
+  equal values. Replaced it with precise complex-projection simp rules,
+  retaining the exponential argument. Current handle88286 performs the
+  targeted build, direct audit, four axiom reports and Mellin scratch in
+  sequence. C30b remains fully audited; GaussianBound is still pending.
+- GaussianBound targeted --old build passes without warnings. Its umbrella
+  import is wired. Handle88286 continues with the direct source check,
+  four axiom reports and the Mellin integrability scratch. Exact source
+  signed Gaussian upper bound is now kernel-checked; final audit pending.
+- GaussianBound final direct check passes without warnings. Handle88286
+  is running its four axiom reports, then the Mellin scratch. C30c lint
+  exits1 with six unrelated unreachable modules (now
+  WeilWorkDeficitXiApproximationCost plus the same five HTGeometry leaves);
+  no WP03 error. Index refresh exits0. Final axiom evidence and cleanup
+  still pending; no second Lean process started.
+- GaussianBound's four axiom audits pass, all standard-only. Six new
+  leaves and41 public declarations are fully audited across C30b/C30c.
+  Handle88286 is now only running the minimal Mellin API/integrability
+  scratch; corpus source audits are complete. WP03 and harmonic sign
+  remain OPEN. Preserve the scratch proof in PROOF if it passes, then
+  remove completed C30c scratch/log files and update memory.
+- Handle88286 exited1 only on the Mellin scratch's unscoped infinity
+  symbol. Replaced it by typed top; scratch-only handle48594 exits0 with
+  no diagnostics. All source and scratch jobs have now exited. The checked
+  integrability proof is preserved in PROOF.md. No source audit needed
+  rerunning for the scratch-only fix.
+- NEXT: actual Hpi(t)=sum a(n)exp(-pi*n²*t) profile, envelopes via
+  T=sqrt(4*pi/t), actual Mellin convergence/transform, fixed integrable
+  upper envelope and pole limit ReP(1)<=0, then identification with C29's
+  ordinary harmonic deviation limit. Gamma_R(1)=1; continuity at1 follows
+  by inverting its globally differentiable reciprocal (verify the exact
+  continuous-inverse API before use). Exact WP03 still needs its uniform
+  quotient detector after this sign theorem; do not mark the goal complete.
+- Iteration classification PROGRESS. Six leaves audited,41 standard-only
+  public axiom lists; all imports wired. All10 completed C30c scratch/log
+  files removed after their jobs exited, in addition to the earlier18.
+  No owned job or unverified Lean source remains. Checked Mellin helper
+  retained in PROOF.md. Cross-session continuation memory:
+  research/weil-work-03-c30c-signed-gaussian-bound-2026-10-07.
+
+### C30d: actual Mellin convergence and source pole sign
+
+- Previous iteration PROGRESS; goal OPEN. Plan: normalize the actual
+  Gaussian profile, discharge norm Fubini from source Dirichlet
+  summability, prove its exact Mellin identity, then compare with a fixed
+  integrable upper envelope and extract the pole sign. Identify the
+  ordinary harmonic limit afterward; uniform quotient detection remains
+  a separate unpaid gate.
+- Fresh deep corpus search inventories68538 files, generation1281256;
+  partial only because reranking exceeded its deadline. All returned
+  candidate/source statements and proposed ingredient sets inspected.
+  Generic contour suggestions do not discharge the actual-source Mellin
+  obligation. No useful replacement theorem found.
+- External audit: DLMF2.5 and Miller--Schmid's Distributions and Analytic
+  Continuation of Dirichlet Series (math/0403030) concern classical
+  Mellin mechanisms; no novelty claim for the transform itself. The
+  proposed new corpus consequence is the actual full-positive source
+  pole sign. Paper proof and integrability obligation remain explicit
+  in PROOF.md. Verdict BRIDGE; no absolute-bound or zero-free premise.
+- GaussianProfile targeted --old build passes without warnings; umbrella
+  import wired. Mellin, MellinBound, PoleSign and HarmonicSign are drafted
+  but UNVERIFIED. Current sequential foreground handle72992 runs the
+  remaining minimal APIs then the targeted Mellin build. No other owned
+  Lean process. Final direct checks, axiom audit, lint and cleanup unpaid.
+- Harmonic lookup found the existing real approach-to-pole theorem and
+  Laurent limit in ZetaResidueFactorDerivative; reused, avoiding a new
+  duplicate filter bridge. Exact harmonic identification paper proof
+  added to PROOF.md. Existing sign receiver needs NotchSmall; this cycle
+  aims to remove it, not infer scalar equality or full rigidity.
+- C31 PRELIMINARY candidate (do not promote to a theorem): multiply the
+  actual test by q(s)=P(s)P(1-s), P a real finite Dirichlet polynomial.
+  On the critical line q=|P|², while q(1)=P(1)P(0) can have either sign.
+  If the C30 signed extraction survives finite positive dilations, the
+  same Mellin argument gives RePsource(1)*q(1)<=0 and hence scalar
+  equality. All convergence, canonical reflection, contour transport,
+  real-frequency kernel errors and exact Mellin factors must be paid.
+  No equality or rigidity has been established from this candidate.
+- C31 deep search is complete,68550 files,generation1281376,partial=false;
+  all20 candidate and20 source statements plus ingredient sets audited.
+  Source suggestions still retain pointwise/nonnegativity/regularity
+  premises where relevant. Checked exact scaled kernel transform in
+  ZetaLeftLineGaussianIntegrals: integral=2*pi*r*sum a(n)J_T(n*r).
+  Its scale factor must be retained. Exposed-point equality refers to the
+  riemannKernelAutocorr functional, not this harmonic constant. Do not
+  conflate them. C30d verification remains the active implementation.
+- Mellin targeted --old build passes without warnings. Both actual-source
+  convergence and exact transform are verified; import wired. Current
+  handle8844 continues sequentially through MellinBound, PoleSign and
+  HarmonicSign. GaussianProfile+Mellin final direct audits still unpaid;
+  remaining three leaves remain unverified until their checks finish.
+- MellinBound targeted --old build passes without warnings, import wired.
+  Its actual-source uniform bound is verified. PoleSign first check had
+  only function-composition and neighbourhood elaboration errors, now
+  fixed. Current foreground handle63389 builds PoleSign then HarmonicSign.
+  Prior handles have exited. Five-leaf direct check script and12-declaration
+  axiom scratch are prepared in /tmp/wp03-c30d-* but not yet run. All
+  minimal mathlib API probes now pass. No sign theorem claimed yet.
+- PoleSign targeted --old build passes without warnings: the actual
+  source coefficient ReP(1)<=0 is now verified. Import wired. Handle63389
+  now runs only HarmonicSign. Direct/axiom checks remain unpaid for all
+  five new leaves; no WP03 completion claim.
+- C30d COMPLETE/PROGRESS: all five targeted --old builds and all five
+  final direct lake-env-lean checks pass without warnings. All12 public
+  declarations have standard-only axiom lists. All imports wired. The
+  actual ordinary harmonic limit is ReP(1)<=0 from hW alone. Working
+  result, evidence, paper proof and WP03 frontier row updated.
+- Final lint exits1 only on seven unrelated unreachable modules (listed
+  in EVIDENCE); index exits0. No owned Lean job remains. Scratch/log
+  cleanup and continuation memory are the remaining housekeeping items.
+- NEXT C31: audit/prove the concrete Q(s)=1-(3/2)*2^(-s) weighted source
+  Gaussian contour and its three-dilate upper bound. Exact profile and
+  scale factors are in PROOF. Do not infer its bound from C30's scalar
+  bounds, since two coefficients are negative. If paid, its pole factor
+  -1/8 should force the reverse inequality and harmonic equality. This
+  would still not be the exposed-point functional or WP03 closure.
+- Housekeeping complete: all25 owned C30d/C31 scratch, log and research
+  files removed after their jobs exited. No owned process or unverified
+  source remains. Generated catalog files have no Git diff. Continuation
+  memory: research/weil-work-03-c30d-harmonic-sign-2026-10-07. Goal ACTIVE;
+  C30d is a completed research cycle, not WP03 completion.
+
+### 2026-10-08 C31 kill audit and positive salvage
+
+- C31 phase-free polynomial profile: FALSE AS STATED. The exact near
+  kernel estimate contains cos(2*pi*y). C30's integer specialization
+  removes it legitimately; the n/2 specialization gives (-1)^n.
+  Therefore the previously logged -1/8 scalar Mellin argument cannot
+  force harmonic equality. C30d remains valid.
+- Corrected profile: (1+c^2/2)H(t)-(c/2)H_alt(t/4)-cH(4t).
+  The additive twist has its own Dirichlet series, not V(s).
+- C31a survivor paper proof closed in PROOF.md: all-real positive
+  frequency weighted kernel error, summation over the actual source,
+  exact scaled source contour extraction and O_r(T^(5/6)) remainder.
+  Formal status pending. Weighted positivity/twisted pole control are
+  next conjectures, not assumed conclusions.
+- Corpus searches c31a/c31b complete without partial results; latest
+  coverage68559 files,generation1281694. All candidate/source statements
+  checked; returned parity/dilation abstractions do not supply the
+  actual arithmetic extraction. Proposed ingredients rejected.
+- External audit: Booker's L-data framework assumes discrete spectral
+  support and near-integral multiplicities, absent for arbitrary hW.
+  Its classification cannot close this task. No novelty claim for the
+  classical additive-twist mechanism.
+- C31a implementation: TwistedGaussianError and TwistedExtraction are
+  new owned leaves. First check found cosine product-order and scale
+  product-normalization script errors, repaired. Targeted check pending;
+  no theorem claimed yet. An API probe/build briefly overlapped due to
+  misreading a live handle; the owned build was terminated by PID and
+  its exit verified. Subsequent Lean calls are strictly sequential.
+- C32 corpus audit: deep search partial (semantic deadline),68565 files,
+  generation1283089. All20 candidate and20 source statements inspected;
+  proposed generic quadratic-form ingredients are inapplicable. Direct
+  rg found relevant existing WeilZetaSquareDilationRigidity,
+  WeilFibreBochnerLaw, WeilConeNotchBochnerLaw and GcdWeightedSeriesInversion.
+  Their exact statements retain absolute boundary decay, NotchSmall,
+  convergent gcd-weighted sums, or absolute harmonic tail control.
+  The gcd representation itself is REDISCOVERED, not a new theorem.
+- Revised C32 target: derive the literal polynomial-weighted Gaussian
+  inequality for arbitrary hW, retaining the additive twist, then test
+  whether it removes NotchSmall from the full fibre law. Do not assume
+  twisted pole limits, coprime-subseries convergence, or absolute tails.
+  Those are the open arithmetic obligations. The main WP03 receiver
+  (uniform quotient boundedness) is still open.
+- C31a uniform refinement exposed by the proof: one source constant
+  controls ALL r>0, with contour error C*r^(-1/8)*T^(5/6), rather than
+  a separate unspecified constant for each r. Paper derivation and
+  novelty verdict BRIDGE recorded; exact-name/kernel lexical re-search
+  produced no matching theorem. The fixed-scale version passed its
+  targeted check; stronger quantifier order is now being checked.
+- C31b dependency-closed paper proof of the literal two-term polynomial
+  Gaussian inequality is now in PROOF.md. It uses the actual Herglotz
+  pairing, canonical zero real part, residue shift, and C31a extraction.
+  It retains H_alt. Lean formalization pending.
+- C32 explicit competing conjectures: full positivity alone forces all
+  ordinary gcd-weighted harmonic limits and the finite twist sign law;
+  or it forces only regularized/subsequential arithmetic limits. First
+  open core: existence of the arithmetic limits. Neither the C30 scalar
+  convergence nor classical gcd inversion supplies this. Do not replace
+  it by an absolute-tail hypothesis.
+- C31a COMPLETE/PROGRESS: strengthened uniform-scale statements pass
+  both targeted --old builds and both final direct lake-env-lean checks,
+  with empty final diagnostics. All9 public axiom audits standard-only.
+  Both imports wired; index exit0; generated catalogs have no Git diff.
+  Lint has9 unrelated unreachable modules, no owned/prohibited errors.
+  Source result, proof and evidence updated. WP03 remains OPEN.
+- Next implementation is C31b's actual polynomial-weighted Gaussian
+  inequality, whose full paper proof is now recorded. Preserve the
+  parity/additive twist and exact residue; do not reuse the failed scalar
+  Mellin factor. Then audit arithmetic-limit existence for C32.
+- Cleanup verified: all18 owned scratch/log/research files removed
+  after every owned process exited. No unverified owned source remains.
+  Continuation memory: research/weil-work-03-c31a-uniform-twist-2026-10-08.
+  Goal ACTIVE; C31a is a completed bridge cycle, not WP03 completion.
+
+### C31b continuation: actual polynomial-weighted positivity
+
+- Previous goal turn: PROGRESS, nine audited source-extraction theorems.
+  Re-read exact WP03 target and C31b paper proof against current tree.
+  Main receiver remains unpaid; hgtl7 workflow continues.
+- Exact Gaussian bound and dependency-closed proof are already in
+  PROOF.md. New implementation will pay polynomial analytic properties,
+  the actual Herglotz/canonical weighted pairing, residue shift, and the
+  literal parity-weighted Gaussian inequality. No twisted pole limit,
+  NotchSmall, sign, or absolute tail premise will be introduced.
+- Fresh corpus search running for the precise weighted mechanism.
+  External re-search checks polynomial/twist and Gaussian/Herglotz
+  formulations. Verdict remains BRIDGE unless stronger arithmetic
+  content survives the subsequent limit audit.
+- Fresh search complete:68568files,generation1283236,partial=false.
+  All20 candidate and20 source statements checked; returned boundary
+  rigidity statements retain extra summability. Proposed parity-graph
+  ingredients are unrelated and rejected. Primary external exact searches
+  returned no hits; previously audited additive-twist/gcd parents remain
+  the comparison, with no novelty claim for polynomial algebra.
+- PolynomialWeight and PolynomialPairing targeted --old checks pass.
+  The actual weighted spectral identity and source sign on Re=3/4 are
+  paid. PolynomialShift initially exposed a product-association mismatch
+  in the residue limit; repaired with an explicit typed limit. Current
+  targeted build proceeds through Shift, Gaussian and Profile. Their
+  results are not claimed until verification and axiom audits finish.
+- C32 renewed searches: parity/pole deep search68573files,
+  generation1283395,partial=false; sourceSquareCoeff follow-up same
+  coverage,generation1283416,partial=false. All20 candidate and20 source
+  statements inspected in each. Proposed dirichletLimit ingredient is
+  an entire transform of a Dirichlet-character test, not a limit of our
+  additive-twisted coefficient series; source definition checked and
+  ingredient rejected. Gcd/sieve hits do not pay actual source limits.
+- C32 sharper target and paper proof now recorded: actual normalized
+  parity Mellin expression is asymptotically confined to an explicit
+  interval determined by ell<=0. Uses fixed c=+/-sqrt(2), no pole-limit
+  premise. Nontrivial interval survives when ell<0; no harmonic equality
+  or uniform quotient bound is claimed. First Lean debt: actual parity
+  Mellin convergence and weighted transform identity.
+- C31b targeted build COMPLETE: PolynomialWeight, PolynomialPairing,
+  PolynomialShift, PolynomialGaussian, PolynomialProfile all pass,
+  without owned warnings. Gaussian's finite integral subtraction needed
+  explicit Pi.sub_apply normalization; no mathematical change. All five
+  imports wired. Sequential final direct audits/30 public axiom reports
+  are currently running; no umbrella build.
+- Index refresh exit0; generated catalogs unchanged in Git. Formal lint
+  exit1 reports seven unrelated unreachable leaves only: WeilPaperNullSamplingSpace,
+  WeilWorkQuantizationPositiveFactor, ApertureConeCalculus,
+  ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal,
+  BoundaryCoronaCStarAlgebra. No owned-source/prohibited-declaration error.
+- New primary-source check opened Guillot--Wu arXiv1901.01947v1 and
+  Choudhury--Panigrahy arXiv2506.24053v1. Finite gcd positivity/totient
+  decomposition is established algebra, not the missing actual-source
+  analytic limit. The latter page has an August2026 internal date;
+  no July2026 novelty claim relies on it. C31b remains a BRIDGE.
+- Name the new interval step C32a. Parent C32 (actual full arithmetic
+  fibre law) and exact WP03 receiver remain unchanged. Kill audit shows
+  the two-term limiting quadratic constraints allow nonconvergent scalar
+  functions inside the interval for ell<0. This is not an arithmetic
+  counterexample; additional actual-source structure is needed for
+  ordinary convergence. Do not sell the interval as the full fibre law.
+- C32a implementation started after the dependency-closed paper audit.
+  Exposed the already-proved generic exponential Mellin convergence and
+  actual source norm-series lemmas in owned Mellin leaf; proofs unchanged.
+  New ParityMellin leaf defines the actual alternating coefficients,
+  proves absolute Dirichlet convergence, and proves actual Mellin
+  convergence/identity. UNVERIFIED until current C31b foreground audit
+  exits and its own targeted/direct checks run. No concurrent Lean job.
+- C31b COMPLETE/PROGRESS: all five final direct source checks exit0 with
+  empty diagnostics. All30 public declarations report only propext,
+  Classical.choice, Quot.sound. Result/proof/evidence/frontier updated.
+  Anti-theatre and anti-laziness answers posted in chat. C32a continues;
+  exact WP03 goal ACTIVE/OPEN. No claim of harmonic equality.

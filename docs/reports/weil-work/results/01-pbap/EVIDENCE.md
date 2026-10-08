@@ -207,3 +207,47 @@ The axiom audit covers exact resonator mass/gamma/sample identities; generic com
 A later two-cluster search completed `partial=false`, 68,464 inventoried files; refresh remained incomplete and compiler coverage mostly source-only/pending. The retrieved ground-shift Cauchy-Schwarz retains the unknown aperture ground correction. It cannot discharge the proposed unshifted signed cross bound.
 
 External next-route correction: [Beckner, Section 2/Theorem 4](https://arxiv.org/html/math/0701939v6) states nonattainment for logarithmic uncertainty and supplies an exact deficit identity. L371's Gaussian-extremal heuristic is therefore not used. This does not affect the critical-coefficient proof.
+
+
+## Joint phase threshold and logarithmic cost
+
+`WeilWorkPBAPJointConvex`, `JointPhase`, and `JointEscape` each passed targeted `lake build --old +<leaf>` and final direct `lake env lean GaloisForLFunctions/RHTower/<leaf>.lean`. The three final source logs are empty. The 17-declaration `/tmp/wp01-joint-axioms.lean` audit exits 0 and reports only `propext`, `Classical.choice`, and `Quot.sound`. The audit includes strict-positive finite correction with cardinality bound, the arbitrary distinct-node antiphase obstruction, mass classification, pair defect, pointwise log-cost minorant and both escape capstones. Imports are wired. No full or umbrella build.
+
+`JointProfiles` scratch source and targeted build pass; final direct audit and the downstream actual null/mass interface remain in progress at this checkpoint. The full-energy coercivity estimate in `JOINT-PHASE-COST.md` remains a paper proof. These phase and realization bridges do not prove PBAP or establish scientific novelty.
+
+
+Fresh joint-phase lint snapshot: `scripts/formal_tools.py lint` exits 1 with nine unrelated unreachable modules: RHTower `WeilPaperPacketPrimeMasks`, `WeilWorkSettledPhasePowerCoefficients`, `WeilWorkSettledPhasePowerLogMoment`, `WeilWorkSingularArithmeticGaussianBound`; HTGeometry `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. File-size warnings remain. All six current Joint leaves are wired; none appears in lint errors. This is a shared-tree snapshot, not a clean global lint claim.
+
+
+Joint realization checkpoint completed: `JointProfiles`, `JointNull`, and `JointActive` all pass targeted `--old` builds and final direct `lake env lean <leaf>` source audits. All final source logs are empty. Nineteen realization and four actual-active-interface axiom checks pass, standard axioms only. Together with the earlier phase checks, all six Joint leaves and all 40 named declarations are audited. `scripts/formal_tools.py index` exits 0; the exact-null and actual-null escape capstones are present in `formal/LEAN_API.md`, with no tracked generated-index diff. Scoped `git diff --check` passes. No full/umbrella build or numerical experiment. Fourier/coercivity work remains in scratch.
+
+Audited source hashes:
+
+- `WeilWorkPBAPJointConvex.lean`: `673e23f41c8940aea1d5b3829e1fdf09340fdecf270d4ee9f95280783615c5e2`
+- `WeilWorkPBAPJointPhase.lean`: `a602a20ebe121e894801460b87e07d222dfd86ae0f622defc25c453e14743ef2`
+- `WeilWorkPBAPJointEscape.lean`: `e1747b8fcc98ee8e5038143e65473f9c9b422477c13ee99e96e2a3d2c5750573`
+- `WeilWorkPBAPJointProfiles.lean`: `e6b0cc9937f35cd47e25e808617b081f46231e1fdf3b8ad14bc48a1c66ef6188`
+- `WeilWorkPBAPJointNull.lean`: `0f1434d27f0265d32915e50a2c28c4de8dd761652ac74dbc55526ad9ec571d45`
+- `WeilWorkPBAPJointActive.lean`: `2681b52aaaf76341422debb9102e5dd2b9ee80f3453aeb11e362fbf56c7ea39c`
+
+
+After adding JointFourier, index again exits 0. Fresh lint exits 1 on seven unrelated unreachable modules: RHTower `WeilWorkDeficitXiApproximationCost`, `WeilWorkSingularArithmeticGaussianBound`; HTGeometry `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. No Joint-leaf error. The changed list reflects concurrent shared-tree work; unrelated sources were not modified.
+
+
+JointFourier final checkpoint: targeted `lake build --old +GaloisForLFunctions.RHTower.WeilWorkPBAPJointFourier` exits 0 (245s); final `lake env lean GaloisForLFunctions/RHTower/WeilWorkPBAPJointFourier.lean` exits 0 with empty diagnostics; seven named axiom checks exit 0, standard axioms only. All seven Joint leaves and all 47 named axiom checks now pass. Prior six source hashes are unchanged. JointFourier SHA-256: `70700e3b041c3ecfb1c72d1432c76b8c36e6ca63a0f8d092c2f99f6c92ec00d5`. All seven imports are wired. The log-moment/coercivity scratch has not been run; full-energy coercivity remains paper-only.
+
+## Literal joint full-energy coercivity (audit in progress)
+
+The complete `/tmp/wp01-joint-coercivity.lean` scratch exits 0 with empty diagnostics. It includes exact physical/Fourier paired mass, central-band mass control, finite base logarithmic moment, full-mass actual gamma lower bound, both signed poles, explicit fixed-profile energy cost, finite-mixture lower bound, exact physical mixture mass, and actual-real-null energy/normalized-energy escape. Promoted to three wired leaves: `JointCoercivity`, `JointEnergy`, `JointEnergyEscape`. Targeted `--old` builds, final direct source audits and 24 named axiom checks are running sequentially. This is not yet a completed production-audit checkpoint.
+
+`scripts/formal_tools.py index` exits 0 after promotion. Scoped diff check passes. Fresh global lint exits 1 with ten unrelated unreachable modules: RHTower `WeilWorkHigherDenominatorBesselBoundary`, `WeilWorkSingularArithmeticHarmonicSign`, `WeilWorkSingularArithmeticMellin`, `WeilWorkSingularArithmeticMellinBound`, `WeilWorkSingularArithmeticPoleSign`; HTGeometry `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. Existing file-size warnings remain. No new Joint-leaf error. Shared-tree work was not altered.
+
+**Completed production checkpoint, 8 October 2026:** the sequential audit script exits 0. Targeted `lake build --old +GaloisForLFunctions.RHTower.WeilWorkPBAPJointCoercivity`, `...JointEnergy`, and `...JointEnergyEscape` pass (71s, 149s, 41s respectively). Each final `lake env lean GaloisForLFunctions/RHTower/<leaf>.lean` audit exits 0 with empty diagnostics. All 24 named `#print axioms` checks in `/tmp/wp01-joint-energy-axioms.lean` pass; only `propext`, `Classical.choice`, `Quot.sound` occur. All prior seven source hashes are unchanged. Ten Joint leaves and 71 named axiom checks are now complete. No owned Lean/build process remains from this audit chain.
+
+| Audited source | SHA-256 |
+|---|---|
+| `WeilWorkPBAPJointCoercivity.lean` | `3206198dc05483d824d5080b76e11deadba3b52cbd9d645e07cad498044f6ee0` |
+| `WeilWorkPBAPJointEnergy.lean` | `7463d28fa0ad4f8d379a51941232dcb2b5dca2516f2b4f9aae20eaa6efe61514` |
+| `WeilWorkPBAPJointEnergyEscape.lean` | `689991d18da95be41e2cd63664fdde96e292d84cc31e478d1bccc05337d9da35` |
+
+Final logs: `/tmp/wp01-final-joint-Coercivity.log`, `/tmp/wp01-final-joint-Energy.log`, `/tmp/wp01-final-joint-EnergyEscape.log`, `/tmp/wp01-joint-energy-axioms.log`. Index includes the gamma, literal-energy and both escape capstones. Global lint remains limited by the ten unrelated reachability errors listed above. Full PBAP remains open; goal stays active.

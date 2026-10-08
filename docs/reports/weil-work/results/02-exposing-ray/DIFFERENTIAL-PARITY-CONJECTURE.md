@@ -1,6 +1,6 @@
 # Differential parity of literal polar radical tails
 
-Cycle 14. Status: paper proof complete below; Lean audit pending. Universal WP02 lower inequality remains OPEN.
+Cycle 14. Status: PROVED in Lean; full scratch and final installed leaf/cache audits pass without warnings. Universal WP02 lower inequality remains OPEN.
 
 For every integer k>=0 put F_k=D^(k+2)Phi-(1/4)D^k Phi. Conjecture that, for some Y_k and every y>=Y_k,
 

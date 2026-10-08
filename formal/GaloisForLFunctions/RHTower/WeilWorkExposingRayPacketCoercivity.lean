@@ -200,7 +200,7 @@ private theorem arch_symbol_lower (τ : ℝ) :
   linarith
 
 private theorem scalar_log_bound {r q : ℝ} (hr : 0 < r) (hq : 0 < q) :
-    Real.log r - Real.log q ≤ r ^ 4 / (4 * q ^ 4) := by
+    Real.log r - Real.log q + 1 / 4 ≤ r ^ 4 / (4 * q ^ 4) := by
   have h := Real.log_le_sub_one_of_pos (by positivity : 0 < (r / q) ^ 4)
   rw [Real.log_pow, Real.log_div hr.ne' hq.ne'] at h
   rw [div_pow] at h
@@ -208,9 +208,10 @@ private theorem scalar_log_bound {r q : ℝ} (hr : 0 < r) (hq : 0 < q) :
   norm_num only [Nat.cast_ofNat] at h
   linarith
 
-private theorem scalar_energy_bound {r : ℝ} (hr : 0 < r) (τ : ℝ) :
+/-- The primitive scalar bound retains its uniform quarter of spectral mass. -/
+theorem exposing_archimedean_scalar_quarter {r : ℝ} (hr : 0 < r) (τ : ℝ) :
     (Real.log r -
-      (digammaVerticalCoercivityConst (1 / 4) + Real.log 2 + Real.log π)) *
+      (digammaVerticalCoercivityConst (1 / 4) + Real.log 2 + Real.log π) + 1 / 4) *
         (τ ^ 2 + 1 / 4) ^ 2 ≤
       (τ ^ 2 + 1 / 4) ^ 2 * archimedeanWeilSymbol (τ / (2 * π)) + r ^ 4 / 4 := by
   have ha := arch_symbol_lower τ
@@ -228,10 +229,18 @@ private theorem scalar_energy_bound {r : ℝ} (hr : 0 < r) (τ : ℝ) :
       _ ≤ _ := h
   have hmain := mul_le_mul_of_nonneg_right
     (show Real.log r -
-      (digammaVerticalCoercivityConst (1 / 4) + Real.log 2 + Real.log π) ≤
+      (digammaVerticalCoercivityConst (1 / 4) + Real.log 2 + Real.log π) + 1 / 4 ≤
       archimedeanWeilSymbol (τ / (2 * π)) + r ^ 4 / (4 * (2 + |τ|) ^ 4) by linarith)
     (sq_nonneg (τ ^ 2 + 1 / 4))
   nlinarith only [hcoeff, hmain]
+
+private theorem scalar_energy_bound {r : ℝ} (hr : 0 < r) (τ : ℝ) :
+    (Real.log r -
+      (digammaVerticalCoercivityConst (1 / 4) + Real.log 2 + Real.log π)) *
+        (τ ^ 2 + 1 / 4) ^ 2 ≤
+      (τ ^ 2 + 1 / 4) ^ 2 * archimedeanWeilSymbol (τ / (2 * π)) + r ^ 4 / 4 := by
+  have h := exposing_archimedean_scalar_quarter hr τ
+  nlinarith only [h, sq_nonneg (τ ^ 2 + 1 / 4)]
 
 private theorem packet_energy_pointwise (N : ℕ) (c : ℕ → ℂ) (τ : ℝ) :
     (Real.log ((N : ℝ) + 1) -

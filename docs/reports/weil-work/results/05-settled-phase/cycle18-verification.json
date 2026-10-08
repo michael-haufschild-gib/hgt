@@ -1,0 +1,121 @@
+{
+  "status": "complete_with_unrelated_lint_failures",
+  "scientific_verdict": "BRIDGE",
+  "wp05": "OPEN",
+  "modules": [
+    {
+      "path": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePowerLogMoment.lean",
+      "sha256": "b9ae33a2d35f0b74102e4b2735635544a33f8e994abff1acc90fd91476ed1657",
+      "umbrella_import_count": 1
+    },
+    {
+      "path": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePowerCoefficients.lean",
+      "sha256": "910dc98b892af7ae8b28ba2e3e17533951c3c5a4ab9345794db4771f4b3cda62",
+      "umbrella_import_count": 1
+    },
+    {
+      "path": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePowerEnergy.lean",
+      "sha256": "676b211dec60c61c14e84ee3346b2321a30bf33486ca74ae912abe36c43e1d3d",
+      "umbrella_import_count": 1
+    }
+  ],
+  "targeted_builds": [
+    {
+      "module": "WeilWorkSettledPhasePowerLogMoment",
+      "handle": 80548,
+      "exit_code": 0
+    },
+    {
+      "module": "WeilWorkSettledPhasePowerCoefficients",
+      "handle": 49547,
+      "exit_code": 0
+    },
+    {
+      "module": "WeilWorkSettledPhasePowerEnergy",
+      "handle": 11793,
+      "exit_code": 0
+    }
+  ],
+  "api_probes": [
+    {
+      "handle": 49367,
+      "exit_code": 0
+    },
+    {
+      "handle": 63283,
+      "exit_code": 0
+    }
+  ],
+  "process_correction": "Source check92777 mistakenly overlapped APIprobe19860; owned PIDs925/892 terminated; handle92777 exit143. Subsequent Lean commands sequential.",
+  "direct_audits": [
+    {
+      "module": "WeilWorkSettledPhasePowerLogMoment",
+      "handle": 54058,
+      "exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "module": "WeilWorkSettledPhasePowerCoefficients",
+      "handle": 44923,
+      "exit_code": 0,
+      "diagnostics_bytes": 0
+    },
+    {
+      "module": "WeilWorkSettledPhasePowerEnergy",
+      "handle": 53421,
+      "exit_code": 0,
+      "diagnostics_bytes": 0
+    }
+  ],
+  "lint": {
+    "handle": 48033,
+    "exit_code": 1,
+    "errors": [
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkDeficitXiApproximationCost",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal",
+      "error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra"
+    ],
+    "owned_errors": []
+  },
+  "axiom_audit": {
+    "handle": 13073,
+    "exit_code": 0,
+    "declarations": [
+      "RHTower.WeilWorkSettledPhase.sum_le_log_rpow_of_normalized_moment",
+      "RHTower.WeilWorkSettledPhase.sum_le_log_rpow_of_log_moment",
+      "RHTower.WeilWorkSettledPhase.powerCoeff",
+      "RHTower.WeilWorkSettledPhase.powerCoeff_zero",
+      "RHTower.WeilWorkSettledPhase.powerCoeff_one",
+      "RHTower.WeilWorkSettledPhase.powerCoeff_LSeries",
+      "RHTower.WeilWorkSettledPhase.powerCoeff_log_convolution",
+      "RHTower.WeilWorkSettledPhase.exists_powerCoeff_log_moment_le",
+      "RHTower.WeilWorkSettledPhase.exists_powerCoeff_critical_energy_le"
+    ],
+    "axioms": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "hashes_revalidated": true,
+  "scratch_cleanup": [
+    "/tmp/wp05-cycle18-api.lean",
+    "/tmp/wp05-cycle18-complex-api.lean",
+    "/tmp/wp05-cycle18-axioms.lean",
+    "/tmp/wp05-cycle18-logmoment.log",
+    "/tmp/wp05-cycle18-coefficients.log",
+    "/tmp/wp05-cycle18-energy.log",
+    "/tmp/wp05-cycle17-signed-fibre.json",
+    "/tmp/wp05-cycle17-self-pairing.json",
+    "/tmp/wp05-cycle17-periodic-attack.json",
+    "/tmp/wp05-cycle18-power-energy.json",
+    "/tmp/wp05-cycle18-reciprocal-critical.json",
+    "/tmp/wp05-cycle19-imaginary-energy.json",
+    "/tmp/wp05-cycle19-toeplitz-lexical.json",
+    "/tmp/wp05-cycle20-logarithm-energy.json",
+    "/tmp/wp05-cycle20-sharp-variance.json"
+  ]
+}

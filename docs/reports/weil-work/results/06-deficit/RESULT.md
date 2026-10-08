@@ -6,7 +6,7 @@
 
 `|λ(n)−Λ(n)|/(4π√n) ≤ D(T)/T + ε`.
 
-This sharpens the previous `4πn` coefficient scale to `4π√n`, with no assumed upper deficit bound. The exact character discrepancy and sharp-window mass balance are also proved. Seventeen modules, 66 public theorem axiom audits, only standard Lean foundations. This is a quantitative corpus advance; external scientific novelty is not established.
+This sharpens the previous `4πn` coefficient scale to `4π√n`, with no assumed upper deficit bound. The exact character discrepancy and sharp-window mass balance are also proved. Twenty modules, 84 public theorem axiom audits, only standard Lean foundations. This is a quantitative corpus advance; external scientific novelty is not established.
 
 ## Audited Lean results
 
@@ -31,7 +31,7 @@ Shared-mass comparison, leakage and complex Fourier transport for both actual me
 
 ## Validation limits
 
-Latest completed repository-wide formal lint status is recorded in `EVIDENCE.md`: nine unrelated reachability errors, none in WP06. All seventeen finished WP06 modules are umbrella-wired. No full or umbrella build was run. No numerical experiments, heartbeat increases, commits, or added mathematical axioms.
+Latest completed repository-wide formal lint status is recorded in `EVIDENCE.md`: eight unrelated reachability errors, none in WP06. All twenty finished WP06 modules are umbrella-wired. No full or umbrella build was run. No numerical experiments, heartbeat increases, commits, or added mathematical axioms.
 
 ## Verified linear-scale Poisson leakage
 
@@ -147,7 +147,7 @@ Next conjecture C2 uses centered shifts log(j/N), j∈[ceil(N/2),N]. Complete pa
 
 PROOF contains the complete paper theorem C2f: every fixed finite arithmetic horizon admits positive real coherent mixtures on all sufficiently fine centered logarithmic grids, with a finite coefficient budget uniform over sufficiently large physical cutoffs. Only its complex-density component is formalized; the real-mixture, cone and grid steps remain paper-only. It supplies no joint asymptotic rate.
 
-Next candidate C3 requires cancelling through M with the baseline Φ retained and squared absolute-coefficient-sum cost ≤C exp(θM), θ<π/2. The complete paper reduction C3→C now includes the actual repair-cost bound `atomCost(n)≤C(n+1)√n` and dominated convergence of the entire weighted arithmetic budget. The repair-cost step is now formalized as recorded below; weighted truncation convergence remains paper-only. The finite-mixture rate in C3 is OPEN, as are C2 and the assigned small-deficit target.
+Next candidate C3 requires cancelling through M with the baseline Φ retained and squared absolute-coefficient-sum cost ≤C exp(θM), θ<π/2. The complete paper reduction C3→C now includes the actual repair-cost bound `atomCost(n)≤C(n+1)√n` and dominated convergence of the entire weighted arithmetic budget. The repair-cost step and full weighted packet truncation convergence are now formalized as recorded below. The full finite-mixture spectral-majorant assembly remains paper-only. C3t+ improves the sufficient rate to θ<π, and C7 below permits an unbounded subsequence at any one fixed aperture. The finite-mixture rate in C3 is OPEN, as are C2 and the assigned small-deficit target.
 
 
 ## Verified polynomial cost of actual isolated-atom repair
@@ -159,3 +159,47 @@ Next candidate C3 requires cancelling through M with the baseline Φ retained an
 Its other three public theorems give exact physical bump scaling, complex Fourier scaling, and squared-mass scaling. The proof bounds the gamma integral uniformly and retains both pole contributions. The existing PBAP definitions are unchanged. Final direct source audit, target-only build, and all four axiom/API audits passed with empty source diagnostics and only standard foundations. Umbrella wired. Seventeen finished modules / 66 public theorem audits.
 
 Classification: **BRIDGE / CLASSICAL SCALING**. This pays C3r; it does not construct a low-cost cancelling mixture or prove small deficit. C4b now has a complete paper-only quartic lower-cost argument `A_M≥c M⁴/(log M)³⁴`; no Lean claim. Next hard conjecture C5p asks for a polynomial upper bound for the particular baseline defect, with K≥4 forced by that paper boundary. C3, C5p and the assigned target remain OPEN.
+
+## Verified full weighted radical budget and arithmetic tails
+
+`WeilWorkDeficitRadicalBudget.lean` proves nine unconditional packet theorems for the actual compact `shiftComb`, `logValue` and PBAP `atomCost`. For every 0<r<π, one constant C_r controls every real finite packet P with shifts in [−log 2,0], every physical cutoff L, and every integer tail:
+
+`Σ_(n≥M) (Λ(n)+atomCost(n)) |b_(P,L)(n)| ≤ C_r cost(P) exp(−rM)`.
+
+The untruncated coefficients obey the same bound. The complete weighted ℓ¹ difference between truncated and untruncated coefficients tends to zero as L→∞; consequently the entire absolute repair budget converges, including every new integer coordinate activated by truncation. These limits fix P first; no uniform limit over growing families is asserted. The exact natural indexing starts at n=2.
+
+Target-only build, final direct `lake --old env lean`, all nine public axiom audits and the specialized API checks passed. Axioms: only `propext`, `Classical.choice`, `Quot.sound`. Umbrella wired. Classification: **BRIDGE / reuse of the corpus's sharp theta envelope**; no significant external scientific novelty claim.
+
+This pays the weighted-tail/truncation component of C3t+. The selected next conjecture C7 asks for affordable exact finite cancellation along an unbounded sequence, at some fixed shift aperture a>0, with cost exponent θ<2π exp(−a). Its full implication is paper-proved; the actual positive family construction remains OPEN. The stronger near-quartic C6Q and critical exponential obstruction C6E are unproved diagnostic alternatives, not an exhaustive dichotomy. C4b's lower boundary remains paper-only. The assigned spectral-deficit target is still UNSOLVED.
+
+## Verified cost of strong Xi-profile approximation
+
+`WeilWorkDeficitXiApproximationCost.lean` proves four unconditional theorems. For any actual real Xi zero γ, any finite complex packet `F=Σ c_j Φ(·−x_j)` with |x_j|≤a, variation `V=Σ|c_j|`, physical error `E=‖F−exp(−iγ·)Φ‖₂`, and `h=|XiC(0)|>0`, universal constants B>0 and K>1 give:
+
+- Exact Fourier mismatch at γ: `paperFT(F−exp(−iγ·)Φ)(γ)=−XiC(0)`.
+- For every L>0: `h≤sqrt(2L)E+2B(V+1)exp(−exp(2(L−a)))`.
+- If N≥0 and V≤exp N: `h²≤8(a+log(N+K))E²`.
+- Always E>0 and `exp(exp(h²/(8E²)−a)−K)≤V+1`.
+
+No zero simplicity or approximation premise is assumed. Target-only build, final unchanged direct `lake --old env lean`, and all four public axiom/API audits passed. Only standard Lean foundations; umbrella wired. The spectral Plancherel restatement remains paper-only.
+
+Classification: **BRIDGE / quantitative obstruction**, with no sharpness or external scientific novelty claim. This rules out a uniform cheap strong-L² transfer theorem covering all spectral shifts. It does not refute transfer for the particular M-dependent Bernoulli witnesses, finite quadratic moment transfer, or C7. The precise failed shortcut and its positive survivor are recorded in `weil-work-06-cheap-strong-transfer.md`.
+
+The next competing constructions are C9's target-relative quadratic witness rate and C10's real derivative packets of order at most M, retaining Φ and cancelling through M while their complete actual PBAP-weighted tail decays exponentially. Existing derivative radical identities pay zero preservation; the bounded-degree positive cone and cost of its cancelling family remain OPEN. The uniform growing-order analytic budget is now formalized below. Neither conjecture is introduced as a Lean premise. The main goal remains ACTIVE and UNSOLVED.
+
+
+## Uniform factorial derivative budget (C10u)
+
+`WeilWorkDeficitUniformDerivativeBudget.lean` proves five unconditional analytic theorems. For every `0<a<π`, one B>0 controls every derivative order:
+
+`‖Φ^(k)(u)‖ ≤ B [3+4π/(π−a)]^k (k+2)! exp(−a exp(2|u|)) exp(−|u|)`.
+
+The same constants control arbitrary finite complex derivative packets and their complete correlations, including integrability. For `0<r<2π`, set `C_r=3+16π/(2π−r)` and `V=Σ_j |c_j| C_r^(k_j)(k_j+2)!`. The full actual PBAP-weighted arithmetic tail is summable and bounded by
+
+`Σ_(n≥N+2) (Λ(n)+atomCost(n)) |correlation(f,log n)| ≤ B_r V² exp(−r(N+2))`.
+
+Constants precede every order, row count and coefficient. No integer or actual repair term is omitted. No sharpness is claimed for the explicit base. At r=π it is exactly19, verified in the specialized real-packet API audit.
+
+Final validation on2026-10-08: target-only build exit0 (114s target); unchanged `lake --old env lean` exit0 with empty output; all five public axiom audits and specialized API examples exit0, only `propext`, `Classical.choice`, `Quot.sound`. Umbrella wired. Formal lint exit1 has eight reachability findings outside WP06.
+
+**Verdict: BRIDGE.** This pays growing-order analytic costs, not positive prefix cancellation or the required upper deficit. C11 asks for nonnegative diagonal derivative coefficients through order M cancelling n=2..M. C11q additionally asks, along unbounded horizons, for `Σ_k d_k 19^(2k)((k+2)!)² ≤ exp(θM)` with fixed `0<θ<π`. Its competing finite dual obstruction and precise limitations are in PROOF. Both remain open; no new Lean premise encodes them.

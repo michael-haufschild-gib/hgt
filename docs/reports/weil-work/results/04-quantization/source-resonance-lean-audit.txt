@@ -1,0 +1,21 @@
+Final leaf audit (exit 0, no diagnostics):
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonance.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationResonance.lean
+
+Scratch axiom audit:
+'RHTower.WeilSpectral.quantizationFrequencyResonates' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationFrequencyResonates_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationFrequencyResidue' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationFrequencyResidue_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.summable_quantization_forward_terms' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_bound_quantizationFrequencyResidue' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationFrequencyResidue_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_twist_contour_displacement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_right_resonance' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_trace_resonance' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationMainRadial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantizationMainRadial_scale' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_bound_quantizationMainRadial' depends on axioms: [propext, Classical.choice, Quot.sound]

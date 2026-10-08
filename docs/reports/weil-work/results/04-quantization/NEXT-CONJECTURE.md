@@ -183,3 +183,20 @@ L remains **SURVIVES PRELIMINARY ATTACK; OPEN**. No new Lean declaration has
 been written for L. Next decisive step: derive the full B(m) system from
 the actual radial traces, then attack its rigidity using source positivity;
 do not replace that step by generic AP regularity or another growth wrapper.
+
+
+### L1 continuation: exact source resonances are now verified
+
+RESONANT-PERIODIC.md isolates the periodic all-resonance candidate L1 and
+contains its paper proof. TwistContour, ResonantTerms and Resonance are now
+compiled, wired and standard-axiom audited. The actual measurable source
+satisfies the shifted-resonance comparison for every frequency and positive
+integer, including rational resonances. Its exponential coefficient bound
+and common-kernel scaling are also verified.
+
+The weighted frequency sum and normalization at m=1 are now compiled in
+FrequencySum and PhaseCoupling, with final leaf and standard-axiom audits passed.
+The q-chain equation and winding argument still need Lean assembly. No source periodicity or
+almost-periodicity has been derived. L1, general L and WP04 remain open.
+The next test is phase rigidity from the fully coupled system, not another
+regularity assumption on the source.

@@ -238,3 +238,138 @@ Cycle 13 index/cleanup checkpoint: `scripts/formal_tools.py index` exits 0 (zero
 - Targeted all-order derivative search completed non-partial with 68,491-file inventory, also predominantly pending compiler metadata/background refresh incomplete. It recovered the exact cusp-series source, k=0 tail theorem, pole-cancelling derivatives and transform/radical identities. Its evenness/decay ingredient set does not close the all-order signed tail. No absence or scientific novelty claim.
 - Primary external audit opened Connes–Consani's 2021 paper, https://alainconnes.org/wp-content/uploads/Selecta.pdf, pp.1–2: exact convolution/polar conventions and the distinction between archimedean-window and full finite-prime positivity. Follow-up derivative/autocorrelation searches returned no applicable primary tail theorem; this is not a novelty verdict.
 - Complete paper proof recorded before code in DIFFERENTIAL-PARITY-PROOF.md. /tmp/wp02_cycle14_parity.lean contains the new all-order source/positive-cusp-envelope/signed-convolution proof and literal Fourier/pole/radical identities. No installed new leaf yet. Existing owned UniformPolarTail exposes its already-proved general integrability/error-absorption helpers for reuse; target-cache audit currently running, no heartbeat or full build.
+
+Cycle14 source continuation: the previous tool session disappeared before producing any audit text. Process inventory confirmed no own Lean process, so the same corrected scratch was restarted once; no timeout-based duplicate build. The existing UniformPolarTail target-cache audit had already exited0. The compact odd-source follow-up search completed partial (68,500-file inventory); current source definitions were found exhaustively, correcting the unverified `fejerTestReal` placeholder to the literal real flatBump. No compact source or final leaf claim yet.
+
+Cycle14 lint exits1 with 16 unrelated reachability findings; none names an owned WP02 leaf. Exact findings:
+
+```text
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilPaperGammaDensity
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkDeficitRadicalBudget
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorBoundaryPeriod
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorBoundaryTransport
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorMovingBoundary
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorPolynomialBoundary
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkPBAPJointEscape
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticCanonicalGaussian
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticGaussianShift
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticPoleCancellation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticSignedConvolution
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+```
+
+Cycle14 formal closure: complete scratch and final installed command `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayDifferentialParity.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayDifferentialParity.lean`, cwd formal, exit0 without warnings. All ten public theorem scratch audits depend exactly on propext/Classical.choice/Quot.sound. The installed 384-line proof bodies match that successful scratch exactly. Twelve owned umbrella imports verified. Both modified/new target caches are current; no full/umbrella build, heartbeat override, numerical computation or new axiom. Scoped whitespace/prohibited-declaration checks clean.
+
+`scripts/formal_tools.py index` exits0, zero changed/removed at its concurrent background-index snapshot; LEAN_API/GAPS/OVERVIEW refreshed. Lint's sixteen unrelated reachability findings are listed above; no WP02 error. Every own Lean/search/lint/index process has exited. The later lexical shifted-derivative query inspected all20 returned declarations (8863 total broad OR hits); it recovered existing cutoff-tail derivatives but no applicable exact shifted-autocorrelation identity among those results. No absence claim. Sharp differential-tail rate is labelled a paper inference in the proof addendum, not an extra formal theorem. Main goal ACTIVE.
+
+## Cycle 15 corpus and external audit (2026-10-07)
+
+Three documented deep searches used the live research command before new Lean. Queries: `polar exposing derivative odd autocorrelation exact opposite ray trace energy source` (module Weil); `differential polynomial Riemann kernel signed autocorrelation tail moment matching energy` (module Riemann); `finite translated Riemann kernel derivatives diameter sharp autocorrelation exponential exposing weight decay barrier` (module Weil). First partial at semantic retrieval; other two non-partial. Snapshot: 68,512 inventoried/indexed files, zero pending files, 1,029,716 declarations; compiler metadata remained mostly pending/stale/source-only and refresh reported `background_indexer_running`. No absence claim follows from retrieval.
+
+Inspected candidate lemmas and source arguments, including literal WeilDualBound receiver, exposingWeight definition and sharp lower/upper envelopes, actual polar-shift correlation identities, fixed source truncation/energy error, local capacity, full kernel derivative transforms and continuity. Inspected proof_ideas and ingredient_sets: first two had no proof ideas; diameter search proposed old autocorrelation decay and exposing-weight bounds, without a complete translated differential-width theorem. Exact relevant source proofs were read before reuse. Current source remains authoritative over retrieval metadata.
+
+Primary external comparison: George Csordas, *Fourier transforms of positive definite kernels and the Riemann xi-Function*, 2014, https://arxiv.org/html/1309.0055v2 (opened full text). Its general positive-definite/Laguerre kernel framework supplies no inspected literal exposing-weight synthesis theorem. No general-method novelty claim is made. A Kent-hosted Csordas/Varga PDF was reached but returned no extractable text; it provides no substantive evidence for the verdict.
+
+Rate/proportion gate produced a stronger target than another isolated negative-tail source: quantitative trace separation for all finite complex differential syntheses of translation width <2, uniform in coefficients and positions. The proof also exposes a necessary exponential coefficient budget for moving finite mixtures in a fixed derivative basis. This budget depends on the chosen source representation; it is not an intrinsic spectral norm, and cannot be treated as an archimedean energy lower bound. Clustered translations can create large cancelling coefficients. This limitation is part of the theorem's intended use.
+
+### Cycle 15 final verification
+
+- Both affected leaves passed final foreground `lake --old env lean -o <their local cache> <leaf>` audits with exit0 and no warnings. DifferentialWidth is353 lines; its11 public theorems retain actual complex coefficients, all integer traces, arbitrary finite signed mixtures and row centers. DifferentialParity gained2 subcritical full-theta envelope theorems; existing10 public statements remain intact.
+- `/tmp/wp02-cycle15-axioms.lean`, importing the installed new leaf, audited ALL23 public theorems across the two leaves. Exit0; every theorem uses exactly `propext`, `Classical.choice`, `Quot.sound`. No added analytical axiom, sorry/admit/opaque/unsafe declaration, or heartbeat/recursion override.
+- New leaf wired after DifferentialParity in RHTower.lean. No full or umbrella build. The missing old TailAsymptotic cache was rebuilt as one foreground leaf dependency; final audit exit0. One pre-edit dependency audit accidentally launched after a failed relative-path edit was cancelled by its exact owned Lean PID, and disappearance/exit143 verified before replacement.
+- Authoritative `scripts/formal_tools.py lint`: exit1, seven unrelated umbrella-reachability errors: RHTower.WeilWorkQuantizationResonance; RHTower.WeilWorkSettledPhasePowerLogMoment; HTGeometry.ApertureConeCalculus; HTGeometry.ApertureConeWinding; HTGeometry.ApertureLogTranslation; HTGeometry.ApertureOpenHistoryIdeal; HTGeometry.BoundaryCoronaCStarAlgebra. No WP02 lint error. Unrelated work was preserved.
+- Scoped whitespace/prohibited-declaration checks clean. Only one own foreground Lean process ran at a time. No numerical experiment or full build was run.
+
+The negative fixed-width conclusion and its stronger positive survivor are both formalized. The survivor is the quantitative uniform trace law and homogeneous mixture amplification, not an assumed energy estimate. Width-two odd-source shortening remains a new OPEN conjecture requiring its own exact source audit. Main WP02 receiver remains unchanged and OPEN.
+
+Cycle 15 index/cleanup closure: `scripts/formal_tools.py index` exits0, one changed entry and zero removed; LEAN_API/GAPS/OVERVIEW refreshed. All13 owned leaves are umbrella-wired. Final scoped whitespace checks clean, including the new untracked leaf. Every own Lean/search/lint/index process has exited; ten owned cycle15 scratch/search files removed. Persistent working card and next constructive conjecture retained. Main goal remains ACTIVE.
+
+
+## Cycle16 evidence: critical odd source and literal opposite tail
+
+- Initial documented deep query targeted actual polar half-step odd filters. It was partial at `query:autocorrelation odd step` and reranking; current-source identities and conditional receivers were inspected. The paper/novelty gates are recorded in CRITICAL-WIDTH-ODD-CONJECTURE.md.
+- Follow-up dyadic/Green query was partial, with68,536 indexed/inventoried files and incomplete compiler enrichment/background refresh. A lexical OR follow-up recovered the existing normalized Green representation and polar-shift rigidity; lexical output did not include compiler-freshness metadata. No search-absence claim.
+- Zero-trace query was partial after a Qdrant deadline, with68,540 indexed/inventoried files and predominantly pending/stale compiler metadata. All20 candidate statements, all20 source-argument statements and its proposed ingredient set were inspected. Direct source checks recovered the exact PrimeBlindPositive definition/equivalence and verified that the apparent zeroTerm_nonneg shortcut needs RH to identify its real-axis term with the actual Weil summand. It was not used.
+- Primary external comparison opened Csordas2014's kernel/Laguerre discussion at https://arxiv.org/html/1309.0055v2. A more recent theta-growth page could not be opened and supplies no evidence. No external novelty claim.
+- Complete source and tail scratch audits exit0 without warnings. Both installed final audits also exit0, without warnings:
+
+    lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayCriticalOddSource.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayCriticalOddSource.lean
+    lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayCriticalOddTail.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayCriticalOddTail.lean
+
+- Source433 lines,13 public theorems; tail217 lines,7 public theorems. Both exact cache artifacts produced, all15 owned umbrella imports verified, scoped whitespace checks clean. Imported-cache axiom closure is recorded below.
+- Authoritative lint exits1 with ten unrelated umbrella-reachability errors; no WP02 finding. Existing large-file warnings are unrelated. Exact errors:
+  - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilPaperPacketNormalizedSeparation
+  - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticGaussianProfile
+  - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticMellin
+  - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticMellinBound
+  - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticPoleSign
+  - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+  - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+  - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+  - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+  - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+No numerical experiment, heartbeat/recursion override, full build, umbrella build, subagent, commit or push. Main universal target remains OPEN.
+
+Cycle16 closure: imported-cache axiom audit exits0 for all20 public theorems; every exact axiom set is propext/Classical.choice/Quot.sound. Both installed proof bodies match their successful scratch bodies after removal of API probes and insertion of module documentation. No prohibited declarations or resource-limit overrides. Index exits0 (2 changed,0 removed), and generated LEAN_API contains the new source energy identity and opposite-ratio capstones. All15 owned umbrella imports verified; no umbrella build. All owned Lean/search/lint/index processes are terminal. Main goal remains ACTIVE; next paper gate is CRITICAL-HEAD-COST-CONJECTURE.md.
+
+Cycle16 cleanup: fifteen owned temporary files removed; every own process terminal; durable memory rh/weil_work_02_critical_odd_2026_10_07 and working card updated. Final15 imports revalidated.
+
+
+## Cycle17 evidence: exact-ray mass and precision
+
+All eight documented deep searches used module Weil and a180-second budget. All returned candidate and source-argument statements, proof ideas and ingredient sets were inspected; proposals were not accepted as proofs.
+
+- `opposite exposing weight negative ray prime blind exact head energy correction`: partial=false, 68,550 indexed/inventoried files; 20 candidates, 20 source arguments, 0 proof ideas, 1 proposed ingredient sets.
+- `WeilPositive eq vonMangoldt uniqueness polar exposing strict inequality`: partial=false, 68,554 indexed/inventoried files; 20 candidates, 20 source arguments, 1 proof ideas, 1 proposed ingredient sets.
+- `single polar differential Riemann source exposes cone normalized Green Jensen`: partial=true, 68,554 indexed/inventoried files; 20 candidates, 20 source arguments, 0 proof ideas, 1 proposed ingredient sets.
+- `exposing ray lower bound signed correction residual head cost`: partial=false, 68,556 indexed/inventoried files; 20 candidates, 20 source arguments, 0 proof ideas, 1 proposed ingredient sets.
+- `prime blind positive definite autocorrelation integer log zeros archimedean lower bound sampling`: partial=false, 68,556 indexed/inventoried files; 20 candidates, 20 source arguments, 0 proof ideas, 1 proposed ingredient sets.
+- `polar near radical arbitrary translated Riemann finite coefficients Weil energy uniform cutoff`: partial=false, 68,556 indexed/inventoried files; 20 candidates, 20 source arguments, 0 proof ideas, 1 proposed ingredient sets.
+- `exposing ray strict archimedean minorant mass penalty sharpness finite realization`: partial=false, 68,556 indexed/inventoried files; 20 candidates, 20 source arguments, 0 proof ideas, 1 proposed ingredient sets.
+- `exposing finite realization repaired spectral density L1 mass convergence resonator`: partial=false, 68,557 indexed/inventoried files; 20 candidates, 20 source arguments, 0 proof ideas, 1 proposed ingredient sets.
+
+The single-source query stopped at semantic retrieval with a Qdrant deadline; the others report non-partial completion. Inventories are complete snapshots, but compiler enrichment remains predominantly pending/stale/source-only and refresh reports background_indexer_running. No absence claim follows from retrieval. Actual source reads revalidated the universal receiver, exposed-point equality condition, weak duality, full PrimeBlindPositive obligation, finite realization and all constants used here.
+
+The head-cost consequence was already anticipated in the earlier opposite-ray card and is explicitly classified as route revalidation. No strict cone point or disproof of opposite-ray production was found. Single-source exposure and scalarization were not added as purported new lower-bound results.
+
+Primary external pages opened: [Connes–Consani](https://arxiv.org/abs/2006.13771) and [Zhu v2](https://arxiv.org/abs/2608.24827v2). Their abstracts provide adjacent single-place/fixed-window and margin context; no claimed computational certificate is imported. Scientific novelty is unestablished. Complete paper argument and hostile limitations are in MATCHED-MASS-MARGIN-PROOF.md.
+
+Verification:
+
+- Unchanged FiniteRealization source rebuilt directly because its object cache was absent; its required imports were already available. `lake --old env lean -o <owned-cache> <leaf>` exits0, no warnings. No full or umbrella build.
+- Complete new scratch audit exits0, no warnings. Installed165-line `WeilWorkExposingRayMassMargin.lean` has six public theorems; its imports and proof bodies match the passed scratch exactly.
+- Final installed audit exits0, no warnings: `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayMassMargin.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayMassMargin.lean`.
+- Sixteenth owned umbrella import wired. Scoped whitespace audit passes. Imported-cache axiom/API audit exits0 without warnings; all six exact axiom sets are propext/Classical.choice/Quot.sound. Polymorphic API probes use explicit universe levels; no source theorem needed alteration for that probe check.
+- Authoritative lint exits1 with seven unrelated reachability errors and no WP02 finding. Exact errors:
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorBesselBoundary
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorFourierBoundary
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+- `scripts/formal_tools.py index` exits0, zero changed/removed entries at the concurrent background-index snapshot; LEAN_API/GAPS/OVERVIEW refreshed. Generated API includes all six new public statements.
+
+No numerical experiment, added axiom, heartbeat/recursion override, full/umbrella build, subagent, commit or push. The positive survivor is quantitative and on the actual all-integer matched ray; it is not a proof of the lower bound. Original goal remains ACTIVE. Next source conjecture is MATCHED-SPECTRAL-LIMIT-CONJECTURE.md, with a mandatory utility gate before new implementation.
+
+Cycle17 cleanup complete: all14 owned temporary files removed after evidence capture; every own process terminal. Durable memory rh/weil_work_02_matched_mass_2026_10_07 written. Final16 imports and all6 standard axiom sets revalidated. Next turn revalidate MassMargin capstones and unchanged universal receiver, then audit MATCHED-SPECTRAL-LIMIT-CONJECTURE.md for actual endpoint utility before any implementation. Goal remains ACTIVE.
+
+
+## Cycle18 — retained quarter and primitive-surrogate boundary (2026-10-08)
+
+- Three opening deep searches (certificate, compensation, primitive ratio) completed non-partial with68,559 indexed/inventoried files. All candidate/source-argument statements and returned ingredient sets inspected. Compiler enrichment mostly pending/stale, refresh background_indexer_running. No completeness/absence claim.
+- Further source searches: integer-null compensation non-partial68,560; ground-state transform partial68,560 (useful exact source recovered by rg and prior ledger, not inferred from an empty search); power-periodization non-partial68,562; vanishing-mass cofinal repair non-partial68,565. All returned candidate/source-argument statements inspected. No computation used.
+- Source audit: old scalar_log_bound discarded the constant -1 in log x<=x-1; all three scalar_energy_bound call sites identified. New public exposing_archimedean_scalar_quarter retains the resulting mass quarter; a private weakening preserves every previous public statement. Complete PacketCoercivity scratch and final installed `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayPacketCoercivity.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayPacketCoercivity.lean` both exit0 without warnings.
+- Exact Mathlib API probe passes. First probe rejected absent inv_le_iff₀; the proof uses the verified div_le_iff₀ instead. New full scratch passed seven public theorem bodies; removed a final unreachable ring tactic before installing the197-line PrimitiveSharpness leaf. Final installed leaf/cache and17-public-theorem imported axiom audit are pending at this checkpoint.
+- All17 owned leaf imports verified exactly once; installed PrimitiveSharpness source equals corrected scratch; scoped whitespace checks clean. No full/umbrella build, subagent, new axiom, heartbeat/recursion increase, commit or push.
+- Authoritative lint exits1 with11 unrelated reachability errors: RHTower.WeilWorkHigherDenominatorBesselBoundary, WeilWorkHigherDenominatorFourierBoundary, WeilWorkHigherDenominatorWeakTrace, WeilWorkQuantizationPairing, WeilWorkSingularArithmeticTwistedExtraction, WeilWorkSingularArithmeticTwistedGaussianError; HTGeometry.ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. No WP02 error; other work preserved.
+- Index exits0, zero changed/removed at its concurrent background-index snapshot; LEAN_API/GAPS/OVERVIEW refreshed. API includes all seven new leaf statements and the new scalar theorem.
+- External comparison: Laptev--Weth author PDF opened, introduction and logarithmic Fourier form(1.1) inspected: https://www.ma.imperial.ac.uk/~alaptev/Papers/laptev-weth-2020-revised.pdf . Generic optimization/logarithmic forms are classical; corpus result classified BRIDGE, scientific novelty unestablished.
+- Ground-state detour rejected as rediscovery against STATUS MUST-786 and prior loop rows377--388. Original spectral L1 conjecture deferred on utility grounds. VANISHING-MASS-DEFECT-CONJECTURE.md is an OPEN next producer target; its cofinal mass-controlled reduction is only a paper argument and not a lower-bound theorem.
+
+Cycle18 closure: final installed PrimitiveSharpness `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayPrimitiveSharpness.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayPrimitiveSharpness.lean` exits0, empty diagnostic log. Imported-cache /tmp axiom audit exits0: ALL17 public statements across both edited leaves have exactly propext/Classical.choice/Quot.sound; no warnings/errors. The printed final axiom set wraps over three lines; whitespace-normalized audit confirms all17, without rerunning Lean. Both source caches are current; no full/umbrella build. Main goal ACTIVE.

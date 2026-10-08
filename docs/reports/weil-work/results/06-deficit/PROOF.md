@@ -114,7 +114,7 @@ Thus **C3 implies C by a complete paper reduction**, with C3r formally audited a
 
 First attack: a Euclidean interior ball for the full defect cone is too demanding to price directly, since its unit high-n coordinates ignore the exponentially small high-n baseline defects. This observation does not refute C3. The next attack must estimate the cost for the particular target `−b(Φ)` or exhibit a dual obstruction to that cost; abstract finite-dimensional separation alone cannot decide it. Main deficit target remains OPEN.
 
-### C3t+ — stronger corpus envelope and complete weighted convergence (paper proof)
+### C3t+ — stronger corpus envelope and complete weighted convergence (packet bounds and limits Lean-audited)
 
 The previous π/2 threshold is unnecessarily restrictive. Existing `ExposingRayTail.autocorr_upper` proves: for every 0<c<π there is C_c>0 with κ(y)≤C_c exp(−2c exp|y|), for every real y. This is prior corpus knowledge, not a new asymptotic theorem. For x_i,x_j∈[−log2,0] and n≥2, the triangle inequality gives exp|±log n+x_j−x_i|≥n/2. Hence each shifted correlation is at most C_c exp(−cn). The same bound holds for every truncated correlation because 0≤κ_L≤κ.
 
@@ -130,7 +130,7 @@ and the same holds for b_P. The majorant is summable. Pointwise κ_L→κ and fi
 
 For any 0<r<c<π, `(n+1)exp(−(c−r)n)` has a finite uniform bound (one degree-one exponential estimate). Therefore the weighted terms are ≤K_r q(P)exp(−rn), uniformly in P,L. Summing n>M gives at most K'_r q(P)exp(−rM). Positive finite mixtures obey the same bound with total packet cost A. Consequently the original C3→C paper reduction works with **θ<π**, choosing θ<r<c<π, instead of θ<π/2. C3+ denotes this weaker sufficient construction problem. No affordable cancellation construction has been proved.
 
-Formalization target: actual packet definitions and exact logValue bridge; uniform exponential bound for full weighted terms; summability; full weighted ℓ¹ convergence under physical truncation. These are unconditional analytic bridge results. C3+, C5p and the assigned spectral-deficit target remain OPEN. C4b's lower-cost boundary is unaffected.
+Formalized in `WeilWorkDeficitRadicalBudget.lean`: actual packet definitions and exact logValue bridge; uniform exponential bounds for full weighted terms and every arithmetic tail; summability; full weighted ℓ¹ convergence under physical truncation. Nine public theorems passed final direct and standard-only axiom audits. The complete mixture/majorant/nullRepair assembly of the C3 implication remains paper-only. These are unconditional analytic bridge results. C3+, C5p and the assigned spectral-deficit target remain OPEN. C4b's lower-cost boundary is unaffected.
 
 ## C4b: a quartic lower boundary for finite cancellation (paper proof; not Lean-audited)
 
@@ -181,6 +181,96 @@ Given the exact internal and external frontier, what would a Fields Medal-winnin
 **[OPEN CORE]** Construct the positive covariance for `−b_M(Φ)` with this cost. Qualitative density and finite-dimensional cone separation supply existence but not the rate. The existing near-radical dimension theorems do not price it. The inspected superoscillation papers price different interpolation data and do not prove either this upper bound or its negation. Preliminary verdict: **SURVIVES PRELIMINARY ATTACK**, with no proof and no novelty certificate from search absence.
 
 If true, polynomial cost lies below every positive exponential threshold, so C3 and its paper reduction apply; after formalizing those dependencies, the exact Weil-positive datum would force critical spectral support. If false, target-specific conditioning has a superpolynomial obstruction, which must be quantified before abandoning C3: superpolynomial cost may still lie below exp(πM/2). The next investigation must price this actual target, not replace it by arbitrary moment interpolation or assume a bounded inverse.
+
+### Competing next rate conjectures C6Q / C6E (OPEN; no formal claim)
+
+The actual unresolved quantity is the least coefficient cost among C3's finite real families with separate Φ baseline and exact cancellation through M, with shifts in [−log 2,0]. Fixed-M feasibility is paper-proved in C2f; no growing-M estimate is known here. The newly verified source envelope suggests testing two incompatible statements rather than inferring an upper bound from C4b.
+
+**C6Q (near-quartic realization).** For every ε>0 there are C_ε>0 and M_ε such that every M≥M_ε admits such a family with `A_M≤C_ε M^(4+ε)`. This strengthens C5p and would nearly match C4b's paper lower boundary. `[OPEN CORE]`: a construction preserving the exact Xi² Fourier factor, positivity of the finite square sum, restricted shifts, and this coefficient cost simultaneously. Generic strip Blaschke products do not supply that construction.
+
+**C6E (critical exponential obstruction).** For every ε>0 there is M_ε such that every admissible cancelling family at every M≥M_ε has `A_M≥exp((π−ε)M)`. This would rule out C3+'s subcritical exponential route, while exposing a quantitative rigidity law. `[OPEN CORE]`: a lower estimate using the positive restricted-Xi covariance constraint, beyond the general analytic-strip zero bound. C4b alone does not imply any exponential lower bound. Neither statement follows from a model replacement of κ by a pure Laplace exponential.
+
+These alternatives are not exhaustive: a larger polynomial cost or a positive subcritical exponential rate could falsify both. Both survive only a preliminary attack; neither has a proof or novelty certificate. Parent audit: the corpus already contains Carlson/Jensen logarithmic-zero machinery; the general moment-cone literature controls representation and atom counts; positive-definite extremal theory does not automatically impose the required Xi² divisibility. Next discriminate these alternatives by estimating the actual finite quadratic dual on signed coefficient measures supported in [−log2,0], pricing the particular target −b(Φ), not arbitrary unit moment vectors. No generic duality reformulation is counted as new science.
+
+### C7: an affordable subsequence at some aperture (OPEN; selected broader attack)
+
+Two restrictions in C3 are not required by its proof: the aperture need not equal log 2, and affordable families need not exist at every sufficiently large M. The source κ envelope is valid at all real shifts, and physical truncation is selected separately for each finite family.
+
+**Exact conjecture.** There exist a>0, C>0, and 0≤θ<2π exp(−a) such that, for every integer R, there is an integer M≥max(R,2) and a finite real family `f_0=Φ`, `f_i=Σ_j a_ij Φ(·−x_ij)` with x_ij∈[−a,0], satisfying total b(n)=0 for all 2≤n≤M and `A_M=1+Σ_(i≥1)(Σ_j|a_ij|)²≤C exp(θM)`.
+
+This retains the actual Xi factor, positive sum-of-squares spectrum, baseline, and exact arithmetic constraints. It is a weaker sufficient construction problem than C3+, not a weakening of the assigned spectral-deficit objective. `[OPEN CORE]`: produce such families and one fixed strict exponential margin at one aperture, along arbitrarily large horizons. C6Q and C6E remain diagnostic stronger alternatives at a=log2; neither settles C7 at other apertures.
+
+**Dependency-closed paper implication.** For |d|≤a and n≥2, exp|±logn+d|≥n exp(−a). For every 0<c<π, the existing kernel envelope therefore gives shifted correlations ≤C_c exp(−2c exp(−a)n), uniformly under truncation. The same finite quadratic expansion and actual atom-cost bound used in C3t+ give full weighted terms ≤C A(n+1)exp(−2c exp(−a)n). Choose fixed rates θ<r<2c exp(−a)<2π exp(−a); absorb the linear factor and sum the geometric tail. For each admissible horizon M the full weighted uncancelled tail is ≤C' A_M exp(−rM)≤C'' exp(−(r−θ)M), tending to zero along the chosen unbounded sequence. For each fixed family, all its shifts are finite, so existing zero-energy truncation bounds and the same dominated weighted-budget convergence apply. Choose L separately to pay its truncation error and zero energy; keep the Φ baseline to majorize every fixed compact set off actual critical zeros after fixed normalization. The actual positive nullRepair adds spectrum and cancels every remaining integer defect at cost bounded by that budget. Thus C7 implies Conjecture C and the critical-support rigidity route by the already recorded exact implication. No all-M uniformity, growing-aperture bound, or asserted coefficient construction is hidden in this argument.
+
+**First attack / verdict:** SURVIVES PRELIMINARY ATTACK, no proof or novelty certificate. Fixed-horizon density does not give the strict rate. The coarse pure-Laplace kernel model does not establish a lower bound for the actual κ. A critical-cost obstruction at one aperture would not retire this route; it would need to cover every fixed aperture. Next estimate the actual positive covariance cost as aperture varies, rather than insist on a polynomial bound at the originally chosen width. The absolute-coefficient envelope is only sufficient: cancellation among outer covariance entries can reduce the actual weighted tail. Failure of C7 would therefore not retire Conjecture C or the assigned deficit route.
+
+### C7 attack: anchored spectral averaging (paper bridge; not a C7 construction)
+
+The quantitative problem is specific to the Xi factor. There is an elementary inexpensive cancellation construction if spectral translations are permitted. Record it explicitly to avoid confusing ordinary positive moment feasibility with the required radical-preserving feasibility.
+
+For an integer M≥2 put `t_n=π/log n`, `ν_n=(1/2)δ_0+(1/4)δ_(t_n)+(1/4)δ_(-t_n)`, and let ν be their convolution for n=2,…,M. This is a finite symmetric probability measure. Its characteristic function is `∏_(n=2)^M (1+cos(t_n y))/2`; therefore it vanishes at every ±log n, 2≤n≤M. The all-zero choices give ν({0})≥2^(−(M−1)), and its support lies in `[−R_M,R_M]`, where `R_M=πΣ_(n=2)^M 1/log n`. Splitting this sum at √M bounds it by `π(√M/log2+2M/log M)`, so R_M=O(M/log M)=o(M). All identities are finite expansions, with no probabilistic limit or computation.
+
+Set `H(r)=XiC(r)` on the real axis. Then
+
+`G_M(r)=2^(M−1) ∫ |H(r−s)|² dν(s)`
+
+is nonnegative, even, integrable, dominates |H(r)|² pointwise, and has every logarithmic Fourier moment through M equal to zero. Indeed, defining `F_G(y)=(1/(2π))∫ exp(iyr)G(r)dr`, finite translation and the already used autocorrelation/Fourier identity give `F_(G_M)(y)=2^(M−1)κ(y)·charν(y)`. The all-zero branch has coefficient exactly 1 before possible collisions; the sum of all coefficients is 2^(M−1).
+
+There is also a target-relative dual statement. For arbitrary real α_2,…,α_M let `Q(s)=Σ α_n κ(log n)cos(s log n)`. Its ν-average is zero. If Q(0)>0, removing precisely the all-zero branch, of probability p=2^(−(M−1)), gives an average `−p Q(0)` over the remaining branches. Consequently one branch s with |s|≤R_M satisfies
+
+`Q(s) ≤ −Q(0)/(2^(M−1)−1)`.
+
+Colliding branches at s=0 cause no problem: the selected all-zero branch is removed in the finite product space, rather than subtracting the whole atom at zero. This prices a negative witness relative to the particular baseline functional, instead of relative to a unit coordinate norm.
+
+**Attack verdict: BRIDGE / classical finite convolution mechanism.** This does not solve C7: the spectra in the construction are |H(r−s)|², while a coherent physical-translate packet has spectrum |H(r)|²|P(r)|². At a real zero γ of H, every latter spectrum vanishes; the former sum is a sum of nonnegative shifted values and would vanish only if every positive-weight shifted value did. No such common-zero property is established. Dividing by H, invoking density, or replacing spectral shifts by physical shifts does not pay the coefficient cost or the error in the actual quadratic form. No impossibility of C7 or Conjecture C follows, and no route is retired.
+
+**Next hard obligation.** Test whether these target-relative negative witnesses can be replaced by actual restricted-Xi packets with controlled cost and sufficiently small signed-form error. A uniform approximation theorem must retain the baseline-relative normalization above; an absolute L² approximation with an unspecified constant does not suffice. The finite convolution construction itself is classical and not selected as new scientific knowledge or as a substitute Lean milestone. C7 remains OPEN.
+
+### C8: zero-preserving approximation has a double-logarithmic cost barrier
+
+**Exact positive statement (paper proof and audited Lean).** Let Φ be the actual Riemann kernel, let γ be any real zero of XiC, and let `F(u)=Σ_j c_j Φ(u−x_j)` be any finite complex packet with |x_j|≤a, a≥0. Put `V=Σ_j|c_j|`, `T_γ(u)=exp(−iγu)Φ(u)`, `E=‖F−T_γ‖_(L²(du))`, and `h=|XiC(0)|>0`. There are universal B>0 and K>1, independent of a, γ and the packet, such that
+
+`h ≤ sqrt(2L) E + 2B(V+1)exp(−exp(2(L−a)))` for every L>0, and
+
+`h² ≤ 8(a+log(N+K)) E²` whenever N≥0 and V≤exp N.
+
+The first inequality is the stronger stability statement; the second exposes its cost scale. At fixed aperture, squared error therefore cannot be o(1/log N) under coefficient budget exp N. Equivalently, achieving sufficiently small error ε forces log log(V+constant) to be at least a positive constant times ε^(−2), up to aperture-dependent constants. No sharpness or matching upper construction is claimed. With the paper Fourier convention, Plancherel gives spectral squared error `∫|XiC(r)Σ_j c_j exp(irx_j)−XiC(r−γ)|²dr = 2π E²`; thus the same obstruction applies to strong L² restoration of a shifted Xi profile.
+
+**Dependency-closed paper proof.** The existing public `riemannPhiKernel_decay_below_theta` at c=2 gives `|Φ(u)|≤C exp(−2exp(2|u|))`. Enlarge C to B>0. Since |u|≤exp(2|u|),
+
+`|Φ(u)|≤B exp(−exp(2|u|))exp(−|u|)`.
+
+For |u|>L and |x|≤a, |u−x|≥L−a. Integrating the resulting bound over this set and enlarging the remaining integral to the real line gives
+
+`∫_(|u|>L)|Φ(u−x)|du ≤2B exp(−exp(2(L−a)))`,
+
+because `∫ exp(−|u−x|)du=2`. The modulation has unit modulus and is the x=0 case. Finite summation gives the tail bound for F−T_γ with factor V+1. All functions are L¹ and L²: the global exponential bounds and finite sums pay these integrability requirements.
+
+The paper Fourier transform of F at γ is XiC(γ) times a finite exponential sum, hence zero. The transform of T_γ at γ is XiC(0). Its norm h is strictly positive by the existing central nonvanishing theorem. Split the Fourier integral of F−T_γ into |u|≤L and its complement. The character has modulus1; Cauchy–Schwarz bounds the first part by sqrt(2L)E, and the preceding tail estimate pays the other part. This proves the first inequality without a simplicity assumption or a lower bound for Xi near γ.
+
+Choose a universal K>1 so large that `4B exp(−K)≤h/2`. Set L=a+log(N+K)>0. Then `exp(2(L−a))=(N+K)²≥N+K`, and `exp N+1≤2exp N`. The tail term is at most `4B exp(−K)≤h/2`. Thus h/2≤sqrt(2L)E; squaring gives h²≤8LE², as claimed.
+
+The exact inverted survivor is `E>0` and `exp(exp(h²/(8E²)−a)−K)≤V+1`. Indeed, take N=log(V+1)≥0, so V≤exp N. The budget inequality and h>0 first exclude E=0. Divide by 8E²>0 to get h²/(8E²)−a≤log(N+K), exponentiate, subtract K, and exponentiate again. Both logarithm arguments are positive. This is an unconditional bound on every actual packet and real Xi zero, not a presumed approximation rate.
+
+**Attack and novelty verdict: BRIDGE / quantitative obstruction to strong-norm transfer.** This is a Fourier cutoff/uncertainty argument specialized to the actual theta tail, not a claimed new general approximation theorem. Current partial corpus search returned tail estimates but no exact packet cost law; no absence certificate. Primary superoscillation and uniform Wiener papers concern adjacent cost/completeness questions, not an imported proof of this inequality. The uniform cheap strong-L²-transfer shortcut is incompatible with this bound. C7 itself is not refuted: it needs only finitely many quadratic moment inequalities, so a transfer adapted to those forms can avoid strong approximation. Its positive-cost construction remains the main open core. The complete stability law, optimized budget and explicit inverted variation bound are now formally audited in `WeilWorkDeficitXiApproximationCost.lean`; only the narrowly stated uniform shortcut is retired.
+
+Scope of that retirement: C8 refutes a uniform cheap strong-L² transfer theorem covering all spectral shifts, since it covers a shift by any real Xi zero. It does not by itself refute transfer of the particular M-dependent Bernoulli branch chosen in C7's dual argument. Such a conclusion would additionally need a quantitative nonzero Fourier mismatch for those specific shifts; that has not been proved. The spectral Plancherel identity remains a paper bridge, separate from the physical L² Lean theorem.
+
+### C9: test the moment cost directly
+
+The next competing conjectures concern the actual signed forms, not approximation of their spectral witnesses. For real coefficients α=(α₂,…,α_M), put `B_α=Σ α_n κ(log n)` and, for a real packet P, `Q_α(P)=Σ α_n b_P(n)`. Normalize packet variation `Σ|c_j|≤1` and restrict shifts to [−a,0]. The strong candidate is: for every a>0 and ε>0 there is C>0 such that every M≥2 and every α with B_α>0 admit P with `Q_α(P)≤−C⁻¹exp(−εM)B_α`. Its competing obstruction is a fixed aperture a and a sequence of normalized dual forms B_α=1 whose most negative unit-variation packet value decays at a genuinely positive exponential rate. These are target-relative statements; qualitative density and generic cone interior do not decide them. The [OPEN CORE] is the uniform cost rate of this exact quadratic witness. This representation does not itself prove C7 or claim a new duality theorem.
+
+Current primary-parent checks: Jorgensen–Niedzialomski's positive-definite extension theorem and Alpay–Colombo–Sabadini's analytic extension construction are qualitative parents; their existence statements do not supply this target-relative rate. A second corpus search is checking positive polynomial spectral multipliers as a possible witness construction. No polynomial positivity, factor preservation, degree bound, or coefficient bound is presumed.
+
+### C10: bounded-order derivative cancellation, competing construction
+
+The corpus already defines `kernelComb a=Σ_k a_k Φ^(k)` and proves `paperFT_riemannKernelDeriv_at_zero` at both actual Weil evaluation points. This is an existing exact radical family, not a new discovery. It avoids converting a shifted Xi profile into a zero-preserving function. The available superexponential-decay theorem fixes derivative order first; it supplies no uniform cost as order grows.
+
+**Exact conjecture.** There are c>0 and an unbounded set of integers M≥2 such that, for each such M, a finite family of derivative packets `f_j=Σ_(k=0)^M a_(j,k) Φ^(k)` with real coefficients a_(j,k) contains f₀=Φ and has total autocorrelation `b_M(n)=Σ_j ∫ f_j(u) conjugate(f_j(u−log n)) du` satisfying both `b_M(n)=0` for 2≤n≤M and `Σ_(n>M)(Λ(n)+atomCost(n))|b_M(n)|≤exp(−cM)`. These autocorrelations are real and even, since the actual derivatives are real on the real axis. The weight is the actual PBAP repair weight, not a surrogate polynomial weight. The retained baseline gives the spectral lower bound away from actual Xi zeros.
+
+This directly prices the complete arithmetic tail and restricts derivative order to M. It competes with C7's physical-translate construction; neither is assumed. Its first [OPEN CORE] is a positive polynomial-square combination of degree at most 2M that cancels the finite cosine moments while retaining that full tail bound. Qualitative polynomial density and the already-proved radical identities do not pay this obligation. No new Lean declaration will encode it as a premise.
+
+**Preliminary attack: SURVIVES PRELIMINARY ATTACK, still unproved.** It may fail already at the bounded-degree positive cone, or at the growing-order tail cost. It has no RH, positivity-of-Xi-Hankel, or prescribed-cancellation premise. The current partial corpus searches and primary kernel/extension papers do not provide this exact degree-and-tail statement. No absence or novelty certificate is claimed. Success would give the positive near-radical families required by C; failure should identify a degree or tail boundary, rather than retire all derivative packets. Its implication still needs the derivative-family version of weighted truncation and the already-recorded null-repair assembly; those are separate obligations, not presumed Lean results.
 
 ## Candidate A: sharper arithmetic cost of spectral deficit
 
@@ -603,3 +693,147 @@ For every real spacing c>0, cutoff L≥c+1, and nonzero finite complex coefficie
 ### C1g final formal closure
 
 The strengthened actual-kernel outer-support invariant and the integer-power rigidity specialization both pass final direct source audit, targeted build, and public axiom audit. Files: `WeilWorkDeficitGeometricRadicalObstruction.lean`; logs `/tmp/wp06-geometric-strong-first.log`, `/tmp/wp06-geometric-strong-build.log`, `/tmp/wp06-geometric-strong-axioms.log`. Source audit has no diagnostics; build exited 0; both axiom lists contain only Lean's standard foundations. The module is umbrella-wired. The closed restricted-route card records both this positive invariant and C0's uniform coercivity law. This completes C1g's no-go closure; C, C1, C2 and the main target remain OPEN.
+
+### C10u: a uniform factorial budget for growing derivative order
+
+**Verdict: BRIDGE.** This explicit all-order majorant for the actual kernel is not C10's positive cancellation construction and carries no scientific-novelty claim. The existing differential-width result fixes derivative orders before choosing its constant; here two constants serve all orders.
+
+For every `0<a<π`, there is `B>0` and the explicit `C=3+4π/(π−a)>0` such that, for all natural k and real u,
+
+`‖Φ^(k)(u)‖ ≤ B C^k (k+2)! exp(−a exp(2|u|)) exp(−|u|)`.
+
+For every finite complex derivative packet `f=Σ_j c_j Φ^(k_j)`, put `V_C(f)=Σ_j |c_j| C^(k_j)(k_j+2)!`. Every correlation is integrable, with
+
+`|∫ f(u) conjugate(f(u−y)) du| ≤ 2 B² V_C(f)² exp(−2a exp(|y|))`.
+
+With the actual weight `w(n)=Λ(n)+atomCost(n)`, for every `0<r<2π` there is `B_r>0` and the explicit `C_r=3+16π/(2π−r)>0` such that, uniformly in every packet and N≥0,
+
+`Σ_(n≥N+2) w(n)|∫ f(u) conjugate(f(u−log n)) du| ≤ B_r V_(C_r)(f)² exp(−r(N+2))`.
+
+**Dependency-closed paper proof.** Write `P_k=cuspDeriv^[k](4π²X²−6πX)` and `p_(k,j)` for its j-th coefficient. Audited cusp identities give `Φ^(k)=Σ_(n≥1) exp(u/2)P_k(n²exp(2u))exp(−πn²exp(2u))` and `deg P_k≤k+2`. Coefficient extraction gives `p_(k+1,0)=p_(k,0)/2` and, for j≥1,
+
+`p_(k+1,j)=(2j+1/2)p_(k,j)−2π p_(k,j−1)`.
+
+Set `δ=(π−a)/2>0`, `b=π−δ=a+δ>0`, `C=3+2π/δ`. Choose positive A with `|p_(0,j)|j!≤2 A δ^j` for j=0,1,2, e.g. one plus their finite weighted absolute sum. Inductively,
+
+`|p_(k,j)|j! ≤ A C^k(k+2)! δ^j` for all k,j.
+
+For j≥1, the recurrence, triangle inequality and `j!=j(j−1)!` give factor `(2j+1/2)+2πj/δ`, bounded by `C(k+3)` when j≤k+3. When j>k+3 the new coefficient vanishes. The j=0 step has factor1/2, also below `C(k+3)`. This includes every degree-boundary index and has no asymptotic restriction on k. Absolute polynomial evaluation and the nonnegative exponential series imply, for t≥0,
+
+`|P_k(t)| ≤ A C^k(k+2)! Σ_j(δt)^j/j! ≤ A C^k(k+2)! exp(δt)`.
+
+For u≥0 put Y=exp(2u)≥1. The inequality `(n+1)²Y≥Y+n` bounds the ENTIRE cusp sum by
+
+`A C^k(k+2)! exp(u/2) exp(−bY)/(1−exp(−b))`.
+
+Using `δY≤exp(δY)` and `exp(3u/2)≤Y` gives `exp(u/2)exp(−δY)≤δ⁻¹ exp(−u)`. The common envelope follows with `B=A/[δ(1−exp(−b))]`. Audited derivative parity handles u<0.
+
+The finite triangle inequality gives the packet envelope. For every u,y, the triangle inequality and `(exp(|u|)−exp(|u−y|))²≥0` give `2exp(|y|)≤exp(2|u|)+exp(2|u−y|)`. Multiplying the two envelopes and using `exp(−|u−y|)≤1` bounds the full absolute integrand by `B² V_C(f)² exp(−2a exp(|y|))exp(−|u|)`. Continuity gives measurability, and `∫exp(−|u|)=2` proves both integrability and the correlation bound.
+
+Choose `a=(r+2π)/4`, so `r<2a<2π` and `C=3+16π/(2π−r)`. No optimality is claimed for this choice. The audited actual repair estimate and `Λ(n)≤log n` give `w(n)≤D(n+1)sqrt(n)` for n≥2. Set s=2a−r>0. Since `(n+1)sqrt(n)≤2n²` and `n²exp(−sn)≤2/s²` by the quadratic exponential-series term, each weighted correlation is at most `8DB² V_C(f)² exp(−rn)/s²`. Sum the complete geometric tail, adding factor `(1−exp(−r))⁻¹`. No integer, pole term or atomCost is discarded.
+
+**Construction implication and limit.** A baseline-containing family cancelling n=2..M and having summed squared factorial budgets below rate r<2π would have exponentially vanishing full repair tails. Producing that positive family is still [OPEN CORE]. No uniform derivative sign, leading-term approximation, C10 solution or RH consequence follows from this upper majorant.
+
+### C11: can the actual diagonal derivative cone cancel a whole prime prefix?
+
+Given the exact internal and current external frontier, the next structural conjecture is deliberately more rigid than arbitrary polynomial-square synthesis. Define the REAL full correlations
+
+`A(n,k)=∫_(u∈ℝ) Re(Φ^(k)(u)) Re(Φ^(k)(u−log n)) du`.
+
+The new all-order bound pays integrability for every entry. **C11:** for every integer M≥2, there are real `d_0,…,d_M≥0`, with `d_0=1`, such that
+
+`Σ_(k=0)^M d_k A(n,k)=0` for every integer `2≤n≤M`.
+
+This would construct exact prefix cancellation in a much smaller cone: the family consists only of the separate packets `sqrt(d_k) Φ^(k)`, retaining Φ itself. It is not the diagonal-translate family already ruled out by C0; actual derivatives have different, potentially signed correlations. C11 makes no assertion that arbitrary negative moment vectors are representable. It targets precisely the negative baseline vector. Its truth would exhibit a specific finite-dimensional positivity law of the actual Xi-weighted cosine moments, not merely qualitative density with an unspecified degree.
+
+**Competing falsifier:** there is a finite M≥2 and real `α_2,…,α_M` such that `Σ_n α_n A(n,0)>0` while `Σ_n α_n A(n,k)≥0` for every `1≤k≤M`. Such an explicit functional would obstruct this diagonal degree-M cone. It would not obstruct coherent cross terms, larger degree, C7 or C9. Finite-dimensional cone separation is classical; finding and proving the actual functional or actual positive family is the research obligation.
+
+**Attack / verdict: SURVIVES PRELIMINARY ATTACK, OPEN.** Dimension counting gives neither positivity nor a baseline coefficient. The existing polar derivative tail-sign theorem fixes k before its threshold and concerns a related polar source, so it does not certify signs of all these entries. The formal C10u upper bound controls magnitudes, not minors or signs. Touchard limiting-zero theory does not transfer to the complete theta autocorrelation matrix. The current total-positivity literature imposes total positivity before deducing collocation invertibility; no such property of this matrix has been established here. We therefore do not assume a Chebyshev system, invertible positive matrix, or positivity-preserving interpolation.
+
+**[OPEN CORE]** Establish the actual target-specific positive solution or exhibit an exact separating functional. After existence, separately estimate `Σ_k d_k C^(2k)((k+2)!)²` against the C10u decay rate, or bound the signed full tail more sharply. Finite feasibility alone cannot complete C10 or the spectral-deficit target. Neither C11 nor its negation is encoded as a Lean premise.
+
+**C11q, concrete quantitative competitor.** The explicit C10u rate r=π has factorial base C_r=19. Conjecture that there is a fixed real `0<θ<π` and an unbounded set of M≥2 admitting C11's nonnegative coefficients with
+
+`Σ_(k=0)^M d_k 19^(2k)((k+2)!)² ≤ exp(θM)`.
+
+No unspecified inverse constant occurs in this target. For the singleton packets `sqrt(d_k)Φ^(k)`, their squared budgets sum exactly to the displayed quantity. The finite triangle inequality and C10u at N=M−1 then bound the complete tail of their sum by `B_π exp(−π(M+1)+θM)`, which is ≤exp(−cM) along large horizons for any fixed `0<c<π−θ`. Thus C11q would supply C10's actual tail together with exact prefix cancellation and the retained baseline. The finite positive solution and this budget are both unproved. This cost condition can fail even if qualitative C11 holds. Conversely, failure of C11 at one horizon need not disprove the unbounded-horizon C11q. Failure of either restricted candidate would not retire coherent C10 or translate C7. First investigate the actual finite coefficient matrix rather than infer signs from its fixed-order leading tail.
+
+### C11b: exact divisor–Bessel representation and two polynomial channels
+
+**Status: complete paper bridge; NOT Lean-formalized.** This audits the representation previously recorded only as a working calculation. It supplies neither positive interpolation nor C11q's cost. Its classical parent is the Xi-square/Koshliakov divisor–Bessel representation; no scientific novelty claim.
+
+Write `S_R(u)=Σ_(a≥1) exp(u/2) R(a² exp(2u)) exp(−πa² exp(2u))`, using the actual corpus cusp series, and let `d(ell)` count ordered positive factor pairs of ell. For integer j≥0 and x>0 define
+
+`K_j(x)=∫_0^∞ exp(−x cosh v) cosh(jv) dv`.
+
+Here j is Bessel order. It is NOT the corpus `kMoment j x` for j≥2; `kMoment` uses `(cosh v)^j`. The two coincide for j=0,1 only. For real polynomials R,Q, write their finitely supported coefficients r_j,q_l. Then, for EVERY real y,
+
+`∫_ℝ S_R(u) S_Q(y−u) du = exp(y/2) Σ_(ell≥1) d(ell) Σ_(j,l) r_j q_l (ell exp y)^(j+l) K_|j−l|(2π ell exp y)`.  (B1)
+
+All sums and the integral in (B1) converge absolutely. Proof: in the term indexed by a,b≥1 set `v=2u−y+log(a/b)` and `t=ab exp y`. The two cusp variables are `X=t exp v`, `Z=t exp(−v)`, the two front factors multiply to `exp(y/2)`, and `du=dv/2`. Expand the finite polynomial product. Its (j,l) integral is
+
+`exp(y/2) r_j q_l t^(j+l) (1/2)∫_ℝ exp((j−l)v) exp(−2πt cosh v) dv`.
+
+Reflection v↦−v eliminates the odd sinh part, leaving exactly K_|j−l|. This explains both the normalization and the absence of a residual factor two.
+
+For the interchange, bound the absolute polynomial product by its coefficientwise absolute-value expansion. Each term has integral at most the same expression with `|r_j q_l|`. With `t≥exp y`,
+
+`K_h(2πt) ≤ exp(−πt) K_h(πt) ≤ exp(−πt) K_h(π exp y)`.
+
+The first inequality uses cosh v≥1 and the second monotonicity in the positive argument. Each fixed K_h(π exp y) is finite: cosh(hv)≤exp(hv) and cosh v≥1+v²/2 give an integrable Gaussian majorant after completing the square. Thus the sum of all absolute pair integrals is bounded by a finite linear combination of `Σ_(ell≥1) d(ell) ell^J exp(−π exp(y) ell)`. The elementary bound d(ell)≤ell and polynomial-times-geometric convergence make this finite. Tonelli followed by Fubini justifies summing the products, integrating, and regrouping every pair by ab=ell. This proof does not assume that arbitrary cusp terms are nonnegative.
+
+Apply (B1) with `R=Q=P_0=4π²X²−6πX`. Since `XZ=t²` and `X+Z=2t cosh v`, the product is `16π⁴t⁴−48π³t³ cosh v+36π²t²`. Actual Φ is real and even, so its literal autocorrelation is
+
+`κ(y)=exp(y/2) Σ_(ell≥1)d(ell) [(x⁴+9x²)K_0(x)−6x³K_1(x)]`, `x=2π ell exp y`.  (B2)
+
+This is exactly the earlier proposed formula after replacing x by2πt.
+
+For all derivative orders define real polynomials U_m,V_m by
+
+`U_0=X⁴+9X²`, `V_0=6X³`,
+
+`U_(m+1)=X U_m' + U_m/2 + X V_m`,
+
+`V_(m+1)=X V_m' − V_m/2 + X U_m`.  (B3)
+
+Then
+
+`κ^(m)(y)=exp(y/2) Σ_(ell≥1)d(ell) [U_m(x)K_0(x)−V_m(x)K_1(x)]`.  (B4)
+
+Indeed differentiation under the defining Bessel integral gives `K_0'=-K_1`. Integrating the derivative of `sinh(v) exp(−x cosh v)` gives `K_1'=-K_0−K_1/x`: boundary terms vanish at infinity by the same Gaussian/exponential bound and at0 because sinh0=0. Differentiate one summand, using dx/dy=x, to obtain (B3). On any compact real y interval, every finite derivative is a finite polynomial combination of K_h(2πell exp y), bounded by `C ell^J exp(−c ell)` for fixed C,J,c>0. The bound just proved is uniform there. Consequently every derivative series converges locally uniformly and termwise differentiation proves (B4) inductively. Constants here may depend on m; no growing-order estimate is asserted.
+
+All coefficients of U_m,V_m are nonnegative. More precisely, U_m is supported on even powers≥2, V_m on odd powers≥3. For each coefficient, (B3) reads
+
+`u_(m+1,j)=(j+1/2)u_(m,j)+v_(m,j−1)`,
+
+`v_(m+1,j)=(j−1/2)v_(m,j)+u_(m,j−1)`.
+
+The zero constant coefficient and the stated supports remove the only potentially negative scalar in the second recurrence. Induction proves nonnegativity and supports. Their degrees are at most m+4. At even m=2k the top coefficients are
+
+`u_(2k,2k+4)=1`, `v_(2k,2k+3)=(k+2)(2k+3)`.  (B5)
+
+For completeness, track the pair of top coefficients through two steps. If these coefficients at2k are1 and b, the top V coefficient at2k+1 is1, the top U coefficient at2k+1 is `2k+9/2+b`, and the next top V coefficient is `b+4k+9`. Starting at b=6, induction gives b=(k+2)(2k+3). No lower coefficient can enter these degrees because (B3) raises degree by at most one.
+
+Finally, real derivative parity and integration by parts give the actual C11 matrix:
+
+`A(n,k)=(-1)^k κ^(2k)(log n)`
+
+`= (-1)^k sqrt(n) Σ_(ell≥1)d(ell) [U_(2k)(2πell n)K_0(2πell n)−V_(2k)(2πell n)K_1(2πell n)]`.  (B6)
+
+To justify integration by parts, all Φ derivatives have the already audited double-exponential envelope; each boundary product vanishes and every product of the finitely many derivatives involved is integrable. Differentiating the convolution twice k times and moving k derivatives to its first factor yields `∫ Φ^(k)(u) Φ^(k)(y−u)du`; parity changes its second factor to `(-1)^k Φ^(k)(u−y)`. This proves (B6) with the literal full integral, not a theta truncation.
+
+**Consequence for the attack.** Each of the two sums in (B6) is positive, but their difference has no sign from coefficient positivity alone. Even its two top coefficients already have relative scale `(k+2)(2k+3)/(2πell n)`. Leading-term dominance is therefore not a justified approximation at k comparable to n. No total positivity, determinant sign, or positive inverse follows from (B3). Formalization must include (B1)/(B2) and the complete divisor sum before the recurrence can be presented as a theorem about the actual C11 matrix.
+
+### C12: arithmetic limit of normalized derivative correlations
+
+**Conjecture C12.** For each fixed integer n≥2,
+
+`lim_(k→∞) A(n,k)/A(1,k) = 1/sqrt(n)`.
+
+The denominator is the actual positive squared L² norm of Φ^(k). Its positivity follows because the nonzero top coefficient of P_k makes Φ^(k) nonzero, as already established by corpus linear independence. This is an all-order arithmetic assertion, not the fixed-k large-n asymptotic. A competing conjecture is that some fixed n≥2 has negative normalized correlations for arbitrarily large k. They cannot both hold.
+
+Motivation from the inspected corpus: broad-window twisted second moments of the actual |ζ|² have the coefficient `gcd(a,b)/sqrt(ab)` at log(a/b), including1/sqrt(n). Formula(B2) gives coherent divisor phases at the boundary above log n. Neither statement licenses the conjectured derivative-order limit. The derivative spectral weight is `t^(2k)|XiC(t)|²`; after its Gamma factor it concentrates on a window of width comparable to sqrt(k), whereas the inspected corpus moment theorem uses a window comparable to its height. An August2026 reciprocity theorem explicitly requires widths T^δ, δ>1/2, and distinct odd prime twists; it neither covers this endpoint nor removes its dual moment. No endpoint estimate is imported.
+
+**Verdict: SURVIVES PRELIMINARY ATTACK / OPEN.** It may be a consequence of a sufficiently uniform classical twisted-moment theorem; no novelty certificate is claimed. The internal theta logarithmic-jet oscillation theorem concerns the logarithmic derivative of the theta source, not κ, and cannot decide C12. Natural-boundary singularities of a summand need not persist in an even symmetrization or convolution, so a Pringsheim shortcut also remains unproved. First `[OPEN CORE]`: control the literal Xi-weighted degree-k window and its twisted error at this concentration scale, or prove a direct coefficient asymptotic from the full divisor–Bessel expression. Do not replace it by a new Lean premise.
+
+If C12 holds, for each fixed finite set of n all sufficiently high derivative columns are strictly positive at those rows. Such columns alone cannot cancel the positive baseline. This would locate the needed sign-changing orders but would NOT refute C11/C11q, whose positive solution can retain low orders. C11q and the full coherent alternatives C7/C9/C10 remain the principal construction targets.

@@ -247,9 +247,11 @@ theorem integrable_sourceZetaPairing_gaussian {lam : ℕ → ℝ} (hW : WeilPosi
     Integrable (fun t : ℝ => sourceZetaPairing hW ((3 / 4 : ℂ) + t * I) *
       gaussWeight T ((3 / 4 : ℂ) + t * I)) := by
   simp_rw [sourceZetaPairing_mul_gaussWeight]
-  have hi := (integrable_canonicalZetaPairing_gaussian (σ := 3 / 4) hT (by norm_num) (by norm_num)).sub
-    (integrable_weilContinuation_mul_zetaGaussian hW hT)
-  simpa only [Complex.ofReal_div, Complex.ofReal_ofNat, Pi.sub_apply] using hi
+  have hi : Integrable (fun t : ℝ => canonicalZetaPairing ((3 / 4 : ℂ) + t * I) *
+      gaussWeight T ((3 / 4 : ℂ) + t * I)) := by
+    simpa only [Complex.ofReal_div, Complex.ofReal_ofNat] using
+      (integrable_canonicalZetaPairing_gaussian (σ := 3 / 4) hT (by norm_num) (by norm_num))
+  exact hi.sub (integrable_weilContinuation_mul_zetaGaussian hW hT)
 
 /-- Exact signed source contour identity, without any additional source premise. -/
 theorem re_integral_sourceZetaPairing_gaussian_eq {lam : ℕ → ℝ}

@@ -1,0 +1,4103 @@
+{
+  "query": "full Weil source exponential moment finite prime torus truncated logarithm signed composite coefficients Gaussian quadratic exponent without coefficient bound",
+  "mode": "deep",
+  "partial": false,
+  "errors": [],
+  "coverage": {
+    "files": 68538,
+    "inventoried": 68538,
+    "pending_files": 0,
+    "outcomes": {
+      "indexed": 68538
+    },
+    "compiler": {
+      "compiled_snapshot": 43,
+      "error": 2,
+      "not_applicable": 11093,
+      "pending": 52047,
+      "stale": 2660,
+      "stale_snapshot": 38,
+      "umbrella_source_only": 1,
+      "unavailable": 2654
+    },
+    "collections": {
+      "lean": 57445,
+      "prose": 11093
+    },
+    "declarations": 1029982,
+    "documents": 2853697,
+    "vectors": 2664828,
+    "method_invalidation_pending": false,
+    "inventory_errors": [],
+    "inventory_complete": true,
+    "generation": 1281253,
+    "enrichment_counts_pending": true,
+    "status": "snapshot",
+    "snapshot_written_at": 1791406925.019062,
+    "current_generation": 1281254
+  },
+  "index_generation": 1281216,
+  "semantic_coverage": {
+    "complete": null,
+    "status": "not_measured",
+    "reason": "reporting_budget"
+  },
+  "refresh": {
+    "complete": false,
+    "reason": "background_indexer_running"
+  },
+  "retrieval_assessment": "model_suggests_sufficient_sources",
+  "candidate_lemmas": [
+    {
+      "id": "ac814b5415efd5fd701b84a9b60bb7de9a178fa6943fadb46bde6bb281e9a698",
+      "name": "GaloisForLFunctions.HTGeometry.truncatedLogCoeff_eq_coeff_logOf",
+      "module": "GaloisForLFunctions.HTGeometry.ProjectiveHorizonLogPotential",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonLogPotential.lean",
+      "line": 620,
+      "end_line": 663,
+      "kind": "theorem",
+      "statement": "theorem truncatedLogCoeff_eq_coeff_logOf\n    {K : Type*} [Field K] [CharZero K]\n    (N : ℕ) (P : Polynomial K) (hP : P.coeff 0 = 1) :\n    truncatedLogCoeff N P =\n      PowerSeries.coeff N (PowerSeries.logOf (P : PowerSeries K))",
+      "compiled_statement": null,
+      "source_statement": "theorem truncatedLogCoeff_eq_coeff_logOf\n    {K : Type*} [Field K] [CharZero K]\n    (N : ℕ) (P : Polynomial K) (hP : P.coeff 0 = 1) :\n    truncatedLogCoeff N P =\n      PowerSeries.coeff N (PowerSeries.logOf (P : PowerSeries K))",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "F",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.coe_range",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.range",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_range_succ'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Function.support",
+          "kind": "source_reference"
+        },
+        {
+          "target": "K",
+          "kind": "source_reference"
+        },
+        {
+          "target": "N",
+          "kind": "source_reference"
+        },
+        {
+          "target": "P",
+          "kind": "source_reference"
+        },
+        {
+          "target": "P.coeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.X_dvd_iff.mpr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.X_pow_dvd_iff.mp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.coeff_coe",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries.HasSubst",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries.HasSubst.of_constantCoeff_zero'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries.coeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries.coeff_log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries.coeff_subst'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries.log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "PowerSeries.logOf_eq",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Set",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Set.mem_Iio",
+          "kind": "source_reference"
+        },
+        {
+          "target": "X",
+          "kind": "source_reference"
+        },
+        {
+          "target": "add_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by_contra",
+          "kind": "source_reference"
+        },
+        {
+          "target": "change",
+          "kind": "source_reference"
+        },
+        {
+          "target": "coeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "d",
+          "kind": "source_reference"
+        },
+        {
+          "target": "dsimp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "finsum_eq_finsetSum_of_support_subset",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hF0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hNd",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hP",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hXd",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hb",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hcoeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hd",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hj",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hnot",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hsupport",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intro",
+          "kind": "source_reference"
+        },
+        {
+          "target": "j",
+          "kind": "source_reference"
+        },
+        {
+          "target": "let",
+          "kind": "source_reference"
+        },
+        {
+          "target": "logarithmicWeight_eq_coeff_log",
+          "kind": "source_reference"
+        },
+        {
+          "target": "map_one",
+          "kind": "source_reference"
+        },
+        {
+          "target": "map_sub",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "omega",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "pow_dvd_pow_of_dvd",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rfl",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "show",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "smul_eq_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sub_self",
+          "kind": "source_reference"
+        },
+        {
+          "target": "symm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "truncatedLogCoeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ᶠ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℕ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "efcd00f1ad5971537967b1ec04a1fce8ebf83cfba86ae93b22cca33a57cd8749",
+      "applicability": "not_checked",
+      "score": 0.015384615384615385,
+      "matched_view": "statement",
+      "reranker_score": 0.9977471232414246
+    },
+    {
+      "id": "24d13e5a163eabbe2ed06d856357beba28f57076adda3a4ade3b8aa8a40a443d",
+      "name": "GaloisForLFunctions.HTGeometry.CExpPoly.exists_exponentialType_bound",
+      "module": "GaloisForLFunctions.HTGeometry.ComplexExponentialPolynomial",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/ComplexExponentialPolynomial.lean",
+      "line": 255,
+      "end_line": 308,
+      "kind": "theorem",
+      "statement": "theorem exists_exponentialType_bound {m : ℕ} (c : Fin m → ℂ) (P : Fin m → Polynomial ℂ) :\n    ∃ C A : ℝ, 1 ≤ C ∧ 0 ≤ A ∧ ∀ z : ℂ, ‖cexpFn c P z‖ ≤ C * Real.exp (A * ‖z‖)",
+      "compiled_statement": null,
+      "source_statement": "theorem exists_exponentialType_bound {m : ℕ} (c : Fin m → ℂ) (P : Fin m → Polynomial ℂ) :\n    ∃ C A : ℝ, 1 ≤ C ∧ 0 ≤ A ∧ ∀ z : ℂ, ‖cexpFn c P z‖ ≤ C * Real.exp (A * ‖z‖)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "A",
+          "kind": "source_reference"
+        },
+        {
+          "target": "C",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.exp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.norm_exp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.re_le_norm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Fin",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.mem_univ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.range",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.single_le_sum",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_le_sum",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "P",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.exp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.exp_add",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.exp_le_exp.mpr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.exp_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "c",
+          "kind": "source_reference"
+        },
+        {
+          "target": "calc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "cexpFn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "classical",
+          "kind": "source_reference"
+        },
+        {
+          "target": "coeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "eval",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "f",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hA",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hA0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hAj",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hC",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hCsum",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hSj",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hexp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hle",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hpoly",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hpow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hterm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "i",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intro",
+          "kind": "source_reference"
+        },
+        {
+          "target": "j",
+          "kind": "source_reference"
+        },
+        {
+          "target": "k",
+          "kind": "source_reference"
+        },
+        {
+          "target": "le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "linarith",
+          "kind": "source_reference"
+        },
+        {
+          "target": "m",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_le_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_le_mul_of_nonneg_left",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_le_mul_of_nonneg_right",
+          "kind": "source_reference"
+        },
+        {
+          "target": "natDegree",
+          "kind": "source_reference"
+        },
+        {
+          "target": "nlinarith",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_eval_le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_sum_le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "one_add_norm_pow_le_exp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "positivity",
+          "kind": "source_reference"
+        },
+        {
+          "target": "re",
+          "kind": "source_reference"
+        },
+        {
+          "target": "refine",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "set",
+          "kind": "source_reference"
+        },
+        {
+          "target": "this",
+          "kind": "source_reference"
+        },
+        {
+          "target": "with",
+          "kind": "source_reference"
+        },
+        {
+          "target": "z",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "7bf3e40facbe6fe5e770335726b4f75297cdba12a2d56047f22c0a152b35ec05",
+      "applicability": "not_checked",
+      "score": 0.015151515151515152,
+      "matched_view": "statement",
+      "reranker_score": 0.9977225661277771
+    },
+    {
+      "id": "c7a209bb339fff1113b39171a75865c4a8918266e063179344191532c54c2ca4",
+      "name": "GaloisForLFunctions.HTGeometry.truncatedLogCoeff",
+      "module": "GaloisForLFunctions.HTGeometry.ProjectiveHorizonLogPotential",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonLogPotential.lean",
+      "line": 198,
+      "end_line": 203,
+      "kind": "def",
+      "statement": "noncomputable def truncatedLogCoeff {K : Type*} [Field K] [CharZero K]\n    (N : ℕ) (P : Polynomial K) : K",
+      "compiled_statement": null,
+      "source_statement": "noncomputable def truncatedLogCoeff {K : Type*} [Field K] [CharZero K]\n    (N : ℕ) (P : Polynomial K) : K",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.range",
+          "kind": "source_reference"
+        },
+        {
+          "target": "K",
+          "kind": "source_reference"
+        },
+        {
+          "target": "N",
+          "kind": "source_reference"
+        },
+        {
+          "target": "P",
+          "kind": "source_reference"
+        },
+        {
+          "target": "coeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "j",
+          "kind": "source_reference"
+        },
+        {
+          "target": "logarithmicWeight",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "f15d7bebac50e21e3ee0bf4c7133453c029972c67a38bbb2a651be5598216b9a",
+      "applicability": "not_checked",
+      "score": 0.016129032258064516,
+      "matched_view": "statement",
+      "reranker_score": 0.9964711666107178
+    },
+    {
+      "id": "4f03ad3137239ed6a021ac20301b84c8982800db78b6fc6a1dd16556f6ddf93a",
+      "name": "cexp_neg_quadratic_isLittleO_abs_rpow_cocompact",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.PoissonSummation",
+      "relpath": "formal/.lake/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Gaussian/PoissonSummation.lean",
+      "line": 57,
+      "end_line": 69,
+      "kind": "lemma",
+      "statement": "lemma cexp_neg_quadratic_isLittleO_abs_rpow_cocompact {a : ℂ} (ha : a.re < 0) (b : ℂ) (s : ℝ) :\n    (fun x : ℝ ↦ cexp (a * x ^ 2 + b * x)) =o[cocompact ℝ] (|·| ^ s)",
+      "compiled_statement": null,
+      "source_statement": "lemma cexp_neg_quadratic_isLittleO_abs_rpow_cocompact {a : ℂ} (ha : a.re < 0) (b : ℂ) (s : ℝ) :\n    (fun x : ℝ ↦ cexp (a * x ^ 2 + b * x)) =o[cocompact ℝ] (|·| ^ s)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Eventually.of_forall",
+          "kind": "source_reference"
+        },
+        {
+          "target": "EventuallyEq.rfl",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Filter.tendsto_neg_atBot_atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Function.comp_apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_of_neg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "abs_of_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "b",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "cexp_neg_quadratic_isLittleO_rpow_atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "cocompact_eq_atBot_atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "comp_tendsto",
+          "kind": "source_reference"
+        },
+        {
+          "target": "congr'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "constructor",
+          "kind": "source_reference"
+        },
+        {
+          "target": "eventually_gt_atTop",
+          "kind": "source_reference"
+        },
+        {
+          "target": "eventually_lt_atBot",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ha",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hx",
+          "kind": "source_reference"
+        },
+        {
+          "target": "isLittleO_sup",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "refine",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "s",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp_rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "x",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "af250bf1f30c2f942b17e7279021aa3e694bdad666c4611e4e53bf8c9dd67c7c",
+      "applicability": "not_checked",
+      "score": 0.014285714285714285,
+      "matched_view": "statement",
+      "reranker_score": 0.9948602318763733
+    },
+    {
+      "id": "b4d48be7fc3a78762ce98627e21483c86f3728b6e2cacdec262c0be1f5c5708a",
+      "name": "RHTower.IsPrimeArchCompactThorinWitness.normalizedPrimeArchMoment_eq_integral_pow",
+      "module": "GaloisForLFunctions.RHTower.CompletedSeamCompactThorinRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CompletedSeamCompactThorinRigidity.lean",
+      "line": 36,
+      "end_line": 70,
+      "kind": "theorem",
+      "statement": "theorem IsPrimeArchCompactThorinWitness.normalizedPrimeArchMoment_eq_integral_pow\n    {μ : Measure ℝ} {B : ℝ}\n    (hμ : IsPrimeArchCompactThorinWitness μ B) (n : ℕ) :\n    normalizedPrimeArchMoment n = ∫ x : ℝ, x ^ n ∂μ",
+      "compiled_statement": null,
+      "source_statement": "theorem IsPrimeArchCompactThorinWitness.normalizedPrimeArchMoment_eq_integral_pow\n    {μ : Measure ℝ} {B : ℝ}\n    (hμ : IsPrimeArchCompactThorinWitness μ B) (n : ℕ) :\n    normalizedPrimeArchMoment n = ∫ x : ℝ, x ^ n ∂μ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "B",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.ofReal_inj.mp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "IsFiniteMeasure",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.factorial",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.factorial_ne_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "X",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "at",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "compactMarkovKernelMoment_zero_node",
+          "kind": "source_reference"
+        },
+        {
+          "target": "compactMarkovTransform",
+          "kind": "source_reference"
+        },
+        {
+          "target": "compactThorinExponent",
+          "kind": "source_reference"
+        },
+        {
+          "target": "completedSeamMomentGerm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "continuous_const",
+          "kind": "source_reference"
+        },
+        {
+          "target": "continuous_norm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "deriv",
+          "kind": "source_reference"
+        },
+        {
+          "target": "deriv_completedSeamSourceLogExponent_eventuallyEq_momentGerm.symm.trans",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact_mod_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "f",
+          "kind": "source_reference"
+        },
+        {
+          "target": "filter_upwards",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hB",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hasDerivAt_compactThorinExponent",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hbound",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hder",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hdisk",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hexponent",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hexponent.deriv.trans",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hfacne",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hfinite",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hgerm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hgerm.iteratedDeriv_eq",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hintc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hsupport",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hsupport.mono",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hthorin",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hx",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hx.2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hz",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hμ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "in",
+          "kind": "source_reference"
+        },
+        {
+          "target": "integral_ofReal",
+          "kind": "source_reference"
+        },
+        {
+          "target": "isOpen_lt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "iteratedDeriv_compactMarkovTransform",
+          "kind": "source_reference"
+        },
+        {
+          "target": "iteratedDeriv_completedSeamMomentGerm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "letI",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mem_nhds",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_left_cancel₀",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "positivity",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rcases",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "show",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simpa",
+          "kind": "source_reference"
+        },
+        {
+          "target": "using",
+          "kind": "source_reference"
+        },
+        {
+          "target": "with",
+          "kind": "source_reference"
+        },
+        {
+          "target": "x",
+          "kind": "source_reference"
+        },
+        {
+          "target": "z",
+          "kind": "source_reference"
+        },
+        {
+          "target": "μ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ᵐ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ᶠ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℂ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℕ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "𝓝",
+          "kind": "source_reference"
+        },
+        {
+          "target": "𝕜",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "18688d4e95703b9da401c3879793de684590f8de14a8aff2026cf8a806eb4124",
+      "applicability": "not_checked",
+      "score": 0.014925373134328358,
+      "matched_view": "statement",
+      "reranker_score": 0.9930902123451233
+    },
+    {
+      "id": "fce14139bce4ec45d7d1ff44d1712e48948060af2ef90c4d3d551289894c9e7d",
+      "name": "GaloisForLFunctions.HTGeometry.parLogTrunc",
+      "module": "GaloisForLFunctions.HTGeometry.ParabolicFormalFlow",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/ParabolicFormalFlow.lean",
+      "line": 333,
+      "end_line": 336,
+      "kind": "def",
+      "statement": "def parLogTrunc (k : ℕ) (a : ℂ) (w : ℂ⟦X⟧) (j : ℕ) (h : ℂ⟦X⟧) : ℂ⟦X⟧",
+      "compiled_statement": null,
+      "source_statement": "def parLogTrunc (k : ℕ) (a : ℂ) (w : ℂ⟦X⟧) (j : ℕ) (h : ℂ⟦X⟧) : ℂ⟦X⟧",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.range",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "binomPoly",
+          "kind": "source_reference"
+        },
+        {
+          "target": "coeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h",
+          "kind": "source_reference"
+        },
+        {
+          "target": "j",
+          "kind": "source_reference"
+        },
+        {
+          "target": "k",
+          "kind": "source_reference"
+        },
+        {
+          "target": "m",
+          "kind": "source_reference"
+        },
+        {
+          "target": "parDiff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "w",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "5fb692f17f404c882b44df08e024ca12100f2dc4748141c7cd6ab5fbb7027c50",
+      "applicability": "not_checked",
+      "score": 0.015151515151515152,
+      "matched_view": "statement",
+      "reranker_score": 0.9896149635314941
+    },
+    {
+      "id": "430835e16b808e0db58b414f5704b25e5e1c4e65f56caa59fdb076ab1b4c765a",
+      "name": "RHTower.truncatedFullGaussianCofactor_eq_Icc",
+      "module": "GaloisForLFunctions.RHTower.SteinhausFullGaussianTruncation",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SteinhausFullGaussianTruncation.lean",
+      "line": 14,
+      "end_line": 27,
+      "kind": "theorem",
+      "statement": "theorem truncatedFullGaussianCofactor_eq_Icc (s : ℂ) (R : ℝ) (L : ℕ)\n    (ω : SteinhausModel.Omega) :\n    truncatedFullGaussianCofactor s R L ω =\n      ∑ n ∈ Icc 1 L, SteinhausModel.X n ω * (n : ℂ) ^ (s - 1) * smoothAFECutoff ((n : ℝ) / R)",
+      "compiled_statement": null,
+      "source_statement": "theorem truncatedFullGaussianCofactor_eq_Icc (s : ℂ) (R : ℝ) (L : ℕ)\n    (ω : SteinhausModel.Omega) :\n    truncatedFullGaussianCofactor s R L ω =\n      ∑ n ∈ Icc 1 L, SteinhausModel.X n ω * (n : ℂ) ^ (s - 1) * smoothAFECutoff ((n : ℝ) / R)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Ico_add_one_right_eq_Icc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.add_comm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.add_sub_cancel_right",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intro",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rfl",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sum_Ico_eq_sum_range",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sum_congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "truncatedFullGaussianCofactor",
+          "kind": "source_reference"
+        },
+        {
+          "target": "unfold",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "57458abf565c186effc2b36d6f05cfbd67a297194e48bc559e08b87f938b4254",
+      "applicability": "not_checked",
+      "score": 0.014925373134328358,
+      "matched_view": "statement",
+      "reranker_score": 0.9858580231666565
+    },
+    {
+      "id": "812b523528128817b88babc0e918417699ac2d97191ec378c15e29599d6e42b9",
+      "name": "RHTower.truncatedFullGaussianCofactor",
+      "module": "GaloisForLFunctions.RHTower.SteinhausFullGaussianTruncation",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SteinhausFullGaussianTruncation.lean",
+      "line": 9,
+      "end_line": 14,
+      "kind": "def",
+      "statement": "def truncatedFullGaussianCofactor (s : ℂ) (R : ℝ) (L : ℕ) (ω : SteinhausModel.Omega) : ℂ",
+      "compiled_statement": null,
+      "source_statement": "def truncatedFullGaussianCofactor (s : ℂ) (R : ℝ) (L : ℕ) (ω : SteinhausModel.Omega) : ℂ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "L",
+          "kind": "source_reference"
+        },
+        {
+          "target": "R",
+          "kind": "source_reference"
+        },
+        {
+          "target": "SteinhausModel.X",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "range",
+          "kind": "source_reference"
+        },
+        {
+          "target": "s",
+          "kind": "source_reference"
+        },
+        {
+          "target": "smoothAFECutoff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ω",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℂ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℕ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "f092716211a68d4e748855e150fc221b36fbb1abbf50b3a346caa9dda80afbeb",
+      "applicability": "not_checked",
+      "score": 0.01639344262295082,
+      "matched_view": "statement",
+      "reranker_score": 0.9835968613624573
+    },
+    {
+      "id": "1a9099e6e2202d2ccab9ae1b11609c50905eb3c3448632959052e33b8465496c",
+      "name": "RHTower.tendsto_primeJumpLevyMoment",
+      "module": "GaloisForLFunctions.RHTower.PrimeBoundaryPoissonJumpField",
+      "relpath": "formal/GaloisForLFunctions/RHTower/PrimeBoundaryPoissonJumpField.lean",
+      "line": 321,
+      "end_line": 361,
+      "kind": "theorem",
+      "statement": "theorem tendsto_primeJumpLevyMoment {m : ℕ} (hm : 1 ≤ m) :\n    Tendsto (fun N : ℕ =>\n        ∑ p ∈ Nat.primesLE N, 2 * (Real.log p / Real.log N) ^ (2 * m) / p)\n      atTop (𝓝 (1 / (m : ℝ)))",
+      "compiled_statement": null,
+      "source_statement": "theorem tendsto_primeJumpLevyMoment {m : ℕ} (hm : 1 ≤ m) :\n    Tendsto (fun N : ℕ =>\n        ∑ p ∈ Nat.primesLE N, 2 * (Real.log p / Real.log N) ^ (2 * m) / p)\n      atTop (𝓝 (1 / (m : ℝ)))",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ContinuousOn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Set.Icc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "at",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by_cases",
+          "kind": "source_reference"
+        },
+        {
+          "target": "congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "congrArg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "continuousOn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "continuous_const.mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "continuous_pow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact_mod_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "field_simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "funext",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hcont",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hlimit",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hm'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hmpos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hone",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hpos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hquot",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hu",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hzero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "if_neg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "if_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "in",
+          "kind": "source_reference"
+        },
+        {
+          "target": "integral_pow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intervalIntegral.integral_const_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "k",
+          "kind": "source_reference"
+        },
+        {
+          "target": "levyTestQuotient",
+          "kind": "source_reference"
+        },
+        {
+          "target": "linarith",
+          "kind": "source_reference"
+        },
+        {
+          "target": "m",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "omega",
+          "kind": "source_reference"
+        },
+        {
+          "target": "one_pow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "pow_succ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "push_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "show",
+          "kind": "source_reference"
+        },
+        {
+          "target": "tendsto_primeLevyWindow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "this",
+          "kind": "source_reference"
+        },
+        {
+          "target": "u",
+          "kind": "source_reference"
+        },
+        {
+          "target": "zero_pow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℕ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "5d4e98c41ea774aec7b787c60c30f919858cb88608f8696f0224577559d7b0dc",
+      "applicability": "not_checked",
+      "score": 0.015873015873015872,
+      "matched_view": "statement",
+      "reranker_score": 0.982769250869751
+    },
+    {
+      "id": "128a74d5c2c624e78d354ca7074682461a5842c9e9affa01777c0d8c672d41a3",
+      "name": "GaloisForLFunctions.HTGeometry.gaussianTailCoeff",
+      "module": "GaloisForLFunctions.HTGeometry.GaussianEntirePacketSplit",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/GaussianEntirePacketSplit.lean",
+      "line": 21,
+      "end_line": 25,
+      "kind": "def",
+      "statement": "def gaussianTailCoeff (N : ℕ) (y : ℕ → ℂ) (m : ℕ) : ℂ",
+      "compiled_statement": null,
+      "source_statement": "def gaussianTailCoeff (N : ℕ) (y : ℕ → ℂ) (m : ℕ) : ℂ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "N",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.factorial",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.sqrt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "else",
+          "kind": "source_reference"
+        },
+        {
+          "target": "if",
+          "kind": "source_reference"
+        },
+        {
+          "target": "m",
+          "kind": "source_reference"
+        },
+        {
+          "target": "then",
+          "kind": "source_reference"
+        },
+        {
+          "target": "y",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℂ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℕ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "516dfeae9778c576d3bd069e6a888ee89ddb5fc6165631d6a4e6f2e281720ea0",
+      "applicability": "not_checked",
+      "score": 0.015873015873015872,
+      "matched_view": "statement",
+      "reranker_score": 0.9800018668174744
+    },
+    {
+      "id": "761de90b5b0cad5f8cefe3233074e8b9ac11bbc1205ae2dbda52eccadb03f92b",
+      "name": "RHTower.DeBruijn.exists_sq_le_exp",
+      "module": "GaloisForLFunctions.RHTower.DeBruijnHeatFlowRealZeros",
+      "relpath": "formal/GaloisForLFunctions/RHTower/DeBruijnHeatFlowRealZeros.lean",
+      "line": 68,
+      "end_line": 93,
+      "kind": "theorem",
+      "statement": "theorem exists_sq_le_exp {B b c : ℝ} (hB : 0 < B) (hb : 0 < b) (hc : 0 ≤ c) :\n    ∃ K : ℝ, ∀ u : ℝ, 0 ≤ u → c * u ^ 2 ≤ B / 4 * Real.exp (b * u) + K",
+      "compiled_statement": null,
+      "source_statement": "theorem exists_sq_le_exp {B b c : ℝ} (hB : 0 < B) (hb : 0 < b) (hc : 0 ≤ c) :\n    ∃ K : ℝ, ∀ u : ℝ, 0 ≤ u → c * u ^ 2 ≤ B / 4 * Real.exp (b * u) + K",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "24",
+          "kind": "source_reference"
+        },
+        {
+          "target": "3",
+          "kind": "source_reference"
+        },
+        {
+          "target": "4",
+          "kind": "source_reference"
+        },
+        {
+          "target": "6",
+          "kind": "source_reference"
+        },
+        {
+          "target": "B",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.factorial",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.exp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.exp_pos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Real.pow_div_factorial_le_exp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "at",
+          "kind": "source_reference"
+        },
+        {
+          "target": "b",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "c",
+          "kind": "source_reference"
+        },
+        {
+          "target": "div_lt_iff₀",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hcube",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hu",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hu0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hu₀",
+          "kind": "source_reference"
+        },
+        {
+          "target": "le_or_gt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "lt_of_le_of_lt",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_le_mul_of_nonneg_left",
+          "kind": "source_reference"
+        },
+        {
+          "target": "nlinarith",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_num",
+          "kind": "source_reference"
+        },
+        {
+          "target": "positivity",
+          "kind": "source_reference"
+        },
+        {
+          "target": "pow_le_pow_left₀",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rcases",
+          "kind": "source_reference"
+        },
+        {
+          "target": "refine",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "set",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sq_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "u",
+          "kind": "source_reference"
+        },
+        {
+          "target": "u₀",
+          "kind": "source_reference"
+        },
+        {
+          "target": "with",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "f3941cb3be985d80d44f400fc050ad85c6fb200e10d78628d3ef3a920d975181",
+      "applicability": "not_checked",
+      "score": 0.014492753623188406,
+      "matched_view": "statement",
+      "reranker_score": 0.9798606038093567
+    },
+    {
+      "id": "7731a96bfd0446c51bbf8de91c5837f54e096f10cd488aeb6a837bc6b7287c94",
+      "name": "RHTower.finiteSignedQuadratic",
+      "module": "GaloisForLFunctions.RHTower.FiniteSignedTriangleBound",
+      "relpath": "formal/GaloisForLFunctions/RHTower/FiniteSignedTriangleBound.lean",
+      "line": 21,
+      "end_line": 23,
+      "kind": "def",
+      "statement": "def finiteSignedQuadratic (M : ι → ι → ℝ) (x : ι → ℝ) : ℝ",
+      "compiled_statement": null,
+      "source_statement": "def finiteSignedQuadratic (M : ι → ι → ℝ) (x : ι → ℝ) : ℝ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "M",
+          "kind": "source_reference"
+        },
+        {
+          "target": "i",
+          "kind": "source_reference"
+        },
+        {
+          "target": "j",
+          "kind": "source_reference"
+        },
+        {
+          "target": "x",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "e725b2ca185c54336a9cee6614a0a9293b4321672956de5e5f5ce0ebcbf5c6b5",
+      "applicability": "not_checked",
+      "score": 0.015384615384615385,
+      "matched_view": "statement",
+      "reranker_score": 0.9798170924186707
+    },
+    {
+      "id": "3e83bb74c859c7a21ef78a0d87b1650436adb0ef01cabb81b483e6f91b0056fd",
+      "name": "GaloisForLFunctions.RHTower.schanuelExponentialValueField",
+      "module": "GaloisForLFunctions.RHTower.SchanuelStageWitnesses",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SchanuelStageWitnesses.lean",
+      "line": 48,
+      "end_line": 55,
+      "kind": "def",
+      "statement": "def schanuelExponentialValueField {n : ℕ} (x : Fin n → ℂ) :\n    IntermediateField (algebraicClosure ℚ ℂ) ℂ",
+      "compiled_statement": null,
+      "source_statement": "def schanuelExponentialValueField {n : ℕ} (x : Fin n → ℂ) :\n    IntermediateField (algebraicClosure ℚ ℂ) ℂ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "IntermediateField.adjoin",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Set.range",
+          "kind": "source_reference"
+        },
+        {
+          "target": "algebraicClosure",
+          "kind": "source_reference"
+        },
+        {
+          "target": "schanuelExponentialGenerator",
+          "kind": "source_reference"
+        },
+        {
+          "target": "x",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℂ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℚ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "fe88822907d5cb301855ee26fdbc86871c7b1ad1f28a81ea2094abd2dd66ad73",
+      "applicability": "not_checked",
+      "score": 0.015625,
+      "matched_view": "statement",
+      "reranker_score": 0.978286623954773
+    },
+    {
+      "id": "7341f83807155d8ef11b8a59c44e10de034a340ec9daa03b3c14dc55e6b011de",
+      "name": "GaloisForLFunctions.HTGeometry.exponent_coordinate_lt_finiteExponentDigitBase",
+      "module": "GaloisForLFunctions.HTGeometry.MultiJetBlowUpSeparation",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/MultiJetBlowUpSeparation.lean",
+      "line": 29,
+      "end_line": 47,
+      "kind": "theorem",
+      "statement": "private theorem exponent_coordinate_lt_finiteExponentDigitBase {κ : Type*} [Fintype κ]\n    {n : ℕ} (exponent : κ → Fin n →₀ ℕ) (a : κ) (k : Fin n) :\n    exponent a k < finiteExponentDigitBase exponent",
+      "compiled_statement": null,
+      "source_statement": "private theorem exponent_coordinate_lt_finiteExponentDigitBase {κ : Type*} [Fintype κ]\n    {n : ℕ} (exponent : κ → Fin n →₀ ℕ) (a : κ) (k : Fin n) :\n    exponent a k < finiteExponentDigitBase exponent",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Finset.mem_univ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.single_le_sum",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.univ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finsupp.sum_fintype",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.zero_le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "b",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "classical",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exponent",
+          "kind": "source_reference"
+        },
+        {
+          "target": "f",
+          "kind": "source_reference"
+        },
+        {
+          "target": "finiteExponentDigitBase",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hcoordinate",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hfamily",
+          "kind": "source_reference"
+        },
+        {
+          "target": "k",
+          "kind": "source_reference"
+        },
+        {
+          "target": "m",
+          "kind": "source_reference"
+        },
+        {
+          "target": "omega",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "s",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sum",
+          "kind": "source_reference"
+        },
+        {
+          "target": "unfold",
+          "kind": "source_reference"
+        },
+        {
+          "target": "κ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "fec2d82c4ae760603b6ece02813e0a5ad97e4f8830999d017d37ca8b3d2728b3",
+      "applicability": "not_checked",
+      "score": 0.016129032258064516,
+      "matched_view": "statement",
+      "reranker_score": 0.9779095649719238
+    },
+    {
+      "id": "fe290ac239e2b27101c4e228c1d0f45db5c11656af4da31ec866cad984a9525f",
+      "name": "RHTower.momentFunctional_semilocalFinitePrimeCyclicMoment",
+      "module": "GaloisForLFunctions.RHTower.SemilocalJacobiLinearGrowthProlateDomainGate",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SemilocalJacobiLinearGrowthProlateDomainGate.lean",
+      "line": 289,
+      "end_line": 312,
+      "kind": "theorem",
+      "statement": "theorem momentFunctional_semilocalFinitePrimeCyclicMoment {n : ℕ} (p : Fin n → ℕ)\n    (hprime : ∀ i, (p i).Prime) (q : ℝ[X]) :\n    HTGeometry.momentFunctional (semilocalFinitePrimeCyclicMoment p) q =\n      (∫ s : ℝ, Polynomial.eval s q * semilocalFinitePrimeEulerDensity p s\n        ∂semilocalArchimedeanGammaMeasure) / semilocalFinitePrimeMass p",
+      "compiled_statement": null,
+      "source_statement": "theorem momentFunctional_semilocalFinitePrimeCyclicMoment {n : ℕ} (p : Fin n → ℕ)\n    (hprime : ∀ i, (p i).Prime) (q : ℝ[X]) :\n    HTGeometry.momentFunctional (semilocalFinitePrimeCyclicMoment p) q =\n      (∫ s : ℝ, Polynomial.eval s q * semilocalFinitePrimeEulerDensity p s\n        ∂semilocalArchimedeanGammaMeasure) / semilocalFinitePrimeMass p",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Finset.sum_congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_div",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "HTGeometry.momentFunctional_eq_support_sum",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.eval",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.eval_eq_sum",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.sum_def",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "const_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "funext",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hprime",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hrw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hsum",
+          "kind": "source_reference"
+        },
+        {
+          "target": "integrable_pow_mul_semilocalFinitePrimeEulerDensity",
+          "kind": "source_reference"
+        },
+        {
+          "target": "integral_const_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "integral_finsetSum",
+          "kind": "source_reference"
+        },
+        {
+          "target": "k",
+          "kind": "source_reference"
+        },
+        {
+          "target": "mul_div_assoc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "p",
+          "kind": "source_reference"
+        },
+        {
+          "target": "q",
+          "kind": "source_reference"
+        },
+        {
+          "target": "q.coeff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "q.support",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rfl",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "s",
+          "kind": "source_reference"
+        },
+        {
+          "target": "semilocalArchimedeanGammaMeasure",
+          "kind": "source_reference"
+        },
+        {
+          "target": "semilocalFinitePrimeCyclicMoment",
+          "kind": "source_reference"
+        },
+        {
+          "target": "semilocalFinitePrimeEulerDensity",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "cf5c22b0e0d79927eebf5f28ef923441ce5db24442c71ae1cb5e52252dcc8e79",
+      "applicability": "not_checked",
+      "score": 0.013888888888888888,
+      "matched_view": "statement",
+      "reranker_score": 0.9755799174308777
+    },
+    {
+      "id": "b90850308c68d048b7c2757e227f4687527aecb9f4a9723c6677bb9de4050806",
+      "name": "RHTower.relativeTruncatedFullGaussianCofactorScalarMode",
+      "module": "GaloisForLFunctions.RHTower.SteinhausFullGaussianCompactTruncation",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SteinhausFullGaussianCompactTruncation.lean",
+      "line": 8,
+      "end_line": 14,
+      "kind": "def",
+      "statement": "def relativeTruncatedFullGaussianCofactorScalarMode (s : ℂ) (t : ℝ) (A : ℂ)\n    (R : ℝ) (L : ℕ) (ω : SteinhausModel.Omega) : ℂ",
+      "compiled_statement": null,
+      "source_statement": "def relativeTruncatedFullGaussianCofactorScalarMode (s : ℂ) (t : ℝ) (A : ℂ)\n    (R : ℝ) (L : ℕ) (ω : SteinhausModel.Omega) : ℂ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "A",
+          "kind": "source_reference"
+        },
+        {
+          "target": "I",
+          "kind": "source_reference"
+        },
+        {
+          "target": "L",
+          "kind": "source_reference"
+        },
+        {
+          "target": "R",
+          "kind": "source_reference"
+        },
+        {
+          "target": "s",
+          "kind": "source_reference"
+        },
+        {
+          "target": "t",
+          "kind": "source_reference"
+        },
+        {
+          "target": "truncatedFullGaussianCofactor",
+          "kind": "source_reference"
+        },
+        {
+          "target": "¹",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ω",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℂ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "f2b8fe8b1489a6d7cae6e45da8f12b534694ca0a5908c1cb56b5cf143273bae5",
+      "applicability": "not_checked",
+      "score": 0.014285714285714285,
+      "matched_view": "statement",
+      "reranker_score": 0.9737443327903748
+    },
+    {
+      "id": "f1c493025d5d3abc244a645bf0a09d6007e3f335e10bfb6eef2a27a29122d1c1",
+      "name": "RHTower.momentInner_semilocalFinitePrimeCyclicMoment_self",
+      "module": "GaloisForLFunctions.RHTower.SemilocalJacobiLinearGrowthProlateDomainGate",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SemilocalJacobiLinearGrowthProlateDomainGate.lean",
+      "line": 312,
+      "end_line": 324,
+      "kind": "theorem",
+      "statement": "theorem momentInner_semilocalFinitePrimeCyclicMoment_self {n : ℕ} (p : Fin n → ℕ)\n    (hprime : ∀ i, (p i).Prime) (q : ℝ[X]) :\n    HTGeometry.momentInner (semilocalFinitePrimeCyclicMoment p) q q =\n      (∫ s : ℝ, (Polynomial.eval s q) ^ 2 * semilocalFinitePrimeEulerDensity p s\n        ∂semilocalArchimedeanGammaMeasure) / semilocalFinitePrimeMass p",
+      "compiled_statement": null,
+      "source_statement": "theorem momentInner_semilocalFinitePrimeCyclicMoment_self {n : ℕ} (p : Fin n → ℕ)\n    (hprime : ∀ i, (p i).Prime) (q : ℝ[X]) :\n    HTGeometry.momentInner (semilocalFinitePrimeCyclicMoment p) q q =\n      (∫ s : ℝ, (Polynomial.eval s q) ^ 2 * semilocalFinitePrimeEulerDensity p s\n        ∂semilocalArchimedeanGammaMeasure) / semilocalFinitePrimeMass p",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Filter.Eventually.of_forall",
+          "kind": "source_reference"
+        },
+        {
+          "target": "HTGeometry.momentInner_def",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Polynomial.eval_mul",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hprime",
+          "kind": "source_reference"
+        },
+        {
+          "target": "integral_congr_ae",
+          "kind": "source_reference"
+        },
+        {
+          "target": "momentFunctional_semilocalFinitePrimeCyclicMoment",
+          "kind": "source_reference"
+        },
+        {
+          "target": "p",
+          "kind": "source_reference"
+        },
+        {
+          "target": "refine",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "s",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sq",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "f1b1e1b1e10ec2c45653eb8de6c30d972f87b5356c27b953166123433ef4f73e",
+      "applicability": "not_checked",
+      "score": 0.014705882352941176,
+      "matched_view": "statement",
+      "reranker_score": 0.9726483821868896
+    },
+    {
+      "id": "4e6696b76bdea71a2016f04b16c2c35700325a681b681d4739de23a38ca03e00",
+      "name": "GaloisForLFunctions.HTGeometry.integral_infiniteTorusFourier_primePoissonMeasure",
+      "module": "GaloisForLFunctions.HTGeometry.PrimePoissonProductState",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/PrimePoissonProductState.lean",
+      "line": 242,
+      "end_line": 250,
+      "kind": "theorem",
+      "statement": "theorem integral_infiniteTorusFourier_primePoissonMeasure\n    (σ t : ℝ) (hσ : 0 < σ) (n : Nat.Primes →₀ ℤ) :\n    ∫ x, infiniteTorusFourier n x ∂(primePoissonMeasure σ t hσ) =\n      n.prod fun p q => circlePoissonFourierMoment (primePoissonParameter σ t hσ p) q",
+      "compiled_statement": null,
+      "source_statement": "theorem integral_infiniteTorusFourier_primePoissonMeasure\n    (σ t : ℝ) (hσ : 0 < σ) (n : Nat.Primes →₀ ℤ) :\n    ∫ x, infiniteTorusFourier n x ∂(primePoissonMeasure σ t hσ) =\n      n.prod fun p q => circlePoissonFourierMoment (primePoissonParameter σ t hσ p) q",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hσ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "integral_infiniteTorusFourier_torusPoissonMeasure",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primePoissonParameter",
+          "kind": "source_reference"
+        },
+        {
+          "target": "t",
+          "kind": "source_reference"
+        },
+        {
+          "target": "σ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "e99bc9ff6e8ac0738997ce20754d66faf288bdce34d1160daffc6b211ee3f396",
+      "applicability": "not_checked",
+      "score": 0.014285714285714285,
+      "matched_view": "statement",
+      "reranker_score": 0.97053062915802
+    },
+    {
+      "id": "8ce255329056d687e0d0eff059ba04facaa824fbc254daa87ad0254f3150b301",
+      "name": "GaloisForLFunctions.RHTower.SixExponentials.Data.expo_le",
+      "module": "GaloisForLFunctions.RHTower.SixExponentials.Setup",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SixExponentials/Setup.lean",
+      "line": 43,
+      "end_line": 47,
+      "kind": "theorem",
+      "statement": "theorem expo_le {L : ℕ} (ab : Fin L × Fin L) (i : Fin 2) : expo ab i ≤ L",
+      "compiled_statement": null,
+      "source_statement": "theorem expo_le {L : ℕ} (ab : Fin L × Fin L) (i : Fin 2) : expo ab i ≤ L",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "expo",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fin_cases",
+          "kind": "source_reference"
+        },
+        {
+          "target": "i",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "bf7aa4bfd8218d9129bcf4191c328d62d4faeeff146d909b270054fc82cfed49",
+      "applicability": "not_checked",
+      "score": 0.015873015873015872,
+      "matched_view": "statement",
+      "reranker_score": 0.9655426144599915
+    },
+    {
+      "id": "e8ef11b203f9ea458bf16f67feae5a4c47d0854f368fc3d4660759a64e0532fc",
+      "name": "GaloisForLFunctions.HTGeometry.primeLogPositiveExponentialClockSample_isInfiniteTorusRayRajchman",
+      "module": "GaloisForLFunctions.HTGeometry.CaiChenFangGuoRajchman",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/CaiChenFangGuoRajchman.lean",
+      "line": 3392,
+      "end_line": 3403,
+      "kind": "theorem",
+      "statement": "theorem primeLogPositiveExponentialClockSample_isInfiniteTorusRayRajchman\n    (b : PositiveExponentialRate) (m : {q : Nat.Primes →₀ ℤ // q ≠ 0}) :\n    IsInfiniteTorusRayRajchman\n      (countableClockSampledPhaseProbabilityMeasure\n        (positiveExponentialClockProbabilityMeasure b)\n        (fun p : Nat.Primes => Real.log (p : ℝ)) :\n          Measure (Nat.Primes → UnitAddCircle)) m.1",
+      "compiled_statement": null,
+      "source_statement": "theorem primeLogPositiveExponentialClockSample_isInfiniteTorusRayRajchman\n    (b : PositiveExponentialRate) (m : {q : Nat.Primes →₀ ℤ // q ≠ 0}) :\n    IsInfiniteTorusRayRajchman\n      (countableClockSampledPhaseProbabilityMeasure\n        (positiveExponentialClockProbabilityMeasure b)\n        (fun p : Nat.Primes => Real.log (p : ℝ)) :\n          Measure (Nat.Primes → UnitAddCircle)) m.1",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "b",
+          "kind": "source_reference"
+        },
+        {
+          "target": "m",
+          "kind": "source_reference"
+        },
+        {
+          "target": "positiveExponentialRajchmanClockLaw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "primeLogRajchmanClockSample_isInfiniteTorusRayRajchman",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "fb2821cdb95141209e7c4c63e80ef4f841c1f7819e4ac6f8f2d2bf0e12dca03a",
+      "applicability": "not_checked",
+      "score": 0.016129032258064516,
+      "matched_view": "statement",
+      "reranker_score": 0.9617050886154175
+    }
+  ],
+  "source_arguments": [
+    {
+      "id": "e4a984a958e1ac72b9fb2680d8f9923b035900b3729c34caaada0be108267fdb",
+      "name": "RHTower.WeilRegular.eq_zero_of_weilPositiveFull_add",
+      "module": "GaloisForLFunctions.RHTower.WeilRegularDeviationRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilRegularDeviationRigidity.lean",
+      "line": 283,
+      "end_line": 288,
+      "kind": "theorem",
+      "statement": "theorem eq_zero_of_weilPositiveFull_add (hR : RegularDeviation w E)\n    (hW : WeilPositiveFull (addVonMangoldt w)) (n : ℕ) : w n = 0",
+      "compiled_statement": null,
+      "source_statement": "theorem eq_zero_of_weilPositiveFull_add (hR : RegularDeviation w E)\n    (hW : WeilPositiveFull (addVonMangoldt w)) (n : ℕ) : w n = 0",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "RHTower.weilPositive_of_weilPositiveFull",
+          "kind": "source_reference"
+        },
+        {
+          "target": "eq_zero_of_weilPositive_add",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hR",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "5dac17e38887d18504795113d43c45e0e2cac457375cb45b58668c7217eb60f4",
+      "applicability": "not_checked",
+      "score": 0.01639344262295082,
+      "matched_view": "proof",
+      "proof_excerpt": "eq_zero_of_weilPositive_add hR (RHTower.weilPositive_of_weilPositiveFull hW) n\n\n/-- **A regular deviation of a full-cone Weil-positive completion forces RH.** -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "875c63b5952122ace1321f60f2ca709663d658faee5876ff73da4302216b0952",
+      "name": "RHTower.exists_admissible_rectIntegral_rectangularSource_eq_xiZeroCopy_sum_containing",
+      "module": "GaloisForLFunctions.RHTower.XiGuinandWeilSpectralRectangle",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiGuinandWeilSpectralRectangle.lean",
+      "line": 135,
+      "end_line": 151,
+      "kind": "theorem",
+      "statement": "theorem exists_admissible_rectIntegral_rectangularSource_eq_xiZeroCopy_sum_containing\n    (t : Finset XiZeroCopy) (L a : ℝ) :\n    ∃ z₁ z₂ : ℂ,\n      z₁.re < z₂.re ∧ z₁.im < z₂.im ∧\n      (∀ q ∈ t, q ∈ xiZeroCopyClosedRectangle z₁ z₂) ∧\n      rectIntegral (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) *\n          continuedPrimeArchSourceRelativeTrace z) z₁ z₂ =\n        2 * Real.pi * I * ∑ q ∈ xiZeroCopyClosedRectangle z₁ z₂,\n          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ)",
+      "compiled_statement": null,
+      "source_statement": "theorem exists_admissible_rectIntegral_rectangularSource_eq_xiZeroCopy_sum_containing\n    (t : Finset XiZeroCopy) (L a : ℝ) :\n    ∃ z₁ z₂ : ℂ,\n      z₁.re < z₂.re ∧ z₁.im < z₂.im ∧\n      (∀ q ∈ t, q ∈ xiZeroCopyClosedRectangle z₁ z₂) ∧\n      rectIntegral (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) *\n          continuedPrimeArchSourceRelativeTrace z) z₁ z₂ =\n        2 * Real.pi * I * ∑ q ∈ xiZeroCopyClosedRectangle z₁ z₂,\n          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "L",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exists_admissible_rectIntegral_source_eq_xiZeroCopy_sum_containing",
+          "kind": "source_reference"
+        },
+        {
+          "target": "t",
+          "kind": "source_reference"
+        },
+        {
+          "target": "xiRectangularTwoEdgeTransform_sq_analyticOnNhd",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "f7bb6735b34c328f289ab9baed3270f77bfdb45f7c0a287db6b697ccf7ed9040",
+      "applicability": "not_checked",
+      "score": 0.016129032258064516,
+      "matched_view": "proof",
+      "proof_excerpt": "exists_admissible_rectIntegral_source_eq_xiZeroCopy_sum_containing t\n    (xiRectangularTwoEdgeTransform_sq_analyticOnNhd L a)\n\n/-- **Full rectangular Weil value as a cofinal source-contour limit.**  For every positive error\ntolerance, an automatically admissible finite rectangle has normalized continued-source contour\nwithin that tolerance of the complete rectangular Xi-Weil polarization.  Thus the passage from\nfinite rectangle residues to the full absolutely summable divisor value needs no extra hypothesis. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "342beadd06616b938773e4eb94897d328d988721a96817a85f072f41b5fdc0db",
+      "name": "RHTower.riemannHypothesis_of_weilPositiveFull_of_le",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeCCMBridge",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeCCMBridge.lean",
+      "line": 156,
+      "end_line": 164,
+      "kind": "theorem",
+      "statement": "theorem riemannHypothesis_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    (h0 : ∀ n, 2 ≤ n → 0 ≤ lam n)\n    (hle : ∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) :\n    RiemannHypothesis",
+      "compiled_statement": null,
+      "source_statement": "theorem riemannHypothesis_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)\n    (h0 : ∀ n, 2 ≤ n → 0 ≤ lam n)\n    (hle : ∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) :\n    RiemannHypothesis",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hle",
+          "kind": "source_reference"
+        },
+        {
+          "target": "riemannHypothesis_of_oddParityPole_subsystem",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "07532e1196f832773ee08e8c50fa5496765e17b939886433297f82e65e6e9b4f",
+      "applicability": "not_checked",
+      "score": 0.015873015873015872,
+      "matched_view": "proof",
+      "proof_excerpt": "riemannHypothesis_of_oddParityPole_subsystem h0 hle fun a =>\n    ccmRestrictedWeilSourceQuadraticWith_nonneg_of_weilPositiveFull hW a _\n\n/-- **Weil-positive majorants force RH (full cone).** -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "ca9d61ad0b97f373982e19258791b5cb9d8e7aabe28c709d010353baf64aabcb",
+      "name": "RHTower.ccmContinuousArithmeticQuadratic_eq_weil_add_prime",
+      "module": "GaloisForLFunctions.RHTower.CCMContinuousLocalizationInvariant",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMContinuousLocalizationInvariant.lean",
+      "line": 42,
+      "end_line": 51,
+      "kind": "theorem",
+      "statement": "theorem ccmContinuousArithmeticQuadratic_eq_weil_add_prime {a : SuzukiPositiveAperture}\n    (u : CCMComplexSmoothInteriorSource a) :\n    ccmContinuousArithmeticQuadratic u = ccmRestrictedWeilSourceQuadratic a u.toCCMFormVector +\n      2 * thetaPrimeScalingCross thetaCuspTiltSource thetaCuspTiltSource\n        (ccmThetaGroundProfile u).toBoundedContinuousFunction",
+      "compiled_statement": null,
+      "source_statement": "theorem ccmContinuousArithmeticQuadratic_eq_weil_add_prime {a : SuzukiPositiveAperture}\n    (u : CCMComplexSmoothInteriorSource a) :\n    ccmContinuousArithmeticQuadratic u = ccmRestrictedWeilSourceQuadratic a u.toCCMFormVector +\n      2 * thetaPrimeScalingCross thetaCuspTiltSource thetaCuspTiltSource\n        (ccmThetaGroundProfile u).toBoundedContinuousFunction",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmContinuousArithmeticQuadratic",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmRestrictedWeilSourceQuadratic_eq_thetaFullArithmetic",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "thetaFullArithmeticQuadratic",
+          "kind": "source_reference"
+        },
+        {
+          "target": "unfold",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "94e8d1c800cba7bcce24185ba68a81f46e9441dc0e45f18e9fe5c8eca9d00130",
+      "applicability": "not_checked",
+      "score": 0.015625,
+      "matched_view": "method",
+      "proof_excerpt": "by\n  rw [ccmRestrictedWeilSourceQuadratic_eq_thetaFullArithmetic, thetaFullArithmeticQuadratic]\n  unfold ccmContinuousArithmeticQuadratic\n  ring",
+      "method": {
+        "decl_id": "ca9d61ad0b97f373982e19258791b5cb9d8e7aabe28c709d010353baf64aabcb",
+        "content_hash": "94e8d1c800cba7bcce24185ba68a81f46e9441dc0e45f18e9fe5c8eca9d00130",
+        "model_version": "mlx-community/Qwen3-4B-Instruct-2507-4bit@50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b:62b26e3a25a911da0a8c5fcad88a9300f64c7ea0bb5cd79b08e7c5ab8d8b7f2a",
+        "prompt_version": "method-3-code-lines",
+        "description": "Proof expands the arithmetic quadratic expression using ring identities and Weil source equivalence.",
+        "assumptions": [
+          "u : CCMComplexSmoothInteriorSource a"
+        ],
+        "steps": [
+          "apply ring simplification to expand quadratic form",
+          "use equivalence between restricted Weil and full arithmetic forms"
+        ],
+        "obligations": [
+          "verify equality of quadratic expressions"
+        ],
+        "evidence": [
+          "  rw [ccmRestrictedWeilSourceQuadratic_eq_thetaFullArithmetic, thetaFullArithmeticQuadratic]",
+          "  unfold ccmContinuousArithmeticQuadratic"
+        ],
+        "status": "ready",
+        "error": ""
+      },
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "5e0161adab7fb0dbe3dca1f82ce5b3093de1c66dc9599635d3f5d70154afcf9f",
+      "name": "RHTower.RemovedPrimes.vonMangoldtWithout_le",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeRemovedPrimes",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeRemovedPrimes.lean",
+      "line": 23,
+      "end_line": 29,
+      "kind": "theorem",
+      "statement": "theorem vonMangoldtWithout_le (R : Set ℕ) (n : ℕ) :\n    vonMangoldtWithout R n ≤ (vonMangoldt n : ℝ)",
+      "compiled_statement": null,
+      "source_statement": "theorem vonMangoldtWithout_le (R : Set ℕ) (n : ℕ) :\n    vonMangoldtWithout R n ≤ (vonMangoldt n : ℝ)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Set.indicator_le_self'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "vonMangoldt_nonneg",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "fbf25eaa1deba8c8ac922547c657cde2a64c92a13564ab94259aba846fab787e",
+      "applicability": "not_checked",
+      "score": 0.015384615384615385,
+      "matched_view": "proof",
+      "proof_excerpt": "Set.indicator_le_self' (fun _ _ => vonMangoldt_nonneg) n\n\n/-- **Removing any prime destroys Weil positivity.**  If `R` contains a prime, then the von Mangoldt\nfunction with the powers of the primes of `R` removed is not full-cone Weil-positive. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "d5a10fd2c51e8d0312c69160ec5391b9722a972d4fe8fdf2481d45c890bf31d9",
+      "name": "RHTower.atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+      "line": 514,
+      "end_line": 523,
+      "kind": "theorem",
+      "statement": "theorem atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0",
+      "compiled_statement": null,
+      "source_statement": "theorem atomPairing_riemannKernelAutocorr_nonpos_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "atomPairing_riemannKernelAutocorr_nonpos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "summable_sub_vonMangoldt_div_sq",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "4013762d5743aadd3a5d27816d2b7cdb71bb3e15ae57d22712f3203a19cadd33",
+      "applicability": "not_checked",
+      "score": 0.015151515151515152,
+      "matched_view": "proof",
+      "proof_excerpt": "atomPairing_riemannKernelAutocorr_nonpos hW (summable_sub_vonMangoldt_div_sq hW)\n\n/-- **`Λ` is an exposed point of the full Weil cone.** Every Weil-positive `lam` has\n`ℓ(lam − Λ) ≤ 0`, with equality only if `lam = Λ` on `n ≥ 2`. The exposing functional `ℓ` has\nthe strictly positive kernel `Φ ⋆ Φ̃`. No summability hypothesis: Weil positivity bounds\n`|lam(n)| ≤ √n (log n + C₀)`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "61acde70920369399c6421d971e44115e78ead402668314221d6347a4ff89745",
+      "name": "RHTower.WeilExcess.not_summable_excess_of_ne",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeSummableExcessRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeSummableExcessRigidity.lean",
+      "line": 273,
+      "end_line": 279,
+      "kind": "theorem",
+      "statement": "theorem not_summable_excess_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) :\n    ¬ Summable fun n => max (lam n - (ArithmeticFunction.vonMangoldt n : ℝ)) 0 / Real.sqrt n",
+      "compiled_statement": null,
+      "source_statement": "theorem not_summable_excess_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) :\n    ¬ Summable fun n => max (lam n - (ArithmeticFunction.vonMangoldt n : ℝ)) 0 / Real.sqrt n",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "eq_vonMangoldt_of_weilPositiveFull_of_summable_excess",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hexc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hne",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "38d6969c142f0c13af2ecef68014543f10768d39eb46578b2228a3871245ebe7",
+      "applicability": "not_checked",
+      "score": 0.014925373134328358,
+      "matched_view": "proof",
+      "proof_excerpt": "fun hexc => hne (eq_vonMangoldt_of_weilPositiveFull_of_summable_excess hW hexc n hn)\n\n/-- A full-cone Weil-positive `lam ≠ Λ` has infinite deficit below `Λ`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "8cd2449a0459745d61225762dbd72796e1d0bb9ec55d5e49f50205538232863a",
+      "name": "RHTower.WeilOneSided.sum_weilArchRe_eq",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeOneSidedCriterion",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeOneSidedCriterion.lean",
+      "line": 443,
+      "end_line": 451,
+      "kind": "theorem",
+      "statement": "theorem sum_weilArchRe_eq (c : WeilTestFn →₀ ℝ) :\n    (c.sum fun f t => t * weilArchRe (EF.weilTest f.1 f.1)) =\n      linearCombination ℝ (fun f : WeilTestFn => weilArchRe (EF.weilTest f.1 f.1)) c",
+      "compiled_statement": null,
+      "source_statement": "theorem sum_weilArchRe_eq (c : WeilTestFn →₀ ℝ) :\n    (c.sum fun f t => t * weilArchRe (EF.weilTest f.1 f.1)) =\n      linearCombination ℝ (fun f : WeilTestFn => weilArchRe (EF.weilTest f.1 f.1)) c",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "linearCombination_apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "smul_eq_mul",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "5c1db83709afe82253ad6a9b0384a029766de3acd075d7cb72f3073fac6ed5ff",
+      "applicability": "not_checked",
+      "score": 0.014705882352941176,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  rw [linearCombination_apply]; simp only [smul_eq_mul]\n\n/-- **The Weil cone is nonempty iff prime-blind positivity holds.** Some real sequence `lam` is\nfull-cone Weil-positive exactly when the pole and archimedean part is nonnegative on the\ncombinations that vanish at every `±log n`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "53f00eb8ad667127cb68c1c57deb96cdd8eeeb5845131102f822c3dd5f62ad61",
+      "name": "RHTower.ccmWeilPoleDiagonal",
+      "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFullPoleMatrix",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilFullPoleMatrix.lean",
+      "line": 169,
+      "end_line": 173,
+      "kind": "def",
+      "statement": "def ccmWeilPoleDiagonal (a : SuzukiPositiveAperture) : ℝ",
+      "compiled_statement": null,
+      "source_statement": "def ccmWeilPoleDiagonal (a : SuzukiPositiveAperture) : ℝ",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "2",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmPolarFormVector",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmRestrictedWeilSourceQuadratic",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "1ac9a583c277c1eb0a2285445644553c8a0c83463b18b1dea9b175c6a185f77e",
+      "applicability": "not_checked",
+      "score": 0.014492753623188406,
+      "matched_view": "proof",
+      "proof_excerpt": "ccmRestrictedWeilSourceQuadratic a (ccmPolarFormVector a (1/2))\n\n/-- The actual full Weil opposite-pole entry, before any sign assumption. -/",
+      "method": {
+        "decl_id": "53f00eb8ad667127cb68c1c57deb96cdd8eeeb5845131102f822c3dd5f62ad61",
+        "content_hash": "1ac9a583c277c1eb0a2285445644553c8a0c83463b18b1dea9b175c6a185f77e",
+        "model_version": "mlx-community/Qwen3-4B-Instruct-2507-4bit@50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b:62b26e3a25a911da0a8c5fcad88a9300f64c7ea0bb5cd79b08e7c5ab8d8b7f2a",
+        "prompt_version": "method-3-code-lines",
+        "description": "Applies the restricted Weil source quadratic to a polar form vector.",
+        "assumptions": [
+          "SuzukiPositiveAperture"
+        ],
+        "steps": [
+          "evaluates quadratic form at half the identity"
+        ],
+        "obligations": [
+          "transfer to real field"
+        ],
+        "evidence": [
+          "ccmRestrictedWeilSourceQuadratic a (ccmPolarFormVector a (1/2))"
+        ],
+        "status": "ready",
+        "error": ""
+      },
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "1c3247826d7cf2ffab89a103917e767660d67cceafcaae2f393cd81154258209",
+      "name": "RHTower.weilFullCone_exposed_at_vonMangoldt",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeExposedPoint",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeExposedPoint.lean",
+      "line": 523,
+      "end_line": 532,
+      "kind": "theorem",
+      "statement": "theorem weilFullCone_exposed_at_vonMangoldt {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0 ∧\n      (atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr = 0 →\n        ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n)",
+      "compiled_statement": null,
+      "source_statement": "theorem weilFullCone_exposed_at_vonMangoldt {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :\n    atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr ≤ 0 ∧\n      (atomPairing (fun n => lam n - ArithmeticFunction.vonMangoldt n) riemannKernelAutocorr = 0 →\n        ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "atomPairing_riemannKernelAutocorr_nonpos",
+          "kind": "source_reference"
+        },
+        {
+          "target": "eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "summable_sub_vonMangoldt_div_sq",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "811c3642410ebe4c1b7c272ec20f6c640ee1880c09736df8c513fc8a3308ea7b",
+      "applicability": "not_checked",
+      "score": 0.014285714285714285,
+      "matched_view": "proof",
+      "proof_excerpt": "⟨atomPairing_riemannKernelAutocorr_nonpos hW (summable_sub_vonMangoldt_div_sq hW),\n    eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero hW (summable_sub_vonMangoldt_div_sq hW)⟩\n\n/-- **`Λ` is an extreme point of the full Weil cone**, with no hypothesis on `w`: if `Λ + w` and\n`Λ − w` are both Weil-positive, then `w(n) = 0` for all `n ≥ 2`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "07f9e78f7c7133f81378923a630c72d876c20bb8a007dc6ee76a02920a5b6571",
+      "name": "RHTower.PrimorialResonance.not_forall_squarefree_signChar_le_of_weilPositiveFull",
+      "module": "GaloisForLFunctions.RHTower.WeilPositivityPrimorialResonance",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPositivityPrimorialResonance.lean",
+      "line": 572,
+      "end_line": 580,
+      "kind": "theorem",
+      "statement": "theorem not_forall_squarefree_signChar_le_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {s : ℕ → ℝ} (hs : ∀ p, s p = 1 ∨ s p = -1) {c δ : ℝ}\n    (hc : 0 < c) (hδ : δ < 1 / 2) :\n    ¬ ∀ n : ℕ, 2 ≤ n → Squarefree n → c * (n : ℝ) ^ (-δ) ≤ signChar s n * lam n",
+      "compiled_statement": null,
+      "source_statement": "theorem not_forall_squarefree_signChar_le_of_weilPositiveFull {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {s : ℕ → ℝ} (hs : ∀ p, s p = 1 ∨ s p = -1) {c δ : ℝ}\n    (hc : 0 < c) (hδ : δ < 1 / 2) :\n    ¬ ∀ n : ℕ, 2 ≤ n → Squarefree n → c * (n : ℝ) ^ (-δ) ≤ signChar s n * lam n",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hδ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "not_forall_squarefree_signChar_le_of_weilPositive",
+          "kind": "source_reference"
+        },
+        {
+          "target": "weilPositive_of_weilPositiveFull",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "438d8d838195e2cf4fea04b9fe8d5fce64aef009e69304add7cee643ff3335be",
+      "applicability": "not_checked",
+      "score": 0.014084507042253521,
+      "matched_view": "proof",
+      "proof_excerpt": "not_forall_squarefree_signChar_le_of_weilPositive (weilPositive_of_weilPositiveFull hW) hs hc hδ\n\n/-- **No full-cone Weil-positive weight system is bounded below by `c n^{-δ}` on the squarefree\nintegers `n ≥ 2`, for any `c > 0` and `δ < 1/2`.** -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "a48c2a95515c76a3b06ef1819167455de4a4602175e0f16276c819258aace112",
+      "name": "RHTower.WeilAbscissa.not_weilPositiveFull_of_semiprime_floor",
+      "module": "GaloisForLFunctions.RHTower.WeilConeMultiplesOfPrimeLaw",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeMultiplesOfPrimeLaw.lean",
+      "line": 686,
+      "end_line": 698,
+      "kind": "theorem",
+      "statement": "theorem not_weilPositiveFull_of_semiprime_floor {lam : ℕ → ℝ} {C c : ℝ} (hC : 0 ≤ C) (hc : 0 < c)\n    (hd : ∀ n, |WeilOneSided.coneDeviation lam n| ≤ C * (1 + ArithmeticFunction.vonMangoldt n))\n    {p : ℕ} (hp : p.Prime) (hnn : ∀ n, p ∣ n → p < n → 0 ≤ lam n)\n    (hfloor : ∀ q, q.Prime → q ≠ p → c ≤ lam (p * q)) : ¬ RHTower.WeilPositiveFull lam",
+      "compiled_statement": null,
+      "source_statement": "theorem not_weilPositiveFull_of_semiprime_floor {lam : ℕ → ℝ} {C c : ℝ} (hC : 0 ≤ C) (hc : 0 < c)\n    (hd : ∀ n, |WeilOneSided.coneDeviation lam n| ≤ C * (1 + ArithmeticFunction.vonMangoldt n))\n    {p : ℕ} (hp : p.Prime) (hnn : ∀ n, p ∣ n → p < n → 0 ≤ lam n)\n    (hfloor : ∀ q, q.Prime → q ≠ p → c ≤ lam (p * q)) : ¬ RHTower.WeilPositiveFull lam",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hC",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hd",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hfloor",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hnn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "not_summable_multiples_of_semiprime_floor",
+          "kind": "source_reference"
+        },
+        {
+          "target": "summable_multiples_of_nonneg",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "1c466cae8e9bdfa40b2121e47c98a70f4c2526d5f0a691f552ec29e710b0f140",
+      "applicability": "not_checked",
+      "score": 0.0136986301369863,
+      "matched_view": "proof",
+      "proof_excerpt": "fun hW => not_summable_multiples_of_semiprime_floor hc hp hnn hfloor\n    (summable_multiples_of_nonneg hW hC hd hp hnn)\n\n/-! ## The nonnegative Weil cone -/\n\n/-- **The multiples-of-a-prime law of the nonnegative Weil cone.** If `lam ≥ 0` is full-cone\nWeil-positive, then for every prime `p` the sums `Σ_{n≤k, p∣n} (lam(n) − Λ(n))/n` tend neither to\n`+∞` nor to `−∞`. No size condition is placed on `lam`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "ad329fef02f31eb669edd0925e8c7e9a225791844326c31cf63d5bf244bc660e",
+      "name": "RHTower.WeilAbscissa.profilePrimitive_mono",
+      "module": "GaloisForLFunctions.RHTower.WeilDeviationLocalMass",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilDeviationLocalMass.lean",
+      "line": 574,
+      "end_line": 584,
+      "kind": "theorem",
+      "statement": "theorem profilePrimitive_mono {φ : ℝ → ℝ} (hφc : Continuous φ) (hφ0 : ∀ x, 0 ≤ φ x) {y y' : ℝ}\n    (h : y' ≤ y) : WeilOneSided.profilePrimitive φ y' ≤ WeilOneSided.profilePrimitive φ y",
+      "compiled_statement": null,
+      "source_statement": "theorem profilePrimitive_mono {φ : ℝ → ℝ} (hφc : Continuous φ) (hφ0 : ∀ x, 0 ≤ φ x) {y y' : ℝ}\n    (h : y' ≤ y) : WeilOneSided.profilePrimitive φ y' ≤ WeilOneSided.profilePrimitive φ y",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "1",
+          "kind": "source_reference"
+        },
+        {
+          "target": "WeilOneSided.profilePrimitive",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hφ0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hφc.intervalIntegrable",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intervalIntegral.integral_add_adjacent_intervals",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intervalIntegral.integral_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "linarith",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "unfold",
+          "kind": "source_reference"
+        },
+        {
+          "target": "volume",
+          "kind": "source_reference"
+        },
+        {
+          "target": "x",
+          "kind": "source_reference"
+        },
+        {
+          "target": "y",
+          "kind": "source_reference"
+        },
+        {
+          "target": "y'",
+          "kind": "source_reference"
+        },
+        {
+          "target": "μ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "b87b73fa278a658b0d6b2def0266ab236021f9f69d2f4180a05762d8cc58afde",
+      "applicability": "not_checked",
+      "score": 0.013513513513513514,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  unfold WeilOneSided.profilePrimitive\n  rw [← intervalIntegral.integral_add_adjacent_intervals (hφc.intervalIntegrable (μ := volume) (-1) y')\n    (hφc.intervalIntegrable y' y)]\n  have := intervalIntegral.integral_nonneg (μ := volume) h (fun x _ => hφ0 x)\n  linarith\n\n/-- **Nonnegative Weil-positive weights have bounded local mass.** If `lam` is full-cone\nWeil-positive and `lam(n) ≥ 0` for `n ≥ 2`, then `d = lam − Λ` has bounded local mass. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "a02883117b06e2e3e45d1318b9e9dd8244076f941f434a07e99e663b631fa293",
+      "name": "RHTower.WeilAtomic.weilFullFunctional_weilTest_eq_atomic",
+      "module": "GaloisForLFunctions.RHTower.WeilAtomicExplicitFormula",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilAtomicExplicitFormula.lean",
+      "line": 336,
+      "end_line": 356,
+      "kind": "theorem",
+      "statement": "theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}\n    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)\n    {ι : Type*} [Countable ι] {c τ : ι → ℝ} (hc : ∀ i, 0 ≤ c i)\n    (hΦ : ∀ s : ℂ, 1 < s.re →\n      HasSum (fun i => (c i : ℂ) * gPair (1 / 2 + τ i * I) s) (WeilHerglotz.weilFunction lam s))\n    {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :\n    HasSum (fun i => ((c i * (‖paperFT f (τ i)‖ ^ 2 + ‖paperFT f (-τ i)‖ ^ 2) : ℝ) : ℂ))\n      (weilFullFunctional lam (EF.weilTest f f))",
+      "compiled_statement": null,
+      "source_statement": "theorem weilFullFunctional_weilTest_eq_atomic {lam : ℕ → ℝ}\n    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)\n    {ι : Type*} [Countable ι] {c τ : ι → ℝ} (hc : ∀ i, 0 ≤ c i)\n    (hΦ : ∀ s : ℂ, 1 < s.re →\n      HasSum (fun i => (c i : ℂ) * gPair (1 / 2 + τ i * I) s) (WeilHerglotz.weilFunction lam s))\n    {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :\n    HasSum (fun i => ((c i * (‖paperFT f (τ i)‖ ^ 2 + ‖paperFT f (-τ i)‖ ^ 2) : ℝ) : ℂ))\n      (weilFullFunctional lam (EF.weilTest f f))",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Complex.ofReal_neg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "D",
+          "kind": "source_reference"
+        },
+        {
+          "target": "EF.weilTest_contDiff",
+          "kind": "source_reference"
+        },
+        {
+          "target": "EF.weilTest_hasCompactSupport",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "at",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h",
+          "kind": "source_reference"
+        },
+        {
+          "target": "h.congr_fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hD",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hasSum_weilFullFunctional_atomic",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hf",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hf.continuous",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hfc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hsl",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hΦ",
+          "kind": "source_reference"
+        },
+        {
+          "target": "i",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_Hfn_weilTest_le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "obtain",
+          "kind": "source_reference"
+        },
+        {
+          "target": "paperFT_weilTest_self_ofReal",
+          "kind": "source_reference"
+        },
+        {
+          "target": "push_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "refine",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "τ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "8d1060e363ba6878abd847e5cf94e5c4ab20975ce8b625f9a4bd28b550d47509",
+      "applicability": "not_checked",
+      "score": 0.013333333333333334,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  obtain ⟨D, -, hD⟩ := norm_Hfn_weilTest_le hf hfc\n  have h := hasSum_weilFullFunctional_atomic hsl hc hΦ\n    (EF.weilTest_contDiff hf hf.continuous hfc) (EF.weilTest_hasCompactSupport hfc hfc) hD\n  refine h.congr_fun fun i => ?_\n  have hneg := paperFT_weilTest_self_ofReal hf.continuous hfc (-τ i)\n  rw [Complex.ofReal_neg] at hneg\n  rw [paperFT_weilTest_self_ofReal hf.continuous hfc, hneg]\n  push_cast\n  ring\n\n/-- **Atomic Weil functions with nonnegative masses on the critical line are full-cone\nWeil-positive.** -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "8bfc4300224c620f0d579f081e4976afafee6aef4d12132fcb6718161a0fd916",
+      "name": "RHTower.WeilDilationRealness.dirPoly_ofReal",
+      "module": "GaloisForLFunctions.RHTower.WeilConeDilationRealnessRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilConeDilationRealnessRigidity.lean",
+      "line": 267,
+      "end_line": 279,
+      "kind": "theorem",
+      "statement": "theorem dirPoly_ofReal (N : ℕ) (a : ℕ → ℝ) (x : ℝ) :\n    dirPoly N a (x : ℂ) = ((∑ n ∈ Finset.Icc 1 N, a n * (n : ℝ) ^ (-x) : ℝ) : ℂ)",
+      "compiled_statement": null,
+      "source_statement": "theorem dirPoly_ofReal (N : ℕ) (a : ℕ → ℝ) (x : ℝ) :\n    dirPoly N a (x : ℂ) = ((∑ n ∈ Finset.Icc 1 N, a n * (n : ℝ) ^ (-x) : ℝ) : ℂ)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Complex.ofReal_cpow",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Finset.sum_congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "Nat.cast_nonneg",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "dirPoly",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hn0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "push_cast",
+          "kind": "source_reference"
+        },
+        {
+          "target": "refine",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rfl",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "unfold",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ℝ",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "00fc8c67cf9e0c7cde5a67fb55e86f01c7aa39dfb786570f2830929299375305",
+      "applicability": "not_checked",
+      "score": 0.013157894736842105,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  unfold dirPoly\n  push_cast\n  refine Finset.sum_congr rfl fun n hn => ?_\n  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n\n  rw [Complex.ofReal_cpow hn0]\n  push_cast\n  rfl\n\n/-- **Dilation rigidity of the Weil cone.**  If `Λ ⋆ a + v` is full-cone Weil-positive, with `a`\nfinitely supported and `v` regular, then `a = δ₁`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "3f78fc1111167442d347805efc545a1e5bc8e5e223c1ac2a797cdc5f2d8be546",
+      "name": "RHTower.norm_xiWeilPolarization_rectangular_le_of_riemannHypothesis",
+      "module": "GaloisForLFunctions.RHTower.CCMRectangularTransverseGrowth",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRectangularTransverseGrowth.lean",
+      "line": 83,
+      "end_line": 105,
+      "kind": "theorem",
+      "statement": "theorem norm_xiWeilPolarization_rectangular_le_of_riemannHypothesis\n    {L a : ℝ} (hRH : RiemannHypothesis) (hLa : L ≤ a) :\n    ‖xiWeilPolarization (xiRectangularTwoEdgeTransform L a)\n        (xiRectangularTwoEdgeTransform L a)‖ ≤\n      rectangularTwoEdgeRemainderBound L *\n        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2",
+      "compiled_statement": null,
+      "source_statement": "theorem norm_xiWeilPolarization_rectangular_le_of_riemannHypothesis\n    {L a : ℝ} (hRH : RiemannHypothesis) (hLa : L ≤ a) :\n    ‖xiWeilPolarization (xiRectangularTwoEdgeTransform L a)\n        (xiRectangularTwoEdgeTransform L a)‖ ≤\n      rectangularTwoEdgeRemainderBound L *\n        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "0",
+          "kind": "source_reference"
+        },
+        {
+          "target": "L",
+          "kind": "source_reference"
+        },
+        {
+          "target": "XiZeroCopy",
+          "kind": "source_reference"
+        },
+        {
+          "target": "a",
+          "kind": "source_reference"
+        },
+        {
+          "target": "apply",
+          "kind": "source_reference"
+        },
+        {
+          "target": "at",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hLa",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hRH",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hdom",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hrem",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ht",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hzero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "intro",
+          "kind": "source_reference"
+        },
+        {
+          "target": "norm_xiWeilPolarization_rectangular_sub_dominant_le",
+          "kind": "source_reference"
+        },
+        {
+          "target": "obtain",
+          "kind": "source_reference"
+        },
+        {
+          "target": "only",
+          "kind": "source_reference"
+        },
+        {
+          "target": "q",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rectangularTwoEdgeDominant_of_re_eq_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "sub_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "t",
+          "kind": "source_reference"
+        },
+        {
+          "target": "tsum_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "xiRectangularTwoEdgeDominant",
+          "kind": "source_reference"
+        },
+        {
+          "target": "xiSpectralPoint",
+          "kind": "source_reference"
+        },
+        {
+          "target": "xiSpectralPoint_real_of_rh",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "b6c3945b3f6d39c0151ab8792c29fad702c810d608f6113e7690de3d33d0f2c3",
+      "applicability": "not_checked",
+      "score": 0.012987012987012988,
+      "matched_view": "method",
+      "proof_excerpt": "by\n  have hdom : (∑' q : XiZeroCopy,\n      xiRectangularTwoEdgeDominant L a (xiSpectralPoint q)) = 0 := by\n    have hzero : ∀ q : XiZeroCopy,\n        xiRectangularTwoEdgeDominant L a (xiSpectralPoint q) = 0 := by\n      intro q\n      obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q\n      rw [xiRectangularTwoEdgeDominant, ht]\n      apply rectangularTwoEdgeDominant_of_re_eq_zero\n      simp\n    simp only [hzero, tsum_zero]\n  have hrem := norm_xiWeilPolarization_rectangular_sub_dominant_le hLa\n  rw [hdom, sub_zero] at hrem\n  exact hrem\n\n/-- If RH fails, the transverse supremum is an upper power exponent for the\nactual fixed-width logarithmic Weil sequence. -/",
+      "method": {
+        "decl_id": "3f78fc1111167442d347805efc545a1e5bc8e5e223c1ac2a797cdc5f2d8be546",
+        "content_hash": "b6c3945b3f6d39c0151ab8792c29fad702c810d608f6113e7690de3d33d0f2c3",
+        "model_version": "mlx-community/Qwen3-4B-Instruct-2507-4bit@50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b:62b26e3a25a911da0a8c5fcad88a9300f64c7ea0bb5cd79b08e7c5ab8d8b7f2a",
+        "prompt_version": "method-3-code-lines",
+        "description": "The proof bounds the norm of a transformed Weil polarization using the dominant term's zero contribution and the remainder estimate.",
+        "assumptions": [
+          "RiemannHypothesis",
+          "L ≤ a"
+        ],
+        "steps": [
+          "shows dominant term sum is zero",
+          "applies remainder bound to subtrahend",
+          "transfers bound to full norm"
+        ],
+        "obligations": [
+          "transfer norm bound to full expression"
+        ],
+        "evidence": [
+          "  have hdom : (∑' q : XiZeroCopy,",
+          "  have hrem := norm_xiWeilPolarization_rectangular_sub_dominant_le hLa",
+          "  rw [hdom, sub_zero] at hrem"
+        ],
+        "status": "ready",
+        "error": ""
+      },
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "aa6d54d868bfe75ae45798bc32ffb5a24f51671959ec553c6743249d5e17d125",
+      "name": "RHTower.ccmWeilPoleDiagonal_eq_error",
+      "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilFullPoleMatrix",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilFullPoleMatrix.lean",
+      "line": 219,
+      "end_line": 229,
+      "kind": "theorem",
+      "statement": "theorem ccmWeilPoleDiagonal_eq_error (a : SuzukiPositiveAperture) :\n    ccmWeilPoleDiagonal a =\n      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*Real.sinh a.1) -\n      Real.exp a.1+(1-2*a.1)*Real.exp (-a.1)+ccmGammaPoleSelfBoundaryMass a -\n      2*Real.exp a.1*ccmReciprocalMangoldtError (2*a.1) +\n      2*Real.exp (-a.1)*Chebyshev.psi (Real.exp (2*a.1))",
+      "compiled_statement": null,
+      "source_statement": "theorem ccmWeilPoleDiagonal_eq_error (a : SuzukiPositiveAperture) :\n    ccmWeilPoleDiagonal a =\n      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*Real.sinh a.1) -\n      Real.exp a.1+(1-2*a.1)*Real.exp (-a.1)+ccmGammaPoleSelfBoundaryMass a -\n      2*Real.exp a.1*ccmReciprocalMangoldtError (2*a.1) +\n      2*Real.exp (-a.1)*Chebyshev.psi (Real.exp (2*a.1))",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Real.sinh_eq",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmReciprocalMangoldtError",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmWeilPoleDiagonal_eq",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ring",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "7cc9663bf527d279c7ab64cf47f6f882741abcc2c9b217618e763d6b887a990a",
+      "applicability": "not_checked",
+      "score": 0.01282051282051282,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  rw [ccmWeilPoleDiagonal_eq, ccmReciprocalMangoldtError, Real.sinh_eq]\n  ring\n\n/-- The opposite-pole full Weil entry is real and retains the complete moving prime tent. -/",
+      "method": {
+        "decl_id": "aa6d54d868bfe75ae45798bc32ffb5a24f51671959ec553c6743249d5e17d125",
+        "content_hash": "7cc9663bf527d279c7ab64cf47f6f882741abcc2c9b217618e763d6b887a990a",
+        "model_version": "mlx-community/Qwen3-4B-Instruct-2507-4bit@50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b:62b26e3a25a911da0a8c5fcad88a9300f64c7ea0bb5cd79b08e7c5ab8d8b7f2a",
+        "prompt_version": "method-3-code-lines",
+        "description": "Proof simplifies the expression using ring operations and identity expansions.",
+        "assumptions": [
+          "SuzukiPositiveAperture"
+        ],
+        "steps": [
+          "apply ring simplification to expand exponential and hyperbolic terms"
+        ],
+        "obligations": [
+          "verify equality of derived expression"
+        ],
+        "evidence": [
+          "  rw [ccmWeilPoleDiagonal_eq, ccmReciprocalMangoldtError, Real.sinh_eq]"
+        ],
+        "status": "ready",
+        "error": ""
+      },
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "644f86ff1e78d83b78c2bc8f60647ce801bba961dd256d8b4d91f3d93437269c",
+      "name": "RHTower.WeilPrimeDeficit.eq_vonMangoldt_of_weilPositiveFull_of_signMult_aligned",
+      "module": "GaloisForLFunctions.RHTower.WeilPrimeDeficitSetRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPrimeDeficitSetRigidity.lean",
+      "line": 480,
+      "end_line": 494,
+      "kind": "theorem",
+      "statement": "theorem eq_vonMangoldt_of_weilPositiveFull_of_signMult_aligned {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {s : ℕ → ℝ} (hs : ∀ p, s p = 1 ∨ s p = -1)\n    (hthin : Summable fun p : ℕ => if p.Prime ∧ s p = -1 then Real.log p / p else 0)\n    (hA : Summable fun n : ℕ => if 2 ≤ n ∧ 0 ≤ (lam n - vonMangoldt n) * signMult s n then 0\n      else |lam n - vonMangoldt n| / n) :\n    ∀ n, 2 ≤ n → lam n = vonMangoldt n",
+      "compiled_statement": null,
+      "source_statement": "theorem eq_vonMangoldt_of_weilPositiveFull_of_signMult_aligned {lam : ℕ → ℝ}\n    (hW : WeilPositiveFull lam) {s : ℕ → ℝ} (hs : ∀ p, s p = 1 ∨ s p = -1)\n    (hthin : Summable fun p : ℕ => if p.Prime ∧ s p = -1 then Real.log p / p else 0)\n    (hA : Summable fun n : ℕ => if 2 ≤ n ∧ 0 ≤ (lam n - vonMangoldt n) * signMult s n then 0\n      else |lam n - vonMangoldt n| / n) :\n    ∀ n, 2 ≤ n → lam n = vonMangoldt n",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "WeilAbscissa.eq_vonMangoldt_of_weilPositiveFull_of_summable_div",
+          "kind": "source_reference"
+        },
+        {
+          "target": "_",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "congr",
+          "kind": "source_reference"
+        },
+        {
+          "target": "div_eq_mul_inv",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hA",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hP",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hP.add",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "have",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hthin",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        },
+        {
+          "target": "refine",
+          "kind": "source_reference"
+        },
+        {
+          "target": "simp",
+          "kind": "source_reference"
+        },
+        {
+          "target": "split_ifs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "summable_aligned_abs_div",
+          "kind": "source_reference"
+        },
+        {
+          "target": "weilPositive_of_weilPositiveFull",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "1f8992be2bfbe36e5b070a35535e37c6a0c9437676dd13a290de16fdcde79dfb",
+      "applicability": "not_checked",
+      "score": 0.012658227848101266,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  have hP := summable_aligned_abs_div (weilPositive_of_weilPositiveFull hW) hs hthin hA\n  refine WeilAbscissa.eq_vonMangoldt_of_weilPositiveFull_of_summable_div hW ((hP.add hA).congr\n    fun n => ?_)\n  split_ifs <;> simp [div_eq_mul_inv]\n\n/-- **Weil positivity forces a harmonically dense prime deficit set.** Let `lam` be full-cone\nWeil-positive, with `Σ_{n not prime} |lam(n) − Λ(n)|/n < ∞` and\n`Σ_{p prime, lam(p) < log p} log p / p < ∞`. Then `lam(n) = Λ(n)` for every `n ≥ 2`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "6391abc3e3c25ffea036d677bac17ee50ae596289138617f0a62f321096ae441",
+      "name": "RHTower.WeilExcess.not_excessMeanVanishes_of_ne",
+      "module": "GaloisForLFunctions.RHTower.WeilFullConeSummableExcessRigidity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilFullConeSummableExcessRigidity.lean",
+      "line": 234,
+      "end_line": 241,
+      "kind": "theorem",
+      "statement": "theorem not_excessMeanVanishes_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Dₑ : ℝ}\n    (hexc : CauchyBounded (deviationExcess lam) Dₑ) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) : ¬ ExcessMeanVanishes lam",
+      "compiled_statement": null,
+      "source_statement": "theorem not_excessMeanVanishes_of_ne {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) {Dₑ : ℝ}\n    (hexc : CauchyBounded (deviationExcess lam) Dₑ) {n : ℕ} (hn : 2 ≤ n)\n    (hne : lam n ≠ ArithmeticFunction.vonMangoldt n) : ¬ ExcessMeanVanishes lam",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "eq_vonMangoldt_of_weilPositiveFull_of_excessMeanVanishes",
+          "kind": "source_reference"
+        },
+        {
+          "target": "fun",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hW",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hexc",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hmean",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hn",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hne",
+          "kind": "source_reference"
+        },
+        {
+          "target": "n",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "5720483df5170ff24760b44f6d35b701a9dd2b3c28c37927db13c27081c16064",
+      "applicability": "not_checked",
+      "score": 0.0125,
+      "matched_view": "proof",
+      "proof_excerpt": "fun hmean => hne (eq_vonMangoldt_of_weilPositiveFull_of_excessMeanVanishes hW hexc hmean n hn)\n\n/-- **Summable excess rigidity.** A full-cone Weil-positive `lam` whose excess over `Λ` is\nsummable against `n^{−1/2}` equals `Λ` at every `n ≥ 2`. -/",
+      "method": null,
+      "idea_status": "retrieved_source_argument"
+    },
+    {
+      "id": "a8a0c2bf6532e1bdf75ee4bd457cd526824124c729ba9e07a4d1f9eb041191e5",
+      "name": "GaloisForLFunctions.RHTower.ccmRationalLocalBrauerAddHom_apply_ne_connesPadicTateLocalZeta_of_invariant",
+      "module": "GaloisForLFunctions.RHTower.CCMRationalAdelicFiniteResidueBrauerObstruction",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRationalAdelicFiniteResidueBrauerObstruction.lean",
+      "line": 78,
+      "end_line": 96,
+      "kind": "theorem",
+      "statement": "theorem ccmRationalLocalBrauerAddHom_apply_ne_connesPadicTateLocalZeta_of_invariant\n    (v : HeightOneSpectrum ℤ)\n    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] ≃+ RatModInt)\n    (g : BrauerGroup (CCMRationalLocalField v) →+ ℂ)\n    (x : BrauerGroup (CCMRationalLocalField v)) {s : ℂ} (hs : 0 < s.re) :\n    g x ≠ ∫ a : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ,\n      Set.indicator {b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ |\n        ‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ ≤ 1}\n        (fun b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ =>\n          ((‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ : ℝ) : ℂ) ^ s) a\n        ∂fieldOnePadicMultiplicativeHaar (Rat.HeightOneSpectrum.primesEquiv v)",
+      "compiled_statement": null,
+      "source_statement": "theorem ccmRationalLocalBrauerAddHom_apply_ne_connesPadicTateLocalZeta_of_invariant\n    (v : HeightOneSpectrum ℤ)\n    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] ≃+ RatModInt)\n    (g : BrauerGroup (CCMRationalLocalField v) →+ ℂ)\n    (x : BrauerGroup (CCMRationalLocalField v)) {s : ℂ} (hs : 0 < s.re) :\n    g x ≠ ∫ a : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ,\n      Set.indicator {b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ |\n        ‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ ≤ 1}\n        (fun b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ =>\n          ((‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ : ℝ) : ℂ) ^ s) a\n        ∂fieldOnePadicMultiplicativeHaar (Rat.HeightOneSpectrum.primesEquiv v)",
+      "binders": [],
+      "axioms": null,
+      "dependencies": [
+        {
+          "target": "Rat.HeightOneSpectrum.primesEquiv",
+          "kind": "source_reference"
+        },
+        {
+          "target": "by",
+          "kind": "source_reference"
+        },
+        {
+          "target": "ccmRationalLocalBrauerAddHom_eq_zero_of_invariant",
+          "kind": "source_reference"
+        },
+        {
+          "target": "connes_padic_tate_local_zeta_ne_zero",
+          "kind": "source_reference"
+        },
+        {
+          "target": "exact",
+          "kind": "source_reference"
+        },
+        {
+          "target": "g",
+          "kind": "source_reference"
+        },
+        {
+          "target": "hs",
+          "kind": "source_reference"
+        },
+        {
+          "target": "invariant",
+          "kind": "source_reference"
+        },
+        {
+          "target": "rw",
+          "kind": "source_reference"
+        },
+        {
+          "target": "symm",
+          "kind": "source_reference"
+        },
+        {
+          "target": "v",
+          "kind": "source_reference"
+        }
+      ],
+      "compiler_status": "source_only",
+      "file_status": "indexed",
+      "compiler_metadata": null,
+      "source_hash": "a696a91406135d0cf464e0f2ff9cc9b1ed85145fccb5a1dce0dbba433761a8d9",
+      "applicability": "not_checked",
+      "score": 0.012345679012345678,
+      "matched_view": "proof",
+      "proof_excerpt": "by\n  rw [ccmRationalLocalBrauerAddHom_eq_zero_of_invariant v invariant g]\n  exact (connes_padic_tate_local_zeta_ne_zero\n    (Rat.HeightOneSpectrum.primesEquiv v) hs).symm\n\n/-- The full additive-Brauer obstruction reaches the actual finite local term in Connes's Weil\nexplicit formula.  A future ABHN-to-Connes/Tate comparison must be nonlinear before the local\nWeil term is formed. -/",
+      "method": {
+        "decl_id": "a8a0c2bf6532e1bdf75ee4bd457cd526824124c729ba9e07a4d1f9eb041191e5",
+        "content_hash": "a696a91406135d0cf464e0f2ff9cc9b1ed85145fccb5a1dce0dbba433761a8d9",
+        "model_version": "mlx-community/Qwen3-4B-Instruct-2507-4bit@50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b:62b26e3a25a911da0a8c5fcad88a9300f64c7ea0bb5cd79b08e7c5ab8d8b7f2a",
+        "prompt_version": "method-3-code-lines",
+        "description": "The proof shows the application of a symmetry to conclude the inequality between a Brauer group homomorphism and a local zeta integral.",
+        "assumptions": [
+          "0 < s.re"
+        ],
+        "steps": [
+          "apply rw to equate the homomorphism to zero via invariant",
+          "use symmetry of non-vanishing Connes-locally Tate zeta function"
+        ],
+        "obligations": [
+          "transfer the argument to non-vanishing of the zeta integral"
+        ],
+        "evidence": [
+          "  rw [ccmRationalLocalBrauerAddHom_eq_zero_of_invariant v invariant g]",
+          "  exact (connes_padic_tate_local_zeta_ne_zero"
+        ],
+        "status": "ready",
+        "error": ""
+      },
+      "idea_status": "retrieved_source_argument"
+    }
+  ],
+  "proof_ideas": [],
+  "ingredient_sets": [
+    {
+      "description": "Exponential bound from truncated log coefficients",
+      "steps": [
+        {
+          "goal": "Bound exponential growth",
+          "candidate_ids": [
+            "24d13e5a163eabbe2ed06d856357beba28f57076adda3a4ade3b8aa8a40a443d"
+          ],
+          "candidates": [
+            {
+              "id": "24d13e5a163eabbe2ed06d856357beba28f57076adda3a4ade3b8aa8a40a443d",
+              "name": "GaloisForLFunctions.HTGeometry.CExpPoly.exists_exponentialType_bound",
+              "module": "GaloisForLFunctions.HTGeometry.ComplexExponentialPolynomial",
+              "relpath": "formal/GaloisForLFunctions/HTGeometry/ComplexExponentialPolynomial.lean",
+              "line": 255
+            }
+          ],
+          "obligations": [
+            "Exist C, A for exponential decay"
+          ],
+          "status": "proposed"
+        },
+        {
+          "goal": "Relate log coefficients to power series",
+          "candidate_ids": [
+            "ac814b5415efd5fd701b84a9b60bb7de9a178fa6943fadb46bde6bb281e9a698"
+          ],
+          "candidates": [
+            {
+              "id": "ac814b5415efd5fd701b84a9b60bb7de9a178fa6943fadb46bde6bb281e9a698",
+              "name": "GaloisForLFunctions.HTGeometry.truncatedLogCoeff_eq_coeff_logOf",
+              "module": "GaloisForLFunctions.HTGeometry.ProjectiveHorizonLogPotential",
+              "relpath": "formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonLogPotential.lean",
+              "line": 620
+            }
+          ],
+          "obligations": [
+            "Truncate log equals coefficient"
+          ],
+          "status": "proposed"
+        }
+      ],
+      "status": "not_verified"
+    }
+  ],
+  "elapsed_seconds": 214.635551458
+}

@@ -34,7 +34,7 @@ private theorem exists_source_regularPart_linear {lam : ℕ → ℝ} (hW : WeilP
       zetaArchimedeanDatum z + 1 / (z - 1) -
         LSeries (fun n => ((if 2 ≤ n then lam n else 0 : ℝ) : ℂ)) z := by
     intro z hz
-    rw [WeilSpectral.weilContinuation_eq hW hz, WeilSpectral.weilFunction, zetaArchimedeanDatum]
+    rw [WeilSpectral.weilContinuation_eq hW hz, WeilHerglotz.weilFunction, zetaArchimedeanDatum]
     rfl
   have hb := norm_regularPart_le_of_re_ge hK hH.summable
     (WeilSpectral.differentiableOn_weilContinuation hW)
@@ -95,7 +95,8 @@ private theorem exists_sourceZetaPairing_tail_poly {lam : ℕ → ℝ} (hW : Wei
     linarith
   unfold sourceZetaPairing
   rw [norm_mul]
-  calc _ ≤ ((D + 1) * (1 + |s.im|) * (A * (1 + |s.im|) ^ N) +
+  calc
+    _ ≤ ((D + 1) * (1 + |s.im|) * (A * (1 + |s.im|) ^ N) +
         (B * 2 ^ M) * (1 + |s.im|) ^ M) * (A * (1 + |s.im|) ^ N) := by
       apply mul_le_mul _ (hz'.trans (mul_le_mul_of_nonneg_left hN hA0)) (norm_nonneg _) (by positivity)
       exact (norm_add_le _ _).trans (add_le_add
@@ -127,6 +128,24 @@ theorem exists_sourceZetaPairing_gaussian_tail_decay {lam : ℕ → ℝ} (hW : W
     _ ≤ _ := mul_le_mul_of_nonneg_left
       (hm.trans (mul_le_of_le_one_right (by positivity) he)) (by positivity)
 
+theorem integrable_sourceZetaPairing_gaussian_right {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+    {T : ℝ} (hT : 1 ≤ T) :
+    Integrable (fun t : ℝ => sourceZetaPairing hW ((3 / 2 : ℂ) + t * I) *
+      gaussWeight T ((3 / 2 : ℂ) + t * I)) := by
+  obtain ⟨C, hC⟩ := exists_sourceZetaPairing_gaussian_tail_decay hW hT
+  have hi := integrable_line_of_bound (F := fun s => sourceZetaPairing hW s * gaussWeight T s)
+    (x := 3 / 2) (T₀ := 2) (C := C) (fun t => by
+      have hs : 1 / 2 < (((3 / 2 : ℝ) : ℂ) + t * I).re := by norm_num
+      have hs1 : (((3 / 2 : ℝ) : ℂ) + t * I) ≠ 1 := by
+        intro he
+        have := congrArg Complex.re he
+        norm_num at this
+      exact ((differentiableAt_sourceZetaPairing hW hs hs1).mul
+        (differentiable_gaussWeight T _)).continuousAt)
+    (fun t ht => by simpa using (hC (((3 / 2 : ℝ) : ℂ) + t * I)
+      (by norm_num) (by norm_num) (by simpa using ht)))
+  simpa only [Complex.ofReal_div, Complex.ofReal_ofNat] using hi
+
 theorem sourceZetaPairing_gaussian_shift {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
     {T : ℝ} (hT : 1 ≤ T) :
     (∫ t : ℝ, sourceZetaPairing hW ((3 / 2 : ℂ) + t * I) * gaussWeight T ((3 / 2 : ℂ) + t * I)) -
@@ -143,7 +162,8 @@ theorem sourceZetaPairing_gaussian_shift {lam : ℕ → ℝ} (hW : WeilPositiveF
     (fun s hs0 _ hs1 => (differentiableAt_sourceZetaPairing hW (by linarith) hs1).mul
       (differentiable_gaussWeight T s)) hr hC
   push_cast at hs
-  convert hs using 1 <;> ring
+  convert hs using 1
+  ring
 
 theorem re_integral_sourceZetaPairing_gaussian_right_eq {lam : ℕ → ℝ}
     (hW : WeilPositiveFull lam) {T : ℝ} (hT : 1 ≤ T) :
@@ -160,7 +180,7 @@ theorem re_integral_sourceZetaPairing_gaussian_right_eq {lam : ℕ → ℝ}
     ring
   have hs := congrArg Complex.re (sourceZetaPairing_gaussian_shift hW hT)
   rw [hg, Complex.sub_re, re_integral_sourceZetaPairing_gaussian_eq hW hT] at hs
-  simp only [Complex.re_mul_ofReal, Complex.mul_re, Complex.neg_re, Complex.ofReal_re,
+  simp only [Complex.mul_re, Complex.neg_re, Complex.ofReal_re,
     Complex.neg_im, Complex.ofReal_im, neg_zero, zero_mul, sub_zero] at hs
   linarith
 

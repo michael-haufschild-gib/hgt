@@ -1,0 +1,11 @@
+Final leaf audit (exit 0, no diagnostics):
+lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationResonantTerms.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationResonantTerms.lean
+
+Scratch axiom audit:
+'RHTower.WeilSpectral.quantization_twist_term_resonant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_twEdgeTerm_resonant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_twEdgeTerm_nonres' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.norm_quantization_twEdgeTerm_radial_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.tendsto_quantization_nonresonant_edge_sum' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

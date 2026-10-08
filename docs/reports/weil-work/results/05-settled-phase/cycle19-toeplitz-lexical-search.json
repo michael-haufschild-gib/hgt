@@ -1,0 +1,356 @@
+{
+  "query": "imaginary power Toeplitz logarithmic moment critical coefficient energy log Sobolev Dirichlet exponential",
+  "match": "(\"imaginary\" OR \"imaginary\"*) OR (\"power\" OR \"power\"*) OR (\"toeplitz\" OR \"toeplitz\"*) OR (\"logarithmic\" OR \"logarithmic\"*) OR (\"moment\" OR \"moment\"*) OR (\"critical\" OR \"critical\"*) OR (\"coefficient\" OR \"coefficient\"*) OR (\"energy\" OR \"energy\"*) OR (\"log\" OR \"log\"*) OR (\"sobolev\" OR \"sobolev\"*) OR (\"dirichlet\" OR \"dirichlet\"*) OR (\"exponential\" OR \"exponential\"*)",
+  "backend": "fts5",
+  "options": {
+    "any_terms": true,
+    "exact": false,
+    "per_module": 2,
+    "offset": 0,
+    "explore": 5,
+    "module": "Weil",
+    "exclude_modules": []
+  },
+  "declarations": [
+    {
+      "name": "HasLogarithmicToeplitzCeiling",
+      "kind": "def",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticToeplitzSharpness",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticToeplitzSharpness.lean",
+      "line": 212,
+      "doc": "The exact family of ceilings extracted from Weil positivity, with no additive constant. No converse to Weil positivity is built into this definition.",
+      "score": -46.079545601884966
+    },
+    {
+      "name": "exists_forwardCoeff_log_moment_le",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardCoefficients",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticForwardCoefficients.lean",
+      "line": 221,
+      "doc": "The exact forward-coefficient test of the Weil--Toeplitz ceiling.",
+      "score": -45.91507420748083
+    },
+    {
+      "name": "critical_multiplicativeToeplitz_bound",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkPBAPCriticalDatum",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPCriticalDatum.lean",
+      "line": 137,
+      "doc": "Any actual modified completion has Toeplitz slope equal to its gamma coefficient. No growth or sign hypothesis on `lam` is used.",
+      "score": -44.278662356527946
+    },
+    {
+      "name": "gramPacket_log_energy_lower",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkPBAPPacketEnergy",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkPBAPPacketEnergy.lean",
+      "line": 341,
+      "doc": "An explicit coefficient-independent logarithmic lower bound.",
+      "score": -42.059998650857956
+    },
+    {
+      "name": "sum_le_log_rpow_of_normalized_moment",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhasePowerLogMoment",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePowerLogMoment.lean",
+      "line": 33,
+      "doc": "A normalized logarithmic moment ceiling gives its exact power exponent.",
+      "score": -38.002048160697235
+    },
+    {
+      "name": "exists_sharp_prime_supported_toeplitz_weight",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticToeplitzSharpness",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticToeplitzSharpness.lean",
+      "line": 375,
+      "doc": "Unconditional sharpness witness for the complete logarithmic Toeplitz relaxation. No Weil-positive source is assumed or claimed.",
+      "score": -37.153009826787105
+    },
+    {
+      "name": "exists_powerCoeff_log_moment_le",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhasePowerEnergy",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePowerEnergy.lean",
+      "line": 19,
+      "doc": "Complex self-pairing keeps the real part of the inverse power parameter.",
+      "score": -37.09225722143332
+    },
+    {
+      "name": "ccmWeilOddPrimeAtom_eq_criticalMellinWallEnergy",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleWallFieldWeld",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleWallFieldWeld.lean",
+      "line": 77,
+      "doc": "Full odd prime atom, including logarithmic delay and aging, is one signed wall response.",
+      "score": -36.94632525454187
+    },
+    {
+      "name": "sum_le_log_rpow_of_log_moment",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhasePowerLogMoment",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePowerLogMoment.lean",
+      "line": 133,
+      "doc": "A logarithmic moment ratio `r > 1` forces growth exponent `1 / (r - 1)`.",
+      "score": -36.80107211717885
+    },
+    {
+      "name": "constrainedProlateWeilToeplitzSchurCoefficient_gt_half",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.ConstrainedProlateWeilToeplitzSchur",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ConstrainedProlateWeilToeplitzSchur.lean",
+      "line": 191,
+      "doc": "Concrete Schur survivor.** Eliminating the adjacent Toeplitz channel retains more than one half of the leading diagonal coefficient.",
+      "score": -35.99855969964843
+    },
+    {
+      "name": "exists_forwardCoeff_critical_energy_le",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticForwardCoefficients",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSingularArithmeticForwardCoefficients.lean",
+      "line": 325,
+      "doc": "Full positivity bounds the critical weighted square energy of the literal forward coefficients by a single logarithm.",
+      "score": -34.69361860937072
+    },
+    {
+      "name": "polarLogMoment",
+      "kind": "def",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorLogMoments",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorLogMoments.lean",
+      "line": 113,
+      "doc": "The actual logarithmic moments used by the polynomial axis operator.",
+      "score": -34.67853532822173
+    },
+    {
+      "name": "tsum_suzukiWeilPrimeDirichletTerm",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiWeilArithmetic",
+      "relpath": "formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiWeilArithmetic.lean",
+      "line": 473,
+      "doc": "The complete exponential von Mangoldt series is exactly the negative zeta logarithmic derivative at Suzuki's spectral argument.",
+      "score": -34.630996461027415
+    },
+    {
+      "name": "constrainedProlateWeilToeplitzAdjacentTerm_le_zeroTerm",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.ConstrainedProlateWeilToeplitzSchur",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ConstrainedProlateWeilToeplitzSchur.lean",
+      "line": 80,
+      "doc": "The adjacent cross moment is dominated by the diagonal moment term by term.",
+      "score": -34.45251344460343
+    },
+    {
+      "name": "twistedMoment_re_zero",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.ConstrainedWeilTwistedOddTest",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ConstrainedWeilTwistedOddTest.lean",
+      "line": 114,
+      "doc": "Twisted moments with zero exponential weight are purely imaginary.",
+      "score": -34.37134622466754
+    },
+    {
+      "name": "weilCriticalLogProfile",
+      "kind": "def",
+      "module": "GaloisForLFunctions.RHTower.WeilCriticalMellinLogBridge",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilCriticalMellinLogBridge.lean",
+      "line": 14,
+      "doc": "Logarithmic half-density profile of a multiplicative Weil test.",
+      "score": -34.11952565709738
+    },
+    {
+      "name": "ccmWeilPolePrimeLogMoment",
+      "kind": "def",
+      "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleLogMoment",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleLogMoment.lean",
+      "line": 20,
+      "doc": "The exact logarithmic arithmetic moment retained by the frozen cross value.",
+      "score": -34.11915296342813
+    },
+    {
+      "name": "logMellinCriticalSamplesCLM",
+      "kind": "def",
+      "module": "GaloisForLFunctions.HTGeometry.SchwartzArithmeticProgressionWeilForm",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/SchwartzArithmeticProgressionWeilForm.lean",
+      "line": 195,
+      "doc": "Shifted critical-line Mellin samples of a Schwartz logarithmic profile.",
+      "score": -34.1150961259207
+    },
+    {
+      "name": "exists_powerCoeff_critical_energy_le",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.WeilWorkSettledPhasePowerEnergy",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkSettledPhasePowerEnergy.lean",
+      "line": 135,
+      "doc": "Original full positivity gives critical square energy throughout the open power disk, with no sign, multiplicativity or spectral hypothesis.",
+      "score": -34.07318422159894
+    },
+    {
+      "name": "weilCriticalLogProfileL2",
+      "kind": "def",
+      "module": "GaloisForLFunctions.RHTower.WeilCriticalMellinLogBridge",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilCriticalMellinLogBridge.lean",
+      "line": 86,
+      "doc": "Literal global `L²` carrier of the logarithmic Weil profile.",
+      "score": -33.74857522051894
+    }
+  ],
+  "exploration": [
+    {
+      "name": "tsum_xiSmoothProfileTwoEdgeDominant_logSample_eq_ofReal_weighted",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.CCMSmoothTwoEdgeWeil",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMSmoothTwoEdgeWeil.lean",
+      "line": 622,
+      "doc": "The full logarithmic dominant carrier is exactly the real weighted right-divisor Dirichlet coefficient.",
+      "score": -31.29228659934386
+    },
+    {
+      "name": "riemannHypothesis_iff_physicalThetaAbelEnergy_logSample_weil_nonneg",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.XiPhysicalPrimeApertureThetaAbelEnergyWeilSource",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyWeilSource.lean",
+      "line": 1039,
+      "doc": "A single positive physical window, aperture, and scalarization width is already a complete RH detector on the logarithmic mesh.",
+      "score": -31.125230475860562
+    },
+    {
+      "name": "gammaNormalizationFreedom_logarithmicCurrent",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.HTGeometry.CriticalEulerMassWeilStokesShadowLaw",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/CriticalEulerMassWeilStokesShadowLaw.lean",
+      "line": 803,
+      "doc": "",
+      "score": -30.753460673979962
+    },
+    {
+      "name": "routeLReflectedNormalCoefficient_eq_log_div_sqrt",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.HTGeometry.HalfDensityRouteLOddWeilConnectionWeld",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/HalfDensityRouteLOddWeilConnectionWeld.lean",
+      "line": 580,
+      "doc": "Paper normalization `-Λ(n) log(n) / sqrt(n)` for every positive arithmetic index.",
+      "score": -22.689691381913242
+    },
+    {
+      "name": "dirichlet_value_le_of_bounded_datum",
+      "kind": "theorem",
+      "module": "GaloisForLFunctions.RHTower.WeilBoundedDatumPoleObstruction",
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilBoundedDatumPoleObstruction.lean",
+      "line": 142,
+      "doc": "Bounded datum at large height bounds the Dirichlet value.** Let `w_n = a_n n^{-σ}` be the absolutely summable weights of a real Dirichlet series on the line `Re s = σ > 1`, written as `L(σ + it) = Σ w_n e^{-it log n}`. If `Re L(σ + it) ≤ C + Re (1/(σ + it - 1))` for all `t ≥ T₀`, then `L(σ) = Σ w_n ≤ C`.",
+      "score": -21.451176609555837
+    }
+  ],
+  "total": 3752,
+  "modules": 670,
+  "eligible": 1187,
+  "markers": [
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanWeilDistribution.lean",
+      "line": 183,
+      "text": "logarithmic test.  This is the analytic well-definedness missing from a pointwise use of",
+      "score": -20.569662961800304
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorInteriorPoles.lean",
+      "line": 8,
+      "text": "the missing multiplicity below one copy of xi, so its logarithmic residue",
+      "score": -20.569662961800304
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleLogMoment.lean",
+      "line": 4,
+      "text": "# The value moment missing from the pole first jets",
+      "score": -19.394514897195126
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPaperGammaEnergy.lean",
+      "line": 196,
+      "text": "weighted by the actual source amplitude, with no pole coefficient remaining. -/",
+      "score": -18.23969854771723
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiWeilVerticalLimit.lean",
+      "line": 8,
+      "text": "constant times a negative real power of `n + 1`, then closes the remaining",
+      "score": -12.866364751345909
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMLogarithmicWeilFormTransport.lean",
+      "line": 13,
+      "text": "This file formalizes the remaining exact content of Connes--Consani--Moscovici (2025),",
+      "score": -12.339772401364282
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPolarSourceCancellation.lean",
+      "line": 11,
+      "text": "terms cancel. On the complete two-moment constrained space the remaining",
+      "score": -12.140736365185287
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/ConnesPadicWeilEulerFactor.lean",
+      "line": 97,
+      "text": "`vol(ℤ_p^*) = log p` supplies the missing `log p`, and the sum over primes of",
+      "score": -11.787719782847887
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiWeilHardyCriticalLocusVerifiedHeightBand.lean",
+      "line": 155,
+      "text": "/-- Remaining complete critical-locus Poisson-margin obligation above a positive frequency. -/",
+      "score": -10.965374805847357
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiWeilHardyCriticalLocusVerifiedHeightBand.lean",
+      "line": 13,
+      "text": "dissipation pays the complete critical-line Poisson trace there, and the remaining exact RH",
+      "score": -10.785222188419581
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/ConstrainedProlateExteriorWeil.lean",
+      "line": 123,
+      "text": "change the von Mangoldt divisor sum, so the remaining charge is exactly `log k`. -/",
+      "score": -10.543006661536332
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/JitteredCellWeilHoeffding.lean",
+      "line": 17,
+      "text": "`Σ_{k<L} 1/(N+k) ≤ log((N+L−1)/(N−1))`, and in `sum_Ico_invPow_sq_le` (the remaining cells,",
+      "score": -10.00853643200763
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilPaperDeficitInverseEnergy.lean",
+      "line": 165,
+      "text": "/-- The inverse remainder never exceeds one quarter of the missing mass. -/",
+      "score": -7.0941237001416555
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/WeilWorkHigherDenominatorLogResidue.lean",
+      "line": 64,
+      "text": "/-- Finite windows retain every missing multiplicity. -/",
+      "score": -6.875410729778977
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiMassCriticalWeilPairingCriterion.lean",
+      "line": 298,
+      "text": "not a candidate for the remaining high-height cancellation. -/",
+      "score": -6.5178864700140755
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiWeilHardyCriticalLocusPoissonReserve.lean",
+      "line": 286,
+      "text": "fixed-locus Poisson charge, the remaining dissipation is precisely the free-orbit dissipation. -/",
+      "score": -6.01980967885309
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiWeilHardyCriticalLocusVerifiedHeightBand.lean",
+      "line": 190,
+      "text": "/-- Remaining passivity obligation for only the free reflection-orbit sector above a positive",
+      "score": -5.9291915705075855
+    },
+    {
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPolarSourceNonvanishing.lean",
+      "line": 158,
+      "text": "the remaining endpoint asymmetry is the bounded logarithm of `1+exp(-L)`. -/",
+      "score": -5.05120585990333
+    }
+  ]
+}

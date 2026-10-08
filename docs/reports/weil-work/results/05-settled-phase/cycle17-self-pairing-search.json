@@ -1,0 +1,468 @@
+{
+  "query": "full positive source forward Dirichlet exponential coefficient energy log convolution lambda self weighted moment sourceCompletion derivative squared modulus",
+  "partial": true,
+  "errors": [
+    {
+      "stage": "semantic_retrieval",
+      "error": "local runtime deadline expired"
+    }
+  ],
+  "coverage": {
+    "files": 68517,
+    "inventoried": 68517,
+    "pending_files": 0,
+    "outcomes": {
+      "indexed": 68517
+    },
+    "compiler": {
+      "compiled_snapshot": 43,
+      "error": 2,
+      "not_applicable": 11091,
+      "pending": 52028,
+      "stale": 2660,
+      "stale_snapshot": 38,
+      "umbrella_source_only": 1,
+      "unavailable": 2654
+    },
+    "collections": {
+      "lean": 57426,
+      "prose": 11091
+    },
+    "declarations": 1029756,
+    "documents": 2853114,
+    "vectors": 2664371,
+    "method_invalidation_pending": false,
+    "inventory_errors": [],
+    "inventory_complete": true,
+    "generation": 1280804,
+    "enrichment_counts_pending": true,
+    "status": "snapshot",
+    "snapshot_written_at": 1791403373.10129,
+    "current_generation": 1280813
+  },
+  "index_warnings": [
+    "coverage_snapshot_older_generation",
+    "semantic_coverage_unavailable"
+  ],
+  "refresh": {
+    "complete": false,
+    "reason": "background_indexer_running"
+  },
+  "unfinished_stages": [
+    "semantic_retrieval"
+  ],
+  "index_generation": 1280792,
+  "elapsed_seconds": 230.69990108399998,
+  "declarations": [],
+  "candidate_lemmas": [
+    {
+      "name": "GaloisForLFunctions.HTGeometry.dirichletConvPow",
+      "module": "GaloisForLFunctions.HTGeometry.DirichletConvolutionExponential",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/DirichletConvolutionExponential.lean",
+      "line": 25,
+      "statement": "def dirichletConvPow {R : Type*} [Semiring R] (f : ℕ → R) : ℕ → ℕ → R\n  | 0 => fun n => if n = 1 then 1 else 0\n  | k + 1 => LSeries.convolution f (dirichletConvPow f k)\n\n/-- The Dirichlet exponential `exp⋆ f = Σ_{k ≤ n} f^{⋆k}(n)/k!`. -/",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.dirConv_sum_left",
+      "module": "GaloisForLFunctions.RHTower.HighBlockSmoothToSharpEnergy",
+      "relpath": "formal/GaloisForLFunctions/RHTower/HighBlockSmoothToSharpEnergy.lean",
+      "line": 26,
+      "statement": "theorem dirConv_sum_left {ι : Type*} (s : Finset ι) (L N : ℕ) (c : ι → ℂ) (a : ι → Fin L → ℂ)\n    (b : Fin N → ℂ) (r : Fin (L * N)) :\n    Sieve.dirConv L N (fun n => ∑ u ∈ s, c u * a u n) b r =\n      ∑ u ∈ s, c u * Sieve.dirConv L N (a u) b r",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.dirichletConv",
+      "module": "GaloisForLFunctions.RHTower.FloorTransformHarmonicInverse",
+      "relpath": "formal/GaloisForLFunctions/RHTower/FloorTransformHarmonicInverse.lean",
+      "line": 34,
+      "statement": "def dirichletConv (a b : ℕ → ℝ) (n : ℕ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.ParityForecast.symmetricOccupation_weighted_energyMoment",
+      "module": "GaloisForLFunctions.RHTower.PermutationInvariantQubitClockRealization",
+      "relpath": "formal/GaloisForLFunctions/RHTower/PermutationInvariantQubitClockRealization.lean",
+      "line": 274,
+      "statement": "theorem symmetricOccupation_weighted_energyMoment\n    (T : ℝ) (n k : ℕ) (weight : Fin (n + 1) → ℝ) :\n    ∑ S : Finset (Fin n),\n        symmetricOccupationWeight n weight S *\n          uniformQubitFieldEnergy T n S ^ k =\n      ∑ j : Fin (n + 1),\n        weight j * angularEnergy T n j ^ k",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.Sieve.dirConv",
+      "module": "GaloisForLFunctions.RHTower.Sieve.DirichletBilinear",
+      "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/DirichletBilinear.lean",
+      "line": 48,
+      "statement": "noncomputable def dirConv (N M : ℕ) (a : Fin N → ℂ) (b : Fin M → ℂ) (r : Fin (N * M)) : ℂ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.weightedMoment",
+      "module": "GaloisForLFunctions.RHTower.CompleteHankelSignCone",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CompleteHankelSignCone.lean",
+      "line": 62,
+      "statement": "def weightedMoment (mu : Measure ℝ) (J : ℝ → ℝ) (n : ℕ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.weightMoment",
+      "module": "GaloisForLFunctions.HTGeometry.NonnegativeWeightMomentHankel",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/NonnegativeWeightMomentHankel.lean",
+      "line": 25,
+      "statement": "def weightMoment (w y : ι → ℝ) (n : ℕ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.dirichletSum_mul_conj",
+      "module": "GaloisForLFunctions.HTGeometry.TorusFejerDisplacement",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/TorusFejerDisplacement.lean",
+      "line": 45,
+      "statement": "theorem dirichletSum_mul_conj (N : ℕ) (x : ℝ) :\n    dirichletSum N x * (starRingEnd ℂ) (dirichletSum N x)\n      = ∑ p ∈ Finset.range (N + 1), ∑ q ∈ Finset.range (N + 1),\n          Complex.exp (((((p : ℝ) - (q : ℝ)) * x : ℝ)) * Complex.I)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.deningerWeightedMomentFun",
+      "module": "GaloisForLFunctions.RHTower.DeningerWeightedMoment",
+      "relpath": "formal/GaloisForLFunctions/RHTower/DeningerWeightedMoment.lean",
+      "line": 26,
+      "statement": "def deningerWeightedMomentFun (h : 𝓢(ℝ, ℂ)) (u : ℝ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "HTGeometry.ConstraintMotiveRelativity.weightMoment",
+      "module": "GaloisForLFunctions.HTGeometry.ConstraintMotiveRelativity.MarkedMellinExchange",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/ConstraintMotiveRelativity/MarkedMellinExchange.lean",
+      "line": 633,
+      "statement": "noncomputable def weightMoment (w : ℕ → ℝ) (k : ℕ) (t : ℝ) : ℂ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.deningerWeightedMomentMass",
+      "module": "GaloisForLFunctions.RHTower.DeningerAbelMajorant",
+      "relpath": "formal/GaloisForLFunctions/RHTower/DeningerAbelMajorant.lean",
+      "line": 26,
+      "statement": "def deningerWeightedMomentMass (h : 𝓢(ℝ, ℂ)) : ℝ≥0∞",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.PhaseKernel.weightedEnergy",
+      "module": "GaloisForLFunctions.HTGeometry.PhaseKernelContactLocalization",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/PhaseKernelContactLocalization.lean",
+      "line": 84,
+      "statement": "def weightedEnergy (μ : Measure ℝ) (h : ℝ → ℝ) {m : ℕ} (t : Fin m → ℝ) (z : Fin m → ℂ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.weightedPowersetFirstMoment_le_energy_mul_mass",
+      "module": "GaloisForLFunctions.RHTower.RouteEProductTruncatedReservoirMass",
+      "relpath": "formal/GaloisForLFunctions/RHTower/RouteEProductTruncatedReservoirMass.lean",
+      "line": 549,
+      "statement": "theorem weightedPowersetFirstMoment_le_energy_mul_mass\n    (b : ℕ) (hb : 0 < b) (α : Type*) [Fintype α] [LinearOrder α]\n    (w energy : α → ℝ) (hw : ∀ a, 0 ≤ w a)\n    (henergy : ∀ a, 0 ≤ energy a) :\n    weightedPowersetFirstMoment Finset.univ b w energy ≤\n      (∑ a, w a * energy a) *\n        weightedPowersetMass Finset.univ (b - 1) w",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.weightedPowersetFirstMoment",
+      "module": "GaloisForLFunctions.RHTower.RouteEProductTruncatedReservoirMass",
+      "relpath": "formal/GaloisForLFunctions/RHTower/RouteEProductTruncatedReservoirMass.lean",
+      "line": 460,
+      "statement": "def weightedPowersetFirstMoment\n    {α : Type*} [DecidableEq α]\n    (s : Finset α) (b : ℕ) (w energy : α → ℝ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.fisherWeightedMoment",
+      "module": "GaloisForLFunctions.RHTower.FisherCurvatureMoment",
+      "relpath": "formal/GaloisForLFunctions/RHTower/FisherCurvatureMoment.lean",
+      "line": 19,
+      "statement": "def fisherWeightedMoment {ι : Type*} (s : Finset ι) (w x : ι → ℝ) (n : ℕ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.laplaceWeightedMoment",
+      "module": "GaloisForLFunctions.HTGeometry.LaplaceMomentPositivity",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/LaplaceMomentPositivity.lean",
+      "line": 270,
+      "statement": "def laplaceWeightedMoment (f : ℝ → ℝ) (n : ℕ) (s : ℝ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.ccmFourierWeightMoment",
+      "module": "GaloisForLFunctions.RHTower.CCMGeneralFourierWeightCompactEmbedding",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMGeneralFourierWeightCompactEmbedding.lean",
+      "line": 37,
+      "statement": "def ccmFourierWeightMoment (ρ : CCMFourierWeight) (f : SoninL2) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "HTGeometry.wEnergy",
+      "module": "GaloisForLFunctions.HTGeometry.RealGramBlindness",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/RealGramBlindness.lean",
+      "line": 43,
+      "statement": "def wEnergy (mu : ℕ → ℝ) (s : Finset ℕ) (v : ℕ → ℂ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.complexWeightedAffineMoment",
+      "module": "GaloisForLFunctions.RHTower.XiHolomorphicAffineCompanionHeightDephasing",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiHolomorphicAffineCompanionHeightDephasing.lean",
+      "line": 23,
+      "statement": "def complexWeightedAffineMoment {ι : Type*}\n    (s : Finset ι) (c z : ι → ℂ) (k : ℕ) : ℂ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.ZetaNotch.weightedMoment_notchWeight_eq",
+      "module": "GaloisForLFunctions.RHTower.ZetaNotchBohrLift",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ZetaNotchBohrLift.lean",
+      "line": 281,
+      "statement": "theorem weightedMoment_notchWeight_eq {L : ℝ} (hL : 0 < L) (P : Finset ℕ) (ε : ℝ) (n₀ : ℕ)\n    (y : ℝ) :\n    weightedMoment L (notchWeight P ε n₀) y =\n      ∑ j ∈ bohrModes, ∑ c ∈ Fintype.piFinset (fun _ : P => bohrModes),\n        (modeCoeff ε j c : ℂ) * twistedMoment L (y - modeFreq n₀ j c)",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    }
+  ],
+  "source_arguments": [
+    {
+      "name": "RiemannGaussian.full_re_mem_interior_negId_integrableExpSet",
+      "module": "GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiPositiveCriticalStripEtaLeadingLogMomentGapDefect",
+      "relpath": "formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiPositiveCriticalStripEtaLeadingLogMomentGapDefect.lean",
+      "line": 63,
+      "statement": "theorem full_re_mem_interior_negId_integrableExpSet\n    {s : ℂ} (hs : 0 < s.re) :\n    s.re ∈ interior (integrableExpSet (fun t : ℝ ↦ -t)\n      (volume.restrict (Ioi 0)))",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.reshapedPrimeLogCauchyControl_surjective",
+      "module": "GaloisForLFunctions.HTGeometry.CoefficientUniformJetEscape",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/CoefficientUniformJetEscape.lean",
+      "line": 46,
+      "statement": "theorem reshapedPrimeLogCauchyControl_surjective\n    {row ι : Type*} [Fintype row] [Fintype ι]\n    [DecidableEq row] [DecidableEq ι]\n    (nodes : row × ι → ℂ) (hnodes : Function.Injective nodes)\n    (hupper : ∀ x, 0 < (nodes x).im) (orders : ι → ℕ) :\n    Function.Surjective\n      ((reshapeCombinedJets row ι orders).comp\n        (cauchyJetRealLinearCombination nodes (fun x => orders x.2) primeLogSupport))",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.DeningerMeyerPositiveRadius",
+      "module": "GaloisForLFunctions.RHTower.DeningerMeyerPrimeSamplingCohomologyObstruction",
+      "relpath": "formal/GaloisForLFunctions/RHTower/DeningerMeyerPrimeSamplingCohomologyObstruction.lean",
+      "line": 295,
+      "statement": "abbrev DeningerMeyerPositiveRadius",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RiemannGaussian.full_negId_complexMGF_eventuallyEq_inv",
+      "module": "GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiPositiveCriticalStripEtaLeadingLogMomentGapDefect",
+      "relpath": "formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiPositiveCriticalStripEtaLeadingLogMomentGapDefect.lean",
+      "line": 90,
+      "statement": "theorem full_negId_complexMGF_eventuallyEq_inv\n    {s : ℂ} (hs : 0 < s.re) :\n    complexMGF (fun t : ℝ ↦ -t) (volume.restrict (Ioi 0)) =ᶠ[nhds s]\n      fun w : ℂ ↦ w⁻¹",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.twoStrandFullTwistWord",
+      "module": "GaloisForLFunctions.RHTower.ClosedPrimeBraid",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ClosedPrimeBraid.lean",
+      "line": 209,
+      "statement": "def twoStrandFullTwistWord : BraidWord 1",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.xiSquaredEulerFullKernel",
+      "module": "GaloisForLFunctions.RHTower.XiSquaredEulerRayFullResponse",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiSquaredEulerRayFullResponse.lean",
+      "line": 243,
+      "statement": "def xiSquaredEulerFullKernel (x y : ℝ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.D4BMPWActualOperatorAnomaly.actual_lift_vertex_anomaly",
+      "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPWActualOperatorAnomaly",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWActualOperatorAnomaly.lean",
+      "line": 95,
+      "statement": "theorem actual_lift_vertex_anomaly (q : XiZeroCopy) (branch : Bool)\n    (X k : ℝ) :\n    firstRowAnomaly (parameter q branch) positiveAngularOperator\n      (differenceReader (E := PositiveField))\n      (positiveRestrict (fullAngularField q branch))\n        ⟨![X, Real.exp k], Real.exp_pos k⟩ =\n      parameter q branch * causalVertexDefect q branch X k",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.IrregularStokes.EulerFusionTypeALegs.fullRankLinear",
+      "module": "GaloisForLFunctions.HTGeometry.StokesEulerFusionTypeALegs",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/StokesEulerFusionTypeALegs.lean",
+      "line": 79,
+      "statement": "noncomputable def fullRankLinear {n : ℕ} (datum : CertifiedFissionDatum n)\n    (legLength : Fin n → ℕ) : LegMode legLength →ₗ[ℝ] ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.RHTower.SelbergMaassCellCurvature.cell_curvature_pos",
+      "module": "GaloisForLFunctions.RHTower.SelbergMaassCellCurvature",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SelbergMaassCellCurvature.lean",
+      "line": 124,
+      "statement": "theorem cell_curvature_pos (e : Ioi (0 : ℝ)) :\n    0 < ∫ z : ℍ in fd, hyperbolicCurvature N f e z",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.gomesCanonicalMomentModel_recovery",
+      "module": "GaloisForLFunctions.HTGeometry.GomesCanonicalMomentGeometry",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/GomesCanonicalMomentGeometry.lean",
+      "line": 39,
+      "statement": "theorem gomesCanonicalMomentModel_recovery (M : GomesMomentModel) :\n    (gomesCanonicalMomentModel M.moments).moments = M.moments",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.cCMArchimedeanHankelProductTraceLocalInst3",
+      "module": "GaloisForLFunctions.RHTower.CCMArchimedeanHankelProductTrace",
+      "relpath": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanHankelProductTrace.lean",
+      "line": 38,
+      "statement": "local instance cCMArchimedeanHankelProductTraceLocalInst3 : TopologicalSpace.SeparableSpace CCMPositiveL2",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.D4BMPWActualOperatorAnomaly.actual_source_operator_anomaly",
+      "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPWActualOperatorAnomaly",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPWActualOperatorAnomaly.lean",
+      "line": 79,
+      "statement": "theorem actual_source_operator_anomaly (q : XiZeroCopy) (branch : Bool)\n    (S : (PositiveField × PositiveField) →ₗ[ℂ]\n      (PositiveField × PositiveField)) :\n    firstRowAnomaly (parameter q branch) positiveAngularOperator S\n      (positiveRestrict (fullAngularField q branch)) =\n    parameter q branch •\n      (S (positiveRestrict (fullAngularField q branch),\n        positiveRestrict (fullSquarePotential q))).1",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.RHTower.SelbergMaassFullGradient.full_gradient_identity",
+      "module": "GaloisForLFunctions.RHTower.SelbergMaassFullGradient",
+      "relpath": "formal/GaloisForLFunctions/RHTower/SelbergMaassFullGradient.lean",
+      "line": 147,
+      "statement": "theorem full_gradient_identity :\n    (∫ p in fullDomain, planarGradient N f p) =\n      (lam : ℝ) * ∫ p in fullDomain, massDensity N f p",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.fullSector_one_le_essentialNorm",
+      "module": "GaloisForLFunctions.RHTower.FullSectorPolarizationEssentialNorm",
+      "relpath": "formal/GaloisForLFunctions/RHTower/FullSectorPolarizationEssentialNorm.lean",
+      "line": 21,
+      "statement": "theorem fullSector_one_le_essentialNorm\n    (J G : E →L[ℂ] E) (S : Submodule ℂ E)\n    (hS : IsClosed (S : Set E)) (hSinfinite : ¬ FiniteDimensional ℂ S)\n    (hnegative : ∀ x ∈ S, J x = -x)\n    (hpositive : ∀ x : E, 0 ≤ Complex.re ⟪(J + G) x, x⟫_ℂ) :\n    1 ≤ essentialNorm G",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.riemannHypothesis_of_continuedPrimeArchPositiveHighFrequencyUpperAntiHerglotz",
+      "module": "GaloisForLFunctions.RHTower.PrimeArchHighFrequencyAccretivity",
+      "relpath": "formal/GaloisForLFunctions/RHTower/PrimeArchHighFrequencyAccretivity.lean",
+      "line": 284,
+      "statement": "theorem riemannHypothesis_of_continuedPrimeArchPositiveHighFrequencyUpperAntiHerglotz\n    (hhigh : ContinuedPrimeArchPositiveHighFrequencyUpperAntiHerglotz) :\n    RiemannHypothesis",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.twoThreePrimeBraidPhase_eq_neg_one",
+      "module": "GaloisForLFunctions.RHTower.ClosedPrimeBraid",
+      "relpath": "formal/GaloisForLFunctions/RHTower/ClosedPrimeBraid.lean",
+      "line": 202,
+      "statement": "theorem twoThreePrimeBraidPhase_eq_neg_one :\n    ((twoStrandPhaseRepresentation twoThreePrimeBraidClass : ℂˣ) : ℂ) = -1",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.xiThetaJetForm_add_right",
+      "module": "GaloisForLFunctions.RHTower.XiThetaConvolutionDefectTrilemma",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiThetaConvolutionDefectTrilemma.lean",
+      "line": 330,
+      "statement": "theorem xiThetaJetForm_add_right {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ)\n    (x y z : Fin n → ℂ) :\n    xiThetaJetForm H x (y + z) = xiThetaJetForm H x y + xiThetaJetForm H x z",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.integrableOn_spatialSourceWindow",
+      "module": "GaloisForLFunctions.RHTower.LiEvenCrossActualClockBorelSpatialGrowth",
+      "relpath": "formal/GaloisForLFunctions/RHTower/LiEvenCrossActualClockBorelSpatialGrowth.lean",
+      "line": 32,
+      "statement": "private theorem integrableOn_spatialSourceWindow {X : ℝ} (hX : 0 < X) :\n    IntegrableOn thetaCuspFullSource (Icc X (X+1))",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "GaloisForLFunctions.HTGeometry.fidelityReplicaCharacterCoefficient",
+      "module": "GaloisForLFunctions.HTGeometry.FidelityReplicaCharacterCoefficientLaw",
+      "relpath": "formal/GaloisForLFunctions/HTGeometry/FidelityReplicaCharacterCoefficientLaw.lean",
+      "line": 38,
+      "statement": "def fidelityReplicaCharacterCoefficient\n    {I : Type*} [Fintype I] [DecidableEq I]\n    (weight : I → ℝ) (n : ℕ) (k : I → ℤ) : ℝ",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    },
+    {
+      "name": "RHTower.factorialNegativeExponentialMixtureDensity_pos",
+      "module": "GaloisForLFunctions.RHTower.XiShiftedHankelBoundaryFactorialRootThresholdNoGo",
+      "relpath": "formal/GaloisForLFunctions/RHTower/XiShiftedHankelBoundaryFactorialRootThresholdNoGo.lean",
+      "line": 513,
+      "statement": "theorem factorialNegativeExponentialMixtureDensity_pos (t : ℝ) :\n    0 < exponentialMixtureDensity HTGeometry.factorialNegativeCarrierWeight\n      HTGeometry.factorialNegativeCarrierNode t",
+      "compiler_status": "source_only",
+      "applicability": "not_checked"
+    }
+  ],
+  "proof_ideas": [],
+  "ingredient_sets": [
+    {
+      "description": "Dirichlet convolution power iteration",
+      "steps": [
+        {
+          "goal": "iterate convolution",
+          "candidate_ids": [
+            "6d7ea0ced311d81f0e7dfb8c4bb986f412680cbc13c37c9c92f3948c256a4515"
+          ],
+          "candidates": [
+            {
+              "id": "6d7ea0ced311d81f0e7dfb8c4bb986f412680cbc13c37c9c92f3948c256a4515",
+              "name": "GaloisForLFunctions.HTGeometry.dirichletConvPow",
+              "module": "GaloisForLFunctions.HTGeometry.DirichletConvolutionExponential",
+              "relpath": "formal/GaloisForLFunctions/HTGeometry/DirichletConvolutionExponential.lean",
+              "line": 25
+            }
+          ],
+          "obligations": [
+            "base case defined"
+          ],
+          "status": "proposed"
+        },
+        {
+          "goal": "apply to exponential sum",
+          "candidate_ids": [
+            "76420d0f63581df1f2e30ea2abb559148c98b8ea74a28a8faef368ccf87b5548"
+          ],
+          "candidates": [
+            {
+              "id": "76420d0f63581df1f2e30ea2abb559148c98b8ea74a28a8faef368ccf87b5548",
+              "name": "RHTower.ParityForecast.symmetricOccupation_weighted_energyMoment",
+              "module": "GaloisForLFunctions.RHTower.PermutationInvariantQubitClockRealization",
+              "relpath": "formal/GaloisForLFunctions/RHTower/PermutationInvariantQubitClockRealization.lean",
+              "line": 274
+            }
+          ],
+          "obligations": [
+            "moment weighted sum"
+          ],
+          "status": "proposed"
+        }
+      ],
+      "status": "not_verified"
+    }
+  ]
+}

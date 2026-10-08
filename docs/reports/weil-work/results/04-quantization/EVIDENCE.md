@@ -1,5 +1,66 @@
 # Evidence
 
+## Twelfth/thirteenth cycles: full resonances and periodic winding
+
+- Completed AP-mechanism and Hamburger-main-kernel deep searches inspected every candidate/source row; neither yielded a source closure. Toeplitz and periodic-lock deep searches returned partial results, with 68,495/68,496 indexed files and semantic retrieval unfinished. The periodic query also left filtering and decomposition unfinished. No absence claim follows.
+- The annulus-log/Laurent-factor query completed with partial=false, 68,508 indexed files. Inspected all returned candidate/source rows. `Bottcher.exists_log_on_annulus`, `Bottcher.winding_zpow_circle`, and `HTGeometry.LaurentAnnulus` provide relevant classical machinery. The generated ingredient set leaves winding zero as an obligation; it is not a rigidity proof.
+- The lexical `periodic phase --module Weil` query returned the existing `vonMangoldt_and_riemannHypothesis_of_ap_settled_atomic_phase`. Its exact statement was read: it retains a discrete spectral representation and excludes nonzero rational resonances. It does not cover L1.
+- Read the exact source critical energy theorem `WeilSingularArithmetic.exists_forwardCoeff_critical_energy_le`, including its coefficient definition. It gives polynomial growth on q-power chains after q^{-j/2} normalization. The equality of its coefficients with `dirichletExp(lamLog lam)` is a pointwise below-two truncation identity, already used in the source subpolynomial proof.
+- Primary external sources opened: [Nolasco–Castro](https://arxiv.org/abs/math/0511127), including its PDF mean-motion statement; [Câmara](https://arxiv.org/abs/1710.11572); [Câmara–Malheiro–Partington](https://link.springer.com/article/10.1007/s00025-020-01323-z), full HTML factorization and kernel statements; [Rodman–Spitkovsky](https://arxiv.org/abs/0804.1945), abstract. The Wiener–Hopf factorization mechanism is classical. No scientific novelty is claimed for it or for the contour prerequisite.
+- L1's exact statement, attack, normalization and complete paper argument are in RESONANT-PERIODIC.md. The m=1 radial limit fixes the nonzero normalization, so the argument does not depend on an unverified explicit main-kernel evaluation. Dominated convergence over coefficients removes the need for a uniform nonresonant gap. General L and WP04 remain open.
+- `WeilWorkQuantizationTwistContour.lean` passed its final direct command `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationTwistContour.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationTwistContour.lean`, exit 0. One informational `ring_nf` suggestion appeared; no error. Six declarations, import wired. All six declarations passed the standard-axiom audit; complete output is saved in twist-contour-lean-audit.txt. ResonantTerms subsequently passed its final direct leaf audit with exit 0 and no diagnostics; five declarations are wired. All five use only the three standard axioms (resonant-terms-lean-audit.txt). The corrected WeilWorkQuantizationResonance leaf passed its final direct audit with exit 0 and no diagnostics; thirteen declarations are wired. All thirteen declarations use only the three standard axioms (source-resonance-lean-audit.txt). WeilWorkQuantizationFrequencySum then passed its clean final direct audit and is wired. All three declarations use only the three standard axioms (frequency-sum-lean-audit.txt). WeilWorkQuantizationPhaseCoupling passed its final direct audit, then a clean rerun after removing two redundant tactics. All three declarations are wired and use only the three standard axioms (phase-coupling-lean-audit.txt). No full periodic-rigidity theorem is claimed.
+- New `scripts/formal_tools.py lint` exited 1, with eleven unrelated unreachable modules: WeilPaperGammaPartition, WeilWorkSingularArithmeticCanonicalGaussian, WeilWorkSingularArithmeticGaussianError, WeilWorkSingularArithmeticGaussianShift, WeilWorkSingularArithmeticPoleCancellation, WeilWorkSingularArithmeticSignedConvolution, ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. Existing size warnings remain; no WP04 error. Those unrelated files were not modified.
+
+### Off-integer shortcut rejected during source assembly
+
+An attempted shortcut would extend the radial equations to arbitrary
+positive real radii and declare every noninteger reflected residue zero.
+The exact source identity rules out that inference: the reflected
+Laplace series has coefficients `dirichletExp(lamLog lam)(n+1)`, not unit
+coefficients. Integer imaginary shifts preserve every exponential; at
+noninteger shifts the unknown additive twists of those coefficients
+remain. Periodicity alone supplies no vanishing theorem there.
+
+The positive survivor is the exact source identity already formalized in
+`quantization_reflected_defectLaplace_eq`: arbitrary-radius residues are
+controlled by additive Abel means of the actual coefficients. Combined
+with shifted arithmetic resonances, this suggests a possible relation
+between additive and multiplicative spectra, but no new closure theorem
+or off-integer vanishing claim is made. L1's proof uses only integer radii
+and is unaffected. The adjacent deep corpus query about zero density and AP nonvanishing
+returned partial=true, 68,525 indexed files, unfinished filter_and_judge
+with malformed local-model JSON, incomplete refresh, and unmeasured
+semantic coverage. All twenty candidate and twenty source rows were
+inspected, including a compact follow-up after initial output truncation.
+The proposed ingredient set substitutes a near-one zero-free region for
+the requested density statement; it does not close the argument. Generic
+strip-AP and zeta facts were found, with their premises retained. No
+application or absence claim follows.
+
+Latest lint after wiring FrequencySum exited 1 with eight unrelated
+unreachable modules: WeilPaperPacketPrimeMasks, WeilWorkSettledPhasePowerLogMoment,
+WeilWorkSingularArithmeticGaussianBound, ApertureConeCalculus,
+ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal,
+BoundaryCoronaCStarAlgebra. No WP04 error. Existing size warnings remain.
+No unrelated module was edited.
+
+The subsequent exact annihilator-mechanism deep query completed with
+partial=false, 68,535 indexed files, no unfinished stage/error, incomplete
+background refresh, and unmeasured semantic coverage. All twenty candidate
+and twenty source rows were inspected. Relevant existing machinery remains
+LaurentAnnulus, AnnulusRoot, and C1-loop winding certificates; unrelated
+finite Toeplitz matrix definitions do not supply the analytic annihilator.
+The generated ingredient set still asks for a log-branch/winding proof and
+is not a closure theorem. No absence claim follows.
+
+After wiring PhaseCoupling, the final lint pass exited 1 with eleven
+unrelated unreachable modules: WeilWorkDeficitXiApproximationCost,
+WeilWorkHigherDenominatorLogResidue, WeilWorkSettledPhasePowerCoefficients,
+WeilWorkSettledPhasePowerEnergy, WeilWorkSettledPhasePowerLogMoment,
+WeilWorkSingularArithmeticGaussianBound, ApertureConeCalculus,
+ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal,
+BoundaryCoronaCStarAlgebra. No WP04 error; no unrelated changes.
+
 ## Eleventh-cycle continuation: resonant AP attack
 
 - `research "almost periodic mean motion phase logarithm resonant density" --mode deep --budget-seconds 300 --json`: partial=false; 68,488 inventoried/indexed files; compiler applicability mostly source-only, refresh incomplete, older-generation snapshot, semantic coverage not measured. All 20 candidate and 20 source-argument rows inspected. Generic AP machinery was found, not a source resonance-collapse theorem. The suggested `feNeutralLogDensity` ingredient set did not establish its proposed link to the actual source and was rejected.
@@ -321,3 +382,150 @@ K formal audit: all three direct commands `lake --old env lean -o .lake/build/li
 Latest `scripts/formal_tools.py lint` exited 1 on ten unrelated unreachable leaves: WeilPaperGammaReflection, WeilWorkHigherDenominatorPoissonAnalytic, WeilWorkSingularArithmeticCauchyReflection, WeilWorkSingularArithmeticGaussianPairing, WeilWorkSingularArithmeticHerglotzPairing, ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. Existing large-file warnings remain. No quantization-module error appeared. These unrelated files were not modified.
 
 Next-route search `almost periodic reflected lock phase resonant rational frequencies integer coefficients rigidity --mode deep --budget-seconds 300 --module Weil --json` returned partial=true, unfinished filter_and_judge, coverage 68481 files, stale snapshot/semantic coverage warnings. All candidate/source rows inspected. Exact reads confirm ap_lock_rigidity needs no nonzero rational resonance and a continuous edge; lock_phase_rigidity needs a smooth subpower phase; boundary/infinite dilation rigidity imposes a convergent dilation representation of λ. None was treated as a producer of those premises. No theorem for arbitrary resonant analytic almost-periodic canonical phases was found; the search is partial, so this is not an absence claim.
+
+
+Thirteenth-cycle checkpoint: five new leaves, thirty declarations, all
+final direct leaf and standard-axiom audits passed. The actual-source
+resonance comparison, full weighted frequency sum and nonzero constant
+resonant sums are verified. L1's q-chain/winding assembly and full WP04
+remain open. New-source and scoped whitespace checks passed. Owned
+completed scratch/search/audit files were removed after terminal exit;
+no owned build/search process remains. No full or umbrella build ran.
+
+## Fourteenth cycle: q-chain and winding continuation
+
+Deep query `canonical periodic resonant phase winding q powers forward coefficient critical energy`
+(module Weil, budget 300 seconds) completed with partial=true, semantic_retrieval unfinished
+(Qdrant HTTP 408), 68,537 indexed files, older-generation coverage snapshot and unmeasured
+semantic coverage. Background refresh remained incomplete. All 20 candidate statements,
+20 source-argument statements, the one proposed transfer and ingredient set were inspected.
+The actual critical energy and resonance-constant statements are relevant; power-coefficient
+energy is a broader family but supplies no phase representation. Parity-wall decompositions,
+two-mode energy and fixed-zeta facts do not supply the missing arbitrary-source winding input.
+The import/API scratch check exited 0. No exhaustive absence claim follows from this search.
+
+Primary external checks: Câmara–Partington, *Toeplitz kernels and model spaces*
+(2017, https://arxiv.org/abs/1711.04511), confirms the classical Toeplitz-kernel parent;
+no novelty is claimed for factorization. Nakamura's *L-functions with Riemann's functional
+equation and the Riemann hypothesis*
+(https://jxiv.jst.go.jp/index.php/jxiv/preprint/download/238/version/291/964/797)
+was inspected for possible converse counterexamples. Its introduction distinguishes
+relaxed pole conditions and functions without ordinary Dirichlet-series representations.
+Those examples do not provide arbitrary WeilPositiveFull sources with the canonical
+normalization used here. They were not treated as counterexamples or as a uniqueness proof.
+
+Cycle 14 formal results: QChain and LaurentInverse passed clean final direct leaf audits using `lake --old env lean -o ... <leaf>`. All 22 declarations passed scratch axiom audits, with only propext, Classical.choice and Quot.sound. Reports: qchain-lean-audit.txt and laurent-inverse-lean-audit.txt. Both imports are wired; no full or umbrella build. A temporary elaboration timeout was repaired by supplying the explicit formal-series receiver and radius coercion; no heartbeat setting was changed. A redundant ring normalization was replaced by associativity/commutativity. Full L1 remains a paper result, not a Lean theorem. These steps close formal dependencies and do not independently certify scientific novelty.
+
+Fresh cycle-14 lint exited 1 with ten unrelated unreachable modules; no quantization-module error. Existing large-file warnings remain. Exact errors:
+
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorBesselBoundary
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticHarmonicSign
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticMellin
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticMellinBound
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticPoleSign
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+The nine hgtl7 self-audit answers were posted in chat: no independent scientific novelty is certified by these two formal components; classical factorization is reused explicitly; actual-source q-chain verification advances the formal frontier; full L1 and arbitrary-phase WP04 remain open; next work is the annihilator, double-series interchange and actual monotone winding. No effort-based deferral, extra axiom or heartbeat increase occurred. All 20 candidate and 20 source-argument statements were inspected, with partial search coverage retained.
+
+Cycle-14 cleanup complete: all owned processes reached terminal exit; all 21 owned temporary files were removed after audit preservation. Scoped whitespace checks passed. Thirty finished leaves remain wired; no full or umbrella build. Goal remains active.
+
+## Fifteenth cycle: absolute pairing and coefficient annihilation
+
+Deep query `Laurent analytic annulus winding Fourier coefficient convolution annihilator`
+completed with partial=false, no unfinished stages and no reported errors (117.58 seconds).
+Coverage: 68,555 indexed files; 52,062 compiler-pending and 2,660 stale-source entries,
+43 compiled snapshots. Coverage snapshot was older-generation; semantic coverage remained
+unmeasured and background refresh incomplete. All 20 candidate statements and all 20
+source-argument statements were inspected. No proof ideas; one unverified ingredient set.
+The annulus logarithm and winding declarations are relevant. Most Laurent-coefficient hits
+concern meromorphic germs, not the bilateral coefficients of an annular analytic function.
+Neither these hits nor the proposed ingredient set supplies the required infinite pairing.
+No exhaustive absence claim is made.
+
+Primary external audit: Câmara, *Toeplitz operators and Wiener–Hopf factorisation: an
+introduction* (2017, https://arxiv.org/pdf/1710.11572), Section 5 and Theorem 5.1, supplies
+the classical factorization/index parent. Its Hardy-space premises cannot be silently
+applied to the polynomial-growth arithmetic sequence. The direct first-moment bound in
+RESONANT-PERIODIC.md pays that passage without this assumption. Câmara–Kliś-Garlicka–Ptak,
+*General Toeplitz kernels and (X,Y)-invariance*
+(https://doi.org/10.4153/S0008414X23000196), abstract inspected; full text was not available
+in that view. Its general kernel framework does not itself identify the canonical
+arithmetic source. No novelty is claimed for scalar factorization or Fubini.
+
+Cycle 15 formal results: Pairing, CircleCoefficient and PositiveFactor each passed a clean
+final foreground command `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<leaf>.olean GaloisForLFunctions/RHTower/<leaf>.lean`.
+The scratch axiom audit exited 0. All eighteen public declarations and their dependencies,
+including three private helpers, use only propext, Classical.choice and Quot.sound. Full
+report and final source-obstruction type: pairing-factor-lean-audit.txt. All three leaves
+are wired into RHTower.lean. No full/umbrella build, numerical experiment, extra axiom,
+heartbeat increase or recursion-limit change occurred. The final theorem explicitly
+retains the representation premise; it is not the unrestricted WP04 conclusion.
+
+The paper pairing bound was sharpened to two first moments and the injective map
+(l,j)↦(l,l−j). This matches the audited linear source-coefficient bound. Circle coefficient
+extraction now proves every column of the annihilator, including the constant coefficient,
+and pays each infinite integration and summation. The actual source excludes the precise
+positive analytic factorization. The periodic symbol, normalized annular logarithm and
+actual monotone winding still require Lean verification before L1 is complete.
+
+Fresh cycle-15 lint exited 1 with six unrelated unreachable modules; no quantization-module
+error. Existing large-file warnings remain. Exact errors:
+
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilPaperNullSamplingSpace
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+All nine hgtl7 answers were posted in chat. Scientific novelty is not established by these
+formal dependencies; the classical parent is explicit. The actual arithmetic/analytic
+interface advances, while full L1 and arbitrary-phase WP04 remain open. No work was deferred
+for cost. The next cycle must construct the periodic analytic symbol and annular logarithm,
+then identify actual winding; no representation producer may be silently added to hW.
+
+Useful inspected next-step API: Complex.differentiableOn_tsum_of_summable_norm in mathlib
+Analysis/Complex/LocallyUniformLimit.lean:171. On q⁻¹<|z|<q, each |z^k|≤q^|k|, so the
+existing coefficient moment is already a uniform analytic-series bound on the entire open
+annulus. This avoids constructing two separate formal power series. API still needs its
+scratch Lean probe before use. Bottcher.AnnulusRoot.exists_log_on_annulus:101 requires a
+zero logarithmic-derivative integral; the normalization proof at lines 373–438 constructs
+g(z)z^{-N} and pays that condition. It can be adapted without treating a supplied winding
+condition as an unconditional source theorem.
+
+Cycle-15 cleanup complete: all owned processes reached terminal exit; all six temporary
+search/proof/audit/lint files were explicitly removed after preserving evidence. Scoped
+whitespace checks passed. Thirty-three finished leaves remain wired. No owned build or
+search process remains. Main goal remains active.
+
+## Sixteenth cycle: the actual periodic symbol and its annular logarithm
+
+Deep query `analytic periodic Laurent symbol winding logarithm monotone cumulative phase rigidity`
+completed in 112.01 seconds with partial=false, no errors or unfinished stages. All 20
+candidate statements and 20 source-argument statements were inspected. Coverage: 68,576
+indexed files, 52,078 compiler-pending and 2,660 stale entries; older-generation snapshot,
+semantic coverage unmeasured, background refresh incomplete. Relevant hits recover actual
+cumulative monotonicity and the continuous-log winding increment. Elliptic and meromorphic
+Laurent periodicity results, fixed archimedean winding, and discrete fractional-tail phases
+do not supply the missing arbitrary-source periodic winding. The one ingredient set is
+unverified and was not treated as a proof. No exhaustive absence claim.
+
+Current primary audit: Ohrysko, *Norm-Controlled Inversion in Measure Algebras*, September
+2026 (https://arxiv.org/html/2609.27714v1), Theorem C/2.29 and Section 2.4. Its Toeplitz
+estimate assumes a Wiener symbol, a normalized lower bound and zero winding. The logarithm
+and one-sided factorization are classical inputs to that argument. It provides no
+representation or zero-index producer from hW. The distinction between inversion of a
+symbol and inversion of its Toeplitz operator reinforces retaining the explicit coefficient
+annihilator proved in cycle 15. No dependence on the new norm-control theorem is introduced.
+
+Burnol, *Deux extensions de Théorèmes de Hamburger*, 2012
+(https://arxiv.org/pdf/1106.4749), Theorem 1 and Corollaries 1–2, was rechecked as the converse
+parent. Its weakened converse still assumes global meromorphic continuation with finitely
+many poles, growth and reflected-half-plane control. Those are not consequences of merely
+writing the actual measurable lock phase, and were not silently inserted here.
+The proposed L1 verdict remains SURVIVES PRELIMINARY ATTACK; its scalar analytic machinery
+is BRIDGE, not independently novel science. The complete L1 paper is being formalized.

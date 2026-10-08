@@ -656,3 +656,260 @@ C13 is explicit and OPEN CORE in PROOF.md. No Lean theorem asserts it.
   https://arxiv.org/pdf/1308.3067 (v2,2015), Definition1.3(A3), was checked:
   discrete support and near-everywhere integral mass are real assumptions.
   Neither is smuggled into our original-source conjecture.
+
+- Continuation audit: old regular-source handle68191 was missing and its
+  process absent. Empty diagnostics were not accepted as success. Replacement
+  mandatory direct audit95111 passed, exit0 and empty log; source hash unchanged.
+  Mandatory summatory direct audit33051 is running at this entry.
+- C16 fibre-cost search74945 completed exit0, partial=false and errors=[];
+  all discovery fields inspected. Coverage reports 68501 files, unmeasured
+  semantic coverage and incomplete background refresh; compiler status is
+  largely pending/source_only. Exact receipt: cycle16-fibre-cost-search.json.
+  The checked fibre-level theorem retains NotchBounded. Inspection of the
+  ramp-scale proof confirms absolute costs; signed forward cancellation does
+  not discharge them. No new theorem or route impossibility follows.
+- Primary external follow-up: Thomas Oliver, Notes on Low Degree L-Data,
+  https://arxiv.org/pdf/1601.05009 , Definition2.1 and section4. Its discrete
+  multiplicity and finite nonintegral-exception inputs remain essential in
+  the stated framework; no application to the arbitrary source measure.
+- Goal control was inspected after compaction and reports paused. Completing
+  records and audits already underway; no further conjecture cycle started.
+
+- Mandatory summatory direct source33051 passed, exit0 with empty diagnostics.
+  Axiom probe11793 started afterwards as the sole own Lean process. Both
+  production hashes still match the successful targeted builds. Both own
+  imports occur exactly once; scoped diff check passed.
+- Current-turn anti-theatre/laziness assessment posted in chat: C15 is a
+  classical formal bridge, not demonstrated scientific novelty. Parent and
+  variance investigations revisited known mechanisms. No effort-based step
+  was skipped. Next hard attack is the source-derived signed fibre cost;
+  WP05 is unproved and research remains paused by goal control.
+
+- C15 verification complete: axiom probe11793 exit0. Each of the three
+  public exports depends exactly on propext, Classical.choice and Quot.sound.
+  Both mandatory source logs are empty. Final hashes revalidated unchanged;
+  all owned processes terminal. Fourteen owned scratch files removed after
+  preserving search/audit receipts. Exact receipt: cycle15-verification.json.
+  No full/umbrella build, numerical experiment, new source premise or resource
+  override. Global lint remains failed on the nine recorded unrelated modules.
+
+## Resumed C17/C18 audit
+
+- Goal ACTIVE again; WP05 OPEN. C17 signed-fibre7851 and self-pairing27084
+  returned partial results; periodic25373 returned partial=false. Compiler
+  coverage largely pending/stale, semantic coverage unmeasured, background
+  refresh incomplete. All returned candidates, source arguments and proposed
+  ingredients inspected. Receipts: cycle17-signed-fibre-search.json,
+  cycle17-self-pairing-search.json, cycle17-periodic-attack-search.json.
+- C18 power-energy74290 partial=true (runtime/Qdrant deadlines and reranker
+  disconnect); all candidate and source-argument fields inspected. Reciprocal
+  lexical37886 returned1433 OR matches, all20 returned declarations inspected.
+  Receipts: cycle18-power-energy-search.json and
+  cycle18-reciprocal-critical-search.json. No absence claim from search.
+- Exact corpus parents read: ForwardCoefficients logarithmic convolution,
+  Toeplitz self-pairing and energy; CommonRatio full-source rigidity;
+  ToeplitzSharpness sparse prime construction and capstone. Sparse ceiling
+  witness is not an hW source.
+- Booker, L-functions as distributions, Definition1.3(A1--A4),
+  https://arxiv.org/pdf/1308.3067 : discreteness/integrality inputs still
+  prevent direct application to the arbitrary canonical measure.
+- Akash Singha Roy, Landau--Selberg--Delange method for products of Dirichlet
+  L-functions I, https://arxiv.org/html/2511.15928v1 and author-hosted
+  https://akashsingharoy.github.io/L_functionsLSD.pdf : analytic product
+  structure remains an input. Parent comparison, not an arbitrary-hW
+  power-energy result or a novelty certificate. Exact-query searches gave
+  no verified stronger applicable parent without that missing structure.
+- Anti-theatre/laziness posted: C17 rediscovered self-pairing; false saturation
+  shortcut exposes a missing constraint. C18 weaker law is BRIDGE, not
+  significant novelty. No effort-based deferral. Next hard target imaginary
+  powers, where this one-sided argument degenerates.
+
+- C18 PowerLogMoment development1635 exit0, then unused trailing tactic
+  removed. Targeted --old leaf80548 exit0, clean, build17s. Generic exact
+  moment-ratio exponent is checked. Complex mathlib APIprobe63283 exit0.
+  PowerCoefficients source development87190 currently sole own Lean process;
+  PowerEnergy drafted but not yet checked. C19 deep search31682 is separate
+  research-tool process, pending. New leaves not yet umbrella-wired.
+- Primary algebraic parent: Winston Alarcon Athens,
+  https://arxiv.org/pdf/2101.07402 , definitions and Theorems1--2 inspected:
+  multiplicative zeta-power coefficients, not arbitrary source rigidity.
+- Existing ProducerLindelof logarithm theorem295 and corollaries460/502
+  checked. Norm bound on the continued logarithm already implies subpower
+  growth of every fixed complex power on strict inner strips. No deduction
+  of critical coefficient energy or shrinking-strip control is made.
+
+- C18 PowerCoefficients development87190 exit0, empty diagnostics; targeted
+  --old leaf49547 exit0 (21s). Final direct and axiom audits still pending.
+- C19 search31682 exit0 but partial=true: Qdrant timeout and local reranking
+  deadline; coverage68535 files, compiler mostly pending/stale, semantic
+  unmeasured, refresh incomplete. All20 candidates,20 source arguments,
+ 1 proof idea and1 ingredient inspected. Proposed hW-to-RH transfer explicitly
+  still requires coefficient nonnegativity/comparison, so it is rejected.
+  Receipt: cycle19-imaginary-energy-search.json. No new source norm law found
+  in the returned results; no completeness or novelty claim.
+
+- C19 lexical90892 exit0,20 returned declarations inspected, receipt retained.
+  Several hits were this turn's own newly indexed source; they are not
+  independent prior evidence and indexing is not verification.
+- C18 energy development23908 isolated one elementary contradiction step;
+  norm_num fixed it. Targeted leaf11793 exit0 (288s), all three new imports
+  occur once. Generic mandatory direct54058 and coefficients44923 both
+  exit0 with empty logs. Energy mandatory direct follows; no umbrella build.
+- C20 search81187 exit0, partial=true: judge worker disconnected and reranking
+  deadline. Coverage68536, compiler mostly pending/stale, semantic unmeasured,
+  refresh incomplete. All20 candidates/20 source arguments/1 ingredient
+  inspected. The generated mixture of forward energy and unrelated damped
+  logarithm estimates does not prove the target. Receipt retained.
+- Source eligibility correction: PrimitiveSetMeanSquare43/284 is restricted
+  to primitive sets/primes. Its135/295 dyadic law only yields an O(log N)
+  all-integer logarithmic energy bound by block summation. Prime-restricted
+  O(log log N) follows by Abel summation. The initial all-integer retirement
+  was erroneous and is superseded in PROOF/RESULT/card/chat; no Lean proof
+  used it. Exact sharp-variance follow-up search96983 remains pending.
+- Primary adjacent parent: Jiang's arXiv preprint
+  https://arxiv.org/html/2507.20653v1 claims Hypothesis H and Selberg
+  orthogonality for cuspidal GL(n) automorphic representations; introduction
+  and domain of Theorem1.2 inspected. Its Euler product/automorphic inputs
+  are not supplied for arbitrary hW. No transplant or independent validation
+  of that paper's claims is asserted. The 2024 published comparison
+  https://link.springer.com/article/10.1007/s00208-024-02892-y likewise works
+  with automorphic L-functions, not arbitrary Weil-positive sources.
+
+- Sharp-variance search96983 exit0, partial=true (text retrieval interrupted),
+  coverage68537, compiler largely pending/stale, semantic unmeasured, refresh
+  incomplete. All20 new candidate statements inspected; all20 source
+  arguments matched previously inspected signatures exactly. The generated
+  Wold-energy/RH recipe is unrelated and retains coefficient comparison;
+  rejected. Receipt: cycle20-sharp-variance-search.json.
+- SignedConvolution source checked: sourceSquareCoeff means
+  (lambda0-Lambda)*1*1, not coefficientwise squared lambda. Its Gaussian
+  transform gives no unsigned square-mass bound. No import/application made.
+- Prior WP03 card673--735 already contains real-power exponent z/(2-z) and
+  the open half-power1/4 improvement. C18 formalizes the general complex
+  range of that same mechanism; its real restriction is not a new idea.
+  Hough's primary author PDF, Lemma6 equation36, checked:
+  https://www.math.stonybrook.edu/~rdhough/angle_results.pdf . It concerns
+  multiplicative half-divisor coefficients. Chang--Gui section2 equation2.1,
+  https://arxiv.org/pdf/2109.13385 , is a circle inequality with weighted
+  logarithmic-coefficient norm; no prime-polydisc/source transfer is supplied.
+- All three mandatory direct source audits now passed:54058,44923,53421,
+  each exit0 with empty diagnostics. Axiom audit follows sequentially.
+  Lint48033 exit1: six unrelated unreachable leaves, no WP05 error and no
+  forbidden declaration. Full exact errors retained in cycle18-verification.
+
+- C18 axiom13073 exit0. All9 public declarations use exactly propext,
+  Classical.choice, Quot.sound. All3 source hashes unchanged, all3 imports
+  once, all3 mandatory source logs empty. Verification complete with the
+  recorded unrelated lint failures. Fifteen terminal owned scratch files
+  removed after retaining receipts. No own Lean/build process remains.
+  C21 research search85796 remains live and its scratch output is retained.
+
+- C21search85796 finished exit0, partial=false/errors=[]; coverage68538,
+  compiler still largely pending/stale, semantic unmeasured, refresh
+  incomplete. All20 new candidates read;20 source signatures identical to
+  previously audited statements. The generic exponential-type/truncated-log
+  recipe is not a uniform source moment bound and was rejected. Receipt
+  cycle21-bohr-moment-search.json retained; terminal scratch removed.
+- Checked exact conditional Soundararajan capstone896 and Steinhaus log-tail
+  Euler-model header. Neither pays arbitrary composite correlations.
+  C21 survives preliminary attack as OPEN CORE, no novel result claimed.
+- End-of-cycle anti-theatre/laziness posted: C18 is a verified bridge;
+  prior real range already known, C20 source-scope mistake corrected. No
+  effort-based skipping. Next cycle must verify parent eligibility first,
+  retain complete mixed composites, and prove the actual source moment
+  budget. All own processes terminal, scoped diff check passed. Goal ACTIVE.
+
+### Cycles22--24 exact source audit
+
+- Source-moment search15596 and phase-source search86142 finished exit0,
+  partial=false/errors=[], with20 candidates and20 source arguments each.
+  All signatures and generated recipes inspected. Compiler metadata remains
+  largely pending/stale, refresh incomplete, semantic coverage unmeasured.
+  The first recipe retains unproved coefficient sign/comparison; the second
+  uses unrelated winding/action objects. Both rejected. Receipts retained.
+- Composite lexical search12139 exit0,20 names/docs read. This lexical schema
+  contains no statements, candidate/source/idea/ingredient fields or coverage
+  metadata. No completeness claim inferred. Receipt retained.
+- Primary sources checked: Booker's Definition1.3 A1--A4 at
+  https://arxiv.org/pdf/1308.3067 explicitly assumes discrete almost-integral
+  spectral data; Helson variants at https://arxiv.org/pdf/1909.11990 concern
+  character-series convergence, not the complete source moment bound.
+  Florea's January2026 survey at
+  https://londmathsoc.onlinelibrary.wiley.com/doi/10.1112/jlms.70376 treats
+  zeta moments and their arithmetic inputs. None supplies arbitrary hW's
+  composite exponential-moment budget.
+- Gamma search19211 exit0, partial=false/errors=[],20 candidates/20 source
+  arguments and1 ingredient recipe inspected. Exact Reflection, Boundary,
+  Energy and Density source definitions/statements checked. Its proposed
+  'zero odd component' step has no producer and uses the wrong reference
+  phase for WP05. Corrected algebra is already contained in the parent.
+  Finite energy and L1/L2 recovery retain an amplitude weight. No source
+  lower bound for that weight was found or assumed. Receipt retained.
+- Read the existing Bohr quotient receiver's exact mechanism: boundedness
+  gives uniform almost periodicity, repeated zeros, then a zero-density
+  contradiction. Fixed-line mean square and global Haar moments do not
+  constitute the missing boundedness premise. No duplicate receiver added.
+- C24 search16797 pending. Current turn has no production source edits,
+  no Lean process and no numerical experiment. No repeated builds needed
+  for unchanged C18 sources; their audited hashes were revalidated.
+
+- C24search16797 exit0, partial=false/errors=[],20 candidates/20 source
+  arguments/1 ingredient inspected. Compiler mostly pending/stale, semantic
+  coverage unmeasured, refresh incomplete; no completeness inference.
+  Generated short-packet cost argument does not control the arithmetic cubic.
+- Primary C24 parent: Harper, IMRN2023 section2.3, Euler Product Result1,
+  https://academic.oup.com/imrn/article/2023/3/2095/6448070 . Exact local Taylor
+  expansion and prime-independence step checked. It uses Euler structure,
+  rather than deriving that structure from full positivity.
+- Existing DivisorCompletion source read fully: composite entry may exactly
+  compensate the two prime entries; no composite sign deletion licensed.
+  The chi_3 toy in PROOF is a paper counterexample only to the signed-mean
+  plus coefficient-size shortcut, not an original full-positive source.
+  C24 remains an open conjecture. No new mathematical Lean assertion added.
+
+### Cycles25--26 audit, 2026-10-08
+
+- C25 cubic-pairing search35741 exit0, partial=false/errors=[]; all20
+  candidate and20 source statements and generated ingredients inspected.
+  The proposed majorant/minorant bridge adds unpaid sign/comparison inputs.
+- C25 Hankel-source search76825 exit0 with partial=true: text/source retrieval
+  interrupted and reranking/decomposition hit the local runtime deadline.
+  All available20 candidates/20 source arguments and the generated polar-log
+  recipe inspected. The recipe concerns a different boundary kernel.
+- C26 spectral-mass search74455 exit0, partial=false/errors=[]; all20
+  candidates/20 source arguments and ingredients inspected. Atomic/ZetaPower
+  hits retain representation or quantization inputs. None constructs them.
+- All three report background refresh incomplete, mostly pending/stale/source
+  compiler data, and unmeasured semantic coverage. No completeness or novelty
+  inference made. Raw receipts retained below.
+- Exact original-source route checked in PowerEnergy and ForwardCoefficients:
+  weil_multiplicativeToeplitz_bound (weilPositive_of_weilPositiveFull hW).
+  Source theorem and its polar-free narrow-bump archimedean cost read. C25's
+  Schur bound is an exact paper consequence, not a new verified Lean export.
+- New WP03 GaussianProfile/MellinBound/PoleSign/HarmonicSign signatures and
+  GaussianShift's actual spectral identity read. Harmonic sign is an
+  unconditional linear deviation law. No cubic bound, log-residue value or
+  vanishing spectral integral follows merely by dropping a positive term.
+- Primary parent updates: Perfekt, September3 2026, arXiv:2609.03855v1,
+  Theorem1.1/Corollary1.2 and proof mechanism inspected:
+  https://arxiv.org/html/2609.03855v1 . This settles the standard multiplicative
+  Hilbert bounded-symbol problem; it does not handle arbitrary lambda(ab).
+  Brevig et al., https://arxiv.org/pdf/1411.7294 is its2016 ancestry.
+  Ma--Lu--Zu, https://arxiv.org/html/2608.22882v2 , section6, requires coefficient
+  comparison or positive moment data absent for the signed source.
+- Nearby2026 crystalline-measure work,
+  https://arxiv.org/abs/2605.23884 , assumes pure-point locally finite support
+  on both sides at its starting definition. It is no atomicity producer for
+  the canonical measure. No general almost-periodicity shortcut imported.
+- Primary parity parent: Kaczorowski--Perelli,2015, Theorem1.1 and introduction,
+  https://journals.sns.it/index.php/annaliscienze/article/download/382/372/601 .
+  It works inside the Selberg class, retaining Euler structure and analytic
+  twist assumptions. Do not treat a current crawl date as a2026 publication.
+- No production Lean file changed. No Lean/build process started, no numerical
+  experiment performed. New claims remain paper deductions or OPEN CORE;
+  previous successful audits are not presented as verification of C24/C26.
+- C26 parity search37451 exit0, partial=false/errors=[]; all20 candidates,
+  all20 source arguments and generated ingredients inspected. Exact
+  notchBochner_le retains NotchSmall plus all gcd-harmonic fibre limits.
+  Compiler mostly pending/stale/source-only, refresh incomplete, semantic
+  coverage unmeasured. Generated odd-parity/polar recipe rejected.

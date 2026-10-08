@@ -984,5 +984,401 @@ preserves the exact equality
 
 No reality claim about P(1) is needed for this real-part identity. The
 later identification with the ordinary real harmonic limit supplies it.
-The implementation is under audit; the arithmetic extraction and Mellin
-asymptotic are still outstanding.
+The canonical subtraction, pole numerator and contour transport are now
+formally audited. The arithmetic extraction below is also audited; the
+one-sided Mellin sign remains to be formalized.
+
+For coefficient extraction use the literal complex sequence
+a=((lambda0-Lambda)*1)*1. Full positivity gives absolute convergence of
+lambda0 for every real exponent>1. The von Mangoldt and constant-one
+series converge absolutely there too, so the convolution theorem gives
+L(a,s)=V(s), with no pointwise coefficient estimate. For s=3/2-it, put
+w=1-s=-1/2+it. The corpus functional equation gives F(s)=chi(w)V(s)
+and g_T(1-w)=g_T(w). Reflection t->-t and the generic chi transform
+therefore identify the actual right contour with 2*pi*sum a(n)J_T(n).
+The coefficient at zero vanishes by the convolution definition. This
+preserves the signed sequence throughout the exact identity.
+
+The aggregate kernel bound can avoid introducing finite partial sums:
+for every integer n>=1, split at Y=T^(4/3). In the near range, multiply
+the pointwise approximation by n^(9/8); its two terms are bounded by
+T^(5/6) and T^(1/2), respectively. In the far range, both kernels give
+T^2*n^(-7/8)<=T^(5/6). Thus one uniform pointwise bound for
+n^(9/8)*|J_T(n)-2*exp(-4*pi^2*n^2/T^2)| can be multiplied by the
+summable majorant |a(n)|/n^(9/8) and summed. This also verifies
+summability before subtracting the two infinite series.
+
+### Cycle30c candidate refinement: one-sided Mellin bound instead of an asymptotic
+
+The full double-pole Mellin contour shift is stronger than the sign target
+requires. Let H(x)=sum a(n)exp(-(n*x)^2), x>0. The exact signed contour
+identity, its nonpositive spectral term and the aggregate kernel error
+give Re H(x)<=C*x^(-5/6) for0<x<=1, after enlarging C to absorb the
+bounded pole term and the fixed Gaussian scaling. The source pole value
+is fixed, so its sign need not be known for this upper estimate.
+For x>=1, exp(-(n*x)^2)<=1/(n*x)^2 and absolute summability at2 give
+|H(x)|<=S2*x^(-2). The n=0 coefficient is zero.
+
+For1<sigma<3/2, absolute summability at sigma justifies Fubini:
+
+    integral_0^infinity x^(sigma-1) H(x) dx
+      = Gamma(sigma/2)/2 * V(sigma).
+
+Indeed each absolute term integrates to
+|a(n)|*n^(-sigma)*Gamma(sigma/2)/2; its sum is finite. Taking real
+parts and applying only the upper bound on H gives
+
+    Gamma(sigma/2)/2 * Re V(sigma)
+      <= C/(sigma-5/6) + S2/(2-sigma) <= 6*C + 2*S2.
+
+The real Gamma factor is positive and continuous at1/2. Multiply by
+(sigma-1)^2 and let sigma decrease to1. The verified candidate pole
+identity gives the left limit sqrt(pi)/2*Re P(1); the right tends to0.
+Consequently Re P(1)<=0. Identifying P(1) with the ordinary real harmonic
+limit still gives the same C30 conclusion.
+
+Kill audit: this uses an upper bound, not an absolute bound, on H near0.
+It excludes a positive double-pole coefficient and permits a negative
+one. It does not invoke Mellin holomorphy across1, assume positivity of
+the signed coefficients, or infer vanishing of the pole. The corpus
+MellinPoleRadialGrowth no-go concerns absolute growth and cannot directly
+replace this one-sided argument. Verdict BRIDGE, paper refinement under
+corpus audit; no new Lean conclusion is claimed here.
+
+The next assembly must establish convergence of both extracted series,
+not only their difference. Absolute Dirichlet summability at2 and
+gaussW(T,n)<=T^2/n^2 prove absolute convergence of sum a(n)gaussW(T,n).
+Adding twice this series to the already absolutely convergent error
+series proves convergence of sum a(n)J_T(n). Thus linearity gives
+
+    2*Re sum a(n)gaussW(T,n)
+      = Re sum a(n)J_T(n) - Re sum a(n)(J_T(n)-2*gaussW(T,n)).
+
+The exact contour bound controls the first term by
+|Re P(1)|*exp(1/4)/2 for T>=1; the error norm controls the second by
+C*T^(5/6). Absorb the fixed pole bound using1<=T^(5/6). This pays the
+signed Gaussian upper bound with the actual source, before any Mellin
+comparison. The subsequent Mellin argument must retain a separate proof
+of absolute integrability; an identity between default-valued integrals
+alone would not suffice for the one-sided comparison.
+
+For the Lean implementation, use Hpi(t)=sum a(n)exp(-pi*n^2*t).
+Its exact transform is Mellin(Hpi,sigma/2)=Gamma_R(sigma)*V(sigma),
+directly matching mathlib hasSum_mellin_pi_mul_sq. The Gaussian parameter
+T=sqrt(4*pi/t) yields Re Hpi(t)<=C*t^(-5/12) on0<t<=1 and
+|Hpi(t)|<=S/t on t>=1. For1<sigma<3/2 the two real Mellin integrals are
+bounded above by12*C and4*S. The known identity Gamma_R(1)=1 and
+continuity at1 identify the rescaled limit directly with Re P(1).
+No separate positivity assertion about Gamma_R away from1 is needed.
+Continuity at1 follows, for example, by inverting the globally
+differentiable reciprocal Gamma_R and using its nonzero value at1.
+
+The uniform comparison need not evaluate parameter-dependent integrals.
+For0<t<=1, t^(sigma/2-1)*Re Hpi(t)<=C*t^(-11/12); for t>=1 the
+same integrand is <=S*t^(-5/4), whenever1<sigma<3/2. These fixed powers
+are integrable on the respective intervals. Their piecewise sum therefore
+gives a uniform finite upper bound for the real Mellin integral. This
+upper envelope is not an absolute-value majorant; actual Mellin
+integrability must still be supplied independently by absolute Dirichlet
+summability and the termwise Gamma norm integrals.
+
+The following integrability step was checked in a minimal mathlib scratch
+with `lake env lean` (exit0, no diagnostics). It is preserved here for the
+actual-source Mellin implementation; it is not itself a new source
+conclusion. Both summand integrability and the weighted norm sum still
+have to be instantiated for a(n)exp(-pi*n^2*t).
+
+```lean
+open Complex MeasureTheory Set Filter Topology
+
+example {μ : Measure ℝ} {f : ℕ → ℝ → ℂ}
+    (hf : ∀ n, Integrable (f n) μ)
+    (hs : Summable fun n => ∫ t, ‖f n t‖ ∂μ) :
+    Integrable (fun t => ∑' n, f n t) μ := by
+  refine ⟨(AEMeasurable.tsum fun n =>
+    (hf n).aestronglyMeasurable.aemeasurable).aestronglyMeasurable,
+    hasFiniteIntegral_iff_enorm.mpr ?_⟩
+  calc
+    (∫⁻ t, ‖∑' n, f n t‖ₑ ∂μ) ≤ ∫⁻ t, ∑' n, ‖f n t‖ₑ ∂μ :=
+      lintegral_mono fun _ => enorm_tsum_le_tsum_enorm
+    _ = ∑' n, ∫⁻ t, ‖f n t‖ₑ ∂μ :=
+      lintegral_tsum fun n => (hf n).aestronglyMeasurable.enorm
+    _ = ∑' n, ENNReal.ofReal (∫ t, ‖f n t‖ ∂μ) :=
+      tsum_congr fun n =>
+        (ofReal_integral_norm_eq_lintegral_enorm (hf n)).symm
+    _ < (⊤ : ENNReal) := hs.tsum_ofReal_lt_top
+```
+
+The norm-integral calculation to instantiate this is already present in
+mathlib NumberTheory/LSeries/MellinEqDirichlet.lean, in the proof of
+hasSum_mellin: GammaIntegral_convergent gives the scaled individual
+integrals, and its norm calculation gives the summable majorant.
+The exact pi-square transform is hasSum_mellin_pi_mul_sq. The present
+six-leaf source result supplies all arithmetic summability and Gaussian
+envelopes, but this final Mellin instantiation is still unformalized.
+
+### C30d harmonic identification and remaining frontier
+
+Let b(k)=lambda0(k+1)-1. C29 proves ordinary convergence of its Dirichlet
+series on Re s>1/2. The corpus uniform Abel theorem makes its sum
+holomorphic there, hence continuous at1. On Re s>1 absolute convergence
+and the source identity identify this sum with
+
+    R(s) - (zeta(s)-1/(s-1)).
+
+The existing zeta Laurent limit is gamma. Therefore the ordinary centered
+harmonic sum has complex value R(1)-gamma. Adding the usual harmonic
+constant gamma and subtracting the von Mangoldt harmonic constant -gamma
+gives the deviation limit R(1)+gamma=P(1). Every interchange here is paid
+either by absolute convergence to the right of1 or ordinary convergence
+at1 plus continuity from an already convergent half-plane.
+
+The old WeilConeHarmonicPinning.nonpos_of_tendsto_harmonicSum additionally
+requires NotchSmall. C30's exact target removes that premise. Its scalar
+sign still does not prove zero, positivity of coefficients, absolute
+harmonic summability, the signs of all twisted fibres, or WP03's uniform
+quotient bound. Those remain distinct gates. The next conjectures must
+address localization/twisting or directly bound the quotient, not promote
+the scalar inequality to rigidity without proof.
+
+### C31 preliminary successor: polynomial weights and the scalar face — FAILED
+
+2026-10-08 kill audit: the phase-free arithmetic profile and Mellin
+multiplier below are FALSE AS STATED. The kernel approximation is
+J_T(y)=2 W_T(y) cos(2*pi*y)+error, not 2 W_T(y)+error.
+C30 uses integer y, where the cosine is exactly one. At y=n/2 the
+factor is (-1)^n. The historical candidate below is retained to expose
+the failed step; none of its harmonic-equality conclusions is established.
+
+This is a conjecture under audit, not an established consequence. For a
+real finite Dirichlet polynomial Q(s)=sum_m c_m m^(-s), multiply the source
+test by q(s)=Q(s)Q(1-s). The critical-line value is |Q(s)|²; q is symmetric
+under s->1-s and bounded on every closed vertical strip. Thus the
+canonical reflection and positive spectral pairing should persist.
+
+The exact corpus kernel transform includes a factor r:
+
+    integral chi(w)L(a,1-w) r^w g_T(w) dt
+      = 2*pi*r*sum_n a(n)J_T(n*r).
+
+Since q(s)=sum_(m,k) c_m*c_k/m * (m/k)^(1-s), its arithmetic Gaussian
+profile is sum_(m,k) c_m*c_k/k * Hpi((m/k)^2*t). Its Mellin transform is
+Gamma_R(s)*V(s)*Q(s)*Q(1-s), with no missing scale factor. Proving the
+same O(T^(5/6)) aggregate error at each fixed positive scale would give
+RePsource(1)*Q(1)*Q(0)<=0. For Q(s)=1-c*2^(-s), 1<c<2 gives Q(1)Q(0)<0;
+together with C30 this would force RePsource(1)=0.
+
+Kill gates: prove actual convergence for the finite dilates; extend the
+kernel error to all positive real frequencies rather than assert scaling
+of J; transport the exact weighted contour and its residue; keep the
+spectral term's sign; prove the literal Mellin factor. Harmonic equality
+is not the riemannKernelAutocorr equality in the existing exposed-point
+theorem. No rigidity conclusion follows from that name alone. This
+candidate is not yet Lean code, nor a dependency-closed formal result.
+
+The first concrete test need only use Q(s)=1-(3/2)*2^(-s). Its profile is
+
+    Hq(t)=(17/8)*Hpi(t)-(3/4)*Hpi(t/4)-(3/2)*Hpi(4*t),
+
+and its Mellin multiplier is
+
+    q(s)=17/8-(3/4)*2^s-(3/2)*2^(-s),  q(1)=-1/8.
+
+The negative coefficients mean C30's separate upper bounds cannot be
+combined to prove an upper bound for Hq. The new positive boundary
+pairing with |Q|² is essential; using only existing scalar inequalities
+would be circular. This explicit three-dilate test is the smaller first
+formal target if the weighted contour audit succeeds.
+
+C30d formal status: GaussianProfile, Mellin, MellinBound, PoleSign and
+HarmonicSign now formalize the full C30 paper chain above. All five
+targeted and final direct checks pass; all12 public axiom lists are
+standard-only. In particular the actual Mellin integrability obligation,
+pole sign and ordinary harmonic identification are closed. The phase-free
+C31 successor failed the arithmetic kill audit; WP03 remains open.
+
+### C31a positive survivor: exact scaled arithmetic extraction
+
+Write a(n)=sourceSquareCoeff(lam)(n), W_T(y)=exp(-4*pi^2*y^2/T^2),
+and J_T(y)=leftKernel(T,y). The already-proved pointwise kernel estimate
+is |J_T(y)-2 W_T(y) cos(2*pi*y)| <= A(y/T^2+1/T) for y>=0,T>=1.
+The square-tail estimates give |J_T(y)|<=B*T^2/y^2 and
+W_T(y)<=T^2/y^2 for y>0. With |cos|<=1 and Y=T^(4/3), splitting
+0<y<=Y and y>Y proves, uniformly for ALL positive real y,
+
+    y^(9/8) |J_T(y)-2 W_T(y) cos(2*pi*y)| <= C*T^(5/6).
+
+Indeed the near terms are A(T^(5/6)+T^(1/2)); the far term is
+(B+2)T^2 Y^(-7/8)=(B+2)T^(5/6). Full positivity already supplies
+S=sum |a(n)|/n^(9/8)<infinity, with a(0)=0. Substitution y=n*r,
+r>0, gives absolute summability of the actual source error and
+
+    norm(sum a(n)[J_T(n*r)-2W_T(n*r)cos(2*pi*n*r)])
+      <= C*S/r^(9/8)*T^(5/6).
+
+Both main series are absolutely summable separately: use the square-tail
+bounds above and sum |a(n)|/n^2<infinity. Thus sum subtraction is valid.
+The existing exact chi-transform, the zeta functional equation, and
+t->-t give the literal source contour identity
+
+    integral F(3/2+it)*r^(1-(3/2+it))*g_T(3/2+it) dt
+       =2*pi*r*sum a(n)J_T(n*r).
+
+Consequently its difference from
+4*pi*r*sum a(n)W_T(n*r)cos(2*pi*n*r) is O_r(T^(5/6)).
+The stronger quantifier order exposed by this proof is also valid:
+one constant K=2*pi*C*S works for EVERY r>0, with error
+K*r^(-1/8)*T^(5/6). This follows exactly from
+r/r^(9/8)=r^(-1/8); no scale-dependent source constant is needed.
+For a reduced rational r=m/k the cost is (k/m)^(1/8).
+This uniform refinement is a BRIDGE, not literature-novel arithmetic
+rigidity; it retains information needed for growing denominator families.
+This is a dependency-closed paper proof of the positive survivor.
+Formal status: COMPLETE for C31a. TwistedGaussianError and
+TwistedExtraction prove all these statements, including the uniform
+quantifier order, contour integrability and half-scale parity identity.
+Both targeted and final direct Lean checks pass; all nine public axiom
+audits are standard-only. No smallness, sign, or twisted pole-limit
+premise has been added. It is a BRIDGE, not uniform quotient control.
+
+The corrected polynomial profile for Q(s)=1-c*2^(-s) is
+
+    (1+c^2/2)H(t) -(c/2)H_alt(t/4) -c H(4t),
+    H_alt(t)=sum a(n)(-1)^n exp(-pi*n^2*t).
+
+Its Mellin transform contains the distinct additive twist V_alt(s).
+It does not factor as Gamma_R(s)V(s)Q(s)Q(1-s). The new research
+question is whether positivity constrains the actual additive-twist
+residues strongly enough to control WP03's quotient. Weighted positivity
+is now paid by C31b. Twisted residue limits remain unpaid.
+
+### C31b completed: the actual two-term polynomial inequality
+
+For each real c and hW, the exact target is existence of C>=0 with
+
+    Re[(1+c^2/2)H(t) -(c/2)H_alt(t/4) -cH(4t)] <= C*t^(-5/12)
+
+for 0<t<=1. This assertion has no NotchSmall, local-mass, convergence
+at the pole, or sign assumption on the deviation. It is a BRIDGE to
+the stronger conjecture that the full fibre Bochner law can be obtained
+from hW alone. Twisted pole convergence is a separate open core of that
+stronger conjecture, not a premise of the present Gaussian inequality.
+
+Paper proof of the displayed Gaussian bound: put Q(s)=1-c*2^(-s),
+q(s)=Q(s)Q(1-s). This entire function is bounded on every closed
+vertical strip, obeys q(1-s)=q(s) and q(conj(s))=conj(q(s)), and has
+q(1/2+iu)=|Q(1/2+iu)|^2>=0. Multiply the C30 canonical pairing by q.
+Its existing quarter-strip inverse-square decay persists. Vertical
+shift to Re=1/2 shows that its real integral is zero, because the
+canonical pairing there is purely imaginary and both q and g_T are
+real. The actual Herglotz pairing theorem applies to zeta(s)zeta(1-s)
+g_T(s)q(s): holomorphy and both reflection laws hold, and multiplication
+by the strip bound for q preserves its existing fourth-order decay.
+It gives a nonnegative real Phi pairing and hence a nonpositive real
+source pairing on Re=3/4. All these integrals converge absolutely by
+the same decay and weighted boundary-measure Fubini theorem as C30.
+
+On 3/4<=Re s<=3/2, the source's existing tail decay also persists
+after multiplication by q. Its sole pole has residue
+-P(1)q(1)g_T(1)/2. The residue shift therefore bounds the real
+right-line integral by -pi*Re(P(1))*q(1)*exp(1/(4T^2)), uniformly
+bounded above for T>=1. No value or sign of q(1) is assumed.
+
+The exact expansion, in the normalization of C31a, is
+
+    q(s)=1+c^2/2 -(c/2)*2^(1-s) -c*(1/2)^(1-s).
+
+C31a extracts the three source contours, with scale factors 1,2,1/2.
+After division by 4*pi their combined Gaussian term is
+(1+c^2/2)S_T(1)-c*S_T(2)-(c/2)*S_T(1/2), where
+S_T(r)=sum a(n)W_T(nr)cos(2*pi*nr). The absolute error is
+O_c(T^(5/6)) by the three C31a norm bounds. Integer cosine identities
+give S_T(1)=H(t), S_T(2)=H(4t), S_T(1/2)=H_alt(t/4),
+where t=4*pi/T^2. The compact remaining T interval when 0<t<=1
+is already within T>=1. This proves the displayed bound on paper.
+Lean formalization COMPLETE: PolynomialWeight, PolynomialPairing,
+PolynomialShift, PolynomialGaussian and PolynomialProfile prove the
+actual statements. Final targeted/direct checks pass without warnings;
+all30 public axiom reports are standard-only. The final profile theorem
+is exists_re_sourceTwoPointGaussianProfile_le.
+
+SOTA audit: rational additive twists are classical (e.g. Fazzari,
+https://arxiv.org/abs/2306.15553). Gcd Gram factorization and totient
+diagonalization are also classical (Guillot--Wu,
+https://arxiv.org/html/1901.01947v1, introduction). The internal
+WeilConeNotchBochnerLaw requires NotchSmall and all gcd-sum limits;
+GcdWeightedSeriesInversion pays the sieve limit using an absolute tail.
+Neither is available for this arbitrary source. Any novelty claim must
+concern removal of those analytic assumptions, not these representations.
+
+### C32a candidate: actual parity pole compactness, without a pole premise
+
+Let V_alt(s)=sum a(n)(-1)^n/n^s on Re s>1. This converges absolutely
+by the actual source coefficient theorem. Write ell=Re(P(1))<=0 and
+
+    a_sigma=(sigma-1)^2 Re(Gamma_R(sigma)V(sigma)),
+    b_sigma=(sigma-1)^2 Re(Gamma_R(sigma)V_alt(sigma)).
+
+The corpus's ordinary-pole theorem gives a_sigma -> ell. No limit for
+b_sigma is assumed. The next precise conjecture is the unconditional
+asymptotic interval bound
+
+    dist(b_sigma, [-ell/2+sqrt(2)*ell, -ell/2-sqrt(2)*ell]) -> 0
+
+as sigma decreases to1. In particular b_sigma is bounded near1. This
+is weaker than convergence, and neither convergence nor ell=0 is claimed.
+The parent C32 conjecture remains the actual full arithmetic fibre law;
+this interval assertion is its first analytic step, not a replacement
+for C32 or WP03.
+
+Dependency-closed paper argument from C31b: the alternating Gaussian
+series is absolutely Mellin integrable for Re s>1 by the same norm
+series as the untwisted source. Its exact Mellin transform is
+Gamma_R(s)V_alt(s). Changing t to t/4 and4t in those actual integrals
+then gives the weighted transform
+
+    Gamma_R(s)[(1+c^2/2-c*2^(-s))V(s)
+                 -(c/2)*2^s V_alt(s)].
+
+The small-t bound of C31b and the actual norm tail O_c(1/t) give a
+fixed integrable real upper envelope on1<sigma<3/2, exactly as in C30d:
+C_c*t^(-11/12) below1 and D_c*t^(-5/4) above1. The tail norm bound
+follows from the all-T twisted Gaussian bound at scale1/2, not from
+a signed upper estimate. Thus the real transform is at most B_c,
+independent of sigma. Multiplying by(sigma-1)^2 yields
+
+    (1+c^2/2-c*2^(-sigma))*a_sigma
+      -(c/2)*2^sigma*b_sigma <= (sigma-1)^2 B_c.
+
+Take the TWO FIXED coefficients c=+sqrt(2) and c=-sqrt(2).
+Their nonzero b_sigma coefficients tend to minus/plus sqrt(2).
+Dividing each inequality by its positive absolute coefficient and
+using a_sigma->ell gives respectively
+
+    liminf b_sigma >= (sqrt(2)-1/2)*ell,
+    limsup b_sigma <= (-sqrt(2)-1/2)*ell.
+
+These statements mean the corresponding eventual epsilon bounds;
+they do not presuppose a finite liminf/limsup or any cluster point.
+Together they prove the displayed interval assertion and boundedness.
+Every cluster value beta therefore satisfies
+(beta+ell/2)^2<=2*ell^2. When ell=0 the interval collapses and the
+normalized parity expression tends to0; for ell<0 this argument leaves
+a nontrivial interval. Sharpness here refers only to the two-term
+quadratic constraint: every beta in this interval satisfies
+ell*c^2/2-(ell/2+beta)*c+ell<=0 for every real c.
+
+Kill audit: no phase-free factorization, no asserted parity Laurent
+expansion, no extraction of an ordinary subseries limit from ordinary
+convergence, and no coefficient sign. The endpoint bound is a BRIDGE;
+its usefulness is replacing an assumed twisted pole by an actual
+asymptotic constraint. Lean status: OPEN. The first implementation debt
+is actual alternating Mellin convergence and the exact weighted identity.
+
+The quadratic inequalities alone cannot establish parity convergence
+when ell<0: any real-valued function b_sigma lying in the displayed
+nontrivial interval satisfies all their limiting quadratic constraints,
+including functions without a limit. This is a logical obstruction to
+that deduction, not a full-positive arithmetic counterexample. A proof
+of ordinary arithmetic-limit existence must exploit additional source
+structure; finite-dimensional discriminant algebra cannot supply it.

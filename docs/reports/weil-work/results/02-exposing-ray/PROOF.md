@@ -79,3 +79,37 @@ LOCAL-SEED-CAPACITY-PROOF.md closes the full unequal-seed finite variance identi
 ## Cycle 13: exact sampled mass and stability
 
 LATTICE-REPAIR-PROOF.md is formalized in WeilWorkExposingRayLatticeMass.lean. Every rounded sample isolates one actual Fejer covariance coefficient. The retained pole product gives exact mass recovery; only one actual half-pole is needed. Its stability bound controls coefficient mass by the complete cosh-weighted absolute sampled trace, and sampled nonnegativity classifies precisely zero active rows. All seven public capstones pass scratch/axiom and final installed source audits. This positive conservation/stability survivor does not supply the universal signed energy lower bound.
+
+## Cycle14: all-order polar differential tail sign
+
+Dependency-closed proof is in DIFFERENTIAL-PARITY-PROOF.md. The signed source polynomial has degree k+4 and positive leading coefficient 4*pi^2*(2*pi)^(k+2). Its full theta series supplies a positive right-tail lower envelope and a two-sided double-exponential upper envelope. In the convolution, any adverse product places one argument below the fixed cusp threshold and the other beyond y-R, costing exp(-a*exp(2(y-R))). The central interval contributes twice exp(-2*pi*exp(2)*exp(y)); the adverse integral is eventually at most half that contribution. Exact parity then converts convolution to (-1)^k times autocorrelation. This proves the sign law without dropping a signed region. All-order Fourier linearity proves actual polar/radical zeros separately.
+
+The complete scratch proof and final installed leaf/cache audit pass without warnings, with ten public scratch axiom audits using only the standard three axioms. This is not compact-support admissibility or an energy bound. The next compact correction and the actual exposing-rate comparison are explicitly OPEN in COMPACT-ODD-SOURCE-CONJECTURE.md.
+
+## Cycle 15: strict translation-width boundary
+
+See DIFFERENTIAL-WIDTH-PROOF.md for the dependency-closed proof. A fixed cusp polynomial is absorbed into every subcritical theta exponent; exact parity supplies the second tail. Complex finite synthesis has a uniform envelope with coefficient l1 mass, and the full autocorrelation has an integrable norm majorant. The literal lower exposing-weight envelope then yields uniform exponential separation, homogeneous finite-mixture amplification, fixed-mixture nonproportionality, and invariance under independent recentering. The final formal packet uses all actual derivatives Phi^(k), so finite polar differential filters and order-zero translation filters are included. No spectral or energy sign is inferred.
+
+
+## Cycle16 proof chain: actual opposite proportion
+
+The complete paper argument is [CRITICAL-WIDTH-ODD-PROOF.md](CRITICAL-WIDTH-ODD-PROOF.md). The checked source leaf expands the finite real covariance at all25 pairs, pays integrability for every translated full or truncated profile, and transports the identity to the actual complex Weil autocorrelation. Its entire Fourier multiplier proves both poles and all actual zero evaluations; compact C² admission and signed-energy integration retain every residual.
+
+The checked tail leaf identifies H with an order-zero Phi packet and recenters its translation window to radius3/4. The uniform cycle15 packet estimate also controls every remaining polar row because its shift is at most1/2 and coefficient norm sum at most2. Dyadic summability therefore bounds the complete infinite remainder. Combining this with the already proved literal lower envelope at rate2*pi*exp(-2) gives exponential relative error, ratio minus one, and strict negative tail. No positivity or spectral hypothesis enters these actual-source statements.
+
+The remaining core is unchanged. Full G is noncompact; compact G_L has exact poles but not exact negative exposing trace. The faster residual is not zero at the finite head, and the exact signed energy identity does not pay that head's correction cost. The zero-trace lower condition is the existing PrimeBlindPositive condition, not a premise established by this construction. See CRITICAL-HEAD-COST-CONJECTURE.md for the next hostile paper audit.
+
+## Cycle17: exact matched-ray mass and zero-margin boundary
+
+MATCHED-MASS-MARGIN-PROOF.md gives the dependency-closed argument. The complete complex correlation is bounded by physical mass using 2ab<=a²+b² and translation invariance. One actual positive exposing atom then bounds the mass of EVERY matching nonnegative mixture below, with the exact 4*pi normalization. Combine this with natural-aperture finite realization and the literal tail envelope to obtain the exponentially small normalized excess upper bound and strict failure of every positive mass margin. No energy lower hypothesis occurs. The complete scratch and final installed leaf/cache audits pass; no global positivity conclusion is drawn.
+
+The stronger opposite-ray head-cost route is DEFERRED, not disproved: its weak-duality consequence is full cone uniqueness. Single-source exposure, ordinary near-radical approximation and scalar factorization do not supply the missing endpoint. The next spectral-density conjecture concerns the actual retained source plus positive repairs, with an explicit novelty/utility gate before implementation.
+
+
+## Cycle18 — primitive loss and optimized survivor
+
+PRIMITIVE-SHARPNESS-PROOF.md closes the full argument. The old scalar logarithmic inequality discarded -1 in log x<=x-1; restoring it gives B_b(f)+M(f)/4<=E(f) for all compact complex C2 sources. The bounded inverse multiplier gives 0<=P<=16*M. For M>0, P>0 follows from varying b; b=log(M/P)/4 yields E>=(log(M/P)/4-C)*M. The zero-mass case follows from P<=16*M and is included without a nonzero-mass premise. An exact multiplier identity identifies P with the original smooth compact primitive's Fourier mass.
+
+Cosine inversion at zero gives M=2*pi*physicalMass. Apply cycle17's actual exact-ray counterexamples with physical-mass debit pi/2 and sum the restored inequality against arbitrary nonnegative coefficients. The SAME family makes every row-dependent old surrogate smaller than T-c*tau_N, for every fixed real c. No sign of E-T is inferred. Both final installed source audits pass; axiom audit is tracked in EVIDENCE.md.
+
+[OPEN CORE] VANISHING-MASS-DEFECT-CONJECTURE.md asks for a universal lower bound with negative mass error K/(1+log N) on the cofinal diagonal. Canonical repair mass is uniformly bounded on paper, permitting that error to vanish for each fixed original family. The producer estimate remains completely unpaid; a conditional reduction alone is not another research contribution.
