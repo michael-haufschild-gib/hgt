@@ -1918,3 +1918,8 @@
   ceiling C. Closed-polydisc extension and coefficient detection have no
   cardinality-dependent constant. New EulerPolydisk leaf wired; final
   direct audit running. Local-tail arithmetic scratch remains unaudited.
+- EulerPolydisk final84285 exits0, empty log. All9 axiom7057 checks
+  exit0, only standard axioms; no source edits since final audit.
+  Index58262 exits0 (2 changed); lint70724 same five unrelated unreachable
+  HTGeometry leaves as27233. Eleven C49 leaves wired, no umbrella or
+  unchanged-module rebuild. Local-tail/source-gain scratch now auditing.

@@ -587,3 +587,12 @@ H>0 from the strict prime-power profile. Its final corollary supplies
 premise. Final direct13882 and all14 axiom96206 audits pass; standard
 axioms only. Ten C49 leaves wired. Prime-tail summability and complete
 class rigidity remain unfinished; WP03 remains open.
+
+C49 coefficient gains: WeilWorkSingularArithmeticEulerPolydisk.lean
+proves that a finite torus real-part ceiling C forces
+product_i(1+norm(a_i(1))*r_i/4)<=2C-1, independently of dimension.
+Maximum-principle extension and exact Caratheodory coefficient detection
+are paid. Final direct84285 and all9 axiom7057 audits pass, standard
+axioms only; leaf wired. Arithmetic logarithm comparison and prime-tail
+summability are next. Eleven C49 leaves wired; full class theorem and
+WP03 remain incomplete.

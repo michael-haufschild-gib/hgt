@@ -2492,3 +2492,11 @@ five unrelated HTGeometry unreachable leaves. Next: finite polydisc
 maximum principle and exact Caratheodory first-coefficient bound using
 existing HTGeometry/CaratheodoryCoefficient.lean. Scratch44944 running.
 No prime-tail/class completion claim; no scientific novelty established.
+
+C49 EulerPolydisk formal checkpoint: nine public theorems, exact
+finite-product first-coefficient gain from the torus real-part bound.
+Final direct84285/all9 axiom7057 PASS, standard axioms only; leaf wired.
+Index58262 PASS; lint70724 reports same five unrelated HTGeometry
+unreachable leaves. Next local-tail/source-gain scratch joins actual
+H and A_P, proves local positivity and quadratic tail bound, then sums
+logarithmic gains. Prime summability and class rigidity still unpaid.
