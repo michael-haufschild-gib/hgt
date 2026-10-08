@@ -1,6 +1,8 @@
-# Resonant periodic phase rigidity — candidate L1
+# Resonant periodic phase rigidity — theorem L1
 
-Status: dependency-closed paper argument below; **NOT YET LEAN VERIFIED**.
+Status: dependency-closed paper proof and clean final Lean leaf audit complete.
+All 23 public declarations and their dependencies use only propext, Classical.choice
+and Quot.sound. Fresh lint reports 15 unrelated unreachable modules, no quantization error.
 Verdict: **SURVIVES PRELIMINARY ATTACK**. Scientific novelty remains provisional.
 The general almost-periodic conjecture L and the full WP04 target remain open.
 
@@ -216,6 +218,16 @@ says that difference is an integer, hence zero. Right continuity then
 makes C continuous on x>0. This argument does not discard a singular
 continuous component.
 
+A direct formal route avoids separately identifying both one-sided measure
+limits. Local finiteness gives ν([2x−δ,2x+δ])→ν{2x}<1 as δ↓0. Choose
+0<δ<2x with this interval mass below one, and put a=x−δ/2, b=x+δ/2.
+Additivity gives C(b)−C(a)=ν((2a,2b])<1. Monotonicity places both
+one-sided limits of C at x between C(a) and C(b). Continuity of W makes
+the exponentials of these two limits equal; their difference is an integer
+in [0,1), hence zero. A monotone function whose one-sided limits coincide
+is continuous. This retains every singular-continuous component and does
+not insert atomlessness as a premise.
+
 Set T=π/log q. Periodicity gives `C(x+T)−C(x)∈ℤ`. This continuous,
 integer-valued function is constant on x>0, equal to N: 2πC is a
 continuous lift of the phase over one circle traversal. Monotonicity
@@ -223,27 +235,54 @@ gives N≥0. Section 3 gives N≤0; hence N=0. A monotone periodic function
 is constant, so C is bounded. The existing actual-phase power rigidity
 theorem, with any exponent in (0,1), now gives R.
 
-All source and analytic obligations have paper proofs above. The weighted
-radial passage, complete resonance system, arithmetic q-chain, exterior
-inverse, absolute double-series interchange and coefficient annihilator
-are now Lean verified. The actual phase excludes a strictly positive
-analytic factorization. Lean must still construct the periodic analytic
-symbol and its annular logarithm, identify the actual winding, and assemble
-the implications before L1 can be called a theorem. The full problem
-remains the source mechanism that controls phases without this representation.
+For the final Lean assembly there is a shorter equivalent route that does not
+need to identify a separately defined topological winding. Set
+`z(x)=exp(2i(log q)x)` and
+`D(x)=2πi C(x)−[2iN(log q)x+L(z(x))]`. The actual phase and
+`P=z^N exp L` give `exp D(x)=1`, hence `D(x)/(2πi)∈ℤ`. The continuity
+proved above makes this function continuous on the connected interval x>0,
+so D(x)=D(1). The annular logarithm is bounded on the compact unit circle,
+say |L(z)|≤M. Taking imaginary parts yields
+`2π C(x)=2N(log q)x+Im L(z(x))+Im D(1)`. Since N≤0, log q>0 and x>0,
+this bounds C from above by `(M+Im D(1))/(2π)`. Choosing a positive bound K
+and using `x^(1/2)≥1` for x≥1 pays the existing monotone-twist power
+remainder theorem and the actual-phase rigidity receiver. Thus the final
+source-only alternative follows without adding any continuity, logarithm,
+or winding premise. The representation itself still must be supplied for
+this conditional branch; the final alternative quantifies its failure.
 
-## Formalization plan
+All source and analytic obligations above are now formalized. The final theorem
+`quantization_rigidity_or_no_periodic_phase` takes only hW and concludes R or
+failure of every stated weighted representation. It is proved in
+`WeilWorkQuantizationPeriodicRigidity.lean`, whose final direct leaf audit
+passed cleanly. The represented branch constructs its analytic symbol,
+nonzero annulus, integer winding, annular logarithm and continuous actual
+cumulative lift; none is added as a source hypothesis. The full WP04 problem
+still requires a mechanism controlling arbitrary phases without this
+representation. Scientific novelty relative to external literature remains
+provisional.
 
-1. Weighted compact radial convergence and open-strip contour displacement
-   for the actual source; uniform frequency bound.
-2. Retain the unique resonant term for each frequency; sum with its actual
-   exponential moment; normalize at m=1.
-3. Laurent annihilator and q-chain energy bound; derive N≤0.
-4. Actual cumulative continuity, periodic winding and positivity; assemble
-   the hW-only rigidity-or-no-representation alternative.
-5. Direct final leaf audits, scratch axiom audit, umbrella imports and lint.
+## Verified dependency chain
 
-Step 1 is compiled and wired in WeilWorkQuantizationTwistContour.lean; all six declarations passed the standard-axiom audit. The five term/series lemmas for step 2 are compiled and wired in WeilWorkQuantizationResonantTerms.lean. WeilWorkQuantizationResonance.lean also passed its clean final audit and is wired: exact source resonance, coefficient bounds and common-kernel scaling. WeilWorkQuantizationFrequencySum passed its clean final audit and is wired. It handles countable frequency families with every resonance retained. WeilWorkQuantizationPhaseCoupling compiled the reflected phase comparison and m=1 normalization: B(1) is nonzero and B(m)=B(1) for every positive integer. Its clean final direct leaf audit and three-declaration standard-axiom audit passed. WeilWorkQuantizationQChain now proves the q-power coefficient bound, exact resonance classification and reindexing, every row's convergence, and the nonzero geometric right side. Its clean direct leaf audit and all fourteen standard-axiom checks passed. WeilWorkQuantizationLaurentInverse also passed clean final and eight-declaration standard-axiom audits. It constructs Γ(w)=exp(-w Σ a_n w^n), analytic for |w|<1/r and nonzero everywhere, proves Γ(1/z)=exp(-Lminus(z)) for |z|>r, proves its multiplicative Laurent factorization, and bounds its Taylor coefficients on every smaller disc. The annular logarithm for P after removing its winding, coefficient annihilator and actual winding assembly remain unformalized. Full L1 is not Lean verified.
+1. TwistContour, ResonantTerms and Resonance pay weighted actual-source
+   contour passage, retain each resonance, and establish common-kernel scaling.
+2. FrequencySum and PhaseCoupling sum all frequencies and prove B(1)≠0,
+   B(m)=B(1) at every positive integer.
+3. QChain, LaurentInverse, Pairing, CircleCoefficient and PositiveFactor pay
+   source energy, exact q-chain reindexing, analytic exterior inverse,
+   absolute double-series interchange, coefficient extraction and the
+   positive-factor contradiction.
+4. PeriodicSymbol, AnnulusLog and WindingFactor construct the actual symbol,
+   its nonzero annulus and winding-normalized logarithm, and prove N≤0.
+5. CumulativeContinuity uses the source's local subunit mass to derive
+   continuity, including singular-continuous residual mass. PeriodicRigidity
+   makes the logarithmic difference constant, bounds C, and applies the
+   existing actual-phase rigidity receiver.
+
+Every finished leaf is wired into RHTower.lean. All five new final direct
+leaf checks used `lake --old env lean -o <olean> <leaf>` and exited 0 without
+diagnostics. No full or umbrella build ran. All 23 public declarations and their dependencies passed the standard-axiom audit;
+see periodic-rigidity-lean-audit.txt.
 
 
 Formal normalization: `quantizationMainRadial` uses the y-coordinate

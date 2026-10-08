@@ -49,7 +49,7 @@ theorem sourceTwoPointGaussianProfile_mellin {lam : ℕ → ℝ}
   constructor
   · unfold MellinConvergent at h12 h3 ⊢
     simp_rw [smul_sub]
-    simpa only [smul_sub] using h12.sub h3
+    simpa only [smul_sub, Pi.sub_def] using h12.sub h3
   · rw [mellin_sub_of_convergent h12 h3, mellin_sub_of_convergent h1 h2,
       mellin_const_smul, mellin_const_smul, mellin_const_smul,
       mellin_comp_mul_left (sourceAlternatingGaussianProfile lam) (s / 2)
@@ -59,5 +59,39 @@ theorem sourceTwoPointGaussianProfile_mellin {lam : ℕ → ℝ}
       mellin_sourceGaussianProfile hW hs, mellin_sourceAlternatingGaussianProfile hW hs]
     simp only [smul_eq_mul, Complex.ofReal_ofNat, A]
     ring
+
+/-- On the real axis the actual transform is a real quadratic family. -/
+theorem re_mellin_sourceTwoPointGaussianProfile_eq {lam : ℕ → ℝ}
+    (hW : WeilPositiveFull lam) (c : ℝ) {σ : ℝ} (hσ : 1 < σ) :
+    (mellin (sourceTwoPointGaussianProfile lam c) ((σ : ℂ) / 2)).re =
+      (1 + c ^ 2 / 2 - c * (4 : ℝ) ^ (-(σ / 2))) *
+        (mellin (sourceGaussianProfile lam) ((σ : ℂ) / 2)).re -
+      (c / 2) * (1 / 4 : ℝ) ^ (-(σ / 2)) *
+        (Gammaℝ (σ : ℂ) * sourceAlternatingZetaSquare lam (σ : ℂ)).re := by
+  have hs : 1 < (σ : ℂ).re := hσ
+  rw [(sourceTwoPointGaussianProfile_mellin hW c hs).2,
+    mellin_sourceGaussianProfile hW hs]
+  have he : -((σ : ℂ) / 2) = ((-(σ / 2) : ℝ) : ℂ) := by push_cast; rfl
+  have hd : (4 : ℂ) ^ (-((σ : ℂ) / 2)) =
+      (((4 : ℝ) ^ (-(σ / 2)) : ℝ) : ℂ) := by
+    rw [he]
+    exact (Complex.ofReal_cpow (by norm_num : (0 : ℝ) ≤ 4) _).symm
+  have hh : ((1 / 4 : ℝ) : ℂ) ^ (-((σ : ℂ) / 2)) =
+      (((1 / 4 : ℝ) ^ (-(σ / 2)) : ℝ) : ℂ) := by
+    rw [he]
+    exact (Complex.ofReal_cpow (by norm_num : (0 : ℝ) ≤ 1 / 4) _).symm
+  rw [hd, hh]
+  have hc : Gammaℝ (σ : ℂ) *
+      ((1 + (c : ℂ) ^ 2 / 2 - c * (((4 : ℝ) ^ (-(σ / 2)) : ℝ) : ℂ)) *
+          sourceZetaSquare hW (σ : ℂ) - ((c : ℂ) / 2) *
+          (((1 / 4 : ℝ) ^ (-(σ / 2)) : ℝ) : ℂ) * sourceAlternatingZetaSquare lam (σ : ℂ)) =
+      ((1 + c ^ 2 / 2 - c * (4 : ℝ) ^ (-(σ / 2)) : ℝ) : ℂ) *
+          (Gammaℝ (σ : ℂ) * sourceZetaSquare hW (σ : ℂ)) -
+        (((c / 2) * (1 / 4 : ℝ) ^ (-(σ / 2)) : ℝ) : ℂ) *
+          (Gammaℝ (σ : ℂ) * sourceAlternatingZetaSquare lam (σ : ℂ)) := by
+    push_cast
+    ring
+  rw [hc]
+  simp only [Complex.sub_re, Complex.re_ofReal_mul]
 
 end RHTower.WeilSingularArithmetic

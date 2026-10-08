@@ -1311,7 +1311,7 @@ GcdWeightedSeriesInversion pays the sieve limit using an absolute tail.
 Neither is available for this arbitrary source. Any novelty claim must
 concern removal of those analytic assumptions, not these representations.
 
-### C32a candidate: actual parity pole compactness, without a pole premise
+### C32a proved: actual parity pole compactness, without a pole premise
 
 Let V_alt(s)=sum a(n)(-1)^n/n^s on Re s>1. This converges absolutely
 by the actual source coefficient theorem. Write ell=Re(P(1))<=0 and
@@ -1372,8 +1372,12 @@ Kill audit: no phase-free factorization, no asserted parity Laurent
 expansion, no extraction of an ordinary subseries limit from ordinary
 convergence, and no coefficient sign. The endpoint bound is a BRIDGE;
 its usefulness is replacing an assumed twisted pole by an actual
-asymptotic constraint. Lean status: OPEN. The first implementation debt
-is actual alternating Mellin convergence and the exact weighted identity.
+asymptotic constraint. Lean status: COMPLETE. ParityMellin, PolynomialMellin,
+PolynomialTail, PolynomialMellinBound, ParityPoleBound and ParityPoleInterval
+pay the chain. The shared owned Mellin/MellinBound helpers are exposed or
+factored without changing their original endpoints. Eight direct source
+audits pass; all21 public declarations have standard-only axiom reports.
+The final theorem is eventually_sourceNormalizedParityPole_interval.
 
 The quadratic inequalities alone cannot establish parity convergence
 when ell<0: any real-valued function b_sigma lying in the displayed
@@ -1382,3 +1386,107 @@ including functions without a limit. This is a logical obstruction to
 that deduction, not a full-positive arithmetic counterexample. A proof
 of ordinary arithmetic-limit existence must exploit additional source
 structure; finite-dimensional discriminant algebra cannot supply it.
+
+
+### C33: uniform finite-polynomial extraction and the unresolved detection law
+
+For real c supported on1,...,N, define
+
+    Q_c(s)=sum_(m<=N) c_m exp(-log(m)*s),
+    W_c(s)=Q_c(s)Q_c(1-s),
+    A_T(c)=sum_(m,n<=N) (c_m*c_n/n) S_T(m/n),
+    S_T(r)=sum_k a(k) exp(-4*pi^2*(k*r)^2/T^2) cos(2*pi*k*r),
+    E(c)=sum_(m<=N) c_m^2/m.
+
+All sums start at1; N=0 has empty finite sums. The infinite sums in S_T
+are actually absolutely convergent by TwistedExtraction. Let I_T(c) be
+the actual integral of F(s)g_T(s)W_c(s) on Re s=3/2.
+
+Exact bold detection conjecture C33 (later rejected as target-equivalent; not an input to any Lean proof):
+for every full-positive source with some n>=2 satisfying lambda(n)!=Lambda(n),
+there exist theta in(0,4/27) and eta>0 such that arbitrarily large T admit
+N<=T^theta and real c supported on1,...,N with E(c)=1 and
+Re A_T(c)>=eta*T. This predicts that every actual deviation can be detected
+by a growing family within the already affordable length range. Rival:
+a nonzero actual deviation escapes every such growing family. The rival
+is not a constructed source. [OPEN CORE]: arithmetic completeness of these
+length-constrained tests. No positivity of A_T is assumed or known.
+
+The following analytic BRIDGE is dependency-closed on paper:
+
+    |I_T(c)-4*pi*A_T(c)|
+      <= C_lambda*T^(5/6)
+           (sum_m |c_m| m^(-9/8)) (sum_n |c_n| n^(1/8)),   T>=1.
+
+The constant is independent of N and c. Indeed, for positive m,n,
+
+    exp(-log(m)*s) exp(-log(n)*(1-s))
+       = (1/m)*(m/n)^(1-s).
+
+This follows by expanding the exponents and using exp(log(m))=m.
+Thus W_c is exactly the finite sum of scaled monomials with coefficient
+c_m*c_n/m. Every corresponding contour is integrable by TwistedExtraction;
+finite linearity therefore gives I_T(c)=sum_(m,n)c_m*c_n/m*J_T(m/n).
+The main term is4*pi*A_T because (1/m)*(m/n)=1/n. Triangle inequality,
+the one-source-constant all-scale extraction estimate, and
+(m/n)^(-1/8)=m^(-1/8)n^(1/8) prove the displayed bound. No exchange of
+infinite arithmetic limits or use of signed upper bounds is involved.
+
+For N>=1, finite Cauchy--Schwarz gives
+
+    sum |c_m|m^(-9/8) <= sqrt(E(c))*sqrt(sum_(m>=1)m^(-5/4)),
+    sum |c_n|n^(1/8) <= sqrt(E(c))*N^(9/8).
+
+The second bound uses sum_(n<=N)n^(5/4)<=N^(9/4). Hence the error is at
+most C_lambda'*E(c)*N^(9/8)*T^(5/6). This Cauchy bound is classical,
+not a scientific novelty claim.
+
+The full weighted pairing and contour shift extend to W_c because it is
+entire, conjugation compatible, reflection invariant, bounded on every
+fixed vertical strip, and equals |Q_c|^2 on the critical line. Their exact
+residue gives
+
+    Re I_T(c) <= pi*|P(1)|*exp(1/4)*|Q_c(1)Q_c(0)|.
+
+Also |Q_c(1)|<=sqrt(E(c))*sqrt(sum_(m<=N)1/m) and
+|Q_c(0)|<=sqrt(E(c))*sqrt(sum_(m<=N)m). Since harmonic sums are
+O(N^(1/4)), this pole term is O_lambda(E(c)*N^(9/8)). Combining these
+bounds proves Re A_T(c)<=C_lambda''*E(c)*N^(9/8)*T^(5/6).
+Thus the C33 detection conjecture would contradict positivity and force
+lambda=Lambda. The analytic bridge does NOT prove that conjecture.
+
+Kill audit: finite expansion/triangle/Cauchy arguments are BRIDGE, with
+no claim beyond classical parent machinery. A stronger all-order kernel
+bound could improve the affordable length, but would still leave
+arithmetic completeness open. Substitution of an infinite reciprocal on
+Re(1-s)<1/2 is invalid. Even a justified logarithmic-derivative energy
+sign is not rigidity: ordinary coefficient mean-square energy already
+has the same sign. No such shortcut enters the proof.
+
+External parents checked: Bettin--Chandee--Radziwill arXiv1411.7764;
+Pratt--Robles arXiv1706.04593 concern actual mollified zeta moments.
+They do not supply this arbitrary source's arithmetic completeness.
+Miles arXiv1803.05878 treats classical lognormal transforms and does
+not remove the denominator-uniformity debt. Internal deep search68603
+files/generation1286479 was partial at semantic deadline; all available
+20 candidate/20 source statements were inspected. Its polynomial-tail
+atom-order theorem is a genuine limitation at the moving critical line,
+not a uniform arithmetic inversion theorem. The six-leaf analytic bridge
+is now Lean-complete: the endpoint uses (N+1)^(9/8), covers N=0, and
+exists_re_sourceFiniteGaussianSum_growing_le gives the moving exponent.
+All six direct source checks and29 public standard-only axiom audits pass.
+
+C33 kill-audit correction: on the full-positive class the proved upper
+bound excludes exactly the proposed positive order-T witness. Thus the
+witness conjecture is equivalent to the desired coefficient rigidity;
+it supplies no independent arithmetic mechanism. Verdict CIRCULAR as a
+research proposal. Its strongest proved survivor is the complete uniform
+finite-polynomial bound above. No proof of the detector is claimed.
+
+C34 candidate: full positivity plus sum |delta(n)|/n<infinity forces
+rigidity. Verdict REDISCOVERED: actual theorem
+WeilAbscissa.eq_vonMangoldt_of_weilPositiveFull_of_summable_div already
+proves exactly this. Stronger WeilOneSided endpoint theorems require only
+one sign part summable at1; exists_profile_summable_windows gives signed
+window cancellation for every source. These are established parent
+results, not new hypotheses to add to WP03. No redundant Lean written.

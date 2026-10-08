@@ -240,3 +240,178 @@ A further extension check follows directly from the exact Fourier factor already
 ## Final formal checkpoint — 8 October 2026
 
 The full-mass gamma bound, explicit two-pole full-energy bound, actual real-null energy escape and mass-normalized escape are now Lean-complete in `JointCoercivity`, `JointEnergy`, and `JointEnergyEscape`. All targeted builds and final direct-source audits pass with empty final diagnostics; 24 new named axiom checks use standard axioms only. This supersedes the earlier paper-only checkpoints in this working proof. Ten Joint leaves and 71 named checks are complete. D2 away from correction mass one and the full PBAP extension remain open; no scientific novelty or full-solution claim is made.
+
+## Current critical-energy attack: an actual phase minorant
+
+Status, 8 October 2026: **OPEN CORE**. The following sufficient certificate is
+paper algebra, not a new scientific theorem and not an assumed positivity input
+to Lean. Its existence is the research question.
+
+Fix the actual smooth profile beta and prime p from the audited two-cluster
+family. Put L=log(p)/2, and let A contain exactly the integers 2<=n<p where
+Re autocorr(beta)(log(n)-L) is nonzero. Write a_n=log(n)-L. Let e(T) be the
+literal full energy of the cosine/sine cluster pair at modulation T, including
+both signed poles, and let E0 be the full energy of the unmodulated cluster.
+The definitions give e(0)=E0: the sine test is zero and the cosine test is beta.
+
+**D2-CERT.** There are real numbers d_n, n in A, such that, at every real T,
+
+    sum_{n in A} d_n cos(a_n T) <= e(T).
+
+This is a concrete finite-coefficient existence conjecture for the actual
+one-variable energy curve. Construct the coefficients and prove the all-T
+inequality; do not insert that inequality as a hypothesis and call the task
+solved. Only sufficiency is asserted here, not a dual-attainment equivalence.
+
+The normalization needed for positivity is automatic. Evaluating at T=0 gives
+sum d_n<=E0. For every actual nonnegative finite null correction, the audited
+active-node equations give sum_j w_j cos(a_n t_j)=-1. Therefore
+
+    E0 + sum_j w_j e(t_j) >= E0 - sum_n d_n >= 0.
+
+This retains the entire actual full energy, every real-active constraint and
+arbitrary correction mass. There is no constant Fourier coefficient available
+for free: adding a constant changes the inequality by that constant times the
+uncontrolled total correction mass. Equations at inactive nodes cannot be used.
+
+Hostile checks:
+
+- The existing coercive floor is 2m log(2+|T|)-C(beta,L). Its negative constant
+  cannot be discarded or converted into an allowed zero-frequency atom. That
+  floor alone does not construct D2-CERT.
+- Three compatible cluster differences can produce frequencies a,b,a+b. Their
+  common target -1 under a positive correction forces total correction mass
+  at least 2, since
+  `3+2cos(ta)+2cos(tb)+2cos(t(a+b))=|1+exp(ita)+exp(-itb)|^2>=0`.
+  Equality forces equilateral phases at each used frequency; rational
+  independence of a,b excludes finite attainment. This classical Gram bound
+  concerns three exact equations, not arbitrary actual multi-cluster nullness.
+  It gives no gamma-plus-pole sign and does not justify independent pair repairs.
+- A sampled pole-kernel quadrature must still bound its trigonometric error at
+  every real height. The verified log-lattice Poisson bound retains a square-root
+  height weight. Replacing it by log(2+|T|) repeats the unpaid L380/C383 estimate.
+  Compact-band approximation, total-mass control and a pointwise Euler-factor
+  cancellation do not supply that replacement.
+
+The next substantive step is a profile-dependent construction of d_n with its
+complete signed error controlled by the actual e(T), or a rigorous obstruction
+to that construction with its strongest positive survivor. No coefficient
+construction or closing paper proof is currently available. Full PBAP stays open.
+
+## Signed modulation kernel — formalized 8 October 2026
+
+Continue with a smooth compact complex profile beta supported in [0,W], now
+requiring L>2W and W>0. Write psi(y)=Re autocorr(beta)(y), m=psi(0),
+omega(y)=exp(-y/2)/(1-exp(-2y)), and A0=Re digamma(1/4)-log pi.
+The already verified paired-correlation identity gives
+
+    Phi_T(y) = 2 psi(y) cos(Ty)
+      - psi(y-L) cos(T(y-L)) - psi(y+L) cos(T(y+L)).
+
+This is the real autocorrelation of the actual cosine/sine cluster pair.
+It has Phi_T(0)=2m. Gamma's Binet identity and Fourier inversion give
+
+    Gamma(Phi_T) = 2 A0 m
+      + 4 integral_(0,infinity) omega(y)(m-psi(y)cos(Ty)) dy
+      + 2 integral_(-W,W) omega(L+y) psi(y) cos(Ty) dy.
+
+The two poles together give
+
+    Pole(Phi_T) = 4(1-cosh(L/2))
+      integral_(-W,W) cosh(y/2) psi(y) cos(Ty) dy.
+
+Subtracting the T=0 identity and folding the even profile yields the exact
+formal capstone
+
+    e(T)-e(0) = integral_(0,W) K_L(y) psi(y)(1-cos(Ty)) dy,
+
+    K_L(y) = 4 omega(y) - 2[omega(L+y)+omega(L-y)]
+      + 8(cosh(L/2)-1)cosh(y/2).
+
+All displayed integrals converge. Near zero, the subtraction supplies
+1-cos(Ty)=O(y^2), while omega(y)=O(1/y); the shifted terms are smooth on
+[-W,W]. Away from zero compact support handles psi. The original Gamma
+identity is justified by the corpus Binet/Tonelli theorem and its C2 Fourier
+cosine-moment identity. Psi is even even when beta is complex; no complex-null
+constraint is substituted for real nullness.
+
+For 0<y<W, both L-y and L+y exceed y. Omega is positive and strictly
+decreasing, so 4 omega(y)-2[omega(L+y)+omega(L-y)]>0. The remaining term is
+positive. Hence K_L(y)>0. The positive survivor is therefore:
+
+    psi >= 0 on (0,W)  ==>  e(0) <= e(T) for every real T.
+
+In particular every real nonnegative beta meets this domain condition. This
+does not assert e(0)>=0. It cannot by itself pay the negative seed energy in
+D2-CERT. For arbitrary complex beta, psi need not be nonnegative.
+
+The same formula suggests a precise classification of the stronger
+nonnegative Levy-jump residual ansatz. At distinct nonzero absolute active
+frequencies, its signed jump measure would have continuous density K_L psi
+and atoms d_n. Levy uniqueness would require psi>=0 and d_n>=0; residual
+nonnegativity at zero would require e(0)>=sum d_n. Conversely psi>=0 and
+e(0)>=0 admit d=0. This classification still needs its actual-source and
+uniqueness audit; it is not a finished no-go, and general D2-CERT does not
+require this ansatz. No route is retired here.
+
+Ancestry/novelty: L373/L375 supply the real-space Gamma/pole formulas;
+JointProfiles supplies the actual paired correlation. The new CCM actual-head
+Gamma module independently proves the full-domain Binet--Plancherel identity.
+The present calculation is a specialized bridge, not a claimed significant
+scientific discovery. Gao's Levy--Khintchine uniqueness theorem is classical:
+https://pmc.ncbi.nlm.nih.gov/articles/PMC7604715/ . A finite-dimensional Riesz
+extension could also recover a cosine minorant from an already established
+null-cone sign; that supplies no independent sign estimate and is not selected
+for another wrapper formalization. No primal-attainment claim is made.
+
+Formal checkpoint: `WeilWorkPBAPJointJump` and `WeilWorkPBAPJointModulation`
+are wired and pass targeted `--old` builds and final direct-source audits.
+All 11 named axiom checks use only standard Lean axioms. The exact increment
+is `jointPairFullEnergy_sub_zero`; `jointPairFullEnergy_zero_le` proves the
+restricted minimum, and `jointPairFullEnergy_zero` identifies its literal
+seed energy. Lean integrates over `(0,infinity)`; the proved support condition
+annihilates the integrand beyond W. The general complex profile is retained
+in the identity, and real-autocorrelation nonnegativity is an explicit domain
+restriction only in the minimum theorem. No PBAP sign is inferred from it.
+
+## Next conjecture: a certificate beyond the seed-energy crossing
+
+Status: **OPEN**, no new Lean premise. Fix one nonzero real nonnegative smooth
+bump phi supported in [0,1], positive in its interior, and use the actual
+profiles beta_W(u)=phi(u/W), 0<W<log(2). For every sufficiently large prime p,
+put L=log(p)/2. Conjecture: some width W has negative literal seed energy
+E0(W), but an actual real-active node n and c>0 satisfy, for every real T,
+
+    -c cos((log(n)-L)T) <= e_W(T).
+
+This is a specific one-node instance of D2-CERT on a nontrivial negative-seed
+sector, not a claim about all profiles or a replacement for full PBAP.
+Evaluating at zero gives E0(W)+c>=0, and the exact active-node equation pays
+the coefficient for every nonnegative finite real-null correction.
+
+Proposed mechanism, all obligations retained:
+
+1. Derive actual small-width normalized Gamma/pole estimates. Seed energy is
+   positive for sufficiently small W and negative at a fixed positive width
+   once L is large. Construct a zero-energy boundary W0 from this actual family;
+   do not add existence of such a boundary as an input assumption.
+2. Prove W0 is large enough that a nearest-integer shifted logarithm is inside
+   the nonzero autocorrelation interval. No inactive-node equation is usable.
+3. Strengthen the exact positive-kernel minimum to strict positivity away from
+   T=0 for the nonzero nonnegative bump. Together with the already formal
+   coercivity, this bounds e_W0 away from zero on the set where cos(aT)<=0.
+   A sufficiently small c>0 then gives a strictly positive residual
+   e_W0(T)+c cos(aT) at every T, including T=0.
+4. Prove joint continuity in width and modulation and a coercive bound uniform
+   in a compact width neighborhood. Only then can the residual margin persist
+   to actual nearby widths with negative seed energy. Compact-band continuity
+   alone does not handle all heights.
+
+The finite-dimensional continuity step is classical. The research content to
+audit is the actual negative-seed sector with all parameters constructed and
+the all-height bound proved. Current corpus search is complete at 68,630 files,
+with incomplete refresh and mostly pending/source-only compiler metadata.
+All candidate/source statements and the ingredient set were inspected. The
+suggested zero-deficit/zero-weight chain assumes a Weil-positive completion or
+concerns a different energy; it does not prove this conjecture. No literature
+novelty or absence claim has been established.

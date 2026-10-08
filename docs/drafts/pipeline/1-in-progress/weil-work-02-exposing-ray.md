@@ -378,3 +378,24 @@ Cycle18 cleanup complete: all own processes terminal;16 owned scratch/search/aud
 ## Cycle19 started — vanishing-defect producer audit
 
 Previous turn PROGRESS: two installed leaf audits and all17 public axiom checks passed; exact primitive-method boundary and positive logarithmic survivor formalized. Current capstone bodies, literal WP02 receiver and next producer card revalidated. Plan: fresh corpus audit of signed gamma compensation and current finite-core mechanisms; attack the vanishing negative mass-error estimate on paper including t=0 and all matched families; adopt only a dependency-closed actual estimate or substantial survivor after hostile/novelty/utility audits; targeted Lean and final source/axiom/lint/index checks when justified. Do not formalize another conditional cofinal receiver as a substitute. Universal target remains OPEN. No new Lean edits.
+
+Cycle19 CLOSED — NO FRONTIER ADVANCE. LOWER-PRODUCER-AUDIT.md records pointwise/sparse/ground-state rediscoveries, the exact finite Sonin comparison gap, and the missing admission for conductor/degree classifications. No lower estimate proved; no Lean file edited or build launched. Two interrupted conductor/Sonin search files and their process handles were unavailable on recovery, so their unseen results are not counted. Five fresh trace/band/period/sparse/square searches completed and all returned candidate/source-argument lists were inspected. The polar sqrt(n)(log n+C) box was rechecked directly. Main goal ACTIVE.
+
+Next cycle plan: attack a concrete full-family integrated estimate retaining both poles and every integer trace. SQUARE-SAMPLING-CONJECTURE.md is an exact competing-sign diagnostic at the first density outside the known sparse theorem; it is NOT a new task or replacement objective. Audit whether it materially tests the proposed full-integer mechanism before spending implementation effort. No conditional receiver or elementary periodization wrapper will count as producer progress. Complete paper proof remains the gate for Lean.
+
+
+## Cycle20 started — critical-density diagnostic and full-producer utility
+
+Previous turn NO FRONTIER ADVANCE, revalidated against current conjecture and audit files. Plan: corpus and primary-source audit of square-null polar mixtures; test additive Fourier-annulus construction with exact Mellin scaling, both poles, compact admission and signed energy; reject it if it only recovers a known short-window class; return every useful conclusion to the actual all-integer vanishing-defect producer. Paper before Lean. No new source edit or build yet. Universal WP02 target unchanged.
+
+
+Cycle20 CLOSED — NO FRONTIER ADVANCE. CYCLE20-AUDIT.md records the missed polar primitive-set mean-square parent: its ordinary Cauchy--Schwarz/local-mass consequence excludes support O(N^theta), theta<1, so squares are not the first density outside current machinery. SQUARE-SAMPLING-CONJECTURE.md is deferred with that motivation withdrawn; exact negative square-null mixture is not claimed compiled. Fourier-annulus transfer preserves every even Mellin spectral energy and supplies no gamma sign. Seven owned searches exit0 and all results inspected; compiler snapshots mostly stale/pending. No new Lean edits or builds.
+
+Next exact candidate: POLAR-FULL-COMPLETION-CONJECTURE.md, forall lambda, WeilPositive lambda implies WeilPositiveFull lambda for the SAME weights and actual pole coefficient. Corpus only proves reverse implication; generated backwards recipe rejected. Possible distribution representation leaves a*cosh(u/2)+b*u*sinh(u/2); eliminating this actual arithmetic remainder is OPEN, not implied by exponential bounds. Mandatory utility gate: this creates no cone point or endpoint attainment by itself. Return to the all-family vanishing-mass-defect producer if only generic extension machinery results. No effort/size excuse; no conditional wrapper or absence-from-search novelty claim. Main universal WP02 goal remains ACTIVE.
+
+Cycle20 cleanup complete: seven owned search JSON files removed after receipts, all own processes terminal, scoped whitespace checks clean. Durable memory rh/weil_work_02_cycle20_density_correction_2026_10_08. Revalidate exact C-lift and its utility against the unchanged WP02 target next turn; no unproved implication may be used as a premise.
+
+
+## Cycle21 started — actual pole-completion audit
+
+Previous turn changed research evidence (density correction) but established no new signed estimate; classify as audit progress, NO FRONTIER ADVANCE. Current C-lift and source state revalidated. Plan: search actual polar/full completion machinery, audit the exponential remainder against the literal integer source and external parent theory, reject any generic extension or reversed implication, then attack a concrete source estimate. Complete paper and utility gates before any Lean. Universal WP02 receiver unchanged; no new build or source edit yet.

@@ -6,7 +6,7 @@
 
 `|λ(n)−Λ(n)|/(4π√n) ≤ D(T)/T + ε`.
 
-This sharpens the previous `4πn` coefficient scale to `4π√n`, with no assumed upper deficit bound. The exact character discrepancy and sharp-window mass balance are also proved. Twenty modules, 84 public theorem axiom audits, only standard Lean foundations. This is a quantitative corpus advance; external scientific novelty is not established.
+This sharpens the previous `4πn` coefficient scale to `4π√n`, with no assumed upper deficit bound. The exact character discrepancy and sharp-window mass balance are also proved. Twenty-two modules, 93 public theorem axiom audits, only standard Lean foundations. This is a quantitative corpus advance; external scientific novelty is not established.
 
 ## Audited Lean results
 
@@ -31,7 +31,7 @@ Shared-mass comparison, leakage and complex Fourier transport for both actual me
 
 ## Validation limits
 
-Latest completed repository-wide formal lint status is recorded in `EVIDENCE.md`: eight unrelated reachability errors, none in WP06. All twenty finished WP06 modules are umbrella-wired. No full or umbrella build was run. No numerical experiments, heartbeat increases, commits, or added mathematical axioms.
+Latest completed repository-wide formal lint status is recorded in `EVIDENCE.md`: seven unrelated reachability errors, none in WP06. All twenty-two finished WP06 modules are umbrella-wired. No full or umbrella build was run. No numerical experiments, heartbeat increases, commits, or added mathematical axioms.
 
 ## Verified linear-scale Poisson leakage
 
@@ -203,3 +203,40 @@ Constants precede every order, row count and coefficient. No integer or actual r
 Final validation on2026-10-08: target-only build exit0 (114s target); unchanged `lake --old env lean` exit0 with empty output; all five public axiom audits and specialized API examples exit0, only `propext`, `Classical.choice`, `Quot.sound`. Umbrella wired. Formal lint exit1 has eight reachability findings outside WP06.
 
 **Verdict: BRIDGE.** This pays growing-order analytic costs, not positive prefix cancellation or the required upper deficit. C11 asks for nonnegative diagonal derivative coefficients through order M cancelling n=2..M. C11q additionally asks, along unbounded horizons, for `Σ_k d_k 19^(2k)((k+2)!)² ≤ exp(θM)` with fixed `0<θ<π`. Its competing finite dual obstruction and precise limitations are in PROOF. Both remain open; no new Lean premise encodes them.
+
+## Verified full divisor–Bessel correlation matrix (C11b)
+
+`WeilWorkDeficitBesselCorrelation.lean` proves the exact convolution identity for arbitrary real polynomial theta series, absolute convergence of each full divisor–Bessel monomial series, and integrability of all polynomial and actual mixed-derivative correlations. Every positive factor pair is retained. The actual matrix `A(n,k)` is now identified in Lean through the same formula at derivative orders `(k,k)` and shift `log n`.
+
+The explicit actual-kernel specialization is
+
+`κ(y) = exp(y/2) Σ_(N≥1) d(N) [(x⁴+9x²)K₀(x) − 6x³K₁(x)]`, `x=2πN exp(y)`.
+
+All seven public theorem audits use only standard foundations; target build and final unchanged direct audit passed. Umbrella wired. Checkpoint:21 modules/91 public theorem audits.
+
+Classification: **CLASSICAL-PARENT BRIDGE**. This verifies the infinite arithmetic correlation matrix without deciding its signs, producing a positive cancellation family, or proving any upper deficit bound. C11/C11q and C12 remain open. The next hard step is the growing-order arithmetic asymptotic or the quantitative cancellation construction, not another unneeded representation theorem.
+
+
+## Verified full twisted-gap budget; C12 paper checkpoint
+
+`WeilWorkDeficitTwistedGapBudget.lean` proves summability and an explicit
+conductor-linear bound for the complete integer-twist reciprocal-square
+frequency sum, with all positive factor pairs retained. For T≥1 and n≥1,
+
+`Σ_(r,m≥1) (rm)^(-1/2) min(1,T/(rm))² / (log(m/r)-log n)² ≤ (48 n² Z + 16 pairZeta) T`,
+
+where Z is the finite reciprocal-square integer-lattice mass and the diagonal
+summand is zero. Target-only build, final unchanged direct audit and both
+public axiom audits passed; standard foundations only. Umbrella wired.
+Classification: **BRIDGE**; no external scientific novelty claimed.
+
+PROOF now contains a complete paper argument for C12g's square-root Gaussian
+twisted moment and C12's literal normalized derivative-correlation limit
+`A(n,k)/A(1,k)→1/sqrt(n)` for each fixed integer n≥2. The analytical assembly
+and Xi transfer remain **unformalized**. The new Lean module proves only the
+full arithmetic gap estimate used by that argument. Eventual positivity on
+fixed finite rows is a paper consequence, not a completed Lean no-go.
+
+C11q's positive construction/cost and the main upper-deficit producer remain
+open. New C13 asks for a truncated-prime lower bound on a coupled derivative
+order band, preserving finitely many low-order exceptions; it is conjectural.

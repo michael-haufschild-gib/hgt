@@ -251,3 +251,48 @@ The complete `/tmp/wp01-joint-coercivity.lean` scratch exits 0 with empty diagno
 | `WeilWorkPBAPJointEnergyEscape.lean` | `689991d18da95be41e2cd63664fdde96e292d84cc31e478d1bccc05337d9da35` |
 
 Final logs: `/tmp/wp01-final-joint-Coercivity.log`, `/tmp/wp01-final-joint-Energy.log`, `/tmp/wp01-final-joint-EnergyEscape.log`, `/tmp/wp01-joint-energy-axioms.log`. Index includes the gamma, literal-energy and both escape capstones. Global lint remains limited by the ten unrelated reachability errors listed above. Full PBAP remains open; goal stays active.
+
+## GY complex-pole orientation audit — completed 8 October 2026
+
+`WeilWorkPBAPMollifierCausality.lean` targeted `lake build --old +GaloisForLFunctions.RHTower.WeilWorkPBAPMollifierCausality` passed in the preceding turn (24s). Its interrupted final-audit handles were unavailable and their temporary logs missing on continuation; no matching owned processes remained. Consequently the final direct source audit and seven `#print axioms` checks were rerun. Both exit 0; the source log is empty. The seven declarations are `poleWave_integral`, `poleWave_integral_nonneg`, `poleWave_integral_neg`, `poleWave_integrable`, `finite_poleWave_integral`, `finite_poleWave_tail`, `finite_poleWave_integral_eq_zero`, all in `RHTower.WeilWorkPBAP`. Only `propext`, `Classical.choice`, `Quot.sound` occur. SHA-256: `54567658a1d605d64ce79ef9715b90bb49610b1610dd318eae68d106a880944c`. Umbrella import verified. Final logs: `/tmp/wp01-mollifier-final-20261008.log`, `/tmp/wp01-mollifier-axioms-20261008.log`.
+
+Index refresh passed. Global formal lint exits 1 on thirteen unrelated unreachable modules: RHTower `WeilPaperFiniteObservations`, `WeilWorkHigherDenominatorNonstationary`, `WeilWorkHigherDenominatorScaledBessel`, `WeilWorkQuantizationPeriodicSymbol`, `WeilWorkSingularArithmeticParityMellin`, `WeilWorkSingularArithmeticPolynomialMellin`, `WeilWorkSingularArithmeticPolynomialMellinBound`, `WeilWorkSingularArithmeticPolynomialTail`; HTGeometry `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. Existing file-size warnings remain; no error concerns this leaf. Unrelated shared-tree sources were not modified. This classical Fourier/Perron correction does not prove full PBAP or disprove the actual GY window conjecture.
+
+Current constrained-energy search `/tmp/wp01-critical-cone-20261008.json`: `partial=false`, 68,586 indexed/inventoried files; background refresh incomplete, mostly pending/source-only compiler metadata. Every candidate/source statement and the full ingredient set inspected. Abstract cochain energy compactness and prime first-trace null sequences are not the actual PBAP quadratic form. The suggested ingredient chain does not establish its claimed link. `WeilPaperFiniteObservations` gives equal-mass, equal-energy null pairs with different rational samples; it supplies no energy sign. The actual polar ground-state theorem concerns a different linear pole-constrained space, not the aggregate integer-null cone. No absence claim.
+
+## Exact joint modulation kernel — completed 8 October 2026
+
+`WeilWorkPBAPJointJump` and `WeilWorkPBAPJointModulation` pass targeted
+`lake build --old +GaloisForLFunctions.RHTower.<leaf>` (57s and 65s), followed
+by final `lake env lean GaloisForLFunctions/RHTower/<leaf>.lean` audits
+(36s and 6s). Both final logs are empty. The guarded sequential audit exits 0;
+no full/umbrella build, numerical experiment or heartbeat increase was used.
+Both imports are wired. Eleven `#print axioms` checks pass and report only
+`propext`, `Classical.choice`, `Quot.sound`:
+
+- `integrable_testGamma_jump`, `testGamma_eq_jump`, `jointModulationKernel_pos`;
+- `testPole_eq_integral_cosh`, `testGamma_eq_jump_scaled`, `integrable_testGamma_jump_scaled`;
+- `integrable_modulation_jump`, `jointPairRealCorr_eq`;
+- `jointPairFullEnergy_sub_zero`, `jointPairFullEnergy_zero_le`, `jointPairFullEnergy_zero`.
+
+All declarations are in `RHTower.WeilWorkPBAP`. The exact source hashes are
+`3a3b73512735950623f8a07ffa8f4e92b0bcdfa6cc24707c1cb21cae9de08d17`
+(JointJump) and `6ac94b5dfdcb3b1196d51ed689d6c89359ad412b96c4c68fb109860cd147ef29`
+(JointModulation). Logs: `/tmp/wp01-kernel-final-WeilWorkPBAPJointJump.log`,
+`/tmp/wp01-kernel-final-WeilWorkPBAPJointModulation.log`, `/tmp/wp01-kernel-axioms.log`;
+stage results: `/tmp/wp01-joint-kernel-audit-state.json`.
+
+Index exits 0. Global formal lint exits 1 on seven unrelated unreachable modules:
+RHTower `WeilWorkHigherDenominatorInversionFourier`, `WeilWorkQuantizationLogarithmicSupport`;
+HTGeometry `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`,
+`ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. Neither new module occurs in
+the errors. Existing large-file warnings remain. Unrelated shared-tree files were not changed.
+
+Current searches are recorded in the working card. Energy-kernel search was complete at
+68,597 files; jump-certificate search was partial at the same coverage; multiplicative-Hilbert
+search complete at 68,599; cosine-dual-attainment search partial at 68,606. Background refresh
+was incomplete and compiler metadata mostly pending/source-only. All displayed candidate and
+source statements and ingredient sets were inspected. Generic positive-jump data, Hilbert
+moment positivity and Riesz duality do not supply the missing actual null-cone sign. No absence
+or scientific-novelty claim follows. The exact signed kernel and restricted minimum are now
+formalized; full PBAP and the all-height arithmetic cosine certificate remain open.

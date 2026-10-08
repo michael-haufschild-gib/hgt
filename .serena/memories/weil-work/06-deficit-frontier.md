@@ -1,4 +1,53 @@
+# Latest WP06 checkpoint — 2026-10-08 C12g/G1
+Main goal ACTIVE/UNSOLVED: docs/reports/weil-work/06-spectral-deficit.md. No unconditional upper-deficit producer, C11q construction, or RH conclusion. This checkpoint supersedes older module counts.
+
+22 completed owned modules / 93 public theorem axiom audits. New formal/GaloisForLFunctions/RHTower/WeilWorkDeficitTwistedGapBudget.lean (namespace RHTower.WeilWorkDeficitGap) has two public theorems:
+- summable_twistedGapWeight: whole positive-pair reciprocal-square gap sum is summable, T>=0,n>=1.
+- tsum_twistedGapWeight_le: for T>=1,n>=1, sum <= (48*n^2*integerGapBudget+16*pairZeta)*T.
+Actual summand: (rm)^(-1/2)*min(1,T/(rm))^2/(log(m/r)-log n)^2. Diagonal zero by field division convention. integerGapBudget=sum_z in Z 1/z^2. No scientific premises.
+Proof: near detuning<1/4 implies nr/2<=m<=2nr; reciprocal log gap <=(2nr)^2/(m-nr)^2; integer gaps inject into Z. Radial r*min(1,a/r^2)^2 <=sqrt(a)*min(1,a/r^2), total<=3a. Far detuning>=1/4 uses16*pairWeight, total<=16*pairZeta*T^.75. Complete tails included.
+Audit: target lake --old build +GaloisForLFunctions.RHTower.WeilWorkDeficitTwistedGapBudget exit0,target16s,9501 jobs cached replay; final unchanged lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitTwistedGapBudget.lean exit0/empty; /tmp/wp06-c12g-gap-axioms.lean exit0, both public standard-only propext/Classical.choice/Quot.sound, exact types inspected. Umbrella wired (line may change). Scoped whitespace clean. Latest lint7 unrelated unreachable modules: WeilWorkHigherDenominatorInversionFourier, WeilWorkQuantizationRationalResonance, ApertureConeCalculus, ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra. No own/forbidden finding. All owned processes terminal; prototype /tmp/wp06-c12g-gap.lean and API scratch removed; audit source/logs retained. No full/umbrella build, heartbeat change, numerical computation, commit.
+
+NEW PAPER PROOF in owned PROOF.md:
+C12g for fixed n>=1,c>0,H=c*sqrt(T):
+integral exp(-((t-T)/H)^2)*abs(zeta(1/2+it))^2*exp(-it log n) =
+sqrt(pi)*H*log(T)/sqrt(n)+O_(n,c)(H).
+Use EXISTING ZetaSquareStirlingAFE.exists_norm_zetaSq_sub_symmetricAFE_le, not sharp Riemann-Siegel/chirp (superseded). Actual smoothAFECutoff is Gaussian upper tail (SmoothAFECutoffGaussianTail); first two log derivatives have min(1,x^-2) bounds. With fixed compact chi(t/T), F_P=chi*Gaussian*V(2piP/t), L1 second derivative <=C/H*min(1,T/P)^2. Two IBPs + new G1 giveO_n(T/H). AFE remainderO(logT). Two diagonals=2/sqrt(n)*integral Gaussian*diagHarm(t/(2pi n)); existing ZetaSquareDiagonalHarmonic.exists_norm_diagHarm_sub_le supplies .5log x+gamma+O(x^-1/4). Polynomial zeta bound removes chi.
+C12 paper transfer complete: paperFT_riemannKernelDeriv+Plancherel imply A(n,k)=1/(2pi)integral t^(2k)|XiC(t)|^2 cos(t log n). GammaVerticalRatioAsymptotic.gamma_vertical_ratio_norm_rpow_tendsto at a=delta=1/4 plus exact HTGeometry.GammaVerticalModulus.norm_Gamma_half_add_I_sq yields |Xi|²~sqrt(pi/2)*t^(7/2)e^(-pi*t/2)|zeta|². p=2k+7/2,T=p/(pi/2),H=sqrt(2T/(pi/2)),B=T^p e^(-pi*T/2). Laplace/Gaussian difference <=C*T^-1/2*|s|³ e^-c s² on[T/2,2T]; untwisted C12g paysO(logT), other tails exponentially small, Gamma relative erroro1 uniform. A(n,k)/(sqrt(pi/2)*B*H*logT/sqrt(pi))->1/sqrt(n), divide n=1.
+Thus C12 limit paper-proved and fixed finite rows eventually strictly positive. NO Lean C12 theorem yet; G1 only new formal input. Do not claim O(1/logk) for full Xi ratio: current Gamma input is only convergence. Classical-parent BRIDGE; no external scientific novelty claim. Does not settle coupled n~k or C11q.
+
+NEXT CONJECTURE C13 (OPEN, exact PROOF statement): exists k0,M0 such that M>=M0,k>=k0,100k<=M implies sum_(2<=n<=M) Lambda(n)*A(n,k)/sqrt(n) >=(1/4)*log(k+2)*A(1,k). Competing arbitrarily-large failure. Source motivation: literal weilFullFunctional=poles-primes+gamma; WeilWorkPBAPJointCoercivity.joint_gamma_lower_log gives log(2+|t|)-(10+log4); actual derivative zero transforms; C10u full tail and C12 untwisted norm lower bound. MUST pay noncompact explicit-formula passage, pole signs/normalization, uniform factorial comparison, finite cutoff. Preserve low-order k<k0 exceptions; no full cone separation follows.
+Plan: complete C12 analytical Lean assembly while attacking C13/complementary coupled-order C11q cost; do not add more unneeded representations.
+
+Current-turn hgtl7 full skill read; all9 review answers posted; primary Oct2026 audit Tang/Baluyot/Motohashi/NIST/Paris, no endpoint theorem imported. Corpus queries gaussian-frontier,cutoff-frontier,c13-truncated-prime-dual all terminalpartial=false/errors=[], all candidate/source statements inspected; indexed68617/68618/68625 but only43 current compiler snapshots and incomplete background refresh, not absence certificates. Relevant exact files read: ZetaSquareStirlingAFE704-780, ZetaSquareDiagonalHarmonic464-505, SmoothAFECutoffGaussianTail whole, ZetaNotchResonanceCount1-265, Sieve/TwistedOffDiagonalSum1-120, ZetaMollifiedShortWindowMeanSquare1-180 and270-320, GammaVerticalRatioAsymptotic150-200, RiemannKernelCuspSeries535-559, WeilFullConeRiemannKernelRigidity252-277, WeilWorkPBAPPacketEnergy1-55 and JointCoercivity96-132.
+Updated owned card, RESULT, PROOF, EVIDENCE, lean-audit.log. All latest G1 logs /tmp/wp06-c12g-gap-*; rawaxioms also persistent owned lean-audit.log.
+
+---
+Earlier checkpoints (historical):
 # WP06 spectral-deficit frontier — 2026-10-08
+
+## LATEST checkpoint — C11b completed; supersedes earlier counts/status below
+ACTIVE/UNSOLVED goal. 21 finished owned modules /91 public theorem axiom audits.
+New `formal/GaloisForLFunctions/RHTower/WeilWorkDeficitBesselCorrelation.lean` (about442 lines), namespace `RHTower.WeilWorkDeficitBessel`.
+Seven public theorems:
+- summable_divisor_bessel (279): complete positive-product divisor series.
+- monomial_correlation_bessel (284): exact full theta monomial convolution.
+- integrable_cusp_correlation (307), cusp_correlation_bessel (319): every real polynomial pair, every real shift, no hypotheses.
+- derivative_correlation_bessel (354), integrable_derivative_correlation (370): every actual mixed derivative pair; k=l,y=log n identifies C11 matrix.
+- riemann_correlation_bessel (395): κ(y)=e^(y/2) Σ_N d(N)[(x⁴+9x²)K0(x)-6x³K1(x)], x=2πN e^y. N=0 term has zero divisor multiplicity.
+All positive factor pairs retained, absolute-integral sum proved, full finite coefficient assembly. K order j-l equals absolute order by evenness. BRIDGE with classical Koshliakov ancestry, no novelty/sign/cancellation/deficit-upper conclusion.
+Validation terminal: target `lake --old build +GaloisForLFunctions.RHTower.WeilWorkDeficitBesselCorrelation` exit0,target99s/9883jobs; final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitBesselCorrelation.lean` exit0/empty; `/tmp/wp06-c11b-axioms.lean` exit0, all7 standard-only. Exact public types inspected. Umbrella import wired. Logs `/tmp/wp06-c11b-{build,final,axioms,lint}.log`; persistent output in owned lean-audit.log. Scoped whitespace clean. Latest lint15 unrelated reachability errors (6 HigherDenominator,1 Quantization,3 SettledPhase,5 HTGeometry), no WP06/forbidden finding. Do not fix unrelated modules. No full build, numerical experiments, heartbeat increase, commits. Scratch source/fragments removed; final audit files retained. All owned processes terminal. Both rounds of 9 review answers posted.
+
+PROOF now has complete paper C11b B1-B6: arbitrary polynomial divisor-Bessel representation, absolute Fubini, U/V two-channel recurrence and leading coefficients, actual matrix. U/V recurrence remains paper-only; actual mixed-order identity is formal via generic polynomials. C11/C11q still OPEN.
+C12 exact open conjecture: for every fixed integer n≥2, A(n,k)/A(1,k)→1/√n. Competing arbitrary-high-order negative ratio remains unrefuted. Positivity of two polynomial channels does not settle their difference.
+Inspected `WeilZetaSquareMoments`, `WeilZetaSquareDilationRigidity`, `ZetaNotchTwistMainTerm`: broad windows; cannot specialize to gamma-weight concentration width sqrt(height). Tang Aug2026 arxiv:2608.14852 Theorem1/Remark3.1 read: δ>1/2, distinct odd primes, dual moment retained; no endpoint input.
+Primary classical ancestry: Berndt–Dixit–Gupta–Zaharescu §13, https://adixit.people.iitgn.ac.in/wp/wp-content/uploads/2023/03/askey_special.pdf (Koshliakov1934 Xi-square integral).
+Fresh searches all terminal/inspected: `/tmp/wp06-c11b-formal-frontier.json` (partial=false,68583 files), `/tmp/wp06-c12-fixed-twist-error.json` (partial=false,68594, mostly irrelevant), `/tmp/wp06-c12-divisor-boundary.json` (partial=false,68605). Compiler only43 current snapshots, most pending/stale; refresh incomplete, no absence certificate.
+New useful source: `CCMFUSuzukiMobiusDivisorAbelProducer`1–80 read: primeFreeDivisorDefect=log(N!)-Σ_d≤N floor(N/d)+2γN, absolute bound24sqrtN. `DivisorUniformSquareRootBound`1–180 read: uniform source/channel ceilings; do not confuse them with κ coefficient asymptotics. Also `Sieve/TwistedMainTermMerge`1–100 and `EstermannGrowth`1–90 read: main-term pole cancellation and functional-equation edge bounds, not short-window estimate.
+C12a paper estimate audit: even granting the leading complex Bessel reduction, naive Abel absolute bound from O(sqrtX) divisor remainder gives Laplace error O(σ^-4+|z|σ^-5). On radius(π/2)(1-1/K), angular arcK^-1/2 gives σ~K^-1,|z|~K^-1/2; absolute coefficient error bound K^4 exceeds expected K^(7/2)logK. This is a deficient bound, not C12 refutation. Complex-sector Bessel reduction and contour cancellation not proved. Next: pay angular/arithmetic cancellation or exact weighted twisted moment, or return directly to C11q construction/finite dual. Do not spend cycle merely re-formalizing real divisor bound or unnecessary U/V recursion.
+
+## Earlier context (historical counts/checkpoint statuses superseded above)
+
 
 ## Goal / scope
 ACTIVE, UNSOLVED unbounded user goal. Solve docs/reports/weil-work/06-spectral-deficit.md: for arbitrary hW : WeilPositiveFull lam, every eta>0 has frequently T atTop with actual deficitCount hW T/T <= eta. Deficit counts ALL XiZeroCopy multiplicities, off-line copies at unit cost, missing canonical critical atom shares. No upper-deficit producer proved. Receiver gives lam=vonMangoldt n>=2 and RH for a supplied positive datum; no positive datum produced.

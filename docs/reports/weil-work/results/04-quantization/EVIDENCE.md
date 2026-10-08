@@ -529,3 +529,153 @@ many poles, growth and reflected-half-plane control. Those are not consequences 
 writing the actual measurable lock phase, and were not silently inserted here.
 The proposed L1 verdict remains SURVIVES PRELIMINARY ATTACK; its scalar analytic machinery
 is BRIDGE, not independently novel science. The complete L1 paper is being formalized.
+
+
+Second cycle-16 deep query `positive locally finite measure cumulative exponential phase
+continuity atom subunit no atoms`, module Weil, completed in 81.16 seconds, partial=false,
+no errors or unfinished stages. All 20 candidate and 20 source-argument statements and the
+proposed ingredient set were inspected. Coverage: 68,589 indexed files; 52,090 compiler-pending,
+2,660 stale; semantic coverage unmeasured and background refresh incomplete. No returned
+candidate pays the actual cumulative-continuity obligation. The suggested partial exponential
+sum is not the actual phase and was rejected. Direct mathlib inspection found
+`tendsto_measure_Icc_nhdsWithin_right'` and monotone one-sided limits, yielding the local
+subunit-interval proof now recorded in RESONANT-PERIODIC.md. This is a classical bridge,
+not a new scientific claim.
+
+
+Preparatory general-AP query `almost periodic Wiener Hopf mean motion canonical Weil phase
+rational resonant coupled coefficient` completed in 226.64 seconds: partial=false, no errors
+or unfinished stages. All 20 candidate and 20 source-argument statements, one transfer idea
+and one ingredient set were inspected. Coverage: 68,603 indexed files, 52,102 compiler-pending,
+2,660 stale; semantic coverage unmeasured and background refresh incomplete. The retrieved
+Wiener–Hopf sech commutator and photonic harmonic are unrelated to the actual phase. Generic
+Bohr-AP stability and existing nonresonant main-term scaling do not pay the missing index
+argument. The generated transfer/ingredient proposals were rejected as inapplicable. A narrower
+query for noninteger arithmetic radial residues was started; no AP generalization is claimed.
+
+
+Narrowed query `noninteger radial residue arithmetic reflection`, module Weil, completed
+in 143.22 seconds: partial=false, no errors or unfinished stages. All 20 candidate and
+20 source-argument statements, two transfer proposals and the ingredient set were
+inspected. Coverage: 68,605 indexed files, 52,104 compiler-pending, 2,660 stale; semantic
+coverage unmeasured and background refresh incomplete. Relevant hits retain the actual
+reflected theta identity and integer-height residues. They do not prove vanishing at
+noninteger heights. The finite-residual-mass transfer proposal cannot be applied to the
+arbitrary source. No absence theorem follows from retrieval.
+
+Direct inspection also reconfirmed that WeilProducerZetaQuotientBohrRecurrence requires
+an actual bounded zeta quotient, and WeilFullConePoissonCountingIdentity only controls
+the fixed-width smoothed count. Neither supplies the missing periodic/AP phase or
+unsmoothed integer count. In particular, a noninteger reflected radial residue encodes
+additive twists of the actual forward coefficients; it cannot be declared zero merely
+because the untwisted summatory function has a main term. This remains an unpaid source
+obligation, not a valid shortcut for generalizing L1.
+
+
+Cycle 16 final verification: all five new leaves passed clean foreground direct audits
+with `lake --old env lean -o <olean> <leaf>` and are wired into RHTower.lean. Thirty-eight
+finished quantization leaves total. All 23 new public declarations and their dependencies,
+including the private circle-membership helper, use only propext, Classical.choice and
+Quot.sound. Full output and final hW-only alternative: periodic-rigidity-lean-audit.txt.
+No full/umbrella build, numerical experiment, added axiom or heartbeat change occurred.
+Scoped whitespace checks passed.
+
+The proof constructs the actual represented symbol, annular logarithm and nonpositive
+winding. Subunit local residual mass plus continuous exponential phase forces the
+monotone cumulative lift to be continuous. Its difference from the analytic logarithm
+is a constant deck translation; nonpositive winding bounds the actual cumulative phase
+and pays the existing rigidity receiver. L1 is fully formalized; general L and WP04 remain
+OPEN. External scientific novelty remains provisional, distinct from formal novelty.
+
+Fresh authoritative lint exited 1 with fifteen unrelated unreachable modules:
+
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionAmplitude
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionDecay
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionFourier
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorInversionGeometry
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorMovingKernel
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorNonstationary
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorScaledBessel
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseDeletionBound
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseDeletionCanonical
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilWorkSettledPhaseDeletionMasks
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeCalculus
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureConeWinding
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureLogTranslation
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.ApertureOpenHistoryIdeal
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
+
+No quantization-module error. Other agents' files were not modified.
+
+All nine hgtl7 answers were posted in chat. Next-cycle plan: attack general AP rigidity,
+retaining all rational resonances and auditing any use of noninteger radial residues.
+The reflected theta identity makes those residues additive-twist questions, not automatic
+zero limits. Do not treat the periodic theorem as a representation producer or full WP04.
+
+Cycle-16 cleanup completed after all owned Lean/search/lint sessions reached terminal exit.
+Twelve temporary proof/search/audit files were explicitly removed after preserving results.
+The cycle-17 frontier search is a new owned process; no prior build remains.
+
+
+## Seventeenth cycle: beyond integer-logarithmic periods
+
+Current primary-source audit began with Nakamura, *L-functions with Riemann’s functional
+equation and the Riemann hypothesis*
+(https://jxiv.jst.go.jp/index.php/jxiv/preprint/download/238/version/291/964/797),
+Introduction §1.1–1.3 and Theorem 1.1. Its comparison examples explicitly fail the ordinary
+Dirichlet-series requirement; they do not supply our normalized positive integer-supported
+source. This reinforces auditing support and normalization when varying the period, rather
+than treating a matching functional equation as a source construction.
+
+Nolasco–Castro, *Factorization theory for Wiener–Hopf plus Hankel operators with almost
+periodic symbols* (https://arxiv.org/pdf/math/0511127), Sections 1–2 and Theorem 5.1,
+was rechecked. The mean-motion decomposition is classical; the operator theorem uses
+its specified factorization and operator spaces. It supplies neither the arithmetic
+coefficient vector nor the missing source residue identities. The MathNet PDF attempt
+returned an internal error and was not used as evidence. No new scientific claim yet.
+
+Cycle-17 deep query `periodic phase rational logarithm conductor winding rigidity`, module
+Weil, completed in 136.70 seconds: partial=false, no errors or unfinished stages. All
+20 candidate and 20 source-argument statements and the one unverified ingredient set
+were inspected. Coverage: 68,612 indexed files, 52,111 compiler-pending, 2,660 stale;
+semantic coverage unmeasured and background refresh incomplete. Returned applicable
+results recover L1 itself; the existing AP receiver retains its nonresonance and
+continuous-edge premises. No returned result proves the arbitrary real-base extension.
+L2 and its first rational-ratio attack are recorded in ARBITRARY-PERIODIC.md; no new
+Lean is authorized by an incomplete paper proof.
+
+### Cycle 17 rational-period attack and survivor
+
+Deep search `rational dilation Blaschke periodic resonance coefficient energy conductor --module Weil`:
+61.37s, partial=false, no unfinished stages/errors; 68,617 indexed files, 52,114 compiler-pending,
+2,660 stale. All 20 candidate and 20 source statements inspected. The unverified ingredient set
+only proposed q-power resonance plus uniqueness; it does not extend the integer-base argument.
+Deep search `periodic residual measure absolutely continuous spectral density arithmetic support --module Weil`:
+81.48s, partial=false, no errors; 68,620 files, 52,116 compiler-pending, 2,660 stale.
+All 40 candidate/source statements and the unverified residual-bound ingredient set inspected;
+none supplies vanishing density. Deep search `Dirichlet exponential coefficients depend divisibility powers logarithm support lacunary`:
+58.64s, partial=false, no errors; 68,621 files, 52,117 compiler-pending, 2,660 stale.
+All 40 statements inspected; the suggested cyclic-loop/logarithm mapping is inapplicable.
+All three report unmeasured semantic completeness and incomplete background refresh; no absence claim.
+
+Exact source reads: AbsoluteConvergenceRigidity:536ff proves absolute deviation/n rigidity;
+ThreeHalvesLacunaryRigidity:778ff proves arbitrary deviations on a three-halves lacunary set vanish;
+SingularArithmeticForwardCoefficients:55ff supplies the exact logarithmic convolution.
+Mathlib MaxPowDiv and VonMangoldt supply composite-base valuation and Λ*ζ=log.
+The rational Blaschke warning model has a complete symbolic paper audit in ONE-SIDED-RATIONAL.md,
+including the full critical coefficient energy bound. It refutes only projected-row rigidity.
+The strongest survivor is exact classification of all one-sided rational row solutions as ζ*b
+with b supported on numerator powers; full positivity then rules out every nontrivial member.
+L2+ paper proof is closed; no new Lean has yet been written. Full L2 remains open.
+
+External exact searches for one-sided Dirichlet converse, rational dilation, and Weil lacunary
+rigidity returned no directly applicable primary theorem. Rechecked Burnol (arXiv:1106.4749,
+Theorem 1 and Corollaries) and Nolasco–Castro (arXiv:math/0511127): their continuation/growth or
+factorization premises are not supplied by this phase representation. This is a parent-theory
+audit, not evidence that the source result is absent from all literature. Scientific novelty provisional.
+
+Cycle 17 formal progress: RationalResonance passed clean final direct leaf audit and is wired.
+RationalRows classification passed its direct leaf audit; adding the full solution-space iff now
+requires a fresh audit. Power-divisor quotient and source logarithmic support scratch work pending.
+`OperatorTailDirichletMatroid.logWeight_leibniz` was located by exhaustive rg and read; reuse it
+rather than reproving the classical finite-convolution derivation. No full or umbrella build.

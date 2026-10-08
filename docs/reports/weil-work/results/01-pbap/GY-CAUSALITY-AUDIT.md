@@ -69,6 +69,16 @@ the theorem above alone is not the full window analysis.
 
 ## Formal status
 
-The parent identity is `RHTower.perron_kernel_identity`. The reflected identity
-and exact finite-frequency tail are paper-proved above; direct Lean verification
-is pending. Do not count this diagnostic as full PBAP progress or retire GY.
+The parent identity is `RHTower.perron_kernel_identity`. The reflected identity,
+absolute integrability and exact finite-frequency tail are formalized in
+`WeilWorkPBAPMollifierCausality.lean`, wired into `RHTower.lean`. The targeted
+`lake build --old +GaloisForLFunctions.RHTower.WeilWorkPBAPMollifierCausality`
+passed. The final direct `lake env lean` source audit passed with no diagnostics;
+all seven named axiom checks use only `propext`, `Classical.choice`, `Quot.sound`.
+Interrupted audit handles and missing temporary logs were not treated as success:
+the final source and axiom audits were rerun on 8 October 2026.
+
+Index refresh passed. Global lint reports thirteen unrelated unreachable modules,
+listed in `EVIDENCE.md`; no error concerns this leaf. No full/umbrella build,
+numerical experiment or heartbeat override was used. This is a completed
+classical bridge and proof-step correction, not a PBAP solution or a GY retirement.

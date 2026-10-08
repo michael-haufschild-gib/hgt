@@ -1,0 +1,51 @@
+'RHTower.WeilSpectral.quantizationPeriodicSymbol' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_norm_zpow_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.summable_quantizationPeriodicSymbol' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.analyticOnNhd_quantizationPeriodicSymbol' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantizationPeriodicSymbol_phase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.norm_quantizationPeriodicSymbol_circle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_exists_nonzero_annulus' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.exists_nonzero_annulus_quantizationPeriodicSymbol' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.continuous_quantization_logDeriv_circle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_exists_integer_winding' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_annulus_log_of_winding' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_exists_annulus_log' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.analyticOnNhd_quantization_laurentOuter' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_phase_winding_nonpos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_phase_exists_nonpos_winding_log' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_exp_phase_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_continuousAt_of_phase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_cumulative_local_subunit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.continuousOn_quantizationResidualCumulative_of_periodic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_continuous_lift_diff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RHTower.WeilSpectral.quantization_cumulative_bounded_of_periodic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_of_periodic_phase' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.WeilSpectral.quantization_rigidity_or_no_periodic_phase' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+RHTower.WeilSpectral.quantization_rigidity_or_no_periodic_phase {lam : ℕ → ℝ} (hW : RHTower.WeilPositiveFull lam) :
+  (∀ (n : ℕ), 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis ∨
+    ∀ (q : ℕ),
+      2 ≤ q →
+        ¬∃ p,
+            (Summable fun k => ‖p k‖ * ↑q ^ k.natAbs) ∧
+              ∀ (x : ℝ),
+                0 < x →
+                  Complex.exp (↑(2 * Real.pi * RHTower.WeilSpectral.quantizationResidualCumulative hW x) * Complex.I) =
+                    ∑' (k : ℤ), p k * Complex.exp (↑(2 * ↑k * Real.log ↑q * x) * Complex.I)

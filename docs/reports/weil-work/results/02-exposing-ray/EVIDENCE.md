@@ -373,3 +373,39 @@ Cycle17 cleanup complete: all14 owned temporary files removed after evidence cap
 - Ground-state detour rejected as rediscovery against STATUS MUST-786 and prior loop rows377--388. Original spectral L1 conjecture deferred on utility grounds. VANISHING-MASS-DEFECT-CONJECTURE.md is an OPEN next producer target; its cofinal mass-controlled reduction is only a paper argument and not a lower-bound theorem.
 
 Cycle18 closure: final installed PrimitiveSharpness `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkExposingRayPrimitiveSharpness.olean GaloisForLFunctions/RHTower/WeilWorkExposingRayPrimitiveSharpness.lean` exits0, empty diagnostic log. Imported-cache /tmp axiom audit exits0: ALL17 public statements across both edited leaves have exactly propext/Classical.choice/Quot.sound; no warnings/errors. The printed final axiom set wraps over three lines; whitespace-normalized audit confirms all17, without rerunning Lean. Both source caches are current; no full/umbrella build. Main goal ACTIVE.
+
+
+## Cycle19 — lower-producer audit, no new theorem (2026-10-08)
+
+- trace: partial=False; 68,587 indexed / 68,587 inventoried; 20 candidate_lemmas, 20 source_arguments, 0 proof_ideas, 1 ingredient_sets.
+- band: partial=False; 68,589 indexed / 68,589 inventoried; 20 candidate_lemmas, 20 source_arguments, 0 proof_ideas, 1 ingredient_sets.
+- period: partial=False; 68,594 indexed / 68,594 inventoried; 20 candidate_lemmas, 20 source_arguments, 0 proof_ideas, 1 ingredient_sets.
+- sparse: partial=False; 68,594 indexed / 68,594 inventoried; 20 candidate_lemmas, 20 source_arguments, 0 proof_ideas, 1 ingredient_sets.
+- square: partial=False; 68,595 indexed / 68,595 inventoried; 20 candidate_lemmas, 20 source_arguments, 0 proof_ideas, 1 ingredient_sets.
+
+All five searches exited0 and all candidate/source-argument lists and ingredient sets were inspected. Compiler enrichment remains mostly pending/stale, semantic coverage unmeasured, refresh background_indexer_running. Search results do not establish absence. Earlier interrupted conductor/Sonin JSON files and handles were missing on recovery; their unseen contents are not used. No replacement was launched merely to recreate those lost outputs.
+
+Source checks include the literal WP02 target; polar test, energy and box definitions; SparseWeightsObstruction and HalfPoleRigidity; finite Euler--Gamma Sonin normal form; existing WP01 moment/phase-cost papers. LOWER-PRODUCER-AUDIT.md records exact limitations and primary sources. SQUARE-SAMPLING-CONJECTURE.md records an open critical-density diagnostic with no assumed scalarization, atomicity or full-cone admission.
+
+No Lean edits or builds occurred, so there is no new compilation claim and no reason to repeat prior leaf tests. No numerical computation, full/umbrella build, subagent, commit or push. Cycle19 classification NO FRONTIER ADVANCE. Original universal lower inequality and RH receiver remain OPEN; goal ACTIVE. All five own search processes terminal; their five temporary JSON files removed after this evidence capture.
+
+
+## Cycle20 completed research audit
+
+- wp02-cycle20-annulus-search.json: exit0; partial=True; indexed/inventoried=68601/68601; candidates=20, arguments=20, ideas=0, ingredient sets=1.
+- wp02-cycle20-density-search.json: exit0; partial=True; indexed/inventoried=68606/68606; candidates=20, arguments=20, ideas=0, ingredient sets=1.
+- wp02-cycle20-polelift-search.json: exit0; partial=False; indexed/inventoried=68608/68608; candidates=20, arguments=20, ideas=0, ingredient sets=1.
+- wp02-cycle20-producer-search.json: exit0; partial=True; indexed/inventoried=68606/68606; candidates=20, arguments=20, ideas=0, ingredient sets=1.
+- wp02-cycle20-sampling-search.json: exit0; partial=True; indexed/inventoried=68606/68606; candidates=20, arguments=20, ideas=0, ingredient sets=1.
+- wp02-cycle20-square-search.json: exit0; partial=False; indexed/inventoried=68599/68599; candidates=20, arguments=20, ideas=1, ingredient sets=1.
+- wp02-cycle20-window-search.json: exit0; partial=True; indexed/inventoried=68603/68603; candidates=20, arguments=20, ideas=0, ingredient sets=0.
+
+All returned candidate statements, source arguments, proof ideas and ingredient steps inspected. Compiler metadata was largely pending/stale; completed retrieval is not compilation or an absence proof. The annulus file was initially read before its process finished (empty JSON); its eventual terminal exit0 result was then read successfully. No replacement process was launched.
+
+Source checks: actual polar primitive-set/dyadic bounds in WeilPrimitiveSetMeanSquare; localAtomMass obstruction in WeilPositivitySparseWeightsObstruction; exact full/polar definitions and only proved full-to-polar implication; full-cone pole-weight theorem hypotheses; actual matched-family receiver. CYCLE20-AUDIT.md corrects the earlier square-root-boundary motivation. Square C-minus itself is not claimed formalized.
+
+The pole-lift generated recipe was explicitly invalid: it cited weilPositive_of_weilPositiveFull backwards and listed full positivity as an obligation. It was rejected. Other generated recipes retained unrelated source comparisons or positivity premises; none was used as proof.
+
+Opened primary sources: Burnol math/9811040 PDF; Desogus2609.20367 current abstract (v3, October6) and earlier v1 HTML; Jorgensen--Tian1712.07264 PDF; Chung--Kim2005 publisher abstract. Cardiff conditional-distribution PDF URL was inaccessible. No numerical/computational claim was adopted. No new Lean edit, foreground Lean job, umbrella change or build occurred this cycle. New conjecture remains unproved and subject to endpoint utility audit.
+
+Cycle20 verification/cleanup: scoped git diff --check exits0; both new-file no-index checks emit no whitespace diagnostics (exit1 means file differs from /dev/null). All seven search processes were terminal before their seven owned JSON files were removed. No own process remains live. Durable memory rh/weil_work_02_cycle20_density_correction_2026_10_08 saved. Goal ACTIVE.

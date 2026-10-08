@@ -304,3 +304,66 @@ error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.H
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.BoundaryCoronaCStarAlgebra
 
 Next C11 representation search `research "riemannAutocorr Bessel divisor autocorrelation theta" --mode deep --budget-seconds 300 --json` completed exit0 but partial=true (local decomposition deadline),68,565 indexed files and stale compiler metadata/background refresh. All returned candidate/source statements inspected. Relevant existing machinery includes `MaassZetaSquaredConverse` and divisor Bessel bounds; no C11 sign/cancellation conclusion follows. [Berndt–Dixit–Gupta–Zaharescu's survey](https://adixit.people.iitgn.ac.in/wp/wp-content/uploads/2023/03/askey_special.pdf) and [Dixit–Moll's Koshliakov identities](https://arxiv.org/abs/1505.01552) were opened as parent-theory leads. A candidate Bessel representation is only a working calculation to audit, not a new proven theorem or novelty claim.
+
+### C11b/C12 paper audit, 2026-10-08
+
+The complete paper formulas and convergence arguments are in PROOF, C11b. They are not yet Lean results and do not increase the 20-module/84-audit checkpoint. Classical ancestry: Berndt–Dixit–Gupta–Zaharescu, §13 and references to Koshliakov's Xi-square/divisor–Bessel integral, <https://adixit.people.iitgn.ac.in/wp/wp-content/uploads/2023/03/askey_special.pdf>. The signed difference of two positive polynomial channels has no proved sign in the coupled scale `k~n`.
+
+C12's fixed-integer limit is a conjecture. The inspected corpus `WeilZetaSquareMoments`, `WeilZetaSquareDilationRigidity`, and `ZetaNotchTwistMainTerm` concern broad windows. Tang, August2026, Theorem1 and Remark3.1, <https://arxiv.org/html/2608.14852v1>, requires `H=T^δ`, `δ>1/2`, distinct odd prime twists and retains a dual moment; it cannot be specialized to the required square-root endpoint or treated as a positivity theorem.
+
+Latest exact-mechanism search: `scripts/formal_tools.py research 'cuspTerm Bessel integral convolution' --mode deep --budget-seconds 300 --json`, saved `/tmp/wp06-c11b-formal-frontier.json`. Terminal exit0; partial=false/errors=[]; inventory68,583; compiler43 current snapshots,52,084 pending,2,660 stale; background refresh incomplete, semantic coverage unmeasured. All20 candidate lemmas and20 source arguments inspected, including the proposed ingredient set. The whole-line complex-order Bessel integral and real-order bridge are applicable dependencies, not a completed correlation or cancellation theorem. No absence certificate claimed.
+
+### C11b final Lean audit, 2026-10-08
+
+- Source: `formal/GaloisForLFunctions/RHTower/WeilWorkDeficitBesselCorrelation.lean`.
+- Complete scratch proof passed with empty diagnostics before source creation.
+- Target-only `lake --old build +GaloisForLFunctions.RHTower.WeilWorkDeficitBesselCorrelation`: exit0, target99s,9,883 jobs mostly cached replay. Initial command from repository root failed to locate a Lake configuration; corrected invocation ran in `formal`. No full or umbrella build.
+- Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitBesselCorrelation.lean`: exit0, empty `/tmp/wp06-c11b-final.log`.
+- `lake --old env lean /tmp/wp06-c11b-axioms.lean`: exit0. Seven public theorem axiom lists contain only `propext`, `Classical.choice`, `Quot.sound`. Exact public types were inspected: arbitrary polynomial/shift and actual mixed-order formulas have no scientific hypotheses. Raw output appended to `lean-audit.log`.
+- Umbrella import in `formal/GaloisForLFunctions/RHTower.lean`. Scoped tracked whitespace check clean; new-source no-index whitespace check emitted no diagnostics.
+- Authoritative `scripts/formal_tools.py lint`: exit1;15 unrelated reachability errors, no WP06 finding and no forbidden-declaration finding. RHTower errors: `WeilWorkHigherDenominatorInversionAmplitude`, `WeilWorkHigherDenominatorInversionDecay`, `WeilWorkHigherDenominatorInversionGeometry`, `WeilWorkHigherDenominatorMovingKernel`, `WeilWorkHigherDenominatorNonstationary`, `WeilWorkHigherDenominatorScaledBessel`, `WeilWorkQuantizationCumulativeContinuity`, `WeilWorkSettledPhaseDeletionBound`, `WeilWorkSettledPhaseDeletionCanonical`, `WeilWorkSettledPhaseDeletionMasks`. HTGeometry errors: `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`, `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`. Unrelated sources preserved.
+
+Next C12 search `divisor summatory hyperbola logarithm error Bessel boundary` completed with partial=false/errors=[],68,605 indexed files,43 current compiled snapshots,52,104 pending and2,660 stale; background refresh incomplete. All candidate/source lists inspected. Exact source reads found `abs_primeFreeDivisorDefect_le` (bound24√N for logarithmic-factorial minus divisor summatory defect) and the stronger channel-specific ceilings in `DivisorUniformSquareRootBound`. These do not themselves provide complex-sector or growing-order correlation asymptotics. Search output `/tmp/wp06-c12-divisor-boundary.json`; no absence or cancellation claim.
+
+
+### G1 full gap-budget audit and C12 paper proof, 2026-10-08
+
+- Source: `formal/GaloisForLFunctions/RHTower/WeilWorkDeficitTwistedGapBudget.lean`.
+- Two public theorems: `summable_twistedGapWeight`, `tsum_twistedGapWeight_le`.
+  Domain restrictions are only conductor/positive-integer bounds; no scientific
+  hypothesis, new axiom or heartbeat option. Entire positive-pair series retained.
+- Target-only `lake --old build +GaloisForLFunctions.RHTower.WeilWorkDeficitTwistedGapBudget`:
+  exit0, target16s,9501 jobs mostly cached replay. No full or umbrella build.
+- Final unchanged `lake --old env lean GaloisForLFunctions/RHTower/WeilWorkDeficitTwistedGapBudget.lean`:
+  exit0; `/tmp/wp06-c12g-gap-final.log` empty.
+- `lake --old env lean /tmp/wp06-c12g-gap-axioms.lean`: exit0. Both theorem
+  axiom lists contain only `propext`, `Classical.choice`, `Quot.sound`.
+  Public types inspected; raw output appended to `lean-audit.log`.
+- Umbrella import wired. Final lint exit1: seven unrelated reachability errors:
+  `WeilWorkHigherDenominatorInversionFourier`, `WeilWorkQuantizationRationalResonance`,
+  `ApertureConeCalculus`, `ApertureConeWinding`, `ApertureLogTranslation`,
+  `ApertureOpenHistoryIdeal`, `BoundaryCoronaCStarAlgebra`.
+  No WP06 or forbidden-declaration finding. Unrelated files preserved.
+
+Corpus queries `/tmp/wp06-c12g-gaussian-frontier.json`,
+`/tmp/wp06-c12g-cutoff-frontier.json`, and
+`/tmp/wp06-c13-truncated-prime-dual.json` all completed partial=false/errors=[].
+Indexed inventories68,617/68,618/68,625; only43 current compiled snapshots,
+large pending/stale coverage, incomplete background refresh. All returned
+candidate-lemma and source-argument lists inspected. No absence certificate.
+Direct source reads supplied the actual symmetric product AFE, Gaussian-tail
+cutoff and derivative, harmonic diagonal, reciprocal-log separation,
+one-dimensional cutoff sum, Gamma ratio, exact Gamma half-line modulus,
+actual derivative transform, and literal Weil-functional signs.
+
+External primary audit opened [Tang's August2026 reciprocity paper](https://arxiv.org/html/2608.14852v1),
+[Baluyot's twisted Atkinson analysis](https://myweb.ecu.edu/baluyots24/criticalline.pdf),
+[Motohashi's lecture](https://www.nara-wu.ac.jp/omi/oka_symposium/18/motohashi.pdf),
+[NIST's Riemann–Siegel formula](https://dlmf.nist.gov/25.10), and
+[Paris's stationary-phase paper](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/F177CA78EE9240A1AE1C22380338CD5B/S0004972700035115a.pdf/riemannsiegel_sums_via_stationary_phase.pdf).
+No endpoint theorem was imported from the broader-window results. The first
+sharp-Riemann–Siegel/chirp idea was superseded by the corpus product AFE;
+its external inputs are not dependencies of the selected proof. G1 and the
+C12 paper argument are classified classical-parent BRIDGES, not new science.
+C12 analytical assembly and Xi transfer remain unformalized; C13 and the
+assigned upper-deficit goal remain open.

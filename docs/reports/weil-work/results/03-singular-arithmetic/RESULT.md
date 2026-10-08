@@ -324,9 +324,50 @@ checks without warnings. All30 public declarations have standard-only
 axiom reports. All five imports are wired; no umbrella build was run.
 Classification: PROGRESS/BRIDGE; no literature-novelty claim.
 
-Parent C32 remains the full arithmetic fibre law from positivity alone.
-C32a's dependency-closed paper argument constrains the actual normalized
-parity Mellin expression to an explicit interval determined by ell<=0.
-It does not assume parity convergence. Its Mellin implementation is in
-progress. Ordinary twisted limits, harmonic equality and WP03's uniform
-quotient bound remain OPEN.
+C32a is now COMPLETE: write ell=Re(P(1))<=0 and
+b(sigma)=(sigma-1)^2 Re(Gamma_R(sigma)*V_alt(sigma)), where V_alt is
+the actual absolutely convergent alternating arithmetic Dirichlet series
+on Re s>1. For every epsilon>0, eventually as sigma decreases to1,
+
+    |b(sigma)+ell/2| <= -sqrt(2)*ell+epsilon.
+
+No twisted-pole existence or convergence premise is added. The proof
+pays actual alternating Mellin convergence, the weighted transform,
+absolute large-t control, and a uniform real Mellin upper bound before
+using two fixed coefficients +/-sqrt(2). The interval remains nontrivial
+when ell<0; convergence and equality ell=0 do not follow.
+
+All six new leaves and the two touched Mellin leaves pass targeted --old
+checks and eight final direct lake-env-lean audits with empty diagnostics.
+All21 public declarations in those files have standard-only axiom reports.
+Six imports wired; no full/umbrella build. Classification: PROGRESS/BRIDGE,
+with no literature-novelty claim. Parent C32's full arithmetic fibre law,
+ordinary twisted limits, harmonic equality and the WP03 quotient bound
+remain OPEN.
+
+C33 analytic BRIDGE is COMPLETE. For every full-positive source, one
+constant D controls every finite real polynomial, every N and every T>=1:
+
+    Re A_T(c) <= D*E(c)*(N+1)^(9/8)*T^(5/6),
+    E(c)=sum_(1<=m<=N)c_m^2/m.
+
+Consequently N+1<=T^theta gives exponent5/6+9*theta/8, sublinear for
+theta<4/27. The exact all-ratio extraction, spectral pairing, residue
+and both coefficient budgets are paid. No arithmetic lower bound is
+proved. FiniteWeight, FiniteGaussian, FinitePairing, FiniteShift,
+FiniteEnergy and FiniteBound pass all targeted --old and six final direct
+source checks with empty diagnostics. All29 public declarations have
+standard-only axiom reports. Six imports wired; no umbrella/full build.
+
+C33's proposed positive order-T detector, restricted to full-positive
+sources, is target-equivalent after this bound; verdict CIRCULAR as a
+research proposal. The verified analytic bound survives as BRIDGE, not a
+solution or literature-novel result. WP03 remains OPEN.
+
+C34 critical absolute-harmonic rigidity was REDISCOVERED, not advanced:
+WeilAbsoluteConvergenceRigidity already proves it. More strongly,
+WeilOneSidedConvergenceRigidity proves either sign part summable against
+1/n forces equality. Any distinct source has both sign parts divergent
+at1, despite absolutely summable signed unit-log-window masses. Next
+research must address that mixed cancellation, without adding tail
+summability or a detection premise.

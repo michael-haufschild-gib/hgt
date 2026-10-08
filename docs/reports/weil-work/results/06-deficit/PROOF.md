@@ -837,3 +837,326 @@ Motivation from the inspected corpus: broad-window twisted second moments of the
 **Verdict: SURVIVES PRELIMINARY ATTACK / OPEN.** It may be a consequence of a sufficiently uniform classical twisted-moment theorem; no novelty certificate is claimed. The internal theta logarithmic-jet oscillation theorem concerns the logarithmic derivative of the theta source, not κ, and cannot decide C12. Natural-boundary singularities of a summand need not persist in an even symmetrization or convolution, so a Pringsheim shortcut also remains unproved. First `[OPEN CORE]`: control the literal Xi-weighted degree-k window and its twisted error at this concentration scale, or prove a direct coefficient asymptotic from the full divisor–Bessel expression. Do not replace it by a new Lean premise.
 
 If C12 holds, for each fixed finite set of n all sufficiently high derivative columns are strictly positive at those rows. Such columns alone cannot cancel the positive baseline. This would locate the needed sign-changing orders but would NOT refute C11/C11q, whose positive solution can retain low orders. C11q and the full coherent alternatives C7/C9/C10 remain the principal construction targets.
+
+#### C11b formal interface and C12 attack obligation
+
+The new `WeilWorkDeficitBesselCorrelation.lean` implements (B1) for every pair of real polynomials and every real shift. Its finite coefficient sums sit outside the full divisor series; finite summation commutes with that absolutely convergent series. The formal real Bessel order is `j-l`; evenness in the order identifies it with `|j-l|`. The index-zero term is present with divisor multiplicity zero. Every positive ordered factor pair is retained. The same argument and the corpus derivative parity give the stronger mixed-order specialization
+
+`∫ Re Φ^(k)(u) Re Φ^(l)(u-y) du = (-1)^l ∫ S_(P_k)(u) S_(P_l)(y-u) du`.
+
+This is already a direct specialization of the paper's arbitrary-polynomial identity, not a new scientific claim. The seven-theorem module also proves the explicit actual-kernel formula (B2). Target build and final unchanged direct audit passed; all seven public axiom audits contain only standard Lean foundations. The two-channel polynomial recurrence (B3)-(B5) remains paper-only; it is not needed to identify the actual all-order matrix via (B1).
+
+C12 remains an unconditional conjecture about the actual normalized matrix, with no new Lean premise. A second possible attack, grounded in (B1)-(B2), is to control the complex boundary above `log n` using the divisor summatory function. At `exp(y)=i n`, the leading large-argument Bessel phase `exp(-2πi N n)` aligns for every integer product index. This motivates the rational arithmetic coefficient but does not establish a high-derivative asymptotic. Pointwise or radial cusp growth alone is insufficient: the Cauchy integral at growing derivative order also requires uniform control away from the cusp and of nearby rational cusps. Neither a boundary-growth claim nor a Tauberian/Darboux conclusion is entered as a proved result. Next research must pay that uniformity, or return to the exact weighted twisted moment, before using C12 to restrict cancellation families.
+
+#### C12a: why a radial divisor-error estimate does not yet close the coefficient limit
+
+Source audit: `CCMFUSuzukiMobiusDivisorAbelProducer.abs_primeFreeDivisorDefect_le` bounds
+`log(N!) - D(N) + 2γN` by `24√N`. Together with the corpus Stirling estimates this gives the ordinary real summatory remainder `D(X)-X log X-(2γ-1)X = O(√X)`. This is available input, not a new premise to install in Lean.
+
+Test the direct absolute-value Abel estimate for the leading Laplace series suggested by (B2). For `p=7/2`, `Re z=σ>0`, integration by parts against that remainder gives an error envelope
+
+`O(σ^(-4) + |z| σ^(-5))`
+
+for `Σ d(N)N^p exp(-zN)` after subtracting its logarithmic main integral. The two terms come respectively from differentiating `t^p` and `exp(-zt)`; all endpoint terms vanish. This is only an estimate to test the proposed method. The additional complex-sector Bessel reduction and the actual high-order coefficient asymptotic still require proofs.
+
+On a Cauchy circle of radius `(π/2)(1-1/K)` about the real correlation point, an angular displacement of order `K^(-1/2)` from the aligned upper cusp gives `σ` of order `K^(-1)` and `|z|` of order `K^(-1/2)`. Thus this absolute envelope permits size `K^(9/2)` on an arc of width `K^(-1/2)`, giving a coefficient-error bound of order `K^4`. The expected leading logarithmic cusp contributes order `K^(7/2) log K`. The available bound therefore does not prove a relative error tending to zero. It is an upper-bound deficiency, not evidence that C12 is false.
+
+The concrete missing step is angular cancellation or a uniform arithmetic estimate adapted to the growing-order contour. Merely re-formalizing the real square-root summatory bound cannot supply it. C12 and the alternative exact weighted-moment attack remain open; no full route is retired.
+# C12g: square-root Gaussian window attack (2026-10-08, OPEN)
+
+For each fixed integer n≥1 and c>0, put H=c√T. Candidate:
+
+`∫ exp(-((t-T)/H)^2) |ζ(1/2+it)|² exp(-it log n) dt = √π H log T / √n + O_(n,c)(H)`.
+
+Proposed mechanism: freeze the balanced Riemann–Siegel polynomial at
+N=floor√(T/(2π)). Its two square terms have the exact Gaussian Fourier
+transform; the m=nr diagonal supplies the displayed main term. Integrate
+before taking absolute values: the remaining near-diagonal lattice sum
+is O(H), since H is comparable to N. For the two functional-equation cross
+terms, Taylor-expand the unit-modulus chi phase to quadratic order at T.
+The resulting chirped Gaussian localizes mr near T/(2πn) or nT/(2π).
+For each r comparable to N, only a bounded Gaussian-weighted number of m
+contribute; the total is O(N)=O(H). Crude polynomial bounds already price
+the cubic phase remainder at O(H). An O(H) error suffices against H log T;
+no power saving is required.
+
+Open audit obligations before accepting this as a proof: a verified sharp
+balanced approximate functional equation with uniform O(T^-1/4) error;
+freezing the moving cutoff with a Gaussian-integrable error; uniform chi
+phase Taylor bounds; the product-lattice estimate including far regions;
+and transfer from this Gaussian window to the actual Gamma-weighted Xi
+derivative moment. The latter has center T=(2k+7/2)/(π/2), width comparable
+to √T, and should yield C12 with error O_n(1/log k), but is not yet proved.
+No new Lean source, sign conclusion, or scientific novelty claim.
+
+## C12g revised route: product formula and full reciprocal-gap budget
+
+The sharp-cutoff route above is superseded by the already formalized symmetric
+product AFE in `ZetaSquareStirlingAFE.exists_norm_zetaSq_sub_symmetricAFE_le`.
+The following arithmetic lemma has a complete paper proof and is selected for
+formalization. Write P=rm, lambda=log(m/r)-log n, r,m≥1, n≥1, T≥1, and
+q_T(P)=min(1,T/P). A zero reciprocal at lambda=0 means that the diagonal is
+excluded. Put Z=Σ_(z∈ℤ) 1/z², with the zero summand interpreted as zero. Then
+
+`Σ_(r,m) P^(-1/2) q_T(P)^2 / lambda² ≤ (48 n² Z + 16 pairZeta) T`. (G1)
+
+Here `pairZeta=Σ_(r,m)(rm)^(-5/4)` is the existing corpus constant. Both
+series converge absolutely. Proof: if |lambda|≥1/4, the summand is at most
+16 times the existing `pairWeight T`, whose total is at most
+pairZeta T^(3/4)≤pairZeta T. If 0<|lambda|<1/4, the corpus near-resonance
+bounds give nr/2≤m≤2nr. Therefore P≥r²/2, P^(-1/2)≤2/r, and
+max(m,nr)≤2nr. The corpus logarithmic gap inequality yields
+`1/lambda²≤4n²r²/(m-nr)²`. The summand is consequently bounded by
+`8n² r min(1,2T/r²)^2/(m-nr)²`.
+For fixed r the integers m-nr are distinct, so their reciprocal-square
+sum is at most Z. For a≥0,
+`r min(1,a/r²)≤sqrt(a)` and hence
+`r min(1,a/r²)^2≤sqrt(a) min(1,a/r²)`.
+The existing one-dimensional bound Σ_r min(1,a/r²)≤3sqrt(a) gives
+Σ_r r min(1,a/r²)^2≤3a. Set a=2T. This proves (G1), including
+summability by the same nonnegative majorants; no unpriced far tail remains.
+
+The remaining analytical assembly is explicit. Let chi be a fixed smooth
+cutoff supported in [1/2,2], equal to one on [3/4,3/2], and
+F_P(t)=chi(t/T) exp(-((t-T)/H)^2) V(2πP/t), H=c sqrt(T).
+The actual V is a Gaussian upper tail on logarithmic scale, already proved in
+`SmoothAFECutoffGaussianTail`. Its first two logarithmic derivatives are a
+Gaussian and a linear polynomial times that Gaussian. Thus, for j=0,1,2,
+`∫|F_P^(j)(t)|dt ≤ C_c H^(1-j) q_T(P)^2`.
+This follows by the product rule, t comparable to T on support, H≤T for large
+T, and finite Gaussian moments; multiplying each logarithmic derivative by
+x² is bounded for x≥1, while all are bounded for 0<x≤1.
+Two integrations by parts and (G1) bound all off-diagonal terms by O_(n,c)(T/H).
+Absolute integration before rearrangement follows from the j=0 bound and
+the summable pair weight. The AFE remainder contributes O_c(log T).
+
+The two diagonals together are
+`2/sqrt(n) ∫ chi(t/T) exp(-((t-T)/H)^2) diagHarm(t/(2πn)) dt`.
+The existing `exists_norm_diagHarm_sub_le` gives
+`diagHarm(x)=log(x)/2+gamma+O(x^(-1/4))`. Consequently the diagonal is
+`sqrt(pi) H log(T)/sqrt(n)+O_(n,c)(H)`.
+Removing chi costs an exponentially small quantity, using any polynomial
+critical-line zeta bound (available through Euler–Maclaurin).
+This closes the paper endpoint moment C12g using established corpus inputs
+and the displayed derivative/integration estimates. It is a classical-parent
+BRIDGE, with no external novelty claim. Lean status: (G1) is now formalized and fully audited in
+`WeilWorkDeficitTwistedGapBudget.lean`; the analytical assembly and transfer to the literal Xi derivative moments
+remain unformalized. Do not label C12 or the main deficit goal solved.
+
+## C12 transfer on paper: literal Xi moments, with no extra premise
+
+The following completes the paper transfer once G1 and the preceding
+endpoint-moment argument are included in the same proof. It is not a Lean
+completion claim. The corpus identity `paperFT_riemannKernelDeriv`, realness
+of the kernel derivatives, and Plancherel give exactly
+
+`A(n,k) = (1/(2π)) ∫_ℝ t^(2k) |XiC(t)|² cos(t log n) dt`.
+
+All integrals converge: the actual kernel derivatives are Schwartz, and the
+Gamma factor also gives exponential decay. At t>0, the exact Xi/Gamma/zeta
+identity and the vertical Gamma-ratio limit give
+
+`|XiC(t)|² = C0 t^(7/2) exp(-a t) |ζ(1/2+it)|² (1+epsilon(t))`,
+`a=π/2`, `C0=sqrt(π/2)>0`, `epsilon(t)→0`.
+
+For the Gamma input one needs no recalled Stirling theorem: apply
+`gamma_vertical_ratio_norm_rpow_tendsto` at a=δ=1/4, combine with the exact
+`norm_Gamma_half_add_I_sq`, then use t/2 as height. The exact Xi identity is
+in `ZetaNotchSmoothTest`; its factor is `(t²+1/4)²/4`. Continuity on compact
+intervals and this limit give a global constant multiple of the same
+exponential-power envelope for t≥1.
+
+Put p=2k+7/2, T=p/a, H=sqrt(2T/a), and B=T^p exp(-aT). On T/2≤t≤2T, with
+s=(t-T)/H, Taylor's theorem for log(1+u) on -1/2≤u≤1 gives
+
+`|t^p exp(-at)/B - exp(-s²)| ≤ C T^(-1/2) |s|³ exp(-c s²)`.
+
+Indeed the exponent difference is bounded by C T^(-1/2)|s|³, and both
+exponents are at most -c s²; use the integral mean-value formula for exp.
+The untwisted endpoint estimate at a slightly larger fixed Gaussian width
+then bounds the integrated error, after multiplication by |ζ|², by O(log T).
+Outside [T/2,2T], `log(t/T)-t/T+1` is negative by a fixed amount, and is
+at most a negative constant times t/T for t≥2T. Polynomial zeta bounds
+therefore make those tails exponentially small relative to B; the compact
+interval [0,1] contributes O(1/B). These statements also apply to the
+Gaussian comparison tail.
+
+The epsilon(t) factor costs o(H log T): its supremum on [T/2,2T] tends to
+zero, the untwisted integral there is O(H log T), and its outside tail has
+the same global exponential envelope. The twist has modulus at most one,
+so every error estimate applies uniformly to a fixed n. Evenness doubles
+the positive half-axis. Consequently
+
+`A(n,k) / (C0 B H log T / sqrt(π)) → 1/sqrt(n)`
+
+and its n=1 specialization tends to 1. Dividing proves the original C12
+limit `A(n,k)/A(1,k)→1/sqrt(n)`. Only convergence is claimed: the available
+Gamma-ratio limit does not by itself price a 1/log(k) error. For each fixed
+finite M, all rows 2≤n≤M are consequently strictly positive for all
+sufficiently large k. This excludes cancellation by those high-order
+columns alone. It does not exclude mixtures retaining lower orders, does
+not give a threshold uniform on n comparable to k, and does not solve
+C11q or the assigned deficit target. Scientific verdict: classical-parent
+BRIDGE; paper status complete subject to normal proof audit; Lean status
+open beyond the existing ingredients and the completed G1 formalization.
+
+## C13: a coupled truncated-prime dual window (OPEN)
+
+**Conjecture:** there exist k0,M0 such that for all integers M≥M0 and
+k≥k0 with 100k≤M,
+
+`Σ_(2≤n≤M) Λ(n) A(n,k)/sqrt(n) ≥ (1/4) log(k+2) A(1,k)`.
+
+Competing statement: there are arbitrarily large such M,k for which the
+displayed inequality fails. Neither statement is presently proved.
+
+Motivation uses inspected corpus inputs, not assumed pointwise signs. The
+literal `weilFullFunctional` has pole minus prime plus gamma signs. Its
+gamma bracket has the proved lower bound
+`log(2+|t|)-(10+log 4)` (`joint_gamma_lower_log`). The actual derivative
+transforms annihilate every Xi zero. Thus a full-prime identity, if paid
+through the noncompact/truncation limit, should give a positive normalized
+gamma contribution of size `(1/2) log k` for large k. C10u bounds the entire
+omitted prime tail by the explicit factorial budget times exp(-πM). The
+untwisted part of the C12 paper argument gives the required lower bound on
+A(1,k); factorial comparison should make that tail uniformly negligible
+when 100k≤M. Exact pole normalization, noncompact explicit-formula passage,
+uniform factorial comparison, and the final finite cutoff must all be
+proved before accepting C13. No additional Lean premise is licensed.
+
+The finitely many orders k<k0 are deliberately retained as exceptions.
+Positivity of the gamma bracket at large spectral height does not justify
+positivity for those low orders. Even C13 would only constrain a band of
+C11's columns, not provide a separating functional on the whole cone.
+Next research should attack those exceptions and the complementary coupled
+order range, while completing C12's remaining formal analytic obligations.
+
+## C13 paper closure: literal poles, cutoff passage, and uniform omitted tail
+
+This closes the preceding C13 paper conjecture, not its Lean obligation.
+Put F_k=Re(Phi^(k)), q_k(y)=integral F_k(u)F_k(u-y)du, and
+E_k=q_k(0)=A(1,k). All sums below include every prime power through Lambda.
+
+**Noncompact explicit formula.** Let F_(k,L)=bulkCutoff(L,.) F_k.
+The fixed smooth transition has bounded derivatives of every fixed order;
+its translates have the same bounds. Superexponential decay of every
+F_k derivative implies, for j=0,1,2 and any fixed b>0,
+
+`integral exp(b|u|) |(F_(k,L)-F_k)^(j)(u)| du -> 0`.
+
+Indeed each Leibniz term is supported on |u|>=L-1 and bounded by a fixed
+finite sum of the corresponding weighted derivative tails. Derivatives of
+F_(k,L) have uniformly bounded weighted L1 norms. Fourier integration by
+parts therefore gives uniform strip bounds C_k/(1+|Re z|)^2 for |Im z|<=1/2,
+and convergence there with the same denominator and a constant tending to
+zero. All actual zero evaluations of F_k vanish. The zero-side
+summands for the cutoffs are thus bounded in absolute value by
+`epsilon_L^2 m(rho)/(1+|Im rho|)^4`, whose sum is finite by the actual
+zero-counting bound. Their full sum tends to zero, including off-line
+zeros and multiplicities; no RH input occurs.
+
+For q_(k,L), the complex Fourier convolution identity is justified by
+weighted L1 Fubini. It converges at both half poles. On the real line its
+Fourier transform is |FT F_(k,L)|^2, bounded by C_k/(1+|t|)^4;
+the gamma bracket has at most logarithmic growth, so dominated convergence
+pays the archimedean integral. For the prime terms, |bulkCutoff|<=1 and
+C10u's product-envelope proof give, uniformly in L,
+`|q_(k,L)(log n)| <= C_k exp(-pi n)` for n>=2.
+The same bound holds at -log n by autocorrelation evenness. Since
+Lambda(n)<=log n, the prime series is dominated by a summable sequence.
+Pointwise convergence follows from the integrable product envelope.
+Taking L->infinity in the existing compact explicit formula now proves
+its exact noncompact version with zero left side.
+
+The actual transform is `FT F_k(z)=(-iz)^k XiC(z)`. Both
+XiC(i/2)=xi(0)=1/2 and XiC(-i/2)=xi(1)=1/2. At either half pole the
+transform of q_k is the product of the two opposite half-pole values,
+namely `(-1)^k/4^(k+1)`. Thus the exact real identity is
+
+`P_k := sum_(n>=2) Lambda(n) A(n,k)/sqrt(n)`
+`     = (-1)^k/4^(k+1) + (1/(4pi)) integral t^(2k)|XiC(t)|^2 gammaBracket(t)dt`.
+
+In particular the pole correction is signed for odd k. It cannot be
+replaced by a nonnegative square at a complex pole.
+
+**Gamma lower bound.** The untwisted C12 proof gives more than total mass:
+with p=2k+7/2, a=pi/2, T=p/a, its normalized nonnegative spectral mass
+outside [T/2,2T] and its negative reflection tends to zero exponentially.
+This follows from the already displayed Laplace tail bound, the global
+polynomial zeta bound, and the lower asymptotic E_k~C B H log T with C>0.
+The corpus inequality gammaBracket(t)>=log(2+|t|)-(10+log4) gives
+
+`P_k/E_k >= (1/2)(log(T/2)(1-o(1))-(10+log4)) - 1/(4^(k+1)E_k)`.
+
+Here the logarithm is nonnegative outside the central region, and
+E_k grows faster than every fixed exponential by C12. Since T/k->4/pi,
+there is k0 such that `P_k >= (3/8)log(k+2) E_k` for all k>=k0.
+Only this lower bound is asserted; no unproved gamma upper asymptotic is
+used.
+
+**Uniform omitted tail.** C10u at r=pi gives one B>0 independent of k,M:
+
+`sum_(n>M) Lambda(n)|A(n,k)|/sqrt(n)`
+`  <= B 19^(2k) ((k+2)!)^2 exp(-pi(M+1))`.
+
+This follows from its stronger actual repair-weight sum by
+Lambda(n)/sqrt(n)<=Lambda(n) for n>=2. C12 gives eventually
+`E_k >= T^(2k) exp(-(2k+7/2))`, after absorbing its positive
+C T^4 log T prefactor. Since pi<4, T>=k. The elementary bound
+`(k+2)! <= (k+2)^(k+2) <= (3k)^(k+2)` for k>=1 then implies
+
+`19^(2k)((k+2)!)^2/E_k <= exp(20k)`
+
+for all sufficiently large k: take logarithms, use log19<3, log3<2,
+and absorb 4log k and fixed constants into the remaining 8k. This is an
+analytic bound, not a numerical experiment. Hence for every M>=100k,
+the omitted tail divided by E_k is at most
+`B exp(20k-pi(M+1)) <= B exp(-280k)`, using pi>3.
+Enlarge k0 so this is <=(1/8)log(k+2). Subtracting the entire omitted
+tail proves C13, simultaneously for all M>=100k and k>=k0.
+Take M0=100k0. No finite-tail sampling is involved.
+
+Verdict: **BRIDGE**, a consequence of the literal explicit formula,
+C12's concentration, and the proved full derivative budget. Paper proof
+is dependency-closed together with C12/C12g above; C12/C13 analytical
+formalization remains open. It gives neither positivity for k<k0 nor
+control of the remaining band M/100<k<=M. Main deficit target and C11q
+remain open.
+
+## C14: coupled-order prime truncation (OPEN)
+
+For each fixed alpha>0, conjecture
+
+`P_(floor(alpha k)),k / (E_k log(k+2)) -> 1/2` as k->infinity,
+
+where P_(M,k)=sum_(2<=n<=M) Lambda(n)A(n,k)/sqrt(n).
+Competing conjecture: some alpha>0 has a subsequence whose normalized
+truncation stays a fixed distance from 1/2. C13 only supplies a lower
+bound for alpha>=100. Fixed-n C12 cannot be summed over n growing with k.
+The exact product AFE suggests a main diagonal on n comparable with k;
+its integrated prime contribution below any fixed positive fraction of k
+has the same leading logarithmic mass. The open core is control of the
+whole coupled prime-weighted off-diagonal, or a signed tail estimate at
+n comparable with k. The current absolute factorial envelope does not
+pay this range. No hypothesis is added to any Lean result.
+
+## G2 paper primitive for C12g: uniform two-jet cutoff bounds
+
+Let V be the corpus's actual smoothAFECutoff. In logarithmic coordinates,
+its already proved first derivative is `-g(y)/(2sqrt(pi))`, where
+`g(y)=exp(-y^2/4)`. Differentiation gives second derivative
+`y g(y)/(4sqrt(pi))`. For every y,
+`(1+|y|)g(y) <= exp(9) min(1,exp(-2y))`:
+use 1+|y|<=exp(|y|), and complete the squares
+`-y^2/4+|y|<=1` and `-y^2/4+|y|+2y<=9`.
+The actual zeroth derivative has 0<=V<=1 and V(x)<=K x^(-2), so increasing
+one constant controls all three logarithmic jets by
+`C min(1,x^(-2))` on x>0.
+For fixed P>0, differentiation of V(P/t), t>0, gives
+`g(log(P/t))/(2sqrt(pi)t)` and
+`g(log(P/t)) (log(P/t)/2-1)/(2sqrt(pi)t^2)`.
+The same envelope therefore bounds orders j=0,1,2 by
+`C t^(-j) min(1,(t/P)^2)`, with one constant preceding P,t.
+All inputs are literal cutoff identities and elementary real inequalities;
+this pays an analytic dependency of the paper C12g proof, with no new
+scientific novelty claim. Formalization follows this proof.

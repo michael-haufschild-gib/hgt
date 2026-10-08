@@ -1496,3 +1496,149 @@ No new route retired. Initial candidate selection remains in progress.
   Classical.choice, Quot.sound. Result/proof/evidence/frontier updated.
   Anti-theatre and anti-laziness answers posted in chat. C32a continues;
   exact WP03 goal ACTIVE/OPEN. No claim of harmonic equality.
+
+### C32a continuation after interrupted turn
+
+- Previous turn PROGRESS: C31b fully source/axiom audited; actual C32a
+  parity and polynomial Mellin leaves written. Goal unchanged/ACTIVE.
+- Interrupted process handle81187 is missing; /tmp log is absent and
+  process inventory shows no owned PolynomialMellin job. Started a fresh
+  targeted --old build only after this authoritative check.
+- Current hgtl7 skill re-read; October2026 SOTA standard retained, with
+  no novelty claim from empty search results. Exact WP03 receiver and
+  current frontier row re-read. Memory C31a is superseded by C31b card.
+- Explicit research question: Given the exact internal and external
+  frontier, what would a Fields Medal-winning mathematician conjecture?
+  Parent answer remains C32: actual full arithmetic fibre law from hW
+  alone. Competing alternative: only subsequential/regularized arithmetic
+  limits. OPEN CORE remains ordinary arithmetic limit existence.
+  C32a interval constraint is a dependency-closed BRIDGE to investigate
+  that core, not a claimed new parent theory or replacement objective.
+- Fresh deep source audit:68583files,generation1286264; partial at semantic
+  runtime deadline. All20 candidate and20 source statements inspected.
+  Proposed finite-support twistBound/poleSystem ingredients retain finite
+  support/BoundaryRegular hypotheses, so do not apply. Source multiples
+  law also requires nonnegative coefficients; not imported here.
+- External broader check: Bettin1607.05595 concerns twisted Dirichlet
+  L-function moments/Estermann; Farmer--Wilson math/0408221 assumes
+  specified Euler factors plus additional converse hypotheses. Neither
+  abstract supplies continuation for our unrestricted alternating series.
+  Their primary pages were opened; no new novelty claim is made.
+- ParityMellin targeted check PASSED: actual absolute Dirichlet/Mellin
+  convergence and exact alternating transform. PolynomialMellin now
+  PASSES, including actual weighted convergence/identity and real-axis
+  quadratic identity. Function subtraction needed Pi.sub_def, not merely
+  Pi.sub_apply. Minimal pole-limit API probe passes, including explicit
+  square-root/rpow evaluations; no numeric experiments.
+- Exposed common upper-envelope argument in owned MellinBound so scalar
+  and polynomial sources share the same proof. Scalar endpoint preserved.
+  PolynomialTail, PolynomialMellinBound, ParityPoleBound and
+  ParityPoleInterval now implement the paper chain; UNVERIFIED pending
+  their checks. Tail build is the only active Lean/Lake job.
+- Tail's half-scale normalization left only a polynomial identity after
+  denominator clearing; ring closes it. Sequential targeted checks now
+  run Tail, shared MellinBound, PolynomialMellinBound, ParityPoleBound,
+  ParityPoleInterval, stopping at first failure. One foreground Lake
+  process at a time. Final direct/axiom audits still unpaid for C32a.
+
+### C33: growing tests versus arithmetic mass escaping fixed denominators
+
+- C32a interval targeted check PASSED. Six new imports wired. Eight
+  final direct source checks plus21 public axiom reports run sequentially;
+  no final audit claim until their process exits. Latest lint has11
+  unrelated unreachable modules and no owned/prohibited-declaration error;
+  index exits0, generated catalogs unchanged.
+- C32a's five anti-theatre and four anti-laziness answers posted in chat.
+  Verdict BRIDGE: actual no-limit-premise bound, no novelty claim.
+- Given the exact internal and external frontier, what would a Fields
+  Medal-winning mathematician conjecture? Parent C32 remains that the
+  actual arithmetic fibre law is rigid. C33 sharpens the competing worlds:
+  growing finite polynomial tests detect every nonzero actual deviation,
+  versus an arithmetic defect that escapes every fixed denominator test.
+  The latter is a possible obstruction, not a constructed full-positive
+  source or a theorem. [OPEN CORE]: uniformity sufficient for arithmetic
+  inversion as polynomial length grows. Fixed discriminants do not pay it.
+- First paid bridge selected: quantify the complete finite-polynomial
+  contour extraction with one source constant and explicit coefficient
+  weights. Existing T^(5/6) kernel error already permits short growing
+  reciprocal prefixes; all-order kernel formalization is unnecessary for
+  this first test. Do not replace C32/WP03 by the routine bridge.
+- Rejected shortcut: formally replacing both factors by the reciprocal
+  turns the deviation pairing into H'(s)H(1-s), H=zeta*G. Even when justified,
+  the associated averaged sign matches ordinary Dirichlet energy decay;
+  it supplies no rigidity. No substitution on the unavailable left domain
+  is made in Lean.
+- Corpus arithmetic search68601files,generation1286472/73 was partial at
+  reranking deadline. All20 candidate and20 source statements inspected;
+  proposed additive-convolution/Estermann ingredients do not identify our
+  arbitrary source's twisted residues. Fourier search same coverage was
+  partial; all20+20 statements inspected. Existing iterated-derivative
+  Fourier decay handles generic analytic machinery, not arithmetic
+  denominator uniformity. All-order kernel idea retained only as optional
+  later optimization, not the selected mathematical breakthrough.
+- Primary external pages opened: Miles1803.05878 (lognormal Mellin/Fourier
+  transform), Bettin--Chandee--Radziwill1411.7764 and Pratt--Robles1706.04593
+  (mollified zeta mean squares). Classical finite polynomial expansion is
+  not novel. These sources do not prove the arbitrary full-positive
+  source's growing arithmetic inversion. No numerical computation run.
+
+- C32a COMPLETE/PROGRESS: all eight final direct source checks exit0,
+  empty diagnostics. All21 public declarations standard-only axioms.
+  Six imports wired; RESULT/PROOF/EVIDENCE/frontier updated. Exact goal
+  ACTIVE/OPEN. The interval proof does not assert a parity limit.
+- C33 four new leaves now written (FiniteWeight,FiniteGaussian,
+  FinitePairing,FiniteShift), unverified/unwired. Paper bridge complete;
+  exact C33 detection conjecture still has arithmetic-completeness core.
+  API probe session30743 is the sole owned foreground Lean process.
+
+- C33 FiniteWeight targeted check PASSED. FiniteGaussian targeted check
+  PASSED after normalizing finite-sum domains and swapping the double-sum
+  order. An unused ring tactic was removed; final recheck still due.
+  Both minimal API probes passed. FiniteEnergy and FiniteBound now written
+  from the closed paper chain. Energy targeted check is the sole active
+  build. Pairing/Shift/Bound checks follow sequentially. No final C33 claim.
+- C32's22 owned scratch/log files removed after source/axiom terminal exit;
+  authoritative results remain in docs and Serena memory. No live C32 job.
+
+- FiniteEnergy targeted check PASSED, no warnings. It bounds BOTH the
+  complete ratio-extraction budget and the literal pole weight by one
+  universal constant times E(c)*(N+1)^(9/8). Cauchy proof needed explicit
+  rational-exponent normalization only. FiniteBound adds the complete
+  hW-only endpoint and moving-length exponent5/6+9*theta/8; UNVERIFIED.
+- Sequential foreground loop now checks FiniteGaussian (unused-tactic
+  cleanup), FinitePairing, FiniteShift, FiniteBound and stops on failure.
+  Six C33 leaves require final direct/axiom audits and umbrella wiring.
+
+
+## C33 final audit and C34 kill audit — 2026-10-08
+
+- Six targeted --old checks PASS; final sequential direct audit10416
+  exits0. Six source logs empty. All29 public declarations (25 theorems,
+  4 definitions) report only propext, Classical.choice, Quot.sound.
+  No new source premise, heartbeat override, axiom, numerical experiment,
+  full build or umbrella build. Six imports wired.
+- Formal lint37605 exits1 on six unrelated unreachable modules:
+  RHTower.WeilWorkHigherDenominatorInversionFourier;
+  HTGeometry.ApertureConeCalculus, ApertureConeWinding,
+  ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra.
+  No owned or prohibited-declaration finding. Global lint is not green.
+  Index16197 exits0; generated catalogs unchanged.
+- C33 analytic survivor BRIDGE. Positive order-T detection conjecture
+  rejected as target-equivalent/CIRCULAR; arithmetic completeness unpaid.
+  Five anti-theatre and four anti-laziness answers posted in chat.
+- C34 exact critical absolute-harmonic candidate REDISCOVERED. Deep
+  search68622files,generation1286724 is complete, partial=false/errors[].
+  All20 candidate and20 source statements inspected; actual theorem
+  WeilAbsoluteConvergenceRigidity:536 read. Stronger one-sided endpoint
+  and signed-window results verified in WeilOneSidedConvergenceRigidity
+  at306,411,425. STATUS MUST-584/586 already records them.
+- Boundary search68621files,generation1286686 partial at reranking;
+  variance search68622files,generation1286718 complete/errors[]. All
+  candidate/source statements inspected. Odd-series radial pole and
+  deletion ratio provide no analytic continuation; dyadic coefficient
+  variance does not imply a global log-square bound. No such shortcut used.
+
+Next plan: inspect the mixed cancellation frontier; propose an independent
+arithmetic statement outside the full-positive-only target equivalence;
+run corpus/primary-source kill audit before any further Lean implementation.
+Exact WP03/goal remains ACTIVE and OPEN.

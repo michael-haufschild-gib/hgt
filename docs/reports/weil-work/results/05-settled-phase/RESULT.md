@@ -386,3 +386,31 @@ global Haar moment repackaging, this would pay a named arithmetic input:
 C13 and the p=2 logarithmic prime-deletion residue law. Its source producer
 is OPEN CORE; neither positivity of a filtered source nor an Euler factor
 has been assumed. Exact statement and failed transfers are in PROOF.md.
+
+## Cycle27: finite even logarithm and nonzero odd radial pole
+
+For every original full-positive source hW, the actual even logarithm
+L_2(sigma)=sum_(even n>=2) lambda(n)/(log(n)*n^sigma) has a finite real
+right limit ell_2 and error O(sigma-1). Consequently, with a=sourceCoeff lam,
+
+    L(oddPart a,sigma)/L(a,sigma) = exp(-L_2(sigma))
+                              = r + O(sigma-1),  r=exp(-ell_2)>0.
+
+Writing B=sourceCompletion hW 1, one also has B!=0 and the actual radial
+expansion L(oddPart a,sigma)=r*B/(sigma-1)+O(1). All statements derive from
+original hW; no parity limit, Euler factor, coefficient sign or deleted
+continuation is added. The source input is the polynomial Gaussian/Mellin
+inequality, applied at both signs to bound the even derivative series.
+
+Six new Deletion* leaves are wired once into RHTower. Targeted --old builds
+and all six mandatory lake env lean direct audits passed without owned
+leaf warnings. Thirteen exports passed the axiom audit with only propext,
+Classical.choice and Quot.sound. Index refreshed. Global lint failed on six
+unrelated unreachable modules; no owned deletion leaf failed. Commands,
+source hashes and exact diagnostics are in cycle27-verification.json.
+
+Verdict: BRIDGE. This closes a source-existence gap; significant scientific
+novelty is not claimed for the transfer. Neither r=1/2 nor ell_2=log2 is
+proved. There is no deleted meromorphic continuation or ordinary parity
+mean yet. The canonical atomic representation, support restriction and
+constant-phase settlement remain OPEN. C28 now targets r=1/2 exactly.

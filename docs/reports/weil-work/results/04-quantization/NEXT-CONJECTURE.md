@@ -196,7 +196,10 @@ and common-kernel scaling are also verified.
 
 The weighted frequency sum and normalization at m=1 are now compiled in
 FrequencySum and PhaseCoupling, with final leaf and standard-axiom audits passed.
-The q-chain equation and winding argument still need Lean assembly. No source periodicity or
-almost-periodicity has been derived. L1, general L and WP04 remain open.
-The next test is phase rigidity from the fully coupled system, not another
-regularity assumption on the source.
+L1 now has a clean final Lean leaf audit: the q-chain excludes positive winding,
+local subunit residual mass gives cumulative continuity, and the annular logarithm
+bounds the actual cumulative phase. The final hW-only alternative is rigidity plus RH
+or failure of every stated weighted periodic representation. All 23 public declarations and their dependencies passed the standard-axiom audit.
+No source periodicity or almost-periodicity has been derived. General L and WP04 remain
+open. Next: audit the full noninteger radial resonance system and whether it permits
+an almost-periodic factorization obstruction. No such generalization is yet proved.

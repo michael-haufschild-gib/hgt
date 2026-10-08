@@ -36,3 +36,15 @@ This closes the narrow-packet energy diagnostic in `PACKET-ENERGY.md`: arbitrary
 Two proposed routes failed novelty audits: scalarization already appears in corpus L248 and classical convolution-root theory; the contemplated small two-window positivity sector is covered by the current full-support theorem. The unresolved problem is still arbitrary signed mixtures with aggregate integer cancellation and both pole terms retained.
 
 `PROOF.md` gives the exact repair proof and labels the unformalized scalarization argument. `EVIDENCE.md` records commands, sources, and lint outcomes. `TORUS-DENSITY.md` contains the closed finite-realization proof and the larger construction of exact integer-null mixtures approximating prime-torus representing measures, with an explicit obstruction to the stronger Jensen claim. The representing-measure connection, packet-mixture normalization, and actual spectral pushforward are formalized. Prime-exponent-box counting, weak convergence, and Jensen transfer remain unformalized. The Jensen route is not retired as a proved no-go. The working card `docs/drafts/pipeline/1-in-progress/weil-work-01-pbap.md` tracks continuation. No producer or solution is claimed.
+
+`WeilWorkPBAPMollifierCausality` proves the exact one-sided second-order pole integral and its finite complex-frequency tail. It corrects the frozen-coefficient Lorentzian step of the L398 GY obstruction sketch: positive displacement annihilates the bare pole. It does not estimate the actual window with its zeta factor or settle either opposing GY conjecture. Targeted `--old` build, final direct source audit and seven standard-only axiom checks pass; import wired. This is a classical bridge, with no scientific novelty claim. See `GY-CAUSALITY-AUDIT.md`.
+
+`WeilWorkPBAPJointJump` and `WeilWorkPBAPJointModulation` prove the exact full-energy increment
+`e(T)-e(0)=integral K_L(y)*Re autocorr(beta)(y)*(1-cos(Ty))`, including both signed poles.
+For support `[0,W]` and `L>2W`, the kernel is strictly positive on `(0,W]`.
+Consequently profiles with nonnegative real autocorrelation minimize this paired energy at zero
+modulation, where it equals the literal unmodulated cluster energy. That minimum can be negative;
+the theorem does not settle arbitrary real-null mixtures or full PBAP. Both targeted builds and
+final direct-source audits pass; all 11 named axiom checks use standard axioms only. Both imports
+are wired. This is a verified bridge, without a significant scientific novelty claim. The broader
+cosine-certificate construction and the proposed stronger Levy-residual classification remain open.

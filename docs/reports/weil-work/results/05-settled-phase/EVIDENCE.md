@@ -913,3 +913,98 @@ C13 is explicit and OPEN CORE in PROOF.md. No Lean theorem asserts it.
   notchBochner_le retains NotchSmall plus all gcd-harmonic fibre limits.
   Compiler mostly pending/stale/source-only, refresh incomplete, semantic
   coverage unmeasured. Generated odd-parity/polar recipe rejected.
+
+### Cycle27 source-transfer audit, 2026-10-08
+
+- Exact deletion-limit search55642: terminal exit0, partial=false, errors=[];
+  all candidate/source/ingredient fields inspected. Background refresh is
+  incomplete and semantic coverage unmeasured. Compiler evidence is mostly
+  pending or stale; no absence or novelty claim follows from retrieval.
+- Supplementary even-Mangoldt search11755: terminal exit0, partial=true;
+  text/source retrieval interrupted. All available candidates and source
+  statements inspected. The applicable parent is
+  WeilPrimeDeficit.summable_nonprime_vonMangoldt_div: the even restriction
+  adds only the prime two to a harmonically summable proper-prime-power tail.
+- Booker, L-functions as distributions, Definition1.3(A3) and Theorem1.7,
+  https://arxiv.org/pdf/1308.3067v2 : its converse theorem retains discrete
+  spectral support and eventual integral multiplicities. Those assumptions
+  remain unpaid for this source, so the classification is not imported.
+- Kaczorowski--Perelli, Twists, Euler products and a converse theorem,
+  https://arxiv.org/pdf/1207.2312 , Theorem1: the input belongs to the Selberg
+  class, and its local-factor conclusion requires analytic bounds for the
+  relevant twists. A finite radial deletion limit supplies neither input.
+- Exact parity masks, canonical even harmonic summability, and the actual
+  source even-deviation bound passed targeted --old leaf builds. Parent
+  PolynomialMellinBound was checked in source and compiled after its tail
+  algebra was repaired independently. No duplicate parent proof was added.
+- Direct production audits, final logarithm/ratio exports, axiom and lint
+  gates are still pending at this checkpoint. The bridge build log contains
+  replayed upstream warnings, with no warning in the three owned leaves.
+
+- C28 normalization search93760: terminal exit0, partial=false, errors=[];
+  all20 candidates,20 source arguments, and its generated ingredient set
+  inspected. The proposed Fourier-diagonal recipe concerns a different
+  operator and provides no arithmetic parity normalization. Actual relevant
+  source, ParityPoleBound, was read in full: it proves the normalized
+  quadratic inequality but assumes/asserts no parity limit. That matches
+  C27's input and does not supply ell_2=log2. Compiler coverage remains
+  mostly pending, refresh incomplete, semantic coverage unmeasured.
+
+### Cycle27 final verification and Cycle28 source audit
+
+- Targeted build92624 passed, rebuilding Ratio after warning cleanup and
+  building Pole. All six current source leaves passed sequential mandatory
+  direct lake env lean audits in session15103, exit0, empty diagnostic logs.
+- The /tmp axiom audit in that session checked thirteen exports. Every
+  dependency list contains only propext, Classical.choice and Quot.sound.
+- Index/lint session77578: index passed and refreshed the corpus; lint exited1
+  on six unrelated unreachable modules. Exact errors are preserved in
+  cycle27-verification.json. All six owned leaves are imported exactly once;
+  owned source whitespace and scoped git diff --check passed. No umbrella
+  build, numerical experiment, heartbeat override or new axiom was used.
+- C28 Abel/fibre search45147: exit0, partial=false, errors=[], unfinished=[].
+  All20 candidates,20 source arguments and generated ingredients inspected;
+  raw receipt is cycle28-abel-fibre-search.json. Compiler inventory68621: 43
+  compiled_snapshot,2 error,11106 not_applicable,52117 pending,2660 stale,38
+  stale_snapshot,1 umbrella,2654 unavailable. Refresh incomplete; semantic
+  coverage unmeasured. No absence or novelty claim follows.
+- Exact notchBochner_le retains NotchSmall plus limits of every gcd-harmonic
+  fibre. NotchSmall contains absolute harmonic, square-root and tail costs.
+  C27 supplies a signed even derivative bound, which pays none of those
+  three costs. PBAP's Abel transform retains its critical-datum inequality.
+  The generated recipe does not produce either missing source hypothesis.
+- The actual negative deviation potential is positive definite, but its
+  value at zero is an unknown autocorrelation-weighted deviation sum. It
+  cannot be set to zero to invoke positive-definite rigidity. Existing
+  absolute harmonic-pinning and prime-deletion quantization receivers also
+  retain unpaid assumptions. C28 remains an open source normalization.
+
+### C28 continued audit: no normalization inferred from auxiliary bounds
+
+- Theta search21776, finite-polynomial search59631 and moment-mechanism
+  search81481 each exited0, partial=false/errors=[]/unfinished_stages=[].
+  All20 candidate statements and20 source-argument statements per search,
+  plus generated ingredient sets, were inspected. Receipts saved as
+  cycle28-theta-normalization-search.json, cycle28-finite-normalization-search.json
+  and cycle28-moment-mechanism-search.json. Background refresh incomplete;
+  semantic coverage unmeasured; compiler inventory mostly pending/stale.
+- Theta recipe conflated finite parity grading with the actual arithmetic
+  parity projection. OddWeilFunctionRigidity concerns crystallineCoeff and
+  an odd Weil-function input, not C27's nonlinear sourceCoeff ratio. Rejected.
+- Finite recipe still used NotchSmall and a critical PBAP datum. The actual
+  fresh FiniteWeight/Gaussian/Energy/Bound parents were read instead. Their
+  explicit length cost is (N+1)^(9/8), with sublinear threshold theta<4/27.
+  No positive lower bound for the same source form was obtained.
+- Moment recipe assumed ZetaPowerDatum, an entire completion and its zeros
+  on the critical line. Those are unpaid. The existing WeilZetaSquareMoments
+  theorem integrates against Lebesgue measure, not boundaryMeasure hW.
+  No conversion of one measure to the other was made.
+- Oliver, Notes on Low Degree L-Data, arXiv:1601.05009v2, Definition2.1(3),
+  https://arxiv.org/pdf/1601.05009 : source explicitly retains discrete
+  multiplicity support and only finitely many nonintegral multiplicities.
+  This descendant of Booker's framework does not remove the source debts.
+  The failed Kyoto PDF fetch was replaced with the readable arXiv primary
+  source; retrieval publication labels were not treated as2026 results.
+- No further production Lean changes or builds followed C27 certification.
+  Scope checks passed again; completed owned scratch/search files removed
+  after preserving receipts. No owned process remains.

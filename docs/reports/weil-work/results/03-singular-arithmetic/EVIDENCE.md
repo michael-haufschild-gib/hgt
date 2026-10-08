@@ -867,3 +867,82 @@
 - C32a next paper result and kill audit recorded in PROOF. Actual parity
   Mellin implementation started; interval extraction and parent C32's
   full arithmetic fibre law are not yet formally closed. WP03 stays OPEN.
+
+
+## C32a source audit and C33 preparation — 2026-10-08
+
+- All C32a targeted --old builds pass. Eight final source checks and21
+  public axiom reports are running sequentially; final status below must
+  be recorded only after terminal exit. Six C32a imports wired.
+- C32a index exits0; generated catalogs unchanged. Lint exits1 on11
+  unrelated unreachable leaves: RHTower.WeilWorkHigherDenominatorInversionGeometry,
+  WeilWorkHigherDenominatorMovingKernel, WeilWorkHigherDenominatorNonstationary,
+  WeilWorkHigherDenominatorScaledBessel, WeilWorkSettledPhaseDeletionBound,
+  WeilWorkSettledPhaseDeletionMasks; HTGeometry.ApertureConeCalculus,
+  ApertureConeWinding, ApertureLogTranslation, ApertureOpenHistoryIdeal,
+  BoundaryCoronaCStarAlgebra. No owned-source/prohibited-declaration error.
+- C32a current-turn deep search68583files,generation1286264 was partial
+  at semantic deadline. All20 candidate/20 source statements inspected;
+  finite-support/BoundaryRegular/nonnegative-source hypotheses rejected.
+  Bettin1607.05595 and Farmer--Wilson math/0408221 primary pages opened;
+  their special coefficients/converse assumptions do not apply.
+- C33 kernel search68594files,generation1286411 completed without errors.
+  Arithmetic and Fourier searches68601files,generations1286472/73 were
+  partial at reranking deadline. Mollifier search68603files,generation1286479
+  was partial at semantic deadline. All returned candidate/source statement
+  lists inspected. Generic Fourier iterated-derivative decay exists;
+  arithmetic completeness does not follow from it.
+- Re-read exact NotchSmall plus all-limit premises of notchBochner_le,
+  and absolute-tail hypotheses/actual sieve error of HTGeometry's
+  GcdWeightedSeriesInversion. No applicability claim without those inputs.
+- External primary pages opened: https://arxiv.org/abs/1803.05878,
+  https://arxiv.org/abs/1411.7764, https://arxiv.org/abs/1706.04593.
+  Mattila--Haukkanen, A notion of positive definiteness for arithmetical
+  functions (Tampere repository PDF,2017 manuscript), Theorem4.3 gives
+  the classical gcd-matrix/Mobius coefficient sign criterion; its
+  cited finite LDLT parent does not establish our actual limiting matrix.
+  Publisher DOI10.1080/03081089308818225 failed to open; no claim relies
+  on its inaccessible text. No numerical experiments.
+- C33 complete finite-polynomial paper bound and exact open detection
+  conjecture recorded in PROOF. Four initial Lean leaves written:
+  FiniteWeight, FiniteGaussian, FinitePairing, FiniteShift. UNVERIFIED
+  pending C32a foreground audit exit and their own sequential checks.
+  The finite extraction constant is independent of length/coefficient
+  vector; polynomial energy estimate and detection are separate debts.
+
+- C32a FINAL PASS: sequential foreground audit exits0. All eight direct
+  source logs are empty. All21 public declarations (18 theorems,3 defs;
+  including preserved existing interfaces) report only propext,
+  Classical.choice, Quot.sound. No added source premise or axiom.
+  Six imports wired. RESULT/PROOF/frontier updated. Exact WP03 stays OPEN.
+- C33 minimal API probe launched only after the C32a audit terminal exit.
+  Its four new leaves remain unverified until their own checks complete.
+
+
+## C33 final audit and C34 kill audit — 2026-10-08
+
+- Six targeted --old checks PASS; final sequential direct audit10416
+  exits0. Six source logs empty. All29 public declarations (25 theorems,
+  4 definitions) report only propext, Classical.choice, Quot.sound.
+  No new source premise, heartbeat override, axiom, numerical experiment,
+  full build or umbrella build. Six imports wired.
+- Formal lint37605 exits1 on six unrelated unreachable modules:
+  RHTower.WeilWorkHigherDenominatorInversionFourier;
+  HTGeometry.ApertureConeCalculus, ApertureConeWinding,
+  ApertureLogTranslation, ApertureOpenHistoryIdeal, BoundaryCoronaCStarAlgebra.
+  No owned or prohibited-declaration finding. Global lint is not green.
+  Index16197 exits0; generated catalogs unchanged.
+- C33 analytic survivor BRIDGE. Positive order-T detection conjecture
+  rejected as target-equivalent/CIRCULAR; arithmetic completeness unpaid.
+  Five anti-theatre and four anti-laziness answers posted in chat.
+- C34 exact critical absolute-harmonic candidate REDISCOVERED. Deep
+  search68622files,generation1286724 is complete, partial=false/errors[].
+  All20 candidate and20 source statements inspected; actual theorem
+  WeilAbsoluteConvergenceRigidity:536 read. Stronger one-sided endpoint
+  and signed-window results verified in WeilOneSidedConvergenceRigidity
+  at306,411,425. STATUS MUST-584/586 already records them.
+- Boundary search68621files,generation1286686 partial at reranking;
+  variance search68622files,generation1286718 complete/errors[]. All
+  candidate/source statements inspected. Odd-series radial pole and
+  deletion ratio provide no analytic continuation; dyadic coefficient
+  variance does not imply a global log-square bound. No such shortcut used.

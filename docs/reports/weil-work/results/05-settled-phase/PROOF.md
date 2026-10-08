@@ -1432,3 +1432,293 @@ open at the actual source cancellation. Next inspect the signed two-fibre
 pairing and try to replace its absolute notch error while retaining all
 physical-height and polar terms; do not repeat the already-failed signed
 summatory-to-absolute-cost substitution from C16.
+
+## Cycle27: a finite even logarithm without an assumed parity pole
+
+C26 remains the exact square-root forward parity conjecture. The proposed
+paired-scale contour step is REDISCOVERED: the current polynomial Gaussian
+modules already prove it with the half-scale cosine retained. No duplicate
+leaf is warranted. A different consequence connects those linear source
+coefficients to C16's nonlinear forward ratio.
+
+Claim, original hW only: there exist real ell_2, K>=0 and eta>0 such that
+for every 1<sigma<1+eta,
+
+  |L_2(sigma)-ell_2| <= K*(sigma-1),
+  L_2(sigma)=sum_(n>=2, 2 divides n) lambda(n)/(log(n)*n^sigma).
+
+This is a right Abel limit with a Lipschitz remainder. It is not ordinary
+convergence at sigma=1, analytic continuation across1, nor ell_2=log2.
+The competing possibility of a divergent even logarithm would contradict
+the following source-specific argument. The broader C16 claim still allows
+a wrong finite constant as a possible falsifier.
+
+Fix sigma>1 and put d=lambda_0-Lambda, D=sum d(n)/n^sigma,
+E=sum_(2|n) d(n)/n^sigma, x=2^(-sigma), z=zeta(sigma),
+b=d*1*1, V=sum b(n)/n^sigma, V_alt=sum (-1)^n*b(n)/n^sigma.
+All these series converge absolutely by full positivity's actual source
+summability and the convolution theorem. All values are real. The odd
+mask is completely multiplicative, hence restricting b to odd indices
+gives d_odd*1_odd*1_odd. Since sum_(odd n) n^(-sigma)=(1-x)z,
+
+  V=D*z^2,
+  V_alt=V-2*(D-E)*(1-x)^2*z^2
+       =z^2*((-1+4*x-2*x^2)*D+2*(1-x)^2*E).                 (27.1)
+
+For a fixed real c, the proved polynomial Gaussian profile is
+H_c(t)=(1+c^2/2)H(t)-(c/2)H_alt(t/4)-c*H(4t).
+Its real part is <=C_c*t^(-5/12) for 0<t<=1. Its norm is <=D_c/t
+for all t>0: bound the three actual summable Gaussian series separately
+using exists_norm_source_twisted_gaussW_le at r=1 and1/2, then rescale.
+The polynomial Mellin theorem supplies absolute Mellin convergence for
+sigma>1 independently of that signed upper bound. For1<sigma<3/2,
+multiply the real upper bound by t^(sigma/2-1). An integrable upper
+envelope is C_c*t^(-11/12) below1 and D_c*t^(-5/4) above1. Therefore
+there is a finite B_c, independent of sigma, with
+
+  Gamma_R(sigma)*[(1+c^2/2-c*x)*V-c/(2*x)*V_alt] <= B_c.   (27.2)
+
+Every term and scale in (27.2) is the actual polynomial Mellin identity;
+no factorization of a parity-free dilated profile is used. Substituting
+(27.1) gives
+
+  Gamma_R(sigma)*z^2 *
+    [(1+c^2/2-2*c+c/(2*x))*D - c*(1-x)^2/x*E] <= B_c.    (27.3)
+
+Use ONLY the two fixed tests c=1 and c=-1. The ordinary harmonic parent
+gives D(sigma)->L=(sourcePoleNumerator hW 1).re. Equivalently this follows
+from the proved double-pole limit for V and (sigma-1)zeta(sigma)->1.
+Also x->1/2, Gamma_R(sigma)->1, and Gamma_R(sigma)*z^2 is positive and
+tends to infinity. Thus the D terms in (27.3) stay bounded, the right
+sides after division stay bounded (indeed tend to0), and (1-x)^2/x tends
+to1/2>0. The c=1 inequality bounds E below; c=-1 bounds it above.
+Consequently |E(sigma)|<=M on some right neighborhood of1, with no limit
+for E assumed. More explicitly these two tests give liminf E>=L and
+limsup E<=-7L; sharper optimization is unnecessary for this bridge.
+
+The even von Mangoldt contribution is exactly log2/(2^sigma-1): among
+even integers, its nonzero terms are precisely powers of2. It stays
+bounded near1. Hence E_lambda(sigma)=sum_(2|n)lambda_0(n)/n^sigma
+is bounded near1. Termwise differentiation on each compact subinterval
+of(1,infinity) is justified by absolute Dirichlet convergence at a smaller
+real abscissa; the derivative of lambda/(log n*n^sigma) is
+-lambda/n^sigma. Therefore L_2'=-E_lambda is uniformly bounded near1.
+The real mean-value theorem gives |L_2(u)-L_2(v)|<=K|u-v| there.
+Completeness of R gives the unique right limit ell_2; letting v decrease
+to1 in this bound gives exactly the claimed Lipschitz remainder.
+
+The exact convolution-exponential restriction also gives, for sigma>1,
+F_odd(sigma)/F(sigma)=exp(-L_2(sigma)). Thus its right limit is the
+positive number exp(-ell_2), with O(sigma-1) remainder. Combined with
+C15's actual pole B/(sigma-1)+O(1), this gives the radial expansion
+F_odd(sigma)=B*exp(-ell_2)/(sigma-1)+O(1). It does not continue F_odd
+holomorphically, produce an ordinary mean, or normalize the residue.
+
+Paper verdict: BRIDGE. The analytic completion step is elementary;
+the substantive input is the corpus's actual signed polynomial source
+inequality. No scientific novelty claim for this consequence alone.
+Booker arXiv:1308.3067v2 Definition1.3(A3) and Theorem1.7 retain discrete
+support and almost-everywhere integral multiplicities; they do not provide
+the present deletion limit without proving those missing source inputs.
+Lean status: formalized in the six DeletionMasks/Canonical/Bound/Logarithm/
+Ratio/Pole leaves. The exact mask identity, the source bound, and the
+derivative/limit passage are proved from original hW. All six targeted
+builds and mandatory direct source audits passed; thirteen exported
+theorems have only propext, Classical.choice and Quot.sound as axioms.
+See cycle27-verification.json. Global lint reports six unrelated unreachable
+modules, no owned deletion-leaf errors. C26, ell_2=log2 and full WP05 remain OPEN.
+
+
+## Cycle28: normalize the now-finite conductor-two residue
+
+**Exact source conjecture.** For every original `hW : WeilPositiveFull lam`,
+with `a = sourceCoeff lam`,
+
+    lim_(sigma down to 1) L(oddPart a,sigma)/L(a,sigma) = 1/2.
+
+By Cycle27 this ratio already has a positive real limit. The conjecture is
+therefore a value assertion, equivalently `ell_2 = log 2`, rather than a
+newly assumed existence or continuation statement. It is the conductor-two
+case of Cycle16, returned to with a verified source bridge. It would remove
+the radial principal term of the alternating forward series. It would NOT
+by itself prove Cycle26's ordinary square-root cancellation: continuation
+and growth of the actual parity twist remain separate debts.
+
+**Preliminary attack: SURVIVES PRELIMINARY ATTACK.** No counterexample meeting
+original full positivity has been produced, and no applicable parent theorem
+was found. This is not an absence or significant-novelty claim: search
+coverage is incomplete. A bounded logarithmic derivative controls variation
+near one, not the logarithm's endpoint value. The normalized polynomial
+inequalities concern derivative-series data and retain source-dependent
+constants; the limit cannot be set to `log 2` by notation or normalization.
+
+Booker's converse theorem starts with a discrete, eventually integral
+spectral divisor. Kaczorowski--Perelli's twist theorem starts inside the
+Selberg class with analytic twist bounds. The corpus's
+PrimeDeletion.residue_quantization_complex concerns the actual indicator
+of integers free of a specified prime set and assumes counting and
+Chebyshev asymptotics. None applies to the arbitrary signed forward source
+at this stage. Importing those unpaid inputs would be circular.
+
+**Meaning of success/failure.** Success would force one canonical local
+arithmetic normalization directly from the original positive functional,
+without a prior atomic spectral representation or filtered-source positivity.
+A counterexample satisfying full positivity and having a different ratio
+would refute both this normalization and Cycle26, and would require a new
+route to the assigned phase problem. Merely changing an Euler factor of a
+Dirichlet series is not such a counterexample unless full positivity is
+proved for its resulting coefficients.
+
+**[OPEN CORE].** Produce a signed original-source identity or inequality that
+fixes the endpoint value. The next mechanism to audit is Abel regularization
+of the two-fibre pairing, retaining every cross term and error. Cycle27's
+bounded derivative can only be used where it controls the exact signed
+quantity. It must not be substituted for the absolute `NotchSmall` costs
+that killed the previous sharp-cutoff argument. If those costs persist,
+reject this mechanism and conjecture another source normalization law.
+
+### C28 mechanism audit after C27 formal verification
+
+The existing notch route cannot be invoked with C27 in place of NotchSmall.
+Its absolute harmonic, square-root and tail envelopes enter before the
+signed limit. Abel transformation preserves those obligations; it does not
+prove them. This rejects that transfer, not the source conjecture. The
+positive survivor is C27's signed finite-limit theorem, already formalized.
+
+The refreshed finite-polynomial source theorem gives, simultaneously in
+N,c,T>=1,
+
+  Re Q_N(c,T) <= D E_N(c) (N+1)^(9/8) T^(5/6),
+  E_N(c)=sum_(1<=m<=N) c(m)^2/m,
+  Q_N(c,T)=sum_(m,n<=N) c(m)c(n)/n *
+       sum_k (d*1*1)(k) exp(-4*pi^2*(km/n)^2/T^2) cos(2*pi*km/n).
+
+Here d=lambda_0-Lambda; the notation T>=1 applies to T, and N is any
+natural number. This is the actual FiniteBound parent, not a conjectured
+new inequality. For E_N=1 and N+1<=T^theta it is sublinear when theta<4/27.
+A contradiction would require a source-derived positive lower bound for
+this same signed form with the same length and energy budgets. Neither
+C27's residue nor the upper bound constructs such a coefficient vector.
+No unbounded-degree limit is taken without its displayed N-cost.
+
+The exact spectral identity keeps the nonnegative measure term
+
+  Re integral_(Re s=3/4) sourceZetaPairing(s) gaussWeight_T(s)
+    = -pi * integral |zeta(1/2+it)|^2 exp(-t^2/T^2) d(boundaryMeasure hW)(t).
+
+A proposed higher-moment attack must first derive its own source identities
+and sharp asymptotics. Hölder for a positive measure by itself cannot force
+this integral to vanish. No higher-moment asymptotic was proved or adopted,
+and the exploratory moment search is not a new completed conjecture cycle.
+
+C28 still has [OPEN CORE]: an actual signed source constraint fixing ell_2,
+rather than bounding it. C26's ordinary parity cancellation and the original
+WP05 representation/settlement inputs remain separate unresolved targets.
+
+## Cycle29: forward-coefficient sign proposal
+
+Exact competing conjecture: for every original hW and n>=1, the real
+coefficient sourceCoeff(lambda)(n) is nonnegative. This is stronger than
+reality of the coefficients and is not an input of the assigned problem.
+Search62763's proposed recipe explicitly lists this target as an obligation;
+it does not prove it. Li-coefficient positivity concerns a different sequence.
+
+Verdict SURVIVES PRELIMINARY ATTACK, but no source proof or original-hW
+counterexample was found. The energy bound controls squares, not coefficient
+signs. Even a proof would not normalize C28 by positivity alone: for 0<c<1,
+the model F(s)=zeta(s)(1+c*2^(-s)) has positive coefficients
+1+c*1_(2 divides n), mean (1+c/2)N+O(1), and odd/full radial ratio 1/(2+c).
+This is NOT a full-positive counterexample. Its logarithmic coefficient
+deviation is supported on powers2 and absolutely summable at the critical
+weight, so existing regular/excess rigidity excludes hW for c!=0. No such
+model is substituted for the original source. A positive Tauberian theorem
+would still need its exact boundary hypotheses; a radial limit alone does
+not produce ordinary parity means. Deprioritize this sign-only detour.
+
+## Cycle30: rational reciprocity and every finite prime deletion
+
+Given the exact internal and external frontier, what would a Fields
+Medal-winning mathematician conjecture? The parity endpoint should belong
+to a whole finite arithmetic deletion system, produced by rational
+reciprocity of the original signed source, before Euler factorization.
+
+Exact target, original hW only: for every integer Q>=2, put
+L_Q(sigma)=sum_(n>=2, gcd(n,Q)>1) lambda(n)/(log(n)*n^sigma).
+There exist real ell_Q, K>=0, eta>0 such that L_Q has right limit ell_Q at1
+and |L_Q(sigma)-ell_Q|<=K*(sigma-1) for 1<sigma<1+eta.
+Consequently the actual coprime-to-Q forward series divided by the full
+forward series tends to exp(-ell_Q)>0 with error O(sigma-1). Neither
+exp(-ell_Q)=phi(Q)/Q nor an Euler product is asserted.
+
+The competing falsifier is a full-positive source with a divergent finite
+prime-deletion logarithm. A noncanonical finite endpoint is not a falsifier
+of C30; it remains the issue in C28. Success would replace a parity accident
+by an entire family of actual arithmetic projections.
+
+Paper mechanism: write d=lambda_0-Lambda, b=d*1*1, and for rational r set
+V_r(sigma)=sum_n b(n)cos(2*pi*n*r)/n^sigma and
+W_r(sigma)=(sigma-1)^2 Re(Gamma_R(sigma)V_r(sigma)).
+Every series here converges absolutely for sigma>1. Define
+H_r(t)=sum_n b(n)cos(2*pi*n*r)exp(-pi*n^2*r^2*t) for r>0.
+Then M H_r(sigma/2)=Gamma_R(sigma)r^(-sigma)V_r(sigma).
+Norm-Fubini follows from absolute convergence of b at sigma; it is not
+inferred from a signed upper bound.
+
+For finite real c_1,...,c_N, the actual finite profile
+P_c(t)=sum_(m,n=1..N)c_m*c_n/n * H_(m/n)(t) has real part
+O_c(t^(-5/12)) above and norm O_c(t^(-1)) at all t>0.
+The first is FiniteBound after T=sqrt(4*pi/t); the second is the finite sum
+of the actual absolute Gaussian bounds. The existing Mellin-envelope lemma
+therefore bounds Re M P_c(sigma/2) uniformly for 1<sigma<3/2.
+Its transform equals Gamma_R(sigma) times
+sum_(m,n)c_m*c_n*n^(sigma-1)/m^sigma * V_(m/n)(sigma).
+
+Choose c supported on two distinct labels m,n, with values1,+1 and1,-1.
+After multiplying by (sigma-1)^2, both quadratic forms have an upper bound
+tending to0. Their common diagonal is (1/m+1/n)W_1(sigma), bounded because
+W_1(sigma)->L by the original source pole theorem. Hence their off-diagonal
+
+  n^(sigma-1)/m^sigma * W_(m/n)(sigma)
+   + m^(sigma-1)/n^sigma * W_(n/m)(sigma)
+
+is bounded in absolute value near1. Both coefficients have positive finite
+limits. Thus boundedness of either W_(m/n) or W_(n/m) gives the other.
+No separate lower estimate for the positive spectral measure was used.
+
+Now W_r is periodic in r with period1, and W_0=W_1. Strong induction on
+denominator q proves boundedness for W_(a/q) for every natural a,q>0:
+reduce a modulo q; remainder0 is the base case. For 0<k<q, W_(q/k) is
+bounded by the induction hypothesis on denominator k. The preceding
+two-label relation gives boundedness of W_(k/q). This is a qualitative
+fixed-rational result, with no denominator-uniform constant claimed.
+
+Let chi_Q(n)=1_(gcd(n,Q)=1). Its finite Fourier expansion contains only real
+cosine coefficients, since chi_Q(-n)=chi_Q(n). The just-proved rational
+bounds imply boundedness of (sigma-1)^2 Gamma_R(sigma) L(b*chi_Q,sigma).
+Here b*chi_Q denotes pointwise masking. This mask respects Dirichlet
+convolution, so
+
+  L(b*chi_Q,s)=L(d*chi_Q,s) zeta(s)^2
+                  * product_(p divides Q)(1-p^(-s))^2.
+
+The product tends to a nonzero real number, and
+(sigma-1)^2 Gamma_R(sigma)zeta(sigma)^2 ->1. Since the real-axis series
+are real, L(d*chi_Q,sigma) is bounded. Subtracting from the bounded full
+d-series gives boundedness of the excluded d-series. The excluded
+von-Mangoldt series is harmonically summable: among primes only finitely
+many divisors of Q contribute, and the proper-prime-power tail is already
+harmonically summable. Thus the excluded lambda-series is bounded near1.
+
+Termwise differentiation gives L_Q' equal to minus that series. The mean
+value theorem and completeness give the finite endpoint and Lipschitz
+error, exactly as in C27. Finally chi_Q commutes with the Dirichlet
+exponential, so the actual coprime/full ratio is exp(-L_Q). Local
+Lipschitz continuity of exp gives its error estimate. No arithmetic sign
+condition, filtered-source positivity or continuation of the deleted
+series enters.
+
+Paper proof status: dependency-closed subject to checking the current
+finite-profile parent and its exact normalization in Lean. The intended
+first Lean capstone is boundedness of every rational W_r. The subsequent
+finite Fourier/mask/endpoint transfers remain to formalize. Literature and
+corpus novelty audit is running; no significant novelty claim yet.

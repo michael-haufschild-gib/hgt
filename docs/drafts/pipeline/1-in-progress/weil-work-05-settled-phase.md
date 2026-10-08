@@ -806,3 +806,118 @@ and select next source conjecture. C26search10973 currently sole owned live
 process. No Lean/build process. Fresh frontier now includes actual
 sourceSquareCoeff cosine extraction with uniform r^(-1/8)T^(5/6) error;
 half scale is parity, not an untwisted scalar dilation.
+
+### Cycle27 — finite prime-deletion logarithm at the pole
+
+Previous turn: PROGRESS by identifying the source transfer below, not a
+proved frontier theorem. Interrupted multi-file patch did not land. Old
+search57042 handle and receipt are absent on authoritative recheck; fresh
+exact search55642 now running. No Lean/build process or production edit.
+
+C26 remains OPEN. The paired-scale contour idea is REDISCOVERY:
+WeilWorkSingularArithmeticPolynomialGaussian already retains exact parity.
+Do not formalize a duplicate. Its source b=(lambda-Lambda)*1*1 differs from
+the forward exponential a. The notch proof still charges absolute errors;
+ordinary harmonic convergence does not supply NotchSmall.
+
+Bridge target: the even logarithm L_2(sigma)=sum_(n>=2,2|n)
+lambda(n)/(log(n)*n^sigma) has a finite right limit at1 with O(sigma-1)
+remainder, from original hW only. Thus F_odd/F has a finite positive radial
+limit. Its value1/2, ordinary parity cancellation, and WP05 remain open.
+No masked-source positivity or continuation is assumed.
+
+Plan: close and attack exact convolution/Mellin paper proof; formalize
+source even-series bound and logarithmic limit; targeted --old leaf build,
+direct lake env lean, axioms/lint, umbrella wiring; return to normalization.
+Key identity: with D=sum d/n^s, E=sum_(2|n)d/n^s, x=2^(-s), V=D*zeta^2,
+V_alt=zeta^2*((-1+4*x-2*x^2)*D+2*(1-x)^2*E).
+Fixed polynomial tests c=+1,-1 bound E near1. Then bounded L_2' gives a
+Lipschitz extension. A limit for E itself is not required or asserted.
+
+C27 formalization checkpoint: exact odd-mask convolution and actual source
+parity-deletion identity passed scratch Lean, then targeted --old leaf build
+in WeilWorkSettledPhaseDeletionMasks. Direct production audit still pending.
+Fresh PolynomialMellinBound supplies the needed upper bound in source, but
+its PolynomialTail dependency currently fails a final elementary identity;
+no claim that this dependency compiled. Reuse this source once verified;
+do not publish a duplicate Mellin-bound proof. Working scratch now verifies
+the normalized polynomial identity and positive deletion coefficient.
+The supplementary even-Mangoldt search11755 exited0 with partial=true
+(text/source retrieval interrupted). All candidate/source fields inspected;
+proper-prime-power harmonic summability supplies the canonical even bound.
+The older exact search55642 was complete but compiler coverage remains
+mostly pending. Paper result remains BRIDGE, not a novelty claim or WP05 closure.
+
+C27 source bound scratch now passes: original hW implies eventual uniform
+absolute bound for Re(sourceEvenDeviation). The normalized polynomial
+identity and the coefficient's positive limit are verified in scratch.
+New PolynomialTail dependency was repaired independently and is compiled;
+we import PolynomialMellinBound rather than duplicate its proof. Odd masks
+also commute with the Dirichlet exponential (scratch checked). Three own
+production leaves now exist; targeted dependency build is still running,
+so final source/axiom/lint audits and umbrella wiring remain pending.
+C27's literal logarithm and actual odd-ratio endpoint proofs are prepared
+in /tmp and not yet claimed verified. No numerical experiments or heartbeat
+changes. C28 search begins against the remaining exact normalization
+ell_2=log2 (the p=2 C16 law), using the new finite-limit bridge rather than
+assuming a deleted continuation. This is not a new name for a solved law.
+
+Build73300 finished successfully: DeletionMasks, DeletionCanonical and
+DeletionBound all compile, with no own leaf warning. These three are wired
+into RHTower. Their mandatory direct audits remain pending. Logarithm's
+literal-series, real-valuedness, derivative and Lipschitz estimates checked
+in scratch; the endpoint extension needed explicit Tendsto typing and the
+current toolchain's NNReal.mk constructor. Production Logarithm build47758
+is active after that repair. Production DeletionRatio is prepared but not
+yet compiled; do not cite its result until verified. Owned process count:
+one Lake build, no search. Normalization search93760 exited0; raw receipt
+saved as cycle28-normalization-search.json and all candidate/source/recipe
+fields inspected. Relevant fresh ParityPoleBound is only a quadratic bound,
+not a normalization or assumed Laurent expansion.
+
+C27 endpoint update: Logarithm build47758 succeeded with no own warning.
+Ratio scratch26597 required only an explicit 1+1=2 normalization; targeted
+build73116 then succeeded. Its sole sequencing-style warning was removed
+in source (cache rebuild pending). All five current leaves are wired once
+into RHTower. A final paper corollary is being checked in scratch19428:
+nonzero radial odd pole B*r/(sigma-1) with bounded O(1) remainder. This uses
+C15's actual forward regular part and the ratio's O(sigma-1) estimate; it
+asserts no meromorphic continuation. One owned Lean process, no search.
+After that: final cache build, required direct audits of all owned leaves,
+axioms, index/lint, source hashes, cleanup and research self-audits. C28
+normalization r=1/2 remains open; it alone would still not establish C26's
+ordinary square-root cancellation without the missing twist analysis.
+
+C27 VERIFIED checkpoint,2026-10-08: Pole build92624 passed and rebuilt the
+warning-clean Ratio. All SIX owned leaves now imported once in RHTower.
+Session15103 passed every mandatory direct source audit with empty logs and
+all13 axiom exports with standard dependencies only. Index passed; lint
+failed only on six unrelated unreachable modules (exact receipt saved).
+cycle27-verification.json records hashes and commands. RESULT/PROOF/EVIDENCE
+updated. C27 is BRIDGE, not a claim of significant scientific novelty.
+No live owned Lean/build/search process remains at this checkpoint.
+
+C28 remains r=1/2 from original hW. Search45147 fully inspected and saved;
+Abelizing the existing notch receiver does not supply its absolute errors.
+Do not smuggle in NotchSmall, ordinary fibre limits or a zero-at-zero
+deviation potential. Next attack the signed source pairing itself, or
+replace the mechanism if an exact source obstruction persists. WP05 OPEN.
+
+C28 continuation checkpoint: three further searches21776/59631/81481
+finished and fully inspected. Exact FiniteBound parent gives energy times
+(N+1)^(9/8) T^(5/6); theta<4/27 is required for sublinear moving lengths.
+Missing input is a positive lower bound for the SAME signed quadratic,
+not its already-proved upper bound. Higher-moment exploration paid no
+source asymptotic and was not promoted to a new theorem/conjecture cycle.
+All receipts preserved, scratch cleaned, no owned process active. C28's
+source constraint fixing ell_2 remains OPEN CORE. C27 verified6-leaf bridge
+is final for this cycle; no further Lean edits after hashes/audits.
+
+New-turn plan,2026-10-08: previous turn PROGRESS (C27 six-leaf proof audited).
+Current state reread; hgtl7 and formal instructions loaded. No update_plan
+tool is exposed, so this card carries the multi-step plan.
+1. Attack C29 forward-coefficient nonnegativity and audit exact source input.
+2. Develop C30 rational reciprocity and finite-prime deletion endpoint law.
+3. Complete dependency-closed paper proof before new Lean; then formalize
+   the actual source bridge, direct-audit leaves, wire them and clean up.
+C28 r_2=1/2 remains the normalization target. No added source hypotheses.
