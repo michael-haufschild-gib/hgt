@@ -192,10 +192,10 @@ theorem exists_two_distinct_positive_real_XiC_zeros_of_rh
     habs, hroot0, hrootn⟩
 
 /-- Compact Xi-zero finiteness selects consecutive positive zeros from any two positive zeros. -/
-theorem exists_positive_real_XiC_zero_gap_of_two_zeros
+theorem exists_positive_real_XiC_zero_gap_ge_of_two_zeros
     {a b : ℝ} (ha : 0 < a) (hab : a < b)
     (hza : XiC (a : ℂ) = 0) (hzb : XiC (b : ℂ) = 0) :
-    ∃ p q : ℝ, 0 < p ∧ p < q ∧
+    ∃ p q : ℝ, a ≤ p ∧ 0 < p ∧ p < q ∧
       XiC (p : ℂ) = 0 ∧ XiC (q : ℂ) = 0 ∧
       ∀ t ∈ Set.Ioo p q, XiC (t : ℂ) ≠ 0 := by
   classical
@@ -238,7 +238,7 @@ theorem exists_positive_real_XiC_zero_gap_of_two_zeros
       · simpa using hzre
       · simpa using hzim
     simpa [hzEq] using hzZ.2
-  refine ⟨p, b, ha.trans_le hap, hpb, hzp, hzb, ?_⟩
+  refine ⟨p, b, hap, ha.trans_le hap, hpb, hzp, hzb, ?_⟩
   intro t ht hzt
   have htS : t ∈ S :=
     hmem t (le_trans hap ht.1.le) ht.2.le hzt
@@ -247,6 +247,17 @@ theorem exists_positive_real_XiC_zero_gap_of_two_zeros
     exact ⟨htS, ht.2⟩
   have htp : t ≤ p := Finset.le_max' P t htP
   exact (not_lt_of_ge htp) ht.1
+
+/-- Compact Xi-zero finiteness selects consecutive positive zeros. -/
+theorem exists_positive_real_XiC_zero_gap_of_two_zeros
+    {a b : ℝ} (ha : 0 < a) (hab : a < b)
+    (hza : XiC (a : ℂ) = 0) (hzb : XiC (b : ℂ) = 0) :
+    ∃ p q : ℝ, 0 < p ∧ p < q ∧
+      XiC (p : ℂ) = 0 ∧ XiC (q : ℂ) = 0 ∧
+      ∀ t ∈ Set.Ioo p q, XiC (t : ℂ) ≠ 0 := by
+  obtain ⟨p, q, _, hp, hpq, hzp, hzq, hgap⟩ :=
+    exists_positive_real_XiC_zero_gap_ge_of_two_zeros ha hab hza hzb
+  exact ⟨p, q, hp, hpq, hzp, hzq, hgap⟩
 
 /-- Under RH, centered Xi has a positive consecutive zero pair. -/
 theorem exists_positive_real_XiC_zero_gap_of_rh

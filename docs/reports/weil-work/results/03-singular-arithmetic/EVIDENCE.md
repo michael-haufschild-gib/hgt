@@ -1923,3 +1923,31 @@
   Index58262 exits0 (2 changed); lint70724 same five unrelated unreachable
   HTGeometry leaves as27233. Eleven C49 leaves wired, no umbrella or
   unchanged-module rebuild. Local-tail/source-gain scratch now auditing.
+- Local-tail scratch7937 checked the local logarithm comparison and
+  source phase conversion up to explicit circle membership and finite
+  index elaboration. Prime summability is now included as the target:
+  first bound all finite large-prime sums, then restore the finite head
+  using cofinite congruence. Current repair uses explicit Finset.prod/
+  sum_coe_sort arguments (an uninstantiated rewrite incorrectly formed a
+  second subtype), unit-sphere membership and a pointwise nonnegative
+  function conversion. No theorem statement was weakened.
+- Absolute-Euler deep search47999 completed: partial=false/errors=[],
+  68913 files, generation1295304/current1295317, index1295302; background
+  refresh incomplete. All20 candidates and20 source arguments plus the
+  proposed ingredient set inspected. No reverse global summability
+  theorem supplied. The proposed theta-prime-tail/chi-boundary route
+  has unrelated premises. Mathlib EulerProduct's finite factoredNumbers
+  summation identity remains the useful parent: bound its nonnegative
+  local products, then dominate each finite global coefficient sum.
+- Prime-tail scratch65410 exits0, empty log. It proves the actual
+  source product gain, positive local harmonic factors, uniform finite
+  large-prime sum bound, and Summable(p -> abs(f(p))*primeRadius(p)).
+  No separate Euler, convergence, notch-smallness or positive-H premise
+  remains. PrimeSummability leaf wired; final direct audit running.
+  The global absolute harmonic closure and C49 rigidity remain to pay.
+- PrimeSummability final direct81285 exits0, empty log. All13 public
+  axiom checks now running separately. The next prepared absolute-closure
+  scratch uses the inspected finite factoredNumbers HasSum, nonnegative
+  exponential local majorants and finite-prime support of each integer.
+  It then targets the exact existing absolute-harmonic rigidity receiver.
+  This closure/capstone scratch is not yet compiled.

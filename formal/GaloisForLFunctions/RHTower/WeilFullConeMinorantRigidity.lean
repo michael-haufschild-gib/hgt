@@ -11,6 +11,13 @@ the Herglotz representation of the cone is not used.
 Together with `eq_vonMangoldt_of_weilPositiveFull_of_ge` this makes `Λ` order-isolated in the full
 Weil cone: no Weil-positive system is comparable with `Λ` without being equal to it.
 
+The quantitative `exists_uniform_logShift_minorant_separation` detects any prescribed positive
+coefficient deficit with a uniform negative margin in every sufficiently large integer window;
+its cutoff is independent of the minorant. The stronger `weilLogShiftMinorantFiber_iff` needs
+positivity only on the explicit countable integer-window family `WeilLogShiftTestsPositive`.
+It identifies each coefficient with index at least 2 without asserting full-cone positivity of
+`Λ` or the Riemann hypothesis.
+
 **The test.** `u = Φχ_L` is the truncated Riemann kernel and `K_L(y) = ∫ u(t) u(t − y) dt` its
 autocorrelation. The test is the log-shift difference `f = u − u(· − log m)`
 (`logShiftRiemannDifference`). Its transform is `(1 − e^{iz log m}) û(z)`. On the zeros the
@@ -904,16 +911,39 @@ theorem exists_exp_mul_nearRadicalEnergy_le {ε : ℝ} (hε : 0 < ε) :
 
 /-! ## Order rigidity from below -/
 
-/-- **No Weil-positive completion minorizes `Λ`.** If `lam` is Weil-positive with the pole term
-(`WeilPositiveFull`) and `lam(n) ≤ Λ(n)` for all `n ≥ 2`, then `lam(n) = Λ(n)` for all `n ≥ 2`.
-Unconditional; no sign or growth condition on `lam` is assumed. -/
-theorem eq_vonMangoldt_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    (hle : ∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) :
-    ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n := by
-  by_contra hne
-  push Not at hne
-  obtain ⟨n₀, hn₀, hne₀⟩ := hne
-  -- the deficit `v(n) = (Λ(n) − lam(n))/√n ≥ 0`
+/-- Nonnegativity on an explicit countable log-shift family, finite at each integer window. -/
+def WeilLogShiftTestsPositive (lam : ℕ → ℝ) : Prop :=
+  ∀ windowIndex m : ℕ, 2 ≤ m → (m : ℝ) ≤ Real.exp (2 * (windowIndex : ℝ)) →
+    0 ≤ (weilFullFunctional lam (EF.weilTest
+      (logShiftRiemannDifference windowIndex (Real.log m))
+      (logShiftRiemannDifference windowIndex (Real.log m)))).re
+
+/-- Every prescribed positive coefficient deficit below von Mangoldt is detected with a
+uniform negative margin in every sufficiently large finite integer-window log-shift family.
+The cutoff depends only on the coefficient and deficit, not on the arithmetic minorant. -/
+theorem exists_uniform_logShift_minorant_separation (q : ℕ) (t : ℝ) :
+    ∃ cutoff : ℕ, ∀ windowIndex : ℕ, cutoff ≤ windowIndex →
+      {lam : ℕ → ℝ |
+        (∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) ∧
+        Real.exp t ≤ ((ArithmeticFunction.vonMangoldt (q + 2) : ℝ) - lam (q + 2)) /
+          Real.sqrt ((q + 2 : ℕ) : ℝ)} ⊆
+      {lam | ∃ m : ℕ, 2 ≤ m ∧ (m : ℝ) ≤ Real.exp (2 * (windowIndex : ℝ)) ∧
+        (weilFullFunctional lam (EF.weilTest
+          (logShiftRiemannDifference windowIndex (Real.log m))
+          (logShiftRiemannDifference windowIndex (Real.log m)))).re ≤
+            -(Real.exp t * riemannAutocorr 0) / 25} := by
+  set n₀ : ℕ := q + 2 with hn₀def
+  have hn₀ : 2 ≤ n₀ := by omega
+  have hn₀R : (1 : ℝ) < n₀ := by exact_mod_cast (show 1 < n₀ by omega)
+  set ε := Real.exp t with hεdef
+  have hε : 0 < ε := Real.exp_pos _
+  set K₀ := riemannAutocorr 0 with hK₀
+  have hK₀pos : 0 < K₀ := riemannAutocorr_zero_pos
+  obtain ⟨L₁, hL₁⟩ := exists_truncatedRiemannAutocorr_zero_ge (η := K₀ / 25) (by positivity)
+  obtain ⟨L₂, hL₂⟩ := exists_exp_mul_nearRadicalEnergy_le (ε := ε * K₀ / 100) (by positivity)
+  set cutoff : ℕ := ⌈max (max L₁ L₂) (Real.log n₀ / 2 + 1)⌉₊ with hCutoff
+  refine ⟨cutoff, ?_⟩
+  rintro windowIndex hcutoff lam ⟨hle, hgap⟩
   set v : ℕ → ℝ := fun n => if 2 ≤ n then
     ((ArithmeticFunction.vonMangoldt n : ℝ) - lam n) / Real.sqrt n else 0 with hvdef
   have hv0 : ∀ n, 0 ≤ v n := by
@@ -921,20 +951,19 @@ theorem eq_vonMangoldt_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilP
     split_ifs with h2
     · exact div_nonneg (sub_nonneg.mpr (hle n h2)) (Real.sqrt_nonneg _)
     · exact le_rfl
-  have hn₀R : (1 : ℝ) < n₀ := by exact_mod_cast (show 1 < n₀ by omega)
-  have hvn₀ : 0 < v n₀ := by
-    simp only [hvdef, if_pos hn₀]
-    exact div_pos (sub_pos.mpr (lt_of_le_of_ne (hle n₀ hn₀) hne₀))
-      (Real.sqrt_pos.mpr (by linarith))
-  set K₀ := riemannAutocorr 0 with hK₀
-  have hK₀pos : 0 < K₀ := riemannAutocorr_zero_pos
-  -- the truncation
-  obtain ⟨L₁, hL₁⟩ := exists_truncatedRiemannAutocorr_zero_ge (η := K₀ / 25) (by positivity)
-  obtain ⟨L₂, hL₂⟩ := exists_exp_mul_nearRadicalEnergy_le (ε := v n₀ * K₀ / 100) (by positivity)
-  set L := max (max L₁ L₂) (Real.log n₀ / 2 + 1) with hL
-  have hLL₁ : L₁ ≤ L := le_trans (le_max_left _ _) (le_max_left _ _)
-  have hLL₂ : L₂ ≤ L := le_trans (le_max_right _ _) (le_max_left _ _)
-  have hLn₀ : Real.log n₀ / 2 + 1 ≤ L := le_max_right _ _
+  have hgap' : ε ≤ v n₀ := by
+    simpa only [hvdef, if_pos hn₀] using hgap
+  set L : ℝ := (windowIndex : ℝ) with hL
+  have hcutoffR : (cutoff : ℝ) ≤ L := by
+    change (cutoff : ℝ) ≤ (windowIndex : ℝ)
+    exact_mod_cast hcutoff
+  have hwindow : max (max L₁ L₂) (Real.log n₀ / 2 + 1) ≤ L :=
+    le_trans (Nat.le_ceil _) hcutoffR
+  have hLL₁ : L₁ ≤ L :=
+    le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hwindow
+  have hLL₂ : L₂ ≤ L :=
+    le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hwindow
+  have hLn₀ : Real.log n₀ / 2 + 1 ≤ L := le_trans (le_max_right _ _) hwindow
   have hlog₀ : 0 < Real.log n₀ := Real.log_pos hn₀R
   have hL0 : 0 < L := by linarith
   have hKL0 := hL₁ L hLL₁
@@ -974,9 +1003,10 @@ theorem eq_vonMangoldt_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilP
   have hfc : HasCompactSupport f := hasCompactSupport_logShiftRiemannDifference L c
   set k := EF.weilTest f f with hk
   have hkc : HasCompactSupport k := EF.weilTest_hasCompactSupport hfc hfc
-  have hpos := hW f hfd hfc
-  rw [weilFullFunctional_eq_sub lam hkc, ← weilFullFunctional_vonMangoldt,
-    ← zeta_W_eq_weilFullFunctional hfd hfc] at hpos
+  have hmBound : (m : ℝ) ≤ Real.exp (2 * (windowIndex : ℝ)) := by
+    change (m : ℝ) ≤ Real.exp (2 * L)
+    calc (m : ℝ) ≤ N := by exact_mod_cast hmN
+      _ ≤ Real.exp (2 * L) := Nat.floor_le (Real.exp_pos _).le
   set a : ℕ → ℝ := fun n => if 2 ≤ n then (lam n - ArithmeticFunction.vonMangoldt n) / Real.sqrt n
     else 0 with ha
   have hav : ∀ n, a n = -v n := by
@@ -999,13 +1029,14 @@ theorem eq_vonMangoldt_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilP
     have := hsumre.neg
     refine this.congr fun n => ?_
     rw [hterm_re, neg_neg]
-  have hmain : 0 ≤ (zetaZeroConfig.W f f).re + ∑' n, F n := by
-    rw [Complex.sub_re, Complex.re_tsum hsum] at hpos
+  have hmain : (weilFullFunctional lam (EF.weilTest f f)).re =
+      (zetaZeroConfig.W f f).re + ∑' n, F n := by
     have e : (∑' n : ℕ, (((a n : ℝ) : ℂ) * (k (Real.log n) + k (-Real.log n))).re) =
         -∑' n, F n := by
       rw [← tsum_neg]; exact tsum_congr hterm_re
-    rw [e] at hpos
-    linarith
+    rw [weilFullFunctional_eq_sub lam hkc, ← weilFullFunctional_vonMangoldt,
+      ← zeta_W_eq_weilFullFunctional hfd hfc, Complex.sub_re, Complex.re_tsum hsum, e]
+    ring
   -- the comparison function
   set G : ℕ → ℝ := fun n => 4 * (v n * truncatedRiemannAutocorr L (Real.log n)) -
     2 * (if n = m then v m * truncatedRiemannAutocorr L 0 else 0) with hG
@@ -1029,8 +1060,8 @@ theorem eq_vonMangoldt_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilP
     split_ifs with hnm
     · subst hnm
       rw [show Real.log n - c = 0 by rw [hc]; ring]
-      nlinarith [mul_nonneg hvn h1]
-    · nlinarith [mul_nonneg hvn h1, mul_nonneg hvn h2]
+      nlinarith only [mul_nonneg hvn h1]
+    · nlinarith only [mul_nonneg hvn h1, mul_nonneg hvn h2]
   have hGs : Summable G := by
     refine summable_of_ne_finset_zero (s := Finset.range (N + 1)) fun n hn => ?_
     rw [Finset.mem_range, not_lt] at hn
@@ -1066,7 +1097,7 @@ theorem eq_vonMangoldt_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilP
       · push Not at hn
         rw [hout n hn, mul_zero]
   -- the zero side
-  have hWnorm : ‖zetaZeroConfig.W f f‖ ≤ v n₀ * K₀ / 25 := by
+  have hWnorm : ‖zetaZeroConfig.W f f‖ ≤ ε * K₀ / 25 := by
     obtain ⟨Λ', -, hΛ'⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
     have h := norm_W_logShiftRiemannDifference_le L hc0 hΛ'
     have hmul : (1 + Real.exp (c / 2)) ^ 2 ≤ 4 * Real.exp (2 * L) := by
@@ -1086,8 +1117,8 @@ theorem eq_vonMangoldt_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilP
           mul_le_mul_of_nonneg_right hmul hE0
       _ = 4 * (Real.exp (2 * L) * ((5 / 4) * zetaInvSqSum * truncatedRiemannTailEnergy L ^ 2)) := by
           ring
-      _ ≤ 4 * (v n₀ * K₀ / 100) := by gcongr
-      _ = v n₀ * K₀ / 25 := by ring
+      _ ≤ 4 * (ε * K₀ / 100) := by gcongr
+      _ = ε * K₀ / 25 := by ring
   -- assembling
   have hFG' : ∑' n, F n ≤ ∑' n, G n := hFs.tsum_le_tsum hFG hGs
   rw [htsumG] at hFG'
@@ -1096,9 +1127,73 @@ theorem eq_vonMangoldt_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilP
   have hKL : K₀ - K₀ / 25 ≤ truncatedRiemannAutocorr L 0 := hKL0
   have h1 : v m * (K₀ - K₀ / 25) ≤ v m * truncatedRiemannAutocorr L 0 :=
     mul_le_mul_of_nonneg_left hKL hvm
-  have h2 : v n₀ * K₀ ≤ v m * K₀ := mul_le_mul_of_nonneg_right hMge hK₀pos.le
-  have h3 : 0 < v n₀ * K₀ := mul_pos hvn₀ hK₀pos
-  linarith
+  have h2 : ε * K₀ ≤ v m * K₀ :=
+    mul_le_mul_of_nonneg_right (hgap'.trans hMge) hK₀pos.le
+  refine ⟨m, hm2, hmBound, ?_⟩
+  change (weilFullFunctional lam (EF.weilTest f f)).re ≤ -(ε * K₀) / 25
+  rw [hmain]
+  linarith only [hFG', hwin, hWnorm, hWre, h1, h2]
+
+/-- The entire arithmetic minorant class admitted by the countable tests is coefficient-exact. -/
+theorem weilLogShiftMinorants_subset_exact :
+    {lam : ℕ → ℝ | (∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) ∧
+      WeilLogShiftTestsPositive lam} ⊆
+    {lam | ∀ n, 2 ≤ n → lam n = (ArithmeticFunction.vonMangoldt n : ℝ)} := by
+  rintro lam ⟨hle, hP⟩
+  change ∀ n, 2 ≤ n → lam n = (ArithmeticFunction.vonMangoldt n : ℝ)
+  by_contra hne
+  push Not at hne
+  obtain ⟨n₀, hn₀, hne₀⟩ := hne
+  have hn₀R : (1 : ℝ) < n₀ := by exact_mod_cast (show 1 < n₀ by omega)
+  set deficit := ((ArithmeticFunction.vonMangoldt n₀ : ℝ) - lam n₀) / Real.sqrt n₀
+  have hdeficit : 0 < deficit :=
+    div_pos (sub_pos.mpr (lt_of_le_of_ne (hle n₀ hn₀) hne₀))
+      (Real.sqrt_pos.mpr (by linarith))
+  have hn₀repr : n₀ - 2 + 2 = n₀ := by omega
+  have hgap : Real.exp (Real.log deficit) ≤
+      ((ArithmeticFunction.vonMangoldt (n₀ - 2 + 2) : ℝ) - lam (n₀ - 2 + 2)) /
+        Real.sqrt ((n₀ - 2 + 2 : ℕ) : ℝ) := by
+    rw [hn₀repr, Real.exp_log hdeficit]
+  obtain ⟨cutoff, hcutoff⟩ :=
+    exists_uniform_logShift_minorant_separation (n₀ - 2) (Real.log deficit)
+  obtain ⟨m, hm2, hmBound, htest⟩ := hcutoff cutoff le_rfl ⟨hle, hgap⟩
+  have hpos := hP cutoff m hm2 hmBound
+  have hmargin : 0 < Real.exp (Real.log deficit) * riemannAutocorr 0 :=
+    mul_pos (Real.exp_pos _) riemannAutocorr_zero_pos
+  linarith only [hpos, htest, hmargin]
+
+/-- Below von Mangoldt, integer-window log-shift positivity has exactly the same coefficient
+fiber as von Mangoldt itself. This classifies arithmetic rigidity, not full Weil positivity. -/
+theorem weilLogShiftMinorantFiber_iff (lam : ℕ → ℝ) :
+    ((∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) ∧
+      WeilLogShiftTestsPositive lam) ↔
+    ((∀ n, 2 ≤ n → lam n = (ArithmeticFunction.vonMangoldt n : ℝ)) ∧
+      WeilLogShiftTestsPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))) := by
+  constructor
+  · rintro ⟨hle, hP⟩
+    have heq : ∀ n, 2 ≤ n → lam n = (ArithmeticFunction.vonMangoldt n : ℝ) :=
+      weilLogShiftMinorants_subset_exact ⟨hle, hP⟩
+    refine ⟨heq, ?_⟩
+    intro windowIndex m hm hwindow
+    rw [weilFullFunctional_congr (lam' := lam) (fun n hn => (heq n hn).symm)]
+    exact hP windowIndex m hm hwindow
+  · rintro ⟨heq, hP⟩
+    refine ⟨fun n hn => (heq n hn).le, ?_⟩
+    intro windowIndex m hm hwindow
+    rw [weilFullFunctional_congr
+      (lam' := fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) heq]
+    exact hP windowIndex m hm hwindow
+
+/-- **No Weil-positive completion minorizes `Λ`.** If `lam` is Weil-positive with the pole term
+(`WeilPositiveFull`) and `lam(n) ≤ Λ(n)` for all `n ≥ 2`, then `lam(n) = Λ(n)` for all `n ≥ 2`.
+Unconditional; no sign or growth condition on `lam` is assumed. -/
+theorem eq_vonMangoldt_of_weilPositiveFull_of_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+    (hle : ∀ n, 2 ≤ n → lam n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) :
+    ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n := by
+  refine ((weilLogShiftMinorantFiber_iff lam).mp ⟨hle, ?_⟩).1
+  intro windowIndex m _ _
+  exact hW (logShiftRiemannDifference windowIndex (Real.log m))
+    (contDiff_logShiftRiemannDifference _ _) (hasCompactSupport_logShiftRiemannDifference _ _)
 
 /-- **RH is the existence of a Weil-positive minorant of `Λ`.** A full-cone Weil-positive
 `lam ≤ Λ` exists iff RH holds, and then `lam = Λ` on `n ≥ 2`. -/

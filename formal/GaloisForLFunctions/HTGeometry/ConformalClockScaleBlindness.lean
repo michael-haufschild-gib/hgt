@@ -4,13 +4,14 @@ import GaloisForLFunctions.HTGeometry.ConformalClockTwoSpeciesScaleLaw
 # Scale blindness: the exact boundary of two-species conformal reconstruction
 
 The two-species scale law recovers `e^{2σ}` from the difference of two effective clock potentials.
-Two hypotheses carry it — distinct calibrated squared masses, and one conjugation weight shared by
-both species — and this file proves both sharp.
+Two hypotheses carry this difference formula — distinct calibrated squared masses, and one
+conjugation weight shared by both species — and this file audits their roles.
 
-* **Distinct masses are necessary.** A single species, or two species with equal calibrated masses,
-  determines only the combination `μ e^{2σ} - D_σ`. Explicit distinct pairs `(scale, defect)` give
-  the same potential, so the conformal scale is invisible. This is the exact content of the audit
-  lines about conformally coupled massless scalars and about mass renormalization.
+* **Equal masses make the difference channel vanish.** A single species does not determine the
+  full pair of independent algebraic channels `(scale, defect)`. This does not imply that scale
+  itself is always invisible: at weight zero and nonzero mass the potential is mass times scale.
+  At nonzero weight the Laplace-defect channel can compensate an arbitrary scale change.
+  These algebraic statements do not assert realizability by derivatives of conformal factors.
 * **A shared conjugation weight is necessary.** If the two species are conjugated with different
   weights, the geometric defect no longer cancels: the potential difference is a pure scale term
   for all geometric data precisely when the two weights agree.
@@ -53,9 +54,9 @@ theorem conformalPotentialData_difference_eq_zero_of_eq_mass (weight massSq scal
         conformalPotentialData weight massSq scale defectLaplace defectGradient = 0 := by
   simp
 
-/-- **One species cannot separate scale from the geometric defect.** For every weight and mass
-there are two distinct scale/defect states with the same effective potential, so a single
-calibrated species determines neither. -/
+/-- **One species cannot determine the full scale/defect pair.** For every weight and mass
+there are two distinct pairs of independent algebraic channels with the same effective potential.
+At weight zero this witness changes only the defect, so it does not establish scale ambiguity. -/
 theorem exists_ne_scaleDefect_with_eq_conformalPotentialData (weight massSq defectGradient : ℝ) :
     ∃ scale₁ defectLaplace₁ scale₂ defectLaplace₂ : ℝ,
       (scale₁, defectLaplace₁) ≠ (scale₂, defectLaplace₂) ∧

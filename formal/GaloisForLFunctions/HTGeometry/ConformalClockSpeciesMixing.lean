@@ -1,17 +1,18 @@
 import GaloisForLFunctions.HTGeometry.ConformalClockScaleBlindness
 
 /-!
-# Species mixing must be diagonalized before the scale law is applied
+# Eigenstate contrasts require the spectral mass gap
 
 The two-species scale law divides the potential difference by the difference of the two calibrated
-squared masses. With a non-diagonal mass matrix the physical species are the eigenvectors, and the
-calibrated masses are the eigenvalues, not the diagonal entries of the matrix in the reporter
-basis.
+squared masses. For measurements of mass eigenstates, those masses are the eigenvalues, not the
+diagonal entries of the matrix in a different reporter basis.
 
 This file proves the resulting failure mode exactly. For a real symmetric mass matrix with diagonal
 entries `a, d` and mixing `b`, the eigenvalue gap is `√((a-d)² + 4b²)`. It equals the naive channel
 gap `|a - d|` precisely when the mixing vanishes, and strictly exceeds it otherwise. Dividing by the
-naive gap therefore returns a strictly overestimated conformal scale.
+naive gap therefore returns a strictly overestimated conformal scale. This compares an eigenstate
+contrast with unmatched mass labels; it does not rule out direct recovery from complete matrix
+observations in the reporter basis.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -91,7 +92,7 @@ theorem conformalPotentialData_mixed_reconstruction (weight a b d scale defectLa
   rw [conformalPotentialData_difference, massEigenvalue_difference]
   field_simp
 
-/-- **Using un-diagonalized channel labels overestimates the conformal scale.**
+/-- **Using a diagonal-entry gap for an eigenstate contrast overestimates the conformal scale.**
 
 The measured potential difference divided by the naive channel gap `|a - d|` is the true scale
 multiplied by the ratio of the spectral gap to the naive gap, which strictly exceeds one whenever
@@ -109,7 +110,7 @@ theorem conformalPotentialData_mixed_naive_overestimate (weight a b d scale defe
   have hgap := abs_sub_lt_massMixingGap (a := a) (d := d) hb
   nlinarith [hgap, habs, hscale]
 
-/-- **A mixed pair never reconstructs the scale from raw channel labels.** -/
+/-- An eigenstate contrast divided by unmatched diagonal-entry mass labels gives the wrong scale. -/
 theorem conformalPotentialData_mixed_naive_ne (weight a b d scale defectLaplace
     defectGradient : ℝ) (hb : b ≠ 0) (had : a ≠ d) (hscale : 0 < scale) :
     (conformalPotentialData weight (massEigenvalueHigh a b d) scale defectLaplace

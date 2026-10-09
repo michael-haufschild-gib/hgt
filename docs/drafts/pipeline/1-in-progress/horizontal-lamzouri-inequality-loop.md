@@ -178,3 +178,31 @@ Horizontal classes `C_g = {z : Re z = g}`, sizes `H(g)`. Within a class, `K(i v)
   `blockOverlap_ge`/`lens_overlap_cost_ge` (quantitative cost `2cos²(ΔL/2)/cosh(εL/2) − 1`).
 - **Limit.** The loss `r²` is intrinsic to energy methods: a pair of simple zeros at distance `r/L` has
   energy `≈ 4 − O(r²)`, the same as a double zero. Removing it needs information beyond pair correlation.
+
+## Cycle H8 — Fourier form with class multiplicity functions (2026-10-09, Opus loop row 595)
+- **Reformulation (paper, exact).** Group `Z` by horizontal class `g = Re z`. With `c_g(σ) := Σ_{z∈C_g} e^{2π Im(z) σ}`, which is even, `≥ m_g := |C_g|` and a convex cosh-sum, `S(σ) = Σ_g c_g(σ)e^{−2πigσ}` and
+  `E = ∫ρ|S|² = Σ_g ∫ρc_g² + Σ_{g≠g'} ∫ρ c_g c_{g'} cos(2π(g−g')σ)`.
+  The right side of (H) is `2|Z| − #hs = Σ_g (2m_g − [m_g = 1])`.
+  - For real configurations (`c_g ≡ m_g`) every cross term is `m_g m_{g'} K(g−g')² ≥ 0` and `∫ρc_g² = m_g² ≥ 2m_g − [m_g=1]`, so Lamzouri's real-multiplicity bound is plain diagonal domination.
+  - Hence **(H) ⟺ the cross terms `∫ρ c_g c_{g'} cos(2π(g−g')σ)` never overspend the diagonal slack `Σ_g(∫ρc_g² − 2m_g + [m_g=1])`.**
+  - Slack per class: singleton `0`; pair `2K(2iy)² − 2`; mixed `{g, g±iy}`: `4K(iy)² + 2K(2iy)² − 3`.
+- **Two adjacent mixed classes at distance ½ (sinc, large `y`): no violation.** The leading terms of the cross energy cancel the own-pair energy, but only to relative order `1/y²`. The remainder is `≈ (6/π²)·sinh²(2πy)/(64y⁴) > 0`, exponentially large, so (H) holds with huge margin. This is the mechanism behind H6's "near-combs of length `e^{πy}`".
+- **Comb-averaged diagonal bound.** For λ = ½ every comb `{f_{ξ+j}}` is an ONB, so `Q ≥ ∫_ℝ (G(x) − ‖Π_W f_x‖²)² dx`, with `∫G = |Z|` and `∫‖Π_W f_x‖² = D`. On the tight pair comb this gives 1 per period against the needed 2, so the averaged diagonal loses a factor 2 and cannot prove (H) alone.
+- **Verdict:** (H) unresolved. The open core is exactly the sign of cross-class cosine integrals against cosh-sum multiplicities. Next: an off-diagonal ONB adapted to classes (horizontal Gram–Schmidt per comb) rather than averaged diagonals.
+
+## Cycle H9 — spectral form; the mixed loss is pair–pair interference (2026-10-09, Opus loop row 610)
+- **Theorem (Lean, MUST-855).** `HilbertMetric/HorizontalLamzouriSpectral` (wired into `HilbertMetric`; `lake build --old` green; direct `lake env lean` clean; axioms propext/choice/Quot.sound). It holds for any packet in a finite-dimensional space with `m₂ ≥ 2`, `mP ≥ 1`, simple real vectors of norm ≤ 1, and no normalisation, orthogonality or independence of the pair vectors:
+  `4·mass − E − 2N + 2 Σ_{x∈M} max(G(f_x), 0) ≤ #H + #M`, with pair field `G(ψ) = Σ_p 2m_p(⟪g_p,ψ⟫² − ⟪h_p,ψ⟫²)`.
+  - Corollaries: `G ≥ ½` on `M` gives `4·mass − E − 2N ≤ #H` (`four_mass_sub_energy_le_of_pairField`); in general the loss is `Σ_x (1 − 2G(f_x))⁺`.
+  - The normalised forms are `spectral_energy_lower_bound` and `card_hs_ge_of_pairField`.
+- **Proof (new, spectral).** Split `Φ = Φ_R + Φ_P`.
+  - (i) `Φ_P ≤ Σ 2m g⊗g` has at most `P` positive eigenvalues. Cauchy–Schwarz on them with `(A − 2P)²/P ≥ 0` gives `‖Φ_P‖² − 4trΦ_P + 2N_P ≥ 4T + ‖Φ_P⁻‖²`.
+  - (ii) Transport weights `p_{ki} = c_k⟪w_k,f_i⟫²/μ_i` satisfy `Σ_i p_{ki} ≤ 1`, via the test vector `Σ_i(⟪w_k,f_i⟫/μ_i)f_i`. With the tangent lines of `((2−x)⁺)² − 4` this gives `‖Φ_R‖² − 4trΦ_R + 2N_R ≥ ‖(Φ_R−2)⁺‖² − #simple`.
+  - (iii) `Φ_R ≤ 2 + (Φ_R − 2)⁺` against `Φ_P⁻` costs at most `4T + ‖Φ_P⁻‖² + ‖(Φ_R−2)⁺‖²`.
+  - (i)–(iii) cancel exactly, leaving `2tr(Φ_RΦ_P⁺) ≥ 2Σ_M max(G, 0)`.
+- **Reading.** For an isolated mixed class, `⟪h,f⟫ = 0` by parity and `⟪g,f⟫ = K(iδ) ≥ 1`, so `G = 2K(iδ)² ≥ 2` at every displacement. H5's single-pair overlap criterion could not pass `δ ≍ 1/L`; the pair field has no such limit. The remaining open core is two-pair interference: a mixed point loses only if other off-line pairs' odd vectors overlap its vector by `Σ_{q≠p} 2m_q⟪h_q,f⟫² > 2m_p⟪g_p,f⟫² − ½`.
+- **Sharpened (same day, Lean).** Keeping the norm slack `2(1 − ‖f‖²)` of every simple atom removes all norm hypotheses. The free condition becomes `G(f_x) ≥ ‖f_x‖² − ½`. An isolated mixed class with `⟪h,f⟫ = 0` and `⟪g,f⟫ ≥ ‖f‖²` satisfies it for every norm (`2t² ≥ t − ½`) and every displacement; on the full grid `⟪g,f⟫ = (L/c)∫φ²cosh(εu) ≥ ‖f‖²` and `⟪h,f⟫ = 0`. The block entry `RHTower.pairField_block_count` (module `HorizontalIsolationBlockPairField`) is wired.
+- **Far-pair bonus (Lean).** The Cauchy–Schwarz step discards `(A − 2P)²/P`, where `A` is the sum of the positive pair eigenvalues and `A ≥ trΦ_P`. Keeping it adds `((trΦ_P − 2P)⁺)²/P` to the left side. In the sampled model a pair at displacement `ε` has `‖g‖² − ‖h‖² ≈ (L/c)∫φ²cosh(2εu)`, so far pairs pay into this bonus. It is the slack meant to absorb their interference `Σ_x 2m_q⟪h_q,f_x⟫²`; whether it suffices quantitatively is open.
+- **Next.**
+  - (a) Zeta transfer: `⟪g,f⟫ ≥ ‖f‖²` and the own odd overlap `⟪h,f⟫` on Zeta23's truncated sampling grid (`blockReVec`, `blockImVec`), analogous to `blockOverlap_near`.
+  - (b) Bound the interference by the odd norms `‖h_q‖²`, which are small for near-line pairs, together with the density of far pairs per block.

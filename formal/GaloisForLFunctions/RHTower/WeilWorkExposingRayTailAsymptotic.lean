@@ -24,7 +24,8 @@ noncomputable section
 namespace RHTower
 namespace ExposingRayTail
 
-private theorem phi_lower (x : ℝ) :
+/-- Pointwise double-exponential lower envelope for the literal theta kernel. -/
+theorem phi_lower (x : ℝ) :
     2 * π ^ 2 * exp (-(π * exp (2 * |x|))) ≤ riemannKernelReal x := by
   have h := (riemannLeadTerm_ge (abs_nonneg x)).trans (riemannKernelReal_sandwich x).1
   have h1 : 1 ≤ exp (2 * |x|) ^ 2 := one_le_pow₀ (Real.one_le_exp (by positivity))
