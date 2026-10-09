@@ -29,7 +29,7 @@ Positive survivor: an explicit dense residual family with signed weighted excurs
 - [x] Exact Lean results compiled and axiom-audited.
 - [x] Imports, index, scoped checks, and global lint recorded.
 
-## Formal results
+## Original formal results
 
 Leaf: `formal/GaloisForLFunctions/RHTower/WeilLogShiftGenericMomentDivergence.lean`.
 Four definitions and eight public theorems:
@@ -46,7 +46,7 @@ Four definitions and eight public theorems:
 
 The category step directly reuses `GaloisForLFunctions.HTGeometry.dense_and_residual_setOf_forall`. Inward transfer handles the uncountable real-shift choice; no uncountable-union category assertion is used.
 
-## Verification
+## Original verification
 
 - Final leaf compile/export exited 0, no diagnostics.
 - All twelve public declarations: scratch axiom audit exit 0, exactly `[propext, Classical.choice, Quot.sound]` each.
@@ -63,9 +63,9 @@ Every realizable moment profile remains dense by the preceding theorem, while th
 
 The result concerns the entire product space of histories. It does not classify genericity inside a bounded-history cube, and it does not settle boundedness of actual probes at every positive real cutoff.
 
-## Next conjecture, not formalized
+## Follow-up proved: bounded-cube genericity
 
-Inside the compact product cube of histories valued in [-1,1], test whether nonsummability of all three moments at log 2 is residual. Candidate mechanism: extend any finite bounded prefix using the existing adaptive antipodal policy, so all later absolute log-2-weighted terms are at least 1/2. Dense open tail events with threshold 1/4 should give generic signed nonsummability; bounded mesh data and the one-sided divergence laws should then exclude both one-sided moments. Do not infer nowhere summability at all real shifts from this bounded-cube argument.
+[Bounded-cube genericity](weil-logshift-bounded-cube-genericity.md) now proves this conjecture, and extends the generic conclusion to every shift |y|≥log 2. It also proves that signed, excess, and deficit summability at log 2 are equivalent for every unit-bounded history. This leaf now exposes `continuous_weilDeviation_recoveryInverse` and specializes it for origin-term continuity; all prior declarations remain unchanged. The follow-up audits all 35 public declarations across its three touched leaves. Interior shifts remain unresolved.
 
 ## Log
 - 2026-10-09 — previous goal turn classified verified progress. Replaced partial-sum sublevel approach by stronger signed tail-excursion construction before formalization.

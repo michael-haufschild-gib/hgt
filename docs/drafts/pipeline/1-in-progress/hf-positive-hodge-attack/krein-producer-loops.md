@@ -7569,3 +7569,5 @@ Notation: `lam ∈ W`, `F = exp(Σ lam(n)n^{−s}/log n) = Σ b_n n^{−s}`, `E 
   - The "barrier" ("any proof of `W(ℚ) ⊆ {Λ}` must use an input that fails for `h_K > 1`, i.e. Minkowski") is **void**. No number field `K` is known with `W(K) ≠ {Λ_K}` under GRH.
   - Conjecture L278 (real-rooted full-pole twins are geometric) is unaffected, but over every `K` it predicts only `ζ_K^n`. The "uniqueness input" need not be ℚ-specific.
   - The ℤ/k torsion-lock (twin) question is the same over every number field. The class-field picture gives no ℤ/k lock at the exact datum.
+
+- 2026-10-09 (pointer, route-candidates loop row 712): L405's statement that core (c) is open is superseded. (c) is closed unconditionally by MUST-718 (`WeilConeCriticalZeroCarriedRigidity`) and L150 (`crystalline_producer_rigidity`, arbitrary real masses). The mechanism is L140's: ζ absorbs the simple poles of `D` whatever the residues, so `ζ·D` is a Dirichlet series with the odd Riemann FE and odd Hamburger kills it. The only remaining producer core is (N1), boundary mass off the critical zeros.

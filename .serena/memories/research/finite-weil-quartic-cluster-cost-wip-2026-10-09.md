@@ -1,0 +1,1 @@
+SUPERSEDED: quartic cluster work completed and audited. All owned processes terminal; do not resume old handles. See `mem:research/finite-weil-quartic-cluster-cost-2026-10-09` and docs/drafts/pipeline/3-formalized/finite-weil-quartic-cluster-cost.md. Full research goal remains active. ONLY local Lean corpus; no web/papers/numerics.

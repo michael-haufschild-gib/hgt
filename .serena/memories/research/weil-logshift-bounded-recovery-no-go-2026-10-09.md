@@ -31,3 +31,7 @@ Boundedness along the entire positive real cutoff axis remains unresolved. Next 
 
 ## Verified finite-data follow-up
 See `mem:research/weil-logshift-recovery-domain-density-2026-10-09`: arbitrary finite recovery histories coexist with every open/closed symmetric domain and finite total excess; every realizable signed/excess/deficit moment profile is dense in product-history space. Eleven new declarations compiled and standard-axiom audited. This does not settle boundedness at all real cutoffs. New lint snapshot has only unrelated PaperSuzukiCarrierNullSets and PaperSuzukiCayleySynthesis unwired.
+
+
+## Finite-prefix/cube follow-up
+See `mem:research/weil-logshift-bounded-cube-genericity-2026-10-09`. BoundedRecoveryNoGo now exposes `exists_antipodal_recovery_after_prefix height M` and `nonsummable_excess_deficit_of_bounded_recovery lam hbounded hbad`. Original counterexamples specialize these results; no public statement removed. Leaf now6 theorems, all audited. Cube genericity holds for every |y|≥log2 and signed/excess/deficit summability atlog2 are equivalent throughout the cube. No interior-shift or real-cutoff boundedness claim.

@@ -32,3 +32,7 @@ Verified category APIs: `isOpen_iUnion`, `isOpen_lt`, `residual_of_dense_open`, 
 
 ## Next conjecture — NOT FORMALIZED
 Within the compact product cube [-1,1]^ℕ, are all three log-2 moments nonsummable residually? Candidate proof: extend any finite bounded prefix with adaptive antipodal targets, guaranteeing all later absolute log-2-weighted terms≥1/2 and all history values bounded by1. Strict tail events |term|>1/4 should be open and dense in the cube; countable intersection gives signed nonsummability. Then bounded cofinal mesh values + local one-sided divergence laws rule out finite excess and deficit at log2. Requires generalizing the existing antipodal construction to preserve a chosen finite prefix; do not copy the builder. DO NOT infer nowhere summability at every real shift within the bounded cube. The unrestricted-history proof does not imply that.
+
+
+## Bounded-cube conjecture now proved
+See `mem:research/weil-logshift-bounded-cube-genericity-2026-10-09`: inside [-1,1]^ℕ, all three moments fail residually/densely for every |y|≥log2. The three summability predicates atlog2 are equivalent for EVERY cube element. Added shared `continuous_weilDeviation_recoveryInverse` to this leaf (now13 declarations); original12 unchanged. All35 declarations across3 touched leaves standard-axiom audited. Interior shifts remain unproved. Latest lint has unrelated LeeYangProducerFieldDensity and BandKernelOperators unwired.

@@ -690,7 +690,7 @@ variable (φ : B →⋆ₙₐ[ℂ] B') (hφ : ∀ b, N' (φ b) ≤ N b)
 /-- The induced map of bounded families, `(y_ρ)_ρ ↦ (y_{ρ' ∘ φ})_{ρ'}`. -/
 def envFamilyMap : EnvFamily B N →⋆ₙₐ[ℂ] EnvFamily B' N' where
   toFun y := EnvFamily.ofBounded (fun ρ => y.apply (ρ.pullback φ hφ)) ‖y‖
-    fun ρ => y.norm_apply_le _
+    fun _ => y.norm_apply_le _
   map_smul' _ _ := EnvFamily.ext fun _ => rfl
   map_zero' := EnvFamily.ext fun _ => rfl
   map_add' _ _ := EnvFamily.ext fun _ => rfl

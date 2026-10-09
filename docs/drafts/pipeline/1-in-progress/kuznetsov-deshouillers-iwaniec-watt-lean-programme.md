@@ -569,3 +569,25 @@ MT Lemma 3.5, MT Thm 1.2, cards.
   **`norm_specWeight_besselWeight_imag_le`**: `≤ 4∫_0^∞|Q|·w`.  Built, audited (0 non-standard axioms), wired.
 - Remaining for P4: integrate the majorants against the scale `X` of `φ` (split at `w₀ = log(1/X)`) and κ-decay
   via `norm_specWeight_imag_le_of_iteratedDeriv` (derivatives of `Q`); deferred until P7 fixes the exact form needed.
+
+## Log 2026-10-09 (ownership)
+- Taken over by session hgt-52, after hgt-8a and hgt-38 confirmed nobody else is on the card.  The goal is
+  the two route-E leftovers cards.
+- The upper branch is delegated to hgt-61: the reflection `√T < N ≤ T` of MT Lemma 3.5 via the
+  partial-sum approximate functional equation.  New module
+  `Sieve/MatomakiTeravainenWattReflection` (`MTDeshouillersIwaniecBoundShort → MTDeshouillersIwaniecBound`,
+  `MTWattBoundShort → MTWattBound`, short = `N² ≤ T`).
+- hgt-52 continues the lower half: P3–P9 (holomorphic part of (1.19), DI §7 weights, Theorems 5–12,
+  Watt), then the short-block twisted fourth moments.
+- P4d (DI Lemma 7.1 analogue: integrate the P4c majorants; exceptional bound with tail
+  `e^{−(1−2ν)w₀}`, tempered bound, κ-decay through `norm_specWeight_imag_le_of_iteratedDeriv`)
+  delegated to hgt-8a.  New module `RHTower/KuznetsovBesselWeightScaleBounds`.
+- P4d DONE (hgt-8a): `RHTower/KuznetsovBesselWeightScaleBounds`.
+  - Data: `besselMassA`, `besselSlopeD`, `besselTailSigma`, `besselMomentA`, `besselTailConst`.
+  - `norm_specWeight_besselWeight_real_le_scale`: the exceptional bound, split at `w₀`, with tail
+    `(1+w₀)e^{−(1−2ν)w₀}/(1−2ν)²`.
+  - `norm_specWeight_besselWeight_imag_le_scale`: the tempered bound.
+  - `norm_specWeight_besselWeight_imag_le_decay`: `π‖Q^{(K)}‖₁/(|sinh πκ||2κ|^K)`.
+  - `besselTailSigma_le`: `Σ ≤ (A + A₁)/4`, where `A₁ = ∫|y||φ|`.
+  - Moment corollaries `_real_le_moments` and `_imag_le_moments`.
+  - The Σ bound uses `A₁`: on a support `[X, 2X]` we have `A₁ ≤ 2X·A`.

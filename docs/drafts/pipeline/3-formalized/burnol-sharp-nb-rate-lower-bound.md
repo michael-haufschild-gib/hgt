@@ -35,3 +35,4 @@ Under RH Burnol conjectures equality; any NB proof of RH must match this rate.
   needs duals k^{−ρ}(log k)^j and ζ^{(j)}(ρ) = 0 in the smoothed partial-sum asymptotics.
 - Open (frontier): the matching upper bound under RH (Burnol's conjecture: d_N² log N → Σ m_ρ²/|ρ|² under RH), i.e. that
   these duals are asymptotically extremal. Lean has only d_N → 0 under RH (MUST-778, no rate).
+- 2026-10-09: B6 (multiplicities) formalized; see card `3-formalized/baez-duarte-burnol-multiplicity.md` (MUST-872, MUST-874). The full target `liminf d_N² log N ≥ Σ_{Re ρ=½} m_ρ²/|ρ|²` is now in Lean as `eventually_le_bdDistDiscrete_sq_mul_log_of_lt_tsum_order` (sum over `Im ρ > 0` of `2m_ρ²/|ρ|²`, in `[0, ∞]`). The duals are `p_m(log k/log Y)k^{−ρ}ψ(k/Y)`, where `p_m` is the Legendre endpoint extremal. Only the matching upper bound under RH stays open.

@@ -28,7 +28,7 @@ Recovery cutoffs L_n=(log(n+1)−log2)/2 tend to infinity. If the excess moment 
 - **New insight:** injectivity and product-topology continuity of recovery do not imply moment control from bounded history values; one-sided moment hypotheses remain substantive even on the recovery mesh.
 - **Status:** paper proof and exact Lean formalization closed using only local Lean results. No statement about boundedness at intervening real cutoffs.
 
-## Formal results
+## Original formal results
 
 `formal/GaloisForLFunctions/RHTower/WeilLogShiftRecoveryAdaptive.lean`:
 - `weilLogShiftRecoveryPrefix`: final earlier coefficients with baseline tail.
@@ -44,7 +44,7 @@ Recovery cutoffs L_n=(log(n+1)−log2)/2 tend to infinity. If the excess moment 
 - `exists_antipodal_recovery_with_large_terms`: every sample has absolute value 1 and every absolute potential term is at least 1/2.
 - `exists_bounded_recovery_with_divergent_excess_and_deficit`: all three local series are nonsummable despite bounded recovery samples.
 
-## Verification
+## Original verification
 
 - All three leaf compile/export checks exited 0, with no diagnostics on final checks.
 - All 21 public declarations across these leaves have exactly `[propext, Classical.choice, Quot.sound]`; scratch axiom audit exited 0.
@@ -70,3 +70,7 @@ Recovery cutoffs L_n=(log(n+1)−log2)/2 tend to infinity. If the excess moment 
 Boundedness on the entire positive real cutoff axis remains unresolved. The proved obstruction controls only the recovery mesh. A next corpus-only audit should determine whether stronger real-cutoff regularity forces a one-sided moment condition or admits a different counterexample; do not assume either conclusion.
 
 Verified follow-up: [recovery-domain density](weil-logshift-recovery-domain-density.md) proves that every finite recovery prefix admits arbitrary open or closed moment domains with finite total excess, and every realized signed/excess/deficit profile is dense in history space. This settles the finite-data topology question while leaving the full real-cutoff question above open.
+
+Further verified follow-up: [bounded-cube genericity](weil-logshift-bounded-cube-genericity.md) makes failure of all three moments at |y|≥log 2 generic within [-1,1]^ℕ. This leaf now exposes finite-prefix antipodal realization and the bounded-mesh one-sided implication; the original counterexamples specialize them. Signed and either one-sided summability at log 2 are equivalent for every unit-bounded history. Updated compilation and 35-declaration axiom audit are recorded in the follow-up card.
+
+Further verified positive statement: [diagonal obstruction](weil-logshift-diagonal-obstruction.md) factors the exact antipodal gain `w_nn|λ_n−Λ_n| = 1+|Q_n(prefix)|`. The original bound is now its specialization. The leaf has seven public theorems and 191 lines; all seven were recompiled and axiom-audited with the new diagonal-obstruction leaf. Every finite bounded prefix admits one extension dominating the entire family of weighted inverse diagonals, and universal moment summability forces diagonal summability. The follow-up records the latest fourteen-declaration audit and lint snapshot.

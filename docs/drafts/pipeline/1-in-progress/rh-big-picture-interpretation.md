@@ -239,3 +239,57 @@
   - Harmonic density (`β = 1`), critical-line weights (`α = ½`) and the Riemann–Siegel balance (`x* ∝ z`) are pairwise compatible but never all three (row 644).
   - Matching `S(T)` needs log-discrepancy of the site Schur phases (row 641), and only the turning-point regime meets that rigidity budget a priori (row 642).
   - Reading: the Lee–Yang route realises either the critical line or the AFE balance, never both. Its last escape routes are non-WKB lattice resummation or non-power profiles.
+- 2026-10-09 (Opus loop rows 606–613b; MUST-824 addendum, MUST-860 [L]).
+  - The Lee–Yang field-density law is formal: every producer of Ξ in the class has field density at most the `Γ(s/2)` density, `log(T/2π) − 1 + C/√T`.
+  - Complex-fugacity chains with constant fields are exactly Szegő (OPUC) recursions, with `Z` the paraorthogonal polynomial (algebraic check). With site-dependent fields they are discrete Krein systems. A chain producer of Ξ is therefore a Krein/de Branges inverse problem.
+  - At first order the doubled-harmonic chain is the Eisenstein constant-term shape, with an explicit `κ²H²e^{|κ|H}` tail [L].
+  - The pole is the detector. Fejér/box tests decide RH by Landau (row 608), but polar profile-monotone tests are blind (row 612). Polarizing at the far edge is forbidden by convex order. Polarizing centrally costs the prime-free Weil energy per unit of pole mass, which swamps every zero contribution.
+  - So monotone-cone detection needs the exact `e^{U/2}` cancellation between the pole and the PNT main term: wall 1 again, now as a convexity statement.
+- 2026-10-09 (rows 646–665; MUST-858/860, CANNOT-497).
+  - **Unitary producers read ζ as a phase modulation, never as a zero carrier.**
+    - Chains are self-dual Lee–Yang data (MUST-858) and unimodular chains are free spins (MUST-860).
+    - At first order the doubled-harmonic chain is the Lagarias–Suzuki shape `2cos(xℓ)+2κRe[y^{ix}ζ(1+2ix)]`.
+    - The count condition (`c·ρ = n²` at the turning point) and the critical-line Born condition (`c·ρ = n^{½}`) are incompatible for every profile.
+    - No Born window at `Re s = ½`: the expansion parameter `κ√log M` cannot be both small and large.
+  - **LP-maximality (CANNOT-497, paper; Lean brick `FirstOrderFilterVanishingIntervalBound`).**
+    - Ξ ∉ φ(D)·LP for every LP symbol φ with a (non-exceptional) real zero. With Newman (Gaussian), every non-translation LP operator is excluded. The statement is unconditional, since under ¬RH it is trivial.
+    - Mechanism: invert one first-order factor, an RC low-pass filter. A real-rooted pre-image must vanish in every Ξ-gap, but filtered Hardy `Z` has macroscopic mean square, while `∫ℓ²Z² = o(T)` (gap moments plus Hardy–Littlewood/Ingham).
+    - Reading: RH, if true, is barely true in every LP direction. No producer is a regularisation of a real-rooted object.
+  - **Mean-square versus pointwise (rows 663, 665).** Flat-spectrum and gap-moment tools see densities only. Every unconditional pointwise-exact tool (Rouché, Landau, Carlson–Pólya, 3-4-1 positivity, Maass–Selberg) is anchored at the 1-line (the pole at `s = 1`, Euler convergence). Every exact `½`-anchor is RH-strength or known false (one-sided Mertens/Pólya bias). This is Lesson L from the operator side.
+- 2026-10-09 (rows 666–682; CANNOT-497 extended; seven Lean modules for its deterministic half).
+  - **LP-maximality covers every LP symbol with a real zero.** The degree-one RC-filter argument works for any such symbol. With Newman, Ξ is maximal in the LP-operator order, and Pólya's `ξ*` is no LP operator away from Ξ.
+  - **Window laws everywhere.** Every finite-order positivity sees zeros only below a height that grows with its order:
+    - Schoenberg `PF_k` of the real-axis kernel `FT[1/ξ(½+τ)]` (row 681);
+    - Weil positivity on `[−a,a]`;
+    - CTF at error `ε` (`Θ(log 1/ε)`);
+    - inertia with bounded Fourier support (Zeta23).
+    RH is the passage to the limit, so a proof needs a mechanism that is uniform in height.
+  - **Free versus RH positivity in one kernel.** `Λ = FT[1/ξ(½+τ)]` is Bochner-positive definite unconditionally, while Schoenberg total positivity is RH. This is the corpus's free/RH split once more.
+  - **Near-line core = band coupling.** Missed crossings would need the self-dual balance-point band of the Riemann–Siegel sum to override the main band locally. An independence model predicts that at a positive proportion of zeros (contradicting Zeta23), so the bands are coupled. The coupling is multiplicative and statistical, not an exact AFE identity (rows 670–671).
+  - **Candidate audit.** PBM, HJ, SEC and EGC reduce to von Koch counting, the seam `|n^ρ|` vs `|n^{1−ρ̄}|`, or zero-free contour bounds. MSC's transport must mix Dirichlet coefficients across `n`: power riggings are excluded by the corpus and LP multipliers by CANNOT-497, which leaves the NB/mollifier family.
+- 2026-10-09 (rows 693–695; LP-maximality closed for all real-rooted polynomial symbols [L]).
+  - **Zero slack in every LP direction is a theorem.** In Lean: Newman (Gaussian), every real-rooted polynomial symbol, and Ki–Kim–Lee effective reality. For a curve over `F_q` the analogue has slack, because the minimum zero gap is positive. So RH for ζ is a rigidity statement, and a proof must be exact and uniform in height.
+  - **The Gaussian ceiling is `1/√3`** (heuristic; the AFE-half optimum uses length-`t` halves, beyond the mean-value range, and inside that range the yield is `½`). Two counts of real zeros meet at the same constant:
+    - the Kac–Rice share for a Gaussian function with Z's flat spectrum;
+    - the best Hermite–Biehler count from a smooth AFE half `ζ = A + χA*`, which equals `1/√3` in the random model, attained by the linear log-taper `½ − (√3/2)y` (row 695).
+  - Second-moment, Gaussian-level information therefore caps at `1/√3`. Zeta23's `0.6725` comes from arithmetic: prime pair correlation via the explicit formula at bandwidth `λ ≤ 1`. Its `H(λ) = 2 − 1/λ − λ/3` peaks at `λ = √3` with value `2 − 2/√3 ≈ 0.845`, and the `⅓` is the same flat-spectrum second moment.
+  - Reading: all the way to 100%, the content of RH lies in correlations beyond pairs, i.e. in the unitary (eigenvalue) structure that the CUE model has by construction. Any route must manufacture that structure; neither second moments nor finite-bandwidth explicit formulas contain it.
+- 2026-10-09 (rows 700–705; MUST-871, cosine family [L]). **Zero slack measures gap irregularity, not exactness.** This refines the 693–695 entry.
+  - **Finite-order slack.** `cos(hD)Ξ` acquires finite-order LP slack for every `h > 0`; its spectrum is top-heavy (`cosh` weights), so its zeros become Gram-regular.
+    - `Ξ` has none: its flat low-frequency theta mass is the signature of irregular, GUE-like spacing.
+    - Any LP function whose zeros are dense (density → ∞) and irregular at the scale of the mean gap should be LP-maximal by the same Poincaré argument.
+  - **Heat slack.** Gaussian (heat) zero slack holds along the whole family (row 705), as Rodgers–Tao's pair-correlation reading predicts.
+  - Corrected reading: zero slack does not show that RH must come from an exotic exact mechanism. It shows that `Ξ`, if LP, is a typical dense-and-irregular LP function sitting on the LP boundary, so every perturbative proof (`Ξ` near something LP) is dead.
+  - The positive requirement is unchanged: a structural, height-uniform, divisor-faithful mechanism. That is the corpus's global positivity/unitarity shape, with no margin to spend.
+- 2026-10-09 (correction to the previous entry; `cosineShift_heat_threshold` [L]).
+  - **Heat slack carries no information about zero statistics.** For every `h ≥ ½`, `Λ_{dBN}(cos(hD)Ξ) = 0` exactly and unconditionally, yet those functions have Gram-regular zeros: `Re ξ(½+h+it)` with `\|ζ\| ≍ 1`.
+  - The corpus Newman mechanism (`DeBruijnNewmanNonnegative`) is a Bohr phenomenon: at height `T` the damped function is modelled by the Gaussian-weighted Dirichlet series `F_τ`, and its zeros reappear at `Re s ≈ τ log T`. Any Dirichlet-modulated theta transform has `Λ ≥ 0`.
+  - So the claim "heat slack, as Rodgers–Tao's pair-correlation reading predicts" is withdrawn.
+  - Finite-order slack still separates regular zero sets (`h > 0`, slack) from irregular ones (`h = 0`, rigid).
+  - Net reading: `Λ = 0` together with LP is achievable unconditionally by natural ζ-built functions. RH asks for it at the single member `h = 0`, where finite-order rigidity also holds.
+- 2026-10-09 (Opus loop rows 637–644; MUST-872, 874–877, 879 [L]). **Exact receivers split into RH plus a multiplicity law.**
+  - Báez-Duarte: `liminf d_N² log N ≥ Σ_ρ 2m_ρ²/|ρ|²` over all critical zeros. Multiplicity sits in the constant, through the Legendre endpoint extremal `∫₀¹p_m² = 1/m²`. The rate at the simple-zero constant implies RH ∧ simplicity (MUST-876).
+  - Möbius Hilbert form: `E_N = Ω((log N)^{2m−1})`. Multiplicity sits in the log exponent.
+  - Liouville: `J ≥ −C√t log^k(1/t)` implies RH ∧ critical orders `≤ k+1`.
+  - Reading: the free/RH split has a third summand. Power-lossy (ε) forms are RH-equivalent. Log-lossy or constant-sharp forms are RH ⊕ (a multiplicity bound), and the simple-zero forms are RH ⊕ SZC. A producer aimed at a sharp rate must see multiplicities, so sharp-rate targets are strictly harder than RH. Target the ε-lossy forms.
+  - Which receivers read multiplicity. The grading occurs exactly in `1/ζ`-type receivers: Báez-Duarte (approximating `1` by `ζ·P`), the Möbius Hilbert form (`Γ/ζ`) and Liouville (`ζ(2s)/ζ(s)`). There a zero of order `m` is a pole of order `m`, which costs `log^{m−1}` growth. `ζ′/ζ`-type receivers are multiplicity-blind, since a zero of order `m` is a simple pole with residue `m`. These are Weil positivity, the lag function `Φ`, Li coefficients and the CCM form. Strategy reading: exact laws are RH-equivalent only on the `ζ′/ζ` side; on the `1/ζ` side they overshoot to RH ∧ SZC unless ε-lossy.

@@ -47,14 +47,16 @@ theorem weilLogShiftRecoveryWeight_diagonal_le (n : ℕ) (hn : 2 ≤ n) :
   dsimp only [pairedLogKernel]
   linarith only [hK, hnonneg]
 
-/-- Preserve any finite sample prefix, then choose antipodal targets. All later
-samples have magnitude one and all later weighted terms have magnitude at least one half. -/
-theorem exists_antipodal_recovery_after_prefix (height : ℕ → ℝ) (M : ℕ) :
+/-- Antipodal choices have exact gain one plus the absolute current probe,
+while preserving an arbitrary finite recovery prefix. -/
+theorem exists_antipodal_recovery_after_prefix_with_gain (height : ℕ → ℝ) (M : ℕ) :
     ∃ lam : ℕ → ℝ,
       (∀ k : ℕ, k < M → weilLogShiftRecoveryProbe lam (k + 2) = height k) ∧
       (∀ n : ℕ, M + 2 ≤ n → |weilLogShiftRecoveryProbe lam n| = 1) ∧
       (∀ n : ℕ, M + 2 ≤ n →
-        (1 / 2 : ℝ) ≤ |weilDeviation lam n| * pairedLogKernel (log 2) n) := by
+        weilLogShiftRecoveryWeight n n * |lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| =
+          1 + |weilLogShiftRecoveryProbe
+            (weilLogShiftRecoveryPrefix (fun j => ArithmeticFunction.vonMangoldt j) lam n) n|) := by
   let base : ℕ → ℝ := fun n => ArithmeticFunction.vonMangoldt n
   let target (k : ℕ) (state : ℕ → ℝ) : ℝ :=
     if k < M then height k else
@@ -76,38 +78,59 @@ theorem exists_antipodal_recovery_after_prefix (height : ℕ → ℝ) (M : ℕ) 
     split_ifs <;> norm_num
   · intro n htail
     have hn : 2 ≤ n := by omega
-    have hgap : 1 ≤ |weilLogShiftRecoveryProbe lam n -
-        weilLogShiftRecoveryProbe (stateAt n) n| := by
+    have hgap : |weilLogShiftRecoveryProbe lam n -
+        weilLogShiftRecoveryProbe (stateAt n) n| =
+          1 + |weilLogShiftRecoveryProbe (stateAt n) n| := by
       rw [hprobe n htail]
       split_ifs with hq
-      · rw [abs_of_nonneg (by linarith only [hq])]
-        linarith only [hq]
+      · rw [abs_of_nonneg (by linarith only [hq]), abs_of_nonpos hq]
+        ring
       · have hqpos : 0 < weilLogShiftRecoveryProbe (stateAt n) n := by linarith only [hq]
-        rw [abs_of_nonpos (by linarith only [hqpos])]
-        linarith only [hqpos]
+        rw [abs_of_nonpos (by linarith only [hqpos]), abs_of_pos hqpos]
+        ring
     have hdiff := weilLogShiftRecoveryProbe_first_difference lam (stateAt n) n hn
       (fun j _ hj => by simp only [stateAt, weilLogShiftRecoveryPrefix, if_pos hj])
     have hbase : stateAt n n = (ArithmeticFunction.vonMangoldt n : ℝ) := by
       simp only [stateAt, weilLogShiftRecoveryPrefix, lt_self_iff_false, if_false, base]
     rw [hdiff, hbase, abs_mul,
       abs_of_pos (weilLogShiftRecoveryWeight_diagonal_pos n hn)] at hgap
-    have hupper := mul_le_mul_of_nonneg_right
-      (weilLogShiftRecoveryWeight_diagonal_le n hn)
-      (abs_nonneg (lam n - (ArithmeticFunction.vonMangoldt n : ℝ)))
-    have hdev : |weilDeviation lam n| =
-        |lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| / sqrt n := by
-      simp only [weilDeviation, if_pos hn, abs_div, abs_of_nonneg (sqrt_nonneg _)]
-    rw [hdev]
-    have hterm : 1 ≤ 2 *
-        (|lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| / sqrt n *
-          pairedLogKernel (log 2) n) := by
-      calc
-        1 ≤ weilLogShiftRecoveryWeight n n *
-            |lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| := hgap
-        _ ≤ (2 * pairedLogKernel (log 2) n / sqrt n) *
-            |lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| := hupper
-        _ = _ := by ring
-    linarith only [hterm]
+    exact hgap
+
+/-- Preserve any finite sample prefix, then choose antipodal targets. All later
+samples have magnitude one and all later weighted terms have magnitude at least one half. -/
+theorem exists_antipodal_recovery_after_prefix (height : ℕ → ℝ) (M : ℕ) :
+    ∃ lam : ℕ → ℝ,
+      (∀ k : ℕ, k < M → weilLogShiftRecoveryProbe lam (k + 2) = height k) ∧
+      (∀ n : ℕ, M + 2 ≤ n → |weilLogShiftRecoveryProbe lam n| = 1) ∧
+      (∀ n : ℕ, M + 2 ≤ n →
+        (1 / 2 : ℝ) ≤ |weilDeviation lam n| * pairedLogKernel (log 2) n) := by
+  obtain ⟨lam, hprefix, hprobe, hgain⟩ :=
+    exists_antipodal_recovery_after_prefix_with_gain height M
+  refine ⟨lam, hprefix, hprobe, fun n htail => ?_⟩
+  have hn : 2 ≤ n := by omega
+  have hgap : 1 ≤ weilLogShiftRecoveryWeight n n *
+      |lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| := by
+    rw [hgain n htail]
+    have h := abs_nonneg (weilLogShiftRecoveryProbe
+      (weilLogShiftRecoveryPrefix (fun j => ArithmeticFunction.vonMangoldt j) lam n) n)
+    linarith only [h]
+  have hupper := mul_le_mul_of_nonneg_right
+    (weilLogShiftRecoveryWeight_diagonal_le n hn)
+    (abs_nonneg (lam n - (ArithmeticFunction.vonMangoldt n : ℝ)))
+  have hdev : |weilDeviation lam n| =
+      |lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| / sqrt n := by
+    simp only [weilDeviation, if_pos hn, abs_div, abs_of_nonneg (sqrt_nonneg _)]
+  rw [hdev]
+  have hterm : 1 ≤ 2 *
+      (|lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| / sqrt n *
+        pairedLogKernel (log 2) n) := by
+    calc
+      1 ≤ weilLogShiftRecoveryWeight n n *
+          |lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| := hgap
+      _ ≤ (2 * pairedLogKernel (log 2) n / sqrt n) *
+          |lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| := hupper
+      _ = _ := by ring
+  linarith only [hterm]
 
 /-- Antipodal target choices keep all samples at ±1 while every weighted
 arithmetic term has magnitude at least one half. -/

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CothInfra
 import GaloisForLFunctions.RHTower.LegStripSteepness
+import GaloisForLFunctions.HTGeometry.HyperbolicSineScaleMonotonicity
 import Mathlib
 
 /-!
@@ -88,26 +89,14 @@ theorem integral_aperture_inv {lam : ℝ} (hlam : 1 < lam) :
 
 Already in the tree and reused here, not rebuilt: `RHTower.self_lt_sinh` (`LegStripSteepness`),
 `RHTower.sinh_pos_of_pos` and `RHTower.sinh_lt_mul_cosh` (`CothInfra`), and Mathlib's
-`Real.one_lt_cosh`.  Only the quotient monotonicity below is new.
+`Real.one_lt_cosh`. The quotient monotonicity is shared with the general
+hyperbolic scale-comparison layer.
 -/
 
 /-- **Equation (4), core monotonicity.**  `u ↦ sinh u / u` is strictly increasing on `(0,∞)`. -/
 theorem sinh_div_self_strictMonoOn :
-    StrictMonoOn (fun u : ℝ => Real.sinh u / u) (Set.Ioi 0) := by
-  refine strictMonoOn_of_deriv_pos (convex_Ioi 0) ?_ ?_
-  · refine ContinuousOn.div (by fun_prop) (by fun_prop) ?_
-    intro x hx
-    exact ne_of_gt (Set.mem_Ioi.mp hx)
-  · intro x hx
-    rw [interior_Ioi] at hx
-    have hx0 := Set.mem_Ioi.mp hx
-    have hd : HasDerivAt (fun u : ℝ => Real.sinh u / u)
-        ((Real.cosh x * x - Real.sinh x * 1) / x ^ 2) x :=
-      (Real.hasDerivAt_sinh x).fun_div (hasDerivAt_id x) (ne_of_gt hx0)
-    rw [hd.deriv]
-    refine div_pos ?_ (by positivity)
-    have := RHTower.sinh_lt_mul_cosh hx0
-    nlinarith [this]
+    StrictMonoOn (fun u : ℝ => Real.sinh u / u) (Set.Ioi 0) :=
+  _root_.HTGeometry.strictMonoOn_sinh_div_self
 
 /-! ## The supremum over a compact substrip -/
 
