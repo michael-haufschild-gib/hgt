@@ -47,3 +47,4 @@ Separate, in each receiver, the RH content from the multiplicity content.
 
 ## Log
 - 2026-10-09 — created at stage 3, collecting MUST-872/874–877/879.
+- 2026-10-09 — MUST-881: the ε-lossy Liouville form is now an exact RH equivalence, `riemannHypothesis_iff_forall_liouvilleExpSum_isBigO`. Both directions are in Lean.

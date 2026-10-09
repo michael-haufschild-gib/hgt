@@ -38,9 +38,9 @@ theorem integrable_kernel_mul {E : Type*} [NormedAddCommGroup E] [NormedSpace �
   simp [hφR _ hw]
 
 include hφc hφR in
-/-- **Dual tiling.**  For a continuous `SL(2, ℤ)`-invariant `g`,
+/-- **Dual tiling.**  For a measurable `SL(2, ℤ)`-invariant `g`,
 `∫⁻_𝒟 ∫⁻_ℍ φ(u(z, w)) g(w) = m ∫⁻_𝒟 g`. -/
-theorem lintegral_fd_kernel_mul_invariant (hφ0 : ∀ u, 0 ≤ φ u) {g : ℍ → ℝ} (hg : Continuous g)
+theorem lintegral_fd_kernel_mul_invariant (hφ0 : ∀ u, 0 ≤ φ u) {g : ℍ → ℝ} (hg : Measurable g)
     (hginv : ∀ (B : SL(2, ℤ)) w, g (B • w) = g w) :
     ∫⁻ z in fd, ∫⁻ w, ENNReal.ofReal (φ (pairU z w) * g w) =
       ENNReal.ofReal (kernelMassR φ) * ∫⁻ z in fd, ENNReal.ofReal (g z) := by
@@ -52,7 +52,7 @@ theorem lintegral_fd_kernel_mul_invariant (hφ0 : ∀ u, 0 ≤ φ u) {g : ℍ �
     simp_rw [abs_of_nonneg (hφ0 _)]
     exact (ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun w => hφ0 _)).symm
   have hG : Measurable (fun z' : ℍ => ENNReal.ofReal (g z')) :=
-    ENNReal.measurable_ofReal.comp hg.measurable
+    ENNReal.measurable_ofReal.comp hg
   have key : ∀ z : ℍ, 2 * ∫⁻ w, ENNReal.ofReal (φ (pairU z w) * g w) =
       ∑' B : SL(2, ℤ), ∫⁻ z' in fd, ENNReal.ofReal |φ (pairU z (B • z'))| *
         ENNReal.ofReal (g z') := by
@@ -122,7 +122,7 @@ theorem lintegral_kernel_normSq :
   have hginv : ∀ (B : SL(2, ℤ)) w, ‖U (B • w)‖ ^ 2 = ‖U w‖ ^ 2 := by
     intro B w
     rw [hUe, LinearIsometryEquiv.norm_map]
-  rw [← lintegral_fd_kernel_mul_invariant hφc hφR hφ0 hg hginv]
+  rw [← lintegral_fd_kernel_mul_invariant hφc hφR hφ0 hg.measurable hginv]
   refine lintegral_congr fun z => ?_
   exact ofReal_integral_eq_lintegral_ofReal
     (by simpa [smul_eq_mul] using integrable_kernel_mul hφc hφR z hg)

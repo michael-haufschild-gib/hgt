@@ -212,7 +212,7 @@ theorem pairU_le_of_dist_add {z ζ η : ℍ} {d₁ R' : ℝ} (h1 : dist z ζ ≤
 /-- **The local energy estimate.**  For every `R ≥ 0` there are `C ≥ 0` and `R₂` such that, for every
 holomorphic `g` on `ℍ` and every pair with `u(z, w) ≤ R`,
 `|g(w) − g(z)|² ≤ C ∫_ℍ β_{R₂}(u(z, η)) (Im η)² |g'(η)|² dμ(η)` with the bump `β_{R₂}`. -/
-theorem exists_normSq_sub_le_energy (R : ℝ) : ∃ C R₂ : ℝ, 0 ≤ C ∧
+theorem exists_normSq_sub_le_energy (R : ℝ) : ∃ C R₂ : ℝ, 0 ≤ C ∧ 0 ≤ R₂ ∧
     ∀ g : ℂ → ℂ, DifferentiableOn ℂ g {w : ℂ | 0 < w.im} → ∀ z w : ℍ, pairU z w ≤ R →
       ‖g w - g z‖ ^ 2 ≤ C * ∫ η : ℍ, bumpProfile R₂ (pairU z η) *
         (η.im ^ 2 * ‖deriv g η‖ ^ 2) := by
@@ -222,7 +222,7 @@ theorem exists_normSq_sub_le_energy (R : ℝ) : ∃ C R₂ : ℝ, 0 ≤ C ∧
   set R₁ := Q * (4 * Q * R) / 4
   set R₂ := (Real.cosh ((1 + 2 * R₁) + (1 + 2 * 1)) - 1) / 2
   refine ⟨4 * |Q| * |R| * (6 * Q) ^ 2 / m₁, R₂, div_nonneg (by positivity) hm₁.le,
-    fun g hg z w h => ?_⟩
+    div_nonneg (sub_nonneg.2 (Real.one_le_cosh _)) zero_le_two, fun g hg z w h => ?_⟩
   have hR : 0 ≤ R := (pairU_nonneg _ _).trans h
   have hQ : 0 < Q := by positivity
   have hy := z.im_pos

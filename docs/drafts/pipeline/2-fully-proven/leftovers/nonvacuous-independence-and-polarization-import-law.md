@@ -247,3 +247,55 @@ homomorphism `gammaTwoWinding`.
       `ModularLambdaTestEnergy`, in progress), giving `D(F) ≲ L/N + N/L` against `‖F‖² ≳ N`.
 - Clause 3 (Selberg zeta zeros) is not started. It needs `Z_Γ` and the trace formula for
   noncongruence cofinite `Γ`.
+- 2026-10-09 (late): test field DONE in Lean.
+  - `NonvacuousTestField`, `NonvacuousTestEnergy`, `NonvacuousWitnessBound`, `ModularInvariantHeight`,
+    `RepCosetOrthogonality`, `HolomorphicHyperbolicMeanValue`.
+  - `exists_testField_dirichlet_lt`: for every `δ > 0` there are `N ≥ 2` and `L ≥ 2` with
+    `D(F_{N,L}) < 2δ‖F_{N,L}‖²`.
+  - The λ inputs come from hgt-8a: `ModularLambdaOrbitSeparation` (λ has degree one on the Γ(2)-cell),
+    `ModularLambdaHeightBound` and `ModularLambdaCellEnergyBound` (`exists_lintegral_sum_lambdaLogEnergy_le`).
+- Clause 3 brick delegated to hgt-61: the hyperbolic lattice-point count, module
+  `RHTower/ModularHyperbolicLatticeCount`.
+- **2026-10-09: clauses 1–2 existence PROVED in Lean, unconditionally.**
+  `RHTower/NonvacuousSmallEigenvalue.exists_finiteIndex_small_eigenvalue` states: there are a
+  finite-index Γ ≤ SL(2,ℤ) (a cyclic cover Γ_N of Γ(2)), a λ ∈ (0, ¼), and a nonconstant
+  Γ-invariant C² u with Δ⁺u = λu (`IsMaassEigenfunction`) that is square-integrable on the Γ-cell.
+  Axioms: propext, Classical.choice, Quot.sound.
+  - Chain: test field → `exists_testField_dirichlet_lt` → `exists_laplaceEigen_of_testField` →
+    `exists_maass_of_laplaceEigen`.
+  - Γ = `windingSubgroup (n+2)` has cusps (it is finite index in SL(2,ℤ)), so Γ\ℍ is a noncompact
+    finite-area surface with λ₁ < ¼. This replaces the Buser/Colin de Verdière citation.
+- REMAINING: clause 3, the Selberg zeta dictionary. Z_Γ must be defined for Re s > 1 and continued to
+  `s_j = ½ + √(¼ − λ)`, and its vanishing there proved. Route: the resolvent trace identity for
+  cofinite Γ with cusps, which needs Eisenstein continuation for noncongruence Γ. The first brick (the
+  lattice-point count) is with hgt-61.
+
+### Clause 3 plan (2026-10-09), recorded after the existence step closed
+
+Corpus audit with `research`:
+- The Eisenstein continuation in the corpus is arithmetic and Γ(N)-only (`SelbergEisensteinContinuation`,
+  `SelbergEisensteinCriticalLine`: Kloosterman sums and Dirichlet L-functions). It does not apply to the
+  noncongruence Γ_N.
+- No Selberg zeta function and no hyperbolic orbital integrals exist in the corpus.
+
+Route (general cofinite Γ, coset representation ρ of SL(2,ℤ) on ℂ^{SL(2,ℤ)/Γ}):
+- Z1. Conjugacy classes and norms of hyperbolic elements; the Euler product
+  `Z_Γ(s) = Π_P Π_{k≥0} (1 − N(P)^{−s−k})` converges for Re s > 1. This needs the lattice-point count
+  (hgt-61, `ModularHyperbolicLatticeCount`).
+- Z2. The hyperbolic orbital integral of a point-pair kernel over the centralizer:
+  `∫_{Γ_γ\ℍ} k(u(z,γz)) = log N(P₀)/(N^{1/2} − N^{−1/2}) · g(log N)`.
+- Z3. Eisenstein series of Γ with a meromorphic continuation to Re s > 1/2, built from the rep-deck
+  operators. Let `h` be the cusp cutoff and `g_s = (L_φ − h_φ(s))(h y^s)`; it is compactly supported
+  by Selberg's theorem. Set `E(s) = h y^s − (L_φ − h_φ(s))⁻¹ g_s`. This is invertible off finitely many s
+  by analytic Fredholm theory applied to `L_φ − h_φ(s) = K + (B − h_φ(s))` with `‖B‖ ≤ h_φ(½) < |h_φ(s)|`.
+  The splitting is already in Lean (`ppL2_sub_cuspOp`, `norm_cuspOp_le`).
+- Z4. A truncated (Maass–Selberg) pre-trace identity for L_φ on Γ\ℍ: discrete eigenvalues plus the
+  continuous part, against identity, hyperbolic, elliptic and parabolic terms.
+- Z5. Log-derivative identity: a test-function family converging to the resolvent kernel shows that
+  Z'/Z continues to a neighbourhood of `s_j` with residue = multiplicity. Hence `Z_Γ(s_j) = 0`.
+- Z1 input DONE (hgt-61): `RHTower/ModularHyperbolicLatticeCount`.
+  - `ncard_pairU_I_smul_I_le`: `#{γ : u(i,γi) ≤ R} ≤ 320(R+1)`.
+  - `summable_one_add_two_mul_pairU_I_rpow` (σ > 1), plus versions with an arbitrary centre and for
+    subgroups.
+  - `four_mul_pairU_I_smul_I_add_two`: `4u(i,γi) + 2 = a²+b²+c²+d²`.
+- Z2 (the hyperbolic orbital integral) offered to hgt-61.

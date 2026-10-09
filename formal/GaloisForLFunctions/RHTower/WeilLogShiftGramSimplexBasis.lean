@@ -13,15 +13,16 @@ attribute [local instance] Classical.propDecidable
 
 namespace RHTower
 
-def finiteWeilGramEvaluation (s : Finset ℕ) (tests : Finset FiniteWeilGramTest) :
+noncomputable def finiteWeilGramEvaluation (s : Finset ℕ) (tests : Finset FiniteWeilGramTest) :
     (s → ℝ) →ₗ[ℝ] (tests → ℝ) :=
   LinearMap.pi fun w => finiteWeilGramForm s w.1
+
+variable [DecidableEq FiniteWeilGramTest]
 
 theorem finiteWeilGram_erase_evaluation_bijective {s : Finset ℕ}
     {tests : Finset FiniteWeilGramTest} (hcert : FiniteWeilGramNormCertificate s tests)
     (hcard : tests.card = s.card + 1) (w₀ : FiniteWeilGramTest) (hw₀ : w₀ ∈ tests) :
     Function.Bijective (finiteWeilGramEvaluation s (tests.erase w₀)) := by
-  classical
   have hinj : Function.Injective (finiteWeilGramEvaluation s (tests.erase w₀)) := by
     apply LinearMap.ker_eq_bot.mp
     apply LinearMap.ker_eq_bot'.mpr
@@ -56,15 +57,16 @@ theorem exists_finiteWeilGram_erase_coordinates {s : Finset ℕ}
     ∃ u : (tests.erase w₀) → s → ℝ,
       (∀ c : s → ℝ, c = ∑ j, finiteWeilGramForm s j.1 c • u j) ∧
       ∀ j, finiteWeilGramForm s w₀ (u j) < 0 := by
-  classical
   let e := LinearEquiv.ofBijective (finiteWeilGramEvaluation s (tests.erase w₀))
     (finiteWeilGram_erase_evaluation_bijective hcert hcard w₀ hw₀)
   let u : (tests.erase w₀) → s → ℝ := fun j => e.symm (Pi.single j 1)
+  have heval (c : s → ℝ) (j : tests.erase w₀) :
+      e c j = finiteWeilGramForm s j.1 c := rfl
   refine ⟨u, ?_, ?_⟩
   · intro c
     have h := congrArg e.symm ((Pi.basisFun ℝ (tests.erase w₀)).sum_repr (e c))
     simpa only [map_sum, map_smul, Pi.basisFun_repr, Pi.basisFun_apply,
-      LinearEquiv.symm_apply_apply] using h.symm
+      LinearEquiv.symm_apply_apply, heval, u] using h.symm
   · intro j
     have hu : u j ≠ 0 := by
       intro hz
@@ -78,8 +80,9 @@ theorem exists_finiteWeilGram_erase_coordinates {s : Finset ℕ}
       by_contra hne
       let k : tests.erase w₀ := ⟨z, Finset.mem_erase.mpr ⟨hne, hz⟩⟩
       have hv := congrFun (e.apply_symm_apply (Pi.single j 1)) k
-      change finiteWeilGramForm s z (u j) = Pi.single j (1 : ℝ) k at hv
-      have hp : 0 ≤ Pi.single j (1 : ℝ) k := by
+      change finiteWeilGramForm s z (u j) =
+        (Pi.single j (1 : ℝ) : tests.erase w₀ → ℝ) k at hv
+      have hp : 0 ≤ (Pi.single j (1 : ℝ) : tests.erase w₀ → ℝ) k := by
         simp only [Pi.single_apply]
         split_ifs <;> norm_num
       linarith [norm_nonneg (u j)]
@@ -98,7 +101,9 @@ theorem exists_finiteWeilGram_positive_balance {s : Finset ℕ}
   have h := congrArg (finiteWeilGramForm s w₀) (hu c)
   simp only [map_sum, map_smul, smul_eq_mul] at h
   rw [h]
-  simp only [neg_mul, mul_comm, Finset.sum_neg_distrib]
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_eq_zero
+  intro j _
   ring
 
 end RHTower

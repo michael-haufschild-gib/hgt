@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PaperDiscriminantAllDerivations
 import GaloisForLFunctions.HTGeometry.PaperDiscriminantTranslationSlice
-import GaloisForLFunctions.HTGeometry.PaperStableCoordinate.LNDAction
+import GaloisForLFunctions.HTGeometry.PaperLNDLinearAction
 
 /-!
 # Every additive action on the ordered discriminant complement
@@ -18,23 +18,6 @@ open StableCoordinate CoactionLND
 noncomputable section
 
 variable {K : Type*} [Field K] [CharZero K] {n : ℕ}
-
-private theorem exponential_linear_on {A : Type*} [CommRing A] [Algebra K A]
-    (D : Derivation K A A) (hD : IsLocallyNilpotent D) (a : A) (h : D (D a) = 0) :
-    (exponentialAction D hD).toAlgHom a =
-      Polynomial.C a + Polynomial.C (D a) * Polynomial.X := by
-  rw [exponentialAction_toAlgHom]
-  ext m
-  cases m with
-  | zero => simp
-  | succ m =>
-    cases m with
-    | zero => simp
-    | succ m =>
-      have htwo : (D : A → A)^[2] a = 0 := h
-      have hz := derivation_iterate_eq_zero_of_le D htwo
-        (show 2 ≤ m + 1 + 1 by omega)
-      simp [hz, Polynomial.coeff_mul_X]
 
 private theorem speed_constant (q : paperDiscriminantTranslationConstants K n) :
     paperDiscriminantTranslation K n (q : PaperRootDiscriminantOpen K n) = 0 :=
@@ -74,7 +57,7 @@ theorem paperDiscriminantAdditiveAction_root
     rw [speed_constant q, mul_zero]
   have htwo : D (D (paperDiscriminantRoot i)) = 0 := by rw [hi]; exact hq
   change (exponentialAction D _).toAlgHom (paperDiscriminantRoot i) = _
-  rw [exponential_linear_on D _ _ htwo, hi]
+  rw [paperLND_exponential_linear_on D _ _ htwo, hi]
 
 /-- Recover the invariant speed from any action by differentiating its first root. -/
 def paperDiscriminantActionSpeed
