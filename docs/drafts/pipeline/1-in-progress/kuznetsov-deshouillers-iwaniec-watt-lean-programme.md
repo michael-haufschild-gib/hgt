@@ -591,3 +591,12 @@ MT Lemma 3.5, MT Thm 1.2, cards.
   - `besselTailSigma_le`: `Σ ≤ (A + A₁)/4`, where `A₁ = ∫|y||φ|`.
   - Moment corollaries `_real_le_moments` and `_imag_le_moments`.
   - The Σ bound uses `A₁`: on a support `[X, 2X]` we have `A₁ ≤ 2X·A`.
+- 2026-10-09: the reflection brick is DONE (hgt-61), in `Sieve/MatomakiTeravainenWattReflection`.
+  - It proves `mtDeshouillersIwaniecBound_of_short : MTDeshouillersIwaniecBoundShort → MTDeshouillersIwaniecBound`
+    and `mtWattBound_of_short : MTWattBoundShort → MTWattBound`, where Short adds `N² ≤ T`. Both are
+    unconditional, with axioms clean.
+  - The proof is a pointwise B-process reflection (Poisson plus first- and second-derivative tests),
+    then dyadic dual blocks, Perron (`MatomakiTeravainenDualPerron`) and three windows.
+  - Reusable pieces: `UnitBlockReflection`, `UnitBlockReflectionFourthMoment`,
+    `HTGeometry/{MonotonePhaseFirstDerivativeTest, SmoothPlateau, IntervalIntegralHolderSwap}`.
+  - REMAINING for route-E: the short forms. These are the twisted fourth moments for `N² ≤ T` (DI (14), Watt (4.7)).
