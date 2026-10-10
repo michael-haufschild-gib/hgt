@@ -38,14 +38,16 @@ theorem exists_normalized_real_moment_annihilator (r : ℕ) (h : Fin (r + 2) →
 
 /-- A cluster with `r+2` consecutive arithmetic labels has a unit coefficient
 direction with sensitivity at most a constant times `n^(-(r+3))`. -/
-theorem pairedLogKernel_cluster_envelope_of_moment_bound (r : ℕ) {E : ℝ} (hE : 0 < E)
+theorem pairedLogKernel_cluster_envelope_with_moments (r : ℕ) {E : ℝ} (hE : 0 < E)
     (hcancel : ∀ (ι : Type) [Fintype ι] (c h : ι → ℝ) (H : ℝ),
       0 ≤ H → H ≤ 1 → (∀ i, 0 ≤ h i ∧ h i ≤ H) →
       (∀ p ≤ r, ∑ i, c i * h i ^ p = 0) → ∀ y : ℝ,
       |∑ i, c i * riemannAutocorr (y - h i)| ≤
         E * Real.exp (-2 * |y|) * (∑ i, |c i|) * H ^ (r + 1)) :
     ∀ n : ℕ, r + 1 ≤ n →
-      ∃ c : Fin (r + 2) → ℝ, ‖c‖ = 1 ∧ ∀ y : ℝ,
+      ∃ c : Fin (r + 2) → ℝ, ‖c‖ = 1 ∧
+        (∀ p ≤ r, ∑ i, c i *
+          (Real.log ((n + (i : ℕ) : ℕ) : ℝ) - Real.log (n : ℝ)) ^ p = 0) ∧ ∀ y : ℝ,
         |∑ i, c i * pairedLogKernel y (n + (i : ℕ))| ≤
           (2 * E * ((r + 2 : ℕ) : ℝ)) * Real.exp (2 * |y|) * ((n : ℝ) ^ 2)⁻¹ *
             (((r + 1 : ℕ) : ℝ) / (n : ℝ)) ^ (r + 1) := by
@@ -75,7 +77,9 @@ theorem pairedLogKernel_cluster_envelope_of_moment_bound (r : ℕ) {E : ℝ} (hE
         _ = (i : ℝ) / x := by field_simp; ring
         _ ≤ R / x := div_le_div_of_nonneg_right hi hx.le
   obtain ⟨c, hnorm, hm⟩ := exists_normalized_real_moment_annihilator r h
-  refine ⟨c, hnorm, ?_⟩
+  refine ⟨c, hnorm, ?_, ?_⟩
+  · intro p hp
+    simpa only [h, x, Nat.cast_add] using hm p hp
   have hL : (∑ i, |c i|) ≤ M := by
     calc
       ∑ i, |c i| ≤ ∑ _i : Fin (r + 2), (1 : ℝ) := by
@@ -132,6 +136,22 @@ theorem pairedLogKernel_cluster_envelope_of_moment_bound (r : ℕ) {E : ℝ} (hE
         E * (Real.exp (2 * |y|) * (x ^ 2)⁻¹) * M * (R / x) ^ (r + 1) := by
       gcongr
     _ = (2 * E * M) * Real.exp (2 * |y|) * (x ^ 2)⁻¹ * (R / x) ^ (r + 1) := by ring
+
+/-- The envelope without exposing the moment equations. -/
+theorem pairedLogKernel_cluster_envelope_of_moment_bound (r : ℕ) {E : ℝ} (hE : 0 < E)
+    (hcancel : ∀ (ι : Type) [Fintype ι] (c h : ι → ℝ) (H : ℝ),
+      0 ≤ H → H ≤ 1 → (∀ i, 0 ≤ h i ∧ h i ≤ H) →
+      (∀ p ≤ r, ∑ i, c i * h i ^ p = 0) → ∀ y : ℝ,
+      |∑ i, c i * riemannAutocorr (y - h i)| ≤
+        E * Real.exp (-2 * |y|) * (∑ i, |c i|) * H ^ (r + 1)) :
+    ∀ n : ℕ, r + 1 ≤ n →
+      ∃ c : Fin (r + 2) → ℝ, ‖c‖ = 1 ∧ ∀ y : ℝ,
+        |∑ i, c i * pairedLogKernel y (n + (i : ℕ))| ≤
+          (2 * E * ((r + 2 : ℕ) : ℝ)) * Real.exp (2 * |y|) * ((n : ℝ) ^ 2)⁻¹ *
+            (((r + 1 : ℕ) : ℝ) / (n : ℝ)) ^ (r + 1) := by
+  intro n hn
+  obtain ⟨c, hc, _, hb⟩ := pairedLogKernel_cluster_envelope_with_moments r hE hcancel n hn
+  exact ⟨c, hc, hb⟩
 
 theorem exists_pairedLogKernel_allOrder_cluster_envelope (r : ℕ) :
     ∃ B : ℝ, 0 < B ∧ ∀ n : ℕ, r + 1 ≤ n →

@@ -87,10 +87,12 @@ theorem norm_exp_neg_mul_spectral_sub_sq_le_of_re_nonneg {ε : ℝ} (hε : 1 ≤
   have hx : x ^ 2 / 2 - t ^ 2 ≤ (x - t) ^ 2 := by nlinarith [sq_nonneg (x - 2 * t)]
   nlinarith
 
-/-- **Ceiling under RH.**  Every zero on the line keeps the arithmetic Gaussian explicit formula
-below twice the width-one Gaussian ordinate sum, for every width `ε ≥ 1`. -/
-theorem abs_gaussianArithmeticExplicitFormula_le_of_riemannHypothesis
-    (hRH : RiemannHypothesis) (t : ℝ) {ε : ℝ} (hε : 1 ≤ ε) :
+/-- **Ceiling off the light cones.**  If no zero lies in the open light cone over `t`, the
+arithmetic Gaussian explicit formula at height `t` is bounded by twice the width-one Gaussian
+ordinate sum, for every width `ε ≥ 1`. -/
+theorem abs_gaussianArithmeticExplicitFormula_le_of_cone {t : ℝ}
+    (hcone : ∀ o : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity,
+      0 ≤ ((zetaSpectralCoordinate o.1.1 - t) ^ 2).re) {ε : ℝ} (hε : 1 ≤ ε) :
     |gaussianArithmeticExplicitFormula ε t| ≤
       2 * ∑' o : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity,
         Real.exp (1 / 4 + t ^ 2) *
@@ -98,11 +100,6 @@ theorem abs_gaussianArithmeticExplicitFormula_le_of_riemannHypothesis
   rw [gaussianArithmeticExplicitFormula_eq_two_re_tsum (by linarith) t, abs_mul,
     abs_of_pos two_pos]
   refine mul_le_mul_of_nonneg_left ((Complex.abs_re_le_norm _).trans ?_) zero_le_two
-  have hcone : ∀ o : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity,
-      0 ≤ ((zetaSpectralCoordinate o.1.1 - t) ^ 2).re := fun o => by
-    rw [re_sub_ofReal_sq, (zetaSpectralCoordinate_im_eq_zero_iff _).2
-      (hRH o.1.1 o.1.2.1 o.1.2.2.1 o.1.2.2.2)]
-    nlinarith
   have h := norm_tsum_mul_exp_neg_le_of_re_nonneg (ε₀ := 1)
     (w := fun o : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity =>
       (zetaSpectralCoordinate o.1.1 - t) ^ 2) (c := fun _ => (1 : ℂ))
@@ -115,6 +112,19 @@ theorem abs_gaussianArithmeticExplicitFormula_le_of_riemannHypothesis
       exact summable_norm_exp_neg_mul_spectral_sub_sq (by linarith) t)
     hcone hε
   simpa only [one_mul] using h
+
+/-- **Ceiling under RH.**  Every zero on the line keeps the arithmetic Gaussian explicit formula
+below twice the width-one Gaussian ordinate sum, for every width `ε ≥ 1`. -/
+theorem abs_gaussianArithmeticExplicitFormula_le_of_riemannHypothesis
+    (hRH : RiemannHypothesis) (t : ℝ) {ε : ℝ} (hε : 1 ≤ ε) :
+    |gaussianArithmeticExplicitFormula ε t| ≤
+      2 * ∑' o : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity,
+        Real.exp (1 / 4 + t ^ 2) *
+          Real.exp (-(1 / 2) * (zetaSpectralCoordinate o.1.1).re ^ 2) :=
+  abs_gaussianArithmeticExplicitFormula_le_of_cone (fun o => by
+    rw [re_sub_ofReal_sq, (zetaSpectralCoordinate_im_eq_zero_iff _).2
+      (hRH o.1.1 o.1.2.1 o.1.2.2.1 o.1.2.2.2)]
+    nlinarith) hε
 
 /-- **Local light-cone obstruction.**  A nontrivial zero whose spectral coordinate lies in the open
 light cone over `t` makes the arithmetic Gaussian formula unbounded in the width at height `t`. -/
@@ -300,6 +310,148 @@ theorem riemannHypothesis_iff_forall_rat_gaussianArithmeticExplicitFormula_bound
     refine not_bounded_gaussianArithmeticExplicitFormula_of_cone hs hnt hne1 (t := r) ?_ (hbdd r)
     have habs : |x - r| < |y| := abs_sub_lt_iff.2 ⟨by linarith, by linarith⟩
     exact sq_lt_sq.2 habs
+
+/-- Occurrences whose zero lies in a closed ball form a finite set. -/
+theorem finite_setOf_occurrence_mem_closedBall (R : ℝ) :
+    {o : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity |
+      o.1.1 ∈ Metric.closedBall (0 : ℂ) R}.Finite := by
+  have hK := IsCompact.inter_nontrivialZetaZeroSet_finite (isCompact_closedBall (0 : ℂ) R)
+  have hA : {ρ : NontrivialZetaZero | ρ.1 ∈ Metric.closedBall (0 : ℂ) R}.Finite :=
+    (hK.preimage Subtype.val_injective.injOn).subset fun ρ hρ => ⟨hρ, ρ.2⟩
+  refine ((hA.biUnion fun ρ _ =>
+    Set.finite_range (fun k : Fin (analyticZetaZeroMultiplicity ρ) =>
+      (⟨ρ, k⟩ : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity)))).subset ?_
+  intro o ho
+  exact Set.mem_biUnion (x := o.1) ho ⟨o.2, rfl⟩
+
+/-- **One-sided local obstruction.**  An off-line nontrivial zero produces a height at which the
+arithmetic Gaussian formula is unbounded below in the width.  The height is chosen inside the light
+cone of the zero but off the finitely many nearby zero ordinates.  Then every light-cone zero carries
+a nonzero frequency `2(Re γ - t) Im γ`, and the leading trigonometric polynomial has mean zero. -/
+theorem exists_height_not_bddBelow_gaussianArithmeticExplicitFormula {s : ℂ}
+    (hs : riemannZeta s = 0) (hnt : ¬ ∃ n : ℕ, s = -2 * (n + 1)) (hne1 : s ≠ 1)
+    (hy : (zetaSpectralCoordinate s).im ≠ 0) :
+    ∃ r : ℚ, |(r : ℝ) - (zetaSpectralCoordinate s).re| < |(zetaSpectralCoordinate s).im| ∧
+      ¬ ∃ C : ℝ, ∀ ε : ℝ, 1 ≤ ε → -C ≤ gaussianArithmeticExplicitFormula ε r := by
+  set ρ : NontrivialZetaZero := ⟨s, hs, hnt, hne1⟩ with hρ
+  set o₀ : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity :=
+    ⟨ρ, ⟨0, analyticZetaZeroMultiplicity_positive ρ⟩⟩ with ho₀
+  set x₀ := (zetaSpectralCoordinate s).re with hx₀
+  set y₀ := (zetaSpectralCoordinate s).im with hy₀
+  have hy0 : 0 < |y₀| := abs_pos.2 hy
+  have hy₀half : |y₀| < 1 / 2 := NontrivialZetaZero.abs_spectralCoordinate_im_lt_half ρ
+  set R : ℝ := |x₀| + 3 with hR
+  have hF₀ := finite_setOf_occurrence_mem_closedBall R
+  set X : Set ℝ := (fun o : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity =>
+    (zetaSpectralCoordinate o.1.1).re) '' {o | o.1.1 ∈ Metric.closedBall (0 : ℂ) R} with hXdef
+  have hX : X.Finite := hF₀.image _
+  obtain ⟨r, hrI, hrX⟩ : ∃ r : ℚ, (r : ℝ) ∈ Set.Ioo (x₀ - |y₀|) (x₀ + |y₀|) ∧ (r : ℝ) ∉ X := by
+    have hinf : (Set.Ioo (x₀ - |y₀|) (x₀ + |y₀|)).Infinite := Set.Ioo_infinite (by linarith)
+    obtain ⟨t₀, ht₀⟩ := (hinf.sdiff hX).nonempty
+    have hopen : IsOpen (Set.Ioo (x₀ - |y₀|) (x₀ + |y₀|) \ X) := isOpen_Ioo.sdiff hX.isClosed
+    obtain ⟨η, hη, hball⟩ := Metric.isOpen_iff.1 hopen t₀ ht₀
+    obtain ⟨r, hr1, hr2⟩ := exists_rat_btwn (show t₀ - η < t₀ + η by linarith)
+    have hmem : (r : ℝ) ∈ Metric.ball t₀ η := by
+      rw [Metric.mem_ball, Real.dist_eq, abs_sub_lt_iff]; constructor <;> linarith
+    exact ⟨r, (hball hmem).1, (hball hmem).2⟩
+  set t : ℝ := (r : ℝ) with htdef
+  have htI : t ∈ Set.Ioo (x₀ - |y₀|) (x₀ + |y₀|) := hrI
+  have htX : t ∉ X := hrX
+  refine ⟨r, abs_sub_lt_iff.2 ⟨by linarith [htI.2], by linarith [htI.1]⟩, ?_⟩
+  rintro ⟨C, hC⟩
+  set W : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity → ℂ :=
+    fun o => (zetaSpectralCoordinate o.1.1 - t) ^ 2 with hWdef
+  -- cone occurrences lie in the finite ball and avoid the height `t`
+  have hconeBall : ∀ o, (W o).re < 0 → o.1.1 ∈ Metric.closedBall (0 : ℂ) R := fun o ho => by
+    simp only [hWdef, re_sub_ofReal_sq] at ho
+    have him := NontrivialZetaZero.abs_spectralCoordinate_im_lt_half o.1
+    have hy2 : (zetaSpectralCoordinate o.1.1).im ^ 2 < (1 / 2) ^ 2 := by
+      have := sq_lt_sq' (abs_lt.1 him).1 (abs_lt.1 him).2
+      linarith
+    have hre : |(zetaSpectralCoordinate o.1.1).re - t| < 1 / 2 := by
+      have h1 : ((zetaSpectralCoordinate o.1.1).re - t) ^ 2 < (1 / 2) ^ 2 := by linarith
+      rw [sq_lt_sq, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at h1
+      exact h1
+    rw [zetaSpectralCoordinate_re] at hre
+    have htx : |t - x₀| < 1 / 2 := by
+      rw [abs_sub_lt_iff]; constructor <;> linarith [htI.1, htI.2]
+    have him' : |(o.1.1).im| ≤ |x₀| + 1 := by
+      have := abs_sub_abs_le_abs_sub (o.1.1).im x₀
+      have : |(o.1.1).im - x₀| < 1 := by
+        calc |(o.1.1).im - x₀| = |((o.1.1).im - t) + (t - x₀)| := by ring_nf
+          _ ≤ |(o.1.1).im - t| + |t - x₀| := abs_add_le _ _
+          _ < 1 / 2 + 1 / 2 := add_lt_add hre htx
+          _ = 1 := by norm_num
+      linarith
+    have hre0 := NontrivialZetaZero.zero_lt_re o.1
+    have hre1 := NontrivialZetaZero.re_lt_one o.1
+    rw [Metric.mem_closedBall, dist_zero_right]
+    calc ‖o.1.1‖ ≤ |(o.1.1).re| + |(o.1.1).im| := Complex.norm_le_abs_re_add_abs_im _
+      _ ≤ 1 + (|x₀| + 1) := by rw [abs_of_pos hre0]; linarith
+      _ ≤ R := by rw [hR]; linarith
+  have hfreq : ∀ o, (W o).re < 0 → (W o).im ≠ 0 := fun o ho => by
+    have hball := hconeBall o ho
+    have hxne : (zetaSpectralCoordinate o.1.1).re ≠ t := fun h => htX ⟨o, hball, h⟩
+    simp only [hWdef, re_sub_ofReal_sq] at ho
+    have hyne : (zetaSpectralCoordinate o.1.1).im ≠ 0 := fun h => by
+      rw [h] at ho; nlinarith [sq_nonneg ((zetaSpectralCoordinate o.1.1).re - t)]
+    simp only [hWdef, sq, Complex.mul_im, Complex.sub_re, Complex.ofReal_re, Complex.sub_im,
+      Complex.ofReal_im, sub_zero]
+    intro h0
+    have : 2 * (((zetaSpectralCoordinate o.1.1).re - t) * (zetaSpectralCoordinate o.1.1).im) = 0 := by
+      linarith
+    rcases mul_eq_zero.1 ((mul_eq_zero.1 this).resolve_left two_ne_zero) with h | h
+    · exact hxne (by linarith)
+    · exact hyne h
+  have hfin : {o | (W o).re < 0}.Finite := hF₀.subset fun o ho => hconeBall o ho
+  set m : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity → ℝ :=
+    fun o => Real.exp (1 / 4 + t ^ 2) *
+      Real.exp (-(1 / 2) * (zetaSpectralCoordinate o.1.1).re ^ 2) with hmdef
+  have hneg : ∃ o, (W o).re < 0 := by
+    refine ⟨o₀, ?_⟩
+    simp only [hWdef, re_sub_ofReal_sq]
+    have h0 : o₀.1.1 = s := rfl
+    rw [h0]
+    have habs : |x₀ - t| < |y₀| := abs_sub_lt_iff.2 ⟨by linarith [htI.1], by linarith [htI.2]⟩
+    have := sq_lt_sq.2 habs
+    linarith
+  obtain ⟨ε, hε, hlt⟩ := exists_re_tsum_mul_exp_neg_lt_of_re_neg (ε₀ := 1)
+    (w := W) (c := fun _ => (1 : ℝ)) (fun _ _ => one_pos) hfreq hfin (m := m)
+    (fun o => by simp only [hmdef]; positivity)
+    ((zetaZeroGaussianOrdinateSummable (1 / 2) (by norm_num)).mul_left _)
+    (fun o ho ε' hε' => by
+      rw [Complex.ofReal_one, one_mul]
+      exact norm_exp_neg_mul_spectral_sub_sq_le_of_re_nonneg hε' t o ho)
+    (fun ε' hε' => by
+      simp only [Complex.ofReal_one, one_mul]
+      exact summable_norm_exp_neg_mul_spectral_sub_sq (by linarith) t)
+    hneg (C / 2)
+  have hform := gaussianArithmeticExplicitFormula_eq_two_re_tsum (by linarith : (0 : ℝ) < ε) t
+  have hbound := hC ε hε
+  simp only [Complex.ofReal_one, one_mul] at hlt
+  rw [hform] at hbound
+  have : (∑' o : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity,
+      Complex.exp (-(ε : ℂ) * W o)) = ∑' o : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity,
+        Complex.exp (-(ε : ℂ) * (zetaSpectralCoordinate o.1.1 - t) ^ 2) := rfl
+  rw [this] at hlt
+  linarith
+
+/-- **One-sided source-native receiver.**  RH holds iff the explicit arithmetic Gaussian formula
+is bounded below in the width `ε ≥ 1` at every real height.  This weakens the Gaussian positivity
+criterion (`G ≥ 0`): any lower bound, depending on the height, already forces RH. -/
+theorem riemannHypothesis_iff_forall_gaussianArithmeticExplicitFormula_bddBelow :
+    RiemannHypothesis ↔
+      ∀ t : ℝ, ∃ C : ℝ, ∀ ε : ℝ, 1 ≤ ε → -C ≤ gaussianArithmeticExplicitFormula ε t := by
+  constructor
+  · intro hRH t
+    obtain ⟨C, hC⟩ := riemannHypothesis_iff_forall_gaussianArithmeticExplicitFormula_bounded.1 hRH t
+    exact ⟨C, fun ε hε => neg_le_of_abs_le (hC ε hε)⟩
+  · intro hbdd
+    rw [riemannHypothesis_iff_spectralCoordinate_real]
+    intro s hs hnt hne1
+    by_contra hy
+    obtain ⟨r, -, ht⟩ := exists_height_not_bddBelow_gaussianArithmeticExplicitFormula hs hnt hne1 hy
+    exact ht (hbdd r)
 
 end
 

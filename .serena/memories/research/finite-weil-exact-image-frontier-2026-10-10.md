@@ -1,0 +1,13 @@
+Current frontier 2026-10-10: CANONICAL MASS RIGIDITY AND RETAINED-MASS COST FORMALIZED. Card docs/drafts/pipeline/3-formalized/finite-weil-canonical-mass-rigidity.md; detailed memory research/finite-weil-canonical-mass-rigidity-2026-10-10.
+
+S=sum|canonical log-cluster dual|. Exact boundary: S=2 iff r<=1; S>2 for r>=2, every k. Generic equality rigidity forces all coordinates except a sup-norm maximizer to have opposite weak sign; an adjacent pair avoiding that maximizer contradicts alternating signs at order>=2. Low orders proved symbolically, no numerics.
+
+Three new leaves: WeilLogShiftMassRigidity, WeilLogShiftCanonicalMass, WeilLogShiftMassWeightedSensitivity. Final roots in last leaf: exists_finiteWeilGram_mass_weighted_fiber_sensitivity line49 gives gap*geom*S <= l1 distance*B*cost1 for every canonical-fiber pair and actual test, with geom=(k+2)^2*2^r under standard cluster width. exists_finiteWeilGram_mass_weighted_coordinate_cost line95 includes actual reader existence and all-reader cost S*geom<=2B*cost1. Exact identity gap*S=l1 distance*absolute canonical pairing supplies the bridge. Existing canonical analytic constants discharge all analytic premises; factor2/S is now retained rather than discarded.
+
+All3 native builds clean;9 public declarations+12 API terms audited, standard axioms only. Source/direct-dependency freshness, incoming-import scope, unique umbrella imports, local index and exact final-root lookup passed. All owned jobs terminal. Global lint latest snapshot:5 unrelated missing umbrella imports listed in card/memory. No whole build, heartbeat changes or foreign repairs.
+
+Next candidate remains OPEN: prove symbolic magnitude/growth bounds for S using actual log-node gaps and exact nodal ratios. Do not claim asymptotic growth from signs alone. The formerly open exact mass factor and low-order boundary are now DONE.
+
+Earlier established chain: research/finite-weil-probability-moment-fiber-2026-10-10 (unique mixture C_a, exact l1 distance2|a-b|, actual coordinate reader, full-fiber sensitivity); alternating probability profiles; canonical barycentric moment dual; moment-background leakage; cost/leakage tradeoff; coordinate isolation; full coefficient image and fixed-node cost control. Do not reopen these as conjectures.
+
+Standing restriction: ONLY local Lean corpus. No web searches or external papers, no external novelty claims. Infinite goal remains active; never mark complete for an increment.

@@ -13,10 +13,12 @@ open scoped BigOperators
 
 namespace RHTower
 
-theorem exists_pairedLogKernel_geometric_cluster_envelope :
+theorem exists_pairedLogKernel_geometric_cluster_envelope_with_moments :
     ∃ B L : ℝ, 0 < B ∧ 1 ≤ L ∧ ∀ (r n : ℕ),
       4 * L * ((r + 1 : ℕ) : ℝ) ≤ (n : ℝ) →
-      ∃ c : Fin (r + 2) → ℝ, ‖c‖ = 1 ∧ ∀ y : ℝ,
+      ∃ c : Fin (r + 2) → ℝ, ‖c‖ = 1 ∧
+        (∀ p ≤ r, ∑ i, c i *
+          (Real.log ((n + (i : ℕ) : ℕ) : ℝ) - Real.log (n : ℝ)) ^ p = 0) ∧ ∀ y : ℝ,
         |∑ i, c i * pairedLogKernel y (n + (i : ℕ))| ≤
           B * Real.exp (2 * |y|) * ((n : ℝ) ^ 2 * (2 : ℝ) ^ r)⁻¹ := by
   obtain ⟨E, L, hE, hL, hcancel⟩ := exists_riemannAutocorr_uniform_moment_cancellation_envelope
@@ -48,9 +50,9 @@ theorem exists_pairedLogKernel_geometric_cluster_envelope :
       _ = 2 * ((2 : ℝ) ^ r)⁻¹ := by
         rw [pow_succ, div_pow, one_pow, show (4 : ℝ) = 2 * 2 by norm_num, mul_pow]
         field_simp
-  obtain ⟨c, hc, hbound⟩ := pairedLogKernel_cluster_envelope_of_moment_bound r
+  obtain ⟨c, hc, hm, hbound⟩ := pairedLogKernel_cluster_envelope_with_moments r
     (E := E * L ^ r) (by positivity) (hcancel r) n hnr
-  refine ⟨c, hc, ?_⟩
+  refine ⟨c, hc, hm, ?_⟩
   intro y
   calc
     |∑ i, c i * pairedLogKernel y (n + (i : ℕ))| ≤
@@ -63,6 +65,19 @@ theorem exists_pairedLogKernel_geometric_cluster_envelope :
     _ = (4 * E) * Real.exp (2 * |y|) * ((n : ℝ) ^ 2 * (2 : ℝ) ^ r)⁻¹ := by
       rw [mul_inv_rev]
       ring
+
+/-- The geometric envelope without exposing its exact moment equations. -/
+theorem exists_pairedLogKernel_geometric_cluster_envelope :
+    ∃ B L : ℝ, 0 < B ∧ 1 ≤ L ∧ ∀ (r n : ℕ),
+      4 * L * ((r + 1 : ℕ) : ℝ) ≤ (n : ℝ) →
+      ∃ c : Fin (r + 2) → ℝ, ‖c‖ = 1 ∧ ∀ y : ℝ,
+        |∑ i, c i * pairedLogKernel y (n + (i : ℕ))| ≤
+          B * Real.exp (2 * |y|) * ((n : ℝ) ^ 2 * (2 : ℝ) ^ r)⁻¹ := by
+  obtain ⟨B, L, hB, hL, hbound⟩ :=
+    exists_pairedLogKernel_geometric_cluster_envelope_with_moments
+  refine ⟨B, L, hB, hL, fun r n hn => ?_⟩
+  obtain ⟨c, hc, _, hb⟩ := hbound r n hn
+  exact ⟨c, hc, hb⟩
 
 theorem exists_finiteWeilGram_geometric_cluster_cost_bound :
     ∃ B L : ℝ, 0 < B ∧ 1 ≤ L ∧ ∀ (s : Finset ℕ) (tests : Finset FiniteWeilGramTest),

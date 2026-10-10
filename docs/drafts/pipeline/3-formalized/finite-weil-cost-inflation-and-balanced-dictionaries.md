@@ -1,6 +1,6 @@
 # Cost inflation at fixed Gram form and balanced actual dictionaries
 
-Status: DEPENDENCY-CLOSED PAPER CONSTRUCTION; Lean implementation in progress.
+Status: FORMALIZED, 2026-10-10. Balanced actual-dictionary existence is discharged.
 Reversal stability is closed. Broader search over all Weil modules found no
 existing duplicate-node cost-inflation result; text search found no matching
 construction. Broader lexical results concern other real/imaginary splittings.
@@ -16,7 +16,7 @@ construction. Broader lexical results concern other real/imaginary splittings.
 - [x] Native cost-inflation leaf: exit 0, empty diagnostic log.
 - [x] Native full-record reencoding leaf: exit 0, empty diagnostic log.
 - [x] Native unconditional balanced-cost receiver: exit 0, empty diagnostic log.
-- [ ] Complete ten-declaration public axiom audit, freshness, index, lint.
+- [x] Complete ten-declaration public axiom audit, freshness, index, lint run.
 
 All three imports are wired. First inflation build passed form preservation
 but failed on NNReal absolute-value/coercion normalization in the cost identity
@@ -31,7 +31,13 @@ Do not treat any pending build as passed. Logs:
 Prepared final audit: `/tmp/hgt-weil-gram-inflation-final-audit.lean`.
 All three native leaves completed successfully. Reencoding needed explicit beta
 reduction before rewriting atom forms and `Nat.cast_id` after transporting support
-counts. Final public axiom audit and index refresh are running; lint remains.
+counts. All owned verification processes are terminal. All ten public declarations
+depend only on `propext`, `Classical.choice`, and `Quot.sound`; source-to-audit
+coverage is complete. Twenty-one API terms passed. Source/olean freshness and
+exactly-once umbrella imports passed. Index refresh and exact receiver search
+passed. Global lint ran and reported one unrelated umbrella gap:
+`GaloisForLFunctions.HTGeometry.QKrawtchoukCompanionTriangular`.
+No diagnostic concerns these three leaves. Global lint is not clean.
 
 ## Corpus evidence checked
 
@@ -57,7 +63,7 @@ Only local Lean mathematical evidence; no web, papers, or numerics.
 Given t>=1, replace each node i by two coincident copies, with amplitudes
 ((t+1)/2)*u_i and ((1-t)/2)*u_i; keep the outer NNReal normalization.
 Their signed coefficients sum to 1. Their absolute coefficients sum to t.
-Thus the Gram form should be unchanged for EVERY support and coefficient
+Thus the Gram form is unchanged for EVERY support and coefficient
 vector, while `finiteWeilGramTailCost B` is multiplied by t^2 for EVERY B.
 Use `Fin N × Fin 2` and `finiteWeilGramTestOfFinite` to obtain a native test.
 
@@ -67,7 +73,7 @@ Use the equivalent finite index `Sum (Fin N) (Fin N)`; the corpus already
 uses `Fintype.sum_sum_type` for the corresponding four quadratic blocks.
 
 Consequently, for a test with positive unit tail cost k, any target C>=k
-should be realized exactly without changing the form: choose
+is realized exactly without changing the form: choose
 t=sqrt(C/k)>=1, so t^2*k=C. This is symbolic existence, not computation.
 
 ## Proposed balanced-dictionary discharge
@@ -95,10 +101,16 @@ the forward equivalence, apply the old feasible-ray iff, then push its pointwise
 identity forward. These steps verify all fields of the coordinate record.
 The empty dictionary is handled by the same finite-image construction.
 
-The existing dimension-equality theorem should then give an actual dictionary
+The existing dimension-equality theorem gives an actual dictionary
 with optimal reversal factor exactly d for every nonempty support. Empty
-support remains explicit/vacuous. This would discharge the previously open
+support remains explicit/vacuous. This discharges the previously open
 balanced-actual-dictionary existence question, not merely assume balance.
+
+The new insight is representation dependence of tail cost: signed duplication
+preserves all Gram forms but permits arbitrary upward cost changes. Optimal
+reversal factor is now attained by actual dictionaries unconditionally. This
+does not control absolute total cost or prove single-test image surjectivity.
+External novelty was not assessed: user restricts research to local Lean evidence.
 
 ## Required audits / limits
 

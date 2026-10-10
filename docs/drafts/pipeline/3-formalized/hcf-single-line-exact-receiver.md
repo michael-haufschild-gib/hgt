@@ -1,0 +1,62 @@
+# HCF single-line exact receiver and the Gaussian–von Mangoldt chirp
+
+- **ID:** HCF-LINE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Source:** route HCF (frontier map, "cofinal ceiling"); working ledger `1-in-progress/hcf-exact-layer-loop-2026-10-09.md` rows 14–20
+- **Statement:** For every `a > 0`, RH ⇔ `b ↦ ν(a+ib) = Σ_q exp(-(a+ib) z_q²)` is bounded ⇔ `log |Σ_n Λ(n) n^{-1/2} exp(-(log n)²/(4(a+ib)))| = o(|b|)`.
+
+## Goal
+Replace the HCF height family (amplified diagonal bounded at every height `t`) by one height with
+complex amplification.  This leaves one explicit prime sum in one real variable, with no zeros,
+heights, or Gamma factor in the statement.
+
+## Gates
+- [x] 0 → 1  in-progress
+- [x] 1 → 2  fully-proven (paper proofs = Lean proofs below)
+- [x] 2 → 3  formalized: all theorems below, `lake build --old` green, axioms = propext, Classical.choice, Quot.sound
+- [ ] 3 → 4  publication-ready (not pursued: user directive "no stage 4, only the RH proof")
+
+## Lean theorems (namespace `RHTower`)
+- `riemannHypothesis_iff_xiGaussianHeatTraceC_bounded_on_vertical_line` — RH ⇔ ν bounded on `Re τ = a`.  This closes the converse that `XiGaussianHeatVerticalBound` records as blocked by possible cancellation.
+- `riemannHypothesis_iff_forall_norm_xiGaussianHeatTraceC_le_real` — RH ⇔ `‖ν(a+ib)‖ ≤ ν(a)` for all `b` (contraction form; 2×2 Toeplitz = chirp Weil cone).
+- `xiGaussianHeatTraceC_eq_bottomSource`, `riemannHypothesis_iff_xiGaussianBottomSourceC_bounded_on_vertical_line` — ν = −(i/π) J, where J is the Gaussian transform of `logDeriv XiC` on `Re s = 3/2`.
+- `pi_mul_xiGaussianHeatTraceC_eq_arch_add_pole_sub_prime` — πν(τ) = Arch(τ) + 2πe^{τ/4} − (π/τ)^{1/2} S(τ) on `Re τ > 0` (identity-theorem continuation of the real-time formula).
+- `riemannHypothesis_iff_gaussianPrimeChirpSum_le_sqrt_norm` — RH ⇔ S(a+ib) = O(|τ|^{1/2}).
+- `xiGaussianHeatTraceC_exponentialType_iff(_xi_zeros)`, `gaussianPrimeChirpSum_exponentialType_iff` — exponential type κ ⇔ all zeros satisfy 2|γ||β−½| ≤ κ (hyperbolic ladder).
+- `riemannHypothesis_iff_gaussianPrimeChirpSum_subexponential` — RH ⇔ S(a+ib) = O(|τ|^{1/2} e^{ε|b|}) for every ε > 0.
+- `abs_re_sub_half_le_of_xiGaussianHeatTraceC_exponentialType` — finite type κ ⇒ |β − ½| ≤ κ/18.
+- `norm_xiGaussianHeatTraceC_le_zeroFree`, `norm_gaussianPrimeChirpSum_le_zeroFree` — unconditional: saving exp(−b²/(116 a log(2|b|/a))) below the trivial exp(b²/(4a)).
+- `tendsto_xiGaussianHeatVerticalVariance_of_rh`, `mult_one_iff_tendsto_xiGaussianHeatVerticalVariance_of_rh` — HCF variance law: under RH the vertical Bohr mean square of ν tends to the λ-coincidence sum, and it equals 2Σ_q e^{−2aλ_q} iff all zeros are simple.
+- `riemannHypothesis_iff_criticalFeatureComplexAmplifiedTrace_bounded_on_vertical_line` — the same for HCF's own diagonal Σ F_0(z)² e^{−τz²}; generic Phragmén–Lindelöf step `norm_le_max_of_vertical_of_sector_of_growth`.
+
+Modules: `RHTower/XiGaussianHeatVerticalLineReceiver`, `XiGaussianHeatBottomSourceReceiver`,
+`XiGaussianHeatPrimeChirpReceiver`, `XiGaussianHeatVerticalExponentialType`,
+`XiGaussianHeatVerticalZeroFreeGrowth`, `HedenmalmCriticalFeatureComplexAmplificationReceiver`,
+`XiGaussianHeatVerticalVarianceLaw`.
+
+## Approach
+- ν is holomorphic on `Re τ > 0` with growth exp(b²/σ)/σ.  It is bounded on the sector |Im τ| ≤ Re τ because ‖z_q‖² > 150.
+- Phragmén–Lindelöf on the strip π/4 < Im s < π/2 via τ = a + e^s (growth exponent 2 < 4) joins the 45° ray to the vertical line.
+- Along a ray a + re^{iφ} with φ ↑ π/2, only finitely many exponents e^{iφ}w_q have negative real part.  An off-line copy with Im w > 0 is among them.  The light-cone lemma (`HTGeometry.exists_lt_norm_tsum_mul_exp_neg_of_re_neg`) then gives unboundedness.
+- The ladder uses the multiplier exp(iκe^s), whose modulus is at most 1 on the strip.
+
+## Insight
+- A single off-line zero gives only LINEAR growth exp(2|γδ||b|).  Quadratic growth b²δ²/a requires infinitely many off-line zeros.  So exponential type, not growth order, is the exact invariant: type = sup 2|γ||β−½|.
+- The HCF producer is RH-strength.  It has the cleanest form: the chirp sum has exponential type zero on one vertical line.  The unconditional state is log|S| ≤ (¼ − c/log b) b²/a.
+
+## Extensions (cycles 24–31)
+- `xiGaussianHeatTraceC_sector_bounded_iff_xi_zeros`: sector of slope T ⇔ conical zero-free region 2T|γ||β−½| ≤ γ² − (β−½)²; T = 6 unconditional; RH ⇔ every T.
+- `exists_norm_xiGaussianHeatTraceC_le_vinogradovKorobov`: VK saving for the unconditional producer.
+- `not_tendsto_zero_xiGaussianHeatTraceC`, `exists_frequently_le_norm_gaussianPrimeChirpSum_sub_main`: unconditional Ω(√|b|).
+- `frequently_le_norm_xiGaussianHeatTraceC`, `frequently_le_norm_gaussianPrimeChirpSum_sub_main`: sharp Ω-constant √π ν(a) (= RH O-constant) (uses corpus `HTGeometry.exists_simultaneous_dirichlet`).
+- `gaussianPrimeChirpSum_growth_gap`: O(√|b|) or ≥ exponential, nothing in between.
+- `exists_norm_xiGaussianHeatTraceC_le_quadratic_coefficient`: quadratic coefficient ≤ Δ∞²/a (lower half open; needs Turán-type non-cancellation).
+- `asymptoticQuasiRH_iff_amplifiedTrace_rates_uniformly_below_quarter`: asymptotic quasi-RH ⇔ HCF rates at large heights uniformly < ¼ (exact, height axis).
+- `eventually_volume_amplifiedTrace_exceeds_exp_le_powerSaving`: deep HCF amplification (rate > κ) occupies measure ≤ U^{1−√κ/40}.
+
+Hierarchy: RH ⇔ sublinear growth on the vertical line ⇔ every height rate is 0. The hyperbolic deviation D = sup 2|γ||β−½| is the vertical exponential type. Asymptotic deviation Δ∞ ⇔ uniform height rates (vertical quadratic coefficient ≤ Δ∞²/a). Unconditional: each height rate < ¼; rates > κ are polynomially rare; the vertical growth has the VK saving.
+
+## Log
+- 2026-10-10 — created directly in 3-formalized (cycles 14–20 of the HCF exact-layer loop)
+- 2026-10-10 — extensions cycles 24–31 added

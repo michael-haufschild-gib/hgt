@@ -102,7 +102,8 @@ theorem xi_onLine_of_model_certificate {c : ℂ} (hc : c.re = 1 / 2) {t R : ℝ}
   have htotal : (∑ ρ ∈ Z, (zeroMult xi ρ : ℤ)) = (ZG.card : ℤ) := by
     have h1 : (∑ ρ ∈ Z, (zeroMult xi ρ : ℂ)) = (ZG.card : ℂ) := by
       rw [← hZsum, heq, hZG'sum, hZGZG', Finset.sum_congr rfl
-        (fun z hz => by rw [hGsimple z hz]), Finset.sum_const, nsmul_eq_mul, mul_one]
+        (fun z hz => by rw [hGsimple z hz]), Finset.sum_const, nsmul_eq_mul]
+      simp
     exact_mod_cast h1
   -- the on-line multiplicity is at least `#W`
   have hWsub : W ⊆ Z.filter (fun ρ => ρ.re = 1 / 2) := by
@@ -132,7 +133,6 @@ theorem xi_onLine_of_model_certificate {c : ℂ} (hc : c.re = 1 / 2) {t R : ℝ}
   have hone : (1 : ℤ) ≤ (zeroMult xi z : ℤ) := by exact_mod_cast one_le_zeroMult_xi h0
   have hle := Finset.single_le_sum (f := fun ρ => (zeroMult xi ρ : ℤ))
     (fun ρ _ => Int.natCast_nonneg _) hmem
-  simp only at hle
   linarith
 
 /-- The open critical strip. -/
@@ -188,8 +188,7 @@ theorem xi_onLine_of_tiltedGaussianModel_certificate {x : ℝ} (hx : 0 < x) {l :
         (abs_nonneg _) h0
     obtain ⟨hz0, hz1⟩ := hball_strip z hzb
     have han : AnalyticAt ℂ G z :=
-      (ReflectionDominance.differentiableAt_reflected hd hz0 hz1).analyticAt_of_isOpen
-        isOpen_openCriticalStrip ⟨hz0, hz1⟩ hGU
+      hGU.analyticAt (isOpen_openCriticalStrip.mem_nhds ⟨hz0, hz1⟩)
     unfold zeroMult
     rw [han.analyticOrderAt_eq_one_of_zero_deriv_ne_zero h0 hderiv]
     rfl
