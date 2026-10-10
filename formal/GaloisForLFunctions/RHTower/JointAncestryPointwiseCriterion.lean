@@ -363,12 +363,17 @@ theorem norm_jasLocalFejer_dressed_le {q : ℂ} {c : ℝ} (hc : 0 < c) (h0 : 0 <
 
 /-! ## Necessity -/
 
-/-- **Positivity forces pointwise positivity.**  If the `σ`-dressed aggregate (`σ = 1/2 + c`,
-`c > 0`) is positive semidefinite, then on every finite prime torus the zero sum of the twisted
-local Euler densities has nonnegative real part. -/
-theorem re_tsum_prod_jasHoloLocal_nonneg_of_psd {c : ℝ} (hc : 0 < c)
-    (hpsd : JasDressedPSD (1 / 2 + c)) (P : Finset Nat.Primes) (w : ↥P → ℂ)
-    (hw : ∀ i, ‖w i‖ = 1) :
+/-- The Fejér form of the `σ`-dressed aggregate on the box `[0,K]^P` at the torus point `w`. -/
+def jasFejerForm (σ : ℝ) (P : Finset Nat.Primes) (w : ↥P → ℂ) (K : ℕ) : ℂ :=
+  ∑ x ∈ jasFejerBox P K, ∑ y ∈ jasFejerBox P K,
+    jasFejerCoeff P w x * conj (jasFejerCoeff P w y) *
+      jasDressedLagAggregate σ (jasVecChar P x - jasVecChar P y)
+
+/-- **Fejér limit.**  If every Fejér form at `w` has nonnegative real part, then the zero sum of the
+twisted local Euler densities at `w` has nonnegative real part. -/
+theorem re_tsum_prod_jasHoloLocal_nonneg_of_fejer {c : ℝ} (hc : 0 < c)
+    (P : Finset Nat.Primes) (w : ↥P → ℂ) (hw : ∀ i, ‖w i‖ = 1)
+    (hfej : ∀ K, 0 ≤ (jasFejerForm (1 / 2 + c) P w K).re) :
     0 ≤ (∑' q : XiZeroCopy, 1 / ((q.1 : ℂ) * (1 - (q.1 : ℂ))) *
       ∏ i : ↥P, jasHoloLocal (jasHoloA ((q.1 : ℂ) + c) i) (jasHoloB ((q.1 : ℂ) - c) i)
         (w i)).re := by
@@ -377,9 +382,7 @@ theorem re_tsum_prod_jasHoloLocal_nonneg_of_psd {c : ℝ} (hc : 0 < c)
   set Q : ℕ → ℂ := fun K => ∑ x ∈ jasFejerBox P K, ∑ y ∈ jasFejerBox P K,
     jasFejerCoeff P w x * conj (jasFejerCoeff P w y) *
       jasDressedLagAggregate (1 / 2 + c) (jasVecChar P x - jasVecChar P y) with hQ
-  have hQnn : ∀ K, 0 ≤ (Q K).re := fun K =>
-    hpsd _ (jasFejerBox P K) (jasFejerCoeff P w) (jasVecChar P)
-      (jasVecChar_injective P).injOn
+  have hQnn : ∀ K, 0 ≤ (Q K).re := hfej
   have hs : ∀ (x y : ↥P → ℕ), Summable (fun q : XiZeroCopy =>
       jasFejerCoeff P w x * conj (jasFejerCoeff P w y) *
         (jasDressedCoeff ((q.1 : ℂ) + c) ((q.1 : ℂ) - c) (jasVecChar P x - jasVecChar P y) /
@@ -457,6 +460,18 @@ theorem re_tsum_prod_jasHoloLocal_nonneg_of_psd {c : ℝ} (hc : 0 < c)
       gcongr with i _
       exact norm_jasLocalFejer_dressed_le hc h0 h1 i (hw i) K
   exact ge_of_tendsto' ((Complex.continuous_re.tendsto _).comp hlim) hnn
+
+/-- **Positivity forces pointwise positivity.**  If the `σ`-dressed aggregate (`σ = 1/2 + c`,
+`c > 0`) is positive semidefinite, then on every finite prime torus the zero sum of the twisted
+local Euler densities has nonnegative real part. -/
+theorem re_tsum_prod_jasHoloLocal_nonneg_of_psd {c : ℝ} (hc : 0 < c)
+    (hpsd : JasDressedPSD (1 / 2 + c)) (P : Finset Nat.Primes) (w : ↥P → ℂ)
+    (hw : ∀ i, ‖w i‖ = 1) :
+    0 ≤ (∑' q : XiZeroCopy, 1 / ((q.1 : ℂ) * (1 - (q.1 : ℂ))) *
+      ∏ i : ↥P, jasHoloLocal (jasHoloA ((q.1 : ℂ) + c) i) (jasHoloB ((q.1 : ℂ) - c) i)
+        (w i)).re :=
+  re_tsum_prod_jasHoloLocal_nonneg_of_fejer hc P w hw fun K =>
+    hpsd _ (jasFejerBox P K) (jasFejerCoeff P w) (jasVecChar P) (jasVecChar_injective P).injOn
 
 /-! ## Sufficiency -/
 

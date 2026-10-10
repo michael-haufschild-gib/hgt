@@ -31,3 +31,5 @@ Lean implementation notes: splitting the erased sum before the full sum prevente
 Interpretation: S is an exact normalization invariant in the measurement cost law. Strict improvement starts at order two. No asymptotic growth rate for S is claimed; that needs further control of the exact weight ratios.
 
 Next frontier: derive symbolic magnitude or growth bounds for S from actual log-node gaps and exact nodal ratios. Alternation alone establishes the equality obstruction above, not any asymptotic growth law.
+
+Successor formalized 2026-10-10: [log-grid mass comparison](finite-weil-log-grid-mass-comparison.md). Logarithmic mass now has a proved two-sided comparison to equally spaced-node mass, with distortion ((k+r+3)/(k+2))^(r+1). Both full-fiber sensitivity and actual-coordinate-reader cost inherit this arithmetic reference. Sixteen declarations passed native compilation and standard-axiom audit. The reference's explicit binomial value remains the next target.

@@ -40,8 +40,8 @@ theorem zeros_finite_closedBall {F : ℂ → ℂ} (hF : Differentiable ℂ F) (h
   exact ⟨hz, by simpa using hz0⟩
 
 /-- The orders of an entire function nonvanishing at `0` are finite. -/
-theorem analyticOrderAt_ne_top_of_entire {F : ℂ → ℂ} (hF : Differentiable ℂ F) (h0 : F 0 ≠ 0)
-    (z : ℂ) : analyticOrderAt F z ≠ ⊤ := by
+theorem analyticOrderAt_ne_top_of_entire_of_ne_zero_at_zero {F : ℂ → ℂ} (hF : Differentiable ℂ F)
+    (h0 : F 0 ≠ 0) (z : ℂ) : analyticOrderAt F z ≠ ⊤ := by
   have han : AnalyticOnNhd ℂ F Set.univ := fun z _ => hF.analyticAt z
   refine han.analyticOrderAt_ne_top_of_isPreconnected isPreconnected_univ (Set.mem_univ 0)
     (Set.mem_univ z) ?_
@@ -78,7 +78,7 @@ theorem analyticOrderNatAt_const_mul {f : ℂ → ℂ} (hf : AnalyticAt ℂ f z)
 theorem analyticOrderNatAt_ne_zero_of_apply_eq_zero {F : ℂ → ℂ} (hF : Differentiable ℂ F)
     (h0 : F 0 ≠ 0) {y₀ : ℂ} (hy₀ : F y₀ = 0) : analyticOrderNatAt F y₀ ≠ 0 := by
   intro hz
-  have hne := analyticOrderAt_ne_top_of_entire hF h0 y₀
+  have hne := analyticOrderAt_ne_top_of_entire_of_ne_zero_at_zero hF h0 y₀
   have : analyticOrderAt F y₀ = 0 := by
     rw [← ENat.coe_toNat hne]
     simpa [analyticOrderNatAt] using hz
@@ -187,7 +187,7 @@ theorem ReciprocalTPUpTo.eq_neg_of_apply_eq_zero_aux : ∀ (n : ℕ) (F : ℂ �
           rw [hlin.analyticOrderAt_eq_zero.mpr hz]
           exact ENat.zero_ne_top
       rw [hFeq, analyticOrderNatAt_mul hlin hdz hlin_ne
-        (analyticOrderAt_ne_top_of_entire hdsl hdsl0 z), analyticOrderNatAt_add_const, hGdef,
+        (analyticOrderAt_ne_top_of_entire_of_ne_zero_at_zero hdsl hdsl0 z), analyticOrderNatAt_add_const, hGdef,
         analyticOrderNatAt_const_mul hdz hDc]
     have hsumG : ∑ z ∈ S, analyticOrderNatAt G z ≤ m' + 1 := by
       have hsplit : ∑ z ∈ S, analyticOrderNatAt F z =

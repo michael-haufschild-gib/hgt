@@ -296,13 +296,16 @@ theorem tendsto_gaussianWindowAverage_tsum_cexp {ι : Type*} [Countable ι] (c :
     refine tsum_congr fun q => ?_
     rw [gaussianWindowAverage]
     ring
-  simp_rw [havg]
+  rw [show (gaussianWindowAverage fun u =>
+      (∑' q, c q * Complex.exp ((μ q : ℂ) * I * (u : ℂ))) *
+        Complex.exp (((-τ : ℝ) : ℂ) * I * (u : ℂ))) = fun T => ∑' q, c q * gaussianWindowAverage
+        (fun u => Complex.exp (((μ q - τ : ℝ) : ℂ) * I * (u : ℂ))) T from funext havg]
   have hlim : ∀ q, (if μ q = τ then c q else 0) = c q * (if μ q - τ = 0 then 1 else 0) := by
     intro q
     by_cases h : μ q = τ
     · rw [if_pos h, if_pos (sub_eq_zero.2 h), mul_one]
     · rw [if_neg h, if_neg (fun h' => h (sub_eq_zero.1 h')), mul_zero]
-  simp_rw [hlim]
+  rw [tsum_congr hlim]
   refine tendsto_tsum_of_dominated_convergence hc
     (fun q => (tendsto_gaussianWindowAverage_cexp (μ q - τ)).const_mul (c q)) ?_
   filter_upwards [eventually_gt_atTop 0] with T hT q
@@ -310,6 +313,345 @@ theorem tendsto_gaussianWindowAverage_tsum_cexp {ι : Type*} [Countable ι] (c :
   calc ‖c q‖ * ‖gaussianWindowAverage (fun u => Complex.exp (((μ q - τ : ℝ) : ℂ) * I * (u : ℂ))) T‖
       ≤ ‖c q‖ * 1 := by gcongr; exact norm_gaussianWindowAverage_cexp_le _ hT
     _ = ‖c q‖ := mul_one _
+
+/-! ## The almost-periodic form of the central gap under RH -/
+
+/-- Half the ordinate of a zero copy. -/
+def xiZeroHalfOrdinate (q : XiZeroCopy) : ℝ := (xiZero q).im / 2
+
+/-- The Bohr amplitude `½ Γ(i μ_ρ)` of a zero copy, `μ_ρ = Im ρ / 2`. -/
+def criticalBohrAmplitude (q : XiZeroCopy) : ℂ :=
+  (1 / 2 : ℂ) * Complex.Gamma ((xiZeroHalfOrdinate q : ℂ) * I)
+
+/-- The critical germ of a zero copy at damping `y`. -/
+def criticalZeroGerm (y : ℝ) (q : XiZeroCopy) : ℂ :=
+  (Real.exp (-y) : ℂ) / (xiZero q - 1 / 2) + gaussianIncompleteMellin y (xiZero q - ((1 / 2 : ℝ) : ℂ))
+
+theorem xiZero_sub_half_eq_of_riemannHypothesis (hRH : RiemannHypothesis) (q : XiZeroCopy) :
+    xiZero q - 1 / 2 = (((xiZero q).im : ℝ) : ℂ) * I := by
+  have hre : (xiZero q).re = 1 / 2 := xiZeroCopy_re_eq_half_of_riemannHypothesis hRH q
+  apply Complex.ext <;> simp [hre]
+
+theorem norm_cpow_neg_ofReal_mul_I {y : ℝ} (hy : 0 < y) (μ : ℝ) :
+    ‖(y : ℂ) ^ (-((μ : ℂ) * I))‖ = 1 := by
+  rw [Complex.norm_cpow_eq_rpow_re_of_pos hy]
+  simp
+
+theorem exp_neg_cpow_eq_cexp (u μ : ℝ) :
+    ((Real.exp (-u) : ℝ) : ℂ) ^ (-((μ : ℂ) * I)) = Complex.exp ((μ : ℂ) * I * (u : ℂ)) := by
+  rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.2 (Real.exp_pos _).ne'),
+    ← Complex.ofReal_log (Real.exp_pos _).le, Real.log_exp]
+  congr 1
+  push_cast
+  ring
+
+/-- **Critical germ = Bohr term + O(y).**  Under RH,
+`‖germ_ρ(y) − ½ Γ(i μ_ρ) y^{-i μ_ρ}‖ ≤ (2y + y²) ‖(ρ − ½)⁻¹‖²`. -/
+theorem norm_criticalZeroGerm_sub_bohr_le (hRH : RiemannHypothesis) {y : ℝ} (hy : 0 < y)
+    (q : XiZeroCopy) :
+    ‖criticalZeroGerm y q - criticalBohrAmplitude q * (y : ℂ) ^ (-((xiZeroHalfOrdinate q : ℂ) * I))‖ ≤
+      (2 * y + y ^ 2) * ‖(xiZero q - 1 / 2)⁻¹‖ ^ 2 := by
+  set a : ℂ := xiZero q - 1 / 2 with ha
+  have hcast : ((1 / 2 : ℝ) : ℂ) = 1 / 2 := by push_cast; ring
+  have haI := xiZero_sub_half_eq_of_riemannHypothesis hRH q
+  have hare : a.re = 0 := by rw [ha, haI]; simp
+  have him : 1 < |(xiZero q).im| := by
+    by_contra h
+    push Not at h
+    exact xi_ne_zero_of_abs_im_le_one h (xi_xiZero q)
+  have ha0 : a ≠ 0 := by
+    intro h0
+    have := congrArg Complex.im h0
+    rw [ha, haI] at this
+    simp at this
+    rw [this, abs_zero] at him
+    linarith
+  have hhalf : a / 2 = (xiZeroHalfOrdinate q : ℂ) * I := by
+    rw [ha, haI, xiZeroHalfOrdinate]; push_cast; ring
+  have h := norm_criticalZeroGerm_sub_gamma_le hy hare ha0
+  rw [hhalf] at h
+  have hgerm : criticalZeroGerm y q = (Real.exp (-y) : ℂ) / a + gaussianIncompleteMellin y a := by
+    rw [criticalZeroGerm, hcast]
+  rw [hgerm, criticalBohrAmplitude, mul_assoc]
+  rw [mul_assoc] at h
+  refine h.trans ?_
+  have hna : 0 < ‖a‖ := norm_pos_iff.2 ha0
+  have hnab : ‖a‖ ≤ ‖a + 2‖ := by
+    have h1 : ‖a‖ ^ 2 ≤ ‖a + 2‖ ^ 2 := by
+      rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
+      simp only [Complex.add_re, Complex.add_im, hare, Complex.re_ofNat, Complex.im_ofNat]
+      nlinarith
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h1
+  rw [norm_inv, inv_pow, ← div_eq_mul_inv]
+  apply div_le_div_of_nonneg_left (by positivity) (by positivity)
+  rw [sq]
+  exact mul_le_mul_of_nonneg_left hnab (norm_nonneg _)
+
+theorem summable_norm_inv_xiZero_sq :
+    Summable fun q : XiZeroCopy => ‖(xiZero q)⁻¹‖ ^ 2 :=
+  (summable_norm_inv_xiZero_pow (k := 2) le_rfl).congr fun _ => norm_pow _ _
+
+/-- Under RH the Bohr amplitudes are absolutely summable. -/
+theorem summable_norm_criticalBohrAmplitude (hRH : RiemannHypothesis) :
+    Summable fun q : XiZeroCopy => ‖criticalBohrAmplitude q‖ := by
+  have hq : ∀ q : XiZeroCopy, (xiZero q).re = 1 / 2 :=
+    fun q => xiZeroCopy_re_eq_half_of_riemannHypothesis hRH q
+  refine Summable.of_nonneg_of_le (fun q => norm_nonneg _) (fun q => ?_)
+    ((summable_norm_inv_xiZero_sq.mul_left (2 * (1 + 1))).add
+      (summable_norm_inv_xiZero_sub_half_sq.mul_left (2 * 1 + 1 ^ 2)))
+  have h1 := norm_criticalZeroGerm_sub_bohr_le hRH one_pos q
+  have h2 := norm_criticalZeroGerm_le one_pos q (hq q)
+  rw [Complex.ofReal_one, Complex.one_cpow, mul_one] at h1
+  have h3 : ‖criticalBohrAmplitude q‖ ≤ ‖criticalZeroGerm 1 q‖ +
+      ‖criticalZeroGerm 1 q - criticalBohrAmplitude q‖ := by
+    have := norm_sub_le (criticalZeroGerm 1 q) (criticalZeroGerm 1 q - criticalBohrAmplitude q)
+    rwa [sub_sub_cancel] at this
+  have h4 : ‖criticalZeroGerm 1 q‖ ≤ 2 * (1 + 1) * ‖(xiZero q)⁻¹‖ ^ 2 := h2
+  linarith
+
+/-- **Almost-periodic form under RH.**  For `y > 0`,
+`G(y) = A_y(½) − Σ_ρ ½ Γ(i μ_ρ) y^{-i μ_ρ} − Σ_ρ (germ_ρ(y) − ½ Γ(i μ_ρ) y^{-i μ_ρ})`. -/
+theorem gaussianCentralGap_eq_archimedean_sub_bohrSeries (hRH : RiemannHypothesis) {y : ℝ}
+    (hy : 0 < y) :
+    ((gaussianWeightedPrimeMass (1 / 2) y - gaussianWeightedContinuumMass (1 / 2) y : ℝ) : ℂ) =
+      gaussianArchimedeanMB y 2 ((1 / 2 : ℝ) : ℂ) -
+        (∑' q : XiZeroCopy, criticalBohrAmplitude q *
+          (y : ℂ) ^ (-((xiZeroHalfOrdinate q : ℂ) * I))) -
+        ∑' q : XiZeroCopy, (criticalZeroGerm y q - criticalBohrAmplitude q *
+          (y : ℂ) ^ (-((xiZeroHalfOrdinate q : ℂ) * I))) := by
+  have hgap := gaussianWeightedGap_eq_MB_sub_germField (σ := 1 / 2) (by norm_num) hy
+  have hS : Summable fun q : XiZeroCopy => criticalBohrAmplitude q *
+      (y : ℂ) ^ (-((xiZeroHalfOrdinate q : ℂ) * I)) := by
+    refine Summable.of_norm ((summable_norm_criticalBohrAmplitude hRH).congr fun q => ?_)
+    rw [norm_mul, norm_cpow_neg_ofReal_mul_I hy, mul_one]
+  have hR : Summable fun q : XiZeroCopy => criticalZeroGerm y q - criticalBohrAmplitude q *
+      (y : ℂ) ^ (-((xiZeroHalfOrdinate q : ℂ) * I)) :=
+    Summable.of_norm (Summable.of_nonneg_of_le (fun q => norm_nonneg _)
+      (fun q => norm_criticalZeroGerm_sub_bohr_le hRH hy q)
+      (summable_norm_inv_xiZero_sub_half_sq.mul_left _))
+  rw [hgap, sub_sub, ← hS.tsum_add hR]
+  congr 1
+  refine tsum_congr fun q => ?_
+  rw [add_sub_cancel, criticalZeroGerm]
+
+/-- **Bohr spectrum of the central Gaussian gap.**  Under RH, for every real `τ`,
+`T⁻¹ ∫₀^T G(e^{-u}) e^{-iτu} du → A(½)·[τ = 0] − Σ_{Im ρ = 2τ} ½ Γ(iτ)`. -/
+theorem tendsto_gaussianWindowAverage_gaussianCentralGap (hRH : RiemannHypothesis) (τ : ℝ) :
+    Tendsto (gaussianWindowAverage fun u =>
+        ((gaussianWeightedPrimeMass (1 / 2) (Real.exp (-u)) -
+          gaussianWeightedContinuumMass (1 / 2) (Real.exp (-u)) : ℝ) : ℂ) *
+          Complex.exp (((-τ : ℝ) : ℂ) * I * (u : ℂ))) atTop
+      (𝓝 ((if τ = 0 then gaussianArchimedeanCurrent ((1 / 2 : ℝ) : ℂ) else 0) -
+        ∑' q : XiZeroCopy, if xiZeroHalfOrdinate q = τ then criticalBohrAmplitude q else 0)) := by
+  set A : ℂ := gaussianArchimedeanCurrent ((1 / 2 : ℝ) : ℂ) with hA
+  set S : ℝ → ℂ := fun u => ∑' q : XiZeroCopy, criticalBohrAmplitude q *
+    Complex.exp ((xiZeroHalfOrdinate q : ℂ) * I * (u : ℂ)) with hSdef
+  set f : ℝ → ℂ := fun u => ((gaussianWeightedPrimeMass (1 / 2) (Real.exp (-u)) -
+    gaussianWeightedContinuumMass (1 / 2) (Real.exp (-u)) : ℝ) : ℂ) with hfdef
+  set E : ℝ → ℂ := fun u => Complex.exp (((-τ : ℝ) : ℂ) * I * (u : ℂ)) with hEdef
+  have hsum := summable_norm_criticalBohrAmplitude hRH
+  have hScont : Continuous S := by
+    refine continuous_tsum (fun q => by fun_prop) hsum (fun q u => ?_)
+    rw [norm_mul, norm_cexp_ofReal_mul_I_mul, mul_one]
+  have hfcont : Continuous f := by
+    have h := continuous_gaussianBudgetProfile (σ := 1 / 2) (by norm_num) (-1) 0 0
+    have heq : f = fun u => ((gaussianBudgetProfile (-1) (1 / 2) 0 0 u : ℝ) : ℂ) := by
+      funext u
+      simp [hfdef, gaussianBudgetProfile]
+    rw [heq]
+    exact Complex.continuous_ofReal.comp h
+  have hEcont : Continuous E := by fun_prop
+  -- the remainder after the archimedean constant and the Bohr series
+  set h : ℝ → ℂ := fun u => f u - A + S u with hhdef
+  have hhcont : Continuous h := (hfcont.sub continuous_const).add hScont
+  have hexpand : ∀ u : ℝ, h u = (gaussianArchimedeanMB (Real.exp (-u)) 2 ((1 / 2 : ℝ) : ℂ) - A) -
+      ∑' q : XiZeroCopy, (criticalZeroGerm (Real.exp (-u)) q - criticalBohrAmplitude q *
+        ((Real.exp (-u) : ℝ) : ℂ) ^ (-((xiZeroHalfOrdinate q : ℂ) * I))) := by
+    intro u
+    have he := gaussianCentralGap_eq_archimedean_sub_bohrSeries hRH (Real.exp_pos (-u))
+    have hSu : S u = ∑' q : XiZeroCopy, criticalBohrAmplitude q *
+        ((Real.exp (-u) : ℝ) : ℂ) ^ (-((xiZeroHalfOrdinate q : ℂ) * I)) := by
+      rw [hSdef]
+      exact tsum_congr fun q => by rw [exp_neg_cpow_eq_cexp]
+    simp only [hhdef, hfdef]
+    rw [he, hSu]
+    ring
+  have hexp0 : Tendsto (fun u : ℝ => Real.exp (-u)) atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ Real.tendsto_exp_neg_atTop_nhds_zero
+      (Eventually.of_forall fun u => Real.exp_pos _)
+  have hMB : Tendsto (fun u : ℝ => gaussianArchimedeanMB (Real.exp (-u)) 2 ((1 / 2 : ℝ) : ℂ) - A)
+      atTop (𝓝 0) := by
+    have h1 := (tendsto_gaussianArchimedeanCurrent_sub_MB two_pos
+      (s := ((1 / 2 : ℝ) : ℂ)) (by norm_num)).comp hexp0
+    have h2 := h1.neg
+    rw [neg_zero] at h2
+    refine h2.congr fun u => ?_
+    simp only [Function.comp, hA]
+    ring
+  have hRem : Tendsto (fun u : ℝ => ∑' q : XiZeroCopy, (criticalZeroGerm (Real.exp (-u)) q -
+      criticalBohrAmplitude q * ((Real.exp (-u) : ℝ) : ℂ) ^ (-((xiZeroHalfOrdinate q : ℂ) * I))))
+      atTop (𝓝 0) := by
+    set K : ℝ := ∑' q : XiZeroCopy, ‖(xiZero q - 1 / 2)⁻¹‖ ^ 2 with hK
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    have hlim : Tendsto (fun u : ℝ => (2 * Real.exp (-u) + Real.exp (-u) ^ 2) * K) atTop (𝓝 0) := by
+      have h0 := Real.tendsto_exp_neg_atTop_nhds_zero
+      simpa using ((h0.const_mul 2).add (h0.pow 2)).mul_const K
+    refine squeeze_zero (fun u => norm_nonneg _) (fun u => ?_) hlim
+    have hy := Real.exp_pos (-u)
+    refine (norm_tsum_le_tsum_norm (Summable.of_nonneg_of_le (fun q => norm_nonneg _)
+      (fun q => norm_criticalZeroGerm_sub_bohr_le hRH hy q)
+      (summable_norm_inv_xiZero_sub_half_sq.mul_left _))).trans ?_
+    rw [hK, ← tsum_mul_left]
+    exact (Summable.of_nonneg_of_le (fun q => norm_nonneg _)
+      (fun q => norm_criticalZeroGerm_sub_bohr_le hRH hy q)
+      (summable_norm_inv_xiZero_sub_half_sq.mul_left _)).tsum_le_tsum
+      (fun q => norm_criticalZeroGerm_sub_bohr_le hRH hy q)
+      (summable_norm_inv_xiZero_sub_half_sq.mul_left _)
+  have hh0 : Tendsto h atTop (𝓝 0) := by
+    have := hMB.sub hRem
+    rw [sub_zero] at this
+    exact this.congr fun u => (hexpand u).symm
+  have hhE0 : Tendsto (fun u => h u * E u) atTop (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    have := (tendsto_zero_iff_norm_tendsto_zero.1 hh0)
+    refine this.congr fun u => ?_
+    rw [norm_mul, hEdef]
+    simp only
+    rw [norm_cexp_ofReal_mul_I_mul, mul_one]
+  -- split the window average
+  have hsplit : ∀ T : ℝ, gaussianWindowAverage (fun u => f u * E u) T =
+      gaussianWindowAverage (fun u => h u * E u) T + A * gaussianWindowAverage E T -
+        gaussianWindowAverage (fun u => S u * E u) T := by
+    intro T
+    have hpt : (fun u => f u * E u) = fun u => (h u * E u + A * E u) - S u * E u := by
+      funext u; simp only [hhdef]; ring
+    have i1 : IntervalIntegrable (fun u => h u * E u + A * E u) volume 0 T :=
+      ((hhcont.mul hEcont).add (continuous_const.mul hEcont)).intervalIntegrable _ _
+    have i2 : IntervalIntegrable (fun u => S u * E u) volume 0 T :=
+      (hScont.mul hEcont).intervalIntegrable _ _
+    have i3 : IntervalIntegrable (fun u => h u * E u) volume 0 T :=
+      (hhcont.mul hEcont).intervalIntegrable _ _
+    have i4 : IntervalIntegrable (fun u => A * E u) volume 0 T :=
+      (continuous_const.mul hEcont).intervalIntegrable _ _
+    rw [gaussianWindowAverage, hpt, intervalIntegral.integral_sub i1 i2,
+      intervalIntegral.integral_add i3 i4, intervalIntegral.integral_const_mul]
+    simp only [gaussianWindowAverage]
+    ring
+  have hfun : (gaussianWindowAverage fun u => f u * E u) = fun T =>
+      gaussianWindowAverage (fun u => h u * E u) T + A * gaussianWindowAverage E T -
+        gaussianWindowAverage (fun u => S u * E u) T := funext hsplit
+  have hlim1 : Tendsto (gaussianWindowAverage fun u => h u * E u) atTop (𝓝 0) :=
+    tendsto_gaussianWindowAverage_of_tendsto_zero (hhcont.mul hEcont) hhE0
+  have hlim2 := (tendsto_gaussianWindowAverage_cexp (-τ)).const_mul A
+  have hlim3 := tendsto_gaussianWindowAverage_tsum_cexp criticalBohrAmplitude hsum
+    xiZeroHalfOrdinate τ
+  have htot := (hlim1.add hlim2).sub hlim3
+  have hval : (if τ = 0 then A else 0) - ∑' q : XiZeroCopy,
+      (if xiZeroHalfOrdinate q = τ then criticalBohrAmplitude q else 0) =
+      (0 + A * (if -τ = 0 then 1 else 0)) - ∑' q : XiZeroCopy,
+      (if xiZeroHalfOrdinate q = τ then criticalBohrAmplitude q else 0) := by
+    by_cases hτ : τ = 0
+    · rw [if_pos hτ, if_pos (by rw [hτ, neg_zero]), mul_one, zero_add]
+    · rw [if_neg hτ, if_neg (by intro h; exact hτ (neg_eq_zero.1 h)), mul_zero, zero_add]
+  rw [hfun, hval]
+  exact htot
+
+/-! ## Zero detection -/
+
+/-- A zero of `ξ` has positive divisor multiplicity. -/
+theorem xiDivisor_pos_of_xi_eq_zero {ρ : ℂ} (hρ : xi ρ = 0) :
+    0 < (MeromorphicOn.divisor xi Set.univ) ρ := by
+  rw [MeromorphicOn.divisor_apply (fun z _ => (xi_analyticAt z).meromorphicAt) (Set.mem_univ ρ),
+    (xi_analyticAt ρ).meromorphicOrderAt_eq]
+  have hne : analyticOrderAt xi ρ ≠ 0 := (xi_analyticAt ρ).analyticOrderAt_ne_zero.mpr hρ
+  have htop : analyticOrderAt xi ρ ≠ ⊤ := by
+    rw [Ne, analyticOrderAt_eq_top]; exact xi_not_eventually_zero ρ
+  obtain ⟨n, hn⟩ := ENat.ne_top_iff_exists.mp htop
+  rw [← hn] at hne ⊢
+  have hn0 : n ≠ 0 := by rintro rfl; exact hne rfl
+  rw [ENat.map_coe, WithTop.untop₀_coe]
+  exact_mod_cast Nat.pos_of_ne_zero hn0
+
+/-- Every zero of `ξ` is the value of a zero copy. -/
+theorem exists_xiZeroCopy_eq_of_xi_eq_zero {ρ : ℂ} (hρ : xi ρ = 0) :
+    ∃ q : XiZeroCopy, xiZero q = ρ := by
+  have hpos := xiDivisor_pos_of_xi_eq_zero hρ
+  have hmem : ρ ∈ (MeromorphicOn.divisor xi Set.univ).support := Function.mem_support.mpr hpos.ne'
+  exact ⟨⟨⟨ρ, hmem⟩, ⟨0, Int.lt_toNat.mpr (by simpa using hpos)⟩⟩, rfl⟩
+
+/-- The number of zero copies with half-ordinate `τ`, i.e. the multiplicity of `½ + 2iτ`. -/
+def halfOrdinateMultiplicity (τ : ℝ) : ℝ :=
+  ∑' q : XiZeroCopy, if xiZeroHalfOrdinate q = τ then (1 : ℝ) else 0
+
+theorem summable_halfOrdinate_indicator (hRH : RiemannHypothesis) (τ : ℝ) :
+    Summable fun q : XiZeroCopy => if xiZeroHalfOrdinate q = τ then (1 : ℝ) else 0 := by
+  refine Summable.of_nonneg_of_le (fun q => by split_ifs <;> norm_num) (fun q => ?_)
+    (summable_norm_inv_xiZero_sub_half_sq.mul_left (4 * τ ^ 2))
+  split_ifs with h
+  · have haI := xiZero_sub_half_eq_of_riemannHypothesis hRH q
+    have him : (xiZero q).im = 2 * τ := by rw [xiZeroHalfOrdinate] at h; linarith
+    have hn : ‖xiZero q - 1 / 2‖ = 2 * |τ| := by
+      rw [haI, norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_I, mul_one, him,
+        abs_mul, abs_two]
+    have hτ : τ ≠ 0 := by
+      intro h0
+      have hz := xi_xiZero q
+      have hlow : |(xiZero q).im| ≤ 1 := by rw [him, h0]; norm_num
+      exact xi_ne_zero_of_abs_im_le_one hlow hz
+    rw [norm_inv, inv_pow, hn, mul_pow, sq_abs]
+    have h4 : 0 < 2 ^ 2 * τ ^ 2 := by have := pow_pos (abs_pos.2 hτ) 2; rw [sq_abs] at this; positivity
+    rw [show (4 : ℝ) * τ ^ 2 = 2 ^ 2 * τ ^ 2 by norm_num, mul_inv_cancel₀ h4.ne']
+  · positivity
+
+/-- **The Bohr coefficient counts the zero.**
+`Σ_{μ_ρ = τ} ½ Γ(i μ_ρ) = ½ Γ(iτ) · #{ρ : Im ρ = 2τ}`. -/
+theorem tsum_bohrAmplitude_eq_gamma_mul_multiplicity (τ : ℝ) :
+    (∑' q : XiZeroCopy, if xiZeroHalfOrdinate q = τ then criticalBohrAmplitude q else 0) =
+      (1 / 2 : ℂ) * Complex.Gamma ((τ : ℂ) * I) * (halfOrdinateMultiplicity τ : ℂ) := by
+  rw [halfOrdinateMultiplicity, Complex.ofReal_tsum, ← tsum_mul_left]
+  refine tsum_congr fun q => ?_
+  split_ifs with h
+  · rw [criticalBohrAmplitude, h]; push_cast; ring
+  · simp
+
+/-- **Zero detection.**  Under RH, for `τ ≠ 0`, `½ + 2iτ` is a zero of `ξ` iff the `τ`-Bohr
+coefficient of the central Gaussian prime gap is nonzero. -/
+theorem xi_eq_zero_iff_bohrCoefficient_ne_zero (hRH : RiemannHypothesis) {τ : ℝ} (hτ : τ ≠ 0) :
+    xi (1 / 2 + 2 * (τ : ℂ) * I) = 0 ↔
+      (∑' q : XiZeroCopy, if xiZeroHalfOrdinate q = τ then criticalBohrAmplitude q else 0) ≠ 0 := by
+  rw [tsum_bohrAmplitude_eq_gamma_mul_multiplicity τ]
+  have hΓ : Complex.Gamma ((τ : ℂ) * I) ≠ 0 := by
+    refine Complex.Gamma_ne_zero fun m hm => ?_
+    have := congrArg Complex.im hm
+    simp at this
+    exact hτ this
+  have hsum := summable_halfOrdinate_indicator hRH τ
+  constructor
+  · intro hz
+    obtain ⟨q, hq⟩ := exists_xiZeroCopy_eq_of_xi_eq_zero hz
+    have hμ : xiZeroHalfOrdinate q = τ := by
+      rw [xiZeroHalfOrdinate, hq]; simp
+    have hle : (1 : ℝ) ≤ halfOrdinateMultiplicity τ := by
+      have := hsum.le_tsum q (fun j _ => by split_ifs <;> norm_num)
+      rwa [if_pos hμ] at this
+    refine mul_ne_zero (mul_ne_zero (by norm_num) hΓ) ?_
+    exact_mod_cast (show halfOrdinateMultiplicity τ ≠ 0 by linarith)
+  · intro hne
+    have hm : halfOrdinateMultiplicity τ ≠ 0 := by
+      intro h0; apply hne; rw [h0]; simp
+    by_contra hz
+    apply hm
+    have hall : ∀ q : XiZeroCopy, ¬ xiZeroHalfOrdinate q = τ := by
+      intro q hq
+      apply hz
+      have haI := xiZero_sub_half_eq_of_riemannHypothesis hRH q
+      have him : (xiZero q).im = 2 * τ := by rw [xiZeroHalfOrdinate] at hq; linarith
+      have hq' : xiZero q = 1 / 2 + 2 * (τ : ℂ) * I := by
+        rw [← sub_eq_iff_eq_add', haI, him]; push_cast; ring
+      rw [← hq']
+      exact xi_xiZero q
+    rw [halfOrdinateMultiplicity]
+    simp [hall]
 
 end
 

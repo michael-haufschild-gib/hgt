@@ -60,3 +60,14 @@ Hierarchy: RH ⇔ sublinear growth on the vertical line ⇔ every height rate is
 ## Log
 - 2026-10-10 — created directly in 3-formalized (cycles 14–20 of the HCF exact-layer loop)
 - 2026-10-10 — extensions cycles 24–31 added
+
+## Extensions (cycles 35–37)
+- **Vertical Bohr spectrum** (`XiGaussianHeatVerticalSpectralLaw`): under RH, the Bohr coefficient of the prime chirp (π/τ)^{½}S(τ) on Re τ = a at frequency λ ≥ 0 is −π Σ_{γ_q²=λ} e^{−aλ}; the archimedean part has empty vertical spectrum unconditionally.
+- **Separation-free power sums** (`HTGeometry/PowerSumTuranLowerBound`): some |z_i| ≥ 1 ⇒ ∃ν ∈ [M+1, M+N], |Σ z_i^ν| ≥ 1/(2eN(6(N+1)(M+2N+2))^N).
+- **Exact vertical quadratic law** (`XiGaussianHeatVerticalQuadraticLowerLaw`): inf{c : ν(a+ib) = O(e^{cb²})} = Δ∞²/a; asymptotic quasi-RH ⇔ vertical rate < 1/(4a).
+- **Mean-value producer** (`XiGaussianHeatVerticalMeanCriterion`, cycle 38): RH ⇔ the vertical Cesàro mean of ν (equivalently of the prime chirp) on one line tends to 0; a polynomially bounded primitive Σ e^{−τw}/w on one line already forces RH.
+- **Zero-free half-plane** (`XiGaussianHeatZeroFreeHalfPlane`, cycle 42): RH ⇔ ν(τ) has no zeros in some right half-plane ⇔ the prime chirp equation (π/τ)^{1/2}S(τ) = Arch(τ) + 2πe^{τ/4} has no solution far right. Under ¬RH the zeros of ν reach every right half-plane (Hurwitz limit of normalized translates).
+- **Gram index** (`XiGaussianHeatVerticalGramIndex`, cycle 43): the vertical heat Gram form Q_a on ℂ[ℝ] has negative index = number of off-line zero quadruples (finite case), independent of a; RH ⇔ Q_a ⪰ 0.
+- **Hermite index law** (`XiGaussianHeatHankelIndex`, `XiGaussianHeatGramIndexInfinite`, cycle 44): the heat Hankel form of the moments m_n(a) = Σ_q w_q^n e^{−aw_q} and the vertical heat Gram form both have negative index = number of off-line zero quadruples ∈ ℕ ∪ {∞}, unconditionally, for every a > 0; RH ⇔ H_a ⪰ 0.
+- **Hodge-index law** (`XiGaussianHeatArchPrimeHankel`, cycle 45): the Hankel matrix of the arithmetic moments w_n(a) = (−1)^n(Arch−Prime)^{(n)}(a)/π has negative index 1 + #off-line quadruples (ℕ∪{∞}); RH ⇔ it is ⪰ 0 on P(−¼) = 0.
+- **Determinant criterion** (`XiGaussianHeatHankelDeterminants`, cycle 46): RH ⇔ det(M_{i+j}(a))_{i,j<N} > 0 for all N, with M_n(a) explicit arch−prime data; Sylvester's criterion added to HTGeometry.

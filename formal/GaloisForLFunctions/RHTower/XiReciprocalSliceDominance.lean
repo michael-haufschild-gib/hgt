@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiReciprocalSliceCriterion
 import GaloisForLFunctions.RHTower.XiReciprocalSlicePolyaFrequency
 import GaloisForLFunctions.HTGeometry.ReciprocalDoubleShadowing
+import GaloisForLFunctions.RHTower.WeightedScrewPoleContradiction
 
 /-!
 # A dominant real zero forces reciprocal slice positivity
@@ -506,22 +507,6 @@ theorem xiReciprocalSlicePositive_of_dominant_zero {t γ : ℝ} (ht : XiC t ≠ 
         (hsumre m).le
     · exact (im_iteratedDeriv_inv_xiHorizontalPair t (2 * m)).symm
   · rw [iteratedDeriv_inv_xiHorizontalPair_odd]
-
-/-- Finitely many zero copies lie in any disk. -/
-theorem finite_xiZeroCopy_norm_le (R : ℝ) :
-    {q : XiZeroCopy | ‖xiSpectralPoint q‖ ≤ R}.Finite := by
-  rcases le_or_gt R 0 with hR | hR
-  · refine Set.Finite.subset Set.finite_empty fun q hq => ?_
-    have := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
-    simp only [Set.mem_setOf_eq] at hq
-    linarith
-  · have h := xiSpectralPoint_inv_sq_summable.tendsto_cofinite_zero
-    have hev := h.eventually (gt_mem_nhds (show (0 : ℝ) < 1 / R ^ 2 by positivity))
-    rw [Filter.eventually_cofinite] at hev
-    refine hev.subset fun q hq => ?_
-    simp only [Set.mem_setOf_eq, not_lt] at hq ⊢
-    have hpos := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
-    exact one_div_le_one_div_of_le (by positivity) (pow_le_pow_left₀ hpos.le hq 2)
 
 /-- The squared reciprocal distances to a fixed point are summable. -/
 theorem summable_inv_sq_norm_xiSpectralPoint_sub (c : ℂ) :
