@@ -2,7 +2,7 @@
 
 **Scope:** dead = stated mechanism impossible, circular or nonselective. Survivor = retained theorem; **Needs** = changed problem outside obstruction. No-go for a shortcut does not retire its live route.
 
-**Lookup:** [27 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Live routes/candidates: [frontier map](rh-current-frontier-map.md#find-a-route).
+**Lookup:** [30 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Live routes/candidates: [frontier map](rh-current-frontier-map.md#find-a-route).
 
 **Evidence:** codes as in frontier map; [L] cited Lean declarations, no fresh compilation; [P] paper only; REF = unlocated legacy evidence, unverified here. Conditional, model-only and class restrictions retained.
 
@@ -250,6 +250,33 @@
 - **Survivor:** Quantization and RH receivers; high-order slices; singleton/isolation density.
 - **Needs:** Actual negative-cross/mixed-class control; every-height low-order sign; WD.
 - **E:** R:XiHolomorphicTwoPrimePencilGrowthDichotomy; R:XiLineUnimodularClockExcessCriterion; R:XiSliceFiniteOrderReduction.
+
+<a id="kr-raw"></a>
+### KR-RAW — Raw positive prime Dirichlet series
+
+- **Path:** Convergence of raw `ΣΛ(n)n^(−s)/log n` or `Σ_p p^(−s)` on `Re s>½` → zero-free log ζ / monodromy.
+- **Obstruction [L]:** Both diverge at every `Re s<1`, with or without RH; nonnegative coefficients fix abscissa 1.
+- **Survivor [L]:** Pole-subtracted coefficients `(Λ(n)−1)/log n` and `1_P(n)−1/log n` have convergence on every real `s>½` iff RH.
+- **Needs:** Independent signed Chebyshev/prime-count cancellation for regularized series; DR/PBM.
+- **E:** R:LogZetaDirichletDivergence; R:RegularizedLogZetaAbscissa; CANNOT-500/501; MUST-883.
+
+<a id="kr-bd"></a>
+### KR-BD — Cofinal Markov ground-state positivity
+
+- **Path:** Beurling–Deny/Markov inequality for even regular screw kernel at every aperture → nonnegative grounds → RH.
+- **Obstruction [L]:** First Beurling–Deny inequality for that kernel plus any scalar L² shift holds iff `2a≤log(plastic constant)`; no cofinal Markov passage through this form. Prime atoms only help the inequality.
+- **Survivor [L]:** Sharp sub-horizon disjoint-support sign; independent cofinal nonnegative-ground receiver remains valid.
+- **Needs:** Global spectral or arithmetic ground-state mechanism outside Markov class; RW/SZ.
+- **E:** R:SuzukiScrewBeurlingDenyAperture; MUST-887.
+
+<a id="kr-ptr"></a>
+### KR-PTR — Local Maxwell collar prime landing
+
+- **Path:** Rotating local Maxwell transmission collar admits literal critical prime conormals → Xi interface.
+- **Obstruction [L]:** Full variable-coefficient interface sidebands decay rapidly; critical prime conormals cannot be admitted. Fixed prime-log/integer half-rate stacks also violate lossless field-density bound.
+- **Survivor [L]:** Lossless temporal-stack entries have real zeros; Xi is their locally uniform product limit iff RH. Thin-slab continuum/nonlocal ports remain outside obstruction.
+- **Needs:** Exact arithmetic source-to-continuum handoff retaining Xi divisor; PTR/W1C.
+- **E:** R:PhotonicCorotatingCollarTraceRegularity; R:PhotonicLosslessTemporalStackRealZeros; R:PhotonicLosslessProductPortRH; R:PhotonicLosslessProductPortDensityLaw; R:PhotonicLosslessProductPortThinSlab.
 
 ## Retired labels
 

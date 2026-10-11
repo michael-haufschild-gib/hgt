@@ -72,3 +72,10 @@ This is the one unconditional theorem on the existence half (PBAP) that covers t
   - `weilArchRe_nonneg_of_primeBlind`: the smooth corollary, `0 ≤ weilArchRe(f⋆f̃)` for nonnegative `C²` compactly supported prime-blind `f`.
 
   Standard axioms. No sorries, no heartbeat options. The whole nonnegative cone of single tests now rests on one inequality on one window. T5 stays numeric: hgt-8a and I both estimate the true minimum only ≈ 0.15 above the target.
+- 2026-10-11 — **T5 reduced to one resolvent number** (Opus loop rows 2062–2063).
+  - On `[−a,a]`, `a = ½log 2`: the pole term is `2⟨f,c⟩² − 2⟨f,s⟩²`, with `‖s‖² = sinh a − a ≈ 0.007` (odd half negligible) and `‖c‖² = a + sinh a ≈ 0.700`.
+  - The arch form decouples by parity. With `μ₀ > 0` on pole-vanishing vectors, T5 for every real `f` is equivalent to `inf{Q_even(f) : ⟨f,c⟩ = 1} ≥ −2`, together with an odd check of size `0.014`.
+  - Certifying this from `μ₀ ≥ 1/10` fails:
+    - the Schur loss `‖P₀Aĉ‖²/μ₀ ≈ 4` exceeds the margin `≈ 0.19`, because of the endpoint log singularities;
+    - a trace certificate needs `‖P₀Kc‖ ≲ 6%·‖Kc‖`, which is numeric.
+  - The √F-subadditivity relaxation for `f ≥ 0` gives only `≈ 0.10 < 0.157` (row 2062).

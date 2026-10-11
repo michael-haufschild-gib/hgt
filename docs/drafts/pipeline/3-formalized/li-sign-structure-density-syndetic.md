@@ -26,3 +26,50 @@ Determine what a failure of Li's criterion must look like. (i) partially dischar
 
 ## Log
 - 2026-10-10: rows 727, 777, 778 formalized; card created in 3-formalized.
+
+## Squares (2026-10-10, MUST-908)
+
+`RHTower/LiSignAlongSquares` (465 lines, standard axioms, wired into `RHTower.lean`):
+- `exists_density_re_xiLiPaired_sq_neg_of_not_riemannHypothesis`: off the critical line, `Re 2λ_{(Tk)²} < 0` for at least `cN` of the `k < N`.
+- `riemannHypothesis_iff_eventually_re_xiLiPaired_sq_nonneg`: RH ⟺ eventual nonnegativity along the squares.
+
+Reusable pieces:
+- `eventually_norm_sum_pow_sq_le`: quadratic Weyl sums are `o(N)` off the roots of unity.
+- `exists_pow_eq_one_or_not_root`: a common period of a finite family's roots of unity.
+- `exists_card_filter_gt_of_mean_sq`: positive density from `o(N)` first and second moments.
+- `exists_card_filter_pow_sq_gt`: cosine sums along `T²k²`.
+
+This closes the squares item of the earlier [P] list. Primes remain [P].
+
+## Polynomials and the obstruction (2026-10-10, MUST-909)
+
+`RHTower/LiSignAlongPolynomials` (579 lines, standard axioms, wired):
+- `riemannHypothesis_iff_eventually_re_xiLiPaired_poly_nonneg`: for `P ∈ ℕ[X]` of degree `≥ 1` with no constant term, RH ⟺ eventual nonnegativity of `λ_{P(m)}`.
+- `re_sum_liTerm_rootFamily_pos`: the Ramanujan-sum countermodel for sequences that avoid `0 mod b`.
+
+Reusable pieces:
+- `eventually_norm_sum_zpow_le`: polynomial Weyl sums.
+- `exists_card_filter_seq_gt`: density along any divisible index family.
+
+Primes remain [P].
+
+## Conjugate second moment: progressions up to modulus 45 (MUST-923, 2026-10-11)
+
+Module `formal/GaloisForLFunctions/RHTower/LiSignConjugateMoment.lean` (550 lines, standard axioms, wired into `RHTower`).
+
+- `exists_card_filter_seq_gt_conj`: positive density for a conjugation-closed unit family with `Re u_i^e > 0`. No conditions on the products `u_iu_j`, `u_iū_j`.
+- `sum_mul_resonantRe_conj_ge`: the conjugate resonant part is a fibre sum of squares over `i ↦ u_i^Q`.
+- `riemannHypothesis_iff_eventually_re_xiLiPaired_of_value_le`: Li along any `P` with `|P(x₀)| ≤ 22`.
+- `riemannHypothesis_iff_eventually_re_xiLiPaired_progression_le_45`: every progression of modulus `≤ 45`.
+- Sharpness: `halfTurnPair_re_liTerm_eq_four` with `abs_arg_halfTurnRoot_twentyThree_le` shows the band angle alone cannot decide `46k + 23`.
+- `abs_re_tsum_liTerm_add_dominant_le` (in `LiSignDensity`) now states `i ∈ D ↔ ‖v i‖ = R`.
+
+Open [P]: odd moduli up to 89, and even moduli up to 88 with `b ≢ a/2`.
+
+## Exact reach below modulus 90 (MUST-926, 2026-10-11)
+
+Module `formal/GaloisForLFunctions/RHTower/LiSignProgressionsSharp.lean` (540 lines, standard axioms, wired). `riemannHypothesis_iff_eventually_re_xiLiPaired_progression_lt_90`: for `1 ≤ a ≤ 89`, every `b` except (`a ∣ 2b`, `a ∤ b`). With the half-turn and modulus-100 pairs, the band-angle classification of progressions is complete below 90.
+
+## Exact abstract classification (MUST-929, 2026-10-11)
+
+`formal/GaloisForLFunctions/RHTower/LiSignBohrRecurrence.lean` (437 lines, standard axioms, wired): `liThinning_iff_isBohrRecurrent`. Li thinning along `A` for all abstract families ⟺ `A` is a set of Bohr recurrence.

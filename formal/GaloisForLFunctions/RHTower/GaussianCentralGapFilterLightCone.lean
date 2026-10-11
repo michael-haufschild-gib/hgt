@@ -272,6 +272,21 @@ theorem norm_filteredZeroTail_le {ε : ℝ} (hε : 0 < ε) (τ : ℝ) (q : XiZer
     ‖filteredZeroTail ε τ q‖ ≤ Real.exp (-2 * ε) :=
   norm_integral_Iic_cexp_mul_gaussianFilterKernel_le hε τ (re_xiZero_sub_half_div_two_le q).1
 
+/-- The filtered left tails sum to at most `(Σ_ρ |c_ρ|) e^{−2ε}`. -/
+theorem norm_tsum_filteredZeroTail_le {ε : ℝ} (hε : 0 < ε) (τ : ℝ) :
+    ‖∑' q : XiZeroCopy, zeroBohrAmplitude q * filteredZeroTail ε τ q‖ ≤
+      (∑' q : XiZeroCopy, ‖zeroBohrAmplitude q‖) * Real.exp (-2 * ε) := by
+  have hAs : Summable fun q : XiZeroCopy => ‖zeroBohrAmplitude q‖ := summable_norm_zeroBohrAmplitude
+  have hb : ∀ q, ‖zeroBohrAmplitude q * filteredZeroTail ε τ q‖ ≤
+      ‖zeroBohrAmplitude q‖ * Real.exp (-2 * ε) := fun q => by
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg_left (norm_filteredZeroTail_le hε τ q) (norm_nonneg _)
+  have hsT : Summable fun q : XiZeroCopy => ‖zeroBohrAmplitude q * filteredZeroTail ε τ q‖ :=
+    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hb (hAs.mul_right _)
+  refine (norm_tsum_le_tsum_norm hsT).trans ?_
+  rw [← tsum_mul_right]
+  exact Summable.tsum_le_tsum hb hsT (hAs.mul_right _)
+
 /-- `(G + Σ_ρ c_ρ e^{(ρ−½)u/2}) K_{ε,τ}` is integrable on `u > 0`. -/
 theorem integrableOn_gapAddZeroSeries_mul_kernel {ε : ℝ} (hε : 0 < ε) (τ : ℝ) :
     IntegrableOn (fun u : ℝ => ((gaussianCentralGapLog u : ℂ) + ∑' q : XiZeroCopy,
@@ -458,18 +473,7 @@ theorem exists_norm_filteredGap_add_zeroSeries_le :
             (Eventually.of_forall fun u => by positivity)
       _ = C₀ * Real.sqrt (2 * Real.pi * ε) := by
           rw [integral_const_mul, integral_gaussianWindow hε]
-  have hTsum : ‖∑' q : XiZeroCopy, zeroBohrAmplitude q * filteredZeroTail ε τ q‖ ≤
-      A * Real.exp (-2 * ε) := by
-    have hsT : Summable fun q : XiZeroCopy => ‖zeroBohrAmplitude q * filteredZeroTail ε τ q‖ :=
-      Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun q => by
-        rw [norm_mul]
-        exact mul_le_mul_of_nonneg_left (norm_filteredZeroTail_le hε τ q) (norm_nonneg _))
-        (hAs.mul_right (Real.exp (-2 * ε)))
-    refine (norm_tsum_le_tsum_norm hsT).trans ?_
-    rw [hA, ← tsum_mul_right]
-    refine Summable.tsum_le_tsum (fun q => ?_) hsT (hAs.mul_right _)
-    rw [norm_mul]
-    exact mul_le_mul_of_nonneg_left (norm_filteredZeroTail_le hε τ q) (norm_nonneg _)
+  have hTsum := norm_tsum_filteredZeroTail_le hε τ
   have hsq : 0 ≤ Real.sqrt (2 * Real.pi * ε) := Real.sqrt_nonneg _
   have he : 0 ≤ Real.exp (-2 * ε) := (Real.exp_pos _).le
   calc _ ≤ C₀ * Real.sqrt (2 * Real.pi * ε) + A * Real.exp (-2 * ε) :=

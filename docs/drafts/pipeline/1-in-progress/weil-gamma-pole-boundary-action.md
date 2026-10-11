@@ -72,6 +72,8 @@ The arithmetic bound `|A_a|≤C_a=psi(exp(2a))+exp(2a)+log 4+5` and `|Delta_a|<l
 
 Each constrained parity sector realizes every complex value of `F_a`; the pair `(F_a(u),F_a(Ru))` is jointly surjective on the complete constrained space. Automatic decoupling cannot be recovered by choosing either parity. This does not restrict the source moment of a selected ground.
 
+The two-ended source rank is now formalized in `CCMPolarSourceEndpointRank`: every nonzero real combination of the two actual parity profiles diverges with one sign at one endpoint. Its right/left singular coefficients are `c(E+F)±d(E−F)`, `E=e^(a/2)>F=e^(−a/2)`. Thus no bounded correction erases both endpoint channels. This sharpens source independence but still gives no sign for the selected constrained ground; see [certificate](../3-formalized/weil-polar-source-endpoint-rank.md).
+
 ## Exact pole matrix and integrated prime error
 The literal pole energy in the ground bound is now `Q(p_r)=2(A+rC)`, where `A=Q(p_+)` and `C=Re Q(p_+,p_-)`. Both entries retain the full Gamma, rank-two polar, and finite prime-power terms. Arbitrary complex pole combinations diagonalize exactly in the two parity directions; their nonnegativity is equivalent to `|C|≤A`.
 

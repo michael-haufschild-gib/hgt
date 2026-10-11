@@ -203,13 +203,13 @@ theorem neg_re_zeroLightConeExponent_neg_of_far {q₀ q : XiZeroCopy} {τ : ℝ}
     nlinarith
   nlinarith
 
-/-- A strict bound on a finite set and a negative bound off it give a uniform gap. -/
+/-- A strict bound `E < M` on a finite set and a bound `E < L ≤ M` off it give a uniform gap. -/
 theorem exists_uniform_gap_of_finite {ι : Type*} (T : Finset ι) (P : ι → Prop) [DecidablePred P]
-    (E : ι → ℝ) {M : ℝ} (hM : 0 < M) (hstrict : ∀ q ∈ T, ¬ P q → E q < M)
-    (hfar : ∀ q, q ∉ T → E q < 0) :
+    (E : ι → ℝ) {L M : ℝ} (hLM : L < M) (hstrict : ∀ q ∈ T, ¬ P q → E q < M)
+    (hfar : ∀ q, q ∉ T → E q < L) :
     ∃ g : ℝ, 0 < g ∧ ∀ q, ¬ P q → E q ≤ M - g := by
   rcases (T.filter fun q => ¬ P q).eq_empty_or_nonempty with he | hne
-  · refine ⟨M, hM, fun q hq => ?_⟩
+  · refine ⟨M - L, by linarith, fun q hq => ?_⟩
     by_cases hqT : q ∈ T
     · exfalso
       have : q ∈ T.filter fun q => ¬ P q := Finset.mem_filter.2 ⟨hqT, hq⟩
@@ -219,13 +219,13 @@ theorem exists_uniform_gap_of_finite {ι : Type*} (T : Finset ι) (P : ι → Pr
   · obtain ⟨q₂, hq₂, hmin⟩ := (T.filter fun q => ¬ P q).exists_min_image (fun q => M - E q) hne
     have hq₂' := Finset.mem_filter.1 hq₂
     have hg2 : 0 < M - E q₂ := by linarith [hstrict q₂ hq₂'.1 hq₂'.2]
-    refine ⟨min M (M - E q₂), lt_min hM hg2, fun q hq => ?_⟩
+    refine ⟨min (M - L) (M - E q₂), lt_min (by linarith) hg2, fun q hq => ?_⟩
     by_cases hqT : q ∈ T
     · have := hmin q (Finset.mem_filter.2 ⟨hqT, hq⟩)
-      have := min_le_right M (M - E q₂)
+      have := min_le_right (M - L) (M - E q₂)
       linarith
     · have := hfar q hqT
-      have := min_le_left M (M - E q₂)
+      have := min_le_left (M - L) (M - E q₂)
       linarith
 
 /-- **The local gap.**  If `ρ₀` (with `Re ρ₀ > ½`) strictly maximizes `Re ρ` among the zeros of height
@@ -257,7 +257,7 @@ theorem exists_lightCone_gap_of_localExtremalZero {q₀ : XiZeroCopy} (hoff : 1 
       nlinarith
   have hfin := finite_xiZeroCopy_norm_le (‖xiZero q₀ - 1 / 2‖ + 6)
   refine exists_uniform_gap_of_finite hfin.toFinset (fun q => xiZero q = xiZero q₀)
-    (fun q => -(zeroLightConeExponent ((xiZero q₀).im / 2) q).re) (by nlinarith)
+    (fun q => -(zeroLightConeExponent ((xiZero q₀).im / 2) q).re) (L := 0) (by nlinarith)
     (fun q _ hq => hstrict q hq) (fun q hq => ?_)
   refine neg_re_zeroLightConeExponent_neg_of_far (q₀ := q₀) (τ := (xiZero q₀).im / 2)
     (by rw [show 2 * ((xiZero q₀).im / 2) - (xiZero q₀).im = 0 by ring, abs_zero]; norm_num) ?_
@@ -515,7 +515,7 @@ theorem exists_dominant_lightCone_centre {q₀ : XiZeroCopy} (hoff : 1 / 2 < (xi
     · exact hτB (Finset.mem_image.2 ⟨(q, q₁), Finset.mem_product.2 ⟨hqT, hq₁T⟩,
         (lightCone_tie_eq him heq).symm⟩)
   obtain ⟨g, hg, hgap⟩ := exists_uniform_gap_of_finite T (fun q => xiZero q = xiZero q₁) E
-    (by linarith) hstrict hfar
+    (L := 0) (by linarith) hstrict hfar
   exact ⟨τ, g, q₁, hg, hE₁, hgap⟩
 
 /-- **Finite-range converse for every off-line zero.**  If `ξ` has a zero `ρ₀` with `Re ρ₀ > ½`, there

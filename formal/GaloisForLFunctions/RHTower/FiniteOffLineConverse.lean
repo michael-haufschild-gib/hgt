@@ -12,6 +12,10 @@ not one of the finitely many points `ρ_q − ½`, `conj ρ_q − ½` (`q ∈ S`
 **Corollary** (`finite_offLine_iff_exists_offLineWave`). The off-line zero copies are finite iff
 `|ψ(x) − x + Re W_S(x)| ≤ K √x log²x` for some finite `S` and all `x ≥ 16`.
 
+**Lag-function form** (`finite_offLine_iff_exists_subtractedLag_bddAbove`, `…_bddBelow`). The
+off-line zero copies are finite iff `Φ(u) − Re Σ_{q ∈ S} w_q e^{u(ρ_q − ½)}` is bounded above (or
+below) on `u ≥ 0` for some finite `S`.
+
 **Proof.** With `w_q = 1/(ρ(1−ρ))` and `p_q = ρ − ½`,
 `Φ_S(u) = Φ(u) − Re Σ_S w_q e^{u p_q}` satisfies `Φ_S(log x)√x = −x∫_x^∞ E_S(t) t^{−2} dt − log 2π + S(x)`
 since `x∫_x^∞ t^{ρ−2} dt/ρ = w_q x^ρ`. A lower bound on `E_S` gives `Φ_S(u) ≤ M e^{au}`. The Laplace
@@ -50,7 +54,7 @@ theorem offLinePoles_finite (S : Finset XiZeroCopy) : (offLinePoles S).Finite :=
   (S.finite_toSet.image _).union (S.finite_toSet.image _)
 
 theorem continuous_offLineLagWave (S : Finset XiZeroCopy) : Continuous (offLineLagWave S) :=
-  Complex.continuous_re.comp (continuous_finset_sum _ fun q _ =>
+  Complex.continuous_re.comp (continuous_finsetSum _ fun _ _ =>
     continuous_const.mul (Complex.continuous_exp.comp
       (Complex.continuous_ofReal.mul continuous_const)))
 
@@ -131,8 +135,8 @@ theorem integral_offLineLagWave_mul_cexp (S : Finset XiZeroCopy) {s : ℂ} (hs :
 
 theorem integrableOn_offLineLagWave_mul_cexp (S : Finset XiZeroCopy) {s : ℂ} (hs : 1 / 2 < s.re) :
     IntegrableOn (fun u : ℝ => (offLineLagWave S u : ℂ) * Complex.exp (-s * u)) (Ioi 0) :=
-  integrable_ofReal_mul_cexp (continuous_offLineLagWave S).measurable
-    (fun u hu => abs_offLineLagWave_le S hu.le) hs
+  integrableOn_exp_bounded_mul_cexp (continuous_offLineLagWave S).measurable
+    (fun _ hu => abs_offLineLagWave_le S hu.le) hs
 
 /-- The Laplace transform of `Φ_S` on `Re s > ½` is `G − R_S`. -/
 theorem integral_subtractedLag_mul_cexp (S : Finset XiZeroCopy) {s : ℂ} (hs : 1 / 2 < s.re) :
@@ -265,7 +269,7 @@ theorem mul_integral_offLineWave_re_div_sq (S : Finset XiZeroCopy) {x : ℝ} (hx
   have hint : ∀ q ∈ S, Integrable (fun t : ℝ => (t : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ) / ((t : ℂ) ^ 2))
       (volume.restrict (Ioi x)) := fun q _ => (integral_Ioi_cpow_div_div_sq q hx).1
   have hsum := integrable_finsetSum S hint
-  refine ⟨hsum.re.congr_fun (fun t _ => (hpt t).symm) measurableSet_Ioi, ?_⟩
+  refine ⟨IntegrableOn.congr_fun hsum.re (fun t _ => (hpt t).symm) measurableSet_Ioi, ?_⟩
   rw [setIntegral_congr_fun measurableSet_Ioi (fun t _ => hpt t), integral_re hsum,
     integral_finsetSum S hint, RCLike.re_to_complex,
     Finset.sum_congr rfl fun q _ => (integral_Ioi_cpow_div_div_sq q hx).2]
@@ -433,7 +437,9 @@ theorem sqrt_mul_log_sq_le_rpow {a t : ℝ} (ha : 0 < a) (ht : 1 ≤ t) :
     calc Real.log t ^ 2 ≤ (t ^ (a / 2) / (a / 2)) ^ 2 := pow_le_pow_left₀ hl0 hl 2
       _ = 4 / a ^ 2 * (t ^ (a / 2)) ^ 2 := by field_simp; ring
       _ = 4 / a ^ 2 * t ^ a := by
-          rw [← Real.rpow_natCast, ← Real.rpow_mul ht0.le]; norm_num
+          have e : (t ^ (a / 2)) ^ 2 = t ^ a := by
+            rw [← Real.rpow_two, ← Real.rpow_mul ht0.le]; ring_nf
+          rw [e]
   have hs : Real.sqrt t * t ^ a = t ^ (1 / 2 + a) := by
     rw [Real.sqrt_eq_rpow, ← Real.rpow_add ht0]
   calc Real.sqrt t * Real.log t ^ 2 ≤ Real.sqrt t * (4 / a ^ 2 * t ^ a) :=
@@ -461,12 +467,10 @@ theorem re_le_half_of_abs_chebyshevPsi_sub_add_offLineWave_le (S : Finset XiZero
     nlinarith
   · linarith [xiZeroCopy_re_lt_one q]
 
-/-- **A finite-wave law for `ψ` forces finitely many off-line zeros.** -/
-theorem finite_offLine_of_abs_chebyshevPsi_sub_add_offLineWave_le (S : Finset XiZeroCopy) {K : ℝ}
-    (hK : ∀ x : ℝ, 16 ≤ x →
-      |Chebyshev.psi x - x + (offLineWave S x).re| ≤ K * Real.sqrt x * Real.log x ^ 2) :
+/-- If every copy off the subtracted poles has `Re ≤ ½`, the off-line copies are finite. -/
+theorem finite_offLine_of_re_le_half_off_offLinePoles (S : Finset XiZeroCopy)
+    (hle : ∀ q : XiZeroCopy, lagPole q ∉ offLinePoles S → (q.1 : ℂ).re ≤ 1 / 2) :
     {q : XiZeroCopy | (q.1 : ℂ).re ≠ 1 / 2}.Finite := by
-  have hle := re_le_half_of_abs_chebyshevPsi_sub_add_offLineWave_le S hK
   refine ((offLinePoles_finite S).biUnion fun p _ =>
     (finite_xiZeroCopy_band p.im le_rfl).union (finite_xiZeroCopy_band (-p.im) le_rfl)).subset ?_
   intro q hq
@@ -489,6 +493,14 @@ theorem finite_offLine_of_abs_chebyshevPsi_sub_add_offLineWave_le (S : Finset Xi
     unfold lagPole
     simp
 
+/-- **A finite-wave law for `ψ` forces finitely many off-line zeros.** -/
+theorem finite_offLine_of_abs_chebyshevPsi_sub_add_offLineWave_le (S : Finset XiZeroCopy) {K : ℝ}
+    (hK : ∀ x : ℝ, 16 ≤ x →
+      |Chebyshev.psi x - x + (offLineWave S x).re| ≤ K * Real.sqrt x * Real.log x ^ 2) :
+    {q : XiZeroCopy | (q.1 : ℂ).re ≠ 1 / 2}.Finite :=
+  finite_offLine_of_re_le_half_off_offLinePoles S
+    (re_le_half_of_abs_chebyshevPsi_sub_add_offLineWave_le S hK)
+
 /-- **Finitely many off-line zeros is exactly a finite-wave law for `ψ`.** The off-line zero copies
 form a finite set iff `|ψ(x) − x + Re Σ_{q ∈ S} x^q/q| ≤ K √x log²x` for `x ≥ 16`, for some finite
 set `S` of copies and some `K`. -/
@@ -502,6 +514,101 @@ theorem finite_offLine_iff_exists_offLineWave :
     exact ⟨hfin.toFinset, K, hK⟩
   · rintro ⟨S, K, hK⟩
     exact finite_offLine_of_abs_chebyshevPsi_sub_add_offLineWave_le S hK
+
+
+/-! ## The lag-function form -/
+
+/-- **Two-sided bound when `S` holds every off-line copy.** Then `Φ_S(u) = Re Σ_{q ∉ S} w_q e^{iuγ_q}`
+and `|Φ_S(u)| ≤ Σ_ρ |w_ρ|`. -/
+theorem abs_subtractedLag_le_of_offLine_subset (S : Finset XiZeroCopy)
+    (hS : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≠ 1 / 2 → q ∈ S) (u : ℝ) :
+    |subtractedLag S u| ≤ lagWeightTotal := by
+  classical
+  set f : XiZeroCopy → ℂ := fun q => lagWeight q * Complex.exp (u * lagPole q) with hf
+  have hfs : Summable f := (summable_lagWeight_mul_exp u).congr fun q => by simp [hf, lagPole]
+  have hΦ : weilLagFunction u = ∑' q, f q := by
+    unfold weilLagFunction
+    exact tsum_congr fun q => by rw [weilLagTerm_eq]; simp [hf, lagPole]
+  set g : XiZeroCopy → ℂ := fun q => if q ∈ S then 0 else f q with hg
+  have hgn : ∀ q, ‖g q‖ ≤ ‖lagWeight q‖ := by
+    intro q
+    by_cases hq : q ∈ S
+    · simp [hg, hq]
+    · have hre : (q.1 : ℂ).re = 1 / 2 := by by_contra h; exact hq (hS q h)
+      have h0 : ((u : ℂ) * lagPole q).re = 0 := by simp [Complex.mul_re, lagPole, hre]
+      simp only [hg, hq, if_false, hf, norm_mul, Complex.norm_exp, h0, Real.exp_zero, mul_one,
+        le_refl]
+  have hgs : Summable g := Summable.of_norm_bounded summable_norm_lagWeight hgn
+  have hfin : ∑' q, (if q ∈ S then f q else 0) = ∑ q ∈ S, f q := by
+    rw [tsum_eq_sum (s := S) (fun q hq => if_neg hq)]
+    exact Finset.sum_congr rfl fun q hq => if_pos hq
+  have hsplit : ∑' q, f q = ∑ q ∈ S, f q + ∑' q, g q := by
+    rw [← hfin, ← Summable.tsum_add (summable_of_ne_finset_zero (s := S) fun q hq => if_neg hq) hgs]
+    exact tsum_congr fun q => by by_cases hq : q ∈ S <;> simp [hg, hq]
+  have hval : subtractedLag S u = (∑' q, g q).re := by
+    unfold subtractedLag weilLagFunctionReal offLineLagWave
+    rw [hΦ, hsplit, Complex.add_re]
+    ring
+  rw [hval]
+  calc |(∑' q, g q).re| ≤ ‖∑' q, g q‖ := Complex.abs_re_le_norm _
+    _ ≤ ∑' q, ‖g q‖ := norm_tsum_le_tsum_norm hgs.norm
+    _ ≤ ∑' q, ‖lagWeight q‖ := hgs.norm.tsum_le_tsum hgn summable_norm_lagWeight
+    _ = lagWeightTotal := rfl
+
+/-- **A one-sided lower exponential bound on `Φ_S` bounds the real parts off the subtracted
+poles.** -/
+theorem re_le_half_add_of_neg_exp_le_subtractedLag (S : Finset XiZeroCopy) {a M : ℝ} (ha0 : 0 ≤ a)
+    (ha : a < 1 / 2) (hM : ∀ u, 0 ≤ u → -(M * Real.exp (a * u)) ≤ subtractedLag S u)
+    (q : XiZeroCopy) (hq : lagPole q ∉ offLinePoles S) :
+    (q.1 : ℂ).re ≤ 1 / 2 + a := by
+  have hΛφ : ∀ s : ℂ, 1 / 2 < s.re →
+      ∫ u in Ioi (0:ℝ), ((-subtractedLag S u : ℝ) : ℂ) * Complex.exp (-s * u) =
+        -(lagPoleSeries s - offLinePoleSum S s) := fun s hs => by
+    have e : (fun u : ℝ => ((-subtractedLag S u : ℝ) : ℂ) * Complex.exp (-s * u)) =
+        fun u : ℝ => -((subtractedLag S u : ℂ) * Complex.exp (-s * u)) :=
+      funext fun u => by push_cast; ring
+    rw [e, integral_neg, integral_subtractedLag_mul_cexp S hs]
+  obtain ⟨F, hFd, hFΛ⟩ := exists_differentiable_extension_of_le_exp
+    (φ := fun u => -subtractedLag S u) (measurable_subtractedLag S).neg
+    (fun u hu => by rw [abs_neg]; exact abs_subtractedLag_le S hu) ha0 ha (M := M)
+    (fun u hu => by linarith [hM u hu]) (Λ := fun s => -(lagPoleSeries s - offLinePoleSum S s))
+    (fun t ht => (analyticAt_lagPoleSeries_sub_offLinePoleSum S (lt_of_le_of_lt ha0 ht)).neg)
+    hΛφ
+  refine re_le_half_add_of_lagPoleSeries_sub_extension ha0 (offLinePoles_finite S)
+    (F := fun z => -F z) (fun z hz _ => (hFd z hz).neg)
+    (fun z hz => differentiableAt_offLinePoleSum S hz) (fun s hs _ => ?_) q hq
+  rw [hFΛ s hs]
+  ring
+
+/-- **Finitely many off-line zeros ⟺ `Φ` minus finitely many exponentials is bounded above.** -/
+theorem finite_offLine_iff_exists_subtractedLag_bddAbove :
+    {q : XiZeroCopy | (q.1 : ℂ).re ≠ 1 / 2}.Finite ↔
+      ∃ S : Finset XiZeroCopy, ∃ M : ℝ, ∀ u : ℝ, 0 ≤ u → subtractedLag S u ≤ M := by
+  constructor
+  · intro hfin
+    refine ⟨hfin.toFinset, lagWeightTotal, fun u _ => ?_⟩
+    exact (le_abs_self _).trans (abs_subtractedLag_le_of_offLine_subset _
+      (fun q hq => hfin.mem_toFinset.mpr hq) u)
+  · rintro ⟨S, M, hM⟩
+    refine finite_offLine_of_re_le_half_off_offLinePoles S fun q hq => ?_
+    have := re_le_half_add_of_subtractedLag_le_exp S le_rfl (by norm_num) (M := M)
+      (fun u hu => by rw [zero_mul, Real.exp_zero, mul_one]; exact hM u hu) q hq
+    linarith
+
+/-- **Finitely many off-line zeros ⟺ `Φ` minus finitely many exponentials is bounded below.** -/
+theorem finite_offLine_iff_exists_subtractedLag_bddBelow :
+    {q : XiZeroCopy | (q.1 : ℂ).re ≠ 1 / 2}.Finite ↔
+      ∃ S : Finset XiZeroCopy, ∃ M : ℝ, ∀ u : ℝ, 0 ≤ u → -M ≤ subtractedLag S u := by
+  constructor
+  · intro hfin
+    refine ⟨hfin.toFinset, lagWeightTotal, fun u _ => ?_⟩
+    exact neg_le_of_abs_le (abs_subtractedLag_le_of_offLine_subset _
+      (fun q hq => hfin.mem_toFinset.mpr hq) u)
+  · rintro ⟨S, M, hM⟩
+    refine finite_offLine_of_re_le_half_off_offLinePoles S fun q hq => ?_
+    have := re_le_half_add_of_neg_exp_le_subtractedLag S le_rfl (by norm_num) (M := M)
+      (fun u hu => by rw [zero_mul, Real.exp_zero, mul_one]; exact hM u hu) q hq
+    linarith
 
 end
 

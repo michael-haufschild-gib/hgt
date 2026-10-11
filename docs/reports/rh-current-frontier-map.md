@@ -2,7 +2,7 @@
 
 **State:** RH open; 16 live routes; 23 candidates; no source producer completes RH.
 
-**Corpus checked:** committed Lean through `965b0194814544d79204add94fb79311e1129bd0`; uncommitted files excluded from [L] claims.
+**Corpus checked:** committed Lean through `ed2e397c0b1861c78f7e83ff94cb5b361fde61c0`; uncommitted files excluded from [L] claims.
 
 **Status:** live = RH receiver + unexcluded producer problem; candidate = missing handoff or independent producer step; dead = stated mechanism refuted, circular or nonselective. Arrows = proposed proof path; only **Proved** records established steps.
 
@@ -12,14 +12,14 @@
 
 | Family | Live | Candidates | Dead mechanisms |
 |---|---|---|---|
-| Prime explicit formula / signed energy | [WL](#wl), [RW](#rw), [FU](#fu), [RP](#rp), [PA](#pa), [LI](#li) | [APF](#apf), [CTF](#ctf), [EGC](#egc), [EWJ](#ewj), [FEL](#fel) | [KR-GEN](rh-killed-routes.md#kr-gen), [KR-CRT](rh-killed-routes.md#kr-crt), [KR-FPR](rh-killed-routes.md#kr-fpr), [KR-REF](rh-killed-routes.md#kr-ref), [KR-CPF](rh-killed-routes.md#kr-cpf), [KR-TMD](rh-killed-routes.md#kr-tmd), [KR-TK](rh-killed-routes.md#kr-tk) |
-| Möbius cancellation | [MC](#mc) | [HCF](#hcf), [MSC](#msc) | [KR-DEF](rh-killed-routes.md#kr-def) |
-| Theta sign / heat / moments | [TT](#tt), [LA](#la), [TH](#th) | [HJ](#hj) | [KR-TEQ](rh-killed-routes.md#kr-teq), [KR-CAL](rh-killed-routes.md#kr-cal), [KR-ISG](rh-killed-routes.md#kr-isg), [KR-JPR](rh-killed-routes.md#kr-jpr) |
-| Geometry / index / arithmetic rigidity | [TG](#tg), [HF](#hf) | [DR](#dr), [GTA](#gta), [IRK](#irk), [PBM](#pbm) | [KR-DSA](rh-killed-routes.md#kr-dsa), [KR-INT](rh-killed-routes.md#kr-int), [KR-TWN](rh-killed-routes.md#kr-twn), [KR-APW](rh-killed-routes.md#kr-apw), [KR-R1](rh-killed-routes.md#kr-r1) |
+| Prime explicit formula / signed energy | [WL](#wl), [RW](#rw), [FU](#fu), [RP](#rp), [PA](#pa), [LI](#li) | [APF](#apf), [CTF](#ctf), [EGC](#egc), [EWJ](#ewj), [FEL](#fel) | [KR-GEN](rh-killed-routes.md#kr-gen), [KR-CRT](rh-killed-routes.md#kr-crt), [KR-BD](rh-killed-routes.md#kr-bd), [KR-FPR](rh-killed-routes.md#kr-fpr), [KR-REF](rh-killed-routes.md#kr-ref), [KR-CPF](rh-killed-routes.md#kr-cpf), [KR-TMD](rh-killed-routes.md#kr-tmd), [KR-TK](rh-killed-routes.md#kr-tk) |
+| Möbius cancellation | [MC](#mc) | [MSC](#msc) | [KR-DEF](rh-killed-routes.md#kr-def) |
+| Theta sign / heat / moments | [TT](#tt), [LA](#la), [TH](#th) | [HCF](#hcf), [HJ](#hj) | [KR-TEQ](rh-killed-routes.md#kr-teq), [KR-CAL](rh-killed-routes.md#kr-cal), [KR-ISG](rh-killed-routes.md#kr-isg), [KR-JPR](rh-killed-routes.md#kr-jpr) |
+| Geometry / index / arithmetic rigidity | [TG](#tg), [HF](#hf) | [DR](#dr), [GTA](#gta), [IRK](#irk), [PBM](#pbm) | [KR-DSA](rh-killed-routes.md#kr-dsa), [KR-INT](rh-killed-routes.md#kr-int), [KR-TWN](rh-killed-routes.md#kr-twn), [KR-APW](rh-killed-routes.md#kr-apw), [KR-RAW](rh-killed-routes.md#kr-raw), [KR-R1](rh-killed-routes.md#kr-r1) |
 | Renewal / singular comparison | [RN](#rn) | — | [KR-TRC](rh-killed-routes.md#kr-trc), [KR-R2](rh-killed-routes.md#kr-r2) |
 | Ward / collision | [WD](#wd) | — | [KR-UCF](rh-killed-routes.md#kr-ucf), [KR-R3](rh-killed-routes.md#kr-r3) |
-| Suzuki / boundary limits | [SZ](#sz) | [SEC](#sec) | [KR-NEV](rh-killed-routes.md#kr-nev) |
-| Physical realization | [PM](#pm) | [PTR](#ptr), [W1C](#w1c) | [KR-AUT](rh-killed-routes.md#kr-aut), [KR-SEL](rh-killed-routes.md#kr-sel), [HB](rh-killed-routes.md#retired-labels) |
+| Suzuki / boundary limits | [SZ](#sz) | [SEC](#sec) | [KR-NEV](rh-killed-routes.md#kr-nev), [KR-BD](rh-killed-routes.md#kr-bd) |
+| Physical realization | [PM](#pm) | [PTR](#ptr), [W1C](#w1c) | [KR-AUT](rh-killed-routes.md#kr-aut), [KR-SEL](rh-killed-routes.md#kr-sel), [KR-PTR](rh-killed-routes.md#kr-ptr), [HB](rh-killed-routes.md#retired-labels) |
 | Singular source completion | — | [BSH](#bsh), [CDC](#cdc), [JAS](#jas), [PCS](#pcs), [RFHM](#rfhm), [SC](#sc), [WBF](#wbf) | [R, AF, F](rh-killed-routes.md#retired-labels) |
 | Deterministic zeta recurrence | — | [BAG](#bag) | [KR-BAG](rh-killed-routes.md#kr-bag), [KR-TOR](rh-killed-routes.md#kr-tor), [KR-LLM](rh-killed-routes.md#kr-llm) |
 
@@ -30,9 +30,10 @@
 
 - **Path:** Exact prime data → one-sided lag/Hodge bound → bounded Φ → RH.
 - **Proved [L]:** RH ⇔ integer lags a_n=Φ(log n) bounded on either side; actual-prime versions and eventual bounds equivalent. Sharp ceiling a₁=2+γ−log(4π). Prime-mesh interpolation and vanishing local chord work proved; prime lags approach a₁ cofinally. Geometric barycentric schedules with controlled variance give equivalent signed-mean receivers. Three corrected lag values recover Λ(n)/n. Native scaled curvature is eventually positive exactly at odd prime powers; centered-prime Green reconstruction retains its affine term with error≤2.
+- **Proved [L]:** Finitely many off-line zero copies ⇔ Chebyshev error admits a finite explicit zero wave with remainder `O(√x log²x)`; subtracting such a wave does not exclude its poles. One isolated off-line copy requires a relative power-saving prime-error bound to contradict.
 - **Needs:** One source bound at √X scale: bound a_p above or below uniformly, or bound the corresponding signed barycentric means. Interpolation controls gaps, not sampled values.
 - **Excluded:** Smaller sharp ceiling; fixed finite prime truncation; genus/fixed-part selector; generic lag-Gram positivity.
-- **E:** R:PrimeLagLowerBoundRH; R:WeilLagPrimeQuadraticMesh; R:WeilLagLocalWorkHuxley; R:WeilLagBarycentricMean; R:WeilLagDiscretePrimeCurvature; R:WeilLagNativeCurvatureSign; R:WeilLagCurvatureGreenRegularization. Dead: KR-GEN.
+- **E:** R:PrimeLagLowerBoundRH; R:WeilLagPrimeQuadraticMesh; R:WeilLagLocalWorkHuxley; R:WeilLagBarycentricMean; R:WeilLagDiscretePrimeCurvature; R:WeilLagNativeCurvatureSign; R:WeilLagCurvatureGreenRegularization; R:FiniteOffLineConverse. Dead: KR-GEN.
 
 <a id="rw"></a>
 ### RW — Restricted Weil ground energy
@@ -42,7 +43,8 @@
 - **Proved [L]:** Literal Fejér box energy equals twice the completed prime-error primitive plus an explicit archimedean term; either eventual one-sided O(U) bound implies RH. Lower bounds sampled at U=log n suffice. Literal odd/even parity poles give conditional weighted deletion/addition laws; βΛ with β<1 makes odd-pole energy eventually negative.
 - **Needs:** Joint all-aperture Gamma/prime-edge/polar lower bound; source-derived Xi energy floor; full-test Hodge bounds transferred to constrained V₀. Arbitrary coherent overlap must retain all cross terms. Produce the cofinal ground-state shape/localization or real-rootedness and mass/zero-sum bounds; receiver hypotheses remain open. Alternatively prove one-sided O(U) literal Fejér box energy or its weighted prime Riesz bound at log-integer apertures.
 - **Excluded:** Raw compressed prime norm exponent: already 1 unconditionally. Edge-only mass gap; finite point-sample domination; positive fixed matched-mass margin; primitive surrogate omitting M/4; bare Gamma truncations K_i≤e^(rN),r<πe⁻². Their remainder-corrected joint forms remain open.
-- **E:** R:PoleVanishingWeilPositivityPrimeTwo; R:CCMPrimePoleSchurKernel; R:CCMPrimePoleSchurGammaInterpolation; R:WeilWorkExposingRayPacketCoercivity; R:WeilWorkExposingRayGammaTruncation; R:CCMFullGroundZeroSideEigen; R:CCMNonnegativeGroundStateRH; R:CCMSymmetricDecreasingGroundStateRH; R:CCMGroundEnergyZeroSumBound; R:WeilFejerBoxEnergyRH; R:WeilParityPoleDeletionAdditionLaws. Dead: KR-CRT, KR-APW.
+- **Excluded [L]:** Markov/Beurling–Deny positivity as a cofinal ground-state producer: exact aperture horizon `2a≤log(plastic constant)≈0.2812`; beyond it a different global spectral argument is required.
+- **E:** R:PoleVanishingWeilPositivityPrimeTwo; R:CCMPrimePoleSchurKernel; R:CCMPrimePoleSchurGammaInterpolation; R:WeilWorkExposingRayPacketCoercivity; R:WeilWorkExposingRayGammaTruncation; R:CCMFullGroundZeroSideEigen; R:CCMNonnegativeGroundStateRH; R:CCMSymmetricDecreasingGroundStateRH; R:CCMGroundEnergyZeroSumBound; R:WeilFejerBoxEnergyRH; R:WeilParityPoleDeletionAdditionLaws; R:SuzukiScrewBeurlingDenyAperture. Dead: KR-CRT, KR-APW, KR-BD.
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
@@ -77,9 +79,10 @@
 - **Path:** Exact signed Möbius source → half-power cancellation/subpower energy, or Σ_{1≤s<N}(ψ(s²)−s²)≤BN² → RH.
 - **Proved [L]:** RH ⇔ M(x)=Oε(x^(½+ε)) ⇔ Möbius Hilbert energy E_N=Oε(N^ε). E_N≥c logN; M(x)=Ω±(√x). Prime/semiprime/triprime matching and low-breadth transport proved, not complete cancellation. Physical wavelet, moving-cusp and prime-only transition-covariance receivers exact; finite-prime deletion preserves them. Signed largest-prime/Ramaré decompositions retain all cross terms. Square-sampled source equals a short signed bilinear form plus O(N²). Complete small-modulus residue action O(NU), U≤N; terminal centered row O(N logN); deleting width H costs≤18H³logN for 4H≤N. Low-product divisor remainder O(N²) when 1≤Q≤N and Q⁵(1+logN)²⁴≤N². For J(t)=Σλ_Liouville(n)e^(−nt)/n, eventual J(t)≥−C√t as t↓0 implies RH and simple nonreal critical zeros.
 - **Proved [L]:** Liouville lower bound J(t)≥−C√t(1+log(1/t)^k) implies RH and critical-zero order≤k+1. Global Hilbert bound E_N≤c(log(N+1))^k+C forces 2m≤k+1 for every critical-zero order m.
+- **Proved [L]:** RH ⇔ `J(t)=O(t^(1/2−ε))` for every ε>0; even one-sided lower bounds at every lossy exponent suffice. RH ⇔ convergence on every real σ>½ of each signed Dirichlet series for μ, Liouville λ, or Λ−1. Mertens/Riesz `o`-polylog laws force RH and strict zero-order `<a+1`; `Σμ(n)/√n` and Riesz `o(x^1/4)` are impossible. Frontier Mertens bounds have graded Ω±; smoothed squarefree one-sided `O(t^(−1/4−ε))` ⇔ RH, with Ω± at 1/4; k-free smoothing gives a zero-free-strip ladder.
 - **Needs:** Signed full bilinear source≤BN²: principal counterterm and high-product remainder jointly; paid small-modulus/low-product/terminal regions do not bound the whole. Alternatively full matched-source cancellation in Hilbert/wavelet receivers. Liouville and Hilbert logarithmic bounds have no independent source producer.
 - **Excluded:** Uniformly bounded Hilbert energy; universal insertion contraction/expansion; local Hall or parity-preserving matching alone; absolute replacement of signed discrepancy; scalar convolution-square-root construction. Coefficient-independent quadratic bound/PSD repair of square kernel; fixed smoothing order for growing prime packets. At exact smoothing threshold normalized positive packets escape every fixed logarithmic window.
-- **E:** R:MobiusHilbertFormEquivalence; R:MobiusHilbertSharpLogarithmicConstant; R:CausalMobiusThetaPhysicalWavelet; R:CausalMobiusThetaTransitionClock; R:CausalMobiusThetaPrimorialInnovation; R:MobiusPrimeInsertionLiteralPackets; R:MobiusSquareResidueShortBilinear; R:MobiusSquareBilinearCutoff; R:MobiusSquareDivisorProductBudget; R:MobiusSquareBilinearTerminalRow; R:MobiusRieszPrimePacketEscape; R:LiouvilleExponentialSumSimplicity; R:LiouvilleExponentialSumMultiplicity; R:MobiusHilbertMultiplicityLogExponent. Dead: KR-DEF.
+- **E:** R:MobiusHilbertFormEquivalence; R:MobiusHilbertSharpLogarithmicConstant; R:CausalMobiusThetaPhysicalWavelet; R:CausalMobiusThetaTransitionClock; R:CausalMobiusThetaPrimorialInnovation; R:MobiusPrimeInsertionLiteralPackets; R:MobiusSquareResidueShortBilinear; R:MobiusSquareBilinearCutoff; R:MobiusSquareDivisorProductBudget; R:MobiusSquareBilinearTerminalRow; R:MobiusRieszPrimePacketEscape; R:LiouvilleExponentialSumSimplicity; R:LiouvilleExponentialSumMultiplicity; R:MobiusHilbertMultiplicityLogExponent; R:LiouvilleExponentialSumRH; R:SignedArithmeticAbscissaRH; R:MertensPolylogStrictMultiplicity; R:RieszFunctionStrictMultiplicity; R:SquarefreeExponentialRH; R:KFreeExponentialLadder. Dead: KR-DEF.
 
 <a id="tt"></a>
 ### TT — Theta-tail and heat–Cassini currents
@@ -105,19 +108,21 @@
 - **Path:** Pre-divisor Gaussian Euler/Burnol source → faithful cubic transgression with nonnegative residual → integer trace<1 → RH.
 - **Proved [L]:** Completed-Xi Hardy cubic trace equals enclosed multiplicity. Primitive budget B_base<1; operator seam norm<1 gives index control. Actual-disc winding, zero-free contraction, finite-height density bounds and principal Burnol cap lift proved. Source/covariance admission and fixed-Schwartz-test transfers do not identify full arithmetic cubic with that budget. Stable cone K₁≅ℤ; physical cone, theta first-exit and Wiener–Hopf presentations identify the unit generator, not the missing arithmetic cubic.
 - **Proved [L]:** Cone crossed-product Schrödinger representation is faithful; full and reduced cone norms agree. Matrix Wiener–Hopf lift is Fredholm with index equal to determinant winding. Neither identifies arithmetic cubic with primitive budget.
-- **Needs:** Construct matrix-complete E_base=E_residual+Tr T_D with E_residual≥0, retaining reflection-odd prime−Gamma data. Faithful source-to-Hardy identification; full signed cubic control; all-disc sub-unit bound. Fixed-scale o(1) bad-disc fraction remains open.
+- **Proved [L]:** Right-half-strip seam contracts on all but `O_c(X^(1−c/28)+log²X)` sampled discs at fixed distance `c>0` from the line; exceptional discs cannot be removed by this density bound.
+- **Proved [L]:** Gaussian central-gap arithmetic receivers give RH iff an eventual central budget, eventual negativity, explicit `−1/10+32√y` ceiling, Gaussian Chebyshev sign bound, spectral-Bohr condition, L² mean-square budget, or differenced ζ-ratio budget. Critical-zero Bohr spectrum and multiplicity-excess Parseval law exact. Off-line zeros force finite-scale budget failure (existential scale); finite-height transfer does not give source bound. Unconditional Vinogradov–Korobov saving reaches exponent 1/4, not the zero budget; positive shifted-Eisenstein source mixtures fail it.
+- **Needs:** Construct matrix-complete E_base=E_residual+Tr T_D with E_residual≥0, retaining reflection-odd prime−Gamma data. Faithful source-to-Hardy identification; full signed cubic control; all-disc sub-unit bound. Independently produce Gaussian central-gap bound at exponent 0 (first milestone <1/4); fixed-scale o(1) bad-disc fraction remains open.
 - **Excluded:** Holomorphic chiral loss; source-side free-orbit quantization; bounded trace-ideal transport; positive observer wall substituted for arithmetic handoff. Generic modular/positive source data do not control seam.
-- **E:** R:FormationAnchoredCubicSpecialization; R:RestrictedProjectionIndexOperatorNormCriterion; R:BurnolBaseCapPrincipalLift; R:SoninGammaClockNuclearLimit; R:PluckerCovarianceObserverSubunitDefect; R:PhysicalPluckerConeExtension; H:ApertureStableKTheory; H:ApertureTransgressionPresentations; H:ConeCrossedProductFaithful; H:MatrixWienerHopfIndex. Dead: KR-DSA, KR-R1, KR-TRC.
+- **E:** R:FormationAnchoredCubicSpecialization; R:RestrictedProjectionIndexOperatorNormCriterion; R:BurnolBaseCapPrincipalLift; R:SoninGammaClockNuclearLimit; R:PluckerCovarianceObserverSubunitDefect; R:PhysicalPluckerConeExtension; R:GaussianCentralGapExplicitCriterion; R:GaussianCentralGapMeanSquareBudget; R:GaussianCentralGapBohrSpectrum; R:GaussianCentralGapSimplicityGate; R:GaussianCentralGapFiniteHeightTransfer; R:GaussianPrimeGapExponentLaw; R:XiRightDiscSeamContractionNearLine; H:ApertureStableKTheory; H:ApertureTransgressionPresentations; H:ConeCrossedProductFaithful; H:MatrixWienerHopfIndex. Dead: KR-DSA, KR-R1, KR-TRC.
 
 <a id="hf"></a>
 ### HF — Positive Hodge form on arithmetic cohomology (Deninger / Meyer / F₁)
 
 - **Path:** Arithmetic cohomology → positive Hodge form with Frobenius–Hodge compatibility → RH. Alternative: full-positive weights λ(n) → arithmetic/spectral rigidity λ=Λ → RH.
 - **Proved [L]:** Geometric Hodge/prime-blind duality receivers; null repair and restricted shrinking-profile symbol floors. Pole-budget compact completion and attained Gamma minima; full energy nowhere weakly continuous. At positive covariance tolerance: dual optimum attained, dimension-independent measurement stability, complementary slackness and zero diagonal weights; at fixed law continuity includes tolerance zero. Exposing coefficients eventually positive with log(weight_n)/n→−2πe⁻²; every finite box tail positive. All-integer polar recovery: full C² sources β<½, one-pole sources β<1; critical energy passage open. For w(n)=(λ(n)−Λ(n))/√n, n≥2, with finite positive excess, fixed-probe asymptotic positivity⇔uniform asymptotic log-panel positivity; whole-line potential convergence⇔subexponential normalized deviation. Fine-mesh histories recover coefficients exactly, not their growth. Producer core: (c) is closed (MUST-718, any real masses on critical zeros), so only (N1) and PBAP remain. RH ⟸ PBAP + one strictly positive prime-blind radical multiplier (row 715). PBAP on the nonnegative cone (HF L349) is reduced in Lean to one window inequality (nonnegative tests, length log 2): R:PrimeBlindNonnegativeConeReduction, via quantile transport (H:QuantileRearrangementEnergy) and the Lévy–pole form (R:WeilArchReLevyPoleForm). The window inequality itself is numeric (margin ≈ 0.15). Uniqueness side: positive integer-blind measures exist at every exponential rate < π/2 (B_β·sech^k, loop row 720 [P]), so (N1)/C-PIN fails only through zero-faithfulness (the sign of the BRS V₁), not through positivity or decay.
-- **Proved [L]:** Every nonempty d-coordinate packet has an exact minimal certificate of d+1 actual normalized Gram tests; erasing any test gives a basis and a positive balancing relation. Under fixed positive cost normalization, full-cutoff certificates cost more than every fixed polynomial. Arbitrarily precise bounded-history errors preserving any finite prefix generically have unbounded and signed-nonsummable moments at every real shift; regular finite-dimensional families admit a common normalized C₀ receiver.
+- **Proved [L]:** Every nonempty d-coordinate packet has an exact minimal certificate of d+1 actual normalized Gram tests; erasing any test gives a basis and a positive balancing relation. One actual Gram test with fixed distinct nodes realizes every prescribed finite coefficient vector (exact image, not just density). For a fixed minimal dictionary its positive balancing ray gives the least feasible weights and minimizes every nonnegative native cost; coordinate isolation is exact but becomes expensive with cutoff. Under fixed positive cost normalization, full-cutoff certificates cost more than every fixed polynomial. Arbitrarily precise bounded-history errors preserving any finite prefix generically have unbounded and signed-nonsummable moments at every real shift; regular finite-dimensional families admit a common normalized C₀ receiver.
 - **Needs:** Source-derived nonnegative dual minimum or compatible positive Hodge geometry. Complete two-source Gamma/pole assembly; universal lower bound for full matched polar cone, multiplier zero included; critical β=1 fibre energy control. Finite Gram feasibility supplies no cutoff-uniform cost or full-source sign. Arbitrary full-positive λ additionally needs independent rigidity.
 - **Excluded:** Finite-rank/integral-lattice substitutes; approximate prime weights below rigidity thresholds; weak compactness without pole budget; one-node cosine at boundary coefficient d<1; bare Gamma truncation; unweighted resonance extension; source-preserving positive Mellin filters other than δ₀. Countable log-panel positivity substituted for full Weil positivity, even with one finite deficit; bounded recovery histories used as moment bounds; totalized potential sums without convergence.
-- **E:** R:WeilPositivityPrimeBlindDuality; R:WeilWorkPBAPJointSymbolFloor; R:WeilPaperSpectralCompactness; R:WeilPaperAffineCovarianceCertificates; R:WeilPaperCovarianceToleranceContinuity; R:WeilWorkExposingRaySublogFibreDensity; R:WeilWorkExposingRayCriticalBoundary; R:WeilPaperCovarianceDualAttainment; R:WeilPaperCovarianceMeasurementStability; R:WeilPaperCovarianceComplementarity; R:WeilWorkExposingRayTailAsymptotic; R:WeilLogShiftFiniteExcessCriterion; R:WeilLogShiftSubexponentialDomain; R:WeilLogShiftRecoveryHomeomorphism; R:WeilLogShiftGramMinimalCardinality; R:WeilLogShiftGramSimplexBasis; R:WeilLogShiftSuperpolynomialGramCost; R:WeilLogShiftArbitraryPrecisionGenericity; R:WeilLogShiftC0RecoveryReceiver. Dead: KR-INT, KR-APW.
+- **E:** R:WeilPositivityPrimeBlindDuality; R:WeilWorkPBAPJointSymbolFloor; R:WeilPaperSpectralCompactness; R:WeilPaperAffineCovarianceCertificates; R:WeilPaperCovarianceToleranceContinuity; R:WeilWorkExposingRaySublogFibreDensity; R:WeilWorkExposingRayCriticalBoundary; R:WeilPaperCovarianceDualAttainment; R:WeilPaperCovarianceMeasurementStability; R:WeilPaperCovarianceComplementarity; R:WeilWorkExposingRayTailAsymptotic; R:WeilLogShiftFiniteExcessCriterion; R:WeilLogShiftSubexponentialDomain; R:WeilLogShiftRecoveryHomeomorphism; R:WeilLogShiftGramMinimalCardinality; R:WeilLogShiftGramSimplexBasis; R:WeilLogShiftGramExactImage; R:WeilLogShiftGramNativeCostMinimum; R:WeilLogShiftGramCostInflation; R:WeilLogShiftSuperpolynomialGramCost; R:WeilLogShiftArbitraryPrecisionGenericity; R:WeilLogShiftC0RecoveryReceiver. Dead: KR-INT, KR-APW.
 
 **Conditional rigidity paths:** normalized full Weil positivity of λ assumed throughout; cubic path additionally assumes complete correspondence. None constructs λ.
 
@@ -132,10 +137,10 @@
 ### TH — Theta moment positivity
 
 - **Path:** Exact theta/prime−Gamma moments → all-degree Hankel/Bezoutian PSD → RH.
-- **Proved [L]:** Hermite finite-polynomial criterion; every fixed degree positive at sufficiently small degree-dependent heat time. Full form=norm energy−phase debt; same-time critical-node floors and heat-dissipation bounds proved. Literal theta fourth log derivative negative. C5 enriched current positive on 2≤t≤u; seam, Green recovery and moment transfer proved. Fixed-node tail Cauchy limits positive, not uniform in growing rank.
+- **Proved [L]:** Hermite finite-polynomial criterion; every fixed degree positive at sufficiently small degree-dependent heat time. Full form=norm energy−phase debt; same-time critical-node floors and heat-dissipation bounds proved. For every fixed positive heat parameter, RH ⇔ all heat-Hankel leading determinants positive; negative index equals off-line zero-quadruple count, while arch−prime form has one additional pole direction. Literal theta fourth log derivative negative. C5 enriched current positive on 2≤t≤u; seam, Green recovery and moment transfer proved. Fixed-node tail Cauchy limits positive, not uniform in growing rank.
 - **Needs:** All-degree positivity at one fixed positive heat time/all-time PSD; same-time phase ratio≤1; C5 current on 0<t≤u,t<2; full signed discrete-prime remainder and growing-rank transfer.
 - **Excluded:** Common all-degree cutoff inferred from fixed-degree limits; reverse heat retention; finite point/spectral-window floors; full-tail positive Cauchy reserve; generic log-concavity/finite moments; coarse eighth-moment absorption.
-- **E:** R:HankelPowerSumHermiteCriterion; R:XiHeatFiniteUniformPositivity; R:XiGaussianFullGapNodalBudget; R:XiGaussianNativeHeatDissipation; R:ThetaCuspC5OuterClockCurrent; R:ThetaCuspC5CurrentMomentTransfer; R:ThetaTailChargedEnergyCollapse.
+- **E:** R:HankelPowerSumHermiteCriterion; R:XiHeatFiniteUniformPositivity; R:XiGaussianFullGapNodalBudget; R:XiGaussianNativeHeatDissipation; R:XiGaussianHeatHankelIndex; R:XiGaussianHeatHankelDeterminants; R:XiGaussianHeatArchPrimeHankel; R:ThetaCuspC5OuterClockCurrent; R:ThetaCuspC5CurrentMomentTransfer; R:ThetaTailChargedEnergyCollapse.
 
 <a id="rn"></a>
 ### RN — Theta renewal phase and singular cofinal comparison
@@ -152,18 +157,20 @@
 - **Path:** Coefficient-faithful directed source current → global negative-cross control / collision charge<2 → RH.
 - **Proved [L]:** Ward edge-energy quantization; symmetric-disc excess even; horizontal slice positivity equivalent to RH after finite-low-order reduction. High-order and positive-density slice signs proved. Actual-zero singleton/horizontal-isolation density estimates retain overlap deficits; abstract packet inequalities retain mixed-class leakage. Sampled block pair-field count removes selected simple critical points under the on-line norm cap and explicit pair-field threshold; no actual-field bound supplied.
 - **Proved [L]:** Sampled-block odd-angle certification bounds horizontal excess by unselected simple-line points plus uncertified mixed points. Under explicit absorber and on-line norm hypotheses, quadratic mixed deficit d≤3−2√2 costs zero in the sharp count.
+- **Proved [L]:** Reciprocal Xi-slice Pólya-frequency (PF∞) criterion: RH iff every admissible height passes; also iff coefficient nonnegativity holds at almost every height. Unconditionally good open intervals occur above every height and positive-density heights pass; hence density alone cannot close route. Under an isolated off-line zero, Xi(γ)≠0 and bounded same-ordinate multiplicity, some reciprocal coefficient is negative by order `O(log γ)` with explicit bound; near-double shadows and missing Xi(γ) condition remain.
 - **Needs:** Global one-sided cap family with uniform integrability; all-prime directed comparison; low-order signs at every height. Eliminate actual mixed-class loss for full horizontal Lamzouri inequality; density does not give all-fibre isolation. Prove actual owner odd-angle or absorber/deficit bounds, including the on-line norm cap and off-line pair-field thresholds, for every zero block.
 - **Excluded:** Symmetric smoothing, scalarized/unlabelled exchange, generic collision transversality; sub-quantum source margin replacing unquantized growth; trace-only overlap criterion.
-- **E:** R:XiWardEdgeEnergyPhaseQuantizationUniversalityLaw; R:XiHorizontalCollisionChargeEndpoint; R:XiSymmetricDiscIndexParity; R:XiSliceFiniteOrderReduction; R:HorizontalSingletonDensityNinth; R:HorizontalIsolationBlockPairField; R:HorizontalIsolationBlockFailureCount; R:HorizontalSimplicitySharpDeficitCount. Dead: KR-R3.
+- **E:** R:XiWardEdgeEnergyPhaseQuantizationUniversalityLaw; R:XiHorizontalCollisionChargeEndpoint; R:XiSymmetricDiscIndexParity; R:XiSliceFiniteOrderReduction; R:XiSingleHeightPolyaFrequencyCriterion; R:XiSlicePolyaFrequencyDensityZeroOne; R:XiSliceBoundedDetectionOrder; R:XiSliceCoeffNearDoublePositivity; R:HorizontalSingletonDensityNinth; R:HorizontalIsolationBlockPairField; R:HorizontalIsolationBlockFailureCount; R:HorizontalSimplicitySharpDeficitCount. Dead: KR-R3.
 
 <a id="li"></a>
 ### LI — Paired Li and prime–Gamma Li balances
 
 - **Path:** Literal prime−Gamma history → signed lower bound / finite primitive floor → Li positivity → RH.
 - **Proved [L]:** Li positivity receiver, including fixed progressions; exact Cayley−Chebyshev and even-cross balances. Source/history, Gamma coupling and Green identities retain signed forcing. Actual Euler jets have both signs; positive local windows and sharp first-negative-order laws classified.
+- **Proved [L]:** RH iff paired Li coefficients have subexponential negative growth; same for the actual even-cross clock lower envelope. First 68 paired Li coefficients are nonnegative unconditionally. If RH fails, positive and negative Li indices each have positive density and eventually bounded gaps; RH iff arbitrarily late arbitrarily long nonnegative runs. These are global receivers, not finite certificates.
 - **Needs:** Eventually Re H_N≥K_N−C on 0<t≤c log(2N+1),some valid r and 0<c<r/4; alternatively finite eventual lower bound for literal primitive P. Moving-history outside correlation/first-crossing sign.
 - **Excluded:** All-even Euler-jet positivity; positive Gamma couplings or asymptotic ratios substituted for signed source bound; scalar Cassini orientation.
-- **E:** R:LiEvenCrossRealEulerJetBridge; R:LiEvenCrossEulerFirstNegativeOrder; R:LiEvenCrossActualCurrentPositiveWindow; R:LiEvenCrossEulerSourceBoundaryLimit.
+- **E:** R:LiEvenCrossRealEulerJetBridge; R:LiEvenCrossEulerFirstNegativeOrder; R:LiEvenCrossActualCurrentPositiveWindow; R:LiEvenCrossEulerSourceBoundaryLimit; R:LiSignDensity; R:LiEvenCrossActualClockGrowthLaw; R:LiFirstCoefficientsNonneg.
 
 <a id="sz"></a>
 ### SZ — Suzuki screw and shifted-kernel limits
@@ -172,7 +179,8 @@
 - **Proved [L]:** Screw/shifted-Xi receivers; exact supported modulation phase recovery and Schur law. Boundary pairing, aperture transfer and explicit quantile debit retained. Finite-head/tail decompositions do not fix complete source sign. Positive Green inverse gives one-sided receiver. Observer boundary/M→0; terminal history costs O(L³/(M√M)), hence O(M) for L³≤M^(5/2), 2(L+2)≤M. Native Cayley synthesis converges a.e. along the full sequence with one null set for countable inputs and finite mixtures.
 - **Needs:** Source Wronskian law controlling moving infinite head and weighted shell leakage in topology retaining cusp cancellation; uniform moving-source passage to unshifted Xi. Linear bound for remaining interior signed/positive-history action; a.e. reconstruction alone supplies no sign or uniform moving-source bound.
 - **Excluded:** Eventual frequency monotonicity; discarded cusp/tail cancellation; finite-aperture or finite-head positivity used as full floor.
-- **E:** R:SuzukiScrewPointwiseNonnegativityCriterion; R:SuzukiCanonicalShiftedXi; R:CCMSuzukiCrossApertureCurvatureLeakage; R:CCMRestrictedWeilModulationPhaseRecovery; R:CCMOutgoingQuantileEntropyDebit; R:CCMUnitRieszSuzukiGreenPositiveInverse; R:SuzukiObserverJetBoundaryAsymptotics; R:SuzukiObserverJetTerminalLayer; R:PaperSuzukiCayleySynthesis.
+- **Excluded [L]:** Beurling–Deny/Markov positivity cannot extend beyond aperture `a=log(plastic constant)/2`; exact sub-horizon sign survives.
+- **E:** R:SuzukiScrewPointwiseNonnegativityCriterion; R:SuzukiCanonicalShiftedXi; R:CCMSuzukiCrossApertureCurvatureLeakage; R:CCMRestrictedWeilModulationPhaseRecovery; R:CCMOutgoingQuantileEntropyDebit; R:CCMUnitRieszSuzukiGreenPositiveInverse; R:SuzukiObserverJetBoundaryAsymptotics; R:SuzukiObserverJetTerminalLayer; R:PaperSuzukiCayleySynthesis; R:SuzukiScrewBeurlingDenyAperture. Dead: KR-BD.
 
 <a id="pm"></a>
 ### PM — Physical-model routes: FZZ parity delay and recoil Ward transmutation
@@ -189,9 +197,9 @@
 ### APF — Arithmetic paired Fredholm
 
 - **Path:** Prime source → zero-independent divisor exhaustion → vanishing Fourier traces → RH receiver.
-- **Available:** Source winding/trace and completed K₁ finite-ancestor classification. [L] Matrix Wiener–Hopf lift has Fredholm index wind(det U), without arithmetic trace cancellation. Literal arithmetic cycle traces reconstructed a.e. from ζ–Mellin Fourier coefficients, with a common exceptional set; reconstruction does not annihilate coefficients.
+- **Available [L]:** Source winding/trace and completed K₁ finite-ancestor classification. Matrix Wiener–Hopf lift has Fredholm index wind(det U), without arithmetic trace cancellation. Literal arithmetic cycle traces reconstructed a.e. from ζ–Mellin Fourier coefficients, with a common exceptional set; all-prime common physical-span reconstruction now exact, but no vanishing theorem.
 - **Needs:** All Fourier-trace coefficients zero; source-derived exhaustion. Index+cokernel exhaustion is circular. Core (row 707): the reconstructed coefficients are ζ–Mellin values at the zeros, so their vanishing is the zero side of the explicit formula with the off-line terms removed, i.e. the Weil-positivity receiver.
-- **E:** CANNOT-100; H:MatrixWienerHopfIndex; R:PaperZetaCycleFourierReconstruction.
+- **E:** CANNOT-100; H:MatrixWienerHopfIndex; R:PaperZetaCycleFourierReconstruction; R:PaperPrimeFredholmReconstruction.
 
 <a id="bag"></a>
 ### BAG — Deterministic zeta self-return
@@ -231,8 +239,8 @@
 
 - **Path:** All dyadic roots on strict-right domain → nonvanishing → RH.
 - **Available:** Every root level on common Littlewood zero-free cusp; all 2^k roots on connected domain force nonvanishing. [L] Tilted Xi monodromy reaches every finite quotient; coordinate relatively algebraically closed. Actual marked image cover has constructed simply connected analytic capping; any planar analytic open embedding is onto, existence not supplied. Marked Kummer square classes/half-fields explicit; finite-plane unramifiedness does not trivialize the common quadratic class.
-- **Needs:** Global continuation/monodromy on entire strict-right domain. Capped topology/profinite surjectivity does not supply global dyadic roots. Core (row 707): every dyadic root of ξ exists on Re s > ½ iff ξ is zero-free there. The only non-restating source is a convergent zero-free representation of log ζ on ½ < Re s < 1, and its canonical form Σ Λ(n)n^{−s}/log n converges there iff RH. Davenport–Heilbronn shows the Euler product must enter at length ≍ t. Planar uniformization and full fundamental-group identification remain separate.
-- **E:** R:XiSymmetricLittlewoodZeroFreeCuspDyadicRoots; R:ZetaPoleHalfCausalSource; R:XiTiltPuncturedMonodromy; R:XiTiltRelativeClosure; R:XiMarkedSquareKernel; R:XiFiniteMarkedUnramified; R:XiLegendreHalfCoordinates; R:XiCappedAnalyticAtlas; R:XiCappedNoBoundedEmbedding. Dead: KR-TWN.
+- **Needs:** Global continuation/monodromy on entire strict-right domain. Capped topology/profinite surjectivity does not supply global dyadic roots. Every dyadic root of ξ exists there iff ξ is zero-free there. A source must prove convergence of the *pole-regularized* log-zeta series `Σ_{n≥2} ((Λ(n)−1)/log n)n^(−s)` for every real `s>½`, equivalent to RH [L]; raw `Σ Λ(n)n^(−s)/log n` diverges for every `Re s<1`, even under RH. Planar uniformization and full fundamental-group identification remain separate.
+- **E:** R:XiSymmetricLittlewoodZeroFreeCuspDyadicRoots; R:ZetaPoleHalfCausalSource; R:XiTiltPuncturedMonodromy; R:XiTiltRelativeClosure; R:XiMarkedSquareKernel; R:XiFiniteMarkedUnramified; R:XiLegendreHalfCoordinates; R:XiCappedAnalyticAtlas; R:XiCappedNoBoundedEmbedding; R:LogZetaDirichletDivergence; R:RegularizedLogZetaAbscissa. Dead: KR-TWN, KR-RAW.
 
 <a id="egc"></a>
 ### EGC — Pole-safe contour
@@ -254,8 +262,9 @@
 ### FEL — Theta likelihood
 
 - **Path:** Predeclared cofinal likelihood history → zero-to-contrast balance → confinement.
-- **Available:** Probability, contrast, reflection gap and tail/vertical decomposition.
+- **Available [L]:** Probability, contrast, reflection gap and tail/vertical decomposition. Each added observation contributes conditional KL; predeclared finite-history information rises to a source-bounded limit and controls finite reflection gaps. Coarsening loses information, not an off-line zero selectively.
 - **Needs:** Source-derived zero-to-contrast balance along that history. Core (rows 564, 714): the zero-to-contrast balance along a predeclared likelihood history is the explicit-formula balance between prime contrast and zero contrast. A source-derived balance is an a priori bound on the off-line zero side, i.e. existence in the HF sense (PBAP + one ray).
+- **E:** R:PaperThetaObservationHistory.
 
 <a id="gta"></a>
 ### GTA — Transverse Schur charge
@@ -266,12 +275,12 @@
 - **E:** F0122; no-go-237.
 
 <a id="hcf"></a>
-### HCF — Critical feature variance
+### HCF — Gaussian heat trace / critical feature variance
 
-- **Path:** Arithmetic nonuniformity → cofinal trace ceiling → RH receiver.
-- **Available:** Uniform-grid aliases→0; compact alias saving≤37/100 zero count.
-- **Needs:** Arithmetic anti-equidistribution and cofinal ceiling.
-- **E:** R:HedenmalmCriticalFeatureVarianceSavingCeiling; R:HedenmalmCriticalFeatureUniformGridAliasNoGo.
+- **Path:** Exact arch−prime Gaussian chirp / heat trace → one-line growth or all-rank Hankel positivity → RH.
+- **Available [L]:** For any fixed `a>0`, RH iff `ν(a+ib)` is bounded, iff the prime chirp is `O(√|b|)` (even subexponential suffices), iff a corresponding vertical mean vanishes; RH iff ν is zero-free on some right heat half-plane. Exact vertical type detects `sup_ρ 2|Imρ||Reρ−½|`; heat Gram/Hankel negative index counts off-line quadruples, arch−prime Hankel index adds one pole direction. All leading heat determinants positive iff RH. Fixed-rank small-time positivity holds unconditionally; uniform rank does not. Older compact alias saving≤37/100 remains non-cofinal.
+- **Needs:** Prime-side vertical cancellation / all-rank Hankel sign at one positive heat scale; neither unconditional Vinogradov–Korobov saving nor fixed-rank positivity supplies it.
+- **E:** R:HedenmalmCriticalFeatureVarianceSavingCeiling; R:HedenmalmCriticalFeatureUniformGridAliasNoGo; R:XiGaussianHeatRouteCapstone; R:XiGaussianHeatVerticalLineReceiver; R:XiGaussianHeatPrimeChirpReceiver; R:XiGaussianHeatZeroFreeHalfPlane; R:XiGaussianHeatHankelIndex; R:XiGaussianHeatHankelDeterminants; R:XiGaussianHeatArchPrimeHankel.
 
 <a id="hj"></a>
 ### HJ — Hurwitz reflection
@@ -285,17 +294,17 @@
 ### IRK — Rotation-algebra trace
 
 - **Path:** Arithmetic trace/Chern landing → integral constraint → orientation.
-- **Available:** K₀ scalar action only integral; no rapidity selector.
+- **Available [L]:** K₀ scalar action only integral; no rapidity selector. Native prime-rotation algebra contains no nonzero compact operator; compact repair cannot change its Calkin class. Trace-ideal cost is 0 only for balanced signed area, otherwise ∞; first-order norm rate detects nontrivial rotations.
 - **Needs:** Arithmetic landing with information beyond K₀ alone. Core (rows 564, 707, 714): the `K₀` trace `rank + θ_{p,q}·chern` is integral only if `chern = 0`. The open step is an arithmetic module whose Chern class equals the off-line multiplicity and whose trace is an integer analytic count. No count weights off-line zeros by an irrational factor, so the `K₀` layer is decorative and the content is that count.
-- **E:** F0164; CANNOT-177.
+- **E:** F0164; CANNOT-177; R:PaperPrimeRotationCalkinFaithfulness; R:PaperPrimeRotationIdealTrace; R:PaperPrimeRotationNormRate.
 
 <a id="jas"></a>
 ### JAS — Joint ancestry
 
 - **Path:** Singular all-grade ancestry → new creation/covariance law → orientation.
-- **Available:** Singular carrier, theta value and all-grade chain.
-- **Needs:** Changed inverse covariance/literal creation; avoid circular ancestry premise. Core (rows 564, 714): `exists_jasGammaThetaClosedFlatUnitResidueCertificate_iff_not_riemannHypothesis` [L]. The creator's current operator properties are compatible with any off-line copy, so a surviving JAS needs a new law excluding the unit residue (reflected prime-source linearity or trace cancellation). That law is RH-strength.
-- **E:** F0128; no-go-228, no-go-229, no-go-230, no-go-231.
+- **Available [L]:** Singular carrier, theta value and all-grade chain. Dressed prime-Poisson/Weil-lag Gram has PSD abscissa σ*; unconditional PSD at σ=2 and σ*≥Θ−½. RH iff σ*=0. At σ=1, exact capstone: `RH ⇔ JasDressedPSD 1 ∧ ¬JasOffLineChain`; PSD excludes a maximal off-line zero, but an infinite real-part chain approaching the supremum remains. Arithmetic Fejér and vertical criteria give equivalent receiver forms with same chain exception.
+- **Needs:** Independent dressed PSD at σ=1 plus exclusion of every off-line chain; the former still requires √X signed-prime cancellation. Existing inverse-covariant creation law remains nonselective.
+- **E:** F0128; R:JointAncestryRouteCapstone; R:JointAncestryLagAggregatePositivityAbscissa; R:JointAncestryMaximalOffLineExclusion; R:JointAncestryIsolatedRealPartPeaks; no-go-228, no-go-229, no-go-230, no-go-231.
 
 <a id="msc"></a>
 ### MSC — Möbius−Sonin transport
@@ -309,40 +318,41 @@
 ### PBM — Prime boundary monodromy
 
 - **Path:** Source boundary cancellation → no monodromy at infinity → orientation.
-- **Available:** No producer theorem recorded. [P] Growth bounds cannot remove logarithmic charges; a monodromy-free series (Σ_p p^{−s} convergent on Re s>½) is von Koch's prime count, i.e. RH; the archimedean weld carries no charge to cancel.
-- **Needs:** Source cancellation/no quantized monodromy at infinity.
+- **Available [L]:** Raw `Σ_p p^(−s)` diverges at every `Re s<1`, irrespective of RH. Pole-regularized `Σ_{n≥2}(1_P(n)−1/log n)n^(−s)` converges at every real `s>½` iff RH; same zero-free abscissa as regularized log ζ. Archimedean weld carries no independent cancelling charge.
+- **Needs:** Source cancellation for regularized prime coefficients/no quantized monodromy; no independent producer.
+- **E:** R:LogZetaDirichletDivergence; R:RegularizedLogZetaAbscissa. Dead: KR-RAW.
 
 <a id="pcs"></a>
 ### PCS — Singular co-shift
 
 - **Path:** Singular ground → wall-class annihilation → confinement.
-- **Available:** Explicit complex and wall-classifying ground.
+- **Available [L]:** Explicit complex and wall-classifying ground. Finite prime packet co-shift projections have essential norm 1, pairwise norm gap 1, strong but not norm cofinal convergence, and infinite nonzero-fibre ideal cost; compact repair cannot erase the wall mode.
 - **Needs:** Annihilate wall class without erasing forward mode; source-natural boundary remains covariant. Core (rows 564, 714): F344. The reflection-odd singular class vanishes exactly on the line because the two co-shift eigenvalues differ by the radial character off it. Annihilating the wall class while keeping the forward mode is the statement that every zero has `Re ρ = ½`.
-- **E:** F344; no-go-157.
+- **E:** F344; R:PaperPrimeCoShiftCalkin; R:PaperPrimeCoShiftCofinalGap; R:PaperPrimeCoShiftPacketSeparation; no-go-157.
 
 <a id="ptr"></a>
 ### PTR — Photonic source
 
-- **Path:** Prime-order nonlinear port → all-grade Xi interface → energy receiver.
-- **Available:** Pointwise full-jet Gårding bound.
-- **Needs:** Nonlinear/nonlocal port and all-grade Xi handoff. Core (rows 564, 714): the frozen complex transmission collar excludes critical prime conormals [L]. The variable-coefficient Maxwell transmission law that would carry this to the full source is unproved and is where the divisor information would have to enter.
-- **E:** R:PhotonicCorotatingFullJetGarding; R:PhotonicFrozenComplexTransmissionConormalNoGo.
+- **Path:** Exact prime-faithful lossless temporal stack/continuum port → real-rooted transfer limit Xi → RH.
+- **Available [L]:** Pointwise full-jet Gårding bound. Full variable-coefficient rotating Maxwell collar has rapidly decaying interface sidebands; literal critical prime conormals cannot enter that local port. Lossless temporal stacks have real-rooted transfer entries; RH iff Xi is a locally uniform limit of finite products of these entries. Field-density/zero-free-band constraint forces every slab duration≤π/6, excluding prime-log slabs; a separate zero-count law excludes integer half-rate clocks. Unconditional safe producers: cosine shifts `cos(hD)Ξ` for `h≥½`, positive heat above the de Bruijn–Newman threshold; extending them to all `h>0` or all positive heat is RH. Receiver overlaps W1C Lee–Yang chains.
+- **Needs:** Nonlocal/driven prime-faithful continuum port with admissible thin slabs, preserving exact Xi divisor; real-rootedness of finite stacks alone gives no arithmetic limit.
+- **E:** R:PhotonicCorotatingFullJetGarding; R:PhotonicCorotatingCollarTraceRegularity; R:PhotonicLosslessTemporalStackRealZeros; R:PhotonicLosslessProductPortRH; R:PhotonicLosslessProductPortDensityLaw; R:PhotonicLosslessProductPortThinSlab; R:PhotonicIntegerClockHalfRate. Dead: KR-PTR.
 
 <a id="rfhm"></a>
 ### RFHM — Support grade
 
 - **Path:** Phase/depth/compound-faithful source → broken inverse covariance → wall law.
-- **Available:** Inverse-covariance/creation obstruction.
+- **Available [L]:** Inverse-covariance/creation obstruction. Exact two-branch survival/KL/entropy bounds; complex defect plus retained output reconstructs input, while survival probabilities omit arithmetic log grade and cannot orient wall.
 - **Needs:** New covariance/creation law retaining phase, depth and compounds. Core (rows 564, 714): no-go-229/231. Reversible prime sewing and direct prime-torus actions preserve inverse covariance, so they cannot see `Re ρ`. A new covariance or creation law retaining phase, depth and compounds is the RH input itself.
-- **E:** no-go-229; no-go-231.
+- **E:** R:PaperRFHMSurvivalInformation; no-go-229; no-go-231.
 
 <a id="sc"></a>
 ### SC — Stokes/Witt−Krein
 
 - **Path:** Cross-fibre indefinite invariant → source orientation.
-- **Available:** Pointwise rigged fibres chamber-constant.
+- **Available [L]:** Pointwise rigged fibres chamber-constant. A single Fourier null set recovers every off-wall rigged chamber action at all source heights; each finite cutoff is zero on wall, so recovery of a prescribed wall vector iff that vector is zero. No uniform wall passage.
 - **Needs:** Source-fixed indefinite restriction/cross-fibre invariant. Core (rows 564, 714): F188 / `SourceHorizontalRiggedKreinWallSingularityNoGo` [L]. Fibrewise Krein invariants are chamber-constant and the canonical polarization is wall-singular. A cross-fibre indefinite invariant that selects the wall would be a Pontryagin index equal to the number of off-line pairs (Krein–Langer), i.e. a Weil-form inertia statement.
-- **E:** F188; no-go-170.
+- **E:** F188; R:PaperKreinWallFourierCompletion; no-go-170.
 
 <a id="sec"></a>
 ### SEC — Adjacent prime seam
@@ -357,8 +367,9 @@
 
 - **Path:** Arithmetic domain/scattering denominator → spectral confinement.
 - **Available:** [L] Bare operator has neither point spectrum nor compact resolvent. Complex-fugacity Lee–Yang chains/trees with abs(α)≤1 retain real-rootedness. Each affine field of frequency λ forces a zero within π/λ; normalized locally uniform E·Ξ limits, E entire zero-free, obey eventual Σ_j max(λ_j−2π/T,0)≤log(T/2π)−1+C/√T at admissible T≥4; complex chains included. Integer-anchored Γ-site chains have a spurious early zero for every length and real coupling abs(c_k)≤1, so no normalized Xi limit. Unitary Euler factorization forces every diagonal factor to have modulus one. Unimodular-fugacity chains factor into free sites (zero set = union of progressions); the κ/(k+2) doubled-harmonic chain equals 2cos(xℓ)+2κRe[e^{ixℓ}Σn^{−1−2ix}] up to κ²H²e^{|κ|H}, i.e. ζ enters on the 1-line (Lagarias–Suzuki shape). [L] Ξ is LP-maximal (CANNOT-497 with Newman). [L] Real-shift averages cosh(hD)Ξ, h ≠ 0, have imaginary zeros (R:XiRealShiftAverageImaginaryZeros); only imaginary shifts cos(hD), h ≥ ½, are LP. [P] For 0<h<½ the non-real zeros of cos(hD)Ξ up to T number ≤ 4N(½+h,T)+O(log T) (phase on Re s = ½+h loses 2π per zero to its right), so they have density zero for every h>0, unconditionally (loop row 722). [L] 0 ≤ Λ_dBN(cos(hD)Ξ) ≤ max(¼−h²,0)/2 for every h>0 (R:XiCosineShiftHeatStrip). For every nonconstant real-rooted real polynomial φ, no LP ψ has φ(D)ψ = Ξ, via flat theta mass at the kernel's natural boundary (R:RiemannKernelStripLPMaximality; R:XiFirstOrderLaguerrePolyaMaximality; R:XiRealRootedPolynomialPreimage; R:XiDerivativeLaguerrePolyaPreimage). For every transcendental LP symbol φ with φ(0) ≠ 0 and a real zero, the kernel-side preimage ∫Φ(u)φ(iu)^{−1}e^{izu}du is not LP (R:RiemannKernelLaguerrePolyaSymbol). So no producer is an LP operator applied to an LP function. [L] The zero slack is exactly at the critical line: cos(hD)Ξ is LP for h ≥ ½ (and every h > 0 under RH) but lies in (1 − (2h/π)D)·LP for h ≥ 3/2 (every h > 0 under RH), by the triple angle cosh 3u = cosh u(2cosh 2u − 1) (R:XiCosineShiftLaguerrePolya; R:XiCosineFamilyLaguerrePolyaSlack). [L] The Gaussian side is shift-blind: e^{τD²}cos(hD)Ξ has non-real zeros for every τ, h > 0, and Λ_{dBN}(cos(hD)Ξ) = 0 exactly for h ≥ ½; RH ⟺ cos(hD)Ξ ∈ LP for every h > 0 (R:DeBruijnNewmanCosineShift). Only the finite-order rigidity sits at h = 0.
+- **Available [L]:** Lossless photonic stack receiver is equivalent at real-rooted-limit level; slab duration≤π/6 excludes prime-log slabs, and a separate zero-count law excludes integer half-rate clocks. Only a source-faithful thin-slab/continuum limit can evade these constraints.
 - **Needs:** Arithmetic domain/coupling or scattering denominator retaining Xi's divisor while satisfying field-density constraints; no Γ-site anchored or modulus-p^(−½) unitary Euler shortcut.
-- **E:** R:WeightOneCliffordSpectralNoGo; R:ComplexFugacityLeeYangChain; R:ComplexFugacityLeeYangTree; R:UnitaryEulerFactorRigidity; R:LeeYangDatumFirstZero; R:LeeYangProducerFieldDensity; R:ComplexFugacityChainFieldDensity; R:ComplexFugacityChainDatum; R:ComplexFugacityChainUnimodular; R:ComplexFugacityChainFirstOrder; H:FirstOrderFilterVanishingIntervalBound; R:GammaSiteLeeYangChainXiObstruction.
+- **E:** R:WeightOneCliffordSpectralNoGo; R:ComplexFugacityLeeYangChain; R:ComplexFugacityLeeYangTree; R:UnitaryEulerFactorRigidity; R:LeeYangDatumFirstZero; R:LeeYangProducerFieldDensity; R:ComplexFugacityChainFieldDensity; R:ComplexFugacityChainDatum; R:ComplexFugacityChainUnimodular; R:ComplexFugacityChainFirstOrder; H:FirstOrderFilterVanishingIntervalBound; R:GammaSiteLeeYangChainXiObstruction; R:PhotonicLosslessProductPortRH; R:PhotonicLosslessProductPortThinSlab; R:PhotonicIntegerClockHalfRate.
 
 <a id="wbf"></a>
 ### WBF — Source certificates

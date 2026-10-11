@@ -19,3 +19,17 @@
 
 ## Log
 - 2026-10-10: rows 755 and 762 formalized; card created in 3-formalized.
+
+## Converse closed (2026-10-10)
+
+The converse of (i) is now in Lean (MUST-906), so the open-in-Lean remark above no longer applies.
+- `FiniteOffLineLandau.lean`:
+  - `norm_lagPoleSeries_ge_disc`: the pole blow-up on a punctured disc.
+  - `re_le_half_add_of_lagPoleSeries_sub_extension`: continuation of `G` up to a finite pole set, via a tilted ray.
+  - `exists_differentiable_extension_of_le_exp`: Landau's theorem for any real function bounded on one side.
+- `FiniteOffLineConverse.lean`:
+  - `subtractedLag_log_mul_sqrt`: the wave moved through the Chebyshev tail.
+  - `re_le_half_add_of_chebyshevPsi_sub_add_offLineWave_ge`: the one-sided converse.
+  - `finite_offLine_iff_exists_offLineWave`: FOZ ⟺ a finite-wave law for ψ.
+- Both modules are wired into `RHTower.lean` and use standard axioms only.
+- The converse allows for multiplicities: zeros sharing a value with some `q ∈ S` are excluded only through the finite pole set `{ρ_q − ½, conj ρ_q − ½}`.

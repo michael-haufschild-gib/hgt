@@ -332,7 +332,7 @@ variable {ι : Type*} {v : ι → ℂ} {m : ι → ℝ} {M : ℝ}
 theorem abs_re_tsum_liTerm_add_dominant_le
     (hm : ∀ i, 1 ≤ m i) (hv : ∀ i, 1 ≤ ‖v i‖) (hM : ∀ i, ‖v i‖ ≤ M)
     (hs : Summable fun i => m i * ‖v i - 1‖ ^ (2 : ℕ)) {i₀ : ι} (hlt : 1 < ‖v i₀‖) :
-    ∃ (D : Finset ι) (R : ℝ), D.Nonempty ∧ 1 < R ∧ (∀ i ∈ D, ‖v i‖ = R) ∧
+    ∃ (D : Finset ι) (R : ℝ), D.Nonempty ∧ 1 < R ∧ (∀ i, i ∈ D ↔ ‖v i‖ = R) ∧
       ∀ η : ℝ, 0 < η → ∃ N₁ : ℕ, ∀ n : ℕ, N₁ ≤ n →
         |∑' i, m i * (liTerm (v i) n).re + R ^ n * ∑ i ∈ D, m i * ((v i / R) ^ n).re|
           ≤ η * R ^ n := by
@@ -363,7 +363,9 @@ theorem abs_re_tsum_liTerm_add_dominant_le
   have hDnorm : ∀ i ∈ D, ‖v i‖ = R := fun i hi => (Finset.mem_filter.mp hi).2
   have hElt : ∀ i ∈ E, ‖v i‖ < R := fun i hi =>
     lt_of_le_of_ne (hRle i (Finset.mem_filter.mp hi).1) (Finset.mem_filter.mp hi).2
-  refine ⟨D, R, hDne, hR1, hDnorm, fun η hη => ?_⟩
+  have hDiff : ∀ i, i ∈ D ↔ ‖v i‖ = R := fun i =>
+    ⟨fun hi => hDnorm i hi, fun hi => Finset.mem_filter.mpr ⟨(hmemS i).mpr (by linarith), hi⟩⟩
+  refine ⟨D, R, hDne, hR1, hDiff, fun η hη => ?_⟩
   set C : ℝ := ∑' i, m i * ‖v i - 1‖ ^ (2 : ℕ) with hCdef
   have hC0 : 0 ≤ C := tsum_nonneg fun i => by nlinarith [hm0 i, sq_nonneg ‖v i - 1‖]
   set mS : ℝ := ∑ i ∈ S, m i with hmS
@@ -523,7 +525,7 @@ theorem exists_density_re_tsum_liTerm_neg_and_pos
   have hunit : ∀ i, ‖u i‖ = 1 := by
     intro i
     rw [hudef]; simp only
-    rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hR0, hDnorm i i.2,
+    rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hR0, (hDnorm i).mp i.2,
       div_self hR0.ne']
   have hu2 : ∀ i, u i ^ 2 ≠ 1 := by
     intro i h
@@ -589,7 +591,7 @@ theorem exists_window_re_tsum_liTerm_neg_and_pos
   have hunit : ∀ i, ‖u i‖ = 1 := by
     intro i
     rw [hudef]; simp only
-    rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hR0, hDnorm i i.2,
+    rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hR0, (hDnorm i).mp i.2,
       div_self hR0.ne']
   have hu2 : ∀ i, u i ^ 2 ≠ 1 := by
     intro i h

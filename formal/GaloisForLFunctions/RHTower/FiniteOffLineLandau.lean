@@ -394,7 +394,7 @@ theorem integrable_cexp_landauDensity {φ : ℝ → ℝ} (hφ : Measurable φ) {
     exact mul_le_mul_of_nonneg_right (landauDensity_le hK ha hu) (Real.exp_pos _).le
 
 /-- `φ(u) e^{−su}` is integrable on `(0,∞)` for `Re s > ½`. -/
-theorem integrable_ofReal_mul_cexp {φ : ℝ → ℝ} (hφ : Measurable φ) {K : ℝ}
+theorem integrableOn_exp_bounded_mul_cexp {φ : ℝ → ℝ} (hφ : Measurable φ) {K : ℝ}
     (hK : ∀ u, 0 < u → |φ u| ≤ K * Real.exp (u / 2)) {s : ℂ} (hs : 1 / 2 < s.re) :
     IntegrableOn (fun u : ℝ => (φ u : ℂ) * Complex.exp (-s * (u : ℂ))) (Ioi 0) := by
   refine (integrableOn_growth_majorant (C := K) (σ := s.re) hs).mono' ?_ ?_
@@ -438,7 +438,7 @@ theorem complexLaplace_landau_eq {φ : ℝ → ℝ} (hφ : Measurable φ) {K a M
       by rw [← Complex.exp_add]; congr 1; ring]
     ring
   rw [setIntegral_congr_fun measurableSet_Ioi hpt,
-    integral_sub (hexpInt'.const_mul _) (integrable_ofReal_mul_cexp hφ hK hs),
+    integral_sub (hexpInt'.const_mul _) (integrableOn_exp_bounded_mul_cexp hφ hK hs),
     integral_const_mul, integral_cexp_neg_mul_Ioi hsa', hΛφ s hs]
   have hne : (s - a) ≠ 0 := fun h => by
     have := congrArg Complex.re h; simp at this; linarith

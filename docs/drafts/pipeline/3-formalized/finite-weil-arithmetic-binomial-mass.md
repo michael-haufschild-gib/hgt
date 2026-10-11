@@ -1,6 +1,6 @@
 # Exact binomial value of arithmetic reference mass
 
-Status: dependency-closed paper argument; Lean API audit and implementation next.
+Status: formalized; native leaf builds and complete axiom/API audit passed.
 Date: 2026-10-10.
 Scope: local Lean corpus and installed Lean dependencies only. No web, external papers, numerical experiment, or external novelty claim.
 
@@ -17,6 +17,10 @@ Paper proof:
 
 Local sources inspected: `Mathlib/Algebra/Group/ForwardDiff.lean` lines147,237,252; `Mathlib/Data/Nat/Choose/Sum.lean` line94; `Mathlib/Data/Nat/Choose/Basic.lean` line333; current barycentric span. Initial `binomial moment annihilator` query had no hits. Broader `binomial finite difference` query found the polynomial coefficient extractor in `ThetaCuspHawkingParikhWilczekFinitePolynomialGradeNoGo.lean`, whose lighter dependency `HTGeometry/MicroSpectrumMomentCollapse.lean` provides exactly the two raw-power identities needed (lines68 and82). Reuse those existing corpus producers. Other hits concerned row transforms and jet multiplication. No mathematical evaluation by computation.
 
-Planned leaves: `WeilLogShiftArithmeticBinomial.lean` and `WeilLogShiftBinomialCost.lean`. Native leaf builds, complete public-declaration axiom audit, verified imported API terms, source/direct-dependency freshness, umbrella imports, local index, and formal lint. One owned Lean process at a time. No full build or heartbeat increase.
+Completed leaves: `WeilLogShiftArithmeticBinomial.lean` (12 public declarations) and `WeilLogShiftBinomialCost.lean` (2). Both native builds passed with empty logs. `/tmp/hgt-binomial-final-audit.lean` passed: all 14 public declarations depend only on `propext`, `Classical.choice`, `Quot.sound`; all 25 explicit API terms elaborate. Source/direct-dependency freshness and exact umbrella counts passed. Exhaustive incoming imports are the umbrella and the cost leaf. Index refresh passed; exact local lookup found `exists_finiteWeilGram_binomial_coordinate_cost` at line30 of the cost leaf. One owned Lean process at a time; no full build or heartbeat increase.
 
-Expected insight: the formerly abstract arithmetic reference becomes an explicit central-binomial ratio. This does not by itself prove an asymptotic growth rate or uniform distortion for clusters at only linear distance; those remain separate questions.
+Final formal lint `/tmp/hgt-binomial-final-lint.log` exits1 on five unrelated missing umbrella imports: `RHTower.JointAncestryArithmeticCriterion`, `RHTower.LiCayleyWindowLaw`, `RHTower.XiGaussianHeatVerticalMeanCriterion`, `HTGeometry.PaperRestrictionPacketDefect`, `HTGeometry.QKrawtchoukCompanionTriangular`. No errors in these leaves. Foreign concurrent work left untouched.
+
+New insight: the formerly abstract arithmetic reference is exactly the central-binomial ratio, with exact raw weights and normalized dual identified as well. Both whole-fiber sensitivity and actual coordinate-reader cost now expose that ratio without a new analytic premise. This does not by itself prove an asymptotic growth rate or uniform distortion for clusters at only linear distance; those remain separate questions.
+
+Follow-up completed 2026-10-10: [finite-weil-quadratic-sqrt-cost.md](finite-weil-quadratic-sqrt-cost.md) proves G_r>=sqrt(r+2), exact adjacent-order equality G_(2m)=G_(2m+1), and two-sided factor-two log-grid mass comparison at quadratic starts. Both actual-reader cost and whole-fiber sensitivity gain the square-root factor. All 12 new theorems passed native builds and complete axiom audit.

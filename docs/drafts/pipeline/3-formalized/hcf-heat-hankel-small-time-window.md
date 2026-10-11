@@ -39,15 +39,19 @@ Notation: `z_q = γ − iδ` with `|δ| < ½`, and `w_q = z_q²`. `σ_q := a·Re
 - **Status:** paper proof complete; Lean closed.
 
 ## Lean
-- `HTGeometry/PolynomialCoeffMassLagrange.lean`: `coeffMass`, `coeffMass_le_of_nodes` (Lagrange: `‖Q‖₁ ≤ ((1+R)/h)^d Σ|Q(t_i)|` for `h`-separated nodes in the `R`-disc), `re_exp_mul_eval_mul_conj_ge` (step 2).
-- `RHTower/XiGaussianHeatHankelSmallTimeWindow.lean`:
-  - `exists_card_xiCopiesWindow_ge`: window counts from RvM, `≥ (1−1/r)/(4π) T₂ log T₂` once `T₂ ≥ r T₁` and `T₁` is large.
-  - `heat_error_le`, `exp_neg_quarter_re_le`, `tsum_heatWindowError_le`: the error budget is `‖Q‖₁² E_d/√a`. This replaces the shell sum in step 5: the growth bound `e^{−(a/4)Re w} ≤ (16/a)|z|^{−2}` and `Σ|z|^{−2} < ∞` give `O(a^{−1/2})` directly, with no log.
-  - `heatHankel_re_ge_window`: `Re H_a(P) ≥ Σ_W e^{−σ}|Q(σ)|² − ‖Q‖₁² E_d/√a` for any finite `W`.
-  - `sum_window_main_ge`: separated windows with `≥ K` points each force `≥ e^{−2}K‖Q‖₁²/(L_d²(d+1))` with `L_d = (3/h)^d`.
-  - `exists_heat_windows`: `d+1` windows `σ ∈ [x_k, x_k+h]`, `h = 1/(2d+2)`, each with `≥ c a^{−1/2} log a^{−1/2}` copies.
-  - `exists_heatHankel_pos_of_natDegree_le` (main theorem). Threshold: `a_d = min(a₁, exp(−2(E_d+1)e²L_d²(d+1)/c_d))`.
+- **Superseded (2026-10-10).** Corpus Route U already proves an unconditional LINEAR window from the
+  arithmetic side, strictly stronger than this card's super-exponential `a_d`:
+  `XiShiftedParabolicDegreeHorizon.xiPolynomialGaussianHeatTraceReal_ge_parabolicWedgeMass` on the wedge
+  `a(deg+1) ≤ κ = routeUCompletedPrimeGammaAperture`. The earlier zero-side modules
+  (`RHTower/XiGaussianHeatHankelSmallTimeWindow`, `HTGeometry/PolynomialCoeffMassLagrange`) were removed.
+- `RHTower/XiGaussianHeatHankelLinearWindow.lean` (axioms: propext, Classical.choice, Quot.sound):
+  - `heatHankel_eq_add_polynomialTrace`: H_a(P) = trace(Re P) + trace(Im P), where P = A + iB, so P(w)·conj P(w̄) = A(w)² + B(w)².
+  - `heatHankel_re_pos_of_window`: P ≠ 0 and a(deg P + 1) ≤ κ ⇒ Re H_a(P) > 0.
+  - `exists_heatHankel_pos_of_natDegree_le` (same statement as before; now a₀ = κ/(d+1)).
+  - `heatMomentDet_pos_of_mul_le`: Δ_N(a) > 0 whenever aN ≤ κ.
+- The paper proof above (Riemann–von Mangoldt windows plus Lagrange) stays as an independent zero-side argument. It is zero-blind and gives only a_d = exp(−exp(O(d log d))).
 
 ## Log
 - 2026-10-10 — created in 1-in-progress (paper proof complete).
 - 2026-10-10 — Lean closed; moved to 3-formalized.
+- 2026-10-10 — Lean replaced by the Route-U corollary (linear window, explicit κ); zero-side modules removed.

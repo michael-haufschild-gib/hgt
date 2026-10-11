@@ -219,6 +219,7 @@ theorem exists_re_xiSliceCoeff_neg_of_isolated_offLine {ρ : ℂ} (hρ : xi ρ =
       rw [le_div_iff₀ (by positivity), one_mul]
       have : 1 ≤ ‖xiSpectralPoint q - t‖ ^ 2 / r₀ ^ 2 := by
         rw [le_div_iff₀ (by positivity)]; linarith
+      have hx0 : 0 ≤ ‖xiSpectralPoint q - t‖ ^ 2 := by positivity
       linarith
     calc ∑ q ∈ F, 1 / ‖xiSpectralPoint q - t‖ ^ 2 ≤ ∑ q ∈ F, A * lorentzMassTerm t q :=
           Finset.sum_le_sum hterm
