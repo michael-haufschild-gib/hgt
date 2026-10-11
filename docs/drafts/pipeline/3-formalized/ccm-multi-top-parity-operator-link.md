@@ -1,8 +1,8 @@
 # CCM parity: from the leading-order model to the restricted Weil operator, any finite top layer
 
 - **ID:** ccm-multitop-link
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper), Lean in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** rh-goal-loop-opus-2026-09-29 rows 917, 927–943; MUST-805, 920, 932, 936, 946, 947
 - **Statement:** Let the non-real Xi spectral points form a finite set, let `δ > 0` be the largest `|Im z|`, and let the top layer be the quartets of `σ_j = t_j + iδ` (`t_j > 0` distinct) with copy counts `M_j`. If `F(θ(a₀)) > 0` for one real `a₀` (by MUST-947 this holds whenever every integer relation among the `t_j` has even coefficient sum), then at arbitrarily large apertures every ground state of the CCM restricted Weil form is reflection-odd.
 
@@ -37,8 +37,14 @@ Notation: `⟨f,g⟩ = ∫ f g` (bilinear). `ψ_j(s) = e^{−(δ−it_j)s}` on `
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven: steps 1–6 above; the remaining written detail is the cutoff limit in step 5, which copies MUST-805's `oddTestSeq`
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized: `RHTower.CCMParityTopLayer.exists_aperture_ground_odd` (and `_of_even_relations`, `not_finiteTopLayer_of_eventually_ground_not_odd`); standard axioms
 
 ## Log
 - 2026-10-11 — created; model side in Lean (MUST-946/947); starting module A (quartet reduction, half-line asymptotics, projection, even floor).
+- 2026-10-11 — formalized (MUST-1218). Change against the paper plan: step 2 is exact. Reflecting `u ↦ u(a − ·)` maps the whole line onto `(0, 2a) ⊂ (0, ∞)`, so `û(−σ_j) = e^{−iσ_j a}⟨u(a − ·), ψ_j⟩` with no remainder. The `e^{−δa}` errors come only from the parity halving (even floor) and from the reflected copy in the odd test. Modules: Projection (267), Transform (479), EvenFloor (307), OddTest (366), OddModel (524), NoGo (581).
+- 2026-10-11 — extension (MUST-1219): odd floor, even test and the mirror theorem `exists_aperture_ground_even`. Under even relations the parity alternates (`ground_parity_alternates_of_even_relations`). Modules OddFloor (372), EvenModel (394), Alternation (372).
+- 2026-10-11 — ground-energy law (MUST-1220): `groundEnergy_law`, `exists_groundEnergy_exponential_bounds` (module GroundEnergyLaw, 477 lines).
+- 2026-10-11 — shape (MUST-1223): `exists_edgeProfile_of_nearGround` (module GroundShape, 614 lines).
+- 2026-10-11: MUST-1226 (`CCMParityNearHalfTurn`) gives a quantitative half-turn criterion. Row 951: `F(0) > 0` is false [P] (first-order common-phase law). MUST-1229 (`CCMParityDeepLimit` + `HTGeometry/DanskinPerturbationBound`): in the deep limit `δ → 0` at fixed shape, `F(θ(a₀)) > 0` at `a₀ = 1/(τ(4m+2))` with no relation hypothesis. Remaining residue: near-coincident top ordinates (spacing `≲ δ`) with an odd-sum relation. The clustered limit `T → ∞` needs the Takagi first-order law (row 952) and is not formalized.
+- 2026-10-11: MUST-1230 (`CCMParityDeepLaw`) gives the exact deep law: parity = largest cosine energy minus largest sine energy of the top ordinates on `[0,a]`.

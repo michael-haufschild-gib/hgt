@@ -167,3 +167,34 @@ The case Θ = 1 is open (ledger row 56). It needs large-value or Bohr-set contro
   new non-alignment theorem for near-1 zeros.
 - Producer side [L]: certificates below ½ are Haar-singular; height-mixture certificates exist iff RH and equal the
   zero measure; JAS positivity = Weil positivity on Euler vectors.
+
+## Route verdict update (2026-10-11, after ledger rows 74–83)
+
+- [L] Cluster theory for the b-side kernel: exact cluster identity (polydisc patterns), twin inequality, exponential
+  coherence threshold, ordinate and Dirichlet-polynomial forms (MUST-1211–1215).
+- Correction (row 83): the a-side factor of the JAS local density perturbs the b-side Hermitian structure at relative
+  order ≈ S/N. For actual zeros the rescue condition is polynomial incoherence, not exponential. Twins are still
+  excluded, but structured clusters of about a members (N = S^a) evade, with a ≲ c/(η loglog γ).
+- Intrinsic detectability limit (row 82): single-shell JAS tests at σ = 1 see only zeros with η ≲ 1/(240 loglog γ).
+- Open core of Θ = 1: structured near-1 clusters (r-th order phase cancellation on small primes) at plateau records,
+  and the invisible slowly approaching chains.
+
+## Route verdict update (2026-10-11, after ledger rows 86–87)
+
+- [L] Two-sided cluster theory for clusters with a common real part (`JointAncestryClusterTwoSided`, MUST-1243).
+  The full JAS local factor is (1 − ab)(1 − aw)⁻¹(1 − bw̄)⁻¹ on the circle. The member-averaged two-sided kernel is a
+  twisted positive double Dirichlet series, and it obeys the exponential coherence threshold with the a-side mass at
+  most S/100. The a-side caveat of rows 83–84 is removed for homogeneous clusters.
+- [P] Exponent gap is invariant (row 86).
+  - Plateau records kill every single spoiler at polynomial height differences: the spoiler zero would be deeper than
+    the record below it, or would break the plateau.
+  - Collective spoilers survive. About log Δ zeros of depth ≤ 2/A in one unit window align a dyadic window, and
+    Jensen with the VK bound permits that many.
+  - Larger shells (super-plateau records) and other dressing levels σ ∈ (1, 3/2) reproduce the same gap,
+    θ < θ′ ≤ 2/3 ≤ θ.
+- Reading: JAS chain exclusion is neutral relative to zero-free-region technology. It excludes only chains that hug the
+  boundary of the best available zero-free region. The Θ = 1 core needs one of two inputs:
+  - a local zero-count bound n_loc(d) ≪ (log Δ)^{Ad/2} for the zeros of depth ≤ d in a unit window at height Δ near
+    the 1-line, for d ∈ [κ/loglog Δ, 2/A] (at the low end this is a log-log zero-free region, since VK–Jensen gives
+    only d^{3/2} log Δ);
+  - or a non-alignment theorem.

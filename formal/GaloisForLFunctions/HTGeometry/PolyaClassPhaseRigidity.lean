@@ -214,16 +214,14 @@ theorem exists_phase_rep {G : ℂ → ℂ} (hG : Differentiable ℂ G) {h : ℝ}
       Complex.ofReal_im, Complex.I_re, Complex.I_im]
     ring_nf
 
-/-- **Consecutive zeros enclose phase `π`.** Let `F = A cos φ` with `A > 0` and `φ` strictly
-decreasing and continuous. If `F(a) = F(b) = 0`, `a < b`, and `F` has no zero in `(a, b)`, then
-`φ(a) − φ(b) = π`. -/
-theorem phase_drop_eq_pi {A φ : ℝ → ℝ} (hφ : StrictAnti φ)
-    (hφc : Continuous φ) {a b : ℝ} (hab : a < b) (ha : Real.cos (φ a) = 0)
-    (hb : Real.cos (φ b) = 0) (hno : ∀ c ∈ Ioo a b, A c * Real.cos (φ c) ≠ 0) :
+/-- **Consecutive zeros enclose phase `π`.** Let `φ` be continuous with `φ(b) < φ(a)`, `a < b`.
+If `cos φ(a) = cos φ(b) = 0` and `A cos φ` has no zero in `(a, b)`, then `φ(a) − φ(b) = π`. -/
+theorem phase_drop_eq_pi_of_lt {A φ : ℝ → ℝ} (hφc : Continuous φ) {a b : ℝ} (hab : a < b)
+    (hlt : φ b < φ a) (ha : Real.cos (φ a) = 0) (hb : Real.cos (φ b) = 0)
+    (hno : ∀ c ∈ Ioo a b, A c * Real.cos (φ c) ≠ 0) :
     φ a - φ b = Real.pi := by
   obtain ⟨k, hk⟩ := Real.cos_eq_zero_iff.mp ha
   obtain ⟨k', hk'⟩ := Real.cos_eq_zero_iff.mp hb
-  have hlt : φ b < φ a := hφ hab
   have hkk : k' < k := by
     rw [hk, hk'] at hlt
     have hpi := Real.pi_pos
@@ -248,6 +246,15 @@ theorem phase_drop_eq_pi {A φ : ℝ → ℝ} (hφ : StrictAnti φ)
   obtain ⟨c, hc, hcv⟩ := intermediate_value_Ioo' hab.le hφc.continuousOn ⟨hv1, hv2⟩
   apply hno c hc
   rw [hcv, hv, Real.cos_eq_zero_iff.mpr ⟨k - 1, rfl⟩, mul_zero]
+
+/-- **Consecutive zeros enclose phase `π`.** Let `F = A cos φ` with `A > 0` and `φ` strictly
+decreasing and continuous. If `F(a) = F(b) = 0`, `a < b`, and `F` has no zero in `(a, b)`, then
+`φ(a) − φ(b) = π`. -/
+theorem phase_drop_eq_pi {A φ : ℝ → ℝ} (hφ : StrictAnti φ)
+    (hφc : Continuous φ) {a b : ℝ} (hab : a < b) (ha : Real.cos (φ a) = 0)
+    (hb : Real.cos (φ b) = 0) (hno : ∀ c ∈ Ioo a b, A c * Real.cos (φ c) ≠ 0) :
+    φ a - φ b = Real.pi :=
+  phase_drop_eq_pi_of_lt hφc hab (hφ hab) ha hb hno
 
 /-- **Gap rigidity from a log-Lipschitz phase speed.** Let `F = A cos φ` with `A > 0`,
 `φ' = −ω`, `ω > 0`, and `ω(s) ≤ e^{2|s−t|/h} ω(t)`. Then any three consecutive zeros `a < b < c`
@@ -383,6 +390,82 @@ theorem gap_rigidity_of_phase_on {A φ ω : ℝ → ℝ} {h T₀ : ℝ} (hh : 0 
     (hLL ξ₁ ξ₂ hT1 hT2).trans (mul_le_mul_of_nonneg_right hE12 (hω ξ₂).le)
   have hw1p := hω ξ₁
   have hw2p := hω ξ₂
+  constructor
+  · have : (c - b) * ω ξ₂ ≤ ((b - a) * K) * ω ξ₂ := by
+      have := mul_le_mul_of_nonneg_left hL12 hba.le
+      nlinarith
+    exact le_of_mul_le_mul_right this hw2p
+  · have : (b - a) * ω ξ₁ ≤ ((c - b) * K) * ω ξ₁ := by
+      have := mul_le_mul_of_nonneg_left hL21 hcb.le
+      nlinarith
+    exact le_of_mul_le_mul_right this hw1p
+
+
+/-- Far to the left of its root, a Poisson term of any depth is log-Lipschitz: for `s, t ≤ a − c`,
+`c > 0`, `poissonTerm a b s ≤ e^{2|s − t|/c} poissonTerm a b t`. -/
+theorem poissonTerm_le_exp_mul_of_far_left {a b c : ℝ} (hb : 0 < b) (hc : 0 < c) {s t : ℝ}
+    (hs : s ≤ a - c) (ht : t ≤ a - c) :
+    poissonTerm a b s ≤ Real.exp (2 * |s - t| / c) * poissonTerm a b t := by
+  have hsym : ∀ u, poissonTerm a b u = poissonTerm (-a) b (-u) := fun u => by
+    unfold poissonTerm; ring_nf
+  rw [hsym s, hsym t]
+  have := poissonTerm_le_exp_mul_of_far (a := -a) hb hc (s := -s) (t := -t) (by linarith)
+    (by linarith)
+  rwa [show -s - -t = -(s - t) by ring, abs_neg] at this
+
+/-- **Gap rigidity on a window.** As `gap_rigidity_of_phase`, with `ω > 0` and the log-Lipschitz
+bound only on `[X, Y]`, and the three zeros in `[X, Y]`. -/
+theorem gap_rigidity_of_phase_window {A φ ω : ℝ → ℝ} {h X Y : ℝ} (hh : 0 < h)
+    (hA : ∀ t, 0 < A t) (hφ : ∀ t, HasDerivAt φ (-ω t) t) (hω : ∀ t ∈ Icc X Y, 0 < ω t)
+    (hLL : ∀ s ∈ Icc X Y, ∀ t ∈ Icc X Y, ω s ≤ Real.exp (2 * |s - t| / h) * ω t)
+    {a b c : ℝ} (haX : X ≤ a) (hcY : c ≤ Y) (hab : a < b) (hbc : b < c)
+    (ha : A a * Real.cos (φ a) = 0) (hb : A b * Real.cos (φ b) = 0)
+    (hc : A c * Real.cos (φ c) = 0)
+    (hno1 : ∀ x ∈ Ioo a b, A x * Real.cos (φ x) ≠ 0)
+    (hno2 : ∀ x ∈ Ioo b c, A x * Real.cos (φ x) ≠ 0) :
+    c - b ≤ (b - a) * Real.exp (2 * (c - a) / h) ∧
+      b - a ≤ (c - b) * Real.exp (2 * (c - a) / h) := by
+  have hcos : ∀ {x}, A x * Real.cos (φ x) = 0 → Real.cos (φ x) = 0 := fun hx =>
+    (mul_eq_zero.mp hx).resolve_left (hA _).ne'
+  have hφc : Continuous φ := continuous_iff_continuousAt.mpr fun x => (hφ x).continuousAt
+  have hanti : StrictAntiOn φ (Icc X Y) := by
+    refine strictAntiOn_of_deriv_neg (convex_Icc X Y) hφc.continuousOn fun x hx => ?_
+    rw [interior_Icc] at hx
+    rw [(hφ x).deriv]
+    linarith [hω x (Ioo_subset_Icc_self hx)]
+  have hmem : ∀ x, a ≤ x → x ≤ c → x ∈ Icc X Y := fun x h1 h2 =>
+    ⟨by linarith, by linarith⟩
+  have hma := hmem a le_rfl (by linarith)
+  have hmb := hmem b hab.le hbc.le
+  have hmc := hmem c (by linarith) le_rfl
+  have h1 := phase_drop_eq_pi_of_lt hφc hab (hanti hma hmb hab) (hcos ha) (hcos hb) hno1
+  have h2 := phase_drop_eq_pi_of_lt hφc hbc (hanti hmb hmc hbc) (hcos hb) (hcos hc) hno2
+  obtain ⟨ξ₁, hξ₁, hm1⟩ := exists_hasDerivAt_eq_slope φ (fun t => -ω t) hab hφc.continuousOn
+    fun x _ => hφ x
+  obtain ⟨ξ₂, hξ₂, hm2⟩ := exists_hasDerivAt_eq_slope φ (fun t => -ω t) hbc hφc.continuousOn
+    fun x _ => hφ x
+  have hM1 := hmem ξ₁ hξ₁.1.le (by linarith [hξ₁.2])
+  have hM2 := hmem ξ₂ (by linarith [hξ₂.1]) hξ₂.2.le
+  have hba : 0 < b - a := by linarith
+  have hcb : 0 < c - b := by linarith
+  have hw1 : ω ξ₁ * (b - a) = Real.pi := by
+    have : -ω ξ₁ = (φ b - φ a) / (b - a) := hm1
+    field_simp at this; linarith
+  have hw2 : ω ξ₂ * (c - b) = Real.pi := by
+    have : -ω ξ₂ = (φ c - φ b) / (c - b) := hm2
+    field_simp at this; linarith
+  have hdist : |ξ₂ - ξ₁| ≤ c - a := by
+    rw [abs_le]; constructor <;> linarith [hξ₁.1, hξ₁.2, hξ₂.1, hξ₂.2]
+  set K := Real.exp (2 * (c - a) / h) with hK
+  have hE21 : Real.exp (2 * |ξ₂ - ξ₁| / h) ≤ K :=
+    Real.exp_le_exp.mpr (div_le_div_of_nonneg_right (by linarith) hh.le)
+  have hE12 : Real.exp (2 * |ξ₁ - ξ₂| / h) ≤ K := by rw [abs_sub_comm]; exact hE21
+  have hw1p := hω ξ₁ hM1
+  have hw2p := hω ξ₂ hM2
+  have hL21 : ω ξ₂ ≤ K * ω ξ₁ :=
+    (hLL ξ₂ hM2 ξ₁ hM1).trans (mul_le_mul_of_nonneg_right hE21 hw1p.le)
+  have hL12 : ω ξ₁ ≤ K * ω ξ₂ :=
+    (hLL ξ₁ hM1 ξ₂ hM2).trans (mul_le_mul_of_nonneg_right hE12 hw2p.le)
   constructor
   · have : (c - b) * ω ξ₂ ≤ ((b - a) * K) * ω ξ₂ := by
       have := mul_le_mul_of_nonneg_left hL12 hba.le

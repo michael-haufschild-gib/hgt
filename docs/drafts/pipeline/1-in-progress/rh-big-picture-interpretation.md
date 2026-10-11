@@ -374,3 +374,42 @@
   - RH is exactly their rank-uniform bridge (row 499), and every bridging mechanism tested (≈ 300 cycles: positivity sources, couplings, operator, probabilistic, algebraic, dynamical, logical) maps onto templates (a)/(b), wall 1, or the strip wall.
   - The sharpest form of the missing object is an additive (FE/Poisson) × multiplicative (Euler) coupling inside the strip at √-strength. Its only exact instance, Kuznetsov, has its √ in the q-aspect.
 - 2026-10-11 (HCF loop rows 513–520). **HCF fully reduced.** Its two receivers (vertical boundedness R1; Hankel PSD R2) exhaust the support/positivity characterisations of the zero measure. Direct attacks place each of its three targets exactly at a classical open wall with zero slack: R1 ↔ √-scale ψ-error (wall 1), R2 ↔ all-aperture Weil positivity (Nyquist/PBAP), Δ∞ = 0 ↔ zero-free regions shrinking to σ = ½ (strip wall).
+
+## 2026-10-11 addendum (rows 942–944; MUST-946, 947, 1218)
+- The CCM parity lane is closed for finite off-line sets, except for one residue.
+  - Connes' step 1 (an even ground state at all large apertures) excludes every finite off-line configuration whose top layer has one positive leading-order point. That includes every top layer with even-sum ordinate relations, in particular ℚ-independent ordinates.
+  - Everything is in Lean. The chain is MUST-936 (no ±μ pair), MUST-946/947 (sign via Kronecker with relations) and MUST-1218 (model to operator).
+- Structural lesson. For an interval source `u`, the top-layer zero-sum term is exactly a Laplace pairing of the reflected source `u(a − ·)` with `e^{−(δ−it)s}`. The off-line zeros act on an edge layer of width `O(1/δ)` at the aperture ends. Their energy is `e^{2δa}` times a Cauchy-matrix form with phases `−2ta`, and no asymptotics enter at this step. Errors come only from the parity halving and from the reflected copy (`O(e^{−δa})`).
+- What it does not give.
+  - Infinite off-line sets (chains). A uniform floor for infinitely many lower off-line zeros would need a Carleson-type density bound, which is not natural for hypothetical zeros.
+  - Top layers with an odd-sum relation and `F ≤ 0` on the whole aperture line.
+  - Step 1 is RH-loaded only for finite configurations. It is not a producer.
+
+## 2026-10-11 addendum (rows 945–953; MUST-1219–1226, 1229)
+- **The CCM parity receiver is complete for finite top layers, up to near-coincident ordinates.**
+  - Exact laws [L]:
+    - ground energy `μ₀ = −(e^{2δa}/2)(Λ* + o(1))`;
+    - near-ground shape = edge profiles;
+    - pointwise parity law `sign F(θ(a))`;
+    - alternation under even relations;
+    - the quantitative half-turn criterion.
+  - Deep limit [L]: for fixed ordinate shape and `δ → 0`, `F(θ(a₀)) > 0` with no relation hypothesis. The balance becomes `M*[λ_max(Γ^c_a) − λ_max(Γ^s_a)]`, the difference of the cosine and sine Grams of the top ordinates on `[0, a]`.
+  - What is left is near-coincident top ordinates (spacing `≲ δ`) with an odd-sum relation.
+- **Physical reading.** Off-line zeros are edge states of the Toeplitz form on `[−a, a]`, with energies `−e^{2δa}`. Their parity is a spectral asymmetry of a finite-rank Hankel operator, decided at first order by the sum Gram `1/(2δ − i(t_j + t_k))`. The leading (difference-Gram) problem is exactly parity-symmetric. `F(0) > 0` is false [P] (common-phase sinusoid law). Excluding edge states is the same as a short-interval prime bound at `√x` precision near `e^{2a}` (wall 1), so the receiver adds no producer.
+- **Infrastructure.** `HTGeometry/DanskinPerturbationBound`: the upper half of Danskin's theorem with uniformly perturbed coefficients. It is reusable for any first-order eigenvalue limit.
+
+## 2026-10-11 addendum (rows 954–961; MUST-1230–1236, 1240, CANNOT-504)
+- **The Lee–Yang / Griffiths–Simon lane is now fully shaped in Lean.**
+  - Tools:
+    - Lee–Yang for every ferromagnetic graph (MUST-1231);
+    - the first-zero budget `Z ≥ ∏cos·Z₀·(1 − S)` (MUST-1233);
+    - Ising graphs as corpus Lee–Yang data (MUST-1235);
+    - GKS certificates via Griffiths I (MUST-1236).
+  - The capstone is that a convergent producer sequence gives RH (MUST-1240, phase-normalized form in CANNOT-504).
+  - Forced shape:
+    - the normalizer must be the centered magnetization characteristic function, with total field `Λ_n → ∞` and `β_n = Λ_n/2 + O(1)` (CANNOT-504);
+    - unscaled site masses `≥ log 2` are impossible, and growing graphs need the scale to tend to 0 (MUST-1236);
+    - frequencies bounded below are impossible (corpus MUST-806 family).
+  - The shape is exactly row 608's Griffiths–Simon class.
+- **Lesson (CANNOT-504).** A capstone's hypotheses can be unsatisfiable. MUST-1240 (constant normalization) and the prime-tree `E`-capstone are vacuous for nonnegative bonds. Spin-flip symmetry pins `Λ_n − 2β_n`, nonnegative coefficients give exponential type, and `E·Ξ` is never of exponential type (Zeta23 simple-critical census). Every "producer ⇒ RH" capstone should be audited for satisfiability with this exponential-type test.
+- **Reading.** Any GS limit is an LP-class characteristic function. So `Ψ = e^{−bz²}Ξ/Ξ(0)` (Gaussian-smoothed `Φ`) is the only possible target shape, and success is RH itself. The necessary GS inequalities (Lebowitz, GHS, Gaussian domination) all hold under RH, so none of them can kill the lane unconditionally. The open core is constructive: a centered ferromagnet with collapsing masses whose limit law is `Φ` (or `Φ * N(0, 2b)`).

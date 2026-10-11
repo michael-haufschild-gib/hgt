@@ -1,0 +1,21 @@
+# Joint quantiles: every finite moment and Lp order
+
+User source constraint, reaffirmed emphatically 2026-10-11: ONLY local Lean corpus as mathematical sources. No web searches, external papers, or numerical experiments. Do not repeat paper reads. The ongoing research goal remains active; this completed increment is progress, not goal completion.
+
+Card: docs/drafts/pipeline/3-formalized/finite-weil-joint-quantile-all-moments.md. Prior scalar input: `mem:research/finite-weil-uniform-exponential-scalar-moments-2026-10-11`.
+
+Six native-clean leaves, 28 theorems and one definition:
+- GaloisForLFunctions.HTGeometry.IntegralVariableEnvelope: tendsto_integral_zero_of_variable_envelope. Nonnegative f_r <= g_r, ae f_r -> 0, ae g_r -> G, integrable nonnegative G and convergence of envelope integrals imply integral f_r -> 0. Uses nonnegative Scheffe plus fixed-envelope dominated convergence for min(f_r,G).
+- RHTower.WeilLogShiftQuantileMoments: exact scalar quantile moment integrability/pushforward, all actual scalar integer moment limits and ae scalar quantile convergence.
+- RHTower.WeilLogShiftQuantileMomentEnvelope: finiteWeilQuantileMomentEnvelope p x y = 2^p * (2^p * (1 + 2^p * (2 + x^(2*p) + y^(2*p)))); nonnegative and dominates actual joint distance^p via distance <= 2 + 2*abs(x-y).
+- RHTower.WeilLogShiftQuantileEnvelopeIntegral: integrability, exact envelope integral, ae convergence and convergence of those integrals.
+- RHTower.WeilLogShiftJointQuantileMomentLimit: distance-power integrability and tendsto_finiteWeilCanonicalJointQuantile_moment_gap_zero; exact pair pushforward transfers to tendsto_finiteWeilCanonicalJointGaussianCoupling_moment_gap_zero. All p+1 powers, arbitrary t : Nat -> Nat, actual index 2*(r+1)^2+t r, no extra hypotheses.
+- RHTower.WeilLogShiftJointQuantileLpLimit: integer norm identity and convergence; tendsto_finiteWeilCanonicalJointQuantile_eLpNorm_zero and tendsto_finiteWeilCanonicalJointGaussianCoupling_eLpNorm_zero for every q : NNReal. finiteWeilCanonicalJointQuantile_eLpNorm_coupling gives exact common-uniform/actual-coupling norm equality for every ENNReal exponent. Finite q bounded by a larger integer on the probability space. No infinite-order convergence theorem.
+
+Audits: six leaf builds terminal exit0 with empty logs; each umbrella import exactly once. Metadata issues [], all nine direct dependencies fresh and all eleven incoming imports inspected. Native /tmp/hgt-joint-all-moments-final-audit.lean terminal0 verifies 29 declarations and 29 API haves. Parsed axioms only propext, Classical.choice, Quot.sound; residual output empty. Refreshed scoped local lexical index has all six root declarations and markers[]. Global lint: 3 unrelated errors, 367 warnings; unreachable RHTower.CCMPolarOddPrimeJumps and HTGeometry.QKrawtchoukCompanionTriangular, plus sorry at CCMPolarOddPrimeJumps.lean:104. No lint references to any new leaf. No full builds, heartbeat increases, external sources, commits or pushes. All owned native processes terminal.
+
+Artifacts prefix /tmp/hgt-joint-all-moments: metadata.py/json, declarations.json, incoming-imports.txt, api.lean/log, final-audit.lean/log, verify-audit.py, audit-summary.json, lint.log, index.json (all six roots found; broader lexical result has 28 eligible, 20 returned), index.stderr empty. Native leaf logs /tmp/hgt-<Leaf>.log.
+
+API repairs: ENNReal.continuous_rpow_const binder is y; squeeze_zero is REAL-only, use tendsto_of_tendsto_of_tendsto_of_le_of_le with constant zero and bot_le for ENNReal. Beta-reduce pointwise lambda integrands with dsimp only before rw [dist_eq_norm, ENNReal.ofReal_pow (norm_nonneg _), ofReal_norm]. For pointwise minimum convergence, explicit rw [min_eq_left (show (0 : Real) <= G x from hGx)] is more reliable than simpa with function zero. Envelope positivity needs explicit even-power nonnegativity through pow_mul. integral_add rewriting needs explicitly typed lambda integrability hypotheses to avoid Pi.add/Pi.mul matching failures.
+
+Potential next conjecture, not established: sharp finite/infinite exponent boundary, since finite-rank atomic source quantiles are bounded while Gaussian quantiles diverge near endpoints. Check only local Lean corpus before pursuing.

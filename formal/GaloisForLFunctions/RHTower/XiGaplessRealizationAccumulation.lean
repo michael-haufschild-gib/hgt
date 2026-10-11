@@ -191,9 +191,13 @@ theorem phaseSpeed_mul_shift_eq {h : ℝ} {Q : ℂ[X]} {G₀ : ℂ → ℂ} (hG�
   have h1 : HasDerivAt (fun w : ℂ => Q.eval (w - h * I))
       (Q.derivative.eval ((t : ℂ) + h * I - h * I)) ((t : ℂ) + h * I) :=
     (Polynomial.hasDerivAt Q _).comp_sub_const _ _
-  have hd := h1.mul (hG₀d ((t : ℂ) + h * I)).hasDerivAt
+  have hd : HasDerivAt (fun w => Q.eval (w - h * I) * G₀ w)
+      (Q.derivative.eval ((t : ℂ) + h * I - h * I) * G₀ ((t : ℂ) + h * I) +
+        Q.eval ((t : ℂ) + h * I - h * I) * deriv G₀ ((t : ℂ) + h * I)) ((t : ℂ) + h * I) :=
+    h1.mul (hG₀d ((t : ℂ) + h * I)).hasDerivAt
   unfold phaseSpeed
-  rw [hd.deriv, hwt]
+  rw [hd.deriv]
+  simp only [hwt]
   have e : (Q.derivative.eval (t : ℂ) * G₀ ((t : ℂ) + h * I) +
       Q.eval (t : ℂ) * deriv G₀ ((t : ℂ) + h * I)) / (Q.eval (t : ℂ) * G₀ ((t : ℂ) + h * I)) =
       Q.derivative.eval (t : ℂ) / Q.eval (t : ℂ) +

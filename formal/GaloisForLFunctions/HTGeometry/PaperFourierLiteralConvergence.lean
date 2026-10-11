@@ -113,6 +113,15 @@ private theorem unit_common_span {κ : Type*} [Countable κ] (f : κ → ℝ →
     have hx' : x ∈ Ioc (0 : ℝ) (0 + 1) := by simpa only [zero_add] using hx
     simpa only [paperUnitInterval_partialSum_lift, g, AddCircle.liftIoc_coe_apply hx'] using ht
 
+/-- Literal measurable L² representatives share one exceptional set for every finite span. -/
+theorem paperUnitIntervalMemLp_common_span_convergence {κ : Type*} [Countable κ]
+    (f : κ → ℝ → ℂ) (hf : ∀ j, MemLp (f j) 2 (volume.restrict (Ioc (0 : ℝ) 1))) :
+    ∃ E : Set ℝ, MeasurableSet E ∧ volume E = 0 ∧
+      ∀ x ∈ Ioc (0 : ℝ) 1, x ∉ E → ∀ (S : Finset κ) (c : κ → ℂ),
+        Tendsto (fun N => fourierPartialSum (fun y => ∑ j ∈ S, c j * f j y) N x)
+          atTop (𝓝 (∑ j ∈ S, c j * f j x)) :=
+  unit_common_span f hf
+
 /-- Every actual unit-interval L² family has full-sequence convergence on one common set. -/
 theorem paperUnitIntervalLp_common_span_convergence {κ : Type*} [Countable κ]
     (f : κ → Lp ℂ 2 (volume.restrict (Ioc (0 : ℝ) 1))) :

@@ -3,16 +3,18 @@ import GaloisForLFunctions.RHTower.JointAncestryWeilEulerBridge
 /-!
 # The cluster self-averaging identity
 
-Let a finite family `j ∈ t` of points `ψ j ∈ T^P` (unimodular prime-phase patterns) carry real
-weights `u j`, and let `θ ∈ T^P`.  Averaging the twisted Euler products of all differences
+Let a finite family `j ∈ t` of points `ψ j` of the closed polydisc (prime-phase patterns with
+`‖ψ_{j,p}‖ ≤ 1`) carry real weights `u j`, and let `θ ∈ T^P`.  Averaging the twisted Euler products of all differences
 `θ · ψ_j · ψ̄_k` with weights `u_j u_k` gives a Dirichlet series whose coefficients are, up to the
 single twist `θ`, squared moduli (`sum_sum_prod_inv_eq_tsum`):
 
 `Σ_{j,k} u_j u_k Π_{p∈P} (1 − θ_p ψ_{j,p} ψ̄_{k,p} p^{−z})⁻¹ = Σ_{m P-smooth} e_θ(m) m^{−z} |Σ_j u_j e_{ψ_j}(m)|²`.
 
 In route JAS the left side is the b-side of the zero-sum density, averaged over the design points of
-the members of a cluster of zeros: `ψ_j` is the phase pattern `p^{iγ_j}` of the member and `θ` the
-common phase design.  So the cluster contributes a twisted *positive* Dirichlet series.  With
+the members of a cluster of zeros: `ψ_j` is the pattern `p^{−s_j}` of the member's shift `s_j`
+(`Re s_j ≥ 0`; a pure phase `p^{iγ_j}` when the members share their real part) and `θ` the common
+phase design.  The Euler products are supplied for arbitrary local parameters `w_p` with
+`‖w_p‖ p^{−Re z} < 1` (`hasSum_jasEulerHom_of_lt`).  So the cluster contributes a twisted *positive* Dirichlet series.  With
 `θ ≡ 1` it is literally a sum of squares (`sum_sum_prod_inv_eq_tsum_of_one`), and a design `θ`
 that turns a single member negative turns the whole averaged cluster negative unless the squared
 moduli cancel.

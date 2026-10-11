@@ -2,7 +2,7 @@
 
 **Scope:** dead = stated mechanism impossible, circular or nonselective. Survivor = retained theorem; **Needs** = changed problem outside obstruction. No-go for a shortcut does not retire its live route.
 
-**Lookup:** [30 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Live routes/candidates: [frontier map](rh-current-frontier-map.md#find-a-route).
+**Lookup:** [33 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Live routes/candidates: [frontier map](rh-current-frontier-map.md#find-a-route).
 
 **Evidence:** codes as in frontier map; [L] cited Lean declarations, no fresh compilation; [P] paper only; REF = unlocated legacy evidence, unverified here. Conditional, model-only and class restrictions retained.
 
@@ -277,6 +277,33 @@
 - **Survivor [L]:** Lossless temporal-stack entries have real zeros; Xi is their locally uniform product limit iff RH. Thin-slab continuum/nonlocal ports remain outside obstruction.
 - **Needs:** Exact arithmetic source-to-continuum handoff retaining Xi divisor; PTR/W1C.
 - **E:** R:PhotonicCorotatingCollarTraceRegularity; R:PhotonicLosslessTemporalStackRealZeros; R:PhotonicLosslessProductPortRH; R:PhotonicLosslessProductPortDensityLaw; R:PhotonicLosslessProductPortThinSlab.
+
+<a id="kr-hfr"></a>
+### KR-HFR — Fixed-rank heat-Hankel completion
+
+- **Path:** Positivity of finitely many heat-Hankel determinants at every heat time → RH.
+- **Obstruction [L]:** For each rank bound `N`, zeros off-line only above a finite height leave every determinant of rank `≤N` positive at all positive times. Fixed rank has a finite-height horizon.
+- **Survivor [L]:** For each off-line zero, some finite rank detects it at every sufficiently large time; rank depends on lower-frequency count. RH ⇔ every rank is eventually positive in time.
+- **Needs:** Rank-uniform arithmetic sign or vertical prime-chirp bound; HCF/TH.
+- **E:** R:XiGaussianHeatHankelHeightHorizon; R:XiGaussianHeatHankelLargeTimeDetection.
+
+<a id="kr-hus"></a>
+### KR-HUS — Averaged Husimi slice positivity
+
+- **Path:** Positive Gaussian-height-averaged slice at every resolution → pointwise Xi-slice positivity → RH.
+- **Obstruction [L]:** Same Husimi identity holds for an Euler-blind Gaussian-cosine source with non-real transform zeros and a negative slice coefficient; Husimi density has zeros at every resolution.
+- **Survivor [L]:** Exact averaged positivity with its uncertainty cost; direct slices detect mixed off-line classes in a nonempty interval.
+- **Needs:** Theta-specific pointwise coefficient sign beyond the averaging bandwidth; WD.
+- **E:** R:XiSliceHusimiPositivity; R:XiSliceHusimiZero; R:XiSliceHusimiEulerBlind; R:XiDirectMixedMultiplicityLaw.
+
+<a id="kr-gap"></a>
+### KR-GAP — Fixed-gap lossless realization
+
+- **Path:** `Ξ(t)=Re G(t+ih)` for a lower-Pólya function `G` and fixed `h>0` → RH.
+- **Obstruction [L]:** No such realization exists: it would make all zeros simple with rigid consecutive gaps, contradicting the zeta anti-crystal law.
+- **Survivor [L]:** Exact positive sech/Poisson handoff from `Re ξ(1+it)` to `Ξ`; a lossless realization must have resonances arbitrarily close to the real axis.
+- **Needs:** Prime-faithful gapless/nonlocal port; PTR/W1C.
+- **E:** R:XiGaplessRealizationLaw; R:ZetaZeroAntiCrystalLaw; R:XiCosineShiftSechHandoff; R:XiCosineShiftPoissonFlow.
 
 ## Retired labels
 

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DeBruijnLocalPairLawMonotonicity
 import GaloisForLFunctions.RHTower.XiHorizontalSliceConeCriterion
+import GaloisForLFunctions.RHTower.XiHorizontalAbsoluteMonotonicityStrip
 
 /-!
 # Slice Taylor positivity along the de Bruijn–Newman flow
@@ -15,6 +16,10 @@ satisfies `(Im ζ)² ≤ (Re ζ − t)²`, then every Taylor coefficient of the 
 is nonnegative.  The Hadamard product `f = f(0) Π E₁(z/ζ)` is grouped into conjugation orbits:
 a real zero contributes `e^{2t/ζ}((ζ − t)² + x²)/ζ²`, a conjugate pair contributes a positive
 multiple of `x⁴ + 2((Re ζ − t)² − (Im ζ)²)x² + |ζ − t|⁴`.
+
+**Hyperbola criterion** (`nonnegTaylorAtZero_slice_shift_of_hyperbola`).  More generally, if every
+zero satisfies `(Im ζ)² ≤ (Re ζ − t)² + x₀²` with `x₀ ≥ 0`, the slice at height `t` is absolutely
+monotone from `x₀`: the cone criterion is `x₀ = 0`, the strip criterion is `|Im ζ| ≤ x₀`.
 
 **Large heights** (`exists_nonnegTaylorAtZero_riemannHeat_slice`).  For every `λ > 0` there is
 `X₀` such that the slice of `H_λ` has nonnegative Taylor coefficients at every height `|t| ≥ X₀`.
@@ -40,6 +45,27 @@ namespace RHTower.DeBruijn
 noncomputable section
 
 variable {f : ℂ → ℂ}
+
+/-- A real quartic `a₀ + a₁y + a₂y² + a₃y³ + y⁴` with nonnegative coefficients has nonnegative
+Taylor coefficients at `0`. -/
+theorem nonnegTaylorAtZero_quartic_full {a₀ a₁ a₂ a₃ : ℝ} (h₀ : 0 ≤ a₀) (h₁ : 0 ≤ a₁)
+    (h₂ : 0 ≤ a₂) (h₃ : 0 ≤ a₃) :
+    NonnegTaylorAtZero (fun y : ℂ => (a₀ : ℂ) + (a₁ : ℂ) * y + (a₂ : ℂ) * y ^ 2 + (a₃ : ℂ) * y ^ 3 +
+      y ^ 4) := by
+  have hid := nonnegTaylorAtZero_id
+  have hc : ∀ {c : ℝ}, 0 ≤ c → NonnegTaylorAtZero (fun _ : ℂ => (c : ℂ)) :=
+    fun hc => nonnegTaylorAtZero_const (Complex.zero_le_real.mpr hc)
+  have e : (fun y : ℂ => (a₀ : ℂ) + (a₁ : ℂ) * y + (a₂ : ℂ) * y ^ 2 + (a₃ : ℂ) * y ^ 3 + y ^ 4) =
+      (fun _ => (a₀ : ℂ)) + (fun _ => (a₁ : ℂ)) * (fun y : ℂ => y) +
+        (fun _ => (a₂ : ℂ)) * ((fun y : ℂ => y) * fun y => y) +
+        (fun _ => (a₃ : ℂ)) * (((fun y : ℂ => y) * fun y => y) * fun y => y) +
+        (((fun y : ℂ => y) * fun y => y) * fun y => y) * fun y => y := by
+    funext y
+    simp only [Pi.mul_apply, Pi.add_apply]
+    ring
+  rw [e]
+  exact (((((hc h₀).add ((hc h₁).mul hid)).add ((hc h₂).mul (hid.mul hid))).add
+    ((hc h₃).mul ((hid.mul hid).mul hid))).add (((hid.mul hid).mul hid).mul hid))
 
 /-- **Monotonicity from Taylor positivity.**  If all Taylor coefficients of an entire `g` at `0`
 are nonnegative, then `Re g` is nondecreasing on `[0, ∞)`. -/
@@ -67,15 +93,19 @@ theorem re_le_re_of_nonnegTaylorAtZero {g : ℂ → ℂ} (hg : NonnegTaylorAtZer
   have hfac : (0 : ℝ) ≤ (n.factorial : ℝ)⁻¹ := by positivity
   exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hpow hfac) hdre
 
-/-- **Cone criterion for the slice of an even real order-one entire function.**  If every zero
-`ζ` of `f` satisfies `(Im ζ)² ≤ (Re ζ − t)²`, then `x ↦ f(t − ix) f(t + ix)` has nonnegative
-Taylor coefficients at `0`. -/
-theorem nonnegTaylorAtZero_slice_of_cone {C : ℝ} (hC : 0 ≤ C) (hf : AnalyticOnNhd ℂ f univ)
-    (hf0 : f 0 ≠ 0) (heven : ∀ z, f (-z) = f z)
+/-- **Hyperbola criterion for the shifted slice of an even real order-one entire function.**
+Let `x₀ ≥ 0`.  If every zero `ζ` of `f` satisfies `(Im ζ)² ≤ (Re ζ − t)² + x₀²`, then
+`y ↦ f(t − i(x₀ + y)) f(t + i(x₀ + y))` has nonnegative Taylor coefficients at `0`: the slice at
+height `t` is absolutely monotone from `x₀`.  At `x₀ = 0` this is the cone criterion, for
+`|Im ζ| ≤ x₀` the strip criterion.  A real zero contributes a quadratic in `y` with nonnegative
+coefficients; a conjugate pair contributes `(x₀+y)⁴ + 2Q(x₀+y)² + R²`, `Q = (Re ζ − t)² − (Im ζ)²`,
+`R = |ζ − t|²`, whose coefficients in `y` are nonnegative exactly when `Q ≥ −x₀²`. -/
+theorem nonnegTaylorAtZero_slice_shift_of_hyperbola {C : ℝ} (hC : 0 ≤ C)
+    (hf : AnalyticOnNhd ℂ f univ) (hf0 : f 0 ≠ 0) (heven : ∀ z, f (-z) = f z)
     (hconj : ∀ z, f ((starRingEnd ℂ) z) = (starRingEnd ℂ) (f z))
     (hbound : ∀ z : ℂ, ‖f z‖ ≤ Real.exp (C * (1 + ‖z‖) * Real.log (2 + ‖z‖)))
-    {t : ℝ} (hloc : ∀ ζ, f ζ = 0 → ζ.im ^ 2 ≤ (ζ.re - t) ^ 2) :
-    NonnegTaylorAtZero (fun x => f ((t : ℂ) - I * x) * f ((t : ℂ) + I * x)) := by
+    {t x₀ : ℝ} (hx₀ : 0 ≤ x₀) (hloc : ∀ ζ, f ζ = 0 → ζ.im ^ 2 ≤ (ζ.re - t) ^ 2 + x₀ ^ 2) :
+    NonnegTaylorAtZero (fun y => f ((t : ℂ) - I * (x₀ + y)) * f ((t : ℂ) + I * (x₀ + y))) := by
   classical
   set a := zeroCopyPoint f with hadef
   have hane : ∀ q, a q ≠ 0 := zeroCopyPoint_ne_zero hf hf0
@@ -89,8 +119,8 @@ theorem nonnegTaylorAtZero_slice_of_cone {C : ℝ} (hC : 0 ≤ C) (hf : Analytic
   have hPdiff : Differentiable ℂ P := fun z => (hPan z (Set.mem_univ z)).differentiableAt
   have hP : TendstoLocallyUniformlyOn (fun S z => ∏ q ∈ S, weierstrassE1 (z / a q)) P atTop
       Set.univ := canonicalProductE1Indexed_hasProdLocallyUniformlyOn a hane hsum
-  set φm : ℂ → ℂ := fun x => (t : ℂ) - I * x with hφm
-  set φp : ℂ → ℂ := fun x => (t : ℂ) + I * x with hφp
+  set φm : ℂ → ℂ := fun y => (t : ℂ) - I * (x₀ + y) with hφm
+  set φp : ℂ → ℂ := fun y => (t : ℂ) + I * (x₀ + y) with hφp
   have hcm : Continuous φm := by rw [hφm]; fun_prop
   have hcp : Continuous φp := by rw [hφp]; fun_prop
   have hm := TendstoLocallyUniformlyOn.comp hP φm (Set.mapsTo_univ φm Set.univ) hcm.continuousOn
@@ -155,9 +185,18 @@ theorem nonnegTaylorAtZero_slice_of_cone {C : ℝ} (hC : 0 ≤ C) (hf : Analytic
       intro h0
       apply hane q
       rw [hz, h0, Complex.ofReal_zero]
-    simp only [hF, hφm, hφp]
-    rw [hz]
-    exact nonnegTaylorAtZero_slice_pair hγ
+    set γ := (a q).re
+    have e : F q = fun y : ℂ =>
+        ((Real.exp (2 * t / γ) * (γ - t) ^ 2 / γ ^ 2 + Real.exp (2 * t / γ) / γ ^ 2 * x₀ ^ 2 : ℝ) :
+          ℂ) + ((2 * (Real.exp (2 * t / γ) / γ ^ 2) * x₀ : ℝ) : ℂ) * y ^ 1 +
+        ((Real.exp (2 * t / γ) / γ ^ 2 : ℝ) : ℂ) * y ^ 2 := by
+      funext y
+      simp only [hF, hφm, hφp]
+      rw [hz, weierstrassE1_slice_pair hγ ((x₀ : ℂ) + y)]
+      push_cast
+      ring
+    rw [e]
+    exact nonnegTaylorAtZero_quadratic (by positivity) (by positivity) (by positivity)
   have hpair : ∀ q, σ q ≠ q → NonnegTaylorAtZero (F q * F (σ q)) := by
     intro q _
     set α : ℝ := (a q).re with hα
@@ -165,17 +204,30 @@ theorem nonnegTaylorAtZero_slice_of_cone {C : ℝ} (hC : 0 ≤ C) (hf : Analytic
     have hz : a q = (α : ℂ) + β * I := (Complex.re_add_im (a q)).symm
     have hz0 : (α : ℂ) + β * I ≠ 0 := by rw [← hz]; exact hane q
     have hzσ : a (σ q) = starRingEnd ℂ ((α : ℂ) + β * I) := by rw [haσ, hz]
-    have e : F q * F (σ q) = fun x =>
+    set Q : ℝ := (α - t) ^ 2 - β ^ 2 with hQ
+    set R : ℝ := (α - t) ^ 2 + β ^ 2 with hR
+    have e : F q * F (σ q) = fun y =>
         ((Real.exp (4 * t * α / (α ^ 2 + β ^ 2)) / (α ^ 2 + β ^ 2) ^ 2 : ℝ) : ℂ) *
-          (x ^ 4 + ((2 * ((α - t) ^ 2 - β ^ 2) : ℝ) : ℂ) * x ^ 2 +
-            ((((α - t) ^ 2 + β ^ 2) ^ 2 : ℝ) : ℂ)) := by
-      funext x
+          (((x₀ ^ 4 + 2 * Q * x₀ ^ 2 + R ^ 2 : ℝ) : ℂ) + ((4 * x₀ ^ 3 + 4 * Q * x₀ : ℝ) : ℂ) * y +
+            ((6 * x₀ ^ 2 + 2 * Q : ℝ) : ℂ) * y ^ 2 + ((4 * x₀ : ℝ) : ℂ) * y ^ 3 + y ^ 4) := by
+      funext y
       simp only [Pi.mul_apply, hF, hzσ, hφm, hφp]
-      rw [hz]
-      exact weierstrassE1_slice_reflectionPair hz0 x
+      rw [hz, weierstrassE1_slice_reflectionPair hz0 ((x₀ : ℂ) + y)]
+      simp only [hQ, hR]
+      push_cast
+      ring
     rw [e]
-    have hsq : β ^ 2 ≤ (α - t) ^ 2 := hloc (a q) (apply_zeroCopyPoint hf q)
-    exact nonnegTaylorAtZero_quartic (by positivity) (by nlinarith) (by positivity)
+    have hsq : β ^ 2 ≤ (α - t) ^ 2 + x₀ ^ 2 := hloc (a q) (apply_zeroCopyPoint hf q)
+    have hQx : 0 ≤ x₀ ^ 2 + Q := by rw [hQ]; linarith
+    have hRQ : Q ^ 2 ≤ R ^ 2 := by
+      rw [hQ, hR]; nlinarith [sq_nonneg (α - t), sq_nonneg β]
+    refine (nonnegTaylorAtZero_const (Complex.zero_le_real.mpr (by positivity))).mul
+      (nonnegTaylorAtZero_quartic_full ?_ ?_ ?_ ?_)
+    · nlinarith [sq_nonneg (x₀ ^ 2 + Q)]
+    · have : 4 * x₀ ^ 3 + 4 * Q * x₀ = 4 * x₀ * (x₀ ^ 2 + Q) := by ring
+      rw [this]; positivity
+    · nlinarith
+    · positivity
   have hfin : ∀ S : Finset (ZeroCopy f), NonnegTaylorAtZero
       (((fun S z => ∏ q ∈ S, weierstrassE1 (z / a q)) (c S) ∘ φm) *
         ((fun S z => ∏ q ∈ S, weierstrassE1 (z / a q)) (c S) ∘ φp)) := by
@@ -203,14 +255,27 @@ theorem nonnegTaylorAtZero_slice_of_cone {C : ℝ} (hC : 0 ≤ C) (hf : Analytic
     · simp only [Complex.mul_re, him, mul_zero, sub_zero]
       exact mul_self_nonneg _
     · simp [Complex.mul_im, him]
-  have e : (fun x => f ((t : ℂ) - I * x) * f ((t : ℂ) + I * x)) =
+  have e : (fun y => f ((t : ℂ) - I * (x₀ + y)) * f ((t : ℂ) + I * (x₀ + y))) =
       (fun _ => f 0 * f 0) * ((P ∘ φm) * (P ∘ φp)) := by
-    funext x
+    funext y
     simp only [Pi.mul_apply, Function.comp_apply, hφm, hφp]
-    rw [hfac ((t : ℂ) - I * x), hfac ((t : ℂ) + I * x)]
+    rw [hfac ((t : ℂ) - I * (x₀ + y)), hfac ((t : ℂ) + I * (x₀ + y))]
     ring
   rw [e]
   exact (nonnegTaylorAtZero_const hf0real).mul hlim
+
+/-- **Cone criterion for the slice of an even real order-one entire function.**  If every zero
+`ζ` of `f` satisfies `(Im ζ)² ≤ (Re ζ − t)²`, then `x ↦ f(t − ix) f(t + ix)` has nonnegative
+Taylor coefficients at `0`. -/
+theorem nonnegTaylorAtZero_slice_of_cone {C : ℝ} (hC : 0 ≤ C) (hf : AnalyticOnNhd ℂ f univ)
+    (hf0 : f 0 ≠ 0) (heven : ∀ z, f (-z) = f z)
+    (hconj : ∀ z, f ((starRingEnd ℂ) z) = (starRingEnd ℂ) (f z))
+    (hbound : ∀ z : ℂ, ‖f z‖ ≤ Real.exp (C * (1 + ‖z‖) * Real.log (2 + ‖z‖)))
+    {t : ℝ} (hloc : ∀ ζ, f ζ = 0 → ζ.im ^ 2 ≤ (ζ.re - t) ^ 2) :
+    NonnegTaylorAtZero (fun x => f ((t : ℂ) - I * x) * f ((t : ℂ) + I * x)) := by
+  have h := nonnegTaylorAtZero_slice_shift_of_hyperbola hC hf hf0 heven hconj hbound
+    (t := t) (x₀ := 0) le_rfl fun ζ hζ => by simpa using hloc ζ hζ
+  simpa using h
 
 /-- The cone criterion for the de Bruijn–Newman deformation, `λ ≥ 0`. -/
 theorem nonnegTaylorAtZero_riemannHeat_slice_of_cone {lam t : ℝ} (hlam : 0 ≤ lam)

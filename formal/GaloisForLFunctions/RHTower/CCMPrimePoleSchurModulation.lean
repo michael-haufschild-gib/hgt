@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMPrimePoleSchurDefect
 import GaloisForLFunctions.HTGeometry.GaussianPolynomialPhaseDefect
-import Mathlib.Analysis.Fourier.RiemannLebesgueLemma
+import GaloisForLFunctions.HTGeometry.ModulationWeakEscape
 
 /-!
 # Modulated actual pole profiles and their full prime-edge energy
@@ -105,29 +105,10 @@ theorem ccmPrimePoleEdgeEnergy_modulatedPole (a : SuzukiPositiveAperture) (t h :
   · simp [hx, hy, hw]
   · simp [hx, hy]
 
-private theorem modulation_inner_tendsto (f g : SoninL2) :
-    Tendsto (fun t : ℝ => inner ℂ g (modulationMul t f)) atTop (𝓝 0) := by
-  have ht : Tendsto (fun t : ℝ => -t) atTop (cocompact ℝ) :=
-    tendsto_neg_atTop_atBot.mono_right atBot_le_cocompact
-  have h := (Real.tendsto_integral_exp_smul_cocompact
-    (fun x : ℝ => inner ℂ (g x) (f x))).comp ht
-  apply h.congr'
-  filter_upwards with t
-  rw [L2.inner_def]
-  apply integral_congr_ae
-  filter_upwards [coeFn_modulationMul t f] with x hx
-  rw [hx]
-  simp only [Circle.smul_def, Real.fourierChar_apply,
-    smul_eq_mul, modulationSymbol, RCLike.inner_apply]
-  have he : ((2 * Real.pi * (-(x * -t)) : ℝ) : ℂ) * I =
-      ((2 * Real.pi * (t*x) : ℝ) : ℂ) * I := by congr 2; ring
-  rw [he]
-  ring
-
 /-- All fixed pole or source pairings vanish, despite unchanged physical norm. -/
 theorem inner_ccmApertureModulation_tendsto_zero (a : SuzukiPositiveAperture)
     (f g : suzukiApertureHilbert a) :
     Tendsto (fun t : ℝ => inner ℂ g (ccmApertureModulation a t f)) atTop (𝓝 0) :=
-  modulation_inner_tendsto f.1 g.1
+  modulationMul_inner_tendsto f.1 g.1
 
 end RHTower
