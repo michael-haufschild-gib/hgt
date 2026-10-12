@@ -1,16 +1,22 @@
 import GaloisForLFunctions.RHTower.JointAncestryLargePrimeAbscissa
 import GaloisForLFunctions.RHTower.JointAncestryMaximalOffLineExclusion
+import GaloisForLFunctions.RHTower.JointAncestryPrimeSumOneLine
 
 /-!
 # A maximal off-line zero is detected by large primes
 
 The maximal off-line exclusion holds for positivity restricted to primes `p > X`: if a Xi zero
-`ρ₀` maximizes `|Re ρ − ½|`, then `JasDressedPSDAbove X σ` fails for every `σ < 1 + |Re ρ₀ − ½|`
-(`not_jasDressedPSDAbove_of_maximal_offLine`).  The proof is the Bernoulli test at the twisted
+`ρ₀` maximizes `|Re ρ − ½|`, then `JasDressedPSDAbove X σ` fails for every `σ ≤ 1 + |Re ρ₀ − ½|`,
+including the endpoint (`not_jasDressedPSDAbove_of_maximal_offLine_of_le`).  At the endpoint the
+target exponent is `1`, where the twisted comparison comes from the exponent-one prime sums.  The proof is the Bernoulli test at the twisted
 Kronecker point of `ρ₀` over the primes in `(X, N]`; it uses the primes only through
 `S_α(X, N) = Σ_{X < p ≤ N} p^{−α} → ∞`, the comparison `S_{α'} = o(S_α)` for `α < α'`, and the loss of a
 fixed proportion under twists `p^{iΔ}`, `Δ ≠ 0` — all inherited from the sums over `p ≤ N` because
 the primes `p ≤ X` contribute a bounded amount.
+
+The test is a rank-one product vector on squarefree characters, so for `σ ≥ ½` the exclusion
+holds already for positivity of the Bernoulli product tests
+(`not_jasProductPositiveAbove_of_maximal_offLine_of_le`).
 
 With the chain case this gives the large-prime abscissa `½ + Θ` for every configuration under a
 half-plane bound below `½` (`largePrime_abscissa_eq_of_xiZeroHalfPlaneBound`).
@@ -61,17 +67,17 @@ theorem eventually_jasPrimeRpowSumB_le {X : ℕ} {α α' : ℝ} (hα : α ≤ 1)
   have h0 := jasPrimeRpowSum_nonneg α' X
   nlinarith
 
-theorem exists_twisted_jasPrimeRpowSumB_le {X : ℕ} {α Δ : ℝ} (h0 : 0 < α) (h1 : α < 1)
+theorem exists_twisted_jasPrimeRpowSumB_le {X : ℕ} {α Δ : ℝ} (h0 : 0 < α) (h1 : α ≤ 1)
     (hΔ : Δ ≠ 0) :
     ∃ κ : ℝ, κ < 1 ∧ ∀ᶠ N in atTop,
       ‖∑ p ∈ jasPrimesBetween X N, (Real.exp (-α * Real.log p) : ℂ) *
           cexp (((Δ * Real.log p : ℝ) : ℂ) * I)‖ ≤ κ * jasPrimeRpowSumB X α N := by
-  obtain ⟨κ, hκ1, hev⟩ := exists_twisted_jasPrimeRpowSum_le h0 h1 hΔ
+  obtain ⟨κ, hκ1, hev⟩ := exists_twisted_jasPrimeRpowSum_le_of_le_one h0 h1 hΔ
   have hκ' : (1 + max κ 0) / 2 < 1 := by have := max_lt hκ1 one_pos; linarith
   refine ⟨(1 + max κ 0) / 2, hκ', ?_⟩
   set C := jasPrimeRpowSum α X with hC
   have hC0 : 0 ≤ C := jasPrimeRpowSum_nonneg α X
-  filter_upwards [hev, (tendsto_jasPrimeRpowSumB_atTop (X := X) h1.le).eventually_ge_atTop
+  filter_upwards [hev, (tendsto_jasPrimeRpowSumB_atTop (X := X) h1).eventually_ge_atTop
     (2 * (1 + 1) * C / (1 - max κ 0)), eventually_ge_atTop X] with N hN hbig hXN
   have hsplit := jasPrimeRpowSumB_add X α hXN
   set f : Nat.Primes → ℂ := fun p => (Real.exp (-α * Real.log p) : ℂ) *
@@ -157,7 +163,7 @@ theorem JasDressedPSDOn.mono {S : Finset Nat.Primes} {σ' σ : ℝ} (h : JasDres
 theorem JasDressedPSDAbove.mono {X : ℕ} {σ' σ : ℝ} (h : JasDressedPSDAbove X σ') (hle : σ' ≤ σ) :
     JasDressedPSDAbove X σ := fun S hS => (h S hS).mono hle
 
-theorem eventually_jasHead_le_of_ltB {X : ℕ} {α α' g : ℝ} (hα0 : 0 < α) (hα1 : α < 1) (hαα' : α < α')
+theorem eventually_jasHead_le_of_ltB {X : ℕ} {α α' g : ℝ} (hα0 : 0 < α) (hα1 : α ≤ 1) (hαα' : α < α')
     (hg : 0 < g) {η : ℝ} (hη : 0 < η) {r₁ r₂ : Nat.Primes → ℝ}
     (hr₁ : ∀ p, r₁ p = Real.exp (-α * Real.log p)) (hr₂ : ∀ p, 0 ≤ r₂ p)
     (F : ℝ → Nat.Primes → ℂ) (hF : ∀ φ p, ‖F φ p‖ ≤ 2 * (1 + Real.exp (-α' * Real.log p))) :
@@ -167,9 +173,9 @@ theorem eventually_jasHead_le_of_ltB {X : ℕ} {α α' g : ℝ} (hα0 : 0 < α) 
       ‖∏ p ∈ jasPrimesBetween X N, F φ p‖ ≤
         η * ‖∏ p ∈ jasPrimesBetween X N, jasTwistedValue (r₁ p) (r₂ p) φ‖ := by
   set T₀ := max 1 (max (64 * Real.pi ^ 2 / g ^ 2) (2 + 4 * |Real.log η|)) with hT₀
-  filter_upwards [eventually_jasPrimeRpowSumB_le hα1.le hαα' (ε := 1 / 8) (by norm_num),
-    eventually_jasPrimeRpowSumB_le hα1.le (show α < 2 * α by linarith) (ε := 1 / 2) (by norm_num),
-    (tendsto_jasPrimeRpowSumB_atTop hα1.le).eventually_ge_atTop T₀] with N h1 h2 h3
+  filter_upwards [eventually_jasPrimeRpowSumB_le hα1 hαα' (ε := 1 / 8) (by norm_num),
+    eventually_jasPrimeRpowSumB_le hα1 (show α < 2 * α by linarith) (ε := 1 / 2) (by norm_num),
+    (tendsto_jasPrimeRpowSumB_atTop hα1).eventually_ge_atTop T₀] with N h1 h2 h3
   intro φ h0 hφ1 hT hsin
   set S := jasPrimeRpowSumB X α N with hS
   have hS1 : 1 ≤ S := (le_max_left _ _).trans h3
@@ -274,7 +280,7 @@ theorem twist_exponent_le {P : Finset Nat.Primes} {r₁ r₂ : Nat.Primes → �
 
 /-- Competitors at the same distance from the line and another height. -/
 
-theorem eventually_jasHead_le_of_twistB {X : ℕ} {α α₂ Δ g m : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+theorem eventually_jasHead_le_of_twistB {X : ℕ} {α α₂ Δ g m : ℝ} (hα0 : 0 < α) (hα1 : α ≤ 1)
     (hαα₂ : α < α₂) (hΔ : Δ ≠ 0) (hg : 0 < g) (hm : 0 < m) {η : ℝ} (hη : 0 < η)
     {r₁ r₂ : Nat.Primes → ℝ} (hr₁ : ∀ p, r₁ p = Real.exp (-α * Real.log p))
     (hr₂ : ∀ p, r₂ p = Real.exp (-α₂ * Real.log p)) (F : ℝ → Nat.Primes → ℂ)
@@ -289,9 +295,9 @@ theorem eventually_jasHead_le_of_twistB {X : ℕ} {α α₂ Δ g m : ℝ} (hα0 
   set ε := (1 - κ) / (3 + 1 / m) with hε
   have hε0 : 0 < ε := by rw [hε]; apply div_pos (by linarith); positivity
   set T₀ := max 1 (max (64 * Real.pi ^ 2 / g ^ 2) ((2 + 4 * |Real.log η|) / (1 - κ))) with hT₀
-  filter_upwards [hκev, eventually_jasPrimeRpowSumB_le hα1.le hαα₂ hε0,
-    eventually_jasPrimeRpowSumB_le hα1.le (show α < 2 * α by linarith) hε0,
-    (tendsto_jasPrimeRpowSumB_atTop hα1.le).eventually_ge_atTop T₀] with N hK h1 h2 h3
+  filter_upwards [hκev, eventually_jasPrimeRpowSumB_le hα1 hαα₂ hε0,
+    eventually_jasPrimeRpowSumB_le hα1 (show α < 2 * α by linarith) hε0,
+    (tendsto_jasPrimeRpowSumB_atTop hα1).eventually_ge_atTop T₀] with N hK h1 h2 h3
   intro φ h0 hφ1 hT hsin
   set S := jasPrimeRpowSumB X α N with hS
   have hS1 : 1 ≤ S := (le_max_left _ _).trans h3
@@ -367,7 +373,7 @@ theorem jasGap_mul_sum_leB {X : ℕ} {ρ : ℂ} (hβ : ρ.re < 1 / 2) (c : ℝ) 
 
 /-- A competitor zero is eventually negligible at the twisted Kronecker points of `ρ`. -/
 theorem eventually_jasCompetitor_leB {X : ℕ} {ρ q : ℂ} {c η : ℝ} (hβ0 : 0 < ρ.re) (hβ : ρ.re < 1 / 2)
-    (hc0 : 0 ≤ c) (hα1 : ρ.re + c < 1) (hη : 0 < η) (hq : |q.re - 1 / 2| ≤ 1 / 2 - ρ.re)
+    (hc0 : 0 ≤ c) (hα1 : ρ.re + c ≤ 1) (hη : 0 < η) (hq : |q.re - 1 / 2| ≤ 1 / 2 - ρ.re)
     (hqD : ¬ (q.im = ρ.im ∧ |q.re - 1 / 2| = 1 / 2 - ρ.re)) :
     ∀ᶠ N in atTop, ∀ φ : ℝ, 0 ≤ φ → φ ≤ Real.pi / 2 →
       jasGap ρ * jasPrimeRpowSumB X (ρ.re + c) N ≤
@@ -417,14 +423,14 @@ theorem eventually_jasCompetitor_leB {X : ℕ} {ρ q : ℂ} {c η : ℝ} (hβ0 :
 
 /-- The zeros outside a finite set are bounded by `∏ (2 + r₁ + r₂) ≤ 2 |G|` eventually. -/
 
-theorem eventually_jasTail_leB {X : ℕ} {ρ : ℂ} {c : ℝ} (hβ : ρ.re < 1 / 2) (hα1 : ρ.re + c < 1) :
+theorem eventually_jasTail_leB {X : ℕ} {ρ : ℂ} {c : ℝ} (hβ : ρ.re < 1 / 2) (hα1 : ρ.re + c ≤ 1) :
     ∀ᶠ N in atTop, ∀ φ : ℝ, 0 ≤ φ → φ ≤ Real.pi / 2 →
       Real.sin φ * ∑ p ∈ jasPrimesBetween X N, (jasR1 (ρ + c) p - jasR2 (ρ - c) p) ≤ 8 * Real.pi →
       ∏ p ∈ jasPrimesBetween X N, (2 + (jasR1 (ρ + c) p + jasR2 (ρ - c) p)) ≤
         2 * ‖∏ p ∈ jasPrimesBetween X N, jasTwistedValue (jasR1 (ρ + c) p) (jasR2 (ρ - c) p) φ‖ := by
   have hg := jasGap_pos hβ
   have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  filter_upwards [(tendsto_jasPrimeRpowSumB_atTop hα1.le).eventually_ge_atTop
+  filter_upwards [(tendsto_jasPrimeRpowSumB_atTop hα1).eventually_ge_atTop
     (max 1 (64 * Real.pi ^ 2 / (jasGap ρ ^ 2 * Real.log 2)))] with N hN
   intro φ h0 h1 hsin
   have hS0 : 0 < jasPrimeRpowSumB X (ρ.re + c) N := lt_of_lt_of_le one_pos ((le_max_left _ _).trans hN)
@@ -456,23 +462,22 @@ theorem eventually_jasTail_leB {X : ℕ} {ρ : ℂ} {c : ℝ} (hβ : ρ.re < 1 /
     _ = 2 := Real.exp_log (by norm_num)
 
 
-theorem not_jasDressedPSDAbove_of_maximal_offLine_of_lt (X : ℕ) (q₀ : XiZeroCopy) (hβ : (q₀.1 : ℂ).re < 1 / 2)
+theorem not_jasProductPositiveAbove_of_maximal_offLine_of_lt_of_le (X : ℕ) (q₀ : XiZeroCopy)
+    (hβ : (q₀.1 : ℂ).re < 1 / 2)
     (hmax : ∀ q : XiZeroCopy, |(q.1 : ℂ).re - 1 / 2| ≤ |(q₀.1 : ℂ).re - 1 / 2|) {σ : ℝ}
-    (hσ : σ < 1 + |(q₀.1 : ℂ).re - 1 / 2|) : ¬ JasDressedPSDAbove X σ := by
+    (hσh : 1 / 2 ≤ σ) (hσ : σ ≤ 1 + |(q₀.1 : ℂ).re - 1 / 2|) : ¬ JasProductPositiveAbove X σ := by
   classical
-  intro hPSD
+  intro hPP
   have hβ0 : 0 < (q₀.1 : ℂ).re := (xi_divisor_support_re_mem_open_unit q₀.1).1
   have habs : |(q₀.1 : ℂ).re - 1 / 2| = 1 / 2 - (q₀.1 : ℂ).re := by
     rw [abs_of_neg (by linarith)]; ring
   rw [habs] at hσ
-  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = max σ (1 / 2) - 1 / 2 := ⟨_, rfl⟩
-  have hc0 : 0 ≤ c := by rw [hc]; linarith [le_max_right σ (1 / 2)]
-  have hα1 : (q₀.1 : ℂ).re + c < 1 := by
-    have : max σ (1 / 2) < 1 + (1 / 2 - (q₀.1 : ℂ).re) := max_lt hσ (by linarith)
-    rw [hc]; linarith
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = σ - 1 / 2 := ⟨_, rfl⟩
+  have hc0 : 0 ≤ c := by rw [hc]; linarith
+  have hα1 : (q₀.1 : ℂ).re + c ≤ 1 := by rw [hc]; linarith
   have hα0 : 0 < (q₀.1 : ℂ).re + c := by linarith
-  have hPSD' : JasDressedPSDAbove X (1 / 2 + c) :=
-    hPSD.mono (by rw [hc]; linarith [le_max_left σ (1 / 2)])
+  have hPP' : JasProductPositiveAbove X (1 / 2 + c) := by
+    rw [show 1 / 2 + c = σ by rw [hc]; ring]; exact hPP
   have hρ0 : (q₀.1 : ℂ) ≠ 0 := fun h => by rw [h] at hβ0; simp at hβ0
   have hρ1 : 1 - (q₀.1 : ℂ) ≠ 0 := fun h => by
     have := congrArg Complex.re h
@@ -510,7 +515,7 @@ theorem not_jasDressedPSDAbove_of_maximal_offLine_of_lt (X : ℕ) (q₀ : XiZero
       (Finset.mem_filter.mp hq).2
   obtain ⟨N, hNhead, hNtail, hNsize⟩ :=
     (((Filter.eventually_all_finset _).mpr hhead).and ((eventually_jasTail_leB hβ hα1).and
-      ((tendsto_jasPrimeRpowSumB_atTop hα1.le).eventually_ge_atTop
+      ((tendsto_jasPrimeRpowSumB_atTop hα1).eventually_ge_atTop
         (8 * Real.pi / jasGap (q₀.1 : ℂ))))).exists
   have hTN := jasGap_mul_sum_leB (X := X) hβ c N
   have hgN : 8 * Real.pi ≤ jasGap (q₀.1 : ℂ) * jasPrimeRpowSumB X ((q₀.1 : ℂ).re + c) N := by
@@ -525,8 +530,7 @@ theorem not_jasDressedPSDAbove_of_maximal_offLine_of_lt (X : ℕ) (q₀ : XiZero
   have hsin8 : Real.sin φ * ∑ p ∈ jasPrimesBetween X N,
       (jasR1 ((q₀.1 : ℂ) + c) p - jasR2 ((q₀.1 : ℂ) - c) p) ≤ 8 * Real.pi := by linarith
   -- the Bernoulli test at the twisted Kronecker point
-  have hB := jasBernoulliAggregate_nonneg_of_on (hPSD' (jasPrimesBetween X N)
-    fun p hp => (Finset.mem_filter.mp hp).2) (jasPrimesBetween X N) subset_rfl
+  have hB := hPP' (jasPrimesBetween X N) (fun p hp => (Finset.mem_filter.mp hp).2)
     (jasTwistedPoint (q₀.1 : ℂ) φ)
   rw [show (1 / 2 + c - 1 / 2 : ℝ) = c by ring] at hB
   obtain ⟨T, hT⟩ : ∃ T : XiZeroCopy → ℂ, T = fun q =>
@@ -611,6 +615,51 @@ theorem not_jasDressedPSDAbove_of_maximal_offLine_of_lt (X : ℕ) (q₀ : XiZero
       _ ≤ (2 * ‖G‖) * (‖w₀‖ / 8) :=
           mul_le_mul hBG hFtail.le (tsum_nonneg fun q => hwq0 q) (by positivity)
       _ = ‖w₀‖ * ‖G‖ / 4 := by ring
+
+theorem not_jasDressedPSDAbove_of_maximal_offLine_of_lt_of_le (X : ℕ) (q₀ : XiZeroCopy)
+    (hβ : (q₀.1 : ℂ).re < 1 / 2)
+    (hmax : ∀ q : XiZeroCopy, |(q.1 : ℂ).re - 1 / 2| ≤ |(q₀.1 : ℂ).re - 1 / 2|) {σ : ℝ}
+    (hσ : σ ≤ 1 + |(q₀.1 : ℂ).re - 1 / 2|) : ¬ JasDressedPSDAbove X σ := fun hPSD =>
+  not_jasProductPositiveAbove_of_maximal_offLine_of_lt_of_le X q₀ hβ hmax (le_max_right σ (1 / 2))
+    (max_le hσ (by linarith [abs_nonneg ((q₀.1 : ℂ).re - 1 / 2)]))
+    (hPSD.mono (le_max_left σ (1 / 2))).productPositive
+
+theorem not_jasDressedPSDAbove_of_maximal_offLine_of_lt (X : ℕ) (q₀ : XiZeroCopy) (hβ : (q₀.1 : ℂ).re < 1 / 2)
+    (hmax : ∀ q : XiZeroCopy, |(q.1 : ℂ).re - 1 / 2| ≤ |(q₀.1 : ℂ).re - 1 / 2|) {σ : ℝ}
+    (hσ : σ < 1 + |(q₀.1 : ℂ).re - 1 / 2|) : ¬ JasDressedPSDAbove X σ :=
+  not_jasDressedPSDAbove_of_maximal_offLine_of_lt_of_le X q₀ hβ hmax hσ.le
+
+/-- **A maximal off-line zero excludes large-prime positivity up to and including
+`σ = 1 + δ`.** -/
+theorem not_jasDressedPSDAbove_of_maximal_offLine_of_le (X : ℕ) (q₀ : XiZeroCopy)
+    (hoff : (q₀.1 : ℂ).re ≠ 1 / 2)
+    (hmax : ∀ q : XiZeroCopy, |(q.1 : ℂ).re - 1 / 2| ≤ |(q₀.1 : ℂ).re - 1 / 2|) {σ : ℝ}
+    (hσ : σ ≤ 1 + |(q₀.1 : ℂ).re - 1 / 2|) : ¬ JasDressedPSDAbove X σ := by
+  rcases lt_or_gt_of_ne hoff with hlt | hgt
+  · exact not_jasDressedPSDAbove_of_maximal_offLine_of_lt_of_le X q₀ hlt hmax hσ
+  · have hval : (((xiZeroCopyReflectEquiv q₀).1 : ℂ)) = 1 - (q₀.1 : ℂ) := rfl
+    have habs : |((xiZeroCopyReflectEquiv q₀).1 : ℂ).re - 1 / 2| = |(q₀.1 : ℂ).re - 1 / 2| := by
+      rw [hval, Complex.sub_re, Complex.one_re, show 1 - (q₀.1 : ℂ).re - 1 / 2 =
+        -((q₀.1 : ℂ).re - 1 / 2) by ring, abs_neg]
+    exact not_jasDressedPSDAbove_of_maximal_offLine_of_lt_of_le X (xiZeroCopyReflectEquiv q₀)
+      (by rw [hval, Complex.sub_re, Complex.one_re]; linarith) (fun q => habs ▸ hmax q)
+      (habs ▸ hσ)
+
+/-- **A maximal off-line zero excludes product-test positivity up to `σ = 1 + δ`.**  The
+Bernoulli tests at the twisted Kronecker point of the maximal zero are rank-one product tests. -/
+theorem not_jasProductPositiveAbove_of_maximal_offLine_of_le (X : ℕ) (q₀ : XiZeroCopy)
+    (hoff : (q₀.1 : ℂ).re ≠ 1 / 2)
+    (hmax : ∀ q : XiZeroCopy, |(q.1 : ℂ).re - 1 / 2| ≤ |(q₀.1 : ℂ).re - 1 / 2|) {σ : ℝ}
+    (hσh : 1 / 2 ≤ σ) (hσ : σ ≤ 1 + |(q₀.1 : ℂ).re - 1 / 2|) : ¬ JasProductPositiveAbove X σ := by
+  rcases lt_or_gt_of_ne hoff with hlt | hgt
+  · exact not_jasProductPositiveAbove_of_maximal_offLine_of_lt_of_le X q₀ hlt hmax hσh hσ
+  · have hval : (((xiZeroCopyReflectEquiv q₀).1 : ℂ)) = 1 - (q₀.1 : ℂ) := rfl
+    have habs : |((xiZeroCopyReflectEquiv q₀).1 : ℂ).re - 1 / 2| = |(q₀.1 : ℂ).re - 1 / 2| := by
+      rw [hval, Complex.sub_re, Complex.one_re, show 1 - (q₀.1 : ℂ).re - 1 / 2 =
+        -((q₀.1 : ℂ).re - 1 / 2) by ring, abs_neg]
+    exact not_jasProductPositiveAbove_of_maximal_offLine_of_lt_of_le X (xiZeroCopyReflectEquiv q₀)
+      (by rw [hval, Complex.sub_re, Complex.one_re]; linarith) (fun q => habs ▸ hmax q) hσh
+      (habs ▸ hσ)
 
 /-- **A maximal off-line zero excludes JAS positivity below `σ = 1 + δ`.**  If a Xi zero `ρ₀` off
 the critical line maximizes `|Re ρ - 1/2|` over all Xi zeros, then the dressed aggregate is not

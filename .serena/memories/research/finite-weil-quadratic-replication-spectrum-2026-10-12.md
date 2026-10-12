@@ -1,0 +1,21 @@
+# Finite Weil quadratic replication spectrum — 2026-10-12
+
+Constraint: mathematical evidence ONLY local Lean corpus. No web, external papers, numerical experiments, or literature novelty judgment. See `mem:workflow/research-corpus-only-2026-10-12`.
+
+Card: docs/drafts/pipeline/3-formalized/finite-weil-quadratic-replication-spectrum.md. Predecessors: `mem:research/finite-weil-quadratic-fast-replication-2026-10-12` and `mem:research/finite-weil-quadratic-adaptive-replication-2026-10-12`.
+
+Three new leaves, four theorems, all native leaf checks empty-log successes. Umbrellas wired without building. Complete actual finite-law replication-affinity spectrum proved.
+
+HTGeometry/IntermediateAffinityReplication.lean imports AdaptiveAffinityReplication. exists_ennreal_power_crossing: x<1, 0<q<1 implies exists n with q*x<=x^n<q (ENNReal, allows x=0). Nat.find first exponent crossing q; predecessor gives lower bound. exists_ennreal_powers_tendsto_intermediate: f→1 and eventually f<1 implies for every 0<q<1 an escaping m:N→N with f(r)^m(r)→q. No monotonicity assertion. Squeeze q*f<=powers<q proves limit; fixed powers f^N→1 and antitonic powers below1 force selected m>N eventually.
+
+HTGeometry/AffinityReplicationSpectrum.lean imports IntermediateAffinityReplication and FastAffinityReplication. exists_ennreal_powers_tendsto_iff: for f:N→ENNReal with each f<=1 and f→c, an escaping m with powers→q exists iff (c<1 and q=0) OR (c=1 and (q=1 OR (q<1 and eventually f<1))). c<=1 is derived, not a premise. Uses existing slow schedule, fast criterion and new interior construction.
+
+RHTower/WeilLogShiftQuadraticReplicationSpectrum.lean imports AffinityReplicationSpectrum, ProbabilityAffinityRigidity, WeilLogShiftQuadraticAffinityLimit. exists_finiteWeilCanonicalJointQuadraticTilt_replication_limit_iff: arbitrary t:N→N; canonical depths 2*(r+1)^2+t(r); subcritical coefficient sums s=a+2b+d<2 and S=A+2B+D<2; arbitrary ENNReal q. Actual product Measure.pi Fin(m r) affinity has escaping schedule with limit q iff (s!=S and q=0) OR (s=S and (q=1 OR (q<1 and actual finite laws eventually unequal))). Analytic assumptions fully discharged at root. Thus exact spectrum is {0} for unequal diagonal sums, [0,1] for equal sums/eventual finite-law inequality, and {1} for equal sums/no eventual inequality. Last case includes infinitely many equal pairs, not just eventual equality. Do not generalize this complete spectrum to arbitrary depths/all coefficients: only predecessor fast-zero criterion has that scope.
+
+Validation: final native scratch /tmp/hgt-affinity-spectrum-final-audit.lean, 4 axiom reports standard propext/Classical.choice/Quot.sound;16 API checks;4 unique declarations;6 direct edges;5 incoming imports;3 fresh native objects;direct dependency freshness;scoped index4/4 no partial/markers/stderr;whitespace clean. Single lint snapshot16 unrelated errors,367 warnings (15 unreachable modules plus existing CCMPolarOddPrimeJumps.lean:104 sorry), no owned errors. Artifacts prefix /tmp/hgt-affinity-spectrum-. No full/umbrella builds, no commits.
+
+Prior research: all38 HTGeometry powers/tendsto records across2 pages and all4 WeilLogShift replication records inspected. PowerSequenceLimitOne offers rate-based sufficient target-one condition, not full existence spectrum. Minimal-crossing proof technique found in EllipticThetaLogGlobalMeromorphic. Broad initial OR search not exhaustive novelty evidence.
+
+API lessons: use mul_le_mul_left, deprecated mul_le_mul_right' gives warning. ENNReal.Tendsto.const_mul (a:=q) hf (Or.inl one_ne_zero), then simpa only[mul_one]. Use explicit Ne.symm hq0 after by_cases q=0; field hq0.symm may infer Function namespace. Actual root requires open scoped ENNReal for explicit target notation. Native API checks use example : True := by have := @Name.{...}; trivial, not untyped example exact h. Final root proof simpa only[bhattacharyya_pi,ENNReal.ofReal_lt_one,ENNReal.ofReal_eq_one,finiteWeilQuadraticTiltAffinity_lt_one_iff,finiteWeilQuadraticTiltAffinity_eq_one_iff,bhattacharyya_lt_one_iff] from generic spectrum.
+
+Remaining: finite-law equality classified by coefficients; prescribed rates/schedules; monotone intermediate targets (not claimed). Corpus-wide goal still active.

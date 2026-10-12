@@ -50,8 +50,8 @@ theorem re_sum_sum_ge_of_offdiag_le {ι : Type*} [DecidableEq ι] (t : Finset ι
   have hrow : ∀ j ∈ t, u j ^ 2 * G * (1 + ε) - ε * G * |u j| * ∑ k ∈ t, |u k| ≤
       ∑ k ∈ t, u j * u k * (T j k).re := by
     intro j hj
-    rw [← Finset.add_sum_erase t _ hj, hdiag j hj, Complex.ofReal_re,
-      ← Finset.add_sum_erase t (fun k => |u k|) hj]
+    rw [← Finset.add_sum_erase t (fun k => u j * u k * (T j k).re) hj, hdiag j hj,
+      Complex.ofReal_re, ← Finset.add_sum_erase t (fun k => |u k|) hj]
     have hrest : -(ε * G * |u j| * ∑ k ∈ t.erase j, |u k|) ≤
         ∑ k ∈ t.erase j, u j * u k * (T j k).re := by
       rw [Finset.mul_sum, ← Finset.sum_neg_distrib]
@@ -66,11 +66,19 @@ theorem re_sum_sum_ge_of_offdiag_le {ι : Type*} [DecidableEq ι] (t : Finset ι
       nlinarith
     have hsq : u j * u j = u j ^ 2 := by ring
     have hab : |u j| * |u j| = u j ^ 2 := by rw [← abs_mul, abs_mul_self]; ring
-    nlinarith [hrest]
+    have hexp : ε * G * |u j| * (|u j| + ∑ x ∈ t.erase j, |u x|) =
+        ε * G * u j ^ 2 + ε * G * |u j| * ∑ x ∈ t.erase j, |u x| := by
+      rw [← hab]; ring
+    rw [hexp, hsq]
+    linarith [hrest]
   calc G * ((1 + ε) * ∑ j ∈ t, u j ^ 2 - ε * (∑ j ∈ t, |u j|) ^ 2)
       = ∑ j ∈ t, (u j ^ 2 * G * (1 + ε) - ε * G * |u j| * ∑ k ∈ t, |u k|) := by
-        rw [Finset.sum_sub_distrib, ← Finset.sum_mul, ← Finset.sum_mul, ← Finset.mul_sum,
-          ← Finset.sum_mul]
+        have e1 : ∑ j ∈ t, u j ^ 2 * G * (1 + ε) = (∑ j ∈ t, u j ^ 2) * G * (1 + ε) := by
+          rw [Finset.sum_mul, Finset.sum_mul]
+        have e2 : ∑ j ∈ t, ε * G * |u j| * ∑ k ∈ t, |u k| =
+            ε * G * (∑ j ∈ t, |u j|) * ∑ k ∈ t, |u k| := by
+          rw [← Finset.sum_mul, ← Finset.mul_sum]
+        rw [Finset.sum_sub_distrib, e1, e2]
         ring
     _ ≤ _ := Finset.sum_le_sum hrow
 
@@ -86,6 +94,17 @@ theorem prod_inv_one_sub_unimodular {P : Finset Nat.Primes} {ψ : ↥P → ℂ}
   push_cast
   refine Finset.prod_congr rfl fun i _ => ?_
   rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hψ i, rpow_natCast_neg_ofReal]
+  push_cast
+  ring
+
+theorem prod_inv_one_sub_conj_mul_unimodular {P : Finset Nat.Primes} {ψ : ↥P → ℂ}
+    (hψ : ∀ i, ‖ψ i‖ = 1) (σ : ℝ) :
+    ∏ i : ↥P, (1 - conj (ψ i) * ψ i * (((i : Nat.Primes) : ℕ) : ℂ) ^ (-(σ : ℂ)))⁻¹ =
+      ((∏ i : ↥P, (1 - (((i : Nat.Primes) : ℕ) : ℝ) ^ (-σ))⁻¹ : ℝ) : ℂ) := by
+  push_cast
+  refine Finset.prod_congr rfl fun i _ => ?_
+  rw [mul_comm (conj (ψ i)), Complex.mul_conj, Complex.normSq_eq_norm_sq, hψ i,
+    rpow_natCast_neg_ofReal]
   push_cast
   ring
 
@@ -145,21 +164,13 @@ theorem jasClusterTwoSided_sum_sq_le_of_nonaligned {ι : Type*} [DecidableEq ι]
   have hGa := prod_inv_one_sub_rpow_pos hα
   have hGb := prod_inv_one_sub_rpow_pos hb
   have hG := mul_pos hGa hGb
-  have hψc : ∀ j, ∀ i, ‖conj (ψ j i)‖ = 1 := fun j i => by rw [Complex.norm_conj]; exact hψ j i
   have hdiag : ∀ j ∈ t,
       (∏ i : ↥P, (1 - ψ j i * conj (ψ j i) * (((i : Nat.Primes) : ℕ) : ℂ) ^ (-(a : ℂ)))⁻¹) *
         ∏ i : ↥P, (1 - conj (ψ j i) * ψ j i * (((i : Nat.Primes) : ℕ) : ℂ) ^ (-(σ : ℂ)))⁻¹ =
       (((∏ i : ↥P, (1 - (((i : Nat.Primes) : ℕ) : ℝ) ^ (-a))⁻¹) *
         ∏ i : ↥P, (1 - (((i : Nat.Primes) : ℕ) : ℝ) ^ (-σ))⁻¹ : ℝ) : ℂ) := fun j _ => by
-    have h2 := prod_inv_one_sub_unimodular (hψc j) σ
-    simp only [Complex.conj_conj] at h2
-    rw [prod_inv_one_sub_unimodular (hψ j) a, Complex.ofReal_mul,
-      show (fun i : ↥P => conj (ψ j i) * ψ j i) = fun i => ψ j i * conj (ψ j i) from
-        funext fun i => mul_comm _ _]
-    rw [← h2]
-    congr 1
-    refine Finset.prod_congr rfl fun i _ => ?_
-    rw [mul_comm (conj (ψ j i))]
+    rw [prod_inv_one_sub_unimodular (hψ j) a, prod_inv_one_sub_conj_mul_unimodular (hψ j) σ,
+      Complex.ofReal_mul]
   have hlow := re_sum_sum_ge_of_offdiag_le t u
     (fun j k => (∏ i : ↥P, (1 - ψ j i * conj (ψ k i) * (((i : Nat.Primes) : ℕ) : ℂ) ^ (-(a : ℂ)))⁻¹) *
       ∏ i : ↥P, (1 - conj (ψ j i) * ψ k i * (((i : Nat.Primes) : ℕ) : ℂ) ^ (-(σ : ℂ)))⁻¹)

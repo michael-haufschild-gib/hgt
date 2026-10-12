@@ -198,3 +198,87 @@ The case Θ = 1 is open (ledger row 56). It needs large-value or Bohr-set contro
     the 1-line, for d ∈ [κ/loglog Δ, 2/A] (at the low end this is a log-log zero-free region, since VK–Jensen gives
     only d^{3/2} log Δ);
   - or a non-alignment theorem.
+- [L] Cluster dichotomy (row 88, `JointAncestryClusterDichotomy`, MUST-1250). A rescuing cluster has effective size at
+  least 1/(ε + 6e^{−S/60}), where ε is its worst pairwise alignment. For zeros, ε is the partial Euler product ratio
+  at a height difference. With VK density, homogeneous clusters reduce to Bohr-aligned pairs. Dispersed clusters need
+  only polylog effective size, so the binding residual is real-part dispersion plus Bohr-aligned pairs at height
+  differences beyond exp(c(log N)^{3/2}).
+- [L] Producer side (row 89, `JointAncestryLargePrimeAttainment`, MUST-1256): summability criterion `d_ρ < σ₀ − 1`, `Σ|w_ρ|/(σ₀−1−d_ρ) < ∞` ⟹ `∃X ∀σ ≥ σ₀`, large-prime positivity. Unconditional at `σ₀ = 3/2` via the zero-free region. Attained abscissa `1 + δ*` for summable chains under quasi-RH. The large-prime producer is equivalent to a zero-free half-plane, up to chains and boundary summability.
+- [L] Row 90 (MUST-1258): endpoint exclusion at exponent one; a farthest zero makes the large-prime producer set the open ray `(1 + d₀, ∞)`; off RH, attainment forces a chain. The chain residual is the endpoint behaviour of the producer.
+
+## Producer-side verdict (2026-10-11, after ledger rows 89–90c)
+- **Large-prime producer law [L].** Positivity above some X at level σ ≥ 1 forces the closed strip `|Re ρ − ½| ≤ σ − 1`, unless `sup |Re ρ − ½| = ½`. Conversely, the open strip plus convergent boundary series `Σ|w_ρ|/(σ−1−d_ρ)` produces positivity (one X for all levels ≥ σ). Unconditionally the producer exists at `σ = 3/2`, the pole threshold where `Σ (ab)^{−σ}(a/b)^{1/2}` stops converging.
+- **Endpoint structure [L].** With a farthest zero, the producer set is the open ray `(1 + d₀, ∞)`; summable chains attain `1 + δ*`. Off RH, attainment forces a chain. The all-prime abscissa exceeds `1 + d₀` strictly when a farthest zero exists.
+- **Capstone [L].** RH ⟺ (∃X, large-prime positivity at σ = 1) ∧ quasi-RH.
+- **Reading.** JAS has no positivity source independent of zero location. Below 3/2 a producer is a zero-free strip, and at σ = 1 it is RH (modulo Θ = 1). This is the prime-side analogue of Hadamard positivity `Re ξ'/ξ > 0` right of all zeros, shifted by the pole of ζ. The archimedean (Poisson-in-L) dressing has abscissa `Θ − ½`, the prime (Poisson-in-primes) dressing `Θ + ½`. Proportion results (critical zeros ≥ 67%, Selberg density) cannot feed JAS positivity, because one off-line zero with `d > σ − 1` has unbounded amplification. The only JAS-specific open content left is the Θ = 1 escape (receiver residual [B]), which needs zero-distribution input beyond Vinogradov–Korobov (rows 86–88). A route-JAS proof of RH therefore needs an RH-strength producer from outside the Euler-product side: modularity/theta or an independent zero-free half-plane.
+- NO INDEPENDENT PRODUCER EXISTS INSIDE JAS (positive survivors: rows 89, 90, 90b, 90c).
+
+## What would close route JAS (2026-10-11, after rows 89–92b)
+- **[A] Producer (RH-strength).** Large-prime positivity at σ = 1 (equivalently, Weil positivity on large-prime harmonic Euler vectors). With quasi-RH this is RH [L] (`riemannHypothesis_iff_exists_jasDressedPSDAbove_one_and_quasi`, `riemannHypothesis_iff_weilEulerPositiveAbove_one_and_quasi`). No producer for it exists inside JAS. The unconditional producers are local: in dressing (σ ≥ 3/2, MUST-1256) and in log-scale (windows ≤ (σ−1) log X, MUST-1260).
+- **[B] Receiver completion.** Exclude Θ = 1 configurations with large-prime positivity at some σ < 3/2. Then positivity at σ ∈ [1, 3/2) ⟺ the zero-free strip Re ρ ≤ σ − ½, and RH ⟺ large-prime positivity at σ = 1 with no side condition. Needed inputs, in paper form:
+  - (B1) a Ford-type density `N(1−κ, T) ≪ T^{Cκ^{3/2}}(log T)^{C}`, which kills chains on the VK boundary (row 88). The corpus has VK and Ingham's density, but not this.
+  - (B2) a growth law making farther-from-the-line zeros polynomially higher in log-height (row 86 exponent gap), or a non-alignment statement for zero ordinates at super-VK height differences. Both are beyond current knowledge.
+- **Verdict.** Route JAS is a complete receiver modulo [B], and its producer is RH-strength. Every remaining step is a statement about zeros of ζ near Re s = 1 (B1, B2) or RH itself (A).
+
+## Minimal producer target (2026-10-12, rows 100–101)
+- Every receiver uses only rank-one Bernoulli product tests. RH ⟺ (∃X, product-test positivity on primes > X at σ=1) ∧ quasi [L] (R:JointAncestryLargePrimeAttainment). Under quasi, block-positivity of the zero operators Σ_ρ w_ρ ⊗_p M_{ρ,p} forces full PSD (MUST-1267).
+- Product tests reduce to the Kronecker line: RH ⟺ (∃X: Re Σ_ρ K_P(ρ−it)/(ρ(1−ρ)) ≥ 0 for every finite P ⊂ primes > X and t ∈ ℝ, K_P(s) = ∏_{p∈P}(1 + p^{−1}cosh((s−½)log p))) ∧ quasi [L] (R:JointAncestryPrimeCosineKernel, MUST-1270). This is the smallest form of [A]: Weil positivity against translates of positive large-prime cosine products.
+- (row 103) The half-plane hypothesis is JAS-internal: quasi-RH ⟺ single-prime JAS positivity at some σ < ½ on large primes, and RH ⟺ single-prime positivity at σ = 0 (the WL prime-lag bound). Capstone: RH ⟺ ∃X: single-prime positivity below ½ ∧ cosine positivity at σ = 1 [L] (R:JointAncestrySinglePrimeLevel, MUST-1272).
+
+## Producer map (2026-10-12, rows 99–108, all [L] unless noted)
+On large primes, JAS positivity is graded by prime-number-theorem strength:
+- **Single-prime tests** (one prime, level σ) ⟺ \|Φ(log p)\| ≤ Φ(0)p^σ. Level ½: unconditional (PNT). Level σ ∈ [¼,½): ⟺ half-plane Re ρ ≤ ½ + σ, up to the boundary. Some level < ½: ⟺ quasi-RH. Level 0: ⟺ RH (the WL prime-lag bound). (R:JointAncestrySinglePrimeLevel, MUST-1272/1273)
+- **Product tests** (rank-one, squarefree) ⟺ **cosine-kernel tests** at every level (R:JointAncestryPrimeCosineKernel, MUST-1270). They are monotone up in the level. Some level < ½: ⟺ RH, with no side condition. Level 1: ⟺ RH given quasi-RH. Level ≥ 3/2: unconditional.
+- **Minimal producer:** quasi-RH (single primes below ½) plus RH given quasi-RH (cosine positivity at level 1). Both are classical.
+- **[B]** (does level-1 positivity force single primes below ½?) is blocked at every level in [½,1]. Single coefficients carry no information there [L]. Averaging in t at width h caps amplification at e^{1/(2h)} [P], so averaging (density, large-sieve) methods cannot certify the competitors. Pointwise tools (records, VK, Ω-balanced ratios) leave collective dispersed rescue (rows 86, 88, 99, 102, 107, 108). [B] needs information about individual near-edge ordinates beyond averaging, the same kind quasi-RH needs.
+
+## Producer map, sharpened (2026-10-12, rows 112–114, all [L])
+- **Single-prime level is exactly Θ − ½** on [0,½), with no ¼ artifact: a one-sided power-saving lag bound at the primes (upper: R:PrimeLagLandauPowerSaving; lower: R:PrimeLagPowerSavingLowerBound) is a zero-free half-plane. One test vector (z = 1 alone, or z = −1 alone) suffices.
+- **Bounded complexity sees only Θ − ½** (R:JointAncestryProductComplexity). For every fixed k, k-prime product positivity has the single-prime abscissa. Positivity holds on all sets of ≤ c·X^{σ−α} primes under a half-plane α ≤ σ, unconditionally for σ ≥ ½.
+- **Consequence for the producer:** off RH, the product abscissa Θ + ½ is carried only by tests on ≫ X^{σ−α} primes. Both [B] and RH-given-quasi live in this high-complexity regime, where every unconditional bound is a zero-free-region bound.
+- **Unconditional producer = bounded prime budget** (row 117, [L]): for every σ and K, positivity holds on all sets of primes > X with Σ_P p^{−(σ−½)} ≤ K once X is large. Few-primes (K·X^{σ−½}) and global (σ > 3/2) producers are special cases. Growing budgets need a zero-free region; unrestricted budget at σ = 1 is [B].
+
+## [B] closed (2026-10-12, row 119, [L])
+`riemannHypothesis_iff_exists_jasProductPositiveAbove_one`: RH ⟺ ∃X, JasProductPositiveAbove X 1, with no quasi-RH hypothesis (R:JointAncestryDiagonalBochnerLevel). Product positivity at any level σ ≥ 0 forces |Re ρ − ½| ≤ max(0, σ − 1). The method is the diagonal Bochner bound (card `jas-diagonal-bochner-level-one`). The producer side now has a single target: prove product positivity on large primes at level 1.
+
+## Route JAS: final producer verdict (2026-10-12, rows 119–124, all [L])
+- **Receiver: closed.** RH ⟺ ∃X: constant-vector product positivity over prime intervals at level 1 (MUST-1290, 1293). Positivity at level σ forces |Re ρ − ½| ≤ max(0, σ − 1) for every configuration of zeros.
+- **Producer: graded exactly by zero-free regions.** Budget y^λ ⟺ half-plane ½ − λ (MUST-1294). Power-of-log regions (log|γ|)^{−θ} transfer to budget (log y)^{1/θ−} (MUST-1296). The unconditional producer reaches (log y)^{3/2−ε} via Vinogradov–Korobov.
+- **No independent producer inside JAS.** Every JAS producer statement is a zero-free-region statement, at every scale. Second pass tried: z-averaging of the on-line square structure, the functional-equation pairing, the Kolmogorov/Bochner torus measure, torus L^q receivers, and Euler-polynomial expansion (the product test is the Weil form on |Euler polynomials|²). None supplies positivity beyond the zero-free region in use. Status: route complete as an equivalence; NO INDEPENDENT PRODUCER FOUND. The next producer step (any λ > 0) is quasi-RH.
+
+## Weighted JAS and the final producer classification (2026-10-12)
+
+**Positive survivor.**
+- Weighting each zero by g(ρ)/(ρ(1−ρ)), for any dressing g positive on the line, keeps the receiver: RH ⟺ level-1 weighted positivity.
+- The weighted family is unconditionally positive at every budget exp(log y·(log log y)^{−θ'}), θ' > 2/3, for g_κ = exp(|κ|(1 − cos 3(s−½))).
+- For every dressing, a budget y^λ is exactly the half-plane ½−λ.
+- Modules: R:JointAncestryWeighted{Lag,LagGrowth,Bochner,Level,Producer,CosProducer,BudgetLaw}; MUST-1305 and MUST-1308.
+
+**New insight.** The undressed (log y)^{3/2} stop is an artifact of the zero-weight tail. All sub-power JAS budgets are reachable from VK alone. So the JAS producer problem is exactly the fixed-power gap, which is quasi-RH.
+
+**Why no JAS-internal producer can close that gap.**
+1. Single off-line zeros are visible at every power budget for every dressing. Density inputs (Selberg, Levinson, zero-density) cannot help. This is consistent with the admissible-shape classification in R:DegradationRateRanking.
+2. A prime-side proof would need a one-sided bound on S(L) = Σ_{n≤e^L} Λ(n) n^{−½}·2 sinh((L−log n)/2) to within e^{aL}, a < ½, of its main term.
+   - The upper direction needs better than the factor-2 sieve bound; this is the parity barrier.
+   - The lower direction needs a lower bound on primes at power precision.
+   - In both cases the positivity of Λ lies on the wrong side of the explicit-formula duality.
+3. Zero-side inputs are the zero-free region lane. There the Vinogradov family sits at κ = 3/2 and quasi-RH needs κ = ∞ (R:ExponentChainKappa).
+
+**Verdict.** NO INDEPENDENT PRODUCER INSIDE JAS. A JAS proof of RH needs a global, non-linear Euler×FE coupling that gives a fixed-width zero-free region. No route in the corpus currently supplies one.
+
+## Measure paradigm closure (2026-10-12)
+- Random phases z_p = rω^{k_p} on a set P of primes in (y, 2y], y ≥ Y:
+  - the exceptional set is at most N^{|P|}·Σ_ρ|w_ρ| exp(−c y^{2ω_ρ} log y), where
+    ω_ρ = ½ − |Re ρ − ½|;
+  - this gives exp(−(log y)^{3/2−ε}) unconditionally and exp(−c y^{1−2α} log y) under a
+    half-plane α (R:JointAncestryRandomPhaseWidthGraded, MUST-1320).
+- Parseval: the phase variance equals Σ_e κ_e²Φ(L_e)² over sign patterns.
+  - On Huxley windows: subpower variance ⟺ RH, and power-saving variance ⟺ quasi-RH
+    (R:JointAncestryRandomPhaseParseval, MUST-1324).
+- Classification: every phase-averaged statistic is a faithful receiver of the zero-free region.
+  None supplies positivity. Direct counting (row 142) fails because it bypasses the zero side.
+- Rows 150–158 add three facts.
+  - Sparse-scale relaxations of the cofinal receiver are blocked by the lack of γ-decay of the
+    twisted prime sums B_ρ(y).
+  - The full-prime PSD abscissa has ceiling ½ + Θ.
+  - The one-prime lattice receiver is already in the corpus (R:WeilLagFunctionSingleBase).

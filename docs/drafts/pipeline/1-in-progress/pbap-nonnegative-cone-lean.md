@@ -79,3 +79,22 @@ This is the one unconditional theorem on the existence half (PBAP) that covers t
     - the Schur loss `‖P₀Aĉ‖²/μ₀ ≈ 4` exceeds the margin `≈ 0.19`, because of the endpoint log singularities;
     - a trace certificate needs `‖P₀Kc‖ ≲ 6%·‖Kc‖`, which is numeric.
   - The √F-subadditivity relaxation for `f ≥ 0` gives only `≈ 0.10 < 0.157` (row 2062).
+- 2026-10-12 — **T5 reduced to one explicit kernel (goal-loop row 991, [P]).**
+  - Notation: `c_k = 2k + ½`, `Ŵ(t) = Σ_k (1 − e^{−c_k t})/c_k² = ∫_0^t W`, and
+    `Φ(t) = −(|A0|/2)t + Ŵ(t) + 8(cosh(t/2) − 1)`.
+  - Nested sets `F ⊆ E`: `J(1_E, 1_F) = ∫_F∫_{E^c} ω(|u − v|)`.
+  - Concentric intervals of half-lengths `x, y`: the full form is `2[Φ(x + y) − Φ(|x − y|)]`.
+  - Riesz rearrangement (`J` and `P` both decrease) therefore gives: T5 on the nonnegative cone ⟺ copositivity on `[0, ½log 2]²` of `G(x,y) = Φ(x+y) − Φ(|x−y|)`.
+  - Green form (`X = max`, `Y = min`): `G = Σ_k (2/c_k²)e^{−c_kX}sinh(c_kY) − |A0| min(x,y) + 16 sinh(x/2)sinh(y/2)`.
+  - Hand values of `Φ`: `0.0531` at `0.1`, `0.0558` at `0.15`, `0.0545` at `0.2`, `0.0474` at `0.3`, `0.0411` at `0.4`, `0.0397` at `0.45`, `0.0402` at `0.5`, `0.0475` at `0.6`, `0.0639` at `log 2`.
+  - `Φ′ < 0` on about `(0.152, 0.462)`, which is why entrywise positivity fails for concentric layers (`G(0.15, 0.30) ≈ −0.032`).
+  - Anchored intervals `(0,a) ⊆ (0,b)` are entrywise positive (`K = Φ(a) + Φ(b) − Φ(b−a) ≥ 0.028`), but anchored monotone rearrangement raises `J`, so it is not an admissible reduction.
+  - Certificate shape needed: `Φ = Φ_inc + Φ_N` with `Φ_N″` positive definite absorbing the dip. Single cosines and `Si`-type tails cannot do it, because the dip interval has ratio `2.3 > 2` and positive-measure sine transforms are front-loaded. A Delsarte-type numeric design is still required.
+  - Literature: Zhu (arXiv 2608.24827) proves full signed Weil positivity on support `[−0.8, 0.8]` by interval arithmetic, so T5 holds. The open task is only a Lean certificate.
+- 2026-10-12 — **Where the T5 minimum sits ([P], hand estimates).**
+  - For `h ≥ 0`, `P(h) ≥ (∫h)²`, so `Q ≥ Q̃ := W + 2·𝟙⊗𝟙` on `L²(0, log 2)`. If `Q̃ ⪰ 0` on all signed functions, T5 holds with no rearrangement at all.
+  - Along `h = 𝟙 + εg` with `g = V̄ − V`, where `V(u) = W(u) + W(L−u)` is the killing potential (`V̄ = 4.155`, `‖V − V̄‖² ≈ 0.13`):
+    - `Q̃ = 0.1175 − 2ε‖V−V̄‖² + ε²⟨g,Wg⟩`;
+    - `Q̃ ⪰ 0` on this plane needs `⟨g,Wg⟩ ≥ ‖V−V̄‖⁴/0.1175 ≈ 0.149`;
+    - the rough estimate is `⟨g,Wg⟩ ≈ 0.15–0.2`, so the plane is borderline.
+  - So the near-minimizer is the flat profile with depleted edges, and the true margin is probably well below the flat value `0.18‖h‖²`. Any certificate must resolve the edge layer, where `W(u) ~ ½log(1/u)` is singular, at roughly 1% relative precision. The cosh weight in `P` adds only `≈ 0.01`.

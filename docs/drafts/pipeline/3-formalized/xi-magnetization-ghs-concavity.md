@@ -33,3 +33,4 @@ GHS is a necessary condition for `Φ` to be a Griffiths–Simon limit of ferroma
 
 ## Log
 - 2026-10-11 — created at stage 3 (MUST-1249).
+- 2026-10-11 — value correlation: the corpus already shows that the theta source `Φ` (in the log variable) has `(log Φ)''' < 0` on `(0, ∞)` and `(log Φ)'''' < 0` everywhere (`thetaCuspLogCurvatureJet_pos_of_pos`, `thetaCuspLogCurvatureJetTwo_pos_all`). So `V = −log Φ` has `V'` convex on `[0, ∞)`, which is the Ellis–Newman sufficient condition for GHS. Riemann's `Φ` is therefore an Ellis–Newman (GHS-class) single-spin measure, and every ferromagnetic system of `Φ`-spins satisfies GHS. MUST-1249 is a direct `ξ`-side proof of the single-site case that does not use Ellis–Newman's theorem (which is not formalized).

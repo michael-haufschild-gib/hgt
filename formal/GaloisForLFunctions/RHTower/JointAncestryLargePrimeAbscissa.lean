@@ -15,6 +15,8 @@ primes `p > X`.
 * **Lower bound** (`one_add_sSup_le_of_jasDressedPSDAbove_of_chain`).  Under a half-plane bound
   below `½`, if the off-line zeros form a chain and positivity holds above some `X` at `σ`, then
   `σ ≥ 1 + δ*`: the chain-exclusion tests use only the primes of the windows `(n, n²]`, `n → ∞`.
+  They are Bernoulli product tests, so the bound holds for product-test positivity
+  `JasProductPositiveAbove X σ` (`one_add_sSup_le_of_jasProductPositiveAbove_of_chain`).
 
 Hence, for chains under quasi-RH, the large-prime abscissa equals `1 + δ* = ½ + Θ` in the limit
 `X → ∞` (`largePrime_abscissa_eq_of_chain`): the per-zero method is exact on large primes.
@@ -84,10 +86,29 @@ theorem jasBernoulliAggregate_nonneg_of_on {σ : ℝ} {S : Finset Nat.Primes}
   rw [heq] at hPSD
   exact hPSD
 
-/-- Log-weight Bernoulli positivity from positivity on a prime set `S ⊇ P`. -/
-theorem jasLogWeightBernoulli_nonneg_of_on {σ : ℝ} {S : Finset Nat.Primes}
-    (h : JasDressedPSDOn S σ) (ξ : ℂ) (P : Finset Nat.Primes) (hP : P ⊆ S) (a : Nat.Primes → ℝ)
-    (ha0 : ∀ p ∈ P, 0 ≤ a p)
+/-- **Product-test positivity above `X`.**  For every finite set `P` of primes `p > X` and all
+local weights `z_p`,
+`Re Σ_ρ (1/(ρ(1-ρ))) ∏_{p ∈ P} (1 + z_p p^{-(ρ+c)} + z̄_p p^{-(1-ρ+c)} + |z_p|²) ≥ 0`, `c = σ − ½`.
+These are the values of the dressed quadratic form on the rank-one product vectors
+`x ↦ ∏_{p ∈ P} z_p^{x_p}`, `x ∈ {0,1}^P`, over squarefree characters. -/
+def JasProductPositiveAbove (X : ℕ) (σ : ℝ) : Prop :=
+  ∀ P : Finset Nat.Primes, (∀ p ∈ P, X < (p : ℕ)) → ∀ z : Nat.Primes → ℂ,
+    0 ≤ (∑' q : XiZeroCopy,
+      (∏ p ∈ P, jasBernoulliFactor (jasHoloA ((q.1 : ℂ) + (σ - 1 / 2 : ℝ)) p)
+        (jasHoloB ((q.1 : ℂ) - (σ - 1 / 2 : ℝ)) p) (z p)) /
+        ((q.1 : ℂ) * (1 - (q.1 : ℂ)))).re
+
+theorem JasDressedPSDAbove.productPositive {X : ℕ} {σ : ℝ} (h : JasDressedPSDAbove X σ) :
+    JasProductPositiveAbove X σ :=
+  fun P hP z => jasBernoulliAggregate_nonneg_of_on (h P hP) P subset_rfl z
+
+/-- Log-weight Bernoulli positivity from positivity of the Bernoulli product tests on `P`. -/
+theorem jasLogWeightBernoulli_nonneg_of_bernoulli {σ : ℝ} {P : Finset Nat.Primes}
+    (hB : ∀ z : Nat.Primes → ℂ, 0 ≤ (∑' q : XiZeroCopy,
+      (∏ p ∈ P, jasBernoulliFactor (jasHoloA ((q.1 : ℂ) + (σ - 1 / 2 : ℝ)) p)
+        (jasHoloB ((q.1 : ℂ) - (σ - 1 / 2 : ℝ)) p) (z p)) /
+        ((q.1 : ℂ) * (1 - (q.1 : ℂ)))).re)
+    (ξ : ℂ) (a : Nat.Primes → ℝ) (ha0 : ∀ p ∈ P, 0 ≤ a p)
     (ha : ∀ p ∈ P, a p * Real.exp ((ξ.re + (σ - 1 / 2)) * Real.log p) ≤ 1 / 2) (φ : ℝ) :
     0 ≤ (∑' q : XiZeroCopy,
       (∏ p ∈ P, jasLogWeightLocal ξ (q.1 : ℂ) (a p) φ p) / ((q.1 : ℂ) * (1 - (q.1 : ℂ)))).re := by
@@ -105,10 +126,10 @@ theorem jasLogWeightBernoulli_nonneg_of_on {σ : ℝ} {S : Finset Nat.Primes}
   choose t ht0 ht1 hts using hex
   set z : Nat.Primes → ℂ := fun p =>
     (t p : ℂ) * cexp (((φ + ξ.im * Real.log p : ℝ) : ℂ) * I) with hz
-  have hpos := jasBernoulliAggregate_nonneg_of_on h P hP z
+  have hpos := hB z
   have hfac : ∀ q : XiZeroCopy,
-      (∏ p ∈ P, jasBernoulliFactor (jasHoloA ((q.1 : ℂ) + (σ - 1 / 2 : ℝ)) p)
-        (jasHoloB ((q.1 : ℂ) - (σ - 1 / 2 : ℝ)) p) (z p)) /
+      (∏ p ∈ P, jasBernoulliFactor (jasHoloA ((q.1 : ℂ) + c) p)
+        (jasHoloB ((q.1 : ℂ) - c) p) (z p)) /
           ((q.1 : ℂ) * (1 - (q.1 : ℂ))) =
         ((∏ p ∈ P, (1 + t p ^ 2) : ℝ) : ℂ) *
           ((∏ p ∈ P, jasLogWeightLocal ξ (q.1 : ℂ) (a p) φ p) / ((q.1 : ℂ) * (1 - (q.1 : ℂ)))) := by
@@ -122,22 +143,42 @@ theorem jasLogWeightBernoulli_nonneg_of_on {σ : ℝ} {S : Finset Nat.Primes}
   have hprod : 0 < ∏ p ∈ P, (1 + t p ^ 2) := Finset.prod_pos fun p _ => by positivity
   exact (mul_nonneg_iff_of_pos_left hprod).mp hpos
 
-/-- Large-prime positivity gives positivity of the window tests beyond `X`. -/
-theorem jasWindowPositivity_of_jasDressedPSDAbove {X : ℕ} {σ : ℝ} (h : JasDressedPSDAbove X σ) :
-    JasWindowPositivity σ X := by
+/-- Log-weight Bernoulli positivity from positivity on a prime set `S ⊇ P`. -/
+theorem jasLogWeightBernoulli_nonneg_of_on {σ : ℝ} {S : Finset Nat.Primes}
+    (h : JasDressedPSDOn S σ) (ξ : ℂ) (P : Finset Nat.Primes) (hP : P ⊆ S) (a : Nat.Primes → ℝ)
+    (ha0 : ∀ p ∈ P, 0 ≤ a p)
+    (ha : ∀ p ∈ P, a p * Real.exp ((ξ.re + (σ - 1 / 2)) * Real.log p) ≤ 1 / 2) (φ : ℝ) :
+    0 ≤ (∑' q : XiZeroCopy,
+      (∏ p ∈ P, jasLogWeightLocal ξ (q.1 : ℂ) (a p) φ p) / ((q.1 : ℂ) * (1 - (q.1 : ℂ)))).re :=
+  jasLogWeightBernoulli_nonneg_of_bernoulli (jasBernoulliAggregate_nonneg_of_on h P hP) ξ a ha0 ha φ
+
+/-- Product-test positivity above `X` gives positivity of the window tests beyond `X`. -/
+theorem jasWindowPositivity_of_jasProductPositiveAbove {X : ℕ} {σ : ℝ}
+    (h : JasProductPositiveAbove X σ) : JasWindowPositivity σ X := by
   intro n hn ξ a ha0 ha φ
-  refine jasLogWeightBernoulli_nonneg_of_on (h _ fun p hp => ?_) ξ _ subset_rfl a ha0 ha φ
+  refine jasLogWeightBernoulli_nonneg_of_bernoulli (h _ fun p hp => ?_) ξ a ha0 ha φ
   have hp' := (Finset.mem_subtype (p := Nat.Prime) (a := p)).mp hp
   exact lt_of_le_of_lt hn (Finset.mem_Ioc.mp hp').1
 
+/-- Large-prime positivity gives positivity of the window tests beyond `X`. -/
+theorem jasWindowPositivity_of_jasDressedPSDAbove {X : ℕ} {σ : ℝ} (h : JasDressedPSDAbove X σ) :
+    JasWindowPositivity σ X :=
+  jasWindowPositivity_of_jasProductPositiveAbove h.productPositive
+
 /-- **Lower bound.**  Under a half-plane bound below `½`, a chain of off-line zeros forces every
 large-prime positivity level to be at least `1 + sup |Re ρ − ½|`. -/
+theorem one_add_sSup_le_of_jasProductPositiveAbove_of_chain {alpha σ : ℝ} {X : ℕ}
+    (halpha0 : 0 ≤ alpha) (halpha : alpha < 1 / 2) (hXi : XiZeroHalfPlaneBound alpha)
+    (h : JasProductPositiveAbove X σ) (hch : JasOffLineChain) :
+    1 + sSup (Set.range fun q : XiZeroCopy => |(q.1 : ℂ).re - 1 / 2|) ≤ σ :=
+  one_add_sSup_le_of_jasWindowPositivity_of_chain halpha0 halpha hXi
+    (jasWindowPositivity_of_jasProductPositiveAbove h) hch
+
 theorem one_add_sSup_le_of_jasDressedPSDAbove_of_chain {alpha σ : ℝ} {X : ℕ}
     (halpha0 : 0 ≤ alpha) (halpha : alpha < 1 / 2) (hXi : XiZeroHalfPlaneBound alpha)
     (h : JasDressedPSDAbove X σ) (hch : JasOffLineChain) :
     1 + sSup (Set.range fun q : XiZeroCopy => |(q.1 : ℂ).re - 1 / 2|) ≤ σ :=
-  one_add_sSup_le_of_jasWindowPositivity_of_chain halpha0 halpha hXi
-    (jasWindowPositivity_of_jasDressedPSDAbove h) hch
+  one_add_sSup_le_of_jasProductPositiveAbove_of_chain halpha0 halpha hXi h.productPositive hch
 
 /-- The large-prime tail: `Σ_{p ∈ S} p^{−(1+ε)} ≤ (1/ε + 1)/log X` for primes `p > X ≥ 2`. -/
 theorem sum_exp_neg_one_add_le_of_gt {S : Finset Nat.Primes} {X : ℕ} (hX : 2 ≤ X)

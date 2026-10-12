@@ -51,7 +51,7 @@ Modules: `RHTower/XiGaussianHeatVerticalLineReceiver`, `XiGaussianHeatBottomSour
 - `not_tendsto_zero_xiGaussianHeatTraceC`, `exists_frequently_le_norm_gaussianPrimeChirpSum_sub_main`: unconditional Ω(√|b|).
 - `frequently_le_norm_xiGaussianHeatTraceC`, `frequently_le_norm_gaussianPrimeChirpSum_sub_main`: sharp Ω-constant √π ν(a) (= RH O-constant) (uses corpus `HTGeometry.exists_simultaneous_dirichlet`).
 - `gaussianPrimeChirpSum_growth_gap`: O(√|b|) or ≥ exponential, nothing in between.
-- `exists_norm_xiGaussianHeatTraceC_le_quadratic_coefficient`: quadratic coefficient ≤ Δ∞²/a (lower half open; needs Turán-type non-cancellation).
+- `exists_norm_xiGaussianHeatTraceC_le_quadratic_coefficient`: quadratic coefficient ≤ Δ∞²/a; lower half PROVED in `XiGaussianHeatVerticalQuadraticLowerLaw` (`vertical_quadratic_rate_le_iff`: exact rate Δ∞²/a).
 - `asymptoticQuasiRH_iff_amplifiedTrace_rates_uniformly_below_quarter`: asymptotic quasi-RH ⇔ HCF rates at large heights uniformly < ¼ (exact, height axis).
 - `eventually_volume_amplifiedTrace_exceeds_exp_le_powerSaving`: deep HCF amplification (rate > κ) occupies measure ≤ U^{1−√κ/40}.
 
@@ -93,3 +93,7 @@ Hierarchy: RH ⇔ sublinear growth on the vertical line ⇔ every height rate is
 - **Positive-node form** (`XiGaussianHeatHankelPositiveNodeWitness`, cycle 564): RH ⟺ Re Σ_q e^{−aw_q}∏(w_q − x_i)² ≥ 0 for all a > 0 and all positive real nodes. Witnesses exist at arbitrarily large resonant heat times. Dual to stable-test positivity (MUST-1237). STATUS MUST-1241.
 - **Large-time census** (`XiGaussianHeatHankelLargeTimeCensus`, cycle 571): eventually sign(conj on S_L)·Δ_{\|S_L\|}(a) > 0. The large-time ladder is a parity census of off-line zeros by height. STATUS MUST-1245.
 - **Exact large-time inertia** (`XiGaussianHeatHankelLargeTimeInertia`, cycle 572): eventually hermNegIndex(section of rank |S_L|) = #{upper off-line frequencies with Re ≤ L}, positive index #{Im ≥ 0}, null index 0. RH ⟺ every level is eventually positive definite. This sharpens the parity census to the exact count. STATUS MUST-1248.
+- **Window at the optimal order** (`XiGaussianHeatHankelExponentialTypeTransfer`, `XiGaussianHeatHankelSincLevelWitness`, cycle 573): ¬RH ⇒ some Δ_k(K/n) ≤ 0, k ≤ n+1, for all large n; RH ⟺ every window constant K is eventually admissible. This replaces the log³N/N ceiling by K/N. The transfer is unconditional for any even exponential-type zero-side witness (K > (eB+1)²/4). STATUS MUST-1251.
+
+- **Scale capstone** (`XiGaussianHeatRouteScaleCapstone.hcf_scale_capstone`, 2026-10-11) collects across heat-time scales: the unconditional window aN ≤ κ; RH ⟺ every window constant K admissible (MUST-1251); the 1/N ceiling under ¬RH; no intermediate growth (MUST-1254); exact large-time inertia and RH ⟺ every level eventually definite (MUST-1248). The route producer is a single statement: unbounded window constant, which is all-aperture Weil positivity (R2). Producer search: ledger rows 576–587, none found.
+- **Window from a Weil margin** (MUST-1261, 2026-10-11): a pole-vanishing margin μ₀(A) > 0 gives the HCF window aN ≤ K for every K < A²/4 on the pole hyperplane, at the sharp turning-point constant. Unconditional instance aN ≤ 1/32 (prime 2 included), at most one negative square. Card `hcf-window-aperture-converse.md`.

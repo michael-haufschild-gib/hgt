@@ -10,7 +10,8 @@ occurs exactly on the critical line. Every finite cutoff has zero ideal cost.
 
 namespace RHTower
 noncomputable section
-open GaloisForLFunctions.HTGeometry ContinuousLinearMap Filter Topology
+open GaloisForLFunctions.HTGeometry Filter Topology
+open _root_.ContinuousLinearMap
 open scoped BigOperators
 
 def paperDeningerFiniteModes (N : ℕ) : Finset (ℕ × Fin 2) :=
@@ -56,9 +57,11 @@ theorem paperDeningerFiniteOperator_norm_tendsto_iff (s : ℂ) :
       (isClosed_setOf_isCompactOperator.mem_of_tendsto h
         (Eventually.of_forall (paperDeningerFiniteOperator_compact s)))
   · intro h
-    simpa [paperDeningerFiniteOperator, paperDeningerMateOperator_critical s h,
-      hsTruncation] using (tendsto_const_nhds : Tendsto
-        (fun _ : ℕ => (0 : PaperCornerSpace →L[ℂ] PaperCornerSpace)) atTop (𝓝 0))
+    have hz : paperDeningerFiniteOperator s = fun _ => 0 := by
+      funext N
+      simp [paperDeningerFiniteOperator, paperDeningerMateOperator_critical s h, hsTruncation]
+    rw [hz, paperDeningerMateOperator_critical s h]
+    exact tendsto_const_nhds
 
 theorem paperDeningerFiniteOperator_gap (s : ℂ) (N : ℕ) :
     (if s.re = 1 / 2 then 0 else 1) ≤
@@ -81,7 +84,8 @@ theorem paperDeningerFiniteMatrix_entry (s : ℂ) (N : ℕ) (i j : Fin N × Fin 
   rcases i with ⟨i, a⟩
   rcases j with ⟨j, b⟩
   fin_cases a <;> fin_cases b <;>
-    simp [paperDeningerNormalizedFrame_eq, lp.single_apply, Prod.mk.injEq, Fin.val_inj]
+    simp [paperDeningerNormalizedFrame_eq, lp.single_apply, Pi.single_apply,
+      Prod.mk.injEq, Fin.val_inj, mul_ite]
 
 theorem paperDeningerFiniteMatrix_sq (s : ℂ) (N : ℕ) :
     paperDeningerFiniteMatrix s N ^ 2 = 0 := by

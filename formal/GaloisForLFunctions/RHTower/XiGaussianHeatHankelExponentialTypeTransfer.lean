@@ -72,10 +72,13 @@ theorem eval_evenTaylorPoly_sq {Φ : ℂ → ℂ} (heven : ∀ z, Φ (-z) = Φ z
 theorem hasSum_entireTaylorTerm {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ) (z : ℂ) :
     HasSum (entireTaylorTerm Φ z) (Φ z) := by
   have h := Complex.hasSum_taylorSeries_of_entire hΦ 0 z
-  convert h using 1
-  funext m
-  simp only [entireTaylorTerm, sub_zero, smul_eq_mul]
-  ring
+  have e : entireTaylorTerm Φ z =
+      fun m => (m.factorial : ℂ)⁻¹ • (z - 0) ^ m • iteratedDeriv m Φ 0 := by
+    funext m
+    simp only [entireTaylorTerm, sub_zero, smul_eq_mul]
+    ring
+  rw [e]
+  exact h
 
 /-! ## Cauchy estimates and the remainder -/
 
@@ -167,15 +170,17 @@ theorem norm_heatWeighted_taylorRemainder_le {Φ : ℂ → ℂ} (hΦ : Different
   have hnorm : ‖z‖ ≤ |z.re| + 1 / 2 := (Complex.norm_le_abs_re_add_abs_im z).trans (by linarith)
   have h1z : 1 + ‖z‖ ≤ Real.exp ‖z‖ := by linarith [Real.add_one_le_exp ‖z‖]
   have hquad : -(a * z.re ^ 2) / 2 + β * |z.re| ≤ β ^ 2 / (2 * a) := by
+    have h1 : (a * |z.re| - β) ^ 2 = a ^ 2 * z.re ^ 2 - 2 * a * β * |z.re| + β ^ 2 := by
+      rw [sub_sq, mul_pow, sq_abs]; ring
     rw [le_div_iff₀ (by positivity)]
-    nlinarith [sq_nonneg (a * |z.re| - β), sq_abs z.re]
-  have hβB : B * Real.exp 1 ≤ β := by rw [hβ]; linarith
+    nlinarith [sq_nonneg (a * |z.re| - β)]
+  have hβ0 : 0 ≤ β := by rw [hβ]; positivity
   have hay : a * z.im ^ 2 ≤ 1 / 4 := by nlinarith
-  have hnz : (1 + B * Real.exp 1) * ‖z‖ ≤ (1 + B * Real.exp 1) * (|z.re| + 1 / 2) :=
-    mul_le_mul_of_nonneg_left hnorm (by positivity)
+  have hβz : β * ‖z‖ ≤ β * (|z.re| + 1 / 2) := mul_le_mul_of_nonneg_left hnorm hβ0
+  have hBρ : B * ρ = (β - 1) * (1 + ‖z‖) := by rw [hρ_def, hβ]; ring
   have hexp : -(a * (z ^ 2).re) / 2 + ‖z‖ + B * ρ - (2 * n + 2) ≤
       1 / 8 + 3 / 2 * β + β ^ 2 / (2 * a) - (2 * n + 2) := by
-    rw [hre, hρ_def]
+    rw [hre, hBρ]
     nlinarith
   calc Real.exp (-(a * (z ^ 2).re) / 2) *
         ((1 + ‖z‖) * ‖Φ z - (evenTaylorPoly Φ n).eval (z ^ 2)‖)
@@ -231,24 +236,17 @@ theorem heatWeighted_norm_eval_evenTaylorPoly_le {Φ : ℂ → ℂ} {D : ℝ}
       _ ≤ Real.exp (1 / 8) * D := mul_le_mul hw hΦz (by positivity) (Real.exp_pos _).le
   nlinarith [mul_le_mul_of_nonneg_left htri (mul_nonneg hE.le hz1.le)]
 
-/-- **Exponential-type transfer.**  An even entire zero-side witness of exponential type `B` gives
-`Re H_{K/n}(T_nΦ, T_nΦ) < 0` for all large `n`, for every `K` with `(eB + 1)² < 4K`. -/
-theorem eventually_re_heatHankel_evenTaylorPoly_neg {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ)
-    (heven : ∀ z, Φ (-z) = Φ z) {C B D K : ℝ} (hB : 0 ≤ B)
-    (hgrowth : ∀ z, ‖Φ z‖ ≤ C * Real.exp (B * ‖z‖))
-    (hdecay : ∀ z : ℂ, |z.im| ≤ 1 / 2 → ‖Φ z‖ ≤ D / (1 + ‖z‖))
-    (hneg : (∑' q : XiZeroCopy, Φ (xiSpectralPoint q) *
-      (starRingEnd ℂ) (Φ ((starRingEnd ℂ) (xiSpectralPoint q)))).re < 0)
-    (hK : (B * Real.exp 1 + 1) ^ 2 < 4 * K) :
-    ∀ᶠ n : ℕ in atTop,
-      (heatHankel (K / n) (evenTaylorPoly Φ n) (evenTaylorPoly Φ n)).re < 0 := by
+/-- **The heat-weighted Taylor remainder is eventually at most `1`** on the strip, at heat time
+`K/n` with `(eB + 1)² < 4K`. -/
+theorem eventually_heatWeighted_taylorRemainder_le_one {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ)
+    (heven : ∀ z, Φ (-z) = Φ z) {C B K : ℝ} (hB : 0 ≤ B)
+    (hgrowth : ∀ z, ‖Φ z‖ ≤ C * Real.exp (B * ‖z‖)) (hK : (B * Real.exp 1 + 1) ^ 2 < 4 * K) :
+    ∀ᶠ n : ℕ in atTop, 0 < n ∧ K / n < 1 ∧ ∀ z : ℂ, |z.im| ≤ 1 / 2 →
+      Real.exp (-((K / n) * (z ^ 2).re) / 2) *
+        ((1 + ‖z‖) * ‖Φ z - (evenTaylorPoly Φ n).eval (z ^ 2)‖) ≤ 1 := by
   set β := B * Real.exp 1 + 1 with hβ
   have hK0 : 0 < K := by nlinarith [sq_nonneg β]
   have hC := nonneg_of_growth hgrowth
-  have hD : 0 ≤ D := by
-    have h := hdecay 0 (by simp)
-    rw [norm_zero, add_zero, div_one] at h
-    exact (norm_nonneg _).trans h
   set A := 2 * C * Real.exp (1 / 8 + 3 / 2 * β) with hA
   set ε : ℕ → ℝ := fun n => A * Real.exp ((β ^ 2 / (2 * K) - 2) * n - 2) with hε_def
   have hA0 : 0 ≤ A := by positivity
@@ -266,23 +264,64 @@ theorem eventually_re_heatHankel_evenTaylorPoly_neg {Φ : ℂ → ℂ} (hΦ : Di
         ((1 + ‖z‖) * ‖Φ z - (evenTaylorPoly Φ n).eval (z ^ 2)‖) ≤ ε n := by
     intro n hn hKn z hz
     have hn' : (0 : ℝ) < n := by exact_mod_cast hn
+    have hn0 : (n : ℝ) ≠ 0 := hn'.ne'
+    have hK0' : K ≠ 0 := hK0.ne'
     refine (norm_heatWeighted_taylorRemainder_le hΦ heven hB hgrowth (div_pos hK0 hn') hKn hz
       n).trans (le_of_eq ?_)
-    rw [hε_def, hA, mul_assoc, ← Real.exp_add]
+    show _ = A * Real.exp ((β ^ 2 / (2 * K) - 2) * n - 2)
+    rw [hA, hβ, mul_assoc (2 * C), ← Real.exp_add]
     congr 2
     field_simp
     ring
+  have h1 : ∀ᶠ n : ℕ in atTop, K / n < 1 :=
+    (tendsto_const_div_atTop_nhds_zero_nat K).eventually (gt_mem_nhds one_pos)
+  have h2 : ∀ᶠ n : ℕ in atTop, ε n < 1 := hε.eventually (gt_mem_nhds one_pos)
+  filter_upwards [h1, h2, eventually_gt_atTop 0] with n hKn hεn hn
+  exact ⟨hn, hKn, fun z hz => (hkey n hn hKn.le z hz).trans hεn.le⟩
+
+/-- **Uniform heat-weighted bound for the Taylor polynomials** on the strip. -/
+theorem eventually_heatWeighted_norm_evenTaylorPoly_le {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ)
+    (heven : ∀ z, Φ (-z) = Φ z) {C B D K : ℝ} (hB : 0 ≤ B)
+    (hgrowth : ∀ z, ‖Φ z‖ ≤ C * Real.exp (B * ‖z‖))
+    (hdecay : ∀ z : ℂ, |z.im| ≤ 1 / 2 → ‖Φ z‖ ≤ D / (1 + ‖z‖))
+    (hK : (B * Real.exp 1 + 1) ^ 2 < 4 * K) :
+    ∀ᶠ n : ℕ in atTop, 0 < n ∧ K / n < 1 ∧ ∀ z : ℂ, |z.im| ≤ 1 / 2 →
+      Real.exp (-((K / n) * (z ^ 2).re) / 2) * ‖(evenTaylorPoly Φ n).eval (z ^ 2)‖ ≤
+        (Real.exp (1 / 8) * D + 1) / (1 + ‖z‖) := by
+  have hK0 : 0 < K := by nlinarith [sq_nonneg (B * Real.exp 1 + 1)]
+  filter_upwards [eventually_heatWeighted_taylorRemainder_le_one hΦ heven hB hgrowth hK]
+    with n hn
+  obtain ⟨hn0, hKn, h⟩ := hn
+  exact ⟨hn0, hKn, fun z hz => heatWeighted_norm_eval_evenTaylorPoly_le hdecay
+    (div_pos hK0 (by exact_mod_cast hn0)) hKn.le hz (h z hz)⟩
+
+/-- **Exponential-type transfer, limit form.**  For an even entire `Φ` of exponential type `B`
+with strip decay and `(eB + 1)² < 4K`, `H_{K/n}(T_nΦ, T_nΦ)` tends to the zero-side sum
+`Σ_q Φ(z_q) \overline{Φ(\bar z_q)}`. -/
+theorem tendsto_heatHankel_evenTaylorPoly {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ)
+    (heven : ∀ z, Φ (-z) = Φ z) {C B D K : ℝ} (hB : 0 ≤ B)
+    (hgrowth : ∀ z, ‖Φ z‖ ≤ C * Real.exp (B * ‖z‖))
+    (hdecay : ∀ z : ℂ, |z.im| ≤ 1 / 2 → ‖Φ z‖ ≤ D / (1 + ‖z‖))
+    (hK : (B * Real.exp 1 + 1) ^ 2 < 4 * K) :
+    Tendsto (fun n : ℕ => heatHankel (K / n) (evenTaylorPoly Φ n) (evenTaylorPoly Φ n)) atTop
+      (𝓝 (∑' q : XiZeroCopy, Φ (xiSpectralPoint q) *
+        (starRingEnd ℂ) (Φ ((starRingEnd ℂ) (xiSpectralPoint q))))) := by
+  have hK0 : 0 < K := by nlinarith [sq_nonneg (B * Real.exp 1 + 1)]
+  have hD : 0 ≤ D := by
+    have h := hdecay 0 (by simp)
+    rw [norm_zero, add_zero, div_one] at h
+    exact (norm_nonneg _).trans h
   -- pointwise convergence
   have hT : ∀ z : ℂ, Tendsto (fun n : ℕ => (evenTaylorPoly Φ n).eval (z ^ 2)) atTop (𝓝 (Φ z)) := by
     intro z
     have h2 : Tendsto (fun n : ℕ => 2 * n + 2) atTop atTop :=
-      tendsto_atTop_mono (fun n => by omega) tendsto_id
+      tendsto_atTop_mono (fun n => by show n ≤ 2 * n + 2; omega) tendsto_id
     have := (hasSum_entireTaylorTerm hΦ z).tendsto_sum_nat.comp h2
     refine this.congr fun n => ?_
     rw [Function.comp_apply, eval_evenTaylorPoly_sq heven]
   have hexp0 : Tendsto (fun n : ℕ => ((K / n : ℝ) : ℂ)) atTop (𝓝 0) := by
     have := (Complex.continuous_ofReal.tendsto 0).comp (tendsto_const_div_atTop_nhds_zero_nat K)
-    simpa using this
+    simpa [Function.comp_def] using this
   have hpt : ∀ q : XiZeroCopy, Tendsto
       (fun n : ℕ => heatHankelTermAt (K / n) (evenTaylorPoly Φ n) (evenTaylorPoly Φ n)
         (xiHeatFrequency q)) atTop
@@ -300,33 +339,30 @@ theorem eventually_re_heatHankel_evenTaylorPoly_neg {Φ : ℂ → ℂ} (hΦ : Di
     have := (he.mul (hT z)).mul hc
     simp only [one_mul] at this
     refine this.congr fun n => ?_
-    simp only [heatHankelTermAt, Function.comp_apply, hwc, hw]
+    simp only [Function.comp_apply]
+    rw [heatHankelTermAt, hwc, hw]
   -- the dominating bound
   set M := (Real.exp (1 / 8) * D + 1) ^ 2 with hM
   have hev : ∀ᶠ n : ℕ in atTop, ∀ q : XiZeroCopy,
       ‖heatHankelTermAt (K / n) (evenTaylorPoly Φ n) (evenTaylorPoly Φ n) (xiHeatFrequency q)‖ ≤
         M * (1 / (1 + ‖xiHeatFrequency q‖)) := by
-    have h1 : ∀ᶠ n : ℕ in atTop, K / n < 1 :=
-      (tendsto_const_div_atTop_nhds_zero_nat K).eventually (gt_mem_nhds one_pos)
-    have h2 : ∀ᶠ n : ℕ in atTop, ε n < 1 := hε.eventually (gt_mem_nhds one_pos)
-    filter_upwards [h1, h2, eventually_gt_atTop 0] with n hKn hεn hn q
+    filter_upwards [eventually_heatWeighted_norm_evenTaylorPoly_le hΦ heven hB hgrowth hdecay hK]
+      with n hn q
+    obtain ⟨hn, hKn, hbd⟩ := hn
     have hn' : (0 : ℝ) < n := by exact_mod_cast hn
     set a := K / (n : ℝ) with ha_def
     have ha : 0 < a := div_pos hK0 hn'
     set z := xiSpectralPoint q
     have hz := abs_im_xiSpectralPoint_le_half q
     have hzc : |((starRingEnd ℂ) z).im| ≤ 1 / 2 := by rw [Complex.conj_im, abs_neg]; exact hz
-    have hb1 := heatWeighted_norm_eval_evenTaylorPoly_le hdecay ha hKn.le hz
-      (hkey n hn hKn.le z hz)
-    have hb2 := heatWeighted_norm_eval_evenTaylorPoly_le hdecay ha hKn.le hzc
-      (hkey n hn hKn.le _ hzc)
+    have hb1 := hbd z hz
+    have hb2 := hbd _ hzc
     have hrec : ((starRingEnd ℂ) z ^ 2).re = (z ^ 2).re := by rw [← map_pow, Complex.conj_re]
     rw [hrec, Complex.norm_conj] at hb2
     have hw : xiHeatFrequency q = z ^ 2 := rfl
     have hnormw : ‖xiHeatFrequency q‖ = ‖z‖ ^ 2 := by rw [hw, norm_pow]
     have hz1 : 0 < 1 + ‖z‖ := by positivity
-    have hnum : 0 ≤ Real.exp (1 / 8) * D + ε n := by positivity
-    have hnum1 : Real.exp (1 / 8) * D + ε n ≤ Real.exp (1 / 8) * D + 1 := by linarith
+    have hnum : 0 ≤ Real.exp (1 / 8) * D + 1 := by positivity
     have hsplit : ‖heatHankelTermAt a (evenTaylorPoly Φ n) (evenTaylorPoly Φ n)
         (xiHeatFrequency q)‖ =
         (Real.exp (-(a * (z ^ 2).re) / 2) * ‖(evenTaylorPoly Φ n).eval (z ^ 2)‖) *
@@ -345,20 +381,31 @@ theorem eventually_re_heatHankel_evenTaylorPoly_neg {Φ : ℂ → ℂ} (hΦ : Di
     refine hprod.trans ?_
     rw [div_mul_div_comm, hnormw, mul_one_div]
     have hden : 1 + ‖z‖ ^ 2 ≤ (1 + ‖z‖) * (1 + ‖z‖) := by nlinarith [norm_nonneg z]
-    calc (Real.exp (1 / 8) * D + ε n) * (Real.exp (1 / 8) * D + ε n) / ((1 + ‖z‖) * (1 + ‖z‖))
+    calc (Real.exp (1 / 8) * D + 1) * (Real.exp (1 / 8) * D + 1) / ((1 + ‖z‖) * (1 + ‖z‖))
         ≤ M / ((1 + ‖z‖) * (1 + ‖z‖)) := by
-          gcongr
           rw [hM, sq]
-          exact mul_le_mul hnum1 hnum1 hnum (by positivity)
       _ ≤ M / (1 + ‖z‖ ^ 2) := by
           gcongr
-          positivity
   have hsum : Summable fun q : XiZeroCopy => M * (1 / (1 + ‖xiHeatFrequency q‖)) :=
     summable_inv_one_add_norm_xiHeatFrequency.mul_left M
-  have hlim := tendsto_tsum_of_dominated_convergence hsum hpt hev
-  have hre := (Complex.continuous_re.tendsto _).comp hlim
+  exact tendsto_tsum_of_dominated_convergence hsum hpt hev
+
+/-- **Exponential-type transfer.**  An even entire zero-side witness of exponential type `B` gives
+`Re H_{K/n}(T_nΦ, T_nΦ) < 0` for all large `n`, for every `K` with `(eB + 1)² < 4K`. -/
+theorem eventually_re_heatHankel_evenTaylorPoly_neg {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ)
+    (heven : ∀ z, Φ (-z) = Φ z) {C B D K : ℝ} (hB : 0 ≤ B)
+    (hgrowth : ∀ z, ‖Φ z‖ ≤ C * Real.exp (B * ‖z‖))
+    (hdecay : ∀ z : ℂ, |z.im| ≤ 1 / 2 → ‖Φ z‖ ≤ D / (1 + ‖z‖))
+    (hneg : (∑' q : XiZeroCopy, Φ (xiSpectralPoint q) *
+      (starRingEnd ℂ) (Φ ((starRingEnd ℂ) (xiSpectralPoint q)))).re < 0)
+    (hK : (B * Real.exp 1 + 1) ^ 2 < 4 * K) :
+    ∀ᶠ n : ℕ in atTop,
+      (heatHankel (K / n) (evenTaylorPoly Φ n) (evenTaylorPoly Φ n)).re < 0 := by
+  have hre := (Complex.continuous_re.tendsto _).comp
+    (tendsto_heatHankel_evenTaylorPoly hΦ heven hB hgrowth hdecay hK)
   filter_upwards [hre.eventually (gt_mem_nhds hneg)] with n hn
   exact hn
+
 
 /-- **The window ceiling at scale `1/N`.**  Under the hypotheses of
 `eventually_re_heatHankel_evenTaylorPoly_neg`, for all large `n` some leading heat determinant

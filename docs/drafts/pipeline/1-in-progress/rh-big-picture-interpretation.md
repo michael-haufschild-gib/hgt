@@ -413,3 +413,103 @@
   - The shape is exactly row 608's Griffiths–Simon class.
 - **Lesson (CANNOT-504).** A capstone's hypotheses can be unsatisfiable. MUST-1240 (constant normalization) and the prime-tree `E`-capstone are vacuous for nonnegative bonds. Spin-flip symmetry pins `Λ_n − 2β_n`, nonnegative coefficients give exponential type, and `E·Ξ` is never of exponential type (Zeta23 simple-critical census). Every "producer ⇒ RH" capstone should be audited for satisfiability with this exponential-type test.
 - **Reading.** Any GS limit is an LP-class characteristic function. So `Ψ = e^{−bz²}Ξ/Ξ(0)` (Gaussian-smoothed `Φ`) is the only possible target shape, and success is RH itself. The necessary GS inequalities (Lebowitz, GHS, Gaussian domination) all hold under RH, so none of them can kill the lane unconditionally. The open core is constructive: a centered ferromagnet with collapsing masses whose limit law is `Φ` (or `Φ * N(0, 2b)`).
+- 2026-10-11 (rows 963–964; MUST-1249, MUST-1252, CANNOT-505). **Griffiths–Simon lane, final shape.**
+  - Every single-site GS necessary inequality holds for `Φ`: GHS (MUST-1249; `Φ` is even Ellis–Newman, `(log Φ)''' < 0` on `(0, ∞)`) and Lebowitz.
+  - The only quantitative obstruction is free magnetization dominance, `Σ c_k tanh(c_k w) ≤ (ξ'/ξ)(½+w)` (MUST-1252). It is a Poisson-averaged form of "ferromagnetic coupling raises the zero count". At large field it compares second coefficients of zero counts. It kills harmonic masses from `K ≤ 7` (CANNOT-505); `K ≥ 8` and Hurwitz shifts with `ψ(a) ≥ γ + log 4` survive, with a gap `7/(4w)` at exact matching.
+  - The lane is now purely constructive: find couplings that resolve the divisor lattice `πℕ` (multiplicities `d(m)`) into Riemann zeros.
+- 2026-10-11 (rows 965–966; MUST-1253, MUST-1255).
+  - **CCM:** boundary nondegeneracy holds along every phase orbit [L]. The mechanism is an exact endpoint identity: the aperture derivative of the top Takagi value equals the boundary mass `|w(0)|²/‖w‖²`, with orbit average `2δ`. The large-height clustered residue is then [P]-closed except at tops that are Takagi doublets whose boundary functional vanishes on an isotropic line (`β = ±iα`). That is a two-real-codimension coincidence, so it can persist only under a Kramers-type symmetry.
+  - **Lee–Yang:** both mass regimes of a GS producer are now constrained in Lean.
+    - Fixed masses must satisfy dominance; harmonic masses with `K ≤ 7` are dead.
+    - Slow masses force criticality: the free variance tends to `0`, so the couplings carry the entire Riemann magnetization.
+  - **Reading:** a GS producer of `Φ` must be a near-critical ferromagnet with a double-exponential limit tail. Mean-field multicritical points give only `e^{−x^{2k}}` tails, so `Φ` would sit at an "infinite-order" critical point. No model with that shape is known.
+- 2026-10-11 (rows 967–969; MUST-1257, MUST-1259). **CCM finite-configuration no-go, current extent [L].** Connes' step 1 (even ground states cofinally) is excluded for every finite off-line set whose top layer is:
+  - (i) relation-even, in particular independent (MUST-1218);
+  - (ii) deep relative to its shape (MUST-1229);
+  - (iii) a cluster at height `T ≥ T₀(shape)` (MUST-1259).
+  - Two new mechanisms made (iii) formal:
+    - Rank-one monotonicity of the aperture flow forces simple, boundary-nondegenerate tops in every window (MUST-1257).
+    - A sandwich bound `F ≥ Δ(y₀) + Δ(z)` with subsequence limits replaces analytic perturbation theory.
+  - **Open finite residue:** odd-relation top layers that are neither deep nor high relative to their shape. For ζ the configurations always satisfy `δ/t_min < 1/28`, so explicit constants in (ii) and (iii) would decide how much of the residue is ζ-relevant.
+  - **Open question with a definite answer:** is there any configuration with `F ≤ 0` on its whole orbit? Such a configuration would make CCM parity selection blind to it.
+
+## 2026-10-11 addendum (JAS rows 89–97; MUST-1256, 1258, 1260)
+- **JAS is a multiplicative-amplification receiver, and its producer is a zero-free strip [L].** Large-prime dressed positivity at level σ ≥ 1 forces `|Re ρ − ½| ≤ σ − 1` unless `sup |Re ρ − ½| = ½`. Conversely, the open strip plus a convergent boundary series produces it, unconditionally at the pole threshold σ = 3/2 (R:JointAncestryLargePrimeAttainment). RH ⟺ (large-prime positivity at σ = 1) ∧ quasi-RH, also in Weil–Euler form (R:JointAncestryWeilEulerProducerLaw).
+- **Unconditional producers are local [L]:** in dressing (σ ≥ 3/2), in log-scale (pairwise log-ratios ≤ κ log X, κ < 2(σ−1)), and in the number of primes (≤ (7/5)√X primes > X at σ = 1). Detection of off-line zeros lives outside all three. Proportion results (critical zeros ≥ 67%, density estimates) cannot feed JAS, because one zero with d > σ − 1 has unbounded amplification.
+- **Analogy.** JAS is the prime-side twin of Hadamard positivity `Re ξ'/ξ > 0` right of all zeros, shifted by the pole: archimedean dressing has abscissa `Θ − ½`, prime dressing `Θ + ½`.
+- **The only JAS-specific open content (Θ = 1 escape) is arithmetic non-alignment of zero ordinates.**
+  - Every twist design's negativity is a phase-π condition (row 94), so a same-depth partner with uniform Kronecker offset of total phase π cancels every design.
+  - Window sweeping forces one such partner per essentially distinct window (row 97).
+  - Neither VK, Ingham density, Deuring–Heilbronn repulsion, nor quantitative Kronecker/Baker bounds place specific zero differences outside these Bohr boxes (rows 95–96).
+- **Reading.** Route JAS cannot produce RH. It converts RH into "no Bohr-aligned clusters of zeros near Re s = 1" (for the receiver) plus an RH-strength positivity (for the producer). Zero information must come from outside the Euler side, consistent with the earlier conclusion that it must enter through modularity.
+- 2026-10-12 (rows 970–974; MUST-1262, 1263, 1265, 1266, 1268). **Low-frequency principle for Laguerre–Pólya producers.**
+  - **Statement [L]:** RH ⟺ `Ξ/Ξ(0)`, restricted to any short real interval `[−ε, ε]`, is a uniform limit of real-rooted real polynomials (MUST-1266). It also holds that RH ⟺ `Ξ ∈ LP` (MUST-1268).
+  - **Why it holds:** on `[−ε, ε]` the target is a positive smooth bump with no zero information. Real-rootedness of the approximants alone carries the global content: even LP Gaussian bounds plus the identity theorem propagate any low-frequency agreement to all of `ℂ`.
+  - **Consequence for every LP producer lane:**
+    - Griffiths–Simon producers need only moment convergence or convergence in law (MUST-1262/1265). All GS no-gos hold in law (MUST-1263).
+    - Real-rooted CCM ground states need only low-frequency shape agreement with `Φ` (MUST-1268).
+    - Lossless stacks likewise.
+  - **Reading:** no producer can win "at the zeros". The burden sits entirely in a structural real-rootedness mechanism (Lee–Yang, self-adjointness, Pólya kernels) together with matching `Φ`'s moments. This splits RH cleanly into a *structure* half and a *moment* half. The moment half is not RH-strength in isolation: on `[−ε, ε]`, a Gaussian with the right variance already agrees to order `ε⁴`. Every difficulty sits in making both halves hold for one sequence.
+
+## 2026-10-12 addendum (rows 979–982; MUST-1276, MUST-1279 [L])
+- **The central integer is a low-frequency invariant.** `N_off(Ξ)`, with multiplicity, equals the minimal number of nonreal roots of real polynomials converging to `Ξ` on any one real interval, of any length, at any height, with zeros of `Ξ` inside allowed (MUST-1279). RH is the case `0` (MUST-1276).
+- **Global versus local on a window.** Approximation by real-rooted, or boundedly non-real-rooted, polynomials on a window is global: the Laguerre–Pólya rigidity propagates it to all of `ℂ`. Every pointwise inequality on a window is local, the higher Laguerre–Turán inequalities of all orders included: an off-line pair at depth `b` is invisible to them at horizontal distance `≥ b` (row 980). So the "one integer" of §3.1 can be read from low-frequency data only through an approximation class, never through finitely many jets or inequalities.
+- **For producers:** an LP producer with at most `m` defect roots per stage, converging on one window, bounds `N_off ≤ m`. A producer that is "almost real-rooted" with a bounded defect budget would exclude all but finitely many off-line zeros.
+
+## 2026-10-12 addendum (rows 987–990; MUST-1287, MUST-1288, CANNOT-506 [L])
+- **Exact readings of `N_off` in Lean.** The central integer of §3.1 now has three formal readings.
+  - The minimal nonreal budget of real polynomials converging to `Ξ` on any window (MUST-1279).
+  - The defect count of the cosine producer `cos(hD)Ξ` at small depth, in a finite off-line world (MUST-1288).
+  - The negative index of the heat Hankel form (corpus; counts distinct off-line points).
+- **Depth resolution is special to the cosine ladder.**
+  - At every depth `h`, the defect count of `cos(hD)Ξ` is at most the number of zeros with `|β − ½| > h` (MUST-1287).
+  - The heat flow has no such law (CANNOT-506): a deep pair can shield a shallow pair at the same abscissa.
+  - Among the Euler-compatible deformations (PTR row 113: only the shifts), the cosine ladder reads the depth profile of the zeros exactly. The de Bruijn flow sees only the maximal depth and the total count.
+- **What this says about producers.** A producer of RH via the cosine ladder must show losslessness at all small depths. That is equivalent to excluding every off-line zero, near-double pairs included. Defects can vanish early through absorption (corpus quartic) and reappear, so no monotonicity in `h` is available to transport losslessness down from `h = ½`.
+
+## 2026-10-12 addendum (rows 991–994; MUST-1292 [L])
+- **The cosine ladder is canonical.**
+  - Among even operators `Σ(−1)^k a_k D^{2k}` normalized by their isolated-pair absorption depth `h`, only `cos(hD)` counts defects by the roots deeper than `h`. The heat flow fails at every time, and so do products of cosines and box averages.
+  - Together with PTR row 113 (only the shifts are Euler-compatible), any producer that reads the depth profile of the off-line zeros must be a two-point average `(F(s+h) + F(s−h))/2`.
+- **What the rigidity says.** Depth-exactness and amplification exclude each other.
+  - The heat flow amplifies at large height (de Bruijn–Newman `Λ < ½` is provable unconditionally), but it loses the depth count, because deep zeros shield shallow ones.
+  - The cosine keeps the count exactly but does not amplify. Its LP threshold `½` should not drop without a zero-free strip. The heuristic is the dense-regime model `(z² + δ²)cos(kz)`: there a pair of depth `δ` keeps a purely imaginary defect for every `h < δ` and every `k`, an exact IVT computation. The corpus persistence lemma covers only `h ≲ θ/log γ`.
+  - So no single deformation family both reads `N_off` exactly and pushes the threshold below `½` for free.
+- **T5 / PBAP (rows 991, 993).** The nonnegative-cone window reduces to copositivity of one explicit kernel, and its near-minimizer is the flat profile with depleted edges. The margin is about 1%, so this is a precision certificate, not a structural gap.
+- 2026-10-12 (row 995, MUST-1295 [L]): crowded persistence. A deep zero crowded by `N` shallow zeros remains a defect of `cos(hD)` for every `h < depth − η − r` once `((2h+r)/r)B√(1−κ)^N < 1`, for polynomials and for `Ξ` under an isolation hypothesis. With MUST-1287 (upper bound) and MUST-1292 (uniqueness), the cosine ladder is now fully described as a depth detector. The remaining analytic input for the actual `ξ` is a local Riemann–von Mangoldt lower count, which would make `N ≍ log γ₀` automatic. The configuration hypothesis ("the other zeros lie below `η`") is what a proof would have to exclude.
+
+## 2026-10-12 addendum (rows 996–998; MUST-1297, MUST-1299, MUST-1301 [L])
+- **The cosine ladder's lower law is complete up to clusters.** At large height an isolated deep zero (MUST-1297) or a deep zero in a bounded cluster (MUST-1299) forces a nonreal zero of `cos(hD)Ξ` for every `h` below its depth minus margins. No hypothesis is placed on far zeros; their total effect is a Lorentzian mass `O(log γ/L)`. A real-rooted cosine level below an off-line depth therefore needs deep clusters of unbounded size.
+- **One parameter for the near-double wall, as a resolution limit (corrected in row 999).** The proven persistence holds whenever `ν = δ² log γ` is large (MUST-1301). The same `ν` is the Speiser displacement of the `ζ'` zero and the first-Laguerre depth. For the cosine ladder, `ν` is not intrinsic. With a typical crowd the phase of `Ξ(x+ih)` stays monotone down to depths `δ ≍ 1/log γ`, the spacing scale. The `ν`-scale is where `S(T) = O(log T)` stops controlling local zero counts: the crowd is certified only at window scale `≍ 1`, where each neighbour contributes `κ ∝ δ²`. Near-double pairs are therefore invisible to unconditional local counting, not to the ladder itself.
+
+## 2026-10-12 addendum (rows 999–1007; MUST-1304, MUST-1306, MUST-1307 [L])
+- **LH is exactly the hypothesis that globalizes local detection.** The cosine ladder, Weil level-`a` detection and BGSTB pair-correlation isolation all detect an off-line zero locally, and all three escape only through dense off-line clusters. By Backlund (1918), "no unit window holds `≫ log T` zeros with `|β − ½| > η`" is the Lindelöf hypothesis. In Lean (MUST-1304/1306/1307): critical-line LH ⇒ half-plane LH (Phragmén–Lindelöf) ⇒ Backlund sparsity (Jensen) ⇒ only positive-proportion clusters can mask (averaged-radius Rouché) ⇒ a real-rooted Suzuki/Lagarias level `A^h` is an eventual zero-free strip of width `h`. Under LH, every partial passage of Suzuki's family below `½` is a quasi-RH statement (`suzuki_threshold_strip_of_lindelof`).
+- **The unconditional barrier is a resolution barrier.** Without LH, local zero counts are certified only at window scale `≍ 1` (`S(T) = O(log T)`). This is why every unconditional local readout stops at `δ² log γ ≍ 1`, and it is not intrinsic to the readouts (row 999).
+- **HF's (N1) has a clean dual.** The positive prime-blind radical multiplier is equivalent to a strictly positive theta-like weight (Jacobi inversion symmetry plus degree-one Poisson periodization; row 1005). Each constraint has a positive stationary-phase main term at `t = 2πn` (row 1004). The Riemann–Siegel AFE for `ζ²` is a divisor-weighted near-certificate against (N1), missing only the `n = 1` mode (row 1007). (N1) and the explicit formula are the same balance seen from its two sides.
+
+## 2026-10-12 addendum (rows 1008–1026; MUST-1317, 1318, 1321, 1323, 1325 [L])
+- **Backlund is exact in Lean.** Off-line sparsity ⟺ LH on the critical line ⟺ `μ(σ) = 0` for all `σ > ½` (MUST-1317/1318). "LH globalizes local detection" is now an equivalence, not a sufficiency.
+- **Three finiteness levels of the cosine ladder, one scale.**
+  - *Power-saving defects* (unconditional, MUST-1325): for every fixed `h > 0`, `cos(hD)Ξ` has `≤ T^θ`, `θ < 1`, non-real zeros in `[T, 2T]`.
+  - *Finitely many defects for every `h > 0`* ⟺ (under LH) zeros approach the line; unconditionally, zeros approach the line ⟺ LH ∧ cosine finite defects (MUST-1323).
+  - *No defects for every `h > 0`* ⟺ RH; *no defects for some `h < ½`* ⟺ (under LH) quasi-RH (MUST-1321).
+  - So the ladder RH ⟹ "zeros approach the line" ⟹ LH ∧ quasi-RH is read off one deformation family at three strengths.
+- **Heat versus cosine, sharpened.** Heat finiteness (Ki–Kim–Lee) is free and depth-blind. Cosine finiteness costs exactly the essential depth. An asymptotic (large-height) method can at best reach "zeros approach the line", never RH. The remaining gap is the shallow-zero / near-double problem.
+- **HF (N1) dual.** Every Farkas certificate is `Z(t)²·Re Q(½+it)` with `Q` a Dirichlet series with `q₁ = 0`. The natural near-certificate `θ'Z²` fails only on `|t| < 6.29`. Repairing it is Weil positivity on PBAP's window `(−log 2, log 2)`. (N1) and the twin door's infinite deficits are the same `s = ½` `SL₂(ℤ)` cocycle-image problem (the packet identity, MUST-930 add. 2).
+
+## 2026-10-12 addendum (rows 1028–1029; MUST-1326, MUST-1328 [L]) — asymptotic regimes of receivers
+- **Large-height forms stratify by resolution.**
+  - Exact-ordinate receivers (horizontal slices): their large-height form is *finitely many off-line zeros* (FOL), MUST-1328.
+  - Depth-margin receivers (Hadamard positivity on `Re s ≥ σ`, cosine levels, eventual strips): their large-height form is *zeros approach the line* (ZAL), MUST-1323/1326.
+  - Ladder in Lean: RH ⟹ FOL ⟹ ZAL ⟹ LH ∧ quasi-RH.
+- **Cumulative receivers are asymptotically complete.** For Li coefficients (index `n`) and the Weil form (aperture `a`), every zero, at any height, influences arbitrarily late stages: an off-line zero at height `γ` dominates `λ_n` once `n ≳ γ²`, and `μ₀(a)` is monotone in `a`. So "eventually nonnegative" is already RH (corpus `LiSignDensity`; monotonicity of `μ₀`). Height-local receivers forget low zeros at large height, so their asymptotics stop at FOL or ZAL.
+- **Consequence for producers.** An asymptotic (saddle-point, large-parameter) producer is RH-complete only on a cumulative receiver. There it must control the prime side at every scale (the Li arithmetic sum at scale `e^{√n}`, the Weil prime sum at aperture `a`). On a height-local receiver it can at best give FOL (slices: a finite check remains) or ZAL (a shallow infinite tail remains). Either outcome already implies LH.
+- **Four languages, one ladder (rows 1031–1033; MUST-1329, MUST-1330 [L]).**
+
+  | Strength | Cosine `cos(hD)Ξ` | Slices | Hadamard `Re ξ'/ξ` | Weil lag `Φ` |
+  |---|---|---|---|---|
+  | RH | no defects, every `h > 0` | positive at every height | `≥ 0` on `Re s > ½` | one-sided bounded |
+  | FOL | defects bounded uniformly in `h` | positive at all large heights | — | `Φ − (finite wave)` bounded |
+  | ZAL | finite defects at every `h` (under LH) | — | `≥ 0` on `Re s ≥ σ`, `\|Im s\| ≥ T(σ)` | `Φ − (finite wave) = O(e^{au})` for every `a` |
+
+  ZAL ⟹ LH ∧ quasi-RH. The arithmetic side (WL) and the analytic sides grade the same three statements, so a producer for any "eventual" or "up to finitely many" form in one language transfers to the others.

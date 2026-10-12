@@ -436,10 +436,8 @@ theorem xiRealLogDeriv_eq_ghsGammaPrimeForm {w : ℝ} (hw : 1 / 2 < w) :
   rw [hI]
   norm_num [Finset.sum_insert]
   have hx0 : x ≠ 0 := by linarith
-
   field_simp
   ring
-
 
 /-- `x ↦ g(x/2 + 8)/2` inherits concavity on `[9, ∞)` from concavity of `g` on `(0, ∞)`. -/
 theorem concaveOn_half_comp_affine {g : ℝ → ℝ} (hg : ConcaveOn ℝ (Ioi 0) g) :
