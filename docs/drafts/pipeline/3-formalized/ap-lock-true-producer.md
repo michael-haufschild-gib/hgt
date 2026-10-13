@@ -72,3 +72,14 @@ So the mean motion is `0`.
 
 ## Log
 - 2026-10-13: card created; paper proof complete (steps 0–8). Lean started.
+- 2026-10-13: **Formalized [L], MUST-1394.**
+  - Theorem `RHTower.AbelianTwist.almostPeriodicLock_trueProducer` (module `RHTower/WeilAlmostPeriodicLockTrueProducer`). Generic tools are in `RHTower/LocalRectangleArgumentBound`.
+  - Refactors:
+    - `limitPeriodic_producer_factor` (exports `G = s(s−1)Γ_ℝζA`);
+    - `continuousOn_limitTrivialSeries`, `norm_limitTrivialSeries_le`;
+    - `almostPeriodicLock_limitPeriodic` (exports the limit-periodic expansion).
+  - Standard axioms, built, wired into the `RHTower` umbrella.
+  - Deviation from the paper plan: the step-6 rectangle for `A` sits in the lower half-plane, so no real symmetry of `A` is needed. The comparison uses `h = v·conj V_ε` with `Re h ≥ ½`.
+  - Open follow-ups:
+    - remove the log moment `Σ|c||log u| < ∞`; it is needed only to make the line lock `C¹`, and the monotonicity could come from `local_phase_monotone`;
+    - non-AP locks.

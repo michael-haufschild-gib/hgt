@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiSliceHeatMixedTripleThreshold
 
 /-!
-# The WD heat threshold of an off-line pair behind a critical zero of order `m`
+# WD heat thresholds of an off-line pair behind a critical zero of order `m`
 
 Let `S(t, y) = ξ(½+y+it) ξ(½−y+it)` and `T_n(λ, 0, t)` the heated slice coefficients.  Suppose
 
@@ -13,21 +13,25 @@ so the off-line pair `½ ± b + iγ` sits at the ordinate of a critical zero of 
 `P`, `∫ P(w) g_n(w) dw = ∫ P^{(n)}(w) e^{−w²/2} dw`, by `n` integrations by parts
 (`g_n' = −g_{n+1}`, `hasDerivAt_hermiteGauss`).
 
-**Theorem** (`re_xiSliceHeatTransfer_neg_of_masked_pair`).  At the ordinate the slice is
+**Theorem** (`re_xiSliceHeatTransfer_neg_of_masked_pair_order`).  At the ordinate the slice is
 `S(γ, y) = y^{2m}(b² − y²)² G(y)`, `G(y) = g(γ − iy) g(γ + iy)` (`xiSliceProduct_eq_masked_mul`), and
-`g(γ)` is real (`maskedCofactor_self_im`).  The moment of order `2m + 2` is
+`g(γ)` is real (`maskedCofactor_self_im`).  The order-`2j` Hermite moment of `λ^m w^{2m}(b² − λw²)²`
+is `√(2π) · maskedPairMoment b λ m j` (`integral_hermiteGauss_mul_maskedPairSlice`).  If the cofactor
+deviation is below `−√(2π) · maskedPairMoment b λ m j · g(γ)²`, then `Re T_{2j}(λ, 0, γ) < 0`, and
+`λ ≤ λ_WD` (`le_wdHeatThreshold_of_masked_pair_order`).
 
-  `∫ g_{2m+2}(w) λ^m w^{2m}(b² − λw²)² dw = √(2π) λ^{m+1} (2m+2)! ((m+2)(2m+3)λ − 2b²)`
+* Order `2m + 2` (`maskedPairMoment_top`): the moment is `λ^{m+1}(2m+2)!((m+2)(2m+3)λ − 2b²)`, so the
+  threshold is `2b²/((m+2)(2m+3))` (`le_wdHeatThreshold_of_masked_pair`); this is `b²/3` for `m = 0`
+  (`re_xiSliceHeatTransfer_two_neg_of_offline_zero`) and `2b²/15` for `m = 1`
+  (`re_xiSliceHeatTransfer_four_neg_of_mixed_triple`).
+* Heat unmasks at lower order (`maskedPairMoment_two_two`,
+  `le_wdHeatThreshold_of_double_masked_pair`): for `m = 2` the order-four coefficient at heat `0` is
+  `b⁴g(γ)² ≥ 0`, but its moment `24λ²(b⁴ − 30b²λ + 210λ²)` is negative at `λ = b²/12`, above the
+  order-six threshold `b²/14`.
 
-(`integral_hermiteGauss_mul_maskedPairSlice`).  So if the cofactor deviation is below
-`√(2π) λ^{m+1} (2m+2)! (2b² − (m+2)(2m+3)λ) g(γ)²`, then `Re T_{2m+2}(λ, 0, γ) < 0`, and
-`λ ≤ λ_WD` (`le_wdHeatThreshold_of_masked_pair`).
-
-The threshold `2b²/((m+2)(2m+3))` is `b²/3` for `m = 0` (the isolated pair,
-`re_xiSliceHeatTransfer_two_neg_of_offline_zero`) and `2b²/15` for `m = 1` (the mixed triple,
-`re_xiSliceHeatTransfer_four_neg_of_mixed_triple`).  At heat `0` the slice coefficients of order
-below `2m` vanish and the one of order `2m` is `b⁴g(γ)² ≥ 0`, so the critical zero hides the pair
-from all coefficients of order at most `2m`; order `2m + 2` is the first that sees it.
+At heat `0` the slice coefficients of order below `2m` vanish and the one of order `2m` is
+`b⁴g(γ)² ≥ 0`, so order `2m + 2` is the first that sees the pair; positive heat moves detection to
+lower orders.
 -/
 
 open Complex MeasureTheory Polynomial
@@ -105,42 +109,85 @@ theorem descFactorial_two_mul_add_four (m : ℕ) :
   push_cast at hR
   linear_combination (1 / 2 : ℝ) * hR
 
-theorem iterate_derivative_maskedPairPoly_eval (b lam : ℝ) (m : ℕ) (w : ℝ) :
-    (derivative^[2 * m + 2] (maskedPairPoly b lam m)).eval w
-      = -(2 * b ^ 2 * lam ^ (m + 1) * (2 * m + 2).factorial)
-        + lam ^ (m + 2) * ((2 * m + 2).factorial * ((2 * m + 3) * (m + 2))) * w ^ 2 := by
-  have h0 : (2 * m).descFactorial (2 * m + 2) = 0 := Nat.descFactorial_eq_zero_iff_lt.mpr (by omega)
+/-- `∫ w^{2r} e^{−w²/2} dw = √(2π) (2r)!/(2^r r!)`, without the factor `√(2π)`. -/
+def gaussEvenMoment (r : ℕ) : ℝ := (2 * r).factorial * (1 / 2 : ℝ) ^ r / r.factorial
+
+theorem gaussEvenMoment_zero : gaussEvenMoment 0 = 1 := by simp [gaussEvenMoment]
+
+theorem gaussEvenMoment_one : gaussEvenMoment 1 = 1 := by
+  norm_num [gaussEvenMoment, Nat.factorial]
+
+/-- The order-`2j` Hermite moment of the masked-pair slice, without the factor `√(2π)`:
+`λ^m b⁴ (2m)↓(2j) μ_{m−j} − 2b²λ^{m+1} (2m+2)↓(2j) μ_{m+1−j} + λ^{m+2} (2m+4)↓(2j) μ_{m+2−j}`,
+with `μ_r = (2r)!/(2^r r!)` and `k↓i` the falling factorial. -/
+def maskedPairMoment (b lam : ℝ) (m j : ℕ) : ℝ :=
+  lam ^ m * b ^ 4 * (2 * m).descFactorial (2 * j) * gaussEvenMoment (m - j)
+    - 2 * b ^ 2 * lam ^ (m + 1) * (2 * m + 2).descFactorial (2 * j) * gaussEvenMoment (m + 1 - j)
+    + lam ^ (m + 2) * (2 * m + 4).descFactorial (2 * j) * gaussEvenMoment (m + 2 - j)
+
+theorem iterate_derivative_maskedPairPoly_eval (b lam : ℝ) (m j : ℕ) (w : ℝ) :
+    (derivative^[2 * j] (maskedPairPoly b lam m)).eval w
+      = lam ^ m * b ^ 4 * (2 * m).descFactorial (2 * j) * w ^ (2 * (m - j))
+        - 2 * b ^ 2 * lam ^ (m + 1) * (2 * m + 2).descFactorial (2 * j) * w ^ (2 * (m + 1 - j))
+        + lam ^ (m + 2) * (2 * m + 4).descFactorial (2 * j) * w ^ (2 * (m + 2 - j)) := by
   rw [maskedPairPoly, iterate_map_add, iterate_derivative_sub, iterate_derivative_C_mul,
     iterate_derivative_C_mul, iterate_derivative_C_mul, iterate_derivative_X_pow_eq_C_mul,
-    iterate_derivative_X_pow_eq_C_mul, iterate_derivative_X_pow_eq_C_mul, h0,
-    Nat.descFactorial_self, show 2 * m + 2 - (2 * m + 2) = 0 by omega,
-    show 2 * m + 4 - (2 * m + 2) = 2 by omega]
-  simp only [eval_add, eval_sub, eval_mul, eval_C, eval_pow, eval_X, Nat.cast_zero, mul_zero,
-    zero_mul, zero_sub, pow_zero, mul_one]
-  rw [descFactorial_two_mul_add_four]
+    iterate_derivative_X_pow_eq_C_mul, iterate_derivative_X_pow_eq_C_mul,
+    show 2 * m - 2 * j = 2 * (m - j) by omega, show 2 * m + 2 - 2 * j = 2 * (m + 1 - j) by omega,
+    show 2 * m + 4 - 2 * j = 2 * (m + 2 - j) by omega]
+  simp only [eval_add, eval_sub, eval_mul, eval_C, eval_pow, eval_X]
   ring
 
-/-- `∫ g_{2m+2}(w) λ^m w^{2m}(b² − λw²)² dw = √(2π) λ^{m+1} (2m+2)! ((m+2)(2m+3)λ − 2b²)`. -/
-theorem integral_hermiteGauss_mul_maskedPairSlice (b lam : ℝ) (m : ℕ) :
-    ∫ w : ℝ, (maskedPairPoly b lam m).eval w * hermiteGauss (2 * m + 2) w
-      = Real.sqrt (2 * Real.pi) * lam ^ (m + 1) * (2 * m + 2).factorial *
-          ((m + 2) * (2 * m + 3) * lam - 2 * b ^ 2) := by
+/-- **Hermite moments of the masked-pair slice.**
+`∫ g_{2j}(w) λ^m w^{2m}(b² − λw²)² dw = √(2π) · maskedPairMoment b λ m j`. -/
+theorem integral_hermiteGauss_mul_maskedPairSlice (b lam : ℝ) (m j : ℕ) :
+    ∫ w : ℝ, (maskedPairPoly b lam m).eval w * hermiteGauss (2 * j) w
+      = Real.sqrt (2 * Real.pi) * maskedPairMoment b lam m j := by
   rw [integral_poly_mul_hermiteGauss]
-  set c₀ : ℝ := -(2 * b ^ 2 * lam ^ (m + 1) * (2 * m + 2).factorial) with hc₀
-  set c₂ : ℝ := lam ^ (m + 2) * ((2 * m + 2).factorial * ((2 * m + 3) * (m + 2))) with hc₂
-  have e : ∀ w : ℝ, (derivative^[2 * m + 2] (maskedPairPoly b lam m)).eval w
-      * Real.exp (-(w ^ 2 / 2)) = c₀ * (Real.exp (-(w ^ 2 / 2)) * w ^ (2 * 0))
-        + c₂ * (Real.exp (-(w ^ 2 / 2)) * w ^ (2 * 1)) := by
+  set c₀ : ℝ := lam ^ m * b ^ 4 * (2 * m).descFactorial (2 * j) with hc₀
+  set c₁ : ℝ := -(2 * b ^ 2 * lam ^ (m + 1) * (2 * m + 2).descFactorial (2 * j)) with hc₁
+  set c₂ : ℝ := lam ^ (m + 2) * (2 * m + 4).descFactorial (2 * j) with hc₂
+  have e : ∀ w : ℝ, (derivative^[2 * j] (maskedPairPoly b lam m)).eval w * Real.exp (-(w ^ 2 / 2))
+      = c₀ * (Real.exp (-(w ^ 2 / 2)) * w ^ (2 * (m - j)))
+        + c₁ * (Real.exp (-(w ^ 2 / 2)) * w ^ (2 * (m + 1 - j)))
+        + c₂ * (Real.exp (-(w ^ 2 / 2)) * w ^ (2 * (m + 2 - j))) := by
     intro w
     rw [iterate_derivative_maskedPairPoly_eval]
     ring
   simp_rw [e]
-  rw [integral_add ((integrable_exp_neg_sq_half_mul_pow _).const_mul _)
-      ((integrable_exp_neg_sq_half_mul_pow _).const_mul _), integral_const_mul, integral_const_mul,
-    integral_exp_neg_sq_half_mul_pow_even, integral_exp_neg_sq_half_mul_pow_even]
-  simp only [hc₀, hc₂, mul_zero, Nat.factorial_zero, pow_zero, Nat.cast_one, div_one, mul_one,
-    Nat.factorial_one, pow_one]
-  norm_num
+  have i₀ := (integrable_exp_neg_sq_half_mul_pow (2 * (m - j))).const_mul c₀
+  have i₁ := (integrable_exp_neg_sq_half_mul_pow (2 * (m + 1 - j))).const_mul c₁
+  have i₂ := (integrable_exp_neg_sq_half_mul_pow (2 * (m + 2 - j))).const_mul c₂
+  have i₀₁ : Integrable fun w : ℝ => c₀ * (Real.exp (-(w ^ 2 / 2)) * w ^ (2 * (m - j)))
+      + c₁ * (Real.exp (-(w ^ 2 / 2)) * w ^ (2 * (m + 1 - j))) := i₀.add i₁
+  rw [integral_add i₀₁ i₂, integral_add i₀ i₁, integral_const_mul, integral_const_mul,
+    integral_const_mul, integral_exp_neg_sq_half_mul_pow_even, integral_exp_neg_sq_half_mul_pow_even,
+    integral_exp_neg_sq_half_mul_pow_even, maskedPairMoment, hc₀, hc₁, hc₂]
+  simp only [gaussEvenMoment]
+  ring
+
+/-- At order `2m + 2` the moment is `λ^{m+1} (2m+2)! ((m+2)(2m+3)λ − 2b²)`. -/
+theorem maskedPairMoment_top (b lam : ℝ) (m : ℕ) :
+    maskedPairMoment b lam m (m + 1)
+      = lam ^ (m + 1) * (2 * m + 2).factorial * ((m + 2) * (2 * m + 3) * lam - 2 * b ^ 2) := by
+  have h0 : (2 * m).descFactorial (2 * (m + 1)) = 0 :=
+    Nat.descFactorial_eq_zero_iff_lt.mpr (by omega)
+  rw [maskedPairMoment, h0, show 2 * (m + 1) = 2 * m + 2 by ring, Nat.descFactorial_self,
+    descFactorial_two_mul_add_four, show m + 1 - (m + 1) = 0 by omega,
+    show m + 2 - (m + 1) = 1 by omega, gaussEvenMoment_zero, gaussEvenMoment_one]
+  push_cast
+  ring
+
+/-- For a double critical zero (`m = 2`) the order-four moment is `24λ²(b⁴ − 30b²λ + 210λ²)`. -/
+theorem maskedPairMoment_two_two (b lam : ℝ) :
+    maskedPairMoment b lam 2 2 = 24 * lam ^ 2 * (b ^ 4 - 30 * b ^ 2 * lam + 210 * lam ^ 2) := by
+  have d₀ : (2 * 2).descFactorial (2 * 2) = 24 := by decide
+  have d₁ : (2 * 2 + 2).descFactorial (2 * 2) = 360 := by decide
+  have d₂ : (2 * 2 + 4).descFactorial (2 * 2) = 1680 := by decide
+  have μ₂ : gaussEvenMoment 2 = 3 := by norm_num [gaussEvenMoment, Nat.factorial]
+  rw [maskedPairMoment, d₀, d₁, d₂, show 2 - 2 = 0 by rfl, show 2 + 1 - 2 = 1 by rfl,
+    show 2 + 2 - 2 = 2 by rfl, gaussEvenMoment_zero, gaussEvenMoment_one, μ₂]
+  push_cast
   ring
 
 /-! ## The slice at the ordinate -/
@@ -194,25 +241,24 @@ theorem maskedCofactor_self_im {γ b : ℝ} {m : ℕ} {g : ℂ → ℂ} (hg : Co
     exact (mul_eq_zero.mp him.symm).resolve_left hd0
   exact congrFun heq γ
 
-/-! ## The threshold -/
+/-! ## The thresholds -/
 
-/-- **A pair behind a critical zero of order `m` is exposed at order `2m + 2`.**  Let
+/-- **The order-`2j` heated coefficient at the ordinate.**  Let
 `Ξ(z) = (z − γ)^m ((z − γ)² + b²) g(z)` with `g` continuous and `λ > 0`.  If the cofactor slice
 `G(y) = g(γ − iy) g(γ + iy)` deviates from `g(γ)²` by less than the Hermite budget
-`√(2π) λ^{m+1} (2m+2)! (2b² − (m+2)(2m+3)λ) |g(γ)|²` (weighted by `g_{2m+2}(w) y^{2m}(b² − y²)²` at
-`y = √λ w`), then `Re T_{2m+2}(λ, 0, γ) < 0`. -/
-theorem re_xiSliceHeatTransfer_neg_of_masked_pair {γ b lam : ℝ} {m : ℕ} {g : ℂ → ℂ}
+`−√(2π) · maskedPairMoment b λ m j · |g(γ)|²` (weighted by `g_{2j}(w) y^{2m}(b² − y²)²` at
+`y = √λ w`), then `Re T_{2j}(λ, 0, γ) < 0`. -/
+theorem re_xiSliceHeatTransfer_neg_of_masked_pair_order {γ b lam : ℝ} {m j : ℕ} {g : ℂ → ℂ}
     (hlam : 0 < lam) (hg : Continuous g)
     (hfac : ∀ z, XiC z = (z - γ) ^ m * ((z - γ) ^ 2 + (b : ℂ) ^ 2) * g z)
-    (hvar : ‖∫ w : ℝ, (hermiteGauss (2 * m + 2) w : ℂ) *
+    (hvar : ‖∫ w : ℝ, (hermiteGauss (2 * j) w : ℂ) *
         (((Real.sqrt lam * w : ℝ) : ℂ) ^ (2 * m) *
           ((b : ℂ) ^ 2 - ((Real.sqrt lam * w : ℝ) : ℂ) ^ 2) ^ 2 *
           (g ((γ : ℂ) - ((Real.sqrt lam * w : ℝ) : ℂ) * I) *
             g ((γ : ℂ) + ((Real.sqrt lam * w : ℝ) : ℂ) * I) - g γ ^ 2))‖
-      < Real.sqrt (2 * Real.pi) * lam ^ (m + 1) * (2 * m + 2).factorial *
-          (2 * b ^ 2 - (m + 2) * (2 * m + 3) * lam) * ‖g γ‖ ^ 2) :
-    (xiSliceHeatTransfer lam 0 γ (2 * m + 2)).re < 0 := by
-  set n := 2 * m + 2 with hn
+      < Real.sqrt (2 * Real.pi) * (-maskedPairMoment b lam m j) * ‖g γ‖ ^ 2) :
+    (xiSliceHeatTransfer lam 0 γ (2 * j)).re < 0 := by
+  set n := 2 * j with hn
   set sl := Real.sqrt lam with hsl
   have hsl0 : 0 < sl := Real.sqrt_pos.mpr hlam
   have hsl2 : sl ^ 2 = lam := Real.sq_sqrt hlam.le
@@ -223,9 +269,8 @@ theorem re_xiSliceHeatTransfer_neg_of_masked_pair {γ b lam : ℝ} {m : ℕ} {g 
         (g ((γ : ℂ) - ((sl * w : ℝ) : ℂ) * I) * g ((γ : ℂ) + ((sl * w : ℝ) : ℂ) * I) - g γ ^ 2))
     with hE
   set M : ℝ := ∫ w : ℝ, (maskedPairPoly b lam m).eval w * hermiteGauss n w with hM
-  have hMval : M = Real.sqrt (2 * Real.pi) * lam ^ (m + 1) * (2 * m + 2).factorial *
-      ((m + 2) * (2 * m + 3) * lam - 2 * b ^ 2) :=
-    integral_hermiteGauss_mul_maskedPairSlice b lam m
+  have hMval : M = Real.sqrt (2 * Real.pi) * maskedPairMoment b lam m j :=
+    integral_hermiteGauss_mul_maskedPairSlice b lam m j
   -- the main part
   have hP : ∀ w : ℝ, ((sl * w : ℝ) : ℂ) ^ (2 * m) * ((b : ℂ) ^ 2 - ((sl * w : ℝ) : ℂ) ^ 2) ^ 2
       = (((maskedPairPoly b lam m).eval w : ℝ) : ℂ) := by
@@ -276,11 +321,9 @@ theorem re_xiSliceHeatTransfer_neg_of_masked_pair {γ b lam : ℝ} {m : ℕ} {g 
   have hEle : E.re ≤ ‖E‖ := Complex.re_le_norm E
   have hgn : ‖g γ‖ ^ 2 = r ^ 2 := by rw [hgr, Complex.norm_real, Real.norm_eq_abs, sq_abs]
   rw [hgn] at hvar
-  have hvar' : ‖E‖ < Real.sqrt (2 * Real.pi) * lam ^ (m + 1) * (2 * m + 2).factorial *
-      (2 * b ^ 2 - (m + 2) * (2 * m + 3) * lam) * r ^ 2 := by
+  have hvar' : ‖E‖ < Real.sqrt (2 * Real.pi) * (-maskedPairMoment b lam m j) * r ^ 2 := by
     simpa [hE, hsl, hn] using hvar
-  have hMr2 : M * r ^ 2 = -(Real.sqrt (2 * Real.pi) * lam ^ (m + 1) * (2 * m + 2).factorial *
-      (2 * b ^ 2 - (m + 2) * (2 * m + 3) * lam) * r ^ 2) := by
+  have hMr2 : M * r ^ 2 = -(Real.sqrt (2 * Real.pi) * (-maskedPairMoment b lam m j) * r ^ 2) := by
     rw [hMval]; ring
   have hsum : M * r ^ 2 + E.re < 0 := by linarith
   by_contra hTnn
@@ -288,6 +331,46 @@ theorem re_xiSliceHeatTransfer_neg_of_masked_pair {γ b lam : ℝ} {m : ℕ} {g 
   have : 0 ≤ Real.sqrt (2 * Real.pi) * sl ^ n * (Nat.factorial n : ℝ) * T.re :=
     mul_nonneg hc.le hTnn
   linarith
+
+/-- **The WD threshold at order `2j`.**  Under the hypotheses of
+`re_xiSliceHeatTransfer_neg_of_masked_pair_order`, `λ ≤ λ_WD`. -/
+theorem le_wdHeatThreshold_of_masked_pair_order {γ b lam : ℝ} {m j : ℕ} {g : ℂ → ℂ}
+    (hlam : 0 < lam) (hg : Continuous g)
+    (hfac : ∀ z, XiC z = (z - γ) ^ m * ((z - γ) ^ 2 + (b : ℂ) ^ 2) * g z)
+    (hvar : ‖∫ w : ℝ, (hermiteGauss (2 * j) w : ℂ) *
+        (((Real.sqrt lam * w : ℝ) : ℂ) ^ (2 * m) *
+          ((b : ℂ) ^ 2 - ((Real.sqrt lam * w : ℝ) : ℂ) ^ 2) ^ 2 *
+          (g ((γ : ℂ) - ((Real.sqrt lam * w : ℝ) : ℂ) * I) *
+            g ((γ : ℂ) + ((Real.sqrt lam * w : ℝ) : ℂ) * I) - g γ ^ 2))‖
+      < Real.sqrt (2 * Real.pi) * (-maskedPairMoment b lam m j) * ‖g γ‖ ^ 2) :
+    lam ≤ wdHeatThreshold := by
+  by_contra h
+  push Not at h
+  have hadm := mem_wdHeatAdmissible_of_lt h γ (2 * j)
+  have hneg := re_xiSliceHeatTransfer_neg_of_masked_pair_order hlam hg hfac hvar
+  have := (Complex.le_def.mp hadm).1
+  simp only [Complex.zero_re] at this
+  linarith
+
+/-- **A pair behind a critical zero of order `m` is exposed at order `2m + 2`.**  Under the Hermite
+budget `√(2π) λ^{m+1} (2m+2)! (2b² − (m+2)(2m+3)λ) |g(γ)|²` for the cofactor deviation,
+`Re T_{2m+2}(λ, 0, γ) < 0`. -/
+theorem re_xiSliceHeatTransfer_neg_of_masked_pair {γ b lam : ℝ} {m : ℕ} {g : ℂ → ℂ}
+    (hlam : 0 < lam) (hg : Continuous g)
+    (hfac : ∀ z, XiC z = (z - γ) ^ m * ((z - γ) ^ 2 + (b : ℂ) ^ 2) * g z)
+    (hvar : ‖∫ w : ℝ, (hermiteGauss (2 * m + 2) w : ℂ) *
+        (((Real.sqrt lam * w : ℝ) : ℂ) ^ (2 * m) *
+          ((b : ℂ) ^ 2 - ((Real.sqrt lam * w : ℝ) : ℂ) ^ 2) ^ 2 *
+          (g ((γ : ℂ) - ((Real.sqrt lam * w : ℝ) : ℂ) * I) *
+            g ((γ : ℂ) + ((Real.sqrt lam * w : ℝ) : ℂ) * I) - g γ ^ 2))‖
+      < Real.sqrt (2 * Real.pi) * lam ^ (m + 1) * (2 * m + 2).factorial *
+          (2 * b ^ 2 - (m + 2) * (2 * m + 3) * lam) * ‖g γ‖ ^ 2) :
+    (xiSliceHeatTransfer lam 0 γ (2 * m + 2)).re < 0 := by
+  have h := re_xiSliceHeatTransfer_neg_of_masked_pair_order (j := m + 1) hlam hg hfac (by
+    rw [show 2 * (m + 1) = 2 * m + 2 by ring, maskedPairMoment_top]
+    calc _ < _ := hvar
+      _ = _ := by ring)
+  rwa [show 2 * (m + 1) = 2 * m + 2 by ring] at h
 
 /-- **The WD threshold is at least the masked-pair time.**  Under the hypotheses of
 `re_xiSliceHeatTransfer_neg_of_masked_pair`, `λ ≤ λ_WD`; for a slowly varying cofactor this is
@@ -310,6 +393,35 @@ theorem le_wdHeatThreshold_of_masked_pair {γ b lam : ℝ} {m : ℕ} {g : ℂ �
   have := (Complex.le_def.mp hadm).1
   simp only [Complex.zero_re] at this
   linarith
+
+/-- `λ = b²/12` lies in the order-four window of a double critical zero:
+`b⁴ − 30b²(b²/12) + 210(b²/12)² = −b⁴/24 < 0`. -/
+theorem doubleMaskedWindow_twelfth {b : ℝ} (hb : 0 < b) :
+    b ^ 4 - 30 * b ^ 2 * (b ^ 2 / 12) + 210 * (b ^ 2 / 12) ^ 2 < 0 := by
+  have e : b ^ 4 - 30 * b ^ 2 * (b ^ 2 / 12) + 210 * (b ^ 2 / 12) ^ 2 = -(b ^ 4 / 24) := by ring
+  rw [e]
+  have : 0 < b ^ 4 := by positivity
+  linarith
+
+/-- **Heat unmasks a pair behind a double critical zero at order four.**  For `m = 2` the order-four
+coefficient at heat `0` is `b⁴g(γ)² ≥ 0`.  At heat `λ` the order-four moment is
+`24λ²(b⁴ − 30b²λ + 210λ²)`, negative for instance at `λ = b²/12` (`doubleMaskedWindow_twelfth`);
+under the corresponding variation bound `λ ≤ λ_WD`, above the order-six threshold `b²/14`. -/
+theorem le_wdHeatThreshold_of_double_masked_pair {γ b lam : ℝ} {g : ℂ → ℂ}
+    (hlam : 0 < lam) (hg : Continuous g)
+    (hfac : ∀ z, XiC z = (z - γ) ^ 2 * ((z - γ) ^ 2 + (b : ℂ) ^ 2) * g z)
+    (hvar : ‖∫ w : ℝ, (hermiteGauss (2 * 2) w : ℂ) *
+        (((Real.sqrt lam * w : ℝ) : ℂ) ^ (2 * 2) *
+          ((b : ℂ) ^ 2 - ((Real.sqrt lam * w : ℝ) : ℂ) ^ 2) ^ 2 *
+          (g ((γ : ℂ) - ((Real.sqrt lam * w : ℝ) : ℂ) * I) *
+            g ((γ : ℂ) + ((Real.sqrt lam * w : ℝ) : ℂ) * I) - g γ ^ 2))‖
+      < Real.sqrt (2 * Real.pi) * (24 * lam ^ 2 * (30 * b ^ 2 * lam - b ^ 4 - 210 * lam ^ 2)) *
+          ‖g γ‖ ^ 2) :
+    lam ≤ wdHeatThreshold :=
+  le_wdHeatThreshold_of_masked_pair_order (m := 2) (j := 2) hlam hg hfac (by
+    rw [maskedPairMoment_two_two]
+    calc _ < _ := hvar
+      _ = _ := by ring)
 
 end
 

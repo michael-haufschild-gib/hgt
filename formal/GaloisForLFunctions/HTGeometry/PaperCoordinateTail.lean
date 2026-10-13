@@ -54,5 +54,12 @@ theorem norm_sub_comp_paperCoordinateProjection_le (T : VecSeq E →L[ℂ] F) (N
   exact (T.le_opNorm _).trans
     (mul_le_mul_of_nonneg_left (norm_sub_paperCoordinateProjection_le N x) (norm_nonneg T))
 
+theorem norm_sub_paperCoordinateProjection_comp_le (T : F →L[ℂ] VecSeq E) (N : ℕ) :
+    ‖T - paperCoordinateProjection N ∘L T‖ ≤ ‖T‖ := by
+  apply ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg T)
+  intro x
+  simpa only [sub_apply, ContinuousLinearMap.comp_apply] using
+    (norm_sub_paperCoordinateProjection_le N (T x)).trans (T.le_opNorm x)
+
 end
 end GaloisForLFunctions.HTGeometry

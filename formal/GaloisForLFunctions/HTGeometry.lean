@@ -17742,3 +17742,7 @@ import GaloisForLFunctions.HTGeometry.CircleQuadratureSectorWolffMeasure
 import GaloisForLFunctions.HTGeometry.TwoBaseCircleQuadrature
 import GaloisForLFunctions.HTGeometry.ModularArcMinimumPrinciple
 import GaloisForLFunctions.HTGeometry.SymmetricCoshKernelPositiveDefinite
+
+import GaloisForLFunctions.HTGeometry.PaperCoordinateTail
+
+import GaloisForLFunctions.HTGeometry.LpSolidObservationOrder

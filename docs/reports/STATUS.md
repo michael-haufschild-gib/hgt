@@ -4088,3 +4088,32 @@ Notation: `δ=Re ρ−½`; angular energy of a zero = `Σ_{ρ′≠ρ}cos²θ`, 
   - Module `RHTower/WeilLagFunctionFiniteMeasureExcursion`. Standard axioms.
 
 - **MUST-1392 addendum [L] (subexponential precision gives AAL).** Suppose that for every `a > 0` there are `M` and a measurable finite-measure set `E` with `Φ(L) ≤ M e^{aL}` for all `L ≥ 0`, `L ∉ E`. Then no top right of the line is attained, so AAL holds (`asymptoticAbscissaLaw_of_forall_le_exp_finiteMeasure`). Consequently RH ⟺ ZAL ∧ this condition. In ψ terms the condition reads `ψ(x) ≥ x − C_ε x^{½+ε}` for every `ε > 0`, outside a set of finite logarithmic measure. This is far below the √x precision that RH-strength producers need: AAL costs only subexponential one-sided precision off finite measure, so all RH content beyond it is the large-height half (ZAL). Module `RHTower/WeilLagFunctionFiniteMeasureExcursion`.
+
+- **MUST-1393 [L] (an attained top forces lag excursions of positive density; density-zero tolerance).**
+  - **Abstract statement** (`re_tsum_top_le_of_lagRe_le_except`). Take summable weights `a_i`, exponents with `Re w_i ≤ B`, `B > 0`, and `Φ = Re Σ a_i e^{t w_i}`. Suppose `Φ ≤ M` on `[0,∞)` outside a measurable set `E` with `η∫_E e^{−ηu}du ≤ δ` for all small `η`. Then `Re Σ_{w_i = B} a_i ≤ δ Σ|a_i|`. No local finiteness is assumed and no analytic continuation is used.
+  - **Mechanism.** The real residue limit `(σ−B)Σ a_i/(σ−w_i) → Σ_{w_i=B} a_i` holds by dominated convergence, since `|σ−w_i| ≥ σ−B`. Combine it with the Laplace bound `Re Σ a_i/(σ−w_i) ≤ max(M,0)/σ + W∫_E e^{−(σ−B)u}`. Upper density zero ⇒ Abel density zero follows by Tonelli (`abelDensityZero_of_upperDensityZero`).
+  - **For ζ.**
+    - `Φ ≤ M e^{aL}` off an Abel-density-zero set, together with an attained top `β₀`, gives `β₀ ≤ ½ + a`.
+    - RH ⟺ ZAL ∧ ∃M: `{L ≥ 0 : Φ(L) > M}` has upper density zero (EHP may replace ZAL).
+    - RH ⟺ ZAL ∧ JAS level-one interval positivity at all scales with `log y` outside a set of upper density zero.
+    - AAL ⟸ `∀a>0`: `Φ ≤ M_a e^{aL}` off Abel-density-zero sets.
+  - **Reading.**
+    - This strictly strengthens MUST-1392: finite measure is replaced by density zero, so exceptional scale sets of infinite measure such as `∪_k [k², k²+1]` are tolerated.
+    - Dichotomy for one-sided receivers: an attained top forces excursions of positive upper density, while a non-attained top admits excursion sets of finite measure (abstract Fejér configurations, MUST-1386 add. 2). So the exception tolerance of every one-sided lag/JAS receiver, given ZAL, is exactly "density zero".
+  - Module `RHTower/WeilLagFunctionDensityZeroExcursion`. Standard axioms.
+
+- **MUST-1394 [L] (almost-periodic locks force the true producer; the weighted AP lock class has mean motion zero).**
+  - **Statement.** Let `G` be a Herglotz producer for the weights `lam` with lower-line lock `G(1−s) = V(s)G(s)`, `V(s) = Σ_j c_j u_j^{−(s−½)}`. Assume the MUST-1391 weight `Σ_j|c_j|max(1,u_j^{−1})K(u_j) < ∞` and the log moment `Σ_j|c_j||log u_j| < ∞`. Then `lam(n) = Λ(n)` for all `n ≥ 2`, and RH holds (`RHTower.AbelianTwist.almostPeriodicLock_trueProducer`).
+  - **Mechanism.**
+    - MUST-1385 gives `G = s(s−1)Γ_ℝ ζ A`, with `A` bounded and continuous on `Re s ≥ ½` (`limitPeriodic_producer_factor`). On `Re s > 1`, `A = exp(Σ lam n^{−s}/log n)/ζ`, so `Re A ≥ ½` on `Re s ≥ σ₀` (anchor).
+    - Since `s(s−1)Γ_ℝζ` is symmetric, the lock passes to `A`: `A(½+iy) = V(½−iy)A(½−iy)`. Hence `E = A` (right) and `E = V(1−z)A(1−z)` (left) glue to a holomorphic function on `Re z > −½, Im z > 0` (Painlevé).
+    - Fix `ε` with `|V(½+ε−iy) − v(y)| ≤ ½`. Apply the argument principle for `E` on `[½−ε, σ₀]×[Y₀,Y]` and for `A` on `[½+ε, σ₀]×[−Y,−Y₀]`. This bounds the phase advance of `V(½+ε−i·)` above by `4π + 2C_E + 2C_A`: the enclosed zeros only lower it, the horizontal edges are bounded by Backlund–Jensen, and the edges at `σ₀` by `2π`.
+    - Comparing with `v` bounds `∫_{Y₀}^{Y} g` at cofinal heights, where `g` is the lock velocity. With `g ≥ 0` (positivity law) and `g` almost periodic, `g` has Bohr mean `0`, so `g ≡ 0`. The lock is constant, and phase-lock rigidity applies.
+  - **Reading.**
+    - The frontier item "two-sided rational spectra with positive mean motion" is now closed in the strongest form. No weighted AP lock has positive mean motion, and the only Herglotz producer carrying one is the true producer.
+    - The obstruction is a sign clash. Herglotz positivity pushes the lock phase up. Zeros of the glued function `E` near the line push it down (`−2πN`). The anchor `A → 1` bounds everything else.
+    - Reusable tools (`RHTower/LocalRectangleArgumentBound`):
+      - the rectangle argument principle in inequality form for functions holomorphic on a connected open set (`argument_variation_rectangle_le`);
+      - Painlevé across a vertical line (`differentiableOn_of_off_vertical_line`);
+      - a Backlund–Jensen horizontal bound for any bounded holomorphic function with a positive real part at the disc centre (`abs_integral_im_logDeriv_horizontal_le`).
+  - Modules `RHTower/LocalRectangleArgumentBound`, `RHTower/WeilAlmostPeriodicLockTrueProducer` (refactors: `limitPeriodic_producer_factor`, `almostPeriodicLock_limitPeriodic`). Standard axioms.

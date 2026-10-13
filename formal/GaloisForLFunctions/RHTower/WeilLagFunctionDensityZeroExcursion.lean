@@ -33,7 +33,11 @@ all `L ≥ 0` outside a measurable set of Abel density zero, then an attained to
 * the asymptotic abscissa law follows from `Φ ≤ M_a e^{aL}` off sets of Abel density zero, for every
   `a > 0` (`asymptoticAbscissaLaw_of_forall_le_exp_abelDensityZero`).
 
-So the excursions of an attained top have positive Abel density, while the abstract Fejér
+Quantitatively (`re_lagWeight_le_of_attainedTop_of_le_exp_except`, `not_volume_le_of_attainedTop`):
+if the top `β₀ > ½ + a` is attained at `ρ₀`, then for every `M` the set of `L ≥ 0` with
+`Φ(L) > M e^{aL}` has upper density at least `Re(1/(ρ₀(1−ρ₀)))/(4 Σ_ρ |1/(ρ(1−ρ))|)`.
+
+So the excursions of an attained top have positive upper density, while the abstract Fejér
 configurations with a non-attained top have excursion sets of finite measure.
 -/
 
@@ -457,30 +461,44 @@ noncomputable section
 
 open OneSidedConfiguration BacklundConverse LindelofSparse
 
-/-- **Lag excursions of Abel density zero bound an attained top.** If `Φ(L) ≤ M e^{aL}` for every
-`L ≥ 0` outside a measurable set of Abel density zero, and the maximal real part `β₀` of the zeros
-is attained, then `β₀ ≤ ½ + a`. -/
-theorem re_le_half_add_of_attainedTop_of_le_exp_abelDensityZero {M a β₀ : ℝ} {E : Set ℝ}
-    (hE : MeasurableSet E) (hEd : AbelDensityZero E)
+theorem norm_phaseCoef_zero (γ a : ℝ) (q : Fin 3 × XiZeroCopy) :
+    ‖phaseCoef γ 0 0 lagWeight (lagShiftExp a) q‖ = ‖lagWeight q.2‖ * twistWeight q.1 := by
+  rw [phaseCoef, Complex.ofReal_zero, zero_mul, Complex.exp_zero, mul_one, norm_mul,
+    phaseWeight_zero, Complex.norm_real, Real.norm_of_nonneg (twistWeight_pos _).le]
+
+/-- The total weight of the twisted lag configuration is `2 Σ_ρ |1/(ρ(1−ρ))|`. -/
+theorem tsum_norm_phaseCoef_zero (γ a : ℝ) :
+    ∑' q : Fin 3 × XiZeroCopy, ‖phaseCoef γ 0 0 lagWeight (lagShiftExp a) q‖ =
+      2 * lagWeightTotal := by
+  have hsum := summable_norm_lagWeight
+  simp_rw [norm_phaseCoef_zero]
+  have hs : Summable fun q : Fin 3 × XiZeroCopy => ‖lagWeight q.2‖ * twistWeight q.1 :=
+    (summable_prod_of_nonneg fun q => mul_nonneg (norm_nonneg _) (twistWeight_pos _).le).mpr
+      ⟨fun _ => hsum.mul_right _, Summable.of_finite⟩
+  rw [hs.tsum_prod' (fun k => hsum.mul_right _), tsum_fintype, Fin.sum_univ_three]
+  simp only [tsum_mul_right, lagWeightTotal, twistWeight, Matrix.cons_val_zero,
+    Matrix.cons_val_one, Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons]
+  ring
+
+/-- **The weight of an attained top is bounded by the Abel density of the excursions.** Let the
+maximal real part `β₀ > ½ + a` be attained at `ρ₀`. If `Φ(L) ≤ M e^{aL}` for every `L ≥ 0` outside a
+measurable set `E` with `η J_E(η) ≤ δ` for all small `η > 0`, then
+`Re(1/(ρ₀(1−ρ₀))) ≤ 4 δ Σ_ρ |1/(ρ(1−ρ))|`. -/
+theorem re_lagWeight_le_of_attainedTop_of_le_exp_except {M a β₀ δ : ℝ} {E : Set ℝ}
+    (hE : MeasurableSet E) (hδ : ∀ᶠ η in 𝓝[>] (0:ℝ), η * abelMass E η ≤ δ)
     (hM : ∀ L, 0 ≤ L → L ∉ E → weilLagFunctionReal L ≤ M * Real.exp (a * L))
-    (htop : AttainedTop β₀) : β₀ ≤ 1 / 2 + a := by
-  obtain ⟨⟨q₀, hq₀⟩, hall⟩ := htop
-  by_contra hlt
-  push Not at hlt
+    (htop : AttainedTop β₀) (hlt : 1 / 2 + a < β₀) {q₀ : XiZeroCopy}
+    (hq₀ : (q₀.1 : ℂ).re = β₀) : (lagWeight q₀).re ≤ 4 * lagWeightTotal * δ := by
+  have hall := htop.2
   obtain ⟨γ, hγ⟩ : ∃ γ : ℝ, γ = (q₀.1 : ℂ).im := ⟨_, rfl⟩
   have hBw : ∀ q, (lagShiftExp a q).re ≤ β₀ - 1 / 2 - a := fun q => by
     rw [re_lagShiftExp]; linarith [hall q]
   have hsum := summable_norm_lagWeight
-  have hcoef : ∀ q : Fin 3 × XiZeroCopy,
-      ‖phaseCoef γ 0 0 lagWeight (lagShiftExp a) q‖ ≤ ‖lagWeight q.2‖ := by
-    intro q
-    rw [phaseCoef, Complex.ofReal_zero, zero_mul, Complex.exp_zero, mul_one, norm_mul]
-    exact mul_le_of_le_one_right (norm_nonneg _) (norm_phaseWeight_le 0 q.1)
   have hnormQ : Summable fun q : Fin 3 × XiZeroCopy =>
       ‖phaseCoef γ 0 0 lagWeight (lagShiftExp a) q‖ := by
-    refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hcoef ?_
-    exact (summable_prod_of_nonneg fun q => norm_nonneg _).mpr
-      ⟨fun _ => hsum, Summable.of_finite⟩
+    simp_rw [norm_phaseCoef_zero]
+    exact (summable_prod_of_nonneg fun q => mul_nonneg (norm_nonneg _) (twistWeight_pos _).le).mpr
+      ⟨fun _ => hsum.mul_right _, Summable.of_finite⟩
   have hpos : ∀ q : Fin 3 × XiZeroCopy,
       0 < (phaseCoef γ 0 0 lagWeight (lagShiftExp a) q).re := by
     intro q
@@ -506,8 +524,9 @@ theorem re_le_half_add_of_attainedTop_of_le_exp_abelDensityZero {M a β₀ : ℝ
     have hm := le_max_left M 0
     have hm0 := le_max_right M 0
     nlinarith
-  have key := re_tsum_top_nonpos_of_lagRe_le_abelDensityZero (B := β₀ - 1 / 2 - a) hnormQ
-    (by linarith) (fun q => by rw [re_twistExp]; exact hBw _) hE hEd hMQ
+  have key := re_tsum_top_le_of_lagRe_le_except (B := β₀ - 1 / 2 - a) hnormQ
+    (by linarith) (fun q => by rw [re_twistExp]; exact hBw _) hE hMQ hδ
+  rw [tsum_norm_phaseCoef_zero] at key
   have hj : twistExp γ (lagShiftExp a) (2, q₀) = ((β₀ - 1 / 2 - a : ℝ) : ℂ) := by
     apply Complex.ext
     · rw [re_twistExp, re_lagShiftExp, hq₀, Complex.ofReal_re]
@@ -526,12 +545,92 @@ theorem re_le_half_add_of_attainedTop_of_le_exp_abelDensityZero {M a β₀ : ℝ
     split_ifs
     · exact (hpos q).le
     · simp
-  have hterm : (f (2, q₀)).re = (phaseCoef γ 0 0 lagWeight (lagShiftExp a) (2, q₀)).re := by
-    simp only [hf]; rw [if_pos hj]
+  have hterm : (f (2, q₀)).re = (lagWeight q₀).re / 2 := by
+    simp only [hf]
+    rw [if_pos hj, phaseCoef, Complex.ofReal_zero, zero_mul, Complex.exp_zero, mul_one,
+      phaseWeight_zero, Complex.re_mul_ofReal]
+    simp [twistWeight]
+    ring
   have hle : (f (2, q₀)).re ≤ ∑' q, (f q).re :=
     (Complex.reCLM.summable hfs).le_tsum (2, q₀) fun q _ => hre0 q
   rw [Complex.re_tsum hfs] at key
-  linarith [hpos (2, q₀)]
+  linarith
+
+/-- **Lag excursions of Abel density zero bound an attained top.** If `Φ(L) ≤ M e^{aL}` for every
+`L ≥ 0` outside a measurable set of Abel density zero, and the maximal real part `β₀` of the zeros
+is attained, then `β₀ ≤ ½ + a`. -/
+theorem re_le_half_add_of_attainedTop_of_le_exp_abelDensityZero {M a β₀ : ℝ} {E : Set ℝ}
+    (hE : MeasurableSet E) (hEd : AbelDensityZero E)
+    (hM : ∀ L, 0 ≤ L → L ∉ E → weilLagFunctionReal L ≤ M * Real.exp (a * L))
+    (htop : AttainedTop β₀) : β₀ ≤ 1 / 2 + a := by
+  by_contra hlt
+  push Not at hlt
+  obtain ⟨q₀, hq₀⟩ := htop.1
+  have hW := lagWeightTotal_pos
+  have hw := lagWeight_re_pos q₀
+  have hδ : 0 < (lagWeight q₀).re / (8 * lagWeightTotal) := by positivity
+  have h := re_lagWeight_le_of_attainedTop_of_le_exp_except hE (hEd _ hδ) hM htop hlt hq₀
+  have h2 : 4 * lagWeightTotal * ((lagWeight q₀).re / (8 * lagWeightTotal)) =
+      (lagWeight q₀).re / 2 := by field_simp; ring
+  linarith
+
+/-- **An attained top forces lag excursions of positive upper density.** Let the maximal real part
+`β₀ > ½ + a` be attained at `ρ₀`. For every level `M`, the set `E` of `L ≥ 0` with
+`Φ(L) > M e^{aL}` does not satisfy `|E ∩ [0, T]| ≤ δT` for all large `T` once
+`δ < Re(1/(ρ₀(1−ρ₀)))/(4 Σ_ρ |1/(ρ(1−ρ))|)`. -/
+theorem not_volume_le_of_attainedTop {M a β₀ δ : ℝ} (htop : AttainedTop β₀)
+    (hlt : 1 / 2 + a < β₀) {q₀ : XiZeroCopy} (hq₀ : (q₀.1 : ℂ).re = β₀)
+    (hδ : δ < (lagWeight q₀).re / (4 * lagWeightTotal)) :
+    ¬ ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
+      volume ({L : ℝ | 0 ≤ L ∧ M * Real.exp (a * L) < weilLagFunctionReal L} ∩ Icc 0 T) ≤
+        ENNReal.ofReal (δ * T) := by
+  rintro ⟨T₀, hT₀⟩
+  set E : Set ℝ := {L : ℝ | 0 ≤ L ∧ M * Real.exp (a * L) < weilLagFunctionReal L} with hEdef
+  have hEm : MeasurableSet E :=
+    measurableSet_Ici.inter (measurableSet_lt
+      (measurable_const.mul (Real.measurable_exp.comp (measurable_const.mul measurable_id)))
+      measurable_weilLagFunctionReal)
+  have hW := lagWeightTotal_pos
+  have hw := lagWeight_re_pos q₀
+  obtain ⟨δ₁, hδ₁def⟩ : ∃ δ₁ : ℝ, δ₁ = max δ 0 := ⟨_, rfl⟩
+  have hδ₁0 : 0 ≤ δ₁ := hδ₁def ▸ le_max_right _ _
+  have hδ₁ : δ₁ < (lagWeight q₀).re / (4 * lagWeightTotal) := by
+    rw [hδ₁def]; exact max_lt hδ (by positivity)
+  obtain ⟨δ₂, hδ₂def⟩ : ∃ δ₂ : ℝ, δ₂ = (δ₁ + (lagWeight q₀).re / (4 * lagWeightTotal)) / 2 :=
+    ⟨_, rfl⟩
+  obtain ⟨C, hCdef⟩ : ∃ C : ℝ, C = max T₀ 0 := ⟨_, rfl⟩
+  have hC : 0 ≤ C := hCdef ▸ le_max_right _ _
+  have hvol : ∀ T : ℝ, 0 ≤ T → volume (E ∩ Icc 0 T) ≤ ENNReal.ofReal (δ₁ * T + C) := by
+    intro T hT
+    rcases le_or_gt T₀ T with h | h
+    · refine (hT₀ T h).trans (ENNReal.ofReal_le_ofReal ?_)
+      have : δ * T ≤ δ₁ * T := mul_le_mul_of_nonneg_right (hδ₁def ▸ le_max_left _ _) hT
+      linarith
+    · calc volume (E ∩ Icc 0 T) ≤ volume (Icc (0:ℝ) T) := measure_mono inter_subset_right
+        _ = ENNReal.ofReal (T - 0) := Real.volume_Icc
+        _ ≤ ENNReal.ofReal (δ₁ * T + C) := by
+            refine ENNReal.ofReal_le_ofReal ?_
+            have : T ≤ C := hCdef ▸ (le_of_lt h).trans (le_max_left _ _)
+            nlinarith
+  have hgap : 0 < δ₂ - δ₁ := by rw [hδ₂def]; linarith
+  have hev : ∀ᶠ η in 𝓝[>] (0:ℝ), η * abelMass E η ≤ δ₂ := by
+    filter_upwards [Ioo_mem_nhdsGT (show (0:ℝ) < (δ₂ - δ₁) / (C + 1) by positivity)] with η hη
+    have h1 := abelMass_le_of_volume_le hEm hη.1 hδ₁0 hC hvol
+    have h2 : η * abelMass E η ≤ η * (δ₁ / η + C) := mul_le_mul_of_nonneg_left h1 hη.1.le
+    have h3 : η * (δ₁ / η + C) = δ₁ + η * C := by
+      rw [mul_add, mul_div_assoc', mul_div_cancel_left₀ _ hη.1.ne']
+    have h4 : η * C ≤ (δ₂ - δ₁) / (C + 1) * C := mul_le_mul_of_nonneg_right hη.2.le hC
+    have h5 : (δ₂ - δ₁) / (C + 1) * C ≤ δ₂ - δ₁ := by
+      rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity)]; nlinarith
+    linarith
+  have hM : ∀ L, 0 ≤ L → L ∉ E → weilLagFunctionReal L ≤ M * Real.exp (a * L) :=
+    fun L hL hLE => not_lt.mp fun h => hLE ⟨hL, h⟩
+  have h := re_lagWeight_le_of_attainedTop_of_le_exp_except hEm hev hM htop hlt hq₀
+  have h6 : 4 * lagWeightTotal * δ₂ < (lagWeight q₀).re := by
+    have : δ₂ < (lagWeight q₀).re / (4 * lagWeightTotal) := by rw [hδ₂def]; linarith
+    rw [lt_div_iff₀ (by positivity)] at this
+    linarith
+  linarith
 
 /-- **Lag excursions of Abel density zero exclude an attained top right of the line.** -/
 theorem not_attainedTop_of_weilLagFunctionReal_le_abelDensityZero {M : ℝ} {E : Set ℝ}

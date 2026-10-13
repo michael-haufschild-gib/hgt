@@ -54,3 +54,14 @@ Setting: positive weights `c_i` with `Σ c_i < ∞`, locally finite exponents `w
   - RH ⟺ ZAL ∧ JAS level-one interval positivity off a finite-measure set of log-scales.
 - **Proof.** The ζ configuration has complex weights `1/(ρ(1−ρ))` with Re > 0, and multiplicities (non-injective exponents) are allowed. `MaxRealPositive` holds because every weight has positive real part. Twist `1 + cos(γ₀L)` at the attaining zero, then apply the sharp Landau round at κ = 0.
 - Module `RHTower/WeilLagFunctionFiniteMeasureExcursion`.
+
+## Addendum — density zero (MUST-1393)
+
+- **[L]** Abstract: `Re Σ_{w_i=B} a_i ≤ (Σ|a_i|)·limsup_{η→0} η∫_E e^{−ηu}`. Assumptions are summable weights and `Re w ≤ B`; local finiteness is not needed. The proof combines the real residue limit with the Laplace bound.
+- **[L]** For ζ:
+  - attained top ⇒ every excursion set `{Φ e^{−aL} > M}` with `a < β₀ − ½` has positive upper density;
+  - RH ⟺ ZAL ∧ density-zero excursions;
+  - JAS: density-zero exceptional log-scales are tolerated given ZAL.
+- **[L]** Upper density zero ⇒ Abel density zero (Tonelli; `abelMass_le_of_volume_le`).
+- **Paley–Wiener rigid side.** Still OPEN. Heuristic capacity mechanism: a structure that lowers excursion density by N carries coherent spikes of mass ≈ N × amplitude. Summability then forces gT ≥ log N at handover, which gives the budget ∫f/t. A rigorous proof needs a capacity lemma for general configurations. Laplace positivity is only available from t = 0.
+- Module `RHTower/WeilLagFunctionDensityZeroExcursion`.

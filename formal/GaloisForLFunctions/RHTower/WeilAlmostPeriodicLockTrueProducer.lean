@@ -209,7 +209,8 @@ theorem eq_lineFactor_of_re_eq_half {G A : ℂ → ℂ}
 theorem riemannZeta_eventually_ne_zero {s : ℂ} (hs : s ≠ 1) :
     ∀ᶠ z in 𝓝[≠] s, riemannZeta z ≠ 0 := by
   have hU : AnalyticOnNhd ℂ riemannZeta {1}ᶜ :=
-    (DifferentiableOn.analyticOnNhd (fun z hz => (differentiableAt_riemannZeta hz).differentiableWithinAt)
+    (DifferentiableOn.analyticOnNhd
+      (fun z hz => (differentiableAt_riemannZeta hz).differentiableWithinAt)
       isOpen_compl_singleton)
   rcases (hU s hs).eventually_eq_zero_or_eventually_ne_zero with h | h
   · exfalso
@@ -543,7 +544,7 @@ theorem abs_integral_re_logDeriv_vertical_le {f : ℂ → ℂ} {σ T₁ T₂ : �
 /-- **Good heights are cofinal.** For `E` holomorphic and not identically zero on the upper glue
 domain, every interval `[n, n + 1]`, `n > 0`, contains a height `Y` with `E ≠ 0` on
 `[a, b] + iY`. -/
-theorem exists_good_height {E : ℂ → ℂ} (hE : AnalyticOnNhd ℂ E glueDomain) {z₀ : ℂ}
+theorem exists_glue_good_height {E : ℂ → ℂ} (hE : AnalyticOnNhd ℂ E glueDomain) {z₀ : ℂ}
     (hz₀ : z₀ ∈ glueDomain) (hEz₀ : E z₀ ≠ 0) {a b n : ℝ} (ha : -(1 / 2) < a) (hab : a ≤ b)
     (hn : 0 < n) : ∃ Y ∈ Icc n (n + 1), ∀ x ∈ Icc a b, E ((x : ℂ) + Y * I) ≠ 0 := by
   classical
@@ -729,7 +730,8 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
             (hB0 q)) hW
   obtain ⟨hGK, hFA⟩ := limitPeriodic_producer_factor hsl hΦd hid hGc hGd hG2 hB hW hΨ
   set A := limitTrivialSeries Ψ with hAdef
-  have hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re} := differentiableOn_limitTrivialSeries hB h8
+  have hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re} :=
+    differentiableOn_limitTrivialSeries hB h8
   have hAc : ContinuousOn A {s : ℂ | 1 / 2 ≤ s.re} := continuousOn_limitTrivialSeries hB h8
   set WA : ℝ := ∑' q : ℕ, (8 : ℝ) ^ (q + 1).primeFactors.card * B q with hWA
   have hAb : ∀ s : ℂ, 1 / 2 ≤ s.re → ‖A s‖ ≤ WA := fun s hs => norm_limitTrivialSeries_le hB h8 hs
@@ -836,7 +838,7 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
     rw [hEA _ (by simp; linarith)]; exact hAσ _ (by simp)
   have hgood : ∀ n : ℝ, σ₀ + 1 ≤ n → ∃ Y ∈ Icc n (n + 1),
       ∀ x ∈ Icc (1 / 2 - ε) σ₀, E ((x : ℂ) + Y * I) ≠ 0 := fun n hn =>
-    exists_good_height hEan hz₀ hEz₀ (by linarith) (by linarith) (by linarith)
+    exists_glue_good_height hEan hz₀ hEz₀ (by linarith) (by linarith) (by linarith)
   obtain ⟨Y₀, hY₀, hY₀good⟩ := hgood (σ₀ + 1) le_rfl
   /- the key bound -/
   have hkey : ∀ Y : ℝ, Y₀ < Y → (∀ x ∈ Icc (1 / 2 - ε) σ₀, E ((x : ℂ) + Y * I) ≠ 0) →
@@ -927,7 +929,8 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
     have hLE : ∫ t in Y₀..Y, (logDeriv E (((1 / 2 - ε : ℝ) : ℂ) + t * I)).re =
         -(∫ y in Y₀..Y, (logDeriv V (p y)).re) - ∫ y in Y₀..Y, (logDeriv A (p y)).re := by
       rw [intervalIntegral.integral_congr hleftEq]
-      have hsub := intervalIntegral.integral_sub hcV.intervalIntegrable.neg hcA.intervalIntegrable
+      have hsub := intervalIntegral.integral_sub (μ := volume) hcV.intervalIntegrable.neg
+        hcA.intervalIntegrable
       simp only [Pi.neg_apply, intervalIntegral.integral_neg] at hsub
       exact hsub
     have hRE : ∫ t in Y₀..Y, (logDeriv E ((σ₀ : ℂ) + t * I)).re =
@@ -955,10 +958,7 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
         (fun y hy => hunit y (hYpos y hy)) (fun y _ => hclose' y)
     rw [hRE, hLE] at hQE
     rw [hLA] at hQE
-    have hnegY : ∀ x : ℝ, (x : ℂ) + ((-Y : ℝ) : ℂ) * I = (x : ℂ) + ((-Y : ℝ) : ℂ) * I :=
-      fun _ => rfl
     rw [abs_le] at hS1 hS2 hB1 hB2 hB3 hB4
-    push_cast at hQA hB3 hB4
     linarith [hS1.1, hS1.2, hS2.1, hS2.2, hB1.1, hB1.2, hB2.1, hB2.2, hB3.1, hB3.2, hB4.1, hB4.2]
   /- the phase velocity has bounded integral -/
   set g := lineLockVelocity c u with hgdef
@@ -987,14 +987,18 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
   have hgCc : Continuous gC := Complex.continuous_ofReal.comp hgc
   have hgCa : _root_.HTGeometry.IsBohrAlmostPeriodic gC :=
     isBohrAlmostPeriodic_lineLockVelocity hqn hql
+  have hg00 : 0 ≤ g 0 :=
+    ge_of_tendsto ((hgc.tendsto 0).mono_left nhdsWithin_le_nhds : Tendsto g (𝓝[>] 0) (𝓝 (g 0)))
+      (by filter_upwards [self_mem_nhdsWithin] with z (hz : 0 < z); exact hpos z hz)
   set K : ℝ := (∫ y in (0 : ℝ)..Y₀, g y) + Cfin with hK
-  have hmeanlim : Tendsto (GaloisForLFunctions.windowAverage gC) atTop (𝓝 0) := by
+  have hmeanlim : Tendsto (_root_.GaloisForLFunctions.windowAverage gC) atTop (𝓝 0) := by
     refine squeeze_zero_norm' ?_ ((tendsto_const_nhds (x := K)).div_atTop tendsto_id)
     filter_upwards [eventually_ge_atTop Y₀] with T hT
     have hT0 : 0 < T := hY₀pos.trans_le hT
-    have hwin : GaloisForLFunctions.windowAverage gC T =
+    have hwin : _root_.GaloisForLFunctions.windowAverage gC T =
         (((T⁻¹ * ∫ y in (0 : ℝ)..T, g y) : ℝ) : ℂ) := by
-      simp only [GaloisForLFunctions.windowAverage, hgC, intervalIntegral.integral_ofReal, Complex.real_smul]
+      simp only [_root_.GaloisForLFunctions.windowAverage, hgC, intervalIntegral.integral_ofReal,
+        Complex.real_smul]
       push_cast; ring
     have hsplit : ∫ y in (0 : ℝ)..T, g y = (∫ y in (0 : ℝ)..Y₀, g y) + ∫ y in Y₀..T, g y :=
       (intervalIntegral.integral_add_adjacent_intervals (hgc.intervalIntegrable _ _)
@@ -1002,10 +1006,7 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
     have hnn : 0 ≤ ∫ y in (0 : ℝ)..T, g y :=
       intervalIntegral.integral_nonneg hT0.le fun y hy => by
         rcases eq_or_lt_of_le hy.1 with h | h
-        · have := hgc.continuousAt (x := y)
-          exact ge_of_tendsto (this.mono_left nhdsWithin_le_nhds (s := Ioi y))
-            (by filter_upwards [self_mem_nhdsWithin] with z hz; exact hpos z (by
-              rw [← h] at hz ⊢; exact hz))
+        · rw [← h]; exact hg00
         · exact hpos y h
     rw [hwin, Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_inv, abs_of_pos hT0,
       abs_of_nonneg hnn, id, inv_mul_eq_div]
@@ -1013,8 +1014,8 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
   /- the tail: a nonnegative almost-periodic function of mean zero vanishes -/
   have hga : _root_.HTGeometry.IsBohrAlmostPeriodic g := isBohrAlmostPeriodic_of_ofReal' hgCa
   have hnorm : _root_.HTGeometry.IsBohrAlmostPeriodic fun t => ‖gC t‖ :=
-    GaloisForLFunctions.isBohrAlmostPeriodic_norm_real hgCa
-  have hdiff := GaloisForLFunctions.isBohrAlmostPeriodic_sub (hgCc.norm) hnorm hgc hga
+    _root_.GaloisForLFunctions.isBohrAlmostPeriodic_norm_real hgCa
+  have hdiff := _root_.GaloisForLFunctions.isBohrAlmostPeriodic_sub (hgCc.norm) hnorm hgc hga
   have hzero := _root_.HTGeometry.eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero hdiff (by
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [eventually_gt_atTop 0] with t ht
@@ -1024,10 +1025,12 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
     simp only [hgC, Complex.norm_real, Real.norm_eq_abs] at h
     have : |g t| = g t := by linarith
     rw [← this]; exact abs_nonneg _
-  have hmean : bohrMean gC = 0 := bohrMean_eq hgCc hgCa hmeanlim
+  have hmean : _root_.GaloisForLFunctions.bohrMean gC = 0 :=
+    _root_.GaloisForLFunctions.bohrMean_eq hgCc hgCa hmeanlim
   have hg0 : ∀ t, g t = 0 := by
     intro t
-    have h := eq_zero_of_bohrMean_eq_zero_of_nonneg hgCc hgCa (fun t => by simp [hgC, hnn t])
+    have h := _root_.GaloisForLFunctions.eq_zero_of_bohrMean_eq_zero_of_nonneg hgCc hgCa
+      (fun t => by simp [hgC, hnn t])
       (fun t => by simp [hgC]) hmean t
     simpa [hgC] using h
   /- the lock is constant -/
