@@ -17753,3 +17753,6 @@ import GaloisForLFunctions.HTGeometry.LpSolidDiagonalObservation
 import GaloisForLFunctions.HTGeometry.L2PhysicalMultiplierObservation
 
 import GaloisForLFunctions.HTGeometry.LpDisjointEnergy
+
+import GaloisForLFunctions.HTGeometry.LpObservationModulus
+import GaloisForLFunctions.HTGeometry.L2PhysicalObservationModulus

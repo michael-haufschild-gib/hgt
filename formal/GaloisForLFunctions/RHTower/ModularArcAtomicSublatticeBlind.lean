@@ -90,14 +90,11 @@ theorem arcLineKernel_arcNeg (x : ℝ) (u : ArcParam) :
 theorem arcLineVector_neg_of_map_arcNeg {ν : Measure ArcParam}
     (hν : ν.map arcNeg = ν) (x : ℝ) :
     arcLineVector ν (-x) = arcLineVector ν x := by
-  unfold arcLineVector
+  simp_rw [arcLineVector_eq_integral_arcPointVector]
   conv_rhs => rw [← hν]
   rw [integral_map measurable_arcNeg.aemeasurable
     (continuous_arcPointVector_arc x).aestronglyMeasurable]
-  refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-  simp only [arcNeg, modularArcHeight_neg]
-  congr 2
-  ring
+  exact integral_congr_ae (Eventually.of_forall fun u => (arcPointVector_arcNeg u x).symm)
 
 /-- For a `u ↦ −u` symmetric measure `ν`, `arcLineDeriv ν` is odd. -/
 theorem arcLineDeriv_neg_of_map_arcNeg {ν : Measure ArcParam}
@@ -106,10 +103,13 @@ theorem arcLineDeriv_neg_of_map_arcNeg {ν : Measure ArcParam}
   have hker : ∀ y : ℝ, Continuous fun u : ArcParam => arcLineKernel y u := fun y =>
     continuous_arcLineKernel.comp (continuous_const.prodMk continuous_id)
   have hdef : ∀ y : ℝ, arcLineDeriv ν y = -∫ u, arcLineKernel y u ∂ν := fun _ => rfl
-  rw [hdef (-x), hdef x, neg_neg]
-  conv_lhs => rw [← hν]
-  rw [integral_map measurable_arcNeg.aemeasurable (hker (-x)).aestronglyMeasurable, ← integral_neg]
-  exact integral_congr_ae (Eventually.of_forall fun u => arcLineKernel_arcNeg x u)
+  rw [hdef (-x), hdef x, neg_neg, ← integral_neg]
+  conv_rhs => rw [← hν]
+  rw [integral_map measurable_arcNeg.aemeasurable (hker x).aestronglyMeasurable]
+  exact integral_congr_ae (Eventually.of_forall fun u => by
+    have := arcLineKernel_arcNeg (-x) u
+    rw [neg_neg] at this
+    exact this.symm)
 
 /-- For a `u ↦ −u` symmetric finite measure `ν`, all cosine moments of `arcLineDeriv ν` vanish. -/
 theorem integral_arcLineDeriv_mul_cos_eq_zero_of_map_arcNeg {ν : Measure ArcParam}
@@ -198,7 +198,8 @@ theorem abs_arcPoissonProfile_le_exp {ν : Measure ArcParam} [IsFiniteMeasure ν
   have h2 : 2 * |arcPoissonProfile ν v| ≤
       ν.real univ * (10 * Real.exp (-(|v| / 2))) := by
     calc 2 * |arcPoissonProfile ν v|
-        = |2 * arcPoissonProfile ν v| := by rw [abs_mul, abs_of_pos two_pos]
+        = |2 * arcPoissonProfile ν v| := by
+          rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
       _ = |∫ u, arcPairProfile u v ∂ν| := by
           rw [integral_arcPairProfile_eq_two_mul_arcPoissonProfile hν]
       _ ≤ ∫ u, |arcPairProfile u v| ∂ν := abs_integral_le_integral_abs
@@ -320,7 +321,7 @@ theorem arcLineAtomicDeriv_neg_of_map_arcNeg (b : ℝ) {ν : Measure ArcParam}
 
 theorem arcLineAtomicVector_inv (b : ℝ) (ν : Measure ArcParam) {x : ℝ} (hx : x ≠ 0) :
     arcLineAtomicVector b ν (1 / x) = |x| * arcLineAtomicVector b ν x := by
-  simp only [arcLineAtomicVector, Finset.sum_univ_five, atomWeight, atomShift,
+  simp only [arcLineAtomicVector, Fin.sum_univ_five, atomWeight, atomShift,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three,
     Matrix.cons_val_four, Matrix.head_cons, Matrix.tail_cons, dilatedArcLine_inv ν _ hx,
     neg_neg, neg_zero]
@@ -335,12 +336,12 @@ theorem exp_half_mul_arcLineAtomicVector (b : ℝ) (ν : Measure ArcParam) (v : 
 
 theorem continuous_arcLineAtomicProfile (b : ℝ) (ν : Measure ArcParam) [IsFiniteMeasure ν] :
     Continuous (arcLineAtomicProfile b ν) :=
-  continuous_finset_sum _ fun j _ =>
+  continuous_finsetSum _ fun j _ =>
     continuous_const.mul ((continuous_arcPoissonProfile ν).comp (by fun_prop))
 
 theorem arcLineAtomicProfile_neg (b : ℝ) (ν : Measure ArcParam) (v : ℝ) :
     arcLineAtomicProfile b ν (-v) = arcLineAtomicProfile b ν v := by
-  simp only [arcLineAtomicProfile, Finset.sum_univ_five, atomWeight, atomShift,
+  simp only [arcLineAtomicProfile, Fin.sum_univ_five, atomWeight, atomShift,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three,
     Matrix.cons_val_four, Matrix.head_cons, Matrix.tail_cons, sub_zero, sub_neg_eq_add]
   rw [arcPoissonProfile_neg, show -v - b = -(v + b) by ring, show -v + b = -(v - b) by ring,
@@ -385,14 +386,15 @@ theorem abs_arcLineAtomicProfile_le {b : ℝ} (hb : 0 ≤ b) {ν : Measure ArcPa
       unfold arcPairProfile arcPairVector
       rw [mul_add, exp_half_mul_arcPointVector, exp_half_mul_arcPointVector]
     rw [e]
-    exact continuous_finset_sum _ fun j _ => continuous_const.mul
+    exact continuous_finsetSum _ fun j _ => continuous_const.mul
       ((continuous_arcPoissonKernel.comp (continuous_const.prodMk continuous_id)).add
         ((continuous_arcPoissonKernel.comp (continuous_const.prodMk continuous_id)).comp
           continuous_arcNeg))
   have h2 : 2 * |arcLineAtomicProfile b ν v| ≤
       ν.real univ * (10 * atomMass b * Real.exp (3 * b) * Real.exp (-(3 * |v| / 2))) := by
     calc 2 * |arcLineAtomicProfile b ν v|
-        = |2 * arcLineAtomicProfile b ν v| := by rw [abs_mul, abs_of_pos two_pos]
+        = |2 * arcLineAtomicProfile b ν v| := by
+          rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
       _ = |∫ u, atomicArcProfile b u v ∂ν| := by
           rw [integral_atomicArcProfile_eq_two_mul_arcLineAtomicProfile b hν v]
       _ ≤ ∫ u, |atomicArcProfile b u v| ∂ν := abs_integral_le_integral_abs
@@ -642,7 +644,7 @@ theorem arcFreq_mul_nat {k : ℕ} (hk : 1 ≤ k) (n : ℕ) :
     arcFreq n * (k : ℝ) = arcFreq ((n + 1) * k - 1) := by
   have h1 : 1 ≤ (n + 1) * k := Nat.mul_pos (Nat.succ_pos n) hk
   unfold arcFreq
-  rw [Nat.sub_add_cancel h1]
+  rw [Nat.cast_sub h1]
   push_cast
   ring
 
@@ -683,7 +685,7 @@ theorem integral_arcLineAtomicDeriv_log_mul_sin_eq_subharmonics
     exact hblind _
   -- `j = 2`: shift `-log k`
   have hneg1 : Real.exp (-(-Real.log k / 2)) = Real.sqrt k := by
-    rw [neg_div, neg_neg, ← Real.exp_half hkpos.le, Real.exp_log hkpos]
+    rw [neg_div, neg_neg, Real.exp_half, Real.exp_log hkpos]
   have hfreq1 : arcFreq n * Real.exp (-Real.log k) = arcFreq n / k := by
     rw [Real.exp_neg, Real.exp_log hkpos, div_eq_mul_inv]
   -- `j = 4`: shift `-2 log k`
@@ -745,26 +747,40 @@ vanishing cosine moments at all real frequencies, purely sub-harmonic sine momen
 integers, and **exact sine blindness along the entire infinite arithmetic progression
 `2π k²(m+1)` (`m ∈ ℕ`)**. -/
 theorem exists_logNat_decayClass_sublattice_witness {k : ℕ} (hk : 2 ≤ k) :
-    ∃ h h' : ℝ → ℝ,
-      (∀ x, HasDerivAt h (h' x) x) ∧ Integrable h ∧ Integrable h' ∧
-      (∀ x, h (-x) = h x) ∧ (∀ x, h' (-x) = -h' x) ∧
-      (∀ x, x ≠ 0 → h (1 / x) = |x| * h x) ∧ ∫ x, h x = 0 ∧
-      (∃ C, 0 < C ∧ ∀ v, |Real.exp (v / 2) * h (Real.exp v)| ≤ C * Real.exp (-(3 * |v| / 2))) ∧
-      (∀ c : ℝ, ∫ x, h' x * Real.cos (c * x) = 0) ∧
-      (∀ m : ℕ, ∫ x, h' x * Real.sin (arcFreq (k ^ 2 * (m + 1) - 1) * x) = 0) ∧
-      (∀ m : ℕ, ∫ x, h' x * Real.sin (arcFreq (k * (m + 1) - 1) * x) =
+    ∃ ν : Measure ArcParam, IsFiniteMeasure ν ∧ ν ≠ 0 ∧ ν.map arcNeg = ν ∧
+      (∀ x, HasDerivAt (arcLineAtomicVector (Real.log k) ν)
+        (arcLineAtomicDeriv (Real.log k) ν x) x) ∧
+      Integrable (arcLineAtomicVector (Real.log k) ν) ∧
+      Integrable (arcLineAtomicDeriv (Real.log k) ν) ∧
+      (∀ x, arcLineAtomicVector (Real.log k) ν (-x) = arcLineAtomicVector (Real.log k) ν x) ∧
+      (∀ x, arcLineAtomicDeriv (Real.log k) ν (-x) = -arcLineAtomicDeriv (Real.log k) ν x) ∧
+      (∀ x, x ≠ 0 → arcLineAtomicVector (Real.log k) ν (1 / x) =
+        |x| * arcLineAtomicVector (Real.log k) ν x) ∧
+      ∫ x, arcLineAtomicVector (Real.log k) ν x = 0 ∧
+      (∃ C, 0 < C ∧ ∀ v,
+        |Real.exp (v / 2) * arcLineAtomicVector (Real.log k) ν (Real.exp v)| ≤
+          C * Real.exp (-(3 * |v| / 2))) ∧
+      (∀ c : ℝ, ∫ x, arcLineAtomicDeriv (Real.log k) ν x * Real.cos (c * x) = 0) ∧
+      (∀ n : ℕ, ∫ x, arcLineAtomicDeriv (Real.log k) ν x * Real.sin (arcFreq n * x) =
+        atomW1 (Real.log k) * (Real.sqrt k *
+          ∫ t, arcLineDeriv ν t * Real.sin (arcFreq n / k * t)) +
         atomW2 (Real.log k) * ((k : ℝ) *
-          ∫ t, h' t * Real.sin (arcFreq m / k * t)) ∨
-        ∃ J : ℝ → ℝ, ∫ x, h' x * Real.sin (arcFreq (k * (m + 1) - 1) * x) =
-          atomW2 (Real.log k) * ((k : ℝ) * J (arcFreq m / k))) ∧
-      ∀ τ : ℝ, 0 < ∫ v, Real.cos (τ * v) * (Real.exp (v / 2) * h (Real.exp v)) := by
+          ∫ t, arcLineDeriv ν t * Real.sin (arcFreq n / (k : ℝ) ^ 2 * t))) ∧
+      (∀ m : ℕ, ∫ x, arcLineAtomicDeriv (Real.log k) ν x *
+          Real.sin (arcFreq (k * (m + 1) - 1) * x) =
+        atomW2 (Real.log k) * ((k : ℝ) *
+          ∫ t, arcLineDeriv ν t * Real.sin (arcFreq m / k * t))) ∧
+      (∀ m : ℕ, ∫ x, arcLineAtomicDeriv (Real.log k) ν x *
+          Real.sin (arcFreq (k ^ 2 * (m + 1) - 1) * x) = 0) ∧
+      ∀ τ : ℝ, 0 < ∫ v, Real.cos (τ * v) *
+        (Real.exp (v / 2) * arcLineAtomicVector (Real.log k) ν (Real.exp v)) := by
   obtain ⟨ν, hfin, hne, hsym, hblind_whittaker, hpd⟩ := exists_arcWitness
   have hk1 : 1 ≤ k := by omega
   have hkgt1 : (1 : ℝ) < k := by exact_mod_cast (lt_of_lt_of_le one_lt_two hk)
   have hb : 0 < Real.log k := Real.log_pos hkgt1
   have hblind : ∀ n : ℕ, ∫ t, arcLineDeriv ν t * Real.sin (arcFreq n * t) = 0 := fun n => by
     rw [integral_arcLineDeriv_mul_sin, (hblind_whittaker n).1, mul_zero, neg_zero]
-  refine ⟨arcLineAtomicVector (Real.log k) ν, arcLineAtomicDeriv (Real.log k) ν,
+  refine ⟨ν, hfin, hne, hsym,
     hasDerivAt_arcLineAtomicVector (Real.log k) ν,
     integrable_arcLineAtomicVector hb.le hsym,
     integrable_arcLineAtomicDeriv (Real.log k) ν,
@@ -774,9 +790,9 @@ theorem exists_logNat_decayClass_sublattice_witness {k : ℕ} (hk : 2 ≤ k) :
     integral_arcLineAtomicVector_eq_zero hb.le hsym,
     ⟨5 * ν.real univ * atomMass (Real.log k) * Real.exp (3 * Real.log k) + 1, ?_, fun v => ?_⟩,
     integral_arcLineAtomicDeriv_mul_cos_eq_zero (Real.log k) hsym,
+    integral_arcLineAtomicDeriv_log_mul_sin_eq_subharmonics hblind hk1,
+    integral_arcLineAtomicDeriv_log_mul_sin_mul_eq_single_subharmonic hblind hk1,
     integral_arcLineAtomicDeriv_log_mul_sin_sq_mul_eq_zero hblind hk1,
-    fun m => Or.inr ⟨fun c => ∫ t, arcLineDeriv ν t * Real.sin (c * t),
-      integral_arcLineAtomicDeriv_log_mul_sin_mul_eq_single_subharmonic hblind hk1 m⟩,
     fun τ => ?_⟩
   · have := measureReal_nonneg (μ := ν) (s := univ)
     have := atomMass_nonneg (Real.log k)

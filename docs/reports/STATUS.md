@@ -4179,3 +4179,12 @@ Notation: `δ=Re ρ−½`; angular energy of a zero = `Σ_{ρ′≠ρ}cos²θ`, 
 
     The corpus capstone RH ⟺ JasDressedPSD 1 ∧ quasi-RH thus reduces to two countable, very sparse test families.
   - Module `RHTower/JointAncestrySparseChainExclusion`. Standard axioms.
+
+- **MUST-1396 addendum [L] (size is no obstruction: sub-linear-exponential quotient growth suffices).**
+  - `RHTower.AbelianTwist.slowQuotient_lock_trueProducer`: the conclusion of MUST-1396 (`lam = Λ` and RH) holds when the quotient only satisfies `|A(s)| ≤ W e^{|Im s|^α}` on `Re s ≥ ½`, for some `α < 1`; `A` need not be bounded. The bounded case is the corollary `α = 0`.
+  - Mechanism. The Backlund–Jensen constants grow like `Y^α`, so the lock phase is `O(y^α)`. The monotone twist theorem holds below the linear wall.
+  - Reading. A Herglotz producer with a continuous lock is forced to `Λ` unless its quotient `G/(s(s−1)Γ_ℝζ)` is singular at the critical line: discontinuous, i.e. `G` fails to vanish at a ζ-zero to full order; or growing at least like `e^{|t|}`. The twin door (`A ~ ζ^{m−1}`) is of the first kind. So the uniqueness obstruction is divisor-supported, not size.
+  - Generic lemmas: `glue_horizontal_le`, `quotient_horizontal_le`, `backlund_const_exp`, `norm_lockGlue_le_exp`. Standard axioms.
+  - Correction to the reading above: the size exception is "not `O(e^{|t|^α})` for any `α < 1`", not "at least `e^{|t|}`". Growth such as `e^{|t|/log|t|}` is not covered.
+
+- **MUST-1397 addendum [L] (purely JAS sparse capstone).** RH ⟺ the single-prime tests on large primes are positive at some level `σ < ½` ∧ level-one log-weight window positivity on `(2^{2^k}, 2^{2^{k+1}}]` ∧ level-one constant-vector positivity at the dyadic scales (`riemannHypothesis_iff_singlePrime_and_doubleExpWindows_and_dyadicScales`). The single-prime tests supply the half-plane `Re ρ ≤ ½ + max(σ, ¼)`, and the sparse families do the rest. This sharpens the corpus JAS-internal capstone (single-prime ∧ product positivity on all large-prime sets). Module `RHTower/JointAncestrySparseChainExclusion`.
