@@ -474,3 +474,18 @@
   only like `e^{−(log n)²/4K}`. Arc Whittaker moments decay like `e^{−π√3 n}`. Cancelling the filter tail needs generators
   with slowly decaying high-`n` moments, i.e. mass near the real axis.
 - Lean programme B′: A `GaussianPoleFilter`, B `FilteredArcGenerator`, C `FilteredArcMoments`, D `FiniteLevelDecayWitness`.
+
+## Row 201 — [L] Theorem B′ formalized: decay-class line witnesses blind at every finite level
+- `RHTower/FiniteLevelDecayWitness.exists_decayClass_lineWitness`, plus four supporting modules (`GaussianPoleFilter`,
+  `FilteredArcGenerator`, `FilteredArcGeneratorDecay`, `FilteredArcGeneratorMoments`).
+- Standard axioms; all five `lake --old` clean; wired into `RHTower.lean`.
+- Remaining lint errors are other agents' unwired modules.
+- Card `n1-log-edge-modular-arc-witness` corrected: Theorem A is ζ-free blind only, with A-kernel residue
+  `(ρ₂ log n − ρ₁)/√n`. Pole dichotomy recorded.
+- Reusable Lean assets:
+  - Gaussian pole filter with exact transforms;
+  - ray-dilated Poisson superpositions with Fubini/derivative control;
+  - the `λ → ½` zero-mean argument;
+  - the uniform K₀ bound `√r K₀(r) ≤ √(π/2)`;
+  - the Whittaker cone density from L1;
+  - signed-basis robustness.

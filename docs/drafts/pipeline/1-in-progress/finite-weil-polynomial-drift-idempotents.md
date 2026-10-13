@@ -1,6 +1,6 @@
 # Canonical finite Weil drift masks as polynomial idempotents
 
-Status: IN PROGRESS — dependency-closed paper proof; native formalization pending.
+Status: STOPPED ON GOAL CLEAR — native warning cleanup and final audit pending; not marked formalized.
 
 ## Objective and scope
 
@@ -36,6 +36,13 @@ Initial documented lexical corpus search `idempotent interpolate` in HTGeometry 
 - `HTGeometry/FiniteNodePolynomialIdempotents.lean`
 - `RHTower/WeilLogShiftPolynomialDriftIdempotents.lean`
 
-## Verification pending
+## Verification progress
 
-Native API scratch, sequential native leaves, final actual-root audit of every declaration, fresh objects/imports, umbrella wiring, formal lint, and transition to formalized only after verification.
+- Native API scratch passed with 17 verified signatures using the generic direct imports.
+- Two initial root-import attempts encountered missing compiled upstream objects, `DigammaTwoSided` and `ZetaZeroFreeRegionUnrestricted`. Both were present on subsequent inspection, with unchanged older sources; neither source was edited for this task.
+- `FiniteLawZeroPattern` and `FiniteNodePolynomialIdempotents` passed native checks with empty logs.
+- The actual root native session `61318` exited 0. Its log contains one deprecation warning: replace `push_neg at hnone` with the supported `push Not at hnone`, then rebuild this root. No owned native process remains running.
+- Formal lint session `22907` exited 1 with four unrelated unreachable modules: `RHTower.GaussianPoleFilter`, `RHTower.LocalRectangleArgumentBound`, `RHTower.WeilAlmostPeriodicLockTrueProducer`, and `RHTower.ZetaWeightedFrobeniusClose`.
+- All three modules are wired into their theorem-area umbrellas.
+- Final scratch is prepared for all nine theorems and 23 API bindings: `/tmp/hgt-polynomial-drift-idempotents-final-audit.lean`. Metadata and axiom checker: `/tmp/hgt-polynomial-drift-idempotents-audit.py`.
+- The user cleared the goal before warning cleanup or the final actual-root axiom audit. Those checks have not run; this increment remains unfinished. No new build was started after the clear.

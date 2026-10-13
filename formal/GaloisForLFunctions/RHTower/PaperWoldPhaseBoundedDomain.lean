@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.PaperWoldPrimePhaseColumn
+import GaloisForLFunctions.RHTower.PaperWoldFiniteColumnEnergy
 import GaloisForLFunctions.RHTower.PaperWoldWalshDomain
 
 /-! # Exact phase-admission boundary of the full arithmetic Wold matrix
@@ -15,14 +15,8 @@ theorem paperWoldPhaseRealization_not_nonempty_of_threeQuarters_le
     (t : {t : ℝ // 3 / 4 ≤ t}) (u : PaperWoldUnitPhase) :
     ¬ Nonempty (PaperWoldPhaseRealization t u) := by
   rintro ⟨T⟩
-  have hg : Tendsto (fun N : ℕ => Real.log N ^ 3 / (2 * 4096 ^ 2)) atTop atTop := by
-    have hlog := Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop (R := ℝ))
-    have hp := ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 3)).comp hlog).atTop_div_const
-      (by norm_num : (0 : ℝ) < 2 * 4096 ^ 2)
-    simpa only [Function.comp_def,
-      show ∀ x : ℝ, x ^ (3 : ℝ) = x ^ 3 from fun x => Real.rpow_natCast x 3] using hp
   obtain ⟨N, hN, hlarge⟩ := ((paperWoldPhaseRealization_eventual_prime_norm_lower t u T).and
-    (hg.eventually (eventually_gt_atTop (‖T.val‖ ^ 2)))).exists
+    (paperWoldPrimeColumnFloor_tendsto.eventually (eventually_gt_atTop (‖T.val‖ ^ 2)))).exists
   exact (not_lt_of_ge hN) hlarge
 
 theorem paperWoldWalsh_exists_bounded_realization_iff (t : ℝ) :

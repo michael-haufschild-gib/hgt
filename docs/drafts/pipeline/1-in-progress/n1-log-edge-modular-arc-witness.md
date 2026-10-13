@@ -24,8 +24,17 @@ In multiplier language, `R(½+it) := B̂(t)/|G(½+it)|²` with `G = s(s−1)Γ_�
 - `R = O(e^{(π/6)|t|})` up to powers;
 - the ζ-free kernel `Ψ_R = 𝓜^{−1}[G²R]` vanishes at every integer `n ≥ 1`.
 
-So `Ξ²R` is a nonnegative Ξ-divisible test, blind at every `log n` with `n ≥ 2`, and analytic in the strip
-except at the pole of ζ. Its only defect is the class: the double pole at `s = 1`, i.e. a tail `e^{−|x|/2}`.
+So `Ξ²R` is a nonnegative Ξ-divisible symbol whose ζ-free kernel is blind at every `n ≥ 1`. Its defect is the
+class: the double pole at `s = 1`, i.e. a tail `e^{−|x|/2}`.
+
+**Correction (row 200).** Because of that pole, the ζ-free blindness does *not* give A-blindness. Shifting
+`a(x) = (1/2πi)∫_{(½)} ξ²R x^{−s} ds` to `Re s > 1` crosses the double pole of `R` at `s = 1`. So the
+autocorrelation of `Ξ²R` at `log n` is the residue `(ρ₂ log n − ρ₁)/√n`, with `ρ₂ ∝ c > 0`, not `0`. The two
+notions agree only in the decay class (`logNode_blind_iff_certKernel_vanishes`).
+
+The pole is also forced: a nonnegative decay-class `R` with `Ψ_R(n) = 0` for all `n ≥ 1` has
+`∫Ξ²R ∝ Ψ_R(1) = 0` (`integral_xi_sq_eq_certKernel_one`), hence `R = 0`. So full ζ-free blindness holds exactly
+at the log edge.
 
 ## Proof (dependency-closed)
 **Step 1 (no nonnegative decaying ¼-combination on `A`).** Let `P = Σ_{0<|n|≤N} c_n W_n` be real and
@@ -125,3 +134,25 @@ self-dual multiplier whose chirp moments `∫B̂(t)cos(2θ(t) − t log n)dt` va
   - (iii) Hence the finite moment cone has dual `{0}` and equals the whole space.
 - The full (N1) is the `N → ∞` limit. The condition `B̂(±i/2) = 0` is analytic and is not stable under real-line weak
   limits, so the open core is uniform separation of the witnesses from the log edge.
+
+## Theorem B′ (row 201): finite-level decay witnesses, fully in Lean
+`RHTower/FiniteLevelDecayWitness.exists_decayClass_lineWitness`: for every `N` there is `h` with:
+- `h` is `C¹`, with `h, h' ∈ L¹`;
+- `h` is even, with `h(1/x) = |x|h(x)`;
+- `∫h = 0` and `|e^{v/2}h(e^v)| ≤ Ce^{−3|v|/2}` (decay class);
+- `∫h'(x) sin(2πmx) dx = 0` for `2 ≤ m ≤ N+1`;
+- `e^{v/2}h(e^v)` is strictly positive definite.
+
+Standard axioms; `lake --old` clean; wired.
+
+Generators are pole-filtered arc pairs `h_{K,u} = ψ_u − ∫ǧ_K(w)e^{−w/2}ψ_u(xe^{−w})dw`, with
+`ǧ_K = 2e^{−K/4}g_K − e^{−K/2}g_{2K}` and spectrum `(1 − e^{−K(τ²+¼)})² Q̂_u`. The dual step is L1 alone, through
+density of the Whittaker cone and a signed-basis perturbation at one large `K`. Modules:
+- `GaussianPoleFilter`
+- `FilteredArcGenerator`: strict positive definiteness, symmetries.
+- `FilteredArcGeneratorDecay`: rate `3/2`, `∫h = 0` via `λ → ½`, `h' ∈ L¹`.
+- `FilteredArcGeneratorMoments`: `√r K₀(r) ≤ √(π/2)`, uniform error `4√(π/2)√c (2e^{−K/4}+e^{−K/2})`.
+- `FiniteLevelDecayWitness`
+
+The open core (C191) is the `N → ∞` limit. The filter's moment error at `n` is log-normal in `n`, while the arc
+Whittaker moments decay like `e^{−π√3 n}`.

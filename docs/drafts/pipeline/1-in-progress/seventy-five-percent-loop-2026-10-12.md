@@ -2603,3 +2603,36 @@ sits under the GUE repulsion. Induction gives the same for every n.
   correlation data in the RS range has no use for 75%: beyond the MT ceiling 0.6725 the only inputs are arithmetic
   twists (CGG θ ≥ 4^{1/3} − 1) or prime pairs past α = 1 (∫_1^{4/3}(4/3 − α)F ≤ 1/9).
 - The ζ goal (75%) is still not met.
+
+## Cycle 146 (2026-10-13) — close prime pairs: the continuous kernel (Lean); CGG θ-gap is a level-of-distribution bridge (C180)
+
+**Lean.** `RHTower/ZetaGridReindex.lean` generalised: `norm_sum_admissible_sub_le` (if Σ_{l∈ℤ}c_l = M then the
+admissible finite part differs from M by at most the outer masses); `norm_sum_admissible_le` is now its M = 0 case.
+New `RHTower/ZetaWeightedFrobeniusClose.lean` (namespace RHTower.FejerWeight):
+`hasSum_grid_char_of_window` (Poisson on the Gabor grid with one surviving alias: if |jL − y| ≥ B for all j ≠ 0 then
+Σ_k W(τ_k)e^{iyτ_k} = (L/2π)∫W(s)e^{iys}ds), `jacksonPairKernel` K_r(θ) = (L/2π)∫W(s + rh)W(s)e^{iθs}ds,
+`hasSum_jacksonProduct_grid_char`, `norm_sum_admissible_jacksonProduct_sub_le` (finite admissible sum = K_r(θ) up to
+2E₀), `norm_sum_sum_jacksonDifference_sub_le` (‖Σ_{k,l}W_kW_l e^{iθτ_l}B(k−l) − Σ_r B(r)K_r(θ)‖ ≤ 2E₀Σ_r‖B(r)‖),
+`abs_weighted_close_pair_sub_le` (a close pair contributes ½Re Σ_r A_n(r)Ā_m(r)K_r(y_n − y_m) up to
+2E₀Σ_r‖A_n(r)‖‖A_m(r)‖). Compiles silently, `lake build` ok (dependants rebuilt), axioms
+[propext, Classical.choice, Quot.sound], lint clean, names unique, wired after ZetaWeightedFrobeniusFar.
+- Project W status: every prime pair of the weighted PP Frobenius norm is now formally either negligible (far pairs,
+  cycle 145) or equal to an explicit continuous kernel (close pairs). The open core is the smoothed prime-pair
+  correlation Σ_{n,m close} c_nc_m ½Re Σ_r A_nĀ_m K_r(log n − log m). K_r(θ) is the transform of W(·+rh)W at θ:
+  a main lobe |θ| ≲ 1/T (intervals of length X/T = X^{1/4}) plus the Jackson-smoothed tail 1/T ≲ |θ| < 4b
+  (intervals up to X/Δ). Both are mean squares of the length-X prime polynomial over a window shorter than X, i.e.
+  F on (1, 4/3) — the same open input as the F-threshold of cycle 145, now without edge artefacts.
+
+**C180 (Kloosterman breach for discrete CGG).** Conjecture: the discrete mollified moment Σ_ρ|ζ'M(ρ)|² over zeros
+extends from θ = ½ to θ = 4/7 by the Deshouillers–Iwaniec bilinear technology, giving (under RH) the CGG proportion
+1 − (1 + 4/7)^{−3} = 1 − 343/1331 = 988/1331 ≈ 0.7423. Attack: the θ = ½ barrier is the Gonek-lemma error
+min(T, x/⟨x⟩) at x = nh/k near prime powers; for θ > ½ the near-misses nh − kp = ℓ ≠ 0 appear, i.e. primes in
+classes p ≡ −ℓk̄ (mod h) with bilinear mollifier weights in (h, k), so the barrier is the Bombieri–Vinogradov level
+with residues that vary with the second mollifier variable (fixed-residue BFI does not apply directly; the corpus
+has no BFI-type theorem). Verdict: BRIDGE (to a level-of-distribution statement with bilinearly varying residues) and
+INSIGNIFICANT for the goal: even θ = 4/7 leaves 988/1331 < 3/4 under RH, and the unconditional version still needs UI
+(C161).
+- Positive content: the single-piece CGG route to 3/4 must exceed the Kloosterman level 4/7 by
+  (4^{1/3} − 1) − 4/7 ≈ 0.0160 in θ; at θ = 4/7 it falls short by 3/4 − 988/1331 = 89/5324 ≈ 0.0167 in proportion.
+  The only remaining freedom inside the method is the mollifier shape (multi-piece/Feng), which is the next test.
+- The ζ goal (75%) is still not met.

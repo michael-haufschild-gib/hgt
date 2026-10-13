@@ -84,7 +84,7 @@ theorem integrable_filterGauss_mul_exp {t : ℝ} (ht : 0 < t) (x : ℂ) :
 theorem integrable_filterGauss_mul_rexp {t : ℝ} (ht : 0 < t) (c : ℝ) :
     Integrable fun w : ℝ => filterGauss t w * Real.exp (w * c) := by
   refine (integrable_filterGauss_mul_exp ht c).norm.congr (Eventually.of_forall fun w => ?_)
-  simp only
+  dsimp only
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (filterGauss_pos ht _),
     ← Complex.ofReal_mul, Complex.norm_exp_ofReal]
 
@@ -107,19 +107,18 @@ theorem integral_filterGauss_mul_cos {t : ℝ} (ht : 0 < t) (τ : ℝ) :
     ∫ w, filterGauss t w * Real.cos (τ * w) = Real.exp (-(t * τ ^ 2)) := by
   have h := integral_filterGauss_mul_exp ht ((τ : ℂ) * I)
   have hint := integrable_filterGauss_mul_exp ht ((τ : ℂ) * I)
-  have hre := congrArg Complex.re h
-  rw [← integral_re hint] at hre
-  have e1 : ∀ w : ℝ, RCLike.re ((filterGauss t w : ℂ) * Complex.exp ((w : ℂ) * ((τ : ℂ) * I))) =
+  have e1 : ∀ w : ℝ, ((filterGauss t w : ℂ) * Complex.exp ((w : ℂ) * ((τ : ℂ) * I))).re =
       filterGauss t w * Real.cos (τ * w) := by
     intro w
     rw [show (w : ℂ) * ((τ : ℂ) * I) = ((τ * w : ℝ) : ℂ) * I by push_cast; ring,
-      Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
-    simp
+      Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re]
   have e2 : (Complex.exp ((t : ℂ) * ((τ : ℂ) * I) ^ 2)).re = Real.exp (-(t * τ ^ 2)) := by
     rw [show (t : ℂ) * ((τ : ℂ) * I) ^ 2 = ((-(t * τ ^ 2) : ℝ) : ℂ) by
       push_cast; ring_nf; rw [I_sq]; ring, ← Complex.ofReal_exp, Complex.ofReal_re]
+  have hre := integral_re hint
+  simp only [RCLike.re_to_complex] at hre
   simp_rw [e1] at hre
-  rw [hre, e2]
+  rw [hre, h, e2]
 
 /-- The pole filter `ǧ_K(w) = 2e^{−K/4} g_K(w) − e^{−K/2} g_{2K}(w)`. -/
 def poleFilter (K w : ℝ) : ℝ :=
@@ -160,7 +159,7 @@ theorem integrable_gaussPoleMajorant_mul_rexp {K : ℝ} (hK : 0 < K) (c : ℝ) :
     ((integrable_filterGauss_mul_rexp (by positivity : 0 < 2 * K) c).const_mul
       (Real.exp (-(K / 2))))
   refine h.congr (Eventually.of_forall fun w => ?_)
-  simp only [gaussPoleMajorant]; ring
+  simp only [gaussPoleMajorant, Pi.add_apply]; ring
 
 theorem integrable_poleFilter_mul_rexp {K : ℝ} (hK : 0 < K) (c : ℝ) :
     Integrable fun w => poleFilter K w * Real.exp (w * c) := by
@@ -181,6 +180,7 @@ theorem integrable_gaussPoleMajorant_mul_exp_abs {K : ℝ} (hK : 0 < K) (c : ℝ
     ((continuous_gaussPoleMajorant K).mul (by fun_prop)).aestronglyMeasurable
     (Eventually.of_forall fun w => ?_)
   have hm := gaussPoleMajorant_nonneg hK w
+  simp only [Pi.add_apply]
   rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hm (Real.exp_pos _).le), ← mul_add]
   refine mul_le_mul_of_nonneg_left ?_ hm
   rcases le_total 0 w with hw | hw
@@ -204,9 +204,10 @@ theorem integral_poleFilter_mul_rexp {K : ℝ} (hK : 0 < K) (c : ℝ) :
 /-- At `c = ±½` the filter has exponential moment `1`. -/
 theorem integral_poleFilter_mul_exp_half {K : ℝ} (hK : 0 < K) (σ : ℝ) (hσ : σ ^ 2 = 1 / 4) :
     ∫ w, poleFilter K w * Real.exp (w * σ) = 1 := by
-  rw [integral_poleFilter_mul_rexp hK, hσ, ← Real.exp_add, ← Real.exp_add]
-  rw [show -(K / 4) + K * (1 / 4) = 0 by ring, show -(K / 2) + 2 * K * (1 / 4) = 0 by ring]
-  simp; norm_num
+  rw [integral_poleFilter_mul_rexp hK, hσ, mul_assoc, ← Real.exp_add, ← Real.exp_add,
+    show -(K / 4) + K * (1 / 4) = 0 by ring, show -(K / 2) + 2 * K * (1 / 4) = 0 by ring,
+    Real.exp_zero]
+  norm_num
 
 /-- **The cosine transform of the filter**: `2E − E²` with `E = e^{−K(τ² + ¼)}`. -/
 theorem integral_poleFilter_mul_cos {K : ℝ} (hK : 0 < K) (τ : ℝ) :
@@ -224,17 +225,22 @@ theorem integral_poleFilter_mul_cos {K : ℝ} (hK : 0 < K) (τ : ℝ) :
         Real.exp (-(K / 2)) * (filterGauss (2 * K) w * Real.cos (τ * w)) := by
     funext w; simp only [poleFilter]; ring
   rw [e, integral_sub ((hi K hK).const_mul _) ((hi _ hK2).const_mul _), integral_const_mul,
-    integral_const_mul, integral_filterGauss_mul_cos hK, integral_filterGauss_mul_cos hK2,
-    ← Real.exp_add, ← Real.exp_add, ← Real.exp_nat_mul]
-  congr 2 <;> ring
+    integral_const_mul, integral_filterGauss_mul_cos hK, integral_filterGauss_mul_cos hK2]
+  have a1 : Real.exp (-(K / 4)) * Real.exp (-(K * τ ^ 2)) = Real.exp (-(K * (τ ^ 2 + 1 / 4))) := by
+    rw [← Real.exp_add]; congr 1; ring
+  have a2 : Real.exp (-(K / 2)) * Real.exp (-(2 * K * τ ^ 2)) =
+      Real.exp (-(K * (τ ^ 2 + 1 / 4))) ^ 2 := by
+    rw [← Real.exp_add, ← Real.exp_nat_mul]; congr 1; push_cast; ring
+  rw [mul_assoc, a1, a2]
 
 /-- **The filtered spectrum is strictly positive**: `1 − ∫ ǧ_K cos(τ·) = (1 − e^{−K(τ²+¼)})² > 0`. -/
 theorem one_sub_integral_poleFilter_mul_cos_pos {K : ℝ} (hK : 0 < K) (τ : ℝ) :
     0 < 1 - ∫ w, poleFilter K w * Real.cos (τ * w) := by
   rw [integral_poleFilter_mul_cos hK]
   have hlt : Real.exp (-(K * (τ ^ 2 + 1 / 4))) < 1 := by
-    rw [Real.exp_lt_one]; have : 0 < K * (τ ^ 2 + 1 / 4) := by positivity
-    linarith
+    have : 0 < K * (τ ^ 2 + 1 / 4) := by positivity
+    have h := Real.exp_lt_exp.mpr (show -(K * (τ ^ 2 + 1 / 4)) < 0 by linarith)
+    rwa [Real.exp_zero] at h
   nlinarith [sq_pos_of_pos (sub_pos.mpr hlt)]
 
 /-- **The filter is small in `L¹`.** -/
